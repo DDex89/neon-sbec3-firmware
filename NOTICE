@@ -1,0 +1,27 @@
+NOTICE
+
+Firmware content
+  The program code and calibration data analysed in this repository come from Chrysler SBEC3
+  engine controller firmware (c) 1995-1998 Chrysler Corporation. No ownership of this material is
+  claimed. It is analysed for non-commercial, educational and interoperability purposes for owners
+  of these vehicles. ROM images are not distributed in this repository.
+
+third_party/SBECBootLoader
+  SBEC3 reflash kernels, checksum and ECU writer scripts by Dino Yancey (dino2gnt),
+  https://github.com/dino2gnt/SBECBootLoader, copyright (C) 2022 Dino Yancey. Published by the
+  author for free use on the 2GNT forum ("Fun ECU facts and developments", topic 5890); included
+  here unchanged with the author's permission. The author's terms apply to that folder, not the
+  MIT license of this project.
+
+Reference information
+  Table addresses for 05293190AC and the SBEC3 table type and unit conventions were checked against
+  the calibration reference pages and the table viewer on 2gnt.com (https://www.2gnt.com). Facts
+  such as addresses are cited; no text from those pages is reproduced.
+
+Project contributions
+  The tools, analysis, comments and documentation written for this project are released under the
+  MIT license (see LICENSE).
+
+Removal requests
+  If you hold rights to any of this material and object to its publication, please open an issue
+  and it will be removed.
