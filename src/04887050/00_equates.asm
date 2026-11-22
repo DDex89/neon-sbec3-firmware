@@ -15,6 +15,7 @@ MainLoopCounter  equ $010C        ; $F810C
 MainLoopPhaseMask equ $010D        ; $F810D
 IacBase          equ $01F0        ; $F81F0
 SegmentRpm       equ $0200        ; $F8200
+MisfireLoad      equ $023F        ; $F823F
 EngineRpm        equ $0306        ; $F8306
 VehicleSpeed     equ $030C        ; $F830C
 VehicleSpeedCoarse equ $030D        ; $F830D
@@ -42,6 +43,7 @@ FlexEthanolScaled equ $0343        ; $F8343
 KnockMapThreshold equ $036E        ; $F836E
 KnockRetardMax   equ $0374        ; $F8374
 LookupResult     equ $03B0        ; $F83B0
+PurgeRamp        equ $03B9        ; $F83B9
 ChargeTargetVolts equ $0415        ; $F8415
 ShortTermTrim1   equ $0500        ; $F8500
 O2UpBank1Raw     equ $0501        ; $F8501

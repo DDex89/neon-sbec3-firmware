@@ -4555,7 +4555,7 @@ L12FA2:
         LDAA    >ThrottleAboveClosed,Z
         SUBA    $01EB,Z
         BLS     L12FC2
-        LDX     #SpeedCtlThrottle2
+        LDX     #SpeedCtlOverrideThrottle
         JSR     Lookup2D
         STAA    $01EC,Z
         BRA     L12FD2
@@ -4970,7 +4970,7 @@ L133BA:
 ;---------------------------------------------------------------------------------------------------
 Sub_133C6:
         PSHM    X
-        LDX     #SensorLimit2
+        LDX     #ChargeVoltsBattTemp
         JSR     Lookup2D
         LDAB    $0358
         CMPB    $4288
@@ -5071,7 +5071,7 @@ L134BC:
 Sub_134C0:
         BRCLR   $20,Z,#$80,L1350C
         LDAA    <EngineRpm,Z
-        LDX     #SensorRpmAdder
+        LDX     #BaroUpdateMapOffset
         JSR     Lookup2D
         ADDA    >Map,Z
         BCC     L134D6
@@ -5224,7 +5224,7 @@ L13618:
         JSR     Sub_19BD8
         BRA     L13650
 L1362E:
-        LDX     #StartV0A87
+        LDX     #AcSensorCurve
         JSR     Lookup2D
         STAA    >AcSensor,Z
         BRA     L13650
@@ -9431,7 +9431,7 @@ L163C8:
         BRSET   $0055,Z,#$02,L16784
         BRSET   $0055,Z,#$01,L16784
         BRSET   $062B,Z,#$40,L1640C
-        TST     $062F,Z
+        TST     >PurgeDuty,Z
         LBEQ    L16784
 L1640C:
         LDAA    $0C,Z
@@ -9529,7 +9529,7 @@ L1654C:
         BSET    $0258,Z,#$20
 L16556:
         BSET    $0256,Z,#$10
-        LDAA    $062F,Z
+        LDAA    >PurgeDuty,Z
         STAA    $025B,Z
         LDAA    <IacPosition,Z
         SUBA    $025C,Z
@@ -9984,13 +9984,13 @@ L16A98:
         BRSET   $B7,Z,#$02,L16AC4
         LDAA    $31,Z
         BRCLR   $02DD,Z,#$02,L16AB4
-        LDX     #DiagV019CLimit2
+        LDX     #DiagLevelLimit2
         JSR     Lookup2D
         CMPA    $0332,Z
         BLS     L16A4C
         BRA     L16AF2
 L16AB4:
-        LDX     #DiagV019CLimit
+        LDX     #DiagLevelLimit
         JSR     Lookup2D
         CMPA    $0332,Z
         BLS     L16AD0
@@ -10384,7 +10384,7 @@ L16EB4:
         BCLR    $B7,Z,#$80
         BRSET   $00B7,Z,#$08,L16F02
         BRCLR   >MainLoopPhaseMask,Z,#$08,L16F02
-        LDAA    $062F,Z
+        LDAA    >PurgeDuty,Z
         CMPA    $2A9E
         BCC     L16EDA
         TST     $0339,Z
@@ -10472,7 +10472,7 @@ Sub_16FAC:
         CMPA    $2BE2
         LBCS    L17074
         CLRA
-        LDAB    $0630,Z
+        LDAB    >PurgeRamp,Z
         TDE
         LDAB    $0375,Z
         PSHM    D,E
@@ -12456,8 +12456,8 @@ Sub_1843C:
         CMPA    $73,Z
         BLT     L184B2
 L18462:
-        LDAA    $0630,Z
-        LDX     #DiagV042CScale
+        LDAA    >PurgeRamp,Z
+        LDX     #FuelSysLimitScale
         JSR     Lookup2D
         BRCLR   $0026,Z,#$10,L18478
         ADDB    $2B0C
@@ -12630,8 +12630,8 @@ Sub_18606:
         CMPA    $86,Z
         BLT     L1867C
 L1862C:
-        LDAA    $0630,Z
-        LDX     #DiagV042CScale
+        LDAA    >PurgeRamp,Z
+        LDX     #FuelSysLimitScale
         JSR     Lookup2D
         BRCLR   $0027,Z,#$10,L18642
         ADDB    $2B0C
@@ -12781,7 +12781,7 @@ Sub_187AE:
         LDAB    >ShortTermTrim1,Z
         JSR     Sub_18A32
         STAB    $0266,Z
-        LDAA    $0630,Z
+        LDAA    >PurgeRamp,Z
         LDX     #Tab2D_2B14
         JSR     Lookup2D
         BRCLR   $0026,Z,#$01,L187D4
@@ -12932,7 +12932,7 @@ Sub_18940:
         LDAB    >ShortTermTrim2,Z
         JSR     Sub_18A32
         STAB    $0267,Z
-        LDAA    $0630,Z
+        LDAA    >PurgeRamp,Z
         LDX     #Tab2D_2B14
         JSR     Lookup2D
         BRCLR   $0027,Z,#$01,L18966
@@ -13425,34 +13425,34 @@ Sub_18DF2:
         LBMI    L18F94
         CPE     $26BB
         LBHI    L18E8A
-        LDAA    $02C1,Z
-        LDX     #MisfireV0620Limit
+        LDAA    >MisfireLoad,Z
+        LDX     #MisfireLoadScale
         JSR     Lookup2D
         LDAB    $028A,Z
         BRCLR   $00EF,Z,#$20,L18E3E
         TBA
-        LDX     #MisfireV06202
+        LDX     #MisfireLoadScaleDrive
         JSR     Lookup2D
         BRA     L18E56
 L18E3E:
         LDE     $0298,Z
         CPE     $029A,Z
         BCC     L18E4E
-        LDX     #MisfireV0620V05C6Factor
+        LDX     #MisfireThresh
         BRA     L18E52
 L18E4E:
-        LDX     #MisfireV0620V05C6Factor3
+        LDX     #MisfireThreshNoisy
 L18E52:
         JSR     Lookup3D
 L18E56:
         LDAB    #$08
         MUL
         TDE
-        LDAA    $02C1,Z
-        LDX     #MisfireV0620Scale2
+        LDAA    >MisfireLoad,Z
+        LDX     #MisfireCoolantLoadScale
         JSR     Lookup2D
         LDAB    $0C,Z
-        LDX     #MisfireV0620CoolantFactor
+        LDX     #MisfireThreshCoolant
         JSR     Lookup3D
         CLRB
         EMUL
@@ -13477,22 +13477,22 @@ L18EA0:
         CMPA    $294B
         BCS     L18EC2
         LDAA    >SegmentRpm,Z
-        LDX     #MisfireSegRpm
+        LDX     #MisfireHoldSegRpm
         JSR     Lookup2D
         STAA    $02C9,Z
 L18EC2:
-        LDAA    $02C1,Z
-        LDX     #MisfireV0620
+        LDAA    >MisfireLoad,Z
+        LDX     #MisfireWeightLoadScale
         JSR     Lookup2D
         STAA    $01FE,Z
         LDAB    $028A,Z
         LDAA    $01FE,Z
         TDE
-        LDX     #MisfireV04FEV05C6
+        LDX     #MisfireWeight
         JSR     Lookup3D
         STAA    $01FE,Z
         TED
-        LDX     #MisfireV04FEScaled
+        LDX     #MisfireWeight2
         JSR     Lookup3D
         STAA    $01FF,Z
         TZX
@@ -13787,7 +13787,7 @@ L1920E:
         BCLR    $02C6,Z,#$80
 L19212:
         LDAB    $02C0,Z
-        STAB    $02C1,Z
+        STAB    >MisfireLoad,Z
         LDAA    >Map,Z
         STAA    $02C0,Z
         SBA
@@ -14176,7 +14176,7 @@ L195E4:
         STAA    $02CB,Z
 L1960A:
         ORP     #$00E0
-        LDAA    $02C1,Z
+        LDAA    >MisfireLoad,Z
         LDX     #Tab2D_0723
         JSR     Lookup2D
         LDAB    $028A,Z
@@ -14238,7 +14238,7 @@ Sub_19646:
         CLR     $02BE,Z
         CLR     $02BF,Z
         CLR     $02C0,Z
-        CLR     $02C1,Z
+        CLR     >MisfireLoad,Z
         CLR     $02C2,Z
         CLR     $02C3,Z
         CLR     $02C4,Z
@@ -14299,11 +14299,11 @@ L19766:
         BLS     L19788
         STE     $029C,Z
 L19788:
-        LDAA    $02C1,Z
-        LDX     #MisfireV0620Limit
+        LDAA    >MisfireLoad,Z
+        LDX     #MisfireLoadScale
         JSR     Lookup2D
         LDAB    $028A,Z
-        LDX     #MisfireV0620V05C6Factor2
+        LDX     #MisfireNoiseRef
         JSR     Lookup3D
         LDAB    #$08
         MUL
@@ -14530,11 +14530,11 @@ L199E6:
 L199F0:
         TBA
         PSHA
-        LDX     #MisfireScale
+        LDX     #MisfireDevCurve
         JSR     Lookup2D
         PSHB
         PULA
-        LDX     #MisfireScaledFactor
+        LDX     #MisfireDevCurve2
         JSR     Lookup2D
         PULB
         MUL
@@ -17578,7 +17578,7 @@ Sub_1B84E:
         BRSET   >MainLoopCounter,Z,#$80,L1B85C
         LDAB    #$32
 L1B85C:
-        STAB    $062F,Z
+        STAB    >PurgeDuty,Z
         RTS
 L1B862:
         BRSET   $0326,#$80,L1B86E

@@ -15,6 +15,7 @@ MainLoopCounter  equ $013C        ; $F813C
 MainLoopPhaseMask equ $013D        ; $F813D
 IacBase          equ $01F0        ; $F81F0
 SegmentRpm       equ $0218        ; $F8218
+MisfireLoad      equ $0257        ; $F8257
 MapRaw           equ $0283        ; $F8283
 LookupResult     equ $02FE        ; $F82FE
 EngineRpm        equ $031D        ; $F831D
@@ -43,6 +44,7 @@ MapRawStart      equ $0358        ; $F8358
 FlexEthanolScaled equ $035D        ; $F835D
 KnockMapThreshold equ $0388        ; $F8388
 KnockRetardMax   equ $038E        ; $F838E
+PurgeRamp        equ $03D1        ; $F83D1
 ChargeTargetVolts equ $042F        ; $F842F
 ShortTermTrim1   equ $050F        ; $F850F
 O2UpBank1Raw     equ $0510        ; $F8510

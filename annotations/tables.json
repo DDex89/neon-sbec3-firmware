@@ -24,12 +24,12 @@
    "auto": false
   },
   "03A4": {
-   "name": "FlexLearnV006B",
-   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17000). Inputs: $6B,Z. Result to $0F41,Z.",
+   "name": "FlexLearnLimitV006B",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel learning: limit $0F41,Z against $6B,Z (negative values as 0)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "03B0": {
    "name": "IacRunUpCoolant",
@@ -48,12 +48,12 @@
    "auto": false
   },
   "03C8": {
-   "name": "PitV0DCCFactor",
-   "desc": "Subsystem: not identified yet (top routine Sub_08DD4) (by the routine that reads it, Sub_08DD4). Inputs: $0DCC,Z. Result to $0DD0,Z.",
+   "name": "FieldRampFactor",
    "category": "Other",
-   "auto": true,
+   "desc": "Generator field soft start (Sub_08DD4): period factor against the step count $0DCC,Z (0-100), into $0DD0,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "03D4": {
    "name": "FlexCoolantWeight",
@@ -64,20 +64,20 @@
    "auto": false
   },
   "03E0": {
-   "name": "Sys3AE3CConstLimit",
-   "desc": "Subsystem: not identified yet (top routine Sub_3AE3C) (by the routine that reads it, Sub_3AE3C). Inputs: #$00; LDD. Result to $00F0,Z.",
+   "name": "RpmFilterAboveIdle",
    "category": "Other",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Filter weight of $09FC,Z (filtered rpm) against rpm above the idle target",
+   "x": "rpm32",
+   "y": "mult256",
+   "auto": false
   },
   "03EC": {
-   "name": "PurgeV042ELimit",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: $042E,Z. Result to $047B,Z.",
+   "name": "PurgeMonitorLimit",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge monitor ($047A,Z bit 7): value $047B,Z against the purge command, at least $774F",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "03F8": {
    "name": "AccelMapGainAdder",
@@ -96,261 +96,261 @@
    "auto": false
   },
   "0410": {
-   "name": "FanCoolantLimit",
-   "desc": "Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_39E54). Inputs: CoolantTemp.",
+   "name": "FanSoakAirLimit",
    "category": "Cooling fan",
-   "auto": true,
+   "desc": "Hot-soak fan (Sub_39E54): air temperature above which the soak mode starts, against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "tempc",
+   "auto": false
   },
   "041C": {
-   "name": "FanAirTempLimit",
-   "desc": "Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_39E54). Inputs: AirTemp.",
+   "name": "FanSoakTime",
    "category": "Cooling fan",
-   "auto": true,
+   "desc": "Hot-soak fan: run time ($0B10,Z) against air temperature",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "04B5": {
-   "name": "SensorRpmAdder",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2CB0E). Inputs: EngineRpm.",
+   "name": "BaroUpdateMapOffset",
    "category": "Sensors",
-   "auto": true,
+   "desc": "Barometric pressure update while running: offset added to MAP against engine rpm (throttle above $04C1)",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "04F7": {
-   "name": "AcCtlSpeedLimit",
-   "desc": "Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
+   "name": "AcThrottleUpper",
    "category": "A/C",
-   "auto": true,
+   "desc": "A/C throttle logic (Sub_2F06A), $0943,Z bit 7 clear: throttle at or above this value against vehicle speed sets bit 7",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0503": {
-   "name": "AcCtlSpeedLimit2",
-   "desc": "Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
+   "name": "AcThrottleLower",
    "category": "A/C",
-   "auto": true,
+   "desc": "As AcThrottleUpper: throttle below this value sets bit 7 too",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "050F": {
-   "name": "AcCtlSpeedLimit3",
-   "desc": "Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
+   "name": "AcThrottleUpperSet",
    "category": "A/C",
-   "auto": true,
+   "desc": "$0943,Z bit 7 set: throttle at or above this value against vehicle speed keeps bit 7",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "051B": {
-   "name": "AcCtlSpeedLimit4",
-   "desc": "Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. Result to $0B53,Z.",
+   "name": "AcThrottleLowerSet",
    "category": "A/C",
-   "auto": true,
+   "desc": "$0943,Z bit 7 set: throttle below this value keeps bit 7; otherwise bit 7 clears after the delay $04EE/$04EF ($0B53,Z)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "052D": {
-   "name": "SensorLimit",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: TBA.",
+   "name": "BattTempSoakLimit",
    "category": "Sensors",
-   "auto": true,
+   "desc": "Battery temperature model at start: coolant-minus-battery temperature limit against the engine-off time ($09C1,Z)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0539": {
-   "name": "SensorV00F0Adder",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: $F0,Z.",
+   "name": "BattTempSoakAdder",
    "category": "Sensors",
-   "auto": true,
+   "desc": "Battery temperature model at start: addition to $0194,Z against the engine-off time",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0552": {
-   "name": "StartCoolantFactor",
-   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to BatteryTemp, $0A5B,Z.",
-   "category": "Startup",
-   "auto": true,
+   "name": "BattTempHeatFactor",
+   "category": "Sensors",
+   "desc": "Battery temperature model: factor on the excess above 110 against coolant (engine heat), into $0A5B,Z",
    "x": "tempc",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "0593": {
-   "name": "FanSpeedLimit",
-   "desc": "Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_39E54). Inputs: VehicleSpeed.",
+   "name": "FanAcDelaySpeed",
    "category": "Cooling fan",
-   "auto": true,
+   "desc": "Fan with A/C: delay ($0B0C,Z) against vehicle speed while the A/C sensor is between $055C and $055D",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "05AA": {
-   "name": "FanTable",
-   "desc": "Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3A8D2). Inputs: TBA.",
+   "name": "FanPwmStepCoolant",
    "category": "Cooling fan",
-   "auto": true,
+   "desc": "PWM fan (Sub_3A8D2): duty change against the coolant PD term ($0B19,Z, error to $05A2/$05A3 and rate)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "05C3": {
-   "name": "FanTable2",
-   "desc": "Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3AA44). Inputs: TBA.",
+   "name": "FanPwmStepAc",
    "category": "Cooling fan",
-   "auto": true,
+   "desc": "PWM fan (Sub_3AA44): duty change against the A/C sensor PD term ($0B1F,Z) with A/C requested",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "05D7": {
-   "name": "FanTable3",
-   "desc": "Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3ABFE). Inputs: TBA.",
+   "name": "FanPwmStepV09BF",
    "category": "Cooling fan",
-   "auto": true,
+   "desc": "PWM fan (Sub_3ABFE): duty change against the PD term of $09BF,Z ($0B2C,Z)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0609": {
-   "name": "StartStartCoolant",
-   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: StartCoolantTemp2. Result to $0C00,Z.",
+   "name": "ResetCoolantInit",
    "category": "Startup",
-   "auto": true,
+   "desc": "At reset: $0C00,Z against start coolant temperature",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0626": {
-   "name": "EgrSpeedLimit",
-   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.",
+   "name": "EgrThrottleMax",
    "category": "EGR",
-   "auto": true,
+   "desc": "EGR enable: throttle limit against vehicle speed while EGR is on",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0638": {
-   "name": "EgrSpeedLimit2",
-   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.",
+   "name": "EgrThrottleMaxOff",
    "category": "EGR",
-   "auto": true,
+   "desc": "As EgrThrottleMax while EGR is off (hysteresis)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "064A": {
-   "name": "EgrRpmAdder",
-   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: EngineRpm.",
+   "name": "EgrMapMinRpm",
    "category": "EGR",
-   "auto": true,
+   "desc": "EGR enable: MAP must be above this value against engine rpm (plus $0623 while off)",
    "x": "rpm32",
-   "y": "raw"
+   "y": "kpa",
+   "auto": false
   },
   "066E": {
-   "name": "EgrStartCoolant",
-   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: StartCoolantTemp2. Result to $0B33,Z.",
+   "name": "EgrStartDelayCoolant",
    "category": "EGR",
-   "auto": true,
+   "desc": "EGR delay after start ($0B33,Z) against start coolant temperature",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0695": {
-   "name": "EgrVacuumFactor",
-   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: ManifoldVacuum.",
+   "name": "EgrFlowFilterVacuum",
    "category": "EGR",
-   "auto": true,
-   "x": "kpa",
-   "y": "raw"
+   "desc": "EGR flow estimate: filter weight against manifold vacuum (multiplied by rpm)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
   },
   "06A1": {
-   "name": "EgrV0B3E",
-   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: $0B3E,Z.",
+   "name": "EgrFeedForward",
    "category": "EGR",
-   "auto": true,
+   "desc": "EGR valve: base PWM duty against the position target, added to the PID terms (output to PWMA)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "06B7": {
-   "name": "EgrTable",
-   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: ?.",
+   "name": "EgrPressureRatio",
    "category": "EGR",
-   "auto": true,
+   "desc": "EGR flow estimate: factor against the ratio ($0684 − MAP)/(baro − MAP), into $0B37,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "06C3": {
-   "name": "EgrV00F0Rpm",
-   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: $F0,Z x EngineRpm. Result to $0B3E,Z.",
+   "name": "EgrTarget",
    "category": "EGR",
-   "auto": true,
+   "desc": "EGR valve position target ($0B3E,Z) against part-throttle MAP position (rows) and engine rpm (columns); EGR off below $035E",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "0864": {
-   "name": "FlexLearnCal",
-   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17000). Inputs: $0857; $01B4,Z; $08E4. Result to $01B5,Z.",
+   "name": "FlexLearnInit",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel learning: start value $01B5,Z against the ethanol value $01B4,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0870": {
-   "name": "FlexLearnV042C",
-   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_187E8). Inputs: $042C,Z. Result to $0F1D,Z.",
+   "name": "FlexLearnPurgeFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel learning: factor $0F1D,Z against the purge ramp $042C,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "0884": {
-   "name": "FlexLearnV0F22",
-   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_183C2). Inputs: $0F22,Z. Result to $0F21,Z.",
+   "name": "FlexLearnTimeGain2",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel learning: second gain $0F21,Z against the learning time",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0890": {
-   "name": "FlexLearnTable",
-   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_183C2). Inputs: TBA. Result to $0F20,Z.",
+   "name": "FlexLearnTimeGain",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel learning: gain $0F20,Z against the learning time ($01A0,Z / 2, at most 255)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "089C": {
    "name": "FlexLearnStartCoolant",
-   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17FC4). Inputs: StartCoolantTemp2. Result to $0F24,Z.",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel learning: value $0F24,Z against start coolant temperature",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "08A8": {
-   "name": "FlexLearnTable2",
-   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17A48). Inputs: ?; $01BB,Z; $01BC,Z. Result to $0F25,Z, $01B9,Z, $01BA,Z.",
+   "name": "FlexLearnEthanolCurve",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel learning: curve from $01BB,Z/$01BC,Z to $01B9,Z/$01BA,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "08B4": {
-   "name": "FlexLearnV019C",
-   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_181BE). Inputs: $019C,Z. Result to $0F26,Z.",
+   "name": "FlexLearnLevelFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel learning: value $0F26,Z against $019C,Z (probably fuel level)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "08C8": {
-   "name": "FlexLearnTrim",
-   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17D44). Inputs: ShortTermTrim1. Result to $0F2B,Z.",
+   "name": "FlexLearnTrimWeight",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel learning: weight $0F2B,Z against the size of the short-term trim",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "08D4": {
-   "name": "FlexLearnV006B2",
-   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17000). Inputs: $6B,Z. Result to $0F40,Z.",
+   "name": "FlexLearnLimitV006B2",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel learning: limit $0F40,Z against $6B,Z, compared with $01B5,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "08EC": {
    "name": "CrankEthanolScale",
@@ -385,12 +385,12 @@
    "auto": false
   },
   "091C": {
-   "name": "SensorTable",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, CalcEngineRpm). Inputs: LDD. Result to $0C4A,Z.",
+   "name": "RpmCurveV0C4A",
    "category": "Sensors",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Engine rpm (high byte) to $0C4A,Z; all points 255 in the reference image",
+   "x": "rpm8",
+   "y": "raw",
+   "auto": false
   },
   "0928": {
    "name": "DecelMapScale",
@@ -489,20 +489,20 @@
    "auto": false
   },
   "09D0": {
-   "name": "PurgeMapScale",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: Map.",
+   "name": "PurgeFuelMapScale",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge vapor fuel correction: MAP to row position of PurgeFuelBase",
    "x": "kpa",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "09DA": {
-   "name": "PurgeRpm",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.",
+   "name": "PurgeFuelRpm",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge vapor fuel correction: engine rpm to column position of PurgeFuelBase",
    "x": "rpm32",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "09E4": {
    "name": "CoolantSparkMapScale",
@@ -1001,28 +1001,28 @@
    "auto": false
   },
   "1462": {
-   "name": "SensorTable2",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C7FE). Inputs: TBA. Result to $01AB,Z.",
-   "category": "Sensors",
-   "auto": true,
+   "name": "FlexLearnBlend",
+   "category": "Fuel",
+   "desc": "Flex-fuel learning: blend weight of the new ethanol value against the learning time ($01A0,Z / 4), $01AC,Z bit 4 set",
    "x": "raw",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "146E": {
-   "name": "SensorTable3",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C7FE). Inputs: TBA. Result to $01AB,Z.",
-   "category": "Sensors",
-   "auto": true,
+   "name": "FlexLearnBlend2",
+   "category": "Fuel",
+   "desc": "As FlexLearnBlend with $01AC,Z bit 4 clear",
    "x": "raw",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "147B": {
-   "name": "SensorCoolant",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: CoolantTemp. Result to MapLast.",
-   "category": "Sensors",
-   "auto": true,
+   "name": "ThrottleCloseMapOffset",
+   "category": "Idle",
+   "desc": "On throttle closing: offset subtracted from MAP into MapLast against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1485": {
    "name": "AccelMapCoolant2",
@@ -1105,12 +1105,12 @@
    "auto": false
   },
   "1500": {
-   "name": "StartCoolant",
-   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to $07C4,Z.",
+   "name": "ResetCoolantFuelInit",
    "category": "Startup",
-   "auto": true,
+   "desc": "At reset: $07C4,Z (cranking fuel set-up) against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "150D": {
    "name": "TipInCoolantFactor",
@@ -1169,12 +1169,12 @@
    "auto": false
   },
   "15C0": {
-   "name": "StartTable",
-   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: TBA. Result to $0A6B,Z.",
+   "name": "ResetCoolantInit2",
    "category": "Startup",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "At reset: $0A6B,Z against coolant temperature",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
   },
   "15CA": {
    "name": "DecelLeanBaroFactor",
@@ -1227,12 +1227,12 @@
    "auto": false
   },
   "1705": {
-   "name": "EventCoolant",
-   "desc": "Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: CoolantTemp. Result to FuelPulseAdder.",
-   "category": "Other",
-   "auto": true,
+   "name": "EventFuelCoolantSub",
+   "category": "Fuel",
+   "desc": "Per-event fuel: amount subtracted from FuelPulseAdder against coolant while FuelModeFlags bit 7 is set",
    "x": "tempc",
-   "y": "raw"
+   "y": "pwus32",
+   "auto": false
   },
   "170F": {
    "name": "IacFuelCoolant",
@@ -1244,20 +1244,20 @@
    "auto": false
   },
   "174C": {
-   "name": "O2Coolant",
-   "desc": "Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14740). Inputs: CoolantTemp.",
+   "name": "O2StartDelayCoolant",
    "category": "Closed loop",
-   "auto": true,
+   "desc": "Closed-loop entry (Sub_14740): delay against coolant (plus $323D with an O2 fault flag)",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "178F": {
-   "name": "O2V042CLimit",
-   "desc": "Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14FD8). Inputs: $042C,Z.",
+   "name": "O2PurgeLimit",
    "category": "Closed loop",
-   "auto": true,
+   "desc": "Closed loop: limit of $0752,Z against the purge ramp $042C,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "17B2": {
    "name": "O2VoltageScale",
@@ -1276,12 +1276,12 @@
    "y": "raw"
   },
   "18FF": {
-   "name": "O2V00F3",
-   "desc": "Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_15D56). Inputs: $F3,Z.",
+   "name": "O2StepScale",
    "category": "Closed loop",
-   "auto": true,
+   "desc": "Closed loop: trim step against the size of the O2 error $F3,Z (doubled while purge is active and duty is zero)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "190B": {
    "name": "TrimUpperLimitRpm",
@@ -1372,101 +1372,102 @@
    "auto": false
   },
   "1A4F": {
-   "name": "PurgeCalScale",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: $3048; $042E,Z.",
+   "name": "PurgeFlowScale",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge command (or constant $3048) to row position of PurgeFlow",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "1A63": {
-   "name": "PurgeV042C",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3D85E). Inputs: $042C,Z. Result to $00F0,Z.",
+   "name": "PurgeCommandBase",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge command base against the purge ramp $042C,Z, into $F0,Z (then scaled by learning and vacuum, into $042E,Z)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1A6F": {
-   "name": "PurgeVacuumFactor",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3D85E). Inputs: ManifoldVacuum.",
+   "name": "PurgeCommandVacuum",
    "category": "EVAP purge",
-   "auto": true,
-   "x": "kpa",
-   "y": "raw"
+   "desc": "Factor on the purge command against manifold vacuum",
+   "x": "raw",
+   "y": "mult256",
+   "auto": false
   },
   "1A7D": {
-   "name": "PurgeV042E",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
+   "name": "PurgeDutyPart",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge solenoid duty ($0431,Z) against the purge command, part throttle",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1A8F": {
-   "name": "PurgeV042E2",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
+   "name": "PurgeDutyClosed",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "As PurgeDutyPart, closed throttle",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1AA5": {
-   "name": "PurgeV042E3",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
+   "name": "PurgeDutyAlt",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "As PurgeDutyPart with calibration bits $0339.2/$0339.3 (by ThrottleState bit 0)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1AB7": {
-   "name": "PurgeCalVacuum",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: result of Lookup2D x ManifoldVacuum. Result to $047F,Z.",
+   "name": "PurgeFlow",
    "category": "EVAP purge",
-   "auto": true,
-   "x": "kpa",
+   "desc": "Purge flow estimate ($047F,Z) against purge command position (rows) and manifold vacuum (columns)",
+   "x": "raw",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "1B31": {
-   "name": "PurgeTrimAdder",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
+   "name": "PurgeLearnUpClosed",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge vapor learning, closed throttle: step added to $07EB,Z when the trim is above $1B2C",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1B3D": {
-   "name": "PurgeTrim",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. Result to $07EB,Z.",
+   "name": "PurgeLearnDownClosed",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge vapor learning, closed throttle: step subtracted from $07EB,Z when the trim is below −$1B2D",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1B49": {
-   "name": "PurgeTrimAdder2",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
+   "name": "PurgeLearnUpPart",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge vapor learning, part throttle: step added to $07EA,Z when the short-term trim is above $1B2C",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1B55": {
-   "name": "PurgeTrim2",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
+   "name": "PurgeLearnDownPart",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge vapor learning, part throttle: step subtracted from $07EA,Z when the trim is below −$1B2D",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1B61": {
-   "name": "PurgeTable",
-   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.",
+   "name": "PurgeFuelBase",
    "category": "EVAP purge",
-   "auto": true,
+   "desc": "Purge vapor fuel correction base against MAP (rows) and rpm (columns, normalised lookup); multiplied by the learned vapor value $07EB,Z",
+   "x": "raw",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "1BCF": {
    "name": "AfterStartSparkMin",
@@ -2286,12 +2287,12 @@
    "auto": false
   },
   "2790": {
-   "name": "SensorRpm",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: EngineRpm; SegmentRpm. Result to $0323,Z, $0347,Z.",
-   "category": "Sensors",
-   "auto": true,
-   "x": "rpm32",
-   "y": "raw"
+   "name": "ThrottleCloseTimerRpm",
+   "category": "Idle",
+   "desc": "On throttle closing at low speed: dashpot timer ($0323,Z, $0347,Z) against engine and segment rpm",
+   "x": "rpm8",
+   "y": "raw",
+   "auto": false
   },
   "279C": {
    "name": "ShiftIdleDelayCoolant",
@@ -2633,12 +2634,12 @@
    "auto": false
   },
   "2A30": {
-   "name": "SensorRpm2",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: EngineRpm; SegmentRpm. Result to $034D,Z.",
-   "category": "Sensors",
-   "auto": true,
-   "x": "rpm32",
-   "y": "raw"
+   "name": "ThrottleCloseTimerRpmMoving",
+   "category": "Idle",
+   "desc": "As ThrottleCloseTimerRpm above vehicle speed $2AF2 ($034D,Z)",
+   "x": "rpm8",
+   "y": "raw",
+   "auto": false
   },
   "2A38": {
    "name": "IdleMapAfterStart",
@@ -2772,300 +2773,300 @@
    "auto": false
   },
   "2B46": {
-   "name": "SpeedCtlV0408",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: $0408,Z.",
+   "name": "SpeedCtlEngagePos",
    "category": "Speed control",
-   "auto": true,
+   "desc": "Speed control (probable): servo position on engagement against the set speed $0408,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2B52": {
-   "name": "SpeedCtlV0408AC",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: $0408,Z.",
+   "name": "SpeedCtlEngagePosAC",
    "category": "Speed control",
-   "auto": true,
+   "desc": "As SpeedCtlEngagePos with A/C requested",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2B5E": {
-   "name": "SpeedCtlBaroFactor",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: Baro.",
+   "name": "SpeedCtlEngageBaro",
    "category": "Speed control",
-   "auto": true,
+   "desc": "Factor on the engagement position against barometric pressure",
    "x": "kpa",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "2B6E": {
-   "name": "SpeedCtlV0408Adder",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: $0408,Z; #$80.",
+   "name": "SpeedCtlEngageErrorAdder",
    "category": "Speed control",
-   "auto": true,
+   "desc": "Correction of the engagement position against the speed error (set speed minus speed, centred on 128)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2BCC": {
-   "name": "SpeedCtlThrottle",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: Throttle.",
+   "name": "SpeedCtlThrottleTerm",
    "category": "Speed control",
-   "auto": true,
+   "desc": "Servo term against throttle above closed ($03,Y)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2BD4": {
-   "name": "SpeedCtlAdder",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: LDD.",
+   "name": "SpeedCtlSpeedTerm",
    "category": "Speed control",
-   "auto": true,
+   "desc": "Servo term against raw vehicle speed ×8, added to SpeedCtlThrottleTerm",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2BE2": {
-   "name": "SpeedCtlTable",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: TBA.",
+   "name": "SpeedCtlErrorGain",
    "category": "Speed control",
-   "auto": true,
+   "desc": "Servo step against the speed error (one of the error curves of Sub_3B800, by $0400,Z bits 2-3)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2BEE": {
-   "name": "SpeedCtlSpeed",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: VehicleSpeed. Result to $0408,Z.",
+   "name": "SpeedCtlCancelStep",
    "category": "Speed control",
-   "auto": true,
+   "desc": "Step against speed plus 4 minus the set speed, when the set speed is replaced by the current speed",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2BFE": {
-   "name": "SpeedCtlConst",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: #$FF; TBA.",
+   "name": "SpeedCtlErrorGainResume",
    "category": "Speed control",
-   "auto": true,
+   "desc": "Servo step against the speed error with $0400,Z bit 4 set",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2C12": {
-   "name": "SpeedCtlSpeedLimit",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: VehicleSpeed.",
+   "name": "SpeedCtlSpeedMin",
    "category": "Speed control",
-   "auto": true,
+   "desc": "Limit against vehicle speed compared with the servo term $F1,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2C2C": {
-   "name": "SpeedCtlThrottle2",
-   "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C46E). Inputs: ThrottleAboveClosed. Result to $041E,Z.",
+   "name": "SpeedCtlOverrideThrottle",
    "category": "Speed control",
-   "auto": true,
+   "desc": "Value $041E,Z against throttle above the level latched in $0420,Z (driver override)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2C58": {
-   "name": "SensorRpmAdder2",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2CB60). Inputs: EngineRpm.",
+   "name": "MapHighThresholdRpm",
    "category": "Sensors",
-   "auto": true,
+   "desc": "MAP plausibility: offset subtracted from the baro limit against engine rpm (MAP above sets $086C,Z bit 2)",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2C68": {
-   "name": "SensorBaroScale",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2CB60). Inputs: Baro.",
+   "name": "MapHighThresholdBaro",
    "category": "Sensors",
-   "auto": true,
+   "desc": "MAP plausibility: limit against barometric pressure",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2C79": {
-   "name": "MisfireV0620Limit",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.",
+   "name": "MisfireLoadScale",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Misfire monitor: load $0620,Z to row position of the misfire thresholds",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "2C85": {
-   "name": "MisfireV0620",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. Result to $04FE,Z.",
+   "name": "MisfireWeightLoadScale",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Load to row position of MisfireWeight",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "2C91": {
-   "name": "MisfireV0620Scale",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: $0620,Z.",
+   "name": "MisfireNoiseLoadScale",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Load to row position of MisfireNoiseLimit",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "2C9D": {
-   "name": "MisfireV0620Scale2",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.",
+   "name": "MisfireCoolantLoadScale",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Load to row position of MisfireThreshCoolant",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "2CA9": {
-   "name": "MisfireV06202",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.",
+   "name": "MisfireLoadScaleDrive",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "As MisfireLoadScale for MisfireThreshDrive",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "2CB5": {
-   "name": "DiagThrottleScale",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: ThrottleAboveClosed.",
+   "name": "ExpectedMapThrottleScale",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "MAP/throttle rationality (Sub_2197C): throttle to row position of ExpectedMap",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "2CDB": {
-   "name": "MisfireCoolant",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: CoolantTemp. Result to $00F1,Z.",
+   "name": "MisfireEnableCoolant",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Misfire monitor enable weight ($0621,Z) term against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2CE5": {
-   "name": "MisfireTime",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: Count3s. Result to $00F3,Z.",
+   "name": "MisfireEnableTime",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Misfire monitor enable weight term against time since start",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2CEF": {
-   "name": "MisfireRpm",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: EngineRpm. Result to $00F5,Z.",
+   "name": "MisfireEnableRpm",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Misfire monitor enable weight term against engine rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2D01": {
-   "name": "MisfireStartCoolant",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: StartCoolantTemp2. Result to $05E6,Z.",
+   "name": "MisfireStartDelay",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Misfire monitor delay after start ($05E6,Z) against start coolant temperature",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2D0D": {
-   "name": "MisfireV0620V05C6Factor",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.",
+   "name": "MisfireThresh",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "raw",
+   "desc": "Misfire threshold of the segment-time change against load (rows) and segment rpm $05C6,Z (columns), P/N",
+   "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "2D6A": {
-   "name": "MisfireV0620V05C6Factor2",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B692). Inputs: result of Lookup2D x $05C6,Z. Result to $05D6,Z.",
+   "name": "MisfireNoiseRef",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "raw",
+   "desc": "Reference for the filtered segment-time change ($05D6,Z) against load and segment rpm; selects MisfireThreshNoisy",
+   "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "2DC7": {
-   "name": "MisfireV0620V05C6Factor3",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.",
+   "name": "MisfireThreshNoisy",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "raw",
+   "desc": "As MisfireThresh when the filtered change $05D4,Z is at or above MisfireNoiseRef",
+   "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "2E24": {
-   "name": "MisfireV0620V05C6Factor4",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.",
+   "name": "MisfireThreshDrive",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "raw",
+   "desc": "As MisfireThresh in gear (or with $00DC,Z bit 5)",
+   "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "2E81": {
-   "name": "MisfireV04FEV05C6",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $04FE,Z x $05C6,Z. Result to $04FE,Z.",
+   "name": "MisfireWeight",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "raw",
+   "desc": "Counter weight of a detected misfire ($04FE,Z) against load (rows) and segment rpm (columns)",
+   "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "2EDE": {
-   "name": "MisfireV04FEScaled",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup3D x result of Lookup3D. Result to $04FF,Z.",
+   "name": "MisfireWeight2",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "raw",
+   "desc": "Second counter weight ($04FF,Z) against the first weight and segment rpm",
+   "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "2F3B": {
-   "name": "MisfireV0620CoolantFactor",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x CoolantTemp. Result to $05E2,Z.",
+   "name": "MisfireThreshCoolant",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Factor on the misfire threshold against load (rows) and coolant (columns), result into $05E2,Z",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "2F5C": {
-   "name": "MisfireSegRpm",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: SegmentRpm. Result to $0629,Z.",
+   "name": "MisfireHoldSegRpm",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Hold-off after a detected misfire ($0629,Z) against segment rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2F97": {
-   "name": "MisfireScaledFactor",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: result of Lookup2D.",
+   "name": "MisfireDevCurve2",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "pos256",
-   "y": "raw"
+   "desc": "Second curve on the deviation, multiplied with MisfireDevCurve",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
   },
   "2FA9": {
-   "name": "MisfireScale",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: TBA.",
+   "name": "MisfireDevCurve",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Misfire monitor: curve on the segment-time deviation $04F6,Z (calibration bit $2CC1.3)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2FBB": {
-   "name": "MisfireBaro",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: Baro. Result to $062A,Z.",
+   "name": "MisfireEnableBaro",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Misfire monitor enable weight term against barometric pressure ($062A,Z)",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2FD5": {
-   "name": "DiagRpmLimit",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_243F8). Inputs: EngineRpm. Result to $0527,Z.",
+   "name": "DiagTimerRpm",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "rpm32",
-   "y": "raw"
+   "desc": "Timer $0527,Z of Sub_243F8 loaded against engine rpm",
+   "x": "rpm8",
+   "y": "raw",
+   "auto": false
   },
   "2FE9": {
-   "name": "MisfireV0620V05C6Factor5",
-   "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: result of Lookup2D x $05C6,Z.",
+   "name": "MisfireNoiseLimit",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "raw",
+   "desc": "Rough-signal limit against load and segment rpm; the peak $05D8,Z above it sets $00DC,Z bit 4",
+   "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "304A": {
    "name": "FlexEthanolMap",
@@ -3077,127 +3078,127 @@
    "auto": false
   },
   "3117": {
-   "name": "DiagV019CLimit",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z.",
+   "name": "DiagLevelLimit",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "3123": {
-   "name": "DiagV019CLimit2",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z.",
+   "name": "DiagLevelLimit2",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "As DiagLevelLimit with $0649,Z bit 1 set",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "3193": {
-   "name": "DiagV042CFlexEthanolAdder",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: result of Lookup2D x FlexEthanol. Result to $00F2,Z.",
+   "name": "FuelSysLimit",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Fuel system monitor: trim limit against purge ramp (rows) and ethanol content (columns); trim beyond it counts towards the fault",
    "x": "raw",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "31B4": {
-   "name": "DiagV042CFlexEthanol",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A4F2). Inputs: result of Lookup2D x FlexEthanol. Result to $00F2,Z.",
+   "name": "FuelSysLimit2",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "As FuelSysLimit for the second pair of routines (Sub_2A4F2, Sub_2A6C0)",
    "x": "raw",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "31D5": {
-   "name": "DiagV042CScale",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: $042C,Z.",
+   "name": "FuelSysLimitScale",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Fuel system monitor (Sub_2A0F0, Sub_2A302): purge ramp $042C,Z to row position of FuelSysLimit",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "31E1": {
-   "name": "DiagV042CScale2",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A4F2). Inputs: $042C,Z.",
+   "name": "FuelSysLimitScale2",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "As FuelSysLimitScale for Sub_2A4F2, Sub_2A6C0",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "32BD": {
-   "name": "Sys2C708VoltsAdder",
-   "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_2C708). Inputs: BatteryVolts2.",
-   "category": "Other",
-   "auto": true,
+   "name": "AnalogV0A92VoltsAdder",
+   "category": "Sensors",
+   "desc": "Correction of analog input $0A92,Z against battery voltage",
    "x": "volt16",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "32C9": {
-   "name": "Sys2C708V00F0",
-   "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_2C708). Inputs: $F0,Z. Result to $019C,Z.",
-   "category": "Other",
-   "auto": true,
+   "name": "AnalogV0A92Curve2",
+   "category": "Sensors",
+   "desc": "Corrected analog input $0A92,Z to $019C,Z (read by the flex-fuel learning)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "32D5": {
-   "name": "Sys2C708Scaled",
-   "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_2C708). Inputs: result of Lookup2D; #$FF. Result to $0A93,Z.",
-   "category": "Other",
-   "auto": true,
-   "x": "pos256",
-   "y": "raw"
+   "name": "AnalogV0A92Curve",
+   "category": "Sensors",
+   "desc": "Corrected analog input $0A92,Z to $0A93,Z (filtered into $0A94,Z)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
   },
   "32ED": {
-   "name": "DiagSpeed",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: VehicleSpeed. Result to $00F4,Z.",
+   "name": "LimpRpmSpeed",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Rpm limit against vehicle speed (MAP fault branch, $06AC,Z bit 6)",
    "x": "raw",
-   "y": "raw"
+   "y": "rpm8",
+   "auto": false
   },
   "32F7": {
-   "name": "DiagThrottle",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: ThrottleAboveClosed. Result to $00F4,Z.",
+   "name": "LimpRpmThrottle",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Rpm limit ($06AD,Z) against throttle while the MAP/throttle fault is set",
    "x": "raw",
-   "y": "raw"
+   "y": "rpm8",
+   "auto": false
   },
   "3301": {
-   "name": "DiagCoolantAdder",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: CoolantTemp. Result to $00F2,Z.",
+   "name": "ExpectedMapCoolant",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Expected MAP addition against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "kpa",
+   "auto": false
   },
   "3307": {
-   "name": "DiagV0330Adder",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: $0330,Z. Result to $00F2,Z.",
+   "name": "ExpectedMapFieldDuty",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Expected MAP addition against the raw generator field duty $0330,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "kpa",
+   "auto": false
   },
   "330D": {
-   "name": "DiagThrottleRpm",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: result of Lookup2D x EngineRpm. Result to $00F2,Z.",
+   "name": "ExpectedMap",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "rpm32",
+   "desc": "Expected MAP against throttle (rows) and engine rpm (columns); additions for coolant, field duty, A/C",
+   "x": "rpm8",
    "y": "pos256",
-   "z": "raw"
+   "z": "kpa",
+   "auto": false
   },
   "339D": {
-   "name": "DiagStartCoolantLimit",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_23A4A). Inputs: StartCoolantTemp2.",
+   "name": "ThermostatTimeLimit",
    "category": "Diagnostics",
-   "auto": true,
+   "desc": "Warm-up monitor: time since start allowed to reach coolant $1743, against start coolant temperature",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "4A59": {
    "name": "ThrottleLimpFromVacuum",
@@ -3216,12 +3217,12 @@
    "auto": false
   },
   "4A78": {
-   "name": "DiagRpmLimit2",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_23970). Inputs: EngineRpm.",
+   "name": "DiagIdleVacuumRpm",
    "category": "Diagnostics",
-   "auto": true,
-   "x": "rpm32",
-   "y": "raw"
+   "desc": "Monitor in Sub_23970 (closed throttle, P/N, warm): manifold vacuum limit against engine rpm",
+   "x": "rpm8",
+   "y": "raw",
+   "auto": false
   },
   "4A94": {
    "name": "KnockSensorCheckRpm",
@@ -3262,20 +3263,20 @@
    "auto": false
   },
   "7089": {
-   "name": "SensorLimit2",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C6DE). Inputs: ?.",
+   "name": "ChargeVoltsBattTemp",
    "category": "Sensors",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Charging voltage target ($0DB9,Z) against battery temperature, limited by $7087/$7088",
+   "x": "tempc",
+   "y": "volt16",
+   "auto": false
   },
   "7095": {
-   "name": "StartV0A87",
-   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to AcSensor.",
-   "category": "Startup",
-   "auto": true,
+   "name": "AcSensorCurve",
+   "category": "Sensors",
+   "desc": "A/C sensor (probably refrigerant pressure): ADC $0A87,Z to $0A88,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "70A1": {
    "name": "FlexEthanolCurve",
@@ -3335,20 +3336,20 @@
    "auto": false
   },
   "ABBD": {
-   "name": "EventV0D11Limit",
-   "desc": "Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: $0D11,Z. Result to $791E,Z.",
+   "name": "EventTimingLimit",
    "category": "Other",
-   "auto": true,
+   "desc": "Output-compare set-up in the GPT IC1 interrupt: limit against $0D11,Z compared with $0ABE,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "ABCF": {
-   "name": "FuelEventCalAdder",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12680). Inputs: $0A83; $7563.",
+   "name": "FuelEventOffset",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Per-event fuel offset against the calibration value $0A83 (or $7563 with bit $0338.2), added before the per-cylinder table $ABC3",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   }
  },
  "scalars": {

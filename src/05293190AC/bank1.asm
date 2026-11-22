@@ -1495,7 +1495,7 @@ Sub_10F6E:
         BNE     L10F9A
         LDAA    $07E8,Z
         BRSET   >ThrottleState,Z,#$80,L10F94
-        LDAA    $07EA,Z
+        LDAA    >PurgeVaporPart,Z
 L10F94:
         BEQ     L10F9A
         CLRB
@@ -1539,7 +1539,7 @@ Sub_10FE6:
         BNE     L11012
         LDAA    $07E9,Z
         BRSET   >ThrottleState,Z,#$80,L1100C
-        LDAA    $07EA,Z
+        LDAA    >PurgeVaporPart,Z
 L1100C:
         BEQ     L11012
         CLRB
@@ -3892,7 +3892,7 @@ L12834:
         BRCLR   $0338,#$04,L1284E
         LDAA    $7563
 L1284E:
-        LDX     #FuelEventCalAdder
+        LDX     #FuelEventOffset
         JSR     Lookup2D
         CLRA
         ADE
@@ -5059,7 +5059,7 @@ L144A0:
 L144B6:
         TST     $0758,Z
         BNE     L14524
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $175E
         BCS     L14524
         TST     $075B,Z
@@ -5339,7 +5339,7 @@ L14756:
         BCLR    $075D,Z,#$F0
         BCLR    $075D,Z,#$0F
         PSHM    X,K
-        LDX     #O2Coolant
+        LDX     #O2StartDelayCoolant
         JSR     Lookup2D
         PULM    K,X
         BRSET   $A5,Z,#$20,L1477E
@@ -5768,7 +5768,7 @@ L14C32:
         BSET    $0761,Z,#$03
 L14C44:
         BRSET   $0312,Z,#$80,L14C54
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $175E
         BCC     L14C66
 L14C54:
@@ -6177,7 +6177,7 @@ L150B0:
         LBCC    L151D4
         BRSET   $0760,Z,#$03,L151C8
         BRCLR   >ThrottleState,Z,#$80,L150F6
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         LDAB    $1749
         BRCLR   $017D,Z,#$01,L150DC
         SUBB    #$02
@@ -6273,8 +6273,8 @@ L151D4:
         TST     $0751,Z
         BEQ     L1520A
         BSET    $F0,Z,#$08
-        LDAA    $042C,Z
-        LDX     #O2V042CLimit
+        LDAA    >PurgeRamp,Z
+        LDX     #O2PurgeLimit
         JSR     Lookup2D
         CMPA    $0752,Z
         BHI     L151FE
@@ -6344,7 +6344,7 @@ L1528C:
 L1529E:
         TST     $0758,Z
         BNE     L152B4
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $18CE
         BCS     L152B4
         TST     $0753,Z
@@ -7436,7 +7436,7 @@ Sub_15D56:
         CLR     $F0,Z
         LDAB    $0801,Z
         ABX
-        LDAA    $0431,Z
+        LDAA    >PurgeDuty,Z
         BNE     L15D9A
         LDAA    $0439,Z
         BEQ     L15D9A
@@ -7504,12 +7504,12 @@ L15E1A:
         NEGA
 L15E24:
         PSHM    X
-        LDX     #O2V00F3
+        LDX     #O2StepScale
         JSR     Lookup2D
         PULM    X
         LDAB    $0439,Z
         BEQ     L15E3E
-        LDAB    $0431,Z
+        LDAB    >PurgeDuty,Z
         BNE     L15E3E
         ASLA
 L15E3E:
@@ -8337,7 +8337,7 @@ L17044:
         STAA    $01BD,Z
         STAA    $0F25,Z
         STAA    $01C3,Z
-        LDX     #FlexLearnCal
+        LDX     #FlexLearnInit
         JSR     Lookup2D
         STAA    $01B5,Z
         LDAA    $0833
@@ -8396,7 +8396,7 @@ L1711A:
         STAA    $01BD,Z
         STAA    $0F25,Z
         STAA    $01C3,Z
-        LDX     #FlexLearnCal
+        LDX     #FlexLearnInit
         JSR     Lookup2D
         STAA    $01B5,Z
 L17144:
@@ -8411,14 +8411,14 @@ L1715C:
         BPL     L17162
         CLRA
 L17162:
-        LDX     #FlexLearnV006B2
+        LDX     #FlexLearnLimitV006B2
         JSR     Lookup2D
         STAA    $0F40,Z
         LDAA    $6B,Z
         BPL     L17174
         CLRA
 L17174:
-        LDX     #FlexLearnV006B
+        LDX     #FlexLearnLimitV006B
         JSR     Lookup2D
         STAA    $0F41,Z
         LDAA    $01B5,Z
@@ -8648,7 +8648,7 @@ L17448:
         STAA    $0F25,Z
         STAA    $01BD,Z
         STAA    $0F3A,Z
-        LDX     #FlexLearnCal
+        LDX     #FlexLearnInit
         JSR     Lookup2D
         STAA    $01B5,Z
         BRA     L17492
@@ -8905,11 +8905,11 @@ L17AAC:
         STAB    $01BC,Z
 L17AB8:
         LDAA    $01BB,Z
-        LDX     #FlexLearnTable2
+        LDX     #FlexLearnEthanolCurve
         JSR     Lookup2D
         STAA    $01B9,Z
         LDAA    $01BC,Z
-        LDX     #FlexLearnTable2
+        LDX     #FlexLearnEthanolCurve
         JSR     Lookup2D
         STAA    $01BA,Z
         LDAA    $01BC,Z
@@ -9000,7 +9000,7 @@ L17BD4:
         LDAA    >CoolantTemp,Z
         CMPA    $0830
         BCS     L17C4A
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $0834
         BCC     L17C4A
         LDAA    $0F2D,Z
@@ -9122,7 +9122,7 @@ Sub_17D44:
         CLR     $0F1A,Z
         LBRA    L17DFA
 L17D62:
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $0834
         BCS     L17D82
         CLR     $0F18,Z
@@ -9181,7 +9181,7 @@ L17E20:
         LDAA    >CoolantTemp,Z
         CMPA    $08E3
         BCS     L17E3A
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $0834
         LBCS    L17EBC
 L17E3A:
@@ -9224,7 +9224,7 @@ L17EA0:
         BPL     L17EB0
         COMA
 L17EB0:
-        LDX     #FlexLearnTrim
+        LDX     #FlexLearnTrimWeight
         JSR     Lookup2D
         STAA    $0F2B,Z
 L17EBC:
@@ -9280,7 +9280,7 @@ Sub_17F7E:
         ADCE    $04F4,Z
         BRA     L17FC2
 L17FA4:
-        TST     $0431,Z
+        TST     >PurgeDuty,Z
         BEQ     L17FC2
         BRSET   >ThrottleState,Z,#$40,L17FC2
         STE     $04F4,Z
@@ -9331,7 +9331,7 @@ L18028:
         STAA    $0F48,Z
         LDAA    $6B,Z
         CLRA
-        LDX     #FlexLearnV006B2
+        LDX     #FlexLearnLimitV006B2
         JSR     Lookup2D
         STAA    $0F40,Z
         BRSET   $01AF,Z,#$40,L180A6
@@ -9351,7 +9351,7 @@ L18070:
         BCS     L1809A
         STAA    $01B4,Z
         STAA    $0F3A,Z
-        LDX     #FlexLearnCal
+        LDX     #FlexLearnInit
         JSR     Lookup2D
         STAA    $01B5,Z
 L1809A:
@@ -9373,7 +9373,7 @@ L180B8:
         BCS     L180E2
         STAA    $01B4,Z
         STAA    $0F3A,Z
-        LDX     #FlexLearnCal
+        LDX     #FlexLearnInit
         JSR     Lookup2D
         STAA    $01B5,Z
 L180E2:
@@ -9412,7 +9412,7 @@ L18136:
 L18144:
         LDAA    $01B4,Z
         STAA    $0F3A,Z
-        LDX     #FlexLearnCal
+        LDX     #FlexLearnInit
         JSR     Lookup2D
         STAA    $01B5,Z
         LDAA    >StartCoolantTemp2,Z
@@ -9516,7 +9516,7 @@ L1824A:
         STAA    $0F37,Z
         PSHM    X
         LDAA    $019C,Z
-        LDX     #FlexLearnV019C
+        LDX     #FlexLearnLevelFactor
         JSR     Lookup2D
         STAA    $0F26,Z
         PULM    X
@@ -9581,11 +9581,11 @@ L1841A:
         LSRD
         STAB    $0F22,Z
         TBA
-        LDX     #FlexLearnTable
+        LDX     #FlexLearnTimeGain
         JSR     Lookup2D
         STAA    $0F20,Z
         LDAA    $0F22,Z
-        LDX     #FlexLearnV0F22
+        LDX     #FlexLearnTimeGain2
         JSR     Lookup2D
         STAA    $0F21,Z
         LDD     $01A0,Z
@@ -9629,7 +9629,7 @@ L184C4:
         LDAA    >CoolantTemp,Z
         CMPA    $08E3
         LBCS    L18788
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $0834
         LBCS    L18788
         LDD     $0F35,Z
@@ -9671,7 +9671,7 @@ L18546:
         LDAA    >CoolantTemp,Z
         CMPA    $08E3
         BCS     L18570
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $0834
         BCS     L18570
         LDAA    $0F3A,Z
@@ -9686,7 +9686,7 @@ L18574:
         LDAB    >CoolantTemp,Z
         CMPB    $08E3
         BCS     L1859A
-        LDAB    $042C,Z
+        LDAB    >PurgeRamp,Z
         CMPB    $0834
         BCS     L1859A
         STAA    $0F3A,Z
@@ -9704,7 +9704,7 @@ L185A6:
         LDAA    >CoolantTemp,Z
         CMPA    $08E3
         BCS     L185D0
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $0834
         BCS     L185D0
         LDAA    $0F3A,Z
@@ -9735,7 +9735,7 @@ L185F6:
         LDAB    >CoolantTemp,Z
         CMPB    $08E3
         BCS     L1861C
-        LDAB    $042C,Z
+        LDAB    >PurgeRamp,Z
         CMPB    $0834
         BCS     L1861C
         STAA    $0F3A,Z
@@ -9750,7 +9750,7 @@ L18628:
         LDAB    >CoolantTemp,Z
         CMPB    $08E3
         BCS     L18648
-        LDAB    $042C,Z
+        LDAB    >PurgeRamp,Z
         CMPB    $0834
         BCS     L18648
         LDAA    $0F3A,Z
@@ -9769,7 +9769,7 @@ L18658:
         LDAB    >CoolantTemp,Z
         CMPB    $08E3
         BCS     L1867E
-        LDAB    $042C,Z
+        LDAB    >PurgeRamp,Z
         CMPB    $0834
         BCS     L1867E
         STAA    $0F3A,Z
@@ -9876,7 +9876,7 @@ L1876C:
         STAA    $01B4,Z
 L18778:
         STAA    $0F3A,Z
-        LDX     #FlexLearnCal
+        LDX     #FlexLearnInit
         JSR     Lookup2D
         STAA    $01B5,Z
 L18788:
@@ -9923,8 +9923,8 @@ L187E6:
 ;---------------------------------------------------------------------------------------------------
 Sub_187E8:
         BRCLR   $01AD,Z,#$80,L18834
-        LDAA    $042C,Z
-        LDX     #FlexLearnV042C
+        LDAA    >PurgeRamp,Z
+        LDX     #FlexLearnPurgeFactor
         JSR     Lookup2D
         STAA    $0F1D,Z
         CLRA
@@ -10110,7 +10110,7 @@ L18A46:
         STAA    $0F3A,Z
         STAA    $01BD,Z
         STAA    $01B4,Z
-        LDX     #FlexLearnCal
+        LDX     #FlexLearnInit
         JSR     Lookup2D
         STAA    $01B5,Z
 L18A5E:
@@ -10144,7 +10144,7 @@ Sub_18A8E:
         LDAA    >CoolantTemp,Z
         CMPA    $08E3
         BCS     L18AEC
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $0834
         BCS     L18AB0
         BSET    $0F0E,Z,#$02
@@ -10165,7 +10165,7 @@ L18ACE:
         BPL     L18ADE
         COMA
 L18ADE:
-        LDX     #FlexLearnTrim
+        LDX     #FlexLearnTrimWeight
         JSR     Lookup2D
         STAA    $0F2B,Z
         BRA     L18B20
@@ -10201,7 +10201,7 @@ Sub_18B22:
         LDAA    >CoolantTemp,Z
         CMPA    $08E3
         BCS     L18BA0
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $0834
         BCC     L18B80
         BSET    $0F0D,Z,#$04
@@ -10212,7 +10212,7 @@ Sub_18B22:
         BPL     L18B72
         COMA
 L18B72:
-        LDX     #FlexLearnTrim
+        LDX     #FlexLearnTrimWeight
         JSR     Lookup2D
         STAA    $0F2B,Z
         BRA     L18BA8
@@ -10286,7 +10286,7 @@ L18C38:
         LDX     $0F38,Z
         CPX     #$FFFF
         BEQ     L18C72
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $0834
         BCS     L18C72
         BRCLR   $0F0B,Z,#$01,L18C72
@@ -10325,7 +10325,7 @@ L18CE8:
         LDAA    $01B4,Z
         STAA    $0F3A,Z
 L18CF0:
-        LDX     #FlexLearnCal
+        LDX     #FlexLearnInit
         JSR     Lookup2D
         STAA    $01B5,Z
         BRA     L18D40
@@ -12568,15 +12568,15 @@ L1A7BE:
         TAB
         CLRA
         TDE
-        LDAB    $0330,Z
+        LDAB    >FieldDutyRaw,Z
         PSHM    D,E
         LDAA    #$40
         JSR     Blend16
         AIS     #$04
-        STAB    $0330,Z
+        STAB    >FieldDutyRaw,Z
         CLR     $032F,Z
         CLRA
-        LDAB    $0330,Z
+        LDAB    >FieldDutyRaw,Z
         TDE
         LDAB    >FieldDuty,Z
         PSHM    D,E
@@ -13981,7 +13981,7 @@ L1B70A:
         BCLR    $0319,Z,#$08
         BRA     L1B740
 L1B716:
-        LDAA    $042C,Z
+        LDAA    >PurgeRamp,Z
         CMPA    $26EE
         BCS     L1B740
         BRCLR   >MainLoopPhaseMask,Z,#$08,L1B72A

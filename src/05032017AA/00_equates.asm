@@ -21,12 +21,18 @@ IdleTarget       equ $0300        ; $F8300
 IdleRpmError     equ $0308        ; $F8308
 IdleMapTarget    equ $031E        ; $F831E
 FieldDuty        equ $032E        ; $F832E
+FieldDutyRaw     equ $0330        ; $F8330
 AcOnTime         equ $0359        ; $F8359
 IacBase          equ $0362        ; $F8362
 IacTarget        equ $0366        ; $F8366
 IacDriveOffset   equ $0374        ; $F8374
 IdleRpmDrop      equ $0378        ; $F8378
+PurgeRamp        equ $0432        ; $F8432
+PurgeCommand     equ $0434        ; $F8434
+PurgeDuty        equ $0437        ; $F8437
 SegmentRpm       equ $05C2        ; $F85C2
+MisfireLoad      equ $0620        ; $F8620
+LimpRpmLimit     equ $06AD        ; $F86AD
 ShortTermTrim1   equ $0700        ; $F8700
 O2UpBank1Raw     equ $0701        ; $F8701
 O2DownBank1Raw   equ $070B        ; $F870B
@@ -52,6 +58,8 @@ IdleEnrichFactor equ $07DA        ; $F87DA
 FuelPulse        equ $07E2        ; $F87E2
 WarmupFuelFactor equ $07E4        ; $F87E4
 TimeSinceStart   equ $07E6        ; $F87E6
+PurgeVaporPart   equ $07EA        ; $F87EA
+PurgeVaporClosed equ $07EB        ; $F87EB
 StartAirTemp     equ $0803        ; $F8803
 FuelPulseAdder   equ $080C        ; $F880C
 BaroFuelAdder    equ $080E        ; $F880E
@@ -87,6 +95,8 @@ VehicleSpeed     equ $0A9E        ; $F8A9E
 VehicleSpeedCoarse equ $0A9F        ; $F8A9F
 RpmSpeedRatio    equ $0AAA        ; $F8AAA
 Ic2OverflowCount equ $0AC8        ; $F8AC8
+EgrTargetPos     equ $0B3A        ; $F8B3A
+EgrDuty          equ $0B48        ; $F8B48
 ThrottleState    equ $0C30        ; $F8C30
 MainLoopPhaseMask equ $0C3B        ; $F8C3B
 Count3s          equ $0C3C        ; $F8C3C

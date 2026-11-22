@@ -336,13 +336,13 @@ IdleRpmSpeedTerm:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; PitV0DCCFactor ($03B4): 2D table, 3 points, unsigned
-; Subsystem: not identified yet (top routine Sub_08DD4) (by the routine that reads it, Sub_08DD4). Inputs: $0DCC,Z. Result to $0DD0,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; FieldRampFactor ($03B4): 2D table, 3 points, unsigned
+; Generator field soft start (Sub_08DD4): period factor against the step count $0DCC,Z (0-100), into $0DD0,Z
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: $0DC4,Z
 ; Read at $08F2E
 ;---------------------------------------------------------------------------------------------------
-PitV0DCCFactor:
+FieldRampFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,1, 40,16, 64,255                       ; x, y
 
@@ -362,26 +362,26 @@ FlexCoolantWeight:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sys3AE3CConstLimit ($03CC): 2D table, 2 points, unsigned
-; Subsystem: not identified yet (top routine Sub_3AE3C) (by the routine that reads it, Sub_3AE3C). Inputs: #$00; LDD. Result to $00F0,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; RpmFilterAboveIdle ($03CC): 2D table, 2 points, unsigned
+; Filter weight of $09FC,Z (filtered rpm) against rpm above the idle target
+; x: rpm32, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: #$00; LDD
 ; Read at $3AE06
 ;---------------------------------------------------------------------------------------------------
-Sys3AE3CConstLimit:
+RpmFilterAboveIdle:
         dc.b    2,$80                                    ; points, flags
         dc.b    34,22, 125,255                           ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeV042ELimit ($03D8): 2D table, 1 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: $042E,Z. Result to $047B,Z.
+; PurgeMonitorLimit ($03D8): 2D table, 1 points, unsigned
+; Purge monitor ($047A,Z bit 7): value $047B,Z against the purge command, at least $774F
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0434,Z
+; Inputs: PurgeCommand
 ; Read at $3E14E
 ;---------------------------------------------------------------------------------------------------
-PurgeV042ELimit:
+PurgeMonitorLimit:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
@@ -421,90 +421,90 @@ MapFilterRiseV0474:
         dc.b    $80,$80,$80,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; AcCtlSpeedLimit ($0471): 2D table, 1 points, unsigned
-; Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.
+; AcThrottleUpper ($0471): 2D table, 1 points, unsigned
+; A/C throttle logic (Sub_2F06A), $0943,Z bit 7 clear: throttle at or above this value against vehicle speed sets bit 7
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $2F126
 ;---------------------------------------------------------------------------------------------------
-AcCtlSpeedLimit:
+AcThrottleUpper:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; AcCtlSpeedLimit2 ($047D): 2D table, 1 points, unsigned
-; Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.
+; AcThrottleLower ($047D): 2D table, 1 points, unsigned
+; As AcThrottleUpper: throttle below this value sets bit 7 too
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $2F138
 ;---------------------------------------------------------------------------------------------------
-AcCtlSpeedLimit2:
+AcThrottleLower:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; AcCtlSpeedLimit3 ($0489): 2D table, 1 points, unsigned
-; Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.
+; AcThrottleUpperSet ($0489): 2D table, 1 points, unsigned
+; $0943,Z bit 7 set: throttle at or above this value against vehicle speed keeps bit 7
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $2F14C
 ;---------------------------------------------------------------------------------------------------
-AcCtlSpeedLimit3:
+AcThrottleUpperSet:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; AcCtlSpeedLimit4 ($0495): 2D table, 1 points, unsigned
-; Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. Result to $0B53,Z.
+; AcThrottleLowerSet ($0495): 2D table, 1 points, unsigned
+; $0943,Z bit 7 set: throttle below this value keeps bit 7; otherwise bit 7 clears after the delay $04EE/$04EF ($0B53,Z)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $2F15E
 ;---------------------------------------------------------------------------------------------------
-AcCtlSpeedLimit4:
+AcThrottleLowerSet:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$06,$0A,$80,$CA,$7F,$36
 
 ;---------------------------------------------------------------------------------------------------
-; SensorLimit ($04A7): 2D table, 5 points, unsigned
-; Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: TBA.
+; BattTempSoakLimit ($04A7): 2D table, 5 points, unsigned
+; Battery temperature model at start: coolant-minus-battery temperature limit against the engine-off time ($09C1,Z)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $2C594
 ;---------------------------------------------------------------------------------------------------
-SensorLimit:
+BattTempSoakLimit:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,135, 4,72, 8,45, 15,20, 30,8           ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SensorV00F0Adder ($04B3): 2D table, 6 points, unsigned
-; Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: $F0,Z.
+; BattTempSoakAdder ($04B3): 2D table, 6 points, unsigned
+; Battery temperature model at start: addition to $0194,Z against the engine-off time
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $F0,Z
 ; Read at $2C5AE
 ;---------------------------------------------------------------------------------------------------
-SensorV00F0Adder:
+BattTempSoakAdder:
         dc.b    6,$80                                    ; points, flags
         dc.b    0,0, 30,12, 75,27, 120,36, 180,41, 255,46 ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$24,$38,$4B,$00,$78
 
 ;---------------------------------------------------------------------------------------------------
-; StartCoolantFactor ($04CC): 2D table, 4 points, unsigned
-; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to BatteryTemp, $0A5B,Z.
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; BattTempHeatFactor ($04CC): 2D table, 4 points, unsigned
+; Battery temperature model: factor on the excess above 110 against coolant (engine heat), into $0A5B,Z
+; x: tempc, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0D97A, $2C4EE
 ;---------------------------------------------------------------------------------------------------
-StartCoolantFactor:
+BattTempHeatFactor:
         dc.b    4,$80                                    ; points, flags
         dc.b    110,255, 180,255, 221,230, 241,205       ; x, y
 
@@ -514,26 +514,26 @@ StartCoolantFactor:
         dc.b    $18,$28,$FF,$58,$58,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FanSpeedLimit ($050D): 2D table, 5 points, unsigned
-; Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_39E54). Inputs: VehicleSpeed.
+; FanAcDelaySpeed ($050D): 2D table, 5 points, unsigned
+; Fan with A/C: delay ($0B0C,Z) against vehicle speed while the A/C sensor is between $055C and $055D
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $3A06C
 ;---------------------------------------------------------------------------------------------------
-FanSpeedLimit:
+FanAcDelaySpeed:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,112, 16,96, 112,96, 160,48, 255,0      ; x, y
 
         dc.b    $00,$00,$00,$6E,$6E,$6E,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; FanTable ($0524): 2D table, 1 points, signed
-; Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3A8D2). Inputs: TBA.
+; FanPwmStepCoolant ($0524): 2D table, 1 points, signed
+; PWM fan (Sub_3A8D2): duty change against the coolant PD term ($0B19,Z, error to $05A2/$05A3 and rate)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3A970
 ;---------------------------------------------------------------------------------------------------
-FanTable:
+FanPwmStepCoolant:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-1                                   ; x, y
 
@@ -541,26 +541,26 @@ FanTable:
         dc.b    $00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; FanTable2 ($053D): 2D table, 1 points, signed
-; Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3AA44). Inputs: TBA.
+; FanPwmStepAc ($053D): 2D table, 1 points, signed
+; PWM fan (Sub_3AA44): duty change against the A/C sensor PD term ($0B1F,Z) with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3AAE8
 ;---------------------------------------------------------------------------------------------------
-FanTable2:
+FanPwmStepAc:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-1                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; FanTable3 ($0551): 2D table, 1 points, signed
-; Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3ABFE). Inputs: TBA.
+; FanPwmStepV09BF ($0551): 2D table, 1 points, signed
+; PWM fan (Sub_3ABFE): duty change against the PD term of $09BF,Z ($0B2C,Z)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3AC9A
 ;---------------------------------------------------------------------------------------------------
-FanTable3:
+FanPwmStepV09BF:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-1                                   ; x, y
 
@@ -569,13 +569,13 @@ FanTable3:
         dc.b    $6E,$FF,$00,$00,$00,$00,$00,$80,$FF,$05,$0C,$50,$03,$20
 
 ;---------------------------------------------------------------------------------------------------
-; StartStartCoolant ($0583): 2D table, 2 points, unsigned
-; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: StartCoolantTemp2. Result to $0C00,Z.
+; ResetCoolantInit ($0583): 2D table, 2 points, unsigned
+; At reset: $0C00,Z against start coolant temperature
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: StartCoolantTemp2
 ; Read at $0D8C6
 ;---------------------------------------------------------------------------------------------------
-StartStartCoolant:
+ResetCoolantInit:
         dc.b    2,$80                                    ; points, flags
         dc.b    99,19, 210,10                            ; x, y
 
@@ -583,39 +583,39 @@ StartStartCoolant:
         dc.b    $58,$FF,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; EgrSpeedLimit ($05A0): 2D table, 1 points, unsigned
-; Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.
+; EgrThrottleMax ($05A0): 2D table, 1 points, unsigned
+; EGR enable: throttle limit against vehicle speed while EGR is on
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $39920, $39B22
 ;---------------------------------------------------------------------------------------------------
-EgrSpeedLimit:
+EgrThrottleMax:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; EgrSpeedLimit2 ($05B2): 2D table, 1 points, unsigned
-; Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.
+; EgrThrottleMaxOff ($05B2): 2D table, 1 points, unsigned
+; As EgrThrottleMax while EGR is off (hysteresis)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $39930, $39B32
 ;---------------------------------------------------------------------------------------------------
-EgrSpeedLimit2:
+EgrThrottleMaxOff:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; EgrRpmAdder ($05C4): 2D table, 1 points, unsigned
-; Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: EngineRpm.
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; EgrMapMinRpm ($05C4): 2D table, 1 points, unsigned
+; EGR enable: MAP must be above this value against engine rpm (plus $0623 while off)
+; x: rpm32, y: kpa (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $398DE, $39AE0
 ;---------------------------------------------------------------------------------------------------
-EgrRpmAdder:
+EgrMapMinRpm:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -623,13 +623,13 @@ EgrRpmAdder:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; EgrStartCoolant ($05E8): 2D table, 1 points, unsigned
-; Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: StartCoolantTemp2. Result to $0B33,Z.
+; EgrStartDelayCoolant ($05E8): 2D table, 1 points, unsigned
+; EGR delay after start ($0B33,Z) against start coolant temperature
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: StartCoolantTemp2
 ; Read at $39828, $399FC
 ;---------------------------------------------------------------------------------------------------
-EgrStartCoolant:
+EgrStartDelayCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -638,26 +638,26 @@ EgrStartCoolant:
         dc.b    $00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; EgrVacuumFactor ($060F): 2D table, 1 points, unsigned
-; Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: ManifoldVacuum.
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; EgrFlowFilterVacuum ($060F): 2D table, 1 points, unsigned
+; EGR flow estimate: filter weight against manifold vacuum (multiplied by rpm)
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ManifoldVacuum
 ; Read at $39C64
 ;---------------------------------------------------------------------------------------------------
-EgrVacuumFactor:
+EgrFlowFilterVacuum:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; EgrV0B3E ($061B): 2D table, 1 points, unsigned
-; Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: $0B3E,Z.
+; EgrFeedForward ($061B): 2D table, 1 points, unsigned
+; EGR valve: base PWM duty against the position target, added to the PID terms (output to PWMA)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0B3A,Z
+; Inputs: EgrTargetPos
 ; Read at $39DE6
 ;---------------------------------------------------------------------------------------------------
-EgrV0B3E:
+EgrFeedForward:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -665,26 +665,26 @@ EgrV0B3E:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; EgrTable ($0631): 2D table, 1 points, unsigned
-; Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: ?.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; EgrPressureRatio ($0631): 2D table, 1 points, unsigned
+; EGR flow estimate: factor against the ratio ($0684 − MAP)/(baro − MAP), into $0B37,Z
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: ?
 ; Read at $39BF6
 ;---------------------------------------------------------------------------------------------------
-EgrTable:
+EgrPressureRatio:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; EgrV00F0Rpm ($063D): 3D table, 17 rows x 17 columns, unsigned
-; Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: $F0,Z x EngineRpm. Result to $0B3E,Z.
+; EgrTarget ($063D): 3D table, 17 rows x 17 columns, unsigned
+; EGR valve position target ($0B3E,Z) against part-throttle MAP position (rows) and engine rpm (columns); EGR off below $035E
 ; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: $F0,Z x EngineRpm
 ; Read at $39D18
 ;---------------------------------------------------------------------------------------------------
-EgrV00F0Rpm:
+EgrTarget:
         dc.b    17,17,$00                                ; rows, columns, signed
         dc.b    8,30,9,2,128,38,0,255,255,255,255,255,255,255,255,255,255 ; column axis
         dc.b    0,0,0,0,0,0,0,255,255,255,255,255,255,255,255,255,255 ; row 0
@@ -714,52 +714,52 @@ EgrV00F0Rpm:
         dc.b    $00,$6E,$00,$00,$00,$00,$00,$00,$FF,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; FlexLearnCal ($07DE): 2D table, 1 points, unsigned
-; Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17000). Inputs: $0857; $01B4,Z; $08E4. Result to $01B5,Z.
+; FlexLearnInit ($07DE): 2D table, 1 points, unsigned
+; Flex-fuel learning: start value $01B5,Z against the ethanol value $01B4,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $07D1; $01B4,Z; $085E
 ; Read at $1705C, $1713C, $17462, $18098, $180E0, $18156, $18786, $18A5C and 1 more
 ;---------------------------------------------------------------------------------------------------
-FlexLearnCal:
+FlexLearnInit:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FlexLearnV042C ($07EA): 2D table, 1 points, unsigned
-; Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_187E8). Inputs: $042C,Z. Result to $0F1D,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0432,Z
+; FlexLearnPurgeFactor ($07EA): 2D table, 1 points, unsigned
+; Flex-fuel learning: factor $0F1D,Z against the purge ramp $042C,Z
+; x: raw, y: mult256 (units: docs/en/calibration.md)
+; Inputs: PurgeRamp
 ; Read at $187FC
 ;---------------------------------------------------------------------------------------------------
-FlexLearnV042C:
+FlexLearnPurgeFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FlexLearnV0F22 ($07FE): 2D table, 1 points, unsigned
-; Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_183C2). Inputs: $0F22,Z. Result to $0F21,Z.
+; FlexLearnTimeGain2 ($07FE): 2D table, 1 points, unsigned
+; Flex-fuel learning: second gain $0F21,Z against the learning time
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0F26,Z
 ; Read at $1843C
 ;---------------------------------------------------------------------------------------------------
-FlexLearnV0F22:
+FlexLearnTimeGain2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FlexLearnTable ($080A): 2D table, 1 points, unsigned
-; Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_183C2). Inputs: TBA. Result to $0F20,Z.
+; FlexLearnTimeGain ($080A): 2D table, 1 points, unsigned
+; Flex-fuel learning: gain $0F20,Z against the learning time ($01A0,Z / 2, at most 255)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1842C
 ;---------------------------------------------------------------------------------------------------
-FlexLearnTable:
+FlexLearnTimeGain:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -767,7 +767,7 @@ FlexLearnTable:
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnStartCoolant ($0816): 2D table, 1 points, unsigned
-; Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17FC4). Inputs: StartCoolantTemp2. Result to $0F24,Z.
+; Flex-fuel learning: value $0F24,Z against start coolant temperature
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: StartCoolantTemp2
 ; Read at $18166
@@ -779,52 +779,52 @@ FlexLearnStartCoolant:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FlexLearnTable2 ($0822): 2D table, 1 points, unsigned
-; Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17A48). Inputs: ?; $01BB,Z; $01BC,Z. Result to $0F25,Z, $01B9,Z, $01BA,Z.
+; FlexLearnEthanolCurve ($0822): 2D table, 1 points, unsigned
+; Flex-fuel learning: curve from $01BB,Z/$01BC,Z to $01B9,Z/$01BA,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ?; $01BB,Z; $01BC,Z
 ; Read at $0D52E, $17AC6, $17AD6
 ;---------------------------------------------------------------------------------------------------
-FlexLearnTable2:
+FlexLearnEthanolCurve:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FlexLearnV019C ($082E): 2D table, 1 points, unsigned
-; Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_181BE). Inputs: $019C,Z. Result to $0F26,Z.
+; FlexLearnLevelFactor ($082E): 2D table, 1 points, unsigned
+; Flex-fuel learning: value $0F26,Z against $019C,Z (probably fuel level)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $019C,Z
 ; Read at $1825E
 ;---------------------------------------------------------------------------------------------------
-FlexLearnV019C:
+FlexLearnLevelFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FlexLearnTrim ($0842): 2D table, 1 points, unsigned
-; Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17D44). Inputs: ShortTermTrim1. Result to $0F2B,Z.
+; FlexLearnTrimWeight ($0842): 2D table, 1 points, unsigned
+; Flex-fuel learning: weight $0F2B,Z against the size of the short-term trim
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim1
 ; Read at $17EBA, $18AE8, $18B7C
 ;---------------------------------------------------------------------------------------------------
-FlexLearnTrim:
+FlexLearnTrimWeight:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FlexLearnV006B2 ($084E): 2D table, 1 points, unsigned
-; Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17000). Inputs: $6B,Z. Result to $0F40,Z.
+; FlexLearnLimitV006B2 ($084E): 2D table, 1 points, unsigned
+; Flex-fuel learning: limit $0F40,Z against $6B,Z, compared with $01B5,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $6C,Z
 ; Read at $17166, $18046
 ;---------------------------------------------------------------------------------------------------
-FlexLearnV006B2:
+FlexLearnLimitV006B2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,170                                  ; x, y
 
@@ -878,13 +878,13 @@ FlexEthanolScale:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SensorTable ($0896): 2D table, 5 points, unsigned
-; Subsystem: sensor processing (by the routine that reads it, CalcEngineRpm). Inputs: LDD. Result to $0C4A,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; RpmCurveV0C4A ($0896): 2D table, 5 points, unsigned
+; Engine rpm (high byte) to $0C4A,Z; all points 255 in the reference image
+; x: rpm8, y: raw (units: docs/en/calibration.md)
 ; Inputs: LDD
 ; Read at $2D850
 ;---------------------------------------------------------------------------------------------------
-SensorTable:
+RpmCurveV0C4A:
         dc.b    5,$80                                    ; points, flags
         dc.b    17,0, 32,80, 62,160, 88,192, 188,255     ; x, y
 
@@ -1039,25 +1039,25 @@ IacFuelScale:
 
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeMapScale ($094A): 2D table, 4 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: Map.
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; PurgeFuelMapScale ($094A): 2D table, 4 points, unsigned
+; Purge vapor fuel correction: MAP to row position of PurgeFuelBase
+; x: kpa, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $3EAF2
 ;---------------------------------------------------------------------------------------------------
-PurgeMapScale:
+PurgeFuelMapScale:
         dc.b    4,$80                                    ; points, flags
         dc.b    41,0, 65,96, 97,224, 114,255             ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeRpm ($0954): 2D table, 4 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; PurgeFuelRpm ($0954): 2D table, 4 points, unsigned
+; Purge vapor fuel correction: engine rpm to column position of PurgeFuelBase
+; x: rpm32, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $3EAE4
 ;---------------------------------------------------------------------------------------------------
-PurgeRpm:
+PurgeFuelRpm:
         dc.b    4,$80                                    ; points, flags
         dc.b    38,0, 50,32, 75,192, 100,255             ; x, y
 
@@ -2226,39 +2226,39 @@ FlexEthanolCoolantFactor3:
         dc.b    $00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; SensorTable2 ($1901): 2D table, 1 points, unsigned
-; Subsystem: sensor processing (by the routine that reads it, Sub_2C7FE). Inputs: TBA. Result to $01AB,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; FlexLearnBlend ($1901): 2D table, 1 points, unsigned
+; Flex-fuel learning: blend weight of the new ethanol value against the learning time ($01A0,Z / 4), $01AC,Z bit 4 set
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $2CAE0
 ;---------------------------------------------------------------------------------------------------
-SensorTable2:
+FlexLearnBlend:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SensorTable3 ($190D): 2D table, 1 points, unsigned
-; Subsystem: sensor processing (by the routine that reads it, Sub_2C7FE). Inputs: TBA. Result to $01AB,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; FlexLearnBlend2 ($190D): 2D table, 1 points, unsigned
+; As FlexLearnBlend with $01AC,Z bit 4 clear
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $2CAE0
 ;---------------------------------------------------------------------------------------------------
-SensorTable3:
+FlexLearnBlend2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$05
 
 ;---------------------------------------------------------------------------------------------------
-; SensorCoolant ($191A): 2D table, 2 points, unsigned
-; Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: CoolantTemp. Result to MapLast.
+; ThrottleCloseMapOffset ($191A): 2D table, 2 points, unsigned
+; On throttle closing: offset subtracted from MAP into MapLast against coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $2D3D6
 ;---------------------------------------------------------------------------------------------------
-SensorCoolant:
+ThrottleCloseMapOffset:
         dc.b    2,$80                                    ; points, flags
         dc.b    146,15, 210,15                           ; x, y
 
@@ -2389,13 +2389,13 @@ AccelRpmFactor:
         dc.b    $FF,$FF,$FF,$FF,$00,$01
 
 ;---------------------------------------------------------------------------------------------------
-; StartCoolant ($199F): 2D table, 1 points, unsigned
-; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to $07C4,Z.
+; ResetCoolantFuelInit ($199F): 2D table, 1 points, unsigned
+; At reset: $07C4,Z (cranking fuel set-up) against coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0DAB8
 ;---------------------------------------------------------------------------------------------------
-StartCoolant:
+ResetCoolantFuelInit:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -2495,13 +2495,13 @@ TpsFilterFallCoolant:
 
 
 ;---------------------------------------------------------------------------------------------------
-; StartTable ($1A5F): 2D table, 1 points, unsigned
-; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: TBA. Result to $0A6B,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; ResetCoolantInit2 ($1A5F): 2D table, 1 points, unsigned
+; At reset: $0A6B,Z against coolant temperature
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $0D8B6
 ;---------------------------------------------------------------------------------------------------
-StartTable:
+ResetCoolantInit2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
@@ -2602,13 +2602,13 @@ IacFuelCoolantLimit:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; EventCoolant ($1BA4): 2D table, 1 points, unsigned
-; Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: CoolantTemp. Result to FuelPulseAdder.
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; EventFuelCoolantSub ($1BA4): 2D table, 1 points, unsigned
+; Per-event fuel: amount subtracted from FuelPulseAdder against coolant while FuelModeFlags bit 7 is set
+; x: tempc, y: pwus32 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0AACA
 ;---------------------------------------------------------------------------------------------------
-EventCoolant:
+EventFuelCoolantSub:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,8                                    ; x, y
 
@@ -2634,13 +2634,13 @@ IacFuelCoolant:
         dc.b    $03,$1E,$1C,$8A,$28,$9F,$C7,$06,$41,$20,$17,$17
 
 ;---------------------------------------------------------------------------------------------------
-; O2Coolant ($1BEB): 2D table, 6 points, unsigned
-; Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14740). Inputs: CoolantTemp.
+; O2StartDelayCoolant ($1BEB): 2D table, 6 points, unsigned
+; Closed-loop entry (Sub_14740): delay against coolant (plus $323D with an O2 fault flag)
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $14768
 ;---------------------------------------------------------------------------------------------------
-O2Coolant:
+O2StartDelayCoolant:
         dc.b    6,$80                                    ; points, flags
         dc.b    116,1, 124,1, 148,4, 202,3, 216,2, 227,2 ; x, y
 
@@ -2650,13 +2650,13 @@ O2Coolant:
         dc.b    $00,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; O2V042CLimit ($1C2E): 2D table, 4 points, unsigned
-; Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14FD8). Inputs: $042C,Z.
+; O2PurgeLimit ($1C2E): 2D table, 4 points, unsigned
+; Closed loop: limit of $0752,Z against the purge ramp $042C,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0432,Z
+; Inputs: PurgeRamp
 ; Read at $15198
 ;---------------------------------------------------------------------------------------------------
-O2V042CLimit:
+O2PurgeLimit:
         dc.b    4,$80                                    ; points, flags
         dc.b    25,255, 75,103, 90,77, 112,38            ; x, y
 
@@ -2708,13 +2708,13 @@ O2VoltageScale2:
         dc.b    $7D,$03,$00,$96,$14,$0A,$1A,$1A,$7F,$80,$7F,$EC,$14,$00,$32
 
 ;---------------------------------------------------------------------------------------------------
-; O2V00F3 ($1D9E): 2D table, 4 points, unsigned
-; Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_15D56). Inputs: $F3,Z.
+; O2StepScale ($1D9E): 2D table, 4 points, unsigned
+; Closed loop: trim step against the size of the O2 error $F3,Z (doubled while purge is active and duty is zero)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $F3,Z
 ; Read at $15DD4
 ;---------------------------------------------------------------------------------------------------
-O2V00F3:
+O2StepScale:
         dc.b    4,$80                                    ; points, flags
         dc.b    3,0, 4,1, 77,6, 127,11                   ; x, y
 
@@ -2915,88 +2915,88 @@ Tab2D_1EE0:
         dc.b    $C0,$28,$01,$80,$18,$01,$28,$FB,$50,$FF,$00
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeCalScale ($1F1F): 2D table, 9 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: $3048; $042E,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $53B6; $0434,Z
+; PurgeFlowScale ($1F1F): 2D table, 9 points, unsigned
+; Purge command (or constant $3048) to row position of PurgeFlow
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: $53B6; PurgeCommand
 ; Read at $3E0AE, $3E0CE
 ;---------------------------------------------------------------------------------------------------
-PurgeCalScale:
+PurgeFlowScale:
         dc.b    9,$80                                    ; points, flags
         dc.b    1,0, 10,32, 20,64, 40,96, 63,128, 96,160, 140,192, 190,224 ; x, y
         dc.b    255,255                                  ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeV042C ($1F33): 2D table, 5 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3D85E). Inputs: $042C,Z. Result to $00F0,Z.
+; PurgeCommandBase ($1F33): 2D table, 5 points, unsigned
+; Purge command base against the purge ramp $042C,Z, into $F0,Z (then scaled by learning and vacuum, into $042E,Z)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0432,Z
+; Inputs: PurgeRamp
 ; Read at $3DA46
 ;---------------------------------------------------------------------------------------------------
-PurgeV042C:
+PurgeCommandBase:
         dc.b    5,$80                                    ; points, flags
         dc.b    3,1, 14,2, 69,48, 105,254, 107,3         ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeVacuumFactor ($1F3F): 2D table, 1 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3D85E). Inputs: ManifoldVacuum.
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; PurgeCommandVacuum ($1F3F): 2D table, 1 points, unsigned
+; Factor on the purge command against manifold vacuum
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: ManifoldVacuum
 ; Read at $3DBD8
 ;---------------------------------------------------------------------------------------------------
-PurgeVacuumFactor:
+PurgeCommandVacuum:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeV042E ($1F4D): 2D table, 8 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.
+; PurgeDutyPart ($1F4D): 2D table, 8 points, unsigned
+; Purge solenoid duty ($0431,Z) against the purge command, part throttle
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0434,Z
+; Inputs: PurgeCommand
 ; Read at $3DC52
 ;---------------------------------------------------------------------------------------------------
-PurgeV042E:
+PurgeDutyPart:
         dc.b    8,$80                                    ; points, flags
         dc.b    0,0, 1,3, 8,6, 15,8, 129,50, 181,70, 208,81, 255,100 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeV042E2 ($1F5F): 2D table, 8 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.
+; PurgeDutyClosed ($1F5F): 2D table, 8 points, unsigned
+; As PurgeDutyPart, closed throttle
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0434,Z
+; Inputs: PurgeCommand
 ; Read at $3DC52
 ;---------------------------------------------------------------------------------------------------
-PurgeV042E2:
+PurgeDutyClosed:
         dc.b    8,$80                                    ; points, flags
         dc.b    0,0, 1,7, 12,10, 71,30, 128,50, 185,70, 204,82, 255,100 ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeV042E3 ($1F75): 2D table, 8 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.
+; PurgeDutyAlt ($1F75): 2D table, 8 points, unsigned
+; As PurgeDutyPart with calibration bits $0339.2/$0339.3 (by ThrottleState bit 0)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0434,Z
+; Inputs: PurgeCommand
 ; Read at $3DC52
 ;---------------------------------------------------------------------------------------------------
-PurgeV042E3:
+PurgeDutyAlt:
         dc.b    8,$80                                    ; points, flags
         dc.b    0,0, 4,5, 12,10, 69,30, 128,50, 184,70, 204,80, 255,100 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeCalVacuum ($1F87): 3D table, 9 rows x 9 columns, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: result of Lookup2D x ManifoldVacuum. Result to $047F,Z.
-; columns: kpa, rows: pos256, values: raw (units: docs/en/calibration.md)
+; PurgeFlow ($1F87): 3D table, 9 rows x 9 columns, unsigned
+; Purge flow estimate ($047F,Z) against purge command position (rows) and manifold vacuum (columns)
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x ManifoldVacuum
 ; Read at $3E0BA, $3E0DA
 ;---------------------------------------------------------------------------------------------------
-PurgeCalVacuum:
+PurgeFlow:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    8,24,40,48,65,73,81,93,97                ; column axis
         dc.b    67,60,54,51,45,41,38,33,0                ; row 0
@@ -3013,65 +3013,65 @@ PurgeCalVacuum:
         dc.b    $61,$80,$E0,$E0,$23,$60,$F0,$F0,$19,$19,$32,$1A,$1A
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeTrimAdder ($2001): 2D table, 3 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.
+; PurgeLearnUpClosed ($2001): 2D table, 3 points, unsigned
+; Purge vapor learning, closed throttle: step added to $07EB,Z when the trim is above $1B2C
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim1
 ; Read at $3E8D4
 ;---------------------------------------------------------------------------------------------------
-PurgeTrimAdder:
+PurgeLearnUpClosed:
         dc.b    3,$80                                    ; points, flags
         dc.b    32,0, 33,1, 127,6                        ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeTrim ($200D): 2D table, 3 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. Result to $07EB,Z.
+; PurgeLearnDownClosed ($200D): 2D table, 3 points, unsigned
+; Purge vapor learning, closed throttle: step subtracted from $07EB,Z when the trim is below −$1B2D
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim1
 ; Read at $3E8FE
 ;---------------------------------------------------------------------------------------------------
-PurgeTrim:
+PurgeLearnDownClosed:
         dc.b    3,$80                                    ; points, flags
         dc.b    129,3, 223,1, 224,0                      ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeTrimAdder2 ($2019): 2D table, 3 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.
+; PurgeLearnUpPart ($2019): 2D table, 3 points, unsigned
+; Purge vapor learning, part throttle: step added to $07EA,Z when the short-term trim is above $1B2C
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim1
 ; Read at $3E854
 ;---------------------------------------------------------------------------------------------------
-PurgeTrimAdder2:
+PurgeLearnUpPart:
         dc.b    3,$80                                    ; points, flags
         dc.b    32,0, 33,1, 127,3                        ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeTrim2 ($2025): 2D table, 3 points, unsigned
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.
+; PurgeLearnDownPart ($2025): 2D table, 3 points, unsigned
+; Purge vapor learning, part throttle: step subtracted from $07EA,Z when the trim is below −$1B2D
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim1
 ; Read at $3E886
 ;---------------------------------------------------------------------------------------------------
-PurgeTrim2:
+PurgeLearnDownPart:
         dc.b    3,$80                                    ; points, flags
         dc.b    129,3, 223,1, 224,0                      ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeTable ($2031): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
-; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.
-; columns: ?, rows: pos256, values: raw (units: docs/en/calibration.md)
+; PurgeFuelBase ($2031): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
+; Purge vapor fuel correction base against MAP (rows) and rpm (columns, normalised lookup); multiplied by the learned vapor value $07EB,Z
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D
 ; Read at $3EAFC
 ;---------------------------------------------------------------------------------------------------
-PurgeTable:
+PurgeFuelBase:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    102,102,112,154,154,154,154,192,212      ; row 0
         dc.b    102,102,112,154,154,154,154,192,212      ; row 1
@@ -4627,13 +4627,13 @@ IdleStepCloseFactor:
 
 
 ;---------------------------------------------------------------------------------------------------
-; SensorRpm ($30A9): 2D table, 2 points, unsigned
-; Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: EngineRpm; SegmentRpm. Result to $0323,Z, $0347,Z.
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; ThrottleCloseTimerRpm ($30A9): 2D table, 2 points, unsigned
+; On throttle closing at low speed: dashpot timer ($0323,Z, $0347,Z) against engine and segment rpm
+; x: rpm8, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm; SegmentRpm
 ; Read at $2D466, $2D4A4
 ;---------------------------------------------------------------------------------------------------
-SensorRpm:
+ThrottleCloseTimerRpm:
         dc.b    2,$80                                    ; points, flags
         dc.b    63,96, 88,64                             ; x, y
 
@@ -5156,13 +5156,13 @@ IacFieldDutyRpm:
         dc.b    $10,$1E,$00,$14,$7F,$00
 
 ;---------------------------------------------------------------------------------------------------
-; SensorRpm2 ($3341): 2D table, 1 points, unsigned
-; Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: EngineRpm; SegmentRpm. Result to $034D,Z.
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; ThrottleCloseTimerRpmMoving ($3341): 2D table, 1 points, unsigned
+; As ThrottleCloseTimerRpm above vehicle speed $2AF2 ($034D,Z)
+; x: rpm8, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm; SegmentRpm
 ; Read at $2D458, $2D492
 ;---------------------------------------------------------------------------------------------------
-SensorRpm2:
+ThrottleCloseTimerRpmMoving:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,56                                   ; x, y
 
@@ -5428,51 +5428,51 @@ IacBaseBaroTarget:
         dc.b    $0E,$1A,$3B,$18,$02,$C8,$32
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlV0408 ($346F): 2D table, 3 points, unsigned
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: $0408,Z.
+; SpeedCtlEngagePos ($346F): 2D table, 3 points, unsigned
+; Speed control (probable): servo position on engagement against the set speed $0408,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $040F,Z
 ; Read at $3C23E
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlV0408:
+SpeedCtlEngagePos:
         dc.b    3,$80                                    ; points, flags
         dc.b    70,29, 130,37, 170,54                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlV0408AC ($347B): 2D table, 5 points, unsigned
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: $0408,Z.
+; SpeedCtlEngagePosAC ($347B): 2D table, 5 points, unsigned
+; As SpeedCtlEngagePos with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $040F,Z
 ; Read at $3C23E
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlV0408AC:
+SpeedCtlEngagePosAC:
         dc.b    5,$80                                    ; points, flags
         dc.b    70,36, 90,38, 110,39, 130,42, 170,46     ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlBaroFactor ($3487): 2D table, 4 points, unsigned
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: Baro.
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; SpeedCtlEngageBaro ($3487): 2D table, 4 points, unsigned
+; Factor on the engagement position against barometric pressure
+; x: kpa, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $3C256
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlBaroFactor:
+SpeedCtlEngageBaro:
         dc.b    4,$80                                    ; points, flags
         dc.b    1,156, 32,137, 49,121, 81,97             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$09,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlV0408Adder ($3497): 2D table, 1 points, unsigned
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: $0408,Z; #$80.
+; SpeedCtlEngageErrorAdder ($3497): 2D table, 1 points, unsigned
+; Correction of the engagement position against the speed error (set speed minus speed, centred on 128)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $040F,Z; #$80
 ; Read at $3BBD8
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlV0408Adder:
+SpeedCtlEngageErrorAdder:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
@@ -5484,64 +5484,64 @@ SpeedCtlV0408Adder:
         dc.b    $80,$FF,$FF,$FF,$FF,$FF,$FF,$08,$20,$04
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlThrottle ($34F5): 2D table, 3 points, unsigned
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: Throttle.
+; SpeedCtlThrottleTerm ($34F5): 2D table, 3 points, unsigned
+; Servo term against throttle above closed ($03,Y)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Throttle
 ; Read at $3C02A
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlThrottle:
+SpeedCtlThrottleTerm:
         dc.b    3,$80                                    ; points, flags
         dc.b    7,8, 22,16, 26,12                        ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlAdder ($34FD): 2D table, 2 points, unsigned
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: LDD.
+; SpeedCtlSpeedTerm ($34FD): 2D table, 2 points, unsigned
+; Servo term against raw vehicle speed ×8, added to SpeedCtlThrottleTerm
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: LDD
 ; Read at $3C03E
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlAdder:
+SpeedCtlSpeedTerm:
         dc.b    2,$80                                    ; points, flags
         dc.b    60,25, 160,11                            ; x, y
 
         dc.b    $FF,$FF,$0A,$14,$5A,$0C,$01,$01
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlTable ($350B): 2D table, 3 points, unsigned
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: TBA.
+; SpeedCtlErrorGain ($350B): 2D table, 3 points, unsigned
+; Servo step against the speed error (one of the error curves of Sub_3B800, by $0400,Z bits 2-3)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3C00E
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlTable:
+SpeedCtlErrorGain:
         dc.b    3,$80                                    ; points, flags
         dc.b    12,16, 160,48, 240,64                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlSpeed ($3517): 2D table, 2 points, unsigned
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: VehicleSpeed. Result to $0408,Z.
+; SpeedCtlCancelStep ($3517): 2D table, 2 points, unsigned
+; Step against speed plus 4 minus the set speed, when the set speed is replaced by the current speed
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $3BD16
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlSpeed:
+SpeedCtlCancelStep:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,0, 4,4                                 ; x, y
 
         dc.b    $FF,$FF,$00,$02,$00,$50,$14,$01,$00,$03
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlConst ($3527): 2D table, 1 points, signed
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: #$FF; TBA.
+; SpeedCtlErrorGainResume ($3527): 2D table, 1 points, signed
+; Servo step against the speed error with $0400,Z bit 4 set
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: #$FF; TBA
 ; Read at $3C00E
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlConst:
+SpeedCtlErrorGainResume:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-128                                 ; x, y
 
@@ -5549,26 +5549,26 @@ SpeedCtlConst:
         dc.b    $17
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlSpeedLimit ($353C): 2D table, 4 points, unsigned
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: VehicleSpeed.
+; SpeedCtlSpeedMin ($353C): 2D table, 4 points, unsigned
+; Limit against vehicle speed compared with the servo term $F1,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $3C122, $3C1C8
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlSpeedLimit:
+SpeedCtlSpeedMin:
         dc.b    4,$80                                    ; points, flags
         dc.b    60,127, 120,112, 160,102, 170,97         ; x, y
 
         dc.b    $FF,$FF,$11,$40,$4D,$11,$40,$8A,$5E,$58,$02,$58,$02,$D1,$0A,$7E
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlThrottle2 ($3556): 2D table, 4 points, unsigned
-; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C46E). Inputs: ThrottleAboveClosed. Result to $041E,Z.
+; SpeedCtlOverrideThrottle ($3556): 2D table, 4 points, unsigned
+; Value $041E,Z against throttle above the level latched in $0420,Z (driver override)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $3C542
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlThrottle2:
+SpeedCtlOverrideThrottle:
         dc.b    4,$80                                    ; points, flags
         dc.b    10,2, 20,4, 36,8, 61,9                   ; x, y
 
@@ -5857,78 +5857,78 @@ Tab3D_37D7:
         dc.b    $25,$1C,$2F,$02,$05,$02,$02,$05,$02,$7F,$7F,$12,$80
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV0620Limit ($3929): 2D table, 4 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0620,Z
+; MisfireLoadScale ($3929): 2D table, 4 points, unsigned
+; Misfire monitor: load $0620,Z to row position of the misfire thresholds
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: MisfireLoad
 ; Read at $2AC34, $2B716
 ;---------------------------------------------------------------------------------------------------
-MisfireV0620Limit:
+MisfireLoadScale:
         dc.b    4,$80                                    ; points, flags
         dc.b    32,0, 65,64, 130,128, 243,255            ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV0620 ($3935): 2D table, 4 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. Result to $04FE,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0620,Z
+; MisfireWeightLoadScale ($3935): 2D table, 4 points, unsigned
+; Load to row position of MisfireWeight
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: MisfireLoad
 ; Read at $2ACF4
 ;---------------------------------------------------------------------------------------------------
-MisfireV0620:
+MisfireWeightLoadScale:
         dc.b    4,$80                                    ; points, flags
         dc.b    32,0, 65,64, 130,128, 243,255            ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV0620Scale ($3941): 2D table, 4 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: $0620,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0620,Z
+; MisfireNoiseLoadScale ($3941): 2D table, 4 points, unsigned
+; Load to row position of MisfireNoiseLimit
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: MisfireLoad
 ; Read at $2B59C
 ;---------------------------------------------------------------------------------------------------
-MisfireV0620Scale:
+MisfireNoiseLoadScale:
         dc.b    4,$80                                    ; points, flags
         dc.b    32,0, 65,64, 130,128, 243,255            ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV0620Scale2 ($394D): 2D table, 4 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0620,Z
+; MisfireCoolantLoadScale ($394D): 2D table, 4 points, unsigned
+; Load to row position of MisfireThreshCoolant
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: MisfireLoad
 ; Read at $2AC8A
 ;---------------------------------------------------------------------------------------------------
-MisfireV0620Scale2:
+MisfireCoolantLoadScale:
         dc.b    4,$80                                    ; points, flags
         dc.b    32,0, 65,64, 130,128, 243,255            ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV06202 ($3959): 2D table, 4 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0620,Z
+; MisfireLoadScaleDrive ($3959): 2D table, 4 points, unsigned
+; As MisfireLoadScale for MisfireThreshDrive
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: MisfireLoad
 ; Read at $2AC60
 ;---------------------------------------------------------------------------------------------------
-MisfireV06202:
+MisfireLoadScaleDrive:
         dc.b    4,$80                                    ; points, flags
         dc.b    32,0, 65,64, 130,128, 243,255            ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DiagThrottleScale ($3965): 2D table, 3 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: ThrottleAboveClosed.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; ExpectedMapThrottleScale ($3965): 2D table, 3 points, unsigned
+; MAP/throttle rationality (Sub_2197C): throttle to row position of ExpectedMap
+; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $219FA
 ;---------------------------------------------------------------------------------------------------
-DiagThrottleScale:
+ExpectedMapThrottleScale:
         dc.b    3,$80                                    ; points, flags
         dc.b    10,0, 61,160, 87,255                     ; x, y
 
@@ -6399,13 +6399,13 @@ FaultTable:
         dc.b    $36,$28,$A0,$44,$C0,$09,$8A,$0D,$00
 
 ;---------------------------------------------------------------------------------------------------
-; DiagStartCoolantLimit ($5002): 2D table, 4 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_23A4A). Inputs: StartCoolantTemp2.
+; ThermostatTimeLimit ($5002): 2D table, 4 points, unsigned
+; Warm-up monitor: time since start allowed to reach coolant $1743, against start coolant temperature
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: StartCoolantTemp2
 ; Read at $23A82
 ;---------------------------------------------------------------------------------------------------
-DiagStartCoolantLimit:
+ThermostatTimeLimit:
         dc.b    4,$80                                    ; points, flags
         dc.b    88,255, 99,112, 121,94, 137,37           ; x, y
 
@@ -6415,63 +6415,63 @@ DiagStartCoolantLimit:
         dc.b    $32,$05,$9B,$DC,$14,$80,$38,$77,$6E,$95,$95,$FF,$00
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireCoolant ($5049): 2D table, 4 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: CoolantTemp. Result to $00F1,Z.
+; MisfireEnableCoolant ($5049): 2D table, 4 points, unsigned
+; Misfire monitor enable weight ($0621,Z) term against coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $2B46C
 ;---------------------------------------------------------------------------------------------------
-MisfireCoolant:
+MisfireEnableCoolant:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,8, 110,5, 121,2, 138,0                ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireTime ($5053): 2D table, 2 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: Count3s. Result to $00F3,Z.
+; MisfireEnableTime ($5053): 2D table, 2 points, unsigned
+; Misfire monitor enable weight term against time since start
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Count3s
 ; Read at $2B47A
 ;---------------------------------------------------------------------------------------------------
-MisfireTime:
+MisfireEnableTime:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,5, 19,0                                ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireRpm ($505D): 2D table, 8 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: EngineRpm. Result to $00F5,Z.
+; MisfireEnableRpm ($505D): 2D table, 8 points, unsigned
+; Misfire monitor enable weight term against engine rpm
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $2B488
 ;---------------------------------------------------------------------------------------------------
-MisfireRpm:
+MisfireEnableRpm:
         dc.b    8,$80                                    ; points, flags
         dc.b    31,73, 39,67, 47,66, 63,57, 70,61, 78,64, 94,61, 195,129 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireStartCoolant ($506F): 2D table, 2 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: StartCoolantTemp2. Result to $05E6,Z.
+; MisfireStartDelay ($506F): 2D table, 2 points, unsigned
+; Misfire monitor delay after start ($05E6,Z) against start coolant temperature
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: StartCoolantTemp2
 ; Read at $2B512
 ;---------------------------------------------------------------------------------------------------
-MisfireStartCoolant:
+MisfireStartDelay:
         dc.b    2,$80                                    ; points, flags
         dc.b    149,19, 150,0                            ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV0620V05C6Factor ($507B): 3D table, 9 rows x 9 columns, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.
-; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
+; MisfireThresh ($507B): 3D table, 9 rows x 9 columns, unsigned
+; Misfire threshold of the segment-time change against load (rows) and segment rpm $05C6,Z (columns), P/N
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $05C6,Z
 ; Read at $2AC78
 ;---------------------------------------------------------------------------------------------------
-MisfireV0620V05C6Factor:
+MisfireThresh:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    16,32,48,64,80,94,125,141,141            ; column axis
         dc.b    65,65,35,20,15,10,17,17,17               ; row 0
@@ -6486,13 +6486,13 @@ MisfireV0620V05C6Factor:
 
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV0620V05C6Factor2 ($50D8): 3D table, 9 rows x 9 columns, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B692). Inputs: result of Lookup2D x $05C6,Z. Result to $05D6,Z.
-; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
+; MisfireNoiseRef ($50D8): 3D table, 9 rows x 9 columns, unsigned
+; Reference for the filtered segment-time change ($05D6,Z) against load and segment rpm; selects MisfireThreshNoisy
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $05C6,Z
 ; Read at $2B722
 ;---------------------------------------------------------------------------------------------------
-MisfireV0620V05C6Factor2:
+MisfireNoiseRef:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    23,31,39,47,55,63,78,94,109              ; column axis
         dc.b    28,28,28,28,28,28,28,28,28               ; row 0
@@ -6507,13 +6507,13 @@ MisfireV0620V05C6Factor2:
 
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV0620V05C6Factor3 ($5135): 3D table, 9 rows x 9 columns, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.
-; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
+; MisfireThreshNoisy ($5135): 3D table, 9 rows x 9 columns, unsigned
+; As MisfireThresh when the filtered change $05D4,Z is at or above MisfireNoiseRef
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $05C6,Z
 ; Read at $2AC78
 ;---------------------------------------------------------------------------------------------------
-MisfireV0620V05C6Factor3:
+MisfireThreshNoisy:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    16,32,48,64,80,96,112,128,144            ; column axis
         dc.b    33,33,18,10,8,5,9,9,9                    ; row 0
@@ -6528,13 +6528,13 @@ MisfireV0620V05C6Factor3:
 
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV0620V05C6Factor4 ($5192): 3D table, 9 rows x 9 columns, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.
-; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
+; MisfireThreshDrive ($5192): 3D table, 9 rows x 9 columns, unsigned
+; As MisfireThresh in gear (or with $00DC,Z bit 5)
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $05C6,Z
 ; Read at $2AC78
 ;---------------------------------------------------------------------------------------------------
-MisfireV0620V05C6Factor4:
+MisfireThreshDrive:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    81,16,32,48,64,80,96,112,128             ; column axis
         dc.b    65,65,65,65,65,65,65,65,65               ; row 0
@@ -6549,13 +6549,13 @@ MisfireV0620V05C6Factor4:
 
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV04FEV05C6 ($51EF): 3D table, 9 rows x 9 columns, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $04FE,Z x $05C6,Z. Result to $04FE,Z.
-; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
+; MisfireWeight ($51EF): 3D table, 9 rows x 9 columns, unsigned
+; Counter weight of a detected misfire ($04FE,Z) against load (rows) and segment rpm (columns)
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: $04FE,Z x $05C6,Z
 ; Read at $2AD0A
 ;---------------------------------------------------------------------------------------------------
-MisfireV04FEV05C6:
+MisfireWeight:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    23,31,39,47,55,63,78,94,109              ; column axis
         dc.b    1,1,1,2,2,4,4,5,5                        ; row 0
@@ -6570,13 +6570,13 @@ MisfireV04FEV05C6:
 
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV04FEScaled ($524C): 3D table, 9 rows x 9 columns, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup3D x result of Lookup3D. Result to $04FF,Z.
-; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
+; MisfireWeight2 ($524C): 3D table, 9 rows x 9 columns, unsigned
+; Second counter weight ($04FF,Z) against the first weight and segment rpm
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup3D x result of Lookup3D
 ; Read at $2AD18
 ;---------------------------------------------------------------------------------------------------
-MisfireV04FEScaled:
+MisfireWeight2:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    23,31,39,47,55,63,78,94,109              ; column axis
         dc.b    1,1,1,1,2,3,3,5,6                        ; row 0
@@ -6591,13 +6591,13 @@ MisfireV04FEScaled:
 
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV0620CoolantFactor ($52A9): 3D table, 5 rows x 5 columns, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x CoolantTemp. Result to $05E2,Z.
+; MisfireThreshCoolant ($52A9): 3D table, 5 rows x 5 columns, unsigned
+; Factor on the misfire threshold against load (rows) and coolant (columns), result into $05E2,Z
 ; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x CoolantTemp
 ; Read at $2AC96
 ;---------------------------------------------------------------------------------------------------
-MisfireV0620CoolantFactor:
+MisfireThreshCoolant:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    121,130,138,146,155                      ; column axis
         dc.b    205,195,186,156,128                      ; row 0
@@ -6608,13 +6608,13 @@ MisfireV0620CoolantFactor:
 
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireSegRpm ($52CA): 2D table, 5 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: SegmentRpm. Result to $0629,Z.
+; MisfireHoldSegRpm ($52CA): 2D table, 5 points, unsigned
+; Hold-off after a detected misfire ($0629,Z) against segment rpm
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $2ACE4
 ;---------------------------------------------------------------------------------------------------
-MisfireSegRpm:
+MisfireHoldSegRpm:
         dc.b    5,$80                                    ; points, flags
         dc.b    16,6, 25,4, 36,3, 40,2, 41,0             ; x, y
 
@@ -6623,39 +6623,39 @@ MisfireSegRpm:
         dc.b    $2A,$00,$0F,$1C,$01,$03,$15,$01,$01,$00,$03,$01,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireScaledFactor ($5305): 2D table, 5 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: result of Lookup2D.
-; x: pos256, y: raw (units: docs/en/calibration.md)
+; MisfireDevCurve2 ($5305): 2D table, 5 points, unsigned
+; Second curve on the deviation, multiplied with MisfireDevCurve
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D
 ; Read at $2B98A
 ;---------------------------------------------------------------------------------------------------
-MisfireScaledFactor:
+MisfireDevCurve2:
         dc.b    5,$80                                    ; points, flags
         dc.b    1,0, 2,10, 4,64, 12,192, 24,255          ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireScale ($5317): 2D table, 5 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: TBA.
+; MisfireDevCurve ($5317): 2D table, 5 points, unsigned
+; Misfire monitor: curve on the segment-time deviation $04F6,Z (calibration bit $2CC1.3)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $2B97E
 ;---------------------------------------------------------------------------------------------------
-MisfireScale:
+MisfireDevCurve:
         dc.b    5,$80                                    ; points, flags
         dc.b    1,0, 2,2, 4,4, 12,48, 24,255             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireBaro ($5329): 2D table, 4 points, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: Baro. Result to $062A,Z.
+; MisfireEnableBaro ($5329): 2D table, 4 points, unsigned
+; Misfire monitor enable weight term against barometric pressure ($062A,Z)
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $2B4A8
 ;---------------------------------------------------------------------------------------------------
-MisfireBaro:
+MisfireEnableBaro:
         dc.b    4,$80                                    ; points, flags
         dc.b    146,33, 168,38, 204,47, 240,56           ; x, y
 
@@ -6673,13 +6673,13 @@ Tab2D_5343:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04,$00,$F5,$00,$00,$10
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireV0620V05C6Factor5 ($5357): 3D table, 9 rows x 9 columns, unsigned
-; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: result of Lookup2D x $05C6,Z.
-; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
+; MisfireNoiseLimit ($5357): 3D table, 9 rows x 9 columns, unsigned
+; Rough-signal limit against load and segment rpm; the peak $05D8,Z above it sets $00DC,Z bit 4
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $05C6,Z
 ; Read at $2B5B2
 ;---------------------------------------------------------------------------------------------------
-MisfireV0620V05C6Factor5:
+MisfireNoiseLimit:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    16,31,47,63,78,94,109,125,141            ; column axis
         dc.b    254,254,254,254,254,254,254,254,254      ; row 0
@@ -6737,26 +6737,26 @@ FlexEthanolMap:
         dc.b    $0C,$18,$06,$15,$03,$05,$03,$05,$27,$2D,$0F,$0A,$14,$06,$19,$96
 
 ;---------------------------------------------------------------------------------------------------
-; DiagV019CLimit ($5532): 2D table, 1 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z.
+; DiagLevelLimit ($5532): 2D table, 1 points, unsigned
+; Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $019C,Z
 ; Read at $25A8E
 ;---------------------------------------------------------------------------------------------------
-DiagV019CLimit:
+DiagLevelLimit:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DiagV019CLimit2 ($553E): 2D table, 2 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z.
+; DiagLevelLimit2 ($553E): 2D table, 2 points, unsigned
+; As DiagLevelLimit with $0649,Z bit 1 set
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $019C,Z
 ; Read at $25A7E
 ;---------------------------------------------------------------------------------------------------
-DiagV019CLimit2:
+DiagLevelLimit2:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,34, 128,16                             ; x, y
 
@@ -6769,13 +6769,13 @@ DiagV019CLimit2:
         dc.b    $0C,$A9
 
 ;---------------------------------------------------------------------------------------------------
-; DiagV042CFlexEthanolAdder ($55A6): 3D table, 5 rows x 5 columns, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: result of Lookup2D x FlexEthanol. Result to $00F2,Z.
+; FuelSysLimit ($55A6): 3D table, 5 rows x 5 columns, unsigned
+; Fuel system monitor: trim limit against purge ramp (rows) and ethanol content (columns); trim beyond it counts towards the fault
 ; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x FlexEthanol
 ; Read at $2A150, $2A362
 ;---------------------------------------------------------------------------------------------------
-DiagV042CFlexEthanolAdder:
+FuelSysLimit:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    0,20,70,120,170                          ; column axis
         dc.b    72,75,75,75,75                           ; row 0
@@ -6786,13 +6786,13 @@ DiagV042CFlexEthanolAdder:
 
 
 ;---------------------------------------------------------------------------------------------------
-; DiagV042CFlexEthanol ($55C7): 3D table, 5 rows x 5 columns, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A4F2). Inputs: result of Lookup2D x FlexEthanol. Result to $00F2,Z.
+; FuelSysLimit2 ($55C7): 3D table, 5 rows x 5 columns, unsigned
+; As FuelSysLimit for the second pair of routines (Sub_2A4F2, Sub_2A6C0)
 ; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x FlexEthanol
 ; Read at $2A530, $2A6FE
 ;---------------------------------------------------------------------------------------------------
-DiagV042CFlexEthanol:
+FuelSysLimit2:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    0,20,70,120,170                          ; column axis
         dc.b    199,194,194,194,194                      ; row 0
@@ -6803,25 +6803,25 @@ DiagV042CFlexEthanol:
 
 
 ;---------------------------------------------------------------------------------------------------
-; DiagV042CScale ($55E8): 2D table, 5 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: $042C,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0432,Z
+; FuelSysLimitScale ($55E8): 2D table, 5 points, unsigned
+; Fuel system monitor (Sub_2A0F0, Sub_2A302): purge ramp $042C,Z to row position of FuelSysLimit
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: PurgeRamp
 ; Read at $2A144, $2A356
 ;---------------------------------------------------------------------------------------------------
-DiagV042CScale:
+FuelSysLimitScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    16,0, 39,64, 47,128, 67,192, 255,255     ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; DiagV042CScale2 ($55F4): 2D table, 5 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A4F2). Inputs: $042C,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0432,Z
+; FuelSysLimitScale2 ($55F4): 2D table, 5 points, unsigned
+; As FuelSysLimitScale for Sub_2A4F2, Sub_2A6C0
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: PurgeRamp
 ; Read at $2A524, $2A6F2
 ;---------------------------------------------------------------------------------------------------
-DiagV042CScale2:
+FuelSysLimitScale2:
         dc.b    5,$80                                    ; points, flags
         dc.b    16,0, 39,64, 47,128, 67,192, 255,255     ; x, y
 
@@ -6874,65 +6874,65 @@ Tab2D_56E8:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DiagSpeed ($5700): 2D table, 1 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: VehicleSpeed. Result to $00F4,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; LimpRpmSpeed ($5700): 2D table, 1 points, unsigned
+; Rpm limit against vehicle speed (MAP fault branch, $06AC,Z bit 6)
+; x: raw, y: rpm8 (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $21B6E
 ;---------------------------------------------------------------------------------------------------
-DiagSpeed:
+LimpRpmSpeed:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DiagThrottle ($570A): 2D table, 1 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: ThrottleAboveClosed. Result to $00F4,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; LimpRpmThrottle ($570A): 2D table, 1 points, unsigned
+; Rpm limit ($06AD,Z) against throttle while the MAP/throttle fault is set
+; x: raw, y: rpm8 (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $2199C, $21ABA, $21AE2
 ;---------------------------------------------------------------------------------------------------
-DiagThrottle:
+LimpRpmThrottle:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DiagCoolantAdder ($5714): 2D table, 1 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: CoolantTemp. Result to $00F2,Z.
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; ExpectedMapCoolant ($5714): 2D table, 1 points, unsigned
+; Expected MAP addition against coolant
+; x: tempc, y: kpa (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $21A14
 ;---------------------------------------------------------------------------------------------------
-DiagCoolantAdder:
+ExpectedMapCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DiagV0330Adder ($571A): 2D table, 1 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: $0330,Z. Result to $00F2,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0330,Z
+; ExpectedMapFieldDuty ($571A): 2D table, 1 points, unsigned
+; Expected MAP addition against the raw generator field duty $0330,Z
+; x: raw, y: kpa (units: docs/en/calibration.md)
+; Inputs: FieldDutyRaw
 ; Read at $21A2A
 ;---------------------------------------------------------------------------------------------------
-DiagV0330Adder:
+ExpectedMapFieldDuty:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DiagThrottleRpm ($5720): 3D table, 9 rows x 9 columns, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: result of Lookup2D x EngineRpm. Result to $00F2,Z.
-; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
+; ExpectedMap ($5720): 3D table, 9 rows x 9 columns, unsigned
+; Expected MAP against throttle (rows) and engine rpm (columns); additions for coolant, field duty, A/C
+; columns: rpm8, rows: pos256, values: kpa (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x EngineRpm
 ; Read at $21A06
 ;---------------------------------------------------------------------------------------------------
-DiagThrottleRpm:
+ExpectedMap:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    0,32,50,62,88,113,138,163,188            ; column axis
         dc.b    255,255,255,255,255,255,255,255,255      ; row 0
@@ -6977,13 +6977,13 @@ MapLimpFromThrottle:
         dc.b    $12,$B6
 
 ;---------------------------------------------------------------------------------------------------
-; DiagRpmLimit2 ($57CD): 2D table, 2 points, unsigned
-; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_23970). Inputs: EngineRpm.
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; DiagIdleVacuumRpm ($57CD): 2D table, 2 points, unsigned
+; Monitor in Sub_23970 (closed throttle, P/N, warm): manifold vacuum limit against engine rpm
+; x: rpm8, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $239DA
 ;---------------------------------------------------------------------------------------------------
-DiagRpmLimit2:
+DiagIdleVacuumRpm:
         dc.b    2,$80                                    ; points, flags
         dc.b    62,0, 63,45                              ; x, y
 
@@ -7464,25 +7464,25 @@ Thermistor3CurveAlt:
         dc.b    $D3,$07
 
 ;---------------------------------------------------------------------------------------------------
-; SensorLimit2 ($70B3): 2D table, 5 points, unsigned
-; Subsystem: sensor processing (by the routine that reads it, Sub_2C6DE). Inputs: ?.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; ChargeVoltsBattTemp ($70B3): 2D table, 5 points, unsigned
+; Charging voltage target ($0DB9,Z) against battery temperature, limited by $7087/$7088
+; x: tempc, y: volt16 (units: docs/en/calibration.md)
 ; Inputs: ?
 ; Read at $2C76C
 ;---------------------------------------------------------------------------------------------------
-SensorLimit2:
+ChargeVoltsBattTemp:
         dc.b    5,$80                                    ; points, flags
         dc.b    110,239, 128,233, 143,228, 158,223, 171,218 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; StartV0A87 ($70BF): 2D table, 2 points, unsigned
-; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to AcSensor.
+; AcSensorCurve ($70BF): 2D table, 2 points, unsigned
+; A/C sensor (probably refrigerant pressure): ADC $0A87,Z to $0A88,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A8B,Z
 ; Read at $0D92C, $2CDC8
 ;---------------------------------------------------------------------------------------------------
-StartV0A87:
+AcSensorCurve:
         dc.b    2,$80                                    ; points, flags
         dc.b    9,0, 240,255                             ; x, y
 
@@ -9246,7 +9246,7 @@ L08ED4:
 L08EE8:
         BNE     L08F5A
         BSET    $0DCC,Z,#$01
-        LDAA    $0330,Z
+        LDAA    >FieldDutyRaw,Z
         LDAB    #$64
         MUL
         STAA    $0DC4,Z
@@ -9267,7 +9267,7 @@ L08F18:
         LDAB    #$FF
         CMPA    #$64
         BCC     L08F4C
-        LDX     #PitV0DCCFactor
+        LDX     #FieldRampFactor
         JSR     Lookup2D
         LDAB    $0DC7,Z
         MUL
@@ -9279,7 +9279,7 @@ L08F18:
         IDIV
         XGDX
 L08F4C:
-        STAB    $0330,Z
+        STAB    >FieldDutyRaw,Z
         BRA     L08FD4
 L08F52:
         BCLR    $0DCC,Z,#$01
@@ -9998,7 +9998,7 @@ L0A45A:
         CMPB    #$82
         BCC     L0A4E0
         LDAA    $0D11,Z
-        LDX     #EventV0D11Limit
+        LDX     #EventTimingLimit
         JSR     Lookup2D
         CMPA    $0AC2,Z
         BCS     L0A4E0
@@ -10507,7 +10507,7 @@ L0AAAC:
         JSR     Sub_11342
         BRCLR   >FuelModeFlags,Z,#$80,L0AAE6
         LDAA    >CoolantTemp,Z
-        LDX     #EventCoolant
+        LDX     #EventFuelCoolantSub
         JSR     Lookup2D
         CLRA
         LDE     >FuelPulseAdder,Z
@@ -10592,26 +10592,26 @@ L0AB94:
         dc.b    $45
 
 ;---------------------------------------------------------------------------------------------------
-; EventV0D11Limit ($ABC5): 2D table, 2 points, unsigned
-; Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: $0D11,Z. Result to $791E,Z.
+; EventTimingLimit ($ABC5): 2D table, 2 points, unsigned
+; Output-compare set-up in the GPT IC1 interrupt: limit against $0D11,Z compared with $0ABE,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0D11,Z
 ; Read at $0A49E
 ;---------------------------------------------------------------------------------------------------
-EventV0D11Limit:
+EventTimingLimit:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,86, 127,142                            ; x, y
 
         dc.b    $01,$02,$03,$02,$03,$00,$03,$00,$01,$00,$01,$02
 
 ;---------------------------------------------------------------------------------------------------
-; FuelEventCalAdder ($ABD7): 2D table, 3 points, unsigned
-; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12680). Inputs: $0A83; $7563.
+; FuelEventOffset ($ABD7): 2D table, 3 points, unsigned
+; Per-event fuel offset against the calibration value $0A83 (or $7563 with bit $0338.2), added before the per-cylinder table $ABC3
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A81; $758D
 ; Read at $1266C
 ;---------------------------------------------------------------------------------------------------
-FuelEventCalAdder:
+FuelEventOffset:
         dc.b    3,$80                                    ; points, flags
         dc.b    6,0, 36,1, 66,2                          ; x, y
 
@@ -12922,7 +12922,7 @@ L0D276:
         LDAA    #$18
         STAA    >PWMC,Z
         CLRA
-        STAA    $0B48,Z
+        STAA    >EgrDuty,Z
         STAA    >PWMA,Z
 L0D29A:
         LDD     #$0003
@@ -13129,7 +13129,7 @@ L0D512:
         LDAB    #$FF
         STAB    $01B7,Z
 L0D52A:
-        LDX     #FlexLearnTable2
+        LDX     #FlexLearnEthanolCurve
         JSR     Lookup2D
         STAA    $0F29,Z
         STAA    $01BD,Z
@@ -13410,11 +13410,11 @@ L0D8A0:
         STAB    >StartCoolantTemp2,Z
         STAB    >StartCoolantTemp,Z
         TBA
-        LDX     #StartTable
+        LDX     #ResetCoolantInit2
         JSR     Lookup2D
         STAA    $0A6F,Z
         LDAA    >StartCoolantTemp2,Z
-        LDX     #StartStartCoolant
+        LDX     #ResetCoolantInit
         JSR     Lookup2D
         STAA    $0C00,Z
         LDAB    $5813
@@ -13445,7 +13445,7 @@ L0D914:
         BCC     L0D930
         CMPA    $5807
         BCS     L0D930
-        LDX     #StartV0A87
+        LDX     #AcSensorCurve
         JSR     Lookup2D
 L0D930:
         STAB    >AcSensor,Z
@@ -13469,7 +13469,7 @@ L0D966:
         BRCLR   $0330,#$01,L0D986
         STAA    $F0,Z
         LDAA    >CoolantTemp,Z
-        LDX     #StartCoolantFactor
+        LDX     #BattTempHeatFactor
         JSR     Lookup2D
         LDAA    $F0,Z
         MUL
@@ -13570,7 +13570,7 @@ L0DAA2:
         BCS     L0DAB0
         BSET    $0774,Z,#$10
 L0DAB0:
-        LDX     #StartCoolant
+        LDX     #ResetCoolantFuelInit
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
         STAA    $07C4,Z

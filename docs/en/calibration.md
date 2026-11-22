@@ -96,52 +96,35 @@ pulse width computed from MAP (next section).
 
 ## Table names
 
-Every table of the reference image has a name. 292 are named by hand from the code (and checked
-against 2GNT where it has them), among them the whole fuel path described below, the spark
-corrections, dwell, idle targets and the sensor curves. The other 118 have **structural names** made by `tools/autoname.py` and marked `"auto": true` in
-`annotations/tables.json` (and with * in the catalogue):
+All 410 tables of the reference image are named by hand from the code (and checked against 2GNT
+where it has them). The name says what the table does; the description in
+`annotations/tables.json` (and in the catalogue and the XDF) says which routine reads it, its inputs
+and where the result goes. Where the meaning of a RAM variable is still open, the name keeps its
+address (`IdleMapAdderV0335`), and readings that rest only on how the code uses a value say
+"probably".
 
-- the prefix is the subsystem, taken from the routine that reads the table and the scheduled routine
-  above it;
-- then the inputs: `Coolant`, `AirTemp`, `Rpm`, `SegRpm`, `Map`, `Baro`, `Vacuum`, `Throttle`,
-  `Speed`, `Volts`, `StartCoolant`, `Time`, `IdleTarget`, `Trim`, `O2`; `V0A91` for a RAM variable
-  without a name yet, `Cal` for a calibration constant, `Scaled` for the result of a scale table;
-- a number when the same name repeats.
+| Category | Tables | Main prefixes |
+|---|---|---|
+| Fuel | 115 | `Fuel`, `PartThrottleFuel`, `AccelFuel`, `AfterStartFuel`, `CrankFuel`, `FuelCut`, `Flex`, `FlexLearn` |
+| Idle | 92 | `IdleTarget`, `Idle`, `Iac`, `IdleMap`, `ShiftIdle`, `ThrottleClose` |
+| Spark | 78 | `Spark`, `Surge`, `TipInRetard`, `SpeedDamp`, `AcSpark`, `EgrSpark`, `Dwell` |
+| Diagnostics | 36 | `Misfire`, `ExpectedMap`, `LimpRpm`, `FuelSys`, `Diag` |
+| Sensors | 20 | sensor curves, `BattTemp`, `ChargeVolts`, `MapHigh`, `BaroUpdate` |
+| EVAP purge | 15 | `Purge` (probable) |
+| Knock | 11 | `Knock` |
+| Speed control | 11 | `SpeedCtl` (probable) |
+| EGR | 8 | `Egr` |
+| Closed loop | 7 | `O2` |
+| Cooling fan | 6 | `Fan` |
+| A/C | 4 | `AcThrottle` |
+| Other | 4 | `FieldRampFactor`, `RpmFilterAboveIdle`, `EventTimingLimit`, ... |
+| Startup | 3 | `ResetCoolant` |
 
-So `AccelFuelCoolant2` is the second acceleration-enrichment table read against coolant
-temperature. The description of each table says which routine reads it, its inputs and where the
-result goes. A structural name tells where a table belongs and what it depends on, not yet what it
-does exactly.
-
-| Prefix | Subsystem | Category | Tables |
-|---|---|---|---|
-| Fuel, FuelEvent | fuel calculation in the main loop and per reference event | Fuel | |
-| FuelCut | fuel cut-off: rev and speed limits, deceleration | Fuel | |
-| AccelFuel | acceleration enrichment (throttle and MAP rate) | Fuel | |
-| AfterStartFuel | after-start enrichment (time since start x coolant) | Fuel | |
-| CrankFuel | cranking fuel | Fuel | 112 in all |
-| O2 | oxygen-sensor closed loop and adaptive fuel | Closed loop | 7 |
-| Idle | idle speed control | Idle | 89 |
-| Spark | spark advance | Spark | 78 |
-| Knock | knock control | Knock | 11 |
-| Misfire, Diag | misfire monitor (crankshaft segment times) and other OBD monitors | Diagnostics | 36 |
-| Sensor | sensor processing | Sensors | 20 |
-| SpeedCtl | speed control (cruise); probable | Speed control | 11 |
-| Start | initialisation at reset | Startup | 5 |
-| FlexLearn | flex-fuel ethanol content learning | Fuel | |
-| Fan | radiator fan control (relay and PWM variants) | Cooling fan | 6 |
-| Egr | EGR control; probable | EGR | 8 |
-| AcCtl | A/C clutch control; probable | A/C | 4 |
-| Purge | EVAP purge control; probable | EVAP purge | 15 |
-| Event, Pit, Sys<address> | not identified yet; named after the top routine | Other | 8 |
-
-The subsystems were identified from the code: for example the idle group writes and uses the idle
-target ($0300,Z, from `IdleTargetRpm`), the misfire group keeps the per-cylinder segment times, the
-knock group reads `KnockThreshold`, the closed-loop group owns the short-term trims. Speed control is
-inferred from its state machine on vehicle speed and rpm and is marked probable.
-
-Re-running `python3 tools/autoname.py` after naming more RAM variables or routines refreshes the
-structural names; hand names (entries without `"auto"`, and the overrides in the script) stay.
+`tools/autoname.py` merges the hand names (`python3 tools/autoname.py hand.json`) and still gives a
+**structural name** to any table found later without a hand name: the subsystem prefix (taken from
+the routine that reads the table and the scheduled routine above it), then the inputs (`Coolant`,
+`Rpm`, `Map`, `V0A91` for an unnamed RAM variable, ...) and a number when the name repeats. Such
+entries are marked `"auto": true` and get a * in the catalogue.
 
 ## Idle and spark control
 
@@ -258,7 +241,10 @@ applies only to the reference image.
 
 ## Open points
 
-- 118 tables have structural names only; giving them exact names means reading each routine.
+- Some table names rest only on how the code uses a value (battery temperature, generator field
+  duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
+  subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
+  them on a running car would settle them.
 - The 1,455 directly read constants are not catalogued one by one yet.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.

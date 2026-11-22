@@ -23,6 +23,7 @@ FieldDuty        equ $01A1        ; $F81A1
 AcOnTime         equ $01CC        ; $F81CC
 IacBase          equ $01CE        ; $F81CE
 SegmentRpm       equ $0286        ; $F8286
+MisfireLoad      equ $02C1        ; $F82C1
 MapRaw           equ $0324        ; $F8324
 ShortTermTrim1   equ $039E        ; $F839E
 O2UpBank1Raw     equ $039F        ; $F839F
@@ -70,6 +71,8 @@ KnockRetardMax   equ $05A3        ; $F85A3
 KnockCylRetardMax equ $05AC        ; $F85AC
 RpmRate          equ $05BF        ; $F85BF
 LookupResult     equ $0627        ; $F8627
+PurgeDuty        equ $062F        ; $F862F
+PurgeRamp        equ $0630        ; $F8630
 KnockRetard      equ $0657        ; $F8657
 SegmentRpmFast   equ $066D        ; $F866D
 RpmAccel         equ $0675        ; $F8675

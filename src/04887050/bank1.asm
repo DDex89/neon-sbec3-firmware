@@ -1704,7 +1704,7 @@ L112F4:
 L112FC:
         LDAA    <FlexEthanol,Z
 L112FE:
-        LDX     #StartV0A87
+        LDX     #AcSensorCurve
         JSR     Lookup2D
         STAA    >FlexEthanolScaled,Z
 L1130A:
@@ -1819,7 +1819,7 @@ L11414:
         JSR     Sub_1BAB0
         BRA     L1144C
 L1142A:
-        LDX     #FlexLearnTable2
+        LDX     #FlexLearnEthanolCurve
         JSR     Lookup2D
         STAA    >AcSensor,Z
         BRA     L1144C
@@ -2865,7 +2865,7 @@ L11F3E:
         CLR     $017F,Z
         CLR     $0180,Z
         CLR     $0181,Z
-        LDX     #StartCoolant
+        LDX     #ResetCoolantFuelInit
         LDAA    >StartCoolantTemp2,Z
         JSR     Lookup2D
         STAA    $027A,Z
@@ -2914,7 +2914,7 @@ Sub_11FDE:
         CMPA    #$0A
         BCC     L1201C
 L12018:
-        LDX     #StartTable
+        LDX     #ResetCoolantInit2
 L1201C:
         LDAA    $0316,Z
         ANDP    #$FF1F
@@ -3047,7 +3047,7 @@ L1216A:
 L1216E:
         STAA    $39,Z
 L12170:
-        LDX     #StartStartCoolant
+        LDX     #ResetCoolantInit
         JSR     Lookup2D
         CMPA    #$D8
         BCC     L1217E
@@ -10201,7 +10201,7 @@ L16FA0:
         CMPA    $4F,Z
         BLT     L17030
 L16FD0:
-        LDAA    $03B9,Z
+        LDAA    >PurgeRamp,Z
         LDX     #Tab2D_25C9
         JSR     Lookup2D
         BRCLR   $018C,Z,#$40,L16FE6
@@ -10328,7 +10328,7 @@ L1710E:
         CMPA    $0060,Z
         BLT     L171AA
 L1714A:
-        LDAA    $03B9,Z
+        LDAA    >PurgeRamp,Z
         LDX     #Tab2D_25C9
         JSR     Lookup2D
         BRCLR   $018D,Z,#$40,L17160
@@ -10427,7 +10427,7 @@ L1725A:
         LDAA    $0561,Z
         JSR     Sub_17426
         STD     $018E,Z
-        LDAA    $03B9,Z
+        LDAA    >PurgeRamp,Z
         LDX     #Tab2D_25BD
         JSR     Lookup2D
         BRCLR   $018C,Z,#$20,L17286
@@ -10528,7 +10528,7 @@ L1737C:
         LDAA    $0562,Z
         JSR     Sub_17426
         STD     $0190,Z
-        LDAA    $03B9,Z
+        LDAA    >PurgeRamp,Z
         LDX     #Tab2D_25BD
         JSR     Lookup2D
         BRCLR   $018D,Z,#$20,L173A8
@@ -13338,34 +13338,34 @@ Sub_19138:
         LBMI    L192BA
         CPE     $26F8
         LBHI    L191CC
-        LDAA    $023F,Z
-        LDX     #MisfireV0620
+        LDAA    >MisfireLoad,Z
+        LDX     #MisfireWeightLoadScale
         JSR     Lookup2D
         LDAB    $0204,Z
         BRCLR   $00E7,Z,#$20,L1917C
         TBA
-        LDX     #MisfireV06202
+        LDX     #MisfireLoadScaleDrive
         JSR     Lookup2D
         BRA     L19194
 L1917C:
         LDE     $0210,Z
         CPE     $0212,Z
         BCC     L1918C
-        LDX     #MisfireV0620V05C6Factor
+        LDX     #MisfireThresh
         BRA     L19190
 L1918C:
-        LDX     #MisfireV0620V05C6Factor3
+        LDX     #MisfireThreshNoisy
 L19190:
         JSR     Lookup3D
 L19194:
         LDAB    #$08
         MUL
         TDE
-        LDAA    $023F,Z
-        LDX     #MisfireV0620Scale2
+        LDAA    >MisfireLoad,Z
+        LDX     #MisfireCoolantLoadScale
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #MisfireV0620CoolantFactor
+        LDX     #MisfireThreshCoolant
         JSR     Lookup3D
         LDAA    #$01
         EMUL
@@ -13386,22 +13386,22 @@ L191CC:
         CMPA    $26D5
         BLS     L191FC
         LDAA    >SegmentRpm,Z
-        LDX     #MisfireSegRpm
+        LDX     #MisfireHoldSegRpm
         JSR     Lookup2D
         STAA    $0247,Z
 L191FC:
-        LDAA    $023F,Z
-        LDX     #MisfireV0620
+        LDAA    >MisfireLoad,Z
+        LDX     #MisfireWeightLoadScale
         JSR     Lookup2D
         STAA    $FE,Z
         LDAB    $0204,Z
         LDAA    $FE,Z
         TDE
-        LDX     #MisfireV04FEV05C6
+        LDX     #MisfireWeight
         JSR     Lookup3D
         STAA    $FE,Z
         TED
-        LDX     #MisfireV04FEScaled
+        LDX     #MisfireWeight2
         JSR     Lookup3D
         STAA    $FF,Z
         TZX
@@ -13734,7 +13734,7 @@ L195A6:
         BCLR    $0244,Z,#$40
 L195AA:
         LDAB    $023E,Z
-        STAB    $023F,Z
+        STAB    >MisfireLoad,Z
         LDAA    >MapRaw,Z
         STAA    $023E,Z
         SBA
@@ -14102,8 +14102,8 @@ L19942:
         STAA    $0249,Z
 L1996A:
         ORP     #$00E0
-        LDAA    $023F,Z
-        LDX     #MisfireV0620
+        LDAA    >MisfireLoad,Z
+        LDX     #MisfireWeightLoadScale
         JSR     Lookup2D
         LDAB    $0204,Z
         ANDP    #$FF1F
@@ -14170,7 +14170,7 @@ Sub_199A6:
         CLR     $023C,Z
         CLR     $023D,Z
         CLR     $023E,Z
-        CLR     $023F,Z
+        CLR     >MisfireLoad,Z
         CLR     $0240,Z
         CLR     $0241,Z
         CLR     $0242,Z
@@ -14227,8 +14227,8 @@ L19ACE:
         BLS     L19AEE
         STE     $0214,Z
 L19AEE:
-        LDAA    $023F,Z
-        LDX     #MisfireV0620
+        LDAA    >MisfireLoad,Z
+        LDX     #MisfireWeightLoadScale
         JSR     Lookup2D
         LDAB    $0204,Z
         LDX     #Tab3D_2832
@@ -18934,7 +18934,7 @@ L1CCA6:
         JMP     L1CEA0
 L1CCBC:
         LDAA    >MapRaw,Z
-        LDX     #MisfireV0620Scale2
+        LDX     #MisfireCoolantLoadScale
         JSR     Lookup2D
         STAA    $01F6,Z
         STAA    $0638,Z
@@ -18946,7 +18946,7 @@ L1CCBC:
         CMPB    >RpmJerk,Z
         LBCC    L1CD62
         LDAA    >MapRaw,Z
-        LDX     #MisfireV0620Scale2
+        LDX     #MisfireCoolantLoadScale
         JSR     Lookup2D
         STAA    $01F6,Z
         LDAB    >SegmentRpmFast,Z

@@ -24,8 +24,8 @@
   <CATEGORY index="0xE" name="Limits" />
  </XDFHEADER>
  <XDFTABLE uniqueid="0x101" flags="0x0">
-  <title>SensorRpmAdder</title>
-  <description>Subsystem: sensor processing (by the routine that reads it, Sub_2CB0E). Inputs: EngineRpm. $03FC, 2D; inputs: EngineRpm</description>
+  <title>BaroUpdateMapOffset</title>
+  <description>Barometric pressure update while running: offset added to MAP against engine rpm (throttle above $04C1) $03FC, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -456,8 +456,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10D" flags="0x0">
-  <title>StartStartCoolant</title>
-  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: StartCoolantTemp2. Result to $0C00,Z. $0581, 2D; inputs: $0C,Z</description>
+  <title>ResetCoolantInit</title>
+  <description>At reset: $0C00,Z against start coolant temperature $0581, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1032,8 +1032,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11D" flags="0x0">
-  <title>PurgeMapScale</title>
-  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: Map. $0673, 2D; inputs: Map</description>
+  <title>PurgeFuelMapScale</title>
+  <description>Purge vapor fuel correction: MAP to row position of PurgeFuelBase $0673, 2D; inputs: Map</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1059,7 +1059,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x676" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -1068,8 +1068,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11E" flags="0x0">
-  <title>PurgeRpm</title>
-  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z. $067D, 2D; inputs: EngineRpm</description>
+  <title>PurgeFuelRpm</title>
+  <description>Purge vapor fuel correction: engine rpm to column position of PurgeFuelBase $067D, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1095,7 +1095,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x680" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -1464,8 +1464,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x129" flags="0x0">
-  <title>MisfireV0620Limit</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. $070B, 2D; inputs: $02C1,Z</description>
+  <title>MisfireLoadScale</title>
+  <description>Misfire monitor: load $0620,Z to row position of the misfire thresholds $070B, 2D; inputs: MisfireLoad</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1491,7 +1491,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x70E" mmedelementsizebits="8" mmedrowcount="3" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -1500,8 +1500,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x12A" flags="0x0">
-  <title>MisfireV0620</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. Result to $04FE,Z. $0717, 2D; inputs: $02C1,Z</description>
+  <title>MisfireWeightLoadScale</title>
+  <description>Load to row position of MisfireWeight $0717, 2D; inputs: MisfireLoad</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1527,7 +1527,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x71A" mmedelementsizebits="8" mmedrowcount="3" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -1537,7 +1537,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x12B" flags="0x0">
   <title>Tab2D_0723</title>
-  <description>$0723, 2D; inputs: $02C1,Z</description>
+  <description>$0723, 2D; inputs: MisfireLoad</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1572,8 +1572,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x12C" flags="0x0">
-  <title>MisfireV0620Scale2</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. $072F, 2D; inputs: $02C1,Z</description>
+  <title>MisfireCoolantLoadScale</title>
+  <description>Load to row position of MisfireThreshCoolant $072F, 2D; inputs: MisfireLoad</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1599,7 +1599,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x732" mmedelementsizebits="8" mmedrowcount="3" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -4188,9 +4188,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x171" flags="0x0">
-  <title>EventCoolant</title>
-  <description>Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: CoolantTemp. Result to FuelPulseAdder. $1374, 2D; inputs: $0C,Z</description>
-  <CATEGORYMEM index="0" category="5" />
+  <title>EventFuelCoolantSub</title>
+  <description>Per-event fuel: amount subtracted from FuelPulseAdder against coolant while FuelModeFlags bit 7 is set $1374, 2D; inputs: $0C,Z</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4215,10 +4215,10 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1377" mmedelementsizebits="8" mmedrowcount="2" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>us</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -4264,8 +4264,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x173" flags="0x0">
-  <title>O2Coolant</title>
-  <description>Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14740). Inputs: CoolantTemp. $13B9, 2D; inputs: $0C,Z</description>
+  <title>O2StartDelayCoolant</title>
+  <description>Closed-loop entry (Sub_14740): delay against coolant (plus $323D with an O2 fault flag) $13B9, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4300,8 +4300,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x174" flags="0x0">
-  <title>O2V042CLimit</title>
-  <description>Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14FD8). Inputs: $042C,Z. $13FC, 2D; inputs: $0630,Z</description>
+  <title>O2PurgeLimit</title>
+  <description>Closed loop: limit of $0752,Z against the purge ramp $042C,Z $13FC, 2D; inputs: PurgeRamp</description>
   <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4408,8 +4408,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x177" flags="0x0">
-  <title>O2V00F3</title>
-  <description>Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_15D56). Inputs: $F3,Z. $1566, 2D; inputs: $F3,Z</description>
+  <title>O2StepScale</title>
+  <description>Closed loop: trim step against the size of the O2 error $F3,Z (doubled while purge is active and duty is zero) $1566, 2D; inputs: $F3,Z</description>
   <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4769,7 +4769,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x181" flags="0x0">
   <title>Tab2D_1658</title>
-  <description>$1658, 2D; inputs: $0630,Z</description>
+  <description>$1658, 2D; inputs: PurgeRamp</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5092,8 +5092,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x18A" flags="0x0">
-  <title>PurgeTable</title>
-  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D. $16F8, 3Dn; inputs: result of Lookup2D</description>
+  <title>PurgeFuelBase</title>
+  <description>Purge vapor fuel correction base against MAP (rows) and rpm (columns, normalised lookup); multiplied by the learned vapor value $07EB,Z $16F8, 3Dn; inputs: result of Lookup2D</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
@@ -5114,7 +5114,7 @@
    <LABEL index="8" value="255" />
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units>kPa (rows set by PurgeMapScale)</units>
+   <units>kPa (rows set by PurgeFuelMapScale)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -10842,8 +10842,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x226" flags="0x0">
-  <title>SpeedCtlThrottle2</title>
-  <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C46E). Inputs: ThrottleAboveClosed. Result to $041E,Z. $267A, 2D; inputs: ThrottleAboveClosed</description>
+  <title>SpeedCtlOverrideThrottle</title>
+  <description>Value $041E,Z against throttle above the level latched in $0420,Z (driver override) $267A, 2D; inputs: ThrottleAboveClosed</description>
   <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10986,23 +10986,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22A" flags="0x0">
-  <title>MisfireV0620V05C6Factor</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z. $26E3, 3D; inputs: result of Lookup2D x $028A,Z</description>
+  <title>MisfireThresh</title>
+  <description>Misfire threshold of the segment-time change against load (rows) and segment rpm $05C6,Z (columns), P/N $26E3, 3D; inputs: result of Lookup2D x $028A,Z</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x26E6" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>9</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by MisfireV0620Limit)</units>
+   <units> (rows set by MisfireLoadScale)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -11030,23 +11030,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22B" flags="0x0">
-  <title>MisfireV0620V05C6Factor2</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B692). Inputs: result of Lookup2D x $05C6,Z. Result to $05D6,Z. $2740, 3D; inputs: result of Lookup2D x $028A,Z</description>
+  <title>MisfireNoiseRef</title>
+  <description>Reference for the filtered segment-time change ($05D6,Z) against load and segment rpm; selects MisfireThreshNoisy $2740, 3D; inputs: result of Lookup2D x $028A,Z</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2743" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>9</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by MisfireV0620Limit)</units>
+   <units> (rows set by MisfireLoadScale)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -11074,23 +11074,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22C" flags="0x0">
-  <title>MisfireV0620V05C6Factor3</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z. $279D, 3D; inputs: result of Lookup2D x $028A,Z</description>
+  <title>MisfireThreshNoisy</title>
+  <description>As MisfireThresh when the filtered change $05D4,Z is at or above MisfireNoiseRef $279D, 3D; inputs: result of Lookup2D x $028A,Z</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x27A0" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>9</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by MisfireV0620Limit)</units>
+   <units> (rows set by MisfireLoadScale)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -11118,18 +11118,18 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22D" flags="0x0">
-  <title>MisfireV04FEV05C6</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $04FE,Z x $05C6,Z. Result to $04FE,Z. $27FA, 3D; inputs: $01FE,Z x $028A,Z</description>
+  <title>MisfireWeight</title>
+  <description>Counter weight of a detected misfire ($04FE,Z) against load (rows) and segment rpm (columns) $27FA, 3D; inputs: $01FE,Z x $028A,Z</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x27FD" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>9</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -11162,23 +11162,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22E" flags="0x0">
-  <title>MisfireV04FEScaled</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup3D x result of Lookup3D. Result to $04FF,Z. $2857, 3D; inputs: result of Lookup3D x result of Lookup3D</description>
+  <title>MisfireWeight2</title>
+  <description>Second counter weight ($04FF,Z) against the first weight and segment rpm $2857, 3D; inputs: result of Lookup3D x result of Lookup3D</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x285A" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>9</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by MisfireV04FEV05C6)</units>
+   <units>rpm (rows set by MisfireWeight)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -11186,14 +11186,14 @@
     <VAR id="X" />
    </MATH>
    <LABEL index="0" value="0" />
-   <LABEL index="1" value="27" />
-   <LABEL index="2" value="48" />
-   <LABEL index="3" value="80" />
-   <LABEL index="4" value="2" />
-   <LABEL index="5" value="2" />
-   <LABEL index="6" value="2" />
-   <LABEL index="7" value="2" />
-   <LABEL index="8" value="2" />
+   <LABEL index="1" value="853" />
+   <LABEL index="2" value="1536" />
+   <LABEL index="3" value="2560" />
+   <LABEL index="4" value="64" />
+   <LABEL index="5" value="64" />
+   <LABEL index="6" value="64" />
+   <LABEL index="7" value="64" />
+   <LABEL index="8" value="64" />
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2863" mmedelementsizebits="8" mmedrowcount="9" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -11206,8 +11206,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22F" flags="0x0">
-  <title>MisfireV0620CoolantFactor</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x CoolantTemp. Result to $05E2,Z. $28B4, 3D; inputs: result of Lookup2D x $0C,Z</description>
+  <title>MisfireThreshCoolant</title>
+  <description>Factor on the misfire threshold against load (rows) and coolant (columns), result into $05E2,Z $28B4, 3D; inputs: result of Lookup2D x $0C,Z</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x28B7" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -11222,7 +11222,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by MisfireV0620Scale2)</units>
+   <units> (rows set by MisfireCoolantLoadScale)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -11246,8 +11246,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x230" flags="0x0">
-  <title>MisfireSegRpm</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: SegmentRpm. Result to $0629,Z. $28D5, 2D; inputs: SegmentRpm</description>
+  <title>MisfireHoldSegRpm</title>
+  <description>Hold-off after a detected misfire ($0629,Z) against segment rpm $28D5, 2D; inputs: SegmentRpm</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11282,8 +11282,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x231" flags="0x0">
-  <title>MisfireScaledFactor</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: result of Lookup2D. $290F, 2D; inputs: result of Lookup2D</description>
+  <title>MisfireDevCurve2</title>
+  <description>Second curve on the deviation, multiplied with MisfireDevCurve $290F, 2D; inputs: result of Lookup2D</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11297,7 +11297,7 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2911" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>position 0-255</units>
+   <units />
    <indexcount>1</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
@@ -11318,8 +11318,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x232" flags="0x0">
-  <title>MisfireScale</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: TBA. $2921, 2D; inputs: TBA</description>
+  <title>MisfireDevCurve</title>
+  <description>Misfire monitor: curve on the segment-time deviation $04F6,Z (calibration bit $2CC1.3) $2921, 2D; inputs: TBA</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11390,8 +11390,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x234" flags="0x0">
-  <title>MisfireV06202</title>
-  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. $2950, 2D; inputs: TBA</description>
+  <title>MisfireLoadScaleDrive</title>
+  <description>As MisfireLoadScale for MisfireThreshDrive $2950, 2D; inputs: TBA</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11417,7 +11417,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2953" mmedelementsizebits="8" mmedrowcount="5" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -11506,8 +11506,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x237" flags="0x0">
-  <title>DiagV019CLimit</title>
-  <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z. $2AA0, 2D; inputs: $31,Z</description>
+  <title>DiagLevelLimit</title>
+  <description>Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z $2AA0, 2D; inputs: $31,Z</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11542,8 +11542,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x238" flags="0x0">
-  <title>DiagV019CLimit2</title>
-  <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z. $2AAC, 2D; inputs: $31,Z</description>
+  <title>DiagLevelLimit2</title>
+  <description>As DiagLevelLimit with $0649,Z bit 1 set $2AAC, 2D; inputs: $31,Z</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11579,7 +11579,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x239" flags="0x0">
   <title>Tab2D_2B14</title>
-  <description>$2B14, 2D; inputs: $0630,Z</description>
+  <description>$2B14, 2D; inputs: PurgeRamp</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11614,8 +11614,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23A" flags="0x0">
-  <title>DiagV042CScale</title>
-  <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: $042C,Z. $2B24, 2D; inputs: $0630,Z</description>
+  <title>FuelSysLimitScale</title>
+  <description>Fuel system monitor (Sub_2A0F0, Sub_2A302): purge ramp $042C,Z to row position of FuelSysLimit $2B24, 2D; inputs: PurgeRamp</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11641,7 +11641,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2B27" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -12536,8 +12536,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x24D" flags="0x0">
-  <title>SensorLimit2</title>
-  <description>Subsystem: sensor processing (by the routine that reads it, Sub_2C6DE). Inputs: ?. $4289, 2D; inputs: ?</description>
+  <title>ChargeVoltsBattTemp</title>
+  <description>Charging voltage target ($0DB9,Z) against battery temperature, limited by $7087/$7088 $4289, 2D; inputs: ?</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12551,30 +12551,30 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x428B" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>5</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x428C" mmedelementsizebits="8" mmedrowcount="5" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>V</units>
+   <decimalpl>2</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/16.19">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x24E" flags="0x0">
-  <title>StartV0A87</title>
-  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to AcSensor. $4295, 2D; inputs: $0559,Z</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AcSensorCurve</title>
+  <description>A/C sensor (probably refrigerant pressure): ADC $0A87,Z to $0A88,Z $4295, 2D; inputs: $0559,Z</description>
+  <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12766,8 +12766,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x253" flags="0x0">
-  <title>EventV0D11Limit</title>
-  <description>Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: $0D11,Z. Result to $791E,Z. $FD53, 2D; inputs: $0664,Z</description>
+  <title>EventTimingLimit</title>
+  <description>Output-compare set-up in the GPT IC1 interrupt: limit against $0D11,Z compared with $0ABE,Z $FD53, 2D; inputs: $0664,Z</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12802,8 +12802,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x254" flags="0x0">
-  <title>FuelEventCalAdder</title>
-  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12680). Inputs: $0A83; $7563. $FD65, 2D; inputs: $0756</description>
+  <title>FuelEventOffset</title>
+  <description>Per-event fuel offset against the calibration value $0A83 (or $7563 with bit $0338.2), added before the per-cylinder table $ABC3 $FD65, 2D; inputs: $0756</description>
   <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
