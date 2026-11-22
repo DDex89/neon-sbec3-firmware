@@ -160,12 +160,12 @@
    "y": "raw"
   },
   "04B3": {
-   "name": "IdleSpeedScale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: VehicleSpeed.",
+   "name": "IacCoastSpeedScale",
    "category": "Idle",
-   "auto": true,
+   "desc": "Vehicle speed to row position of IacCoastSpeedRpm",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "4333": {
    "name": "IdleV032EScale",
@@ -176,12 +176,12 @@
    "y": "raw"
   },
   "433F": {
-   "name": "IdleBaroScale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Baro.",
+   "name": "IacBaroScale",
    "category": "Idle",
-   "auto": true,
+   "desc": "Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2",
    "x": "kpa",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "058A": {
    "name": "CrankPulseCoolantFactor",
@@ -810,23 +810,23 @@
    "y": "raw"
   },
   "1FCF": {
-   "name": "IdleCoolant6",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z.",
+   "name": "IacCoastCoolant",
    "category": "Idle",
-   "auto": true,
+   "desc": "Minimum idle air while coasting against coolant; the higher of this and IacCoastSpeedRpm applies",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1FDD": {
-   "name": "IdleThrottleLimit",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: ThrottleAboveClosed.",
+   "name": "IacCoastThrottleLimit",
    "category": "Idle",
-   "auto": true,
+   "desc": "Throttle opening limit for the coasting idle air",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2069": {
-   "name": "IdleSpeedScale2",
+   "name": "IdleSpeedScale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed.",
    "category": "Idle",
    "auto": true,
@@ -875,16 +875,16 @@
    "z": "raw"
   },
   "1FE7": {
-   "name": "IdleSpeedSegRpmLimit",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00FE,Z.",
+   "name": "IacCoastSpeedRpm",
    "category": "Idle",
-   "auto": true,
+   "desc": "Minimum idle air while coasting against vehicle speed (rows) and segment rpm",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "21E8": {
-   "name": "IdleBaroScale2",
+   "name": "IdleBaroScale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: Baro. Result to $00F1,Z.",
    "category": "Idle",
    "auto": true,
@@ -926,30 +926,30 @@
    "z": "raw"
   },
   "21B5": {
-   "name": "IdleBaroIdleTarget",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F5,Z.",
+   "name": "IacBaseBaroTarget2",
    "category": "Idle",
-   "auto": true,
+   "desc": "Second base idle air table, barometric pressure x idle target, into the idle air sum",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "21AD": {
-   "name": "IdleBaro2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A688). Inputs: Baro. Result to $002A,Z.",
+   "name": "IacStartBaro",
    "category": "Idle",
-   "auto": true,
+   "desc": "Idle air position at reset against barometric pressure, into $2A,Z",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "218C": {
-   "name": "IdleBaroIdleTarget2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F0,Z.",
+   "name": "IacBaseBaroTarget",
    "category": "Idle",
-   "auto": true,
+   "desc": "Base idle air (IAC position) against barometric pressure (rows) and the idle target (columns), into $0362,Z; added to the IAC target",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "0507": {
    "name": "MisfireV0620",

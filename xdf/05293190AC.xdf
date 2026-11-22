@@ -24,8 +24,8 @@
   <CATEGORY index="0xE" name="Limits" />
  </XDFHEADER>
  <XDFTABLE uniqueid="0x101" flags="0x0">
-  <title>IdleCoolantAdder</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AADC). Inputs: CoolantTemp. $0398, 2D; inputs: CoolantTemp</description>
+  <title>IacCoolantAdder</title>
+  <description>Idle air added against coolant in Sub_1AADC $0398, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -132,8 +132,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x104" flags="0x0">
-  <title>IdleRpm</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1BA5E). Inputs: EngineRpm. Result to $0DCF,Z. $03BC, 2D; inputs: EngineRpm</description>
+  <title>IdleRpmSpeedTerm</title>
+  <description>Value against rpm into $0DCF,Z (used by the PIT idle code) $03BC, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2524,8 +2524,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x146" flags="0x0">
-  <title>IdleSpeedScale</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: VehicleSpeed. $0A44, 2D; inputs: VehicleSpeed</description>
+  <title>IacCoastSpeedScale</title>
+  <description>Vehicle speed to row position of IacCoastSpeedRpm $0A44, 2D; inputs: VehicleSpeed</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2551,7 +2551,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xA47" mmedelementsizebits="8" mmedrowcount="3" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -2596,8 +2596,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x148" flags="0x0">
-  <title>IdleBaroScale</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Baro. $0A5C, 2D; inputs: Baro</description>
+  <title>IacBaroScale</title>
+  <description>Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2 $0A5C, 2D; inputs: Baro</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2623,7 +2623,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xA5F" mmedelementsizebits="8" mmedrowcount="5" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -10816,7 +10816,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x223" flags="0x0">
-  <title>IdleCoolantAdder2</title>
+  <title>IdleCoolantAdder</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp. $27F6, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -11392,8 +11392,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x233" flags="0x0">
-  <title>IdleCoolant6</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z. $28DD, 2D; inputs: CoolantTemp</description>
+  <title>IacCoastCoolant</title>
+  <description>Minimum idle air while coasting against coolant; the higher of this and IacCoastSpeedRpm applies $28DD, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11428,8 +11428,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x234" flags="0x0">
-  <title>IdleThrottleLimit</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: ThrottleAboveClosed. $28EB, 2D; inputs: ThrottleAboveClosed</description>
+  <title>IacCoastThrottleLimit</title>
+  <description>Throttle opening limit for the coasting idle air $28EB, 2D; inputs: ThrottleAboveClosed</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11464,7 +11464,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x235" flags="0x0">
-  <title>IdleSpeedScale2</title>
+  <title>IdleSpeedScale</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed. $28F9, 2D; inputs: VehicleSpeed</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -11684,8 +11684,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23B" flags="0x0">
-  <title>IdleSpeedSegRpmLimit</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00FE,Z. $2950, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <title>IacCoastSpeedRpm</title>
+  <description>Minimum idle air while coasting against vehicle speed (rows) and segment rpm $2950, 3D; inputs: result of Lookup2D x SegmentRpm</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2953" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -11700,7 +11700,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by IdleSpeedScale)</units>
+   <units> (rows set by IacCoastSpeedScale)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -11728,7 +11728,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23C" flags="0x0">
-  <title>IdleBaroScale2</title>
+  <title>IdleBaroScale</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: Baro. Result to $00F1,Z. $29AD, 2D; inputs: Baro</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -12056,8 +12056,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x245" flags="0x0">
-  <title>IdleTimeAdder2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: Count3s. $2A38, 2D; inputs: Count3s</description>
+  <title>IacAfterStartTimeAdder</title>
+  <description>Idle air added shortly after start against time since start $2A38, 2D; inputs: Count3s</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12092,8 +12092,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x246" flags="0x0">
-  <title>IdleCoolantAdder3</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp. $2A42, 2D; inputs: CoolantTemp</description>
+  <title>IacWarmupCoolantAdder</title>
+  <description>Idle air added against coolant (warm-up) $2A42, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12456,8 +12456,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x250" flags="0x0">
-  <title>IdleBaroIdleTarget</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F5,Z. $2AC3, 3D; inputs: result of Lookup2D x IdleTarget</description>
+  <title>IacBaseBaroTarget2</title>
+  <description>Second base idle air table, barometric pressure x idle target, into the idle air sum $2AC3, 3D; inputs: result of Lookup2D x IdleTarget</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2AC6" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -12472,7 +12472,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units>kPa (rows set by IdleBaroScale)</units>
+   <units>kPa (rows set by IacBaroScale)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -12532,8 +12532,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x252" flags="0x0">
-  <title>IdleBaro2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1A688). Inputs: Baro. Result to $002A,Z. $2B06, 2D; inputs: Baro</description>
+  <title>IacStartBaro</title>
+  <description>Idle air position at reset against barometric pressure, into $2A,Z $2B06, 2D; inputs: Baro</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12604,8 +12604,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x254" flags="0x0">
-  <title>IdleBaroIdleTarget2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F0,Z. $2B1E, 3D; inputs: result of Lookup2D x IdleTarget</description>
+  <title>IacBaseBaroTarget</title>
+  <description>Base idle air (IAC position) against barometric pressure (rows) and the idle target (columns), into $0362,Z; added to the IAC target $2B1E, 3D; inputs: result of Lookup2D x IdleTarget</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2B21" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -12620,7 +12620,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units>kPa (rows set by IdleBaroScale)</units>
+   <units>kPa (rows set by IacBaroScale)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />

@@ -14434,7 +14434,7 @@ L2D17E:
         BCC     L2D1B0
         BRA     L2D1AA
 L2D18E:
-        LDX     #IdleCoolantAdder2
+        LDX     #IdleCoolantAdder
         BRCLR   $0055,Z,#$20,L2D19C
         LDX     #IdleCoolantAdderAC
 L2D19C:

@@ -12077,7 +12077,7 @@ L19B46:
         BRA     L19BEE
 L19B7C:
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeedScale2
+        LDX     #IdleSpeedScale
         JSR     Lookup2D
         CLRA
         TDE
@@ -12666,7 +12666,7 @@ L1A2B6:
         BRA     L1A348
 L1A2D2:
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeedScale2
+        LDX     #IdleSpeedScale
         JSR     Lookup2D
         CLRA
         TDE
@@ -12965,7 +12965,7 @@ Sub_1A5CE:
         LDAA    #$FF
         STAA    $18,Z
         LDAA    <Baro,Z
-        LDX     #IdleBaro2
+        LDX     #IacStartBaro
         JSR     Lookup2D
         STAA    $2A,Z
         BRCLR   $0331,#$80,L1A626
@@ -13003,7 +13003,7 @@ L1A626:
 ;---------------------------------------------------------------------------------------------------
 Sub_1A628:
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale2
+        LDX     #IdleBaroScale
         JSR     Lookup2D
         LDAA    #$01
         TDE
@@ -13103,7 +13103,7 @@ L1A73C:
         BLS     L1A758
 L1A74A:
         LDAA    <Baro,Z
-        LDX     #IdleBaro2
+        LDX     #IacStartBaro
         JSR     Lookup2D
         CLRB
         STAA    $2A,Z
@@ -13503,7 +13503,7 @@ L1AB3A:
         BITA    #$1E
         BNE     L1ABAE
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolantAdder
+        LDX     #IacCoolantAdder
         JSR     Lookup2D
         CLRA
         TDE
@@ -13587,12 +13587,12 @@ Sub_1ABD2:
         LDAB    $F5,Z
         ADE
         LDAA    >Count3s,Z
-        LDX     #IdleTimeAdder2
+        LDX     #IacAfterStartTimeAdder
         JSR     Lookup2D
         CLRA
         ADE
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolantAdder3
+        LDX     #IacWarmupCoolantAdder
         JSR     Lookup2D
         CLRA
         ADE
@@ -13917,35 +13917,35 @@ L1AF5C:
 ;---------------------------------------------------------------------------------------------------
 Sub_1AF5E:
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacBaroScale
         JSR     Lookup2D
         LDAB    >IdleTarget,Z
-        LDX     #IdleBaroIdleTarget2
+        LDX     #IacBaseBaroTarget
         JSR     Lookup3D
         STAA    $F0,Z
         BRSET   $0312,Z,#$40,L1AF80
         STAA    $0362,Z
 L1AF80:
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale2
+        LDX     #IdleBaroScale
         JSR     Lookup2D
         STAA    $F1,Z
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant6
+        LDX     #IacCoastCoolant
         JSR     Lookup2D
         STAA    $FE,Z
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeedScale
+        LDX     #IacCoastSpeedScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleSpeedSegRpmLimit
+        LDX     #IacCoastSpeedRpm
         JSR     Lookup3D
         CMPA    $FE,Z
         BLS     L1AFB8
         STAA    $FE,Z
 L1AFB8:
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #IdleThrottleLimit
+        LDX     #IacCoastThrottleLimit
         JSR     Lookup2D
         CMPB    $FE,Z
         BHI     L1AFCA
@@ -14033,10 +14033,10 @@ L1B0B0:
         STD     $0A57,Z
 L1B0D2:
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacBaroScale
         JSR     Lookup2D
         LDAB    >IdleTarget,Z
-        LDX     #IdleBaroIdleTarget
+        LDX     #IacBaseBaroTarget2
         JSR     Lookup3D
         STAA    $F5,Z
         RTS
@@ -14815,7 +14815,7 @@ L1B9FC:
         JSR     Blend16
         AIS     #$04
         STD     $0DC2,Z
-        LDX     #IdleRpm
+        LDX     #IdleRpmSpeedTerm
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         STAA    $0DC7,Z
@@ -14850,7 +14850,7 @@ L1BA58:
         BITB    #$02
         BNE     L1BAD0
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale2
+        LDX     #IdleBaroScale
         JSR     Lookup2D
         LDAA    #$01
         TDE
@@ -14908,7 +14908,7 @@ Sub_1BAEC:
         BITB    #$02
         BNE     L1BB66
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale2
+        LDX     #IdleBaroScale
         JSR     Lookup2D
         LDAA    #$01
         TDE

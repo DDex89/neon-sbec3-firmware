@@ -460,13 +460,13 @@ Tab2D_04B9:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleSpeedScale ($04C5): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: VehicleSpeed.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; IacCoastSpeedScale ($04C5): 2D table, 3 points, unsigned
+; Vehicle speed to row position of IacCoastSpeedRpm
+; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $0C08C
 ;---------------------------------------------------------------------------------------------------
-IdleSpeedScale:
+IacCoastSpeedScale:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,0, 40,128, 120,255                     ; x, y
 
@@ -3210,38 +3210,38 @@ IdleTimeAdder:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolant6 ($1FF5): 2D table, 6 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z.
+; IacCoastCoolant ($1FF5): 2D table, 6 points, unsigned
+; Minimum idle air while coasting against coolant; the higher of this and IacCoastSpeedRpm applies
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0C078
 ;---------------------------------------------------------------------------------------------------
-IdleCoolant6:
+IacCoastCoolant:
         dc.b    6,$80                                    ; points, flags
         dc.b    99,134, 105,80, 116,44, 155,30, 205,12, 216,8 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleThrottleLimit ($2003): 2D table, 2 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: ThrottleAboveClosed.
+; IacCoastThrottleLimit ($2003): 2D table, 2 points, unsigned
+; Throttle opening limit for the coasting idle air
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $0C0AE
 ;---------------------------------------------------------------------------------------------------
-IdleThrottleLimit:
+IacCoastThrottleLimit:
         dc.b    2,$80                                    ; points, flags
         dc.b    3,0, 15,10                               ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleSpeedSegRpmLimit ($200D): 3D table, 9 rows x 9 columns, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00FE,Z.
+; IacCoastSpeedRpm ($200D): 3D table, 9 rows x 9 columns, unsigned
+; Minimum idle air while coasting against vehicle speed (rows) and segment rpm
 ; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x SegmentRpm
 ; Read at $0C098
 ;---------------------------------------------------------------------------------------------------
-IdleSpeedSegRpmLimit:
+IacCoastSpeedRpm:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    31,47,63,78,94,109,125,141,156           ; column axis
         dc.b    5,5,5,5,8,8,8,8,8                        ; row 0
@@ -3274,13 +3274,13 @@ IdleV032ESegRpm:
         dc.b    $03,$FF,$FF,$6E
 
 ;---------------------------------------------------------------------------------------------------
-; IdleSpeedScale2 ($208F): 2D table, 2 points, unsigned
+; IdleSpeedScale ($208F): 2D table, 2 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $0ACDC, $0B334
 ;---------------------------------------------------------------------------------------------------
-IdleSpeedScale2:
+IdleSpeedScale:
         dc.b    2,$80                                    ; points, flags
         dc.b    100,37, 140,53                           ; x, y
 
@@ -3515,13 +3515,13 @@ Tab2D_21A6:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleBaroIdleTarget2 ($21B2): 3D table, 5 rows x 5 columns, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F0,Z.
+; IacBaseBaroTarget ($21B2): 3D table, 5 rows x 5 columns, unsigned
+; Base idle air (IAC position) against barometric pressure (rows) and the idle target (columns), into $0362,Z; added to the IAC target
 ; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x IdleTarget
 ; Read at $0C05A
 ;---------------------------------------------------------------------------------------------------
-IdleBaroIdleTarget2:
+IacBaseBaroTarget:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    19,22,25,30,33                           ; column axis
         dc.b    11,17,22,25,33                           ; row 0
@@ -3532,26 +3532,26 @@ IdleBaroIdleTarget2:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleBaro2 ($21D3): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1A688). Inputs: Baro. Result to $002A,Z.
+; IacStartBaro ($21D3): 2D table, 3 points, unsigned
+; Idle air position at reset against barometric pressure, into $2A,Z
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $0B6D0, $0B850
 ;---------------------------------------------------------------------------------------------------
-IdleBaro2:
+IacStartBaro:
         dc.b    3,$80                                    ; points, flags
         dc.b    172,70, 203,74, 240,85                   ; x, y
 
         dc.b    $00
 
 ;---------------------------------------------------------------------------------------------------
-; IdleBaroIdleTarget ($21DC): 3D table, 5 rows x 5 columns, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F5,Z.
+; IacBaseBaroTarget2 ($21DC): 3D table, 5 rows x 5 columns, unsigned
+; Second base idle air table, barometric pressure x idle target, into the idle air sum
 ; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x IdleTarget
 ; Read at $0C1AE
 ;---------------------------------------------------------------------------------------------------
-IdleBaroIdleTarget:
+IacBaseBaroTarget2:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    19,22,25,30,33                           ; column axis
         dc.b    36,32,28,27,30                           ; row 0
@@ -3584,13 +3584,13 @@ Tab2D_2207:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleBaroScale2 ($220F): 2D table, 1 points, unsigned
+; IdleBaroScale ($220F): 2D table, 1 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: Baro. Result to $00F1,Z.
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $0B650, $0B728, $0C068
 ;---------------------------------------------------------------------------------------------------
-IdleBaroScale2:
+IdleBaroScale:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -4935,13 +4935,13 @@ IdleV032EScale:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleBaroScale ($435F): 2D table, 5 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Baro.
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; IacBaroScale ($435F): 2D table, 5 points, unsigned
+; Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2
+; x: kpa, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $0C04E, $0C1A2
 ;---------------------------------------------------------------------------------------------------
-IdleBaroScale:
+IacBaroScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    129,0, 162,64, 194,128, 227,192, 255,255 ; x, y
 
@@ -13942,7 +13942,7 @@ L0AC9E:
         BRA     L0AD40
 L0ACD4:
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeedScale2
+        LDX     #IdleSpeedScale
         JSR     Lookup2D
         CLRA
         TDE
@@ -14438,7 +14438,7 @@ L0B302:
         BRA     L0B39C
 L0B32C:
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeedScale2
+        LDX     #IdleSpeedScale
         JSR     Lookup2D
         CLRA
         TDE
@@ -14727,7 +14727,7 @@ L0B628:
         BITB    #$02
         BNE     L0B6A0
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale2
+        LDX     #IdleBaroScale
         JSR     Lookup2D
         LDAA    #$01
         TDE
@@ -14780,7 +14780,7 @@ Sub_0B6BC:
         LDAA    #$FF
         STAA    $0B,Z
         LDAA    <Baro,Z
-        LDX     #IdleBaro2
+        LDX     #IacStartBaro
         JSR     Lookup2D
         STAA    $0033,Z
         BRCLR   $031E,#$04,L0B720
@@ -14818,7 +14818,7 @@ L0B720:
 ;---------------------------------------------------------------------------------------------------
 Sub_0B722:
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale2
+        LDX     #IdleBaroScale
         JSR     Lookup2D
         LDAA    #$01
         TDE
@@ -14919,7 +14919,7 @@ L0B83A:
         BLS     L0B85E
 L0B84A:
         LDAA    <Baro,Z
-        LDX     #IdleBaro2
+        LDX     #IacStartBaro
         JSR     Lookup2D
         CLRB
         STAA    $0033,Z
@@ -15699,33 +15699,33 @@ L0C046:
 ;---------------------------------------------------------------------------------------------------
 Sub_0C048:
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacBaroScale
         JSR     Lookup2D
         LDAB    >IdleTarget,Z
-        LDX     #IdleBaroIdleTarget2
+        LDX     #IacBaseBaroTarget
         JSR     Lookup3D
         STAA    $01F0,Z
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale2
+        LDX     #IdleBaroScale
         JSR     Lookup2D
         STAA    $01F1,Z
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant6
+        LDX     #IacCoastCoolant
         JSR     Lookup2D
         STAA    $01FE,Z
         STAA    $01F6,Z
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeedScale
+        LDX     #IacCoastSpeedScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleSpeedSegRpmLimit
+        LDX     #IacCoastSpeedRpm
         JSR     Lookup3D
         CMPA    $01FE,Z
         BLS     L0C0A6
         STAA    $01FE,Z
 L0C0A6:
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #IdleThrottleLimit
+        LDX     #IacCoastThrottleLimit
         JSR     Lookup2D
         CMPB    $01FE,Z
         BHI     L0C0BC
@@ -15800,10 +15800,10 @@ L0C13C:
         STD     $034F,Z
 L0C19C:
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacBaroScale
         JSR     Lookup2D
         LDAB    >IdleTarget,Z
-        LDX     #IdleBaroIdleTarget
+        LDX     #IacBaseBaroTarget2
         JSR     Lookup3D
         STAA    $01F5,Z
         CLRA

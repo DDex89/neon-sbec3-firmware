@@ -16,12 +16,12 @@
  },
  "tables": {
   "0398": {
-   "name": "IdleCoolantAdder",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AADC). Inputs: CoolantTemp.",
+   "name": "IacCoolantAdder",
    "category": "Idle",
-   "auto": true,
+   "desc": "Idle air added against coolant in Sub_1AADC",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "03A4": {
    "name": "FlexLearnV006B",
@@ -40,12 +40,12 @@
    "y": "raw"
   },
   "03BC": {
-   "name": "IdleRpm",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1BA5E). Inputs: EngineRpm. Result to $0DCF,Z.",
+   "name": "IdleRpmSpeedTerm",
    "category": "Idle",
-   "auto": true,
+   "desc": "Value against rpm into $0DCF,Z (used by the PIT idle code)",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "03C8": {
    "name": "PitV0DCCFactor",
@@ -569,12 +569,12 @@
    "y": "raw"
   },
   "0A44": {
-   "name": "IdleSpeedScale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: VehicleSpeed.",
+   "name": "IacCoastSpeedScale",
    "category": "Idle",
-   "auto": true,
+   "desc": "Vehicle speed to row position of IacCoastSpeedRpm",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "0A50": {
    "name": "IdleV032EScale",
@@ -585,12 +585,12 @@
    "y": "raw"
   },
   "0A5C": {
-   "name": "IdleBaroScale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Baro.",
+   "name": "IacBaroScale",
    "category": "Idle",
-   "auto": true,
+   "desc": "Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2",
    "x": "kpa",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "0A68": {
    "name": "ColdSoakMapScale",
@@ -2366,7 +2366,7 @@
    "y": "raw"
   },
   "27F6": {
-   "name": "IdleCoolantAdder2",
+   "name": "IdleCoolantAdder",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2494,23 +2494,23 @@
    "y": "raw"
   },
   "28DD": {
-   "name": "IdleCoolant6",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z.",
+   "name": "IacCoastCoolant",
    "category": "Idle",
-   "auto": true,
+   "desc": "Minimum idle air while coasting against coolant; the higher of this and IacCoastSpeedRpm applies",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "28EB": {
-   "name": "IdleThrottleLimit",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: ThrottleAboveClosed.",
+   "name": "IacCoastThrottleLimit",
    "category": "Idle",
-   "auto": true,
+   "desc": "Throttle opening limit for the coasting idle air",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "28F9": {
-   "name": "IdleSpeedScale2",
+   "name": "IdleSpeedScale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed.",
    "category": "Idle",
    "auto": true,
@@ -2559,16 +2559,16 @@
    "z": "raw"
   },
   "2950": {
-   "name": "IdleSpeedSegRpmLimit",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00FE,Z.",
+   "name": "IacCoastSpeedRpm",
    "category": "Idle",
-   "auto": true,
+   "desc": "Minimum idle air while coasting against vehicle speed (rows) and segment rpm",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "29AD": {
-   "name": "IdleBaroScale2",
+   "name": "IdleBaroScale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: Baro. Result to $00F1,Z.",
    "category": "Idle",
    "auto": true,
@@ -2641,20 +2641,20 @@
    "y": "raw"
   },
   "2A38": {
-   "name": "IdleTimeAdder2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: Count3s.",
+   "name": "IacAfterStartTimeAdder",
    "category": "Idle",
-   "auto": true,
+   "desc": "Idle air added shortly after start against time since start",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2A42": {
-   "name": "IdleCoolantAdder3",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp.",
+   "name": "IacWarmupCoolantAdder",
    "category": "Idle",
-   "auto": true,
+   "desc": "Idle air added against coolant (warm-up)",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2A52": {
    "name": "IdleSegRpm",
@@ -2730,13 +2730,13 @@
    "z": "raw"
   },
   "2AC3": {
-   "name": "IdleBaroIdleTarget",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F5,Z.",
+   "name": "IacBaseBaroTarget2",
    "category": "Idle",
-   "auto": true,
+   "desc": "Second base idle air table, barometric pressure x idle target, into the idle air sum",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "2AFA": {
    "name": "IdleBaro",
@@ -2747,12 +2747,12 @@
    "y": "raw"
   },
   "2B06": {
-   "name": "IdleBaro2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A688). Inputs: Baro. Result to $002A,Z.",
+   "name": "IacStartBaro",
    "category": "Idle",
-   "auto": true,
+   "desc": "Idle air position at reset against barometric pressure, into $2A,Z",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2B12": {
    "name": "IdleBaroFactor3",
@@ -2763,13 +2763,13 @@
    "y": "raw"
   },
   "2B1E": {
-   "name": "IdleBaroIdleTarget2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F0,Z.",
+   "name": "IacBaseBaroTarget",
    "category": "Idle",
-   "auto": true,
+   "desc": "Base idle air (IAC position) against barometric pressure (rows) and the idle target (columns), into $0362,Z; added to the IAC target",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "2B46": {
    "name": "SpeedCtlV0408",

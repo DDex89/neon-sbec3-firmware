@@ -14295,7 +14295,7 @@ L2D136:
         BCC     L2D168
         BRA     L2D162
 L2D146:
-        LDX     #IdleCoolantAdder2
+        LDX     #IdleCoolantAdder
         BRCLR   $0055,Z,#$20,L2D154
         LDX     #IdleCoolantAdderAC
 L2D154:
