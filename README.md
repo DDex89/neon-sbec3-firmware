@@ -13,15 +13,15 @@ logic and the units of its values descend from it.
 
 ## Status
 
-Stage 2 of 6: tools. All eleven images rebuild byte for byte; the reference image is
+Stage 3 of 6: program skeleton. All eleven images rebuild byte for byte; the reference image is
 **05293190AC** (1999 Eclipse, manual), chosen because outside reference addresses exist for it.
 
 | Stage | Content | |
 |---|---|---|
 | 1 | Survey: images, memory layout, checksum, families | done, see [docs/en/images.md](docs/en/images.md) |
 | 2 | Tools: CPU16 disassembler, assembler, source generator, byte-identical build, CI | done, see [docs/en/tools.md](docs/en/tools.md) |
-| 3 | Program skeleton: reset, interrupts, main loop, scheduler, communication | next |
-| 4 | Calibration: table formats, finding and naming the tables | |
+| 3 | Program skeleton: reset, interrupts, main loop, scheduler, communication | done, see [docs/en/architecture.md](docs/en/architecture.md) |
+| 4 | Calibration: table formats, finding and naming the tables | next |
 | 5 | Detailed annotation, documentation in English and Russian, porting to the other families | |
 | 6 | Editor definitions: TunerPro XDF generated from the annotations | |
 
@@ -30,6 +30,7 @@ Stage 2 of 6: tools. All eleven images rebuild byte for byte; the reference imag
 ```
 docs/en, docs/ru        documentation
 src/05293190AC/         generated source of the reference image, one file per 64 KB bank
+annotations/            names and notes the generator uses: labels, RAM, registers, vectors
 tools/                  CPU16 opcode table, decoder, assembler, analysis, generator, build, survey
 roms/                   place for the flash images (not distributed, see roms/README.md)
 third_party/            SBECBootLoader by Dino Yancey: reading and reflashing on the bench

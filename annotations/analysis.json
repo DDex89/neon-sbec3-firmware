@@ -1,0 +1,17 @@
+{
+ "_comment": "Analysis settings and notes for the reference image 05293190AC.",
+ "z_not_base": [
+  [
+   "15464",
+   "154F6",
+   "Z is used as a data pointer between TBZK and PULM Y,Z,K"
+  ]
+ ],
+ "ram_code": [
+  [
+   "35AE2",
+   "F8700",
+   "SCI diagnostic service: code downloaded byte by byte into RAM $F8700-$F87FF (DiagWriteRamByte), checked (length, checksum, RTS at the end) and run by DiagRunRamCode"
+  ]
+ ]
+}

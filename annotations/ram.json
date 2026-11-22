@@ -1,0 +1,16 @@
+{
+ "_comment": "RAM variables: offset from Z (Z = $F8000) -> name. Offsets $7000-$7FFF are module registers (annotations/hc16z_registers.json).",
+ "0000": "UnexpectedIrqFlags",
+ "0002": "UnexpectedIrqStack4",
+ "0004": "UnexpectedIrqStack6",
+ "0006": "ResetCheckWord",
+ "0008": "ResetCountsExtSw",
+ "0009": "ResetCountsHltPow",
+ "0AC4": "Ic2OverflowCount",
+ "0C3B": "MainLoopPhaseMask",
+ "0C3C": "Count3s",
+ "0C3D": "MainLoopCounter",
+ "0C3E": "Count191ms",
+ "0C41": "PitTickCounter",
+ "0C42": "LoopTickCounter"
+}

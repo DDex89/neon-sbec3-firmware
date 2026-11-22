@@ -23,6 +23,15 @@ class AsmError(Exception):
 
 def num(tok, syms, need=True):
     tok = tok.strip()
+    width = None
+    if tok.startswith(">>"):
+        width, tok = 5, tok[2:]
+    elif tok.startswith(">"):
+        width, tok = 4, tok[1:]
+    elif tok.startswith("<"):
+        width, tok = 2, tok[1:]
+    if width:
+        return num(tok, syms, need)[0], width
     if tok.startswith("$"):
         return int(tok[1:], 16), len(tok) - 1
     if re.fullmatch(r"\d+", tok):
@@ -54,6 +63,10 @@ def pick(mn, text, syms, final):
 
     if not ops:
         return res("INH", [])
+    if mn in ("PSHM", "PULM") and not ops[0].startswith("#"):
+        names = ["D", "E", "X", "Y", "Z", "K", "CCR"] if mn == "PSHM" else \
+            ["CCR", "K", "Z", "Y", "X", "E", "D"]
+        return res("IMM8", [("ii", sum(1 << names.index(r) for r in ops))])
     if ops[0].startswith("#") and len(ops) == 1:
         v, nd = num(ops[0][1:], syms, final)
         if has("IMM8") and (nd == 2 or not has("IMM16")):

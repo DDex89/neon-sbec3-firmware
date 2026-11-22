@@ -29,7 +29,7 @@ python3 tools/survey.py roms/*.bin  # header, checksum and families of all image
 | `tools/syntax16.py` | Assembly syntax, shared by the generator and the assembler |
 | `tools/asm16.py` | Two-pass assembler |
 | `tools/analyse.py` | Code-flow analysis: what is code and what is data |
-| `tools/gen_source.py` | Writes one source file per 64 KB bank |
+| `tools/gen_source.py` | Writes `00_equates.asm` and one source file per 64 KB bank, with names and notes from `annotations/` |
 | `tools/build.py` | Assembles and verifies against `tools/variants.json` |
 | `tools/survey.py` | Survey of images (stage 1) |
 
@@ -61,17 +61,43 @@ encoding:
 | Branch | `BRA L080B4`, `LBNE L08B52` | Bcc = 8-bit offset, LBcc = 16-bit |
 | Bit operations | `BSET $0A,Z,#$02`, `BRSET $0332,#$08,L2CE6C` | address, mask, target |
 | Move | `MOVB $05,X+,$1234`, `MOVW $1234,$5678` | |
-| Register mask | `PSHM #$2F`, `PULM #$20` | raw mask for now |
+| Register list | `PSHM D,E,X,Y,K`, `PULM K,X,D` | the order of the list does not matter |
+| Symbol | `INC >PitTickCounter,Z`, `STD >SYNCR,Z` | `>` forces 16-bit, `<` 8-bit encoding, as in the original |
 
 ## Code-flow analysis
 
 `tools/analyse.py` starts at the reset entry and at the exception vectors, follows branches, calls
-and EXT20 jumps, and resolves **jump tables**: an index scaled by 4 in X followed by
-`JMP $base,X`, where the base holds a run of 4-byte `JMP $xxxxx` entries (a preceding `CMPB #n`
-limits the count). Tables may start at any even address. In 05293190AC this finds 40,760
-instructions (135,104 bytes) and 16 jump tables. Four indirect jumps are not resolved yet: they go
-through pointers loaded from data (stage 3). Code reached only through them is still emitted as
-`dc.b`, which does not affect the rebuild.
+and EXT20 jumps, and resolves **jump tables** reached by an indexed `JMP`:
+
+- `JMP $base,X` or `JMP $base,Y` over a run of 4-byte `JMP $xxxxx` entries, a run of 4-byte
+  `JSR $xxxxx` entries, or 6-byte `JSR` / `BRA` pairs. A preceding `CMPB #n` limits the count. An
+  entry may be a short inline stub ending in `RTS`; if entry 0 is not a jump but entry 1 is, the
+  caller never uses index 0 and the table starts at entry 1.
+- `LDX #base` ... `CPX #limit` ... `JMP $00000,X`: entries between the two bounds.
+
+In 05293190AC this finds 43,370 instructions (144,074 bytes) and 21 jump tables, with no unresolved
+indirect jump. One jump goes into RAM ($F8700): a diagnostic service that runs code downloaded
+through the SCI line (see [architecture.md](architecture.md)); it is listed separately, not as a
+problem.
+
+## Names and notes
+
+`tools/gen_source.py` takes names from `annotations/`:
+
+| File | Content |
+|---|---|
+| `labels.json` | code labels of the reference image |
+| `vectors.json` | names of the exception vectors |
+| `ram.json` | RAM variables, as offsets from Z |
+| `hc16z_registers.json` | the 68HC16Z module registers (from the Z-series user's manual) |
+| `routines.md` | notes printed above routines |
+| `analysis.json` | where Z is not the RAM base; jumps into RAM |
+
+Other labels are generated: `Sub_xxxxx` for call targets, `JumpTable_xxxxx`, `Lxxxxx` for the rest.
+`$xxxx,Z` operands become `NAME,Z` when the offset is a known RAM variable or register; a byte access
+to the low half of a 16-bit register gets the suffix `_L` (`SCDR_L` = low byte of SCDR). The symbols
+used are written to `00_equates.asm`. Each routine has a header with its vectors, its callers and the
+notes.
 
 ## Results
 
@@ -79,18 +105,18 @@ All eleven images rebuild byte for byte from generated sources. Only the referen
 05293190AC, has its source in the repository; the others will follow once the annotations are
 ported to their families.
 
-| Image | Instructions | Code bytes | Jump tables |
-|---|---|---|---|
-| 05293190AC (reference) | 40,760 | 135,104 | 16 |
-| 05269833AI, 05269834AJ | 39,878 | 132,032 | 16 |
-| 05269833AH | 38,744 | 127,960 | 16 |
-| 05032017AA | 41,375 | 137,048 | 16 |
-| 05293013AC, 05293014AC | 29,487 | 96,882 | 13 |
-| 04887050, 04887051 | 28,336 | 92,770 | 12 |
-| 05007038, 05293148AA | 30,646 | 98,734 | 14 |
+| Image | Instructions | Code bytes | Jump tables | Jump into RAM at |
+|---|---|---|---|---|
+| 05293190AC (reference) | 43,370 | 144,074 | 21 | $35AE2 |
+| 05269833AI, 05269834AJ | 42,473 | 140,922 | 21 | $35ACE |
+| 05269833AH | 41,340 | 136,844 | 21 | $35AA4 |
+| 05032017AA | 43,970 | 145,938 | 21 | $35AC4 |
+| 05293013AC, 05293014AC | 31,833 | 104,764 | 18 | $162F6 |
+| 04887050, 04887051 | 30,371 | 99,534 | 17 | $130D6 |
+| 05007038, 05293148AA | 33,139 | 107,118 | 19 | $1B158 |
 
 Images of one family have the same instruction count, which supports the family grouping of
-stage 1: same program, different calibration.
+stage 1: same program, different calibration. No image has an unresolved indirect jump.
 
 ## Check against the 2GNT reference addresses
 
@@ -120,7 +146,7 @@ The reset routine sets SK = ZK = $F, SP = $8FFE and IZ = $8000, and EK = 0. So:
 
 - **Z points at $F8000, the start of RAM.** `$xx,Z` and `$0xxx,Z` address RAM ($F8000-$F8FFF on
   the 4 KB parts); `$7xxx,Z` reaches the module registers at $FFxxx, for example `$7A00,Z` = $FFA00
-  (SIM) and `$791F,Z` = $FF91F (general-purpose timer). RAM variables will be named by their offset
+  (SIM) and `$791F,Z` = $FF91F (general-purpose timer). RAM variables are named by their offset
   from Z.
 - **Extended addresses (`$xxxx`, EK = 0) point into bank 0**, that is into the calibration. Code in
   banks 1-3 reads calibration with plain `LDAA $19DC` style instructions.

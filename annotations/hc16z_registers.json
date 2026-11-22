@@ -1,0 +1,755 @@
+{
+ "_comment": "68HC16Z2/Z3 module registers (Y = F, MM = 1), from the MC68HC16Z1/Z2/Z3/Z4 user's manual, appendix D. Keyed by 20-bit address.",
+ "FF700": {
+  "name": "ADCMCR",
+  "desc": "ADC Module Configuration Register"
+ },
+ "FF702": {
+  "name": "ADCTEST",
+  "desc": "ADC Test Register"
+ },
+ "FF707": {
+  "name": "PORTADA",
+  "desc": "Port ADA Data Register"
+ },
+ "FF70A": {
+  "name": "ADCTL0",
+  "desc": "Control Register 0"
+ },
+ "FF70C": {
+  "name": "ADCTL1",
+  "desc": "Control Register 1"
+ },
+ "FF70E": {
+  "name": "ADCSTAT",
+  "desc": "Status Register"
+ },
+ "FF710": {
+  "name": "RJURR0",
+  "desc": "Right-Justified Unsigned Result Register 0"
+ },
+ "FF712": {
+  "name": "RJURR1",
+  "desc": "Right-Justified Unsigned Result Register 1"
+ },
+ "FF714": {
+  "name": "RJURR2",
+  "desc": "Right-Justified Unsigned Result Register 2"
+ },
+ "FF716": {
+  "name": "RJURR3",
+  "desc": "Right-Justified Unsigned Result Register 3"
+ },
+ "FF718": {
+  "name": "RJURR4",
+  "desc": "Right-Justified Unsigned Result Register 4"
+ },
+ "FF71A": {
+  "name": "RJURR5",
+  "desc": "Right-Justified Unsigned Result Register 5"
+ },
+ "FF71C": {
+  "name": "RJURR6",
+  "desc": "Right-Justified Unsigned Result Register 6"
+ },
+ "FF71E": {
+  "name": "RJURR7",
+  "desc": "Right-Justified Unsigned Result Register 7"
+ },
+ "FF720": {
+  "name": "LJSRR0",
+  "desc": "Left-Justified Signed Result Register 0"
+ },
+ "FF722": {
+  "name": "LJSRR1",
+  "desc": "Left-Justified Signed Result Register 1"
+ },
+ "FF724": {
+  "name": "LJSRR2",
+  "desc": "Left-Justified Signed Result Register 2"
+ },
+ "FF726": {
+  "name": "LJSRR3",
+  "desc": "Left-Justified Signed Result Register 3"
+ },
+ "FF728": {
+  "name": "LJSRR4",
+  "desc": "Left-Justified Signed Result Register 4"
+ },
+ "FF72A": {
+  "name": "LJSRR5",
+  "desc": "Left-Justified Signed Result Register 5"
+ },
+ "FF72C": {
+  "name": "LJSRR6",
+  "desc": "Left-Justified Signed Result Register 6"
+ },
+ "FF72E": {
+  "name": "LJSRR7",
+  "desc": "Left-Justified Signed Result Register 7"
+ },
+ "FF730": {
+  "name": "LJURR0",
+  "desc": "Left-Justified Unsigned Result Register 0"
+ },
+ "FF732": {
+  "name": "LJURR1",
+  "desc": "Left-Justified Unsigned Result Register 1"
+ },
+ "FF734": {
+  "name": "LJURR2",
+  "desc": "Left-Justified Unsigned Result Register 2"
+ },
+ "FF736": {
+  "name": "LJURR3",
+  "desc": "Left-Justified Unsigned Result Register 3"
+ },
+ "FF738": {
+  "name": "LJURR4",
+  "desc": "Left-Justified Unsigned Result Register 4"
+ },
+ "FF73A": {
+  "name": "LJURR5",
+  "desc": "Left-Justified Unsigned Result Register 5"
+ },
+ "FF73C": {
+  "name": "LJURR6",
+  "desc": "Left-Justified Unsigned Result Register 6"
+ },
+ "FF73E": {
+  "name": "LJURR7",
+  "desc": "Left-Justified Unsigned Result Register 7"
+ },
+ "FF820": {
+  "name": "MRMCR",
+  "desc": "Masked ROM Module Configuration Register"
+ },
+ "FF824": {
+  "name": "ROMBAH",
+  "desc": "ROM Array Base Address Register High"
+ },
+ "FF826": {
+  "name": "ROMBAL",
+  "desc": "ROM Array Base Address Register Low"
+ },
+ "FF828": {
+  "name": "SIGHI",
+  "desc": "Signature Register High"
+ },
+ "FF82A": {
+  "name": "SIGLO",
+  "desc": "Signature Register Low"
+ },
+ "FF830": {
+  "name": "ROMBS0",
+  "desc": "ROM Bootstrap Word 0"
+ },
+ "FF832": {
+  "name": "ROMBS1",
+  "desc": "ROM Bootstrap Word 1"
+ },
+ "FF834": {
+  "name": "ROMBS2",
+  "desc": "ROM Bootstrap Word 2"
+ },
+ "FF836": {
+  "name": "ROMBS3",
+  "desc": "ROM Bootstrap Word 3"
+ },
+ "FF900": {
+  "name": "GPTMCR",
+  "desc": "GPT Module Configuration Register"
+ },
+ "FF902": {
+  "name": "GPTMTR",
+  "desc": "GPT Module Test Register"
+ },
+ "FF904": {
+  "name": "ICR",
+  "desc": "GPT Interrupt Configuration Register"
+ },
+ "FF906": {
+  "name": "DDRGP",
+  "desc": "Port GP Data Direction Register"
+ },
+ "FF907": {
+  "name": "PORTGP",
+  "desc": "Port GP Data Register"
+ },
+ "FF908": {
+  "name": "OC1M",
+  "desc": "Output Compare 1 Action Mask Register"
+ },
+ "FF909": {
+  "name": "OC1D",
+  "desc": "Output Compare 1 Action Data Register"
+ },
+ "FF90A": {
+  "name": "TCNT",
+  "desc": "Timer Counter Register"
+ },
+ "FF90C": {
+  "name": "PACTL",
+  "desc": "Pulse Accumulator Control Register"
+ },
+ "FF90D": {
+  "name": "PACNT",
+  "desc": "Pulse Accumulator Counter Register"
+ },
+ "FF90E": {
+  "name": "TIC1",
+  "desc": "Timer Input Capture Register 1"
+ },
+ "FF910": {
+  "name": "TIC2",
+  "desc": "Timer Input Capture Register 2"
+ },
+ "FF912": {
+  "name": "TIC3",
+  "desc": "Timer Input Capture Register 3"
+ },
+ "FF914": {
+  "name": "TOC1",
+  "desc": "Timer Output Compare Register 1"
+ },
+ "FF916": {
+  "name": "TOC2",
+  "desc": "Timer Output Compare Register 2"
+ },
+ "FF918": {
+  "name": "TOC3",
+  "desc": "Timer Output Compare Register 3"
+ },
+ "FF91A": {
+  "name": "TOC4",
+  "desc": "Timer Output Compare Register 4"
+ },
+ "FF91C": {
+  "name": "TI4O5",
+  "desc": "Timer Input Capture 4/Output Compare Register 5"
+ },
+ "FF91E": {
+  "name": "TCTL1",
+  "desc": "Timer Control Register 1"
+ },
+ "FF91F": {
+  "name": "TCTL2",
+  "desc": "Timer Control Register 2"
+ },
+ "FF920": {
+  "name": "TMSK1",
+  "desc": "Timer Mask Register 1"
+ },
+ "FF921": {
+  "name": "TMSK2",
+  "desc": "Timer Mask Register 2"
+ },
+ "FF922": {
+  "name": "TFLG1",
+  "desc": "Timer Flag Register 1"
+ },
+ "FF923": {
+  "name": "TFLG2",
+  "desc": "Timer Flag Register 2"
+ },
+ "FF924": {
+  "name": "CFORC",
+  "desc": "Compare Force Register"
+ },
+ "FF925": {
+  "name": "PWMC",
+  "desc": "PWM Control Register C"
+ },
+ "FF926": {
+  "name": "PWMA",
+  "desc": "PWM Control Register A"
+ },
+ "FF927": {
+  "name": "PWMB",
+  "desc": "PWM Control Register B"
+ },
+ "FF928": {
+  "name": "PWMCNT",
+  "desc": "PWM Count Register"
+ },
+ "FF92A": {
+  "name": "PWMBUFA",
+  "desc": "PWM Buffer Register A"
+ },
+ "FF92B": {
+  "name": "PWMBUFB",
+  "desc": "PWM Buffer Register B"
+ },
+ "FF92C": {
+  "name": "PRESCL",
+  "desc": "GPT Prescaler Register"
+ },
+ "FFA00": {
+  "name": "SIMCR",
+  "desc": "SIM Module Configuration Register"
+ },
+ "FFA02": {
+  "name": "SIMTR",
+  "desc": "SIM Test Register"
+ },
+ "FFA04": {
+  "name": "SYNCR",
+  "desc": "Clock Synthesizer Control Register"
+ },
+ "FFA07": {
+  "name": "RSR",
+  "desc": "Reset Status Register"
+ },
+ "FFA08": {
+  "name": "SIMTRE",
+  "desc": "SIM Test Register E"
+ },
+ "FFA11": {
+  "name": "PORTE0",
+  "desc": "Port E Data Register 0"
+ },
+ "FFA13": {
+  "name": "PORTE1",
+  "desc": "Port E Data Register 1"
+ },
+ "FFA15": {
+  "name": "DDRE",
+  "desc": "Port E Data Direction Register"
+ },
+ "FFA17": {
+  "name": "PEPAR",
+  "desc": "Port E Pin Assignment Register"
+ },
+ "FFA19": {
+  "name": "PORTF0",
+  "desc": "Port F Data Register 0"
+ },
+ "FFA1B": {
+  "name": "PORTF1",
+  "desc": "Port F Data Register 1"
+ },
+ "FFA1D": {
+  "name": "DDRF",
+  "desc": "Port F Data Direction Register"
+ },
+ "FFA1F": {
+  "name": "PFPAR",
+  "desc": "Port F Pin Assignment Register"
+ },
+ "FFA21": {
+  "name": "SYPCR",
+  "desc": "System Protection Control Register"
+ },
+ "FFA22": {
+  "name": "PICR",
+  "desc": "Periodic Interrupt Control Register"
+ },
+ "FFA24": {
+  "name": "PITR",
+  "desc": "Periodic Interrupt Timer Register"
+ },
+ "FFA27": {
+  "name": "SWSR",
+  "desc": "Software Watchdog Service Register"
+ },
+ "FFA30": {
+  "name": "TSTMSRA",
+  "desc": "Test Module Master Shift A Register"
+ },
+ "FFA32": {
+  "name": "TSTMSRB",
+  "desc": "Test Module Master Shift B Register"
+ },
+ "FFA34": {
+  "name": "TSTSC",
+  "desc": "Test Module Shift Count Register"
+ },
+ "FFA36": {
+  "name": "TSTRC",
+  "desc": "Test Module Repetition Counter Register"
+ },
+ "FFA38": {
+  "name": "CREG",
+  "desc": "Test Module Control Register"
+ },
+ "FFA3A": {
+  "name": "DREG",
+  "desc": "Test Module Distributed Register"
+ },
+ "FFA41": {
+  "name": "PORTC",
+  "desc": "Port C Data Register"
+ },
+ "FFA44": {
+  "name": "CSPAR0",
+  "desc": "Chip-Select Pin Assignment Register 0"
+ },
+ "FFA46": {
+  "name": "CSPAR1",
+  "desc": "Chip-Select Pin Assignment Register 1"
+ },
+ "FFA48": {
+  "name": "CSBARBT",
+  "desc": "Chip-Select Base Address Register Boot"
+ },
+ "FFA4A": {
+  "name": "CSORBT",
+  "desc": "Chip-Select Option Register Boot"
+ },
+ "FFA4C": {
+  "name": "CSBAR0",
+  "desc": "Chip-Select Base Address Register 0"
+ },
+ "FFA4E": {
+  "name": "CSOR0",
+  "desc": "Chip-Select Option Address Register 0"
+ },
+ "FFA50": {
+  "name": "CSBAR1",
+  "desc": "Chip-Select Base Address Register 1"
+ },
+ "FFA52": {
+  "name": "CSOR1",
+  "desc": "Chip-Select Option Address Register 1"
+ },
+ "FFA54": {
+  "name": "CSBAR2",
+  "desc": "Chip-Select Base Address Register 2"
+ },
+ "FFA56": {
+  "name": "CSOR2",
+  "desc": "Chip-Select Option Address Register 2"
+ },
+ "FFA58": {
+  "name": "CSBAR3",
+  "desc": "Chip-Select Base Address Register 3"
+ },
+ "FFA5A": {
+  "name": "CSOR3",
+  "desc": "Chip-Select Option Address Register 3"
+ },
+ "FFA5C": {
+  "name": "CSBAR4",
+  "desc": "Chip-Select Base Address Register 4"
+ },
+ "FFA5E": {
+  "name": "CSOR4",
+  "desc": "Chip-Select Option Address Register 4"
+ },
+ "FFA60": {
+  "name": "CSBAR5",
+  "desc": "Chip-Select Base Address Register 5"
+ },
+ "FFA62": {
+  "name": "CSOR5",
+  "desc": "Chip-Select Option Address Register 5"
+ },
+ "FFA64": {
+  "name": "CSBAR6",
+  "desc": "Chip-Select Base Address Register 6"
+ },
+ "FFA66": {
+  "name": "CSOR6",
+  "desc": "Chip-Select Option Address Register 6"
+ },
+ "FFA68": {
+  "name": "CSBAR7",
+  "desc": "Chip-Select Base Address Register 7"
+ },
+ "FFA6A": {
+  "name": "CSOR7",
+  "desc": "Chip-Select Option Address Register 7"
+ },
+ "FFA6C": {
+  "name": "CSBAR8",
+  "desc": "Chip-Select Base Address Register 8"
+ },
+ "FFA6E": {
+  "name": "CSOR8",
+  "desc": "Chip-Select Option Address Register 8"
+ },
+ "FFA70": {
+  "name": "CSBAR9",
+  "desc": "Chip-Select Base Address Register 9"
+ },
+ "FFA72": {
+  "name": "CSOR9",
+  "desc": "Chip-Select Option Address Register 9"
+ },
+ "FFA74": {
+  "name": "CSBAR10",
+  "desc": "Chip-Select Base Address Register 10"
+ },
+ "FFA76": {
+  "name": "CSOR10",
+  "desc": "Chip-Select Option Address Register 10"
+ },
+ "FFB00": {
+  "name": "RAMMCR",
+  "desc": "RAM Module Configuration Register"
+ },
+ "FFB02": {
+  "name": "RAMTST",
+  "desc": "RAM Test Register"
+ },
+ "FFB04": {
+  "name": "RAMBAH",
+  "desc": "RAM Array Base Address Register High"
+ },
+ "FFB06": {
+  "name": "RAMBAL",
+  "desc": "RAM Array Base Address Register Low"
+ },
+ "FFC00": {
+  "name": "QSMCR",
+  "desc": "QSM Module Configuration Register"
+ },
+ "FFC02": {
+  "name": "QTEST",
+  "desc": "QSM Test Register"
+ },
+ "FFC04": {
+  "name": "QILR",
+  "desc": "QSM Interrupt Level Register"
+ },
+ "FFC05": {
+  "name": "QIVR",
+  "desc": "QSM Interrupt Vector Register"
+ },
+ "FFC08": {
+  "name": "SCCR0",
+  "desc": "SCI Control 0 Register"
+ },
+ "FFC0A": {
+  "name": "SCCR1",
+  "desc": "SCI Control 1 Register"
+ },
+ "FFC0C": {
+  "name": "SCSR",
+  "desc": "SCI Status Register"
+ },
+ "FFC0E": {
+  "name": "SCDR",
+  "desc": "SCI Data Register"
+ },
+ "FFC15": {
+  "name": "PORTQS",
+  "desc": "Port QS Data Register"
+ },
+ "FFC16": {
+  "name": "DDRQS",
+  "desc": "Port QS Data Direction Register"
+ },
+ "FFC18": {
+  "name": "SPCR0",
+  "desc": "SPI Control Register 0"
+ },
+ "FFC1A": {
+  "name": "SPCR1",
+  "desc": "SPI Control Register 1"
+ },
+ "FFC1C": {
+  "name": "SPCR2",
+  "desc": "SPI Control Register 2"
+ },
+ "FFC1E": {
+  "name": "SPCR3",
+  "desc": "SPI Control Register 3"
+ },
+ "FFC1F": {
+  "name": "SPSR",
+  "desc": "SPI Status Register"
+ },
+ "FFD00": {
+  "name": "RR0",
+  "desc": "QSPI receive data RAM word 0"
+ },
+ "FFD02": {
+  "name": "RR1",
+  "desc": "QSPI receive data RAM word 1"
+ },
+ "FFD04": {
+  "name": "RR2",
+  "desc": "QSPI receive data RAM word 2"
+ },
+ "FFD06": {
+  "name": "RR3",
+  "desc": "QSPI receive data RAM word 3"
+ },
+ "FFD08": {
+  "name": "RR4",
+  "desc": "QSPI receive data RAM word 4"
+ },
+ "FFD0A": {
+  "name": "RR5",
+  "desc": "QSPI receive data RAM word 5"
+ },
+ "FFD0C": {
+  "name": "RR6",
+  "desc": "QSPI receive data RAM word 6"
+ },
+ "FFD0E": {
+  "name": "RR7",
+  "desc": "QSPI receive data RAM word 7"
+ },
+ "FFD10": {
+  "name": "RR8",
+  "desc": "QSPI receive data RAM word 8"
+ },
+ "FFD12": {
+  "name": "RR9",
+  "desc": "QSPI receive data RAM word 9"
+ },
+ "FFD14": {
+  "name": "RRA",
+  "desc": "QSPI receive data RAM word 10"
+ },
+ "FFD16": {
+  "name": "RRB",
+  "desc": "QSPI receive data RAM word 11"
+ },
+ "FFD18": {
+  "name": "RRC",
+  "desc": "QSPI receive data RAM word 12"
+ },
+ "FFD1A": {
+  "name": "RRD",
+  "desc": "QSPI receive data RAM word 13"
+ },
+ "FFD1C": {
+  "name": "RRE",
+  "desc": "QSPI receive data RAM word 14"
+ },
+ "FFD1E": {
+  "name": "RRF",
+  "desc": "QSPI receive data RAM word 15"
+ },
+ "FFD20": {
+  "name": "TR0",
+  "desc": "QSPI transmit data RAM word 0"
+ },
+ "FFD22": {
+  "name": "TR1",
+  "desc": "QSPI transmit data RAM word 1"
+ },
+ "FFD24": {
+  "name": "TR2",
+  "desc": "QSPI transmit data RAM word 2"
+ },
+ "FFD26": {
+  "name": "TR3",
+  "desc": "QSPI transmit data RAM word 3"
+ },
+ "FFD28": {
+  "name": "TR4",
+  "desc": "QSPI transmit data RAM word 4"
+ },
+ "FFD2A": {
+  "name": "TR5",
+  "desc": "QSPI transmit data RAM word 5"
+ },
+ "FFD2C": {
+  "name": "TR6",
+  "desc": "QSPI transmit data RAM word 6"
+ },
+ "FFD2E": {
+  "name": "TR7",
+  "desc": "QSPI transmit data RAM word 7"
+ },
+ "FFD30": {
+  "name": "TR8",
+  "desc": "QSPI transmit data RAM word 8"
+ },
+ "FFD32": {
+  "name": "TR9",
+  "desc": "QSPI transmit data RAM word 9"
+ },
+ "FFD34": {
+  "name": "TRA",
+  "desc": "QSPI transmit data RAM word 10"
+ },
+ "FFD36": {
+  "name": "TRB",
+  "desc": "QSPI transmit data RAM word 11"
+ },
+ "FFD38": {
+  "name": "TRC",
+  "desc": "QSPI transmit data RAM word 12"
+ },
+ "FFD3A": {
+  "name": "TRD",
+  "desc": "QSPI transmit data RAM word 13"
+ },
+ "FFD3C": {
+  "name": "TRE",
+  "desc": "QSPI transmit data RAM word 14"
+ },
+ "FFD3E": {
+  "name": "TRF",
+  "desc": "QSPI transmit data RAM word 15"
+ },
+ "FFD40": {
+  "name": "CR0",
+  "desc": "QSPI command RAM byte 0"
+ },
+ "FFD41": {
+  "name": "CR1",
+  "desc": "QSPI command RAM byte 1"
+ },
+ "FFD42": {
+  "name": "CR2",
+  "desc": "QSPI command RAM byte 2"
+ },
+ "FFD43": {
+  "name": "CR3",
+  "desc": "QSPI command RAM byte 3"
+ },
+ "FFD44": {
+  "name": "CR4",
+  "desc": "QSPI command RAM byte 4"
+ },
+ "FFD45": {
+  "name": "CR5",
+  "desc": "QSPI command RAM byte 5"
+ },
+ "FFD46": {
+  "name": "CR6",
+  "desc": "QSPI command RAM byte 6"
+ },
+ "FFD47": {
+  "name": "CR7",
+  "desc": "QSPI command RAM byte 7"
+ },
+ "FFD48": {
+  "name": "CR8",
+  "desc": "QSPI command RAM byte 8"
+ },
+ "FFD49": {
+  "name": "CR9",
+  "desc": "QSPI command RAM byte 9"
+ },
+ "FFD4A": {
+  "name": "CRA",
+  "desc": "QSPI command RAM byte 10"
+ },
+ "FFD4B": {
+  "name": "CRB",
+  "desc": "QSPI command RAM byte 11"
+ },
+ "FFD4C": {
+  "name": "CRC",
+  "desc": "QSPI command RAM byte 12"
+ },
+ "FFD4D": {
+  "name": "CRD",
+  "desc": "QSPI command RAM byte 13"
+ },
+ "FFD4E": {
+  "name": "CRE",
+  "desc": "QSPI command RAM byte 14"
+ },
+ "FFD4F": {
+  "name": "CRF",
+  "desc": "QSPI command RAM byte 15"
+ }
+}

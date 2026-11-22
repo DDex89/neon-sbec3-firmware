@@ -1,0 +1,15 @@
+{
+ "_comment": "Code labels of the reference image 05293190AC: address (hex, 20-bit) -> name.",
+ "080B4": "UnexpectedInterrupt",
+ "0C000": "MainLoopCounters",
+ "0C420": "KickWatchdogs",
+ "0C440": "KickWatchdogsLong",
+ "0D08C": "Reset",
+ "0DC36": "MainLoop",
+ "0DED0": "CheckPowerDown",
+ "0E9B8": "MeasureLoopTime",
+ "3343C": "SciInterrupt",
+ "35A4C": "DiagWriteRamByte",
+ "35A98": "DiagRunRamCode",
+ "3D000": "EmptyHook"
+}

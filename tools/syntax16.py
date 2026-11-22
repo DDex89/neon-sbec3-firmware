@@ -22,9 +22,28 @@ def h(v, n):
     return "$%0*X" % (n, v)
 
 
-def format_insn(ins, label=None):
-    """Text of an instruction. label(addr) returns a label name or None."""
+PSHM_REGS = ["D", "E", "X", "Y", "Z", "K", "CCR"]      # mask bit 0..6 (CPU16RM 5.8)
+PULM_REGS = ["CCR", "K", "Z", "Y", "X", "E", "D"]      # mask bit 0..6
+
+
+def reg_list(mn, mask):
+    names = PSHM_REGS if mn == "PSHM" else PULM_REGS
+    if mask & 0x80 or not mask:
+        return "#" + h(mask, 2)
+    return ",".join(n for b, n in enumerate(names) if mask >> b & 1)
+
+
+def format_insn(ins, label=None, zsym=None, extsym=None):
+    """Text of an instruction.
+
+    label(addr)        -> name of a code label, or None
+    zsym(offset)       -> name for an offset from Z (RAM or module register), or None
+    extsym(addr)       -> name for a 16-bit extended address (calibration), or None
+    A symbol in an indexed or extended operand gets a width prefix: < 8-bit, > 16-bit.
+    """
     lab = label or (lambda a: None)
+    zs = zsym or (lambda o: None)
+    es = extsym or (lambda a: None)
     v = dict(ins.vals)
     m = ins.mode
 
@@ -34,6 +53,8 @@ def format_insn(ins, label=None):
     reg = m[-1] if m.startswith(("IND", "E, ")) else None
     if m == "INH":
         ops = ""
+    elif ins.mn in ("PSHM", "PULM"):
+        ops = reg_list(ins.mn, v["ii"])
     elif m == "IMM8":
         ops = "#" + h(v.get("ii", v.get("xoyo", 0)), 2)
     elif m == "IMM16":
@@ -50,15 +71,18 @@ def format_insn(ins, label=None):
         ops = "%s,%s" % (h(v["hhll"], 4), h(v["hhll2"], 4))
     else:
         if "ff" in v:
-            base = h(v["ff"], 2) + "," + reg
+            sym = zs(v["ff"]) if reg == "Z" else None
+            base = ("<" + sym if sym else h(v["ff"], 2)) + "," + reg
         elif "gggg" in v:
-            base = h(v["gggg"], 4) + "," + reg
+            sym = zs(v["gggg"]) if reg == "Z" else None
+            base = (">" + sym if sym else h(v["gggg"], 4)) + "," + reg
         elif "zggggg" in v:
             base = h(v["zggggg"], 5) + "," + reg
         elif "zbhhll" in v:
             base = tgt(v["zbhhll"]) if ins.mn in ("JMP", "JSR") else h(v["zbhhll"], 5)
         else:
-            base = h(v["hhll"], 4)
+            sym = es(v["hhll"])
+            base = ">" + sym if sym else h(v["hhll"], 4)
         ops = base
         if "mm" in v:
             ops += ",#" + h(v["mm"], 2)
