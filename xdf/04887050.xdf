@@ -17,8 +17,9 @@
   <CATEGORY index="0x7" name="Other" />
   <CATEGORY index="0x8" name="Closed loop" />
   <CATEGORY index="0x9" name="EVAP purge" />
-  <CATEGORY index="0xA" name="Faults" />
-  <CATEGORY index="0xB" name="Limits" />
+  <CATEGORY index="0xA" name="Knock" />
+  <CATEGORY index="0xB" name="Faults" />
+  <CATEGORY index="0xC" name="Limits" />
  </XDFHEADER>
  <XDFTABLE uniqueid="0x101" flags="0x0">
   <title>Tab2D_033B</title>
@@ -489,8 +490,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10E" flags="0x0">
-  <title>SparkV0AA6Scale</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. $049B, 2D; inputs: $033B,Z</description>
+  <title>SurgeDecayGearScale</title>
+  <description>Driveline surge spark control: rpm/speed ratio (gear) to row position of SurgeDecay $049B, 2D; inputs: RpmSpeedRatio</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -516,7 +517,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x49E" mmedelementsizebits="8" mmedrowcount="5" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -2896,7 +2897,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x14D" flags="0x0">
   <title>StartCoolantFactor</title>
-  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to AirTempAlt, $0A5B,Z. $0EE2, 2D; inputs: CoolantTemp</description>
+  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to BatteryTemp, $0A5B,Z. $0EE2, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3758,7 +3759,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x164" flags="0x0">
   <title>Tab2D_111C</title>
-  <description>$111C, 2D; inputs: $0682,Z</description>
+  <description>$111C, 2D; inputs: FieldDuty</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3794,7 +3795,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x165" flags="0x0">
   <title>Tab2D_1128</title>
-  <description>$1128, 2D; inputs: $0682,Z</description>
+  <description>$1128, 2D; inputs: FieldDuty</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4816,7 +4817,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x17F" flags="0x0">
   <title>Tab2D_19A1</title>
-  <description>$19A1, 2D; inputs: $0650,Z</description>
+  <description>$19A1, 2D; inputs: SparkStartTime</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5031,8 +5032,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x185" flags="0x0">
-  <title>SparkRpm</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DE3A). Inputs: EngineRpm. $19F3, 2D; inputs: EngineRpm</description>
+  <title>HighSpeedSparkRpm</title>
+  <description>Spark retard against engine rpm above coarse vehicle speed $1FA6 (hysteresis $1FA5) $19F3, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5058,10 +5059,10 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x19F6" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -5503,8 +5504,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x192" flags="0x0">
-  <title>SparkV00F6V0D1ELimit</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z. Result to $00F2,Z. $1AFB, 3D; inputs: $01F6,Z x $061B,Z</description>
+  <title>SurgeJerkLimit</title>
+  <description>Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into $0D36,Z $1AFB, 3D; inputs: $01F6,Z x SegmentRpmFast</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1AFE" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -5534,17 +5535,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B03" mmedelementsizebits="8" mmedrowcount="5" mmedcolcount="5" mmedmajorstridebits="0" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x193" flags="0x0">
-  <title>SparkV00F6V0D1EFactor</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z. $1B1C, 3D; inputs: result of Lookup2D x $061B,Z</description>
+  <title>SurgeJerkGain</title>
+  <description>Driveline surge spark control: jerk retard gain against MAP position (rows) and fast rpm (columns) $1B1C, 3D; inputs: result of Lookup2D x SegmentRpmFast</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B1F" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -5584,7 +5585,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x194" flags="0x0">
   <title>Tab3D_1B3D</title>
-  <description>$1B3D, 3D; inputs: $0638,Z x $061B,Z</description>
+  <description>$1B3D, 3D; inputs: $0638,Z x SegmentRpmFast</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B40" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -5623,8 +5624,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x195" flags="0x0">
-  <title>SparkV0AA6V00F2Factor</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: result of Lookup2D x $F2,Z. Result to $00F4,Z. $1B5E, 3D; inputs: result of Lookup2D x $01F2,Z</description>
+  <title>SurgeDecay</title>
+  <description>Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage $0D37,Z (columns) $1B5E, 3D; inputs: result of Lookup2D x $01F2,Z</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B61" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -5639,7 +5640,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by SparkV0AA6Scale)</units>
+   <units> (rows set by SurgeDecayGearScale)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -5654,17 +5655,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B6A" mmedelementsizebits="8" mmedrowcount="5" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>factor</units>
+   <decimalpl>3</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/256">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x196" flags="0x0">
-  <title>SparkCoolantFactor</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: CoolantTemp. Result to $00F2,Z. $1B97, 2D; inputs: CoolantTemp</description>
+  <title>SurgeRetardCoolantFactor</title>
+  <description>Driveline surge spark control: factor on the retard against coolant $1B97, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5690,17 +5691,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B9A" mmedelementsizebits="8" mmedrowcount="3" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>factor</units>
+   <decimalpl>3</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/256">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x197" flags="0x0">
-  <title>SparkV0D30</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D30,Z. $1BA3, 2D; inputs: $062D,Z</description>
+  <title>SurgeJerkRetardOpen</title>
+  <description>Driveline surge spark control, throttle open: retard against positive rpm jerk (above $2173) $1BA3, 2D; inputs: RpmJerk</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5726,17 +5727,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1BA6" mmedelementsizebits="8" mmedrowcount="3" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x198" flags="0x0">
-  <title>SparkV0D302</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D30,Z. $1BAB, 2D; inputs: $062D,Z</description>
+  <title>SurgeJerkAdvanceOpen</title>
+  <description>Driveline surge spark control, throttle open: spark against negative rpm jerk (below $2172) $1BAB, 2D; inputs: RpmJerk</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5762,17 +5763,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1BAE" mmedelementsizebits="8" mmedrowcount="3" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x199" flags="0x0">
-  <title>SparkV0D26Factor</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D26,Z. Result to $00F2,Z. $1BC3, 2D; inputs: $0623,Z</description>
+  <title>SurgeRetardRateFactor</title>
+  <description>Driveline surge spark control: factor on the retard against rpm acceleration $0D26,Z $1BC3, 2D; inputs: RpmAccel</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5798,17 +5799,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1BC6" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>factor</units>
+   <decimalpl>3</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/256">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19A" flags="0x0">
-  <title>SparkV0D3BFactor</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D3B,Z. Result to $0D33,Z. $1BCF, 2D; inputs: $063A,Z</description>
+  <title>SurgeRetardMapRiseFactor</title>
+  <description>Driveline surge spark control: factor on the retard against MAP rise $0D3B,Z (MAP minus filtered MAP); result into $0D33,Z $1BCF, 2D; inputs: MapRise</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5834,17 +5835,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1BD2" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>factor</units>
+   <decimalpl>3</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/256">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19B" flags="0x0">
-  <title>SparkV0AA6Limit</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. $1BDB, 2D; inputs: $033B,Z</description>
+  <title>SurgeRateThreshold</title>
+  <description>Driveline surge spark control: rpm acceleration ($0D26,Z) that starts the retard, against the rpm/speed ratio (gear) $1BDB, 2D; inputs: RpmSpeedRatio</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5879,8 +5880,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19C" flags="0x0">
-  <title>SparkV0AA6Factor</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. Result to $00F2,Z. $1BE9, 2D; inputs: $033B,Z</description>
+  <title>SurgeRetardGearFactor</title>
+  <description>Driveline surge spark control: factor on the base retard against the rpm/speed ratio (gear) $1BE9, 2D; inputs: RpmSpeedRatio</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5906,17 +5907,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1BEC" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>factor</units>
+   <decimalpl>3</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/256">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19D" flags="0x0">
-  <title>SparkV0AA6Limit2</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. $1BF7, 2D; inputs: $033B,Z</description>
+  <title>SurgeJerkThreshold</title>
+  <description>Driveline surge spark control: rpm jerk ($0D30,Z) above which the jerk retard applies, against the rpm/speed ratio $1BF7, 2D; inputs: RpmSpeedRatio</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5952,7 +5953,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19E" flags="0x0">
   <title>Tab2D_1C11</title>
-  <description>$1C11, 2D; inputs: $0318,Z</description>
+  <description>$1C11, 2D; inputs: AcSensor</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6060,7 +6061,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A1" flags="0x0">
   <title>Tab2D_1C29</title>
-  <description>$1C29, 2D; inputs: $0318,Z</description>
+  <description>$1C29, 2D; inputs: AcSensor</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6167,8 +6168,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A4" flags="0x0">
-  <title>SparkScale</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA. $1C41, 2D; inputs: TBA</description>
+  <title>AcSparkRateUp</title>
+  <description>A/C spark compensation: spark against positive rpm rate $0D4A,Z, into $0D55,Z $1C41, 2D; inputs: TBA</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6194,17 +6195,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x1C44" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A5" flags="0x0">
-  <title>SparkScale2</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA. $1C49, 2D; inputs: TBA</description>
+  <title>AcSparkRateDown</title>
+  <description>As AcSparkRateUp against negative rpm rate, A/C clutch off $1C49, 2D; inputs: TBA</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6230,17 +6231,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x1C4C" mmedelementsizebits="8" mmedrowcount="3" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A6" flags="0x0">
-  <title>SparkScaleAcOn</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA. $1C51, 2D; inputs: TBA</description>
+  <title>AcSparkRateDownAcOn</title>
+  <description>As AcSparkRateDown with the A/C clutch on $1C51, 2D; inputs: TBA</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6266,17 +6267,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x1C54" mmedelementsizebits="8" mmedrowcount="3" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A7" flags="0x0">
-  <title>SparkMapLimit</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: Map. Result to $0D55,Z. $1C59, 2D; inputs: MapRaw</description>
+  <title>AcSparkMapLimit</title>
+  <description>Limit of the A/C spark compensation against MAP $1C59, 2D; inputs: MapRaw</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6302,10 +6303,10 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x1C5C" mmedelementsizebits="8" mmedrowcount="2" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -6491,9 +6492,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AD" flags="0x0">
-  <title>KnockMap</title>
-  <description>Subsystem: knock control (by the routine that reads it, Sub_1F256). Inputs: Map. $1CB3, 2D; inputs: MapRaw</description>
-  <CATEGORYMEM index="0" category="5" />
+  <title>KnockRetardMaxMap</title>
+  <description>Maximum knock retard ($0DAA,Z) against MAP (above throttle $24A5 or below rpm $24A6) $1CB3, 2D; inputs: MapRaw</description>
+  <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6518,18 +6519,18 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1CB6" mmedelementsizebits="8" mmedrowcount="2" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AE" flags="0x0">
-  <title>KnockV0A8B</title>
-  <description>Subsystem: knock control (by the routine that reads it, Sub_1F408). Inputs: $0A8B,Z. $1CBC, 2D; inputs: $0322,Z</description>
-  <CATEGORYMEM index="0" category="5" />
+  <title>KnockRetardStep</title>
+  <description>Knock retard step against the knock signal above the threshold ($0A8B,Z minus KnockThresholdNow) $1CBC, 2D; inputs: $0322,Z</description>
+  <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6554,10 +6555,10 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1CBF" mmedelementsizebits="8" mmedrowcount="2" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -6707,8 +6708,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1B3" flags="0x0">
-  <title>SparkThrottleAdder</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed. $1D31, 2D; inputs: ThrottleAboveClosed</description>
+  <title>EventSparkThrottle</title>
+  <description>Upper limit of the event spark $0859,Z against throttle while $0856,Z bits 4 and 2 are set (raised by $205D per loop) $1D31, 2D; inputs: ThrottleAboveClosed</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6734,17 +6735,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1D34" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1B4" flags="0x0">
-  <title>SparkThrottleAdder2</title>
-  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed. $1D3B, 2D; inputs: ThrottleAboveClosed</description>
+  <title>EventSparkThrottle2</title>
+  <description>As EventSparkThrottle while $0856,Z bit 3 is set (raised by $205E per loop) $1D3B, 2D; inputs: ThrottleAboveClosed</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6770,10 +6771,10 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1D3E" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>deg BTDC</units>
+   <decimalpl>1</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/2">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -8191,8 +8192,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DC" flags="0x0">
-  <title>IdleMapScale</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Map. $1FA5, 2D; inputs: MapRaw</description>
+  <title>IacAcKickMap</title>
+  <description>IAC step when the A/C clutch engages, against MAP (MAP latched into $0341,Z); into $0340,Z $1FA5, 2D; inputs: MapRaw</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8227,8 +8228,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DD" flags="0x0">
-  <title>IdleV0341Scale</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0341,Z. $1FAD, 2D; inputs: $0695,Z</description>
+  <title>IacAcKickMapLatched</title>
+  <description>IAC step when the A/C clutch releases, against the MAP latched at engagement ($0341,Z) $1FAD, 2D; inputs: $0695,Z</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8242,13 +8243,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1FAF" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>kPa</units>
    <indexcount>1</indexcount>
-   <decimalpl>0</decimalpl>
+   <decimalpl>1</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X/2.428">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -8299,8 +8300,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DF" flags="0x0">
-  <title>IdleTimeAdder</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Count3s. $1FC7, 2D; inputs: Count3s</description>
+  <title>IacRunTimeAdder</title>
+  <description>IAC addition against time since start $1FC7, 2D; inputs: Count3s</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8451,8 +8452,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E3" flags="0x0">
-  <title>IdleV032ESegRpm</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00F4,Z. $2044, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <title>IacFieldDutyRpm</title>
+  <description>IAC addition against field duty (rows) and segment rpm (columns), into $F4,Z $2044, 3D; inputs: result of Lookup2D x SegmentRpm</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2047" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -8467,7 +8468,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by IdleV032EScale)</units>
+   <units> (rows set by IacFieldDutyScale)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -8563,8 +8564,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E6" flags="0x0">
-  <title>IacRollFactorAirTempAlt</title>
-  <description>Factor on the rolling IAC target against the alternative air temperature $0A5A,Z (centred on 128) $2081, 2D; inputs: $0315,Z</description>
+  <title>IacRollFactorBattTemp</title>
+  <description>Factor on the rolling IAC target against battery temperature (centred on 128) $2081, 2D; inputs: $0315,Z</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8927,8 +8928,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F0" flags="0x0">
-  <title>IdleV032ESegRpm2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00F7,Z. $2109, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <title>IacFieldDutyRpm2</title>
+  <description>Second field-duty table against segment rpm, into $F7,Z (MAP offset for the learned idle MAP) $2109, 3D; inputs: result of Lookup2D x SegmentRpm</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x210C" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -8943,7 +8944,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by IdleV032EScale)</units>
+   <units> (rows set by IacFieldDutyScale)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -9295,8 +9296,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FA" flags="0x0">
-  <title>IacBaseBaroTarget2</title>
-  <description>Second base idle air table, barometric pressure x idle target, into the idle air sum $21B5, 3D; inputs: result of Lookup2D x IdleTarget</description>
+  <title>IdleMapBase</title>
+  <description>Base of the idle MAP target ($031E,Z, via $F5,Z): barometric pressure (rows) and idle target rpm (columns) $21B5, 3D; inputs: result of Lookup2D x IdleTarget</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x21B8" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -9407,8 +9408,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FD" flags="0x0">
-  <title>IdleBaroScale</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: Baro. Result to $00F1,Z. $21E8, 2D; inputs: Baro</description>
+  <title>IacStepBaroFactor</title>
+  <description>Multiplier on IAC steps and start positions against barometric pressure $21E8, 2D; inputs: Baro</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9443,8 +9444,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FE" flags="0x0">
-  <title>IdleBaroFactor</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1971A). Inputs: Baro. Result to $00F0,Z. $21F2, 2D; inputs: Baro</description>
+  <title>IacShiftBaroFactor</title>
+  <description>Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure $21F2, 2D; inputs: Baro</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9479,8 +9480,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FF" flags="0x0">
-  <title>IdleBaroFactor2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Baro. $21FC, 2D; inputs: Baro</description>
+  <title>IacKickBaroFactor</title>
+  <description>Factor on the A/C and rpm-dip IAC steps against barometric pressure $21FC, 2D; inputs: Baro</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10873,7 +10874,7 @@
  <XDFTABLE uniqueid="0x224" flags="0x0">
   <title>FaultTable</title>
   <description>Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes $3505</description>
-  <CATEGORYMEM index="0" category="11" />
+  <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>10</indexcount>
@@ -11590,7 +11591,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x232" flags="0x0">
   <title>StartV0A87</title>
-  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to $0A88,Z. $4088, 2D; inputs: FlexEthanol; ?; #$AA</description>
+  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to AcSensor. $4088, 2D; inputs: FlexEthanol; ?; #$AA</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11999,8 +12000,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23D" flags="0x0">
-  <title>IdleV032EScale</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: $032E,Z. $4333, 2D; inputs: $0682,Z</description>
+  <title>IacFieldDutyScale</title>
+  <description>Filtered duty of the CS2 input $106E.5 (probably the generator field) to row position of IacFieldDutyRpm $4333, 2D; inputs: FieldDuty</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12026,7 +12027,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x4336" mmedelementsizebits="8" mmedrowcount="5" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -12193,7 +12194,7 @@
  <XDFCONSTANT uniqueid="0x245" flags="0x0">
   <title>RevLimit</title>
   <description>Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral) $10F8</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x10F8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -12205,7 +12206,7 @@
  <XDFCONSTANT uniqueid="0x246" flags="0x0">
   <title>RevLimitAlt</title>
   <description>Rev limit, used while $0C31,Z bit 5 is clear $10FA</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x10FA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>

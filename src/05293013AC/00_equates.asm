@@ -24,6 +24,7 @@ AirTemp          equ $0328        ; $F8328
 StartCoolantTemp2 equ $032A        ; $F832A
 CoolantRaw       equ $032B        ; $F832B
 BatteryVolts2    equ $032E        ; $F832E
+AcSensor         equ $032F        ; $F832F
 ThrottleAboveClosed equ $0332        ; $F8332
 ThrottleState    equ $0336        ; $F8336
 KnockThresholdNow equ $033A        ; $F833A
@@ -36,8 +37,13 @@ Throttle         equ $0349        ; $F8349
 TpsFilterCoef    equ $034A        ; $F834A
 StartCoolantTemp equ $034B        ; $F834B
 CoolantTemp      equ $034D        ; $F834D
+BatteryVoltsFiltered equ $034F        ; $F834F
+RpmSpeedRatio    equ $0355        ; $F8355
 MapRawStart      equ $0358        ; $F8358
 FlexEthanolScaled equ $035D        ; $F835D
+KnockMapThreshold equ $0388        ; $F8388
+KnockRetardMax   equ $038E        ; $F838E
+ChargeTargetVolts equ $042F        ; $F842F
 ShortTermTrim1   equ $050F        ; $F850F
 O2UpBank1Raw     equ $0510        ; $F8510
 O2DownBank1Raw   equ $051A        ; $F851A
@@ -58,8 +64,15 @@ AccelTpsFuel     equ $05CE        ; $F85CE
 MapAccelFuel     equ $05D0        ; $F85D0
 AccelFactor      equ $05D4        ; $F85D4
 AccelMapGain     equ $05D8        ; $F85D8
+SegmentRpmFast   equ $0629        ; $F8629
+RpmAccel         equ $0631        ; $F8631
+RpmJerk          equ $063B        ; $F863B
+MapRise          equ $0648        ; $F8648
+RpmRate          equ $064A        ; $F864A
+SparkStartTime   equ $065E        ; $F865E
 IdleTarget       equ $0660        ; $F8660
 IacTarget        equ $067A        ; $F867A
+FieldDuty        equ $0690        ; $F8690
 ADCMCR           equ $7700        ; $FF700
 ADCTL0_L         equ $770B        ; $FF70B
 ADCTL1_L         equ $770D        ; $FF70D

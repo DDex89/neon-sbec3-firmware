@@ -1799,7 +1799,7 @@ Sub_21800:
         JMP     L2190A
 L2180C:
         BRSET   $06B4,Z,#$01,L21822
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $31DD
         BCS     L21822
         BCLR    $9C,Z,#$01
@@ -2200,7 +2200,7 @@ Sub_21C66:
         LDAA    >BatteryVolts2,Z
         ADDA    $4A09
         BCS     L21CE6
-        CMPA    $0DB9,Z
+        CMPA    >ChargeTargetVolts,Z
         BCC     L21CE6
         LDAA    >EngineRpm,Z
         CMPA    $4A0A
@@ -2290,7 +2290,7 @@ L21D56:
 Sub_21D58:
         BRCLR   $0774,Z,#$80,L21D80
         LDAA    >BatteryVolts2,Z
-        SUBA    $0DB9,Z
+        SUBA    >ChargeTargetVolts,Z
         BCS     L21D7C
         CMPA    #$10
         BCS     L21D7C
@@ -2520,7 +2520,7 @@ Sub_21F70:
         LDAA    >StartCoolantTemp2,Z
         CMPA    $49BF
         LBCC    L22020
-        SUBA    >AirTempAlt,Z
+        SUBA    >BatteryTemp,Z
         BCC     L21FAE
         NEGA
 L21FAE:
@@ -4435,7 +4435,7 @@ Sub_23518:
         JSR     Blend16
         AIS     #$04
         STD     $0672,Z
-        LDAA    $0AA6,Z
+        LDAA    >RpmSpeedRatio,Z
         CLRB
         TDE
         LDD     $066E,Z
@@ -4460,7 +4460,7 @@ L23590:
         BRSET   $0943,Z,#$80,L2367A
         BRCLR   $0B4E,Z,#$20,L235CC
         CLRB
-        LDAA    $0AA6,Z
+        LDAA    >RpmSpeedRatio,Z
         CPD     $066E,Z
         BCC     L235B8
         LDD     $066E,Z
@@ -6340,7 +6340,7 @@ Sub_25000:
         INC     $0581,Z
         LBRA    L25296
 L25046:
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $308E
         LBCS    L25296
         BRSET   $06B4,Z,#$20,L25296
@@ -6958,13 +6958,13 @@ L25822:
 L25826:
         BCLR    $011B,Z,#$0F
         BRSET   $0649,Z,#$02,L25850
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $3035
         BHI     L25876
         CMPA    $3036
         BCS     L25854
         LDAA    >CoolantTemp,Z
-        SUBA    >AirTempAlt,Z
+        SUBA    >BatteryTemp,Z
         BCS     L25850
         CMPA    $3037
         BCC     L25854
@@ -8747,7 +8747,7 @@ L28638:
         LBNE    L286DC
         TST     $0758,Z
         LBNE    L286DC
-        LDAA    $0AA6,Z
+        LDAA    >RpmSpeedRatio,Z
         CMPA    $3177
         LBHI    L286DC
         LDD     >MapAccelFuel,Z
@@ -12476,7 +12476,7 @@ L2B762:
         STX     $04F4,Z
         LDED    $2EAA
         EDIV
-        STX     $0D1E,Z
+        STX     >SegmentRpmFast,Z
         LDAA    $ABB1
         CMPA    #$06
         BNE     L2B7D4
@@ -12500,7 +12500,7 @@ L2B7E8:
         STX     >SegmentRpm,Z
         LDD     $05C4,Z
         SUBD    >SegmentRpm,Z
-        STD     $0D4A,Z
+        STD     >RpmRate,Z
         LBRA    L2B8F2
 L2B7FC:
         BRCLR   $100E,Z,#$02,L2B80E
@@ -12536,7 +12536,7 @@ L2B852:
         LDED    $2EAA
 L2B856:
         EDIV
-        STX     $0D1E,Z
+        STX     >SegmentRpmFast,Z
         LDAA    $ABB1
         CMPA    #$06
         BNE     L2B8A4
@@ -12596,7 +12596,7 @@ L2B8E2:
         STX     >SegmentRpm,Z
         LDD     $05C4,Z
         SUBD    >SegmentRpm,Z
-        STD     $0D4A,Z
+        STD     >RpmRate,Z
 L2B8F2:
         BRSET   $0624,Z,#$04,L2B93C
         BRCLR   $00DC,Z,#$80,L2B902
@@ -13221,7 +13221,7 @@ L2C490:
         LDAA    #$FF
 L2C4B8:
         STAA    $0A5B,Z
-        LDAB    >AirTempAlt,Z
+        LDAB    >BatteryTemp,Z
         SBA
         BCC     L2C4C8
         DECB
@@ -13231,8 +13231,8 @@ L2C4C8:
         BCS     L2C4CE
         INCB
 L2C4CE:
-        STAB    >AirTempAlt,Z
-        LDAA    >AirTempAlt,Z
+        STAB    >BatteryTemp,Z
+        LDAA    >BatteryTemp,Z
         BRCLR   $0330,#$02,L2C62C
         LDAA    #$98
         BRSET   $06B4,Z,#$01,L2C628
@@ -13272,7 +13272,7 @@ L2C548:
         LDX     #SensorLimit
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        SUBB    >AirTempAlt,Z
+        SUBB    >BatteryTemp,Z
         BCC     L2C560
         CLRB
 L2C560:
@@ -13293,7 +13293,7 @@ L2C576:
         INCB
         ABY
         LDAB    $00,Y
-        ADDB    >AirTempAlt,Z
+        ADDB    >BatteryTemp,Z
         LBCS    L2C628
         CBA
         LBLS    L2C628
@@ -13316,22 +13316,22 @@ L2C59C:
         TAB
 L2C5C2:
         LDAA    $0194,Z
-        CMPA    >AirTempAlt,Z
+        CMPA    >BatteryTemp,Z
         BEQ     L2C5E6
         BCS     L2C5DC
         NEGB
         ABA
         BCC     L2C628
-        CMPA    >AirTempAlt,Z
+        CMPA    >BatteryTemp,Z
         BCC     L2C628
         BRA     L2C5E6
 L2C5DC:
         ABA
         BCS     L2C5E6
-        CMPA    >AirTempAlt,Z
+        CMPA    >BatteryTemp,Z
         BCS     L2C628
 L2C5E6:
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         BRA     L2C628
 L2C5EC:
         LDAA    >MainLoopCounter,Z
@@ -13339,7 +13339,7 @@ L2C5EC:
         BNE     L2C634
         LDAA    $0194,Z
         LDE     $0A5F,Z
-        CMPA    >AirTempAlt,Z
+        CMPA    >BatteryTemp,Z
         BEQ     L2C624
         BCC     L2C606
         ADDE    #$02
@@ -13361,7 +13361,7 @@ L2C628:
         STAA    $0194,Z
 L2C62C:
         JSR     Sub_2C6DE
-        STAA    $0DB9,Z
+        STAA    >ChargeTargetVolts,Z
 L2C634:
         RTS
 
@@ -13907,7 +13907,7 @@ Sub_2CBC8:
         BRA     L2CBEE
 L2CBE4:
         LDAB    >Map,Z
-        CMPB    $031E,Z
+        CMPB    >IdleMapTarget,Z
         BLS     L2CBF6
 L2CBEE:
         LDAA    $0323,Z
@@ -13988,14 +13988,14 @@ Sub_2CCA8:
         LDAA    >MainLoopCounter,Z
         CMPA    #$F8
         BCS     L2CCC6
-        LDAA    $0359,Z
+        LDAA    >AcOnTime,Z
         INCA
         BEQ     L2CCC6
         BRA     L2CCC2
 L2CCC0:
         CLRA
 L2CCC2:
-        STAA    $0359,Z
+        STAA    >AcOnTime,Z
 L2CCC6:
         LDAA    $0A87,Z
         LDY     #$430C
@@ -14014,14 +14014,14 @@ L2CCE0:
 L2CCF6:
         LDX     #StartV0A87
         JSR     Lookup2D
-        STAA    $0A88,Z
+        STAA    >AcSensor,Z
         BRA     L2CD18
 L2CD04:
         BRCLR   $0055,Z,#$80,L2CD18
         JSR     Sub_245D4
         BCC     L2CD18
         LDAA    $49E9
-        STAA    $0A88,Z
+        STAA    >AcSensor,Z
 L2CD18:
         RTS
 
@@ -14404,7 +14404,7 @@ L2D10A:
         BCS     L2D15C
         LDAB    $0365,Z
         BNE     L2D144
-        LDX     #IdleCoolant2
+        LDX     #ShiftIdleDelayCoolant
         JSR     Lookup2D
         TSTA
         BEQ     L2D15C
@@ -14423,9 +14423,9 @@ L2D15C:
         BSET    $0310,Z,#$02
         LDAA    >CoolantTemp,Z
         BRCLR   $0C31,Z,#$20,L2D18E
-        LDX     #IdleCoolantAdderPN
+        LDX     #ShiftIdleRateCoolantPN
         BRCLR   $0055,Z,#$20,L2D17E
-        LDX     #IdleCoolantAdderAC2
+        LDX     #ShiftIdleRateCoolantPNAC
 L2D17E:
         JSR     Lookup2D
         LDAA    $033C,Z
@@ -14434,9 +14434,9 @@ L2D17E:
         BCC     L2D1B0
         BRA     L2D1AA
 L2D18E:
-        LDX     #IdleCoolantAdder
+        LDX     #ShiftIdleRateCoolant
         BRCLR   $0055,Z,#$20,L2D19C
-        LDX     #IdleCoolantAdderAC
+        LDX     #ShiftIdleRateCoolantAC
 L2D19C:
         JSR     Lookup2D
         LDAA    $033C,Z
@@ -15023,7 +15023,7 @@ L2D746:
 L2D76A:
         LDAA    #$FF
 L2D76C:
-        STAA    $0AA6,Z
+        STAA    >RpmSpeedRatio,Z
         LDD     >EngineRpm,Z
         ROLB
         LDAB    #$FF
@@ -15169,12 +15169,12 @@ Sub_2D914:
         LDAA    >BatteryVolts2,Z
         CLRB
         TDE
-        LDD     $0A57,Z
+        LDD     >BatteryVoltsDwell,Z
         PSHM    D,E
         LDAA    $758A
         JSR     Blend16
         AIS     #$04
-        STD     $0A57,Z
+        STD     >BatteryVoltsDwell,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -16439,7 +16439,7 @@ Sub_2FB1E:
         LDAA    >CoolantTemp,Z
         CMPA    $0451
         LBCS    L2FCAA
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $0452
         LBCS    L2FCAA
         BRCLR   >ThrottleState,Z,#$40,L2FCAA

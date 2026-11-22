@@ -438,13 +438,13 @@ PartThrottleMapScale:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV0AA6Scale ($04AD): 2D table, 5 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0355,Z
+; SurgeDecayGearScale ($04AD): 2D table, 5 points, unsigned
+; Driveline surge spark control: rpm/speed ratio (gear) to row position of SurgeDecay
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: RpmSpeedRatio
 ; Read at $14FC0
 ;---------------------------------------------------------------------------------------------------
-SparkV0AA6Scale:
+SurgeDecayGearScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    43,0, 56,64, 73,128, 115,192, 168,255    ; x, y
 
@@ -1310,7 +1310,7 @@ Tab2D_0EE9:
 
 ;---------------------------------------------------------------------------------------------------
 ; StartCoolantFactor ($0EF5): 2D table, 2 points, unsigned
-; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to AirTempAlt, $0A5B,Z.
+; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to BatteryTemp, $0A5B,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0D0D2
@@ -1614,7 +1614,7 @@ Tab2D_1123:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_112F ($112F): 2D table, 4 points, unsigned
-; Inputs: $0690,Z
+; Inputs: FieldDuty
 ; Read at $0655E
 ;---------------------------------------------------------------------------------------------------
 Tab2D_112F:
@@ -1625,7 +1625,7 @@ Tab2D_112F:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_113B ($113B): 2D table, 1 points, unsigned
-; Inputs: $0690,Z
+; Inputs: FieldDuty
 ; Read at $06524
 ;---------------------------------------------------------------------------------------------------
 Tab2D_113B:
@@ -2040,7 +2040,7 @@ AfterStartSparkMapRpm:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_19B9 ($19B9): 2D table, 3 points, signed
-; Inputs: $065E,Z
+; Inputs: SparkStartTime
 ; Read at $15210
 ;---------------------------------------------------------------------------------------------------
 Tab2D_19B9:
@@ -2108,13 +2108,13 @@ DecelSpark:
         dc.b    $FF,$FF,$FF,$FF,$80,$80
 
 ;---------------------------------------------------------------------------------------------------
-; SparkRpm ($1A0B): 2D table, 1 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DE3A). Inputs: EngineRpm.
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; HighSpeedSparkRpm ($1A0B): 2D table, 1 points, unsigned
+; Spark retard against engine rpm above coarse vehicle speed $1FA6 (hysteresis $1FA5)
+; x: rpm32, y: spark (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $14D24
 ;---------------------------------------------------------------------------------------------------
-SparkRpm:
+HighSpeedSparkRpm:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -2276,13 +2276,13 @@ AirTempSparkFactor:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV00F6V0D1ELimit ($1B13): 3D table, 5 rows x 5 columns, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z. Result to $00F2,Z.
-; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
-; Inputs: $01F6,Z x $0629,Z
+; SurgeJerkLimit ($1B13): 3D table, 5 rows x 5 columns, unsigned
+; Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into $0D36,Z
+; columns: raw, rows: pos256, values: spark (units: docs/en/calibration.md)
+; Inputs: $01F6,Z x SegmentRpmFast
 ; Read at $14EAC
 ;---------------------------------------------------------------------------------------------------
-SparkV00F6V0D1ELimit:
+SurgeJerkLimit:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    31,63,94,125,156                         ; column axis
         dc.b    37,37,37,37,37                           ; row 0
@@ -2293,13 +2293,13 @@ SparkV00F6V0D1ELimit:
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV00F6V0D1EFactor ($1B34): 3D table, 5 rows x 5 columns, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z.
+; SurgeJerkGain ($1B34): 3D table, 5 rows x 5 columns, unsigned
+; Driveline surge spark control: jerk retard gain against MAP position (rows) and fast rpm (columns)
 ; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
-; Inputs: result of Lookup2D x $0629,Z
+; Inputs: result of Lookup2D x SegmentRpmFast
 ; Read at $14E66
 ;---------------------------------------------------------------------------------------------------
-SparkV00F6V0D1EFactor:
+SurgeJerkGain:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    31,63,94,125,156                         ; column axis
         dc.b    32,192,192,0,0                           ; row 0
@@ -2311,7 +2311,7 @@ SparkV00F6V0D1EFactor:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab3D_1B55 ($1B55): 3D table, 5 rows x 5 columns, unsigned
-; Inputs: $0646,Z x $0629,Z
+; Inputs: $0646,Z x SegmentRpmFast
 ; Read at $1513A
 ;---------------------------------------------------------------------------------------------------
 Tab3D_1B55:
@@ -2325,13 +2325,13 @@ Tab3D_1B55:
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV0AA6V00F2Factor ($1B76): 3D table, 5 rows x 9 columns, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: result of Lookup2D x $F2,Z. Result to $00F4,Z.
-; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
+; SurgeDecay ($1B76): 3D table, 5 rows x 9 columns, unsigned
+; Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage $0D37,Z (columns)
+; columns: raw, rows: pos256, values: mult256 (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $01F2,Z
 ; Read at $14FCC
 ;---------------------------------------------------------------------------------------------------
-SparkV0AA6V00F2Factor:
+SurgeDecay:
         dc.b    5,9,$00                                  ; rows, columns, signed
         dc.b    4,8,12,16,20,24,28,32,36                 ; column axis
         dc.b    204,187,0,0,0,0,0,0,0                    ; row 0
@@ -2342,99 +2342,99 @@ SparkV0AA6V00F2Factor:
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkCoolantFactor ($1BAF): 2D table, 3 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: CoolantTemp. Result to $00F2,Z.
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; SurgeRetardCoolantFactor ($1BAF): 2D table, 3 points, unsigned
+; Driveline surge spark control: factor on the retard against coolant
+; x: tempc, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $14E90, $14F28
 ;---------------------------------------------------------------------------------------------------
-SparkCoolantFactor:
+SurgeRetardCoolantFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    127,64, 144,102, 194,255                 ; x, y
 
         dc.b    $FF,$FF,$FF,$01
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV0D30 ($1BBB): 2D table, 3 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D30,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $063B,Z
+; SurgeJerkRetardOpen ($1BBB): 2D table, 3 points, unsigned
+; Driveline surge spark control, throttle open: retard against positive rpm jerk (above $2173)
+; x: raw, y: spark (units: docs/en/calibration.md)
+; Inputs: RpmJerk
 ; Read at $14DFE
 ;---------------------------------------------------------------------------------------------------
-SparkV0D30:
+SurgeJerkRetardOpen:
         dc.b    3,$80                                    ; points, flags
         dc.b    1,4, 4,12, 8,40                          ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV0D302 ($1BC3): 2D table, 3 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D30,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $063B,Z
+; SurgeJerkAdvanceOpen ($1BC3): 2D table, 3 points, unsigned
+; Driveline surge spark control, throttle open: spark against negative rpm jerk (below $2172)
+; x: raw, y: spark (units: docs/en/calibration.md)
+; Inputs: RpmJerk
 ; Read at $14E16
 ;---------------------------------------------------------------------------------------------------
-SparkV0D302:
+SurgeJerkAdvanceOpen:
         dc.b    3,$80                                    ; points, flags
         dc.b    1,4, 8,8, 254,12                         ; x, y
 
         dc.b    $FF,$FF,$FE,$FE,$30,$01,$01,$01,$FF,$C0,$20,$26,$0C,$27,$6E,$2E
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV0D26Factor ($1BDB): 2D table, 5 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D26,Z. Result to $00F2,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0631,Z
+; SurgeRetardRateFactor ($1BDB): 2D table, 5 points, unsigned
+; Driveline surge spark control: factor on the retard against rpm acceleration $0D26,Z
+; x: raw, y: mult256 (units: docs/en/calibration.md)
+; Inputs: RpmAccel
 ; Read at $14F44
 ;---------------------------------------------------------------------------------------------------
-SparkV0D26Factor:
+SurgeRetardRateFactor:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 4,64, 8,128, 16,192, 32,255         ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV0D3BFactor ($1BE7): 2D table, 5 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D3B,Z. Result to $0D33,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0648,Z
+; SurgeRetardMapRiseFactor ($1BE7): 2D table, 5 points, unsigned
+; Driveline surge spark control: factor on the retard against MAP rise $0D3B,Z (MAP minus filtered MAP); result into $0D33,Z
+; x: raw, y: mult256 (units: docs/en/calibration.md)
+; Inputs: MapRise
 ; Read at $14F5C
 ;---------------------------------------------------------------------------------------------------
-SparkV0D3BFactor:
+SurgeRetardMapRiseFactor:
         dc.b    5,$80                                    ; points, flags
         dc.b    145,0, 161,128, 193,255, 226,255, 227,0  ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV0AA6Limit ($1BF3): 2D table, 6 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z.
+; SurgeRateThreshold ($1BF3): 2D table, 6 points, unsigned
+; Driveline surge spark control: rpm acceleration ($0D26,Z) that starts the retard, against the rpm/speed ratio (gear)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0355,Z
+; Inputs: RpmSpeedRatio
 ; Read at $14EEA
 ;---------------------------------------------------------------------------------------------------
-SparkV0AA6Limit:
+SurgeRateThreshold:
         dc.b    6,$80                                    ; points, flags
         dc.b    43,3, 56,3, 73,3, 115,3, 168,17, 229,127 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV0AA6Factor ($1C01): 2D table, 6 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. Result to $00F2,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0355,Z
+; SurgeRetardGearFactor ($1C01): 2D table, 6 points, unsigned
+; Driveline surge spark control: factor on the base retard against the rpm/speed ratio (gear)
+; x: raw, y: mult256 (units: docs/en/calibration.md)
+; Inputs: RpmSpeedRatio
 ; Read at $14F10
 ;---------------------------------------------------------------------------------------------------
-SparkV0AA6Factor:
+SurgeRetardGearFactor:
         dc.b    6,$80                                    ; points, flags
         dc.b    43,10, 56,10, 73,128, 115,128, 168,128, 229,1 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkV0AA6Limit2 ($1C0F): 2D table, 6 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z.
+; SurgeJerkThreshold ($1C0F): 2D table, 6 points, unsigned
+; Driveline surge spark control: rpm jerk ($0D30,Z) above which the jerk retard applies, against the rpm/speed ratio
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0355,Z
+; Inputs: RpmSpeedRatio
 ; Read at $14E42
 ;---------------------------------------------------------------------------------------------------
-SparkV0AA6Limit2:
+SurgeJerkThreshold:
         dc.b    6,$80                                    ; points, flags
         dc.b    43,3, 56,3, 73,4, 115,4, 168,6, 229,254  ; x, y
 
@@ -2442,7 +2442,7 @@ SparkV0AA6Limit2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1C29 ($1C29): 2D table, 1 points, unsigned
-; Inputs: $032F,Z
+; Inputs: AcSensor
 ; Read at $14936
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1C29:
@@ -2475,7 +2475,7 @@ Tab2D_1C39:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1C41 ($1C41): 2D table, 1 points, unsigned
-; Inputs: $032F,Z
+; Inputs: AcSensor
 ; Read at $12AE2
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1C41:
@@ -2507,50 +2507,50 @@ Tab2D_1C51:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SparkScale ($1C59): 2D table, 1 points, signed
-; Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; AcSparkRateUp ($1C59): 2D table, 1 points, signed
+; A/C spark compensation: spark against positive rpm rate $0D4A,Z, into $0D55,Z
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1484A
 ;---------------------------------------------------------------------------------------------------
-SparkScale:
+AcSparkRateUp:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SparkScale2 ($1C61): 2D table, 3 points, signed
-; Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; AcSparkRateDown ($1C61): 2D table, 3 points, signed
+; As AcSparkRateUp against negative rpm rate, A/C clutch off
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1484A
 ;---------------------------------------------------------------------------------------------------
-SparkScale2:
+AcSparkRateDown:
         dc.b    3,$20                                    ; points, flags
         dc.b    0,0, 36,0, 40,-20                        ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkScaleAcOn ($1C69): 2D table, 3 points, signed
-; Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; AcSparkRateDownAcOn ($1C69): 2D table, 3 points, signed
+; As AcSparkRateDown with the A/C clutch on
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1484A
 ;---------------------------------------------------------------------------------------------------
-SparkScaleAcOn:
+AcSparkRateDownAcOn:
         dc.b    3,$20                                    ; points, flags
         dc.b    0,0, 36,0, 40,-20                        ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkMapLimit ($1C71): 2D table, 2 points, signed
-; Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: Map. Result to $0D55,Z.
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; AcSparkMapLimit ($1C71): 2D table, 2 points, signed
+; Limit of the A/C spark compensation against MAP
+; x: kpa, y: spark (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $14858
 ;---------------------------------------------------------------------------------------------------
-SparkMapLimit:
+AcSparkMapLimit:
         dc.b    2,$20                                    ; points, flags
         dc.b    178,-60, 227,-16                         ; x, y
 
@@ -2613,26 +2613,26 @@ KnockThreshold:
         dc.b    $1C,$53,$1C,$00
 
 ;---------------------------------------------------------------------------------------------------
-; KnockMap ($1CCB): 2D table, 2 points, unsigned
-; Subsystem: knock control (by the routine that reads it, Sub_1F256). Inputs: Map.
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; KnockRetardMaxMap ($1CCB): 2D table, 2 points, unsigned
+; Maximum knock retard ($0DAA,Z) against MAP (above throttle $24A5 or below rpm $24A6)
+; x: kpa, y: spark (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $15482
 ;---------------------------------------------------------------------------------------------------
-KnockMap:
+KnockRetardMaxMap:
         dc.b    2,$80                                    ; points, flags
         dc.b    162,6, 178,8                             ; x, y
 
         dc.b    $FF,$FF,$1F
 
 ;---------------------------------------------------------------------------------------------------
-; KnockV0A8B ($1CD4): 2D table, 2 points, unsigned
-; Subsystem: knock control (by the routine that reads it, Sub_1F408). Inputs: $0A8B,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; KnockRetardStep ($1CD4): 2D table, 2 points, unsigned
+; Knock retard step against the knock signal above the threshold ($0A8B,Z minus KnockThresholdNow)
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: $0339,Z
 ; Read at $156D2
 ;---------------------------------------------------------------------------------------------------
-KnockV0A8B:
+KnockRetardStep:
         dc.b    2,$80                                    ; points, flags
         dc.b    16,128, 64,255                           ; x, y
 
@@ -2685,26 +2685,26 @@ Tab2D_1D31:
         dc.b    $DA,$01,$00,$00,$0A,$04,$01,$01,$04,$00,$00,$04,$01,$45,$03
 
 ;---------------------------------------------------------------------------------------------------
-; SparkThrottleAdder ($1D4A): 2D table, 1 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; EventSparkThrottle ($1D4A): 2D table, 1 points, unsigned
+; Upper limit of the event spark $0859,Z against throttle while $0856,Z bits 4 and 2 are set (raised by $205D per loop)
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $14B44
 ;---------------------------------------------------------------------------------------------------
-SparkThrottleAdder:
+EventSparkThrottle:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SparkThrottleAdder2 ($1D54): 2D table, 1 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; EventSparkThrottle2 ($1D54): 2D table, 1 points, unsigned
+; As EventSparkThrottle while $0856,Z bit 3 is set (raised by $205E per loop)
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $14B70
 ;---------------------------------------------------------------------------------------------------
-SparkThrottleAdder2:
+EventSparkThrottle2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3160,26 +3160,26 @@ Tab2D_1FC1:
         dc.b    $FF,$FF,$2F
 
 ;---------------------------------------------------------------------------------------------------
-; IdleMapScale ($1FCA): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Map.
+; IacAcKickMap ($1FCA): 2D table, 1 points, unsigned
+; IAC step when the A/C clutch engages, against MAP (MAP latched into $0341,Z); into $0340,Z
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $0B2A8
 ;---------------------------------------------------------------------------------------------------
-IdleMapScale:
+IacAcKickMap:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,12                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0341Scale ($1FD2): 2D table, 1 points, signed
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0341,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; IacAcKickMapLatched ($1FD2): 2D table, 1 points, signed
+; IAC step when the A/C clutch releases, against the MAP latched at engagement ($0341,Z)
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: $06A3,Z
 ; Read at $0B2A8
 ;---------------------------------------------------------------------------------------------------
-IdleV0341Scale:
+IacAcKickMapLatched:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-7                                   ; x, y
 
@@ -3197,13 +3197,13 @@ Tab2D_1FE1:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$11,$00
 
 ;---------------------------------------------------------------------------------------------------
-; IdleTimeAdder ($1FED): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Count3s.
+; IacRunTimeAdder ($1FED): 2D table, 1 points, unsigned
+; IAC addition against time since start
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Count3s
 ; Read at $0C0E8
 ;---------------------------------------------------------------------------------------------------
-IdleTimeAdder:
+IacRunTimeAdder:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3256,13 +3256,13 @@ IacCoastSpeedRpm:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV032ESegRpm ($206A): 3D table, 5 rows x 5 columns, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00F4,Z.
+; IacFieldDutyRpm ($206A): 3D table, 5 rows x 5 columns, unsigned
+; IAC addition against field duty (rows) and segment rpm (columns), into $F4,Z
 ; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x SegmentRpm
 ; Read at $0C0D4
 ;---------------------------------------------------------------------------------------------------
-IdleV032ESegRpm:
+IacFieldDutyRpm:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    19,22,25,30,33                           ; column axis
         dc.b    0,0,0,0,0                                ; row 0
@@ -3300,13 +3300,13 @@ IacRollFactorV0345:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IacRollFactorAirTempAlt ($20A7): 2D table, 1 points, unsigned
-; Factor on the rolling IAC target against the alternative air temperature $0A5A,Z (centred on 128)
+; IacRollFactorBattTemp ($20A7): 2D table, 1 points, unsigned
+; Factor on the rolling IAC target against battery temperature (centred on 128)
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $032C,Z
 ; Read at $0AD2C, $0B386
 ;---------------------------------------------------------------------------------------------------
-IacRollFactorAirTempAlt:
+IacRollFactorBattTemp:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
@@ -3421,13 +3421,13 @@ Tab2D_2125:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV032ESegRpm2 ($212F): 3D table, 5 rows x 5 columns, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00F7,Z.
+; IacFieldDutyRpm2 ($212F): 3D table, 5 rows x 5 columns, unsigned
+; Second field-duty table against segment rpm, into $F7,Z (MAP offset for the learned idle MAP)
 ; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x SegmentRpm
 ; Read at $0C156
 ;---------------------------------------------------------------------------------------------------
-IdleV032ESegRpm2:
+IacFieldDutyRpm2:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    19,22,25,30,33                           ; column axis
         dc.b    0,3,4,5,5                                ; row 0
@@ -3545,13 +3545,13 @@ IacStartBaro:
         dc.b    $00
 
 ;---------------------------------------------------------------------------------------------------
-; IacBaseBaroTarget2 ($21DC): 3D table, 5 rows x 5 columns, unsigned
-; Second base idle air table, barometric pressure x idle target, into the idle air sum
+; IdleMapBase ($21DC): 3D table, 5 rows x 5 columns, unsigned
+; Base of the idle MAP target ($031E,Z, via $F5,Z): barometric pressure (rows) and idle target rpm (columns)
 ; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x IdleTarget
 ; Read at $0C1AE
 ;---------------------------------------------------------------------------------------------------
-IacBaseBaroTarget2:
+IdleMapBase:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    19,22,25,30,33                           ; column axis
         dc.b    36,32,28,27,30                           ; row 0
@@ -3584,39 +3584,39 @@ Tab2D_2207:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleBaroScale ($220F): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: Baro. Result to $00F1,Z.
+; IacStepBaroFactor ($220F): 2D table, 1 points, unsigned
+; Multiplier on IAC steps and start positions against barometric pressure
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $0B650, $0B728, $0C068
 ;---------------------------------------------------------------------------------------------------
-IdleBaroScale:
+IacStepBaroFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleBaroFactor ($2219): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1971A). Inputs: Baro. Result to $00F0,Z.
+; IacShiftBaroFactor ($2219): 2D table, 1 points, unsigned
+; Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $0A942, $0B6E4, $0BAB0
 ;---------------------------------------------------------------------------------------------------
-IdleBaroFactor:
+IacShiftBaroFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleBaroFactor2 ($2223): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Baro.
+; IacKickBaroFactor ($2223): 2D table, 3 points, unsigned
+; Factor on the A/C and rpm-dip IAC steps against barometric pressure
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $0B2B6
 ;---------------------------------------------------------------------------------------------------
-IdleBaroFactor2:
+IacKickBaroFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    146,64, 203,18, 235,0                    ; x, y
 
@@ -4751,7 +4751,7 @@ Tab2D_407C:
 
 ;---------------------------------------------------------------------------------------------------
 ; StartV0A87 ($4088): 2D table, 2 points, unsigned
-; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to $0A88,Z.
+; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to AcSensor.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: FlexEthanol; ?; #$AA
 ; Read at $0D094, $11202
@@ -4923,13 +4923,13 @@ PurgeMapScale:
         dc.b    $38
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV032EScale ($4353): 2D table, 5 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: $032E,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0690,Z
+; IacFieldDutyScale ($4353): 2D table, 5 points, unsigned
+; Filtered duty of the CS2 input $106E.5 (probably the generator field) to row position of IacFieldDutyRpm
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: FieldDuty
 ; Read at $0C0C8, $0C14A
 ;---------------------------------------------------------------------------------------------------
-IdleV032EScale:
+IacFieldDutyScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    51,0, 102,64, 153,128, 204,192, 255,255  ; x, y
 
@@ -6355,7 +6355,7 @@ L056C4:
 L056D4:
         XGDX
 L056D6:
-        SUBA    $042F,Z
+        SUBA    >ChargeTargetVolts,Z
         BNE     L056E4
 L056DC:
         BRCLR   $086E,Z,#$20,L0570A
@@ -7130,7 +7130,7 @@ L064BA:
         LDX     #Tab2D_1123
         JSR     Lookup2D
         STAA    $01F2,Z
-        LDAA    $0690,Z
+        LDAA    >FieldDuty,Z
         LDX     #Tab2D_113B
         JSR     Lookup2D
         CMPA    $01F2,Z
@@ -7148,7 +7148,7 @@ L0654A:
         LDX     #Tab2D_1117
         JSR     Lookup2D
         STAA    $01F2,Z
-        LDAA    $0690,Z
+        LDAA    >FieldDuty,Z
         LDX     #Tab2D_112F
         JSR     Lookup2D
         LDAB    >IacBase,Z
@@ -13630,7 +13630,7 @@ L0A92C:
         TSTA
         BNE     L0A968
         LDAA    <Baro,Z
-        LDX     #IdleBaroFactor
+        LDX     #IacShiftBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         EMULS
@@ -13962,7 +13962,7 @@ L0AD0A:
         XGAB
         TDE
         LDAA    $032C,Z
-        LDX     #IacRollFactorAirTempAlt
+        LDX     #IacRollFactorBattTemp
         BRCLR   $031E,#$04,L0AD2C
         BRSET   $01F8,Z,#$02,L0AD2C
         LDAA    $06A7,Z
@@ -14107,7 +14107,7 @@ L0AED2:
         LBRA    L0B57E
 L0AEF0:
         BRSET   $0676,Z,#$80,L0B072
-        LDAA    $032F,Z
+        LDAA    >AcSensor,Z
         CMPA    $041F
         BCC     L0AF18
         LDD     >SegmentRpm,Z
@@ -14385,17 +14385,17 @@ L0B284:
         BRCLR   $031C,Z,#$08,L0B2A0
         LDAA    >Map,Z
         STAA    $06A3,Z
-        LDX     #IdleMapScale
+        LDX     #IacAcKickMap
         BRA     L0B2A8
 L0B2A0:
-        LDX     #IdleV0341Scale
+        LDX     #IacAcKickMapLatched
         LDAA    $06A3,Z
 L0B2A8:
         JSR     Lookup2D
         SXT
         TDE
         LDAA    <Baro,Z
-        LDX     #IdleBaroFactor2
+        LDX     #IacKickBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         EMULS
@@ -14458,7 +14458,7 @@ L0B362:
         EMULS
         TDE
         LDAA    $032C,Z
-        LDX     #IacRollFactorAirTempAlt
+        LDX     #IacRollFactorBattTemp
         BRCLR   $031E,#$04,L0B386
         BRSET   $01F8,Z,#$02,L0B386
         LDAA    $06A7,Z
@@ -14706,7 +14706,7 @@ Sub_0B5F4:
         LBNE    L0B6B0
         BRSET   $0169,Z,#$10,L0B6B0
         BRSET   $0168,Z,#$08,L0B6B0
-        LDAB    $042F,Z
+        LDAB    >ChargeTargetVolts,Z
         SUBB    >BatteryVolts2,Z
         BCC     L0B618
         CLRB
@@ -14727,7 +14727,7 @@ L0B628:
         BITB    #$02
         BNE     L0B6A0
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacStepBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         TDE
@@ -14785,7 +14785,7 @@ Sub_0B6BC:
         STAA    $0033,Z
         BRCLR   $031E,#$04,L0B720
         LDAA    <Baro,Z
-        LDX     #IdleBaroFactor
+        LDX     #IacShiftBaroFactor
         JSR     Lookup2D
         STAA    >IacBase,Z
         CLRB
@@ -14818,7 +14818,7 @@ L0B720:
 ;---------------------------------------------------------------------------------------------------
 Sub_0B722:
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacStepBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         TDE
@@ -14905,12 +14905,12 @@ L0B802:
         CLRA
         LDAB    $0692,Z
         TDE
-        LDAB    $0690,Z
+        LDAB    >FieldDuty,Z
         PSHM    D,E
         LDAA    $1DD1
         JSR     Blend16
         AIS     #$04
-        STAB    $0690,Z
+        STAB    >FieldDuty,Z
 L0B83A:
         LDAA    $0033,Z
         CMPA    $1DD4
@@ -14946,7 +14946,7 @@ L0B894:
 L0B8A6:
         CMPA    $1DD8
         LBCC    L0B94E
-        LDAA    $0690,Z
+        LDAA    >FieldDuty,Z
         CMPA    $1DD6
         LBCC    L0B94E
         CLR     $0685,Z
@@ -15151,7 +15151,7 @@ L0BAA0:
         CLRA
         TDE
         LDAA    <Baro,Z
-        LDX     #IdleBaroFactor
+        LDX     #IacShiftBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         EMUL
@@ -15706,7 +15706,7 @@ Sub_0C048:
         JSR     Lookup3D
         STAA    >IacBase,Z
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacStepBaroFactor
         JSR     Lookup2D
         STAA    $01F1,Z
         LDAA    >CoolantTemp,Z
@@ -15733,17 +15733,17 @@ L0C0A6:
 L0C0BC:
         CLRA
         TDE
-        LDAA    $0690,Z
-        LDX     #IdleV032EScale
+        LDAA    >FieldDuty,Z
+        LDX     #IacFieldDutyScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleV032ESegRpm
+        LDX     #IacFieldDutyRpm
         JSR     Lookup3D
         STAB    $01F3,Z
         CLRA
         ADE
         LDAA    >Count3s,Z
-        LDX     #IdleTimeAdder
+        LDX     #IacRunTimeAdder
         JSR     Lookup2D
         CLRA
         ADE
@@ -15772,15 +15772,15 @@ L0C132:
 L0C13C:
         TED
         STAB    $01F2,Z
-        LDAA    $0690,Z
-        LDX     #IdleV032EScale
+        LDAA    >FieldDuty,Z
+        LDX     #IacFieldDutyScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleV032ESegRpm2
+        LDX     #IacFieldDutyRpm2
         JSR     Lookup3D
         STAB    $01F7,Z
         CLRA
-        LDAB    $032F,Z
+        LDAB    >AcSensor,Z
         TDE
         LDAB    $06A7,Z
         PSHM    D,E
@@ -15789,7 +15789,7 @@ L0C13C:
         AIS     #$04
         STAB    $06A7,Z
         BRCLR   >MainLoopPhaseMask,Z,#$04,L0C19C
-        LDE     $034F,Z
+        LDE     >BatteryVoltsFiltered,Z
         LDAA    >BatteryVolts2,Z
         CLRB
         XGDE
@@ -15797,13 +15797,13 @@ L0C13C:
         LDAA    $1DD2
         JSR     Blend16
         AIS     #$04
-        STD     $034F,Z
+        STD     >BatteryVoltsFiltered,Z
 L0C19C:
         LDAA    <Baro,Z
         LDX     #IacBaroScale
         JSR     Lookup2D
         LDAB    >IdleTarget,Z
-        LDX     #IacBaseBaroTarget2
+        LDX     #IdleMapBase
         JSR     Lookup3D
         STAA    $01F5,Z
         CLRA
@@ -16039,7 +16039,7 @@ L0C46A:
         CMPA    $1DE6
         LBHI    L0C58E
 L0C47A:
-        LDAA    $042F,Z
+        LDAA    >ChargeTargetVolts,Z
         LDAB    $1DF2
         BRCLR   $0676,Z,#$04,L0C48C
         LDAB    $1DF3
@@ -16048,7 +16048,7 @@ L0C48C:
         BCC     L0C492
         CLRA
 L0C492:
-        CMPA    $034F,Z
+        CMPA    >BatteryVoltsFiltered,Z
         BLS     L0C4A6
         BRCLR   $0672,Z,#$40,L0C58E
         BSET    $0676,Z,#$04
@@ -16728,7 +16728,7 @@ L0CC40:
         LDAA    >RJURR3_L,Z
         STAA    $0351,Z
         STAA    >BatteryVolts2,Z
-        STAA    $034F,Z
+        STAA    >BatteryVoltsFiltered,Z
         LDAA    >RJURR2_L,Z
         STAA    $0330,Z
         LDAA    >RJURR1_L,Z
@@ -17004,7 +17004,7 @@ L0CF94:
         LDX     #FlexLearnTable2
         JSR     Lookup2D
 L0CFB0:
-        STAB    $032F,Z
+        STAB    >AcSensor,Z
         LDAB    #$BE
         LDAA    $032D,Z
         CMPA    #$F5
@@ -17043,7 +17043,7 @@ L0CFFC:
 L0D012:
         LDAA    #$D8
 L0D014:
-        STAA    $042F,Z
+        STAA    >ChargeTargetVolts,Z
         LDAA    $0374
         STAA    $0399,Z
         LDD     #$FFFF

@@ -646,12 +646,12 @@ L30780:
         LDAA    #$8C
         STAA    $097E,Z
         LDAA    >CoolantTemp,Z
-        LDAB    >AirTempAlt,Z
+        LDAB    >BatteryTemp,Z
         RTS
 L30790:
         LDAA    #$75
         STAA    $097E,Z
-        LDAA    $0A8C,Z
+        LDAA    >AcSensor,Z
         CLRB
         BRCLR   $032C,#$40,L307B0
         LDAB    >FlexEthanol,Z
@@ -663,7 +663,7 @@ L307B2:
         LDAA    #$D4
         STAA    $097E,Z
         LDAA    >BatteryVolts2,Z
-        LDAB    $0DB1,Z
+        LDAB    >ChargeTargetVolts,Z
         RTS
 L307C2:
         LDAA    #$CC
@@ -2428,7 +2428,7 @@ L31A48:
         BCC     L31A66
         CLRA
 L31A66:
-        LDAB    >AirTempAlt,Z
+        LDAB    >BatteryTemp,Z
         SUBB    #$58
         BCC     L31A70
         CLRB
@@ -2465,7 +2465,7 @@ L31A9C:
         CLRB
 L31AB2:
         STD     $02,Y
-        LDAA    $0A8C,Z
+        LDAA    >AcSensor,Z
         LDAB    #$F7
         MUL
         ADCA    #$00
@@ -9860,7 +9860,7 @@ L39270:
 Sub_39272:
         BRCLR   $032D,#$20,L39288
         BRCLR   $0503,Z,#$01,L39288
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $035F
         BLS     L392E8
 L39288:
@@ -9872,7 +9872,7 @@ L39298:
         LBRA    L393F6
 L392A0:
         BRCLR   $0331,#$80,L392D2
-        LDAA    $0A8C,Z
+        LDAA    >AcSensor,Z
         LDAB    $050A,Z
         BITB    #$0C
         BNE     L392D8
@@ -9942,7 +9942,7 @@ L3937C:
         BRSET   $0C21,Z,#$40,L393A2
         BSET    $0C22,Z,#$02
 L39386:
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $056E
         BLS     L393A2
         CMPA    $056F
@@ -10142,7 +10142,7 @@ L395AE:
         BCC     L395DA
         INCA
         STAA    $0F5A,Z
-        LDD     $0D4A,Z
+        LDD     >RpmRate,Z
         LBMI    L396E6
         CPD     $2A29
         LBLS    L396E6
@@ -10179,7 +10179,7 @@ L3961E:
         BCC     L39666
         INCA
         STAA    $0F5A,Z
-        LDD     $0D4A,Z
+        LDD     >RpmRate,Z
         LBPL    L396E6
         NEGD
         CPD     $2A27
@@ -10264,7 +10264,7 @@ L39724:
         BLS     L3975A
         CMPA    $2A31
         BCC     L3975A
-        LDD     $0D4A,Z
+        LDD     >RpmRate,Z
         LBMI    L397DC
         CPD     $0F5E,Z
         LBLS    L397DC
@@ -10387,7 +10387,7 @@ L3986A:
 L39886:
         BCLR    $0B2C,Z,#$08
         BRSET   $06B4,Z,#$01,L399A2
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $0595
         LBCS    L399A2
         BRCLR   $0B2D,Z,#$08,L398AA
@@ -10552,7 +10552,7 @@ L39A6C:
 L39A88:
         BCLR    $0B2C,Z,#$08
         BRSET   $06B4,Z,#$01,L39B8C
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $0595
         LBCS    L39B8C
         BRCLR   $0B2D,Z,#$08,L39AAC
@@ -11082,7 +11082,7 @@ L3A02E:
         LDAA    $050A,Z
         BITA    #$0C
         BNE     L3A08A
-        LDAA    $0A8C,Z
+        LDAA    >AcSensor,Z
         CMPA    $04D8
         BCS     L3A04E
         ORAB    #$08
@@ -11534,7 +11534,7 @@ Sub_3A57A:
         STAA    $F3,Z
         BCLR    $F2,Z,#$C0
         LDAB    #$FF
-        LDAA    $0A8C,Z
+        LDAA    >AcSensor,Z
         CMPA    $04D7
         BHI     L3A5AC
         BRA     L3A5E8
@@ -12099,7 +12099,7 @@ L3AB20:
         BLS     L3AB2A
         LDE     #$6400
 L3AB2A:
-        LDAA    $0359,Z
+        LDAA    >AcOnTime,Z
         CMPA    $053A
         BHI     L3AB5E
         LDAA    $0345,Z
@@ -12820,7 +12820,7 @@ L3B854:
         LDAB    #$05
         LDAA    $0AC1,Z
         BNE     L3B86C
-        LDAA    $0AAA,Z
+        LDAA    >RpmSpeedRatio,Z
         CMPA    $3533
         BCC     L3B8AC
         CMPA    $3534
@@ -13984,7 +13984,7 @@ L3C47E:
         BRSET   $0407,Z,#$80,L3C54C
         BRSET   $56,Z,#$20,L3C49A
         BRCLR   $032E,#$40,L3C54C
-        LDAA    $0AAA,Z
+        LDAA    >RpmSpeedRatio,Z
         CMPA    $354E
         BLS     L3C4A8
         BHI     L3C4B8
@@ -14975,7 +14975,7 @@ Sub_3DC64:
         BRCLR   $0430,Z,#$04,L3DC70
         BRSET   $0774,Z,#$80,L3DCBE
 L3DC70:
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $1EF0
         BCS     L3DC98
         CMPA    $1EF1
@@ -16596,7 +16596,7 @@ L3ED66:
         CMPA    $53B4
         BCS     L3EDBE
         BRSET   $0330,#$20,L3ED7C
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         BRA     L3ED80
 L3ED7C:
         LDAA    >AirTemp,Z

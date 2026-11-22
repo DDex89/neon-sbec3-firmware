@@ -96,9 +96,9 @@ pulse width computed from MAP (next section).
 
 ## Table names
 
-Every table of the reference image has a name. 198 are named by hand from the code (and checked
+Every table of the reference image has a name. 292 are named by hand from the code (and checked
 against 2GNT where it has them), among them the whole fuel path described below, the spark
-corrections, dwell, idle targets and the sensor curves. The other 212 have **structural names** made by `tools/autoname.py` and marked `"auto": true` in
+corrections, dwell, idle targets and the sensor curves. The other 118 have **structural names** made by `tools/autoname.py` and marked `"auto": true` in
 `annotations/tables.json` (and with * in the catalogue):
 
 - the prefix is the subsystem, taken from the routine that reads the table and the scheduled routine
@@ -122,7 +122,8 @@ does exactly.
 | CrankFuel | cranking fuel | Fuel | 112 in all |
 | O2 | oxygen-sensor closed loop and adaptive fuel | Closed loop | 7 |
 | Idle | idle speed control | Idle | 89 |
-| Spark, Knock | spark advance and knock control | Spark | 89 |
+| Spark | spark advance | Spark | 78 |
+| Knock | knock control | Knock | 11 |
 | Misfire, Diag | misfire monitor (crankshaft segment times) and other OBD monitors | Diagnostics | 36 |
 | Sensor | sensor processing | Sensors | 20 |
 | SpeedCtl | speed control (cruise); probable | Speed control | 11 |
@@ -141,6 +142,41 @@ inferred from its state machine on vehicle speed and rpm and is marked probable.
 
 Re-running `python3 tools/autoname.py` after naming more RAM variables or routines refreshes the
 structural names; hand names (entries without `"auto"`, and the overrides in the script) stay.
+
+## Idle and spark control
+
+The idle air valve is driven by several routines that all end in the step routine `Sub_1A54A`:
+
+| Routine | What it does | Tables |
+|---|---|---|
+| `Sub_1B182` | idle target ($0300,Z): coolant table (P/N variant), additions for an rpm dip in gear, hot intake air, and a ramped target against battery temperature and run time | `IdleTargetRpm*`, `IdleTargetDip*`, `IdleTargetHotAirAdder`, `IdleBattTemp*` |
+| `Sub_1908C` | closed loop on rpm: error term (coarse/fine, P/N), rate filter, deadband from MAP and coolant, integrator that takes opening or closing IAC steps | `IdleErrorTerm*`, `IdleRateFilterCoolant`, `IdleDeadband*`, `IdleStep*` |
+| `Sub_1AC64` | closed loop on MAP: idle MAP target ($031E,Z) from base, time, coolant, rpm and baro, then IAC steps against the MAP error | `IdleMap*`, `IacMap*Step*` |
+| `Sub_1AFDE` | base IAC position against baro and idle target, coasting target, generator field duty, A/C engagement | `IacBase*`, `IacCoast*`, `IacFieldDuty*`, `IacAcEngageAdder` |
+| `Sub_19808`, `Sub_2D086` | events: gear change (delay, duration, step; A/C and P/N variants), rpm droop and dip kicks, A/C clutch kick, rolling target | `IacGear*`, `IacDroop*`, `IacDipKick*`, `IacAcKick*`, `IacRoll*`, `ShiftIdle*` |
+| `Sub_1A5CA` | extra air when the battery voltage stays below the charging target | `IacChargeStep` |
+| `Sub_1AE22` | IAC position while cranking and in start mode | `IacCrankCoolant`, `IacRunUpCoolant` |
+
+Spark corrections besides the base tables:
+
+| Routine | What it does | Tables |
+|---|---|---|
+| `Sub_1DEDC`, `Sub_1E14E` | driveline surge: a staged retard from rpm acceleration and jerk (band-passed segment rpm), weighted by gear (rpm/speed ratio), MAP rise and coolant | `Surge*` |
+| `Sub_1D5EC` | tip-in retard near idle against throttle rise and air temperature | `TipInRetard*` |
+| `Sub_1DC20` | low-speed surge damping: P, D and I terms on the deviation of rpm from an expected rpm for the vehicle speed | `SpeedRpmRef*`, `SpeedDamp*` |
+| `Sub_1E76A` | idle spark against the idle rpm error | `IdleSpark*` |
+| `Sub_1D822`, `Sub_1D8F0` | spark compensation around A/C clutch engagement | `AcEngageSpark*`, `AcClutchSpark*`, `AcSpark*` |
+| `Sub_1D36A` | spark change against the short-term fuel trim deviation | `O2SparkTrim*` |
+| `Sub_1DA26` | addition with EGR active (17x17) | `EgrSpark` |
+| `Sub_1E582` | coil dwell against battery voltage | `DwellBattery*` |
+
+Knock control learns a noise level per rpm band (`KnockNoise*`), runs above a MAP threshold
+(`KnockMapThreshold*`) and limits the retard by rpm and MAP (`KnockRetardMax*`, `KnockRetardLimit`).
+
+Several of these readings rest on how the code uses a variable rather than on a document: the
+battery temperature ($0A5A,Z, used for the charging target), the generator field duty ($032E,Z,
+a duty count of CS2 input $106E bit 5) and the A/C sensor ($0A88,Z, probably A/C
+pressure) are inferred this way.
 
 ## Fuel pulse width
 
@@ -222,7 +258,7 @@ applies only to the reference image.
 
 ## Open points
 
-- 212 tables have structural names only; giving them exact names means reading each routine.
+- 118 tables have structural names only; giving them exact names means reading each routine.
 - The 1,455 directly read constants are not catalogued one by one yet.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.

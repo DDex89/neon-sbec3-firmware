@@ -24,12 +24,12 @@
    "auto": false
   },
   "039C": {
-   "name": "IdleCoolant",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AE22). Inputs: CoolantTemp.",
+   "name": "IacRunUpCoolant",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC position in start mode once engine rpm reaches $2641, against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "03A8": {
    "name": "IdleRpmSpeedTerm",
@@ -137,7 +137,7 @@
   },
   "04CC": {
    "name": "StartCoolantFactor",
-   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to AirTempAlt, $0A5B,Z.",
+   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to BatteryTemp, $0A5B,Z.",
    "category": "Startup",
    "auto": true,
    "x": "tempc",
@@ -473,12 +473,12 @@
    "auto": false
   },
   "09A6": {
-   "name": "IdleAirTempAlt",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: AirTempAlt.",
+   "name": "IdleBattTempScale",
    "category": "Idle",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Battery temperature to row position of IdleBattTempTarget",
+   "x": "tempc",
+   "y": "pos256",
+   "auto": false
   },
   "09B2": {
    "name": "IacRollThrottleScale",
@@ -497,12 +497,12 @@
    "auto": false
   },
   "09CA": {
-   "name": "IdleV032EScale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: $032E,Z.",
+   "name": "IacFieldDutyScale",
    "category": "Idle",
-   "auto": true,
+   "desc": "Filtered duty of the CS2 input $106E.5 (probably the generator field) to row position of IacFieldDutyRpm",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "09D6": {
    "name": "IacBaroScale",
@@ -1308,29 +1308,29 @@
    "z": "raw"
   },
   "209F": {
-   "name": "SparkV0D18",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E2B6). Inputs: $0D18,Z. Result to $04FC,Z.",
+   "name": "AfterStartSparkMin",
    "category": "Spark",
-   "auto": true,
+   "desc": "Lower limit of the spark change against time since start ($0D18,Z), into $04FC,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "20A9": {
-   "name": "SparkV0D18Limit",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E5A8). Inputs: $0D18,Z. Result to $0D46,Z.",
+   "name": "AfterStartSparkCap",
    "category": "Spark",
-   "auto": true,
+   "desc": "Upper limit of the spark change against time since start while $0D02,Z bit 3 is set (coolant above $1BED, baro, $0ABE,Z window)",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2334": {
-   "name": "SparkMapRpm",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DA26). Inputs: result of Lookup2D x EngineRpm. Result to $00F6,Z.",
+   "name": "EgrSpark",
    "category": "Spark",
-   "auto": true,
+   "desc": "Spark addition with EGR active ($0B30,Z bit 1): part-throttle MAP position (rows) and engine rpm (columns); scaled by $0B35,Z with calibration bit $0335.2",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "spark",
+   "auto": false
   },
   "2523": {
    "name": "AirTempSparkFactor",
@@ -1390,183 +1390,183 @@
    "auto": false
   },
   "269F": {
-   "name": "SparkRpm",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DE3A). Inputs: EngineRpm.",
+   "name": "HighSpeedSparkRpm",
    "category": "Spark",
-   "auto": true,
+   "desc": "Spark retard against engine rpm above coarse vehicle speed $1FA6 (hysteresis $1FA5)",
    "x": "rpm32",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2828": {
-   "name": "SparkThrottleAdder",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed.",
+   "name": "EventSparkThrottle",
    "category": "Spark",
-   "auto": true,
+   "desc": "Upper limit of the event spark $0859,Z against throttle while $0856,Z bits 4 and 2 are set (raised by $205D per loop)",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2832": {
-   "name": "SparkThrottleAdder2",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed.",
+   "name": "EventSparkThrottle2",
    "category": "Spark",
-   "auto": true,
+   "desc": "As EventSparkThrottle while $0856,Z bit 3 is set (raised by $205E per loop)",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2847": {
-   "name": "SparkSpeed",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: VehicleSpeed.",
+   "name": "SpeedRpmRef",
    "category": "Spark",
-   "auto": true,
+   "desc": "Low-speed surge spark control (Sub_1DC20): expected rpm/128 against vehicle speed ($0A46,Z bit 0 set)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2857": {
-   "name": "SparkSpeed2",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: VehicleSpeed.",
+   "name": "SpeedRpmRef2",
    "category": "Spark",
-   "auto": true,
+   "desc": "As SpeedRpmRef with $0A46,Z bit 0 clear",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2863": {
-   "name": "SparkSpeed3",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: VehicleSpeed.",
+   "name": "SpeedRpmRefAC",
    "category": "Spark",
-   "auto": true,
+   "desc": "As SpeedRpmRef with A/C requested",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2873": {
-   "name": "SparkSpeed4",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: VehicleSpeed.",
+   "name": "SpeedRpmRef2AC",
    "category": "Spark",
-   "auto": true,
+   "desc": "As SpeedRpmRef2 with A/C requested",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "287F": {
-   "name": "SparkV00F1",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: $F1,Z. Result to $00F4,Z.",
+   "name": "SpeedDampP",
    "category": "Spark",
-   "auto": true,
+   "desc": "Low-speed surge spark control: spark against the rpm deviation from SpeedRpmRef (sign kept)",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2889": {
-   "name": "SparkV00F2Limit",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: $F2,Z.",
+   "name": "SpeedDampD",
    "category": "Spark",
-   "auto": true,
+   "desc": "Low-speed surge spark control: spark against the change of the rpm deviation",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2893": {
-   "name": "SparkV00F3Adder",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: $F3,Z.",
+   "name": "SpeedDampI",
    "category": "Spark",
-   "auto": true,
+   "desc": "Low-speed surge spark control: spark against the accumulated rpm deviation",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "28AA": {
-   "name": "SparkAirTempLimit",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: AirTemp.",
+   "name": "TipInRetardDuration",
    "category": "Spark",
-   "auto": true,
+   "desc": "Tip-in spark retard near idle (Sub_1D5EC): number of steps ($0D14,Z) against air temperature",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "28B2": {
-   "name": "SparkAirTempV0D15",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: result of Lookup2D x $0D15,Z.",
+   "name": "TipInRetard",
    "category": "Spark",
-   "auto": true,
+   "desc": "Tip-in spark retard against air temperature (rows) and throttle rise above its filtered value $0D15,Z (columns)",
    "x": "raw",
    "y": "pos256",
-   "z": "raw"
+   "z": "spark",
+   "auto": false
   },
   "28E4": {
-   "name": "SparkAirTempV0D152",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: result of Lookup2D x $0D15,Z.",
+   "name": "TipInRetardKnock",
    "category": "Spark",
-   "auto": true,
+   "desc": "As TipInRetard while a knock retard is applied",
    "x": "raw",
    "y": "pos256",
-   "z": "raw"
+   "z": "spark",
+   "auto": false
   },
   "2905": {
-   "name": "SparkAirTempLimit2",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: AirTemp.",
+   "name": "TipInRetardDurationKnock",
    "category": "Spark",
-   "auto": true,
+   "desc": "As TipInRetardDuration while a knock retard is applied ($0D04,Z non-zero)",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "290D": {
-   "name": "SparkAirTemp",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: AirTemp.",
+   "name": "TipInRetardAirScale",
    "category": "Spark",
-   "auto": true,
+   "desc": "Tip-in spark retard: air temperature to row position",
    "x": "tempc",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "2970": {
-   "name": "SparkV0D39V0D1E",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E14E). Inputs: $0D39,Z x $0D1E,Z. Result to $0D32,Z.",
+   "name": "SurgeRetardBase",
    "category": "Spark",
-   "auto": true,
+   "desc": "Driveline surge spark control: base retard ($0D32,Z) against MAP position (rows) and the fast segment rpm $0D1E,Z (columns)",
    "x": "raw",
    "y": "pos256",
-   "z": "raw"
+   "z": "spark",
+   "auto": false
   },
   "2CE3": {
-   "name": "KnockRpmFactor",
-   "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA4,Z.",
-   "category": "Spark",
-   "auto": true,
+   "name": "KnockMapThresholdRpm",
+   "category": "Knock",
+   "desc": "MAP above which knock control runs ($0DA4,Z), against engine rpm; multiplied by KnockMapThresholdBaro",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2CF1": {
-   "name": "KnockBaro",
-   "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: Baro. Result to $00FE,Z.",
-   "category": "Spark",
-   "auto": true,
+   "name": "KnockMapThresholdBaro",
+   "category": "Knock",
+   "desc": "Factor on the knock MAP threshold against barometric pressure",
    "x": "kpa",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "2CFB": {
-   "name": "KnockRpm",
-   "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA5,Z.",
-   "category": "Spark",
-   "auto": true,
+   "name": "KnockNoiseLearnWeight",
+   "category": "Knock",
+   "desc": "Filter weight of the learned knock noise level per rpm band ($0DA5,Z)",
    "x": "rpm32",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "2D07": {
-   "name": "KnockRpm2",
-   "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA7,Z.",
-   "category": "Spark",
-   "auto": true,
+   "name": "KnockNoiseMin",
+   "category": "Knock",
+   "desc": "Lower limit of the learned knock noise level against engine rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2D13": {
-   "name": "KnockRpm3",
-   "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA6,Z.",
-   "category": "Spark",
-   "auto": true,
+   "name": "KnockNoiseMax",
+   "category": "Knock",
+   "desc": "Upper limit of the learned knock noise level against engine rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2D1F": {
-   "name": "KnockRpm4",
-   "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DB5,Z.",
-   "category": "Spark",
-   "auto": true,
+   "name": "KnockWindowRpm",
+   "category": "Knock",
+   "desc": "Knock sampling window length factor ($0DB5,Z) against engine rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2D35": {
    "name": "KnockThreshold",
@@ -1576,28 +1576,28 @@
    "category": "Spark"
   },
   "2D49": {
-   "name": "KnockV0A8B",
-   "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F408). Inputs: $0A8B,Z.",
-   "category": "Spark",
-   "auto": true,
+   "name": "KnockRetardStep",
+   "category": "Knock",
+   "desc": "Knock retard step against the knock signal above the threshold ($0A8B,Z minus KnockThresholdNow)",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2D55": {
-   "name": "KnockMap",
-   "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F256). Inputs: Map.",
-   "category": "Spark",
-   "auto": true,
+   "name": "KnockRetardMaxMap",
+   "category": "Knock",
+   "desc": "Maximum knock retard ($0DAA,Z) against MAP (above throttle $24A5 or below rpm $24A6)",
    "x": "kpa",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2E4D": {
-   "name": "KnockRpm5",
-   "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0D40,Z.",
-   "category": "Spark",
-   "auto": true,
+   "name": "KnockRetardMaxRpm",
+   "category": "Knock",
+   "desc": "Limit of the per-cylinder knock retard ($0D40,Z) against engine rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2E8D": {
    "name": "SparkCoolantCorrA",
@@ -1616,36 +1616,36 @@
    "category": "Spark"
   },
   "2EA6": {
-   "name": "SparkTrim",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z.",
+   "name": "O2SparkTrimPos",
    "category": "Spark",
-   "auto": true,
+   "desc": "Spark change against the short-term trim above its average (closed loop, part throttle), into $0D42,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2EB4": {
-   "name": "SparkTrim2",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z.",
+   "name": "O2SparkTrimNeg",
    "category": "Spark",
-   "auto": true,
+   "desc": "Spark change against the short-term trim below its average",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2EC2": {
-   "name": "SparkTrim3",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z.",
+   "name": "O2SparkTrimPosPN",
    "category": "Spark",
-   "auto": true,
+   "desc": "As O2SparkTrimPos in P/N",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2ED0": {
-   "name": "SparkTrim4",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z.",
+   "name": "O2SparkTrimNegPN",
    "category": "Spark",
-   "auto": true,
+   "desc": "As O2SparkTrimNeg in P/N",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "2EE4": {
    "name": "IdleSparkFilterCoolant",
@@ -1720,28 +1720,28 @@
    "auto": false
   },
   "2F5B": {
-   "name": "IdleTargetRpmNeutral",
+   "name": "IacCrankCoolant",
    "category": "Idle",
-   "desc": "Target idle speed against coolant used instead of IdleTargetRpm while $0C31,Z bit 5 is set (with calibration bit $032E.6 clear)",
+   "desc": "IAC position while cranking (engine rpm below $2641) against coolant; scaled by IacStepBaroFactor and limited by $2642",
    "x": "tempc",
-   "y": "rpm8",
+   "y": "raw",
    "auto": false
   },
   "2F8D": {
-   "name": "IdleV0C3FLimit",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: $0C3F,Z.",
+   "name": "IdleTargetDipLimit",
    "category": "Idle",
-   "auto": true,
+   "desc": "Limit of IdleTargetDipAdder against $0C3F,Z (time since the last crank event)",
    "x": "raw",
-   "y": "raw"
+   "y": "rpm8",
+   "auto": false
   },
   "2FB5": {
-   "name": "IdleV0381Scale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: $0381,Z.",
+   "name": "IdleTargetDipAdder",
    "category": "Idle",
-   "auto": true,
+   "desc": "Idle target addition in gear against the time since segment rpm rose back above $263F (after start time $29FE, coolant above $2853)",
    "x": "raw",
-   "y": "raw"
+   "y": "rpm8",
+   "auto": false
   },
   "2F95": {
    "name": "IdleTargetRpm",
@@ -1752,54 +1752,54 @@
    "category": "Idle"
   },
   "2FA1": {
-   "name": "IdleTargetRpmAlt",
+   "name": "IdleTargetRpmPN",
    "category": "Idle",
-   "desc": "Target idle speed against coolant, second variant read by Sub_1B182",
+   "desc": "Target idle speed against coolant in P/N (with calibration bit $032E.6 clear)",
    "x": "tempc",
    "y": "rpm8",
    "auto": false
   },
   "2FAD": {
-   "name": "IdleAdder",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: TBA. Result to $00FE,Z.",
+   "name": "IdleTargetHotAirAdder",
    "category": "Idle",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Idle target addition against air temperature above $265A (hysteresis down to $2659)",
+   "x": "tempc",
+   "y": "rpm8",
+   "auto": false
   },
   "2FBD": {
-   "name": "IdleAirTempAltV030EFactor",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: result of Lookup2D x $030E,Z. Result to $035E,Z.",
+   "name": "IdleBattTempTarget",
    "category": "Idle",
-   "auto": true,
+   "desc": "Ramped idle target ($035E,Z) against battery temperature (rows) and run time $030E,Z (columns)",
    "x": "raw",
    "y": "pos256",
-   "z": "raw"
+   "z": "rpm8",
+   "auto": false
   },
   "2FDE": {
-   "name": "IdleAirTempAltV030EFactorPN",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: result of Lookup2D x $030E,Z. Result to $035E,Z.",
+   "name": "IdleBattTempTargetPN",
    "category": "Idle",
-   "auto": true,
+   "desc": "As IdleBattTempTarget in P/N",
    "x": "raw",
    "y": "pos256",
-   "z": "raw"
+   "z": "rpm8",
+   "auto": false
   },
   "3009": {
-   "name": "IdleAirTempAltLimit",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: AirTempAlt. Result to $035D,Z.",
+   "name": "IdleBattTempRampDelay",
    "category": "Idle",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Delay before the idle target ramp starts, against battery temperature",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
   },
   "3013": {
-   "name": "IdleAirTempAltLimit2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: AirTempAlt.",
+   "name": "IdleBattTempRampHold",
    "category": "Idle",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Time the ramped idle target is held after it ends, against battery temperature",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
   },
   "301D": {
    "name": "IdleRateFilterCoolant",
@@ -2010,52 +2010,52 @@
    "auto": false
   },
   "318F": {
-   "name": "IdleMapScale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Map.",
+   "name": "IacAcKickMap",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC step when the A/C clutch engages, against MAP (MAP latched into $0341,Z); into $0340,Z",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "3197": {
-   "name": "IdleV0341Scale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0341,Z.",
+   "name": "IacAcKickMapLatched",
    "category": "Idle",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "IAC step when the A/C clutch releases, against the MAP latched at engagement ($0341,Z)",
+   "x": "kpa",
+   "y": "raw",
+   "auto": false
   },
   "31C5": {
-   "name": "IdleAirTempAltFactor",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A6E2). Inputs: AirTempAlt. Result to $0334,Z.",
+   "name": "IacStartBattTemp",
    "category": "Idle",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "IAC hold at start ($0334,Z/$0333,Z) against battery temperature, scaled by IacStepBaroFactor",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
   },
   "31F5": {
-   "name": "IdleSpeedFactor",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1971A). Inputs: VehicleSpeed.",
+   "name": "IacShiftSpeedFactor",
    "category": "Idle",
-   "auto": true,
+   "desc": "Factor on the gear-change IAC step in drive against vehicle speed",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "3201": {
-   "name": "IdleV035C",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: $035C,Z. Result to $035B,Z.",
+   "name": "IacAcEngageAdder",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC addition just after A/C engagement against the A/C sensor value latched before engagement ($035C,Z), into $035B,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "3210": {
-   "name": "IdleTimeAdder",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Count3s.",
+   "name": "IacRunTimeAdder",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC addition against time since start",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "3218": {
    "name": "IacCoastCoolant",
@@ -2090,9 +2090,9 @@
    "auto": false
   },
   "324C": {
-   "name": "IacRollFactorAirTempAlt",
+   "name": "IacRollFactorBattTemp",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against the alternative air temperature $0A5A,Z (centred on 128)",
+   "desc": "Factor on the rolling IAC target against battery temperature (centred on 128)",
    "x": "tempc",
    "y": "raw",
    "auto": false
@@ -2132,69 +2132,69 @@
    "auto": false
   },
   "32E8": {
-   "name": "IdleBaroScale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: Baro. Result to $00F1,Z.",
+   "name": "IacStepBaroFactor",
    "category": "Idle",
-   "auto": true,
+   "desc": "Multiplier on IAC steps and start positions against barometric pressure",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "32F2": {
-   "name": "IdleBaroFactor",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1971A). Inputs: Baro. Result to $00F0,Z.",
+   "name": "IacShiftBaroFactor",
    "category": "Idle",
-   "auto": true,
+   "desc": "Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "32FC": {
-   "name": "IdleBaroFactor2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Baro.",
+   "name": "IacKickBaroFactor",
    "category": "Idle",
-   "auto": true,
+   "desc": "Factor on the A/C and rpm-dip IAC steps against barometric pressure",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "3310": {
-   "name": "IdleV0DC6Factor",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: $0DC6,Z.",
+   "name": "IacChargeStep",
    "category": "Idle",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "IAC opening step against the charging deficit $0DC6,Z (target charging voltage minus battery voltage)",
+   "x": "volt16",
+   "y": "raw",
+   "auto": false
   },
   "331A": {
-   "name": "IdleV032ESegRpm",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00F4,Z.",
+   "name": "IacFieldDutyRpm",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC addition against field duty (rows) and segment rpm (columns), into $F4,Z",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "33B3": {
-   "name": "IdleScale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: TBA.",
+   "name": "IacDipKickPN",
    "category": "Idle",
-   "auto": true,
+   "desc": "As IacDipKick in P/N with $0312,Z bit 6 set",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "33BB": {
-   "name": "IdleScale2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: TBA.",
+   "name": "IacDipKickPN2",
    "category": "Idle",
-   "auto": true,
+   "desc": "As IacDipKick in P/N otherwise",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "33C3": {
-   "name": "IdleScale3",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: TBA.",
+   "name": "IacDipKick",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC step against the rpm drop below the reference ($0379,Z / 8), in drive",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "3341": {
    "name": "SensorRpm2",
@@ -2205,110 +2205,110 @@
    "y": "raw"
   },
   "3349": {
-   "name": "IacAfterStartTimeAdder",
+   "name": "IdleMapAfterStart",
    "category": "Idle",
-   "desc": "Idle air added shortly after start against time since start",
+   "desc": "Idle MAP target addition against time since start",
    "x": "raw",
    "y": "raw",
    "auto": false
   },
   "3353": {
-   "name": "IacWarmupCoolantAdder",
+   "name": "IdleMapWarmup",
    "category": "Idle",
-   "desc": "Idle air added against coolant (warm-up)",
+   "desc": "Idle MAP target addition against coolant",
    "x": "tempc",
    "y": "raw",
    "auto": false
   },
   "3363": {
-   "name": "IacRpmAdder",
+   "name": "IdleMapRpm",
    "category": "Idle",
-   "desc": "IAC addition against segment rpm, weighted by IacRpmAdderCoolantWeight",
+   "desc": "Idle MAP target addition against segment rpm, weighted by IdleMapRpmCoolantWeight",
    "x": "rpm32",
    "y": "raw",
    "auto": false
   },
   "336D": {
-   "name": "IacRpmAdderCoolantWeight",
+   "name": "IdleMapRpmCoolantWeight",
    "category": "Idle",
-   "desc": "Weight of IacRpmAdder against coolant",
+   "desc": "Weight of IdleMapRpm against coolant",
    "x": "tempc",
    "y": "mult256",
    "auto": false
   },
   "3377": {
-   "name": "IacBaroAdder",
+   "name": "IdleMapBaro",
    "category": "Idle",
-   "desc": "IAC addition against barometric pressure",
+   "desc": "Idle MAP target addition against barometric pressure",
    "x": "kpa",
    "y": "raw",
    "auto": false
   },
   "3381": {
-   "name": "IdleTable",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: TBA.",
+   "name": "IacMapHighStepClosed",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC closing step against how far MAP is above the idle MAP target, closed throttle",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "338B": {
-   "name": "IdleTable2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: TBA.",
+   "name": "IacMapHighStep",
    "category": "Idle",
-   "auto": true,
+   "desc": "As IacMapHighStepClosed, throttle not closed",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "3395": {
-   "name": "IdleTable3",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: TBA.",
+   "name": "IacMapLowStep",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC opening step against how far MAP is below the idle MAP target ($031E,Z)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "339F": {
-   "name": "IacAdderV0335",
+   "name": "IdleMapAdderV0335",
    "category": "Idle",
-   "desc": "IAC addition against $0335,Z (Sub_1AC64)",
+   "desc": "Idle MAP target addition against $0335,Z (without A/C clutch)",
    "x": "raw",
    "y": "raw",
    "auto": false
   },
   "33A9": {
-   "name": "IacAdderV0335b",
+   "name": "IdleMapAdderV0335b",
    "category": "Idle",
-   "desc": "Second IAC addition against $0335,Z",
+   "desc": "As IdleMapAdderV0335 when fuel mode bits $0770.7-6 are set and $05E0,Z is zero",
    "x": "raw",
    "y": "raw",
    "auto": false
   },
   "33CB": {
-   "name": "IdleV032ESegRpm2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00F7,Z.",
+   "name": "IacFieldDutyRpm2",
    "category": "Idle",
-   "auto": true,
+   "desc": "Second field-duty table against segment rpm, into $F7,Z (MAP offset for the learned idle MAP)",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "33EC": {
-   "name": "IacBaseBaroTarget2",
+   "name": "IdleMapBase",
    "category": "Idle",
-   "desc": "Second base idle air table, barometric pressure x idle target, into the idle air sum",
+   "desc": "Base of the idle MAP target ($031E,Z, via $F5,Z): barometric pressure (rows) and idle target rpm (columns)",
    "x": "rpm32",
    "y": "pos256",
    "z": "raw",
    "auto": false
   },
   "3423": {
-   "name": "IdleBaro",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_193EC). Inputs: Baro.",
+   "name": "IacDriveOffsetBaro",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC offset removed from the IAC target in drive, against barometric pressure, giving $0374,Z",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "342F": {
    "name": "IacStartBaro",
@@ -2319,12 +2319,12 @@
    "auto": false
   },
   "343B": {
-   "name": "IdleBaroFactor3",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A720). Inputs: Baro.",
+   "name": "IacCoastMapGain",
    "category": "Idle",
-   "auto": true,
+   "desc": "Coasting IAC target: gain of the MAP error (MAP minus learned idle MAP $2A,Z) against barometric pressure",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "3447": {
    "name": "IacBaseBaroTarget",
@@ -2740,12 +2740,12 @@
    "y": "raw"
   },
   "57E9": {
-   "name": "KnockRpm6",
-   "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DB3,Z.",
-   "category": "Spark",
-   "auto": true,
+   "name": "KnockSensorCheckRpm",
+   "category": "Knock",
+   "desc": "Minimum filtered knock signal for the sensor check ($0DB3,Z) against engine rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "704B": {
    "name": "ThermistorCold",
@@ -2787,7 +2787,7 @@
   },
   "70BF": {
    "name": "StartV0A87",
-   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to $0A88,Z.",
+   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to AcSensor.",
    "category": "Startup",
    "auto": true,
    "x": "raw",
@@ -2835,20 +2835,20 @@
    "auto": false
   },
   "758E": {
-   "name": "SparkV0A57",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E582). Inputs: $0A57,Z.",
+   "name": "DwellBattery",
    "category": "Spark",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Coil dwell against filtered battery voltage $0A57,Z (×32 into $E8,Z)",
+   "x": "volt16",
+   "y": "raw",
+   "auto": false
   },
   "75A2": {
-   "name": "SparkV0A572",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E582). Inputs: $0A57,Z.",
+   "name": "DwellBatteryAlt",
    "category": "Spark",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "As DwellBattery with $0D5F,Z bit 6 set",
+   "x": "volt16",
+   "y": "raw",
+   "auto": false
   },
   "ABC5": {
    "name": "EventV0D11Limit",

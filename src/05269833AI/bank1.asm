@@ -202,7 +202,7 @@ L10256:
         LDX     #DecelCutMinRpmCoolant
         JSR     Lookup2D
         STAA    $F2,Z
-        LDAA    $032E,Z
+        LDAA    >FieldDuty,Z
         LDX     #DecelCutMinRpmV032E
         JSR     Lookup2D
         CMPA    $F2,Z
@@ -220,7 +220,7 @@ L102A0:
         LDX     #DecelCutMinRpmCoolant2
         JSR     Lookup2D
         STAA    $F2,Z
-        LDAA    $032E,Z
+        LDAA    >FieldDuty,Z
         LDX     #DecelCutMinRpmV032E2
         JSR     Lookup2D
         LDAB    $F0,Z
@@ -566,7 +566,7 @@ Sub_10604:
         LDAA    >EngineRpm,Z
         CMPA    $16AA
         BCS     L10684
-        LDAA    $0D04,Z
+        LDAA    >KnockRetard,Z
         STAA    $F0,Z
         TZX
         LDX     #$8DAC
@@ -590,9 +590,9 @@ L10666:
         BVC     L10672
         LDAA    #$7F
 L10672:
-        CMPA    $0D40,Z
+        CMPA    >KnockCylRetardMax,Z
         BCS     L1067C
-        LDAA    $0D40,Z
+        LDAA    >KnockCylRetardMax,Z
 L1067C:
         LDAB    $16A4
         MUL
@@ -3376,7 +3376,7 @@ L122BC:
         JSR     Lookup2D
         CLRB
         STD     $F8,Z
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $09F8
         BHI     L1233E
         LDAA    $FC,Z
@@ -8700,7 +8700,7 @@ Sub_17B7E:
         CMPA    $0795
         BCS     L17BD0
         BRSET   $0509,Z,#$80,L17BAC
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         CMPA    $0796
         BCC     L17BD0
 L17BAC:
@@ -10570,7 +10570,7 @@ L19498:
 L1949E:
         TDE
         LDAA    <Baro,Z
-        LDX     #IdleBaro
+        LDX     #IacDriveOffsetBaro
         JSR     Lookup2D
         CLRA
         SDE
@@ -10580,7 +10580,7 @@ L194B0:
         BPL     L194B6
         CLRB
 L194B6:
-        STAB    $0374,Z
+        STAB    >IacDriveOffset,Z
         BRCLR   $0331,#$80,L19606
         BRSET   $00F8,Z,#$02,L19606
         CLRE
@@ -10695,7 +10695,7 @@ L195AE:
         BRA     L19604
 L195F4:
         CLR     $0350,Z
-        LDAB    $0374,Z
+        LDAB    >IacDriveOffset,Z
         LDAA    $0335,Z
         JSR     Sub_19672
 L19604:
@@ -10709,7 +10709,7 @@ L19606:
         BRA     L19648
 L1961C:
         CLR     $0350,Z
-        LDAB    $0374,Z
+        LDAB    >IacDriveOffset,Z
         BRSET   $032E,#$40,L1963C
         BRCLR   $0C31,Z,#$20,L1963C
         LDAA    $0333,Z
@@ -10853,7 +10853,7 @@ L1974A:
         BRCLR   $0C31,Z,#$20,L1977A
 L1975E:
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeedFactor
+        LDX     #IacShiftSpeedFactor
         JSR     Lookup2D
         CLRA
         EMULS
@@ -10870,7 +10870,7 @@ L1977A:
         TSTA
         BNE     L197B6
         LDAA    <Baro,Z
-        LDX     #IdleBaroFactor
+        LDX     #IacShiftBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         EMUL
@@ -11241,8 +11241,8 @@ L19BAE:
         TED
         XGAB
         TDE
-        LDAA    >AirTempAlt,Z
-        LDX     #IacRollFactorAirTempAlt
+        LDAA    >BatteryTemp,Z
+        LDX     #IacRollFactorBattTemp
         BRCLR   $0331,#$80,L19BD0
         BRSET   $00F8,Z,#$02,L19BD0
         LDAA    $0345,Z
@@ -11390,7 +11390,7 @@ L19D76:
         LBRA    L1A462
 L19D94:
         BRSET   $0316,Z,#$80,L19F0A
-        LDAA    $0A88,Z
+        LDAA    >AcSensor,Z
         CMPA    $056D
         BHI     L19DBC
         LDD     >SegmentRpm,Z
@@ -11677,17 +11677,17 @@ L1A148:
         BRCLR   $0C31,Z,#$08,L1A164
         LDAA    >Map,Z
         STAA    $0341,Z
-        LDX     #IdleMapScale
+        LDX     #IacAcKickMap
         BRA     L1A16C
 L1A164:
-        LDX     #IdleV0341Scale
+        LDX     #IacAcKickMapLatched
         LDAA    $0341,Z
 L1A16C:
         JSR     Lookup2D
         SXT
         TDE
         LDAA    <Baro,Z
-        LDX     #IdleBaroFactor2
+        LDX     #IacKickBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         EMULS
@@ -11770,8 +11770,8 @@ L1A24C:
         LDD     #$0100
         EMULS
         TDE
-        LDAA    >AirTempAlt,Z
-        LDX     #IacRollFactorAirTempAlt
+        LDAA    >BatteryTemp,Z
+        LDX     #IacRollFactorBattTemp
         BRCLR   $0331,#$80,L1A270
         BRSET   $00F8,Z,#$02,L1A270
         LDAA    $0345,Z
@@ -12031,7 +12031,7 @@ Sub_1A4E4:
         PSHM    E,X,K
         BRSET   $06B4,Z,#$20,L1A596
         BRSET   $0505,Z,#$08,L1A596
-        LDAB    $0DB9,Z
+        LDAB    >ChargeTargetVolts,Z
         SUBB    >BatteryVolts2,Z
         BCC     L1A4FE
         CLRB
@@ -12042,7 +12042,7 @@ L1A4FE:
         BCC     L1A50E
         CLRA
 L1A50E:
-        STAA    $0DC6,Z
+        STAA    >ChargeDeficit,Z
         BRSET   $0DC7,Z,#$04,L1A596
         BRCLR   $0312,Z,#$80,L1A596
         BRSET   $0017,Z,#$01,L1A596
@@ -12052,12 +12052,12 @@ L1A50E:
         BITB    #$02
         BNE     L1A586
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacStepBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         TDE
-        LDAA    $0DC6,Z
-        LDX     #IdleV0DC6Factor
+        LDAA    >ChargeDeficit,Z
+        LDX     #IacChargeStep
         JSR     Lookup2D
         CLRA
         EMUL
@@ -12107,10 +12107,10 @@ Sub_1A5A2:
         LDAA    <Baro,Z
         LDX     #IacStartBaro
         JSR     Lookup2D
-        STAA    $2A,Z
+        STAA    <IdleMapLearned,Z
         BRCLR   $0331,#$80,L1A5FA
         LDAA    <Baro,Z
-        LDX     #IdleBaroFactor
+        LDX     #IacShiftBaroFactor
         JSR     Lookup2D
         STAA    $F0,Z
         CLRB
@@ -12143,12 +12143,12 @@ L1A5FA:
 ;---------------------------------------------------------------------------------------------------
 Sub_1A5FC:
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacStepBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         TDE
-        LDAA    >AirTempAlt,Z
-        LDX     #IdleAirTempAltFactor
+        LDAA    >BatteryTemp,Z
+        LDX     #IacStartBattTemp
         JSR     Lookup2D
         CLRA
         EMUL
@@ -12229,14 +12229,14 @@ L1A6D8:
         CLRA
         LDAB    $0330,Z
         TDE
-        LDAB    $032E,Z
+        LDAB    >FieldDuty,Z
         PSHM    D,E
         LDAA    $2937
         JSR     Blend16
         AIS     #$04
-        STAB    $032E,Z
+        STAB    >FieldDuty,Z
 L1A710:
-        LDAA    $2A,Z
+        LDAA    <IdleMapLearned,Z
         CMPA    $2A7E
         BCS     L1A71E
         CMPA    $2A7F
@@ -12246,7 +12246,7 @@ L1A71E:
         LDX     #IacStartBaro
         JSR     Lookup2D
         CLRB
-        STAA    $2A,Z
+        STAA    <IdleMapLearned,Z
 L1A72C:
         BRCLR   $00FC,Z,#$02,L1A7C4
         BRSET   $032E,#$40,L1A73E
@@ -12258,7 +12258,7 @@ L1A73E:
         BCC     L1A74E
         CLRA
 L1A74E:
-        SUBA    $2A,Z
+        SUBA    <IdleMapLearned,Z
         BCC     L1A754
         NEGA
 L1A754:
@@ -12283,7 +12283,7 @@ L1A784:
 L1A79A:
         CLRA
         TDE
-        LDAB    $2A,Z
+        LDAB    <IdleMapLearned,Z
         PSHM    D,E
         LDAA    $2A81
         JSR     Blend16
@@ -12297,7 +12297,7 @@ L1A7B8:
         BLS     L1A7C2
         LDAB    $2A7F
 L1A7C2:
-        STAB    $2A,Z
+        STAB    <IdleMapLearned,Z
 L1A7C4:
         BRSET   $033D,#$08,L1A884
         BRSET   $0314,Z,#$80,L1A7DC
@@ -12310,7 +12310,7 @@ L1A7DA:
 L1A7DC:
         CLRA
         LDAB    >Map,Z
-        SUBB    $2A,Z
+        SUBB    <IdleMapLearned,Z
         SBCA    #$00
         BRSET   $032E,#$40,L1A7F2
         BRCLR   $0C31,Z,#$20,L1A7F8
@@ -12321,7 +12321,7 @@ L1A7F2:
 L1A7F8:
         TDE
         LDAA    <Baro,Z
-        LDX     #IdleBaroFactor3
+        LDX     #IacCoastMapGain
         JSR     Lookup2D
         CLRA
         EMULS
@@ -12483,7 +12483,7 @@ L1A974:
         CLRA
         TDE
         LDAA    <Baro,Z
-        LDX     #IdleBaroFactor
+        LDX     #IacShiftBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         EMUL
@@ -12713,24 +12713,24 @@ Sub_1AB7E:
         LDAB    $F5,Z
         ADE
         LDAA    >Count3s,Z
-        LDX     #IacAfterStartTimeAdder
+        LDX     #IdleMapAfterStart
         JSR     Lookup2D
         CLRA
         ADE
         LDAA    >CoolantTemp,Z
-        LDX     #IacWarmupCoolantAdder
+        LDX     #IdleMapWarmup
         JSR     Lookup2D
         CLRA
         ADE
         BRSET   $0943,Z,#$01,L1ABD6
         LDAA    $0335,Z
-        LDX     #IacAdderV0335
+        LDX     #IdleMapAdderV0335
         LDAB    $0770,Z
         ANDB    #$C0
         BEQ     L1ABCE
         LDAB    $05E0,Z
         BNE     L1ABCE
-        LDX     #IacAdderV0335b
+        LDX     #IdleMapAdderV0335b
 L1ABCE:
         JSR     Lookup2D
         CLRA
@@ -12771,11 +12771,11 @@ L1AC1C:
 L1AC20:
         TDE
         LDAA    >SegmentRpm,Z
-        LDX     #IacRpmAdder
+        LDX     #IdleMapRpm
         JSR     Lookup2D
         STAA    $FE,Z
         LDAA    >CoolantTemp,Z
-        LDX     #IacRpmAdderCoolantWeight
+        LDX     #IdleMapRpmCoolantWeight
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
@@ -12783,7 +12783,7 @@ L1AC20:
         TAB
         CLRA
         ADE
-        LDX     #IacBaroAdder
+        LDX     #IdleMapBaro
         LDAA    <Baro,Z
         JSR     Lookup2D
         CLRA
@@ -12800,7 +12800,7 @@ L1AC66:
         BCC     L1AC72
         LDAB    $2968
 L1AC72:
-        STAB    $031E,Z
+        STAB    >IdleMapTarget,Z
         LDAA    >ThrottleState,Z
         BITA    #$80
         BEQ     L1AC88
@@ -12849,7 +12849,7 @@ L1ACFE:
         BCS     L1AD3A
         CLR     $0322,Z
         CLRA
-        LDAB    $031E,Z
+        LDAB    >IdleMapTarget,Z
         TDE
         LDAB    >Map,Z
         SDE
@@ -12857,14 +12857,14 @@ L1ACFE:
         TED
         BMI     L1AD20
         TBA
-        LDX     #IdleTable3
+        LDX     #IacMapLowStep
         BRA     L1AD32
 L1AD20:
         NEGD
         TBA
-        LDX     #IdleTable
+        LDX     #IacMapHighStepClosed
         BRSET   $0313,Z,#$01,L1AD32
-        LDX     #IdleTable2
+        LDX     #IacMapHighStep
 L1AD32:
         JSR     Lookup2D
         JSR     Sub_1A464
@@ -12888,12 +12888,12 @@ L1AD4A:
         BCS     L1AD6C
 L1AD5E:
         LDAA    >CoolantTemp,Z
-        LDX     #IdleTargetRpmNeutral
+        LDX     #IacCrankCoolant
         JSR     Lookup2D
         BRA     L1AD78
 L1AD6C:
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant
+        LDX     #IacRunUpCoolant
         JSR     Lookup2D
 L1AD78:
         CLRB
@@ -13047,7 +13047,7 @@ Sub_1AEF8:
         STAA    >IacBase,Z
 L1AF1A:
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacStepBaroFactor
         JSR     Lookup2D
         STAA    $F1,Z
         LDAA    >CoolantTemp,Z
@@ -13074,17 +13074,17 @@ L1AF54:
 L1AF66:
         CLRA
         TDE
-        LDAA    $032E,Z
-        LDX     #IdleV032EScale
+        LDAA    >FieldDuty,Z
+        LDX     #IacFieldDutyScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleV032ESegRpm
+        LDX     #IacFieldDutyRpm
         JSR     Lookup3D
         STAB    $F4,Z
         CLRA
         ADE
         LDAA    >Count3s,Z
-        LDX     #IdleTimeAdder
+        LDX     #IacRunTimeAdder
         JSR     Lookup2D
         CLRA
         ADE
@@ -13102,15 +13102,15 @@ L1AFAC:
         ADE
 L1AFC6:
         STE     $00F2,Z
-        LDAA    $032E,Z
-        LDX     #IdleV032EScale
+        LDAA    >FieldDuty,Z
+        LDX     #IacFieldDutyScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleV032ESegRpm2
+        LDX     #IacFieldDutyRpm2
         JSR     Lookup3D
         STAB    $F7,Z
         CLRA
-        LDAB    $0A88,Z
+        LDAB    >AcSensor,Z
         TDE
         LDAB    $0345,Z
         PSHM    D,E
@@ -13125,7 +13125,7 @@ L1AFC6:
 L1B012:
         BRCLR   $0331,#$80,L1B028
         BRCLR   $0314,Z,#$01,L1B028
-        LDAA    $0359,Z
+        LDAA    >AcOnTime,Z
         CMPA    $27F5
         BLS     L1B02E
 L1B028:
@@ -13133,12 +13133,12 @@ L1B028:
         BRA     L1B03E
 L1B02E:
         LDAA    $035C,Z
-        LDX     #IdleV035C
+        LDX     #IacAcEngageAdder
         JSR     Lookup2D
         STAA    $035B,Z
 L1B03E:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L1B060
-        LDE     $0A52,Z
+        LDE     >BatteryVoltsFiltered,Z
         LDAA    >BatteryVolts2,Z
         CLRB
         XGDE
@@ -13146,13 +13146,13 @@ L1B03E:
         LDAA    $2938
         JSR     Blend16
         AIS     #$04
-        STD     $0A52,Z
+        STD     >BatteryVoltsFiltered,Z
 L1B060:
         LDAA    <Baro,Z
         LDX     #IacBaroScale
         JSR     Lookup2D
         LDAB    >IdleTarget,Z
-        LDX     #IacBaseBaroTarget2
+        LDX     #IdleMapBase
         JSR     Lookup3D
         STAA    $F5,Z
         BRSET   $0338,#$02,L1B09A
@@ -13313,7 +13313,7 @@ L1B23A:
         LDX     #IdleTargetRpm
         BRSET   $032E,#$40,L1B252
         BRCLR   $0C31,Z,#$20,L1B252
-        LDX     #IdleTargetRpmAlt
+        LDX     #IdleTargetRpmPN
 L1B252:
         JSR     Lookup2D
         STAA    $FE,Z
@@ -13338,7 +13338,7 @@ L1B27C:
         BRA     L1B2A0
 L1B28E:
         TBA
-        LDX     #IdleAdder
+        LDX     #IdleTargetHotAirAdder
         JSR     Lookup2D
         ADDA    $FE,Z
         BCC     L1B29E
@@ -13388,7 +13388,7 @@ L1B316:
         CMPA    $25CB
         LBHI    L1B450
 L1B326:
-        LDAA    $0DB9,Z
+        LDAA    >ChargeTargetVolts,Z
         LDAB    $25D7
         BRCLR   $0316,Z,#$04,L1B338
         LDAB    $25DA
@@ -13397,7 +13397,7 @@ L1B338:
         BCC     L1B33E
         CLRA
 L1B33E:
-        CMPA    $0A52,Z
+        CMPA    >BatteryVoltsFiltered,Z
         BLS     L1B352
         BRCLR   $0312,Z,#$40,L1B450
         BSET    $0316,Z,#$04
@@ -13419,7 +13419,7 @@ L1B376:
         CMPA    $25D5
         LBHI    L1B450
 L1B386:
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
         BRSET   $0316,Z,#$08,L1B3AA
         CMPA    $25D1
         BCS     L1B39C
@@ -13499,13 +13499,13 @@ L1B480:
         BLS     L1B496
         STD     $FE,Z
 L1B496:
-        LDAA    >AirTempAlt,Z
-        LDX     #IdleAirTempAlt
+        LDAA    >BatteryTemp,Z
+        LDX     #IdleBattTempScale
         JSR     Lookup2D
-        LDX     #IdleAirTempAltV030EFactor
+        LDX     #IdleBattTempTarget
         BRSET   $032E,#$40,L1B4B6
         BRCLR   $0C31,Z,#$20,L1B4B6
-        LDX     #IdleAirTempAltV030EFactorPN
+        LDX     #IdleBattTempTargetPN
 L1B4B6:
         LDAB    $030E,Z
         JSR     Lookup3D
@@ -13526,8 +13526,8 @@ L1B4F0:
         INC     $0360,Z
 L1B500:
         CLR     $0361,Z
-        LDAA    >AirTempAlt,Z
-        LDX     #IdleAirTempAltLimit
+        LDAA    >BatteryTemp,Z
+        LDX     #IdleBattTempRampDelay
         JSR     Lookup2D
         CMPA    $0360,Z
         LBHI    L1B5CE
@@ -13590,8 +13590,8 @@ L1B5A4:
         BRCLR   >MainLoopPhaseMask,Z,#$08,L1B5B8
         INC     $0361,Z
 L1B5B8:
-        LDAA    >AirTempAlt,Z
-        LDX     #IdleAirTempAltLimit2
+        LDAA    >BatteryTemp,Z
+        LDX     #IdleBattTempRampHold
         JSR     Lookup2D
         CMPA    $0361,Z
         BHI     L1B5CE
@@ -13711,7 +13711,7 @@ L1B6DA:
 ;---------------------------------------------------------------------------------------------------
 Sub_1B6E8:
         BRCLR   $0338,#$02,L1B736
-        LDAA    $0DB9,Z
+        LDAA    >ChargeTargetVolts,Z
         SUBA    $0DD1,Z
         BCC     L1B6FA
         CLRA
@@ -13721,7 +13721,7 @@ L1B6FA:
         BCC     L1B706
         CLRA
 L1B706:
-        STAA    $0DC6,Z
+        STAA    >ChargeDeficit,Z
         CLRB
         LDAA    $0DC4,Z
         TDE
@@ -13755,12 +13755,12 @@ Sub_1B738:
         BITB    #$02
         BNE     L1B7B2
         LDAA    <Baro,Z
-        LDX     #IdleBaroScale
+        LDX     #IacStepBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         TDE
-        LDAA    $0DC6,Z
-        LDX     #IdleV0DC6Factor
+        LDAA    >ChargeDeficit,Z
+        LDX     #IacChargeStep
         JSR     Lookup2D
         CLRA
         EMUL
@@ -14331,7 +14331,7 @@ L1D18C:
         STAA    $03,Y
         LDAA    >AirTemp,Z
         BRSET   $0330,#$20,L1D19C
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
 L1D19C:
         LDX     #AirTempSparkFactor2
         JSR     Lookup2D
@@ -14357,7 +14357,7 @@ L1D1D2:
         STAA    $03,Y
         LDAA    >AirTemp,Z
         BRSET   $0330,#$20,L1D1E2
-        LDAA    >AirTempAlt,Z
+        LDAA    >BatteryTemp,Z
 L1D1E2:
         LDX     #AirTempSparkFactor
         JSR     Lookup2D
@@ -14577,17 +14577,17 @@ L1D40A:
         BPL     L1D422
         NEGA
         BRSET   $0C31,Z,#$20,L1D41C
-        LDX     #SparkTrim2
+        LDX     #O2SparkTrimNeg
         BRA     L1D432
 L1D41C:
-        LDX     #SparkTrim4
+        LDX     #O2SparkTrimNegPN
         BRA     L1D432
 L1D422:
         BRSET   $0C31,Z,#$20,L1D42E
-        LDX     #SparkTrim
+        LDX     #O2SparkTrimPos
         BRA     L1D432
 L1D42E:
-        LDX     #SparkTrim3
+        LDX     #O2SparkTrimPosPN
 L1D432:
         JSR     Lookup2D
 L1D436:
@@ -14761,7 +14761,7 @@ Sub_1D5E0:
         LDD     $0D16,Z
         PSHM    D,E
         LDAA    $2077
-        TST     $0D04,Z
+        TST     >KnockRetard,Z
         BEQ     L1D5FC
         LDAA    $20AD
 L1D5FC:
@@ -14780,8 +14780,8 @@ L1D616:
         NEGA
 L1D618:
         TAB
-        STAB    $0D15,Z
-        LDAA    $0D04,Z
+        STAB    >ThrottleRise,Z
+        LDAA    >KnockRetard,Z
         BNE     L1D698
         CMPB    $2076
         LBLE    L1D7C0
@@ -14857,24 +14857,24 @@ L1D70A:
         BRSET   $0D01,Z,#$10,L1D764
         BSET    $0D00,Z,#$02
         LDAA    >AirTemp,Z
-        LDX     #SparkAirTempLimit
-        LDAB    $0D04,Z
+        LDX     #TipInRetardDuration
+        LDAB    >KnockRetard,Z
         BEQ     L1D726
-        LDX     #SparkAirTempLimit2
+        LDX     #TipInRetardDurationKnock
 L1D726:
         JSR     Lookup2D
         LDAB    $0D14,Z
         CBA
         BCS     L1D764
         LDAA    >AirTemp,Z
-        LDX     #SparkAirTemp
+        LDX     #TipInRetardAirScale
         JSR     Lookup2D
-        LDX     #SparkAirTempV0D15
-        TST     $0D04,Z
+        LDX     #TipInRetard
+        TST     >KnockRetard,Z
         BEQ     L1D74C
-        LDX     #SparkAirTempV0D152
+        LDX     #TipInRetardKnock
 L1D74C:
-        LDAB    $0D15,Z
+        LDAB    >ThrottleRise,Z
         JSR     Lookup3D
         BRCLR   $0339,#$01,L1D7DE
         LBNE    L1D7DE
@@ -14896,7 +14896,7 @@ L1D78A:
         DECB
         CMPB    #$FF
         BEQ     L1D7B2
-        TST     $0D04,Z
+        TST     >KnockRetard,Z
         BNE     L1D7A4
         SUBA    $2078
         BCS     L1D7C0
@@ -14961,7 +14961,7 @@ Sub_1D816:
         BRSET   $0D57,Z,#$01,L1D832
         CLR     $0D56,Z
         CLRW    $0D4E,Z
-        LDD     $0D4A,Z
+        LDD     >RpmRate,Z
         STD     $0D4C,Z
         CLRB
         LBRA    L1D8DE
@@ -14972,7 +14972,7 @@ L1D832:
         STAA    $0D56,Z
 L1D83E:
         LDD     $0D4C,Z
-        LDE     $0D4A,Z
+        LDE     >RpmRate,Z
         STE     $0D4C,Z
         SDE
         BVC     L1D85A
@@ -15003,7 +15003,7 @@ L1D88E:
         BLT     L1D8DE
         STAA    $0D56,Z
 L1D898:
-        LDD     $0D4A,Z
+        LDD     >RpmRate,Z
         BPL     L1D8B8
         NEGD
         TSTA
@@ -15011,9 +15011,9 @@ L1D898:
         LDAB    #$FF
 L1D8A6:
         TBA
-        LDX     #SparkScale2
+        LDX     #AcSparkRateDown
         BRCLR   $0943,Z,#$01,L1D8B6
-        LDX     #SparkScaleAcOn
+        LDX     #AcSparkRateDownAcOn
 L1D8B6:
         BRA     L1D8C4
 L1D8B8:
@@ -15022,12 +15022,12 @@ L1D8B8:
         LDAB    #$FF
 L1D8BE:
         TBA
-        LDX     #SparkScale
+        LDX     #AcSparkRateUp
 L1D8C4:
         JSR     Lookup2D
         PSHA
         LDAA    >Map,Z
-        LDX     #SparkMapLimit
+        LDX     #AcSparkMapLimit
         JSR     Lookup2D
         PULB
         CBA
@@ -15101,16 +15101,16 @@ L1D984:
         BSET    $0D57,Z,#$80
         BRSET   $0331,#$80,L1D9B2
         LDAA    $0335,Z
-        LDX     #SparkV0335
+        LDX     #AcEngageSparkHoldV0335
         BRA     L1D9BA
 L1D9B2:
-        LDAA    $0A88,Z
+        LDAA    >AcSensor,Z
         LDX     #Tab2D_21FE
 L1D9BA:
         JSR     Lookup2D
         STAA    $F2,Z
         LDAA    >Map,Z
-        LDX     #SparkMapFactor
+        LDX     #AcEngageSparkHoldMap
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
@@ -15132,7 +15132,7 @@ L1D9F4:
         BEQ     L1DA0C
         DECA
         STAA    $0D52,Z
-        LDD     $0D4A,Z
+        LDD     >RpmRate,Z
         BMI     L1DA18
         CPD     $21F2
         BLT     L1DA18
@@ -15160,7 +15160,7 @@ L1DA36:
         LDX     #PartThrottleMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #SparkMapRpm
+        LDX     #EgrSpark
         JSR     Lookup3D
         STAA    $F6,Z
         BRSET   $0335,#$04,L1DA94
@@ -15303,7 +15303,7 @@ Sub_1DB78:
         BRCLR   $0856,Z,#$10,L1DBDC
         BRCLR   $0856,Z,#$04,L1DBB0
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #SparkThrottleAdder
+        LDX     #EventSparkThrottle
         JSR     Lookup2D
         LDAA    $0859,Z
         ADDA    $1FD1
@@ -15319,7 +15319,7 @@ L1DBAA:
 L1DBB0:
         BRCLR   $0856,Z,#$08,L1DC0E
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #SparkThrottleAdder2
+        LDX     #EventSparkThrottle2
         JSR     Lookup2D
         LDAA    $0859,Z
         ADDA    $1FD2
@@ -15438,14 +15438,14 @@ L1DCE6:
 L1DCFE:
         STAA    $F5,Z
         LDAA    >VehicleSpeed,Z
-        LDX     #SparkSpeed3
+        LDX     #SpeedRpmRefAC
         BRSET   $0055,Z,#$20,L1DD12
-        LDX     #SparkSpeed
+        LDX     #SpeedRpmRef
 L1DD12:
         BRSET   $0A46,Z,#$01,L1DD26
-        LDX     #SparkSpeed4
+        LDX     #SpeedRpmRef2AC
         BRSET   $0055,Z,#$20,L1DD26
-        LDX     #SparkSpeed2
+        LDX     #SpeedRpmRef2
 L1DD26:
         JSR     Lookup2D
         LDAB    $F5,Z
@@ -15487,7 +15487,7 @@ L1DD76:
         LDAA    #$7F
 L1DD78:
         STAA    $F3,Z
-        LDX     #SparkV00F1
+        LDX     #SpeedDampP
         LDAA    $F1,Z
         BPL     L1DD8A
         NEGA
@@ -15503,7 +15503,7 @@ L1DD90:
         CMPA    $2016
         BGT     L1DDE2
 L1DDA0:
-        LDX     #SparkV00F2Limit
+        LDX     #SpeedDampD
         LDAA    $F2,Z
         BPL     L1DDB0
         NEGA
@@ -15536,7 +15536,7 @@ L1DDDE:
 L1DDE0:
         STAA    $F4,Z
 L1DDE2:
-        LDX     #SparkV00F3Adder
+        LDX     #SpeedDampI
         LDAA    $F3,Z
         BPL     L1DDF2
         NEGA
@@ -15587,7 +15587,7 @@ Sub_1DE2E:
 L1DE44:
         BSET    $0D02,Z,#$80
         LDAA    >EngineRpm,Z
-        LDX     #SparkRpm
+        LDX     #HighSpeedSparkRpm
         JSR     Lookup2D
         NEGA
         BRA     L1DE5E
@@ -15646,7 +15646,7 @@ Sub_1DED0:
         LDAA    >VehicleSpeed,Z
         CMPA    $2104
         LBCS    L1E12E
-        LDAA    $0D1E,Z
+        LDAA    >SegmentRpmFast,Z
         CMPA    $2103
         LBCS    L1E12E
         LDAA    >CoolantTemp,Z
@@ -15676,11 +15676,11 @@ L1DF26:
         INC     $0D38,Z
 L1DF5A:
         BRSET   $0DA2,Z,#$40,L1E12E
-        LDAA    $0D30,Z
+        LDAA    >RpmJerk,Z
         BMI     L1DF7C
         CMPA    $20E7
         LBCS    L1E12E
-        LDX     #SparkV0D30
+        LDX     #SurgeJerkRetardOpen
         JSR     Lookup2D
         NEGB
         LBRA    L1E13E
@@ -15688,27 +15688,27 @@ L1DF7C:
         CMPA    $20E6
         LBGT    L1E12E
         NEGA
-        LDX     #SparkV0D302
+        LDX     #SurgeJerkAdvanceOpen
         JSR     Lookup2D
         JMP     L1E13E
 L1DF92:
         LDAA    >Map,Z
-        LDX     #SparkMap
+        LDX     #SurgeMapScale
         JSR     Lookup2D
         STAA    $F6,Z
         STAA    $0D39,Z
-        LDAA    $0D30,Z
+        LDAA    >RpmJerk,Z
         LBMI    L1E018
-        LDAA    $0AA6,Z
-        LDX     #SparkV0AA6Limit2
+        LDAA    >RpmSpeedRatio,Z
+        LDX     #SurgeJerkThreshold
         JSR     Lookup2D
-        CMPB    $0D30,Z
+        CMPB    >RpmJerk,Z
         BCC     L1E018
         LDAA    $F6,Z
-        LDAB    $0D1E,Z
-        LDX     #SparkV00F6V0D1EFactor
+        LDAB    >SegmentRpmFast,Z
+        LDX     #SurgeJerkGain
         JSR     Lookup3D
-        LDAB    $0D30,Z
+        LDAB    >RpmJerk,Z
         MUL
         ADCA    #$00
         ASLD
@@ -15724,15 +15724,15 @@ L1DFE4:
 L1DFE6:
         STAA    $F2,Z
         LDAA    >CoolantTemp,Z
-        LDX     #SparkCoolantFactor
+        LDX     #SurgeRetardCoolantFactor
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
         ADCA    #$00
         STAA    $F2,Z
         LDAA    $F6,Z
-        LDAB    $0D1E,Z
-        LDX     #SparkV00F6V0D1ELimit
+        LDAB    >SegmentRpmFast,Z
+        LDX     #SurgeJerkLimit
         JSR     Lookup3D
         CMPA    $F2,Z
         BCC     L1E010
@@ -15750,12 +15750,12 @@ L1E01C:
         LDAA    $0D01,Z
         ANDA    #$03
         BNE     L1E04E
-        LDAA    $0D26,Z
+        LDAA    >RpmAccel,Z
         BMI     L1E04E
-        LDAA    $0AA6,Z
-        LDX     #SparkV0AA6Limit
+        LDAA    >RpmSpeedRatio,Z
+        LDX     #SurgeRateThreshold
         JSR     Lookup2D
-        CMPA    $0D26,Z
+        CMPA    >RpmAccel,Z
         BCC     L1E04E
         CLR     $0D37,Z
         INC     $0D01,Z
@@ -15764,32 +15764,32 @@ L1E04E:
         ANDA    #$03
         CMPA    #$01
         LBNE    L1E0DC
-        LDAA    $0AA6,Z
-        LDX     #SparkV0AA6Factor
+        LDAA    >RpmSpeedRatio,Z
+        LDX     #SurgeRetardGearFactor
         JSR     Lookup2D
         LDAA    $0D32,Z
         MUL
         ADCA    #$00
         STAA    $F2,Z
         LDAA    >CoolantTemp,Z
-        LDX     #SparkCoolantFactor
+        LDX     #SurgeRetardCoolantFactor
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
         ADCA    #$00
         STAA    $F2,Z
-        LDAA    $0D26,Z
+        LDAA    >RpmAccel,Z
         BPL     L1E08C
         BRA     L1E0DC
 L1E08C:
-        LDX     #SparkV0D26Factor
+        LDX     #SurgeRetardRateFactor
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
         ADCA    #$00
         STAA    $F2,Z
-        LDAA    $0D3B,Z
-        LDX     #SparkV0D3BFactor
+        LDAA    >MapRise,Z
+        LDX     #SurgeRetardMapRiseFactor
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
@@ -15822,11 +15822,11 @@ L1E0DC:
         BEQ     L1E130
         STAA    $0D37,Z
         STAA    $F2,Z
-        LDAA    $0AA6,Z
-        LDX     #SparkV0AA6Scale
+        LDAA    >RpmSpeedRatio,Z
+        LDX     #SurgeDecayGearScale
         JSR     Lookup2D
         LDAB    $F2,Z
-        LDX     #SparkV0AA6V00F2Factor
+        LDX     #SurgeDecay
         JSR     Lookup3D
         LDAA    $0D33,Z
         MUL
@@ -15868,8 +15868,8 @@ Sub_1E142:
         LDAA    >Map,Z
         LDAB    $0D3A,Z
         SBA
-        STAA    $0D3B,Z
-        LDE     $0D1E,Z
+        STAA    >MapRise,Z
+        LDE     >SegmentRpmFast,Z
         LDD     $0D20,Z
         PSHM    D,E
         LDAA    $20FC
@@ -15942,7 +15942,7 @@ L1E230:
 L1E236:
         NEGD
 L1E238:
-        STD     $0D30,Z
+        STD     >RpmJerk,Z
         LDD     $0D24,Z
         BMI     L1E254
         ASLD
@@ -15969,10 +15969,10 @@ L1E264:
 L1E26A:
         NEGD
 L1E26C:
-        STAA    $0D26,Z
-        LDAB    $0D1E,Z
+        STAA    >RpmAccel,Z
+        LDAB    >SegmentRpmFast,Z
         LDAA    $0D39,Z
-        LDX     #SparkV0D39V0D1E
+        LDX     #SurgeRetardBase
         JSR     Lookup3D
         STAA    $0D32,Z
         RTS
@@ -15984,11 +15984,11 @@ L1E26C:
 Sub_1E286:
         CLRA
         BRCLR   $0774,Z,#$80,L1E296
-        LDAA    $0D18,Z
+        LDAA    >SparkStartTime,Z
         INCA
         BEQ     L1E29A
 L1E296:
-        STAA    $0D18,Z
+        STAA    >SparkStartTime,Z
 L1E29A:
         RTS
         dc.b    $00,$02,$03,$01,$02,$03,$01,$00,$00,$01,$02,$03,$04,$05
@@ -16051,13 +16051,13 @@ L1E330:
         ABX
         XGDY
         LDAB    $00,X
-        ADDB    $0D04,Z
+        ADDB    >KnockRetard,Z
         BPL     L1E34C
         LDAB    #$7F
 L1E34C:
-        CMPB    $0D40,Z
+        CMPB    >KnockCylRetardMax,Z
         BLS     L1E356
-        LDAB    $0D40,Z
+        LDAB    >KnockCylRetardMax,Z
 L1E356:
         SXT
         SDE
@@ -16065,8 +16065,8 @@ L1E35A:
         STE     $0D48,Z
         JSR     Sub_1E596
         XGEY
-        LDX     #SparkV0D18
-        LDAA    $0D18,Z
+        LDX     #AfterStartSparkMin
+        LDAA    >SparkStartTime,Z
         JSR     Lookup2D
         SXT
         STD     $04FC,Z
@@ -16255,11 +16255,11 @@ L1E56E:
 ; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 Sub_1E570:
-        LDX     #SparkV0A57
+        LDX     #DwellBattery
         BRCLR   $0D5F,Z,#$40,L1E57E
-        LDX     #SparkV0A572
+        LDX     #DwellBatteryAlt
 L1E57E:
-        LDAA    $0A57,Z
+        LDAA    >BatteryVoltsDwell,Z
         JSR     Lookup2D
         CLRA
         ASLD
@@ -16329,8 +16329,8 @@ L1E612:
         STAB    $0D02,Z
         BITB    #$08
         BEQ     L1E640
-        LDX     #SparkV0D18Limit
-        LDAA    $0D18,Z
+        LDX     #AfterStartSparkCap
+        LDAA    >SparkStartTime,Z
         JSR     Lookup2D
         CLRA
         CPD     #$007F
@@ -16719,7 +16719,7 @@ L1F0F2:
         CMPB    $23A4
         LBCS    L1F13C
         LDAA    >Map,Z
-        CMPA    $0DA4,Z
+        CMPA    >KnockMapThreshold,Z
         BCS     L1F13C
         TZY
         LDY     #$8092
@@ -16754,7 +16754,7 @@ Sub_1F13E:
         CMPB    $23A4
         LBCS    L1F18E
         LDAB    >Map,Z
-        CMPB    $0DA4,Z
+        CMPB    >KnockMapThreshold,Z
         BCS     L1F18E
         TZY
         LDY     #$8092
@@ -16765,7 +16765,7 @@ Sub_1F13E:
         BEQ     L1F18E
         PSHA
         LDAA    >Map,Z
-        LDX     #KnockMapScale
+        LDX     #KnockRetardMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
         LDX     #KnockRetardLimit
@@ -16774,7 +16774,7 @@ Sub_1F13E:
         MUL
         ADCA    #$00
 L1F18E:
-        STAA    $0D04,Z
+        STAA    >KnockRetard,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -16825,7 +16825,7 @@ L1F1EC:
         LBRA    L1F254
 L1F1F4:
         LDAA    >Map,Z
-        CMPA    $0DA4,Z
+        CMPA    >KnockMapThreshold,Z
         BCS     L1F254
         LDAA    $0DA9,Z
         INCA
@@ -16883,7 +16883,7 @@ Sub_1F256:
         CMPA    $241A
         BCS     L1F28C
 L1F27A:
-        LDX     #KnockMap
+        LDX     #KnockRetardMaxMap
         LDAA    >Map,Z
         JSR     Lookup2D
         BRA     L1F290
@@ -16893,7 +16893,7 @@ L1F288:
 L1F28C:
         LDAA    $241B
 L1F290:
-        STAA    $0DAA,Z
+        STAA    >KnockRetardMax,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -17021,39 +17021,39 @@ L1F372:
 ;---------------------------------------------------------------------------------------------------
 Sub_1F378:
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm3
+        LDX     #KnockNoiseMax
         JSR     Lookup2D
         STAA    $0DA6,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm2
+        LDX     #KnockNoiseMin
         JSR     Lookup2D
         STAA    $0DA7,Z
-        LDX     #KnockBaro
+        LDX     #KnockMapThresholdBaro
         LDAA    <Baro,Z
         JSR     Lookup2D
         STAA    $FE,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpmFactor
+        LDX     #KnockMapThresholdRpm
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
-        STAA    $0DA4,Z
+        STAA    >KnockMapThreshold,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm
+        LDX     #KnockNoiseLearnWeight
         JSR     Lookup2D
         STAA    $0DA5,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm6
+        LDX     #KnockSensorCheckRpm
         JSR     Lookup2D
         STAA    $0DB3,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm4
+        LDX     #KnockWindowRpm
         JSR     Lookup2D
         STAA    $0DB5,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm5
+        LDX     #KnockRetardMaxRpm
         JSR     Lookup2D
-        STAA    $0D40,Z
+        STAA    >KnockCylRetardMax,Z
         RTS
         dc.b    $01,$00,$02,$03,$00,$02,$03,$01,$05,$00,$01,$02,$03,$04
 
@@ -17082,7 +17082,7 @@ L1F440:
         STAA    $0A8B,Z
         LDAA    $49C8
         LDAB    >Map,Z
-        CMPB    $0DA4,Z
+        CMPB    >KnockMapThreshold,Z
         BCC     L1F45A
         LDAA    $06D0,Z
         DECA
@@ -17130,13 +17130,13 @@ L1F4D6:
         LDAB    >CoolantTemp,Z
         CMPB    $2417
         LBCS    L1F588
-        LDAB    $0DA4,Z
+        LDAB    >KnockMapThreshold,Z
         CMPB    >Map,Z
         LBHI    L1F588
         LDAA    $0A8B,Z
         SUBA    >KnockThresholdNow,Z
         LBCS    L1F588
-        LDX     #KnockV0A8B
+        LDX     #KnockRetardStep
         JSR     Lookup2D
         BRSET   $0C34,Z,#$80,L1F516
         BSET    $0C34,Z,#$80
@@ -17172,7 +17172,7 @@ L1F542:
         BVC     L1F55C
         LDAA    #$7F
 L1F55C:
-        LDAB    $0DAA,Z
+        LDAB    >KnockRetardMax,Z
         CBA
         BLT     L1F566
         TBA
@@ -17257,7 +17257,7 @@ L1F62C:
         LDAA    >CoolantTemp,Z
         CMPA    $23A4
         LBCS    L1F6E0
-        LDAA    $0DA4,Z
+        LDAA    >KnockMapThreshold,Z
         CMPA    >Map,Z
         LBLS    L1F6E0
         BRSET   $06B4,Z,#$20,L1F6E0
