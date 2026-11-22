@@ -139,7 +139,11 @@ def find(data, an=None):
                 continue
             ina = operand(*source_of(prev, "A"))
             inb = operand(*source_of(prev, "B")) if kind == "3D" else None
-            found.append((tab, (ina, inb) if inb else (ina,)))
+            # for a row position that comes from another lookup: that lookup's call address
+            src = None
+            if ina.startswith("result of"):
+                src = next((p.addr for p in prev if p.mn == "JSR"), None)
+            found.append((tab, (ina, inb) if inb else (ina,), src))
         if not found:
             unresolved.append(a)
             continue
@@ -154,14 +158,28 @@ def find(data, an=None):
                 dest = v.get("ff", v.get("gggg"))
                 break
             b += n.size
-        for tab, key in dict.fromkeys(found):
+        for tab, key, src in dict.fromkeys(found):
             t = tables.setdefault(tab, {"kind": kind, "size": table_size(data, tab, kind), "calls": [],
-                                        "inputs": collections.Counter(), "dest": collections.Counter()})
+                                        "inputs": collections.Counter(), "dest": collections.Counter(),
+                                        "row_calls": collections.Counter()})
+            if src is not None:
+                t["row_calls"][src] += 1
             if dest is not None:
                 t["dest"][dest] += 1
             if a not in t["calls"]:
                 t["calls"].append(a)
             t["inputs"][key] += 1
+    # row_from: the table whose lookup result is used as the row (or 2D input) position
+    by_call = {}
+    for tab, t in tables.items():
+        for c in t["calls"]:
+            by_call[c] = tab
+    for t in tables.values():
+        rows = collections.Counter()
+        for c, n in t.pop("row_calls").items():
+            if c in by_call:
+                rows[by_call[c]] += n
+        t["row_from"] = rows
     return an, tables, unresolved
 
 
@@ -195,6 +213,7 @@ def main():
         print("$%04X %-3s %4d bytes  %2d calls  in: %s" % (a, t["kind"], t["size"], len(t["calls"]), ins))
     if "--json" in sys.argv:
         out = {"%04X" % a: {"kind": t["kind"], "size": t["size"],
+                            "row_from": ["%04X" % r for r in t["row_from"]],
                             "calls": ["%05X" % c for c in t["calls"]],
                             "inputs": [list(k) for k in t["inputs"]],
                             **describe(d, a, t["kind"])} for a, t in sorted(tables.items())}

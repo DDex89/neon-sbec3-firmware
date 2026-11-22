@@ -35,6 +35,8 @@ python3 tools/survey.py roms/*.bin  # заголовок, контрольная
 | `tools/xref.py` | Перекрёстные ссылки на переменные ОЗУ и адреса калибровки: кто читает и пишет |
 | `tools/port.py` | Переносит разметку эталона на другой образ (`annotations/ports/`) |
 | `tools/caldiff.py` | Сравнивает два образа одного семейства по таблицам (`docs/diffs/`) |
+| `tools/xdf.py` | Пишет описание образа для TunerPro (`xdf/`) |
+| `tools/fixsum.py` | Проверяет или исправляет контрольную сумму после правки |
 | `tools/build.py` | Собирает и сверяет с `tools/variants.json` |
 | `tools/survey.py` | Обзор образов (этап 1) |
 

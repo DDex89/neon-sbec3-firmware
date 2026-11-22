@@ -12,5 +12,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Assemble and verify the reference image
+      - name: Assemble every source and verify it byte for byte
         run: python3 tools/build.py
+      - name: Check that the TunerPro definitions are well-formed XML
+        run: python3 -c "import glob, xml.etree.ElementTree as ET; [ET.parse(f) for f in glob.glob('xdf/*.xdf')]; print(len(glob.glob('xdf/*.xdf')), 'XDF files OK')"
