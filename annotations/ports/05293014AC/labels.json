@@ -1,0 +1,20 @@
+{
+ "_comment": "Carried over from 05293190AC by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
+ "05426": "Isr_PIT",
+ "0641C": "CalcDeadTime",
+ "0735A": "ScaleByFraction",
+ "078E8": "FinishFuelPulse",
+ "07D82": "CalcFuelPulse",
+ "0C7BC": "UnexpectedInterrupt",
+ "0C860": "Reset",
+ "0E500": "Lookup2D",
+ "0E64E": "Lookup3D",
+ "0E6AE": "Lookup3DNorm",
+ "0E7DA": "KickWatchdogs",
+ "0E7FA": "KickWatchdogsLong",
+ "0E924": "Blend16",
+ "0E9A6": "Blend16Signed",
+ "1231C": "EmptyHook",
+ "12330": "ReadMap",
+ "141E4": "CalcBaseSpark"
+}

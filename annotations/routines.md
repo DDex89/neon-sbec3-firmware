@@ -71,7 +71,7 @@ Fuel pulse width, called from Isr_GPT_IC1 on every reference event. Base pulse w
 (Map - MapOffset) * (256 + K) / 16, zero when MAP is below the offset; part-throttle or WOT
 constants and tables are chosen by $0771,Z bit 5. The base is multiplied by 1 + v / 256, where v
 is the signed value of PartThrottleFuel or WotFuel (rows by MAP through the scale table, columns
-by RpmBy32). $080E,Z is added at the end; the result goes to FuelPulse and $04F6,Z.
+by the high byte of EngineRpm). $080E,Z is added at the end; the result goes to FuelPulse and $04F6,Z.
 
 ## 1105E ScaleByFraction
 E = E * (1 + A / 256), saturating at $FFFF.

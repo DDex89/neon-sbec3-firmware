@@ -12,8 +12,9 @@ notes come from annotations/:
   routines.md             routine notes               analysis.json  where Z is not the RAM base
   tables.json             calibration tables and constants (with tools/caltables.py)
 
-The image-specific files (labels, ram, routines, analysis, tables) are applied only to the
-reference image 05293190AC; vectors, registers and the generic table layout apply to every image.
+The image-specific files (labels, ram, routines, analysis, tables) belong to the reference image
+05293190AC. Other images use the set that tools/port.py carried over into annotations/ports/<PN>/
+(routine notes stay with the reference). Vectors, registers and the table layout apply to every image.
 
 The source assembles back into the identical image with tools/build.py.
 """
@@ -35,6 +36,19 @@ def is_reference(data):
     import hashlib
     v = json.load(open(os.path.join(ROOT, "tools", "variants.json")))[REFERENCE]
     return hashlib.sha256(data).hexdigest() == v["sha256"]
+
+
+def annotation_set(data, pn):
+    """Loader for the image-specific annotations: the reference files, or the set carried over
+    by tools/port.py (annotations/ports/<PN>/, checked against the image's SHA-256)."""
+    import hashlib
+    if is_reference(data):
+        return load, True
+    d = os.path.join(ANN, "ports", pn)
+    st = os.path.join(d, "stats.json")
+    if os.path.exists(st) and json.load(open(st)).get("sha256") == hashlib.sha256(data).hexdigest():
+        return (lambda name: load(os.path.join("ports", pn, name))), False
+    return (lambda name: {}), False
 
 
 def load(name, default=None):
@@ -70,9 +84,8 @@ def load_routines():
 
 
 class Names:
-    def __init__(self, an, data, ref=True):
+    def __init__(self, an, data, own=load, ref=True):
         self.an = an
-        own = (lambda name: load(name)) if ref else (lambda name: {})
         self.labels_ann = {int(k, 16): v for k, v in own("labels.json").items()}
         for a, kind in caltables.routines(data).items():
             self.labels_ann.setdefault(a, caltables.NAMES[kind])
@@ -138,11 +151,11 @@ FLAGS2D = {0x80: "unsigned", 0x40: "unsigned, y = 0 counts as 256", 0x20: "signe
 class Calibration:
     """Calibration tables and constants in bank 0, laid out as structured dc.b blocks."""
 
-    def __init__(self, data, an, names, ref):
+    def __init__(self, data, an, names, own=load):
         self.data = data
         self.names = names
         found = caltables.find(data, an)[1]
-        cur = load("tables.json") if ref else {}
+        cur = own("tables.json")
         units = cur.get("units", {})
         self.units = units
         curated = {int(k, 16): v for k, v in cur.get("tables", {}).items()}
@@ -154,7 +167,21 @@ class Calibration:
             self.items[a] = dict(t, name=c.get("name", PREFIX[t["kind"]] + "%04X" % a), cur=c)
         for k, v in cur.get("special", {}).items():
             a = int(k, 16)
+            v = dict(v)
+            if v.get("kind") == "fault":
+                # rows are numbered in byte 0; the table ends where the numbering stops
+                n = 0
+                while n < 256 and a + v["row_size"] * (n + 1) <= len(data) and data[a + v["row_size"] * n] == n:
+                    n += 1
+                v["rows"] = n
             self.items[a] = dict(v, size=v["rows"] * v["row_size"], cur=v, calls=[])
+        # a table that overlaps the one before it cannot be laid out; keep the first
+        end = -1
+        for a in sorted(self.items):
+            if a < end:
+                del self.items[a]
+            else:
+                end = a + self.items[a]["size"]
         self.scalars = {}
         for k, v in cur.get("scalars", {}).items():
             a = int(k, 16)
@@ -278,9 +305,9 @@ def header(names, a):
 def generate(image_path, outdir):
     data = open(image_path, "rb").read()
     an = Analysis(data).run()
-    ref = is_reference(data)
-    names = Names(an, data, ref)
-    cal = Calibration(data, an, names, ref)
+    own, ref = annotation_set(data, os.path.splitext(os.path.basename(image_path))[0])
+    names = Names(an, data, own, ref)
+    cal = Calibration(data, an, names, own)
     lab = names.labels.get
     vec_names = names.vectors
 
@@ -352,6 +379,17 @@ def generate(image_path, outdir):
     for s, off in sorted(names.used.items(), key=lambda x: x[1]):
         eq.append("%-16s equ $%04X        ; $%05X" % (s, off, (Z_BASE + off) & 0xFFFFF))
     open(os.path.join(outdir, "00_equates.asm"), "w").write("\n".join(eq) + "\n")
+    # one name, one meaning: a clash between a label, a table and an equate would assemble wrongly
+    seen = collections.defaultdict(set)
+    for a, n in names.labels.items():
+        seen[n].add(("code", a))
+    for a, n in cal.labels.items():
+        seen[n].add(("cal", a))
+    for n, off in names.used.items():
+        seen[n].add(("equ", off))
+    clash = {n: v for n, v in seen.items() if len(v) > 1}
+    if clash:
+        raise SystemExit("name used twice: " + ", ".join("%s %s" % (n, sorted(v)) for n, v in sorted(clash.items())))
     return an, files, cal
 
 

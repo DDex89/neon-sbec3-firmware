@@ -1,0 +1,10 @@
+{
+ "_comment": "Carried over from 05293190AC by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
+ "z_not_base": [
+  [
+   "1540E",
+   "154A0",
+   "Z is used as a data pointer between TBZK and PULM Y,Z,K"
+  ]
+ ]
+}

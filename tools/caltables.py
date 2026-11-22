@@ -18,13 +18,14 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 from analyse import Analysis
 
-# lookup routines, found by the first 20 bytes of their code in the reference image (where they
-# are at $0C08E, $0C36A, $0C214, $0C28C). The 128 KB families use other code: not found there yet.
+# lookup routines, found by the first 20 bytes of their code. The 256 KB program has them at
+# $0C08E, $0C36A, $0C214 and $0C28C (05293190AC); the 128 KB programs use an older version of the
+# 2D and 3D routines with the same table formats.
 SIGNATURES = {
-    "2D": "342a3715379c275cc5003c02f801b730f8ffb72c",
-    "2Dr": "34283715379cc500378700463c0248013783003a",
-    "3D": "342a373ffff6275c274f277b3715379d8d075501",
-    "3Dn": "342a373ffff6275c274f34013715379d8d075501",
+    "2D": ["342a3715379c275cc5003c02f801b730f8ffb72c", "342a3715379c275cc5003c02f801b72cf8ffb728"],
+    "2Dr": ["34283715379cc500378700463c0248013783003a"],
+    "3D": ["342a373ffff6275c274f277b3715379d8d075501", "342a37183715379c37193708275c3d03d800b30c"],
+    "3Dn": ["342a373ffff6275c274f34013715379d8d075501", "342a37183715379c37193708450137013724275c"],
 }
 NAMES = {"2D": "Lookup2D", "2Dr": "Lookup2DRev", "3D": "Lookup3D", "3Dn": "Lookup3DNorm"}
 ROUTINES = {}
@@ -33,10 +34,11 @@ ROUTINES = {}
 def routines(data):
     """address -> table kind, for the lookup routines present in this image."""
     out = {}
-    for kind, sig in SIGNATURES.items():
-        a = data.find(bytes.fromhex(sig))
-        if a >= 0 and not a & 1:
-            out[a] = kind
+    for kind, sigs in SIGNATURES.items():
+        for sig in sigs:
+            a = data.find(bytes.fromhex(sig))
+            if a >= 0 and not a & 1:
+                out[a] = kind
     return out
 WRITES_X = {"LDX", "TZX", "TSX", "TYX", "XGDX", "XGEX", "XGXY", "PULM", "AIX", "ABX", "ADX", "AEX"}
 
@@ -141,9 +143,22 @@ def find(data, an=None):
         if not found:
             unresolved.append(a)
             continue
+        dest = None
+        b = a + ins.size
+        for _ in range(6):
+            n = an.insn.get(b)
+            if n is None or n.mn in ("JSR", "RTS", "JMP", "BRA", "LBRA"):
+                break
+            if n.mn in ("STAA", "STAB", "STD", "STE") and n.mode.endswith(", Z"):
+                v = dict(n.vals)
+                dest = v.get("ff", v.get("gggg"))
+                break
+            b += n.size
         for tab, key in dict.fromkeys(found):
             t = tables.setdefault(tab, {"kind": kind, "size": table_size(data, tab, kind), "calls": [],
-                                        "inputs": collections.Counter()})
+                                        "inputs": collections.Counter(), "dest": collections.Counter()})
+            if dest is not None:
+                t["dest"][dest] += 1
             if a not in t["calls"]:
                 t["calls"].append(a)
             t["inputs"][key] += 1

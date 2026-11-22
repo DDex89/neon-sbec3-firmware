@@ -1,0 +1,13 @@
+{
+ "sha256": "0b6be604c5220be79236bfa92bbccf1e87c4726a52a09708e733f39fa3e980a4",
+ "routines_matched": 623,
+ "routines_ref": 657,
+ "instructions_mapped": 39434,
+ "instructions_ref": 43370,
+ "labels": "34 of 35",
+ "ram": "48 of 48",
+ "tables": "12 of 16",
+ "scalars": "6 of 8",
+ "ram_identity": 1257,
+ "ram_moved": 639
+}

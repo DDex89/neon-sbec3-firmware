@@ -2,6 +2,36 @@
  "05293190AC": {
   "size": 262144,
   "sha256": "f7d154bebd58973b2e57dfca394391320c7d60e7af79af1cd1ad83e829d505ea",
-  "description": "1999 Mitsubishi Eclipse, manual (reference image)"
+  "description": "family F; 1999 Mitsubishi Eclipse, manual (reference image)"
+ },
+ "04887050": {
+  "size": 131072,
+  "sha256": "4d564f3b3a49b4e3eba838562c7001fe5fa10b82756cf4e57aae0019ed3138ef",
+  "description": "family A; copyright 1995, probably 1996 model year"
+ },
+ "05293013AC": {
+  "size": 131072,
+  "sha256": "e2cd98527a32d0618d0c3f0bc0b637440d3a10e3447f93a51ae2fff49e539f23",
+  "description": "family B; 1997 Eagle Talon, manual"
+ },
+ "05007038": {
+  "size": 131072,
+  "sha256": "82581758ea9cfbe3f45e01e27b425a1569caa99b6170c1f88fd6cdab9694f651",
+  "description": "family C; probably a Mopar Performance calibration"
+ },
+ "05269833AH": {
+  "size": 262144,
+  "sha256": "91cb7e264c3cc657153ccab9c8137ef2ae12d96ce5dae670ed29a4a3ed6af9da",
+  "description": "family D; probably Neon"
+ },
+ "05269833AI": {
+  "size": 262144,
+  "sha256": "37101ef3beed81f736004091597991b0876fd4085f91479fbaec2b69561d66fd",
+  "description": "family E; probably Neon"
+ },
+ "05032017AA": {
+  "size": 262144,
+  "sha256": "0b6be604c5220be79236bfa92bbccf1e87c4726a52a09708e733f39fa3e980a4",
+  "description": "family G; copyright 1998"
  }
 }

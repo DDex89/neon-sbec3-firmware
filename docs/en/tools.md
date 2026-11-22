@@ -32,6 +32,9 @@ python3 tools/survey.py roms/*.bin  # header, checksum and families of all image
 | `tools/gen_source.py` | Writes `00_equates.asm` and one source file per 64 KB bank, with names and notes from `annotations/` |
 | `tools/caltables.py` | Finds the calibration tables from the calls to the lookup routines |
 | `tools/catalogue.py` | Writes the calibration catalogue (`docs/catalogue/`) |
+| `tools/xref.py` | Cross-reference of RAM variables and calibration addresses: who reads and writes them |
+| `tools/port.py` | Carries the reference annotations over to another image (`annotations/ports/`) |
+| `tools/caldiff.py` | Compares two images of one family table by table (`docs/diffs/`) |
 | `tools/build.py` | Assembles and verifies against `tools/variants.json` |
 | `tools/survey.py` | Survey of images (stage 1) |
 
@@ -103,9 +106,9 @@ notes.
 
 ## Results
 
-All eleven images rebuild byte for byte from generated sources. Only the reference image,
-05293190AC, has its source in the repository; the others will follow once the annotations are
-ported to their families.
+All eleven images rebuild byte for byte from generated sources. The repository holds the source of
+one image per family (see [porting.md](porting.md)); the second image of a family differs only in
+calibration bytes.
 
 | Image | Instructions | Code bytes | Jump tables | Jump into RAM at |
 |---|---|---|---|---|

@@ -15,26 +15,179 @@
   "raw": "no conversion known yet"
  },
  "tables": {
-  "08F8": {"name": "PartThrottleMapScale", "desc": "MAP to row position of the part-throttle spark and fuel tables", "x": "kpa", "y": "pos256", "x_in": "Map"},
-  "0904": {"name": "WotMapScale", "desc": "MAP to row position of the WOT spark and fuel tables", "x": "kpa", "y": "pos256", "x_in": "Map"},
-  "1BFA": {"name": "PartThrottleSpark", "desc": "Part-throttle spark advance", "x": "rpm32", "y": "pos256", "z": "spark", "x_in": "RpmBy32", "y_in": "PartThrottleMapScale"},
-  "1FAF": {"name": "WotSpark", "desc": "Wide-open-throttle spark advance", "x": "rpm32", "y": "pos256", "z": "spark", "x_in": "RpmBy32", "y_in": "WotMapScale"},
-  "0BF6": {"name": "PartThrottleFuel", "desc": "Part-throttle fuel correction on the MAP-based pulse width", "x": "rpm32", "y": "pos256", "z": "fuelcorr", "x_in": "RpmBy32", "y_in": "PartThrottleMapScale"},
-  "0F6C": {"name": "WotFuel", "desc": "Wide-open-throttle fuel correction on the MAP-based pulse width", "x": "rpm32", "y": "pos256", "z": "fuelcorr", "x_in": "RpmBy32", "y_in": "WotMapScale"},
-  "0B76": {"name": "InjectorDeadTime", "desc": "Injector dead time against battery voltage", "x": "volt16", "y": "pwus32"},
-  "0B9E": {"name": "ReturnlessFuelScale", "desc": "Global fuel multiplier of the returnless fuel system", "x": "kpa", "y": "mult256"},
-  "24AB": {"name": "KnockThreshold", "desc": "Knock sensor voltage threshold against rpm", "x": "rpm32", "y": "volt51"},
-  "2684": {"name": "IdleTargetRpm", "desc": "Target idle speed against coolant temperature", "x": "tempc", "y": "rpm8", "x_in": "CoolantTemp"}
+  "08F8": {
+   "name": "PartThrottleMapScale",
+   "desc": "MAP to row position of the part-throttle spark and fuel tables",
+   "x": "kpa",
+   "y": "pos256",
+   "x_in": "Map"
+  },
+  "0904": {
+   "name": "WotMapScale",
+   "desc": "MAP to row position of the WOT spark and fuel tables",
+   "x": "kpa",
+   "y": "pos256",
+   "x_in": "Map"
+  },
+  "0B76": {
+   "name": "InjectorDeadTime",
+   "desc": "Injector dead time against battery voltage",
+   "x": "volt16",
+   "y": "pwus32"
+  },
+  "0B9E": {
+   "name": "ReturnlessFuelScale",
+   "desc": "Global fuel multiplier of the returnless fuel system",
+   "x": "kpa",
+   "y": "mult256"
+  },
+  "0BF6": {
+   "name": "PartThrottleFuel",
+   "desc": "Part-throttle fuel correction on the MAP-based pulse width",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "fuelcorr",
+   "x_in": "EngineRpm",
+   "y_in": "PartThrottleMapScale"
+  },
+  "0F6C": {
+   "name": "WotFuel",
+   "desc": "Wide-open-throttle fuel correction on the MAP-based pulse width",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "fuelcorr",
+   "x_in": "EngineRpm",
+   "y_in": "WotMapScale"
+  },
+  "11D4": {
+   "name": "BaroFuel",
+   "desc": "Pulse width added to the fuel pulse against barometric pressure (result x 8)",
+   "x": "kpa",
+   "y": "raw",
+   "x_in": "Baro"
+  },
+  "1BFA": {
+   "name": "PartThrottleSpark",
+   "desc": "Part-throttle spark advance",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "spark",
+   "x_in": "EngineRpm",
+   "y_in": "PartThrottleMapScale"
+  },
+  "1FAF": {
+   "name": "WotSpark",
+   "desc": "Wide-open-throttle spark advance",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "spark",
+   "x_in": "EngineRpm",
+   "y_in": "WotMapScale"
+  },
+  "24AB": {
+   "name": "KnockThreshold",
+   "desc": "Knock sensor voltage threshold against rpm",
+   "x": "rpm32",
+   "y": "volt51"
+  },
+  "2582": {
+   "name": "SparkCoolantCorrA",
+   "desc": "Spark correction against coolant temperature (one of two variants, chosen by the caller)",
+   "x": "tempc",
+   "y": "spark",
+   "x_in": "CoolantTemp"
+  },
+  "258C": {
+   "name": "SparkCoolantCorrB",
+   "desc": "Spark correction against coolant temperature (second variant)",
+   "x": "tempc",
+   "y": "spark",
+   "x_in": "CoolantTemp"
+  },
+  "2684": {
+   "name": "IdleTargetRpm",
+   "desc": "Target idle speed against coolant temperature",
+   "x": "tempc",
+   "y": "rpm8",
+   "x_in": "CoolantTemp"
+  },
+  "4A59": {
+   "name": "ThrottleLimpFromVacuum",
+   "desc": "Substitute throttle position from manifold vacuum when the TPS has failed",
+   "x": "kpa",
+   "y": "raw",
+   "x_in": "ManifoldVacuum"
+  },
+  "7047": {
+   "name": "ThermistorCold",
+   "desc": "Thermistor ADC counts to temperature, cold range (-55 to 83 C), used after the pull-up is switched",
+   "x": "raw",
+   "y": "tempc"
+  },
+  "7057": {
+   "name": "ThermistorHot",
+   "desc": "Thermistor ADC counts to temperature, hot range (13 to 127 C); coolant and intake air",
+   "x": "raw",
+   "y": "tempc"
+  }
  },
  "scalars": {
-  "0B92": {"name": "PartThrottleFuelK", "desc": "K factor of the part-throttle base pulse width: (MAP - offset) * (256 + K) / 16", "size": 1, "unit": "raw"},
-  "0B93": {"name": "PartThrottleFuelMapOffset", "desc": "MAP offset of the part-throttle base pulse width", "size": 1, "unit": "kpa"},
-  "0B94": {"name": "WotFuelK", "desc": "K factor of the WOT base pulse width", "size": 1, "unit": "raw"},
-  "0B95": {"name": "WotFuelMapOffset", "desc": "MAP offset of the WOT base pulse width", "size": 1, "unit": "kpa"},
-  "19DB": {"name": "RevLimitResume", "desc": "Rev limiter (manual transmission / park-neutral): fuel back on below", "size": 1, "unit": "rpm32"},
-  "19DC": {"name": "RevLimit", "desc": "Rev limiter (manual transmission / park-neutral): fuel cut above", "size": 1, "unit": "rpm32"}
+  "0B92": {
+   "name": "PartThrottleFuelK",
+   "desc": "K factor of the part-throttle base pulse width: (MAP - offset) * (256 + K) / 16",
+   "size": 1,
+   "unit": "raw"
+  },
+  "0B93": {
+   "name": "PartThrottleFuelMapOffset",
+   "desc": "MAP offset of the part-throttle base pulse width",
+   "size": 1,
+   "unit": "kpa"
+  },
+  "0B94": {
+   "name": "WotFuelK",
+   "desc": "K factor of the WOT base pulse width",
+   "size": 1,
+   "unit": "raw"
+  },
+  "0B95": {
+   "name": "WotFuelMapOffset",
+   "desc": "MAP offset of the WOT base pulse width",
+   "size": 1,
+   "unit": "kpa"
+  },
+  "19DC": {
+   "name": "RevLimit",
+   "desc": "Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral)",
+   "size": 1,
+   "unit": "rpm32"
+  },
+  "19DE": {
+   "name": "RevLimitAlt",
+   "desc": "Rev limit, used while $0C31,Z bit 5 is clear",
+   "size": 1,
+   "unit": "rpm32"
+  },
+  "19E1": {
+   "name": "SpeedLimit",
+   "desc": "Vehicle speed limit (compared with $0A9B,Z), active with calibration bit $0337.5",
+   "size": 1,
+   "unit": "raw"
+  },
+  "19E3": {
+   "name": "SpeedLimitMinRpm",
+   "desc": "The speed limit is checked only above this rpm",
+   "size": 1,
+   "unit": "rpm32"
+  }
  },
  "special": {
-  "4052": {"name": "FaultTable", "kind": "fault", "rows": 256, "row_size": 10, "desc": "Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes"}
+  "4052": {
+   "name": "FaultTable",
+   "kind": "fault",
+   "rows": 256,
+   "row_size": 10,
+   "desc": "Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes"
+  }
  }
 }

@@ -84,10 +84,13 @@ These are the same as in the 1995 FCC controller and as on the 2GNT pages.
 | $0B9E | ReturnlessFuelScale | fuel multiplier of the returnless fuel system |
 | $24AB | KnockThreshold | knock sensor threshold against rpm |
 | $2684 | IdleTargetRpm | target idle speed against coolant temperature |
-| $19DB, $19DC | RevLimitResume, RevLimit | rev limiter (manual / park-neutral) |
+| $19DC, $19DE | RevLimit, RevLimitAlt | two rev limits (6,048 and 7,008 rpm), chosen by $0C31,Z bit 5 |
+| $19E1, $19E3 | SpeedLimit, SpeedLimitMinRpm | speed limiter, enabled by calibration bit $0337.5 |
 | $4052 | FaultTable | 256 fault rows |
 
-All of these were checked against the code: each is read where 2GNT says, with the format above.
+All of these were checked against the code: each is read where 2GNT says, with the format above. One
+correction: 2GNT shows the rev limit as two cells starting at $19DB (resume and limit), but $19DB
+holds $FF and is never read; the code compares rpm with $19DC or with $19DE.
 The 2GNT page calls the fuel tables "msec"; the code shows that they are corrections applied to a
 pulse width computed from MAP (next section).
 
@@ -101,7 +104,7 @@ event:
 2. Base pulse width = (Map - MapOffset) x (256 + K) / 16, or zero if MAP is below the offset. With
    calibration bit $0337.2 set, MAP is first raised to the lowest point of the part-throttle scale.
 3. The fuel table gives a signed value v (rows by MAP through the scale table, columns by
-   `RpmBy32`); the base is multiplied by 1 + v / 256.
+   `EngineRpm`, whose high byte is rpm / 32); the base is multiplied by 1 + v / 256.
 4. `$080E,Z` is added and the result is stored in `FuelPulse` ($07E2,Z) and `$04F6,Z`.
 
 So the fuel tables work like a volumetric-efficiency correction on a linear MAP model, with the

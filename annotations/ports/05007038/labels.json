@@ -1,0 +1,22 @@
+{
+ "_comment": "Carried over from 05293190AC by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
+ "06960": "UnexpectedInterrupt",
+ "06A00": "Reset",
+ "0739A": "MainLoop",
+ "07F0A": "CalcBaroFuelAdder",
+ "08C64": "ScaleByFraction",
+ "09134": "FinishFuelPulse",
+ "09606": "CalcFuelPulse",
+ "0A048": "Lookup2D",
+ "0A196": "Lookup3D",
+ "0A1F6": "Lookup3DNorm",
+ "0A28E": "Lookup2DRev",
+ "0A344": "KickWatchdogs",
+ "0A364": "KickWatchdogsLong",
+ "0A596": "Blend16",
+ "0A618": "Blend16Signed",
+ "0E0C8": "EmptyHook",
+ "0E7E6": "Isr_PIT",
+ "1430C": "ReadMap",
+ "1D6F0": "CalcBaseSpark"
+}

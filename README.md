@@ -13,8 +13,10 @@ logic and the units of its values descend from it.
 
 ## Status
 
-Stage 4 of 6: calibration. All eleven images rebuild byte for byte; the reference image is
-**05293190AC** (1999 Eclipse, manual), chosen because outside reference addresses exist for it.
+Stage 5 of 6: annotation and porting. All eleven images rebuild byte for byte; the reference image
+is **05293190AC** (1999 Eclipse, manual), chosen because outside reference addresses exist for it.
+Its annotations are carried over automatically to the other six families, and one image per family
+has its source in the repository.
 
 | Stage | Content | |
 |---|---|---|
@@ -22,15 +24,18 @@ Stage 4 of 6: calibration. All eleven images rebuild byte for byte; the referenc
 | 2 | Tools: CPU16 disassembler, assembler, source generator, byte-identical build, CI | done, see [docs/en/tools.md](docs/en/tools.md) |
 | 3 | Program skeleton: reset, interrupts, main loop, scheduler, communication | done, see [docs/en/architecture.md](docs/en/architecture.md) |
 | 4 | Calibration: table formats, finding and naming the tables | done, see [docs/en/calibration.md](docs/en/calibration.md) and the [catalogue](docs/catalogue/05293190AC.md) |
-| 5 | Detailed annotation, documentation in English and Russian, porting to the other families | next |
-| 6 | Editor definitions: TunerPro XDF generated from the annotations | |
+| 5 | Detailed annotation, documentation in English and Russian, porting to the other families | first pass done, see [docs/en/porting.md](docs/en/porting.md); naming continues |
+| 6 | Editor definitions: TunerPro XDF generated from the annotations | next |
 
 ## Layout
 
 ```
 docs/en, docs/ru        documentation
-src/05293190AC/         generated source of the reference image, one file per 64 KB bank
-annotations/            names and notes the generator uses: labels, RAM, registers, vectors
+src/<part number>/      generated source, one file per 64 KB bank; one image per family
+annotations/            names and notes the generator uses: labels, RAM, registers, vectors, tables
+annotations/ports/      the same, carried over to the other images by tools/port.py
+docs/catalogue/         generated calibration catalogue of each image
+docs/diffs/             generated calibration differences inside each family
 tools/                  CPU16 opcode table, decoder, assembler, analysis, generator, build, survey
 roms/                   place for the flash images (not distributed, see roms/README.md)
 third_party/            SBECBootLoader by Dino Yancey: reading and reflashing on the bench
