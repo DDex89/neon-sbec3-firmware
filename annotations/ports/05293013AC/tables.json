@@ -843,9 +843,9 @@
    "auto": false
   },
   "209B": {
-   "name": "IacRollFactorV0345",
+   "name": "IacRollFactorAcSensor",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against $0345,Z (centred on 128), with calibration bit $0331.7",
+   "desc": "Factor on the rolling IAC target against the filtered A/C sensor $0345,Z (centred on 128), with calibration bit $0331.7",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1118,41 +1118,2024 @@
   }
  },
  "scalars": {
+  "031D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Byte tested; read by Isr_GPT_OC4, Isr_GPT_IC1, Reset +11.",
+   "name": "EventFlag1"
+  },
+  "0325": {
+   "name": "Options0339",
+   "desc": "Option byte (global configuration); bits used are listed with their names where known",
+   "category": "Options",
+   "unit": "raw",
+   "bitnames": {
+    "01": "TipInRetardHold",
+    "04": "PurgeDutyAltClosed",
+    "08": "PurgeDutyAltOther"
+   },
+   "size": 1,
+   "bits": [
+    "01",
+    "02",
+    "04",
+    "08",
+    "10",
+    "20",
+    "40",
+    "80"
+   ]
+  },
+  "031E": {
+   "name": "Options0331",
+   "desc": "Option byte (global configuration); bits used are listed with their names where known",
+   "category": "Options",
+   "unit": "raw",
+   "bitnames": {
+    "80": "AcPressureSensor"
+   },
+   "size": 1,
+   "bits": [
+    "08",
+    "10",
+    "20",
+    "40",
+    "80"
+   ]
+  },
+  "0323": {
+   "name": "Options0337",
+   "desc": "Option byte (global configuration); bits used are listed with their names where known",
+   "category": "Options",
+   "unit": "raw",
+   "bitnames": {
+    "01": "IdleDipKickMode",
+    "10": "SurgeSparkOn",
+    "20": "SpeedLimitOn",
+    "40": "SpeedDampOn",
+    "80": "EventSparkOn"
+   },
+   "size": 1,
+   "bits": [
+    "01",
+    "02",
+    "04",
+    "08",
+    "10",
+    "20",
+    "40",
+    "80"
+   ]
+  },
+  "0326": {
+   "name": "Options033A",
+   "desc": "Option byte (global configuration); bits used are listed with their names where known",
+   "category": "Options",
+   "unit": "raw",
+   "bitnames": {
+    "10": "AcSparkOn"
+   },
+   "size": 1,
+   "bits": [
+    "01",
+    "08",
+    "10",
+    "40",
+    "80"
+   ]
+  },
+  "0368": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word subtracted from EngineRpm; read by Sub_2F800.",
+   "name": "CalRpmOffset1"
+  },
+  "036A": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word subtracted from EngineRpm; read by Sub_2F800.",
+   "name": "CalRpmOffset2"
+  },
+  "036C": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word compared with V0C08; read by Sub_2F800.",
+   "name": "CalV0C08Thresh1"
+  },
+  "036E": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word subtracted from; read by Sub_2F800.",
+   "name": "CalOffset1"
+  },
+  "0370": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word subtracted from; read by Sub_2F800.",
+   "name": "CalOffset2"
+  },
+  "0372": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word subtracted from; read by Sub_2F800.",
+   "name": "CalOffset3"
+  },
+  "0374": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Startup",
+   "desc": "Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10.",
+   "name": "StartV0C03Init"
+  },
+  "0375": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word compared with V0C08; read by Sub_2F800.",
+   "name": "CalV0C08Thresh2"
+  },
+  "0377": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Other",
+   "desc": "Byte compared with CoolantTemp; read by Sub_2F800.",
+   "name": "CalCoolantThresh1"
+  },
+  "03B7": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Cooling fan",
+   "desc": "Byte compared with; read by Sub_39E54, Sub_3A614.",
+   "name": "FanThresh1"
+  },
+  "03B8": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Cooling fan",
+   "desc": "Byte compared with AcSensor; read by Sub_39E54, Sub_3A614.",
+   "name": "FanAcSensorThresh1"
+  },
+  "03B9": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Cooling fan",
+   "desc": "Byte compared with AcSensor; read by Sub_39E54, Sub_3A614.",
+   "name": "FanAcSensorThresh2"
+  },
+  "03BA": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Cooling fan",
+   "desc": "Byte compared with; read by Sub_39E54, Sub_3A614.",
+   "name": "FanThresh2"
+  },
+  "03E2": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte compared with CoolantTemp; read by Sub_19808, Sub_3A6C8.",
+   "name": "IacCoolantThresh1"
+  },
+  "0414": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Word compared with SegmentRpm; read by Sub_19808.",
+   "name": "IacSegRpmThresh1"
+  },
+  "0416": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Word compared with EngineRpm; read by Sub_19808, Sub_39412.",
+   "name": "SparkRpmThresh1"
+  },
+  "0419": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte compared with Count3s; read by Sub_19808.",
+   "name": "IacTimeThresh"
+  },
+  "041A": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte stored into V0C24; read by Sub_19808.",
+   "name": "IacV0C24Init"
+  },
+  "0541": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word compared with V0ABD; read by Isr_GPT_IC1.",
+   "name": "EventV0ABDThresh1"
+  },
+  "0543": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word compared with V0ABD; read by Isr_GPT_IC1.",
+   "name": "EventV0ABDThresh2"
+  },
+  "0551": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with CrankCoolant; read by Sub_123C0.",
+   "name": "CrankFuelCrankCoolantThresh"
+  },
+  "0552": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_123C0.",
+   "name": "CrankFuelThrottleThresh"
+  },
+  "05A9": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with CoolantTemp; read by Sub_12680.",
+   "name": "FuelEventCoolantThresh1"
+  },
+  "05AA": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte used with; read by Sub_12680.",
+   "name": "FuelEventValue3"
+  },
+  "05AB": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte used with; read by Sub_12680.",
+   "name": "FuelEventValue4"
+  },
+  "05AC": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte used with; read by Sub_12680.",
+   "name": "FuelEventValue12"
+  },
+  "0657": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with CoolantTemp; read by Sub_123C0.",
+   "name": "CrankFuelCoolantThresh"
+  },
   "0669": {
    "name": "PartThrottleFuelK",
    "desc": "K factor of the part-throttle base pulse width: (MAP - offset) * (256 + K) / 16",
    "size": 1,
-   "unit": "raw"
+   "unit": "raw",
+   "category": "Fuel"
   },
   "066A": {
    "name": "PartThrottleFuelMapOffset",
    "desc": "MAP offset of the part-throttle base pulse width",
    "size": 1,
-   "unit": "kpa"
+   "unit": "kpa",
+   "category": "Fuel"
   },
   "0667": {
    "name": "WotFuelK",
    "desc": "K factor of the WOT base pulse width",
    "size": 1,
-   "unit": "raw"
+   "unit": "raw",
+   "category": "Fuel"
   },
   "0668": {
    "name": "WotFuelMapOffset",
    "desc": "MAP offset of the WOT base pulse width",
    "size": 1,
-   "unit": "kpa"
+   "unit": "kpa",
+   "category": "Fuel"
+  },
+  "147B": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with CoolantTemp; read by Sub_112A8.",
+   "name": "FuelEventCoolantThresh2"
+  },
+  "147C": {
+   "size": 1,
+   "unit": "rpm32",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with EngineRpm; read by Sub_112A8.",
+   "name": "FuelEventRpmThresh"
+  },
+  "147D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte stored into V077B; read by Sub_112A8.",
+   "name": "FuelEventV077BInit"
+  },
+  "14A0": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte tested; read by Sub_111E0, FinishFuelPulse.",
+   "name": "FuelFlag"
+  },
+  "0E67": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with; read by Sub_104AE.",
+   "name": "FuelThresh1"
+  },
+  "0E68": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte subtracted from; read by Sub_104AE.",
+   "name": "FuelOffset1"
+  },
+  "0E69": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte used with; read by Sub_104AE.",
+   "name": "FuelValue11"
+  },
+  "0E6A": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with DecelFuelRamp; read by Sub_104AE.",
+   "name": "FuelDecelFuelRampThresh"
+  },
+  "0E6B": {
+   "size": 1,
+   "unit": "rpm32",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with EngineRpm; read by Sub_104AE.",
+   "name": "FuelRpmThresh2"
+  },
+  "0E6C": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte subtracted from V0777; read by Sub_104AE.",
+   "name": "FuelV0777Offset1"
+  },
+  "0E6D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte added to DecelFuelRamp; read by Sub_104AE.",
+   "name": "FuelDecelFuelRampAdder"
+  },
+  "0E6E": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte subtracted from V0777; read by Sub_104AE.",
+   "name": "FuelV0777Offset2"
+  },
+  "0E6F": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte subtracted from DecelFuelRamp; read by Sub_104AE.",
+   "name": "FuelDecelFuelRampOffset"
+  },
+  "0F57": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with CoolantTemp; read by Sub_102FE.",
+   "name": "FuelCoolantThresh3"
+  },
+  "0F58": {
+   "size": 1,
+   "unit": "rpm32",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with EngineRpm; read by Sub_102FE.",
+   "name": "FuelRpmThresh3"
+  },
+  "0F59": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte added to WotTimeEnrich; read by Sub_102FE.",
+   "name": "FuelWotTimeEnrichAdder"
+  },
+  "0F5A": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte subtracted from V081A; read by Sub_102FE.",
+   "name": "FuelV081AOffset"
+  },
+  "0F5B": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Word compared with V07AD; read by Sub_102FE.",
+   "name": "FuelV07ADThresh"
+  },
+  "0F5D": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Word compared with; read by Sub_102FE.",
+   "name": "FuelThresh2"
+  },
+  "0F5F": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Word compared with V07AB; read by Sub_102FE.",
+   "name": "FuelV07ABThresh"
+  },
+  "071D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte compared with FlexEthanol; read by Sub_15F5C.",
+   "name": "O2FlexEthanolThresh"
+  },
+  "071E": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte added to; read by Sub_15F5C.",
+   "name": "O2Adder1"
+  },
+  "071F": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte added to; read by Sub_15F5C.",
+   "name": "O2Adder2"
+  },
+  "0724": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte used with; read by Sub_15FF4.",
+   "name": "SensorValue4"
+  },
+  "0727": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte used with; read by Sub_15FF4.",
+   "name": "SensorValue5"
+  },
+  "0720": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte used with; read by Sub_15F5C.",
+   "name": "O2Value4"
+  },
+  "0ED0": {
+   "size": 1,
+   "unit": "kpa",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte subtracted from Map; read by FinishFuelPulse.",
+   "name": "DecelMapOffset"
+  },
+  "0F71": {
+   "size": 1,
+   "unit": "kpa",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with MapLast; read by Sub_12142.",
+   "name": "DecelMapLastThresh"
+  },
+  "0F72": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with ThrottleLast; read by Sub_12142.",
+   "name": "DecelThrottleLastThresh"
+  },
+  "0F73": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with DecelLeanTimer; read by Sub_12142.",
+   "name": "DecelLeanTimerThresh"
+  },
+  "0F74": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte multiplied; read by Sub_12142.",
+   "name": "DecelFactor1"
+  },
+  "0F75": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte multiplied; read by Sub_12142.",
+   "name": "DecelFactor2"
+  },
+  "0F76": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with DecelLeanFuel; read by Sub_12142.",
+   "name": "DecelLeanFuelThresh1"
+  },
+  "0F7F": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with VehicleSpeed; read by Sub_12142.",
+   "name": "DecelSpeedThresh"
+  },
+  "0F80": {
+   "size": 1,
+   "unit": "rpm32",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with EngineRpm; read by Sub_12142.",
+   "name": "DecelRpmThresh"
+  },
+  "0F81": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte used with; read by Sub_1202A.",
+   "name": "FuelEventValue9"
+  },
+  "0F82": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte stored into DecelLeanTimer; read by Sub_12142.",
+   "name": "DecelLeanTimerInit"
+  },
+  "0F83": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with; read by Sub_12142.",
+   "name": "DecelThresh"
+  },
+  "0F84": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Word added to IdleTarget; read by Sub_12142.",
+   "name": "DecelIdleTargetAdder"
+  },
+  "12AA": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte compared with PurgeRamp; read by Sub_143C2, Sub_14802.",
+   "name": "O2PurgeRampThresh1"
+  },
+  "1247": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte used with; read by Sub_15364.",
+   "name": "O2Value20"
+  },
+  "12C2": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte multiplied; read by Sub_143C2.",
+   "name": "O2Factor2"
+  },
+  "12C3": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte compared with; read by Sub_143C2, Sub_14802.",
+   "name": "O2Thresh12"
+  },
+  "12C4": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte compared with; read by Sub_143C2, Sub_14802.",
+   "name": "O2Thresh13"
+  },
+  "1293": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Word compared with; read by Sub_143C2.",
+   "name": "O2Thresh14"
+  },
+  "1295": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Word compared with; read by Sub_143C2.",
+   "name": "O2Thresh15"
+  },
+  "12AF": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Word compared with; read by Sub_143C2.",
+   "name": "O2Thresh16"
+  },
+  "12B1": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Word used with; read by Sub_143C2.",
+   "name": "O2Value25"
+  },
+  "12AE": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte used with V0712; read by Sub_143C2, Sub_14802, Sub_14FD8 +1.",
+   "name": "O2V0712Value"
+  },
+  "12B3": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte used with; read by Sub_143C2.",
+   "name": "O2Value26"
+  },
+  "12B4": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte used with; read by Sub_143C2.",
+   "name": "O2Value27"
+  },
+  "12AC": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte used with; read by Sub_143C2.",
+   "name": "O2Value28"
+  },
+  "12AD": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte used with; read by Sub_143C2.",
+   "name": "O2Value29"
+  },
+  "11BD": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte compared with CoolantTemp; read by Sub_14FD8, Sub_20BB4, Sub_20C24.",
+   "name": "O2CoolantThresh4"
+  },
+  "06A6": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "bits": [
+    "40",
+    "80"
+   ],
+   "desc": "Option byte; bits tested: $40, $80. Read by Sub_107EA, CalcFuelPulse.",
+   "name": "AccelFuelOptions"
+  },
+  "1116": {
+   "size": 1,
+   "unit": "kpa",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with Map; read by Sub_11C44.",
+   "name": "FuelMapThresh3"
   },
   "110B": {
    "name": "RevLimit",
    "desc": "Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral)",
    "size": 1,
-   "unit": "rpm32"
+   "unit": "rpm32",
+   "category": "Fuel"
   },
   "110D": {
    "name": "RevLimitAlt",
    "desc": "Rev limit, used while $0C31,Z bit 5 is clear",
    "size": 1,
-   "unit": "rpm32"
+   "unit": "rpm32",
+   "category": "Fuel"
+  },
+  "11A7": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with Count3s; read by Sub_103FA.",
+   "name": "SensorTimeThresh2"
+  },
+  "11A8": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with CoolantTemp; read by Sub_103FA.",
+   "name": "SensorCoolantThresh3"
+  },
+  "11A9": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with; read by Sub_103FA.",
+   "name": "SensorThresh6"
+  },
+  "11AA": {
+   "size": 1,
+   "unit": "rpm32",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with EngineRpm; read by Sub_103FA.",
+   "name": "SensorRpmThresh4"
+  },
+  "11AB": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with; read by Sub_103FA.",
+   "name": "SensorThresh7"
+  },
+  "11AC": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with; read by Sub_103FA.",
+   "name": "SensorThresh8"
+  },
+  "13A4": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Startup",
+   "desc": "Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5.",
+   "name": "StartV0801Thresh"
+  },
+  "13A5": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Startup",
+   "desc": "Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4.",
+   "name": "StartV043BValue"
+  },
+  "13A6": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Startup",
+   "desc": "Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4.",
+   "name": "StartV043CThresh"
+  },
+  "19B7": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word compared with V0ABD; read by Isr_GPT_IC1.",
+   "name": "EventV0ABDThresh3"
+  },
+  "1A1B": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte compared with V076D; read by Sub_1D448.",
+   "name": "AfterV076DThresh"
+  },
+  "1A1C": {
+   "size": 1,
+   "unit": "kpa",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte compared with Baro; read by Sub_1D448.",
+   "name": "AfterBaroThresh2"
+  },
+  "1A1D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte compared with V0D19; read by Sub_1D448.",
+   "name": "AfterV0D19Thresh1"
+  },
+  "1A1E": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte compared with V0D19; read by Sub_1D448.",
+   "name": "AfterV0D19Thresh2"
+  },
+  "1A1F": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Word compared with; read by Sub_1D448.",
+   "name": "AfterThresh"
+  },
+  "1A09": {
+   "name": "HighSpeedSparkOff",
+   "desc": "Coarse vehicle speed below which HighSpeedSparkRpm stops (hysteresis)",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1A0A": {
+   "name": "HighSpeedSparkOn",
+   "desc": "Coarse vehicle speed above which HighSpeedSparkRpm applies",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1D3C": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte added to EventSpark; read by Sub_1DB84.",
+   "name": "SparkEventSparkAdder1"
+  },
+  "1D3D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte added to EventSpark; read by Sub_1DB84.",
+   "name": "SparkEventSparkAdder2"
+  },
+  "1D3E": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte subtracted from; read by Sub_1DB84.",
+   "name": "SparkOffset1"
+  },
+  "1D3F": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte subtracted from; read by Sub_1DB84.",
+   "name": "SparkOffset2"
+  },
+  "1D40": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte stored into EventSparkTimer; read by Sub_11C44.",
+   "name": "FuelEventSparkTimerInit1"
+  },
+  "1D41": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte subtracted from V0863; read by Sub_11C44.",
+   "name": "FuelV0863Offset"
+  },
+  "1D43": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte added to V0863; read by Isr_GPT_IC4OC5, Sub_11C44.",
+   "name": "FuelV0863Adder"
+  },
+  "1D44": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte stored into EventSpark; read by Sub_11C44.",
+   "name": "FuelEventSparkInit"
+  },
+  "1D45": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte stored into V0862; read by Sub_11C44.",
+   "name": "FuelV0862Init"
+  },
+  "1D46": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Startup",
+   "desc": "Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44.",
+   "name": "StartV0863Thresh"
+  },
+  "1D48": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte used with; read by Sub_12CCC.",
+   "name": "FuelEventValue10"
+  },
+  "1D49": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Byte used with; read by Isr_GPT_IC4OC5.",
+   "name": "CalValue7"
+  },
+  "1BB9": {
+   "name": "SurgeJerkNegMin",
+   "desc": "Throttle open: negative jerk beyond which SurgeJerkAdvanceOpen applies",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BBA": {
+   "name": "SurgeJerkPosMin",
+   "desc": "Throttle open: positive jerk above which SurgeJerkRetardOpen applies",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BD3": {
+   "name": "SurgeRpmAccelEnd",
+   "desc": "Driveline surge: rpm acceleration change ($0D2C,Z) below which the retard stage ends early",
+   "size": 2,
+   "category": "Spark"
+  },
+  "1BD5": {
+   "name": "SurgeMapMin",
+   "desc": "Driveline surge spark control runs above this MAP",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BD6": {
+   "name": "SurgeRpmMin",
+   "desc": "Driveline surge spark control runs above this fast segment rpm (high byte)",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BD7": {
+   "name": "SurgeSpeedMin",
+   "desc": "Driveline surge spark control runs above this vehicle speed",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BD8": {
+   "name": "SurgeOpenThrottleTime",
+   "desc": "Throttle open: time ($0D38,Z) during which the jerk spark applies",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BD9": {
+   "name": "SurgeCoolantMin",
+   "desc": "Driveline surge spark control runs above this coolant temperature",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BDA": {
+   "name": "SurgeRetardTime",
+   "desc": "Retard stage length ($0D37,Z) before the decay stage",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1C25": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Word used with; read by Sub_1D822.",
+   "name": "AcValue4"
+  },
+  "1C27": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Word compared with V0D4E; read by Sub_1D822.",
+   "name": "AcV0D4EThresh"
+  },
+  "1C1F": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte used with; read by Sub_1D822.",
+   "name": "AcValue5"
+  },
+  "1C20": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte used with; read by Sub_1D822.",
+   "name": "AcValue6"
+  },
+  "1CF0": {
+   "name": "KnockCoolantMin",
+   "desc": "Knock retard and its maximum apply above this coolant temperature",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1CC7": {
+   "name": "KnockRetardMaxRpmMin",
+   "desc": "KnockRetardMaxMap is used above this engine rpm",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Knock"
+  },
+  "1CC8": {
+   "name": "KnockRetardMaxThrottle",
+   "desc": "KnockRetardMaxMap is used above this throttle opening (else above KnockRetardMaxRpm2)",
+   "size": 1,
+   "category": "Knock"
+  },
+  "1CC9": {
+   "name": "KnockRetardMaxRpm2",
+   "desc": "Below this rpm (with throttle below KnockRetardMaxThrottle) the maximum is KnockRetardMaxLow",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Knock"
+  },
+  "1CCA": {
+   "name": "KnockRetardMaxLow",
+   "desc": "Knock retard maximum at low throttle and rpm",
+   "unit": "spark",
+   "size": 1,
+   "category": "Knock"
+  },
+  "1CE0": {
+   "name": "KnockFirstStepFactor",
+   "desc": "Factor on KnockRetardStep for the first knock event",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1CE1": {
+   "name": "KnockStepFactor",
+   "desc": "Factor on KnockRetardStep for later knock events",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1CE2": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte used with; read by Sub_1F296.",
+   "name": "KnockValue2"
+  },
+  "1CE7": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte added to; read by Sub_1F296.",
+   "name": "KnockAdder1"
+  },
+  "1CE8": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte added to; read by Sub_1F296.",
+   "name": "KnockAdder2"
+  },
+  "1AF2": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte compared with CoolantTemp; read by Sub_1D15C.",
+   "name": "AirCoolantThresh"
+  },
+  "2195": {
+   "name": "IacTargetMax",
+   "desc": "Upper limit of the IAC target position",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DFF": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Word compared with SegmentRpm; read by Sub_19808.",
+   "name": "IacSegRpmThresh2"
+  },
+  "1E2C": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Word subtracted from IdleTarget; read by Sub_19808.",
+   "name": "IacIdleTargetOffset1"
+  },
+  "1E2E": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Word subtracted from IdleTarget; read by Sub_19808.",
+   "name": "IacIdleTargetOffset2"
+  },
+  "1F5D": {
+   "name": "IacGearCoolantMax",
+   "desc": "Gear-change IAC: coolant below which the IacGearTimeCoolant tables and the time counter $0348,Z apply",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1FC9": {
+   "name": "IacKickRpmMax",
+   "desc": "A/C and rpm-dip kicks: segment rpm below which they apply",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1F09": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte stored into V0352; read by Sub_19808.",
+   "name": "IacV0352Init"
+  },
+  "1F0E": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte added to; read by Sub_19808.",
+   "name": "IacAdder1"
+  },
+  "1F0B": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte added to; read by Sub_19808.",
+   "name": "IacAdder2"
+  },
+  "1F0F": {
+   "name": "IacKickHold",
+   "desc": "A/C and rpm-dip kicks: hold time $035A,Z",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1F10": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte used with; read by Sub_1AFDE.",
+   "name": "IacValue2"
+  },
+  "1F12": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte stored into V034F; read by Sub_19808.",
+   "name": "IacV034FInit"
+  },
+  "1F13": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte used with; read by Sub_1AA32.",
+   "name": "IacValue3"
+  },
+  "1F14": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte used with; read by Sub_1AA32.",
+   "name": "IacValue4"
+  },
+  "1F15": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte used with; read by Sub_1AA32.",
+   "name": "IacValue5"
+  },
+  "1F16": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte used with; read by Sub_1AA32.",
+   "name": "IacValue6"
+  },
+  "1F17": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte used with; read by Sub_1AA32.",
+   "name": "IacValue7"
+  },
+  "1F18": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte used with; read by Sub_1AA32.",
+   "name": "IacValue8"
+  },
+  "2194": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte stored into V034E; read by Sub_19808.",
+   "name": "IacV034EInit"
+  },
+  "1FEB": {
+   "name": "IacAcRequestAdder",
+   "desc": "IAC addition with A/C requested (A/C switch input, not blocked)",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1FEC": {
+   "name": "IacDriveAdder",
+   "desc": "IAC addition (signed) in drive",
+   "size": 1,
+   "category": "Idle"
+  },
+  "208B": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte mask for MainLoopCounter; read by Sub_19808.",
+   "name": "IacLoopMask1"
+  },
+  "208C": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte multiplied; read by Sub_19808.",
+   "name": "IacFactor1"
+  },
+  "208D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte multiplied; read by Sub_19808.",
+   "name": "IacFactor2"
+  },
+  "208E": {
+   "name": "IacRollCoolantMin",
+   "desc": "Rolling IAC target: below this coolant the $0335,Z value is used instead",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DD2": {
+   "name": "BatteryVoltsFilter",
+   "desc": "Filter weight of the filtered battery voltage $0A52,Z",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1FDD": {
+   "name": "ChargeDeficitFilter",
+   "desc": "Filter weight of the charging deficit average $0DCA,Z",
+   "size": 1,
+   "category": "Idle"
+  },
+  "218C": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte used with; read by Sub_1A54A.",
+   "name": "IdleValue17"
+  },
+  "218D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Idle",
+   "desc": "Byte used with; read by Sub_1A54A.",
+   "name": "IdleValue18"
+  },
+  "2182": {
+   "name": "IdleRollSpeed",
+   "desc": "Vehicle speed that separates standing from rolling for idle air, dashpot and coast logic",
+   "size": 1,
+   "category": "Idle"
+  },
+  "2326": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte stored into V00F0; read by Sub_3C3C6.",
+   "name": "SensorV00F0Init"
+  },
+  "2327": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte used with; read by Sub_3C3C6.",
+   "name": "SensorValue11"
+  },
+  "2328": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Word compared with EngineRpm; read by Sub_3C3C6.",
+   "name": "SensorRpmThresh6"
+  },
+  "232A": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Word compared with EngineRpm; read by Sub_3C3C6.",
+   "name": "SensorRpmThresh7"
+  },
+  "232C": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte used with; read by Sub_3C3C6.",
+   "name": "SensorValue12"
+  },
+  "232D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_3C3C6.",
+   "name": "SensorThrottleThresh3"
+  },
+  "232E": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte used with; read by Sub_3C3C6.",
+   "name": "SensorValue13"
+  },
+  "2718": {
+   "name": "MisfireChangeMax",
+   "desc": "Misfire monitor: segment-time change above which a misfire is taken without the thresholds",
+   "size": 2,
+   "category": "Diagnostics"
+  },
+  "26F5": {
+   "name": "MisfireHoldSpeedMin",
+   "desc": "Misfire hold-off (MisfireHoldSegRpm) applies above this vehicle speed",
+   "size": 1,
+   "category": "Diagnostics"
+  },
+  "2708": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with V061D; read by Sub_2AE1E.",
+   "name": "FuelV061DThresh"
+  },
+  "2709": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte used with; read by Sub_2AE1E.",
+   "name": "FuelValue16"
+  },
+  "26F9": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with; read by Sub_2AE1E.",
+   "name": "FuelThresh6"
+  },
+  "2972": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with BatteryTemp; read by Sub_25784.",
+   "name": "DiagBatteryTempThresh1"
+  },
+  "2973": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with BatteryTemp; read by Sub_25784.",
+   "name": "DiagBatteryTempThresh2"
+  },
+  "2976": {
+   "size": 1,
+   "unit": "volt16",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with BatteryVolts2; read by Sub_25784.",
+   "name": "DiagVoltsThresh1"
+  },
+  "2977": {
+   "size": 1,
+   "unit": "volt16",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with BatteryVolts2; read by Sub_25784.",
+   "name": "DiagVoltsThresh2"
+  },
+  "2978": {
+   "size": 1,
+   "unit": "kpa",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with ManifoldVacuum; read by Sub_25784.",
+   "name": "DiagVacuumThresh1"
+  },
+  "2979": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0591; read by Sub_25DA8.",
+   "name": "DiagV0591Thresh"
+  },
+  "2981": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0593; read by Sub_25784.",
+   "name": "DiagV0593Thresh"
+  },
+  "297A": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0592; read by Sub_25784, Sub_25DA8.",
+   "name": "DiagV0592Thresh"
+  },
+  "297C": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte used with; read by Sub_25DA8.",
+   "name": "DiagValue1"
+  },
+  "297B": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with DiagMonPeak; read by Sub_25DA8.",
+   "name": "DiagMonPeakThresh1"
+  },
+  "297D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_25784.",
+   "name": "DiagThresh1"
+  },
+  "297E": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_25784.",
+   "name": "DiagThresh2"
+  },
+  "2983": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0590; read by Sub_25784.",
+   "name": "DiagV0590Thresh"
+  },
+  "2984": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0598; read by Sub_25784.",
+   "name": "DiagV0598Thresh"
+  },
+  "2985": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_25784.",
+   "name": "DiagThresh3"
+  },
+  "2337": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_25784.",
+   "name": "DiagThresh4"
+  },
+  "298B": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_25784.",
+   "name": "DiagThresh5"
+  },
+  "298D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0599; read by Sub_25784.",
+   "name": "DiagV0599Thresh"
+  },
+  "298E": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V059A; read by Sub_25784.",
+   "name": "DiagV059AThresh"
+  },
+  "297F": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0596; read by Sub_25784.",
+   "name": "DiagV0596Thresh1"
+  },
+  "2982": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0597; read by Sub_25784.",
+   "name": "DiagV0597Thresh1"
+  },
+  "2986": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0596; read by Sub_25784.",
+   "name": "DiagV0596Thresh2"
+  },
+  "298F": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0597; read by Sub_25784.",
+   "name": "DiagV0597Thresh2"
+  },
+  "2980": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with DiagMonPeak; read by Sub_25784.",
+   "name": "DiagMonPeakThresh2"
+  },
+  "2987": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with DiagMonPeak; read by Sub_25784.",
+   "name": "DiagMonPeakThresh3"
+  },
+  "2988": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0595; read by Sub_25784.",
+   "name": "DiagV0595Thresh"
+  },
+  "2989": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_25784.",
+   "name": "DiagThresh6"
+  },
+  "298A": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with DiagMonPeak; read by Sub_25784.",
+   "name": "DiagMonPeakThresh4"
+  },
+  "298C": {
+   "size": 1,
+   "unit": "kpa",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with ManifoldVacuum; read by Sub_25784.",
+   "name": "DiagVacuumThresh2"
+  },
+  "2499": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Closed loop",
+   "desc": "Byte added to; read by Sub_15364.",
+   "name": "O2Adder5"
+  },
+  "2547": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with Count3s; read by Sub_2877A.",
+   "name": "DiagTimeThresh2"
+  },
+  "254B": {
+   "size": 1,
+   "unit": "tempc",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with CoolantTemp; read by Sub_2877A.",
+   "name": "DiagCoolantThresh3"
+  },
+  "254A": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with VehicleSpeed; read by Sub_2877A.",
+   "name": "DiagSpeedThresh2"
+  },
+  "2548": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V053F; read by Sub_2877A.",
+   "name": "DiagV053FThresh"
+  },
+  "254E": {
+   "size": 2,
+   "unit": "rpmw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Word compared with IdleTarget; read by Sub_2877A.",
+   "name": "DiagIdleTargetThresh"
+  },
+  "254D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_2877A.",
+   "name": "DiagThresh10"
+  },
+  "254C": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_2877A.",
+   "name": "DiagThresh11"
+  },
+  "2550": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0542; read by Sub_2877A.",
+   "name": "DiagV0542Thresh"
+  },
+  "2552": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte stored into V0541; read by Sub_2877A.",
+   "name": "DiagV0541Init"
+  },
+  "2553": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0A4E; read by Sub_2877A.",
+   "name": "DiagV0A4EThresh"
+  },
+  "2549": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with V0543; read by Sub_2877A.",
+   "name": "DiagV0543Thresh"
+  },
+  "2568": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_2877A.",
+   "name": "DiagThresh12"
+  },
+  "2571": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_2877A.",
+   "name": "DiagThresh13"
+  },
+  "257B": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_2877A.",
+   "name": "DiagThresh14"
+  },
+  "257C": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Diagnostics",
+   "desc": "Byte compared with; read by Sub_2877A.",
+   "name": "DiagThresh15"
+  },
+  "2582": {
+   "size": 2,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Word compared with V010A; read by Sub_2919A.",
+   "name": "CalV010AThresh1"
+  },
+  "246D": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with; read by Sub_23D76.",
+   "name": "FuelThresh8"
+  },
+  "246E": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with; read by Sub_23D76.",
+   "name": "FuelThresh9"
+  },
+  "246F": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with; read by Sub_23D76.",
+   "name": "FuelThresh10"
+  },
+  "2470": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte compared with V068E; read by Sub_23D76.",
+   "name": "FuelV068EThresh"
+  },
+  "3E04": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte added to result of MapLimpFromThrottle; read by Sub_241AA.",
+   "name": "MapAdder2"
+  },
+  "3E05": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte added to Throttle; read by Sub_241AA.",
+   "name": "MapThrottleAdder"
+  },
+  "3DD6": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte used with; read by Sub_1F408.",
+   "name": "KnockValue3"
+  },
+  "3DD7": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Spark",
+   "desc": "Byte compared with V0A89; read by Sub_1F408.",
+   "name": "KnockV0A89Thresh"
+  },
+  "3DD2": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap.",
+   "name": "SensorMapRawThresh1"
+  },
+  "3DD3": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with MapRaw; read by Sub_21EFE, ReadMap.",
+   "name": "SensorMapRawThresh2"
+  },
+  "3DD5": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap.",
+   "name": "SensorThrottleThresh4"
+  },
+  "3DE5": {
+   "size": 1,
+   "unit": "volt16",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte added to BatteryVolts2; read by Sub_21C78.",
+   "name": "SensorVoltsAdder"
+  },
+  "3DE6": {
+   "size": 1,
+   "unit": "rpm32",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with EngineRpm; read by Sub_21C78.",
+   "name": "SensorRpmThresh10"
+  },
+  "3DE7": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with V0DBB; read by Sub_21C78.",
+   "name": "SensorV0DBBThresh"
+  },
+  "3DE8": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with; read by Sub_21C78.",
+   "name": "SensorThresh23"
+  },
+  "3DE9": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Sensors",
+   "desc": "Byte compared with; read by Sub_21C78.",
+   "name": "SensorThresh24"
+  },
+  "51DF": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Other",
+   "desc": "Byte used with V0C46; read by Isr_GPT_IC4OC5, Isr_GPT_IC1, Sub_10604 +17.",
+   "name": "EventV0C46Value"
+  },
+  "5207": {
+   "size": 1,
+   "unit": "raw",
+   "auto": true,
+   "category": "Fuel",
+   "desc": "Byte multiplied; read by Sub_12680.",
+   "name": "FuelEventFactor"
   }
  },
  "special": {

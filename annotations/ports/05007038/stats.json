@@ -5,9 +5,9 @@
  "instructions_mapped": 15809,
  "instructions_ref": 43370,
  "labels": "19 of 35",
- "ram": "80 of 120",
+ "ram": "124 of 214",
  "tables": "167 of 410",
- "scalars": "6 of 8",
+ "scalars": "548 of 1448",
  "ram_identity": 102,
  "ram_moved": 913
 }

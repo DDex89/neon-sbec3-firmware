@@ -17,9 +17,9 @@ The code refers to it in two ways:
 - **Tables**, passed in X to one of four lookup routines (`LDX #table`, `JSR Lookup2D`). The lookup
   routines force XK = 0, so every table is in bank 0. 411 tables are found this way, between $0398
   and $ABD7 (two small ones lie among the bank 0 code).
-- **Constants**, read directly: 1,455 different addresses, mostly with `CMPA`/`CMPB` (thresholds),
-  `LDAA`/`LDAB` and `LDD`/`CPD` (16-bit values). Configuration bits around $0328-$0338 are tested
-  with `BRSET`/`BRCLR`. Only the constants confirmed so far are named.
+- **Constants**, read directly: 1,448 different addresses, mostly with `CMPA`/`CMPB` (thresholds),
+  `LDAA`/`LDAB` and `LDD`/`CPD` (16-bit values). Configuration bits at $0328-$0340 are tested
+  with `BRSET`/`BRCLR`. See [constants and option bits](#constants-and-option-bits).
 
 ## Table formats
 
@@ -100,7 +100,7 @@ All 410 tables of the reference image are named by hand from the code (and check
 where it has them). The name says what the table does; the description in
 `annotations/tables.json` (and in the catalogue and the XDF) says which routine reads it, its inputs
 and where the result goes. Where the meaning of a RAM variable is still open, the name keeps its
-address (`IdleMapAdderV0335`), and readings that rest only on how the code uses a value say
+address (`FlexLearnLimitV006B`), and readings that rest only on how the code uses a value say
 "probably".
 
 | Category | Tables | Main prefixes |
@@ -160,6 +160,56 @@ Several of these readings rest on how the code uses a variable rather than on a 
 battery temperature ($0A5A,Z, used for the charging target), the generator field duty ($032E,Z,
 a duty count of CS2 input $106E bit 5) and the A/C sensor ($0A88,Z, probably A/C
 pressure) are inferred this way.
+
+## Constants and option bits
+
+`tools/constants.py` finds every byte or word the code reads directly with extended addressing and
+that is not part of a table: 1,448 of them in 05293190AC (1,263 bytes, 181 words, 4 longs), among
+them 21 option bytes tested with `BRSET`/`BRCLR` (120 bits used). They are kept with the tables in
+the `scalars` of `annotations/tables.json`, so the sources show `CMPA >IdleCoolantMin` instead of
+`CMPA $2853`, the catalogue lists them with value and physical value, the XDF has them as constants
+(and every option bit as a flag), and the port carries them to the other images (from 239 in family
+A to 1,404 in family E).
+
+For each constant the script looks at how it is used: what the register held before the compare,
+add or subtract (`LDAA >CoolantTemp,Z` then `CMPA $2853`), or what a loaded value is compared with
+or stored into. That gives the unit (temperature, rpm, kPa, volts) and a structural name: the
+prefix of the tables of the same routine or the subsystem, the variable, and the role (`Thresh` for
+a compare, `Adder`, `Offset`, `Factor`, `Init` for a value stored into RAM, `Value` otherwise),
+numbered when repeated. 153 constants have hand names from the code read so far (idle, spark,
+knock, EGR, fan, A/C, diagnostics, the fuel constants and limits); the rest keep the structural
+name with * in the catalogue. Word rpm values use the unit `rpmw` (rpm = x / 8).
+
+The option bytes at $0328-$0340 are global configuration. The bits identified so far, with their
+state in 05293190AC:
+
+| Byte | Bit | Name | Set |
+|---|---|---|---|
+| $032B | $20 | `SparkCalcHookOn` | 0 |
+| $032B | $40 | `DwellBatteryOn` | 0 |
+| $032C | $40 | `FlexFuelOn` | 0 |
+| $032D | $20 | `AcClutchLogicOn` | 1 |
+| $032E | $40 | `ManualTransmission` | 1 |
+| $0330 | $01 | `BattTempModelOn` | 0 |
+| $0330 | $04 | `BattTempCurveAlt` | 0 |
+| $0330 | $20 | `TipInAirTempCheck` | 1 |
+| $0331 | $80 | `AcPressureSensor` | 0 |
+| $0335 | $04 | `EgrSparkScaled` | 0 |
+| $0337 | $01 | `IdleDipKickMode` | 0 |
+| $0337 | $10 | `SurgeSparkOn` | 1 |
+| $0337 | $20 | `SpeedLimitOn` | 0 |
+| $0337 | $40 | `SpeedDampOn` | 0 |
+| $0337 | $80 | `EventSparkOn` | 0 |
+| $0338 | $02 | `FieldControlAlt` | 0 |
+| $0338 | $04 | `FuelEventOffsetAlt` | 0 |
+| $0339 | $01 | `TipInRetardHold` | 0 |
+| $0339 | $04 | `PurgeDutyAltClosed` | 0 |
+| $0339 | $08 | `PurgeDutyAltOther` | 1 |
+| $033A | $10 | `AcSparkOn` | 0 |
+| $033D | $08 | `IacCoastOff` | 0 |
+
+`ManualTransmission` set means the P/N switch is ignored (the idle and spark P/N variants are never
+used), which fits the manual 05293190AC.
 
 ## Fuel pulse width
 
@@ -245,6 +295,7 @@ applies only to the reference image.
   duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
   subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
   them on a running car would settle them.
-- The 1,455 directly read constants are not catalogued one by one yet.
+- 1,295 constants have structural names only, and about 270 RAM variables are still known by
+  address.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.

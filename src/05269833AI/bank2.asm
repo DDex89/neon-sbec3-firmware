@@ -471,7 +471,7 @@ L205A8:
 ;---------------------------------------------------------------------------------------------------
 Sub_205AA:
         BRSET   $00D8,Z,#$40,L206CA
-        LDAB    $0C3F,Z
+        LDAB    >RunTime,Z
         CMPB    #$25
         LBCS    L206CA
         TPD
@@ -1152,7 +1152,7 @@ L20BB8:
         CMPA    #$0C
         BHI     L20BEA
         LDAA    >CoolantTemp,Z
-        CMPA    $1852
+        CMPA    >O2CoolantThresh4
         BCS     L20BD2
         LDE     $0006,Y
         LDAB    E,Z
@@ -1202,7 +1202,7 @@ Sub_20BFA:
         LDAA    E,Z
         ANDA    #$FE
         LDAB    >CoolantTemp,Z
-        CMPB    $1852
+        CMPB    >O2CoolantThresh4
         BCS     L20C30
         ORAA    #$01
 L20C30:
@@ -1406,31 +1406,31 @@ L20DBC:
 ;---------------------------------------------------------------------------------------------------
 Sub_20DF4:
         BRSET   $00D8,Z,#$20,L20F0A
-        BRCLR   $033E,#$10,L20E1E
+        BRCLR   >StartV06B8Flag,#$10,L20E1E
         BRCLR   $00A1,Z,#$02,L20E22
         BRSET   $00A1,Z,#$10,L20E22
-        BRCLR   $033E,#$08,L20E1E
+        BRCLR   >StartV06B8Flag,#$08,L20E1E
         BRCLR   $00A2,Z,#$02,L20E22
         BRSET   $00A2,Z,#$10,L20E22
 L20E1E:
         BCLR    $3F,Z,#$01
 L20E22:
-        BRCLR   $033E,#$80,L20E46
+        BRCLR   >StartV06B8Flag,#$80,L20E46
         BRCLR   $00A3,Z,#$02,L20E4A
         BRSET   $00A3,Z,#$10,L20E4A
-        BRCLR   $033E,#$40,L20E46
+        BRCLR   >StartV06B8Flag,#$40,L20E46
         BRCLR   $00A4,Z,#$02,L20E4A
         BRSET   $00A4,Z,#$10,L20E4A
 L20E46:
         BCLR    $3F,Z,#$20
 L20E4A:
-        BRCLR   $033E,#$01,L20E5C
+        BRCLR   >StartV06B8Flag,#$01,L20E5C
         BRCLR   $00AA,Z,#$02,L20E60
         BRSET   $00AA,Z,#$10,L20E60
 L20E5C:
         BCLR    $3F,Z,#$80
 L20E60:
-        BRCLR   $033E,#$02,L20EA8
+        BRCLR   >StartV06B8Flag,#$02,L20EA8
         BRSET   $0137,Z,#$02,L20EA8
         BRSET   $0137,Z,#$01,L20EA8
         BRSET   $0139,Z,#$80,L20EA8
@@ -1445,18 +1445,18 @@ L20E60:
 L20EA8:
         BCLR    $3F,Z,#$04
 L20EAC:
-        BRCLR   $033F,#$80,L20EF4
+        BRCLR   >StartV06B9Flag,#$80,L20EF4
         BRCLR   $00A5,Z,#$02,L20EF8
         BRSET   $00A5,Z,#$10,L20EF8
-        BRCLR   $033F,#$40,L20ED0
+        BRCLR   >StartV06B9Flag,#$40,L20ED0
         BRCLR   $00A6,Z,#$02,L20EF8
         BRSET   $00A6,Z,#$10,L20EF8
 L20ED0:
-        BRCLR   $033F,#$20,L20EE2
+        BRCLR   >StartV06B9Flag,#$20,L20EE2
         BRCLR   $00A7,Z,#$02,L20EF8
         BRSET   $00A7,Z,#$10,L20EF8
 L20EE2:
-        BRCLR   $033F,#$10,L20EF4
+        BRCLR   >StartV06B9Flag,#$10,L20EF4
         BRCLR   $00A8,Z,#$02,L20EF8
         BRSET   $00A8,Z,#$10,L20EF8
 L20EF4:
@@ -1800,7 +1800,7 @@ Sub_21800:
 L2180C:
         BRSET   $06B4,Z,#$01,L21822
         LDAA    >BatteryTemp,Z
-        CMPA    $31DD
+        CMPA    >CalBatteryTempThresh2
         BCS     L21822
         BCLR    $9C,Z,#$01
         BRA     L21826
@@ -1809,14 +1809,14 @@ L21822:
 L21826:
         BRSET   $06B4,Z,#$20,L2183A
         LDAA    <Baro,Z
-        CMPA    $31DE
+        CMPA    >CalBaroThresh
         BCS     L2183A
         BCLR    $9C,Z,#$02
         BRA     L2183E
 L2183A:
         BSET    $9C,Z,#$02
 L2183E:
-        BRCLR   $0331,#$10,L2184A
+        BRCLR   >Options0331,#$10,L2184A
         BRSET   $050D,Z,#$02,L21862
 L2184A:
         BRCLR   $06C1,Z,#$02,L218C2
@@ -1827,12 +1827,12 @@ L21862:
         BCLR    $9C,Z,#$18
         BRA     L218C2
 L21868:
-        LDAA    $0A94,Z
+        LDAA    >AnalogV0A92Filtered,Z
         BRSET   $0505,Z,#$08,L218AA
         BRSET   $0507,Z,#$02,L218AA
         BRSET   $0507,Z,#$01,L218AA
         BRCLR   $009C,Z,#$08,L2189A
-        CMPA    $31E1
+        CMPA    >CalAnalogV0A92FilteredThresh
         BHI     L218AE
         BRSET   $06C1,Z,#$04,L218AA
         LDAB    $0121,Z
@@ -1840,7 +1840,7 @@ L21868:
         BCC     L218AA
         BRA     L218B2
 L2189A:
-        CMPA    $31E0
+        CMPA    >CalThresh2
         BLS     L218AA
         BSET    $9C,Z,#$08
         BSET    $06C1,Z,#$04
@@ -1850,14 +1850,14 @@ L218AA:
 L218AE:
         CLR     $0121,Z
 L218B2:
-        CMPA    $31E2
+        CMPA    >CalThresh3
         BCC     L218BE
         BSET    $9C,Z,#$10
         BRA     L218C2
 L218BE:
         BCLR    $9C,Z,#$10
 L218C2:
-        BRCLR   $032C,#$40,L218EA
+        BRCLR   >Options032C,#$40,L218EA
         BRSET   $050B,Z,#$10,L218E0
         BRSET   $050B,Z,#$20,L218E0
         BRSET   $050D,Z,#$10,L218E0
@@ -1872,7 +1872,7 @@ L218EA:
         BRSET   $0501,Z,#$20,L21906
         BRSET   $0500,Z,#$08,L21906
         LDAA    >BatteryVolts2,Z
-        CMPA    $31DF
+        CMPA    >CalVoltsThresh2
         BLS     L21906
         BCLR    $9C,Z,#$04
         BRA     L2190A
@@ -1902,7 +1902,7 @@ Sub_2190C:
         LDY     #$0000
         JSR     Sub_2194C
         JSR     KickWatchdogsLong
-        CMPA    $0305
+        CMPA    >CalThresh1
         BEQ     L21948
         LDY     #$3F9C
         JSR     Sub_245D4
@@ -1936,7 +1936,7 @@ Sub_2196A:
         STAA    $F4,Z
         BRSET   >ThrottleState,Z,#$02,L21B94
         LDAA    <Baro,Z
-        LDAB    $3217
+        LDAB    >DiagFactor1
         MUL
         ADCA    #$00
         STAA    $F0,Z
@@ -1964,9 +1964,9 @@ L219AC:
         INCA
 L219CA:
         STAA    $06B0,Z
-        CMPA    $3222
+        CMPA    >LimpMapFaultTime
         BCS     L219E0
-        LDAA    $3221
+        LDAA    >LimpRpmMapFault
         STAA    $F4,Z
         BRA     L219E4
 L219DC:
@@ -1976,7 +1976,7 @@ L219E0:
         STAA    $F4,Z
 L219E4:
         LDAA    >EngineRpm,Z
-        CMPA    $321F
+        CMPA    >ExpectedMapRpmMin
         LBCS    L21AC2
         LDAA    >ThrottleAboveClosed,Z
         LDX     #ExpectedMapThrottleScale
@@ -2004,7 +2004,7 @@ L21A1E:
 L21A34:
         STAA    $F2,Z
         BRSET   $0943,Z,#$01,L21A44
-        ADDA    $3218
+        ADDA    >DiagAdder1
         BCC     L21A44
         LDAA    #$FF
 L21A44:
@@ -2012,7 +2012,7 @@ L21A44:
         BRCLR   $0055,Z,#$04,L21A60
         BRSET   $050F,Z,#$08,L21A60
         BRCLR   $0A47,Z,#$40,L21A60
-        ADDA    $3219
+        ADDA    >DiagAdder2
         BCC     L21A60
         LDAA    #$FF
 L21A60:
@@ -2021,10 +2021,10 @@ L21A60:
         BCS     L21A8A
         BRSET   >ThrottleState,Z,#$80,L21AC2
         LDAA    >VehicleSpeed,Z
-        CMPA    $321B
+        CMPA    >DiagSpeedThresh4
         BCC     L21AC2
         LDAA    >EngineRpm,Z
-        CMPA    $321C
+        CMPA    >DiagRpmThresh2
         BCS     L21AC2
         LDAA    >Map,Z
         CMPA    $F0,Z
@@ -2032,7 +2032,7 @@ L21A60:
 L21A8A:
         BRCLR   $0A46,Z,#$01,L21AC2
         LDAA    $06AF,Z
-        CMPA    $321A
+        CMPA    >DiagV06AFThresh
         BCC     L21AA0
         INC     $06AF,Z
         BRA     L21AC6
@@ -2058,10 +2058,10 @@ L21AD0:
         STAA    $F4,Z
         BRSET   >ThrottleState,Z,#$80,L21B6C
         LDAA    >EngineRpm,Z
-        CMPA    $321D
+        CMPA    >DiagRpmThresh3
         BCC     L21B6C
         LDAA    $06AE,Z
-        CMPA    $321E
+        CMPA    >DiagV06AEThresh
         BCC     L21AFE
         INC     $06AE,Z
         BRA     L21B6C
@@ -2075,7 +2075,7 @@ L21AFE:
 L21B10:
         BRSET   $06B4,Z,#$20,L21B8C
         LDAA    >VehicleSpeed,Z
-        CMPA    $3220
+        CMPA    >DiagSpeedThresh5
         BCC     L21B42
         LDAA    >Map,Z
         CMPA    $F0,Z
@@ -2086,7 +2086,7 @@ L21B10:
         INCA
 L21B32:
         STAA    $06B0,Z
-        CMPA    $3222
+        CMPA    >LimpMapFaultTime
         BCS     L21B42
         BRA     L21B62
 L21B3E:
@@ -2102,7 +2102,7 @@ L21B42:
         STAA    $F4,Z
         BRA     L21B6C
 L21B62:
-        LDAA    $3221
+        LDAA    >LimpRpmMapFault
         STAA    $F4,Z
         BSET    $06AC,Z,#$40
 L21B6C:
@@ -2198,12 +2198,12 @@ Sub_21C66:
         BRSET   $0501,Z,#$20,L21CE6
         BRSET   $0500,Z,#$08,L21CE6
         LDAA    >BatteryVolts2,Z
-        ADDA    $4A09
+        ADDA    >SensorVoltsAdder
         BCS     L21CE6
         CMPA    >ChargeTargetVolts,Z
         BCC     L21CE6
         LDAA    >EngineRpm,Z
-        CMPA    $4A0A
+        CMPA    >SensorRpmThresh10
         BCS     L21CE6
         LDAA    #$0F
         BRCLR   $0DB8,Z,#$08,L21C9C
@@ -2217,18 +2217,18 @@ L21C9C:
         STAA    $0DBB,Z
 L21CAE:
         BRSET   $0DB8,Z,#$08,L21CC0
-        CMPA    $4A0B
+        CMPA    >SensorV0DBBThresh
         BCS     L21CEE
         BSET    $0DB8,Z,#$08
         BRA     L21CEA
 L21CC0:
         BRSET   $0DB8,Z,#$40,L21CD2
-        CMPA    $4A0D
+        CMPA    >SensorThresh24
         BCS     L21CEE
         BSET    $0DB8,Z,#$40
         BRA     L21CEA
 L21CD2:
-        CMPA    $4A0C
+        CMPA    >SensorThresh23
         BCS     L21CEE
         BCLR    $0DB8,Z,#$40
         LDY     #$3FBA
@@ -2249,11 +2249,11 @@ Sub_21CF0:
         BRSET   $0DB8,Z,#$04,L21D30
         BRCLR   $0774,Z,#$80,L21D56
         LDAA    >Count3s,Z
-        CMPA    $49DA
+        CMPA    >SensorTimeThresh5
         BCS     L21D52
         BRCLR   $0DC7,Z,#$08,L21D52
         LDAA    >BatteryVolts2,Z
-        CMPA    $49D6
+        CMPA    >SensorVoltsThresh2
         BCC     L21D52
         LDAB    $0DBC,Z
         INCB
@@ -2261,13 +2261,13 @@ Sub_21CF0:
         LDAB    #$FF
 L21D20:
         STAB    $0DBC,Z
-        CMPB    $49D8
+        CMPB    >SensorThresh17
         BCS     L21D56
         BSET    $0DB8,Z,#$04
         BRA     L21D52
 L21D30:
         LDAA    >BatteryVolts2,Z
-        CMPA    $49D7
+        CMPA    >SensorVoltsThresh3
         BCS     L21D52
         LDAB    $0DBC,Z
         INCB
@@ -2275,7 +2275,7 @@ L21D30:
         LDAB    #$FF
 L21D44:
         STAB    $0DBC,Z
-        CMPB    $49D9
+        CMPB    >SensorThresh18
         BCS     L21D56
         BCLR    $0DB8,Z,#$04
 L21D52:
@@ -2396,20 +2396,20 @@ L21E52:
 L21E58:
         TSTA
         BNE     L21E62
-        CMPB    $49E4
+        CMPB    >CalThresh10
         BCS     L21E68
 L21E62:
         BSET    $0669,Z,#$02
         BRA     L21E92
 L21E68:
         LDAB    >MapRaw,Z
-        CMPB    $49E5
+        CMPB    >CalMapRawThresh
         BCC     L21E92
-        CMPB    $49E1
+        CMPB    >SensorMapRawThresh1
         BCS     L21E92
         INC     $06D1,Z
         LDAB    $06D1,Z
-        CMPB    $49E3
+        CMPB    >CalV06D1Thresh
         BCS     L21E92
         LDY     #$41E0
         JSR     Sub_245D4
@@ -2432,17 +2432,17 @@ Sub_21E94:
         BCC     L21EB2
         NEGD
 L21EB2:
-        CPD     $4999
+        CPD     >CalRpmThresh4
         BCC     L21EEA
         LDY     #$410E
         LDAA    >ManifoldVacuum,Z
         LDAB    <Baro,Z
-        CMPB    $499B
+        CMPB    >DiagBaroThresh2
         BCC     L21ECE
-        CMPA    $499D
+        CMPA    >DiagVacuumThresh4
         BRA     L21ED2
 L21ECE:
-        CMPA    $499C
+        CMPA    >DiagValue10
 L21ED2:
         BCC     L21EE6
         BRSET   $9C,Z,#$08,L21EEA
@@ -2461,7 +2461,7 @@ L21EEA:
 ;---------------------------------------------------------------------------------------------------
 Sub_21EEC:
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    $49E6
+        CMPA    >SensorThrottleThresh4
         BCC     L21F30
         LDE     >EngineRpm,Z
         CPE     #$6D60
@@ -2470,13 +2470,13 @@ Sub_21EEC:
         BCS     L21F18
         LDY     #$40FA
         LDAA    >MapRaw,Z
-        CMPA    $49E2
+        CMPA    >SensorMapRawThresh2
         BCC     L21F2C
         JSR     Sub_24160
 L21F18:
         LDY     #$40F0
         LDAA    >MapRaw,Z
-        CMPA    $49E1
+        CMPA    >SensorMapRawThresh1
         BCS     L21F2C
         JSR     Sub_24160
         BRA     L21F30
@@ -2511,30 +2511,30 @@ Sub_21F70:
         LDAB    #$02
         TBXK
         LDX     #$1F4C
-        BRCLR   $0340,#$01,L22042
+        BRCLR   >Options0340,#$01,L22042
         BRSET   $067F,Z,#$80,L22020
         BRCLR   $0100,Z,#$80,L22020
         LDAA    >Count191ms,Z
-        CMPA    $49C1
+        CMPA    >CalCount191msThresh
         LBCC    L21FF2
         LDAA    >StartCoolantTemp2,Z
-        CMPA    $49BF
+        CMPA    >CalStartCoolantThresh
         LBCC    L22020
         SUBA    >BatteryTemp,Z
         BCC     L21FAE
         NEGA
 L21FAE:
-        CMPA    $49C0
+        CMPA    >CalThresh5
         LBCC    L22042
 L21FB6:
-        LDAB    $032F
+        LDAB    >EventFlag2
         BITB    $06,X
         BEQ     L21FE6
         LDE     $0000,X
         LDAB    E,Z
         LDE     $0002,X
         CLRA
-        CMPB    $49C2
+        CMPB    >CalThresh6
         BCC     L21FD8
         LDAA    E,Z
         CMPA    #$28
@@ -2553,7 +2553,7 @@ L21FE6:
         BCS     L21FB6
         JMP     L22042
 L21FF2:
-        LDAB    $032F
+        LDAB    >EventFlag2
         BITB    $06,X
         BEQ     L22010
         LDAA    $067F,Z
@@ -2575,7 +2575,7 @@ L22020:
         TST     $0C40,Z
         BEQ     L22042
         LDAA    >CoolantTemp,Z
-        CMPA    $49BE
+        CMPA    >CalCoolantThresh4
         BCS     L2203A
         BSET    $0100,Z,#$80
         BRA     L2203E
@@ -2640,7 +2640,7 @@ L220D4:
         CPE     #$0729
         BEQ     L22124
         LDAB    >VehicleSpeed,Z
-        CMPB    $49FD
+        CMPB    >CalSpeedThresh3
         BCS     L22172
 L22124:
         LDE     $0004,X
@@ -2722,7 +2722,7 @@ L221D8:
         LBRA    L222E6
 L221FC:
         LDAA    $06CB,Z
-        CMPA    $49FB
+        CMPA    >CalV06CBThresh
         BCC     L2220E
         INC     $06CB,Z
         LBRA    L222E6
@@ -2745,12 +2745,12 @@ L2222A:
         CPE     #$0729
         BEQ     L22244
         LDAB    >VehicleSpeed,Z
-        CMPB    $49FD
+        CMPB    >CalSpeedThresh3
         BCS     L222BC
 L22244:
         LDE     $0002,X
         LDAA    E,Z
-        CMPA    $49FC
+        CMPA    >CalThresh12
         BCC     L2226C
         LDAA    $9E,Z
         BITA    $14,X
@@ -2829,34 +2829,34 @@ Sub_222E8:
         BRSET   $0679,Z,#$10,L22380
         LDAA    $0684,Z
         ANDA    #$C3
-        BRCLR   $032F,#$80,L22316
+        BRCLR   >EventFlag2,#$80,L22316
         ORAA    #$20
 L22316:
-        BRCLR   $032F,#$40,L2231E
+        BRCLR   >EventFlag2,#$40,L2231E
         ORAA    #$10
 L2231E:
-        BRCLR   $032F,#$20,L22326
+        BRCLR   >EventFlag2,#$20,L22326
         ORAA    #$08
 L22326:
-        BRCLR   $032F,#$10,L2232E
+        BRCLR   >EventFlag2,#$10,L2232E
         ORAA    #$04
 L2232E:
         STAA    $0684,Z
-        BRCLR   $0340,#$01,L22384
+        BRCLR   >Options0340,#$01,L22384
         LDAA    >VehicleSpeed,Z
-        CMPA    $49C3
+        CMPA    >CalSpeedThresh2
         BCS     L22384
         BRCLR   >ThrottleState,Z,#$80,L22384
         LDAA    $0684,Z
         ANDA    #$FC
-        BRCLR   $032F,#$20,L22364
+        BRCLR   >EventFlag2,#$20,L22364
         BRSET   $0512,Z,#$10,L22364
         BRCLR   $071D,Z,#$70,L22362
         BRA     L22364
 L22362:
         ORAA    #$02
 L22364:
-        BRCLR   $032F,#$10,L2237A
+        BRCLR   >EventFlag2,#$10,L2237A
         BRSET   $0517,Z,#$40,L2237A
         BRCLR   $0745,Z,#$70,L22378
         BRA     L2237A
@@ -2901,9 +2901,9 @@ L223D6:
 L223E6:
         LDE     $0000,X
         LDAA    E,Z
-        CMPA    $49C4
+        CMPA    >CalThresh7
         BCS     L22402
-        CMPA    $4A05
+        CMPA    >CalThresh13
         BHI     L2240C
         JSR     Sub_225B2
         JSR     Sub_22540
@@ -2924,7 +2924,7 @@ L22414:
         LDAA    $0685,Z
         BITA    $16,X
         BNE     L22450
-        CMPB    $4A07
+        CMPB    >CalThresh15
         BCS     L2248C
         LDAA    $0D,X
         ORAA    $0686,Z
@@ -2937,7 +2937,7 @@ L22414:
         STAA    E,Z
         BRA     L2248C
 L22450:
-        CMPB    $4A06
+        CMPB    >CalThresh14
         BCS     L2248C
         LDAA    $0659,Z
         ORAA    $0C,X
@@ -2967,7 +2967,7 @@ L2248C:
         LDAA    $0685,Z
         BITA    $17,X
         BNE     L224C6
-        CMPB    $49C6
+        CMPB    >CalThresh9
         BCS     L22502
         LDAA    $12,X
         ORAA    $0686,Z
@@ -2979,7 +2979,7 @@ L2248C:
         LDE     $0004,X
         STAA    E,Z
 L224C6:
-        CMPB    $49C5
+        CMPB    >CalThresh8
         BCS     L22502
         LDAA    $0659,Z
         ORAA    $11,X
@@ -3186,14 +3186,14 @@ Sub_22676:
         BRCLR   >MainLoopPhaseMask,Z,#$08,L226AC
         BRCLR   $0684,Z,#$20,L22694
         LDAA    >O2UpBank1Raw,Z
-        CMPA    $4A04
+        CMPA    >O2UpBank1RawThresh4
         BCS     L22694
         LDY     #$41F4
         JSR     Sub_245D4
 L22694:
         BRCLR   $0684,Z,#$10,L226AC
         LDAA    >O2UpBank2Raw,Z
-        CMPA    $4A04
+        CMPA    >O2UpBank1RawThresh4
         BCS     L226AC
         LDY     #$421C
         JSR     Sub_245D4
@@ -3205,7 +3205,7 @@ L226AC:
 ; Called from: Sub_21F32
 ;---------------------------------------------------------------------------------------------------
 Sub_226AE:
-        BRCLR   $032F,#$80,L226CC
+        BRCLR   >EventFlag2,#$80,L226CC
         BRSET   $0505,Z,#$01,L226C6
         BRSET   $0506,Z,#$40,L226C6
         BRCLR   $0512,Z,#$08,L226CC
@@ -3215,7 +3215,7 @@ L226C6:
 L226CC:
         BCLR    $06B5,Z,#$08
 L226D0:
-        BRCLR   $032F,#$20,L226FA
+        BRCLR   >EventFlag2,#$20,L226FA
         BRSET   $0512,Z,#$10,L226F4
         BRSET   $0659,Z,#$08,L226F4
         BRSET   $0659,Z,#$20,L226F4
@@ -3227,7 +3227,7 @@ L226F4:
 L226FA:
         BCLR    $06B5,Z,#$02
 L226FE:
-        BRCLR   $032F,#$40,L2271C
+        BRCLR   >EventFlag2,#$40,L2271C
         BRSET   $0509,Z,#$02,L22716
         BRSET   $0509,Z,#$04,L22716
         BRCLR   $0517,Z,#$20,L2271C
@@ -3237,7 +3237,7 @@ L22716:
 L2271C:
         BCLR    $06B5,Z,#$04
 L22720:
-        BRCLR   $032F,#$10,L2274A
+        BRCLR   >EventFlag2,#$10,L2274A
         BRSET   $0517,Z,#$40,L22744
         BRSET   $0659,Z,#$04,L22744
         BRSET   $0659,Z,#$10,L22744
@@ -3268,7 +3268,7 @@ Sub_22750:
         BSET    $05BE,Z,#$80
         LBRA    L227EC
 L22778:
-        BRCLR   $0333,#$80,L227F4
+        BRCLR   >Options0333,#$80,L227F4
         TST     $0460,Z
         BEQ     L2278E
         CLR     $0471,Z
@@ -3276,20 +3276,20 @@ L22778:
         BRA     L227B2
 L2278E:
         LDAA    $0471,Z
-        CMPA    $74E8
+        CMPA    >PurgeV0471Thresh
         BCC     L227A0
         INCA
         STAA    $0471,Z
         BRA     L227B2
 L227A0:
         LDAA    $045F,Z
-        CMPA    $4A15
+        CMPA    >PurgeV045FThresh
         BCS     L227B2
         BSET    $05BE,Z,#$40
         LBRA    L227EC
 L227B2:
         LDAA    $045E,Z
-        CMPA    $4A18
+        CMPA    >PurgeV045EThresh
         BLS     L227C2
         CLR     $05C0,Z
         BRA     L227F4
@@ -3298,13 +3298,13 @@ L227C2:
         BPL     L227CA
         NEGD
 L227CA:
-        CMPB    $4A16
+        CMPB    >PurgeV045AThresh
         BHI     L227D6
         CLR     $05C0,Z
         BRA     L227F4
 L227D6:
         LDAA    $05C0,Z
-        CMPA    $4A17
+        CMPA    >PurgeV05C0Thresh
         BLS     L227E6
         BSET    $05BE,Z,#$20
         BRA     L227EC
@@ -3322,7 +3322,7 @@ L227F4:
 ; Called from: Sub_39866
 ;---------------------------------------------------------------------------------------------------
 Sub_227F6:
-        BRCLR   $0335,#$02,L22802
+        BRCLR   >Options0335,#$02,L22802
         BRSET   $0500,Z,#$04,L22B02
 L22802:
         BRSET   $0503,Z,#$02,L22AFA
@@ -3332,10 +3332,10 @@ L22802:
         BRSET   $0504,Z,#$40,L22B02
         LDY     #$47DA
         LDAB    $0A8D,Z
-        CMPB    $4A11
+        CMPB    >EgrV0A8DThresh
         BHI     L22830
         LDY     #$47D0
-        CMPB    $4A10
+        CMPB    >EgrThresh9
         BCC     L2283E
 L22830:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L22B02
@@ -3400,7 +3400,7 @@ L228F8:
         DECB
 L22932:
         INCA
-        CMPA    $0361
+        CMPA    >EgrThresh2
         BCS     L2299A
         BHI     L22940
         STAA    $01EC,Z
@@ -3417,7 +3417,7 @@ L22954:
         DECA
 L22960:
         INCB
-        CMPB    $05FE
+        CMPB    >EgrThresh5
         BCS     L2299A
         STAB    $0B53,Z
         CLR     $01EC,Z
@@ -3444,13 +3444,13 @@ L229A8:
         BRCLR   >ThrottleState,Z,#$80,L22AE0
         BRSET   $0B2D,Z,#$80,L22B02
         LDAA    >EgrTargetPos,Z
-        CMPA    $49DB
+        CMPA    >EgrTargetPosThresh3
         LBCS    L22B02
-        CMPA    $05FD
+        CMPA    >EgrTargetPosThresh1
         LBHI    L22B02
         BRCLR   >MainLoopPhaseMask,Z,#$04,L22B02
         LDAA    $0B56,Z
-        CMPA    $0364
+        CMPA    >EgrV0B5AThresh
         BCC     L229E8
         INCA
         STAA    $0B56,Z
@@ -3461,12 +3461,12 @@ L229E8:
         NEGE
 L229F0:
         CLRA
-        LDAB    $49DC
+        LDAB    >EgrValue9
         SDE
         LBCC    L22A62
         BRCLR   $0B2D,Z,#$10,L22A16
         LDAA    $0B55,Z
-        CMPA    $0363
+        CMPA    >EgrV0B59Thresh
         BCC     L22A26
         INCA
         STAA    $0B55,Z
@@ -3484,7 +3484,7 @@ L22A26:
         DECB
 L22A36:
         INCA
-        CMPA    $0362
+        CMPA    >EgrThresh3
         LBCS    L22AD6
         BHI     L22A46
         STAA    $01ED,Z
@@ -3503,7 +3503,7 @@ L22A62:
         LBRA    L22B02
 L22A78:
         LDAA    $058C,Z
-        CMPA    $49DD
+        CMPA    >EgrV058CThresh
         BCC     L22A8C
         INCA
         STAA    $058C,Z
@@ -3516,7 +3516,7 @@ L22A8C:
         DECA
 L22A9C:
         INCB
-        CMPB    $49DE
+        CMPB    >EgrThresh8
         BCS     L22AD6
         STAB    $058D,Z
         CLR     $01ED,Z
@@ -3556,7 +3556,7 @@ L22B02:
 ;---------------------------------------------------------------------------------------------------
 Sub_22B04:
         BRSET   $0B2C,Z,#$01,L22BFC
-        BRCLR   $0335,#$02,L22B16
+        BRCLR   >Options0335,#$02,L22B16
         BRSET   $0943,Z,#$10,L22BFC
 L22B16:
         PSHM    D,E,Y,K,CCR
@@ -3604,19 +3604,19 @@ L22B7E:
         TBA
         LDAB    >PWMA,Z
         BEQ     L22BB0
-        CMPA    $4A12
+        CMPA    >EgrThresh10
         BCS     L22BF8
-        SUBB    $4A13
+        SUBB    >EgrV7926Offset
         CBA
         BCS     L22BC8
         LDAB    >PWMA,Z
-        ADDB    $4A13
+        ADDB    >EgrV7926Offset
         BCS     L22BF8
         CBA
         BCS     L22BF8
 L22BB0:
         CLRB
-        SUBB    $4A12
+        SUBB    >EgrThresh10
         CBA
         BCC     L22BF8
 L22BBA:
@@ -3631,7 +3631,7 @@ L22BC8:
 L22BD4:
         BRCLR   >MainLoopPhaseMask,Z,#$20,L22BF8
         LDAA    $00,Y
-        CMPA    $4A14
+        CMPA    >EgrThresh11
         BCC     L22BE6
         INC     $00,Y
         BRA     L22BF8
@@ -3657,7 +3657,7 @@ L22C08:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_22C0A:
-        BRCLR   $032C,#$40,L22CC4
+        BRCLR   >Options032C,#$40,L22CC4
         TST     $07B5,Z
         LBNE    L22CC4
         TST     $07B6,Z
@@ -3669,28 +3669,28 @@ Sub_22C0A:
         BRA     L22C90
 L22C34:
         LDAA    $06CC,Z
-        CMPA    $32A0
+        CMPA    >SensorV06CCThresh
         BCC     L22C44
         INC     $06CC,Z
         BRA     L22C90
 L22C44:
-        CPE     $32A1
+        CPE     >SensorThresh14
         BLS     L22C90
         BRSET   $07BB,Z,#$80,L22CAE
         BRSET   $06B5,Z,#$08,L22C90
         BRSET   $050D,Z,#$40,L22C90
         LDAA    >O2UpBank1Raw,Z
-        CMPA    $32A8
+        CMPA    >SensorO2UpBank1RawThresh
         BCC     L22C90
-        BRCLR   $032F,#$40,L22C82
+        BRCLR   >EventFlag2,#$40,L22C82
         BRSET   $06B5,Z,#$04,L22C90
         BRSET   $050E,Z,#$04,L22C90
         LDAA    >O2UpBank2Raw,Z
-        CMPA    $32A9
+        CMPA    >SensorO2UpBank2RawThresh
         BCC     L22C90
 L22C82:
         LDAA    $06CD,Z
-        CMPA    $32A3
+        CMPA    >SensorV06CDThresh
         BCC     L22C96
         INC     $06CD,Z
 L22C90:
@@ -3704,10 +3704,10 @@ L22C96:
         JSR     Sub_245D4
         BRA     L22CB4
 L22CAE:
-        CPE     $32A4
+        CPE     >SensorThresh15
         BCC     L22CC0
 L22CB4:
-        CPE     $32A6
+        CPE     >SensorThresh16
         BCC     L22CC4
         BCLR    $0770,Z,#$10
         BRA     L22CC4
@@ -3825,7 +3825,7 @@ Sub_22DF4:
         LDAA    #$01
         BRCLR   $07B4,Z,#$80,L22E28
         LDAA    #$08
-        BRCLR   $2BFF,#$80,L22E0A
+        BRCLR   >MisfireOptions,#$80,L22E0A
         BRSET   $0624,Z,#$10,L22E28
 L22E0A:
         LDAA    #$04
@@ -3833,13 +3833,13 @@ L22E0A:
         LDAB    >DecelFuelFactor,Z
         BNE     L22E28
         LDAB    >Map,Z
-        CMPB    $1863
+        CMPB    >O2MapThresh2
         BCS     L22E28
         LDAB    $07C3,Z
         BEQ     L22E3C
 L22E28:
         STAA    $0528,Z
-        BRSET   $032F,#$40,L22E34
+        BRSET   >EventFlag2,#$40,L22E34
         CLRA
 L22E34:
         STAA    $0529,Z
@@ -3851,14 +3851,14 @@ L22E3C:
         BRA     L22E62
 L22E4C:
         LDAA    #$08
-        BRCLR   $032F,#$40,L22E62
+        BRCLR   >EventFlag2,#$40,L22E62
         BRSET   $06B5,Z,#$04,L22E62
         BRCLR   $075D,Z,#$04,L22E62
         LDAA    #$10
 L22E62:
         STAA    $0528,Z
         CLRA
-        BRCLR   $032F,#$40,L22E8E
+        BRCLR   >EventFlag2,#$40,L22E8E
         LDAA    #$02
         BRSET   $06B5,Z,#$04,L22E7E
         BRCLR   $075D,Z,#$04,L22E7E
@@ -3878,7 +3878,7 @@ L22E92:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_22E94:
-        BRCLR   $0331,#$10,L22EA0
+        BRCLR   >Options0331,#$10,L22EA0
         BRSET   $050D,Z,#$02,L23084
 L22EA0:
         BRCLR   $06C1,Z,#$02,L2308C
@@ -3902,13 +3902,13 @@ L22ED2:
 L22EEE:
         BRSET   $0513,Z,#$80,L2308C
         BRSET   $065A,Z,#$80,L22F4E
-        LDAA    $0A94,Z
-        CMPA    $31E9
+        LDAA    >AnalogV0A92Filtered,Z
+        CMPA    >SensorAnalogV0A92FilteredThresh2
         BLS     L22F30
         CLR     $06C4,Z
         LDAA    $06C5,Z
         INCA
-        CMPA    $31EA
+        CMPA    >SensorV06C5Thresh
         BHI     L22F1A
         STAA    $06C5,Z
         BRA     L22F4E
@@ -3923,7 +3923,7 @@ L22F30:
         CLR     $06C5,Z
         LDAA    $06C4,Z
         INCA
-        CMPA    $31EB
+        CMPA    >SensorV06C2Thresh
         BHI     L22F46
         STAA    $06C4,Z
         BRA     L22F4E
@@ -3932,13 +3932,13 @@ L22F46:
         BSET    $0686,Z,#$20
 L22F4E:
         BRSET   $065A,Z,#$40,L22FA8
-        LDAA    $0A94,Z
-        CMPA    $31E8
+        LDAA    >AnalogV0A92Filtered,Z
+        CMPA    >SensorAnalogV0A92FilteredThresh1
         BHI     L22F8A
         CLR     $06C2,Z
         LDAA    $06C3,Z
         INCA
-        CMPA    $31EA
+        CMPA    >SensorV06C5Thresh
         BHI     L22F74
         STAA    $06C3,Z
         BRA     L22FA8
@@ -3953,7 +3953,7 @@ L22F8A:
         CLR     $06C3,Z
         LDAA    $06C2,Z
         INCA
-        CMPA    $31EB
+        CMPA    >SensorV06C2Thresh
         BHI     L22FA0
         STAA    $06C2,Z
         BRA     L22FA8
@@ -3961,33 +3961,33 @@ L22FA0:
         BSET    $0101,Z,#$10
         BSET    $0686,Z,#$10
 L22FA8:
-        BRCLR   $0340,#$02,L2308C
+        BRCLR   >Options0340,#$02,L2308C
         BRSET   $06C1,Z,#$80,L2308C
         BRSET   $0505,Z,#$08,L23084
         BRCLR   $0D00,Z,#$20,L2308C
         BRSET   $0513,Z,#$40,L2308C
         BRSET   $0513,Z,#$20,L2308C
-        LDAB    $0A94,Z
-        CMPB    $31EF
+        LDAB    >AnalogV0A92Filtered,Z
+        CMPB    >SensorAnalogV0A92FilteredThresh3
         LBCS    L2308C
         BRSET   $06C1,Z,#$10,L22FFA
         LDAA    $0120,Z
-        LDAB    $0A93,Z
+        LDAB    >AnalogV0A92Scaled,Z
         CBA
         BCC     L22FEC
         XGAB
 L22FEC:
         SBA
-        CMPA    $31F2
+        CMPA    >SensorThresh13
         LBCC    L2305C
         BSET    $06C1,Z,#$10
 L22FFA:
         BRSET   $000A,Z,#$08,L2301A
-        LDAB    $0A94,Z
+        LDAB    >AnalogV0A92Filtered,Z
         STAB    $011E,Z
         CLR     $011F,Z
         BSET    $0A,Z,#$08
-        CMPB    $31EC
+        CMPB    >SensorThresh10
         BCC     L2301A
         BSET    $0A,Z,#$01
 L2301A:
@@ -3998,10 +3998,10 @@ L2301A:
         XGAB
 L2302A:
         SBA
-        CMPA    $31F0
+        CMPA    >SensorThresh12
         BCC     L2305C
         LDAB    $011F,Z
-        CMPB    $31F1
+        CMPB    >SensorV011FThresh2
         BCS     L2308C
         BRA     L2306E
 L2303E:
@@ -4011,10 +4011,10 @@ L2303E:
         XGAB
 L23048:
         SBA
-        CMPA    $31ED
+        CMPA    >SensorThresh11
         BCC     L2305C
         LDAB    $011F,Z
-        CMPB    $31EE
+        CMPB    >SensorV011FThresh1
         BCS     L2308C
         BRA     L2306E
 L2305C:
@@ -4054,7 +4054,7 @@ L230A4:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_230A6:
-        BRCLR   $0333,#$40,L23136
+        BRCLR   >Options0333,#$40,L23136
         BRSET   $051A,Z,#$04,L23136
         TST     $0C40,Z
         BNE     L23136
@@ -4109,9 +4109,9 @@ L23136:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_2313C:
-        BRCLR   $0335,#$80,L23190
+        BRCLR   >Options0335,#$80,L23190
         BRSET   $051A,Z,#$02,L23190
-        BRCLR   $0335,#$40,L2315A
+        BRCLR   >Options0335,#$40,L2315A
         BRSET   $0943,Z,#$10,L23190
         BRSET   $0500,Z,#$04,L23190
 L2315A:
@@ -4170,12 +4170,12 @@ L231D8:
 ;---------------------------------------------------------------------------------------------------
 Sub_231DA:
         LDAA    >StartCoolantTemp2,Z
-        CMPA    $49ED
+        CMPA    >DiagStartCoolantThresh1
         LBCS    L23268
-        CMPA    $49EE
+        CMPA    >DiagStartCoolantThresh2
         LBCC    L23268
-        LDAA    $0A5E,Z
-        CMPA    $49EF
+        LDAA    >BatteryTempStart,Z
+        CMPA    >DiagBatteryTempStartThresh
         BCS     L23268
         BRSET   $06C7,Z,#$04,L2326C
         BRCLR   $0774,Z,#$80,L2326C
@@ -4183,7 +4183,7 @@ Sub_231DA:
         BRSET   $0509,Z,#$80,L2326C
         BRSET   $06B4,Z,#$01,L2326C
         LDAA    >CoolantTemp,Z
-        CMPA    $49F0
+        CMPA    >DiagCoolantThresh6
         BCS     L2322E
         BCLR    $0658,Z,#$02
         LDAA    $40D2
@@ -4197,7 +4197,7 @@ L2322E:
         CMPA    #$38
         BCS     L2326C
         LDAA    $06C9,Z
-        CMPA    $49F1
+        CMPA    >DiagV06C9Thresh
         BEQ     L23252
         TSTB
         BNE     L2326C
@@ -4220,12 +4220,12 @@ L2326C:
 ;---------------------------------------------------------------------------------------------------
 Sub_2326E:
         BRSET   $0669,Z,#$0C,L233DE
-        BRCLR   $0340,#$20,L232A0
+        BRCLR   >Options0340,#$20,L232A0
         BRSET   $0512,Z,#$01,L232A0
         TST     $0C40,Z
         LBNE    L232A0
         BRCLR   $0774,Z,#$80,L232A0
-        BRSET   $032E,#$40,L2329A
+        BRSET   >Options032E,#$40,L2329A
         BRCLR   $0C31,Z,#$20,L232A0
 L2329A:
         BRCLR   $009C,Z,#$0E,L232AC
@@ -4237,14 +4237,14 @@ L232AC:
         BRSET   $0669,Z,#$08,L232EE
         BRSET   $0A46,Z,#$01,L232E0
         LDAA    >VehicleSpeed,Z
-        CMPA    $32FB
+        CMPA    >DiagSpeedThresh10
         BCC     L232EA
         BRCLR   $0669,Z,#$80,L232EE
         LDAA    >VehicleSpeed,Z
         BNE     L232EE
         INC     $011C,Z
         LDAA    $011C,Z
-        CMPA    $32F9
+        CMPA    >DiagV011CThresh
         BCS     L232E4
         BSET    $0669,Z,#$20
 L232E0:
@@ -4258,21 +4258,21 @@ L232EE:
         BRSET   $0669,Z,#$04,L23358
         BRCLR   $0A46,Z,#$01,L23340
         LDAA    >VehicleSpeed,Z
-        CMPA    $32FC
+        CMPA    >DiagSpeedThresh11
         BCS     L2334E
         BRCLR   $0669,Z,#$40,L23358
         BRCLR   >ThrottleState,Z,#$80,L23348
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    $32FD
+        CMPA    >DiagThrottleThresh2
         BCS     L23348
         BRCLR   >MainLoopPhaseMask,Z,#$04,L23358
         INC     $066A,Z
         LDAA    $066A,Z
-        CMPA    $32FE
+        CMPA    >DiagV066AThresh
         BCS     L23358
         INC     $011D,Z
         LDAA    $011D,Z
-        CMPA    $32FA
+        CMPA    >DiagV011DThresh
         BCS     L23344
         BSET    $0669,Z,#$10
 L23340:
@@ -4291,12 +4291,12 @@ L23358:
         BRCLR   $0A46,Z,#$01,L2338E
         BRSET   >ThrottleState,Z,#$80,L2338E
         LDAA    >VehicleSpeed,Z
-        CMPA    $32FB
+        CMPA    >DiagSpeedThresh10
         BCC     L2338E
         BRCLR   >MainLoopPhaseMask,Z,#$04,L23392
         INC     $066B,Z
         LDAA    $066B,Z
-        CMPA    $32FF
+        CMPA    >DiagV066BThresh
         BCS     L23392
         BSET    $0669,Z,#$08
         BRA     L23392
@@ -4307,12 +4307,12 @@ L23392:
         BRSET   $0A46,Z,#$01,L233C8
         BRCLR   >ThrottleState,Z,#$80,L233C8
         LDAA    >VehicleSpeed,Z
-        CMPA    $32FC
+        CMPA    >DiagSpeedThresh11
         BCS     L233C8
         BRCLR   >MainLoopPhaseMask,Z,#$04,L233CC
         INC     $066C,Z
         LDAA    $066C,Z
-        CMPA    $32FF
+        CMPA    >DiagV066BThresh
         BCS     L233CC
         BSET    $0669,Z,#$04
         BRA     L233CC
@@ -4338,12 +4338,12 @@ L233EA:
 Sub_233EC:
         BRSET   $0664,Z,#$C0,L2350A
         BRSET   $06BC,Z,#$80,L23450
-        BRSET   $0333,#$04,L23448
-        BRCLR   $0340,#$40,L2344C
-        BRSET   $032E,#$40,L2344C
+        BRSET   >Options0333,#$04,L23448
+        BRCLR   >Options0340,#$40,L2344C
+        BRSET   >Options032E,#$40,L2344C
         BRSET   $0774,Z,#$80,L2344C
         LDAA    >VehicleSpeed,Z
-        CMPA    $32D2
+        CMPA    >DiagSpeedThresh7
         BHI     L2344C
         BRSET   $000A,Z,#$20,L2344C
         BRSET   $009C,Z,#$08,L2344C
@@ -4361,8 +4361,8 @@ L2344C:
 L23450:
         ANDP    #$FF1F
         BRSET   $0664,Z,#$40,L234F8
-        BRCLR   $0340,#$40,L234F8
-        BRSET   $032E,#$40,L234F8
+        BRCLR   >Options0340,#$40,L234F8
+        BRSET   >Options032E,#$40,L234F8
         BRCLR   $0774,Z,#$80,L234F8
         TST     $0C40,Z
         LBNE    L234F8
@@ -4371,18 +4371,18 @@ L23450:
 L2347C:
         BRSET   $050F,Z,#$04,L234F0
         LDAA    >VehicleSpeed,Z
-        CMPA    $32CA
+        CMPA    >DiagSpeedThresh6
         BCS     L234F0
         LDE     >EngineRpm,Z
-        CPE     $32CB
+        CPE     >DiagRpmThresh5
         BCS     L234F0
-        CPE     $32CD
+        CPE     >DiagRpmThresh6
         BCC     L234F0
         LDAB    >ThrottleAboveClosed,Z
-        CMPB    $32CF
+        CMPB    >DiagThrottleThresh1
         BCS     L234F0
         LDAA    <Baro,Z
-        LDAB    $32D0
+        LDAB    >DiagFactor2
         MUL
         TAB
         CMPB    >Map,Z
@@ -4392,7 +4392,7 @@ L2347C:
         CLR     $0666,Z
         INC     $0665,Z
         LDAA    $0665,Z
-        CMPA    $32D1
+        CMPA    >DiagV0665Thresh
         BCS     L234F8
         BSET    $0664,Z,#$10
         BRA     L234F0
@@ -4400,7 +4400,7 @@ L234DA:
         CLR     $0665,Z
         INC     $0666,Z
         LDAA    $0666,Z
-        CMPA    $32D1
+        CMPA    >DiagV0665Thresh
         BCS     L234F8
         BSET    $0664,Z,#$40
 L234F0:
@@ -4431,19 +4431,19 @@ Sub_23518:
         TDE
         LDD     $0672,Z
         PSHM    D,E
-        LDAA    $32ED
+        LDAA    >DiagValue8
         JSR     Blend16
         AIS     #$04
         STD     $0672,Z
         LDAA    >RpmSpeedRatio,Z
         CLRB
         TDE
-        LDD     $066E,Z
+        LDD     >RpmSpeedRatioFiltered,Z
         PSHM    D,E
-        LDAA    $32EE
+        LDAA    >DiagValue9
         JSR     Blend16
         AIS     #$04
-        STD     $066E,Z
+        STD     >RpmSpeedRatioFiltered,Z
         BRSET   $0513,Z,#$10,L236B4
         BRSET   $0500,Z,#$10,L236B4
         BRSET   $0501,Z,#$02,L236B4
@@ -4455,39 +4455,39 @@ Sub_23518:
         LBRA    L236B4
 L23590:
         LDAA    >VehicleSpeed,Z
-        CMPA    $32EF
+        CMPA    >DiagSpeedThresh9
         LBHI    L236B8
         BRSET   $0943,Z,#$80,L2367A
         BRCLR   $0B4E,Z,#$20,L235CC
         CLRB
         LDAA    >RpmSpeedRatio,Z
-        CPD     $066E,Z
+        CPD     >RpmSpeedRatioFiltered,Z
         BCC     L235B8
-        LDD     $066E,Z
+        LDD     >RpmSpeedRatioFiltered,Z
 L235B8:
-        STD     $066E,Z
+        STD     >RpmSpeedRatioFiltered,Z
         STD     $0670,Z
         LDD     $0672,Z
         STD     $0674,Z
         BCLR    $0B4E,Z,#$20
 L235CC:
-        LDAA    $066E,Z
-        CMPA    $32F2
+        LDAA    >RpmSpeedRatioFiltered,Z
+        CMPA    >DiagRpmSpeedRatioFilteredThresh2
         LBCC    L236B8
         LDAB    $0676,Z
-        CMPB    $32F3
+        CMPB    >DiagV0676Thresh
         LBCS    L236B8
         LDAB    $0672,Z
-        CMPB    $32F4
+        CMPB    >DiagV0672Thresh1
         LBLS    L236B8
         LDD     $0672,Z
         SUBD    $0674,Z
         BCC     L235FC
         NEGD
 L235FC:
-        CMPA    $32F5
+        CMPA    >DiagV0672Thresh2
         LBCC    L236B8
-        LDE     $066E,Z
+        LDE     >RpmSpeedRatioFiltered,Z
         CPE     $0670,Z
         BCS     L23612
         STE     $0670,Z
@@ -4497,10 +4497,10 @@ L23612:
         BVC     L2361C
         BRA     L23652
 L2361C:
-        CPE     $32F6
+        CPE     >DiagV0678Thresh
         BCC     L23652
         LDAB    $0677,Z
-        CMPB    $32F8
+        CMPB    >DiagV0677Thresh
         BCS     L2366C
         LDAA    $0678,Z
         ADDA    #$01
@@ -4538,16 +4538,16 @@ L23688:
         BEQ     L23694
         STAA    $0676,Z
 L23694:
-        LDE     $066E,Z
+        LDE     >RpmSpeedRatioFiltered,Z
         SUBE    $0670,Z
         BCC     L236A0
         NEGE
 L236A0:
-        CPE     $32F0
+        CPE     >DiagRpmSpeedRatioFilteredThresh1
         BCS     L236AA
         CLR     $0676,Z
 L236AA:
-        LDE     $066E,Z
+        LDE     >RpmSpeedRatioFiltered,Z
         STE     $0670,Z
         BRA     L236BC
 L236B4:
@@ -4566,7 +4566,7 @@ L236C0:
 Sub_236C2:
         BRCLR   $0774,Z,#$80,L23746
         LDAA    >EngineRpm,Z
-        CMPA    $498E
+        CMPA    >DiagRpmThresh10
         BCS     L23746
         BRCLR   $06B4,Z,#$30,L236DA
         BRA     L23746
@@ -4576,33 +4576,33 @@ L236DA:
         BRA     L23746
 L236E8:
         LDAA    >EngineRpm,Z
-        CMPA    $498A
+        CMPA    >DiagRpmThresh9
         BHI     L2371A
-        LDAB    $499C
+        LDAB    >DiagValue10
         LDAA    <Baro,Z
-        CMPA    $499B
+        CMPA    >DiagBaroThresh2
         BHI     L23702
-        LDAB    $499D
+        LDAB    >DiagVacuumThresh4
 L23702:
         CMPB    >ManifoldVacuum,Z
         BCC     L23746
         LDAA    >ThrottleRaw,Z
-        CMPA    $49E0
+        CMPA    >ThrottleRawThresh2
         BCC     L23746
-        CMPA    $498D
+        CMPA    >DiagThrottleRawThresh2
         BHI     L2373E
         BRA     L23746
 L2371A:
         LDAB    >VehicleSpeed,Z
-        CMPB    $4989
+        CMPB    >DiagSpeedThresh12
         BLS     L23746
         LDAB    >ManifoldVacuum,Z
-        CMPB    $498B
+        CMPB    >DiagVacuumThresh3
         BCC     L23746
         LDAA    >ThrottleRaw,Z
-        CMPA    $4988
+        CMPA    >DiagThrottleRawThresh1
         BCC     L23746
-        CMPA    $49DF
+        CMPA    >ThrottleRawThresh1
         BLS     L23746
 L2373E:
         LDY     #$44B0
@@ -4615,7 +4615,7 @@ L23746:
 ; Called from: Sub_23196
 ;---------------------------------------------------------------------------------------------------
 Sub_23748:
-        BRCLR   $0340,#$80,L23802
+        BRCLR   >Options0340,#$80,L23802
         TST     $0C40,Z
         LBNE    L237E8
         JSR     Sub_23804
@@ -4623,12 +4623,12 @@ Sub_23748:
         LDE     >EngineRpm,Z
         SUBE    >IdleTarget,Z
         BLT     L23774
-        CPE     $32E3
+        CPE     >DiagRpmThresh7
         LBLS    L237E2
         BRA     L2377E
 L23774:
         NEGE
-        CPE     $32E5
+        CPE     >DiagThresh26
         LBLS    L237E2
 L2377E:
         TSTW    $0662,Z
@@ -4640,7 +4640,7 @@ L2378C:
         ADDA    #$01
         SBCA    #$00
         STAA    $0660,Z
-        CMPA    $32E2
+        CMPA    >DiagV0660Thresh
         LBCS    L23802
         LDD     >EngineRpm,Z
         LDE     $0662,Z
@@ -4649,13 +4649,13 @@ L2378C:
         XGDE
 L237B0:
         SDE
-        CPE     $32E7
+        CPE     >DiagV0662Thresh
         BGE     L237E2
         LDAA    $0661,Z
         ADDA    #$01
         SBCA    #$00
         STAA    $0661,Z
-        CMPA    $32E9
+        CMPA    >DiagV0661Thresh
         BCS     L237FA
         BCLR    $065F,Z,#$80
         BRSET   $0658,Z,#$08,L23802
@@ -4711,21 +4711,21 @@ L23864:
         BEQ     L238B8
 L2387C:
         LDAA    >Count3s,Z
-        CMPA    $2A31
+        CMPA    >IdleTimeThresh
         BCS     L238B8
         LDAA    $0801,Z
         CMPA    #$0D
-        BRCLR   $032E,#$40,L23894
+        BRCLR   >Options032E,#$40,L23894
         CMPA    #$0C
 L23894:
         BNE     L238B8
         LDAA    <Baro,Z
-        CMPA    $32E1
+        CMPA    >DiagBaroThresh1
         BCS     L238B8
-        LDAB    $499C
-        CMPA    $499B
+        LDAB    >DiagValue10
+        CMPA    >DiagBaroThresh2
         BHI     L238AC
-        LDAB    $499D
+        LDAB    >DiagVacuumThresh4
 L238AC:
         CMPB    >ManifoldVacuum,Z
         BCC     L238B8
@@ -4741,7 +4741,7 @@ L238BC:
 ; Called from: Sub_23196
 ;---------------------------------------------------------------------------------------------------
 Sub_238BE:
-        BRCLR   $0340,#$08,L2395C
+        BRCLR   >Options0340,#$08,L2395C
         BRCLR   $0055,Z,#$04,L2395C
         BRSET   $06BC,Z,#$08,L2395C
         CLRB
@@ -4757,7 +4757,7 @@ Sub_238BE:
         CLR     $0667,Z
         LDAB    $0668,Z
         INCB
-        CMPB    $32EA
+        CMPB    >DiagV0668Thresh
         BCS     L2391C
         BCLR    $0658,Z,#$01
         LDAA    $4406
@@ -4770,14 +4770,14 @@ L2391C:
 L23922:
         CLR     $0668,Z
         LDAA    >VehicleSpeed,Z
-        CMPA    $32EB
+        CMPA    >DiagSpeedThresh8
         BLS     L23958
         LDAA    >EngineRpm,Z
-        CMPA    $32EC
+        CMPA    >DiagRpmThresh8
         BCC     L23958
         LDAB    $0667,Z
         INCB
-        CMPB    $32EA
+        CMPB    >DiagV0668Thresh
         BCS     L23958
         BSET    $0658,Z,#$01
         LDAA    $4406
@@ -4807,12 +4807,12 @@ L23986:
         CMPA    #$0A
         LBCS    L23A2E
         LDAA    >CoolantTemp,Z
-        CMPA    $49AD
+        CMPA    >DiagIdleVacuumCoolantMin
         LBCS    L23A2E
-        BRSET   $032E,#$40,L239A8
+        BRSET   >Options032E,#$40,L239A8
         BRCLR   $0C31,Z,#$20,L23A2E
 L239A8:
-        BRCLR   $0340,#$20,L239B4
+        BRCLR   >Options0340,#$20,L239B4
         BRSET   $0A46,Z,#$01,L23A2E
 L239B4:
         BRCLR   >ThrottleState,Z,#$80,L23A2E
@@ -4830,7 +4830,7 @@ L239B4:
         LDAA    #$FF
 L239E2:
         STAA    $065D,Z
-        CMPA    $49AC
+        CMPA    >DiagThresh27
         BLS     L23A36
         BRSET   $0658,Z,#$10,L23A36
         BSET    $0658,Z,#$10
@@ -4845,7 +4845,7 @@ L23A00:
         LDAA    #$FF
 L23A0E:
         STAA    $065E,Z
-        CMPA    $49AC
+        CMPA    >DiagThresh27
         BLS     L23A36
         BCLR    $0658,Z,#$10
         LDAA    $40E6
@@ -4865,14 +4865,14 @@ L23A36:
 ;---------------------------------------------------------------------------------------------------
 Sub_23A38:
         BRSET   $06BC,Z,#$40,L23A90
-        BRCLR   $0340,#$10,L23A8C
+        BRCLR   >Options0340,#$10,L23A8C
         BRCLR   $0774,Z,#$80,L23A90
         BRSET   $009C,Z,#$08,L23A90
         BRCLR   $0502,Z,#$C0,L23A58
         BRA     L23A8C
 L23A58:
         LDAA    >CoolantTemp,Z
-        CMPA    $16B7
+        CMPA    >ThermostatCoolant
         BCC     L23A80
         LDAA    >StartCoolantTemp2,Z
         LDX     #ThermostatTimeLimit
@@ -4915,7 +4915,7 @@ Sub_23AA0:
         LDAB    >BatteryVolts2,Z
         CMPB    #$41
         BCS     L23B06
-        CMPB    $49FA
+        CMPB    >CalVoltsThresh3
         BCC     L23B06
         ORP     #$00E0
         LDAA    #$20
@@ -4929,7 +4929,7 @@ L23ACE:
         SUBA    <Baro,Z
         BCC     L23B06
         NEGA
-        CMPA    $49F9
+        CMPA    >CalThresh11
         BCS     L23B06
         INC     $0695,Z
         LDAA    $0695,Z
@@ -4949,7 +4949,7 @@ L23B0A:
         BRA     L23B48
 L23B1C:
         LDAA    $0694,Z
-        BRSET   $032B,#$80,L23B2C
+        BRSET   >Options032B,#$80,L23B2C
         CMPA    #$28
         BCS     L23B48
         BRA     L23B30
@@ -4961,7 +4961,7 @@ L23B30:
         LDY     #$3F92
         JSR     Sub_245D4
         BCC     L23B48
-        LDD     $774C
+        LDD     >CalV06E7Init
         STD     $06E7,Z
 L23B48:
         RTS
@@ -4981,7 +4981,7 @@ Sub_23B4A:
 ;---------------------------------------------------------------------------------------------------
 Sub_23B54:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L23B70
-        TST     $753C
+        TST     >CalSwitch
         BEQ     L23B70
         CLR     $018D,Z
         CLR     $018E,Z
@@ -5006,7 +5006,7 @@ Sub_23B72:
         ADDA    #$01
         SBCA    #$00
         STAA    $068A,Z
-        LDAA    $32C9
+        LDAA    >CalV068DInit
         STAA    $068D,Z
         LDAA    #$FF
         STAA    $068C,Z
@@ -5026,7 +5026,7 @@ L23BB8:
         ADCA    #$00
         STAA    $068A,Z
         BEQ     L23BD4
-        LDAA    $32C9
+        LDAA    >CalV068DInit
         STAA    $068D,Z
 L23BD4:
         TST     $068B,Z
@@ -5053,10 +5053,10 @@ L23C06:
 L23C0A:
         BSET    $06BC,Z,#$10
 L23C0E:
-        BRCLR   $0340,#$04,L23C2A
+        BRCLR   >Options0340,#$04,L23C2A
         BRSET   $9C,Z,#$08,L23C2A
         LDAA    $068A,Z
-        CMPA    $32C8
+        CMPA    >CalV068AThresh
         BCS     L23C2A
         LDY     #$45AA
         JSR     Sub_245D4
@@ -5079,40 +5079,40 @@ Sub_23C2C:
         LDAA    $0ABD,Z
         LBNE    L23CCE
         LDAA    >EngineRpm,Z
-        CMPA    $32BD
+        CMPA    >CalRpmThresh1
         BLS     L23C74
-        CMPA    $32BF
+        CMPA    >CalRpmThresh3
         BCS     L23C8A
 L23C74:
-        CMPA    $32BE
+        CMPA    >CalRpmThresh2
         BLS     L23CCE
-        CMPA    $32C0
+        CMPA    >CalThresh4
         BCC     L23CCE
         LDAA    >VehicleSpeed,Z
-        CMPA    $32C1
+        CMPA    >CalSpeedThresh1
         BHI     L23CCE
 L23C8A:
         LDD     $0ABA,Z
         BPL     L23C92
         NEGD
 L23C92:
-        CPD     $32BA
+        CPD     >CalV0ABAThresh
         BCC     L23CCE
         LDAA    >ThrottleDelta,Z
-        CMPA    $32BC
+        CMPA    >CalThrottleDeltaThresh
         BCC     L23CCE
         LDAA    >MapLast,Z
         SUBA    >Map,Z
         BPL     L23CAE
         NEGA
 L23CAE:
-        CMPA    $32B9
+        CMPA    >CalMapLastThresh
         BCC     L23CCE
         LDAA    >CoolantTemp,Z
-        CMPA    $32B8
+        CMPA    >CalCoolantThresh3
         BLS     L23CCE
         LDAA    >Count3s,Z
-        CMPA    $32B7
+        CMPA    >CalTimeThresh
         BCS     L23CCE
         BSET    $06BC,Z,#$02
         BRA     L23CD4
@@ -5125,7 +5125,7 @@ L23CD4:
         CMPA    #$FF
         BEQ     L23D0A
         TAB
-        SUBB    $32C7
+        SUBB    >CalOffset7
         BCC     L23CE8
         CLRB
 L23CE8:
@@ -5133,7 +5133,7 @@ L23CE8:
         BEQ     L23D16
         CMPB    $068F,Z
         BHI     L23D02
-        ADDA    $32C7
+        ADDA    >CalOffset7
         BCC     L23CFC
         LDAA    #$FF
 L23CFC:
@@ -5144,7 +5144,7 @@ L23D02:
         JSR     Sub_245D4
 L23D0A:
         LDAA    $068F,Z
-        SUBA    $32AF
+        SUBA    >CalV068FOffset
         STAA    $0690,Z
 L23D16:
         BRCLR   >ThrottleState,Z,#$40,L23D62
@@ -5191,8 +5191,8 @@ L23D82:
         LBRA    L23E26
 L23D88:
         LDAA    $0C46,Z
-        BRCLR   $032B,#$80,L23DA0
-        BRCLR   $032B,#$20,L23DA8
+        BRCLR   >Options032B,#$80,L23DA0
+        BRCLR   >Options032B,#$20,L23DA8
         CMPA    #$03
         BEQ     L23DB0
         LBRA    L23E60
@@ -5207,14 +5207,14 @@ L23DA8:
 L23DB0:
         LDE     $0AFC,Z
         SUBE    $0691,Z
-        BRCLR   $032B,#$80,L23DC4
+        BRCLR   >Options032B,#$80,L23DC4
         LDD     #$F000
         BRA     L23DC8
 L23DC4:
         LDD     #$B400
 L23DC8:
         EMUL
-        BRCLR   $032B,#$80,L23DD8
+        BRCLR   >Options032B,#$80,L23DD8
         XGDE
         LDX     $0ABD,Z
         BRA     L23DE8
@@ -5240,7 +5240,7 @@ L23DF6:
         BPL     L23E06
         NEGA
 L23E06:
-        CMPA    $32C4
+        CMPA    >FuelThresh10
         BCS     L23E12
         LDAB    $04F0,Z
         BRA     L23E26
@@ -5249,7 +5249,7 @@ L23E12:
         INCA
         BEQ     L23E30
         STAA    $068E,Z
-        CMPA    $32C5
+        CMPA    >FuelV068EThresh
         BCC     L23E30
         BRA     L23E2A
 L23E26:
@@ -5259,9 +5259,9 @@ L23E2A:
         BRA     L23E60
 L23E30:
         STAB    $068F,Z
-        CMPB    $32C3
+        CMPB    >FuelThresh9
         BCC     L23E40
-        CMPB    $32C2
+        CMPB    >FuelThresh8
         BHI     L23E4A
 L23E40:
         LDY     #$44BA
@@ -5487,14 +5487,14 @@ L241BC:
         TAB
 L241C4:
         LDAA    >Throttle,Z
-        ADDA    $499F
+        ADDA    >MapThrottleAdder
         SBA
         BCC     L241D2
         CLRA
 L241D2:
         LDX     #MapLimpFromThrottle
         JSR     Lookup2D
-        ADDA    $499E
+        ADDA    >MapAdder2
         BCC     L241E2
         LDAA    #$FF
 L241E2:
@@ -5779,7 +5779,7 @@ L24456:
         STAA    $0526,Z
         ORAB    $0526,Z
         STAB    $0526,Z
-        BRSET   $032E,#$04,L24478
+        BRSET   >Options032E,#$04,L24478
         BRCLR   $0526,Z,#$80,L24474
         BCLR    $0C39,Z,#$10
         BRA     L24478
@@ -5813,7 +5813,7 @@ L2449E:
 ; Called from: Sub_2432A
 ;---------------------------------------------------------------------------------------------------
 Sub_244A0:
-        BRCLR   $032D,#$20,L244E8
+        BRCLR   >Options032D,#$20,L244E8
         BRSET   $0774,Z,#$80,L244B4
         LDAB    >Count3s,Z
         BNE     L244DC
@@ -6083,7 +6083,7 @@ Sub_246EC:
 ;---------------------------------------------------------------------------------------------------
 Sub_24704:
         PSHM    E
-        LDD     $2EA6
+        LDD     >FuelEventV0631Value
         ANDA    #$C0
         BEQ     L24716
         CMPA    #$40
@@ -6093,7 +6093,7 @@ Sub_24704:
 L24716:
         JMP     L247FC
 L2471A:
-        LDD     $2EA6
+        LDD     >FuelEventV0631Value
         CMPA    $0630,Z
         BEQ     L24728
         STD     $0630,Z
@@ -6119,7 +6119,7 @@ L2475E:
         BRCLR   $0633,Z,#$3F,L24768
         JSR     Sub_247B0
 L24768:
-        LDD     $2EA6
+        LDD     >FuelEventV0631Value
         CMPA    $0630,Z
         BEQ     L2477A
         STD     $0630,Z
@@ -6150,7 +6150,7 @@ Sub_247B0:
         TPD
         TBXK
         LDX     #$481C
-        LDAA    $ABB1
+        LDAA    >EventV0C46Value
         CMPA    #$06
         BEQ     L247C4
         LDX     #$4828
@@ -6176,13 +6176,13 @@ L247D6:
         RTS
 L247F4:
         PULM    E
-        LDE     $2EA8
+        LDE     >FuelEventValue11
         BRA     L24804
 L247FC:
         PULM    E
         BRCLR   $0632,Z,#$01,L2481C
 L24804:
-        LDAA    $ABB1
+        LDAA    >EventV0C46Value
         DECA
         CMPA    $0C46,Z
         BNE     L2481C
@@ -6324,24 +6324,24 @@ L2481C:
 ; Called from: Sub_20272
 ;---------------------------------------------------------------------------------------------------
 Sub_25000:
-        BRCLR   $033E,#$01,L252A6
+        BRCLR   >StartV06B8Flag,#$01,L252A6
         BRSET   $00AA,Z,#$02,L252A6
         BRCLR   $00AA,Z,#$80,L25296
         BRSET   $00D8,Z,#$01,L25296
         BSET    $0580,Z,#$01
         BRCLR   $0774,Z,#$80,L25296
         LDAA    >CoolantTemp,Z
-        CMPA    $308D
+        CMPA    >MapCoolantThresh
         LBCS    L25296
         LDAA    $0581,Z
-        CMPA    $308C
+        CMPA    >MapV0581Thresh
         BCC     L25046
         BRCLR   >MainLoopPhaseMask,Z,#$80,L25296
         INC     $0581,Z
         LBRA    L25296
 L25046:
         LDAA    >BatteryTemp,Z
-        CMPA    $308E
+        CMPA    >MapBatteryTempThresh
         LBCS    L25296
         BRSET   $06B4,Z,#$20,L25296
         BRSET   $06B4,Z,#$10,L25296
@@ -6355,7 +6355,7 @@ L2507A:
         LBNE    L25296
         BRCLR   $075D,Z,#$80,L25296
         BRSET   $071D,Z,#$20,L25296
-        BRCLR   $032F,#$40,L250A0
+        BRCLR   >EventFlag2,#$40,L250A0
         BRCLR   $075D,Z,#$40,L25296
         BRSET   $0745,Z,#$20,L25296
 L250A0:
@@ -6363,23 +6363,23 @@ L250A0:
         TST     $0439,Z
         LBNE    L25296
         LDAA    >ManifoldVacuum,Z
-        CMPA    $308F
+        CMPA    >MapVacuumThresh
         LBCS    L25296
         LDAA    >VehicleSpeed,Z
-        CMPA    $3090
+        CMPA    >MapSpeedThresh
         LBCS    L25296
         LDD     >MapAccelFuel,Z
-        CPD     $3091
+        CPD     >MapAccelFuelThresh
         LBHI    L25296
         LDD     >AccelTpsFuel,Z
-        CPD     $3093
+        CPD     >MapAccelTpsFuelThresh
         LBHI    L25296
         LDD     >TipInFuel,Z
-        CPD     $3095
+        CPD     >MapTipInFuelThresh
         LBHI    L25296
         LDAA    >DecelLeanFuel,Z
         BEQ     L250F8
-        CMPA    $3097
+        CMPA    >MapDecelLeanFuelThresh
         LBCS    L25296
 L250F8:
         CLRB
@@ -6419,24 +6419,24 @@ L2512E:
         BSET    $0580,Z,#$02
         BSET    $AA,Z,#$04
         LDAA    >ShortTermTrim1,Z
-        CMPA    $30AD
+        CMPA    >MapShortTermTrim1Thresh1
         LBLT    L2529A
-        CMPA    $30AE
+        CMPA    >MapShortTermTrim1Thresh2
         LBGT    L2529A
-        BRCLR   $032F,#$40,L25196
+        BRCLR   >EventFlag2,#$40,L25196
         LDAA    >ShortTermTrim2,Z
-        CMPA    $30AD
+        CMPA    >MapShortTermTrim1Thresh1
         LBLT    L2529A
-        CMPA    $30AE
+        CMPA    >MapShortTermTrim1Thresh2
         LBGT    L2529A
 L25196:
         LDE     $057E,Z
-        CPE     $309F
+        CPE     >MapV057EThresh1
         LBCC    L251D0
         INCW    $057E,Z
         LDAB    $0723,Z
         STAB    $0582,Z
-        BRCLR   $032F,#$40,L251C8
+        BRCLR   >EventFlag2,#$40,L251C8
         SXT
         TDE
         LDAB    $074B,Z
@@ -6456,12 +6456,12 @@ L251D0:
 L251E0:
         BSET    $0580,Z,#$04
         LDE     $057E,Z
-        CPE     $30AF
+        CPE     >MapV057EThresh2
         LBCC    L2522A
         INCW    $057E,Z
         LDAB    $0723,Z
         STAB    $0585,Z
-        BRCLR   $032F,#$40,L25216
+        BRCLR   >EventFlag2,#$40,L25216
         SXT
         TDE
         LDAB    $074B,Z
@@ -6480,9 +6480,9 @@ L25222:
         JMP     L252A6
 L2522A:
         LDAA    $0588,Z
-        CMPA    $30BD
+        CMPA    >ThermistorV0588Value1
         BCS     L2524C
-        CMPA    $30BE
+        CMPA    >ThermistorV0588Value2
         BHI     L25252
         BSET    $0580,Z,#$88
         BCLR    $0580,Z,#$30
@@ -6497,7 +6497,7 @@ L25252:
 L25256:
         INC     $0589,Z
         LDAB    $0589,Z
-        CMPB    $30BF
+        CMPB    >MapV0589Thresh
         BCS     L25296
         BSET    $0580,Z,#$48
         BSET    $AA,Z,#$48
@@ -6529,11 +6529,11 @@ L252A6:
 ; Called from: Sub_20272
 ;---------------------------------------------------------------------------------------------------
 Sub_252A8:
-        BRCLR   $033E,#$20,L25782
+        BRCLR   >StartV06B8Flag,#$20,L25782
         BRSET   $00A9,Z,#$02,L25782
         BRCLR   $00A9,Z,#$80,L25750
         BRSET   $00D8,Z,#$01,L25750
-        BRCLR   $033E,#$02,L252DE
+        BRCLR   >StartV06B8Flag,#$02,L252DE
         BRSET   $00B0,Z,#$80,L25782
         BRSET   $058E,Z,#$80,L252DE
         BSET    $05AE,Z,#$80
@@ -6556,26 +6556,26 @@ L252FE:
         LDAB    $05BB,Z
         SXT
         PSHM    D,E
-        LDAA    $3074
+        LDAA    >DiagValue3
         JSR     Blend16Signed
         AIS     #$04
         STAB    $05BB,Z
-        BRCLR   $032F,#$40,L25346
+        BRCLR   >EventFlag2,#$40,L25346
         LDAB    >ShortTermTrim2,Z
         SXT
         TDE
         LDAB    $05BC,Z
         SXT
         PSHM    D,E
-        LDAA    $3074
+        LDAA    >DiagValue3
         JSR     Blend16Signed
         AIS     #$04
         STAB    $05BC,Z
 L25346:
         BRSET   $05AE,Z,#$02,L25368
         BRCLR   $0438,Z,#$04,L25730
-        LDAA    $306F
-        LDAB    $3070
+        LDAA    >DiagV05B1Value
+        LDAB    >DiagValue2
         BEQ     L25360
         NEGB
         MUL
@@ -6598,24 +6598,24 @@ L2539C:
         LBEQ    L25730
 L253AA:
         LDAA    >CoolantTemp,Z
-        CMPA    $306A
+        CMPA    >DiagCoolantThresh2
         LBCS    L25730
         LDAA    >Count3s,Z
-        CMPA    $3069
+        CMPA    >DiagTimeThresh1
         LBCS    L25730
         LDAA    >Map,Z
-        CMPA    $306C
+        CMPA    >DiagMapThresh1
         LBHI    L25730
         LDAA    >VehicleSpeed,Z
-        CMPA    $306B
+        CMPA    >DiagSpeedThresh1
         LBHI    L25730
         BRSET   >ThrottleState,Z,#$80,L25730
         BRSET   >ThrottleState,Z,#$01,L25730
-        BRSET   $032E,#$40,L253F2
+        BRSET   >Options032E,#$40,L253F2
         BRCLR   $0C31,Z,#$20,L25730
 L253F2:
         BRCLR   $0C31,Z,#$01,L25730
-        BRCLR   $0340,#$20,L25404
+        BRCLR   >Options0340,#$20,L25404
         BRCLR   $0A46,Z,#$01,L25730
 L25404:
         LDD     >EngineRpm,Z
@@ -6623,7 +6623,7 @@ L25404:
         BCC     L25410
         NEGD
 L25410:
-        CPD     $306D
+        CPD     >DiagRpmThresh1
         LBHI    L25730
         LDAA    $092E,Z
         CMPA    #$25
@@ -6633,15 +6633,15 @@ L25410:
         BRSET   >ThrottleState,Z,#$02,L25730
         BRSET   $05AE,Z,#$10,L25500
         BSET    $05AE,Z,#$04
-        LDAA    $031B,Z
+        LDAA    >IacTargetCmd,Z
         SUBA    <IacPosition,Z
         BCC     L25442
         NEGA
 L25442:
-        CMPA    $3071
+        CMPA    >DiagIacTargetCmdThresh
         LBHI    L25730
         LDAA    $05B1,Z
-        CMPA    $306F
+        CMPA    >DiagV05B1Value
         BCC     L25462
         BRCLR   >MainLoopPhaseMask,Z,#$02,L25782
         INC     $05B1,Z
@@ -6650,7 +6650,7 @@ L25462:
         BRSET   $0017,Z,#$20,L25730
         TST     $0323,Z
         LBNE    L25730
-        LDAA    $034A,Z
+        LDAA    >IacGearDuration,Z
         CMPA    #$FF
         BEQ     L2547E
         TSTA
@@ -6683,7 +6683,7 @@ L254D8:
         BRSET   $0C21,Z,#$04,L254E2
         BSET    $05B0,Z,#$08
 L254E2:
-        BRSET   $0334,#$10,L25500
+        BRSET   >StartFlag,#$10,L25500
         BCLR    $05B0,Z,#$30
         BRCLR   $0944,Z,#$10,L254F6
         BSET    $05B0,Z,#$10
@@ -6697,7 +6697,7 @@ L25500:
         LDAA    <IacPosition,Z
         SUBA    $05B4,Z
         BCS     L2551C
-        CMPA    $3072
+        CMPA    >DiagIacPositionThresh
         LBHI    L25730
 L2551C:
         LDAA    >Map,Z
@@ -6705,7 +6705,7 @@ L2551C:
         BCC     L25528
         NEGA
 L25528:
-        CMPA    $3073
+        CMPA    >DiagMapThresh2
         LBHI    L25730
         BRCLR   $0055,Z,#$04,L2553C
         BRSET   $0C31,Z,#$40,L25730
@@ -6724,7 +6724,7 @@ L2555C:
 L2556A:
         BRSET   $05B0,Z,#$04,L25730
 L25570:
-        BRSET   $0334,#$10,L255AA
+        BRSET   >StartFlag,#$10,L255AA
         BRSET   $0C33,Z,#$04,L25730
         BRSET   $0C33,Z,#$40,L25730
         BRCLR   $0944,Z,#$10,L25590
@@ -6740,16 +6740,16 @@ L255A4:
         BRSET   $05B0,Z,#$20,L25730
 L255AA:
         CLRW    $00F2,Z
-        BRSET   $033E,#$02,L255D8
+        BRSET   >StartV06B8Flag,#$02,L255D8
         LDAA    $05B4,Z
         SUBA    <IacPosition,Z
         BCS     L255D8
         STAA    $F2,Z
         BRSET   $0312,Z,#$40,L255CA
-        CMPA    $3086
+        CMPA    >DiagV05B4Thresh
         BRA     L255CE
 L255CA:
-        CMPA    $3087
+        CMPA    >DiagThresh7
 L255CE:
         BCS     L255D8
         BSET    $05AF,Z,#$04
@@ -6761,25 +6761,25 @@ L255D8:
         BLT     L25602
         STAA    $F4,Z
         BRSET   $0312,Z,#$40,L255F4
-        CMPA    $3088
+        CMPA    >O2V05B9Thresh
         BRA     L255F8
 L255F4:
-        CMPA    $3089
+        CMPA    >O2Thresh21
 L255F8:
         BCS     L25602
         BSET    $05AF,Z,#$08
         LBRA    L25686
 L25602:
-        BRCLR   $032F,#$40,L2562E
+        BRCLR   >EventFlag2,#$40,L2562E
         LDAA    $05BA,Z
         SUBA    >ShortTermTrim2,Z
         BLT     L2562E
         STAA    $F5,Z
         BRSET   $0312,Z,#$40,L25620
-        CMPA    $3088
+        CMPA    >O2V05B9Thresh
         BRA     L25624
 L25620:
-        CMPA    $3089
+        CMPA    >O2Thresh21
 L25624:
         BCS     L2562E
         BSET    $05AF,Z,#$10
@@ -6787,21 +6787,21 @@ L25624:
 L2562E:
         LDAA    $042D,Z
         SUBA    $05B7,Z
-        CMPA    $3081
+        CMPA    >DiagV042DThresh
         BCC     L25640
         JMP     L25782
 L25640:
         CLRW    $00F6,Z
-        BRSET   $033E,#$02,L2566E
+        BRSET   >StartV06B8Flag,#$02,L2566E
         LDD     >EngineRpm,Z
         SUBD    $05B5,Z
         BCS     L2566E
         STD     $F6,Z
         BRSET   $0312,Z,#$40,L25662
-        CPD     $3082
+        CPD     >ThermistorRpmValue
         BRA     L25666
 L25662:
-        CPD     $3084
+        CPD     >ThermistorValue6
 L25666:
         BCS     L2566E
         BSET    $05AF,Z,#$20
@@ -6809,7 +6809,7 @@ L25666:
 L2566E:
         INC     $05BD,Z
         LDAA    $05BD,Z
-        CMPA    $308B
+        CMPA    >DiagV05BDThresh
         LBCS    L25730
         BSET    $A9,Z,#$08
         BSET    $05AF,Z,#$80
@@ -6836,7 +6836,7 @@ L256AC:
         LSRA
         ORAA    #$C0
         BRSET   $05AF,Z,#$08,L256E0
-        BRCLR   $032F,#$40,L256D4
+        BRCLR   >EventFlag2,#$40,L256D4
         LDAB    $F5,Z
         BRSET   $05AF,Z,#$10,L256E0
 L256D4:
@@ -6884,8 +6884,8 @@ L25750:
         BRCLR   $05AE,Z,#$10,L25782
         BCLR    $05AE,Z,#$10
         BSET    $05AE,Z,#$20
-        BRCLR   $033E,#$02,L2577A
-        TSTW    $32B5
+        BRCLR   >StartV06B8Flag,#$02,L2577A
+        TSTW    >O2V0E06Switch
         BEQ     L2577A
         BSET    $05B0,Z,#$40
         CLRW    $0E06,Z
@@ -6900,7 +6900,7 @@ L25782:
 ; Called from: Sub_20272
 ;---------------------------------------------------------------------------------------------------
 Sub_25784:
-        BRCLR   $033E,#$02,L25D36
+        BRCLR   >StartV06B8Flag,#$02,L25D36
         BRSET   $00B0,Z,#$02,L25D36
         BRSET   $00D8,Z,#$01,L25D36
         BRCLR   $0774,Z,#$80,L25D36
@@ -6916,9 +6916,9 @@ Sub_25784:
         BRSET   $009C,Z,#$02,L257DA
         BRSET   $009C,Z,#$20,L257DA
         LDAA    >BatteryVolts2,Z
-        CMPA    $3039
+        CMPA    >DiagVoltsThresh2
         BCS     L257DA
-        CMPA    $3038
+        CMPA    >DiagVoltsThresh1
         BLS     L257E4
 L257DA:
         BSET    $058E,Z,#$08
@@ -6959,14 +6959,14 @@ L25826:
         BCLR    $011B,Z,#$0F
         BRSET   $0649,Z,#$02,L25850
         LDAA    >BatteryTemp,Z
-        CMPA    $3035
+        CMPA    >DiagBatteryTempThresh1
         BHI     L25876
-        CMPA    $3036
+        CMPA    >DiagBatteryTempThresh2
         BCS     L25854
         LDAA    >CoolantTemp,Z
         SUBA    >BatteryTemp,Z
         BCS     L25850
-        CMPA    $3037
+        CMPA    >DiagCoolantThresh1
         BCC     L25854
 L25850:
         BSET    $011B,Z,#$01
@@ -7003,7 +7003,7 @@ L258A8:
         LBRA    L25944
 L258B6:
         LDAA    >ManifoldVacuum,Z
-        CMPA    $303A
+        CMPA    >DiagVacuumThresh1
         BCC     L258C6
         CLR     $0591,Z
         BRA     L258F6
@@ -7016,7 +7016,7 @@ L258C6:
         INC     $0591,Z
         BRA     L258F6
 L258E2:
-        CMPA    $3040
+        CMPA    >DiagThresh1
         BCC     L258FC
         BRCLR   >MainLoopPhaseMask,Z,#$02,L258F6
         INCA
@@ -7028,7 +7028,7 @@ L258F6:
 L258FC:
         BCLR    $058E,Z,#$01
         LDAA    $0592,Z
-        CMPA    $303D
+        CMPA    >DiagV0592Thresh
         BCC     L25910
         INC     $0592,Z
         BRA     L25944
@@ -7045,7 +7045,7 @@ L2591C:
         CLR     $059A,Z
         CLR     $0596,Z
         CLR     $0593,Z
-        CLR     $0594,Z
+        CLR     >DiagMonPeak,Z
         CLR     $0595,Z
 L25944:
         LBRA    L25D36
@@ -7060,16 +7060,16 @@ L25948:
         BRA     L259D4
 L25964:
         JSR     Sub_25D38
-        CMPA    $3041
+        CMPA    >DiagThresh2
         BCC     L2597E
         JSR     Sub_25D58
         LDAA    $0596,Z
-        CMPA    $3049
+        CMPA    >DiagV0596Thresh1
         BCC     L2597E
         BRA     L259D4
 L2597E:
-        LDAA    $0594,Z
-        CMPA    $304D
+        LDAA    >DiagMonPeak,Z
+        CMPA    >DiagMonPeakThresh2
         BCS     L259B6
         LDAA    #$25
         STAA    $058F,Z
@@ -7106,7 +7106,7 @@ L259E4:
         LBRA    L25AC8
 L259F2:
         LDAA    >ManifoldVacuum,Z
-        CMPA    $303A
+        CMPA    >DiagVacuumThresh1
         BCC     L25A04
         BRSET   $0649,Z,#$02,L259E4
         BRA     L25A28
@@ -7117,7 +7117,7 @@ L25A04:
         INCA
         BEQ     L25A1E
         STAA    $0598,Z
-        CMPA    $3043
+        CMPA    >DiagV0598Thresh
         BCC     L25A1E
         BRA     L25A28
 L25A1E:
@@ -7127,7 +7127,7 @@ L25A1E:
 L25A28:
         JSR     Sub_25D58
         LDAA    $0593,Z
-        CMPA    $303C
+        CMPA    >DiagV0593Thresh
         BCS     L25A4C
         CLR     $0597,Z
         CLR     $0593,Z
@@ -7137,10 +7137,10 @@ L25A28:
         BRA     L25A6A
 L25A4C:
         LDAA    $0597,Z
-        CMPA    $304A
+        CMPA    >DiagV0597Thresh1
         BCS     L25A6A
         LDAA    $0598,Z
-        SUBA    $3042
+        SUBA    >DiagV0590Thresh
         BCC     L25A62
         LDAA    #$00
 L25A62:
@@ -7148,7 +7148,7 @@ L25A62:
         CLR     $0597,Z
 L25A6A:
         BRSET   $011B,Z,#$02,L25A9A
-        LDAA    $019C,Z
+        LDAA    >FuelLevelScaled,Z
         BRCLR   $0649,Z,#$02,L25A8A
         LDX     #DiagLevelLimit2
         JSR     Lookup2D
@@ -7163,7 +7163,7 @@ L25A8A:
         BRA     L25AC8
 L25A9A:
         LDAA    $0590,Z
-        CMPA    $3042
+        CMPA    >DiagV0590Thresh
         BCC     L25AA6
         BRA     L25AC8
 L25AA6:
@@ -7188,7 +7188,7 @@ L25ACC:
         BRA     L25B3A
 L25ADE:
         LDAA    >ManifoldVacuum,Z
-        CMPA    $303A
+        CMPA    >DiagVacuumThresh1
         BCC     L25AF8
         LDAA    #$48
         STAA    $058F,Z
@@ -7197,16 +7197,16 @@ L25ADE:
         BRA     L25B3A
 L25AF8:
         JSR     Sub_25D38
-        CMPA    $3044
+        CMPA    >DiagThresh3
         BCC     L25B12
         JSR     Sub_25D58
         LDAA    $0596,Z
-        CMPA    $304B
+        CMPA    >DiagV0596Thresh2
         BCC     L25B12
         BRA     L25B3A
 L25B12:
-        LDAA    $0594,Z
-        CMPA    $304E
+        LDAA    >DiagMonPeak,Z
+        CMPA    >DiagMonPeakThresh3
         BCC     L25B2C
         LDAA    #$43
         STAA    $058F,Z
@@ -7231,13 +7231,13 @@ L25B4A:
         LBRA    L25C1A
 L25B58:
         LDAA    >ManifoldVacuum,Z
-        CMPA    $303A
+        CMPA    >DiagVacuumThresh1
         BCC     L25B88
         BRSET   $0649,Z,#$02,L25B4A
         LDAA    #$58
         STAA    $058F,Z
-        LDAA    $0594,Z
-        CMPA    $304E
+        LDAA    >DiagMonPeak,Z
+        CMPA    >DiagMonPeakThresh3
         BCS     L25B80
         BSET    $011B,Z,#$04
         LBRA    L25C1A
@@ -7247,10 +7247,10 @@ L25B80:
 L25B88:
         JSR     Sub_25D38
         BRCLR   $0649,Z,#$02,L25B98
-        CMPA    $3045
+        CMPA    >DiagThresh4
         BRA     L25B9C
 L25B98:
-        CMPA    $3046
+        CMPA    >DiagThresh5
 L25B9C:
         BCC     L25BA4
         JSR     Sub_25D58
@@ -7276,11 +7276,11 @@ L25BCC:
         BSET    $011B,Z,#$08
         LDAA    $0595,Z
         STAA    $0171,Z
-        CMPA    $304F
+        CMPA    >DiagV0595Thresh
         BCC     L25C0C
         ORAB    #$20
         STAB    $0170,Z
-        CMPA    $3050
+        CMPA    >DiagThresh6
         BCC     L25C04
         BSET    $058E,Z,#$40
         BSET    $0170,Z,#$01
@@ -7304,20 +7304,20 @@ L25C2A:
         LDAA    #$67
         STAA    $058F,Z
         LDAA    #$FF
-        STAA    $0594,Z
+        STAA    >DiagMonPeak,Z
 L25C36:
         LBRA    L25D36
 L25C3A:
         LDAA    >ManifoldVacuum,Z
-        CMPA    $3052
+        CMPA    >DiagVacuumThresh2
         BCC     L25C4C
         LDAA    #$79
         STAA    $058F,Z
         BRA     L25C68
 L25C4C:
         JSR     Sub_25D58
-        LDAA    $0594,Z
-        CMPA    $3051
+        LDAA    >DiagMonPeak,Z
+        CMPA    >DiagMonPeakThresh4
         BCS     L25C62
         TST     $042F,Z
         BEQ     L25C62
@@ -7337,7 +7337,7 @@ L25C72:
         LBRA    L25D34
 L25C80:
         LDAA    >ManifoldVacuum,Z
-        CMPA    $303A
+        CMPA    >DiagVacuumThresh1
         BCC     L25CBA
         BRCLR   >MainLoopPhaseMask,Z,#$40,L25CB4
         LDAA    $0599,Z
@@ -7351,7 +7351,7 @@ L25C9C:
         INCA
         STAA    $059A,Z
 L25CAA:
-        CMPA    $3048
+        CMPA    >DiagV059AThresh
         BCC     L25C72
         STAA    $059A,Z
 L25CB4:
@@ -7367,16 +7367,16 @@ L25CBA:
         BRA     L25C72
 L25CCA:
         LDAA    $0599,Z
-        CMPA    $3047
+        CMPA    >DiagV0599Thresh
         BCC     L25CF0
         LDAA    $0597,Z
-        CMPA    $304C
+        CMPA    >DiagV0597Thresh2
         BCS     L25CF0
         BRA     L25CF4
 L25CE0:
         BRCLR   $011B,Z,#$04,L25D04
-        LDAA    $0594,Z
-        CMPA    $304E
+        LDAA    >DiagMonPeak,Z
+        CMPA    >DiagMonPeakThresh3
         BCC     L25D04
 L25CF0:
         CLR     $0598,Z
@@ -7432,7 +7432,7 @@ L25D56:
 ;---------------------------------------------------------------------------------------------------
 Sub_25D58:
         LDAA    $0591,Z
-        CMPA    $303B
+        CMPA    >DiagV0591Thresh
         BCC     L25D6E
         INC     $0591,Z
         BSET    $058E,Z,#$01
@@ -7458,7 +7458,7 @@ L25D92:
         STAA    $0593,Z
 L25D9E:
         LDAA    $0592,Z
-        CMPA    $303D
+        CMPA    >DiagV0592Thresh
         BCC     L25DB6
         INCA
         LBEQ    L25E4C
@@ -7474,13 +7474,13 @@ L25DB6:
         BRA     L25E4C
 L25DCC:
         LDAA    $0593,Z
-        CMPA    $0594,Z
+        CMPA    >DiagMonPeak,Z
         BCS     L25DDA
-        STAA    $0594,Z
+        STAA    >DiagMonPeak,Z
 L25DDA:
         BRSET   $011B,Z,#$08,L25E4C
-        LDAA    $0594,Z
-        CMPA    $303F
+        LDAA    >DiagMonPeak,Z
+        CMPA    >DiagMonPeakThresh1
         BCS     L25E4C
         STAA    $0595,Z
         BRA     L25E4C
@@ -7495,13 +7495,13 @@ L25DF0:
         TDE
         LDAB    $0595,Z
         PSHM    D,E
-        LDAA    $303E
+        LDAA    >DiagValue1
         JSR     Blend16
         AIS     #$04
         STAB    $0595,Z
 L25E1C:
         LDAA    $0593,Z
-        STAA    $0594,Z
+        STAA    >DiagMonPeak,Z
 L25E24:
         LDAA    $0596,Z
         INCA
@@ -7525,7 +7525,7 @@ L25E4C:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_25E4E:
-        BRCLR   $033E,#$02,L25EEE
+        BRCLR   >StartV06B8Flag,#$02,L25EEE
         BRCLR   $1000,Z,#$02,L25E60
         BSET    $058E,Z,#$02
         BRA     L25E64
@@ -7552,7 +7552,7 @@ L25E9C:
         BRSET   $011B,Z,#$10,L25EEA
         BRCLR   >MainLoopPhaseMask,Z,#$08,L25EEA
         LDAA    >PurgeDuty,Z
-        CMPA    $3053
+        CMPA    >SensorPurgeDutyThresh1
         BCC     L25EC2
         TST     $059B,Z
         BEQ     L25EEA
@@ -7565,7 +7565,7 @@ L25EC2:
         INCA
         STAA    $059B,Z
 L25ED0:
-        CMPA    $3054
+        CMPA    >SensorV059BThresh
         BCC     L25ED8
         BRA     L25EEA
 L25ED8:
@@ -8157,18 +8157,18 @@ L25F6A:
 Sub_2802A:
         BRCLR   $0774,Z,#$80,L28124
         LDAA    >CoolantTemp,Z
-        CMPA    $31D8
+        CMPA    >SensorCoolantThresh7
         LBCS    L280F8
         CLRA
         LDAB    >PurgeRamp,Z
         TDE
         LDAB    $057C,Z
         PSHM    D,E
-        LDAA    $31DC
+        LDAA    >SensorValue15
         JSR     Blend16
         AIS     #$04
         STAB    $057C,Z
-        CMPB    $31DB
+        CMPB    >SensorThresh9
         BCS     L28064
         BSET    $057A,Z,#$08
         BRA     L28068
@@ -8183,7 +8183,7 @@ L28068:
         BRCLR   >ThrottleState,Z,#$80,L280B4
         CLR     $057B,Z
         LDAA    >VehicleSpeed,Z
-        CMPA    $31D9
+        CMPA    >SensorSpeedThresh2
         LBCS    L28124
 L2808A:
         LDE     $0000,X
@@ -8201,10 +8201,10 @@ L2808A:
         JMP     L28124
 L280B4:
         LDAA    >VehicleSpeed,Z
-        CMPA    $31D9
+        CMPA    >SensorSpeedThresh2
         BCS     L280D0
         LDAA    $057B,Z
-        CMPA    $31DA
+        CMPA    >SensorV057BThresh
         BCC     L280D0
         INC     $057B,Z
         JMP     L28124
@@ -8318,7 +8318,7 @@ L281F4:
         TBXK
         TPD
         TBYK
-        LDAA    $033E
+        LDAA    >StartV06B8Flag
         BITA    $32,Y
         LBEQ    L285C8
         LDE     $0020,Y
@@ -8347,10 +8347,10 @@ L281F4:
         LDE     $0022,Y
         LDAB    E,Z
         ANDB    #$F3
-        BRCLR   $0338,#$08,L28272
+        BRCLR   >Options0338,#$08,L28272
         LDE     $0002,Y
         LDAA    E,Z
-        CMPA    $31B3
+        CMPA    >DiagThresh23
         BCC     L28270
         LDE     $0006,Y
         LDAA    E,Z
@@ -8372,7 +8372,7 @@ L28282:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L285C8
         LDE     $0012,Y
         LDAA    E,Z
-        CMPA    $3182
+        CMPA    >DiagThresh16
         BCC     L282A4
         INCA
         STAA    E,Z
@@ -8388,7 +8388,7 @@ L282A4:
 L282B6:
         LDE     $0014,Y
         LDD     E,Z
-        CPD     $318B
+        CPD     >DiagThresh17
         LBCC    L2837A
         ADDD    #$01
         STD     E,Z
@@ -8401,7 +8401,7 @@ L282B6:
         LDAB    E,Z
         BITB    #$02
         BEQ     L282FA
-        LDAB    $31A6
+        LDAB    >DiagValue4
         JSR     Sub_286E2
         LDE     $0016,Y
         CMPB    E,Z
@@ -8412,7 +8412,7 @@ L282B6:
         STAB    E,Z
         BRA     L28320
 L282FA:
-        LDAB    $31A7
+        LDAB    >DiagValue5
         JSR     Sub_286E2
         LDE     $0016,Y
         CMPB    E,Z
@@ -8435,11 +8435,11 @@ L28320:
         BEQ     L2834E
         BITB    #$04
         BEQ     L2833E
-        CMPA    $31B4
+        CMPA    >DiagThresh24
         LBHI    L285C8
         BRA     L28346
 L2833E:
-        CMPA    $31A8
+        CMPA    >DiagThresh18
         LBHI    L285C8
 L28346:
         EORB    #$01
@@ -8448,11 +8448,11 @@ L28346:
 L2834E:
         BITB    #$04
         BEQ     L2835C
-        CMPA    $31B5
+        CMPA    >DiagThresh25
         LBCS    L285C8
         BRA     L28364
 L2835C:
-        CMPA    $31A9
+        CMPA    >DiagThresh19
         LBCS    L285C8
 L28364:
         ORAB    #$01
@@ -8504,7 +8504,7 @@ L283C8:
         LDAA    E,Z
         LDE     $0010,Y
         STAA    E,Z
-        CMPA    $31AA
+        CMPA    >DiagThresh20
         LBCC    L2841A
         LDX     $2A,Y
         LDE     $0008,Y
@@ -8578,7 +8578,7 @@ L28478:
         LDAB    E,Z
         LDE     $00F0,Z
         PSHM    D,E
-        LDAA    $31AE
+        LDAA    >DiagValue7
         JSR     Blend16
         AIS     #$04
         STAB    $F2,Z
@@ -8587,7 +8587,7 @@ L28478:
         LDAB    E,Z
         LDE     $00F0,Z
         PSHM    D,E
-        LDAA    $31AD
+        LDAA    >DiagValue6
         JSR     Blend16
         AIS     #$04
         STAB    $F3,Z
@@ -8595,16 +8595,16 @@ L28478:
         LDAA    E,Z
         SBA
         BCS     L284FE
-        CMPA    $31AB
+        CMPA    >DiagThresh21
         BCS     L284FE
         LDE     $0006,Y
         LDAA    E,Z
         INCA
         BEQ     L284FA
-        CMPA    $31AC
+        CMPA    >DiagThresh22
         BHI     L284FA
         STAA    E,Z
-        BRCLR   $0338,#$08,L284E8
+        BRCLR   >Options0338,#$08,L284E8
         LDE     $0022,Y
         LDAB    E,Z
         BITB    #$04
@@ -8715,7 +8715,7 @@ Sub_285CA:
         BRCLR   $0774,Z,#$80,L286D8
         BRSET   $056A,Z,#$01,L285E6
         LDAA    >CoolantTemp,Z
-        CMPA    $3174
+        CMPA    >DiagCoolantThresh4
         LBCS    L286D8
         BSET    $056A,Z,#$01
 L285E6:
@@ -8723,10 +8723,10 @@ L285E6:
         BRCLR   >MainLoopPhaseMask,Z,#$10,L286D8
         BRCLR   >ThrottleState,Z,#$80,L286D8
         LDAA    >VehicleSpeed,Z
-        CMPA    $3175
+        CMPA    >DiagSpeedThresh3
         LBCS    L286D8
         LDAA    $056E,Z
-        CMPA    $3176
+        CMPA    >DiagV056EThresh
         BCC     L28616
         INC     $056E,Z
         LBRA    L286D8
@@ -8748,20 +8748,20 @@ L28638:
         TST     $0758,Z
         LBNE    L286DC
         LDAA    >RpmSpeedRatio,Z
-        CMPA    $3177
+        CMPA    >DiagRpmSpeedRatioThresh
         LBHI    L286DC
         LDD     >MapAccelFuel,Z
-        CPD     $317B
+        CPD     >DiagMapAccelFuelThresh
         LBHI    L286DC
         LDD     >AccelTpsFuel,Z
-        CPD     $317D
+        CPD     >DiagAccelTpsFuelThresh
         LBHI    L286DC
         LDD     >TipInFuel,Z
-        CPD     $317F
+        CPD     >DiagTipInFuelThresh
         LBHI    L286DC
         LDAA    >DecelLeanFuel,Z
         BEQ     L28694
-        CMPA    $3181
+        CMPA    >DiagDecelLeanFuelThresh
         LBCS    L286DC
 L28694:
         CLRB
@@ -8856,17 +8856,17 @@ L287B2:
 L287B6:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L287D2
         LDAB    >VehicleSpeed,Z
-        CMPB    $3125
+        CMPB    >DiagSpeedThresh2
         BLS     L287D2
         LDAA    $053F,Z
         INCA
         BEQ     L287D2
         STAA    $053F,Z
 L287D2:
-        LDAA    $033E
+        LDAA    >StartV06B8Flag
         ANDA    $37,Y
         LBEQ    L2891C
-        LDAA    $032F
+        LDAA    >EventFlag2
         ANDA    $36,Y
         LBEQ    L2891C
         BRCLR   $0774,Z,#$80,L2891C
@@ -8895,33 +8895,33 @@ L287FE:
         LBNE    L2891C
         LDE     $0006,Y
         LDAA    E,Z
-        CMPA    $3129
+        CMPA    >DiagThresh10
         LBGT    L2891C
-        CMPA    $312A
+        CMPA    >DiagThresh11
         LBLT    L2891C
         LDAA    >Count3s,Z
-        CMPA    $3123
+        CMPA    >DiagTimeThresh2
         LBCS    L2891C
         BRCLR   $0C31,Z,#$01,L2891C
         LDAB    >VehicleSpeed,Z
-        CMPB    $3125
+        CMPB    >DiagSpeedThresh2
         LBHI    L2891C
         LDAA    $053F,Z
-        CMPA    $3126
+        CMPA    >DiagV053FThresh
         LBCS    L2891C
         TST     $0757,Z
         LBNE    L2891C
         TST     $0758,Z
         LBNE    L2891C
         LDAA    >CoolantTemp,Z
-        CMPA    $3124
+        CMPA    >DiagCoolantThresh3
         LBCS    L2891C
         LDAA    $0A4E,Z
-        CMPA    $312D
+        CMPA    >DiagV0A4EThresh
         LBCS    L2891C
         BRCLR   $0055,Z,#$04,L288B6
         LDAA    $0A4F,Z
-        CMPA    $312D
+        CMPA    >DiagV0A4EThresh
         LBCS    L2891C
 L288B6:
         LDE     >IdleTarget,Z
@@ -8929,13 +8929,13 @@ L288B6:
         BCC     L288C2
         NEGE
 L288C2:
-        CPE     $3127
+        CPE     >DiagIdleTargetThresh
         LBCC    L2891C
         TST     $042B,Z
         BNE     L288EC
         BRCLR   $0438,Z,#$04,L288E4
         LDAA    $0543,Z
-        CMPA    $312E
+        CMPA    >DiagV0543Thresh
         LBCS    L2891C
         BRA     L288EC
 L288E4:
@@ -8950,7 +8950,7 @@ L288FE:
         BRSET   $0679,Z,#$40,L28914
         BSET    $0679,Z,#$40
 L28908:
-        LDAA    $312C
+        LDAA    >DiagV0541Init
         STAA    $0541,Z
         LBRA    L2891C
 L28914:
@@ -8968,7 +8968,7 @@ L2891C:
 L28932:
         BRSET   $00D8,Z,#$01,L28958
         LDAA    $0542,Z
-        CMPA    $312B
+        CMPA    >DiagV0542Thresh
         LBCS    L28958
         LDAA    $0532,Z
         ANDA    $34,Y
@@ -9008,7 +9008,7 @@ L28992:
         JSR     Sub_28B36
         LDE     $000A,Y
         LDAA    E,Z
-        CMPA    $3137
+        CMPA    >DiagThresh12
         BCC     L289CC
         BRCLR   >MainLoopPhaseMask,Z,#$20,L28AD6
         INCA
@@ -9059,7 +9059,7 @@ L28A0A:
 L28A2C:
         LDE     $000C,Y
         LDAA    E,Z
-        CMPA    $314F
+        CMPA    >DiagThresh14
         BLS     L28A56
         LDAB    $3D,Y
         COMB
@@ -9074,7 +9074,7 @@ L28A2C:
 L28A56:
         LDE     $000C,Y
         LDAA    E,Z
-        CMPA    $3150
+        CMPA    >DiagThresh15
         BCS     L28AD6
         LDE     $001C,Y
         LDAA    E,Z
@@ -9117,7 +9117,7 @@ L28AB4:
         BVC     L28AC6
         LDAA    #$7F
 L28AC6:
-        CMPA    $313C
+        CMPA    >DiagThresh13
         BCS     L28AD6
         LDAA    $3A,Y
         ORAA    $0761,Z
@@ -9381,7 +9381,7 @@ Sub_28CB6:
 ; Called from: CheckPowerDown
 ;---------------------------------------------------------------------------------------------------
 Sub_28D78:
-        BRCLR   $033F,#$F0,L28E48
+        BRCLR   >StartV06B9Flag,#$F0,L28E48
         BRSET   $00A5,Z,#$80,L28D9A
         BRSET   $00A6,Z,#$80,L28D9A
         BRSET   $00A7,Z,#$80,L28D9A
@@ -9444,8 +9444,8 @@ L28DFE:
         LDAA    $0504,Z
         ANDA    #$0E
         BNE     L28E48
-        LDAB    $0C3F,Z
-        CMPB    $3154
+        LDAB    >RunTime,Z
+        CMPB    >CalRunTimeThresh
         BCS     L28E48
         BRSET   $057A,Z,#$04,L28E50
 L28E48:
@@ -9479,25 +9479,25 @@ L28E50:
         BCLRW   $100C,Z,#$0800
         ANDP    #$FF1F
         BSET    $0108,Z,#$80
-        BRCLR   $032F,#$80,L28ED0
+        BRCLR   >EventFlag2,#$80,L28ED0
         BRSET   $06B5,Z,#$08,L28ED0
         BRSET   $050D,Z,#$40,L28ED0
         BSET    $0107,Z,#$80
         BSET    $A5,Z,#$04
 L28ED0:
-        BRCLR   $032F,#$40,L28EEA
+        BRCLR   >EventFlag2,#$40,L28EEA
         BRSET   $06B5,Z,#$04,L28EEA
         BRSET   $050E,Z,#$04,L28EEA
         BSET    $0107,Z,#$40
         BSET    $A6,Z,#$04
 L28EEA:
-        BRCLR   $032F,#$20,L28F04
+        BRCLR   >EventFlag2,#$20,L28F04
         BRSET   $06B5,Z,#$02,L28F04
         BRSET   $050C,Z,#$01,L28F04
         BSET    $0107,Z,#$20
         BSET    $A7,Z,#$04
 L28F04:
-        BRCLR   $032F,#$10,L28F1E
+        BRCLR   >EventFlag2,#$10,L28F1E
         BRSET   $06B5,Z,#$01,L28F1E
         BRSET   $050E,Z,#$08,L28F1E
         BSET    $0107,Z,#$10
@@ -9526,7 +9526,7 @@ L28F3E:
         BRA     L28FD4
 L28F64:
         LDD     $010A,Z
-        CPD     $315A
+        CPD     >CalV010AThresh2
         LBHI    L28FF6
         LDD     $010A,Z
         BITB    #$1F
@@ -9582,7 +9582,7 @@ L28FDA:
 L28FF6:
         BRSET   $0108,Z,#$20,L2905A
         LDD     $010A,Z
-        CPD     $315A
+        CPD     >CalV010AThresh2
         LBLS    L2905A
         LDY     #$8CD0
 L2900C:
@@ -9732,7 +9732,7 @@ L2916C:
 ;---------------------------------------------------------------------------------------------------
 Sub_2919A:
         LDD     $010A,Z
-        CPD     $3158
+        CPD     >CalV010AThresh1
         BLS     L291EE
         LBSR    Sub_29118
         LBSR    Sub_290F4
@@ -9816,7 +9816,7 @@ L29252:
         BRA     L29282
 L2925C:
         LDD     $010A,Z
-        CPD     $315C
+        CPD     >CalV010AThresh3
         BCC     L29282
         LDAB    $F2,Z
         STAB    $0555,Z
@@ -9830,7 +9830,7 @@ L2925C:
 L29282:
         LDY     #$8CD0
 L29286:
-        LDAA    $032F
+        LDAA    >EventFlag2
         BITA    $23,Y
         BEQ     L292AE
         LDE     $000E,Y
@@ -9839,7 +9839,7 @@ L29286:
         BNE     L292AE
         LDE     $0000,Y
         LDAB    E,Z
-        CMPB    $49C2
+        CMPB    >CalThresh6
         BCC     L292AE
         LDAB    $0100,Z
         ORAB    $25,Y
@@ -10040,7 +10040,7 @@ L2946A:
         CPY     #$8D4E
         LBLS    L29392
         LDAB    $010E,Z
-        CMPB    $315E
+        CMPB    >CalV010EThresh
         BLS     L294D4
         LDY     #$8CD0
 L29482:
@@ -10278,7 +10278,7 @@ L2A00C:
         BRA     L2A060
 L2A018:
         BRCLR   $00D8,Z,#$01,L2A028
-        LDAA    $30C7
+        LDAA    >DiagV05A8Init
         STAA    $05A7,Z
         BRA     L2A060
 L2A028:
@@ -10286,7 +10286,7 @@ L2A028:
         BNE     L2A060
         BRCLR   $0774,Z,#$80,L2A060
         BRCLR   $075D,Z,#$80,L2A060
-        BRCLR   $032F,#$80,L2A060
+        BRCLR   >EventFlag2,#$80,L2A060
         TST     $0937,Z
         BNE     L2A060
         BRSET   $00AE,Z,#$08,L2A07C
@@ -10311,15 +10311,15 @@ L2A07C:
 ; Called from: Sub_2A000
 ;---------------------------------------------------------------------------------------------------
 Sub_2A07E:
-        BRSET   $032C,#$40,L2A0EE
+        BRSET   >Options032C,#$40,L2A0EE
         LDAA    $07B0,Z
-        CMPA    $186D
+        CMPA    >O2V07B1Thresh2
         BNE     L2A0E0
         LDAA    >ShortTermTrim1,Z
-        CMPA    $17ED
+        CMPA    >O2ShortTermTrim2Thresh2
         BNE     L2A0E0
         BRSET   $064A,Z,#$80,L2A0AE
-        LDAA    $30C8
+        LDAA    >FuelV007DThresh
         CMPA    $6A,Z
         BGT     L2A0AE
         CMPA    $6B,Z
@@ -10338,7 +10338,7 @@ L2A0BC:
         CMPA    $0656,Z
         BRA     L2A0D8
 L2A0D4:
-        CMPA    $30C3
+        CMPA    >DiagThresh9
 L2A0D8:
         BCS     L2A0EE
         BSET    $059D,Z,#$80
@@ -10356,10 +10356,10 @@ L2A0EE:
 ;---------------------------------------------------------------------------------------------------
 Sub_2A0F0:
         LDAA    $07B0,Z
-        BRCLR   $032C,#$40,L2A10E
-        BRSET   $032F,#$08,L2A10E
-        LDAB    $01B5,Z
-        CMPB    $0786
+        BRCLR   >Options032C,#$40,L2A10E
+        BRSET   >EventFlag2,#$08,L2A10E
+        LDAB    >FlexLearnBase,Z
+        CMPB    >FuelFlexLearnBaseThresh
         BCS     L2A10E
         LDAA    $01B8,Z
 L2A10E:
@@ -10367,10 +10367,10 @@ L2A10E:
         JSR     Sub_2A7E2
         STAB    $059F,Z
         BRSET   $064A,Z,#$80,L2A13C
-        BRCLR   $032C,#$40,L2A12C
-        BRCLR   $032F,#$08,L2A13C
+        BRCLR   >Options032C,#$40,L2A12C
+        BRCLR   >EventFlag2,#$08,L2A13C
 L2A12C:
-        LDAA    $30C8
+        LDAA    >FuelV007DThresh
         CMPA    $6A,Z
         BGT     L2A13C
         CMPA    $6B,Z
@@ -10385,7 +10385,7 @@ L2A13C:
         LDX     #FuelSysLimit
         JSR     Lookup3D
         BRCLR   $059D,Z,#$10,L2A15E
-        ADDB    $30C1
+        ADDB    >FuelAdder
 L2A15E:
         STAB    $F2,Z
         CMPB    $059F,Z
@@ -10401,7 +10401,7 @@ L2A174:
         CMPA    $0656,Z
         BRA     L2A190
 L2A18C:
-        CMPA    $30C5
+        CMPA    >FuelV05ADThresh
 L2A190:
         BCS     L2A1D6
         BSET    $059D,Z,#$20
@@ -10414,7 +10414,7 @@ L2A198:
         LDAA    $05AC,Z
         INCA
         STAA    $05AC,Z
-        CMPA    $30C5
+        CMPA    >FuelV05ADThresh
         BCS     L2A1C8
         BSET    $AE,Z,#$40
         LDAA    $C0,Z
@@ -10469,7 +10469,7 @@ L2A21E:
         BRA     L2A272
 L2A22A:
         BRCLR   $00D8,Z,#$01,L2A23A
-        LDAA    $30C7
+        LDAA    >DiagV05A8Init
         STAA    $05A8,Z
         BRA     L2A272
 L2A23A:
@@ -10477,7 +10477,7 @@ L2A23A:
         BNE     L2A272
         BRCLR   $0774,Z,#$80,L2A272
         BRCLR   $075D,Z,#$40,L2A272
-        BRCLR   $032F,#$40,L2A272
+        BRCLR   >EventFlag2,#$40,L2A272
         TST     $0937,Z
         BNE     L2A272
         BRSET   $00AF,Z,#$08,L2A28E
@@ -10502,15 +10502,15 @@ L2A28E:
 ; Called from: Sub_2A212
 ;---------------------------------------------------------------------------------------------------
 Sub_2A290:
-        BRSET   $032C,#$40,L2A300
+        BRSET   >Options032C,#$40,L2A300
         LDAA    $07B1,Z
-        CMPA    $186D
+        CMPA    >O2V07B1Thresh2
         BNE     L2A2F2
         LDAA    >ShortTermTrim2,Z
-        CMPA    $17ED
+        CMPA    >O2ShortTermTrim2Thresh2
         BNE     L2A2F2
         BRSET   $064A,Z,#$80,L2A2C0
-        LDAA    $30C8
+        LDAA    >FuelV007DThresh
         CMPA    $7D,Z
         BGT     L2A2C0
         CMPA    $7E,Z
@@ -10529,7 +10529,7 @@ L2A2CE:
         CMPA    $0656,Z
         BRA     L2A2EA
 L2A2E6:
-        CMPA    $30C3
+        CMPA    >DiagThresh9
 L2A2EA:
         BCS     L2A300
         BSET    $059E,Z,#$80
@@ -10547,10 +10547,10 @@ L2A300:
 ;---------------------------------------------------------------------------------------------------
 Sub_2A302:
         LDAA    $07B1,Z
-        BRCLR   $032C,#$40,L2A320
-        BRSET   $032F,#$08,L2A320
-        LDAB    $01B5,Z
-        CMPB    $0786
+        BRCLR   >Options032C,#$40,L2A320
+        BRSET   >EventFlag2,#$08,L2A320
+        LDAB    >FlexLearnBase,Z
+        CMPB    >FuelFlexLearnBaseThresh
         BCS     L2A320
         LDAA    $01B8,Z
 L2A320:
@@ -10558,10 +10558,10 @@ L2A320:
         JSR     Sub_2A7E2
         STAB    $05A0,Z
         BRSET   $064A,Z,#$80,L2A34E
-        BRCLR   $032C,#$40,L2A33E
-        BRCLR   $032F,#$08,L2A34E
+        BRCLR   >Options032C,#$40,L2A33E
+        BRCLR   >EventFlag2,#$08,L2A34E
 L2A33E:
-        LDAA    $30C8
+        LDAA    >FuelV007DThresh
         CMPA    $7D,Z
         BGT     L2A34E
         CMPA    $7E,Z
@@ -10576,7 +10576,7 @@ L2A34E:
         LDX     #FuelSysLimit
         JSR     Lookup3D
         BRCLR   $059E,Z,#$10,L2A370
-        ADDB    $30C1
+        ADDB    >FuelAdder
 L2A370:
         STAB    $F2,Z
         CMPB    $05A0,Z
@@ -10592,7 +10592,7 @@ L2A386:
         CMPA    $0656,Z
         BRA     L2A3A2
 L2A39E:
-        CMPA    $30C5
+        CMPA    >FuelV05ADThresh
 L2A3A2:
         BCS     L2A3E8
         BSET    $059E,Z,#$20
@@ -10605,7 +10605,7 @@ L2A3AA:
         LDAA    $05AD,Z
         INCA
         STAA    $05AD,Z
-        CMPA    $30C5
+        CMPA    >FuelV05ADThresh
         BCS     L2A3DA
         BSET    $AF,Z,#$40
         LDAA    $C4,Z
@@ -10655,7 +10655,7 @@ Sub_2A424:
         BRA     L2A478
 L2A430:
         BRCLR   $00D8,Z,#$01,L2A440
-        LDAA    $30C7
+        LDAA    >DiagV05A8Init
         STAA    $05A7,Z
         BRA     L2A478
 L2A440:
@@ -10663,7 +10663,7 @@ L2A440:
         BNE     L2A478
         BRCLR   $0774,Z,#$80,L2A478
         BRCLR   $075D,Z,#$80,L2A478
-        BRCLR   $032F,#$80,L2A478
+        BRCLR   >EventFlag2,#$80,L2A478
         TST     $0937,Z
         BNE     L2A478
         BRSET   $00AC,Z,#$08,L2A494
@@ -10689,11 +10689,11 @@ L2A494:
 ;---------------------------------------------------------------------------------------------------
 Sub_2A496:
         LDAA    $07B0,Z
-        BRSET   $032C,#$40,L2A4F0
-        CMPA    $186C
+        BRSET   >Options032C,#$40,L2A4F0
+        CMPA    >O2V07B1Thresh1
         BNE     L2A4E2
         LDAA    >ShortTermTrim1,Z
-        CMPA    $17EC
+        CMPA    >O2ShortTermTrim2Thresh1
         BNE     L2A4E2
         BRSET   $059D,Z,#$04,L2A4BE
         BSET    $059D,Z,#$04
@@ -10706,7 +10706,7 @@ L2A4BE:
         CMPA    $0656,Z
         BRA     L2A4DA
 L2A4D6:
-        CMPA    $30C2
+        CMPA    >DiagThresh8
 L2A4DA:
         BCS     L2A4F0
         BSET    $059D,Z,#$08
@@ -10724,10 +10724,10 @@ L2A4F0:
 ;---------------------------------------------------------------------------------------------------
 Sub_2A4F2:
         LDAA    $07B0,Z
-        BRCLR   $032C,#$40,L2A510
-        BRSET   $032F,#$08,L2A510
-        LDAB    $01B5,Z
-        CMPB    $0786
+        BRCLR   >Options032C,#$40,L2A510
+        BRSET   >EventFlag2,#$08,L2A510
+        LDAB    >FlexLearnBase,Z
+        CMPB    >FuelFlexLearnBaseThresh
         BCS     L2A510
         LDAA    $01B8,Z
 L2A510:
@@ -10741,7 +10741,7 @@ L2A510:
         LDX     #FuelSysLimit2
         JSR     Lookup3D
         BRCLR   $059D,Z,#$01,L2A53E
-        SUBB    $30C0
+        SUBB    >FuelOffset4
 L2A53E:
         STAB    $F2,Z
         CMPB    $059F,Z
@@ -10757,7 +10757,7 @@ L2A554:
         CMPA    $0656,Z
         BRA     L2A570
 L2A56C:
-        CMPA    $30C4
+        CMPA    >FuelV05ABThresh
 L2A570:
         BCS     L2A5B6
         BSET    $059D,Z,#$02
@@ -10770,7 +10770,7 @@ L2A578:
         LDAA    $05AA,Z
         INCA
         STAA    $05AA,Z
-        CMPA    $30C4
+        CMPA    >FuelV05ABThresh
         BCS     L2A5A8
         BSET    $AC,Z,#$40
         LDAA    $B8,Z
@@ -10820,7 +10820,7 @@ Sub_2A5F2:
         BRA     L2A646
 L2A5FE:
         BRCLR   $00D8,Z,#$01,L2A60E
-        LDAA    $30C7
+        LDAA    >DiagV05A8Init
         STAA    $05A8,Z
         BRA     L2A646
 L2A60E:
@@ -10828,7 +10828,7 @@ L2A60E:
         BNE     L2A646
         BRCLR   $0774,Z,#$80,L2A646
         BRCLR   $075D,Z,#$40,L2A646
-        BRCLR   $032F,#$40,L2A646
+        BRCLR   >EventFlag2,#$40,L2A646
         TST     $0937,Z
         BNE     L2A646
         BRSET   $00AD,Z,#$08,L2A662
@@ -10854,11 +10854,11 @@ L2A662:
 ;---------------------------------------------------------------------------------------------------
 Sub_2A664:
         LDAA    $07B1,Z
-        BRSET   $032C,#$40,L2A6BE
-        CMPA    $186C
+        BRSET   >Options032C,#$40,L2A6BE
+        CMPA    >O2V07B1Thresh1
         BNE     L2A6B0
         LDAA    >ShortTermTrim2,Z
-        CMPA    $17EC
+        CMPA    >O2ShortTermTrim2Thresh1
         BNE     L2A6B0
         BRSET   $059E,Z,#$04,L2A68C
         BSET    $059E,Z,#$04
@@ -10871,7 +10871,7 @@ L2A68C:
         CMPA    $0656,Z
         BRA     L2A6A8
 L2A6A4:
-        CMPA    $30C2
+        CMPA    >DiagThresh8
 L2A6A8:
         BCS     L2A6BE
         BSET    $059E,Z,#$08
@@ -10889,10 +10889,10 @@ L2A6BE:
 ;---------------------------------------------------------------------------------------------------
 Sub_2A6C0:
         LDAA    $07B1,Z
-        BRCLR   $032C,#$40,L2A6DE
-        BRSET   $032F,#$08,L2A6DE
-        LDAB    $01B5,Z
-        CMPB    $0786
+        BRCLR   >Options032C,#$40,L2A6DE
+        BRSET   >EventFlag2,#$08,L2A6DE
+        LDAB    >FlexLearnBase,Z
+        CMPB    >FuelFlexLearnBaseThresh
         BCS     L2A6DE
         LDAA    $01B8,Z
 L2A6DE:
@@ -10906,7 +10906,7 @@ L2A6DE:
         LDX     #FuelSysLimit2
         JSR     Lookup3D
         BRCLR   $059E,Z,#$01,L2A70C
-        SUBB    $30C0
+        SUBB    >FuelOffset4
 L2A70C:
         STAB    $F2,Z
         CMPB    $05A0,Z
@@ -10922,7 +10922,7 @@ L2A722:
         CMPA    $0656,Z
         BRA     L2A73E
 L2A73A:
-        CMPA    $30C4
+        CMPA    >FuelV05ABThresh
 L2A73E:
         BCS     L2A784
         BSET    $059E,Z,#$02
@@ -10935,7 +10935,7 @@ L2A746:
         LDAA    $05AB,Z
         INCA
         STAA    $05AB,Z
-        CMPA    $30C4
+        CMPA    >FuelV05ABThresh
         BCS     L2A776
         BSET    $AD,Z,#$40
         LDAA    $BC,Z
@@ -11058,8 +11058,8 @@ L2A84E:
         LBRA    L2A8F6
 L2A856:
         LBSR    Sub_2B730
-        BRCLR   $032C,#$40,L2A872
-        BRSET   $032F,#$08,L2A872
+        BRCLR   >Options032C,#$40,L2A872
+        BRSET   >EventFlag2,#$08,L2A872
         LBSR    Sub_2B30E
         LBSR    Sub_2B692
         JSR     Sub_18836
@@ -11073,10 +11073,10 @@ L2A872:
         BRSET   $064A,Z,#$40,L2A890
         BEQ     L2A8F6
 L2A890:
-        TST     $0622,Z
+        TST     >MisfireTransientHold,Z
         BNE     L2A8F6
-        BRSET   $032F,#$08,L2A8A2
-        BRSET   $032C,#$40,L2A8AA
+        BRSET   >EventFlag2,#$08,L2A8A2
+        BRSET   >Options032C,#$40,L2A8AA
 L2A8A2:
         LBSR    Sub_2B30E
         LBSR    Sub_2B692
@@ -11105,7 +11105,7 @@ L2A8D4:
         LBSR    Sub_2AE1E
         TST     $062B,Z
         BNE     L2A8F6
-        TST     $0629,Z
+        TST     >MisfireHold,Z
         BNE     L2A8F6
         BSET    $0626,Z,#$01
         BRA     L2A8FA
@@ -11122,11 +11122,11 @@ L2A8FA:
 ; Called from: Sub_2A81A
 ;---------------------------------------------------------------------------------------------------
 Sub_2A906:
-        BRCLR   $2BFF,#$10,L2A92C
-        LDED    $2EAE
+        BRCLR   >MisfireOptions,#$10,L2A92C
+        LDED    >StartV000FInit
         STE     $000F,Z
         STD     $11,Z
-        LDED    $2EB2
+        LDED    >StartV0013Init
         STE     $0013,Z
         STD     $15,Z
         CLRW    $00DE,Z
@@ -11134,14 +11134,14 @@ Sub_2A906:
         LBRA    L2AA7C
 L2A92C:
         LDD     >IdleTarget,Z
-        ADDD    $2EBC
+        ADDD    >MisfireIdleTargetAdder1
         BCC     L2A93A
         LDD     #$FFFF
 L2A93A:
         CPD     >SegmentRpm,Z
         LBCC    L2AA7C
         LDAA    >IdleTarget,Z
-        ADDA    $2EC3
+        ADDA    >MisfireIdleTargetAdder2
         BCC     L2A94E
         LDAA    #$FF
 L2A94E:
@@ -11149,14 +11149,14 @@ L2A94E:
         LBCS    L2AA7C
         BRCLR   $0626,Z,#$40,L2A974
         BCLR    $0626,Z,#$40
-        LDAB    $2EC1
+        LDAB    >MisfireV0623Thresh2
         CMPB    $0623,Z
         LBLS    L2AA7C
         STAB    $0623,Z
         LBRA    L2AA7C
 L2A974:
         BRSET   $0626,Z,#$10,L2A98E
-        LDAB    $2EC0
+        LDAB    >MisfireV0623Thresh1
         CMPB    $0623,Z
         LBLS    L2AA66
         STAB    $0623,Z
@@ -11171,7 +11171,7 @@ L2A9A2:
         LDAA    $04F0,Z
         ANDA    #$09
         LBEQ    L2AA7C
-        LDAA    $ABB1
+        LDAA    >EventV0C46Value
         CMPA    #$06
         BNE     L2AA1C
         CLRE
@@ -11199,7 +11199,7 @@ L2A9F2:
         LDX     #$8013
         TZY
         LDY     #$80E2
-        LDED    $2EB2
+        LDED    >StartV0013Init
         JSR     Sub_2B93E
         LDD     $04F8,Z
         ADDD    $05C8,Z
@@ -11226,7 +11226,7 @@ L2AA44:
         LDX     #$800F
         TZY
         LDY     #$80E0
-        LDED    $2EAE
+        LDED    >StartV000FInit
         JSR     Sub_2B93E
         BRCLR   $0626,Z,#$20,L2AA66
         LDD     $DE,Z
@@ -11236,12 +11236,12 @@ L2AA44:
 L2AA66:
         BSET    $0626,Z,#$08
         LDD     $DE,Z
-        CPD     $2EBE
+        CPD     >MisfireV00DEThresh
         BLS     L2AA7C
         BRSET   $0770,Z,#$80,L2AA7C
         BSET    $0626,Z,#$02
 L2AA7C:
-        LDD     $2EBA
+        LDD     >MisfireValue2
         LDE     $00E0,Z
         BPL     L2AA88
         NEGE
@@ -11318,7 +11318,7 @@ L2AB0C:
 ; Called from: Sub_2A81A
 ;---------------------------------------------------------------------------------------------------
 Sub_2AB16:
-        BRCLR   $033E,#$04,L2AB98
+        BRCLR   >StartV06B8Flag,#$04,L2AB98
         BRCLR   $00AB,Z,#$80,L2AB98
         BRCLR   $0624,Z,#$04,L2AB98
         TST     $0937,Z
@@ -11329,15 +11329,15 @@ Sub_2AB16:
 L2AB40:
         LDAA    >CoolantTemp,Z
         LDAB    >StartCoolantTemp2,Z
-        CMPB    $2C13
+        CMPB    >FuelStartCoolantThresh1
         BHI     L2AB62
-        CMPB    $2C14
+        CMPB    >FuelStartCoolantThresh2
         BLS     L2AB5C
-        CMPA    $2C15
+        CMPA    >FuelThresh4
         BHI     L2AB62
         BRA     L2AB98
 L2AB5C:
-        CMPA    $2C16
+        CMPA    >FuelThresh5
         BLS     L2AB98
 L2AB62:
         BRCLR   $0642,Z,#$80,L2AB6E
@@ -11373,7 +11373,7 @@ L2AB9A:
 Sub_2ABA2:
         PSHM    D
         CLRA
-        LDAB    $ABB1
+        LDAB    >EventV0C46Value
         DECB
         TDE
         PULM    D
@@ -11401,7 +11401,7 @@ L2ABC8:
 Sub_2ABD0:
         PSHM    D
         CLRA
-        LDAB    $ABB1
+        LDAB    >EventV0C46Value
         DECB
         ASLB
         TDE
@@ -11430,24 +11430,24 @@ L2ABFA:
 ;---------------------------------------------------------------------------------------------------
 Sub_2AC02:
         BRSET   $00DC,Z,#$10,L2AE1C
-        TST     $0629,Z
+        TST     >MisfireHold,Z
         LBNE    L2AE1C
         LDD     $05D0,Z
         LBLE    L2ADCC
         LDE     $05D2,Z
         STE     $04FC,Z
         LBMI    L2ADCC
-        CPE     $2C17
+        CPE     >MisfireChangeMax
         LBHI    L2ACB2
         LDAA    >MisfireLoad,Z
         LDX     #MisfireLoadScale
         JSR     Lookup2D
         LDAB    $05C6,Z
-        LDE     $05D4,Z
-        CPE     $05D6,Z
+        LDE     >MisfireChangeFiltered,Z
+        CPE     >MisfireNoiseLevel,Z
         BCC     L2AC74
         BRSET   $00DC,Z,#$20,L2AC58
-        BRSET   $032E,#$40,L2AC6E
+        BRSET   >Options032E,#$40,L2AC6E
         BRSET   $0A47,Z,#$20,L2AC6E
 L2AC58:
         LDAA    >MisfireLoad,Z
@@ -11488,16 +11488,16 @@ L2ACB2:
         BRCLR   $064A,Z,#$40,L2ACC8
         BSET    $0642,Z,#$01
 L2ACC8:
-        LDE     $05D4,Z
-        CPE     $05D6,Z
+        LDE     >MisfireChangeFiltered,Z
+        CPE     >MisfireNoiseLevel,Z
         BCC     L2ACEC
         LDAA    >VehicleSpeed,Z
-        CMPA    $2EC2
+        CMPA    >MisfireHoldSpeedMin
         BCS     L2ACEC
         LDAA    >SegmentRpm,Z
         LDX     #MisfireHoldSegRpm
         JSR     Lookup2D
-        STAA    $0629,Z
+        STAA    >MisfireHold,Z
 L2ACEC:
         LDAA    >MisfireLoad,Z
         LDX     #MisfireWeightLoadScale
@@ -11646,10 +11646,10 @@ L2AE64:
         BSET    $AB,Z,#$49
         LBRA    L2AF32
 L2AE72:
-        TST     $05E6,Z
+        TST     >MisfireStartTimer,Z
         LBNE    L2AF32
         LDD     $060D,Z
-        CPD     $2F03
+        CPD     >FuelV0610Thresh
         LBCS    L2AF28
         BSET    $0624,Z,#$10
         BSET    $0612,Z,#$80
@@ -11663,11 +11663,11 @@ L2AE72:
         BRSET   $00DC,Z,#$02,L2AEB8
         LDD     $060D,Z
         STD     $E5,Z
-        LDAA    $0C3F,Z
+        LDAA    >RunTime,Z
         STAA    $E7,Z
 L2AEB8:
         BSET    $D8,Z,#$18
-        BRSET   $2BFF,#$02,L2AEE6
+        BRSET   >MisfireOptions,#$02,L2AEE6
         BRSET   $0627,Z,#$10,L2AF32
         BRSET   $0627,Z,#$20,L2AF32
         BSET    $0627,Z,#$10
@@ -11686,7 +11686,7 @@ L2AEF8:
         LDX     #$8600
         TZY
         LDY     #$8612
-        LDD     $2F05
+        LDD     >FuelValue15
         JSR     Sub_2ABD0
         LDAB    $0612,Z
         ANDB    #$3F
@@ -11723,13 +11723,13 @@ L2AF32:
         BRSET   $064A,Z,#$40,L2B068
         LDAA    $0619,Z
         BRSET   $0627,Z,#$80,L2AF8A
-        CMPA    $2F09
+        CMPA    >FuelV0619Thresh
         LBCS    L2B068
         BRA     L2AFB0
 L2AF8A:
-        CMPA    $2F12
+        CMPA    >FuelThresh6
         BRSET   $00DC,Z,#$20,L2AF98
-        CMPA    $2F08
+        CMPA    >FuelV061DThresh
 L2AF98:
         LBCS    L2B068
         LDAA    $061B,Z
@@ -11737,7 +11737,7 @@ L2AF98:
         BEQ     L2AFA8
         STAA    $061B,Z
 L2AFA8:
-        CMPA    $2F0A
+        CMPA    >FuelV061BThresh
         LBCS    L2B068
 L2AFB0:
         BRSET   $0627,Z,#$10,L2B068
@@ -11756,7 +11756,7 @@ L2AFB0:
         CLRA
         LDAB    $0619,Z
         STD     $E5,Z
-        LDAA    $0C3F,Z
+        LDAA    >RunTime,Z
         STAA    $E7,Z
         BRCLR   $00DC,Z,#$20,L2B004
         BSET    $E4,Z,#$04
@@ -11780,9 +11780,9 @@ L2B02E:
         LDX     #$8613
         TZY
         LDY     #$861E
-        LDAB    $2F0B
+        LDAB    >FuelValue16
         BRSET   $0627,Z,#$80,L2B048
-        LDAB    $2F0C
+        LDAB    >FuelValue17
 L2B048:
         JSR     Sub_2ABA2
         LDAB    $061E,Z
@@ -11822,7 +11822,7 @@ L2B094:
         CMPA    #$64
         BCS     L2B0F8
         LDD     $0610,Z
-        CPD     $2F03
+        CPD     >FuelV0610Thresh
         BCS     L2B0BA
         LDAA    #$80
         STAA    $B4,Z
@@ -11834,7 +11834,7 @@ L2B0BA:
         CMPA    #$05
         BCS     L2B0F8
         LDAA    $061D,Z
-        CMPA    $2F08
+        CMPA    >FuelV061DThresh
         BCS     L2B0DC
         LDAB    #$80
         BRA     L2B0EA
@@ -11864,16 +11864,16 @@ Sub_2B0FA:
         BRCLR   $04F0,Z,#$01,L2B112
         LDX     #$012C
         JSR     Sub_20B8A
-        TST     $0622,Z
+        TST     >MisfireTransientHold,Z
         BEQ     L2B112
-        DEC     $0622,Z
+        DEC     >MisfireTransientHold,Z
 L2B112:
         BRSET   $0774,Z,#$80,L2B12C
         BSET    $0625,Z,#$80
-        LDAB    $2C0C
-        CMPB    $0622,Z
+        LDAB    >FuelMisfireTransientHoldThresh8
+        CMPB    >MisfireTransientHold,Z
         BLS     L2B130
-        STAB    $0622,Z
+        STAB    >MisfireTransientHold,Z
         BRA     L2B130
 L2B12C:
         BCLR    $0625,Z,#$80
@@ -11885,22 +11885,22 @@ L2B130:
         SBA
         BCC     L2B160
         NEGA
-        CMPA    $2C00
+        CMPA    >FuelMapThresh4
         BLS     L2B17A
         BSET    $0625,Z,#$20
-        LDAB    $2C01
-        CMPB    $0622,Z
+        LDAB    >FuelMisfireTransientHoldThresh1
+        CMPB    >MisfireTransientHold,Z
         BLS     L2B17E
-        STAB    $0622,Z
+        STAB    >MisfireTransientHold,Z
         BRA     L2B17E
 L2B160:
-        CMPA    $2C02
+        CMPA    >FuelThresh3
         BLS     L2B17A
         BSET    $0625,Z,#$20
-        LDAB    $2C03
-        CMPB    $0622,Z
+        LDAB    >FuelMisfireTransientHoldThresh2
+        CMPB    >MisfireTransientHold,Z
         BLS     L2B17E
-        STAB    $0622,Z
+        STAB    >MisfireTransientHold,Z
         BRA     L2B17E
 L2B17A:
         BCLR    $0625,Z,#$20
@@ -11912,15 +11912,15 @@ L2B18C:
         CMPA    >SegmentRpm,Z
         BCC     L2B1A6
         BSET    $0625,Z,#$10
-        LDAB    $2C0B
-        CMPB    $0622,Z
+        LDAB    >FuelMisfireTransientHoldThresh7
+        CMPB    >MisfireTransientHold,Z
         BLS     L2B1AA
-        STAB    $0622,Z
+        STAB    >MisfireTransientHold,Z
         BRA     L2B1AA
 L2B1A6:
         BCLR    $0625,Z,#$10
 L2B1AA:
-        LDAA    $2C06
+        LDAA    >FuelValue13
         BRCLR   $064A,Z,#$40,L2B1BE
         BRSET   $0626,Z,#$02,L2B1BE
         LDAA    $063B,Z
@@ -11928,17 +11928,17 @@ L2B1BE:
         CMPA    >SegmentRpm,Z
         BCC     L2B1D8
         BSET    $0625,Z,#$01
-        LDAB    $2C07
-        CMPB    $0622,Z
+        LDAB    >FuelMisfireTransientHoldThresh4
+        CMPB    >MisfireTransientHold,Z
         BLS     L2B1DC
-        STAB    $0622,Z
+        STAB    >MisfireTransientHold,Z
         BRA     L2B1DC
 L2B1D8:
         BCLR    $0625,Z,#$01
 L2B1DC:
         LDAA    >DecelLeanFuel,Z
         BEQ     L2B1E8
-        CMPA    $2C04
+        CMPA    >FuelDecelLeanFuelThresh
         BCS     L2B210
 L2B1E8:
         TST     $07C1,Z
@@ -11956,34 +11956,34 @@ L2B1E8:
         BRA     L2B222
 L2B210:
         BSET    $0625,Z,#$08
-        LDAB    $2C05
-        CMPB    $0622,Z
+        LDAB    >FuelMisfireTransientHoldThresh3
+        CMPB    >MisfireTransientHold,Z
         BLS     L2B222
-        STAB    $0622,Z
+        STAB    >MisfireTransientHold,Z
 L2B222:
         BCLR    $0625,Z,#$02
         LDAB    >Map,Z
-        CMPB    $2F0F
+        CMPB    >FuelMapThresh5
         BCC     L2B254
         LDAA    >SegmentRpm,Z
-        CMPA    $2F11
+        CMPA    >FuelSegRpmThresh2
         BLS     L2B254
-        CMPA    $2F10
+        CMPA    >FuelSegRpmThresh1
         BCC     L2B254
         LDAA    >VehicleSpeed,Z
-        CMPA    $2F0E
+        CMPA    >FuelSpeedThresh
         BHI     L2B254
         LDAA    >CoolantTemp,Z
-        CMPA    $2F0D
+        CMPA    >FuelCoolantThresh4
         BHI     L2B26E
 L2B254:
-        CMPB    $0621,Z
+        CMPB    >MisfireEnable,Z
         BCC     L2B296
         BSET    $0625,Z,#$02
-        LDAB    $2C0A
-        CMPB    $0622,Z
+        LDAB    >FuelMisfireTransientHoldThresh6
+        CMPB    >MisfireTransientHold,Z
         BLS     L2B296
-        STAB    $0622,Z
+        STAB    >MisfireTransientHold,Z
         BRA     L2B296
 L2B26E:
         BRSET   $00DC,Z,#$20,L2B280
@@ -11992,8 +11992,8 @@ L2B26E:
         TST     $061A,Z
         BNE     L2B296
 L2B280:
-        LDE     $05D4,Z
-        CPE     $05D6,Z
+        LDE     >MisfireChangeFiltered,Z
+        CPE     >MisfireNoiseLevel,Z
         BCC     L2B296
         BRSET   $064A,Z,#$40,L2B296
         BSET    $DC,Z,#$20
@@ -12010,29 +12010,29 @@ L2B2AC:
         BSET    $0624,Z,#$40
 L2B2B6:
         BSET    $0625,Z,#$40
-        LDAB    $2C0D
-        CMPB    $0622,Z
+        LDAB    >FuelMisfireTransientHoldThresh9
+        CMPB    >MisfireTransientHold,Z
         BLS     L2B2CE
-        STAB    $0622,Z
+        STAB    >MisfireTransientHold,Z
         BRA     L2B2CE
 L2B2CA:
         BCLR    $0625,Z,#$40
 L2B2CE:
-        BRCLR   $2BFF,#$40,L2B308
+        BRCLR   >MisfireOptions,#$40,L2B308
         BRSET   $0856,Z,#$10,L2B2E0
         BRCLR   $0857,Z,#$04,L2B308
 L2B2E0:
-        LDAA    $0858,Z
-        CMPA    $2C08
+        LDAA    >SpeedDampSpark,Z
+        CMPA    >FuelSpeedDampSparkThresh
         BLT     L2B308
-        LDAA    $0859,Z
-        CMPA    $2C08
+        LDAA    >EventSpark,Z
+        CMPA    >FuelSpeedDampSparkThresh
         BLT     L2B308
         BSET    $0625,Z,#$04
-        LDAB    $2C09
-        CMPB    $0622,Z
+        LDAB    >FuelMisfireTransientHoldThresh5
+        CMPB    >MisfireTransientHold,Z
         BLS     L2B30C
-        STAB    $0622,Z
+        STAB    >MisfireTransientHold,Z
         BRA     L2B30C
 L2B308:
         BCLR    $0625,Z,#$04
@@ -12051,7 +12051,7 @@ Sub_2B30E:
         STAB    $04FE,Z
 L2B31C:
         LDAB    $04FE,Z
-        CMPB    $ABB1
+        CMPB    >EventV0C46Value
         BCC     L2B34E
         ASLB
         LDY     #$85C2
@@ -12085,7 +12085,7 @@ L2B34E:
         STAB    $04FA,Z
 L2B370:
         LDAB    $04FA,Z
-        CMPB    $ABB1
+        CMPB    >EventV0C46Value
         LBCC    L2B40A
         TXY
         ASLB
@@ -12144,7 +12144,7 @@ L2B3E4:
 L2B40A:
         TXY
         CLRA
-        LDAB    $ABB1
+        LDAB    >EventV0C46Value
         ASLD
         STD     $04F4,Z
         ADY
@@ -12169,7 +12169,7 @@ L2B40A:
 ;---------------------------------------------------------------------------------------------------
 Sub_2B448:
         LDD     $DE,Z
-        CPD     $2EBE
+        CPD     >MisfireV00DEThresh
         BCS     L2B454
         CLRW    $00DE,Z
 L2B454:
@@ -12197,7 +12197,7 @@ Sub_2B456:
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         STAA    $F5,Z
-        LDD     $2C0E
+        LDD     >MisfireValue1
         XGAB
         TSTA
         BPL     L2B49E
@@ -12212,12 +12212,12 @@ L2B49E:
         JSR     Lookup2D
         CLRA
         STAB    $062A,Z
-        SUBB    $2C12
+        SUBB    >MisfireOffset
         SBCA    #$00
         STD     $F6,Z
         CLRA
         LDAB    $19,Z
-        SUBB    $2C11
+        SUBB    >MisfireV0019Offset
         SBCA    #$00
         ASRD
         ASRD
@@ -12227,7 +12227,7 @@ L2B49E:
         EDIVS
         XGEX
         CLRA
-        LDAB    $2C10
+        LDAB    >MisfireFactor1
         EMULS
         LDX     #$1000
         EDIVS
@@ -12244,14 +12244,14 @@ L2B4F0:
 L2B4F4:
         LDAB    #$FF
 L2B4F6:
-        STAB    $0621,Z
+        STAB    >MisfireEnable,Z
         BRSET   $0627,Z,#$40,L2B51E
         BSET    $0627,Z,#$40
         BRCLR   $00DC,Z,#$01,L2B51E
         LDAA    >StartCoolantTemp2,Z
         LDX     #MisfireStartDelay
         JSR     Lookup2D
-        STAA    $05E6,Z
+        STAA    >MisfireStartTimer,Z
         BCLR    $DC,Z,#$01
 L2B51E:
         BRSET   $00DC,Z,#$01,L2B53E
@@ -12269,30 +12269,30 @@ L2B532:
 L2B53E:
         BRCLR   $0774,Z,#$80,L2B554
         BRCLR   >MainLoopPhaseMask,Z,#$80,L2B554
-        TST     $05E6,Z
+        TST     >MisfireStartTimer,Z
         BEQ     L2B554
-        DEC     $05E6,Z
+        DEC     >MisfireStartTimer,Z
 L2B554:
-        TST     $0629,Z
+        TST     >MisfireHold,Z
         BEQ     L2B55E
-        DEC     $0629,Z
+        DEC     >MisfireHold,Z
 L2B55E:
         TST     $062B,Z
         BEQ     L2B56A
         DEC     $062B,Z
         BRA     L2B590
 L2B56A:
-        LDAB    $2F23
+        LDAB    >MisfireValue5
         BEQ     L2B590
         CLRA
-        LDE     $05D8,Z
+        LDE     >MisfireNoisePeak,Z
         EMUL
         STE     $00F0,Z
         STD     $F2,Z
         LDE     $00F1,Z
-        STE     $05D8,Z
+        STE     >MisfireNoisePeak,Z
         BEQ     L2B590
-        LDAA    $2F24
+        LDAA    >MisfireV062BInit
         STAA    $062B,Z
 L2B590:
         ORP     #$00E0
@@ -12301,12 +12301,12 @@ L2B590:
         JSR     Lookup2D
         LDAB    $05C6,Z
         ANDP    #$FF1F
-        BRCLR   $2BFF,#$20,L2B5C0
+        BRCLR   >MisfireOptions,#$20,L2B5C0
         LDX     #MisfireNoiseLimit
         JSR     Lookup3D
         LDAB    #$08
         MUL
-        CPD     $05D8,Z
+        CPD     >MisfireNoisePeak,Z
         BLS     L2B5C6
 L2B5C0:
         BCLR    $DC,Z,#$10
@@ -12330,11 +12330,11 @@ Sub_2B5CC:
         CLRW    $05CE,Z
         CLRW    $05D2,Z
         CLRW    $05DA,Z
-        CLRW    $05D4,Z
+        CLRW    >MisfireChangeFiltered,Z
         CLRW    $05DC,Z
         CLRW    $05DE,Z
-        CLRW    $05D8,Z
-        CLRW    $05D6,Z
+        CLRW    >MisfireNoisePeak,Z
+        CLRW    >MisfireNoiseLevel,Z
         CLRW    $0600,Z
         CLRW    $0602,Z
         CLRW    $0604,Z
@@ -12359,8 +12359,8 @@ Sub_2B5CC:
         CLR     $061E,Z
         CLR     $061F,Z
         CLR     >MisfireLoad,Z
-        CLR     $0621,Z
-        CLR     $0622,Z
+        CLR     >MisfireEnable,Z
+        CLR     >MisfireTransientHold,Z
         CLR     $0623,Z
         CLR     $0638,Z
         CLR     $0624,Z
@@ -12368,7 +12368,7 @@ Sub_2B5CC:
         CLR     $0626,Z
         CLR     $0628,Z
         CLR     $062A,Z
-        CLR     $0629,Z
+        CLR     >MisfireHold,Z
         CLR     $062B,Z
         RTS
 
@@ -12384,17 +12384,17 @@ Sub_2B692:
         NEGE
 L2B6A0:
         STE     $05DA,Z
-        LDD     $05D4,Z
+        LDD     >MisfireChangeFiltered,Z
         PSHM    D,E
-        LDAA    $2F21
+        LDAA    >MisfireValue4
         JSR     Blend16
         AIS     #$04
-        STD     $05D4,Z
+        STD     >MisfireChangeFiltered,Z
         LDE     $05DC,Z
         LDD     $05D2,Z
         BPL     L2B6D4
         NEGD
-        CPD     $2F25
+        CPD     >MisfireV05D2Thresh2
         BLS     L2B6D4
         BRSET   $0628,Z,#$80,L2B6D4
         STD     $05DC,Z
@@ -12410,14 +12410,14 @@ L2B6E4:
 L2B6EC:
         STE     $05DE,Z
         LDAA    #$01
-        LDAB    $2F22
+        LDAB    >MisfireFactor2
         EMUL
         STE     $04FC,Z
         STD     $04FE,Z
         LDE     $04FD,Z
-        CPE     $05D8,Z
+        CPE     >MisfireNoisePeak,Z
         BLS     L2B70E
-        STE     $05D8,Z
+        STE     >MisfireNoisePeak,Z
 L2B70E:
         LDAA    >MisfireLoad,Z
         LDX     #MisfireLoadScale
@@ -12427,7 +12427,7 @@ L2B70E:
         JSR     Lookup3D
         LDAB    #$08
         MUL
-        STD     $05D6,Z
+        STD     >MisfireNoiseLevel,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -12439,12 +12439,12 @@ Sub_2B730:
         TBXK
         LDE     $0AC0,Z
         LDX     #$74E9
-        LDAA    $ABB1
+        LDAA    >EventV0C46Value
         CMPA    #$06
         BEQ     L2B756
         LDE     $0AC2,Z
         LDX     #$74FB
-        BRSET   $032A,#$40,L2B756
+        BRSET   >EventFlag1,#$40,L2B756
         LDX     #$7507
 L2B756:
         LDAA    $0C46,Z
@@ -12468,16 +12468,16 @@ L2B762:
         STD     $05C6,Z
         LDD     >SegmentRpm,Z
         STD     $05C4,Z
-        BRSET   $2BFF,#$04,L2B7FC
+        BRSET   >MisfireOptions,#$04,L2B7FC
         LDD     $0AFC,Z
         SDE
         NEGE
         XGEX
         STX     $04F4,Z
-        LDED    $2EAA
+        LDED    >FuelValue14
         EDIV
         STX     >SegmentRpmFast,Z
-        LDAA    $ABB1
+        LDAA    >EventV0C46Value
         CMPA    #$06
         BNE     L2B7D4
         LDAA    $04F0,Z
@@ -12519,7 +12519,7 @@ L2B822:
         STX     $04F4,Z
         LDAA    $0C43,Z
         BEQ     L2B852
-        LDED    $2EAA
+        LDED    >FuelValue14
         PSHM    D,E,X
         TSY
         LDAA    $0C43,Z
@@ -12533,11 +12533,11 @@ L2B83C:
         PULM    X,E,D
         BRA     L2B856
 L2B852:
-        LDED    $2EAA
+        LDED    >FuelValue14
 L2B856:
         EDIV
         STX     >SegmentRpmFast,Z
-        LDAA    $ABB1
+        LDAA    >EventV0C46Value
         CMPA    #$06
         BNE     L2B8A4
         LDAA    $04F0,Z
@@ -12613,10 +12613,10 @@ L2B902:
         STX     $05C4,Z
         BCLR    $B7,Z,#$10
         BSET    $0625,Z,#$80
-        LDAB    $2C0C
-        CMPB    $0622,Z
+        LDAB    >FuelMisfireTransientHoldThresh8
+        CMPB    >MisfireTransientHold,Z
         BLS     L2B938
-        STAB    $0622,Z
+        STAB    >MisfireTransientHold,Z
 L2B938:
         BSET    $0624,Z,#$04
 L2B93C:
@@ -12631,12 +12631,12 @@ Sub_2B93E:
         LDD     $00,Y
         LDE     $04F6,Z
         PSHM    D,E
-        LDAA    $2EC4
+        LDAA    >MisfireValue3
         JSR     Blend16Signed
         AIS     #$04
         STD     $00,Y
         BCLR    $0626,Z,#$20
-        BRCLR   $2BFF,#$08,L2BA36
+        BRCLR   >MisfireOptions,#$08,L2BA36
         BSET    $0626,Z,#$20
         PSHM    X,K
         LDD     $04F6,Z
@@ -12657,7 +12657,7 @@ L2B976:
         JSR     Lookup2D
         PULB
         MUL
-        BRCLR   $2BFF,#$04,L2B9A8
+        BRCLR   >MisfireOptions,#$04,L2B9A8
         TDE
         CLRA
         LDAB    #$08
@@ -12676,8 +12676,8 @@ L2B9A8:
         STE     $04F2,Z
         STD     $04F4,Z
         PULM    E,D
-        ADDD    $2EB8
-        ADCE    $2EB6
+        ADDD    >MisfireAdder2
+        ADCE    >MisfireAdder1
         PSHM    D,E
         SUBD    $04F4,Z
         SBCE    $04F2,Z
@@ -12698,8 +12698,8 @@ L2B9F6:
         STE     $04F2,Z
         STD     $04F4,Z
         PULM    E,D
-        SUBD    $2EB8
-        SBCE    $2EB6
+        SUBD    >MisfireAdder2
+        SBCE    >MisfireAdder1
         PSHM    D,E
         SUBD    $04F4,Z
         SBCE    $04F2,Z
@@ -12963,9 +12963,9 @@ Sub_2C1BC:
 ;---------------------------------------------------------------------------------------------------
 ProcessCoolantTemp:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C2E4
-        BRCLR   $033D,#$20,L2C1E2
-        LDAA    $041F
-        STAA    $0A6E,Z
+        BRCLR   >Options033D,#$20,L2C1E2
+        LDAA    >ThermistorCoolantTempSlowInit
+        STAA    >CoolantTempSlow,Z
         LBRA    L2C2B4
 L2C1E2:
         LDAA    >CoolantRaw,Z
@@ -12992,37 +12992,37 @@ L2C220:
 L2C224:
         BCLR    $06C7,Z,#$30
         LDY     #$40BE
-        CMPA    $49EB
+        CMPA    >StartCoolantRawThresh2
         BHI     L2C274
         BRCLR   $0502,Z,#$80,L2C23E
         JSR     Sub_24160
         BRA     L2C298
 L2C23E:
         LDY     #$40B4
-        CMPA    $49EA
+        CMPA    >StartCoolantRawThresh1
         BCS     L2C274
         BRCLR   $0502,Z,#$40,L2C254
         JSR     Sub_24160
         BRA     L2C298
 L2C254:
         JSR     Lookup2D
-        LDAB    $0A6E,Z
+        LDAB    >CoolantTempSlow,Z
         SBA
         BCC     L2C268
         DECB
-        STAB    $0A6E,Z
+        STAB    >CoolantTempSlow,Z
         BRA     L2C298
 L2C268:
         CMPA    #$03
         BCS     L2C298
         INCB
-        STAB    $0A6E,Z
+        STAB    >CoolantTempSlow,Z
         BRA     L2C298
 L2C274:
         JSR     Sub_245D4
         BCC     L2C298
-        LDAA    $49EC
-        STAA    $0A6E,Z
+        LDAA    >StartCoolantTempSlowValue
+        STAA    >CoolantTempSlow,Z
         BRSET   $06B4,Z,#$80,L2C298
         BCLR    $075D,Z,#$CC
         CLR     $07B5,Z
@@ -13037,9 +13037,9 @@ L2C298:
 L2C2B0:
         BSET    $06B4,Z,#$80
 L2C2B4:
-        BRCLR   $033D,#$10,L2C2DC
-        LDAA    $0A6E,Z
-        LDAB    $0420
+        BRCLR   >Options033D,#$10,L2C2DC
+        LDAA    >CoolantTempSlow,Z
+        LDAB    >ThermistorValue5
         BITB    #$80
         BNE     L2C2CE
         ABA
@@ -13056,7 +13056,7 @@ L2C2D8:
         LDAA    #$58
         BRA     L2C2E0
 L2C2DC:
-        LDAA    $0A6E,Z
+        LDAA    >CoolantTempSlow,Z
 L2C2E0:
         STAA    >CoolantTemp,Z
 L2C2E4:
@@ -13092,14 +13092,14 @@ L2C32A:
 L2C32E:
         BCLR    $06C7,Z,#$03
         LDY     #$41CC
-        CMPA    $49F3
+        CMPA    >StartAirTempRawThresh2
         BHI     L2C382
         BRCLR   $0506,Z,#$04,L2C34A
         JSR     Sub_24160
         LBRA    L2C3A6
 L2C34A:
         LDY     #$41C2
-        CMPA    $49F2
+        CMPA    >StartAirTempRawThresh1
         BCS     L2C382
         BRCLR   $0506,Z,#$02,L2C362
         JSR     Sub_24160
@@ -13121,7 +13121,7 @@ L2C376:
 L2C382:
         JSR     Sub_245D4
         BCC     L2C3A6
-        LDAA    $49F4
+        LDAA    >StartValue2
         BRSET   $06B4,Z,#$80,L2C396
         LDAA    >CoolantTemp,Z
 L2C396:
@@ -13140,18 +13140,18 @@ L2C3AA:
 ;---------------------------------------------------------------------------------------------------
 Sub_2C3AC:
         JSR     Sub_2C636
-        BRCLR   $0330,#$01,L2C3E0
+        BRCLR   >Options0330,#$01,L2C3E0
         BRCLR   >MainLoopPhaseMask,Z,#$40,L2C3E0
         LDAB    $0A5D,Z
         LDAA    >VehicleSpeed,Z
-        CMPA    $04C1
+        CMPA    >BattSpeedThresh
         BCC     L2C3D2
         TSTB
         BEQ     L2C3DC
         DECB
         BRA     L2C3DC
 L2C3D2:
-        CMPB    $04C3
+        CMPB    >BattThresh3
         BCC     L2C3DC
         INCB
         BEQ     L2C3E0
@@ -13159,13 +13159,13 @@ L2C3DC:
         STAB    $0A5D,Z
 L2C3E0:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C634
-        BRCLR   $0330,#$01,L2C46E
+        BRCLR   >Options0330,#$01,L2C46E
         LDAB    >Count191ms,Z
-        CMPB    $04C4
+        CMPB    >BattCount191msThresh
         BHI     L2C418
         BRCLR   $09D5,Z,#$01,L2C46E
         LDAA    $017B,Z
-        CMPA    $04C5
+        CMPA    >BattV017BThresh
         BHI     L2C432
         LDAA    >Temp3,Z
         BEQ     L2C432
@@ -13175,7 +13175,7 @@ L2C3E0:
 L2C418:
         LDAA    $0A5B,Z
         LDAB    $0A5D,Z
-        CMPB    $04C2
+        CMPB    >BattV0A5DThresh
         BCC     L2C432
         BSET    $0A5C,Z,#$02
         BCLR    $0A5C,Z,#$0D
@@ -13187,7 +13187,7 @@ L2C432:
         BRCLR   $0A1C,Z,#$02,L2C46E
         LDAA    $0A1B,Z
         LDX     #Thermistor3Curve
-        BRCLR   $0330,#$04,L2C45C
+        BRCLR   >Options0330,#$04,L2C45C
         LDX     #Thermistor3CurveAlt
 L2C45C:
         JSR     Lookup2D
@@ -13200,13 +13200,13 @@ L2C46E:
         BCLR    $0A5C,Z,#$0E
         LDAB    #$BE
         BRSET   $06B4,Z,#$01,L2C4CE
-        LDAA    $0A59,Z
+        LDAA    >BatteryTempRaw,Z
         LDX     #Thermistor3Curve
-        BRCLR   $0330,#$04,L2C490
+        BRCLR   >Options0330,#$04,L2C490
         LDX     #Thermistor3CurveAlt
 L2C490:
         JSR     Lookup2D
-        BRCLR   $0330,#$01,L2C4B8
+        BRCLR   >Options0330,#$01,L2C4B8
         CMPA    #$6E
         BLS     L2C4B8
         SUBA    #$6E
@@ -13233,15 +13233,15 @@ L2C4C8:
 L2C4CE:
         STAB    >BatteryTemp,Z
         LDAA    >BatteryTemp,Z
-        BRCLR   $0330,#$02,L2C62C
+        BRCLR   >Options0330,#$02,L2C62C
         LDAA    #$98
         BRSET   $06B4,Z,#$01,L2C628
         BRSET   $0DB8,Z,#$02,L2C5EC
         BRCLR   $09D5,Z,#$01,L2C510
-        BRCLR   $0330,#$01,L2C526
+        BRCLR   >Options0330,#$01,L2C526
         BRCLR   $0A1C,Z,#$02,L2C510
         LDAA    $0E02,Z
-        CMPA    $0360
+        CMPA    >BattV0E02Thresh
         BCC     L2C526
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C510
         INC     $0E02,Z
@@ -13301,16 +13301,16 @@ L2C576:
         LBRA    L2C628
 L2C59C:
         LDAB    $09C1,Z
-        CMPB    $049C
+        CMPB    >BattV09C1Thresh
         BCC     L2C5E6
-        LDAA    $049B
+        LDAA    >BattFactor
         MUL
         TSTA
         BNE     L2C5E6
         LDAA    $09C2,Z
         CMPA    #$1E
         BCS     L2C5C2
-        LDAA    $049B
+        LDAA    >BattFactor
         ASRA
         ABA
         TAB
@@ -13345,13 +13345,13 @@ L2C5EC:
         ADDE    #$02
 L2C606:
         ADDE    #$FFFF
-        CPE     $049D
+        CPE     >BattThresh1
         BCS     L2C618
         INCA
         LDE     #$8000
         BRA     L2C624
 L2C618:
-        CPE     $049F
+        CPE     >BattThresh2
         BCC     L2C624
         DECA
         LDE     #$8000
@@ -13371,12 +13371,12 @@ L2C634:
 ;---------------------------------------------------------------------------------------------------
 Sub_2C636:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C6DC
-        BRCLR   $0330,#$08,L2C666
-        LDAA    $0A59,Z
+        BRCLR   >Options0330,#$08,L2C666
+        LDAA    >BatteryTempRaw,Z
         LDY     #$424E
-        CMPA    $49F6
+        CMPA    >StartBatteryTempRawThresh2
         BHI     L2C662
-        CMPA    $49F5
+        CMPA    >StartBatteryTempRawThresh1
         BCS     L2C662
         BRCLR   $0509,Z,#$80,L2C666
         JSR     Sub_24160
@@ -13385,20 +13385,20 @@ L2C662:
         JSR     Sub_245D4
 L2C666:
         LDAA    $0A1B,Z
-        BRCLR   $0330,#$01,L2C676
+        BRCLR   >Options0330,#$01,L2C676
         BRSET   $0A1C,Z,#$02,L2C680
 L2C676:
-        BRSET   $0330,#$08,L2C6AE
-        LDAA    $0A59,Z
+        BRSET   >Options0330,#$08,L2C6AE
+        LDAA    >BatteryTempRaw,Z
 L2C680:
         LDY     #$458C
-        CMPA    $49F6
+        CMPA    >StartBatteryTempRawThresh2
         BHI     L2C6AA
         BRCLR   $0512,Z,#$04,L2C694
         JSR     Sub_24160
 L2C694:
         LDY     #$4582
-        CMPA    $49F5
+        CMPA    >StartBatteryTempRawThresh1
         BCS     L2C6AA
         BRCLR   $0512,Z,#$02,L2C6AE
         JSR     Sub_24160
@@ -13406,9 +13406,9 @@ L2C694:
 L2C6AA:
         JSR     Sub_245D4
 L2C6AE:
-        BRCLR   $0330,#$08,L2C6CC
+        BRCLR   >Options0330,#$08,L2C6CC
         BRCLR   $0509,Z,#$80,L2C6D8
-        BRCLR   $0330,#$01,L2C6D2
+        BRCLR   >Options0330,#$01,L2C6D2
         BRSET   $050D,Z,#$02,L2C6D2
         BRCLR   $0A1C,Z,#$02,L2C6D2
 L2C6CC:
@@ -13429,17 +13429,17 @@ Sub_2C6DE:
         PSHM    X
         LDX     #ChargeVoltsBattTemp
         JSR     Lookup2D
-        LDAB    $0AFA
-        CMPB    $7088
+        LDAB    >SensorValue1
+        CMPB    >SensorThresh26
         BLS     L2C6F6
-        LDAB    $7088
+        LDAB    >SensorThresh26
 L2C6F6:
         SBA
         BCS     L2C700
-        CMPA    $7087
+        CMPA    >SensorThresh25
         BCC     L2C704
 L2C700:
-        LDAA    $7087
+        LDAA    >SensorThresh25
 L2C704:
         PULM    X
         RTS
@@ -13449,7 +13449,7 @@ L2C704:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_2C708:
-        BRCLR   $0331,#$10,L2C71E
+        BRCLR   >Options0331,#$10,L2C71E
         BRSET   $050D,Z,#$02,L2C760
         BRSET   $06C1,Z,#$01,L2C75A
         JMP     L2C7E6
@@ -13470,50 +13470,50 @@ L2C73E:
         STAA    $F0,Z
         LDX     #AnalogV0A92Curve
         JSR     Lookup2D
-        STAA    $0A93,Z
+        STAA    >AnalogV0A92Scaled,Z
         LDAA    $F0,Z
         LDX     #AnalogV0A92Curve2
         JSR     Lookup2D
-        STAA    $019C,Z
+        STAA    >FuelLevelScaled,Z
 L2C75A:
         BRCLR   $06B5,Z,#$80,L2C76E
 L2C760:
-        LDAA    $31E5
+        LDAA    >StartV01B6Value
         LDAB    #$CC
         MUL
         ADCA    #$00
-        STAA    $019C,Z
+        STAA    >FuelLevelScaled,Z
 L2C76E:
-        LDAA    $31E5
-        SUBA    $019C,Z
+        LDAA    >StartV01B6Value
+        SUBA    >FuelLevelScaled,Z
         BCC     L2C77A
         CLRA
 L2C77A:
         STAA    $0A96,Z
         BRCLR   >MainLoopPhaseMask,Z,#$40,L2C7AA
         CLRB
-        LDAA    $0A93,Z
+        LDAA    >AnalogV0A92Scaled,Z
         TDE
         BRCLR   $06C1,Z,#$08,L2C796
-        LDD     $0A94,Z
+        LDD     >AnalogV0A92Filtered,Z
 L2C796:
         PSHM    D,E
-        LDAA    $31E7
+        LDAA    >AnalogValue
         JSR     Blend16
         AIS     #$04
-        STD     $0A94,Z
+        STD     >AnalogV0A92Filtered,Z
         BSET    $06C1,Z,#$08
 L2C7AA:
         BRCLR   $0774,Z,#$80,L2C7E6
         LDAA    $06C6,Z
-        BRCLR   $0331,#$10,L2C7D0
+        BRCLR   >Options0331,#$10,L2C7D0
         BRCLR   $06C1,Z,#$01,L2C7E6
         BRCLR   $050D,Z,#$02,L2C7D0
         BCLR    $06C1,Z,#$03
         CLR     $06C6,Z
         BRA     L2C7E6
 L2C7D0:
-        CMPA    $31E6
+        CMPA    >AnalogTimeThresh
         BCC     L2C7E2
         BRCLR   >MainLoopPhaseMask,Z,#$80,L2C7E6
         INC     $06C6,Z
@@ -13521,11 +13521,11 @@ L2C7D0:
 L2C7E2:
         BSET    $06C1,Z,#$02
 L2C7E6:
-        BRSET   $032C,#$40,L2C7F2
+        BRSET   >Options032C,#$40,L2C7F2
         JSR     Sub_17F2C
         BRA     L2C7FC
 L2C7F2:
-        BRSET   $032F,#$08,L2C7FC
+        BRSET   >EventFlag2,#$08,L2C7FC
         JSR     Sub_17000
 L2C7FC:
         RTS
@@ -13535,7 +13535,7 @@ L2C7FC:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_2C7FE:
-        BRSET   $032C,#$40,L2C80A
+        BRSET   >Options032C,#$40,L2C80A
         CLRA
         JMP     L2CABA
 L2C80A:
@@ -13577,10 +13577,10 @@ L2C862:
         IDIV
         XGDX
         LDY     #$42D0
-        CMPB    $49F7
+        CMPB    >SensorThresh19
         LBCC    L2CA8E
         LDY     #$42DA
-        CMPB    $49F8
+        CMPB    >SensorThresh20
         LBCS    L2CA8E
         LDAA    $050B,Z
         BITA    #$30
@@ -13595,14 +13595,14 @@ L2C862:
         NEGB
         CMPB    #$04
         BCS     L2C8D6
-        SUBA    $11F8
+        SUBA    >SensorOffset2
         BCC     L2C8D2
         CLRA
         BRA     L2C8D2
 L2C8C2:
         CMPB    #$04
         BCS     L2C8D6
-        ADDA    $11F7
+        ADDA    >SensorAdder4
         BCS     L2C8D0
         CMPA    #$AA
         BCS     L2C8D2
@@ -13611,7 +13611,7 @@ L2C8D0:
 L2C8D2:
         STAA    >FlexEthanolLearned,Z
 L2C8D6:
-        BRCLR   $032F,#$08,L2CAB6
+        BRCLR   >EventFlag2,#$08,L2CAB6
         BRSET   $01AC,Z,#$20,L2CA22
         BRSET   $01AC,Z,#$04,L2C9EA
         BRSET   $01AC,Z,#$08,L2C9EA
@@ -13620,13 +13620,13 @@ L2C8D6:
         BNE     L2C936
         BRCLR   $01AC,Z,#$01,L2C924
         LDAA    $019F,Z
-        CMPA    $13C3
+        CMPA    >SensorV019FThresh
         BCS     L2C912
-        LDAA    $019C,Z
+        LDAA    >FuelLevelScaled,Z
         STAA    $019E,Z
 L2C912:
         LDD     $01A4,Z
-        CPD     $13C8
+        CPD     >SensorV01A4Thresh
         BCS     L2C924
         LDAA    >FuelLevel,Z
         STAA    $019B,Z
@@ -13645,32 +13645,32 @@ L2C936:
 L2C946:
         LDAB    $019E,Z
         LBEQ    L2C9AC
-        LDAB    $019C,Z
+        LDAB    >FuelLevelScaled,Z
         SUBB    $019E,Z
         BCC     L2C95A
         CLRB
 L2C95A:
         STAB    $019D,Z
-        CMPB    $13C4
+        CMPB    >SensorFuelLevelScaledThresh
         BCS     L2C9AC
         BSET    $01AC,Z,#$02
         LDAB    >FuelLevel,Z
         STAB    $019A,Z
-        CLRW    $01A0,Z
+        CLRW    >FlexLearnFuelSum,Z
         CLRW    $01A2,Z
 L2C978:
-        LDD     $01A0,Z
-        CPD     $13C5
+        LDD     >FlexLearnFuelSum,Z
+        CPD     >SensorFlexLearnFuelSumThresh1
         LBCC    L2CA70
         LDAA    $019A,Z
         SUBA    >FuelLevel,Z
         BCS     L2C998
-        CMPA    $13C7
+        CMPA    >SensorV019AThresh
         LBCS    L2CA88
         BRA     L2C9A6
 L2C998:
         NEGA
-        CMPA    $13C7
+        CMPA    >SensorV019AThresh
         LBCS    L2CA88
         BSET    $01AC,Z,#$10
 L2C9A6:
@@ -13681,41 +13681,41 @@ L2C9AC:
         LBEQ    L2CA88
         SUBA    >FuelLevel,Z
         BCS     L2C9C4
-        CMPA    $13CA
+        CMPA    >SensorV019BThresh
         LBCS    L2CA88
         BRA     L2C9D2
 L2C9C4:
         NEGA
-        CMPA    $13CA
+        CMPA    >SensorV019BThresh
         LBCS    L2CA88
         BSET    $01AC,Z,#$10
 L2C9D2:
         BSET    $01AC,Z,#$08
 L2C9D6:
         BSET    $01AC,Z,#$80
-        CLRW    $01A0,Z
+        CLRW    >FlexLearnFuelSum,Z
         CLRW    $01A2,Z
         LDAA    >FlexEthanolLearned,Z
         STAA    $0199,Z
 L2C9EA:
         BRCLR   $01AC,Z,#$08,L2CA00
-        LDD     $13CF
+        LDD     >SensorValue7
         BRSET   $01AC,Z,#$10,L2CA0E
-        LDD     $13D1
+        LDD     >SensorValue8
         BRA     L2CA0E
 L2CA00:
-        LDD     $13CB
+        LDD     >SensorValue6
         BRSET   $01AC,Z,#$10,L2CA0E
-        LDD     $13CD
+        LDD     >SensorFlexLearnFuelSumThresh2
 L2CA0E:
-        CPD     $01A0,Z
+        CPD     >FlexLearnFuelSum,Z
         LBCC    L2CABE
         BSET    $01AC,Z,#$20
-        CLRW    $01A0,Z
+        CLRW    >FlexLearnFuelSum,Z
         CLRW    $01A2,Z
 L2CA22:
-        LDD     $01A0,Z
-        CPD     $13D4
+        LDD     >FlexLearnFuelSum,Z
+        CPD     >SensorFlexLearnFuelSumThresh3
         BCC     L2CA6C
         LSRD
         LSRD
@@ -13755,9 +13755,9 @@ L2CA8E:
         JSR     Sub_245D4
 L2CA92:
         LDAA    >EngineRpm,Z
-        CMPA    $32AA
+        CMPA    >SensorRpmThresh8
         BCC     L2CAAC
-        CMPA    $32AB
+        CMPA    >SensorRpmThresh9
         LBCC    L2CAB6
         BCLR    $0770,Z,#$10
         LBRA    L2CAB6
@@ -13766,7 +13766,7 @@ L2CAAC:
         BSET    $0760,Z,#$30
         BRA     L2CABE
 L2CAB6:
-        LDAA    $01B5,Z
+        LDAA    >FlexLearnBase,Z
 L2CABA:
         STAA    >FlexEthanol,Z
 L2CABE:
@@ -13784,14 +13784,14 @@ L2CACE:
 Sub_2CAD0:
         PSHM    D,E
         PSHM    E
-        LDD     $01A0,Z
+        LDD     >FlexLearnFuelSum,Z
         CPD     #$FFFF
         BCC     L2CAEE
         LDD     $01A2,Z
         ADE
         STE     $01A2,Z
         BCC     L2CAEE
-        INCW    $01A0,Z
+        INCW    >FlexLearnFuelSum,Z
 L2CAEE:
         PULM    E
         LDD     $01A4,Z
@@ -13827,12 +13827,12 @@ L2CB28:
         JMP     L2CB5E
 L2CB36:
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    $0435
+        CMPA    >BaroUpdateThrottleMin
         BCS     L2CB5A
-        LDAA    $0A86,Z
-        CMPA    $0436
+        LDAA    >BaroUpdateCount,Z
+        CMPA    >BaroUpdateTime
         BCC     L2CB52
-        INC     $0A86,Z
+        INC     >BaroUpdateCount,Z
         JMP     L2CB5E
 L2CB52:
         DECB
@@ -13841,7 +13841,7 @@ L2CB52:
 L2CB58:
         STAB    <Baro,Z
 L2CB5A:
-        CLR     $0A86,Z
+        CLR     >BaroUpdateCount,Z
 L2CB5E:
         RTS
 
@@ -13868,7 +13868,7 @@ L2CB86:
         SUBA    >Map,Z
         BRCLR   $086C,Z,#$04,L2CB9E
         BLS     L2CBA8
-        SUBA    $2BB6
+        SUBA    >SensorOffset3
         BLS     L2CBA8
         BCLR    $086C,Z,#$04
         BRA     L2CBA4
@@ -13898,10 +13898,10 @@ L2CBC6:
 Sub_2CBC8:
         CLRA
         LDAB    >VehicleSpeed,Z
-        CMPB    $2A30
+        CMPB    >IdleRollSpeed
         BCC     L2CBE4
         LDE     >EngineRpm,Z
-        ADDE    $2A36
+        ADDE    >SensorRpmAdder
         CPE     >IdleTarget,Z
         BLS     L2CBF6
         BRA     L2CBEE
@@ -13918,7 +13918,7 @@ L2CBF6:
 L2CBFA:
         BRSET   $17,Z,#$01,L2CC2C
         BRSET   >ThrottleState,Z,#$80,L2CC38
-        LDAA    $2A30
+        LDAA    >IdleRollSpeed
         LDAB    >VehicleSpeed,Z
         BRSET   >ThrottleState,Z,#$01,L2CC18
         ADDA    #$03
@@ -13960,13 +13960,13 @@ Sub_2CC42:
         BCC     L2CCA6
 L2CC6C:
         BCLR    $0C32,Z,#$04
-        CLRW    $000D,Z
+        CLRW    >EepromCount,Z
         JMP     L2CCA6
 L2CC78:
         BCLR    $0C32,Z,#$04
         BSET    $094A,Z,#$C0
         ADDE    #$01
-        STE     $000D,Z
+        STE     >EepromCount,Z
         STE     $0948,Z
         CLRA
         ASLD
@@ -13997,16 +13997,16 @@ L2CCC0:
 L2CCC2:
         STAA    >AcOnTime,Z
 L2CCC6:
-        LDAA    $0A87,Z
+        LDAA    >AcSensorRaw,Z
         LDY     #$430C
-        CMPA    $49E7
+        CMPA    >StartAcSensorRawThresh1
         BHI     L2CD04
         BRCLR   $050A,Z,#$04,L2CCE0
         JSR     Sub_24160
         BRA     L2CD18
 L2CCE0:
         LDY     #$4316
-        CMPA    $49E8
+        CMPA    >StartAcSensorRawThresh2
         BCS     L2CD04
         BRCLR   $050A,Z,#$08,L2CCF6
         JSR     Sub_24160
@@ -14020,7 +14020,7 @@ L2CD04:
         BRCLR   $0055,Z,#$80,L2CD18
         JSR     Sub_245D4
         BCC     L2CD18
-        LDAA    $49E9
+        LDAA    >StartAcSensorValue
         STAA    >AcSensor,Z
 L2CD18:
         RTS
@@ -14039,10 +14039,10 @@ L2CD26:
         TBXK
         LDAA    $0A4B,Z
         LDAB    #$FF
-        BRSET   $0332,#$08,L2CE10
-        BRSET   $0332,#$02,L2CF46
-        BRSET   $0332,#$04,L2CE0A
-        BRSET   $0332,#$01,L2CD56
+        BRSET   >Options0332,#$08,L2CE10
+        BRSET   >Options0332,#$02,L2CF46
+        BRSET   >Options0332,#$04,L2CE0A
+        BRSET   >Options0332,#$01,L2CD56
         LBRA    L2CE16
         dc.b    $19,$41,$4E,$84,$9A,$9F,$FF,$FF,$FF,$FF
 L2CD56:
@@ -14139,8 +14139,8 @@ L2CE36:
         ASLB
         CLRA
         XGDX
-        BRSET   $0332,#$08,L2CE5A
-        BRSET   $0332,#$04,L2CE56
+        BRSET   >Options0332,#$08,L2CE5A
+        BRSET   >Options0332,#$04,L2CE56
         JMP     $2CE5E,X
 L2CE56:
         JMP     $2CE76,X
@@ -14325,7 +14325,7 @@ L2D03C:
         LDAA    $0A4B,Z
         CMPA    #$16
         BCS     L2D050
-        BRCLR   $0332,#$02,L2D07C
+        BRCLR   >Options0332,#$02,L2D07C
         CMPA    #$FD
         BCC     L2D084
         BRA     L2D07C
@@ -14358,12 +14358,12 @@ Sub_2D086:
         BRCLR   $0A47,Z,#$20,L2D090
         BCLR    $0D01,Z,#$20
 L2D090:
-        BRCLR   $032E,#$40,L2D09E
+        BRCLR   >Options032E,#$40,L2D09E
         BCLR    $0C31,Z,#$20
         JMP     L2D1EC
 L2D09E:
         BRCLR   $0055,Z,#$20,L2D0B2
-        BRSET   $0338,#$40,L2D0B2
+        BRSET   >Options0338,#$40,L2D0B2
         BRSET   $0310,Z,#$10,L2D1C0
         BRA     L2D0B6
 L2D0B2:
@@ -14383,7 +14383,7 @@ L2D0D2:
         BRSET   >ThrottleState,Z,#$80,L2D1B0
         BRSET   $0C31,Z,#$80,L2D0F8
         LDD     >IdleTarget,Z
-        ADDD    $2704
+        ADDD    >ShiftIdleRpmMargin
         BCC     L2D0F0
         LDD     #$FFFF
 L2D0F0:
@@ -14400,9 +14400,9 @@ L2D10A:
         BRSET   $0310,Z,#$04,L2D15C
         BRSET   $0310,Z,#$20,L2D15C
         LDAA    >CoolantTemp,Z
-        CMPA    $2707
+        CMPA    >ShiftIdleCoolantMin
         BCS     L2D15C
-        LDAB    $0365,Z
+        LDAB    >ShiftIdleDelay,Z
         BNE     L2D144
         LDX     #ShiftIdleDelayCoolant
         JSR     Lookup2D
@@ -14413,12 +14413,12 @@ L2D144:
         BRCLR   >MainLoopPhaseMask,Z,#$02,L2D1EC
         DECB
 L2D14C:
-        STAB    $0365,Z
+        STAB    >ShiftIdleDelay,Z
         LBNE    L2D1EC
         BSET    $0310,Z,#$84
         JMP     L2D1EC
 L2D15C:
-        LDAA    $034A,Z
+        LDAA    >IacGearDuration,Z
         BNE     L2D1AA
         BSET    $0310,Z,#$02
         LDAA    >CoolantTemp,Z
@@ -14428,7 +14428,7 @@ L2D15C:
         LDX     #ShiftIdleRateCoolantPNAC
 L2D17E:
         JSR     Lookup2D
-        LDAA    $033C,Z
+        LDAA    >IdleRateTerm,Z
         ADDA    #$80
         CBA
         BCC     L2D1B0
@@ -14439,12 +14439,12 @@ L2D18E:
         LDX     #ShiftIdleRateCoolantAC
 L2D19C:
         JSR     Lookup2D
-        LDAA    $033C,Z
+        LDAA    >IdleRateTerm,Z
         ADDA    #$80
         CBA
         BCS     L2D1B0
 L2D1AA:
-        LDAA    $0349,Z
+        LDAA    >IacGearTime2,Z
         BNE     L2D1EC
 L2D1B0:
         BRCLR   $0A47,Z,#$20,L2D1C0
@@ -14458,13 +14458,13 @@ L2D1CA:
         BCLR    $0C31,Z,#$20
 L2D1CE:
         LDAA    >VehicleSpeed,Z
-        CMPA    $2A30
+        CMPA    >IdleRollSpeed
         BCC     L2D1DC
         BCLR    >ThrottleState,Z,#$01
 L2D1DC:
         BCLR    $0310,Z,#$34
         BCLR    $0C31,Z,#$80
-        CLR     $0365,Z
+        CLR     >ShiftIdleDelay,Z
         BCLR    $0310,Z,#$02
 L2D1EC:
         RTS
@@ -14487,14 +14487,14 @@ Sub_2D1EE:
 ProcessThrottle:
         LDAA    >ThrottleRaw,Z
         LDY     #$408C
-        CMPA    $49DF
+        CMPA    >ThrottleRawThresh1
         BCS     L2D23C
         BRCLR   $0502,Z,#$04,L2D21A
         JSR     Sub_24160
         BRA     L2D242
 L2D21A:
         LDY     #$4096
-        CMPA    $49E0
+        CMPA    >ThrottleRawThresh2
         BCC     L2D23C
         BRCLR   $0502,Z,#$08,L2D230
         JSR     Sub_24160
@@ -14543,18 +14543,18 @@ Sub_2D26A:
         BNE     L2D2A6
         LDAB    <ThrottleClosed,Z
         BNE     L2D29A
-        LDAB    $043A
+        LDAB    >StartThrottleClosedInit
 L2D29A:
         DECB
         STAB    <ThrottleClosed,Z
         BCLR    >ThrottleState,Z,#$10
 L2D2A2:
-        LDAA    $043B
+        LDAA    >ThrottleV0A78Init
 L2D2A6:
         STAA    $0A78,Z
-        LDAA    $043D
+        LDAA    >ThrottleValue
         BRSET   >ThrottleState,Z,#$80,L2D2B8
-        LDAA    $043C
+        LDAA    >ThrottleClosedValue
 L2D2B8:
         ADDA    <ThrottleClosed,Z
         SUBA    >Throttle,Z
@@ -14564,7 +14564,7 @@ L2D2B8:
         CMPA    #$08
         BHI     L2D2DC
         LDAA    $0E01,Z
-        CMPA    $035D
+        CMPA    >ThrottleV0E01Thresh
         BCC     L2D2DC
         INC     $0E01,Z
         BRA     L2D342
@@ -14578,7 +14578,7 @@ L2D2DC:
         BSET    >ThrottleState,Z,#$10
 L2D2F2:
         LDAA    $0C47,Z
-        CMPA    $10D4
+        CMPA    >ThrottleV0C47Thresh
         BCS     L2D300
         CLR     $0C47,Z
 L2D300:
@@ -14598,7 +14598,7 @@ L2D316:
 L2D32A:
         CLR     $0E01,Z
         BCLR    $0D01,Z,#$20
-        LDAA    $2B4E
+        LDAA    >ThrottleV041CInit
         STAA    $041C,Z
         LBRA    L2D3DC
 L2D33E:
@@ -14606,7 +14606,7 @@ L2D33E:
 L2D342:
         BRCLR   $1013,Z,#$80,L2D368
         BRSET   $0400,Z,#$80,L2D368
-        TST     $0408,Z
+        TST     >SpeedCtlSetSpeed,Z
         BEQ     L2D368
         LDAA    $041C,Z
         BEQ     L2D370
@@ -14615,12 +14615,12 @@ L2D342:
         STAA    $041C,Z
         BRA     L2D3DC
 L2D368:
-        LDAA    $2B4E
+        LDAA    >ThrottleV041CInit
         STAA    $041C,Z
 L2D370:
         BRCLR   >ThrottleState,Z,#$80,L2D3DC
         LDAB    >VehicleSpeed,Z
-        CMPB    $2A30
+        CMPB    >IdleRollSpeed
         BLS     L2D38E
         LDAA    >EngineRpm,Z
         LDX     #ThrottleCloseTimerRpmMoving
@@ -14637,7 +14637,7 @@ L2D39A:
         BSET    $0317,Z,#$01
         LDAA    >SegmentRpm,Z
         LDAB    >VehicleSpeed,Z
-        CMPB    $2A30
+        CMPB    >IdleRollSpeed
         BLS     L2D3CC
         CLR     $0347,Z
         LDX     #ThrottleCloseTimerRpmMoving
@@ -14653,16 +14653,16 @@ L2D3DC:
         BRSET   >ThrottleState,Z,#$08,L2D410
         BRCLR   $0A46,Z,#$01,L2D410
         LDAA    >EngineRpm,Z
-        CMPA    $0439
+        CMPA    >ThrottleRpmThresh
         BCS     L2D410
         LDAA    >Map,Z
-        CMPA    $0438
+        CMPA    >ThrottleMapThresh
         BCC     L2D410
         LDAA    <ThrottleClosed,Z
         INCA
-        CMPA    $043A
+        CMPA    >StartThrottleClosedInit
         BLS     L2D40A
-        LDAA    $043A
+        LDAA    >StartThrottleClosedInit
 L2D40A:
         STAA    <ThrottleClosed,Z
         BSET    >ThrottleState,Z,#$08
@@ -14681,7 +14681,7 @@ L2D41E:
 ;---------------------------------------------------------------------------------------------------
 Sub_2D420:
         LDAA    <ThrottleClosed,Z
-        ADDA    $0EC7
+        ADDA    >SensorThrottleClosedAdder
         BCS     L2D42C
         CMPA    #$D0
         BCS     L2D42E
@@ -14689,7 +14689,7 @@ L2D42C:
         LDAA    #$D0
 L2D42E:
         BRCLR   >ThrottleState,Z,#$40,L2D438
-        SUBA    $0EC8
+        SUBA    >SensorOffset1
 L2D438:
         CMPA    >Throttle,Z
         BCC     L2D444
@@ -14710,20 +14710,20 @@ L2D466:
         BRA     L2D4A0
 L2D46C:
         LDAA    >VehicleSpeed,Z
-        CMPA    $0EC9
+        CMPA    >SensorSpeedThresh1
         BCS     L2D494
         LDAA    $081B,Z
-        CMPA    $0ECB
+        CMPA    >SensorV081BThresh2
         BCC     L2D49C
         BRCLR   >MainLoopPhaseMask,Z,#$10,L2D48C
         INCA
         STAA    $081B,Z
 L2D48C:
-        CMPA    $0ECA
+        CMPA    >SensorV081BThresh1
         BCS     L2D4A0
         BRA     L2D49C
 L2D494:
-        LDAA    $0ECA
+        LDAA    >SensorV081BThresh1
         STAA    $081B,Z
 L2D49C:
         BSET    >FuelModeFlags,Z,#$20
@@ -14777,7 +14777,7 @@ L2D4F0:
         ANDP    #$FF1F
         LDAA    $0AB2,Z
         LSRA
-        CMPA    $74E5
+        CMPA    >SensorV0AB2Thresh
         BCS     L2D51E
         BRCLR   $0C32,Z,#$03,L2D5D8
         JSR     Sub_2D5DA
@@ -14899,7 +14899,7 @@ L2D644:
         CLRB
         TBXK
         LDX     #$74DB
-        BRCLR   $032D,#$20,L2D654
+        BRCLR   >Options032D,#$20,L2D654
         AIX     #$05
 L2D654:
         PSHM    CCR
@@ -14956,7 +14956,7 @@ CalcEngineRpm:
         LDED    $ABAD
         BRCLR   $0ABD,Z,#$FF,L2D6D2
         LDX     $0ABD,Z
-        LDED    $ABAC
+        LDED    >SensorValue16
 L2D6D2:
         CPX     #$0000
         BEQ     L2D6DC
@@ -15056,7 +15056,7 @@ L2D784:
         BCLR    $0764,Z,#$02
         BCLR    $0764,Z,#$01
 L2D7E0:
-        BRCLR   $032A,#$C0,L2D7F4
+        BRCLR   >EventFlag1,#$C0,L2D7F4
         LDAA    #$65
         BRSET   >PACTL,Z,#$80,L2D7F0
         LDAA    #$75
@@ -15064,16 +15064,16 @@ L2D7F0:
         STAA    >PACTL,Z
 L2D7F4:
         LDAA    $0812,Z
-        CMPA    $117D
+        CMPA    >FuelV0812Thresh
         BCS     L2D802
         CLR     >EngineOffTime,Z
 L2D802:
         LDAA    >CoolantTemp,Z
-        CMPA    $09F2
+        CMPA    >StartCoolantThresh1
         BCC     L2D810
         BCLR    $0774,Z,#$10
 L2D810:
-        LDAA    $0C3F,Z
+        LDAA    >RunTime,Z
         STAA    >CrankEvents,Z
         BRCLR   $0C31,Z,#$02,L2D82A
         LDAB    $0ABD,Z
@@ -15086,8 +15086,8 @@ L2D82A:
         STD     $0ABE,Z
         CLR     $0689,Z
         CLR     $0DBC,Z
-        BRCLR   $032C,#$40,L2D84E
-        BRSET   $032F,#$08,L2D84E
+        BRCLR   >Options032C,#$40,L2D84E
+        BRSET   >EventFlag2,#$08,L2D84E
         JSR     Sub_18A60
 L2D84E:
         CLR     $056B,Z
@@ -15120,7 +15120,7 @@ L2D84E:
         CLR     $05A4,Z
         CLR     $05A1,Z
         CLR     $05A2,Z
-        BRCLR   $032C,#$40,L2D8D2
+        BRCLR   >Options032C,#$40,L2D8D2
         BRCLR   $50,Z,#$28,L2D8D2
         BRA     L2D8D6
 L2D8D2:
@@ -15171,7 +15171,7 @@ Sub_2D914:
         TDE
         LDD     >BatteryVoltsDwell,Z
         PSHM    D,E
-        LDAA    $758A
+        LDAA    >CalValue8
         JSR     Blend16
         AIS     #$04
         STD     >BatteryVoltsDwell,Z
@@ -15187,10 +15187,10 @@ Sub_2D932:
         STE     $0A48,Z
         LDX     #$729B
         LDE     #$72BB
-        BRSET   $032D,#$80,L2D962
+        BRSET   >Options032D,#$80,L2D962
         LDX     #$725B
         LDE     #$727B
-        BRSET   $032D,#$20,L2D962
+        BRSET   >Options032D,#$20,L2D962
         LDX     #$721B
         LDE     #$723B
 L2D962:
@@ -15202,7 +15202,7 @@ L2D962:
         LDE     $00F0,Z
         TED
         BRCLR   $0055,Z,#$04,L2D998
-        BRCLR   $032D,#$20,L2D986
+        BRCLR   >Options032D,#$20,L2D986
         EORD    #$0040
 L2D986:
         EORD    $0A4C,Z
@@ -15211,7 +15211,7 @@ L2D986:
         BRSET   $050F,Z,#$08,L2D998
         BSET    $0C31,Z,#$40
 L2D998:
-        BRCLR   $032D,#$20,L2D9A2
+        BRCLR   >Options032D,#$20,L2D9A2
         EORE    #$0040
 L2D9A2:
         TED
@@ -15380,11 +15380,11 @@ ReadMap:
         CMPB    #$13
         BCS     L2DB06
         LDAB    >ThrottleAboveClosed,Z
-        CMPB    $49E6
+        CMPB    >SensorThrottleThresh4
         BCC     L2DB06
-        CMPA    $49E2
+        CMPA    >SensorMapRawThresh2
         BCC     L2DB0C
-        CMPA    $49E1
+        CMPA    >SensorMapRawThresh1
         BCS     L2DB0C
 L2DB06:
         BRCLR   $06B4,Z,#$20,L2DB12
@@ -15397,7 +15397,7 @@ L2DB12:
         RORA
         JSR     Sub_2DA02
 L2DB1E:
-        BRCLR   $0337,#$08,L2DB30
+        BRCLR   >Options0337,#$08,L2DB30
         TAB
         ADDA    $0A81,Z
         RORA
@@ -15421,15 +15421,15 @@ L2DB48:
 ;---------------------------------------------------------------------------------------------------
 Sub_2DB4E:
         BRSET   $0055,Z,#$80,L2DBA8
-        BRCLR   $0331,#$80,L2DB6A
-        LDAA    $0A87,Z
-        CMPA    $49E7
+        BRCLR   >Options0331,#$80,L2DB6A
+        LDAA    >AcSensorRaw,Z
+        CMPA    >StartAcSensorRawThresh1
         BHI     L2DB6A
-        CMPA    $49E8
+        CMPA    >StartAcSensorRawThresh2
         BHI     L2DB8E
 L2DB6A:
-        BRSET   $0331,#$40,L2DB86
-        BRCLR   $0331,#$20,L2DB7E
+        BRSET   >Options0331,#$40,L2DB86
+        BRCLR   >Options0331,#$20,L2DB7E
         BRCLR   $0A47,Z,#$80,L2DBA4
         BRA     L2DB8E
 L2DB7E:
@@ -15440,7 +15440,7 @@ L2DB86:
         BRA     L2DBA0
 L2DB8E:
         LDAA    $06E2,Z
-        CMPA    $045F
+        CMPA    >SensorV06E2Thresh
         BCC     L2DBA0
         INCA
         STAA    $06E2,Z
@@ -15451,10 +15451,10 @@ L2DBA4:
         CLR     $06E2,Z
 L2DBA8:
         BRSET   $0055,Z,#$40,L2DBFA
-        BRCLR   $032D,#$20,L2DBCC
+        BRCLR   >Options032D,#$20,L2DBCC
         BRCLR   $0A47,Z,#$10,L2DBCC
         LDAA    $06E3,Z
-        CMPA    $045E
+        CMPA    >SensorV06E3Thresh
         BCC     L2DBF6
         INCA
         STAA    $06E3,Z
@@ -15464,11 +15464,11 @@ L2DBCC:
 L2DBD0:
         BRSET   $0A47,Z,#$08,L2DBF6
         BRCLR   $0A47,Z,#$04,L2DBF6
-        BRCLR   $0332,#$02,L2DBEA
+        BRCLR   >Options0332,#$02,L2DBEA
         BRSET   $0A47,Z,#$10,L2DBF6
         BRA     L2DBFA
 L2DBEA:
-        BRCLR   $0332,#$04,L2DBFA
+        BRCLR   >Options0332,#$04,L2DBFA
         BRCLR   $0A47,Z,#$11,L2DBFA
 L2DBF6:
         BSET    $55,Z,#$40
@@ -15481,7 +15481,7 @@ L2DBFA:
         BCS     L2DC30
         BRSET   $0A47,Z,#$40,L2DC30
         LDAA    $06E4,Z
-        CMPA    $0460
+        CMPA    >SensorV06E4Thresh
         BCC     L2DC2C
         INCA
         STAA    $06E4,Z
@@ -15551,7 +15551,7 @@ L2DC9E:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_2DCB4:
-        BRCLR   $0330,#$10,L2DD64
+        BRCLR   >Options0330,#$10,L2DD64
         JSR     Sub_2DC7A
         BRSET   $051A,Z,#$08,L2DD64
         BRSET   $051A,Z,#$10,L2DD64
@@ -15560,34 +15560,34 @@ Sub_2DCB4:
         CPD     #$031D
         LBCS    L2DD5C
         LDAA    >Count3s,Z
-        CMPA    $31D7
+        CMPA    >SensorTimeThresh4
         BCS     L2DD16
         LDY     #$4816
         LDAA    $0A63,Z
-        CMPA    $4A0E
+        CMPA    >SensorV0A63Thresh1
         BCC     L2DCFE
         LDY     #$4820
-        CMPA    $4A0F
+        CMPA    >SensorV0A63Thresh2
         BHI     L2DD20
 L2DCFE:
         LDAA    $06B2,Z
         ADDA    #$01
         SBCA    #$00
         STAA    $06B2,Z
-        CMPA    $31D6
+        CMPA    >SensorV06B2Thresh
         BCS     L2DD64
         JSR     Sub_245D4
         BRA     L2DD5C
 L2DD16:
         LDAA    $0A63,Z
-        CMPA    $4A0F
+        CMPA    >SensorV0A63Thresh2
         BLS     L2DD5C
 L2DD20:
         LDAA    $0A64,Z
-        CMPA    $31D5
+        CMPA    >SensorV0A64Thresh2
         BLS     L2DD5C
         BRSET   $06B1,Z,#$01,L2DD3A
-        CMPA    $31D4
+        CMPA    >SensorV0A64Thresh1
         BCS     L2DD5C
         BSET    $06B1,Z,#$01
 L2DD3A:
@@ -15596,7 +15596,7 @@ L2DD3A:
         ADDA    #$01
         SBCA    #$00
         STAA    $06B2,Z
-        CMPA    $31D6
+        CMPA    >SensorV06B2Thresh
         BCS     L2DD64
         LDY     #$4726
         JSR     Sub_245D4
@@ -15923,8 +15923,8 @@ L2F00E:
 ;---------------------------------------------------------------------------------------------------
 Sub_2F010:
         BRSET   $0055,Z,#$20,L2F064
-        BRSET   $032E,#$40,L2F064
-        BRSET   $0333,#$20,L2F05A
+        BRSET   >Options032E,#$40,L2F064
+        BRSET   >Options0333,#$20,L2F05A
         BRSET   $0055,Z,#$10,L2F068
         BRCLR   $0774,Z,#$80,L2F052
         BRSET   $09D0,Z,#$40,L2F03A
@@ -15971,11 +15971,11 @@ L2F080:
         BRCLR   >ThrottleState,Z,#$80,L2F196
         BRCLR   $0C31,Z,#$20,L2F196
         LDAA    >CoolantTemp,Z
-        CMPA    $0461
+        CMPA    >AcCoolantThresh
         LBCS    L2F196
         BRCLR   $0A46,Z,#$01,L2F0AA
         LDAA    $0B51,Z
-        CMPA    $046A
+        CMPA    >AcV0B55Thresh
         LBLS    L2F196
 L2F0AA:
         BRSET   $06B4,Z,#$10,L2F196
@@ -15984,13 +15984,13 @@ L2F0AA:
         BRSET   $050F,Z,#$04,L2F196
         BRSET   $0500,Z,#$10,L2F196
         LDAA    >Map,Z
-        SUBA    $0B50,Z
+        SUBA    >AcCutMapRef,Z
         BCS     L2F0EA
         BCLR    $0B4E,Z,#$C0
         LDAB    >VehicleSpeed,Z
-        CMPB    $0466
+        CMPB    >AcCutSpeed
         BCC     L2F118
-        CMPA    $0464
+        CMPA    >AcCutMapRise
         BCS     L2F118
         LBRA    L2F196
 L2F0EA:
@@ -15998,16 +15998,16 @@ L2F0EA:
         BRSET   $0B4E,Z,#$80,L2F106
         BRSET   $0B4E,Z,#$40,L2F110
         LDAB    >ThrottleAboveClosed,Z
-        CMPB    $0467
+        CMPB    >AcCutThrottle
         BCS     L2F10C
         BSET    $0B4E,Z,#$80
 L2F106:
-        LDAB    $0468
+        LDAB    >AcCutMapDrop
         BRA     L2F114
 L2F10C:
         BSET    $0B4E,Z,#$40
 L2F110:
-        LDAB    $0469
+        LDAB    >AcCutMapDropLow
 L2F114:
         CBA
         BCC     L2F196
@@ -16035,20 +16035,20 @@ L2F144:
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BHI     L2F196
-        LDAA    $0B4F,Z
+        LDAA    >AcCutTimer,Z
         BEQ     L2F178
         DECA
-        STAA    $0B4F,Z
+        STAA    >AcCutTimer,Z
         BEQ     L2F190
         BRA     L2F1A2
 L2F178:
-        LDAB    $0462
+        LDAB    >AcCutDelay
         LDAA    >VehicleSpeed,Z
-        CMPA    $0466
+        CMPA    >AcCutSpeed
         BCC     L2F18A
-        LDAB    $0463
+        LDAB    >AcCutDelayLow
 L2F18A:
-        STAB    $0B4F,Z
+        STAB    >AcCutTimer,Z
         BNE     L2F1A2
 L2F190:
         BCLR    $0943,Z,#$80
@@ -16056,13 +16056,13 @@ L2F190:
 L2F196:
         BSET    $0943,Z,#$80
         BCLR    $0B4E,Z,#$C0
-        CLR     $0B4F,Z
+        CLR     >AcCutTimer,Z
 L2F1A2:
         LDAA    >MainLoopCounter,Z
-        ANDA    $0465
+        ANDA    >AcLoopMask1
         BNE     L2F1B4
         LDAA    >Map,Z
-        STAA    $0B50,Z
+        STAA    >AcCutMapRef,Z
 L2F1B4:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -16180,7 +16180,7 @@ Sub_2F800:
         DEC     $0C03,Z
         LBNE    L2FABC
         LDAA    >CoolantTemp,Z
-        CMPA    $044D
+        CMPA    >CalCoolantThresh1
         BCS     L2F828
         BRSET   >ThrottleState,Z,#$40,L2F830
 L2F828:
@@ -16195,35 +16195,35 @@ L2F830:
         BCLR    $0C02,Z,#$20
         NEGD
 L2F846:
-        CPD     $044B
+        CPD     >CalV0C08Thresh2
         BCS     L2F850
-        LDD     $044B
+        LDD     >CalV0C08Thresh2
 L2F850:
         STD     $0C08,Z
-        CPE     $043E
+        CPE     >CalRpmOffset1
         BCS     L2F866
-        CPE     $0440
+        CPE     >CalRpmOffset2
         LBCS    L2F8F0
         JMP     L2F95C
 L2F866:
         LDD     $0C08,Z
-        CPD     $0442
+        CPD     >CalV0C08Thresh1
         LBCS    L2F9E2
         BRCLR   $0C02,Z,#$20,L2F9E2
         BRSET   $101F,Z,#$10,L2F8C8
-        LDD     $0440
+        LDD     >CalRpmOffset2
         SUBD    >EngineRpm,Z
         JSR     Sub_2FA10
-        SUBD    $0444
+        SUBD    >CalOffset1
         LBCS    L2F9EE
-        SUBD    $0448
+        SUBD    >CalOffset3
         LBCS    L2F9EE
-        SUBD    $0446
+        SUBD    >CalOffset2
         LBCS    L2F9EE
-        LDD     $043E
+        LDD     >CalRpmOffset1
         SUBD    >EngineRpm,Z
         JSR     Sub_2FA10
-        SUBD    $0444
+        SUBD    >CalOffset1
         BCC     L2F8BC
         BSET    $0C02,Z,#$10
         JMP     L2F9E6
@@ -16232,67 +16232,67 @@ L2F8BC:
         BSET    $0C02,Z,#$10
         JMP     L2F9EE
 L2F8C8:
-        LDD     $043E
+        LDD     >CalRpmOffset1
         SUBD    >EngineRpm,Z
         JSR     Sub_2FA10
-        SUBD    $0446
+        SUBD    >CalOffset2
         LBCS    L2F9EE
-        SUBD    $0448
+        SUBD    >CalOffset3
         LBCS    L2F9EE
-        SUBD    $0444
+        SUBD    >CalOffset1
         LBCS    L2F9EE
         JMP     L2F9E2
 L2F8F0:
         LDD     $0C08,Z
-        CPD     $0442
+        CPD     >CalV0C08Thresh1
         BCC     L2F902
         BSET    $0C02,Z,#$10
         JMP     L2F9E6
 L2F902:
         BRCLR   $0C02,Z,#$20,L2F916
-        LDD     $0440
+        LDD     >CalRpmOffset2
         SUBD    >EngineRpm,Z
         JSR     Sub_2FA10
         BRA     L2F922
 L2F916:
         LDD     >EngineRpm,Z
-        SUBD    $043E
+        SUBD    >CalRpmOffset1
         JSR     Sub_2FA10
 L2F922:
         BRCLR   $101F,Z,#$10,L2F93C
-        SUBD    $0446
+        SUBD    >CalOffset2
         LBCS    L2F9E2
         STD     $0C04,Z
         BCLR    $0C02,Z,#$10
         JMP     L2F9EE
 L2F93C:
-        SUBD    $0444
+        SUBD    >CalOffset1
         LBCS    L2F9EE
-        SUBD    $0448
+        SUBD    >CalOffset3
         LBCS    L2F9EE
-        SUBD    $0446
+        SUBD    >CalOffset2
         LBCS    L2F9EE
         BSET    $0C02,Z,#$10
         JMP     L2F9E6
 L2F95C:
         LDD     $0C08,Z
-        CPD     $0442
+        CPD     >CalV0C08Thresh1
         LBCS    L2F9E2
         BRSET   $0C02,Z,#$20,L2F9E2
         BRSET   $101F,Z,#$10,L2F9BE
         LDD     >EngineRpm,Z
-        SUBD    $043E
+        SUBD    >CalRpmOffset1
         JSR     Sub_2FA10
-        SUBD    $0444
+        SUBD    >CalOffset1
         LBCS    L2F9EE
-        SUBD    $0448
+        SUBD    >CalOffset3
         LBCS    L2F9EE
-        SUBD    $0446
+        SUBD    >CalOffset2
         LBCS    L2F9EE
         LDD     >EngineRpm,Z
-        SUBD    $0440
+        SUBD    >CalRpmOffset2
         JSR     Sub_2FA10
-        SUBD    $0444
+        SUBD    >CalOffset1
         BCC     L2F9B2
         BSET    $0C02,Z,#$10
         JMP     L2F9E6
@@ -16302,13 +16302,13 @@ L2F9B2:
         JMP     L2F9EE
 L2F9BE:
         LDD     >EngineRpm,Z
-        SUBD    $0440
+        SUBD    >CalRpmOffset2
         JSR     Sub_2FA10
-        SUBD    $0446
+        SUBD    >CalOffset2
         LBCS    L2F9EE
-        SUBD    $0448
+        SUBD    >CalOffset3
         LBCS    L2F9EE
-        SUBD    $0444
+        SUBD    >CalOffset1
         LBCS    L2F9EE
 L2F9E2:
         BCLR    $0C02,Z,#$10
@@ -16316,7 +16316,7 @@ L2F9E6:
         LDE     #$0001
         STE     $0C04,Z
 L2F9EE:
-        LDAA    $044A
+        LDAA    >StartV0C03Init
         STAA    $0C03,Z
         LDD     >EngineRpm,Z
         STD     $0C06,Z
@@ -16356,7 +16356,7 @@ L2FA34:
         ADE
 L2FA42:
         CLRB
-        LDAA    $044A
+        LDAA    >StartV0C03Init
         EMUL
         TED
         STE     >LookupResult,Z
@@ -16367,7 +16367,7 @@ L2FA42:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_2FA52:
-        BRCLR   $0335,#$20,L2FAB6
+        BRCLR   >Options0335,#$20,L2FAB6
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2FAB6
         LDD     $1000,Z
         ANDD    #$0800
@@ -16377,7 +16377,7 @@ Sub_2FA52:
         BCS     L2FAB6
         TST     $0C40,Z
         BNE     L2FAB6
-        BRCLR   $0335,#$10,L2FA88
+        BRCLR   >Options0335,#$10,L2FA88
         BRSET   $0943,Z,#$10,L2FAB6
         BRSET   $0500,Z,#$04,L2FAB6
 L2FA88:
@@ -16416,7 +16416,7 @@ L2FAE2:
         BRCLR   $101F,Z,#$10,L2FB06
         BRSET   $0C02,Z,#$10,L2FB1C
         BSETW   $101E,Z,#$0020
-        LDAB    $044E
+        LDAB    >SensorV0C0AInit1
         STAB    $0C0A,Z
         BRA     L2FB1C
 L2FB06:
@@ -16424,7 +16424,7 @@ L2FB06:
         BITB    #$10
         BEQ     L2FB1C
         BCLRW   $101E,Z,#$0020
-        LDAB    $044F
+        LDAB    >SensorV0C0AInit2
         STAB    $0C0A,Z
 L2FB1C:
         RTS
@@ -16437,10 +16437,10 @@ Sub_2FB1E:
         DEC     $0C0D,Z
         LBNE    L2FCCE
         LDAA    >CoolantTemp,Z
-        CMPA    $0451
+        CMPA    >CalCoolantThresh2
         LBCS    L2FCAA
         LDAA    >BatteryTemp,Z
-        CMPA    $0452
+        CMPA    >CalBatteryTempThresh1
         LBCS    L2FCAA
         BRCLR   >ThrottleState,Z,#$40,L2FCAA
         LDD     >EngineRpm,Z
@@ -16451,34 +16451,34 @@ Sub_2FB1E:
         BCLR    $0C0C,Z,#$80
         NEGD
 L2FB5A:
-        CPD     $0453
+        CPD     >CalV0C0EThresh
         BCS     L2FB64
-        LDD     $0453
+        LDD     >CalV0C0EThresh
 L2FB64:
         STD     $0C0E,Z
-        CPE     $045B
+        CPE     >CalRpmValue
         LBHI    L2FC50
-        CPE     $0459
+        CPE     >CalRpmOffset3
         LBCC    L2FBD2
         TST     $0C0E,Z
         LBEQ    L2FCAA
         BRCLR   $0C0C,Z,#$80,L2FCAA
         BRCLR   $0C0C,Z,#$20,L2FBA4
-        LDD     $0459
+        LDD     >CalRpmOffset3
         SUBD    >EngineRpm,Z
         JSR     Sub_2FD2A
-        SUBD    $0455
+        SUBD    >CalOffset4
         LBCS    L2FCB0
         LBRA    L2FCAA
 L2FBA4:
-        LDD     $045B
+        LDD     >CalRpmValue
         SUBD    >EngineRpm,Z
         JSR     Sub_2FD2A
-        SUBD    $0457
+        SUBD    >CalOffset5
         LBCS    L2FCB0
         TSTA
         LBNE    L2FCAA
-        CMPB    $0450
+        CMPB    >CalV0C0DThresh
         LBCC    L2FCAA
         STAB    $0C12,Z
         BSET    $0C0C,Z,#$40
@@ -16488,14 +16488,14 @@ L2FBD2:
         TST     $0C0E,Z
         LBEQ    L2FCAA
         BRCLR   $0C0C,Z,#$80,L2FCAA
-        LDD     $045B
+        LDD     >CalRpmValue
         SUBD    >EngineRpm,Z
         JSR     Sub_2FD2A
-        SUBD    $0457
+        SUBD    >CalOffset5
         LBCS    L2FCB0
         TSTA
         LBNE    L2FCAA
-        CMPB    $0450
+        CMPB    >CalV0C0DThresh
         LBCC    L2FCAA
         STAB    $0C12,Z
         BSET    $0C0C,Z,#$40
@@ -16505,13 +16505,13 @@ L2FC14:
         LBEQ    L2FCB0
         BRSET   $0C0C,Z,#$80,L2FCB0
         LDD     >EngineRpm,Z
-        SUBD    $0459
+        SUBD    >CalRpmOffset3
         JSR     Sub_2FD2A
-        SUBD    $0455
+        SUBD    >CalOffset4
         LBCS    L2FCAA
         TSTA
         LBNE    L2FCB0
-        CMPB    $0450
+        CMPB    >CalV0C0DThresh
         LBCC    L2FCB0
         STAB    $0C12,Z
         BCLR    $0C0C,Z,#$40
@@ -16522,20 +16522,20 @@ L2FC50:
         BRSET   $0C0C,Z,#$80,L2FCB0
         BRSET   $0C0C,Z,#$20,L2FC7C
         LDD     >EngineRpm,Z
-        SUBD    $045B
+        SUBD    >CalRpmValue
         JSR     Sub_2FD2A
-        SUBD    $0457
+        SUBD    >CalOffset5
         LBCS    L2FCAA
         LBRA    L2FCB0
 L2FC7C:
         LDD     >EngineRpm,Z
-        SUBD    $0459
+        SUBD    >CalRpmOffset3
         JSR     Sub_2FD2A
-        SUBD    $0455
+        SUBD    >CalOffset4
         LBCS    L2FCAA
         TSTA
         LBNE    L2FCB0
-        CMPB    $0450
+        CMPB    >CalV0C0DThresh
         LBCC    L2FCB0
         STAB    $0C12,Z
         BCLR    $0C0C,Z,#$40
@@ -16548,7 +16548,7 @@ L2FCB0:
 L2FCB4:
         CLR     $0C12,Z
 L2FCB8:
-        LDAA    $0450
+        LDAA    >CalV0C0DThresh
         STAA    $0C0D,Z
         LDD     >EngineRpm,Z
         STD     $0C10,Z
@@ -16566,7 +16566,7 @@ L2FCE2:
 L2FCE8:
         LDAA    $0C13,Z
         BEQ     L2FCF6
-        CMPA    $045D
+        CMPA    >CalV0C13Thresh
         LBCC    L2FD28
 L2FCF6:
         INCA
@@ -16577,7 +16577,7 @@ L2FCF6:
 L2FD0A:
         BRSET   $0C0C,Z,#$20,L2FD28
         LDAA    $0C13,Z
-        CMPA    $045D
+        CMPA    >CalV0C13Thresh
         BCS     L2FCF6
         BSETW   $1066,Z,#$2000
         BSET    $0C0C,Z,#$20
@@ -16613,7 +16613,7 @@ L2FD4E:
         XGAB
         ADE
 L2FD5C:
-        LDAA    $0450
+        LDAA    >CalV0C0DThresh
         CLRB
         EMUL
         ADCE    #$0000

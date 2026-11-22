@@ -38,6 +38,8 @@ python3 tools/survey.py roms/*.bin  # header, checksum and families of all image
 | `tools/xdf.py` | Writes the TunerPro definition of an image (`xdf/`) |
 | `tools/fixsum.py` | Checks or corrects the image checksum after editing |
 | `tools/autoname.py` | Gives the tables without a hand name a structural name (subsystem + inputs) |
+| `tools/constants.py` | Finds every directly read constant and option bit, names it structurally and merges hand names (`annotations/tables.json` scalars) |
+| `tools/subsystems.py` | Subsystem groups shared by `autoname.py` and `constants.py` |
 | `tools/build.py` | Assembles and verifies against `tools/variants.json` |
 | `tools/survey.py` | Survey of images (stage 1) |
 

@@ -15,7 +15,8 @@ program yet. Please report what does not open or shows wrong values.
 | Category | Content |
 |---|---|
 | Fuel | main and WOT fuel tables (as % change of the MAP-based pulse width), MAP scales, dead time, baro and air-temperature corrections, acceleration, after-start and cranking enrichment, fuel cut-off |
-| Spark | main and WOT spark (degrees), corrections, knock control |
+| Spark | main and WOT spark (degrees), corrections, dwell |
+| Knock | knock control |
 | Idle | idle speed control, including `IdleTargetRpm` |
 | Closed loop | oxygen-sensor feedback |
 | Sensors | thermistor curves, throttle limp-in, sensor processing |
@@ -26,7 +27,7 @@ program yet. Please report what does not open or shows wrong values.
 | A/C | A/C clutch control (probable) |
 | EVAP purge | purge control and vapour learning (probable) |
 | Startup | values set at reset |
-| Limits | rev and speed limits |
+| Options | option bytes $0328-$0340, one flag per bit used |
 | Faults | `FaultTable`: one row per fault, P-code in the row label |
 | Other | tables of subsystems not identified yet |
 
@@ -36,6 +37,11 @@ reads it, its inputs and where the result goes. The other images get the names t
 carry over (from 131 tables in family A to 403 in family E); the rest keep their generated `Tab...`
 name. Units come from the annotations or from the inputs where those are known (rpm, deg C, kPa,
 volts).
+
+The XDF also holds the 1,448 directly read constants of the reference image (thresholds, limits,
+times, gains) as XDFCONSTANT, with the unit where it is known, and each used bit of the option bytes
+as an XDFFLAG (see [calibration.md](calibration.md#constants-and-option-bits)); the other images get
+the constants the port carries over (239 in family A to 1,404 in family E).
 
 ## Axes
 

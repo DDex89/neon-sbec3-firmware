@@ -26,6 +26,13 @@ def size_text(d, a, t):
     return "%d x %d bytes" % (t["rows"], t["row_size"])
 
 
+PHYS = {"rpm32": lambda v: "%d rpm" % (v * 32), "rpm8": lambda v: "%d rpm" % (v * 8), "rpmw": lambda v: "%d rpm" % (v / 8),
+        "kpa": lambda v: "%.1f kPa" % (v / 2.428), "tempc": lambda v: "%d deg C" % (v - 128),
+        "volt16": lambda v: "%.2f V" % (v / 16.19), "volt51": lambda v: "%.2f V" % (v / 51),
+        "spark": lambda v: "%.1f deg" % (v / 2), "pwus32": lambda v: "%d us" % (v * 32),
+        "mult256": lambda v: "%.3f" % (v / 256)}
+
+
 def main():
     path, out = sys.argv[1], sys.argv[2]
     d = open(path, "rb").read()
@@ -42,7 +49,7 @@ def main():
          " ([русский](../ru/calibration.md)). Names in the generated form (`Tab3D_0D2B`) are not",
          "identified yet; names marked * are structural (subsystem + inputs, see calibration.md). \"Inputs\" are the values passed to the lookup routine (RAM variables by name",
          "where known, `result of Lookup2D` for a row position from a scale table).", "",
-         "%d tables, %d named constants." % (len(cal.items), len(cal.scalars)), "",
+         "%d tables, %d constants." % (len(cal.items), len(cal.scalars)), "",
          "## Tables", "",
          "| Address | Name | Category | Format | Size | Bytes | Inputs | Result to | Read in | Read at |",
          "|---|---|---|---|---|---|---|---|---|---|"]
@@ -61,10 +68,24 @@ def main():
             ", ".join(zname(o) for o in t.get("dest", {})),
             ", ".join(owners[:3]) + (" +%d" % (len(owners) - 3) if len(owners) > 3 else ""),
             ", ".join("$%05X" % c for c in calls[:4]) + (" +%d" % (len(calls) - 4) if len(calls) > 4 else "")))
-    L += ["", "## Named constants", "", "| Address | Name | Value | Description |", "|---|---|---|---|"]
+    L += ["", "## Constants", "",
+          "Bytes and words the code reads directly (see calibration.md). * marks a structural name. Value is",
+          "the raw value; Physical applies the unit. For option bytes the bits tested are listed, with the",
+          "state in this image (1 = set).", "",
+          "| Address | Name | Category | Size | Value | Physical | Description |", "|---|---|---|---|---|---|---|"]
     for a in sorted(cal.scalars):
         v = cal.scalars[a]
-        L.append("| $%04X | %s | $%02X (%d) | %s |" % (a, v["name"], d[a], d[a], v.get("desc", "")))
+        n = v.get("size", 1)
+        raw = int.from_bytes(d[a:a + n], "big")
+        phys = PHYS.get(v.get("unit", "raw"))
+        desc = v.get("desc", "")
+        if v.get("bits"):
+            bn = v.get("bitnames", {})
+            desc += " Bits: " + ", ".join("$%s%s=%d" % (m, " " + bn[m] if m in bn else "", 1 if raw & int(m, 16) else 0)
+                                         for m in v["bits"]) + "."
+        L.append("| $%04X | %s | %s | %d | $%0*X (%d) | %s | %s |" % (
+            a, v["name"] + (" *" if v.get("auto") else ""), v.get("category", ""), n, 2 * n, raw, raw,
+            phys(raw) if phys and n <= 2 else "", desc.replace("|", "/")))
     for a, t in sorted(cal.items.items()):
         if t["kind"] != "fault":
             continue

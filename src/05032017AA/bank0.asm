@@ -275,13 +275,139 @@
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $55,$00,$05,$03,$20,$17,$41,$41,$A0,$20,$20,$20,$20,$20,$20,$03
-        dc.b    $04,$0E,$00,$08,$09,$02,$08,$03,$04,$01,$0B,$0D,$06,$01,$12,$18
-        dc.b    $0D,$B0,$64,$21,$18,$44,$18,$0B,$00,$00,$40,$00,$00,$04,$3E,$84
-        dc.b    $22,$D8,$08,$84,$22,$C0,$00,$E4,$62,$83,$58,$02,$00,$00,$00,$00
-        dc.b    $20,$00,$BE,$3E,$B0,$10,$7E,$38,$00,$00,$04,$00,$01,$00,$00,$00
-        dc.b    $01,$00,$00,$00,$01,$00,$00,$00,$01,$00,$00,$00,$00,$01,$00,$58
-        dc.b    $02,$00,$00,$00,$00,$00,$09,$04,$20,$00,$FF,$FF,$40,$80,$FF,$FF
+        dc.b    $55,$00,$05,$03,$20
+CalThresh1:
+        dc.b    $17                                      ; Byte compared with; read by Sub_2191E.
+        dc.b    $41,$41,$A0,$20,$20,$20,$20,$20,$20,$03,$04,$0E,$00,$08,$09
+ThermistorValue1:
+        dc.b    $02                                      ; Byte used with; read by Sub_32318.
+StartValue1:
+        dc.b    $08                                      ; Byte used with; read by Reset.
+        dc.b    $03,$04,$01,$0B,$0D,$06,$01,$12,$18
+CalValue1:
+        dc.b    $0D,$B0                                  ; Word used with; read by Sub_3060E.
+CalValue2:
+        dc.b    $64                                      ; Byte used with; read by Sub_30972.
+CalValue3:
+        dc.b    $21                                      ; Byte used with; read by Sub_31860.
+CalValue4:
+        dc.b    $18                                      ; Byte used with; read by Sub_31860.
+FuelEventValue1:
+        dc.b    $44                                      ; Byte used with; read by Sub_1148E, Sub_31860.
+CalValue5:
+        dc.b    $18                                      ; Byte used with; read by Sub_31860.
+CalValue6:
+        dc.b    $0B                                      ; Byte used with; read by Sub_31860.
+Options0328:
+        dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $00
+EventFlag1:
+        dc.b    $40                                      ; Byte tested; read by Isr_GPT_OC4, Isr_GPT_IC1, Reset +11.
+Options032B:
+        dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options032C:
+        dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options032D:
+        dc.b    $04                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options032E:
+        dc.b    $3E                                      ; Option byte (global configuration); bits used are listed with their names where known
+EventFlag2:
+        dc.b    $84                                      ; Byte tested; read by Isr_GPT_IC1, Reset, Sub_0DBCA +53.
+Options0330:
+        dc.b    $22                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options0331:
+        dc.b    $D8                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options0332:
+        dc.b    $08                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options0333:
+        dc.b    $84                                      ; Option byte (global configuration); bits used are listed with their names where known
+StartFlag:
+        dc.b    $22                                      ; Byte tested; read by Isr_PIT, Reset, Sub_0E0B6 +8.
+Options0335:
+        dc.b    $C0                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $00
+Options0337:
+        dc.b    $E4                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options0338:
+        dc.b    $62                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options0339:
+        dc.b    $83                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options033A:
+        dc.b    $58                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options033B:
+        dc.b    $02                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options033C:
+        dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options033D:
+        dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
+StartV06B8Flag:
+        dc.b    $00                                      ; Byte tested V06B8; read by Reset, Sub_155C8, Sub_20E1E +10.
+StartV06B9Flag:
+        dc.b    $00                                      ; Byte tested V06B9; read by Reset, Sub_20E1E, Sub_28D78.
+Options0340:
+        dc.b    $20                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $00
+ThermistorFlag1:
+        dc.b    $BE                                      ; Byte tested; read by Sub_32318.
+ThermistorFlag2:
+        dc.b    $3E                                      ; Byte tested; read by Sub_32318.
+ThermistorFlag3:
+        dc.b    $B0                                      ; Byte tested; read by Sub_32318.
+ThermistorFlag4:
+        dc.b    $10                                      ; Byte tested; read by Sub_32318.
+ThermistorFlag5:
+        dc.b    $7E                                      ; Byte tested; read by Sub_32318.
+ThermistorFlag6:
+        dc.b    $38                                      ; Byte tested; read by Sub_32318.
+ThermistorValue2:
+        dc.b    $00                                      ; Byte used with; read by Sub_32318.
+ThermistorValue3:
+        dc.b    $00                                      ; Byte used with; read by Sub_32318.
+ThermistorV0A2AInit:
+        dc.b    $04                                      ; Byte stored into V0A2A; read by Sub_32318.
+ThermistorV003FMask:
+        dc.b    $00                                      ; Byte mask for V003F; read by Sub_32318.
+ThermistorValue4:
+        dc.b    $01                                      ; Byte used with; read by Sub_32318.
+        dc.b    $00,$00,$00,$01,$00,$00,$00,$01,$00,$00,$00,$01,$00,$00,$00,$00
+ThrottleV0E01Thresh:
+        dc.b    $01                                      ; Byte compared with V0E01; read by Sub_2D272.
+EgrThresh1:
+        dc.b    $00                                      ; Byte compared with; read by Sub_39866.
+SensorBatteryTempThresh1:
+        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_39272.
+BattV0E02Thresh:
+        dc.b    $02                                      ; Byte compared with V0E02; read by Sub_2C3AC.
+EgrThresh2:
+        dc.b    $00                                      ; Byte compared with; read by Sub_22808.
+EgrThresh3:
+        dc.b    $00                                      ; Byte compared with; read by Sub_22808.
+EgrV0B59Thresh:
+        dc.b    $00                                      ; Byte compared with V0B59; read by Sub_22808.
+EgrV0B5AThresh:
+        dc.b    $00                                      ; Byte compared with V0B5A; read by Sub_22808.
+AfterBaroThresh1:
+        dc.b    $00                                      ; Byte compared with Baro; read by Sub_1E5A8.
+FieldV0DCEInit:
+        dc.b    $09                                      ; Byte stored into V0DCE; read by Sub_08DD4.
+FieldChargeDeficitThresh:
+        dc.b    $04                                      ; Byte compared with ChargeDeficit; read by Sub_08DD4.
+FieldValue1:
+        dc.b    $20                                      ; Byte used with; read by Sub_08DD4.
+EgrMonTimerThresh1:
+        dc.b    $00                                      ; Byte compared with EgrMonTimer; read by Sub_39D3E.
+PurgeCommandThresh:
+        dc.b    $FF                                      ; Byte compared with PurgeCommand; read by Sub_3D85E.
+PurgeSpeedThresh1:
+        dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_3D85E.
+PurgeBaroThresh:
+        dc.b    $40                                      ; Byte compared with Baro; read by Sub_3D85E.
+PurgeTrimLatchedThresh1:
+        dc.b    $80                                      ; Byte compared with PurgeTrimLatched; read by Sub_3ECC6.
+PurgeTrimLatchedThresh2:
+        dc.b    $FF                                      ; Byte compared with PurgeTrimLatched; read by Sub_3ECC6.
+PurgeRampThresh1:
+        dc.b    $FF                                      ; Byte compared with PurgeRamp; read by Sub_3ECC6.
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00
 
@@ -411,14 +537,101 @@ MapFilterRiseV0474:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$80,$00,$80,$00,$80,$00,$80,$00,$80,$00
-        dc.b    $80,$00,$00,$00,$00,$00,$00,$00,$00,$00,$64,$A4,$00,$00,$00,$00
-        dc.b    $80,$00,$00,$00,$00,$04,$80,$27,$00,$4E,$03,$8D,$02,$AC,$01,$FF
-        dc.b    $FF,$4D,$1C,$03,$42,$96,$42,$1C,$09,$03,$5E,$26,$5C,$0E,$02,$01
-        dc.b    $FF,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$FF,$00,$FF
-        dc.b    $00,$00,$00,$FF,$58,$FF,$FF,$00,$00,$00,$00,$FF,$FF,$FF,$FF,$00
-        dc.b    $80,$80,$80,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+FuelEventValue2:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_1148E.
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$80,$00,$80,$00
+        dc.b    $80,$00,$80,$00,$80,$00,$80,$00,$00,$00,$00,$00,$00,$00,$00
+IdleIacTargetCmdInit:
+        dc.b    $00                                      ; Byte stored into IacTargetCmd; read by Sub_19000.
+FanV0B12Thresh:
+        dc.b    $64                                      ; Byte compared with V0B12; read by Sub_3ADDE.
+ThermistorCoolantTempSlowInit:
+        dc.b    $A4                                      ; Byte stored into CoolantTempSlow; read by ProcessCoolantTemp.
+ThermistorValue5:
+        dc.b    $00                                      ; Byte used with; read by ProcessCoolantTemp.
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$00,$04,$80,$27,$00,$4E,$03,$8D,$02
+        dc.b    $AC,$01,$FF,$FF,$4D,$1C,$03,$42,$96,$42,$1C,$09
+StartThrottleClosedAdder:
+        dc.b    $03                                      ; Byte added to ThrottleClosed; read by Reset.
+ThrottleMapThresh:
+        dc.b    $5E                                      ; Byte compared with Map; read by Sub_2D272.
+ThrottleRpmThresh:
+        dc.b    $26                                      ; Byte compared with EngineRpm; read by Sub_2D272.
+StartThrottleClosedInit:
+        dc.b    $5C                                      ; Byte stored into ThrottleClosed; read by Reset, Sub_2D272, Sub_358DC.
+ThrottleV0A78Init:
+        dc.b    $0E                                      ; Byte stored into V0A78; read by Sub_2D272.
+ThrottleClosedValue:
+        dc.b    $02                                      ; Byte used with ThrottleClosed; read by Sub_2D272.
+ThrottleValue:
+        dc.b    $01                                      ; Byte used with; read by Sub_2D272.
+CalRpmOffset1:
+        dc.b    $FF,$00                                  ; Word subtracted from EngineRpm; read by Sub_2F800.
+CalRpmOffset2:
+        dc.b    $FF,$00                                  ; Word subtracted from EngineRpm; read by Sub_2F800.
+CalV0C08Thresh1:
+        dc.b    $FF,$00                                  ; Word compared with V0C08; read by Sub_2F800.
+CalOffset1:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
+CalOffset2:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
+CalOffset3:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
+StartV0C03Init:
+        dc.b    $00                                      ; Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10.
+CalV0C08Thresh2:
+        dc.b    $FF,$00                                  ; Word compared with V0C08; read by Sub_2F800.
+CalCoolantThresh1:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_2F800.
+SensorV0C0AInit1:
+        dc.b    $00                                      ; Byte stored into V0C0A; read by Sub_2FA52.
+SensorV0C0AInit2:
+        dc.b    $00                                      ; Byte stored into V0C0A; read by Sub_2FA52.
+CalV0C0DThresh:
+        dc.b    $00                                      ; Byte compared with V0C0D; read by Sub_2FB1E, Sub_2FD2A.
+CalCoolantThresh2:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_2FB1E.
+CalBatteryTempThresh1:
+        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_2FB1E.
+CalV0C0EThresh:
+        dc.b    $FF,$FF                                  ; Word compared with V0C0E; read by Sub_2FB1E.
+CalOffset4:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2FB1E.
+CalOffset5:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2FB1E.
+CalRpmOffset3:
+        dc.b    $FF,$FF                                  ; Word subtracted from EngineRpm; read by Sub_2FB1E.
+CalRpmValue:
+        dc.b    $FF,$FF                                  ; Word used with EngineRpm; read by Sub_2FB1E.
+CalV0C13Thresh:
+        dc.b    $00                                      ; Byte compared with V0C13; read by Sub_2FB1E.
+SensorV06E3Thresh:
+        dc.b    $80                                      ; Byte compared with V06E3; read by Sub_2DB56.
+SensorV06E2Thresh:
+        dc.b    $80                                      ; Byte compared with V06E2; read by Sub_2DB56.
+SensorV06E4Thresh:
+        dc.b    $80                                      ; Byte compared with V06E4; read by Sub_2DB56.
+AcCoolantThresh:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_2F06A.
+AcCutDelay:
+        dc.b    $00                                      ; A/C throttle logic: delay $0B53,Z at speed
+AcCutDelayLow:
+        dc.b    $00                                      ; A/C throttle logic: delay $0B53,Z below AcCutSpeed
+AcCutMapRise:
+        dc.b    $00                                      ; A/C throttle logic: MAP rise (from $0B54,Z) that sets bit 7 below speed AcCutSpeed
+AcLoopMask1:
+        dc.b    $00                                      ; Byte mask for MainLoopCounter; read by Sub_2F06A.
+AcCutSpeed:
+        dc.b    $00                                      ; A/C throttle logic: vehicle speed threshold
+AcCutThrottle:
+        dc.b    $00                                      ; A/C throttle logic: throttle that selects the larger MAP-drop limit
+AcCutMapDrop:
+        dc.b    $00                                      ; A/C throttle logic: MAP drop limit above throttle AcCutThrottle
+AcCutMapDropLow:
+        dc.b    $00                                      ; A/C throttle logic: MAP drop limit below throttle AcCutThrottle
+AcV0B55Thresh:
+        dc.b    $00                                      ; Byte compared with V0B55; read by Sub_2F06A.
 
 ;---------------------------------------------------------------------------------------------------
 ; AcThrottleUpper ($0471): 2D table, 1 points, unsigned
@@ -470,7 +683,15 @@ AcThrottleLowerSet:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$06,$0A,$80,$CA,$7F,$36
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+BattFactor:
+        dc.b    $06                                      ; Byte multiplied; read by Sub_2C3AC.
+BattV09C1Thresh:
+        dc.b    $0A                                      ; Byte compared with V09C1; read by Sub_2C3AC.
+BattThresh1:
+        dc.b    $80,$CA                                  ; Word compared with; read by Sub_2C3AC.
+BattThresh2:
+        dc.b    $7F,$36                                  ; Word compared with; read by Sub_2C3AC.
 
 ;---------------------------------------------------------------------------------------------------
 ; BattTempSoakLimit ($04A7): 2D table, 5 points, unsigned
@@ -495,7 +716,17 @@ BattTempSoakAdder:
         dc.b    6,$80                                    ; points, flags
         dc.b    0,0, 30,12, 75,27, 120,36, 180,41, 255,46 ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$24,$38,$4B,$00,$78
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+BattSpeedThresh:
+        dc.b    $24                                      ; Byte compared with VehicleSpeed; read by Sub_2C3AC.
+BattV0A5DThresh:
+        dc.b    $38                                      ; Byte compared with V0A5D; read by Sub_2C3AC.
+BattThresh3:
+        dc.b    $4B                                      ; Byte compared with; read by Sub_2C3AC.
+BattCount191msThresh:
+        dc.b    $00                                      ; Byte compared with Count191ms; read by Sub_2C3AC.
+BattV017BThresh:
+        dc.b    $78                                      ; Byte compared with V017B; read by Sub_2C3AC.
 
 ;---------------------------------------------------------------------------------------------------
 ; BattTempHeatFactor ($04CC): 2D table, 4 points, unsigned
@@ -508,10 +739,55 @@ BattTempHeatFactor:
         dc.b    4,$80                                    ; points, flags
         dc.b    110,255, 180,255, 221,230, 241,205       ; x, y
 
-        dc.b    $6B,$59,$7F,$75,$E2,$DD,$E5,$E0,$E2,$DD,$E5,$E0,$E2,$DD,$E5,$E0
-        dc.b    $39,$37,$3A,$39,$14,$0F,$EB,$E6,$E6,$E0,$E6,$E0,$EB,$E6,$E6,$E0
-        dc.b    $E6,$E0,$64,$5C,$38,$30,$64,$5C,$18,$10,$FE,$F1,$41,$4D,$6D,$05
-        dc.b    $18,$28,$FF,$58,$58,$FF,$FF
+FanThresh1:
+        dc.b    $6B                                      ; Byte compared with; read by Sub_39E54, Sub_3A614.
+FanAcSensorThresh1:
+        dc.b    $59                                      ; Byte compared with AcSensor; read by Sub_39E54, Sub_3A614.
+FanAcSensorThresh2:
+        dc.b    $7F                                      ; Byte compared with AcSensor; read by Sub_39E54, Sub_3A614.
+FanThresh2:
+        dc.b    $75                                      ; Byte compared with; read by Sub_39E54, Sub_3A614.
+        dc.b    $E2,$DD,$E5,$E0,$E2,$DD,$E5,$E0,$E2,$DD,$E5,$E0
+FanThresh3:
+        dc.b    $39                                      ; Byte compared with; read by Sub_39E54.
+FanThresh4:
+        dc.b    $37                                      ; Byte compared with; read by Sub_39E54.
+FanBusTempThresh1:
+        dc.b    $3A                                      ; Byte compared with BusTemp; read by Sub_39E54.
+FanThresh5:
+        dc.b    $39                                      ; Byte compared with; read by Sub_39E54.
+FanStageTimerThresh1:
+        dc.b    $14                                      ; Byte compared with FanStageTimer; read by Sub_39E54.
+FanStageTimerThresh2:
+        dc.b    $0F                                      ; Byte compared with FanStageTimer; read by Sub_39E54, Sub_3A336.
+        dc.b    $EB,$E6,$E6,$E0,$E6,$E0,$EB,$E6,$E6,$E0,$E6,$E0,$64,$5C,$38,$30
+        dc.b    $64,$5C,$18,$10
+FanValue1:
+        dc.b    $FE                                      ; Byte used with; read by Sub_3A6C8.
+IacCoolantThresh1:
+        dc.b    $F1                                      ; Byte compared with CoolantTemp; read by Sub_19808, Sub_3A6C8.
+FanBusTempThresh2:
+        dc.b    $41                                      ; Byte compared with BusTemp; read by Sub_3A6C8.
+FanOffset2:
+        dc.b    $4D                                      ; Byte subtracted from; read by Sub_3A6C8.
+FanRpmThresh:
+        dc.b    $6D                                      ; Byte compared with EngineRpm; read by Sub_3A6C8.
+FanV0B0AThresh:
+        dc.b    $05                                      ; Byte compared with V0B0A; read by Sub_3A6C8.
+FanValue2:
+        dc.b    $18                                      ; Byte used with; read by Sub_3A6C8.
+FanSpeedThresh3:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_3A6C8.
+FanV0B0BThresh:
+        dc.b    $FF                                      ; Byte compared with V0B0B; read by Sub_3A742.
+FanStartCoolantThresh:
+        dc.b    $58                                      ; Byte compared with StartCoolantTemp2; read by Sub_3A742.
+FanBatteryTempStartThresh:
+        dc.b    $58                                      ; Byte compared with BatteryTempStart; read by Sub_3A742.
+FanCoolantThresh2:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_3A742.
+FanSpeedThresh4:
+        dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_3A742.
 
 ;---------------------------------------------------------------------------------------------------
 ; FanAcDelaySpeed ($050D): 2D table, 5 points, unsigned
@@ -524,7 +800,25 @@ FanAcDelaySpeed:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,112, 16,96, 112,96, 160,48, 255,0      ; x, y
 
-        dc.b    $00,$00,$00,$6E,$6E,$6E,$00,$00,$00,$00,$00
+        dc.b    $00
+FanThresh6:
+        dc.b    $00                                      ; Byte compared with; read by Sub_3ADA8.
+FanPwmMinDuty:
+        dc.b    $00                                      ; PWM fan: minimum duty when running
+FanPwmCoolantTarget:
+        dc.b    $6E                                      ; PWM fan: coolant target (for $0801,Z not $0C/$0D)
+FanPwmCoolantTarget2:
+        dc.b    $6E                                      ; PWM fan: coolant target for $0801,Z = $0C or $0D
+FanPwmCoolantMax:
+        dc.b    $6E                                      ; PWM fan coolant loop runs below this coolant (above it: full duty)
+FanV0B16Init:
+        dc.b    $00,$00                                  ; Word stored into V0B16; read by Sub_3A8D2.
+FanPwmP:
+        dc.b    $00                                      ; PWM fan coolant loop: proportional gain
+FanPwmD:
+        dc.b    $00                                      ; PWM fan coolant loop: rate gain
+FanValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_3AD6E.
 
 ;---------------------------------------------------------------------------------------------------
 ; FanPwmStepCoolant ($0524): 2D table, 1 points, signed
@@ -537,8 +831,27 @@ FanPwmStepCoolant:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-1                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+FanValue6:
+        dc.b    $00                                      ; Byte used with; read by Sub_3AA44.
+FanAcSensorFilteredThresh1:
+        dc.b    $00                                      ; Byte compared with AcSensorFiltered; read by Sub_3AA44.
+FanV0B1CInit:
+        dc.b    $00,$00                                  ; Word stored into V0B1C; read by Sub_3AA44.
+FanFactor3:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_3AA44.
+FanFactor4:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_3AA44.
+FanValue7:
+        dc.b    $00                                      ; Byte used with; read by Sub_3AA44.
+FanAcSensorFilteredThresh2:
+        dc.b    $00                                      ; Byte compared with AcSensorFiltered; read by Sub_3AA44.
+FanAcOnTimeThresh:
+        dc.b    $00                                      ; Byte compared with AcOnTime; read by Sub_3AA44.
+FanSpeedThresh5:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_3AA44.
+FanValue8:
+        dc.b    $00                                      ; Byte used with; read by Sub_3AA44.
 
 ;---------------------------------------------------------------------------------------------------
 ; FanPwmStepAc ($053D): 2D table, 1 points, signed
@@ -551,22 +864,94 @@ FanPwmStepAc:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-1                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+FanValue9:
+        dc.b    $00                                      ; Byte used with; read by Sub_3ABFE.
+FanBusTempThresh3:
+        dc.b    $00                                      ; Byte compared with BusTemp; read by Sub_3ABFE.
+FanV0B29Init:
+        dc.b    $00,$00                                  ; Word stored into V0B29; read by Sub_3ABFE.
+FanFactor5:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_3ABFE.
+FanFactor6:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_3ABFE.
 
 ;---------------------------------------------------------------------------------------------------
-; FanPwmStepV09BF ($0551): 2D table, 1 points, signed
-; PWM fan (Sub_3ABFE): duty change against the PD term of $09BF,Z ($0B2C,Z)
+; FanPwmStepBusTemp ($0551): 2D table, 1 points, signed
+; PWM fan (Sub_3ABFE): duty change against the PD term of the bus temperature $09BF,Z (received on the serial bus) ($0B2C,Z)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3AC9A
 ;---------------------------------------------------------------------------------------------------
-FanPwmStepV09BF:
+FanPwmStepBusTemp:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-1                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$7F,$7F,$7F,$0F,$A0,$AB
-        dc.b    $E0,$02,$01,$FF,$4C,$F9,$F8,$BB,$80,$8A,$9B,$32,$0F,$12,$DC,$AE
-        dc.b    $6E,$FF,$00,$00,$00,$00,$00,$80,$FF,$05,$0C,$50,$03,$20
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+SensorBusTempThresh1:
+        dc.b    $7F                                      ; Byte compared with BusTemp; read by Sub_3ADFA.
+SensorBusTempThresh2:
+        dc.b    $7F                                      ; Byte compared with BusTemp; read by Sub_3ADFA.
+SensorThresh1:
+        dc.b    $7F                                      ; Byte compared with; read by Sub_3ADFA.
+IacSegRpmThresh1:
+        dc.b    $0F,$A0                                  ; Word compared with SegmentRpm; read by Sub_19808.
+SparkRpmThresh1:
+        dc.b    $AB,$E0                                  ; Word compared with EngineRpm; read by Sub_19808, Sub_39412.
+IacTimeThresh:
+        dc.b    $02                                      ; Byte compared with Count3s; read by Sub_19808.
+IacV0C24Init:
+        dc.b    $01                                      ; Byte stored into V0C24; read by Sub_19808.
+SensorV086DInit:
+        dc.b    $FF                                      ; Byte stored into V086D; read by Sub_3017C, Sub_3123A.
+SensorThrottleThresh2:
+        dc.b    $4C                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3017C, Sub_3123A.
+SparkCoolantThresh1:
+        dc.b    $F9                                      ; Byte compared with CoolantTemp; read by Sub_39412.
+SparkCoolantThresh2:
+        dc.b    $F8                                      ; Byte compared with CoolantTemp; read by Sub_39412.
+SparkRpmThresh2:
+        dc.b    $BB,$80                                  ; Word compared with EngineRpm; read by Sub_39412.
+SensorBatteryTempThresh2:
+        dc.b    $8A                                      ; Byte compared with BatteryTemp; read by Sub_39272.
+SensorBatteryTempThresh3:
+        dc.b    $9B                                      ; Byte compared with BatteryTemp; read by Sub_39272.
+SensorThresh2:
+        dc.b    $32                                      ; Byte compared with; read by Sub_39272.
+SensorThresh3:
+        dc.b    $0F                                      ; Byte compared with; read by Sub_39272.
+SensorThresh4:
+        dc.b    $12                                      ; Byte compared with; read by Sub_39272.
+IacAcSensorThresh:
+        dc.b    $DC                                      ; Byte compared with AcSensor; read by Sub_19808, Sub_39272.
+SensorThresh5:
+        dc.b    $AE                                      ; Byte compared with; read by Sub_39272.
+SparkCoolantThresh3:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_39412.
+SparkThrottleThresh1:
+        dc.b    $FF                                      ; Byte compared with ThrottleAboveClosed; read by Sub_39412.
+SparkRpmThresh3:
+        dc.b    $00                                      ; Byte compared with EngineRpm; read by Sub_39412.
+SparkV0C2FSwitch:
+        dc.b    $00                                      ; Byte tested (zero = off) V0C2F; read by Sub_39412.
+SparkThrottleAdder1:
+        dc.b    $00                                      ; Byte added to ThrottleAboveClosed; read by Sub_39412.
+SparkSpeedThresh1:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_39412.
+SparkSpeedThresh2:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_39412.
+SparkThrottleThresh2:
+        dc.b    $80                                      ; Byte compared with ThrottleAboveClosed; read by Sub_39412.
+SparkSpeedThresh3:
+        dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_39412.
+SparkThrottleAdder2:
+        dc.b    $05                                      ; Byte added to ThrottleAboveClosed; read by Sub_39412.
+SparkV0C2ESwitch:
+        dc.b    $0C                                      ; Byte tested (zero = off) V0C2E; read by Sub_39412.
+SensorV0C01Init:
+        dc.b    $50                                      ; Byte stored into V0C01; read by Sub_3AECC.
+SensorRpmThresh1:
+        dc.b    $03,$20                                  ; Word compared with EngineRpm; read by Sub_3AECC.
 
 ;---------------------------------------------------------------------------------------------------
 ; ResetCoolantInit ($0583): 2D table, 2 points, unsigned
@@ -579,8 +964,29 @@ ResetCoolantInit:
         dc.b    2,$80                                    ; points, flags
         dc.b    99,19, 210,10                            ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$58,$58,$FF,$58
-        dc.b    $58,$FF,$00,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+EgrBattTempMin:
+        dc.b    $58                                      ; EGR enable: battery temperature above this value
+EgrBattTempMax:
+        dc.b    $58                                      ; EGR enable: battery temperature below this value (once $0B31,Z bit 3 is set)
+EgrStartColdMax:
+        dc.b    $FF                                      ; At start: EGR stays off ($0B30,Z bit 2) at start coolant up to this value
+EgrStartWarmMax:
+        dc.b    $58                                      ; At start: EgrStartDelayCoolant applies up to this start coolant
+EgrCoolantOn:
+        dc.b    $58                                      ; EGR enable: coolant at or above this value sets $0B30,Z bit 4
+EgrCoolantOff:
+        dc.b    $FF                                      ; EGR enable: coolant at or above this value clears it again (window)
+EgrVacuumMin:
+        dc.b    $00                                      ; EGR enable: manifold vacuum above this value
+EgrVacuumHyst:
+        dc.b    $00                                      ; Vacuum hysteresis while EGR is off
+EgrMapHyst:
+        dc.b    $00                                      ; MAP hysteresis on EgrMapMinRpm while EGR is off
+EgrV0B32Thresh1:
+        dc.b    $00                                      ; Byte compared with V0B32; read by Sub_3969E.
+EgrV0B32Thresh2:
+        dc.b    $00                                      ; Byte compared with V0B32; read by Sub_3969E.
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrThrottleMax ($05A0): 2D table, 1 points, unsigned
@@ -633,9 +1039,55 @@ EgrStartDelayCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$58,$00
-        dc.b    $00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+EgrValue1:
+        dc.b    $00                                      ; Byte used with; read by Sub_39866.
+EgrDutyOverride:
+        dc.b    $00                                      ; EGR: when not zero the PID is bypassed (output $067D)
+EgrDutyFixed:
+        dc.b    $00                                      ; EGR: fixed PWM duty used while EgrDutyOverride is zero and this is not
+EgrValue3:
+        dc.b    $00                                      ; Byte used with; read by Sub_39866.
+EgrValue4:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_39866.
+EgrValue5:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_39866.
+EgrV0B34Adder:
+        dc.b    $00                                      ; Byte added to V0B34; read by Sub_39866.
+EgrMapValue:
+        dc.b    $00                                      ; Byte used with Map; read by Sub_39866.
+EgrPidP:
+        dc.b    $00                                      ; EGR PID: proportional gain
+EgrPidI:
+        dc.b    $00                                      ; EGR PID: integral gain
+EgrPidD:
+        dc.b    $00                                      ; EGR PID: derivative gain
+EgrPidDeadband:
+        dc.b    $00                                      ; EGR PID: position error below which the P and I terms are zero
+EgrTargetPosThresh1:
+        dc.b    $00                                      ; Byte compared with EgrTargetPos; read by Sub_22808.
+EgrThresh5:
+        dc.b    $00                                      ; Byte compared with; read by Sub_22808.
+EgrDutyThresh:
+        dc.b    $00                                      ; Byte compared with EgrDuty; read by Sub_39D3E.
+EgrV0B51Thresh:
+        dc.b    $00                                      ; Byte compared with V0B51; read by Sub_39D3E.
+StartV0040Init:
+        dc.b    $00                                      ; Byte stored into V0040; read by Reset.
+EgrThresh6:
+        dc.b    $00                                      ; Byte compared with; read by Sub_39D3E.
+EgrThresh7:
+        dc.b    $00                                      ; Byte compared with; read by Sub_39D3E.
+EgrCoolantThresh3:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_39D3E.
+EgrMonTimerThresh2:
+        dc.b    $00                                      ; Byte compared with EgrMonTimer; read by Sub_39D3E.
+EgrTargetPosThresh2:
+        dc.b    $00                                      ; Byte compared with EgrTargetPos; read by Sub_39D3E.
+EgrAdder2:
+        dc.b    $00                                      ; Byte added to; read by Sub_39D3E.
+EgrOffset:
+        dc.b    $00                                      ; Byte subtracted from; read by Sub_39D3E.
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrFlowFilterVacuum ($060F): 2D table, 1 points, unsigned
@@ -705,19 +1157,120 @@ EgrTarget:
         dc.b    255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255 ; row 15
         dc.b    255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255 ; row 16
 
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$6E,$00,$00,$FF,$00,$00
-        dc.b    $58,$00,$00,$7F,$80,$7F,$80,$7F,$80,$00,$AA,$FF,$FF,$DC,$FF,$DC
-        dc.b    $FF,$DC,$FF,$DC,$FF,$DC,$FF,$DC,$FF,$FF,$58,$58,$00,$FF,$FF,$00
-        dc.b    $00,$FF,$FF,$00,$00,$00,$00,$FF,$58,$FF,$FF,$FF,$00,$FF,$AA,$00
-        dc.b    $FF,$FF,$00,$00,$FF,$FF,$00,$00,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00
-        dc.b    $00,$00,$33,$00,$FF,$00,$00,$7F,$FF,$FF,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$6E,$00,$00,$00,$00,$00,$00,$FF,$00,$00,$00
+FlexLearnOptions:
+        dc.b    $00                                      ; Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836.
+FlexLearnFuelSumThresh1:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_17000, Sub_183C2.
+FlexLearnFuelSumThresh2:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_17000, Sub_183C2.
+        dc.b    $00,$00,$00,$00,$00,$6E,$00,$00,$FF,$00,$00,$58,$00,$00,$7F,$80
+        dc.b    $7F,$80,$7F,$80,$00
+FuelFlexLearnBaseThresh:
+        dc.b    $AA                                      ; Byte compared with FlexLearnBase; read by Sub_14802, Sub_2A0F0, Sub_2A302 +2.
+O2RunTimeThresh:
+        dc.b    $FF                                      ; Byte compared with RunTime; read by Sub_14802.
+        dc.b    $FF,$DC,$FF,$DC,$FF,$DC,$FF,$DC,$FF,$DC,$FF,$DC
+FlexLearnV0F3CThresh:
+        dc.b    $FF                                      ; Byte compared with V0F3C; read by Sub_17B7E, Sub_18BAA.
+FlexLearnFlexEthanolStartThresh:
+        dc.b    $FF                                      ; Byte compared with FlexEthanolStart; read by Sub_17B7E, Sub_18BAA.
+FlexLearnBatteryTempThresh:
+        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_17B7E, Sub_18BAA.
+FlexLearnCoolantThresh2:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_17B7E, Sub_18BAA.
+FlexLearnValue1:
+        dc.b    $00                                      ; Byte used with; read by Sub_17D44.
+FlexLearnV0F14Thresh:
+        dc.b    $FF,$FF                                  ; Word compared with V0F14; read by Sub_17B7E, Sub_18BAA.
+        dc.b    $00,$00
+FlexLearnV0F18Thresh:
+        dc.b    $FF                                      ; Byte compared with V0F18; read by Sub_17D44.
+FlexLearnV0F1AThresh:
+        dc.b    $FF                                      ; Byte compared with V0F1A; read by Sub_17D44.
+FlexLearnV0F19Thresh:
+        dc.b    $00                                      ; Byte compared with V0F19; read by Sub_17D44.
+        dc.b    $00,$00
+FlexLearnV0F28Thresh:
+        dc.b    $00,$FF                                  ; Word compared with V0F28; read by Sub_187E8.
+FlexLearnCoolantThresh3:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_17B7E, Sub_18BAA.
+        dc.b    $FF,$FF
+FlexLearnTimerInit:
+        dc.b    $FF                                      ; Byte stored into FlexLearnTimer; read by Sub_17000, Sub_17B7E, Sub_18BAA.
+FlexLearnPurgeRampThresh:
+        dc.b    $00                                      ; Byte compared with PurgeRamp; read by Sub_17B7E, Sub_17D44, Sub_183C2 +3.
+FuelFlexEthanolStartThresh:
+        dc.b    $FF                                      ; Byte compared with FlexEthanolStart; read by Sub_1879A.
+FlexLearnV01BBThresh:
+        dc.b    $AA                                      ; Byte compared with V01BB; read by Sub_17A48.
+FuelV01BEThresh:
+        dc.b    $00                                      ; Byte compared with V01BE; read by Sub_1879A.
+FlexLearnFactor1:
+        dc.b    $FF,$FF                                  ; Word multiplied; read by Sub_183C2.
+FlexLearnFactor2:
+        dc.b    $00,$00                                  ; Word multiplied; read by Sub_183C2.
+FlexLearnV0F35Thresh:
+        dc.b    $FF,$FF                                  ; Word compared with V0F35; read by Sub_183C2.
+FlexLearnV01C4Adder:
+        dc.b    $00                                      ; Byte added to V01C4; read by Sub_183C2, Sub_18836.
+FlexLearnV01C5Adder:
+        dc.b    $00                                      ; Byte added to V01C5; read by Sub_183C2.
+FlexLearnV01BCThresh:
+        dc.b    $FF                                      ; Byte compared with V01BC; read by Sub_17A48.
+FlexLearnV0F23Thresh:
+        dc.b    $FF                                      ; Byte compared with V0F23; read by Sub_183C2.
+FlexLearnV0F31Thresh:
+        dc.b    $FF,$FF                                  ; Word compared with V0F31; read by Sub_183C2.
+FlexLearnV0F33Thresh:
+        dc.b    $FF,$FF                                  ; Word compared with V0F33; read by Sub_183C2.
+FlexLearnFlexEthanolPrevThresh:
+        dc.b    $00                                      ; Byte compared with FlexEthanolPrev; read by Sub_183C2.
+FlexLearnFlexEthanolPrevAdder1:
+        dc.b    $00                                      ; Byte added to FlexEthanolPrev; read by Sub_183C2.
+FlexLearnFlexEthanolPrevAdder2:
+        dc.b    $00                                      ; Byte added to FlexEthanolPrev; read by Sub_183C2.
+FlexLearnFlexEthanolPrevOffset:
+        dc.b    $00                                      ; Byte subtracted from FlexEthanolPrev; read by Sub_183C2.
+        dc.b    $33,$00
+FlexLearnStartCoolantThresh1:
+        dc.b    $FF                                      ; Byte compared with StartCoolantTemp2; read by Sub_18836.
+FlexLearnFuelSumThresh3:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_18836.
+        dc.b    $7F
+FlexLearnTimerThresh:
+        dc.b    $FF                                      ; Byte compared with FlexLearnTimer; read by Sub_17B7E, Sub_18BAA.
+FlexLearnV0F2AInit:
+        dc.b    $FF                                      ; Byte stored into V0F2A; read by Sub_17B7E, Sub_17CF6, Sub_17D44 +2.
+        dc.b    $00
+FlexLearnV0F2DThresh:
+        dc.b    $00                                      ; Byte compared with V0F2D; read by Sub_17B7E, Sub_18BAA.
+        dc.b    $00
+FuelFactor:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_10A3A.
+        dc.b    $00
+FlexLearnFlexEthanolStartValue:
+        dc.b    $00                                      ; Byte used with FlexEthanolStart; read by Sub_17000, Sub_17FC4, Sub_18836.
+FlexLearnValue2:
+        dc.b    $00                                      ; Byte used with; read by Sub_18836.
+FlexLearnCoolantThresh4:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_18836.
+FlexLearnFuelSumThresh4:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_183C2.
+FlexLearnV0F2FThresh:
+        dc.b    $00,$00                                  ; Word compared with V0F2F; read by Sub_18836.
+        dc.b    $00
+FlexLearnThresh3:
+        dc.b    $00                                      ; Byte compared with; read by Sub_18836.
+FlexLearnV0F43Thresh:
+        dc.b    $FF,$00                                  ; Word compared with V0F43; read by Sub_18836.
+AfterStartFuelTimeThresh:
+        dc.b    $00,$00                                  ; Word compared with Count3s; read by Sub_10C00.
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnInit ($07DE): 2D table, 1 points, unsigned
 ; Flex-fuel learning: start value $01B5,Z against the ethanol value $01B4,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $07D1; $01B4,Z; $085E
+; Inputs: $07D1; FlexEthanolStart; $085E
 ; Read at $1705C, $1713C, $17462, $18098, $180E0, $18156, $18786, $18A5C and 1 more
 ;---------------------------------------------------------------------------------------------------
 FlexLearnInit:
@@ -795,7 +1348,7 @@ FlexLearnEthanolCurve:
 ; FlexLearnLevelFactor ($082E): 2D table, 1 points, unsigned
 ; Flex-fuel learning: value $0F26,Z against $019C,Z (probably fuel level)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $019C,Z
+; Inputs: FuelLevelScaled
 ; Read at $1825E
 ;---------------------------------------------------------------------------------------------------
 FlexLearnLevelFactor:
@@ -828,8 +1381,27 @@ FlexLearnLimitV006B2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,170                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$FF,$FE,$FF,$00,$FF,$FF,$FF
-        dc.b    $00,$AA,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+FlexLearnV01C3Adder:
+        dc.b    $00                                      ; Byte added to V01C3; read by Sub_18836.
+FlexLearnThresh4:
+        dc.b    $FF,$FE                                  ; Word compared with; read by Sub_18BAA.
+FlexLearnCoolantThresh5:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_17CF6, Sub_17D44, Sub_183C2 +3.
+        dc.b    $00
+FlexLearnFuelLevelScaledThresh:
+        dc.b    $FF                                      ; Byte compared with FuelLevelScaled; read by Sub_17FC4.
+        dc.b    $FF
+FlexLearnV0F3EThresh:
+        dc.b    $FF                                      ; Byte compared with V0F3E; read by Sub_17FC4, Sub_18836.
+FlexLearnV01B7Thresh:
+        dc.b    $00                                      ; Byte compared with V01B7; read by Sub_18836.
+FlexLearnBaseThresh:
+        dc.b    $AA                                      ; Byte compared with FlexLearnBase; read by Sub_17000, Sub_18836.
+O2Factor1:
+        dc.b    $FF                                      ; Byte multiplied; read by Sub_155C8.
+O2Value1:
+        dc.b    $FF                                      ; Byte used with; read by Sub_155C8.
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankEthanolScale ($0866): 2D table, 2 points, unsigned
@@ -1315,8 +1887,28 @@ WarmupMapScaleLowSpeed:
         dc.b    5,$80                                    ; points, flags
         dc.b    120,0, 166,64, 190,128, 206,192, 235,255 ; x, y
 
-        dc.b    $00,$82,$01,$04,$00,$C3,$01,$87,$63,$80,$58,$01,$58,$6E,$6E,$44
-        dc.b    $58
+        dc.b    $00,$82,$01,$04
+EventV0ABDThresh1:
+        dc.b    $00,$C3                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
+EventV0ABDThresh2:
+        dc.b    $01,$87                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
+CrankFuelCrankCoolantThresh:
+        dc.b    $63                                      ; Byte compared with CrankCoolant; read by Sub_123C0.
+CrankFuelThrottleThresh:
+        dc.b    $80                                      ; Byte compared with ThrottleAboveClosed; read by Sub_123C0.
+StartCoolantThresh1:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Reset, CalcEngineRpm.
+        dc.b    $01
+FuelEventCoolantThresh1:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_12680.
+FuelEventValue3:
+        dc.b    $6E                                      ; Byte used with; read by Sub_12680.
+FuelEventValue4:
+        dc.b    $6E                                      ; Byte used with; read by Sub_12680.
+CrankFuelValue:
+        dc.b    $44                                      ; Byte used with; read by Sub_123C0, Sub_12680.
+CrankFuelBatteryTempThresh:
+        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_123C0.
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankPulseCoolantFactor ($0A83): 2D table, 2 points, unsigned
@@ -1494,7 +2086,8 @@ CrankCoolantAdder:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,18, 5,40, 9,85                         ; x, y
 
-        dc.b    $80
+CrankFuelCoolantThresh:
+        dc.b    $80                                      ; Byte compared with CoolantTemp; read by Sub_123C0.
 
 ;---------------------------------------------------------------------------------------------------
 ; InjectorDeadTime ($0B74): 2D table, 5 points, unsigned
@@ -1507,7 +2100,25 @@ InjectorDeadTime:
         dc.b    5,$80                                    ; points, flags
         dc.b    97,100, 113,71, 194,28, 227,21, 255,15   ; x, y
 
-        dc.b    $FF,$FF,$00,$6E,$00,$00,$6C,$00,$28,$00,$28,$00,$28,$E3,$10,$38
+        dc.b    $FF,$FF,$00
+SensorCoolantThresh1:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_0EB62.
+SensorValue1:
+        dc.b    $00                                      ; Byte used with; read by Sub_2C6DE.
+SensorV0DBEThresh:
+        dc.b    $00,$6C                                  ; Word compared with V0DBE; read by Sub_0EB62.
+SensorAdder1:
+        dc.b    $00,$28                                  ; Word added to; read by Sub_0EB62.
+SensorAdder2:
+        dc.b    $00,$28                                  ; Word added to; read by Sub_0EB62.
+SensorAdder3:
+        dc.b    $00,$28                                  ; Word added to; read by Sub_0EB62.
+SensorVoltsThresh1:
+        dc.b    $E3                                      ; Byte compared with BatteryVolts2; read by Sub_0EB62.
+SensorRpmThresh2:
+        dc.b    $10                                      ; Byte compared with EngineRpm; read by Sub_0EB62.
+SensorTimeThresh1:
+        dc.b    $38                                      ; Byte compared with Count3s; read by Sub_0EB62.
 PartThrottleFuelK:
         dc.b    $02                                      ; K factor of the part-throttle base pulse width: (MAP - offset) * (256 + K) / 16
 PartThrottleFuelMapOffset:
@@ -1516,7 +2127,18 @@ WotFuelK:
         dc.b    $30                                      ; K factor of the WOT base pulse width
 WotFuelMapOffset:
         dc.b    $0F                                      ; MAP offset of the WOT base pulse width
-        dc.b    $01,$64,$58,$64,$01,$40,$01,$40
+IdleIacTargetThresh:
+        dc.b    $01                                      ; Byte compared with IacTarget; read by Sub_1B970.
+IdleV0C17Offset:
+        dc.b    $64                                      ; Byte subtracted from V0C17; read by Sub_1B970, Sub_3B0BA.
+SensorStartCoolantThresh:
+        dc.b    $58                                      ; Byte compared with StartCoolantTemp2; read by Sub_3AF4C.
+SensorV0C20Offset:
+        dc.b    $64                                      ; Byte subtracted from V0C20; read by Sub_3AF4C, Sub_3B0BA.
+IdleValue4:
+        dc.b    $01,$40                                  ; Word used with; read by Sub_1B970, Sub_3B0BA.
+SensorValue2:
+        dc.b    $01,$40                                  ; Word used with; read by Sub_3AF4C, Sub_3B0BA.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0B9C ($0B9C): 2D table, 4 points, unsigned
@@ -1527,10 +2149,47 @@ Tab2D_0B9C:
         dc.b    4,$80                                    ; points, flags
         dc.b    0,255, 40,246, 81,237, 127,228           ; x, y
 
-        dc.b    $30,$00,$43,$00,$2D,$4D,$14,$21,$22,$14,$22,$24,$18,$24,$24,$FC
-        dc.b    $08,$24,$30,$00,$43,$00,$2D,$4D,$14,$21,$22,$14,$22,$24,$14,$24
-        dc.b    $24,$CD,$04,$02,$00,$24,$24,$24,$24,$24,$24,$00,$00,$00,$00,$00
-        dc.b    $00,$FF,$FF,$FF,$00,$00
+FuelValue1:
+        dc.b    $30,$00                                  ; Word used with; read by Sub_12B6C.
+FuelValue2:
+        dc.b    $43,$00                                  ; Word used with; read by Sub_12B6C.
+FuelValue3:
+        dc.b    $2D                                      ; Byte used with; read by Sub_12B6C.
+FuelValue4:
+        dc.b    $4D                                      ; Byte used with; read by Sub_12B6C.
+        dc.b    $14,$21,$22,$14,$22,$24,$18,$24,$24
+FuelEventCoolantThresh2:
+        dc.b    $FC                                      ; Byte compared with CoolantTemp; read by Sub_112A8.
+FuelEventRpmThresh:
+        dc.b    $08                                      ; Byte compared with EngineRpm; read by Sub_112A8.
+FuelEventV077BInit:
+        dc.b    $24                                      ; Byte stored into V077B; read by Sub_112A8.
+FuelValue5:
+        dc.b    $30,$00                                  ; Word used with; read by Sub_12B6C.
+FuelValue6:
+        dc.b    $43,$00                                  ; Word used with; read by Sub_12B6C.
+FuelValue7:
+        dc.b    $2D                                      ; Byte used with; read by Sub_12B6C.
+FuelValue8:
+        dc.b    $4D                                      ; Byte used with; read by Sub_12B6C.
+        dc.b    $14,$21,$22,$14,$22,$24,$14,$24,$24
+FuelCoolantThresh1:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_12B6C.
+FuelValue9:
+        dc.b    $04                                      ; Byte used with; read by Sub_12B6C.
+FuelValue10:
+        dc.b    $02,$00                                  ; Word used with; read by Sub_12B6C.
+        dc.b    $24,$24,$24,$24,$24,$24,$00,$00,$00,$00,$00,$00
+FuelCoolantThresh2:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_111E0.
+FuelRpmThresh1:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_111E0.
+FuelMapThresh1:
+        dc.b    $FF                                      ; Byte compared with Map; read by Sub_111E0.
+FuelTimeThresh1:
+        dc.b    $00                                      ; Byte compared with Count3s; read by Sub_111E0.
+FuelFlag:
+        dc.b    $00                                      ; Byte tested; read by Sub_111E0, FinishFuelPulse.
 
 ;---------------------------------------------------------------------------------------------------
 ; HotEngineEnrich ($0BDC): 2D table, 1 points, unsigned
@@ -1711,7 +2370,27 @@ Tab2D_10EA:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$0E,$05,$2C,$80,$58,$20,$01,$35,$01,$1A
+        dc.b    $FF,$FF,$FF,$FF
+FuelThresh1:
+        dc.b    $0E                                      ; Byte compared with; read by Sub_104AE.
+FuelOffset1:
+        dc.b    $05                                      ; Byte subtracted from; read by Sub_104AE.
+FuelValue11:
+        dc.b    $2C                                      ; Byte used with; read by Sub_104AE.
+FuelDecelFuelRampThresh:
+        dc.b    $80                                      ; Byte compared with DecelFuelRamp; read by Sub_104AE.
+FuelRpmThresh2:
+        dc.b    $58                                      ; Byte compared with EngineRpm; read by Sub_104AE.
+FuelV0777Offset1:
+        dc.b    $20                                      ; Byte subtracted from V0777; read by Sub_104AE.
+FuelDecelFuelRampAdder:
+        dc.b    $01                                      ; Byte added to DecelFuelRamp; read by Sub_104AE.
+FuelV0777Offset2:
+        dc.b    $35                                      ; Byte subtracted from V0777; read by Sub_104AE.
+FuelDecelFuelRampOffset:
+        dc.b    $01                                      ; Byte subtracted from DecelFuelRamp; read by Sub_104AE.
+SensorValue3:
+        dc.b    $1A                                      ; Byte used with; read by Sub_161C2.
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelBaroMapOffset ($10FC): 2D table, 3 points, unsigned
@@ -1775,8 +2454,31 @@ FuelEventRpmAdder:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$7C,$04,$FF,$00,$00,$58,$58,$00,$01,$00,$00,$00
-        dc.b    $03,$00,$00
+        dc.b    $FF,$FF,$FF,$FF
+SensorThrottleClosedAdder:
+        dc.b    $7C                                      ; Byte added to ThrottleClosed; read by Sub_2D428.
+SensorOffset1:
+        dc.b    $04                                      ; Byte subtracted from; read by Sub_2D428.
+SensorSpeedThresh1:
+        dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_2D428.
+SensorV081BThresh1:
+        dc.b    $00                                      ; Byte compared with V081B; read by Sub_2D428.
+SensorV081BThresh2:
+        dc.b    $00                                      ; Byte compared with V081B; read by Sub_2D428.
+FuelCoolantThresh3:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_102FE.
+FuelRpmThresh3:
+        dc.b    $58                                      ; Byte compared with EngineRpm; read by Sub_102FE.
+FuelWotTimeEnrichAdder:
+        dc.b    $00                                      ; Byte added to WotTimeEnrich; read by Sub_102FE.
+FuelV081AOffset:
+        dc.b    $01                                      ; Byte subtracted from V081A; read by Sub_102FE.
+FuelV07ADThresh:
+        dc.b    $00,$00                                  ; Word compared with V07AD; read by Sub_102FE.
+FuelThresh2:
+        dc.b    $00,$03                                  ; Word compared with; read by Sub_102FE.
+FuelV07ABThresh:
+        dc.b    $00,$00                                  ; Word compared with V07AB; read by Sub_102FE.
 
 ;---------------------------------------------------------------------------------------------------
 ; WotTimeEnrichMax ($1277): 2D table, 1 points, unsigned
@@ -1866,7 +2568,8 @@ AfterStartDecay:
         dc.b    16,12,4,3,0,0,0,0,0                      ; row 7
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 8
 
-        dc.b    $FF
+WarmupFactor:
+        dc.b    $FF                                      ; Byte multiplied; read by Sub_10D5E.
 
 ;---------------------------------------------------------------------------------------------------
 ; WarmupRpmFactor ($144D): 2D table, 1 points, unsigned
@@ -1933,7 +2636,8 @@ WarmupMapCoolantLowSpeed:
         dc.b    80,62,27,23,11,8,5,2,0                   ; row 7
         dc.b    80,62,27,23,11,8,5,2,0                   ; row 8
 
-        dc.b    $FF
+WarmupValue:
+        dc.b    $FF                                      ; Byte used with; read by Sub_10D5E.
 
 ;---------------------------------------------------------------------------------------------------
 ; WarmupRpmFactorIdle ($151A): 2D table, 1 points, unsigned
@@ -1987,7 +2691,12 @@ WarmupMapCoolant:
         dc.b    66,53,20,17,14,12,10,5,0                 ; row 7
         dc.b    66,53,20,17,14,12,10,5,0                 ; row 8
 
-        dc.b    $3F,$04,$1F
+ThrottleV0C47Thresh:
+        dc.b    $3F                                      ; Byte compared with V0C47; read by Sub_10D24, Sub_2D272.
+FuelThrottleThresh:
+        dc.b    $04                                      ; Byte compared with ThrottleAboveClosed; read by Sub_10D24.
+FuelLoopMask:
+        dc.b    $1F                                      ; Byte mask for MainLoopCounter; read by Sub_10D24.
 
 ;---------------------------------------------------------------------------------------------------
 ; WarmupIdleTimeFactor ($15E1): 2D table, 2 points, unsigned
@@ -2046,7 +2755,9 @@ BaroFuel:
         dc.b    3,$80                                    ; points, flags
         dc.b    84,13, 102,9, 117,0                      ; x, y
 
-        dc.b    $FF,$FF,$00
+        dc.b    $FF,$FF
+WarmupBatteryTempStartThresh:
+        dc.b    $00                                      ; Byte compared with BatteryTempStart; read by Sub_10D5E.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab3D_165D ($165D): 3D table, 5 rows x 5 columns, unsigned
@@ -2077,7 +2788,26 @@ Tab3D_167E:
         dc.b    255,255,255,255,255                      ; row 3
         dc.b    255,255,255,255,255                      ; row 4
 
-        dc.b    $FF,$FF,$38,$92,$00,$00,$00,$00,$00,$00
+StartCoolantThresh2:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Reset.
+StartAirTempThresh:
+        dc.b    $FF                                      ; Byte compared with AirTemp; read by Reset.
+FuelRpmThresh4:
+        dc.b    $38                                      ; Byte compared with EngineRpm; read by Sub_11074.
+FuelMapThresh2:
+        dc.b    $92                                      ; Byte compared with Map; read by Sub_11074.
+FuelV07DCThresh:
+        dc.b    $00                                      ; Byte compared with V07DC; read by Sub_0C5B4, Sub_11074.
+FuelV07DBThresh:
+        dc.b    $00                                      ; Byte compared with V07DB; read by Sub_0C5B4, Sub_11074.
+FuelIdleFuelRampOffset:
+        dc.b    $00                                      ; Byte subtracted from IdleFuelRamp; read by Sub_11074.
+FuelIdleFuelRampAdder:
+        dc.b    $00                                      ; Byte added to IdleFuelRamp; read by Sub_11074.
+FuelTimeThresh2:
+        dc.b    $00                                      ; Byte compared with Count3s; read by Sub_11074.
+FuelV0812Thresh:
+        dc.b    $00                                      ; Byte compared with V0812; read by CheckPowerDown, Sub_11074, CalcEngineRpm +2.
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleEnrichSoakTime ($16A9): 2D table, 3 points, unsigned
@@ -2125,7 +2855,32 @@ IdleEnrichEthanolAirTemp:
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 7
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 8
 
-        dc.b    $04,$01,$28,$02,$01,$AA,$58,$03,$C3,$04,$05,$E6,$00
+SensorAdder4:
+        dc.b    $04                                      ; Byte added to; read by Sub_2C7FE.
+SensorOffset2:
+        dc.b    $01                                      ; Byte subtracted from; read by Sub_2C7FE.
+O2FlexEthanolThresh:
+        dc.b    $28                                      ; Byte compared with FlexEthanol; read by Sub_15F5C.
+O2Adder1:
+        dc.b    $02                                      ; Byte added to; read by Sub_15F5C.
+O2Adder2:
+        dc.b    $01                                      ; Byte added to; read by Sub_15F5C.
+StartFlexEthanolThresh:
+        dc.b    $AA                                      ; Byte compared with FlexEthanol; read by Reset.
+StartCoolantThresh3:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Reset.
+SensorEepromCountThresh:
+        dc.b    $03                                      ; Byte compared with EepromCount; read by CheckPowerDown.
+SensorValue4:
+        dc.b    $C3                                      ; Byte used with; read by Sub_15FF4.
+O2Value2:
+        dc.b    $04                                      ; Byte used with; read by Sub_15D56.
+O2Value3:
+        dc.b    $05                                      ; Byte used with; read by Sub_15D56.
+SensorValue5:
+        dc.b    $E6                                      ; Byte used with; read by Sub_15FF4.
+O2Value4:
+        dc.b    $00                                      ; Byte used with; read by Sub_15F5C.
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexEthanolFactor ($172F): 2D table, 1 points, unsigned
@@ -2222,8 +2977,29 @@ FlexEthanolCoolantFactor3:
         dc.b    64,64,64,64,64,64,64,64,64               ; row 7
         dc.b    64,64,64,64,64,64,64,64,64               ; row 8
 
-        dc.b    $00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00
+SensorV019FThresh:
+        dc.b    $00                                      ; Byte compared with V019F; read by Sub_2C7FE.
+SensorFuelLevelScaledThresh:
+        dc.b    $FF                                      ; Byte compared with FuelLevelScaled; read by Sub_2C7FE.
+SensorFlexLearnFuelSumThresh1:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE.
+SensorV019AThresh:
+        dc.b    $FF                                      ; Byte compared with V019A; read by Sub_2C7FE.
+SensorV01A4Thresh:
+        dc.b    $00,$00                                  ; Word compared with V01A4; read by Sub_2C7FE.
+SensorV019BThresh:
+        dc.b    $00                                      ; Byte compared with V019B; read by Sub_2C7FE.
+SensorValue6:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE.
+SensorFlexLearnFuelSumThresh2:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE.
+SensorValue7:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE.
+SensorValue8:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE.
+        dc.b    $00
+SensorFlexLearnFuelSumThresh3:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE.
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnBlend ($1901): 2D table, 1 points, unsigned
@@ -2249,7 +3025,9 @@ FlexLearnBlend2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$05
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+DecelMapOffset:
+        dc.b    $05                                      ; Byte subtracted from Map; read by FinishFuelPulse.
 
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleCloseMapOffset ($191A): 2D table, 2 points, unsigned
@@ -2312,7 +3090,9 @@ AccelMapBaro:
         dc.b    3,$80                                    ; points, flags
         dc.b    81,40, 101,51, 120,128                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$02
+        dc.b    $FF,$FF,$FF,$FF
+AccelFuelThrottleOffset:
+        dc.b    $02                                      ; Byte subtracted from Throttle; read by Sub_106EC.
 
 ;---------------------------------------------------------------------------------------------------
 ; AccelTpsRateLimit ($1955): 2D table, 5 points, unsigned
@@ -2386,7 +3166,11 @@ AccelRpmFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    47,163, 109,197, 172,245                 ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$00,$01
+        dc.b    $FF,$FF,$FF,$FF
+AccelFuelTimeThresh:
+        dc.b    $00                                      ; Byte compared with Count3s; read by Sub_106EC.
+AccelFuelV07C5Offset:
+        dc.b    $01                                      ; Byte subtracted from V07C5; read by Sub_106EC.
 
 ;---------------------------------------------------------------------------------------------------
 ; ResetCoolantFuelInit ($199F): 2D table, 1 points, unsigned
@@ -2399,7 +3183,13 @@ ResetCoolantFuelInit:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$BA,$02,$01
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+AccelFuelRpmThresh:
+        dc.b    $BA                                      ; Byte compared with EngineRpm; read by Sub_107EA.
+AccelFuelOffset:
+        dc.b    $02                                      ; Byte subtracted from; read by Sub_107EA.
+AccelFuelValue:
+        dc.b    $01                                      ; Byte used with; read by Sub_107EA.
 
 ;---------------------------------------------------------------------------------------------------
 ; TipInCoolantFactor ($19AC): 2D table, 4 points, unsigned
@@ -2441,8 +3231,29 @@ TipInBaroFactor:
         dc.b    $08,$08,$09,$0B,$0D,$0F,$11,$13,$15,$05,$05,$06,$07,$09,$0B,$0E
         dc.b    $11,$14,$03,$03,$03,$04,$06,$08,$0B,$0F,$12,$03,$03,$03,$03,$04
         dc.b    $06,$09,$0E,$11,$01,$01,$01,$01,$01,$03,$06,$0A,$0D,$01,$01,$01
-        dc.b    $01,$01,$03,$06,$0A,$0D,$02,$03,$01,$07,$05,$F8,$01,$1C,$0B,$32
-        dc.b    $CD
+        dc.b    $01,$01,$03,$06,$0A,$0D
+DecelMapLastThresh:
+        dc.b    $02                                      ; Byte compared with MapLast; read by Sub_12142.
+DecelThrottleLastThresh:
+        dc.b    $03                                      ; Byte compared with ThrottleLast; read by Sub_12142.
+DecelLeanTimerThresh:
+        dc.b    $01                                      ; Byte compared with DecelLeanTimer; read by Sub_12142.
+DecelFactor1:
+        dc.b    $07                                      ; Byte multiplied; read by Sub_12142.
+DecelFactor2:
+        dc.b    $05                                      ; Byte multiplied; read by Sub_12142.
+DecelLeanFuelThresh1:
+        dc.b    $F8                                      ; Byte compared with DecelLeanFuel; read by Sub_12142.
+DecelSpeedThresh:
+        dc.b    $01                                      ; Byte compared with VehicleSpeed; read by Sub_12142.
+DecelRpmThresh:
+        dc.b    $1C                                      ; Byte compared with EngineRpm; read by Sub_12142.
+FuelEventValue9:
+        dc.b    $0B                                      ; Byte used with; read by Sub_1202A.
+DecelLeanFuelThresh2:
+        dc.b    $32                                      ; Byte compared with DecelLeanFuel; read by Sub_12142.
+O2CoolantThresh1:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_14802.
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanThrottleCoolantFactor ($1A2B): 2D table, 5 points, unsigned
@@ -2565,7 +3376,12 @@ DecelLeanAirflow:
         dc.b    18,18,26,35,48,69,89,109,130,149,167,180,191,200,208,215,239 ; row 7
         dc.b    18,18,26,35,48,68,88,111,131,151,173,187,198,209,217,226,255 ; row 8
 
-        dc.b    $00,$FF,$FF,$00
+DecelLeanTimerInit:
+        dc.b    $00                                      ; Byte stored into DecelLeanTimer; read by Sub_12142.
+DecelThresh:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_12142.
+DecelIdleTargetAdder:
+        dc.b    $FF,$00                                  ; Word added to IdleTarget; read by Sub_12142.
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanTimeCoolant ($1B3D): 3D table, 9 rows x 9 columns, unsigned
@@ -2630,8 +3446,59 @@ IacFuelCoolant:
         dc.b    48,32,26,18,8                            ; row 3
         dc.b    48,32,28,20,8                            ; row 4
 
-        dc.b    $2A,$40,$FF,$FF,$05,$05,$FF,$25,$0F,$1E,$12,$FE,$25,$0F,$11,$2B
-        dc.b    $03,$1E,$1C,$8A,$28,$9F,$C7,$06,$41,$20,$17,$17
+SensorFactor1:
+        dc.b    $2A                                      ; Byte multiplied; read by Sub_10604.
+SensorV07D8Thresh:
+        dc.b    $40                                      ; Byte compared with V07D8; read by Sub_10604.
+SensorVacuumThresh:
+        dc.b    $FF                                      ; Byte compared with ManifoldVacuum; read by Sub_10604.
+SensorCoolantThresh2:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_10604.
+SensorFactor2:
+        dc.b    $05                                      ; Byte multiplied; read by Sub_10604.
+SensorFactor3:
+        dc.b    $05                                      ; Byte multiplied; read by Sub_10604.
+SensorRpmThresh3:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_10604.
+O2UpBank1RawThresh1:
+        dc.b    $25                                      ; Byte compared with O2UpBank1Raw; read by Sub_14802.
+O2UpBank1RawThresh2:
+        dc.b    $0F                                      ; Byte compared with O2UpBank1Raw; read by Sub_14802.
+        dc.b    $1E,$12
+O2Thresh1:
+        dc.b    $FE                                      ; Byte compared with; read by Sub_14802.
+O2DownBank1RawThresh1:
+        dc.b    $25                                      ; Byte compared with O2DownBank1Raw; read by Sub_14802.
+O2DownBank1RawThresh2:
+        dc.b    $0F                                      ; Byte compared with O2DownBank1Raw; read by Sub_14802.
+O2Thresh2:
+        dc.b    $11                                      ; Byte compared with; read by Sub_145F6.
+O2Thresh3:
+        dc.b    $2B                                      ; Byte compared with; read by Sub_145F6.
+O2Thresh4:
+        dc.b    $03                                      ; Byte compared with; read by Sub_145F6.
+O2Thresh5:
+        dc.b    $1E                                      ; Byte compared with; read by Sub_145F6.
+O2Thresh6:
+        dc.b    $1C                                      ; Byte compared with; read by Sub_145F6.
+ThermostatCoolant:
+        dc.b    $8A                                      ; Coolant the warm-up monitor waits for (also the closed-loop coolant limit)
+O2Value5:
+        dc.b    $28                                      ; Byte used with; read by Sub_14FD8.
+O2Value6:
+        dc.b    $9F                                      ; Byte used with; read by Sub_14FD8.
+O2StartCoolantThresh:
+        dc.b    $C7                                      ; Byte compared with StartCoolantTemp2; read by Sub_14740, Sub_14FD8.
+O2V07B5Offset:
+        dc.b    $06                                      ; Byte subtracted from V07B5; read by Sub_14740, Sub_14FD8.
+O2V07B8Thresh:
+        dc.b    $41                                      ; Byte compared with V07B8; read by Sub_14FD8.
+O2Value7:
+        dc.b    $20                                      ; Byte used with; read by Sub_14FD8.
+O2UpBank1RawThresh3:
+        dc.b    $17                                      ; Byte compared with O2UpBank1Raw; read by Sub_14FD8, Sub_18D42.
+O2UpBank2RawThresh:
+        dc.b    $17                                      ; Byte compared with O2UpBank2Raw; read by Sub_14FD8.
 
 ;---------------------------------------------------------------------------------------------------
 ; O2StartDelayCoolant ($1BEB): 2D table, 6 points, unsigned
@@ -2644,10 +3511,20 @@ O2StartDelayCoolant:
         dc.b    6,$80                                    ; points, flags
         dc.b    116,1, 124,1, 148,4, 202,3, 216,2, 227,2 ; x, y
 
-        dc.b    $FF,$FF,$02,$FE,$1E,$15,$03,$01,$80,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$03,$80,$00,$00,$14,$02,$18,$04,$03,$80,$00
-        dc.b    $00,$06,$02,$0F,$03,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF
-        dc.b    $00,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF
+O2V000EThresh1:
+        dc.b    $02                                      ; Byte compared with V000E; read by Sub_14802.
+O2Thresh7:
+        dc.b    $FE                                      ; Byte compared with; read by Sub_14FD8.
+O2PurgeRampThresh1:
+        dc.b    $1E                                      ; Byte compared with PurgeRamp; read by Sub_143C2, Sub_14802.
+O2V0754Init:
+        dc.b    $15                                      ; Byte stored into V0754; read by Sub_14FD8.
+O2V075CInit:
+        dc.b    $03                                      ; Byte stored into V075C; read by Sub_14802.
+        dc.b    $01,$80,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$03,$80
+        dc.b    $00,$00,$14,$02,$18,$04,$03,$80,$00,$00,$06,$02,$0F,$03,$01,$80
+        dc.b    $FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; O2PurgeLimit ($1C2E): 2D table, 4 points, unsigned
@@ -2687,25 +3564,168 @@ O2VoltageScale2:
         dc.b    6,$80                                    ; points, flags
         dc.b    1,50, 2,51, 5,107, 38,148, 46,204, 48,205 ; x, y
 
-        dc.b    $FF,$FF,$30,$70,$44,$C0,$02,$00,$28,$55,$04,$30,$70,$44,$C0,$02
-        dc.b    $00,$28,$55,$04,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$F3
-        dc.b    $F3,$F3,$F3,$F3,$F3,$F3,$F3,$F3,$F3,$F3,$1A,$1A,$1A,$1A,$1A,$1A
-        dc.b    $1A,$1A,$1A,$16,$16,$E6,$E6,$E6,$E6,$E8,$E6,$E6,$E6,$E6,$E6,$E6
+        dc.b    $FF,$FF
+O2Value8:
+        dc.b    $30,$70                                  ; Word used with; read by Sub_1430C.
+O2Value9:
+        dc.b    $44,$C0                                  ; Word used with; read by Sub_1430C.
+O2Value10:
+        dc.b    $02,$00                                  ; Word used with; read by Sub_1430C.
+O2Value11:
+        dc.b    $28                                      ; Byte used with; read by Sub_1430C.
+O2Value12:
+        dc.b    $55                                      ; Byte used with; read by Sub_1430C.
+O2Value13:
+        dc.b    $04                                      ; Byte used with; read by Sub_1430C.
+O2Value14:
+        dc.b    $30,$70                                  ; Word used with; read by Sub_1430C.
+O2Value15:
+        dc.b    $44,$C0                                  ; Word used with; read by Sub_1430C.
+O2Value16:
+        dc.b    $02,$00                                  ; Word used with; read by Sub_1430C.
+O2Value17:
+        dc.b    $28                                      ; Byte used with; read by Sub_1430C.
+O2Value18:
+        dc.b    $55                                      ; Byte used with; read by Sub_1430C.
+O2Value19:
+        dc.b    $04                                      ; Byte used with; read by Sub_1430C.
+        dc.b    $0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$F3,$F3,$F3,$F3,$F3
+        dc.b    $F3,$F3,$F3,$F3,$F3,$F3,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$1A,$16
+        dc.b    $16,$E6,$E6,$E6,$E6,$E8,$E6,$E6,$E6,$E6,$E6,$E6,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$20,$20,$20,$20
-        dc.b    $20,$20,$20,$20,$20,$0E,$0E,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D
-        dc.b    $10,$10,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$10,$10,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$7F,$FF,$81,$07,$06,$7F,$80,$14,$CD,$38,$78,$CD,$80
-        dc.b    $00,$50,$1F,$01,$28,$3F,$05,$E3,$B3,$46,$49,$0A,$8B,$8B,$8B,$8B
-        dc.b    $8B,$8B,$8B,$8B,$8B,$8B,$8B,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$08,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$A0,$6B,$0E,$00,$F2,$00
-        dc.b    $03,$00,$FD,$00,$00,$0E,$00,$02,$FF,$00,$00,$00,$00,$FF,$FF,$FF
-        dc.b    $01,$80,$FF,$51,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$CD,$0A
-        dc.b    $06,$CD,$28,$35,$48,$59,$69,$03,$FE,$34,$01,$06,$0A,$03,$80,$13
-        dc.b    $7D,$03,$00,$96,$14,$0A,$1A,$1A,$7F,$80,$7F,$EC,$14,$00,$32
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$20,$20,$20,$20,$20,$20,$20,$20
+        dc.b    $20,$0E,$0E,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$10,$10,$1D,$1D
+        dc.b    $1D,$1D,$1D,$1D,$1D,$1D,$1D,$10,$10,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+O2Thresh8:
+        dc.b    $7F,$FF                                  ; Word compared with; read by Sub_155C8.
+O2Thresh9:
+        dc.b    $81,$07                                  ; Word compared with; read by Sub_155C8.
+O2Value20:
+        dc.b    $06                                      ; Byte used with; read by Sub_15364.
+O2ShortTermTrim2Thresh1:
+        dc.b    $7F                                      ; Byte compared with ShortTermTrim2; read by Sub_155C8, Sub_2A496, Sub_2A664.
+O2ShortTermTrim2Thresh2:
+        dc.b    $80                                      ; Byte compared with ShortTermTrim2; read by Sub_155C8, Sub_2A07E, Sub_2A290.
+O2V07B9Thresh:
+        dc.b    $14                                      ; Byte compared with V07B9; read by Sub_14FD8, Sub_18D42.
+O2Value21:
+        dc.b    $CD                                      ; Byte used with; read by Sub_155C8.
+O2Thresh10:
+        dc.b    $38                                      ; Byte compared with; read by Sub_14FD8.
+O2Value22:
+        dc.b    $78                                      ; Byte used with; read by Sub_14FD8.
+O2Value23:
+        dc.b    $CD                                      ; Byte used with; read by Sub_155C8.
+O2Value24:
+        dc.b    $80                                      ; Byte used with; read by Sub_155C8.
+O2Thresh11:
+        dc.b    $00                                      ; Byte compared with; read by Sub_14FD8.
+        dc.b    $50,$1F,$01,$28,$3F,$05
+O2CoolantThresh3:
+        dc.b    $E3                                      ; Byte compared with CoolantTemp; read by Sub_1594A.
+O2ShortTermTrim1Thresh:
+        dc.b    $B3                                      ; Byte compared with ShortTermTrim1; read by Sub_1594A.
+O2SpeedThresh1:
+        dc.b    $46                                      ; Byte compared with VehicleSpeed; read by Sub_1594A.
+O2VacuumThresh:
+        dc.b    $49                                      ; Byte compared with ManifoldVacuum; read by Sub_1594A.
+O2ThrottleThresh:
+        dc.b    $0A                                      ; Byte compared with ThrottleAboveClosed; read by Sub_1594A.
+        dc.b    $8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00
+O2V0759Thresh:
+        dc.b    $08                                      ; Byte compared with V0759; read by Sub_1424C.
+        dc.b    $8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B,$8B
+O2Factor2:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_143C2.
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+O2Thresh12:
+        dc.b    $A0                                      ; Byte compared with; read by Sub_143C2, Sub_14802.
+O2Thresh13:
+        dc.b    $6B                                      ; Byte compared with; read by Sub_143C2, Sub_14802.
+O2Thresh14:
+        dc.b    $0E,$00                                  ; Word compared with; read by Sub_143C2.
+O2Thresh15:
+        dc.b    $F2,$00                                  ; Word compared with; read by Sub_143C2.
+O2Thresh16:
+        dc.b    $03,$00                                  ; Word compared with; read by Sub_143C2.
+O2Value25:
+        dc.b    $FD,$00                                  ; Word used with; read by Sub_143C2.
+O2V0712Value:
+        dc.b    $00                                      ; Byte used with V0712; read by Sub_143C2, Sub_14802, Sub_14FD8 +1.
+O2V075BInit:
+        dc.b    $0E                                      ; Byte stored into V075B; read by Sub_14802.
+O2Thresh17:
+        dc.b    $00,$02                                  ; Word compared with; read by Sub_143C2.
+O2V000EThresh2:
+        dc.b    $FF                                      ; Byte compared with V000E; read by Sub_143C2.
+O2Value26:
+        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
+O2Value27:
+        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
+O2Value28:
+        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
+O2Value29:
+        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
+O2Thresh18:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_14FD8.
+O2PurgeRampThresh2:
+        dc.b    $FF                                      ; Byte compared with PurgeRamp; read by Sub_14FD8.
+O2Thresh19:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_14802.
+        dc.b    $01,$80,$FF,$51,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+O2CoolantThresh4:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_14FD8, Sub_20BB4, Sub_20C24.
+O2V07AFInit:
+        dc.b    $0A                                      ; Byte stored into V07AF; read by Sub_14740.
+O2Value30:
+        dc.b    $06                                      ; Byte used with; read by Sub_14740, Sub_14FD8.
+O2CoolantThresh5:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_14740.
+        dc.b    $28,$35,$48,$59,$69
+O2Adder3:
+        dc.b    $03                                      ; Byte added to; read by Sub_1594A.
+O2Value31:
+        dc.b    $FE                                      ; Byte used with; read by Sub_1594A.
+O2Value32:
+        dc.b    $34                                      ; Byte used with; read by Sub_1594A.
+O2Adder4:
+        dc.b    $01                                      ; Byte added to; read by Sub_1594A.
+O2IdleTargetAdder1:
+        dc.b    $06                                      ; Byte added to IdleTarget; read by Sub_1430C, Sub_1594A.
+O2SpeedThresh2:
+        dc.b    $0A                                      ; Byte compared with VehicleSpeed; read by Sub_1430C, Sub_1594A.
+O2IdleTargetAdder2:
+        dc.b    $03                                      ; Byte added to IdleTarget; read by Sub_1594A.
+O2MapThresh1:
+        dc.b    $80                                      ; Byte compared with Map; read by Sub_15B20.
+O2MapThresh2:
+        dc.b    $13                                      ; Byte compared with Map; read by Sub_14FD8, Sub_15B20, Sub_22E06.
+O2RpmValue:
+        dc.b    $7D                                      ; Byte used with EngineRpm; read by Sub_15B20.
+O2Offset:
+        dc.b    $03                                      ; Byte subtracted from; read by Sub_15B20.
+O2V0780Thresh:
+        dc.b    $00,$96                                  ; Word compared with V0780; read by Sub_14FD8, Sub_15B20.
+        dc.b    $14,$0A
+O2Value33:
+        dc.b    $1A                                      ; Byte used with; read by Sub_15D56.
+O2Value34:
+        dc.b    $1A                                      ; Byte used with; read by Sub_15D56.
+O2V07B1Thresh1:
+        dc.b    $7F                                      ; Byte compared with V07B1; read by Sub_15D56, Sub_2A496, Sub_2A664.
+O2V07B1Thresh2:
+        dc.b    $80                                      ; Byte compared with V07B1; read by Sub_15D56, Sub_2A07E, Sub_2A290.
+TrimThresh1:
+        dc.b    $7F                                      ; Byte compared with; read by Sub_16244.
+TrimThresh2:
+        dc.b    $EC                                      ; Byte compared with; read by Sub_16244.
+O2V0750Switch:
+        dc.b    $14                                      ; Byte tested (zero = off) V0750; read by Sub_158B6.
+O2V07C8Thresh:
+        dc.b    $00,$32                                  ; Word compared with V07C8; read by Sub_158B6.
 
 ;---------------------------------------------------------------------------------------------------
 ; O2StepScale ($1D9E): 2D table, 4 points, unsigned
@@ -2744,7 +3764,9 @@ TrimLowerLimitRpm:
         dc.b    3,$20                                    ; points, flags
         dc.b    0,-1, 94,-1, 125,-1                      ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$00
+        dc.b    $FF,$FF,$FF,$FF
+StartV07EEValue:
+        dc.b    $00                                      ; Byte used with V07EE; read by Reset, Sub_10AEC.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1DC3 ($1DC3): 2D table, 1 points, unsigned
@@ -2766,8 +3788,22 @@ Tab2D_1DCD:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$40,$26,$28,$8A,$CD,$0F,$0F,$39,$01,$0D
-        dc.b    $01,$80,$14,$8A,$40,$28,$04,$02,$FF,$FE,$08,$08,$08,$08,$36,$14
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+AccelFuelOptions:
+        dc.b    $40                                      ; Option byte; bits tested: $40, $80. Read by Sub_107EA, CalcFuelPulse.
+        dc.b    $26,$28,$8A,$CD,$0F,$0F,$39,$01,$0D
+FuelMapThresh3:
+        dc.b    $01                                      ; Byte compared with Map; read by Sub_11C44.
+        dc.b    $80,$14,$8A,$40,$28,$04,$02,$FF,$FE
+FuelV04F0Init1:
+        dc.b    $08                                      ; Byte stored into V04F0; read by Sub_11C44.
+FuelV04F0Init2:
+        dc.b    $08                                      ; Byte stored into V04F0; read by Sub_11C44.
+FuelV04F0Init3:
+        dc.b    $08                                      ; Byte stored into V04F0; read by Sub_11C44.
+FuelV04F0Init4:
+        dc.b    $08                                      ; Byte stored into V04F0; read by Sub_11C44.
+        dc.b    $36,$14
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1DF1 ($1DF1): 2D table, 1 points, unsigned
@@ -2865,10 +3901,23 @@ RevLimit:
         dc.b    $C3
 RevLimitAlt:
         dc.b    $81                                      ; Rev limit, used while $0C31,Z bit 5 is clear
-        dc.b    $85,$81,$7E,$20,$1E,$05,$02,$FF,$3E,$0F,$1E,$11,$05,$23,$00,$01
-        dc.b    $1F,$02,$03,$1B,$01,$01,$16,$03,$02,$11,$02,$01,$00,$05,$05,$00
-        dc.b    $21,$42,$63,$85,$A6,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $85,$81,$7E,$20,$1E,$05
+SensorTimeThresh2:
+        dc.b    $02                                      ; Byte compared with Count3s; read by Sub_103FA.
+SensorCoolantThresh3:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_103FA.
+SensorThresh6:
+        dc.b    $3E                                      ; Byte compared with; read by Sub_103FA.
+SensorRpmThresh4:
+        dc.b    $0F                                      ; Byte compared with EngineRpm; read by Sub_103FA.
+SensorThresh7:
+        dc.b    $1E                                      ; Byte compared with; read by Sub_103FA.
+SensorThresh8:
+        dc.b    $11                                      ; Byte compared with; read by Sub_103FA.
+        dc.b    $05,$23,$00,$01,$1F,$02,$03,$1B,$01,$01,$16,$03,$02,$11,$02,$01
+        dc.b    $00,$05,$05,$00,$21,$42,$63,$85,$A6,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1EBC ($1EBC): 2D table, 5 points, unsigned
@@ -2909,10 +3958,105 @@ Tab2D_1EE0:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$90,$CD,$45,$00,$58,$59,$00,$00
-        dc.b    $7B,$33,$01,$84,$07,$04,$80,$70,$20,$10,$0A,$00,$29,$02,$0A,$10
-        dc.b    $B3,$C2,$BD,$1F,$00,$00,$39,$1A,$14,$01,$04,$00,$58,$FF,$FF,$CD
-        dc.b    $C0,$28,$01,$80,$18,$01,$28,$FB,$50,$FF,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+PurgeCoolantThresh1:
+        dc.b    $90                                      ; Byte compared with CoolantTemp; read by Sub_3DE9C, Sub_3E500.
+SensorCoolantThresh4:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_3DE9C.
+SensorValue9:
+        dc.b    $45                                      ; Byte used with; read by Sub_3DE9C.
+SensorV042BInit:
+        dc.b    $00                                      ; Byte stored into V042B; read by Sub_3DE9C.
+PurgeBatteryTempThresh1:
+        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_3DC64.
+PurgeBatteryTempThresh2:
+        dc.b    $59                                      ; Byte compared with BatteryTemp; read by Sub_3DC64.
+PurgeV0428Init:
+        dc.b    $00,$00                                  ; Word stored into V0428; read by Sub_3DC64.
+PurgeMapThresh:
+        dc.b    $7B                                      ; Byte compared with Map; read by Sub_3DC64.
+O2Thresh20:
+        dc.b    $33                                      ; Byte compared with; read by Sub_15D56.
+PurgeFactor1:
+        dc.b    $01,$84                                  ; Word multiplied; read by Sub_3E4CA.
+PurgeMask:
+        dc.b    $07                                      ; Byte mask for; read by Sub_3D85E.
+PurgeV0436Thresh:
+        dc.b    $04                                      ; Byte compared with V0436; read by Sub_3D85E.
+StartV042FInit:
+        dc.b    $80                                      ; Byte stored into V042F; read by Reset, Sub_3DC64, Sub_3DE9C.
+PurgeRampThresh2:
+        dc.b    $70                                      ; Byte compared with PurgeRamp; read by Sub_3D85E.
+PurgeRampThresh3:
+        dc.b    $20                                      ; Byte compared with PurgeRamp; read by Sub_3D85E.
+PurgeAdder1:
+        dc.b    $10                                      ; Byte added to; read by Sub_3D85E.
+PurgeAdder2:
+        dc.b    $0A                                      ; Byte added to; read by Sub_3D85E.
+PurgeValue1:
+        dc.b    $00                                      ; Byte used with; read by Sub_3D85E.
+PurgeV0450Thresh:
+        dc.b    $29                                      ; Byte compared with V0450; read by Sub_3D85E.
+PurgeTrimCountThresh1:
+        dc.b    $02                                      ; Byte compared with PurgeTrimCount; read by Sub_3D85E.
+PurgeTrimCountThresh2:
+        dc.b    $0A                                      ; Byte compared with PurgeTrimCount; read by Sub_3D85E.
+PurgeVacuumThresh:
+        dc.b    $10                                      ; Byte compared with ManifoldVacuum; read by Sub_3D85E.
+PurgeThresh1:
+        dc.b    $B3                                      ; Byte compared with; read by Sub_3D85E.
+PurgeTrimLatchedThresh3:
+        dc.b    $C2                                      ; Byte compared with PurgeTrimLatched; read by Sub_3D85E.
+PurgeTrimLatchedThresh4:
+        dc.b    $BD                                      ; Byte compared with PurgeTrimLatched; read by Sub_3D85E.
+PurgeLoopMask:
+        dc.b    $1F                                      ; Byte mask for MainLoopCounter; read by Sub_3D85E.
+PurgeValue2:
+        dc.b    $00                                      ; Byte used with; read by Sub_3E074.
+PurgeValue3:
+        dc.b    $00                                      ; Byte used with; read by Sub_3E074.
+PurgeValue4:
+        dc.b    $39                                      ; Byte used with; read by Sub_3E074.
+PurgeV0464Thresh:
+        dc.b    $1A                                      ; Byte compared with V0464; read by Sub_3E074.
+PurgeOffset1:
+        dc.b    $14                                      ; Byte subtracted from; read by Sub_3E074.
+PurgeV0465Init:
+        dc.b    $01                                      ; Byte stored into V0465; read by Sub_3E074.
+PurgeThresh2:
+        dc.b    $04                                      ; Byte compared with; read by Sub_3E074.
+PurgeValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_3E074.
+PurgeBatteryTempStartThresh:
+        dc.b    $58                                      ; Byte compared with BatteryTempStart; read by Sub_3D85E.
+PurgeFactor2:
+        dc.b    $FF                                      ; Byte multiplied; read by Sub_3D85E.
+PurgeRampStepThresh1:
+        dc.b    $FF                                      ; Byte compared with PurgeRampStep; read by Sub_3D85E.
+PurgeTrimLatchedThresh5:
+        dc.b    $CD                                      ; Byte compared with PurgeTrimLatched; read by Sub_3EB4C.
+PurgeTrimLatchedThresh6:
+        dc.b    $C0                                      ; Byte compared with PurgeTrimLatched; read by Sub_3EB4C.
+PurgeV046BInit:
+        dc.b    $28                                      ; Byte stored into V046B; read by Sub_3EB4C.
+PurgeFlowAdaptAdder:
+        dc.b    $01                                      ; Byte added to PurgeFlowAdapt; read by Sub_3EB4C.
+PurgeV046CThresh1:
+        dc.b    $80                                      ; Byte compared with V046C; read by Sub_3EB4C.
+PurgeFlowAdaptThresh1:
+        dc.b    $18                                      ; Byte compared with PurgeFlowAdapt; read by Sub_3EB4C.
+PurgeFlowAdaptOffset:
+        dc.b    $01                                      ; Byte subtracted from PurgeFlowAdapt; read by Sub_3EB4C.
+PurgeV046CThresh2:
+        dc.b    $28                                      ; Byte compared with V046C; read by Sub_3EB4C.
+PurgeFlowAdaptThresh2:
+        dc.b    $FB                                      ; Byte compared with PurgeFlowAdapt; read by Sub_3EB4C.
+PurgeV046DThresh:
+        dc.b    $50                                      ; Byte compared with V046D; read by Sub_3EB4C.
+PurgeRampStepThresh2:
+        dc.b    $FF                                      ; Byte compared with PurgeRampStep; read by Sub_3EB4C.
+PurgeRampStepThresh3:
+        dc.b    $00                                      ; Byte compared with PurgeRampStep; read by Sub_3EB4C.
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeFlowScale ($1F1F): 2D table, 9 points, unsigned
@@ -3009,8 +4153,60 @@ PurgeFlow:
         dc.b    190,186,155,150,142,140,139,137,0        ; row 7
         dc.b    190,190,190,152,129,114,114,113,0        ; row 8
 
-        dc.b    $A6,$26,$80,$80,$05,$4B,$00,$40,$05,$10,$80,$CD,$60,$0F,$FF,$40
-        dc.b    $61,$80,$E0,$E0,$23,$60,$F0,$F0,$19,$19,$32,$1A,$1A
+PurgeStartCoolantThresh:
+        dc.b    $A6                                      ; Byte compared with StartCoolantTemp2; read by Sub_3E500.
+PurgeRampThresh4:
+        dc.b    $26                                      ; Byte compared with PurgeRamp; read by Sub_3E500.
+PurgeValue6:
+        dc.b    $80                                      ; Byte used with; read by Sub_3E500.
+PurgeValue7:
+        dc.b    $80                                      ; Byte used with; read by Sub_3E500.
+PurgeV0448Thresh:
+        dc.b    $05,$4B                                  ; Word compared with V0448; read by Sub_3E500.
+PurgeValue8:
+        dc.b    $00                                      ; Byte used with; read by Sub_3E500.
+PurgeV0444Init1:
+        dc.b    $40                                      ; Byte stored into V0444; read by Sub_3E500.
+PurgeAdder3:
+        dc.b    $05                                      ; Byte added to; read by Sub_3E500.
+PurgeV0446Thresh:
+        dc.b    $10                                      ; Byte compared with V0446; read by Sub_3E500.
+PurgeV0444Thresh1:
+        dc.b    $80                                      ; Byte compared with V0444; read by Sub_3E500.
+PurgeV044CAdder:
+        dc.b    $CD                                      ; Byte added to V044C; read by Sub_3E500.
+PurgeV0447Thresh:
+        dc.b    $60                                      ; Byte compared with V0447; read by Sub_3E500.
+PurgeAdder4:
+        dc.b    $0F                                      ; Byte added to; read by Sub_3E500.
+PurgeV0444Thresh2:
+        dc.b    $FF                                      ; Byte compared with V0444; read by Sub_3E500.
+PurgeV0444Init2:
+        dc.b    $40                                      ; Byte stored into V0444; read by Sub_3E500.
+PurgeV044AThresh:
+        dc.b    $61,$80                                  ; Word compared with V044A; read by Sub_3E500.
+PurgeV07E8Init:
+        dc.b    $E0                                      ; Byte stored into V07E8; read by Sub_3E500.
+PurgeVaporPartInit:
+        dc.b    $E0                                      ; Byte stored into PurgeVaporPart; read by Sub_3E500.
+PurgeRampThresh5:
+        dc.b    $23                                      ; Byte compared with PurgeRamp; read by Sub_3E500.
+PurgeRampThresh6:
+        dc.b    $60                                      ; Byte compared with PurgeRamp; read by Sub_3E500.
+PurgeThresh3:
+        dc.b    $F0                                      ; Byte compared with; read by Sub_3E500.
+PurgeThresh4:
+        dc.b    $F0                                      ; Byte compared with; read by Sub_3E500.
+PurgeShortTermTrim1Thresh1:
+        dc.b    $19                                      ; Byte compared with ShortTermTrim1; read by Sub_3E500.
+PurgeValue9:
+        dc.b    $19                                      ; Byte used with; read by Sub_3E500.
+PurgeV044EThresh:
+        dc.b    $32                                      ; Byte compared with V044E; read by Sub_3E500.
+PurgeV07ECThresh1:
+        dc.b    $1A                                      ; Byte compared with V07EC; read by Sub_3E500.
+PurgeV07ECThresh2:
+        dc.b    $1A                                      ; Byte compared with V07EC; read by Sub_3E500.
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeLearnUpClosed ($2001): 2D table, 3 points, unsigned
@@ -3083,8 +4279,50 @@ PurgeFuelBase:
         dc.b    205,205,205,205,218,218,218,230,233      ; row 7
         dc.b    218,218,218,218,218,218,218,230,233      ; row 8
 
-        dc.b    $58,$1E,$1E,$0C,$04,$04,$05,$10,$0D,$FE,$33,$33,$33,$0A,$0A,$0A
-        dc.b    $CD,$F1,$1A,$58,$20,$14,$82,$35,$00,$C3
+FlexLearnStartCoolantThresh2:
+        dc.b    $58                                      ; Byte compared with StartCoolantTemp2; read by Sub_17FC4, Sub_3DE9C.
+PurgeSpeedThresh2:
+        dc.b    $1E                                      ; Byte compared with VehicleSpeed; read by Sub_3E500.
+PurgeSpeedThresh3:
+        dc.b    $1E                                      ; Byte compared with VehicleSpeed; read by Sub_3E500.
+StartV0801Thresh:
+        dc.b    $0C                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5.
+StartV043BValue:
+        dc.b    $04                                      ; Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4.
+StartV043CThresh:
+        dc.b    $04                                      ; Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4.
+O2V0439Thresh:
+        dc.b    $05                                      ; Byte compared with V0439; read by Sub_15B20.
+        dc.b    $10,$0D
+FlexLearnCoolantThresh6:
+        dc.b    $FE                                      ; Byte compared with CoolantTemp; read by Sub_17FC4, Sub_3DFCA.
+PurgeThresh5:
+        dc.b    $33                                      ; Byte compared with; read by Sub_3DD3C.
+PurgeThresh6:
+        dc.b    $33                                      ; Byte compared with; read by Sub_17A1C, Sub_3DD3C.
+PurgeThresh7:
+        dc.b    $33                                      ; Byte compared with; read by Sub_3DD3C.
+PurgeAdder5:
+        dc.b    $0A                                      ; Byte added to; read by Sub_3DD3C.
+PurgeAdder6:
+        dc.b    $0A                                      ; Byte added to; read by Sub_17A1C, Sub_3DD3C.
+PurgeAdder7:
+        dc.b    $0A                                      ; Byte added to; read by Sub_3DD3C.
+PurgeShortTermTrim1Thresh2:
+        dc.b    $CD                                      ; Byte compared with ShortTermTrim1; read by Sub_3E500.
+O2Value35:
+        dc.b    $F1                                      ; Byte used with; read by Sub_14802.
+SensorAdder5:
+        dc.b    $1A                                      ; Byte added to; read by Sub_3DFCA.
+SensorCoolantThresh5:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_3DEF8.
+PurgeV043EThresh:
+        dc.b    $20                                      ; Byte compared with V043E; read by Sub_3E344.
+CalOffset6:
+        dc.b    $14                                      ; Byte subtracted from; read by Sub_3DFB8.
+        dc.b    $82,$35
+EventV0ABDThresh3:
+        dc.b    $00,$C3                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSparkMin ($209F): 2D table, 2 points, signed
@@ -3110,47 +4348,70 @@ AfterStartSparkCap:
         dc.b    2,$80                                    ; points, flags
         dc.b    8,56, 9,126                              ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$4E,$20,$6F,$9B,$92,$7C,$61,$A8,$90,$14
-        dc.b    $14,$58,$00,$00,$00,$00,$00,$06,$01,$03,$02,$11,$11,$00,$14,$17
-        dc.b    $1A,$1D,$20,$26,$2C,$32,$38,$3E,$4B,$58,$71,$7E,$8A,$A3,$AF,$28
-        dc.b    $28,$28,$28,$2C,$2C,$2C,$30,$14,$14,$14,$44,$44,$44,$44,$44,$44
-        dc.b    $28,$28,$28,$28,$2C,$2C,$2C,$30,$14,$14,$14,$44,$44,$44,$44,$44
-        dc.b    $44,$28,$28,$28,$28,$2C,$2C,$2C,$30,$14,$14,$14,$44,$44,$44,$44
-        dc.b    $44,$44,$28,$28,$28,$28,$2C,$2C,$2C,$30,$14,$14,$14,$44,$44,$44
-        dc.b    $44,$44,$44,$28,$28,$28,$28,$2C,$2C,$30,$30,$1E,$1E,$1E,$44,$44
-        dc.b    $44,$44,$44,$44,$28,$28,$28,$28,$2C,$30,$34,$38,$28,$28,$32,$44
-        dc.b    $44,$44,$44,$44,$44,$28,$28,$28,$28,$39,$3E,$43,$44,$45,$46,$48
-        dc.b    $48,$48,$48,$48,$44,$44,$28,$28,$28,$28,$35,$3D,$3F,$40,$42,$44
-        dc.b    $48,$4A,$48,$45,$43,$44,$44,$28,$28,$28,$28,$30,$38,$3B,$3D,$40
-        dc.b    $42,$47,$47,$44,$42,$3E,$44,$44,$24,$24,$24,$28,$2D,$33,$39,$3C
-        dc.b    $3E,$40,$46,$44,$42,$3E,$3C,$40,$42,$1E,$1E,$1E,$27,$2A,$30,$36
-        dc.b    $39,$3B,$3D,$42,$44,$3F,$3D,$3A,$3C,$42,$18,$18,$18,$1E,$27,$2D
-        dc.b    $31,$35,$38,$3B,$3E,$3F,$3C,$3B,$3A,$3C,$42,$13,$13,$13,$16,$23
-        dc.b    $28,$2C,$31,$35,$38,$3D,$3D,$3B,$3A,$39,$3C,$42,$10,$10,$10,$14
-        dc.b    $1E,$23,$27,$2D,$31,$38,$3C,$3C,$3A,$38,$37,$3C,$42,$0E,$0E,$0E
-        dc.b    $0E,$1A,$1E,$23,$25,$2A,$30,$36,$34,$36,$36,$36,$38,$40,$04,$08
-        dc.b    $08,$08,$10,$19,$1E,$24,$2A,$2E,$32,$34,$32,$34,$34,$38,$40,$02
-        dc.b    $02,$02,$02,$04,$19,$14,$16,$20,$28,$32,$32,$32,$32,$32,$30,$30
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+AfterValue1:
+        dc.b    $4E,$20                                  ; Word used with; read by Sub_1E5A8.
+AfterValue2:
+        dc.b    $6F,$9B                                  ; Word used with; read by Sub_1E5A8.
+AfterV0ABEThresh:
+        dc.b    $92,$7C                                  ; Word compared with V0ABE; read by Sub_1E5A8.
+AfterValue3:
+        dc.b    $61,$A8                                  ; Word used with; read by Sub_1E5A8.
+AfterStartSparkCoolantMin:
+        dc.b    $90                                      ; AfterStartSparkCap applies above this coolant temperature
+        dc.b    $14,$14
+SensorCoolantThresh6:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_1E4E2.
+SensorRpmThresh5:
+        dc.b    $00                                      ; Byte compared with EngineRpm; read by Sub_1E4E2.
+SensorTimeThresh3:
+        dc.b    $00,$00                                  ; Word compared with Count3s; read by Sub_1E4E2.
+SensorV0D60Thresh:
+        dc.b    $00,$00                                  ; Word compared with V0D60; read by Sub_1E4E2.
+        dc.b    $06,$01
+MapV0D41Switch:
+        dc.b    $03                                      ; Byte tested (zero = off) V0D41; read by Sub_1DA26.
+MapAdder1:
+        dc.b    $02                                      ; Byte added to; read by Sub_1DA26.
         dc.b    $11,$11,$00,$14,$17,$1A,$1D,$20,$26,$2C,$32,$38,$3E,$4B,$58,$71
-        dc.b    $7E,$8A,$A3,$AF,$02,$02,$02,$02,$04,$19,$14,$16,$20,$28,$30,$32
-        dc.b    $34,$34,$32,$32,$30,$02,$02,$02,$02,$04,$07,$14,$1A,$1C,$26,$2C
-        dc.b    $2F,$32,$2F,$2F,$30,$2E,$02,$02,$02,$02,$03,$0E,$12,$15,$18,$1E
-        dc.b    $25,$2D,$2C,$2A,$2A,$2C,$2D,$00,$00,$00,$01,$02,$06,$0F,$14,$16
-        dc.b    $18,$1D,$24,$26,$24,$25,$2B,$2D,$00,$00,$00,$00,$02,$06,$0C,$08
-        dc.b    $16,$16,$1A,$1E,$22,$21,$24,$2A,$2E,$00,$00,$00,$00,$02,$06,$0B
-        dc.b    $10,$14,$14,$18,$1C,$22,$20,$23,$28,$2D,$00,$00,$00,$00,$02,$06
-        dc.b    $0A,$0A,$0A,$0E,$13,$18,$1D,$1E,$1F,$23,$2C,$00,$00,$00,$00,$02
-        dc.b    $02,$02,$04,$07,$0C,$12,$16,$1B,$1C,$1E,$23,$2A,$00,$00,$00,$00
-        dc.b    $02,$02,$02,$04,$04,$0B,$11,$14,$1B,$18,$1C,$22,$2C,$00,$00,$00
-        dc.b    $00,$02,$02,$02,$04,$04,$09,$0E,$13,$1A,$18,$1D,$23,$2B,$00,$00
-        dc.b    $00,$00,$02,$02,$02,$02,$02,$08,$0D,$12,$19,$19,$1C,$25,$2E,$00
-        dc.b    $00,$00,$00,$02,$02,$02,$02,$02,$06,$0D,$11,$19,$1B,$1A,$25,$2F
-        dc.b    $00,$00,$00,$00,$02,$02,$02,$02,$02,$05,$0D,$11,$19,$1B,$1A,$26
-        dc.b    $2C,$00,$00,$00,$00,$02,$02,$02,$02,$02,$03,$0B,$0F,$17,$18,$1A
-        dc.b    $23,$2C,$00,$00,$00,$00,$02,$02,$02,$02,$02,$02,$09,$0A,$16,$15
-        dc.b    $19,$21,$24,$00,$00,$00,$00,$02,$02,$02,$02,$02,$02,$08,$08,$0E
-        dc.b    $0D,$12,$1B,$16,$00,$00,$00,$00,$02,$02,$02,$02,$02,$02,$08,$08
-        dc.b    $0E,$0D,$12,$16,$16
+        dc.b    $7E,$8A,$A3,$AF,$28,$28,$28,$28,$2C,$2C,$2C,$30,$14,$14,$14,$44
+        dc.b    $44,$44,$44,$44,$44,$28,$28,$28,$28,$2C,$2C,$2C,$30,$14,$14,$14
+        dc.b    $44,$44,$44,$44,$44,$44,$28,$28,$28,$28,$2C,$2C,$2C,$30,$14,$14
+        dc.b    $14,$44,$44,$44,$44,$44,$44,$28,$28,$28,$28,$2C,$2C,$2C,$30,$14
+        dc.b    $14,$14,$44,$44,$44,$44,$44,$44,$28,$28,$28,$28,$2C,$2C,$30,$30
+        dc.b    $1E,$1E,$1E,$44,$44,$44,$44,$44,$44,$28,$28,$28,$28,$2C,$30,$34
+        dc.b    $38,$28,$28,$32,$44,$44,$44,$44,$44,$44,$28,$28,$28,$28,$39,$3E
+        dc.b    $43,$44,$45,$46,$48,$48,$48,$48,$48,$44,$44,$28,$28,$28,$28,$35
+        dc.b    $3D,$3F,$40,$42,$44,$48,$4A,$48,$45,$43,$44,$44,$28,$28,$28,$28
+        dc.b    $30,$38,$3B,$3D,$40,$42,$47,$47,$44,$42,$3E,$44,$44,$24,$24,$24
+        dc.b    $28,$2D,$33,$39,$3C,$3E,$40,$46,$44,$42,$3E,$3C,$40,$42,$1E,$1E
+        dc.b    $1E,$27,$2A,$30,$36,$39,$3B,$3D,$42,$44,$3F,$3D,$3A,$3C,$42,$18
+        dc.b    $18,$18,$1E,$27,$2D,$31,$35,$38,$3B,$3E,$3F,$3C,$3B,$3A,$3C,$42
+        dc.b    $13,$13,$13,$16,$23,$28,$2C,$31,$35,$38,$3D,$3D,$3B,$3A,$39,$3C
+        dc.b    $42,$10,$10,$10,$14,$1E,$23,$27,$2D,$31,$38,$3C,$3C,$3A,$38,$37
+        dc.b    $3C,$42,$0E,$0E,$0E,$0E,$1A,$1E,$23,$25,$2A,$30,$36,$34,$36,$36
+        dc.b    $36,$38,$40,$04,$08,$08,$08,$10,$19,$1E,$24,$2A,$2E,$32,$34,$32
+        dc.b    $34,$34,$38,$40,$02,$02,$02,$02,$04,$19,$14,$16,$20,$28,$32,$32
+        dc.b    $32,$32,$32,$30,$30,$11,$11,$00,$14,$17,$1A,$1D,$20,$26,$2C,$32
+        dc.b    $38,$3E,$4B,$58,$71,$7E,$8A,$A3,$AF,$02,$02,$02,$02,$04,$19,$14
+        dc.b    $16,$20,$28,$30,$32,$34,$34,$32,$32,$30,$02,$02,$02,$02,$04,$07
+        dc.b    $14,$1A,$1C,$26,$2C,$2F,$32,$2F,$2F,$30,$2E,$02,$02,$02,$02,$03
+        dc.b    $0E,$12,$15,$18,$1E,$25,$2D,$2C,$2A,$2A,$2C,$2D,$00,$00,$00,$01
+        dc.b    $02,$06,$0F,$14,$16,$18,$1D,$24,$26,$24,$25,$2B,$2D,$00,$00,$00
+        dc.b    $00,$02,$06,$0C,$08,$16,$16,$1A,$1E,$22,$21,$24,$2A,$2E,$00,$00
+        dc.b    $00,$00,$02,$06,$0B,$10,$14,$14,$18,$1C,$22,$20,$23,$28,$2D,$00
+        dc.b    $00,$00,$00,$02,$06,$0A,$0A,$0A,$0E,$13,$18,$1D,$1E,$1F,$23,$2C
+        dc.b    $00,$00,$00,$00,$02,$02,$02,$04,$07,$0C,$12,$16,$1B,$1C,$1E,$23
+        dc.b    $2A,$00,$00,$00,$00,$02,$02,$02,$04,$04,$0B,$11,$14,$1B,$18,$1C
+        dc.b    $22,$2C,$00,$00,$00,$00,$02,$02,$02,$04,$04,$09,$0E,$13,$1A,$18
+        dc.b    $1D,$23,$2B,$00,$00,$00,$00,$02,$02,$02,$02,$02,$08,$0D,$12,$19
+        dc.b    $19,$1C,$25,$2E,$00,$00,$00,$00,$02,$02,$02,$02,$02,$06,$0D,$11
+        dc.b    $19,$1B,$1A,$25,$2F,$00,$00,$00,$00,$02,$02,$02,$02,$02,$05,$0D
+        dc.b    $11,$19,$1B,$1A,$26,$2C,$00,$00,$00,$00,$02,$02,$02,$02,$02,$03
+        dc.b    $0B,$0F,$17,$18,$1A,$23,$2C,$00,$00,$00,$00,$02,$02,$02,$02,$02
+        dc.b    $02,$09,$0A,$16,$15,$19,$21,$24,$00,$00,$00,$00,$02,$02,$02,$02
+        dc.b    $02,$02,$08,$08,$0E,$0D,$12,$1B,$16,$00,$00,$00,$00,$02,$02,$02
+        dc.b    $02,$02,$02,$08,$08,$0E,$0D,$12,$16,$16
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrSpark ($2334): 3D table, 17 rows x 17 columns, signed
@@ -3260,7 +4521,16 @@ Tab3D_2566:
         dc.b    0,0,0,-6,-6,-6,-6,-8,-8                  ; row 3
         dc.b    0,0,0,-6,-6,-6,-6,-6,-6                  ; row 4
 
-        dc.b    $10,$71,$10,$10,$01,$90
+AfterV076DThresh:
+        dc.b    $10                                      ; Byte compared with V076D; read by Sub_1D448.
+AfterBaroThresh2:
+        dc.b    $71                                      ; Byte compared with Baro; read by Sub_1D448.
+AfterV0D19Thresh1:
+        dc.b    $10                                      ; Byte compared with V0D19; read by Sub_1D448.
+AfterV0D19Thresh2:
+        dc.b    $10                                      ; Byte compared with V0D19; read by Sub_1D448.
+AfterThresh:
+        dc.b    $01,$90                                  ; Word compared with; read by Sub_1D448.
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSparkCoolant ($25A5): 2D table, 1 points, unsigned
@@ -3366,7 +4636,11 @@ DecelSpark:
         dc.b    2,$20                                    ; points, flags
         dc.b    16,0, 21,4                               ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+HighSpeedSparkOff:
+        dc.b    $FF                                      ; Coarse vehicle speed below which HighSpeedSparkRpm stops (hysteresis)
+HighSpeedSparkOn:
+        dc.b    $FF                                      ; Coarse vehicle speed above which HighSpeedSparkRpm applies
 
 ;---------------------------------------------------------------------------------------------------
 ; HighSpeedSparkRpm ($269F): 2D table, 1 points, unsigned
@@ -3400,10 +4674,33 @@ HighSpeedSparkRpm:
         dc.b    $16,$1C,$1C,$1D,$22,$22,$26,$2E,$2C,$34,$38,$00,$00,$02,$04,$0A
         dc.b    $11,$15,$19,$1B,$1C,$1E,$20,$26,$2B,$2B,$32,$38,$00,$00,$00,$02
         dc.b    $05,$0D,$0E,$12,$16,$1A,$1A,$1B,$20,$20,$20,$20,$20,$00,$00,$00
-        dc.b    $00,$02,$05,$12,$12,$12,$12,$13,$1A,$1D,$1E,$20,$20,$20,$DA,$00
-        dc.b    $00,$00,$00,$04,$04,$04,$04,$00,$00,$04,$02,$4D,$01,$03,$00,$00
-        dc.b    $04,$00,$00,$00,$00,$00,$00,$01,$4D,$00,$04,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$DA
+        dc.b    $00,$02,$05,$12,$12,$12,$12,$13,$1A,$1D,$1E,$20,$20,$20
+SensorV0864Thresh:
+        dc.b    $DA                                      ; Byte compared with V0864; read by Sub_1DE6C.
+SparkEventSparkAdder1:
+        dc.b    $00                                      ; Byte added to EventSpark; read by Sub_1DB84.
+SparkEventSparkAdder2:
+        dc.b    $00                                      ; Byte added to EventSpark; read by Sub_1DB84.
+SparkOffset1:
+        dc.b    $00                                      ; Byte subtracted from; read by Sub_1DB84.
+SparkOffset2:
+        dc.b    $00                                      ; Byte subtracted from; read by Sub_1DB84.
+FuelEventSparkTimerInit1:
+        dc.b    $04                                      ; Byte stored into EventSparkTimer; read by Sub_11C44.
+FuelV0863Offset:
+        dc.b    $04                                      ; Byte subtracted from V0863; read by Sub_11C44.
+FuelEventSparkTimerInit2:
+        dc.b    $04                                      ; Byte stored into EventSparkTimer; read by Sub_11C44.
+FuelV0863Adder:
+        dc.b    $04                                      ; Byte added to V0863; read by Isr_GPT_IC4OC5, Sub_11C44.
+FuelEventSparkInit:
+        dc.b    $00                                      ; Byte stored into EventSpark; read by Sub_11C44.
+FuelV0862Init:
+        dc.b    $00                                      ; Byte stored into V0862; read by Sub_11C44.
+StartV0863Thresh:
+        dc.b    $04                                      ; Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44.
+        dc.b    $02,$4D,$01,$03,$00,$00,$04,$00,$00,$00,$00,$00,$00,$01,$4D,$00
+        dc.b    $04,$00,$00,$00,$00,$00,$00,$00,$00,$00,$DA
 
 ;---------------------------------------------------------------------------------------------------
 ; EventSparkThrottle ($2828): 2D table, 1 points, unsigned
@@ -3429,8 +4726,29 @@ EventSparkThrottle2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$04,$04,$52,$51,$1F,$20,$52,$51,$1F,$20
-        dc.b    $18
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+SparkV0865Init:
+        dc.b    $04                                      ; Byte stored into V0865; read by Sub_1DC20.
+SparkSpeedDampSparkOffset:
+        dc.b    $04                                      ; Byte subtracted from SpeedDampSpark; read by Sub_1DC20.
+SparkThrottleThresh3:
+        dc.b    $52                                      ; Byte compared with ThrottleAboveClosed; read by Sub_1DC20.
+SparkMapThresh1:
+        dc.b    $51                                      ; Byte compared with Map; read by Sub_1DC20.
+SparkSpeedThresh4:
+        dc.b    $1F                                      ; Byte compared with VehicleSpeed; read by Sub_1DC20.
+SparkThresh1:
+        dc.b    $20                                      ; Byte compared with; read by Sub_1DC20.
+SparkThrottleThresh4:
+        dc.b    $52                                      ; Byte compared with ThrottleAboveClosed; read by Sub_1DC20.
+SparkMapThresh2:
+        dc.b    $51                                      ; Byte compared with Map; read by Sub_1DC20.
+SparkSpeedThresh5:
+        dc.b    $1F                                      ; Byte compared with VehicleSpeed; read by Sub_1DC20.
+SparkSpeedThresh6:
+        dc.b    $20                                      ; Byte compared with VehicleSpeed; read by Sub_1DC20.
+SparkV00F1Thresh:
+        dc.b    $18                                      ; Byte compared with V00F1; read by Sub_1DC20.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedRpmRef ($2847): 2D table, 4 points, unsigned
@@ -3519,7 +4837,28 @@ SpeedDampI:
         dc.b    4,$80                                    ; points, flags
         dc.b    0,0, 12,6, 25,15, 49,36                  ; x, y
 
-        dc.b    $6B,$FF,$D2,$37,$06,$40,$2D,$50,$08,$02,$10,$04,$04
+TipInBaroMin:
+        dc.b    $6B                                      ; Tip-in retard runs above this barometric pressure
+TipInAirTempMin:
+        dc.b    $FF                                      ; Tip-in retard runs above this air temperature (with calibration bit $0330.5)
+TipInCoolantMin:
+        dc.b    $D2                                      ; Tip-in retard runs above this coolant temperature
+TipInMapMin:
+        dc.b    $37                                      ; Tip-in retard runs above this MAP
+TipInRpmBelowTarget:
+        dc.b    $06,$40                                  ; Tip-in retard window: engine rpm above idle target minus this value
+TipInRpmAboveTarget:
+        dc.b    $2D,$50                                  ; Tip-in retard window: engine rpm below idle target plus this value
+TipInThrottleMin:
+        dc.b    $08                                      ; Tip-in retard runs above this throttle opening
+TipInThrottleRiseMin:
+        dc.b    $02                                      ; Tip-in retard: throttle rise ($0D15,Z) above which it starts
+TipValue1:
+        dc.b    $10                                      ; Byte used with; read by Sub_1D5EC.
+TipInRetardDecay:
+        dc.b    $04                                      ; Tip-in retard: decrease per step
+TipInRetardEnd:
+        dc.b    $04                                      ; Tip-in retard: value below which it ends
 
 ;---------------------------------------------------------------------------------------------------
 ; TipInRetardDuration ($28AA): 2D table, 2 points, unsigned
@@ -3550,8 +4889,31 @@ TipInRetard:
         dc.b    0,5,10,13,16                             ; row 3
         dc.b    0,5,10,13,16                             ; row 4
 
-        dc.b    $50,$FF,$D2,$37,$06,$40,$2D,$50,$08,$02,$10,$04,$04,$00,$80,$6C
-        dc.b    $FF
+TipBaroThresh2:
+        dc.b    $50                                      ; Byte compared with Baro; read by Sub_1D5EC.
+TipAirTempThresh2:
+        dc.b    $FF                                      ; Byte compared with AirTemp; read by Sub_1D5EC.
+TipCoolantThresh2:
+        dc.b    $D2                                      ; Byte compared with CoolantTemp; read by Sub_1D5EC.
+TipMapThresh2:
+        dc.b    $37                                      ; Byte compared with Map; read by Sub_1D5EC.
+TipOffset3:
+        dc.b    $06,$40                                  ; Word subtracted from; read by Sub_1D5EC.
+TipAdder2:
+        dc.b    $2D,$50                                  ; Word added to; read by Sub_1D5EC.
+TipThrottleThresh2:
+        dc.b    $08                                      ; Byte compared with ThrottleAboveClosed; read by Sub_1D5EC.
+TipInThrottleRiseMinKnock:
+        dc.b    $02                                      ; As TipInThrottleRiseMin while a knock retard is applied
+TipValue2:
+        dc.b    $10                                      ; Byte used with; read by Sub_1D5EC.
+TipOffset4:
+        dc.b    $04                                      ; Byte subtracted from; read by Sub_1D5EC.
+TipThresh4:
+        dc.b    $04                                      ; Byte compared with; read by Sub_1D5EC.
+TipInRetardMinSteps:
+        dc.b    $00                                      ; Tip-in retard: number of steps below which the result is zero
+        dc.b    $80,$6C,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; TipInRetardKnock ($28E4): 3D table, 5 rows x 5 columns, unsigned
@@ -3616,8 +4978,20 @@ Tab2D_2923:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$38,$58,$00,$00,$00,$FF,$00,$00
-        dc.b    $00,$00,$FE,$21,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$00,$00
+SparkValue2:
+        dc.b    $38                                      ; Byte used with; read by Sub_1E14E.
+SparkValue3:
+        dc.b    $58                                      ; Byte used with; read by Sub_1E14E.
+SparkValue4:
+        dc.b    $00                                      ; Byte used with; read by Sub_1E14E.
+SparkValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_1E14E.
+SparkValue6:
+        dc.b    $00                                      ; Byte used with; read by Sub_1E14E.
+SparkValue7:
+        dc.b    $FF                                      ; Byte used with; read by Sub_1E14E.
+        dc.b    $00,$00,$00,$00,$FE,$21,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_293C ($293C): 2D table, 6 points, unsigned
@@ -3666,7 +5040,7 @@ Tab2D_2964:
 ; SurgeRetardBase ($2970): 3D table, 5 rows x 5 columns, unsigned
 ; Driveline surge spark control: base retard ($0D32,Z) against MAP position (rows) and the fast segment rpm $0D1E,Z (columns)
 ; columns: raw, rows: pos256, values: spark (units: docs/en/calibration.md)
-; Inputs: $0D39,Z x SegmentRpmFast
+; Inputs: SurgeMapPos x SegmentRpmFast
 ; Read at $1E30A
 ;---------------------------------------------------------------------------------------------------
 SurgeRetardBase:
@@ -3745,10 +5119,15 @@ Tab3D_2A03:
         dc.b    0,0,0,0,0                                ; row 3
         dc.b    0,0,0,0,0                                ; row 4
 
-        dc.b    $0A,$1C,$28,$00,$12,$00,$14,$00,$0A,$02,$54,$0A,$64,$96,$40,$70
-        dc.b    $DC,$FF,$02,$80,$47,$15,$66,$20,$FF,$FF,$01,$80,$FF,$00,$FF,$FF
-        dc.b    $FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$7E,$FF,$FF
-        dc.b    $FF,$FF,$02,$80,$59,$FF,$72,$80,$FF,$FF
+        dc.b    $0A,$1C
+AcClutchSparkHold:
+        dc.b    $28                                      ; A/C clutch engage: hold time $0D54,Z
+        dc.b    $00,$12,$00,$14,$00,$0A,$02,$54,$0A,$64,$96,$40,$70,$DC
+IacV0D5AInit:
+        dc.b    $FF                                      ; Byte stored into V0D5A; read by Sub_19808.
+        dc.b    $02,$80,$47,$15,$66,$20,$FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF
+        dc.b    $01,$80,$FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$7E,$FF,$FF,$FF,$FF
+        dc.b    $02,$80,$59,$FF,$72,$80,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_2A5E ($2A5E): 2D table, 2 points, unsigned
@@ -3807,7 +5186,7 @@ Tab2D_2A98:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_2AA4 ($2AA4): 2D table, 1 points, unsigned
-; Inputs: $0335,Z
+; Inputs: IacLearned
 ; Read at $1D990
 ;---------------------------------------------------------------------------------------------------
 Tab2D_2AA4:
@@ -3945,11 +5324,24 @@ Tab2D_2C97:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$09,$01,$21,$24,$2A,$38,$42,$42
-        dc.b    $42,$42,$42,$42,$42,$42,$42,$42,$42,$42,$42,$42,$42,$D2,$01,$90
-        dc.b    $09,$D2,$27,$10,$2E,$E0,$36,$B0,$3E,$80,$46,$50,$4E,$20,$55,$F0
-        dc.b    $5D,$C0,$65,$90,$6D,$60,$75,$30,$7D,$00,$84,$D0,$8C,$A0,$94,$70
-        dc.b    $9C,$40,$A4,$10,$AB,$E0,$B3,$B0
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+FuelV04F2Thresh:
+        dc.b    $09                                      ; Byte compared with V04F2; read by Sub_1F58A.
+FuelOffset2:
+        dc.b    $01                                      ; Byte subtracted from; read by Sub_1F58A.
+        dc.b    $21,$24,$2A,$38,$42,$42,$42,$42,$42,$42,$42,$42,$42,$42,$42,$42
+        dc.b    $42,$42,$42
+KnockLearnCoolantMin:
+        dc.b    $D2                                      ; Knock noise learning and the knock retard limit run above this coolant temperature
+KnockLearnRpmBand:
+        dc.b    $01,$90                                  ; Knock noise learning: half width of an rpm band around each band centre ($2435-$2459)
+KnockLearnTimeMin:
+        dc.b    $09                                      ; Knock noise learning runs after this time since start
+KnockLearnAirTempMax:
+        dc.b    $D2                                      ; Knock noise learning runs below this air temperature
+        dc.b    $27,$10,$2E,$E0,$36,$B0,$3E,$80,$46,$50,$4E,$20,$55,$F0,$5D,$C0
+        dc.b    $65,$90,$6D,$60,$75,$30,$7D,$00,$84,$D0,$8C,$A0,$94,$70,$9C,$40
+        dc.b    $A4,$10,$AB,$E0,$B3,$B0
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockMapThresholdRpm ($2CE3): 2D table, 6 points, unsigned
@@ -4023,7 +5415,24 @@ KnockWindowRpm:
         dc.b    2,$80                                    ; points, flags
         dc.b    113,225, 125,205                         ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$6E,$1F,$4D,$32,$0A,$06,$0A,$10,$FE,$FE
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+KnockCoolantMin:
+        dc.b    $6E                                      ; Knock retard and its maximum apply above this coolant temperature
+KnockRetardMaxRpmMin:
+        dc.b    $1F                                      ; KnockRetardMaxMap is used above this engine rpm
+KnockRetardMaxThrottle:
+        dc.b    $4D                                      ; KnockRetardMaxMap is used above this throttle opening (else above KnockRetardMaxRpm2)
+KnockRetardMaxRpm2:
+        dc.b    $32                                      ; Below this rpm (with throttle below KnockRetardMaxThrottle) the maximum is KnockRetardMaxLow
+KnockRetardMaxLow:
+        dc.b    $0A                                      ; Knock retard maximum at low throttle and rpm
+KnockFirstStepFactor:
+        dc.b    $06                                      ; Factor on KnockRetardStep for the first knock event
+KnockStepFactor:
+        dc.b    $0A                                      ; Factor on KnockRetardStep for later knock events
+SparkV0DB6Thresh:
+        dc.b    $10                                      ; Byte compared with V0DB6; read by Sub_1F02A.
+        dc.b    $FE,$FE
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockThreshold ($2D35): 2D table, 6 points, unsigned
@@ -4093,8 +5502,36 @@ Tab2D_2D75:
         dc.b    3,$80                                    ; points, flags
         dc.b    127,10, 192,9, 255,10                    ; x, y
 
-        dc.b    $55,$1F,$0A,$0C,$80,$40,$00,$FF,$01,$40,$03,$7D,$3F,$5E,$7D,$9C
-        dc.b    $05,$02,$02,$01,$01,$01
+SparkValue8:
+        dc.b    $55                                      ; Byte used with; read by Sub_1F02A.
+SparkLoopMask:
+        dc.b    $1F                                      ; Byte mask for MainLoopCounter; read by Sub_1F194.
+SparkKnockEventCountThresh:
+        dc.b    $0A                                      ; Byte compared with KnockEventCount; read by Sub_1F02A.
+SparkV0DABThresh:
+        dc.b    $0C                                      ; Byte compared with V0DAB; read by Sub_1F02A.
+SparkAdder:
+        dc.b    $80                                      ; Byte added to; read by Sub_1F02A.
+KnockOffset1:
+        dc.b    $40                                      ; Byte subtracted from; read by Sub_1F2E0.
+SparkMask:
+        dc.b    $00                                      ; Byte mask for; read by Sub_1F194.
+SparkKnockEventCountOffset:
+        dc.b    $FF                                      ; Byte subtracted from KnockEventCount; read by Sub_1F194.
+KnockOffset2:
+        dc.b    $01                                      ; Byte subtracted from; read by Sub_1F1DC.
+KnockThresh2:
+        dc.b    $40                                      ; Byte compared with; read by Sub_1F1DC.
+KnockV0DA9Thresh:
+        dc.b    $03                                      ; Byte compared with V0DA9; read by Sub_1F1DC.
+KnockValue2:
+        dc.b    $7D                                      ; Byte used with; read by Sub_1F296.
+        dc.b    $3F,$5E,$7D,$9C
+KnockAdder1:
+        dc.b    $05                                      ; Byte added to; read by Sub_1F296.
+KnockAdder2:
+        dc.b    $02                                      ; Byte added to; read by Sub_1F296.
+        dc.b    $02,$01,$01,$01
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab3D_2D93 ($2D93): 3D table, 9 rows x 9 columns, signed
@@ -4148,7 +5585,18 @@ KnockRetardMaxRpm:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$40,$40,$40,$40,$40,$40,$40,$40
         dc.b    $40,$80,$80,$80,$80,$80,$80,$80,$80,$80,$C0,$C0,$C0,$C0,$C0,$C0
         dc.b    $C0,$C0,$C0,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$0A,$7D,$03,$03
+        dc.b    $00,$00,$00,$00,$00
+SensorAdder6:
+        dc.b    $00,$00                                  ; Word added to; read by Sub_1F6FA.
+        dc.b    $00
+SparkSpeedThresh8:
+        dc.b    $0A                                      ; Byte compared with VehicleSpeed; read by Sub_1D204.
+SparkRpmThresh4:
+        dc.b    $7D                                      ; Byte compared with EngineRpm; read by Sub_1D204.
+SparkSpeedOffset:
+        dc.b    $03                                      ; Byte subtracted from VehicleSpeed; read by Sub_1D204.
+SparkRpmOffset:
+        dc.b    $03                                      ; Byte subtracted from EngineRpm; read by Sub_1D204.
 
 ;---------------------------------------------------------------------------------------------------
 ; SparkCoolantCorrA ($2E8D): 2D table, 4 points, signed
@@ -4173,7 +5621,12 @@ SparkCoolantCorrB:
         dc.b    4,$20                                    ; points, flags
         dc.b    99,6, 110,12, 144,0, 177,-8              ; x, y
 
-        dc.b    $58,$00,$9F,$0C,$80
+O2SparkTrimCoolantMin:
+        dc.b    $58                                      ; O2 spark trim runs above this coolant temperature
+O2SparkTrimTimeMin:
+        dc.b    $00,$9F                                  ; O2 spark trim runs after this time since start
+O2SparkTrimRpmMin:
+        dc.b    $0C,$80                                  ; O2 spark trim runs above this engine rpm
 
 ;---------------------------------------------------------------------------------------------------
 ; O2SparkTrimPos ($2EA6): 2D table, 2 points, signed
@@ -4225,7 +5678,9 @@ O2SparkTrimNegPN:
         dc.b    2,$20                                    ; points, flags
         dc.b    0,0, 13,4                                ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$80,$00,$AD,$01,$04,$1A
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$80,$00,$AD,$01,$04
+EventFactor:
+        dc.b    $1A                                      ; Byte multiplied; read by Isr_GPT_IC1, Reset, Sub_0E0B6.
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleSparkFilterCoolant ($2EE4): 2D table, 1 points, unsigned
@@ -4287,7 +5742,10 @@ IdleSparkRpmErrorPNAlt:
         dc.b    5,$20                                    ; points, flags
         dc.b    128,0, 134,-6, 136,-12, 151,-20, 156,-22 ; x, y
 
-        dc.b    $06,$00
+IacStepSumMax:
+        dc.b    $06                                      ; Idle speed control: limit of the summed IAC steps $033E,Z; beyond it the sum is reset to IacStepSumReset
+IacStepSumReset:
+        dc.b    $00                                      ; Idle speed control: value $033E,Z is set to when IacStepSumMax is exceeded
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleStepClose ($2F1E): 2D table, 3 points, signed
@@ -4312,7 +5770,8 @@ IdleStepOpen:
         dc.b    3,$20                                    ; points, flags
         dc.b    119,6, 123,3, 128,1                      ; x, y
 
-        dc.b    $58
+AirCoolantThresh:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_1D15C.
 
 ;---------------------------------------------------------------------------------------------------
 ; AirTempSparkFactor2 ($2F2F): 2D table, 4 points, unsigned
@@ -4348,7 +5807,24 @@ AirTempSparkMap:
         dc.b    3,$20                                    ; points, flags
         dc.b    120,-16, 192,-20, 255,-24                ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$18,$02,$04,$7F,$01,$00,$00,$AA,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+SparkStartRampThresh:
+        dc.b    $18                                      ; Byte compared with SparkStartRamp; read by Sub_1E2B6.
+SparkStartRampAdder:
+        dc.b    $02                                      ; Byte added to SparkStartRamp; read by Sub_1E2B6.
+SparkV07A0Offset1:
+        dc.b    $04                                      ; Byte subtracted from V07A0; read by Sub_1E2B6.
+SparkStartRampOffset:
+        dc.b    $7F                                      ; Byte subtracted from SparkStartRamp; read by Sub_1E2B6.
+SparkV07A0Offset2:
+        dc.b    $01                                      ; Byte subtracted from V07A0; read by Sub_1E2B6.
+        dc.b    $00
+IacCrankRpm:
+        dc.b    $00                                      ; Engine rpm that ends the cranking IAC position (IacCrankCoolant) and starts IacRunUpCoolant
+IacTargetMax:
+        dc.b    $AA                                      ; Upper limit of the IAC target position
+IdleDipRpm:
+        dc.b    $FF,$FF                                  ; Segment rpm below which an rpm dip in gear starts the IdleTargetDipAdder timer
 
 ;---------------------------------------------------------------------------------------------------
 ; IacCrankCoolant ($2F5B): 2D table, 6 points, unsigned
@@ -4361,15 +5837,73 @@ IacCrankCoolant:
         dc.b    6,$80                                    ; points, flags
         dc.b    105,150, 119,85, 146,40, 182,25, 207,18, 227,18 ; x, y
 
-        dc.b    $FF,$FF,$64,$30,$71,$28,$74,$E8,$F4,$75,$F4,$FE,$75,$74,$49,$B3
-        dc.b    $B1,$F1,$F4,$1F,$C4,$09,$1A,$28,$09,$02,$01,$00,$01,$90,$15,$E0
-        dc.b    $00,$00,$12,$20
+        dc.b    $FF,$FF
+IdleTargetFault:
+        dc.b    $64                                      ; Idle target used with a fault ($0D01,Z bit 5 or $0502,Z bits 7-6), ×64
+IdleValue5:
+        dc.b    $30                                      ; Byte used with; read by Sub_1906C.
+CalVoltsThresh1:
+        dc.b    $71                                      ; Byte compared with BatteryVolts2; read by Sub_0843A.
+CalV0364Thresh:
+        dc.b    $28                                      ; Byte compared with V0364; read by Sub_1BA02.
+IdleAirTempThresh1:
+        dc.b    $74                                      ; Byte compared with AirTemp; read by Sub_1B182.
+IdleHotAirOff:
+        dc.b    $E8                                      ; Air temperature below which IdleTargetHotAirAdder stops (hysteresis)
+IdleHotAirOn:
+        dc.b    $F4                                      ; Air temperature above which IdleTargetHotAirAdder applies
+IdleThresh3:
+        dc.b    $75                                      ; Byte compared with; read by Sub_1B182.
+IdleThresh4:
+        dc.b    $F4                                      ; Byte compared with; read by Sub_1B182.
+IdleBatteryTempThresh1:
+        dc.b    $FE                                      ; Byte compared with BatteryTemp; read by Sub_1B182.
+IdleThresh5:
+        dc.b    $75                                      ; Byte compared with; read by Sub_1B182.
+IdleBatteryTempThresh2:
+        dc.b    $74                                      ; Byte compared with BatteryTemp; read by Sub_1B182.
+IdleBaroThresh:
+        dc.b    $49                                      ; Byte compared with Baro; read by Sub_1B182.
+IdleThresh6:
+        dc.b    $B3                                      ; Byte compared with; read by Sub_1B182.
+IdleCoolantThresh1:
+        dc.b    $B1                                      ; Byte compared with CoolantTemp; read by Sub_1B182.
+IdleThresh7:
+        dc.b    $F1                                      ; Byte compared with; read by Sub_1B182.
+IdleCoolantThresh2:
+        dc.b    $F4                                      ; Byte compared with CoolantTemp; read by Sub_1B182.
+IdleValue6:
+        dc.b    $1F                                      ; Byte used with; read by Sub_1B182.
+IdleLowVoltsMin:
+        dc.b    $C4                                      ; Battery voltage below which the low-voltage timer $0358,Z counts
+IdleLowVoltsTime:
+        dc.b    $09                                      ; Low-voltage time ($0358,Z) above which the battery-temperature idle ramp is blocked
+IdleValue7:
+        dc.b    $1A                                      ; Byte used with; read by Sub_1B182.
+IdleRampDelayInit:
+        dc.b    $28                                      ; Byte stored into IdleRampDelay; read by Sub_1B182.
+IdleRampHoldInit:
+        dc.b    $09                                      ; Byte stored into IdleRampHold; read by Sub_1B182.
+IdleRampBlockTimerThresh1:
+        dc.b    $02                                      ; Byte compared with IdleRampBlockTimer; read by Sub_1B182.
+IdleRampBlockTimerThresh2:
+        dc.b    $01                                      ; Byte compared with IdleRampBlockTimer; read by Sub_1B182.
+IdleRampBlockTimerThresh3:
+        dc.b    $00                                      ; Byte compared with IdleRampBlockTimer; read by Sub_1B182.
+IdleRampTargetOffset:
+        dc.b    $01,$90                                  ; Amount subtracted from the idle target when the ramp starts
+IdleAcTargetMin:
+        dc.b    $15,$E0                                  ; Minimum idle target with A/C requested and $09CE,Z bit 1 set
+IdleEepromCountThresh:
+        dc.b    $00,$00                                  ; Word compared with EepromCount; read by Sub_1B182.
+IacSegRpmThresh2:
+        dc.b    $12,$20                                  ; Word compared with SegmentRpm; read by Sub_19808.
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleTargetDipLimit ($2F8D): 2D table, 2 points, unsigned
 ; Limit of IdleTargetDipAdder against $0C3F,Z (time since the last crank event)
 ; x: raw, y: rpm8 (units: docs/en/calibration.md)
-; Inputs: $0C3F,Z
+; Inputs: RunTime
 ; Read at $1B31A
 ;---------------------------------------------------------------------------------------------------
 IdleTargetDipLimit:
@@ -4419,7 +5953,7 @@ IdleTargetHotAirAdder:
 ; IdleTargetDipAdder ($2FB5): 2D table, 1 points, unsigned
 ; Idle target addition in gear against the time since segment rpm rose back above $263F (after start time $29FE, coolant above $2853)
 ; x: raw, y: rpm8 (units: docs/en/calibration.md)
-; Inputs: $0382,Z
+; Inputs: IdleDipTime
 ; Read at $1B30C
 ;---------------------------------------------------------------------------------------------------
 IdleTargetDipAdder:
@@ -4461,7 +5995,20 @@ IdleBattTempTargetPN:
         dc.b    88,88,88,88,88                           ; row 3
         dc.b    72,72,72,72,72                           ; row 4
 
-        dc.b    $06,$03,$C0,$01,$80,$40,$08,$00,$28,$01
+IdleLoopHoldTime:
+        dc.b    $06                                      ; Idle speed control: hold-off $0357,Z loaded when $0A46,Z bit 0 first sets; no closing steps while it runs
+IacIdleTargetOffset1:
+        dc.b    $03,$C0                                  ; Word subtracted from IdleTarget; read by Sub_19808.
+IacIdleTargetOffset2:
+        dc.b    $01,$80                                  ; Word subtracted from IdleTarget; read by Sub_19808.
+FuelLoopThresh:
+        dc.b    $40                                      ; Byte compared with MainLoopCounter; read by Sub_10A6E, Sub_1AE22.
+IdleErrorCoarseMin:
+        dc.b    $08,$00                                  ; Idle speed control: rpm error from which the coarse error term (IdleErrorTermCoarse) is used instead of the fine one
+IdlePurgeRampThresh:
+        dc.b    $28                                      ; Byte compared with PurgeRamp; read by Sub_1B182.
+IdleRampStepTime:
+        dc.b    $01                                      ; Battery-temperature idle ramp: time per one-step increase of the ramped target $035D,Z
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleBattTempRampDelay ($3009): 2D table, 2 points, unsigned
@@ -4606,7 +6153,7 @@ IdleStepOpenFactor:
 ; IdleStepCloseScale ($3095): 2D table, 4 points, steps, no interpolation
 ; Idle speed control: accumulated error to the size of an IAC closing step
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0339,Z
+; Inputs: IdleErrorNet
 ; Read at $1931C
 ;---------------------------------------------------------------------------------------------------
 IdleStepCloseScale:
@@ -4637,7 +6184,10 @@ ThrottleCloseTimerRpm:
         dc.b    2,$80                                    ; points, flags
         dc.b    63,96, 88,64                             ; x, y
 
-        dc.b    $FF,$FF,$25,$80,$58,$58
+        dc.b    $FF,$FF,$25,$80
+IacGearCoolantMax:
+        dc.b    $58                                      ; Gear-change IAC: coolant below which the IacGearTimeCoolant tables and the time counter $0348,Z apply
+        dc.b    $58
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_30B5 ($30B5): 2D table, 1 points, unsigned
@@ -4706,7 +6256,7 @@ IacGearTimeCoolantAC:
 ; IacGearTimeFactor ($30E7): 2D table, 1 points, unsigned
 ; Factor on IacGearTimeCoolant against the time counter $0348,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0348,Z
+; Inputs: IacGearTime
 ; Read at $1A030
 ;---------------------------------------------------------------------------------------------------
 IacGearTimeFactor:
@@ -4719,7 +6269,7 @@ IacGearTimeFactor:
 ; IacGearTimeFactorAC ($30F1): 2D table, 1 points, unsigned
 ; As IacGearTimeFactor with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0348,Z
+; Inputs: IacGearTime
 ; Read at $1A030
 ;---------------------------------------------------------------------------------------------------
 IacGearTimeFactorAC:
@@ -4805,7 +6355,7 @@ IacGearTimeCoolantPNAC:
 ; IacGearTimeFactorPN ($3133): 2D table, 1 points, unsigned
 ; As IacGearTimeFactor in P/N
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0348,Z
+; Inputs: IacGearTime
 ; Read at $1A030
 ;---------------------------------------------------------------------------------------------------
 IacGearTimeFactorPN:
@@ -4818,7 +6368,7 @@ IacGearTimeFactorPN:
 ; IacGearTimeFactorPNAC ($313D): 2D table, 1 points, unsigned
 ; As IacGearTimeFactor in P/N with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0348,Z
+; Inputs: IacGearTime
 ; Read at $1A030
 ;---------------------------------------------------------------------------------------------------
 IacGearTimeFactorPNAC:
@@ -4873,9 +6423,30 @@ Tab2D_3163:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,134                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$1E,$84,$00,$00,$FF,$00,$30,$50,$00,$18,$10,$03
-        dc.b    $20,$00,$00,$01,$08,$18,$10,$03,$20,$01,$08,$18,$10,$03,$E8,$00
-        dc.b    $00,$00,$00,$00,$16,$19,$01,$08
+        dc.b    $FF,$FF,$FF,$FF
+IacKickRpmMax:
+        dc.b    $1E                                      ; A/C and rpm-dip kicks: segment rpm below which they apply
+IdleCoolantMin:
+        dc.b    $84                                      ; Coolant above which the rpm-dip target addition and the A/C and dip IAC kicks run
+IdleV037BThresh:
+        dc.b    $00                                      ; Byte compared with V037B; read by Sub_1B182.
+IdleV037CThresh:
+        dc.b    $00                                      ; Byte compared with V037C; read by Sub_1B182.
+IdleStartTimeMin:
+        dc.b    $FF                                      ; Time since start ($037D,Z) after which the rpm-dip addition and the rpm-drop reference run
+IdleV037FInit:
+        dc.b    $00                                      ; Byte stored into V037F; read by Sub_1B182.
+IdleV0380Init:
+        dc.b    $30                                      ; Byte stored into V0380; read by Sub_1B182.
+IdleV0382Init:
+        dc.b    $50                                      ; Byte stored into V0382; read by Sub_1B182.
+IdleV037EInit:
+        dc.b    $00                                      ; Byte stored into V037E; read by Sub_1B182.
+        dc.b    $18,$10,$03,$20,$00,$00,$01,$08,$18,$10,$03,$20,$01,$08,$18,$10
+        dc.b    $03,$E8
+IdleRpmRefOffset:
+        dc.b    $00,$00                                  ; Word subtracted from IdleRpmRef; read by Sub_1B182.
+        dc.b    $00,$00,$00,$16,$19,$01,$08
 
 ;---------------------------------------------------------------------------------------------------
 ; IacAcKickMap ($318F): 2D table, 3 points, unsigned
@@ -4893,16 +6464,51 @@ IacAcKickMap:
 ; IacAcKickMapLatched ($3197): 2D table, 4 points, signed
 ; IAC step when the A/C clutch releases, against the MAP latched at engagement ($0341,Z)
 ; x: kpa, y: raw (units: docs/en/calibration.md)
-; Inputs: $0341,Z
+; Inputs: IacAcKickMapLatch
 ; Read at $1A176
 ;---------------------------------------------------------------------------------------------------
 IacAcKickMapLatched:
         dc.b    4,$20                                    ; points, flags
         dc.b    40,-15, 52,-18, 60,-21, 73,-23           ; x, y
 
-        dc.b    $14,$19,$10,$04,$0B,$16,$1C,$00,$B3,$05,$00,$24,$24,$00,$0A,$0A
-        dc.b    $0A,$06,$0D,$13,$1A,$20,$26,$2D,$33,$25,$45,$65,$85,$A5,$C5,$E5
-        dc.b    $50,$50,$28,$00
+IacV0352Init:
+        dc.b    $14                                      ; Byte stored into V0352; read by Sub_19808.
+        dc.b    $19
+IacV0350Thresh:
+        dc.b    $10                                      ; Byte compared with V0350; read by Sub_193EC.
+IacCoastTargetBand:
+        dc.b    $04                                      ; Coast IAC: allowed difference between IAC target and coast target
+        dc.b    $0B
+IacAdder1:
+        dc.b    $16                                      ; Byte added to; read by Sub_19808.
+IacAdder2:
+        dc.b    $1C                                      ; Byte added to; read by Sub_19808.
+IacKickHold:
+        dc.b    $00                                      ; A/C and rpm-dip kicks: hold time $035A,Z
+IacValue2:
+        dc.b    $B3                                      ; Byte used with; read by Sub_1AFDE.
+IacV0346Init:
+        dc.b    $05                                      ; Byte stored into V0346; read by Sub_193EC.
+IacV034FInit:
+        dc.b    $00                                      ; Byte stored into V034F; read by Sub_19808.
+IacValue3:
+        dc.b    $24                                      ; Byte used with; read by Sub_1AA32.
+IacValue4:
+        dc.b    $24                                      ; Byte used with; read by Sub_1AA32.
+IacValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_1AA32.
+IacValue6:
+        dc.b    $0A                                      ; Byte used with; read by Sub_1AA32.
+IacValue7:
+        dc.b    $0A                                      ; Byte used with; read by Sub_1AA32.
+IacValue8:
+        dc.b    $0A                                      ; Byte used with; read by Sub_1AA32.
+        dc.b    $06,$0D,$13,$1A,$20,$26,$2D,$33,$25,$45,$65,$85,$A5,$C5,$E5,$50
+        dc.b    $50
+IacV034EInit:
+        dc.b    $28                                      ; Byte stored into V034E; read by Sub_19808.
+IacAcEngageTime:
+        dc.b    $00                                      ; IacAcEngageAdder applies while the A/C-on time ($0359,Z) is below this value
 
 ;---------------------------------------------------------------------------------------------------
 ; IacStartBattTemp ($31C5): 2D table, 1 points, unsigned
@@ -4943,7 +6549,13 @@ IacAcEngageAdder:
         dc.b    3,$80                                    ; points, flags
         dc.b    38,2, 108,127, 166,245                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$00,$00,$1F
+        dc.b    $FF,$FF,$FF,$FF
+IacAcRequestAdder:
+        dc.b    $00                                      ; IAC addition with A/C requested (A/C switch input, not blocked)
+IacDriveAdder:
+        dc.b    $00                                      ; IAC addition (signed) in drive
+IacLoopMask1:
+        dc.b    $1F                                      ; Byte mask for MainLoopCounter; read by Sub_19808.
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRunTimeAdder ($3210): 2D table, 3 points, unsigned
@@ -4981,7 +6593,14 @@ IacCoastThrottleLimit:
         dc.b    4,$80                                    ; points, flags
         dc.b    0,0, 4,10, 5,10, 30,24                   ; x, y
 
-        dc.b    $FF,$D0,$84,$00
+IacFactor1:
+        dc.b    $FF                                      ; Byte multiplied; read by Sub_19808.
+IacFactor2:
+        dc.b    $D0                                      ; Byte multiplied; read by Sub_19808.
+IacRollCoolantMin:
+        dc.b    $84                                      ; Rolling IAC target: below this coolant the $0335,Z value is used instead
+IacSpeedThresh1:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_19808.
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollSpeedBase ($3234): 2D table, 4 points, unsigned
@@ -4997,13 +6616,13 @@ IacRollSpeedBase:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IacRollFactorV0345 ($3240): 2D table, 4 points, unsigned
-; Factor on the rolling IAC target against $0345,Z (centred on 128), with calibration bit $0331.7
+; IacRollFactorAcSensor ($3240): 2D table, 4 points, unsigned
+; Factor on the rolling IAC target against the filtered A/C sensor $0345,Z (centred on 128), with calibration bit $0331.7
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0345,Z
+; Inputs: AcSensorFiltered
 ; Read at $19BDA, $1A332
 ;---------------------------------------------------------------------------------------------------
-IacRollFactorV0345:
+IacRollFactorAcSensor:
         dc.b    4,$80                                    ; points, flags
         dc.b    38,54, 51,128, 127,194, 204,238          ; x, y
 
@@ -5122,7 +6741,17 @@ IacKickBaroFactor:
         dc.b    4,$80                                    ; points, flags
         dc.b    81,102, 101,64, 113,41, 120,0            ; x, y
 
-        dc.b    $10,$20,$20,$00,$01,$18,$0A,$05,$05,$06
+FieldDutyFilter:
+        dc.b    $10                                      ; Filter weight of the generator field duty $032E,Z
+BatteryVoltsFilter:
+        dc.b    $20                                      ; Filter weight of the filtered battery voltage $0A52,Z
+ChargeDeficitFilter:
+        dc.b    $20                                      ; Filter weight of the charging deficit average $0DCA,Z
+IacChargeStepWait:
+        dc.b    $00                                      ; Charging IAC step: wait after a step ($0DC2,Z)
+IacChargeStepRest:
+        dc.b    $01,$18                                  ; Charging IAC step: pause before the next step
+        dc.b    $0A,$05,$05,$06
 
 ;---------------------------------------------------------------------------------------------------
 ; IacChargeStep ($3310): 2D table, 1 points, unsigned
@@ -5153,7 +6782,18 @@ IacFieldDutyRpm:
         dc.b    11,19,19,21,22                           ; row 3
         dc.b    18,24,26,29,30                           ; row 4
 
-        dc.b    $10,$1E,$00,$14,$7F,$00
+IdleMapTargetMin:
+        dc.b    $10                                      ; Lower limit of the idle MAP target $031E,Z
+IdleMapStepTimeClosed:
+        dc.b    $1E                                      ; Idle MAP loop: time between IAC steps, closed throttle
+IdleMapHoldTime:
+        dc.b    $00                                      ; Idle MAP loop: hold-off ($032A,Z) while the dashpot timer runs
+IdleMapStepTime:
+        dc.b    $14                                      ; Idle MAP loop: time between IAC steps, throttle not closed
+IdleMapRpmAccelMax:
+        dc.b    $7F                                      ; Idle MAP loop: closed-throttle mode ends when $0D27,Z (rpm acceleration) exceeds this value
+IdleMapAcAdder:
+        dc.b    $00                                      ; Idle MAP target addition with A/C requested
 
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleCloseTimerRpmMoving ($3341): 2D table, 1 points, unsigned
@@ -5272,26 +6912,26 @@ IacMapLowStep:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleMapAdderV0335 ($339F): 2D table, 3 points, unsigned
-; Idle MAP target addition against $0335,Z (without A/C clutch)
+; IdleMapAdderIac ($339F): 2D table, 3 points, unsigned
+; Idle MAP target addition against the learned IAC position $0335,Z (without A/C clutch)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0335,Z
+; Inputs: IacLearned
 ; Read at $1AC22
 ;---------------------------------------------------------------------------------------------------
-IdleMapAdderV0335:
+IdleMapAdderIac:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,5, 26,42, 48,56                        ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleMapAdderV0335b ($33A9): 2D table, 3 points, unsigned
-; As IdleMapAdderV0335 when fuel mode bits $0770.7-6 are set and $05E0,Z is zero
+; IdleMapAdderIac2 ($33A9): 2D table, 3 points, unsigned
+; As IdleMapAdderIac2 when fuel mode bits $0770.7-6 are set and $05E0,Z is zero
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0335,Z
+; Inputs: IacLearned
 ; Read at $1AC22
 ;---------------------------------------------------------------------------------------------------
-IdleMapAdderV0335b:
+IdleMapAdderIac2:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,5, 26,42, 48,56                        ; x, y
 
@@ -5369,8 +7009,38 @@ IdleMapBase:
         dc.b    0,8,13,20,26                             ; row 3
         dc.b    3,12,15,22,26                            ; row 4
 
-        dc.b    $F0,$01,$01,$02,$00,$1C,$20,$17,$70,$1E,$40,$2A,$00,$00,$05,$13
-        dc.b    $CD,$02,$51,$07,$00,$C0
+IacSpeedThresh2:
+        dc.b    $F0                                      ; Byte compared with VehicleSpeed; read by Sub_1AADC.
+        dc.b    $01
+IacV0351Thresh:
+        dc.b    $01                                      ; Byte compared with V0351; read by Sub_1AADC.
+IacV0302Offset:
+        dc.b    $02,$00                                  ; Word subtracted from V0302; read by Sub_1AADC.
+IacIdleTargetThresh:
+        dc.b    $1C,$20                                  ; Word compared with IdleTarget; read by Sub_1AADC.
+IacIdleTargetAdder1:
+        dc.b    $17,$70                                  ; Word added to IdleTarget; read by Sub_1AADC.
+IacIdleTargetAdder2:
+        dc.b    $1E,$40                                  ; Word added to IdleTarget; read by Sub_1AADC.
+IdleValue17:
+        dc.b    $2A                                      ; Byte used with; read by Sub_1A54A.
+IdleValue18:
+        dc.b    $00                                      ; Byte used with; read by Sub_1A54A.
+        dc.b    $00
+IdleRollSpeed:
+        dc.b    $05                                      ; Vehicle speed that separates standing from rolling for idle air, dashpot and coast logic
+IdleTimeThresh:
+        dc.b    $13                                      ; Byte compared with Count3s; read by Sub_1AEE0, Sub_23816.
+IdleCoolantThresh4:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_1AEE0.
+IdleThresh9:
+        dc.b    $02                                      ; Byte compared with; read by Sub_1AEE0.
+IacCoastMapMax:
+        dc.b    $51                                      ; Coast IAC mode runs below this MAP
+IacCoastLoopMask:
+        dc.b    $07                                      ; Coast IAC: main-loop mask for the update rate of the IAC target
+SensorRpmAdder:
+        dc.b    $00,$C0                                  ; Word added to EngineRpm; read by Sub_2CBC8.
 
 ;---------------------------------------------------------------------------------------------------
 ; IacDriveOffsetBaro ($3423): 2D table, 5 points, unsigned
@@ -5425,13 +7095,25 @@ IacBaseBaroTarget:
         dc.b    30,31,32,33,34                           ; row 3
         dc.b    31,32,33,33,34                           ; row 4
 
-        dc.b    $0E,$1A,$3B,$18,$02,$C8,$32
+        dc.b    $0E
+IdleMapLearnedMin:
+        dc.b    $1A                                      ; Lower limit of the learned idle MAP $2A,Z (outside the range it is reset from IacStartBaro)
+IdleMapLearnedMax:
+        dc.b    $3B                                      ; Upper limit of the learned idle MAP
+IdleMapLearnBand:
+        dc.b    $18                                      ; Idle MAP learning runs while MAP is within this distance of the learned value
+IdleMapLearnWeight:
+        dc.b    $02                                      ; Filter weight of the idle MAP learning
+SpeedCtlSetSpeedThresh1:
+        dc.b    $C8                                      ; Byte compared with SpeedCtlSetSpeed; read by Sub_3B800.
+SpeedCtlSetSpeedThresh2:
+        dc.b    $32                                      ; Byte compared with SpeedCtlSetSpeed; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlEngagePos ($346F): 2D table, 3 points, unsigned
 ; Speed control (probable): servo position on engagement against the set speed $0408,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $040F,Z
+; Inputs: SpeedCtlSetSpeed
 ; Read at $3C23E
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlEngagePos:
@@ -5444,7 +7126,7 @@ SpeedCtlEngagePos:
 ; SpeedCtlEngagePosAC ($347B): 2D table, 5 points, unsigned
 ; As SpeedCtlEngagePos with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $040F,Z
+; Inputs: SpeedCtlSetSpeed
 ; Read at $3C23E
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlEngagePosAC:
@@ -5463,25 +7145,64 @@ SpeedCtlEngageBaro:
         dc.b    4,$80                                    ; points, flags
         dc.b    1,156, 32,137, 49,121, 81,97             ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$09,$FF
+        dc.b    $FF,$FF,$FF,$FF
+SpeedCtlThresh1:
+        dc.b    $09                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlV041FInit:
+        dc.b    $FF                                      ; Byte stored into V041F; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlEngageErrorAdder ($3497): 2D table, 1 points, unsigned
 ; Correction of the engagement position against the speed error (set speed minus speed, centred on 128)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $040F,Z; #$80
+; Inputs: SpeedCtlSetSpeed; #$80
 ; Read at $3BBD8
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlEngageErrorAdder:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$6E
-        dc.b    $0D,$07,$08,$14,$EC,$02,$02,$10,$EF,$FF,$00,$01,$01,$05,$80,$00
-        dc.b    $00,$08,$03,$2C,$06,$4D,$09,$C0,$0C,$03,$20,$00,$00,$20,$FE,$C0
-        dc.b    $FA,$FF,$FF,$02,$80,$98,$01,$ED,$04,$FF,$FF,$02,$80,$80,$80,$96
-        dc.b    $FF,$FF,$FF,$02,$80,$50,$09,$68,$01,$FF,$FF,$02,$80,$6C,$FF,$80
-        dc.b    $80,$FF,$FF,$FF,$FF,$FF,$FF,$08,$20,$04
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+SpeedCtlSetSpeedAdder:
+        dc.b    $00                                      ; Byte added to SpeedCtlSetSpeed; read by Sub_3B800.
+SpeedCtlSetSpeedThresh3:
+        dc.b    $6E                                      ; Byte compared with SpeedCtlSetSpeed; read by Sub_3B800, Sub_3C222.
+SpeedCtlThresh2:
+        dc.b    $0D                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlTimerThresh1:
+        dc.b    $07                                      ; Byte compared with SpeedCtlTimer; read by Sub_3B800.
+SpeedCtlThresh3:
+        dc.b    $08                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlThresh4:
+        dc.b    $14                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlThresh5:
+        dc.b    $EC                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlAdder1:
+        dc.b    $02                                      ; Byte added to; read by Sub_3B800.
+SpeedCtlOffset:
+        dc.b    $02                                      ; Byte subtracted from; read by Sub_3B800.
+SpeedCtlThresh6:
+        dc.b    $10                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlThresh7:
+        dc.b    $EF                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlVacuumThresh1:
+        dc.b    $FF                                      ; Byte compared with ManifoldVacuum; read by Sub_3B800.
+SpeedCtlVacuumThresh2:
+        dc.b    $00                                      ; Byte compared with ManifoldVacuum; read by Sub_3B800.
+SpeedCtlV00F0Mask:
+        dc.b    $01                                      ; Byte mask for V00F0; read by Sub_3B800.
+SpeedCtlMask:
+        dc.b    $01                                      ; Byte mask for; read by Sub_3B800.
+        dc.b    $05,$80,$00,$00,$08,$03,$2C,$06,$4D,$09,$C0,$0C,$03,$20,$00,$00
+        dc.b    $20,$FE,$C0,$FA,$FF,$FF,$02,$80,$98,$01,$ED,$04,$FF,$FF,$02,$80
+        dc.b    $80,$80,$96,$FF,$FF,$FF,$02,$80,$50,$09,$68,$01,$FF,$FF,$02,$80
+        dc.b    $6C,$FF,$80,$80,$FF,$FF,$FF,$FF,$FF,$FF
+SpeedCtlThresh8:
+        dc.b    $08                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlThresh9:
+        dc.b    $20                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlTimerThresh2:
+        dc.b    $04                                      ; Byte compared with SpeedCtlTimer; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlThrottleTerm ($34F5): 2D table, 3 points, unsigned
@@ -5506,7 +7227,19 @@ SpeedCtlSpeedTerm:
         dc.b    2,$80                                    ; points, flags
         dc.b    60,25, 160,11                            ; x, y
 
-        dc.b    $FF,$FF,$0A,$14,$5A,$0C,$01,$01
+        dc.b    $FF,$FF
+SpeedCtlValue1:
+        dc.b    $0A                                      ; Byte used with; read by Sub_3B800.
+SpeedCtlV0412Thresh:
+        dc.b    $14                                      ; Byte compared with V0412; read by Sub_3B800.
+SpeedCtlSpeedAdder:
+        dc.b    $5A                                      ; Byte added to VehicleSpeed; read by Sub_3B800.
+SpeedCtlAdder2:
+        dc.b    $0C                                      ; Byte added to; read by Sub_3B800.
+SpeedCtlResumeSpeedOffset1:
+        dc.b    $01                                      ; Byte subtracted from SpeedCtlResumeSpeed; read by Sub_3B800.
+SpeedCtlV00F0Adder:
+        dc.b    $01                                      ; Byte added to V00F0; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlErrorGain ($350B): 2D table, 3 points, unsigned
@@ -5532,7 +7265,23 @@ SpeedCtlCancelStep:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,0, 4,4                                 ; x, y
 
-        dc.b    $FF,$FF,$00,$02,$00,$50,$14,$01,$00,$03
+        dc.b    $FF,$FF
+SpeedCtlThresh10:
+        dc.b    $00                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlSetSpeedOffset:
+        dc.b    $02                                      ; Byte subtracted from SpeedCtlSetSpeed; read by Sub_3B800.
+SpeedCtlValue2:
+        dc.b    $00                                      ; Byte used with; read by Sub_3B800.
+SpeedCtlTimer2Thresh1:
+        dc.b    $50                                      ; Byte compared with SpeedCtlTimer2; read by Sub_3B800.
+SpeedCtlTimer2Thresh2:
+        dc.b    $14                                      ; Byte compared with SpeedCtlTimer2; read by Sub_3B800.
+SpeedCtlResumeSpeedOffset2:
+        dc.b    $01                                      ; Byte subtracted from SpeedCtlResumeSpeed; read by Sub_3B800.
+SpeedCtlValue3:
+        dc.b    $00                                      ; Byte used with; read by Sub_3B800.
+SpeedCtlAdder3:
+        dc.b    $03                                      ; Byte added to; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlErrorGainResume ($3527): 2D table, 1 points, signed
@@ -5545,7 +7294,27 @@ SpeedCtlErrorGainResume:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-128                                 ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$80,$30,$74,$20,$2A,$28,$0A,$BC,$00,$05
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+SpeedCtlThresh11:
+        dc.b    $80                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlThresh12:
+        dc.b    $30                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlRpmSpeedRatioThresh1:
+        dc.b    $74                                      ; Byte compared with RpmSpeedRatio; read by Sub_3B800.
+SpeedCtlRpmSpeedRatioThresh2:
+        dc.b    $20                                      ; Byte compared with RpmSpeedRatio; read by Sub_3B800.
+SpeedCtlSpeedThresh:
+        dc.b    $2A                                      ; Byte compared with VehicleSpeed; read by Sub_3B800.
+SensorValue10:
+        dc.b    $28                                      ; Byte used with; read by Sub_3C288.
+SensorV0416Init:
+        dc.b    $0A                                      ; Byte stored into V0416; read by Sub_3C288.
+SpeedCtlRpmThresh:
+        dc.b    $BC                                      ; Byte compared with EngineRpm; read by Sub_3B800.
+ThrottleV041CInit:
+        dc.b    $00                                      ; Byte stored into V041C; read by Sub_2D272.
+SpeedCtlThresh13:
+        dc.b    $05                                      ; Byte compared with; read by Sub_3B800.
         dc.b    $17
 
 ;---------------------------------------------------------------------------------------------------
@@ -5559,7 +7328,31 @@ SpeedCtlSpeedMin:
         dc.b    4,$80                                    ; points, flags
         dc.b    60,127, 120,112, 160,102, 170,97         ; x, y
 
-        dc.b    $FF,$FF,$11,$40,$4D,$11,$40,$8A,$5E,$58,$02,$58,$02,$D1,$0A,$7E
+        dc.b    $FF,$FF
+SpeedCtlOverrideTimerInit1:
+        dc.b    $11                                      ; Byte stored into SpeedCtlOverrideTimer; read by Sub_3C46E.
+SpeedCtlValue4:
+        dc.b    $40                                      ; Byte used with; read by Sub_3C46E.
+SpeedCtlValue5:
+        dc.b    $4D                                      ; Byte used with; read by Sub_3C46E.
+SpeedCtlOverrideTimerInit2:
+        dc.b    $11                                      ; Byte stored into SpeedCtlOverrideTimer; read by Sub_3C46E.
+SpeedCtlValue6:
+        dc.b    $40                                      ; Byte used with; read by Sub_3C46E.
+SpeedCtlValue7:
+        dc.b    $8A                                      ; Byte used with; read by Sub_3C46E.
+SpeedCtlRpmSpeedRatioThresh3:
+        dc.b    $5E                                      ; Byte compared with RpmSpeedRatio; read by Sub_3C46E.
+SpeedCtlCoolantThresh:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_3B800.
+SpeedCtlFactor1:
+        dc.b    $02,$58                                  ; Word multiplied; read by Sub_3C65C.
+SpeedCtlFactor2:
+        dc.b    $02,$D1                                  ; Word multiplied; read by Sub_3C65C.
+SpeedCtlThresh14:
+        dc.b    $0A                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlLoopMask:
+        dc.b    $7E                                      ; Byte mask for MainLoopCounter; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlOverrideThrottle ($3556): 2D table, 4 points, unsigned
@@ -5573,8 +7366,26 @@ SpeedCtlOverrideThrottle:
         dc.b    10,2, 20,4, 36,8, 61,9                   ; x, y
 
         dc.b    $05,$80,$00,$01,$08,$03,$2C,$06,$4D,$13,$C0,$3A,$03,$20,$00,$00
-        dc.b    $20,$FE,$C0,$FA,$FF,$FF,$0D,$0D,$03,$20,$00,$00,$1F,$1F,$20,$3C
-        dc.b    $00,$01
+        dc.b    $20,$FE,$C0,$FA,$FF,$FF
+SensorV00F0Init:
+        dc.b    $0D                                      ; Byte stored into V00F0; read by Sub_3C3C6.
+SensorValue11:
+        dc.b    $0D                                      ; Byte used with; read by Sub_3C3C6.
+SensorRpmThresh6:
+        dc.b    $03,$20                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
+SensorRpmThresh7:
+        dc.b    $00,$00                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
+SensorValue12:
+        dc.b    $1F                                      ; Byte used with; read by Sub_3C3C6.
+SensorThrottleThresh3:
+        dc.b    $1F                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3C3C6.
+SensorValue13:
+        dc.b    $20                                      ; Byte used with; read by Sub_3C3C6.
+SpeedCtlV0423Thresh:
+        dc.b    $3C                                      ; Byte compared with V0423; read by Sub_3C690.
+        dc.b    $00
+SpeedCtlV0424Thresh:
+        dc.b    $01                                      ; Byte compared with V0424; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_3582 ($3582): 2D table, 3 points, unsigned
@@ -6396,7 +8207,20 @@ FaultTable:
         dc.b    $FE,$00,$00,$00,$40,$1E,$00,$00,$00,$00
         dc.b    $FF,$00,$00,$00,$80,$1E,$00,$00,$00,$00
 
-        dc.b    $36,$28,$A0,$44,$C0,$09,$8A,$0D,$00
+DiagSpeedThresh6:
+        dc.b    $36                                      ; Byte compared with VehicleSpeed; read by Sub_233FE.
+DiagRpmThresh5:
+        dc.b    $28,$A0                                  ; Word compared with EngineRpm; read by Sub_233FE.
+DiagRpmThresh6:
+        dc.b    $44,$C0                                  ; Word compared with EngineRpm; read by Sub_233FE.
+DiagThrottleThresh1:
+        dc.b    $09                                      ; Byte compared with ThrottleAboveClosed; read by Sub_233FE.
+DiagFactor2:
+        dc.b    $8A                                      ; Byte multiplied; read by Sub_233FE.
+DiagV0665Thresh:
+        dc.b    $0D                                      ; Byte compared with V0665; read by Sub_233FE.
+DiagSpeedThresh7:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_233FE.
 
 ;---------------------------------------------------------------------------------------------------
 ; ThermostatTimeLimit ($5002): 2D table, 4 points, unsigned
@@ -6409,10 +8233,107 @@ ThermostatTimeLimit:
         dc.b    4,$80                                    ; points, flags
         dc.b    88,255, 99,112, 121,94, 137,37           ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$5B,$C8,$06,$40,$03,$20,$02,$00,$02,$95,$50,$FF
-        dc.b    $E6,$E6,$78,$18,$00,$48,$80,$1F,$04,$04,$03,$98,$FE,$FE,$28,$28
-        dc.b    $01,$40,$03,$04,$FF,$00,$FF,$00,$F1,$04,$61,$04,$F3,$02,$04,$0C
-        dc.b    $32,$05,$9B,$DC,$14,$80,$38,$77,$6E,$95,$95,$FF,$00
+        dc.b    $FF,$FF,$FF,$FF
+DiagBaroThresh1:
+        dc.b    $5B                                      ; Byte compared with Baro; read by Sub_23816.
+DiagV0660Thresh:
+        dc.b    $C8                                      ; Byte compared with V0660; read by Sub_2375A.
+DiagRpmThresh7:
+        dc.b    $06,$40                                  ; Word compared with EngineRpm; read by Sub_2375A.
+DiagThresh26:
+        dc.b    $03,$20                                  ; Word compared with; read by Sub_2375A.
+DiagV0662Thresh:
+        dc.b    $02,$00                                  ; Word compared with V0662; read by Sub_2375A.
+DiagV0661Thresh:
+        dc.b    $02                                      ; Byte compared with V0661; read by Sub_2375A.
+DiagV0668Thresh:
+        dc.b    $95                                      ; Byte compared with V0668; read by Sub_238D0.
+DiagSpeedThresh8:
+        dc.b    $50                                      ; Byte compared with VehicleSpeed; read by Sub_238D0.
+DiagRpmThresh8:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_238D0.
+DiagValue8:
+        dc.b    $E6                                      ; Byte used with; read by Sub_2352A.
+DiagValue9:
+        dc.b    $E6                                      ; Byte used with; read by Sub_2352A.
+DiagSpeedThresh9:
+        dc.b    $78                                      ; Byte compared with VehicleSpeed; read by Sub_2352A.
+DiagRpmSpeedRatioFilteredThresh1:
+        dc.b    $18,$00                                  ; Word compared with RpmSpeedRatioFiltered; read by Sub_2352A.
+DiagRpmSpeedRatioFilteredThresh2:
+        dc.b    $48                                      ; Byte compared with RpmSpeedRatioFiltered; read by Sub_2352A.
+DiagV0676Thresh:
+        dc.b    $80                                      ; Byte compared with V0676; read by Sub_2352A.
+DiagV0672Thresh1:
+        dc.b    $1F                                      ; Byte compared with V0672; read by Sub_2352A.
+DiagV0672Thresh2:
+        dc.b    $04                                      ; Byte compared with V0672; read by Sub_2352A.
+DiagV0678Thresh:
+        dc.b    $04,$03                                  ; Word compared with V0678; read by Sub_2352A.
+DiagV0677Thresh:
+        dc.b    $98                                      ; Byte compared with V0677; read by Sub_2352A.
+DiagV011CThresh:
+        dc.b    $FE                                      ; Byte compared with V011C; read by Sub_23280.
+DiagV011DThresh:
+        dc.b    $FE                                      ; Byte compared with V011D; read by Sub_23280.
+DiagSpeedThresh10:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_23280.
+DiagSpeedThresh11:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_23280.
+DiagThrottleThresh2:
+        dc.b    $01                                      ; Byte compared with ThrottleAboveClosed; read by Sub_23280.
+DiagV066AThresh:
+        dc.b    $40                                      ; Byte compared with V066A; read by Sub_23280.
+DiagV066BThresh:
+        dc.b    $03                                      ; Byte compared with V066B; read by Sub_23280.
+MisfireOptions:
+        dc.b    $04                                      ; Option byte; bits tested: $02, $04, $08, $10, $20, $40, $80. Read by Sub_14802, Sub_22E06, Sub_2A906 +5.
+FuelMapThresh4:
+        dc.b    $FF                                      ; Byte compared with Map; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh1:
+        dc.b    $00                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelThresh3:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh2:
+        dc.b    $00                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelDecelLeanFuelThresh:
+        dc.b    $F1                                      ; Byte compared with DecelLeanFuel; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh3:
+        dc.b    $04                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelValue13:
+        dc.b    $61                                      ; Byte used with; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh4:
+        dc.b    $04                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelSpeedDampSparkThresh:
+        dc.b    $F3                                      ; Byte compared with SpeedDampSpark; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh5:
+        dc.b    $02                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh6:
+        dc.b    $04                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh7:
+        dc.b    $0C                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh8:
+        dc.b    $32                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA, Sub_2B730.
+FuelMisfireTransientHoldThresh9:
+        dc.b    $05                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+MisfireValue1:
+        dc.b    $9B,$DC                                  ; Word used with; read by Sub_2B456.
+MisfireFactor1:
+        dc.b    $14                                      ; Byte multiplied; read by Sub_2B456.
+MisfireV0019Offset:
+        dc.b    $80                                      ; Byte subtracted from V0019; read by Sub_2B456.
+MisfireOffset:
+        dc.b    $38                                      ; Byte subtracted from; read by Sub_2B456.
+FuelStartCoolantThresh1:
+        dc.b    $77                                      ; Byte compared with StartCoolantTemp2; read by Sub_2AB16.
+FuelStartCoolantThresh2:
+        dc.b    $6E                                      ; Byte compared with StartCoolantTemp2; read by Sub_2AB16.
+FuelThresh4:
+        dc.b    $95                                      ; Byte compared with; read by Sub_2AB16.
+FuelThresh5:
+        dc.b    $95                                      ; Byte compared with; read by Sub_2AB16.
+MisfireChangeMax:
+        dc.b    $FF,$00                                  ; Misfire monitor: segment-time change above which a misfire is taken without the thresholds
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireEnableCoolant ($5049): 2D table, 4 points, unsigned
@@ -6618,9 +8539,37 @@ MisfireHoldSegRpm:
         dc.b    5,$80                                    ; points, flags
         dc.b    16,6, 25,4, 36,3, 40,2, 41,0             ; x, y
 
-        dc.b    $00,$FF,$00,$00,$19,$6E,$6A,$AA,$19,$6E,$6A,$AA,$19,$6E,$6A,$AA
-        dc.b    $00,$BA,$A1,$C0,$00,$08,$00,$08,$00,$3C,$03,$04,$00,$5A,$10,$04
-        dc.b    $2A,$00,$0F,$1C,$01,$03,$15,$01,$01,$00,$03,$01,$00,$00,$00
+FuelEventV0631Value:
+        dc.b    $00,$FF                                  ; Word used with V0631; read by Sub_246FC, Sub_247A8.
+FuelEventValue11:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_247A8.
+FuelValue14:
+        dc.b    $19,$6E,$6A,$AA                          ; Long used with; read by Sub_2B730.
+StartV000FInit:
+        dc.b    $19,$6E,$6A,$AA                          ; Long stored into V000F; read by Reset, Sub_2A906.
+StartV0013Init:
+        dc.b    $19,$6E,$6A,$AA                          ; Long stored into V0013; read by Reset, Sub_2A906.
+MisfireAdder1:
+        dc.b    $00,$BA                                  ; Word added to; read by Sub_2B93E.
+MisfireAdder2:
+        dc.b    $A1,$C0                                  ; Word added to; read by Sub_2B93E.
+MisfireValue2:
+        dc.b    $00,$08                                  ; Word used with; read by Sub_2A906.
+MisfireIdleTargetAdder1:
+        dc.b    $00,$08                                  ; Word added to IdleTarget; read by Sub_2A906.
+MisfireV00DEThresh:
+        dc.b    $00,$3C                                  ; Word compared with V00DE; read by Sub_2A906, Sub_2B448.
+MisfireV0623Thresh1:
+        dc.b    $03                                      ; Byte compared with V0623; read by Sub_2A906.
+MisfireV0623Thresh2:
+        dc.b    $04                                      ; Byte compared with V0623; read by Sub_2A906.
+MisfireHoldSpeedMin:
+        dc.b    $00                                      ; Misfire hold-off (MisfireHoldSegRpm) applies above this vehicle speed
+MisfireIdleTargetAdder2:
+        dc.b    $5A                                      ; Byte added to IdleTarget; read by Sub_2A906.
+MisfireValue3:
+        dc.b    $10                                      ; Byte used with; read by Sub_2B93E.
+        dc.b    $04,$2A,$00,$0F,$1C,$01,$03,$15,$01,$01,$00,$03,$01,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireDevCurve2 ($5305): 2D table, 5 points, unsigned
@@ -6659,7 +8608,34 @@ MisfireEnableBaro:
         dc.b    4,$80                                    ; points, flags
         dc.b    146,33, 168,38, 204,47, 240,56           ; x, y
 
-        dc.b    $00,$8C,$00,$20,$FF,$C8,$C8,$04,$28,$28,$D0,$00,$2A,$58,$44,$78
+FuelV0610Thresh:
+        dc.b    $00,$8C                                  ; Word compared with V0610; read by Sub_2AE1E.
+FuelValue15:
+        dc.b    $00,$20                                  ; Word used with; read by Sub_2AE1E.
+PurgeV0474Thresh:
+        dc.b    $FF                                      ; Byte compared with V0474; read by Sub_3ECC6.
+FuelV061DThresh:
+        dc.b    $C8                                      ; Byte compared with V061D; read by Sub_2AE1E.
+FuelV0619Thresh:
+        dc.b    $C8                                      ; Byte compared with V0619; read by Sub_2AE1E.
+FuelV061BThresh:
+        dc.b    $04                                      ; Byte compared with V061B; read by Sub_2AE1E.
+FuelValue16:
+        dc.b    $28                                      ; Byte used with; read by Sub_2AE1E.
+FuelValue17:
+        dc.b    $28                                      ; Byte used with; read by Sub_2AE1E.
+FuelCoolantThresh4:
+        dc.b    $D0                                      ; Byte compared with CoolantTemp; read by Sub_2B0FA.
+FuelSpeedThresh:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2B0FA.
+FuelMapThresh5:
+        dc.b    $2A                                      ; Byte compared with Map; read by Sub_2B0FA.
+FuelSegRpmThresh1:
+        dc.b    $58                                      ; Byte compared with SegmentRpm; read by Sub_2B0FA.
+FuelSegRpmThresh2:
+        dc.b    $44                                      ; Byte compared with SegmentRpm; read by Sub_2B0FA.
+FuelThresh6:
+        dc.b    $78                                      ; Byte compared with; read by Sub_2AE1E.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_5343 ($5343): 2D table, 2 points, unsigned
@@ -6670,7 +8646,17 @@ Tab2D_5343:
         dc.b    2,$80                                    ; points, flags
         dc.b    19,25, 63,6                              ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04,$00,$F5,$00,$00,$10
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+MisfireValue4:
+        dc.b    $04                                      ; Byte used with; read by Sub_2B692.
+MisfireFactor2:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_2B692.
+MisfireValue5:
+        dc.b    $F5                                      ; Byte used with; read by Sub_2B456.
+MisfireV062BInit:
+        dc.b    $00                                      ; Byte stored into V062B; read by Sub_2B456.
+MisfireV05D2Thresh2:
+        dc.b    $00,$10                                  ; Word compared with V05D2; read by Sub_2B692.
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireNoiseLimit ($5357): 3D table, 9 rows x 9 columns, unsigned
@@ -6692,7 +8678,14 @@ MisfireNoiseLimit:
         dc.b    254,254,254,254,254,254,254,254,254      ; row 7
         dc.b    254,254,254,254,254,254,254,254,254      ; row 8
 
-        dc.b    $58,$58,$00,$00
+PurgeCoolantThresh2:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_3ED66.
+PurgeAirTempThresh:
+        dc.b    $58                                      ; Byte compared with AirTemp; read by Sub_3ED66.
+PurgeValue10:
+        dc.b    $00                                      ; Byte used with; read by Sub_3E074, Sub_3ED66.
+PurgeValue11:
+        dc.b    $00                                      ; Byte used with; read by Sub_3ED66.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab3D_53B8 ($53B8): 3D table, 9 rows x 17 columns, unsigned
@@ -6733,14 +8726,76 @@ FlexEthanolMap:
         dc.b    64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64 ; row 7
         dc.b    64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64 ; row 8
 
-        dc.b    $A0,$84,$06,$F6,$92,$10,$14,$1C,$02,$55,$95,$A0,$06,$06,$3E,$06
-        dc.b    $0C,$18,$06,$15,$03,$05,$03,$05,$27,$2D,$0F,$0A,$14,$06,$19,$96
+DiagBatteryTempThresh1:
+        dc.b    $A0                                      ; Byte compared with BatteryTemp; read by Sub_25784.
+DiagBatteryTempThresh2:
+        dc.b    $84                                      ; Byte compared with BatteryTemp; read by Sub_25784.
+DiagCoolantThresh1:
+        dc.b    $06                                      ; Byte compared with CoolantTemp; read by Sub_25784.
+DiagVoltsThresh1:
+        dc.b    $F6                                      ; Byte compared with BatteryVolts2; read by Sub_25784.
+DiagVoltsThresh2:
+        dc.b    $92                                      ; Byte compared with BatteryVolts2; read by Sub_25784.
+DiagVacuumThresh1:
+        dc.b    $10                                      ; Byte compared with ManifoldVacuum; read by Sub_25784.
+DiagV0591Thresh:
+        dc.b    $14                                      ; Byte compared with V0591; read by Sub_25DA8.
+DiagV0593Thresh:
+        dc.b    $1C                                      ; Byte compared with V0593; read by Sub_25784.
+DiagV0592Thresh:
+        dc.b    $02                                      ; Byte compared with V0592; read by Sub_25784, Sub_25DA8.
+DiagValue1:
+        dc.b    $55                                      ; Byte used with; read by Sub_25DA8.
+DiagMonPeakThresh1:
+        dc.b    $95                                      ; Byte compared with DiagMonPeak; read by Sub_25DA8.
+DiagThresh1:
+        dc.b    $A0                                      ; Byte compared with; read by Sub_25784.
+DiagThresh2:
+        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
+DiagV0590Thresh:
+        dc.b    $06                                      ; Byte compared with V0590; read by Sub_25784.
+DiagV0598Thresh:
+        dc.b    $3E                                      ; Byte compared with V0598; read by Sub_25784.
+DiagThresh3:
+        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
+DiagThresh4:
+        dc.b    $0C                                      ; Byte compared with; read by Sub_25784.
+DiagThresh5:
+        dc.b    $18                                      ; Byte compared with; read by Sub_25784.
+DiagV0599Thresh:
+        dc.b    $06                                      ; Byte compared with V0599; read by Sub_25784.
+DiagV059AThresh:
+        dc.b    $15                                      ; Byte compared with V059A; read by Sub_25784.
+DiagV0596Thresh1:
+        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
+DiagV0597Thresh1:
+        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
+DiagV0596Thresh2:
+        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
+DiagV0597Thresh2:
+        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
+DiagMonPeakThresh2:
+        dc.b    $27                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+DiagMonPeakThresh3:
+        dc.b    $2D                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+DiagV0595Thresh:
+        dc.b    $0F                                      ; Byte compared with V0595; read by Sub_25784.
+DiagThresh6:
+        dc.b    $0A                                      ; Byte compared with; read by Sub_25784.
+DiagMonPeakThresh4:
+        dc.b    $14                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+DiagVacuumThresh2:
+        dc.b    $06                                      ; Byte compared with ManifoldVacuum; read by Sub_25784.
+SensorPurgeDutyThresh1:
+        dc.b    $19                                      ; Byte compared with PurgeDuty; read by Sub_25E9E.
+SensorV059BThresh:
+        dc.b    $96                                      ; Byte compared with V059B; read by Sub_25E9E.
 
 ;---------------------------------------------------------------------------------------------------
 ; DiagLevelLimit ($5532): 2D table, 1 points, unsigned
 ; Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $019C,Z
+; Inputs: FuelLevelScaled
 ; Read at $25A8E
 ;---------------------------------------------------------------------------------------------------
 DiagLevelLimit:
@@ -6753,20 +8808,118 @@ DiagLevelLimit:
 ; DiagLevelLimit2 ($553E): 2D table, 2 points, unsigned
 ; As DiagLevelLimit with $0649,Z bit 1 set
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $019C,Z
+; Inputs: FuelLevelScaled
 ; Read at $25A7E
 ;---------------------------------------------------------------------------------------------------
 DiagLevelLimit2:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,34, 128,16                             ; x, y
 
-        dc.b    $FF,$FF,$3E,$CD,$02,$61,$06,$40,$40,$EF,$02,$04,$0D,$01,$0A,$F6
-        dc.b    $0A,$F6,$10,$10,$0E,$00,$01,$0B,$05,$0E,$10,$FF,$F8,$FF,$F8,$FE
-        dc.b    $FE,$1A,$1A,$29,$02,$41,$CD,$84,$20,$2C,$00,$0B,$00,$0B,$00,$0B
-        dc.b    $F2,$10,$F0,$10,$F0,$18,$18,$12,$00,$D5,$2A,$49,$26,$38,$06,$1F
-        dc.b    $2A,$49,$26,$3D,$06,$29,$E6,$24,$00,$C7,$24,$4A,$1F,$3F,$06,$21
-        dc.b    $49,$4A,$1F,$3F,$06,$21,$14,$F6,$03,$03,$03,$FE,$FE,$FE,$FE,$06
-        dc.b    $0C,$A9
+        dc.b    $FF,$FF
+DiagTimeThresh1:
+        dc.b    $3E                                      ; Byte compared with Count3s; read by Sub_252A8.
+DiagCoolantThresh2:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_252A8.
+DiagSpeedThresh1:
+        dc.b    $02                                      ; Byte compared with VehicleSpeed; read by Sub_252A8.
+DiagMapThresh1:
+        dc.b    $61                                      ; Byte compared with Map; read by Sub_252A8.
+DiagRpmThresh1:
+        dc.b    $06,$40                                  ; Word compared with EngineRpm; read by Sub_252A8.
+DiagV05B1Value:
+        dc.b    $40                                      ; Byte used with V05B1; read by Sub_252A8.
+DiagValue2:
+        dc.b    $EF                                      ; Byte used with; read by Sub_252A8.
+DiagIacTargetCmdThresh:
+        dc.b    $02                                      ; Byte compared with IacTargetCmd; read by Sub_252A8.
+DiagIacPositionThresh:
+        dc.b    $04                                      ; Byte compared with IacPosition; read by Sub_252A8.
+DiagMapThresh2:
+        dc.b    $0D                                      ; Byte compared with Map; read by Sub_252A8.
+DiagValue3:
+        dc.b    $01                                      ; Byte used with; read by Sub_252A8.
+        dc.b    $0A,$F6,$0A,$F6,$10,$10,$0E
+O2Adder5:
+        dc.b    $00                                      ; Byte added to; read by Sub_15364.
+PurgeAdder8:
+        dc.b    $01                                      ; Byte added to; read by Sub_3D85E.
+PurgeThresh8:
+        dc.b    $0B                                      ; Byte compared with; read by Sub_3D85E.
+PurgeOffset2:
+        dc.b    $05                                      ; Byte subtracted from; read by Sub_3D85E.
+PurgeV05B2Thresh:
+        dc.b    $0E                                      ; Byte compared with V05B2; read by Sub_3D85E.
+DiagV042DThresh:
+        dc.b    $10                                      ; Byte compared with V042D; read by Sub_252A8.
+ThermistorRpmValue:
+        dc.b    $FF,$F8                                  ; Word used with EngineRpm; read by Sub_252A8, Sub_32318.
+ThermistorValue6:
+        dc.b    $FF,$F8                                  ; Word used with; read by Sub_252A8, Sub_32318.
+DiagV05B4Thresh:
+        dc.b    $FE                                      ; Byte compared with V05B4; read by Sub_252A8.
+DiagThresh7:
+        dc.b    $FE                                      ; Byte compared with; read by Sub_252A8.
+O2V05B9Thresh:
+        dc.b    $1A                                      ; Byte compared with V05B9; read by Sub_155C8, Sub_252A8.
+O2Thresh21:
+        dc.b    $1A                                      ; Byte compared with; read by Sub_155C8, Sub_252A8.
+PurgeV006AThresh:
+        dc.b    $29                                      ; Byte compared with V006A; read by Sub_3DD3C.
+DiagV05BDThresh:
+        dc.b    $02                                      ; Byte compared with V05BD; read by Sub_252A8.
+MapV0581Thresh:
+        dc.b    $41                                      ; Byte compared with V0581; read by Sub_25000.
+MapCoolantThresh:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_25000.
+MapBatteryTempThresh:
+        dc.b    $84                                      ; Byte compared with BatteryTemp; read by Sub_25000.
+MapVacuumThresh:
+        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_25000.
+MapSpeedThresh:
+        dc.b    $2C                                      ; Byte compared with VehicleSpeed; read by Sub_25000.
+MapAccelFuelThresh:
+        dc.b    $00,$0B                                  ; Word compared with MapAccelFuel; read by Sub_25000.
+MapAccelTpsFuelThresh:
+        dc.b    $00,$0B                                  ; Word compared with AccelTpsFuel; read by Sub_25000.
+MapTipInFuelThresh:
+        dc.b    $00,$0B                                  ; Word compared with TipInFuel; read by Sub_25000.
+MapDecelLeanFuelThresh:
+        dc.b    $F2                                      ; Byte compared with DecelLeanFuel; read by Sub_25000.
+        dc.b    $10,$F0,$10,$F0,$18,$18,$12
+MapV057EThresh1:
+        dc.b    $00,$D5                                  ; Word compared with V057E; read by Sub_25000.
+        dc.b    $2A,$49,$26,$38,$06,$1F,$2A,$49,$26,$3D,$06,$29
+MapShortTermTrim1Thresh1:
+        dc.b    $E6                                      ; Byte compared with ShortTermTrim1; read by Sub_25000.
+MapShortTermTrim1Thresh2:
+        dc.b    $24                                      ; Byte compared with ShortTermTrim1; read by Sub_25000.
+MapV057EThresh2:
+        dc.b    $00,$C7                                  ; Word compared with V057E; read by Sub_25000.
+        dc.b    $24,$4A,$1F,$3F,$06,$21,$49,$4A,$1F,$3F,$06,$21
+ThermistorV0588Value1:
+        dc.b    $14                                      ; Byte used with V0588; read by Sub_25000, Sub_32318.
+ThermistorV0588Value2:
+        dc.b    $F6                                      ; Byte used with V0588; read by Sub_25000, Sub_32318.
+MapV0589Thresh:
+        dc.b    $03                                      ; Byte compared with V0589; read by Sub_25000.
+FuelOffset4:
+        dc.b    $03                                      ; Byte subtracted from result of FuelSysLimit2; read by Sub_2A4F2, Sub_2A6C0.
+FuelAdder:
+        dc.b    $03                                      ; Byte added to result of FuelSysLimit; read by Sub_2A0F0, Sub_2A302.
+DiagThresh8:
+        dc.b    $FE                                      ; Byte compared with; read by Sub_2A496, Sub_2A664.
+DiagThresh9:
+        dc.b    $FE                                      ; Byte compared with; read by Sub_2A07E, Sub_2A290.
+FuelV05ABThresh:
+        dc.b    $FE                                      ; Byte compared with V05AB; read by Sub_2A4F2, Sub_2A6C0.
+FuelV05ADThresh:
+        dc.b    $FE                                      ; Byte compared with V05AD; read by Sub_2A0F0, Sub_2A302.
+O2V05A5Init:
+        dc.b    $06                                      ; Byte stored into V05A5; read by Sub_1594A.
+DiagV05A8Init:
+        dc.b    $0C                                      ; Byte stored into V05A8; read by Sub_2A000, Sub_2A212, Sub_2A424 +1.
+FuelV007DThresh:
+        dc.b    $A9                                      ; Byte compared with V007D; read by Sub_2A07E, Sub_2A0F0, Sub_2A290 +1.
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysLimit ($55A6): 3D table, 5 rows x 5 columns, unsigned
@@ -6825,19 +8978,166 @@ FuelSysLimitScale2:
         dc.b    5,$80                                    ; points, flags
         dc.b    16,0, 39,64, 47,128, 67,192, 255,255     ; x, y
 
-        dc.b    $64,$C6,$14,$09,$06,$40,$7B,$85,$0F,$04,$0B,$32,$8E,$8A,$8E,$8A
-        dc.b    $02,$02,$01,$01,$0B,$10,$64,$10,$64,$7F,$00,$0A,$F6,$0A,$F6,$0F
-        dc.b    $F1,$0F,$F1,$10,$10,$10,$10,$0E,$89,$8F,$89,$8F,$96,$0F,$09,$80
-        dc.b    $80,$64,$35,$81,$81,$00,$64,$1C,$84,$19,$C8,$12,$33,$33,$33,$33
-        dc.b    $1A,$1A,$1A,$1A,$01,$01,$01,$01,$0D,$0D,$0D,$0D,$06,$06,$06,$06
-        dc.b    $25,$CD,$24,$8C,$FE,$35,$80,$80,$01,$00,$01,$00,$01,$00,$80,$38
-        dc.b    $28,$B9,$1E,$3F,$2D,$50,$29,$44,$06,$3B,$47,$61,$1D,$40,$2B,$A5
-        dc.b    $26,$47,$1A,$E6,$1A,$E6,$1A,$E6,$1A,$E6,$18,$18,$18,$18,$11,$87
-        dc.b    $8D,$87,$8D,$88,$8C,$12,$24,$12,$4D,$06,$1A,$66,$C8,$9A,$C8,$9A
-        dc.b    $80,$0F,$21,$14,$E6,$14,$E6,$18,$18,$03,$80,$01,$06,$02,$0D,$03
-        dc.b    $13,$FF,$FF,$FF,$FF,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF,$FF
-        dc.b    $FF,$A0,$94,$05,$05,$9B,$14,$03,$70,$40,$79,$5B,$B2,$CA,$C8,$1E
-        dc.b    $F8,$21,$80,$06,$20,$05,$E6,$08,$04,$8C,$0C,$25,$1D,$10,$0C,$05
+DiagTimeThresh2:
+        dc.b    $64                                      ; Byte compared with Count3s; read by Sub_2877A.
+DiagCoolantThresh3:
+        dc.b    $C6                                      ; Byte compared with CoolantTemp; read by Sub_2877A.
+DiagSpeedThresh2:
+        dc.b    $14                                      ; Byte compared with VehicleSpeed; read by Sub_2877A.
+DiagV053FThresh:
+        dc.b    $09                                      ; Byte compared with V053F; read by Sub_2877A.
+DiagIdleTargetThresh:
+        dc.b    $06,$40                                  ; Word compared with IdleTarget; read by Sub_2877A.
+DiagThresh10:
+        dc.b    $7B                                      ; Byte compared with; read by Sub_2877A.
+DiagThresh11:
+        dc.b    $85                                      ; Byte compared with; read by Sub_2877A.
+DiagV0542Thresh:
+        dc.b    $0F                                      ; Byte compared with V0542; read by Sub_2877A.
+DiagV0541Init:
+        dc.b    $04                                      ; Byte stored into V0541; read by Sub_2877A.
+DiagV0A4EThresh:
+        dc.b    $0B                                      ; Byte compared with V0A4E; read by Sub_2877A.
+DiagV0543Thresh:
+        dc.b    $32                                      ; Byte compared with V0543; read by Sub_2877A.
+        dc.b    $8E,$8A,$8E,$8A,$02,$02,$01,$01
+DiagThresh12:
+        dc.b    $0B                                      ; Byte compared with; read by Sub_2877A.
+        dc.b    $10,$64,$10,$64
+DiagThresh13:
+        dc.b    $7F                                      ; Byte compared with; read by Sub_2877A.
+O2Value36:
+        dc.b    $00                                      ; Byte used with; read by Sub_14802.
+        dc.b    $0A,$F6,$0A,$F6,$0F,$F1,$0F,$F1,$10,$10,$10,$10,$0E,$89,$8F,$89
+        dc.b    $8F
+DiagThresh14:
+        dc.b    $96                                      ; Byte compared with; read by Sub_2877A.
+DiagThresh15:
+        dc.b    $0F                                      ; Byte compared with; read by Sub_2877A.
+        dc.b    $09,$80,$80
+CalRunTimeThresh:
+        dc.b    $64                                      ; Byte compared with RunTime; read by Sub_28D78.
+        dc.b    $35,$81,$81
+CalV010AThresh1:
+        dc.b    $00,$64                                  ; Word compared with V010A; read by Sub_2919A.
+CalV010AThresh2:
+        dc.b    $1C,$84                                  ; Word compared with V010A; read by Sub_28D78.
+CalV010AThresh3:
+        dc.b    $19,$C8                                  ; Word compared with V010A; read by Sub_291F0.
+CalV010EThresh:
+        dc.b    $12                                      ; Byte compared with V010E; read by Sub_29384.
+        dc.b    $33,$33,$33,$33,$1A,$1A,$1A,$1A,$01,$01,$01,$01,$0D,$0D,$0D,$0D
+        dc.b    $06,$06,$06,$06
+O2Adder6:
+        dc.b    $25                                      ; Byte added to; read by Sub_14740.
+DiagCoolantThresh4:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_285CA.
+DiagSpeedThresh3:
+        dc.b    $24                                      ; Byte compared with VehicleSpeed; read by Sub_285CA.
+DiagV056EThresh:
+        dc.b    $8C                                      ; Byte compared with V056E; read by Sub_285CA.
+DiagRpmSpeedRatioThresh:
+        dc.b    $FE                                      ; Byte compared with RpmSpeedRatio; read by Sub_285CA.
+        dc.b    $35,$80,$80
+DiagMapAccelFuelThresh:
+        dc.b    $01,$00                                  ; Word compared with MapAccelFuel; read by Sub_285CA.
+DiagAccelTpsFuelThresh:
+        dc.b    $01,$00                                  ; Word compared with AccelTpsFuel; read by Sub_285CA.
+DiagTipInFuelThresh:
+        dc.b    $01,$00                                  ; Word compared with TipInFuel; read by Sub_285CA.
+DiagDecelLeanFuelThresh:
+        dc.b    $80                                      ; Byte compared with DecelLeanFuel; read by Sub_285CA.
+DiagThresh16:
+        dc.b    $38                                      ; Byte compared with; read by Sub_281E2.
+        dc.b    $28,$B9,$1E,$3F,$2D,$50,$29,$44
+DiagThresh17:
+        dc.b    $06,$3B                                  ; Word compared with; read by Sub_281E2.
+        dc.b    $47,$61,$1D,$40,$2B,$A5,$26,$47,$1A,$E6,$1A,$E6,$1A,$E6,$1A,$E6
+        dc.b    $18,$18,$18,$18,$11,$87,$8D,$87,$8D
+DiagValue4:
+        dc.b    $88                                      ; Byte used with; read by Sub_281E2.
+DiagValue5:
+        dc.b    $8C                                      ; Byte used with; read by Sub_281E2.
+DiagThresh18:
+        dc.b    $12                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh19:
+        dc.b    $24                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh20:
+        dc.b    $12                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh21:
+        dc.b    $4D                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh22:
+        dc.b    $06                                      ; Byte compared with; read by Sub_281E2.
+DiagValue6:
+        dc.b    $1A                                      ; Byte used with; read by Sub_281E2.
+DiagValue7:
+        dc.b    $66                                      ; Byte used with; read by Sub_281E2.
+ThermistorThresh1:
+        dc.b    $C8                                      ; Byte compared with; read by Sub_32318.
+ThermistorThresh2:
+        dc.b    $9A                                      ; Byte compared with; read by Sub_32318.
+ThermistorThresh3:
+        dc.b    $C8                                      ; Byte compared with; read by Sub_32318.
+ThermistorThresh4:
+        dc.b    $9A                                      ; Byte compared with; read by Sub_32318.
+DiagThresh23:
+        dc.b    $80                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh24:
+        dc.b    $0F                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh25:
+        dc.b    $21                                      ; Byte compared with; read by Sub_281E2.
+        dc.b    $14,$E6,$14,$E6,$18,$18,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF
+        dc.b    $FF,$FF,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF,$FF,$FF
+SensorV0A64Thresh1:
+        dc.b    $A0                                      ; Byte compared with V0A64; read by Sub_2DCC2.
+SensorV0A64Thresh2:
+        dc.b    $94                                      ; Byte compared with V0A64; read by Sub_2DCC2.
+SensorV06B2Thresh:
+        dc.b    $05                                      ; Byte compared with V06B2; read by Sub_2DCC2.
+SensorTimeThresh4:
+        dc.b    $05                                      ; Byte compared with Count3s; read by Sub_2DCC2.
+SensorCoolantThresh7:
+        dc.b    $9B                                      ; Byte compared with CoolantTemp; read by Sub_2802A.
+SensorSpeedThresh2:
+        dc.b    $14                                      ; Byte compared with VehicleSpeed; read by Sub_2802A.
+SensorV057BThresh:
+        dc.b    $03                                      ; Byte compared with V057B; read by Sub_2802A.
+SensorThresh9:
+        dc.b    $70                                      ; Byte compared with; read by Sub_2802A.
+SensorValue15:
+        dc.b    $40                                      ; Byte used with; read by Sub_2802A.
+        dc.b    $79,$5B,$B2,$CA,$C8,$1E
+PurgeValue12:
+        dc.b    $F8                                      ; Byte used with; read by Sub_3ECC6.
+PurgeValue13:
+        dc.b    $21                                      ; Byte used with; read by Sub_3ECC6.
+StartV01B6Value:
+        dc.b    $80                                      ; Byte used with V01B6; read by Reset, Sub_17A48, Sub_2C708.
+AnalogTimeThresh:
+        dc.b    $06                                      ; Byte compared with Count3s; read by CheckPowerDown, Sub_2C708.
+        dc.b    $20
+SensorAnalogV0A92FilteredThresh1:
+        dc.b    $05                                      ; Byte compared with AnalogV0A92Filtered; read by Sub_22EA6.
+SensorAnalogV0A92FilteredThresh2:
+        dc.b    $E6                                      ; Byte compared with AnalogV0A92Filtered; read by Sub_22EA6.
+SensorV06C5Thresh:
+        dc.b    $08                                      ; Byte compared with V06C5; read by Sub_22EA6.
+SensorV06C2Thresh:
+        dc.b    $04                                      ; Byte compared with V06C2; read by Sub_22EA6.
+SensorThresh10:
+        dc.b    $8C                                      ; Byte compared with; read by Sub_22EA6.
+SensorThresh11:
+        dc.b    $0C                                      ; Byte compared with; read by Sub_22EA6.
+SensorV011FThresh1:
+        dc.b    $25                                      ; Byte compared with V011F; read by Sub_22EA6.
+SensorAnalogV0A92FilteredThresh3:
+        dc.b    $1D                                      ; Byte compared with AnalogV0A92Filtered; read by Sub_22EA6.
+SensorThresh12:
+        dc.b    $10                                      ; Byte compared with; read by Sub_22EA6.
+SensorV011FThresh2:
+        dc.b    $0C                                      ; Byte compared with V011F; read by Sub_22EA6.
+SensorThresh13:
+        dc.b    $05                                      ; Byte compared with; read by Sub_22EA6.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_56D0 ($56D0): 2D table, 3 points, signed
@@ -6870,8 +9170,31 @@ Tab2D_56E8:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,0, 179,255                             ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$FF,$00,$FF,$FF,$00,$FF,$00
-        dc.b    $FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+DiagFactor1:
+        dc.b    $FF                                      ; Byte multiplied; read by Sub_2197C.
+DiagAdder1:
+        dc.b    $00                                      ; Byte added to; read by Sub_2197C.
+DiagAdder2:
+        dc.b    $00                                      ; Byte added to; read by Sub_2197C.
+DiagV06AFThresh:
+        dc.b    $FF                                      ; Byte compared with V06AF; read by Sub_2197C.
+DiagSpeedThresh4:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2197C.
+DiagRpmThresh2:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2197C.
+DiagRpmThresh3:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2197C.
+DiagV06AEThresh:
+        dc.b    $00                                      ; Byte compared with V06AE; read by Sub_2197C.
+ExpectedMapRpmMin:
+        dc.b    $FF                                      ; MAP/throttle rationality runs above this engine rpm
+DiagSpeedThresh5:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2197C.
+LimpRpmMapFault:
+        dc.b    $FF                                      ; Rpm limit with the MAP fault
+LimpMapFaultTime:
+        dc.b    $FF                                      ; MAP fault: time with MAP above the baro limit before it sets
 
 ;---------------------------------------------------------------------------------------------------
 ; LimpRpmSpeed ($5700): 2D table, 1 points, unsigned
@@ -6945,10 +9268,85 @@ ExpectedMap:
         dc.b    255,255,255,255,255,255,255,255,255      ; row 7
         dc.b    255,255,255,255,255,255,255,255,255      ; row 8
 
-        dc.b    $00,$FF,$00,$00,$00,$FF,$00,$FF,$00,$00,$FF,$FF,$40,$20,$30,$40
-        dc.b    $00,$00,$00,$00,$0A,$01,$3F,$13,$CD,$02,$02,$80,$02,$12,$21,$1E
-        dc.b    $7D,$C8,$10,$70,$03,$6A,$3C,$1A,$0A,$02,$1A,$28,$2F,$20,$66,$94
-        dc.b    $1F
+SensorV06CCThresh:
+        dc.b    $00                                      ; Byte compared with V06CC; read by Sub_22C1C.
+SensorThresh14:
+        dc.b    $FF,$00                                  ; Word compared with; read by Sub_22C1C.
+SensorV06CDThresh:
+        dc.b    $00                                      ; Byte compared with V06CD; read by Sub_22C1C.
+SensorThresh15:
+        dc.b    $00,$FF                                  ; Word compared with; read by Sub_22C1C.
+SensorThresh16:
+        dc.b    $00,$FF                                  ; Word compared with; read by Sub_22C1C.
+SensorO2UpBank1RawThresh:
+        dc.b    $00                                      ; Byte compared with O2UpBank1Raw; read by Sub_22C1C.
+SensorO2UpBank2RawThresh:
+        dc.b    $00                                      ; Byte compared with O2UpBank2Raw; read by Sub_22C1C.
+SensorRpmThresh8:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2C7FE.
+SensorRpmThresh9:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2C7FE.
+FuelThresh7:
+        dc.b    $40                                      ; Byte compared with; read by Sub_0C5B4.
+FuelV0F07Thresh:
+        dc.b    $20                                      ; Byte compared with V0F07; read by Sub_0C5B4.
+FuelV0F08Thresh:
+        dc.b    $30                                      ; Byte compared with V0F08; read by Sub_0C5B4.
+CalV068FOffset:
+        dc.b    $40                                      ; Byte subtracted from V068F; read by Sub_23C3E.
+        dc.b    $00,$00,$00,$00
+O2Adder7:
+        dc.b    $0A                                      ; Byte added to; read by Sub_155C8.
+O2V0E06Switch:
+        dc.b    $01,$3F                                  ; Word tested (zero = off) V0E06; read by Sub_14802, Sub_252A8.
+CalTimeThresh:
+        dc.b    $13                                      ; Byte compared with Count3s; read by Sub_23C3E.
+CalCoolantThresh3:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_23C3E.
+CalMapLastThresh:
+        dc.b    $02                                      ; Byte compared with MapLast; read by Sub_23C3E.
+CalV0ABAThresh:
+        dc.b    $02,$80                                  ; Word compared with V0ABA; read by Sub_23C3E.
+CalThrottleDeltaThresh:
+        dc.b    $02                                      ; Byte compared with ThrottleDelta; read by Sub_23C3E.
+CalRpmThresh1:
+        dc.b    $12                                      ; Byte compared with EngineRpm; read by Sub_23C3E.
+CalRpmThresh2:
+        dc.b    $21                                      ; Byte compared with EngineRpm; read by Sub_23C3E.
+CalRpmThresh3:
+        dc.b    $1E                                      ; Byte compared with EngineRpm; read by Sub_23C3E.
+CalThresh4:
+        dc.b    $7D                                      ; Byte compared with; read by Sub_23C3E.
+CalSpeedThresh1:
+        dc.b    $C8                                      ; Byte compared with VehicleSpeed; read by Sub_23C3E.
+FuelThresh8:
+        dc.b    $10                                      ; Byte compared with; read by Sub_23D76.
+FuelThresh9:
+        dc.b    $70                                      ; Byte compared with; read by Sub_23D76.
+FuelThresh10:
+        dc.b    $03                                      ; Byte compared with; read by Sub_23D76.
+FuelV068EThresh:
+        dc.b    $6A                                      ; Byte compared with V068E; read by Sub_23D76.
+        dc.b    $3C
+CalOffset7:
+        dc.b    $1A                                      ; Byte subtracted from; read by Sub_23C3E.
+CalV068AThresh:
+        dc.b    $0A                                      ; Byte compared with V068A; read by Sub_23B84.
+CalV068DInit:
+        dc.b    $02                                      ; Byte stored into V068D; read by Sub_23B84.
+DiagThrottleRawThresh1:
+        dc.b    $1A                                      ; Byte compared with ThrottleRaw; read by Sub_236D4.
+DiagSpeedThresh12:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_236D4.
+DiagRpmThresh9:
+        dc.b    $2F                                      ; Byte compared with EngineRpm; read by Sub_236D4.
+DiagVacuumThresh3:
+        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_236D4.
+        dc.b    $66
+DiagThrottleRawThresh2:
+        dc.b    $94                                      ; Byte compared with ThrottleRaw; read by Sub_236D4.
+DiagRpmThresh10:
+        dc.b    $1F                                      ; Byte compared with EngineRpm; read by Sub_236D4.
 
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleLimpFromVacuum ($57AE): 2D table, 4 points, unsigned
@@ -6961,7 +9359,18 @@ ThrottleLimpFromVacuum:
         dc.b    4,$80                                    ; points, flags
         dc.b    0,153, 16,124, 32,51, 129,0              ; x, y
 
-        dc.b    $02,$00,$66,$0D,$06,$17,$0B
+CalRpmThresh4:
+        dc.b    $02,$00                                  ; Word compared with EngineRpm; read by Sub_21EA6.
+DiagBaroThresh2:
+        dc.b    $66                                      ; Byte compared with Baro; read by Sub_21EA6, Sub_236D4, Sub_23816.
+DiagValue10:
+        dc.b    $0D                                      ; Byte used with; read by Sub_21EA6, Sub_236D4, Sub_23816.
+DiagVacuumThresh4:
+        dc.b    $06                                      ; Byte compared with ManifoldVacuum; read by Sub_21EA6, Sub_236D4, Sub_23816.
+MapAdder2:
+        dc.b    $17                                      ; Byte added to result of MapLimpFromThrottle; read by Sub_241AA.
+MapThrottleAdder:
+        dc.b    $0B                                      ; Byte added to Throttle; read by Sub_241AA.
 
 ;---------------------------------------------------------------------------------------------------
 ; MapLimpFromThrottle ($57BF): 2D table, 5 points, unsigned
@@ -6974,7 +9383,10 @@ MapLimpFromThrottle:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 7,32, 25,65, 40,97, 52,105          ; x, y
 
-        dc.b    $12,$B6
+DiagThresh27:
+        dc.b    $12                                      ; Byte compared with; read by Sub_23970.
+DiagIdleVacuumCoolantMin:
+        dc.b    $B6                                      ; Monitor in Sub_23970 runs above this coolant temperature
 
 ;---------------------------------------------------------------------------------------------------
 ; DiagIdleVacuumRpm ($57CD): 2D table, 2 points, unsigned
@@ -6987,8 +9399,31 @@ DiagIdleVacuumRpm:
         dc.b    2,$80                                    ; points, flags
         dc.b    62,0, 63,45                              ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$C0,$A6,$04,$19,$04,$50
-        dc.b    $04,$13,$0A,$33,$64,$F0
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+CalCoolantThresh4:
+        dc.b    $C0                                      ; Byte compared with CoolantTemp; read by Sub_21F82.
+CalStartCoolantThresh:
+        dc.b    $A6                                      ; Byte compared with StartCoolantTemp2; read by Sub_21F82.
+CalThresh5:
+        dc.b    $04                                      ; Byte compared with; read by Sub_21F82.
+CalCount191msThresh:
+        dc.b    $19                                      ; Byte compared with Count191ms; read by Sub_21F82.
+CalThresh6:
+        dc.b    $04                                      ; Byte compared with; read by Sub_21F82, Sub_291F0.
+CalSpeedThresh2:
+        dc.b    $50                                      ; Byte compared with VehicleSpeed; read by Sub_222FA.
+CalThresh7:
+        dc.b    $04                                      ; Byte compared with; read by Sub_223CC.
+CalThresh8:
+        dc.b    $13                                      ; Byte compared with; read by Sub_223CC.
+CalThresh9:
+        dc.b    $0A                                      ; Byte compared with; read by Sub_223CC.
+O2Value37:
+        dc.b    $33                                      ; Byte used with; read by Sub_14802.
+KnockValue3:
+        dc.b    $64                                      ; Byte used with; read by Sub_1F408.
+KnockV0A89Thresh:
+        dc.b    $F0                                      ; Byte compared with V0A89; read by Sub_1F408.
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockSensorCheckRpm ($57E9): 2D table, 3 points, unsigned
@@ -7001,11 +9436,128 @@ KnockSensorCheckRpm:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,0, 94,0, 194,41                        ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$BD,$BA,$19,$95,$03,$26,$14,$64,$0E,$08,$E4,$02
-        dc.b    $FD,$18,$1C,$36,$3D,$FB,$03,$E0,$1A,$FD,$AE,$79,$E4,$68,$C7,$FF
-        dc.b    $1A,$FD,$AE,$05,$FA,$FF,$00,$0A,$B7,$6E,$4D,$50,$13,$13,$1E,$12
-        dc.b    $1E,$12,$3E,$42,$96,$4B,$04,$10,$24,$3C,$05,$6D,$FF,$05,$08,$FA
-        dc.b    $03,$05,$FF,$66,$14,$C8,$99,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+SensorVoltsThresh2:
+        dc.b    $BD                                      ; Byte compared with BatteryVolts2; read by Sub_21D02.
+SensorVoltsThresh3:
+        dc.b    $BA                                      ; Byte compared with BatteryVolts2; read by Sub_21D02.
+SensorThresh17:
+        dc.b    $19                                      ; Byte compared with; read by Sub_21D02.
+SensorThresh18:
+        dc.b    $95                                      ; Byte compared with; read by Sub_21D02.
+SensorTimeThresh5:
+        dc.b    $03                                      ; Byte compared with Count3s; read by Sub_21D02.
+EgrTargetPosThresh3:
+        dc.b    $26                                      ; Byte compared with EgrTargetPos; read by Sub_22808.
+EgrValue9:
+        dc.b    $14                                      ; Byte used with; read by Sub_22808.
+EgrV058CThresh:
+        dc.b    $64                                      ; Byte compared with V058C; read by Sub_22808.
+EgrThresh8:
+        dc.b    $0E                                      ; Byte compared with; read by Sub_22808.
+ThrottleRawThresh1:
+        dc.b    $08                                      ; Byte compared with ThrottleRaw; read by Sub_236D4, ProcessThrottle.
+ThrottleRawThresh2:
+        dc.b    $E4                                      ; Byte compared with ThrottleRaw; read by Sub_236D4, ProcessThrottle.
+SensorMapRawThresh1:
+        dc.b    $02                                      ; Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap.
+SensorMapRawThresh2:
+        dc.b    $FD                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap.
+CalV06D1Thresh:
+        dc.b    $18                                      ; Byte compared with V06D1; read by Sub_21E38.
+CalThresh10:
+        dc.b    $1C                                      ; Byte compared with; read by Sub_21E38.
+CalMapRawThresh:
+        dc.b    $36                                      ; Byte compared with MapRaw; read by Sub_21E38.
+SensorThrottleThresh4:
+        dc.b    $3D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap.
+StartAcSensorRawThresh1:
+        dc.b    $FB                                      ; Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56.
+StartAcSensorRawThresh2:
+        dc.b    $03                                      ; Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56.
+StartAcSensorValue:
+        dc.b    $E0                                      ; Byte used with AcSensor; read by Reset, Sub_2CCA8.
+StartCoolantRawThresh1:
+        dc.b    $1A                                      ; Byte compared with CoolantRaw; read by Reset, ProcessCoolantTemp.
+StartCoolantRawThresh2:
+        dc.b    $FD                                      ; Byte compared with CoolantRaw; read by Reset, ProcessCoolantTemp.
+StartCoolantTempSlowValue:
+        dc.b    $AE                                      ; Byte used with CoolantTempSlow; read by Reset, ProcessCoolantTemp.
+DiagStartCoolantThresh1:
+        dc.b    $79                                      ; Byte compared with StartCoolantTemp2; read by Sub_231EC.
+DiagStartCoolantThresh2:
+        dc.b    $E4                                      ; Byte compared with StartCoolantTemp2; read by Sub_231EC.
+DiagBatteryTempStartThresh:
+        dc.b    $68                                      ; Byte compared with BatteryTempStart; read by Sub_231EC.
+DiagCoolantThresh6:
+        dc.b    $C7                                      ; Byte compared with CoolantTemp; read by Sub_231EC.
+DiagV06C9Thresh:
+        dc.b    $FF                                      ; Byte compared with V06C9; read by Sub_231EC.
+StartAirTempRawThresh1:
+        dc.b    $1A                                      ; Byte compared with AirTempRaw; read by Reset, ProcessAirTemp.
+StartAirTempRawThresh2:
+        dc.b    $FD                                      ; Byte compared with AirTempRaw; read by Reset, ProcessAirTemp.
+StartValue2:
+        dc.b    $AE                                      ; Byte used with; read by Reset, ProcessAirTemp.
+StartBatteryTempRawThresh1:
+        dc.b    $05                                      ; Byte compared with BatteryTempRaw; read by Reset, Sub_2C636.
+StartBatteryTempRawThresh2:
+        dc.b    $FA                                      ; Byte compared with BatteryTempRaw; read by Reset, Sub_2C636.
+SensorThresh19:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_2C7FE.
+SensorThresh20:
+        dc.b    $00                                      ; Byte compared with; read by Sub_2C7FE.
+        dc.b    $0A,$B7
+CalV06CBThresh:
+        dc.b    $6E                                      ; Byte compared with V06CB; read by Sub_220AE.
+CalThresh12:
+        dc.b    $4D                                      ; Byte compared with; read by Sub_220AE.
+CalSpeedThresh3:
+        dc.b    $50                                      ; Byte compared with VehicleSpeed; read by Sub_220AE.
+        dc.b    $13,$13,$1E,$12,$1E,$12
+O2UpBank1RawThresh4:
+        dc.b    $3E                                      ; Byte compared with O2UpBank1Raw; read by Sub_14802, Sub_22688.
+CalThresh13:
+        dc.b    $42                                      ; Byte compared with; read by Sub_223CC.
+CalThresh14:
+        dc.b    $96                                      ; Byte compared with; read by Sub_223CC.
+CalThresh15:
+        dc.b    $4B                                      ; Byte compared with; read by Sub_223CC.
+FieldThresh:
+        dc.b    $04                                      ; Byte compared with; read by Sub_08520, Sub_08DD4.
+SensorVoltsAdder:
+        dc.b    $10                                      ; Byte added to BatteryVolts2; read by Sub_21C78.
+SensorRpmThresh10:
+        dc.b    $24                                      ; Byte compared with EngineRpm; read by Sub_21C78.
+SensorV0DBBThresh:
+        dc.b    $3C                                      ; Byte compared with V0DBB; read by Sub_21C78.
+SensorThresh23:
+        dc.b    $05                                      ; Byte compared with; read by Sub_21C78.
+SensorThresh24:
+        dc.b    $6D                                      ; Byte compared with; read by Sub_21C78.
+SensorV0A63Thresh1:
+        dc.b    $FF                                      ; Byte compared with V0A63; read by Sub_2DCC2.
+SensorV0A63Thresh2:
+        dc.b    $05                                      ; Byte compared with V0A63; read by Sub_2DCC2.
+EgrThresh9:
+        dc.b    $08                                      ; Byte compared with; read by Sub_22808.
+EgrV0A8DThresh:
+        dc.b    $FA                                      ; Byte compared with V0A8D; read by Sub_22808.
+EgrThresh10:
+        dc.b    $03                                      ; Byte compared with; read by Sub_22B16.
+EgrV7926Offset:
+        dc.b    $05                                      ; Byte subtracted from V7926; read by Sub_22B16.
+EgrThresh11:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_22B16.
+PurgeV045FThresh:
+        dc.b    $66                                      ; Byte compared with V045F; read by Sub_22762.
+PurgeV045AThresh:
+        dc.b    $14                                      ; Byte compared with V045A; read by Sub_22762.
+PurgeV05C0Thresh:
+        dc.b    $C8                                      ; Byte compared with V05C0; read by Sub_22762.
+PurgeV045EThresh:
+        dc.b    $99                                      ; Byte compared with V045E; read by Sub_22762.
+        dc.b    $00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7385,12 +9937,12 @@ KnockSensorCheckRpm:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FC
-        dc.b    $03,$4A,$FF,$43,$4F,$50,$59,$52,$49,$47,$48,$54,$20,$31,$39,$39
-        dc.b    $38,$20,$43,$48,$52,$59,$53,$4C,$45,$52,$20,$43,$4F,$52,$50,$4F
-        dc.b    $52,$41,$54,$49,$4F,$4E,$00,$01,$00,$02,$00,$04,$00,$08,$00,$10
-        dc.b    $00,$20,$00,$40,$00,$80,$01,$00,$02,$00,$04,$00,$08,$00,$10,$00
-        dc.b    $20,$00,$40,$00,$80,$00,$60,$50,$90,$A0
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FC,$03,$4A,$FF,$43,$4F,$50,$59
+        dc.b    $52,$49,$47,$48,$54,$20,$31,$39,$39,$38,$20,$43,$48,$52,$59,$53
+        dc.b    $4C,$45,$52,$20,$43,$4F,$52,$50,$4F,$52,$41,$54,$49,$4F,$4E,$00
+        dc.b    $01,$00,$02,$00,$04,$00,$08,$00,$10,$00,$20,$00,$40,$00,$80,$01
+        dc.b    $00,$02,$00,$04,$00,$08,$00,$10,$00,$20,$00,$40,$00,$80,$00,$60
+        dc.b    $50,$90,$A0
 
 ;---------------------------------------------------------------------------------------------------
 ; ThermistorCold ($704B): 2D table, 7 points, unsigned
@@ -7418,7 +9970,7 @@ ThermistorHot:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_7065 ($7065): 2D table, 10 points, unsigned
-; Inputs: $0A5E,Z
+; Inputs: BatteryTempRaw
 ; Read at $2C68E
 ;---------------------------------------------------------------------------------------------------
 Tab2D_7065:
@@ -7429,7 +9981,7 @@ Tab2D_7065:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_707B ($707B): 2D table, 7 points, unsigned
-; Inputs: $0A5E,Z
+; Inputs: BatteryTempRaw
 ; Read at $2C68E
 ;---------------------------------------------------------------------------------------------------
 Tab2D_707B:
@@ -7441,7 +9993,7 @@ Tab2D_707B:
 ; Thermistor3Curve ($708B): 2D table, 10 points, unsigned
 ; ADC counts of a third thermistor input ($0A59,Z or $0A1B,Z) to temperature, into $0195,Z
 ; x: raw, y: tempc (units: docs/en/calibration.md)
-; Inputs: $0A5E,Z; $0A20,Z
+; Inputs: BatteryTempRaw; $0A20,Z
 ; Read at $0D966, $2C4A0, $2C4D4
 ;---------------------------------------------------------------------------------------------------
 Thermistor3Curve:
@@ -7454,14 +10006,17 @@ Thermistor3Curve:
 ; Thermistor3CurveAlt ($70A1): 2D table, 7 points, unsigned
 ; Alternative curve for the third thermistor input, chosen by calibration bit $0330.2
 ; x: raw, y: tempc (units: docs/en/calibration.md)
-; Inputs: $0A5E,Z; $0A20,Z
+; Inputs: BatteryTempRaw; $0A20,Z
 ; Read at $0D966, $2C4A0, $2C4D4
 ;---------------------------------------------------------------------------------------------------
 Thermistor3CurveAlt:
         dc.b    7,$80                                    ; points, flags
         dc.b    23,228, 40,208, 69,188, 112,168, 211,128, 239,108, 251,88 ; x, y
 
-        dc.b    $D3,$07
+SensorThresh25:
+        dc.b    $D3                                      ; Byte compared with; read by Sub_2C6DE.
+SensorThresh26:
+        dc.b    $07                                      ; Byte compared with; read by Sub_2C6DE.
 
 ;---------------------------------------------------------------------------------------------------
 ; ChargeVoltsBattTemp ($70B3): 2D table, 5 points, unsigned
@@ -7479,7 +10034,7 @@ ChargeVoltsBattTemp:
 ; AcSensorCurve ($70BF): 2D table, 2 points, unsigned
 ; A/C sensor (probably refrigerant pressure): ADC $0A87,Z to $0A88,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0A8B,Z
+; Inputs: AcSensorRaw
 ; Read at $0D92C, $2CDC8
 ;---------------------------------------------------------------------------------------------------
 AcSensorCurve:
@@ -7616,15 +10171,40 @@ DwellTime:
         dc.b    $04,$0A,$08,$08,$04,$0E,$01,$04,$00,$00,$00,$02,$0A,$23,$10,$01
         dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
         dc.b    $09,$45,$01,$08,$0A,$4A,$01,$04,$00,$00,$00,$02,$04,$0E,$02,$01
-        dc.b    $00,$0D,$BB,$A0,$00,$00,$1A,$CB,$C0,$00,$1E,$3F,$05,$18,$00,$10
-        dc.b    $04,$01,$20,$08,$02,$01,$10,$03,$02,$20,$04,$04,$01,$05,$08,$02
-        dc.b    $00,$02,$04,$01,$01,$08,$02,$04,$02,$03,$08,$01,$00,$02,$01,$01
-        dc.b    $01,$04,$02,$04,$08,$03,$08,$02,$07,$73,$80,$80,$07,$73,$40,$40
-        dc.b    $08,$56,$0C,$20,$07,$70,$80,$10,$07,$72,$40,$08,$07,$73,$04,$04
-        dc.b    $00,$00,$00,$02,$00,$00,$00,$01,$10,$0C,$FF,$3F,$00,$00,$00,$0A
-        dc.b    $0F,$00,$FF,$FF,$01,$04,$02,$05,$04,$00,$08,$01,$10,$02,$20,$03
-        dc.b    $04,$03,$08,$04,$10,$05,$20,$06,$01,$01,$02,$02,$03,$05,$01,$04
-        dc.b    $03,$05,$02,$06,$01,$04,$02,$06,$18
+        dc.b    $00,$0D,$BB,$A0,$00,$00,$1A,$CB,$C0,$00
+SensorV0AB2Thresh:
+        dc.b    $1E                                      ; Byte compared with V0AB2; read by CalcVehicleSpeed.
+StartFactor1:
+        dc.b    $3F                                      ; Byte multiplied; read by Reset.
+StartFactor2:
+        dc.b    $05                                      ; Byte multiplied; read by Reset.
+PurgeV0471Thresh:
+        dc.b    $18                                      ; Byte compared with V0471; read by Sub_22762.
+        dc.b    $00,$10,$04,$01,$20,$08,$02,$01,$10,$03,$02,$20,$04,$04,$01,$05
+        dc.b    $08,$02,$00,$02,$04,$01,$01,$08,$02,$04,$02,$03,$08,$01,$00,$02
+        dc.b    $01,$01,$01,$04,$02,$04,$08,$03,$08,$02,$07,$73,$80,$80,$07,$73
+        dc.b    $40,$40,$08,$56,$0C,$20,$07,$70,$80,$10,$07,$72,$40,$08,$07,$73
+        dc.b    $04,$04,$00,$00,$00,$02,$00,$00,$00,$01
+SensorRpmThresh11:
+        dc.b    $10                                      ; Byte compared with EngineRpm; read by Sub_0EB62.
+SensorThresh27:
+        dc.b    $0C                                      ; Byte compared with; read by Sub_0EB62.
+FieldValue3:
+        dc.b    $FF                                      ; Byte used with; read by Sub_08520, Sub_08DD4.
+FieldV0DC1Init:
+        dc.b    $3F                                      ; Byte stored into V0DC1; read by Sub_08520, Sub_08DD4.
+        dc.b    $00,$00,$00
+CalV09B3Thresh:
+        dc.b    $0A                                      ; Byte compared with V09B3; read by Sub_08684.
+CalV09B1Thresh:
+        dc.b    $0F                                      ; Byte compared with V09B1; read by Sub_08684.
+CalSwitch:
+        dc.b    $00                                      ; Byte tested (zero = off); read by Sub_23B66.
+        dc.b    $FF,$FF,$01,$04,$02,$05,$04,$00,$08,$01,$10,$02,$20,$03,$04,$03
+        dc.b    $08,$04,$10,$05,$20,$06,$01,$01,$02,$02,$03,$05,$01,$04,$03,$05
+        dc.b    $02,$06,$01,$04,$02,$06
+FuelEventValue12:
+        dc.b    $18                                      ; Byte used with; read by Sub_12680.
 
 ;---------------------------------------------------------------------------------------------------
 ; DwellBattery ($758E): 2D table, 9 points, unsigned
@@ -7650,36 +10230,44 @@ DwellBatteryAlt:
         dc.b    8,$80                                    ; points, flags
         dc.b    146,255, 162,233, 178,175, 194,131, 210,123, 227,107, 243,94, 255,88 ; x, y
 
-        dc.b    $C0,$FA,$78,$03,$78,$78,$0C,$4C,$39,$00,$B1,$00,$10,$00,$00,$00
-        dc.b    $00,$4A,$63,$00,$AA,$00,$10,$00,$00,$00,$00,$49,$FF,$00,$A6,$00
-        dc.b    $10,$00,$00,$00,$00,$4A,$D1,$00,$A7,$00,$10,$00,$00,$00,$00,$4A
-        dc.b    $13,$00,$A8,$00,$10,$00,$00,$00,$00,$4A,$DB,$00,$A9,$00,$10,$00
-        dc.b    $00,$00,$00,$4A,$59,$00,$A2,$00,$10,$00,$00,$00,$00,$4D,$01,$00
-        dc.b    $A3,$00,$10,$00,$00,$00,$00,$49,$F5,$00,$A4,$00,$10,$00,$00,$00
-        dc.b    $00,$4A,$BD,$00,$A5,$00,$10,$00,$00,$00,$00,$47,$C5,$00,$AB,$00
-        dc.b    $10,$00,$00,$00,$00,$4D,$83,$00,$9F,$00,$02,$06,$59,$00,$02,$4D
-        dc.b    $79,$00,$9F,$00,$01,$06,$59,$00,$01,$4B,$C1,$00,$9E,$00,$80,$06
-        dc.b    $58,$00,$80,$4A,$6D,$00,$9E,$00,$40,$06,$58,$00,$40,$4B,$E9,$00
-        dc.b    $9E,$00,$20,$06,$58,$00,$20,$47,$57,$00,$9E,$00,$10,$06,$58,$00
-        dc.b    $10,$4B,$5D,$00,$9E,$00,$08,$06,$58,$00,$08,$4A,$F9,$00,$9E,$00
-        dc.b    $04,$06,$58,$00,$04,$47,$43,$00,$9E,$00,$02,$06,$58,$00,$02,$4A
-        dc.b    $77,$00,$9E,$00,$01,$06,$58,$00,$01,$4A,$E5,$00,$9F,$00,$80,$06
-        dc.b    $59,$00,$80,$4A,$EF,$00,$9F,$00,$40,$06,$59,$00,$40,$4B,$03,$00
-        dc.b    $9F,$00,$20,$06,$59,$00,$20,$4B,$0D,$00,$9F,$00,$10,$06,$59,$00
-        dc.b    $10,$4C,$11,$00,$9F,$00,$08,$06,$59,$00,$08,$4D,$15,$00,$9F,$00
-        dc.b    $04,$06,$59,$00,$04,$4B,$D5,$00,$A0,$00,$80,$06,$5A,$00,$80,$4B
-        dc.b    $CB,$00,$A0,$00,$40,$06,$5A,$00,$40,$4B,$DF,$00,$A0,$00,$20,$06
-        dc.b    $5A,$00,$20,$4B,$53,$00,$A0,$00,$10,$06,$5A,$00,$10,$4E,$5F,$00
-        dc.b    $A0,$00,$08,$06,$5A,$00,$08,$49,$B9,$00,$A0,$00,$04,$06,$5A,$00
-        dc.b    $04,$4A,$95,$00,$AF,$00,$10,$00,$00,$00,$00,$4A,$9F,$00,$AD,$00
-        dc.b    $10,$00,$00,$00,$00,$4A,$A9,$00,$B0,$00,$10,$00,$00,$00,$00,$4A
-        dc.b    $B3,$00,$AE,$00,$10,$00,$00,$00,$00,$4A,$27,$00,$DE,$00,$01,$00
-        dc.b    $00,$00,$00,$4A,$31,$00,$DE,$00,$02,$00,$00,$00,$00,$4A,$3B,$00
-        dc.b    $DE,$00,$04,$00,$00,$00,$00,$4A,$45,$00,$DE,$00,$08,$00,$00,$00
-        dc.b    $00,$4C,$C5,$00,$DE,$00,$10,$00,$00,$00,$00,$4C,$CF,$00,$DE,$00
-        dc.b    $20,$00,$00,$00,$00,$4A,$1D,$00,$DE,$00,$40,$00,$00,$00,$00,$2C
-        dc.b    $1F,$16,$00,$C0,$01,$04,$01,$17,$14,$08,$05,$FF,$19,$98,$04,$0D
-        dc.b    $07,$21,$00,$00,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+CalValue8:
+        dc.b    $C0                                      ; Byte used with; read by Sub_2D91C.
+        dc.b    $FA,$78,$03,$78,$78,$0C,$4C,$39,$00,$B1,$00,$10,$00,$00,$00,$00
+        dc.b    $4A,$63,$00,$AA,$00,$10,$00,$00,$00,$00,$49,$FF,$00,$A6,$00,$10
+        dc.b    $00,$00,$00,$00,$4A,$D1,$00,$A7,$00,$10,$00,$00,$00,$00,$4A,$13
+        dc.b    $00,$A8,$00,$10,$00,$00,$00,$00,$4A,$DB,$00,$A9,$00,$10,$00,$00
+        dc.b    $00,$00,$4A,$59,$00,$A2,$00,$10,$00,$00,$00,$00,$4D,$01,$00,$A3
+        dc.b    $00,$10,$00,$00,$00,$00,$49,$F5,$00,$A4,$00,$10,$00,$00,$00,$00
+        dc.b    $4A,$BD,$00,$A5,$00,$10,$00,$00,$00,$00,$47,$C5,$00,$AB,$00,$10
+        dc.b    $00,$00,$00,$00,$4D,$83,$00,$9F,$00,$02,$06,$59,$00,$02,$4D,$79
+        dc.b    $00,$9F,$00,$01,$06,$59,$00,$01,$4B,$C1,$00,$9E,$00,$80,$06,$58
+        dc.b    $00,$80,$4A,$6D,$00,$9E,$00,$40,$06,$58,$00,$40,$4B,$E9,$00,$9E
+        dc.b    $00,$20,$06,$58,$00,$20,$47,$57,$00,$9E,$00,$10,$06,$58,$00,$10
+        dc.b    $4B,$5D,$00,$9E,$00,$08,$06,$58,$00,$08,$4A,$F9,$00,$9E,$00,$04
+        dc.b    $06,$58,$00,$04,$47,$43,$00,$9E,$00,$02,$06,$58,$00,$02,$4A,$77
+        dc.b    $00,$9E,$00,$01,$06,$58,$00,$01,$4A,$E5,$00,$9F,$00,$80,$06,$59
+        dc.b    $00,$80,$4A,$EF,$00,$9F,$00,$40,$06,$59,$00,$40,$4B,$03,$00,$9F
+        dc.b    $00,$20,$06,$59,$00,$20,$4B,$0D,$00,$9F,$00,$10,$06,$59,$00,$10
+        dc.b    $4C,$11,$00,$9F,$00,$08,$06,$59,$00,$08,$4D,$15,$00,$9F,$00,$04
+        dc.b    $06,$59,$00,$04,$4B,$D5,$00,$A0,$00,$80,$06,$5A,$00,$80,$4B,$CB
+        dc.b    $00,$A0,$00,$40,$06,$5A,$00,$40,$4B,$DF,$00,$A0,$00,$20,$06,$5A
+        dc.b    $00,$20,$4B,$53,$00,$A0,$00,$10,$06,$5A,$00,$10,$4E,$5F,$00,$A0
+        dc.b    $00,$08,$06,$5A,$00,$08,$49,$B9,$00,$A0,$00,$04,$06,$5A,$00,$04
+        dc.b    $4A,$95,$00,$AF,$00,$10,$00,$00,$00,$00,$4A,$9F,$00,$AD,$00,$10
+        dc.b    $00,$00,$00,$00,$4A,$A9,$00,$B0,$00,$10,$00,$00,$00,$00,$4A,$B3
+        dc.b    $00,$AE,$00,$10,$00,$00,$00,$00,$4A,$27,$00,$DE,$00,$01,$00,$00
+        dc.b    $00,$00,$4A,$31,$00,$DE,$00,$02,$00,$00,$00,$00,$4A,$3B,$00,$DE
+        dc.b    $00,$04,$00,$00,$00,$00,$4A,$45,$00,$DE,$00,$08,$00,$00,$00,$00
+        dc.b    $4C,$C5,$00,$DE,$00,$10,$00,$00,$00,$00,$4C,$CF,$00,$DE,$00,$20
+        dc.b    $00,$00,$00,$00,$4A,$1D,$00,$DE,$00,$40,$00,$00,$00,$00,$2C,$1F
+        dc.b    $16,$00,$C0,$01,$04,$01,$17
+PurgeMonitorValueInit:
+        dc.b    $14                                      ; Byte stored into PurgeMonitorValue; read by Sub_3E074.
+PurgeMonitorValueThresh:
+        dc.b    $08                                      ; Byte compared with PurgeMonitorValue; read by Sub_3E074, Sub_3ECC6.
+PurgeV047DThresh:
+        dc.b    $05                                      ; Byte compared with V047D; read by Sub_3E074.
+        dc.b    $FF,$19,$98,$04,$0D,$07,$21,$00,$00,$00,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7814,7 +10402,8 @@ DwellBatteryAlt:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF
 
 ;---------------------------------------------------------------------------------------------------
 ; Isr_IRQ1 ($08000)
@@ -7925,7 +10514,7 @@ Isr_GPT_IC3:
         BRSET   >PORTGP,Z,#$04,L08332
         INC     $09CE,Z
         INCW    $0053,Z
-        BRSET   $032D,#$20,L080F4
+        BRSET   >Options032D,#$20,L080F4
         TSTW    $0053,Z
         BNE     L08104
         BRA     L08100
@@ -8069,7 +10658,7 @@ L08288:
         BEQ     L082B6
         ANDA    #$EF
         STAA    $0C32,Z
-        BRCLR   $032D,#$20,L082A0
+        BRCLR   >Options032D,#$20,L082A0
         LDAB    #$05
         LDE     #$5BF0
         BRA     L082A6
@@ -8100,7 +10689,7 @@ L082C4:
         STAA    $0AB1,Z
         LDE     >TIC3,Z
         SUBE    $0AB4,Z
-        BRSET   $032D,#$20,L082F8
+        BRSET   >Options032D,#$20,L082F8
         CMPA    #$02
         BCS     L08302
 L082F8:
@@ -8162,17 +10751,17 @@ L08378:
         BNE     L08392
         DEC     $032F,Z
 L08392:
-        BRCLR   $0338,#$02,L0839E
+        BRCLR   >Options0338,#$02,L0839E
         JSR     Sub_08DAC
         BRA     L083C4
 L0839E:
         JSR     Sub_0853C
         BRA     L083C4
 L083A4:
-        BRCLR   $0335,#$20,L083AE
+        BRCLR   >Options0335,#$20,L083AE
         JSR     Sub_2F800
 L083AE:
-        BRCLR   $0335,#$80,L083B8
+        BRCLR   >Options0335,#$80,L083B8
         JSR     Sub_2FB1E
 L083B8:
         JSR     Sub_2DAE4
@@ -8186,7 +10775,7 @@ L083C4:
         BEQ     L083DC
         STAA    $0F56,Z
 L083DC:
-        BRCLR   $0338,#$02,L0841E
+        BRCLR   >Options0338,#$02,L0841E
         BRCLR   $0DCC,Z,#$01,L0841E
         LDAA    $0DC5,Z
         ADDA    $0DC4,Z
@@ -8205,7 +10794,7 @@ L0840C:
         BCLRW   $106E,Z,#$2000
         BCLR    $0DB0,Z,#$20
 L0841E:
-        BRCLR   $0334,#$10,L08428
+        BRCLR   >StartFlag,#$10,L08428
         JSR     Sub_08CE4
 L08428:
         ORP     #$00E0
@@ -8213,7 +10802,7 @@ L08428:
         BNE     L0844E
         LDAA    #$18
         STAA    $097D,Z
-        BRSET   $032E,#$04,L08444
+        BRSET   >Options032E,#$04,L08444
         JSR     Sub_30626
         BRA     L0844E
 L08444:
@@ -8233,7 +10822,7 @@ Sub_08456:
         TBXK
         BRSET   $0017,Z,#$02,L084B0
         LDAA    >BatteryVolts2,Z
-        CMPA    $2F6D
+        CMPA    >CalVoltsThresh1
         BCS     L084B0
         LDAB    <IacPosition,Z
         BRCLR   $0017,Z,#$40,L0847C
@@ -8244,7 +10833,7 @@ Sub_08456:
 L0847C:
         TST     $0363,Z
         BNE     L084C0
-        CMPB    $031B,Z
+        CMPB    >IacTargetCmd,Z
         BEQ     L084B0
         BCS     L0849E
 L0848A:
@@ -8333,9 +10922,9 @@ L08570:
         BRSET   $106E,Z,#$20,L0858C
 L08576:
         BSET    $06B6,Z,#$08
-        LDAA    $755F
+        LDAA    >FieldValue3
         BRSET   $0774,Z,#$80,L08588
-        LDAA    $7560
+        LDAA    >FieldV0DC1Init
 L08588:
         STAA    $0DB9,Z
 L0858C:
@@ -8385,7 +10974,7 @@ L08602:
         SUBB    $0DB2,Z
         BHI     L0866C
         NEGB
-        CMPB    $5827
+        CMPB    >FieldThresh
         BLS     L0866C
         BSET    $0DB0,Z,#$80
         BCLR    $0DB0,Z,#$40
@@ -8450,7 +11039,7 @@ L08696:
         LDAA    $09B5,Z
         INCA
         STAA    $09B5,Z
-        CMPA    $7564
+        CMPA    >CalV09B3Thresh
         BCC     L086AE
         LBRA    L087DE
 L086AE:
@@ -8515,14 +11104,14 @@ L08750:
         BRA     L087A0
 L08758:
         LDAA    $09B3,Z
-        CMPA    $7565
+        CMPA    >CalV09B1Thresh
         BHI     L08794
         TDE
         LDD     E,Z
         STAB    $09B4,Z
         BRA     L087DA
 L0876C:
-        CMPA    $7565
+        CMPA    >CalV09B1Thresh
         BHI     L08740
         STAA    $09B3,Z
         BCLR    $0C34,Z,#$01
@@ -8579,7 +11168,7 @@ L087DE:
 Isr_GPT_OC2:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
-        BRCLR   $032B,#$20,L08804
+        BRCLR   >Options032B,#$20,L08804
         JSR     Sub_08936
         JMP     L08932
 L08804:
@@ -8588,7 +11177,7 @@ L08804:
         LDY     #$87E0
         TZX
         LDX     #$F916
-        BRSET   $032B,#$40,L0881C
+        BRSET   >Options032B,#$40,L0881C
         LDAB    $86,Z
         BRA     L0889A
 L0881C:
@@ -8612,7 +11201,7 @@ Isr_GPT_OC3:
         LDY     #$87E5
         TZX
         LDX     #$F918
-        BRSET   $032B,#$40,L0884C
+        BRSET   >Options032B,#$40,L0884C
         LDAB    $87,Z
         BRA     L0889A
 L0884C:
@@ -8636,7 +11225,7 @@ Isr_GPT_OC4:
         LDY     #$87EA
         TZX
         LDX     #$F91A
-        BRSET   $032B,#$40,L0887C
+        BRSET   >Options032B,#$40,L0887C
         LDAB    $88,Z
         BRA     L0889A
 L0887C:
@@ -8663,7 +11252,7 @@ L088B0:
         LDAA    >TFLG1,Z
         ANDA    $04,Y
         STAA    >TFLG1,Z
-        BRCLR   $032B,#$40,L088C8
+        BRCLR   >Options032B,#$40,L088C8
         BRCLR   $0C35,Z,#$20,L08928
         BRA     L088CE
 L088C8:
@@ -8675,14 +11264,14 @@ L088CE:
         LDAB    >TCTL1,Z
         BITB    $01,Y
         BEQ     L08928
-        LDAA    $032A
+        LDAA    >EventFlag1
         BITA    #$C0
         BNE     L088FA
         LDAA    $0C35,Z
         ANDA    #$18
         CMPA    $02,Y
         BNE     L08928
-        BRSET   $032B,#$40,L08918
+        BRSET   >Options032B,#$40,L08918
 L088FA:
         LDAB    #$02
         LDAA    $0C46,Z
@@ -8817,7 +11406,7 @@ Isr_SCI:
 ; Called from: Isr_IRQ2
 ;---------------------------------------------------------------------------------------------------
 Sub_08A1E:
-        BRSET   $032E,#$04,L08A2A
+        BRSET   >Options032E,#$04,L08A2A
         JSR     Sub_30D62
         BRA     L08A2E
 L08A2A:
@@ -8862,7 +11451,7 @@ L08A7E:
 Isr_GPT_IC4OC5:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
-        BRCLR   $0337,#$80,L08CD4
+        BRCLR   >Options0337,#$80,L08CD4
         BRCLR   $0E05,Z,#$01,L08CD4
         LDD     >TI4O5,Z
         TDE
@@ -8916,7 +11505,7 @@ L08B26:
 L08B32:
         BCLR    $0857,Z,#$01
         BCLR    $0856,Z,#$CC
-        BRSET   $032E,#$04,L08CB4
+        BRSET   >Options032E,#$04,L08CB4
         LBRA    L08CC0
 L08B44:
         BRCLR   $0A4B,Z,#$20,L08B60
@@ -8936,7 +11525,7 @@ L08B60:
 L08B74:
         CLR     $0863,Z
         CLR     $0862,Z
-        CLR     $085A,Z
+        CLR     >EventSparkTimer,Z
         BSET    $0857,Z,#$01
         BSET    $0856,Z,#$10
         BSET    $0856,Z,#$20
@@ -8969,32 +11558,32 @@ L08BC8:
         BCLR    $0856,Z,#$0C
         LDAA    $085D,Z
         BEQ     L08C34
-        LDAB    $280C
+        LDAB    >StartV0863Thresh
         LDAA    $085E,Z
-        ADDA    $2809
-        CMPA    $280C
+        ADDA    >FuelV0863Adder
+        CMPA    >StartV0863Thresh
         BCC     L08BF4
         TAB
 L08BF4:
         STAB    $085E,Z
-        LDAB    $280C
+        LDAB    >StartV0863Thresh
         LDAA    $0863,Z
-        ADDA    $2809
-        CMPA    $280C
+        ADDA    >FuelV0863Adder
+        CMPA    >StartV0863Thresh
         BCC     L08C0C
         TAB
 L08C0C:
         STAB    $0863,Z
         CLRB
         LDAA    $085D,Z
-        SUBA    $2809
+        SUBA    >FuelV0863Adder
         BCC     L08C1E
         TBA
 L08C1E:
         STAA    $085D,Z
         CLRB
         LDAA    $0862,Z
-        SUBA    $2809
+        SUBA    >FuelV0863Adder
         BCC     L08C30
         TBA
 L08C30:
@@ -9002,11 +11591,11 @@ L08C30:
 L08C34:
         LDAA    $085D,Z
         ADDA    $085E,Z
-        STAA    $085A,Z
+        STAA    >EventSparkTimer,Z
         PSHM    E
         BSET    >FuelModeFlags,Z,#$08
         CLR     $04FE,Z
-        LDAB    $ABBD
+        LDAB    >EventV0C46Value
         DECB
         CLRA
         TDE
@@ -9024,7 +11613,7 @@ L08C6C:
         BPL     L08C5A
         LDAB    $04FE,Z
         COMB
-        BRCLR   $032B,#$80,L08C82
+        BRCLR   >Options032B,#$80,L08C82
         ANDB    #$3F
         BRA     L08C84
 L08C82:
@@ -9039,7 +11628,7 @@ L08C8A:
         BCLR    >TCTL2,Z,#$80
         BRA     L08CD4
 L08C9C:
-        BRSET   $032E,#$04,L08CB4
+        BRSET   >Options032E,#$04,L08CB4
         BRSET   $0855,Z,#$10,L08CAE
         JSR     Sub_30ACE
         BRA     L08CBC
@@ -9161,9 +11750,9 @@ L08DE0:
         BRSET   $106E,Z,#$20,L08DFC
 L08DE6:
         BSET    $06B6,Z,#$08
-        LDAA    $755F
+        LDAA    >FieldValue3
         BRSET   $0774,Z,#$80,L08DF8
-        LDAA    $7560
+        LDAA    >FieldV0DC1Init
 L08DF8:
         STAA    $0DB9,Z
 L08DFC:
@@ -9209,7 +11798,7 @@ L08E5E:
         TDE
         LDD     $0DCA,Z
         PSHM    D,E
-        LDAA    $0368
+        LDAA    >FieldValue1
         JSR     Blend16
         AIS     #$04
         STD     $0DCA,Z
@@ -9222,7 +11811,7 @@ L08E94:
         SUBB    $0DB2,Z
         LBHI    L08FC6
         NEGB
-        CMPB    $5827
+        CMPB    >FieldThresh
         LBLS    L08FC6
         BSET    $0DB0,Z,#$80
         BCLR    $0DB0,Z,#$40
@@ -9239,9 +11828,9 @@ L08EAE:
         BRA     L08EE8
 L08ED4:
         LDAA    >ChargeDeficit,Z
-        CMPA    $0367
+        CMPA    >FieldChargeDeficitThresh
         LBLS    L08F52
-        LDAA    $0366
+        LDAA    >FieldV0DCEInit
         STAA    $0DC6,Z
 L08EE8:
         BNE     L08F5A
@@ -9826,7 +12415,7 @@ L0A292:
         STE     $0D7C,Z
 L0A296:
         PSHM    D
-        LDAA    $2EE3
+        LDAA    >EventFactor
         CMPA    #$FF
         BEQ     L0A2AA
         TSTB
@@ -9884,10 +12473,10 @@ L0A32E:
         LDY     #$A017
         LDAB    $87,Z
         BRSET   $0C35,Z,#$20,L0A34E
-        BRSET   $032A,#$40,L0A35A
+        BRSET   >EventFlag1,#$40,L0A35A
         BRA     L0A354
 L0A34E:
-        BRCLR   $032A,#$40,L0A35A
+        BRCLR   >EventFlag1,#$40,L0A35A
 L0A354:
         LDY     #$A010
         LDAB    $86,Z
@@ -9903,7 +12492,7 @@ L0A35A:
         PULM    K,Y
         LDAA    $0D43,Z
         STAA    $0D45,Z
-        LDAA    $0D42,Z
+        LDAA    >O2SparkTrim,Z
         STAA    $0D43,Z
         LDAA    #$8A
         SUBA    $0D11,Z
@@ -9917,13 +12506,13 @@ L0A35A:
         SUBE    $04F6,Z
         STE     $04F6,Z
         LDD     $0AC1,Z
-        CPD     $209D
+        CPD     >EventV0ABDThresh3
         BCS     L0A3D0
         CPD     #$00FF
         BCS     L0A3CA
 L0A3B6:
         BCLR    $0D00,Z,#$20
-        CLR     $0D3D,Z
+        CLR     >SurgeEnableTime,Z
         BCLR    $0D02,Z,#$08
         BCLR    $0D02,Z,#$04
         JMP     L0A4E0
@@ -9968,10 +12557,10 @@ L0A436:
         LDY     #$A010
         LDAB    $86,Z
         BRSET   $0C35,Z,#$20,L0A44E
-        BRSET   $032A,#$40,L0A45A
+        BRSET   >EventFlag1,#$40,L0A45A
         BRA     L0A454
 L0A44E:
-        BRCLR   $032A,#$40,L0A45A
+        BRCLR   >EventFlag1,#$40,L0A45A
 L0A454:
         LDY     #$A017
         LDAB    $87,Z
@@ -10029,7 +12618,7 @@ L0A4E6:
         dc.b    $27,$4C,$27,$4C
 L0A4EE:
         JSR     EmptyHook
-        BRCLR   $0333,#$02,L0A500
+        BRCLR   >Options0333,#$02,L0A500
         LDE     #$0177
         STE     $1048,Z
 L0A500:
@@ -10092,10 +12681,10 @@ L0A5A4:
         LDY     #$A017
         LDAB    $87,Z
         BRSET   $0C35,Z,#$20,L0A5BC
-        BRSET   $032A,#$40,L0A5C8
+        BRSET   >EventFlag1,#$40,L0A5C8
         BRA     L0A5C2
 L0A5BC:
-        BRCLR   $032A,#$40,L0A5C8
+        BRCLR   >EventFlag1,#$40,L0A5C8
 L0A5C2:
         LDY     #$A010
         LDAB    $86,Z
@@ -10248,10 +12837,10 @@ L0A726:
         LDY     #$A017
         LDAB    $87,Z
         BRSET   $0C35,Z,#$20,L0A7A6
-        BRSET   $032A,#$40,L0A7B2
+        BRSET   >EventFlag1,#$40,L0A7B2
         BRA     L0A7AC
 L0A7A6:
-        BRCLR   $032A,#$40,L0A7B2
+        BRCLR   >EventFlag1,#$40,L0A7B2
 L0A7AC:
         LDY     #$A010
         LDAB    $86,Z
@@ -10352,10 +12941,10 @@ L0A8BA:
         TBYK
         LDY     #$A010
         BRSET   $0C35,Z,#$20,L0A8E8
-        BRSET   $032A,#$40,L0A8F2
+        BRSET   >EventFlag1,#$40,L0A8F2
         BRA     L0A8EE
 L0A8E8:
-        BRCLR   $032A,#$40,L0A8F2
+        BRCLR   >EventFlag1,#$40,L0A8F2
 L0A8EE:
         LDY     #$A017
 L0A8F2:
@@ -10367,12 +12956,12 @@ L0A8F2:
 L0A902:
         LDAA    $0C46,Z
         INCA
-        CMPA    $ABBD
+        CMPA    >EventV0C46Value
         BCS     L0A910
         CLRA
 L0A910:
         STAA    $0C46,Z
-        BRCLR   $032F,#$06,L0A920
+        BRCLR   >EventFlag2,#$06,L0A920
         BCLRW   $1002,Z,#$0400
 L0A920:
         BCLR    $0D00,Z,#$80
@@ -10413,10 +13002,10 @@ L0A96A:
         LBNE    L0A9F2
         LDAB    #$00
         BRSET   $0C35,Z,#$20,L0A9A8
-        BRSET   $032A,#$40,L0A9B0
+        BRSET   >EventFlag1,#$40,L0A9B0
         BRA     L0A9AE
 L0A9A8:
-        BRCLR   $032A,#$40,L0A9B0
+        BRCLR   >EventFlag1,#$40,L0A9B0
 L0A9AE:
         LDAB    #$01
 L0A9B0:
@@ -10462,12 +13051,12 @@ L0AA02:
         BSET    $0317,Z,#$40
         JSR     Sub_1E1D0
         LDX     $0AC1,Z
-        CPX     $0A76
+        CPX     >EventV0ABDThresh1
         BCS     L0AA4A
-        CPX     $0A78
+        CPX     >EventV0ABDThresh2
         BCS     L0AA84
         BRCLR   $0774,Z,#$80,L0AA40
-        BRCLR   $033B,#$40,L0AA40
+        BRCLR   >Options033B,#$40,L0AA40
         BCLR    $0443,Z,#$20
 L0AA40:
         BCLR    $0774,Z,#$80
@@ -10481,7 +13070,7 @@ L0AA4A:
         STD     >CrankPulse,Z
         BSET    $0774,Z,#$01
         CLRW    >Count3s,Z
-        CLR     $0C3F,Z
+        CLR     >RunTime,Z
         CLR     >CrankEvents,Z
         CLR     $0933,Z
         LDAA    >Throttle,Z
@@ -10588,8 +13177,22 @@ L0AB94:
         STD     >TMSK1,Z
         PULM    E,D
         RTI
-        dc.b    $27,$4C,$27,$4C,$00,$0E,$4E,$1C,$00,$04,$00,$3A,$00,$76,$10,$18
-        dc.b    $45
+        dc.b    $27,$4C,$27,$4C
+SensorValue16:
+        dc.b    $00,$0E,$4E,$1C                          ; Long used with; read by Sub_0C77E, CalcEngineRpm.
+        dc.b    $00
+EventV0C46Value:
+        dc.b    $04                                      ; Byte used with V0C46; read by Isr_GPT_IC4OC5, Isr_GPT_IC1, Sub_10604 +17.
+SensorValue17:
+        dc.b    $00,$3A                                  ; Word used with; read by Sub_39000.
+SensorValue18:
+        dc.b    $00,$76                                  ; Word used with; read by Sub_39000.
+SensorV0ABCThresh:
+        dc.b    $10                                      ; Byte compared with V0ABC; read by Sub_39000.
+SensorValue19:
+        dc.b    $18                                      ; Byte used with; read by Sub_39000.
+SensorValue20:
+        dc.b    $45                                      ; Byte used with; read by Sub_39000.
 
 ;---------------------------------------------------------------------------------------------------
 ; EventTimingLimit ($ABC5): 2D table, 2 points, unsigned
@@ -10615,7 +13218,11 @@ FuelEventOffset:
         dc.b    3,$80                                    ; points, flags
         dc.b    6,0, 36,1, 66,2                          ; x, y
 
-        dc.b    $03,$01,$71,$01,$68,$00,$B4,$00,$A0,$00,$8C,$00,$78,$07,$80
+FuelEventFactor:
+        dc.b    $03                                      ; Byte multiplied; read by Sub_12680.
+        dc.b    $01,$71,$01,$68,$00,$B4,$00,$A0,$00,$8C,$00,$78
+IdleV0D9AInit:
+        dc.b    $07,$80                                  ; Word stored into V0D9A; read by Sub_1908C, Sub_1E76A.
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_0ABEE ($0ABEE)
@@ -11073,7 +13680,7 @@ L0AD0A:
 ;---------------------------------------------------------------------------------------------------
 MainLoopCounters:
         ORP     #$00E0
-        BRCLR   $0333,#$40,L0C00E
+        BRCLR   >Options0333,#$40,L0C00E
         JSR     Sub_0C064
 L0C00E:
         INC     >MainLoopCounter,Z
@@ -11084,7 +13691,7 @@ L0C00E:
         BEQ     L0C038
         STAA    >Count3s,Z
         BRCLR   $0774,Z,#$80,L0C038
-        STAA    $0C3F,Z
+        STAA    >RunTime,Z
         TST     $0F28,Z
         BEQ     L0C038
         DEC     $0F28,Z
@@ -11319,7 +13926,7 @@ L0C1C8:
         BCS     L0C1D2
         STAA    $01,X
 L0C1D2:
-        BRSET   $032B,#$80,L0C1DA
+        BRSET   >Options032B,#$80,L0C1DA
         BSR     Sub_0C1DE
 L0C1DA:
         PULM    K,E
@@ -11714,7 +14321,7 @@ L0C480:
 ; Called from: Isr_GPT_IC3, Sub_08456, Reset, Sub_21BE0, Sub_2FA52, Sub_38368 (10 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_0C4A4:
-        BRCLR   $032E,#$02,L0C4BE
+        BRCLR   >Options032E,#$02,L0C4BE
         SUBE    #$0002
         BLS     L0C4BC
 L0C4B0:
@@ -11766,7 +14373,7 @@ Sub_0C4F0:
         TZX
         LDX     #$8C49
         LDAA    $0801,Z
-        CMPA    $2088
+        CMPA    >StartV0801Thresh
         BNE     L0C508
         BSET    $0C31,Z,#$01
         BSR     Sub_0C560
@@ -11851,10 +14458,10 @@ L0C5CA:
         CPX     #$C59A
         BCS     L0C5BC
         BRCLR   $0D00,Z,#$02,L0C5E4
-        LDAA    $0D14,Z
+        LDAA    >TipInSteps,Z
         INCA
         BEQ     L0C5E4
-        STAA    $0D14,Z
+        STAA    >TipInSteps,Z
 L0C5E4:
         BRCLR   $0774,Z,#$80,L0C5F6
         BRCLR   $0D1A,Z,#$3C,L0C5F2
@@ -11873,14 +14480,14 @@ L0C60A:
         BRSET   >ThrottleState,Z,#$40,L0C62E
         LDAA    $07DB,Z
         INCA
-        CMPA    $16A4
+        CMPA    >FuelV07DBThresh
         BHI     L0C63E
         STAA    $07DB,Z
         BRA     L0C63E
 L0C62E:
         LDAA    $07DC,Z
         INCA
-        CMPA    $16A3
+        CMPA    >FuelV07DCThresh
         BHI     L0C63E
         STAA    $07DC,Z
 L0C63E:
@@ -11914,14 +14521,14 @@ L0C696:
         BPL     L0C6CE
         CLR     $0F07,Z
         NEGA
-        CMPA    $5789
+        CMPA    >FuelThresh7
         BCC     L0C6AA
         CLR     $0F08,Z
         BRA     L0C702
 L0C6AA:
         LDAA    $0F08,Z
         INCA
-        CMPA    $578B
+        CMPA    >FuelV0F08Thresh
         BEQ     L0C6BC
         STAA    $0F08,Z
         BRA     L0C702
@@ -11934,14 +14541,14 @@ L0C6BC:
         BRA     L0C702
 L0C6CE:
         CLR     $0F08,Z
-        CMPA    $5789
+        CMPA    >FuelThresh7
         BCC     L0C6DE
         CLR     $0F07,Z
         BRA     L0C702
 L0C6DE:
         LDAA    $0F07,Z
         INCA
-        CMPA    $578A
+        CMPA    >FuelV0F07Thresh
         BEQ     L0C6F0
         STAA    $0F07,Z
         BRA     L0C702
@@ -11976,7 +14583,7 @@ Sub_0C764:
         LDED    $ABB9
         BRCLR   $0AC1,Z,#$FF,L0C78A
         LDX     $0AC1,Z
-        LDED    $ABB8
+        LDED    >SensorValue16
 L0C78A:
         CPX     #$0000
         BEQ     L0C794
@@ -12513,7 +15120,7 @@ L0CC12:
 ;---------------------------------------------------------------------------------------------------
 Sub_0CC70:
         ORP     #$00E0
-        BRSET   $032E,#$04,L0CC80
+        BRSET   >Options032E,#$04,L0CC80
         LDX     #$73C5
         BRA     L0CC84
 L0CC80:
@@ -12534,7 +15141,7 @@ L0CC90:
 ;---------------------------------------------------------------------------------------------------
 Sub_0CC9E:
         ORP     #$00E0
-        BRSET   $032E,#$04,L0CD1A
+        BRSET   >Options032E,#$04,L0CD1A
         LDX     #$7405
         JSR     Sub_0C4CE
         BRCLR   $0056,Z,#$40,L0CCCE
@@ -12542,7 +15149,7 @@ Sub_0CC9E:
         CMPB    $353B
         BCS     L0CCCC
         BRSET   $0407,Z,#$80,L0CCCE
-        LDAB    $040F,Z
+        LDAB    >SpeedCtlSetSpeed,Z
         BEQ     L0CCCE
 L0CCCC:
         ORAA    #$01
@@ -12552,7 +15159,7 @@ L0CCCE:
         BCS     L0CCD8
         ORAA    #$02
 L0CCD8:
-        BRCLR   $032E,#$40,L0CCE0
+        BRCLR   >Options032E,#$40,L0CCE0
         ORAA    #$80
 L0CCE0:
         STAA    $09D5,Z
@@ -12578,7 +15185,7 @@ L0CD1A:
         STAA    $0A15,Z
         LDX     #$74E5
         JSR     Sub_0C4CE
-        BRCLR   $032E,#$40,L0CD36
+        BRCLR   >Options032E,#$40,L0CD36
         ORAA    #$80
 L0CD36:
         LDAB    >ThrottleAboveClosed,Z
@@ -12818,7 +15425,7 @@ L0D0EC:
         CLR     >PORTC,Z
         CLR     >PORTF0,Z
         LDD     #$6BB0
-        BRSET   $032E,#$02,L0D16E
+        BRSET   >Options032E,#$02,L0D16E
         LDD     #$6830
 L0D16E:
         STD     >CSORBT,Z
@@ -12884,7 +15491,7 @@ L0D206:
         STAA    >DDRGP,Z
         LDAA    #$08
         STAA    >OC1M,Z
-        BRCLR   $032A,#$E0,L0D242
+        BRCLR   >EventFlag1,#$E0,L0D242
         BRCLR   >PACTL,Z,#$80,L0D23A
         LDAA    #$65
         STAA    >PACTL,Z
@@ -12898,27 +15505,27 @@ L0D242:
         STAA    >PACTL,Z
 L0D248:
         LDAA    #$2A
-        BRCLR   $032B,#$20,L0D252
+        BRCLR   >Options032B,#$20,L0D252
         ORAA    #$01
 L0D252:
         STAA    >TCTL1,Z
         LDAA    #$29
-        BRCLR   $0337,#$80,L0D260
+        BRCLR   >Options0337,#$80,L0D260
         LDAA    #$A9
 L0D260:
         STAA    >TCTL2,Z
         LDAA    #$05
-        BRSET   $032B,#$80,L0D26E
+        BRSET   >Options032B,#$80,L0D26E
         ORAA    #$02
 L0D26E:
-        BRCLR   $0337,#$80,L0D276
+        BRCLR   >Options0337,#$80,L0D276
         ORAA    #$80
 L0D276:
         STAA    >TMSK1,Z
         LDAA    #$12
         STAA    >TMSK2,Z
         BSET    >CFORC,Z,#$F8
-        BRCLR   $0335,#$04,L0D29A
+        BRCLR   >Options0335,#$04,L0D29A
         LDAA    #$18
         STAA    >PWMC,Z
         CLRA
@@ -12926,7 +15533,7 @@ L0D276:
         STAA    >PWMA,Z
 L0D29A:
         LDD     #$0003
-        BRSET   $032E,#$04,L0D2A8
+        BRSET   >Options032E,#$04,L0D2A8
         LDD     #$0803
 L0D2A8:
         STD     $100C,Z
@@ -12964,14 +15571,14 @@ L0D2A8:
         LDAA    #$07
         STAA    >ADCTL0_L,Z
         LDD     #$FA91
-        BRSET   $032E,#$04,L0D330
+        BRSET   >Options032E,#$04,L0D330
         LDD     #$F891
 L0D330:
         STD     $1014,Z
         LDD     #$1800
         STD     $1012,Z
         LDD     #$0000
-        BRSET   $032E,#$04,L0D34A
+        BRSET   >Options032E,#$04,L0D34A
         LDD     #$202C
 L0D34A:
         STD     $1018,Z
@@ -12980,15 +15587,15 @@ L0D34A:
         LDD     #$0005
         STD     $101C,Z
         LDD     #$003F
-        BRCLR   $0335,#$20,L0D36C
+        BRCLR   >Options0335,#$20,L0D36C
         LDD     #$002F
 L0D36C:
         STD     $1020,Z
-        BRCLR   $032B,#$20,L0D37C
+        BRCLR   >Options032B,#$20,L0D37C
         LDD     #$0002
         BRA     L0D38C
 L0D37C:
-        BRCLR   $032B,#$80,L0D388
+        BRCLR   >Options032B,#$80,L0D388
         LDD     #$000E
         BRA     L0D38C
 L0D388:
@@ -13000,7 +15607,7 @@ L0D38C:
         STD     $1058,Z
         STD     $105A,Z
         STD     $105C,Z
-        BRSET   $032B,#$80,L0D3AC
+        BRSET   >Options032B,#$80,L0D3AC
         CLRD
 L0D3AC:
         STD     $105E,Z
@@ -13010,34 +15617,34 @@ L0D3AC:
         STD     $1028,Z
         STD     $102C,Z
         STD     $1030,Z
-        BRCLR   $032B,#$80,L0D3D6
+        BRCLR   >Options032B,#$80,L0D3D6
         STD     $1034,Z
         STD     $1038,Z
 L0D3D6:
         CLRD
         STD     $1062,Z
         CLRD
-        BRCLR   $0333,#$40,L0D3E8
+        BRCLR   >Options0333,#$40,L0D3E8
         LDD     #$061B
 L0D3E8:
         STD     $1064,Z
         CLRD
         STD     $1066,Z
         CLRD
-        BRCLR   $0333,#$02,L0D400
+        BRCLR   >Options0333,#$02,L0D400
         LDD     #$E01B
         BRA     L0D40A
 L0D400:
-        BRCLR   $0334,#$10,L0D40A
+        BRCLR   >StartFlag,#$10,L0D40A
         LDD     #$C61B
 L0D40A:
         STD     $1068,Z
         CLRD
-        BRCLR   $032F,#$06,L0D41A
+        BRCLR   >EventFlag2,#$06,L0D41A
         LDD     #$C209
 L0D41A:
         STD     $106A,Z
-        BRCLR   $032F,#$06,L0D42C
+        BRCLR   >EventFlag2,#$06,L0D42C
         LDD     #$00FA
         STD     $104C,Z
 L0D42C:
@@ -13065,8 +15672,8 @@ L0D42C:
         LDX     #$8AD4
         LDAB    #$04
         JSR     Sub_0CB5C
-        STE     $000D,Z
-        LDAA    $0440
+        STE     >EepromCount,Z
+        LDAA    >StartThrottleClosedInit
         STAA    <ThrottleClosed,Z
         LDAA    $75B6
         STAA    <Baro,Z
@@ -13074,7 +15681,7 @@ L0D42C:
         STAA    $002B,Z
         LDAA    #$32
         STAA    $3F,Z
-        LDAA    $0607
+        LDAA    >StartV0040Init
         STAA    $41,Z
         TZY
         LDY     #$802C
@@ -13088,10 +15695,10 @@ L0D4A2:
         AIY     #$01
         CPX     #$2CB7
         BLS     L0D4A2
-        LDED    $52DE
+        LDED    >StartV000FInit
         STE     $000F,Z
         STD     $11,Z
-        LDED    $52E2
+        LDED    >StartV0013Init
         STE     $0013,Z
         STD     $15,Z
         JSR     Sub_208D6
@@ -13112,7 +15719,7 @@ L0D4E6:
         CPX     #$8FFF
         BCS     L0D4E6
         BRCLR   $000A,Z,#$10,L0D54C
-        BRCLR   $032C,#$40,L0D53E
+        BRCLR   >Options032C,#$40,L0D53E
         LDAA    #$E3
         STAA    >FuelLevelFiltered,Z
         LDD     #$000C
@@ -13124,7 +15731,7 @@ L0D512:
         STAA    >FlexEthanol,Z
         STAA    $0A94,Z
         STAA    >FlexEthanolLearned,Z
-        STAA    $01B5,Z
+        STAA    >FlexLearnBase,Z
         BNE     L0D52A
         LDAB    #$FF
         STAB    $01B7,Z
@@ -13132,16 +15739,16 @@ L0D52A:
         LDX     #FlexLearnEthanolCurve
         JSR     Lookup2D
         STAA    $0F29,Z
-        STAA    $01BD,Z
-        STAA    $01B4,Z
+        STAA    >FlexEthanolPrev,Z
+        STAA    >FlexEthanolStart,Z
 L0D53E:
-        LDAA    $56C2
+        LDAA    >StartV01B6Value
         LDAB    #$CC
         MUL
         ADCA    #$00
-        STAA    $019C,Z
+        STAA    >FuelLevelScaled,Z
 L0D54C:
-        BRCLR   $032E,#$04,L0D556
+        BRCLR   >Options032E,#$04,L0D556
         JSR     Sub_320AA
 L0D556:
         LDAA    #$02
@@ -13217,7 +15824,7 @@ L0D646:
 L0D650:
         STAA    >CoolantRaw,Z
         LDAA    >RJURR2_L,Z
-        STAA    $0A8B,Z
+        STAA    >AcSensorRaw,Z
         LDAA    >PORTF0,Z
         ANDA    #$1F
         ORAA    #$80
@@ -13245,9 +15852,9 @@ L0D6A0:
 L0D6AA:
         STAA    >AirTempRaw,Z
         LDAA    >RJURR1_L,Z
-        STAA    $0A5E,Z
+        STAA    >BatteryTempRaw,Z
         JSR     Sub_2C67A
-        BRCLR   $0330,#$10,L0D6E4
+        BRCLR   >Options0330,#$10,L0D6E4
         LDAA    >PORTF0,Z
         ANDA    #$1F
         ORAA    #$60
@@ -13324,7 +15931,7 @@ L0D730:
         STAA    $0A,Z
         BSET    $0A7C,Z,#$03
         LDAA    #$7F
-        STAA    $079D,Z
+        STAA    >SparkStartRamp,Z
         BSET    $0C32,Z,#$10
         BSET    >ThrottleState,Z,#$10
         BSET    $0C21,Z,#$B0
@@ -13344,7 +15951,7 @@ L0D730:
         STD     $0AB6,Z
         STD     $0AB8,Z
         STAA    $07C5,Z
-        STAA    $07DD,Z
+        STAA    >IdleFuelRamp,Z
         STAA    $0935,Z
         STAA    $0936,Z
         LDAA    #$0F
@@ -13354,26 +15961,26 @@ L0D730:
         BCS     L0D80E
         BSET    $0C36,Z,#$01
 L0D80E:
-        LDAA    $280C
+        LDAA    >StartV0863Thresh
         STAA    $0863,Z
         JSR     Sub_0DBEA
-        LDAA    $0316
+        LDAA    >StartValue1
         CMPA    #$05
         BCS     L0D82A
-        BRCLR   $032E,#$80,L0D82A
+        BRCLR   >Options032E,#$80,L0D82A
         ADDA    #$04
 L0D82A:
         STAA    $5A,Z
         LDAA    #$04
         BRSET   $0056,Z,#$20,L0D846
         LDAA    #$02
-        BRSET   $032E,#$40,L0D846
+        BRSET   >Options032E,#$40,L0D846
         LDAA    #$03
         BRSET   $0056,Z,#$10,L0D846
         LDAA    #$01
 L0D846:
         STAA    $59,Z
-        BRCLR   $033E,#$02,L0D852
+        BRCLR   >StartV06B8Flag,#$02,L0D852
         BSET    $56,Z,#$08
 L0D852:
         LDD     #$0097
@@ -13393,11 +16000,11 @@ L0D868:
         INC     $50,Z
 L0D876:
         BSET    $0642,Z,#$40
-        LDAB    $580B
+        LDAB    >StartCoolantTempSlowValue
         LDAA    >CoolantRaw,Z
-        CMPA    $580A
+        CMPA    >StartCoolantRawThresh2
         BCC     L0D8A0
-        CMPA    $5809
+        CMPA    >StartCoolantRawThresh1
         BCS     L0D8A0
         LDX     #ThermistorHot
         BRCLR   $1012,Z,#$08,L0D89C
@@ -13406,7 +16013,7 @@ L0D89C:
         JSR     Lookup2D
 L0D8A0:
         STAB    >CoolantTemp,Z
-        STAB    $0A72,Z
+        STAB    >CoolantTempSlow,Z
         STAB    >StartCoolantTemp2,Z
         STAB    >StartCoolantTemp,Z
         TBA
@@ -13417,11 +16024,11 @@ L0D8A0:
         LDX     #ResetCoolantInit
         JSR     Lookup2D
         STAA    $0C00,Z
-        LDAB    $5813
+        LDAB    >StartValue2
         LDAA    >AirTempRaw,Z
-        CMPA    $5812
+        CMPA    >StartAirTempRawThresh2
         BCC     L0D8F4
-        CMPA    $5811
+        CMPA    >StartAirTempRawThresh1
         BCS     L0D8F4
         LDX     #ThermistorHot
         BRCLR   $1012,Z,#$10,L0D8F0
@@ -13432,41 +16039,41 @@ L0D8F4:
         STAB    >AirTemp,Z
         STAB    >StartAirTemp,Z
         LDAA    >AirTemp,Z
-        CMPA    $16A0
+        CMPA    >StartAirTempThresh
         BCS     L0D914
         LDAA    >CoolantTemp,Z
-        CMPA    $169F
+        CMPA    >StartCoolantThresh2
         BCS     L0D914
         BSET    $06C7,Z,#$08
 L0D914:
-        LDAB    $5808
-        LDAA    $0A8B,Z
-        CMPA    $5806
+        LDAB    >StartAcSensorValue
+        LDAA    >AcSensorRaw,Z
+        CMPA    >StartAcSensorRawThresh1
         BCC     L0D930
-        CMPA    $5807
+        CMPA    >StartAcSensorRawThresh2
         BCS     L0D930
         LDX     #AcSensorCurve
         JSR     Lookup2D
 L0D930:
         STAB    >AcSensor,Z
-        BRCLR   $0333,#$40,L0D946
-        LDAA    $7510
+        BRCLR   >Options0333,#$40,L0D946
+        LDAA    >StartFactor1
         LDAB    #$FA
         MUL
         STD     $0C18,Z
 L0D946:
         LDAB    #$BE
-        LDAA    $0A5E,Z
-        CMPA    $5815
+        LDAA    >BatteryTempRaw,Z
+        CMPA    >StartBatteryTempRawThresh2
         BHI     L0D986
-        CMPA    $5814
+        CMPA    >StartBatteryTempRawThresh1
         BCS     L0D986
         LDX     #Thermistor3Curve
-        BRCLR   $0330,#$04,L0D966
+        BRCLR   >Options0330,#$04,L0D966
         LDX     #Thermistor3CurveAlt
 L0D966:
         JSR     Lookup2D
-        BRCLR   $0330,#$01,L0D986
+        BRCLR   >Options0330,#$01,L0D986
         STAA    $F0,Z
         LDAA    >CoolantTemp,Z
         LDX     #BattTempHeatFactor
@@ -13477,21 +16084,21 @@ L0D966:
         TAB
 L0D986:
         STAB    >BatteryTemp,Z
-        STAB    $0A63,Z
+        STAB    >BatteryTempStart,Z
         LDE     >ResetCheckWord,Z
         CPE     #$4AB6
         BNE     L0D99C
         STAB    $0194,Z
 L0D99C:
-        BRSET   $033D,#$08,L0D9AC
+        BRSET   >Options033D,#$08,L0D9AC
         LDE     >ResetCheckWord,Z
         CPE     #$4AB6
         BNE     L0D9B0
 L0D9AC:
         JSR     Sub_1A5CE
 L0D9B0:
-        BRCLR   $0333,#$80,L0D9C2
-        LDAA    $7511
+        BRCLR   >Options0333,#$80,L0D9C2
+        LDAA    >StartFactor2
         LDAB    #$FA
         MUL
         STD     $0458,Z
@@ -13499,12 +16106,12 @@ L0D9C2:
         LDAA    >BatteryTemp,Z
         JSR     Sub_2C766
         STAA    >ChargeTargetVolts,Z
-        LDAA    $0450
+        LDAA    >StartV0C03Init
         STAA    $0C03,Z
         LDD     #$FFFF
         STD     $0C04,Z
         BSET    $0C02,Z,#$10
-        LDAA    $1EFA
+        LDAA    >StartV042FInit
         STAA    $0435,Z
         LDAA    #$64
         STAA    $043A,Z
@@ -13512,11 +16119,11 @@ L0D9C2:
         STAA    >Throttle,Z
         STAA    >ThrottleLast,Z
         LDAB    <ThrottleClosed,Z
-        ADDB    $043D
-        CMPB    $0440
+        ADDB    >StartThrottleClosedAdder
+        CMPB    >StartThrottleClosedInit
         BCS     L0DA14
         ADDA    #$06
-        LDAB    $0440
+        LDAB    >StartThrottleClosedInit
         CBA
         BCC     L0DA14
         TAB
@@ -13531,9 +16138,9 @@ L0DA20:
         BEQ     L0DA2A
         BSET    >ThrottleState,Z,#$80
 L0DA2A:
-        BRSET   $032B,#$80,L0DA66
+        BRSET   >Options032B,#$80,L0DA66
         LDAA    #$80
-        LDAB    $2EE3
+        LDAB    >EventFactor
         MUL
         STD     $0D88,Z
         LDE     #$8000
@@ -13549,24 +16156,24 @@ L0DA2A:
         STD     $0D80,Z
 L0DA66:
         JSR     EmptyHook
-        BRCLR   $032C,#$40,L0DAA2
+        BRCLR   >Options032C,#$40,L0DAA2
         LDAA    >FlexEthanol,Z
         LDX     #FlexEthanolScale
         JSR     Lookup2D
         STAA    >FlexEthanolScaled,Z
-        LDD     $0D,Z
+        LDD     <EepromCount,Z
         STD     $0F09,Z
         LDAA    >CoolantTemp,Z
-        CMPA    $1728
+        CMPA    >StartCoolantThresh3
         BCC     L0DAA2
         LDAA    >FlexEthanol,Z
-        CMPA    $1727
+        CMPA    >StartFlexEthanolThresh
         BCS     L0DAA2
         BSET    $50,Z,#$08
         BCLR    $50,Z,#$20
 L0DAA2:
         LDAA    >CoolantTemp,Z
-        CMPA    $0A7C
+        CMPA    >StartCoolantThresh1
         BCS     L0DAB0
         BSET    $0774,Z,#$10
 L0DAB0:
@@ -13576,7 +16183,7 @@ L0DAB0:
         STAA    $07C4,Z
         JSR     CalcDeadTime
         JSR     Sub_121E6
-        BRCLR   $032C,#$40,L0DAE0
+        BRCLR   >Options032C,#$40,L0DAE0
         BRCLR   $0050,Z,#$28,L0DAE0
         BRSET   $0050,Z,#$08,L0DAE4
         BCLR    $50,Z,#$10
@@ -13584,15 +16191,15 @@ L0DAB0:
 L0DAE0:
         JSR     Sub_3DE9C
 L0DAE4:
-        LDAA    $2088
+        LDAA    >StartV0801Thresh
         STAA    $0440,Z
-        LDAA    $2089
+        LDAA    >StartV043BValue
         STAA    $0441,Z
-        LDAA    $208A
+        LDAA    >StartV043CThresh
         STAA    $0442,Z
-        LDAA    $033E
+        LDAA    >StartV06B8Flag
         STAA    $06B8,Z
-        LDAA    $033F
+        LDAA    >StartV06B9Flag
         STAA    $06B9,Z
         BCLR    $50,Z,#$20
         LDAA    #$36
@@ -13625,7 +16232,7 @@ L0DB28:
         JSR     Sub_38674
         JSR     Sub_0F206
         JSR     Sub_0F0AA
-        BRCLR   $032C,#$80,L0DBB4
+        BRCLR   >Options032C,#$80,L0DBB4
         LDAA    $0978,Z
         CMPA    #$19
         BNE     L0DBA2
@@ -13641,7 +16248,7 @@ L0DB28:
         BRA     L0DBB0
 L0DBA2:
         BSET    $0C33,Z,#$10
-        LDAA    $1DC2
+        LDAA    >StartV07EEValue
         STAA    $07EE,Z
         LDAA    #$80
 L0DBB0:
@@ -13669,34 +16276,34 @@ L0DBDE:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_0DBEA:
-        BRCLR   $0330,#$10,L0DBF4
+        BRCLR   >Options0330,#$10,L0DBF4
         BSET    $56,Z,#$01
 L0DBF4:
-        BRCLR   $032F,#$08,L0DBFE
+        BRCLR   >EventFlag2,#$08,L0DBFE
         BSET    $57,Z,#$20
 L0DBFE:
-        BRCLR   $0331,#$08,L0DC08
+        BRCLR   >Options0331,#$08,L0DC08
         BSET    $56,Z,#$04
 L0DC08:
-        BRCLR   $0335,#$08,L0DC12
+        BRCLR   >Options0335,#$08,L0DC12
         BSET    $56,Z,#$02
 L0DC12:
-        BRCLR   $0333,#$01,L0DC1C
+        BRCLR   >Options0333,#$01,L0DC1C
         BSET    $57,Z,#$10
 L0DC1C:
-        BRCLR   $0333,#$10,L0DC26
+        BRCLR   >Options0333,#$10,L0DC26
         BSET    $57,Z,#$40
 L0DC26:
-        BRCLR   $0335,#$04,L0DC30
+        BRCLR   >Options0335,#$04,L0DC30
         BSET    $57,Z,#$80
 L0DC30:
-        BRCLR   $0333,#$80,L0DC3A
+        BRCLR   >Options0333,#$80,L0DC3A
         BSET    $57,Z,#$08
 L0DC3A:
-        BRCLR   $032E,#$04,L0DC44
+        BRCLR   >Options032E,#$04,L0DC44
         BSET    $57,Z,#$04
 L0DC44:
-        BRCLR   $032E,#$20,L0DC4E
+        BRCLR   >Options032E,#$20,L0DC4E
         BSET    $56,Z,#$20
 L0DC4E:
         RTS
@@ -13860,7 +16467,7 @@ L0DDCE:
         JSR     Sub_38068
         JSR     Sub_387FE
         JSR     Sub_385EC
-        BRSET   $032E,#$04,L0DE9A
+        BRSET   >Options032E,#$04,L0DE9A
         JSR     Sub_3017C
         BRA     L0DEA2
 L0DE9A:
@@ -13938,12 +16545,12 @@ L0DF52:
         RTS
 L0DF58:
         LDAA    #$2B
-        BRSET   $032B,#$20,L0DF62
+        BRSET   >Options032B,#$20,L0DF62
         LDAA    #$2A
 L0DF62:
         STAA    >TCTL1,Z
         LDD     #$7200
-        BRCLR   $0335,#$04,L0DF74
+        BRCLR   >Options0335,#$04,L0DF74
         LDD     #$7218
 L0DF74:
         STD     >CFORC,Z
@@ -13987,15 +16594,15 @@ L0DFE6:
         BNE     L0DFE6
         BCLR    $0A,Z,#$20
 L0E000:
-        BRCLR   $032C,#$40,L0E05C
+        BRCLR   >Options032C,#$40,L0E05C
         BCLR    $50,Z,#$10
         BRCLR   $0050,Z,#$08,L0E030
-        LDD     $0D,Z
+        LDD     <EepromCount,Z
         SUBD    $0F09,Z
         BCS     L0E02C
         TSTA
         BNE     L0E022
-        CMPB    $1729
+        CMPB    >SensorEepromCountThresh
         BCS     L0E030
 L0E022:
         BCLR    $50,Z,#$08
@@ -14040,14 +16647,14 @@ L0E080:
 L0E09E:
         BSET    $50,Z,#$04
         LDAA    $0812,Z
-        CMPA    $16A8
+        CMPA    >FuelV0812Thresh
         BCS     L0E0B0
         CLR     >EngineOffTime,Z
 L0E0B0:
         LDAA    >Count3s,Z
-        CMPA    $56C3
+        CMPA    >AnalogTimeThresh
         BCS     L0E0C2
-        LDAA    $0A98,Z
+        LDAA    >AnalogV0A92Filtered,Z
         STAA    $0120,Z
 L0E0C2:
         ORP     #$00E0
@@ -14260,7 +16867,7 @@ L0E31C:
         STE     $06BA,Z
 L0E32E:
         LDD     #$6BB0
-        BRSET   $032E,#$02,L0E33C
+        BRSET   >Options032E,#$02,L0E33C
         LDD     #$6830
 L0E33C:
         CPD     >CSORBT,Z
@@ -14399,7 +17006,7 @@ L0E4C2:
         LDE     #$002B
         STE     $06BA,Z
 L0E4D6:
-        BRCLR   $032A,#$E0,L0E500
+        BRCLR   >EventFlag1,#$E0,L0E500
         LDAA    >PACNT,Z
         CMPA    #$FF
         BNE     L0E518
@@ -14438,7 +17045,7 @@ L0E52E:
         STE     $06BA,Z
 L0E540:
         LDAA    >TCTL2,Z
-        BRSET   $0337,#$80,L0E552
+        BRSET   >Options0337,#$80,L0E552
         CMPA    #$29
         BEQ     L0E56C
         LDAA    #$29
@@ -14458,7 +17065,7 @@ L0E56C:
         ORP     #$00E0
         LDAA    >TMSK1,Z
         ANDA    #$85
-        BRSET   $0337,#$80,L0E58A
+        BRSET   >Options0337,#$80,L0E58A
         CMPA    #$05
         BEQ     L0E5A0
         LDAA    >TMSK1,Z
@@ -14477,7 +17084,7 @@ L0E594:
 L0E5A0:
         LDAA    >TMSK1,Z
         TAB
-        BRSET   $032B,#$80,L0E5B6
+        BRSET   >Options032B,#$80,L0E5B6
         ANDB    #$02
         CMPB    #$02
         BEQ     L0E5C8
@@ -14493,7 +17100,7 @@ L0E5BC:
         STE     $06BA,Z
 L0E5C8:
         LDAA    >TMSK2,Z
-        BRCLR   $032A,#$E0,L0E5E2
+        BRCLR   >EventFlag1,#$E0,L0E5E2
         ANDA    #$3F
         CMPA    #$12
         BEQ     L0E600
@@ -14515,7 +17122,7 @@ L0E5F0:
         ANDP    #$FF1F
 L0E600:
         LDAA    >PWMC,Z
-        BRSET   $0335,#$04,L0E610
+        BRSET   >Options0335,#$04,L0E610
         BEQ     L0E628
         CLRA
         BRA     L0E61C
@@ -14628,7 +17235,7 @@ L0E738:
 L0E74E:
         ANDP    #$FF1F
         LDD     #$FA91
-        BRSET   $032E,#$04,L0E760
+        BRSET   >Options032E,#$04,L0E760
         LDD     #$F891
 L0E760:
         CPD     $1014,Z
@@ -14639,7 +17246,7 @@ L0E760:
 L0E772:
         ORP     #$00E0
         LDD     $1018,Z
-        BRSET   $032E,#$04,L0E798
+        BRSET   >Options032E,#$04,L0E798
         ANDD    #$38FD
         CPD     #$202C
         BEQ     L0E7AC
@@ -14668,7 +17275,7 @@ L0E7C4:
         STE     $06BA,Z
 L0E7D8:
         LDD     #$003F
-        BRCLR   $0335,#$20,L0E7E6
+        BRCLR   >Options0335,#$20,L0E7E6
         LDD     #$002F
 L0E7E6:
         LDE     $1020,Z
@@ -14684,7 +17291,7 @@ L0E7FE:
         CPD     #$0003
         BEQ     L0E82E
         LDD     #$0803
-        BRCLR   $032E,#$04,L0E822
+        BRCLR   >Options032E,#$04,L0E822
         LDD     $100C,Z
         ANDD    #$0800
         ORD     #$0003
@@ -14722,7 +17329,7 @@ L0E876:
         LDE     #$004C
         STE     $06BA,Z
 L0E888:
-        BRSET   $032B,#$80,L0E890
+        BRSET   >Options032B,#$80,L0E890
         CLRD
 L0E890:
         CPD     $105E,Z
@@ -14743,21 +17350,21 @@ L0E8B4:
         LDE     #$004F
         STE     $06BA,Z
 L0E8CC:
-        BRSET   $0333,#$40,L0E8E6
+        BRSET   >Options0333,#$40,L0E8E6
         BRCLR   $1064,Z,#$C0,L0E8E6
         BCLRW   $1064,Z,#$DFFF
         LDE     #$0050
         STE     $06BA,Z
 L0E8E6:
-        BRSET   $0335,#$80,L0E900
+        BRSET   >Options0335,#$80,L0E900
         BRCLR   $1066,Z,#$C0,L0E900
         BCLRW   $1066,Z,#$DFFF
         LDE     #$0051
         STE     $06BA,Z
 L0E900:
-        BRSET   $0334,#$10,L0E92C
+        BRSET   >StartFlag,#$10,L0E92C
         CLRD
-        BRCLR   $0333,#$02,L0E91A
+        BRCLR   >Options0333,#$02,L0E91A
         LDD     #$E01B
         CPD     $1068,Z
         BEQ     L0E92C
@@ -14771,7 +17378,7 @@ L0E920:
         STE     $06BA,Z
 L0E92C:
         CLRD
-        BRCLR   $032F,#$06,L0E938
+        BRCLR   >EventFlag2,#$06,L0E938
         LDD     #$C209
 L0E938:
         CPD     $106A,Z
@@ -14799,17 +17406,17 @@ L0E974:
         LDE     #$0055
         STE     $06BA,Z
 L0E988:
-        BRSET   $032B,#$40,L0E9E8
+        BRSET   >Options032B,#$40,L0E9E8
         LDD     $101E,Z
         ANDD    #$000F
-        BRCLR   $032B,#$20,L0E9AC
+        BRCLR   >Options032B,#$20,L0E9AC
         CPD     #$0002
         BEQ     L0E9E8
         LDE     #$FFF2
         LDD     #$0002
         BRA     L0E9D0
 L0E9AC:
-        BRCLR   $032B,#$80,L0E9C2
+        BRCLR   >Options032B,#$80,L0E9C2
         CPD     #$000E
         BEQ     L0E9E8
         LDE     #$FFFE
@@ -14829,7 +17436,7 @@ L0E9D0:
         STE     $06BA,Z
 L0E9E8:
         LDAA    #$80
-        LDAB    $2EE3
+        LDAB    >EventFactor
         MUL
         CPD     $0D88,Z
         BEQ     L0E9FA
@@ -15014,12 +17621,12 @@ L0EBB4:
 Sub_0EBB6:
         LDAA    >EngineRpm,Z
         BRSET   $0DB0,Z,#$10,L0EBCE
-        CMPA    $755D
+        CMPA    >SensorRpmThresh11
         LBCS    L0EC80
         BSET    $0DB0,Z,#$10
         BRA     L0EBD6
 L0EBCE:
-        CMPA    $755E
+        CMPA    >SensorThresh27
         LBCS    L0EC7C
 L0EBD6:
         BRSET   $0DBF,Z,#$40,L0EC58
@@ -15029,35 +17636,35 @@ L0EBD6:
         STE     $0DB6,Z
         BRCLR   $0774,Z,#$80,L0EC00
         LDAA    >Count3s,Z
-        CMPA    $0B8F
+        CMPA    >SensorTimeThresh1
         BCS     L0EC00
         BSET    $0DBF,Z,#$40
         BRA     L0EC58
 L0EC00:
         LDAA    >CoolantTemp,Z
-        CMPA    $0B83
+        CMPA    >SensorCoolantThresh1
         BCC     L0EC58
         LDAA    >EngineRpm,Z
-        CMPA    $0B8E
+        CMPA    >SensorRpmThresh2
         BCS     L0EC80
         BRSET   $0DBF,Z,#$20,L0EC58
         LDAA    >BatteryVolts2,Z
-        CMPA    $0B8D
+        CMPA    >SensorVoltsThresh1
         BHI     L0EC58
         LDAA    #$00
-        LDE     $0B85
+        LDE     >SensorV0DBEThresh
         CPE     $0DB6,Z
         BCC     L0EC6E
         LDAA    #$19
-        ADDE    $0B87
+        ADDE    >SensorAdder1
         CPE     $0DB6,Z
         BCC     L0EC6E
         LDAA    #$32
-        ADDE    $0B89
+        ADDE    >SensorAdder2
         CPE     $0DB6,Z
         BCC     L0EC6E
         LDAA    #$4B
-        ADDE    $0B8B
+        ADDE    >SensorAdder3
         CPE     $0DB6,Z
         BCC     L0EC6E
         BSET    $0DBF,Z,#$20
@@ -15087,7 +17694,7 @@ L0EC8C:
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
 Sub_0EC8E:
-        BRSET   $032E,#$04,L0ED00
+        BRSET   >Options032E,#$04,L0ED00
         ORP     #$00E0
         LDAA    $0A26,Z
         LBEQ    L0EDD0
@@ -15196,7 +17803,7 @@ L0EDD0:
         BRSET   $0A27,Z,#$10,L0EE02
         BRCLR   $0774,Z,#$80,L0EE02
         BRSET   $094E,Z,#$40,L0EDF8
-        BRSET   $032E,#$04,L0EDF8
+        BRSET   >Options032E,#$04,L0EDF8
         BRSET   $0A23,Z,#$10,L0EDF8
         BRSET   $09D7,Z,#$04,L0EDF8
         JSR     Sub_309EE
@@ -15213,7 +17820,7 @@ L0EE02:
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
 Sub_0EE08:
-        BRCLR   $032E,#$08,L0EE60
+        BRCLR   >Options032E,#$08,L0EE60
         BRSET   $0A02,Z,#$04,L0EE60
         BRCLR   $0A04,Z,#$10,L0EE20
         BCLR    $0A04,Z,#$10
@@ -15301,12 +17908,12 @@ L0EEBC:
         BRCLR   $0774,Z,#$80,L0EFCC
         BRCLR   $0C31,Z,#$20,L0EFCC
         BRSET   $0A02,Z,#$04,L0EFDC
-        BRCLR   $032E,#$08,L0EF16
+        BRCLR   >Options032E,#$08,L0EF16
         LDAB    $0A17,Z
         INCB
         BEQ     L0EEF8
         STAB    $0A17,Z
-        BRCLR   $032E,#$04,L0EEF4
+        BRCLR   >Options032E,#$04,L0EEF4
         BRSET   $0A02,Z,#$08,L0EEF4
         CMPB    #$64
         BCS     L0EF16
@@ -15319,7 +17926,7 @@ L0EEF8:
         LDY     #$4EC3
         JSR     Sub_245D6
         BCC     L0EF16
-        BRCLR   $0330,#$40,L0EF16
+        BRCLR   >Options0330,#$40,L0EF16
         BSET    $0A27,Z,#$20
         NOP
         NOP
@@ -15329,7 +17936,7 @@ L0EF16:
         INCB
         BEQ     L0EF40
         STAB    $0A18,Z
-        BRCLR   $032E,#$04,L0EF3C
+        BRCLR   >Options032E,#$04,L0EF3C
         BRSET   $0A02,Z,#$08,L0EF3C
         CMPB    #$64
         BCS     L0EF54
@@ -15345,12 +17952,12 @@ L0EF40:
         NOP
         NOP
 L0EF54:
-        BRCLR   $032E,#$10,L0EFA0
+        BRCLR   >Options032E,#$10,L0EFA0
         LDAB    $09BD,Z
         INCB
         BEQ     L0EF7E
         STAB    $09BD,Z
-        BRCLR   $032E,#$04,L0EF7A
+        BRCLR   >Options032E,#$04,L0EF7A
         BRSET   $0A02,Z,#$08,L0EF7A
         CMPB    #$64
         BCS     L0EFA0
@@ -15365,7 +17972,7 @@ L0EF7E:
         BCC     L0EFA0
         CLR     $017B,Z
         BCLR    $0C21,Z,#$08
-        BRCLR   $0331,#$10,L0EFA0
+        BRCLR   >Options0331,#$10,L0EFA0
         BSET    $0A27,Z,#$20
 L0EFA0:
         BRCLR   $0056,Z,#$20,L0EFDC
@@ -15373,7 +17980,7 @@ L0EFA0:
         INCB
         BEQ     L0EFC6
         STAB    $09C9,Z
-        BRCLR   $032E,#$04,L0EFC6
+        BRCLR   >Options032E,#$04,L0EFC6
         BRSET   $0A02,Z,#$08,L0EFC6
         CMPB    #$64
         BCS     L0EFDC
@@ -15468,7 +18075,7 @@ L0F086:
         JSR     Sub_38712
         BRA     L0F0A4
 L0F094:
-        BRSET   $032E,#$04,L0F0A0
+        BRSET   >Options032E,#$04,L0F0A0
         JSR     Sub_30546
         BRA     L0F0A4
 L0F0A0:
@@ -15483,7 +18090,7 @@ L0F0A4:
 ;---------------------------------------------------------------------------------------------------
 Sub_0F0AA:
         ORP     #$00E0
-        BRSET   $0328,#$01,L0F0C0
+        BRSET   >Options0328,#$01,L0F0C0
         BRSET   $0A23,Z,#$02,L0F0C0
         BRSET   $094E,Z,#$C0,L0F1FC
 L0F0C0:
@@ -15501,7 +18108,7 @@ L0F0DA:
 L0F0E0:
         STAB    $09C0,Z
         LDAA    $094E,Z
-        BRSET   $0328,#$01,L0F11A
+        BRSET   >Options0328,#$01,L0F11A
         BRSET   $0A23,Z,#$01,L0F106
         BRSET   $09BE,Z,#$80,L0F102
         CMPB    #$C9
@@ -15540,7 +18147,7 @@ L0F154:
         BRSET   $0A23,Z,#$10,L0F16E
         BITA    #$40
         BEQ     L0F18E
-        BRSET   $032E,#$04,L0F18E
+        BRSET   >Options032E,#$04,L0F18E
         BRCLR   $09BE,Z,#$08,L0F18E
 L0F16E:
         BRSET   $0507,Z,#$02,L0F198
@@ -15558,8 +18165,8 @@ L0F18E:
         LDAA    $094E,Z
 L0F198:
         BRSET   $0A23,Z,#$10,L0F1FC
-        BRSET   $0328,#$01,L0F1BA
-        BRSET   $032E,#$04,L0F1B6
+        BRSET   >Options0328,#$01,L0F1BA
+        BRSET   >Options032E,#$04,L0F1B6
         BRSET   $09BE,Z,#$08,L0F1FC
         BRSET   $09BE,Z,#$04,L0F1BA
 L0F1B6:
@@ -15609,7 +18216,7 @@ Sub_0F206:
         BCLR    $57,Z,#$01
         BRA     L0F2A6
 L0F22E:
-        BRSET   $0328,#$01,L0F28C
+        BRSET   >Options0328,#$01,L0F28C
         BRSET   $0A23,Z,#$08,L0F254
         BITA    #$80
         BNE     L0F24E
@@ -15620,7 +18227,7 @@ L0F22E:
 L0F24E:
         BRCLR   $0A23,Z,#$04,L0F2A0
 L0F254:
-        BRCLR   $0328,#$02,L0F282
+        BRCLR   >Options0328,#$02,L0F282
         BRCLR   $0774,Z,#$80,L0F2AA
         BRSET   $094E,Z,#$1F,L0F27A
         BSET    $0A23,Z,#$02

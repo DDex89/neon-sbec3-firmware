@@ -26,6 +26,7 @@ from xref import Xref
 UNITS = {
     "rpm32": ("X*32", "rpm", 0),
     "rpm8": ("X*8", "rpm", 0),
+    "rpmw": ("X/8", "rpm", 0),
     "kpa": ("X/2.428", "kPa", 1),
     "spark": ("X/2", "deg BTDC", 1),
     "tempc": ("X-128", "deg C", 0),
@@ -243,19 +244,32 @@ def main():
                 labels.append("%d P%02X%02X" % (r, b[6], b[7]) if b[6] or b[7] else str(r))
             X.label_axis(e, "y", labels)
             X.zdata(e, a, rows, 10, "raw", False, output="3")
+    n_flags = 0
     for a in sorted(cal.scalars):
         v = cal.scalars[a]
+        cat = [v["category"]] if v.get("category") else next(([c] for w, c in CATEGORY_WORDS if w in v["name"]),
+                                                              ["Constants"])
+        if v.get("bits"):
+            bn = v.get("bitnames", {})
+            for m in v["bits"]:
+                e = X.item("XDFFLAG", "%s bit $%s%s" % (v["name"], m, " " + bn[m] if m in bn else ""),
+                           v.get("desc", "") + " $%04X mask $%s" % (a, m), cat)
+                SubElement(e, "EMBEDDEDDATA", mmedaddress="0x%X" % a, mmedelementsizebits="8")
+                SubElement(e, "mask").text = "0x%s" % m
+                n_flags += 1
+            continue
         u = v.get("unit", "raw")
         eq, text, dec = UNITS.get(u, UNITS["raw"])
-        e = X.item("XDFCONSTANT", v["name"], v.get("desc", "") + " $%04X" % a,
-                   next(([c] for w, c in CATEGORY_WORDS if w in v["name"]), ["Constants"]))
-        SubElement(e, "EMBEDDEDDATA", mmedaddress="0x%X" % a, mmedelementsizebits="8", mmedtypeflags="0x00")
+        e = X.item("XDFCONSTANT", v["name"], v.get("desc", "") + " $%04X" % a, cat)
+        SubElement(e, "EMBEDDEDDATA", mmedaddress="0x%X" % a, mmedelementsizebits=str(8 * v.get("size", 1)),
+                   mmedtypeflags="0x00")
         SubElement(e, "units").text = text
         SubElement(e, "decimalpl").text = str(dec)
         SubElement(e, "outputtype").text = "1"
         Xdf.math(e, eq)
     X.write(out)
-    print("%s: %d tables (%d named), %d constants, %d categories" % (out, n_tables, n_named, len(cal.scalars), len(X.cats)))
+    print("%s: %d tables (%d named), %d constants, %d flags, %d categories" % (
+        out, n_tables, n_named, len(cal.scalars), n_flags, len(X.cats)))
 
 
 if __name__ == "__main__":

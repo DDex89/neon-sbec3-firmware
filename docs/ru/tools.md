@@ -38,6 +38,8 @@ python3 tools/survey.py roms/*.bin  # заголовок, контрольная
 | `tools/xdf.py` | Пишет описание образа для TunerPro (`xdf/`) |
 | `tools/fixsum.py` | Проверяет или исправляет контрольную сумму после правки |
 | `tools/autoname.py` | Даёт таблицам без ручного имени структурное имя (подсистема + входы) |
+| `tools/constants.py` | Находит каждую константу и бит настроек, читаемые напрямую, даёт им структурные имена и вливает ручные (`scalars` в `annotations/tables.json`) |
+| `tools/subsystems.py` | Группы подсистем, общие для `autoname.py` и `constants.py` |
 | `tools/build.py` | Собирает и сверяет с `tools/variants.json` |
 | `tools/survey.py` | Обзор образов (этап 1) |
 

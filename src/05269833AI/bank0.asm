@@ -275,13 +275,139 @@
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $55,$00,$05,$26,$98,$33,$41,$49,$B0,$20,$20,$20,$20,$20,$20,$D1
-        dc.b    $04,$0D,$01,$18,$15,$07,$07,$01,$04,$01,$08,$10,$07,$01,$07,$04
-        dc.b    $00,$00,$00,$01,$14,$44,$28,$0C,$00,$00,$80,$00,$00,$20,$40,$A4
-        dc.b    $28,$28,$01,$82,$82,$08,$00,$14,$30,$48,$80,$74,$00,$00,$B7,$A8
-        dc.b    $9F,$00,$BE,$3E,$B8,$10,$7E,$38,$00,$00,$07,$E5,$03,$00,$00,$A8
-        dc.b    $F1,$80,$00,$00,$01,$80,$00,$E0,$01,$80,$00,$00,$00,$01,$00,$FF
-        dc.b    $00,$00,$00,$00,$FF,$FF,$09,$03,$20,$FF,$40,$05,$FF,$AE,$A5,$60
+        dc.b    $55,$00,$05,$26,$98
+CalThresh1:
+        dc.b    $33                                      ; Byte compared with; read by Sub_2191E.
+        dc.b    $41,$49,$B0,$20,$20,$20,$20,$20,$20,$D1,$04,$0D,$01,$18,$15
+ThermistorValue1:
+        dc.b    $07                                      ; Byte used with; read by Sub_32318.
+StartValue1:
+        dc.b    $07                                      ; Byte used with; read by Reset.
+        dc.b    $01,$04,$01,$08,$10,$07,$01,$07,$04
+CalValue1:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_3060E.
+CalValue2:
+        dc.b    $00                                      ; Byte used with; read by Sub_30972.
+CalValue3:
+        dc.b    $01                                      ; Byte used with; read by Sub_31860.
+CalValue4:
+        dc.b    $14                                      ; Byte used with; read by Sub_31860.
+FuelEventValue1:
+        dc.b    $44                                      ; Byte used with; read by Sub_1148E, Sub_31860.
+CalValue5:
+        dc.b    $28                                      ; Byte used with; read by Sub_31860.
+CalValue6:
+        dc.b    $0C                                      ; Byte used with; read by Sub_31860.
+Options0328:
+        dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $00
+EventFlag1:
+        dc.b    $80                                      ; Byte tested; read by Isr_GPT_OC4, Isr_GPT_IC1, Reset +11.
+Options032B:
+        dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options032C:
+        dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options032D:
+        dc.b    $20                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options032E:
+        dc.b    $40                                      ; Option byte (global configuration); bits used are listed with their names where known
+EventFlag2:
+        dc.b    $A4                                      ; Byte tested; read by Isr_GPT_IC1, Reset, Sub_0DBCA +53.
+Options0330:
+        dc.b    $28                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options0331:
+        dc.b    $28                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options0332:
+        dc.b    $01                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options0333:
+        dc.b    $82                                      ; Option byte (global configuration); bits used are listed with their names where known
+StartFlag:
+        dc.b    $82                                      ; Byte tested; read by Isr_PIT, Reset, Sub_0E0B6 +8.
+Options0335:
+        dc.b    $08                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $00
+Options0337:
+        dc.b    $14                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options0338:
+        dc.b    $30                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options0339:
+        dc.b    $48                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options033A:
+        dc.b    $80                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options033B:
+        dc.b    $74                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options033C:
+        dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options033D:
+        dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
+StartV06B8Flag:
+        dc.b    $B7                                      ; Byte tested V06B8; read by Reset, Sub_155C8, Sub_20E1E +10.
+StartV06B9Flag:
+        dc.b    $A8                                      ; Byte tested V06B9; read by Reset, Sub_20E1E, Sub_28D78.
+Options0340:
+        dc.b    $9F                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $00
+ThermistorFlag1:
+        dc.b    $BE                                      ; Byte tested; read by Sub_32318.
+ThermistorFlag2:
+        dc.b    $3E                                      ; Byte tested; read by Sub_32318.
+ThermistorFlag3:
+        dc.b    $B8                                      ; Byte tested; read by Sub_32318.
+ThermistorFlag4:
+        dc.b    $10                                      ; Byte tested; read by Sub_32318.
+ThermistorFlag5:
+        dc.b    $7E                                      ; Byte tested; read by Sub_32318.
+ThermistorFlag6:
+        dc.b    $38                                      ; Byte tested; read by Sub_32318.
+ThermistorValue2:
+        dc.b    $00                                      ; Byte used with; read by Sub_32318.
+ThermistorValue3:
+        dc.b    $00                                      ; Byte used with; read by Sub_32318.
+ThermistorV0A2AInit:
+        dc.b    $07                                      ; Byte stored into V0A2A; read by Sub_32318.
+ThermistorV003FMask:
+        dc.b    $E5                                      ; Byte mask for V003F; read by Sub_32318.
+ThermistorValue4:
+        dc.b    $03                                      ; Byte used with; read by Sub_32318.
+        dc.b    $00,$00,$A8,$F1,$80,$00,$00,$01,$80,$00,$E0,$01,$80,$00,$00,$00
+ThrottleV0E01Thresh:
+        dc.b    $01                                      ; Byte compared with V0E01; read by Sub_2D272.
+EgrThresh1:
+        dc.b    $00                                      ; Byte compared with; read by Sub_39866.
+SensorBatteryTempThresh1:
+        dc.b    $FF                                      ; Byte compared with BatteryTemp; read by Sub_39272.
+BattV0E02Thresh:
+        dc.b    $00                                      ; Byte compared with V0E02; read by Sub_2C3AC.
+EgrThresh2:
+        dc.b    $00                                      ; Byte compared with; read by Sub_22808.
+EgrThresh3:
+        dc.b    $00                                      ; Byte compared with; read by Sub_22808.
+EgrV0B59Thresh:
+        dc.b    $00                                      ; Byte compared with V0B59; read by Sub_22808.
+EgrV0B5AThresh:
+        dc.b    $FF                                      ; Byte compared with V0B5A; read by Sub_22808.
+AfterBaroThresh1:
+        dc.b    $FF                                      ; Byte compared with Baro; read by Sub_1E5A8.
+FieldV0DCEInit:
+        dc.b    $09                                      ; Byte stored into V0DCE; read by Sub_08DD4.
+FieldChargeDeficitThresh:
+        dc.b    $03                                      ; Byte compared with ChargeDeficit; read by Sub_08DD4.
+FieldValue1:
+        dc.b    $20                                      ; Byte used with; read by Sub_08DD4.
+EgrMonTimerThresh1:
+        dc.b    $FF                                      ; Byte compared with EgrMonTimer; read by Sub_39D3E.
+PurgeCommandThresh:
+        dc.b    $40                                      ; Byte compared with PurgeCommand; read by Sub_3D85E.
+PurgeSpeedThresh1:
+        dc.b    $05                                      ; Byte compared with VehicleSpeed; read by Sub_3D85E.
+PurgeBaroThresh:
+        dc.b    $FF                                      ; Byte compared with Baro; read by Sub_3D85E.
+PurgeTrimLatchedThresh1:
+        dc.b    $AE                                      ; Byte compared with PurgeTrimLatched; read by Sub_3ECC6.
+PurgeTrimLatchedThresh2:
+        dc.b    $A5                                      ; Byte compared with PurgeTrimLatched; read by Sub_3ECC6.
+PurgeRampThresh1:
+        dc.b    $60                                      ; Byte compared with PurgeRamp; read by Sub_3ECC6.
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00
 
@@ -412,10 +538,20 @@ MapFilterRiseV0474:
         dc.b    3,$80                                    ; points, flags
         dc.b    112,56, 254,40, 255,0                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$80,$00,$80,$00,$80,$00,$80,$00,$80,$00,$80,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$6E,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00
+        dc.b    $FF,$FF,$FF,$FF
+FuelEventValue2:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_1148E.
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$80,$00,$80,$00
+        dc.b    $80,$00,$80,$00,$80,$00,$80,$00,$00,$00,$00,$00,$00,$00,$00
+IdleIacTargetCmdInit:
+        dc.b    $00                                      ; Byte stored into IacTargetCmd; read by Sub_19000.
+FanV0B12Thresh:
+        dc.b    $00                                      ; Byte compared with V0B12; read by Sub_3ADDE.
+ThermistorCoolantTempSlowInit:
+        dc.b    $6E                                      ; Byte stored into CoolantTempSlow; read by ProcessCoolantTemp.
+ThermistorValue5:
+        dc.b    $00                                      ; Byte used with; read by ProcessCoolantTemp.
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; BaroUpdateMapOffset ($0429): 2D table, 4 points, unsigned
@@ -428,10 +564,91 @@ BaroUpdateMapOffset:
         dc.b    4,$80                                    ; points, flags
         dc.b    63,1, 94,2, 125,4, 188,10                ; x, y
 
-        dc.b    $FF,$FF,$7D,$01,$03,$5D,$30,$5C,$08,$02,$01,$FF,$00,$FF,$00,$FF
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$6E,$00,$00,$00,$6E,$58
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$80,$80,$80,$B9,$25
-        dc.b    $25,$E5,$07,$5B,$34,$E5,$A4,$1F
+        dc.b    $FF,$FF
+BaroUpdateThrottleMin:
+        dc.b    $7D                                      ; Barometric pressure update runs above this throttle opening
+BaroUpdateTime:
+        dc.b    $01                                      ; Barometric pressure update: steps of the counter $0A86,Z before baro moves by one
+StartThrottleClosedAdder:
+        dc.b    $03                                      ; Byte added to ThrottleClosed; read by Reset.
+ThrottleMapThresh:
+        dc.b    $5D                                      ; Byte compared with Map; read by Sub_2D272.
+ThrottleRpmThresh:
+        dc.b    $30                                      ; Byte compared with EngineRpm; read by Sub_2D272.
+StartThrottleClosedInit:
+        dc.b    $5C                                      ; Byte stored into ThrottleClosed; read by Reset, Sub_2D272, Sub_358DC.
+ThrottleV0A78Init:
+        dc.b    $08                                      ; Byte stored into V0A78; read by Sub_2D272.
+ThrottleClosedValue:
+        dc.b    $02                                      ; Byte used with ThrottleClosed; read by Sub_2D272.
+ThrottleValue:
+        dc.b    $01                                      ; Byte used with; read by Sub_2D272.
+CalRpmOffset1:
+        dc.b    $FF,$00                                  ; Word subtracted from EngineRpm; read by Sub_2F800.
+CalRpmOffset2:
+        dc.b    $FF,$00                                  ; Word subtracted from EngineRpm; read by Sub_2F800.
+CalV0C08Thresh1:
+        dc.b    $FF,$00                                  ; Word compared with V0C08; read by Sub_2F800.
+CalOffset1:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
+CalOffset2:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
+CalOffset3:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
+StartV0C03Init:
+        dc.b    $00                                      ; Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10.
+CalV0C08Thresh2:
+        dc.b    $00,$00                                  ; Word compared with V0C08; read by Sub_2F800.
+CalCoolantThresh1:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_2F800.
+SensorV0C0AInit1:
+        dc.b    $00                                      ; Byte stored into V0C0A; read by Sub_2FA52.
+SensorV0C0AInit2:
+        dc.b    $00                                      ; Byte stored into V0C0A; read by Sub_2FA52.
+CalV0C0DThresh:
+        dc.b    $00                                      ; Byte compared with V0C0D; read by Sub_2FB1E, Sub_2FD2A.
+CalCoolantThresh2:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_2FB1E.
+CalBatteryTempThresh1:
+        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_2FB1E.
+CalV0C0EThresh:
+        dc.b    $00,$00                                  ; Word compared with V0C0E; read by Sub_2FB1E.
+CalOffset4:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2FB1E.
+CalOffset5:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2FB1E.
+CalRpmOffset3:
+        dc.b    $00,$00                                  ; Word subtracted from EngineRpm; read by Sub_2FB1E.
+CalRpmValue:
+        dc.b    $00,$00                                  ; Word used with EngineRpm; read by Sub_2FB1E.
+CalV0C13Thresh:
+        dc.b    $00                                      ; Byte compared with V0C13; read by Sub_2FB1E.
+SensorV06E3Thresh:
+        dc.b    $80                                      ; Byte compared with V06E3; read by Sub_2DB56.
+SensorV06E2Thresh:
+        dc.b    $80                                      ; Byte compared with V06E2; read by Sub_2DB56.
+SensorV06E4Thresh:
+        dc.b    $80                                      ; Byte compared with V06E4; read by Sub_2DB56.
+AcCoolantThresh:
+        dc.b    $B9                                      ; Byte compared with CoolantTemp; read by Sub_2F06A.
+AcCutDelay:
+        dc.b    $25                                      ; A/C throttle logic: delay $0B53,Z at speed
+AcCutDelayLow:
+        dc.b    $25                                      ; A/C throttle logic: delay $0B53,Z below AcCutSpeed
+AcCutMapRise:
+        dc.b    $E5                                      ; A/C throttle logic: MAP rise (from $0B54,Z) that sets bit 7 below speed AcCutSpeed
+AcLoopMask1:
+        dc.b    $07                                      ; Byte mask for MainLoopCounter; read by Sub_2F06A.
+AcCutSpeed:
+        dc.b    $5B                                      ; A/C throttle logic: vehicle speed threshold
+AcCutThrottle:
+        dc.b    $34                                      ; A/C throttle logic: throttle that selects the larger MAP-drop limit
+AcCutMapDrop:
+        dc.b    $E5                                      ; A/C throttle logic: MAP drop limit above throttle AcCutThrottle
+AcCutMapDropLow:
+        dc.b    $A4                                      ; A/C throttle logic: MAP drop limit below throttle AcCutThrottle
+AcV0B55Thresh:
+        dc.b    $1F                                      ; Byte compared with V0B55; read by Sub_2F06A.
 
 ;---------------------------------------------------------------------------------------------------
 ; AcThrottleUpper ($046B): 2D table, 5 points, unsigned
@@ -481,7 +698,15 @@ AcThrottleLowerSet:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,6                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$06,$0A,$80,$CA,$7F,$36
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+BattFactor:
+        dc.b    $06                                      ; Byte multiplied; read by Sub_2C3AC.
+BattV09C1Thresh:
+        dc.b    $0A                                      ; Byte compared with V09C1; read by Sub_2C3AC.
+BattThresh1:
+        dc.b    $80,$CA                                  ; Word compared with; read by Sub_2C3AC.
+BattThresh2:
+        dc.b    $7F,$36                                  ; Word compared with; read by Sub_2C3AC.
 
 ;---------------------------------------------------------------------------------------------------
 ; BattTempSoakLimit ($04A1): 2D table, 5 points, unsigned
@@ -506,7 +731,17 @@ BattTempSoakAdder:
         dc.b    6,$80                                    ; points, flags
         dc.b    0,0, 1,21, 2,35, 2,45, 3,47, 5,49        ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+BattSpeedThresh:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2C3AC.
+BattV0A5DThresh:
+        dc.b    $00                                      ; Byte compared with V0A5D; read by Sub_2C3AC.
+BattThresh3:
+        dc.b    $00                                      ; Byte compared with; read by Sub_2C3AC.
+BattCount191msThresh:
+        dc.b    $00                                      ; Byte compared with Count191ms; read by Sub_2C3AC.
+BattV017BThresh:
+        dc.b    $00                                      ; Byte compared with V017B; read by Sub_2C3AC.
 
 ;---------------------------------------------------------------------------------------------------
 ; BattTempHeatFactor ($04C6): 2D table, 1 points, unsigned
@@ -519,10 +754,56 @@ BattTempHeatFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$6B,$57,$7F,$75,$E3,$DD,$EE,$E9,$6E,$6E
-        dc.b    $6E,$6E,$6E,$6E,$6E,$6E,$3D,$3C,$3F,$3D,$14,$0F,$E3,$E2,$E0,$DF
-        dc.b    $DE,$DD,$F2,$F0,$E3,$E2,$CD,$CB,$64,$5C,$38,$30,$64,$5C,$18,$10
-        dc.b    $4D,$F1,$41,$38,$6D,$05,$00,$28,$38,$A6,$A0,$FE,$28
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+FanThresh1:
+        dc.b    $6B                                      ; Byte compared with; read by Sub_39E54, Sub_3A614.
+FanAcSensorThresh1:
+        dc.b    $57                                      ; Byte compared with AcSensor; read by Sub_39E54, Sub_3A614.
+FanAcSensorThresh2:
+        dc.b    $7F                                      ; Byte compared with AcSensor; read by Sub_39E54, Sub_3A614.
+FanThresh2:
+        dc.b    $75                                      ; Byte compared with; read by Sub_39E54, Sub_3A614.
+        dc.b    $E3,$DD,$EE,$E9,$6E,$6E,$6E,$6E,$6E,$6E,$6E,$6E
+FanThresh3:
+        dc.b    $3D                                      ; Byte compared with; read by Sub_39E54.
+FanThresh4:
+        dc.b    $3C                                      ; Byte compared with; read by Sub_39E54.
+FanBusTempThresh1:
+        dc.b    $3F                                      ; Byte compared with BusTemp; read by Sub_39E54.
+FanThresh5:
+        dc.b    $3D                                      ; Byte compared with; read by Sub_39E54.
+FanStageTimerThresh1:
+        dc.b    $14                                      ; Byte compared with FanStageTimer; read by Sub_39E54.
+FanStageTimerThresh2:
+        dc.b    $0F                                      ; Byte compared with FanStageTimer; read by Sub_39E54, Sub_3A336.
+        dc.b    $E3,$E2,$E0,$DF,$DE,$DD,$F2,$F0,$E3,$E2,$CD,$CB,$64,$5C,$38,$30
+        dc.b    $64,$5C,$18,$10
+FanValue1:
+        dc.b    $4D                                      ; Byte used with; read by Sub_3A6C8.
+IacCoolantThresh1:
+        dc.b    $F1                                      ; Byte compared with CoolantTemp; read by Sub_19808, Sub_3A6C8.
+FanBusTempThresh2:
+        dc.b    $41                                      ; Byte compared with BusTemp; read by Sub_3A6C8.
+FanOffset2:
+        dc.b    $38                                      ; Byte subtracted from; read by Sub_3A6C8.
+FanRpmThresh:
+        dc.b    $6D                                      ; Byte compared with EngineRpm; read by Sub_3A6C8.
+FanV0B0AThresh:
+        dc.b    $05                                      ; Byte compared with V0B0A; read by Sub_3A6C8.
+FanValue2:
+        dc.b    $00                                      ; Byte used with; read by Sub_3A6C8.
+FanSpeedThresh3:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_3A6C8.
+FanV0B0BThresh:
+        dc.b    $38                                      ; Byte compared with V0B0B; read by Sub_3A742.
+FanStartCoolantThresh:
+        dc.b    $A6                                      ; Byte compared with StartCoolantTemp2; read by Sub_3A742.
+FanBatteryTempStartThresh:
+        dc.b    $A0                                      ; Byte compared with BatteryTempStart; read by Sub_3A742.
+FanCoolantThresh2:
+        dc.b    $FE                                      ; Byte compared with CoolantTemp; read by Sub_3A742.
+FanSpeedThresh4:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_3A742.
 
 ;---------------------------------------------------------------------------------------------------
 ; FanAcDelaySpeed ($0507): 2D table, 1 points, unsigned
@@ -535,8 +816,25 @@ FanAcDelaySpeed:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$6E,$6E,$6E,$00,$00
-        dc.b    $00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00
+FanThresh6:
+        dc.b    $00                                      ; Byte compared with; read by Sub_3ADA8.
+FanPwmMinDuty:
+        dc.b    $00                                      ; PWM fan: minimum duty when running
+FanPwmCoolantTarget:
+        dc.b    $6E                                      ; PWM fan: coolant target (for $0801,Z not $0C/$0D)
+FanPwmCoolantTarget2:
+        dc.b    $6E                                      ; PWM fan: coolant target for $0801,Z = $0C or $0D
+FanPwmCoolantMax:
+        dc.b    $6E                                      ; PWM fan coolant loop runs below this coolant (above it: full duty)
+FanV0B16Init:
+        dc.b    $00,$00                                  ; Word stored into V0B16; read by Sub_3A8D2.
+FanPwmP:
+        dc.b    $00                                      ; PWM fan coolant loop: proportional gain
+FanPwmD:
+        dc.b    $00                                      ; PWM fan coolant loop: rate gain
+FanValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_3AD6E.
 
 ;---------------------------------------------------------------------------------------------------
 ; FanPwmStepCoolant ($051E): 2D table, 6 points, signed
@@ -549,7 +847,26 @@ FanPwmStepCoolant:
         dc.b    6,$20                                    ; points, flags
         dc.b    255,-1, 255,-1, 255,-1, 255,-1, 255,-1, 255,-1 ; x, y
 
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+FanValue6:
+        dc.b    $00                                      ; Byte used with; read by Sub_3AA44.
+FanAcSensorFilteredThresh1:
+        dc.b    $00                                      ; Byte compared with AcSensorFiltered; read by Sub_3AA44.
+FanV0B1CInit:
+        dc.b    $00,$00                                  ; Word stored into V0B1C; read by Sub_3AA44.
+FanFactor3:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_3AA44.
+FanFactor4:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_3AA44.
+FanValue7:
+        dc.b    $00                                      ; Byte used with; read by Sub_3AA44.
+FanAcSensorFilteredThresh2:
+        dc.b    $00                                      ; Byte compared with AcSensorFiltered; read by Sub_3AA44.
+FanAcOnTimeThresh:
+        dc.b    $00                                      ; Byte compared with AcOnTime; read by Sub_3AA44.
+FanSpeedThresh5:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_3AA44.
+FanValue8:
+        dc.b    $00                                      ; Byte used with; read by Sub_3AA44.
 
 ;---------------------------------------------------------------------------------------------------
 ; FanPwmStepAc ($0537): 2D table, 6 points, signed
@@ -562,22 +879,92 @@ FanPwmStepAc:
         dc.b    6,$20                                    ; points, flags
         dc.b    255,-1, 255,-1, 255,-1, 255,-1, 255,-1, 255,-1 ; x, y
 
-        dc.b    $00,$00,$00,$00,$00,$00
+FanValue9:
+        dc.b    $00                                      ; Byte used with; read by Sub_3ABFE.
+FanBusTempThresh3:
+        dc.b    $00                                      ; Byte compared with BusTemp; read by Sub_3ABFE.
+FanV0B29Init:
+        dc.b    $00,$00                                  ; Word stored into V0B29; read by Sub_3ABFE.
+FanFactor5:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_3ABFE.
+FanFactor6:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_3ABFE.
 
 ;---------------------------------------------------------------------------------------------------
-; FanPwmStepV09BF ($054B): 2D table, 6 points, signed
-; PWM fan (Sub_3ABFE): duty change against the PD term of $09BF,Z ($0B2C,Z)
+; FanPwmStepBusTemp ($054B): 2D table, 6 points, signed
+; PWM fan (Sub_3ABFE): duty change against the PD term of the bus temperature $09BF,Z (received on the serial bus) ($0B2C,Z)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3AB36
 ;---------------------------------------------------------------------------------------------------
-FanPwmStepV09BF:
+FanPwmStepBusTemp:
         dc.b    6,$20                                    ; points, flags
         dc.b    255,-1, 255,-1, 255,-1, 255,-1, 255,-1, 255,-1 ; x, y
 
-        dc.b    $7F,$7E,$7F,$0F,$A0,$FF,$00,$02,$0D,$00,$00,$F4,$F1,$FF,$00,$95
-        dc.b    $FE,$41,$00,$00,$00,$00,$74,$07,$FF,$04,$04,$08,$28,$FF,$FF,$00
-        dc.b    $06,$00,$00,$00
+SensorBusTempThresh1:
+        dc.b    $7F                                      ; Byte compared with BusTemp; read by Sub_3ADFA.
+SensorBusTempThresh2:
+        dc.b    $7E                                      ; Byte compared with BusTemp; read by Sub_3ADFA.
+SensorThresh1:
+        dc.b    $7F                                      ; Byte compared with; read by Sub_3ADFA.
+IacSegRpmThresh1:
+        dc.b    $0F,$A0                                  ; Word compared with SegmentRpm; read by Sub_19808.
+SparkRpmThresh1:
+        dc.b    $FF,$00                                  ; Word compared with EngineRpm; read by Sub_19808, Sub_39412.
+IacTimeThresh:
+        dc.b    $02                                      ; Byte compared with Count3s; read by Sub_19808.
+IacV0C24Init:
+        dc.b    $0D                                      ; Byte stored into V0C24; read by Sub_19808.
+SensorV086DInit:
+        dc.b    $00                                      ; Byte stored into V086D; read by Sub_3017C, Sub_3123A.
+SensorThrottleThresh2:
+        dc.b    $00                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3017C, Sub_3123A.
+SparkCoolantThresh1:
+        dc.b    $F4                                      ; Byte compared with CoolantTemp; read by Sub_39412.
+SparkCoolantThresh2:
+        dc.b    $F1                                      ; Byte compared with CoolantTemp; read by Sub_39412.
+SparkRpmThresh2:
+        dc.b    $FF,$00                                  ; Word compared with EngineRpm; read by Sub_39412.
+SensorBatteryTempThresh2:
+        dc.b    $95                                      ; Byte compared with BatteryTemp; read by Sub_39272.
+SensorBatteryTempThresh3:
+        dc.b    $FE                                      ; Byte compared with BatteryTemp; read by Sub_39272.
+SensorThresh2:
+        dc.b    $41                                      ; Byte compared with; read by Sub_39272.
+SensorThresh3:
+        dc.b    $00                                      ; Byte compared with; read by Sub_39272.
+SensorThresh4:
+        dc.b    $00                                      ; Byte compared with; read by Sub_39272.
+IacAcSensorThresh:
+        dc.b    $00                                      ; Byte compared with AcSensor; read by Sub_19808, Sub_39272.
+SensorThresh5:
+        dc.b    $00                                      ; Byte compared with; read by Sub_39272.
+SparkCoolantThresh3:
+        dc.b    $74                                      ; Byte compared with CoolantTemp; read by Sub_39412.
+SparkThrottleThresh1:
+        dc.b    $07                                      ; Byte compared with ThrottleAboveClosed; read by Sub_39412.
+SparkRpmThresh3:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_39412.
+SparkV0C2FSwitch:
+        dc.b    $04                                      ; Byte tested (zero = off) V0C2F; read by Sub_39412.
+SparkThrottleAdder1:
+        dc.b    $04                                      ; Byte added to ThrottleAboveClosed; read by Sub_39412.
+SparkSpeedThresh1:
+        dc.b    $08                                      ; Byte compared with VehicleSpeed; read by Sub_39412.
+SparkSpeedThresh2:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_39412.
+SparkThrottleThresh2:
+        dc.b    $FF                                      ; Byte compared with ThrottleAboveClosed; read by Sub_39412.
+SparkSpeedThresh3:
+        dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_39412.
+SparkThrottleAdder2:
+        dc.b    $00                                      ; Byte added to ThrottleAboveClosed; read by Sub_39412.
+SparkV0C2ESwitch:
+        dc.b    $06                                      ; Byte tested (zero = off) V0C2E; read by Sub_39412.
+SensorV0C01Init:
+        dc.b    $00                                      ; Byte stored into V0C01; read by Sub_3AECC.
+SensorRpmThresh1:
+        dc.b    $00,$00                                  ; Word compared with EngineRpm; read by Sub_3AECC.
 
 ;---------------------------------------------------------------------------------------------------
 ; ResetCoolantInit ($057D): 2D table, 8 points, unsigned
@@ -590,7 +977,28 @@ ResetCoolantInit:
         dc.b    8,$80                                    ; points, flags
         dc.b    255,255, 255,255, 255,255, 255,255, 255,255, 255,255, 255,255, 255,255 ; x, y
 
-        dc.b    $7C,$FE,$84,$8F,$FA,$F5,$16,$04,$0A,$10,$08
+EgrBattTempMin:
+        dc.b    $7C                                      ; EGR enable: battery temperature above this value
+EgrBattTempMax:
+        dc.b    $FE                                      ; EGR enable: battery temperature below this value (once $0B31,Z bit 3 is set)
+EgrStartColdMax:
+        dc.b    $84                                      ; At start: EGR stays off ($0B30,Z bit 2) at start coolant up to this value
+EgrStartWarmMax:
+        dc.b    $8F                                      ; At start: EgrStartDelayCoolant applies up to this start coolant
+EgrCoolantOn:
+        dc.b    $FA                                      ; EGR enable: coolant at or above this value sets $0B30,Z bit 4
+EgrCoolantOff:
+        dc.b    $F5                                      ; EGR enable: coolant at or above this value clears it again (window)
+EgrVacuumMin:
+        dc.b    $16                                      ; EGR enable: manifold vacuum above this value
+EgrVacuumHyst:
+        dc.b    $04                                      ; Vacuum hysteresis while EGR is off
+EgrMapHyst:
+        dc.b    $0A                                      ; MAP hysteresis on EgrMapMinRpm while EGR is off
+EgrV0B32Thresh1:
+        dc.b    $10                                      ; Byte compared with V0B32; read by Sub_3969E.
+EgrV0B32Thresh2:
+        dc.b    $08                                      ; Byte compared with V0B32; read by Sub_3969E.
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrThrottleMax ($059A): 2D table, 1 points, unsigned
@@ -643,9 +1051,55 @@ EgrStartDelayCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$6E,$00
-        dc.b    $00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00
+EgrValue1:
+        dc.b    $00                                      ; Byte used with; read by Sub_39866.
+EgrDutyOverride:
+        dc.b    $00                                      ; EGR: when not zero the PID is bypassed (output $067D)
+EgrDutyFixed:
+        dc.b    $00                                      ; EGR: fixed PWM duty used while EgrDutyOverride is zero and this is not
+EgrValue3:
+        dc.b    $00                                      ; Byte used with; read by Sub_39866.
+EgrValue4:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_39866.
+EgrValue5:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_39866.
+EgrV0B34Adder:
+        dc.b    $00                                      ; Byte added to V0B34; read by Sub_39866.
+EgrMapValue:
+        dc.b    $00                                      ; Byte used with Map; read by Sub_39866.
+EgrPidP:
+        dc.b    $00                                      ; EGR PID: proportional gain
+EgrPidI:
+        dc.b    $00                                      ; EGR PID: integral gain
+EgrPidD:
+        dc.b    $00                                      ; EGR PID: derivative gain
+EgrPidDeadband:
+        dc.b    $00                                      ; EGR PID: position error below which the P and I terms are zero
+EgrTargetPosThresh1:
+        dc.b    $00                                      ; Byte compared with EgrTargetPos; read by Sub_22808.
+EgrThresh5:
+        dc.b    $00                                      ; Byte compared with; read by Sub_22808.
+EgrDutyThresh:
+        dc.b    $00                                      ; Byte compared with EgrDuty; read by Sub_39D3E.
+EgrV0B51Thresh:
+        dc.b    $00                                      ; Byte compared with V0B51; read by Sub_39D3E.
+StartV0040Init:
+        dc.b    $00                                      ; Byte stored into V0040; read by Reset.
+EgrThresh6:
+        dc.b    $00                                      ; Byte compared with; read by Sub_39D3E.
+EgrThresh7:
+        dc.b    $00                                      ; Byte compared with; read by Sub_39D3E.
+EgrCoolantThresh3:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_39D3E.
+EgrMonTimerThresh2:
+        dc.b    $00                                      ; Byte compared with EgrMonTimer; read by Sub_39D3E.
+EgrTargetPosThresh2:
+        dc.b    $00                                      ; Byte compared with EgrTargetPos; read by Sub_39D3E.
+EgrAdder2:
+        dc.b    $00                                      ; Byte added to; read by Sub_39D3E.
+EgrOffset:
+        dc.b    $00                                      ; Byte subtracted from; read by Sub_39D3E.
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrFlowFilterVacuum ($0609): 2D table, 5 points, unsigned
@@ -712,19 +1166,137 @@ EgrTarget:
         dc.b    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0        ; row 15
         dc.b    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0        ; row 16
 
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$58,$00,$00,$FF,$00,$00
-        dc.b    $58,$00,$00,$7F,$80,$7F,$80,$7F,$80,$00,$AA,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$58,$58,$00,$FF,$FF,$00
-        dc.b    $00,$FF,$FF,$00,$00,$00,$00,$FF,$58,$FE,$FE,$FE,$00,$FF,$AA,$00
-        dc.b    $FF,$FF,$00,$00,$FF,$FF,$00,$00,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00
-        dc.b    $00,$00,$33,$00,$FF,$00,$00,$7F,$FE,$FF,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$58,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+FlexLearnOptions:
+        dc.b    $00                                      ; Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836.
+FlexLearnFuelSumThresh1:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_17000, Sub_183C2.
+FlexLearnFuelSumThresh2:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_17000, Sub_183C2.
+FlexLearnThresh1:
+        dc.b    $00,$00                                  ; Word compared with; read by Sub_17000.
+FlexLearnThresh2:
+        dc.b    $00                                      ; Byte compared with; read by Sub_17000.
+FlexLearnV01B2Thresh:
+        dc.b    $00                                      ; Byte compared with V01B2; read by Sub_17000.
+FlexLearnV01B3Thresh:
+        dc.b    $00                                      ; Byte compared with V01B3; read by Sub_17000.
+FlexLearnCoolantThresh1:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_17000.
+        dc.b    $00
+FlexLearnV01C2Init:
+        dc.b    $00                                      ; Byte stored into V01C2; read by Sub_17000.
+FlexLearnFlexEthanolStartOffset:
+        dc.b    $FF                                      ; Byte subtracted from FlexEthanolStart; read by Sub_17000.
+        dc.b    $00,$00,$58,$00,$00,$7F,$80,$7F,$80,$7F,$80,$00
+FuelFlexLearnBaseThresh:
+        dc.b    $AA                                      ; Byte compared with FlexLearnBase; read by Sub_14802, Sub_2A0F0, Sub_2A302 +2.
+O2RunTimeThresh:
+        dc.b    $FF                                      ; Byte compared with RunTime; read by Sub_14802.
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+FlexLearnV0F3CThresh:
+        dc.b    $FF                                      ; Byte compared with V0F3C; read by Sub_17B7E, Sub_18BAA.
+FlexLearnFlexEthanolStartThresh:
+        dc.b    $FF                                      ; Byte compared with FlexEthanolStart; read by Sub_17B7E, Sub_18BAA.
+FlexLearnBatteryTempThresh:
+        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_17B7E, Sub_18BAA.
+FlexLearnCoolantThresh2:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_17B7E, Sub_18BAA.
+FlexLearnValue1:
+        dc.b    $00                                      ; Byte used with; read by Sub_17D44.
+FlexLearnV0F14Thresh:
+        dc.b    $FF,$FF                                  ; Word compared with V0F14; read by Sub_17B7E, Sub_18BAA.
+        dc.b    $00,$00
+FlexLearnV0F18Thresh:
+        dc.b    $FF                                      ; Byte compared with V0F18; read by Sub_17D44.
+FlexLearnV0F1AThresh:
+        dc.b    $FF                                      ; Byte compared with V0F1A; read by Sub_17D44.
+FlexLearnV0F19Thresh:
+        dc.b    $00                                      ; Byte compared with V0F19; read by Sub_17D44.
+        dc.b    $00,$00
+FlexLearnV0F28Thresh:
+        dc.b    $00,$FF                                  ; Word compared with V0F28; read by Sub_187E8.
+FlexLearnCoolantThresh3:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_17B7E, Sub_18BAA.
+        dc.b    $FE,$FE
+FlexLearnTimerInit:
+        dc.b    $FE                                      ; Byte stored into FlexLearnTimer; read by Sub_17000, Sub_17B7E, Sub_18BAA.
+FlexLearnPurgeRampThresh:
+        dc.b    $00                                      ; Byte compared with PurgeRamp; read by Sub_17B7E, Sub_17D44, Sub_183C2 +3.
+FuelFlexEthanolStartThresh:
+        dc.b    $FF                                      ; Byte compared with FlexEthanolStart; read by Sub_1879A.
+FlexLearnV01BBThresh:
+        dc.b    $AA                                      ; Byte compared with V01BB; read by Sub_17A48.
+FuelV01BEThresh:
+        dc.b    $00                                      ; Byte compared with V01BE; read by Sub_1879A.
+FlexLearnFactor1:
+        dc.b    $FF,$FF                                  ; Word multiplied; read by Sub_183C2.
+FlexLearnFactor2:
+        dc.b    $00,$00                                  ; Word multiplied; read by Sub_183C2.
+FlexLearnV0F35Thresh:
+        dc.b    $FF,$FF                                  ; Word compared with V0F35; read by Sub_183C2.
+FlexLearnV01C4Adder:
+        dc.b    $00                                      ; Byte added to V01C4; read by Sub_183C2, Sub_18836.
+FlexLearnV01C5Adder:
+        dc.b    $00                                      ; Byte added to V01C5; read by Sub_183C2.
+FlexLearnV01BCThresh:
+        dc.b    $FF                                      ; Byte compared with V01BC; read by Sub_17A48.
+FlexLearnV0F23Thresh:
+        dc.b    $FF                                      ; Byte compared with V0F23; read by Sub_183C2.
+FlexLearnV0F31Thresh:
+        dc.b    $FF,$FF                                  ; Word compared with V0F31; read by Sub_183C2.
+FlexLearnV0F33Thresh:
+        dc.b    $FF,$FF                                  ; Word compared with V0F33; read by Sub_183C2.
+FlexLearnFlexEthanolPrevThresh:
+        dc.b    $00                                      ; Byte compared with FlexEthanolPrev; read by Sub_183C2.
+FlexLearnFlexEthanolPrevAdder1:
+        dc.b    $00                                      ; Byte added to FlexEthanolPrev; read by Sub_183C2.
+FlexLearnFlexEthanolPrevAdder2:
+        dc.b    $00                                      ; Byte added to FlexEthanolPrev; read by Sub_183C2.
+FlexLearnFlexEthanolPrevOffset:
+        dc.b    $00                                      ; Byte subtracted from FlexEthanolPrev; read by Sub_183C2.
+        dc.b    $33,$00
+FlexLearnStartCoolantThresh1:
+        dc.b    $FF                                      ; Byte compared with StartCoolantTemp2; read by Sub_18836.
+FlexLearnFuelSumThresh3:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_18836.
+FlexLearnV01B8Thresh:
+        dc.b    $7F                                      ; Byte compared with V01B8; read by Sub_17000.
+FlexLearnTimerThresh:
+        dc.b    $FE                                      ; Byte compared with FlexLearnTimer; read by Sub_17B7E, Sub_18BAA.
+FlexLearnV0F2AInit:
+        dc.b    $FF                                      ; Byte stored into V0F2A; read by Sub_17B7E, Sub_17CF6, Sub_17D44 +2.
+        dc.b    $00
+FlexLearnV0F2DThresh:
+        dc.b    $00                                      ; Byte compared with V0F2D; read by Sub_17B7E, Sub_18BAA.
+FlexLearnRunTimeThresh:
+        dc.b    $00                                      ; Byte compared with RunTime; read by Sub_17000.
+FuelFactor:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_10A3A.
+FlexLearnV000EThresh:
+        dc.b    $00                                      ; Byte compared with V000E; read by Sub_17000.
+FlexLearnFlexEthanolStartValue:
+        dc.b    $00                                      ; Byte used with FlexEthanolStart; read by Sub_17000, Sub_17FC4, Sub_18836.
+FlexLearnValue2:
+        dc.b    $00                                      ; Byte used with; read by Sub_18836.
+FlexLearnCoolantThresh4:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_18836.
+FlexLearnFuelSumThresh4:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_183C2.
+FlexLearnV0F2FThresh:
+        dc.b    $00,$00                                  ; Word compared with V0F2F; read by Sub_18836.
+        dc.b    $00
+FlexLearnThresh3:
+        dc.b    $00                                      ; Byte compared with; read by Sub_18836.
+FlexLearnV0F43Thresh:
+        dc.b    $00,$00                                  ; Word compared with V0F43; read by Sub_18836.
+AfterStartFuelTimeThresh:
+        dc.b    $00,$00                                  ; Word compared with Count3s; read by Sub_10C00.
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnInit ($07D8): 2D table, 1 points, unsigned
 ; Flex-fuel learning: start value $01B5,Z against the ethanol value $01B4,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $07CB; $01B4,Z; $0858
+; Inputs: $07CB; FlexEthanolStart; $0858
 ; Read at $1705C, $1713C, $1745C, $18092, $180DA, $18150, $18780, $18A56 and 1 more
 ;---------------------------------------------------------------------------------------------------
 FlexLearnInit:
@@ -802,7 +1374,7 @@ FlexLearnEthanolCurve:
 ; FlexLearnLevelFactor ($0828): 2D table, 1 points, unsigned
 ; Flex-fuel learning: value $0F26,Z against $019C,Z (probably fuel level)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $019C,Z
+; Inputs: FuelLevelScaled
 ; Read at $18258
 ;---------------------------------------------------------------------------------------------------
 FlexLearnLevelFactor:
@@ -835,8 +1407,29 @@ FlexLearnLimitV006B2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,170                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$FF,$00,$00,$00,$00
-        dc.b    $00,$AA,$28,$08
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+FlexLearnV01C3Adder:
+        dc.b    $00                                      ; Byte added to V01C3; read by Sub_18836.
+FlexLearnThresh4:
+        dc.b    $00,$00                                  ; Word compared with; read by Sub_18BAA.
+FlexLearnCoolantThresh5:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_17CF6, Sub_17D44, Sub_183C2 +3.
+FlexLearnFlexEthanolStartInit:
+        dc.b    $00                                      ; Byte stored into FlexEthanolStart; read by Sub_17000.
+FlexLearnFuelLevelScaledThresh:
+        dc.b    $00                                      ; Byte compared with FuelLevelScaled; read by Sub_17FC4.
+FlexLearnV0F3FThresh:
+        dc.b    $00                                      ; Byte compared with V0F3F; read by Sub_17000.
+FlexLearnV0F3EThresh:
+        dc.b    $00                                      ; Byte compared with V0F3E; read by Sub_17FC4, Sub_18836.
+FlexLearnV01B7Thresh:
+        dc.b    $00                                      ; Byte compared with V01B7; read by Sub_18836.
+FlexLearnBaseThresh:
+        dc.b    $AA                                      ; Byte compared with FlexLearnBase; read by Sub_17000, Sub_18836.
+O2Factor1:
+        dc.b    $28                                      ; Byte multiplied; read by Sub_155C8.
+O2Value1:
+        dc.b    $08                                      ; Byte used with; read by Sub_155C8.
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankEthanolScale ($0860): 2D table, 2 points, unsigned
@@ -1228,8 +1821,28 @@ ColdSoakMapScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 0,0, 0,0, 0,0, 0,0                  ; x, y
 
-        dc.b    $00,$80,$00,$CD,$00,$C0,$01,$34,$63,$85,$58,$02,$95,$70,$77,$42
-        dc.b    $58
+        dc.b    $00,$80,$00,$CD
+EventV0ABDThresh1:
+        dc.b    $00,$C0                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
+EventV0ABDThresh2:
+        dc.b    $01,$34                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
+CrankFuelCrankCoolantThresh:
+        dc.b    $63                                      ; Byte compared with CrankCoolant; read by Sub_123C0.
+CrankFuelThrottleThresh:
+        dc.b    $85                                      ; Byte compared with ThrottleAboveClosed; read by Sub_123C0.
+StartCoolantThresh1:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Reset, CalcEngineRpm.
+        dc.b    $02
+FuelEventCoolantThresh1:
+        dc.b    $95                                      ; Byte compared with CoolantTemp; read by Sub_12680.
+FuelEventValue3:
+        dc.b    $70                                      ; Byte used with; read by Sub_12680.
+FuelEventValue4:
+        dc.b    $77                                      ; Byte used with; read by Sub_12680.
+CrankFuelValue:
+        dc.b    $42                                      ; Byte used with; read by Sub_123C0, Sub_12680.
+CrankFuelBatteryTempThresh:
+        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_123C0.
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankPulseCoolantFactor ($09F9): 2D table, 1 points, unsigned
@@ -1410,7 +2023,8 @@ CrankCoolantAdder:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,0, 8,33, 23,67                         ; x, y
 
-        dc.b    $A0
+CrankFuelCoolantThresh:
+        dc.b    $A0                                      ; Byte compared with CoolantTemp; read by Sub_123C0.
 
 ;---------------------------------------------------------------------------------------------------
 ; InjectorDeadTime ($0AEA): 2D table, 5 points, unsigned
@@ -1423,7 +2037,25 @@ InjectorDeadTime:
         dc.b    5,$80                                    ; points, flags
         dc.b    97,94, 145,54, 195,31, 227,23, 255,18    ; x, y
 
-        dc.b    $FF,$FF,$C8,$6E,$04,$00,$EF,$00,$EF,$00,$00,$00,$00,$E2,$10,$38
+        dc.b    $FF,$FF,$C8
+SensorCoolantThresh1:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_0EB62.
+SensorValue1:
+        dc.b    $04                                      ; Byte used with; read by Sub_2C6DE.
+SensorV0DBEThresh:
+        dc.b    $00,$EF                                  ; Word compared with V0DBE; read by Sub_0EB62.
+SensorAdder1:
+        dc.b    $00,$EF                                  ; Word added to; read by Sub_0EB62.
+SensorAdder2:
+        dc.b    $00,$00                                  ; Word added to; read by Sub_0EB62.
+SensorAdder3:
+        dc.b    $00,$00                                  ; Word added to; read by Sub_0EB62.
+SensorVoltsThresh1:
+        dc.b    $E2                                      ; Byte compared with BatteryVolts2; read by Sub_0EB62.
+SensorRpmThresh2:
+        dc.b    $10                                      ; Byte compared with EngineRpm; read by Sub_0EB62.
+SensorTimeThresh1:
+        dc.b    $38                                      ; Byte compared with Count3s; read by Sub_0EB62.
 PartThrottleFuelK:
         dc.b    $41                                      ; K factor of the part-throttle base pulse width: (MAP - offset) * (256 + K) / 16
 PartThrottleFuelMapOffset:
@@ -1432,7 +2064,18 @@ WotFuelK:
         dc.b    $7F                                      ; K factor of the WOT base pulse width
 WotFuelMapOffset:
         dc.b    $0D                                      ; MAP offset of the WOT base pulse width
-        dc.b    $00,$00,$6E,$00,$00,$00,$00,$00
+IdleIacTargetThresh:
+        dc.b    $00                                      ; Byte compared with IacTarget; read by Sub_1B970.
+IdleV0C17Offset:
+        dc.b    $00                                      ; Byte subtracted from V0C17; read by Sub_1B970, Sub_3B0BA.
+SensorStartCoolantThresh:
+        dc.b    $6E                                      ; Byte compared with StartCoolantTemp2; read by Sub_3AF4C.
+SensorV0C20Offset:
+        dc.b    $00                                      ; Byte subtracted from V0C20; read by Sub_3AF4C, Sub_3B0BA.
+IdleValue4:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_1B970, Sub_3B0BA.
+SensorValue2:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_3AF4C, Sub_3B0BA.
 
 ;---------------------------------------------------------------------------------------------------
 ; ReturnlessFuelScale ($0B12): 2D table, 4 points, unsigned
@@ -1445,10 +2088,47 @@ ReturnlessFuelScale:
         dc.b    4,$80                                    ; points, flags
         dc.b    0,255, 65,246, 130,236, 255,223          ; x, y
 
-        dc.b    $2F,$00,$43,$00,$61,$E3,$14,$14,$14,$14,$14,$14,$14,$14,$14,$C2
-        dc.b    $1F,$14,$2F,$00,$43,$00,$61,$E3,$14,$14,$14,$14,$14,$14,$14,$14
-        dc.b    $14,$A0,$08,$03,$00,$14,$14,$14,$14,$14,$14,$00,$00,$00,$00,$00
-        dc.b    $00,$FF,$FF,$FF,$00,$00
+FuelValue1:
+        dc.b    $2F,$00                                  ; Word used with; read by Sub_12B6C.
+FuelValue2:
+        dc.b    $43,$00                                  ; Word used with; read by Sub_12B6C.
+FuelValue3:
+        dc.b    $61                                      ; Byte used with; read by Sub_12B6C.
+FuelValue4:
+        dc.b    $E3                                      ; Byte used with; read by Sub_12B6C.
+        dc.b    $14,$14,$14,$14,$14,$14,$14,$14,$14
+FuelEventCoolantThresh2:
+        dc.b    $C2                                      ; Byte compared with CoolantTemp; read by Sub_112A8.
+FuelEventRpmThresh:
+        dc.b    $1F                                      ; Byte compared with EngineRpm; read by Sub_112A8.
+FuelEventV077BInit:
+        dc.b    $14                                      ; Byte stored into V077B; read by Sub_112A8.
+FuelValue5:
+        dc.b    $2F,$00                                  ; Word used with; read by Sub_12B6C.
+FuelValue6:
+        dc.b    $43,$00                                  ; Word used with; read by Sub_12B6C.
+FuelValue7:
+        dc.b    $61                                      ; Byte used with; read by Sub_12B6C.
+FuelValue8:
+        dc.b    $E3                                      ; Byte used with; read by Sub_12B6C.
+        dc.b    $14,$14,$14,$14,$14,$14,$14,$14,$14
+FuelCoolantThresh1:
+        dc.b    $A0                                      ; Byte compared with CoolantTemp; read by Sub_12B6C.
+FuelValue9:
+        dc.b    $08                                      ; Byte used with; read by Sub_12B6C.
+FuelValue10:
+        dc.b    $03,$00                                  ; Word used with; read by Sub_12B6C.
+        dc.b    $14,$14,$14,$14,$14,$14,$00,$00,$00,$00,$00,$00
+FuelCoolantThresh2:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_111E0.
+FuelRpmThresh1:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_111E0.
+FuelMapThresh1:
+        dc.b    $FF                                      ; Byte compared with Map; read by Sub_111E0.
+FuelTimeThresh1:
+        dc.b    $00                                      ; Byte compared with Count3s; read by Sub_111E0.
+FuelFlag:
+        dc.b    $00                                      ; Byte tested; read by Sub_111E0, FinishFuelPulse.
 
 ;---------------------------------------------------------------------------------------------------
 ; HotEngineEnrich ($0B52): 2D table, 1 points, unsigned
@@ -1583,7 +2263,26 @@ FuelAirTempRpmWeight:
         dc.b    3,$80                                    ; points, flags
         dc.b    94,255, 125,153, 203,113                 ; x, y
 
-        dc.b    $05,$02,$23,$65,$75,$32,$01,$3D,$01,$FF
+FuelThresh1:
+        dc.b    $05                                      ; Byte compared with; read by Sub_104AE.
+FuelOffset1:
+        dc.b    $02                                      ; Byte subtracted from; read by Sub_104AE.
+FuelValue11:
+        dc.b    $23                                      ; Byte used with; read by Sub_104AE.
+FuelDecelFuelRampThresh:
+        dc.b    $65                                      ; Byte compared with DecelFuelRamp; read by Sub_104AE.
+FuelRpmThresh2:
+        dc.b    $75                                      ; Byte compared with EngineRpm; read by Sub_104AE.
+FuelV0777Offset1:
+        dc.b    $32                                      ; Byte subtracted from V0777; read by Sub_104AE.
+FuelDecelFuelRampAdder:
+        dc.b    $01                                      ; Byte added to DecelFuelRamp; read by Sub_104AE.
+FuelV0777Offset2:
+        dc.b    $3D                                      ; Byte subtracted from V0777; read by Sub_104AE.
+FuelDecelFuelRampOffset:
+        dc.b    $01                                      ; Byte subtracted from DecelFuelRamp; read by Sub_104AE.
+SensorValue3:
+        dc.b    $FF                                      ; Byte used with; read by Sub_161C2.
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelBaroMapOffset ($0E08): 2D table, 3 points, unsigned
@@ -1630,8 +2329,31 @@ FuelEventRpmAdder:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$85,$03,$00,$00,$00,$95,$98,$64,$01,$00,$08,$00
-        dc.b    $09,$00,$09
+        dc.b    $FF,$FF,$FF,$FF
+SensorThrottleClosedAdder:
+        dc.b    $85                                      ; Byte added to ThrottleClosed; read by Sub_2D428.
+SensorOffset1:
+        dc.b    $03                                      ; Byte subtracted from; read by Sub_2D428.
+SensorSpeedThresh1:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2D428.
+SensorV081BThresh1:
+        dc.b    $00                                      ; Byte compared with V081B; read by Sub_2D428.
+SensorV081BThresh2:
+        dc.b    $00                                      ; Byte compared with V081B; read by Sub_2D428.
+FuelCoolantThresh3:
+        dc.b    $95                                      ; Byte compared with CoolantTemp; read by Sub_102FE.
+FuelRpmThresh3:
+        dc.b    $98                                      ; Byte compared with EngineRpm; read by Sub_102FE.
+FuelWotTimeEnrichAdder:
+        dc.b    $64                                      ; Byte added to WotTimeEnrich; read by Sub_102FE.
+FuelV081AOffset:
+        dc.b    $01                                      ; Byte subtracted from V081A; read by Sub_102FE.
+FuelV07ADThresh:
+        dc.b    $00,$08                                  ; Word compared with V07AD; read by Sub_102FE.
+FuelThresh2:
+        dc.b    $00,$09                                  ; Word compared with; read by Sub_102FE.
+FuelV07ABThresh:
+        dc.b    $00,$09                                  ; Word compared with V07AB; read by Sub_102FE.
 
 ;---------------------------------------------------------------------------------------------------
 ; WotTimeEnrichMax ($0ED6): 2D table, 2 points, unsigned
@@ -1700,7 +2422,8 @@ AfterStartDecay:
         dc.b    4,4,3,2,2,1,2,2,2                        ; row 7
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 8
 
-        dc.b    $00
+WarmupFactor:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_10D5E.
 
 ;---------------------------------------------------------------------------------------------------
 ; WarmupRpmFactor ($0FFD): 2D table, 1 points, unsigned
@@ -1748,7 +2471,8 @@ WarmupMapCoolantLowSpeed:
         dc.b    114,114,94,75,74,66,48,8,0               ; row 7
         dc.b    114,114,94,75,74,66,48,8,0               ; row 8
 
-        dc.b    $FE
+WarmupValue:
+        dc.b    $FE                                      ; Byte used with; read by Sub_10D5E.
 
 ;---------------------------------------------------------------------------------------------------
 ; WarmupRpmFactorIdle ($106D): 2D table, 1 points, unsigned
@@ -1783,7 +2507,12 @@ WarmupMapCoolant:
         dc.b    88,87,67,56,50,44,26,18,0                ; row 7
         dc.b    88,87,67,60,54,48,28,18,0                ; row 8
 
-        dc.b    $FE,$FE,$FD
+ThrottleV0C47Thresh:
+        dc.b    $FE                                      ; Byte compared with V0C47; read by Sub_10D24, Sub_2D272.
+FuelThrottleThresh:
+        dc.b    $FE                                      ; Byte compared with ThrottleAboveClosed; read by Sub_10D24.
+FuelLoopMask:
+        dc.b    $FD                                      ; Byte mask for MainLoopCounter; read by Sub_10D24.
 
 ;---------------------------------------------------------------------------------------------------
 ; WarmupIdleTimeFactor ($10D7): 2D table, 1 points, unsigned
@@ -1843,7 +2572,9 @@ BaroFuel:
         dc.b    2,$80                                    ; points, flags
         dc.b    176,12, 233,0                            ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$00
+        dc.b    $FF,$FF,$FF,$FF
+WarmupBatteryTempStartThresh:
+        dc.b    $00                                      ; Byte compared with BatteryTempStart; read by Sub_10D5E.
 
 ;---------------------------------------------------------------------------------------------------
 ; ColdSoakMapCoolant ($1153): 3D table, 5 rows x 5 columns, unsigned
@@ -1861,7 +2592,26 @@ ColdSoakMapCoolant:
         dc.b    255,255,255,255,255                      ; row 3
         dc.b    255,255,255,255,255                      ; row 4
 
-        dc.b    $FF,$FF,$FF,$FD,$02,$02,$12,$01,$09,$32
+StartCoolantThresh2:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Reset.
+StartAirTempThresh:
+        dc.b    $FF                                      ; Byte compared with AirTemp; read by Reset.
+FuelRpmThresh4:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_11074.
+FuelMapThresh2:
+        dc.b    $FD                                      ; Byte compared with Map; read by Sub_11074.
+FuelV07DCThresh:
+        dc.b    $02                                      ; Byte compared with V07DC; read by Sub_0C5B4, Sub_11074.
+FuelV07DBThresh:
+        dc.b    $02                                      ; Byte compared with V07DB; read by Sub_0C5B4, Sub_11074.
+FuelIdleFuelRampOffset:
+        dc.b    $12                                      ; Byte subtracted from IdleFuelRamp; read by Sub_11074.
+FuelIdleFuelRampAdder:
+        dc.b    $01                                      ; Byte added to IdleFuelRamp; read by Sub_11074.
+FuelTimeThresh2:
+        dc.b    $09                                      ; Byte compared with Count3s; read by Sub_11074.
+FuelV0812Thresh:
+        dc.b    $32                                      ; Byte compared with V0812; read by CheckPowerDown, Sub_11074, CalcEngineRpm +2.
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleEnrichSoakTime ($117E): 2D table, 1 points, unsigned
@@ -1909,7 +2659,32 @@ IdleEnrichEthanolAirTemp:
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 7
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 8
 
-        dc.b    $00,$00,$28,$02,$01,$AA,$58,$00,$80,$00,$00,$00,$00
+SensorAdder4:
+        dc.b    $00                                      ; Byte added to; read by Sub_2C7FE.
+SensorOffset2:
+        dc.b    $00                                      ; Byte subtracted from; read by Sub_2C7FE.
+O2FlexEthanolThresh:
+        dc.b    $28                                      ; Byte compared with FlexEthanol; read by Sub_15F5C.
+O2Adder1:
+        dc.b    $02                                      ; Byte added to; read by Sub_15F5C.
+O2Adder2:
+        dc.b    $01                                      ; Byte added to; read by Sub_15F5C.
+StartFlexEthanolThresh:
+        dc.b    $AA                                      ; Byte compared with FlexEthanol; read by Reset.
+StartCoolantThresh3:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Reset.
+SensorEepromCountThresh:
+        dc.b    $00                                      ; Byte compared with EepromCount; read by CheckPowerDown.
+SensorValue4:
+        dc.b    $80                                      ; Byte used with; read by Sub_15FF4.
+O2Value2:
+        dc.b    $00                                      ; Byte used with; read by Sub_15D56.
+O2Value3:
+        dc.b    $00                                      ; Byte used with; read by Sub_15D56.
+SensorValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_15FF4.
+O2Value4:
+        dc.b    $00                                      ; Byte used with; read by Sub_15F5C.
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexEthanolFactor ($1204): 2D table, 5 points, unsigned
@@ -2005,8 +2780,29 @@ FlexEthanolCoolantFactor3:
         dc.b    64,64,64,64,64,64,64,64,64               ; row 7
         dc.b    64,64,64,64,64,64,64,64,64               ; row 8
 
-        dc.b    $00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00
+SensorV019FThresh:
+        dc.b    $00                                      ; Byte compared with V019F; read by Sub_2C7FE.
+SensorFuelLevelScaledThresh:
+        dc.b    $FF                                      ; Byte compared with FuelLevelScaled; read by Sub_2C7FE.
+SensorFlexLearnFuelSumThresh1:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE.
+SensorV019AThresh:
+        dc.b    $FF                                      ; Byte compared with V019A; read by Sub_2C7FE.
+SensorV01A4Thresh:
+        dc.b    $00,$00                                  ; Word compared with V01A4; read by Sub_2C7FE.
+SensorV019BThresh:
+        dc.b    $FF                                      ; Byte compared with V019B; read by Sub_2C7FE.
+SensorValue6:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE.
+SensorFlexLearnFuelSumThresh2:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE.
+SensorValue7:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE.
+SensorValue8:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE.
+        dc.b    $00
+SensorFlexLearnFuelSumThresh3:
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE.
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnBlend ($13D6): 2D table, 1 points, unsigned
@@ -2032,7 +2828,9 @@ FlexLearnBlend2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$13
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+DecelMapOffset:
+        dc.b    $13                                      ; Byte subtracted from Map; read by FinishFuelPulse.
 
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleCloseMapOffset ($13EF): 2D table, 1 points, unsigned
@@ -2097,7 +2895,9 @@ AccelMapBaro:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$03
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+AccelFuelThrottleOffset:
+        dc.b    $03                                      ; Byte subtracted from Throttle; read by Sub_106EC.
 
 ;---------------------------------------------------------------------------------------------------
 ; AccelTpsRateLimit ($142A): 2D table, 2 points, unsigned
@@ -2175,7 +2975,11 @@ AccelRpmFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$14,$0A
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+AccelFuelTimeThresh:
+        dc.b    $14                                      ; Byte compared with Count3s; read by Sub_106EC.
+AccelFuelV07C5Offset:
+        dc.b    $0A                                      ; Byte subtracted from V07C5; read by Sub_106EC.
 
 ;---------------------------------------------------------------------------------------------------
 ; ResetCoolantFuelInit ($1474): 2D table, 3 points, unsigned
@@ -2188,7 +2992,13 @@ ResetCoolantFuelInit:
         dc.b    3,$80                                    ; points, flags
         dc.b    121,224, 138,59, 155,1                   ; x, y
 
-        dc.b    $FF,$FF,$55,$03,$01
+        dc.b    $FF,$FF
+AccelFuelRpmThresh:
+        dc.b    $55                                      ; Byte compared with EngineRpm; read by Sub_107EA.
+AccelFuelOffset:
+        dc.b    $03                                      ; Byte subtracted from; read by Sub_107EA.
+AccelFuelValue:
+        dc.b    $01                                      ; Byte used with; read by Sub_107EA.
 
 ;---------------------------------------------------------------------------------------------------
 ; TipInCoolantFactor ($1481): 2D table, 3 points, unsigned
@@ -2232,8 +3042,29 @@ TipInBaroFactor:
         dc.b    $0B,$0C,$0D,$0D,$0D,$0E,$08,$08,$09,$0A,$0B,$0C,$0C,$0C,$0D,$06
         dc.b    $07,$07,$08,$0A,$0A,$0A,$0B,$0C,$05,$06,$06,$07,$08,$09,$09,$09
         dc.b    $0A,$04,$05,$05,$06,$07,$08,$08,$08,$09,$03,$04,$05,$05,$06,$07
-        dc.b    $07,$07,$08,$02,$03,$04,$04,$05,$06,$06,$06,$07,$10,$02,$00,$09
-        dc.b    $08,$C0,$00,$19,$0B,$00,$FE
+        dc.b    $07,$07,$08,$02,$03,$04,$04,$05,$06,$06,$06,$07
+DecelMapLastThresh:
+        dc.b    $10                                      ; Byte compared with MapLast; read by Sub_12142.
+DecelThrottleLastThresh:
+        dc.b    $02                                      ; Byte compared with ThrottleLast; read by Sub_12142.
+DecelLeanTimerThresh:
+        dc.b    $00                                      ; Byte compared with DecelLeanTimer; read by Sub_12142.
+DecelFactor1:
+        dc.b    $09                                      ; Byte multiplied; read by Sub_12142.
+DecelFactor2:
+        dc.b    $08                                      ; Byte multiplied; read by Sub_12142.
+DecelLeanFuelThresh1:
+        dc.b    $C0                                      ; Byte compared with DecelLeanFuel; read by Sub_12142.
+DecelSpeedThresh:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_12142.
+DecelRpmThresh:
+        dc.b    $19                                      ; Byte compared with EngineRpm; read by Sub_12142.
+FuelEventValue9:
+        dc.b    $0B                                      ; Byte used with; read by Sub_1202A.
+DecelLeanFuelThresh2:
+        dc.b    $00                                      ; Byte compared with DecelLeanFuel; read by Sub_12142.
+O2CoolantThresh1:
+        dc.b    $FE                                      ; Byte compared with CoolantTemp; read by Sub_14802.
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanThrottleCoolantFactor ($1500): 2D table, 3 points, unsigned
@@ -2356,7 +3187,12 @@ DecelLeanAirflow:
         dc.b    23,30,27,33,38,42,52,62,75,93,108,125,140,154,166,174,204 ; row 7
         dc.b    25,34,30,38,42,52,62,75,93,108,125,140,154,166,174,204,230 ; row 8
 
-        dc.b    $6E,$FF,$09,$60
+DecelLeanTimerInit:
+        dc.b    $6E                                      ; Byte stored into DecelLeanTimer; read by Sub_12142.
+DecelThresh:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_12142.
+DecelIdleTargetAdder:
+        dc.b    $09,$60                                  ; Word added to IdleTarget; read by Sub_12142.
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanTimeCoolant ($1612): 3D table, 9 rows x 9 columns, unsigned
@@ -2421,8 +3257,59 @@ IacFuelCoolant:
         dc.b    35,23,20,12,12                           ; row 3
         dc.b    35,23,20,12,12                           ; row 4
 
-        dc.b    $04,$29,$51,$6E,$00,$00,$00,$26,$0F,$18,$15,$20,$25,$0F,$00,$FF
-        dc.b    $00,$FF,$00,$7D,$28,$28,$C7,$13,$05,$3D,$0F,$00
+SensorFactor1:
+        dc.b    $04                                      ; Byte multiplied; read by Sub_10604.
+SensorV07D8Thresh:
+        dc.b    $29                                      ; Byte compared with V07D8; read by Sub_10604.
+SensorVacuumThresh:
+        dc.b    $51                                      ; Byte compared with ManifoldVacuum; read by Sub_10604.
+SensorCoolantThresh2:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_10604.
+SensorFactor2:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_10604.
+SensorFactor3:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_10604.
+SensorRpmThresh3:
+        dc.b    $00                                      ; Byte compared with EngineRpm; read by Sub_10604.
+O2UpBank1RawThresh1:
+        dc.b    $26                                      ; Byte compared with O2UpBank1Raw; read by Sub_14802.
+O2UpBank1RawThresh2:
+        dc.b    $0F                                      ; Byte compared with O2UpBank1Raw; read by Sub_14802.
+        dc.b    $18,$15
+O2Thresh1:
+        dc.b    $20                                      ; Byte compared with; read by Sub_14802.
+O2DownBank1RawThresh1:
+        dc.b    $25                                      ; Byte compared with O2DownBank1Raw; read by Sub_14802.
+O2DownBank1RawThresh2:
+        dc.b    $0F                                      ; Byte compared with O2DownBank1Raw; read by Sub_14802.
+O2Thresh2:
+        dc.b    $00                                      ; Byte compared with; read by Sub_145F6.
+O2Thresh3:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_145F6.
+O2Thresh4:
+        dc.b    $00                                      ; Byte compared with; read by Sub_145F6.
+O2Thresh5:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_145F6.
+O2Thresh6:
+        dc.b    $00                                      ; Byte compared with; read by Sub_145F6.
+ThermostatCoolant:
+        dc.b    $7D                                      ; Coolant the warm-up monitor waits for (also the closed-loop coolant limit)
+O2Value5:
+        dc.b    $28                                      ; Byte used with; read by Sub_14FD8.
+O2Value6:
+        dc.b    $28                                      ; Byte used with; read by Sub_14FD8.
+O2StartCoolantThresh:
+        dc.b    $C7                                      ; Byte compared with StartCoolantTemp2; read by Sub_14740, Sub_14FD8.
+O2V07B5Offset:
+        dc.b    $13                                      ; Byte subtracted from V07B5; read by Sub_14740, Sub_14FD8.
+O2V07B8Thresh:
+        dc.b    $05                                      ; Byte compared with V07B8; read by Sub_14FD8.
+O2Value7:
+        dc.b    $3D                                      ; Byte used with; read by Sub_14FD8.
+O2UpBank1RawThresh3:
+        dc.b    $0F                                      ; Byte compared with O2UpBank1Raw; read by Sub_14FD8, Sub_18D42.
+O2UpBank2RawThresh:
+        dc.b    $00                                      ; Byte compared with O2UpBank2Raw; read by Sub_14FD8.
 
 ;---------------------------------------------------------------------------------------------------
 ; O2StartDelayCoolant ($16C0): 2D table, 5 points, unsigned
@@ -2435,10 +3322,20 @@ O2StartDelayCoolant:
         dc.b    5,$80                                    ; points, flags
         dc.b    130,13, 138,11, 147,6, 155,6, 203,4      ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$00,$B3,$1B,$10,$00,$03,$80,$58,$1F,$79,$18,$95
-        dc.b    $0A,$FF,$FF,$FF,$FF,$FF,$FF,$03,$80,$00,$00,$04,$05,$14,$08,$03
-        dc.b    $80,$00,$00,$04,$05,$14,$08,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$01
-        dc.b    $80,$FF,$00,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+O2V000EThresh1:
+        dc.b    $00                                      ; Byte compared with V000E; read by Sub_14802.
+O2Thresh7:
+        dc.b    $B3                                      ; Byte compared with; read by Sub_14FD8.
+O2PurgeRampThresh1:
+        dc.b    $1B                                      ; Byte compared with PurgeRamp; read by Sub_143C2, Sub_14802.
+O2V0754Init:
+        dc.b    $10                                      ; Byte stored into V0754; read by Sub_14FD8.
+O2V075CInit:
+        dc.b    $00                                      ; Byte stored into V075C; read by Sub_14802.
+        dc.b    $03,$80,$58,$1F,$79,$18,$95,$0A,$FF,$FF,$FF,$FF,$FF,$FF,$03,$80
+        dc.b    $00,$00,$04,$05,$14,$08,$03,$80,$00,$00,$04,$05,$14,$08,$01,$80
+        dc.b    $FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; O2PurgeLimit ($1703): 2D table, 1 points, unsigned
@@ -2478,26 +3375,168 @@ O2VoltageScale2:
         dc.b    4,$80                                    ; points, flags
         dc.b    2,64, 5,119, 38,136, 46,178              ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$3B,$00,$4B,$00,$02,$00,$49,$61,$06,$3B
-        dc.b    $00,$4B,$00,$02,$00,$49,$61,$06,$06,$06,$06,$06,$06,$06,$06,$06
-        dc.b    $06,$06,$06,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$0F,$12
-        dc.b    $12,$0C,$12,$0C,$12,$12,$12,$06,$06,$F1,$EE,$EE,$F4,$EE,$F4,$EE
-        dc.b    $EE,$EE,$FA,$FA,$06,$06,$06,$06,$06,$06,$06,$06,$06,$06,$06,$FA
-        dc.b    $FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$0F,$12,$12,$0C,$12,$0C
-        dc.b    $12,$12,$12,$06,$06,$F1,$EE,$EE,$F4,$EE,$F4,$EE,$EE,$EE,$FA,$FA
-        dc.b    $1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$0A,$0A,$28,$28,$28,$28,$28
-        dc.b    $28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28
-        dc.b    $28,$28,$28,$28,$10,$28,$28,$10,$28,$28,$10,$10,$28,$28,$28,$10
-        dc.b    $28,$28,$10,$28,$28,$10,$10,$7F,$FF,$80,$00,$01,$7F,$80,$14,$80
-        dc.b    $00,$00,$80,$80,$00,$50,$1F,$01,$1F,$0F,$05,$6E,$DC,$34,$A2,$02
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+O2Value8:
+        dc.b    $3B,$00                                  ; Word used with; read by Sub_1430C.
+O2Value9:
+        dc.b    $4B,$00                                  ; Word used with; read by Sub_1430C.
+O2Value10:
+        dc.b    $02,$00                                  ; Word used with; read by Sub_1430C.
+O2Value11:
+        dc.b    $49                                      ; Byte used with; read by Sub_1430C.
+O2Value12:
+        dc.b    $61                                      ; Byte used with; read by Sub_1430C.
+O2Value13:
+        dc.b    $06                                      ; Byte used with; read by Sub_1430C.
+O2Value14:
+        dc.b    $3B,$00                                  ; Word used with; read by Sub_1430C.
+O2Value15:
+        dc.b    $4B,$00                                  ; Word used with; read by Sub_1430C.
+O2Value16:
+        dc.b    $02,$00                                  ; Word used with; read by Sub_1430C.
+O2Value17:
+        dc.b    $49                                      ; Byte used with; read by Sub_1430C.
+O2Value18:
+        dc.b    $61                                      ; Byte used with; read by Sub_1430C.
+O2Value19:
+        dc.b    $06                                      ; Byte used with; read by Sub_1430C.
+        dc.b    $06,$06,$06,$06,$06,$06,$06,$06,$06,$06,$06,$FA,$FA,$FA,$FA,$FA
+        dc.b    $FA,$FA,$FA,$FA,$FA,$FA,$0F,$12,$12,$0C,$12,$0C,$12,$12,$12,$06
+        dc.b    $06,$F1,$EE,$EE,$F4,$EE,$F4,$EE,$EE,$EE,$FA,$FA,$06,$06,$06,$06
+        dc.b    $06,$06,$06,$06,$06,$06,$06,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA
+        dc.b    $FA,$FA,$0F,$12,$12,$0C,$12,$0C,$12,$12,$12,$06,$06,$F1,$EE,$EE
+        dc.b    $F4,$EE,$F4,$EE,$EE,$EE,$FA,$FA,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F
+        dc.b    $1F,$0A,$0A,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28
+        dc.b    $28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$28,$10,$28,$28,$10
+        dc.b    $28,$28,$10,$10,$28,$28,$28,$10,$28,$28,$10,$28,$28,$10,$10
+O2Thresh8:
+        dc.b    $7F,$FF                                  ; Word compared with; read by Sub_155C8.
+O2Thresh9:
+        dc.b    $80,$00                                  ; Word compared with; read by Sub_155C8.
+O2Value20:
+        dc.b    $01                                      ; Byte used with; read by Sub_15364.
+O2ShortTermTrim2Thresh1:
+        dc.b    $7F                                      ; Byte compared with ShortTermTrim2; read by Sub_155C8, Sub_2A496, Sub_2A664.
+O2ShortTermTrim2Thresh2:
+        dc.b    $80                                      ; Byte compared with ShortTermTrim2; read by Sub_155C8, Sub_2A07E, Sub_2A290.
+O2V07B9Thresh:
+        dc.b    $14                                      ; Byte compared with V07B9; read by Sub_14FD8, Sub_18D42.
+O2Value21:
+        dc.b    $80                                      ; Byte used with; read by Sub_155C8.
+O2Thresh10:
+        dc.b    $00                                      ; Byte compared with; read by Sub_14FD8.
+O2Value22:
+        dc.b    $00                                      ; Byte used with; read by Sub_14FD8.
+O2Value23:
+        dc.b    $80                                      ; Byte used with; read by Sub_155C8.
+O2Value24:
+        dc.b    $80                                      ; Byte used with; read by Sub_155C8.
+O2Thresh11:
+        dc.b    $00                                      ; Byte compared with; read by Sub_14FD8.
+        dc.b    $50,$1F,$01,$1F,$0F,$05
+O2CoolantThresh3:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_1594A.
+O2ShortTermTrim1Thresh:
+        dc.b    $DC                                      ; Byte compared with ShortTermTrim1; read by Sub_1594A.
+O2SpeedThresh1:
+        dc.b    $34                                      ; Byte compared with VehicleSpeed; read by Sub_1594A.
+O2VacuumThresh:
+        dc.b    $A2                                      ; Byte compared with ManifoldVacuum; read by Sub_1594A.
+O2ThrottleThresh:
+        dc.b    $02                                      ; Byte compared with ThrottleAboveClosed; read by Sub_1594A.
         dc.b    $87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87
-        dc.b    $87,$87,$87,$87,$87,$87,$08,$87,$87,$87,$87,$87,$87,$87,$87,$87
-        dc.b    $87,$87,$02,$01,$01,$01,$01,$01,$01,$01,$01,$01,$00,$00,$A0,$60
-        dc.b    $0E,$00,$F2,$00,$7F,$F6,$80,$09,$FE,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$CD,$1B,$CC,$03,$80,$58,$4B,$95,$30,$CF,$40,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$BD,$08,$0F,$BD,$57,$7E,$A6,$CE,$DA,$05,$01,$3D,$03,$03
-        dc.b    $05,$02,$FF,$1A,$5E,$03,$00,$AF,$09,$09,$09,$08,$7F,$80,$1A,$E6
-        dc.b    $00,$FF,$FE
+        dc.b    $87,$87,$87,$87,$87,$87
+O2V0759Thresh:
+        dc.b    $08                                      ; Byte compared with V0759; read by Sub_1424C.
+        dc.b    $87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87
+O2Factor2:
+        dc.b    $02                                      ; Byte multiplied; read by Sub_143C2.
+        dc.b    $01,$01,$01,$01,$01,$01,$01,$01,$01,$00,$00
+O2Thresh12:
+        dc.b    $A0                                      ; Byte compared with; read by Sub_143C2, Sub_14802.
+O2Thresh13:
+        dc.b    $60                                      ; Byte compared with; read by Sub_143C2, Sub_14802.
+O2Thresh14:
+        dc.b    $0E,$00                                  ; Word compared with; read by Sub_143C2.
+O2Thresh15:
+        dc.b    $F2,$00                                  ; Word compared with; read by Sub_143C2.
+O2Thresh16:
+        dc.b    $7F,$F6                                  ; Word compared with; read by Sub_143C2.
+O2Value25:
+        dc.b    $80,$09                                  ; Word used with; read by Sub_143C2.
+O2V0712Value:
+        dc.b    $FE                                      ; Byte used with V0712; read by Sub_143C2, Sub_14802, Sub_14FD8 +1.
+O2V075BInit:
+        dc.b    $00                                      ; Byte stored into V075B; read by Sub_14802.
+O2Thresh17:
+        dc.b    $00,$00                                  ; Word compared with; read by Sub_143C2.
+O2V000EThresh2:
+        dc.b    $00                                      ; Byte compared with V000E; read by Sub_143C2.
+O2Value26:
+        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
+O2Value27:
+        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
+O2Value28:
+        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
+O2Value29:
+        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
+O2Thresh18:
+        dc.b    $CD                                      ; Byte compared with; read by Sub_14FD8.
+O2PurgeRampThresh2:
+        dc.b    $1B                                      ; Byte compared with PurgeRamp; read by Sub_14FD8.
+O2Thresh19:
+        dc.b    $CC                                      ; Byte compared with; read by Sub_14802.
+        dc.b    $03,$80,$58,$4B,$95,$30,$CF,$40,$FF,$FF,$FF,$FF,$FF,$FF
+O2CoolantThresh4:
+        dc.b    $BD                                      ; Byte compared with CoolantTemp; read by Sub_14FD8, Sub_20BB4, Sub_20C24.
+O2V07AFInit:
+        dc.b    $08                                      ; Byte stored into V07AF; read by Sub_14740.
+O2Value30:
+        dc.b    $0F                                      ; Byte used with; read by Sub_14740, Sub_14FD8.
+O2CoolantThresh5:
+        dc.b    $BD                                      ; Byte compared with CoolantTemp; read by Sub_14740.
+        dc.b    $57,$7E,$A6,$CE,$DA
+O2Adder3:
+        dc.b    $05                                      ; Byte added to; read by Sub_1594A.
+O2Value31:
+        dc.b    $01                                      ; Byte used with; read by Sub_1594A.
+O2Value32:
+        dc.b    $3D                                      ; Byte used with; read by Sub_1594A.
+O2Adder4:
+        dc.b    $03                                      ; Byte added to; read by Sub_1594A.
+O2IdleTargetAdder1:
+        dc.b    $03                                      ; Byte added to IdleTarget; read by Sub_1430C, Sub_1594A.
+O2SpeedThresh2:
+        dc.b    $05                                      ; Byte compared with VehicleSpeed; read by Sub_1430C, Sub_1594A.
+O2IdleTargetAdder2:
+        dc.b    $02                                      ; Byte added to IdleTarget; read by Sub_1594A.
+O2MapThresh1:
+        dc.b    $FF                                      ; Byte compared with Map; read by Sub_15B20.
+O2MapThresh2:
+        dc.b    $1A                                      ; Byte compared with Map; read by Sub_14FD8, Sub_15B20, Sub_22E06.
+O2RpmValue:
+        dc.b    $5E                                      ; Byte used with EngineRpm; read by Sub_15B20.
+O2Offset:
+        dc.b    $03                                      ; Byte subtracted from; read by Sub_15B20.
+O2V0780Thresh:
+        dc.b    $00,$AF                                  ; Word compared with V0780; read by Sub_14FD8, Sub_15B20.
+        dc.b    $09,$09
+O2Value33:
+        dc.b    $09                                      ; Byte used with; read by Sub_15D56.
+O2Value34:
+        dc.b    $08                                      ; Byte used with; read by Sub_15D56.
+O2V07B1Thresh1:
+        dc.b    $7F                                      ; Byte compared with V07B1; read by Sub_15D56, Sub_2A496, Sub_2A664.
+O2V07B1Thresh2:
+        dc.b    $80                                      ; Byte compared with V07B1; read by Sub_15D56, Sub_2A07E, Sub_2A290.
+TrimThresh1:
+        dc.b    $1A                                      ; Byte compared with; read by Sub_16244.
+TrimThresh2:
+        dc.b    $E6                                      ; Byte compared with; read by Sub_16244.
+O2V0750Switch:
+        dc.b    $00                                      ; Byte tested (zero = off) V0750; read by Sub_158B6.
+O2V07C8Thresh:
+        dc.b    $FF,$FE                                  ; Word compared with V07C8; read by Sub_158B6.
 
 ;---------------------------------------------------------------------------------------------------
 ; O2StepScale ($1873): 2D table, 4 points, unsigned
@@ -2536,7 +3575,9 @@ TrimLowerLimitRpm:
         dc.b    3,$20                                    ; points, flags
         dc.b    63,-2, 65,-128, 255,-128                 ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$80
+        dc.b    $FF,$FF,$FF,$FF
+StartV07EEValue:
+        dc.b    $80                                      ; Byte used with V07EE; read by Reset, Sub_10AEC.
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelTrimAdjust ($1898): 2D table, 1 points, unsigned
@@ -2562,8 +3603,59 @@ FuelTrimAdjustMapWeight:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$80,$3F,$16,$95,$FE,$06,$06,$65,$00,$2A
-        dc.b    $20,$01,$14,$92,$80,$24,$01,$FE,$01,$FE,$05,$05,$00,$00,$3F,$22
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+AccelFuelOptions:
+        dc.b    $80                                      ; Option byte; bits tested: $40, $80. Read by Sub_107EA, CalcFuelPulse.
+FuelCutRpmThresh1:
+        dc.b    $3F                                      ; Byte compared with EngineRpm; read by Sub_10036.
+FuelCutSpeedThresh1:
+        dc.b    $16                                      ; Byte compared with VehicleSpeed; read by Sub_10036.
+FuelCutCoolantThresh1:
+        dc.b    $95                                      ; Byte compared with CoolantTemp; read by Sub_10036.
+FuelCutStartCoolantThresh:
+        dc.b    $FE                                      ; Byte compared with StartCoolantTemp2; read by Sub_10036.
+FuelCutValue:
+        dc.b    $06                                      ; Byte used with; read by Sub_10036.
+FuelCutTimeThresh:
+        dc.b    $06                                      ; Byte compared with Count3s; read by Sub_10036.
+FuelCutMapThresh1:
+        dc.b    $65                                      ; Byte compared with Map; read by Sub_10036.
+FuelCutThrottleLastThresh:
+        dc.b    $00                                      ; Byte compared with ThrottleLast; read by Sub_10036.
+FuelCutMapThresh2:
+        dc.b    $2A                                      ; Byte compared with Map; read by Sub_10036.
+FuelMapThresh3:
+        dc.b    $20                                      ; Byte compared with Map; read by Sub_11C44.
+FuelCutV07A2Init:
+        dc.b    $01                                      ; Byte stored into V07A2; read by Sub_10036.
+FuelCutSpeedThresh2:
+        dc.b    $14                                      ; Byte compared with VehicleSpeed; read by Sub_10036.
+FuelCutCoolantThresh2:
+        dc.b    $92                                      ; Byte compared with CoolantTemp; read by Sub_10036.
+FuelCutMapThresh3:
+        dc.b    $80                                      ; Byte compared with Map; read by Sub_10036.
+FuelCutSpeedThresh3:
+        dc.b    $24                                      ; Byte compared with VehicleSpeed; read by Sub_10036.
+FuelCutSpeedThresh4:
+        dc.b    $01                                      ; Byte compared with VehicleSpeed; read by Sub_10036.
+FuelCutSpeedThresh5:
+        dc.b    $FE                                      ; Byte compared with VehicleSpeed; read by Sub_10036.
+FuelCutRpmThresh2:
+        dc.b    $01                                      ; Byte compared with EngineRpm; read by Sub_10036.
+FuelCutRpmThresh3:
+        dc.b    $FE                                      ; Byte compared with EngineRpm; read by Sub_10036.
+FuelV04F0Init1:
+        dc.b    $05                                      ; Byte stored into V04F0; read by Sub_11C44.
+FuelV04F0Init2:
+        dc.b    $05                                      ; Byte stored into V04F0; read by Sub_11C44.
+FuelV04F0Init3:
+        dc.b    $00                                      ; Byte stored into V04F0; read by Sub_11C44.
+FuelV04F0Init4:
+        dc.b    $00                                      ; Byte stored into V04F0; read by Sub_11C44.
+FuelCutRpmThresh4:
+        dc.b    $3F                                      ; Byte compared with EngineRpm; read by Sub_10036.
+FuelCutSpeedThresh6:
+        dc.b    $22                                      ; Byte compared with VehicleSpeed; read by Sub_10036.
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelCutMapThreshold ($18C6): 2D table, 1 points, unsigned
@@ -2607,7 +3699,7 @@ DecelCutMinRpmCoolant2:
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelCutMinRpmCoolant ($18F9): 2D table, 1 points, unsigned
-; Deceleration fuel cut-off: minimum rpm against coolant (variant with $0943,Z bit 0 set); the higher of this and DecelCutMinRpmV032E applies
+; Deceleration fuel cut-off: minimum rpm against coolant (variant with $0943,Z bit 0 set); the higher of this and DecelCutMinRpmFieldDuty applies
 ; x: tempc, y: rpm32 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $10272
@@ -2619,26 +3711,26 @@ DecelCutMinRpmCoolant:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DecelCutMinRpmV032E2 ($1905): 2D table, 4 points, unsigned
+; DecelCutMinRpmFieldDuty2 ($1905): 2D table, 4 points, unsigned
 ; Deceleration fuel cut-off: minimum rpm against $032E,Z (variant with $0943,Z bit 0 clear)
 ; x: raw, y: rpm32 (units: docs/en/calibration.md)
 ; Inputs: FieldDuty
 ; Read at $102B2
 ;---------------------------------------------------------------------------------------------------
-DecelCutMinRpmV032E2:
+DecelCutMinRpmFieldDuty2:
         dc.b    4,$80                                    ; points, flags
         dc.b    64,34, 88,46, 101,59, 229,61             ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DecelCutMinRpmV032E ($1911): 2D table, 1 points, unsigned
+; DecelCutMinRpmFieldDuty ($1911): 2D table, 1 points, unsigned
 ; Deceleration fuel cut-off: minimum rpm against $032E,Z (variant with $0943,Z bit 0 set)
 ; x: raw, y: rpm32 (units: docs/en/calibration.md)
 ; Inputs: FieldDuty
 ; Read at $10280
 ;---------------------------------------------------------------------------------------------------
-DecelCutMinRpmV032E:
+DecelCutMinRpmFieldDuty:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,61                                   ; x, y
 
@@ -2660,22 +3752,134 @@ DecelCutRpmFactor:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 RevLimit:
         dc.b    $BD                                      ; Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral)
-        dc.b    $CA
+FuelCutThresh1:
+        dc.b    $CA                                      ; Byte compared with; read by Sub_10036.
 RevLimitAlt:
         dc.b    $DB                                      ; Rev limit, used while $0C31,Z bit 5 is clear
-        dc.b    $E1,$FF
+FuelCutRpmThresh5:
+        dc.b    $E1                                      ; Byte compared with EngineRpm; read by Sub_10036.
+FuelCutSpeedThresh7:
+        dc.b    $FF                                      ; Byte compared with VehicleSpeedCoarse; read by Sub_10036.
 SpeedLimit:
         dc.b    $FE                                      ; Vehicle speed limit (compared with $0A9B,Z), active with calibration bit $0337.5
-        dc.b    $53
+FuelCutThresh2:
+        dc.b    $53                                      ; Byte compared with; read by Sub_10036.
 SpeedLimitMinRpm:
         dc.b    $4E                                      ; The speed limit is checked only above this rpm
-        dc.b    $02,$87,$30,$1B,$30,$19,$01,$0A,$00,$01,$1F,$02,$03,$1B,$01,$01
-        dc.b    $16,$03,$02,$11,$02,$01,$00,$05,$05,$00,$00,$00,$00,$00,$00,$00
+SensorTimeThresh2:
+        dc.b    $02                                      ; Byte compared with Count3s; read by Sub_103FA.
+SensorCoolantThresh3:
+        dc.b    $87                                      ; Byte compared with CoolantTemp; read by Sub_103FA.
+SensorThresh6:
+        dc.b    $30                                      ; Byte compared with; read by Sub_103FA.
+SensorRpmThresh4:
+        dc.b    $1B                                      ; Byte compared with EngineRpm; read by Sub_103FA.
+SensorThresh7:
+        dc.b    $30                                      ; Byte compared with; read by Sub_103FA.
+SensorThresh8:
+        dc.b    $19                                      ; Byte compared with; read by Sub_103FA.
+        dc.b    $01,$0A,$00,$01,$1F,$02,$03,$1B,$01,$01,$16,$03,$02,$11,$02,$01
+        dc.b    $00,$05,$05,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$90,$CD,$3E,$1A,$58,$5B,$00,$00
-        dc.b    $FE,$00,$01,$84,$07,$01,$05,$96,$02,$05,$04,$00,$1C,$04,$05,$20
-        dc.b    $B3,$CD,$BC,$1E,$40,$20,$39,$0A,$0A,$02,$01,$00,$58,$FE,$C0,$9D
-        dc.b    $91,$28,$01,$FF,$00,$01,$28,$00,$50,$FE,$00
+        dc.b    $00,$00
+PurgeCoolantThresh1:
+        dc.b    $90                                      ; Byte compared with CoolantTemp; read by Sub_3DE9C, Sub_3E500.
+SensorCoolantThresh4:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_3DE9C.
+SensorValue9:
+        dc.b    $3E                                      ; Byte used with; read by Sub_3DE9C.
+SensorV042BInit:
+        dc.b    $1A                                      ; Byte stored into V042B; read by Sub_3DE9C.
+PurgeBatteryTempThresh1:
+        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_3DC64.
+PurgeBatteryTempThresh2:
+        dc.b    $5B                                      ; Byte compared with BatteryTemp; read by Sub_3DC64.
+PurgeV0428Init:
+        dc.b    $00,$00                                  ; Word stored into V0428; read by Sub_3DC64.
+PurgeMapThresh:
+        dc.b    $FE                                      ; Byte compared with Map; read by Sub_3DC64.
+O2Thresh20:
+        dc.b    $00                                      ; Byte compared with; read by Sub_15D56.
+PurgeFactor1:
+        dc.b    $01,$84                                  ; Word multiplied; read by Sub_3E4CA.
+PurgeMask:
+        dc.b    $07                                      ; Byte mask for; read by Sub_3D85E.
+PurgeV0436Thresh:
+        dc.b    $01                                      ; Byte compared with V0436; read by Sub_3D85E.
+StartV042FInit:
+        dc.b    $05                                      ; Byte stored into V042F; read by Reset, Sub_3DC64, Sub_3DE9C.
+PurgeRampThresh2:
+        dc.b    $96                                      ; Byte compared with PurgeRamp; read by Sub_3D85E.
+PurgeRampThresh3:
+        dc.b    $02                                      ; Byte compared with PurgeRamp; read by Sub_3D85E.
+PurgeAdder1:
+        dc.b    $05                                      ; Byte added to; read by Sub_3D85E.
+PurgeAdder2:
+        dc.b    $04                                      ; Byte added to; read by Sub_3D85E.
+PurgeValue1:
+        dc.b    $00                                      ; Byte used with; read by Sub_3D85E.
+PurgeV0450Thresh:
+        dc.b    $1C                                      ; Byte compared with V0450; read by Sub_3D85E.
+PurgeTrimCountThresh1:
+        dc.b    $04                                      ; Byte compared with PurgeTrimCount; read by Sub_3D85E.
+PurgeTrimCountThresh2:
+        dc.b    $05                                      ; Byte compared with PurgeTrimCount; read by Sub_3D85E.
+PurgeVacuumThresh:
+        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_3D85E.
+PurgeThresh1:
+        dc.b    $B3                                      ; Byte compared with; read by Sub_3D85E.
+PurgeTrimLatchedThresh3:
+        dc.b    $CD                                      ; Byte compared with PurgeTrimLatched; read by Sub_3D85E.
+PurgeTrimLatchedThresh4:
+        dc.b    $BC                                      ; Byte compared with PurgeTrimLatched; read by Sub_3D85E.
+PurgeLoopMask:
+        dc.b    $1E                                      ; Byte mask for MainLoopCounter; read by Sub_3D85E.
+PurgeValue2:
+        dc.b    $40                                      ; Byte used with; read by Sub_3E074.
+PurgeValue3:
+        dc.b    $20                                      ; Byte used with; read by Sub_3E074.
+PurgeValue4:
+        dc.b    $39                                      ; Byte used with; read by Sub_3E074.
+PurgeV0464Thresh:
+        dc.b    $0A                                      ; Byte compared with V0464; read by Sub_3E074.
+PurgeOffset1:
+        dc.b    $0A                                      ; Byte subtracted from; read by Sub_3E074.
+PurgeV0465Init:
+        dc.b    $02                                      ; Byte stored into V0465; read by Sub_3E074.
+PurgeThresh2:
+        dc.b    $01                                      ; Byte compared with; read by Sub_3E074.
+PurgeValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_3E074.
+PurgeBatteryTempStartThresh:
+        dc.b    $58                                      ; Byte compared with BatteryTempStart; read by Sub_3D85E.
+PurgeFactor2:
+        dc.b    $FE                                      ; Byte multiplied; read by Sub_3D85E.
+PurgeRampStepThresh1:
+        dc.b    $C0                                      ; Byte compared with PurgeRampStep; read by Sub_3D85E.
+PurgeTrimLatchedThresh5:
+        dc.b    $9D                                      ; Byte compared with PurgeTrimLatched; read by Sub_3EB4C.
+PurgeTrimLatchedThresh6:
+        dc.b    $91                                      ; Byte compared with PurgeTrimLatched; read by Sub_3EB4C.
+PurgeV046BInit:
+        dc.b    $28                                      ; Byte stored into V046B; read by Sub_3EB4C.
+PurgeFlowAdaptAdder:
+        dc.b    $01                                      ; Byte added to PurgeFlowAdapt; read by Sub_3EB4C.
+PurgeV046CThresh1:
+        dc.b    $FF                                      ; Byte compared with V046C; read by Sub_3EB4C.
+PurgeFlowAdaptThresh1:
+        dc.b    $00                                      ; Byte compared with PurgeFlowAdapt; read by Sub_3EB4C.
+PurgeFlowAdaptOffset:
+        dc.b    $01                                      ; Byte subtracted from PurgeFlowAdapt; read by Sub_3EB4C.
+PurgeV046CThresh2:
+        dc.b    $28                                      ; Byte compared with V046C; read by Sub_3EB4C.
+PurgeFlowAdaptThresh2:
+        dc.b    $00                                      ; Byte compared with PurgeFlowAdapt; read by Sub_3EB4C.
+PurgeV046DThresh:
+        dc.b    $50                                      ; Byte compared with V046D; read by Sub_3EB4C.
+PurgeRampStepThresh2:
+        dc.b    $FE                                      ; Byte compared with PurgeRampStep; read by Sub_3EB4C.
+PurgeRampStepThresh3:
+        dc.b    $00                                      ; Byte compared with PurgeRampStep; read by Sub_3EB4C.
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeFlowScale ($19C3): 2D table, 9 points, unsigned
@@ -2773,8 +3977,60 @@ PurgeFlow:
         dc.b    191,191,171,167,162,160,158,157,148      ; row 7
         dc.b    191,191,191,191,191,188,185,183,175      ; row 8
 
-        dc.b    $58,$40,$FF,$FF,$02,$9F,$00,$40,$0F,$20,$B3,$C0,$0D,$05,$FF,$2D
-        dc.b    $15,$CC,$E8,$E8,$10,$60,$F0,$F0,$00,$00,$00,$1A,$1A
+PurgeStartCoolantThresh:
+        dc.b    $58                                      ; Byte compared with StartCoolantTemp2; read by Sub_3E500.
+PurgeRampThresh4:
+        dc.b    $40                                      ; Byte compared with PurgeRamp; read by Sub_3E500.
+PurgeValue6:
+        dc.b    $FF                                      ; Byte used with; read by Sub_3E500.
+PurgeValue7:
+        dc.b    $FF                                      ; Byte used with; read by Sub_3E500.
+PurgeV0448Thresh:
+        dc.b    $02,$9F                                  ; Word compared with V0448; read by Sub_3E500.
+PurgeValue8:
+        dc.b    $00                                      ; Byte used with; read by Sub_3E500.
+PurgeV0444Init1:
+        dc.b    $40                                      ; Byte stored into V0444; read by Sub_3E500.
+PurgeAdder3:
+        dc.b    $0F                                      ; Byte added to; read by Sub_3E500.
+PurgeV0446Thresh:
+        dc.b    $20                                      ; Byte compared with V0446; read by Sub_3E500.
+PurgeV0444Thresh1:
+        dc.b    $B3                                      ; Byte compared with V0444; read by Sub_3E500.
+PurgeV044CAdder:
+        dc.b    $C0                                      ; Byte added to V044C; read by Sub_3E500.
+PurgeV0447Thresh:
+        dc.b    $0D                                      ; Byte compared with V0447; read by Sub_3E500.
+PurgeAdder4:
+        dc.b    $05                                      ; Byte added to; read by Sub_3E500.
+PurgeV0444Thresh2:
+        dc.b    $FF                                      ; Byte compared with V0444; read by Sub_3E500.
+PurgeV0444Init2:
+        dc.b    $2D                                      ; Byte stored into V0444; read by Sub_3E500.
+PurgeV044AThresh:
+        dc.b    $15,$CC                                  ; Word compared with V044A; read by Sub_3E500.
+PurgeV07E8Init:
+        dc.b    $E8                                      ; Byte stored into V07E8; read by Sub_3E500.
+PurgeVaporPartInit:
+        dc.b    $E8                                      ; Byte stored into PurgeVaporPart; read by Sub_3E500.
+PurgeRampThresh5:
+        dc.b    $10                                      ; Byte compared with PurgeRamp; read by Sub_3E500.
+PurgeRampThresh6:
+        dc.b    $60                                      ; Byte compared with PurgeRamp; read by Sub_3E500.
+PurgeThresh3:
+        dc.b    $F0                                      ; Byte compared with; read by Sub_3E500.
+PurgeThresh4:
+        dc.b    $F0                                      ; Byte compared with; read by Sub_3E500.
+PurgeShortTermTrim1Thresh1:
+        dc.b    $00                                      ; Byte compared with ShortTermTrim1; read by Sub_3E500.
+PurgeValue9:
+        dc.b    $00                                      ; Byte used with; read by Sub_3E500.
+PurgeV044EThresh:
+        dc.b    $00                                      ; Byte compared with V044E; read by Sub_3E500.
+PurgeV07ECThresh1:
+        dc.b    $1A                                      ; Byte compared with V07EC; read by Sub_3E500.
+PurgeV07ECThresh2:
+        dc.b    $1A                                      ; Byte compared with V07EC; read by Sub_3E500.
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeLearnUpClosed ($1AA5): 2D table, 2 points, unsigned
@@ -2847,8 +4103,50 @@ PurgeFuelBase:
         dc.b    166,169,200,201,202,221,235,242,242      ; row 7
         dc.b    166,169,202,204,216,227,233,242,242      ; row 8
 
-        dc.b    $84,$28,$3C,$0C,$03,$05,$05,$12,$0D,$FF,$2C,$2C,$2C,$05,$05,$05
-        dc.b    $D7,$00,$33,$BC,$00,$0F,$82,$35,$00,$C3
+FlexLearnStartCoolantThresh2:
+        dc.b    $84                                      ; Byte compared with StartCoolantTemp2; read by Sub_17FC4, Sub_3DE9C.
+PurgeSpeedThresh2:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_3E500.
+PurgeSpeedThresh3:
+        dc.b    $3C                                      ; Byte compared with VehicleSpeed; read by Sub_3E500.
+StartV0801Thresh:
+        dc.b    $0C                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5.
+StartV043BValue:
+        dc.b    $03                                      ; Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4.
+StartV043CThresh:
+        dc.b    $05                                      ; Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4.
+O2V0439Thresh:
+        dc.b    $05                                      ; Byte compared with V0439; read by Sub_15B20.
+        dc.b    $12,$0D
+FlexLearnCoolantThresh6:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_17FC4, Sub_3DFCA.
+PurgeThresh5:
+        dc.b    $2C                                      ; Byte compared with; read by Sub_3DD3C.
+PurgeThresh6:
+        dc.b    $2C                                      ; Byte compared with; read by Sub_17A1C, Sub_3DD3C.
+PurgeThresh7:
+        dc.b    $2C                                      ; Byte compared with; read by Sub_3DD3C.
+PurgeAdder5:
+        dc.b    $05                                      ; Byte added to; read by Sub_3DD3C.
+PurgeAdder6:
+        dc.b    $05                                      ; Byte added to; read by Sub_17A1C, Sub_3DD3C.
+PurgeAdder7:
+        dc.b    $05                                      ; Byte added to; read by Sub_3DD3C.
+PurgeShortTermTrim1Thresh2:
+        dc.b    $D7                                      ; Byte compared with ShortTermTrim1; read by Sub_3E500.
+O2Value35:
+        dc.b    $00                                      ; Byte used with; read by Sub_14802.
+SensorAdder5:
+        dc.b    $33                                      ; Byte added to; read by Sub_3DFCA.
+SensorCoolantThresh5:
+        dc.b    $BC                                      ; Byte compared with CoolantTemp; read by Sub_3DEF8.
+PurgeV043EThresh:
+        dc.b    $00                                      ; Byte compared with V043E; read by Sub_3E344.
+CalOffset6:
+        dc.b    $0F                                      ; Byte subtracted from; read by Sub_3DFB8.
+        dc.b    $82,$35
+EventV0ABDThresh3:
+        dc.b    $00,$C3                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSparkMin ($1B43): 2D table, 3 points, signed
@@ -2874,8 +4172,36 @@ AfterStartSparkCap:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,127                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$B4,$4A,$78,$31,$9C,$40,$68,$2B
-        dc.b    $FF,$18,$18,$6E,$00,$00,$00,$00,$00,$00,$7F,$00,$7F
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+AfterValue1:
+        dc.b    $B4,$4A                                  ; Word used with; read by Sub_1E5A8.
+AfterValue2:
+        dc.b    $78,$31                                  ; Word used with; read by Sub_1E5A8.
+AfterV0ABEThresh:
+        dc.b    $9C,$40                                  ; Word compared with V0ABE; read by Sub_1E5A8.
+AfterValue3:
+        dc.b    $68,$2B                                  ; Word used with; read by Sub_1E5A8.
+AfterStartSparkCoolantMin:
+        dc.b    $FF                                      ; AfterStartSparkCap applies above this coolant temperature
+SparkValue1:
+        dc.b    $18                                      ; Byte used with; read by CalcSpark.
+        dc.b    $18
+SensorCoolantThresh6:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_1E4E2.
+SensorRpmThresh5:
+        dc.b    $00                                      ; Byte compared with EngineRpm; read by Sub_1E4E2.
+SensorTimeThresh3:
+        dc.b    $00,$00                                  ; Word compared with Count3s; read by Sub_1E4E2.
+SensorV0D60Thresh:
+        dc.b    $00,$00                                  ; Word compared with V0D60; read by Sub_1E4E2.
+PartV0D3FSwitch:
+        dc.b    $00                                      ; Byte tested (zero = off) V0D3F; read by CalcBaseSpark.
+PartAdder:
+        dc.b    $7F                                      ; Byte added to; read by CalcBaseSpark.
+MapV0D41Switch:
+        dc.b    $00                                      ; Byte tested (zero = off) V0D41; read by Sub_1DA26.
+MapAdder1:
+        dc.b    $7F                                      ; Byte added to; read by Sub_1DA26.
 
 ;---------------------------------------------------------------------------------------------------
 ; PartThrottleSpark ($1B6E): 3D table, 17 rows x 17 columns, unsigned
@@ -2985,7 +4311,16 @@ AirTempSparkMapRpm:
         dc.b    0,0,-2,-4,-6,-8,-8,-8,-8                 ; row 3
         dc.b    0,0,-2,-4,-6,-8,-8,-8,-8                 ; row 4
 
-        dc.b    $06,$FF,$04,$04,$01,$90
+AfterV076DThresh:
+        dc.b    $06                                      ; Byte compared with V076D; read by Sub_1D448.
+AfterBaroThresh2:
+        dc.b    $FF                                      ; Byte compared with Baro; read by Sub_1D448.
+AfterV0D19Thresh1:
+        dc.b    $04                                      ; Byte compared with V0D19; read by Sub_1D448.
+AfterV0D19Thresh2:
+        dc.b    $04                                      ; Byte compared with V0D19; read by Sub_1D448.
+AfterThresh:
+        dc.b    $01,$90                                  ; Word compared with; read by Sub_1D448.
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSparkCoolant ($1E7E): 2D table, 10 points, unsigned
@@ -3071,7 +4406,11 @@ DecelSpark:
         dc.b    3,$20                                    ; points, flags
         dc.b    48,0, 64,4, 80,8                         ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FE,$FE
+        dc.b    $FF,$FF,$FF,$FF
+HighSpeedSparkOff:
+        dc.b    $FE                                      ; Coarse vehicle speed below which HighSpeedSparkRpm stops (hysteresis)
+HighSpeedSparkOn:
+        dc.b    $FE                                      ; Coarse vehicle speed above which HighSpeedSparkRpm applies
 
 ;---------------------------------------------------------------------------------------------------
 ; HighSpeedSparkRpm ($1F1B): 2D table, 1 points, unsigned
@@ -3106,9 +4445,36 @@ WotSpark:
         dc.b    0,0,0,0,0,0,12,14,18,26,40,40,36,30,40,40,42 ; row 7
         dc.b    0,0,0,0,0,0,8,10,14,22,38,38,34,30,40,40,40 ; row 8
 
-        dc.b    $DA,$01,$00,$00,$0A,$04,$01,$01,$04,$00,$00,$04,$45,$03,$75,$02
-        dc.b    $02,$4D,$02,$02,$00,$00,$04,$00,$00,$00,$01,$4D,$00,$0C,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00
+SensorV0864Thresh:
+        dc.b    $DA                                      ; Byte compared with V0864; read by Sub_1DE6C.
+SparkEventSparkAdder1:
+        dc.b    $01                                      ; Byte added to EventSpark; read by Sub_1DB84.
+SparkEventSparkAdder2:
+        dc.b    $00                                      ; Byte added to EventSpark; read by Sub_1DB84.
+SparkOffset1:
+        dc.b    $00                                      ; Byte subtracted from; read by Sub_1DB84.
+SparkOffset2:
+        dc.b    $0A                                      ; Byte subtracted from; read by Sub_1DB84.
+FuelEventSparkTimerInit1:
+        dc.b    $04                                      ; Byte stored into EventSparkTimer; read by Sub_11C44.
+FuelV0863Offset:
+        dc.b    $01                                      ; Byte subtracted from V0863; read by Sub_11C44.
+FuelEventSparkTimerInit2:
+        dc.b    $01                                      ; Byte stored into EventSparkTimer; read by Sub_11C44.
+FuelV0863Adder:
+        dc.b    $04                                      ; Byte added to V0863; read by Isr_GPT_IC4OC5, Sub_11C44.
+FuelEventSparkInit:
+        dc.b    $00                                      ; Byte stored into EventSpark; read by Sub_11C44.
+FuelV0862Init:
+        dc.b    $00                                      ; Byte stored into V0862; read by Sub_11C44.
+StartV0863Thresh:
+        dc.b    $04                                      ; Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44.
+FuelEventValue10:
+        dc.b    $45                                      ; Byte used with; read by Sub_12CCC.
+        dc.b    $03,$75,$02,$02,$4D,$02,$02,$00,$00,$04,$00,$00,$00,$01,$4D,$00
+        dc.b    $0C,$00,$00,$00,$00,$00,$00,$00,$00,$00
+CalValue7:
+        dc.b    $00                                      ; Byte used with; read by Isr_GPT_IC4OC5.
 
 ;---------------------------------------------------------------------------------------------------
 ; EventSparkThrottle ($1FF8): 2D table, 1 points, unsigned
@@ -3134,8 +4500,29 @@ EventSparkThrottle2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$0E,$00,$FF,$FF,$10,$10,$FF,$FF,$10,$10
-        dc.b    $00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+SparkV0865Init:
+        dc.b    $0E                                      ; Byte stored into V0865; read by Sub_1DC20.
+SparkSpeedDampSparkOffset:
+        dc.b    $00                                      ; Byte subtracted from SpeedDampSpark; read by Sub_1DC20.
+SparkThrottleThresh3:
+        dc.b    $FF                                      ; Byte compared with ThrottleAboveClosed; read by Sub_1DC20.
+SparkMapThresh1:
+        dc.b    $FF                                      ; Byte compared with Map; read by Sub_1DC20.
+SparkSpeedThresh4:
+        dc.b    $10                                      ; Byte compared with VehicleSpeed; read by Sub_1DC20.
+SparkThresh1:
+        dc.b    $10                                      ; Byte compared with; read by Sub_1DC20.
+SparkThrottleThresh4:
+        dc.b    $FF                                      ; Byte compared with ThrottleAboveClosed; read by Sub_1DC20.
+SparkMapThresh2:
+        dc.b    $FF                                      ; Byte compared with Map; read by Sub_1DC20.
+SparkSpeedThresh5:
+        dc.b    $10                                      ; Byte compared with VehicleSpeed; read by Sub_1DC20.
+SparkSpeedThresh6:
+        dc.b    $10                                      ; Byte compared with VehicleSpeed; read by Sub_1DC20.
+SparkV00F1Thresh:
+        dc.b    $00                                      ; Byte compared with V00F1; read by Sub_1DC20.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedRpmRef ($2017): 2D table, 1 points, unsigned
@@ -3224,8 +4611,29 @@ SpeedDampI:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$81,$A0,$FF,$B2,$13,$00,$FF,$00,$01,$01
-        dc.b    $5F,$02,$0A
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+TipInBaroMin:
+        dc.b    $81                                      ; Tip-in retard runs above this barometric pressure
+TipInAirTempMin:
+        dc.b    $A0                                      ; Tip-in retard runs above this air temperature (with calibration bit $0330.5)
+TipInCoolantMin:
+        dc.b    $FF                                      ; Tip-in retard runs above this coolant temperature
+TipInMapMin:
+        dc.b    $B2                                      ; Tip-in retard runs above this MAP
+TipInRpmBelowTarget:
+        dc.b    $13,$00                                  ; Tip-in retard window: engine rpm above idle target minus this value
+TipInRpmAboveTarget:
+        dc.b    $FF,$00                                  ; Tip-in retard window: engine rpm below idle target plus this value
+TipInThrottleMin:
+        dc.b    $01                                      ; Tip-in retard runs above this throttle opening
+TipInThrottleRiseMin:
+        dc.b    $01                                      ; Tip-in retard: throttle rise ($0D15,Z) above which it starts
+TipValue1:
+        dc.b    $5F                                      ; Byte used with; read by Sub_1D5EC.
+TipInRetardDecay:
+        dc.b    $02                                      ; Tip-in retard: decrease per step
+TipInRetardEnd:
+        dc.b    $0A                                      ; Tip-in retard: value below which it ends
 
 ;---------------------------------------------------------------------------------------------------
 ; TipInRetardDuration ($207A): 2D table, 1 points, unsigned
@@ -3256,7 +4664,30 @@ TipInRetard:
         dc.b    0,0,10,10,10                             ; row 3
         dc.b    0,0,10,10,10                             ; row 4
 
-        dc.b    $81,$A6,$FF,$B2,$03,$20,$15,$E0,$03,$01,$5F,$02,$0A,$00
+TipBaroThresh2:
+        dc.b    $81                                      ; Byte compared with Baro; read by Sub_1D5EC.
+TipAirTempThresh2:
+        dc.b    $A6                                      ; Byte compared with AirTemp; read by Sub_1D5EC.
+TipCoolantThresh2:
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_1D5EC.
+TipMapThresh2:
+        dc.b    $B2                                      ; Byte compared with Map; read by Sub_1D5EC.
+TipOffset3:
+        dc.b    $03,$20                                  ; Word subtracted from; read by Sub_1D5EC.
+TipAdder2:
+        dc.b    $15,$E0                                  ; Word added to; read by Sub_1D5EC.
+TipThrottleThresh2:
+        dc.b    $03                                      ; Byte compared with ThrottleAboveClosed; read by Sub_1D5EC.
+TipInThrottleRiseMinKnock:
+        dc.b    $01                                      ; As TipInThrottleRiseMin while a knock retard is applied
+TipValue2:
+        dc.b    $5F                                      ; Byte used with; read by Sub_1D5EC.
+TipOffset4:
+        dc.b    $02                                      ; Byte subtracted from; read by Sub_1D5EC.
+TipThresh4:
+        dc.b    $0A                                      ; Byte compared with; read by Sub_1D5EC.
+TipInRetardMinSteps:
+        dc.b    $00                                      ; Tip-in retard: number of steps below which the result is zero
 
 ;---------------------------------------------------------------------------------------------------
 ; TipInRetardKnock ($20B1): 3D table, 5 rows x 5 columns, unsigned
@@ -3299,7 +4730,11 @@ TipInRetardAirScale:
         dc.b    2,$80                                    ; points, flags
         dc.b    155,0, 255,255                           ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$01,$01
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+SurgeJerkNegMin:
+        dc.b    $01                                      ; Throttle open: negative jerk beyond which SurgeJerkAdvanceOpen applies
+SurgeJerkPosMin:
+        dc.b    $01                                      ; Throttle open: positive jerk above which SurgeJerkRetardOpen applies
 
 ;---------------------------------------------------------------------------------------------------
 ; SurgeJerkRetardOpen ($20E8): 2D table, 3 points, unsigned
@@ -3324,8 +4759,35 @@ SurgeJerkAdvanceOpen:
         dc.b    3,$80                                    ; points, flags
         dc.b    1,4, 8,8, 254,12                         ; x, y
 
-        dc.b    $FF,$FF,$FF,$C0,$FE,$FE,$30,$01,$01,$01,$20,$26,$0C,$27,$6E,$2E
-        dc.b    $0A
+        dc.b    $FF,$FF
+SurgeRpmAccelEnd:
+        dc.b    $FF,$C0                                  ; Driveline surge: rpm acceleration change ($0D2C,Z) below which the retard stage ends early
+SparkValue2:
+        dc.b    $FE                                      ; Byte used with; read by Sub_1E14E.
+SparkValue3:
+        dc.b    $FE                                      ; Byte used with; read by Sub_1E14E.
+SparkValue4:
+        dc.b    $30                                      ; Byte used with; read by Sub_1E14E.
+SparkValue5:
+        dc.b    $01                                      ; Byte used with; read by Sub_1E14E.
+SparkValue6:
+        dc.b    $01                                      ; Byte used with; read by Sub_1E14E.
+SparkValue7:
+        dc.b    $01                                      ; Byte used with; read by Sub_1E14E.
+SurgeMapMin:
+        dc.b    $20                                      ; Driveline surge spark control runs above this MAP
+SurgeRpmMin:
+        dc.b    $26                                      ; Driveline surge spark control runs above this fast segment rpm (high byte)
+SurgeSpeedMin:
+        dc.b    $0C                                      ; Driveline surge spark control runs above this vehicle speed
+SurgeOpenThrottleTime:
+        dc.b    $27                                      ; Throttle open: time ($0D38,Z) during which the jerk spark applies
+SurgeCoolantMin:
+        dc.b    $6E                                      ; Driveline surge spark control runs above this coolant temperature
+SurgeRetardTime:
+        dc.b    $2E                                      ; Retard stage length ($0D37,Z) before the decay stage
+SurgeEnableDelay:
+        dc.b    $0A                                      ; Delay ($0D3D,Z) after the enable conditions are met
 
 ;---------------------------------------------------------------------------------------------------
 ; SurgeRateThreshold ($2109): 2D table, 6 points, unsigned
@@ -3379,7 +4841,7 @@ SurgeRetardMapRiseFactor:
 ; SurgeRetardBase ($213D): 3D table, 5 rows x 5 columns, unsigned
 ; Driveline surge spark control: base retard ($0D32,Z) against MAP position (rows) and the fast segment rpm $0D1E,Z (columns)
 ; columns: raw, rows: pos256, values: spark (units: docs/en/calibration.md)
-; Inputs: $0D39,Z x SegmentRpmFast
+; Inputs: SurgeMapPos x SegmentRpmFast
 ; Read at $1E27C
 ;---------------------------------------------------------------------------------------------------
 SurgeRetardBase:
@@ -3467,7 +4929,26 @@ SurgeJerkLimit:
         dc.b    24,24,24,24,24                           ; row 3
         dc.b    24,24,24,24,24                           ; row 4
 
-        dc.b    $FF,$00,$08,$00,$FF,$83,$FF,$B5,$10,$08,$10,$10,$00
+AcSparkSpeedMin:
+        dc.b    $FF                                      ; A/C spark compensation runs above this vehicle speed (closed throttle)
+AcRpmRateThresh:
+        dc.b    $00,$08                                  ; Word compared with RpmRate; read by Sub_1D8F0.
+AcLoopMask2:
+        dc.b    $00                                      ; Byte mask for MainLoopCounter; read by Sub_1D8F0.
+AcValue4:
+        dc.b    $FF,$83                                  ; Word used with; read by Sub_1D822.
+AcV0D4EThresh:
+        dc.b    $FF,$B5                                  ; Word compared with V0D4E; read by Sub_1D822.
+AcValue5:
+        dc.b    $10                                      ; Byte used with; read by Sub_1D822.
+AcValue6:
+        dc.b    $08                                      ; Byte used with; read by Sub_1D822.
+SparkV0D52Init:
+        dc.b    $10                                      ; Byte stored into V0D52; read by Sub_39412.
+AcClutchSparkHold:
+        dc.b    $10                                      ; A/C clutch engage: hold time $0D54,Z
+IacV0D5AInit:
+        dc.b    $00                                      ; Byte stored into V0D5A; read by Sub_19808.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_21FE ($21FE): 2D table, 1 points, unsigned
@@ -3481,13 +4962,13 @@ Tab2D_21FE:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; AcEngageSparkHoldV0335 ($2206): 2D table, 1 points, unsigned
-; As AcEngageSparkHoldSensor against $0335,Z (bit $0331.7 clear)
+; AcEngageSparkHoldIac ($2206): 2D table, 1 points, unsigned
+; As AcEngageSparkHoldSensor against the learned IAC position $0335,Z (bit $0331.7 clear)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0335,Z
+; Inputs: IacLearned
 ; Read at $1D9BA
 ;---------------------------------------------------------------------------------------------------
-AcEngageSparkHoldV0335:
+AcEngageSparkHoldIac:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3520,13 +5001,13 @@ AcClutchSparkTimeSensor:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; AcClutchSparkTimeV0335 ($221E): 2D table, 1 points, unsigned
-; As AcClutchSparkTimeSensor against $0335,Z
+; AcClutchSparkTimeIac ($221E): 2D table, 1 points, unsigned
+; As AcClutchSparkTimeSensor against the learned IAC position $0335,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0335,Z
+; Inputs: IacLearned
 ; Read at $395F4
 ;---------------------------------------------------------------------------------------------------
-AcClutchSparkTimeV0335:
+AcClutchSparkTimeIac:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3635,11 +5116,24 @@ FlexSparkEthanolWeight:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$09,$01,$1C,$1C,$1C,$3A,$3A,$3A
-        dc.b    $3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$9B,$03,$20
-        dc.b    $13,$C7,$20,$00,$37,$00,$37,$00,$37,$00,$37,$00,$37,$00,$37,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+FuelV04F2Thresh:
+        dc.b    $09                                      ; Byte compared with V04F2; read by Sub_1F58A.
+FuelOffset2:
+        dc.b    $01                                      ; Byte subtracted from; read by Sub_1F58A.
+        dc.b    $1C,$1C,$1C,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A,$3A
+        dc.b    $3A,$3A,$3A
+KnockLearnCoolantMin:
+        dc.b    $9B                                      ; Knock noise learning and the knock retard limit run above this coolant temperature
+KnockLearnRpmBand:
+        dc.b    $03,$20                                  ; Knock noise learning: half width of an rpm band around each band centre ($2435-$2459)
+KnockLearnTimeMin:
+        dc.b    $13                                      ; Knock noise learning runs after this time since start
+KnockLearnAirTempMax:
+        dc.b    $C7                                      ; Knock noise learning runs below this air temperature
+        dc.b    $20,$00,$37,$00,$37,$00,$37,$00,$37,$00,$37,$00,$37,$00,$37,$00
         dc.b    $37,$00,$37,$00,$37,$00,$37,$00,$37,$00,$37,$00,$37,$00,$37,$00
-        dc.b    $37,$00,$37,$00,$37,$00,$37,$00
+        dc.b    $37,$00,$37,$00,$37,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockMapThresholdRpm ($23CF): 2D table, 1 points, unsigned
@@ -3715,7 +5209,23 @@ KnockWindowRpm:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,186                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$6E,$1C,$53,$1C,$00,$04,$0C,$20
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+KnockCoolantMin:
+        dc.b    $6E                                      ; Knock retard and its maximum apply above this coolant temperature
+KnockRetardMaxRpmMin:
+        dc.b    $1C                                      ; KnockRetardMaxMap is used above this engine rpm
+KnockRetardMaxThrottle:
+        dc.b    $53                                      ; KnockRetardMaxMap is used above this throttle opening (else above KnockRetardMaxRpm2)
+KnockRetardMaxRpm2:
+        dc.b    $1C                                      ; Below this rpm (with throttle below KnockRetardMaxThrottle) the maximum is KnockRetardMaxLow
+KnockRetardMaxLow:
+        dc.b    $00                                      ; Knock retard maximum at low throttle and rpm
+KnockFirstStepFactor:
+        dc.b    $04                                      ; Factor on KnockRetardStep for the first knock event
+KnockStepFactor:
+        dc.b    $0C                                      ; Factor on KnockRetardStep for later knock events
+SparkV0DB6Thresh:
+        dc.b    $20                                      ; Byte compared with V0DB6; read by Sub_1F02A.
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockThreshold ($241F): 2D table, 5 points, unsigned
@@ -3754,8 +5264,36 @@ KnockRetardMaxMap:
         dc.b    2,$80                                    ; points, flags
         dc.b    162,6, 178,8                             ; x, y
 
-        dc.b    $FF,$FF,$00,$3F,$06,$08,$40,$FF,$00,$FF,$01,$00,$01,$92,$30,$50
-        dc.b    $70,$90,$0A,$02
+        dc.b    $FF,$FF
+SparkValue8:
+        dc.b    $00                                      ; Byte used with; read by Sub_1F02A.
+SparkLoopMask:
+        dc.b    $3F                                      ; Byte mask for MainLoopCounter; read by Sub_1F194.
+SparkKnockEventCountThresh:
+        dc.b    $06                                      ; Byte compared with KnockEventCount; read by Sub_1F02A.
+SparkV0DABThresh:
+        dc.b    $08                                      ; Byte compared with V0DAB; read by Sub_1F02A.
+SparkAdder:
+        dc.b    $40                                      ; Byte added to; read by Sub_1F02A.
+KnockOffset1:
+        dc.b    $FF                                      ; Byte subtracted from; read by Sub_1F2E0.
+SparkMask:
+        dc.b    $00                                      ; Byte mask for; read by Sub_1F194.
+SparkKnockEventCountOffset:
+        dc.b    $FF                                      ; Byte subtracted from KnockEventCount; read by Sub_1F194.
+KnockOffset2:
+        dc.b    $01                                      ; Byte subtracted from; read by Sub_1F1DC.
+KnockThresh2:
+        dc.b    $00                                      ; Byte compared with; read by Sub_1F1DC.
+KnockV0DA9Thresh:
+        dc.b    $01                                      ; Byte compared with V0DA9; read by Sub_1F1DC.
+KnockValue2:
+        dc.b    $92                                      ; Byte used with; read by Sub_1F296.
+        dc.b    $30,$50,$70,$90
+KnockAdder1:
+        dc.b    $0A                                      ; Byte added to; read by Sub_1F296.
+KnockAdder2:
+        dc.b    $02                                      ; Byte added to; read by Sub_1F296.
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardLimit ($2459): 3D table, 9 rows x 9 columns, signed
@@ -3792,7 +5330,18 @@ KnockRetardMaxRpm:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$07,$7D,$0A,$02
+        dc.b    $00,$00,$00,$00,$00
+SensorAdder6:
+        dc.b    $00,$00                                  ; Word added to; read by Sub_1F6FA.
+        dc.b    $00
+SparkSpeedThresh8:
+        dc.b    $07                                      ; Byte compared with VehicleSpeed; read by Sub_1D204.
+SparkRpmThresh4:
+        dc.b    $7D                                      ; Byte compared with EngineRpm; read by Sub_1D204.
+SparkSpeedOffset:
+        dc.b    $0A                                      ; Byte subtracted from VehicleSpeed; read by Sub_1D204.
+SparkRpmOffset:
+        dc.b    $02                                      ; Byte subtracted from EngineRpm; read by Sub_1D204.
 
 ;---------------------------------------------------------------------------------------------------
 ; SparkCoolantCorrA ($24F6): 2D table, 4 points, signed
@@ -3817,7 +5366,12 @@ SparkCoolantCorrB:
         dc.b    4,$20                                    ; points, flags
         dc.b    110,18, 144,-2, 177,-6, 210,-10          ; x, y
 
-        dc.b    $6E,$00,$00,$00,$00
+O2SparkTrimCoolantMin:
+        dc.b    $6E                                      ; O2 spark trim runs above this coolant temperature
+O2SparkTrimTimeMin:
+        dc.b    $00,$00                                  ; O2 spark trim runs after this time since start
+O2SparkTrimRpmMin:
+        dc.b    $00,$00                                  ; O2 spark trim runs above this engine rpm
 
 ;---------------------------------------------------------------------------------------------------
 ; O2SparkTrimPos ($250F): 2D table, 3 points, signed
@@ -3869,7 +5423,15 @@ O2SparkTrimNegPN:
         dc.b    3,$20                                    ; points, flags
         dc.b    0,0, 15,4, 102,4                         ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$75,$00,$AD,$01,$04,$1A
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+SparkV0DA0Switch:
+        dc.b    $75                                      ; Byte tested (zero = off) V0DA0; read by Sub_1E6A8.
+SparkV0ABDThresh:
+        dc.b    $00,$AD                                  ; Word compared with V0ABD; read by Sub_1E6A8.
+SparkValue9:
+        dc.b    $01,$04                                  ; Word used with; read by Sub_1E6A8.
+EventFactor:
+        dc.b    $1A                                      ; Byte multiplied; read by Isr_GPT_IC1, Reset, Sub_0E0B6.
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleSparkFilterCoolant ($254D): 2D table, 1 points, unsigned
@@ -3934,7 +5496,11 @@ IdleSparkRpmErrorPNAlt:
         dc.b    4,$20                                    ; points, flags
         dc.b    130,0, 133,-4, 138,-6, 144,-12           ; x, y
 
-        dc.b    $FF,$FF,$06,$00
+        dc.b    $FF,$FF
+IacStepSumMax:
+        dc.b    $06                                      ; Idle speed control: limit of the summed IAC steps $033E,Z; beyond it the sum is reset to IacStepSumReset
+IacStepSumReset:
+        dc.b    $00                                      ; Idle speed control: value $033E,Z is set to when IacStepSumMax is exceeded
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleStepClose ($2587): 2D table, 1 points, signed
@@ -3960,7 +5526,9 @@ IdleStepOpen:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$58
+        dc.b    $FF,$FF,$FF,$FF
+AirCoolantThresh:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_1D15C.
 
 ;---------------------------------------------------------------------------------------------------
 ; AirTempSparkFactor2 ($2598): 2D table, 2 points, unsigned
@@ -3986,7 +5554,22 @@ AirTempSparkMap:
         dc.b    2,$20                                    ; points, flags
         dc.b    178,-12, 194,0                           ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$64,$08,$08,$04,$05,$74,$0A,$A0
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+SparkStartRampThresh:
+        dc.b    $64                                      ; Byte compared with SparkStartRamp; read by Sub_1E2B6.
+SparkStartRampAdder:
+        dc.b    $08                                      ; Byte added to SparkStartRamp; read by Sub_1E2B6.
+SparkV07A0Offset1:
+        dc.b    $08                                      ; Byte subtracted from V07A0; read by Sub_1E2B6.
+SparkStartRampOffset:
+        dc.b    $04                                      ; Byte subtracted from SparkStartRamp; read by Sub_1E2B6.
+SparkV07A0Offset2:
+        dc.b    $05                                      ; Byte subtracted from V07A0; read by Sub_1E2B6.
+        dc.b    $74
+IacCrankRpm:
+        dc.b    $0A                                      ; Engine rpm that ends the cranking IAC position (IacCrankCoolant) and starts IacRunUpCoolant
+IacTargetMax:
+        dc.b    $A0                                      ; Upper limit of the IAC target position
 
 ;---------------------------------------------------------------------------------------------------
 ; IacCrankCoolant ($25B6): 2D table, 5 points, unsigned
@@ -3999,13 +5582,71 @@ IacCrankCoolant:
         dc.b    5,$80                                    ; points, flags
         dc.b    105,134, 119,100, 166,60, 207,43, 221,59 ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$64,$1A,$71,$28,$8A,$CD,$D2,$90,$E0,$EE,$88,$84
-        dc.b    $DF,$C6,$C2,$E0,$EE,$15,$00,$00,$0C,$DA,$05,$13,$13,$13,$01,$90
-        dc.b    $19,$00,$01,$31,$17,$70
+        dc.b    $FF,$FF,$FF,$FF
+IdleTargetFault:
+        dc.b    $64                                      ; Idle target used with a fault ($0D01,Z bit 5 or $0502,Z bits 7-6), ×64
+IdleValue5:
+        dc.b    $1A                                      ; Byte used with; read by Sub_1906C.
+CalVoltsThresh1:
+        dc.b    $71                                      ; Byte compared with BatteryVolts2; read by Sub_0843A.
+CalV0364Thresh:
+        dc.b    $28                                      ; Byte compared with V0364; read by Sub_1BA02.
+IdleAirTempThresh1:
+        dc.b    $8A                                      ; Byte compared with AirTemp; read by Sub_1B182.
+IdleHotAirOff:
+        dc.b    $CD                                      ; Air temperature below which IdleTargetHotAirAdder stops (hysteresis)
+IdleHotAirOn:
+        dc.b    $D2                                      ; Air temperature above which IdleTargetHotAirAdder applies
+IdleThresh3:
+        dc.b    $90                                      ; Byte compared with; read by Sub_1B182.
+IdleThresh4:
+        dc.b    $E0                                      ; Byte compared with; read by Sub_1B182.
+IdleBatteryTempThresh1:
+        dc.b    $EE                                      ; Byte compared with BatteryTemp; read by Sub_1B182.
+IdleThresh5:
+        dc.b    $88                                      ; Byte compared with; read by Sub_1B182.
+IdleBatteryTempThresh2:
+        dc.b    $84                                      ; Byte compared with BatteryTemp; read by Sub_1B182.
+IdleBaroThresh:
+        dc.b    $DF                                      ; Byte compared with Baro; read by Sub_1B182.
+IdleThresh6:
+        dc.b    $C6                                      ; Byte compared with; read by Sub_1B182.
+IdleCoolantThresh1:
+        dc.b    $C2                                      ; Byte compared with CoolantTemp; read by Sub_1B182.
+IdleThresh7:
+        dc.b    $E0                                      ; Byte compared with; read by Sub_1B182.
+IdleCoolantThresh2:
+        dc.b    $EE                                      ; Byte compared with CoolantTemp; read by Sub_1B182.
+IdleValue6:
+        dc.b    $15                                      ; Byte used with; read by Sub_1B182.
+IdleLowVoltsMin:
+        dc.b    $00                                      ; Battery voltage below which the low-voltage timer $0358,Z counts
+IdleLowVoltsTime:
+        dc.b    $00                                      ; Low-voltage time ($0358,Z) above which the battery-temperature idle ramp is blocked
+IdleValue7:
+        dc.b    $0C                                      ; Byte used with; read by Sub_1B182.
+IdleRampDelayInit:
+        dc.b    $DA                                      ; Byte stored into IdleRampDelay; read by Sub_1B182.
+IdleRampHoldInit:
+        dc.b    $05                                      ; Byte stored into IdleRampHold; read by Sub_1B182.
+IdleRampBlockTimerThresh1:
+        dc.b    $13                                      ; Byte compared with IdleRampBlockTimer; read by Sub_1B182.
+IdleRampBlockTimerThresh2:
+        dc.b    $13                                      ; Byte compared with IdleRampBlockTimer; read by Sub_1B182.
+IdleRampBlockTimerThresh3:
+        dc.b    $13                                      ; Byte compared with IdleRampBlockTimer; read by Sub_1B182.
+IdleRampTargetOffset:
+        dc.b    $01,$90                                  ; Amount subtracted from the idle target when the ramp starts
+IdleAcTargetMin:
+        dc.b    $19,$00                                  ; Minimum idle target with A/C requested and $09CE,Z bit 1 set
+IdleEepromCountThresh:
+        dc.b    $01,$31                                  ; Word compared with EepromCount; read by Sub_1B182.
+IacSegRpmThresh2:
+        dc.b    $17,$70                                  ; Word compared with SegmentRpm; read by Sub_19808.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_25E8 ($25E8): 2D table, 2 points, unsigned
-; Inputs: $0C3F,Z
+; Inputs: RunTime
 ; Read at $1B260
 ;---------------------------------------------------------------------------------------------------
 Tab2D_25E8:
@@ -4086,7 +5727,20 @@ IdleBattTempTargetPN:
         dc.b    88,88,88,88,88                           ; row 3
         dc.b    88,88,88,88,88                           ; row 4
 
-        dc.b    $00,$03,$C0,$01,$80,$40,$00,$00,$00,$00
+IdleLoopHoldTime:
+        dc.b    $00                                      ; Idle speed control: hold-off $0357,Z loaded when $0A46,Z bit 0 first sets; no closing steps while it runs
+IacIdleTargetOffset1:
+        dc.b    $03,$C0                                  ; Word subtracted from IdleTarget; read by Sub_19808.
+IacIdleTargetOffset2:
+        dc.b    $01,$80                                  ; Word subtracted from IdleTarget; read by Sub_19808.
+FuelLoopThresh:
+        dc.b    $40                                      ; Byte compared with MainLoopCounter; read by Sub_10A6E, Sub_1AE22.
+IdleErrorCoarseMin:
+        dc.b    $00,$00                                  ; Idle speed control: rpm error from which the coarse error term (IdleErrorTermCoarse) is used instead of the fine one
+IdlePurgeRampThresh:
+        dc.b    $00                                      ; Byte compared with PurgeRamp; read by Sub_1B182.
+IdleRampStepTime:
+        dc.b    $00                                      ; Battery-temperature idle ramp: time per one-step increase of the ramped target $035D,Z
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleBattTempRampDelay ($265C): 2D table, 1 points, unsigned
@@ -4232,7 +5886,7 @@ IdleStepOpenFactor:
 ; IdleStepCloseScale ($26E8): 2D table, 3 points, steps, no interpolation
 ; Idle speed control: accumulated error to the size of an IAC closing step
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0339,Z
+; Inputs: IdleErrorNet
 ; Read at $1931C
 ;---------------------------------------------------------------------------------------------------
 IdleStepCloseScale:
@@ -4264,7 +5918,13 @@ ThrottleCloseTimerRpm:
         dc.b    2,$80                                    ; points, flags
         dc.b    63,20, 94,27                             ; x, y
 
-        dc.b    $FF,$FF,$FA,$00,$79,$69
+        dc.b    $FF,$FF
+ShiftIdleRpmMargin:
+        dc.b    $FA,$00                                  ; Shift into drive: idle target plus this margin; segment rpm above it ends the transition
+IacGearCoolantMax:
+        dc.b    $79                                      ; Gear-change IAC: coolant below which the IacGearTimeCoolant tables and the time counter $0348,Z apply
+ShiftIdleCoolantMin:
+        dc.b    $69                                      ; Shift into P/N: coolant above which ShiftIdleDelayCoolant applies
 
 ;---------------------------------------------------------------------------------------------------
 ; ShiftIdleDelayCoolant ($2708): 2D table, 2 points, unsigned
@@ -4333,7 +5993,7 @@ IacGearTimeCoolantAC:
 ; IacGearTimeFactor ($273A): 2D table, 1 points, unsigned
 ; Factor on IacGearTimeCoolant against the time counter $0348,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0348,Z
+; Inputs: IacGearTime
 ; Read at $1A020
 ;---------------------------------------------------------------------------------------------------
 IacGearTimeFactor:
@@ -4346,7 +6006,7 @@ IacGearTimeFactor:
 ; IacGearTimeFactorAC ($2744): 2D table, 1 points, unsigned
 ; As IacGearTimeFactor with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0348,Z
+; Inputs: IacGearTime
 ; Read at $1A020
 ;---------------------------------------------------------------------------------------------------
 IacGearTimeFactorAC:
@@ -4431,7 +6091,7 @@ IacGearTimeCoolantPNAC:
 ; IacGearTimeFactorPN ($2786): 2D table, 1 points, unsigned
 ; As IacGearTimeFactor in P/N
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0348,Z
+; Inputs: IacGearTime
 ; Read at $1A020
 ;---------------------------------------------------------------------------------------------------
 IacGearTimeFactorPN:
@@ -4444,7 +6104,7 @@ IacGearTimeFactorPN:
 ; IacGearTimeFactorPNAC ($2790): 2D table, 1 points, unsigned
 ; As IacGearTimeFactor in P/N with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0348,Z
+; Inputs: IacGearTime
 ; Read at $1A020
 ;---------------------------------------------------------------------------------------------------
 IacGearTimeFactorPNAC:
@@ -4501,7 +6161,11 @@ ShiftIdleRateCoolantPNAC:
         dc.b    2,$80                                    ; points, flags
         dc.b    99,138, 121,136                          ; x, y
 
-        dc.b    $FF,$FF,$20,$9B
+        dc.b    $FF,$FF
+IacKickRpmMax:
+        dc.b    $20                                      ; A/C and rpm-dip kicks: segment rpm below which they apply
+IdleCoolantMin:
+        dc.b    $9B                                      ; Coolant above which the rpm-dip target addition and the A/C and dip IAC kicks run
 
 ;---------------------------------------------------------------------------------------------------
 ; IacAcKickMap ($27C0): 2D table, 1 points, unsigned
@@ -4520,16 +6184,52 @@ IacAcKickMap:
 ; IacAcKickMapLatched ($27C8): 2D table, 1 points, signed
 ; IAC step when the A/C clutch releases, against the MAP latched at engagement ($0341,Z)
 ; x: kpa, y: raw (units: docs/en/calibration.md)
-; Inputs: $0341,Z
+; Inputs: IacAcKickMapLatch
 ; Read at $1A16C
 ;---------------------------------------------------------------------------------------------------
 IacAcKickMapLatched:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-7                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$07,$20,$37,$04,$10,$10,$00,$14,$B3,$0C
-        dc.b    $DB,$11,$09,$00,$06,$04,$04,$08,$10,$18,$20,$28,$30,$38,$40,$25
-        dc.b    $45,$65,$85,$A5,$C5,$E5,$FF,$FF,$28,$25
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+IacV0352Init:
+        dc.b    $07                                      ; Byte stored into V0352; read by Sub_19808.
+        dc.b    $20
+IacV0350Thresh:
+        dc.b    $37                                      ; Byte compared with V0350; read by Sub_193EC.
+IacCoastTargetBand:
+        dc.b    $04                                      ; Coast IAC: allowed difference between IAC target and coast target
+        dc.b    $10
+IacAdder1:
+        dc.b    $10                                      ; Byte added to; read by Sub_19808.
+IacAdder2:
+        dc.b    $00                                      ; Byte added to; read by Sub_19808.
+IacKickHold:
+        dc.b    $14                                      ; A/C and rpm-dip kicks: hold time $035A,Z
+IacValue2:
+        dc.b    $B3                                      ; Byte used with; read by Sub_1AFDE.
+IacV0346Init:
+        dc.b    $0C                                      ; Byte stored into V0346; read by Sub_193EC.
+IacV034FInit:
+        dc.b    $DB                                      ; Byte stored into V034F; read by Sub_19808.
+IacValue3:
+        dc.b    $11                                      ; Byte used with; read by Sub_1AA32.
+IacValue4:
+        dc.b    $09                                      ; Byte used with; read by Sub_1AA32.
+IacValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_1AA32.
+IacValue6:
+        dc.b    $06                                      ; Byte used with; read by Sub_1AA32.
+IacValue7:
+        dc.b    $04                                      ; Byte used with; read by Sub_1AA32.
+IacValue8:
+        dc.b    $04                                      ; Byte used with; read by Sub_1AA32.
+        dc.b    $08,$10,$18,$20,$28,$30,$38,$40,$25,$45,$65,$85,$A5,$C5,$E5,$FF
+        dc.b    $FF
+IacV034EInit:
+        dc.b    $28                                      ; Byte stored into V034E; read by Sub_19808.
+IacAcEngageTime:
+        dc.b    $25                                      ; IacAcEngageAdder applies while the A/C-on time ($0359,Z) is below this value
 
 ;---------------------------------------------------------------------------------------------------
 ; IacStartBattTemp ($27F6): 2D table, 3 points, unsigned
@@ -4570,7 +6270,13 @@ IacAcEngageAdder:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$11,$00,$03
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+IacAcRequestAdder:
+        dc.b    $11                                      ; IAC addition with A/C requested (A/C switch input, not blocked)
+IacDriveAdder:
+        dc.b    $00                                      ; IAC addition (signed) in drive
+IacLoopMask1:
+        dc.b    $03                                      ; Byte mask for MainLoopCounter; read by Sub_19808.
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRunTimeAdder ($2841): 2D table, 1 points, unsigned
@@ -4608,7 +6314,15 @@ IacCoastThrottleLimit:
         dc.b    2,$80                                    ; points, flags
         dc.b    3,0, 15,10                               ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$6E,$00
+        dc.b    $FF,$FF,$FF,$FF
+IacFactor1:
+        dc.b    $FF                                      ; Byte multiplied; read by Sub_19808.
+IacFactor2:
+        dc.b    $FF                                      ; Byte multiplied; read by Sub_19808.
+IacRollCoolantMin:
+        dc.b    $6E                                      ; Rolling IAC target: below this coolant the $0335,Z value is used instead
+IacSpeedThresh1:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_19808.
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollSpeedBase ($2865): 2D table, 2 points, unsigned
@@ -4624,13 +6338,13 @@ IacRollSpeedBase:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IacRollFactorV0345 ($2871): 2D table, 1 points, unsigned
-; Factor on the rolling IAC target against $0345,Z (centred on 128), with calibration bit $0331.7
+; IacRollFactorAcSensor ($2871): 2D table, 1 points, unsigned
+; Factor on the rolling IAC target against the filtered A/C sensor $0345,Z (centred on 128), with calibration bit $0331.7
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0345,Z
+; Inputs: AcSensorFiltered
 ; Read at $19BD0, $1A270
 ;---------------------------------------------------------------------------------------------------
-IacRollFactorV0345:
+IacRollFactorAcSensor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
@@ -4750,7 +6464,17 @@ IacKickBaroFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    146,64, 203,18, 235,0                    ; x, y
 
-        dc.b    $FF,$FF,$40,$80,$FE,$00,$00,$00
+        dc.b    $FF,$FF
+FieldDutyFilter:
+        dc.b    $40                                      ; Filter weight of the generator field duty $032E,Z
+BatteryVoltsFilter:
+        dc.b    $80                                      ; Filter weight of the filtered battery voltage $0A52,Z
+ChargeDeficitFilter:
+        dc.b    $FE                                      ; Filter weight of the charging deficit average $0DCA,Z
+IacChargeStepWait:
+        dc.b    $00                                      ; Charging IAC step: wait after a step ($0DC2,Z)
+IacChargeStepRest:
+        dc.b    $00,$00                                  ; Charging IAC step: pause before the next step
 
 ;---------------------------------------------------------------------------------------------------
 ; IacChargeStep ($293D): 2D table, 1 points, unsigned
@@ -4781,7 +6505,18 @@ IacFieldDutyRpm:
         dc.b    3,7,9,9,9                                ; row 3
         dc.b    5,11,13,13,13                            ; row 4
 
-        dc.b    $20,$0E,$20,$0E,$7F,$02
+IdleMapTargetMin:
+        dc.b    $20                                      ; Lower limit of the idle MAP target $031E,Z
+IdleMapStepTimeClosed:
+        dc.b    $0E                                      ; Idle MAP loop: time between IAC steps, closed throttle
+IdleMapHoldTime:
+        dc.b    $20                                      ; Idle MAP loop: hold-off ($032A,Z) while the dashpot timer runs
+IdleMapStepTime:
+        dc.b    $0E                                      ; Idle MAP loop: time between IAC steps, throttle not closed
+IdleMapRpmAccelMax:
+        dc.b    $7F                                      ; Idle MAP loop: closed-throttle mode ends when $0D27,Z (rpm acceleration) exceeds this value
+IdleMapAcAdder:
+        dc.b    $02                                      ; Idle MAP target addition with A/C requested
 
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleCloseTimerRpmMoving ($296E): 2D table, 1 points, unsigned
@@ -4899,26 +6634,26 @@ IacMapLowStep:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleMapAdderV0335 ($29CC): 2D table, 2 points, unsigned
-; Idle MAP target addition against $0335,Z (without A/C clutch)
+; IdleMapAdderIac ($29CC): 2D table, 2 points, unsigned
+; Idle MAP target addition against the learned IAC position $0335,Z (without A/C clutch)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0335,Z
+; Inputs: IacLearned
 ; Read at $1ABCE
 ;---------------------------------------------------------------------------------------------------
-IdleMapAdderV0335:
+IdleMapAdderIac:
         dc.b    2,$80                                    ; points, flags
         dc.b    15,17, 30,24                             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleMapAdderV0335b ($29D6): 2D table, 2 points, unsigned
-; As IdleMapAdderV0335 when fuel mode bits $0770.7-6 are set and $05E0,Z is zero
+; IdleMapAdderIac2 ($29D6): 2D table, 2 points, unsigned
+; As IdleMapAdderIac2 when fuel mode bits $0770.7-6 are set and $05E0,Z is zero
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0335,Z
+; Inputs: IacLearned
 ; Read at $1ABCE
 ;---------------------------------------------------------------------------------------------------
-IdleMapAdderV0335b:
+IdleMapAdderIac2:
         dc.b    2,$80                                    ; points, flags
         dc.b    15,17, 30,24                             ; x, y
 
@@ -4957,8 +6692,39 @@ IdleMapBase:
         dc.b    41,45,51,55,62                           ; row 3
         dc.b    48,52,57,61,69                           ; row 4
 
-        dc.b    $EC,$02,$01,$02,$00,$22,$60,$0F,$A0,$1F,$40,$0A,$F0,$00,$05,$13
-        dc.b    $CA,$04,$A1,$3F,$00,$00
+IacSpeedThresh2:
+        dc.b    $EC                                      ; Byte compared with VehicleSpeed; read by Sub_1AADC.
+IacAdder3:
+        dc.b    $02                                      ; Byte added to; read by Sub_1AADC.
+IacV0351Thresh:
+        dc.b    $01                                      ; Byte compared with V0351; read by Sub_1AADC.
+IacV0302Offset:
+        dc.b    $02,$00                                  ; Word subtracted from V0302; read by Sub_1AADC.
+IacIdleTargetThresh:
+        dc.b    $22,$60                                  ; Word compared with IdleTarget; read by Sub_1AADC.
+IacIdleTargetAdder1:
+        dc.b    $0F,$A0                                  ; Word added to IdleTarget; read by Sub_1AADC.
+IacIdleTargetAdder2:
+        dc.b    $1F,$40                                  ; Word added to IdleTarget; read by Sub_1AADC.
+IdleValue17:
+        dc.b    $0A                                      ; Byte used with; read by Sub_1A54A.
+IdleValue18:
+        dc.b    $F0                                      ; Byte used with; read by Sub_1A54A.
+        dc.b    $00
+IdleRollSpeed:
+        dc.b    $05                                      ; Vehicle speed that separates standing from rolling for idle air, dashpot and coast logic
+IdleTimeThresh:
+        dc.b    $13                                      ; Byte compared with Count3s; read by Sub_1AEE0, Sub_23816.
+IdleCoolantThresh4:
+        dc.b    $CA                                      ; Byte compared with CoolantTemp; read by Sub_1AEE0.
+IdleThresh9:
+        dc.b    $04                                      ; Byte compared with; read by Sub_1AEE0.
+IacCoastMapMax:
+        dc.b    $A1                                      ; Coast IAC mode runs below this MAP
+IacCoastLoopMask:
+        dc.b    $3F                                      ; Coast IAC: main-loop mask for the update rate of the IAC target
+SensorRpmAdder:
+        dc.b    $00,$00                                  ; Word added to EngineRpm; read by Sub_2CBC8.
 
 ;---------------------------------------------------------------------------------------------------
 ; IacDriveOffsetBaro ($2A38): 2D table, 2 points, unsigned
@@ -5014,13 +6780,26 @@ IacBaseBaroTarget:
         dc.b    19,23,28,28,28                           ; row 3
         dc.b    17,21,24,24,24                           ; row 4
 
-        dc.b    $04,$41,$71,$20,$01,$AE,$32
+IacCoastOffsetDrive:
+        dc.b    $04                                      ; Coast IAC target: offset removed in drive
+IdleMapLearnedMin:
+        dc.b    $41                                      ; Lower limit of the learned idle MAP $2A,Z (outside the range it is reset from IacStartBaro)
+IdleMapLearnedMax:
+        dc.b    $71                                      ; Upper limit of the learned idle MAP
+IdleMapLearnBand:
+        dc.b    $20                                      ; Idle MAP learning runs while MAP is within this distance of the learned value
+IdleMapLearnWeight:
+        dc.b    $01                                      ; Filter weight of the idle MAP learning
+SpeedCtlSetSpeedThresh1:
+        dc.b    $AE                                      ; Byte compared with SpeedCtlSetSpeed; read by Sub_3B800.
+SpeedCtlSetSpeedThresh2:
+        dc.b    $32                                      ; Byte compared with SpeedCtlSetSpeed; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlEngagePos ($2A84): 2D table, 3 points, unsigned
 ; Speed control (probable): servo position on engagement against the set speed $0408,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0408,Z
+; Inputs: SpeedCtlSetSpeed
 ; Read at $3C23E
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlEngagePos:
@@ -5033,7 +6812,7 @@ SpeedCtlEngagePos:
 ; SpeedCtlEngagePosAC ($2A90): 2D table, 3 points, unsigned
 ; As SpeedCtlEngagePos with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0408,Z
+; Inputs: SpeedCtlSetSpeed
 ; Read at $3C23E
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlEngagePosAC:
@@ -5053,25 +6832,64 @@ SpeedCtlEngageBaro:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$09,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+SpeedCtlThresh1:
+        dc.b    $09                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlV041FInit:
+        dc.b    $FF                                      ; Byte stored into V041F; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlEngageErrorAdder ($2AAC): 2D table, 3 points, unsigned
 ; Correction of the engagement position against the speed error (set speed minus speed, centred on 128)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0408,Z; #$80
+; Inputs: SpeedCtlSetSpeed; #$80
 ; Read at $3BBD8
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlEngageErrorAdder:
         dc.b    3,$80                                    ; points, flags
         dc.b    112,120, 128,128, 144,155                ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04,$64,$0F,$13,$06,$07
-        dc.b    $F8,$01,$02,$1B,$E5,$A2,$20,$01,$01,$05,$80,$00,$01,$08,$02,$2C
-        dc.b    $05,$4D,$10,$FF,$40,$02,$20,$33,$00,$80,$F2,$FF,$FF,$FF,$FF,$02
-        dc.b    $80,$93,$01,$9A,$03,$FF,$FF,$02,$80,$78,$80,$80,$FF,$FF,$FF,$02
-        dc.b    $80,$4D,$02,$60,$01,$FF,$FF,$03,$80,$60,$80,$68,$FF,$88,$40,$FF
-        dc.b    $FF,$FF,$FF,$00,$0C,$03
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+SpeedCtlSetSpeedAdder:
+        dc.b    $04                                      ; Byte added to SpeedCtlSetSpeed; read by Sub_3B800.
+SpeedCtlSetSpeedThresh3:
+        dc.b    $64                                      ; Byte compared with SpeedCtlSetSpeed; read by Sub_3B800, Sub_3C222.
+SpeedCtlThresh2:
+        dc.b    $0F                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlTimerThresh1:
+        dc.b    $13                                      ; Byte compared with SpeedCtlTimer; read by Sub_3B800.
+SpeedCtlThresh3:
+        dc.b    $06                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlThresh4:
+        dc.b    $07                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlThresh5:
+        dc.b    $F8                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlAdder1:
+        dc.b    $01                                      ; Byte added to; read by Sub_3B800.
+SpeedCtlOffset:
+        dc.b    $02                                      ; Byte subtracted from; read by Sub_3B800.
+SpeedCtlThresh6:
+        dc.b    $1B                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlThresh7:
+        dc.b    $E5                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlVacuumThresh1:
+        dc.b    $A2                                      ; Byte compared with ManifoldVacuum; read by Sub_3B800.
+SpeedCtlVacuumThresh2:
+        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_3B800.
+SpeedCtlV00F0Mask:
+        dc.b    $01                                      ; Byte mask for V00F0; read by Sub_3B800.
+SpeedCtlMask:
+        dc.b    $01                                      ; Byte mask for; read by Sub_3B800.
+        dc.b    $05,$80,$00,$01,$08,$02,$2C,$05,$4D,$10,$FF,$40,$02,$20,$33,$00
+        dc.b    $80,$F2,$FF,$FF,$FF,$FF,$02,$80,$93,$01,$9A,$03,$FF,$FF,$02,$80
+        dc.b    $78,$80,$80,$FF,$FF,$FF,$02,$80,$4D,$02,$60,$01,$FF,$FF,$03,$80
+        dc.b    $60,$80,$68,$FF,$88,$40,$FF,$FF,$FF,$FF
+SpeedCtlThresh8:
+        dc.b    $00                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlThresh9:
+        dc.b    $0C                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlTimerThresh2:
+        dc.b    $03                                      ; Byte compared with SpeedCtlTimer; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlThrottleTerm ($2B0A): 2D table, 2 points, unsigned
@@ -5097,7 +6915,19 @@ SpeedCtlSpeedTerm:
         dc.b    2,$80                                    ; points, flags
         dc.b    60,22, 130,16                            ; x, y
 
-        dc.b    $FF,$FF,$04,$00,$12,$12,$01,$07
+        dc.b    $FF,$FF
+SpeedCtlValue1:
+        dc.b    $04                                      ; Byte used with; read by Sub_3B800.
+SpeedCtlV0412Thresh:
+        dc.b    $00                                      ; Byte compared with V0412; read by Sub_3B800.
+SpeedCtlSpeedAdder:
+        dc.b    $12                                      ; Byte added to VehicleSpeed; read by Sub_3B800.
+SpeedCtlAdder2:
+        dc.b    $12                                      ; Byte added to; read by Sub_3B800.
+SpeedCtlResumeSpeedOffset1:
+        dc.b    $01                                      ; Byte subtracted from SpeedCtlResumeSpeed; read by Sub_3B800.
+SpeedCtlV00F0Adder:
+        dc.b    $07                                      ; Byte added to V00F0; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlErrorGain ($2B20): 2D table, 3 points, unsigned
@@ -5123,7 +6953,23 @@ SpeedCtlCancelStep:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,32                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$06,$02,$03,$30,$00,$08,$4D,$05
+        dc.b    $FF,$FF,$FF,$FF
+SpeedCtlThresh10:
+        dc.b    $06                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlSetSpeedOffset:
+        dc.b    $02                                      ; Byte subtracted from SpeedCtlSetSpeed; read by Sub_3B800.
+SpeedCtlValue2:
+        dc.b    $03                                      ; Byte used with; read by Sub_3B800.
+SpeedCtlTimer2Thresh1:
+        dc.b    $30                                      ; Byte compared with SpeedCtlTimer2; read by Sub_3B800.
+SpeedCtlTimer2Thresh2:
+        dc.b    $00                                      ; Byte compared with SpeedCtlTimer2; read by Sub_3B800.
+SpeedCtlResumeSpeedOffset2:
+        dc.b    $08                                      ; Byte subtracted from SpeedCtlResumeSpeed; read by Sub_3B800.
+SpeedCtlValue3:
+        dc.b    $4D                                      ; Byte used with; read by Sub_3B800.
+SpeedCtlAdder3:
+        dc.b    $05                                      ; Byte added to; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlErrorGainResume ($2B3C): 2D table, 3 points, signed
@@ -5136,7 +6982,27 @@ SpeedCtlErrorGainResume:
         dc.b    3,$20                                    ; points, flags
         dc.b    0,-2, 64,-48, 255,-80                    ; x, y
 
-        dc.b    $FF,$FF,$C0,$A0,$55,$20,$28,$F0,$0A,$BC,$3C,$01
+        dc.b    $FF,$FF
+SpeedCtlThresh11:
+        dc.b    $C0                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlThresh12:
+        dc.b    $A0                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlRpmSpeedRatioThresh1:
+        dc.b    $55                                      ; Byte compared with RpmSpeedRatio; read by Sub_3B800.
+SpeedCtlRpmSpeedRatioThresh2:
+        dc.b    $20                                      ; Byte compared with RpmSpeedRatio; read by Sub_3B800.
+SpeedCtlSpeedThresh:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_3B800.
+SensorValue10:
+        dc.b    $F0                                      ; Byte used with; read by Sub_3C288.
+SensorV0416Init:
+        dc.b    $0A                                      ; Byte stored into V0416; read by Sub_3C288.
+SpeedCtlRpmThresh:
+        dc.b    $BC                                      ; Byte compared with EngineRpm; read by Sub_3B800.
+ThrottleV041CInit:
+        dc.b    $3C                                      ; Byte stored into V041C; read by Sub_2D272.
+SpeedCtlThresh13:
+        dc.b    $01                                      ; Byte compared with; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlSpeedMin ($2B50): 2D table, 1 points, unsigned
@@ -5149,8 +7015,31 @@ SpeedCtlSpeedMin:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,138                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00,$40,$69
-        dc.b    $02,$37,$02,$D6,$0A,$7F
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+SpeedCtlOverrideTimerInit1:
+        dc.b    $00                                      ; Byte stored into SpeedCtlOverrideTimer; read by Sub_3C46E.
+SpeedCtlValue4:
+        dc.b    $00                                      ; Byte used with; read by Sub_3C46E.
+SpeedCtlValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_3C46E.
+SpeedCtlOverrideTimerInit2:
+        dc.b    $00                                      ; Byte stored into SpeedCtlOverrideTimer; read by Sub_3C46E.
+SpeedCtlValue6:
+        dc.b    $00                                      ; Byte used with; read by Sub_3C46E.
+SpeedCtlValue7:
+        dc.b    $00                                      ; Byte used with; read by Sub_3C46E.
+SpeedCtlRpmSpeedRatioThresh3:
+        dc.b    $40                                      ; Byte compared with RpmSpeedRatio; read by Sub_3C46E.
+SpeedCtlCoolantThresh:
+        dc.b    $69                                      ; Byte compared with CoolantTemp; read by Sub_3B800.
+SpeedCtlFactor1:
+        dc.b    $02,$37                                  ; Word multiplied; read by Sub_3C65C.
+SpeedCtlFactor2:
+        dc.b    $02,$D6                                  ; Word multiplied; read by Sub_3C65C.
+SpeedCtlThresh14:
+        dc.b    $0A                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlLoopMask:
+        dc.b    $7F                                      ; Byte mask for MainLoopCounter; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlOverrideThrottle ($2B6A): 2D table, 1 points, unsigned
@@ -5164,8 +7053,26 @@ SpeedCtlOverrideThrottle:
         dc.b    255,1                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$05,$80,$00,$01,$08,$02,$2C,$05,$4D,$0A
-        dc.b    $FF,$10,$02,$20,$33,$00,$80,$F2,$FF,$FF,$FF,$FF,$04,$09,$0A,$20
-        dc.b    $26,$00,$40,$0D,$10,$00,$00,$00
+        dc.b    $FF,$10,$02,$20,$33,$00,$80,$F2,$FF,$FF,$FF,$FF
+SensorV00F0Init:
+        dc.b    $04                                      ; Byte stored into V00F0; read by Sub_3C3C6.
+SensorValue11:
+        dc.b    $09                                      ; Byte used with; read by Sub_3C3C6.
+SensorRpmThresh6:
+        dc.b    $0A,$20                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
+SensorRpmThresh7:
+        dc.b    $26,$00                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
+SensorValue12:
+        dc.b    $40                                      ; Byte used with; read by Sub_3C3C6.
+SensorThrottleThresh3:
+        dc.b    $0D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3C3C6.
+SensorValue13:
+        dc.b    $10                                      ; Byte used with; read by Sub_3C3C6.
+SpeedCtlV0423Thresh:
+        dc.b    $00                                      ; Byte compared with V0423; read by Sub_3C690.
+        dc.b    $00
+SpeedCtlV0424Thresh:
+        dc.b    $00                                      ; Byte compared with V0424; read by Sub_3B800.
 
 ;---------------------------------------------------------------------------------------------------
 ; MapHighThresholdRpm ($2B96): 2D table, 7 points, unsigned
@@ -5190,7 +7097,9 @@ MapHighThresholdBaro:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00
+SensorOffset3:
+        dc.b    $00                                      ; Byte subtracted from; read by Sub_2CB60.
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireLoadScale ($2BB7): 2D table, 3 points, unsigned
@@ -5267,8 +7176,54 @@ ExpectedMapThrottleScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    10,0, 0,4, 0,5, 0,0, 0,0                 ; x, y
 
-        dc.b    $08,$12,$0A,$12,$0A,$F0,$04,$74,$04,$C4,$04,$04,$04,$32,$05,$8A
-        dc.b    $31,$30,$80,$32,$77,$6E,$95,$95,$07,$F8
+MisfireOptions:
+        dc.b    $08                                      ; Option byte; bits tested: $02, $04, $08, $10, $20, $40, $80. Read by Sub_14802, Sub_22E06, Sub_2A906 +5.
+FuelMapThresh4:
+        dc.b    $12                                      ; Byte compared with Map; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh1:
+        dc.b    $0A                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelThresh3:
+        dc.b    $12                                      ; Byte compared with; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh2:
+        dc.b    $0A                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelDecelLeanFuelThresh:
+        dc.b    $F0                                      ; Byte compared with DecelLeanFuel; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh3:
+        dc.b    $04                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelValue13:
+        dc.b    $74                                      ; Byte used with; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh4:
+        dc.b    $04                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelSpeedDampSparkThresh:
+        dc.b    $C4                                      ; Byte compared with SpeedDampSpark; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh5:
+        dc.b    $04                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh6:
+        dc.b    $04                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh7:
+        dc.b    $04                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+FuelMisfireTransientHoldThresh8:
+        dc.b    $32                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA, Sub_2B730.
+FuelMisfireTransientHoldThresh9:
+        dc.b    $05                                      ; Byte compared with MisfireTransientHold; read by Sub_2B0FA.
+MisfireValue1:
+        dc.b    $8A,$31                                  ; Word used with; read by Sub_2B456.
+MisfireFactor1:
+        dc.b    $30                                      ; Byte multiplied; read by Sub_2B456.
+MisfireV0019Offset:
+        dc.b    $80                                      ; Byte subtracted from V0019; read by Sub_2B456.
+MisfireOffset:
+        dc.b    $32                                      ; Byte subtracted from; read by Sub_2B456.
+FuelStartCoolantThresh1:
+        dc.b    $77                                      ; Byte compared with StartCoolantTemp2; read by Sub_2AB16.
+FuelStartCoolantThresh2:
+        dc.b    $6E                                      ; Byte compared with StartCoolantTemp2; read by Sub_2AB16.
+FuelThresh4:
+        dc.b    $95                                      ; Byte compared with; read by Sub_2AB16.
+FuelThresh5:
+        dc.b    $95                                      ; Byte compared with; read by Sub_2AB16.
+MisfireChangeMax:
+        dc.b    $07,$F8                                  ; Misfire monitor: segment-time change above which a misfire is taken without the thresholds
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireEnableCoolant ($2C19): 2D table, 4 points, unsigned
@@ -5475,9 +7430,37 @@ MisfireHoldSegRpm:
         dc.b    5,$80                                    ; points, flags
         dc.b    19,39, 29,24, 47,10, 63,8, 78,0          ; x, y
 
-        dc.b    $00,$FF,$00,$00,$03,$2D,$CD,$55,$03,$2D,$CD,$55,$03,$2D,$CD,$55
-        dc.b    $00,$17,$54,$38,$00,$0C,$00,$08,$00,$FF,$03,$02,$06,$BC,$10,$05
-        dc.b    $33,$00,$01,$2A,$01,$03,$17,$01,$01,$10,$03,$01,$0B,$05,$01
+FuelEventV0631Value:
+        dc.b    $00,$FF                                  ; Word used with V0631; read by Sub_246FC, Sub_247A8.
+FuelEventValue11:
+        dc.b    $00,$00                                  ; Word used with; read by Sub_247A8.
+FuelValue14:
+        dc.b    $03,$2D,$CD,$55                          ; Long used with; read by Sub_2B730.
+StartV000FInit:
+        dc.b    $03,$2D,$CD,$55                          ; Long stored into V000F; read by Reset, Sub_2A906.
+StartV0013Init:
+        dc.b    $03,$2D,$CD,$55                          ; Long stored into V0013; read by Reset, Sub_2A906.
+MisfireAdder1:
+        dc.b    $00,$17                                  ; Word added to; read by Sub_2B93E.
+MisfireAdder2:
+        dc.b    $54,$38                                  ; Word added to; read by Sub_2B93E.
+MisfireValue2:
+        dc.b    $00,$0C                                  ; Word used with; read by Sub_2A906.
+MisfireIdleTargetAdder1:
+        dc.b    $00,$08                                  ; Word added to IdleTarget; read by Sub_2A906.
+MisfireV00DEThresh:
+        dc.b    $00,$FF                                  ; Word compared with V00DE; read by Sub_2A906, Sub_2B448.
+MisfireV0623Thresh1:
+        dc.b    $03                                      ; Byte compared with V0623; read by Sub_2A906.
+MisfireV0623Thresh2:
+        dc.b    $02                                      ; Byte compared with V0623; read by Sub_2A906.
+MisfireHoldSpeedMin:
+        dc.b    $06                                      ; Misfire hold-off (MisfireHoldSegRpm) applies above this vehicle speed
+MisfireIdleTargetAdder2:
+        dc.b    $BC                                      ; Byte added to IdleTarget; read by Sub_2A906.
+MisfireValue3:
+        dc.b    $10                                      ; Byte used with; read by Sub_2B93E.
+        dc.b    $05,$33,$00,$01,$2A,$01,$03,$17,$01,$01,$10,$03,$01,$0B,$05,$01
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireDevCurve2 ($2ED5): 2D table, 1 points, unsigned
@@ -5516,7 +7499,34 @@ MisfireEnableBaro:
         dc.b    4,$80                                    ; points, flags
         dc.b    129,28, 194,42, 227,49, 255,55           ; x, y
 
-        dc.b    $00,$B4,$00,$1E,$0D,$5A,$FE,$04,$0F,$0F,$FE,$06,$61,$74,$26,$FE
+FuelV0610Thresh:
+        dc.b    $00,$B4                                  ; Word compared with V0610; read by Sub_2AE1E.
+FuelValue15:
+        dc.b    $00,$1E                                  ; Word used with; read by Sub_2AE1E.
+PurgeV0474Thresh:
+        dc.b    $0D                                      ; Byte compared with V0474; read by Sub_3ECC6.
+FuelV061DThresh:
+        dc.b    $5A                                      ; Byte compared with V061D; read by Sub_2AE1E.
+FuelV0619Thresh:
+        dc.b    $FE                                      ; Byte compared with V0619; read by Sub_2AE1E.
+FuelV061BThresh:
+        dc.b    $04                                      ; Byte compared with V061B; read by Sub_2AE1E.
+FuelValue16:
+        dc.b    $0F                                      ; Byte used with; read by Sub_2AE1E.
+FuelValue17:
+        dc.b    $0F                                      ; Byte used with; read by Sub_2AE1E.
+FuelCoolantThresh4:
+        dc.b    $FE                                      ; Byte compared with CoolantTemp; read by Sub_2B0FA.
+FuelSpeedThresh:
+        dc.b    $06                                      ; Byte compared with VehicleSpeed; read by Sub_2B0FA.
+FuelMapThresh5:
+        dc.b    $61                                      ; Byte compared with Map; read by Sub_2B0FA.
+FuelSegRpmThresh1:
+        dc.b    $74                                      ; Byte compared with SegmentRpm; read by Sub_2B0FA.
+FuelSegRpmThresh2:
+        dc.b    $26                                      ; Byte compared with SegmentRpm; read by Sub_2B0FA.
+FuelThresh6:
+        dc.b    $FE                                      ; Byte compared with; read by Sub_2AE1E.
 
 ;---------------------------------------------------------------------------------------------------
 ; DiagTimerRpm ($2F13): 2D table, 6 points, unsigned
@@ -5529,7 +7539,16 @@ DiagTimerRpm:
         dc.b    6,$80                                    ; points, flags
         dc.b    16,24, 20,19, 25,15, 38,10, 50,8, 75,5   ; x, y
 
-        dc.b    $08,$00,$F5,$03,$00,$00
+MisfireValue4:
+        dc.b    $08                                      ; Byte used with; read by Sub_2B692.
+MisfireFactor2:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_2B692.
+MisfireValue5:
+        dc.b    $F5                                      ; Byte used with; read by Sub_2B456.
+MisfireV062BInit:
+        dc.b    $03                                      ; Byte stored into V062B; read by Sub_2B456.
+MisfireV05D2Thresh2:
+        dc.b    $00,$00                                  ; Word compared with V05D2; read by Sub_2B692.
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireNoiseLimit ($2F27): 3D table, 9 rows x 9 columns, unsigned
@@ -5551,7 +7570,14 @@ MisfireNoiseLimit:
         dc.b    254,254,254,254,254,254,254,254,254      ; row 7
         dc.b    254,254,254,254,254,254,254,254,254      ; row 8
 
-        dc.b    $92,$92,$1E,$22
+PurgeCoolantThresh2:
+        dc.b    $92                                      ; Byte compared with CoolantTemp; read by Sub_3ED66.
+PurgeAirTempThresh:
+        dc.b    $92                                      ; Byte compared with AirTemp; read by Sub_3ED66.
+PurgeValue10:
+        dc.b    $1E                                      ; Byte used with; read by Sub_3E074, Sub_3ED66.
+PurgeValue11:
+        dc.b    $22                                      ; Byte used with; read by Sub_3ED66.
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexEthanolMap ($2F88): 3D table, 9 rows x 17 columns, unsigned
@@ -5573,14 +7599,76 @@ FlexEthanolMap:
         dc.b    64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64 ; row 7
         dc.b    64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64 ; row 8
 
-        dc.b    $9F,$84,$06,$F6,$92,$20,$14,$1C,$01,$3A,$55,$29,$06,$06,$3E,$06
-        dc.b    $18,$18,$06,$12,$03,$05,$03,$05,$27,$1E,$10,$07,$12,$0D,$0F,$96
+DiagBatteryTempThresh1:
+        dc.b    $9F                                      ; Byte compared with BatteryTemp; read by Sub_25784.
+DiagBatteryTempThresh2:
+        dc.b    $84                                      ; Byte compared with BatteryTemp; read by Sub_25784.
+DiagCoolantThresh1:
+        dc.b    $06                                      ; Byte compared with CoolantTemp; read by Sub_25784.
+DiagVoltsThresh1:
+        dc.b    $F6                                      ; Byte compared with BatteryVolts2; read by Sub_25784.
+DiagVoltsThresh2:
+        dc.b    $92                                      ; Byte compared with BatteryVolts2; read by Sub_25784.
+DiagVacuumThresh1:
+        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_25784.
+DiagV0591Thresh:
+        dc.b    $14                                      ; Byte compared with V0591; read by Sub_25DA8.
+DiagV0593Thresh:
+        dc.b    $1C                                      ; Byte compared with V0593; read by Sub_25784.
+DiagV0592Thresh:
+        dc.b    $01                                      ; Byte compared with V0592; read by Sub_25784, Sub_25DA8.
+DiagValue1:
+        dc.b    $3A                                      ; Byte used with; read by Sub_25DA8.
+DiagMonPeakThresh1:
+        dc.b    $55                                      ; Byte compared with DiagMonPeak; read by Sub_25DA8.
+DiagThresh1:
+        dc.b    $29                                      ; Byte compared with; read by Sub_25784.
+DiagThresh2:
+        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
+DiagV0590Thresh:
+        dc.b    $06                                      ; Byte compared with V0590; read by Sub_25784.
+DiagV0598Thresh:
+        dc.b    $3E                                      ; Byte compared with V0598; read by Sub_25784.
+DiagThresh3:
+        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
+DiagThresh4:
+        dc.b    $18                                      ; Byte compared with; read by Sub_25784.
+DiagThresh5:
+        dc.b    $18                                      ; Byte compared with; read by Sub_25784.
+DiagV0599Thresh:
+        dc.b    $06                                      ; Byte compared with V0599; read by Sub_25784.
+DiagV059AThresh:
+        dc.b    $12                                      ; Byte compared with V059A; read by Sub_25784.
+DiagV0596Thresh1:
+        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
+DiagV0597Thresh1:
+        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
+DiagV0596Thresh2:
+        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
+DiagV0597Thresh2:
+        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
+DiagMonPeakThresh2:
+        dc.b    $27                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+DiagMonPeakThresh3:
+        dc.b    $1E                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+DiagV0595Thresh:
+        dc.b    $10                                      ; Byte compared with V0595; read by Sub_25784.
+DiagThresh6:
+        dc.b    $07                                      ; Byte compared with; read by Sub_25784.
+DiagMonPeakThresh4:
+        dc.b    $12                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+DiagVacuumThresh2:
+        dc.b    $0D                                      ; Byte compared with ManifoldVacuum; read by Sub_25784.
+SensorPurgeDutyThresh1:
+        dc.b    $0F                                      ; Byte compared with PurgeDuty; read by Sub_25E9E.
+SensorV059BThresh:
+        dc.b    $96                                      ; Byte compared with V059B; read by Sub_25E9E.
 
 ;---------------------------------------------------------------------------------------------------
 ; DiagLevelLimit ($3055): 2D table, 1 points, unsigned
 ; Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $019C,Z
+; Inputs: FuelLevelScaled
 ; Read at $25A8E
 ;---------------------------------------------------------------------------------------------------
 DiagLevelLimit:
@@ -5593,20 +7681,118 @@ DiagLevelLimit:
 ; DiagLevelLimit2 ($3061): 2D table, 1 points, unsigned
 ; As DiagLevelLimit with $0649,Z bit 1 set
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $019C,Z
+; Inputs: FuelLevelScaled
 ; Read at $25A7E
 ;---------------------------------------------------------------------------------------------------
 DiagLevelLimit2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,27                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$13,$CD,$02,$BA,$09,$10,$3C,$EF,$01,$02,$08,$10
-        dc.b    $06,$FA,$06,$FA,$10,$10,$02,$00,$0F,$25,$05,$0E,$A6,$FF,$00,$FF
-        dc.b    $00,$7F,$7F,$1E,$1E,$29,$02,$49,$90,$84,$31,$3C,$00,$01,$00,$01
-        dc.b    $00,$01,$E6,$06,$FA,$12,$EE,$28,$28,$1F,$01,$00,$62,$B9,$27,$50
-        dc.b    $03,$1B,$00,$00,$00,$00,$00,$00,$B3,$23,$00,$B8,$61,$B9,$27,$50
-        dc.b    $03,$1B,$00,$00,$00,$00,$00,$00,$11,$5A,$03,$03,$04,$32,$32,$32
-        dc.b    $32,$0F,$0A,$81
+        dc.b    $FF,$FF,$FF,$FF
+DiagTimeThresh1:
+        dc.b    $13                                      ; Byte compared with Count3s; read by Sub_252A8.
+DiagCoolantThresh2:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_252A8.
+DiagSpeedThresh1:
+        dc.b    $02                                      ; Byte compared with VehicleSpeed; read by Sub_252A8.
+DiagMapThresh1:
+        dc.b    $BA                                      ; Byte compared with Map; read by Sub_252A8.
+DiagRpmThresh1:
+        dc.b    $09,$10                                  ; Word compared with EngineRpm; read by Sub_252A8.
+DiagV05B1Value:
+        dc.b    $3C                                      ; Byte used with V05B1; read by Sub_252A8.
+DiagValue2:
+        dc.b    $EF                                      ; Byte used with; read by Sub_252A8.
+DiagIacTargetCmdThresh:
+        dc.b    $01                                      ; Byte compared with IacTargetCmd; read by Sub_252A8.
+DiagIacPositionThresh:
+        dc.b    $02                                      ; Byte compared with IacPosition; read by Sub_252A8.
+DiagMapThresh2:
+        dc.b    $08                                      ; Byte compared with Map; read by Sub_252A8.
+DiagValue3:
+        dc.b    $10                                      ; Byte used with; read by Sub_252A8.
+        dc.b    $06,$FA,$06,$FA,$10,$10,$02
+O2Adder5:
+        dc.b    $00                                      ; Byte added to; read by Sub_15364.
+PurgeAdder8:
+        dc.b    $0F                                      ; Byte added to; read by Sub_3D85E.
+PurgeThresh8:
+        dc.b    $25                                      ; Byte compared with; read by Sub_3D85E.
+PurgeOffset2:
+        dc.b    $05                                      ; Byte subtracted from; read by Sub_3D85E.
+PurgeV05B2Thresh:
+        dc.b    $0E                                      ; Byte compared with V05B2; read by Sub_3D85E.
+DiagV042DThresh:
+        dc.b    $A6                                      ; Byte compared with V042D; read by Sub_252A8.
+ThermistorRpmValue:
+        dc.b    $FF,$00                                  ; Word used with EngineRpm; read by Sub_252A8, Sub_32318.
+ThermistorValue6:
+        dc.b    $FF,$00                                  ; Word used with; read by Sub_252A8, Sub_32318.
+DiagV05B4Thresh:
+        dc.b    $7F                                      ; Byte compared with V05B4; read by Sub_252A8.
+DiagThresh7:
+        dc.b    $7F                                      ; Byte compared with; read by Sub_252A8.
+O2V05B9Thresh:
+        dc.b    $1E                                      ; Byte compared with V05B9; read by Sub_155C8, Sub_252A8.
+O2Thresh21:
+        dc.b    $1E                                      ; Byte compared with; read by Sub_155C8, Sub_252A8.
+PurgeV006AThresh:
+        dc.b    $29                                      ; Byte compared with V006A; read by Sub_3DD3C.
+DiagV05BDThresh:
+        dc.b    $02                                      ; Byte compared with V05BD; read by Sub_252A8.
+MapV0581Thresh:
+        dc.b    $49                                      ; Byte compared with V0581; read by Sub_25000.
+MapCoolantThresh:
+        dc.b    $90                                      ; Byte compared with CoolantTemp; read by Sub_25000.
+MapBatteryTempThresh:
+        dc.b    $84                                      ; Byte compared with BatteryTemp; read by Sub_25000.
+MapVacuumThresh:
+        dc.b    $31                                      ; Byte compared with ManifoldVacuum; read by Sub_25000.
+MapSpeedThresh:
+        dc.b    $3C                                      ; Byte compared with VehicleSpeed; read by Sub_25000.
+MapAccelFuelThresh:
+        dc.b    $00,$01                                  ; Word compared with MapAccelFuel; read by Sub_25000.
+MapAccelTpsFuelThresh:
+        dc.b    $00,$01                                  ; Word compared with AccelTpsFuel; read by Sub_25000.
+MapTipInFuelThresh:
+        dc.b    $00,$01                                  ; Word compared with TipInFuel; read by Sub_25000.
+MapDecelLeanFuelThresh:
+        dc.b    $E6                                      ; Byte compared with DecelLeanFuel; read by Sub_25000.
+        dc.b    $06,$FA,$12,$EE,$28,$28,$1F
+MapV057EThresh1:
+        dc.b    $01,$00                                  ; Word compared with V057E; read by Sub_25000.
+        dc.b    $62,$B9,$27,$50,$03,$1B,$00,$00,$00,$00,$00,$00
+MapShortTermTrim1Thresh1:
+        dc.b    $B3                                      ; Byte compared with ShortTermTrim1; read by Sub_25000.
+MapShortTermTrim1Thresh2:
+        dc.b    $23                                      ; Byte compared with ShortTermTrim1; read by Sub_25000.
+MapV057EThresh2:
+        dc.b    $00,$B8                                  ; Word compared with V057E; read by Sub_25000.
+        dc.b    $61,$B9,$27,$50,$03,$1B,$00,$00,$00,$00,$00,$00
+ThermistorV0588Value1:
+        dc.b    $11                                      ; Byte used with V0588; read by Sub_25000, Sub_32318.
+ThermistorV0588Value2:
+        dc.b    $5A                                      ; Byte used with V0588; read by Sub_25000, Sub_32318.
+MapV0589Thresh:
+        dc.b    $03                                      ; Byte compared with V0589; read by Sub_25000.
+FuelOffset4:
+        dc.b    $03                                      ; Byte subtracted from result of FuelSysLimit2; read by Sub_2A4F2, Sub_2A6C0.
+FuelAdder:
+        dc.b    $04                                      ; Byte added to result of FuelSysLimit; read by Sub_2A0F0, Sub_2A302.
+DiagThresh8:
+        dc.b    $32                                      ; Byte compared with; read by Sub_2A496, Sub_2A664.
+DiagThresh9:
+        dc.b    $32                                      ; Byte compared with; read by Sub_2A07E, Sub_2A290.
+FuelV05ABThresh:
+        dc.b    $32                                      ; Byte compared with V05AB; read by Sub_2A4F2, Sub_2A6C0.
+FuelV05ADThresh:
+        dc.b    $32                                      ; Byte compared with V05AD; read by Sub_2A0F0, Sub_2A302.
+O2V05A5Init:
+        dc.b    $0F                                      ; Byte stored into V05A5; read by Sub_1594A.
+DiagV05A8Init:
+        dc.b    $0A                                      ; Byte stored into V05A8; read by Sub_2A000, Sub_2A212, Sub_2A424 +1.
+FuelV007DThresh:
+        dc.b    $81                                      ; Byte compared with V007D; read by Sub_2A07E, Sub_2A0F0, Sub_2A290 +1.
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysLimit ($30C9): 3D table, 5 rows x 5 columns, unsigned
@@ -5665,19 +7851,178 @@ FuelSysLimitScale2:
         dc.b    5,$80                                    ; points, flags
         dc.b    15,0, 30,64, 50,128, 85,192, 255,255     ; x, y
 
-        dc.b    $41,$C7,$14,$1C,$06,$40,$7B,$85,$08,$08,$11,$1E,$89,$85,$00,$00
-        dc.b    $02,$00,$01,$00,$0B,$05,$2D,$00,$00,$7F,$00,$05,$FB,$00,$00,$0F
-        dc.b    $F1,$00,$00,$15,$15,$00,$00,$15,$84,$8A,$00,$00,$70,$0C,$12,$80
-        dc.b    $80,$60,$26,$80,$80,$00,$64,$15,$90,$11,$30,$1E,$4D,$00,$4D,$00
-        dc.b    $1A,$00,$1A,$00,$01,$00,$01,$00,$08,$00,$08,$00,$0A,$00,$0A,$00
-        dc.b    $25,$CD,$28,$FC,$60,$19,$80,$80,$01,$00,$01,$00,$01,$00,$FA,$50
-        dc.b    $57,$7E,$31,$5F,$00,$00,$00,$00,$05,$5F,$44,$81,$2F,$61,$00,$00
-        dc.b    $00,$00,$0B,$F5,$00,$FB,$24,$DC,$00,$FB,$28,$28,$00,$00,$1F,$87
-        dc.b    $89,$00,$00,$87,$89,$15,$26,$08,$26,$06,$26,$57,$AD,$80,$00,$00
-        dc.b    $FF,$15,$26,$0B,$F5,$24,$DC,$28,$28,$03,$80,$01,$06,$02,$0D,$03
-        dc.b    $13,$FF,$FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$00,$00,$00,$00,$9B,$24,$05,$FF,$FF,$79,$B5,$B2,$70,$6D,$00
-        dc.b    $18,$0C,$80,$1C,$20,$05,$E6,$07,$07,$6D,$09,$0C,$6D,$0C,$7A,$13
+DiagTimeThresh2:
+        dc.b    $41                                      ; Byte compared with Count3s; read by Sub_2877A.
+DiagCoolantThresh3:
+        dc.b    $C7                                      ; Byte compared with CoolantTemp; read by Sub_2877A.
+DiagSpeedThresh2:
+        dc.b    $14                                      ; Byte compared with VehicleSpeed; read by Sub_2877A.
+DiagV053FThresh:
+        dc.b    $1C                                      ; Byte compared with V053F; read by Sub_2877A.
+DiagIdleTargetThresh:
+        dc.b    $06,$40                                  ; Word compared with IdleTarget; read by Sub_2877A.
+DiagThresh10:
+        dc.b    $7B                                      ; Byte compared with; read by Sub_2877A.
+DiagThresh11:
+        dc.b    $85                                      ; Byte compared with; read by Sub_2877A.
+DiagV0542Thresh:
+        dc.b    $08                                      ; Byte compared with V0542; read by Sub_2877A.
+DiagV0541Init:
+        dc.b    $08                                      ; Byte stored into V0541; read by Sub_2877A.
+DiagV0A4EThresh:
+        dc.b    $11                                      ; Byte compared with V0A4E; read by Sub_2877A.
+DiagV0543Thresh:
+        dc.b    $1E                                      ; Byte compared with V0543; read by Sub_2877A.
+        dc.b    $89,$85,$00,$00,$02,$00,$01,$00
+DiagThresh12:
+        dc.b    $0B                                      ; Byte compared with; read by Sub_2877A.
+        dc.b    $05,$2D,$00,$00
+DiagThresh13:
+        dc.b    $7F                                      ; Byte compared with; read by Sub_2877A.
+O2Value36:
+        dc.b    $00                                      ; Byte used with; read by Sub_14802.
+        dc.b    $05,$FB,$00,$00,$0F,$F1,$00,$00,$15,$15,$00,$00,$15,$84,$8A,$00
+        dc.b    $00
+DiagThresh14:
+        dc.b    $70                                      ; Byte compared with; read by Sub_2877A.
+DiagThresh15:
+        dc.b    $0C                                      ; Byte compared with; read by Sub_2877A.
+        dc.b    $12,$80,$80
+CalRunTimeThresh:
+        dc.b    $60                                      ; Byte compared with RunTime; read by Sub_28D78.
+        dc.b    $26,$80,$80
+CalV010AThresh1:
+        dc.b    $00,$64                                  ; Word compared with V010A; read by Sub_2919A.
+CalV010AThresh2:
+        dc.b    $15,$90                                  ; Word compared with V010A; read by Sub_28D78.
+CalV010AThresh3:
+        dc.b    $11,$30                                  ; Word compared with V010A; read by Sub_291F0.
+CalV010EThresh:
+        dc.b    $1E                                      ; Byte compared with V010E; read by Sub_29384.
+        dc.b    $4D,$00,$4D,$00,$1A,$00,$1A,$00,$01,$00,$01,$00,$08,$00,$08,$00
+        dc.b    $0A,$00,$0A,$00
+O2Adder6:
+        dc.b    $25                                      ; Byte added to; read by Sub_14740.
+DiagCoolantThresh4:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_285CA.
+DiagSpeedThresh3:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_285CA.
+DiagV056EThresh:
+        dc.b    $FC                                      ; Byte compared with V056E; read by Sub_285CA.
+DiagRpmSpeedRatioThresh:
+        dc.b    $60                                      ; Byte compared with RpmSpeedRatio; read by Sub_285CA.
+        dc.b    $19,$80,$80
+DiagMapAccelFuelThresh:
+        dc.b    $01,$00                                  ; Word compared with MapAccelFuel; read by Sub_285CA.
+DiagAccelTpsFuelThresh:
+        dc.b    $01,$00                                  ; Word compared with AccelTpsFuel; read by Sub_285CA.
+DiagTipInFuelThresh:
+        dc.b    $01,$00                                  ; Word compared with TipInFuel; read by Sub_285CA.
+DiagDecelLeanFuelThresh:
+        dc.b    $FA                                      ; Byte compared with DecelLeanFuel; read by Sub_285CA.
+DiagThresh16:
+        dc.b    $50                                      ; Byte compared with; read by Sub_281E2.
+        dc.b    $57,$7E,$31,$5F,$00,$00,$00,$00
+DiagThresh17:
+        dc.b    $05,$5F                                  ; Word compared with; read by Sub_281E2.
+        dc.b    $44,$81,$2F,$61,$00,$00,$00,$00,$0B,$F5,$00,$FB,$24,$DC,$00,$FB
+        dc.b    $28,$28,$00,$00,$1F,$87,$89,$00,$00
+DiagValue4:
+        dc.b    $87                                      ; Byte used with; read by Sub_281E2.
+DiagValue5:
+        dc.b    $89                                      ; Byte used with; read by Sub_281E2.
+DiagThresh18:
+        dc.b    $15                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh19:
+        dc.b    $26                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh20:
+        dc.b    $08                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh21:
+        dc.b    $26                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh22:
+        dc.b    $06                                      ; Byte compared with; read by Sub_281E2.
+DiagValue6:
+        dc.b    $26                                      ; Byte used with; read by Sub_281E2.
+DiagValue7:
+        dc.b    $57                                      ; Byte used with; read by Sub_281E2.
+ThermistorThresh1:
+        dc.b    $AD                                      ; Byte compared with; read by Sub_32318.
+ThermistorThresh2:
+        dc.b    $80                                      ; Byte compared with; read by Sub_32318.
+ThermistorThresh3:
+        dc.b    $00                                      ; Byte compared with; read by Sub_32318.
+ThermistorThresh4:
+        dc.b    $00                                      ; Byte compared with; read by Sub_32318.
+DiagThresh23:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh24:
+        dc.b    $15                                      ; Byte compared with; read by Sub_281E2.
+DiagThresh25:
+        dc.b    $26                                      ; Byte compared with; read by Sub_281E2.
+        dc.b    $0B,$F5,$24,$DC,$28,$28,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF
+        dc.b    $FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+SensorV0A64Thresh1:
+        dc.b    $00                                      ; Byte compared with V0A64; read by Sub_2DCC2.
+SensorV0A64Thresh2:
+        dc.b    $00                                      ; Byte compared with V0A64; read by Sub_2DCC2.
+SensorV06B2Thresh:
+        dc.b    $00                                      ; Byte compared with V06B2; read by Sub_2DCC2.
+SensorTimeThresh4:
+        dc.b    $00                                      ; Byte compared with Count3s; read by Sub_2DCC2.
+SensorCoolantThresh7:
+        dc.b    $9B                                      ; Byte compared with CoolantTemp; read by Sub_2802A.
+SensorSpeedThresh2:
+        dc.b    $24                                      ; Byte compared with VehicleSpeed; read by Sub_2802A.
+SensorV057BThresh:
+        dc.b    $05                                      ; Byte compared with V057B; read by Sub_2802A.
+SensorThresh9:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_2802A.
+SensorValue15:
+        dc.b    $FF                                      ; Byte used with; read by Sub_2802A.
+CalBatteryTempThresh2:
+        dc.b    $79                                      ; Byte compared with BatteryTemp; read by Sub_21800.
+CalBaroThresh:
+        dc.b    $B5                                      ; Byte compared with Baro; read by Sub_21800.
+CalVoltsThresh2:
+        dc.b    $B2                                      ; Byte compared with BatteryVolts2; read by Sub_21800.
+CalThresh2:
+        dc.b    $70                                      ; Byte compared with; read by Sub_21800.
+CalAnalogV0A92FilteredThresh:
+        dc.b    $6D                                      ; Byte compared with AnalogV0A92Filtered; read by Sub_21800.
+CalThresh3:
+        dc.b    $00                                      ; Byte compared with; read by Sub_21800.
+PurgeValue12:
+        dc.b    $18                                      ; Byte used with; read by Sub_3ECC6.
+PurgeValue13:
+        dc.b    $0C                                      ; Byte used with; read by Sub_3ECC6.
+StartV01B6Value:
+        dc.b    $80                                      ; Byte used with V01B6; read by Reset, Sub_17A48, Sub_2C708.
+AnalogTimeThresh:
+        dc.b    $1C                                      ; Byte compared with Count3s; read by CheckPowerDown, Sub_2C708.
+AnalogValue:
+        dc.b    $20                                      ; Byte used with; read by Sub_2C708.
+SensorAnalogV0A92FilteredThresh1:
+        dc.b    $05                                      ; Byte compared with AnalogV0A92Filtered; read by Sub_22EA6.
+SensorAnalogV0A92FilteredThresh2:
+        dc.b    $E6                                      ; Byte compared with AnalogV0A92Filtered; read by Sub_22EA6.
+SensorV06C5Thresh:
+        dc.b    $07                                      ; Byte compared with V06C5; read by Sub_22EA6.
+SensorV06C2Thresh:
+        dc.b    $07                                      ; Byte compared with V06C2; read by Sub_22EA6.
+SensorThresh10:
+        dc.b    $6D                                      ; Byte compared with; read by Sub_22EA6.
+SensorThresh11:
+        dc.b    $09                                      ; Byte compared with; read by Sub_22EA6.
+SensorV011FThresh1:
+        dc.b    $0C                                      ; Byte compared with V011F; read by Sub_22EA6.
+SensorAnalogV0A92FilteredThresh3:
+        dc.b    $6D                                      ; Byte compared with AnalogV0A92Filtered; read by Sub_22EA6.
+SensorThresh12:
+        dc.b    $0C                                      ; Byte compared with; read by Sub_22EA6.
+SensorV011FThresh2:
+        dc.b    $7A                                      ; Byte compared with V011F; read by Sub_22EA6.
+SensorThresh13:
+        dc.b    $13                                      ; Byte compared with; read by Sub_22EA6.
 
 ;---------------------------------------------------------------------------------------------------
 ; AnalogV0A92VoltsAdder ($31F3): 2D table, 5 points, signed
@@ -5715,8 +8060,31 @@ AnalogV0A92Curve:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,255, 255,0                             ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$FF,$00,$FF,$FF,$00,$FF,$00
-        dc.b    $FF,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+DiagFactor1:
+        dc.b    $FF                                      ; Byte multiplied; read by Sub_2197C.
+DiagAdder1:
+        dc.b    $00                                      ; Byte added to; read by Sub_2197C.
+DiagAdder2:
+        dc.b    $00                                      ; Byte added to; read by Sub_2197C.
+DiagV06AFThresh:
+        dc.b    $FF                                      ; Byte compared with V06AF; read by Sub_2197C.
+DiagSpeedThresh4:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2197C.
+DiagRpmThresh2:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2197C.
+DiagRpmThresh3:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2197C.
+DiagV06AEThresh:
+        dc.b    $00                                      ; Byte compared with V06AE; read by Sub_2197C.
+ExpectedMapRpmMin:
+        dc.b    $FF                                      ; MAP/throttle rationality runs above this engine rpm
+DiagSpeedThresh5:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2197C.
+LimpRpmMapFault:
+        dc.b    $FF                                      ; Rpm limit with the MAP fault
+LimpMapFaultTime:
+        dc.b    $00                                      ; MAP fault: time with MAP above the baro limit before it sets
 
 ;---------------------------------------------------------------------------------------------------
 ; LimpRpmSpeed ($3223): 2D table, 1 points, unsigned
@@ -5790,10 +8158,86 @@ ExpectedMap:
         dc.b    255,255,255,255,255,255,255,255,255      ; row 7
         dc.b    255,255,255,255,255,255,255,255,255      ; row 8
 
-        dc.b    $00,$FF,$00,$00,$00,$FF,$00,$FF,$00,$00,$FF,$FF,$00,$00,$00,$40
-        dc.b    $00,$00,$00,$00,$0F,$01,$B6,$13,$CD,$02,$02,$80,$02,$12,$21,$1E
-        dc.b    $7D,$C8,$10,$70,$03,$6A,$3C,$1A,$C8,$01,$FF,$FF,$00,$FF,$00,$FF
-        dc.b    $00,$00,$00
+SensorV06CCThresh:
+        dc.b    $00                                      ; Byte compared with V06CC; read by Sub_22C1C.
+SensorThresh14:
+        dc.b    $FF,$00                                  ; Word compared with; read by Sub_22C1C.
+SensorV06CDThresh:
+        dc.b    $00                                      ; Byte compared with V06CD; read by Sub_22C1C.
+SensorThresh15:
+        dc.b    $00,$FF                                  ; Word compared with; read by Sub_22C1C.
+SensorThresh16:
+        dc.b    $00,$FF                                  ; Word compared with; read by Sub_22C1C.
+SensorO2UpBank1RawThresh:
+        dc.b    $00                                      ; Byte compared with O2UpBank1Raw; read by Sub_22C1C.
+SensorO2UpBank2RawThresh:
+        dc.b    $00                                      ; Byte compared with O2UpBank2Raw; read by Sub_22C1C.
+SensorRpmThresh8:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2C7FE.
+SensorRpmThresh9:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2C7FE.
+FuelThresh7:
+        dc.b    $00                                      ; Byte compared with; read by Sub_0C5B4.
+FuelV0F07Thresh:
+        dc.b    $00                                      ; Byte compared with V0F07; read by Sub_0C5B4.
+FuelV0F08Thresh:
+        dc.b    $00                                      ; Byte compared with V0F08; read by Sub_0C5B4.
+CalV068FOffset:
+        dc.b    $40                                      ; Byte subtracted from V068F; read by Sub_23C3E.
+        dc.b    $00,$00,$00,$00
+O2Adder7:
+        dc.b    $0F                                      ; Byte added to; read by Sub_155C8.
+O2V0E06Switch:
+        dc.b    $01,$B6                                  ; Word tested (zero = off) V0E06; read by Sub_14802, Sub_252A8.
+CalTimeThresh:
+        dc.b    $13                                      ; Byte compared with Count3s; read by Sub_23C3E.
+CalCoolantThresh3:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_23C3E.
+CalMapLastThresh:
+        dc.b    $02                                      ; Byte compared with MapLast; read by Sub_23C3E.
+CalV0ABAThresh:
+        dc.b    $02,$80                                  ; Word compared with V0ABA; read by Sub_23C3E.
+CalThrottleDeltaThresh:
+        dc.b    $02                                      ; Byte compared with ThrottleDelta; read by Sub_23C3E.
+CalRpmThresh1:
+        dc.b    $12                                      ; Byte compared with EngineRpm; read by Sub_23C3E.
+CalRpmThresh2:
+        dc.b    $21                                      ; Byte compared with EngineRpm; read by Sub_23C3E.
+CalRpmThresh3:
+        dc.b    $1E                                      ; Byte compared with EngineRpm; read by Sub_23C3E.
+CalThresh4:
+        dc.b    $7D                                      ; Byte compared with; read by Sub_23C3E.
+CalSpeedThresh1:
+        dc.b    $C8                                      ; Byte compared with VehicleSpeed; read by Sub_23C3E.
+FuelThresh8:
+        dc.b    $10                                      ; Byte compared with; read by Sub_23D76.
+FuelThresh9:
+        dc.b    $70                                      ; Byte compared with; read by Sub_23D76.
+FuelThresh10:
+        dc.b    $03                                      ; Byte compared with; read by Sub_23D76.
+FuelV068EThresh:
+        dc.b    $6A                                      ; Byte compared with V068E; read by Sub_23D76.
+        dc.b    $3C
+CalOffset7:
+        dc.b    $1A                                      ; Byte subtracted from; read by Sub_23C3E.
+CalV068AThresh:
+        dc.b    $C8                                      ; Byte compared with V068A; read by Sub_23B84.
+CalV068DInit:
+        dc.b    $01                                      ; Byte stored into V068D; read by Sub_23B84.
+DiagSpeedThresh6:
+        dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_233FE.
+DiagRpmThresh5:
+        dc.b    $FF,$00                                  ; Word compared with EngineRpm; read by Sub_233FE.
+DiagRpmThresh6:
+        dc.b    $FF,$00                                  ; Word compared with EngineRpm; read by Sub_233FE.
+DiagThrottleThresh1:
+        dc.b    $FF                                      ; Byte compared with ThrottleAboveClosed; read by Sub_233FE.
+DiagFactor2:
+        dc.b    $00                                      ; Byte multiplied; read by Sub_233FE.
+DiagV0665Thresh:
+        dc.b    $00                                      ; Byte compared with V0665; read by Sub_233FE.
+DiagSpeedThresh7:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_233FE.
 
 ;---------------------------------------------------------------------------------------------------
 ; ThermostatTimeLimit ($32D3): 2D table, 6 points, unsigned
@@ -5806,209 +8250,259 @@ ThermostatTimeLimit:
         dc.b    6,$80                                    ; points, flags
         dc.b    88,255, 99,189, 110,151, 116,94, 121,57, 132,38 ; x, y
 
-        dc.b    $C2,$C8,$06,$40,$03,$20,$01,$E0,$02,$C7,$64,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$00,$00,$FF,$00,$FF,$06,$FF,$10,$10,$28,$28,$01,$00,$00,$13
-        dc.b    $01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$B9
-        dc.b    $01,$26,$00,$4E,$01,$28,$00,$76,$01,$2B,$00,$F0,$01,$2A,$00,$30
-        dc.b    $01,$2F,$00,$C0,$01,$2E,$00,$7E,$01,$31,$00,$C6,$01,$30,$00,$40
-        dc.b    $01,$33,$00,$13,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34,$00,$3F
-        dc.b    $01,$36,$00,$C0,$01,$3D,$00,$F0,$01,$3C,$00,$01,$00,$00,$00,$00
-        dc.b    $04,$0A,$9A,$04,$24,$00,$AA,$00,$04,$07,$7A,$00,$FF,$04,$43,$00
-        dc.b    $88,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+DiagBaroThresh1:
+        dc.b    $C2                                      ; Byte compared with Baro; read by Sub_23816.
+DiagV0660Thresh:
+        dc.b    $C8                                      ; Byte compared with V0660; read by Sub_2375A.
+DiagRpmThresh7:
+        dc.b    $06,$40                                  ; Word compared with EngineRpm; read by Sub_2375A.
+DiagThresh26:
+        dc.b    $03,$20                                  ; Word compared with; read by Sub_2375A.
+DiagV0662Thresh:
+        dc.b    $01,$E0                                  ; Word compared with V0662; read by Sub_2375A.
+DiagV0661Thresh:
+        dc.b    $02                                      ; Byte compared with V0661; read by Sub_2375A.
+DiagV0668Thresh:
+        dc.b    $C7                                      ; Byte compared with V0668; read by Sub_238D0.
+DiagSpeedThresh8:
+        dc.b    $64                                      ; Byte compared with VehicleSpeed; read by Sub_238D0.
+DiagRpmThresh8:
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_238D0.
+DiagValue8:
+        dc.b    $FF                                      ; Byte used with; read by Sub_2352A.
+DiagValue9:
+        dc.b    $FF                                      ; Byte used with; read by Sub_2352A.
+DiagSpeedThresh9:
+        dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_2352A.
+DiagRpmSpeedRatioFilteredThresh1:
+        dc.b    $FF,$FF                                  ; Word compared with RpmSpeedRatioFiltered; read by Sub_2352A.
+DiagRpmSpeedRatioFilteredThresh2:
+        dc.b    $00                                      ; Byte compared with RpmSpeedRatioFiltered; read by Sub_2352A.
+DiagV0676Thresh:
+        dc.b    $00                                      ; Byte compared with V0676; read by Sub_2352A.
+DiagV0672Thresh1:
+        dc.b    $FF                                      ; Byte compared with V0672; read by Sub_2352A.
+DiagV0672Thresh2:
+        dc.b    $00                                      ; Byte compared with V0672; read by Sub_2352A.
+DiagV0678Thresh:
+        dc.b    $FF,$06                                  ; Word compared with V0678; read by Sub_2352A.
+DiagV0677Thresh:
+        dc.b    $FF                                      ; Byte compared with V0677; read by Sub_2352A.
+DiagV011CThresh:
+        dc.b    $10                                      ; Byte compared with V011C; read by Sub_23280.
+DiagV011DThresh:
+        dc.b    $10                                      ; Byte compared with V011D; read by Sub_23280.
+DiagSpeedThresh10:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_23280.
+DiagSpeedThresh11:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_23280.
+DiagThrottleThresh2:
+        dc.b    $01                                      ; Byte compared with ThrottleAboveClosed; read by Sub_23280.
+DiagV066AThresh:
+        dc.b    $00                                      ; Byte compared with V066A; read by Sub_23280.
+DiagV066BThresh:
+        dc.b    $00                                      ; Byte compared with V066B; read by Sub_23280.
+        dc.b    $13,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00
+        dc.b    $B9,$01,$26,$00,$4E,$01,$28,$00,$76,$01,$2B,$00,$F0,$01,$2A,$00
+        dc.b    $30,$01,$2F,$00,$C0,$01,$2E,$00,$7E,$01,$31,$00,$C6,$01,$30,$00
+        dc.b    $40,$01,$33,$00,$13,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34,$00
+        dc.b    $3F,$01,$36,$00,$C0,$01,$3D,$00,$F0,$01,$3C,$00,$01,$00,$00,$00
+        dc.b    $00,$04,$0A,$9A,$04,$24,$00,$AA,$00,$04,$07,$7A,$00,$FF,$04,$43
+        dc.b    $00,$88,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$0C,$00,$A3,$00,$90,$00,$A3,$02,$02,$00,$A5
-        dc.b    $00,$10,$00,$A7,$00,$10,$00,$A9,$00,$10,$00,$AA,$00,$10,$00,$AB
-        dc.b    $00,$10,$00,$AC,$00,$10,$00,$AE,$00,$10,$00,$9D,$00,$7C,$00,$9E
-        dc.b    $00,$A9,$00,$9F,$00,$18,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$0C,$00,$A3,$00,$90,$00,$A3,$02,$02,$00
+        dc.b    $A5,$00,$10,$00,$A7,$00,$10,$00,$A9,$00,$10,$00,$AA,$00,$10,$00
+        dc.b    $AB,$00,$10,$00,$AC,$00,$10,$00,$AE,$00,$10,$00,$9D,$00,$7C,$00
+        dc.b    $9E,$00,$A9,$00,$9F,$00,$18,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$13,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE
+        dc.b    $01,$27,$00,$B8,$01,$26,$00,$4E,$01,$28,$00,$36,$01,$2B,$00,$F6
+        dc.b    $01,$2A,$00,$30,$01,$2E,$00,$7C,$01,$31,$00,$06,$01,$30,$00,$B7
+        dc.b    $01,$33,$00,$15,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34,$00,$27
+        dc.b    $01,$36,$00,$C0,$01,$39,$00,$60,$01,$3D,$00,$F0,$01,$3C,$00,$01
+        dc.b    $00,$00,$00,$00,$04,$0A,$9A,$04,$24,$00,$AA,$00,$04,$07,$7A,$00
+        dc.b    $FF,$04,$43,$00,$88,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$0C,$00,$A4,$00,$90,$00,$A4
+        dc.b    $02,$02,$00,$A6,$00,$10,$00,$A8,$00,$10,$00,$A9,$00,$10,$00,$AA
+        dc.b    $00,$10,$00,$AB,$00,$10,$00,$AD,$00,$10,$00,$AF,$00,$10,$00,$9D
+        dc.b    $00,$7C,$00,$9E,$00,$56,$00,$9F,$00,$18,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$14,$01,$23,$00,$06,$01,$25,$00,$3E,$01
+        dc.b    $24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00,$4E,$01,$28,$00,$76,$01
+        dc.b    $2B,$00,$F0,$01,$2A,$00,$30,$01,$2C,$00,$0C,$01,$2F,$00,$80,$01
+        dc.b    $2E,$00,$7E,$01,$31,$00,$0C,$01,$30,$00,$40,$01,$33,$00,$13,$01
+        dc.b    $32,$00,$06,$01,$35,$00,$06,$01,$34,$00,$3E,$01,$36,$00,$C0,$01
+        dc.b    $3D,$00,$F0,$01,$3C,$00,$01,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$01,$00,$A9,$00,$04
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$05,$00,$A5,$00,$10,$00,$AB,$00
+        dc.b    $10,$00,$9D,$00,$5C,$00,$9E,$00,$A9,$00,$9F,$00,$18,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$14,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27
+        dc.b    $00,$B8,$01,$26,$00,$4E,$01,$28,$00,$36,$01,$2B,$00,$F6,$01,$2A
+        dc.b    $00,$30,$01,$2C,$00,$0C,$01,$2E,$00,$7C,$01,$31,$00,$0C,$01,$30
+        dc.b    $00,$B0,$01,$33,$00,$15,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34
+        dc.b    $00,$26,$01,$36,$00,$C0,$01,$39,$00,$60,$01,$3D,$00,$F0,$01,$3C
+        dc.b    $00,$01,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$01,$00,$A9,$00,$04,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$05,$00,$A6,$00,$10,$00,$AB,$00,$10,$00,$9D,$00,$5C
+        dc.b    $00,$9E,$00,$56,$00,$9F,$00,$18,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$0F,$01,$23,$00
+        dc.b    $04,$01,$25,$00,$38,$01,$24,$00,$C0,$01,$27,$00,$09,$01,$26,$00
+        dc.b    $0E,$01,$28,$00,$60,$01,$2B,$00,$70,$01,$2A,$00,$30,$01,$2E,$00
+        dc.b    $7C,$01,$31,$00,$C0,$01,$33,$00,$01,$01,$35,$00,$04,$01,$34,$00
+        dc.b    $08,$01,$36,$00,$C0,$01,$3C,$00,$01,$01,$0A,$9A,$06,$03,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$01,$00,$9D,$00,$10,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$0F
+        dc.b    $01,$23,$00,$04,$01,$25,$00,$38,$01,$24,$00,$C0,$01,$27,$00,$08
+        dc.b    $01,$26,$00,$0E,$01,$28,$00,$20,$01,$2B,$00,$76,$01,$2A,$00,$30
+        dc.b    $01,$2E,$00,$7C,$01,$30,$00,$07,$01,$33,$00,$01,$01,$35,$00,$04
+        dc.b    $01,$36,$00,$C0,$01,$39,$00,$20,$01,$3C,$00,$01,$01,$0A,$9A,$06
+        dc.b    $03,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$01,$00,$9D,$00,$10,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$0F,$01,$23,$00,$04,$01,$25,$00,$38,$01,$24,$00,$C0,$01
+        dc.b    $26,$00,$0E,$01,$28,$00,$20,$01,$2B,$00,$70,$01,$2A,$00,$30,$01
+        dc.b    $2E,$00,$7C,$01,$31,$00,$C0,$01,$30,$00,$40,$01,$33,$00,$03,$01
+        dc.b    $35,$00,$04,$01,$34,$00,$10,$01,$36,$00,$C0,$01,$3C,$00,$01,$01
+        dc.b    $0A,$9A,$06,$03,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$01,$00,$9D,$00
+        dc.b    $10,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$0F,$01,$23,$00,$04,$01,$25,$00,$38,$01,$24
+        dc.b    $00,$C0,$01,$27,$00,$08,$01,$26,$00,$0E,$01,$28,$00,$20,$01,$2B
+        dc.b    $00,$70,$01,$2A,$00,$30,$01,$2E,$00,$7C,$01,$30,$00,$83,$01,$33
+        dc.b    $00,$05,$01,$35,$00,$04,$01,$36,$00,$C0,$01,$39,$00,$40,$01,$3C
+        dc.b    $00,$01,$01,$0A,$9A,$06,$03,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$01
+        dc.b    $00,$9D,$00,$10,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$17,$01,$23,$00,$06,$01,$25,$00
+        dc.b    $3E,$01,$24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00,$4E,$01,$28,$00
+        dc.b    $76,$01,$2B,$00,$F6,$01,$2A,$00,$30,$01,$2F,$00,$C0,$01,$2E,$00
+        dc.b    $7E,$01,$31,$00,$C4,$01,$30,$00,$F7,$01,$33,$00,$17,$01,$32,$00
+        dc.b    $06,$01,$35,$00,$06,$01,$34,$00,$3F,$01,$37,$00,$03,$01,$36,$00
+        dc.b    $C0,$01,$39,$00,$E0,$01,$38,$00,$09,$01,$3B,$00,$03,$01,$3D,$00
+        dc.b    $F0,$01,$3C,$00,$01,$00,$00,$00,$00,$00,$00,$00,$00,$03,$00,$A3
+        dc.b    $00,$04,$00,$A4,$00,$04,$00,$AB,$00,$04,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$0F,$00,$A3,$00,$10,$00,$A4,$00,$10,$00,$A3,$02,$02,$00
+        dc.b    $A4,$00,$00,$00,$A5,$00,$10,$00,$A6,$00,$10,$00,$AB,$00,$10,$00
+        dc.b    $AC,$00,$10,$00,$AE,$00,$10,$00,$AD,$00,$10,$00,$AF,$00,$10,$00
+        dc.b    $AA,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$FF,$00,$9F,$00,$18,$15
+        dc.b    $01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$BB
+        dc.b    $01,$26,$00,$0E,$01,$28,$00,$76,$01,$2B,$00,$F6,$01,$2A,$00,$30
+        dc.b    $01,$2F,$00,$C0,$01,$2E,$00,$7E,$01,$31,$00,$C6,$01,$30,$00,$F7
+        dc.b    $01,$33,$00,$17,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34,$00,$3F
+        dc.b    $01,$36,$00,$C0,$01,$39,$00,$60,$01,$3B,$00,$03,$01,$3D,$00,$F0
+        dc.b    $01,$3C,$00,$01,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$04,$00,$A1,$00,$04,$00,$A2,$00,$04,$07,$7A,$00
+        dc.b    $FF,$04,$43,$00,$88,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$0E,$00,$A3,$00,$90,$00,$A4
+        dc.b    $00,$90,$00,$A3,$02,$02,$00,$A4,$00,$00,$00,$A5,$00,$10,$00,$A6
+        dc.b    $00,$10,$00,$AB,$00,$10,$00,$AC,$00,$10,$00,$AE,$00,$10,$00,$AD
+        dc.b    $00,$10,$00,$AF,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$FF,$00,$9F
+        dc.b    $00,$18,$00,$00,$00,$00,$11,$01,$23,$00,$06,$01,$25,$00,$06,$01
+        dc.b    $24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00,$40,$01,$28,$00,$56,$01
+        dc.b    $2B,$00,$96,$01,$2F,$00,$40,$01,$31,$00,$C0,$01,$30,$00,$C7,$01
+        dc.b    $33,$00,$11,$01,$32,$00,$04,$01,$35,$00,$06,$01,$34,$00,$3E,$01
+        dc.b    $39,$00,$60,$01,$3B,$00,$03,$01,$3D,$00,$F0,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$02,$00,$A9,$00,$04,$00,$AA,$00,$04
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$07,$00,$AC,$00,$10,$00,$AE,$00,$10,$00,$AD,$00
+        dc.b    $10,$00,$AF,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$FF,$00,$9F,$00
+        dc.b    $08,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$14,$01,$23
+        dc.b    $00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$B9,$01,$26
+        dc.b    $00,$4E,$01,$28,$00,$36,$01,$2B,$00,$F0,$01,$2A,$00,$30,$01,$2F
+        dc.b    $00,$C0,$01,$2E,$00,$7E,$01,$31,$00,$02,$01,$30,$00,$40,$01,$33
+        dc.b    $00,$13,$01,$32,$00,$04,$01,$35,$00,$06,$01,$34,$00,$3E,$01,$36
+        dc.b    $00,$C0,$01,$3B,$00,$01,$01,$3D,$00,$F0,$01,$3C,$00,$01,$02,$00
+        dc.b    $AA,$00,$04,$04,$43,$00,$88,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$05,$00,$A3,$00,$10
+        dc.b    $00,$A5,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$A9,$00,$9F,$00,$08
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$14,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00
+        dc.b    $CE,$01,$27,$00,$B9,$01,$26,$00,$4E,$01,$28,$00,$76,$01,$2B,$00
+        dc.b    $F0,$01,$2A,$00,$30,$01,$2F,$00,$C0,$01,$2E,$00,$7E,$01,$31,$00
+        dc.b    $02,$01,$30,$00,$40,$01,$33,$00,$13,$01,$32,$00,$04,$01,$35,$00
+        dc.b    $06,$01,$34,$00,$3E,$01,$36,$00,$C0,$01,$3B,$00,$01,$01,$3D,$00
+        dc.b    $F0,$01,$3C,$00,$01,$02,$00,$AA,$00,$04,$04,$43,$00,$88,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$06,$00,$A3,$00,$10,$00,$A5,$00,$10,$00,$AA,$00,$10,$00
+        dc.b    $9D,$00,$FC,$00,$9E,$00,$A9,$00,$9F,$00,$08,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$14,$01,$23,$00,$06
+        dc.b    $01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$B8,$01,$26,$00,$4E
+        dc.b    $01,$28,$00,$36,$01,$2B,$00,$F2,$01,$2A,$00,$30,$01,$2E,$00,$7C
+        dc.b    $01,$31,$00,$02,$01,$30,$00,$B4,$01,$33,$00,$15,$01,$32,$00,$04
+        dc.b    $01,$35,$00,$06,$01,$34,$00,$26,$01,$36,$00,$C0,$01,$39,$00,$60
+        dc.b    $01,$3B,$00,$02,$01,$3D,$00,$F0,$01,$3C,$00,$01,$02,$00,$AA,$00
+        dc.b    $04,$04,$43,$00,$88,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$05,$00,$A4,$00,$10,$00,$A6
+        dc.b    $00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$56,$00,$9F,$00,$08,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$13,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01
         dc.b    $27,$00,$B8,$01,$26,$00,$4E,$01,$28,$00,$36,$01,$2B,$00,$F6,$01
-        dc.b    $2A,$00,$30,$01,$2E,$00,$7C,$01,$31,$00,$06,$01,$30,$00,$B7,$01
-        dc.b    $33,$00,$15,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34,$00,$27,$01
-        dc.b    $36,$00,$C0,$01,$39,$00,$60,$01,$3D,$00,$F0,$01,$3C,$00,$01,$00
-        dc.b    $00,$00,$00,$04,$0A,$9A,$04,$24,$00,$AA,$00,$04,$07,$7A,$00,$FF
-        dc.b    $04,$43,$00,$88,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $2A,$00,$30,$01,$2E,$00,$7C,$01,$31,$00,$02,$01,$30,$00,$B4,$01
+        dc.b    $33,$00,$15,$01,$32,$00,$04,$01,$35,$00,$06,$01,$34,$00,$26,$01
+        dc.b    $36,$00,$C0,$01,$3B,$00,$02,$01,$3D,$00,$F0,$01,$3C,$00,$01,$00
+        dc.b    $00,$00,$00,$02,$00,$AA,$00,$04,$04,$43,$00,$88,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$0C,$00,$A4,$00,$90,$00,$A4,$02
-        dc.b    $02,$00,$A6,$00,$10,$00,$A8,$00,$10,$00,$A9,$00,$10,$00,$AA,$00
-        dc.b    $10,$00,$AB,$00,$10,$00,$AD,$00,$10,$00,$AF,$00,$10,$00,$9D,$00
-        dc.b    $7C,$00,$9E,$00,$56,$00,$9F,$00,$18,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$14,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24
-        dc.b    $00,$CE,$01,$27,$00,$B9,$01,$26,$00,$4E,$01,$28,$00,$76,$01,$2B
-        dc.b    $00,$F0,$01,$2A,$00,$30,$01,$2C,$00,$0C,$01,$2F,$00,$80,$01,$2E
-        dc.b    $00,$7E,$01,$31,$00,$0C,$01,$30,$00,$40,$01,$33,$00,$13,$01,$32
-        dc.b    $00,$06,$01,$35,$00,$06,$01,$34,$00,$3E,$01,$36,$00,$C0,$01,$3D
-        dc.b    $00,$F0,$01,$3C,$00,$01,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$01,$00,$A9,$00,$04,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$05,$00,$A5,$00,$10,$00,$AB,$00,$10
-        dc.b    $00,$9D,$00,$5C,$00,$9E,$00,$A9,$00,$9F,$00,$18,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $14,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00
-        dc.b    $B8,$01,$26,$00,$4E,$01,$28,$00,$36,$01,$2B,$00,$F6,$01,$2A,$00
-        dc.b    $30,$01,$2C,$00,$0C,$01,$2E,$00,$7C,$01,$31,$00,$0C,$01,$30,$00
-        dc.b    $B0,$01,$33,$00,$15,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34,$00
-        dc.b    $26,$01,$36,$00,$C0,$01,$39,$00,$60,$01,$3D,$00,$F0,$01,$3C,$00
-        dc.b    $01,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$01,$00,$A9,$00,$04,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$05,$00,$A6,$00,$10,$00,$AB,$00,$10,$00,$9D,$00,$5C,$00
-        dc.b    $9E,$00,$56,$00,$9F,$00,$18,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$0F,$01,$23,$00,$04
-        dc.b    $01,$25,$00,$38,$01,$24,$00,$C0,$01,$27,$00,$09,$01,$26,$00,$0E
-        dc.b    $01,$28,$00,$60,$01,$2B,$00,$70,$01,$2A,$00,$30,$01,$2E,$00,$7C
-        dc.b    $01,$31,$00,$C0,$01,$33,$00,$01,$01,$35,$00,$04,$01,$34,$00,$08
-        dc.b    $01,$36,$00,$C0,$01,$3C,$00,$01,$01,$0A,$9A,$06,$03,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$01,$00,$9D,$00,$10,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$0F,$01
-        dc.b    $23,$00,$04,$01,$25,$00,$38,$01,$24,$00,$C0,$01,$27,$00,$08,$01
-        dc.b    $26,$00,$0E,$01,$28,$00,$20,$01,$2B,$00,$76,$01,$2A,$00,$30,$01
-        dc.b    $2E,$00,$7C,$01,$30,$00,$07,$01,$33,$00,$01,$01,$35,$00,$04,$01
-        dc.b    $36,$00,$C0,$01,$39,$00,$20,$01,$3C,$00,$01,$01,$0A,$9A,$06,$03
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$01,$00,$9D,$00,$10,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$0F,$01,$23,$00,$04,$01,$25,$00,$38,$01,$24,$00,$C0,$01,$26
-        dc.b    $00,$0E,$01,$28,$00,$20,$01,$2B,$00,$70,$01,$2A,$00,$30,$01,$2E
-        dc.b    $00,$7C,$01,$31,$00,$C0,$01,$30,$00,$40,$01,$33,$00,$03,$01,$35
-        dc.b    $00,$04,$01,$34,$00,$10,$01,$36,$00,$C0,$01,$3C,$00,$01,$01,$0A
-        dc.b    $9A,$06,$03,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$01,$00,$9D,$00,$10
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$0F,$01,$23,$00,$04,$01,$25,$00,$38,$01,$24,$00
-        dc.b    $C0,$01,$27,$00,$08,$01,$26,$00,$0E,$01,$28,$00,$20,$01,$2B,$00
-        dc.b    $70,$01,$2A,$00,$30,$01,$2E,$00,$7C,$01,$30,$00,$83,$01,$33,$00
-        dc.b    $05,$01,$35,$00,$04,$01,$36,$00,$C0,$01,$39,$00,$40,$01,$3C,$00
-        dc.b    $01,$01,$0A,$9A,$06,$03,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$01,$00
-        dc.b    $9D,$00,$10,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$17,$01,$23,$00,$06,$01,$25,$00,$3E
-        dc.b    $01,$24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00,$4E,$01,$28,$00,$76
-        dc.b    $01,$2B,$00,$F6,$01,$2A,$00,$30,$01,$2F,$00,$C0,$01,$2E,$00,$7E
-        dc.b    $01,$31,$00,$C4,$01,$30,$00,$F7,$01,$33,$00,$17,$01,$32,$00,$06
-        dc.b    $01,$35,$00,$06,$01,$34,$00,$3F,$01,$37,$00,$03,$01,$36,$00,$C0
-        dc.b    $01,$39,$00,$E0,$01,$38,$00,$09,$01,$3B,$00,$03,$01,$3D,$00,$F0
-        dc.b    $01,$3C,$00,$01,$00,$00,$00,$00,$00,$00,$00,$00,$03,$00,$A3,$00
-        dc.b    $04,$00,$A4,$00,$04,$00,$AB,$00,$04,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $06,$00,$A4,$00,$10,$00,$A6,$00,$10,$00,$AA,$00,$10,$00,$9D,$00
+        dc.b    $FC,$00,$9E,$00,$56,$00,$9F,$00,$10,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$11,$01,$23,$00,$06,$01,$25
+        dc.b    $00,$3C,$01,$24,$00,$CE,$01,$27,$00,$B0,$01,$26,$00,$0E,$01,$28
+        dc.b    $00,$30,$01,$2B,$00,$F0,$01,$2A,$00,$30,$01,$2E,$00,$7C,$01,$31
+        dc.b    $00,$C0,$01,$30,$00,$03,$01,$33,$00,$11,$01,$35,$00,$06,$01,$34
+        dc.b    $00,$26,$01,$36,$00,$C0,$01,$3D,$00,$F0,$01,$3C,$00,$01,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$0F,$00,$A3,$00,$10,$00,$A4,$00,$10,$00,$A3,$02,$02,$00,$A4
-        dc.b    $00,$00,$00,$A5,$00,$10,$00,$A6,$00,$10,$00,$AB,$00,$10,$00,$AC
-        dc.b    $00,$10,$00,$AE,$00,$10,$00,$AD,$00,$10,$00,$AF,$00,$10,$00,$AA
-        dc.b    $00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$FF,$00,$9F,$00,$18,$15,$01
-        dc.b    $23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$BB,$01
-        dc.b    $26,$00,$0E,$01,$28,$00,$76,$01,$2B,$00,$F6,$01,$2A,$00,$30,$01
-        dc.b    $2F,$00,$C0,$01,$2E,$00,$7E,$01,$31,$00,$C6,$01,$30,$00,$F7,$01
-        dc.b    $33,$00,$17,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34,$00,$3F,$01
-        dc.b    $36,$00,$C0,$01,$39,$00,$60,$01,$3B,$00,$03,$01,$3D,$00,$F0,$01
-        dc.b    $3C,$00,$01,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$04,$00,$A1,$00,$04,$00,$A2,$00,$04,$07,$7A,$00,$FF
-        dc.b    $04,$43,$00,$88,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$02,$00,$AB,$00,$04
+        dc.b    $00,$9F,$00,$08,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$0E,$00,$A3,$00,$90,$00,$A4,$00
-        dc.b    $90,$00,$A3,$02,$02,$00,$A4,$00,$00,$00,$A5,$00,$10,$00,$A6,$00
-        dc.b    $10,$00,$AB,$00,$10,$00,$AC,$00,$10,$00,$AE,$00,$10,$00,$AD,$00
-        dc.b    $10,$00,$AF,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$FF,$00,$9F,$00
-        dc.b    $18,$00,$00,$00,$00,$11,$01,$23,$00,$06,$01,$25,$00,$06,$01,$24
-        dc.b    $00,$CE,$01,$27,$00,$B9,$01,$26,$00,$40,$01,$28,$00,$56,$01,$2B
-        dc.b    $00,$96,$01,$2F,$00,$40,$01,$31,$00,$C0,$01,$30,$00,$C7,$01,$33
-        dc.b    $00,$11,$01,$32,$00,$04,$01,$35,$00,$06,$01,$34,$00,$3E,$01,$39
-        dc.b    $00,$60,$01,$3B,$00,$03,$01,$3D,$00,$F0,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$02,$00,$A9,$00,$04,$00,$AA,$00,$04,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$07,$00,$AC,$00,$10,$00,$AE,$00,$10,$00,$AD,$00,$10
-        dc.b    $00,$AF,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$FF,$00,$9F,$00,$08
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$14,$01,$23,$00
-        dc.b    $06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00
-        dc.b    $4E,$01,$28,$00,$36,$01,$2B,$00,$F0,$01,$2A,$00,$30,$01,$2F,$00
-        dc.b    $C0,$01,$2E,$00,$7E,$01,$31,$00,$02,$01,$30,$00,$40,$01,$33,$00
-        dc.b    $13,$01,$32,$00,$04,$01,$35,$00,$06,$01,$34,$00,$3E,$01,$36,$00
-        dc.b    $C0,$01,$3B,$00,$01,$01,$3D,$00,$F0,$01,$3C,$00,$01,$02,$00,$AA
-        dc.b    $00,$04,$04,$43,$00,$88,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$05,$00,$A3,$00,$10,$00
-        dc.b    $A5,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$A9,$00,$9F,$00,$08,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$14,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE
-        dc.b    $01,$27,$00,$B9,$01,$26,$00,$4E,$01,$28,$00,$76,$01,$2B,$00,$F0
-        dc.b    $01,$2A,$00,$30,$01,$2F,$00,$C0,$01,$2E,$00,$7E,$01,$31,$00,$02
-        dc.b    $01,$30,$00,$40,$01,$33,$00,$13,$01,$32,$00,$04,$01,$35,$00,$06
-        dc.b    $01,$34,$00,$3E,$01,$36,$00,$C0,$01,$3B,$00,$01,$01,$3D,$00,$F0
-        dc.b    $01,$3C,$00,$01,$02,$00,$AA,$00,$04,$04,$43,$00,$88,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$06,$00,$A3,$00,$10,$00,$A5,$00,$10,$00,$AA,$00,$10,$00,$9D
-        dc.b    $00,$FC,$00,$9E,$00,$A9,$00,$9F,$00,$08,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$14,$01,$23,$00,$06,$01
-        dc.b    $25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$B8,$01,$26,$00,$4E,$01
-        dc.b    $28,$00,$36,$01,$2B,$00,$F2,$01,$2A,$00,$30,$01,$2E,$00,$7C,$01
-        dc.b    $31,$00,$02,$01,$30,$00,$B4,$01,$33,$00,$15,$01,$32,$00,$04,$01
-        dc.b    $35,$00,$06,$01,$34,$00,$26,$01,$36,$00,$C0,$01,$39,$00,$60,$01
-        dc.b    $3B,$00,$02,$01,$3D,$00,$F0,$01,$3C,$00,$01,$02,$00,$AA,$00,$04
-        dc.b    $04,$43,$00,$88,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$05,$00,$A4,$00,$10,$00,$A6,$00
-        dc.b    $10,$00,$9D,$00,$FC,$00,$9E,$00,$56,$00,$9F,$00,$08,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$13,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27
-        dc.b    $00,$B8,$01,$26,$00,$4E,$01,$28,$00,$36,$01,$2B,$00,$F6,$01,$2A
-        dc.b    $00,$30,$01,$2E,$00,$7C,$01,$31,$00,$02,$01,$30,$00,$B4,$01,$33
-        dc.b    $00,$15,$01,$32,$00,$04,$01,$35,$00,$06,$01,$34,$00,$26,$01,$36
-        dc.b    $00,$C0,$01,$3B,$00,$02,$01,$3D,$00,$F0,$01,$3C,$00,$01,$00,$00
-        dc.b    $00,$00,$02,$00,$AA,$00,$04,$04,$43,$00,$88,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$06
-        dc.b    $00,$A4,$00,$10,$00,$A6,$00,$10,$00,$AA,$00,$10,$00,$9D,$00,$FC
-        dc.b    $00,$9E,$00,$56,$00,$9F,$00,$10,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$11,$01,$23,$00,$06,$01,$25,$00
-        dc.b    $3C,$01,$24,$00,$CE,$01,$27,$00,$B0,$01,$26,$00,$0E,$01,$28,$00
-        dc.b    $30,$01,$2B,$00,$F0,$01,$2A,$00,$30,$01,$2E,$00,$7C,$01,$31,$00
-        dc.b    $C0,$01,$30,$00,$03,$01,$33,$00,$11,$01,$35,$00,$06,$01,$34,$00
-        dc.b    $26,$01,$36,$00,$C0,$01,$3D,$00,$F0,$01,$3C,$00,$01,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$02,$00,$AB,$00,$04,$00
-        dc.b    $9F,$00,$08,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; FaultTable ($3F88): 256 rows of 10 bytes
@@ -6272,7 +8766,20 @@ FaultTable:
         dc.b    $FE,$00,$00,$03,$40,$1E,$00,$00,$00,$00
         dc.b    $FF,$00,$00,$03,$80,$1E,$00,$00,$00,$00
 
-        dc.b    $1A,$28,$2F,$20,$66,$97,$13
+DiagThrottleRawThresh1:
+        dc.b    $1A                                      ; Byte compared with ThrottleRaw; read by Sub_236D4.
+DiagSpeedThresh12:
+        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_236D4.
+DiagRpmThresh9:
+        dc.b    $2F                                      ; Byte compared with EngineRpm; read by Sub_236D4.
+DiagVacuumThresh3:
+        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_236D4.
+SensorFactor4:
+        dc.b    $66                                      ; Byte multiplied; read by Sub_356AE.
+DiagThrottleRawThresh2:
+        dc.b    $97                                      ; Byte compared with ThrottleRaw; read by Sub_236D4.
+DiagRpmThresh10:
+        dc.b    $13                                      ; Byte compared with EngineRpm; read by Sub_236D4.
 
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleLimpFromVacuum ($498F): 2D table, 4 points, unsigned
@@ -6285,7 +8792,18 @@ ThrottleLimpFromVacuum:
         dc.b    4,$80                                    ; points, flags
         dc.b    8,167, 45,84, 78,63, 110,0               ; x, y
 
-        dc.b    $02,$00,$E3,$07,$03,$22,$09
+CalRpmThresh4:
+        dc.b    $02,$00                                  ; Word compared with EngineRpm; read by Sub_21EA6.
+DiagBaroThresh2:
+        dc.b    $E3                                      ; Byte compared with Baro; read by Sub_21EA6, Sub_236D4, Sub_23816.
+DiagValue10:
+        dc.b    $07                                      ; Byte used with; read by Sub_21EA6, Sub_236D4, Sub_23816.
+DiagVacuumThresh4:
+        dc.b    $03                                      ; Byte compared with ManifoldVacuum; read by Sub_21EA6, Sub_236D4, Sub_23816.
+MapAdder2:
+        dc.b    $22                                      ; Byte added to result of MapLimpFromThrottle; read by Sub_241AA.
+MapThrottleAdder:
+        dc.b    $09                                      ; Byte added to Throttle; read by Sub_241AA.
 
 ;---------------------------------------------------------------------------------------------------
 ; MapLimpFromThrottle ($49A0): 2D table, 5 points, unsigned
@@ -6298,7 +8816,10 @@ MapLimpFromThrottle:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 8,73, 20,112, 57,186, 120,193       ; x, y
 
-        dc.b    $32,$B6
+DiagThresh27:
+        dc.b    $32                                      ; Byte compared with; read by Sub_23970.
+DiagIdleVacuumCoolantMin:
+        dc.b    $B6                                      ; Monitor in Sub_23970 runs above this coolant temperature
 
 ;---------------------------------------------------------------------------------------------------
 ; DiagIdleVacuumRpm ($49AE): 2D table, 4 points, unsigned
@@ -6311,8 +8832,31 @@ DiagIdleVacuumRpm:
         dc.b    4,$80                                    ; points, flags
         dc.b    63,0, 69,113, 78,113, 80,0               ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$C7,$A6,$07,$19,$08,$50,$04,$1C,$0A,$33
-        dc.b    $FF,$F0
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+CalCoolantThresh4:
+        dc.b    $C7                                      ; Byte compared with CoolantTemp; read by Sub_21F82.
+CalStartCoolantThresh:
+        dc.b    $A6                                      ; Byte compared with StartCoolantTemp2; read by Sub_21F82.
+CalThresh5:
+        dc.b    $07                                      ; Byte compared with; read by Sub_21F82.
+CalCount191msThresh:
+        dc.b    $19                                      ; Byte compared with Count191ms; read by Sub_21F82.
+CalThresh6:
+        dc.b    $08                                      ; Byte compared with; read by Sub_21F82, Sub_291F0.
+CalSpeedThresh2:
+        dc.b    $50                                      ; Byte compared with VehicleSpeed; read by Sub_222FA.
+CalThresh7:
+        dc.b    $04                                      ; Byte compared with; read by Sub_223CC.
+CalThresh8:
+        dc.b    $1C                                      ; Byte compared with; read by Sub_223CC.
+CalThresh9:
+        dc.b    $0A                                      ; Byte compared with; read by Sub_223CC.
+O2Value37:
+        dc.b    $33                                      ; Byte used with; read by Sub_14802.
+KnockValue3:
+        dc.b    $FF                                      ; Byte used with; read by Sub_1F408.
+KnockV0A89Thresh:
+        dc.b    $F0                                      ; Byte compared with V0A89; read by Sub_1F408.
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockSensorCheckRpm ($49CA): 2D table, 1 points, unsigned
@@ -6325,889 +8869,135 @@ KnockSensorCheckRpm:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$BD,$BA,$19,$95,$03,$66,$FF,$64
-        dc.b    $FF,$08,$E4,$02,$FD,$18,$1C,$70,$3D,$FB,$03,$E0,$1A,$FD,$AE,$79
-        dc.b    $E4,$68,$C7,$FF,$1A,$FD,$AE,$05,$FA,$FF,$00,$0A,$B7,$6E,$4D,$50
-        dc.b    $13,$13,$1E,$12,$1E,$12,$3E,$42,$96,$4B,$04,$10,$24,$3C,$05,$6D
-        dc.b    $FF,$05,$08,$FA,$03,$05,$FF,$66,$14,$C8,$99,$00,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$43,$4F,$50,$59,$52,$49,$47,$48,$54,$20,$31,$39,$39,$36
-        dc.b    $20,$43,$48,$52,$59,$53,$4C,$45,$52,$20,$43,$4F,$52,$50,$4F,$52
-        dc.b    $41,$54,$49,$4F,$4E,$00,$01,$00,$02,$00,$04,$00,$08,$00,$10,$00
-        dc.b    $20,$00,$40,$00,$80,$01,$00,$02,$00,$04,$00,$08,$00,$10,$00,$20
-        dc.b    $00,$40,$00,$80,$00,$60,$50,$90,$A0
-
-;---------------------------------------------------------------------------------------------------
-; ThermistorCold ($7047): 2D table, 7 points, unsigned
-; Thermistor ADC counts to temperature, cold range (-55 to 83 C), used after the pull-up is switched
-; x: raw, y: tempc (units: docs/en/calibration.md)
-; Inputs: CoolantRaw; AirTempRaw; ?
-; Read at $0D85E, $0D8B2, $20AE8, $2C254, $2C362, $3246A, $32500
-;---------------------------------------------------------------------------------------------------
-ThermistorCold:
-        dc.b    7,$80                                    ; points, flags
-        dc.b    0,211, 83,171, 215,120, 230,110, 241,100, 246,94, 255,73 ; x, y
-
-
-;---------------------------------------------------------------------------------------------------
-; ThermistorHot ($7057): 2D table, 4 points, unsigned
-; Thermistor ADC counts to temperature, hot range (13 to 127 C); coolant and intake air
-; x: raw, y: tempc (units: docs/en/calibration.md)
-; Inputs: CoolantRaw; AirTempRaw
-; Read at $0D85E, $0D8B2, $20AE8, $2C254, $2C362, $3246A, $32500
-;---------------------------------------------------------------------------------------------------
-ThermistorHot:
-        dc.b    4,$80                                    ; points, flags
-        dc.b    66,255, 87,241, 197,181, 255,141         ; x, y
-
-
-;---------------------------------------------------------------------------------------------------
-; Thermistor3Curve ($7061): 2D table, 10 points, unsigned
-; ADC counts of a third thermistor input ($0A59,Z or $0A1B,Z) to temperature, into $0195,Z
-; x: raw, y: tempc (units: docs/en/calibration.md)
-; Inputs: $0A59,Z; $0A1B,Z
-; Read at $0D928, $2C45C, $2C490
-;---------------------------------------------------------------------------------------------------
-Thermistor3Curve:
-        dc.b    10,$80                                   ; points, flags
-        dc.b    0,213, 47,173, 75,158, 100,148, 130,138, 160,128, 189,118, 222,103 ; x, y
-        dc.b    241,88, 255,71                           ; x, y
-
-
-;---------------------------------------------------------------------------------------------------
-; Thermistor3CurveAlt ($7077): 2D table, 7 points, unsigned
-; Alternative curve for the third thermistor input, chosen by calibration bit $0330.2
-; x: raw, y: tempc (units: docs/en/calibration.md)
-; Inputs: $0A59,Z; $0A1B,Z
-; Read at $0D928, $2C45C, $2C490
-;---------------------------------------------------------------------------------------------------
-Thermistor3CurveAlt:
-        dc.b    7,$80                                    ; points, flags
-        dc.b    23,228, 40,208, 69,188, 112,168, 211,128, 239,108, 251,88 ; x, y
-
-        dc.b    $D3,$07
-
-;---------------------------------------------------------------------------------------------------
-; ChargeVoltsBattTemp ($7089): 2D table, 5 points, unsigned
-; Charging voltage target ($0DB9,Z) against battery temperature, limited by $7087/$7088
-; x: tempc, y: volt16 (units: docs/en/calibration.md)
-; Inputs: ?
-; Read at $2C6E4
-;---------------------------------------------------------------------------------------------------
-ChargeVoltsBattTemp:
-        dc.b    5,$80                                    ; points, flags
-        dc.b    110,239, 128,233, 143,228, 158,223, 171,218 ; x, y
-
-
-;---------------------------------------------------------------------------------------------------
-; AcSensorCurve ($7095): 2D table, 2 points, unsigned
-; A/C sensor (probably refrigerant pressure): ADC $0A87,Z to $0A88,Z
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0A87,Z
-; Read at $0D8EE, $2CCFA
-;---------------------------------------------------------------------------------------------------
-AcSensorCurve:
-        dc.b    2,$80                                    ; points, flags
-        dc.b    9,0, 240,255                             ; x, y
-
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
-
-;---------------------------------------------------------------------------------------------------
-; FlexEthanolCurve ($70A1): 2D table, 2 points, unsigned
-; Flex-fuel: learned ratio to ethanol content (0-170)
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: TBA
-; Read at $2C8A4
-;---------------------------------------------------------------------------------------------------
-FlexEthanolCurve:
-        dc.b    2,$80                                    ; points, flags
-        dc.b    27,0, 227,170                            ; x, y
-
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
-
-;---------------------------------------------------------------------------------------------------
-; FuelLevelCurve ($70AD): 2D table, 8 points, unsigned
-; Fuel level sensor counts to fuel level
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: FuelLevel
-; Read at $2DC8A
-;---------------------------------------------------------------------------------------------------
-FuelLevelCurve:
-        dc.b    8,$80                                    ; points, flags
-        dc.b    11,175, 24,133, 27,125, 43,100, 74,75, 113,50, 167,25, 209,0 ; x, y
-
-
-;---------------------------------------------------------------------------------------------------
-; DwellRpmScale ($70BF): 2D table, 9 points, unsigned
-; Rpm to column position of DwellTime
-; x: rpm32, y: pos256 (units: docs/en/calibration.md)
-; Inputs: EngineRpm
-; Read at $1DB64
-;---------------------------------------------------------------------------------------------------
-DwellRpmScale:
-        dc.b    9,$80                                    ; points, flags
-        dc.b    16,0, 63,32, 94,64, 125,96, 156,128, 188,160, 219,192, 250,224 ; x, y
-        dc.b    255,255                                  ; x, y
-
-
-;---------------------------------------------------------------------------------------------------
-; DwellVoltsScale ($70D3): 2D table, 9 points, unsigned
-; Battery voltage to row position of DwellTime
-; x: volt16, y: pos256 (units: docs/en/calibration.md)
-; Inputs: BatteryVolts2
-; Read at $1DB56
-;---------------------------------------------------------------------------------------------------
-DwellVoltsScale:
-        dc.b    9,$80                                    ; points, flags
-        dc.b    81,0, 133,32, 152,64, 172,96, 176,128, 209,160, 228,192, 248,224 ; x, y
-        dc.b    255,255                                  ; x, y
-
-
-;---------------------------------------------------------------------------------------------------
-; DwellTime ($70E7): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
-; Coil dwell against battery voltage and rpm (both as positions)
-; columns: pos256, rows: pos256, values: raw (units: docs/en/calibration.md)
-; Inputs: LDAA IND8, Y
-; Read at $1DB6E
-;---------------------------------------------------------------------------------------------------
-DwellTime:
-        dc.b    9,9,$00                                  ; rows, columns, signed
-        dc.b    49,165,192,192,192,192,192,192,192       ; row 0
-        dc.b    49,165,192,192,192,192,192,192,192       ; row 1
-        dc.b    49,165,192,192,192,192,192,192,192       ; row 2
-        dc.b    48,148,192,192,192,192,192,192,192       ; row 3
-        dc.b    40,128,184,192,192,192,192,192,192       ; row 4
-        dc.b    36,110,157,192,192,192,192,192,192       ; row 5
-        dc.b    33,96,138,192,192,192,192,192,192        ; row 6
-        dc.b    28,85,123,169,192,192,192,192,192        ; row 7
-        dc.b    26,74,108,148,185,192,192,192,192        ; row 8
-
-        dc.b    $0A,$47,$40,$80,$0A,$47,$80,$40,$0A,$46,$01,$20,$0A,$47,$20,$10
-        dc.b    $0A,$47,$08,$08,$0A,$47,$10,$04,$0A,$47,$04,$02,$0A,$47,$01,$01
-        dc.b    $0A,$46,$02,$80,$10,$00,$08,$40,$79,$07,$80,$20,$10,$00,$04,$10
-        dc.b    $0C,$21,$08,$08,$00,$00,$00,$04,$00,$00,$00,$02,$0A,$47,$02,$01
-        dc.b    $09,$44,$02,$80,$09,$43,$40,$40,$10,$02,$08,$20,$09,$43,$10,$10
-        dc.b    $09,$44,$20,$08,$09,$43,$08,$04,$09,$44,$04,$02,$09,$43,$01,$01
-        dc.b    $09,$44,$02,$80,$09,$43,$40,$40,$10,$02,$08,$20,$09,$43,$10,$10
-        dc.b    $09,$44,$20,$08,$09,$43,$08,$04,$10,$13,$04,$02,$09,$43,$01,$01
-        dc.b    $09,$44,$02,$80,$09,$43,$40,$40,$10,$02,$08,$20,$09,$43,$10,$10
-        dc.b    $10,$02,$02,$08,$09,$43,$08,$04,$09,$44,$04,$02,$09,$43,$01,$01
-        dc.b    $09,$44,$08,$80,$09,$44,$10,$40,$10,$02,$01,$20,$10,$13,$80,$10
-        dc.b    $10,$02,$10,$08,$09,$42,$02,$04,$09,$44,$80,$02,$10,$1F,$20,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$10,$02,$01,$20,$09,$42,$04,$10
-        dc.b    $09,$42,$01,$08,$09,$44,$01,$04,$10,$03,$40,$02,$09,$43,$80,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $0A,$48,$08,$08,$0A,$48,$04,$04,$0A,$48,$02,$02,$0A,$48,$01,$01
-        dc.b    $0A,$49,$80,$80,$0A,$49,$40,$40,$0A,$49,$20,$20,$0A,$4A,$10,$10
-        dc.b    $0A,$4A,$08,$08,$0A,$4A,$04,$04,$0A,$4A,$02,$02,$0A,$4A,$01,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $0A,$48,$08,$08,$0A,$48,$04,$04,$0A,$48,$02,$02,$0A,$48,$01,$01
-        dc.b    $0A,$49,$80,$80,$0A,$49,$40,$40,$0A,$49,$20,$20,$0A,$49,$10,$10
-        dc.b    $0A,$4A,$08,$08,$0A,$4A,$04,$04,$00,$00,$00,$02,$0A,$4A,$01,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $0A,$48,$08,$08,$0A,$48,$04,$04,$0A,$48,$02,$02,$0A,$48,$01,$01
-        dc.b    $0A,$49,$80,$80,$0A,$49,$40,$40,$0A,$49,$20,$20,$0A,$4A,$10,$10
-        dc.b    $0A,$4A,$08,$08,$0A,$4A,$04,$04,$0A,$4A,$02,$02,$0A,$4A,$01,$01
-        dc.b    $09,$43,$80,$80,$09,$43,$40,$40,$00,$00,$00,$20,$09,$43,$10,$10
-        dc.b    $09,$43,$08,$08,$09,$42,$04,$04,$00,$00,$00,$02,$09,$43,$01,$01
-        dc.b    $09,$44,$80,$80,$00,$00,$00,$40,$00,$00,$00,$20,$09,$44,$10,$10
-        dc.b    $09,$44,$08,$08,$09,$44,$04,$04,$09,$44,$02,$02,$09,$44,$01,$01
-        dc.b    $00,$00,$00,$80,$09,$43,$40,$40,$00,$00,$00,$20,$09,$43,$10,$10
-        dc.b    $09,$43,$08,$08,$09,$42,$01,$04,$00,$00,$00,$02,$09,$43,$01,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$09,$44,$10,$10
-        dc.b    $09,$44,$08,$08,$00,$00,$00,$04,$09,$44,$02,$02,$09,$44,$01,$01
-        dc.b    $00,$00,$00,$80,$09,$43,$40,$40,$00,$00,$00,$20,$09,$43,$10,$10
-        dc.b    $09,$43,$08,$08,$09,$43,$04,$04,$09,$42,$02,$02,$09,$43,$01,$01
-        dc.b    $09,$44,$80,$80,$00,$00,$00,$40,$09,$44,$20,$20,$09,$44,$10,$10
-        dc.b    $09,$44,$08,$08,$09,$44,$04,$04,$09,$44,$02,$02,$00,$00,$00,$01
-        dc.b    $06,$B4,$01,$80,$05,$06,$06,$40,$05,$0B,$30,$20,$05,$0A,$0C,$10
-        dc.b    $0D,$B8,$01,$08,$0D,$B8,$04,$04,$06,$B4,$10,$02,$06,$B4,$80,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $00,$00,$00,$08,$00,$00,$00,$04,$09,$4C,$80,$02,$09,$BC,$01,$01
-        dc.b    $00,$00,$00,$80,$0C,$31,$20,$40,$0C,$39,$10,$20,$00,$00,$00,$10
-        dc.b    $09,$43,$01,$08,$0A,$46,$01,$04,$00,$00,$00,$02,$00,$00,$00,$01
-        dc.b    $00,$00,$00,$80,$06,$B1,$01,$40,$0D,$57,$08,$20,$09,$42,$01,$10
-        dc.b    $04,$03,$08,$08,$00,$00,$00,$00,$00,$00,$00,$80,$00,$00,$00,$40
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $04,$03,$08,$08,$0A,$46,$01,$04,$04,$07,$01,$02,$04,$07,$02,$01
-        dc.b    $08,$6C,$04,$80,$00,$00,$00,$40,$0D,$57,$08,$20,$09,$42,$01,$10
-        dc.b    $00,$00,$00,$08,$00,$00,$00,$00,$00,$00,$00,$80,$00,$00,$00,$40
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $00,$00,$00,$08,$00,$00,$00,$04,$00,$00,$00,$02,$00,$00,$00,$01
-        dc.b    $06,$B4,$01,$80,$05,$06,$06,$40,$05,$0B,$30,$20,$05,$0A,$0C,$10
-        dc.b    $0D,$B8,$01,$08,$0D,$B8,$04,$04,$06,$B4,$10,$02,$06,$B4,$80,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $04,$03,$08,$08,$04,$07,$01,$04,$00,$00,$00,$02,$0A,$1E,$10,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $09,$43,$01,$08,$0A,$46,$01,$04,$00,$00,$00,$02,$04,$07,$02,$01
-        dc.b    $00,$0D,$BB,$A0,$00,$00,$1A,$CB,$C0,$00,$1E,$3F,$05,$18,$00,$10
-        dc.b    $04,$01,$20,$08,$02,$01,$10,$03,$02,$20,$04,$04,$01,$05,$08,$02
-        dc.b    $00,$02,$04,$01,$01,$08,$02,$04,$02,$03,$08,$01,$00,$02,$01,$01
-        dc.b    $01,$04,$02,$04,$08,$03,$08,$02,$07,$73,$80,$80,$07,$73,$40,$40
-        dc.b    $08,$56,$0C,$20,$07,$70,$80,$10,$07,$72,$40,$08,$00,$00,$00,$04
-        dc.b    $00,$00,$00,$02,$00,$00,$00,$01,$10,$0C,$FF,$3F,$00,$00,$00,$0A
-        dc.b    $0F,$00,$FF,$FF,$01,$04,$02,$05,$04,$00,$08,$01,$10,$02,$20,$03
-        dc.b    $04,$03,$08,$04,$10,$05,$20,$06,$01,$01,$02,$02,$03,$05,$01,$04
-        dc.b    $03,$05,$02,$06,$01,$04,$02,$06,$18
-
-;---------------------------------------------------------------------------------------------------
-; DwellBattery ($7564): 2D table, 9 points, unsigned
-; Coil dwell against filtered battery voltage $0A57,Z (×32 into $E8,Z)
-; x: volt16, y: raw (units: docs/en/calibration.md)
-; Inputs: BatteryVoltsDwell
-; Read at $1E582
-;---------------------------------------------------------------------------------------------------
-DwellBattery:
-        dc.b    9,$80                                    ; points, flags
-        dc.b    130,172, 146,150, 162,131, 178,108, 194,88, 210,83, 227,74, 243,68 ; x, y
-        dc.b    255,62                                   ; x, y
-
-
-;---------------------------------------------------------------------------------------------------
-; DwellBatteryAlt ($7578): 2D table, 8 points, unsigned
-; As DwellBattery with $0D5F,Z bit 6 set
-; x: volt16, y: raw (units: docs/en/calibration.md)
-; Inputs: BatteryVoltsDwell
-; Read at $1E582
-;---------------------------------------------------------------------------------------------------
-DwellBatteryAlt:
-        dc.b    8,$80                                    ; points, flags
-        dc.b    146,255, 162,233, 178,175, 194,131, 210,123, 227,107, 243,94, 255,88 ; x, y
-
-        dc.b    $C0,$FA,$45,$C8,$00,$B0,$00,$10,$00,$00,$00,$00,$43,$F2,$00,$A9
-        dc.b    $00,$10,$00,$00,$00,$00,$43,$8E,$00,$A5,$00,$10,$00,$00,$00,$00
-        dc.b    $44,$60,$00,$A6,$00,$10,$00,$00,$00,$00,$43,$A2,$00,$A7,$00,$10
-        dc.b    $00,$00,$00,$00,$44,$6A,$00,$A8,$00,$10,$00,$00,$00,$00,$43,$E8
-        dc.b    $00,$A1,$00,$10,$00,$00,$00,$00,$46,$90,$00,$A2,$00,$10,$00,$00
-        dc.b    $00,$00,$43,$84,$00,$A3,$00,$10,$00,$00,$00,$00,$44,$4C,$00,$A4
-        dc.b    $00,$10,$00,$00,$00,$00,$41,$54,$00,$AA,$00,$10,$00,$00,$00,$00
-        dc.b    $47,$12,$00,$9E,$00,$02,$06,$59,$00,$02,$47,$08,$00,$9E,$00,$01
-        dc.b    $06,$59,$00,$01,$45,$50,$00,$9D,$00,$80,$06,$58,$00,$80,$43,$FC
-        dc.b    $00,$9D,$00,$40,$06,$58,$00,$40,$45,$78,$00,$9D,$00,$20,$06,$58
-        dc.b    $00,$20,$40,$E6,$00,$9D,$00,$10,$06,$58,$00,$10,$44,$EC,$00,$9D
-        dc.b    $00,$08,$06,$58,$00,$08,$44,$88,$00,$9D,$00,$04,$06,$58,$00,$04
-        dc.b    $40,$D2,$00,$9D,$00,$02,$06,$58,$00,$02,$44,$06,$00,$9D,$00,$01
-        dc.b    $06,$58,$00,$01,$44,$74,$00,$9E,$00,$80,$06,$59,$00,$80,$44,$7E
-        dc.b    $00,$9E,$00,$40,$06,$59,$00,$40,$44,$92,$00,$9E,$00,$20,$06,$59
-        dc.b    $00,$20,$44,$9C,$00,$9E,$00,$10,$06,$59,$00,$10,$45,$A0,$00,$9E
-        dc.b    $00,$08,$06,$59,$00,$08,$46,$A4,$00,$9E,$00,$04,$06,$59,$00,$04
-        dc.b    $45,$64,$00,$9F,$00,$80,$06,$5A,$00,$80,$45,$5A,$00,$9F,$00,$40
-        dc.b    $06,$5A,$00,$40,$45,$6E,$00,$9F,$00,$20,$06,$5A,$00,$20,$44,$E2
-        dc.b    $00,$9F,$00,$10,$06,$5A,$00,$10,$47,$EE,$00,$9F,$00,$08,$06,$5A
-        dc.b    $00,$08,$43,$48,$00,$9F,$00,$04,$06,$5A,$00,$04,$44,$24,$00,$AE
-        dc.b    $00,$10,$00,$00,$00,$00,$44,$2E,$00,$AC,$00,$10,$00,$00,$00,$00
-        dc.b    $44,$38,$00,$AF,$00,$10,$00,$00,$00,$00,$44,$42,$00,$AD,$00,$10
-        dc.b    $00,$00,$00,$00,$43,$B6,$00,$DD,$00,$01,$00,$00,$00,$00,$43,$C0
-        dc.b    $00,$DD,$00,$02,$00,$00,$00,$00,$43,$CA,$00,$DD,$00,$04,$00,$00
-        dc.b    $00,$00,$43,$D4,$00,$DD,$00,$08,$00,$00,$00,$00,$46,$54,$00,$DD
-        dc.b    $00,$10,$00,$00,$00,$00,$46,$5E,$00,$DD,$00,$20,$00,$00,$00,$00
-        dc.b    $43,$AC,$00,$DD,$00,$40,$00,$00,$00,$00,$2C,$1F,$16,$FF,$00,$C0
-        dc.b    $01,$04,$01,$17,$14,$08,$05,$FF,$19,$98,$04,$0D,$07,$21,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+SensorVoltsThresh2:
+        dc.b    $BD                                      ; Byte compared with BatteryVolts2; read by Sub_21D02.
+SensorVoltsThresh3:
+        dc.b    $BA                                      ; Byte compared with BatteryVolts2; read by Sub_21D02.
+SensorThresh17:
+        dc.b    $19                                      ; Byte compared with; read by Sub_21D02.
+SensorThresh18:
+        dc.b    $95                                      ; Byte compared with; read by Sub_21D02.
+SensorTimeThresh5:
+        dc.b    $03                                      ; Byte compared with Count3s; read by Sub_21D02.
+EgrTargetPosThresh3:
+        dc.b    $66                                      ; Byte compared with EgrTargetPos; read by Sub_22808.
+EgrValue9:
+        dc.b    $FF                                      ; Byte used with; read by Sub_22808.
+EgrV058CThresh:
+        dc.b    $64                                      ; Byte compared with V058C; read by Sub_22808.
+EgrThresh8:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_22808.
+ThrottleRawThresh1:
+        dc.b    $08                                      ; Byte compared with ThrottleRaw; read by Sub_236D4, ProcessThrottle.
+ThrottleRawThresh2:
+        dc.b    $E4                                      ; Byte compared with ThrottleRaw; read by Sub_236D4, ProcessThrottle.
+SensorMapRawThresh1:
+        dc.b    $02                                      ; Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap.
+SensorMapRawThresh2:
+        dc.b    $FD                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap.
+CalV06D1Thresh:
+        dc.b    $18                                      ; Byte compared with V06D1; read by Sub_21E38.
+CalThresh10:
+        dc.b    $1C                                      ; Byte compared with; read by Sub_21E38.
+CalMapRawThresh:
+        dc.b    $70                                      ; Byte compared with MapRaw; read by Sub_21E38.
+SensorThrottleThresh4:
+        dc.b    $3D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap.
+StartAcSensorRawThresh1:
+        dc.b    $FB                                      ; Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56.
+StartAcSensorRawThresh2:
+        dc.b    $03                                      ; Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56.
+StartAcSensorValue:
+        dc.b    $E0                                      ; Byte used with AcSensor; read by Reset, Sub_2CCA8.
+StartCoolantRawThresh1:
+        dc.b    $1A                                      ; Byte compared with CoolantRaw; read by Reset, ProcessCoolantTemp.
+StartCoolantRawThresh2:
+        dc.b    $FD                                      ; Byte compared with CoolantRaw; read by Reset, ProcessCoolantTemp.
+StartCoolantTempSlowValue:
+        dc.b    $AE                                      ; Byte used with CoolantTempSlow; read by Reset, ProcessCoolantTemp.
+DiagStartCoolantThresh1:
+        dc.b    $79                                      ; Byte compared with StartCoolantTemp2; read by Sub_231EC.
+DiagStartCoolantThresh2:
+        dc.b    $E4                                      ; Byte compared with StartCoolantTemp2; read by Sub_231EC.
+DiagBatteryTempStartThresh:
+        dc.b    $68                                      ; Byte compared with BatteryTempStart; read by Sub_231EC.
+DiagCoolantThresh6:
+        dc.b    $C7                                      ; Byte compared with CoolantTemp; read by Sub_231EC.
+DiagV06C9Thresh:
+        dc.b    $FF                                      ; Byte compared with V06C9; read by Sub_231EC.
+StartAirTempRawThresh1:
+        dc.b    $1A                                      ; Byte compared with AirTempRaw; read by Reset, ProcessAirTemp.
+StartAirTempRawThresh2:
+        dc.b    $FD                                      ; Byte compared with AirTempRaw; read by Reset, ProcessAirTemp.
+StartValue2:
+        dc.b    $AE                                      ; Byte used with; read by Reset, ProcessAirTemp.
+StartBatteryTempRawThresh1:
+        dc.b    $05                                      ; Byte compared with BatteryTempRaw; read by Reset, Sub_2C636.
+StartBatteryTempRawThresh2:
+        dc.b    $FA                                      ; Byte compared with BatteryTempRaw; read by Reset, Sub_2C636.
+SensorThresh19:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_2C7FE.
+SensorThresh20:
+        dc.b    $00                                      ; Byte compared with; read by Sub_2C7FE.
+CalThresh11:
+        dc.b    $0A                                      ; Byte compared with; read by Sub_23AB2.
+CalVoltsThresh3:
+        dc.b    $B7                                      ; Byte compared with BatteryVolts2; read by Sub_23AB2.
+CalV06CBThresh:
+        dc.b    $6E                                      ; Byte compared with V06CB; read by Sub_220AE.
+CalThresh12:
+        dc.b    $4D                                      ; Byte compared with; read by Sub_220AE.
+CalSpeedThresh3:
+        dc.b    $50                                      ; Byte compared with VehicleSpeed; read by Sub_220AE.
+        dc.b    $13,$13
+SensorThresh21:
+        dc.b    $1E                                      ; Byte compared with; read by Sub_356AE.
+SensorThresh22:
+        dc.b    $12                                      ; Byte compared with; read by Sub_356AE.
+        dc.b    $1E,$12
+O2UpBank1RawThresh4:
+        dc.b    $3E                                      ; Byte compared with O2UpBank1Raw; read by Sub_14802, Sub_22688.
+CalThresh13:
+        dc.b    $42                                      ; Byte compared with; read by Sub_223CC.
+CalThresh14:
+        dc.b    $96                                      ; Byte compared with; read by Sub_223CC.
+CalThresh15:
+        dc.b    $4B                                      ; Byte compared with; read by Sub_223CC.
+FieldThresh:
+        dc.b    $04                                      ; Byte compared with; read by Sub_08520, Sub_08DD4.
+SensorVoltsAdder:
+        dc.b    $10                                      ; Byte added to BatteryVolts2; read by Sub_21C78.
+SensorRpmThresh10:
+        dc.b    $24                                      ; Byte compared with EngineRpm; read by Sub_21C78.
+SensorV0DBBThresh:
+        dc.b    $3C                                      ; Byte compared with V0DBB; read by Sub_21C78.
+SensorThresh23:
+        dc.b    $05                                      ; Byte compared with; read by Sub_21C78.
+SensorThresh24:
+        dc.b    $6D                                      ; Byte compared with; read by Sub_21C78.
+SensorV0A63Thresh1:
+        dc.b    $FF                                      ; Byte compared with V0A63; read by Sub_2DCC2.
+SensorV0A63Thresh2:
+        dc.b    $05                                      ; Byte compared with V0A63; read by Sub_2DCC2.
+EgrThresh9:
+        dc.b    $08                                      ; Byte compared with; read by Sub_22808.
+EgrV0A8DThresh:
+        dc.b    $FA                                      ; Byte compared with V0A8D; read by Sub_22808.
+EgrThresh10:
+        dc.b    $03                                      ; Byte compared with; read by Sub_22B16.
+EgrV7926Offset:
+        dc.b    $05                                      ; Byte subtracted from V7926; read by Sub_22B16.
+EgrThresh11:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_22B16.
+PurgeV045FThresh:
+        dc.b    $66                                      ; Byte compared with V045F; read by Sub_22762.
+PurgeV045AThresh:
+        dc.b    $14                                      ; Byte compared with V045A; read by Sub_22762.
+PurgeV05C0Thresh:
+        dc.b    $C8                                      ; Byte compared with V05C0; read by Sub_22762.
+PurgeV045EThresh:
+        dc.b    $99                                      ; Byte compared with V045E; read by Sub_22762.
         dc.b    $00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7346,7 +9136,923 @@ DwellBatteryAlt:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$43,$4F,$50,$59,$52,$49,$47,$48,$54
+        dc.b    $20,$31,$39,$39,$36,$20,$43,$48,$52,$59,$53,$4C,$45,$52,$20,$43
+        dc.b    $4F,$52,$50,$4F,$52,$41,$54,$49,$4F,$4E,$00,$01,$00,$02,$00,$04
+        dc.b    $00,$08,$00,$10,$00,$20,$00,$40,$00,$80,$01,$00,$02,$00,$04,$00
+        dc.b    $08,$00,$10,$00,$20,$00,$40,$00,$80,$00,$60,$50,$90,$A0
+
+;---------------------------------------------------------------------------------------------------
+; ThermistorCold ($7047): 2D table, 7 points, unsigned
+; Thermistor ADC counts to temperature, cold range (-55 to 83 C), used after the pull-up is switched
+; x: raw, y: tempc (units: docs/en/calibration.md)
+; Inputs: CoolantRaw; AirTempRaw; ?
+; Read at $0D85E, $0D8B2, $20AE8, $2C254, $2C362, $3246A, $32500
+;---------------------------------------------------------------------------------------------------
+ThermistorCold:
+        dc.b    7,$80                                    ; points, flags
+        dc.b    0,211, 83,171, 215,120, 230,110, 241,100, 246,94, 255,73 ; x, y
+
+
+;---------------------------------------------------------------------------------------------------
+; ThermistorHot ($7057): 2D table, 4 points, unsigned
+; Thermistor ADC counts to temperature, hot range (13 to 127 C); coolant and intake air
+; x: raw, y: tempc (units: docs/en/calibration.md)
+; Inputs: CoolantRaw; AirTempRaw
+; Read at $0D85E, $0D8B2, $20AE8, $2C254, $2C362, $3246A, $32500
+;---------------------------------------------------------------------------------------------------
+ThermistorHot:
+        dc.b    4,$80                                    ; points, flags
+        dc.b    66,255, 87,241, 197,181, 255,141         ; x, y
+
+
+;---------------------------------------------------------------------------------------------------
+; Thermistor3Curve ($7061): 2D table, 10 points, unsigned
+; ADC counts of a third thermistor input ($0A59,Z or $0A1B,Z) to temperature, into $0195,Z
+; x: raw, y: tempc (units: docs/en/calibration.md)
+; Inputs: BatteryTempRaw; $0A1B,Z
+; Read at $0D928, $2C45C, $2C490
+;---------------------------------------------------------------------------------------------------
+Thermistor3Curve:
+        dc.b    10,$80                                   ; points, flags
+        dc.b    0,213, 47,173, 75,158, 100,148, 130,138, 160,128, 189,118, 222,103 ; x, y
+        dc.b    241,88, 255,71                           ; x, y
+
+
+;---------------------------------------------------------------------------------------------------
+; Thermistor3CurveAlt ($7077): 2D table, 7 points, unsigned
+; Alternative curve for the third thermistor input, chosen by calibration bit $0330.2
+; x: raw, y: tempc (units: docs/en/calibration.md)
+; Inputs: BatteryTempRaw; $0A1B,Z
+; Read at $0D928, $2C45C, $2C490
+;---------------------------------------------------------------------------------------------------
+Thermistor3CurveAlt:
+        dc.b    7,$80                                    ; points, flags
+        dc.b    23,228, 40,208, 69,188, 112,168, 211,128, 239,108, 251,88 ; x, y
+
+SensorThresh25:
+        dc.b    $D3                                      ; Byte compared with; read by Sub_2C6DE.
+SensorThresh26:
+        dc.b    $07                                      ; Byte compared with; read by Sub_2C6DE.
+
+;---------------------------------------------------------------------------------------------------
+; ChargeVoltsBattTemp ($7089): 2D table, 5 points, unsigned
+; Charging voltage target ($0DB9,Z) against battery temperature, limited by $7087/$7088
+; x: tempc, y: volt16 (units: docs/en/calibration.md)
+; Inputs: ?
+; Read at $2C6E4
+;---------------------------------------------------------------------------------------------------
+ChargeVoltsBattTemp:
+        dc.b    5,$80                                    ; points, flags
+        dc.b    110,239, 128,233, 143,228, 158,223, 171,218 ; x, y
+
+
+;---------------------------------------------------------------------------------------------------
+; AcSensorCurve ($7095): 2D table, 2 points, unsigned
+; A/C sensor (probably refrigerant pressure): ADC $0A87,Z to $0A88,Z
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: AcSensorRaw
+; Read at $0D8EE, $2CCFA
+;---------------------------------------------------------------------------------------------------
+AcSensorCurve:
+        dc.b    2,$80                                    ; points, flags
+        dc.b    9,0, 240,255                             ; x, y
+
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FlexEthanolCurve ($70A1): 2D table, 2 points, unsigned
+; Flex-fuel: learned ratio to ethanol content (0-170)
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: TBA
+; Read at $2C8A4
+;---------------------------------------------------------------------------------------------------
+FlexEthanolCurve:
+        dc.b    2,$80                                    ; points, flags
+        dc.b    27,0, 227,170                            ; x, y
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FuelLevelCurve ($70AD): 2D table, 8 points, unsigned
+; Fuel level sensor counts to fuel level
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: FuelLevel
+; Read at $2DC8A
+;---------------------------------------------------------------------------------------------------
+FuelLevelCurve:
+        dc.b    8,$80                                    ; points, flags
+        dc.b    11,175, 24,133, 27,125, 43,100, 74,75, 113,50, 167,25, 209,0 ; x, y
+
+
+;---------------------------------------------------------------------------------------------------
+; DwellRpmScale ($70BF): 2D table, 9 points, unsigned
+; Rpm to column position of DwellTime
+; x: rpm32, y: pos256 (units: docs/en/calibration.md)
+; Inputs: EngineRpm
+; Read at $1DB64
+;---------------------------------------------------------------------------------------------------
+DwellRpmScale:
+        dc.b    9,$80                                    ; points, flags
+        dc.b    16,0, 63,32, 94,64, 125,96, 156,128, 188,160, 219,192, 250,224 ; x, y
+        dc.b    255,255                                  ; x, y
+
+
+;---------------------------------------------------------------------------------------------------
+; DwellVoltsScale ($70D3): 2D table, 9 points, unsigned
+; Battery voltage to row position of DwellTime
+; x: volt16, y: pos256 (units: docs/en/calibration.md)
+; Inputs: BatteryVolts2
+; Read at $1DB56
+;---------------------------------------------------------------------------------------------------
+DwellVoltsScale:
+        dc.b    9,$80                                    ; points, flags
+        dc.b    81,0, 133,32, 152,64, 172,96, 176,128, 209,160, 228,192, 248,224 ; x, y
+        dc.b    255,255                                  ; x, y
+
+
+;---------------------------------------------------------------------------------------------------
+; DwellTime ($70E7): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
+; Coil dwell against battery voltage and rpm (both as positions)
+; columns: pos256, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Inputs: LDAA IND8, Y
+; Read at $1DB6E
+;---------------------------------------------------------------------------------------------------
+DwellTime:
+        dc.b    9,9,$00                                  ; rows, columns, signed
+        dc.b    49,165,192,192,192,192,192,192,192       ; row 0
+        dc.b    49,165,192,192,192,192,192,192,192       ; row 1
+        dc.b    49,165,192,192,192,192,192,192,192       ; row 2
+        dc.b    48,148,192,192,192,192,192,192,192       ; row 3
+        dc.b    40,128,184,192,192,192,192,192,192       ; row 4
+        dc.b    36,110,157,192,192,192,192,192,192       ; row 5
+        dc.b    33,96,138,192,192,192,192,192,192        ; row 6
+        dc.b    28,85,123,169,192,192,192,192,192        ; row 7
+        dc.b    26,74,108,148,185,192,192,192,192        ; row 8
+
+        dc.b    $0A,$47,$40,$80,$0A,$47,$80,$40,$0A,$46,$01,$20,$0A,$47,$20,$10
+        dc.b    $0A,$47,$08,$08,$0A,$47,$10,$04,$0A,$47,$04,$02,$0A,$47,$01,$01
+        dc.b    $0A,$46,$02,$80,$10,$00,$08,$40,$79,$07,$80,$20,$10,$00,$04,$10
+        dc.b    $0C,$21,$08,$08,$00,$00,$00,$04,$00,$00,$00,$02,$0A,$47,$02,$01
+        dc.b    $09,$44,$02,$80,$09,$43,$40,$40,$10,$02,$08,$20,$09,$43,$10,$10
+        dc.b    $09,$44,$20,$08,$09,$43,$08,$04,$09,$44,$04,$02,$09,$43,$01,$01
+        dc.b    $09,$44,$02,$80,$09,$43,$40,$40,$10,$02,$08,$20,$09,$43,$10,$10
+        dc.b    $09,$44,$20,$08,$09,$43,$08,$04,$10,$13,$04,$02,$09,$43,$01,$01
+        dc.b    $09,$44,$02,$80,$09,$43,$40,$40,$10,$02,$08,$20,$09,$43,$10,$10
+        dc.b    $10,$02,$02,$08,$09,$43,$08,$04,$09,$44,$04,$02,$09,$43,$01,$01
+        dc.b    $09,$44,$08,$80,$09,$44,$10,$40,$10,$02,$01,$20,$10,$13,$80,$10
+        dc.b    $10,$02,$10,$08,$09,$42,$02,$04,$09,$44,$80,$02,$10,$1F,$20,$01
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$10,$02,$01,$20,$09,$42,$04,$10
+        dc.b    $09,$42,$01,$08,$09,$44,$01,$04,$10,$03,$40,$02,$09,$43,$80,$01
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
+        dc.b    $0A,$48,$08,$08,$0A,$48,$04,$04,$0A,$48,$02,$02,$0A,$48,$01,$01
+        dc.b    $0A,$49,$80,$80,$0A,$49,$40,$40,$0A,$49,$20,$20,$0A,$4A,$10,$10
+        dc.b    $0A,$4A,$08,$08,$0A,$4A,$04,$04,$0A,$4A,$02,$02,$0A,$4A,$01,$01
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
+        dc.b    $0A,$48,$08,$08,$0A,$48,$04,$04,$0A,$48,$02,$02,$0A,$48,$01,$01
+        dc.b    $0A,$49,$80,$80,$0A,$49,$40,$40,$0A,$49,$20,$20,$0A,$49,$10,$10
+        dc.b    $0A,$4A,$08,$08,$0A,$4A,$04,$04,$00,$00,$00,$02,$0A,$4A,$01,$01
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
+        dc.b    $0A,$48,$08,$08,$0A,$48,$04,$04,$0A,$48,$02,$02,$0A,$48,$01,$01
+        dc.b    $0A,$49,$80,$80,$0A,$49,$40,$40,$0A,$49,$20,$20,$0A,$4A,$10,$10
+        dc.b    $0A,$4A,$08,$08,$0A,$4A,$04,$04,$0A,$4A,$02,$02,$0A,$4A,$01,$01
+        dc.b    $09,$43,$80,$80,$09,$43,$40,$40,$00,$00,$00,$20,$09,$43,$10,$10
+        dc.b    $09,$43,$08,$08,$09,$42,$04,$04,$00,$00,$00,$02,$09,$43,$01,$01
+        dc.b    $09,$44,$80,$80,$00,$00,$00,$40,$00,$00,$00,$20,$09,$44,$10,$10
+        dc.b    $09,$44,$08,$08,$09,$44,$04,$04,$09,$44,$02,$02,$09,$44,$01,$01
+        dc.b    $00,$00,$00,$80,$09,$43,$40,$40,$00,$00,$00,$20,$09,$43,$10,$10
+        dc.b    $09,$43,$08,$08,$09,$42,$01,$04,$00,$00,$00,$02,$09,$43,$01,$01
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$09,$44,$10,$10
+        dc.b    $09,$44,$08,$08,$00,$00,$00,$04,$09,$44,$02,$02,$09,$44,$01,$01
+        dc.b    $00,$00,$00,$80,$09,$43,$40,$40,$00,$00,$00,$20,$09,$43,$10,$10
+        dc.b    $09,$43,$08,$08,$09,$43,$04,$04,$09,$42,$02,$02,$09,$43,$01,$01
+        dc.b    $09,$44,$80,$80,$00,$00,$00,$40,$09,$44,$20,$20,$09,$44,$10,$10
+        dc.b    $09,$44,$08,$08,$09,$44,$04,$04,$09,$44,$02,$02,$00,$00,$00,$01
+        dc.b    $06,$B4,$01,$80,$05,$06,$06,$40,$05,$0B,$30,$20,$05,$0A,$0C,$10
+        dc.b    $0D,$B8,$01,$08,$0D,$B8,$04,$04,$06,$B4,$10,$02,$06,$B4,$80,$01
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
+        dc.b    $00,$00,$00,$08,$00,$00,$00,$04,$09,$4C,$80,$02,$09,$BC,$01,$01
+        dc.b    $00,$00,$00,$80,$0C,$31,$20,$40,$0C,$39,$10,$20,$00,$00,$00,$10
+        dc.b    $09,$43,$01,$08,$0A,$46,$01,$04,$00,$00,$00,$02,$00,$00,$00,$01
+        dc.b    $00,$00,$00,$80,$06,$B1,$01,$40,$0D,$57,$08,$20,$09,$42,$01,$10
+        dc.b    $04,$03,$08,$08,$00,$00,$00,$00,$00,$00,$00,$80,$00,$00,$00,$40
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
+        dc.b    $04,$03,$08,$08,$0A,$46,$01,$04,$04,$07,$01,$02,$04,$07,$02,$01
+        dc.b    $08,$6C,$04,$80,$00,$00,$00,$40,$0D,$57,$08,$20,$09,$42,$01,$10
+        dc.b    $00,$00,$00,$08,$00,$00,$00,$00,$00,$00,$00,$80,$00,$00,$00,$40
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
+        dc.b    $00,$00,$00,$08,$00,$00,$00,$04,$00,$00,$00,$02,$00,$00,$00,$01
+        dc.b    $06,$B4,$01,$80,$05,$06,$06,$40,$05,$0B,$30,$20,$05,$0A,$0C,$10
+        dc.b    $0D,$B8,$01,$08,$0D,$B8,$04,$04,$06,$B4,$10,$02,$06,$B4,$80,$01
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
+        dc.b    $04,$03,$08,$08,$04,$07,$01,$04,$00,$00,$00,$02,$0A,$1E,$10,$01
+        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
+        dc.b    $09,$43,$01,$08,$0A,$46,$01,$04,$00,$00,$00,$02,$04,$07,$02,$01
+        dc.b    $00,$0D,$BB,$A0,$00,$00,$1A,$CB,$C0,$00
+SensorV0AB2Thresh:
+        dc.b    $1E                                      ; Byte compared with V0AB2; read by CalcVehicleSpeed.
+StartFactor1:
+        dc.b    $3F                                      ; Byte multiplied; read by Reset.
+StartFactor2:
+        dc.b    $05                                      ; Byte multiplied; read by Reset.
+PurgeV0471Thresh:
+        dc.b    $18                                      ; Byte compared with V0471; read by Sub_22762.
+        dc.b    $00,$10,$04,$01,$20,$08,$02,$01,$10,$03,$02,$20,$04,$04,$01,$05
+        dc.b    $08,$02,$00,$02,$04,$01,$01,$08,$02,$04,$02,$03,$08,$01,$00,$02
+        dc.b    $01,$01,$01,$04,$02,$04,$08,$03,$08,$02,$07,$73,$80,$80,$07,$73
+        dc.b    $40,$40,$08,$56,$0C,$20,$07,$70,$80,$10,$07,$72,$40,$08,$00,$00
+        dc.b    $00,$04,$00,$00,$00,$02,$00,$00,$00,$01
+SensorRpmThresh11:
+        dc.b    $10                                      ; Byte compared with EngineRpm; read by Sub_0EB62.
+SensorThresh27:
+        dc.b    $0C                                      ; Byte compared with; read by Sub_0EB62.
+FieldValue3:
+        dc.b    $FF                                      ; Byte used with; read by Sub_08520, Sub_08DD4.
+FieldV0DC1Init:
+        dc.b    $3F                                      ; Byte stored into V0DC1; read by Sub_08520, Sub_08DD4.
+        dc.b    $00,$00,$00
+CalV09B3Thresh:
+        dc.b    $0A                                      ; Byte compared with V09B3; read by Sub_08684.
+CalV09B1Thresh:
+        dc.b    $0F                                      ; Byte compared with V09B1; read by Sub_08684.
+CalSwitch:
+        dc.b    $00                                      ; Byte tested (zero = off); read by Sub_23B66.
+        dc.b    $FF,$FF,$01,$04,$02,$05,$04,$00,$08,$01,$10,$02,$20,$03,$04,$03
+        dc.b    $08,$04,$10,$05,$20,$06,$01,$01,$02,$02,$03,$05,$01,$04,$03,$05
+        dc.b    $02,$06,$01,$04,$02,$06
+FuelEventValue12:
+        dc.b    $18                                      ; Byte used with; read by Sub_12680.
+
+;---------------------------------------------------------------------------------------------------
+; DwellBattery ($7564): 2D table, 9 points, unsigned
+; Coil dwell against filtered battery voltage $0A57,Z (×32 into $E8,Z)
+; x: volt16, y: raw (units: docs/en/calibration.md)
+; Inputs: BatteryVoltsDwell
+; Read at $1E582
+;---------------------------------------------------------------------------------------------------
+DwellBattery:
+        dc.b    9,$80                                    ; points, flags
+        dc.b    130,172, 146,150, 162,131, 178,108, 194,88, 210,83, 227,74, 243,68 ; x, y
+        dc.b    255,62                                   ; x, y
+
+
+;---------------------------------------------------------------------------------------------------
+; DwellBatteryAlt ($7578): 2D table, 8 points, unsigned
+; As DwellBattery with $0D5F,Z bit 6 set
+; x: volt16, y: raw (units: docs/en/calibration.md)
+; Inputs: BatteryVoltsDwell
+; Read at $1E582
+;---------------------------------------------------------------------------------------------------
+DwellBatteryAlt:
+        dc.b    8,$80                                    ; points, flags
+        dc.b    146,255, 162,233, 178,175, 194,131, 210,123, 227,107, 243,94, 255,88 ; x, y
+
+CalValue8:
+        dc.b    $C0                                      ; Byte used with; read by Sub_2D91C.
+        dc.b    $FA,$45,$C8,$00,$B0,$00,$10,$00,$00,$00,$00,$43,$F2,$00,$A9,$00
+        dc.b    $10,$00,$00,$00,$00,$43,$8E,$00,$A5,$00,$10,$00,$00,$00,$00,$44
+        dc.b    $60,$00,$A6,$00,$10,$00,$00,$00,$00,$43,$A2,$00,$A7,$00,$10,$00
+        dc.b    $00,$00,$00,$44,$6A,$00,$A8,$00,$10,$00,$00,$00,$00,$43,$E8,$00
+        dc.b    $A1,$00,$10,$00,$00,$00,$00,$46,$90,$00,$A2,$00,$10,$00,$00,$00
+        dc.b    $00,$43,$84,$00,$A3,$00,$10,$00,$00,$00,$00,$44,$4C,$00,$A4,$00
+        dc.b    $10,$00,$00,$00,$00,$41,$54,$00,$AA,$00,$10,$00,$00,$00,$00,$47
+        dc.b    $12,$00,$9E,$00,$02,$06,$59,$00,$02,$47,$08,$00,$9E,$00,$01,$06
+        dc.b    $59,$00,$01,$45,$50,$00,$9D,$00,$80,$06,$58,$00,$80,$43,$FC,$00
+        dc.b    $9D,$00,$40,$06,$58,$00,$40,$45,$78,$00,$9D,$00,$20,$06,$58,$00
+        dc.b    $20,$40,$E6,$00,$9D,$00,$10,$06,$58,$00,$10,$44,$EC,$00,$9D,$00
+        dc.b    $08,$06,$58,$00,$08,$44,$88,$00,$9D,$00,$04,$06,$58,$00,$04,$40
+        dc.b    $D2,$00,$9D,$00,$02,$06,$58,$00,$02,$44,$06,$00,$9D,$00,$01,$06
+        dc.b    $58,$00,$01,$44,$74,$00,$9E,$00,$80,$06,$59,$00,$80,$44,$7E,$00
+        dc.b    $9E,$00,$40,$06,$59,$00,$40,$44,$92,$00,$9E,$00,$20,$06,$59,$00
+        dc.b    $20,$44,$9C,$00,$9E,$00,$10,$06,$59,$00,$10,$45,$A0,$00,$9E,$00
+        dc.b    $08,$06,$59,$00,$08,$46,$A4,$00,$9E,$00,$04,$06,$59,$00,$04,$45
+        dc.b    $64,$00,$9F,$00,$80,$06,$5A,$00,$80,$45,$5A,$00,$9F,$00,$40,$06
+        dc.b    $5A,$00,$40,$45,$6E,$00,$9F,$00,$20,$06,$5A,$00,$20,$44,$E2,$00
+        dc.b    $9F,$00,$10,$06,$5A,$00,$10,$47,$EE,$00,$9F,$00,$08,$06,$5A,$00
+        dc.b    $08,$43,$48,$00,$9F,$00,$04,$06,$5A,$00,$04,$44,$24,$00,$AE,$00
+        dc.b    $10,$00,$00,$00,$00,$44,$2E,$00,$AC,$00,$10,$00,$00,$00,$00,$44
+        dc.b    $38,$00,$AF,$00,$10,$00,$00,$00,$00,$44,$42,$00,$AD,$00,$10,$00
+        dc.b    $00,$00,$00,$43,$B6,$00,$DD,$00,$01,$00,$00,$00,$00,$43,$C0,$00
+        dc.b    $DD,$00,$02,$00,$00,$00,$00,$43,$CA,$00,$DD,$00,$04,$00,$00,$00
+        dc.b    $00,$43,$D4,$00,$DD,$00,$08,$00,$00,$00,$00,$46,$54,$00,$DD,$00
+        dc.b    $10,$00,$00,$00,$00,$46,$5E,$00,$DD,$00,$20,$00,$00,$00,$00,$43
+        dc.b    $AC,$00,$DD,$00,$40,$00,$00,$00,$00,$2C,$1F,$16,$FF,$00,$C0,$01
+        dc.b    $04
+CalV06E7Init:
+        dc.b    $01,$17                                  ; Word stored into V06E7; read by Sub_23AB2.
+PurgeMonitorValueInit:
+        dc.b    $14                                      ; Byte stored into PurgeMonitorValue; read by Sub_3E074.
+PurgeMonitorValueThresh:
+        dc.b    $08                                      ; Byte compared with PurgeMonitorValue; read by Sub_3E074, Sub_3ECC6.
+PurgeV047DThresh:
+        dc.b    $05                                      ; Byte compared with V047D; read by Sub_3E074.
+        dc.b    $FF,$19,$98,$04,$0D,$07,$21,$00,$00,$00,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; Isr_IRQ1 ($08000)
@@ -7457,7 +10163,7 @@ Isr_GPT_IC3:
         BRSET   >PORTGP,Z,#$04,L08332
         INC     $09CC,Z
         INCW    $0052,Z
-        BRSET   $032D,#$20,L080F4
+        BRSET   >Options032D,#$20,L080F4
         TSTW    $0052,Z
         BNE     L08104
         BRA     L08100
@@ -7601,7 +10307,7 @@ L08288:
         BEQ     L082B6
         ANDA    #$EF
         STAA    $0C32,Z
-        BRCLR   $032D,#$20,L082A0
+        BRCLR   >Options032D,#$20,L082A0
         LDAB    #$05
         LDE     #$5BF0
         BRA     L082A6
@@ -7632,7 +10338,7 @@ L082C4:
         STAA    $0AAD,Z
         LDE     >TIC3,Z
         SUBE    $0AB0,Z
-        BRSET   $032D,#$20,L082F8
+        BRSET   >Options032D,#$20,L082F8
         CMPA    #$02
         BCS     L08302
 L082F8:
@@ -7694,23 +10400,23 @@ L08378:
         BNE     L08392
         DEC     $032F,Z
 L08392:
-        BRCLR   $0338,#$02,L0839E
+        BRCLR   >Options0338,#$02,L0839E
         JSR     Sub_08DAA
         BRA     L083C0
 L0839E:
         JSR     Sub_08520
         BRA     L083C0
 L083A4:
-        BRCLR   $0335,#$20,L083AE
+        BRCLR   >Options0335,#$20,L083AE
         JSR     Sub_2F800
 L083AE:
-        BRCLR   $0335,#$80,L083B8
+        BRCLR   >Options0335,#$80,L083B8
         JSR     Sub_2FB1E
 L083B8:
         JSR     Sub_2DA10
         JSR     Sub_33048
 L083C0:
-        BRCLR   $0338,#$02,L08402
+        BRCLR   >Options0338,#$02,L08402
         BRCLR   $0DD4,Z,#$01,L08402
         LDAA    $0DCD,Z
         ADDA    $0DCC,Z
@@ -7729,7 +10435,7 @@ L083F0:
         BCLRW   $106E,Z,#$2000
         BCLR    $0DB8,Z,#$20
 L08402:
-        BRCLR   $0334,#$10,L0840C
+        BRCLR   >StartFlag,#$10,L0840C
         JSR     Sub_08CE2
 L0840C:
         ORP     #$00E0
@@ -7737,7 +10443,7 @@ L0840C:
         BNE     L08432
         LDAA    #$18
         STAA    $097B,Z
-        BRSET   $032E,#$04,L08428
+        BRSET   >Options032E,#$04,L08428
         JSR     Sub_3060E
         BRA     L08432
 L08428:
@@ -7757,7 +10463,7 @@ Sub_0843A:
         TBXK
         BRSET   $0017,Z,#$02,L08494
         LDAA    >BatteryVolts2,Z
-        CMPA    $25C8
+        CMPA    >CalVoltsThresh1
         BCS     L08494
         LDAB    <IacPosition,Z
         BRCLR   $0017,Z,#$40,L08460
@@ -7768,7 +10474,7 @@ Sub_0843A:
 L08460:
         TST     $0363,Z
         BNE     L084A4
-        CMPB    $031B,Z
+        CMPB    >IacTargetCmd,Z
         BEQ     L08494
         BCS     L08482
 L0846E:
@@ -7857,9 +10563,9 @@ L08554:
         BRSET   $106E,Z,#$20,L08570
 L0855A:
         BSET    $06B6,Z,#$08
-        LDAA    $7535
+        LDAA    >FieldValue3
         BRSET   $0774,Z,#$80,L0856C
-        LDAA    $7536
+        LDAA    >FieldV0DC1Init
 L0856C:
         STAA    $0DC1,Z
 L08570:
@@ -7909,7 +10615,7 @@ L085E6:
         SUBB    $0DBA,Z
         BHI     L08650
         NEGB
-        CMPB    $4A08
+        CMPB    >FieldThresh
         BLS     L08650
         BSET    $0DB8,Z,#$80
         BCLR    $0DB8,Z,#$40
@@ -7974,7 +10680,7 @@ L0867A:
         LDAA    $09B3,Z
         INCA
         STAA    $09B3,Z
-        CMPA    $753A
+        CMPA    >CalV09B3Thresh
         BCC     L08692
         LBRA    L087C2
 L08692:
@@ -8039,14 +10745,14 @@ L08734:
         BRA     L08784
 L0873C:
         LDAA    $09B1,Z
-        CMPA    $753B
+        CMPA    >CalV09B1Thresh
         BHI     L08778
         TDE
         LDD     E,Z
         STAB    $09B2,Z
         BRA     L087BE
 L08750:
-        CMPA    $753B
+        CMPA    >CalV09B1Thresh
         BHI     L08724
         STAA    $09B1,Z
         BCLR    $0C34,Z,#$01
@@ -8103,7 +10809,7 @@ L087C2:
 Isr_GPT_OC2:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
-        BRCLR   $032B,#$20,L087E8
+        BRCLR   >Options032B,#$20,L087E8
         JSR     Sub_0891A
         JMP     L08916
 L087E8:
@@ -8112,7 +10818,7 @@ L087E8:
         LDY     #$87C4
         TZX
         LDX     #$F916
-        BRSET   $032B,#$40,L08800
+        BRSET   >Options032B,#$40,L08800
         LDAB    $85,Z
         BRA     L0887E
 L08800:
@@ -8136,7 +10842,7 @@ Isr_GPT_OC3:
         LDY     #$87C9
         TZX
         LDX     #$F918
-        BRSET   $032B,#$40,L08830
+        BRSET   >Options032B,#$40,L08830
         LDAB    $86,Z
         BRA     L0887E
 L08830:
@@ -8160,7 +10866,7 @@ Isr_GPT_OC4:
         LDY     #$87CE
         TZX
         LDX     #$F91A
-        BRSET   $032B,#$40,L08860
+        BRSET   >Options032B,#$40,L08860
         LDAB    $87,Z
         BRA     L0887E
 L08860:
@@ -8187,7 +10893,7 @@ L08894:
         LDAA    >TFLG1,Z
         ANDA    $04,Y
         STAA    >TFLG1,Z
-        BRCLR   $032B,#$40,L088AC
+        BRCLR   >Options032B,#$40,L088AC
         BRCLR   $0C35,Z,#$20,L0890C
         BRA     L088B2
 L088AC:
@@ -8199,14 +10905,14 @@ L088B2:
         LDAB    >TCTL1,Z
         BITB    $01,Y
         BEQ     L0890C
-        LDAA    $032A
+        LDAA    >EventFlag1
         BITA    #$C0
         BNE     L088DE
         LDAA    $0C35,Z
         ANDA    #$18
         CMPA    $02,Y
         BNE     L0890C
-        BRSET   $032B,#$40,L088FC
+        BRSET   >Options032B,#$40,L088FC
 L088DE:
         LDAB    #$02
         LDAA    $0C46,Z
@@ -8341,7 +11047,7 @@ Isr_SCI:
 ; Called from: Isr_IRQ2
 ;---------------------------------------------------------------------------------------------------
 Sub_08A02:
-        BRSET   $032E,#$04,L08A0E
+        BRSET   >Options032E,#$04,L08A0E
         JSR     Sub_30D52
         BRA     L08A12
 L08A0E:
@@ -8386,7 +11092,7 @@ L08A62:
 Isr_GPT_IC4OC5:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
-        BRCLR   $0337,#$80,L08CD2
+        BRCLR   >Options0337,#$80,L08CD2
         BRCLR   $0E05,Z,#$01,L08CD2
         LDD     >TI4O5,Z
         TDE
@@ -8440,7 +11146,7 @@ L08B0A:
 L08B16:
         BCLR    $0857,Z,#$01
         BCLR    $0856,Z,#$CC
-        BRSET   $032E,#$04,L08CB2
+        BRSET   >Options032E,#$04,L08CB2
         LBRA    L08CBE
 L08B28:
         BRCLR   $0A47,Z,#$20,L08B44
@@ -8460,7 +11166,7 @@ L08B44:
 L08B58:
         CLR     $0863,Z
         CLR     $0862,Z
-        CLR     $085A,Z
+        CLR     >EventSparkTimer,Z
         BSET    $0857,Z,#$01
         BSET    $0856,Z,#$10
         BSET    $0856,Z,#$20
@@ -8493,32 +11199,32 @@ L08BAC:
         BCLR    $0856,Z,#$0C
         LDAA    $085D,Z
         BEQ     L08C18
-        LDAB    $1FDB
+        LDAB    >StartV0863Thresh
         LDAA    $085E,Z
-        ADDA    $1FD8
-        CMPA    $1FDB
+        ADDA    >FuelV0863Adder
+        CMPA    >StartV0863Thresh
         BCC     L08BD8
         TAB
 L08BD8:
         STAB    $085E,Z
-        LDAB    $1FDB
+        LDAB    >StartV0863Thresh
         LDAA    $0863,Z
-        ADDA    $1FD8
-        CMPA    $1FDB
+        ADDA    >FuelV0863Adder
+        CMPA    >StartV0863Thresh
         BCC     L08BF0
         TAB
 L08BF0:
         STAB    $0863,Z
         CLRB
         LDAA    $085D,Z
-        SUBA    $1FD8
+        SUBA    >FuelV0863Adder
         BCC     L08C02
         TBA
 L08C02:
         STAA    $085D,Z
         CLRB
         LDAA    $0862,Z
-        SUBA    $1FD8
+        SUBA    >FuelV0863Adder
         BCC     L08C14
         TBA
 L08C14:
@@ -8526,11 +11232,11 @@ L08C14:
 L08C18:
         LDAA    $085D,Z
         ADDA    $085E,Z
-        STAA    $085A,Z
+        STAA    >EventSparkTimer,Z
         PSHM    E
         BSET    >FuelModeFlags,Z,#$08
         CLR     $04FE,Z
-        LDAB    $ABB1
+        LDAB    >EventV0C46Value
         DECB
         CLRA
         TDE
@@ -8546,7 +11252,7 @@ L08C3E:
 L08C50:
         SUBE    #$0001
         BPL     L08C3E
-        LDAB    $ABB1
+        LDAB    >EventV0C46Value
         CLRA
         STD     $04FC,Z
         CLRE
@@ -8558,7 +11264,7 @@ L08C50:
 L08C70:
         LSRB
         BCC     L08C7A
-        LDAA    $1FF7
+        LDAA    >CalValue7
         BRA     L08C7C
 L08C7A:
         CLRA
@@ -8575,7 +11281,7 @@ L08C88:
         BCLR    >TCTL2,Z,#$80
         BRA     L08CD2
 L08C9A:
-        BRSET   $032E,#$04,L08CB2
+        BRSET   >Options032E,#$04,L08CB2
         BRSET   $0855,Z,#$10,L08CAC
         JSR     Sub_30ABE
         BRA     L08CBA
@@ -8697,9 +11403,9 @@ L08DDE:
         BRSET   $106E,Z,#$20,L08DFA
 L08DE4:
         BSET    $06B6,Z,#$08
-        LDAA    $7535
+        LDAA    >FieldValue3
         BRSET   $0774,Z,#$80,L08DF6
-        LDAA    $7536
+        LDAA    >FieldV0DC1Init
 L08DF6:
         STAA    $0DC1,Z
 L08DFA:
@@ -8745,7 +11451,7 @@ L08E5C:
         TDE
         LDD     $0DD2,Z
         PSHM    D,E
-        LDAA    $0368
+        LDAA    >FieldValue1
         JSR     Blend16
         AIS     #$04
         STD     $0DD2,Z
@@ -8758,7 +11464,7 @@ L08E92:
         SUBB    $0DBA,Z
         LBHI    L08FA2
         NEGB
-        CMPB    $4A08
+        CMPB    >FieldThresh
         LBLS    L08FA2
         BSET    $0DB8,Z,#$80
         BCLR    $0DB8,Z,#$40
@@ -8775,9 +11481,9 @@ L08EAC:
         BRA     L08EE6
 L08ED2:
         LDAA    >ChargeDeficit,Z
-        CMPA    $0367
+        CMPA    >FieldChargeDeficitThresh
         LBLS    L08F50
-        LDAA    $0366
+        LDAA    >FieldV0DCEInit
         STAA    $0DCE,Z
 L08EE6:
         BNE     L08F58
@@ -9351,7 +12057,7 @@ L0A292:
         STE     $0D84,Z
 L0A296:
         PSHM    D
-        LDAA    $254C
+        LDAA    >EventFactor
         CMPA    #$FF
         BEQ     L0A2AA
         TSTB
@@ -9405,10 +12111,10 @@ L0A322:
         LDY     #$A017
         LDAB    $86,Z
         BRSET   $0C35,Z,#$20,L0A342
-        BRSET   $032A,#$40,L0A34E
+        BRSET   >EventFlag1,#$40,L0A34E
         BRA     L0A348
 L0A342:
-        BRCLR   $032A,#$40,L0A34E
+        BRCLR   >EventFlag1,#$40,L0A34E
 L0A348:
         LDY     #$A010
         LDAB    $85,Z
@@ -9424,7 +12130,7 @@ L0A34E:
         PULM    K,Y
         LDAA    $0D43,Z
         STAA    $0D45,Z
-        LDAA    $0D42,Z
+        LDAA    >O2SparkTrim,Z
         STAA    $0D43,Z
         LDAA    #$8A
         SUBA    $0D11,Z
@@ -9438,13 +12144,13 @@ L0A34E:
         SUBE    $04F6,Z
         STE     $04F6,Z
         LDD     $0ABD,Z
-        CPD     $1B41
+        CPD     >EventV0ABDThresh3
         BCS     L0A3C4
         CPD     #$00FF
         BCS     L0A3BE
 L0A3AA:
         BCLR    $0D00,Z,#$20
-        CLR     $0D3D,Z
+        CLR     >SurgeEnableTime,Z
         BCLR    $0D02,Z,#$08
         BCLR    $0D02,Z,#$04
         JMP     L0A4D4
@@ -9489,10 +12195,10 @@ L0A42A:
         LDY     #$A010
         LDAB    $85,Z
         BRSET   $0C35,Z,#$20,L0A442
-        BRSET   $032A,#$40,L0A44E
+        BRSET   >EventFlag1,#$40,L0A44E
         BRA     L0A448
 L0A442:
-        BRCLR   $032A,#$40,L0A44E
+        BRCLR   >EventFlag1,#$40,L0A44E
 L0A448:
         LDY     #$A017
         LDAB    $86,Z
@@ -9550,7 +12256,7 @@ L0A4DA:
         dc.b    $27,$4C,$27,$4C
 L0A4E2:
         JSR     EmptyHook
-        BRCLR   $0333,#$02,L0A4F4
+        BRCLR   >Options0333,#$02,L0A4F4
         LDE     #$0177
         STE     $1048,Z
 L0A4F4:
@@ -9613,10 +12319,10 @@ L0A598:
         LDY     #$A017
         LDAB    $86,Z
         BRSET   $0C35,Z,#$20,L0A5B0
-        BRSET   $032A,#$40,L0A5BC
+        BRSET   >EventFlag1,#$40,L0A5BC
         BRA     L0A5B6
 L0A5B0:
-        BRCLR   $032A,#$40,L0A5BC
+        BRCLR   >EventFlag1,#$40,L0A5BC
 L0A5B6:
         LDY     #$A010
         LDAB    $85,Z
@@ -9769,10 +12475,10 @@ L0A71A:
         LDY     #$A017
         LDAB    $86,Z
         BRSET   $0C35,Z,#$20,L0A79A
-        BRSET   $032A,#$40,L0A7A6
+        BRSET   >EventFlag1,#$40,L0A7A6
         BRA     L0A7A0
 L0A79A:
-        BRCLR   $032A,#$40,L0A7A6
+        BRCLR   >EventFlag1,#$40,L0A7A6
 L0A7A0:
         LDY     #$A010
         LDAB    $85,Z
@@ -9873,10 +12579,10 @@ L0A8AE:
         TBYK
         LDY     #$A010
         BRSET   $0C35,Z,#$20,L0A8DC
-        BRSET   $032A,#$40,L0A8E6
+        BRSET   >EventFlag1,#$40,L0A8E6
         BRA     L0A8E2
 L0A8DC:
-        BRCLR   $032A,#$40,L0A8E6
+        BRCLR   >EventFlag1,#$40,L0A8E6
 L0A8E2:
         LDY     #$A017
 L0A8E6:
@@ -9888,12 +12594,12 @@ L0A8E6:
 L0A8F6:
         LDAA    $0C46,Z
         INCA
-        CMPA    $ABB1
+        CMPA    >EventV0C46Value
         BCS     L0A904
         CLRA
 L0A904:
         STAA    $0C46,Z
-        BRCLR   $032F,#$06,L0A914
+        BRCLR   >EventFlag2,#$06,L0A914
         BCLRW   $1002,Z,#$0400
 L0A914:
         BCLR    $0D00,Z,#$80
@@ -9934,10 +12640,10 @@ L0A95E:
         LBNE    L0A9E6
         LDAB    #$00
         BRSET   $0C35,Z,#$20,L0A99C
-        BRSET   $032A,#$40,L0A9A4
+        BRSET   >EventFlag1,#$40,L0A9A4
         BRA     L0A9A2
 L0A99C:
-        BRCLR   $032A,#$40,L0A9A4
+        BRCLR   >EventFlag1,#$40,L0A9A4
 L0A9A2:
         LDAB    #$01
 L0A9A4:
@@ -9983,12 +12689,12 @@ L0A9F6:
         BSET    $0317,Z,#$40
         JSR     Sub_1E142
         LDX     $0ABD,Z
-        CPX     $09EC
+        CPX     >EventV0ABDThresh1
         BCS     L0AA3E
-        CPX     $09EE
+        CPX     >EventV0ABDThresh2
         BCS     L0AA78
         BRCLR   $0774,Z,#$80,L0AA34
-        BRCLR   $033B,#$40,L0AA34
+        BRCLR   >Options033B,#$40,L0AA34
         BCLR    $043D,Z,#$20
 L0AA34:
         BCLR    $0774,Z,#$80
@@ -10002,7 +12708,7 @@ L0AA3E:
         STD     >CrankPulse,Z
         BSET    $0774,Z,#$01
         CLRW    >Count3s,Z
-        CLR     $0C3F,Z
+        CLR     >RunTime,Z
         CLR     >CrankEvents,Z
         CLR     $0933,Z
         LDAA    >Throttle,Z
@@ -10109,8 +12815,22 @@ L0AB88:
         STD     >TMSK1,Z
         PULM    E,D
         RTI
-        dc.b    $27,$4C,$27,$4C,$00,$0E,$4E,$1C,$00,$04,$00,$3A,$00,$76,$10,$18
-        dc.b    $45
+        dc.b    $27,$4C,$27,$4C
+SensorValue16:
+        dc.b    $00,$0E,$4E,$1C                          ; Long used with; read by Sub_0C77E, CalcEngineRpm.
+        dc.b    $00
+EventV0C46Value:
+        dc.b    $04                                      ; Byte used with V0C46; read by Isr_GPT_IC4OC5, Isr_GPT_IC1, Sub_10604 +17.
+SensorValue17:
+        dc.b    $00,$3A                                  ; Word used with; read by Sub_39000.
+SensorValue18:
+        dc.b    $00,$76                                  ; Word used with; read by Sub_39000.
+SensorV0ABCThresh:
+        dc.b    $10                                      ; Byte compared with V0ABC; read by Sub_39000.
+SensorValue19:
+        dc.b    $18                                      ; Byte used with; read by Sub_39000.
+SensorValue20:
+        dc.b    $45                                      ; Byte used with; read by Sub_39000.
 
 ;---------------------------------------------------------------------------------------------------
 ; EventTimingLimit ($ABB9): 2D table, 2 points, unsigned
@@ -10136,7 +12856,11 @@ FuelEventOffset:
         dc.b    3,$80                                    ; points, flags
         dc.b    6,0, 36,1, 66,2                          ; x, y
 
-        dc.b    $03,$01,$71,$01,$68,$00,$B4,$00,$A0,$00,$8C,$00,$78,$07,$80
+FuelEventFactor:
+        dc.b    $03                                      ; Byte multiplied; read by Sub_12680.
+        dc.b    $01,$71,$01,$68,$00,$B4,$00,$A0,$00,$8C,$00,$78
+IdleV0D9AInit:
+        dc.b    $07,$80                                  ; Word stored into V0D9A; read by Sub_1908C, Sub_1E76A.
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_0ABE2 ($0ABE2)
@@ -10595,7 +13319,7 @@ L0ACFE:
 ;---------------------------------------------------------------------------------------------------
 MainLoopCounters:
         ORP     #$00E0
-        BRCLR   $0333,#$40,L0C00E
+        BRCLR   >Options0333,#$40,L0C00E
         JSR     Sub_0C064
 L0C00E:
         INC     >MainLoopCounter,Z
@@ -10606,7 +13330,7 @@ L0C00E:
         BEQ     L0C038
         STAA    >Count3s,Z
         BRCLR   $0774,Z,#$80,L0C038
-        STAA    $0C3F,Z
+        STAA    >RunTime,Z
         TST     $0F24,Z
         BEQ     L0C038
         DEC     $0F24,Z
@@ -10841,7 +13565,7 @@ L0C1C8:
         BCS     L0C1D2
         STAA    $01,X
 L0C1D2:
-        BRSET   $032B,#$80,L0C1DA
+        BRSET   >Options032B,#$80,L0C1DA
         BSR     Sub_0C1DE
 L0C1DA:
         PULM    K,E
@@ -11302,7 +14026,7 @@ Sub_0C50A:
         TZX
         LDX     #$8C49
         LDAA    $0801,Z
-        CMPA    $1B2C
+        CMPA    >StartV0801Thresh
         BNE     L0C522
         BSET    $0C31,Z,#$01
         BSR     Sub_0C57A
@@ -11387,10 +14111,10 @@ L0C5E4:
         CPX     #$C5B4
         BCS     L0C5D6
         BRCLR   $0D00,Z,#$02,L0C5FE
-        LDAA    $0D14,Z
+        LDAA    >TipInSteps,Z
         INCA
         BEQ     L0C5FE
-        STAA    $0D14,Z
+        STAA    >TipInSteps,Z
 L0C5FE:
         BRCLR   $0774,Z,#$80,L0C610
         BRCLR   $0D1A,Z,#$3C,L0C60C
@@ -11409,14 +14133,14 @@ L0C624:
         BRSET   >ThrottleState,Z,#$40,L0C648
         LDAA    $07DB,Z
         INCA
-        CMPA    $1179
+        CMPA    >FuelV07DBThresh
         BHI     L0C658
         STAA    $07DB,Z
         BRA     L0C658
 L0C648:
         LDAA    $07DC,Z
         INCA
-        CMPA    $1178
+        CMPA    >FuelV07DCThresh
         BHI     L0C658
         STAA    $07DC,Z
 L0C658:
@@ -11450,14 +14174,14 @@ L0C6B0:
         BPL     L0C6E8
         CLR     $0F07,Z
         NEGA
-        CMPA    $32AC
+        CMPA    >FuelThresh7
         BCC     L0C6C4
         CLR     $0F08,Z
         BRA     L0C71C
 L0C6C4:
         LDAA    $0F08,Z
         INCA
-        CMPA    $32AE
+        CMPA    >FuelV0F08Thresh
         BEQ     L0C6D6
         STAA    $0F08,Z
         BRA     L0C71C
@@ -11470,14 +14194,14 @@ L0C6D6:
         BRA     L0C71C
 L0C6E8:
         CLR     $0F08,Z
-        CMPA    $32AC
+        CMPA    >FuelThresh7
         BCC     L0C6F8
         CLR     $0F07,Z
         BRA     L0C71C
 L0C6F8:
         LDAA    $0F07,Z
         INCA
-        CMPA    $32AD
+        CMPA    >FuelV0F07Thresh
         BEQ     L0C70A
         STAA    $0F07,Z
         BRA     L0C71C
@@ -11512,7 +14236,7 @@ Sub_0C77E:
         LDED    $ABAD
         BRCLR   $0ABD,Z,#$FF,L0C7A4
         LDX     $0ABD,Z
-        LDED    $ABAC
+        LDED    >SensorValue16
 L0C7A4:
         CPX     #$0000
         BEQ     L0C7AE
@@ -12049,7 +14773,7 @@ L0CC2C:
 ;---------------------------------------------------------------------------------------------------
 Sub_0CC8A:
         ORP     #$00E0
-        BRSET   $032E,#$04,L0CC9A
+        BRSET   >Options032E,#$04,L0CC9A
         LDX     #$739B
         BRA     L0CC9E
 L0CC9A:
@@ -12070,7 +14794,7 @@ L0CCAA:
 ;---------------------------------------------------------------------------------------------------
 Sub_0CCB8:
         ORP     #$00E0
-        BRSET   $032E,#$04,L0CD3A
+        BRSET   >Options032E,#$04,L0CD3A
         LDX     #$73DB
         JSR     Sub_0C4E8
         BRCLR   $0055,Z,#$40,L0CCEC
@@ -12080,7 +14804,7 @@ Sub_0CCB8:
         BEQ     L0CCEA
 L0CCDE:
         BRSET   $0400,Z,#$80,L0CCEC
-        LDAB    $0408,Z
+        LDAB    >SpeedCtlSetSpeed,Z
         BEQ     L0CCEC
 L0CCEA:
         ORAA    #$01
@@ -12090,7 +14814,7 @@ L0CCEC:
         BCS     L0CCF6
         ORAA    #$02
 L0CCF6:
-        BRCLR   $032E,#$40,L0CCFE
+        BRCLR   >Options032E,#$40,L0CCFE
         ORAA    #$80
 L0CCFE:
         STAA    $09D3,Z
@@ -12117,7 +14841,7 @@ L0CD3A:
         STAA    $0A10,Z
         LDX     #$74BB
         JSR     Sub_0C4E8
-        BRCLR   $032E,#$40,L0CD56
+        BRCLR   >Options032E,#$40,L0CD56
         ORAA    #$80
 L0CD56:
         LDAB    >ThrottleAboveClosed,Z
@@ -12418,7 +15142,7 @@ L0D1FC:
         STAA    >DDRGP,Z
         LDAA    #$08
         STAA    >OC1M,Z
-        BRCLR   $032A,#$E0,L0D238
+        BRCLR   >EventFlag1,#$E0,L0D238
         BRCLR   >PACTL,Z,#$80,L0D230
         LDAA    #$65
         STAA    >PACTL,Z
@@ -12432,27 +15156,27 @@ L0D238:
         STAA    >PACTL,Z
 L0D23E:
         LDAA    #$2A
-        BRCLR   $032B,#$20,L0D248
+        BRCLR   >Options032B,#$20,L0D248
         ORAA    #$01
 L0D248:
         STAA    >TCTL1,Z
         LDAA    #$29
-        BRCLR   $0337,#$80,L0D256
+        BRCLR   >Options0337,#$80,L0D256
         LDAA    #$A9
 L0D256:
         STAA    >TCTL2,Z
         LDAA    #$05
-        BRSET   $032B,#$80,L0D264
+        BRSET   >Options032B,#$80,L0D264
         ORAA    #$02
 L0D264:
-        BRCLR   $0337,#$80,L0D26C
+        BRCLR   >Options0337,#$80,L0D26C
         ORAA    #$80
 L0D26C:
         STAA    >TMSK1,Z
         LDAA    #$12
         STAA    >TMSK2,Z
         BSET    >CFORC,Z,#$F8
-        BRCLR   $0335,#$04,L0D290
+        BRCLR   >Options0335,#$04,L0D290
         LDAA    #$18
         STAA    >PWMC,Z
         CLRA
@@ -12460,7 +15184,7 @@ L0D26C:
         STAA    >PWMA,Z
 L0D290:
         LDD     #$0003
-        BRSET   $032E,#$04,L0D29E
+        BRSET   >Options032E,#$04,L0D29E
         LDD     #$0803
 L0D29E:
         STD     $100C,Z
@@ -12498,14 +15222,14 @@ L0D29E:
         LDAA    #$07
         STAA    >ADCTL0_L,Z
         LDD     #$FA91
-        BRSET   $032E,#$04,L0D326
+        BRSET   >Options032E,#$04,L0D326
         LDD     #$F891
 L0D326:
         STD     $1014,Z
         LDD     #$1800
         STD     $1012,Z
         LDD     #$0000
-        BRSET   $032E,#$04,L0D340
+        BRSET   >Options032E,#$04,L0D340
         LDD     #$202C
 L0D340:
         STD     $1018,Z
@@ -12514,15 +15238,15 @@ L0D340:
         LDD     #$0005
         STD     $101C,Z
         LDD     #$003F
-        BRCLR   $0335,#$20,L0D362
+        BRCLR   >Options0335,#$20,L0D362
         LDD     #$002F
 L0D362:
         STD     $1020,Z
-        BRCLR   $032B,#$20,L0D372
+        BRCLR   >Options032B,#$20,L0D372
         LDD     #$0002
         BRA     L0D382
 L0D372:
-        BRCLR   $032B,#$80,L0D37E
+        BRCLR   >Options032B,#$80,L0D37E
         LDD     #$000E
         BRA     L0D382
 L0D37E:
@@ -12534,7 +15258,7 @@ L0D382:
         STD     $1058,Z
         STD     $105A,Z
         STD     $105C,Z
-        BRSET   $032B,#$80,L0D3A2
+        BRSET   >Options032B,#$80,L0D3A2
         CLRD
 L0D3A2:
         STD     $105E,Z
@@ -12544,34 +15268,34 @@ L0D3A2:
         STD     $1028,Z
         STD     $102C,Z
         STD     $1030,Z
-        BRCLR   $032B,#$80,L0D3CC
+        BRCLR   >Options032B,#$80,L0D3CC
         STD     $1034,Z
         STD     $1038,Z
 L0D3CC:
         CLRD
         STD     $1062,Z
         CLRD
-        BRCLR   $0333,#$40,L0D3DE
+        BRCLR   >Options0333,#$40,L0D3DE
         LDD     #$061B
 L0D3DE:
         STD     $1064,Z
         CLRD
         STD     $1066,Z
         CLRD
-        BRCLR   $0333,#$02,L0D3F6
+        BRCLR   >Options0333,#$02,L0D3F6
         LDD     #$E01B
         BRA     L0D400
 L0D3F6:
-        BRCLR   $0334,#$10,L0D400
+        BRCLR   >StartFlag,#$10,L0D400
         LDD     #$C61B
 L0D400:
         STD     $1068,Z
         CLRD
-        BRCLR   $032F,#$06,L0D410
+        BRCLR   >EventFlag2,#$06,L0D410
         LDD     #$C209
 L0D410:
         STD     $106A,Z
-        BRCLR   $032F,#$06,L0D422
+        BRCLR   >EventFlag2,#$06,L0D422
         LDD     #$00FA
         STD     $104C,Z
 L0D422:
@@ -12599,14 +15323,14 @@ L0D422:
         LDX     #$8AD0
         LDAB    #$04
         JSR     Sub_0CB76
-        STE     $000D,Z
-        LDAA    $043A
+        STE     >EepromCount,Z
+        LDAA    >StartThrottleClosedInit
         STAA    <ThrottleClosed,Z
         LDAA    #$F0
         STAA    <Baro,Z
         LDAA    #$32
         STAA    $3E,Z
-        LDAA    $0601
+        LDAA    >StartV0040Init
         STAA    $40,Z
         TZY
         LDY     #$802B
@@ -12620,10 +15344,10 @@ L0D48E:
         AIY     #$01
         CPX     #$23A3
         BLS     L0D48E
-        LDED    $2EAE
+        LDED    >StartV000FInit
         STE     $000F,Z
         STD     $11,Z
-        LDED    $2EB2
+        LDED    >StartV0013Init
         STE     $0013,Z
         STD     $15,Z
         JSR     Sub_208D6
@@ -12644,7 +15368,7 @@ L0D4D2:
         CPX     #$8FFF
         BCS     L0D4D2
         BRCLR   $000A,Z,#$10,L0D538
-        BRCLR   $032C,#$40,L0D52A
+        BRCLR   >Options032C,#$40,L0D52A
         LDAA    #$E3
         STAA    >FuelLevelFiltered,Z
         LDD     #$000C
@@ -12656,7 +15380,7 @@ L0D4FE:
         STAA    >FlexEthanol,Z
         STAA    $0A90,Z
         STAA    >FlexEthanolLearned,Z
-        STAA    $01B5,Z
+        STAA    >FlexLearnBase,Z
         BNE     L0D516
         LDAB    #$FF
         STAB    $01B7,Z
@@ -12664,16 +15388,16 @@ L0D516:
         LDX     #FlexLearnEthanolCurve
         JSR     Lookup2D
         STAA    $0F25,Z
-        STAA    $01BD,Z
-        STAA    $01B4,Z
+        STAA    >FlexEthanolPrev,Z
+        STAA    >FlexEthanolStart,Z
 L0D52A:
-        LDAA    $31E5
+        LDAA    >StartV01B6Value
         LDAB    #$CC
         MUL
         ADCA    #$00
-        STAA    $019C,Z
+        STAA    >FuelLevelScaled,Z
 L0D538:
-        BRCLR   $032E,#$04,L0D542
+        BRCLR   >Options032E,#$04,L0D542
         JSR     Sub_31FF2
 L0D542:
         LDAA    #$02
@@ -12739,7 +15463,7 @@ L0D60C:
 L0D616:
         STAA    >CoolantRaw,Z
         LDAA    >RJURR2_L,Z
-        STAA    $0A87,Z
+        STAA    >AcSensorRaw,Z
         LDAA    >PORTF0,Z
         ANDA    #$1F
         ORAA    #$80
@@ -12767,8 +15491,8 @@ L0D666:
 L0D670:
         STAA    >AirTempRaw,Z
         LDAA    >RJURR1_L,Z
-        STAA    $0A59,Z
-        BRCLR   $0330,#$10,L0D6A6
+        STAA    >BatteryTempRaw,Z
+        BRCLR   >Options0330,#$10,L0D6A6
         LDAA    >PORTF0,Z
         ANDA    #$1F
         ORAA    #$60
@@ -12845,7 +15569,7 @@ L0D6F2:
         STAA    $0A,Z
         BSET    $0A78,Z,#$03
         LDAA    #$7F
-        STAA    $079D,Z
+        STAA    >SparkStartRamp,Z
         BSET    $0C32,Z,#$10
         BSET    >ThrottleState,Z,#$10
         BSET    $0C21,Z,#$B0
@@ -12865,7 +15589,7 @@ L0D6F2:
         STD     $0AB2,Z
         STD     $0AB4,Z
         STAA    $07C5,Z
-        STAA    $07DD,Z
+        STAA    >IdleFuelRamp,Z
         STAA    $0934,Z
         STAA    $0935,Z
         LDAA    #$0F
@@ -12875,26 +15599,26 @@ L0D6F2:
         BCS     L0D7D0
         BSET    $0C36,Z,#$01
 L0D7D0:
-        LDAA    $1FDB
+        LDAA    >StartV0863Thresh
         STAA    $0863,Z
         JSR     Sub_0DBB2
-        LDAA    $0316
+        LDAA    >StartValue1
         CMPA    #$05
         BCS     L0D7EC
-        BRCLR   $032E,#$80,L0D7EC
+        BRCLR   >Options032E,#$80,L0D7EC
         ADDA    #$04
 L0D7EC:
         STAA    $59,Z
         LDAA    #$04
         BRSET   $0055,Z,#$20,L0D808
         LDAA    #$02
-        BRSET   $032E,#$40,L0D808
+        BRSET   >Options032E,#$40,L0D808
         LDAA    #$03
         BRSET   $0055,Z,#$10,L0D808
         LDAA    #$01
 L0D808:
         STAA    $58,Z
-        BRCLR   $033E,#$02,L0D814
+        BRCLR   >StartV06B8Flag,#$02,L0D814
         BSET    $55,Z,#$08
 L0D814:
         LDD     #$0097
@@ -12914,11 +15638,11 @@ L0D82A:
         INC     $50,Z
 L0D838:
         BSET    $0642,Z,#$40
-        LDAB    $49EC
+        LDAB    >StartCoolantTempSlowValue
         LDAA    >CoolantRaw,Z
-        CMPA    $49EB
+        CMPA    >StartCoolantRawThresh2
         BCC     L0D862
-        CMPA    $49EA
+        CMPA    >StartCoolantRawThresh1
         BCS     L0D862
         LDX     #ThermistorHot
         BRCLR   $1012,Z,#$08,L0D85E
@@ -12927,7 +15651,7 @@ L0D85E:
         JSR     Lookup2D
 L0D862:
         STAB    >CoolantTemp,Z
-        STAB    $0A6E,Z
+        STAB    >CoolantTempSlow,Z
         STAB    >StartCoolantTemp2,Z
         STAB    >StartCoolantTemp,Z
         TBA
@@ -12938,11 +15662,11 @@ L0D862:
         LDX     #ResetCoolantInit
         JSR     Lookup2D
         STAA    $0C00,Z
-        LDAB    $49F4
+        LDAB    >StartValue2
         LDAA    >AirTempRaw,Z
-        CMPA    $49F3
+        CMPA    >StartAirTempRawThresh2
         BCC     L0D8B6
-        CMPA    $49F2
+        CMPA    >StartAirTempRawThresh1
         BCS     L0D8B6
         LDX     #ThermistorHot
         BRCLR   $1012,Z,#$10,L0D8B2
@@ -12953,41 +15677,41 @@ L0D8B6:
         STAB    >AirTemp,Z
         STAB    >StartAirTemp,Z
         LDAA    >AirTemp,Z
-        CMPA    $1175
+        CMPA    >StartAirTempThresh
         BCS     L0D8D6
         LDAA    >CoolantTemp,Z
-        CMPA    $1174
+        CMPA    >StartCoolantThresh2
         BCS     L0D8D6
         BSET    $06C7,Z,#$08
 L0D8D6:
-        LDAB    $49E9
-        LDAA    $0A87,Z
-        CMPA    $49E7
+        LDAB    >StartAcSensorValue
+        LDAA    >AcSensorRaw,Z
+        CMPA    >StartAcSensorRawThresh1
         BCC     L0D8F2
-        CMPA    $49E8
+        CMPA    >StartAcSensorRawThresh2
         BCS     L0D8F2
         LDX     #AcSensorCurve
         JSR     Lookup2D
 L0D8F2:
         STAB    >AcSensor,Z
-        BRCLR   $0333,#$40,L0D908
-        LDAA    $74E6
+        BRCLR   >Options0333,#$40,L0D908
+        LDAA    >StartFactor1
         LDAB    #$FA
         MUL
         STD     $0C18,Z
 L0D908:
         LDAB    #$BE
-        LDAA    $0A59,Z
-        CMPA    $49F6
+        LDAA    >BatteryTempRaw,Z
+        CMPA    >StartBatteryTempRawThresh2
         BHI     L0D948
-        CMPA    $49F5
+        CMPA    >StartBatteryTempRawThresh1
         BCS     L0D948
         LDX     #Thermistor3Curve
-        BRCLR   $0330,#$04,L0D928
+        BRCLR   >Options0330,#$04,L0D928
         LDX     #Thermistor3CurveAlt
 L0D928:
         JSR     Lookup2D
-        BRCLR   $0330,#$01,L0D948
+        BRCLR   >Options0330,#$01,L0D948
         STAA    $F0,Z
         LDAA    >CoolantTemp,Z
         LDX     #BattTempHeatFactor
@@ -12998,21 +15722,21 @@ L0D928:
         TAB
 L0D948:
         STAB    >BatteryTemp,Z
-        STAB    $0A5E,Z
+        STAB    >BatteryTempStart,Z
         LDE     >ResetCheckWord,Z
         CPE     #$4AB6
         BNE     L0D95E
         STAB    $0194,Z
 L0D95E:
-        BRSET   $033D,#$08,L0D96E
+        BRSET   >Options033D,#$08,L0D96E
         LDE     >ResetCheckWord,Z
         CPE     #$4AB6
         BNE     L0D972
 L0D96E:
         JSR     Sub_1A5A2
 L0D972:
-        BRCLR   $0333,#$80,L0D984
-        LDAA    $74E7
+        BRCLR   >Options0333,#$80,L0D984
+        LDAA    >StartFactor2
         LDAB    #$FA
         MUL
         STD     $0452,Z
@@ -13020,12 +15744,12 @@ L0D984:
         LDAA    >BatteryTemp,Z
         JSR     Sub_2C6DE
         STAA    >ChargeTargetVolts,Z
-        LDAA    $044A
+        LDAA    >StartV0C03Init
         STAA    $0C03,Z
         LDD     #$FFFF
         STD     $0C04,Z
         BSET    $0C02,Z,#$10
-        LDAA    $199E
+        LDAA    >StartV042FInit
         STAA    $042F,Z
         LDAA    #$64
         STAA    $0434,Z
@@ -13033,11 +15757,11 @@ L0D984:
         STAA    >Throttle,Z
         STAA    >ThrottleLast,Z
         LDAB    <ThrottleClosed,Z
-        ADDB    $0437
-        CMPB    $043A
+        ADDB    >StartThrottleClosedAdder
+        CMPB    >StartThrottleClosedInit
         BCS     L0D9D6
         ADDA    #$06
-        LDAB    $043A
+        LDAB    >StartThrottleClosedInit
         CBA
         BCC     L0D9D6
         TAB
@@ -13058,9 +15782,9 @@ L0D9EC:
         LDAA    #$F0
         STAA    <Baro,Z
 L0D9F6:
-        BRSET   $032B,#$80,L0DA32
+        BRSET   >Options032B,#$80,L0DA32
         LDAA    #$80
-        LDAB    $254C
+        LDAB    >EventFactor
         MUL
         STD     $0D90,Z
         LDE     #$8000
@@ -13076,24 +15800,24 @@ L0D9F6:
         STD     $0D88,Z
 L0DA32:
         JSR     EmptyHook
-        BRCLR   $032C,#$40,L0DA6E
+        BRCLR   >Options032C,#$40,L0DA6E
         LDAA    >FlexEthanol,Z
         LDX     #FlexEthanolScale
         JSR     Lookup2D
         STAA    >FlexEthanolScaled,Z
-        LDD     $0D,Z
+        LDD     <EepromCount,Z
         STD     $0F09,Z
         LDAA    >CoolantTemp,Z
-        CMPA    $11FD
+        CMPA    >StartCoolantThresh3
         BCC     L0DA6E
         LDAA    >FlexEthanol,Z
-        CMPA    $11FC
+        CMPA    >StartFlexEthanolThresh
         BCS     L0DA6E
         BSET    $50,Z,#$08
         BCLR    $50,Z,#$20
 L0DA6E:
         LDAA    >CoolantTemp,Z
-        CMPA    $09F2
+        CMPA    >StartCoolantThresh1
         BCS     L0DA7C
         BSET    $0774,Z,#$10
 L0DA7C:
@@ -13103,7 +15827,7 @@ L0DA7C:
         STAA    $07C4,Z
         JSR     CalcDeadTime
         JSR     Sub_1211C
-        BRCLR   $032C,#$40,L0DAAC
+        BRCLR   >Options032C,#$40,L0DAAC
         BRCLR   $0050,Z,#$28,L0DAAC
         BRSET   $0050,Z,#$08,L0DAB0
         BCLR    $50,Z,#$10
@@ -13111,15 +15835,15 @@ L0DA7C:
 L0DAAC:
         JSR     Sub_3DE9C
 L0DAB0:
-        LDAA    $1B2C
+        LDAA    >StartV0801Thresh
         STAA    $043A,Z
-        LDAA    $1B2D
+        LDAA    >StartV043BValue
         STAA    $043B,Z
-        LDAA    $1B2E
+        LDAA    >StartV043CThresh
         STAA    $043C,Z
-        LDAA    $033E
+        LDAA    >StartV06B8Flag
         STAA    $06B8,Z
-        LDAA    $033F
+        LDAA    >StartV06B9Flag
         STAA    $06B9,Z
         BCLR    $50,Z,#$20
         LDAA    #$36
@@ -13152,7 +15876,7 @@ L0DAF4:
         JSR     Sub_38668
         JSR     Sub_0F17C
         JSR     Sub_0F020
-        BRCLR   $032C,#$80,L0DB80
+        BRCLR   >Options032C,#$80,L0DB80
         LDAA    $0976,Z
         CMPA    #$19
         BNE     L0DB6E
@@ -13168,7 +15892,7 @@ L0DAF4:
         BRA     L0DB7C
 L0DB6E:
         BSET    $0C33,Z,#$10
-        LDAA    $1897
+        LDAA    >StartV07EEValue
         STAA    $07EE,Z
         LDAA    #$80
 L0DB7C:
@@ -13195,34 +15919,34 @@ L0DBA6:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_0DBB2:
-        BRCLR   $0330,#$10,L0DBBC
+        BRCLR   >Options0330,#$10,L0DBBC
         BSET    $55,Z,#$01
 L0DBBC:
-        BRCLR   $032F,#$08,L0DBC6
+        BRCLR   >EventFlag2,#$08,L0DBC6
         BSET    $56,Z,#$20
 L0DBC6:
-        BRCLR   $0331,#$08,L0DBD0
+        BRCLR   >Options0331,#$08,L0DBD0
         BSET    $55,Z,#$04
 L0DBD0:
-        BRCLR   $0335,#$08,L0DBDA
+        BRCLR   >Options0335,#$08,L0DBDA
         BSET    $55,Z,#$02
 L0DBDA:
-        BRCLR   $0333,#$01,L0DBE4
+        BRCLR   >Options0333,#$01,L0DBE4
         BSET    $56,Z,#$10
 L0DBE4:
-        BRCLR   $0333,#$10,L0DBEE
+        BRCLR   >Options0333,#$10,L0DBEE
         BSET    $56,Z,#$40
 L0DBEE:
-        BRCLR   $0335,#$04,L0DBF8
+        BRCLR   >Options0335,#$04,L0DBF8
         BSET    $56,Z,#$80
 L0DBF8:
-        BRCLR   $0333,#$80,L0DC02
+        BRCLR   >Options0333,#$80,L0DC02
         BSET    $56,Z,#$08
 L0DC02:
-        BRCLR   $032E,#$04,L0DC0C
+        BRCLR   >Options032E,#$04,L0DC0C
         BSET    $56,Z,#$04
 L0DC0C:
-        BRCLR   $032E,#$20,L0DC16
+        BRCLR   >Options032E,#$20,L0DC16
         BSET    $55,Z,#$20
 L0DC16:
         RTS
@@ -13382,7 +16106,7 @@ L0DD8A:
         JSR     Sub_38068
         JSR     Sub_387F2
         JSR     Sub_385E0
-        BRSET   $032E,#$04,L0DE52
+        BRSET   >Options032E,#$04,L0DE52
         JSR     Sub_3017C
         BRA     L0DE5A
 L0DE52:
@@ -13460,12 +16184,12 @@ L0DF0A:
         RTS
 L0DF10:
         LDAA    #$2B
-        BRSET   $032B,#$20,L0DF1A
+        BRSET   >Options032B,#$20,L0DF1A
         LDAA    #$2A
 L0DF1A:
         STAA    >TCTL1,Z
         LDD     #$7200
-        BRCLR   $0335,#$04,L0DF2C
+        BRCLR   >Options0335,#$04,L0DF2C
         LDD     #$7218
 L0DF2C:
         STD     >CFORC,Z
@@ -13509,15 +16233,15 @@ L0DF9E:
         BNE     L0DF9E
         BCLR    $0A,Z,#$20
 L0DFB8:
-        BRCLR   $032C,#$40,L0E014
+        BRCLR   >Options032C,#$40,L0E014
         BCLR    $50,Z,#$10
         BRCLR   $0050,Z,#$08,L0DFE8
-        LDD     $0D,Z
+        LDD     <EepromCount,Z
         SUBD    $0F09,Z
         BCS     L0DFE4
         TSTA
         BNE     L0DFDA
-        CMPB    $11FE
+        CMPB    >SensorEepromCountThresh
         BCS     L0DFE8
 L0DFDA:
         BCLR    $50,Z,#$08
@@ -13551,14 +16275,14 @@ L0E014:
 L0E032:
         BSET    $50,Z,#$04
         LDAA    $0812,Z
-        CMPA    $117D
+        CMPA    >FuelV0812Thresh
         BCS     L0E044
         CLR     >EngineOffTime,Z
 L0E044:
         LDAA    >Count3s,Z
-        CMPA    $31E6
+        CMPA    >AnalogTimeThresh
         BCS     L0E056
-        LDAA    $0A94,Z
+        LDAA    >AnalogV0A92Filtered,Z
         STAA    $0120,Z
 L0E056:
         ORP     #$00E0
@@ -13907,7 +16631,7 @@ L0E44C:
         LDE     #$002B
         STE     $06BA,Z
 L0E460:
-        BRCLR   $032A,#$E0,L0E48A
+        BRCLR   >EventFlag1,#$E0,L0E48A
         LDAA    >PACNT,Z
         CMPA    #$FF
         BNE     L0E4A2
@@ -13946,7 +16670,7 @@ L0E4B8:
         STE     $06BA,Z
 L0E4CA:
         LDAA    >TCTL2,Z
-        BRSET   $0337,#$80,L0E4DC
+        BRSET   >Options0337,#$80,L0E4DC
         CMPA    #$29
         BEQ     L0E4F6
         LDAA    #$29
@@ -13966,7 +16690,7 @@ L0E4F6:
         ORP     #$00E0
         LDAA    >TMSK1,Z
         ANDA    #$85
-        BRSET   $0337,#$80,L0E514
+        BRSET   >Options0337,#$80,L0E514
         CMPA    #$05
         BEQ     L0E52A
         LDAA    >TMSK1,Z
@@ -13985,7 +16709,7 @@ L0E51E:
 L0E52A:
         LDAA    >TMSK1,Z
         TAB
-        BRSET   $032B,#$80,L0E540
+        BRSET   >Options032B,#$80,L0E540
         ANDB    #$02
         CMPB    #$02
         BEQ     L0E552
@@ -14001,7 +16725,7 @@ L0E546:
         STE     $06BA,Z
 L0E552:
         LDAA    >TMSK2,Z
-        BRCLR   $032A,#$E0,L0E56C
+        BRCLR   >EventFlag1,#$E0,L0E56C
         ANDA    #$3F
         CMPA    #$12
         BEQ     L0E58A
@@ -14023,7 +16747,7 @@ L0E57A:
         ANDP    #$FF1F
 L0E58A:
         LDAA    >PWMC,Z
-        BRSET   $0335,#$04,L0E59A
+        BRSET   >Options0335,#$04,L0E59A
         BEQ     L0E5B2
         CLRA
         BRA     L0E5A6
@@ -14136,7 +16860,7 @@ L0E6C2:
 L0E6D8:
         ANDP    #$FF1F
         LDD     #$FA91
-        BRSET   $032E,#$04,L0E6EA
+        BRSET   >Options032E,#$04,L0E6EA
         LDD     #$F891
 L0E6EA:
         CPD     $1014,Z
@@ -14147,7 +16871,7 @@ L0E6EA:
 L0E6FC:
         ORP     #$00E0
         LDD     $1018,Z
-        BRSET   $032E,#$04,L0E722
+        BRSET   >Options032E,#$04,L0E722
         ANDD    #$38FD
         CPD     #$202C
         BEQ     L0E736
@@ -14176,7 +16900,7 @@ L0E74E:
         STE     $06BA,Z
 L0E762:
         LDD     #$003F
-        BRCLR   $0335,#$20,L0E770
+        BRCLR   >Options0335,#$20,L0E770
         LDD     #$002F
 L0E770:
         LDE     $1020,Z
@@ -14192,7 +16916,7 @@ L0E788:
         CPD     #$0003
         BEQ     L0E7B8
         LDD     #$0803
-        BRCLR   $032E,#$04,L0E7AC
+        BRCLR   >Options032E,#$04,L0E7AC
         LDD     $100C,Z
         ANDD    #$0800
         ORD     #$0003
@@ -14230,7 +16954,7 @@ L0E800:
         LDE     #$004C
         STE     $06BA,Z
 L0E812:
-        BRSET   $032B,#$80,L0E81A
+        BRSET   >Options032B,#$80,L0E81A
         CLRD
 L0E81A:
         CPD     $105E,Z
@@ -14251,21 +16975,21 @@ L0E83E:
         LDE     #$004F
         STE     $06BA,Z
 L0E856:
-        BRSET   $0333,#$40,L0E870
+        BRSET   >Options0333,#$40,L0E870
         BRCLR   $1064,Z,#$C0,L0E870
         BCLRW   $1064,Z,#$DFFF
         LDE     #$0050
         STE     $06BA,Z
 L0E870:
-        BRSET   $0335,#$80,L0E88A
+        BRSET   >Options0335,#$80,L0E88A
         BRCLR   $1066,Z,#$C0,L0E88A
         BCLRW   $1066,Z,#$DFFF
         LDE     #$0051
         STE     $06BA,Z
 L0E88A:
-        BRSET   $0334,#$10,L0E8B6
+        BRSET   >StartFlag,#$10,L0E8B6
         CLRD
-        BRCLR   $0333,#$02,L0E8A4
+        BRCLR   >Options0333,#$02,L0E8A4
         LDD     #$E01B
         CPD     $1068,Z
         BEQ     L0E8B6
@@ -14279,7 +17003,7 @@ L0E8AA:
         STE     $06BA,Z
 L0E8B6:
         CLRD
-        BRCLR   $032F,#$06,L0E8C2
+        BRCLR   >EventFlag2,#$06,L0E8C2
         LDD     #$C209
 L0E8C2:
         CPD     $106A,Z
@@ -14307,17 +17031,17 @@ L0E8FE:
         LDE     #$0055
         STE     $06BA,Z
 L0E912:
-        BRSET   $032B,#$40,L0E972
+        BRSET   >Options032B,#$40,L0E972
         LDD     $101E,Z
         ANDD    #$000F
-        BRCLR   $032B,#$20,L0E936
+        BRCLR   >Options032B,#$20,L0E936
         CPD     #$0002
         BEQ     L0E972
         LDE     #$FFF2
         LDD     #$0002
         BRA     L0E95A
 L0E936:
-        BRCLR   $032B,#$80,L0E94C
+        BRCLR   >Options032B,#$80,L0E94C
         CPD     #$000E
         BEQ     L0E972
         LDE     #$FFFE
@@ -14337,7 +17061,7 @@ L0E95A:
         STE     $06BA,Z
 L0E972:
         LDAA    #$80
-        LDAB    $254C
+        LDAB    >EventFactor
         MUL
         CPD     $0D90,Z
         BEQ     L0E984
@@ -14522,12 +17246,12 @@ L0EB3E:
 Sub_0EB40:
         LDAA    >EngineRpm,Z
         BRSET   $0DB8,Z,#$10,L0EB58
-        CMPA    $7533
+        CMPA    >SensorRpmThresh11
         LBCS    L0EC0A
         BSET    $0DB8,Z,#$10
         BRA     L0EB60
 L0EB58:
-        CMPA    $7534
+        CMPA    >SensorThresh27
         LBCS    L0EC06
 L0EB60:
         BRSET   $0DC7,Z,#$40,L0EBE2
@@ -14537,35 +17261,35 @@ L0EB60:
         STE     $0DBE,Z
         BRCLR   $0774,Z,#$80,L0EB8A
         LDAA    >Count3s,Z
-        CMPA    $0B05
+        CMPA    >SensorTimeThresh1
         BCS     L0EB8A
         BSET    $0DC7,Z,#$40
         BRA     L0EBE2
 L0EB8A:
         LDAA    >CoolantTemp,Z
-        CMPA    $0AF9
+        CMPA    >SensorCoolantThresh1
         BCC     L0EBE2
         LDAA    >EngineRpm,Z
-        CMPA    $0B04
+        CMPA    >SensorRpmThresh2
         BCS     L0EC0A
         BRSET   $0DC7,Z,#$20,L0EBE2
         LDAA    >BatteryVolts2,Z
-        CMPA    $0B03
+        CMPA    >SensorVoltsThresh1
         BHI     L0EBE2
         LDAA    #$00
-        LDE     $0AFB
+        LDE     >SensorV0DBEThresh
         CPE     $0DBE,Z
         BCC     L0EBF8
         LDAA    #$19
-        ADDE    $0AFD
+        ADDE    >SensorAdder1
         CPE     $0DBE,Z
         BCC     L0EBF8
         LDAA    #$32
-        ADDE    $0AFF
+        ADDE    >SensorAdder2
         CPE     $0DBE,Z
         BCC     L0EBF8
         LDAA    #$4B
-        ADDE    $0B01
+        ADDE    >SensorAdder3
         CPE     $0DBE,Z
         BCC     L0EBF8
         BSET    $0DC7,Z,#$20
@@ -14595,7 +17319,7 @@ L0EC16:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_0EC18:
-        BRSET   $032E,#$04,L0EC8A
+        BRSET   >Options032E,#$04,L0EC8A
         ORP     #$00E0
         LDAA    $0A21,Z
         LBEQ    L0ED5A
@@ -14704,7 +17428,7 @@ L0ED5A:
         BRSET   $0A22,Z,#$10,L0ED8C
         BRCLR   $0774,Z,#$80,L0ED8C
         BRSET   $094C,Z,#$40,L0ED82
-        BRSET   $032E,#$04,L0ED82
+        BRSET   >Options032E,#$04,L0ED82
         BRSET   $0A1E,Z,#$10,L0ED82
         BRSET   $09D5,Z,#$04,L0ED82
         JSR     Sub_309DE
@@ -14721,7 +17445,7 @@ L0ED8C:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_0ED92:
-        BRCLR   $032E,#$08,L0EDEA
+        BRCLR   >Options032E,#$08,L0EDEA
         BRSET   $0A01,Z,#$04,L0EDEA
         BRCLR   $0A03,Z,#$10,L0EDAA
         BCLR    $0A03,Z,#$10
@@ -14809,12 +17533,12 @@ L0EE46:
         BRCLR   $0774,Z,#$80,L0EF42
         BRCLR   $0C31,Z,#$20,L0EF42
         BRSET   $0A01,Z,#$04,L0EF52
-        BRCLR   $032E,#$08,L0EE96
+        BRCLR   >Options032E,#$08,L0EE96
         LDAB    $0A12,Z
         INCB
         BEQ     L0EE82
         STAB    $0A12,Z
-        BRCLR   $032E,#$04,L0EE7E
+        BRCLR   >Options032E,#$04,L0EE7E
         BRSET   $0A01,Z,#$08,L0EE7E
         CMPB    #$64
         BCS     L0EE96
@@ -14835,7 +17559,7 @@ L0EE96:
         INCB
         BEQ     L0EEC0
         STAB    $0A13,Z
-        BRCLR   $032E,#$04,L0EEBC
+        BRCLR   >Options032E,#$04,L0EEBC
         BRSET   $0A01,Z,#$08,L0EEBC
         CMPB    #$64
         BCS     L0EED4
@@ -14851,12 +17575,12 @@ L0EEC0:
         NOP
         NOP
 L0EED4:
-        BRCLR   $032E,#$10,L0EF16
+        BRCLR   >Options032E,#$10,L0EF16
         LDAB    $09BB,Z
         INCB
         BEQ     L0EEFE
         STAB    $09BB,Z
-        BRCLR   $032E,#$04,L0EEFA
+        BRCLR   >Options032E,#$04,L0EEFA
         BRSET   $0A01,Z,#$08,L0EEFA
         CMPB    #$64
         BCS     L0EF16
@@ -14877,7 +17601,7 @@ L0EF16:
         INCB
         BEQ     L0EF3C
         STAB    $09C7,Z
-        BRCLR   $032E,#$04,L0EF3C
+        BRCLR   >Options032E,#$04,L0EF3C
         BRSET   $0A01,Z,#$08,L0EF3C
         CMPB    #$64
         BCS     L0EF52
@@ -14972,7 +17696,7 @@ L0EFFC:
         JSR     Sub_38706
         BRA     L0F01A
 L0F00A:
-        BRSET   $032E,#$04,L0F016
+        BRSET   >Options032E,#$04,L0F016
         JSR     Sub_3052E
         BRA     L0F01A
 L0F016:
@@ -14987,7 +17711,7 @@ L0F01A:
 ;---------------------------------------------------------------------------------------------------
 Sub_0F020:
         ORP     #$00E0
-        BRSET   $0328,#$01,L0F036
+        BRSET   >Options0328,#$01,L0F036
         BRSET   $0A1E,Z,#$02,L0F036
         BRSET   $094C,Z,#$C0,L0F172
 L0F036:
@@ -15005,7 +17729,7 @@ L0F050:
 L0F056:
         STAB    $09BE,Z
         LDAA    $094C,Z
-        BRSET   $0328,#$01,L0F090
+        BRSET   >Options0328,#$01,L0F090
         BRSET   $0A1E,Z,#$01,L0F07C
         BRSET   $09BC,Z,#$80,L0F078
         CMPB    #$C9
@@ -15044,7 +17768,7 @@ L0F0CA:
         BRSET   $0A1E,Z,#$10,L0F0E4
         BITA    #$40
         BEQ     L0F104
-        BRSET   $032E,#$04,L0F104
+        BRSET   >Options032E,#$04,L0F104
         BRCLR   $09BC,Z,#$08,L0F104
 L0F0E4:
         BRSET   $0507,Z,#$02,L0F10E
@@ -15062,8 +17786,8 @@ L0F104:
         LDAA    $094C,Z
 L0F10E:
         BRSET   $0A1E,Z,#$10,L0F172
-        BRSET   $0328,#$01,L0F130
-        BRSET   $032E,#$04,L0F12C
+        BRSET   >Options0328,#$01,L0F130
+        BRSET   >Options032E,#$04,L0F12C
         BRSET   $09BC,Z,#$08,L0F172
         BRSET   $09BC,Z,#$04,L0F130
 L0F12C:
@@ -15113,7 +17837,7 @@ Sub_0F17C:
         BCLR    $56,Z,#$01
         BRA     L0F21C
 L0F1A4:
-        BRSET   $0328,#$01,L0F202
+        BRSET   >Options0328,#$01,L0F202
         BRSET   $0A1E,Z,#$08,L0F1CA
         BITA    #$80
         BNE     L0F1C4
@@ -15124,7 +17848,7 @@ L0F1A4:
 L0F1C4:
         BRCLR   $0A1E,Z,#$04,L0F216
 L0F1CA:
-        BRCLR   $0328,#$02,L0F1F8
+        BRCLR   >Options0328,#$02,L0F1F8
         BRCLR   $0774,Z,#$80,L0F220
         BRSET   $094C,Z,#$1F,L0F1F0
         BSET    $0A1E,Z,#$02

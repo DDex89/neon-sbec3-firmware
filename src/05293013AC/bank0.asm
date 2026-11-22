@@ -276,10 +276,22 @@
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $07,$07,$01,$04,$01,$07,$10,$07,$01,$08,$04,$00,$00,$06,$76,$0B
-        dc.b    $55,$AA,$00,$00,$03,$5D,$30,$5C,$08,$02,$01,$85,$03,$02,$A2,$B0
-        dc.b    $00,$09,$00,$05,$32,$28,$B2,$60,$00,$00,$AA,$BF,$80,$9F,$00,$BE
-        dc.b    $3E,$B8,$00,$7E,$38,$00,$00,$07,$E5,$03,$00,$00,$A8,$F1,$80,$00
-        dc.b    $00,$01,$80,$00,$E0,$01,$80,$00,$00,$00,$0B,$C0,$44
+        dc.b    $55,$AA,$00,$00,$03,$5D,$30,$5C,$08,$02,$01,$85,$03
+EventFlag1:
+        dc.b    $02                                      ; Byte tested; read by Isr_GPT_OC4, Isr_GPT_IC1, Reset +11.
+Options0331:
+        dc.b    $A2                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $B0,$00,$09,$00
+Options0337:
+        dc.b    $05                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $32
+Options0339:
+        dc.b    $28                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options033A:
+        dc.b    $B2                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $60,$00,$00,$AA,$BF,$80,$9F,$00,$BE,$3E,$B8,$00,$7E,$38,$00,$00
+        dc.b    $07,$E5,$03,$00,$00,$A8,$F1,$80,$00,$00,$01,$80,$00,$E0,$01,$80
+        dc.b    $00,$00,$00,$0B,$C0,$44
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_034D ($034D): 2D table, 4 points, unsigned
@@ -291,8 +303,26 @@ Tab2D_034D:
         dc.b    63,1, 94,2, 125,4, 188,10                ; x, y
 
         dc.b    $FF,$FF,$7D,$01,$C8,$00,$EF,$00,$EF,$00,$00,$00,$00,$6E,$E2,$10
-        dc.b    $38,$FF,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $6E,$00,$00,$80,$80,$80,$B9,$25,$25,$E5,$07,$5B,$34,$E5,$A4,$1F
+        dc.b    $38
+CalRpmOffset1:
+        dc.b    $FF,$00                                  ; Word subtracted from EngineRpm; read by Sub_2F800.
+CalRpmOffset2:
+        dc.b    $FF,$00                                  ; Word subtracted from EngineRpm; read by Sub_2F800.
+CalV0C08Thresh1:
+        dc.b    $FF,$00                                  ; Word compared with V0C08; read by Sub_2F800.
+CalOffset1:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
+CalOffset2:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
+CalOffset3:
+        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
+StartV0C03Init:
+        dc.b    $00                                      ; Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10.
+CalV0C08Thresh2:
+        dc.b    $00,$00                                  ; Word compared with V0C08; read by Sub_2F800.
+CalCoolantThresh1:
+        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_2F800.
+        dc.b    $00,$00,$80,$80,$80,$B9,$25,$25,$E5,$07,$5B,$34,$E5,$A4,$1F
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0387 ($0387): 2D table, 5 points, unsigned
@@ -334,11 +364,22 @@ Tab2D_03AB:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,6                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$6B,$57,$7F,$75,$E3,$DD,$EE,$E9
-        dc.b    $6E,$6E,$6E,$6E,$6E,$6E,$6E,$6E,$3D,$3C,$3F,$3D,$14,$0F,$E3,$E2
-        dc.b    $E0,$DF,$DE,$DD,$F2,$F0,$E3,$E2,$CD,$CB,$64,$5C,$38,$30,$64,$5C
-        dc.b    $18,$10,$4D,$F1,$41,$38,$6D,$05,$00,$28,$38,$A6,$A0,$FE,$28,$06
-        dc.b    $0A,$80,$CA,$7F,$36
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+FanThresh1:
+        dc.b    $6B                                      ; Byte compared with; read by Sub_39E54, Sub_3A614.
+FanAcSensorThresh1:
+        dc.b    $57                                      ; Byte compared with AcSensor; read by Sub_39E54, Sub_3A614.
+FanAcSensorThresh2:
+        dc.b    $7F                                      ; Byte compared with AcSensor; read by Sub_39E54, Sub_3A614.
+FanThresh2:
+        dc.b    $75                                      ; Byte compared with; read by Sub_39E54, Sub_3A614.
+        dc.b    $E3,$DD,$EE,$E9,$6E,$6E,$6E,$6E,$6E,$6E,$6E,$6E,$3D,$3C,$3F,$3D
+        dc.b    $14,$0F,$E3,$E2,$E0,$DF,$DE,$DD,$F2,$F0,$E3,$E2,$CD,$CB,$64,$5C
+        dc.b    $38,$30,$64,$5C,$18,$10,$4D
+IacCoolantThresh1:
+        dc.b    $F1                                      ; Byte compared with CoolantTemp; read by Sub_19808, Sub_3A6C8.
+        dc.b    $41,$38,$6D,$05,$00,$28,$38,$A6,$A0,$FE,$28,$06,$0A,$80,$CA,$7F
+        dc.b    $36
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_03F4 ($03F4): 2D table, 5 points, unsigned
@@ -359,8 +400,17 @@ Tab2D_0400:
         dc.b    6,$80                                    ; points, flags
         dc.b    0,0, 2,21, 5,35, 8,45, 12,47, 19,49      ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$0F,$A0,$FF,$00,$FF,$02,$0C,$1F,$F4,$00
-        dc.b    $00,$00,$00,$74,$07,$FF,$04,$04,$06,$08,$28
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+IacSegRpmThresh1:
+        dc.b    $0F,$A0                                  ; Word compared with SegmentRpm; read by Sub_19808.
+SparkRpmThresh1:
+        dc.b    $FF,$00                                  ; Word compared with EngineRpm; read by Sub_19808, Sub_39412.
+        dc.b    $FF
+IacTimeThresh:
+        dc.b    $02                                      ; Byte compared with Count3s; read by Sub_19808.
+IacV0C24Init:
+        dc.b    $0C                                      ; Byte stored into V0C24; read by Sub_19808.
+        dc.b    $1F,$F4,$00,$00,$00,$00,$74,$07,$FF,$04,$04,$06,$08,$28
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0429 ($0429): 2D table, 1 points, unsigned
@@ -577,7 +627,11 @@ IacRollThrottleScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    3,0, 4,64, 5,128, 26,192, 51,255         ; x, y
 
-        dc.b    $00,$80,$00,$CD,$00,$C0,$01,$34
+        dc.b    $00,$80,$00,$CD
+EventV0ABDThresh1:
+        dc.b    $00,$C0                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
+EventV0ABDThresh2:
+        dc.b    $01,$34                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankVacuumFactor ($0545): 2D table, 4 points, unsigned, y = 0 counts as 256
@@ -590,7 +644,12 @@ CrankVacuumFactor:
         dc.b    4,$40                                    ; points, flags
         dc.b    0,255, 65,246, 130,236, 255,223          ; x, y
 
-        dc.b    $FF,$FF,$63,$85,$58
+        dc.b    $FF,$FF
+CrankFuelCrankCoolantThresh:
+        dc.b    $63                                      ; Byte compared with CrankCoolant; read by Sub_123C0.
+CrankFuelThrottleThresh:
+        dc.b    $85                                      ; Byte compared with ThrottleAboveClosed; read by Sub_123C0.
+        dc.b    $58
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0554 ($0554): 2D table, 3 points, unsigned
@@ -688,7 +747,15 @@ CrankPulseCoolantFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$02,$95,$70,$77,$42
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$02
+FuelEventCoolantThresh1:
+        dc.b    $95                                      ; Byte compared with CoolantTemp; read by Sub_12680.
+FuelEventValue3:
+        dc.b    $70                                      ; Byte used with; read by Sub_12680.
+FuelEventValue4:
+        dc.b    $77                                      ; Byte used with; read by Sub_12680.
+FuelEventValue12:
+        dc.b    $42                                      ; Byte used with; read by Sub_12680.
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankEthanolCoolant ($05AD): 3D table, 5 rows x 5 columns, unsigned
@@ -772,7 +839,8 @@ CrankCoolantAdder:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,0, 8,33, 23,67                         ; x, y
 
-        dc.b    $A0
+CrankFuelCoolantThresh:
+        dc.b    $A0                                      ; Byte compared with CoolantTemp; read by Sub_123C0.
 
 ;---------------------------------------------------------------------------------------------------
 ; InjectorDeadTime ($0658): 2D table, 5 points, unsigned
@@ -838,7 +906,9 @@ Tab2D_069C:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$80
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+AccelFuelOptions:
+        dc.b    $80                                      ; Option byte; bits tested: $40, $80. Read by Sub_107EA, CalcFuelPulse.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_06A7 ($06A7): 2D table, 3 points, unsigned
@@ -925,7 +995,21 @@ Tab2D_070E:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 87,0, 127,0, 217,0, 255,0           ; x, y
 
-        dc.b    $00,$00,$00,$28,$02,$01,$00,$AA,$58,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00
+O2FlexEthanolThresh:
+        dc.b    $28                                      ; Byte compared with FlexEthanol; read by Sub_15F5C.
+O2Adder1:
+        dc.b    $02                                      ; Byte added to; read by Sub_15F5C.
+O2Adder2:
+        dc.b    $01                                      ; Byte added to; read by Sub_15F5C.
+O2Value4:
+        dc.b    $00                                      ; Byte used with; read by Sub_15F5C.
+        dc.b    $AA,$58,$00
+SensorValue4:
+        dc.b    $00                                      ; Byte used with; read by Sub_15FF4.
+        dc.b    $00,$00
+SensorValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_15FF4.
 
 ;---------------------------------------------------------------------------------------------------
 ; WotFuel ($0728): 3D table, 9 rows x 17 columns, signed
@@ -1181,7 +1265,24 @@ Tab3D_0D32:
         dc.b    255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255 ; row 15
         dc.b    255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255 ; row 16
 
-        dc.b    $05,$02,$23,$65,$75,$32,$01,$3D,$01
+FuelThresh1:
+        dc.b    $05                                      ; Byte compared with; read by Sub_104AE.
+FuelOffset1:
+        dc.b    $02                                      ; Byte subtracted from; read by Sub_104AE.
+FuelValue11:
+        dc.b    $23                                      ; Byte used with; read by Sub_104AE.
+FuelDecelFuelRampThresh:
+        dc.b    $65                                      ; Byte compared with DecelFuelRamp; read by Sub_104AE.
+FuelRpmThresh2:
+        dc.b    $75                                      ; Byte compared with EngineRpm; read by Sub_104AE.
+FuelV0777Offset1:
+        dc.b    $32                                      ; Byte subtracted from V0777; read by Sub_104AE.
+FuelDecelFuelRampAdder:
+        dc.b    $01                                      ; Byte added to DecelFuelRamp; read by Sub_104AE.
+FuelV0777Offset2:
+        dc.b    $3D                                      ; Byte subtracted from V0777; read by Sub_104AE.
+FuelDecelFuelRampOffset:
+        dc.b    $01                                      ; Byte subtracted from DecelFuelRamp; read by Sub_104AE.
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelBaroMapOffset ($0E70): 2D table, 3 points, unsigned
@@ -1273,7 +1374,9 @@ TpsFilterRiseCoolant:
         dc.b    4,$40                                    ; points, flags
         dc.b    99,77, 144,128, 160,128, 199,160         ; x, y
 
-        dc.b    $FF,$FF,$41,$13
+        dc.b    $FF,$FF,$41
+DecelMapOffset:
+        dc.b    $13                                      ; Byte subtracted from Map; read by FinishFuelPulse.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0ED1 ($0ED1): 2D table, 2 points, unsigned
@@ -1390,7 +1493,21 @@ Tab2D_0F4C:
         dc.b    3,$80                                    ; points, flags
         dc.b    94,255, 125,153, 203,113                 ; x, y
 
-        dc.b    $00,$00,$00,$95,$98,$64,$01,$00,$08,$00,$09,$00,$09
+        dc.b    $00,$00,$00
+FuelCoolantThresh3:
+        dc.b    $95                                      ; Byte compared with CoolantTemp; read by Sub_102FE.
+FuelRpmThresh3:
+        dc.b    $98                                      ; Byte compared with EngineRpm; read by Sub_102FE.
+FuelWotTimeEnrichAdder:
+        dc.b    $64                                      ; Byte added to WotTimeEnrich; read by Sub_102FE.
+FuelV081AOffset:
+        dc.b    $01                                      ; Byte subtracted from V081A; read by Sub_102FE.
+FuelV07ADThresh:
+        dc.b    $00,$08                                  ; Word compared with V07AD; read by Sub_102FE.
+FuelThresh2:
+        dc.b    $00,$09                                  ; Word compared with; read by Sub_102FE.
+FuelV07ABThresh:
+        dc.b    $00,$09                                  ; Word compared with V07AB; read by Sub_102FE.
 
 ;---------------------------------------------------------------------------------------------------
 ; WotTimeEnrichMax ($0F61): 2D table, 2 points, unsigned
@@ -1403,7 +1520,19 @@ WotTimeEnrichMax:
         dc.b    2,$80                                    ; points, flags
         dc.b    152,0, 180,33                            ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$04,$29,$51,$6E,$00,$00,$10,$02,$00,$09,$08,$C0
+        dc.b    $FF,$FF,$FF,$FF,$04,$29,$51,$6E,$00,$00
+DecelMapLastThresh:
+        dc.b    $10                                      ; Byte compared with MapLast; read by Sub_12142.
+DecelThrottleLastThresh:
+        dc.b    $02                                      ; Byte compared with ThrottleLast; read by Sub_12142.
+DecelLeanTimerThresh:
+        dc.b    $00                                      ; Byte compared with DecelLeanTimer; read by Sub_12142.
+DecelFactor1:
+        dc.b    $09                                      ; Byte multiplied; read by Sub_12142.
+DecelFactor2:
+        dc.b    $08                                      ; Byte multiplied; read by Sub_12142.
+DecelLeanFuelThresh1:
+        dc.b    $C0                                      ; Byte compared with DecelLeanFuel; read by Sub_12142.
 
 ;---------------------------------------------------------------------------------------------------
 ; TpsFilterFallCoolant ($0F77): 2D table, 3 points, unsigned, y = 0 counts as 256
@@ -1416,7 +1545,18 @@ TpsFilterFallCoolant:
         dc.b    3,$40                                    ; points, flags
         dc.b    146,24, 177,36, 205,56                   ; x, y
 
-        dc.b    $00,$19,$0B,$6E,$FF,$09,$60
+DecelSpeedThresh:
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_12142.
+DecelRpmThresh:
+        dc.b    $19                                      ; Byte compared with EngineRpm; read by Sub_12142.
+FuelEventValue9:
+        dc.b    $0B                                      ; Byte used with; read by Sub_1202A.
+DecelLeanTimerInit:
+        dc.b    $6E                                      ; Byte stored into DecelLeanTimer; read by Sub_12142.
+DecelThresh:
+        dc.b    $FF                                      ; Byte compared with; read by Sub_12142.
+DecelIdleTargetAdder:
+        dc.b    $09,$60                                  ; Word added to IdleTarget; read by Sub_12142.
 
 ;---------------------------------------------------------------------------------------------------
 ; MapFilterFallCoolant ($0F86): 2D table, 3 points, unsigned, y = 0 counts as 256
@@ -1588,7 +1728,9 @@ RevLimit:
         dc.b    $CA
 RevLimitAlt:
         dc.b    $DB                                      ; Rev limit, used while $0C31,Z bit 5 is clear
-        dc.b    $E1,$3F,$24,$95,$06,$65,$00,$2A,$20
+        dc.b    $E1,$3F,$24,$95,$06,$65,$00,$2A
+FuelMapThresh3:
+        dc.b    $20                                      ; Byte compared with Map; read by Sub_11C44.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1117 ($1117): 2D table, 2 points, unsigned
@@ -1671,10 +1813,24 @@ DecelCutRpmFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$02,$87,$30,$1B,$30,$19
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+SensorTimeThresh2:
+        dc.b    $02                                      ; Byte compared with Count3s; read by Sub_103FA.
+SensorCoolantThresh3:
+        dc.b    $87                                      ; Byte compared with CoolantTemp; read by Sub_103FA.
+SensorThresh6:
+        dc.b    $30                                      ; Byte compared with; read by Sub_103FA.
+SensorRpmThresh4:
+        dc.b    $1B                                      ; Byte compared with EngineRpm; read by Sub_103FA.
+SensorThresh7:
+        dc.b    $30                                      ; Byte compared with; read by Sub_103FA.
+SensorThresh8:
+        dc.b    $19                                      ; Byte compared with; read by Sub_103FA.
         dc.b    $01,$0A,$00,$01,$1F,$02,$03,$1B,$01,$01,$16,$03,$02,$11,$02,$01
-        dc.b    $BD,$08,$0F,$BD,$57,$7E,$A6,$CE,$DA,$05,$3D,$03,$03,$05,$02,$6E
-        dc.b    $DC,$18,$A2,$02,$09,$08,$09,$09
+O2CoolantThresh4:
+        dc.b    $BD                                      ; Byte compared with CoolantTemp; read by Sub_14FD8, Sub_20BB4, Sub_20C24.
+        dc.b    $08,$0F,$BD,$57,$7E,$A6,$CE,$DA,$05,$3D,$03,$03,$05,$02,$6E,$DC
+        dc.b    $18,$A2,$02,$09,$08,$09,$09
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_11D5 ($11D5): 2D table, 3 points, unsigned
@@ -1701,10 +1857,13 @@ Tab2D_11E9:
         dc.b    $10,$1A,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF
         dc.b    $FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF
         dc.b    $FF,$FF,$03,$80,$95,$10,$D2,$04,$DB,$00,$01,$80,$FF,$00,$FF,$FF
-        dc.b    $FF,$FF,$01,$28,$28,$28,$28,$28,$28,$28,$28,$28,$10,$10,$28,$28
-        dc.b    $28,$28,$28,$28,$28,$28,$28,$10,$10,$28,$28,$28,$28,$28,$28,$28
-        dc.b    $28,$28,$10,$10,$28,$28,$28,$28,$28,$28,$28,$28,$28,$10,$10,$1F
-        dc.b    $1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$00,$00,$7F,$FF,$80,$00
+        dc.b    $FF,$FF
+O2Value20:
+        dc.b    $01                                      ; Byte used with; read by Sub_15364.
+        dc.b    $28,$28,$28,$28,$28,$28,$28,$28,$28,$10,$10,$28,$28,$28,$28,$28
+        dc.b    $28,$28,$28,$28,$10,$10,$28,$28,$28,$28,$28,$28,$28,$28,$28,$10
+        dc.b    $10,$28,$28,$28,$28,$28,$28,$28,$28,$28,$10,$10,$1F,$1F,$1F,$1F
+        dc.b    $1F,$1F,$1F,$1F,$1F,$00,$00,$7F,$FF,$80,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1283 ($1283): 2D table, 4 points, unsigned
@@ -1715,12 +1874,39 @@ Tab2D_1283:
         dc.b    4,$80                                    ; points, flags
         dc.b    2,64, 5,119, 38,136, 46,178              ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$0E,$00,$F2,$00,$B3,$CD,$03,$80,$58,$1F
-        dc.b    $79,$18,$95,$0A,$03,$80,$58,$4B,$95,$30,$CF,$40,$1B,$1B,$CC,$00
-        dc.b    $FF,$FF,$7F,$F6,$80,$09,$00,$FF,$00,$00,$01,$01,$01,$01,$01,$01
-        dc.b    $01,$01,$01,$00,$00,$02,$A0,$60,$87,$87,$87,$87,$87,$87,$87,$87
-        dc.b    $87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$25,$0F
-        dc.b    $18,$15
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+O2Thresh14:
+        dc.b    $0E,$00                                  ; Word compared with; read by Sub_143C2.
+O2Thresh15:
+        dc.b    $F2,$00                                  ; Word compared with; read by Sub_143C2.
+        dc.b    $B3,$CD,$03,$80,$58,$1F,$79,$18,$95,$0A,$03,$80,$58,$4B,$95,$30
+        dc.b    $CF,$40,$1B
+O2PurgeRampThresh1:
+        dc.b    $1B                                      ; Byte compared with PurgeRamp; read by Sub_143C2, Sub_14802.
+        dc.b    $CC
+O2Value28:
+        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
+O2Value29:
+        dc.b    $FF                                      ; Byte used with; read by Sub_143C2.
+O2V0712Value:
+        dc.b    $FF                                      ; Byte used with V0712; read by Sub_143C2, Sub_14802, Sub_14FD8 +1.
+O2Thresh16:
+        dc.b    $7F,$F6                                  ; Word compared with; read by Sub_143C2.
+O2Value25:
+        dc.b    $80,$09                                  ; Word used with; read by Sub_143C2.
+O2Value26:
+        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
+O2Value27:
+        dc.b    $FF                                      ; Byte used with; read by Sub_143C2.
+        dc.b    $00,$00,$01,$01,$01,$01,$01,$01,$01,$01,$01,$00,$00
+O2Factor2:
+        dc.b    $02                                      ; Byte multiplied; read by Sub_143C2.
+O2Thresh12:
+        dc.b    $A0                                      ; Byte compared with; read by Sub_143C2, Sub_14802.
+O2Thresh13:
+        dc.b    $60                                      ; Byte compared with; read by Sub_143C2, Sub_14802.
+        dc.b    $87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87
+        dc.b    $87,$87,$87,$87,$87,$87,$25,$0F,$18,$15
 
 ;---------------------------------------------------------------------------------------------------
 ; O2VoltageScale2 ($12DF): 2D table, 4 points, unsigned
@@ -1782,8 +1968,15 @@ Tab2D_138F:
         dc.b    5,$80                                    ; points, flags
         dc.b    5,12, 32,42, 64,63, 80,77, 200,108       ; x, y
 
-        dc.b    $27,$6E,$84,$02,$30,$90,$CD,$3E,$1A,$0C,$03,$05,$2C,$2C,$2C,$05
-        dc.b    $05,$05,$12,$0D,$05,$00,$D7,$00,$FF,$84,$33,$BC,$0F,$00
+        dc.b    $27,$6E,$84,$02,$30,$90,$CD,$3E,$1A
+StartV0801Thresh:
+        dc.b    $0C                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5.
+StartV043BValue:
+        dc.b    $03                                      ; Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4.
+StartV043CThresh:
+        dc.b    $05                                      ; Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4.
+        dc.b    $2C,$2C,$2C,$05,$05,$05,$12,$0D,$05,$00,$D7,$00,$FF,$84,$33,$BC
+        dc.b    $0F,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_13B9 ($13B9): 2D table, 5 points, unsigned
@@ -1862,7 +2055,12 @@ PurgeFuelBase:
         dc.b    166,169,200,201,202,221,235,242,242      ; row 7
         dc.b    166,169,202,204,216,227,233,242,242      ; row 8
 
-        dc.b    $C2,$1F,$14
+FuelEventCoolantThresh2:
+        dc.b    $C2                                      ; Byte compared with CoolantTemp; read by Sub_112A8.
+FuelEventRpmThresh:
+        dc.b    $1F                                      ; Byte compared with EngineRpm; read by Sub_112A8.
+FuelEventV077BInit:
+        dc.b    $14                                      ; Byte stored into V077B; read by Sub_112A8.
 
 ;---------------------------------------------------------------------------------------------------
 ; InjectionModeRpmFactor ($147E): 2D table, 2 points, unsigned
@@ -1876,7 +2074,9 @@ InjectionModeRpmFactor:
         dc.b    22,1, 25,205                             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$2F,$00,$43,$00,$61,$E3,$14,$14,$14,$14,$14,$14
-        dc.b    $14,$14,$14,$A0,$00,$08,$03,$00,$FF,$FF,$FF,$00,$00
+        dc.b    $14,$14,$14,$A0,$00,$08,$03,$00,$FF,$FF,$FF,$00
+FuelFlag:
+        dc.b    $00                                      ; Byte tested; read by Sub_111E0, FinishFuelPulse.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_14A1 ($14A1): 2D table, 1 points, unsigned, y = 0 counts as 256
@@ -2036,7 +2236,9 @@ AfterStartSparkMapRpm:
         dc.b    -1,-1,-1,-1,-1,-1,-1,-1,-1               ; row 7
         dc.b    -1,-1,-1,-1,-1,-1,-1,-1,-1               ; row 8
 
-        dc.b    $82,$35,$00,$C3
+        dc.b    $82,$35
+EventV0ABDThresh3:
+        dc.b    $00,$C3                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_19B9 ($19B9): 2D table, 3 points, signed
@@ -2105,7 +2307,11 @@ DecelSpark:
         dc.b    3,$20                                    ; points, flags
         dc.b    48,0, 64,4, 80,8                         ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$80,$80
+        dc.b    $FF,$FF,$FF,$FF
+HighSpeedSparkOff:
+        dc.b    $80                                      ; Coarse vehicle speed below which HighSpeedSparkRpm stops (hysteresis)
+HighSpeedSparkOn:
+        dc.b    $80                                      ; Coarse vehicle speed above which HighSpeedSparkRpm applies
 
 ;---------------------------------------------------------------------------------------------------
 ; HighSpeedSparkRpm ($1A0B): 2D table, 1 points, unsigned
@@ -2131,7 +2337,17 @@ FuelEventRpmAdder:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$06,$FF,$04,$04,$01,$90
+        dc.b    $FF,$FF,$FF,$FF
+AfterV076DThresh:
+        dc.b    $06                                      ; Byte compared with V076D; read by Sub_1D448.
+AfterBaroThresh2:
+        dc.b    $FF                                      ; Byte compared with Baro; read by Sub_1D448.
+AfterV0D19Thresh1:
+        dc.b    $04                                      ; Byte compared with V0D19; read by Sub_1D448.
+AfterV0D19Thresh2:
+        dc.b    $04                                      ; Byte compared with V0D19; read by Sub_1D448.
+AfterThresh:
+        dc.b    $01,$90                                  ; Word compared with; read by Sub_1D448.
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSparkCoolant ($1A21): 2D table, 10 points, unsigned
@@ -2234,7 +2450,9 @@ AirTempSparkMapRpm:
         dc.b    0,0,-2,-4,-6,-8,-8,-8,-8                 ; row 3
         dc.b    0,0,-2,-4,-6,-8,-8,-8,-8                 ; row 4
 
-        dc.b    $07,$7D,$64,$04,$08,$58
+        dc.b    $07,$7D,$64,$04,$08
+AirCoolantThresh:
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_1D15C.
 
 ;---------------------------------------------------------------------------------------------------
 ; AirTempSparkFactor2 ($1AF3): 2D table, 2 points, unsigned
@@ -2311,7 +2529,7 @@ SurgeJerkGain:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab3D_1B55 ($1B55): 3D table, 5 rows x 5 columns, unsigned
-; Inputs: $0646,Z x SegmentRpmFast
+; Inputs: SurgeMapPos x SegmentRpmFast
 ; Read at $1513A
 ;---------------------------------------------------------------------------------------------------
 Tab3D_1B55:
@@ -2352,7 +2570,11 @@ SurgeRetardCoolantFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    127,64, 144,102, 194,255                 ; x, y
 
-        dc.b    $FF,$FF,$FF,$01
+        dc.b    $FF,$FF
+SurgeJerkNegMin:
+        dc.b    $FF                                      ; Throttle open: negative jerk beyond which SurgeJerkAdvanceOpen applies
+SurgeJerkPosMin:
+        dc.b    $01                                      ; Throttle open: positive jerk above which SurgeJerkRetardOpen applies
 
 ;---------------------------------------------------------------------------------------------------
 ; SurgeJerkRetardOpen ($1BBB): 2D table, 3 points, unsigned
@@ -2377,7 +2599,21 @@ SurgeJerkAdvanceOpen:
         dc.b    3,$80                                    ; points, flags
         dc.b    1,4, 8,8, 254,12                         ; x, y
 
-        dc.b    $FF,$FF,$FE,$FE,$30,$01,$01,$01,$FF,$C0,$20,$26,$0C,$27,$6E,$2E
+        dc.b    $FF,$FF,$FE,$FE,$30,$01,$01,$01
+SurgeRpmAccelEnd:
+        dc.b    $FF,$C0                                  ; Driveline surge: rpm acceleration change ($0D2C,Z) below which the retard stage ends early
+SurgeMapMin:
+        dc.b    $20                                      ; Driveline surge spark control runs above this MAP
+SurgeRpmMin:
+        dc.b    $26                                      ; Driveline surge spark control runs above this fast segment rpm (high byte)
+SurgeSpeedMin:
+        dc.b    $0C                                      ; Driveline surge spark control runs above this vehicle speed
+SurgeOpenThrottleTime:
+        dc.b    $27                                      ; Throttle open: time ($0D38,Z) during which the jerk spark applies
+SurgeCoolantMin:
+        dc.b    $6E                                      ; Driveline surge spark control runs above this coolant temperature
+SurgeRetardTime:
+        dc.b    $2E                                      ; Retard stage length ($0D37,Z) before the decay stage
 
 ;---------------------------------------------------------------------------------------------------
 ; SurgeRetardRateFactor ($1BDB): 2D table, 5 points, unsigned
@@ -2438,7 +2674,16 @@ SurgeJerkThreshold:
         dc.b    6,$80                                    ; points, flags
         dc.b    43,3, 56,3, 73,4, 115,4, 168,6, 229,254  ; x, y
 
-        dc.b    $FF,$00,$10,$08,$10,$10,$00,$08,$FF,$83,$FF,$B5
+        dc.b    $FF,$00
+AcValue5:
+        dc.b    $10                                      ; Byte used with; read by Sub_1D822.
+AcValue6:
+        dc.b    $08                                      ; Byte used with; read by Sub_1D822.
+        dc.b    $10,$10,$00,$08
+AcValue4:
+        dc.b    $FF,$83                                  ; Word used with; read by Sub_1D822.
+AcV0D4EThresh:
+        dc.b    $FF,$B5                                  ; Word compared with V0D4E; read by Sub_1D822.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1C29 ($1C29): 2D table, 1 points, unsigned
@@ -2453,7 +2698,7 @@ Tab2D_1C29:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1C31 ($1C31): 2D table, 1 points, unsigned
-; Inputs: $0697,Z
+; Inputs: IacLearned
 ; Read at $14936
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1C31:
@@ -2486,7 +2731,7 @@ Tab2D_1C41:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1C49 ($1C49): 2D table, 1 points, unsigned
-; Inputs: $0697,Z
+; Inputs: IacLearned
 ; Read at $12AE2
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1C49:
@@ -2610,7 +2855,14 @@ KnockThreshold:
         dc.b    5,$80                                    ; points, flags
         dc.b    31,10, 78,24, 117,42, 156,83, 218,160    ; x, y
 
-        dc.b    $1C,$53,$1C,$00
+KnockRetardMaxRpmMin:
+        dc.b    $1C                                      ; KnockRetardMaxMap is used above this engine rpm
+KnockRetardMaxThrottle:
+        dc.b    $53                                      ; KnockRetardMaxMap is used above this throttle opening (else above KnockRetardMaxRpm2)
+KnockRetardMaxRpm2:
+        dc.b    $1C                                      ; Below this rpm (with throttle below KnockRetardMaxThrottle) the maximum is KnockRetardMaxLow
+KnockRetardMaxLow:
+        dc.b    $00                                      ; Knock retard maximum at low throttle and rpm
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardMaxMap ($1CCB): 2D table, 2 points, unsigned
@@ -2636,8 +2888,22 @@ KnockRetardStep:
         dc.b    2,$80                                    ; points, flags
         dc.b    16,128, 64,255                           ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$04,$0C,$92,$30,$50,$70,$90,$0A,$02,$3F
-        dc.b    $06,$03,$00,$FF,$00,$22,$6E,$01,$00,$08
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+KnockFirstStepFactor:
+        dc.b    $04                                      ; Factor on KnockRetardStep for the first knock event
+KnockStepFactor:
+        dc.b    $0C                                      ; Factor on KnockRetardStep for later knock events
+KnockValue2:
+        dc.b    $92                                      ; Byte used with; read by Sub_1F296.
+        dc.b    $30,$50,$70,$90
+KnockAdder1:
+        dc.b    $0A                                      ; Byte added to; read by Sub_1F296.
+KnockAdder2:
+        dc.b    $02                                      ; Byte added to; read by Sub_1F296.
+        dc.b    $3F,$06,$03,$00,$FF,$00,$22
+KnockCoolantMin:
+        dc.b    $6E                                      ; Knock retard and its maximum apply above this coolant temperature
+        dc.b    $01,$00,$08
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1CF4 ($1CF4): 2D table, 2 points, unsigned
@@ -2682,7 +2948,33 @@ Tab2D_1D31:
         dc.b    4,$80                                    ; points, flags
         dc.b    0,0, 2,0, 5,0, 9,0                       ; x, y
 
-        dc.b    $DA,$01,$00,$00,$0A,$04,$01,$01,$04,$00,$00,$04,$01,$45,$03
+        dc.b    $DA
+SparkEventSparkAdder1:
+        dc.b    $01                                      ; Byte added to EventSpark; read by Sub_1DB84.
+SparkEventSparkAdder2:
+        dc.b    $00                                      ; Byte added to EventSpark; read by Sub_1DB84.
+SparkOffset1:
+        dc.b    $00                                      ; Byte subtracted from; read by Sub_1DB84.
+SparkOffset2:
+        dc.b    $0A                                      ; Byte subtracted from; read by Sub_1DB84.
+FuelEventSparkTimerInit1:
+        dc.b    $04                                      ; Byte stored into EventSparkTimer; read by Sub_11C44.
+FuelV0863Offset:
+        dc.b    $01                                      ; Byte subtracted from V0863; read by Sub_11C44.
+        dc.b    $01
+FuelV0863Adder:
+        dc.b    $04                                      ; Byte added to V0863; read by Isr_GPT_IC4OC5, Sub_11C44.
+FuelEventSparkInit:
+        dc.b    $00                                      ; Byte stored into EventSpark; read by Sub_11C44.
+FuelV0862Init:
+        dc.b    $00                                      ; Byte stored into V0862; read by Sub_11C44.
+StartV0863Thresh:
+        dc.b    $04                                      ; Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44.
+        dc.b    $01
+FuelEventValue10:
+        dc.b    $45                                      ; Byte used with; read by Sub_12CCC.
+CalValue7:
+        dc.b    $03                                      ; Byte used with; read by Isr_GPT_IC4OC5.
 
 ;---------------------------------------------------------------------------------------------------
 ; EventSparkThrottle ($1D4A): 2D table, 1 points, unsigned
@@ -2787,7 +3079,10 @@ Tab2D_1DC1:
         dc.b    4,$80                                    ; points, flags
         dc.b    105,134, 119,100, 166,60, 207,43         ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$40,$80,$71,$41,$71,$58,$50,$20
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$40
+BatteryVoltsFilter:
+        dc.b    $80                                      ; Filter weight of the filtered battery voltage $0A52,Z
+        dc.b    $71,$41,$71,$58,$50,$20
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1DD9 ($1DD9): 2D table, 5 points, unsigned
@@ -2799,7 +3094,10 @@ Tab2D_1DD9:
         dc.b    129,201, 172,165, 203,145, 240,111, 255,100 ; x, y
 
         dc.b    $8A,$CD,$D2,$90,$E0,$EE,$88,$84,$DF,$C6,$C2,$E0,$EE,$15,$0C,$DA
-        dc.b    $05,$13,$13,$13,$01,$90,$19,$00,$01,$31,$17,$70,$00,$00
+        dc.b    $05,$13,$13,$13,$01,$90,$19,$00,$01,$31
+IacSegRpmThresh2:
+        dc.b    $17,$70                                  ; Word compared with SegmentRpm; read by Sub_19808.
+        dc.b    $00,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1E03 ($1E03): 2D table, 3 points, unsigned
@@ -2843,7 +3141,12 @@ Tab2D_1E23:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$00,$03,$C0,$01,$80,$40,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$00
+IacIdleTargetOffset1:
+        dc.b    $03,$C0                                  ; Word subtracted from IdleTarget; read by Sub_19808.
+IacIdleTargetOffset2:
+        dc.b    $01,$80                                  ; Word subtracted from IdleTarget; read by Sub_19808.
+        dc.b    $40,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1E33 ($1E33): 2D table, 1 points, unsigned, y = 0 counts as 256
@@ -3002,7 +3305,33 @@ Tab3D_1EE8:
         dc.b    113,100,100,100,100                      ; row 3
         dc.b    100,100,100,100,100                      ; row 4
 
-        dc.b    $07,$00,$00,$37,$10,$10,$14,$B3,$0C,$DB,$11,$09,$00,$06,$04,$04
+IacV0352Init:
+        dc.b    $07                                      ; Byte stored into V0352; read by Sub_19808.
+        dc.b    $00
+IacAdder2:
+        dc.b    $00                                      ; Byte added to; read by Sub_19808.
+        dc.b    $37,$10
+IacAdder1:
+        dc.b    $10                                      ; Byte added to; read by Sub_19808.
+IacKickHold:
+        dc.b    $14                                      ; A/C and rpm-dip kicks: hold time $035A,Z
+IacValue2:
+        dc.b    $B3                                      ; Byte used with; read by Sub_1AFDE.
+        dc.b    $0C
+IacV034FInit:
+        dc.b    $DB                                      ; Byte stored into V034F; read by Sub_19808.
+IacValue3:
+        dc.b    $11                                      ; Byte used with; read by Sub_1AA32.
+IacValue4:
+        dc.b    $09                                      ; Byte used with; read by Sub_1AA32.
+IacValue5:
+        dc.b    $00                                      ; Byte used with; read by Sub_1AA32.
+IacValue6:
+        dc.b    $06                                      ; Byte used with; read by Sub_1AA32.
+IacValue7:
+        dc.b    $04                                      ; Byte used with; read by Sub_1AA32.
+IacValue8:
+        dc.b    $04                                      ; Byte used with; read by Sub_1AA32.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1F19 ($1F19): 2D table, 3 points, unsigned
@@ -3018,7 +3347,7 @@ Tab2D_1F19:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1F33 ($1F33): 2D table, 2 points, unsigned
-; Inputs: $0697,Z
+; Inputs: IacLearned
 ; Read at $0BC4A
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1F33:
@@ -3029,7 +3358,7 @@ Tab2D_1F33:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1F3D ($1F3D): 2D table, 2 points, unsigned
-; Inputs: $0697,Z
+; Inputs: IacLearned
 ; Read at $0BC4A
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1F3D:
@@ -3037,7 +3366,10 @@ Tab2D_1F3D:
         dc.b    10,15, 49,39                             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$02,$20,$0A,$FB,$31,$CB,$FF,$FF,$FF,$FF,$02,$20
-        dc.b    $0A,$F4,$31,$D5,$FF,$FF,$FF,$FF,$FA,$00,$79,$69
+        dc.b    $0A,$F4,$31,$D5,$FF,$FF,$FF,$FF,$FA,$00
+IacGearCoolantMax:
+        dc.b    $79                                      ; Gear-change IAC: coolant below which the IacGearTimeCoolant tables and the time counter $0348,Z apply
+        dc.b    $69
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1F5F ($1F5F): 2D table, 2 points, unsigned
@@ -3080,7 +3412,7 @@ IacGearTimeCoolantPN:
 ; IacGearTimeFactor ($1F87): 2D table, 1 points, unsigned
 ; Factor on IacGearTimeCoolant against the time counter $0348,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $06AA,Z
+; Inputs: IacGearTime
 ; Read at $0B14E
 ;---------------------------------------------------------------------------------------------------
 IacGearTimeFactor:
@@ -3127,7 +3459,7 @@ IacGearTimeCoolantPNAC:
 ; IacGearTimeFactorPNAC ($1FAD): 2D table, 1 points, unsigned
 ; As IacGearTimeFactor in P/N with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $06AA,Z
+; Inputs: IacGearTime
 ; Read at $0B14E
 ;---------------------------------------------------------------------------------------------------
 IacGearTimeFactorPNAC:
@@ -3157,7 +3489,9 @@ Tab2D_1FC1:
         dc.b    2,$80                                    ; points, flags
         dc.b    99,138, 121,136                          ; x, y
 
-        dc.b    $FF,$FF,$2F
+        dc.b    $FF,$FF
+IacKickRpmMax:
+        dc.b    $2F                                      ; A/C and rpm-dip kicks: segment rpm below which they apply
 
 ;---------------------------------------------------------------------------------------------------
 ; IacAcKickMap ($1FCA): 2D table, 1 points, unsigned
@@ -3176,14 +3510,17 @@ IacAcKickMap:
 ; IacAcKickMapLatched ($1FD2): 2D table, 1 points, signed
 ; IAC step when the A/C clutch releases, against the MAP latched at engagement ($0341,Z)
 ; x: kpa, y: raw (units: docs/en/calibration.md)
-; Inputs: $06A3,Z
+; Inputs: IacAcKickMapLatch
 ; Read at $0B2A8
 ;---------------------------------------------------------------------------------------------------
 IacAcKickMapLatched:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-7                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$9B,$FE,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$9B
+ChargeDeficitFilter:
+        dc.b    $FE                                      ; Filter weight of the charging deficit average $0DCA,Z
+        dc.b    $00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1FE1 ($1FE1): 2D table, 1 points, unsigned
@@ -3194,7 +3531,11 @@ Tab2D_1FE1:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$11,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+IacAcRequestAdder:
+        dc.b    $11                                      ; IAC addition with A/C requested (A/C switch input, not blocked)
+IacDriveAdder:
+        dc.b    $00                                      ; IAC addition (signed) in drive
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRunTimeAdder ($1FED): 2D table, 1 points, unsigned
@@ -3271,7 +3612,14 @@ IacFieldDutyRpm:
         dc.b    3,7,9,9,9                                ; row 3
         dc.b    5,11,13,13,13                            ; row 4
 
-        dc.b    $03,$FF,$FF,$6E
+IacLoopMask1:
+        dc.b    $03                                      ; Byte mask for MainLoopCounter; read by Sub_19808.
+IacFactor1:
+        dc.b    $FF                                      ; Byte multiplied; read by Sub_19808.
+IacFactor2:
+        dc.b    $FF                                      ; Byte multiplied; read by Sub_19808.
+IacRollCoolantMin:
+        dc.b    $6E                                      ; Rolling IAC target: below this coolant the $0335,Z value is used instead
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollSpeedBase ($208F): 2D table, 2 points, unsigned
@@ -3287,13 +3635,13 @@ IacRollSpeedBase:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IacRollFactorV0345 ($209B): 2D table, 1 points, unsigned
-; Factor on the rolling IAC target against $0345,Z (centred on 128), with calibration bit $0331.7
+; IacRollFactorAcSensor ($209B): 2D table, 1 points, unsigned
+; Factor on the rolling IAC target against the filtered A/C sensor $0345,Z (centred on 128), with calibration bit $0331.7
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $06A7,Z
+; Inputs: AcSensorFiltered
 ; Read at $0AD2C, $0B386
 ;---------------------------------------------------------------------------------------------------
-IacRollFactorV0345:
+IacRollFactorAcSensor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
@@ -3471,7 +3819,7 @@ Tab2D_2164:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_216E ($216E): 2D table, 2 points, unsigned
-; Inputs: $0697,Z
+; Inputs: IacLearned
 ; Read at $0BCFA
 ;---------------------------------------------------------------------------------------------------
 Tab2D_216E:
@@ -3482,15 +3830,27 @@ Tab2D_216E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_2178 ($2178): 2D table, 2 points, unsigned
-; Inputs: $0697,Z
+; Inputs: IacLearned
 ; Read at $0BCFA
 ;---------------------------------------------------------------------------------------------------
 Tab2D_2178:
         dc.b    2,$80                                    ; points, flags
         dc.b    16,13, 41,38                             ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$05,$EC,$04,$02,$02,$00,$22,$60,$0F,$A0,$0A,$F0
-        dc.b    $1F,$40,$13,$CA,$04,$A1,$28,$A0,$64,$1A,$00,$00
+        dc.b    $FF,$FF,$FF,$FF
+IdleRollSpeed:
+        dc.b    $05                                      ; Vehicle speed that separates standing from rolling for idle air, dashpot and coast logic
+        dc.b    $EC,$04,$02,$02,$00,$22,$60,$0F,$A0
+IdleValue17:
+        dc.b    $0A                                      ; Byte used with; read by Sub_1A54A.
+IdleValue18:
+        dc.b    $F0                                      ; Byte used with; read by Sub_1A54A.
+        dc.b    $1F,$40,$13,$CA,$04,$A1
+IacV034EInit:
+        dc.b    $28                                      ; Byte stored into V034E; read by Sub_19808.
+IacTargetMax:
+        dc.b    $A0                                      ; Upper limit of the IAC target position
+        dc.b    $64,$1A,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_219A ($219A): 2D table, 1 points, unsigned
@@ -3748,15 +4108,31 @@ Tab2D_231A:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$F0,$0A,$04,$09,$0A,$20,$26,$00,$40,$0D
-        dc.b    $10,$69,$02,$37,$02,$D6,$0A,$7F,$00,$0C,$01,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$F0,$0A
+SensorV00F0Init:
+        dc.b    $04                                      ; Byte stored into V00F0; read by Sub_3C3C6.
+SensorValue11:
+        dc.b    $09                                      ; Byte used with; read by Sub_3C3C6.
+SensorRpmThresh6:
+        dc.b    $0A,$20                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
+SensorRpmThresh7:
+        dc.b    $26,$00                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
+SensorValue12:
+        dc.b    $40                                      ; Byte used with; read by Sub_3C3C6.
+SensorThrottleThresh3:
+        dc.b    $0D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3C3C6.
+SensorValue13:
+        dc.b    $10                                      ; Byte used with; read by Sub_3C3C6.
+        dc.b    $69,$02,$37,$02,$D6,$0A,$7F,$00
+DiagThresh4:
+        dc.b    $0C                                      ; Byte compared with; read by Sub_25784.
+        dc.b    $01,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; DiagLevelLimit2 ($2348): 2D table, 1 points, unsigned
 ; As DiagLevelLimit with $0649,Z bit 1 set
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0485,Z
+; Inputs: FuelLevelScaled
 ; Read at $1EAB4
 ;---------------------------------------------------------------------------------------------------
 DiagLevelLimit2:
@@ -3781,11 +4157,22 @@ DiagLevelLimit2:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$13,$CD,$02,$02,$80,$02,$12,$21,$1E,$7D
-        dc.b    $C8,$10,$70,$03,$6A,$3C,$1A,$40,$3F,$C0,$3F,$C0,$FF,$00,$00,$C8
-        dc.b    $01,$EF,$B5,$FF,$A6,$7F,$1D,$7F,$0F,$25,$02,$BA,$EF,$01,$02,$10
-        dc.b    $05,$0E,$09,$10,$84,$02,$7F,$1D,$FF,$06,$FA,$06,$FA,$00,$02,$10
-        dc.b    $10,$05,$FB,$1C,$E4,$20,$20,$FF,$00,$00,$FF,$00,$FF,$FF,$00,$FF
-        dc.b    $00,$FF
+        dc.b    $C8
+FuelThresh8:
+        dc.b    $10                                      ; Byte compared with; read by Sub_23D76.
+FuelThresh9:
+        dc.b    $70                                      ; Byte compared with; read by Sub_23D76.
+FuelThresh10:
+        dc.b    $03                                      ; Byte compared with; read by Sub_23D76.
+FuelV068EThresh:
+        dc.b    $6A                                      ; Byte compared with V068E; read by Sub_23D76.
+        dc.b    $3C,$1A,$40,$3F,$C0,$3F,$C0,$FF,$00,$00,$C8,$01,$EF,$B5,$FF,$A6
+        dc.b    $7F,$1D,$7F,$0F,$25,$02,$BA,$EF,$01,$02,$10,$05,$0E,$09,$10,$84
+        dc.b    $02,$7F,$1D,$FF,$06,$FA,$06,$FA
+O2Adder5:
+        dc.b    $00                                      ; Byte added to; read by Sub_15364.
+        dc.b    $02,$10,$10,$05,$FB,$1C,$E4,$20,$20,$FF,$00,$00,$FF,$00,$FF,$FF
+        dc.b    $00,$FF,$00,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_24AE ($24AE): 2D table, 1 points, unsigned
@@ -3850,14 +4237,48 @@ Tab3D_24CE:
         dc.b    255,255,255,255,255,255,255,255,255      ; row 8
 
         dc.b    $01,$14,$CD,$AB,$80,$F0,$F0,$20,$07,$26,$25,$1A,$1C,$04,$02,$80
-        dc.b    $40,$05,$05,$01,$03,$03,$8A,$86,$8A,$86,$02,$02,$28,$17,$1C,$30
-        dc.b    $CD,$80,$7F,$03,$80,$07,$18,$0D,$35,$06,$FA,$06,$FA,$06,$FA,$06
-        dc.b    $FA,$10,$10,$10,$10,$00,$86,$8A,$86,$8A,$00,$00,$00,$08,$00,$0A
-        dc.b    $00,$23,$00,$0A,$00,$23,$7F,$00,$01,$33,$FE,$FE,$FF,$FF,$33,$01
-        dc.b    $95,$13,$08,$80,$04,$A2,$60,$00,$64,$15,$90,$11,$30,$1E,$4D,$4D
-        dc.b    $4D,$4D,$1A,$1A,$1A,$1A,$01,$01,$01,$01,$08,$08,$08,$08,$0A,$0A
-        dc.b    $0A,$0A,$05,$04,$80,$25,$FF,$C0,$00,$00,$FF,$00,$FF,$00,$FF,$00
-        dc.b    $00,$10,$10,$28,$28,$01,$02,$80
+        dc.b    $40,$05,$05,$01,$03,$03,$8A,$86,$8A,$86,$02,$02
+DiagTimeThresh2:
+        dc.b    $28                                      ; Byte compared with Count3s; read by Sub_2877A.
+DiagV053FThresh:
+        dc.b    $17                                      ; Byte compared with V053F; read by Sub_2877A.
+DiagV0543Thresh:
+        dc.b    $1C                                      ; Byte compared with V0543; read by Sub_2877A.
+DiagSpeedThresh2:
+        dc.b    $30                                      ; Byte compared with VehicleSpeed; read by Sub_2877A.
+DiagCoolantThresh3:
+        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_2877A.
+DiagThresh11:
+        dc.b    $80                                      ; Byte compared with; read by Sub_2877A.
+DiagThresh10:
+        dc.b    $7F                                      ; Byte compared with; read by Sub_2877A.
+DiagIdleTargetThresh:
+        dc.b    $03,$80                                  ; Word compared with IdleTarget; read by Sub_2877A.
+DiagV0542Thresh:
+        dc.b    $07                                      ; Byte compared with V0542; read by Sub_2877A.
+        dc.b    $18
+DiagV0541Init:
+        dc.b    $0D                                      ; Byte stored into V0541; read by Sub_2877A.
+DiagV0A4EThresh:
+        dc.b    $35                                      ; Byte compared with V0A4E; read by Sub_2877A.
+        dc.b    $06,$FA,$06,$FA,$06,$FA,$06,$FA,$10,$10,$10,$10,$00,$86,$8A,$86
+        dc.b    $8A,$00,$00,$00
+DiagThresh12:
+        dc.b    $08                                      ; Byte compared with; read by Sub_2877A.
+        dc.b    $00,$0A,$00,$23,$00,$0A,$00,$23
+DiagThresh13:
+        dc.b    $7F                                      ; Byte compared with; read by Sub_2877A.
+        dc.b    $00,$01,$33,$FE,$FE,$FF,$FF,$33,$01
+DiagThresh14:
+        dc.b    $95                                      ; Byte compared with; read by Sub_2877A.
+DiagThresh15:
+        dc.b    $13                                      ; Byte compared with; read by Sub_2877A.
+        dc.b    $08,$80,$04,$A2,$60
+CalV010AThresh1:
+        dc.b    $00,$64                                  ; Word compared with V010A; read by Sub_2919A.
+        dc.b    $15,$90,$11,$30,$1E,$4D,$4D,$4D,$4D,$1A,$1A,$1A,$1A,$01,$01,$01
+        dc.b    $01,$08,$08,$08,$08,$0A,$0A,$0A,$0A,$05,$04,$80,$25,$FF,$C0,$00
+        dc.b    $00,$FF,$00,$FF,$00,$FF,$00,$00,$10,$10,$28,$28,$01,$02,$80
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_25B3 ($25B3): 2D table, 6 points, unsigned
@@ -3978,7 +4399,12 @@ Tab2D_26EA:
         dc.b    4,$80                                    ; points, flags
         dc.b    25,80, 31,52, 63,36, 94,27               ; x, y
 
-        dc.b    $D0,$06,$61,$74,$26,$58
+        dc.b    $D0
+MisfireHoldSpeedMin:
+        dc.b    $06                                      ; Misfire hold-off (MisfireHoldSegRpm) applies above this vehicle speed
+        dc.b    $61,$74,$26
+FuelThresh6:
+        dc.b    $58                                      ; Byte compared with; read by Sub_2AE1E.
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireLoadScaleDrive ($26FA): 2D table, 5 points, unsigned
@@ -3991,7 +4417,11 @@ MisfireLoadScaleDrive:
         dc.b    5,$80                                    ; points, flags
         dc.b    31,19, 47,15, 63,12, 78,11, 125,8        ; x, y
 
-        dc.b    $B4,$1E,$58,$0F
+        dc.b    $B4,$1E
+FuelV061DThresh:
+        dc.b    $58                                      ; Byte compared with V061D; read by Sub_2AE1E.
+FuelValue16:
+        dc.b    $0F                                      ; Byte used with; read by Sub_2AE1E.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_270A ($270A): 2D table, 6 points, unsigned
@@ -4002,7 +4432,8 @@ Tab2D_270A:
         dc.b    6,$80                                    ; points, flags
         dc.b    16,24, 20,19, 25,15, 38,10, 50,8, 75,5   ; x, y
 
-        dc.b    $07,$F8
+MisfireChangeMax:
+        dc.b    $07,$F8                                  ; Misfire monitor: segment-time change above which a misfire is taken without the thresholds
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireWeight ($271A): 3D table, 9 rows x 9 columns, unsigned
@@ -4142,15 +4573,71 @@ Tab3D_290C:
         dc.b    254,254,254,254,254,254,254,254,254      ; row 7
         dc.b    254,254,254,254,254,254,254,254,254      ; row 8
 
-        dc.b    $08,$00,$F5,$03,$00,$00,$06,$FF,$FF,$9F,$84,$06,$B5,$F6,$92,$20
-        dc.b    $14,$01,$3A,$55,$29,$06,$03,$27,$1C,$05,$06,$3E,$06,$03,$1E,$12
-        dc.b    $08,$12,$18,$0D,$06,$12,$05,$0F,$96
+        dc.b    $08,$00,$F5,$03,$00,$00,$06,$FF,$FF
+DiagBatteryTempThresh1:
+        dc.b    $9F                                      ; Byte compared with BatteryTemp; read by Sub_25784.
+DiagBatteryTempThresh2:
+        dc.b    $84                                      ; Byte compared with BatteryTemp; read by Sub_25784.
+        dc.b    $06,$B5
+DiagVoltsThresh1:
+        dc.b    $F6                                      ; Byte compared with BatteryVolts2; read by Sub_25784.
+DiagVoltsThresh2:
+        dc.b    $92                                      ; Byte compared with BatteryVolts2; read by Sub_25784.
+DiagVacuumThresh1:
+        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_25784.
+DiagV0591Thresh:
+        dc.b    $14                                      ; Byte compared with V0591; read by Sub_25DA8.
+DiagV0592Thresh:
+        dc.b    $01                                      ; Byte compared with V0592; read by Sub_25784, Sub_25DA8.
+DiagMonPeakThresh1:
+        dc.b    $3A                                      ; Byte compared with DiagMonPeak; read by Sub_25DA8.
+DiagValue1:
+        dc.b    $55                                      ; Byte used with; read by Sub_25DA8.
+DiagThresh1:
+        dc.b    $29                                      ; Byte compared with; read by Sub_25784.
+DiagThresh2:
+        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
+DiagV0596Thresh1:
+        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
+DiagMonPeakThresh2:
+        dc.b    $27                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+DiagV0593Thresh:
+        dc.b    $1C                                      ; Byte compared with V0593; read by Sub_25784.
+DiagV0597Thresh1:
+        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
+DiagV0590Thresh:
+        dc.b    $06                                      ; Byte compared with V0590; read by Sub_25784.
+DiagV0598Thresh:
+        dc.b    $3E                                      ; Byte compared with V0598; read by Sub_25784.
+DiagThresh3:
+        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
+DiagV0596Thresh2:
+        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
+DiagMonPeakThresh3:
+        dc.b    $1E                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+DiagV0595Thresh:
+        dc.b    $12                                      ; Byte compared with V0595; read by Sub_25784.
+DiagThresh6:
+        dc.b    $08                                      ; Byte compared with; read by Sub_25784.
+DiagMonPeakThresh4:
+        dc.b    $12                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+DiagThresh5:
+        dc.b    $18                                      ; Byte compared with; read by Sub_25784.
+DiagVacuumThresh2:
+        dc.b    $0D                                      ; Byte compared with ManifoldVacuum; read by Sub_25784.
+DiagV0599Thresh:
+        dc.b    $06                                      ; Byte compared with V0599; read by Sub_25784.
+DiagV059AThresh:
+        dc.b    $12                                      ; Byte compared with V059A; read by Sub_25784.
+DiagV0597Thresh2:
+        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
+        dc.b    $0F,$96
 
 ;---------------------------------------------------------------------------------------------------
 ; DiagLevelLimit ($2992): 2D table, 1 points, unsigned
 ; Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0485,Z
+; Inputs: FuelLevelScaled
 ; Read at $1EAC4
 ;---------------------------------------------------------------------------------------------------
 DiagLevelLimit:
@@ -4614,8 +5101,18 @@ Tab2D_3DB9:
         dc.b    4,$80                                    ; points, flags
         dc.b    63,0, 69,113, 78,113, 80,0               ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$05,$FA,$08,$E4,$1A,$28,$2F,$20,$66,$01
-        dc.b    $EE,$3D,$3D,$FF,$F0
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$05,$FA,$08,$E4,$1A,$28,$2F,$20,$66
+SensorMapRawThresh1:
+        dc.b    $01                                      ; Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap.
+SensorMapRawThresh2:
+        dc.b    $EE                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap.
+        dc.b    $3D
+SensorThrottleThresh4:
+        dc.b    $3D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap.
+KnockValue3:
+        dc.b    $FF                                      ; Byte used with; read by Sub_1F408.
+KnockV0A89Thresh:
+        dc.b    $F0                                      ; Byte compared with V0A89; read by Sub_1F408.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_3DD8 ($3DD8): 2D table, 1 points, unsigned
@@ -4626,8 +5123,18 @@ Tab2D_3DD8:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04,$10,$24,$3C,$05,$6D,$BD,$BD
-        dc.b    $64,$95,$00,$79,$E4,$C7,$FF,$02,$00,$E3,$07,$01
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04
+SensorVoltsAdder:
+        dc.b    $10                                      ; Byte added to BatteryVolts2; read by Sub_21C78.
+SensorRpmThresh10:
+        dc.b    $24                                      ; Byte compared with EngineRpm; read by Sub_21C78.
+SensorV0DBBThresh:
+        dc.b    $3C                                      ; Byte compared with V0DBB; read by Sub_21C78.
+SensorThresh23:
+        dc.b    $05                                      ; Byte compared with; read by Sub_21C78.
+SensorThresh24:
+        dc.b    $6D                                      ; Byte compared with; read by Sub_21C78.
+        dc.b    $BD,$BD,$64,$95,$00,$79,$E4,$C7,$FF,$02,$00,$E3,$07,$01
 
 ;---------------------------------------------------------------------------------------------------
 ; MapLimpFromThrottle ($3DF8): 2D table, 5 points, unsigned
@@ -4640,8 +5147,11 @@ MapLimpFromThrottle:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 8,73, 20,112, 57,186, 120,193       ; x, y
 
-        dc.b    $22,$09,$13,$00,$05,$29,$30,$13,$41,$43,$A0,$20,$20,$20,$20,$20
-        dc.b    $20,$8D,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+MapAdder2:
+        dc.b    $22                                      ; Byte added to result of MapLimpFromThrottle; read by Sub_241AA.
+MapThrottleAdder:
+        dc.b    $09                                      ; Byte added to Throttle; read by Sub_241AA.
+        dc.b    $13,$00,$05,$29,$30,$13,$41,$43,$A0,$20,$20,$20,$20,$20,$20,$8D
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -4671,9 +5181,10 @@ MapLimpFromThrottle:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$01,$00,$02
-        dc.b    $00,$04,$00,$08,$00,$10,$00,$20,$00,$40,$00,$80,$01,$00,$02,$00
-        dc.b    $04,$00,$08,$00,$10,$00,$20,$00,$40,$00,$80,$00,$60,$50,$90,$A0
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$01,$00,$02,$00,$04
+        dc.b    $00,$08,$00,$10,$00,$20,$00,$40,$00,$80,$01,$00,$02,$00,$04,$00
+        dc.b    $08,$00,$10,$00,$20,$00,$40,$00,$80,$00,$60,$50,$90,$A0
 
 ;---------------------------------------------------------------------------------------------------
 ; ThermistorCold ($4024): 2D table, 7 points, unsigned
@@ -5154,7 +5665,7 @@ L0496E:
         BRSET   $03BB,Z,#$20,L04980
         INCB
 L04980:
-        BRCLR   $031D,#$04,L04988
+        BRCLR   >EventFlag1,#$04,L04988
         EORB    #$01
 L04988:
         STAB    $F0,Z
@@ -5181,7 +5692,7 @@ L04988:
         SUBE    $00F6,Z
         STE     $00F6,Z
         LDD     $037D,Z
-        CPD     $19B7
+        CPD     >EventV0ABDThresh3
         BCS     L049E8
         CPD     #$00FF
         BCS     L049E2
@@ -5365,7 +5876,7 @@ L04BCE:
         BRSET   $03BB,Z,#$20,L04BD8
         INCB
 L04BD8:
-        BRCLR   $031D,#$04,L04BE0
+        BRCLR   >EventFlag1,#$04,L04BE0
         EORB    #$01
 L04BE0:
         STAB    $F0,Z
@@ -5482,7 +5993,7 @@ L04D04:
         STAB    >O2UpBank2Raw,Z
         LDAB    >RJURR1_L,Z
         STAB    >O2DownBank1Raw,Z
-        BRCLR   $031E,#$10,L04D3A
+        BRCLR   >Options0331,#$10,L04D3A
         LDAA    >PORTC,Z
         ORAA    #$07
         ANDA    #$FD
@@ -5492,8 +6003,8 @@ L04D04:
 L04D3A:
         LDAB    #$02
         JSR     Sub_075D6
-        BRCLR   $031E,#$10,L04D60
-        BRSET   $0323,#$20,L04D60
+        BRCLR   >Options0331,#$10,L04D60
+        BRSET   >Options0337,#$20,L04D60
         BRCLR   $0598,Z,#$80,L04D60
 L04D52:
         BRCLR   >ADCSTAT,Z,#$80,L04D52
@@ -5537,7 +6048,7 @@ L04D72:
         BRSET   $03BB,Z,#$20,L04DDE
         INCB
 L04DDE:
-        BRCLR   $031D,#$04,L04DE6
+        BRCLR   >EventFlag1,#$04,L04DE6
         EORB    #$01
 L04DE6:
         STAB    $F0,Z
@@ -5653,7 +6164,7 @@ L04EFE:
         BRCLR   $03BB,Z,#$20,L04F20
         INCB
 L04F20:
-        BRCLR   $031D,#$04,L04F28
+        BRCLR   >EventFlag1,#$04,L04F28
         EORB    #$01
 L04F28:
         LDX     #$4810
@@ -5666,7 +6177,7 @@ L04F28:
 L04F3E:
         LDAA    $03BE,Z
         INCA
-        CMPA    $51DF
+        CMPA    >EventV0C46Value
         BCS     L04F4C
         CLRA
 L04F4C:
@@ -5713,7 +6224,7 @@ L04FAE:
         BRCLR   $03BB,Z,#$20,L04FD2
         INCB
 L04FD2:
-        BRCLR   $031D,#$04,L04FDA
+        BRCLR   >EventFlag1,#$04,L04FDA
         EORB    #$01
 L04FDA:
         BRCLR   $060E,Z,#$20,L04FFA
@@ -5764,9 +6275,9 @@ L05038:
         JSR     Sub_089C6
         JSR     Sub_15006
         LDX     $037D,Z
-        CPX     $0541
+        CPX     >EventV0ABDThresh1
         BCS     L05070
-        CPX     $0543
+        CPX     >EventV0ABDThresh2
         BCS     L050A6
         BCLR    $0598,Z,#$80
         BRA     L050A6
@@ -5778,7 +6289,7 @@ L05070:
         STD     >CrankPulse,Z
         BSET    $0598,Z,#$01
         CLRW    >Count3s,Z
-        CLR     $03BA,Z
+        CLR     >RunTime,Z
         CLR     $0491,Z
         LDAA    >Throttle,Z
         STAA    >ThrottleLast,Z
@@ -5887,8 +6398,10 @@ L051A8:
 L051D4:
         PULM    E,D
         RTI
-        dc.b    $27,$4C,$00,$0E,$4E,$1C,$00,$04,$00,$0E,$00,$3A,$00,$76,$10,$18
-        dc.b    $45,$03,$2D,$CD,$55
+        dc.b    $27,$4C,$00,$0E,$4E,$1C,$00
+EventV0C46Value:
+        dc.b    $04                                      ; Byte used with V0C46; read by Isr_GPT_IC4OC5, Isr_GPT_IC1, Sub_10604 +17.
+        dc.b    $00,$0E,$00,$3A,$00,$76,$10,$18,$45,$03,$2D,$CD,$55
 
 ;---------------------------------------------------------------------------------------------------
 ; EventTimingLimit ($51ED): 2D table, 2 points, unsigned
@@ -5914,8 +6427,9 @@ FuelEventOffset:
         dc.b    3,$80                                    ; points, flags
         dc.b    6,0, 36,1, 66,2                          ; x, y
 
-        dc.b    $03,$01,$71,$01,$68,$00,$B4,$00,$A0,$00,$8C,$00,$78,$07,$80,$27
-        dc.b    $4C
+FuelEventFactor:
+        dc.b    $03                                      ; Byte multiplied; read by Sub_12680.
+        dc.b    $01,$71,$01,$68,$00,$B4,$00,$A0,$00,$8C,$00,$78,$07,$80,$27,$4C
 
 ;---------------------------------------------------------------------------------------------------
 ; Isr_GPT_IC3 ($05218)
@@ -5959,7 +6473,7 @@ Isr_GPT_IC3:
 L0528C:
         STE     $0384,Z
         INCW    $0034,Z
-        LDAB    $031D
+        LDAB    >EventFlag1
         BITB    #$0A
         BNE     L052A4
         TSTW    $0034,Z
@@ -6010,7 +6524,7 @@ L05314:
         CLR     $0370,Z
         LDD     $0321,Z
         ADDD    #$50
-        BRCLR   $031D,#$0A,L0532C
+        BRCLR   >EventFlag1,#$0A,L0532C
         ADDD    #$4C
 L0532C:
         STD     $0321,Z
@@ -6023,7 +6537,7 @@ L05334:
         CLRA
         LDAB    #$02
         LDE     #$BF20
-        BRCLR   $031D,#$0A,L05352
+        BRCLR   >EventFlag1,#$0A,L05352
         LDAB    #$05
         LDE     #$5BF0
 L05352:
@@ -6582,7 +7096,7 @@ L0585C:
 Isr_GPT_OC2:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
-        BRCLR   $0323,#$40,L05C7A
+        BRCLR   >Options0337,#$40,L05C7A
         JSR     Sub_05D3A
         JMP     L05D36
 L05C7A:
@@ -6636,7 +7150,7 @@ L05CC0:
         LDAB    >TCTL1,Z
         BITB    $01,Y
         BEQ     L05D2C
-        LDAA    $031D
+        LDAA    >EventFlag1
         BITA    #$87
         BNE     L05CF6
         LDAA    $03BB,Z
@@ -6813,7 +7327,7 @@ Isr_GPT_IC4OC5:
         BRCLR   $0598,Z,#$80,L06048
         TST     >Count3s,Z
         LBEQ    L06048
-        BRCLR   $0323,#$80,L06048
+        BRCLR   >Options0337,#$80,L06048
         LDD     >TI4O5,Z
         TDE
         BRSET   >TCTL2,Z,#$80,L05FBC
@@ -6924,7 +7438,7 @@ L05FBC:
         PSHM    E
         BSET    >FuelModeFlags,Z,#$08
         CLR     $00FE,Z
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
         DECB
         CLRA
         TDE
@@ -6940,7 +7454,7 @@ L05FE0:
 L05FF2:
         SUBE    #$0001
         BPL     L05FE0
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
         CLRA
         STD     $00FC,Z
         CLRE
@@ -6952,7 +7466,7 @@ L05FF2:
 L06012:
         LSRB
         BCC     L0601C
-        LDAA    $1D49
+        LDAA    >CalValue7
         BRA     L0601E
 L0601C:
         CLRA
@@ -7163,7 +7677,7 @@ L06578:
         LBRA    L06706
 L0657E:
         LDAA    >EngineRpm,Z
-        BRCLR   $0323,#$08,L065A2
+        BRCLR   >Options0337,#$08,L065A2
         CMPA    $1175
         BCS     L065A2
         LDAA    >VehicleSpeedCoarse,Z
@@ -7193,7 +7707,7 @@ L065D4:
 L065D8:
         LBHI    L066C8
         BCLR    $056D,Z,#$40
-        BRCLR   $0323,#$08,L065F8
+        BRCLR   >Options0337,#$08,L065F8
         CMPA    $1174
         BCS     L065F8
         LDAA    >VehicleSpeedCoarse,Z
@@ -7306,13 +7820,13 @@ Sub_06720:
         BRCLR   >ThrottleState,Z,#$40,L06776
         CLRW    $05C6,Z
         LDAA    >CoolantTemp,Z
-        CMPA    $0F57
+        CMPA    >FuelCoolantThresh3
         LBCS    L06770
         LDAA    >EngineRpm,Z
-        CMPA    $0F58
+        CMPA    >FuelRpmThresh3
         LBCS    L06770
         LDE     $05C4,Z
-        CPE     $0F5F
+        CPE     >FuelV07ABThresh
         BCC     L06764
         BRCLR   >MainLoopPhaseMask,Z,#$80,L06764
         ADDE    #$01
@@ -7321,7 +7835,7 @@ Sub_06720:
 L06760:
         STE     $05C4,Z
 L06764:
-        CPE     $0F5D
+        CPE     >FuelThresh2
         BCS     L06770
         BSET    >FuelModeFlags,Z,#$01
         BRA     L067CE
@@ -7337,10 +7851,10 @@ L06782:
         LDAB    >DecelFuelFactor,Z
         BNE     L067CA
         LDAA    >CoolantTemp,Z
-        CMPA    $0F57
+        CMPA    >FuelCoolantThresh3
         BCS     L0679C
         LDAA    >EngineRpm,Z
-        CMPA    $0F58
+        CMPA    >FuelRpmThresh3
         BCC     L067AC
 L0679C:
         LDE     $05C4,Z
@@ -7353,7 +7867,7 @@ L067AC:
         ADDD    #$01
         STD     $05C6,Z
 L067BC:
-        CPD     $0F5B
+        CPD     >FuelV07ADThresh
         BCS     L067CA
         CLRW    $05C6,Z
         CLRW    $05C4,Z
@@ -7363,7 +7877,7 @@ L067CE:
         BRCLR   >FuelModeFlags,Z,#$01,L06812
         ORP     #$00E0
         LDAA    $060C,Z
-        SUBA    $0F5A
+        SUBA    >FuelV081AOffset
         BCS     L0680C
         STAA    $060C,Z
         ANDP    #$FF1F
@@ -7371,7 +7885,7 @@ L067CE:
         LDX     #WotTimeEnrichMax
         JSR     Lookup2D
         LDAA    >WotTimeEnrich,Z
-        ADDA    $0F59
+        ADDA    >FuelWotTimeEnrichAdder
         BCC     L06802
         LDAA    #$FF
 L06802:
@@ -7397,20 +7911,20 @@ Sub_0681C:
         BRCLR   >ThrottleState,Z,#$80,L06826
         BSET    $056B,Z,#$08
 L06826:
-        BRSET   $0325,#$20,L06832
+        BRSET   >Options0339,#$20,L06832
         BRSET   $031C,Z,#$20,L068C6
 L06832:
         BRSET   >ThrottleState,Z,#$80,L068C6
         BRCLR   $056B,Z,#$08,L068C6
         LDAA    >VehicleSpeed,Z
-        CMPA    $2182
+        CMPA    >IdleRollSpeed
         BCC     L068C6
         BRCLR   $0598,Z,#$80,L068C6
         LDAA    >Count3s,Z
-        CMPA    $11A7
+        CMPA    >SensorTimeThresh2
         BCS     L068C6
         LDAA    >CoolantTemp,Z
-        CMPA    $11A8
+        CMPA    >SensorCoolantThresh3
         BCS     L068C6
         LDAB    >EngineRpm,Z
         SUBB    >IdleTarget,Z
@@ -7418,12 +7932,12 @@ L06832:
         CLRB
 L0686E:
         BRCLR   $056B,Z,#$80,L06880
-        CMPB    $11AA
+        CMPB    >SensorRpmThresh4
         BCC     L0688A
         BCLR    $056B,Z,#$80
         BRA     L0688A
 L06880:
-        CMPB    $11A9
+        CMPB    >SensorThresh6
         BCS     L0688A
         BSET    $056B,Z,#$80
 L0688A:
@@ -7432,18 +7946,18 @@ L0688A:
         BNE     L06896
         BCLR    $056B,Z,#$08
 L06896:
-        CMPB    $11AB
+        CMPB    >SensorThresh7
         BCS     L068AE
-        BRSET   $0326,#$80,L068A8
+        BRSET   >Options033A,#$80,L068A8
         BRCLR   $0498,Z,#$01,L068CA
 L068A8:
         BSET    $056B,Z,#$40
         BRA     L068CE
 L068AE:
         BRCLR   $056B,Z,#$40,L068CE
-        CMPB    $11AC
+        CMPB    >SensorThresh8
         BCS     L068CA
-        BRSET   $0326,#$80,L068CE
+        BRSET   >Options033A,#$80,L068CE
         BRSET   $0498,Z,#$01,L068CE
 L068C6:
         BCLR    $056B,Z,#$80
@@ -7515,7 +8029,7 @@ L06944:
         BCC     L06970
         LDAA    #$FF
 L06970:
-        CMPA    $0E67
+        CMPA    >FuelThresh1
         BHI     L069D8
         LDAA    $01F4,Z
         ADDA    $057D,Z
@@ -7523,8 +8037,8 @@ L06970:
         LDAA    #$FF
 L06982:
         BRCLR   $059D,Z,#$20,L06994
-        LDAB    $0E67
-        SUBB    $0E68
+        LDAB    >FuelThresh1
+        SUBB    >FuelOffset1
         CBA
         BCC     L069D8
 L06994:
@@ -7532,17 +8046,17 @@ L06994:
 L06998:
         BCLR    $059D,Z,#$20
         LDAB    $059E,Z
-        SUBB    $0E6E
+        SUBB    >FuelV0777Offset2
         BCS     L069CE
         STAB    $059E,Z
-        LDAA    $059F,Z
-        SUBA    $0E6F
+        LDAA    >DecelFuelRamp,Z
+        SUBA    >FuelDecelFuelRampOffset
         BCC     L069B6
         CLRA
 L069B6:
-        STAA    $059F,Z
+        STAA    >DecelFuelRamp,Z
         LDAA    $05A0,Z
-        SUBA    $0E6F
+        SUBA    >FuelDecelFuelRampOffset
         BCC     L069C6
         CLRA
 L069C6:
@@ -7556,38 +8070,38 @@ L069CE:
 L069D8:
         BSET    $059D,Z,#$20
         LDAB    >EngineRpm,Z
-        CMPB    $0E6B
+        CMPB    >FuelRpmThresh2
         BCS     L069F6
-        LDAB    $0E69
-        LDAA    $059F,Z
+        LDAB    >FuelValue11
+        LDAA    >DecelFuelRamp,Z
         CBA
         BCC     L069F6
-        STAB    $059F,Z
+        STAB    >DecelFuelRamp,Z
 L069F6:
         ORP     #$00E0
 L069FA:
         LDAB    $059E,Z
-        SUBB    $0E6C
+        SUBB    >FuelV0777Offset1
         BCS     L06A42
         STAB    $059E,Z
-        LDAA    $059F,Z
-        ADDA    $0E6D
+        LDAA    >DecelFuelRamp,Z
+        ADDA    >FuelDecelFuelRampAdder
         BCS     L06A18
-        CMPA    $0E6A
+        CMPA    >FuelDecelFuelRampThresh
         BCS     L06A1C
 L06A18:
-        LDAA    $0E6A
+        LDAA    >FuelDecelFuelRampThresh
 L06A1C:
-        STAA    $059F,Z
-        CMPA    $0E69
+        STAA    >DecelFuelRamp,Z
+        CMPA    >FuelValue11
         BCS     L06A42
         LDAA    $05A0,Z
-        ADDA    $0E6D
+        ADDA    >FuelDecelFuelRampAdder
         BCS     L06A36
-        CMPA    $0E6A
+        CMPA    >FuelDecelFuelRampThresh
         BCS     L06A3A
 L06A36:
-        LDAA    $0E6A
+        LDAA    >FuelDecelFuelRampThresh
 L06A3A:
         STAA    $05A0,Z
         TSTB
@@ -7650,7 +8164,7 @@ L06AB8:
         TZX
         LDX     #$8390
         CLRA
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
         DECB
         TDE
         ORP     #$00E0
@@ -7864,7 +8378,7 @@ L06CE0:
         TAB
         LDX     #$0C81
         ABX
-        BRCLR   $06A6,#$40,L06D12
+        BRCLR   >AccelFuelOptions,#$40,L06D12
         SUBB    #$03
         CLRA
 L06CFC:
@@ -7929,29 +8443,29 @@ L06D9A:
         TSTW    $058A,Z
         LBEQ    L06DF0
         LDAB    $03BE,Z
-        LDAA    $51DF
+        LDAA    >EventV0C46Value
         CMPA    #$04
         BEQ     L06DCA
         DECB
         BPL     L06DBC
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
         DECB
 L06DBC:
         JSR     Sub_06DF2
         INCB
-        CMPB    $51DF
+        CMPB    >EventV0C46Value
         BCS     L06DCA
         CLRB
 L06DCA:
         JSR     Sub_06DF2
         INCB
-        CMPB    $51DF
+        CMPB    >EventV0C46Value
         BCS     L06DD8
         CLRB
 L06DD8:
         JSR     Sub_06DF2
         INCB
-        CMPB    $51DF
+        CMPB    >EventV0C46Value
         BCS     L06DE6
         CLRB
 L06DE6:
@@ -7972,7 +8486,7 @@ Sub_06DF2:
         TBYK
         TED
         PSHM    D
-        BRCLR   $031D,#$83,L06E06
+        BRCLR   >EventFlag1,#$83,L06E06
         DECB
         ANDB    #$03
 L06E06:
@@ -8240,7 +8754,7 @@ L070BE:
         BNE     L07142
         BITB    #$14
         BNE     L07108
-        BRCLR   $0325,#$40,L070EA
+        BRCLR   >Options0339,#$40,L070EA
         BRSET   $0167,Z,#$40,L07142
         BRSET   $0166,Z,#$02,L07142
         BRA     L070F8
@@ -8317,7 +8831,7 @@ L071A0:
         LDAA    $057D,Z
         JSR     ScaleByFraction
 L071BC:
-        BRCLR   $0323,#$20,L07212
+        BRCLR   >Options0337,#$20,L07212
         LDAA    $0691
         BRSET   $013F,Z,#$10,L071D0
         LDAA    $0361,Z
@@ -8365,7 +8879,7 @@ L07234:
         LDE     #$FFFF
 L07238:
         STE     $05C8,Z
-        BRSET   $0323,#$20,L072C8
+        BRSET   >Options0337,#$20,L072C8
         BRSET   $03DF,Z,#$0A,L07278
         BRSET   $36,Z,#$28,L07278
         BRSET   $03DF,Z,#$80,L07278
@@ -8417,7 +8931,7 @@ L072C6:
 L072C8:
         STE     $05B3,Z
         LDE     $05C8,Z
-        BRSET   $0323,#$20,L07354
+        BRSET   >Options0337,#$20,L07354
         BRSET   $03DF,Z,#$05,L0730C
         BRSET   $36,Z,#$28,L0730C
         BRSET   $03DF,Z,#$80,L0730C
@@ -8655,7 +9169,7 @@ Sub_07502:
         BITA    #$10
         BNE     L0756E
         BRSET   $0558,Z,#$80,L0756E
-        BRCLR   $14A0,#$FF,L0756E
+        BRCLR   >FuelFlag,#$FF,L0756E
         BRCLR   $0598,Z,#$80,L0756E
         LDAA    >Count3s,Z
         CMPA    $149F
@@ -8687,16 +9201,16 @@ L07574:
 ;---------------------------------------------------------------------------------------------------
 Sub_0757A:
         LDAA    $0577,Z
-        CMPA    $13A4
+        CMPA    >StartV0801Thresh
         BNE     L075BC
-        BRCLR   $031E,#$80,L075BC
+        BRCLR   >Options0331,#$80,L075BC
         LDAB    $248B
         LDAA    >ShortTermTrim1,Z
         SUBA    $01D8,Z
         BSR     Sub_075BE
         ADDA    $01D8,Z
         STAA    $01D8,Z
-        BRCLR   $031E,#$40,L075BC
+        BRCLR   >Options0331,#$40,L075BC
         LDAB    $248B
         LDAA    >ShortTermTrim2,Z
         SUBA    $01D9,Z
@@ -8777,16 +9291,16 @@ Sub_07632:
         BRA     L0766C
 L0764C:
         LDAA    >CoolantTemp,Z
-        CMPA    $147B
+        CMPA    >FuelEventCoolantThresh2
         BCS     L07680
         BRSET   >ThrottleState,Z,#$80,L07680
         LDAA    >EngineRpm,Z
         SUBA    >IdleTarget,Z
         BCS     L0766C
-        CMPA    $147C
+        CMPA    >FuelEventRpmThresh
         BCC     L07680
 L0766C:
-        LDAA    $147D
+        LDAA    >FuelEventV077BInit
         STAA    $057E,Z
         BRCLR   $056C,Z,#$80,L0767E
         BSET    $056C,Z,#$08
@@ -8809,7 +9323,7 @@ L07688:
         BRSET   $056C,Z,#$02,L076C8
         LDAA    $03BE,Z
         INCA
-        CMPA    $51DF
+        CMPA    >EventV0C46Value
         BCS     L076B8
         CLRA
 L076B8:
@@ -8829,12 +9343,12 @@ L076DE:
         BEQ     L07706
         LDAA    $03BE,Z
         INCA
-        CMPA    $51DF
+        CMPA    >EventV0C46Value
         BCS     L076F4
         CLRA
 L076F4:
         INCA
-        CMPA    $51DF
+        CMPA    >EventV0C46Value
         BCS     L076FE
         CLRA
 L076FE:
@@ -8844,12 +9358,12 @@ L07706:
         BSET    $056C,Z,#$01
         LDAB    $03BE,Z
         INCB
-        CMPB    $51DF
+        CMPB    >EventV0C46Value
         BCS     L07718
         CLRB
 L07718:
         INCB
-        CMPB    $51DF
+        CMPB    >EventV0C46Value
         BCS     L07722
         CLRB
 L07722:
@@ -8867,7 +9381,7 @@ L0772E:
 L07748:
         LDAA    $03BE,Z
         INCA
-        CMPA    $51DF
+        CMPA    >EventV0C46Value
         BCS     L07756
         CLRA
 L07756:
@@ -8922,7 +9436,7 @@ L077DE:
 L077E8:
         JSR     Sub_0780C
 L077EC:
-        LDAA    $147D
+        LDAA    >FuelEventV077BInit
         STAA    $057E,Z
         JMP     L0780A
 L077F8:
@@ -9010,7 +9524,7 @@ L078A8:
         TPD
         TBXK
         XGDX
-        BRCLR   $031D,#$83,L078BC
+        BRCLR   >EventFlag1,#$83,L078BC
         DECB
         ANDB    #$03
 L078BC:
@@ -9067,7 +9581,7 @@ L07942:
         LDAA    >Map,Z
         SUBA    >MapLast,Z
         BCS     L07978
-        SUBA    $0ED0
+        SUBA    >DecelMapOffset
         BCS     L07978
         CBA
         BCS     L0795C
@@ -9121,7 +9635,7 @@ L079C2:
         EMUL
 L079C6:
         STE     $00F6,Z
-        BRSET   $0325,#$02,L079E0
+        BRSET   >Options0339,#$02,L079E0
         LDD     >MapAccelFuel,Z
         ADE
         BCS     L079DA
@@ -9203,17 +9717,17 @@ L07A9A:
         TPD
         TBXK
         LDX     #$6409
-        BRCLR   $031D,#$78,L07AB4
+        BRCLR   >EventFlag1,#$78,L07AB4
         BRA     L07AC2
 L07AB4:
         LDX     #$640F
-        BRCLR   $031D,#$04,L07AC2
+        BRCLR   >EventFlag1,#$04,L07AC2
         LDX     #$6415
 L07AC2:
         LDAB    $057F,Z
         ABX
         LDAB    $00,X
-        ANDB    $14A0
+        ANDB    >FuelFlag
         BEQ     L07ADA
         LDAA    $05E8,Z
         BEQ     L07ADA
@@ -9245,24 +9759,24 @@ L07B0C:
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
 Sub_07B0E:
-        BRCLR   $0323,#$80,L07B9C
+        BRCLR   >Options0337,#$80,L07B9C
         BRCLR   $041A,Z,#$0C,L07B9C
         LDAA    $1D47
         STAA    $0597,Z
         LDAB    $0423,Z
         BEQ     L07B34
-        TST     $041D,Z
+        TST     >EventSparkTimer,Z
         BEQ     L07B34
-        DEC     $041D,Z
+        DEC     >EventSparkTimer,Z
         BNE     L07B74
 L07B34:
-        LDAA    $1D40
-        STAA    $041D,Z
+        LDAA    >FuelEventSparkTimerInit1
+        STAA    >EventSparkTimer,Z
         LDAA    $0424,Z
-        SUBA    $1D41
+        SUBA    >FuelV0863Offset
         BCS     L07B54
         STAA    $0424,Z
-        ADDB    $1D41
+        ADDB    >FuelV0863Offset
         CMPB    $041F,Z
         BCS     L07B60
 L07B54:
@@ -9296,32 +9810,32 @@ L07B94:
 L07B9C:
         LDAB    $0423,Z
         BEQ     L07C02
-        TST     $041D,Z
+        TST     >EventSparkTimer,Z
         BEQ     L07BB0
-        DEC     $041D,Z
+        DEC     >EventSparkTimer,Z
         LBNE    L07B74
 L07BB0:
         LDAA    $1D42
-        STAA    $041D,Z
+        STAA    >EventSparkTimer,Z
         LDAA    $0424,Z
-        ADDA    $1D43
-        CMPA    $1D46
+        ADDA    >FuelV0863Adder
+        CMPA    >StartV0863Thresh
         BCC     L07BDC
         STAA    $0424,Z
         LDAB    $0423,Z
-        SUBB    $1D43
+        SUBB    >FuelV0863Adder
         BCS     L07BDC
         STAB    $0423,Z
         LBNE    L07B60
 L07BDC:
-        LDAB    $1D45
+        LDAB    >FuelV0862Init
         STAB    $0423,Z
         STAB    $0420,Z
-        LDAA    $1D46
+        LDAA    >StartV0863Thresh
         STAA    $0424,Z
         STAA    $0421,Z
-        LDAA    $1D44
-        STAA    $041C,Z
+        LDAA    >FuelEventSparkInit
+        STAA    >EventSpark,Z
         BNE     L07C02
 L07BFE:
         BCLR    $041A,Z,#$0C
@@ -9362,7 +9876,7 @@ L07C70:
 L07C80:
         BRCLR   $0327,#$20,L07D54
         LDAB    >Map,Z
-        CMPB    $1116
+        CMPB    >FuelMapThresh3
         BCS     L07C9C
         BRSET   $0498,Z,#$01,L07C9C
         LDX     #$115B
@@ -9471,7 +9985,7 @@ CalcFuelPulse:
         LDAB    >WotFuelK
         BRA     L07DBE
 L07DA2:
-        BRCLR   $0323,#$01,L07DBE
+        BRCLR   >Options0337,#$01,L07DBE
         TDE
         LDAA    >Map,Z
         CMPA    $04A3
@@ -9510,7 +10024,7 @@ L07DFA:
 L07E06:
         LDAB    >EngineRpm,Z
         JSR     Lookup3D
-        BRCLR   $06A6,#$80,L07E1C
+        BRCLR   >AccelFuelOptions,#$80,L07E1C
         LDAB    $00F0,Z
         STAB    $0576,Z
 L07E1C:
@@ -9545,7 +10059,7 @@ L07E56:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_07E60:
-        LDAB    $0F81
+        LDAB    >FuelEventValue9
         CMPB    #$0B
         BNE     L07E74
         CLRA
@@ -9645,7 +10159,7 @@ L07F5E:
 ;---------------------------------------------------------------------------------------------------
 Sub_07F60:
         LDAB    >VehicleSpeed,Z
-        CMPB    $0F7F
+        CMPB    >DecelSpeedThresh
         BCS     L07F70
         TST     >Count3s,Z
         BNE     L07F98
@@ -9654,7 +10168,7 @@ L07F70:
         CLR     $05A8,Z
         CLR     $0592,Z
         CLR     >DecelLeanFuel,Z
-        CLR     $0594,Z
+        CLR     >DecelLeanTimer,Z
         CLR     $0595,Z
         CLR     $0596,Z
         CLR     $0585,Z
@@ -9664,7 +10178,7 @@ L07F98:
         LDAA    >ThrottleLast,Z
         SUBA    >Throttle,Z
         BLS     L07FA8
-        CMPA    $0F72
+        CMPA    >DecelThrottleLastThresh
         BCC     L07FBC
 L07FA8:
         BCLR    $056E,Z,#$01
@@ -9675,14 +10189,14 @@ L07FA8:
 L07FBC:
         BSET    $056E,Z,#$01
         STAA    $0596,Z
-        CMPA    $0F83
+        CMPA    >DecelThresh
         BCS     L07FE4
         LDAA    >Count3s,Z
         CMPA    #$40
         BCC     L07FE4
         BRSET   $056E,Z,#$02,L07FE4
-        LDAA    $0F82
-        STAA    $0594,Z
+        LDAA    >DecelLeanTimerInit
+        STAA    >DecelLeanTimer,Z
         BSET    $056E,Z,#$02
 L07FE4:
         LDAA    >EngineRpm,Z
@@ -9711,7 +10225,7 @@ L0801A:
         CLRA
 L08036:
         STAA    $0585,Z
-        LDAB    $0F74
+        LDAB    >DecelFactor1
         MUL
         TDE
         LDAA    >StartCoolantTemp,Z
@@ -9729,7 +10243,7 @@ L0805E:
         LDAB    >MapLast,Z
         SUBB    >Map,Z
         BLS     L0806E
-        CMPB    $0F71
+        CMPB    >DecelMapLastThresh
         BCC     L0807C
 L0806E:
         BCLR    $056E,Z,#$04
@@ -9740,15 +10254,15 @@ L0807C:
         BSET    $056E,Z,#$04
         STAB    $0595,Z
         LDAA    >EngineRpm,Z
-        CMPA    $0F80
+        CMPA    >DecelRpmThresh
         BCS     L0809A
-        BRSET   $0325,#$20,L0809E
+        BRSET   >Options0339,#$20,L0809E
         BRSET   $031C,Z,#$20,L0809E
 L0809A:
         CLRB
         BRA     L080BE
 L0809E:
-        LDAA    $0F75
+        LDAA    >DecelFactor2
         MUL
         TDE
         LDAA    >StartCoolantTemp,Z
@@ -9763,11 +10277,11 @@ L0809E:
 L080BE:
         STAB    $05A8,Z
 L080C2:
-        TST     $0594,Z
+        TST     >DecelLeanTimer,Z
         BEQ     L08112
         BRCLR   $056E,Z,#$05,L08112
         LDD     >IdleTarget,Z
-        ADDD    $0F84
+        ADDD    >DecelIdleTargetAdder
         CPD     >EngineRpm,Z
         BCC     L08112
         LDAA    >Count3s,Z
@@ -9783,13 +10297,13 @@ L080C2:
         JSR     Lookup3D
         STAA    $0592,Z
         BEQ     L08112
-        DEC     $0594,Z
+        DEC     >DecelLeanTimer,Z
         BNE     L0811E
         BCLR    $056E,Z,#$02
         BRA     L0811E
 L08112:
         CLR     $0592,Z
-        CLR     $0594,Z
+        CLR     >DecelLeanTimer,Z
         BCLR    $056E,Z,#$02
 L0811E:
         LDAA    $05A8,Z
@@ -9850,21 +10364,21 @@ L08198:
 L081A4:
         TST     >DecelLeanFuel,Z
         BEQ     L08198
-        LDAA    $0F76
+        LDAA    >DecelLeanFuelThresh1
         CMPA    >DecelLeanFuel,Z
         BCS     L081C8
-        LDAA    $0F73
-        CMPA    $0594,Z
+        LDAA    >DecelLeanTimerThresh
+        CMPA    >DecelLeanTimer,Z
         BCC     L081C2
-        LDAA    $0594,Z
+        LDAA    >DecelLeanTimer,Z
 L081C2:
         STAA    $05DC,Z
         BRA     L081E6
 L081C8:
         LDAA    $05DC,Z
-        CMPA    $0594,Z
+        CMPA    >DecelLeanTimer,Z
         BCC     L081DC
-        LDAA    $0594,Z
+        LDAA    >DecelLeanTimer,Z
         STAA    $05DC,Z
         BRA     L081E6
 L081DC:
@@ -9880,7 +10394,7 @@ L081E6:
 ;---------------------------------------------------------------------------------------------------
 Sub_081E8:
         LDAB    >CoolantTemp,Z
-        CMPB    $0657
+        CMPB    >CrankFuelCoolantThresh
         BHI     L08212
         LDAA    $03B7,Z
         BEQ     L08212
@@ -9890,7 +10404,7 @@ Sub_081E8:
         BCC     L08208
         LDAB    #$FF
 L08208:
-        LDAA    $0657
+        LDAA    >CrankFuelCoolantThresh
         CBA
         BCC     L08212
         TAB
@@ -9934,8 +10448,8 @@ L0826E:
 L08272:
         PSHM    E
         LDE     #$0045
-        LDAA    $05AC
-        BRSET   $51DF,#$06,L08294
+        LDAA    >FuelEventValue12
+        BRSET   >EventV0C46Value,#$06,L08294
         CMPA    #$06
         BLS     L082A6
         ADDE    #$00B4
@@ -9961,7 +10475,7 @@ L082A6:
 L082AE:
         TED
         LDX     #$0078
-        BRSET   $51DF,#$06,L082BE
+        BRSET   >EventV0C46Value,#$06,L082BE
         LDX     #$00B4
 L082BE:
         IDIV
@@ -9982,7 +10496,7 @@ L082DA:
 L082E2:
         BRSET   $0598,Z,#$10,L082F2
         LDAB    #$03
-        BRSET   $51DF,#$06,L082F2
+        BRSET   >EventV0C46Value,#$06,L082F2
         LDAB    #$02
 L082F2:
         INCB
@@ -9992,7 +10506,7 @@ L082F2:
         CMPA    #$D0
         LBHI    L08312
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    $0552
+        CMPA    >CrankFuelThrottleThresh
         LBLS    L08326
 L08312:
         CLRW    >CrankPulse,Z
@@ -10003,9 +10517,9 @@ L08312:
 L08326:
         LDAB    >CrankCoolant,Z
         BRSET   >ThrottleState,Z,#$80,L0833A
-        CMPB    $0551
+        CMPB    >CrankFuelCrankCoolantThresh
         BCC     L0833A
-        LDAB    $0551
+        LDAB    >CrankFuelCrankCoolantThresh
 L0833A:
         LDAA    >FlexEthanolScaled,Z
         LDX     #CrankBasePulse
@@ -10074,7 +10588,7 @@ L08406:
         EMUL
         ADCE    #$0000
 L08412:
-        BRSET   $51DF,#$06,L08422
+        BRSET   >EventV0C46Value,#$06,L08422
         LSRE
         LDD     #$0003
         EMUL
@@ -10082,7 +10596,7 @@ L08412:
 L08422:
         STE     >CrankPulse,Z
         LDD     #$2AAA
-        BRSET   $51DF,#$06,L08434
+        BRSET   >EventV0C46Value,#$06,L08434
         LDD     #$4000
 L08434:
         SDE
@@ -10092,7 +10606,7 @@ L08434:
 L0843E:
         LDE     >CrankPulse,Z
         CLRA
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
         EMUL
 L0844A:
         STD     $058A,Z
@@ -10120,7 +10634,7 @@ Sub_0846A:
         STE     $0858,Z
         STE     $085A,Z
         STE     $085C,Z
-        LDAA    $51DF
+        LDAA    >EventV0C46Value
         CMPA    #$06
         BNE     L0849C
         STE     $085E,Z
@@ -10135,7 +10649,7 @@ L084A4:
         STE     $0858,Z
         STE     $085A,Z
         STE     $085C,Z
-        LDAA    $51DF
+        LDAA    >EventV0C46Value
         CMPA    #$06
         BNE     L084CE
         STE     $085E,Z
@@ -10144,10 +10658,10 @@ L084CE:
         BSET    $055D,Z,#$80
         BRCLR   $0598,Z,#$10,L08514
         LDAA    >CoolantTemp,Z
-        CMPA    $05A9
+        CMPA    >FuelEventCoolantThresh1
         BCC     L08514
         LDAB    $0136,Z
-        LDAA    $05AB
+        LDAA    >FuelEventValue4
         SUBA    #$6E
         BCC     L084F0
         CLRA
@@ -10159,7 +10673,7 @@ L084F6:
         CMPA    >CoolantTemp,Z
         BLS     L08514
         TBA
-        LDAB    $05AA
+        LDAB    >FuelEventValue3
         SUBB    #$6E
         BCC     L08508
         CLRB
@@ -10176,13 +10690,13 @@ L08514:
         LDE     $0564,Z
         BRSET   $0598,Z,#$10,L08536
         CLRA
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
         XGDX
         TED
         IDIV
         XGEX
 L08536:
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
 L0853A:
         DECB
         BMI     L08544
@@ -10195,8 +10709,8 @@ L08544:
         CLR     $0563,Z
         LBRA    L08672
 L0855C:
-        LDAA    $05AC
-        BRSET   $51DF,#$06,L0857E
+        LDAA    >FuelEventValue12
+        BRSET   >EventV0C46Value,#$06,L0857E
         LDAB    #$01
         CMPA    #$42
         BNE     L08572
@@ -10228,7 +10742,7 @@ L085A2:
         STE     $0858,Z
         STE     $085A,Z
         STE     $085C,Z
-        LDAA    $51DF
+        LDAA    >EventV0C46Value
         CMPA    #$06
         BNE     L085C6
         STE     $085E,Z
@@ -10236,11 +10750,11 @@ L085A2:
 L085C6:
         BCLR    $055D,Z,#$80
         BRCLR   $0598,Z,#$10,L08660
-        LDAA    $5207
+        LDAA    >FuelEventFactor
         LDAB    $03BE,Z
         MUL
         TDE
-        LDAA    $05AC
+        LDAA    >FuelEventValue12
         LDX     #FuelEventOffset
         JSR     Lookup2D
         CLRA
@@ -10255,10 +10769,10 @@ L085C6:
         BRCLR   $055D,Z,#$40,L08642
         BCLR    $055D,Z,#$40
         LDAA    #$01
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
         CMPB    #$06
         BNE     L08626
-        LDAB    $05AC
+        LDAB    >FuelEventValue12
         CMPB    #$42
         BNE     L08620
         LDAA    #$03
@@ -10272,7 +10786,7 @@ L08626:
 L0862E:
         TSTB
         BNE     L08636
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
 L08636:
         DECB
         JSR     Sub_07810
@@ -10286,7 +10800,7 @@ L08646:
         BEQ     L08672
         TSTB
         BNE     L08654
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
 L08654:
         DECB
         JSR     Sub_07810
@@ -10294,7 +10808,7 @@ L08654:
         BRA     L08646
 L08660:
         LDE     >CrankPulse,Z
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
 L08668:
         DECB
         BMI     L08672
@@ -10360,11 +10874,11 @@ L086E4:
 ;---------------------------------------------------------------------------------------------------
 Sub_086EA:
         PSHM    X,K
-        BRCLR   $031D,#$83,L086F8
+        BRCLR   >EventFlag1,#$83,L086F8
         LDX     #$5B7C
         BRA     L08708
 L086F8:
-        BRCLR   $031D,#$04,L08704
+        BRCLR   >EventFlag1,#$04,L08704
         LDX     #$5B82
         BRA     L08708
 L08704:
@@ -10390,7 +10904,7 @@ L08718:
 Sub_0871C:
         BRCLR   $041A,Z,#$20,L0875C
         BRSET   >FuelModeFlags,Z,#$08,L0875C
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
         CMPB    #$06
         BNE     L08740
         LDAB    $070A,Z
@@ -10428,7 +10942,7 @@ L0877C:
         TST     $00,Y
         BEQ     L0878A
         DEC     $00,Y
-        LDAA    $1D48
+        LDAA    >FuelEventValue10
         JSR     ScaleByFraction
 L0878A:
         PULM    D
@@ -10448,7 +10962,7 @@ L0879C:
         BNE     L087B6
         INCA
         AIY     #$01
-        CMPA    $51DF
+        CMPA    >EventV0C46Value
         BCS     L0879C
         BCLR    $041A,Z,#$20
         BCLR    >FuelModeFlags,Z,#$08
@@ -10481,7 +10995,7 @@ L087B6:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_088F2:
-        BRCLR   $0323,#$20,L08996
+        BRCLR   >Options0337,#$20,L08996
         BCLR    $0558,Z,#$F0
         CLR     >ShortTermTrim1,Z
         CLR     $0511,Z
@@ -10551,7 +11065,7 @@ L089C4:
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
 Sub_089C6:
-        BRSET   $0323,#$20,L08A28
+        BRSET   >Options0337,#$20,L08A28
         BRCLR   $0598,Z,#$80,L08A28
         LDAB    #$0F
         TBXK
@@ -10567,14 +11081,14 @@ L089E8:
         CLR     $0557,Z
         BSET    $0559,Z,#$02
 L089FA:
-        BRSET   $031E,#$20,L08A08
+        BRSET   >Options0331,#$20,L08A08
         LDAA    $120A
         STAA    $0523,Z
 L08A08:
         JSR     Sub_099AC
-        BRCLR   $031E,#$40,L08A28
+        BRCLR   >Options0331,#$40,L08A28
         LDX     #$8530
-        BRSET   $031E,#$10,L08A24
+        BRSET   >Options0331,#$10,L08A24
         LDAA    $0523,Z
         STAA    $0544,Z
 L08A24:
@@ -10587,16 +11101,16 @@ L08A28:
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
 Sub_08A2A:
-        BRSET   $0323,#$20,L08A70
+        BRSET   >Options0337,#$20,L08A70
         BRCLR   $0598,Z,#$80,L08A70
         BRCLR   $0559,Z,#$02,L08A60
-        BRCLR   $031E,#$20,L08A4E
+        BRCLR   >Options0331,#$20,L08A4E
         LDAB    #$0F
         TBXK
         LDX     #$850F
         JSR     Sub_08AFA
 L08A4E:
-        BRCLR   $031E,#$10,L08A60
+        BRCLR   >Options0331,#$10,L08A60
         LDAB    #$0F
         TBXK
         LDX     #$8530
@@ -10620,7 +11134,7 @@ Sub_08A72:
         LDAA    >ThrottleState,Z
         BITA    #$81
         BNE     L08AAE
-        BRCLR   $0325,#$80,L08AA0
+        BRCLR   >Options0339,#$80,L08AA0
         LDAA    >IdleTarget,Z
         ADDA    $11C9
         BCC     L08A98
@@ -10692,7 +11206,7 @@ L08B34:
         TED
         STAB    $10,X
         CLRA
-        LDAB    $12C2
+        LDAB    >O2Factor2
         EMULS
         ASLD
         ASLD
@@ -10741,30 +11255,30 @@ L08BA2:
 L08BA6:
         TED
         BCLR    $1D,X,#$03
-        CPD     $12AF
+        CPD     >O2Thresh16
         BLE     L08BB8
         BSET    $1D,X,#$02
         BRA     L08BC2
 L08BB8:
-        CPD     $12B1
+        CPD     >O2Value25
         BGE     L08BC2
         BSET    $1D,X,#$01
 L08BC2:
-        CPD     $1293
+        CPD     >O2Thresh14
         BLT     L08BCE
-        LDD     $1293
+        LDD     >O2Thresh14
         BRA     L08BD8
 L08BCE:
-        CPD     $1295
+        CPD     >O2Thresh15
         BGE     L08BD8
-        LDD     $1295
+        LDD     >O2Thresh15
 L08BD8:
         STD     $0C,X
         BCLR    $1E,X,#$02
         LDAA    $1D,X
         BITA    #$03
         BNE     L08BF2
-        LDAB    $12AE
+        LDAB    >O2V0712Value
         STAB    $12,X
         CLRW    $001F,X
         LBRA    L08C6E
@@ -10772,12 +11286,12 @@ L08BF2:
         TST     $0556,Z
         BNE     L08C6E
         LDAA    >PurgeRamp,Z
-        CMPA    $12AA
+        CMPA    >O2PurgeRampThresh1
         BCS     L08C6E
         BRCLR   $001E,X,#$04,L08C6E
         BRCLR   $001D,X,#$02,L08C22
         LDE     $000C,X
-        SUBE    $12AF
+        SUBE    >O2Thresh16
         LDD     $1F,X
         STE     $001F,X
         SDE
@@ -10785,7 +11299,7 @@ L08BF2:
         BRA     L08C6E
 L08C22:
         BRCLR   $001D,X,#$01,L08C3C
-        LDE     $12B1
+        LDE     >O2Value25
         SUBE    $000C,X
         LDD     $1F,X
         STE     $001F,X
@@ -10797,7 +11311,7 @@ L08C3C:
         TST     $12,X
         BNE     L08C6E
         BRCLR   $001D,X,#$02,L08C5A
-        LDAB    $12AE
+        LDAB    >O2V0712Value
         STAB    $12,X
         INC     $11,X
         BVC     L08C6E
@@ -10806,32 +11320,32 @@ L08C3C:
         BRA     L08C6E
 L08C5A:
         BRCLR   $001D,X,#$01,L08C6E
-        LDAB    $12AE
+        LDAB    >O2V0712Value
         STAB    $12,X
         DEC     $11,X
         BVC     L08C6E
         LDAA    #$80
         STAA    $11,X
 L08C6E:
-        LDD     $0020,Z
+        LDD     >EepromCount,Z
         CPD     $12B5
         BCC     L08C8E
-        LDAA    $12B4
+        LDAA    >O2Value27
         LDAB    $11,X
         CBA
         BGT     L08C8A
-        LDAA    $12B3
+        LDAA    >O2Value26
         CBA
         BGE     L08CA2
 L08C8A:
         STAA    $11,X
         BRA     L08CA2
 L08C8E:
-        LDAA    $12AD
+        LDAA    >O2Value29
         LDAB    $11,X
         CBA
         BGT     L08CA0
-        LDAA    $12AC
+        LDAA    >O2Value28
         CBA
         BGE     L08CA2
 L08CA0:
@@ -10859,14 +11373,14 @@ L08CA2:
 L08CD6:
         LDAB    #$FF
 L08CD8:
-        CMPB    $12C3
+        CMPB    >O2Thresh12
         BCS     L08CE4
-        LDAB    $12C3
+        LDAB    >O2Thresh12
         BRA     L08CEE
 L08CE4:
-        CMPB    $12C4
+        CMPB    >O2Thresh13
         BCC     L08CEE
-        LDAB    $12C4
+        LDAB    >O2Thresh13
 L08CEE:
         STAB    $14,X
 L08CF0:
@@ -10879,7 +11393,7 @@ L08CF0:
 ; Called from: Sub_088F2 (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_08D06:
-        BRCLR   $0326,#$20,L08DC2
+        BRCLR   >Options033A,#$20,L08DC2
         BRCLR   $0598,Z,#$80,L08DC2
         LDAB    $00B7,Z
         BITB    #$30
@@ -11028,7 +11542,7 @@ L08E54:
         LDX     #Tab2D_11E9
         JSR     Lookup2D
         PULM    K,X
-        BRSET   $0325,#$40,L08E80
+        BRSET   >Options0339,#$40,L08E80
         BRCLR   $00B7,Z,#$20,L08E80
         ADDA    $25A0
         BCC     L08E80
@@ -11079,7 +11593,7 @@ Sub_08EDC:
         BRSET   $0812,Z,#$40,L08F94
         TST     $0193,Z
         LBNE    L08F94
-        BRCLR   $031E,#$80,L08F32
+        BRCLR   >Options0331,#$80,L08F32
         TST     $05AA,Z
         BEQ     L08F1E
         BSET    >IacBase,Z,#$F0
@@ -11093,7 +11607,7 @@ L08F1E:
 L08F2E:
         BSET    $0558,Z,#$88
 L08F32:
-        BRCLR   $031E,#$40,L08F58
+        BRCLR   >Options0331,#$40,L08F58
         TST     $05AB,Z
         BEQ     L08F44
         BSET    $01F1,Z,#$F0
@@ -11109,7 +11623,7 @@ L08F54:
 L08F58:
         TST     $0555,Z
         LBNE    L08F94
-        BRCLR   $031E,#$20,L08F7A
+        BRCLR   >Options0331,#$20,L08F7A
         LDAA    >O2DownBank1Raw,Z
         CMPA    $12DB
         BCC     L08F76
@@ -11118,7 +11632,7 @@ L08F58:
 L08F76:
         BSET    $0558,Z,#$22
 L08F7A:
-        BRCLR   $031E,#$10,L08F94
+        BRCLR   >Options0331,#$10,L08F94
         LDAA    $053B,Z
         CMPA    $12DB
         BCC     L08F90
@@ -11127,7 +11641,7 @@ L08F7A:
 L08F90:
         BSET    $0558,Z,#$11
 L08F94:
-        BRCLR   $031E,#$80,L08FB2
+        BRCLR   >Options0331,#$80,L08FB2
         BRSET   $0168,Z,#$01,L08FAC
         BRSET   $0169,Z,#$40,L08FAC
         BRCLR   $0175,Z,#$08,L08FB2
@@ -11135,7 +11649,7 @@ L08FAC:
         BCLR    $0558,Z,#$88
         BRA     L08FD4
 L08FB2:
-        BRCLR   $031E,#$20,L08FD4
+        BRCLR   >Options0331,#$20,L08FD4
         BRSET   $016F,Z,#$01,L08FD0
         BRSET   $0171,Z,#$40,L08FD0
         BRSET   $0174,Z,#$02,L08FD0
@@ -11145,7 +11659,7 @@ L08FD0:
 L08FD4:
         CLR     $11,X
 L08FD6:
-        BRCLR   $031E,#$40,L08FF4
+        BRCLR   >Options0331,#$40,L08FF4
         BRSET   $016C,Z,#$02,L08FEE
         BRSET   $016C,Z,#$04,L08FEE
         BRCLR   $017A,Z,#$20,L08FF4
@@ -11153,7 +11667,7 @@ L08FEE:
         BCLR    $0558,Z,#$44
         BRA     L09012
 L08FF4:
-        BRCLR   $031E,#$10,L09012
+        BRCLR   >Options0331,#$10,L09012
         LDAA    $0171,Z
         BITA    #$88
         BNE     L0900E
@@ -11179,7 +11693,7 @@ L09018:
         CLRB
         TBXK
         LDAB    $0D,Y
-        ANDB    $031E
+        ANDB    >Options0331
         BEQ     L0905E
         LDAA    >Count3s,Z
         CMPA    #$25
@@ -11265,7 +11779,7 @@ L0910E:
         BSET    $01F1,Z,#$F0
         LBRA    L093E2
 L09122:
-        BRCLR   $031E,#$80,L0912E
+        BRCLR   >Options0331,#$80,L0912E
         BRSET   $0558,Z,#$08,L0914E
 L0912E:
         BSET    $02C6,Z,#$20
@@ -11283,7 +11797,7 @@ L0912E:
         LDAA    $07,Y
         STAA    $07,X
 L0914E:
-        BRCLR   $031E,#$40,L0915A
+        BRCLR   >Options0331,#$40,L0915A
         BRSET   $0558,Z,#$04,L0917A
 L0915A:
         BSET    $02C6,Z,#$10
@@ -11301,12 +11815,12 @@ L0915A:
         LDAA    $07,X
         STAA    $07,Y
 L0917A:
-        BRCLR   $031E,#$20,L09186
+        BRCLR   >Options0331,#$20,L09186
         BRSET   $0558,Z,#$02,L0918A
 L09186:
         BSET    >IacBase,Z,#$50
 L0918A:
-        BRCLR   $031E,#$10,L09196
+        BRCLR   >Options0331,#$10,L09196
         BRSET   $0558,Z,#$01,L0919A
 L09196:
         BSET    $01F1,Z,#$50
@@ -11382,7 +11896,7 @@ L09268:
         BSET    $02C6,Z,#$30
 L0927A:
         LDAA    >PurgeRamp,Z
-        CMPA    $12AA
+        CMPA    >O2PurgeRampThresh1
         BCS     L0928A
         CMPA    $12AB
         BLS     L09292
@@ -11554,8 +12068,8 @@ L0943A:
         BCLR    $1E,X,#$14
         CLRW    $000C,X
         CLR     $0E,X
-        BRCLR   $031E,#$20,L0949C
-        LDAB    $12AE
+        BRCLR   >Options0331,#$20,L0949C
+        LDAB    >O2V0712Value
         STAB    $12,X
         BCLR    $1E,X,#$02
         BRSET   $001E,X,#$20,L0949C
@@ -11577,14 +12091,14 @@ L0943A:
 L09482:
         LDAB    #$FF
 L09484:
-        CMPB    $12C3
+        CMPB    >O2Thresh12
         BCS     L09490
-        LDAB    $12C3
+        LDAB    >O2Thresh12
         BRA     L0949A
 L09490:
-        CMPB    $12C4
+        CMPB    >O2Thresh13
         BCC     L0949A
-        LDAB    $12C4
+        LDAB    >O2Thresh13
 L0949A:
         STAB    $14,X
 L0949C:
@@ -11592,8 +12106,8 @@ L0949C:
         BCLR    $1E,Y,#$14
         CLRW    $000C,Y
         CLR     $0E,Y
-        BRCLR   $031E,#$10,L094FE
-        LDAB    $12AE
+        BRCLR   >Options0331,#$10,L094FE
+        LDAB    >O2V0712Value
         STAB    $12,Y
         BCLR    $1E,Y,#$02
         BRSET   $001E,Y,#$20,L094FE
@@ -11615,14 +12129,14 @@ L0949C:
 L094E4:
         LDAB    #$FF
 L094E6:
-        CMPB    $12C3
+        CMPB    >O2Thresh12
         BCS     L094F2
-        LDAB    $12C3
+        LDAB    >O2Thresh12
         BRA     L094FC
 L094F2:
-        CMPB    $12C4
+        CMPB    >O2Thresh13
         BCC     L094FC
-        LDAB    $12C4
+        LDAB    >O2Thresh13
 L094FC:
         STAB    $14,Y
 L094FE:
@@ -11820,7 +12334,7 @@ L09718:
 L09724:
         DEC     $05AB,Z
 L09728:
-        CMPA    $11BD
+        CMPA    >O2CoolantThresh4
         LDAB    $056F,Z
         BCC     L0973A
         BNE     L09742
@@ -11864,13 +12378,13 @@ L0977E:
         TST     $0552,Z
         BEQ     L097A2
 L09794:
-        LDAB    $12AE
+        LDAB    >O2V0712Value
         STAB    $0521,Z
         STAB    $0542,Z
         BRA     L097F2
 L097A2:
         BRSET   $0558,Z,#$80,L097B2
-        LDAB    $12AE
+        LDAB    >O2V0712Value
         STAB    $0521,Z
         BRA     L097CA
 L097B2:
@@ -11883,7 +12397,7 @@ L097B2:
         DEC     $0521,Z
 L097CA:
         BRSET   $0558,Z,#$40,L097DA
-        LDAB    $12AE
+        LDAB    >O2V0712Value
         STAB    $0542,Z
         BRA     L097F2
 L097DA:
@@ -11920,7 +12434,7 @@ Sub_09808:
         BHI     L0982A
         BSET    $1D,X,#$08
 L0982A:
-        ADDA    $2499
+        ADDA    >O2Adder5
         BCC     L09832
         LDAA    #$FF
 L09832:
@@ -11951,7 +12465,7 @@ L0985E:
         BRSET   $001E,X,#$10,L09882
         BSET    $1E,X,#$10
         BSET    $1E,X,#$04
-        LDAB    $12AE
+        LDAB    >O2V0712Value
         STAB    $12,X
 L09882:
         BCLR    $1E,X,#$20
@@ -12062,7 +12576,7 @@ L0995E:
         BRA     L09936
 L0996E:
         PULM    K,X
-        LDAA    $1247
+        LDAA    >O2Value20
         STAA    $15,X
         JSR     Sub_0A192
 L0997A:
@@ -12351,18 +12865,18 @@ Sub_09BD0:
         LDX     #$11C1
         BRSET   >ThrottleState,Z,#$80,L09C60
         LDAB    #$0C
-        BRSET   $0325,#$20,L09C08
+        BRSET   >Options0339,#$20,L09C08
         BRCLR   $031C,Z,#$80,L09C00
         JMP     L09D3C
 L09C00:
         BRCLR   $031C,Z,#$20,L09C08
         INCB
 L09C08:
-        BRSET   $0325,#$80,L09C32
+        BRSET   >Options0339,#$80,L09C32
         LDAA    >VehicleSpeed,Z
         CMPB    $0577,Z
         BNE     L09C28
-        BRCLR   $031D,#$0A,L09C22
+        BRCLR   >EventFlag1,#$0A,L09C22
         SUBA    #$05
         BRA     L09C24
 L09C22:
@@ -12453,13 +12967,13 @@ L09D00:
         BRSET   $0036,Z,#$08,L09D38
 L09D18:
         LDAA    #$20
-        CMPB    $13A4
+        CMPB    >StartV0801Thresh
         BEQ     L09D30
         LSRA
-        CMPB    $13A5
+        CMPB    >StartV043BValue
         BEQ     L09D30
         LSRA
-        CMPB    $13A6
+        CMPB    >StartV043CThresh
         BNE     L09D38
 L09D30:
         EORA    $03CE,Z
@@ -12610,7 +13124,7 @@ L09EB2:
         BITA    #$30
         LBNE    L09D00
         BRSET   $0170,Z,#$10,L09D00
-        BRSET   $0323,#$20,L09FC0
+        BRSET   >Options0337,#$20,L09FC0
         BRSET   $0558,Z,#$08,L09ED8
         BRSET   $0558,Z,#$04,L09F52
         BSET    $055B,Z,#$C0
@@ -12726,13 +13240,13 @@ Sub_0A014:
         LDAA    $03CF,Z
         BNE     L0A04C
         BRSET   $0062,Z,#$80,L0A04C
-        CMPB    $13A4
+        CMPB    >StartV0801Thresh
         BEQ     L0A048
         AIY     #$01
-        CMPB    $13A5
+        CMPB    >StartV043BValue
         BEQ     L0A048
         AIY     #$01
-        CMPB    $13A6
+        CMPB    >StartV043CThresh
         BNE     L0A04C
 L0A048:
         XGDY
@@ -12870,18 +13384,18 @@ Sub_0A192:
         BRSET   $031F,#$04,L0A1A8
         LDAA    $071A
 L0A1A8:
-        CMPA    $071D
+        CMPA    >O2FlexEthanolThresh
         BCC     L0A1C4
         BRCLR   $0569,Z,#$04,L0A240
         ADDA    #$0A
-        CMPA    $071D
+        CMPA    >O2FlexEthanolThresh
         BCC     L0A1C4
         BCLR    $0569,Z,#$04
         LBRA    L0A240
 L0A1C4:
         BSET    $0569,Z,#$04
         LDAA    $0572,Z
-        LDAB    $0720
+        LDAB    >O2Value4
         CMPA    #$00
         BNE     L0A1DE
         BITB    #$01
@@ -12931,11 +13445,11 @@ L0A220:
 L0A228:
         LDAA    $19,X
         BMI     L0A236
-        ADDA    $071E
+        ADDA    >O2Adder1
         STAA    $05E7,Z
         BRA     L0A240
 L0A236:
-        ADDA    $071F
+        ADDA    >O2Adder2
         BMI     L0A23E
         CLRA
 L0A23E:
@@ -12949,8 +13463,8 @@ L0A240:
 ; Called from: Sub_08DC4
 ;---------------------------------------------------------------------------------------------------
 Sub_0A244:
-        LDAA    $0724
-        LDAB    $0727
+        LDAA    >SensorValue4
+        LDAB    >SensorValue5
         TZX
         LDX     #$8040
 L0A252:
@@ -13086,9 +13600,9 @@ L0A342:
         BRCLR   $0168,Z,#$08,L0A360
 L0A34E:
         LDAA    $2197
-        CMPA    $2195
+        CMPA    >IacTargetMax
         BLS     L0A35C
-        LDAA    $2195
+        LDAA    >IacTargetMax
 L0A35C:
         STAA    >IacTarget,Z
 L0A360:
@@ -13168,14 +13682,14 @@ L0A42E:
         BCS     L0A44E
         LDAA    $01FC,Z
         LDX     #Tab2D_1E3B
-        BRSET   $0325,#$20,L0A466
+        BRSET   >Options0339,#$20,L0A466
         BRCLR   $031C,Z,#$20,L0A466
         LDX     #Tab2D_1E5F
         BRA     L0A466
 L0A44E:
         LDAA    $01FD,Z
         LDX     #Tab2D_1E4D
-        BRSET   $0325,#$20,L0A466
+        BRSET   >Options0339,#$20,L0A466
         BRCLR   $031C,Z,#$20,L0A466
         LDX     #Tab2D_1E71
 L0A466:
@@ -13299,13 +13813,13 @@ L0A5B2:
         ADDA    #$80
         BMI     L0A5D0
         LDX     #Tab2D_1D95
-        BRSET   $0325,#$20,L0A5E4
+        BRSET   >Options0339,#$20,L0A5E4
         BRCLR   $031C,Z,#$20,L0A5E4
         LDX     #Tab2D_1D7D
         BRA     L0A5E4
 L0A5D0:
         LDX     #Tab2D_1DA1
-        BRSET   $0325,#$20,L0A5E4
+        BRSET   >Options0339,#$20,L0A5E4
         BRCLR   $031C,Z,#$20,L0A5E4
         LDX     #Tab2D_1D89
 L0A5E4:
@@ -13450,7 +13964,7 @@ L0A736:
 L0A748:
         BRCLR   $01F8,Z,#$04,L0A770
         BRCLR   $0675,Z,#$20,L0A770
-        LDAA    $2182
+        LDAA    >IdleRollSpeed
         BRCLR   $0674,Z,#$40,L0A764
         ADDA    #$03
         BCC     L0A764
@@ -13465,7 +13979,7 @@ L0A770:
 L0A774:
         CLRA
         LDAB    $0694,Z
-        BRSET   $0325,#$20,L0A78A
+        BRSET   >Options0339,#$20,L0A78A
         BRCLR   $031C,Z,#$20,L0A78A
         LDAB    $0693,Z
 L0A78A:
@@ -13475,7 +13989,7 @@ L0A78A:
         TBXK
         LDX     #$1F29
 L0A798:
-        LDAA    $06A7,Z
+        LDAA    >AcSensorFiltered,Z
         CMPA    E,X
         BLS     L0A7AE
         ADDE    #$01
@@ -13498,7 +14012,7 @@ L0A7C2:
 L0A7C8:
         TED
         LDAA    #$FF
-        BRSET   $0325,#$20,L0A7DA
+        BRSET   >Options0339,#$20,L0A7DA
         BRCLR   $031C,Z,#$20,L0A7DA
         XGAB
 L0A7DA:
@@ -13516,7 +14030,7 @@ L0A7FA:
         CLRA
         SUBB    $01F3,Z
         SBCA    #$00
-        BRSET   $0325,#$20,L0A816
+        BRSET   >Options0339,#$20,L0A816
         BRCLR   $031C,Z,#$20,L0A81E
 L0A816:
         SUBB    >IacBase,Z
@@ -13535,10 +14049,10 @@ L0A830:
         BPL     L0A836
         CLRB
 L0A836:
-        BRCLR   $031E,#$04,L0A842
+        BRCLR   >Options0331,#$04,L0A842
         BRCLR   $01F8,Z,#$02,L0A86C
 L0A842:
-        BRSET   $0325,#$20,L0A85E
+        BRSET   >Options0339,#$20,L0A85E
         BRCLR   $031C,Z,#$20,L0A85E
         LDAA    $0695,Z
         JSR     Sub_0C64A
@@ -13553,7 +14067,7 @@ L0A86C:
         TZY
         PSHM    D
         CLRA
-        BRSET   $0325,#$20,L0A888
+        BRSET   >Options0339,#$20,L0A888
         BRCLR   $031C,Z,#$20,L0A888
         LDY     #$8023
         LDAB    $0693,Z
@@ -13569,10 +14083,10 @@ L0A892:
         STAA    E,Y
         BRA     L0A8EC
 L0A89E:
-        BRCLR   $031E,#$04,L0A8AA
+        BRCLR   >Options0331,#$04,L0A8AA
         BRCLR   $01F8,Z,#$02,L0A8C2
 L0A8AA:
-        BRSET   $0325,#$20,L0A8BC
+        BRSET   >Options0339,#$20,L0A8BC
         BRCLR   $031C,Z,#$20,L0A8BC
         LDAA    $0695,Z
         BRA     L0A8EC
@@ -13583,7 +14097,7 @@ L0A8C2:
         TZY
         PSHM    D
         CLRA
-        BRSET   $0325,#$20,L0A8DE
+        BRSET   >Options0339,#$20,L0A8DE
         BRCLR   $031C,Z,#$20,L0A8DE
         LDY     #$8023
         LDAB    $0693,Z
@@ -13596,7 +14110,7 @@ L0A8E8:
         PULM    D
         LDAA    E,Y
 L0A8EC:
-        STAA    $0697,Z
+        STAA    >IacLearned,Z
         RTS
         dc.b    $1F,$3D,$1F,$33,$1F,$31,$1F,$0D,$1F,$51,$1F,$47,$1F,$32,$1F,$0A
 
@@ -13616,9 +14130,9 @@ L0A90C:
         TBYK
         CLRB
         TBXK
-        LDAA    $0697,Z
+        LDAA    >IacLearned,Z
         LDX     $02,Y
-        BRSET   $0325,#$20,L0A92C
+        BRSET   >Options0339,#$20,L0A92C
         BRCLR   $031C,Z,#$20,L0A92C
         LDX     $00,Y
 L0A92C:
@@ -13694,19 +14208,19 @@ L0A9B8:
 ;---------------------------------------------------------------------------------------------------
 Sub_0A9BA:
         BRCLR   >MainLoopPhaseMask,Z,#$02,L0A9D0
-        LDAA    $06AB,Z
+        LDAA    >IacGearTime2,Z
         CMPA    #$FF
         BEQ     L0A9D0
         TSTA
         BEQ     L0A9D0
-        DEC     $06AB,Z
+        DEC     >IacGearTime2,Z
 L0A9D0:
-        LDAA    $06AC,Z
+        LDAA    >IacGearDuration,Z
         CMPA    #$FF
         BEQ     L0A9E0
         TSTA
         BEQ     L0A9E0
-        DEC     $06AC,Z
+        DEC     >IacGearDuration,Z
 L0A9E0:
         TST     $06A9,Z
         BEQ     L0A9EA
@@ -13720,7 +14234,7 @@ L0A9F4:
         BRCLR   $056B,Z,#$80,L0AA10
         CLR     $06A9,Z
         CLR     $06AF,Z
-        LDAA    $1F12
+        LDAA    >IacV034FInit
         STAA    $06B1,Z
         BRA     L0AA1A
 L0AA10:
@@ -13741,7 +14255,7 @@ L0AA28:
         TST     >AccelTpsFuel,Z
         BEQ     L0AA44
 L0AA3A:
-        LDAA    $2194
+        LDAA    >IacV034EInit
         STAA    $06B0,Z
         BRA     L0AA4E
 L0AA44:
@@ -13770,7 +14284,7 @@ L0AA8C:
         BCLR    $0677,Z,#$10
 L0AA90:
         LDD     >IdleTarget,Z
-        SUBD    $1E2C
+        SUBD    >IacIdleTargetOffset1
         BCC     L0AA9C
         CLRD
 L0AA9C:
@@ -13789,12 +14303,12 @@ L0AAAE:
         BCLR    $0674,Z,#$02
         BCLR    $0672,Z,#$0A
         LDAA    >CoolantTemp,Z
-        CMPA    $03E2
+        CMPA    >IacCoolantThresh1
         BLS     L0AAD8
         BCLR    $013F,Z,#$44
 L0AAD8:
         LDD     >IdleTarget,Z
-        SUBD    $1E2E
+        SUBD    >IacIdleTargetOffset2
         BCC     L0AAE4
         CLRD
 L0AAE4:
@@ -13804,7 +14318,7 @@ L0AAE4:
 L0AAF0:
         BRCLR   $0679,Z,#$40,L0AB30
         LDD     >IdleTarget,Z
-        SUBD    $1E2E
+        SUBD    >IacIdleTargetOffset2
         BCC     L0AB02
         CLRD
 L0AB02:
@@ -13823,7 +14337,7 @@ L0AB1E:
         LBRA    L0AC24
 L0AB30:
         LDD     >SegmentRpm,Z
-        CPD     $0414
+        CPD     >IacSegRpmThresh1
         BCC     L0AB66
         BCLR    $0672,Z,#$0C
         BCLR    $0673,Z,#$18
@@ -13833,7 +14347,7 @@ L0AB30:
         BSET    $03A1,Z,#$20
         BCLR    $0677,Z,#$10
         CLR     $06B1,Z
-        LDAA    $041A
+        LDAA    >IacV0C24Init
         STAA    $03A4,Z
         LBRA    L0AC24
 L0AB66:
@@ -13850,7 +14364,7 @@ L0AB66:
         CLRA
         LDAB    $01F2,Z
         EMUL
-        LDAB    $2195
+        LDAB    >IacTargetMax
         CBA
         BLS     L0ABA6
         TBA
@@ -13914,8 +14428,8 @@ L0AC24:
         BRSET   $0672,Z,#$80,L0AC90
         BRSET   >ThrottleState,Z,#$01,L0AC90
         LDAA    #$FF
-        STAA    $06AB,Z
-        STAA    $06AC,Z
+        STAA    >IacGearTime2,Z
+        STAA    >IacGearDuration,Z
         BCLR    $0675,Z,#$8C
         BCLR    $0672,Z,#$20
         BCLR    $0672,Z,#$10
@@ -13931,12 +14445,12 @@ L0AC9E:
         BCLR    $0675,Z,#$02
         BRSET   $0498,Z,#$01,L0AD86
         BRSET   $03A1,Z,#$80,L0AD86
-        BRSET   $031D,#$40,L0AD86
-        BRSET   $031D,#$20,L0AD86
+        BRSET   >EventFlag1,#$40,L0AD86
+        BRSET   >EventFlag1,#$20,L0AD86
         LDAA    >CoolantTemp,Z
-        CMPA    $208E
+        CMPA    >IacRollCoolantMin
         BHI     L0ACD4
-        LDAA    $0697,Z
+        LDAA    >IacLearned,Z
         CLRB
         TDE
         BRA     L0AD40
@@ -13963,10 +14477,10 @@ L0AD0A:
         TDE
         LDAA    $032C,Z
         LDX     #IacRollFactorBattTemp
-        BRCLR   $031E,#$04,L0AD2C
+        BRCLR   >Options0331,#$04,L0AD2C
         BRSET   $01F8,Z,#$02,L0AD2C
-        LDAA    $06A7,Z
-        LDX     #IacRollFactorV0345
+        LDAA    >AcSensorFiltered,Z
+        LDX     #IacRollFactorAcSensor
 L0AD2C:
         JSR     Lookup2D
         SUBA    #$80
@@ -14005,9 +14519,9 @@ L0AD66:
         BEQ     L0AD78
         LDAA    #$FF
 L0AD78:
-        CMPA    $2195
+        CMPA    >IacTargetMax
         BLS     L0AD82
-        LDAA    $2195
+        LDAA    >IacTargetMax
 L0AD82:
         STAA    >IacTarget,Z
 L0AD86:
@@ -14030,7 +14544,7 @@ L0ADB6:
 L0ADC6:
         BRCLR   $0672,Z,#$80,L0ADFC
         BRSET   $031C,Z,#$80,L0ADFC
-        TST     $0658,Z
+        TST     >ShiftIdleDelay,Z
         BNE     L0ADFC
 L0ADD8:
         BRSET   $0676,Z,#$80,L0B072
@@ -14044,7 +14558,7 @@ L0ADF0:
         LBRA    L0B072
 L0ADFC:
         LDAA    >Count3s,Z
-        CMPA    $0419
+        CMPA    >IacTimeThresh
         LBCS    L0B072
         BRSET   $0679,Z,#$80,L0B072
         BRCLR   $0677,Z,#$10,L0B072
@@ -14065,14 +14579,14 @@ L0AE40:
         LBNE    L0B072
         BRSET   $0677,Z,#$08,L0B072
         BRSET   $0676,Z,#$80,L0B072
-        TST     $0658,Z
+        TST     >ShiftIdleDelay,Z
         LBNE    L0B072
         BRSET   $031C,Z,#$80,L0B072
         TST     $06B0,Z
         LBNE    L0B072
         BRCLR   $0677,Z,#$20,L0AE80
         LDD     >SegmentRpm,Z
-        CPD     $1DFF
+        CPD     >IacSegRpmThresh2
         LBLS    L0B072
         BCLR    $0677,Z,#$20
 L0AE80:
@@ -14089,7 +14603,7 @@ L0AE98:
         LDD     #$00FF
         JSR     Sub_0A902
         CLR     $0404,Z
-        LDAA    $1F09
+        LDAA    >IacV0352Init
         STAA    $06B4,Z
         BCLR    $0677,Z,#$10
         BCLR    $03A1,Z,#$20
@@ -14111,7 +14625,7 @@ L0AEF0:
         CMPA    $041F
         BCC     L0AF18
         LDD     >SegmentRpm,Z
-        CPD     $0414
+        CPD     >IacSegRpmThresh1
         BCS     L0AF18
         TST     $06B4,Z
         BEQ     L0AF18
@@ -14209,13 +14723,13 @@ L0B054:
         BSET    $025D,Z,#$20
         CLR     $0681,Z
 L0B072:
-        BRSET   $0325,#$20,L0B22C
+        BRSET   >Options0339,#$20,L0B22C
         BRCLR   $0677,Z,#$08,L0B0C4
         BRCLR   $031C,Z,#$80,L0B22C
         BRSET   $031C,Z,#$20,L0B22C
-        INC     $06AA,Z
+        INC     >IacGearTime,Z
         BNE     L0B094
-        DEC     $06AA,Z
+        DEC     >IacGearTime,Z
 L0B094:
         BRSET   $0672,Z,#$20,L0B22C
         LDAA    >CoolantTemp,Z
@@ -14246,9 +14760,9 @@ L0B0D4:
         BNE     L0B0F0
         DECA
 L0B0F0:
-        STAA    $06AB,Z
+        STAA    >IacGearTime2,Z
 L0B0F4:
-        TST     $0658,Z
+        TST     >ShiftIdleDelay,Z
         BEQ     L0B100
         BRCLR   $0670,Z,#$20,L0B166
 L0B100:
@@ -14268,10 +14782,10 @@ L0B122:
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
         LDAA    >CoolantTemp,Z
-        CMPA    $1F5D
+        CMPA    >IacGearCoolantMax
         BCC     L0B162
         STAB    $01FE,Z
-        LDAA    $06AA,Z
+        LDAA    >IacGearTime,Z
         LDX     #IacGearTimeFactorPNAC
         BRSET   $031C,Z,#$20,L0B14E
         LDX     #IacGearTimeFactor
@@ -14284,15 +14798,15 @@ L0B14E:
         EDIV
         XGDX
 L0B162:
-        STAB    $06AC,Z
+        STAB    >IacGearDuration,Z
 L0B166:
-        LDAA    $06AC,Z
+        LDAA    >IacGearDuration,Z
         CMPA    #$FF
         BEQ     L0B174
         TSTA
         LBNE    L0B23E
 L0B174:
-        TST     $0658,Z
+        TST     >ShiftIdleDelay,Z
         LBNE    L0B23E
         BRSET   $0672,Z,#$20,L0B23E
         BSET    $0672,Z,#$20
@@ -14348,15 +14862,15 @@ L0B204:
 L0B212:
         BRCLR   $031C,Z,#$20,L0B23E
         LDAA    >CoolantTemp,Z
-        CMPA    $1F5D
+        CMPA    >IacGearCoolantMax
         BCC     L0B22C
-        INC     $06AA,Z
+        INC     >IacGearTime,Z
         BNE     L0B22C
-        DEC     $06AA,Z
+        DEC     >IacGearTime,Z
 L0B22C:
         LDAA    #$FF
-        STAA    $06AB,Z
-        STAA    $06AC,Z
+        STAA    >IacGearTime2,Z
+        STAA    >IacGearDuration,Z
         BCLR    $0675,Z,#$8C
         BCLR    $0672,Z,#$20
 L0B23E:
@@ -14380,16 +14894,16 @@ L0B27C:
         BCLR    $0672,Z,#$10
         LBRA    L0B57E
 L0B284:
-        LDAA    $1F0F
+        LDAA    >IacKickHold
         STAA    $06D7,Z
         BRCLR   $031C,Z,#$08,L0B2A0
         LDAA    >Map,Z
-        STAA    $06A3,Z
+        STAA    >IacAcKickMapLatch,Z
         LDX     #IacAcKickMap
         BRA     L0B2A8
 L0B2A0:
         LDX     #IacAcKickMapLatched
-        LDAA    $06A3,Z
+        LDAA    >IacAcKickMapLatch,Z
 L0B2A8:
         JSR     Lookup2D
         SXT
@@ -14412,10 +14926,10 @@ L0B2D2:
         LDD     #$FF80
 L0B2DC:
         TBA
-        STAA    $06A2,Z
+        STAA    >IacKick,Z
         BRCLR   $031C,Z,#$08,L0B2F6
         LDAB    >SegmentRpm,Z
-        CMPB    $1FC9
+        CMPB    >IacKickRpmMax
         BCS     L0B2F6
         LBRA    L0B57E
 L0B2F6:
@@ -14432,9 +14946,9 @@ L0B302:
         EMUL
         STAA    $01FA,Z
         LDAA    >CoolantTemp,Z
-        CMPA    $208E
+        CMPA    >IacRollCoolantMin
         BHI     L0B32C
-        LDAA    $0697,Z
+        LDAA    >IacLearned,Z
         BRA     L0B39C
 L0B32C:
         LDAA    >VehicleSpeed,Z
@@ -14459,10 +14973,10 @@ L0B362:
         TDE
         LDAA    $032C,Z
         LDX     #IacRollFactorBattTemp
-        BRCLR   $031E,#$04,L0B386
+        BRCLR   >Options0331,#$04,L0B386
         BRSET   $01F8,Z,#$02,L0B386
-        LDAA    $06A7,Z
-        LDX     #IacRollFactorV0345
+        LDAA    >AcSensorFiltered,Z
+        LDX     #IacRollFactorAcSensor
 L0B386:
         JSR     Lookup2D
         SUBA    #$80
@@ -14493,7 +15007,7 @@ L0B39C:
         EMUL
         STAA    $01FC,Z
         LDAA    >Count3s,Z
-        CMPA    $0419
+        CMPA    >IacTimeThresh
         LBCS    L0B53E
         BRSET   $0679,Z,#$80,L0B53E
         BRSET   $0674,Z,#$02,L0B3FC
@@ -14504,7 +15018,7 @@ L0B39C:
         BRSET   $03A1,Z,#$80,L0B4CC
 L0B3FC:
         LDD     >SegmentRpm,Z
-        CPD     $0416
+        CPD     >SparkRpmThresh1
         LBCC    L0B57E
         BRSET   $0677,Z,#$08,L0B57E
         BRSET   $0674,Z,#$02,L0B45E
@@ -14512,20 +15026,20 @@ L0B3FC:
         BSET    $0657,Z,#$10
         LDAB    $01FB,Z
         LDAA    >CoolantTemp,Z
-        CMPA    $208E
+        CMPA    >IacRollCoolantMin
         BLS     L0B432
         ADDB    $01FC,Z
         BCC     L0B432
         LDAB    #$FF
 L0B432:
-        LDAA    $208C
+        LDAA    >IacFactor1
         MUL
         ADCA    #$00
         STAA    $01FE,Z
         LDAB    #$A4
         MUL
         ADCA    #$00
-        ADDA    $1F0E
+        ADDA    >IacAdder1
         BCC     L0B44C
         LDAA    #$FF
 L0B44C:
@@ -14554,7 +15068,7 @@ L0B47E:
         ADCA    #$00
         TDE
         LDAA    >CoolantTemp,Z
-        CMPA    $208E
+        CMPA    >IacRollCoolantMin
         BLS     L0B4AC
         LDAB    $01FC,Z
         CLRA
@@ -14567,9 +15081,9 @@ L0B4B6:
         TED
         TBA
 L0B4BA:
-        CMPA    $2195
+        CMPA    >IacTargetMax
         BLS     L0B4C4
-        LDAA    $2195
+        LDAA    >IacTargetMax
 L0B4C4:
         STAA    >IacTarget,Z
         LBRA    L0B57E
@@ -14578,19 +15092,19 @@ L0B4CC:
         BSET    $0674,Z,#$04
         BSET    $0678,Z,#$02
         LDAA    $01FB,Z
-        LDAB    $208D
+        LDAB    >IacFactor2
         MUL
         ADCA    #$00
         LDAB    #$A4
         MUL
         ADCA    #$00
-        ADDA    $1F0B
+        ADDA    >IacAdder2
         BCC     L0B4F4
         LDAA    #$FF
 L0B4F4:
         STAA    $06B1,Z
         LDAA    $01FB,Z
-        LDAB    $208D
+        LDAB    >IacFactor2
         NEGB
         MUL
         ADCA    #$00
@@ -14598,9 +15112,9 @@ L0B4F4:
         BCC     L0B50E
         LDAA    #$FF
 L0B50E:
-        CMPA    $2195
+        CMPA    >IacTargetMax
         BLS     L0B518
-        LDAA    $2195
+        LDAA    >IacTargetMax
 L0B518:
         STAA    >IacTarget,Z
         LBRA    L0B57E
@@ -14620,7 +15134,7 @@ L0B53E:
         BCC     L0B556
         LDAA    #$FF
 L0B556:
-        LDAB    $2195
+        LDAB    >IacTargetMax
         CBA
         BCS     L0B562
         TBA
@@ -14629,7 +15143,7 @@ L0B562:
         CMPA    >IacTarget,Z
         BCC     L0B57A
         LDAB    >MainLoopCounter,Z
-        BITB    $208B
+        BITB    >IacLoopMask1
         BNE     L0B57E
         LDAA    >IacTarget,Z
         BEQ     L0B57E
@@ -14656,7 +15170,7 @@ Sub_0B580:
         LDAB    $068E,Z
         CLRA
         TDE
-        LDAB    $218C
+        LDAB    >IdleValue17
         SXT
         ADE
         PULM    D
@@ -14668,7 +15182,7 @@ Sub_0B580:
         LDAB    $068E,Z
         CLRA
         TDE
-        LDAB    $218D
+        LDAB    >IdleValue18
         SXT
         ADE
         PULM    D
@@ -14684,7 +15198,7 @@ L0B5D2:
         BRA     L0B5EA
 L0B5DA:
         CLRA
-        LDAB    $2195
+        LDAB    >IacTargetMax
         PSHM    E
         SDE
         PULM    E
@@ -14783,7 +15297,7 @@ Sub_0B6BC:
         LDX     #IacStartBaro
         JSR     Lookup2D
         STAA    $0033,Z
-        BRCLR   $031E,#$04,L0B720
+        BRCLR   >Options0331,#$04,L0B720
         LDAA    <Baro,Z
         LDX     #IacShiftBaroFactor
         JSR     Lookup2D
@@ -14833,8 +15347,8 @@ Sub_0B722:
         BSET    $0A,Z,#$20
         BCLR    $0A,Z,#$10
         LDAA    #$FF
-        STAA    $06AB,Z
-        STAA    $06AC,Z
+        STAA    >IacGearTime2,Z
+        STAA    >IacGearDuration,Z
         LDAA    $0033,Z
         CLRB
         STD     $06DB,Z
@@ -14854,7 +15368,7 @@ Sub_0B76A:
         LBNE    L0B7DA
         BRSET   $0174,Z,#$10,L0B7DA
         BRSET   $01F8,Z,#$01,L0B7DA
-        BRSET   $0325,#$20,L0B7A0
+        BRSET   >Options0339,#$20,L0B7A0
         BRCLR   $031C,Z,#$20,L0B7DA
 L0B7A0:
         BRSET   >ThrottleState,Z,#$01,L0B7DA
@@ -14864,7 +15378,7 @@ L0B7A0:
         CMPA    <IacPosition,Z
         BNE     L0B7DA
         BRSET   $00B8,Z,#$04,L0B7DA
-        LDAA    $2182
+        LDAA    >IdleRollSpeed
         BRCLR   $0674,Z,#$80,L0B7CE
         ADDA    #$03
         BCC     L0B7CE
@@ -15044,7 +15558,7 @@ L0B98C:
         BRA     L0B9C0
 L0B9B4:
         INCA
-        LDAB    $2195
+        LDAB    >IacTargetMax
         CBA
         BLS     L0B9C0
         TBA
@@ -15135,16 +15649,16 @@ Sub_0BA78:
         LDAA    $06B5,Z
         BNE     L0BA98
         BRSET   $013F,Z,#$40,L0BA8E
-        LDAA    $1F17
-        LDAB    $1F14
+        LDAA    >IacValue7
+        LDAB    >IacValue4
         BRA     L0BAA0
 L0BA8E:
-        LDAA    $1F16
-        LDAB    $1F13
+        LDAA    >IacValue6
+        LDAB    >IacValue3
         BRA     L0BAA0
 L0BA98:
-        LDAA    $1F18
-        LDAB    $1F15
+        LDAA    >IacValue8
+        LDAB    >IacValue5
 L0BAA0:
         STD     $01FE,Z
         TAB
@@ -15210,7 +15724,7 @@ Sub_0BB20:
         BRSET   $000A,Z,#$01,L0BB8E
         BRCLR   $0677,Z,#$04,L0BB4C
         LDAA    >VehicleSpeed,Z
-        LDAB    $2182
+        LDAB    >IdleRollSpeed
         ADDB    $2184
         BCC     L0BB3C
         LDAB    #$FF
@@ -15223,7 +15737,7 @@ L0BB3C:
 L0BB4C:
         BRCLR   >ThrottleState,Z,#$01,L0BB6C
         LDAA    >VehicleSpeed,Z
-        CMPA    $2182
+        CMPA    >IdleRollSpeed
         BLS     L0BBBE
         LDAB    $2183
         SUBB    $2184
@@ -15249,7 +15763,7 @@ L0BB8E:
         LDAA    >VehicleSpeed,Z
         CMPA    $2183
         BHI     L0BBBE
-        CMPA    $2182
+        CMPA    >IdleRollSpeed
         BCS     L0BBBE
         LDD     >IdleTarget,Z
         ADDD    $218A
@@ -15305,9 +15819,9 @@ L0BC14:
         CLRA
         ADE
         BRSET   $03A1,Z,#$80,L0BC52
-        LDAA    $0697,Z
+        LDAA    >IacLearned,Z
         LDX     #Tab2D_1F33
-        BRSET   $0325,#$20,L0BC4A
+        BRSET   >Options0339,#$20,L0BC4A
         BRCLR   $031C,Z,#$20,L0BC4A
         LDX     #Tab2D_1F3D
 L0BC4A:
@@ -15318,7 +15832,7 @@ L0BC52:
         BRCLR   $0011,Z,#$04,L0BC6C
         BRSET   $0172,Z,#$08,L0BC6C
         BRCLR   $031B,Z,#$40,L0BC6C
-        LDAB    $1FEB
+        LDAB    >IacAcRequestAdder
         CLRA
         ADE
 L0BC6C:
@@ -15384,7 +15898,7 @@ Sub_0BCA6:
         CLRA
         ADE
         BRSET   $0498,Z,#$01,L0BD02
-        LDAA    $0697,Z
+        LDAA    >IacLearned,Z
         LDX     #Tab2D_216E
         LDAB    $0569,Z
         ANDB    #$C0
@@ -15556,7 +16070,7 @@ L0BE9C:
         LDAB    $01F1,Z
         LDAA    #$01
         EMUL
-        LDAB    $2195
+        LDAB    >IacTargetMax
         CBA
         BLS     L0BEB4
         TBA
@@ -15633,7 +16147,7 @@ L0BF70:
         BRCLR   $01F8,Z,#$04,L0BFA8
         BRCLR   $01F8,Z,#$10,L0BFA8
         BRSET   >ThrottleState,Z,#$01,L0BFA8
-        BRSET   $0325,#$20,L0BF8E
+        BRSET   >Options0339,#$20,L0BF8E
         BRCLR   $031C,Z,#$20,L0BFA8
 L0BF8E:
         TST     $06AF,Z
@@ -15666,7 +16180,7 @@ L0BFD8:
         BNE     L0C00C
         BRSET   >ThrottleState,Z,#$80,L0C00C
         LDE     $1D7B
-        LDAA    $51DF
+        LDAA    >EventV0C46Value
         CMPA    #$04
         BEQ     L0BFFC
         LDE     $1D79
@@ -15687,7 +16201,7 @@ L0C00C:
         ANDB    #$0E
         BNE     L0C046
         BRSET   $031C,Z,#$80,L0C046
-        TST     $0658,Z
+        TST     >ShiftIdleDelay,Z
         BNE     L0C046
         BSET    $0675,Z,#$20
 L0C046:
@@ -15753,16 +16267,16 @@ L0C0BC:
         CLRA
         STAB    $01F4,Z
         ADE
-        BRSET   $0325,#$20,L0C118
+        BRSET   >Options0339,#$20,L0C118
         BRSET   $031C,Z,#$20,L0C118
-        LDAB    $1FEC
+        LDAB    >IacDriveAdder
         CLRA
         ADE
 L0C118:
         BRCLR   $0011,Z,#$04,L0C132
         BRSET   $0172,Z,#$08,L0C132
         BRCLR   $031B,Z,#$40,L0C132
-        LDAB    $1FEB
+        LDAB    >IacAcRequestAdder
         CLRA
         ADE
 L0C132:
@@ -15782,19 +16296,19 @@ L0C13C:
         CLRA
         LDAB    >AcSensor,Z
         TDE
-        LDAB    $06A7,Z
+        LDAB    >AcSensorFiltered,Z
         PSHM    D,E
-        LDAA    $1F10
+        LDAA    >IacValue2
         JSR     Blend16
         AIS     #$04
-        STAB    $06A7,Z
+        STAB    >AcSensorFiltered,Z
         BRCLR   >MainLoopPhaseMask,Z,#$04,L0C19C
         LDE     >BatteryVoltsFiltered,Z
         LDAA    >BatteryVolts2,Z
         CLRB
         XGDE
         PSHM    D,E
-        LDAA    $1DD2
+        LDAA    >BatteryVoltsFilter
         JSR     Blend16
         AIS     #$04
         STD     >BatteryVoltsFiltered,Z
@@ -15811,7 +16325,7 @@ L0C19C:
         TDE
         LDAB    $0437,Z
         PSHM    D,E
-        LDAA    $1FDD
+        LDAA    >ChargeDeficitFilter
         JSR     Blend16
         AIS     #$04
         STAB    $0437,Z
@@ -15857,7 +16371,7 @@ L0C228:
         BLS     L0C23C
         STAA    $06AD,Z
 L0C23C:
-        BRSET   $0326,#$40,L0C256
+        BRSET   >Options033A,#$40,L0C256
         BRSET   $0498,Z,#$01,L0C256
         LDAA    $1DF6
         CMPA    $06AD,Z
@@ -15960,7 +16474,7 @@ L0C364:
 L0C37C:
         LDAA    >CoolantTemp,Z
         LDX     #Tab2D_1E0F
-        BRSET   $0325,#$20,L0C394
+        BRSET   >Options0339,#$20,L0C394
         BRCLR   $031C,Z,#$20,L0C394
         LDX     #Tab2D_1E03
 L0C394:
@@ -16092,7 +16606,7 @@ L0C50E:
         BSET    $0676,Z,#$20
         LBRA    L0C58E
 L0C522:
-        BRSET   $0326,#$40,L0C536
+        BRSET   >Options033A,#$40,L0C536
         BRSET   $03A1,Z,#$80,L0C536
         BSET    $0677,Z,#$20
         LBRA    L0C58E
@@ -16103,11 +16617,11 @@ L0C536:
         CMPA    $1E02
         LBHI    L0C58E
         BRSET   $0671,Z,#$80,L0C58E
-        BRSET   $0325,#$20,L0C55C
+        BRSET   >Options0339,#$20,L0C55C
         BRCLR   $031C,Z,#$20,L0C58E
 L0C55C:
         LDD     $1DFD
-        CPD     $0020,Z
+        CPD     >EepromCount,Z
         LBHI    L0C58E
         LDAA    <Baro,Z
         CMPA    $1DED
@@ -16138,7 +16652,7 @@ L0C5B6:
         BCLR    $0676,Z,#$0F
         BSET    $0672,Z,#$40
 L0C5C2:
-        BRSET   $0325,#$20,L0C5E2
+        BRSET   >Options0339,#$20,L0C5E2
         BRSET   $0321,#$20,L0C5E2
         BRCLR   $0483,Z,#$02,L0C5E2
         LDD     $1DFB
@@ -16150,7 +16664,7 @@ L0C5E2:
         LDX     #Tab2D_0525
         JSR     Lookup2D
         LDX     #Tab3D_1EE8
-        BRSET   $0325,#$20,L0C602
+        BRSET   >Options0339,#$20,L0C602
         BRCLR   $031C,Z,#$20,L0C602
         LDX     #Tab3D_1EC7
 L0C602:
@@ -16505,7 +17019,7 @@ L0C8C0:
         STAA    >DDRGP,Z
         LDAA    #$08
         STAA    >OC1M,Z
-        BRCLR   $031D,#$60,L0C9B2
+        BRCLR   >EventFlag1,#$60,L0C9B2
         LDAA    #$74
         STAA    >PACTL,Z
         BRA     L0C9C6
@@ -16519,17 +17033,17 @@ L0C9C0:
         STAA    >PACTL,Z
 L0C9C6:
         LDAA    #$2A
-        BRCLR   $0323,#$40,L0C9D0
+        BRCLR   >Options0337,#$40,L0C9D0
         ORAA    #$01
 L0C9D0:
         STAA    >TCTL1,Z
         LDAA    #$29
-        BRCLR   $0323,#$80,L0C9DE
+        BRCLR   >Options0337,#$80,L0C9DE
         LDAA    #$A9
 L0C9DE:
         STAA    >TCTL2,Z
         LDAA    #$05
-        BRCLR   $0323,#$80,L0C9EC
+        BRCLR   >Options0337,#$80,L0C9EC
         ORAA    #$85
 L0C9EC:
         STAA    >TMSK1,Z
@@ -16545,7 +17059,7 @@ L0C9EC:
         STE     $0858,Z
         STE     $085A,Z
         STE     $085C,Z
-        LDAB    $51DF
+        LDAB    >EventV0C46Value
         CMPB    #$06
         BEQ     L0CA26
         CLRE
@@ -16615,11 +17129,11 @@ L0CA26:
         STE     $0828,Z
         STE     $082C,Z
         STE     $0830,Z
-        LDAA    $51DF
+        LDAA    >EventV0C46Value
         CMPA    #$04
         BEQ     L0CB34
         STE     $0834,Z
-        LDAA    $51DF
+        LDAA    >EventV0C46Value
         CMPA    #$05
         BEQ     L0CB34
         STE     $0838,Z
@@ -16647,7 +17161,7 @@ L0CB42:
         LDAA    #$E3
         STAA    $0F,Z
         LDAA    #$CC
-        STAA    $0486,Z
+        STAA    >AnalogV0A92Scaled,Z
         LDD     #$000C
         JSR     Sub_1716E
         CMPA    #$AB
@@ -16657,7 +17171,7 @@ L0CB8E:
         STAA    <FlexEthanol,Z
         JSR     Sub_173A6
         LDD     >RRC,Z
-        STD     $20,Z
+        STD     <EepromCount,Z
         LDAA    $0317
         STAA    <ThrottleClosed,Z
         LDAA    #$F0
@@ -16677,7 +17191,7 @@ L0CBC6:
         BSET    $11,Z,#$02
 L0CBD0:
         LDAA    #$02
-        BRSET   $0325,#$20,L0CBEE
+        BRSET   >Options0339,#$20,L0CBEE
         LDAA    #$04
         BSET    $11,Z,#$20
         BRCLR   $0321,#$20,L0CBEE
@@ -16924,7 +17438,7 @@ L0CED2:
         ANDA    #$78
         STAA    $A4,Z
 L0CED6:
-        BRCLR   $031E,#$40,L0CEF8
+        BRCLR   >Options0331,#$40,L0CEF8
         LDAA    $A5,Z
         BITA    #$80
         BNE     L0CEEA
@@ -17044,7 +17558,7 @@ L0D012:
         LDAA    #$D8
 L0D014:
         STAA    >ChargeTargetVolts,Z
-        LDAA    $0374
+        LDAA    >StartV0C03Init
         STAA    $0399,Z
         LDD     #$FFFF
         STD     $039A,Z
@@ -17089,7 +17603,7 @@ L0D088:
         LDX     #AcSensorCurve
         JSR     Lookup2D
         STAA    >FlexEthanolScaled,Z
-        LDD     $20,Z
+        LDD     <EepromCount,Z
         STD     $0606,Z
         LDAA    >CoolantTemp,Z
         CMPA    $0722
@@ -17160,7 +17674,7 @@ L0D14C:
         STAA    $0140,Z
         JSR     Sub_1E638
         JSR     Sub_17380
-        BRCLR   $0323,#$20,L0D1CC
+        BRCLR   >Options0337,#$20,L0D1CC
         LDAA    $04D1,Z
         CMPA    #$19
         BNE     L0D1BA
@@ -17312,11 +17826,11 @@ L0D378:
         JSR     Sub_12B88
         JSR     Sub_1D8A8
         JSR     Sub_1AD86
-        BRCLR   $0323,#$80,L0D392
+        BRCLR   >Options0337,#$80,L0D392
         JSR     Sub_14D34
         JSR     Sub_14B2A
 L0D392:
-        BRCLR   $0323,#$10,L0D39C
+        BRCLR   >Options0337,#$10,L0D39C
         JSR     Sub_14BC6
 L0D39C:
         BRCLR   $031F,#$C0,L0D3B6
@@ -17422,7 +17936,7 @@ L0D4CA:
         BNE     L0D4CA
         JSR     KickWatchdogsLong
         LDD     #$2B70
-        BRSET   $0323,#$40,L0D4E6
+        BRSET   >Options0337,#$40,L0D4E6
         LDD     #$2A70
 L0D4E6:
         STAA    >TCTL1,Z
@@ -17479,7 +17993,7 @@ L0D584:
         BRCLR   $0324,#$01,L0D5DE
         BCLR    $36,Z,#$10
         BRCLR   $0036,Z,#$08,L0D5B4
-        LDD     $20,Z
+        LDD     <EepromCount,Z
         SUBD    $0606,Z
         BCS     L0D5B0
         TSTA
@@ -17529,7 +18043,7 @@ L0D602:
         ORAB    #$18
         STAB    $A4,Z
 L0D61A:
-        BRCLR   $031E,#$40,L0D638
+        BRCLR   >Options0331,#$40,L0D638
         BRCLR   $0201,Z,#$80,L0D638
         LDAA    $A5,Z
         BITA    #$C0
@@ -17839,15 +18353,15 @@ L0D996:
         LDE     #$0027
         STE     $01B2,Z
 L0D9AA:
-        BRCLR   $031D,#$60,L0D9B6
+        BRCLR   >EventFlag1,#$60,L0D9B6
         JSR     Sub_0DCB0
         BRA     L0D9CC
 L0D9B6:
-        BRCLR   $031D,#$18,L0D9C2
+        BRCLR   >EventFlag1,#$18,L0D9C2
         JSR     Sub_0DE88
         BRA     L0D9CC
 L0D9C2:
-        BRCLR   $031D,#$87,L0D9CC
+        BRCLR   >EventFlag1,#$87,L0D9CC
         JSR     Sub_0E092
 L0D9CC:
         LDD     #$4089
@@ -18061,7 +18575,7 @@ L0DC5A:
         LDE     #$005B
         STE     $01B2,Z
 L0DC6C:
-        BRCLR   $0323,#$80,L0DC86
+        BRCLR   >Options0337,#$80,L0DC86
         BRSET   >TMSK1,Z,#$80,L0DC98
         BSET    >TMSK1,Z,#$80
         LDE     #$005C
@@ -18395,7 +18909,7 @@ L0E038:
         LDE     #$004F
         STE     $01B2,Z
 L0E04C:
-        BRCLR   $031D,#$08,L0E064
+        BRCLR   >EventFlag1,#$08,L0E064
         LDD     $0864,Z
         ANDD    #$C000
         BEQ     L0E07A
@@ -18565,7 +19079,7 @@ L0E236:
         LDE     #$004F
         STE     $01B2,Z
 L0E24A:
-        BRCLR   $031D,#$03,L0E262
+        BRCLR   >EventFlag1,#$03,L0E262
         LDD     $0864,Z
         ANDD    #$C000
         BEQ     L0E278
@@ -18795,7 +19309,7 @@ Sub_0E616:
         PULM    Y,X
         CPX     #$837C
         BNE     L0E62E
-        BRCLR   $031D,#$87,L0E62E
+        BRCLR   >EventFlag1,#$87,L0E62E
         SUBD    $06,X
         BRA     L0E630
 L0E62E:
@@ -19022,7 +19536,7 @@ L0E792:
         BEQ     L0E7BA
         STAA    >Count3s,Z
         BRCLR   $0598,Z,#$80,L0E7BA
-        STAA    $03BA,Z
+        STAA    >RunTime,Z
 L0E7BA:
         RTS
 
@@ -19175,7 +19689,7 @@ Sub_0E8B4:
         TZX
         LDX     #$83C1
         LDAA    $0577,Z
-        CMPA    $13A4
+        CMPA    >StartV0801Thresh
         BNE     L0E8CC
         BSET    $031C,Z,#$01
         BSR     Sub_0E8AA
@@ -19630,7 +20144,7 @@ L0ECDA:
 Sub_0ECDC:
         LDD     >TIC1,Z
         TDE
-        BRCLR   $031D,#$78,L0ED14
+        BRCLR   >EventFlag1,#$78,L0ED14
         TZX
         TZY
         LDX     #$837C
@@ -19810,7 +20324,7 @@ Sub_0EEA4:
         BCLR    $03DF,Z,#$0F
         TZX
         LDX     #$8040
-        LDAB    $13A4
+        LDAB    >StartV0801Thresh
         ABX
         LDAA    $4E,Z
         LBSR    Sub_0EF78
@@ -19819,7 +20333,7 @@ Sub_0EEA4:
         BSET    $03DF,Z,#$08
 L0EF02:
         LDX     #$8051
-        LDAB    $13A4
+        LDAB    >StartV0801Thresh
         ABX
         LDAA    $5F,Z
         BSR     Sub_0EF78
@@ -19828,12 +20342,12 @@ L0EF02:
         BSET    $03DF,Z,#$04
 L0EF1A:
         LDX     #$8040
-        LDAB    $13A5
+        LDAB    >StartV043BValue
         ABX
         LDAA    $4F,Z
         BSR     Sub_0EF78
         LDX     #$8040
-        LDAB    $13A6
+        LDAB    >StartV043CThresh
         ABX
         TAB
         LDAA    $50,Z
@@ -19847,12 +20361,12 @@ L0EF3E:
         BSET    $03DF,Z,#$02
 L0EF48:
         LDX     #$8051
-        LDAB    $13A5
+        LDAB    >StartV043BValue
         ABX
         LDAA    $60,Z
         BSR     Sub_0EF78
         LDX     #$8051
-        LDAB    $13A6
+        LDAB    >StartV043CThresh
         ABX
         TAB
         LDAA    $61,Z
@@ -19907,7 +20421,7 @@ L0EFAE:
         JSR     Sub_0F016
         BCLR    $62,Z,#$38
 L0EFD4:
-        BRSET   $0325,#$20,L0F006
+        BRSET   >Options0339,#$20,L0F006
         LDX     #$804C
         LDAB    $01,X
         LDAA    $00,X
@@ -19950,11 +20464,11 @@ Sub_0F016:
 L0F020:
         CLRB
 L0F022:
-        CMPB    $13A4
+        CMPB    >StartV0801Thresh
         BEQ     L0F036
-        CMPB    $13A5
+        CMPB    >StartV043BValue
         BEQ     L0F036
-        CMPB    $13A6
+        CMPB    >StartV043CThresh
         BEQ     L0F036
         BSR     Sub_0F056
 L0F036:
@@ -19962,13 +20476,13 @@ L0F036:
         CMPB    #$0D
         BCS     L0F022
         LDAA    $0E,X
-        LDAB    $13A4
+        LDAB    >StartV0801Thresh
         BSR     Sub_0F056
         LDAA    $0F,X
-        LDAB    $13A5
+        LDAB    >StartV043BValue
         BSR     Sub_0F056
         LDAA    $10,X
-        LDAB    $13A6
+        LDAB    >StartV043CThresh
         BSR     Sub_0F056
         RTS
 
@@ -20090,7 +20604,7 @@ L0F146:
         CMPA    #$01
         BNE     L0F180
         LDAA    >VehicleSpeed,Z
-        CMPA    $2182
+        CMPA    >IdleRollSpeed
         BHI     L0F180
         LDAA    $0496,Z
         CLRB
@@ -20487,11 +21001,11 @@ L0F5FC:
         LDX     #$13AD
         LDAB    #$04
         LDAA    $0577,Z
-        CMPA    $13A4
+        CMPA    >StartV0801Thresh
         BEQ     L0F64C
         LDX     #$13AE
         LDAB    #$02
-        CMPA    $13A5
+        CMPA    >StartV043BValue
         BNE     L0F62C
         BRCLR   $03E1,Z,#$01,L0F64C
         LDAA    >VehicleSpeed,Z
@@ -20500,7 +21014,7 @@ L0F5FC:
 L0F62C:
         LDAB    #$01
         LDAA    $0577,Z
-        CMPA    $13A6
+        CMPA    >StartV043CThresh
         LBNE    L0F6F4
         BRCLR   $03E1,Z,#$01,L0F64C
         LDAA    >VehicleSpeed,Z
@@ -20509,7 +21023,7 @@ L0F62C:
 L0F64C:
         BRSET   $00B9,Z,#$04,L0F6F4
         BRSET   $052C,Z,#$20,L0F6F4
-        BRCLR   $031E,#$40,L0F664
+        BRCLR   >Options0331,#$40,L0F664
         BRSET   $054D,Z,#$20,L0F6F4
 L0F664:
         BRSET   $0062,Z,#$40,L0F6F4
@@ -20567,7 +21081,7 @@ L0F6E0:
 L0F6F4:
         CLR     $03CD,Z
 L0F6F8:
-        BRSET   $0323,#$20,L0F704
+        BRSET   >Options0337,#$20,L0F704
         BRCLR   $0558,Z,#$C0,L0F6DA
 L0F704:
         BRSET   >ThrottleState,Z,#$40,L0F6DA
@@ -20740,7 +21254,7 @@ L0F8EA:
         LDAA    $03D4,Z
         LDAB    $03D3,Z
         BNE     L0F916
-        BRSET   $0323,#$20,L0F916
+        BRSET   >Options0337,#$20,L0F916
         BRSET   >ThrottleState,Z,#$80,L0F906
         LDAB    $13CD
         BEQ     L0F916
@@ -20782,10 +21296,10 @@ L0F94C:
         BRA     L0F98A
 L0F964:
         BRSET   >ThrottleState,Z,#$01,L0F972
-        BRCLR   $0325,#$04,L0F982
+        BRCLR   >Options0339,#$04,L0F982
         BRA     L0F978
 L0F972:
-        BRCLR   $0325,#$08,L0F982
+        BRCLR   >Options0339,#$08,L0F982
 L0F978:
         LDX     #Tab2D_137D
         BSET    $013E,Z,#$40
@@ -20855,7 +21369,7 @@ Sub_0FA02:
         TZX
         BRCLR   $62,Z,#$04,L0FA58
         LDX     #$8040
-        LDAB    $13A4
+        LDAB    >StartV0801Thresh
         ABX
         LDAA    $4E,Z
         SUBA    $00,X
@@ -20872,7 +21386,7 @@ L0FA30:
         BRA     L0FA5C
 L0FA36:
         LDX     #$8051
-        LDAB    $13A4
+        LDAB    >StartV0801Thresh
         ABX
         LDAA    $5F,Z
         SUBA    $00,X
@@ -20889,7 +21403,7 @@ L0FA58:
 L0FA5C:
         BRCLR   $62,Z,#$02,L0FAAA
         LDX     #$8040
-        LDAB    $13A5
+        LDAB    >StartV043BValue
         ABX
         LDAA    $4F,Z
         SUBA    $00,X
@@ -20906,7 +21420,7 @@ L0FA82:
         BRA     L0FAAE
 L0FA88:
         LDX     #$8051
-        LDAB    $13A5
+        LDAB    >StartV043BValue
         ABX
         LDAA    $60,Z
         SUBA    $00,X
@@ -20923,7 +21437,7 @@ L0FAAA:
 L0FAAE:
         BRCLR   $62,Z,#$01,L0FAFC
         LDX     #$8040
-        LDAB    $13A6
+        LDAB    >StartV043CThresh
         ABX
         LDAA    $50,Z
         SUBA    $00,X
@@ -20940,7 +21454,7 @@ L0FAD4:
         BRA     L0FB00
 L0FADA:
         LDX     #$8051
-        LDAB    $13A6
+        LDAB    >StartV043CThresh
         ABX
         LDAA    $61,Z
         SUBA    $00,X
@@ -21003,7 +21517,7 @@ L0FB66:
 L0FB76:
         BRSET   >ThrottleState,Z,#$80,L0FBD8
         LDAA    >VehicleSpeed,Z
-        LDAB    $2182
+        LDAB    >IdleRollSpeed
         BRCLR   $03CC,Z,#$04,L0FB90
         ADDB    #$03
         BCC     L0FB90
