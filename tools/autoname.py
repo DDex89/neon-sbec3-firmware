@@ -64,13 +64,15 @@ grp([0x14160, 0x1424C, 0x142C8], "O2", "Closed loop", "oxygen-sensor closed loop
 grp([0x19000, 0x1A5CA, 0x1A688, 0x1A6E2, 0x1BA5E, 0x1BAAE, 0x2D086], "Idle", "Idle", "idle speed control")
 grp([0x1D000, 0x1DB84, 0x1DC20, 0x1DEDC, 0x1E14E, 0x1E2B6, 0x39412], "Spark", "Spark", "spark advance")
 grp([0x1F000, 0x1F408], "Knock", "Spark", "knock control")
-grp([0x2A81A, 0x2A906, 0x2B456, 0x2AC02, 0x2B692, 0x18836], "Misfire", "Diagnostics", "misfire monitor (crankshaft segment times)")
+grp([0x2A81A, 0x2A906, 0x2B456, 0x2AC02, 0x2B692], "Misfire", "Diagnostics", "misfire monitor (crankshaft segment times)")
 grp([0x20284, 0x2197C, 0x231A8, 0x2432A, 0x245CC], "Diag", "Diagnostics", "on-board diagnostic monitors")
 grp([0x2C1BC, 0x2C6DE, 0x2C7FE, 0x2CB0E, 0x2CB60, 0x2CCA8, 0x2D1F6, 0x2D698, 0x2DADE, 0x2DC88, 0x0EC3A], "Sensor", "Sensors", "sensor processing")
 grp([0x3B800, 0x3C46E], "SpeedCtl", "Speed control", "speed control (cruise), probable")
 grp([0x0D08C], "Start", "Startup", "initialisation at reset")
 grp([0x0A02E], "Event", "Other", "reference-event interrupt (input capture 1)")
-OTHER = {0x08DD4: "Pit", 0x17FC4: "Sys17000", 0x2C708: "Sys17000", 0x2F000: "Sys2F000", 0x39686: "Sys39686",
+grp([0x17000, 0x17FC4, 0x183C2, 0x17A48, 0x17D44, 0x181BE, 0x187E8, 0x18A8E, 0x18B22, 0x18BAA, 0x18836],
+    "FlexLearn", "Fuel", "flex-fuel ethanol content learning")
+OTHER = {0x08DD4: "Pit", 0x2C708: "Sys2C708", 0x2F000: "Sys2F000", 0x39686: "Sys39686",
          0x39E1A: "Sys39E1A", 0x3AE3C: "Sys3AE3C", 0x3D800: "Sys3D800"}
 for a, p in OTHER.items():
     G.setdefault(a, (p, "Other", "not identified yet (top routine %s)" % nm(a)))
@@ -89,6 +91,39 @@ UNIT = {"Rpm": "rpm32", "SegRpm": "rpm32", "IdleTarget": "rpm32", "Coolant": "te
 def var_of(s):
     m = re.match(r"^\$([0-9A-F]{2,4}),Z$", s or "")
     return names.ram.get(int(m.group(1), 16)) if m else None
+
+
+LOOKUPS = {a for a, k in __import__("caltables").routines(d).items()}
+ORDER = sorted(an.insn)
+INDEX = {a: i for i, a in enumerate(ORDER)}
+
+
+def role(calls):
+    """How the result is used right after the lookup: Factor, Adder, Limit, Scale or ''."""
+    votes = collections.Counter()
+    for c in calls:
+        i = INDEX[c] + 1
+        for _ in range(5):
+            if i >= len(ORDER):
+                break
+            n = an.insn[ORDER[i]]
+            i += 1
+            t = n.target()
+            if n.mn == "JSR" and t in LOOKUPS:
+                votes["Scale"] += 1
+                break
+            if n.mn == "JSR" and names.labels.get(t) == "ScaleByFraction" or n.mn in ("MUL", "EMUL", "EMULS"):
+                votes["Factor"] += 1
+                break
+            if n.mn in ("ADDA", "ADDB", "ABA", "ADDD", "ADE", "ADDE", "ADCE"):
+                votes["Adder"] += 1
+                break
+            if n.mn in ("CMPA", "CMPB", "CBA", "CPD", "CPE"):
+                votes["Limit"] += 1
+                break
+            if n.mn in ("JSR", "RTS", "BRA", "LBRA", "JMP") or n.mn.startswith("ST"):
+                break
+    return votes.most_common(1)[0][0] if votes else ""
 
 
 def word(s):
@@ -111,6 +146,9 @@ def word(s):
 
 cur = json.load(open("annotations/tables.json"))
 T = cur["tables"]
+if len(sys.argv) > 1:      # merge hand names given as a JSON file {addr: {name, desc, category, x, y, z}}
+    for k, v in json.load(open(sys.argv[1])).items():
+        T[k] = dict(v, auto=False)
 used = set(names.labels.values()) | set(names.ram.values()) | set(names.regs.values()) | \
     {v["name"] for v in T.values() if not v.get("auto")}
 used |= {v["name"] for v in cur.get("scalars", {}).values()} | {v["name"] for v in cur.get("special", {}).values()}
@@ -130,7 +168,7 @@ count = collections.Counter()
 for a in sorted(cal.items):
     t = cal.items[a]
     key = "%04X" % a
-    if t["kind"] == "fault" or key in T and not T[key].get("auto") and key not in OVR:
+    if t["kind"] not in ("2D", "2Dr", "3D", "3Dn") or key in T and not T[key].get("auto") and key not in OVR:
         continue
     owners = collections.Counter(x.owner(c) for c in t.get("calls", []))
     o = owners.most_common(1)[0][0] if owners else None
@@ -160,7 +198,7 @@ for a in sorted(cal.items):
     if key in OVR:
         name, desc, units = OVR[key]
     else:
-        base = pre + "".join(p for p in dict.fromkeys(parts) if p not in ("X",))
+        base = pre + "".join(p for p in dict.fromkeys(parts) if p not in ("X",)) + role(t.get("calls", []))
         if base == pre:
             base = pre + "Table"
         name, n = base, 1

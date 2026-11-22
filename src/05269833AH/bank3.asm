@@ -246,11 +246,11 @@ L3035E:
         CMPA    $117D
         LBCC    L3051A
         BRSET   $0770,Z,#$01,L3051A
-        ADDA    $017C,Z
+        ADDA    >EngineOffTime,Z
         BCC     L30386
         LDAA    #$FF
 L30386:
-        STAA    $017C,Z
+        STAA    >EngineOffTime,Z
         BSET    $0770,Z,#$01
         LBRA    L3051A
 L30392:
@@ -645,7 +645,7 @@ L30778:
         LDAA    $0A88,Z
         CLRB
         BRCLR   $032C,#$40,L30798
-        LDAB    $0198,Z
+        LDAB    >FlexEthanol,Z
         BRSET   $032F,#$08,L30798
         LDAB    $01B5,Z
 L30798:
@@ -1777,11 +1777,11 @@ L314BE:
         CMPA    $117D
         BCC     L314E2
         BRSET   $0770,Z,#$01,L314E2
-        ADDA    $017C,Z
+        ADDA    >EngineOffTime,Z
         BCC     L314DA
         LDAA    #$FF
 L314DA:
-        STAA    $017C,Z
+        STAA    >EngineOffTime,Z
         BSET    $0770,Z,#$01
 L314E2:
         BCLR    $050D,Z,#$02
@@ -2364,7 +2364,7 @@ L31A10:
         ADCA    #$00
         STAA    $04,Y
         CLRA
-        LDAB    $0198,Z
+        LDAB    >FlexEthanol,Z
         LDE     #$0146
         EMUL
         ASLB
@@ -3115,7 +3115,7 @@ Sub_320B4:
         EORD    #$9340
         ADDD    #$1010
         EORD    $09F8,Z
-        ADDD    #FuelCutV032E2
+        ADDD    #DecelCutMinRpmV032E
         TDE
         STAB    $09F6,Z
         LSRB
@@ -5048,7 +5048,7 @@ Sub_3391C:
         BRCLR   $064E,Z,#$20,L33A0A
         BRCLR   $0774,Z,#$80,L33A0A
         BRSET   $0C31,Z,#$20,L33A0A
-        BRSET   $0C30,Z,#$80,L33A0A
+        BRSET   >ThrottleState,Z,#$80,L33A0A
         TST     >VehicleSpeed,Z
         LBNE    L33A0A
         LDAA    $05F6,Z
@@ -5970,7 +5970,7 @@ L353E8:
         STAA    $092E,Z
         CMPA    #$14
         BEQ     L35400
-        BCLR    $0C30,Z,#$02
+        BCLR    >ThrottleState,Z,#$02
         CMPA    #$25
         BNE     L35400
         CLR     $0936,Z
@@ -6182,7 +6182,7 @@ Sub_355E8:
         CMPA    #$EE
         BCC     L35610
         BRCLR   $0774,Z,#$80,L35610
-        BRSET   $0C30,Z,#$80,L35610
+        BRSET   >ThrottleState,Z,#$80,L35610
         LDAA    >VehicleSpeed,Z
         BNE     L35610
         CLR     $0322,Z
@@ -6365,7 +6365,7 @@ L357AA:
         BEQ     L3580C
         CMPB    #$10
         BEQ     L357CA
-        BCLR    $0C30,Z,#$02
+        BCLR    >ThrottleState,Z,#$02
         CMPB    #$40
         BCS     L357C4
         CMPB    #$4C
@@ -6375,15 +6375,15 @@ L357C4:
         BHI     L3580C
         BRA     L357EA
 L357CA:
-        BRSET   $0C30,Z,#$80,L357E0
+        BRSET   >ThrottleState,Z,#$80,L357E0
         BRSET   $032E,#$40,L357E6
         BRCLR   $0C31,Z,#$20,L357E6
         BCLR    $0C31,Z,#$80
 L357E0:
-        BCLR    $0C30,Z,#$02
+        BCLR    >ThrottleState,Z,#$02
         BRA     L3580C
 L357E6:
-        BSET    $0C30,Z,#$02
+        BSET    >ThrottleState,Z,#$02
 L357EA:
         TDE
         TPD
@@ -6657,7 +6657,7 @@ L35AC4:
 L35AD0:
         LDAA    $0930,Z
         BNE     L35B0A
-        BRSET   $0C30,Z,#$80,L35AFC
+        BRSET   >ThrottleState,Z,#$80,L35AFC
         BRSET   $032E,#$40,L35AE8
         BRSET   $0C31,Z,#$20,L35B00
 L35AE8:
@@ -6678,7 +6678,7 @@ L35B02:
         CLR     $092E,Z
         JMP     Sub_3589E
 L35B0A:
-        BRSET   $0C30,Z,#$80,L35B1C
+        BRSET   >ThrottleState,Z,#$80,L35B1C
         BRSET   $032E,#$40,L35B20
         BRCLR   $0C31,Z,#$20,L35B20
 L35B1C:
@@ -9699,7 +9699,7 @@ L393AC:
         LDAA    #$05
         BRSET   $06B4,Z,#$10,L393D4
         BRSET   $0505,Z,#$08,L393D4
-        BRSET   $0C30,Z,#$80,L393D4
+        BRSET   >ThrottleState,Z,#$80,L393D4
         LDE     >VehicleSpeedRaw,Z
         CPE     #$0280
         BHI     L393D4
@@ -9896,7 +9896,7 @@ L395F4:
         JSR     Lookup2D
         STAA    $F0,Z
         LDAA    >Map,Z
-        LDX     #SparkMap6
+        LDX     #SparkMapFactor2
         JSR     Lookup2D
         LDAA    $F0,Z
         MUL
@@ -10016,10 +10016,10 @@ L39754:
         LBCC    L39838
         BCLR    $0B2C,Z,#$10
 L39760:
-        BRSET   $0C30,Z,#$40,L39838
-        BRCLR   $0C30,Z,#$80,L39838
+        BRSET   >ThrottleState,Z,#$40,L39838
+        BRCLR   >ThrottleState,Z,#$80,L39838
         LDAA    >EngineRpm,Z
-        LDX     #Sys39686Rpm
+        LDX     #Sys39686RpmAdder
         JSR     Lookup2D
         BRCLR   $0B2C,Z,#$01,L39786
         ADDA    $0597
@@ -10038,13 +10038,13 @@ L397A0:
         LBLS    L39838
         LDAA    >VehicleSpeed,Z
         BRSET   $0B2C,Z,#$01,L397C2
-        LDX     #Sys39686Speed
+        LDX     #Sys39686SpeedLimit
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BLS     L397D0
         BRA     L39838
 L397C2:
-        LDX     #Sys39686Speed2
+        LDX     #Sys39686SpeedLimit2
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BCC     L39838
@@ -10181,10 +10181,10 @@ L39956:
         LBCC    L39A22
         BCLR    $0B2C,Z,#$10
 L39962:
-        BRSET   $0C30,Z,#$40,L39A22
-        BRCLR   $0C30,Z,#$80,L39A22
+        BRSET   >ThrottleState,Z,#$40,L39A22
+        BRCLR   >ThrottleState,Z,#$80,L39A22
         LDAA    >EngineRpm,Z
-        LDX     #Sys39686Rpm
+        LDX     #Sys39686RpmAdder
         JSR     Lookup2D
         BRCLR   $0B2C,Z,#$01,L39988
         ADDA    $0597
@@ -10203,13 +10203,13 @@ L399A2:
         LBLS    L39A22
         LDAA    >VehicleSpeed,Z
         BRSET   $0B2C,Z,#$01,L399C4
-        LDX     #Sys39686Speed
+        LDX     #Sys39686SpeedLimit
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BLS     L399D2
         BRA     L39A22
 L399C4:
-        LDX     #Sys39686Speed2
+        LDX     #Sys39686SpeedLimit2
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BCC     L39A22
@@ -10334,12 +10334,12 @@ L39B20:
         STAA    $0B38,Z
 L39B24:
         LDAA    $0B38,Z
-        BRCLR   $0C30,Z,#$40,L39B30
+        BRCLR   >ThrottleState,Z,#$40,L39B30
         CLRA
 L39B30:
         COMA
         STAA    $0B36,Z
-        BRCLR   $0C30,Z,#$40,L39B40
+        BRCLR   >ThrottleState,Z,#$40,L39B40
         CLRA
         BRA     L39B5E
 L39B40:
@@ -10557,7 +10557,7 @@ L39D58:
 L39D5E:
         BSET    $0B4C,Z,#$02
 L39D62:
-        BRSET   $0C30,Z,#$80,L39DC8
+        BRSET   >ThrottleState,Z,#$80,L39DC8
         LDAA    $0B48,Z
         CMPA    $05FF
         BHI     L39DC8
@@ -10660,7 +10660,7 @@ L39E58:
         BRSET   $086C,Z,#$10,L3A06A
         JSR     Sub_3A47E
         BRSET   $0B00,Z,#$08,L3A038
-        BRCLR   $0C30,Z,#$80,L39E74
+        BRCLR   >ThrottleState,Z,#$80,L39E74
         BCLR    $0C33,Z,#$44
         BRA     L39E7E
 L39E74:
@@ -10690,7 +10690,7 @@ L39EAE:
         CMPA    $04D1
         BHI     L39ED4
         LDAA    >VehicleSpeed,Z
-        LDX     #Sys39E1ASpeed
+        LDX     #Sys39E1ASpeedLimit
         JSR     Lookup2D
         CLRB
         CMPA    $0B0C,Z
@@ -10900,7 +10900,7 @@ L3A174:
         JSR     Sub_3A47E
         LDE     #$0000
         BRSET   $0B00,Z,#$08,L3A34E
-        BRCLR   $0C30,Z,#$80,L3A192
+        BRCLR   >ThrottleState,Z,#$80,L3A192
         BCLR    $0C33,Z,#$44
 L3A192:
         LDAA    $0C33,Z
@@ -11324,7 +11324,7 @@ L3A5E0:
         BSET    $0C3A,Z,#$02
         BSET    $0C33,Z,#$04
 L3A5F4:
-        BRSET   $0C30,Z,#$80,L3A60C
+        BRSET   >ThrottleState,Z,#$80,L3A60C
         BRCLR   $0C33,Z,#$04,L3A60C
         JMP     L3A63E
 L3A604:
@@ -12705,7 +12705,7 @@ L3BBCA:
         SBCA    #$00
 L3BBD2:
         ADDA    #$80
-        LDX     #SpeedCtlV04083
+        LDX     #SpeedCtlV0408Adder
         JSR     Lookup2D
         ADDB    #$80
         ADDB    $02,Y
@@ -13094,7 +13094,7 @@ L3BFE0:
         LBRA    L3C170
 L3BFEA:
         BRCLR   $0400,Z,#$0C,L3BFF8
-        LDX     #SpeedCtlTable2
+        LDX     #SpeedCtlTable
         LSRD
         LSRD
 L3BFF8:
@@ -13124,7 +13124,7 @@ L3C01A:
 L3C02A:
         JSR     Lookup2D
         STAA    $03,Y
-        LDX     #SpeedCtlTable
+        LDX     #SpeedCtlAdder
         LDD     >VehicleSpeedRaw,Z
         ASLD
         ASLD
@@ -13226,7 +13226,7 @@ L3C0F6:
         BRA     L3C16A
 L3C118:
         STD     $F0,Z
-        LDX     #SpeedCtlSpeed2
+        LDX     #SpeedCtlSpeedLimit
         LDAA    >VehicleSpeed,Z
         JSR     Lookup2D
         LDAA    $F0,Z
@@ -13281,7 +13281,7 @@ L3C1A6:
         BLS     L3C1EE
         CLR     $0424,Z
 L3C1C0:
-        LDX     #SpeedCtlSpeed2
+        LDX     #SpeedCtlSpeedLimit
         LDAA    >VehicleSpeed,Z
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
@@ -13342,7 +13342,7 @@ L3C246:
         BCC     L3C252
         CLRA
 L3C252:
-        LDX     #SpeedCtlBaro
+        LDX     #SpeedCtlBaroFactor
         JSR     Lookup2D
         LDAB    $01,Y
         ASLB
@@ -14276,7 +14276,7 @@ L3D952:
 L3D95E:
         LDAA    $042F,Z
         BNE     L3D9A8
-        BRSET   $0C30,Z,#$80,L3D970
+        BRSET   >ThrottleState,Z,#$80,L3D970
         LDAA    $19A3
         BEQ     L3D9A8
 L3D970:
@@ -14324,7 +14324,7 @@ L3D9BE:
         BEQ     L3D9EC
         LDAB    $042F,Z
         BNE     L3D9EC
-        BRSET   $0C30,Z,#$80,L3D9E8
+        BRSET   >ThrottleState,Z,#$80,L3D9E8
         LDAB    $19A3
         BEQ     L3D9EC
 L3D9E8:
@@ -14412,7 +14412,7 @@ L3DAC8:
         BRA     L3DB10
 L3DAD8:
         BRSET   $032C,#$80,L3DB10
-        BRSET   $0C30,Z,#$80,L3DAEA
+        BRSET   >ThrottleState,Z,#$80,L3DAEA
         TST     $19A3
         BEQ     L3DB10
 L3DAEA:
@@ -14458,22 +14458,22 @@ L3DB38:
 ;---------------------------------------------------------------------------------------------------
 Sub_3DB40:
         LDAA    $042E,Z
-        BRCLR   $0C30,Z,#$80,L3DB54
+        BRCLR   >ThrottleState,Z,#$80,L3DB54
         BSET    $0C34,Z,#$40
-        LDX     #Sys3D800V042E3
+        LDX     #Sys3D800V042E2
         BRA     L3DB7A
 L3DB54:
-        BRSET   $0C30,Z,#$01,L3DB62
+        BRSET   >ThrottleState,Z,#$01,L3DB62
         BRCLR   $0339,#$04,L3DB72
         BRA     L3DB68
 L3DB62:
         BRCLR   $0339,#$08,L3DB72
 L3DB68:
-        LDX     #Sys3D800V042E4
+        LDX     #Sys3D800V042E3
         BSET    $0C34,Z,#$40
         BRA     L3DB7A
 L3DB72:
-        LDX     #Sys3D800V042E2
+        LDX     #Sys3D800V042E
         BCLR    $0C34,Z,#$40
 L3DB7A:
         JSR     Lookup2D
@@ -14515,7 +14515,7 @@ L3DBD4:
         BSET    $042A,Z,#$04
         BRA     L3DC62
 L3DBE6:
-        BRSET   $0C30,Z,#$80,L3DC2C
+        BRSET   >ThrottleState,Z,#$80,L3DC2C
         LDAA    >VehicleSpeed,Z
         CMPA    $2A30
         BCC     L3DC2C
@@ -14922,7 +14922,7 @@ Sub_3DF80:
         LDAB    >ManifoldVacuum,Z
         LDX     #Tab3D_1A2B
         JSR     Lookup3D
-        BRSET   $0C30,Z,#$80,L3DFC4
+        BRSET   >ThrottleState,Z,#$80,L3DFC4
         CLRA
         TDE
         LDAB    $046A,Z
@@ -15343,8 +15343,8 @@ L3E3D6:
         BRCLR   $0338,#$80,L3E7D8
         BRSET   $0443,Z,#$02,L3E7D8
         BRCLR   $0774,Z,#$80,L3E8C4
-        BRSET   $0C30,Z,#$40,L3E8C4
-        LDAA    $077A,Z
+        BRSET   >ThrottleState,Z,#$40,L3E8C4
+        LDAA    >DecelFuelFactor,Z
         LBNE    L3E8C4
         BRSET   $0443,Z,#$80,L3E59E
         BRSET   $0443,Z,#$20,L3E7D8
@@ -15494,7 +15494,7 @@ L3E59E:
         CPD     $044A,Z
         LBLS    L3E7B4
 L3E5B4:
-        BRSET   $0C30,Z,#$80,L3E5D0
+        BRSET   >ThrottleState,Z,#$80,L3E5D0
         LDAA    $1A97
         ORP     #$00E0
         STAA    $0444,Z
@@ -15551,12 +15551,12 @@ L3E64A:
         BRA     L3E666
 L3E658:
         BSET    $0443,Z,#$04
-        BRCLR   $0C30,Z,#$80,L3E910
+        BRCLR   >ThrottleState,Z,#$80,L3E910
         JMP     L3E750
 L3E666:
         BCLR    $0443,Z,#$04
 L3E66A:
-        BRSET   $0C30,Z,#$80,L3E6F4
+        BRSET   >ThrottleState,Z,#$80,L3E6F4
         LDAA    >ShortTermTrim1,Z
         BMI     L3E6A6
         LDAB    $1AA0
@@ -15782,7 +15782,7 @@ L3E8E6:
         BRCLR   $075D,Z,#$C0,L3E8C4
 L3E8F2:
         BRCLR   $0774,Z,#$80,L3E8C4
-        BRSET   $0C30,Z,#$40,L3E8C4
+        BRSET   >ThrottleState,Z,#$40,L3E8C4
         BRSET   $05AE,Z,#$10,L3E910
         BRSET   $05AE,Z,#$20,L3E910
         BRSET   $042A,Z,#$40,L3E8C4
@@ -15799,7 +15799,7 @@ Sub_3E912:
         JSR     Lookup2D
         STAA    $F0,Z
         LDAA    >Map,Z
-        LDX     #Sys3D800Map
+        LDX     #Sys3D800MapScale
         JSR     Lookup2D
         LDAB    $F0,Z
         LDX     #Sys3D800Table
@@ -15845,7 +15845,7 @@ Sub_3E972:
         TST     $042F,Z
         LBNE    L3EACC
         BRSET   $A9,Z,#$04,L3E9B6
-        BRSET   $0C30,Z,#$80,L3E9D2
+        BRSET   >ThrottleState,Z,#$80,L3E9D2
         BRSET   $0469,Z,#$10,L3E99E
         TST     $046B,Z
         BEQ     L3E99E

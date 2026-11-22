@@ -26,7 +26,7 @@ program yet. Please report what does not open or shows wrong values.
 | Faults | `FaultTable`: one row per fault, P-code in the row label |
 | Other | tables of subsystems not identified yet |
 
-In the reference image every table has a name: 24 exact ones and 386 structural ones (subsystem +
+In the reference image every table has a name: 142 exact ones and 268 structural ones (subsystem +
 inputs, see [calibration.md](calibration.md#table-names)); the description of each says which routine
 reads it, its inputs and where the result goes. The other images get the names that the port can
 carry over (from 131 tables in family A to 403 in family E); the rest keep their generated `Tab...`

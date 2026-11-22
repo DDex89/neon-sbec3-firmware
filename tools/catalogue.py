@@ -14,7 +14,7 @@ from analyse import Analysis
 from gen_source import Calibration, Names, annotation_set
 from xref import Xref
 
-FORMAT = {"2D": "2D", "2Dr": "2D (y, x)", "3D": "3D", "3Dn": "3D, no axis", "fault": "fault rows"}
+FORMAT = {"2D": "2D", "2Dr": "2D (y, x)", "3D": "3D", "3Dn": "3D, no axis", "fault": "fault rows", "grid": "grid"}
 
 
 def size_text(d, a, t):

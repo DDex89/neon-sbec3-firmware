@@ -27,23 +27,23 @@ CalcDeadTime:
 ;---------------------------------------------------------------------------------------------------
 Sub_10036:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L10070
-        BRSET   $0C30,Z,#$80,L10064
+        BRSET   >ThrottleState,Z,#$80,L10064
         LDAA    >EngineRpm,Z
-        LDX     #FuelCutRpm
+        LDX     #DecelCutMapThreshold
         JSR     Lookup2D
         LDAA    >Map,Z
         CBA
         BCC     L10064
-        LDAA    $07A1,Z
+        LDAA    >DecelTimer,Z
         INCA
         BEQ     L10070
-        STAA    $07A1,Z
+        STAA    >DecelTimer,Z
         BRA     L10070
 L10064:
-        LDAA    $07A1,Z
+        LDAA    >DecelTimer,Z
         BEQ     L10084
         DECA
-        STAA    $07A1,Z
+        STAA    >DecelTimer,Z
 L10070:
         LDAA    >ThrottleLast,Z
         SUBA    >Throttle,Z
@@ -53,7 +53,7 @@ L10070:
         BSET    $0770,Z,#$20
 L10084:
         LDAB    $0770,Z
-        BRCLR   $0C30,Z,#$80,L10096
+        BRCLR   >ThrottleState,Z,#$80,L10096
         LDAA    $18B7
         STAA    $07A2,Z
 L10096:
@@ -62,7 +62,7 @@ L10096:
         LBEQ    L100C0
         BITB    #$80
         LBEQ    L101CE
-        BRSET   $0C30,Z,#$01,L10212
+        BRSET   >ThrottleState,Z,#$01,L10212
         LBRA    L102C6
 L100B2:
         LDAA    $0773,Z
@@ -85,7 +85,7 @@ L100D4:
         CMPA    $1954
         LBCC    L102D6
 L100F0:
-        BRCLR   $0C30,Z,#$01,L102C6
+        BRCLR   >ThrottleState,Z,#$01,L102C6
         LDAA    >EngineRpm,Z
         CMPA    $18BF
         LBCS    L10114
@@ -105,10 +105,10 @@ L1012C:
         CLR     $F1,Z
         STAB    $F0,Z
         LDAA    >EngineRpm,Z
-        LDX     #FuelCutRpm2
+        LDX     #DecelCutDelay
         JSR     Lookup2D
         LDAB    $F0,Z
-        CMPA    $07A1,Z
+        CMPA    >DecelTimer,Z
         BCC     L10148
         COM     $F1,Z
         BRA     L1015E
@@ -199,11 +199,11 @@ L10256:
         STAB    $F0,Z
         LDAA    >CoolantTemp,Z
         BRSET   $0943,Z,#$01,L102A0
-        LDX     #FuelCutCoolant2
+        LDX     #DecelCutMinRpmCoolant
         JSR     Lookup2D
         STAA    $F2,Z
         LDAA    $032E,Z
-        LDX     #FuelCutV032E2
+        LDX     #DecelCutMinRpmV032E
         JSR     Lookup2D
         CMPA    $F2,Z
         BCC     L1028A
@@ -217,11 +217,11 @@ L1028A:
         LBHI    L102DC
         BRA     L102C6
 L102A0:
-        LDX     #FuelCutCoolant
+        LDX     #DecelCutMinRpmCoolant2
         JSR     Lookup2D
         STAA    $F2,Z
         LDAA    $032E,Z
-        LDX     #FuelCutV032E
+        LDX     #DecelCutMinRpmV032E2
         JSR     Lookup2D
         LDAB    $F0,Z
         CMPA    $F2,Z
@@ -261,7 +261,7 @@ L102E8:
 ;---------------------------------------------------------------------------------------------------
 Sub_102FE:
         BRSET   $06B4,Z,#$10,L1034E
-        BRCLR   $0C30,Z,#$40,L10354
+        BRCLR   >ThrottleState,Z,#$40,L10354
         CLRW    $07AD,Z
         LDAA    >CoolantTemp,Z
         CMPA    $0ECC
@@ -292,7 +292,7 @@ L10354:
         CLRW    $07AD,Z
         BRA     L103A8
 L10360:
-        LDAB    $077A,Z
+        LDAB    >DecelFuelFactor,Z
         BNE     L103A8
         LDAA    >CoolantTemp,Z
         CMPA    $0ECC
@@ -326,9 +326,9 @@ L103AC:
         STAA    $081A,Z
         ANDP    #$FF1F
         LDAA    >EngineRpm,Z
-        LDX     #FuelRpm3
+        LDX     #WotTimeEnrichMax
         JSR     Lookup2D
-        LDAA    $07AA,Z
+        LDAA    >WotTimeEnrich,Z
         ADDA    $0ECE
         BCC     L103E0
         LDAA    #$FF
@@ -337,12 +337,12 @@ L103E0:
         BCS     L103E6
         TBA
 L103E6:
-        STAA    $07AA,Z
+        STAA    >WotTimeEnrich,Z
 L103EA:
         ANDP    #$FF1F
         BRA     L103F8
 L103F0:
-        CLR     $07AA,Z
+        CLR     >WotTimeEnrich,Z
         ANDP    #$FF1F
 L103F8:
         RTS
@@ -352,13 +352,13 @@ L103F8:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_103FA:
-        BRCLR   $0C30,Z,#$80,L10404
+        BRCLR   >ThrottleState,Z,#$80,L10404
         BSET    $0772,Z,#$08
 L10404:
         BRSET   $032E,#$40,L10410
         BRSET   $0C31,Z,#$20,L104A4
 L10410:
-        BRSET   $0C30,Z,#$80,L104A4
+        BRSET   >ThrottleState,Z,#$80,L104A4
         BRCLR   $0772,Z,#$08,L104A4
         LDAA    >VehicleSpeed,Z
         CMPA    $2A30
@@ -415,20 +415,20 @@ L104AC:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_104AE:
-        LDX     #FuelBaro
+        LDX     #DecelBaroMapOffset
         LDAA    <Baro,Z
         JSR     Lookup2D
         ADDA    >Map,Z
         BCC     L104C0
         LDAA    #$FF
 L104C0:
-        LDX     #FuelScaled
+        LDX     #DecelMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #FuelRpm2
+        LDX     #DecelMapRpmLimit
         JSR     Lookup3D
         STAA    $F4,Z
-        BRCLR   $0C30,Z,#$80,L1050C
+        BRCLR   >ThrottleState,Z,#$80,L1050C
         BRSET   >FuelModeFlags,Z,#$20,L10550
         ADDA    $07D8,Z
         BCC     L104EA
@@ -523,7 +523,7 @@ L105CC:
         LDAA    $F4,Z
         BSET    $0B2D,Z,#$08
 L105D6:
-        STAA    $077A,Z
+        STAA    >DecelFuelFactor,Z
         BRCLR   $0B2D,Z,#$08,L105EA
         LDAA    $0779,Z
         BNE     L105EA
@@ -599,7 +599,7 @@ L1067C:
         STD     $F0,Z
 L10684:
         BRCLR   $0338,#$20,L106A8
-        BRCLR   $0C30,Z,#$80,L106A8
+        BRCLR   >ThrottleState,Z,#$80,L106A8
         LDAA    $0D09,Z
         BMI     L1069A
         CLRA
@@ -655,29 +655,29 @@ Sub_106EC:
         BRCLR   $0774,Z,#$80,L107A4
         BRCLR   >MainLoopPhaseMask,Z,#$04,L10740
         LDAA    >CoolantTemp,Z
-        LDX     #AccelFuelCoolant2
+        LDX     #AccelMapGainCoolant
         JSR     Lookup2D
         STAB    $F0,Z
         LDAA    $0474,Z
         BEQ     L1071E
-        LDX     #AccelFuelV0474
+        LDX     #AccelMapGainAdder
         JSR     Lookup2D
         ADDB    $F0,Z
         BCC     L1071E
         LDAB    #$FF
 L1071E:
-        STAB    $07D4,Z
+        STAB    >AccelMapGain,Z
         LDAA    >CoolantTemp,Z
-        LDX     #AccelFuelCoolant
+        LDX     #AccelMapCoolant2
         JSR     Lookup2D
         STAA    $07D5,Z
         LDAA    <Baro,Z
-        LDX     #AccelFuelBaro
+        LDX     #AccelMapBaro
         JSR     Lookup2D
         STAA    $07D6,Z
 L10740:
         LDAA    >CoolantTemp,Z
-        LDX     #AccelFuelCoolant3
+        LDX     #AccelTpsRateLimit
         JSR     Lookup2D
         LDAA    >Throttle,Z
         SUBA    >ThrottleLast,Z
@@ -689,7 +689,7 @@ L10740:
         TBA
 L10762:
         STAA    $F6,Z
-        LDX     #AccelFuelCoolant4
+        LDX     #AccelTpsCoolantFactor
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
         LDAA    $F6,Z
@@ -714,19 +714,19 @@ L107A0:
         STAA    $07C5,Z
 L107A4:
         LDD     $F6,Z
-        STD     $07CA,Z
+        STD     >AccelTpsFuel,Z
         BEQ     L107BA
         LDAA    <Baro,Z
-        LDX     #AccelFuelBaro2
+        LDX     #AccelTpsBaro
         JSR     Lookup2D
         STAA    $07D7,Z
 L107BA:
-        LDX     #AccelFuelRpm
+        LDX     #AccelRpmFactor
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         CLRA
         XGDE
-        LDX     #AccelFuelMap
+        LDX     #AccelMapAdder
         LDAA    >Map,Z
         JSR     Lookup2D
         CLRA
@@ -735,7 +735,7 @@ L107BA:
         BCS     L107E4
         LDE     #$0100
 L107E4:
-        STE     $07D0,Z
+        STE     >AccelFactor,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -764,11 +764,11 @@ L1080C:
         STAA    $F4,Z
         BRCLR   $0774,Z,#$80,L1096C
         BRSET   $0770,Z,#$40,L1096C
-        BRCLR   $0C30,Z,#$80,L1096C
+        BRCLR   >ThrottleState,Z,#$80,L1096C
         LDAB    >EngineRpm,Z
         CMPB    $147E
         LBCC    L1096C
-        LDX     #AccelFuelThrottle
+        LDX     #TipInThrottleIndex
         LDAA    >ThrottleAboveClosed,Z
         JSR     Lookup2D
         BEQ     L10858
@@ -781,7 +781,7 @@ L10852:
         MUL
 L10858:
         STAB    $F0,Z
-        LDX     #AccelFuelV00F4
+        LDX     #TipInRateIndex
         LDAA    $F4,Z
         JSR     Lookup2D
         BEQ     L1086E
@@ -816,7 +816,7 @@ L1089E:
         LDAA    $00,X
         LBEQ    L1096C
         STAA    $F4,Z
-        LDX     #AccelFuelCoolant5
+        LDX     #TipInCoolantFactor
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
         LDAB    $F4,Z
@@ -830,7 +830,7 @@ L1089E:
         RORE
         LSRE
         LDAA    >AirTemp,Z
-        LDX     #AccelFuelAirTemp
+        LDX     #TipInAirTempFactor
         JSR     Lookup2D
         BEQ     L108EA
         CLRA
@@ -843,7 +843,7 @@ L1089E:
         LDE     $00F4,Z
 L108EA:
         LDAA    <Baro,Z
-        LDX     #AccelFuelBaro3
+        LDX     #TipInBaroFactor
         JSR     Lookup2D
         CLRA
         ADDD    #$0080
@@ -857,7 +857,7 @@ L108EA:
         JSR     Lookup2D
         CLRB
         EMUL
-        STE     $07C6,Z
+        STE     >TipInFuel,Z
         TSTW    $0780,Z
         LBEQ    L10970
         LDAB    $0C46,Z
@@ -890,7 +890,7 @@ L10966:
         JSR     Sub_10972
         BRA     L10970
 L1096C:
-        CLRW    $07C6,Z
+        CLRW    >TipInFuel,Z
 L10970:
         RTS
 
@@ -921,11 +921,11 @@ L1098C:
         JSR     Sub_179CC
         BRA     L109B8
 L109B0:
-        LDE     $07C6,Z
+        LDE     >TipInFuel,Z
         JSR     Sub_2CAD0
 L109B8:
         LDE     $080A,Z
-        ADDE    $07C6,Z
+        ADDE    >TipInFuel,Z
         LDAA    $00,Y
         ORP     #$00E0
         BITA    $1003,Z
@@ -940,12 +940,12 @@ L109D8:
         BCS     L109F8
         SUBE    $080A,Z
         STE     $0000,X
-        LDE     $07C6,Z
+        LDE     >TipInFuel,Z
         SDE
         BRA     L109FA
 L109EE:
         STE     $0000,X
-        LDE     $07C6,Z
+        LDE     >TipInFuel,Z
         BRA     L109FA
 L109F8:
         CLRE
@@ -1019,7 +1019,7 @@ L10A6C:
 ;---------------------------------------------------------------------------------------------------
 Sub_10A6E:
         CLRE
-        BRSET   $0C30,Z,#$80,L10AE6
+        BRSET   >ThrottleState,Z,#$80,L10AE6
         TST     >Count3s,Z
         BNE     L10A86
         LDAA    >MainLoopCounter,Z
@@ -1031,7 +1031,7 @@ L10A86:
         BCS     L10AEA
         STAA    $F0,Z
         LDAA    >CoolantTemp,Z
-        LDX     #FuelCoolant3
+        LDX     #IacFuelCoolantLimit
         JSR     Lookup2D
         CMPA    $F0,Z
         BCS     L10AA6
@@ -1040,10 +1040,10 @@ L10A86:
 L10AA6:
         BCLR    >FuelModeFlags,Z,#$80
         LDAA    $F0,Z
-        LDX     #FuelV00F0
+        LDX     #IacFuelScale
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #FuelV00F0Coolant
+        LDX     #IacFuelCoolant
         JSR     Lookup3D
         CLRB
         XGAB
@@ -1058,11 +1058,11 @@ L10AA6:
 L10ADA:
         JSR     Sub_10A1C
 L10ADE:
-        CPE     $080C,Z
+        CPE     >FuelPulseAdder,Z
         BCC     L10AE6
         BRA     L10AEA
 L10AE6:
-        STE     $080C,Z
+        STE     >FuelPulseAdder,Z
 L10AEA:
         RTS
 
@@ -1102,15 +1102,15 @@ L10B0E:
         ADCA    #$00
         JSR     ScaleByFraction
 L10B48:
-        LDAA    $07C2,Z
+        LDAA    >DecelLeanFuel,Z
         BEQ     L10B52
         CLRB
         EMUL
 L10B52:
-        LDAA    $077A,Z
+        LDAA    >DecelFuelFactor,Z
         JSR     ScaleByFraction
-        BRCLR   $0C30,Z,#$40,L10B6E
-        LDAA    $077A,Z
+        BRCLR   >ThrottleState,Z,#$40,L10B6E
+        LDAA    >DecelFuelFactor,Z
         BNE     L10B6E
         LDAA    $07D8,Z
         JSR     ScaleByFraction
@@ -1120,11 +1120,11 @@ L10B6E:
         BRSET   $0C33,Z,#$10,L10B82
         LDAA    $0ACA,Z
 L10B82:
-        LDX     #FuelCal
+        LDX     #FuelTrimAdjust
         JSR     Lookup2D
         ADDA    #$80
         STAA    $F0,Z
-        LDX     #FuelMap4
+        LDX     #FuelTrimAdjustMapWeight
         LDAA    >Map,Z
         JSR     Lookup2D
         LDAA    $F0,Z
@@ -1146,7 +1146,7 @@ L10BB6:
         EMUL
 L10BBA:
         BRCLR   $0770,Z,#$08,L10BE0
-        LDAA    $07DA,Z
+        LDAA    >IdleEnrichFactor,Z
         CLRB
         EMUL
         CPE     #$2000
@@ -1181,26 +1181,26 @@ Sub_10BF2:
         LDAA    #$80
         STAA    $0F06,Z
         LDD     #$0100
-        STD     $0F00,Z
+        STD     >FlexFuelFactor,Z
         STD     $0F45,Z
         JMP     L10D14
 L10C22:
-        LDAA    $0A91,Z
+        LDAA    >FlexEthanolScaled,Z
         LDAB    >CoolantTemp,Z
-        LDX     #AfterStartFuelV0A91Coolant2
+        LDX     #FlexEthanolCoolantFactor1
         JSR     Lookup3D
         STAA    $0F04,Z
         LDD     >Count3s,Z
         CPD     $07D6
         BCS     L10C94
         LDAA    >CoolantTemp,Z
-        LDX     #AfterStartFuelCoolant
+        LDX     #FlexCoolantWeight
         JSR     Lookup2D
         BEQ     L10C94
         STAA    $0F47,Z
-        LDAA    $0A91,Z
+        LDAA    >FlexEthanolScaled,Z
         LDAB    >Map,Z
-        LDX     #AfterStartFuelV0A91Map
+        LDX     #FlexEthanolMap
         JSR     Lookup3D
         CLRA
         ASLD
@@ -1228,22 +1228,22 @@ L10C94:
         LDD     #$0100
 L10C98:
         STD     $0F45,Z
-        LDAA    $0A91,Z
+        LDAA    >FlexEthanolScaled,Z
         LDAB    >CoolantTemp,Z
-        LDX     #AfterStartFuelV0A91Coolant
+        LDX     #FlexEthanolCoolantFactor2
         JSR     Lookup3D
         STAA    $0F03,Z
-        LDX     #AfterStartFuelV0198
-        LDAA    $0198,Z
+        LDX     #FlexEthanolFactor
+        LDAA    >FlexEthanol,Z
         JSR     Lookup2D
         STAA    $0F02,Z
-        LDX     #AfterStartFuelV0A91Coolant3
-        LDAA    $0A91,Z
+        LDX     #FlexEthanolCoolantFactor3
+        LDAA    >FlexEthanolScaled,Z
         LDAB    >CoolantTemp,Z
         JSR     Lookup3D
         STAA    $0F05,Z
-        LDX     #AfterStartFuelTable
-        LDAA    $0A91,Z
+        LDX     #FlexEthanolRpm
+        LDAA    >FlexEthanolScaled,Z
         LDAB    $0C4A,Z
         JSR     Lookup3DNorm
         STAB    $0F06,Z
@@ -1262,7 +1262,7 @@ L10D06:
         BEQ     L10D10
         JSR     ScaleByFraction
 L10D10:
-        STE     $0F00,Z
+        STE     >FlexFuelFactor,Z
 L10D14:
         RTS
 
@@ -1298,7 +1298,7 @@ L10D4E:
 ;---------------------------------------------------------------------------------------------------
 Sub_10D50:
         CLRW    $00F4,Z
-        LDAA    $07E6,Z
+        LDAA    >TimeSinceStart,Z
         CMPA    #$FF
         BEQ     L10DB0
         BRCLR   $0774,Z,#$80,L10D70
@@ -1306,15 +1306,15 @@ Sub_10D50:
         BITB    #$1F
         BNE     L10D70
         INCA
-        STAA    $07E6,Z
+        STAA    >TimeSinceStart,Z
 L10D70:
-        LDAA    $07E6,Z
-        LDX     #FuelV07E6
+        LDAA    >TimeSinceStart,Z
+        LDX     #AfterStartTimeScale
         JSR     Lookup2D
-        LDAB    $0768,Z
-        LDX     #FuelV07E6V0768
+        LDAB    >CrankCoolant,Z
+        LDX     #AfterStartDecay
         JSR     Lookup3D
-        BRCLR   $0C30,Z,#$40,L10D9C
+        BRCLR   >ThrottleState,Z,#$40,L10D9C
         LDAA    $0FFC
         MUL
         ADCA    #$00
@@ -1332,8 +1332,8 @@ L10D9E:
 L10DAC:
         STE     $00F4,Z
 L10DB0:
-        BRSET   $0C30,Z,#$40,L10E3E
-        BRSET   $0C30,Z,#$80,L10DEE
+        BRSET   >ThrottleState,Z,#$40,L10E3E
+        BRSET   >ThrottleState,Z,#$80,L10DEE
         LDAA    $106C
         BRCLR   >FuelModeFlags,Z,#$04,L10DCC
         ADDA    #$03
@@ -1347,20 +1347,20 @@ L10DCC:
 L10DD8:
         BSET    >FuelModeFlags,Z,#$04
         LDAA    >Map,Z
-        LDX     #FuelMap
+        LDX     #WarmupMapScaleLowSpeed
         JSR     Lookup2D
-        LDX     #FuelMapCoolant
+        LDX     #WarmupMapCoolantLowSpeed
         BRA     L10E34
 L10DEE:
         LDAA    >EngineRpm,Z
-        LDX     #FuelRpm
+        LDX     #WarmupRpmScaleIdle
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #FuelRpmCoolant
+        LDX     #WarmupRpmCoolantIdle
         JSR     Lookup3D
         STAA    $F2,Z
         LDAA    $0C47,Z
-        LDX     #FuelV0C47
+        LDX     #WarmupIdleTimeFactor
         JSR     Lookup2D
         LDAA    $F2,Z
         MUL
@@ -1372,16 +1372,16 @@ L10DEE:
         STD     $F4,Z
 L10E24:
         LDAA    >Map,Z
-        LDX     #FuelMap2
+        LDX     #WarmupMapScale
         JSR     Lookup2D
-        LDX     #FuelMapCoolant2
+        LDX     #WarmupMapCoolant
 L10E34:
         LDAB    >CoolantTemp,Z
         JSR     Lookup3D
         BRA     L10E4A
 L10E3E:
         LDAA    >CoolantTemp,Z
-        LDX     #FuelCoolant2
+        LDX     #WarmupCoolantAdder
         JSR     Lookup2D
 L10E4A:
         CLRA
@@ -1389,7 +1389,7 @@ L10E4A:
         ASLD
         STD     $F4,Z
         LDAA    <Baro,Z
-        LDX     #FuelBaro2
+        LDX     #WarmupBaroFactor
         JSR     Lookup2D
         LDE     $00F4,Z
         CLRB
@@ -1402,17 +1402,17 @@ L10E4A:
         BRSET   $0505,Z,#$08,L10E92
         STE     $00F0,Z
         LDAA    $0E,Z
-        LDX     #FuelV000E
+        LDX     #WarmupRunTimeFactor
         JSR     Lookup2D
         CLRB
         EMUL
         ADCE    $00F0,Z
 L10E92:
-        BRSET   $0C30,Z,#$40,L10EFE
+        BRSET   >ThrottleState,Z,#$40,L10EFE
         LDAA    >EngineRpm,Z
-        LDX     #FuelRpm5
-        BRSET   $0C30,Z,#$80,L10EAA
-        LDX     #FuelRpm4
+        LDX     #WarmupRpmFactorIdle
+        BRSET   >ThrottleState,Z,#$80,L10EAA
+        LDX     #WarmupRpmFactor
 L10EAA:
         JSR     Lookup2D
         CLRB
@@ -1430,10 +1430,10 @@ L10ED6:
         CMPA    $1152
         BCC     L10EFE
         LDAA    >Map,Z
-        LDX     #FuelMap3
+        LDX     #ColdSoakMapScale
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #FuelMapCoolant3
+        LDX     #ColdSoakMapCoolant
         JSR     Lookup3D
         STAA    $07E7,Z
         CLRB
@@ -1444,7 +1444,7 @@ L10EFE:
         STAA    $07E7,Z
 L10F04:
         ADDE    #$0100
-        STE     $07E4,Z
+        STE     >WarmupFuelFactor,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -1486,11 +1486,11 @@ L10F5E:
 Sub_10F60:
         BRSET   $032C,#$80,L10FD2
         BRCLR   $0443,Z,#$80,L10F8C
-        BRSET   $0C30,Z,#$40,L10F8C
-        LDAA    $077A,Z
+        BRSET   >ThrottleState,Z,#$40,L10F8C
+        LDAA    >DecelFuelFactor,Z
         BNE     L10F8C
         LDAA    $07E8,Z
-        BRSET   $0C30,Z,#$80,L10F86
+        BRSET   >ThrottleState,Z,#$80,L10F86
         LDAA    $07EA,Z
 L10F86:
         BEQ     L10F8C
@@ -1501,7 +1501,7 @@ L10F8C:
         BRSET   $50,Z,#$28,L10FC0
         BRSET   $043D,Z,#$80,L10FC0
         BRSET   $06B4,Z,#$80,L10FC0
-        BRSET   $0C30,Z,#$40,L10FC0
+        BRSET   >ThrottleState,Z,#$40,L10FC0
         LDAB    $0801,Z
         CMPB    #$0C
         BCC     L10FB6
@@ -1530,11 +1530,11 @@ L10FD2:
 Sub_10FD8:
         BRSET   $032C,#$80,L1104A
         BRCLR   $0443,Z,#$80,L11004
-        BRSET   $0C30,Z,#$40,L11004
-        LDAA    $077A,Z
+        BRSET   >ThrottleState,Z,#$40,L11004
+        LDAA    >DecelFuelFactor,Z
         BNE     L11004
         LDAA    $07E9,Z
-        BRSET   $0C30,Z,#$80,L10FFE
+        BRSET   >ThrottleState,Z,#$80,L10FFE
         LDAA    $07EA,Z
 L10FFE:
         BEQ     L11004
@@ -1545,7 +1545,7 @@ L11004:
         BRSET   $50,Z,#$28,L11038
         BRSET   $043D,Z,#$80,L11038
         BRSET   $06B4,Z,#$80,L11038
-        BRSET   $0C30,Z,#$40,L11038
+        BRSET   >ThrottleState,Z,#$40,L11038
         LDAB    $0801,Z
         CMPB    #$0C
         BCC     L1102E
@@ -1594,10 +1594,10 @@ Sub_11066:
         LDAA    $0813,Z
         DECA
         BNE     L11088
-        LDAA    $017C,Z
+        LDAA    >EngineOffTime,Z
         INCA
         BEQ     L11086
-        STAA    $017C,Z
+        STAA    >EngineOffTime,Z
 L11086:
         LDAA    #$13
 L11088:
@@ -1627,7 +1627,7 @@ L110B8:
         BEQ     L110D2
         STAA    $07D9,Z
 L110D2:
-        BRSET   $0C30,Z,#$40,L1111E
+        BRSET   >ThrottleState,Z,#$40,L1111E
         LDAA    >EngineRpm,Z
         CMPA    $1176
         BCC     L1111E
@@ -1671,7 +1671,7 @@ L11130:
 L1114A:
         STAA    $07DD,Z
 L1114E:
-        LDX     #FuelV07D9
+        LDX     #IdleEnrichRunTime
         LDAA    $07D9,Z
         JSR     Lookup2D
         STAA    $F0,Z
@@ -1679,12 +1679,12 @@ L1114E:
         CLRA
         BRA     L11172
 L11166:
-        LDAA    $0198,Z
-        LDX     #FuelV0198
+        LDAA    >FlexEthanol,Z
+        LDX     #IdleEnrichEthanolScale
         JSR     Lookup2D
 L11172:
-        LDAB    $0803,Z
-        LDX     #FuelV07D9V0803
+        LDAB    >StartAirTemp,Z
+        LDX     #IdleEnrichEthanolAirTemp
         JSR     Lookup3D
         CLRA
         ASLD
@@ -1696,8 +1696,8 @@ L11172:
         LDAA    $07DD,Z
         CLRB
         EMUL
-        LDAA    $017C,Z
-        LDX     #FuelV017C
+        LDAA    >EngineOffTime,Z
+        LDX     #IdleEnrichSoakTime
         JSR     Lookup2D
         STAA    $07DE,Z
         CLRB
@@ -1716,7 +1716,7 @@ L111BE:
         LSRD
         LSRD
         LSRD
-        STAB    $07DA,Z
+        STAB    >IdleEnrichFactor,Z
         TST     $F0,Z
         BNE     L111D0
 L111CC:
@@ -1747,7 +1747,7 @@ L111DA:
         LDAA    >CoolantTemp,Z
         CMPA    $0B4D
         BCS     L11226
-        LDX     #FuelCoolant
+        LDX     #HotEngineEnrich
         JSR     Lookup2D
         STAA    $0811,Z
         BSET    $0770,Z,#$02
@@ -1810,13 +1810,13 @@ L112A6:
         BEQ     L112F4
         BRSET   $0775,Z,#$08,L112E0
         BRSET   $0775,Z,#$80,L112C0
-        BRSET   $0C30,Z,#$80,L112C0
+        BRSET   >ThrottleState,Z,#$80,L112C0
         BRA     L112E0
 L112C0:
         LDAA    >CoolantTemp,Z
         CMPA    $0B2B
         BCS     L112F4
-        BRSET   $0C30,Z,#$80,L112F4
+        BRSET   >ThrottleState,Z,#$80,L112F4
         LDAA    >EngineRpm,Z
         SUBA    >IdleTarget,Z
         BCS     L112E0
@@ -1939,7 +1939,7 @@ L11426:
         BCLR    $0775,Z,#$F8
 L1142A:
         LDAA    >EngineRpm,Z
-        LDX     #FuelEventRpm2
+        LDX     #InjectionModeRpmFactor
         JSR     Lookup2D
         CLRB
         BRCLR   $077C,Z,#$01,L1144E
@@ -2003,14 +2003,14 @@ L114B6:
         LSRD
         LSRD
         LSRD
-        SUBD    $0766,Z
+        SUBD    >CrankPulse,Z
         BCC     L114E4
         COMD
-        STD     $0766,Z
+        STD     >CrankPulse,Z
         XGDE
         SDE
         BLS     L114E2
-        LDE     $0766,Z
+        LDE     >CrankPulse,Z
         BRA     L114E8
 L114E2:
         XGDE
@@ -2248,14 +2248,14 @@ L11740:
         BCC     L11754
         CLRA
 L11754:
-        LDX     #FuelEventTable3
+        LDX     #DecelCutRpmFactor
         JSR     Lookup2D
         CLRB
         EMUL
         ADCE    #$0000
         STE     $04F4,Z
 L11768:
-        BRSET   $0C30,Z,#$80,L11774
+        BRSET   >ThrottleState,Z,#$80,L11774
         BRSET   $0338,#$10,L117D0
 L11774:
         LDAB    $07D5,Z
@@ -2268,12 +2268,12 @@ L11774:
         BCS     L1178E
         TBA
 L1178E:
-        LDAB    $07D4,Z
+        LDAB    >AccelMapGain,Z
         MUL
         BRA     L117AC
 L11796:
         LDE     #$FFFF
-        LDD     $0F00,Z
+        LDD     >FlexFuelFactor,Z
         CPD     #$0100
         LBCC    L1196C
         LBRA    L11918
@@ -2299,10 +2299,10 @@ L117CA:
 L117D0:
         CLRE
         STE     >MapAccelFuel,Z
-        STE     $07CA,Z
+        STE     >AccelTpsFuel,Z
         BRA     L117F8
 L117DC:
-        LDE     $07CA,Z
+        LDE     >AccelTpsFuel,Z
         LDAB    $07D7,Z
         CLRA
         ADDB    #$80
@@ -2330,7 +2330,7 @@ L11812:
         LDE     >MapAccelFuel,Z
 L1181C:
         ASLE
-        LDD     $07D0,Z
+        LDD     >AccelFactor,Z
         EMUL
         STE     $04F7,Z
         STAA    $04F9,Z
@@ -2376,7 +2376,7 @@ L1188A:
         RORE
         BRCLR   $0D02,Z,#$80,L118B8
         LDAA    >EngineRpm,Z
-        LDX     #FuelEventRpm3
+        LDX     #FuelEventRpmAdder
         JSR     Lookup2D
         CLRA
         ASLD
@@ -2385,7 +2385,7 @@ L1188A:
         ADE
         LBCS    L11796
 L118B8:
-        ADDE    $080C,Z
+        ADDE    >FuelPulseAdder,Z
         LBCS    L11796
         PSHM    X,Y,K
         BRCLR   $033A,#$01,L11916
@@ -2421,7 +2421,7 @@ L1190E:
 L11916:
         PULM    K,Y,X
 L11918:
-        LDD     $0F00,Z
+        LDD     >FlexFuelFactor,Z
         CPD     #$0100
         BEQ     L1192E
         EMUL
@@ -2825,7 +2825,7 @@ L11D54:
         STD     $0432,Z
         BRCLR   >FuelModeFlags,Z,#$20,L11D72
         BRCLR   >FuelModeFlags,Z,#$01,L11D72
-        LDAA    $07AA,Z
+        LDAA    >WotTimeEnrich,Z
         BEQ     L11D72
         JSR     ScaleByFraction
 L11D72:
@@ -2868,12 +2868,12 @@ Sub_11DA6:
         BEQ     L11E04
         BCC     L11DE2
         LDAA    >StartCoolantTemp,Z
-        LDX     #FuelEventStartCoolant
+        LDX     #MapFilterRiseCoolant
         JSR     Lookup2D
         STAB    $F0,Z
         LDAA    $0474,Z
         BEQ     L11DDC
-        LDX     #FuelEventV0474
+        LDX     #MapFilterRiseV0474
         JSR     Lookup2D
         SUBB    $F0,Z
         BCS     L11DDA
@@ -2881,13 +2881,13 @@ Sub_11DA6:
 L11DDA:
         NEGB
 L11DDC:
-        STAB    $0A7F,Z
+        STAB    >MapFilterCoef,Z
         BRA     L11E04
 L11DE2:
-        LDX     #FuelEventStartCoolant5
+        LDX     #MapFilterFallCoolant
         LDAA    >StartCoolantTemp,Z
         JSR     Lookup2D
-        STAA    $0A7F,Z
+        STAA    >MapFilterCoef,Z
         TZX
         LDX     #$8A7C
         ORP     #$00E0
@@ -2898,16 +2898,16 @@ L11E04:
         CMPA    >Throttle,Z
         BEQ     L11E44
         BCC     L11E22
-        LDX     #FuelEventStartCoolant2
+        LDX     #TpsFilterRiseCoolant
         LDAA    >StartCoolantTemp,Z
         JSR     Lookup2D
-        STAA    $0A73,Z
+        STAA    >TpsFilterCoef,Z
         BRA     L11E44
 L11E22:
-        LDX     #FuelEventStartCoolant6
+        LDX     #TpsFilterFallCoolant
         LDAA    >StartCoolantTemp,Z
         JSR     Lookup2D
-        STAA    $0A73,Z
+        STAA    >TpsFilterCoef,Z
         TZX
         LDX     #$8A70
         ORP     #$00E0
@@ -2961,7 +2961,7 @@ L11EAE:
         CLR     $07C0,Z
         CLR     $07BF,Z
         CLR     $07C1,Z
-        CLR     $07C2,Z
+        CLR     >DecelLeanFuel,Z
         CLR     $07BC,Z
         CLR     $07BD,Z
         CLR     $07BE,Z
@@ -2994,14 +2994,14 @@ L11EFA:
         BSET    $07BB,Z,#$02
 L11F22:
         LDAA    >EngineRpm,Z
-        LDX     #FuelEventRpm
+        LDX     #DecelLeanRpmScale
         JSR     Lookup2D
         STAA    $F0,Z
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #FuelEventThrottle
+        LDX     #DecelLeanThrottleScale
         JSR     Lookup2D
         LDAA    $F0,Z
-        LDX     #FuelEventTable2
+        LDX     #DecelLeanAirflow
         JSR     Lookup3DNorm
         STAA    $F2,Z
         LDAA    >ThrottleLast,Z
@@ -3009,10 +3009,10 @@ L11F22:
         BCC     L11F52
         CLRA
 L11F52:
-        LDX     #FuelEventThrottle
+        LDX     #DecelLeanThrottleScale
         JSR     Lookup2D
         LDAA    $F0,Z
-        LDX     #FuelEventTable2
+        LDX     #DecelLeanAirflow
         JSR     Lookup3DNorm
         SUBA    $F2,Z
         BCC     L11F6A
@@ -3023,7 +3023,7 @@ L11F6A:
         MUL
         TDE
         LDAA    >StartCoolantTemp,Z
-        LDX     #FuelEventStartCoolant4
+        LDX     #DecelLeanMapCoolantFactor
         JSR     Lookup2D
         CLRB
         EMUL
@@ -3060,7 +3060,7 @@ L11FD2:
         MUL
         TDE
         LDAA    >StartCoolantTemp,Z
-        LDX     #FuelEventStartCoolant3
+        LDX     #DecelLeanThrottleCoolantFactor
         JSR     Lookup2D
         CLRB
         EMUL
@@ -3083,10 +3083,10 @@ L11FF6:
         BCC     L12042
         ASLA
         ASLA
-        LDX     #FuelEventTime
+        LDX     #DecelLeanTimeScale
         JSR     Lookup2D
         LDAB    >StartCoolantTemp2,Z
-        LDX     #FuelEventTimeStartCoolant
+        LDX     #DecelLeanTimeCoolant
         JSR     Lookup3D
         STAA    $07C1,Z
         BEQ     L12042
@@ -3107,12 +3107,12 @@ L1205C:
         TSTA
         BEQ     L12092
         STAA    $F2,Z
-        LDX     #FuelEventRpm4
+        LDX     #DecelLeanRpmFactor
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         CLRA
         TDE
-        LDX     #FuelEventMap
+        LDX     #DecelLeanMapAdder
         LDAA    >Map,Z
         JSR     Lookup2D
         CLRA
@@ -3134,7 +3134,7 @@ L1209A:
         TSTA
         BEQ     L120C0
         STAA    $F0,Z
-        LDX     #FuelEventBaro
+        LDX     #DecelLeanBaroFactor
         LDAA    <Baro,Z
         JSR     Lookup2D
         LDAA    $F0,Z
@@ -3148,7 +3148,7 @@ L120B2:
         BCC     L120C0
         LDAA    $14FE
 L120C0:
-        STAA    $07C2,Z
+        STAA    >DecelLeanFuel,Z
 L120C4:
         LDAA    $07BB,Z
         ANDA    #$05
@@ -3159,10 +3159,10 @@ L120CC:
         DEC     $07C3,Z
         BRA     L1211A
 L120D8:
-        TST     $07C2,Z
+        TST     >DecelLeanFuel,Z
         BEQ     L120CC
         LDAA    $14FA
-        CMPA    $07C2,Z
+        CMPA    >DecelLeanFuel,Z
         BCS     L120FC
         LDAA    $14F7
         CMPA    $07BC,Z
@@ -3193,9 +3193,9 @@ Sub_1211C:
         LDAB    >CoolantTemp,Z
         CMPB    $0AE9
         BHI     L12146
-        LDAA    $0C44,Z
+        LDAA    >CrankEvents,Z
         BEQ     L12146
-        LDX     #CrankFuelV0C44
+        LDX     #CrankCoolantAdder
         JSR     Lookup2D
         ADDB    >CoolantTemp,Z
         BCC     L1213C
@@ -3206,12 +3206,12 @@ L1213C:
         BCC     L12146
         TAB
 L12146:
-        STAB    $0768,Z
-        LDAA    $0198,Z
-        LDX     #CrankFuelV0198
+        STAB    >CrankCoolant,Z
+        LDAA    >FlexEthanol,Z
+        LDX     #CrankEthanolScale
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #CrankFuelV0198Coolant
+        LDX     #CrankEthanolCoolant
         JSR     Lookup3D
         STAA    $0765,Z
         LDAB    #$00
@@ -3299,7 +3299,7 @@ L12228:
         INCB
         STAB    $076E,Z
         BRSET   $09BC,Z,#$20,L1224E
-        CLRW    $07CA,Z
+        CLRW    >AccelTpsFuel,Z
         LDAA    >Throttle,Z
         CMPA    #$D0
         LBHI    L1224E
@@ -3307,7 +3307,7 @@ L12228:
         CMPA    $09F1
         LBLS    L12262
 L1224E:
-        CLRW    $0766,Z
+        CLRW    >CrankPulse,Z
         CLRW    $0780,Z
         CLRW    $0782,Z
         CLRW    $076B,Z
@@ -3324,54 +3324,54 @@ L1227C:
         BRCLR   $0642,Z,#$80,L1228A
         BRSET   $064F,Z,#$20,L1229E
 L1228A:
-        LDAB    $0768,Z
-        BRSET   $0C30,Z,#$80,L1229E
+        LDAB    >CrankCoolant,Z
+        BRSET   >ThrottleState,Z,#$80,L1229E
         CMPB    $09F0
         BCC     L1229E
         LDAB    $09F0
 L1229E:
-        LDAA    $0A91,Z
-        LDX     #CrankFuelV0A91Coolant
+        LDAA    >FlexEthanolScaled,Z
+        LDX     #CrankBasePulse
         JSR     Lookup3D
         MUL
         STD     $F0,Z
-        LDX     #CrankFuelRpm2
-        BRSET   $0C30,Z,#$80,L122BC
-        LDX     #CrankFuelRpm
+        LDX     #CrankRpmDecayClosed
+        BRSET   >ThrottleState,Z,#$80,L122BC
+        LDX     #CrankRpmDecay
 L122BC:
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         STAA    $FE,Z
-        LDX     #CrankFuelV00FC2
+        LDX     #CrankRpmDecayWeight
         LDAA    $FC,Z
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         NEGD
         STD     $F2,Z
-        LDX     #CrankFuelV0769
+        LDX     #CrankV0769Decay
         LDAA    $0769,Z
         JSR     Lookup2D
         STAA    $FE,Z
-        LDX     #CrankFuelV00FC3
+        LDX     #CrankV0769DecayWeight
         LDAA    $FC,Z
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         NEGD
         STD     $F4,Z
-        LDX     #CrankFuelBaro
+        LDX     #CrankBaroDecay
         LDAA    <Baro,Z
         JSR     Lookup2D
         STAA    $FE,Z
-        LDX     #CrankFuelV00FC5
+        LDX     #CrankBaroDecayWeight
         LDAA    $FC,Z
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         NEGD
         STD     $F6,Z
-        LDX     #CrankFuelVacuum
+        LDX     #CrankVacuumFactor
         LDAA    >ManifoldVacuum,Z
         JSR     Lookup2D
         CLRB
@@ -3380,7 +3380,7 @@ L122BC:
         CMPA    $09F8
         BHI     L1233E
         LDAA    $FC,Z
-        LDX     #CrankFuelV00FC4
+        LDX     #CrankCoolantAdder2
         JSR     Lookup2D
         CLRB
         BRA     L12340
@@ -3419,7 +3419,7 @@ L1237A:
         EMUL
         TDE
 L1238A:
-        STE     $0766,Z
+        STE     >CrankPulse,Z
         LDD     #$2AAA
         BRSET   $ABB1,#$06,L1239C
         LDD     #$4000
@@ -3429,7 +3429,7 @@ L1239C:
         LDD     #$FFFF
         BRA     L123B2
 L123A6:
-        LDE     $0766,Z
+        LDE     >CrankPulse,Z
         CLRA
         LDAB    $ABB1
         EMUL
@@ -3438,7 +3438,7 @@ L123B2:
         STD     $0782,Z
         TDE
         LDAA    $FC,Z
-        LDX     #CrankFuelV00FC
+        LDX     #CrankPulseCoolantFactor
         JSR     Lookup2D
         CLRB
         EMUL
@@ -3603,7 +3603,7 @@ L12584:
         BRCLR   $0338,#$04,L1259E
         LDAA    $7563
 L1259E:
-        LDX     #FuelEventCal
+        LDX     #FuelEventCalAdder
         JSR     Lookup2D
         CLRA
         ADE
@@ -3655,7 +3655,7 @@ L12612:
         DEC     $076F,Z
         BRA     L12604
 L1261E:
-        LDE     $0766,Z
+        LDE     >CrankPulse,Z
         LDAB    $ABB1
 L12626:
         DECB
@@ -4641,7 +4641,7 @@ Sub_1430C:
         LDAA    $075E,Z
         STAA    $F0,Z
         BCLR    $F0,Z,#$04
-        LDAA    $0C30,Z
+        LDAA    >ThrottleState,Z
         BITA    #$81
         BNE     L14346
         BRCLR   $0339,#$80,L14338
@@ -5541,7 +5541,7 @@ L14C82:
         BRCLR   $0773,Z,#$C0,L14C8C
         BSET    $0761,Z,#$03
 L14C8C:
-        TST     $077A,Z
+        TST     >DecelFuelFactor,Z
         BEQ     L14CE6
         BSET    $0761,Z,#$03
         BSET    $075F,Z,#$C0
@@ -5633,7 +5633,7 @@ L14D50:
         LBRA    L14DD4
 L14D6E:
         BRCLR   $05B0,Z,#$40,L14DD4
-        BRSET   $0C30,Z,#$80,L14DCC
+        BRSET   >ThrottleState,Z,#$80,L14DCC
         BRSET   $001D,X,#$08,L14D8C
         BRCLR   $032F,#$40,L14D9C
         BRCLR   $001D,Y,#$08,L14D9C
@@ -5840,7 +5840,7 @@ L14FB8:
         BCLR    $F0,Z,#$40
         LDAB    $16B9
         BRSET   >FuelModeFlags,Z,#$20,L14FCC
-        TST     $077A,Z
+        TST     >DecelFuelFactor,Z
         BEQ     L14FD2
 L14FCC:
         STAB    $0753,Z
@@ -5898,7 +5898,7 @@ L1505A:
         CMPB    $16BA
         LBCC    L1517E
         BRSET   $0760,Z,#$03,L15172
-        BRCLR   $0C30,Z,#$80,L150A0
+        BRCLR   >ThrottleState,Z,#$80,L150A0
         LDAA    $042C,Z
         LDAB    $16BD
         BRCLR   $017D,Z,#$01,L15086
@@ -5936,7 +5936,7 @@ L150C8:
         DEC     $07BA,Z
 L150DC:
         BRSET   $064A,Z,#$80,L150F2
-        BRCLR   $0C30,Z,#$80,L15128
+        BRCLR   >ThrottleState,Z,#$80,L15128
         LDAA    $07B8,Z
         CMPA    $16BC
         BCS     L15128
@@ -5996,7 +5996,7 @@ L1517E:
         BEQ     L151B4
         BSET    $F0,Z,#$08
         LDAA    $042C,Z
-        LDX     #O2V042C
+        LDX     #O2V042CLimit
         JSR     Lookup2D
         CMPA    $0752,Z
         BHI     L151A8
@@ -6482,7 +6482,7 @@ L1561C:
         TDE
         CLRA
         LDAB    $17,X
-        BRSET   $0C30,Z,#$80,L15646
+        BRSET   >ThrottleState,Z,#$80,L15646
         TST     $0755,Z
         BNE     L15646
         TST     $0474,Z
@@ -6727,20 +6727,20 @@ Sub_15860:
         BEQ     L158DE
         TST     $0439,Z
         BNE     L158C4
-        TST     $07C2,Z
+        TST     >DecelLeanFuel,Z
         BNE     L158CA
-        TSTW    $080C,Z
+        TSTW    >FuelPulseAdder,Z
         BNE     L158CA
         LDD     $07C8,Z
         CPD     $1871
         BCC     L158CA
-        LDD     $07C6,Z
+        LDD     >TipInFuel,Z
         CPD     $1871
         BCC     L158CA
         BRCLR   $0761,Z,#$30,L158DE
         TSTW    $07C8,Z
         BNE     L158CA
-        TSTW    $07C6,Z
+        TSTW    >TipInFuel,Z
         BNE     L158CA
         BRCLR   >MainLoopPhaseMask,Z,#$04,L158AE
         TST     $0750,Z
@@ -6784,7 +6784,7 @@ Sub_158F4:
         CLRB
         TBXK
         LDX     #$1856
-        BRSET   $0C30,Z,#$80,L15998
+        BRSET   >ThrottleState,Z,#$80,L15998
         LDAB    #$0C
         BRSET   $032E,#$40,L1592A
         BRCLR   $0C31,Z,#$80,L15922
@@ -7049,7 +7049,7 @@ L15BC4:
 L15BD6:
         TSTA
         BPL     L15BF6
-        TST     $077A,Z
+        TST     >DecelFuelFactor,Z
         BNE     L15BF6
         CPY     #$878A
         BEQ     L15BEC
@@ -7187,7 +7187,7 @@ L15D44:
         BRCLR   $0050,Z,#$10,L15D58
         LDAB    $1200
 L15D58:
-        BRSET   $0C30,Z,#$80,L15D72
+        BRSET   >ThrottleState,Z,#$80,L15D72
         LDAB    $186B
         BRCLR   $032C,#$40,L15D72
         BRCLR   $0050,Z,#$10,L15D72
@@ -7305,7 +7305,7 @@ L15E84:
         LDAA    $00,X
 L15E86:
         BRSET   $07BB,Z,#$80,L15E92
-        BRCLR   $077A,Z,#$FF,L15E96
+        BRCLR   >DecelFuelFactor,Z,#$FF,L15E96
 L15E92:
         BPL     L15E96
         CLRA
@@ -7365,7 +7365,7 @@ L15F00:
 Sub_15F06:
         PSHM    D
         BRCLR   $032C,#$40,L15F9A
-        LDAA    $0198,Z
+        LDAA    >FlexEthanol,Z
         CMPA    $11F9
         BCC     L15F2C
         BRCLR   $0770,Z,#$04,L15F9A
@@ -7593,7 +7593,7 @@ Sub_160A0:
         CLRB
         TBYK
         LDY     #$17F5
-        BRCLR   $0C30,Z,#$81,L160BA
+        BRCLR   >ThrottleState,Z,#$81,L160BA
         LDY     #$17F8
 L160BA:
         LDE     $000A,X
@@ -7754,7 +7754,7 @@ L16208:
         CMPA    $186E
         BLE     L16254
         LDAA    >EngineRpm,Z
-        LDX     #O2Rpm
+        LDX     #TrimUpperLimitRpm
         JSR     Lookup2D
         ADDA    $07B0,Z
         BVC     L1622A
@@ -7767,7 +7767,7 @@ L16234:
         CMPA    $186F
         BGE     L16254
         LDAA    >EngineRpm,Z
-        LDX     #O2Rpm2
+        LDX     #TrimLowerLimitRpm
         JSR     Lookup2D
         ADDA    $07B0,Z
         BVC     L1624E
@@ -7794,7 +7794,7 @@ L1626C:
         CMPA    $186E
         BLE     L162B8
         LDAA    >EngineRpm,Z
-        LDX     #O2Rpm
+        LDX     #TrimUpperLimitRpm
         JSR     Lookup2D
         ADDA    $07B1,Z
         BVC     L1628E
@@ -7807,7 +7807,7 @@ L16298:
         CMPA    $186F
         BGE     L162B8
         LDAA    >EngineRpm,Z
-        LDX     #O2Rpm2
+        LDX     #TrimLowerLimitRpm
         JSR     Lookup2D
         ADDA    $07B1,Z
         BVC     L162B2
@@ -8064,7 +8064,7 @@ L17044:
         STAA    $01BD,Z
         STAA    $0F25,Z
         STAA    $01C3,Z
-        LDX     #Sys17000Cal
+        LDX     #FlexLearnCal
         JSR     Lookup2D
         STAA    $01B5,Z
         LDAA    $07A7
@@ -8123,7 +8123,7 @@ L1711A:
         STAA    $01BD,Z
         STAA    $0F25,Z
         STAA    $01C3,Z
-        LDX     #Sys17000Cal
+        LDX     #FlexLearnCal
         JSR     Lookup2D
         STAA    $01B5,Z
 L17144:
@@ -8138,14 +8138,14 @@ L1715C:
         BPL     L17162
         CLRA
 L17162:
-        LDX     #Sys17000V006B2
+        LDX     #FlexLearnV006B2
         JSR     Lookup2D
         STAA    $0F40,Z
         LDAA    $6B,Z
         BPL     L17174
         CLRA
 L17174:
-        LDX     #Sys17000V006B
+        LDX     #FlexLearnV006B
         JSR     Lookup2D
         STAA    $0F41,Z
         LDAA    $01B5,Z
@@ -8375,7 +8375,7 @@ L17448:
         STAA    $0F25,Z
         STAA    $01BD,Z
         STAA    $0F3A,Z
-        LDX     #Sys17000Cal
+        LDX     #FlexLearnCal
         JSR     Lookup2D
         STAA    $01B5,Z
         BRA     L17492
@@ -8550,7 +8550,7 @@ Sub_179CC:
         CPD     #$FFFF
         BCC     L17A18
         LDD     $01A2,Z
-        ADDD    $07C6,Z
+        ADDD    >TipInFuel,Z
         STD     $01A2,Z
         BCC     L17A18
         INCW    $01A0,Z
@@ -8632,11 +8632,11 @@ L17AAC:
         STAB    $01BC,Z
 L17AB8:
         LDAA    $01BB,Z
-        LDX     #Sys17000Table
+        LDX     #FlexLearnTable2
         JSR     Lookup2D
         STAA    $01B9,Z
         LDAA    $01BC,Z
-        LDX     #Sys17000Table
+        LDX     #FlexLearnTable2
         JSR     Lookup2D
         STAA    $01BA,Z
         LDAA    $01BC,Z
@@ -8951,7 +8951,7 @@ L17EA0:
         BPL     L17EB0
         COMA
 L17EB0:
-        LDX     #Sys17000Trim
+        LDX     #FlexLearnTrim
         JSR     Lookup2D
         STAA    $0F2B,Z
 L17EBC:
@@ -9009,7 +9009,7 @@ Sub_17F7E:
 L17FA4:
         TST     $0431,Z
         BEQ     L17FC2
-        BRSET   $0C30,Z,#$40,L17FC2
+        BRSET   >ThrottleState,Z,#$40,L17FC2
         STE     $04F4,Z
         LDAA    $01B8,Z
         ASRA
@@ -9058,7 +9058,7 @@ L18028:
         STAA    $0F48,Z
         LDAA    $6B,Z
         CLRA
-        LDX     #Sys17000V006B2
+        LDX     #FlexLearnV006B2
         JSR     Lookup2D
         STAA    $0F40,Z
         BRSET   $01AF,Z,#$40,L180A6
@@ -9078,7 +9078,7 @@ L18070:
         BCS     L1809A
         STAA    $01B4,Z
         STAA    $0F3A,Z
-        LDX     #Sys17000Cal
+        LDX     #FlexLearnCal
         JSR     Lookup2D
         STAA    $01B5,Z
 L1809A:
@@ -9100,7 +9100,7 @@ L180B8:
         BCS     L180E2
         STAA    $01B4,Z
         STAA    $0F3A,Z
-        LDX     #Sys17000Cal
+        LDX     #FlexLearnCal
         JSR     Lookup2D
         STAA    $01B5,Z
 L180E2:
@@ -9139,11 +9139,11 @@ L18136:
 L18144:
         LDAA    $01B4,Z
         STAA    $0F3A,Z
-        LDX     #Sys17000Cal
+        LDX     #FlexLearnCal
         JSR     Lookup2D
         STAA    $01B5,Z
         LDAA    >StartCoolantTemp2,Z
-        LDX     #Sys17000StartCoolant
+        LDX     #FlexLearnStartCoolant
         JSR     Lookup2D
         STAA    $0F24,Z
         RTS
@@ -9243,7 +9243,7 @@ L1824A:
         STAA    $0F37,Z
         PSHM    X
         LDAA    $019C,Z
-        LDX     #Sys17000V019C
+        LDX     #FlexLearnV019C
         JSR     Lookup2D
         STAA    $0F26,Z
         PULM    X
@@ -9308,11 +9308,11 @@ L1841A:
         LSRD
         STAB    $0F22,Z
         TBA
-        LDX     #FuelEventTable
+        LDX     #FlexLearnTable
         JSR     Lookup2D
         STAA    $0F20,Z
         LDAA    $0F22,Z
-        LDX     #FuelEventV0F22
+        LDX     #FlexLearnV0F22
         JSR     Lookup2D
         STAA    $0F21,Z
         LDD     $01A0,Z
@@ -9603,7 +9603,7 @@ L1876C:
         STAA    $01B4,Z
 L18778:
         STAA    $0F3A,Z
-        LDX     #Sys17000Cal
+        LDX     #FlexLearnCal
         JSR     Lookup2D
         STAA    $01B5,Z
 L18788:
@@ -9651,7 +9651,7 @@ L187E6:
 Sub_187E8:
         BRCLR   $01AD,Z,#$80,L18834
         LDAA    $042C,Z
-        LDX     #Sys17000V042C
+        LDX     #FlexLearnV042C
         JSR     Lookup2D
         STAA    $0F1D,Z
         CLRA
@@ -9837,7 +9837,7 @@ L18A46:
         STAA    $0F3A,Z
         STAA    $01BD,Z
         STAA    $01B4,Z
-        LDX     #Sys17000Cal
+        LDX     #FlexLearnCal
         JSR     Lookup2D
         STAA    $01B5,Z
 L18A5E:
@@ -9892,7 +9892,7 @@ L18ACE:
         BPL     L18ADE
         COMA
 L18ADE:
-        LDX     #Sys17000Trim
+        LDX     #FlexLearnTrim
         JSR     Lookup2D
         STAA    $0F2B,Z
         BRA     L18B20
@@ -9939,7 +9939,7 @@ Sub_18B22:
         BPL     L18B72
         COMA
 L18B72:
-        LDX     #Sys17000Trim
+        LDX     #FlexLearnTrim
         JSR     Lookup2D
         STAA    $0F2B,Z
         BRA     L18BA8
@@ -10052,7 +10052,7 @@ L18CE8:
         LDAA    $01B4,Z
         STAA    $0F3A,Z
 L18CF0:
-        LDX     #Sys17000Cal
+        LDX     #FlexLearnCal
         JSR     Lookup2D
         STAA    $01B5,Z
         BRA     L18D40
@@ -10344,7 +10344,7 @@ L19220:
         EDIVS
         STX     $030C,Z
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant5
+        LDX     #IdleCoolant2
         JSR     Lookup2D
         STAA    $FF,Z
         LDD     $030A,Z
@@ -10383,7 +10383,7 @@ L19290:
         JSR     Lookup2D
         STAA    $033D,Z
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant6
+        LDX     #IdleCoolant3
         JSR     Lookup2D
         STAA    $033B,Z
         ADDA    $033D,Z
@@ -10422,7 +10422,7 @@ L192F4:
         LBPL    L1937C
         TST     $0357,Z
         LBNE    L193EA
-        LDX     #IdleV0339
+        LDX     #IdleV0339Scale
         JSR     Lookup2D
         CLRA
         TDE
@@ -10462,7 +10462,7 @@ L19368:
         BRA     L193E2
 L1937C:
         LDAA    $FE,Z
-        LDX     #IdleV00FE3
+        LDX     #IdleV00FEScale
         JSR     Lookup2D
         CLRA
         TDE
@@ -10570,7 +10570,7 @@ L19498:
 L1949E:
         TDE
         LDAA    <Baro,Z
-        LDX     #IdleBaro6
+        LDX     #IdleBaro
         JSR     Lookup2D
         CLRA
         SDE
@@ -10853,7 +10853,7 @@ L1974A:
         BRCLR   $0C31,Z,#$20,L1977A
 L1975E:
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeed2
+        LDX     #IdleSpeedFactor
         JSR     Lookup2D
         CLRA
         EMULS
@@ -10870,7 +10870,7 @@ L1977A:
         TSTA
         BNE     L197B6
         LDAA    <Baro,Z
-        LDX     #IdleBaro3
+        LDX     #IdleBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         EMUL
@@ -10979,11 +10979,11 @@ L1986C:
         BEQ     L19876
         DEC     $035A,Z
 L19876:
-        TST     $07C6,Z
+        TST     >TipInFuel,Z
         BNE     L19888
         TST     >MapAccelFuel,Z
         BNE     L19888
-        TST     $07CA,Z
+        TST     >AccelTpsFuel,Z
         BEQ     L19892
 L19888:
         LDAA    $27F4
@@ -11115,7 +11115,7 @@ L19A1E:
         BRCLR   $031A,Z,#$01,L19AB4
         BSET    $031A,Z,#$80
         BRSET   $0312,Z,#$80,L19A7E
-        BRSET   $0C30,Z,#$01,L19A7E
+        BRSET   >ThrottleState,Z,#$01,L19A7E
         LDAB    $F1,Z
         LDAA    #$01
         TDE
@@ -11187,7 +11187,7 @@ L19AC2:
         LBNE    L1A1C6
 L19AFE:
         BRSET   $0312,Z,#$80,L19B2E
-        BRSET   $0C30,Z,#$01,L19B2E
+        BRSET   >ThrottleState,Z,#$01,L19B2E
         LDAA    #$FF
         STAA    $0349,Z
         STAA    $034A,Z
@@ -11218,15 +11218,15 @@ L19B3C:
         BRA     L19BE4
 L19B72:
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeed3
+        LDX     #IdleSpeedScale2
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #IdleThrottle
+        LDX     #IdleThrottleScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleThrottleSegRpm
+        LDX     #IdleThrottleSegRpmAdder
         JSR     Lookup3D
         SXT
         ADE
@@ -11242,11 +11242,11 @@ L19BAE:
         XGAB
         TDE
         LDAA    $0A5A,Z
-        LDX     #IdleV0A5A5
+        LDX     #IdleV0A5AFactor2
         BRCLR   $0331,#$80,L19BD0
         BRSET   $00F8,Z,#$02,L19BD0
         LDAA    $0345,Z
-        LDX     #IdleV0345
+        LDX     #IdleV0345Factor
 L19BD0:
         JSR     Lookup2D
         SUBA    #$80
@@ -11259,7 +11259,7 @@ L19BE2:
         EMUL
 L19BE4:
         LDAA    >SegmentRpm,Z
-        LDX     #IdleSegRpm2
+        LDX     #IdleSegRpmFactor2
         JSR     Lookup2D
         CLRA
         ASLD
@@ -11300,7 +11300,7 @@ L19C34:
 L19C38:
         BRCLR   $0C33,Z,#$44,L19CAE
         BRSET   $0317,Z,#$08,L19CAE
-        BRCLR   $0C30,Z,#$01,L19C78
+        BRCLR   >ThrottleState,Z,#$01,L19C78
         TST     $034D,Z
         BNE     L19C78
 L19C50:
@@ -11427,7 +11427,7 @@ L19DFE:
         BSET    $0626,Z,#$40
         LBRA    L1A462
 L19E1C:
-        BRCLR   $0C30,Z,#$01,L19F0A
+        BRCLR   >ThrottleState,Z,#$01,L19F0A
         TST     $034D,Z
         LBNE    L19F0A
         BRCLR   $0C21,Z,#$80,L19E9A
@@ -11499,9 +11499,9 @@ L19F0A:
 L19F2C:
         BRSET   $0312,Z,#$20,L1A0F0
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant12
+        LDX     #IdleCoolantFactor
         BRCLR   $0055,Z,#$20,L19F44
-        LDX     #IdleCoolant13
+        LDX     #IdleCoolantFactor2
 L19F44:
         JSR     Lookup2D
         SXT
@@ -11523,9 +11523,9 @@ L19F74:
         BRSET   $0315,Z,#$80,L19F9E
         BSET    $0315,Z,#$80
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant8
+        LDX     #IdleCoolantLimit
         BRCLR   $0055,Z,#$20,L19F90
-        LDX     #IdleCoolant9
+        LDX     #IdleCoolantLimit2
 L19F90:
         JSR     Lookup2D
         CMPA    #$FF
@@ -11544,14 +11544,14 @@ L19FAA:
         LDAB    $0315,Z
         ORAB    #$08
         ANDB    #$FB
-        LDX     #IdleCoolant10
+        LDX     #IdleCoolantLimit3
         BRCLR   $0055,Z,#$20,L19FCA
-        LDX     #IdleCoolant11
+        LDX     #IdleCoolantLimit4
 L19FCA:
         BRCLR   $0C31,Z,#$20,L19FE2
-        LDX     #IdleCoolant16
+        LDX     #IdleCoolantLimit5
         BRCLR   $0055,Z,#$20,L19FDE
-        LDX     #IdleCoolant17
+        LDX     #IdleCoolantLimit6
 L19FDE:
         ORAB    #$04
         ANDB    #$F7
@@ -11564,14 +11564,14 @@ L19FE2:
         BCC     L1A032
         STAB    $FE,Z
         LDAA    $0348,Z
-        LDX     #IdleV03483
+        LDX     #IdleV0348Factor3
         BRCLR   $0055,Z,#$20,L1A00C
-        LDX     #IdleV03484
+        LDX     #IdleV0348Factor4
 L1A00C:
         BRSET   $0C31,Z,#$20,L1A020
-        LDX     #IdleV0348
+        LDX     #IdleV0348Factor
         BRCLR   $0055,Z,#$20,L1A020
-        LDX     #IdleV03482
+        LDX     #IdleV0348Factor2
 L1A020:
         JSR     Lookup2D
         LDAB    $FE,Z
@@ -11594,14 +11594,14 @@ L1A044:
         BRSET   $0312,Z,#$20,L1A102
         BSET    $0312,Z,#$20
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant18
+        LDX     #IdleCoolant5
         BRCLR   $0055,Z,#$20,L1A068
-        LDX     #IdleCoolant19
+        LDX     #IdleCoolant6
 L1A068:
         BRSET   $0C31,Z,#$20,L1A07C
-        LDX     #IdleCoolant12
+        LDX     #IdleCoolantFactor
         BRCLR   $0055,Z,#$20,L1A07C
-        LDX     #IdleCoolant13
+        LDX     #IdleCoolantFactor2
 L1A07C:
         JSR     Lookup2D
         SXT
@@ -11662,7 +11662,7 @@ L1A120:
         BRSET   $0C31,Z,#$08,L1A140
         BSET    $0C31,Z,#$08
 L1A12A:
-        BRSET   $0C30,Z,#$01,L1A140
+        BRSET   >ThrottleState,Z,#$01,L1A140
         TST     $0347,Z
         BNE     L1A140
         LDAA    >CoolantTemp,Z
@@ -11677,17 +11677,17 @@ L1A148:
         BRCLR   $0C31,Z,#$08,L1A164
         LDAA    >Map,Z
         STAA    $0341,Z
-        LDX     #IdleMap2
+        LDX     #IdleMapScale
         BRA     L1A16C
 L1A164:
-        LDX     #IdleV0341
+        LDX     #IdleV0341Scale
         LDAA    $0341,Z
 L1A16C:
         JSR     Lookup2D
         SXT
         TDE
         LDAA    <Baro,Z
-        LDX     #IdleBaro4
+        LDX     #IdleBaroFactor2
         JSR     Lookup2D
         LDAA    #$01
         EMULS
@@ -11747,15 +11747,15 @@ L1A1F4:
         BRA     L1A286
 L1A210:
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeed3
+        LDX     #IdleSpeedScale2
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #IdleThrottle
+        LDX     #IdleThrottleScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleThrottleSegRpm
+        LDX     #IdleThrottleSegRpmAdder
         JSR     Lookup3D
         SXT
         ADE
@@ -11771,11 +11771,11 @@ L1A24C:
         EMULS
         TDE
         LDAA    $0A5A,Z
-        LDX     #IdleV0A5A5
+        LDX     #IdleV0A5AFactor2
         BRCLR   $0331,#$80,L1A270
         BRSET   $00F8,Z,#$02,L1A270
         LDAA    $0345,Z
-        LDX     #IdleV0345
+        LDX     #IdleV0345Factor
 L1A270:
         JSR     Lookup2D
         SUBA    #$80
@@ -11799,7 +11799,7 @@ L1A292:
         STAA    $FB,Z
         BRSET   $0503,Z,#$01,L1A2B0
         LDAA    >SegmentRpm,Z
-        LDX     #IdleSegRpm
+        LDX     #IdleSegRpmFactor
         JSR     Lookup2D
         CLRA
         TDE
@@ -12052,12 +12052,12 @@ L1A50E:
         BITB    #$02
         BNE     L1A586
         LDAA    <Baro,Z
-        LDX     #IdleBaro2
+        LDX     #IdleBaroScale2
         JSR     Lookup2D
         LDAA    #$01
         TDE
         LDAA    $0DC6,Z
-        LDX     #IdleV0DC6
+        LDX     #IdleV0DC6Factor
         JSR     Lookup2D
         CLRA
         EMUL
@@ -12105,12 +12105,12 @@ Sub_1A5A2:
         LDAA    #$FF
         STAA    $18,Z
         LDAA    <Baro,Z
-        LDX     #IdleBaro7
+        LDX     #IdleBaro2
         JSR     Lookup2D
         STAA    $2A,Z
         BRCLR   $0331,#$80,L1A5FA
         LDAA    <Baro,Z
-        LDX     #IdleBaro3
+        LDX     #IdleBaroFactor
         JSR     Lookup2D
         STAA    $F0,Z
         CLRB
@@ -12143,12 +12143,12 @@ L1A5FA:
 ;---------------------------------------------------------------------------------------------------
 Sub_1A5FC:
         LDAA    <Baro,Z
-        LDX     #IdleBaro2
+        LDX     #IdleBaroScale2
         JSR     Lookup2D
         LDAA    #$01
         TDE
         LDAA    $0A5A,Z
-        LDX     #IdleV0A5A4
+        LDX     #IdleV0A5AFactor
         JSR     Lookup2D
         CLRA
         EMUL
@@ -12174,10 +12174,10 @@ Sub_1A63A:
         BRSET   $06B4,Z,#$10,L1A6B0
         BRSET   $06B4,Z,#$80,L1A6B0
         BRSET   $00F8,Z,#$01,L1A6B0
-        BRSET   $0C30,Z,#$01,L1A6B0
+        BRSET   >ThrottleState,Z,#$01,L1A6B0
         BSET    $FC,Z,#$02
         BRCLR   $00F8,Z,#$10,L1A6B0
-        BRSET   $0C30,Z,#$01,L1A6B0
+        BRSET   >ThrottleState,Z,#$01,L1A6B0
         TST     $034D,Z
         BNE     L1A6B0
         TST     $0347,Z
@@ -12243,7 +12243,7 @@ L1A710:
         BLS     L1A72C
 L1A71E:
         LDAA    <Baro,Z
-        LDX     #IdleBaro7
+        LDX     #IdleBaro2
         JSR     Lookup2D
         CLRB
         STAA    $2A,Z
@@ -12321,7 +12321,7 @@ L1A7F2:
 L1A7F8:
         TDE
         LDAA    <Baro,Z
-        LDX     #IdleBaro8
+        LDX     #IdleBaroFactor3
         JSR     Lookup2D
         CLRA
         EMULS
@@ -12483,7 +12483,7 @@ L1A974:
         CLRA
         TDE
         LDAA    <Baro,Z
-        LDX     #IdleBaro3
+        LDX     #IdleBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         EMUL
@@ -12520,7 +12520,7 @@ Sub_1A9AE:
         BCLR    $17,Z,#$10
         BRA     L1A9F4
 L1A9C8:
-        BRSET   $0C30,Z,#$01,L1A9F4
+        BRSET   >ThrottleState,Z,#$01,L1A9F4
         BRSET   $00F8,Z,#$01,L1A9F4
         ORP     #$00E0
         LDAA    $0366,Z
@@ -12555,7 +12555,7 @@ L1AA12:
         CMPA    $2A22
         BCC     L1AA94
 L1AA22:
-        BRCLR   $0C30,Z,#$01,L1AA42
+        BRCLR   >ThrottleState,Z,#$01,L1AA42
         LDAA    >VehicleSpeed,Z
         CMPA    $2A30
         BLS     L1AA94
@@ -12574,12 +12574,12 @@ L1AA42:
 L1AA50:
         CPD     >SegmentRpm,Z
         BLS     L1AA94
-        BRSET   $0C30,Z,#$80,L1AA94
+        BRSET   >ThrottleState,Z,#$80,L1AA94
         TST     $034D,Z
         BNE     L1AA94
         BRA     L1AA9C
 L1AA64:
-        BRSET   $0C30,Z,#$80,L1AA94
+        BRSET   >ThrottleState,Z,#$80,L1AA94
         LDAA    >VehicleSpeed,Z
         CMPA    $2A22
         BHI     L1AA94
@@ -12602,7 +12602,7 @@ L1AA9C:
         BRSET   $0017,Z,#$01,L1AAB8
         BSET    $17,Z,#$01
         LDD     >IdleTarget,Z
-        BRCLR   $0C30,Z,#$01,L1AAF0
+        BRCLR   >ThrottleState,Z,#$01,L1AAF0
         LDD     >SegmentRpm,Z
         STD     $0302,Z
 L1AAB8:
@@ -12638,7 +12638,7 @@ L1AAF4:
         CLRA
         TDE
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant
+        LDX     #IdleCoolantAdder
         JSR     Lookup2D
         CLRA
         ADE
@@ -12713,24 +12713,24 @@ Sub_1AB7E:
         LDAB    $F5,Z
         ADE
         LDAA    >Count3s,Z
-        LDX     #IdleTime2
+        LDX     #IdleTimeAdder2
         JSR     Lookup2D
         CLRA
         ADE
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant23
+        LDX     #IdleCoolantAdder6
         JSR     Lookup2D
         CLRA
         ADE
         BRSET   $0943,Z,#$01,L1ABD6
         LDAA    $0335,Z
-        LDX     #IdleV0335
+        LDX     #IdleV0335Adder
         LDAB    $0770,Z
         ANDB    #$C0
         BEQ     L1ABCE
         LDAB    $05E0,Z
         BNE     L1ABCE
-        LDX     #IdleV03352
+        LDX     #IdleV0335Adder2
 L1ABCE:
         JSR     Lookup2D
         CLRA
@@ -12771,11 +12771,11 @@ L1AC1C:
 L1AC20:
         TDE
         LDAA    >SegmentRpm,Z
-        LDX     #IdleSegRpm3
+        LDX     #IdleSegRpm
         JSR     Lookup2D
         STAA    $FE,Z
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant24
+        LDX     #IdleCoolantFactor3
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
@@ -12783,7 +12783,7 @@ L1AC20:
         TAB
         CLRA
         ADE
-        LDX     #IdleBaro5
+        LDX     #IdleBaroAdder
         LDAA    <Baro,Z
         JSR     Lookup2D
         CLRA
@@ -12801,7 +12801,7 @@ L1AC66:
         LDAB    $2968
 L1AC72:
         STAB    $031E,Z
-        LDAA    $0C30,Z
+        LDAA    >ThrottleState,Z
         BITA    #$80
         BEQ     L1AC88
         CLR     $0322,Z
@@ -12818,7 +12818,7 @@ L1AC88:
 L1AC9C:
         BCLR    $0313,Z,#$40
         BRCLR   $00F8,Z,#$10,L1AD3A
-        LDAA    $0C30,Z
+        LDAA    >ThrottleState,Z
         BITA    #$01
         LBEQ    L1AD3A
         BRSET   $0017,Z,#$01,L1AD3A
@@ -12857,14 +12857,14 @@ L1ACFE:
         TED
         BMI     L1AD20
         TBA
-        LDX     #IdleTable7
+        LDX     #IdleTable3
         BRA     L1AD32
 L1AD20:
         NEGD
         TBA
-        LDX     #IdleTable5
+        LDX     #IdleTable
         BRSET   $0313,Z,#$01,L1AD32
-        LDX     #IdleTable6
+        LDX     #IdleTable2
 L1AD32:
         JSR     Lookup2D
         JSR     Sub_1A464
@@ -12888,12 +12888,12 @@ L1AD4A:
         BCS     L1AD6C
 L1AD5E:
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant3
+        LDX     #IdleTargetRpmNeutral
         JSR     Lookup2D
         BRA     L1AD78
 L1AD6C:
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant2
+        LDX     #IdleCoolant
         JSR     Lookup2D
 L1AD78:
         CLRB
@@ -12965,7 +12965,7 @@ L1AE08:
         BEQ     L1AE14
         BSET    $F8,Z,#$02
 L1AE14:
-        LDAB    $0C30,Z
+        LDAB    >ThrottleState,Z
         BITB    #$80
         BNE     L1AE4A
         LDAA    >CoolantTemp,Z
@@ -12994,12 +12994,12 @@ L1AE60:
         TST     $0347,Z
         BNE     L1AE7C
         BRSET   $0772,Z,#$80,L1AE7C
-        BRSET   $0C30,Z,#$01,L1AE7C
+        BRSET   >ThrottleState,Z,#$01,L1AE7C
         BSET    $F8,Z,#$20
 L1AE7C:
         BRCLR   $00F8,Z,#$04,L1AEB4
         BRCLR   $00F8,Z,#$10,L1AEB4
-        BRSET   $0C30,Z,#$01,L1AEB4
+        BRSET   >ThrottleState,Z,#$01,L1AEB4
         BRSET   $032E,#$40,L1AE9A
         BRCLR   $0C31,Z,#$20,L1AEB4
 L1AE9A:
@@ -13037,7 +13037,7 @@ L1AEF6:
 ;---------------------------------------------------------------------------------------------------
 Sub_1AEF8:
         LDAA    <Baro,Z
-        LDX     #IdleBaro
+        LDX     #IdleBaroScale
         JSR     Lookup2D
         LDAB    >IdleTarget,Z
         LDX     #IdleBaroIdleTarget2
@@ -13047,26 +13047,26 @@ Sub_1AEF8:
         STAA    $0362,Z
 L1AF1A:
         LDAA    <Baro,Z
-        LDX     #IdleBaro2
+        LDX     #IdleBaroScale2
         JSR     Lookup2D
         STAA    $F1,Z
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant22
+        LDX     #IdleCoolant7
         JSR     Lookup2D
         STAA    $FE,Z
         STAA    $F6,Z
         LDAA    >VehicleSpeed,Z
-        LDX     #IdleSpeed
+        LDX     #IdleSpeedScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleSpeedSegRpm
+        LDX     #IdleSpeedSegRpmLimit
         JSR     Lookup3D
         CMPA    $FE,Z
         BLS     L1AF54
         STAA    $FE,Z
 L1AF54:
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #IdleThrottle2
+        LDX     #IdleThrottleLimit
         JSR     Lookup2D
         CMPB    $FE,Z
         BHI     L1AF66
@@ -13075,7 +13075,7 @@ L1AF66:
         CLRA
         TDE
         LDAA    $032E,Z
-        LDX     #IdleV032E
+        LDX     #IdleV032EScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
         LDX     #IdleV032ESegRpm
@@ -13084,7 +13084,7 @@ L1AF66:
         CLRA
         ADE
         LDAA    >Count3s,Z
-        LDX     #IdleTime
+        LDX     #IdleTimeAdder
         JSR     Lookup2D
         CLRA
         ADE
@@ -13103,7 +13103,7 @@ L1AFAC:
 L1AFC6:
         STE     $00F2,Z
         LDAA    $032E,Z
-        LDX     #IdleV032E
+        LDX     #IdleV032EScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
         LDX     #IdleV032ESegRpm2
@@ -13149,7 +13149,7 @@ L1B03E:
         STD     $0A52,Z
 L1B060:
         LDAA    <Baro,Z
-        LDX     #IdleBaro
+        LDX     #IdleBaroScale
         JSR     Lookup2D
         LDAB    >IdleTarget,Z
         LDX     #IdleBaroIdleTarget
@@ -13189,7 +13189,7 @@ L1B0BA:
 L1B0C0:
         CLRW    $030E,Z
 L1B0C4:
-        BRSET   $0C30,Z,#$01,L1B0D6
+        BRSET   >ThrottleState,Z,#$01,L1B0D6
         BRSET   $0017,Z,#$01,L1B0D6
         BRCLR   $0316,Z,#$20,L1B0E0
 L1B0D6:
@@ -13240,11 +13240,11 @@ L1B16A:
         CLR     $0358,Z
 L1B16E:
         BCLR    $0315,Z,#$10
-        BRCLR   $0C30,Z,#$02,L1B198
+        BRCLR   >ThrottleState,Z,#$02,L1B198
         BRSET   $0C31,Z,#$20,L1B184
-        BRCLR   $0C30,Z,#$80,L1B18A
+        BRCLR   >ThrottleState,Z,#$80,L1B18A
 L1B184:
-        BCLR    $0C30,Z,#$02
+        BCLR    >ThrottleState,Z,#$02
         BRA     L1B198
 L1B18A:
         BSET    $0315,Z,#$10
@@ -13313,7 +13313,7 @@ L1B23A:
         LDX     #IdleTargetRpm
         BRSET   $032E,#$40,L1B252
         BRCLR   $0C31,Z,#$20,L1B252
-        LDX     #IdleCoolant4
+        LDX     #IdleTargetRpmAlt
 L1B252:
         JSR     Lookup2D
         STAA    $FE,Z
@@ -13338,7 +13338,7 @@ L1B27C:
         BRA     L1B2A0
 L1B28E:
         TBA
-        LDX     #IdleTable
+        LDX     #IdleAdder
         JSR     Lookup2D
         ADDA    $FE,Z
         BCC     L1B29E
@@ -13349,7 +13349,7 @@ L1B2A0:
         LDAB    #$40
         MUL
         STD     $FE,Z
-        BRSET   $0C30,Z,#$01,L1B2BC
+        BRSET   >ThrottleState,Z,#$01,L1B2BC
         BRCLR   $0316,Z,#$10,L1B2B6
         BCLR    $0316,Z,#$20
 L1B2B6:
@@ -13462,7 +13462,7 @@ L1B408:
         CMPA    $25D2
         LBCS    L1B450
         BRSET   $0017,Z,#$01,L1B450
-        BRSET   $0C30,Z,#$01,L1B450
+        BRSET   >ThrottleState,Z,#$01,L1B450
         BRCLR   $032C,#$40,L1B440
         BRSET   $032F,#$08,L1B440
         BRCLR   $01AD,Z,#$80,L1B440
@@ -13502,10 +13502,10 @@ L1B496:
         LDAA    $0A5A,Z
         LDX     #IdleV0A5A
         JSR     Lookup2D
-        LDX     #IdleV0A5AV030E
+        LDX     #IdleV0A5AV030EFactor
         BRSET   $032E,#$40,L1B4B6
         BRCLR   $0C31,Z,#$20,L1B4B6
-        LDX     #IdleV0A5AV030E2
+        LDX     #IdleV0A5AV030EFactor2
 L1B4B6:
         LDAB    $030E,Z
         JSR     Lookup3D
@@ -13527,7 +13527,7 @@ L1B4F0:
 L1B500:
         CLR     $0361,Z
         LDAA    $0A5A,Z
-        LDX     #IdleV0A5A2
+        LDX     #IdleV0A5ALimit
         JSR     Lookup2D
         CMPA    $0360,Z
         LBHI    L1B5CE
@@ -13591,7 +13591,7 @@ L1B5A4:
         INC     $0361,Z
 L1B5B8:
         LDAA    $0A5A,Z
-        LDX     #IdleV0A5A3
+        LDX     #IdleV0A5ALimit2
         JSR     Lookup2D
         CMPA    $0361,Z
         BHI     L1B5CE
@@ -13755,12 +13755,12 @@ Sub_1B738:
         BITB    #$02
         BNE     L1B7B2
         LDAA    <Baro,Z
-        LDX     #IdleBaro2
+        LDX     #IdleBaroScale2
         JSR     Lookup2D
         LDAA    #$01
         TDE
         LDAA    $0DC6,Z
-        LDX     #IdleV0DC6
+        LDX     #IdleV0DC6Factor
         JSR     Lookup2D
         CLRA
         EMUL
@@ -14285,7 +14285,7 @@ L1D118:
         LDAA    $0C51,Z
         BRA     L1D14A
 L1D12A:
-        LDAB    $0C30,Z
+        LDAB    >ThrottleState,Z
         ANDB    #$01
         ORAB    $0323,Z
         BNE     L1D140
@@ -14312,7 +14312,7 @@ Sub_1D150:
         LDAA    >CoolantTemp,Z
         CMPA    $2597
         BCS     L1D174
-        BRSET   $0C30,Z,#$80,L1D1B2
+        BRSET   >ThrottleState,Z,#$80,L1D1B2
         LDAA    >VehicleSpeed,Z
         CMPA    $2A30
         BCS     L1D178
@@ -14322,7 +14322,7 @@ L1D174:
 L1D178:
         CLR     $02,Y
         LDAA    >Map,Z
-        LDX     #SparkMap8
+        LDX     #AirTempSparkMap
         JSR     Lookup2D
         BPL     L1D18C
         NEGA
@@ -14333,7 +14333,7 @@ L1D18C:
         BRSET   $0330,#$20,L1D19C
         LDAA    $0A5A,Z
 L1D19C:
-        LDX     #SparkAirTemp5
+        LDX     #AirTempSparkFactor2
         JSR     Lookup2D
         LDAA    $03,Y
         MUL
@@ -14345,10 +14345,10 @@ L1D19C:
 L1D1B2:
         CLR     $02,Y
         LDAA    >Map,Z
-        LDX     #SparkMap2
+        LDX     #AirTempSparkMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #SparkMapRpm2
+        LDX     #AirTempSparkMapRpm
         JSR     Lookup3D
         BPL     L1D1D2
         NEGA
@@ -14359,7 +14359,7 @@ L1D1D2:
         BRSET   $0330,#$20,L1D1E2
         LDAA    $0A5A,Z
 L1D1E2:
-        LDX     #SparkAirTemp
+        LDX     #AirTempSparkFactor
         JSR     Lookup2D
         LDAA    $03,Y
         MUL
@@ -14375,7 +14375,7 @@ L1D1F4:
 ; Called from: CalcBaseSpark
 ;---------------------------------------------------------------------------------------------------
 Sub_1D1F8:
-        BRSET   $0C30,Z,#$80,L1D250
+        BRSET   >ThrottleState,Z,#$80,L1D250
         LDAA    >VehicleSpeed,Z
         BRCLR   $0D02,Z,#$40,L1D210
         SUBA    $24F4
@@ -14498,14 +14498,14 @@ L1D32E:
 ;---------------------------------------------------------------------------------------------------
 Sub_1D330:
         CLRA
-        BRSET   $0C30,Z,#$40,L1D35C
+        BRSET   >ThrottleState,Z,#$40,L1D35C
         AIS     #$FC
         TSY
-        LDX     #SparkBaro
+        LDX     #BaroSpark
         LDAA    <Baro,Z
         JSR     Lookup2D
         STAA    $02,Y
-        LDX     #SparkRpm
+        LDX     #BaroSparkRpmWeight
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         LDAA    $02,Y
@@ -14520,8 +14520,8 @@ L1D35C:
 ; Called from: Sub_1E2AA
 ;---------------------------------------------------------------------------------------------------
 Sub_1D35E:
-        BRSET   $0C30,Z,#$80,L1D3D6
-        BRSET   $0C30,Z,#$01,L1D3D6
+        BRSET   >ThrottleState,Z,#$80,L1D3D6
+        BRSET   >ThrottleState,Z,#$01,L1D3D6
         BRCLR   $0774,Z,#$80,L1D3D6
         BRCLR   $0C33,Z,#$44,L1D378
         BRA     L1D3D6
@@ -14540,7 +14540,7 @@ L1D378:
         LDAB    >CoolantTemp,Z
         CMPB    $250A
         BLS     L1D3D6
-        BRSET   $0C30,Z,#$02,L1D3D6
+        BRSET   >ThrottleState,Z,#$02,L1D3D6
         LDX     >Count3s,Z
         CPX     $250B
         BCS     L1D3D6
@@ -14622,7 +14622,7 @@ L1D47E:
         BSET    $0D1A,Z,#$20
         LBRA    L1D584
 L1D486:
-        BRSET   $0C30,Z,#$40,L1D584
+        BRSET   >ThrottleState,Z,#$40,L1D584
         LDAA    <Baro,Z
         CMPA    $1E79
         LBCS    L1D584
@@ -14631,7 +14631,7 @@ L1D486:
         BRSET   $0D1A,Z,#$04,L1D4DA
         BRSET   $0D1A,Z,#$02,L1D4C6
 L1D4AE:
-        LDX     #SparkStartCoolant
+        LDX     #AfterStartSparkCoolant
         LDAA    >StartCoolantTemp2,Z
         JSR     Lookup2D
         STAA    $0D1B,Z
@@ -14723,15 +14723,15 @@ L1D5A0:
 ; Called from: Sub_1D43C (3 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_1D5A2:
-        LDX     #SparkMap3
+        LDX     #AfterStartSparkMapScale
         LDAA    >Map,Z
         JSR     Lookup2D
-        LDX     #SparkMapRpm3
+        LDX     #AfterStartSparkMapRpm
         LDAB    >EngineRpm,Z
         JSR     Lookup3D
         NEGA
         STAA    $F0,Z
-        LDX     #SparkCoolant
+        LDX     #AfterStartSparkCoolantWeight
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
         LDAA    $F0,Z
@@ -14743,9 +14743,9 @@ Sub_1D5A2:
 ; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 Sub_1D5D0:
-        LDAA    $077A,Z
+        LDAA    >DecelFuelFactor,Z
         BEQ     L1D5DE
-        LDX     #SparkV077A
+        LDX     #DecelSpark
         JSR     Lookup2D
 L1D5DE:
         RTS
@@ -14857,17 +14857,17 @@ L1D70A:
         BRSET   $0D01,Z,#$10,L1D764
         BSET    $0D00,Z,#$02
         LDAA    >AirTemp,Z
-        LDX     #SparkAirTemp2
+        LDX     #SparkAirTempLimit
         LDAB    $0D04,Z
         BEQ     L1D726
-        LDX     #SparkAirTemp3
+        LDX     #SparkAirTempLimit2
 L1D726:
         JSR     Lookup2D
         LDAB    $0D14,Z
         CBA
         BCS     L1D764
         LDAA    >AirTemp,Z
-        LDX     #SparkAirTemp4
+        LDX     #SparkAirTemp
         JSR     Lookup2D
         LDX     #SparkAirTempV0D15
         TST     $0D04,Z
@@ -14921,7 +14921,7 @@ L1D7C0:
         ANDP    #$FF1F
         CLRA
         BRCLR   $0339,#$01,L1D7DE
-        BRSET   $0C30,Z,#$80,L1D7DE
+        BRSET   >ThrottleState,Z,#$80,L1D7DE
         BCLR    $0D01,Z,#$10
 L1D7DE:
         NEGA
@@ -14940,15 +14940,15 @@ L1D7F0:
 ; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 Sub_1D7F2:
-        BRSET   $0C30,Z,#$80,L1D7FC
+        BRSET   >ThrottleState,Z,#$80,L1D7FC
         CLRA
         BRA     L1D814
 L1D7FC:
-        LDX     #SparkMap
+        LDX     #CoolantSparkMapScale
         LDAA    >Map,Z
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #SparkMapCoolant
+        LDX     #CoolantSparkMap
         JSR     Lookup3D
 L1D814:
         RTS
@@ -15011,9 +15011,9 @@ L1D898:
         LDAB    #$FF
 L1D8A6:
         TBA
-        LDX     #SparkTable2
+        LDX     #SparkScale2
         BRCLR   $0943,Z,#$01,L1D8B6
-        LDX     #SparkTable3
+        LDX     #SparkScale3
 L1D8B6:
         BRA     L1D8C4
 L1D8B8:
@@ -15022,12 +15022,12 @@ L1D8B8:
         LDAB    #$FF
 L1D8BE:
         TBA
-        LDX     #SparkTable
+        LDX     #SparkScale
 L1D8C4:
         JSR     Lookup2D
         PSHA
         LDAA    >Map,Z
-        LDX     #SparkMap7
+        LDX     #SparkMapLimit
         JSR     Lookup2D
         PULB
         CBA
@@ -15043,7 +15043,7 @@ L1D8DE:
 ;---------------------------------------------------------------------------------------------------
 Sub_1D8E4:
         BRCLR   $033A,#$10,L1D922
-        BRCLR   $0C30,Z,#$80,L1D922
+        BRCLR   >ThrottleState,Z,#$80,L1D922
         LDAA    >VehicleSpeed,Z
         BRCLR   $0D57,Z,#$20,L1D8FC
         ADDA    #$04
@@ -15110,7 +15110,7 @@ L1D9BA:
         JSR     Lookup2D
         STAA    $F2,Z
         LDAA    >Map,Z
-        LDX     #SparkMap5
+        LDX     #SparkMapFactor
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
@@ -15208,23 +15208,23 @@ Sub_1DAA8:
         AIS     #$FC
         TSY
         BRCLR   $032C,#$40,L1DACA
-        LDAA    $0198,Z
+        LDAA    >FlexEthanol,Z
         BEQ     L1DACA
         BRSET   $032E,#$40,L1DACE
         BRSET   $0C31,Z,#$20,L1DACE
-        BRSET   $0C30,Z,#$80,L1DACE
+        BRSET   >ThrottleState,Z,#$80,L1DACE
 L1DACA:
         CLRA
         BRA     L1DB04
 L1DACE:
-        LDX     #SparkV0198
+        LDX     #FlexSparkEthanolWeight
         JSR     Lookup2D
         STAA    $02,Y
         LDAA    >Map,Z
         LDX     #PartThrottleMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #SparkMapRpm4
+        LDX     #FlexSparkMapRpm
         JSR     Lookup3D
         SUBA    $0D03,Z
         BMI     L1DAFC
@@ -15280,14 +15280,14 @@ L1DB48:
         AIS     #$FC
         TSY
         LDAA    >BatteryVolts2,Z
-        LDX     #SparkVolts
+        LDX     #DwellVoltsScale
         JSR     Lookup2D
         STAA    $02,Y
         LDAA    >EngineRpm,Z
-        LDX     #SparkRpm3
+        LDX     #DwellRpmScale
         JSR     Lookup2D
         LDAA    $02,Y
-        LDX     #SparkTable8
+        LDX     #DwellTime
         JSR     Lookup3DNorm
         AIS     #$04
         PULM    X
@@ -15303,7 +15303,7 @@ Sub_1DB78:
         BRCLR   $0856,Z,#$10,L1DBDC
         BRCLR   $0856,Z,#$04,L1DBB0
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #SparkThrottle
+        LDX     #SparkThrottleAdder
         JSR     Lookup2D
         LDAA    $0859,Z
         ADDA    $1FD1
@@ -15319,7 +15319,7 @@ L1DBAA:
 L1DBB0:
         BRCLR   $0856,Z,#$08,L1DC0E
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #SparkThrottle2
+        LDX     #SparkThrottleAdder2
         JSR     Lookup2D
         LDAA    $0859,Z
         ADDA    $1FD2
@@ -15503,7 +15503,7 @@ L1DD90:
         CMPA    $2016
         BGT     L1DDE2
 L1DDA0:
-        LDX     #SparkV00F2
+        LDX     #SparkV00F2Limit
         LDAA    $F2,Z
         BPL     L1DDB0
         NEGA
@@ -15536,7 +15536,7 @@ L1DDDE:
 L1DDE0:
         STAA    $F4,Z
 L1DDE2:
-        LDX     #SparkV00F3
+        LDX     #SparkV00F3Adder
         LDAA    $F3,Z
         BPL     L1DDF2
         NEGA
@@ -15587,7 +15587,7 @@ Sub_1DE2E:
 L1DE44:
         BSET    $0D02,Z,#$80
         LDAA    >EngineRpm,Z
-        LDX     #SparkRpm2
+        LDX     #SparkRpm
         JSR     Lookup2D
         NEGA
         BRA     L1DE5E
@@ -15662,7 +15662,7 @@ Sub_1DED0:
         INC     $0D3D,Z
         LBRA    L1E12E
 L1DF26:
-        BRSET   $0C30,Z,#$80,L1DF92
+        BRSET   >ThrottleState,Z,#$80,L1DF92
         CLR     $0D33,Z
         CLR     $0D34,Z
         CLR     $0D35,Z
@@ -15693,20 +15693,20 @@ L1DF7C:
         JMP     L1E13E
 L1DF92:
         LDAA    >Map,Z
-        LDX     #SparkMap4
+        LDX     #SparkMap
         JSR     Lookup2D
         STAA    $F6,Z
         STAA    $0D39,Z
         LDAA    $0D30,Z
         LBMI    L1E018
         LDAA    $0AA6,Z
-        LDX     #SparkV0AA64
+        LDX     #SparkV0AA6Limit2
         JSR     Lookup2D
         CMPB    $0D30,Z
         BCC     L1E018
         LDAA    $F6,Z
         LDAB    $0D1E,Z
-        LDX     #SparkV00F6V0D1E
+        LDX     #SparkV00F6V0D1EFactor
         JSR     Lookup3D
         LDAB    $0D30,Z
         MUL
@@ -15724,7 +15724,7 @@ L1DFE4:
 L1DFE6:
         STAA    $F2,Z
         LDAA    >CoolantTemp,Z
-        LDX     #SparkCoolant2
+        LDX     #SparkCoolantFactor
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
@@ -15732,7 +15732,7 @@ L1DFE6:
         STAA    $F2,Z
         LDAA    $F6,Z
         LDAB    $0D1E,Z
-        LDX     #SparkV00F6V0D1E2
+        LDX     #SparkV00F6V0D1ELimit
         JSR     Lookup3D
         CMPA    $F2,Z
         BCC     L1E010
@@ -15753,7 +15753,7 @@ L1E01C:
         LDAA    $0D26,Z
         BMI     L1E04E
         LDAA    $0AA6,Z
-        LDX     #SparkV0AA62
+        LDX     #SparkV0AA6Limit
         JSR     Lookup2D
         CMPA    $0D26,Z
         BCC     L1E04E
@@ -15765,14 +15765,14 @@ L1E04E:
         CMPA    #$01
         LBNE    L1E0DC
         LDAA    $0AA6,Z
-        LDX     #SparkV0AA63
+        LDX     #SparkV0AA6Factor
         JSR     Lookup2D
         LDAA    $0D32,Z
         MUL
         ADCA    #$00
         STAA    $F2,Z
         LDAA    >CoolantTemp,Z
-        LDX     #SparkCoolant2
+        LDX     #SparkCoolantFactor
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
@@ -15782,14 +15782,14 @@ L1E04E:
         BPL     L1E08C
         BRA     L1E0DC
 L1E08C:
-        LDX     #SparkV0D26
+        LDX     #SparkV0D26Factor
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
         ADCA    #$00
         STAA    $F2,Z
         LDAA    $0D3B,Z
-        LDX     #SparkV0D3B
+        LDX     #SparkV0D3BFactor
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
@@ -15823,10 +15823,10 @@ L1E0DC:
         STAA    $0D37,Z
         STAA    $F2,Z
         LDAA    $0AA6,Z
-        LDX     #SparkV0AA6
+        LDX     #SparkV0AA6Scale
         JSR     Lookup2D
         LDAB    $F2,Z
-        LDX     #SparkV0AA6V00F2
+        LDX     #SparkV0AA6V00F2Factor
         JSR     Lookup3D
         LDAA    $0D33,Z
         MUL
@@ -16091,7 +16091,7 @@ L1E396:
 L1E398:
         BRSET   $0770,Z,#$80,L1E3CA
         BRCLR   $0339,#$20,L1E3AA
-        BRSET   $0C30,Z,#$01,L1E3CA
+        BRSET   >ThrottleState,Z,#$01,L1E3CA
 L1E3AA:
         BCLR    $0806,Z,#$40
         LDAB    $07A0,Z
@@ -16329,7 +16329,7 @@ L1E612:
         STAB    $0D02,Z
         BITB    #$08
         BEQ     L1E640
-        LDX     #SparkV0D182
+        LDX     #SparkV0D18Limit
         LDAA    $0D18,Z
         JSR     Lookup2D
         CLRA
@@ -16390,7 +16390,7 @@ L1E6CC:
 L1E6E0:
         BRSET   $0D01,Z,#$20,L1E72A
         BRSET   $06B4,Z,#$80,L1E72A
-        BRSET   $0C30,Z,#$80,L1E72A
+        BRSET   >ThrottleState,Z,#$80,L1E72A
         LDE     $254A
         LDAA    $ABB1
         CMPA    #$04
@@ -16403,7 +16403,7 @@ L1E702:
         TST     $0347,Z
         BNE     L1E72A
         BRSET   $0772,Z,#$80,L1E72A
-        BRSET   $0C30,Z,#$01,L1E72A
+        BRSET   >ThrottleState,Z,#$01,L1E72A
         BSET    $0DA2,Z,#$40
         BRA     L1E750
 L1E726:
@@ -16439,7 +16439,7 @@ Sub_1E752:
         EDIVS
         STX     $0D9A,Z
         LDAA    >CoolantTemp,Z
-        LDX     #SparkCoolant3
+        LDX     #SparkCoolant
         JSR     Lookup2D
         LDE     $0D9C,Z
         LDX     $0D9A,Z
@@ -16473,16 +16473,16 @@ L1E7CA:
         STAA    $0D9F,Z
         ADDA    #$80
         BMI     L1E7E8
-        LDX     #SparkTable4
+        LDX     #SparkTable
         BRSET   $032E,#$40,L1E7FC
         BRCLR   $0C31,Z,#$20,L1E7FC
-        LDX     #SparkTable6
+        LDX     #SparkTable3
         BRA     L1E7FC
 L1E7E8:
-        LDX     #SparkTable5
+        LDX     #SparkTable2
         BRSET   $032E,#$40,L1E7FC
         BRCLR   $0C31,Z,#$20,L1E7FC
-        LDX     #SparkTable7
+        LDX     #SparkTable4
 L1E7FC:
         JSR     Lookup2D
         STAA    $0DA1,Z
@@ -16765,7 +16765,7 @@ Sub_1F13E:
         BEQ     L1F18E
         PSHA
         LDAA    >Map,Z
-        LDX     #KnockMap
+        LDX     #KnockMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
         LDX     #KnockRetardLimit
@@ -16883,7 +16883,7 @@ Sub_1F256:
         CMPA    $241A
         BCS     L1F28C
 L1F27A:
-        LDX     #KnockMap2
+        LDX     #KnockMap
         LDAA    >Map,Z
         JSR     Lookup2D
         BRA     L1F290
@@ -17021,11 +17021,11 @@ L1F372:
 ;---------------------------------------------------------------------------------------------------
 Sub_1F378:
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm4
+        LDX     #KnockRpm3
         JSR     Lookup2D
         STAA    $0DA6,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm3
+        LDX     #KnockRpm2
         JSR     Lookup2D
         STAA    $0DA7,Z
         LDX     #KnockBaro
@@ -17033,25 +17033,25 @@ Sub_1F378:
         JSR     Lookup2D
         STAA    $FE,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm
+        LDX     #KnockRpmFactor
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         STAA    $0DA4,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm2
+        LDX     #KnockRpm
         JSR     Lookup2D
         STAA    $0DA5,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm7
+        LDX     #KnockRpm6
         JSR     Lookup2D
         STAA    $0DB3,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm5
+        LDX     #KnockRpm4
         JSR     Lookup2D
         STAA    $0DB5,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRpm6
+        LDX     #KnockRpm5
         JSR     Lookup2D
         STAA    $0D40,Z
         RTS

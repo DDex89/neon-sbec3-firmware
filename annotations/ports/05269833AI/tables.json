@@ -16,7 +16,7 @@
  },
  "tables": {
   "0384": {
-   "name": "IdleCoolant",
+   "name": "IdleCoolantAdder",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AADC). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -24,15 +24,15 @@
    "y": "raw"
   },
   "0390": {
-   "name": "Sys17000V006B",
-   "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_17000). Inputs: $6B,Z. Result to $0F41,Z.",
-   "category": "Other",
+   "name": "FlexLearnV006B",
+   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17000). Inputs: $6B,Z. Result to $0F41,Z.",
+   "category": "Fuel",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "039C": {
-   "name": "IdleCoolant2",
+   "name": "IdleCoolant",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AE22). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -48,7 +48,7 @@
    "y": "raw"
   },
   "03B4": {
-   "name": "PitV0DCC",
+   "name": "PitV0DCCFactor",
    "desc": "Subsystem: not identified yet (top routine Sub_08DD4) (by the routine that reads it, Sub_08DD4). Inputs: $0DCC,Z. Result to $0DD0,Z.",
    "category": "Other",
    "auto": true,
@@ -56,15 +56,15 @@
    "y": "raw"
   },
   "03C0": {
-   "name": "AfterStartFuelCoolant",
-   "desc": "Subsystem: after-start enrichment (time since start x coolant) (by the routine that reads it, Sub_10C00). Inputs: CoolantTemp. Result to $0F47,Z.",
+   "name": "FlexCoolantWeight",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel: weight of FlexEthanolMap against coolant, used once Count3s has passed $0862",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "03CC": {
-   "name": "Sys3AE3CConst",
+   "name": "Sys3AE3CConstLimit",
    "desc": "Subsystem: not identified yet (top routine Sub_3AE3C) (by the routine that reads it, Sub_3AE3C). Inputs: #$00; LDD. Result to $00F0,Z.",
    "category": "Other",
    "auto": true,
@@ -72,7 +72,7 @@
    "y": "raw"
   },
   "03D8": {
-   "name": "Sys3D800V042E",
+   "name": "Sys3D800V042ELimit",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E074). Inputs: $042E,Z. Result to $047B,Z.",
    "category": "Other",
    "auto": true,
@@ -80,23 +80,23 @@
    "y": "raw"
   },
   "03E4": {
-   "name": "AccelFuelV0474",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_106EC). Inputs: $0474,Z. Result to $07D4,Z.",
+   "name": "AccelMapGainAdder",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Added to AccelMapGainCoolant against $0474,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "03F0": {
-   "name": "FuelEventV0474",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_1204A). Inputs: $0474,Z. Result to $0A7F,Z.",
+   "name": "MapFilterRiseV0474",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Subtracted from MapFilterRiseCoolant against $0474,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0429": {
-   "name": "SensorRpm",
+   "name": "SensorRpmAdder",
    "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2CB0E). Inputs: EngineRpm.",
    "category": "Sensors",
    "auto": true,
@@ -104,7 +104,7 @@
    "y": "raw"
   },
   "046B": {
-   "name": "Sys2F000Speed",
+   "name": "Sys2F000SpeedLimit",
    "desc": "Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
    "category": "Other",
    "auto": true,
@@ -112,7 +112,7 @@
    "y": "raw"
   },
   "0477": {
-   "name": "Sys2F000Speed2",
+   "name": "Sys2F000SpeedLimit2",
    "desc": "Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
    "category": "Other",
    "auto": true,
@@ -120,7 +120,7 @@
    "y": "raw"
   },
   "0483": {
-   "name": "Sys2F000Speed3",
+   "name": "Sys2F000SpeedLimit3",
    "desc": "Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
    "category": "Other",
    "auto": true,
@@ -128,7 +128,7 @@
    "y": "raw"
   },
   "048F": {
-   "name": "Sys2F000Speed4",
+   "name": "Sys2F000SpeedLimit4",
    "desc": "Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. Result to $0B53,Z.",
    "category": "Other",
    "auto": true,
@@ -136,7 +136,7 @@
    "y": "raw"
   },
   "04A1": {
-   "name": "SensorTable",
+   "name": "SensorLimit",
    "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: TBA.",
    "category": "Sensors",
    "auto": true,
@@ -144,7 +144,7 @@
    "y": "raw"
   },
   "04AD": {
-   "name": "SensorV00F0",
+   "name": "SensorV00F0Adder",
    "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: $F0,Z.",
    "category": "Sensors",
    "auto": true,
@@ -152,7 +152,7 @@
    "y": "raw"
   },
   "04C6": {
-   "name": "StartCoolant",
+   "name": "StartCoolantFactor",
    "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to $0A5A,Z, $0A5B,Z.",
    "category": "Startup",
    "auto": true,
@@ -160,7 +160,7 @@
    "y": "raw"
   },
   "0507": {
-   "name": "Sys39E1ASpeed",
+   "name": "Sys39E1ASpeedLimit",
    "desc": "Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_39E54). Inputs: VehicleSpeed.",
    "category": "Other",
    "auto": true,
@@ -200,7 +200,7 @@
    "y": "raw"
   },
   "059A": {
-   "name": "Sys39686Speed",
+   "name": "Sys39686SpeedLimit",
    "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.",
    "category": "Other",
    "auto": true,
@@ -208,7 +208,7 @@
    "y": "raw"
   },
   "05AC": {
-   "name": "Sys39686Speed2",
+   "name": "Sys39686SpeedLimit2",
    "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.",
    "category": "Other",
    "auto": true,
@@ -216,7 +216,7 @@
    "y": "raw"
   },
   "05BE": {
-   "name": "Sys39686Rpm",
+   "name": "Sys39686RpmAdder",
    "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: EngineRpm.",
    "category": "Other",
    "auto": true,
@@ -232,7 +232,7 @@
    "y": "raw"
   },
   "0609": {
-   "name": "Sys39686Vacuum",
+   "name": "Sys39686VacuumFactor",
    "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_39866). Inputs: ManifoldVacuum.",
    "category": "Other",
    "auto": true,
@@ -265,84 +265,84 @@
    "z": "raw"
   },
   "07D8": {
-   "name": "Sys17000Cal",
-   "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_17000). Inputs: $0857; $01B4,Z; $08E4. Result to $01B5,Z.",
-   "category": "Other",
+   "name": "FlexLearnCal",
+   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17000). Inputs: $0857; $01B4,Z; $08E4. Result to $01B5,Z.",
+   "category": "Fuel",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "07E4": {
-   "name": "Sys17000V042C",
-   "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_187E8). Inputs: $042C,Z. Result to $0F1D,Z.",
-   "category": "Other",
+   "name": "FlexLearnV042C",
+   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_187E8). Inputs: $042C,Z. Result to $0F1D,Z.",
+   "category": "Fuel",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "07F8": {
-   "name": "FuelEventV0F22",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_183C2). Inputs: $0F22,Z. Result to $0F21,Z.",
+   "name": "FlexLearnV0F22",
+   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_183C2). Inputs: $0F22,Z. Result to $0F21,Z.",
    "category": "Fuel",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "0804": {
-   "name": "FuelEventTable",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_183C2). Inputs: TBA. Result to $0F20,Z.",
+   "name": "FlexLearnTable",
+   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_183C2). Inputs: TBA. Result to $0F20,Z.",
    "category": "Fuel",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "0810": {
-   "name": "Sys17000StartCoolant",
-   "desc": "Subsystem: not identified yet (top routine Sub_17FC4) (by the routine that reads it, Sub_17FC4). Inputs: StartCoolantTemp2. Result to $0F24,Z.",
-   "category": "Other",
+   "name": "FlexLearnStartCoolant",
+   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17FC4). Inputs: StartCoolantTemp2. Result to $0F24,Z.",
+   "category": "Fuel",
    "auto": true,
    "x": "tempc",
    "y": "raw"
   },
   "081C": {
-   "name": "Sys17000Table",
-   "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_17A48). Inputs: ?; $01BB,Z; $01BC,Z. Result to $0F25,Z, $01B9,Z, $01BA,Z.",
-   "category": "Other",
+   "name": "FlexLearnTable2",
+   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17A48). Inputs: ?; $01BB,Z; $01BC,Z. Result to $0F25,Z, $01B9,Z, $01BA,Z.",
+   "category": "Fuel",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "0828": {
-   "name": "Sys17000V019C",
-   "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_181BE). Inputs: $019C,Z. Result to $0F26,Z.",
-   "category": "Other",
+   "name": "FlexLearnV019C",
+   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_181BE). Inputs: $019C,Z. Result to $0F26,Z.",
+   "category": "Fuel",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "083C": {
-   "name": "Sys17000Trim",
-   "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_17D44). Inputs: ShortTermTrim1. Result to $0F2B,Z.",
-   "category": "Other",
+   "name": "FlexLearnTrim",
+   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17D44). Inputs: ShortTermTrim1. Result to $0F2B,Z.",
+   "category": "Fuel",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "0848": {
-   "name": "Sys17000V006B2",
-   "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_17000). Inputs: $6B,Z. Result to $0F40,Z.",
-   "category": "Other",
+   "name": "FlexLearnV006B2",
+   "desc": "Subsystem: flex-fuel ethanol content learning (by the routine that reads it, Sub_17000). Inputs: $6B,Z. Result to $0F40,Z.",
+   "category": "Fuel",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "0860": {
-   "name": "CrankFuelV0198",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0198,Z.",
+   "name": "CrankEthanolScale",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Cranking: flex-fuel ethanol content to row position of CrankEthanolCoolant",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "086C": {
    "name": "PartThrottleMapScale",
@@ -361,15 +361,15 @@
    "category": "Other"
   },
   "0884": {
-   "name": "StartV0198",
-   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0198,Z. Result to $0A91,Z.",
-   "category": "Startup",
-   "auto": true,
+   "name": "FlexEthanolScale",
+   "category": "Fuel",
+   "desc": "Flex-fuel: ethanol content ($0198,Z) to the scaled value $0A91,Z used as table input",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0890": {
-   "name": "SensorTable2",
+   "name": "SensorTable",
    "desc": "Subsystem: sensor processing (by the routine that reads it, CalcEngineRpm). Inputs: LDD. Result to $0C4A,Z.",
    "category": "Sensors",
    "auto": true,
@@ -377,103 +377,103 @@
    "y": "raw"
   },
   "089C": {
-   "name": "FuelScaled",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_104AE). Inputs: result of Lookup2D; #$FF.",
+   "name": "DecelMapScale",
    "category": "Fuel",
-   "auto": true,
-   "x": "pos256",
-   "y": "raw"
+   "desc": "Corrected MAP to row position of DecelMapRpmLimit",
+   "x": "kpa",
+   "y": "pos256",
+   "auto": false
   },
   "08A8": {
-   "name": "FuelV07E6",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: $07E6,Z.",
+   "name": "AfterStartTimeScale",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Time since start ($07E6,Z, counted every 32 main-loop passes) to row position of AfterStartDecay",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "08BC": {
-   "name": "FuelMap",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: Map.",
+   "name": "WarmupMapScaleLowSpeed",
    "category": "Fuel",
-   "auto": true,
+   "desc": "MAP to row position of WarmupMapCoolantLowSpeed",
    "x": "kpa",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "08C8": {
-   "name": "FuelMap2",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: Map.",
+   "name": "WarmupMapScale",
    "category": "Fuel",
-   "auto": true,
+   "desc": "MAP to row position of WarmupMapCoolant",
    "x": "kpa",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "08D4": {
-   "name": "FuelRpm",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: EngineRpm.",
+   "name": "WarmupRpmScaleIdle",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Rpm to row position of WarmupRpmCoolantIdle",
    "x": "rpm32",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "08E0": {
-   "name": "FuelV0198",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_11074). Inputs: $0198,Z.",
+   "name": "IdleEnrichEthanolScale",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel ethanol content to row position of IdleEnrichEthanolAirTemp",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "08EC": {
-   "name": "AccelFuelThrottle",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_107EA). Inputs: ThrottleAboveClosed.",
+   "name": "TipInThrottleIndex",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Tip-in enrichment: throttle opening to row index 1-9 of TipInMatrix",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0900": {
-   "name": "AccelFuelV00F4",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_107EA). Inputs: $F4,Z.",
+   "name": "TipInRateIndex",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Tip-in enrichment: throttle opening step to column index 1-9 of TipInMatrix",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0914": {
-   "name": "FuelEventRpm",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: EngineRpm. Result to $00F0,Z.",
+   "name": "DecelLeanRpmScale",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration enleanment: rpm to row position of DecelLeanAirflow",
    "x": "rpm32",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "0920": {
-   "name": "FuelEventThrottle",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: ThrottleAboveClosed; ThrottleLast.",
+   "name": "DecelLeanThrottleScale",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration enleanment: throttle opening to column position of DecelLeanAirflow",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "092C": {
-   "name": "FuelEventTime",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: Count3s.",
+   "name": "DecelLeanTimeScale",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration enleanment: time since start to row position of DecelLeanTimeCoolant",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "0938": {
-   "name": "FuelV00F0",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10A6E). Inputs: $F0,Z.",
+   "name": "IacFuelScale",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Extra idle air ($031B,Z minus $18,Z) to row position of IacFuelCoolant",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "0944": {
-   "name": "Sys3D800Map",
+   "name": "Sys3D800MapScale",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: Map.",
    "category": "Other",
    "auto": true,
@@ -489,31 +489,31 @@
    "y": "raw"
   },
   "0958": {
-   "name": "SparkMap",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D7FE). Inputs: Map.",
+   "name": "CoolantSparkMapScale",
    "category": "Spark",
-   "auto": true,
+   "desc": "MAP to row position of CoolantSparkMap",
    "x": "kpa",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "0964": {
-   "name": "SparkMap2",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: Map.",
+   "name": "AirTempSparkMapScale",
    "category": "Spark",
-   "auto": true,
+   "desc": "MAP to row position of AirTempSparkMapRpm",
    "x": "kpa",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "0970": {
-   "name": "SparkMap3",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5AE). Inputs: Map.",
+   "name": "AfterStartSparkMapScale",
    "category": "Spark",
-   "auto": true,
+   "desc": "MAP to row position of AfterStartSparkMapRpm",
    "x": "kpa",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "097C": {
-   "name": "SparkMap4",
+   "name": "SparkMap",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: Map. Result to $00F6,Z.",
    "category": "Spark",
    "auto": true,
@@ -521,7 +521,7 @@
    "y": "raw"
   },
   "0988": {
-   "name": "SparkV0AA6",
+   "name": "SparkV0AA6Scale",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z.",
    "category": "Spark",
    "auto": true,
@@ -529,7 +529,7 @@
    "y": "raw"
   },
   "0994": {
-   "name": "KnockMap",
+   "name": "KnockMapScale",
    "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F13E). Inputs: Map.",
    "category": "Spark",
    "auto": true,
@@ -545,7 +545,7 @@
    "y": "raw"
   },
   "09AC": {
-   "name": "IdleThrottle",
+   "name": "IdleThrottleScale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: ThrottleAboveClosed.",
    "category": "Idle",
    "auto": true,
@@ -553,7 +553,7 @@
    "y": "raw"
   },
   "09B8": {
-   "name": "IdleSpeed",
+   "name": "IdleSpeedScale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: VehicleSpeed.",
    "category": "Idle",
    "auto": true,
@@ -561,7 +561,7 @@
    "y": "raw"
   },
   "09C4": {
-   "name": "IdleV032E",
+   "name": "IdleV032EScale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: $032E,Z.",
    "category": "Idle",
    "auto": true,
@@ -569,7 +569,7 @@
    "y": "raw"
   },
   "09D0": {
-   "name": "IdleBaro",
+   "name": "IdleBaroScale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Baro.",
    "category": "Idle",
    "auto": true,
@@ -577,118 +577,118 @@
    "y": "raw"
   },
   "09DC": {
-   "name": "FuelMap3",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: Map.",
+   "name": "ColdSoakMapScale",
    "category": "Fuel",
-   "auto": true,
+   "desc": "MAP to row position of ColdSoakMapCoolant",
    "x": "kpa",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "09F9": {
-   "name": "CrankFuelV00FC",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z. Result to $076B,Z.",
+   "name": "CrankPulseCoolantFactor",
    "category": "Fuel",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Factor on the cranking pulse against the cranking coolant, result into $076B,Z",
+   "x": "tempc",
+   "y": "mult256",
+   "auto": false
   },
   "0A05": {
-   "name": "CrankFuelV0A91Coolant",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0A91,Z x CoolantTemp; $0A91,Z x $05FE,Z; $0A91,Z x $0768,Z. Result to $00F0,Z.",
+   "name": "CrankBasePulse",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Cranking base pulse width: ethanol content ($0A91,Z, rows) x cranking coolant temperature (columns); squared, then reduced by the decay factors below; into $0766,Z",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "0A62": {
-   "name": "CrankFuelRpm",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: EngineRpm. Result to $00FE,Z.",
+   "name": "CrankRpmDecay",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Cranking pulse reduction against rpm, throttle not closed; weighted by CrankRpmDecayWeight",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0A6C": {
-   "name": "CrankFuelRpm2",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: EngineRpm. Result to $00FE,Z.",
+   "name": "CrankRpmDecayClosed",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Cranking pulse reduction against rpm with the throttle closed",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0A76": {
-   "name": "CrankFuelV00FC2",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z. Result to $00F2,Z.",
+   "name": "CrankRpmDecayWeight",
    "category": "Fuel",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Weight of the rpm reduction against the cranking coolant",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
   },
   "0A82": {
-   "name": "CrankFuelV0769",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0769,Z. Result to $00FE,Z.",
+   "name": "CrankV0769Decay",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Cranking pulse reduction against $0769,Z; weighted by CrankV0769DecayWeight",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0A8E": {
-   "name": "CrankFuelV00FC3",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z. Result to $00F4,Z.",
+   "name": "CrankV0769DecayWeight",
    "category": "Fuel",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Weight of CrankV0769Decay against the cranking coolant",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
   },
   "0A9A": {
-   "name": "CrankFuelV00FC4",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z.",
+   "name": "CrankCoolantAdder2",
    "category": "Fuel",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Cranking pulse addition against the cranking coolant, used while $0A5A,Z is not above the raw MAP",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
   },
   "0AA4": {
-   "name": "CrankFuelBaro",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: Baro. Result to $00FE,Z.",
+   "name": "CrankBaroDecay",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Cranking pulse reduction against barometric pressure; weighted by CrankBaroDecayWeight",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0AAC": {
-   "name": "CrankFuelV00FC5",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z. Result to $00F6,Z.",
+   "name": "CrankBaroDecayWeight",
    "category": "Fuel",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Weight of CrankBaroDecay against the cranking coolant",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
   },
   "0AB4": {
-   "name": "CrankFuelVacuum",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: ManifoldVacuum. Result to $00F8,Z.",
+   "name": "CrankVacuumFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Cranking pulse factor against manifold vacuum",
    "x": "kpa",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "0AC0": {
-   "name": "CrankFuelV0198Coolant",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: result of Lookup2D x CoolantTemp. Result to $0765,Z.",
+   "name": "CrankEthanolCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Cranking: value against ethanol content and coolant into $0765,Z",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "0AE1": {
-   "name": "CrankFuelV0C44",
-   "desc": "Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0C44,Z.",
+   "name": "CrankCoolantAdder",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Cranking: added to the coolant temperature against the number of crank events ($0C44,Z), limited to $0B75; result is the cranking coolant $0768,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0AEA": {
    "name": "InjectorDeadTime",
@@ -705,20 +705,20 @@
    "category": "Fuel"
   },
   "0B52": {
-   "name": "FuelCoolant",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_111E0). Inputs: CoolantTemp. Result to $0811,Z.",
+   "name": "HotEngineEnrich",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Enrichment against coolant above $0BD9 (with rpm, MAP and time above their limits), into $0811,Z; sets $0770,Z bit 1",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0B60": {
-   "name": "FuelEventRpm2",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_112A8). Inputs: EngineRpm.",
+   "name": "InjectionModeRpmFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Factor against rpm on the bank pulse ($0780,Z / $0782,Z) during the change of injection mode in Sub_112A8",
    "x": "rpm32",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "0B6A": {
    "name": "PartThrottleFuel",
@@ -772,37 +772,37 @@
    "y": "mult256"
   },
   "0E08": {
-   "name": "FuelBaro",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_104AE). Inputs: Baro.",
+   "name": "DecelBaroMapOffset",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Added to MAP against barometric pressure before DecelMapScale",
    "x": "kpa",
-   "y": "raw"
+   "y": "kpa",
+   "auto": false
   },
   "0E12": {
-   "name": "FuelRpm2",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_104AE). Inputs: result of Lookup2D x EngineRpm. Result to $00F4,Z.",
+   "name": "DecelMapRpmLimit",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration fuel reduction: MAP x rpm threshold; with the throttle closed, values under it ramp DecelFuelFactor ($077A,Z) in",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "0EBF": {
-   "name": "FuelEventRpm3",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, FinishFuelPulse). Inputs: EngineRpm.",
+   "name": "FuelEventRpmAdder",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Pulse width added against rpm while $0D02,Z bit 7 is set (result x 8)",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0ED6": {
-   "name": "FuelRpm3",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_102FE). Inputs: EngineRpm.",
+   "name": "WotTimeEnrichMax",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Maximum of the WOT enrichment that builds up after a sustained WOT ($07AA,Z), against rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0EE0": {
    "name": "WotFuel",
@@ -815,88 +815,88 @@
    "category": "Fuel"
   },
   "0F8D": {
-   "name": "FuelCoolant2",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: CoolantTemp. Result to $00F4,Z.",
+   "name": "WarmupCoolantAdder",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Warm-up enrichment against coolant, used instead of the tables while $0C30,Z bit 6 is set",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "0F9F": {
-   "name": "FuelV07E6V0768",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: result of Lookup2D x $0768,Z.",
+   "name": "AfterStartDecay",
    "category": "Fuel",
-   "auto": true,
+   "desc": "After-start enrichment against time since start (rows) and $0768,Z (columns, set by the cranking code); part of the warm-up factor",
    "x": "raw",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "0FFD": {
-   "name": "FuelRpm4",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: EngineRpm.",
+   "name": "WarmupRpmFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Factor on the warm-up enrichment against rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "1007": {
-   "name": "FuelV000E",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: $0E,Z.",
+   "name": "WarmupRunTimeFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Factor on the warm-up enrichment against engine run time ($0E,Z) while it is short",
    "x": "raw",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "100F": {
-   "name": "FuelMapCoolant",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: result of Lookup2D x CoolantTemp.",
+   "name": "WarmupMapCoolantLowSpeed",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Warm-up enrichment, MAP x coolant, used below the vehicle speed $10F8 (with hysteresis)",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "106D": {
-   "name": "FuelRpm5",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: EngineRpm.",
+   "name": "WarmupRpmFactorIdle",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Factor on the warm-up enrichment against rpm while $0C30,Z bit 7 is set",
    "x": "rpm32",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "1077": {
-   "name": "FuelMapCoolant2",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: result of Lookup2D x CoolantTemp.",
+   "name": "WarmupMapCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Warm-up enrichment, MAP x coolant (normal case)",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "10D7": {
-   "name": "FuelV0C47",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: $0C47,Z.",
+   "name": "WarmupIdleTimeFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Factor on WarmupRpmCoolantIdle against $0C47,Z (a timer cleared by the throttle code)",
    "x": "raw",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "10DF": {
-   "name": "FuelRpmCoolant",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: result of Lookup2D x CoolantTemp. Result to $00F2,Z.",
+   "name": "WarmupRpmCoolantIdle",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Warm-up enrichment, rpm x coolant, used while $0C30,Z bit 7 is set; scaled by WarmupIdleTimeFactor",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "113C": {
-   "name": "FuelBaro2",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: Baro.",
+   "name": "WarmupBaroFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Factor on the warm-up enrichment against barometric pressure",
    "x": "kpa",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "1148": {
    "name": "BaroFuel",
@@ -907,84 +907,85 @@
    "category": "Fuel"
   },
   "1153": {
-   "name": "FuelMapCoolant3",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10D5E). Inputs: result of Lookup2D x CoolantTemp. Result to $07E7,Z.",
+   "name": "ColdSoakMapCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Extra warm-up factor, MAP x coolant, applied when the coolant temperature at start is within $11DE of $0A5E,Z (cold-soaked engine); result also in $07E7,Z",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "mult256",
+   "auto": false
   },
   "117E": {
-   "name": "FuelV017C",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_11074). Inputs: $017C,Z. Result to $07DE,Z.",
+   "name": "IdleEnrichSoakTime",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Idle enrichment against the engine-off time $017C,Z, into $07DE,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "118C": {
-   "name": "FuelV07D9",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_11074). Inputs: $07D9,Z. Result to $00F0,Z.",
+   "name": "IdleEnrichRunTime",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Idle enrichment against run time ($07D9,Z); with the others into $07DA,Z, which multiplies the fuel while $0770,Z bit 3 is set (low rpm and MAP)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "119A": {
-   "name": "FuelV07D9V0803",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_11074). Inputs: result of Lookup2D x $0803,Z.",
+   "name": "IdleEnrichEthanolAirTemp",
    "category": "Fuel",
-   "auto": true,
-   "x": "raw",
+   "desc": "Idle enrichment against ethanol content (rows) and intake air temperature at start ($0803,Z)",
+   "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "1204": {
-   "name": "AfterStartFuelV0198",
-   "desc": "Subsystem: after-start enrichment (time since start x coolant) (by the routine that reads it, Sub_10C00). Inputs: $0198,Z. Result to $0F02,Z.",
+   "name": "FlexEthanolFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel: factor against ethanol content ($0198,Z) into $0F02,Z, multiplied into FlexFuelFactor",
    "x": "raw",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "1210": {
-   "name": "AfterStartFuelTable",
-   "desc": "Subsystem: after-start enrichment (time since start x coolant) (by the routine that reads it, Sub_10C00). Inputs: $0A91,Z. Result to $0F06,Z.",
+   "name": "FlexEthanolRpm",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel: value against ethanol content (rows) and $0C4A,Z (columns, from CalcEngineRpm), both as positions, into $0F06,Z",
+   "x": "pos256",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "12AC": {
-   "name": "AfterStartFuelV0A91Coolant",
-   "desc": "Subsystem: after-start enrichment (time since start x coolant) (by the routine that reads it, Sub_10C00). Inputs: $0A91,Z x CoolantTemp. Result to $0F03,Z.",
+   "name": "FlexEthanolCoolantFactor2",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel: factor against ethanol content and coolant into $0F03,Z; scales AfterStartDecay",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "mult256",
+   "auto": false
   },
   "1309": {
-   "name": "AfterStartFuelV0A91Coolant2",
-   "desc": "Subsystem: after-start enrichment (time since start x coolant) (by the routine that reads it, Sub_10C00). Inputs: $0A91,Z x CoolantTemp. Result to $0F04,Z.",
+   "name": "FlexEthanolCoolantFactor1",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel: factor against ethanol content ($0A91,Z, rows) and coolant, into $0F04,Z, multiplied into FlexFuelFactor",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "mult256",
+   "auto": false
   },
   "1366": {
-   "name": "AfterStartFuelV0A91Coolant3",
-   "desc": "Subsystem: after-start enrichment (time since start x coolant) (by the routine that reads it, Sub_10C00). Inputs: $0A91,Z x CoolantTemp. Result to $0F05,Z.",
+   "name": "FlexEthanolCoolantFactor3",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel: value against ethanol content and coolant into $0F05,Z",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "13D6": {
-   "name": "SensorTable3",
+   "name": "SensorTable2",
    "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C7FE). Inputs: TBA. Result to $01AB,Z.",
    "category": "Sensors",
    "auto": true,
@@ -992,7 +993,7 @@
    "y": "raw"
   },
   "13E2": {
-   "name": "SensorTable4",
+   "name": "SensorTable3",
    "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C7FE). Inputs: TBA. Result to $01AB,Z.",
    "category": "Sensors",
    "auto": true,
@@ -1008,87 +1009,87 @@
    "y": "raw"
   },
   "13F9": {
-   "name": "AccelFuelCoolant",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_106EC). Inputs: CoolantTemp. Result to $07D5,Z.",
+   "name": "AccelMapCoolant2",
    "category": "Fuel",
-   "auto": true,
+   "desc": "MAP-rate acceleration enrichment term against coolant into $07D5,Z",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1405": {
-   "name": "AccelFuelCoolant2",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_106EC). Inputs: CoolantTemp. Result to $00F0,Z.",
+   "name": "AccelMapGainCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "MAP-rate acceleration enrichment gain against coolant, plus AccelMapGainAdder, into $07D4,Z",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1411": {
-   "name": "FuelEventStartCoolant",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_1204A). Inputs: StartCoolantTemp. Result to $00F0,Z.",
+   "name": "MapFilterRiseCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Filter coefficient for MapLast ($0A7F,Z) while MAP rises, against coolant at start, minus MapFilterRiseV0474",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "141D": {
-   "name": "AccelFuelBaro",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_106EC). Inputs: Baro. Result to $07D6,Z.",
+   "name": "AccelMapBaro",
    "category": "Fuel",
-   "auto": true,
+   "desc": "MAP-rate acceleration enrichment term against barometric pressure into $07D6,Z",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "142A": {
-   "name": "AccelFuelCoolant3",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_106EC). Inputs: CoolantTemp.",
+   "name": "AccelTpsRateLimit",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Throttle-rate acceleration enrichment: the throttle step above $14B5 is limited to this value, against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1436": {
-   "name": "AccelFuelCoolant4",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_106EC). Inputs: CoolantTemp. Result to $00F6,Z.",
+   "name": "AccelTpsCoolantFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Throttle-rate acceleration enrichment: amount per throttle step against coolant; product into $07CA,Z",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1442": {
-   "name": "FuelEventStartCoolant2",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_1204A). Inputs: StartCoolantTemp. Result to $0A73,Z.",
+   "name": "TpsFilterRiseCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Filter coefficient for ThrottleLast ($0A73,Z) while the throttle opens, against coolant at start",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "144E": {
-   "name": "AccelFuelBaro2",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_106EC). Inputs: Baro. Result to $07D7,Z.",
+   "name": "AccelTpsBaro",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Throttle-rate acceleration enrichment term against barometric pressure into $07D7,Z",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "145A": {
-   "name": "AccelFuelMap",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_106EC). Inputs: Map. Result to $07D0,Z.",
+   "name": "AccelMapAdder",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Added to AccelRpmFactor against MAP",
    "x": "kpa",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "1466": {
-   "name": "AccelFuelRpm",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_106EC). Inputs: EngineRpm.",
+   "name": "AccelRpmFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Acceleration enrichment factor against rpm; plus AccelMapAdder, limited to 1.0, into $07D0,Z",
    "x": "rpm32",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "1474": {
-   "name": "StartCoolant2",
+   "name": "StartCoolant",
    "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to $07C4,Z.",
    "category": "Startup",
    "auto": true,
@@ -1096,60 +1097,60 @@
    "y": "raw"
   },
   "1481": {
-   "name": "AccelFuelCoolant5",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_107EA). Inputs: CoolantTemp.",
+   "name": "TipInCoolantFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Tip-in enrichment factor against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "148B": {
-   "name": "AccelFuelAirTemp",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_107EA). Inputs: AirTemp.",
+   "name": "TipInAirTempFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Tip-in enrichment factor against intake air temperature",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1495": {
-   "name": "AccelFuelBaro3",
-   "desc": "Subsystem: acceleration enrichment (throttle and MAP rate) (by the routine that reads it, Sub_107EA). Inputs: Baro. Result to $00F3,Z.",
+   "name": "TipInBaroFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Tip-in enrichment factor against barometric pressure; result (with ReturnlessFuelScale) into $07C6,Z and spread over the next injectors",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1500": {
-   "name": "FuelEventStartCoolant3",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: StartCoolantTemp.",
+   "name": "DecelLeanThrottleCoolantFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration enleanment: factor on the throttle-closing term against coolant at start, into $07C0,Z",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1512": {
-   "name": "FuelEventStartCoolant4",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: StartCoolantTemp.",
+   "name": "DecelLeanMapCoolantFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration enleanment: factor on the MAP-drop term against coolant at start, into $07BF,Z",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1524": {
-   "name": "FuelEventStartCoolant5",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_1204A). Inputs: StartCoolantTemp. Result to $0A7F,Z.",
+   "name": "MapFilterFallCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Filter coefficient for MapLast ($0A7F,Z) while MAP falls, against coolant at start",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "152C": {
-   "name": "FuelEventStartCoolant6",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_1204A). Inputs: StartCoolantTemp. Result to $0A73,Z.",
+   "name": "TpsFilterFallCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Filter coefficient for ThrottleLast ($0A73,Z) while the throttle closes, against coolant at start",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1534": {
    "name": "StartTable",
@@ -1160,70 +1161,71 @@
    "y": "raw"
   },
   "153E": {
-   "name": "FuelEventBaro",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: Baro.",
+   "name": "DecelLeanBaroFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is $07C2,Z",
    "x": "kpa",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "154A": {
-   "name": "FuelEventMap",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: Map.",
+   "name": "DecelLeanMapAdder",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration enleanment: added to DecelLeanRpmFactor against MAP",
    "x": "kpa",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "155E": {
-   "name": "FuelEventRpm4",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: EngineRpm.",
+   "name": "DecelLeanRpmFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration enleanment: factor against rpm (with DecelLeanMapAdder)",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1572": {
-   "name": "FuelEventTable2",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: $F0,Z. Result to $00F2,Z, $0804,Z.",
+   "name": "DecelLeanAirflow",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration enleanment: airflow value against rpm and throttle position; the drop between last and current throttle goes to $0804,Z",
+   "x": "pos256",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "1612": {
-   "name": "FuelEventTimeStartCoolant",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: result of Lookup2D x StartCoolantTemp2. Result to $07C1,Z.",
+   "name": "DecelLeanTimeCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration enleanment shortly after start: time x coolant at start, into $07C1,Z",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "166F": {
-   "name": "FuelCoolant3",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10A6E). Inputs: CoolantTemp.",
+   "name": "IacFuelCoolantLimit",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Above this (against coolant) the extra idle air ($031B,Z minus $18,Z) sets FuelModeFlags bit 7 instead of adding fuel",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1679": {
    "name": "EventCoolant",
-   "desc": "Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: CoolantTemp. Result to $080C,Z.",
+   "desc": "Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: CoolantTemp. Result to FuelPulseAdder.",
    "category": "Other",
    "auto": true,
    "x": "tempc",
    "y": "raw"
   },
   "1683": {
-   "name": "FuelV00F0Coolant",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10A6E). Inputs: result of Lookup2D x CoolantTemp.",
+   "name": "IacFuelCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Fuel pulse added for extra idle air, rows by IacFuelScale, columns coolant; x 16 into $080C,Z",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "16C0": {
    "name": "O2Coolant",
@@ -1234,7 +1236,7 @@
    "y": "raw"
   },
   "1703": {
-   "name": "O2V042C",
+   "name": "O2V042CLimit",
    "desc": "Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14FD8). Inputs: $042C,Z.",
    "category": "Closed loop",
    "auto": true,
@@ -1266,95 +1268,95 @@
    "y": "raw"
   },
   "187F": {
-   "name": "O2Rpm",
-   "desc": "Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_16244). Inputs: EngineRpm.",
+   "name": "TrimUpperLimitRpm",
    "category": "Closed loop",
-   "auto": true,
+   "desc": "Upper limit of the short-term fuel trim against rpm (signed)",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "188B": {
-   "name": "O2Rpm2",
-   "desc": "Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_16244). Inputs: EngineRpm.",
+   "name": "TrimLowerLimitRpm",
    "category": "Closed loop",
-   "auto": true,
+   "desc": "Lower limit of the short-term fuel trim against rpm (signed)",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1898": {
-   "name": "FuelCal",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10AEC). Inputs: $1923; $0ACA,Z. Result to $00F0,Z.",
+   "name": "FuelTrimAdjust",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Signed fuel adjustment (centred on 128) from calibration $1923 or, with $0C33,Z bit 4 clear, from $0ACA,Z (set over the SCI line); enabled by calibration bit $032C.7",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "18A2": {
-   "name": "FuelMap4",
-   "desc": "Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_10AEC). Inputs: Map.",
+   "name": "FuelTrimAdjustMapWeight",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Weight of FuelTrimAdjust against MAP; the product goes to $07EE,Z and multiplies the fuel",
    "x": "kpa",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "18C6": {
-   "name": "FuelCutRpm",
-   "desc": "Subsystem: fuel cut-off: rev and speed limits, deceleration (by the routine that reads it, Sub_10036). Inputs: EngineRpm.",
+   "name": "DecelCutMapThreshold",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration fuel cut-off: MAP threshold against rpm; while MAP is under it the decel timer $07A1,Z counts up",
    "x": "rpm32",
-   "y": "raw"
+   "y": "kpa",
+   "auto": false
   },
   "18D0": {
-   "name": "FuelCutRpm2",
-   "desc": "Subsystem: fuel cut-off: rev and speed limits, deceleration (by the routine that reads it, Sub_10036). Inputs: EngineRpm.",
+   "name": "DecelCutDelay",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration fuel cut-off: decel timer value ($07A1,Z) needed against rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "18ED": {
-   "name": "FuelCutCoolant",
-   "desc": "Subsystem: fuel cut-off: rev and speed limits, deceleration (by the routine that reads it, Sub_10036). Inputs: CoolantTemp. Result to $00F2,Z.",
+   "name": "DecelCutMinRpmCoolant2",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration fuel cut-off: minimum rpm against coolant (variant with $0943,Z bit 0 clear)",
    "x": "tempc",
-   "y": "raw"
+   "y": "rpm32",
+   "auto": false
   },
   "18F9": {
-   "name": "FuelCutCoolant2",
-   "desc": "Subsystem: fuel cut-off: rev and speed limits, deceleration (by the routine that reads it, Sub_10036). Inputs: CoolantTemp. Result to $00F2,Z.",
+   "name": "DecelCutMinRpmCoolant",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration fuel cut-off: minimum rpm against coolant (variant with $0943,Z bit 0 set); the higher of this and DecelCutMinRpmV032E applies",
    "x": "tempc",
-   "y": "raw"
+   "y": "rpm32",
+   "auto": false
   },
   "1905": {
-   "name": "FuelCutV032E",
-   "desc": "Subsystem: fuel cut-off: rev and speed limits, deceleration (by the routine that reads it, Sub_10036). Inputs: $032E,Z.",
+   "name": "DecelCutMinRpmV032E2",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration fuel cut-off: minimum rpm against $032E,Z (variant with $0943,Z bit 0 clear)",
    "x": "raw",
-   "y": "raw"
+   "y": "rpm32",
+   "auto": false
   },
   "1911": {
-   "name": "FuelCutV032E2",
-   "desc": "Subsystem: fuel cut-off: rev and speed limits, deceleration (by the routine that reads it, Sub_10036). Inputs: $032E,Z.",
+   "name": "DecelCutMinRpmV032E",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Deceleration fuel cut-off: minimum rpm against $032E,Z (variant with $0943,Z bit 0 set)",
    "x": "raw",
-   "y": "raw"
+   "y": "rpm32",
+   "auto": false
   },
   "1942": {
-   "name": "FuelEventTable3",
-   "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, FinishFuelPulse). Inputs: LDD. Result to $04F4,Z.",
+   "name": "DecelCutRpmFactor",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Factor on the fuel pulse while the deceleration cut-off flag ($0770,Z bit 7) is set, against rpm above the idle target",
    "x": "raw",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "19C3": {
-   "name": "Sys3D800Cal",
+   "name": "Sys3D800CalScale",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E074). Inputs: $3048; $042E,Z.",
    "category": "Other",
    "auto": true,
@@ -1370,7 +1372,7 @@
    "y": "raw"
   },
   "19E3": {
-   "name": "Sys3D800Vacuum",
+   "name": "Sys3D800VacuumFactor",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3D85E). Inputs: ManifoldVacuum.",
    "category": "Other",
    "auto": true,
@@ -1378,7 +1380,7 @@
    "y": "raw"
   },
   "19F1": {
-   "name": "Sys3D800V042E2",
+   "name": "Sys3D800V042E",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
    "category": "Other",
    "auto": true,
@@ -1386,7 +1388,7 @@
    "y": "raw"
   },
   "1A03": {
-   "name": "Sys3D800V042E3",
+   "name": "Sys3D800V042E2",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
    "category": "Other",
    "auto": true,
@@ -1394,7 +1396,7 @@
    "y": "raw"
   },
   "1A19": {
-   "name": "Sys3D800V042E4",
+   "name": "Sys3D800V042E3",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
    "category": "Other",
    "auto": true,
@@ -1411,7 +1413,7 @@
    "z": "raw"
   },
   "1AA5": {
-   "name": "Sys3D800Trim",
+   "name": "Sys3D800TrimAdder",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
    "category": "Other",
    "auto": true,
@@ -1419,7 +1421,7 @@
    "y": "raw"
   },
   "1AB1": {
-   "name": "Sys3D800Trim2",
+   "name": "Sys3D800Trim",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. Result to $07EB,Z.",
    "category": "Other",
    "auto": true,
@@ -1427,7 +1429,7 @@
    "y": "raw"
   },
   "1ABD": {
-   "name": "Sys3D800Trim3",
+   "name": "Sys3D800TrimAdder2",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
    "category": "Other",
    "auto": true,
@@ -1435,7 +1437,7 @@
    "y": "raw"
   },
   "1AC9": {
-   "name": "Sys3D800Trim4",
+   "name": "Sys3D800Trim2",
    "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
    "category": "Other",
    "auto": true,
@@ -1459,7 +1461,7 @@
    "y": "raw"
   },
   "1B4D": {
-   "name": "SparkV0D182",
+   "name": "SparkV0D18Limit",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E5A8). Inputs: $0D18,Z. Result to $0D46,Z.",
    "category": "Spark",
    "auto": true,
@@ -1486,82 +1488,82 @@
    "z": "raw"
   },
   "1DD8": {
-   "name": "SparkMapCoolant",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D7FE). Inputs: result of Lookup2D x CoolantTemp.",
+   "name": "CoolantSparkMap",
    "category": "Spark",
-   "auto": true,
+   "desc": "Spark change against MAP (rows) and coolant (columns), signed",
    "x": "tempc",
    "y": "pos256",
-   "z": "raw"
+   "z": "spark",
+   "auto": false
   },
   "1E35": {
-   "name": "SparkAirTemp",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: AirTemp; $0A5A,Z.",
+   "name": "AirTempSparkFactor",
    "category": "Spark",
-   "auto": true,
+   "desc": "Weight of AirTempSparkMapRpm against intake air temperature (or $0A5A,Z with calibration bit $0330.5 clear)",
    "x": "tempc",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "1E3F": {
-   "name": "SparkMapRpm2",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: result of Lookup2D x EngineRpm.",
+   "name": "AirTempSparkMapRpm",
    "category": "Spark",
-   "auto": true,
+   "desc": "Spark change for intake air temperature, MAP x rpm (signed), scaled by AirTempSparkFactor",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "spark",
+   "auto": false
   },
   "1E7E": {
-   "name": "SparkStartCoolant",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D448). Inputs: StartCoolantTemp2. Result to $0D1B,Z.",
+   "name": "AfterStartSparkCoolant",
    "category": "Spark",
-   "auto": true,
+   "desc": "Spark change after start against the coolant temperature at start, into $0D1B,Z",
    "x": "tempc",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "1E94": {
-   "name": "SparkCoolant",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5AE). Inputs: CoolantTemp.",
+   "name": "AfterStartSparkCoolantWeight",
    "category": "Spark",
-   "auto": true,
+   "desc": "Weight of AfterStartSparkMapRpm against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "1EA0": {
-   "name": "SparkMapRpm3",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5AE). Inputs: result of Lookup2D x EngineRpm. Result to $00F0,Z.",
+   "name": "AfterStartSparkMapRpm",
    "category": "Spark",
-   "auto": true,
+   "desc": "Spark change after start, MAP x rpm (signed), weighted by AfterStartSparkCoolantWeight",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "spark",
+   "auto": false
   },
   "1EFD": {
-   "name": "SparkBaro",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D33C). Inputs: Baro.",
+   "name": "BaroSpark",
    "category": "Spark",
-   "auto": true,
+   "desc": "Spark change against barometric pressure, weighted by BaroSparkRpmWeight",
    "x": "kpa",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "1F05": {
-   "name": "SparkRpm",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D33C). Inputs: EngineRpm.",
+   "name": "BaroSparkRpmWeight",
    "category": "Spark",
-   "auto": true,
+   "desc": "Weight of BaroSpark against rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "1F0D": {
-   "name": "SparkV077A",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5DC). Inputs: $077A,Z.",
+   "name": "DecelSpark",
    "category": "Spark",
-   "auto": true,
+   "desc": "Spark change against the deceleration fuel factor (DecelFuelFactor), signed",
    "x": "raw",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "1F1B": {
-   "name": "SparkRpm2",
+   "name": "SparkRpm",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DE3A). Inputs: EngineRpm.",
    "category": "Spark",
    "auto": true,
@@ -1579,7 +1581,7 @@
    "category": "Spark"
   },
   "1FF8": {
-   "name": "SparkThrottle",
+   "name": "SparkThrottleAdder",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed.",
    "category": "Spark",
    "auto": true,
@@ -1587,7 +1589,7 @@
    "y": "raw"
   },
   "2002": {
-   "name": "SparkThrottle2",
+   "name": "SparkThrottleAdder2",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed.",
    "category": "Spark",
    "auto": true,
@@ -1635,7 +1637,7 @@
    "y": "raw"
   },
   "2059": {
-   "name": "SparkV00F2",
+   "name": "SparkV00F2Limit",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: $F2,Z.",
    "category": "Spark",
    "auto": true,
@@ -1643,7 +1645,7 @@
    "y": "raw"
   },
   "2063": {
-   "name": "SparkV00F3",
+   "name": "SparkV00F3Adder",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: $F3,Z.",
    "category": "Spark",
    "auto": true,
@@ -1651,7 +1653,7 @@
    "y": "raw"
   },
   "207A": {
-   "name": "SparkAirTemp2",
+   "name": "SparkAirTempLimit",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: AirTemp.",
    "category": "Spark",
    "auto": true,
@@ -1677,7 +1679,7 @@
    "z": "raw"
   },
   "20D2": {
-   "name": "SparkAirTemp3",
+   "name": "SparkAirTempLimit2",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: AirTemp.",
    "category": "Spark",
    "auto": true,
@@ -1685,7 +1687,7 @@
    "y": "raw"
   },
   "20DA": {
-   "name": "SparkAirTemp4",
+   "name": "SparkAirTemp",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: AirTemp.",
    "category": "Spark",
    "auto": true,
@@ -1709,7 +1711,7 @@
    "y": "raw"
   },
   "2109": {
-   "name": "SparkV0AA62",
+   "name": "SparkV0AA6Limit",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z.",
    "category": "Spark",
    "auto": true,
@@ -1717,7 +1719,7 @@
    "y": "raw"
   },
   "2117": {
-   "name": "SparkV0AA63",
+   "name": "SparkV0AA6Factor",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. Result to $00F2,Z.",
    "category": "Spark",
    "auto": true,
@@ -1725,7 +1727,7 @@
    "y": "raw"
   },
   "2125": {
-   "name": "SparkV0D26",
+   "name": "SparkV0D26Factor",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D26,Z. Result to $00F2,Z.",
    "category": "Spark",
    "auto": true,
@@ -1733,7 +1735,7 @@
    "y": "raw"
   },
   "2131": {
-   "name": "SparkV0D3B",
+   "name": "SparkV0D3BFactor",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D3B,Z. Result to $0D33,Z.",
    "category": "Spark",
    "auto": true,
@@ -1750,7 +1752,7 @@
    "z": "raw"
   },
   "215E": {
-   "name": "SparkV0AA6V00F2",
+   "name": "SparkV0AA6V00F2Factor",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: result of Lookup2D x $F2,Z. Result to $00F4,Z.",
    "category": "Spark",
    "auto": true,
@@ -1759,7 +1761,7 @@
    "z": "raw"
   },
   "2197": {
-   "name": "SparkV0AA64",
+   "name": "SparkV0AA6Limit2",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z.",
    "category": "Spark",
    "auto": true,
@@ -1767,7 +1769,7 @@
    "y": "raw"
   },
   "21A5": {
-   "name": "SparkCoolant2",
+   "name": "SparkCoolantFactor",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: CoolantTemp. Result to $00F2,Z.",
    "category": "Spark",
    "auto": true,
@@ -1775,7 +1777,7 @@
    "y": "raw"
   },
   "21AF": {
-   "name": "SparkV00F6V0D1E",
+   "name": "SparkV00F6V0D1EFactor",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z.",
    "category": "Spark",
    "auto": true,
@@ -1784,7 +1786,7 @@
    "z": "raw"
   },
   "21D0": {
-   "name": "SparkV00F6V0D1E2",
+   "name": "SparkV00F6V0D1ELimit",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z. Result to $00F2,Z.",
    "category": "Spark",
    "auto": true,
@@ -1801,7 +1803,7 @@
    "y": "raw"
   },
   "220E": {
-   "name": "SparkMap5",
+   "name": "SparkMapFactor",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D8F0). Inputs: Map. Result to $0D51,Z.",
    "category": "Spark",
    "auto": true,
@@ -1825,7 +1827,7 @@
    "y": "raw"
   },
   "2226": {
-   "name": "SparkMap6",
+   "name": "SparkMapFactor2",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_39412). Inputs: Map. Result to $0D53,Z.",
    "category": "Spark",
    "auto": true,
@@ -1833,7 +1835,7 @@
    "y": "raw"
   },
   "222E": {
-   "name": "SparkTable",
+   "name": "SparkScale",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.",
    "category": "Spark",
    "auto": true,
@@ -1841,7 +1843,7 @@
    "y": "raw"
   },
   "2236": {
-   "name": "SparkTable2",
+   "name": "SparkScale2",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.",
    "category": "Spark",
    "auto": true,
@@ -1849,7 +1851,7 @@
    "y": "raw"
   },
   "223E": {
-   "name": "SparkTable3",
+   "name": "SparkScale3",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.",
    "category": "Spark",
    "auto": true,
@@ -1857,7 +1859,7 @@
    "y": "raw"
   },
   "2246": {
-   "name": "SparkMap7",
+   "name": "SparkMapLimit",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: Map. Result to $0D55,Z.",
    "category": "Spark",
    "auto": true,
@@ -1865,24 +1867,24 @@
    "y": "raw"
   },
   "224E": {
-   "name": "SparkMapRpm4",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DAB4). Inputs: result of Lookup2D x EngineRpm.",
+   "name": "FlexSparkMapRpm",
    "category": "Spark",
-   "auto": true,
+   "desc": "Flex-fuel spark change, MAP x rpm, minus $0D03,Z, weighted by FlexSparkEthanolWeight",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "spark",
+   "auto": false
   },
   "2383": {
-   "name": "SparkV0198",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DAB4). Inputs: $0198,Z.",
+   "name": "FlexSparkEthanolWeight",
    "category": "Spark",
-   "auto": true,
+   "desc": "Weight of FlexSparkMapRpm against ethanol content",
    "x": "raw",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "23CF": {
-   "name": "KnockRpm",
+   "name": "KnockRpmFactor",
    "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA4,Z.",
    "category": "Spark",
    "auto": true,
@@ -1898,7 +1900,7 @@
    "y": "raw"
   },
   "23E7": {
-   "name": "KnockRpm2",
+   "name": "KnockRpm",
    "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA5,Z.",
    "category": "Spark",
    "auto": true,
@@ -1906,7 +1908,7 @@
    "y": "raw"
   },
   "23F3": {
-   "name": "KnockRpm3",
+   "name": "KnockRpm2",
    "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA7,Z.",
    "category": "Spark",
    "auto": true,
@@ -1914,7 +1916,7 @@
    "y": "raw"
   },
   "23FF": {
-   "name": "KnockRpm4",
+   "name": "KnockRpm3",
    "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA6,Z.",
    "category": "Spark",
    "auto": true,
@@ -1922,7 +1924,7 @@
    "y": "raw"
   },
   "240B": {
-   "name": "KnockRpm5",
+   "name": "KnockRpm4",
    "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DB5,Z.",
    "category": "Spark",
    "auto": true,
@@ -1945,7 +1947,7 @@
    "y": "raw"
   },
   "243F": {
-   "name": "KnockMap2",
+   "name": "KnockMap",
    "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F256). Inputs: Map.",
    "category": "Spark",
    "auto": true,
@@ -1962,7 +1964,7 @@
    "z": "spark"
   },
   "24B6": {
-   "name": "KnockRpm6",
+   "name": "KnockRpm5",
    "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0D40,Z.",
    "category": "Spark",
    "auto": true,
@@ -2018,7 +2020,7 @@
    "y": "raw"
   },
   "254D": {
-   "name": "SparkCoolant3",
+   "name": "SparkCoolant",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: CoolantTemp.",
    "category": "Spark",
    "auto": true,
@@ -2026,7 +2028,7 @@
    "y": "raw"
   },
   "2555": {
-   "name": "SparkTable4",
+   "name": "SparkTable",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.",
    "category": "Spark",
    "auto": true,
@@ -2034,7 +2036,7 @@
    "y": "raw"
   },
   "2561": {
-   "name": "SparkTable5",
+   "name": "SparkTable2",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.",
    "category": "Spark",
    "auto": true,
@@ -2042,7 +2044,7 @@
    "y": "raw"
   },
   "256D": {
-   "name": "SparkTable6",
+   "name": "SparkTable3",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.",
    "category": "Spark",
    "auto": true,
@@ -2050,7 +2052,7 @@
    "y": "raw"
   },
   "2579": {
-   "name": "SparkTable7",
+   "name": "SparkTable4",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.",
    "category": "Spark",
    "auto": true,
@@ -2074,28 +2076,28 @@
    "y": "raw"
   },
   "2598": {
-   "name": "SparkAirTemp5",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: AirTemp; $0A5A,Z.",
+   "name": "AirTempSparkFactor2",
    "category": "Spark",
-   "auto": true,
+   "desc": "Weight of AirTempSparkMap against intake air temperature",
    "x": "tempc",
-   "y": "raw"
+   "y": "mult256",
+   "auto": false
   },
   "25A2": {
-   "name": "SparkMap8",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: Map.",
+   "name": "AirTempSparkMap",
    "category": "Spark",
-   "auto": true,
+   "desc": "Second air-temperature spark term against MAP (signed), scaled by AirTempSparkFactor2",
    "x": "kpa",
-   "y": "raw"
+   "y": "spark",
+   "auto": false
   },
   "25B6": {
-   "name": "IdleCoolant3",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AE22). Inputs: CoolantTemp.",
+   "name": "IdleTargetRpmNeutral",
    "category": "Idle",
-   "auto": true,
+   "desc": "Target idle speed against coolant used instead of IdleTargetRpm while $0C31,Z bit 5 is set (with calibration bit $032E.6 clear)",
    "x": "tempc",
-   "y": "raw"
+   "y": "rpm8",
+   "auto": false
   },
   "25F0": {
    "name": "IdleTargetRpm",
@@ -2106,15 +2108,15 @@
    "category": "Idle"
   },
   "25FC": {
-   "name": "IdleCoolant4",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: CoolantTemp. Result to $00FE,Z.",
+   "name": "IdleTargetRpmAlt",
    "category": "Idle",
-   "auto": true,
+   "desc": "Target idle speed against coolant, second variant read by Sub_1B182",
    "x": "tempc",
-   "y": "raw"
+   "y": "rpm8",
+   "auto": false
   },
   "2608": {
-   "name": "IdleTable",
+   "name": "IdleAdder",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: TBA. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -2122,7 +2124,7 @@
    "y": "raw"
   },
   "2610": {
-   "name": "IdleV0A5AV030E",
+   "name": "IdleV0A5AV030EFactor",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: result of Lookup2D x $030E,Z. Result to $035E,Z.",
    "category": "Idle",
    "auto": true,
@@ -2131,7 +2133,7 @@
    "z": "raw"
   },
   "2631": {
-   "name": "IdleV0A5AV030E2",
+   "name": "IdleV0A5AV030EFactor2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: result of Lookup2D x $030E,Z. Result to $035E,Z.",
    "category": "Idle",
    "auto": true,
@@ -2140,7 +2142,7 @@
    "z": "raw"
   },
   "265C": {
-   "name": "IdleV0A5A2",
+   "name": "IdleV0A5ALimit",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: $0A5A,Z. Result to $035D,Z.",
    "category": "Idle",
    "auto": true,
@@ -2148,7 +2150,7 @@
    "y": "raw"
   },
   "2666": {
-   "name": "IdleV0A5A3",
+   "name": "IdleV0A5ALimit2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: $0A5A,Z.",
    "category": "Idle",
    "auto": true,
@@ -2156,7 +2158,7 @@
    "y": "raw"
   },
   "2670": {
-   "name": "IdleCoolant5",
+   "name": "IdleCoolant2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: CoolantTemp. Result to $00FF,Z.",
    "category": "Idle",
    "auto": true,
@@ -2196,7 +2198,7 @@
    "y": "raw"
   },
   "26C0": {
-   "name": "IdleCoolant6",
+   "name": "IdleCoolant3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: CoolantTemp. Result to $033B,Z.",
    "category": "Idle",
    "auto": true,
@@ -2212,7 +2214,7 @@
    "y": "raw"
   },
   "26D4": {
-   "name": "IdleV00FE3",
+   "name": "IdleV00FEScale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -2228,7 +2230,7 @@
    "y": "raw"
   },
   "26E8": {
-   "name": "IdleV0339",
+   "name": "IdleV0339Scale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $0339,Z.",
    "category": "Idle",
    "auto": true,
@@ -2244,7 +2246,7 @@
    "y": "raw"
   },
   "26FC": {
-   "name": "SensorRpm2",
+   "name": "SensorRpm",
    "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: EngineRpm; SegmentRpm. Result to $0323,Z, $0347,Z.",
    "category": "Sensors",
    "auto": true,
@@ -2252,7 +2254,7 @@
    "y": "raw"
   },
   "2708": {
-   "name": "IdleCoolant7",
+   "name": "IdleCoolant4",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2260,7 +2262,7 @@
    "y": "raw"
   },
   "2712": {
-   "name": "IdleCoolant8",
+   "name": "IdleCoolantLimit",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.",
    "category": "Idle",
    "auto": true,
@@ -2268,7 +2270,7 @@
    "y": "raw"
   },
   "271C": {
-   "name": "IdleCoolant9",
+   "name": "IdleCoolantLimit2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.",
    "category": "Idle",
    "auto": true,
@@ -2276,7 +2278,7 @@
    "y": "raw"
   },
   "2726": {
-   "name": "IdleCoolant10",
+   "name": "IdleCoolantLimit3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -2284,7 +2286,7 @@
    "y": "raw"
   },
   "2730": {
-   "name": "IdleCoolant11",
+   "name": "IdleCoolantLimit4",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -2292,7 +2294,7 @@
    "y": "raw"
   },
   "273A": {
-   "name": "IdleV0348",
+   "name": "IdleV0348Factor",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.",
    "category": "Idle",
    "auto": true,
@@ -2300,7 +2302,7 @@
    "y": "raw"
   },
   "2744": {
-   "name": "IdleV03482",
+   "name": "IdleV0348Factor2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.",
    "category": "Idle",
    "auto": true,
@@ -2308,7 +2310,7 @@
    "y": "raw"
   },
   "274E": {
-   "name": "IdleCoolant12",
+   "name": "IdleCoolantFactor",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2316,7 +2318,7 @@
    "y": "raw"
   },
   "2758": {
-   "name": "IdleCoolant13",
+   "name": "IdleCoolantFactor2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2324,7 +2326,7 @@
    "y": "raw"
   },
   "2762": {
-   "name": "IdleCoolant14",
+   "name": "IdleCoolantAdder2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2332,7 +2334,7 @@
    "y": "raw"
   },
   "276A": {
-   "name": "IdleCoolant15",
+   "name": "IdleCoolantAdder3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2340,7 +2342,7 @@
    "y": "raw"
   },
   "2772": {
-   "name": "IdleCoolant16",
+   "name": "IdleCoolantLimit5",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -2348,7 +2350,7 @@
    "y": "raw"
   },
   "277C": {
-   "name": "IdleCoolant17",
+   "name": "IdleCoolantLimit6",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -2356,7 +2358,7 @@
    "y": "raw"
   },
   "2786": {
-   "name": "IdleV03483",
+   "name": "IdleV0348Factor3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.",
    "category": "Idle",
    "auto": true,
@@ -2364,7 +2366,7 @@
    "y": "raw"
   },
   "2790": {
-   "name": "IdleV03484",
+   "name": "IdleV0348Factor4",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.",
    "category": "Idle",
    "auto": true,
@@ -2372,7 +2374,7 @@
    "y": "raw"
   },
   "279A": {
-   "name": "IdleCoolant18",
+   "name": "IdleCoolant5",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2380,7 +2382,7 @@
    "y": "raw"
   },
   "27A4": {
-   "name": "IdleCoolant19",
+   "name": "IdleCoolant6",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2388,7 +2390,7 @@
    "y": "raw"
   },
   "27AE": {
-   "name": "IdleCoolant20",
+   "name": "IdleCoolantAdder4",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2396,7 +2398,7 @@
    "y": "raw"
   },
   "27B6": {
-   "name": "IdleCoolant21",
+   "name": "IdleCoolantAdder5",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2404,7 +2406,7 @@
    "y": "raw"
   },
   "27C0": {
-   "name": "IdleMap2",
+   "name": "IdleMapScale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Map.",
    "category": "Idle",
    "auto": true,
@@ -2412,7 +2414,7 @@
    "y": "raw"
   },
   "27C8": {
-   "name": "IdleV0341",
+   "name": "IdleV0341Scale",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0341,Z.",
    "category": "Idle",
    "auto": true,
@@ -2420,7 +2422,7 @@
    "y": "raw"
   },
   "27F6": {
-   "name": "IdleV0A5A4",
+   "name": "IdleV0A5AFactor",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A6E2). Inputs: $0A5A,Z. Result to $0334,Z.",
    "category": "Idle",
    "auto": true,
@@ -2428,7 +2430,7 @@
    "y": "raw"
   },
   "2826": {
-   "name": "IdleSpeed2",
+   "name": "IdleSpeedFactor",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1971A). Inputs: VehicleSpeed.",
    "category": "Idle",
    "auto": true,
@@ -2444,7 +2446,7 @@
    "y": "raw"
   },
   "2841": {
-   "name": "IdleTime",
+   "name": "IdleTimeAdder",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Count3s.",
    "category": "Idle",
    "auto": true,
@@ -2452,7 +2454,7 @@
    "y": "raw"
   },
   "2849": {
-   "name": "IdleCoolant22",
+   "name": "IdleCoolant7",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -2460,7 +2462,7 @@
    "y": "raw"
   },
   "2857": {
-   "name": "IdleThrottle2",
+   "name": "IdleThrottleLimit",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: ThrottleAboveClosed.",
    "category": "Idle",
    "auto": true,
@@ -2468,7 +2470,7 @@
    "y": "raw"
   },
   "2865": {
-   "name": "IdleSpeed3",
+   "name": "IdleSpeedScale2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed.",
    "category": "Idle",
    "auto": true,
@@ -2476,7 +2478,7 @@
    "y": "raw"
   },
   "2871": {
-   "name": "IdleV0345",
+   "name": "IdleV0345Factor",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0345,Z.",
    "category": "Idle",
    "auto": true,
@@ -2484,7 +2486,7 @@
    "y": "raw"
   },
   "287D": {
-   "name": "IdleV0A5A5",
+   "name": "IdleV0A5AFactor2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0A5A,Z.",
    "category": "Idle",
    "auto": true,
@@ -2492,7 +2494,7 @@
    "y": "raw"
   },
   "2887": {
-   "name": "IdleSegRpm",
+   "name": "IdleSegRpmFactor",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm. Result to $00FC,Z.",
    "category": "Idle",
    "auto": true,
@@ -2500,7 +2502,7 @@
    "y": "raw"
   },
   "2891": {
-   "name": "IdleSegRpm2",
+   "name": "IdleSegRpmFactor2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm.",
    "category": "Idle",
    "auto": true,
@@ -2508,7 +2510,7 @@
    "y": "raw"
   },
   "289B": {
-   "name": "IdleThrottleSegRpm",
+   "name": "IdleThrottleSegRpmAdder",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: result of Lookup2D x SegmentRpm.",
    "category": "Idle",
    "auto": true,
@@ -2517,7 +2519,7 @@
    "z": "raw"
   },
   "28BC": {
-   "name": "IdleSpeedSegRpm",
+   "name": "IdleSpeedSegRpmLimit",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -2526,7 +2528,7 @@
    "z": "raw"
   },
   "2919": {
-   "name": "IdleBaro2",
+   "name": "IdleBaroScale2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: Baro. Result to $00F1,Z.",
    "category": "Idle",
    "auto": true,
@@ -2534,7 +2536,7 @@
    "y": "raw"
   },
   "2923": {
-   "name": "IdleBaro3",
+   "name": "IdleBaroFactor",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1971A). Inputs: Baro. Result to $00F0,Z.",
    "category": "Idle",
    "auto": true,
@@ -2542,7 +2544,7 @@
    "y": "raw"
   },
   "292D": {
-   "name": "IdleBaro4",
+   "name": "IdleBaroFactor2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Baro.",
    "category": "Idle",
    "auto": true,
@@ -2550,7 +2552,7 @@
    "y": "raw"
   },
   "293D": {
-   "name": "IdleV0DC6",
+   "name": "IdleV0DC6Factor",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: $0DC6,Z.",
    "category": "Idle",
    "auto": true,
@@ -2567,7 +2569,7 @@
    "z": "raw"
   },
   "296E": {
-   "name": "SensorRpm3",
+   "name": "SensorRpm2",
    "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: EngineRpm; SegmentRpm. Result to $034D,Z.",
    "category": "Sensors",
    "auto": true,
@@ -2575,7 +2577,7 @@
    "y": "raw"
   },
   "2976": {
-   "name": "IdleTime2",
+   "name": "IdleTimeAdder2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: Count3s.",
    "category": "Idle",
    "auto": true,
@@ -2583,7 +2585,7 @@
    "y": "raw"
   },
   "2980": {
-   "name": "IdleCoolant23",
+   "name": "IdleCoolantAdder6",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2591,7 +2593,7 @@
    "y": "raw"
   },
   "2990": {
-   "name": "IdleSegRpm3",
+   "name": "IdleSegRpm",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: SegmentRpm. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -2599,7 +2601,7 @@
    "y": "raw"
   },
   "299A": {
-   "name": "IdleCoolant24",
+   "name": "IdleCoolantFactor3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2607,7 +2609,7 @@
    "y": "raw"
   },
   "29A4": {
-   "name": "IdleBaro5",
+   "name": "IdleBaroAdder",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: Baro.",
    "category": "Idle",
    "auto": true,
@@ -2615,7 +2617,7 @@
    "y": "raw"
   },
   "29AE": {
-   "name": "IdleTable5",
+   "name": "IdleTable",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: TBA.",
    "category": "Idle",
    "auto": true,
@@ -2623,7 +2625,7 @@
    "y": "raw"
   },
   "29B8": {
-   "name": "IdleTable6",
+   "name": "IdleTable2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: TBA.",
    "category": "Idle",
    "auto": true,
@@ -2631,7 +2633,7 @@
    "y": "raw"
   },
   "29C2": {
-   "name": "IdleTable7",
+   "name": "IdleTable3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: TBA.",
    "category": "Idle",
    "auto": true,
@@ -2639,7 +2641,7 @@
    "y": "raw"
   },
   "29CC": {
-   "name": "IdleV0335",
+   "name": "IdleV0335Adder",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: $0335,Z.",
    "category": "Idle",
    "auto": true,
@@ -2647,7 +2649,7 @@
    "y": "raw"
   },
   "29D6": {
-   "name": "IdleV03352",
+   "name": "IdleV0335Adder2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: $0335,Z.",
    "category": "Idle",
    "auto": true,
@@ -2673,7 +2675,7 @@
    "z": "raw"
   },
   "2A38": {
-   "name": "IdleBaro6",
+   "name": "IdleBaro",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_193EC). Inputs: Baro.",
    "category": "Idle",
    "auto": true,
@@ -2681,7 +2683,7 @@
    "y": "raw"
   },
   "2A44": {
-   "name": "IdleBaro7",
+   "name": "IdleBaro2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A688). Inputs: Baro. Result to $002A,Z.",
    "category": "Idle",
    "auto": true,
@@ -2689,7 +2691,7 @@
    "y": "raw"
   },
   "2A50": {
-   "name": "IdleBaro8",
+   "name": "IdleBaroFactor3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1A720). Inputs: Baro.",
    "category": "Idle",
    "auto": true,
@@ -2722,7 +2724,7 @@
    "y": "raw"
   },
   "2A9C": {
-   "name": "SpeedCtlBaro",
+   "name": "SpeedCtlBaroFactor",
    "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: Baro.",
    "category": "Speed control",
    "auto": true,
@@ -2730,7 +2732,7 @@
    "y": "raw"
   },
   "2AAC": {
-   "name": "SpeedCtlV04083",
+   "name": "SpeedCtlV0408Adder",
    "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: $0408,Z; #$80.",
    "category": "Speed control",
    "auto": true,
@@ -2746,7 +2748,7 @@
    "y": "raw"
   },
   "2B12": {
-   "name": "SpeedCtlTable",
+   "name": "SpeedCtlAdder",
    "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: LDD.",
    "category": "Speed control",
    "auto": true,
@@ -2754,7 +2756,7 @@
    "y": "raw"
   },
   "2B20": {
-   "name": "SpeedCtlTable2",
+   "name": "SpeedCtlTable",
    "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: TBA.",
    "category": "Speed control",
    "auto": true,
@@ -2778,7 +2780,7 @@
    "y": "raw"
   },
   "2B50": {
-   "name": "SpeedCtlSpeed2",
+   "name": "SpeedCtlSpeedLimit",
    "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: VehicleSpeed.",
    "category": "Speed control",
    "auto": true,
@@ -2794,7 +2796,7 @@
    "y": "raw"
   },
   "2B96": {
-   "name": "SensorRpm4",
+   "name": "SensorRpmAdder2",
    "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2CB60). Inputs: EngineRpm.",
    "category": "Sensors",
    "auto": true,
@@ -2802,7 +2804,7 @@
    "y": "raw"
   },
   "2BA6": {
-   "name": "SensorBaro",
+   "name": "SensorBaroScale",
    "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2CB60). Inputs: Baro.",
    "category": "Sensors",
    "auto": true,
@@ -2810,7 +2812,7 @@
    "y": "raw"
   },
   "2BB7": {
-   "name": "MisfireV0620",
+   "name": "MisfireV0620Limit",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2818,7 +2820,7 @@
    "y": "raw"
   },
   "2BC3": {
-   "name": "MisfireV06202",
+   "name": "MisfireV0620",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. Result to $04FE,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2826,7 +2828,7 @@
    "y": "raw"
   },
   "2BCF": {
-   "name": "MisfireV06203",
+   "name": "MisfireV0620Scale",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: $0620,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2834,7 +2836,7 @@
    "y": "raw"
   },
   "2BDB": {
-   "name": "MisfireV06204",
+   "name": "MisfireV0620Scale2",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2842,7 +2844,7 @@
    "y": "raw"
   },
   "2BE7": {
-   "name": "MisfireV06205",
+   "name": "MisfireV06202",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2850,7 +2852,7 @@
    "y": "raw"
   },
   "2BF3": {
-   "name": "DiagThrottle",
+   "name": "DiagThrottleScale",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: ThrottleAboveClosed.",
    "category": "Diagnostics",
    "auto": true,
@@ -2890,7 +2892,7 @@
    "y": "raw"
   },
   "2C4B": {
-   "name": "MisfireV0620V05C6",
+   "name": "MisfireV0620V05C6Factor",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2899,7 +2901,7 @@
    "z": "raw"
   },
   "2CA8": {
-   "name": "MisfireV0620V05C62",
+   "name": "MisfireV0620V05C6Factor2",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B692). Inputs: result of Lookup2D x $05C6,Z. Result to $05D6,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2908,7 +2910,7 @@
    "z": "raw"
   },
   "2D05": {
-   "name": "MisfireV0620V05C63",
+   "name": "MisfireV0620V05C6Factor3",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2917,7 +2919,7 @@
    "z": "raw"
   },
   "2D62": {
-   "name": "MisfireV0620V05C64",
+   "name": "MisfireV0620V05C6Factor4",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2944,7 +2946,7 @@
    "z": "raw"
   },
   "2E79": {
-   "name": "MisfireV0620Coolant",
+   "name": "MisfireV0620CoolantFactor",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x CoolantTemp. Result to $05E2,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2961,7 +2963,7 @@
    "y": "raw"
   },
   "2ED5": {
-   "name": "MisfireScaled",
+   "name": "MisfireScaledFactor",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: result of Lookup2D.",
    "category": "Diagnostics",
    "auto": true,
@@ -2969,7 +2971,7 @@
    "y": "raw"
   },
   "2EE7": {
-   "name": "MisfireTable",
+   "name": "MisfireScale",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: TBA.",
    "category": "Diagnostics",
    "auto": true,
@@ -2985,7 +2987,7 @@
    "y": "raw"
   },
   "2F13": {
-   "name": "DiagRpm",
+   "name": "DiagRpmLimit",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_243F8). Inputs: EngineRpm. Result to $0527,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -2993,7 +2995,7 @@
    "y": "raw"
   },
   "2F27": {
-   "name": "MisfireV0620V05C65",
+   "name": "MisfireV0620V05C6Factor5",
    "desc": "Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: result of Lookup2D x $05C6,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -3002,16 +3004,16 @@
    "z": "raw"
   },
   "2F88": {
-   "name": "AfterStartFuelV0A91Map",
-   "desc": "Subsystem: after-start enrichment (time since start x coolant) (by the routine that reads it, Sub_10C00). Inputs: $0A91,Z x Map. Result to $00F0,Z.",
+   "name": "FlexEthanolMap",
    "category": "Fuel",
-   "auto": true,
+   "desc": "Flex-fuel: correction against ethanol content (rows) and MAP, weighted by FlexCoolantWeight, into $0F45,Z",
    "x": "kpa",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "3055": {
-   "name": "DiagV019C",
+   "name": "DiagV019CLimit",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -3019,7 +3021,7 @@
    "y": "raw"
   },
   "3061": {
-   "name": "DiagV019C2",
+   "name": "DiagV019CLimit2",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -3027,8 +3029,8 @@
    "y": "raw"
   },
   "30C9": {
-   "name": "DiagV042CV0198",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: result of Lookup2D x $0198,Z. Result to $00F2,Z.",
+   "name": "DiagV042CFlexEthanolAdder",
+   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: result of Lookup2D x FlexEthanol. Result to $00F2,Z.",
    "category": "Diagnostics",
    "auto": true,
    "x": "raw",
@@ -3036,8 +3038,8 @@
    "z": "raw"
   },
   "30EA": {
-   "name": "DiagV042CV01982",
-   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A4F2). Inputs: result of Lookup2D x $0198,Z. Result to $00F2,Z.",
+   "name": "DiagV042CFlexEthanol",
+   "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A4F2). Inputs: result of Lookup2D x FlexEthanol. Result to $00F2,Z.",
    "category": "Diagnostics",
    "auto": true,
    "x": "raw",
@@ -3045,7 +3047,7 @@
    "z": "raw"
   },
   "310B": {
-   "name": "DiagV042C",
+   "name": "DiagV042CScale",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: $042C,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -3053,7 +3055,7 @@
    "y": "raw"
   },
   "3117": {
-   "name": "DiagV042C2",
+   "name": "DiagV042CScale2",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A4F2). Inputs: $042C,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -3061,7 +3063,7 @@
    "y": "raw"
   },
   "31F3": {
-   "name": "Sys17000Volts",
+   "name": "Sys2C708VoltsAdder",
    "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_2C708). Inputs: BatteryVolts2.",
    "category": "Other",
    "auto": true,
@@ -3069,7 +3071,7 @@
    "y": "raw"
   },
   "31FF": {
-   "name": "Sys17000V00F0",
+   "name": "Sys2C708V00F0",
    "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_2C708). Inputs: $F0,Z. Result to $019C,Z.",
    "category": "Other",
    "auto": true,
@@ -3077,7 +3079,7 @@
    "y": "raw"
   },
   "320B": {
-   "name": "Sys17000Scaled",
+   "name": "Sys2C708Scaled",
    "desc": "Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_2C708). Inputs: result of Lookup2D; #$FF. Result to $0A93,Z.",
    "category": "Other",
    "auto": true,
@@ -3093,7 +3095,7 @@
    "y": "raw"
   },
   "322D": {
-   "name": "DiagThrottle2",
+   "name": "DiagThrottle",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: ThrottleAboveClosed. Result to $00F4,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -3101,7 +3103,7 @@
    "y": "raw"
   },
   "3237": {
-   "name": "DiagCoolant",
+   "name": "DiagCoolantAdder",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: CoolantTemp. Result to $00F2,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -3109,7 +3111,7 @@
    "y": "raw"
   },
   "323D": {
-   "name": "DiagV0330",
+   "name": "DiagV0330Adder",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: $0330,Z. Result to $00F2,Z.",
    "category": "Diagnostics",
    "auto": true,
@@ -3126,7 +3128,7 @@
    "z": "raw"
   },
   "32D3": {
-   "name": "DiagStartCoolant",
+   "name": "DiagStartCoolantLimit",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_23A4A). Inputs: StartCoolantTemp2.",
    "category": "Diagnostics",
    "auto": true,
@@ -3142,15 +3144,15 @@
    "category": "Sensors"
   },
   "49A0": {
-   "name": "SensorTable5",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_241AA). Inputs: ?; Throttle.",
+   "name": "MapLimpFromThrottle",
    "category": "Sensors",
-   "auto": true,
+   "desc": "Substitute MAP from the throttle position when the MAP sensor has failed",
    "x": "raw",
-   "y": "raw"
+   "y": "kpa",
+   "auto": false
   },
   "49AE": {
-   "name": "DiagRpm2",
+   "name": "DiagRpmLimit2",
    "desc": "Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_23970). Inputs: EngineRpm.",
    "category": "Diagnostics",
    "auto": true,
@@ -3158,7 +3160,7 @@
    "y": "raw"
   },
   "49CA": {
-   "name": "KnockRpm7",
+   "name": "KnockRpm6",
    "desc": "Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DB3,Z.",
    "category": "Spark",
    "auto": true,
@@ -3180,23 +3182,23 @@
    "category": "Sensors"
   },
   "7061": {
-   "name": "SensorV0A59",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: $0A59,Z; $0A1B,Z. Result to $00F0,Z, $0195,Z.",
+   "name": "Thermistor3Curve",
    "category": "Sensors",
-   "auto": true,
+   "desc": "ADC counts of a third thermistor input ($0A59,Z or $0A1B,Z) to temperature, into $0195,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "tempc",
+   "auto": false
   },
   "7077": {
-   "name": "SensorV0A592",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: $0A59,Z; $0A1B,Z. Result to $00F0,Z, $0195,Z.",
+   "name": "Thermistor3CurveAlt",
    "category": "Sensors",
-   "auto": true,
+   "desc": "Alternative curve for the third thermistor input, chosen by calibration bit $0330.2",
    "x": "raw",
-   "y": "raw"
+   "y": "tempc",
+   "auto": false
   },
   "7089": {
-   "name": "SensorTable6",
+   "name": "SensorLimit2",
    "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C6DE). Inputs: ?.",
    "category": "Sensors",
    "auto": true,
@@ -3212,44 +3214,45 @@
    "y": "raw"
   },
   "70A1": {
-   "name": "SensorTable7",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2C7FE). Inputs: TBA.",
-   "category": "Sensors",
-   "auto": true,
+   "name": "FlexEthanolCurve",
+   "category": "Fuel",
+   "desc": "Flex-fuel: learned ratio to ethanol content (0-170)",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "70AD": {
-   "name": "SensorV0A8E",
-   "desc": "Subsystem: sensor processing (by the routine that reads it, Sub_2DC88). Inputs: $0A8E,Z.",
+   "name": "FuelLevelCurve",
    "category": "Sensors",
-   "auto": true,
+   "desc": "Fuel level sensor counts to fuel level",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "70BF": {
-   "name": "SparkRpm3",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DB4A). Inputs: EngineRpm.",
+   "name": "DwellRpmScale",
    "category": "Spark",
-   "auto": true,
+   "desc": "Rpm to column position of DwellTime",
    "x": "rpm32",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "70D3": {
-   "name": "SparkVolts",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DB4A). Inputs: BatteryVolts2.",
+   "name": "DwellVoltsScale",
    "category": "Spark",
-   "auto": true,
+   "desc": "Battery voltage to row position of DwellTime",
    "x": "volt16",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "70E7": {
-   "name": "SparkTable8",
-   "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1DB4A). Inputs: LDAA IND8, Y.",
+   "name": "DwellTime",
    "category": "Spark",
-   "auto": true,
+   "desc": "Coil dwell against battery voltage and rpm (both as positions)",
+   "x": "pos256",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "7564": {
    "name": "SparkV0A57",
@@ -3268,7 +3271,7 @@
    "y": "raw"
   },
   "ABB9": {
-   "name": "EventV0D11",
+   "name": "EventV0D11Limit",
    "desc": "Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: $0D11,Z. Result to $791E,Z.",
    "category": "Other",
    "auto": true,
@@ -3276,7 +3279,7 @@
    "y": "raw"
   },
   "ABCB": {
-   "name": "FuelEventCal",
+   "name": "FuelEventCalAdder",
    "desc": "Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12680). Inputs: $0A83; $7563.",
    "category": "Fuel",
    "auto": true,

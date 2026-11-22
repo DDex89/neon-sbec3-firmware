@@ -228,6 +228,11 @@ def main():
             else:
                 X.label_axis(e, "y", [str(round(r * 255 / max(1, ny - 1))) for r in range(ny)], "row position 0-255")
             X.zdata(e, p, ny, nx, zu, sg != 0)
+        elif kind == "grid":
+            e = X.item("XDFTABLE", t["name"], (c.get("desc") or "") + " $%04X" % a, [c.get("category", "Other")])
+            X.label_axis(e, "x", [str(i + 1) for i in range(t["cols"])])
+            X.label_axis(e, "y", [str(i + 1) for i in range(t["rows"])])
+            X.zdata(e, a, t["rows"], t["cols"], "raw", False)
         elif kind == "fault":
             rows = t["rows"]
             e = X.item("XDFTABLE", t["name"], (c.get("desc") or "") + " $%04X" % a, ["Faults"])

@@ -96,10 +96,9 @@ pulse width computed from MAP (next section).
 
 ## Table names
 
-Every table of the reference image has a name. 24 are named by hand from the code (and checked
-against 2GNT where it has them): the fuel and spark tables, MAP scales, dead time, knock threshold,
-idle target, thermistor curves, the air-temperature fuel correction and its weights, and a few more.
-The other 386 have **structural names** made by `tools/autoname.py` and marked `"auto": true` in
+Every table of the reference image has a name. 142 are named by hand from the code (and checked
+against 2GNT where it has them), among them the whole fuel path described below, the spark
+corrections, dwell, idle targets and the sensor curves. The other 268 have **structural names** made by `tools/autoname.py` and marked `"auto": true` in
 `annotations/tables.json` (and with * in the catalogue):
 
 - the prefix is the subsystem, taken from the routine that reads the table and the scheduled routine
@@ -158,6 +157,34 @@ are applied elsewhere (stage 5).
 `InjectorDeadTime` is looked up with `$0A51,Z` as input. 2GNT lists a fix that changes this to
 `$0A50,Z` (`BatteryVolts`); who writes $0A51 has not been checked yet.
 
+## Fuel corrections
+
+Besides the base pulse, the code builds these corrections (names as in the source):
+
+| Part | Routine | Tables | Result |
+|---|---|---|---|
+| Warm-up enrichment | `Sub_10D5E` | `WarmupMapCoolant` (MAP x coolant), `WarmupMapCoolantLowSpeed` (below a vehicle speed), `WarmupRpmCoolantIdle` (throttle closed), `WarmupCoolantAdder` (WOT), factors for baro, run time and rpm | `WarmupFuelFactor` ($07E4,Z) |
+| After-start decay | `Sub_10D5E` | `AfterStartTimeScale`, `AfterStartDecay` (time since start x cranking coolant) | part of the warm-up factor |
+| Cold-soak | `Sub_10D5E` | `ColdSoakMapCoolant`, used when the coolant at start is close to $0A5E,Z | `$07E7,Z` |
+| Cranking | `Sub_123C0` | `CrankBasePulse` (ethanol x cranking coolant), reductions against rpm, $0769,Z and baro, each weighted by coolant; `CrankVacuumFactor` | `CrankPulse` ($0766,Z) |
+| Throttle tip-in | `Sub_107EA` | `TipInMatrix` (9 x 9, rows by throttle opening, columns by throttle step), coolant, air temperature and baro factors | `TipInFuel` ($07C6,Z) |
+| MAP-rate and throttle-rate enrichment | `Sub_106EC` | `AccelMapGainCoolant`, `AccelTpsRateLimit`, `AccelTpsCoolantFactor`, baro terms, `AccelRpmFactor` | `AccelMapGain`, `AccelTpsFuel`, `AccelFactor` |
+| Deceleration enleanment | `Sub_12142` | `DecelLeanAirflow` (rpm x throttle), coolant, time, rpm, MAP and baro factors | `DecelLeanFuel` ($07C2,Z) |
+| Deceleration fuel cut-off | `Sub_10036` | `DecelCutMapThreshold`, `DecelCutDelay`, minimum rpm against coolant; rev and speed limits | `$0770,Z` flags, `DecelCutRpmFactor` |
+| Deceleration fuel reduction | `Sub_104AE` | `DecelMapRpmLimit` (MAP x rpm) | `DecelFuelFactor` ($077A,Z) |
+| WOT enrichment over time | `Sub_102FE` | `WotTimeEnrichMax` | `WotTimeEnrich` ($07AA,Z) |
+| Idle enrichment | `Sub_11074` | run time, ethanol x start air temperature, engine-off time | `IdleEnrichFactor` ($07DA,Z) |
+| Hot-engine enrichment | `Sub_111E0` | `HotEngineEnrich` | `$0811,Z` |
+| Air temperature | `Sub_10AEC` | `FuelAirTempCorr` with rpm and MAP weights | multiplies the fuel |
+| MAP and throttle filters | `Sub_1204A` | filter coefficients for rising and falling MAP and throttle against start coolant | `MapFilterCoef`, `TpsFilterCoef` |
+
+**Flex fuel.** The program supports flexible-fuel vehicles: `Sub_2C7FE` watches the fuel level
+(`FuelLevel`, $0A8E,Z) for a refill and the flex-fuel learning code (`FlexLearn...`, around
+`Sub_17000`) learns the ethanol content from the oxygen-sensor trims (`FlexEthanolLearned` $0197,Z,
+0-170, and `FlexEthanol` $0198,Z). The ethanol content then selects rows in the `Flex...` fuel and
+spark tables and in the cranking table. Calibration bit $032C.6 enables it; in 05293190AC (a
+gasoline car) the flex tables are neutral.
+
 ## Fault table
 
 `FaultTable` ($4052) has 256 rows of 10 bytes:
@@ -190,7 +217,7 @@ applies only to the reference image.
 
 ## Open points
 
-- 386 tables have structural names only; giving them exact names means reading each routine.
+- 268 tables have structural names only; giving them exact names means reading each routine.
 - The 1,455 directly read constants are not catalogued one by one yet.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.
