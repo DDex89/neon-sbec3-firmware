@@ -335,50 +335,50 @@ SensorRpmAdder:
         dc.b    $25,$E5,$07,$5B,$34,$E5,$A4,$1F
 
 ;---------------------------------------------------------------------------------------------------
-; Sys2F000SpeedLimit ($046B): 2D table, 5 points, unsigned
-; Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.
+; AcCtlSpeedLimit ($046B): 2D table, 5 points, unsigned
+; Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $2F126
 ;---------------------------------------------------------------------------------------------------
-Sys2F000SpeedLimit:
+AcCtlSpeedLimit:
         dc.b    5,$80                                    ; points, flags
         dc.b    54,5, 58,33, 90,56, 110,92, 130,122      ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Sys2F000SpeedLimit2 ($0477): 2D table, 1 points, unsigned
-; Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.
+; AcCtlSpeedLimit2 ($0477): 2D table, 1 points, unsigned
+; Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $2F138
 ;---------------------------------------------------------------------------------------------------
-Sys2F000SpeedLimit2:
+AcCtlSpeedLimit2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,4                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sys2F000SpeedLimit3 ($0483): 2D table, 5 points, unsigned
-; Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.
+; AcCtlSpeedLimit3 ($0483): 2D table, 5 points, unsigned
+; Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $2F14C
 ;---------------------------------------------------------------------------------------------------
-Sys2F000SpeedLimit3:
+AcCtlSpeedLimit3:
         dc.b    5,$80                                    ; points, flags
         dc.b    58,6, 62,10, 90,33, 110,77, 130,102      ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Sys2F000SpeedLimit4 ($048F): 2D table, 1 points, unsigned
-; Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. Result to $0B53,Z.
+; AcCtlSpeedLimit4 ($048F): 2D table, 1 points, unsigned
+; Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. Result to $0B53,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $2F15E
 ;---------------------------------------------------------------------------------------------------
-Sys2F000SpeedLimit4:
+AcCtlSpeedLimit4:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,6                                    ; x, y
 
@@ -426,13 +426,13 @@ StartCoolantFactor:
         dc.b    $4D,$F1,$41,$38,$6D,$05,$00,$28,$38,$A6,$A0,$FE,$28
 
 ;---------------------------------------------------------------------------------------------------
-; Sys39E1ASpeedLimit ($0507): 2D table, 1 points, unsigned
-; Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_39E54). Inputs: VehicleSpeed.
+; FanSpeedLimit ($0507): 2D table, 1 points, unsigned
+; Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_39E54). Inputs: VehicleSpeed.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $39EBC
 ;---------------------------------------------------------------------------------------------------
-Sys39E1ASpeedLimit:
+FanSpeedLimit:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -440,39 +440,39 @@ Sys39E1ASpeedLimit:
         dc.b    $00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Sys39E1ATable ($051E): 2D table, 6 points, signed
-; Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_3A8D2). Inputs: TBA.
+; FanTable ($051E): 2D table, 6 points, signed
+; Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3A8D2). Inputs: TBA.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3A7C0
 ;---------------------------------------------------------------------------------------------------
-Sys39E1ATable:
+FanTable:
         dc.b    6,$20                                    ; points, flags
         dc.b    255,-1, 255,-1, 255,-1, 255,-1, 255,-1, 255,-1 ; x, y
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Sys39E1ATable2 ($0537): 2D table, 6 points, signed
-; Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_3AA44). Inputs: TBA.
+; FanTable2 ($0537): 2D table, 6 points, signed
+; Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3AA44). Inputs: TBA.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3A938
 ;---------------------------------------------------------------------------------------------------
-Sys39E1ATable2:
+FanTable2:
         dc.b    6,$20                                    ; points, flags
         dc.b    255,-1, 255,-1, 255,-1, 255,-1, 255,-1, 255,-1 ; x, y
 
         dc.b    $00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Sys39E1ATable3 ($054B): 2D table, 6 points, signed
-; Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_3ABFE). Inputs: TBA.
+; FanTable3 ($054B): 2D table, 6 points, signed
+; Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3ABFE). Inputs: TBA.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3AAEA
 ;---------------------------------------------------------------------------------------------------
-Sys39E1ATable3:
+FanTable3:
         dc.b    6,$20                                    ; points, flags
         dc.b    255,-1, 255,-1, 255,-1, 255,-1, 255,-1, 255,-1 ; x, y
 
@@ -494,39 +494,39 @@ StartStartCoolant:
         dc.b    $7C,$FE,$84,$8F,$FA,$F5,$16,$04,$0A,$10,$08
 
 ;---------------------------------------------------------------------------------------------------
-; Sys39686SpeedLimit ($059A): 2D table, 1 points, unsigned
-; Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.
+; EgrSpeedLimit ($059A): 2D table, 1 points, unsigned
+; Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $397B6, $399B8
 ;---------------------------------------------------------------------------------------------------
-Sys39686SpeedLimit:
+EgrSpeedLimit:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,1                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sys39686SpeedLimit2 ($05AC): 2D table, 1 points, unsigned
-; Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.
+; EgrSpeedLimit2 ($05AC): 2D table, 1 points, unsigned
+; Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $397C6, $399C8
 ;---------------------------------------------------------------------------------------------------
-Sys39686SpeedLimit2:
+EgrSpeedLimit2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,3                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sys39686RpmAdder ($05BE): 2D table, 2 points, unsigned
-; Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: EngineRpm.
+; EgrRpmAdder ($05BE): 2D table, 2 points, unsigned
+; Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: EngineRpm.
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $39774, $39976
 ;---------------------------------------------------------------------------------------------------
-Sys39686RpmAdder:
+EgrRpmAdder:
         dc.b    2,$80                                    ; points, flags
         dc.b    40,244, 44,79                            ; x, y
 
@@ -534,13 +534,13 @@ Sys39686RpmAdder:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sys39686StartCoolant ($05E2): 2D table, 1 points, unsigned
-; Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: StartCoolantTemp2. Result to $0B33,Z.
+; EgrStartCoolant ($05E2): 2D table, 1 points, unsigned
+; Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: StartCoolantTemp2. Result to $0B33,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: StartCoolantTemp2
 ; Read at $396CA, $39892
 ;---------------------------------------------------------------------------------------------------
-Sys39686StartCoolant:
+EgrStartCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
@@ -947,26 +947,26 @@ IacFuelScale:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Sys3D800MapScale ($0944): 2D table, 2 points, unsigned
-; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: Map.
+; PurgeMapScale ($0944): 2D table, 2 points, unsigned
+; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: Map.
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $3E928
 ;---------------------------------------------------------------------------------------------------
-Sys3D800MapScale:
+PurgeMapScale:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,0, 195,255                             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sys3D800Rpm ($094E): 2D table, 4 points, unsigned
-; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.
+; PurgeRpm ($094E): 2D table, 4 points, unsigned
+; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $3E91A
 ;---------------------------------------------------------------------------------------------------
-Sys3D800Rpm:
+PurgeRpm:
         dc.b    4,$80                                    ; points, flags
         dc.b    31,0, 79,160, 125,224, 155,255           ; x, y
 
@@ -2563,38 +2563,38 @@ Tab2D_19E3:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sys3D800V042E ($19F1): 2D table, 8 points, unsigned
-; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.
+; PurgeV042E ($19F1): 2D table, 8 points, unsigned
+; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $042E,Z
 ; Read at $3DB7A
 ;---------------------------------------------------------------------------------------------------
-Sys3D800V042E:
+PurgeV042E:
         dc.b    8,$80                                    ; points, flags
         dc.b    0,0, 2,7, 24,12, 30,13, 37,18, 42,21, 48,25, 108,100 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Sys3D800V042E2 ($1A03): 2D table, 7 points, unsigned
-; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.
+; PurgeV042E2 ($1A03): 2D table, 7 points, unsigned
+; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $042E,Z
 ; Read at $3DB7A
 ;---------------------------------------------------------------------------------------------------
-Sys3D800V042E2:
+PurgeV042E2:
         dc.b    7,$80                                    ; points, flags
         dc.b    0,0, 2,11, 35,28, 53,43, 78,80, 91,98, 102,100 ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sys3D800V042E3 ($1A19): 2D table, 7 points, unsigned
-; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.
+; PurgeV042E3 ($1A19): 2D table, 7 points, unsigned
+; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $042E,Z
 ; Read at $3DB7A
 ;---------------------------------------------------------------------------------------------------
-Sys3D800V042E3:
+PurgeV042E3:
         dc.b    7,$80                                    ; points, flags
         dc.b    0,0, 2,7, 24,12, 30,13, 37,18, 42,21, 48,25 ; x, y
 
@@ -2666,13 +2666,13 @@ Tab2D_1AC9:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sys3D800Table ($1AD5): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
-; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.
+; PurgeTable ($1AD5): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
+; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.
 ; columns: ?, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D
 ; Read at $3E932
 ;---------------------------------------------------------------------------------------------------
-Sys3D800Table:
+PurgeTable:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    166,169,184,185,197,202,210,227,230      ; row 0
         dc.b    166,169,185,186,198,203,211,228,231      ; row 1
@@ -3406,13 +3406,13 @@ SparkScale2:
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkScale3 ($223E): 2D table, 3 points, signed
+; SparkScaleAcOn ($223E): 2D table, 3 points, signed
 ; Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1D8B0
 ;---------------------------------------------------------------------------------------------------
-SparkScale3:
+SparkScaleAcOn:
         dc.b    3,$20                                    ; points, flags
         dc.b    0,0, 36,0, 40,-20                        ; x, y
 
@@ -3746,26 +3746,26 @@ SparkTable2:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SparkTable3 ($256D): 2D table, 4 points, signed
+; SparkPN ($256D): 2D table, 4 points, signed
 ; Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA; #$7F; #$80
 ; Read at $1E7D6
 ;---------------------------------------------------------------------------------------------------
-SparkTable3:
+SparkPN:
         dc.b    4,$20                                    ; points, flags
         dc.b    104,20, 118,8, 123,4, 126,0              ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SparkTable4 ($2579): 2D table, 4 points, signed
+; SparkPN2 ($2579): 2D table, 4 points, signed
 ; Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA; #$7F; #$80
 ; Read at $1E7D6
 ;---------------------------------------------------------------------------------------------------
-SparkTable4:
+SparkPN2:
         dc.b    4,$20                                    ; points, flags
         dc.b    130,0, 133,-4, 138,-6, 144,-12           ; x, y
 
@@ -3906,13 +3906,13 @@ IdleV0A5AV030EFactor:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0A5AV030EFactor2 ($2631): 3D table, 5 rows x 5 columns, unsigned
+; IdleV0A5AV030EFactorPN ($2631): 3D table, 5 rows x 5 columns, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: result of Lookup2D x $030E,Z. Result to $035E,Z.
 ; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $030E,Z
 ; Read at $1B472
 ;---------------------------------------------------------------------------------------------------
-IdleV0A5AV030EFactor2:
+IdleV0A5AV030EFactorPN:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    4,20,40,60,80                            ; column axis
         dc.b    88,88,88,88,88                           ; row 0
@@ -3989,26 +3989,26 @@ IdleV00FD:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FC2 ($269C): 2D table, 5 points, unsigned
+; IdleV00FCPN ($269C): 2D table, 5 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $0336,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FC,Z
 ; Read at $19188
 ;---------------------------------------------------------------------------------------------------
-IdleV00FC2:
+IdleV00FCPN:
         dc.b    5,$80                                    ; points, flags
         dc.b    57,146, 59,144, 64,128, 80,97, 92,81     ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FD2 ($26AE): 2D table, 4 points, unsigned
+; IdleV00FDPN ($26AE): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FD,Z. Result to $0336,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FD,Z
 ; Read at $19188
 ;---------------------------------------------------------------------------------------------------
-IdleV00FD2:
+IdleV00FDPN:
         dc.b    4,$80                                    ; points, flags
         dc.b    72,146, 88,144, 128,128, 255,97          ; x, y
 
@@ -4052,13 +4052,13 @@ IdleV00FEScale:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FC3 ($26DE): 2D table, 4 points, unsigned
+; IdleV00FC2 ($26DE): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $033F,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FC,Z
 ; Read at $19390
 ;---------------------------------------------------------------------------------------------------
-IdleV00FC3:
+IdleV00FC2:
         dc.b    4,$80                                    ; points, flags
         dc.b    57,255, 59,128, 66,128, 70,255           ; x, y
 
@@ -4077,13 +4077,13 @@ IdleV0339Scale:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FC4 ($26F2): 2D table, 4 points, unsigned
+; IdleV00FC3 ($26F2): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $033A,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FC,Z
 ; Read at $1932A
 ;---------------------------------------------------------------------------------------------------
-IdleV00FC4:
+IdleV00FC3:
         dc.b    4,$80                                    ; points, flags
         dc.b    58,255, 62,128, 67,128, 89,255           ; x, y
 
@@ -4128,38 +4128,38 @@ IdleCoolantLimit:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit2 ($271C): 2D table, 3 points, unsigned
+; IdleCoolantLimitAC ($271C): 2D table, 3 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19F78
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit2:
+IdleCoolantLimitAC:
         dc.b    3,$80                                    ; points, flags
         dc.b    99,179, 121,32, 141,12                   ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit3 ($2726): 2D table, 4 points, unsigned
+; IdleCoolantLimit2 ($2726): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19FD2
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit3:
+IdleCoolantLimit2:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,68, 105,12, 121,12, 141,8             ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit4 ($2730): 2D table, 4 points, unsigned
+; IdleCoolantLimitAC2 ($2730): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19FD2
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit4:
+IdleCoolantLimitAC2:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,68, 105,12, 121,12, 141,8             ; x, y
 
@@ -4178,13 +4178,13 @@ IdleV0348Factor:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348Factor2 ($2744): 2D table, 1 points, unsigned
+; IdleV0348FactorAC ($2744): 2D table, 1 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0348,Z
 ; Read at $1A008
 ;---------------------------------------------------------------------------------------------------
-IdleV0348Factor2:
+IdleV0348FactorAC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
@@ -4203,13 +4203,13 @@ IdleCoolantFactor:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantFactor2 ($2758): 2D table, 4 points, unsigned
+; IdleCoolantFactorAC ($2758): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19F2C, $1A064
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantFactor2:
+IdleCoolantFactorAC:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,100, 127,40, 141,18, 200,11           ; x, y
 
@@ -4227,62 +4227,62 @@ IdleCoolantAdder2:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantAdder3 ($276A): 2D table, 3 points, unsigned
+; IdleCoolantAdderAC ($276A): 2D table, 3 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $2D154
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantAdder3:
+IdleCoolantAdderAC:
         dc.b    3,$80                                    ; points, flags
         dc.b    99,127, 121,120, 177,120                 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit5 ($2772): 2D table, 4 points, unsigned
+; IdleCoolantLimitPN ($2772): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19FD2
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit5:
+IdleCoolantLimitPN:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,128, 105,28, 121,15, 200,3            ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit6 ($277C): 2D table, 4 points, unsigned
+; IdleCoolantLimitAC3 ($277C): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19FD2
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit6:
+IdleCoolantLimitAC3:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,128, 105,28, 121,15, 200,3            ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348Factor3 ($2786): 2D table, 1 points, unsigned
+; IdleV0348Factor2 ($2786): 2D table, 1 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0348,Z
 ; Read at $1A008
 ;---------------------------------------------------------------------------------------------------
-IdleV0348Factor3:
+IdleV0348Factor2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348Factor4 ($2790): 2D table, 1 points, unsigned
+; IdleV0348FactorAC2 ($2790): 2D table, 1 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0348,Z
 ; Read at $1A008
 ;---------------------------------------------------------------------------------------------------
-IdleV0348Factor4:
+IdleV0348FactorAC2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
@@ -4301,38 +4301,38 @@ IdleCoolant5:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolant6 ($27A4): 2D table, 4 points, unsigned
+; IdleCoolantAC ($27A4): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1A064
 ;---------------------------------------------------------------------------------------------------
-IdleCoolant6:
+IdleCoolantAC:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,222, 127,232, 141,238, 200,252        ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantAdder4 ($27AE): 2D table, 2 points, unsigned
+; IdleCoolantAdderPN ($27AE): 2D table, 2 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $2D136
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantAdder4:
+IdleCoolantAdderPN:
         dc.b    2,$80                                    ; points, flags
         dc.b    99,138, 121,136                          ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantAdder5 ($27B6): 2D table, 2 points, unsigned
+; IdleCoolantAdderAC2 ($27B6): 2D table, 2 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $2D136
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantAdder5:
+IdleCoolantAdderAC2:
         dc.b    2,$80                                    ; points, flags
         dc.b    99,138, 121,136                          ; x, y
 
@@ -4441,13 +4441,13 @@ IdleTimeAdder:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolant7 ($2849): 2D table, 6 points, unsigned
+; IdleCoolant6 ($2849): 2D table, 6 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1AEEC
 ;---------------------------------------------------------------------------------------------------
-IdleCoolant7:
+IdleCoolant6:
         dc.b    6,$80                                    ; points, flags
         dc.b    99,134, 105,80, 116,44, 155,30, 205,12, 216,8 ; x, y
 
@@ -4665,13 +4665,13 @@ IdleTimeAdder2:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantAdder6 ($2980): 2D table, 7 points, unsigned
+; IdleCoolantAdder3 ($2980): 2D table, 7 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1ABA6
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantAdder6:
+IdleCoolantAdder3:
         dc.b    7,$80                                    ; points, flags
         dc.b    99,64, 116,47, 144,18, 171,11, 199,4, 210,2, 216,0 ; x, y
 
@@ -4690,13 +4690,13 @@ IdleSegRpm:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantFactor3 ($299A): 2D table, 1 points, unsigned
+; IdleCoolantFactor2 ($299A): 2D table, 1 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1AC38
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantFactor3:
+IdleCoolantFactor2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
@@ -4885,13 +4885,13 @@ SpeedCtlV0408:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SpeedCtlV04082 ($2A90): 2D table, 3 points, unsigned
+; SpeedCtlV0408AC ($2A90): 2D table, 3 points, unsigned
 ; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: $0408,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0408,Z
 ; Read at $3C23E
 ;---------------------------------------------------------------------------------------------------
-SpeedCtlV04082:
+SpeedCtlV0408AC:
         dc.b    3,$80                                    ; points, flags
         dc.b    70,38, 130,42, 170,50                    ; x, y
 

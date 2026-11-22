@@ -10,15 +10,19 @@
   <CATEGORY index="0x0" name="Idle" />
   <CATEGORY index="0x1" name="Fuel" />
   <CATEGORY index="0x2" name="Other" />
-  <CATEGORY index="0x3" name="Sensors" />
-  <CATEGORY index="0x4" name="Startup" />
-  <CATEGORY index="0x5" name="Spark" />
-  <CATEGORY index="0x6" name="Closed loop" />
-  <CATEGORY index="0x7" name="Unidentified" />
-  <CATEGORY index="0x8" name="Speed control" />
-  <CATEGORY index="0x9" name="Diagnostics" />
-  <CATEGORY index="0xA" name="Faults" />
-  <CATEGORY index="0xB" name="Limits" />
+  <CATEGORY index="0x3" name="EVAP purge" />
+  <CATEGORY index="0x4" name="Sensors" />
+  <CATEGORY index="0x5" name="A/C" />
+  <CATEGORY index="0x6" name="Startup" />
+  <CATEGORY index="0x7" name="Cooling fan" />
+  <CATEGORY index="0x8" name="EGR" />
+  <CATEGORY index="0x9" name="Spark" />
+  <CATEGORY index="0xA" name="Closed loop" />
+  <CATEGORY index="0xB" name="Unidentified" />
+  <CATEGORY index="0xC" name="Speed control" />
+  <CATEGORY index="0xD" name="Diagnostics" />
+  <CATEGORY index="0xE" name="Faults" />
+  <CATEGORY index="0xF" name="Limits" />
  </XDFHEADER>
  <XDFTABLE uniqueid="0x101" flags="0x0">
   <title>IdleCoolantAdder</title>
@@ -273,9 +277,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x108" flags="0x0">
-  <title>Sys3D800V042ELimit</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E074). Inputs: $042E,Z. Result to $047B,Z. $03D8, 2D; inputs: $042E,Z</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeV042ELimit</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: $042E,Z. Result to $047B,Z. $03D8, 2D; inputs: $042E,Z</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -383,7 +387,7 @@
  <XDFTABLE uniqueid="0x10B" flags="0x0">
   <title>SensorRpmAdder</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2CB0E). Inputs: EngineRpm. $0429, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -417,9 +421,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10C" flags="0x0">
-  <title>Sys2F000SpeedLimit</title>
-  <description>Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. $046B, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AcCtlSpeedLimit</title>
+  <description>Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. $046B, 2D; inputs: VehicleSpeed</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -453,9 +457,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10D" flags="0x0">
-  <title>Sys2F000SpeedLimit2</title>
-  <description>Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. $0477, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AcCtlSpeedLimit2</title>
+  <description>Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. $0477, 2D; inputs: VehicleSpeed</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -489,9 +493,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10E" flags="0x0">
-  <title>Sys2F000SpeedLimit3</title>
-  <description>Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. $0483, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AcCtlSpeedLimit3</title>
+  <description>Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. $0483, 2D; inputs: VehicleSpeed</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -525,9 +529,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10F" flags="0x0">
-  <title>Sys2F000SpeedLimit4</title>
-  <description>Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. Result to $0B53,Z. $048F, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AcCtlSpeedLimit4</title>
+  <description>Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. Result to $0B53,Z. $048F, 2D; inputs: VehicleSpeed</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -563,7 +567,7 @@
  <XDFTABLE uniqueid="0x110" flags="0x0">
   <title>SensorLimit</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: TBA. $04A1, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -599,7 +603,7 @@
  <XDFTABLE uniqueid="0x111" flags="0x0">
   <title>SensorV00F0Adder</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: $F0,Z. $04AD, 2D; inputs: $F0,Z</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -635,7 +639,7 @@
  <XDFTABLE uniqueid="0x112" flags="0x0">
   <title>StartCoolantFactor</title>
   <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to $0A5A,Z, $0A5B,Z. $04C6, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -669,9 +673,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x113" flags="0x0">
-  <title>Sys39E1ASpeedLimit</title>
-  <description>Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_39E54). Inputs: VehicleSpeed. $0507, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>FanSpeedLimit</title>
+  <description>Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_39E54). Inputs: VehicleSpeed. $0507, 2D; inputs: VehicleSpeed</description>
+  <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -705,9 +709,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x114" flags="0x0">
-  <title>Sys39E1ATable</title>
-  <description>Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_3A8D2). Inputs: TBA. $051E, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>FanTable</title>
+  <description>Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3A8D2). Inputs: TBA. $051E, 2D; inputs: TBA</description>
+  <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -741,9 +745,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x115" flags="0x0">
-  <title>Sys39E1ATable2</title>
-  <description>Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_3AA44). Inputs: TBA. $0537, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>FanTable2</title>
+  <description>Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3AA44). Inputs: TBA. $0537, 2D; inputs: TBA</description>
+  <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -777,9 +781,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x116" flags="0x0">
-  <title>Sys39E1ATable3</title>
-  <description>Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_3ABFE). Inputs: TBA. $054B, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>FanTable3</title>
+  <description>Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3ABFE). Inputs: TBA. $054B, 2D; inputs: TBA</description>
+  <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -815,7 +819,7 @@
  <XDFTABLE uniqueid="0x117" flags="0x0">
   <title>StartStartCoolant</title>
   <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: StartCoolantTemp2. Result to $0C00,Z. $057D, 2D; inputs: StartCoolantTemp2</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -849,9 +853,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x118" flags="0x0">
-  <title>Sys39686SpeedLimit</title>
-  <description>Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed. $059A, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>EgrSpeedLimit</title>
+  <description>Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed. $059A, 2D; inputs: VehicleSpeed</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -885,9 +889,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x119" flags="0x0">
-  <title>Sys39686SpeedLimit2</title>
-  <description>Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed. $05AC, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>EgrSpeedLimit2</title>
+  <description>Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed. $05AC, 2D; inputs: VehicleSpeed</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -921,9 +925,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11A" flags="0x0">
-  <title>Sys39686RpmAdder</title>
-  <description>Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: EngineRpm. $05BE, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>EgrRpmAdder</title>
+  <description>Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: EngineRpm. $05BE, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -957,9 +961,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11B" flags="0x0">
-  <title>Sys39686StartCoolant</title>
-  <description>Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: StartCoolantTemp2. Result to $0B33,Z. $05E2, 2D; inputs: StartCoolantTemp2</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>EgrStartCoolant</title>
+  <description>Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: StartCoolantTemp2. Result to $0B33,Z. $05E2, 2D; inputs: StartCoolantTemp2</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -993,9 +997,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11C" flags="0x0">
-  <title>Sys39686VacuumFactor</title>
-  <description>Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_39866). Inputs: ManifoldVacuum. $0609, 2D; inputs: ManifoldVacuum</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>EgrVacuumFactor</title>
+  <description>Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: ManifoldVacuum. $0609, 2D; inputs: ManifoldVacuum</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1029,9 +1033,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11D" flags="0x0">
-  <title>Sys39686V0B3E</title>
-  <description>Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_39866). Inputs: $0B3E,Z. $0615, 2D; inputs: $0B3A,Z</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>EgrV0B3E</title>
+  <description>Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: $0B3E,Z. $0615, 2D; inputs: $0B3A,Z</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1065,9 +1069,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11E" flags="0x0">
-  <title>Sys39686Table</title>
-  <description>Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_39866). Inputs: ?. $062B, 2D; inputs: ?</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>EgrTable</title>
+  <description>Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: ?. $062B, 2D; inputs: ?</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1101,9 +1105,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11F" flags="0x0">
-  <title>Sys39686V00F0Rpm</title>
-  <description>Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_39866). Inputs: $F0,Z x EngineRpm. Result to $0B3E,Z. $0637, 3D; inputs: $F0,Z x EngineRpm</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>EgrV00F0Rpm</title>
+  <description>Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: $F0,Z x EngineRpm. Result to $0B3E,Z. $0637, 3D; inputs: $F0,Z x EngineRpm</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x63A" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -1515,7 +1519,7 @@
  <XDFTABLE uniqueid="0x12A" flags="0x0">
   <title>PartThrottleMapScale</title>
   <description>MAP to row position of the part-throttle spark and fuel tables $086C, 2D; inputs: Map; result of Lookup2D; #$FF</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1623,7 +1627,7 @@
  <XDFTABLE uniqueid="0x12D" flags="0x0">
   <title>SensorTable</title>
   <description>Subsystem: sensor processing (by the routine that reads it, CalcEngineRpm). Inputs: LDD. Result to $0C4A,Z. $0890, 2D; inputs: LDD</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2089,9 +2093,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x13A" flags="0x0">
-  <title>Sys3D800MapScale</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: Map. $0944, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeMapScale</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: Map. $0944, 2D; inputs: Map</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2125,9 +2129,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x13B" flags="0x0">
-  <title>Sys3D800Rpm</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z. $094E, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeRpm</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z. $094E, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2163,7 +2167,7 @@
  <XDFTABLE uniqueid="0x13C" flags="0x0">
   <title>CoolantSparkMapScale</title>
   <description>MAP to row position of CoolantSparkMap $0958, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2199,7 +2203,7 @@
  <XDFTABLE uniqueid="0x13D" flags="0x0">
   <title>AirTempSparkMapScale</title>
   <description>MAP to row position of AirTempSparkMapRpm $0964, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2235,7 +2239,7 @@
  <XDFTABLE uniqueid="0x13E" flags="0x0">
   <title>AfterStartSparkMapScale</title>
   <description>MAP to row position of AfterStartSparkMapRpm $0970, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2271,7 +2275,7 @@
  <XDFTABLE uniqueid="0x13F" flags="0x0">
   <title>SparkMap</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: Map. Result to $00F6,Z. $097C, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2307,7 +2311,7 @@
  <XDFTABLE uniqueid="0x140" flags="0x0">
   <title>SparkV0AA6Scale</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. $0988, 2D; inputs: $0AA6,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2343,7 +2347,7 @@
  <XDFTABLE uniqueid="0x141" flags="0x0">
   <title>KnockMapScale</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F13E). Inputs: Map. $0994, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4473,7 +4477,7 @@
  <XDFTABLE uniqueid="0x178" flags="0x0">
   <title>SensorTable2</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2C7FE). Inputs: TBA. Result to $01AB,Z. $13D6, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4509,7 +4513,7 @@
  <XDFTABLE uniqueid="0x179" flags="0x0">
   <title>SensorTable3</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2C7FE). Inputs: TBA. Result to $01AB,Z. $13E2, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4545,7 +4549,7 @@
  <XDFTABLE uniqueid="0x17A" flags="0x0">
   <title>SensorCoolant</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: CoolantTemp. Result to MapLast. $13EF, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4941,7 +4945,7 @@
  <XDFTABLE uniqueid="0x185" flags="0x0">
   <title>StartCoolant</title>
   <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to $07C4,Z. $1474, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5229,7 +5233,7 @@
  <XDFTABLE uniqueid="0x18D" flags="0x0">
   <title>StartTable</title>
   <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: TBA. Result to $0A6B,Z. $1534, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5587,7 +5591,7 @@
  <XDFTABLE uniqueid="0x196" flags="0x0">
   <title>O2Coolant</title>
   <description>Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14740). Inputs: CoolantTemp. $16C0, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5623,7 +5627,7 @@
  <XDFTABLE uniqueid="0x197" flags="0x0">
   <title>O2V042CLimit</title>
   <description>Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14FD8). Inputs: $042C,Z. $1703, 2D; inputs: $042C,Z</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5659,7 +5663,7 @@
  <XDFTABLE uniqueid="0x198" flags="0x0">
   <title>O2VoltageScale</title>
   <description>Upstream O2 sensor ADC counts to the value used by closed loop and its monitor $1726, 2D; inputs: LDAA IND8, X; O2UpBank1; O2UpBank2</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5695,7 +5699,7 @@
  <XDFTABLE uniqueid="0x199" flags="0x0">
   <title>O2VoltageScale2</title>
   <description>Second copy of the O2 voltage scale (same values as O2VoltageScale) $1736, 2D; inputs: LDAA IND8, X</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5731,7 +5735,7 @@
  <XDFTABLE uniqueid="0x19A" flags="0x0">
   <title>O2V00F3</title>
   <description>Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_15D56). Inputs: $F3,Z. $1873, 2D; inputs: $F3,Z</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5767,7 +5771,7 @@
  <XDFTABLE uniqueid="0x19B" flags="0x0">
   <title>TrimUpperLimitRpm</title>
   <description>Upper limit of the short-term fuel trim against rpm (signed) $187F, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5803,7 +5807,7 @@
  <XDFTABLE uniqueid="0x19C" flags="0x0">
   <title>TrimLowerLimitRpm</title>
   <description>Lower limit of the short-term fuel trim against rpm (signed) $188B, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6161,9 +6165,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A6" flags="0x0">
-  <title>Sys3D800CalScale</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E074). Inputs: $3048; $042E,Z. $19C3, 2D; inputs: $2F86; $042E,Z</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeCalScale</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: $3048; $042E,Z. $19C3, 2D; inputs: $2F86; $042E,Z</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6197,9 +6201,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A7" flags="0x0">
-  <title>Sys3D800V042C</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3D85E). Inputs: $042C,Z. Result to $00F0,Z. $19D7, 2D; inputs: $042C,Z</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeV042C</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3D85E). Inputs: $042C,Z. Result to $00F0,Z. $19D7, 2D; inputs: $042C,Z</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6233,9 +6237,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A8" flags="0x0">
-  <title>Sys3D800VacuumFactor</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3D85E). Inputs: ManifoldVacuum. $19E3, 2D; inputs: ManifoldVacuum</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeVacuumFactor</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3D85E). Inputs: ManifoldVacuum. $19E3, 2D; inputs: ManifoldVacuum</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6269,9 +6273,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A9" flags="0x0">
-  <title>Sys3D800V042E</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z. $19F1, 2D; inputs: $042E,Z</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeV042E</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z. $19F1, 2D; inputs: $042E,Z</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6305,9 +6309,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AA" flags="0x0">
-  <title>Sys3D800V042E2</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z. $1A03, 2D; inputs: $042E,Z</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeV042E2</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z. $1A03, 2D; inputs: $042E,Z</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6341,9 +6345,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AB" flags="0x0">
-  <title>Sys3D800V042E3</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z. $1A19, 2D; inputs: $042E,Z</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeV042E3</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z. $1A19, 2D; inputs: $042E,Z</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6377,9 +6381,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AC" flags="0x0">
-  <title>Sys3D800CalVacuum</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E074). Inputs: result of Lookup2D x ManifoldVacuum. Result to $047F,Z. $1A2B, 3D; inputs: result of Lookup2D x ManifoldVacuum</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeCalVacuum</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: result of Lookup2D x ManifoldVacuum. Result to $047F,Z. $1A2B, 3D; inputs: result of Lookup2D x ManifoldVacuum</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1A2E" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>kPa</units>
@@ -6393,7 +6397,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Sys3D800CalScale)</units>
+   <units> (rows set by PurgeCalScale)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -6421,9 +6425,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AD" flags="0x0">
-  <title>Sys3D800TrimAdder</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. $1AA5, 2D; inputs: ShortTermTrim1</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeTrimAdder</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. $1AA5, 2D; inputs: ShortTermTrim1</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6457,9 +6461,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AE" flags="0x0">
-  <title>Sys3D800Trim</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. Result to $07EB,Z. $1AB1, 2D; inputs: ShortTermTrim1</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeTrim</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. Result to $07EB,Z. $1AB1, 2D; inputs: ShortTermTrim1</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6493,9 +6497,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AF" flags="0x0">
-  <title>Sys3D800TrimAdder2</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. $1ABD, 2D; inputs: ShortTermTrim1</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeTrimAdder2</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. $1ABD, 2D; inputs: ShortTermTrim1</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6529,9 +6533,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1B0" flags="0x0">
-  <title>Sys3D800Trim2</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. $1AC9, 2D; inputs: ShortTermTrim1</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeTrim2</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. $1AC9, 2D; inputs: ShortTermTrim1</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6565,9 +6569,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1B1" flags="0x0">
-  <title>Sys3D800Table</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D. $1AD5, 3Dn; inputs: result of Lookup2D</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeTable</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D. $1AD5, 3Dn; inputs: result of Lookup2D</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
    <indexcount>9</indexcount>
@@ -6587,7 +6591,7 @@
    <LABEL index="8" value="255" />
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units>kPa (rows set by Sys3D800MapScale)</units>
+   <units>kPa (rows set by PurgeMapScale)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -6617,7 +6621,7 @@
  <XDFTABLE uniqueid="0x1B2" flags="0x0">
   <title>SparkV0D18</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1E2B6). Inputs: $0D18,Z. Result to $04FC,Z. $1B43, 2D; inputs: $0D18,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6653,7 +6657,7 @@
  <XDFTABLE uniqueid="0x1B3" flags="0x0">
   <title>SparkV0D18Limit</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1E5A8). Inputs: $0D18,Z. Result to $0D46,Z. $1B4D, 2D; inputs: $0D18,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6689,7 +6693,7 @@
  <XDFTABLE uniqueid="0x1B4" flags="0x0">
   <title>PartThrottleSpark</title>
   <description>Part-throttle spark advance $1B6E, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B71" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -6741,7 +6745,7 @@
  <XDFTABLE uniqueid="0x1B5" flags="0x0">
   <title>SparkMapRpm</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DA26). Inputs: result of Lookup2D x EngineRpm. Result to $00F6,Z. $1CA3, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1CA6" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -6793,7 +6797,7 @@
  <XDFTABLE uniqueid="0x1B6" flags="0x0">
   <title>CoolantSparkMap</title>
   <description>Spark change against MAP (rows) and coolant (columns), signed $1DD8, 3D; inputs: result of Lookup2D x CoolantTemp</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1DDB" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>deg C</units>
@@ -6837,7 +6841,7 @@
  <XDFTABLE uniqueid="0x1B7" flags="0x0">
   <title>AirTempSparkFactor</title>
   <description>Weight of AirTempSparkMapRpm against intake air temperature (or $0A5A,Z with calibration bit $0330.5 clear) $1E35, 2D; inputs: AirTemp; $0A5A,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6873,7 +6877,7 @@
  <XDFTABLE uniqueid="0x1B8" flags="0x0">
   <title>AirTempSparkMapRpm</title>
   <description>Spark change for intake air temperature, MAP x rpm (signed), scaled by AirTempSparkFactor $1E3F, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1E42" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -6913,7 +6917,7 @@
  <XDFTABLE uniqueid="0x1B9" flags="0x0">
   <title>AfterStartSparkCoolant</title>
   <description>Spark change after start against the coolant temperature at start, into $0D1B,Z $1E7E, 2D; inputs: StartCoolantTemp2</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6949,7 +6953,7 @@
  <XDFTABLE uniqueid="0x1BA" flags="0x0">
   <title>AfterStartSparkCoolantWeight</title>
   <description>Weight of AfterStartSparkMapRpm against coolant $1E94, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6985,7 +6989,7 @@
  <XDFTABLE uniqueid="0x1BB" flags="0x0">
   <title>AfterStartSparkMapRpm</title>
   <description>Spark change after start, MAP x rpm (signed), weighted by AfterStartSparkCoolantWeight $1EA0, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1EA3" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -7029,7 +7033,7 @@
  <XDFTABLE uniqueid="0x1BC" flags="0x0">
   <title>BaroSpark</title>
   <description>Spark change against barometric pressure, weighted by BaroSparkRpmWeight $1EFD, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7065,7 +7069,7 @@
  <XDFTABLE uniqueid="0x1BD" flags="0x0">
   <title>BaroSparkRpmWeight</title>
   <description>Weight of BaroSpark against rpm $1F05, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7101,7 +7105,7 @@
  <XDFTABLE uniqueid="0x1BE" flags="0x0">
   <title>DecelSpark</title>
   <description>Spark change against the deceleration fuel factor (DecelFuelFactor), signed $1F0D, 2D; inputs: DecelFuelFactor</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7137,7 +7141,7 @@
  <XDFTABLE uniqueid="0x1BF" flags="0x0">
   <title>SparkRpm</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DE3A). Inputs: EngineRpm. $1F1B, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7173,7 +7177,7 @@
  <XDFTABLE uniqueid="0x1C0" flags="0x0">
   <title>WotSpark</title>
   <description>Wide-open-throttle spark advance $1F23, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1F26" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -7217,7 +7221,7 @@
  <XDFTABLE uniqueid="0x1C1" flags="0x0">
   <title>SparkThrottleAdder</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed. $1FF8, 2D; inputs: ThrottleAboveClosed</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7253,7 +7257,7 @@
  <XDFTABLE uniqueid="0x1C2" flags="0x0">
   <title>SparkThrottleAdder2</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed. $2002, 2D; inputs: ThrottleAboveClosed</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7289,7 +7293,7 @@
  <XDFTABLE uniqueid="0x1C3" flags="0x0">
   <title>SparkSpeed</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: VehicleSpeed. $2017, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7325,7 +7329,7 @@
  <XDFTABLE uniqueid="0x1C4" flags="0x0">
   <title>SparkSpeed2</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: VehicleSpeed. $2027, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7361,7 +7365,7 @@
  <XDFTABLE uniqueid="0x1C5" flags="0x0">
   <title>SparkSpeed3</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: VehicleSpeed. $2033, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7397,7 +7401,7 @@
  <XDFTABLE uniqueid="0x1C6" flags="0x0">
   <title>SparkSpeed4</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: VehicleSpeed. $2043, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7433,7 +7437,7 @@
  <XDFTABLE uniqueid="0x1C7" flags="0x0">
   <title>SparkV00F1</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: $F1,Z. Result to $00F4,Z. $204F, 2D; inputs: $F1,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7469,7 +7473,7 @@
  <XDFTABLE uniqueid="0x1C8" flags="0x0">
   <title>SparkV00F2Limit</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: $F2,Z. $2059, 2D; inputs: $F2,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7505,7 +7509,7 @@
  <XDFTABLE uniqueid="0x1C9" flags="0x0">
   <title>SparkV00F3Adder</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DC20). Inputs: $F3,Z. $2063, 2D; inputs: $F3,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7541,7 +7545,7 @@
  <XDFTABLE uniqueid="0x1CA" flags="0x0">
   <title>SparkAirTempLimit</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: AirTemp. $207A, 2D; inputs: AirTemp</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7577,7 +7581,7 @@
  <XDFTABLE uniqueid="0x1CB" flags="0x0">
   <title>SparkAirTempV0D15</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: result of Lookup2D x $0D15,Z. $2082, 3D; inputs: result of Lookup2D x $0D15,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2085" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -7617,7 +7621,7 @@
  <XDFTABLE uniqueid="0x1CC" flags="0x0">
   <title>SparkAirTempV0D152</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: result of Lookup2D x $0D15,Z. $20B1, 3D; inputs: result of Lookup2D x $0D15,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x20B4" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -7657,7 +7661,7 @@
  <XDFTABLE uniqueid="0x1CD" flags="0x0">
   <title>SparkAirTempLimit2</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: AirTemp. $20D2, 2D; inputs: AirTemp</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7693,7 +7697,7 @@
  <XDFTABLE uniqueid="0x1CE" flags="0x0">
   <title>SparkAirTemp</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D5EC). Inputs: AirTemp. $20DA, 2D; inputs: AirTemp</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7729,7 +7733,7 @@
  <XDFTABLE uniqueid="0x1CF" flags="0x0">
   <title>SparkV0D30</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D30,Z. $20E8, 2D; inputs: $0D30,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7765,7 +7769,7 @@
  <XDFTABLE uniqueid="0x1D0" flags="0x0">
   <title>SparkV0D302</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D30,Z. $20F0, 2D; inputs: $0D30,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7801,7 +7805,7 @@
  <XDFTABLE uniqueid="0x1D1" flags="0x0">
   <title>SparkV0AA6Limit</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. $2109, 2D; inputs: $0AA6,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7837,7 +7841,7 @@
  <XDFTABLE uniqueid="0x1D2" flags="0x0">
   <title>SparkV0AA6Factor</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. Result to $00F2,Z. $2117, 2D; inputs: $0AA6,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7873,7 +7877,7 @@
  <XDFTABLE uniqueid="0x1D3" flags="0x0">
   <title>SparkV0D26Factor</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D26,Z. Result to $00F2,Z. $2125, 2D; inputs: $0D26,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7909,7 +7913,7 @@
  <XDFTABLE uniqueid="0x1D4" flags="0x0">
   <title>SparkV0D3BFactor</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D3B,Z. Result to $0D33,Z. $2131, 2D; inputs: $0D3B,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7945,7 +7949,7 @@
  <XDFTABLE uniqueid="0x1D5" flags="0x0">
   <title>SparkV0D39V0D1E</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1E14E). Inputs: $0D39,Z x $0D1E,Z. Result to $0D32,Z. $213D, 3D; inputs: $0D39,Z x $0D1E,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2140" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -7985,7 +7989,7 @@
  <XDFTABLE uniqueid="0x1D6" flags="0x0">
   <title>SparkV0AA6V00F2Factor</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: result of Lookup2D x $F2,Z. Result to $00F4,Z. $215E, 3D; inputs: result of Lookup2D x $F2,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2161" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -8025,7 +8029,7 @@
  <XDFTABLE uniqueid="0x1D7" flags="0x0">
   <title>SparkV0AA6Limit2</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. $2197, 2D; inputs: $0AA6,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8061,7 +8065,7 @@
  <XDFTABLE uniqueid="0x1D8" flags="0x0">
   <title>SparkCoolantFactor</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: CoolantTemp. Result to $00F2,Z. $21A5, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8097,7 +8101,7 @@
  <XDFTABLE uniqueid="0x1D9" flags="0x0">
   <title>SparkV00F6V0D1EFactor</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z. $21AF, 3D; inputs: $F6,Z x $0D1E,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x21B2" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -8137,7 +8141,7 @@
  <XDFTABLE uniqueid="0x1DA" flags="0x0">
   <title>SparkV00F6V0D1ELimit</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z. Result to $00F2,Z. $21D0, 3D; inputs: $F6,Z x $0D1E,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x21D3" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -8177,7 +8181,7 @@
  <XDFTABLE uniqueid="0x1DB" flags="0x0">
   <title>Tab2D_21FE</title>
   <description>$21FE, 2D; inputs: $0A88,Z</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8213,7 +8217,7 @@
  <XDFTABLE uniqueid="0x1DC" flags="0x0">
   <title>SparkV0335</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D8F0). Inputs: $0335,Z. Result to $00F2,Z. $2206, 2D; inputs: $0335,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8249,7 +8253,7 @@
  <XDFTABLE uniqueid="0x1DD" flags="0x0">
   <title>SparkMapFactor</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D8F0). Inputs: Map. Result to $0D51,Z. $220E, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8285,7 +8289,7 @@
  <XDFTABLE uniqueid="0x1DE" flags="0x0">
   <title>SparkV0A882</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_39412). Inputs: $0A88,Z. Result to $00F0,Z. $2216, 2D; inputs: $0A88,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8321,7 +8325,7 @@
  <XDFTABLE uniqueid="0x1DF" flags="0x0">
   <title>SparkV03352</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_39412). Inputs: $0335,Z. Result to $00F0,Z. $221E, 2D; inputs: $0335,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8357,7 +8361,7 @@
  <XDFTABLE uniqueid="0x1E0" flags="0x0">
   <title>SparkMapFactor2</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_39412). Inputs: Map. Result to $0D53,Z. $2226, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8393,7 +8397,7 @@
  <XDFTABLE uniqueid="0x1E1" flags="0x0">
   <title>SparkScale</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA. $222E, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8429,7 +8433,7 @@
  <XDFTABLE uniqueid="0x1E2" flags="0x0">
   <title>SparkScale2</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA. $2236, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8463,9 +8467,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E3" flags="0x0">
-  <title>SparkScale3</title>
+  <title>SparkScaleAcOn</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA. $223E, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8501,7 +8505,7 @@
  <XDFTABLE uniqueid="0x1E4" flags="0x0">
   <title>SparkMapLimit</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: Map. Result to $0D55,Z. $2246, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8537,7 +8541,7 @@
  <XDFTABLE uniqueid="0x1E5" flags="0x0">
   <title>FlexSparkMapRpm</title>
   <description>Flex-fuel spark change, MAP x rpm, minus $0D03,Z, weighted by FlexSparkEthanolWeight $224E, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2251" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -8589,7 +8593,7 @@
  <XDFTABLE uniqueid="0x1E6" flags="0x0">
   <title>FlexSparkEthanolWeight</title>
   <description>Weight of FlexSparkMapRpm against ethanol content $2383, 2D; inputs: FlexEthanol</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8625,7 +8629,7 @@
  <XDFTABLE uniqueid="0x1E7" flags="0x0">
   <title>KnockRpmFactor</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA4,Z. $23CF, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8661,7 +8665,7 @@
  <XDFTABLE uniqueid="0x1E8" flags="0x0">
   <title>KnockBaro</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: Baro. Result to $00FE,Z. $23DD, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8697,7 +8701,7 @@
  <XDFTABLE uniqueid="0x1E9" flags="0x0">
   <title>KnockRpm</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA5,Z. $23E7, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8733,7 +8737,7 @@
  <XDFTABLE uniqueid="0x1EA" flags="0x0">
   <title>KnockRpm2</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA7,Z. $23F3, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8769,7 +8773,7 @@
  <XDFTABLE uniqueid="0x1EB" flags="0x0">
   <title>KnockRpm3</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA6,Z. $23FF, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8805,7 +8809,7 @@
  <XDFTABLE uniqueid="0x1EC" flags="0x0">
   <title>KnockRpm4</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DB5,Z. $240B, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8841,7 +8845,7 @@
  <XDFTABLE uniqueid="0x1ED" flags="0x0">
   <title>KnockThreshold</title>
   <description>Knock sensor voltage threshold against rpm $241F, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8877,7 +8881,7 @@
  <XDFTABLE uniqueid="0x1EE" flags="0x0">
   <title>KnockV0A8B</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F408). Inputs: $0A8B,Z. $2433, 2D; inputs: $0A8B,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8913,7 +8917,7 @@
  <XDFTABLE uniqueid="0x1EF" flags="0x0">
   <title>KnockMap</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F256). Inputs: Map. $243F, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8949,7 +8953,7 @@
  <XDFTABLE uniqueid="0x1F0" flags="0x0">
   <title>KnockRetardLimit</title>
   <description>Knock retard against MAP (rows) and rpm; signed; result scaled by the current knock level into $0D04 $2459, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x245C" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -8993,7 +8997,7 @@
  <XDFTABLE uniqueid="0x1F1" flags="0x0">
   <title>KnockRpm5</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0D40,Z. $24B6, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9029,7 +9033,7 @@
  <XDFTABLE uniqueid="0x1F2" flags="0x0">
   <title>SparkCoolantCorrA</title>
   <description>Spark correction against coolant temperature (one of two variants, chosen by the caller) $24F6, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9065,7 +9069,7 @@
  <XDFTABLE uniqueid="0x1F3" flags="0x0">
   <title>SparkCoolantCorrB</title>
   <description>Spark correction against coolant temperature (second variant) $2500, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9101,7 +9105,7 @@
  <XDFTABLE uniqueid="0x1F4" flags="0x0">
   <title>SparkTrim</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z. $250F, 2D; inputs: ShortTermTrim2; ShortTermTrim1; #$80</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9137,7 +9141,7 @@
  <XDFTABLE uniqueid="0x1F5" flags="0x0">
   <title>SparkTrim2</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z. $251D, 2D; inputs: ShortTermTrim2; ShortTermTrim1; #$80</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9173,7 +9177,7 @@
  <XDFTABLE uniqueid="0x1F6" flags="0x0">
   <title>SparkTrim3</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z. $252B, 2D; inputs: ShortTermTrim2; ShortTermTrim1; #$80</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9209,7 +9213,7 @@
  <XDFTABLE uniqueid="0x1F7" flags="0x0">
   <title>SparkTrim4</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z. $2539, 2D; inputs: ShortTermTrim2; ShortTermTrim1; #$80</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9245,7 +9249,7 @@
  <XDFTABLE uniqueid="0x1F8" flags="0x0">
   <title>SparkCoolant</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: CoolantTemp. $254D, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9281,7 +9285,7 @@
  <XDFTABLE uniqueid="0x1F9" flags="0x0">
   <title>SparkTable</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z. $2555, 2D; inputs: TBA; #$7F; #$80</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9317,7 +9321,7 @@
  <XDFTABLE uniqueid="0x1FA" flags="0x0">
   <title>SparkTable2</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z. $2561, 2D; inputs: TBA; #$7F; #$80</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9351,9 +9355,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FB" flags="0x0">
-  <title>SparkTable3</title>
+  <title>SparkPN</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z. $256D, 2D; inputs: TBA; #$7F; #$80</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9387,9 +9391,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FC" flags="0x0">
-  <title>SparkTable4</title>
+  <title>SparkPN2</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z. $2579, 2D; inputs: TBA; #$7F; #$80</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9497,7 +9501,7 @@
  <XDFTABLE uniqueid="0x1FF" flags="0x0">
   <title>AirTempSparkFactor2</title>
   <description>Weight of AirTempSparkMap against intake air temperature $2598, 2D; inputs: AirTemp; $0A5A,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9533,7 +9537,7 @@
  <XDFTABLE uniqueid="0x200" flags="0x0">
   <title>AirTempSparkMap</title>
   <description>Second air-temperature spark term against MAP (signed), scaled by AirTempSparkFactor2 $25A2, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9605,7 +9609,7 @@
  <XDFTABLE uniqueid="0x202" flags="0x0">
   <title>Tab2D_25E8</title>
   <description>$25E8, 2D; inputs: $0C3F,Z</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9787,7 +9791,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x207" flags="0x0">
-  <title>IdleV0A5AV030EFactor2</title>
+  <title>IdleV0A5AV030EFactorPN</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: result of Lookup2D x $030E,Z. Result to $035E,Z. $2631, 3D; inputs: result of Lookup2D x $030E,Z</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10007,7 +10011,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x20D" flags="0x0">
-  <title>IdleV00FC2</title>
+  <title>IdleV00FCPN</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $0336,Z. $269C, 2D; inputs: $FC,Z</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10043,7 +10047,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x20E" flags="0x0">
-  <title>IdleV00FD2</title>
+  <title>IdleV00FDPN</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FD,Z. Result to $0336,Z. $26AE, 2D; inputs: $FD,Z</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10187,7 +10191,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x212" flags="0x0">
-  <title>IdleV00FC3</title>
+  <title>IdleV00FC2</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $033F,Z. $26DE, 2D; inputs: $FC,Z</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10259,7 +10263,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x214" flags="0x0">
-  <title>IdleV00FC4</title>
+  <title>IdleV00FC3</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $033A,Z. $26F2, 2D; inputs: $FC,Z</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10297,7 +10301,7 @@
  <XDFTABLE uniqueid="0x215" flags="0x0">
   <title>SensorRpm</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: EngineRpm; SegmentRpm. Result to $0323,Z, $0347,Z. $26FC, 2D; inputs: EngineRpm; SegmentRpm</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -10403,7 +10407,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x218" flags="0x0">
-  <title>IdleCoolantLimit2</title>
+  <title>IdleCoolantLimitAC</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z. $271C, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10439,7 +10443,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x219" flags="0x0">
-  <title>IdleCoolantLimit3</title>
+  <title>IdleCoolantLimit2</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $2726, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10475,7 +10479,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21A" flags="0x0">
-  <title>IdleCoolantLimit4</title>
+  <title>IdleCoolantLimitAC2</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $2730, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10547,7 +10551,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21C" flags="0x0">
-  <title>IdleV0348Factor2</title>
+  <title>IdleV0348FactorAC</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z. $2744, 2D; inputs: $0348,Z</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10619,7 +10623,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21E" flags="0x0">
-  <title>IdleCoolantFactor2</title>
+  <title>IdleCoolantFactorAC</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. $2758, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10691,7 +10695,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x220" flags="0x0">
-  <title>IdleCoolantAdder3</title>
+  <title>IdleCoolantAdderAC</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp. $276A, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10727,7 +10731,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x221" flags="0x0">
-  <title>IdleCoolantLimit5</title>
+  <title>IdleCoolantLimitPN</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $2772, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10763,7 +10767,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x222" flags="0x0">
-  <title>IdleCoolantLimit6</title>
+  <title>IdleCoolantLimitAC3</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $277C, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10799,7 +10803,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x223" flags="0x0">
-  <title>IdleV0348Factor3</title>
+  <title>IdleV0348Factor2</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z. $2786, 2D; inputs: $0348,Z</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10835,7 +10839,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x224" flags="0x0">
-  <title>IdleV0348Factor4</title>
+  <title>IdleV0348FactorAC2</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z. $2790, 2D; inputs: $0348,Z</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10907,7 +10911,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x226" flags="0x0">
-  <title>IdleCoolant6</title>
+  <title>IdleCoolantAC</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. $27A4, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10943,7 +10947,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x227" flags="0x0">
-  <title>IdleCoolantAdder4</title>
+  <title>IdleCoolantAdderPN</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp. $27AE, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10979,7 +10983,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x228" flags="0x0">
-  <title>IdleCoolantAdder5</title>
+  <title>IdleCoolantAdderAC2</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_2D086). Inputs: CoolantTemp. $27B6, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -11231,7 +11235,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22F" flags="0x0">
-  <title>IdleCoolant7</title>
+  <title>IdleCoolant6</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z. $2849, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -11753,7 +11757,7 @@
  <XDFTABLE uniqueid="0x23D" flags="0x0">
   <title>SensorRpm2</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2D272). Inputs: EngineRpm; SegmentRpm. Result to $034D,Z. $296E, 2D; inputs: EngineRpm; SegmentRpm</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11823,7 +11827,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23F" flags="0x0">
-  <title>IdleCoolantAdder6</title>
+  <title>IdleCoolantAdder3</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp. $2980, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -11895,7 +11899,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x241" flags="0x0">
-  <title>IdleCoolantFactor3</title>
+  <title>IdleCoolantFactor2</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp. $299A, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -12377,7 +12381,7 @@
  <XDFTABLE uniqueid="0x24E" flags="0x0">
   <title>SpeedCtlV0408</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: $0408,Z. $2A84, 2D; inputs: $0408,Z</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12411,9 +12415,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x24F" flags="0x0">
-  <title>SpeedCtlV04082</title>
+  <title>SpeedCtlV0408AC</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: $0408,Z. $2A90, 2D; inputs: $0408,Z</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12449,7 +12453,7 @@
  <XDFTABLE uniqueid="0x250" flags="0x0">
   <title>SpeedCtlBaroFactor</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: Baro. $2A9C, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12485,7 +12489,7 @@
  <XDFTABLE uniqueid="0x251" flags="0x0">
   <title>SpeedCtlV0408Adder</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: $0408,Z; #$80. $2AAC, 2D; inputs: $0408,Z; #$80</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12521,7 +12525,7 @@
  <XDFTABLE uniqueid="0x252" flags="0x0">
   <title>SpeedCtlThrottle</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: Throttle. $2B0A, 2D; inputs: Throttle</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12557,7 +12561,7 @@
  <XDFTABLE uniqueid="0x253" flags="0x0">
   <title>SpeedCtlAdder</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: LDD. $2B12, 2D; inputs: LDD</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12593,7 +12597,7 @@
  <XDFTABLE uniqueid="0x254" flags="0x0">
   <title>SpeedCtlTable</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: TBA. $2B20, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12629,7 +12633,7 @@
  <XDFTABLE uniqueid="0x255" flags="0x0">
   <title>SpeedCtlSpeed</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: VehicleSpeed. Result to $0408,Z. $2B2C, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12665,7 +12669,7 @@
  <XDFTABLE uniqueid="0x256" flags="0x0">
   <title>SpeedCtlConst</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: #$FF; TBA. $2B3C, 2D; inputs: #$FF; TBA</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12701,7 +12705,7 @@
  <XDFTABLE uniqueid="0x257" flags="0x0">
   <title>SpeedCtlSpeedLimit</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3B800). Inputs: VehicleSpeed. $2B50, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12737,7 +12741,7 @@
  <XDFTABLE uniqueid="0x258" flags="0x0">
   <title>SpeedCtlThrottle2</title>
   <description>Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C46E). Inputs: ThrottleAboveClosed. Result to $041E,Z. $2B6A, 2D; inputs: ThrottleAboveClosed</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12773,7 +12777,7 @@
  <XDFTABLE uniqueid="0x259" flags="0x0">
   <title>SensorRpmAdder2</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2CB60). Inputs: EngineRpm. $2B96, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12809,7 +12813,7 @@
  <XDFTABLE uniqueid="0x25A" flags="0x0">
   <title>SensorBaroScale</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2CB60). Inputs: Baro. $2BA6, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12845,7 +12849,7 @@
  <XDFTABLE uniqueid="0x25B" flags="0x0">
   <title>MisfireV0620Limit</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. $2BB7, 2D; inputs: $0620,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12881,7 +12885,7 @@
  <XDFTABLE uniqueid="0x25C" flags="0x0">
   <title>MisfireV0620</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. Result to $04FE,Z. $2BC3, 2D; inputs: $0620,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12917,7 +12921,7 @@
  <XDFTABLE uniqueid="0x25D" flags="0x0">
   <title>MisfireV0620Scale</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: $0620,Z. $2BCF, 2D; inputs: $0620,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12953,7 +12957,7 @@
  <XDFTABLE uniqueid="0x25E" flags="0x0">
   <title>MisfireV0620Scale2</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. $2BDB, 2D; inputs: $0620,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12989,7 +12993,7 @@
  <XDFTABLE uniqueid="0x25F" flags="0x0">
   <title>MisfireV06202</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. $2BE7, 2D; inputs: $0620,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13025,7 +13029,7 @@
  <XDFTABLE uniqueid="0x260" flags="0x0">
   <title>DiagThrottleScale</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: ThrottleAboveClosed. $2BF3, 2D; inputs: ThrottleAboveClosed</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13061,7 +13065,7 @@
  <XDFTABLE uniqueid="0x261" flags="0x0">
   <title>MisfireCoolant</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: CoolantTemp. Result to $00F1,Z. $2C19, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13097,7 +13101,7 @@
  <XDFTABLE uniqueid="0x262" flags="0x0">
   <title>MisfireTime</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: Count3s. Result to $00F3,Z. $2C23, 2D; inputs: Count3s</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13133,7 +13137,7 @@
  <XDFTABLE uniqueid="0x263" flags="0x0">
   <title>MisfireRpm</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: EngineRpm. Result to $00F5,Z. $2C2D, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13169,7 +13173,7 @@
  <XDFTABLE uniqueid="0x264" flags="0x0">
   <title>MisfireStartCoolant</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: StartCoolantTemp2. Result to $05E6,Z. $2C3F, 2D; inputs: StartCoolantTemp2</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13205,7 +13209,7 @@
  <XDFTABLE uniqueid="0x265" flags="0x0">
   <title>MisfireV0620V05C6Factor</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z. $2C4B, 3D; inputs: result of Lookup2D x $05C6,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2C4E" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -13249,7 +13253,7 @@
  <XDFTABLE uniqueid="0x266" flags="0x0">
   <title>MisfireV0620V05C6Factor2</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B692). Inputs: result of Lookup2D x $05C6,Z. Result to $05D6,Z. $2CA8, 3D; inputs: result of Lookup2D x $05C6,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2CAB" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -13293,7 +13297,7 @@
  <XDFTABLE uniqueid="0x267" flags="0x0">
   <title>MisfireV0620V05C6Factor3</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z. $2D05, 3D; inputs: result of Lookup2D x $05C6,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2D08" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -13337,7 +13341,7 @@
  <XDFTABLE uniqueid="0x268" flags="0x0">
   <title>MisfireV0620V05C6Factor4</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z. $2D62, 3D; inputs: result of Lookup2D x $05C6,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2D65" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -13381,7 +13385,7 @@
  <XDFTABLE uniqueid="0x269" flags="0x0">
   <title>MisfireV04FEV05C6</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $04FE,Z x $05C6,Z. Result to $04FE,Z. $2DBF, 3D; inputs: $04FE,Z x $05C6,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2DC2" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -13425,7 +13429,7 @@
  <XDFTABLE uniqueid="0x26A" flags="0x0">
   <title>MisfireV04FEScaled</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup3D x result of Lookup3D. Result to $04FF,Z. $2E1C, 3D; inputs: result of Lookup3D x result of Lookup3D</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2E1F" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -13469,7 +13473,7 @@
  <XDFTABLE uniqueid="0x26B" flags="0x0">
   <title>MisfireV0620CoolantFactor</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x CoolantTemp. Result to $05E2,Z. $2E79, 3D; inputs: result of Lookup2D x CoolantTemp</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2E7C" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>deg C</units>
@@ -13509,7 +13513,7 @@
  <XDFTABLE uniqueid="0x26C" flags="0x0">
   <title>MisfireSegRpm</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: SegmentRpm. Result to $0629,Z. $2E9A, 2D; inputs: SegmentRpm</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13545,7 +13549,7 @@
  <XDFTABLE uniqueid="0x26D" flags="0x0">
   <title>MisfireScaledFactor</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: result of Lookup2D. $2ED5, 2D; inputs: result of Lookup2D</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13581,7 +13585,7 @@
  <XDFTABLE uniqueid="0x26E" flags="0x0">
   <title>MisfireScale</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: TBA. $2EE7, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13617,7 +13621,7 @@
  <XDFTABLE uniqueid="0x26F" flags="0x0">
   <title>MisfireBaro</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: Baro. Result to $062A,Z. $2EF9, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13653,7 +13657,7 @@
  <XDFTABLE uniqueid="0x270" flags="0x0">
   <title>DiagRpmLimit</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_243F8). Inputs: EngineRpm. Result to $0527,Z. $2F13, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13689,7 +13693,7 @@
  <XDFTABLE uniqueid="0x271" flags="0x0">
   <title>MisfireV0620V05C6Factor5</title>
   <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B456). Inputs: result of Lookup2D x $05C6,Z. $2F27, 3D; inputs: result of Lookup2D x $05C6,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2F2A" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -13777,7 +13781,7 @@
  <XDFTABLE uniqueid="0x273" flags="0x0">
   <title>DiagV019CLimit</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z. $3055, 2D; inputs: $019C,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13813,7 +13817,7 @@
  <XDFTABLE uniqueid="0x274" flags="0x0">
   <title>DiagV019CLimit2</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z. $3061, 2D; inputs: $019C,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13849,7 +13853,7 @@
  <XDFTABLE uniqueid="0x275" flags="0x0">
   <title>DiagV042CFlexEthanolAdder</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: result of Lookup2D x FlexEthanol. Result to $00F2,Z. $30C9, 3D; inputs: result of Lookup2D x FlexEthanol</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x30CC" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -13889,7 +13893,7 @@
  <XDFTABLE uniqueid="0x276" flags="0x0">
   <title>DiagV042CFlexEthanol</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A4F2). Inputs: result of Lookup2D x FlexEthanol. Result to $00F2,Z. $30EA, 3D; inputs: result of Lookup2D x FlexEthanol</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x30ED" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -13929,7 +13933,7 @@
  <XDFTABLE uniqueid="0x277" flags="0x0">
   <title>DiagV042CScale</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: $042C,Z. $310B, 2D; inputs: $042C,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -13965,7 +13969,7 @@
  <XDFTABLE uniqueid="0x278" flags="0x0">
   <title>DiagV042CScale2</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A4F2). Inputs: $042C,Z. $3117, 2D; inputs: $042C,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14109,7 +14113,7 @@
  <XDFTABLE uniqueid="0x27C" flags="0x0">
   <title>DiagSpeed</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: VehicleSpeed. Result to $00F4,Z. $3223, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14145,7 +14149,7 @@
  <XDFTABLE uniqueid="0x27D" flags="0x0">
   <title>DiagThrottle</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: ThrottleAboveClosed. Result to $00F4,Z. $322D, 2D; inputs: ThrottleAboveClosed</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14181,7 +14185,7 @@
  <XDFTABLE uniqueid="0x27E" flags="0x0">
   <title>DiagCoolantAdder</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: CoolantTemp. Result to $00F2,Z. $3237, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14217,7 +14221,7 @@
  <XDFTABLE uniqueid="0x27F" flags="0x0">
   <title>DiagV0330Adder</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: $0330,Z. Result to $00F2,Z. $323D, 2D; inputs: $0330,Z</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14253,7 +14257,7 @@
  <XDFTABLE uniqueid="0x280" flags="0x0">
   <title>DiagThrottleRpm</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2197C). Inputs: result of Lookup2D x EngineRpm. Result to $00F2,Z. $3243, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x3246" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -14297,7 +14301,7 @@
  <XDFTABLE uniqueid="0x281" flags="0x0">
   <title>DiagStartCoolantLimit</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_23A4A). Inputs: StartCoolantTemp2. $32D3, 2D; inputs: StartCoolantTemp2</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14333,7 +14337,7 @@
  <XDFTABLE uniqueid="0x282" flags="0x0">
   <title>FaultTable</title>
   <description>Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes $3F88</description>
-  <CATEGORYMEM index="0" category="11" />
+  <CATEGORYMEM index="0" category="15" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>10</indexcount>
@@ -14631,7 +14635,7 @@
  <XDFTABLE uniqueid="0x283" flags="0x0">
   <title>ThrottleLimpFromVacuum</title>
   <description>Substitute throttle position from manifold vacuum when the TPS has failed $498F, 2D; inputs: ManifoldVacuum</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14667,7 +14671,7 @@
  <XDFTABLE uniqueid="0x284" flags="0x0">
   <title>MapLimpFromThrottle</title>
   <description>Substitute MAP from the throttle position when the MAP sensor has failed $49A0, 2D; inputs: ?; Throttle</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14703,7 +14707,7 @@
  <XDFTABLE uniqueid="0x285" flags="0x0">
   <title>DiagRpmLimit2</title>
   <description>Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_23970). Inputs: EngineRpm. $49AE, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14739,7 +14743,7 @@
  <XDFTABLE uniqueid="0x286" flags="0x0">
   <title>KnockRpm6</title>
   <description>Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DB3,Z. $49CA, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14775,7 +14779,7 @@
  <XDFTABLE uniqueid="0x287" flags="0x0">
   <title>ThermistorCold</title>
   <description>Thermistor ADC counts to temperature, cold range (-55 to 83 C), used after the pull-up is switched $7047, 2D; inputs: CoolantRaw; AirTempRaw; ?</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14811,7 +14815,7 @@
  <XDFTABLE uniqueid="0x288" flags="0x0">
   <title>ThermistorHot</title>
   <description>Thermistor ADC counts to temperature, hot range (13 to 127 C); coolant and intake air $7057, 2D; inputs: CoolantRaw; AirTempRaw</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14847,7 +14851,7 @@
  <XDFTABLE uniqueid="0x289" flags="0x0">
   <title>Thermistor3Curve</title>
   <description>ADC counts of a third thermistor input ($0A59,Z or $0A1B,Z) to temperature, into $0195,Z $7061, 2D; inputs: $0A59,Z; $0A1B,Z</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14883,7 +14887,7 @@
  <XDFTABLE uniqueid="0x28A" flags="0x0">
   <title>Thermistor3CurveAlt</title>
   <description>Alternative curve for the third thermistor input, chosen by calibration bit $0330.2 $7077, 2D; inputs: $0A59,Z; $0A1B,Z</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14919,7 +14923,7 @@
  <XDFTABLE uniqueid="0x28B" flags="0x0">
   <title>SensorLimit2</title>
   <description>Subsystem: sensor processing (by the routine that reads it, Sub_2C6DE). Inputs: ?. $7089, 2D; inputs: ?</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14955,7 +14959,7 @@
  <XDFTABLE uniqueid="0x28C" flags="0x0">
   <title>StartV0A87</title>
   <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to $0A88,Z. $7095, 2D; inputs: $0A87,Z</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -15027,7 +15031,7 @@
  <XDFTABLE uniqueid="0x28E" flags="0x0">
   <title>FuelLevelCurve</title>
   <description>Fuel level sensor counts to fuel level $70AD, 2D; inputs: FuelLevel</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -15063,7 +15067,7 @@
  <XDFTABLE uniqueid="0x28F" flags="0x0">
   <title>DwellRpmScale</title>
   <description>Rpm to column position of DwellTime $70BF, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -15099,7 +15103,7 @@
  <XDFTABLE uniqueid="0x290" flags="0x0">
   <title>DwellVoltsScale</title>
   <description>Battery voltage to row position of DwellTime $70D3, 2D; inputs: BatteryVolts2</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -15135,7 +15139,7 @@
  <XDFTABLE uniqueid="0x291" flags="0x0">
   <title>DwellTime</title>
   <description>Coil dwell against battery voltage and rpm (both as positions) $70E7, 3Dn; inputs: LDAA IND8, Y</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
    <indexcount>9</indexcount>
@@ -15185,7 +15189,7 @@
  <XDFTABLE uniqueid="0x292" flags="0x0">
   <title>SparkV0A57</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1E582). Inputs: $0A57,Z. $7564, 2D; inputs: $0A57,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -15221,7 +15225,7 @@
  <XDFTABLE uniqueid="0x293" flags="0x0">
   <title>SparkV0A572</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1E582). Inputs: $0A57,Z. $7578, 2D; inputs: $0A57,Z</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -15377,7 +15381,7 @@
  <XDFCONSTANT uniqueid="0x29A" flags="0x0">
   <title>RevLimit</title>
   <description>Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral) $1950</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1950" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -15389,7 +15393,7 @@
  <XDFCONSTANT uniqueid="0x29B" flags="0x0">
   <title>RevLimitAlt</title>
   <description>Rev limit, used while $0C31,Z bit 5 is clear $1952</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1952" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -15401,7 +15405,7 @@
  <XDFCONSTANT uniqueid="0x29C" flags="0x0">
   <title>SpeedLimit</title>
   <description>Vehicle speed limit (compared with $0A9B,Z), active with calibration bit $0337.5 $1955</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1955" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15413,7 +15417,7 @@
  <XDFCONSTANT uniqueid="0x29D" flags="0x0">
   <title>SpeedLimitMinRpm</title>
   <description>The speed limit is checked only above this rpm $1957</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1957" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>

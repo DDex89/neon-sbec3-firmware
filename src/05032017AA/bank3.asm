@@ -10355,7 +10355,7 @@ L39818:
         CMPA    $0598
         LBHI    L399A2
         BSET    $0B2C,Z,#$08
-        LDX     #Sys39686StartCoolant
+        LDX     #EgrStartCoolant
         JSR     Lookup2D
         STAA    $0B2F,Z
         LBRA    L399A2
@@ -10407,7 +10407,7 @@ L398CA:
         BRSET   >ThrottleState,Z,#$40,L399A2
         BRCLR   >ThrottleState,Z,#$80,L399A2
         LDAA    >EngineRpm,Z
-        LDX     #Sys39686RpmAdder
+        LDX     #EgrRpmAdder
         JSR     Lookup2D
         BRCLR   $0B2C,Z,#$01,L398F0
         ADDA    $059D
@@ -10426,13 +10426,13 @@ L3990A:
         LBLS    L399A2
         LDAA    >VehicleSpeed,Z
         BRSET   $0B2C,Z,#$01,L3992C
-        LDX     #Sys39686SpeedLimit
+        LDX     #EgrSpeedLimit
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BLS     L3993A
         BRA     L399A2
 L3992C:
-        LDX     #Sys39686SpeedLimit2
+        LDX     #EgrSpeedLimit2
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BCC     L399A2
@@ -10497,7 +10497,7 @@ L399EC:
         CMPA    $0598
         LBHI    L39B8C
         BSET    $0B2C,Z,#$08
-        LDX     #Sys39686StartCoolant
+        LDX     #EgrStartCoolant
         JSR     Lookup2D
         STAA    $0B2F,Z
         LBRA    L39B8C
@@ -10572,7 +10572,7 @@ L39ACC:
         BRSET   >ThrottleState,Z,#$40,L39B8C
         BRCLR   >ThrottleState,Z,#$80,L39B8C
         LDAA    >EngineRpm,Z
-        LDX     #Sys39686RpmAdder
+        LDX     #EgrRpmAdder
         JSR     Lookup2D
         BRCLR   $0B2C,Z,#$01,L39AF2
         ADDA    $059D
@@ -10591,13 +10591,13 @@ L39B0C:
         LBLS    L39B8C
         LDAA    >VehicleSpeed,Z
         BRSET   $0B2C,Z,#$01,L39B2E
-        LDX     #Sys39686SpeedLimit
+        LDX     #EgrSpeedLimit
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BLS     L39B3C
         BRA     L39B8C
 L39B2E:
-        LDX     #Sys39686SpeedLimit2
+        LDX     #EgrSpeedLimit2
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BCC     L39B8C
@@ -10659,7 +10659,7 @@ L39BD0:
         FDIV
         BVS     L39BFC
         XGDX
-        LDX     #Sys39686Table
+        LDX     #EgrTable
         JSR     Lookup2D
         BRA     L39BFE
 L39BFC:
@@ -10701,7 +10701,7 @@ L39C44:
 L39C5A:
         PSHM    X
         LDAA    >ManifoldVacuum,Z
-        LDX     #Sys39686VacuumFactor
+        LDX     #EgrVacuumFactor
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
         MUL
@@ -10767,7 +10767,7 @@ L39D08:
         BNE     L39D1E
         LDAA    $F0,Z
         LDAB    >EngineRpm,Z
-        LDX     #Sys39686V00F0Rpm
+        LDX     #EgrV00F0Rpm
         JSR     Lookup3D
         TAB
 L39D1E:
@@ -10848,7 +10848,7 @@ L39DD2:
         LDD     $0B3C,Z
         STD     $0B3E,Z
         LDAA    $0B3A,Z
-        LDX     #Sys39686V0B3E
+        LDX     #EgrV0B3E
         JSR     Lookup2D
         TAB
         CLRA
@@ -11098,7 +11098,7 @@ L3A05E:
         CMPA    $04D7
         BHI     L3A084
         LDAA    >VehicleSpeed,Z
-        LDX     #Sys39E1ASpeedLimit
+        LDX     #FanSpeedLimit
         JSR     Lookup2D
         CLRB
         CMPA    $0B0C,Z
@@ -11914,7 +11914,7 @@ L3A95C:
         STAA    $0B14,Z
         TBA
         ADDA    #$80
-        LDX     #Sys39E1ATable
+        LDX     #FanTable
         JSR     Lookup2D
         CLRB
         ASRD
@@ -12069,7 +12069,7 @@ L3AAD4:
         STAA    $0B1A,Z
         TBA
         ADDA    #$80
-        LDX     #Sys39E1ATable2
+        LDX     #FanTable2
         JSR     Lookup2D
         BRA     L3AAFA
 L3AAEE:
@@ -12248,7 +12248,7 @@ L3AC86:
         STAA    $0B27,Z
         TBA
         ADDA    #$80
-        LDX     #Sys39E1ATable3
+        LDX     #FanTable3
         JSR     Lookup2D
         CLRB
         ASRD
@@ -13734,7 +13734,7 @@ L3C22C:
         LDAA    $040F,Z
         LDX     #SpeedCtlV0408
         BRCLR   $0056,Z,#$20,L3C23E
-        LDX     #SpeedCtlV04082
+        LDX     #SpeedCtlV0408AC
 L3C23E:
         JSR     Lookup2D
         BPL     L3C246
@@ -14763,7 +14763,7 @@ L3DA36:
         LDAA    $044A,Z
         LBNE    L3DBC2
         LDAA    $0432,Z
-        LDX     #Sys3D800V042C
+        LDX     #PurgeV042C
         JSR     Lookup2D
         STAA    $F0,Z
         BRCLR   $05AE,Z,#$30,L3DAB2
@@ -14910,7 +14910,7 @@ L3DBC4:
         CLRA
         TDE
         LDAA    >ManifoldVacuum,Z
-        LDX     #Sys3D800VacuumFactor
+        LDX     #PurgeVacuumFactor
         JSR     Lookup2D
         LDAA    #$01
         EMUL
@@ -14944,7 +14944,7 @@ Sub_3DC18:
         LDAA    $0434,Z
         BRCLR   >ThrottleState,Z,#$80,L3DC2C
         BSET    $0C34,Z,#$40
-        LDX     #Sys3D800V042E2
+        LDX     #PurgeV042E2
         BRA     L3DC52
 L3DC2C:
         BRSET   >ThrottleState,Z,#$01,L3DC3A
@@ -14953,11 +14953,11 @@ L3DC2C:
 L3DC3A:
         BRCLR   $0339,#$08,L3DC4A
 L3DC40:
-        LDX     #Sys3D800V042E3
+        LDX     #PurgeV042E3
         BSET    $0C34,Z,#$40
         BRA     L3DC52
 L3DC4A:
-        LDX     #Sys3D800V042E
+        LDX     #PurgeV042E
         BCLR    $0C34,Z,#$40
 L3DC52:
         JSR     Lookup2D
@@ -15420,19 +15420,19 @@ L3E098:
 L3E0A4:
         CLRB
         LDAA    $53B6
-        LDX     #Sys3D800CalScale
+        LDX     #PurgeCalScale
         JSR     Lookup2D
         LDAB    >ManifoldVacuum,Z
-        LDX     #Sys3D800CalVacuum
+        LDX     #PurgeCalVacuum
         JSR     Lookup3D
         STAB    $0485,Z
         CLRB
         LDAA    $0434,Z
         BEQ     L3E10A
-        LDX     #Sys3D800CalScale
+        LDX     #PurgeCalScale
         JSR     Lookup2D
         LDAB    >ManifoldVacuum,Z
-        LDX     #Sys3D800CalVacuum
+        LDX     #PurgeCalVacuum
         JSR     Lookup3D
         BRCLR   $0480,Z,#$80,L3E0E8
         LDAB    $0485,Z
@@ -15473,7 +15473,7 @@ L3E13A:
         BRCLR   $0480,Z,#$80,L3E172
         PSHM    E,X
         LDAA    $0434,Z
-        LDX     #Sys3D800V042ELimit
+        LDX     #PurgeV042ELimit
         JSR     Lookup2D
         CMPA    $777D
         BCC     L3E15C
@@ -16117,7 +16117,7 @@ L3E82A:
         CMPB    $1FFF
         LBCS    L3E96E
         CLR     $07EC,Z
-        LDX     #Sys3D800TrimAdder2
+        LDX     #PurgeTrimAdder2
         JSR     Lookup2D
         LDAA    $07EA,Z
         BEQ     L3E894
@@ -16134,7 +16134,7 @@ L3E866:
         CMPB    $1FFF
         LBCS    L3E96E
         CLR     $07EC,Z
-        LDX     #Sys3D800Trim2
+        LDX     #PurgeTrim2
         JSR     Lookup2D
         LDAA    $07EA,Z
         SBA
@@ -16160,7 +16160,7 @@ L3E8B4:
         CMPB    $2000
         BCS     L3E910
         CLR     $07EC,Z
-        LDX     #Sys3D800TrimAdder
+        LDX     #PurgeTrimAdder
         JSR     Lookup2D
         ADDA    $07EB,Z
         BCC     L3E90C
@@ -16175,7 +16175,7 @@ L3E8E2:
         CMPB    $2000
         BCS     L3E910
         CLR     $07EC,Z
-        LDX     #Sys3D800Trim
+        LDX     #PurgeTrim
         JSR     Lookup2D
         LDAA    $07EB,Z
         SBA
@@ -16350,14 +16350,14 @@ L3EADA:
 ;---------------------------------------------------------------------------------------------------
 Sub_3EADC:
         LDAA    >EngineRpm,Z
-        LDX     #Sys3D800Rpm
+        LDX     #PurgeRpm
         JSR     Lookup2D
         STAA    $F0,Z
         LDAA    >Map,Z
-        LDX     #Sys3D800MapScale
+        LDX     #PurgeMapScale
         JSR     Lookup2D
         LDAB    $F0,Z
-        LDX     #Sys3D800Table
+        LDX     #PurgeTable
         JSR     Lookup3DNorm
         RTS
 

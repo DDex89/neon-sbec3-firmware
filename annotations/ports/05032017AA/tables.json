@@ -64,9 +64,9 @@
    "y": "raw"
   },
   "03D8": {
-   "name": "Sys3D800V042ELimit",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E074). Inputs: $042E,Z. Result to $047B,Z.",
-   "category": "Other",
+   "name": "PurgeV042ELimit",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: $042E,Z. Result to $047B,Z.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "raw",
    "y": "raw"
@@ -88,33 +88,33 @@
    "auto": false
   },
   "0471": {
-   "name": "Sys2F000SpeedLimit",
-   "desc": "Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
-   "category": "Other",
+   "name": "AcCtlSpeedLimit",
+   "desc": "Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
+   "category": "A/C",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "047D": {
-   "name": "Sys2F000SpeedLimit2",
-   "desc": "Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
-   "category": "Other",
+   "name": "AcCtlSpeedLimit2",
+   "desc": "Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
+   "category": "A/C",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "0489": {
-   "name": "Sys2F000SpeedLimit3",
-   "desc": "Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
-   "category": "Other",
+   "name": "AcCtlSpeedLimit3",
+   "desc": "Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed.",
+   "category": "A/C",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "0495": {
-   "name": "Sys2F000SpeedLimit4",
-   "desc": "Subsystem: not identified yet (top routine Sub_2F000) (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. Result to $0B53,Z.",
-   "category": "Other",
+   "name": "AcCtlSpeedLimit4",
+   "desc": "Subsystem: A/C clutch control, probable (by the routine that reads it, Sub_2F06A). Inputs: VehicleSpeed. Result to $0B53,Z.",
+   "category": "A/C",
    "auto": true,
    "x": "raw",
    "y": "raw"
@@ -144,33 +144,33 @@
    "y": "raw"
   },
   "050D": {
-   "name": "Sys39E1ASpeedLimit",
-   "desc": "Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_39E54). Inputs: VehicleSpeed.",
-   "category": "Other",
+   "name": "FanSpeedLimit",
+   "desc": "Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_39E54). Inputs: VehicleSpeed.",
+   "category": "Cooling fan",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "0524": {
-   "name": "Sys39E1ATable",
-   "desc": "Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_3A8D2). Inputs: TBA.",
-   "category": "Other",
+   "name": "FanTable",
+   "desc": "Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3A8D2). Inputs: TBA.",
+   "category": "Cooling fan",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "053D": {
-   "name": "Sys39E1ATable2",
-   "desc": "Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_3AA44). Inputs: TBA.",
-   "category": "Other",
+   "name": "FanTable2",
+   "desc": "Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3AA44). Inputs: TBA.",
+   "category": "Cooling fan",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "0551": {
-   "name": "Sys39E1ATable3",
-   "desc": "Subsystem: not identified yet (top routine Sub_39E1A) (by the routine that reads it, Sub_3ABFE). Inputs: TBA.",
-   "category": "Other",
+   "name": "FanTable3",
+   "desc": "Subsystem: radiator fan control (relay and PWM variants) (by the routine that reads it, Sub_3ABFE). Inputs: TBA.",
+   "category": "Cooling fan",
    "auto": true,
    "x": "raw",
    "y": "raw"
@@ -184,65 +184,65 @@
    "y": "raw"
   },
   "05A0": {
-   "name": "Sys39686SpeedLimit",
-   "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.",
-   "category": "Other",
+   "name": "EgrSpeedLimit",
+   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.",
+   "category": "EGR",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "05B2": {
-   "name": "Sys39686SpeedLimit2",
-   "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.",
-   "category": "Other",
+   "name": "EgrSpeedLimit2",
+   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: VehicleSpeed.",
+   "category": "EGR",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "05C4": {
-   "name": "Sys39686RpmAdder",
-   "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: EngineRpm.",
-   "category": "Other",
+   "name": "EgrRpmAdder",
+   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: EngineRpm.",
+   "category": "EGR",
    "auto": true,
    "x": "rpm32",
    "y": "raw"
   },
   "05E8": {
-   "name": "Sys39686StartCoolant",
-   "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_3969E). Inputs: StartCoolantTemp2. Result to $0B33,Z.",
-   "category": "Other",
+   "name": "EgrStartCoolant",
+   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_3969E). Inputs: StartCoolantTemp2. Result to $0B33,Z.",
+   "category": "EGR",
    "auto": true,
    "x": "tempc",
    "y": "raw"
   },
   "060F": {
-   "name": "Sys39686VacuumFactor",
-   "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_39866). Inputs: ManifoldVacuum.",
-   "category": "Other",
+   "name": "EgrVacuumFactor",
+   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: ManifoldVacuum.",
+   "category": "EGR",
    "auto": true,
    "x": "kpa",
    "y": "raw"
   },
   "061B": {
-   "name": "Sys39686V0B3E",
-   "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_39866). Inputs: $0B3E,Z.",
-   "category": "Other",
+   "name": "EgrV0B3E",
+   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: $0B3E,Z.",
+   "category": "EGR",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "0631": {
-   "name": "Sys39686Table",
-   "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_39866). Inputs: ?.",
-   "category": "Other",
+   "name": "EgrTable",
+   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: ?.",
+   "category": "EGR",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "063D": {
-   "name": "Sys39686V00F0Rpm",
-   "desc": "Subsystem: not identified yet (top routine Sub_39686) (by the routine that reads it, Sub_39866). Inputs: $F0,Z x EngineRpm. Result to $0B3E,Z.",
-   "category": "Other",
+   "name": "EgrV00F0Rpm",
+   "desc": "Subsystem: EGR control, probable (by the routine that reads it, Sub_39866). Inputs: $F0,Z x EngineRpm. Result to $0B3E,Z.",
+   "category": "EGR",
    "auto": true,
    "x": "rpm32",
    "y": "pos256",
@@ -449,17 +449,17 @@
    "auto": false
   },
   "094A": {
-   "name": "Sys3D800MapScale",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: Map.",
-   "category": "Other",
+   "name": "PurgeMapScale",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: Map.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "kpa",
    "y": "raw"
   },
   "0954": {
-   "name": "Sys3D800Rpm",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.",
-   "category": "Other",
+   "name": "PurgeRpm",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "rpm32",
    "y": "raw"
@@ -1211,98 +1211,98 @@
    "auto": false
   },
   "1F1F": {
-   "name": "Sys3D800CalScale",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E074). Inputs: $3048; $042E,Z.",
-   "category": "Other",
+   "name": "PurgeCalScale",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: $3048; $042E,Z.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "1F33": {
-   "name": "Sys3D800V042C",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3D85E). Inputs: $042C,Z. Result to $00F0,Z.",
-   "category": "Other",
+   "name": "PurgeV042C",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3D85E). Inputs: $042C,Z. Result to $00F0,Z.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "1F3F": {
-   "name": "Sys3D800VacuumFactor",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3D85E). Inputs: ManifoldVacuum.",
-   "category": "Other",
+   "name": "PurgeVacuumFactor",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3D85E). Inputs: ManifoldVacuum.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "kpa",
    "y": "raw"
   },
   "1F4D": {
-   "name": "Sys3D800V042E",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
-   "category": "Other",
+   "name": "PurgeV042E",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "1F5F": {
-   "name": "Sys3D800V042E2",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
-   "category": "Other",
+   "name": "PurgeV042E2",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "1F75": {
-   "name": "Sys3D800V042E3",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
-   "category": "Other",
+   "name": "PurgeV042E3",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3DC18). Inputs: $042E,Z. Result to $0431,Z.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "1F87": {
-   "name": "Sys3D800CalVacuum",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E074). Inputs: result of Lookup2D x ManifoldVacuum. Result to $047F,Z.",
-   "category": "Other",
+   "name": "PurgeCalVacuum",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E074). Inputs: result of Lookup2D x ManifoldVacuum. Result to $047F,Z.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "kpa",
    "y": "pos256",
    "z": "raw"
   },
   "2001": {
-   "name": "Sys3D800TrimAdder",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
-   "category": "Other",
+   "name": "PurgeTrimAdder",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "200D": {
-   "name": "Sys3D800Trim",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. Result to $07EB,Z.",
-   "category": "Other",
+   "name": "PurgeTrim",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1. Result to $07EB,Z.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "2019": {
-   "name": "Sys3D800TrimAdder2",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
-   "category": "Other",
+   "name": "PurgeTrimAdder2",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "2025": {
-   "name": "Sys3D800Trim2",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
-   "category": "Other",
+   "name": "PurgeTrim2",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3E500). Inputs: ShortTermTrim1.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "raw",
    "y": "raw"
   },
   "2031": {
-   "name": "Sys3D800Table",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.",
-   "category": "Other",
+   "name": "PurgeTable",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.",
+   "category": "EVAP purge",
    "auto": true,
    "y": "pos256",
    "z": "raw"
@@ -1672,7 +1672,7 @@
    "y": "raw"
   },
   "2F04": {
-   "name": "SparkTable3",
+   "name": "SparkPN",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.",
    "category": "Spark",
    "auto": true,
@@ -1680,7 +1680,7 @@
    "y": "raw"
   },
   "2F10": {
-   "name": "SparkTable4",
+   "name": "SparkPN2",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.",
    "category": "Spark",
    "auto": true,
@@ -1777,7 +1777,7 @@
    "z": "raw"
   },
   "2FDE": {
-   "name": "IdleV0A5AV030EFactor2",
+   "name": "IdleV0A5AV030EFactorPN",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: result of Lookup2D x $030E,Z. Result to $035E,Z.",
    "category": "Idle",
    "auto": true,
@@ -1826,7 +1826,7 @@
    "y": "raw"
   },
   "3049": {
-   "name": "IdleV00FC2",
+   "name": "IdleV00FCPN",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $0336,Z.",
    "category": "Idle",
    "auto": true,
@@ -1834,7 +1834,7 @@
    "y": "raw"
   },
   "305B": {
-   "name": "IdleV00FD2",
+   "name": "IdleV00FDPN",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FD,Z. Result to $0336,Z.",
    "category": "Idle",
    "auto": true,
@@ -1866,7 +1866,7 @@
    "y": "raw"
   },
   "308B": {
-   "name": "IdleV00FC3",
+   "name": "IdleV00FC2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $033F,Z.",
    "category": "Idle",
    "auto": true,
@@ -1882,7 +1882,7 @@
    "y": "raw"
   },
   "309F": {
-   "name": "IdleV00FC4",
+   "name": "IdleV00FC3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $033A,Z.",
    "category": "Idle",
    "auto": true,
@@ -1906,7 +1906,7 @@
    "y": "raw"
   },
   "30C9": {
-   "name": "IdleCoolantLimit2",
+   "name": "IdleCoolantLimitAC",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.",
    "category": "Idle",
    "auto": true,
@@ -1914,7 +1914,7 @@
    "y": "raw"
   },
   "30D3": {
-   "name": "IdleCoolantLimit3",
+   "name": "IdleCoolantLimit2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -1922,7 +1922,7 @@
    "y": "raw"
   },
   "30DD": {
-   "name": "IdleCoolantLimit4",
+   "name": "IdleCoolantLimitAC2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -1938,7 +1938,7 @@
    "y": "raw"
   },
   "30F1": {
-   "name": "IdleV0348Factor2",
+   "name": "IdleV0348FactorAC",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.",
    "category": "Idle",
    "auto": true,
@@ -1954,7 +1954,7 @@
    "y": "raw"
   },
   "3105": {
-   "name": "IdleCoolantFactor2",
+   "name": "IdleCoolantFactorAC",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -1962,7 +1962,7 @@
    "y": "raw"
   },
   "311F": {
-   "name": "IdleCoolantLimit5",
+   "name": "IdleCoolantLimitPN",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -1970,7 +1970,7 @@
    "y": "raw"
   },
   "3129": {
-   "name": "IdleCoolantLimit6",
+   "name": "IdleCoolantLimitAC3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -1978,7 +1978,7 @@
    "y": "raw"
   },
   "3133": {
-   "name": "IdleV0348Factor3",
+   "name": "IdleV0348Factor2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.",
    "category": "Idle",
    "auto": true,
@@ -1986,7 +1986,7 @@
    "y": "raw"
   },
   "313D": {
-   "name": "IdleV0348Factor4",
+   "name": "IdleV0348FactorAC2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.",
    "category": "Idle",
    "auto": true,
@@ -2002,7 +2002,7 @@
    "y": "raw"
   },
   "3151": {
-   "name": "IdleCoolant6",
+   "name": "IdleCoolantAC",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2058,7 +2058,7 @@
    "y": "raw"
   },
   "3218": {
-   "name": "IdleCoolant7",
+   "name": "IdleCoolant6",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -2213,7 +2213,7 @@
    "y": "raw"
   },
   "3353": {
-   "name": "IdleCoolantAdder6",
+   "name": "IdleCoolantAdder3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2229,7 +2229,7 @@
    "y": "raw"
   },
   "336D": {
-   "name": "IdleCoolantFactor3",
+   "name": "IdleCoolantFactor2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -2344,7 +2344,7 @@
    "y": "raw"
   },
   "347B": {
-   "name": "SpeedCtlV04082",
+   "name": "SpeedCtlV0408AC",
    "desc": "Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C222). Inputs: $0408,Z.",
    "category": "Speed control",
    "auto": true,

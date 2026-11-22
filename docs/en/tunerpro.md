@@ -21,6 +21,10 @@ program yet. Please report what does not open or shows wrong values.
 | Sensors | thermistor curves, throttle limp-in, sensor processing |
 | Diagnostics | misfire monitor and other OBD monitors |
 | Speed control | cruise control (probable) |
+| Cooling fan | radiator fan, relay and PWM variants |
+| EGR | EGR control (probable) |
+| A/C | A/C clutch control (probable) |
+| EVAP purge | purge control and vapour learning (probable) |
 | Startup | values set at reset |
 | Limits | rev and speed limits |
 | Faults | `FaultTable`: one row per fault, P-code in the row label |

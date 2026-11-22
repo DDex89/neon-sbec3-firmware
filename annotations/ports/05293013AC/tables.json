@@ -96,17 +96,17 @@
    "auto": false
   },
   "42EC": {
-   "name": "Sys3D800MapScale",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: Map.",
-   "category": "Other",
+   "name": "PurgeMapScale",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: Map.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "kpa",
    "y": "raw"
   },
   "42E2": {
-   "name": "Sys3D800Rpm",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.",
-   "category": "Other",
+   "name": "PurgeRpm",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.",
+   "category": "EVAP purge",
    "auto": true,
    "x": "rpm32",
    "y": "raw"
@@ -448,9 +448,9 @@
    "auto": false
   },
   "1427": {
-   "name": "Sys3D800Table",
-   "desc": "Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.",
-   "category": "Other",
+   "name": "PurgeTable",
+   "desc": "Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.",
+   "category": "EVAP purge",
    "auto": true,
    "y": "pos256",
    "z": "raw"
@@ -666,7 +666,7 @@
    "y": "raw"
   },
   "1C69": {
-   "name": "SparkScale3",
+   "name": "SparkScaleAcOn",
    "desc": "Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.",
    "category": "Spark",
    "auto": true,
@@ -762,7 +762,7 @@
    "y": "raw"
   },
   "1F73": {
-   "name": "IdleCoolantLimit5",
+   "name": "IdleCoolantLimitPN",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -770,7 +770,7 @@
    "y": "raw"
   },
   "1FA3": {
-   "name": "IdleCoolantLimit6",
+   "name": "IdleCoolantLimitAC3",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,
@@ -778,7 +778,7 @@
    "y": "raw"
   },
   "1FAD": {
-   "name": "IdleV0348Factor4",
+   "name": "IdleV0348FactorAC2",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.",
    "category": "Idle",
    "auto": true,
@@ -786,7 +786,7 @@
    "y": "raw"
   },
   "1FB7": {
-   "name": "IdleCoolant6",
+   "name": "IdleCoolantAC",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.",
    "category": "Idle",
    "auto": true,
@@ -818,7 +818,7 @@
    "y": "raw"
   },
   "1FF5": {
-   "name": "IdleCoolant7",
+   "name": "IdleCoolant6",
    "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z.",
    "category": "Idle",
    "auto": true,

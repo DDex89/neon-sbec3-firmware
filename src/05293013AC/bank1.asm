@@ -6671,7 +6671,7 @@ L1482C:
         TBA
         LDX     #SparkScale2
         BRCLR   $0498,Z,#$01,L1483C
-        LDX     #SparkScale3
+        LDX     #SparkScaleAcOn
 L1483C:
         BRA     L1484A
 L1483E:

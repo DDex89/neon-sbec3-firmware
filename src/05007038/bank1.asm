@@ -20977,7 +20977,7 @@ L1DD2C:
         TBA
         LDX     #SparkScale2
         BRCLR   $0527,Z,#$01,L1DD3C
-        LDX     #SparkScale3
+        LDX     #SparkScaleAcOn
 L1DD3C:
         BRA     L1DD4A
 L1DD3E:

@@ -11130,14 +11130,14 @@ L19154:
         LDX     #IdleV00FC
         BRSET   $032E,#$40,L19188
         BRCLR   $0C31,Z,#$20,L19188
-        LDX     #IdleV00FC2
+        LDX     #IdleV00FCPN
         BRA     L19188
 L19172:
         LDAA    $FD,Z
         LDX     #IdleV00FD
         BRSET   $032E,#$40,L19188
         BRCLR   $0C31,Z,#$20,L19188
-        LDX     #IdleV00FD2
+        LDX     #IdleV00FDPN
 L19188:
         JSR     Lookup2D
         SUBB    #$80
@@ -11285,7 +11285,7 @@ L192F4:
         CLRA
         TDE
         LDAA    $FC,Z
-        LDX     #IdleV00FC4
+        LDX     #IdleV00FC3
         JSR     Lookup2D
         STAB    $033A,Z
         CLRA
@@ -11325,7 +11325,7 @@ L1937C:
         CLRA
         TDE
         LDAA    $FC,Z
-        LDX     #IdleV00FC3
+        LDX     #IdleV00FC2
         JSR     Lookup2D
         STAB    $033F,Z
         CLRA
@@ -12361,7 +12361,7 @@ L19F3C:
         LDAA    >CoolantTemp,Z
         LDX     #IdleCoolantFactor
         BRCLR   $0056,Z,#$20,L19F54
-        LDX     #IdleCoolantFactor2
+        LDX     #IdleCoolantFactorAC
 L19F54:
         JSR     Lookup2D
         SXT
@@ -12385,7 +12385,7 @@ L19F84:
         LDAA    >CoolantTemp,Z
         LDX     #IdleCoolantLimit
         BRCLR   $0056,Z,#$20,L19FA0
-        LDX     #IdleCoolantLimit2
+        LDX     #IdleCoolantLimitAC
 L19FA0:
         JSR     Lookup2D
         CMPA    #$FF
@@ -12404,14 +12404,14 @@ L19FBA:
         LDAB    $0315,Z
         ORAB    #$08
         ANDB    #$FB
-        LDX     #IdleCoolantLimit3
+        LDX     #IdleCoolantLimit2
         BRCLR   $0056,Z,#$20,L19FDA
-        LDX     #IdleCoolantLimit4
+        LDX     #IdleCoolantLimitAC2
 L19FDA:
         BRCLR   $0C31,Z,#$20,L19FF2
-        LDX     #IdleCoolantLimit5
+        LDX     #IdleCoolantLimitPN
         BRCLR   $0056,Z,#$20,L19FEE
-        LDX     #IdleCoolantLimit6
+        LDX     #IdleCoolantLimitAC3
 L19FEE:
         ORAB    #$04
         ANDB    #$F7
@@ -12424,14 +12424,14 @@ L19FF2:
         BCC     L1A042
         STAB    $FE,Z
         LDAA    $0348,Z
-        LDX     #IdleV0348Factor3
+        LDX     #IdleV0348Factor2
         BRCLR   $0056,Z,#$20,L1A01C
-        LDX     #IdleV0348Factor4
+        LDX     #IdleV0348FactorAC2
 L1A01C:
         BRSET   $0C31,Z,#$20,L1A030
         LDX     #IdleV0348Factor
         BRCLR   $0056,Z,#$20,L1A030
-        LDX     #IdleV0348Factor2
+        LDX     #IdleV0348FactorAC
 L1A030:
         JSR     Lookup2D
         LDAB    $FE,Z
@@ -12456,12 +12456,12 @@ L1A054:
         LDAA    >CoolantTemp,Z
         LDX     #IdleCoolant5
         BRCLR   $0056,Z,#$20,L1A078
-        LDX     #IdleCoolant6
+        LDX     #IdleCoolantAC
 L1A078:
         BRSET   $0C31,Z,#$20,L1A08C
         LDX     #IdleCoolantFactor
         BRCLR   $0056,Z,#$20,L1A08C
-        LDX     #IdleCoolantFactor2
+        LDX     #IdleCoolantFactorAC
 L1A08C:
         JSR     Lookup2D
         SXT
@@ -13592,7 +13592,7 @@ Sub_1ABD2:
         CLRA
         ADE
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolantAdder6
+        LDX     #IdleCoolantAdder3
         JSR     Lookup2D
         CLRA
         ADE
@@ -13654,7 +13654,7 @@ L1AC82:
         JSR     Lookup2D
         STAA    $FE,Z
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolantFactor3
+        LDX     #IdleCoolantFactor2
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
@@ -13931,7 +13931,7 @@ L1AF80:
         JSR     Lookup2D
         STAA    $F1,Z
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant7
+        LDX     #IdleCoolant6
         JSR     Lookup2D
         STAA    $FE,Z
         LDAA    >VehicleSpeed,Z
@@ -14420,7 +14420,7 @@ L1B55E:
         LDX     #IdleV0A5AV030EFactor
         BRSET   $032E,#$40,L1B57E
         BRCLR   $0C31,Z,#$20,L1B57E
-        LDX     #IdleV0A5AV030EFactor2
+        LDX     #IdleV0A5AV030EFactorPN
 L1B57E:
         LDAB    $030E,Z
         JSR     Lookup3D
@@ -17620,13 +17620,13 @@ L1E858:
         LDX     #SparkTable
         BRSET   $032E,#$40,L1E88A
         BRCLR   $0C31,Z,#$20,L1E88A
-        LDX     #SparkTable3
+        LDX     #SparkPN
         BRA     L1E88A
 L1E876:
         LDX     #SparkTable2
         BRSET   $032E,#$40,L1E88A
         BRCLR   $0C31,Z,#$20,L1E88A
-        LDX     #SparkTable4
+        LDX     #SparkPN2
 L1E88A:
         JSR     Lookup2D
         STAA    $0D99,Z

@@ -72,6 +72,10 @@ grp([0x0D08C], "Start", "Startup", "initialisation at reset")
 grp([0x0A02E], "Event", "Other", "reference-event interrupt (input capture 1)")
 grp([0x17000, 0x17FC4, 0x183C2, 0x17A48, 0x17D44, 0x181BE, 0x187E8, 0x18A8E, 0x18B22, 0x18BAA, 0x18836],
     "FlexLearn", "Fuel", "flex-fuel ethanol content learning")
+grp([0x39E1A, 0x3A7A4, 0x3A8D2, 0x3AA44, 0x3ABFE], "Fan", "Cooling fan", "radiator fan control (relay and PWM variants)")
+grp([0x39686], "Egr", "EGR", "EGR control, probable")
+grp([0x2F000], "AcCtl", "A/C", "A/C clutch control, probable")
+grp([0x3D800], "Purge", "EVAP purge", "EVAP purge control, probable")
 OTHER = {0x08DD4: "Pit", 0x2C708: "Sys2C708", 0x2F000: "Sys2F000", 0x39686: "Sys39686",
          0x39E1A: "Sys39E1A", 0x3AE3C: "Sys3AE3C", 0x3D800: "Sys3D800"}
 for a, p in OTHER.items():
@@ -124,6 +128,31 @@ def role(calls):
             if n.mn in ("JSR", "RTS", "BRA", "LBRA", "JMP") or n.mn.startswith("ST"):
                 break
     return votes.most_common(1)[0][0] if votes else ""
+
+
+# variant of a table chosen by a flag test right before its LDX #table:
+# BRCLR flag,L / LDX #table  -> the table is used while the flag is set
+FLAGS = {(0x0055, 0x20): "AC", (0x0C31, 0x20): "PN", (0x0C30, 0x80): "Closed", (0x0C30, 0x40): "Wot",
+         (0x0943, 0x01): "AcOn"}
+VARIANT = {}
+for _a in ORDER:
+    _i = an.insn[_a]
+    if _i.mn == "LDX" and _i.mode == "IMM16":
+        _j = INDEX[_a]
+        if _j == 0:
+            continue
+        _p = an.insn[ORDER[_j - 1]]
+        _v = dict(_p.vals)
+        if _p.mn in ("BRCLR", "BRSET") and _p.addr + _p.size == _a:
+            off = _v.get("ff", _v.get("gggg"))
+            key = (off, _v.get("mm"))
+            if key in FLAGS and _p.mode.endswith(", Z"):
+                VARIANT.setdefault(dict(_i.vals)["jjkk"], set()).add(FLAGS[key] if _p.mn == "BRCLR" else "No" + FLAGS[key])
+
+
+def variant(a):
+    v = VARIANT.get(a, set())
+    return "".join(sorted(x for x in v if not x.startswith("No"))) if len(v) == 1 or all(not x.startswith("No") for x in v) else ""
 
 
 def word(s):
@@ -198,7 +227,7 @@ for a in sorted(cal.items):
     if key in OVR:
         name, desc, units = OVR[key]
     else:
-        base = pre + "".join(p for p in dict.fromkeys(parts) if p not in ("X",)) + role(t.get("calls", []))
+        base = pre + "".join(p for p in dict.fromkeys(parts) if p not in ("X",)) + role(t.get("calls", [])) + variant(a)
         if base == pre:
             base = pre + "Table"
         name, n = base, 1

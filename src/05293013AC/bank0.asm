@@ -1844,13 +1844,13 @@ Tab2D_141B:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sys3D800Table ($1427): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
-; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.
+; PurgeTable ($1427): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
+; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.
 ; columns: ?, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D
 ; Read at $0FB26
 ;---------------------------------------------------------------------------------------------------
-Sys3D800Table:
+PurgeTable:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    166,169,184,185,197,202,210,227,230      ; row 0
         dc.b    166,169,185,186,198,203,211,228,231      ; row 1
@@ -2532,13 +2532,13 @@ SparkScale2:
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkScale3 ($1C69): 2D table, 3 points, signed
+; SparkScaleAcOn ($1C69): 2D table, 3 points, signed
 ; Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1484A
 ;---------------------------------------------------------------------------------------------------
-SparkScale3:
+SparkScaleAcOn:
         dc.b    3,$20                                    ; points, flags
         dc.b    0,0, 36,0, 40,-20                        ; x, y
 
@@ -3064,13 +3064,13 @@ IdleCoolantLimit:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit5 ($1F73): 2D table, 4 points, unsigned
+; IdleCoolantLimitPN ($1F73): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0B12A
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit5:
+IdleCoolantLimitPN:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,68, 105,12, 121,12, 141,8             ; x, y
 
@@ -3112,38 +3112,38 @@ Tab2D_1F9B:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit6 ($1FA3): 2D table, 4 points, unsigned
+; IdleCoolantLimitAC3 ($1FA3): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0B12A
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit6:
+IdleCoolantLimitAC3:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,128, 105,28, 121,15, 200,3            ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348Factor4 ($1FAD): 2D table, 1 points, unsigned
+; IdleV0348FactorAC2 ($1FAD): 2D table, 1 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $06AA,Z
 ; Read at $0B14E
 ;---------------------------------------------------------------------------------------------------
-IdleV0348Factor4:
+IdleV0348FactorAC2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolant6 ($1FB7): 2D table, 4 points, unsigned
+; IdleCoolantAC ($1FB7): 2D table, 4 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0B198
 ;---------------------------------------------------------------------------------------------------
-IdleCoolant6:
+IdleCoolantAC:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,222, 127,232, 141,238, 200,252        ; x, y
 
@@ -3210,13 +3210,13 @@ IdleTimeAdder:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolant7 ($1FF5): 2D table, 6 points, unsigned
+; IdleCoolant6 ($1FF5): 2D table, 6 points, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0C078
 ;---------------------------------------------------------------------------------------------------
-IdleCoolant7:
+IdleCoolant6:
         dc.b    6,$80                                    ; points, flags
         dc.b    99,134, 105,80, 116,44, 155,30, 205,12, 216,8 ; x, y
 
@@ -4892,25 +4892,25 @@ Tab2D_4142:
         dc.b    $02,$03,$08,$01
 
 ;---------------------------------------------------------------------------------------------------
-; Sys3D800Rpm ($42E2): 2D table, 4 points, unsigned
-; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.
+; PurgeRpm ($42E2): 2D table, 4 points, unsigned
+; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $0FB0A
 ;---------------------------------------------------------------------------------------------------
-Sys3D800Rpm:
+PurgeRpm:
         dc.b    4,$80                                    ; points, flags
         dc.b    31,0, 79,160, 125,224, 155,255           ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Sys3D800MapScale ($42EC): 2D table, 2 points, unsigned
-; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: Map.
+; PurgeMapScale ($42EC): 2D table, 2 points, unsigned
+; Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: Map.
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $0FB1A
 ;---------------------------------------------------------------------------------------------------
-Sys3D800MapScale:
+PurgeMapScale:
         dc.b    2,$80                                    ; points, flags
         dc.b    49,0, 195,255                            ; x, y
 
@@ -14258,9 +14258,9 @@ L0B100:
         LDAB    $0675,Z
         ORAB    #$08
         ANDB    #$FB
-        LDX     #IdleCoolantLimit5
+        LDX     #IdleCoolantLimitPN
         BRCLR   $031C,Z,#$20,L0B122
-        LDX     #IdleCoolantLimit6
+        LDX     #IdleCoolantLimitAC3
         ORAB    #$04
         ANDB    #$F7
 L0B122:
@@ -14272,7 +14272,7 @@ L0B122:
         BCC     L0B162
         STAB    $01FE,Z
         LDAA    $06AA,Z
-        LDX     #IdleV0348Factor4
+        LDX     #IdleV0348FactorAC2
         BRSET   $031C,Z,#$20,L0B14E
         LDX     #IdleV0348Factor
 L0B14E:
@@ -14297,7 +14297,7 @@ L0B174:
         BRSET   $0672,Z,#$20,L0B23E
         BSET    $0672,Z,#$20
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant6
+        LDX     #IdleCoolantAC
         BRSET   $031C,Z,#$20,L0B198
         LDX     #IdleCoolantFactor
 L0B198:
@@ -15710,7 +15710,7 @@ Sub_0C048:
         JSR     Lookup2D
         STAA    $01F1,Z
         LDAA    >CoolantTemp,Z
-        LDX     #IdleCoolant7
+        LDX     #IdleCoolant6
         JSR     Lookup2D
         STAA    $01FE,Z
         STAA    $01F6,Z
@@ -20963,14 +20963,14 @@ L0FB00:
 ;---------------------------------------------------------------------------------------------------
 Sub_0FB02:
         LDAA    >EngineRpm,Z
-        LDX     #Sys3D800Rpm
+        LDX     #PurgeRpm
         JSR     Lookup2D
         STAA    $01F0,Z
         LDAA    >Map,Z
-        LDX     #Sys3D800MapScale
+        LDX     #PurgeMapScale
         JSR     Lookup2D
         LDAB    $01F0,Z
-        LDX     #Sys3D800Table
+        LDX     #PurgeTable
         JSR     Lookup3DNorm
         RTS
 

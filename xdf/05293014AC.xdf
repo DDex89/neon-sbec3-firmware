@@ -16,8 +16,9 @@
   <CATEGORY index="0x6" name="Diagnostics" />
   <CATEGORY index="0x7" name="Other" />
   <CATEGORY index="0x8" name="Closed loop" />
-  <CATEGORY index="0x9" name="Faults" />
-  <CATEGORY index="0xA" name="Limits" />
+  <CATEGORY index="0x9" name="EVAP purge" />
+  <CATEGORY index="0xA" name="Faults" />
+  <CATEGORY index="0xB" name="Limits" />
  </XDFHEADER>
  <XDFTABLE uniqueid="0x101" flags="0x0">
   <title>Tab2D_034D</title>
@@ -4404,9 +4405,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x176" flags="0x0">
-  <title>Sys3D800Table</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D. $1427, 3Dn; inputs: result of Lookup2D</description>
-  <CATEGORYMEM index="0" category="8" />
+  <title>PurgeTable</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D. $1427, 3Dn; inputs: result of Lookup2D</description>
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
    <indexcount>9</indexcount>
@@ -4426,7 +4427,7 @@
    <LABEL index="8" value="255" />
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units>kPa (rows set by Sys3D800MapScale)</units>
+   <units>kPa (rows set by PurgeMapScale)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -6238,7 +6239,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A6" flags="0x0">
-  <title>SparkScale3</title>
+  <title>SparkScaleAcOn</title>
   <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA. $1C69, 2D; inputs: TBA</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -7902,7 +7903,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D4" flags="0x0">
-  <title>IdleCoolantLimit5</title>
+  <title>IdleCoolantLimitPN</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $1F73, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -8046,7 +8047,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D8" flags="0x0">
-  <title>IdleCoolantLimit6</title>
+  <title>IdleCoolantLimitAC3</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $1FA3, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -8082,7 +8083,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D9" flags="0x0">
-  <title>IdleV0348Factor4</title>
+  <title>IdleV0348FactorAC2</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z. $1FAD, 2D; inputs: $06AA,Z</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -8118,7 +8119,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DA" flags="0x0">
-  <title>IdleCoolant6</title>
+  <title>IdleCoolantAC</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. $1FB7, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -8334,7 +8335,7 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E0" flags="0x0">
-  <title>IdleCoolant7</title>
+  <title>IdleCoolant6</title>
   <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z. $1FF5, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
@@ -10908,7 +10909,7 @@
  <XDFTABLE uniqueid="0x225" flags="0x0">
   <title>FaultTable</title>
   <description>Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes $3530</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>10</indexcount>
@@ -11962,9 +11963,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23C" flags="0x0">
-  <title>Sys3D800Rpm</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z. $42E2, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="8" />
+  <title>PurgeRpm</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z. $42E2, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11998,9 +11999,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23D" flags="0x0">
-  <title>Sys3D800MapScale</title>
-  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: Map. $42EC, 2D; inputs: Map</description>
-  <CATEGORYMEM index="0" category="8" />
+  <title>PurgeMapScale</title>
+  <description>Subsystem: EVAP purge control, probable (by the routine that reads it, Sub_3EAEC). Inputs: Map. $42EC, 2D; inputs: Map</description>
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12228,7 +12229,7 @@
  <XDFCONSTANT uniqueid="0x246" flags="0x0">
   <title>RevLimit</title>
   <description>Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral) $110B</description>
-  <CATEGORYMEM index="0" category="11" />
+  <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x110B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -12240,7 +12241,7 @@
  <XDFCONSTANT uniqueid="0x247" flags="0x0">
   <title>RevLimitAlt</title>
   <description>Rev limit, used while $0C31,Z bit 5 is clear $110D</description>
-  <CATEGORYMEM index="0" category="11" />
+  <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x110D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>

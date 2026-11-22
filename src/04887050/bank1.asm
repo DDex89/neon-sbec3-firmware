@@ -18341,7 +18341,7 @@ L1C6CA:
         TBA
         LDX     #SparkScale2
         BRCLR   $047E,Z,#$01,L1C6DA
-        LDX     #SparkScale3
+        LDX     #SparkScaleAcOn
 L1C6DA:
         BRA     L1C6E8
 L1C6DC:

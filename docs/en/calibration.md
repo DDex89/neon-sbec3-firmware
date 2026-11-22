@@ -119,15 +119,20 @@ does exactly.
 | FuelCut | fuel cut-off: rev and speed limits, deceleration | Fuel | |
 | AccelFuel | acceleration enrichment (throttle and MAP rate) | Fuel | |
 | AfterStartFuel | after-start enrichment (time since start x coolant) | Fuel | |
-| CrankFuel | cranking fuel | Fuel | 102 in all |
+| CrankFuel | cranking fuel | Fuel | 112 in all |
 | O2 | oxygen-sensor closed loop and adaptive fuel | Closed loop | 7 |
 | Idle | idle speed control | Idle | 89 |
 | Spark, Knock | spark advance and knock control | Spark | 89 |
 | Misfire, Diag | misfire monitor (crankshaft segment times) and other OBD monitors | Diagnostics | 36 |
-| Sensor | sensor processing | Sensors | 21 |
+| Sensor | sensor processing | Sensors | 20 |
 | SpeedCtl | speed control (cruise); probable | Speed control | 11 |
-| Start | initialisation at reset | Startup | 6 |
-| Event, Pit, Sys<address> | not identified yet; named after the top routine | Other | 49 |
+| Start | initialisation at reset | Startup | 5 |
+| FlexLearn | flex-fuel ethanol content learning | Fuel | |
+| Fan | radiator fan control (relay and PWM variants) | Cooling fan | 6 |
+| Egr | EGR control; probable | EGR | 8 |
+| AcCtl | A/C clutch control; probable | A/C | 4 |
+| Purge | EVAP purge control; probable | EVAP purge | 15 |
+| Event, Pit, Sys<address> | not identified yet; named after the top routine | Other | 8 |
 
 The subsystems were identified from the code: for example the idle group writes and uses the idle
 target ($0300,Z, from `IdleTargetRpm`), the misfire group keeps the per-cylinder segment times, the

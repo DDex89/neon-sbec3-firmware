@@ -14284,9 +14284,9 @@ L2D114:
         BSET    $0310,Z,#$02
         LDAA    >CoolantTemp,Z
         BRCLR   $0C31,Z,#$20,L2D146
-        LDX     #IdleCoolantAdder4
+        LDX     #IdleCoolantAdderPN
         BRCLR   $0055,Z,#$20,L2D136
-        LDX     #IdleCoolantAdder5
+        LDX     #IdleCoolantAdderAC2
 L2D136:
         JSR     Lookup2D
         LDAA    $033C,Z
@@ -14297,7 +14297,7 @@ L2D136:
 L2D146:
         LDX     #IdleCoolantAdder2
         BRCLR   $0055,Z,#$20,L2D154
-        LDX     #IdleCoolantAdder3
+        LDX     #IdleCoolantAdderAC
 L2D154:
         JSR     Lookup2D
         LDAA    $033C,Z
@@ -15890,24 +15890,24 @@ L2F114:
         BCC     L2F196
 L2F118:
         BRSET   $0943,Z,#$80,L2F144
-        LDX     #Sys2F000SpeedLimit
+        LDX     #AcCtlSpeedLimit
         LDAA    >VehicleSpeed,Z
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BLS     L2F196
-        LDX     #Sys2F000SpeedLimit2
+        LDX     #AcCtlSpeedLimit2
         LDAA    >VehicleSpeed,Z
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BHI     L2F196
         BRA     L2F1A2
 L2F144:
-        LDX     #Sys2F000SpeedLimit3
+        LDX     #AcCtlSpeedLimit3
         LDAA    >VehicleSpeed,Z
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BLS     L2F196
-        LDX     #Sys2F000SpeedLimit4
+        LDX     #AcCtlSpeedLimit4
         LDAA    >VehicleSpeed,Z
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
