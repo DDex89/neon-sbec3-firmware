@@ -1,0 +1,69 @@
+"""Assembly syntax shared by the source generator and the assembler.
+
+The syntax is close to Motorola's, but every operand width is explicit, so that the assembler can
+always pick the same encoding as the original:
+
+  INH          ABA
+  IMM8/IMM16   LDAA #$12      LDD #$1234       (2 hex digits = 8 bit, 4 = 16 bit)
+  IND8/16/20   LDAA $12,Z     LDAA $1234,Z     JMP $12345,X
+  EXT/EXT20    LDAA $1234     JSR $12345 or JSR label
+  E,X          LDAA E,X
+  REL          BRA label      (Bcc = 8-bit offset, LBcc = 16-bit offset)
+  bit ops      BCLR $12,Z,#$01   BCLR $1234,#$01   BCLRW $1234,X,#$0001
+  bit branch   BRCLR $12,Z,#$01,label     BRCLR $1234,Z,#$01,label     BRCLR $1234,#$01,label
+  MOVB/MOVW    MOVB $05,X+,$1234   MOVB $1234,$05,X+   MOVB $1234,$5678
+  PSHM/PULM    PSHM #$2F (register mask)      MAC/RMAC   MAC #$11 (X and Y offset nibbles)
+
+Numbers are written in hex with a fixed number of digits; labels may replace branch, call and jump
+targets. A 16-bit index offset is written unsigned ($FFFE,X is -2).
+"""
+
+def h(v, n):
+    return "$%0*X" % (n, v)
+
+
+def format_insn(ins, label=None):
+    """Text of an instruction. label(addr) returns a label name or None."""
+    lab = label or (lambda a: None)
+    v = dict(ins.vals)
+    m = ins.mode
+
+    def tgt(addr):
+        return lab(addr) or h(addr, 5)
+
+    reg = m[-1] if m.startswith(("IND", "E, ")) else None
+    if m == "INH":
+        ops = ""
+    elif m == "IMM8":
+        ops = "#" + h(v.get("ii", v.get("xoyo", 0)), 2)
+    elif m == "IMM16":
+        ops = "#" + h(v["jjkk"], 4)
+    elif m.startswith("E, "):
+        ops = "E," + reg
+    elif m in ("REL8", "REL16"):
+        ops = tgt(ins.target())
+    elif m == "IXP to EXT":
+        ops = "%s,X+,%s" % (h(v["ff"], 2), h(v["hhll"], 4))
+    elif m == "EXT to IXP":
+        ops = "%s,%s,X+" % (h(v["hhll"], 4), h(v["ff"], 2))
+    elif m == "EXT to EXT":
+        ops = "%s,%s" % (h(v["hhll"], 4), h(v["hhll2"], 4))
+    else:
+        if "ff" in v:
+            base = h(v["ff"], 2) + "," + reg
+        elif "gggg" in v:
+            base = h(v["gggg"], 4) + "," + reg
+        elif "zggggg" in v:
+            base = h(v["zggggg"], 5) + "," + reg
+        elif "zbhhll" in v:
+            base = tgt(v["zbhhll"]) if ins.mn in ("JMP", "JSR") else h(v["zbhhll"], 5)
+        else:
+            base = h(v["hhll"], 4)
+        ops = base
+        if "mm" in v:
+            ops += ",#" + h(v["mm"], 2)
+        if "mmmm" in v:
+            ops += ",#" + h(v["mmmm"], 4)
+        if "rr" in v or "rrrr" in v:
+            ops += "," + tgt(ins.target())
+    return ins.mn, ops

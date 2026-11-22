@@ -1,0 +1,6346 @@
+{
+"00": {
+"fields": [
+"ff"
+],
+"mn": "COM",
+"mode": "IND8, X",
+"size": 2
+},
+"01": {
+"fields": [
+"ff"
+],
+"mn": "DEC",
+"mode": "IND8, X",
+"size": 2
+},
+"02": {
+"fields": [
+"ff"
+],
+"mn": "NEG",
+"mode": "IND8, X",
+"size": 2
+},
+"03": {
+"fields": [
+"ff"
+],
+"mn": "INC",
+"mode": "IND8, X",
+"size": 2
+},
+"04": {
+"fields": [
+"ff"
+],
+"mn": "ASL",
+"mode": "IND8, X",
+"size": 2
+},
+"05": {
+"fields": [
+"ff"
+],
+"mn": "CLR",
+"mode": "IND8, X",
+"size": 2
+},
+"06": {
+"fields": [
+"ff"
+],
+"mn": "TST",
+"mode": "IND8, X",
+"size": 2
+},
+"08": {
+"fields": [
+"mm",
+"gggg"
+],
+"mn": "BCLR",
+"mode": "IND16, X",
+"size": 4
+},
+"09": {
+"fields": [
+"mm",
+"gggg"
+],
+"mn": "BSET",
+"mode": "IND16, X",
+"size": 4
+},
+"0A": {
+"fields": [
+"mm",
+"gggg",
+"rrrr"
+],
+"mn": "BRCLR",
+"mode": "IND16, X",
+"size": 6
+},
+"0B": {
+"fields": [
+"mm",
+"gggg",
+"rrrr"
+],
+"mn": "BRSET",
+"mode": "IND16, X",
+"size": 6
+},
+"0C": {
+"fields": [
+"ff"
+],
+"mn": "ROL",
+"mode": "IND8, X",
+"size": 2
+},
+"0D": {
+"fields": [
+"ff"
+],
+"mn": "ASR",
+"mode": "IND8, X",
+"size": 2
+},
+"0E": {
+"fields": [
+"ff"
+],
+"mn": "ROR",
+"mode": "IND8, X",
+"size": 2
+},
+"0F": {
+"fields": [
+"ff"
+],
+"mn": "LSR",
+"mode": "IND8, X",
+"size": 2
+},
+"10": {
+"fields": [
+"ff"
+],
+"mn": "COM",
+"mode": "IND8, Y",
+"size": 2
+},
+"11": {
+"fields": [
+"ff"
+],
+"mn": "DEC",
+"mode": "IND8, Y",
+"size": 2
+},
+"12": {
+"fields": [
+"ff"
+],
+"mn": "NEG",
+"mode": "IND8, Y",
+"size": 2
+},
+"13": {
+"fields": [
+"ff"
+],
+"mn": "INC",
+"mode": "IND8, Y",
+"size": 2
+},
+"14": {
+"fields": [
+"ff"
+],
+"mn": "ASL",
+"mode": "IND8, Y",
+"size": 2
+},
+"15": {
+"fields": [
+"ff"
+],
+"mn": "CLR",
+"mode": "IND8, Y",
+"size": 2
+},
+"16": {
+"fields": [
+"ff"
+],
+"mn": "TST",
+"mode": "IND8, Y",
+"size": 2
+},
+"1700": {
+"fields": [
+"gggg"
+],
+"mn": "COM",
+"mode": "IND16, X",
+"size": 4
+},
+"1701": {
+"fields": [
+"gggg"
+],
+"mn": "DEC",
+"mode": "IND16, X",
+"size": 4
+},
+"1702": {
+"fields": [
+"gggg"
+],
+"mn": "NEG",
+"mode": "IND16, X",
+"size": 4
+},
+"1703": {
+"fields": [
+"gggg"
+],
+"mn": "INC",
+"mode": "IND16, X",
+"size": 4
+},
+"1704": {
+"fields": [
+"gggg"
+],
+"mn": "ASL",
+"mode": "IND16, X",
+"size": 4
+},
+"1705": {
+"fields": [
+"gggg"
+],
+"mn": "CLR",
+"mode": "IND16, X",
+"size": 4
+},
+"1706": {
+"fields": [
+"gggg"
+],
+"mn": "TST",
+"mode": "IND16, X",
+"size": 4
+},
+"1708": {
+"fields": [
+"mm",
+"ff"
+],
+"mn": "BCLR",
+"mode": "IND8, X",
+"size": 4
+},
+"1709": {
+"fields": [
+"mm",
+"ff"
+],
+"mn": "BSET",
+"mode": "IND8, X",
+"size": 4
+},
+"170C": {
+"fields": [
+"gggg"
+],
+"mn": "ROL",
+"mode": "IND16, X",
+"size": 4
+},
+"170D": {
+"fields": [
+"gggg"
+],
+"mn": "ASR",
+"mode": "IND16, X",
+"size": 4
+},
+"170E": {
+"fields": [
+"gggg"
+],
+"mn": "ROR",
+"mode": "IND16, X",
+"size": 4
+},
+"170F": {
+"fields": [
+"gggg"
+],
+"mn": "LSR",
+"mode": "IND16, X",
+"size": 4
+},
+"1710": {
+"fields": [
+"gggg"
+],
+"mn": "COM",
+"mode": "IND16, Y",
+"size": 4
+},
+"1711": {
+"fields": [
+"gggg"
+],
+"mn": "DEC",
+"mode": "IND16, Y",
+"size": 4
+},
+"1712": {
+"fields": [
+"gggg"
+],
+"mn": "NEG",
+"mode": "IND16, Y",
+"size": 4
+},
+"1713": {
+"fields": [
+"gggg"
+],
+"mn": "INC",
+"mode": "IND16, Y",
+"size": 4
+},
+"1714": {
+"fields": [
+"gggg"
+],
+"mn": "ASL",
+"mode": "IND16, Y",
+"size": 4
+},
+"1715": {
+"fields": [
+"gggg"
+],
+"mn": "CLR",
+"mode": "IND16, Y",
+"size": 4
+},
+"1716": {
+"fields": [
+"gggg"
+],
+"mn": "TST",
+"mode": "IND16, Y",
+"size": 4
+},
+"1718": {
+"fields": [
+"mm",
+"ff"
+],
+"mn": "BCLR",
+"mode": "IND8, Y",
+"size": 4
+},
+"1719": {
+"fields": [
+"mm",
+"ff"
+],
+"mn": "BSET",
+"mode": "IND8, Y",
+"size": 4
+},
+"171C": {
+"fields": [
+"gggg"
+],
+"mn": "ROL",
+"mode": "IND16, Y",
+"size": 4
+},
+"171D": {
+"fields": [
+"gggg"
+],
+"mn": "ASR",
+"mode": "IND16, Y",
+"size": 4
+},
+"171E": {
+"fields": [
+"gggg"
+],
+"mn": "ROR",
+"mode": "IND16, Y",
+"size": 4
+},
+"171F": {
+"fields": [
+"gggg"
+],
+"mn": "LSR",
+"mode": "IND16, Y",
+"size": 4
+},
+"1720": {
+"fields": [
+"gggg"
+],
+"mn": "COM",
+"mode": "IND16, Z",
+"size": 4
+},
+"1721": {
+"fields": [
+"gggg"
+],
+"mn": "DEC",
+"mode": "IND16, Z",
+"size": 4
+},
+"1722": {
+"fields": [
+"gggg"
+],
+"mn": "NEG",
+"mode": "IND16, Z",
+"size": 4
+},
+"1723": {
+"fields": [
+"gggg"
+],
+"mn": "INC",
+"mode": "IND16, Z",
+"size": 4
+},
+"1724": {
+"fields": [
+"gggg"
+],
+"mn": "ASL",
+"mode": "IND16, Z",
+"size": 4
+},
+"1725": {
+"fields": [
+"gggg"
+],
+"mn": "CLR",
+"mode": "IND16, Z",
+"size": 4
+},
+"1726": {
+"fields": [
+"gggg"
+],
+"mn": "TST",
+"mode": "IND16, Z",
+"size": 4
+},
+"1728": {
+"fields": [
+"mm",
+"ff"
+],
+"mn": "BCLR",
+"mode": "IND8, Z",
+"size": 4
+},
+"1729": {
+"fields": [
+"mm",
+"ff"
+],
+"mn": "BSET",
+"mode": "IND8, Z",
+"size": 4
+},
+"172C": {
+"fields": [
+"gggg"
+],
+"mn": "ROL",
+"mode": "IND16, Z",
+"size": 4
+},
+"172D": {
+"fields": [
+"gggg"
+],
+"mn": "ASR",
+"mode": "IND16, Z",
+"size": 4
+},
+"172E": {
+"fields": [
+"gggg"
+],
+"mn": "ROR",
+"mode": "IND16, Z",
+"size": 4
+},
+"172F": {
+"fields": [
+"gggg"
+],
+"mn": "LSR",
+"mode": "IND16, Z",
+"size": 4
+},
+"1730": {
+"fields": [
+"hhll"
+],
+"mn": "COM",
+"mode": "EXT",
+"size": 4
+},
+"1731": {
+"fields": [
+"hhll"
+],
+"mn": "DEC",
+"mode": "EXT",
+"size": 4
+},
+"1732": {
+"fields": [
+"hhll"
+],
+"mn": "NEG",
+"mode": "EXT",
+"size": 4
+},
+"1733": {
+"fields": [
+"hhll"
+],
+"mn": "INC",
+"mode": "EXT",
+"size": 4
+},
+"1734": {
+"fields": [
+"hhll"
+],
+"mn": "ASL",
+"mode": "EXT",
+"size": 4
+},
+"1735": {
+"fields": [
+"hhll"
+],
+"mn": "CLR",
+"mode": "EXT",
+"size": 4
+},
+"1736": {
+"fields": [
+"hhll"
+],
+"mn": "TST",
+"mode": "EXT",
+"size": 4
+},
+"173C": {
+"fields": [
+"hhll"
+],
+"mn": "ROL",
+"mode": "EXT",
+"size": 4
+},
+"173D": {
+"fields": [
+"hhll"
+],
+"mn": "ASR",
+"mode": "EXT",
+"size": 4
+},
+"173E": {
+"fields": [
+"hhll"
+],
+"mn": "ROR",
+"mode": "EXT",
+"size": 4
+},
+"173F": {
+"fields": [
+"hhll"
+],
+"mn": "LSR",
+"mode": "EXT",
+"size": 4
+},
+"1740": {
+"fields": [
+"gggg"
+],
+"mn": "SUBA",
+"mode": "IND16, X",
+"size": 4
+},
+"1741": {
+"fields": [
+"gggg"
+],
+"mn": "ADDA",
+"mode": "IND16, X",
+"size": 4
+},
+"1742": {
+"fields": [
+"gggg"
+],
+"mn": "SBCA",
+"mode": "IND16, X",
+"size": 4
+},
+"1743": {
+"fields": [
+"gggg"
+],
+"mn": "ADCA",
+"mode": "IND16, X",
+"size": 4
+},
+"1744": {
+"fields": [
+"gggg"
+],
+"mn": "EORA",
+"mode": "IND16, X",
+"size": 4
+},
+"1745": {
+"fields": [
+"gggg"
+],
+"mn": "LDAA",
+"mode": "IND16, X",
+"size": 4
+},
+"1746": {
+"fields": [
+"gggg"
+],
+"mn": "ANDA",
+"mode": "IND16, X",
+"size": 4
+},
+"1747": {
+"fields": [
+"gggg"
+],
+"mn": "ORAA",
+"mode": "IND16, X",
+"size": 4
+},
+"1748": {
+"fields": [
+"gggg"
+],
+"mn": "CMPA",
+"mode": "IND16, X",
+"size": 4
+},
+"1749": {
+"fields": [
+"gggg"
+],
+"mn": "BITA",
+"mode": "IND16, X",
+"size": 4
+},
+"174A": {
+"fields": [
+"gggg"
+],
+"mn": "STAA",
+"mode": "IND16, X",
+"size": 4
+},
+"174C": {
+"fields": [
+"gggg"
+],
+"mn": "CPX",
+"mode": "IND16, X",
+"size": 4
+},
+"174D": {
+"fields": [
+"gggg"
+],
+"mn": "CPY",
+"mode": "IND16, X",
+"size": 4
+},
+"174E": {
+"fields": [
+"gggg"
+],
+"mn": "CPZ",
+"mode": "IND16, X",
+"size": 4
+},
+"174F": {
+"fields": [
+"gggg"
+],
+"mn": "CPS",
+"mode": "IND16, X",
+"size": 4
+},
+"1750": {
+"fields": [
+"gggg"
+],
+"mn": "SUBA",
+"mode": "IND16, Y",
+"size": 4
+},
+"1751": {
+"fields": [
+"gggg"
+],
+"mn": "ADDA",
+"mode": "IND16, Y",
+"size": 4
+},
+"1752": {
+"fields": [
+"gggg"
+],
+"mn": "SBCA",
+"mode": "IND16, Y",
+"size": 4
+},
+"1753": {
+"fields": [
+"gggg"
+],
+"mn": "ADCA",
+"mode": "IND16, Y",
+"size": 4
+},
+"1754": {
+"fields": [
+"gggg"
+],
+"mn": "EORA",
+"mode": "IND16, Y",
+"size": 4
+},
+"1755": {
+"fields": [
+"gggg"
+],
+"mn": "LDAA",
+"mode": "IND16, Y",
+"size": 4
+},
+"1756": {
+"fields": [
+"gggg"
+],
+"mn": "ANDA",
+"mode": "IND16, Y",
+"size": 4
+},
+"1757": {
+"fields": [
+"gggg"
+],
+"mn": "ORAA",
+"mode": "IND16, Y",
+"size": 4
+},
+"1758": {
+"fields": [
+"gggg"
+],
+"mn": "CMPA",
+"mode": "IND16, Y",
+"size": 4
+},
+"1759": {
+"fields": [
+"gggg"
+],
+"mn": "BITA",
+"mode": "IND16, Y",
+"size": 4
+},
+"175A": {
+"fields": [
+"gggg"
+],
+"mn": "STAA",
+"mode": "IND16, Y",
+"size": 4
+},
+"175C": {
+"fields": [
+"gggg"
+],
+"mn": "CPX",
+"mode": "IND16, Y",
+"size": 4
+},
+"175D": {
+"fields": [
+"gggg"
+],
+"mn": "CPY",
+"mode": "IND16, Y",
+"size": 4
+},
+"175E": {
+"fields": [
+"gggg"
+],
+"mn": "CPZ",
+"mode": "IND16, Y",
+"size": 4
+},
+"175F": {
+"fields": [
+"gggg"
+],
+"mn": "CPS",
+"mode": "IND16, Y",
+"size": 4
+},
+"1760": {
+"fields": [
+"gggg"
+],
+"mn": "SUBA",
+"mode": "IND16, Z",
+"size": 4
+},
+"1761": {
+"fields": [
+"gggg"
+],
+"mn": "ADDA",
+"mode": "IND16, Z",
+"size": 4
+},
+"1762": {
+"fields": [
+"gggg"
+],
+"mn": "SBCA",
+"mode": "IND16, Z",
+"size": 4
+},
+"1763": {
+"fields": [
+"gggg"
+],
+"mn": "ADCA",
+"mode": "IND16, Z",
+"size": 4
+},
+"1764": {
+"fields": [
+"gggg"
+],
+"mn": "EORA",
+"mode": "IND16, Z",
+"size": 4
+},
+"1765": {
+"fields": [
+"gggg"
+],
+"mn": "LDAA",
+"mode": "IND16, Z",
+"size": 4
+},
+"1766": {
+"fields": [
+"gggg"
+],
+"mn": "ANDA",
+"mode": "IND16, Z",
+"size": 4
+},
+"1767": {
+"fields": [
+"gggg"
+],
+"mn": "ORAA",
+"mode": "IND16, Z",
+"size": 4
+},
+"1768": {
+"fields": [
+"gggg"
+],
+"mn": "CMPA",
+"mode": "IND16, Z",
+"size": 4
+},
+"1769": {
+"fields": [
+"gggg"
+],
+"mn": "BITA",
+"mode": "IND16, Z",
+"size": 4
+},
+"176A": {
+"fields": [
+"gggg"
+],
+"mn": "STAA",
+"mode": "IND16, Z",
+"size": 4
+},
+"176C": {
+"fields": [
+"gggg"
+],
+"mn": "CPX",
+"mode": "IND16, Z",
+"size": 4
+},
+"176D": {
+"fields": [
+"gggg"
+],
+"mn": "CPY",
+"mode": "IND16, Z",
+"size": 4
+},
+"176E": {
+"fields": [
+"gggg"
+],
+"mn": "CPZ",
+"mode": "IND16, Z",
+"size": 4
+},
+"176F": {
+"fields": [
+"gggg"
+],
+"mn": "CPS",
+"mode": "IND16, Z",
+"size": 4
+},
+"1770": {
+"fields": [
+"hhll"
+],
+"mn": "SUBA",
+"mode": "EXT",
+"size": 4
+},
+"1771": {
+"fields": [
+"hhll"
+],
+"mn": "ADDA",
+"mode": "EXT",
+"size": 4
+},
+"1772": {
+"fields": [
+"hhll"
+],
+"mn": "SBCA",
+"mode": "EXT",
+"size": 4
+},
+"1773": {
+"fields": [
+"hhll"
+],
+"mn": "ADCA",
+"mode": "EXT",
+"size": 4
+},
+"1774": {
+"fields": [
+"hhll"
+],
+"mn": "EORA",
+"mode": "EXT",
+"size": 4
+},
+"1775": {
+"fields": [
+"hhll"
+],
+"mn": "LDAA",
+"mode": "EXT",
+"size": 4
+},
+"1776": {
+"fields": [
+"hhll"
+],
+"mn": "ANDA",
+"mode": "EXT",
+"size": 4
+},
+"1777": {
+"fields": [
+"hhll"
+],
+"mn": "ORAA",
+"mode": "EXT",
+"size": 4
+},
+"1778": {
+"fields": [
+"hhll"
+],
+"mn": "CMPA",
+"mode": "EXT",
+"size": 4
+},
+"1779": {
+"fields": [
+"hhll"
+],
+"mn": "BITA",
+"mode": "EXT",
+"size": 4
+},
+"177A": {
+"fields": [
+"hhll"
+],
+"mn": "STAA",
+"mode": "EXT",
+"size": 4
+},
+"177C": {
+"fields": [
+"hhll"
+],
+"mn": "CPX",
+"mode": "EXT",
+"size": 4
+},
+"177D": {
+"fields": [
+"hhll"
+],
+"mn": "CPY",
+"mode": "EXT",
+"size": 4
+},
+"177E": {
+"fields": [
+"hhll"
+],
+"mn": "CPZ",
+"mode": "EXT",
+"size": 4
+},
+"177F": {
+"fields": [
+"hhll"
+],
+"mn": "CPS",
+"mode": "EXT",
+"size": 4
+},
+"178C": {
+"fields": [
+"gggg"
+],
+"mn": "STX",
+"mode": "IND16, X",
+"size": 4
+},
+"178D": {
+"fields": [
+"gggg"
+],
+"mn": "STY",
+"mode": "IND16, X",
+"size": 4
+},
+"178E": {
+"fields": [
+"gggg"
+],
+"mn": "STZ",
+"mode": "IND16, X",
+"size": 4
+},
+"178F": {
+"fields": [
+"gggg"
+],
+"mn": "STS",
+"mode": "IND16, X",
+"size": 4
+},
+"179C": {
+"fields": [
+"gggg"
+],
+"mn": "STX",
+"mode": "IND16, Y",
+"size": 4
+},
+"179D": {
+"fields": [
+"gggg"
+],
+"mn": "STY",
+"mode": "IND16, Y",
+"size": 4
+},
+"179E": {
+"fields": [
+"gggg"
+],
+"mn": "STZ",
+"mode": "IND16, Y",
+"size": 4
+},
+"179F": {
+"fields": [
+"gggg"
+],
+"mn": "STS",
+"mode": "IND16, Y",
+"size": 4
+},
+"17AC": {
+"fields": [
+"gggg"
+],
+"mn": "STX",
+"mode": "IND16, Z",
+"size": 4
+},
+"17AD": {
+"fields": [
+"gggg"
+],
+"mn": "STY",
+"mode": "IND16, Z",
+"size": 4
+},
+"17AE": {
+"fields": [
+"gggg"
+],
+"mn": "STZ",
+"mode": "IND16, Z",
+"size": 4
+},
+"17AF": {
+"fields": [
+"gggg"
+],
+"mn": "STS",
+"mode": "IND16, Z",
+"size": 4
+},
+"17BC": {
+"fields": [
+"hhll"
+],
+"mn": "STX",
+"mode": "EXT",
+"size": 4
+},
+"17BD": {
+"fields": [
+"hhll"
+],
+"mn": "STY",
+"mode": "EXT",
+"size": 4
+},
+"17BE": {
+"fields": [
+"hhll"
+],
+"mn": "STZ",
+"mode": "EXT",
+"size": 4
+},
+"17BF": {
+"fields": [
+"hhll"
+],
+"mn": "STS",
+"mode": "EXT",
+"size": 4
+},
+"17C0": {
+"fields": [
+"gggg"
+],
+"mn": "SUBB",
+"mode": "IND16, X",
+"size": 4
+},
+"17C1": {
+"fields": [
+"gggg"
+],
+"mn": "ADDB",
+"mode": "IND16, X",
+"size": 4
+},
+"17C2": {
+"fields": [
+"gggg"
+],
+"mn": "SBCB",
+"mode": "IND16, X",
+"size": 4
+},
+"17C3": {
+"fields": [
+"gggg"
+],
+"mn": "ADCB",
+"mode": "IND16, X",
+"size": 4
+},
+"17C4": {
+"fields": [
+"gggg"
+],
+"mn": "EORB",
+"mode": "IND16, X",
+"size": 4
+},
+"17C5": {
+"fields": [
+"gggg"
+],
+"mn": "LDAB",
+"mode": "IND16, X",
+"size": 4
+},
+"17C6": {
+"fields": [
+"gggg"
+],
+"mn": "ANDB",
+"mode": "IND16, X",
+"size": 4
+},
+"17C7": {
+"fields": [
+"gggg"
+],
+"mn": "ORAB",
+"mode": "IND16, X",
+"size": 4
+},
+"17C8": {
+"fields": [
+"gggg"
+],
+"mn": "CMPB",
+"mode": "IND16, X",
+"size": 4
+},
+"17C9": {
+"fields": [
+"gggg"
+],
+"mn": "BITB",
+"mode": "IND16, X",
+"size": 4
+},
+"17CA": {
+"fields": [
+"gggg"
+],
+"mn": "STAB",
+"mode": "IND16, X",
+"size": 4
+},
+"17CC": {
+"fields": [
+"gggg"
+],
+"mn": "LDX",
+"mode": "IND16, X",
+"size": 4
+},
+"17CD": {
+"fields": [
+"gggg"
+],
+"mn": "LDY",
+"mode": "IND16, X",
+"size": 4
+},
+"17CE": {
+"fields": [
+"gggg"
+],
+"mn": "LDZ",
+"mode": "IND16, X",
+"size": 4
+},
+"17CF": {
+"fields": [
+"gggg"
+],
+"mn": "LDS",
+"mode": "IND16, X",
+"size": 4
+},
+"17D0": {
+"fields": [
+"gggg"
+],
+"mn": "SUBB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17D1": {
+"fields": [
+"gggg"
+],
+"mn": "ADDB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17D2": {
+"fields": [
+"gggg"
+],
+"mn": "SBCB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17D3": {
+"fields": [
+"gggg"
+],
+"mn": "ADCB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17D4": {
+"fields": [
+"gggg"
+],
+"mn": "EORB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17D5": {
+"fields": [
+"gggg"
+],
+"mn": "LDAB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17D6": {
+"fields": [
+"gggg"
+],
+"mn": "ANDB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17D7": {
+"fields": [
+"gggg"
+],
+"mn": "ORAB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17D8": {
+"fields": [
+"gggg"
+],
+"mn": "CMPB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17D9": {
+"fields": [
+"gggg"
+],
+"mn": "BITB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17DA": {
+"fields": [
+"gggg"
+],
+"mn": "STAB",
+"mode": "IND16, Y",
+"size": 4
+},
+"17DC": {
+"fields": [
+"gggg"
+],
+"mn": "LDX",
+"mode": "IND16, Y",
+"size": 4
+},
+"17DD": {
+"fields": [
+"gggg"
+],
+"mn": "LDY",
+"mode": "IND16, Y",
+"size": 4
+},
+"17DE": {
+"fields": [
+"gggg"
+],
+"mn": "LDZ",
+"mode": "IND16, Y",
+"size": 4
+},
+"17DF": {
+"fields": [
+"gggg"
+],
+"mn": "LDS",
+"mode": "IND16, Y",
+"size": 4
+},
+"17E0": {
+"fields": [
+"gggg"
+],
+"mn": "SUBB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17E1": {
+"fields": [
+"gggg"
+],
+"mn": "ADDB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17E2": {
+"fields": [
+"gggg"
+],
+"mn": "SBCB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17E3": {
+"fields": [
+"gggg"
+],
+"mn": "ADCB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17E4": {
+"fields": [
+"gggg"
+],
+"mn": "EORB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17E5": {
+"fields": [
+"gggg"
+],
+"mn": "LDAB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17E6": {
+"fields": [
+"gggg"
+],
+"mn": "ANDB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17E7": {
+"fields": [
+"gggg"
+],
+"mn": "ORAB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17E8": {
+"fields": [
+"gggg"
+],
+"mn": "CMPB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17E9": {
+"fields": [
+"gggg"
+],
+"mn": "BITB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17EA": {
+"fields": [
+"gggg"
+],
+"mn": "STAB",
+"mode": "IND16, Z",
+"size": 4
+},
+"17EC": {
+"fields": [
+"gggg"
+],
+"mn": "LDX",
+"mode": "IND16, Z",
+"size": 4
+},
+"17ED": {
+"fields": [
+"gggg"
+],
+"mn": "LDY",
+"mode": "IND16, Z",
+"size": 4
+},
+"17EE": {
+"fields": [
+"gggg"
+],
+"mn": "LDZ",
+"mode": "IND16, Z",
+"size": 4
+},
+"17EF": {
+"fields": [
+"gggg"
+],
+"mn": "LDS",
+"mode": "IND16, Z",
+"size": 4
+},
+"17F0": {
+"fields": [
+"hhll"
+],
+"mn": "SUBB",
+"mode": "EXT",
+"size": 4
+},
+"17F1": {
+"fields": [
+"hhll"
+],
+"mn": "ADDB",
+"mode": "EXT",
+"size": 4
+},
+"17F2": {
+"fields": [
+"hhll"
+],
+"mn": "SBCB",
+"mode": "EXT",
+"size": 4
+},
+"17F3": {
+"fields": [
+"hhll"
+],
+"mn": "ADCB",
+"mode": "EXT",
+"size": 4
+},
+"17F4": {
+"fields": [
+"hhll"
+],
+"mn": "EORB",
+"mode": "EXT",
+"size": 4
+},
+"17F5": {
+"fields": [
+"hhll"
+],
+"mn": "LDAB",
+"mode": "EXT",
+"size": 4
+},
+"17F6": {
+"fields": [
+"hhll"
+],
+"mn": "ANDB",
+"mode": "EXT",
+"size": 4
+},
+"17F7": {
+"fields": [
+"hhll"
+],
+"mn": "ORAB",
+"mode": "EXT",
+"size": 4
+},
+"17F8": {
+"fields": [
+"hhll"
+],
+"mn": "CMPB",
+"mode": "EXT",
+"size": 4
+},
+"17F9": {
+"fields": [
+"hhll"
+],
+"mn": "BITB",
+"mode": "EXT",
+"size": 4
+},
+"17FA": {
+"fields": [
+"hhll"
+],
+"mn": "STAB",
+"mode": "EXT",
+"size": 4
+},
+"17FC": {
+"fields": [
+"hhll"
+],
+"mn": "LDX",
+"mode": "EXT",
+"size": 4
+},
+"17FD": {
+"fields": [
+"hhll"
+],
+"mn": "LDY",
+"mode": "EXT",
+"size": 4
+},
+"17FE": {
+"fields": [
+"hhll"
+],
+"mn": "LDZ",
+"mode": "EXT",
+"size": 4
+},
+"17FF": {
+"fields": [
+"hhll"
+],
+"mn": "LDS",
+"mode": "EXT",
+"size": 4
+},
+"18": {
+"fields": [
+"mm",
+"gggg"
+],
+"mn": "BCLR",
+"mode": "IND16, Y",
+"size": 4
+},
+"19": {
+"fields": [
+"mm",
+"gggg"
+],
+"mn": "BSET",
+"mode": "IND16, Y",
+"size": 4
+},
+"1A": {
+"fields": [
+"mm",
+"gggg",
+"rrrr"
+],
+"mn": "BRCLR",
+"mode": "IND16, Y",
+"size": 6
+},
+"1B": {
+"fields": [
+"mm",
+"gggg",
+"rrrr"
+],
+"mn": "BRSET",
+"mode": "IND16, Y",
+"size": 6
+},
+"1C": {
+"fields": [
+"ff"
+],
+"mn": "ROL",
+"mode": "IND8, Y",
+"size": 2
+},
+"1D": {
+"fields": [
+"ff"
+],
+"mn": "ASR",
+"mode": "IND8, Y",
+"size": 2
+},
+"1E": {
+"fields": [
+"ff"
+],
+"mn": "ROR",
+"mode": "IND8, Y",
+"size": 2
+},
+"1F": {
+"fields": [
+"ff"
+],
+"mn": "LSR",
+"mode": "IND8, Y",
+"size": 2
+},
+"20": {
+"fields": [
+"ff"
+],
+"mn": "COM",
+"mode": "IND8, Z",
+"size": 2
+},
+"21": {
+"fields": [
+"ff"
+],
+"mn": "DEC",
+"mode": "IND8, Z",
+"size": 2
+},
+"22": {
+"fields": [
+"ff"
+],
+"mn": "NEG",
+"mode": "IND8, Z",
+"size": 2
+},
+"23": {
+"fields": [
+"ff"
+],
+"mn": "INC",
+"mode": "IND8, Z",
+"size": 2
+},
+"24": {
+"fields": [
+"ff"
+],
+"mn": "ASL",
+"mode": "IND8, Z",
+"size": 2
+},
+"25": {
+"fields": [
+"ff"
+],
+"mn": "CLR",
+"mode": "IND8, Z",
+"size": 2
+},
+"26": {
+"fields": [
+"ff"
+],
+"mn": "TST",
+"mode": "IND8, Z",
+"size": 2
+},
+"2700": {
+"fields": [
+"gggg"
+],
+"mn": "COMW",
+"mode": "IND16, X",
+"size": 4
+},
+"2701": {
+"fields": [
+"gggg"
+],
+"mn": "DECW",
+"mode": "IND16, X",
+"size": 4
+},
+"2702": {
+"fields": [
+"gggg"
+],
+"mn": "NEGW",
+"mode": "IND16, X",
+"size": 4
+},
+"2703": {
+"fields": [
+"gggg"
+],
+"mn": "INCW",
+"mode": "IND16, X",
+"size": 4
+},
+"2704": {
+"fields": [
+"gggg"
+],
+"mn": "ASLW",
+"mode": "IND16, X",
+"size": 4
+},
+"2705": {
+"fields": [
+"gggg"
+],
+"mn": "CLRW",
+"mode": "IND16, X",
+"size": 4
+},
+"2706": {
+"fields": [
+"gggg"
+],
+"mn": "TSTW",
+"mode": "IND16, X",
+"size": 4
+},
+"2708": {
+"fields": [
+"gggg"
+],
+"mn": "BCLRW",
+"mode": "IND16, X",
+"size": 4
+},
+"2709": {
+"fields": [
+"gggg"
+],
+"mn": "BSETW",
+"mode": "IND16, X",
+"size": 4
+},
+"270C": {
+"fields": [
+"gggg"
+],
+"mn": "ROLW",
+"mode": "IND16, X",
+"size": 4
+},
+"270D": {
+"fields": [
+"gggg"
+],
+"mn": "ASRW",
+"mode": "IND16, X",
+"size": 4
+},
+"270E": {
+"fields": [
+"gggg"
+],
+"mn": "RORW",
+"mode": "IND16, X",
+"size": 4
+},
+"270F": {
+"fields": [
+"gggg"
+],
+"mn": "LSRW",
+"mode": "IND16, X",
+"size": 4
+},
+"2710": {
+"fields": [
+"gggg"
+],
+"mn": "COMW",
+"mode": "IND16, Y",
+"size": 4
+},
+"2711": {
+"fields": [
+"gggg"
+],
+"mn": "DECW",
+"mode": "IND16, Y",
+"size": 4
+},
+"2712": {
+"fields": [
+"gggg"
+],
+"mn": "NEGW",
+"mode": "IND16, Y",
+"size": 4
+},
+"2713": {
+"fields": [
+"gggg"
+],
+"mn": "INCW",
+"mode": "IND16, Y",
+"size": 4
+},
+"2714": {
+"fields": [
+"gggg"
+],
+"mn": "ASLW",
+"mode": "IND16, Y",
+"size": 4
+},
+"2715": {
+"fields": [
+"gggg"
+],
+"mn": "CLRW",
+"mode": "IND16, Y",
+"size": 4
+},
+"2716": {
+"fields": [
+"gggg"
+],
+"mn": "TSTW",
+"mode": "IND16, Y",
+"size": 4
+},
+"2718": {
+"fields": [
+"gggg",
+"mmmm"
+],
+"mn": "BCLRW",
+"mode": "IND16, Y",
+"size": 6
+},
+"2719": {
+"fields": [
+"gggg",
+"mmmm"
+],
+"mn": "BSETW",
+"mode": "IND16, Y",
+"size": 6
+},
+"271C": {
+"fields": [
+"gggg"
+],
+"mn": "ROLW",
+"mode": "IND16, Y",
+"size": 4
+},
+"271D": {
+"fields": [
+"gggg"
+],
+"mn": "ASRW",
+"mode": "IND16, Y",
+"size": 4
+},
+"271E": {
+"fields": [
+"gggg"
+],
+"mn": "RORW",
+"mode": "IND16, Y",
+"size": 4
+},
+"271F": {
+"fields": [
+"gggg"
+],
+"mn": "LSRW",
+"mode": "IND16, Y",
+"size": 4
+},
+"2720": {
+"fields": [
+"gggg"
+],
+"mn": "COMW",
+"mode": "IND16, Z",
+"size": 4
+},
+"2721": {
+"fields": [
+"gggg"
+],
+"mn": "DECW",
+"mode": "IND16, Z",
+"size": 4
+},
+"2722": {
+"fields": [
+"gggg"
+],
+"mn": "NEGW",
+"mode": "IND16, Z",
+"size": 4
+},
+"2723": {
+"fields": [
+"gggg"
+],
+"mn": "INCW",
+"mode": "IND16, Z",
+"size": 4
+},
+"2724": {
+"fields": [
+"gggg"
+],
+"mn": "ASLW",
+"mode": "IND16, Z",
+"size": 4
+},
+"2725": {
+"fields": [
+"gggg"
+],
+"mn": "CLRW",
+"mode": "IND16, Z",
+"size": 4
+},
+"2726": {
+"fields": [
+"gggg"
+],
+"mn": "TSTW",
+"mode": "IND16, Z",
+"size": 4
+},
+"2728": {
+"fields": [
+"gggg",
+"mmmm"
+],
+"mn": "BCLRW",
+"mode": "IND16, Z",
+"size": 6
+},
+"2729": {
+"fields": [
+"gggg",
+"mmmm"
+],
+"mn": "BSETW",
+"mode": "IND16, Z",
+"size": 6
+},
+"272C": {
+"fields": [
+"gggg"
+],
+"mn": "ROLW",
+"mode": "IND16, Z",
+"size": 4
+},
+"272D": {
+"fields": [
+"gggg"
+],
+"mn": "ASRW",
+"mode": "IND16, Z",
+"size": 4
+},
+"272E": {
+"fields": [
+"gggg"
+],
+"mn": "RORW",
+"mode": "IND16, Z",
+"size": 4
+},
+"272F": {
+"fields": [
+"gggg"
+],
+"mn": "LSRW",
+"mode": "IND16, Z",
+"size": 4
+},
+"2730": {
+"fields": [
+"hhll"
+],
+"mn": "COMW",
+"mode": "EXT",
+"size": 4
+},
+"2731": {
+"fields": [
+"hhll"
+],
+"mn": "DECW",
+"mode": "EXT",
+"size": 4
+},
+"2732": {
+"fields": [
+"hhll"
+],
+"mn": "NEGW",
+"mode": "EXT",
+"size": 4
+},
+"2733": {
+"fields": [
+"hhll"
+],
+"mn": "INCW",
+"mode": "EXT",
+"size": 4
+},
+"2734": {
+"fields": [
+"hhll"
+],
+"mn": "ASLW",
+"mode": "EXT",
+"size": 4
+},
+"2735": {
+"fields": [
+"hhll"
+],
+"mn": "CLRW",
+"mode": "EXT",
+"size": 4
+},
+"2736": {
+"fields": [
+"hhll"
+],
+"mn": "TSTW",
+"mode": "EXT",
+"size": 4
+},
+"2738": {
+"fields": [
+"hhll",
+"mmmm"
+],
+"mn": "BCLRW",
+"mode": "EXT",
+"size": 6
+},
+"2739": {
+"fields": [
+"hhll",
+"mmmm"
+],
+"mn": "BSETW",
+"mode": "EXT",
+"size": 6
+},
+"273C": {
+"fields": [
+"hhll"
+],
+"mn": "ROLW",
+"mode": "EXT",
+"size": 4
+},
+"273D": {
+"fields": [
+"hhll"
+],
+"mn": "ASRW",
+"mode": "EXT",
+"size": 4
+},
+"273E": {
+"fields": [
+"hhll"
+],
+"mn": "RORW",
+"mode": "EXT",
+"size": 4
+},
+"273F": {
+"fields": [
+"hhll"
+],
+"mn": "LSRW",
+"mode": "EXT",
+"size": 4
+},
+"2740": {
+"fields": [],
+"mn": "SUBA",
+"mode": "E, X",
+"size": 2
+},
+"2741": {
+"fields": [],
+"mn": "ADDA",
+"mode": "E, X",
+"size": 2
+},
+"2742": {
+"fields": [],
+"mn": "SBCA",
+"mode": "E, X",
+"size": 2
+},
+"2743": {
+"fields": [],
+"mn": "ADCA",
+"mode": "E, X",
+"size": 2
+},
+"2744": {
+"fields": [],
+"mn": "EORA",
+"mode": "E, X",
+"size": 2
+},
+"2745": {
+"fields": [],
+"mn": "LDAA",
+"mode": "E, X",
+"size": 2
+},
+"2746": {
+"fields": [],
+"mn": "ANDA",
+"mode": "E, X",
+"size": 2
+},
+"2747": {
+"fields": [],
+"mn": "ORAA",
+"mode": "E, X",
+"size": 2
+},
+"2748": {
+"fields": [],
+"mn": "CMPA",
+"mode": "E, X",
+"size": 2
+},
+"2749": {
+"fields": [],
+"mn": "BITA",
+"mode": "E, X",
+"size": 2
+},
+"274A": {
+"fields": [],
+"mn": "STAA",
+"mode": "E, X",
+"size": 2
+},
+"274C": {
+"fields": [],
+"mn": "NOP",
+"mode": "INH",
+"size": 2
+},
+"274D": {
+"fields": [],
+"mn": "TYX",
+"mode": "INH",
+"size": 2
+},
+"274E": {
+"fields": [],
+"mn": "TZX",
+"mode": "INH",
+"size": 2
+},
+"274F": {
+"fields": [],
+"mn": "TSX",
+"mode": "INH",
+"size": 2
+},
+"2750": {
+"fields": [],
+"mn": "SUBA",
+"mode": "E, Y",
+"size": 2
+},
+"2751": {
+"fields": [],
+"mn": "ADDA",
+"mode": "E, Y",
+"size": 2
+},
+"2752": {
+"fields": [],
+"mn": "SBCA",
+"mode": "E, Y",
+"size": 2
+},
+"2753": {
+"fields": [],
+"mn": "ADCA",
+"mode": "E, Y",
+"size": 2
+},
+"2754": {
+"fields": [],
+"mn": "EORA",
+"mode": "E, Y",
+"size": 2
+},
+"2755": {
+"fields": [],
+"mn": "LDAA",
+"mode": "E, Y",
+"size": 2
+},
+"2756": {
+"fields": [],
+"mn": "ANDA",
+"mode": "E, Y",
+"size": 2
+},
+"2757": {
+"fields": [],
+"mn": "ORAA",
+"mode": "E, Y",
+"size": 2
+},
+"2758": {
+"fields": [],
+"mn": "CMPA",
+"mode": "E, Y",
+"size": 2
+},
+"2759": {
+"fields": [],
+"mn": "BITA",
+"mode": "E, Y",
+"size": 2
+},
+"275A": {
+"fields": [],
+"mn": "STAA",
+"mode": "E, Y",
+"size": 2
+},
+"275C": {
+"fields": [],
+"mn": "TXY",
+"mode": "INH",
+"size": 2
+},
+"275E": {
+"fields": [],
+"mn": "TZY",
+"mode": "INH",
+"size": 2
+},
+"275F": {
+"fields": [],
+"mn": "TSY",
+"mode": "INH",
+"size": 2
+},
+"2760": {
+"fields": [],
+"mn": "SUBA",
+"mode": "E, Z",
+"size": 2
+},
+"2761": {
+"fields": [],
+"mn": "ADDA",
+"mode": "E, Z",
+"size": 2
+},
+"2762": {
+"fields": [],
+"mn": "SBCA",
+"mode": "E, Z",
+"size": 2
+},
+"2763": {
+"fields": [],
+"mn": "ADCA",
+"mode": "E, Z",
+"size": 2
+},
+"2764": {
+"fields": [],
+"mn": "EORA",
+"mode": "E, Z",
+"size": 2
+},
+"2765": {
+"fields": [],
+"mn": "LDAA",
+"mode": "E, Z",
+"size": 2
+},
+"2766": {
+"fields": [],
+"mn": "ANDA",
+"mode": "E, Z",
+"size": 2
+},
+"2767": {
+"fields": [],
+"mn": "ORAA",
+"mode": "E, Z",
+"size": 2
+},
+"2768": {
+"fields": [],
+"mn": "CMPA",
+"mode": "E, Z",
+"size": 2
+},
+"2769": {
+"fields": [],
+"mn": "BITA",
+"mode": "E, Z",
+"size": 2
+},
+"276A": {
+"fields": [],
+"mn": "STAA",
+"mode": "E, Z",
+"size": 2
+},
+"276C": {
+"fields": [],
+"mn": "TXZ",
+"mode": "INH",
+"size": 2
+},
+"276D": {
+"fields": [],
+"mn": "TYZ",
+"mode": "INH",
+"size": 2
+},
+"276F": {
+"fields": [],
+"mn": "TSZ",
+"mode": "INH",
+"size": 2
+},
+"2770": {
+"fields": [],
+"mn": "COME",
+"mode": "INH",
+"size": 2
+},
+"2771": {
+"fields": [
+"hhll"
+],
+"mn": "LDED",
+"mode": "EXT",
+"size": 4
+},
+"2772": {
+"fields": [],
+"mn": "NEGE",
+"mode": "INH",
+"size": 2
+},
+"2773": {
+"fields": [
+"hhll"
+],
+"mn": "STED",
+"mode": "EXT",
+"size": 4
+},
+"2774": {
+"fields": [],
+"mn": "ASLE",
+"mode": "INH",
+"size": 2
+},
+"2775": {
+"fields": [],
+"mn": "CLRE",
+"mode": "INH",
+"size": 2
+},
+"2776": {
+"fields": [],
+"mn": "TSTE",
+"mode": "INH",
+"size": 2
+},
+"2777": {
+"fields": [],
+"mn": "RTI",
+"mode": "INH",
+"size": 2
+},
+"2778": {
+"fields": [],
+"mn": "ADE",
+"mode": "INH",
+"size": 2
+},
+"2779": {
+"fields": [],
+"mn": "SDE",
+"mode": "INH",
+"size": 2
+},
+"277A": {
+"fields": [],
+"mn": "XGDE",
+"mode": "INH",
+"size": 2
+},
+"277B": {
+"fields": [],
+"mn": "TDE",
+"mode": "INH",
+"size": 2
+},
+"277C": {
+"fields": [],
+"mn": "ROLE",
+"mode": "INH",
+"size": 2
+},
+"277D": {
+"fields": [],
+"mn": "ASRE",
+"mode": "INH",
+"size": 2
+},
+"277E": {
+"fields": [],
+"mn": "RORE",
+"mode": "INH",
+"size": 2
+},
+"277F": {
+"fields": [],
+"mn": "LSRE",
+"mode": "INH",
+"size": 2
+},
+"2780": {
+"fields": [],
+"mn": "SUBD",
+"mode": "E, X",
+"size": 2
+},
+"2781": {
+"fields": [],
+"mn": "ADDD",
+"mode": "E, X",
+"size": 2
+},
+"2782": {
+"fields": [],
+"mn": "SBCD",
+"mode": "E, X",
+"size": 2
+},
+"2783": {
+"fields": [],
+"mn": "ADCD",
+"mode": "E, X",
+"size": 2
+},
+"2784": {
+"fields": [],
+"mn": "EORD",
+"mode": "E, X",
+"size": 2
+},
+"2785": {
+"fields": [],
+"mn": "LDD",
+"mode": "E, X",
+"size": 2
+},
+"2786": {
+"fields": [],
+"mn": "ANDD",
+"mode": "E, X",
+"size": 2
+},
+"2787": {
+"fields": [],
+"mn": "ORD",
+"mode": "E, X",
+"size": 2
+},
+"2788": {
+"fields": [],
+"mn": "CPD",
+"mode": "E, X",
+"size": 2
+},
+"278A": {
+"fields": [],
+"mn": "STD",
+"mode": "E, X",
+"size": 2
+},
+"2790": {
+"fields": [],
+"mn": "SUBD",
+"mode": "E, Y",
+"size": 2
+},
+"2791": {
+"fields": [],
+"mn": "ADDD",
+"mode": "E, Y",
+"size": 2
+},
+"2792": {
+"fields": [],
+"mn": "SBCD",
+"mode": "E, Y",
+"size": 2
+},
+"2793": {
+"fields": [],
+"mn": "ADCD",
+"mode": "E, Y",
+"size": 2
+},
+"2794": {
+"fields": [],
+"mn": "EORD",
+"mode": "E, Y",
+"size": 2
+},
+"2795": {
+"fields": [],
+"mn": "LDD",
+"mode": "E, Y",
+"size": 2
+},
+"2796": {
+"fields": [],
+"mn": "ANDD",
+"mode": "E, Y",
+"size": 2
+},
+"2797": {
+"fields": [],
+"mn": "ORD",
+"mode": "E, Y",
+"size": 2
+},
+"2798": {
+"fields": [],
+"mn": "CPD",
+"mode": "E, Y",
+"size": 2
+},
+"279A": {
+"fields": [],
+"mn": "STD",
+"mode": "E, Y",
+"size": 2
+},
+"27A0": {
+"fields": [],
+"mn": "SUBD",
+"mode": "E, Z",
+"size": 2
+},
+"27A1": {
+"fields": [],
+"mn": "ADDD",
+"mode": "E, Z",
+"size": 2
+},
+"27A2": {
+"fields": [],
+"mn": "SBCD",
+"mode": "E, Z",
+"size": 2
+},
+"27A3": {
+"fields": [],
+"mn": "ADCD",
+"mode": "E, Z",
+"size": 2
+},
+"27A4": {
+"fields": [],
+"mn": "EORD",
+"mode": "E, Z",
+"size": 2
+},
+"27A5": {
+"fields": [],
+"mn": "LDD",
+"mode": "E, Z",
+"size": 2
+},
+"27A6": {
+"fields": [],
+"mn": "ANDD",
+"mode": "E, Z",
+"size": 2
+},
+"27A7": {
+"fields": [],
+"mn": "ORD",
+"mode": "E, Z",
+"size": 2
+},
+"27A8": {
+"fields": [],
+"mn": "CPD",
+"mode": "E, Z",
+"size": 2
+},
+"27AA": {
+"fields": [],
+"mn": "STD",
+"mode": "E, Z",
+"size": 2
+},
+"27B0": {
+"fields": [],
+"mn": "LDHI",
+"mode": "INH",
+"size": 2
+},
+"27B1": {
+"fields": [],
+"mn": "TEDM",
+"mode": "INH",
+"size": 2
+},
+"27B2": {
+"fields": [],
+"mn": "TEM",
+"mode": "INH",
+"size": 2
+},
+"27B3": {
+"fields": [],
+"mn": "TMXED",
+"mode": "INH",
+"size": 2
+},
+"27B4": {
+"fields": [],
+"mn": "TMER",
+"mode": "INH",
+"size": 2
+},
+"27B5": {
+"fields": [],
+"mn": "TMET",
+"mode": "INH",
+"size": 2
+},
+"27B6": {
+"fields": [],
+"mn": "ASLM",
+"mode": "INH",
+"size": 2
+},
+"27B7": {
+"fields": [],
+"mn": "CLRM",
+"mode": "INH",
+"size": 2
+},
+"27B8": {
+"fields": [],
+"mn": "PSHMAC",
+"mode": "INH",
+"size": 2
+},
+"27B9": {
+"fields": [],
+"mn": "PULMAC",
+"mode": "INH",
+"size": 2
+},
+"27BA": {
+"fields": [],
+"mn": "ASRM",
+"mode": "INH",
+"size": 2
+},
+"27BB": {
+"fields": [],
+"mn": "TEKB",
+"mode": "INH",
+"size": 2
+},
+"27C0": {
+"fields": [],
+"mn": "SUBB",
+"mode": "E, X",
+"size": 2
+},
+"27C1": {
+"fields": [],
+"mn": "ADDB",
+"mode": "E, X",
+"size": 2
+},
+"27C2": {
+"fields": [],
+"mn": "SBCB",
+"mode": "E, X",
+"size": 2
+},
+"27C3": {
+"fields": [],
+"mn": "ADCB",
+"mode": "E, X",
+"size": 2
+},
+"27C4": {
+"fields": [],
+"mn": "EORB",
+"mode": "E, X",
+"size": 2
+},
+"27C5": {
+"fields": [],
+"mn": "LDAB",
+"mode": "E, X",
+"size": 2
+},
+"27C6": {
+"fields": [],
+"mn": "ANDB",
+"mode": "E, X",
+"size": 2
+},
+"27C7": {
+"fields": [],
+"mn": "ORAB",
+"mode": "E, X",
+"size": 2
+},
+"27C8": {
+"fields": [],
+"mn": "CMPB",
+"mode": "E, X",
+"size": 2
+},
+"27C9": {
+"fields": [],
+"mn": "BITB",
+"mode": "E, X",
+"size": 2
+},
+"27CA": {
+"fields": [],
+"mn": "STAB",
+"mode": "E, X",
+"size": 2
+},
+"27D0": {
+"fields": [],
+"mn": "SUBB",
+"mode": "E, Y",
+"size": 2
+},
+"27D1": {
+"fields": [],
+"mn": "ADDB",
+"mode": "E, Y",
+"size": 2
+},
+"27D2": {
+"fields": [],
+"mn": "SBCB",
+"mode": "E, Y",
+"size": 2
+},
+"27D3": {
+"fields": [],
+"mn": "ADCB",
+"mode": "E, Y",
+"size": 2
+},
+"27D4": {
+"fields": [],
+"mn": "EORB",
+"mode": "E, Y",
+"size": 2
+},
+"27D5": {
+"fields": [],
+"mn": "LDAB",
+"mode": "E, Y",
+"size": 2
+},
+"27D6": {
+"fields": [],
+"mn": "ANDB",
+"mode": "E, Y",
+"size": 2
+},
+"27D7": {
+"fields": [],
+"mn": "ORAB",
+"mode": "E, Y",
+"size": 2
+},
+"27D8": {
+"fields": [],
+"mn": "CMPB",
+"mode": "E, Y",
+"size": 2
+},
+"27D9": {
+"fields": [],
+"mn": "BITB",
+"mode": "E, Y",
+"size": 2
+},
+"27DA": {
+"fields": [],
+"mn": "STAB",
+"mode": "E, Y",
+"size": 2
+},
+"27E0": {
+"fields": [],
+"mn": "SUBB",
+"mode": "E, Z",
+"size": 2
+},
+"27E1": {
+"fields": [],
+"mn": "ADDB",
+"mode": "E, Z",
+"size": 2
+},
+"27E2": {
+"fields": [],
+"mn": "SBCB",
+"mode": "E, Z",
+"size": 2
+},
+"27E3": {
+"fields": [],
+"mn": "ADCB",
+"mode": "E, Z",
+"size": 2
+},
+"27E4": {
+"fields": [],
+"mn": "EORB",
+"mode": "E, Z",
+"size": 2
+},
+"27E5": {
+"fields": [],
+"mn": "LDAB",
+"mode": "E, Z",
+"size": 2
+},
+"27E6": {
+"fields": [],
+"mn": "ANDB",
+"mode": "E, Z",
+"size": 2
+},
+"27E7": {
+"fields": [],
+"mn": "ORAB",
+"mode": "E, Z",
+"size": 2
+},
+"27E8": {
+"fields": [],
+"mn": "CMPB",
+"mode": "E, Z",
+"size": 2
+},
+"27E9": {
+"fields": [],
+"mn": "BITB",
+"mode": "E, Z",
+"size": 2
+},
+"27EA": {
+"fields": [],
+"mn": "STAB",
+"mode": "E, Z",
+"size": 2
+},
+"27F0": {
+"fields": [],
+"mn": "COMD",
+"mode": "INH",
+"size": 2
+},
+"27F1": {
+"fields": [],
+"mn": "LPSTOP",
+"mode": "INH",
+"size": 2
+},
+"27F2": {
+"fields": [],
+"mn": "NEGD",
+"mode": "INH",
+"size": 2
+},
+"27F3": {
+"fields": [],
+"mn": "WAI",
+"mode": "INH",
+"size": 2
+},
+"27F4": {
+"fields": [],
+"mn": "ASLD",
+"mode": "INH",
+"size": 2
+},
+"27F5": {
+"fields": [],
+"mn": "CLRD",
+"mode": "INH",
+"size": 2
+},
+"27F6": {
+"fields": [],
+"mn": "TSTD",
+"mode": "INH",
+"size": 2
+},
+"27F7": {
+"fields": [],
+"mn": "RTS",
+"mode": "INH",
+"size": 2
+},
+"27F8": {
+"fields": [],
+"mn": "SXT",
+"mode": "INH",
+"size": 2
+},
+"27F9": {
+"fields": [
+"rrrr"
+],
+"mn": "LBSR",
+"mode": "REL16",
+"size": 4
+},
+"27FA": {
+"fields": [],
+"mn": "TBEK",
+"mode": "INH",
+"size": 2
+},
+"27FB": {
+"fields": [],
+"mn": "TED",
+"mode": "INH",
+"size": 2
+},
+"27FC": {
+"fields": [],
+"mn": "ROLD",
+"mode": "INH",
+"size": 2
+},
+"27FD": {
+"fields": [],
+"mn": "ASRD",
+"mode": "INH",
+"size": 2
+},
+"27FE": {
+"fields": [],
+"mn": "RORD",
+"mode": "INH",
+"size": 2
+},
+"27FF": {
+"fields": [],
+"mn": "LSRD",
+"mode": "INH",
+"size": 2
+},
+"28": {
+"fields": [
+"mm",
+"gggg"
+],
+"mn": "BCLR",
+"mode": "IND16, Z",
+"size": 4
+},
+"29": {
+"fields": [
+"mm",
+"gggg"
+],
+"mn": "BSET",
+"mode": "IND16, Z",
+"size": 4
+},
+"2A": {
+"fields": [
+"mm",
+"gggg",
+"rrrr"
+],
+"mn": "BRCLR",
+"mode": "IND16, Z",
+"size": 6
+},
+"2B": {
+"fields": [
+"mm",
+"gggg",
+"rrrr"
+],
+"mn": "BRSET",
+"mode": "IND16, Z",
+"size": 6
+},
+"2C": {
+"fields": [
+"ff"
+],
+"mn": "ROL",
+"mode": "IND8, Z",
+"size": 2
+},
+"2D": {
+"fields": [
+"ff"
+],
+"mn": "ASR",
+"mode": "IND8, Z",
+"size": 2
+},
+"2E": {
+"fields": [
+"ff"
+],
+"mn": "ROR",
+"mode": "IND8, Z",
+"size": 2
+},
+"2F": {
+"fields": [
+"ff"
+],
+"mn": "LSR",
+"mode": "IND8, Z",
+"size": 2
+},
+"30": {
+"fields": [
+"ff",
+"hhll"
+],
+"mn": "MOVB",
+"mode": "IXP to EXT",
+"size": 4
+},
+"31": {
+"fields": [
+"ff",
+"hhll"
+],
+"mn": "MOVW",
+"mode": "IXP to EXT",
+"size": 4
+},
+"32": {
+"fields": [
+"ff",
+"hhll"
+],
+"mn": "MOVB",
+"mode": "EXT to IXP",
+"size": 4
+},
+"33": {
+"fields": [
+"ff",
+"hhll"
+],
+"mn": "MOVW",
+"mode": "EXT to IXP",
+"size": 4
+},
+"34": {
+"fields": [
+"ii"
+],
+"mn": "PSHM",
+"mode": "IMM8",
+"size": 2
+},
+"35": {
+"fields": [
+"ii"
+],
+"mn": "PULM",
+"mode": "IMM8",
+"size": 2
+},
+"36": {
+"fields": [
+"rr"
+],
+"mn": "BSR",
+"mode": "REL8",
+"size": 2
+},
+"3700": {
+"fields": [],
+"mn": "COMA",
+"mode": "INH",
+"size": 2
+},
+"3701": {
+"fields": [],
+"mn": "DECA",
+"mode": "INH",
+"size": 2
+},
+"3702": {
+"fields": [],
+"mn": "NEGA",
+"mode": "INH",
+"size": 2
+},
+"3703": {
+"fields": [],
+"mn": "INCA",
+"mode": "INH",
+"size": 2
+},
+"3704": {
+"fields": [],
+"mn": "ASLA",
+"mode": "INH",
+"size": 2
+},
+"3705": {
+"fields": [],
+"mn": "CLRA",
+"mode": "INH",
+"size": 2
+},
+"3706": {
+"fields": [],
+"mn": "TSTA",
+"mode": "INH",
+"size": 2
+},
+"3707": {
+"fields": [],
+"mn": "TBA",
+"mode": "INH",
+"size": 2
+},
+"3708": {
+"fields": [],
+"mn": "PSHA",
+"mode": "INH",
+"size": 2
+},
+"3709": {
+"fields": [],
+"mn": "PULA",
+"mode": "INH",
+"size": 2
+},
+"370A": {
+"fields": [],
+"mn": "SBA",
+"mode": "INH",
+"size": 2
+},
+"370B": {
+"fields": [],
+"mn": "ABA",
+"mode": "INH",
+"size": 2
+},
+"370C": {
+"fields": [],
+"mn": "ROLA",
+"mode": "INH",
+"size": 2
+},
+"370D": {
+"fields": [],
+"mn": "ASRA",
+"mode": "INH",
+"size": 2
+},
+"370E": {
+"fields": [],
+"mn": "RORA",
+"mode": "INH",
+"size": 2
+},
+"370F": {
+"fields": [],
+"mn": "LSRA",
+"mode": "INH",
+"size": 2
+},
+"3710": {
+"fields": [],
+"mn": "COMB",
+"mode": "INH",
+"size": 2
+},
+"3711": {
+"fields": [],
+"mn": "DECB",
+"mode": "INH",
+"size": 2
+},
+"3712": {
+"fields": [],
+"mn": "NEGB",
+"mode": "INH",
+"size": 2
+},
+"3713": {
+"fields": [],
+"mn": "INCB",
+"mode": "INH",
+"size": 2
+},
+"3714": {
+"fields": [],
+"mn": "ASLB",
+"mode": "INH",
+"size": 2
+},
+"3715": {
+"fields": [],
+"mn": "CLRB",
+"mode": "INH",
+"size": 2
+},
+"3716": {
+"fields": [],
+"mn": "TSTB",
+"mode": "INH",
+"size": 2
+},
+"3717": {
+"fields": [],
+"mn": "TAB",
+"mode": "INH",
+"size": 2
+},
+"3718": {
+"fields": [],
+"mn": "PSHB",
+"mode": "INH",
+"size": 2
+},
+"3719": {
+"fields": [],
+"mn": "PULB",
+"mode": "INH",
+"size": 2
+},
+"371A": {
+"fields": [],
+"mn": "XGAB",
+"mode": "INH",
+"size": 2
+},
+"371B": {
+"fields": [],
+"mn": "CBA",
+"mode": "INH",
+"size": 2
+},
+"371C": {
+"fields": [],
+"mn": "ROLB",
+"mode": "INH",
+"size": 2
+},
+"371D": {
+"fields": [],
+"mn": "ASRB",
+"mode": "INH",
+"size": 2
+},
+"371E": {
+"fields": [],
+"mn": "RORB",
+"mode": "INH",
+"size": 2
+},
+"371F": {
+"fields": [],
+"mn": "LSRB",
+"mode": "INH",
+"size": 2
+},
+"3720": {
+"fields": [],
+"mn": "SWI",
+"mode": "INH",
+"size": 2
+},
+"3721": {
+"fields": [],
+"mn": "DAA",
+"mode": "INH",
+"size": 2
+},
+"3722": {
+"fields": [],
+"mn": "ACE",
+"mode": "INH",
+"size": 2
+},
+"3723": {
+"fields": [],
+"mn": "ACED",
+"mode": "INH",
+"size": 2
+},
+"3724": {
+"fields": [],
+"mn": "MUL",
+"mode": "INH",
+"size": 2
+},
+"3725": {
+"fields": [],
+"mn": "EMUL",
+"mode": "INH",
+"size": 2
+},
+"3726": {
+"fields": [],
+"mn": "EMULS",
+"mode": "INH",
+"size": 2
+},
+"3727": {
+"fields": [],
+"mn": "FMULS",
+"mode": "INH",
+"size": 2
+},
+"3728": {
+"fields": [],
+"mn": "EDIV",
+"mode": "INH",
+"size": 2
+},
+"3729": {
+"fields": [],
+"mn": "EDIVS",
+"mode": "INH",
+"size": 2
+},
+"372A": {
+"fields": [],
+"mn": "IDIV",
+"mode": "INH",
+"size": 2
+},
+"372B": {
+"fields": [],
+"mn": "FDIV",
+"mode": "INH",
+"size": 2
+},
+"372C": {
+"fields": [],
+"mn": "TPD",
+"mode": "INH",
+"size": 2
+},
+"372D": {
+"fields": [],
+"mn": "TDP",
+"mode": "INH",
+"size": 2
+},
+"372F": {
+"fields": [],
+"mn": "TDMSK",
+"mode": "INH",
+"size": 2
+},
+"3730": {
+"fields": [
+"jjkk"
+],
+"mn": "SUBE",
+"mode": "IMM16",
+"size": 4
+},
+"3731": {
+"fields": [
+"jjkk"
+],
+"mn": "ADDE",
+"mode": "IMM16",
+"size": 4
+},
+"3732": {
+"fields": [
+"jjkk"
+],
+"mn": "SBCE",
+"mode": "IMM16",
+"size": 4
+},
+"3733": {
+"fields": [
+"jjkk"
+],
+"mn": "ADCE",
+"mode": "IMM16",
+"size": 4
+},
+"3734": {
+"fields": [
+"jjkk"
+],
+"mn": "EORE",
+"mode": "IMM16",
+"size": 4
+},
+"3735": {
+"fields": [
+"jjkk"
+],
+"mn": "LDE",
+"mode": "IMM16",
+"size": 4
+},
+"3736": {
+"fields": [
+"jjkk"
+],
+"mn": "ANDE",
+"mode": "IMM16",
+"size": 4
+},
+"3737": {
+"fields": [
+"jjkk"
+],
+"mn": "ORE",
+"mode": "IMM16",
+"size": 4
+},
+"3738": {
+"fields": [
+"jjkk"
+],
+"mn": "CPE",
+"mode": "IMM16",
+"size": 4
+},
+"373A": {
+"fields": [
+"jjkk"
+],
+"mn": "ANDP",
+"mode": "IMM16",
+"size": 4
+},
+"373B": {
+"fields": [
+"jjkk"
+],
+"mn": "ORP",
+"mode": "IMM16",
+"size": 4
+},
+"373C": {
+"fields": [
+"jjkk"
+],
+"mn": "AIX",
+"mode": "IMM16",
+"size": 4
+},
+"373D": {
+"fields": [
+"jjkk"
+],
+"mn": "AIY",
+"mode": "IMM16",
+"size": 4
+},
+"373E": {
+"fields": [
+"jjkk"
+],
+"mn": "AIZ",
+"mode": "IMM16",
+"size": 4
+},
+"373F": {
+"fields": [
+"jjkk"
+],
+"mn": "AIS",
+"mode": "IMM16",
+"size": 4
+},
+"3740": {
+"fields": [
+"gggg"
+],
+"mn": "SUBE",
+"mode": "IND16, X",
+"size": 4
+},
+"3741": {
+"fields": [
+"gggg"
+],
+"mn": "ADDE",
+"mode": "IND16, X",
+"size": 4
+},
+"3742": {
+"fields": [
+"gggg"
+],
+"mn": "SBCE",
+"mode": "IND16, X",
+"size": 4
+},
+"3743": {
+"fields": [
+"gggg"
+],
+"mn": "ADCE",
+"mode": "IND16, X",
+"size": 4
+},
+"3744": {
+"fields": [
+"gggg"
+],
+"mn": "EORE",
+"mode": "IND16, X",
+"size": 4
+},
+"3745": {
+"fields": [
+"gggg"
+],
+"mn": "LDE",
+"mode": "IND16, X",
+"size": 4
+},
+"3746": {
+"fields": [
+"gggg"
+],
+"mn": "ANDE",
+"mode": "IND16, X",
+"size": 4
+},
+"3747": {
+"fields": [
+"gggg"
+],
+"mn": "ORE",
+"mode": "IND16, X",
+"size": 4
+},
+"3748": {
+"fields": [
+"gggg"
+],
+"mn": "CPE",
+"mode": "IND16, X",
+"size": 4
+},
+"374A": {
+"fields": [
+"gggg"
+],
+"mn": "STE",
+"mode": "IND16, X",
+"size": 4
+},
+"374C": {
+"fields": [],
+"mn": "XGEX",
+"mode": "INH",
+"size": 2
+},
+"374D": {
+"fields": [],
+"mn": "AEX",
+"mode": "INH",
+"size": 2
+},
+"374E": {
+"fields": [],
+"mn": "TXS",
+"mode": "INH",
+"size": 2
+},
+"374F": {
+"fields": [],
+"mn": "ABX",
+"mode": "INH",
+"size": 2
+},
+"3750": {
+"fields": [
+"gggg"
+],
+"mn": "SUBE",
+"mode": "IND16, Y",
+"size": 4
+},
+"3751": {
+"fields": [
+"gggg"
+],
+"mn": "ADDE",
+"mode": "IND16, Y",
+"size": 4
+},
+"3752": {
+"fields": [
+"gggg"
+],
+"mn": "SBCE",
+"mode": "IND16, Y",
+"size": 4
+},
+"3753": {
+"fields": [
+"gggg"
+],
+"mn": "ADCE",
+"mode": "IND16, Y",
+"size": 4
+},
+"3754": {
+"fields": [
+"gggg"
+],
+"mn": "EORE",
+"mode": "IND16, Y",
+"size": 4
+},
+"3755": {
+"fields": [
+"gggg"
+],
+"mn": "LDE",
+"mode": "IND16, Y",
+"size": 4
+},
+"3756": {
+"fields": [
+"gggg"
+],
+"mn": "ANDE",
+"mode": "IND16, Y",
+"size": 4
+},
+"3757": {
+"fields": [
+"gggg"
+],
+"mn": "ORE",
+"mode": "IND16, Y",
+"size": 4
+},
+"3758": {
+"fields": [
+"gggg"
+],
+"mn": "CPE",
+"mode": "IND16, Y",
+"size": 4
+},
+"375A": {
+"fields": [
+"gggg"
+],
+"mn": "STE",
+"mode": "IND16, Y",
+"size": 4
+},
+"375C": {
+"fields": [],
+"mn": "XGEY",
+"mode": "INH",
+"size": 2
+},
+"375D": {
+"fields": [],
+"mn": "AEY",
+"mode": "INH",
+"size": 2
+},
+"375E": {
+"fields": [],
+"mn": "TYS",
+"mode": "INH",
+"size": 2
+},
+"375F": {
+"fields": [],
+"mn": "ABY",
+"mode": "INH",
+"size": 2
+},
+"3760": {
+"fields": [
+"gggg"
+],
+"mn": "SUBE",
+"mode": "IND16, Z",
+"size": 4
+},
+"3761": {
+"fields": [
+"gggg"
+],
+"mn": "ADDE",
+"mode": "IND16, Z",
+"size": 4
+},
+"3762": {
+"fields": [
+"gggg"
+],
+"mn": "SBCE",
+"mode": "IND16, Z",
+"size": 4
+},
+"3763": {
+"fields": [
+"gggg"
+],
+"mn": "ADCE",
+"mode": "IND16, Z",
+"size": 4
+},
+"3764": {
+"fields": [
+"gggg"
+],
+"mn": "EORE",
+"mode": "IND16, Z",
+"size": 4
+},
+"3765": {
+"fields": [
+"gggg"
+],
+"mn": "LDE",
+"mode": "IND16, Z",
+"size": 4
+},
+"3766": {
+"fields": [
+"gggg"
+],
+"mn": "ANDE",
+"mode": "IND16, Z",
+"size": 4
+},
+"3767": {
+"fields": [
+"gggg"
+],
+"mn": "ORE",
+"mode": "IND16, Z",
+"size": 4
+},
+"3768": {
+"fields": [
+"gggg"
+],
+"mn": "CPE",
+"mode": "IND16, Z",
+"size": 4
+},
+"376A": {
+"fields": [
+"gggg"
+],
+"mn": "STE",
+"mode": "IND16, Z",
+"size": 4
+},
+"376C": {
+"fields": [],
+"mn": "XGEZ",
+"mode": "INH",
+"size": 2
+},
+"376D": {
+"fields": [],
+"mn": "AEZ",
+"mode": "INH",
+"size": 2
+},
+"376E": {
+"fields": [],
+"mn": "TZS",
+"mode": "INH",
+"size": 2
+},
+"376F": {
+"fields": [],
+"mn": "ABZ",
+"mode": "INH",
+"size": 2
+},
+"3770": {
+"fields": [
+"hhll"
+],
+"mn": "SUBE",
+"mode": "EXT",
+"size": 4
+},
+"3771": {
+"fields": [
+"hhll"
+],
+"mn": "ADDE",
+"mode": "EXT",
+"size": 4
+},
+"3772": {
+"fields": [
+"hhll"
+],
+"mn": "SBCE",
+"mode": "EXT",
+"size": 4
+},
+"3773": {
+"fields": [
+"hhll"
+],
+"mn": "ADCE",
+"mode": "EXT",
+"size": 4
+},
+"3774": {
+"fields": [
+"hhll"
+],
+"mn": "EORE",
+"mode": "EXT",
+"size": 4
+},
+"3775": {
+"fields": [
+"hhll"
+],
+"mn": "LDE",
+"mode": "EXT",
+"size": 4
+},
+"3776": {
+"fields": [
+"hhll"
+],
+"mn": "ANDE",
+"mode": "EXT",
+"size": 4
+},
+"3777": {
+"fields": [
+"hhll"
+],
+"mn": "ORE",
+"mode": "EXT",
+"size": 4
+},
+"3778": {
+"fields": [
+"hhll"
+],
+"mn": "CPE",
+"mode": "EXT",
+"size": 4
+},
+"377A": {
+"fields": [
+"hhll"
+],
+"mn": "STE",
+"mode": "EXT",
+"size": 4
+},
+"377C": {
+"fields": [
+"jjkk"
+],
+"mn": "CPX",
+"mode": "IMM16",
+"size": 4
+},
+"377D": {
+"fields": [
+"jjkk"
+],
+"mn": "CPY",
+"mode": "IMM16",
+"size": 4
+},
+"377E": {
+"fields": [
+"jjkk"
+],
+"mn": "CPZ",
+"mode": "IMM16",
+"size": 4
+},
+"377F": {
+"fields": [
+"jjkk"
+],
+"mn": "CPS",
+"mode": "IMM16",
+"size": 4
+},
+"3780": {
+"fields": [
+"rrrr"
+],
+"mn": "LBRA",
+"mode": "REL16",
+"size": 4
+},
+"3781": {
+"fields": [
+"rrrr"
+],
+"mn": "LBRN",
+"mode": "REL16",
+"size": 4
+},
+"3782": {
+"fields": [
+"rrrr"
+],
+"mn": "LBHI",
+"mode": "REL16",
+"size": 4
+},
+"3783": {
+"fields": [
+"rrrr"
+],
+"mn": "LBLS",
+"mode": "REL16",
+"size": 4
+},
+"3784": {
+"fields": [
+"rrrr"
+],
+"mn": "LBCC",
+"mode": "REL16",
+"size": 4
+},
+"3785": {
+"fields": [
+"rrrr"
+],
+"mn": "LBCS",
+"mode": "REL16",
+"size": 4
+},
+"3786": {
+"fields": [
+"rrrr"
+],
+"mn": "LBNE",
+"mode": "REL16",
+"size": 4
+},
+"3787": {
+"fields": [
+"rrrr"
+],
+"mn": "LBEQ",
+"mode": "REL16",
+"size": 4
+},
+"3788": {
+"fields": [
+"rrrr"
+],
+"mn": "LBVC",
+"mode": "REL16",
+"size": 4
+},
+"3789": {
+"fields": [
+"rrrr"
+],
+"mn": "LBVS",
+"mode": "REL16",
+"size": 4
+},
+"378A": {
+"fields": [
+"rrrr"
+],
+"mn": "LBPL",
+"mode": "REL16",
+"size": 4
+},
+"378B": {
+"fields": [
+"rrrr"
+],
+"mn": "LBMI",
+"mode": "REL16",
+"size": 4
+},
+"378C": {
+"fields": [
+"rrrr"
+],
+"mn": "LBGE",
+"mode": "REL16",
+"size": 4
+},
+"378D": {
+"fields": [
+"rrrr"
+],
+"mn": "LBLT",
+"mode": "REL16",
+"size": 4
+},
+"378E": {
+"fields": [
+"rrrr"
+],
+"mn": "LBGT",
+"mode": "REL16",
+"size": 4
+},
+"378F": {
+"fields": [
+"rrrr"
+],
+"mn": "LBLE",
+"mode": "REL16",
+"size": 4
+},
+"3790": {
+"fields": [
+"rrrr"
+],
+"mn": "LBMV",
+"mode": "REL16",
+"size": 4
+},
+"3791": {
+"fields": [
+"rrrr"
+],
+"mn": "LBEV",
+"mode": "REL16",
+"size": 4
+},
+"379C": {
+"fields": [],
+"mn": "TBXK",
+"mode": "INH",
+"size": 2
+},
+"379D": {
+"fields": [],
+"mn": "TBYK",
+"mode": "INH",
+"size": 2
+},
+"379E": {
+"fields": [],
+"mn": "TBZK",
+"mode": "INH",
+"size": 2
+},
+"379F": {
+"fields": [],
+"mn": "TBSK",
+"mode": "INH",
+"size": 2
+},
+"37A6": {
+"fields": [],
+"mn": "BGND",
+"mode": "INH",
+"size": 2
+},
+"37AC": {
+"fields": [],
+"mn": "TXKB",
+"mode": "INH",
+"size": 2
+},
+"37AD": {
+"fields": [],
+"mn": "TYKB",
+"mode": "INH",
+"size": 2
+},
+"37AE": {
+"fields": [],
+"mn": "TZKB",
+"mode": "INH",
+"size": 2
+},
+"37AF": {
+"fields": [],
+"mn": "TSKB",
+"mode": "INH",
+"size": 2
+},
+"37B0": {
+"fields": [
+"jjkk"
+],
+"mn": "SUBD",
+"mode": "IMM16",
+"size": 4
+},
+"37B1": {
+"fields": [
+"jjkk"
+],
+"mn": "ADDD",
+"mode": "IMM16",
+"size": 4
+},
+"37B2": {
+"fields": [
+"jjkk"
+],
+"mn": "SBCD",
+"mode": "IMM16",
+"size": 4
+},
+"37B3": {
+"fields": [
+"jjkk"
+],
+"mn": "ADCD",
+"mode": "IMM16",
+"size": 4
+},
+"37B4": {
+"fields": [
+"jjkk"
+],
+"mn": "EORD",
+"mode": "IMM16",
+"size": 4
+},
+"37B5": {
+"fields": [
+"jjkk"
+],
+"mn": "LDD",
+"mode": "IMM16",
+"size": 4
+},
+"37B6": {
+"fields": [
+"jjkk"
+],
+"mn": "ANDD",
+"mode": "IMM16",
+"size": 4
+},
+"37B7": {
+"fields": [
+"jjkk"
+],
+"mn": "ORD",
+"mode": "IMM16",
+"size": 4
+},
+"37B8": {
+"fields": [
+"jjkk"
+],
+"mn": "CPD",
+"mode": "IMM16",
+"size": 4
+},
+"37BC": {
+"fields": [
+"jjkk"
+],
+"mn": "LDX",
+"mode": "IMM16",
+"size": 4
+},
+"37BD": {
+"fields": [
+"jjkk"
+],
+"mn": "LDY",
+"mode": "IMM16",
+"size": 4
+},
+"37BE": {
+"fields": [
+"jjkk"
+],
+"mn": "LDZ",
+"mode": "IMM16",
+"size": 4
+},
+"37BF": {
+"fields": [
+"jjkk"
+],
+"mn": "LDS",
+"mode": "IMM16",
+"size": 4
+},
+"37C0": {
+"fields": [
+"gggg"
+],
+"mn": "SUBD",
+"mode": "IND16, X",
+"size": 4
+},
+"37C1": {
+"fields": [
+"gggg"
+],
+"mn": "ADDD",
+"mode": "IND16, X",
+"size": 4
+},
+"37C2": {
+"fields": [
+"gggg"
+],
+"mn": "SBCD",
+"mode": "IND16, X",
+"size": 4
+},
+"37C3": {
+"fields": [
+"gggg"
+],
+"mn": "ADCD",
+"mode": "IND16, X",
+"size": 4
+},
+"37C4": {
+"fields": [
+"gggg"
+],
+"mn": "EORD",
+"mode": "IND16, X",
+"size": 4
+},
+"37C5": {
+"fields": [
+"gggg"
+],
+"mn": "LDD",
+"mode": "IND16, X",
+"size": 4
+},
+"37C6": {
+"fields": [
+"gggg"
+],
+"mn": "ANDD",
+"mode": "IND16, X",
+"size": 4
+},
+"37C7": {
+"fields": [
+"gggg"
+],
+"mn": "ORD",
+"mode": "IND16, X",
+"size": 4
+},
+"37C8": {
+"fields": [
+"gggg"
+],
+"mn": "CPD",
+"mode": "IND16, X",
+"size": 4
+},
+"37CA": {
+"fields": [
+"gggg"
+],
+"mn": "STD",
+"mode": "IND16, X",
+"size": 4
+},
+"37CC": {
+"fields": [],
+"mn": "XGDX",
+"mode": "INH",
+"size": 2
+},
+"37CD": {
+"fields": [],
+"mn": "ADX",
+"mode": "INH",
+"size": 2
+},
+"37D0": {
+"fields": [
+"gggg"
+],
+"mn": "SUBD",
+"mode": "IND16, Y",
+"size": 4
+},
+"37D1": {
+"fields": [
+"gggg"
+],
+"mn": "ADDD",
+"mode": "IND16, Y",
+"size": 4
+},
+"37D2": {
+"fields": [
+"gggg"
+],
+"mn": "SBCD",
+"mode": "IND16, Y",
+"size": 4
+},
+"37D3": {
+"fields": [
+"gggg"
+],
+"mn": "ADCD",
+"mode": "IND16, Y",
+"size": 4
+},
+"37D4": {
+"fields": [
+"gggg"
+],
+"mn": "EORD",
+"mode": "IND16, Y",
+"size": 4
+},
+"37D5": {
+"fields": [
+"gggg"
+],
+"mn": "LDD",
+"mode": "IND16, Y",
+"size": 4
+},
+"37D6": {
+"fields": [
+"gggg"
+],
+"mn": "ANDD",
+"mode": "IND16, Y",
+"size": 4
+},
+"37D7": {
+"fields": [
+"gggg"
+],
+"mn": "ORD",
+"mode": "IND16, Y",
+"size": 4
+},
+"37D8": {
+"fields": [
+"gggg"
+],
+"mn": "CPD",
+"mode": "IND16, Y",
+"size": 4
+},
+"37DA": {
+"fields": [
+"gggg"
+],
+"mn": "STD",
+"mode": "IND16, Y",
+"size": 4
+},
+"37DC": {
+"fields": [],
+"mn": "XGDY",
+"mode": "INH",
+"size": 2
+},
+"37DD": {
+"fields": [],
+"mn": "ADY",
+"mode": "INH",
+"size": 2
+},
+"37E0": {
+"fields": [
+"gggg"
+],
+"mn": "SUBD",
+"mode": "IND16, Z",
+"size": 4
+},
+"37E1": {
+"fields": [
+"gggg"
+],
+"mn": "ADDD",
+"mode": "IND16, Z",
+"size": 4
+},
+"37E2": {
+"fields": [
+"gggg"
+],
+"mn": "SBCD",
+"mode": "IND16, Z",
+"size": 4
+},
+"37E3": {
+"fields": [
+"gggg"
+],
+"mn": "ADCD",
+"mode": "IND16, Z",
+"size": 4
+},
+"37E4": {
+"fields": [
+"gggg"
+],
+"mn": "EORD",
+"mode": "IND16, Z",
+"size": 4
+},
+"37E5": {
+"fields": [
+"gggg"
+],
+"mn": "LDD",
+"mode": "IND16, Z",
+"size": 4
+},
+"37E6": {
+"fields": [
+"gggg"
+],
+"mn": "ANDD",
+"mode": "IND16, Z",
+"size": 4
+},
+"37E7": {
+"fields": [
+"gggg"
+],
+"mn": "ORD",
+"mode": "IND16, Z",
+"size": 4
+},
+"37E8": {
+"fields": [
+"gggg"
+],
+"mn": "CPD",
+"mode": "IND16, Z",
+"size": 4
+},
+"37EA": {
+"fields": [
+"gggg"
+],
+"mn": "STD",
+"mode": "IND16, Z",
+"size": 4
+},
+"37EC": {
+"fields": [],
+"mn": "XGDZ",
+"mode": "INH",
+"size": 2
+},
+"37ED": {
+"fields": [],
+"mn": "ADZ",
+"mode": "INH",
+"size": 2
+},
+"37F0": {
+"fields": [
+"hhll"
+],
+"mn": "SUBD",
+"mode": "EXT",
+"size": 4
+},
+"37F1": {
+"fields": [
+"hhll"
+],
+"mn": "ADDD",
+"mode": "EXT",
+"size": 4
+},
+"37F2": {
+"fields": [
+"hhll"
+],
+"mn": "SBCD",
+"mode": "EXT",
+"size": 4
+},
+"37F3": {
+"fields": [
+"hhll"
+],
+"mn": "ADCD",
+"mode": "EXT",
+"size": 4
+},
+"37F4": {
+"fields": [
+"hhll"
+],
+"mn": "EORD",
+"mode": "EXT",
+"size": 4
+},
+"37F5": {
+"fields": [
+"hhll"
+],
+"mn": "LDD",
+"mode": "EXT",
+"size": 4
+},
+"37F6": {
+"fields": [
+"hhll"
+],
+"mn": "ANDD",
+"mode": "EXT",
+"size": 4
+},
+"37F7": {
+"fields": [
+"hhll"
+],
+"mn": "ORD",
+"mode": "EXT",
+"size": 4
+},
+"37F8": {
+"fields": [
+"hhll"
+],
+"mn": "CPD",
+"mode": "EXT",
+"size": 4
+},
+"37FA": {
+"fields": [
+"hhll"
+],
+"mn": "STD",
+"mode": "EXT",
+"size": 4
+},
+"37FC": {
+"fields": [],
+"mn": "TPA",
+"mode": "INH",
+"size": 2
+},
+"37FD": {
+"fields": [],
+"mn": "TAP",
+"mode": "INH",
+"size": 2
+},
+"37FE": {
+"fields": [
+"hhll",
+"hhll2"
+],
+"mn": "MOVB",
+"mode": "EXT to EXT",
+"size": 6
+},
+"37FF": {
+"fields": [
+"hhll",
+"hhll2"
+],
+"mn": "MOVW",
+"mode": "EXT to EXT",
+"size": 6
+},
+"38": {
+"fields": [
+"mm",
+"hhll"
+],
+"mn": "BCLR",
+"mode": "EXT",
+"size": 4
+},
+"39": {
+"fields": [
+"mm",
+"hhll"
+],
+"mn": "BSET",
+"mode": "EXT",
+"size": 4
+},
+"3A": {
+"fields": [
+"mm",
+"hhll",
+"rrrr"
+],
+"mn": "BRCLR",
+"mode": "EXT",
+"size": 6
+},
+"3B": {
+"fields": [
+"mm",
+"hhll",
+"rrrr"
+],
+"mn": "BRSET",
+"mode": "EXT",
+"size": 6
+},
+"3C": {
+"fields": [
+"ii"
+],
+"mn": "AIX",
+"mode": "IMM8",
+"size": 2
+},
+"3D": {
+"fields": [
+"ii"
+],
+"mn": "AIY",
+"mode": "IMM8",
+"size": 2
+},
+"3E": {
+"fields": [
+"ii"
+],
+"mn": "AIZ",
+"mode": "IMM8",
+"size": 2
+},
+"3F": {
+"fields": [
+"ii"
+],
+"mn": "AIS",
+"mode": "IMM8",
+"size": 2
+},
+"40": {
+"fields": [
+"ff"
+],
+"mn": "SUBA",
+"mode": "IND8, X",
+"size": 2
+},
+"41": {
+"fields": [
+"ff"
+],
+"mn": "ADDA",
+"mode": "IND8, X",
+"size": 2
+},
+"42": {
+"fields": [
+"ff"
+],
+"mn": "SBCA",
+"mode": "IND8, X",
+"size": 2
+},
+"43": {
+"fields": [
+"ff"
+],
+"mn": "ADCA",
+"mode": "IND8, X",
+"size": 2
+},
+"44": {
+"fields": [
+"ff"
+],
+"mn": "EORA",
+"mode": "IND8, X",
+"size": 2
+},
+"45": {
+"fields": [
+"ff"
+],
+"mn": "LDAA",
+"mode": "IND8, X",
+"size": 2
+},
+"46": {
+"fields": [
+"ff"
+],
+"mn": "ANDA",
+"mode": "IND8, X",
+"size": 2
+},
+"47": {
+"fields": [
+"ff"
+],
+"mn": "ORAA",
+"mode": "IND8, X",
+"size": 2
+},
+"48": {
+"fields": [
+"ff"
+],
+"mn": "CMPA",
+"mode": "IND8, X",
+"size": 2
+},
+"49": {
+"fields": [
+"ff"
+],
+"mn": "BITA",
+"mode": "IND8, X",
+"size": 2
+},
+"4A": {
+"fields": [
+"ff"
+],
+"mn": "STAA",
+"mode": "IND8, X",
+"size": 2
+},
+"4B": {
+"fields": [
+"zggggg"
+],
+"mn": "JMP",
+"mode": "IND20, X",
+"size": 4
+},
+"4C": {
+"fields": [
+"ff"
+],
+"mn": "CPX",
+"mode": "IND8, X",
+"size": 2
+},
+"4D": {
+"fields": [
+"ff"
+],
+"mn": "CPY",
+"mode": "IND8, X",
+"size": 2
+},
+"4E": {
+"fields": [
+"ff"
+],
+"mn": "CPZ",
+"mode": "IND8, X",
+"size": 2
+},
+"4F": {
+"fields": [
+"ff"
+],
+"mn": "CPS",
+"mode": "IND8, X",
+"size": 2
+},
+"50": {
+"fields": [
+"ff"
+],
+"mn": "SUBA",
+"mode": "IND8, Y",
+"size": 2
+},
+"51": {
+"fields": [
+"ff"
+],
+"mn": "ADDA",
+"mode": "IND8, Y",
+"size": 2
+},
+"52": {
+"fields": [
+"ff"
+],
+"mn": "SBCA",
+"mode": "IND8, Y",
+"size": 2
+},
+"53": {
+"fields": [
+"ff"
+],
+"mn": "ADCA",
+"mode": "IND8, Y",
+"size": 2
+},
+"54": {
+"fields": [
+"ff"
+],
+"mn": "EORA",
+"mode": "IND8, Y",
+"size": 2
+},
+"55": {
+"fields": [
+"ff"
+],
+"mn": "LDAA",
+"mode": "IND8, Y",
+"size": 2
+},
+"56": {
+"fields": [
+"ff"
+],
+"mn": "ANDA",
+"mode": "IND8, Y",
+"size": 2
+},
+"57": {
+"fields": [
+"ff"
+],
+"mn": "ORAA",
+"mode": "IND8, Y",
+"size": 2
+},
+"58": {
+"fields": [
+"ff"
+],
+"mn": "CMPA",
+"mode": "IND8, Y",
+"size": 2
+},
+"59": {
+"fields": [
+"ff"
+],
+"mn": "BITA",
+"mode": "IND8, Y",
+"size": 2
+},
+"5A": {
+"fields": [
+"ff"
+],
+"mn": "STAA",
+"mode": "IND8, Y",
+"size": 2
+},
+"5B": {
+"fields": [
+"zggggg"
+],
+"mn": "JMP",
+"mode": "IND20, Y",
+"size": 4
+},
+"5C": {
+"fields": [
+"ff"
+],
+"mn": "CPX",
+"mode": "IND8, Y",
+"size": 2
+},
+"5D": {
+"fields": [
+"ff"
+],
+"mn": "CPY",
+"mode": "IND8, Y",
+"size": 2
+},
+"5E": {
+"fields": [
+"ff"
+],
+"mn": "CPZ",
+"mode": "IND8, Y",
+"size": 2
+},
+"5F": {
+"fields": [
+"ff"
+],
+"mn": "CPS",
+"mode": "IND8, Y",
+"size": 2
+},
+"60": {
+"fields": [
+"ff"
+],
+"mn": "SUBA",
+"mode": "IND8, Z",
+"size": 2
+},
+"61": {
+"fields": [
+"ff"
+],
+"mn": "ADDA",
+"mode": "IND8, Z",
+"size": 2
+},
+"62": {
+"fields": [
+"ff"
+],
+"mn": "SBCA",
+"mode": "IND8, Z",
+"size": 2
+},
+"63": {
+"fields": [
+"ff"
+],
+"mn": "ADCA",
+"mode": "IND8, Z",
+"size": 2
+},
+"64": {
+"fields": [
+"ff"
+],
+"mn": "EORA",
+"mode": "IND8, Z",
+"size": 2
+},
+"65": {
+"fields": [
+"ff"
+],
+"mn": "LDAA",
+"mode": "IND8, Z",
+"size": 2
+},
+"66": {
+"fields": [
+"ff"
+],
+"mn": "ANDA",
+"mode": "IND8, Z",
+"size": 2
+},
+"67": {
+"fields": [
+"ff"
+],
+"mn": "ORAA",
+"mode": "IND8, Z",
+"size": 2
+},
+"68": {
+"fields": [
+"ff"
+],
+"mn": "CMPA",
+"mode": "IND8, Z",
+"size": 2
+},
+"69": {
+"fields": [
+"ff"
+],
+"mn": "BITA",
+"mode": "IND8, Z",
+"size": 2
+},
+"6A": {
+"fields": [
+"ff"
+],
+"mn": "STAA",
+"mode": "IND8, Z",
+"size": 2
+},
+"6B": {
+"fields": [
+"zggggg"
+],
+"mn": "JMP",
+"mode": "IND20, Z",
+"size": 4
+},
+"6C": {
+"fields": [
+"ff"
+],
+"mn": "CPX",
+"mode": "IND8, Z",
+"size": 2
+},
+"6D": {
+"fields": [
+"ff"
+],
+"mn": "CPY",
+"mode": "IND8, Z",
+"size": 2
+},
+"6E": {
+"fields": [
+"ff"
+],
+"mn": "CPZ",
+"mode": "IND8, Z",
+"size": 2
+},
+"6F": {
+"fields": [
+"ff"
+],
+"mn": "CPS",
+"mode": "IND8, Z",
+"size": 2
+},
+"70": {
+"fields": [
+"ii"
+],
+"mn": "SUBA",
+"mode": "IMM8",
+"size": 2
+},
+"71": {
+"fields": [
+"ii"
+],
+"mn": "ADDA",
+"mode": "IMM8",
+"size": 2
+},
+"72": {
+"fields": [
+"ii"
+],
+"mn": "SBCA",
+"mode": "IMM8",
+"size": 2
+},
+"73": {
+"fields": [
+"ii"
+],
+"mn": "ADCA",
+"mode": "IMM8",
+"size": 2
+},
+"74": {
+"fields": [
+"ii"
+],
+"mn": "EORA",
+"mode": "IMM8",
+"size": 2
+},
+"75": {
+"fields": [
+"ii"
+],
+"mn": "LDAA",
+"mode": "IMM8",
+"size": 2
+},
+"76": {
+"fields": [
+"ii"
+],
+"mn": "ANDA",
+"mode": "IMM8",
+"size": 2
+},
+"77": {
+"fields": [
+"ii"
+],
+"mn": "ORAA",
+"mode": "IMM8",
+"size": 2
+},
+"78": {
+"fields": [
+"ii"
+],
+"mn": "CMPA",
+"mode": "IMM8",
+"size": 2
+},
+"79": {
+"fields": [
+"ii"
+],
+"mn": "BITA",
+"mode": "IMM8",
+"size": 2
+},
+"7A": {
+"fields": [
+"zbhhll"
+],
+"mn": "JMP",
+"mode": "EXT20",
+"size": 4
+},
+"7B": {
+"fields": [
+"xoyo"
+],
+"mn": "MAC",
+"mode": "IMM8",
+"size": 2
+},
+"7C": {
+"fields": [
+"ii"
+],
+"mn": "ADDE",
+"mode": "IMM8",
+"size": 2
+},
+"80": {
+"fields": [
+"ff"
+],
+"mn": "SUBD",
+"mode": "IND8, X",
+"size": 2
+},
+"81": {
+"fields": [
+"ff"
+],
+"mn": "ADDD",
+"mode": "IND8, X",
+"size": 2
+},
+"82": {
+"fields": [
+"ff"
+],
+"mn": "SBCD",
+"mode": "IND8, X",
+"size": 2
+},
+"83": {
+"fields": [
+"ff"
+],
+"mn": "ADCD",
+"mode": "IND8, X",
+"size": 2
+},
+"84": {
+"fields": [
+"ff"
+],
+"mn": "EORD",
+"mode": "IND8, X",
+"size": 2
+},
+"85": {
+"fields": [
+"ff"
+],
+"mn": "LDD",
+"mode": "IND8, X",
+"size": 2
+},
+"86": {
+"fields": [
+"ff"
+],
+"mn": "ANDD",
+"mode": "IND8, X",
+"size": 2
+},
+"87": {
+"fields": [
+"ff"
+],
+"mn": "ORD",
+"mode": "IND8, X",
+"size": 2
+},
+"88": {
+"fields": [
+"ff"
+],
+"mn": "CPD",
+"mode": "IND8, X",
+"size": 2
+},
+"89": {
+"fields": [
+"zggggg"
+],
+"mn": "JSR",
+"mode": "IND20, X",
+"size": 4
+},
+"8A": {
+"fields": [
+"ff"
+],
+"mn": "STD",
+"mode": "IND8, X",
+"size": 2
+},
+"8B": {
+"fields": [
+"mm",
+"ff",
+"rr"
+],
+"mn": "BRSET",
+"mode": "IND8, X",
+"size": 4
+},
+"8C": {
+"fields": [
+"ff"
+],
+"mn": "STX",
+"mode": "IND8, X",
+"size": 2
+},
+"8D": {
+"fields": [
+"ff"
+],
+"mn": "STY",
+"mode": "IND8, X",
+"size": 2
+},
+"8E": {
+"fields": [
+"ff"
+],
+"mn": "STZ",
+"mode": "IND8, X",
+"size": 2
+},
+"8F": {
+"fields": [
+"ff"
+],
+"mn": "STS",
+"mode": "IND8, X",
+"size": 2
+},
+"90": {
+"fields": [
+"ff"
+],
+"mn": "SUBD",
+"mode": "IND8, Y",
+"size": 2
+},
+"91": {
+"fields": [
+"ff"
+],
+"mn": "ADDD",
+"mode": "IND8, Y",
+"size": 2
+},
+"92": {
+"fields": [
+"ff"
+],
+"mn": "SBCD",
+"mode": "IND8, Y",
+"size": 2
+},
+"93": {
+"fields": [
+"ff"
+],
+"mn": "ADCD",
+"mode": "IND8, Y",
+"size": 2
+},
+"94": {
+"fields": [
+"ff"
+],
+"mn": "EORD",
+"mode": "IND8, Y",
+"size": 2
+},
+"95": {
+"fields": [
+"ff"
+],
+"mn": "LDD",
+"mode": "IND8, Y",
+"size": 2
+},
+"96": {
+"fields": [
+"ff"
+],
+"mn": "ANDD",
+"mode": "IND8, Y",
+"size": 2
+},
+"97": {
+"fields": [
+"ff"
+],
+"mn": "ORD",
+"mode": "IND8, Y",
+"size": 2
+},
+"98": {
+"fields": [
+"ff"
+],
+"mn": "CPD",
+"mode": "IND8, Y",
+"size": 2
+},
+"99": {
+"fields": [
+"zggggg"
+],
+"mn": "JSR",
+"mode": "IND20, Y",
+"size": 4
+},
+"9A": {
+"fields": [
+"ff"
+],
+"mn": "STD",
+"mode": "IND8, Y",
+"size": 2
+},
+"9B": {
+"fields": [
+"mm",
+"ff",
+"rr"
+],
+"mn": "BRSET",
+"mode": "IND8, Y",
+"size": 4
+},
+"9C": {
+"fields": [
+"ff"
+],
+"mn": "STX",
+"mode": "IND8, Y",
+"size": 2
+},
+"9D": {
+"fields": [
+"ff"
+],
+"mn": "STY",
+"mode": "IND8, Y",
+"size": 2
+},
+"9E": {
+"fields": [
+"ff"
+],
+"mn": "STZ",
+"mode": "IND8, Y",
+"size": 2
+},
+"9F": {
+"fields": [
+"ff"
+],
+"mn": "STS",
+"mode": "IND8, Y",
+"size": 2
+},
+"A0": {
+"fields": [
+"ff"
+],
+"mn": "SUBD",
+"mode": "IND8, Z",
+"size": 2
+},
+"A1": {
+"fields": [
+"ff"
+],
+"mn": "ADDD",
+"mode": "IND8, Z",
+"size": 2
+},
+"A2": {
+"fields": [
+"ff"
+],
+"mn": "SBCD",
+"mode": "IND8, Z",
+"size": 2
+},
+"A3": {
+"fields": [
+"ff"
+],
+"mn": "ADCD",
+"mode": "IND8, Z",
+"size": 2
+},
+"A4": {
+"fields": [
+"ff"
+],
+"mn": "EORD",
+"mode": "IND8, Z",
+"size": 2
+},
+"A5": {
+"fields": [
+"ff"
+],
+"mn": "LDD",
+"mode": "IND8, Z",
+"size": 2
+},
+"A6": {
+"fields": [
+"ff"
+],
+"mn": "ANDD",
+"mode": "IND8, Z",
+"size": 2
+},
+"A7": {
+"fields": [
+"ff"
+],
+"mn": "ORD",
+"mode": "IND8, Z",
+"size": 2
+},
+"A8": {
+"fields": [
+"ff"
+],
+"mn": "CPD",
+"mode": "IND8, Z",
+"size": 2
+},
+"A9": {
+"fields": [
+"zggggg"
+],
+"mn": "JSR",
+"mode": "IND20, Z",
+"size": 4
+},
+"AA": {
+"fields": [
+"ff"
+],
+"mn": "STD",
+"mode": "IND8, Z",
+"size": 2
+},
+"AB": {
+"fields": [
+"mm",
+"ff",
+"rr"
+],
+"mn": "BRSET",
+"mode": "IND8, Z",
+"size": 4
+},
+"AC": {
+"fields": [
+"ff"
+],
+"mn": "STX",
+"mode": "IND8, Z",
+"size": 2
+},
+"AD": {
+"fields": [
+"ff"
+],
+"mn": "STY",
+"mode": "IND8, Z",
+"size": 2
+},
+"AE": {
+"fields": [
+"ff"
+],
+"mn": "STZ",
+"mode": "IND8, Z",
+"size": 2
+},
+"AF": {
+"fields": [
+"ff"
+],
+"mn": "STS",
+"mode": "IND8, Z",
+"size": 2
+},
+"B0": {
+"fields": [
+"rr"
+],
+"mn": "BRA",
+"mode": "REL8",
+"size": 2
+},
+"B1": {
+"fields": [
+"rr"
+],
+"mn": "BRN",
+"mode": "REL8",
+"size": 2
+},
+"B2": {
+"fields": [
+"rr"
+],
+"mn": "BHI",
+"mode": "REL8",
+"size": 2
+},
+"B3": {
+"fields": [
+"rr"
+],
+"mn": "BLS",
+"mode": "REL8",
+"size": 2
+},
+"B4": {
+"fields": [
+"rr"
+],
+"mn": "BCC",
+"mode": "REL8",
+"size": 2
+},
+"B5": {
+"fields": [
+"rr"
+],
+"mn": "BCS",
+"mode": "REL8",
+"size": 2
+},
+"B6": {
+"fields": [
+"rr"
+],
+"mn": "BNE",
+"mode": "REL8",
+"size": 2
+},
+"B7": {
+"fields": [
+"rr"
+],
+"mn": "BEQ",
+"mode": "REL8",
+"size": 2
+},
+"B8": {
+"fields": [
+"rr"
+],
+"mn": "BVC",
+"mode": "REL8",
+"size": 2
+},
+"B9": {
+"fields": [
+"rr"
+],
+"mn": "BVS",
+"mode": "REL8",
+"size": 2
+},
+"BA": {
+"fields": [
+"rr"
+],
+"mn": "BPL",
+"mode": "REL8",
+"size": 2
+},
+"BB": {
+"fields": [
+"rr"
+],
+"mn": "BMI",
+"mode": "REL8",
+"size": 2
+},
+"BC": {
+"fields": [
+"rr"
+],
+"mn": "BGE",
+"mode": "REL8",
+"size": 2
+},
+"BD": {
+"fields": [
+"rr"
+],
+"mn": "BLT",
+"mode": "REL8",
+"size": 2
+},
+"BE": {
+"fields": [
+"rr"
+],
+"mn": "BGT",
+"mode": "REL8",
+"size": 2
+},
+"BF": {
+"fields": [
+"rr"
+],
+"mn": "BLE",
+"mode": "REL8",
+"size": 2
+},
+"C0": {
+"fields": [
+"ff"
+],
+"mn": "SUBB",
+"mode": "IND8, X",
+"size": 2
+},
+"C1": {
+"fields": [
+"ff"
+],
+"mn": "ADDB",
+"mode": "IND8, X",
+"size": 2
+},
+"C2": {
+"fields": [
+"ff"
+],
+"mn": "SBCB",
+"mode": "IND8, X",
+"size": 2
+},
+"C3": {
+"fields": [
+"ff"
+],
+"mn": "ADCB",
+"mode": "IND8, X",
+"size": 2
+},
+"C4": {
+"fields": [
+"ff"
+],
+"mn": "EORB",
+"mode": "IND8, X",
+"size": 2
+},
+"C5": {
+"fields": [
+"ff"
+],
+"mn": "LDAB",
+"mode": "IND8, X",
+"size": 2
+},
+"C6": {
+"fields": [
+"ff"
+],
+"mn": "ANDB",
+"mode": "IND8, X",
+"size": 2
+},
+"C7": {
+"fields": [
+"ff"
+],
+"mn": "ORAB",
+"mode": "IND8, X",
+"size": 2
+},
+"C8": {
+"fields": [
+"ff"
+],
+"mn": "CMPB",
+"mode": "IND8, X",
+"size": 2
+},
+"C9": {
+"fields": [
+"ff"
+],
+"mn": "BITB",
+"mode": "IND8, X",
+"size": 2
+},
+"CA": {
+"fields": [
+"ff"
+],
+"mn": "STAB",
+"mode": "IND8, X",
+"size": 2
+},
+"CB": {
+"fields": [
+"mm",
+"ff",
+"rr"
+],
+"mn": "BRCLR",
+"mode": "IND8, X",
+"size": 4
+},
+"CC": {
+"fields": [
+"ff"
+],
+"mn": "LDX",
+"mode": "IND8, X",
+"size": 2
+},
+"CD": {
+"fields": [
+"ff"
+],
+"mn": "LDY",
+"mode": "IND8, X",
+"size": 2
+},
+"CE": {
+"fields": [
+"ff"
+],
+"mn": "LDZ",
+"mode": "IND8, X",
+"size": 2
+},
+"CF": {
+"fields": [
+"ff"
+],
+"mn": "LDS",
+"mode": "IND8, X",
+"size": 2
+},
+"D0": {
+"fields": [
+"ff"
+],
+"mn": "SUBB",
+"mode": "IND8, Y",
+"size": 2
+},
+"D1": {
+"fields": [
+"ff"
+],
+"mn": "ADDB",
+"mode": "IND8, Y",
+"size": 2
+},
+"D2": {
+"fields": [
+"ff"
+],
+"mn": "SBCB",
+"mode": "IND8, Y",
+"size": 2
+},
+"D3": {
+"fields": [
+"ff"
+],
+"mn": "ADCB",
+"mode": "IND8, Y",
+"size": 2
+},
+"D4": {
+"fields": [
+"ff"
+],
+"mn": "EORB",
+"mode": "IND8, Y",
+"size": 2
+},
+"D5": {
+"fields": [
+"ff"
+],
+"mn": "LDAB",
+"mode": "IND8, Y",
+"size": 2
+},
+"D6": {
+"fields": [
+"ff"
+],
+"mn": "ANDB",
+"mode": "IND8, Y",
+"size": 2
+},
+"D7": {
+"fields": [
+"ff"
+],
+"mn": "ORAB",
+"mode": "IND8, Y",
+"size": 2
+},
+"D8": {
+"fields": [
+"ff"
+],
+"mn": "CMPB",
+"mode": "IND8, Y",
+"size": 2
+},
+"D9": {
+"fields": [
+"ff"
+],
+"mn": "BITB",
+"mode": "IND8, Y",
+"size": 2
+},
+"DA": {
+"fields": [
+"ff"
+],
+"mn": "STAB",
+"mode": "IND8, Y",
+"size": 2
+},
+"DB": {
+"fields": [
+"mm",
+"ff",
+"rr"
+],
+"mn": "BRCLR",
+"mode": "IND8, Y",
+"size": 4
+},
+"DC": {
+"fields": [
+"ff"
+],
+"mn": "LDX",
+"mode": "IND8, Y",
+"size": 2
+},
+"DD": {
+"fields": [
+"ff"
+],
+"mn": "LDY",
+"mode": "IND8, Y",
+"size": 2
+},
+"DE": {
+"fields": [
+"ff"
+],
+"mn": "LDZ",
+"mode": "IND8, Y",
+"size": 2
+},
+"DF": {
+"fields": [
+"ff"
+],
+"mn": "LDS",
+"mode": "IND8, Y",
+"size": 2
+},
+"E0": {
+"fields": [
+"ff"
+],
+"mn": "SUBB",
+"mode": "IND8, Z",
+"size": 2
+},
+"E1": {
+"fields": [
+"ff"
+],
+"mn": "ADDB",
+"mode": "IND8, Z",
+"size": 2
+},
+"E2": {
+"fields": [
+"ff"
+],
+"mn": "SBCB",
+"mode": "IND8, Z",
+"size": 2
+},
+"E3": {
+"fields": [
+"ff"
+],
+"mn": "ADCB",
+"mode": "IND8, Z",
+"size": 2
+},
+"E4": {
+"fields": [
+"ff"
+],
+"mn": "EORB",
+"mode": "IND8, Z",
+"size": 2
+},
+"E5": {
+"fields": [
+"ff"
+],
+"mn": "LDAB",
+"mode": "IND8, Z",
+"size": 2
+},
+"E6": {
+"fields": [
+"ff"
+],
+"mn": "ANDB",
+"mode": "IND8, Z",
+"size": 2
+},
+"E7": {
+"fields": [
+"ff"
+],
+"mn": "ORAB",
+"mode": "IND8, Z",
+"size": 2
+},
+"E8": {
+"fields": [
+"ff"
+],
+"mn": "CMPB",
+"mode": "IND8, Z",
+"size": 2
+},
+"E9": {
+"fields": [
+"ff"
+],
+"mn": "BITB",
+"mode": "IND8, Z",
+"size": 2
+},
+"EA": {
+"fields": [
+"ff"
+],
+"mn": "STAB",
+"mode": "IND8, Z",
+"size": 2
+},
+"EB": {
+"fields": [
+"mm",
+"ff",
+"rr"
+],
+"mn": "BRCLR",
+"mode": "IND8, Z",
+"size": 4
+},
+"EC": {
+"fields": [
+"ff"
+],
+"mn": "LDX",
+"mode": "IND8, Z",
+"size": 2
+},
+"ED": {
+"fields": [
+"ff"
+],
+"mn": "LDY",
+"mode": "IND8, Z",
+"size": 2
+},
+"EE": {
+"fields": [
+"ff"
+],
+"mn": "LDZ",
+"mode": "IND8, Z",
+"size": 2
+},
+"EF": {
+"fields": [
+"ff"
+],
+"mn": "LDS",
+"mode": "IND8, Z",
+"size": 2
+},
+"F0": {
+"fields": [
+"ii"
+],
+"mn": "SUBB",
+"mode": "IMM8",
+"size": 2
+},
+"F1": {
+"fields": [
+"ii"
+],
+"mn": "ADDB",
+"mode": "IMM8",
+"size": 2
+},
+"F2": {
+"fields": [
+"ii"
+],
+"mn": "SBCB",
+"mode": "IMM8",
+"size": 2
+},
+"F3": {
+"fields": [
+"ii"
+],
+"mn": "ADCB",
+"mode": "IMM8",
+"size": 2
+},
+"F4": {
+"fields": [
+"ii"
+],
+"mn": "EORB",
+"mode": "IMM8",
+"size": 2
+},
+"F5": {
+"fields": [
+"ii"
+],
+"mn": "LDAB",
+"mode": "IMM8",
+"size": 2
+},
+"F6": {
+"fields": [
+"ii"
+],
+"mn": "ANDB",
+"mode": "IMM8",
+"size": 2
+},
+"F7": {
+"fields": [
+"ii"
+],
+"mn": "ORAB",
+"mode": "IMM8",
+"size": 2
+},
+"F8": {
+"fields": [
+"ii"
+],
+"mn": "CMPB",
+"mode": "IMM8",
+"size": 2
+},
+"F9": {
+"fields": [
+"ii"
+],
+"mn": "BITB",
+"mode": "IMM8",
+"size": 2
+},
+"FA": {
+"fields": [
+"zbhhll"
+],
+"mn": "JSR",
+"mode": "EXT20",
+"size": 4
+},
+"FB": {
+"fields": [
+"xoyo"
+],
+"mn": "RMAC",
+"mode": "IMM8",
+"size": 2
+},
+"FC": {
+"fields": [
+"ii"
+],
+"mn": "ADDD",
+"mode": "IMM8",
+"size": 2
+}
+}

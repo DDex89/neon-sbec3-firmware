@@ -79,7 +79,8 @@ correction byte there. [inferred]
 
 ## Next steps
 
-Stage 2 builds the tools: a CPU16 disassembler that follows the extension registers (EK, XK, YK, ZK),
-an assembler for byte-for-byte rebuilds, and the source generator. The reference image is chosen at
-that point: 05293190AC has outside reference addresses to check the tools against, while the image
-of the project owner's 1996 Neon controller is expected to be a 128 KB, 2 KB RAM unit.
+Stage 2 is done, see [tools.md](tools.md): disassembler, assembler and source generator, with all
+eleven images rebuilt byte for byte. It also confirmed that Z points at RAM ($F8000) and that
+extended addresses read the calibration in bank 0. The reference image is **05293190AC**, because
+outside reference addresses exist for it. The project owner's 1996 Neon controller is expected to be
+a 128 KB, 2 KB RAM unit; its family will be reached by porting the annotations.

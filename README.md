@@ -13,13 +13,14 @@ logic and the units of its values descend from it.
 
 ## Status
 
-Stage 1 of 6: survey of the images.
+Stage 2 of 6: tools. All eleven images rebuild byte for byte; the reference image is
+**05293190AC** (1999 Eclipse, manual), chosen because outside reference addresses exist for it.
 
 | Stage | Content | |
 |---|---|---|
 | 1 | Survey: images, memory layout, checksum, families | done, see [docs/en/images.md](docs/en/images.md) |
-| 2 | Tools: CPU16 disassembler, assembler, source generator, byte-identical build, CI | next |
-| 3 | Program skeleton: reset, interrupts, main loop, scheduler, communication | |
+| 2 | Tools: CPU16 disassembler, assembler, source generator, byte-identical build, CI | done, see [docs/en/tools.md](docs/en/tools.md) |
+| 3 | Program skeleton: reset, interrupts, main loop, scheduler, communication | next |
 | 4 | Calibration: table formats, finding and naming the tables | |
 | 5 | Detailed annotation, documentation in English and Russian, porting to the other families | |
 | 6 | Editor definitions: TunerPro XDF generated from the annotations | |
@@ -28,9 +29,16 @@ Stage 1 of 6: survey of the images.
 
 ```
 docs/en, docs/ru        documentation
-tools/survey.py         image survey (vectors, header block, checksum, build stamp)
+src/05293190AC/         generated source of the reference image, one file per 64 KB bank
+tools/                  CPU16 opcode table, decoder, assembler, analysis, generator, build, survey
 roms/                   place for the flash images (not distributed, see roms/README.md)
 third_party/            SBECBootLoader by Dino Yancey: reading and reflashing on the bench
+```
+
+## Building
+
+```sh
+python3 tools/build.py   # assembles src/ and checks the SHA-256; no ROM image needed
 ```
 
 ## Reading and reflashing a controller
