@@ -14,18 +14,24 @@ program yet. Please report what does not open or shows wrong values.
 
 | Category | Content |
 |---|---|
-| Fuel | `PartThrottleFuel`, `WotFuel` (shown as % change of the MAP-based pulse width), MAP scales, `InjectorDeadTime`, `BaroFuel`, `ReturnlessFuelScale`, fuel K and MAP offset constants |
-| Spark | `PartThrottleSpark`, `WotSpark` (degrees), coolant corrections, `KnockThreshold` |
-| Idle | `IdleTargetRpm` |
-| Sensors | thermistor curves, throttle limp-in |
-| Limits | `RevLimit`, `RevLimitAlt`, speed limiter |
+| Fuel | main and WOT fuel tables (as % change of the MAP-based pulse width), MAP scales, dead time, baro and air-temperature corrections, acceleration, after-start and cranking enrichment, fuel cut-off |
+| Spark | main and WOT spark (degrees), corrections, knock control |
+| Idle | idle speed control, including `IdleTargetRpm` |
+| Closed loop | oxygen-sensor feedback |
+| Sensors | thermistor curves, throttle limp-in, sensor processing |
+| Diagnostics | misfire monitor and other OBD monitors |
+| Speed control | cruise control (probable) |
+| Startup | values set at reset |
+| Limits | rev and speed limits |
 | Faults | `FaultTable`: one row per fault, P-code in the row label |
-| Unidentified | every other table, grouped by the routine that reads it when that routine has a name |
+| Other | tables of subsystems not identified yet |
 
-The named set depends on the family (see [porting.md](porting.md)): 17 tables in families D, E and
-F, 13 in G, 11 in A, B and C. All tables are present in every XDF; the unnamed ones carry their
-address and inputs in the description, and get units from their inputs where those are known (rpm,
-deg C, kPa, volts).
+In the reference image every table has a name: 24 exact ones and 386 structural ones (subsystem +
+inputs, see [calibration.md](calibration.md#table-names)); the description of each says which routine
+reads it, its inputs and where the result goes. The other images get the names that the port can
+carry over (from 131 tables in family A to 403 in family E); the rest keep their generated `Tab...`
+name. Units come from the annotations or from the inputs where those are known (rpm, deg C, kPa,
+volts).
 
 ## Axes
 

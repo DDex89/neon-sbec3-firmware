@@ -8,15 +8,16 @@
   <DEFAULTS datasizeinbits="8" sigdigits="4" outputtype="1" signed="0" lsbfirst="0" float="0" />
   <REGION type="0xFFFFFFFF" startaddress="0x0" size="0x20000" regionflags="0x0" name="Binary" desc="SBEC3 flash image" />
   <CATEGORY index="0x0" name="Unidentified" />
-  <CATEGORY index="0x1" name="Unidentified: Reset" />
-  <CATEGORY index="0x2" name="Unidentified: CalcBaseSpark" />
+  <CATEGORY index="0x1" name="Startup" />
+  <CATEGORY index="0x2" name="Fuel" />
   <CATEGORY index="0x3" name="Sensors" />
-  <CATEGORY index="0x4" name="Fuel" />
-  <CATEGORY index="0x5" name="Unidentified: Isr_GPT_IC1" />
-  <CATEGORY index="0x6" name="Unidentified: FinishFuelPulse" />
-  <CATEGORY index="0x7" name="Spark" />
-  <CATEGORY index="0x8" name="Faults" />
-  <CATEGORY index="0x9" name="Limits" />
+  <CATEGORY index="0x4" name="Spark" />
+  <CATEGORY index="0x5" name="Idle" />
+  <CATEGORY index="0x6" name="Diagnostics" />
+  <CATEGORY index="0x7" name="Other" />
+  <CATEGORY index="0x8" name="Closed loop" />
+  <CATEGORY index="0x9" name="Faults" />
+  <CATEGORY index="0xA" name="Limits" />
  </XDFHEADER>
  <XDFTABLE uniqueid="0x101" flags="0x0">
   <title>Tab2D_033B</title>
@@ -343,10 +344,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10A" flags="0x0">
-  <title>Tab2D_0440</title>
-  <description>$0440, 2D; inputs: $0313,Z</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="2" />
+  <title>StartCoolant2</title>
+  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to $07C4,Z. $0440, 2D; inputs: StartCoolantTemp2</description>
+  <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -359,13 +359,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x442" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>1</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -416,10 +416,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10C" flags="0x0">
-  <title>WotMapScale</title>
-  <description>MAP to row position of the WOT spark and fuel tables $0483, 2D; inputs: result of Lookup2D; #$FF; $00F0,Z</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="3" />
+  <title>FuelScaled</title>
+  <description>Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_104AE). Inputs: result of Lookup2D; #$FF. $0483, 2D; inputs: result of Lookup2D; #$FF; $00F0,Z</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -432,19 +431,19 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x485" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units>position 0-255</units>
    <indexcount>3</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x486" mmedelementsizebits="8" mmedrowcount="3" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>position 0-255</units>
+   <units />
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -489,9 +488,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10E" flags="0x0">
-  <title>Tab2D_049B</title>
-  <description>$049B, 2D; inputs: $033B,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV0AA6</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. $049B, 2D; inputs: $033B,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -561,9 +560,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x110" flags="0x0">
-  <title>Tab2D_04B3</title>
-  <description>$04B3, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleSpeed</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: VehicleSpeed. $04B3, 2D; inputs: VehicleSpeed</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -597,9 +596,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x111" flags="0x0">
-  <title>Tab2D_04BF</title>
-  <description>$04BF, 2D; inputs: MapRaw</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkMap2</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: Map. $04BF, 2D; inputs: MapRaw</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -612,13 +611,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x4C1" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>kPa</units>
    <indexcount>4</indexcount>
-   <decimalpl>0</decimalpl>
+   <decimalpl>1</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X/2.428">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -633,9 +632,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x112" flags="0x0">
-  <title>Tab2D_04CB</title>
-  <description>$04CB, 2D; inputs: Count3s</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventTime</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: Count3s. $04CB, 2D; inputs: Count3s</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -669,9 +668,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x113" flags="0x0">
-  <title>Tab2D_04D7</title>
-  <description>$04D7, 2D; inputs: MapRaw</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkMap3</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D5AE). Inputs: Map. $04D7, 2D; inputs: MapRaw</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -684,13 +683,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x4D9" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>kPa</units>
    <indexcount>3</indexcount>
-   <decimalpl>0</decimalpl>
+   <decimalpl>1</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X/2.428">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -741,9 +740,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x115" flags="0x0">
-  <title>Tab2D_04EF</title>
-  <description>$04EF, 2D; inputs: $023F,Z; MapRaw</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>MisfireV06204</title>
+  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. $04EF, 2D; inputs: $023F,Z; MapRaw</description>
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -813,9 +812,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x117" flags="0x0">
-  <title>Tab2D_0507</title>
-  <description>$0507, 2D; inputs: $023F,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>MisfireV06202</title>
+  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. Result to $04FE,Z. $0507, 2D; inputs: $023F,Z</description>
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -885,9 +884,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x119" flags="0x0">
-  <title>Tab2D_051F</title>
-  <description>$051F, 2D; inputs: ThrottleAboveClosed</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleThrottle</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: ThrottleAboveClosed. $051F, 2D; inputs: ThrottleAboveClosed</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -921,9 +920,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11A" flags="0x0">
-  <title>Tab2D_0533</title>
-  <description>$0533, 2D; inputs: ManifoldVacuum</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CrankFuelVacuum</title>
+  <description>Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: ManifoldVacuum. Result to $00F8,Z. $0533, 2D; inputs: ManifoldVacuum</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1029,9 +1028,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11D" flags="0x0">
-  <title>Tab2D_055A</title>
-  <description>$055A, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CrankFuelRpm</title>
+  <description>Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: EngineRpm. Result to $00FE,Z. $055A, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1065,9 +1064,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11E" flags="0x0">
-  <title>Tab2D_0564</title>
-  <description>$0564, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CrankFuelRpm2</title>
+  <description>Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: EngineRpm. Result to $00FE,Z. $0564, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1137,9 +1136,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x120" flags="0x0">
-  <title>Tab2D_057A</title>
-  <description>$057A, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CrankFuelV00FC2</title>
+  <description>Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z. Result to $00F2,Z. $057A, 2D; inputs: Baro</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1152,13 +1151,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x57C" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>1</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -1173,9 +1172,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x121" flags="0x0">
-  <title>Tab2D_0582</title>
-  <description>$0582, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CrankFuelV0769</title>
+  <description>Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0769,Z. Result to $00FE,Z. $0582, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1188,13 +1187,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x584" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>deg C</units>
+   <units />
    <indexcount>1</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X-128">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -1209,9 +1208,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x122" flags="0x0">
-  <title>Tab2D_058A</title>
-  <description>$058A, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CrankFuelV00FC</title>
+  <description>Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z. Result to $076B,Z. $058A, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1224,13 +1223,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x58C" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>deg C</units>
+   <units />
    <indexcount>1</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X-128">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -1245,9 +1244,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x123" flags="0x0">
-  <title>Tab3D_059B</title>
-  <description>$059B, 3D; inputs: result of Lookup2D x CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CrankFuelV0198Coolant</title>
+  <description>Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: result of Lookup2D x CoolantTemp. Result to $0765,Z. $059B, 3D; inputs: result of Lookup2D x CoolantTemp</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x59E" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>deg C</units>
@@ -1261,7 +1260,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_4094)</units>
+   <units> (rows set by CrankFuelV0198)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -1285,18 +1284,18 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x124" flags="0x0">
-  <title>Tab3D_05BC</title>
-  <description>$05BC, 3D; inputs: $0343,Z x $0552,Z; $0343,Z x $053F</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CrankFuelV0A91Coolant</title>
+  <description>Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0A91,Z x CoolantTemp; $0A91,Z x $05FE,Z; $0A91,Z x $0768,Z. Result to $00F0,Z. $05BC, 3D; inputs: $0343,Z x $0552,Z; $0343,Z x $053F</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x5BF" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>9</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -1437,9 +1436,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x128" flags="0x0">
-  <title>Tab2D_063D</title>
-  <description>$063D, 2D; inputs: $039D,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CrankFuelV0C44</title>
+  <description>Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0C44,Z. $063D, 2D; inputs: $039D,Z</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1475,7 +1474,7 @@
  <XDFTABLE uniqueid="0x129" flags="0x0">
   <title>InjectorDeadTime</title>
   <description>Injector dead time against battery voltage $0646, 2D; inputs: BatteryVolts2</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -1943,7 +1942,7 @@
  <XDFTABLE uniqueid="0x136" flags="0x0">
   <title>WotFuel</title>
   <description>Wide-open-throttle fuel correction on the MAP-based pulse width $0715, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x718" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -1957,22 +1956,22 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units>kPa (rows set by WotMapScale)</units>
+   <units>position 0-255 (rows set by FuelScaled)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
    <MATH equation="X">
     <VAR id="X" />
    </MATH>
-   <LABEL index="0" value="52.7" />
-   <LABEL index="1" value="59.3" />
-   <LABEL index="2" value="65.9" />
-   <LABEL index="3" value="72.5" />
-   <LABEL index="4" value="79.1" />
-   <LABEL index="5" value="85.7" />
-   <LABEL index="6" value="92.3" />
-   <LABEL index="7" value="98.8" />
-   <LABEL index="8" value="105.0" />
+   <LABEL index="0" value="128" />
+   <LABEL index="1" value="144" />
+   <LABEL index="2" value="160" />
+   <LABEL index="3" value="176" />
+   <LABEL index="4" value="192" />
+   <LABEL index="5" value="208" />
+   <LABEL index="6" value="224" />
+   <LABEL index="7" value="240" />
+   <LABEL index="8" value="255" />
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x729" mmedelementsizebits="8" mmedrowcount="9" mmedcolcount="17" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -1987,7 +1986,7 @@
  <XDFTABLE uniqueid="0x137" flags="0x0">
   <title>PartThrottleFuel</title>
   <description>Part-throttle fuel correction on the MAP-based pulse width $07C2, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x7C5" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -2097,22 +2096,22 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_4118)</units>
+   <units>kPa (rows set by SparkMap)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
    <MATH equation="X">
     <VAR id="X" />
    </MATH>
-   <LABEL index="0" value="49" />
-   <LABEL index="1" value="73" />
-   <LABEL index="2" value="97" />
-   <LABEL index="3" value="121" />
-   <LABEL index="4" value="145" />
-   <LABEL index="5" value="169" />
-   <LABEL index="6" value="194" />
-   <LABEL index="7" value="218" />
-   <LABEL index="8" value="241" />
+   <LABEL index="0" value="20.2" />
+   <LABEL index="1" value="30.1" />
+   <LABEL index="2" value="40.0" />
+   <LABEL index="3" value="50.0" />
+   <LABEL index="4" value="59.9" />
+   <LABEL index="5" value="69.8" />
+   <LABEL index="6" value="79.7" />
+   <LABEL index="7" value="89.6" />
+   <LABEL index="8" value="99.3" />
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x960" mmedelementsizebits="8" mmedrowcount="9" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2169,9 +2168,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x13B" flags="0x0">
-  <title>Tab3D_0A0E</title>
-  <description>$0A0E, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelRpm2</title>
+  <description>Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_104AE). Inputs: result of Lookup2D x EngineRpm. Result to $00F4,Z. $0A0E, 3D; inputs: result of Lookup2D x EngineRpm</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xA11" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -2185,22 +2184,22 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units>kPa (rows set by WotMapScale)</units>
+   <units>position 0-255 (rows set by FuelScaled)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
    <MATH equation="X">
     <VAR id="X" />
    </MATH>
-   <LABEL index="0" value="52.7" />
-   <LABEL index="1" value="59.3" />
-   <LABEL index="2" value="65.9" />
-   <LABEL index="3" value="72.5" />
-   <LABEL index="4" value="79.1" />
-   <LABEL index="5" value="85.7" />
-   <LABEL index="6" value="92.3" />
-   <LABEL index="7" value="98.8" />
-   <LABEL index="8" value="105.0" />
+   <LABEL index="0" value="128" />
+   <LABEL index="1" value="144" />
+   <LABEL index="2" value="160" />
+   <LABEL index="3" value="176" />
+   <LABEL index="4" value="192" />
+   <LABEL index="5" value="208" />
+   <LABEL index="6" value="224" />
+   <LABEL index="7" value="240" />
+   <LABEL index="8" value="255" />
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xA22" mmedelementsizebits="8" mmedrowcount="9" mmedcolcount="17" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -2499,9 +2498,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x142" flags="0x0">
-  <title>Tab2D_0E5D</title>
-  <description>$0E5D, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelBaro</title>
+  <description>Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_104AE). Inputs: Baro. $0E5D, 2D; inputs: Baro</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2751,9 +2750,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x149" flags="0x0">
-  <title>Tab2D_0EB0</title>
-  <description>$0EB0, 2D; inputs: $0331,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventStartCoolant2</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_1204A). Inputs: StartCoolantTemp. Result to $0A73,Z. $0EB0, 2D; inputs: StartCoolantTemp</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2766,13 +2765,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xEB2" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>4</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -2860,7 +2859,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x14C" flags="0x0">
   <title>Tab2D_0ED6</title>
-  <description>$0ED6, 2D; inputs: $0331,Z</description>
+  <description>$0ED6, 2D; inputs: StartCoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2895,10 +2894,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x14D" flags="0x0">
-  <title>Tab2D_0EE2</title>
-  <description>$0EE2, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="2" />
+  <title>StartCoolant</title>
+  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to $0A5A,Z, $0A5B,Z. $0EE2, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3008,10 +3006,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x150" flags="0x0">
-  <title>Tab2D_0F19</title>
-  <description>$0F19, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="6" />
+  <title>EventCoolant</title>
+  <description>Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: CoolantTemp. Result to $080C,Z. $0F19, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3189,9 +3186,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x155" flags="0x0">
-  <title>Tab2D_0F64</title>
-  <description>$0F64, 2D; inputs: $0331,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventStartCoolant6</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_1204A). Inputs: StartCoolantTemp. Result to $0A73,Z. $0F64, 2D; inputs: StartCoolantTemp</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3204,13 +3201,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xF66" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>3</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -3225,9 +3222,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x156" flags="0x0">
-  <title>Tab2D_0F73</title>
-  <description>$0F73, 2D; inputs: $0331,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventStartCoolant5</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_1204A). Inputs: StartCoolantTemp. Result to $0A7F,Z. $0F73, 2D; inputs: StartCoolantTemp</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3240,13 +3237,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xF75" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>3</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -3261,9 +3258,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x157" flags="0x0">
-  <title>Tab2D_0F7B</title>
-  <description>$0F7B, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventBaro</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: Baro. $0F7B, 2D; inputs: Baro</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3297,9 +3294,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x158" flags="0x0">
-  <title>Tab2D_0F87</title>
-  <description>$0F87, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventRpm</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: EngineRpm. Result to $00F0,Z. $0F87, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3333,9 +3330,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x159" flags="0x0">
-  <title>Tab2D_0F93</title>
-  <description>$0F93, 2D; inputs: ThrottleAboveClosed; ThrottleLast</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventThrottle</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: ThrottleAboveClosed; ThrottleLast. $0F93, 2D; inputs: ThrottleAboveClosed; ThrottleLast</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3369,10 +3366,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15A" flags="0x0">
-  <title>Tab2D_0F9F</title>
-  <description>$0F9F, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="2" />
+  <title>StartV0198</title>
+  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0198,Z. Result to $0A91,Z. $0F9F, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3385,13 +3381,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xFA1" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>deg C</units>
+   <units />
    <indexcount>1</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X-128">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -3406,9 +3402,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15B" flags="0x0">
-  <title>Tab2D_0FA9</title>
-  <description>$0FA9, 2D; inputs: $0331,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventStartCoolant3</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: StartCoolantTemp. $0FA9, 2D; inputs: StartCoolantTemp</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3421,13 +3417,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xFAB" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>3</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -3442,9 +3438,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15C" flags="0x0">
-  <title>Tab2D_0FBB</title>
-  <description>$0FBB, 2D; inputs: $0331,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventStartCoolant4</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: StartCoolantTemp. $0FBB, 2D; inputs: StartCoolantTemp</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3457,13 +3453,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xFBD" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>3</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -3478,9 +3474,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15D" flags="0x0">
-  <title>Tab2D_0FCD</title>
-  <description>$0FCD, 2D; inputs: MapRaw</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventMap</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: Map. $0FCD, 2D; inputs: MapRaw</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3493,13 +3489,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xFCF" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>kPa</units>
    <indexcount>9</indexcount>
-   <decimalpl>0</decimalpl>
+   <decimalpl>1</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X/2.428">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -3514,9 +3510,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15E" flags="0x0">
-  <title>Tab2D_0FE1</title>
-  <description>$0FE1, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventRpm4</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: EngineRpm. $0FE1, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3550,9 +3546,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15F" flags="0x0">
-  <title>Tab3DN_0FF5</title>
-  <description>$0FF5, 3Dn; inputs: $01F0,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventTable2</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: $F0,Z. Result to $00F2,Z, $0804,Z. $0FF5, 3Dn; inputs: $01F0,Z</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
    <indexcount>17</indexcount>
@@ -3608,23 +3604,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x160" flags="0x0">
-  <title>Tab3D_1091</title>
-  <description>$1091, 3D; inputs: result of Lookup2D x $0313,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventTimeStartCoolant</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: result of Lookup2D x StartCoolantTemp2. Result to $07C1,Z. $1091, 3D; inputs: result of Lookup2D x StartCoolantTemp2</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1094" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>9</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_04CB)</units>
+   <units> (rows set by FuelEventTime)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -3904,10 +3900,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x168" flags="0x0">
-  <title>Tab2D_1186</title>
-  <description>$1186, 2D; inputs: LDD</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="7" />
+  <title>FuelEventTable3</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, FinishFuelPulse). Inputs: LDD. Result to $04F4,Z. $1186, 2D; inputs: LDD</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4014,7 +4009,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x16B" flags="0x0">
   <title>Tab2D_1270</title>
-  <description>$1270, 2D; inputs: LDAA IND8, X; Adc4Raw</description>
+  <description>$1270, 2D; inputs: LDAA IND8, X; O2UpBank1Raw</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4049,9 +4044,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x16C" flags="0x0">
-  <title>Tab2D_12C8</title>
-  <description>$12C8, 2D; inputs: LDAA IND8, X</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>O2VoltageScale2</title>
+  <description>Second copy of the O2 voltage scale (same values as O2VoltageScale) $12C8, 2D; inputs: LDAA IND8, X</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4409,9 +4404,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x176" flags="0x0">
-  <title>Tab3DN_140F</title>
-  <description>$140F, 3Dn; inputs: result of Lookup2D</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>Sys3D800Table</title>
+  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D. $140F, 3Dn; inputs: result of Lookup2D</description>
+  <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
    <indexcount>9</indexcount>
@@ -4431,22 +4426,22 @@
    <LABEL index="8" value="255" />
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_42CC)</units>
+   <units>kPa (rows set by Sys3D800Map)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
    <MATH equation="X">
     <VAR id="X" />
    </MATH>
-   <LABEL index="0" value="49" />
-   <LABEL index="1" value="67" />
-   <LABEL index="2" value="86" />
-   <LABEL index="3" value="104" />
-   <LABEL index="4" value="122" />
-   <LABEL index="5" value="141" />
-   <LABEL index="6" value="159" />
-   <LABEL index="7" value="177" />
-   <LABEL index="8" value="195" />
+   <LABEL index="0" value="20.2" />
+   <LABEL index="1" value="27.7" />
+   <LABEL index="2" value="35.3" />
+   <LABEL index="3" value="42.8" />
+   <LABEL index="4" value="50.4" />
+   <LABEL index="5" value="57.9" />
+   <LABEL index="6" value="65.5" />
+   <LABEL index="7" value="73.0" />
+   <LABEL index="8" value="80.3" />
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1412" mmedelementsizebits="8" mmedrowcount="9" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -4459,9 +4454,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x177" flags="0x0">
-  <title>Tab2D_1466</title>
-  <description>$1466, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventRpm2</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_112A8). Inputs: EngineRpm. $1466, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4533,7 +4528,7 @@
  <XDFTABLE uniqueid="0x179" flags="0x0">
   <title>WotSpark</title>
   <description>Wide-open-throttle spark advance $1497, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x149A" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -4547,22 +4542,22 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units>kPa (rows set by WotMapScale)</units>
+   <units>position 0-255 (rows set by FuelScaled)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
    <MATH equation="X">
     <VAR id="X" />
    </MATH>
-   <LABEL index="0" value="52.7" />
-   <LABEL index="1" value="59.3" />
-   <LABEL index="2" value="65.9" />
-   <LABEL index="3" value="72.5" />
-   <LABEL index="4" value="79.1" />
-   <LABEL index="5" value="85.7" />
-   <LABEL index="6" value="92.3" />
-   <LABEL index="7" value="98.8" />
-   <LABEL index="8" value="105.0" />
+   <LABEL index="0" value="128" />
+   <LABEL index="1" value="144" />
+   <LABEL index="2" value="160" />
+   <LABEL index="3" value="176" />
+   <LABEL index="4" value="192" />
+   <LABEL index="5" value="208" />
+   <LABEL index="6" value="224" />
+   <LABEL index="7" value="240" />
+   <LABEL index="8" value="255" />
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x14AB" mmedelementsizebits="8" mmedrowcount="9" mmedcolcount="17" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -4577,7 +4572,7 @@
  <XDFTABLE uniqueid="0x17A" flags="0x0">
   <title>PartThrottleSpark</title>
   <description>Part-throttle spark advance $1544, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1547" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -4627,9 +4622,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x17B" flags="0x0">
-  <title>Tab3D_1679</title>
-  <description>$1679, 3D; inputs: result of Lookup2D x CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkMapCoolant</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D7FE). Inputs: result of Lookup2D x CoolantTemp. $1679, 3D; inputs: result of Lookup2D x CoolantTemp</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x167C" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>deg C</units>
@@ -4643,22 +4638,22 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_4118)</units>
+   <units>kPa (rows set by SparkMap)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
    <MATH equation="X">
     <VAR id="X" />
    </MATH>
-   <LABEL index="0" value="49" />
-   <LABEL index="1" value="73" />
-   <LABEL index="2" value="97" />
-   <LABEL index="3" value="121" />
-   <LABEL index="4" value="145" />
-   <LABEL index="5" value="169" />
-   <LABEL index="6" value="194" />
-   <LABEL index="7" value="218" />
-   <LABEL index="8" value="241" />
+   <LABEL index="0" value="20.2" />
+   <LABEL index="1" value="30.1" />
+   <LABEL index="2" value="40.0" />
+   <LABEL index="3" value="50.0" />
+   <LABEL index="4" value="59.9" />
+   <LABEL index="5" value="69.8" />
+   <LABEL index="6" value="79.7" />
+   <LABEL index="7" value="89.6" />
+   <LABEL index="8" value="99.3" />
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x1685" mmedelementsizebits="8" mmedrowcount="9" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -4671,9 +4666,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x17C" flags="0x0">
-  <title>Tab3D_16D6</title>
-  <description>$16D6, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkMapRpm4</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DAB4). Inputs: result of Lookup2D x EngineRpm. $16D6, 3D; inputs: result of Lookup2D x EngineRpm</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x16D9" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -4775,9 +4770,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x17E" flags="0x0">
-  <title>Tab3D_1940</title>
-  <description>$1940, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkMapRpm3</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D5AE). Inputs: result of Lookup2D x EngineRpm. Result to $00F0,Z. $1940, 3D; inputs: result of Lookup2D x EngineRpm</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1943" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -4791,22 +4786,22 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_04D7)</units>
+   <units>kPa (rows set by SparkMap3)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
    <MATH equation="X">
     <VAR id="X" />
    </MATH>
-   <LABEL index="0" value="65" />
-   <LABEL index="1" value="81" />
-   <LABEL index="2" value="97" />
-   <LABEL index="3" value="114" />
-   <LABEL index="4" value="130" />
-   <LABEL index="5" value="146" />
-   <LABEL index="6" value="162" />
-   <LABEL index="7" value="195" />
-   <LABEL index="8" value="227" />
+   <LABEL index="0" value="26.8" />
+   <LABEL index="1" value="33.4" />
+   <LABEL index="2" value="40.1" />
+   <LABEL index="3" value="46.7" />
+   <LABEL index="4" value="53.4" />
+   <LABEL index="5" value="60.1" />
+   <LABEL index="6" value="66.7" />
+   <LABEL index="7" value="80.3" />
+   <LABEL index="8" value="93.5" />
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x194C" mmedelementsizebits="8" mmedrowcount="9" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -4999,9 +4994,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x184" flags="0x0">
-  <title>Tab2D_19E5</title>
-  <description>$19E5, 2D; inputs: $0591,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV077A</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D5DC). Inputs: $077A,Z. $19E5, 2D; inputs: $0591,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5035,9 +5030,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x185" flags="0x0">
-  <title>Tab2D_19F3</title>
-  <description>$19F3, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkRpm2</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DE3A). Inputs: EngineRpm. $19F3, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5071,10 +5066,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x186" flags="0x0">
-  <title>Tab2D_19FB</title>
-  <description>$19FB, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="7" />
+  <title>FuelEventRpm3</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, FinishFuelPulse). Inputs: EngineRpm. $19FB, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5108,9 +5102,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x187" flags="0x0">
-  <title>Tab2D_1A09</title>
-  <description>$1A09, 2D; inputs: $0313,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkStartCoolant</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D448). Inputs: StartCoolantTemp2. Result to $0D1B,Z. $1A09, 2D; inputs: StartCoolantTemp2</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5123,13 +5117,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1A0B" mmedelementsizebits="8" mmedcolcount="10" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>10</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -5144,9 +5138,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x188" flags="0x0">
-  <title>Tab2D_1A1F</title>
-  <description>$1A1F, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkCoolant</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D5AE). Inputs: CoolantTemp. $1A1F, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5252,9 +5246,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x18B" flags="0x0">
-  <title>Tab2D_1A42</title>
-  <description>$1A42, 2D; inputs: $0E,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV0198</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DAB4). Inputs: $0198,Z. $1A42, 2D; inputs: $0E,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5360,9 +5354,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x18E" flags="0x0">
-  <title>Tab3D_1A9C</title>
-  <description>$1A9C, 3D; inputs: result of Lookup2D x EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkMapRpm2</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: result of Lookup2D x EngineRpm. $1A9C, 3D; inputs: result of Lookup2D x EngineRpm</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1A9F" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>rpm</units>
@@ -5376,18 +5370,18 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_04BF)</units>
+   <units>kPa (rows set by SparkMap2)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
    <MATH equation="X">
     <VAR id="X" />
    </MATH>
-   <LABEL index="0" value="113" />
-   <LABEL index="1" value="146" />
-   <LABEL index="2" value="154" />
-   <LABEL index="3" value="162" />
-   <LABEL index="4" value="178" />
+   <LABEL index="0" value="46.5" />
+   <LABEL index="1" value="60.1" />
+   <LABEL index="2" value="63.4" />
+   <LABEL index="3" value="66.7" />
+   <LABEL index="4" value="73.3" />
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x01" mmedaddress="0x1AA8" mmedelementsizebits="8" mmedrowcount="5" mmedcolcount="9" mmedmajorstridebits="0" mmedminorstridebits="0" />
@@ -5400,9 +5394,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x18F" flags="0x0">
-  <title>Tab2D_1ADB</title>
-  <description>$1ADB, 2D; inputs: AirTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkAirTemp5</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: AirTemp; $0A5A,Z. $1ADB, 2D; inputs: AirTemp</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5436,9 +5430,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x190" flags="0x0">
-  <title>Tab2D_1AE5</title>
-  <description>$1AE5, 2D; inputs: MapRaw</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkMap8</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: Map. $1AE5, 2D; inputs: MapRaw</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5451,13 +5445,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1AE7" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>kPa</units>
    <indexcount>2</indexcount>
-   <decimalpl>0</decimalpl>
+   <decimalpl>1</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X/2.428">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -5472,9 +5466,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x191" flags="0x0">
-  <title>Tab2D_1AF1</title>
-  <description>$1AF1, 2D; inputs: AirTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkAirTemp</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: AirTemp; $0A5A,Z. $1AF1, 2D; inputs: AirTemp</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5508,9 +5502,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x192" flags="0x0">
-  <title>Tab3D_1AFB</title>
-  <description>$1AFB, 3D; inputs: $01F6,Z x $061B,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV00F6V0D1E2</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z. Result to $00F2,Z. $1AFB, 3D; inputs: $01F6,Z x $061B,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1AFE" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -5548,9 +5542,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x193" flags="0x0">
-  <title>Tab3D_1B1C</title>
-  <description>$1B1C, 3D; inputs: result of Lookup2D x $061B,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV00F6V0D1E</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z. $1B1C, 3D; inputs: result of Lookup2D x $061B,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B1F" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -5564,7 +5558,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_04EF)</units>
+   <units> (rows set by MisfireV06204)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -5628,9 +5622,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x195" flags="0x0">
-  <title>Tab3D_1B5E</title>
-  <description>$1B5E, 3D; inputs: result of Lookup2D x $01F2,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV0AA6V00F2</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: result of Lookup2D x $F2,Z. Result to $00F4,Z. $1B5E, 3D; inputs: result of Lookup2D x $01F2,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B61" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -5644,7 +5638,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_049B)</units>
+   <units> (rows set by SparkV0AA6)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -5668,9 +5662,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x196" flags="0x0">
-  <title>Tab2D_1B97</title>
-  <description>$1B97, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkCoolant2</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: CoolantTemp. Result to $00F2,Z. $1B97, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5704,9 +5698,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x197" flags="0x0">
-  <title>Tab2D_1BA3</title>
-  <description>$1BA3, 2D; inputs: $062D,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV0D30</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D30,Z. $1BA3, 2D; inputs: $062D,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5740,9 +5734,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x198" flags="0x0">
-  <title>Tab2D_1BAB</title>
-  <description>$1BAB, 2D; inputs: $062D,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV0D302</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D30,Z. $1BAB, 2D; inputs: $062D,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5776,9 +5770,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x199" flags="0x0">
-  <title>Tab2D_1BC3</title>
-  <description>$1BC3, 2D; inputs: $0623,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV0D26</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D26,Z. Result to $00F2,Z. $1BC3, 2D; inputs: $0623,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5812,9 +5806,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19A" flags="0x0">
-  <title>Tab2D_1BCF</title>
-  <description>$1BCF, 2D; inputs: $063A,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV0D3B</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D3B,Z. Result to $0D33,Z. $1BCF, 2D; inputs: $063A,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5848,9 +5842,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19B" flags="0x0">
-  <title>Tab2D_1BDB</title>
-  <description>$1BDB, 2D; inputs: $033B,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV0AA62</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. $1BDB, 2D; inputs: $033B,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5884,9 +5878,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19C" flags="0x0">
-  <title>Tab2D_1BE9</title>
-  <description>$1BE9, 2D; inputs: $033B,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV0AA63</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. Result to $00F2,Z. $1BE9, 2D; inputs: $033B,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -5920,9 +5914,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19D" flags="0x0">
-  <title>Tab2D_1BF7</title>
-  <description>$1BF7, 2D; inputs: $033B,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkV0AA64</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. $1BF7, 2D; inputs: $033B,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6172,9 +6166,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A4" flags="0x0">
-  <title>Tab2D_1C41</title>
-  <description>$1C41, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkTable</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA. $1C41, 2D; inputs: TBA</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6208,9 +6202,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A5" flags="0x0">
-  <title>Tab2D_1C49</title>
-  <description>$1C49, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkTable2</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA. $1C49, 2D; inputs: TBA</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6244,9 +6238,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A6" flags="0x0">
-  <title>Tab2D_1C51</title>
-  <description>$1C51, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkTable3</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA. $1C51, 2D; inputs: TBA</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6280,9 +6274,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A7" flags="0x0">
-  <title>Tab2D_1C59</title>
-  <description>$1C59, 2D; inputs: MapRaw</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkMap7</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: Map. Result to $0D55,Z. $1C59, 2D; inputs: MapRaw</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6295,13 +6289,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1C5B" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>kPa</units>
    <indexcount>2</indexcount>
-   <decimalpl>0</decimalpl>
+   <decimalpl>1</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X/2.428">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -6462,7 +6456,7 @@
  <XDFTABLE uniqueid="0x1AC" flags="0x0">
   <title>KnockThreshold</title>
   <description>Knock sensor voltage threshold against rpm $1CA3, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6496,9 +6490,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AD" flags="0x0">
-  <title>Tab2D_1CB3</title>
-  <description>$1CB3, 2D; inputs: MapRaw</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>KnockMap2</title>
+  <description>Subsystem: knock control (by the routine that reads it, Sub_1F256). Inputs: Map. $1CB3, 2D; inputs: MapRaw</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6511,13 +6505,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1CB5" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>kPa</units>
    <indexcount>2</indexcount>
-   <decimalpl>0</decimalpl>
+   <decimalpl>1</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X/2.428">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -6532,9 +6526,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AE" flags="0x0">
-  <title>Tab2D_1CBC</title>
-  <description>$1CBC, 2D; inputs: $0322,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>KnockV0A8B</title>
+  <description>Subsystem: knock control (by the routine that reads it, Sub_1F408). Inputs: $0A8B,Z. $1CBC, 2D; inputs: $0322,Z</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6712,9 +6706,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1B3" flags="0x0">
-  <title>Tab2D_1D31</title>
-  <description>$1D31, 2D; inputs: ThrottleAboveClosed</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkThrottle</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed. $1D31, 2D; inputs: ThrottleAboveClosed</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -6748,9 +6742,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1B4" flags="0x0">
-  <title>Tab2D_1D3B</title>
-  <description>$1D3B, 2D; inputs: ThrottleAboveClosed</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkThrottle2</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DB84). Inputs: ThrottleAboveClosed. $1D3B, 2D; inputs: ThrottleAboveClosed</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7613,7 +7607,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1CC" flags="0x0">
   <title>Tab2D_1EA4</title>
-  <description>$1EA4, 2D; inputs: EngineRpm; $0200,Z</description>
+  <description>$1EA4, 2D; inputs: EngineRpm; SegmentRpm</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -7872,9 +7866,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D3" flags="0x0">
-  <title>Tab2D_1F4E</title>
-  <description>$1F4E, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleCoolant8</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z. $1F4E, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7908,9 +7902,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D4" flags="0x0">
-  <title>Tab2D_1F58</title>
-  <description>$1F58, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleCoolant16</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $1F58, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7944,9 +7938,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D5" flags="0x0">
-  <title>Tab2D_1F62</title>
-  <description>$1F62, 2D; inputs: $069C,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleV0348</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z. $1F62, 2D; inputs: $069C,Z</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -7980,9 +7974,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D6" flags="0x0">
-  <title>Tab2D_1F6C</title>
-  <description>$1F6C, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleCoolant12</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. $1F6C, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8052,9 +8046,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D8" flags="0x0">
-  <title>Tab2D_1F7E</title>
-  <description>$1F7E, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleCoolant17</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $1F7E, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8088,9 +8082,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D9" flags="0x0">
-  <title>Tab2D_1F88</title>
-  <description>$1F88, 2D; inputs: $069C,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleV03484</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z. $1F88, 2D; inputs: $069C,Z</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8124,9 +8118,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DA" flags="0x0">
-  <title>Tab2D_1F92</title>
-  <description>$1F92, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleCoolant19</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. $1F92, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8196,9 +8190,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DC" flags="0x0">
-  <title>Tab2D_1FA5</title>
-  <description>$1FA5, 2D; inputs: MapRaw</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleMap2</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Map. $1FA5, 2D; inputs: MapRaw</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8211,13 +8205,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1FA7" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>kPa</units>
    <indexcount>1</indexcount>
-   <decimalpl>0</decimalpl>
+   <decimalpl>1</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X/2.428">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -8232,9 +8226,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DD" flags="0x0">
-  <title>Tab2D_1FAD</title>
-  <description>$1FAD, 2D; inputs: $0695,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleV0341</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0341,Z. $1FAD, 2D; inputs: $0695,Z</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8304,9 +8298,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DF" flags="0x0">
-  <title>Tab2D_1FC7</title>
-  <description>$1FC7, 2D; inputs: Count3s</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleTime</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Count3s. $1FC7, 2D; inputs: Count3s</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8340,9 +8334,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E0" flags="0x0">
-  <title>Tab2D_1FCF</title>
-  <description>$1FCF, 2D; inputs: CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleCoolant22</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z. $1FCF, 2D; inputs: CoolantTemp</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8376,9 +8370,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E1" flags="0x0">
-  <title>Tab2D_1FDD</title>
-  <description>$1FDD, 2D; inputs: ThrottleAboveClosed</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleThrottle2</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: ThrottleAboveClosed. $1FDD, 2D; inputs: ThrottleAboveClosed</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8412,23 +8406,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E2" flags="0x0">
-  <title>Tab3D_1FE7</title>
-  <description>$1FE7, 3D; inputs: result of Lookup2D x $0200,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleSpeedSegRpm</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00FE,Z. $1FE7, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1FEA" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>9</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_04B3)</units>
+   <units> (rows set by IdleSpeed)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -8456,23 +8450,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E3" flags="0x0">
-  <title>Tab3D_2044</title>
-  <description>$2044, 3D; inputs: result of Lookup2D x $0200,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleV032ESegRpm</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00F4,Z. $2044, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2047" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>5</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_4333)</units>
+   <units> (rows set by IdleV032E)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -8496,9 +8490,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E4" flags="0x0">
-  <title>Tab2D_2069</title>
-  <description>$2069, 2D; inputs: VehicleSpeed</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleSpeed3</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed. $2069, 2D; inputs: VehicleSpeed</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8532,9 +8526,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E5" flags="0x0">
-  <title>Tab2D_2075</title>
-  <description>$2075, 2D; inputs: $0699,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleV0345</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0345,Z. $2075, 2D; inputs: $0699,Z</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8568,9 +8562,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E6" flags="0x0">
-  <title>Tab2D_2081</title>
-  <description>$2081, 2D; inputs: $0315,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleV0A5A5</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0A5A,Z. $2081, 2D; inputs: $0315,Z</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8604,9 +8598,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E7" flags="0x0">
-  <title>Tab2D_208B</title>
-  <description>$208B, 2D; inputs: $0200,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleSegRpm</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm. Result to $00FC,Z. $208B, 2D; inputs: SegmentRpm</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8619,13 +8613,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x208D" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>1</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -8640,9 +8634,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E8" flags="0x0">
-  <title>Tab2D_2095</title>
-  <description>$2095, 2D; inputs: $0200,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleSegRpm2</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm. $2095, 2D; inputs: SegmentRpm</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -8655,13 +8649,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2097" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>1</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -8676,23 +8670,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E9" flags="0x0">
-  <title>Tab3D_209F</title>
-  <description>$209F, 3D; inputs: result of Lookup2D x $0200,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleThrottleSegRpm</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: result of Lookup2D x SegmentRpm. $209F, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x20A2" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>5</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_051F)</units>
+   <units> (rows set by IdleThrottle)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -8825,7 +8819,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1ED" flags="0x0">
   <title>Tab2D_20EB</title>
-  <description>$20EB, 2D; inputs: $0200,Z</description>
+  <description>$20EB, 2D; inputs: SegmentRpm</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8932,23 +8926,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F0" flags="0x0">
-  <title>Tab3D_2109</title>
-  <description>$2109, 3D; inputs: result of Lookup2D x $0200,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleV032ESegRpm2</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00F7,Z. $2109, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x210C" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>5</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_4333)</units>
+   <units> (rows set by IdleV032E)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -9153,7 +9147,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F6" flags="0x0">
   <title>Tab2D_2174</title>
-  <description>$2174, 2D; inputs: $0652,Z</description>
+  <description>$2174, 2D; inputs: IdleTarget</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9224,23 +9218,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F8" flags="0x0">
-  <title>Tab3D_218C</title>
-  <description>$218C, 3D; inputs: result of Lookup2D x $0652,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleBaroIdleTarget2</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F0,Z. $218C, 3D; inputs: result of Lookup2D x IdleTarget</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x218F" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>5</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units>kPa (rows set by Tab2D_433F)</units>
+   <units>kPa (rows set by IdleBaro)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -9264,9 +9258,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F9" flags="0x0">
-  <title>Tab2D_21AD</title>
-  <description>$21AD, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleBaro7</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1A688). Inputs: Baro. Result to $002A,Z. $21AD, 2D; inputs: Baro</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9300,23 +9294,23 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FA" flags="0x0">
-  <title>Tab3D_21B5</title>
-  <description>$21B5, 3D; inputs: result of Lookup2D x $0652,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleBaroIdleTarget</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F5,Z. $21B5, 3D; inputs: result of Lookup2D x IdleTarget</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x21B8" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>5</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units>kPa (rows set by Tab2D_433F)</units>
+   <units>kPa (rows set by IdleBaro)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -9377,7 +9371,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FC" flags="0x0">
   <title>Tab2D_21E0</title>
-  <description>$21E0, 2D; inputs: EngineRpm; $0200,Z</description>
+  <description>$21E0, 2D; inputs: EngineRpm; SegmentRpm</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9412,9 +9406,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FD" flags="0x0">
-  <title>Tab2D_21E8</title>
-  <description>$21E8, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleBaro2</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: Baro. Result to $00F1,Z. $21E8, 2D; inputs: Baro</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9448,9 +9442,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FE" flags="0x0">
-  <title>Tab2D_21F2</title>
-  <description>$21F2, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleBaro3</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1971A). Inputs: Baro. Result to $00F0,Z. $21F2, 2D; inputs: Baro</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -9484,9 +9478,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FF" flags="0x0">
-  <title>Tab2D_21FC</title>
-  <description>$21FC, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleBaro4</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Baro. $21FC, 2D; inputs: Baro</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -10105,7 +10099,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x210" flags="0x0">
   <title>Tab2D_2597</title>
-  <description>$2597, 2D; inputs: $0313,Z</description>
+  <description>$2597, 2D; inputs: StartCoolantTemp2</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10392,9 +10386,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x218" flags="0x0">
-  <title>Tab2D_26BA</title>
-  <description>$26BA, 2D; inputs: $0200,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>MisfireSegRpm</title>
+  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: SegmentRpm. Result to $0629,Z. $26BA, 2D; inputs: SegmentRpm</description>
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -10407,13 +10401,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x26BC" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>rpm</units>
    <indexcount>5</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X*32">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -10429,7 +10423,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x219" flags="0x0">
   <title>Tab2D_26CA</title>
-  <description>$26CA, 2D; inputs: $0200,Z</description>
+  <description>$26CA, 2D; inputs: SegmentRpm</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10464,9 +10458,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21A" flags="0x0">
-  <title>Tab2D_26DA</title>
-  <description>$26DA, 2D; inputs: TBA</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>MisfireV06205</title>
+  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. $26DA, 2D; inputs: TBA</description>
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -10536,9 +10530,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21C" flags="0x0">
-  <title>Tab3D_26FA</title>
-  <description>$26FA, 3D; inputs: $FE,Z x $0204,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>MisfireV04FEV05C6</title>
+  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $04FE,Z x $05C6,Z. Result to $04FE,Z. $26FA, 3D; inputs: $FE,Z x $0204,Z</description>
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x26FD" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -10580,9 +10574,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21D" flags="0x0">
-  <title>Tab3D_2757</title>
-  <description>$2757, 3D; inputs: result of Lookup3D x result of Lookup3D</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>MisfireV04FEScaled</title>
+  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup3D x result of Lookup3D. Result to $04FF,Z. $2757, 3D; inputs: result of Lookup3D x result of Lookup3D</description>
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x275A" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -10596,7 +10590,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab3D_26FA)</units>
+   <units> (rows set by MisfireV04FEV05C6)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -10624,9 +10618,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21E" flags="0x0">
-  <title>Tab3D_27B4</title>
-  <description>$27B4, 3D; inputs: result of Lookup2D x CoolantTemp</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>MisfireV0620Coolant</title>
+  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x CoolantTemp. Result to $05E2,Z. $27B4, 3D; inputs: result of Lookup2D x CoolantTemp</description>
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x27B7" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units>deg C</units>
@@ -10640,7 +10634,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_04EF)</units>
+   <units> (rows set by MisfireV06204)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -10664,9 +10658,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21F" flags="0x0">
-  <title>Tab3D_27D5</title>
-  <description>$27D5, 3D; inputs: result of Lookup2D x $0204,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>MisfireV0620V05C6</title>
+  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z. $27D5, 3D; inputs: result of Lookup2D x $0204,Z</description>
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x27D8" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -10680,7 +10674,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_0507)</units>
+   <units> (rows set by MisfireV06202)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -10724,7 +10718,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_0507)</units>
+   <units> (rows set by MisfireV06202)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -10752,9 +10746,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x221" flags="0x0">
-  <title>Tab3D_288F</title>
-  <description>$288F, 3D; inputs: result of Lookup2D x $0204,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>MisfireV0620V05C63</title>
+  <description>Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z. $288F, 3D; inputs: result of Lookup2D x $0204,Z</description>
+  <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2892" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
    <units />
@@ -10768,7 +10762,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_0507)</units>
+   <units> (rows set by MisfireV06202)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -10812,7 +10806,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by Tab2D_0507)</units>
+   <units> (rows set by MisfireV06202)</units>
    <indexcount>9</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />
@@ -10878,7 +10872,7 @@
  <XDFTABLE uniqueid="0x224" flags="0x0">
   <title>FaultTable</title>
   <description>Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes $3505</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>10</indexcount>
@@ -11342,9 +11336,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22B" flags="0x0">
-  <title>Tab2D_3DCD</title>
-  <description>$3DCD, 2D; inputs: ?; Throttle</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SensorTable5</title>
+  <description>Subsystem: sensor processing (by the routine that reads it, Sub_241AA). Inputs: ?; Throttle. $3DCD, 2D; inputs: ?; Throttle</description>
+  <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11450,10 +11444,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22E" flags="0x0">
-  <title>Tab2D_4054</title>
-  <description>$4054, 2D; inputs: $0316,Z</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="2" />
+  <title>StartTable</title>
+  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: TBA. Result to $0A6B,Z. $4054, 2D; inputs: $0316,Z</description>
+  <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11487,10 +11480,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22F" flags="0x0">
-  <title>Tab2D_4064</title>
-  <description>$4064, 2D; inputs: $0315,Z; $39,Z; #$98</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="2" />
+  <title>StartStartCoolant</title>
+  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: StartCoolantTemp2. Result to $0C00,Z. $4064, 2D; inputs: $0315,Z; $39,Z; #$98</description>
+  <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11503,13 +11495,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x4066" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>5</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -11524,10 +11516,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x230" flags="0x0">
-  <title>Tab2D_4070</title>
-  <description>$4070, 2D; inputs: $0319,Z</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="2" />
+  <title>Sys17000Table</title>
+  <description>Subsystem: not identified yet (top routine Sub_2C708) (by the routine that reads it, Sub_17A48). Inputs: ?; $01BB,Z; $01BC,Z. Result to $0F25,Z, $01B9,Z, $01BA,Z. $4070, 2D; inputs: $0319,Z</description>
+  <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11597,10 +11588,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x232" flags="0x0">
-  <title>Tab2D_4088</title>
-  <description>$4088, 2D; inputs: $0E,Z; ?; #$AA</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="2" />
+  <title>StartV0A87</title>
+  <description>Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to $0A88,Z. $4088, 2D; inputs: $0E,Z; ?; #$AA</description>
+  <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11634,9 +11624,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x233" flags="0x0">
-  <title>Tab2D_4094</title>
-  <description>$4094, 2D; inputs: $0E,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CrankFuelV0198</title>
+  <description>Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0198,Z. $4094, 2D; inputs: $0E,Z</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11670,9 +11660,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x234" flags="0x0">
-  <title>Tab2D_409C</title>
-  <description>$409C, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkRpm3</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DB4A). Inputs: EngineRpm. $409C, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11706,9 +11696,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x235" flags="0x0">
-  <title>Tab2D_40B0</title>
-  <description>$40B0, 2D; inputs: BatteryVolts2</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkVolts</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DB4A). Inputs: BatteryVolts2. $40B0, 2D; inputs: BatteryVolts2</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11742,9 +11732,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x236" flags="0x0">
-  <title>Tab3DN_40C4</title>
-  <description>$40C4, 3Dn; inputs: LDAA IND8, Y</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkTable8</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1DB4A). Inputs: LDAA IND8, Y. $40C4, 3Dn; inputs: LDAA IND8, Y</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
    <indexcount>9</indexcount>
@@ -11792,9 +11782,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x237" flags="0x0">
-  <title>Tab2D_4118</title>
-  <description>$4118, 2D; inputs: MapRaw</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SparkMap</title>
+  <description>Subsystem: spark advance (by the routine that reads it, Sub_1D7FE). Inputs: Map. $4118, 2D; inputs: MapRaw</description>
+  <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11807,13 +11797,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x411A" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>kPa</units>
    <indexcount>2</indexcount>
-   <decimalpl>0</decimalpl>
+   <decimalpl>1</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X/2.428">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -11936,9 +11926,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23B" flags="0x0">
-  <title>Tab2D_42C2</title>
-  <description>$42C2, 2D; inputs: EngineRpm</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>Sys3D800Rpm</title>
+  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z. $42C2, 2D; inputs: EngineRpm</description>
+  <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11972,9 +11962,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23C" flags="0x0">
-  <title>Tab2D_42CC</title>
-  <description>$42CC, 2D; inputs: MapRaw</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>Sys3D800Map</title>
+  <description>Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: Map. $42CC, 2D; inputs: MapRaw</description>
+  <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11987,13 +11977,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x42CE" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>kPa</units>
    <indexcount>2</indexcount>
-   <decimalpl>0</decimalpl>
+   <decimalpl>1</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X/2.428">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -12008,9 +11998,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23D" flags="0x0">
-  <title>Tab2D_4333</title>
-  <description>$4333, 2D; inputs: $0682,Z</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleV032E</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: $032E,Z. $4333, 2D; inputs: $0682,Z</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12044,9 +12034,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23E" flags="0x0">
-  <title>Tab2D_433F</title>
-  <description>$433F, 2D; inputs: Baro</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>IdleBaro</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Baro. $433F, 2D; inputs: Baro</description>
+  <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12080,10 +12070,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23F" flags="0x0">
-  <title>Tab2D_51E1</title>
-  <description>$51E1, 2D; inputs: $0612,Z</description>
-  <CATEGORYMEM index="0" category="1" />
-  <CATEGORYMEM index="1" category="6" />
+  <title>EventV0D11</title>
+  <description>Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: $0D11,Z. Result to $791E,Z. $51E1, 2D; inputs: $0612,Z</description>
+  <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12117,9 +12106,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x240" flags="0x0">
-  <title>Tab2D_51F3</title>
-  <description>$51F3, 2D; inputs: $059A</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>FuelEventCal</title>
+  <description>Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12680). Inputs: $0A83; $7563. $51F3, 2D; inputs: $059A</description>
+  <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12155,7 +12144,7 @@
  <XDFCONSTANT uniqueid="0x241" flags="0x0">
   <title>WotFuelK</title>
   <description>K factor of the WOT base pulse width $0654</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x654" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12167,7 +12156,7 @@
  <XDFCONSTANT uniqueid="0x242" flags="0x0">
   <title>WotFuelMapOffset</title>
   <description>MAP offset of the WOT base pulse width $0655</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x655" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -12179,7 +12168,7 @@
  <XDFCONSTANT uniqueid="0x243" flags="0x0">
   <title>PartThrottleFuelK</title>
   <description>K factor of the part-throttle base pulse width: (MAP - offset) * (256 + K) / 16 $0656</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x656" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12191,7 +12180,7 @@
  <XDFCONSTANT uniqueid="0x244" flags="0x0">
   <title>PartThrottleFuelMapOffset</title>
   <description>MAP offset of the part-throttle base pulse width $0657</description>
-  <CATEGORYMEM index="0" category="5" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x657" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -12203,7 +12192,7 @@
  <XDFCONSTANT uniqueid="0x245" flags="0x0">
   <title>RevLimit</title>
   <description>Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral) $10F8</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x10F8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -12215,7 +12204,7 @@
  <XDFCONSTANT uniqueid="0x246" flags="0x0">
   <title>RevLimitAlt</title>
   <description>Rev limit, used while $0C31,Z bit 5 is clear $10FA</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x10FA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>

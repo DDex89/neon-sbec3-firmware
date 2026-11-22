@@ -37,6 +37,7 @@ python3 tools/survey.py roms/*.bin  # header, checksum and families of all image
 | `tools/caldiff.py` | Compares two images of one family table by table (`docs/diffs/`) |
 | `tools/xdf.py` | Writes the TunerPro definition of an image (`xdf/`) |
 | `tools/fixsum.py` | Checks or corrects the image checksum after editing |
+| `tools/autoname.py` | Gives the tables without a hand name a structural name (subsystem + inputs) |
 | `tools/build.py` | Assembles and verifies against `tools/variants.json` |
 | `tools/survey.py` | Survey of images (stage 1) |
 

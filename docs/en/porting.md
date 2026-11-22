@@ -32,12 +32,12 @@ wrong file. These files are generated: change the reference annotations and re-r
 
 | Image | Family | Size | Routines matched | Instructions mapped | Labels | RAM names | Tables | Constants |
 |---|---|---|---|---|---|---|---|---|
-| 05269833AI, 05269834AJ | E | 256 KB | 654 of 657 | 42,461 of 43,370 | 35 of 35 | 48 of 48 | 16 of 16 | 8 of 8 |
-| 05269833AH | D | 256 KB | 618 | 37,929 | 35 | 48 | 16 | 8 |
-| 05032017AA | G | 256 KB | 623 | 39,434 | 34 | 48 | 12 | 6 |
-| 05007038, 05293148AA | C | 128 KB | 301 | 15,809 | 19 | 34 | 10 | 6 |
-| 05293013AC, 05293014AC | B | 128 KB | 194 | 8,103 | 17 | 34 | 10 | 6 |
-| 04887050, 04887051 | A | 128 KB | 170 | 7,042 | 17 | 32 | 10 | 6 |
+| 05269833AI, 05269834AJ | E | 256 KB | 654 of 657 | 42,461 of 43,370 | 35 of 35 | 55 of 55 | 402 of 410 | 8 of 8 |
+| 05269833AH | D | 256 KB | 618 | 37,929 | 35 | 55 | 361 | 8 |
+| 05032017AA | G | 256 KB | 623 | 39,434 | 34 | 55 | 351 | 6 |
+| 05007038, 05293148AA | C | 128 KB | 301 | 15,809 | 19 | 39 | 167 | 6 |
+| 05293013AC, 05293014AC | B | 128 KB | 194 | 8,103 | 17 | 39 | 134 | 6 |
+| 04887050, 04887051 | A | 128 KB | 170 | 7,042 | 17 | 37 | 131 | 6 |
 
 The 256 KB families are close relatives of the reference: almost everything carries over, and
 the RAM layout is nearly the same. The 128 KB families are an older, smaller program (30,000 to

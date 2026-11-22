@@ -5,8 +5,8 @@
  "instructions_mapped": 15809,
  "instructions_ref": 43370,
  "labels": "19 of 35",
- "ram": "34 of 48",
- "tables": "10 of 16",
+ "ram": "39 of 55",
+ "tables": "167 of 410",
  "scalars": "6 of 8",
  "ram_identity": 102,
  "ram_moved": 913

@@ -29,7 +29,7 @@ Sub_10036:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L10070
         BRSET   $0C30,Z,#$80,L10064
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_1952
+        LDX     #FuelCutRpm
         JSR     Lookup2D
         LDAA    >Map,Z
         CBA
@@ -105,7 +105,7 @@ L1012C:
         CLR     $F1,Z
         STAB    $F0,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_195C
+        LDX     #FuelCutRpm2
         JSR     Lookup2D
         LDAB    $F0,Z
         CMPA    $07A1,Z
@@ -122,7 +122,7 @@ L1015E:
         LDAA    >CoolantTemp,Z
         CMPA    $193B
         LBCS    L102E8
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         CMPA    $193C
         BCC     L1017A
         LDAA    $193D
@@ -199,11 +199,11 @@ L10256:
         STAB    $F0,Z
         LDAA    >CoolantTemp,Z
         BRSET   $0943,Z,#$01,L102A0
-        LDX     #Tab2D_1985
+        LDX     #FuelCutCoolant2
         JSR     Lookup2D
         STAA    $F2,Z
         LDAA    $032E,Z
-        LDX     #Tab2D_199D
+        LDX     #FuelCutV032E2
         JSR     Lookup2D
         CMPA    $F2,Z
         BCC     L1028A
@@ -217,11 +217,11 @@ L1028A:
         LBHI    L102DC
         BRA     L102C6
 L102A0:
-        LDX     #Tab2D_1979
+        LDX     #FuelCutCoolant
         JSR     Lookup2D
         STAA    $F2,Z
         LDAA    $032E,Z
-        LDX     #Tab2D_1991
+        LDX     #FuelCutV032E
         JSR     Lookup2D
         LDAB    $F0,Z
         CMPA    $F2,Z
@@ -326,7 +326,7 @@ L103AC:
         STAA    $081A,Z
         ANDP    #$FF1F
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_0F62
+        LDX     #FuelRpm3
         JSR     Lookup2D
         LDAA    $07AA,Z
         ADDA    $0F5A
@@ -371,7 +371,7 @@ L10410:
         CMPA    $19E5
         BCS     L104A4
         LDAB    >EngineRpm,Z
-        SUBB    $0300,Z
+        SUBB    >IdleTarget,Z
         BCC     L1044C
         CLRB
 L1044C:
@@ -415,17 +415,17 @@ L104AC:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 Sub_104AE:
-        LDX     #Tab2D_0E94
+        LDX     #FuelBaro
         LDAA    <Baro,Z
         JSR     Lookup2D
         ADDA    >Map,Z
         BCC     L104C0
         LDAA    #$FF
 L104C0:
-        LDX     #Tab2D_0928
+        LDX     #FuelScaled
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #Tab3D_0E9E
+        LDX     #FuelRpm2
         JSR     Lookup3D
         STAA    $F4,Z
         BRCLR   $0C30,Z,#$80,L1050C
@@ -655,12 +655,12 @@ Sub_106EC:
         BRCLR   $0774,Z,#$80,L107A4
         BRCLR   >MainLoopPhaseMask,Z,#$04,L10740
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_1491
+        LDX     #AccelFuelCoolant2
         JSR     Lookup2D
         STAB    $F0,Z
         LDAA    $0474,Z
         BEQ     L1071E
-        LDX     #Tab2D_03F8
+        LDX     #AccelFuelV0474
         JSR     Lookup2D
         ADDB    $F0,Z
         BCC     L1071E
@@ -668,16 +668,16 @@ Sub_106EC:
 L1071E:
         STAB    $07D4,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_1485
+        LDX     #AccelFuelCoolant
         JSR     Lookup2D
         STAA    $07D5,Z
         LDAA    <Baro,Z
-        LDX     #Tab2D_14A9
+        LDX     #AccelFuelBaro
         JSR     Lookup2D
         STAA    $07D6,Z
 L10740:
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_14B6
+        LDX     #AccelFuelCoolant3
         JSR     Lookup2D
         LDAA    >Throttle,Z
         SUBA    >ThrottleLast,Z
@@ -689,7 +689,7 @@ L10740:
         TBA
 L10762:
         STAA    $F6,Z
-        LDX     #Tab2D_14C2
+        LDX     #AccelFuelCoolant4
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
         LDAA    $F6,Z
@@ -717,16 +717,16 @@ L107A4:
         STD     $07CA,Z
         BEQ     L107BA
         LDAA    <Baro,Z
-        LDX     #Tab2D_14DA
+        LDX     #AccelFuelBaro2
         JSR     Lookup2D
         STAA    $07D7,Z
 L107BA:
-        LDX     #Tab2D_14F2
+        LDX     #AccelFuelRpm
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         CLRA
         XGDE
-        LDX     #Tab2D_14E6
+        LDX     #AccelFuelMap
         LDAA    >Map,Z
         JSR     Lookup2D
         CLRA
@@ -768,7 +768,7 @@ L1080C:
         LDAB    >EngineRpm,Z
         CMPB    $150A
         LBCC    L1096C
-        LDX     #Tab2D_0978
+        LDX     #AccelFuelThrottle
         LDAA    >ThrottleAboveClosed,Z
         JSR     Lookup2D
         BEQ     L10858
@@ -781,7 +781,7 @@ L10852:
         MUL
 L10858:
         STAB    $F0,Z
-        LDX     #Tab2D_098C
+        LDX     #AccelFuelV00F4
         LDAA    $F4,Z
         JSR     Lookup2D
         BEQ     L1086E
@@ -816,7 +816,7 @@ L1089E:
         LDAA    $00,X
         LBEQ    L1096C
         STAA    $F4,Z
-        LDX     #Tab2D_150D
+        LDX     #AccelFuelCoolant5
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
         LDAB    $F4,Z
@@ -830,7 +830,7 @@ L1089E:
         RORE
         LSRE
         LDAA    >AirTemp,Z
-        LDX     #Tab2D_1517
+        LDX     #AccelFuelAirTemp
         JSR     Lookup2D
         BEQ     L108EA
         CLRA
@@ -843,7 +843,7 @@ L1089E:
         LDE     $00F4,Z
 L108EA:
         LDAA    <Baro,Z
-        LDX     #Tab2D_1521
+        LDX     #AccelFuelBaro3
         JSR     Lookup2D
         CLRA
         ADDD    #$0080
@@ -1031,7 +1031,7 @@ L10A86:
         BCS     L10AEA
         STAA    $F0,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_16FB
+        LDX     #FuelCoolant3
         JSR     Lookup2D
         CMPA    $F0,Z
         BCS     L10AA6
@@ -1040,10 +1040,10 @@ L10A86:
 L10AA6:
         BCLR    >FuelModeFlags,Z,#$80
         LDAA    $F0,Z
-        LDX     #Tab2D_09C4
+        LDX     #FuelV00F0
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #Tab3D_170F
+        LDX     #FuelV00F0Coolant
         JSR     Lookup3D
         CLRB
         XGAB
@@ -1083,19 +1083,19 @@ Sub_10AEC:
         EMUL
 L10B0E:
         LDAA    >AirTemp,Z
-        LDX     #Tab2D_0E6C
+        LDX     #FuelAirTempCorr
         JSR     Lookup2D
         BEQ     L10B48
         STAA    $FA,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_0E82
+        LDX     #FuelAirTempRpmWeight
         JSR     Lookup2D
         LDAB    $FA,Z
         MUL
         ADCA    #$00
         STAA    $FA,Z
         LDAA    >Map,Z
-        LDX     #Tab2D_0E7A
+        LDX     #FuelAirTempMapWeight
         JSR     Lookup2D
         LDAB    $FA,Z
         MUL
@@ -1124,11 +1124,11 @@ L10B7C:
         BRSET   $0C33,Z,#$10,L10B90
         LDAA    $0ACA,Z
 L10B90:
-        LDX     #Tab2D_1924
+        LDX     #FuelCal
         JSR     Lookup2D
         ADDA    #$80
         STAA    $F0,Z
-        LDX     #Tab2D_192E
+        LDX     #FuelMap4
         LDAA    >Map,Z
         JSR     Lookup2D
         LDAA    $F0,Z
@@ -1191,20 +1191,20 @@ Sub_10C00:
 L10C30:
         LDAA    $0A91,Z
         LDAB    >CoolantTemp,Z
-        LDX     #Tab3D_1395
+        LDX     #AfterStartFuelV0A91Coolant2
         JSR     Lookup3D
         STAA    $0F04,Z
         LDD     >Count3s,Z
         CPD     $0862
         BCS     L10CA2
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_03D4
+        LDX     #AfterStartFuelCoolant
         JSR     Lookup2D
         BEQ     L10CA2
         STAA    $0F47,Z
         LDAA    $0A91,Z
         LDAB    >Map,Z
-        LDX     #Tab3D_304A
+        LDX     #AfterStartFuelV0A91Map
         JSR     Lookup3D
         CLRA
         ASLD
@@ -1234,19 +1234,19 @@ L10CA6:
         STD     $0F45,Z
         LDAA    $0A91,Z
         LDAB    >CoolantTemp,Z
-        LDX     #Tab3D_1338
+        LDX     #AfterStartFuelV0A91Coolant
         JSR     Lookup3D
         STAA    $0F03,Z
-        LDX     #Tab2D_1290
+        LDX     #AfterStartFuelV0198
         LDAA    $0198,Z
         JSR     Lookup2D
         STAA    $0F02,Z
-        LDX     #Tab3D_13F2
+        LDX     #AfterStartFuelV0A91Coolant3
         LDAA    $0A91,Z
         LDAB    >CoolantTemp,Z
         JSR     Lookup3D
         STAA    $0F05,Z
-        LDX     #Tab3DN_129C
+        LDX     #AfterStartFuelTable
         LDAA    $0A91,Z
         LDAB    $0C4A,Z
         JSR     Lookup3DNorm
@@ -1313,10 +1313,10 @@ Sub_10D5E:
         STAA    $07E6,Z
 L10D7E:
         LDAA    $07E6,Z
-        LDX     #Tab2D_0934
+        LDX     #FuelV07E6
         JSR     Lookup2D
         LDAB    $0768,Z
-        LDX     #Tab3D_102B
+        LDX     #FuelV07E6V0768
         JSR     Lookup3D
         BRCLR   $0C30,Z,#$40,L10DAA
         LDAA    $1088
@@ -1351,20 +1351,20 @@ L10DDA:
 L10DE6:
         BSET    >FuelModeFlags,Z,#$04
         LDAA    >Map,Z
-        LDX     #Tab2D_0948
+        LDX     #FuelMap
         JSR     Lookup2D
-        LDX     #Tab3D_109B
+        LDX     #FuelMapCoolant
         BRA     L10E42
 L10DFC:
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_0960
+        LDX     #FuelRpm
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #Tab3D_116B
+        LDX     #FuelRpmCoolant
         JSR     Lookup3D
         STAA    $F2,Z
         LDAA    $0C47,Z
-        LDX     #Tab2D_1163
+        LDX     #FuelV0C47
         JSR     Lookup2D
         LDAA    $F2,Z
         MUL
@@ -1376,16 +1376,16 @@ L10DFC:
         STD     $F4,Z
 L10E32:
         LDAA    >Map,Z
-        LDX     #Tab2D_0954
+        LDX     #FuelMap2
         JSR     Lookup2D
-        LDX     #Tab3D_1103
+        LDX     #FuelMapCoolant2
 L10E42:
         LDAB    >CoolantTemp,Z
         JSR     Lookup3D
         BRA     L10E58
 L10E4C:
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_1019
+        LDX     #FuelCoolant2
         JSR     Lookup2D
 L10E58:
         CLRA
@@ -1393,7 +1393,7 @@ L10E58:
         ASLD
         STD     $F4,Z
         LDAA    <Baro,Z
-        LDX     #Tab2D_11C8
+        LDX     #FuelBaro2
         JSR     Lookup2D
         LDE     $00F4,Z
         CLRB
@@ -1406,7 +1406,7 @@ L10E58:
         BRSET   $0505,Z,#$08,L10EA0
         STE     $00F0,Z
         LDAA    $0E,Z
-        LDX     #Tab2D_1093
+        LDX     #FuelV000E
         JSR     Lookup2D
         CLRB
         EMUL
@@ -1414,9 +1414,9 @@ L10E58:
 L10EA0:
         BRSET   $0C30,Z,#$40,L10F0C
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_10F9
+        LDX     #FuelRpm5
         BRSET   $0C30,Z,#$80,L10EB8
-        LDX     #Tab2D_1089
+        LDX     #FuelRpm4
 L10EB8:
         JSR     Lookup2D
         CLRB
@@ -1427,17 +1427,17 @@ L10EB8:
         TST     $07AF,Z
         BEQ     L10F0C
         LDAA    $0A5E,Z
-        SUBA    $0A6D,Z
+        SUBA    >StartCoolantTemp2,Z
         BCC     L10EE4
         NEGA
 L10EE4:
         CMPA    $11DE
         BCC     L10F0C
         LDAA    >Map,Z
-        LDX     #Tab2D_0A68
+        LDX     #FuelMap3
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #Tab3D_11DF
+        LDX     #FuelMapCoolant3
         JSR     Lookup3D
         STAA    $07E7,Z
         CLRB
@@ -1461,7 +1461,7 @@ Sub_10F1C:
         LDAA    >Map,Z
         BRSET   $06B4,Z,#$20,L10F46
         LDAA    <Baro,Z
-        LDX     #Tab2D_0E60
+        LDX     #MapBaroOffset
         JSR     Lookup2D
         LDAB    >Map,Z
         ABA
@@ -1471,7 +1471,7 @@ L10F46:
         LDX     #PartThrottleMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #Tab3D_0D2B
+        LDX     #PartThrottleFuelMain
         JSR     Lookup3D
         JSR     ScaleByFraction
         LSRE
@@ -1677,7 +1677,7 @@ L1113E:
 L11158:
         STAA    $07DD,Z
 L1115C:
-        LDX     #Tab2D_1218
+        LDX     #FuelV07D9
         LDAA    $07D9,Z
         JSR     Lookup2D
         STAA    $F0,Z
@@ -1686,11 +1686,11 @@ L1115C:
         BRA     L11180
 L11174:
         LDAA    $0198,Z
-        LDX     #Tab2D_096C
+        LDX     #FuelV0198
         JSR     Lookup2D
 L11180:
         LDAB    $0803,Z
-        LDX     #Tab3D_1226
+        LDX     #FuelV07D9V0803
         JSR     Lookup3D
         CLRA
         ASLD
@@ -1703,7 +1703,7 @@ L11180:
         CLRB
         EMUL
         LDAA    $017C,Z
-        LDX     #Tab2D_120A
+        LDX     #FuelV017C
         JSR     Lookup2D
         STAA    $07DE,Z
         CLRB
@@ -1753,7 +1753,7 @@ L111E8:
         LDAA    >CoolantTemp,Z
         CMPA    $0BD9
         BCS     L11234
-        LDX     #Tab2D_0BDE
+        LDX     #FuelCoolant
         JSR     Lookup2D
         STAA    $0811,Z
         BSET    $0770,Z,#$02
@@ -1824,7 +1824,7 @@ L112CE:
         BCS     L11302
         BRSET   $0C30,Z,#$80,L11302
         LDAA    >EngineRpm,Z
-        SUBA    $0300,Z
+        SUBA    >IdleTarget,Z
         BCS     L112EE
         CMPA    $0BB8
         BCC     L11302
@@ -1945,7 +1945,7 @@ L11434:
         BCLR    $0775,Z,#$F8
 L11438:
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_0BEC
+        LDX     #FuelEventRpm2
         JSR     Lookup2D
         CLRB
         BRCLR   $077C,Z,#$01,L1145C
@@ -2524,11 +2524,11 @@ L119E4:
         PULM    K,Y,X
         BRCLR   $0770,Z,#$80,L11A0C
         LDD     >EngineRpm,Z
-        SUBD    $0300,Z
+        SUBD    >IdleTarget,Z
         BCC     L119F8
         CLRA
 L119F8:
-        LDX     #Tab2D_19CE
+        LDX     #FuelEventTable3
         JSR     Lookup2D
         CLRB
         EMUL
@@ -2656,7 +2656,7 @@ L11B2E:
         RORE
         BRCLR   $0D02,Z,#$80,L11B5C
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_0F4B
+        LDX     #FuelEventRpm3
         JSR     Lookup2D
         CLRA
         ASLD
@@ -2853,7 +2853,7 @@ L11D66:
         LDAA    $07A3,Z
         LBNE    L11E78
         LDAA    >EngineRpm,Z
-        SUBA    $0300,Z
+        SUBA    >IdleTarget,Z
         BCC     L11D82
         CLRA
 L11D82:
@@ -3153,13 +3153,13 @@ Sub_1204A:
         CMPA    >Map,Z
         BEQ     L120A8
         BCC     L12086
-        LDAA    $0A68,Z
-        LDX     #Tab2D_149D
+        LDAA    >StartCoolantTemp,Z
+        LDX     #FuelEventStartCoolant
         JSR     Lookup2D
         STAB    $F0,Z
         LDAA    $0474,Z
         BEQ     L12080
-        LDX     #Tab2D_0404
+        LDX     #FuelEventV0474
         JSR     Lookup2D
         SUBB    $F0,Z
         BCS     L1207E
@@ -3170,8 +3170,8 @@ L12080:
         STAB    $0A7F,Z
         BRA     L120A8
 L12086:
-        LDX     #Tab2D_15B0
-        LDAA    $0A68,Z
+        LDX     #FuelEventStartCoolant5
+        LDAA    >StartCoolantTemp,Z
         JSR     Lookup2D
         STAA    $0A7F,Z
         TZX
@@ -3184,14 +3184,14 @@ L120A8:
         CMPA    >Throttle,Z
         BEQ     L120E8
         BCC     L120C6
-        LDX     #Tab2D_14CE
-        LDAA    $0A68,Z
+        LDX     #FuelEventStartCoolant2
+        LDAA    >StartCoolantTemp,Z
         JSR     Lookup2D
         STAA    $0A73,Z
         BRA     L120E8
 L120C6:
-        LDX     #Tab2D_15B8
-        LDAA    $0A68,Z
+        LDX     #FuelEventStartCoolant6
+        LDAA    >StartCoolantTemp,Z
         JSR     Lookup2D
         STAA    $0A73,Z
         TZX
@@ -3208,7 +3208,7 @@ L120E8:
 L120F6:
         CLR     $0805,Z
         LDAA    >CoolantTemp,Z
-        CMPA    $0A68,Z
+        CMPA    >StartCoolantTemp,Z
         BEQ     L12140
         TZX
         LDX     #$8A68
@@ -3280,14 +3280,14 @@ L1219E:
         BSET    $07BB,Z,#$02
 L121C6:
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_09A0
+        LDX     #FuelEventRpm
         JSR     Lookup2D
         STAA    $F0,Z
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #Tab2D_09AC
+        LDX     #FuelEventThrottle
         JSR     Lookup2D
         LDAA    $F0,Z
-        LDX     #Tab3DN_15FE
+        LDX     #FuelEventTable2
         JSR     Lookup3DNorm
         STAA    $F2,Z
         LDAA    >ThrottleLast,Z
@@ -3295,10 +3295,10 @@ L121C6:
         BCC     L121F6
         CLRA
 L121F6:
-        LDX     #Tab2D_09AC
+        LDX     #FuelEventThrottle
         JSR     Lookup2D
         LDAA    $F0,Z
-        LDX     #Tab3DN_15FE
+        LDX     #FuelEventTable2
         JSR     Lookup3DNorm
         SUBA    $F2,Z
         BCC     L1220E
@@ -3308,8 +3308,8 @@ L1220E:
         LDAB    $1584
         MUL
         TDE
-        LDAA    $0A68,Z
-        LDX     #Tab2D_159E
+        LDAA    >StartCoolantTemp,Z
+        LDX     #FuelEventStartCoolant4
         JSR     Lookup2D
         CLRB
         EMUL
@@ -3345,8 +3345,8 @@ L12276:
         LDAA    $1585
         MUL
         TDE
-        LDAA    $0A68,Z
-        LDX     #Tab2D_158C
+        LDAA    >StartCoolantTemp,Z
+        LDX     #FuelEventStartCoolant3
         JSR     Lookup2D
         CLRB
         EMUL
@@ -3360,7 +3360,7 @@ L1229A:
         TST     $07BC,Z
         BEQ     L122E6
         BRCLR   $07BB,Z,#$05,L122E6
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         ADDD    $169C
         CPD     >EngineRpm,Z
         BCC     L122E6
@@ -3369,10 +3369,10 @@ L1229A:
         BCC     L122E6
         ASLA
         ASLA
-        LDX     #Tab2D_09B8
+        LDX     #FuelEventTime
         JSR     Lookup2D
-        LDAB    $0A6D,Z
-        LDX     #Tab3D_169E
+        LDAB    >StartCoolantTemp2,Z
+        LDX     #FuelEventTimeStartCoolant
         JSR     Lookup3D
         STAA    $07C1,Z
         BEQ     L122E6
@@ -3393,12 +3393,12 @@ L12300:
         TSTA
         BEQ     L12336
         STAA    $F2,Z
-        LDX     #Tab2D_15EA
+        LDX     #FuelEventRpm4
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         CLRA
         TDE
-        LDX     #Tab2D_15D6
+        LDX     #FuelEventMap
         LDAA    >Map,Z
         JSR     Lookup2D
         CLRA
@@ -3420,7 +3420,7 @@ L1233E:
         TSTA
         BEQ     L12364
         STAA    $F0,Z
-        LDX     #Tab2D_15CA
+        LDX     #FuelEventBaro
         LDAA    <Baro,Z
         JSR     Lookup2D
         LDAA    $F0,Z
@@ -3481,7 +3481,7 @@ Sub_123C0:
         BHI     L123EA
         LDAA    $0C44,Z
         BEQ     L123EA
-        LDX     #Tab2D_0B6D
+        LDX     #CrankFuelV0C44
         JSR     Lookup2D
         ADDB    >CoolantTemp,Z
         BCC     L123E0
@@ -3494,10 +3494,10 @@ L123E0:
 L123EA:
         STAB    $0768,Z
         LDAA    $0198,Z
-        LDX     #Tab2D_08EC
+        LDX     #CrankFuelV0198
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #Tab3D_0B4C
+        LDX     #CrankFuelV0198Coolant
         JSR     Lookup3D
         STAA    $0765,Z
         LDAB    #$00
@@ -3620,47 +3620,47 @@ L1253A:
         LDAB    $0A7C
 L1254E:
         LDAA    $0A91,Z
-        LDX     #Tab3D_0A91
+        LDX     #CrankFuelV0A91Coolant
         JSR     Lookup3D
         MUL
         STD     $F0,Z
-        LDX     #Tab2D_0AF8
+        LDX     #CrankFuelRpm2
         BRSET   $0C30,Z,#$80,L1256C
-        LDX     #Tab2D_0AEE
+        LDX     #CrankFuelRpm
 L1256C:
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         STAA    $FE,Z
-        LDX     #Tab2D_0B02
+        LDX     #CrankFuelV00FC2
         LDAA    $FC,Z
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         NEGD
         STD     $F2,Z
-        LDX     #Tab2D_0B0E
+        LDX     #CrankFuelV0769
         LDAA    $0769,Z
         JSR     Lookup2D
         STAA    $FE,Z
-        LDX     #Tab2D_0B1A
+        LDX     #CrankFuelV00FC3
         LDAA    $FC,Z
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         NEGD
         STD     $F4,Z
-        LDX     #Tab2D_0B30
+        LDX     #CrankFuelBaro
         LDAA    <Baro,Z
         JSR     Lookup2D
         STAA    $FE,Z
-        LDX     #Tab2D_0B38
+        LDX     #CrankFuelV00FC5
         LDAA    $FC,Z
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         NEGD
         STD     $F6,Z
-        LDX     #Tab2D_0B40
+        LDX     #CrankFuelVacuum
         LDAA    >ManifoldVacuum,Z
         JSR     Lookup2D
         CLRB
@@ -3669,7 +3669,7 @@ L1256C:
         CMPA    $0A84
         BHI     L125EE
         LDAA    $FC,Z
-        LDX     #Tab2D_0B26
+        LDX     #CrankFuelV00FC4
         JSR     Lookup2D
         CLRB
         BRA     L125F0
@@ -3727,7 +3727,7 @@ L12662:
         STD     $0782,Z
         TDE
         LDAA    $FC,Z
-        LDX     #Tab2D_0A85
+        LDX     #CrankFuelV00FC
         JSR     Lookup2D
         CLRB
         EMUL
@@ -3892,7 +3892,7 @@ L12834:
         BRCLR   $0338,#$04,L1284E
         LDAA    $7563
 L1284E:
-        LDX     #Tab2D_ABCF
+        LDX     #FuelEventCal
         JSR     Lookup2D
         CLRA
         ADE
@@ -4837,15 +4837,15 @@ L1427E:
 L14290:
         BRSET   $032F,#$20,L142A2
         LDAA    $075A,Z
-        STAA    $0714,Z
+        STAA    >O2UpBank1,Z
         JSR     Sub_16218
 L142A2:
         JSR     Sub_155C8
         BRCLR   $032F,#$40,L142C6
         LDX     #$8728
         BRSET   $032F,#$10,L142C2
-        LDAA    $0714,Z
-        STAA    $073C,Z
+        LDAA    >O2UpBank1,Z
+        STAA    >O2UpBank2,Z
         JSR     Sub_16218
 L142C2:
         JSR     Sub_155C8
@@ -4891,7 +4891,7 @@ Sub_1430C:
         BITA    #$81
         BNE     L14346
         BRCLR   $0339,#$80,L14338
-        LDAA    $0300,Z
+        LDAA    >IdleTarget,Z
         ADDA    $18EB
         BCC     L14330
         LDAA    #$FF
@@ -4958,7 +4958,7 @@ L143C0:
 Sub_143C2:
         PSHM    X
         LDAA    $0B,X
-        LDX     #Tab2D_17C2
+        LDX     #O2VoltageScale2
         JSR     Lookup2D
         PULM    X
         STAB    $0F,X
@@ -5279,7 +5279,7 @@ L146CC:
         AEY
         TPD
         TBYK
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         LDX     $00,Y
         JSR     Lookup2D
         LDE     $0002,Y
@@ -5339,7 +5339,7 @@ L14756:
         BCLR    $075D,Z,#$F0
         BCLR    $075D,Z,#$0F
         PSHM    X,K
-        LDX     #Tab2D_174C
+        LDX     #O2Coolant
         JSR     Lookup2D
         PULM    K,X
         BRSET   $A5,Z,#$20,L1477E
@@ -5351,7 +5351,7 @@ L1477E:
         BCC     L14786
         LDAA    #$FF
 L14786:
-        LDAB    $0A6D,Z
+        LDAB    >StartCoolantTemp2,Z
         CMPB    $1746
         BCC     L14798
         ADDA    $1747
@@ -5433,7 +5433,7 @@ L14884:
         BSET    $F0,Z,#$F0
         BRA     L1489E
 L1488A:
-        LDAA    >Adc4Raw,Z
+        LDAA    >O2UpBank1Raw,Z
         CMPA    $1737
         BCC     L1489A
         CMPA    $1738
@@ -5447,7 +5447,7 @@ L1489E:
         BSET    $F1,Z,#$F0
         BRA     L148C4
 L148B0:
-        LDAA    >Adc5Raw,Z
+        LDAA    >O2UpBank2Raw,Z
         CMPA    $1737
         BCC     L148C0
         CMPA    $1738
@@ -5458,7 +5458,7 @@ L148C4:
         TST     $0757,Z
         LBNE    L14900
         BRCLR   $032F,#$20,L148E6
-        LDAA    >Adc1Raw,Z
+        LDAA    >O2DownBank1Raw,Z
         CMPA    $173C
         BCC     L148E2
         CMPA    $173D
@@ -5467,7 +5467,7 @@ L148E2:
         BSET    $075D,Z,#$22
 L148E6:
         BRCLR   $032F,#$10,L14900
-        LDAA    >Adc2Raw,Z
+        LDAA    >O2DownBank2Raw,Z
         CMPA    $173C
         BCC     L148FC
         CMPA    $173D
@@ -5786,7 +5786,7 @@ L14C74:
         BSET    $F0,Z,#$50
         BSET    $F1,Z,#$50
 L14C7C:
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         CPD     #$9C40
         BCS     L14C92
         BSET    $F0,Z,#$50
@@ -6151,7 +6151,7 @@ L15068:
 L15072:
         BCLR    $F2,Z,#$01
 L15076:
-        LDAB    $0A6D,Z
+        LDAB    >StartCoolantTemp2,Z
         CMPB    $1746
         BCC     L150AC
         LDAB    $07B7,Z
@@ -6172,7 +6172,7 @@ L150A4:
 L150AC:
         BCLR    $017D,Z,#$02
 L150B0:
-        LDAB    $0A6D,Z
+        LDAB    >StartCoolantTemp2,Z
         CMPB    $1746
         LBCC    L151D4
         BRSET   $0760,Z,#$03,L151C8
@@ -6199,14 +6199,14 @@ L150FE:
         TST     >Count3s,Z
         BEQ     L15132
         BRCLR   >MainLoopPhaseMask,Z,#$02,L15132
-        LDAA    >Adc4Raw,Z
+        LDAA    >O2UpBank1Raw,Z
         CMPA    $174A
         BHI     L1511E
         INC     $07B9,Z
         BNE     L1511E
         DEC     $07B9,Z
 L1511E:
-        LDAA    >Adc5Raw,Z
+        LDAA    >O2UpBank2Raw,Z
         CMPA    $174B
         BHI     L15132
         INC     $07BA,Z
@@ -6274,7 +6274,7 @@ L151D4:
         BEQ     L1520A
         BSET    $F0,Z,#$08
         LDAA    $042C,Z
-        LDX     #Tab2D_178F
+        LDX     #O2V042C
         JSR     Lookup2D
         CMPA    $0752,Z
         BHI     L151FE
@@ -6695,7 +6695,7 @@ Sub_155C8:
 L155D0:
         STAA    $09,X
         PSHM    X
-        LDX     #Tab2D_17B2
+        LDX     #O2VoltageScale
         JSR     Lookup2D
         PULM    X
         STAA    $08,X
@@ -7088,7 +7088,7 @@ L159A0:
         BCS     L15A14
         BRA     L159C2
 L159A8:
-        LDAA    $0300,Z
+        LDAA    >IdleTarget,Z
         ADDA    $18EB
         CMPB    $0801,Z
         BNE     L159BA
@@ -7205,7 +7205,7 @@ L15ADC:
         TZY
         LDY     #$878A
         LDAA    >ShortTermTrim1,Z
-        LDAB    >Adc4Raw,Z
+        LDAB    >O2UpBank1Raw,Z
         STD     $078A,Z
         LDAA    $071D,Z
         ANDA    #$08
@@ -7215,7 +7215,7 @@ L15ADC:
         TZY
         LDY     #$8794
         LDAA    >ShortTermTrim2,Z
-        LDAB    >Adc5Raw,Z
+        LDAB    >O2UpBank2Raw,Z
         STD     $0794,Z
         LDAA    $0745,Z
         ANDA    #$08
@@ -7504,7 +7504,7 @@ L15E1A:
         NEGA
 L15E24:
         PSHM    X
-        LDX     #Tab2D_18FF
+        LDX     #O2V00F3
         JSR     Lookup2D
         PULM    X
         LDAB    $0439,Z
@@ -7996,13 +7996,13 @@ L16216:
 ;---------------------------------------------------------------------------------------------------
 Sub_16218:
         PSHM    D,X,K
-        LDAA    $0714,Z
-        LDX     #Tab2D_17B2
+        LDAA    >O2UpBank1,Z
+        LDX     #O2VoltageScale
         JSR     Lookup2DRev
         STAA    $0762,Z
         BRCLR   $032F,#$40,L16240
-        LDAA    $073C,Z
-        LDX     #Tab2D_17B2
+        LDAA    >O2UpBank2,Z
+        LDX     #O2VoltageScale
         JSR     Lookup2DRev
         STAA    $0763,Z
 L16240:
@@ -8032,7 +8032,7 @@ L1625E:
         CMPA    $18FA
         BLE     L162AA
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_190B
+        LDX     #O2Rpm
         JSR     Lookup2D
         ADDA    $07B0,Z
         BVC     L16280
@@ -8045,7 +8045,7 @@ L1628A:
         CMPA    $18FB
         BGE     L162AA
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_1917
+        LDX     #O2Rpm2
         JSR     Lookup2D
         ADDA    $07B0,Z
         BVC     L162A4
@@ -8072,7 +8072,7 @@ L162C2:
         CMPA    $18FA
         BLE     L1630E
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_190B
+        LDX     #O2Rpm
         JSR     Lookup2D
         ADDA    $07B1,Z
         BVC     L162E4
@@ -8085,7 +8085,7 @@ L162EE:
         CMPA    $18FB
         BGE     L1630E
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_1917
+        LDX     #O2Rpm2
         JSR     Lookup2D
         ADDA    $07B1,Z
         BVC     L16308
@@ -8337,7 +8337,7 @@ L17044:
         STAA    $01BD,Z
         STAA    $0F25,Z
         STAA    $01C3,Z
-        LDX     #Tab2D_0864
+        LDX     #Sys17000Cal
         JSR     Lookup2D
         STAA    $01B5,Z
         LDAA    $0833
@@ -8396,7 +8396,7 @@ L1711A:
         STAA    $01BD,Z
         STAA    $0F25,Z
         STAA    $01C3,Z
-        LDX     #Tab2D_0864
+        LDX     #Sys17000Cal
         JSR     Lookup2D
         STAA    $01B5,Z
 L17144:
@@ -8411,14 +8411,14 @@ L1715C:
         BPL     L17162
         CLRA
 L17162:
-        LDX     #Tab2D_08D4
+        LDX     #Sys17000V006B2
         JSR     Lookup2D
         STAA    $0F40,Z
         LDAA    $6B,Z
         BPL     L17174
         CLRA
 L17174:
-        LDX     #Tab2D_03A4
+        LDX     #Sys17000V006B
         JSR     Lookup2D
         STAA    $0F41,Z
         LDAA    $01B5,Z
@@ -8648,7 +8648,7 @@ L17448:
         STAA    $0F25,Z
         STAA    $01BD,Z
         STAA    $0F3A,Z
-        LDX     #Tab2D_0864
+        LDX     #Sys17000Cal
         JSR     Lookup2D
         STAA    $01B5,Z
         BRA     L17492
@@ -8905,11 +8905,11 @@ L17AAC:
         STAB    $01BC,Z
 L17AB8:
         LDAA    $01BB,Z
-        LDX     #Tab2D_08A8
+        LDX     #Sys17000Table
         JSR     Lookup2D
         STAA    $01B9,Z
         LDAA    $01BC,Z
-        LDX     #Tab2D_08A8
+        LDX     #Sys17000Table
         JSR     Lookup2D
         STAA    $01BA,Z
         LDAA    $01BC,Z
@@ -9224,7 +9224,7 @@ L17EA0:
         BPL     L17EB0
         COMA
 L17EB0:
-        LDX     #Tab2D_08C8
+        LDX     #Sys17000Trim
         JSR     Lookup2D
         STAA    $0F2B,Z
 L17EBC:
@@ -9331,7 +9331,7 @@ L18028:
         STAA    $0F48,Z
         LDAA    $6B,Z
         CLRA
-        LDX     #Tab2D_08D4
+        LDX     #Sys17000V006B2
         JSR     Lookup2D
         STAA    $0F40,Z
         BRSET   $01AF,Z,#$40,L180A6
@@ -9351,7 +9351,7 @@ L18070:
         BCS     L1809A
         STAA    $01B4,Z
         STAA    $0F3A,Z
-        LDX     #Tab2D_0864
+        LDX     #Sys17000Cal
         JSR     Lookup2D
         STAA    $01B5,Z
 L1809A:
@@ -9373,7 +9373,7 @@ L180B8:
         BCS     L180E2
         STAA    $01B4,Z
         STAA    $0F3A,Z
-        LDX     #Tab2D_0864
+        LDX     #Sys17000Cal
         JSR     Lookup2D
         STAA    $01B5,Z
 L180E2:
@@ -9387,7 +9387,7 @@ L180EC:
 L180F6:
         BCLR    $01AF,Z,#$08
         BRCLR   $01AF,Z,#$80,L18118
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         CMPA    $1BB5
         BCS     L18118
         CMPA    $1BBE
@@ -9412,11 +9412,11 @@ L18136:
 L18144:
         LDAA    $01B4,Z
         STAA    $0F3A,Z
-        LDX     #Tab2D_0864
+        LDX     #Sys17000Cal
         JSR     Lookup2D
         STAA    $01B5,Z
-        LDAA    $0A6D,Z
-        LDX     #Tab2D_089C
+        LDAA    >StartCoolantTemp2,Z
+        LDX     #Sys17000StartCoolant
         JSR     Lookup2D
         STAA    $0F24,Z
         RTS
@@ -9516,7 +9516,7 @@ L1824A:
         STAA    $0F37,Z
         PSHM    X
         LDAA    $019C,Z
-        LDX     #Tab2D_08B4
+        LDX     #Sys17000V019C
         JSR     Lookup2D
         STAA    $0F26,Z
         PULM    X
@@ -9581,11 +9581,11 @@ L1841A:
         LSRD
         STAB    $0F22,Z
         TBA
-        LDX     #Tab2D_0890
+        LDX     #FuelEventTable
         JSR     Lookup2D
         STAA    $0F20,Z
         LDAA    $0F22,Z
-        LDX     #Tab2D_0884
+        LDX     #FuelEventV0F22
         JSR     Lookup2D
         STAA    $0F21,Z
         LDD     $01A0,Z
@@ -9876,7 +9876,7 @@ L1876C:
         STAA    $01B4,Z
 L18778:
         STAA    $0F3A,Z
-        LDX     #Tab2D_0864
+        LDX     #Sys17000Cal
         JSR     Lookup2D
         STAA    $01B5,Z
 L18788:
@@ -9924,7 +9924,7 @@ L187E6:
 Sub_187E8:
         BRCLR   $01AD,Z,#$80,L18834
         LDAA    $042C,Z
-        LDX     #Tab2D_0870
+        LDX     #Sys17000V042C
         JSR     Lookup2D
         STAA    $0F1D,Z
         CLRA
@@ -9977,7 +9977,7 @@ Sub_18836:
         LDAA    $01B5,Z
         CMPA    $08E9
         BCS     L188B8
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         CMPA    #$74
         LBCC    L18A5E
 L188B8:
@@ -10022,7 +10022,7 @@ L18952:
         LDD     $01A0,Z
         CPD     $084D
         LBCC    L18A5E
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         CMPA    $084C
         LBCS    L18A5E
         LDAA    $0F2E,Z
@@ -10110,7 +10110,7 @@ L18A46:
         STAA    $0F3A,Z
         STAA    $01BD,Z
         STAA    $01B4,Z
-        LDX     #Tab2D_0864
+        LDX     #Sys17000Cal
         JSR     Lookup2D
         STAA    $01B5,Z
 L18A5E:
@@ -10165,7 +10165,7 @@ L18ACE:
         BPL     L18ADE
         COMA
 L18ADE:
-        LDX     #Tab2D_08C8
+        LDX     #Sys17000Trim
         JSR     Lookup2D
         STAA    $0F2B,Z
         BRA     L18B20
@@ -10212,7 +10212,7 @@ Sub_18B22:
         BPL     L18B72
         COMA
 L18B72:
-        LDX     #Tab2D_08C8
+        LDX     #Sys17000Trim
         JSR     Lookup2D
         STAA    $0F2B,Z
         BRA     L18BA8
@@ -10250,7 +10250,7 @@ Sub_18BAA:
 L18BD4:
         BRSET   $06B4,Z,#$80,L18BEA
         BRSET   $0505,Z,#$02,L18BEA
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         CMPA    $0823
         BCC     L18BFC
 L18BEA:
@@ -10325,7 +10325,7 @@ L18CE8:
         LDAA    $01B4,Z
         STAA    $0F3A,Z
 L18CF0:
-        LDX     #Tab2D_0864
+        LDX     #Sys17000Cal
         JSR     Lookup2D
         STAA    $01B5,Z
         BRA     L18D40
@@ -10358,7 +10358,7 @@ L18D40:
 ; Called from: Sub_14FD8
 ;---------------------------------------------------------------------------------------------------
 Sub_18D42:
-        LDAA    >Adc4Raw,Z
+        LDAA    >O2UpBank1Raw,Z
         CMPA    $174A
         BHI     L18D56
         INC     $0F3D,Z
@@ -10499,7 +10499,7 @@ L190D0:
         BRCLR   $0317,Z,#$40,L193EA
         BCLR    $0317,Z,#$40
         BCLR    $0318,Z,#$04
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         CPD     #$7D00
         BLS     L190F0
         BSET    $0315,Z,#$01
@@ -10512,12 +10512,12 @@ L190F0:
         BSET    $0318,Z,#$04
 L19106:
         CLRE
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         BRCLR   $0017,Z,#$01,L19118
         SUBD    $0302,Z
         BRA     L1911C
 L19118:
-        SUBD    $0300,Z
+        SUBD    >IdleTarget,Z
 L1911C:
         STD     $0308,Z
         BCC     L19126
@@ -10542,17 +10542,17 @@ L19154:
         CPE     $26EC
         BCS     L19172
         LDAA    $FC,Z
-        LDX     #Tab2D_270C
+        LDX     #IdleV00FC
         BRSET   $032E,#$40,L19188
         BRCLR   $0C31,Z,#$20,L19188
-        LDX     #Tab2D_2730
+        LDX     #IdleV00FC2
         BRA     L19188
 L19172:
         LDAA    $FD,Z
-        LDX     #Tab2D_271E
+        LDX     #IdleV00FD
         BRSET   $032E,#$40,L19188
         BRCLR   $0C31,Z,#$20,L19188
-        LDX     #Tab2D_2742
+        LDX     #IdleV00FD2
 L19188:
         JSR     Lookup2D
         SUBB    #$80
@@ -10608,16 +10608,16 @@ L19214:
         LDAB    $0336,Z
         BRA     L1927A
 L19220:
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         SUBD    $05C4,Z
         STD     $0306,Z
-        LDE     $05C2,Z
+        LDE     >SegmentRpm,Z
         EMULS
         LDX     $ABE4
         EDIVS
         STX     $030C,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_2704
+        LDX     #IdleCoolant5
         JSR     Lookup2D
         STAA    $FF,Z
         LDD     $030A,Z
@@ -10652,11 +10652,11 @@ L1928E:
 L19290:
         STAA    $0339,Z
         LDAA    >Map,Z
-        LDX     #Tab2D_275E
+        LDX     #IdleMap
         JSR     Lookup2D
         STAA    $033D,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_2754
+        LDX     #IdleCoolant6
         JSR     Lookup2D
         STAA    $033B,Z
         ADDA    $033D,Z
@@ -10695,12 +10695,12 @@ L192F4:
         LBPL    L1937C
         TST     $0357,Z
         LBNE    L193EA
-        LDX     #Tab2D_277C
+        LDX     #IdleV0339
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    $FC,Z
-        LDX     #Tab2D_2786
+        LDX     #IdleV00FC4
         JSR     Lookup2D
         STAB    $033A,Z
         CLRA
@@ -10710,7 +10710,7 @@ L192F4:
         NEGA
         LBNE    L193E2
         LDAA    $FE,Z
-        LDX     #Tab2D_2613
+        LDX     #IdleV00FE
         JSR     Lookup2D
         STAA    $0343,Z
         ADDA    $033E,Z
@@ -10735,12 +10735,12 @@ L19368:
         BRA     L193E2
 L1937C:
         LDAA    $FE,Z
-        LDX     #Tab2D_2768
+        LDX     #IdleV00FE3
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    $FC,Z
-        LDX     #Tab2D_2772
+        LDX     #IdleV00FC3
         JSR     Lookup2D
         STAB    $033F,Z
         CLRA
@@ -10749,7 +10749,7 @@ L1937C:
         ADCA    #$00
         LBNE    L193E2
         LDAA    $FE,Z
-        LDX     #Tab2D_261B
+        LDX     #IdleV00FE2
         JSR     Lookup2D
         STAA    $0343,Z
         ADDA    $033E,Z
@@ -10843,7 +10843,7 @@ L19498:
 L1949E:
         TDE
         LDAA    <Baro,Z
-        LDX     #Tab2D_2AFA
+        LDX     #IdleBaro6
         JSR     Lookup2D
         CLRA
         SDE
@@ -11126,7 +11126,7 @@ L1974A:
         BRCLR   $0C31,Z,#$20,L1977A
 L1975E:
         LDAA    >VehicleSpeed,Z
-        LDX     #Tab2D_28BA
+        LDX     #IdleSpeed2
         JSR     Lookup2D
         CLRA
         EMULS
@@ -11143,7 +11143,7 @@ L1977A:
         TSTA
         BNE     L197B6
         LDAA    <Baro,Z
-        LDX     #Tab2D_29B7
+        LDX     #IdleBaro3
         JSR     Lookup2D
         LDAA    #$01
         EMUL
@@ -11310,12 +11310,12 @@ L19926:
 L1992C:
         BCLR    $0317,Z,#$10
 L19930:
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         SUBD    $26E7
         BCC     L1993C
         CLRD
 L1993C:
-        CPD     $05C2,Z
+        CPD     >SegmentRpm,Z
         BLS     L19948
         BSET    $0317,Z,#$08
         BRA     L1994E
@@ -11334,12 +11334,12 @@ L1994E:
         BLS     L19978
         BCLR    $0C33,Z,#$44
 L19978:
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         SUBD    $26E9
         BCC     L19984
         CLRD
 L19984:
-        CPD     $05C2,Z
+        CPD     >SegmentRpm,Z
         LBCC    L19990
         BCLR    $0317,Z,#$08
 L19990:
@@ -11355,12 +11355,12 @@ L19990:
         LBRA    L19B08
 L199BC:
         BRCLR   $031A,Z,#$40,L199F2
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         SUBD    $26E9
         BCC     L199CE
         CLRD
 L199CE:
-        CPD     $05C2,Z
+        CPD     >SegmentRpm,Z
         LBCC    L19ACC
         LDAA    $0C24,Z
         BEQ     L199EA
@@ -11371,7 +11371,7 @@ L199EA:
         BCLR    $031A,Z,#$C0
         LBRA    L19ACC
 L199F2:
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         CPD     $05E8
         BCC     L19A28
         BCLR    $0312,Z,#$0C
@@ -11495,15 +11495,15 @@ L19B46:
         BRA     L19BEE
 L19B7C:
         LDAA    >VehicleSpeed,Z
-        LDX     #Tab2D_28F9
+        LDX     #IdleSpeed3
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #Tab2D_0A38
+        LDX     #IdleThrottle
         JSR     Lookup2D
-        LDAB    $05C2,Z
-        LDX     #Tab3D_292F
+        LDAB    >SegmentRpm,Z
+        LDX     #IdleThrottleSegRpm
         JSR     Lookup3D
         SXT
         ADE
@@ -11519,11 +11519,11 @@ L19BB8:
         XGAB
         TDE
         LDAA    $0A5A,Z
-        LDX     #Tab2D_2911
+        LDX     #IdleV0A5A5
         BRCLR   $0331,#$80,L19BDA
         BRSET   $00F8,Z,#$02,L19BDA
         LDAA    $0345,Z
-        LDX     #Tab2D_2905
+        LDX     #IdleV0345
 L19BDA:
         JSR     Lookup2D
         SUBA    #$80
@@ -11535,8 +11535,8 @@ L19BDA:
 L19BEC:
         EMUL
 L19BEE:
-        LDAA    $05C2,Z
-        LDX     #Tab2D_2925
+        LDAA    >SegmentRpm,Z
+        LDX     #IdleSegRpm2
         JSR     Lookup2D
         CLRA
         ASLD
@@ -11632,7 +11632,7 @@ L19CF2:
         TST     $034E,Z
         LBNE    L19F1A
         BRCLR   $0317,Z,#$20,L19D32
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         CPD     $2674
         LBLS    L19F1A
         BCLR    $0317,Z,#$20
@@ -11671,7 +11671,7 @@ L19D9E:
         LDAA    $0A88,Z
         CMPA    $05F9
         BHI     L19DCC
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         CPD     $05E8
         BCS     L19DCC
         TST     $0352,Z
@@ -11777,9 +11777,9 @@ L19F1A:
 L19F3C:
         BRSET   $0312,Z,#$20,L1A12C
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_27E2
+        LDX     #IdleCoolant12
         BRCLR   $0055,Z,#$20,L19F54
-        LDX     #Tab2D_27EC
+        LDX     #IdleCoolant13
 L19F54:
         JSR     Lookup2D
         SXT
@@ -11801,9 +11801,9 @@ L19F84:
         BRSET   $0315,Z,#$80,L19FAE
         BSET    $0315,Z,#$80
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_27A6
+        LDX     #IdleCoolant8
         BRCLR   $0055,Z,#$20,L19FA0
-        LDX     #Tab2D_27B0
+        LDX     #IdleCoolant9
 L19FA0:
         JSR     Lookup2D
         CMPA    #$FF
@@ -11822,14 +11822,14 @@ L19FBA:
         LDAB    $0315,Z
         ORAB    #$08
         ANDB    #$FB
-        LDX     #Tab2D_27BA
+        LDX     #IdleCoolant10
         BRCLR   $0055,Z,#$20,L19FDA
-        LDX     #Tab2D_27C4
+        LDX     #IdleCoolant11
 L19FDA:
         BRCLR   $0C31,Z,#$20,L19FF2
-        LDX     #Tab2D_2806
+        LDX     #IdleCoolant16
         BRCLR   $0055,Z,#$20,L19FEE
-        LDX     #Tab2D_2810
+        LDX     #IdleCoolant17
 L19FEE:
         ORAB    #$04
         ANDB    #$F7
@@ -11842,14 +11842,14 @@ L19FF2:
         BCC     L1A042
         STAB    $FE,Z
         LDAA    $0348,Z
-        LDX     #Tab2D_281A
+        LDX     #IdleV03483
         BRCLR   $0055,Z,#$20,L1A01C
-        LDX     #Tab2D_2824
+        LDX     #IdleV03484
 L1A01C:
         BRSET   $0C31,Z,#$20,L1A030
-        LDX     #Tab2D_27CE
+        LDX     #IdleV0348
         BRCLR   $0055,Z,#$20,L1A030
-        LDX     #Tab2D_27D8
+        LDX     #IdleV03482
 L1A030:
         JSR     Lookup2D
         LDAB    $FE,Z
@@ -11873,9 +11873,9 @@ L1A054:
         BSET    $0312,Z,#$20
         BRCLR   $0C31,Z,#$20,L1A08E
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_27A6
+        LDX     #IdleCoolant8
         BRCLR   $0055,Z,#$20,L1A07E
-        LDX     #Tab2D_27B0
+        LDX     #IdleCoolant9
 L1A07E:
         JSR     Lookup2D
         LDAA    $0376,Z
@@ -11884,14 +11884,14 @@ L1A07E:
         BNE     L1A0BA
 L1A08E:
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_282E
+        LDX     #IdleCoolant18
         BRCLR   $0055,Z,#$20,L1A0A0
-        LDX     #Tab2D_2838
+        LDX     #IdleCoolant19
 L1A0A0:
         BRSET   $0C31,Z,#$20,L1A0B4
-        LDX     #Tab2D_27E2
+        LDX     #IdleCoolant12
         BRCLR   $0055,Z,#$20,L1A0B4
-        LDX     #Tab2D_27EC
+        LDX     #IdleCoolant13
 L1A0B4:
         JSR     Lookup2D
         BRA     L1A0BC
@@ -11972,17 +11972,17 @@ L1A18A:
         BRCLR   $0C31,Z,#$08,L1A1A6
         LDAA    >Map,Z
         STAA    $0341,Z
-        LDX     #Tab2D_2854
+        LDX     #IdleMap2
         BRA     L1A1AE
 L1A1A6:
-        LDX     #Tab2D_285C
+        LDX     #IdleV0341
         LDAA    $0341,Z
 L1A1AE:
         JSR     Lookup2D
         SXT
         TDE
         LDAA    <Baro,Z
-        LDX     #Tab2D_29C1
+        LDX     #IdleBaro4
         JSR     Lookup2D
         LDAA    #$01
         EMULS
@@ -12001,7 +12001,7 @@ L1A1E2:
         TBA
         STAA    $0340,Z
         BRCLR   $0C31,Z,#$08,L1A1FC
-        LDAB    $05C2,Z
+        LDAB    >SegmentRpm,Z
         CMPB    $2852
         BCS     L1A1FC
         LBRA    L1A548
@@ -12016,7 +12016,7 @@ L1A208:
         LDAA    >CoolantTemp,Z
         CMPA    $2853
         BLS     L1A234
-        LDAA    $05C2,Z
+        LDAA    >SegmentRpm,Z
         CMPA    $2852
         BCC     L1A234
         BRCLR   $0383,Z,#$40,L1A234
@@ -12029,11 +12029,11 @@ L1A23C:
         STAA    $035A,Z
         BSET    $0312,Z,#$10
         BSET    $0383,Z,#$08
-        LDX     #Tab2D_2A22
+        LDX     #IdleTable4
         BRCLR   $0A47,Z,#$20,L1A264
-        LDX     #Tab2D_2A12
+        LDX     #IdleTable2
         BRSET   $0312,Z,#$40,L1A264
-        LDX     #Tab2D_2A1A
+        LDX     #IdleTable3
 L1A264:
         LDD     $0379,Z
         LSRD
@@ -12048,7 +12048,7 @@ L1A274:
         SXT
         TDE
         LDAA    <Baro,Z
-        LDX     #Tab2D_29C1
+        LDX     #IdleBaro4
         JSR     Lookup2D
         LDAA    #$01
         EMULS
@@ -12096,15 +12096,15 @@ L1A2DA:
         BRA     L1A36C
 L1A2F6:
         LDAA    >VehicleSpeed,Z
-        LDX     #Tab2D_28F9
+        LDX     #IdleSpeed3
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #Tab2D_0A38
+        LDX     #IdleThrottle
         JSR     Lookup2D
-        LDAB    $05C2,Z
-        LDX     #Tab3D_292F
+        LDAB    >SegmentRpm,Z
+        LDX     #IdleThrottleSegRpm
         JSR     Lookup3D
         SXT
         ADE
@@ -12120,11 +12120,11 @@ L1A332:
         EMULS
         TDE
         LDAA    $0A5A,Z
-        LDX     #Tab2D_2911
+        LDX     #IdleV0A5A5
         BRCLR   $0331,#$80,L1A356
         BRSET   $00F8,Z,#$02,L1A356
         LDAA    $0345,Z
-        LDX     #Tab2D_2905
+        LDX     #IdleV0345
 L1A356:
         JSR     Lookup2D
         SUBA    #$80
@@ -12147,8 +12147,8 @@ L1A36C:
 L1A378:
         STAA    $FB,Z
         BRSET   $0503,Z,#$01,L1A396
-        LDAA    $05C2,Z
-        LDX     #Tab2D_291B
+        LDAA    >SegmentRpm,Z
+        LDX     #IdleSegRpm
         JSR     Lookup2D
         CLRA
         TDE
@@ -12168,7 +12168,7 @@ L1A396:
         LBNE    L1A50C
         BRSET   $0C21,Z,#$80,L1A4A0
 L1A3CA:
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         CPD     $05EA
         LBCC    L1A548
         BRSET   $0317,Z,#$08,L1A548
@@ -12401,12 +12401,12 @@ L1A5F4:
         BITB    #$02
         BNE     L1A66C
         LDAA    <Baro,Z
-        LDX     #Tab2D_29AD
+        LDX     #IdleBaro2
         JSR     Lookup2D
         LDAA    #$01
         TDE
         LDAA    $0DC6,Z
-        LDX     #Tab2D_29D1
+        LDX     #IdleV0DC6
         JSR     Lookup2D
         CLRA
         EMUL
@@ -12454,12 +12454,12 @@ Sub_1A688:
         LDAA    #$FF
         STAA    $18,Z
         LDAA    <Baro,Z
-        LDX     #Tab2D_2B06
+        LDX     #IdleBaro7
         JSR     Lookup2D
         STAA    $2A,Z
         BRCLR   $0331,#$80,L1A6E0
         LDAA    <Baro,Z
-        LDX     #Tab2D_29B7
+        LDX     #IdleBaro3
         JSR     Lookup2D
         STAA    $F0,Z
         CLRB
@@ -12492,12 +12492,12 @@ L1A6E0:
 ;---------------------------------------------------------------------------------------------------
 Sub_1A6E2:
         LDAA    <Baro,Z
-        LDX     #Tab2D_29AD
+        LDX     #IdleBaro2
         JSR     Lookup2D
         LDAA    #$01
         TDE
         LDAA    $0A5A,Z
-        LDX     #Tab2D_288A
+        LDX     #IdleV0A5A4
         JSR     Lookup2D
         CLRA
         EMUL
@@ -12592,7 +12592,7 @@ L1A7F6:
         BLS     L1A812
 L1A804:
         LDAA    <Baro,Z
-        LDX     #Tab2D_2B06
+        LDX     #IdleBaro7
         JSR     Lookup2D
         CLRB
         STAA    $2A,Z
@@ -12670,7 +12670,7 @@ L1A8D8:
 L1A8DE:
         TDE
         LDAA    <Baro,Z
-        LDX     #Tab2D_2B12
+        LDX     #IdleBaro8
         JSR     Lookup2D
         CLRA
         EMULS
@@ -12832,7 +12832,7 @@ L1AA5A:
         CLRA
         TDE
         LDAA    <Baro,Z
-        LDX     #Tab2D_29B7
+        LDX     #IdleBaro3
         JSR     Lookup2D
         LDAA    #$01
         EMUL
@@ -12916,12 +12916,12 @@ L1AB24:
         CBA
         BCC     L1AB7A
 L1AB28:
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         ADDD    $2AEB
         BCC     L1AB36
         LDD     #$FFFF
 L1AB36:
-        CPD     $05C2,Z
+        CPD     >SegmentRpm,Z
         BLS     L1AB7A
         BRSET   $0C30,Z,#$80,L1AB7A
         TST     $034D,Z
@@ -12934,7 +12934,7 @@ L1AB4A:
         BHI     L1AB7A
         CMPA    $2AF2
         BCS     L1AB7A
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         ADDD    $2AEB
         BCS     L1AB70
         ADDD    $2AED
@@ -12942,7 +12942,7 @@ L1AB4A:
 L1AB70:
         LDD     #$FFFF
 L1AB74:
-        CPD     $05C2,Z
+        CPD     >SegmentRpm,Z
         BCC     L1AB82
 L1AB7A:
         BCLR    $17,Z,#$01
@@ -12950,9 +12950,9 @@ L1AB7A:
 L1AB82:
         BRSET   $0017,Z,#$01,L1AB9E
         BSET    $17,Z,#$01
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         BRCLR   $0C30,Z,#$01,L1ABD6
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         STD     $0302,Z
 L1AB9E:
         LDAA    $0351,Z
@@ -12968,9 +12968,9 @@ L1ABAE:
         CLRD
 L1ABBE:
         LDE     $2AE9
-        CPE     $0300,Z
+        CPE     >IdleTarget,Z
         BCC     L1ABCC
-        LDE     $0300,Z
+        LDE     >IdleTarget,Z
 L1ABCC:
         PSHM    E
         SDE
@@ -12987,7 +12987,7 @@ L1ABDA:
         CLRA
         TDE
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_0398
+        LDX     #IdleCoolant
         JSR     Lookup2D
         CLRA
         ADE
@@ -13062,24 +13062,24 @@ Sub_1AC64:
         LDAB    $F5,Z
         ADE
         LDAA    >Count3s,Z
-        LDX     #Tab2D_2A38
+        LDX     #IdleTime2
         JSR     Lookup2D
         CLRA
         ADE
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_2A42
+        LDX     #IdleCoolant23
         JSR     Lookup2D
         CLRA
         ADE
         BRSET   $0943,Z,#$01,L1ACBC
         LDAA    $0335,Z
-        LDX     #Tab2D_2A8E
+        LDX     #IdleV0335
         LDAB    $0770,Z
         ANDB    #$C0
         BEQ     L1ACB4
         LDAB    $05E0,Z
         BNE     L1ACB4
-        LDX     #Tab2D_2A98
+        LDX     #IdleV03352
 L1ACB4:
         JSR     Lookup2D
         CLRA
@@ -13119,12 +13119,12 @@ L1AD02:
         LDD     #$00FF
 L1AD06:
         TDE
-        LDAA    $05C2,Z
-        LDX     #Tab2D_2A52
+        LDAA    >SegmentRpm,Z
+        LDX     #IdleSegRpm3
         JSR     Lookup2D
         STAA    $FE,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_2A5C
+        LDX     #IdleCoolant24
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
@@ -13132,7 +13132,7 @@ L1AD06:
         TAB
         CLRA
         ADE
-        LDX     #Tab2D_2A66
+        LDX     #IdleBaro5
         LDAA    <Baro,Z
         JSR     Lookup2D
         CLRA
@@ -13206,14 +13206,14 @@ L1ADE4:
         TED
         BMI     L1AE06
         TBA
-        LDX     #Tab2D_2A84
+        LDX     #IdleTable7
         BRA     L1AE18
 L1AE06:
         NEGD
         TBA
-        LDX     #Tab2D_2A70
+        LDX     #IdleTable5
         BRSET   $0313,Z,#$01,L1AE18
-        LDX     #Tab2D_2A7A
+        LDX     #IdleTable6
 L1AE18:
         JSR     Lookup2D
         JSR     Sub_1A54A
@@ -13237,12 +13237,12 @@ L1AE30:
         BCS     L1AE52
 L1AE44:
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_2644
+        LDX     #IdleCoolant3
         JSR     Lookup2D
         BRA     L1AE5E
 L1AE52:
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_03B0
+        LDX     #IdleCoolant2
         JSR     Lookup2D
 L1AE5E:
         CLRB
@@ -13320,8 +13320,8 @@ L1AEFA:
         LDAA    >CoolantTemp,Z
         CMPA    $2AF4
         BLS     L1AF30
-        LDAA    $05C2,Z
-        SUBA    $0300,Z
+        LDAA    >SegmentRpm,Z
+        SUBA    >IdleTarget,Z
         BCC     L1AF1C
         NEGA
         BVC     L1AF1C
@@ -13386,36 +13386,36 @@ L1AFDC:
 ;---------------------------------------------------------------------------------------------------
 Sub_1AFDE:
         LDAA    <Baro,Z
-        LDX     #Tab2D_0A5C
+        LDX     #IdleBaro
         JSR     Lookup2D
-        LDAB    $0300,Z
-        LDX     #Tab3D_2B1E
+        LDAB    >IdleTarget,Z
+        LDX     #IdleBaroIdleTarget2
         JSR     Lookup3D
         STAA    $F0,Z
         BRSET   $0312,Z,#$40,L1B000
         STAA    $0362,Z
 L1B000:
         LDAA    <Baro,Z
-        LDX     #Tab2D_29AD
+        LDX     #IdleBaro2
         JSR     Lookup2D
         STAA    $F1,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_28DD
+        LDX     #IdleCoolant22
         JSR     Lookup2D
         STAA    $FE,Z
         STAA    $F6,Z
         LDAA    >VehicleSpeed,Z
-        LDX     #Tab2D_0A44
+        LDX     #IdleSpeed
         JSR     Lookup2D
-        LDAB    $05C2,Z
-        LDX     #Tab3D_2950
+        LDAB    >SegmentRpm,Z
+        LDX     #IdleSpeedSegRpm
         JSR     Lookup3D
         CMPA    $FE,Z
         BLS     L1B03A
         STAA    $FE,Z
 L1B03A:
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #Tab2D_28EB
+        LDX     #IdleThrottle2
         JSR     Lookup2D
         CMPB    $FE,Z
         BHI     L1B04C
@@ -13424,16 +13424,16 @@ L1B04C:
         CLRA
         TDE
         LDAA    $032E,Z
-        LDX     #Tab2D_0A50
+        LDX     #IdleV032E
         JSR     Lookup2D
-        LDAB    $05C2,Z
-        LDX     #Tab3D_29DB
+        LDAB    >SegmentRpm,Z
+        LDX     #IdleV032ESegRpm
         JSR     Lookup3D
         STAB    $F4,Z
         CLRA
         ADE
         LDAA    >Count3s,Z
-        LDX     #Tab2D_28D5
+        LDX     #IdleTime
         JSR     Lookup2D
         CLRA
         ADE
@@ -13452,10 +13452,10 @@ L1B092:
 L1B0AC:
         STE     $00F2,Z
         LDAA    $032E,Z
-        LDX     #Tab2D_0A50
+        LDX     #IdleV032E
         JSR     Lookup2D
-        LDAB    $05C2,Z
-        LDX     #Tab3D_2AA2
+        LDAB    >SegmentRpm,Z
+        LDX     #IdleV032ESegRpm2
         JSR     Lookup3D
         STAB    $F7,Z
         CLRA
@@ -13482,7 +13482,7 @@ L1B10E:
         BRA     L1B124
 L1B114:
         LDAA    $035C,Z
-        LDX     #Tab2D_28C6
+        LDX     #IdleV035C
         JSR     Lookup2D
         STAA    $035B,Z
 L1B124:
@@ -13498,10 +13498,10 @@ L1B124:
         STD     $0A52,Z
 L1B146:
         LDAA    <Baro,Z
-        LDX     #Tab2D_0A5C
+        LDX     #IdleBaro
         JSR     Lookup2D
-        LDAB    $0300,Z
-        LDX     #Tab3D_2AC3
+        LDAB    >IdleTarget,Z
+        LDX     #IdleBaroIdleTarget
         JSR     Lookup3D
         STAA    $F5,Z
         BRSET   $0338,#$02,L1B180
@@ -13617,7 +13617,7 @@ L1B284:
         BRA     L1B2BA
 L1B2AC:
         BRCLR   $0017,Z,#$04,L1B2C4
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         DECB
         BEQ     L1B2C4
 L1B2BA:
@@ -13673,7 +13673,7 @@ L1B340:
         LDX     #IdleTargetRpm
         BRSET   $032E,#$40,L1B358
         BRCLR   $0C31,Z,#$20,L1B358
-        LDX     #Tab2D_2690
+        LDX     #IdleCoolant4
 L1B358:
         JSR     Lookup2D
         STAA    $FE,Z
@@ -13684,7 +13684,7 @@ L1B358:
         CMPA    $2853
         BCS     L1B39E
         BRSET   $0C31,Z,#$20,L1B39E
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         CPD     $263F
         BLS     L1B3A6
         CLRB
@@ -13704,12 +13704,12 @@ L1B3A6:
         BSET    $0383,Z,#$80
 L1B3AE:
         LDAA    $0381,Z
-        LDX     #Tab2D_267E
+        LDX     #IdleV0381
         JSR     Lookup2D
 L1B3BA:
         PSHB
         LDAA    $0C3F,Z
-        LDX     #Tab2D_2676
+        LDX     #IdleV0C3F
         JSR     Lookup2D
         PULB
         CBA
@@ -13734,7 +13734,7 @@ L1B3E8:
         BRA     L1B40C
 L1B3FA:
         TBA
-        LDX     #Tab2D_269C
+        LDX     #IdleTable
         JSR     Lookup2D
         ADDA    $FE,Z
         BCC     L1B40A
@@ -13897,12 +13897,12 @@ L1B5F2:
         STD     $FE,Z
 L1B608:
         LDAA    $0A5A,Z
-        LDX     #Tab2D_0A2C
+        LDX     #IdleV0A5A
         JSR     Lookup2D
-        LDX     #Tab3D_26A4
+        LDX     #IdleV0A5AV030E
         BRSET   $032E,#$40,L1B628
         BRCLR   $0C31,Z,#$20,L1B628
-        LDX     #Tab3D_26C5
+        LDX     #IdleV0A5AV030E2
 L1B628:
         LDAB    $030E,Z
         JSR     Lookup3D
@@ -13924,7 +13924,7 @@ L1B662:
 L1B672:
         CLR     $0361,Z
         LDAA    $0A5A,Z
-        LDX     #Tab2D_26F0
+        LDX     #IdleV0A5A2
         JSR     Lookup2D
         CMPA    $0360,Z
         LBHI    L1B740
@@ -13988,7 +13988,7 @@ L1B716:
         INC     $0361,Z
 L1B72A:
         LDAA    $0A5A,Z
-        LDX     #Tab2D_26FA
+        LDX     #IdleV0A5A3
         JSR     Lookup2D
         CMPA    $0361,Z
         BHI     L1B740
@@ -14006,7 +14006,7 @@ L1B740:
         STD     $FE,Z
 L1B764:
         LDD     $FE,Z
-        STD     $0300,Z
+        STD     >IdleTarget,Z
         LDAA    $0380,Z
         BEQ     L1B774
         DEC     $0380,Z
@@ -14043,20 +14043,20 @@ L1B7AA:
         LDD     #$0000
 L1B7E6:
         STD     $0377,Z
-        CPD     $0300,Z
+        CPD     >IdleTarget,Z
         BHI     L1B80A
 L1B7F0:
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         STD     $0377,Z
         BRA     L1B80A
 L1B7FA:
-        LDD     $05C2,Z
+        LDD     >SegmentRpm,Z
         STD     $0377,Z
         BSET    $0383,Z,#$20
         CLR     $037C,Z
 L1B80A:
         LDD     $0377,Z
-        SUBD    $05C2,Z
+        SUBD    >SegmentRpm,Z
         BCC     L1B818
         LDD     #$0000
 L1B818:
@@ -14141,7 +14141,7 @@ L1B92C:
         BCC     L1B93A
         LDE     #$FFFF
 L1B93A:
-        CPX     $05C2,Z
+        CPX     >SegmentRpm,Z
         BLS     L1B962
         BRSET   $0383,Z,#$40,L1B96E
         CPE     $0379,Z
@@ -14280,7 +14280,7 @@ L1BA7C:
         JSR     Blend16
         AIS     #$04
         STD     $0DCA,Z
-        LDX     #Tab2D_03BC
+        LDX     #IdleRpm
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         STAA    $0DCF,Z
@@ -14304,12 +14304,12 @@ Sub_1BAAE:
         BITB    #$02
         BNE     L1BB28
         LDAA    <Baro,Z
-        LDX     #Tab2D_29AD
+        LDX     #IdleBaro2
         JSR     Lookup2D
         LDAA    #$01
         TDE
         LDAA    $0DC6,Z
-        LDX     #Tab2D_29D1
+        LDX     #IdleV0DC6
         JSR     Lookup2D
         CLRA
         EMUL
@@ -14819,7 +14819,7 @@ L1D180:
 L1D184:
         CLR     $02,Y
         LDAA    >Map,Z
-        LDX     #Tab2D_262E
+        LDX     #SparkMap8
         JSR     Lookup2D
         BPL     L1D198
         NEGA
@@ -14830,7 +14830,7 @@ L1D198:
         BRSET   $0330,#$20,L1D1A8
         LDAA    $0A5A,Z
 L1D1A8:
-        LDX     #Tab2D_2624
+        LDX     #SparkAirTemp5
         JSR     Lookup2D
         LDAA    $03,Y
         MUL
@@ -14842,10 +14842,10 @@ L1D1A8:
 L1D1BE:
         CLR     $02,Y
         LDAA    >Map,Z
-        LDX     #Tab2D_09F0
+        LDX     #SparkMap2
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #Tab3D_1ECB
+        LDX     #SparkMapRpm2
         JSR     Lookup3D
         BPL     L1D1DE
         NEGA
@@ -14856,7 +14856,7 @@ L1D1DE:
         BRSET   $0330,#$20,L1D1EE
         LDAA    $0A5A,Z
 L1D1EE:
-        LDX     #Tab2D_1EC1
+        LDX     #SparkAirTemp
         JSR     Lookup2D
         LDAA    $03,Y
         MUL
@@ -14998,11 +14998,11 @@ Sub_1D33C:
         BRSET   $0C30,Z,#$40,L1D368
         AIS     #$FC
         TSY
-        LDX     #Tab2D_1F89
+        LDX     #SparkBaro
         LDAA    <Baro,Z
         JSR     Lookup2D
         STAA    $02,Y
-        LDX     #Tab2D_1F91
+        LDX     #SparkRpm
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         LDAA    $02,Y
@@ -15074,17 +15074,17 @@ L1D416:
         BPL     L1D42E
         NEGA
         BRSET   $0C31,Z,#$20,L1D428
-        LDX     #Tab2D_25A9
+        LDX     #SparkTrim2
         BRA     L1D43E
 L1D428:
-        LDX     #Tab2D_25C5
+        LDX     #SparkTrim4
         BRA     L1D43E
 L1D42E:
         BRSET   $0C31,Z,#$20,L1D43A
-        LDX     #Tab2D_259B
+        LDX     #SparkTrim
         BRA     L1D43E
 L1D43A:
-        LDX     #Tab2D_25B7
+        LDX     #SparkTrim3
 L1D43E:
         JSR     Lookup2D
 L1D442:
@@ -15102,7 +15102,7 @@ Sub_1D448:
         BEQ     L1D4BA
         BRSET   $0C31,Z,#$20,L1D492
         LDD     >EngineRpm,Z
-        SUBD    $0300,Z
+        SUBD    >IdleTarget,Z
         BCC     L1D492
         NEGD
         BVC     L1D472
@@ -15128,8 +15128,8 @@ L1D492:
         BRSET   $0D1A,Z,#$04,L1D4E6
         BRSET   $0D1A,Z,#$02,L1D4D2
 L1D4BA:
-        LDX     #Tab2D_1F0A
-        LDAA    $0A6D,Z
+        LDX     #SparkStartCoolant
+        LDAA    >StartCoolantTemp2,Z
         JSR     Lookup2D
         STAA    $0D1B,Z
         BSET    $0D1A,Z,#$02
@@ -15220,15 +15220,15 @@ L1D5AC:
 ; Called from: Sub_1D448 (3 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_1D5AE:
-        LDX     #Tab2D_09FC
+        LDX     #SparkMap3
         LDAA    >Map,Z
         JSR     Lookup2D
-        LDX     #Tab3D_1F2C
+        LDX     #SparkMapRpm3
         LDAB    >EngineRpm,Z
         JSR     Lookup3D
         NEGA
         STAA    $F0,Z
-        LDX     #Tab2D_1F20
+        LDX     #SparkCoolant
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
         LDAA    $F0,Z
@@ -15242,7 +15242,7 @@ Sub_1D5AE:
 Sub_1D5DC:
         LDAA    $077A,Z
         BEQ     L1D5EA
-        LDX     #Tab2D_1F99
+        LDX     #SparkV077A
         JSR     Lookup2D
 L1D5EA:
         RTS
@@ -15299,7 +15299,7 @@ L1D654:
         LDAA    >Map,Z
         CMPA    $20FC
         LBLS    L1D7CC
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         TDE
         SUBD    $20FD
         BCC     L1D686
@@ -15335,7 +15335,7 @@ L1D6C8:
         LDAA    >Map,Z
         CMPA    $2132
         LBLS    L1D7CC
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         TDE
         SUBD    $2133
         BCC     L1D6FA
@@ -15354,22 +15354,22 @@ L1D716:
         BRSET   $0D01,Z,#$10,L1D770
         BSET    $0D00,Z,#$02
         LDAA    >AirTemp,Z
-        LDX     #Tab2D_2106
+        LDX     #SparkAirTemp2
         LDAB    $0D04,Z
         BEQ     L1D732
-        LDX     #Tab2D_215E
+        LDX     #SparkAirTemp3
 L1D732:
         JSR     Lookup2D
         LDAB    $0D14,Z
         CBA
         BCS     L1D770
         LDAA    >AirTemp,Z
-        LDX     #Tab2D_2166
+        LDX     #SparkAirTemp4
         JSR     Lookup2D
-        LDX     #Tab3D_210E
+        LDX     #SparkAirTempV0D15
         TST     $0D04,Z
         BEQ     L1D758
-        LDX     #Tab3D_213D
+        LDX     #SparkAirTempV0D152
 L1D758:
         LDAB    $0D15,Z
         JSR     Lookup3D
@@ -15441,11 +15441,11 @@ Sub_1D7FE:
         CLRA
         BRA     L1D820
 L1D808:
-        LDX     #Tab2D_09E4
+        LDX     #SparkMap
         LDAA    >Map,Z
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #Tab3D_1E64
+        LDX     #SparkMapCoolant
         JSR     Lookup3D
 L1D820:
         RTS
@@ -15508,9 +15508,9 @@ L1D8A4:
         LDAB    #$FF
 L1D8B2:
         TBA
-        LDX     #Tab2D_22C2
+        LDX     #SparkTable2
         BRCLR   $0943,Z,#$01,L1D8C2
-        LDX     #Tab2D_22CA
+        LDX     #SparkTable3
 L1D8C2:
         BRA     L1D8D0
 L1D8C4:
@@ -15519,12 +15519,12 @@ L1D8C4:
         LDAB    #$FF
 L1D8CA:
         TBA
-        LDX     #Tab2D_22BA
+        LDX     #SparkTable
 L1D8D0:
         JSR     Lookup2D
         PSHA
         LDAA    >Map,Z
-        LDX     #Tab2D_22D2
+        LDX     #SparkMap7
         JSR     Lookup2D
         PULB
         CBA
@@ -15598,16 +15598,16 @@ L1D990:
         BSET    $0D57,Z,#$80
         BRSET   $0331,#$80,L1D9BE
         LDAA    $0335,Z
-        LDX     #Tab2D_2292
+        LDX     #SparkV0335
         BRA     L1D9C6
 L1D9BE:
         LDAA    $0A88,Z
-        LDX     #Tab2D_228A
+        LDX     #SparkV0A88
 L1D9C6:
         JSR     Lookup2D
         STAA    $F2,Z
         LDAA    >Map,Z
-        LDX     #Tab2D_229A
+        LDX     #SparkMap5
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
@@ -15648,7 +15648,7 @@ Sub_1DA26:
         LDAA    >Map,Z
         BRSET   $06B4,Z,#$20,L1DA42
         LDAA    <Baro,Z
-        LDX     #Tab2D_0E60
+        LDX     #MapBaroOffset
         JSR     Lookup2D
         ADDA    >Map,Z
         BCC     L1DA42
@@ -15657,7 +15657,7 @@ L1DA42:
         LDX     #PartThrottleMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #Tab3D_1D2F
+        LDX     #SparkMapRpm
         JSR     Lookup3D
         STAA    $F6,Z
         BRSET   $0335,#$04,L1DAA0
@@ -15714,14 +15714,14 @@ L1DAD6:
         CLRA
         BRA     L1DB10
 L1DADA:
-        LDX     #Tab2D_240F
+        LDX     #SparkV0198
         JSR     Lookup2D
         STAA    $02,Y
         LDAA    >Map,Z
         LDX     #PartThrottleMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #Tab3D_22DA
+        LDX     #SparkMapRpm4
         JSR     Lookup3D
         SUBA    $0D03,Z
         BMI     L1DB08
@@ -15777,14 +15777,14 @@ L1DB54:
         AIS     #$FC
         TSY
         LDAA    >BatteryVolts2,Z
-        LDX     #Tab2D_70D3
+        LDX     #SparkVolts
         JSR     Lookup2D
         STAA    $02,Y
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_70BF
+        LDX     #SparkRpm3
         JSR     Lookup2D
         LDAA    $02,Y
-        LDX     #Tab3DN_70E7
+        LDX     #SparkTable8
         JSR     Lookup3DNorm
         AIS     #$04
         PULM    X
@@ -15800,7 +15800,7 @@ Sub_1DB84:
         BRCLR   $0856,Z,#$10,L1DBE8
         BRCLR   $0856,Z,#$04,L1DBBC
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #Tab2D_2084
+        LDX     #SparkThrottle
         JSR     Lookup2D
         LDAA    $0859,Z
         ADDA    $205D
@@ -15816,7 +15816,7 @@ L1DBB6:
 L1DBBC:
         BRCLR   $0856,Z,#$08,L1DC1A
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #Tab2D_208E
+        LDX     #SparkThrottle2
         JSR     Lookup2D
         LDAA    $0859,Z
         ADDA    $205E
@@ -15935,14 +15935,14 @@ L1DCF2:
 L1DD0A:
         STAA    $F5,Z
         LDAA    >VehicleSpeed,Z
-        LDX     #Tab2D_20BF
+        LDX     #SparkSpeed3
         BRSET   $0055,Z,#$20,L1DD1E
-        LDX     #Tab2D_20A3
+        LDX     #SparkSpeed
 L1DD1E:
         BRSET   $0A46,Z,#$01,L1DD32
-        LDX     #Tab2D_20CF
+        LDX     #SparkSpeed4
         BRSET   $0055,Z,#$20,L1DD32
-        LDX     #Tab2D_20B3
+        LDX     #SparkSpeed2
 L1DD32:
         JSR     Lookup2D
         LDAB    $F5,Z
@@ -15984,7 +15984,7 @@ L1DD82:
         LDAA    #$7F
 L1DD84:
         STAA    $F3,Z
-        LDX     #Tab2D_20DB
+        LDX     #SparkV00F1
         LDAA    $F1,Z
         BPL     L1DD96
         NEGA
@@ -16000,7 +16000,7 @@ L1DD9C:
         CMPA    $20A2
         BGT     L1DDEE
 L1DDAC:
-        LDX     #Tab2D_20E5
+        LDX     #SparkV00F2
         LDAA    $F2,Z
         BPL     L1DDBC
         NEGA
@@ -16033,7 +16033,7 @@ L1DDEA:
 L1DDEC:
         STAA    $F4,Z
 L1DDEE:
-        LDX     #Tab2D_20EF
+        LDX     #SparkV00F3
         LDAA    $F3,Z
         BPL     L1DDFE
         NEGA
@@ -16084,7 +16084,7 @@ Sub_1DE3A:
 L1DE50:
         BSET    $0D02,Z,#$80
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_1FA7
+        LDX     #SparkRpm2
         JSR     Lookup2D
         NEGA
         BRA     L1DE6A
@@ -16177,7 +16177,7 @@ L1DF66:
         BMI     L1DF88
         CMPA    $2173
         LBCS    L1E13A
-        LDX     #Tab2D_2174
+        LDX     #SparkV0D30
         JSR     Lookup2D
         NEGB
         LBRA    L1E14A
@@ -16185,25 +16185,25 @@ L1DF88:
         CMPA    $2172
         LBGT    L1E13A
         NEGA
-        LDX     #Tab2D_217C
+        LDX     #SparkV0D302
         JSR     Lookup2D
         JMP     L1E14A
 L1DF9E:
         LDAA    >Map,Z
-        LDX     #Tab2D_0A08
+        LDX     #SparkMap4
         JSR     Lookup2D
         STAA    $F6,Z
         STAA    $0D39,Z
         LDAA    $0D30,Z
         LBMI    L1E024
         LDAA    $0AA6,Z
-        LDX     #Tab2D_2223
+        LDX     #SparkV0AA64
         JSR     Lookup2D
         CMPB    $0D30,Z
         BCC     L1E024
         LDAA    $F6,Z
         LDAB    $0D1E,Z
-        LDX     #Tab3D_223B
+        LDX     #SparkV00F6V0D1E
         JSR     Lookup3D
         LDAB    $0D30,Z
         MUL
@@ -16221,7 +16221,7 @@ L1DFF0:
 L1DFF2:
         STAA    $F2,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_2231
+        LDX     #SparkCoolant2
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
@@ -16229,7 +16229,7 @@ L1DFF2:
         STAA    $F2,Z
         LDAA    $F6,Z
         LDAB    $0D1E,Z
-        LDX     #Tab3D_225C
+        LDX     #SparkV00F6V0D1E2
         JSR     Lookup3D
         CMPA    $F2,Z
         BCC     L1E01C
@@ -16250,7 +16250,7 @@ L1E028:
         LDAA    $0D26,Z
         BMI     L1E05A
         LDAA    $0AA6,Z
-        LDX     #Tab2D_2195
+        LDX     #SparkV0AA62
         JSR     Lookup2D
         CMPA    $0D26,Z
         BCC     L1E05A
@@ -16262,14 +16262,14 @@ L1E05A:
         CMPA    #$01
         LBNE    L1E0E8
         LDAA    $0AA6,Z
-        LDX     #Tab2D_21A3
+        LDX     #SparkV0AA63
         JSR     Lookup2D
         LDAA    $0D32,Z
         MUL
         ADCA    #$00
         STAA    $F2,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_2231
+        LDX     #SparkCoolant2
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
@@ -16279,14 +16279,14 @@ L1E05A:
         BPL     L1E098
         BRA     L1E0E8
 L1E098:
-        LDX     #Tab2D_21B1
+        LDX     #SparkV0D26
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
         ADCA    #$00
         STAA    $F2,Z
         LDAA    $0D3B,Z
-        LDX     #Tab2D_21BD
+        LDX     #SparkV0D3B
         JSR     Lookup2D
         LDAB    $F2,Z
         MUL
@@ -16320,10 +16320,10 @@ L1E0E8:
         STAA    $0D37,Z
         STAA    $F2,Z
         LDAA    $0AA6,Z
-        LDX     #Tab2D_0A14
+        LDX     #SparkV0AA6
         JSR     Lookup2D
         LDAB    $F2,Z
-        LDX     #Tab3D_21EA
+        LDX     #SparkV0AA6V00F2
         JSR     Lookup3D
         LDAA    $0D33,Z
         MUL
@@ -16469,7 +16469,7 @@ L1E278:
         STAA    $0D26,Z
         LDAB    $0D1E,Z
         LDAA    $0D39,Z
-        LDX     #Tab3D_21C9
+        LDX     #SparkV0D39V0D1E
         JSR     Lookup3D
         STAA    $0D32,Z
         RTS
@@ -16563,7 +16563,7 @@ L1E36C:
         STE     $0D48,Z
         JSR     Sub_1E5A8
         XGEY
-        LDX     #Tab2D_1BCF
+        LDX     #SparkV0D18
         LDAA    $0D18,Z
         JSR     Lookup2D
         SXT
@@ -16753,9 +16753,9 @@ L1E580:
 ; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 Sub_1E582:
-        LDX     #Tab2D_7564
+        LDX     #SparkV0A57
         BRCLR   $0D5F,Z,#$40,L1E590
-        LDX     #Tab2D_7578
+        LDX     #SparkV0A572
 L1E590:
         LDAA    $0A57,Z
         JSR     Lookup2D
@@ -16827,7 +16827,7 @@ L1E624:
         STAB    $0D02,Z
         BITB    #$08
         BEQ     L1E652
-        LDX     #Tab2D_1BD9
+        LDX     #SparkV0D182
         LDAA    $0D18,Z
         JSR     Lookup2D
         CLRA
@@ -16938,7 +16938,7 @@ Sub_1E76A:
         EDIVS
         STX     $0D9A,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_25D9
+        LDX     #SparkCoolant3
         JSR     Lookup2D
         LDE     $0D9C,Z
         LDX     $0D9A,Z
@@ -16972,16 +16972,16 @@ L1E7E2:
         STAA    $0D9F,Z
         ADDA    #$80
         BMI     L1E800
-        LDX     #Tab2D_25E1
+        LDX     #SparkTable4
         BRSET   $032E,#$40,L1E814
         BRCLR   $0C31,Z,#$20,L1E814
-        LDX     #Tab2D_25F9
+        LDX     #SparkTable6
         BRA     L1E814
 L1E800:
-        LDX     #Tab2D_25ED
+        LDX     #SparkTable5
         BRSET   $032E,#$40,L1E814
         BRCLR   $0C31,Z,#$20,L1E814
-        LDX     #Tab2D_2605
+        LDX     #SparkTable7
 L1E814:
         JSR     Lookup2D
         STAA    $0DA1,Z
@@ -17262,10 +17262,10 @@ Sub_1F13E:
         BEQ     L1F18E
         PSHA
         LDAA    >Map,Z
-        LDX     #Tab2D_0A20
+        LDX     #KnockMap
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #Tab3D_24E5
+        LDX     #KnockRetardLimit
         JSR     Lookup3D
         PULA
         MUL
@@ -17380,7 +17380,7 @@ Sub_1F256:
         CMPA    $24A6
         BCS     L1F28C
 L1F27A:
-        LDX     #Tab2D_24CB
+        LDX     #KnockMap2
         LDAA    >Map,Z
         JSR     Lookup2D
         BRA     L1F290
@@ -17509,7 +17509,7 @@ L1F35E:
         BCC     L1F372
         LDAB    #$FF
 L1F372:
-        STAB    $0A8C,Z
+        STAB    >KnockThresholdNow,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -17518,37 +17518,37 @@ L1F372:
 ;---------------------------------------------------------------------------------------------------
 Sub_1F378:
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_248B
+        LDX     #KnockRpm4
         JSR     Lookup2D
         STAA    $0DA6,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_247F
+        LDX     #KnockRpm3
         JSR     Lookup2D
         STAA    $0DA7,Z
-        LDX     #Tab2D_2469
+        LDX     #KnockBaro
         LDAA    <Baro,Z
         JSR     Lookup2D
         STAA    $FE,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_245B
+        LDX     #KnockRpm
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         STAA    $0DA4,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_2473
+        LDX     #KnockRpm2
         JSR     Lookup2D
         STAA    $0DA5,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_4A94
+        LDX     #KnockRpm7
         JSR     Lookup2D
         STAA    $0DB3,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_2497
+        LDX     #KnockRpm5
         JSR     Lookup2D
         STAA    $0DB5,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_2542
+        LDX     #KnockRpm6
         JSR     Lookup2D
         STAA    $0D40,Z
         RTS
@@ -17631,9 +17631,9 @@ L1F4D6:
         CMPB    >Map,Z
         LBHI    L1F588
         LDAA    $0A8B,Z
-        SUBA    $0A8C,Z
+        SUBA    >KnockThresholdNow,Z
         LBCS    L1F588
-        LDX     #Tab2D_24BF
+        LDX     #KnockV0A8B
         JSR     Lookup2D
         BRSET   $0C34,Z,#$80,L1F516
         BSET    $0C34,Z,#$80

@@ -293,11 +293,13 @@
         dc.b    $FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_03FC ($03FC): 2D table, 4 points, unsigned
+; SensorRpm ($03FC): 2D table, 4 points, unsigned
+; Subsystem: sensor processing (by the routine that reads it, Sub_2CB0E). Inputs: EngineRpm.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $134CA
 ;---------------------------------------------------------------------------------------------------
-Tab2D_03FC:
+SensorRpm:
         dc.b    4,$80                                    ; points, flags
         dc.b    31,0, 63,5, 94,8, 156,12                 ; x, y
 
@@ -435,22 +437,26 @@ Tab2D_0574:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$50
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0581 ($0581): 2D table, 1 points, unsigned
+; StartStartCoolant ($0581): 2D table, 1 points, unsigned
+; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: StartCoolantTemp2. Result to $0C00,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $07140
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0581:
+StartStartCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0593 ($0593): 2D table, 1 points, unsigned
+; CrankFuelV0198 ($0593): 2D table, 1 points, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0198,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $2F,Z
 ; Read at $09A6A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0593:
+CrankFuelV0198:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -494,11 +500,13 @@ Tab2D_05BF:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_05CB ($05CB): 2D table, 3 points, unsigned
+; FuelScaled ($05CB): 2D table, 3 points, unsigned
+; Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_104AE). Inputs: result of Lookup2D; #$FF.
+; x: pos256, y: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D; #$FF
 ; Read at $0838A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_05CB:
+FuelScaled:
         dc.b    3,$80                                    ; points, flags
         dc.b    128,0, 240,224, 255,255                  ; x, y
 
@@ -527,11 +535,13 @@ Tab2D_05EB:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_05F7 ($05F7): 2D table, 2 points, unsigned
+; SparkMap ($05F7): 2D table, 2 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1D7FE). Inputs: Map.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $08ADC, $1DC8C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_05F7:
+SparkMap:
         dc.b    2,$80                                    ; points, flags
         dc.b    49,0, 241,255                            ; x, y
 
@@ -571,32 +581,38 @@ Tab2D_062F:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0643 ($0643): 2D table, 2 points, unsigned
+; FuelEventRpm ($0643): 2D table, 2 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: EngineRpm. Result to $00F0,Z.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $0985A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0643:
+FuelEventRpm:
         dc.b    2,$80                                    ; points, flags
         dc.b    47,0, 172,255                            ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_064F ($064F): 2D table, 5 points, unsigned
+; FuelEventThrottle ($064F): 2D table, 5 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: ThrottleAboveClosed; ThrottleLast.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed; ThrottleLast
 ; Read at $09868, $09886
 ;---------------------------------------------------------------------------------------------------
-Tab2D_064F:
+FuelEventThrottle:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 21,112, 50,176, 78,208, 153,255     ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_065B ($065B): 2D table, 4 points, unsigned
+; FuelEventTime ($065B): 2D table, 4 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: Count3s.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Count3s
 ; Read at $09942
 ;---------------------------------------------------------------------------------------------------
-Tab2D_065B:
+FuelEventTime:
         dc.b    4,$80                                    ; points, flags
         dc.b    0,0, 80,192, 112,224, 160,255            ; x, y
 
@@ -613,22 +629,26 @@ Tab2D_0667:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0673 ($0673): 2D table, 1 points, unsigned
+; Sys3D800Map ($0673): 2D table, 1 points, unsigned
+; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: Map.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $0D9BE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0673:
+Sys3D800Map:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_067D ($067D): 2D table, 1 points, unsigned
+; Sys3D800Rpm ($067D): 2D table, 1 points, unsigned
+; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: EngineRpm. Result to $00F0,Z.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $0D9B0
 ;---------------------------------------------------------------------------------------------------
-Tab2D_067D:
+Sys3D800Rpm:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -636,53 +656,63 @@ Tab2D_067D:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0693 ($0693): 2D table, 2 points, unsigned
+; SparkMap2 ($0693): 2D table, 2 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: Map.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $1D6C0
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0693:
+SparkMap2:
         dc.b    2,$80                                    ; points, flags
         dc.b    113,0, 243,255                           ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_069F ($069F): 2D table, 3 points, unsigned
+; SparkMap3 ($069F): 2D table, 3 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1D5AE). Inputs: Map.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $1DA54
 ;---------------------------------------------------------------------------------------------------
-Tab2D_069F:
+SparkMap3:
         dc.b    3,$80                                    ; points, flags
         dc.b    65,0, 162,192, 227,255                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06AB ($06AB): 2D table, 5 points, unsigned
+; SparkMap4 ($06AB): 2D table, 5 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: Map. Result to $00F6,Z.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $1E276
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06AB:
+SparkMap4:
         dc.b    5,$80                                    ; points, flags
         dc.b    97,0, 113,64, 129,128, 209,192, 227,255  ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06B7 ($06B7): 2D table, 5 points, unsigned
+; SparkV0AA6 ($06B7): 2D table, 5 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $059C,Z
 ; Read at $1E3DA
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06B7:
+SparkV0AA6:
         dc.b    5,$80                                    ; points, flags
         dc.b    41,0, 60,64, 80,128, 125,192, 207,255    ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06C3 ($06C3): 2D table, 2 points, unsigned
+; KnockMap ($06C3): 2D table, 2 points, unsigned
+; Subsystem: knock control (by the routine that reads it, Sub_1F13E). Inputs: Map.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $0A96A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06C3:
+KnockMap:
         dc.b    2,$80                                    ; points, flags
         dc.b    129,0, 243,255                           ; x, y
 
@@ -700,65 +730,77 @@ Tab2D_06CF:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06DB ($06DB): 2D table, 5 points, unsigned
+; IdleThrottle ($06DB): 2D table, 5 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: ThrottleAboveClosed.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $050A8, $05728
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06DB:
+IdleThrottle:
         dc.b    5,$80                                    ; points, flags
         dc.b    10,0, 20,64, 41,153, 51,192, 102,255     ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06E7 ($06E7): 2D table, 3 points, unsigned
+; IdleSpeed ($06E7): 2D table, 3 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: VehicleSpeed.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $18,Z
 ; Read at $06374
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06E7:
+IdleSpeed:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,0, 24,64, 136,255                      ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06F3 ($06F3): 2D table, 2 points, unsigned
+; IdleV032E ($06F3): 2D table, 2 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: $032E,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01A1,Z
 ; Read at $063A8, $06406
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06F3:
+IdleV032E:
         dc.b    2,$80                                    ; points, flags
         dc.b    51,0, 255,255                            ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06FF ($06FF): 2D table, 3 points, unsigned
+; IdleBaro ($06FF): 2D table, 3 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Baro.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $0633A, $0645A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06FF:
+IdleBaro:
         dc.b    3,$80                                    ; points, flags
         dc.b    129,0, 227,192, 255,255                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_070B ($070B): 2D table, 3 points, unsigned
+; MisfireV0620 ($070B): 2D table, 3 points, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $02C1,Z
 ; Read at $18E24, $19790
 ;---------------------------------------------------------------------------------------------------
-Tab2D_070B:
+MisfireV0620:
         dc.b    3,$80                                    ; points, flags
         dc.b    65,0, 162,190, 227,255                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0717 ($0717): 2D table, 3 points, unsigned
+; MisfireV06202 ($0717): 2D table, 3 points, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z. Result to $04FE,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $02C1,Z
 ; Read at $18ECA
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0717:
+MisfireV06202:
         dc.b    3,$80                                    ; points, flags
         dc.b    65,0, 162,190, 227,255                   ; x, y
 
@@ -776,11 +818,13 @@ Tab2D_0723:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_072F ($072F): 2D table, 3 points, unsigned
+; MisfireV06204 ($072F): 2D table, 3 points, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $02C1,Z
 ; Read at $18E64
 ;---------------------------------------------------------------------------------------------------
-Tab2D_072F:
+MisfireV06204:
         dc.b    3,$80                                    ; points, flags
         dc.b    65,0, 162,190, 227,255                   ; x, y
 
@@ -799,22 +843,26 @@ Tab2D_073B:
         dc.b    $84,$70,$76,$06,$58
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0758 ($0758): 2D table, 1 points, unsigned
+; CrankFuelV00FC ($0758): 2D table, 1 points, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z. Result to $076B,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $09CA4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0758:
+CrankFuelV00FC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_0764 ($0764): 3D table, 9 rows x 9 columns, unsigned
+; CrankFuelV0A91Coolant ($0764): 3D table, 9 rows x 9 columns, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0A91,Z x CoolantTemp; $0A91,Z x $05FE,Z; $0A91,Z x $0768,Z. Result to $00F0,Z.
+; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: $0561,Z x CoolantTemp; $0561,Z x $074F
 ; Read at $09B8C
 ;---------------------------------------------------------------------------------------------------
-Tab3D_0764:
+CrankFuelV0A91Coolant:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    94,99,110,132,146,155,205,216,227        ; column axis
         dc.b    91,88,72,50,38,34,23,23,24               ; row 0
@@ -840,99 +888,117 @@ Tab2D_07C1:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_07CB ($07CB): 2D table, 3 points, unsigned
+; CrankFuelRpm2 ($07CB): 2D table, 3 points, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: EngineRpm. Result to $00FE,Z.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $09BA2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_07CB:
+CrankFuelRpm2:
         dc.b    3,$80                                    ; points, flags
         dc.b    4,1, 16,77, 20,128                       ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_07D5 ($07D5): 2D table, 1 points, unsigned
+; CrankFuelV00FC2 ($07D5): 2D table, 1 points, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z. Result to $00F2,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $09BAE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_07D5:
+CrankFuelV00FC2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_07E1 ($07E1): 2D table, 3 points, unsigned
+; CrankFuelV0769 ($07E1): 2D table, 3 points, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0769,Z. Result to $00FE,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0420,Z
 ; Read at $09BC2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_07E1:
+CrankFuelV0769:
         dc.b    3,$80                                    ; points, flags
         dc.b    10,0, 30,90, 50,128                      ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_07ED ($07ED): 2D table, 2 points, unsigned
+; CrankFuelV00FC3 ($07ED): 2D table, 2 points, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z. Result to $00F4,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $09BCE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_07ED:
+CrankFuelV00FC3:
         dc.b    2,$80                                    ; points, flags
         dc.b    99,255, 160,69                           ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_07F9 ($07F9): 2D table, 1 points, unsigned
+; CrankFuelV00FC4 ($07F9): 2D table, 1 points, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $09C16
 ;---------------------------------------------------------------------------------------------------
-Tab2D_07F9:
+CrankFuelV00FC4:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0803 ($0803): 2D table, 2 points, unsigned
+; CrankFuelBaro ($0803): 2D table, 2 points, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: Baro. Result to $00FE,Z.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $09BE0
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0803:
+CrankFuelBaro:
         dc.b    2,$80                                    ; points, flags
         dc.b    183,77, 233,0                            ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_080B ($080B): 2D table, 1 points, unsigned
+; CrankFuelV00FC5 ($080B): 2D table, 1 points, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $FC,Z. Result to $00F6,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $09BEC
 ;---------------------------------------------------------------------------------------------------
-Tab2D_080B:
+CrankFuelV00FC5:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0813 ($0813): 2D table, 4 points, unsigned, y = 0 counts as 256
+; CrankFuelVacuum ($0813): 2D table, 4 points, unsigned, y = 0 counts as 256
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: ManifoldVacuum. Result to $00F8,Z.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: ManifoldVacuum
 ; Read at $09C00
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0813:
+CrankFuelVacuum:
         dc.b    4,$40                                    ; points, flags
         dc.b    0,255, 65,246, 130,236, 255,223          ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_081F ($081F): 3D table, 5 rows x 5 columns, unsigned
+; CrankFuelV0198Coolant ($081F): 3D table, 5 rows x 5 columns, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: result of Lookup2D x CoolantTemp. Result to $0765,Z.
+; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $0C,Z
 ; Read at $09A74
 ;---------------------------------------------------------------------------------------------------
-Tab3D_081F:
+CrankFuelV0198Coolant:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    99,105,110,144,204                       ; column axis
         dc.b    47,47,47,32,16                           ; row 0
@@ -943,11 +1009,13 @@ Tab3D_081F:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0840 ($0840): 2D table, 3 points, unsigned
+; CrankFuelV0C44 ($0840): 2D table, 3 points, unsigned
+; Subsystem: cranking fuel (by the routine that reads it, Sub_123C0). Inputs: $0C44,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0606,Z
 ; Read at $09A4C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0840:
+CrankFuelV0C44:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,0, 6,22, 11,67                         ; x, y
 
@@ -989,11 +1057,13 @@ Tab2D_0868:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_08AA ($08AA): 2D table, 1 points, unsigned
+; FuelEventRpm2 ($08AA): 2D table, 1 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_112A8). Inputs: EngineRpm.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $08F8C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_08AA:
+FuelEventRpm2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
@@ -1056,11 +1126,13 @@ Tab3D_09E9:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0B1E ($0B1E): 2D table, 2 points, unsigned
+; MapBaroOffset ($0B1E): 2D table, 2 points, unsigned
+; Added to MAP against barometric pressure before the part-throttle MAP scale (main-loop fuel, Sys39686, diagnostics)
+; x: kpa, y: kpa (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $08B78, $16184, $1DEAA
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0B1E:
+MapBaroOffset:
         dc.b    2,$80                                    ; points, flags
         dc.b    146,94, 240,0                            ; x, y
 
@@ -1099,22 +1171,26 @@ Tab2D_0B40:
         dc.b    $FF,$FF,$0C,$05,$21,$70,$77,$10,$10,$3D,$02
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0B51 ($0B51): 2D table, 2 points, unsigned
+; FuelBaro ($0B51): 2D table, 2 points, unsigned
+; Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_104AE). Inputs: Baro.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $0837A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0B51:
+FuelBaro:
         dc.b    2,$80                                    ; points, flags
         dc.b    162,16, 227,0                            ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_0B5B ($0B5B): 3D table, 9 rows x 17 columns, unsigned
+; FuelRpm2 ($0B5B): 3D table, 9 rows x 17 columns, unsigned
+; Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_104AE). Inputs: result of Lookup2D x EngineRpm. Result to $00F4,Z.
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x EngineRpm
 ; Read at $08394
 ;---------------------------------------------------------------------------------------------------
-Tab3D_0B5B:
+FuelRpm2:
         dc.b    9,17,$00                                 ; rows, columns, signed
         dc.b    22,25,28,38,47,55,63,70,78,103,108,123,142,161,180,199,218 ; column axis
         dc.b    0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,32,39     ; row 0
@@ -1129,11 +1205,13 @@ Tab3D_0B5B:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0C08 ($0C08): 2D table, 1 points, unsigned
+; FuelEventRpm3 ($0C08): 2D table, 1 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, FinishFuelPulse). Inputs: EngineRpm.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $092FE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0C08:
+FuelEventRpm3:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -1141,11 +1219,13 @@ Tab2D_0C08:
         dc.b    $06,$00,$0B
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0C1F ($0C1F): 2D table, 4 points, unsigned
+; FuelRpm3 ($0C1F): 2D table, 4 points, unsigned
+; Subsystem: fuel calculation (main loop) (by the routine that reads it, Sub_102FE). Inputs: EngineRpm.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $08246
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0C1F:
+FuelRpm3:
         dc.b    4,$80                                    ; points, flags
         dc.b    147,0, 161,10, 200,15, 219,14            ; x, y
 
@@ -1473,11 +1553,13 @@ Tab2D_1131:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_113D ($113D): 2D table, 3 points, unsigned, y = 0 counts as 256
+; FuelEventStartCoolant2 ($113D): 2D table, 3 points, unsigned, y = 0 counts as 256
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_1204A). Inputs: StartCoolantTemp. Result to $0A73,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A,Z
 ; Read at $09756
 ;---------------------------------------------------------------------------------------------------
-Tab2D_113D:
+FuelEventStartCoolant2:
         dc.b    3,$40                                    ; points, flags
         dc.b    99,113, 144,128, 216,182                 ; x, y
 
@@ -1567,22 +1649,26 @@ Tab2D_1190:
         dc.b    $03,$C0,$07,$22,$0B,$00,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_11FB ($11FB): 2D table, 4 points, unsigned
+; FuelEventStartCoolant3 ($11FB): 2D table, 4 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: StartCoolantTemp.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A,Z
 ; Read at $0990A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_11FB:
+FuelEventStartCoolant3:
         dc.b    4,$80                                    ; points, flags
         dc.b    99,79, 121,97, 144,72, 216,18            ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_120D ($120D): 2D table, 3 points, unsigned
+; FuelEventStartCoolant4 ($120D): 2D table, 3 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: StartCoolantTemp.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A,Z
 ; Read at $098AC
 ;---------------------------------------------------------------------------------------------------
-Tab2D_120D:
+FuelEventStartCoolant4:
         dc.b    3,$80                                    ; points, flags
         dc.b    99,41, 144,33, 216,15                    ; x, y
 
@@ -1599,11 +1685,13 @@ Tab2D_121F:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1227 ($1227): 2D table, 3 points, unsigned, y = 0 counts as 256
+; FuelEventStartCoolant6 ($1227): 2D table, 3 points, unsigned, y = 0 counts as 256
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_1204A). Inputs: StartCoolantTemp. Result to $0A73,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A,Z
 ; Read at $09766
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1227:
+FuelEventStartCoolant6:
         dc.b    3,$40                                    ; points, flags
         dc.b    99,10, 144,13, 216,26                    ; x, y
 
@@ -1620,44 +1708,52 @@ Tab2D_122F:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1239 ($1239): 2D table, 3 points, unsigned
+; FuelEventBaro ($1239): 2D table, 3 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: Baro.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $099C4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1239:
+FuelEventBaro:
         dc.b    3,$80                                    ; points, flags
         dc.b    178,218, 194,243, 227,255                ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1245 ($1245): 2D table, 1 points, unsigned
+; FuelEventMap ($1245): 2D table, 1 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: Map.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $09998
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1245:
+FuelEventMap:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1259 ($1259): 2D table, 6 points, unsigned
+; FuelEventRpm4 ($1259): 2D table, 6 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: EngineRpm.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $09988
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1259:
+FuelEventRpm4:
         dc.b    6,$80                                    ; points, flags
         dc.b    16,128, 32,208, 55,255, 80,210, 112,144, 160,0 ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3DN_126D ($126D): 3D table, 9 rows x 17 columns, unsigned, columns by position 0-255
+; FuelEventTable2 ($126D): 3D table, 9 rows x 17 columns, unsigned, columns by position 0-255
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: $F0,Z. Result to $00F2,Z, $0804,Z.
+; columns: ?, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: $F0,Z
 ; Read at $09872, $09890
 ;---------------------------------------------------------------------------------------------------
-Tab3DN_126D:
+FuelEventTable2:
         dc.b    9,17,$00                                 ; rows, columns, signed
         dc.b    0,5,10,15,20,26,31,36,41,46,51,56,61,67,72,77,82 ; row 0
         dc.b    0,8,13,20,26,33,38,46,51,59,64,72,77,84,90,97,105 ; row 1
@@ -1672,11 +1768,13 @@ Tab3DN_126D:
         dc.b    $28,$05,$07,$D0
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_130D ($130D): 3D table, 9 rows x 9 columns, unsigned
+; FuelEventTimeStartCoolant ($130D): 3D table, 9 rows x 9 columns, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12142). Inputs: result of Lookup2D x StartCoolantTemp2. Result to $07C1,Z.
+; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $0F,Z
 ; Read at $0994C
 ;---------------------------------------------------------------------------------------------------
-Tab3D_130D:
+FuelEventTimeStartCoolant:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    99,110,121,146,163,188,205,232,255       ; column axis
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 0
@@ -1702,11 +1800,13 @@ Tab2D_136A:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1374 ($1374): 2D table, 2 points, unsigned
+; EventCoolant ($1374): 2D table, 2 points, unsigned
+; Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: CoolantTemp. Result to $080C,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0FC48
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1374:
+EventCoolant:
         dc.b    2,$80                                    ; points, flags
         dc.b    144,4, 192,5                             ; x, y
 
@@ -1730,11 +1830,13 @@ Tab3D_137E:
         dc.b    $1E,$1F,$82,$10,$A0,$05,$05,$12,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_13B9 ($13B9): 2D table, 6 points, unsigned
+; O2Coolant ($13B9): 2D table, 6 points, unsigned
+; Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14740). Inputs: CoolantTemp.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0B580
 ;---------------------------------------------------------------------------------------------------
-Tab2D_13B9:
+O2Coolant:
         dc.b    6,$80                                    ; points, flags
         dc.b    130,19, 138,14, 144,12, 147,7, 155,7, 203,3 ; x, y
 
@@ -1744,11 +1846,13 @@ Tab2D_13B9:
         dc.b    $00,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_13FC ($13FC): 2D table, 1 points, unsigned
+; O2V042C ($13FC): 2D table, 1 points, unsigned
+; Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_14FD8). Inputs: $042C,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0630,Z
 ; Read at $0BF16
 ;---------------------------------------------------------------------------------------------------
-Tab2D_13FC:
+O2V042C:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
@@ -1756,22 +1860,26 @@ Tab2D_13FC:
         dc.b    $9B,$45,$B1,$00,$FF,$FF,$0D,$F3,$0D,$F3,$0D,$F3,$30,$20,$15
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_141F ($141F): 2D table, 6 points, unsigned
-; Inputs: LDAA IND8, X; $03B2,Z; $03D3,Z
+; O2VoltageScale ($141F): 2D table, 6 points, unsigned
+; Upstream O2 sensor ADC counts to the value used by closed loop and its monitor
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: LDAA IND8, X; O2UpBank1; O2UpBank2
 ; Read at $0C2D2, $0CC68, $0CC7E, $0D3B0
 ;---------------------------------------------------------------------------------------------------
-Tab2D_141F:
+O2VoltageScale:
         dc.b    6,$80                                    ; points, flags
         dc.b    1,5, 2,64, 5,102, 24,128, 46,153, 49,166 ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_142F ($142F): 2D table, 6 points, unsigned
+; O2VoltageScale2 ($142F): 2D table, 6 points, unsigned
+; Second copy of the O2 voltage scale (same values as O2VoltageScale)
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: LDAA IND8, X
 ; Read at $0B228
 ;---------------------------------------------------------------------------------------------------
-Tab2D_142F:
+O2VoltageScale2:
         dc.b    6,$80                                    ; points, flags
         dc.b    1,5, 2,64, 12,119, 38,136, 48,140, 50,178 ; x, y
 
@@ -1796,11 +1904,13 @@ Tab2D_142F:
         dc.b    $09,$09,$09,$08,$7F,$80,$64,$00,$30
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1566 ($1566): 2D table, 4 points, unsigned
+; O2V00F3 ($1566): 2D table, 4 points, unsigned
+; Subsystem: oxygen-sensor closed loop and adaptive fuel (by the routine that reads it, Sub_15D56). Inputs: $F3,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $F3,Z
 ; Read at $0C9D0
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1566:
+O2V00F3:
         dc.b    4,$80                                    ; points, flags
         dc.b    3,0, 4,1, 5,1, 77,6                      ; x, y
 
@@ -1899,11 +2009,13 @@ Tab2D_15E4:
         dc.b    $01,$01,$14,$01,$01,$00,$01,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1610 ($1610): 2D table, 1 points, unsigned
+; FuelEventTable3 ($1610): 2D table, 1 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, FinishFuelPulse). Inputs: LDD. Result to $04F4,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: LDD
 ; Read at $091B2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1610:
+FuelEventTable3:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
@@ -2017,11 +2129,13 @@ Tab2D_16EC:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3DN_16F8 ($16F8): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
+; Sys3D800Table ($16F8): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
+; Subsystem: not identified yet (top routine Sub_3D800) (by the routine that reads it, Sub_3EAEC). Inputs: result of Lookup2D.
+; columns: ?, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D
 ; Read at $0D9C8
 ;---------------------------------------------------------------------------------------------------
-Tab3DN_16F8:
+Sys3D800Table:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 0
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 1
@@ -2037,11 +2151,13 @@ Tab3DN_16F8:
         dc.b    $CD,$00,$33,$FF,$9F,$00,$82,$35,$00,$C3
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1766 ($1766): 2D table, 1 points, signed
+; SparkV0D18 ($1766): 2D table, 1 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1E2B6). Inputs: $0D18,Z. Result to $04FC,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0692,Z
 ; Read at $1E60C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1766:
+SparkV0D18:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,-32                                  ; x, y
 
@@ -2104,11 +2220,13 @@ Tab3D_18A7:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_19DC ($19DC): 3D table, 9 rows x 9 columns, signed
+; SparkMapCoolant ($19DC): 3D table, 9 rows x 9 columns, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D7FE). Inputs: result of Lookup2D x CoolantTemp.
+; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $0C,Z
 ; Read at $1DC96
 ;---------------------------------------------------------------------------------------------------
-Tab3D_19DC:
+SparkMapCoolant:
         dc.b    9,9,$FF                                  ; rows, columns, signed
         dc.b    99,116,127,138,149,166,177,232,238       ; column axis
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 0
@@ -2123,22 +2241,26 @@ Tab3D_19DC:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1A39 ($1A39): 2D table, 2 points, unsigned
+; SparkAirTemp ($1A39): 2D table, 2 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: AirTemp; $0A5A,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: AirTemp
 ; Read at $1D6DE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1A39:
+SparkAirTemp:
         dc.b    2,$80                                    ; points, flags
         dc.b    160,0, 210,255                           ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_1A43 ($1A43): 3D table, 5 rows x 9 columns, signed
+; SparkMapRpm2 ($1A43): 3D table, 5 rows x 9 columns, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: result of Lookup2D x EngineRpm.
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x EngineRpm
 ; Read at $1D6CA
 ;---------------------------------------------------------------------------------------------------
-Tab3D_1A43:
+SparkMapRpm2:
         dc.b    5,9,$FF                                  ; rows, columns, signed
         dc.b    23,31,47,63,78,94,109,125,156            ; column axis
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 0
@@ -2150,32 +2272,38 @@ Tab3D_1A43:
         dc.b    $06,$FF,$04,$00,$01,$90
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1A82 ($1A82): 2D table, 10 points, unsigned
+; SparkStartCoolant ($1A82): 2D table, 10 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1D448). Inputs: StartCoolantTemp2. Result to $0D1B,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0F,Z
 ; Read at $1D962
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1A82:
+SparkStartCoolant:
         dc.b    10,$80                                   ; points, flags
         dc.b    110,0, 121,3, 138,14, 146,31, 160,31, 161,9, 214,9, 216,9 ; x, y
         dc.b    219,9, 221,0                             ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1A98 ($1A98): 2D table, 5 points, unsigned
+; SparkCoolant ($1A98): 2D table, 5 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1D5AE). Inputs: CoolantTemp.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $1DA6C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1A98:
+SparkCoolant:
         dc.b    5,$80                                    ; points, flags
         dc.b    138,255, 152,255, 205,128, 222,64, 222,0 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_1AA4 ($1AA4): 3D table, 9 rows x 9 columns, signed
+; SparkMapRpm3 ($1AA4): 3D table, 9 rows x 9 columns, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D5AE). Inputs: result of Lookup2D x EngineRpm. Result to $00F0,Z.
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x EngineRpm
 ; Read at $1DA5E
 ;---------------------------------------------------------------------------------------------------
-Tab3D_1AA4:
+SparkMapRpm3:
         dc.b    9,9,$FF                                  ; rows, columns, signed
         dc.b    17,26,32,44,56,62,75,88,119              ; column axis
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 0
@@ -2212,22 +2340,26 @@ Tab2D_1B09:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1B11 ($1B11): 2D table, 5 points, signed
+; SparkV077A ($1B11): 2D table, 5 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D5DC). Inputs: $077A,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $042F,Z
 ; Read at $1DA80
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1B11:
+SparkV077A:
         dc.b    5,$20                                    ; points, flags
         dc.b    0,0, 13,0, 26,3, 39,5, 51,7              ; x, y
 
         dc.b    $FE,$FE
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1B1F ($1B1F): 2D table, 1 points, unsigned
+; SparkRpm2 ($1B1F): 2D table, 1 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DE3A). Inputs: EngineRpm.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1E15C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1B1F:
+SparkRpm2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -2383,22 +2515,26 @@ Tab2D_1CA3:
         dc.b    $FF,$FF,$FF,$FF,$02,$04
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1CAD ($1CAD): 2D table, 1 points, unsigned
+; SparkV0D30 ($1CAD): 2D table, 1 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D30,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $067F,Z
 ; Read at $1E24E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1CAD:
+SparkV0D30:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,10                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1CB5 ($1CB5): 2D table, 1 points, unsigned
+; SparkV0D302 ($1CB5): 2D table, 1 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D30,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $067F,Z
 ; Read at $1E266
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1CB5:
+SparkV0D302:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -2406,55 +2542,65 @@ Tab2D_1CB5:
         dc.b    $00,$28,$6E,$1B,$C7
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1CCE ($1CCE): 2D table, 2 points, unsigned
+; SparkV0AA62 ($1CCE): 2D table, 2 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $059C,Z
 ; Read at $1E316
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1CCE:
+SparkV0AA62:
         dc.b    2,$80                                    ; points, flags
         dc.b    249,1, 250,128                           ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1CDC ($1CDC): 2D table, 3 points, unsigned
+; SparkV0AA63 ($1CDC): 2D table, 3 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z. Result to $00F2,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $059C,Z
 ; Read at $1E33C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1CDC:
+SparkV0AA63:
         dc.b    3,$80                                    ; points, flags
         dc.b    37,10, 54,20, 72,255                     ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1CEA ($1CEA): 2D table, 3 points, unsigned
+; SparkV0D26 ($1CEA): 2D table, 3 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D26,Z. Result to $00F2,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0675,Z
 ; Read at $1E368
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1CEA:
+SparkV0D26:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,0, 1,79, 8,255                         ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1CF6 ($1CF6): 2D table, 1 points, unsigned
+; SparkV0D3B ($1CF6): 2D table, 1 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0D3B,Z. Result to $0D33,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $068C,Z
 ; Read at $1E37C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1CF6:
+SparkV0D3B:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,192                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_1D02 ($1D02): 3D table, 5 rows x 5 columns, unsigned
+; SparkV0D39V0D1E ($1D02): 3D table, 5 rows x 5 columns, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1E14E). Inputs: $0D39,Z x $0D1E,Z. Result to $0D32,Z.
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: $068A,Z x $066D,Z
 ; Read at $1E554
 ;---------------------------------------------------------------------------------------------------
-Tab3D_1D02:
+SparkV0D39V0D1E:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    31,47,63,94,95                           ; column axis
         dc.b    24,16,10,0,0                             ; row 0
@@ -2465,11 +2611,13 @@ Tab3D_1D02:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_1D23 ($1D23): 3D table, 5 rows x 9 columns, unsigned
+; SparkV0AA6V00F2 ($1D23): 3D table, 5 rows x 9 columns, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: result of Lookup2D x $F2,Z. Result to $00F4,Z.
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $F2,Z
 ; Read at $1E3E4
 ;---------------------------------------------------------------------------------------------------
-Tab3D_1D23:
+SparkV0AA6V00F2:
         dc.b    5,9,$00                                  ; rows, columns, signed
         dc.b    4,8,12,16,20,24,28,32,36                 ; column axis
         dc.b    255,255,255,255,0,0,0,0,0                ; row 0
@@ -2480,32 +2628,38 @@ Tab3D_1D23:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1D5C ($1D5C): 2D table, 6 points, unsigned
+; SparkV0AA64 ($1D5C): 2D table, 6 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $0AA6,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $059C,Z
 ; Read at $1E290
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1D5C:
+SparkV0AA64:
         dc.b    6,$80                                    ; points, flags
         dc.b    41,5, 60,5, 80,8, 125,10, 240,10, 245,255 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1D6A ($1D6A): 2D table, 3 points, unsigned
+; SparkCoolant2 ($1D6A): 2D table, 3 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: CoolantTemp. Result to $00F2,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $1E2CA, $1E350
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1D6A:
+SparkCoolant2:
         dc.b    3,$80                                    ; points, flags
         dc.b    127,64, 144,102, 194,255                 ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_1D74 ($1D74): 3D table, 5 rows x 5 columns, unsigned
+; SparkV00F6V0D1E ($1D74): 3D table, 5 rows x 5 columns, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z.
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: $F6,Z x $066D,Z
 ; Read at $1E2A4
 ;---------------------------------------------------------------------------------------------------
-Tab3D_1D74:
+SparkV00F6V0D1E:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    31,63,94,95,156                          ; column axis
         dc.b    255,255,254,0,0                          ; row 0
@@ -2516,11 +2670,13 @@ Tab3D_1D74:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_1D95 ($1D95): 3D table, 5 rows x 5 columns, unsigned
+; SparkV00F6V0D1E2 ($1D95): 3D table, 5 rows x 5 columns, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DEDC). Inputs: $F6,Z x $0D1E,Z. Result to $00F2,Z.
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: $F6,Z x $066D,Z
 ; Read at $1E2E0
 ;---------------------------------------------------------------------------------------------------
-Tab3D_1D95:
+SparkV00F6V0D1E2:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    31,47,63,94,95                           ; column axis
         dc.b    20,20,20,20,0                            ; row 0
@@ -2597,44 +2753,52 @@ Tab2D_1DEB:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1DF3 ($1DF3): 2D table, 1 points, signed
+; SparkTable ($1DF3): 2D table, 1 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1DD4A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1DF3:
+SparkTable:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1DFB ($1DFB): 2D table, 2 points, signed
+; SparkTable2 ($1DFB): 2D table, 2 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1DD4A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1DFB:
+SparkTable2:
         dc.b    2,$20                                    ; points, flags
         dc.b    32,0, 36,-24                             ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E03 ($1E03): 2D table, 2 points, signed
+; SparkTable3 ($1E03): 2D table, 2 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: TBA.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1DD4A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E03:
+SparkTable3:
         dc.b    2,$20                                    ; points, flags
         dc.b    36,0, 40,-16                             ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E0B ($1E0B): 2D table, 2 points, signed
+; SparkMap7 ($1E0B): 2D table, 2 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D822). Inputs: Map. Result to $0D55,Z.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $1DD58
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E0B:
+SparkMap7:
         dc.b    2,$20                                    ; points, flags
         dc.b    178,-30, 227,-16                         ; x, y
 
@@ -2662,44 +2826,52 @@ Tab2D_1E0B:
         dc.b    $03,$20,$06,$40,$09,$60,$0C,$80,$1A,$90
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1F6B ($1F6B): 2D table, 1 points, unsigned
+; KnockRpm2 ($1F6B): 2D table, 1 points, unsigned
+; Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA5,Z.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $0AB7A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1F6B:
+KnockRpm2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,129                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1F79 ($1F79): 2D table, 1 points, unsigned
+; KnockRpm7 ($1F79): 2D table, 1 points, unsigned
+; Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DB3,Z.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $0AB88
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1F79:
+KnockRpm7:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,233                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1F85 ($1F85): 2D table, 1 points, unsigned
+; KnockRpm3 ($1F85): 2D table, 1 points, unsigned
+; Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA7,Z.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $0AB6C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1F85:
+KnockRpm3:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,20                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1F91 ($1F91): 2D table, 1 points, unsigned
+; KnockRpm4 ($1F91): 2D table, 1 points, unsigned
+; Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0DA6,Z.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $0AB5E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1F91:
+KnockRpm4:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,61                                   ; x, y
 
@@ -2719,22 +2891,26 @@ KnockThreshold:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1FB3 ($1FB3): 2D table, 1 points, unsigned
+; KnockV0A8B ($1FB3): 2D table, 1 points, unsigned
+; Subsystem: knock control (by the routine that reads it, Sub_1F408). Inputs: $0A8B,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $055C,Z
 ; Read at $0AC92
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1FB3:
+KnockV0A8B:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$00,$A8,$FF,$FF,$FF,$A7,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1FBF ($1FBF): 2D table, 2 points, unsigned
+; KnockMap2 ($1FBF): 2D table, 2 points, unsigned
+; Subsystem: knock control (by the routine that reads it, Sub_1F256). Inputs: Map.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $0AA68
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1FBF:
+KnockMap2:
         dc.b    2,$80                                    ; points, flags
         dc.b    162,6, 178,12                            ; x, y
 
@@ -2742,11 +2918,13 @@ Tab2D_1FBF:
         dc.b    $FF,$FF,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_1FD9 ($1FD9): 3D table, 9 rows x 9 columns, signed
+; KnockRetardLimit ($1FD9): 3D table, 9 rows x 9 columns, signed
+; Knock retard against MAP (rows) and rpm; signed; result scaled by the current knock level into $0D04
+; columns: rpm32, rows: pos256, values: spark (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x EngineRpm
 ; Read at $0A974
 ;---------------------------------------------------------------------------------------------------
-Tab3D_1FD9:
+KnockRetardLimit:
         dc.b    9,9,$FF                                  ; rows, columns, signed
         dc.b    16,31,47,63,94,125,156,188,219           ; column axis
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 0
@@ -2784,44 +2962,52 @@ Tab2D_2044:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$6E,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2053 ($2053): 2D table, 1 points, signed
+; SparkTrim ($2053): 2D table, 1 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim2; ShortTermTrim1; #$80
 ; Read at $1D8E6
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2053:
+SparkTrim:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2061 ($2061): 2D table, 1 points, signed
+; SparkTrim2 ($2061): 2D table, 1 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim2; ShortTermTrim1; #$80
 ; Read at $1D8E6
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2061:
+SparkTrim2:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_206F ($206F): 2D table, 1 points, signed
+; SparkTrim3 ($206F): 2D table, 1 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim2; ShortTermTrim1; #$80
 ; Read at $1D8E6
 ;---------------------------------------------------------------------------------------------------
-Tab2D_206F:
+SparkTrim3:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_207D ($207D): 2D table, 1 points, signed
+; SparkTrim4 ($207D): 2D table, 1 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D36A). Inputs: ShortTermTrim2; ShortTermTrim1; #$80. Result to $0D42,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim2; ShortTermTrim1; #$80
 ; Read at $1D8E6
 ;---------------------------------------------------------------------------------------------------
-Tab2D_207D:
+SparkTrim4:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -2893,22 +3079,26 @@ Tab2D_20CA:
         dc.b    $58
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_20D3 ($20D3): 2D table, 1 points, unsigned
+; SparkAirTemp5 ($20D3): 2D table, 1 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: AirTemp; $0A5A,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: AirTemp
 ; Read at $1D6A4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_20D3:
+SparkAirTemp5:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_20DD ($20DD): 2D table, 1 points, signed
+; SparkMap8 ($20DD): 2D table, 1 points, signed
+; Subsystem: spark advance (by the routine that reads it, Sub_1D15C). Inputs: Map.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $1D690
 ;---------------------------------------------------------------------------------------------------
-Tab2D_20DD:
+SparkMap8:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3122,7 +3312,7 @@ Tab2D_2214:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_221E ($221E): 2D table, 1 points, unsigned
-; Inputs: EngineRpm; $0286,Z
+; Inputs: EngineRpm; SegmentRpm
 ; Read at $13C7A, $13CB6
 ;---------------------------------------------------------------------------------------------------
 Tab2D_221E:
@@ -3143,88 +3333,104 @@ Tab2D_222A:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2234 ($2234): 2D table, 1 points, unsigned
+; IdleCoolant8 ($2234): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054A6
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2234:
+IdleCoolant8:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_223E ($223E): 2D table, 1 points, unsigned
+; IdleCoolant9 ($223E): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054A6
 ;---------------------------------------------------------------------------------------------------
-Tab2D_223E:
+IdleCoolant9:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2248 ($2248): 2D table, 1 points, unsigned
+; IdleCoolant10 ($2248): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2248:
+IdleCoolant10:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2252 ($2252): 2D table, 1 points, unsigned
+; IdleCoolant11 ($2252): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2252:
+IdleCoolant11:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_225C ($225C): 2D table, 1 points, unsigned
+; IdleV0348 ($225C): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01BB,Z
 ; Read at $05532
 ;---------------------------------------------------------------------------------------------------
-Tab2D_225C:
+IdleV0348:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2266 ($2266): 2D table, 1 points, unsigned
+; IdleV03482 ($2266): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01BB,Z
 ; Read at $05532
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2266:
+IdleV03482:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2270 ($2270): 2D table, 1 points, unsigned
+; IdleCoolant12 ($2270): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0545C, $0558C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2270:
+IdleCoolant12:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_227A ($227A): 2D table, 1 points, unsigned
+; IdleCoolant13 ($227A): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0545C, $0558C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_227A:
+IdleCoolant13:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3253,66 +3459,78 @@ Tab2D_228C:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2294 ($2294): 2D table, 1 points, unsigned
+; IdleCoolant16 ($2294): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2294:
+IdleCoolant16:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_229E ($229E): 2D table, 1 points, unsigned
+; IdleCoolant17 ($229E): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_229E:
+IdleCoolant17:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22A8 ($22A8): 2D table, 1 points, unsigned
+; IdleV03483 ($22A8): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01BB,Z
 ; Read at $05532
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22A8:
+IdleV03483:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22B2 ($22B2): 2D table, 1 points, unsigned
+; IdleV03484 ($22B2): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01BB,Z
 ; Read at $05532
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22B2:
+IdleV03484:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22BC ($22BC): 2D table, 1 points, unsigned
+; IdleCoolant18 ($22BC): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0558C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22BC:
+IdleCoolant18:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22C6 ($22C6): 2D table, 1 points, unsigned
+; IdleCoolant19 ($22C6): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0558C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22C6:
+IdleCoolant19:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3341,22 +3559,26 @@ Tab2D_22D8:
         dc.b    $FF,$FF,$FF,$FF,$3E
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22E1 ($22E1): 2D table, 2 points, unsigned
+; IdleMap2 ($22E1): 2D table, 2 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Map.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $05670
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22E1:
+IdleMap2:
         dc.b    2,$80                                    ; points, flags
         dc.b    65,20, 97,22                             ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22E9 ($22E9): 2D table, 2 points, signed
+; IdleV0341 ($22E9): 2D table, 2 points, signed
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0341,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01B4,Z
 ; Read at $05670
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22E9:
+IdleV0341:
         dc.b    2,$20                                    ; points, flags
         dc.b    65,-8, 97,-10                            ; x, y
 
@@ -3365,11 +3587,13 @@ Tab2D_22E9:
         dc.b    $00,$00,$00,$00,$C0,$80,$14
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2316 ($2316): 2D table, 3 points, unsigned
+; IdleV0A5A4 ($2316): 2D table, 3 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1A6E2). Inputs: $0A5A,Z. Result to $0334,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $16,Z
 ; Read at $05B00
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2316:
+IdleV0A5A4:
         dc.b    3,$80                                    ; points, flags
         dc.b    128,18, 163,24, 199,29                   ; x, y
 
@@ -3398,98 +3622,116 @@ Tab2D_2328:
         dc.b    $01,$20,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$12,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2349 ($2349): 2D table, 1 points, unsigned
+; IdleTime ($2349): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: Count3s.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Count3s
 ; Read at $063C4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2349:
+IdleTime:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2351 ($2351): 2D table, 6 points, unsigned
+; IdleCoolant22 ($2351): 2D table, 6 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: CoolantTemp. Result to $00FE,Z.
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $06366
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2351:
+IdleCoolant22:
         dc.b    6,$80                                    ; points, flags
         dc.b    99,85, 105,69, 116,53, 132,40, 199,16, 205,0 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_235F ($235F): 2D table, 1 points, unsigned
+; IdleThrottle2 ($235F): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: ThrottleAboveClosed.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $06392
 ;---------------------------------------------------------------------------------------------------
-Tab2D_235F:
+IdleThrottle2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$9A,$1A,$A6,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_236D ($236D): 2D table, 1 points, unsigned
+; IdleSpeed3 ($236D): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $18,Z
 ; Read at $05098, $05718
 ;---------------------------------------------------------------------------------------------------
-Tab2D_236D:
+IdleSpeed3:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,30                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2379 ($2379): 2D table, 1 points, unsigned
+; IdleV0345 ($2379): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0345,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01B8,Z
 ; Read at $050EC, $0576E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2379:
+IdleV0345:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2385 ($2385): 2D table, 2 points, unsigned
+; IdleV0A5A5 ($2385): 2D table, 2 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0A5A,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $16,Z
 ; Read at $050EC, $0576E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2385:
+IdleV0A5A5:
         dc.b    2,$80                                    ; points, flags
         dc.b    121,77, 160,128                          ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_238F ($238F): 2D table, 3 points, unsigned
-; Inputs: $0286,Z
+; IdleSegRpm ($238F): 2D table, 3 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm. Result to $00FC,Z.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
+; Inputs: SegmentRpm
 ; Read at $057A0
 ;---------------------------------------------------------------------------------------------------
-Tab2D_238F:
+IdleSegRpm:
         dc.b    3,$80                                    ; points, flags
         dc.b    47,5, 78,5, 109,10                       ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2399 ($2399): 2D table, 3 points, unsigned
-; Inputs: $0286,Z
+; IdleSegRpm2 ($2399): 2D table, 3 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
+; Inputs: SegmentRpm
 ; Read at $05108
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2399:
+IdleSegRpm2:
         dc.b    3,$80                                    ; points, flags
         dc.b    56,122, 63,64, 93,48                     ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_23A3 ($23A3): 3D table, 5 rows x 5 columns, signed
-; Inputs: result of Lookup2D x $0286,Z
+; IdleThrottleSegRpm ($23A3): 3D table, 5 rows x 5 columns, signed
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: result of Lookup2D x SegmentRpm.
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Inputs: result of Lookup2D x SegmentRpm
 ; Read at $050B4, $05734
 ;---------------------------------------------------------------------------------------------------
-Tab3D_23A3:
+IdleThrottleSegRpm:
         dc.b    5,5,$FF                                  ; rows, columns, signed
         dc.b    31,63,94,125,156                         ; column axis
         dc.b    10,12,12,12,15                           ; row 0
@@ -3500,11 +3742,13 @@ Tab3D_23A3:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_23C4 ($23C4): 3D table, 9 rows x 9 columns, unsigned
-; Inputs: result of Lookup2D x $0286,Z
+; IdleSpeedSegRpm ($23C4): 3D table, 9 rows x 9 columns, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00FE,Z.
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Inputs: result of Lookup2D x SegmentRpm
 ; Read at $06380
 ;---------------------------------------------------------------------------------------------------
-Tab3D_23C4:
+IdleSpeedSegRpm:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    31,47,63,78,94,109,125,141,156           ; column axis
         dc.b    10,10,20,20,24,24,24,24,24               ; row 0
@@ -3519,53 +3763,63 @@ Tab3D_23C4:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2421 ($2421): 2D table, 4 points, unsigned
+; IdleBaro2 ($2421): 2D table, 4 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: Baro. Result to $00F1,Z.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $05A28, $05AF2, $0635A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2421:
+IdleBaro2:
         dc.b    4,$80                                    ; points, flags
         dc.b    129,128, 162,79, 194,41, 227,0           ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_242B ($242B): 2D table, 4 points, unsigned
+; IdleBaro3 ($242B): 2D table, 4 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1971A). Inputs: Baro. Result to $00F0,Z.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $04CE8, $05AB6, $05DD0
 ;---------------------------------------------------------------------------------------------------
-Tab2D_242B:
+IdleBaro3:
         dc.b    4,$80                                    ; points, flags
         dc.b    162,64, 194,49, 227,26, 255,0            ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2435 ($2435): 2D table, 3 points, unsigned
+; IdleBaro4 ($2435): 2D table, 3 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: Baro.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $0567E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2435:
+IdleBaro4:
         dc.b    3,$80                                    ; points, flags
         dc.b    194,128, 227,77, 255,0                   ; x, y
 
         dc.b    $FF,$FF,$40,$80,$FE,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2445 ($2445): 2D table, 1 points, unsigned
+; IdleV0DC6 ($2445): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1A5CA). Inputs: $0DC6,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $06B8,Z
 ; Read at $05A38
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2445:
+IdleV0DC6:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_244F ($244F): 3D table, 5 rows x 5 columns, unsigned
-; Inputs: result of Lookup2D x $0286,Z
+; IdleV032ESegRpm ($244F): 3D table, 5 rows x 5 columns, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00F4,Z.
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Inputs: result of Lookup2D x SegmentRpm
 ; Read at $063B4
 ;---------------------------------------------------------------------------------------------------
-Tab3D_244F:
+IdleV032ESegRpm:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    25,26,30,34,47                           ; column axis
         dc.b    1,1,1,1,1                                ; row 0
@@ -3578,7 +3832,7 @@ Tab3D_244F:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_2476 ($2476): 2D table, 1 points, unsigned
-; Inputs: EngineRpm; $0286,Z
+; Inputs: EngineRpm; SegmentRpm
 ; Read at $13C6E, $13CA4
 ;---------------------------------------------------------------------------------------------------
 Tab2D_2476:
@@ -3610,7 +3864,7 @@ Tab2D_2488:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_2498 ($2498): 2D table, 3 points, unsigned
-; Inputs: $0286,Z
+; Inputs: SegmentRpm
 ; Read at $06060
 ;---------------------------------------------------------------------------------------------------
 Tab2D_2498:
@@ -3695,11 +3949,13 @@ Tab2D_24DE:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_24E8 ($24E8): 3D table, 5 rows x 5 columns, unsigned
-; Inputs: result of Lookup2D x $0286,Z
+; IdleV032ESegRpm2 ($24E8): 3D table, 5 rows x 5 columns, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x SegmentRpm. Result to $00F7,Z.
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Inputs: result of Lookup2D x SegmentRpm
 ; Read at $06412
 ;---------------------------------------------------------------------------------------------------
-Tab3D_24E8:
+IdleV032ESegRpm2:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    25,26,30,34,47                           ; column axis
         dc.b    3,3,3,3,3                                ; row 0
@@ -3710,11 +3966,13 @@ Tab3D_24E8:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_2509 ($2509): 3D table, 5 rows x 5 columns, unsigned
-; Inputs: result of Lookup2D x $14,Z
+; IdleBaroIdleTarget ($2509): 3D table, 5 rows x 5 columns, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F5,Z.
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Inputs: result of Lookup2D x IdleTarget
 ; Read at $06464
 ;---------------------------------------------------------------------------------------------------
-Tab3D_2509:
+IdleBaroIdleTarget:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    19,22,26,32,38                           ; column axis
         dc.b    15,15,15,20,27                           ; row 0
@@ -3738,11 +3996,13 @@ Tab2D_2540:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_254C ($254C): 2D table, 2 points, unsigned
+; IdleBaro7 ($254C): 2D table, 2 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1A688). Inputs: Baro. Result to $002A,Z.
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $05AA4, $05C00
 ;---------------------------------------------------------------------------------------------------
-Tab2D_254C:
+IdleBaro7:
         dc.b    2,$80                                    ; points, flags
         dc.b    162,65, 241,87                           ; x, y
 
@@ -3759,11 +4019,13 @@ Tab2D_2558:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_2564 ($2564): 3D table, 5 rows x 5 columns, unsigned
-; Inputs: result of Lookup2D x $14,Z
+; IdleBaroIdleTarget2 ($2564): 3D table, 5 rows x 5 columns, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1AFDE). Inputs: result of Lookup2D x IdleTarget. Result to $00F0,Z.
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Inputs: result of Lookup2D x IdleTarget
 ; Read at $06344
 ;---------------------------------------------------------------------------------------------------
-Tab3D_2564:
+IdleBaroIdleTarget2:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    19,22,26,30,38                           ; column axis
         dc.b    18,23,30,35,48                           ; row 0
@@ -3899,11 +4161,13 @@ Tab2D_2660:
         dc.b    $00,$00,$00,$00,$00,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_267A ($267A): 2D table, 1 points, unsigned
+; SpeedCtlThrottle2 ($267A): 2D table, 1 points, unsigned
+; Subsystem: speed control (cruise), probable (by the routine that reads it, Sub_3C46E). Inputs: ThrottleAboveClosed. Result to $041E,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $12FB0
 ;---------------------------------------------------------------------------------------------------
-Tab2D_267A:
+SpeedCtlThrottle2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3945,11 +4209,13 @@ Tab2D_26D1:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_26E3 ($26E3): 3D table, 9 rows x 9 columns, unsigned
+; MisfireV0620V05C6 ($26E3): 3D table, 9 rows x 9 columns, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $028A,Z
 ; Read at $18E52
 ;---------------------------------------------------------------------------------------------------
-Tab3D_26E3:
+MisfireV0620V05C6:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    16,26,31,47,63,78,94,109,125             ; column axis
         dc.b    38,36,32,32,25,19,14,14,14               ; row 0
@@ -3964,11 +4230,13 @@ Tab3D_26E3:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_2740 ($2740): 3D table, 9 rows x 9 columns, unsigned
+; MisfireV0620V05C62 ($2740): 3D table, 9 rows x 9 columns, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B692). Inputs: result of Lookup2D x $05C6,Z. Result to $05D6,Z.
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $028A,Z
 ; Read at $1979C
 ;---------------------------------------------------------------------------------------------------
-Tab3D_2740:
+MisfireV0620V05C62:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    16,26,31,47,63,78,94,109,125             ; column axis
         dc.b    48,45,35,20,15,11,10,10,10               ; row 0
@@ -3983,11 +4251,13 @@ Tab3D_2740:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_279D ($279D): 3D table, 9 rows x 9 columns, unsigned
+; MisfireV0620V05C63 ($279D): 3D table, 9 rows x 9 columns, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x $05C6,Z.
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $028A,Z
 ; Read at $18E52
 ;---------------------------------------------------------------------------------------------------
-Tab3D_279D:
+MisfireV0620V05C63:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    0,26,31,47,63,78,94,109,125              ; column axis
         dc.b    12,10,10,10,10,10,10,10,10               ; row 0
@@ -4002,11 +4272,13 @@ Tab3D_279D:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_27FA ($27FA): 3D table, 9 rows x 9 columns, unsigned
+; MisfireV04FEV05C6 ($27FA): 3D table, 9 rows x 9 columns, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $04FE,Z x $05C6,Z. Result to $04FE,Z.
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: $01FE,Z x $028A,Z
 ; Read at $18EE0
 ;---------------------------------------------------------------------------------------------------
-Tab3D_27FA:
+MisfireV04FEV05C6:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    16,26,31,47,63,78,94,109,125             ; column axis
         dc.b    2,2,2,2,2,2,2,2,2                        ; row 0
@@ -4021,11 +4293,13 @@ Tab3D_27FA:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_2857 ($2857): 3D table, 9 rows x 9 columns, unsigned
+; MisfireV04FEScaled ($2857): 3D table, 9 rows x 9 columns, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup3D x result of Lookup3D. Result to $04FF,Z.
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup3D x result of Lookup3D
 ; Read at $18EEE
 ;---------------------------------------------------------------------------------------------------
-Tab3D_2857:
+MisfireV04FEScaled:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    16,26,31,47,63,78,94,109,125             ; column axis
         dc.b    1,1,1,1,1,1,1,1,1                        ; row 0
@@ -4040,11 +4314,13 @@ Tab3D_2857:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_28B4 ($28B4): 3D table, 5 rows x 5 columns, unsigned
+; MisfireV0620Coolant ($28B4): 3D table, 5 rows x 5 columns, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: result of Lookup2D x CoolantTemp. Result to $05E2,Z.
+; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $0C,Z
 ; Read at $18E6E
 ;---------------------------------------------------------------------------------------------------
-Tab3D_28B4:
+MisfireV0620Coolant:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    99,121,149,210,221                       ; column axis
         dc.b    128,128,128,128,128                      ; row 0
@@ -4055,11 +4331,13 @@ Tab3D_28B4:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_28D5 ($28D5): 2D table, 5 points, unsigned
-; Inputs: $0286,Z
+; MisfireSegRpm ($28D5): 2D table, 5 points, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: SegmentRpm. Result to $0629,Z.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
+; Inputs: SegmentRpm
 ; Read at $18EBA
 ;---------------------------------------------------------------------------------------------------
-Tab2D_28D5:
+MisfireSegRpm:
         dc.b    5,$80                                    ; points, flags
         dc.b    19,39, 29,24, 47,10, 63,8, 78,0          ; x, y
 
@@ -4068,22 +4346,26 @@ Tab2D_28D5:
         dc.b    $00,$0F,$16,$01,$03,$11,$01,$01,$0D,$03,$01,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_290F ($290F): 2D table, 1 points, unsigned
+; MisfireScaled ($290F): 2D table, 1 points, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: result of Lookup2D.
+; x: pos256, y: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D
 ; Read at $19A04
 ;---------------------------------------------------------------------------------------------------
-Tab2D_290F:
+MisfireScaled:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,2                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2921 ($2921): 2D table, 5 points, unsigned
+; MisfireTable ($2921): 2D table, 5 points, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2B93E). Inputs: TBA.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $199F8
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2921:
+MisfireTable:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 2,2, 4,4, 12,48, 24,255             ; x, y
 
@@ -4102,11 +4384,13 @@ Tab2D_2933:
         dc.b    $7D,$26,$60
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2950 ($2950): 2D table, 5 points, unsigned
+; MisfireV06205 ($2950): 2D table, 5 points, unsigned
+; Subsystem: misfire monitor (crankshaft segment times) (by the routine that reads it, Sub_2AC02). Inputs: $0620,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $18E38
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2950:
+MisfireV06205:
         dc.b    5,$80                                    ; points, flags
         dc.b    31,19, 47,15, 63,12, 78,11, 125,8        ; x, y
 
@@ -4156,22 +4440,26 @@ Tab3D_2970:
         dc.b    $0D,$0F,$96
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2AA0 ($2AA0): 2D table, 3 points, unsigned
+; DiagV019C ($2AA0): 2D table, 3 points, unsigned
+; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $31,Z
 ; Read at $16AB8
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2AA0:
+DiagV019C:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,45, 80,30, 100,26                      ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2AAC ($2AAC): 2D table, 3 points, unsigned
+; DiagV019C2 ($2AAC): 2D table, 3 points, unsigned
+; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_25784). Inputs: $019C,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $31,Z
 ; Read at $16AA8
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2AAC:
+DiagV019C2:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,45, 80,30, 100,26                      ; x, y
 
@@ -4194,11 +4482,13 @@ Tab2D_2B14:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2B24 ($2B24): 2D table, 1 points, unsigned
+; DiagV042C ($2B24): 2D table, 1 points, unsigned
+; Subsystem: on-board diagnostic monitors (by the routine that reads it, Sub_2A0F0). Inputs: $042C,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0630,Z
 ; Read at $1846A, $18634
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2B24:
+DiagV042C:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,87                                   ; x, y
 
@@ -4756,11 +5046,13 @@ Tab2D_4127:
         dc.b    $09
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_413E ($413E): 2D table, 5 points, unsigned
+; SensorTable5 ($413E): 2D table, 5 points, unsigned
+; Subsystem: sensor processing (by the routine that reads it, Sub_241AA). Inputs: ?; Throttle.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ?; Throttle
 ; Read at $19C4C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_413E:
+SensorTable5:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,22, 8,91, 20,129, 57,199, 120,206      ; x, y
 
@@ -4780,11 +5072,13 @@ Tab2D_415B:
         dc.b    $A6,$07,$32,$08,$04,$50,$33,$FF,$F0
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_417E ($417E): 2D table, 1 points, unsigned
+; KnockRpm6 ($417E): 2D table, 1 points, unsigned
+; Subsystem: knock control (by the routine that reads it, Sub_1F378). Inputs: EngineRpm. Result to $0D40,Z.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $0AB96
 ;---------------------------------------------------------------------------------------------------
-Tab2D_417E:
+KnockRpm6:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -4827,43 +5121,51 @@ ThermistorHot:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_4261 ($4261): 2D table, 10 points, unsigned
+; SensorV0A59 ($4261): 2D table, 10 points, unsigned
+; Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: $0A59,Z; $0A1B,Z. Result to $00F0,Z, $0195,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $053F,Z
 ; Read at $071CC, $133A4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_4261:
+SensorV0A59:
         dc.b    10,$80                                   ; points, flags
         dc.b    0,213, 47,173, 75,158, 100,148, 130,138, 160,128, 189,118, 222,103 ; x, y
         dc.b    241,88, 255,71                           ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_4277 ($4277): 2D table, 7 points, unsigned
+; SensorV0A592 ($4277): 2D table, 7 points, unsigned
+; Subsystem: sensor processing (by the routine that reads it, Sub_2C3AC). Inputs: $0A59,Z; $0A1B,Z. Result to $00F0,Z, $0195,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $053F,Z
 ; Read at $071CC, $133A4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_4277:
+SensorV0A592:
         dc.b    7,$80                                    ; points, flags
         dc.b    23,228, 40,208, 69,188, 112,168, 211,128, 239,108, 251,88 ; x, y
 
         dc.b    $D3,$07
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_4289 ($4289): 2D table, 5 points, unsigned
+; SensorTable6 ($4289): 2D table, 5 points, unsigned
+; Subsystem: sensor processing (by the routine that reads it, Sub_2C6DE). Inputs: ?.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ?
 ; Read at $133CC
 ;---------------------------------------------------------------------------------------------------
-Tab2D_4289:
+SensorTable6:
         dc.b    5,$80                                    ; points, flags
         dc.b    110,239, 128,233, 143,228, 158,223, 171,218 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_4295 ($4295): 2D table, 2 points, unsigned
+; StartV0A87 ($4295): 2D table, 2 points, unsigned
+; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: $0A87,Z. Result to $0A88,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0559,Z
 ; Read at $071A4, $13632
 ;---------------------------------------------------------------------------------------------------
-Tab2D_4295:
+StartV0A87:
         dc.b    2,$80                                    ; points, flags
         dc.b    9,0, 240,255                             ; x, y
 
@@ -4871,43 +5173,51 @@ Tab2D_4295:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_42AD ($42AD): 2D table, 8 points, unsigned
+; SensorV0A8E ($42AD): 2D table, 8 points, unsigned
+; Subsystem: sensor processing (by the routine that reads it, Sub_2DC88). Inputs: $0A8E,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: AirTempRaw
 ; Read at $144B2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_42AD:
+SensorV0A8E:
         dc.b    8,$80                                    ; points, flags
         dc.b    86,175, 137,133, 145,125, 176,100, 208,75, 229,50, 243,25, 250,0 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_42BF ($42BF): 2D table, 9 points, unsigned
+; SparkRpm3 ($42BF): 2D table, 9 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DB4A). Inputs: EngineRpm.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1DF1C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_42BF:
+SparkRpm3:
         dc.b    9,$80                                    ; points, flags
         dc.b    16,0, 63,32, 94,64, 125,96, 156,128, 188,160, 219,192, 250,224 ; x, y
         dc.b    255,255                                  ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_42D3 ($42D3): 2D table, 9 points, unsigned
+; SparkVolts ($42D3): 2D table, 9 points, unsigned
+; Subsystem: spark advance (by the routine that reads it, Sub_1DB4A). Inputs: BatteryVolts2.
+; x: volt16, y: raw (units: docs/en/calibration.md)
 ; Inputs: $17,Z
 ; Read at $1DF10
 ;---------------------------------------------------------------------------------------------------
-Tab2D_42D3:
+SparkVolts:
         dc.b    9,$80                                    ; points, flags
         dc.b    81,0, 133,32, 152,64, 172,96, 176,128, 209,160, 228,192, 248,224 ; x, y
         dc.b    255,255                                  ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3DN_42E7 ($42E7): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
+; SparkTable8 ($42E7): 3D table, 9 rows x 9 columns, unsigned, columns by position 0-255
+; Subsystem: spark advance (by the routine that reads it, Sub_1DB4A). Inputs: LDAA IND8, Y.
+; columns: ?, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: LDAA IND8, Y
 ; Read at $1DF26
 ;---------------------------------------------------------------------------------------------------
-Tab3DN_42E7:
+SparkTable8:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    49,165,192,192,192,192,192,192,192       ; row 0
         dc.b    49,165,192,192,192,192,192,192,192       ; row 1
@@ -5056,7 +5366,7 @@ L0476C:
         BRCLR   $0189,Z,#$40,L04ACC
         BCLR    $0189,Z,#$40
         BCLR    $018A,Z,#$04
-        LDD     $0286,Z
+        LDD     >SegmentRpm,Z
         CPD     #$7D00
         BLS     L0478C
         BSET    $0187,Z,#$01
@@ -5069,12 +5379,12 @@ L0478C:
         BSET    $018A,Z,#$04
 L047A2:
         CLRE
-        LDD     $0286,Z
+        LDD     >SegmentRpm,Z
         BRCLR   $0041,Z,#$01,L047B4
         SUBD    $0174,Z
         BRA     L047B6
 L047B4:
-        SUBD    $14,Z
+        SUBD    <IdleTarget,Z
 L047B6:
         STD     $017A,Z
         BCC     L047C0
@@ -5165,10 +5475,10 @@ L048AE:
         LDAB    $01A9,Z
         BRA     L04912
 L048BA:
-        LDD     $0286,Z
+        LDD     >SegmentRpm,Z
         SUBD    $0288,Z
         STD     $0178,Z
-        LDE     $0286,Z
+        LDE     >SegmentRpm,Z
         EMULS
         LDX     $FD7A
         EDIVS
@@ -5563,7 +5873,7 @@ L04CD2:
         TSTA
         BNE     L04D0E
         LDAA    <Baro,Z
-        LDX     #Tab2D_242B
+        LDX     #IdleBaro3
         JSR     Lookup2D
         LDAA    #$01
         EMULS
@@ -5721,12 +6031,12 @@ L04E74:
 L04E7A:
         BCLR    $0189,Z,#$10
 L04E7E:
-        LDD     $14,Z
+        LDD     <IdleTarget,Z
         SUBD    $218B
         BCC     L04E88
         CLRD
 L04E88:
-        CPD     $0286,Z
+        CPD     >SegmentRpm,Z
         BLS     L04E94
         BSET    $0189,Z,#$08
         BRA     L04E9A
@@ -5745,22 +6055,22 @@ L04E9A:
         BLS     L04EC2
         BCLR    $22,Z,#$44
 L04EC2:
-        LDD     $14,Z
+        LDD     <IdleTarget,Z
         SUBD    $218D
         BCC     L04ECC
         CLRD
 L04ECC:
-        CPD     $0286,Z
+        CPD     >SegmentRpm,Z
         LBCC    L04ED8
         BCLR    $0189,Z,#$08
 L04ED8:
         BRCLR   $018B,Z,#$40,L04F0C
-        LDD     $14,Z
+        LDD     <IdleTarget,Z
         SUBD    $218D
         BCC     L04EE8
         CLRD
 L04EE8:
-        CPD     $0286,Z
+        CPD     >SegmentRpm,Z
         LBCC    L04FE6
         LDAA    $05B4,Z
         BEQ     L04F04
@@ -5771,7 +6081,7 @@ L04F04:
         BCLR    $018B,Z,#$C0
         LBRA    L04FE6
 L04F0C:
-        LDD     $0286,Z
+        LDD     >SegmentRpm,Z
         CPD     $0506
         BCC     L04F42
         BCLR    $0184,Z,#$0C
@@ -5894,15 +6204,15 @@ L05060:
         BRA     L05100
 L05092:
         LDAA    $18,Z
-        LDX     #Tab2D_236D
+        LDX     #IdleSpeed3
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #Tab2D_06DB
+        LDX     #IdleThrottle
         JSR     Lookup2D
-        LDAB    $0286,Z
-        LDX     #Tab3D_23A3
+        LDAB    >SegmentRpm,Z
+        LDX     #IdleThrottleSegRpm
         JSR     Lookup3D
         SXT
         ADE
@@ -5918,11 +6228,11 @@ L050CC:
         XGAB
         TDE
         LDAA    $16,Z
-        LDX     #Tab2D_2385
+        LDX     #IdleV0A5A5
         BRCLR   $032B,#$80,L050EC
         BRSET   $00F8,Z,#$02,L050EC
         LDAA    $01B8,Z
-        LDX     #Tab2D_2379
+        LDX     #IdleV0345
 L050EC:
         JSR     Lookup2D
         SUBA    #$80
@@ -5934,8 +6244,8 @@ L050EC:
 L050FE:
         EMUL
 L05100:
-        LDAA    $0286,Z
-        LDX     #Tab2D_2399
+        LDAA    >SegmentRpm,Z
+        LDX     #IdleSegRpm2
         JSR     Lookup2D
         CLRA
         ASLD
@@ -6031,7 +6341,7 @@ L05202:
         TST     $01C1,Z
         LBNE    L05424
         BRCLR   $0189,Z,#$20,L05242
-        LDD     $0286,Z
+        LDD     >SegmentRpm,Z
         CPD     $211E
         LBLS    L05424
         BCLR    $0189,Z,#$20
@@ -6069,7 +6379,7 @@ L052AE:
         LDAA    $0558,Z
         CMPA    $0515
         BCC     L052D6
-        LDD     $0286,Z
+        LDD     >SegmentRpm,Z
         CPD     $0506
         BCS     L052D6
         TST     $01C5,Z
@@ -6175,9 +6485,9 @@ L05424:
 L05446:
         BRSET   $0184,Z,#$20,L055FE
         LDAA    $0C,Z
-        LDX     #Tab2D_2270
+        LDX     #IdleCoolant12
         BRCLR   $0056,Z,#$20,L0545C
-        LDX     #Tab2D_227A
+        LDX     #IdleCoolant13
 L0545C:
         JSR     Lookup2D
         SXT
@@ -6199,9 +6509,9 @@ L0548C:
         BRSET   $0187,Z,#$80,L054B4
         BSET    $0187,Z,#$80
         LDAA    $0C,Z
-        LDX     #Tab2D_2234
+        LDX     #IdleCoolant8
         BRCLR   $0056,Z,#$20,L054A6
-        LDX     #Tab2D_223E
+        LDX     #IdleCoolant9
 L054A6:
         JSR     Lookup2D
         CMPA    #$FF
@@ -6220,14 +6530,14 @@ L054C0:
         LDAB    $0187,Z
         ORAB    #$08
         ANDB    #$FB
-        LDX     #Tab2D_2248
+        LDX     #IdleCoolant10
         BRCLR   $0056,Z,#$20,L054E0
-        LDX     #Tab2D_2252
+        LDX     #IdleCoolant11
 L054E0:
         BRCLR   $001D,Z,#$20,L054F8
-        LDX     #Tab2D_2294
+        LDX     #IdleCoolant16
         BRCLR   $0056,Z,#$20,L054F4
-        LDX     #Tab2D_229E
+        LDX     #IdleCoolant17
 L054F4:
         ORAB    #$04
         ANDB    #$F7
@@ -6240,14 +6550,14 @@ L054F8:
         BCC     L05544
         STAB    $FE,Z
         LDAA    $01BB,Z
-        LDX     #Tab2D_22A8
+        LDX     #IdleV03483
         BRCLR   $0056,Z,#$20,L0551E
-        LDX     #Tab2D_22B2
+        LDX     #IdleV03484
 L0551E:
         BRSET   $001D,Z,#$20,L05532
-        LDX     #Tab2D_225C
+        LDX     #IdleV0348
         BRCLR   $0056,Z,#$20,L05532
-        LDX     #Tab2D_2266
+        LDX     #IdleV03482
 L05532:
         JSR     Lookup2D
         LDAB    $FE,Z
@@ -6270,14 +6580,14 @@ L05556:
         BRSET   $0184,Z,#$20,L05610
         BSET    $0184,Z,#$20
         LDAA    $0C,Z
-        LDX     #Tab2D_22BC
+        LDX     #IdleCoolant18
         BRCLR   $0056,Z,#$20,L05578
-        LDX     #Tab2D_22C6
+        LDX     #IdleCoolant19
 L05578:
         BRSET   $001D,Z,#$20,L0558C
-        LDX     #Tab2D_2270
+        LDX     #IdleCoolant12
         BRCLR   $0056,Z,#$20,L0558C
-        LDX     #Tab2D_227A
+        LDX     #IdleCoolant13
 L0558C:
         JSR     Lookup2D
         SXT
@@ -6350,17 +6660,17 @@ L0564C:
         BRCLR   $001D,Z,#$08,L05668
         LDAA    >Map,Z
         STAA    $01B4,Z
-        LDX     #Tab2D_22E1
+        LDX     #IdleMap2
         BRA     L05670
 L05668:
-        LDX     #Tab2D_22E9
+        LDX     #IdleV0341
         LDAA    $01B4,Z
 L05670:
         JSR     Lookup2D
         SXT
         TDE
         LDAA    <Baro,Z
-        LDX     #Tab2D_2435
+        LDX     #IdleBaro4
         JSR     Lookup2D
         LDAA    #$01
         EMULS
@@ -6379,7 +6689,7 @@ L056A4:
         TBA
         STAA    $01B3,Z
         BRCLR   $001D,Z,#$08,L056BE
-        LDAB    $0286,Z
+        LDAB    >SegmentRpm,Z
         CMPB    $22E0
         BCS     L056BE
         LBRA    L05958
@@ -6420,15 +6730,15 @@ L056F8:
         BRA     L05784
 L05712:
         LDAA    $18,Z
-        LDX     #Tab2D_236D
+        LDX     #IdleSpeed3
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #Tab2D_06DB
+        LDX     #IdleThrottle
         JSR     Lookup2D
-        LDAB    $0286,Z
-        LDX     #Tab3D_23A3
+        LDAB    >SegmentRpm,Z
+        LDX     #IdleThrottleSegRpm
         JSR     Lookup3D
         SXT
         ADE
@@ -6444,11 +6754,11 @@ L0574C:
         EMULS
         TDE
         LDAA    $16,Z
-        LDX     #Tab2D_2385
+        LDX     #IdleV0A5A5
         BRCLR   $032B,#$80,L0576E
         BRSET   $00F8,Z,#$02,L0576E
         LDAA    $01B8,Z
-        LDX     #Tab2D_2379
+        LDX     #IdleV0345
 L0576E:
         JSR     Lookup2D
         SUBA    #$80
@@ -6471,8 +6781,8 @@ L05784:
 L05790:
         STAA    $FB,Z
         BRSET   $021F,Z,#$01,L057AE
-        LDAA    $0286,Z
-        LDX     #Tab2D_238F
+        LDAA    >SegmentRpm,Z
+        LDX     #IdleSegRpm
         JSR     Lookup2D
         CLRA
         TDE
@@ -6492,7 +6802,7 @@ L057AE:
         LBNE    L0591E
         BRSET   $001A,Z,#$80,L058B2
 L057E0:
-        LDD     $0286,Z
+        LDD     >SegmentRpm,Z
         CPD     $0508
         LBCC    L05958
         BRSET   $0189,Z,#$08,L05958
@@ -6725,12 +7035,12 @@ L05A02:
         BITB    #$02
         BNE     L05A76
         LDAA    <Baro,Z
-        LDX     #Tab2D_2421
+        LDX     #IdleBaro2
         JSR     Lookup2D
         LDAA    #$01
         TDE
         LDAA    $06B8,Z
-        LDX     #Tab2D_2445
+        LDX     #IdleV0DC6
         JSR     Lookup2D
         CLRA
         EMUL
@@ -6778,12 +7088,12 @@ Sub_05A92:
         LDAA    #$FF
         STAA    $42,Z
         LDAA    <Baro,Z
-        LDX     #Tab2D_254C
+        LDX     #IdleBaro7
         JSR     Lookup2D
         STAA    $54,Z
         BRCLR   $032B,#$80,L05AEA
         LDAA    <Baro,Z
-        LDX     #Tab2D_242B
+        LDX     #IdleBaro3
         JSR     Lookup2D
         STAA    $F0,Z
         CLRB
@@ -6816,12 +7126,12 @@ L05AEA:
 ;---------------------------------------------------------------------------------------------------
 Sub_05AEC:
         LDAA    <Baro,Z
-        LDX     #Tab2D_2421
+        LDX     #IdleBaro2
         JSR     Lookup2D
         LDAA    #$01
         TDE
         LDAA    $16,Z
-        LDX     #Tab2D_2316
+        LDX     #IdleV0A5A4
         JSR     Lookup2D
         CLRA
         EMUL
@@ -6911,7 +7221,7 @@ L05BEC:
         BLS     L05C08
 L05BFA:
         LDAA    <Baro,Z
-        LDX     #Tab2D_254C
+        LDX     #IdleBaro7
         JSR     Lookup2D
         CLRB
         STAA    $54,Z
@@ -7106,7 +7416,7 @@ L05DC2:
         CLRA
         TDE
         LDAA    <Baro,Z
-        LDX     #Tab2D_242B
+        LDX     #IdleBaro3
         JSR     Lookup2D
         LDAA    #$01
         EMUL
@@ -7189,12 +7499,12 @@ L05E82:
         CBA
         BCC     L05ED2
 L05E86:
-        LDD     $14,Z
+        LDD     <IdleTarget,Z
         ADDD    $2531
         BCC     L05E92
         LDD     #$FFFF
 L05E92:
-        CPD     $0286,Z
+        CPD     >SegmentRpm,Z
         BLS     L05ED2
         BRSET   $0025,Z,#$80,L05ED2
         TST     $01C0,Z
@@ -7207,7 +7517,7 @@ L05EA6:
         BHI     L05ED2
         CMPA    $2538
         BCS     L05ED2
-        LDD     $14,Z
+        LDD     <IdleTarget,Z
         ADDD    $2531
         BCS     L05EC8
         ADDD    $2533
@@ -7215,7 +7525,7 @@ L05EA6:
 L05EC8:
         LDD     #$FFFF
 L05ECC:
-        CPD     $0286,Z
+        CPD     >SegmentRpm,Z
         BCC     L05EDA
 L05ED2:
         BCLR    $41,Z,#$01
@@ -7223,9 +7533,9 @@ L05ED2:
 L05EDA:
         BRSET   $0041,Z,#$01,L05EF4
         BSET    $41,Z,#$01
-        LDD     $14,Z
+        LDD     <IdleTarget,Z
         BRCLR   $0025,Z,#$01,L05F2C
-        LDD     $0286,Z
+        LDD     >SegmentRpm,Z
         STD     $0174,Z
 L05EF4:
         LDAA    $01C4,Z
@@ -7241,9 +7551,9 @@ L05F04:
         CLRD
 L05F14:
         LDE     $252F
-        CPE     $0014,Z
+        CPE     >IdleTarget,Z
         BCC     L05F22
-        LDE     $0014,Z
+        LDE     >IdleTarget,Z
 L05F22:
         PSHM    E
         SDE
@@ -7385,7 +7695,7 @@ L06052:
         TAB
         CLRA
         TDE
-        LDAA    $0286,Z
+        LDAA    >SegmentRpm,Z
         LDX     #Tab2D_2498
         JSR     Lookup2D
         STAA    $FE,Z
@@ -7561,8 +7871,8 @@ L061FE:
         LDAA    $0C,Z
         CMPA    $253A
         BLS     L0622C
-        LDAA    $0286,Z
-        SUBA    $14,Z
+        LDAA    >SegmentRpm,Z
+        SUBA    <IdleTarget,Z
         BCC     L0621A
         NEGA
         BVC     L0621A
@@ -7654,36 +7964,36 @@ L06332:
 ;---------------------------------------------------------------------------------------------------
 Sub_06334:
         LDAA    <Baro,Z
-        LDX     #Tab2D_06FF
+        LDX     #IdleBaro
         JSR     Lookup2D
-        LDAB    $14,Z
-        LDX     #Tab3D_2564
+        LDAB    <IdleTarget,Z
+        LDX     #IdleBaroIdleTarget2
         JSR     Lookup3D
         STAA    $F0,Z
         BRSET   $0184,Z,#$40,L06354
         STAA    $01CE,Z
 L06354:
         LDAA    <Baro,Z
-        LDX     #Tab2D_2421
+        LDX     #IdleBaro2
         JSR     Lookup2D
         STAA    $F1,Z
         LDAA    $0C,Z
-        LDX     #Tab2D_2351
+        LDX     #IdleCoolant22
         JSR     Lookup2D
         STAA    $FE,Z
         STAA    $F6,Z
         LDAA    $18,Z
-        LDX     #Tab2D_06E7
+        LDX     #IdleSpeed
         JSR     Lookup2D
-        LDAB    $0286,Z
-        LDX     #Tab3D_23C4
+        LDAB    >SegmentRpm,Z
+        LDX     #IdleSpeedSegRpm
         JSR     Lookup3D
         CMPA    $FE,Z
         BLS     L0638A
         STAA    $FE,Z
 L0638A:
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #Tab2D_235F
+        LDX     #IdleThrottle2
         JSR     Lookup2D
         CMPB    $FE,Z
         BHI     L0639C
@@ -7692,16 +8002,16 @@ L0639C:
         CLRA
         TDE
         LDAA    $01A1,Z
-        LDX     #Tab2D_06F3
+        LDX     #IdleV032E
         JSR     Lookup2D
-        LDAB    $0286,Z
-        LDX     #Tab3D_244F
+        LDAB    >SegmentRpm,Z
+        LDX     #IdleV032ESegRpm
         JSR     Lookup3D
         STAB    $F4,Z
         CLRA
         ADE
         LDAA    <Count3s,Z
-        LDX     #Tab2D_2349
+        LDX     #IdleTime
         JSR     Lookup2D
         CLRA
         ADE
@@ -7720,10 +8030,10 @@ L063E0:
 L063FA:
         STE     $00F2,Z
         LDAA    $01A1,Z
-        LDX     #Tab2D_06F3
+        LDX     #IdleV032E
         JSR     Lookup2D
-        LDAB    $0286,Z
-        LDX     #Tab3D_24E8
+        LDAB    >SegmentRpm,Z
+        LDX     #IdleV032ESegRpm2
         JSR     Lookup3D
         STAB    $F7,Z
         CLRA
@@ -7747,10 +8057,10 @@ L063FA:
         STD     $053A,Z
 L06454:
         LDAA    <Baro,Z
-        LDX     #Tab2D_06FF
+        LDX     #IdleBaro
         JSR     Lookup2D
-        LDAB    $14,Z
-        LDX     #Tab3D_2509
+        LDAB    <IdleTarget,Z
+        LDX     #IdleBaroIdleTarget
         JSR     Lookup3D
         STAA    $F5,Z
         CLRA
@@ -7862,7 +8172,7 @@ L06582:
         BRA     L065B6
 L065AA:
         BRCLR   $0041,Z,#$04,L065C0
-        LDD     $14,Z
+        LDD     <IdleTarget,Z
         DECB
         BEQ     L065C0
 L065B6:
@@ -8118,7 +8428,7 @@ L06890:
         STD     $FE,Z
 L068B2:
         LDD     $FE,Z
-        STD     $14,Z
+        STD     <IdleTarget,Z
 L068B6:
         RTS
 
@@ -8671,9 +8981,9 @@ L06E36:
         LDAA    >RJURR6_L,Z
         STAA    $0548,Z
         LDAA    >RJURR5_L,Z
-        STAA    >Adc5Raw,Z
+        STAA    >O2UpBank2Raw,Z
         LDAA    >RJURR4_L,Z
-        STAA    >Adc4Raw,Z
+        STAA    >O2UpBank1Raw,Z
         LDAA    >RJURR3_L,Z
         STAA    $0539,Z
         STAA    $17,Z
@@ -8703,7 +9013,7 @@ L06E9E:
         STAA    <Baro,Z
 L06EC4:
         LDAA    #$FF
-        STAA    $055D,Z
+        STAA    >KnockThresholdNow,Z
         LDAA    >RJURR1_L,Z
         CMPA    #$40
         BCC     L06F00
@@ -8906,7 +9216,7 @@ L07134:
 L07138:
         STAB    $0C,Z
         LDAA    $0C,Z
-        LDX     #Tab2D_0581
+        LDX     #StartStartCoolant
         JSR     Lookup2D
         STAA    $05CD,Z
         LDAB    $4156
@@ -8937,7 +9247,7 @@ L0718C:
         BCC     L071A8
         CMPA    $414B
         BCS     L071A8
-        LDX     #Tab2D_4295
+        LDX     #StartV0A87
         JSR     Lookup2D
 L071A8:
         STAB    $0558,Z
@@ -8947,9 +9257,9 @@ L071A8:
         BHI     L071D0
         CMPA    $4157
         BCS     L071D0
-        LDX     #Tab2D_4261
+        LDX     #SensorV0A59
         BRCLR   $032A,#$04,L071CC
-        LDX     #Tab2D_4277
+        LDX     #SensorV0A592
 L071CC:
         JSR     Lookup2D
 L071D0:
@@ -10380,7 +10690,7 @@ L08224:
         STAA    $04B6,Z
         ANDP    #$FF1F
         LDAA    <EngineRpm,Z
-        LDX     #Tab2D_0C1F
+        LDX     #FuelRpm3
         JSR     Lookup2D
         LDAA    $0452,Z
         ADDA    $0C17
@@ -10425,7 +10735,7 @@ L08286:
         CMPA    $1627
         BCS     L08310
         LDAB    <EngineRpm,Z
-        SUBB    $14,Z
+        SUBB    <IdleTarget,Z
         BCC     L082B8
         CLRB
 L082B8:
@@ -10507,17 +10817,17 @@ L08372:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_08374:
-        LDX     #Tab2D_0B51
+        LDX     #FuelBaro
         LDAA    <Baro,Z
         JSR     Lookup2D
         ADDA    >Map,Z
         BCC     L08386
         LDAA    #$FF
 L08386:
-        LDX     #Tab2D_05CB
+        LDX     #FuelScaled
         JSR     Lookup2D
         LDAB    <EngineRpm,Z
-        LDX     #Tab3D_0B5B
+        LDX     #FuelRpm2
         JSR     Lookup3D
         STAA    $F4,Z
         BRCLR   $0025,Z,#$80,L083D0
@@ -11281,7 +11591,7 @@ L08AC8:
         STD     $F4,Z
 L08AD4:
         LDAA    >Map,Z
-        LDX     #Tab2D_05F7
+        LDX     #SparkMap
         JSR     Lookup2D
         LDX     #Tab3D_0DBE
 L08AE4:
@@ -11340,7 +11650,7 @@ Sub_08B62:
         LDAA    >Map,Z
         BRSET   $0023,Z,#$20,L08B86
         LDAA    <Baro,Z
-        LDX     #Tab2D_0B1E
+        LDX     #MapBaroOffset
         JSR     Lookup2D
         LDAB    >Map,Z
         ABA
@@ -11643,7 +11953,7 @@ L08E2E:
         BCS     L08E5A
         BRSET   $25,Z,#$80,L08E5A
         LDAA    <EngineRpm,Z
-        SUBA    $14,Z
+        SUBA    <IdleTarget,Z
         BCS     L08E46
         CMPA    $0882
         BCC     L08E5A
@@ -11765,7 +12075,7 @@ L08F82:
         BCLR    $042A,Z,#$F8
 L08F86:
         LDAA    <EngineRpm,Z
-        LDX     #Tab2D_08AA
+        LDX     #FuelEventRpm2
         JSR     Lookup2D
         CLRB
         BRCLR   $0431,Z,#$01,L08FA8
@@ -11981,11 +12291,11 @@ L091A0:
         PULM    K,Y,X
         BRCLR   $21,Z,#$80,L091C2
         LDD     <EngineRpm,Z
-        SUBD    $14,Z
+        SUBD    <IdleTarget,Z
         BCC     L091AE
         CLRA
 L091AE:
-        LDX     #Tab2D_1610
+        LDX     #FuelEventTable3
         JSR     Lookup2D
         CLRB
         EMUL
@@ -12113,7 +12423,7 @@ L092E4:
         RORE
         BRCLR   $0653,Z,#$80,L09310
         LDAA    <EngineRpm,Z
-        LDX     #Tab2D_0C08
+        LDX     #FuelEventRpm3
         JSR     Lookup2D
         CLRA
         ASLD
@@ -12279,7 +12589,7 @@ L094BE:
         LDAA    $0450,Z
         LBNE    L0957E
         LDAA    <EngineRpm,Z
-        SUBA    $14,Z
+        SUBA    <IdleTarget,Z
         BCC     L094D6
         CLRA
 L094D6:
@@ -12528,13 +12838,13 @@ L09744:
         CMPA    >Throttle,Z
         BEQ     L09780
         BCC     L09760
-        LDX     #Tab2D_113D
+        LDX     #FuelEventStartCoolant2
         LDAA    $0A,Z
         JSR     Lookup2D
         STAA    $0547,Z
         BRA     L09780
 L09760:
-        LDX     #Tab2D_1227
+        LDX     #FuelEventStartCoolant6
         LDAA    $0A,Z
         JSR     Lookup2D
         STAA    $0547,Z
@@ -12624,14 +12934,14 @@ L0982E:
         BSET    $0463,Z,#$02
 L09854:
         LDAA    <EngineRpm,Z
-        LDX     #Tab2D_0643
+        LDX     #FuelEventRpm
         JSR     Lookup2D
         STAA    $F0,Z
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #Tab2D_064F
+        LDX     #FuelEventThrottle
         JSR     Lookup2D
         LDAA    $F0,Z
-        LDX     #Tab3DN_126D
+        LDX     #FuelEventTable2
         JSR     Lookup3DNorm
         STAA    $F2,Z
         LDAA    >ThrottleLast,Z
@@ -12639,10 +12949,10 @@ L09854:
         BCC     L09882
         CLRA
 L09882:
-        LDX     #Tab2D_064F
+        LDX     #FuelEventThrottle
         JSR     Lookup2D
         LDAA    $F0,Z
-        LDX     #Tab3DN_126D
+        LDX     #FuelEventTable2
         JSR     Lookup3DNorm
         SUBA    $F2,Z
         BCC     L0989A
@@ -12653,7 +12963,7 @@ L0989A:
         MUL
         TDE
         LDAA    $0A,Z
-        LDX     #Tab2D_120D
+        LDX     #FuelEventStartCoolant4
         JSR     Lookup2D
         CLRB
         EMUL
@@ -12690,7 +13000,7 @@ L098FC:
         MUL
         TDE
         LDAA    $0A,Z
-        LDX     #Tab2D_11FB
+        LDX     #FuelEventStartCoolant3
         JSR     Lookup2D
         CLRB
         EMUL
@@ -12704,7 +13014,7 @@ L0991E:
         TST     $0464,Z
         BEQ     L09962
         BRCLR   $0463,Z,#$05,L09962
-        LDD     $14,Z
+        LDD     <IdleTarget,Z
         ADDD    $130B
         CPD     <EngineRpm,Z
         BCC     L09962
@@ -12713,10 +13023,10 @@ L0991E:
         BCC     L09962
         ASLA
         ASLA
-        LDX     #Tab2D_065B
+        LDX     #FuelEventTime
         JSR     Lookup2D
         LDAB    $0F,Z
-        LDX     #Tab3D_130D
+        LDX     #FuelEventTimeStartCoolant
         JSR     Lookup3D
         STAA    $0469,Z
         BEQ     L09962
@@ -12737,12 +13047,12 @@ L0997C:
         TSTA
         BEQ     L099B0
         STAA    $F2,Z
-        LDX     #Tab2D_1259
+        LDX     #FuelEventRpm4
         LDAA    <EngineRpm,Z
         JSR     Lookup2D
         CLRA
         TDE
-        LDX     #Tab2D_1245
+        LDX     #FuelEventMap
         LDAA    >Map,Z
         JSR     Lookup2D
         CLRA
@@ -12764,7 +13074,7 @@ L099B8:
         TSTA
         BEQ     L099DE
         STAA    $F0,Z
-        LDX     #Tab2D_1239
+        LDX     #FuelEventBaro
         LDAA    <Baro,Z
         JSR     Lookup2D
         LDAA    $F0,Z
@@ -12825,7 +13135,7 @@ Sub_09A3A:
         BHI     L09A60
         LDAA    $0606,Z
         BEQ     L09A60
-        LDX     #Tab2D_0840
+        LDX     #CrankFuelV0C44
         JSR     Lookup2D
         ADDB    $0C,Z
         BCC     L09A56
@@ -12838,10 +13148,10 @@ L09A56:
 L09A60:
         STAB    >CoolantTemp,Z
         LDAA    $2F,Z
-        LDX     #Tab2D_0593
+        LDX     #CrankFuelV0198
         JSR     Lookup2D
         LDAB    $0C,Z
-        LDX     #Tab3D_081F
+        LDX     #CrankFuelV0198Coolant
         JSR     Lookup3D
         STAA    $041C,Z
         LDAB    #$00
@@ -12949,47 +13259,47 @@ L09B72:
         LDAB    $074F
 L09B84:
         LDAA    $0561,Z
-        LDX     #Tab3D_0764
+        LDX     #CrankFuelV0A91Coolant
         JSR     Lookup3D
         MUL
         STD     $F0,Z
-        LDX     #Tab2D_07CB
+        LDX     #CrankFuelRpm2
         BRSET   $25,Z,#$80,L09BA0
         LDX     #Tab2D_07C1
 L09BA0:
         LDAA    <EngineRpm,Z
         JSR     Lookup2D
         STAA    $FE,Z
-        LDX     #Tab2D_07D5
+        LDX     #CrankFuelV00FC2
         LDAA    $0C,Z
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         NEGD
         STD     $F2,Z
-        LDX     #Tab2D_07E1
+        LDX     #CrankFuelV0769
         LDAA    $0420,Z
         JSR     Lookup2D
         STAA    $FE,Z
-        LDX     #Tab2D_07ED
+        LDX     #CrankFuelV00FC3
         LDAA    $0C,Z
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         NEGD
         STD     $F4,Z
-        LDX     #Tab2D_0803
+        LDX     #CrankFuelBaro
         LDAA    <Baro,Z
         JSR     Lookup2D
         STAA    $FE,Z
-        LDX     #Tab2D_080B
+        LDX     #CrankFuelV00FC5
         LDAA    $0C,Z
         JSR     Lookup2D
         LDAA    $FE,Z
         MUL
         NEGD
         STD     $F6,Z
-        LDX     #Tab2D_0813
+        LDX     #CrankFuelVacuum
         LDAA    >ManifoldVacuum,Z
         JSR     Lookup2D
         CLRB
@@ -12998,7 +13308,7 @@ L09BA0:
         CMPA    $0757
         BHI     L09C1E
         LDAA    $0C,Z
-        LDX     #Tab2D_07F9
+        LDX     #CrankFuelV00FC4
         JSR     Lookup2D
         CLRB
         BRA     L09C20
@@ -13058,7 +13368,7 @@ L09C94:
         STD     $0437,Z
         TDE
         LDAA    $0C,Z
-        LDX     #Tab2D_0758
+        LDX     #CrankFuelV00FC
         JSR     Lookup2D
         CLRB
         EMUL
@@ -13200,7 +13510,7 @@ L09E02:
         MUL
         TDE
         LDAA    $0756
-        LDX     #Tab2D_FD65
+        LDX     #FuelEventCal
         JSR     Lookup2D
         CLRA
         ADE
@@ -14645,10 +14955,10 @@ Sub_0A932:
         BEQ     L0A97E
         PSHA
         LDAA    >Map,Z
-        LDX     #Tab2D_06C3
+        LDX     #KnockMap
         JSR     Lookup2D
         LDAB    <EngineRpm,Z
-        LDX     #Tab3D_1FD9
+        LDX     #KnockRetardLimit
         JSR     Lookup3D
         PULA
         MUL
@@ -14763,7 +15073,7 @@ Sub_0AA40:
         CMPA    $1FA0
         BCS     L0AA72
 L0AA60:
-        LDX     #Tab2D_1FBF
+        LDX     #KnockMap2
         LDAA    >Map,Z
         JSR     Lookup2D
         BRA     L0AA76
@@ -14892,7 +15202,7 @@ L0AB40:
         BCC     L0AB52
         LDAB    #$FF
 L0AB52:
-        STAB    $055D,Z
+        STAB    >KnockThresholdNow,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -14901,23 +15211,23 @@ L0AB52:
 ;---------------------------------------------------------------------------------------------------
 Sub_0AB58:
         LDAA    <EngineRpm,Z
-        LDX     #Tab2D_1F91
+        LDX     #KnockRpm4
         JSR     Lookup2D
         STAA    $059F,Z
         LDAA    <EngineRpm,Z
-        LDX     #Tab2D_1F85
+        LDX     #KnockRpm3
         JSR     Lookup2D
         STAA    $05A0,Z
         LDAA    <EngineRpm,Z
-        LDX     #Tab2D_1F6B
+        LDX     #KnockRpm2
         JSR     Lookup2D
         STAA    $059D,Z
         LDAA    <EngineRpm,Z
-        LDX     #Tab2D_1F79
+        LDX     #KnockRpm7
         JSR     Lookup2D
         STAA    $059E,Z
         LDAA    <EngineRpm,Z
-        LDX     #Tab2D_417E
+        LDX     #KnockRpm6
         JSR     Lookup2D
         STAA    $05AC,Z
         RTS
@@ -14995,9 +15305,9 @@ L0AC6C:
         CMPB    >Map,Z
         LBHI    L0AD1A
         LDAA    $055C,Z
-        SUBA    $055D,Z
+        SUBA    >KnockThresholdNow,Z
         LBCS    L0AD1A
-        LDX     #Tab2D_1FB3
+        LDX     #KnockV0A8B
         JSR     Lookup2D
         BRSET   $060F,Z,#$80,L0ACAA
         BSET    $060F,Z,#$80
@@ -15317,15 +15627,15 @@ L0B0E4:
 L0B0F6:
         BRSET   $0329,#$20,L0B108
         LDAA    $0409,Z
-        STAA    $03B2,Z
+        STAA    >O2UpBank1,Z
         JSR     Sub_0CC5E
 L0B108:
         JSR     Sub_0C2C2
         BRCLR   $0329,#$40,L0B12C
         LDX     #$83BF
         BRSET   $0329,#$10,L0B128
-        LDAA    $03B2,Z
-        STAA    $03D3,Z
+        LDAA    >O2UpBank1,Z
+        STAA    >O2UpBank2,Z
         JSR     Sub_0CC5E
 L0B128:
         JSR     Sub_0C2C2
@@ -15371,7 +15681,7 @@ Sub_0B172:
         BITA    #$81
         BNE     L0B1A4
         BRCLR   $0330,#$80,L0B198
-        LDAA    $14,Z
+        LDAA    <IdleTarget,Z
         ADDA    $1554
         BCC     L0B192
         LDAA    #$FF
@@ -15438,7 +15748,7 @@ L0B21E:
 Sub_0B220:
         PSHM    X
         LDAA    $0B,X
-        LDX     #Tab2D_142F
+        LDX     #O2VoltageScale2
         JSR     Lookup2D
         PULM    X
         STAB    $0F,X
@@ -15803,7 +16113,7 @@ L0B56E:
         BCLR    $040C,Z,#$F0
         BCLR    $040C,Z,#$0F
         PSHM    X,K
-        LDX     #Tab2D_13B9
+        LDX     #O2Coolant
         JSR     Lookup2D
         PULM    K,X
         BRCLR   $BC,Z,#$20,L0B592
@@ -15870,7 +16180,7 @@ Sub_0B60C:
         BSET    $F0,Z,#$F0
         BRA     L0B660
 L0B64C:
-        LDAA    >Adc4Raw,Z
+        LDAA    >O2UpBank1Raw,Z
         CMPA    $13A5
         BCC     L0B65C
         CMPA    $13A6
@@ -15884,7 +16194,7 @@ L0B660:
         BSET    $F1,Z,#$F0
         BRA     L0B686
 L0B672:
-        LDAA    >Adc5Raw,Z
+        LDAA    >O2UpBank2Raw,Z
         CMPA    $13A5
         BCC     L0B682
         CMPA    $13A6
@@ -16226,7 +16536,7 @@ L0BA62:
         BSET    $F0,Z,#$50
         BSET    $F1,Z,#$50
 L0BA6A:
-        LDD     $0286,Z
+        LDD     >SegmentRpm,Z
         CPD     #$9C40
         BCS     L0BAAC
         BSET    $F0,Z,#$50
@@ -16573,14 +16883,14 @@ L0BE28:
         TST     <Count3s,Z
         BEQ     L0BE5A
         BRCLR   >MainLoopPhaseMask,Z,#$02,L0BE5A
-        LDAA    >Adc4Raw,Z
+        LDAA    >O2UpBank1Raw,Z
         CMPA    $13B7
         BHI     L0BE46
         INC     $0461,Z
         BNE     L0BE46
         DEC     $0461,Z
 L0BE46:
-        LDAA    >Adc5Raw,Z
+        LDAA    >O2UpBank2Raw,Z
         CMPA    $13B8
         BHI     L0BE5A
         INC     $0462,Z
@@ -16648,7 +16958,7 @@ L0BEFC:
         BEQ     L0BF32
         BSET    $F0,Z,#$08
         LDAA    $0630,Z
-        LDX     #Tab2D_13FC
+        LDX     #O2V042C
         JSR     Lookup2D
         CMPA    $0402,Z
         BHI     L0BF26
@@ -17054,7 +17364,7 @@ Sub_0C2C2:
 L0C2CA:
         STAA    $09,X
         PSHM    X
-        LDX     #Tab2D_141F
+        LDX     #O2VoltageScale
         JSR     Lookup2D
         PULM    X
         STAA    $08,X
@@ -17378,7 +17688,7 @@ L0C5CE:
         BCS     L0C63A
         BRA     L0C5EC
 L0C5D6:
-        LDAA    $14,Z
+        LDAA    <IdleTarget,Z
         ADDA    $1554
         CMPB    $04A0,Z
         BNE     L0C5E6
@@ -17482,7 +17792,7 @@ L0C6D4:
         TZY
         LDY     #$843D
         LDAA    >ShortTermTrim1,Z
-        LDAB    >Adc4Raw,Z
+        LDAB    >O2UpBank1Raw,Z
         STD     $043D,Z
         LDAA    $03BB,Z
         ANDA    #$08
@@ -17492,7 +17802,7 @@ L0C6D4:
         TZY
         LDY     #$8444
         LDAA    >ShortTermTrim2,Z
-        LDAB    >Adc5Raw,Z
+        LDAB    >O2UpBank2Raw,Z
         STD     $0444,Z
         LDAA    $03DC,Z
         ANDA    #$08
@@ -17762,7 +18072,7 @@ L0C9C0:
         NEGA
 L0C9CA:
         PSHM    X
-        LDX     #Tab2D_1566
+        LDX     #O2V00F3
         JSR     Lookup2D
         PULM    X
         LDAB    $062C,Z
@@ -18097,13 +18407,13 @@ L0CC4C:
 ;---------------------------------------------------------------------------------------------------
 Sub_0CC5E:
         PSHM    D,X,K
-        LDAA    $03B2,Z
-        LDX     #Tab2D_141F
+        LDAA    >O2UpBank1,Z
+        LDX     #O2VoltageScale
         JSR     Lookup2DRev
         STAA    $0411,Z
         BRCLR   $0329,#$40,L0CC86
-        LDAA    $03D3,Z
-        LDX     #Tab2D_141F
+        LDAA    >O2UpBank2,Z
+        LDX     #O2VoltageScale
         JSR     Lookup2DRev
         STAA    $0412,Z
 L0CC86:
@@ -18811,10 +19121,10 @@ L0D39C:
         LDAA    $0630,Z
         CMPA    $16BF
         LBCS    L0D51A
-        LDAA    >Adc4Raw,Z
-        LDX     #Tab2D_141F
+        LDAA    >O2UpBank1Raw,Z
+        LDX     #O2VoltageScale
         JSR     Lookup2D
-        LDAA    $03B2,Z
+        LDAA    >O2UpBank1,Z
         LSRA
         LSRB
         SBA
@@ -19367,14 +19677,14 @@ L0D9A0:
 ;---------------------------------------------------------------------------------------------------
 Sub_0D9AA:
         LDAA    <EngineRpm,Z
-        LDX     #Tab2D_067D
+        LDX     #Sys3D800Rpm
         JSR     Lookup2D
         STAA    $F0,Z
         LDAA    >Map,Z
-        LDX     #Tab2D_0673
+        LDX     #Sys3D800Map
         JSR     Lookup2D
         LDAB    $F0,Z
-        LDX     #Tab3DN_16F8
+        LDX     #Sys3D800Table
         JSR     Lookup3DNorm
         RTS
 
@@ -21801,7 +22111,7 @@ L0F5BE:
         CMPB    #$82
         BCC     L0F644
         LDAA    $0664,Z
-        LDX     #Tab2D_FD53
+        LDX     #EventV0D11
         JSR     Lookup2D
         CMPA    $0586,Z
         BCS     L0F644
@@ -21998,9 +22308,9 @@ L0F83E:
 L0F842:
         BRCLR   >ADCSTAT,Z,#$80,L0F842
         LDAB    >RJURR4_L,Z
-        STAB    >Adc4Raw,Z
+        STAB    >O2UpBank1Raw,Z
         LDAB    >RJURR5_L,Z
-        STAB    >Adc5Raw,Z
+        STAB    >O2UpBank2Raw,Z
         LDAB    >RJURR1_L,Z
         STAB    $03A9,Z
         BRCLR   $0329,#$10,L0F878
@@ -22326,7 +22636,7 @@ L0FC2C:
         JSR     Sub_08E18
         BRCLR   >FuelModeFlags,Z,#$80,L0FC64
         LDAA    $0C,Z
-        LDX     #Tab2D_1374
+        LDX     #EventCoolant
         JSR     Lookup2D
         CLRA
         LDE     $04A8,Z
@@ -22418,22 +22728,26 @@ L0FD40:
         dc.b    $00,$0E,$4E,$1C,$00,$04,$00,$0E,$00,$3A,$00,$76,$10,$18,$45
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_FD53 ($FD53): 2D table, 2 points, unsigned
+; EventV0D11 ($FD53): 2D table, 2 points, unsigned
+; Subsystem: reference-event interrupt (input capture 1) (by the routine that reads it, Isr_GPT_IC1). Inputs: $0D11,Z. Result to $791E,Z.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0664,Z
 ; Read at $0F602
 ;---------------------------------------------------------------------------------------------------
-Tab2D_FD53:
+EventV0D11:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,86, 127,142                            ; x, y
 
         dc.b    $01,$02,$03,$02,$03,$00,$03,$00,$01,$00,$01,$02
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_FD65 ($FD65): 2D table, 3 points, unsigned
+; FuelEventCal ($FD65): 2D table, 3 points, unsigned
+; Subsystem: fuel calculation per reference event (by the routine that reads it, Sub_12680). Inputs: $0A83; $7563.
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0756
 ; Read at $09E1E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_FD65:
+FuelEventCal:
         dc.b    3,$80                                    ; points, flags
         dc.b    6,0, 36,1, 66,2                          ; x, y
 

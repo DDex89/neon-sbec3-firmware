@@ -664,7 +664,7 @@ L307AA:
         ASLE
         ASLE
         ANDE    #$FF00
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         ASLD
         ASLD
         TAB
@@ -2300,7 +2300,7 @@ L3198C:
         STAA    $03,Y
         LDAA    $0A0B,Z
         STAA    $04,Y
-        LDD     $0300,Z
+        LDD     >IdleTarget,Z
         ASLD
         ASLD
         ASLB
@@ -3115,7 +3115,7 @@ Sub_320B4:
         EORD    #$9340
         ADDD    #$1010
         EORD    $09F8,Z
-        ADDD    #Tab2D_1911
+        ADDD    #FuelCutV032E2
         TDE
         STAB    $09F6,Z
         LSRB
@@ -3521,17 +3521,17 @@ L324B2:
         LBRA    L32558
 L324BA:
         BRCLR   $0344,#$10,L322D2
-        LDAA    >Adc4Raw,Z
+        LDAA    >O2UpBank1Raw,Z
         LDAB    >ShortTermTrim1,Z
         BRA     L324E6
 L324CA:
         BRCLR   $0344,#$08,L322D2
-        LDAB    >Adc1Raw,Z
+        LDAB    >O2DownBank1Raw,Z
         LDAA    #$FF
         BRA     L3250A
 L324D8:
         BRCLR   $0344,#$01,L322D2
-        LDAA    >Adc5Raw,Z
+        LDAA    >O2UpBank2Raw,Z
         LDAB    >ShortTermTrim2,Z
 L324E6:
         STAA    $03F0,Z
@@ -3547,7 +3547,7 @@ L324F2:
         BRA     L3250A
 L324FE:
         BRCLR   $0345,#$80,L322D2
-        LDAB    >Adc2Raw,Z
+        LDAB    >O2DownBank2Raw,Z
         LDAA    #$FF
 L3250A:
         STAA    $03F0,Z
@@ -5095,7 +5095,7 @@ L339BC:
         BCLR    $0649,Z,#$20
         BSET    $0649,Z,#$10
 L339C8:
-        LDAA    $0300,Z
+        LDAA    >IdleTarget,Z
         SUBA    >EngineRpm,Z
         BHI     L339D4
         NEGA
@@ -6425,16 +6425,16 @@ L3583E:
         LDAA    >VehicleSpeed,Z
         BRA     Sub_3589E
 L35844:
-        LDAB    >Adc4Raw,Z
+        LDAB    >O2UpBank1Raw,Z
         BRA     L3585A
 L3584A:
-        LDAB    >Adc5Raw,Z
+        LDAB    >O2UpBank2Raw,Z
         BRA     L3585A
 L35850:
-        LDAB    >Adc1Raw,Z
+        LDAB    >O2DownBank1Raw,Z
         BRA     L3585A
 L35856:
-        LDAB    >Adc2Raw,Z
+        LDAB    >O2DownBank2Raw,Z
 L3585A:
         LDAA    #$FF
         CMPB    $4A00
@@ -6471,7 +6471,7 @@ L35892:
         LDAA    $0D11,Z
         BRA     Sub_3589E
 L35898:
-        LDAA    >Adc2Raw,Z
+        LDAA    >O2DownBank2Raw,Z
         BRA     Sub_3589E
 
 ;---------------------------------------------------------------------------------------------------
@@ -9887,16 +9887,16 @@ L395CC:
         BRCLR   $0D57,Z,#$20,L39618
         BRSET   $0331,#$80,L395EC
         LDAA    $0335,Z
-        LDX     #Tab2D_221E
+        LDX     #SparkV03352
         BRA     L395F4
 L395EC:
         LDAA    $0A88,Z
-        LDX     #Tab2D_2216
+        LDX     #SparkV0A882
 L395F4:
         JSR     Lookup2D
         STAA    $F0,Z
         LDAA    >Map,Z
-        LDX     #Tab2D_2226
+        LDX     #SparkMap6
         JSR     Lookup2D
         LDAA    $F0,Z
         MUL
@@ -9961,7 +9961,7 @@ Sub_39698:
         LDAA    $0933,Z
         CMPA    #$10
         LBEQ    L3985E
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         CMPA    $0591
         BHI     L396BA
         BSET    $0B2C,Z,#$04
@@ -9970,7 +9970,7 @@ L396BA:
         CMPA    $0592
         LBHI    L39838
         BSET    $0B2C,Z,#$08
-        LDX     #Tab2D_05E2
+        LDX     #Sys39686StartCoolant
         JSR     Lookup2D
         STAA    $0B2F,Z
         LBRA    L39838
@@ -10019,7 +10019,7 @@ L39760:
         BRSET   $0C30,Z,#$40,L39838
         BRCLR   $0C30,Z,#$80,L39838
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_05BE
+        LDX     #Sys39686Rpm
         JSR     Lookup2D
         BRCLR   $0B2C,Z,#$01,L39786
         ADDA    $0597
@@ -10038,13 +10038,13 @@ L397A0:
         LBLS    L39838
         LDAA    >VehicleSpeed,Z
         BRSET   $0B2C,Z,#$01,L397C2
-        LDX     #Tab2D_059A
+        LDX     #Sys39686Speed
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BLS     L397D0
         BRA     L39838
 L397C2:
-        LDX     #Tab2D_05AC
+        LDX     #Sys39686Speed2
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BCC     L39838
@@ -10100,7 +10100,7 @@ Sub_39860:
         LDAA    $0933,Z
         CMPA    #$10
         LBEQ    L39D1A
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         CMPA    $0591
         BHI     L39882
         BSET    $0B2C,Z,#$04
@@ -10109,7 +10109,7 @@ L39882:
         CMPA    $0592
         LBHI    L39A22
         BSET    $0B2C,Z,#$08
-        LDX     #Tab2D_05E2
+        LDX     #Sys39686StartCoolant
         JSR     Lookup2D
         STAA    $0B2F,Z
         LBRA    L39A22
@@ -10184,7 +10184,7 @@ L39962:
         BRSET   $0C30,Z,#$40,L39A22
         BRCLR   $0C30,Z,#$80,L39A22
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_05BE
+        LDX     #Sys39686Rpm
         JSR     Lookup2D
         BRCLR   $0B2C,Z,#$01,L39988
         ADDA    $0597
@@ -10203,13 +10203,13 @@ L399A2:
         LBLS    L39A22
         LDAA    >VehicleSpeed,Z
         BRSET   $0B2C,Z,#$01,L399C4
-        LDX     #Tab2D_059A
+        LDX     #Sys39686Speed
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BLS     L399D2
         BRA     L39A22
 L399C4:
-        LDX     #Tab2D_05AC
+        LDX     #Sys39686Speed2
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
         BCC     L39A22
@@ -10241,7 +10241,7 @@ L39A26:
         JSR     Lookup2D
         STAA    $F0,Z
         LDAB    >EngineRpm,Z
-        LDX     #Tab3D_0C9F
+        LDX     #PartThrottleFuelMain
         JSR     Lookup3D
         BNE     L39A44
         LDAA    #$01
@@ -10690,7 +10690,7 @@ L39EAE:
         CMPA    $04D1
         BHI     L39ED4
         LDAA    >VehicleSpeed,Z
-        LDX     #Tab2D_0507
+        LDX     #Sys39E1ASpeed
         JSR     Lookup2D
         CLRB
         CMPA    $0B0C,Z
@@ -11238,7 +11238,7 @@ Sub_3A4F8:
         LDAA    $0B0B,Z
         CMPA    $0502
         BCC     L3A554
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         CMPA    $0503
         BCC     L3A51C
         BRSET   $0509,Z,#$80,L3A51C
@@ -11506,7 +11506,7 @@ L3A7AC:
         STAA    $0B14,Z
         TBA
         ADDA    #$80
-        LDX     #Tab2D_051E
+        LDX     #Sys39E1ATable
         JSR     Lookup2D
         CLRB
         ASRD
@@ -11661,7 +11661,7 @@ L3A924:
         STAA    $0B1A,Z
         TBA
         ADDA    #$80
-        LDX     #Tab2D_0537
+        LDX     #Sys39E1ATable2
         JSR     Lookup2D
         BRA     L3A94A
 L3A93E:
@@ -11840,7 +11840,7 @@ L3AAD6:
         STAA    $0B27,Z
         TBA
         ADDA    #$80
-        LDX     #Tab2D_054B
+        LDX     #Sys39E1ATable3
         JSR     Lookup2D
         CLRB
         ASRD
@@ -12093,7 +12093,7 @@ L3AD06:
 L3AD18:
         BITB    #$04
         LBNE    L3ADA6
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         CMPA    $0B0C
         BHI     L3AD90
         LDAA    >CoolantTemp,Z
@@ -12705,7 +12705,7 @@ L3BBCA:
         SBCA    #$00
 L3BBD2:
         ADDA    #$80
-        LDX     #Tab2D_2AAC
+        LDX     #SpeedCtlV04083
         JSR     Lookup2D
         ADDB    #$80
         ADDB    $02,Y
@@ -12822,7 +12822,7 @@ L3BD04:
         BCC     L3BD12
         CLRA
 L3BD12:
-        LDX     #Tab2D_2B2C
+        LDX     #SpeedCtlSpeed
         JSR     Lookup2D
         ORAB    #$80
 L3BD1C:
@@ -13070,7 +13070,7 @@ L3BFB0:
         LSRD
         LSRD
         BRCLR   $0400,Z,#$10,L3BFC6
-        LDX     #Tab2D_2B3C
+        LDX     #SpeedCtlConst
         TSTA
         BEQ     L3C00C
         LDAA    #$FF
@@ -13094,7 +13094,7 @@ L3BFE0:
         LBRA    L3C170
 L3BFEA:
         BRCLR   $0400,Z,#$0C,L3BFF8
-        LDX     #Tab2D_2B20
+        LDX     #SpeedCtlTable2
         LSRD
         LSRD
 L3BFF8:
@@ -13116,7 +13116,7 @@ L3C00E:
         DECA
 L3C01A:
         STD     $00,Y
-        LDX     #Tab2D_2B0A
+        LDX     #SpeedCtlThrottle
         LDAA    >Throttle,Z
         SUBA    <ThrottleClosed,Z
         BCC     L3C02A
@@ -13124,7 +13124,7 @@ L3C01A:
 L3C02A:
         JSR     Lookup2D
         STAA    $03,Y
-        LDX     #Tab2D_2B12
+        LDX     #SpeedCtlTable
         LDD     >VehicleSpeedRaw,Z
         ASLD
         ASLD
@@ -13226,7 +13226,7 @@ L3C0F6:
         BRA     L3C16A
 L3C118:
         STD     $F0,Z
-        LDX     #Tab2D_2B50
+        LDX     #SpeedCtlSpeed2
         LDAA    >VehicleSpeed,Z
         JSR     Lookup2D
         LDAA    $F0,Z
@@ -13281,7 +13281,7 @@ L3C1A6:
         BLS     L3C1EE
         CLR     $0424,Z
 L3C1C0:
-        LDX     #Tab2D_2B50
+        LDX     #SpeedCtlSpeed2
         LDAA    >VehicleSpeed,Z
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
@@ -13328,9 +13328,9 @@ Sub_3C222:
         BSET    $0406,Z,#$40
 L3C22C:
         LDAA    $0408,Z
-        LDX     #Tab2D_2A84
+        LDX     #SpeedCtlV0408
         BRCLR   $0055,Z,#$20,L3C23E
-        LDX     #Tab2D_2A90
+        LDX     #SpeedCtlV04082
 L3C23E:
         JSR     Lookup2D
         BPL     L3C246
@@ -13342,7 +13342,7 @@ L3C246:
         BCC     L3C252
         CLRA
 L3C252:
-        LDX     #Tab2D_2A9C
+        LDX     #SpeedCtlBaro
         JSR     Lookup2D
         LDAB    $01,Y
         ASLB
@@ -13635,7 +13635,7 @@ L3C534:
         LDAA    >ThrottleAboveClosed,Z
         SUBA    $0420,Z
         BLS     L3C554
-        LDX     #Tab2D_2B6A
+        LDX     #SpeedCtlThrottle2
         JSR     Lookup2D
         STAA    $041E,Z
         BRA     L3C564
@@ -14460,7 +14460,7 @@ Sub_3DB40:
         LDAA    $042E,Z
         BRCLR   $0C30,Z,#$80,L3DB54
         BSET    $0C34,Z,#$40
-        LDX     #Tab2D_1A03
+        LDX     #Sys3D800V042E3
         BRA     L3DB7A
 L3DB54:
         BRSET   $0C30,Z,#$01,L3DB62
@@ -14469,11 +14469,11 @@ L3DB54:
 L3DB62:
         BRCLR   $0339,#$08,L3DB72
 L3DB68:
-        LDX     #Tab2D_1A19
+        LDX     #Sys3D800V042E4
         BSET    $0C34,Z,#$40
         BRA     L3DB7A
 L3DB72:
-        LDX     #Tab2D_19F1
+        LDX     #Sys3D800V042E2
         BCLR    $0C34,Z,#$40
 L3DB7A:
         JSR     Lookup2D
@@ -15353,7 +15353,7 @@ L3E3D6:
         LDAA    $042C,Z
         CMPA    $1A89
         LBLS    L3E7B0
-        LDAA    $0A6D,Z
+        LDAA    >StartCoolantTemp2,Z
         CMPA    $1A88
         LBCC    L3E7B0
         LDAA    $042A,Z
@@ -15525,10 +15525,10 @@ L3E60C:
         LDAA    $042C,Z
         CMPA    $1A9C
         LBCS    L3E7B4
-        LDAA    >Adc4Raw,Z
-        LDX     #Tab2D_1726
+        LDAA    >O2UpBank1Raw,Z
+        LDX     #O2VoltageScale
         JSR     Lookup2D
-        LDAA    $0714,Z
+        LDAA    >O2UpBank1,Z
         LSRA
         LSRB
         SBA
@@ -15795,14 +15795,14 @@ L3E910:
 ;---------------------------------------------------------------------------------------------------
 Sub_3E912:
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_094E
+        LDX     #Sys3D800Rpm
         JSR     Lookup2D
         STAA    $F0,Z
         LDAA    >Map,Z
-        LDX     #Tab2D_0944
+        LDX     #Sys3D800Map
         JSR     Lookup2D
         LDAB    $F0,Z
-        LDX     #Tab3DN_1AD5
+        LDX     #Sys3D800Table
         JSR     Lookup3DNorm
         RTS
 

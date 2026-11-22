@@ -94,6 +94,50 @@ holds $FF and is never read; the code compares rpm with $19DC or with $19DE.
 The 2GNT page calls the fuel tables "msec"; the code shows that they are corrections applied to a
 pulse width computed from MAP (next section).
 
+## Table names
+
+Every table of the reference image has a name. 24 are named by hand from the code (and checked
+against 2GNT where it has them): the fuel and spark tables, MAP scales, dead time, knock threshold,
+idle target, thermistor curves, the air-temperature fuel correction and its weights, and a few more.
+The other 386 have **structural names** made by `tools/autoname.py` and marked `"auto": true` in
+`annotations/tables.json` (and with * in the catalogue):
+
+- the prefix is the subsystem, taken from the routine that reads the table and the scheduled routine
+  above it;
+- then the inputs: `Coolant`, `AirTemp`, `Rpm`, `SegRpm`, `Map`, `Baro`, `Vacuum`, `Throttle`,
+  `Speed`, `Volts`, `StartCoolant`, `Time`, `IdleTarget`, `Trim`, `O2`; `V0A91` for a RAM variable
+  without a name yet, `Cal` for a calibration constant, `Scaled` for the result of a scale table;
+- a number when the same name repeats.
+
+So `AccelFuelCoolant2` is the second acceleration-enrichment table read against coolant
+temperature. The description of each table says which routine reads it, its inputs and where the
+result goes. A structural name tells where a table belongs and what it depends on, not yet what it
+does exactly.
+
+| Prefix | Subsystem | Category | Tables |
+|---|---|---|---|
+| Fuel, FuelEvent | fuel calculation in the main loop and per reference event | Fuel | |
+| FuelCut | fuel cut-off: rev and speed limits, deceleration | Fuel | |
+| AccelFuel | acceleration enrichment (throttle and MAP rate) | Fuel | |
+| AfterStartFuel | after-start enrichment (time since start x coolant) | Fuel | |
+| CrankFuel | cranking fuel | Fuel | 102 in all |
+| O2 | oxygen-sensor closed loop and adaptive fuel | Closed loop | 7 |
+| Idle | idle speed control | Idle | 89 |
+| Spark, Knock | spark advance and knock control | Spark | 89 |
+| Misfire, Diag | misfire monitor (crankshaft segment times) and other OBD monitors | Diagnostics | 36 |
+| Sensor | sensor processing | Sensors | 21 |
+| SpeedCtl | speed control (cruise); probable | Speed control | 11 |
+| Start | initialisation at reset | Startup | 6 |
+| Event, Pit, Sys<address> | not identified yet; named after the top routine | Other | 49 |
+
+The subsystems were identified from the code: for example the idle group writes and uses the idle
+target ($0300,Z, from `IdleTargetRpm`), the misfire group keeps the per-cylinder segment times, the
+knock group reads `KnockThreshold`, the closed-loop group owns the short-term trims. Speed control is
+inferred from its state machine on vehicle speed and rpm and is marked probable.
+
+Re-running `python3 tools/autoname.py` after naming more RAM variables or routines refreshes the
+structural names; hand names (entries without `"auto"`, and the overrides in the script) stay.
+
 ## Fuel pulse width
 
 `CalcFuelPulse` ($11F40) runs from the input-capture 1 interrupt, that is on every reference
@@ -146,8 +190,7 @@ applies only to the reference image.
 
 ## Open points
 
-- Most of the 411 tables have generated names. Their inputs (shown in the catalogue) are the
-  starting point for naming them in stage 5.
+- 386 tables have structural names only; giving them exact names means reading each routine.
 - The 1,455 directly read constants are not catalogued one by one yet.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.
