@@ -6,11 +6,17 @@
  "0006": "ResetCheckWord",
  "0008": "ResetCountsExtSw",
  "0009": "ResetCountsHltPow",
+ "07E2": "FuelPulse",
+ "0A50": "BatteryVolts",
+ "0A6A": "CoolantTemp",
+ "0A7E": "Map",
  "0AC4": "Ic2OverflowCount",
  "0C3B": "MainLoopPhaseMask",
  "0C3C": "Count3s",
  "0C3D": "MainLoopCounter",
  "0C3E": "Count191ms",
  "0C41": "PitTickCounter",
- "0C42": "LoopTickCounter"
+ "0C42": "LoopTickCounter",
+ "0C4C": "RpmBy32",
+ "0C5D": "LookupResult"
 }

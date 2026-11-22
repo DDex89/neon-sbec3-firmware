@@ -34,7 +34,7 @@ def num(tok, syms, need=True):
         return num(tok, syms, need)[0], width
     if tok.startswith("$"):
         return int(tok[1:], 16), len(tok) - 1
-    if re.fullmatch(r"\d+", tok):
+    if re.fullmatch(r"-?\d+", tok):
         return int(tok), None
     if tok in syms:
         return syms[tok], None

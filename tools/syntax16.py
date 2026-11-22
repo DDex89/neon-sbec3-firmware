@@ -33,17 +33,19 @@ def reg_list(mn, mask):
     return ",".join(n for b, n in enumerate(names) if mask >> b & 1)
 
 
-def format_insn(ins, label=None, zsym=None, extsym=None):
+def format_insn(ins, label=None, zsym=None, extsym=None, immsym=None):
     """Text of an instruction.
 
     label(addr)        -> name of a code label, or None
     zsym(offset)       -> name for an offset from Z (RAM or module register), or None
     extsym(addr)       -> name for a 16-bit extended address (calibration), or None
+    immsym(ins, value) -> name for a 16-bit immediate (a table address), or None
     A symbol in an indexed or extended operand gets a width prefix: < 8-bit, > 16-bit.
     """
     lab = label or (lambda a: None)
     zs = zsym or (lambda o: None)
     es = extsym or (lambda a: None)
+    ims = immsym or (lambda i, v: None)
     v = dict(ins.vals)
     m = ins.mode
 
@@ -58,7 +60,7 @@ def format_insn(ins, label=None, zsym=None, extsym=None):
     elif m == "IMM8":
         ops = "#" + h(v.get("ii", v.get("xoyo", 0)), 2)
     elif m == "IMM16":
-        ops = "#" + h(v["jjkk"], 4)
+        ops = "#" + (ims(ins, v["jjkk"]) or h(v["jjkk"], 4))
     elif m.startswith("E, "):
         ops = "E," + reg
     elif m in ("REL8", "REL16"):

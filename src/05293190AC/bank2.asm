@@ -394,7 +394,7 @@ L204EA:
         CMPB    #$28
         BCC     L20522
         BRSET   $00D9,Z,#$80,L205B2
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         LDAB    $0A6D,Z
         ADDB    #$16
         BCC     L20506
@@ -515,7 +515,7 @@ L20616:
         BEQ     L20672
         LDAB    #$0A
         MUL
-        LDY     #$4052
+        LDY     #FaultTable
         ADY
         CLRB
         TBYK
@@ -981,7 +981,7 @@ L20A82:
         TBYK
         LDAB    #$0A
         MUL
-        ADDD    #$4052
+        ADDD    #FaultTable
         XGDY
         BRCLR   $03,Y,#$08,L20AB6
         TPD
@@ -1000,7 +1000,7 @@ L20A82:
 L20AB6:
         TPD
         TBYK
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         STAA    $D4,Z
         LDAA    $0A84,Z
         JSR     Sub_2DA0A
@@ -1025,11 +1025,11 @@ L20ACA:
         LDAA    $0A85,Z
         STAA    $D3,Z
         LDAA    $0A6C,Z
-        LDX     #$7057
+        LDX     #Tab2D_7057
         BRCLR   $1012,Z,#$08,L20B12
-        LDX     #$7047
+        LDX     #Tab2D_7047
 L20B12:
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         STAA    $CD,Z
 L20B18:
         PULM    K,Y,X
@@ -1157,13 +1157,13 @@ L20BD0:
         BHI     L20C14
         LDE     $0002,Y
         LDAA    E,Z
-        SUBA    $0C4C,Z
+        SUBA    >RpmBy32,Z
         BCC     L20BE2
         NEGA
 L20BE2:
         CMPA    #$0C
         BHI     L20C14
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $18DE
         BCS     L20BFC
         LDE     $0006,Y
@@ -1207,13 +1207,13 @@ Sub_20C24:
         JSR     Sub_2DA0A
         LDE     $0004,Y
         STAA    E,Z
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         LDE     $0002,Y
         STAA    E,Z
         LDE     $0006,Y
         LDAA    E,Z
         ANDA    #$FE
-        LDAB    $0A6A,Z
+        LDAB    >CoolantTemp,Z
         CMPB    $18DE
         BCS     L20C5A
         ORAA    #$01
@@ -1249,14 +1249,14 @@ Sub_20C60:
 Sub_20C82:
         PSHM    D,E,X
         LDAA    $0C,Z
-        LDAB    $19DC
+        LDAB    >RevLimit
         BRSET   $0C31,Z,#$20,L20C94
         LDAB    $19DE
 L20C94:
         MUL
         XGDX
-        LDAA    $0C4C,Z
-        LDAB    $0A7E,Z
+        LDAA    >RpmBy32,Z
+        LDAB    >Map,Z
         MUL
         LDE     #$0100
         EMUL
@@ -1961,14 +1961,14 @@ L2199C:
         BCLR    $06AC,Z,#$40
         BRCLR   $06B4,Z,#$20,L219BE
         LDAA    $0A75,Z
-        LDX     #$32F7
-        JSR     Sub_0C08E
+        LDX     #Tab2D_32F7
+        JSR     Lookup2D
         STAA    $F4,Z
         LBRA    L21B7E
 L219BE:
         BRCLR   $0774,Z,#$80,L21B7E
         BRSET   $0C30,Z,#$80,L219EE
-        LDAA    $0A7E,Z
+        LDAA    >Map,Z
         CMPA    $F0,Z
         BCS     L219EE
         LDAA    $06B0,Z
@@ -1988,19 +1988,19 @@ L219F2:
         LDAA    #$FF
         STAA    $F4,Z
 L219F6:
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $32E9
         LBCS    L21AD4
         LDAA    $0A75,Z
-        LDX     #$2CB5
-        JSR     Sub_0C08E
-        LDAB    $0C4C,Z
-        LDX     #$330D
-        JSR     Sub_0C214
+        LDX     #Tab2D_2CB5
+        JSR     Lookup2D
+        LDAB    >RpmBy32,Z
+        LDX     #Tab3D_330D
+        JSR     Lookup3D
         STAA    $F2,Z
-        LDAA    $0A6A,Z
-        LDX     #$3301
-        JSR     Sub_0C08E
+        LDAA    >CoolantTemp,Z
+        LDX     #Tab2D_3301
+        JSR     Lookup2D
         LDAB    $F2,Z
         ABA
         BCC     L21A30
@@ -2008,8 +2008,8 @@ L219F6:
 L21A30:
         STAA    $F2,Z
         LDAA    $0330,Z
-        LDX     #$3307
-        JSR     Sub_0C08E
+        LDX     #Tab2D_3307
+        JSR     Lookup2D
         LDAB    $F2,Z
         ABA
         BCC     L21A46
@@ -2030,16 +2030,16 @@ L21A56:
         LDAA    #$FF
 L21A72:
         STAA    $F2,Z
-        CMPA    $0A7E,Z
+        CMPA    >Map,Z
         BCS     L21A9C
         BRSET   $0C30,Z,#$80,L21AD4
         LDAA    $0A9A,Z
         CMPA    $32E5
         BCC     L21AD4
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $32E6
         BCS     L21AD4
-        LDAA    $0A7E,Z
+        LDAA    >Map,Z
         CMPA    $F0,Z
         BCS     L21AD4
 L21A9C:
@@ -2053,8 +2053,8 @@ L21AB2:
         BSET    $06AC,Z,#$80
         BSET    $51,Z,#$10
         LDAA    $0A75,Z
-        LDX     #$32F7
-        JSR     Sub_0C08E
+        LDX     #Tab2D_32F7
+        JSR     Lookup2D
         STAA    $F4,Z
         LDY     #$45FC
         JSR     Sub_245CC
@@ -2066,11 +2066,11 @@ L21AD8:
         LBRA    L21B7E
 L21AE2:
         LDAA    $0A75,Z
-        LDX     #$32F7
-        JSR     Sub_0C08E
+        LDX     #Tab2D_32F7
+        JSR     Lookup2D
         STAA    $F4,Z
         BRSET   $0C30,Z,#$80,L21B7E
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $32E7
         BCC     L21B7E
         LDAA    $06AE,Z
@@ -2090,7 +2090,7 @@ L21B22:
         LDAA    $0A9A,Z
         CMPA    $32EA
         BCC     L21B54
-        LDAA    $0A7E,Z
+        LDAA    >Map,Z
         CMPA    $F0,Z
         BCS     L21B50
         LDAA    $06B0,Z
@@ -2110,8 +2110,8 @@ L21B54:
         BRCLR   $0A46,Z,#$01,L21B7E
         BRCLR   $06AC,Z,#$40,L21B7E
         LDAA    $0A9A,Z
-        LDX     #$32ED
-        JSR     Sub_0C08E
+        LDX     #Tab2D_32ED
+        JSR     Lookup2D
         STAA    $F4,Z
         BRA     L21B7E
 L21B74:
@@ -2121,7 +2121,7 @@ L21B74:
 L21B7E:
         LDAA    $F4,Z
         STAA    $06AD,Z
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $06AD,Z
         BCS     L21B98
         BSET    $06AC,Z,#$20
@@ -2147,7 +2147,7 @@ L21BAC:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 Sub_21BDE:
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    #$5D
         LBCC    L21C6E
         LDAA    $0A51,Z
@@ -2215,7 +2215,7 @@ Sub_21C78:
         BCS     L21CF8
         CMPA    $0DB9,Z
         BCC     L21CF8
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $4AD4
         BCS     L21CF8
         LDAA    #$0F
@@ -2395,7 +2395,7 @@ L21E36:
 ;---------------------------------------------------------------------------------------------------
 Sub_21E38:
         BRSET   $0669,Z,#$02,L21EA4
-        LDE     $0C4C,Z
+        LDE     >RpmBy32,Z
         CPE     #$07D0
         BCC     L21E74
         LDD     >Count3s,Z
@@ -2440,7 +2440,7 @@ Sub_21EA6:
         TST     $0A9A,Z
         BNE     L21EFC
         BRSET   $0C30,Z,#$80,L21EFC
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         SUBD    $0300,Z
         BCC     L21EC4
         NEGD
@@ -2476,7 +2476,7 @@ Sub_21EFE:
         LDAA    $0A75,Z
         CMPA    $4AB0
         BCC     L21F42
-        LDE     $0C4C,Z
+        LDE     >RpmBy32,Z
         CPE     #$6D60
         BCC     L21F42
         CPE     #$12C0
@@ -2587,7 +2587,7 @@ L22032:
         BSET    $067F,Z,#$80
         TST     $0C40,Z
         BEQ     L22054
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $4A88
         BCS     L2204C
         BSET    $0100,Z,#$80
@@ -2616,7 +2616,7 @@ Sub_220AE:
         LDAA    >Count3s,Z
         CMPA    #$2C
         LBCS    L221A4
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    #$CD
         LBCS    L221A4
         BRSET   $0679,Z,#$10,L2220E
@@ -2836,7 +2836,7 @@ Sub_222FA:
         LDAA    >Count3s,Z
         CMPA    #$2C
         LBCS    L22392
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    #$CD
         LBCS    L22392
         BRSET   $0679,Z,#$10,L22392
@@ -3675,7 +3675,7 @@ Sub_22C1C:
         LBNE    L22CD6
         TST     $07B6,Z
         LBNE    L22CD6
-        LDE     $0C4C,Z
+        LDE     >RpmBy32,Z
         BRSET   $0C30,Z,#$40,L22C46
         CLR     $06CC,Z
         CLR     $06CD,Z
@@ -3845,7 +3845,7 @@ L22E1C:
         BRSET   $0C30,Z,#$40,L22E3A
         LDAB    $077A,Z
         BNE     L22E3A
-        LDAB    $0A7E,Z
+        LDAB    >Map,Z
         CMPB    $18EF
         BCS     L22E3A
         LDAB    $07C3,Z
@@ -4195,7 +4195,7 @@ Sub_231EC:
         BRSET   $06B4,Z,#$80,L2327E
         BRSET   $0509,Z,#$80,L2327E
         BRSET   $06B4,Z,#$01,L2327E
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $4ABA
         BCS     L23240
         BCLR    $0658,Z,#$02
@@ -4386,7 +4386,7 @@ L2348E:
         LDAA    $0A9A,Z
         CMPA    $3394
         BCS     L23502
-        LDE     $0C4C,Z
+        LDE     >RpmBy32,Z
         CPE     $3395
         BCS     L23502
         CPE     $3397
@@ -4398,7 +4398,7 @@ L2348E:
         LDAB    $339A
         MUL
         TAB
-        CMPB    $0A7E,Z
+        CMPB    >Map,Z
         BCC     L23502
         BRCLR   >MainLoopPhaseMask,Z,#$20,L2350A
         BRSET   $0A47,Z,#$20,L234EC
@@ -4445,7 +4445,7 @@ Sub_2352A:
         LDD     $0672,Z
         PSHM    D,E
         LDAA    $33B7
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         STD     $0672,Z
         LDAA    $0AA6,Z
@@ -4454,7 +4454,7 @@ Sub_2352A:
         LDD     $066E,Z
         PSHM    D,E
         LDAA    $33B8
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         STD     $066E,Z
         BRSET   $0513,Z,#$10,L236C6
@@ -4578,7 +4578,7 @@ L236D2:
 ;---------------------------------------------------------------------------------------------------
 Sub_236D4:
         BRCLR   $0774,Z,#$80,L23758
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $4A58
         BCS     L23758
         BRCLR   $06B4,Z,#$30,L236EC
@@ -4588,7 +4588,7 @@ L236EC:
         BRCLR   $009C,Z,#$0E,L236FA
         BRA     L23758
 L236FA:
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $4A54
         BHI     L2372C
         LDAB    $4A66
@@ -4633,7 +4633,7 @@ Sub_2375A:
         LBNE    L237FA
         JSR     Sub_23816
         BRCLR   $065F,Z,#$01,L2380C
-        LDE     $0C4C,Z
+        LDE     >RpmBy32,Z
         SUBE    $0300,Z
         BLT     L23786
         CPE     $33AD
@@ -4646,7 +4646,7 @@ L23786:
 L23790:
         TSTW    $0662,Z
         BNE     L2379E
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         STD     $0662,Z
 L2379E:
         LDAA    $0660,Z
@@ -4655,7 +4655,7 @@ L2379E:
         STAA    $0660,Z
         CMPA    $33AC
         LBCS    L23814
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         LDE     $0662,Z
         CPE     $0300,Z
         BCC     L237C2
@@ -4785,7 +4785,7 @@ L23934:
         LDAA    $0A9A,Z
         CMPA    $33B5
         BLS     L2396A
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $33B6
         BCC     L2396A
         LDAB    $0667,Z
@@ -4819,7 +4819,7 @@ L23998:
         LDD     >Count3s,Z
         CMPA    #$0A
         LBCS    L23A40
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $4A77
         LBCS    L23A40
         BRSET   $032E,#$40,L239BA
@@ -4829,9 +4829,9 @@ L239BA:
         BRSET   $0A46,Z,#$01,L23A40
 L239C6:
         BRCLR   $0C30,Z,#$80,L23A40
-        LDAA    $0C4C,Z
-        LDX     #$4A78
-        JSR     Sub_0C08E
+        LDAA    >RpmBy32,Z
+        LDX     #Tab2D_4A78
+        JSR     Lookup2D
         CMPA    $0A85,Z
         LBCS    L23A40
         TST     $0A9A,Z
@@ -4884,12 +4884,12 @@ Sub_23A4A:
         BRCLR   $0502,Z,#$C0,L23A6A
         BRA     L23A9E
 L23A6A:
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $1743
         BCC     L23A92
         LDAA    $0A6D,Z
-        LDX     #$339D
-        JSR     Sub_0C08E
+        LDX     #Tab2D_339D
+        JSR     Lookup2D
         CMPA    >Count3s,Z
         BCC     L23AA2
         BRSET   $0658,Z,#$04,L23AA2
@@ -4938,7 +4938,7 @@ L23AE0:
         ANDP    #$FF1F
         LDAA    >RJURR0_L,Z
         JSR     Sub_2DA0A
-        STAA    $0C5D,Z
+        STAA    >LookupResult,Z
         SUBA    $0C,Z
         BCC     L23B18
         NEGA
@@ -5091,7 +5091,7 @@ Sub_23C3E:
         BRSET   $0511,Z,#$20,L23CE0
         LDAA    $0ABD,Z
         LBNE    L23CE0
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $3387
         BLS     L23C86
         CMPA    $3389
@@ -5115,13 +5115,13 @@ L23CA4:
         CMPA    $3386
         BCC     L23CE0
         LDAA    $0A7C,Z
-        SUBA    $0A7E,Z
+        SUBA    >Map,Z
         BPL     L23CC0
         NEGA
 L23CC0:
         CMPA    $3383
         BCC     L23CE0
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $3382
         BLS     L23CE0
         LDAA    >Count3s,Z
@@ -5161,7 +5161,7 @@ L23D1C:
         STAA    $0690,Z
 L23D28:
         BRCLR   $0C30,Z,#$40,L23D74
-        LDE     $0C4C,Z
+        LDE     >RpmBy32,Z
         CPE     #$0320
         BCC     L23D70
         BRSET   $06BC,Z,#$04,L23D74
@@ -5394,7 +5394,7 @@ L240E6:
         LDAB    $0524,Z
         LDAA    #$0A
         MUL
-        ADDD    #$4052
+        ADDD    #FaultTable
         XGDX
         TED
         CMPB    $01,X
@@ -5484,7 +5484,7 @@ L241A6:
 ;---------------------------------------------------------------------------------------------------
 Sub_241AA:
         CLRA
-        LDAB    $0C4C,Z
+        LDAB    >RpmBy32,Z
         CMPB    #$7D
         BCC     L241D2
         SUBB    #$10
@@ -5503,8 +5503,8 @@ L241C4:
         BCC     L241D2
         CLRA
 L241D2:
-        LDX     #$4A6A
-        JSR     Sub_0C08E
+        LDX     #Tab2D_4A6A
+        JSR     Lookup2D
         ADDA    $4A68
         BCC     L241E2
         LDAA    #$FF
@@ -5624,7 +5624,7 @@ L242C4:
         BEQ     L242E6
         LDAA    #$0A
         MUL
-        LDY     #$4052
+        LDY     #FaultTable
         ADY
         LDAB    $00,X
         BRCLR   $0003,Y,#$40,L242DE
@@ -5764,9 +5764,9 @@ L24408:
         BRSET   $0526,Z,#$80,L24446
         BRCLR   $D8,Z,#$10,L2442C
         BCLR    $D8,Z,#$10
-        LDAA    $0C4C,Z
-        LDX     #$2FD5
-        JSR     Sub_0C08E
+        LDAA    >RpmBy32,Z
+        LDX     #Tab2D_2FD5
+        JSR     Lookup2D
         CMPA    $0527,Z
         BLS     L2442C
         STAA    $0527,Z
@@ -6340,7 +6340,7 @@ Sub_25000:
         BRSET   $00D8,Z,#$01,L25296
         BSET    $0580,Z,#$01
         BRCLR   $0774,Z,#$80,L25296
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $3157
         LBCS    L25296
         LDAA    $0581,Z
@@ -6405,9 +6405,9 @@ L25114:
         TXY
 L2511C:
         LDAA    $0C,Z
-        LDX     #$0E60
-        JSR     Sub_0C08E
-        ADDA    $0A7E,Z
+        LDX     #Tab2D_0E60
+        JSR     Lookup2D
+        ADDA    >Map,Z
         BCC     L2512E
         LDAA    #$FF
 L2512E:
@@ -6415,7 +6415,7 @@ L2512E:
         LBCS    L2529A
         CMPA    $01,Y
         LBHI    L2529A
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $02,Y
         LBCS    L2529A
         CMPA    $03,Y
@@ -6567,7 +6567,7 @@ L252FE:
         SXT
         PSHM    D,E
         LDAA    $313E
-        JSR     Sub_0C83A
+        JSR     Blend16Signed
         AIS     #$04
         STAB    $05BB,Z
         BRCLR   $032F,#$40,L25346
@@ -6578,7 +6578,7 @@ L252FE:
         SXT
         PSHM    D,E
         LDAA    $313E
-        JSR     Sub_0C83A
+        JSR     Blend16Signed
         AIS     #$04
         STAB    $05BC,Z
 L25346:
@@ -6607,13 +6607,13 @@ L2539C:
         TST     $0431,Z
         LBEQ    L25730
 L253AA:
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $3134
         LBCS    L25730
         LDAA    >Count3s,Z
         CMPA    $3133
         LBCS    L25730
-        LDAA    $0A7E,Z
+        LDAA    >Map,Z
         CMPA    $3136
         LBHI    L25730
         LDAA    $0A9A,Z
@@ -6628,7 +6628,7 @@ L253F2:
         BRCLR   $0340,#$20,L25404
         BRCLR   $0A46,Z,#$01,L25730
 L25404:
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         SUBD    $0300,Z
         BCC     L25410
         NEGD
@@ -6674,7 +6674,7 @@ L2547E:
         STAA    $05B9,Z
         LDAA    $05BC,Z
         STAA    $05BA,Z
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         STD     $05B5,Z
         LDAA    $042D,Z
         STAA    $05B7,Z
@@ -6710,7 +6710,7 @@ L25500:
         CMPA    $313C
         LBHI    L25730
 L2551C:
-        LDAA    $0A7E,Z
+        LDAA    >Map,Z
         SUBA    $05B8,Z
         BCC     L25528
         NEGA
@@ -6803,7 +6803,7 @@ L2562E:
 L25640:
         CLRW    $00F6,Z
         BRSET   $033E,#$02,L2566E
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         SUBD    $05B5,Z
         BCS     L2566E
         STD     $F6,Z
@@ -6978,7 +6978,7 @@ L25830:
         BHI     L2588C
         CMPA    $30F8
         BCS     L25864
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         SUBA    $0A5A,Z
         BCS     L25860
         CMPA    $30F9
@@ -7170,14 +7170,14 @@ L25A92:
         BRSET   $011B,Z,#$02,L25AC2
         LDAA    $019C,Z
         BRCLR   $0649,Z,#$02,L25AB2
-        LDX     #$3123
-        JSR     Sub_0C08E
+        LDX     #Tab2D_3123
+        JSR     Lookup2D
         CMPA    $0590,Z
         BLS     L25A46
         BRA     L25AF0
 L25AB2:
-        LDX     #$3117
-        JSR     Sub_0C08E
+        LDX     #Tab2D_3117
+        JSR     Lookup2D
         CMPA    $0590,Z
         BLS     L25ACE
         BRA     L25AF0
@@ -7526,7 +7526,7 @@ L25E40:
         LDAB    $0595,Z
         PSHM    D,E
         LDAA    $3100
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         STAB    $0595,Z
 L25E6C:
@@ -7715,7 +7715,7 @@ Sub_26052:
         BRCLR   $0E10,Z,#$01,L26204
         BRSET   $0E10,Z,#$04,L26204
         BRSET   $0E10,Z,#$10,L26204
-        LDE     $0C4C,Z
+        LDE     >RpmBy32,Z
         SUBE    $0300,Z
         BCC     L26070
         NEGE
@@ -8338,7 +8338,7 @@ L26204:
 ;---------------------------------------------------------------------------------------------------
 Sub_2802A:
         BRCLR   $0774,Z,#$80,L28124
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $32A2
         LBCS    L280F8
         CLRA
@@ -8347,7 +8347,7 @@ Sub_2802A:
         LDAB    $057C,Z
         PSHM    D,E
         LDAA    $32A6
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         STAB    $057C,Z
         CMPB    $32A5
@@ -8696,7 +8696,7 @@ L283C8:
         CMPA    $00,X
         BHI     L283FC
         STAA    E,Z
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         LDE     $000A,Y
         STAA    E,Z
         LBRA    L28584
@@ -8747,7 +8747,7 @@ L2845E:
         DECA
         STAA    E,Z
         BEQ     L28472
-        JSR     Sub_0C08E
+        JSR     Lookup2D
 L28472:
         LDE     $000A,Y
         STAA    E,Z
@@ -8761,7 +8761,7 @@ L28478:
         LDE     $00F0,Z
         PSHM    D,E
         LDAA    $3278
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         STAB    $F2,Z
         CLRA
@@ -8770,7 +8770,7 @@ L28478:
         LDE     $00F0,Z
         PSHM    D,E
         LDAA    $3277
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         STAB    $F3,Z
         LDE     $0000,Y
@@ -8896,7 +8896,7 @@ L285C8:
 Sub_285CA:
         BRCLR   $0774,Z,#$80,L286D8
         BRSET   $056A,Z,#$01,L285E6
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $323E
         LBCS    L286D8
         BSET    $056A,Z,#$01
@@ -8958,12 +8958,12 @@ L286B0:
         BRCLR   $056A,Z,#$30,L286B8
         TXY
 L286B8:
-        LDAA    $0A7E,Z
+        LDAA    >Map,Z
         CMPA    $00,Y
         BCS     L286DC
         CMPA    $01,Y
         BHI     L286DC
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $02,Y
         BCS     L286DC
         CMPA    $03,Y
@@ -9095,7 +9095,7 @@ L287FE:
         LBNE    L2891C
         TST     $0758,Z
         LBNE    L2891C
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $31EE
         LBCS    L2891C
         LDAA    $0A4E,Z
@@ -9107,7 +9107,7 @@ L287FE:
         LBCS    L2891C
 L288B6:
         LDE     $0300,Z
-        SUBE    $0C4C,Z
+        SUBE    >RpmBy32,Z
         BCC     L288C2
         NEGE
 L288C2:
@@ -10561,11 +10561,11 @@ L2A12C:
         BLT     L2A198
 L2A13C:
         LDAA    $042C,Z
-        LDX     #$31D5
-        JSR     Sub_0C08E
+        LDX     #Tab2D_31D5
+        JSR     Lookup2D
         LDAB    $0198,Z
-        LDX     #$3193
-        JSR     Sub_0C214
+        LDX     #Tab3D_3193
+        JSR     Lookup3D
         BRCLR   $059D,Z,#$10,L2A15E
         ADDB    $318B
 L2A15E:
@@ -10752,11 +10752,11 @@ L2A33E:
         BLT     L2A3AA
 L2A34E:
         LDAA    $042C,Z
-        LDX     #$31D5
-        JSR     Sub_0C08E
+        LDX     #Tab2D_31D5
+        JSR     Lookup2D
         LDAB    $0198,Z
-        LDX     #$3193
-        JSR     Sub_0C214
+        LDX     #Tab3D_3193
+        JSR     Lookup3D
         BRCLR   $059E,Z,#$10,L2A370
         ADDB    $318B
 L2A370:
@@ -10917,11 +10917,11 @@ L2A510:
         JSR     Sub_2A7E2
         STAB    $059F,Z
         LDAA    $042C,Z
-        LDX     #$31E1
-        JSR     Sub_0C08E
+        LDX     #Tab2D_31E1
+        JSR     Lookup2D
         LDAB    $0198,Z
-        LDX     #$31B4
-        JSR     Sub_0C214
+        LDX     #Tab3D_31B4
+        JSR     Lookup3D
         BRCLR   $059D,Z,#$01,L2A53E
         SUBB    $318A
 L2A53E:
@@ -11082,11 +11082,11 @@ L2A6DE:
         JSR     Sub_2A7E2
         STAB    $05A0,Z
         LDAA    $042C,Z
-        LDX     #$31E1
-        JSR     Sub_0C08E
+        LDX     #Tab2D_31E1
+        JSR     Lookup2D
         LDAB    $0198,Z
-        LDX     #$31B4
-        JSR     Sub_0C214
+        LDX     #Tab3D_31B4
+        JSR     Lookup3D
         BRCLR   $059E,Z,#$01,L2A70C
         SUBB    $318A
 L2A70C:
@@ -11509,7 +11509,7 @@ Sub_2AB16:
         BRCLR   $009C,Z,#$2F,L2AB40
         LBRA    L2AB98
 L2AB40:
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         LDAB    $0A6D,Z
         CMPB    $2CD5
         BHI     L2AB62
@@ -11622,8 +11622,8 @@ Sub_2AC02:
         CPE     $2CD9
         LBHI    L2ACB2
         LDAA    $0620,Z
-        LDX     #$2C79
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2C79
+        JSR     Lookup2D
         LDAB    $05C6,Z
         LDE     $05D4,Z
         CPE     $05D6,Z
@@ -11633,27 +11633,27 @@ Sub_2AC02:
         BRSET   $0A47,Z,#$20,L2AC6E
 L2AC58:
         LDAA    $0620,Z
-        LDX     #$2CA9
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2CA9
+        JSR     Lookup2D
         LDAB    $05C6,Z
-        LDX     #$2E24
+        LDX     #Tab3D_2E24
         BRA     L2AC78
 L2AC6E:
-        LDX     #$2D0D
+        LDX     #Tab3D_2D0D
         BRA     L2AC78
 L2AC74:
-        LDX     #$2DC7
+        LDX     #Tab3D_2DC7
 L2AC78:
-        JSR     Sub_0C214
+        JSR     Lookup3D
         LDAB    #$08
         MUL
         TDE
         LDAA    $0620,Z
-        LDX     #$2C9D
-        JSR     Sub_0C08E
-        LDAB    $0A6A,Z
-        LDX     #$2F3B
-        JSR     Sub_0C214
+        LDX     #Tab2D_2C9D
+        JSR     Lookup2D
+        LDAB    >CoolantTemp,Z
+        LDX     #Tab3D_2F3B
+        JSR     Lookup3D
         CLRB
         EMUL
         ROLE
@@ -11677,23 +11677,23 @@ L2ACC8:
         CMPA    $2F84
         BCS     L2ACEC
         LDAA    $05C2,Z
-        LDX     #$2F5C
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2F5C
+        JSR     Lookup2D
         STAA    $0629,Z
 L2ACEC:
         LDAA    $0620,Z
-        LDX     #$2C85
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2C85
+        JSR     Lookup2D
         STAA    $04FE,Z
         LDAB    $05C6,Z
         LDAA    $04FE,Z
         TDE
-        LDX     #$2E81
-        JSR     Sub_0C214
+        LDX     #Tab3D_2E81
+        JSR     Lookup3D
         STAA    $04FE,Z
         TED
-        LDX     #$2EDE
-        JSR     Sub_0C214
+        LDX     #Tab3D_2EDE
+        JSR     Lookup3D
         STAA    $04FF,Z
         TZX
         LDX     #$8600
@@ -11776,7 +11776,7 @@ L2ADE2:
         LDD     $0636,Z
         PSHM    D,E
         LDAA    $063A,Z
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         STD     $0636,Z
         TDE
@@ -12062,7 +12062,7 @@ L2B12C:
 L2B130:
         LDAB    $061F,Z
         STAB    $0620,Z
-        LDAA    $0A7E,Z
+        LDAA    >Map,Z
         STAA    $061F,Z
         SBA
         BCC     L2B160
@@ -12087,7 +12087,7 @@ L2B160:
 L2B17A:
         BCLR    $0625,Z,#$20
 L2B17E:
-        LDAA    $19DC
+        LDAA    >RevLimit
         BRSET   $0C31,Z,#$20,L2B18C
         LDAA    $19DE
 L2B18C:
@@ -12144,7 +12144,7 @@ L2B210:
         STAB    $0622,Z
 L2B222:
         BCLR    $0625,Z,#$02
-        LDAB    $0A7E,Z
+        LDAB    >Map,Z
         CMPB    $2FD1
         BCC     L2B254
         LDAA    $05C2,Z
@@ -12155,7 +12155,7 @@ L2B222:
         LDAA    $0A9A,Z
         CMPA    $2FD0
         BHI     L2B254
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $2FCF
         BHI     L2B26E
 L2B254:
@@ -12367,17 +12367,17 @@ Sub_2B456:
         STD     $F0,Z
         STD     $F2,Z
         STD     $F4,Z
-        LDX     #$2CDB
-        LDAA    $0A6A,Z
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2CDB
+        LDAA    >CoolantTemp,Z
+        JSR     Lookup2D
         STAA    $F1,Z
-        LDX     #$2CE5
+        LDX     #Tab2D_2CE5
         LDAA    >Count3s,Z
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         STAA    $F3,Z
-        LDX     #$2CEF
-        LDAA    $0C4C,Z
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2CEF
+        LDAA    >RpmBy32,Z
+        JSR     Lookup2D
         STAA    $F5,Z
         LDD     $2CD0
         XGAB
@@ -12390,8 +12390,8 @@ L2B49E:
         CLRA
         TDE
         LDAA    $0C,Z
-        LDX     #$2FBB
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2FBB
+        JSR     Lookup2D
         CLRA
         STAB    $062A,Z
         SUBB    $2CD4
@@ -12431,13 +12431,13 @@ L2B4F6:
         BSET    $0627,Z,#$40
         BRCLR   $00DC,Z,#$01,L2B51E
         LDAA    $0A6D,Z
-        LDX     #$2D01
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2D01
+        JSR     Lookup2D
         STAA    $05E6,Z
         BCLR    $DC,Z,#$01
 L2B51E:
         BRSET   $00DC,Z,#$01,L2B53E
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         LDAB    $0A6D,Z
         ADDB    #$16
         BCC     L2B532
@@ -12479,13 +12479,13 @@ L2B56A:
 L2B590:
         ORP     #$00E0
         LDAA    $0620,Z
-        LDX     #$2C91
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2C91
+        JSR     Lookup2D
         LDAB    $05C6,Z
         ANDP    #$FF1F
         BRCLR   $2CC1,#$20,L2B5C0
-        LDX     #$2FE9
-        JSR     Sub_0C214
+        LDX     #Tab3D_2FE9
+        JSR     Lookup3D
         LDAB    #$08
         MUL
         CPD     $05D8,Z
@@ -12569,7 +12569,7 @@ L2B6A0:
         LDD     $05D4,Z
         PSHM    D,E
         LDAA    $2FE3
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         STD     $05D4,Z
         LDE     $05DC,Z
@@ -12602,11 +12602,11 @@ L2B6EC:
         STE     $05D8,Z
 L2B70E:
         LDAA    $0620,Z
-        LDX     #$2C79
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2C79
+        JSR     Lookup2D
         LDAB    $05C6,Z
-        LDX     #$2D6A
-        JSR     Sub_0C214
+        LDX     #Tab3D_2D6A
+        JSR     Lookup3D
         LDAB    #$08
         MUL
         STD     $05D6,Z
@@ -12814,7 +12814,7 @@ Sub_2B93E:
         LDE     $04F6,Z
         PSHM    D,E
         LDAA    $2F86
-        JSR     Sub_0C83A
+        JSR     Blend16Signed
         AIS     #$04
         STD     $00,Y
         BCLR    $0626,Z,#$20
@@ -12831,12 +12831,12 @@ L2B96C:
 L2B976:
         TBA
         PSHA
-        LDX     #$2FA9
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2FA9
+        JSR     Lookup2D
         PSHB
         PULA
-        LDX     #$2F97
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2F97
+        JSR     Lookup2D
         PULB
         MUL
         BRCLR   $2CC1,#$04,L2B9A8
@@ -13025,7 +13025,7 @@ L2C03C:
         LDAB    >RJURR6_L,Z
         STAB    $0A74,Z
         LDAB    >RJURR7_L,Z
-        STAB    $0A50,Z
+        STAB    >BatteryVolts,Z
         ANDP    #$FF1F
         LDAA    $0A84,Z
         JSR     Sub_2DA00
@@ -13151,9 +13151,9 @@ Sub_2C1CA:
         LBRA    L2C2B4
 L2C1E2:
         LDAA    $0A6C,Z
-        LDX     #$7057
+        LDX     #Tab2D_7057
         BRCLR   $1012,Z,#$08,L2C220
-        LDX     #$7047
+        LDX     #Tab2D_7047
         CMPA    #$40
         BCC     L2C224
 L2C1F8:
@@ -13187,7 +13187,7 @@ L2C23E:
         JSR     Sub_24160
         BRA     L2C298
 L2C254:
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         LDAB    $0A6E,Z
         SBA
         BCC     L2C268
@@ -13240,7 +13240,7 @@ L2C2D8:
 L2C2DC:
         LDAA    $0A6E,Z
 L2C2E0:
-        STAA    $0A6A,Z
+        STAA    >CoolantTemp,Z
 L2C2E4:
         RTS
 
@@ -13251,9 +13251,9 @@ L2C2E4:
 Sub_2C2E6:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C3AA
         LDAA    $0A61,Z
-        LDX     #$7057
+        LDX     #Tab2D_7057
         BRCLR   $1012,Z,#$10,L2C32A
-        LDX     #$7047
+        LDX     #Tab2D_7047
         CMPA    #$40
         BCC     L2C32E
 L2C302:
@@ -13287,7 +13287,7 @@ L2C34A:
         JSR     Sub_24160
         LBRA    L2C3A6
 L2C362:
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         LDAB    $0A62,Z
         SBA
         BCC     L2C376
@@ -13305,7 +13305,7 @@ L2C382:
         BCC     L2C3A6
         LDAA    $4ABE
         BRSET   $06B4,Z,#$80,L2C396
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
 L2C396:
         STAA    $0A62,Z
         BRCLR   $0506,Z,#$06,L2C3A6
@@ -13368,11 +13368,11 @@ L2C432:
         BRSET   $0512,Z,#$02,L2C46E
         BRCLR   $0A1C,Z,#$02,L2C46E
         LDAA    $0A1B,Z
-        LDX     #$7061
+        LDX     #Tab2D_7061
         BRCLR   $0330,#$04,L2C45C
-        LDX     #$7077
+        LDX     #Tab2D_7077
 L2C45C:
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         STAA    $0195,Z
         BSET    $0A5C,Z,#$04
         BCLR    $0A5C,Z,#$0B
@@ -13383,19 +13383,19 @@ L2C46E:
         LDAB    #$BE
         BRSET   $06B4,Z,#$01,L2C4CE
         LDAA    $0A59,Z
-        LDX     #$7061
+        LDX     #Tab2D_7061
         BRCLR   $0330,#$04,L2C490
-        LDX     #$7077
+        LDX     #Tab2D_7077
 L2C490:
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         BRCLR   $0330,#$01,L2C4B8
         CMPA    #$6E
         BLS     L2C4B8
         SUBA    #$6E
         STAA    $F0,Z
-        LDAA    $0A6A,Z
-        LDX     #$0552
-        JSR     Sub_0C08E
+        LDAA    >CoolantTemp,Z
+        LDX     #Tab2D_0552
+        JSR     Lookup2D
         LDAA    $F0,Z
         MUL
         ADCA    #$6E
@@ -13451,9 +13451,9 @@ L2C526:
 L2C548:
         TBA
         STAA    $F0,Z
-        LDX     #$052D
-        JSR     Sub_0C08E
-        LDAB    $0A6A,Z
+        LDX     #Tab2D_052D
+        JSR     Lookup2D
+        LDAB    >CoolantTemp,Z
         SUBB    $0A5A,Z
         BCC     L2C560
         CLRB
@@ -13461,13 +13461,13 @@ L2C560:
         CBA
         BCC     L2C59C
         LDAA    $F0,Z
-        LDX     #$0539
-        JSR     Sub_0C08E
+        LDX     #Tab2D_0539
+        JSR     Lookup2D
         ADDA    $0194,Z
         BCC     L2C576
         LDAA    #$FF
 L2C576:
-        LDY     #$0539
+        LDY     #Tab2D_0539
         CLRB
         TBYK
         LDAB    $00,Y
@@ -13609,8 +13609,8 @@ L2C6DC:
 ;---------------------------------------------------------------------------------------------------
 Sub_2C6DE:
         PSHM    X
-        LDX     #$7089
-        JSR     Sub_0C08E
+        LDX     #Tab2D_7089
+        JSR     Lookup2D
         LDAB    $0B86
         CMPB    $7088
         BLS     L2C6F6
@@ -13637,8 +13637,8 @@ Sub_2C708:
         JMP     L2C7E6
 L2C71E:
         LDAA    $0A51,Z
-        LDX     #$32BD
-        JSR     Sub_0C08E
+        LDX     #Tab2D_32BD
+        JSR     Lookup2D
         BPL     L2C736
         ADDA    $0A92,Z
         BCS     L2C73E
@@ -13650,12 +13650,12 @@ L2C736:
         LDAA    #$FF
 L2C73E:
         STAA    $F0,Z
-        LDX     #$32D5
-        JSR     Sub_0C08E
+        LDX     #Tab2D_32D5
+        JSR     Lookup2D
         STAA    $0A93,Z
         LDAA    $F0,Z
-        LDX     #$32C9
-        JSR     Sub_0C08E
+        LDX     #Tab2D_32C9
+        JSR     Lookup2D
         STAA    $019C,Z
 L2C75A:
         BRCLR   $06B5,Z,#$80,L2C76E
@@ -13681,7 +13681,7 @@ L2C77A:
 L2C796:
         PSHM    D,E
         LDAA    $32B1
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         STD     $0A94,Z
         BSET    $06C1,Z,#$08
@@ -13768,9 +13768,9 @@ L2C862:
         BITA    #$30
         LBNE    L2CA92
         BRSET   $050D,Z,#$10,L2CA92
-        LDX     #$70A1
+        LDX     #Tab2D_70A1
         TBA
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         LDAA    $0197,Z
         SUBB    $0197,Z
         BCC     L2C8C2
@@ -13905,11 +13905,11 @@ L2CA22:
         BNE     L2CA88
         STAB    $01A8,Z
         TBA
-        LDX     #$1462
+        LDX     #Tab2D_1462
         BRSET   $01AC,Z,#$10,L2CA48
-        LDX     #$146E
+        LDX     #Tab2D_146E
 L2CA48:
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         STAA    $01AB,Z
         LDAB    $0197,Z
         CLRA
@@ -13917,7 +13917,7 @@ L2CA48:
         LDAB    $0199,Z
         PSHM    D,E
         LDAA    $01AB,Z
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         TBA
         BRA     L2CABA
@@ -13936,7 +13936,7 @@ L2CA88:
 L2CA8E:
         JSR     Sub_245CC
 L2CA92:
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $3374
         BCC     L2CAAC
         CMPA    $3375
@@ -13953,8 +13953,8 @@ L2CABA:
         STAA    $0198,Z
 L2CABE:
         LDAA    $0198,Z
-        LDX     #$0910
-        JSR     Sub_0C08E
+        LDX     #Tab2D_0910
+        JSR     Lookup2D
         STAA    $0A91,Z
 L2CACE:
         RTS
@@ -13994,10 +13994,10 @@ L2CB0A:
 ;---------------------------------------------------------------------------------------------------
 Sub_2CB0E:
         BRCLR   $0774,Z,#$80,L2CB5E
-        LDAA    $0C4C,Z
-        LDX     #$04B5
-        JSR     Sub_0C08E
-        ADDA    $0A7E,Z
+        LDAA    >RpmBy32,Z
+        LDX     #Tab2D_04B5
+        JSR     Lookup2D
+        ADDA    >Map,Z
         BCC     L2CB28
         LDAA    #$FF
 L2CB28:
@@ -14033,13 +14033,13 @@ L2CB5E:
 ;---------------------------------------------------------------------------------------------------
 Sub_2CB60:
         LDAA    $0C,Z
-        LDX     #$2C68
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2C68
+        JSR     Lookup2D
         CLRA
         TDE
-        LDAA    $0C4C,Z
-        LDX     #$2C58
-        JSR     Sub_0C08E
+        LDAA    >RpmBy32,Z
+        LDX     #Tab2D_2C58
+        JSR     Lookup2D
         CLRB
         ADE
         TED
@@ -14047,7 +14047,7 @@ Sub_2CB60:
         BCC     L2CB86
         CLRA
 L2CB86:
-        SUBA    $0A7E,Z
+        SUBA    >Map,Z
         BRCLR   $086C,Z,#$04,L2CB9E
         BLS     L2CBA8
         SUBA    $2C78
@@ -14082,13 +14082,13 @@ Sub_2CBC8:
         LDAB    $0A9A,Z
         CMPB    $2AF2
         BCC     L2CBE4
-        LDE     $0C4C,Z
+        LDE     >RpmBy32,Z
         ADDE    $2AF8
         CPE     $0300,Z
         BLS     L2CBF6
         BRA     L2CBEE
 L2CBE4:
-        LDAB    $0A7E,Z
+        LDAB    >Map,Z
         CMPB    $031E,Z
         BLS     L2CBF6
 L2CBEE:
@@ -14194,8 +14194,8 @@ L2CCE0:
         JSR     Sub_24160
         BRA     L2CD18
 L2CCF6:
-        LDX     #$7095
-        JSR     Sub_0C08E
+        LDX     #Tab2D_7095
+        JSR     Lookup2D
         STAA    $0A88,Z
         BRA     L2CD18
 L2CD04:
@@ -14581,13 +14581,13 @@ L2D10A:
         BRCLR   $0A47,Z,#$20,L2D15C
         BRSET   $0310,Z,#$04,L2D15C
         BRSET   $0310,Z,#$20,L2D15C
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $279B
         BCS     L2D15C
         LDAB    $0365,Z
         BNE     L2D144
-        LDX     #$279C
-        JSR     Sub_0C08E
+        LDX     #Tab2D_279C
+        JSR     Lookup2D
         TSTA
         BEQ     L2D15C
         BRA     L2D14C
@@ -14603,24 +14603,24 @@ L2D15C:
         LDAA    $034A,Z
         BNE     L2D1AA
         BSET    $0310,Z,#$02
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         BRCLR   $0C31,Z,#$20,L2D18E
-        LDX     #$2842
+        LDX     #Tab2D_2842
         BRCLR   $0055,Z,#$20,L2D17E
-        LDX     #$284A
+        LDX     #Tab2D_284A
 L2D17E:
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         LDAA    $033C,Z
         ADDA    #$80
         CBA
         BCC     L2D1B4
         BRA     L2D1AA
 L2D18E:
-        LDX     #$27F6
+        LDX     #Tab2D_27F6
         BRCLR   $0055,Z,#$20,L2D19C
-        LDX     #$27FE
+        LDX     #Tab2D_27FE
 L2D19C:
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         LDAA    $033C,Z
         ADDA    #$80
         CBA
@@ -14696,8 +14696,8 @@ L2D24A:
         STAA    $0B,Z
         BRCLR   $0774,Z,#$80,L2D26C
         LDAA    $0A85,Z
-        LDX     #$4A59
-        JSR     Sub_0C08E
+        LDX     #Tab2D_4A59
+        JSR     Lookup2D
         CMPA    #$90
         BLS     L2D26A
         LDAA    #$90
@@ -14766,10 +14766,10 @@ L2D2FA:
         BCS     L2D308
         CLR     $0C47,Z
 L2D308:
-        LDAA    $0A6A,Z
-        LDX     #$147B
-        JSR     Sub_0C08E
-        LDAA    $0A7E,Z
+        LDAA    >CoolantTemp,Z
+        LDX     #Tab2D_147B
+        JSR     Lookup2D
+        LDAA    >Map,Z
         SBA
         BCC     L2D31E
         LDAA    #$06
@@ -14806,14 +14806,14 @@ L2D378:
         LDAB    $0A9A,Z
         CMPB    $2AF2
         BLS     L2D396
-        LDAA    $0C4C,Z
-        LDX     #$2A30
-        JSR     Sub_0C08E
+        LDAA    >RpmBy32,Z
+        LDX     #Tab2D_2A30
+        JSR     Lookup2D
         BRA     L2D3A2
 L2D396:
-        LDAA    $0C4C,Z
-        LDX     #$2790
-        JSR     Sub_0C08E
+        LDAA    >RpmBy32,Z
+        LDX     #Tab2D_2790
+        JSR     Lookup2D
 L2D3A2:
         STAA    $0323,Z
         BCLR    $0C30,Z,#$80
@@ -14824,22 +14824,22 @@ L2D3A2:
         CMPB    $2AF2
         BLS     L2D3D4
         CLR     $0347,Z
-        LDX     #$2A30
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2A30
+        JSR     Lookup2D
         STAA    $034D,Z
         BRA     L2D3E4
 L2D3D4:
         CLR     $034D,Z
-        LDX     #$2790
-        JSR     Sub_0C08E
+        LDX     #Tab2D_2790
+        JSR     Lookup2D
         STAA    $0347,Z
 L2D3E4:
         BRSET   $0C30,Z,#$08,L2D418
         BRCLR   $0A46,Z,#$01,L2D418
-        LDAA    $0C4C,Z
+        LDAA    >RpmBy32,Z
         CMPA    $04C5
         BCS     L2D418
-        LDAA    $0A7E,Z
+        LDAA    >Map,Z
         CMPA    $04C4
         BCC     L2D418
         LDAA    $0B,Z
@@ -15134,7 +15134,7 @@ Sub_2D698:
         LDE     $0ABD,Z
         CPE     #$7F00
         BCC     L2D6EA
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         STD     $0C4E,Z
         LDX     $0ABE,Z
         LDED    $ABB1
@@ -15153,11 +15153,11 @@ L2D6E8:
 L2D6EA:
         ANDP    #$FF1F
         TDE
-        ADDD    $0C4C,Z
+        ADDD    >RpmBy32,Z
         RORA
         RORB
         STD     $F0,Z
-        STE     $0C4C,Z
+        STE     >RpmBy32,Z
         CPE     #$1FFF
         BCS     L2D70A
         LDD     #$FFFF
@@ -15176,7 +15176,7 @@ L2D712:
 L2D728:
         CLRW    $00F0,Z
         CLRW    $00F2,Z
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         LDX     $0A98,Z
         BEQ     L2D772
         CPD     $0A98,Z
@@ -15208,13 +15208,13 @@ L2D772:
         LDAA    #$FF
 L2D774:
         STAA    $0AA6,Z
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         ROLB
         LDAB    #$FF
         ADCA    #$00
         BCS     L2D78C
-        LDX     #$091C
-        JSR     Sub_0C08E
+        LDX     #Tab2D_091C
+        JSR     Lookup2D
 L2D78C:
         STAB    $0C4A,Z
         BRCLR   $0943,Z,#$10,L2D8E2
@@ -15252,7 +15252,7 @@ L2D7FC:
         BCS     L2D80A
         CLR     $017C,Z
 L2D80A:
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $0A7E
         BCC     L2D818
         BCLR    $0774,Z,#$10
@@ -15327,7 +15327,7 @@ Sub_2D8E4:
 L2D8F0:
         TAB
         STAA    $0A54,Z
-        LDAA    $0A50,Z
+        LDAA    >BatteryVolts,Z
         ADDB    #$F8
         BCS     L2D904
         MUL
@@ -15337,7 +15337,7 @@ L2D904:
         CMPB    #$08
         BHI     L2D912
         MUL
-        ADCA    $0A50,Z
+        ADCA    >BatteryVolts,Z
         BCC     L2D912
         LDAA    #$FF
 L2D912:
@@ -15356,7 +15356,7 @@ Sub_2D91C:
         LDD     $0A57,Z
         PSHM    D,E
         LDAA    $758A
-        JSR     Sub_0C7B8
+        JSR     Blend16
         AIS     #$04
         STD     $0A57,Z
         RTS
@@ -15467,7 +15467,7 @@ L2DA16:
 Sub_2DA18:
         BRCLR   $0ACC,Z,#$80,L2DA5A
         BRSET   $0ACC,Z,#$40,L2DA5A
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         CPD     #$1900
         BCS     L2DA52
         BSET    $0ACC,Z,#$40
@@ -15525,7 +15525,7 @@ L2DAA8:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 Sub_2DAAA:
-        LDE     $0C4C,Z
+        LDE     >RpmBy32,Z
         LDD     $0AB8,Z
         SDE
         TED
@@ -15533,7 +15533,7 @@ Sub_2DAAA:
         ASRD
         ADE
         STE     $0ABA,Z
-        LDE     $0C4C,Z
+        LDE     >RpmBy32,Z
         STE     $0AB8,Z
         RTS
 
@@ -15558,7 +15558,7 @@ Sub_2DADE:
         BRCLR   >ADCSTAT_L,Z,#$01,Sub_2DADE
         LDAA    >RJURR0_L,Z
         STAA    $0A84,Z
-        LDAB    $0C4C,Z
+        LDAB    >RpmBy32,Z
         CMPB    #$6E
         BCC     L2DB0E
         CMPB    #$13
@@ -15587,10 +15587,10 @@ L2DB26:
         RORA
         STAB    $0A81,Z
 L2DB38:
-        STAA    $0A7E,Z
+        STAA    >Map,Z
         JSR     Sub_2DA02
         STAA    $0A82,Z
-        LDAB    $0A7E,Z
+        LDAB    >Map,Z
         LDAA    $0C,Z
         SBA
         BCC     L2DB50
@@ -15711,10 +15711,10 @@ L2DC86:
 Sub_2DC88:
         CLRB
         TBXK
-        LDX     #$70AD
+        LDX     #Tab2D_70AD
         LDAA    $0A8E,Z
         STAA    $0A63,Z
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         TST     $0A64,Z
         BEQ     L2DCAC
         CLRA
@@ -16154,7 +16154,7 @@ L2F076:
 L2F080:
         BRCLR   $0C30,Z,#$80,L2F196
         BRCLR   $0C31,Z,#$20,L2F196
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $04ED
         LBCS    L2F196
         BRCLR   $0A46,Z,#$01,L2F0AA
@@ -16167,7 +16167,7 @@ L2F0AA:
         BRSET   $0505,Z,#$08,L2F196
         BRSET   $050F,Z,#$04,L2F196
         BRSET   $0500,Z,#$10,L2F196
-        LDAA    $0A7E,Z
+        LDAA    >Map,Z
         SUBA    $0B54,Z
         BCS     L2F0EA
         BCLR    $0B52,Z,#$C0
@@ -16197,26 +16197,26 @@ L2F114:
         BCC     L2F196
 L2F118:
         BRSET   $0943,Z,#$80,L2F144
-        LDX     #$04F7
+        LDX     #Tab2D_04F7
         LDAA    $0A9A,Z
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         CMPA    $0A75,Z
         BLS     L2F196
-        LDX     #$0503
+        LDX     #Tab2D_0503
         LDAA    $0A9A,Z
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         CMPA    $0A75,Z
         BHI     L2F196
         BRA     L2F1A2
 L2F144:
-        LDX     #$050F
+        LDX     #Tab2D_050F
         LDAA    $0A9A,Z
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         CMPA    $0A75,Z
         BLS     L2F196
-        LDX     #$051B
+        LDX     #Tab2D_051B
         LDAA    $0A9A,Z
-        JSR     Sub_0C08E
+        JSR     Lookup2D
         CMPA    $0A75,Z
         BHI     L2F196
         LDAA    $0B53,Z
@@ -16245,7 +16245,7 @@ L2F1A2:
         LDAA    >MainLoopCounter,Z
         ANDA    $04F1
         BNE     L2F1B4
-        LDAA    $0A7E,Z
+        LDAA    >Map,Z
         STAA    $0B54,Z
 L2F1B4:
         RTS
@@ -16363,7 +16363,7 @@ Sub_2F800:
         LBEQ    L2FA0E
         DEC     $0C03,Z
         LBNE    L2FABC
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $04D9
         BCS     L2F828
         BRSET   $0C30,Z,#$40,L2F830
@@ -16371,7 +16371,7 @@ L2F828:
         BSET    $0C02,Z,#$10
         JMP     L2F9E6
 L2F830:
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         TDE
         SUBD    $0C06,Z
         BSET    $0C02,Z,#$20
@@ -16396,7 +16396,7 @@ L2F866:
         BRCLR   $0C02,Z,#$20,L2F9E2
         BRSET   $101F,Z,#$10,L2F8C8
         LDD     $04CC
-        SUBD    $0C4C,Z
+        SUBD    >RpmBy32,Z
         JSR     Sub_2FA10
         SUBD    $04D0
         LBCS    L2F9EE
@@ -16405,7 +16405,7 @@ L2F866:
         SUBD    $04D2
         LBCS    L2F9EE
         LDD     $04CA
-        SUBD    $0C4C,Z
+        SUBD    >RpmBy32,Z
         JSR     Sub_2FA10
         SUBD    $04D0
         BCC     L2F8BC
@@ -16417,7 +16417,7 @@ L2F8BC:
         JMP     L2F9EE
 L2F8C8:
         LDD     $04CA
-        SUBD    $0C4C,Z
+        SUBD    >RpmBy32,Z
         JSR     Sub_2FA10
         SUBD    $04D2
         LBCS    L2F9EE
@@ -16435,11 +16435,11 @@ L2F8F0:
 L2F902:
         BRCLR   $0C02,Z,#$20,L2F916
         LDD     $04CC
-        SUBD    $0C4C,Z
+        SUBD    >RpmBy32,Z
         JSR     Sub_2FA10
         BRA     L2F922
 L2F916:
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         SUBD    $04CA
         JSR     Sub_2FA10
 L2F922:
@@ -16464,7 +16464,7 @@ L2F95C:
         LBCS    L2F9E2
         BRSET   $0C02,Z,#$20,L2F9E2
         BRSET   $101F,Z,#$10,L2F9BE
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         SUBD    $04CA
         JSR     Sub_2FA10
         SUBD    $04D0
@@ -16473,7 +16473,7 @@ L2F95C:
         LBCS    L2F9EE
         SUBD    $04D2
         LBCS    L2F9EE
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         SUBD    $04CC
         JSR     Sub_2FA10
         SUBD    $04D0
@@ -16485,7 +16485,7 @@ L2F9B2:
         BSET    $0C02,Z,#$10
         JMP     L2F9EE
 L2F9BE:
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         SUBD    $04CC
         JSR     Sub_2FA10
         SUBD    $04D2
@@ -16502,7 +16502,7 @@ L2F9E6:
 L2F9EE:
         LDAA    $04D6
         STAA    $0C03,Z
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         STD     $0C06,Z
         TST     $0C0A,Z
         LBEQ    L2FABC
@@ -16543,7 +16543,7 @@ L2FA42:
         LDAA    $04D6
         EMUL
         TED
-        STE     $0C5D,Z
+        STE     >LookupResult,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -16620,14 +16620,14 @@ L2FB1C:
 Sub_2FB1E:
         DEC     $0C0D,Z
         LBNE    L2FCCE
-        LDAA    $0A6A,Z
+        LDAA    >CoolantTemp,Z
         CMPA    $04DD
         LBCS    L2FCAA
         LDAA    $0A5A,Z
         CMPA    $04DE
         LBCS    L2FCAA
         BRCLR   $0C30,Z,#$40,L2FCAA
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         TDE
         SUBD    $0C10,Z
         BSET    $0C0C,Z,#$80
@@ -16649,14 +16649,14 @@ L2FB64:
         BRCLR   $0C0C,Z,#$80,L2FCAA
         BRCLR   $0C0C,Z,#$20,L2FBA4
         LDD     $04E5
-        SUBD    $0C4C,Z
+        SUBD    >RpmBy32,Z
         JSR     Sub_2FD2A
         SUBD    $04E1
         LBCS    L2FCB0
         LBRA    L2FCAA
 L2FBA4:
         LDD     $04E7
-        SUBD    $0C4C,Z
+        SUBD    >RpmBy32,Z
         JSR     Sub_2FD2A
         SUBD    $04E3
         LBCS    L2FCB0
@@ -16673,7 +16673,7 @@ L2FBD2:
         LBEQ    L2FCAA
         BRCLR   $0C0C,Z,#$80,L2FCAA
         LDD     $04E7
-        SUBD    $0C4C,Z
+        SUBD    >RpmBy32,Z
         JSR     Sub_2FD2A
         SUBD    $04E3
         LBCS    L2FCB0
@@ -16688,7 +16688,7 @@ L2FC14:
         TST     $0C0E,Z
         LBEQ    L2FCB0
         BRSET   $0C0C,Z,#$80,L2FCB0
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         SUBD    $04E5
         JSR     Sub_2FD2A
         SUBD    $04E1
@@ -16705,14 +16705,14 @@ L2FC50:
         LBEQ    L2FCB0
         BRSET   $0C0C,Z,#$80,L2FCB0
         BRSET   $0C0C,Z,#$20,L2FC7C
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         SUBD    $04E7
         JSR     Sub_2FD2A
         SUBD    $04E3
         LBCS    L2FCAA
         LBRA    L2FCB0
 L2FC7C:
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         SUBD    $04E5
         JSR     Sub_2FD2A
         SUBD    $04E1
@@ -16734,7 +16734,7 @@ L2FCB4:
 L2FCB8:
         LDAA    $04DC
         STAA    $0C0D,Z
-        LDD     $0C4C,Z
+        LDD     >RpmBy32,Z
         STD     $0C10,Z
         JMP     L2FCCE
         dc.b    $27,$F7
@@ -16802,7 +16802,7 @@ L2FD5C:
         EMUL
         ADCE    #$0000
         TED
-        STD     $0C5D,Z
+        STD     >LookupResult,Z
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF

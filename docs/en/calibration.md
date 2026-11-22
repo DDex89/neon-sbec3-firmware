@@ -1,0 +1,150 @@
+# Calibration
+
+How the calibration of the reference image **05293190AC** is organised: where it lies, the table
+formats and the lookup routines that read them, the units, and how the fuel pulse width is built.
+The full list of tables is in the generated catalogue
+[docs/catalogue/05293190AC.md](../catalogue/05293190AC.md); in the source every table is laid out as
+a commented block (header, axis, one line per row).
+
+## Where the calibration lies
+
+The calibration is in bank 0, between the header at $00202 and the start of the code at $08000. The
+reset code sets EK = 0, so the code reads it with plain extended addresses (`CMPA $19DC`). Nothing
+in the code writes there: the area is read-only.
+
+The code refers to it in two ways:
+
+- **Tables**, passed in X to one of four lookup routines (`LDX #table`, `JSR Lookup2D`). The lookup
+  routines force XK = 0, so every table is in bank 0. 411 tables are found this way, between $0398
+  and $ABD7 (two small ones lie among the bank 0 code).
+- **Constants**, read directly: 1,455 different addresses, mostly with `CMPA`/`CMPB` (thresholds),
+  `LDAA`/`LDAB` and `LDD`/`CPD` (16-bit values). Configuration bits around $0328-$0338 are tested
+  with `BRSET`/`BRCLR`. Only the constants confirmed so far are named.
+
+## Table formats
+
+All values are bytes. The formats follow from the lookup routines:
+
+| Format | Routine | Layout | 2GNT type |
+|---|---|---|---|
+| 2D | `Lookup2D` ($0C08E) | n, flags, then n pairs (x, y), x ascending | C |
+| 2D (y, x) | `Lookup2DRev` ($0C36A) | n, unused, then n pairs (y, x) | |
+| 3D | `Lookup3D` ($0C214) | rows, columns, signed flag, column axis (one byte per column), values row by row | A |
+| 3D, no axis | `Lookup3DNorm` ($0C28C) | rows, columns, signed flag, values row by row | B |
+
+Fault table: see below (2GNT type D).
+
+**2D.** The input is compared with the x values; between two points the result is interpolated
+linearly, outside the range it is the first or last y. The flags byte selects the arithmetic: $80
+unsigned (320 of the 353 tables), $20 signed y, $10 steps without interpolation, $40 a zero y counts
+as 256. Many 2D tables are followed by unused bytes up to a 12-byte slot (five points); whether a
+table may be lengthened into that space has to be checked per table.
+
+**3D.** The row input is a *position* 0-255 spread evenly over the rows (row = position x (rows-1)
+/ 256). It usually comes from a 2D scale table that converts MAP into that position: the part-throttle
+tables use `PartThrottleMapScale`, the WOT tables `WotMapScale`. The column input is searched on the
+stored column axis (`Lookup3D`) or is also a position 0-255 (`Lookup3DNorm`). The result is
+interpolated in both directions. Sizes in this image: 17 x 17, 9 x 17, 9 x 9, 5 x 9 and 5 x 5.
+
+The signed flag ($FF) makes the values two's complement; the source shows them as negative decimals.
+
+## Units
+
+The unit names in `annotations/tables.json` and in the source comments:
+
+| Unit | Conversion |
+|---|---|
+| rpm32 | rpm = x * 32 |
+| rpm8 | rpm = x * 8 |
+| kpa | kPa = x / 2.428 (2GNT: torr = x / 0.3237) |
+| spark | degrees BTDC = x / 2 |
+| tempc | deg C = x - 128 (deg F = (x - 128) * 1.8 + 32) |
+| volt16 | volts = x / 16.19 |
+| volt51 | volts = x / 51 |
+| pwus32 | microseconds = x * 32 |
+| mult256 | factor = x / 256 |
+| pos256 | position 0-255 over the rows of a 3D table |
+| fuelcorr | fuel factor = 1 + x / 256, x signed: -128 gives 0.5, +127 gives 1.496 |
+
+These are the same as in the 1995 FCC controller and as on the 2GNT pages.
+
+## Known tables and constants
+
+| Address | Name | Content |
+|---|---|---|
+| $08F8 | PartThrottleMapScale | MAP to row position, part throttle (spark and fuel) |
+| $0904 | WotMapScale | MAP to row position, WOT (spark and fuel) |
+| $1BFA | PartThrottleSpark | 17 x 17, rpm x MAP, spark |
+| $1FAF | WotSpark | 9 x 17, signed |
+| $0BF6 | PartThrottleFuel | 17 x 17, signed, fuel correction |
+| $0F6C | WotFuel | 9 x 17, signed, fuel correction |
+| $0B92, $0B93 | PartThrottleFuelK, PartThrottleFuelMapOffset | base pulse width constants, part throttle |
+| $0B94, $0B95 | WotFuelK, WotFuelMapOffset | the same for WOT |
+| $0B76 | InjectorDeadTime | battery voltage to dead time |
+| $0B9E | ReturnlessFuelScale | fuel multiplier of the returnless fuel system |
+| $24AB | KnockThreshold | knock sensor threshold against rpm |
+| $2684 | IdleTargetRpm | target idle speed against coolant temperature |
+| $19DB, $19DC | RevLimitResume, RevLimit | rev limiter (manual / park-neutral) |
+| $4052 | FaultTable | 256 fault rows |
+
+All of these were checked against the code: each is read where 2GNT says, with the format above.
+The 2GNT page calls the fuel tables "msec"; the code shows that they are corrections applied to a
+pulse width computed from MAP (next section).
+
+## Fuel pulse width
+
+`CalcFuelPulse` ($11F40) runs from the input-capture 1 interrupt, that is on every reference
+event:
+
+1. Part throttle or WOT is chosen by `$0771,Z` bit 5; this selects the constants, the scale table
+   and the fuel table.
+2. Base pulse width = (Map - MapOffset) x (256 + K) / 16, or zero if MAP is below the offset. With
+   calibration bit $0337.2 set, MAP is first raised to the lowest point of the part-throttle scale.
+3. The fuel table gives a signed value v (rows by MAP through the scale table, columns by
+   `RpmBy32`); the base is multiplied by 1 + v / 256.
+4. `$080E,Z` is added and the result is stored in `FuelPulse` ($07E2,Z) and `$04F6,Z`.
+
+So the fuel tables work like a volumetric-efficiency correction on a linear MAP model, with the
+two constants setting the slope and the zero point. Dead time, temperature and other corrections
+are applied elsewhere (stage 5).
+
+`InjectorDeadTime` is looked up with `$0A51,Z` as input. 2GNT lists a fix that changes this to
+`$0A50,Z` (`BatteryVolts`); who writes $0A51 has not been checked yet.
+
+## Fault table
+
+`FaultTable` ($4052) has 256 rows of 10 bytes:
+
+| Byte | Content |
+|---|---|
+| 0 | row number |
+| 1 | trigger count |
+| 2 | blink code (BCD, as flashed by the check-engine lamp) |
+| 3 | attribute bits |
+| 4, 5 | mask and byte offset of the fault bit in the fault bit array |
+| 6, 7 | P-code (BCD): $03 $40 = P0340 |
+| 8, 9 | unused (zero) |
+
+83 rows carry a P-code; the list is in the catalogue. Codes for cylinders 5 and 6 (P0205, P0206,
+P0355) are present, so the program also covers six-cylinder engines.
+
+## Tools
+
+```sh
+python3 tools/caltables.py roms/05293190AC.bin        # list the tables found
+python3 tools/catalogue.py roms/05293190AC.bin docs/catalogue/05293190AC.md
+```
+
+`tools/caltables.py` finds the lookup routines by the bytes of their code, so it also works on the
+other 256 KB images: 397 tables in 05269833AH, 404 in 05269833AI and 05269834AJ, 462 in
+05032017AA. The 128 KB families use different
+lookup code and are a stage 5 topic. Names and units come from `annotations/tables.json`, which
+applies only to the reference image.
+
+## Open points
+
+- Most of the 411 tables have generated names. Their inputs (shown in the catalogue) are the
+  starting point for naming them in stage 5.
+- The 1,455 directly read constants are not catalogued one by one yet.
+- The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
+  $146E4 and $1974A), are not followed yet.

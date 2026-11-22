@@ -1,0 +1,40 @@
+{
+ "_comment": "Calibration of the reference image 05293190AC: names, descriptions and units of tables and constants (address in bank 0, hex). Units are defined in docs/en/calibration.md. Tables not listed here are still found and laid out by tools/caltables.py; they get generated names (Tab2D_xxxx ...). Sources: 2GNT calibration page for 05293190AC and the code.",
+ "units": {
+  "rpm32": "rpm = x * 32",
+  "rpm8": "rpm = x * 8",
+  "kpa": "kPa = x / 2.428 (2GNT shows torr = x / 0.3237)",
+  "spark": "degrees BTDC = x / 2 (signed tables: two's complement)",
+  "tempc": "deg C = x - 128",
+  "volt16": "volts = x / 16.19",
+  "volt51": "volts = x / 51",
+  "pwus32": "microseconds = x * 32",
+  "mult256": "factor = x / 256",
+  "pos256": "position 0-255 along the rows (or columns) of a 3D table",
+  "fuelcorr": "fuel factor = 1 + x / 256, x signed (-128 = 0.5, +127 = 1.496)",
+  "raw": "no conversion known yet"
+ },
+ "tables": {
+  "08F8": {"name": "PartThrottleMapScale", "desc": "MAP to row position of the part-throttle spark and fuel tables", "x": "kpa", "y": "pos256", "x_in": "Map"},
+  "0904": {"name": "WotMapScale", "desc": "MAP to row position of the WOT spark and fuel tables", "x": "kpa", "y": "pos256", "x_in": "Map"},
+  "1BFA": {"name": "PartThrottleSpark", "desc": "Part-throttle spark advance", "x": "rpm32", "y": "pos256", "z": "spark", "x_in": "RpmBy32", "y_in": "PartThrottleMapScale"},
+  "1FAF": {"name": "WotSpark", "desc": "Wide-open-throttle spark advance", "x": "rpm32", "y": "pos256", "z": "spark", "x_in": "RpmBy32", "y_in": "WotMapScale"},
+  "0BF6": {"name": "PartThrottleFuel", "desc": "Part-throttle fuel correction on the MAP-based pulse width", "x": "rpm32", "y": "pos256", "z": "fuelcorr", "x_in": "RpmBy32", "y_in": "PartThrottleMapScale"},
+  "0F6C": {"name": "WotFuel", "desc": "Wide-open-throttle fuel correction on the MAP-based pulse width", "x": "rpm32", "y": "pos256", "z": "fuelcorr", "x_in": "RpmBy32", "y_in": "WotMapScale"},
+  "0B76": {"name": "InjectorDeadTime", "desc": "Injector dead time against battery voltage", "x": "volt16", "y": "pwus32"},
+  "0B9E": {"name": "ReturnlessFuelScale", "desc": "Global fuel multiplier of the returnless fuel system", "x": "kpa", "y": "mult256"},
+  "24AB": {"name": "KnockThreshold", "desc": "Knock sensor voltage threshold against rpm", "x": "rpm32", "y": "volt51"},
+  "2684": {"name": "IdleTargetRpm", "desc": "Target idle speed against coolant temperature", "x": "tempc", "y": "rpm8", "x_in": "CoolantTemp"}
+ },
+ "scalars": {
+  "0B92": {"name": "PartThrottleFuelK", "desc": "K factor of the part-throttle base pulse width: (MAP - offset) * (256 + K) / 16", "size": 1, "unit": "raw"},
+  "0B93": {"name": "PartThrottleFuelMapOffset", "desc": "MAP offset of the part-throttle base pulse width", "size": 1, "unit": "kpa"},
+  "0B94": {"name": "WotFuelK", "desc": "K factor of the WOT base pulse width", "size": 1, "unit": "raw"},
+  "0B95": {"name": "WotFuelMapOffset", "desc": "MAP offset of the WOT base pulse width", "size": 1, "unit": "kpa"},
+  "19DB": {"name": "RevLimitResume", "desc": "Rev limiter (manual transmission / park-neutral): fuel back on below", "size": 1, "unit": "rpm32"},
+  "19DC": {"name": "RevLimit", "desc": "Rev limiter (manual transmission / park-neutral): fuel cut above", "size": 1, "unit": "rpm32"}
+ },
+ "special": {
+  "4052": {"name": "FaultTable", "kind": "fault", "rows": 256, "row_size": 10, "desc": "Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes"}
+ }
+}

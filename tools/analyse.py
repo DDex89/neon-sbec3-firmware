@@ -1,11 +1,9 @@
 """Code-flow analysis of an SBEC3 flash image.
 
 Starts from the reset entry and the exception vectors (16-bit addresses in bank 0), follows
-branches, calls and EXT20 jumps, and resolves jump tables of the form
-
-    (index scaled by 4 in X)  JMP $base,X      ; base: a run of 4-byte JMP $xxxxx entries
-
-Everything reached is code; the rest is treated as data until later stages say otherwise.
+branches, calls and EXT20 jumps, and resolves jump tables reached by indexed JMPs (see
+jump_table). Everything reached is code; the rest is data. Jumps into RAM ($F8000 and up) are
+code downloaded at run time and are listed in ram_jumps.
 """
 import os, sys
 

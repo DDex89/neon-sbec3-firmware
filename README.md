@@ -13,7 +13,7 @@ logic and the units of its values descend from it.
 
 ## Status
 
-Stage 3 of 6: program skeleton. All eleven images rebuild byte for byte; the reference image is
+Stage 4 of 6: calibration. All eleven images rebuild byte for byte; the reference image is
 **05293190AC** (1999 Eclipse, manual), chosen because outside reference addresses exist for it.
 
 | Stage | Content | |
@@ -21,8 +21,8 @@ Stage 3 of 6: program skeleton. All eleven images rebuild byte for byte; the ref
 | 1 | Survey: images, memory layout, checksum, families | done, see [docs/en/images.md](docs/en/images.md) |
 | 2 | Tools: CPU16 disassembler, assembler, source generator, byte-identical build, CI | done, see [docs/en/tools.md](docs/en/tools.md) |
 | 3 | Program skeleton: reset, interrupts, main loop, scheduler, communication | done, see [docs/en/architecture.md](docs/en/architecture.md) |
-| 4 | Calibration: table formats, finding and naming the tables | next |
-| 5 | Detailed annotation, documentation in English and Russian, porting to the other families | |
+| 4 | Calibration: table formats, finding and naming the tables | done, see [docs/en/calibration.md](docs/en/calibration.md) and the [catalogue](docs/catalogue/05293190AC.md) |
+| 5 | Detailed annotation, documentation in English and Russian, porting to the other families | next |
 | 6 | Editor definitions: TunerPro XDF generated from the annotations | |
 
 ## Layout

@@ -8,6 +8,10 @@ UnexpectedIrqStack6 equ $0004        ; $F8004
 ResetCheckWord   equ $0006        ; $F8006
 ResetCountsExtSw equ $0008        ; $F8008
 ResetCountsHltPow equ $0009        ; $F8009
+FuelPulse        equ $07E2        ; $F87E2
+BatteryVolts     equ $0A50        ; $F8A50
+CoolantTemp      equ $0A6A        ; $F8A6A
+Map              equ $0A7E        ; $F8A7E
 Ic2OverflowCount equ $0AC4        ; $F8AC4
 MainLoopPhaseMask equ $0C3B        ; $F8C3B
 Count3s          equ $0C3C        ; $F8C3C
@@ -15,6 +19,8 @@ MainLoopCounter  equ $0C3D        ; $F8C3D
 Count191ms       equ $0C3E        ; $F8C3E
 PitTickCounter   equ $0C41        ; $F8C41
 LoopTickCounter  equ $0C42        ; $F8C42
+RpmBy32          equ $0C4C        ; $F8C4C
+LookupResult     equ $0C5D        ; $F8C5D
 ADCMCR           equ $7700        ; $FF700
 ADCTL0_L         equ $770B        ; $FF70B
 ADCTL1_L         equ $770D        ; $FF70D

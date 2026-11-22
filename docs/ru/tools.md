@@ -30,6 +30,8 @@ python3 tools/survey.py roms/*.bin  # заголовок, контрольная
 | `tools/asm16.py` | Двухпроходный ассемблер |
 | `tools/analyse.py` | Анализ потока управления: что код, а что данные |
 | `tools/gen_source.py` | Пишет `00_equates.asm` и по одному файлу исходника на каждый банк 64 КБ, с именами и заметками из `annotations/` |
+| `tools/caltables.py` | Находит калибровочные таблицы по вызовам подпрограмм выборки |
+| `tools/catalogue.py` | Пишет каталог калибровки (`docs/catalogue/`) |
 | `tools/build.py` | Собирает и сверяет с `tools/variants.json` |
 | `tools/survey.py` | Обзор образов (этап 1) |
 

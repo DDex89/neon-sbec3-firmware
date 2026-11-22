@@ -30,6 +30,8 @@ python3 tools/survey.py roms/*.bin  # header, checksum and families of all image
 | `tools/asm16.py` | Two-pass assembler |
 | `tools/analyse.py` | Code-flow analysis: what is code and what is data |
 | `tools/gen_source.py` | Writes `00_equates.asm` and one source file per 64 KB bank, with names and notes from `annotations/` |
+| `tools/caltables.py` | Finds the calibration tables from the calls to the lookup routines |
+| `tools/catalogue.py` | Writes the calibration catalogue (`docs/catalogue/`) |
 | `tools/build.py` | Assembles and verifies against `tools/variants.json` |
 | `tools/survey.py` | Survey of images (stage 1) |
 

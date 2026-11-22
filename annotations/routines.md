@@ -48,3 +48,30 @@ ECU without reflashing.
 
 ## 3D000 EmptyHook
 An RTS; called from several places, probably left for development or calibration variants.
+
+## 0C08E Lookup2D
+2D table lookup with linear interpolation. X = table, A = input; result in A and B and in
+LookupResult. Table: n, flags, then n (x, y) byte pairs with x ascending. Inputs below the first
+or above the last x give the first or last y. Flags: $80 unsigned, $20 signed y, $10 steps (no
+interpolation), $40 a zero y counts as 256; with flags $00 the table address is kept in $0C56,Z.
+
+## 0C214 Lookup3D
+3D table lookup with bilinear interpolation. X = table, A = row position 0-255 (usually the
+result of a Lookup2D scale table), B = column input. Table: rows, columns, signed flag, the
+column axis (one byte per column, ascending), then the values row by row.
+
+## 0C28C Lookup3DNorm
+As Lookup3D, but both inputs are positions 0-255 and the table has no column axis.
+
+## 0C36A Lookup2DRev
+2D lookup on a table whose pairs are stored as (y, x). Used twice.
+
+## 11F40 CalcFuelPulse
+Fuel pulse width, called from Isr_GPT_IC1 on every reference event. Base pulse width
+(Map - MapOffset) * (256 + K) / 16, zero when MAP is below the offset; part-throttle or WOT
+constants and tables are chosen by $0771,Z bit 5. The base is multiplied by 1 + v / 256, where v
+is the signed value of PartThrottleFuel or WotFuel (rows by MAP through the scale table, columns
+by RpmBy32). $080E,Z is added at the end; the result goes to FuelPulse and $04F6,Z.
+
+## 1105E ScaleByFraction
+E = E * (1 + A / 256), saturating at $FFFF.
