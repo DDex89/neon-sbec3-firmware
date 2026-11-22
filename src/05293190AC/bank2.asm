@@ -1812,7 +1812,7 @@ L21818:
         JMP     L2191C
 L2181E:
         BRSET   $06B4,Z,#$01,L21834
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         CMPA    $32A7
         BCS     L21834
         BCLR    $9C,Z,#$01
@@ -2533,7 +2533,7 @@ Sub_21F82:
         LDAA    >StartCoolantTemp2,Z
         CMPA    $4A89
         LBCC    L22032
-        SUBA    $0A5A,Z
+        SUBA    >AirTempAlt,Z
         BCC     L21FC0
         NEGA
 L21FC0:
@@ -6350,7 +6350,7 @@ Sub_25000:
         INC     $0581,Z
         LBRA    L25296
 L25046:
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         CMPA    $3158
         LBCS    L25296
         BRSET   $06B4,Z,#$20,L25296
@@ -6644,7 +6644,7 @@ L25410:
         BRSET   $05AE,Z,#$10,L25500
         BSET    $05AE,Z,#$04
         LDAA    $031B,Z
-        SUBA    $18,Z
+        SUBA    <IacPosition,Z
         BCC     L25442
         NEGA
 L25442:
@@ -6668,7 +6668,7 @@ L25462:
 L2547E:
         BSET    $05AE,Z,#$08
         BSET    $A9,Z,#$04
-        LDAA    $18,Z
+        LDAA    <IacPosition,Z
         STAA    $05B4,Z
         LDAA    $05BB,Z
         STAA    $05B9,Z
@@ -6704,7 +6704,7 @@ L25500:
         BSET    $05AE,Z,#$10
         LDAA    $042D,Z
         STAA    $05B3,Z
-        LDAA    $18,Z
+        LDAA    <IacPosition,Z
         SUBA    $05B4,Z
         BCS     L2551C
         CMPA    $313C
@@ -6752,7 +6752,7 @@ L255AA:
         CLRW    $00F2,Z
         BRSET   $033E,#$02,L255D8
         LDAA    $05B4,Z
-        SUBA    $18,Z
+        SUBA    <IacPosition,Z
         BCS     L255D8
         STAA    $F2,Z
         BRSET   $0312,Z,#$40,L255CA
@@ -6973,13 +6973,13 @@ L25830:
         BCLR    $011B,Z,#$0F
         BRSET   $0649,Z,#$02,L25860
         BRSET   $0E10,Z,#$10,L25860
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         CMPA    $30F7
         BHI     L2588C
         CMPA    $30F8
         BCS     L25864
         LDAA    >CoolantTemp,Z
-        SUBA    $0A5A,Z
+        SUBA    >AirTempAlt,Z
         BCS     L25860
         CMPA    $30F9
         BCC     L25864
@@ -13403,7 +13403,7 @@ L2C490:
         LDAA    #$FF
 L2C4B8:
         STAA    $0A5B,Z
-        LDAB    $0A5A,Z
+        LDAB    >AirTempAlt,Z
         SBA
         BCC     L2C4C8
         DECB
@@ -13413,8 +13413,8 @@ L2C4C8:
         BCS     L2C4CE
         INCB
 L2C4CE:
-        STAB    $0A5A,Z
-        LDAA    $0A5A,Z
+        STAB    >AirTempAlt,Z
+        LDAA    >AirTempAlt,Z
         BRCLR   $0330,#$02,L2C62C
         LDAA    #$98
         BRSET   $06B4,Z,#$01,L2C628
@@ -13454,7 +13454,7 @@ L2C548:
         LDX     #SensorLimit
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        SUBB    $0A5A,Z
+        SUBB    >AirTempAlt,Z
         BCC     L2C560
         CLRB
 L2C560:
@@ -13475,7 +13475,7 @@ L2C576:
         INCB
         ABY
         LDAB    $00,Y
-        ADDB    $0A5A,Z
+        ADDB    >AirTempAlt,Z
         LBCS    L2C628
         CBA
         LBLS    L2C628
@@ -13498,22 +13498,22 @@ L2C59C:
         TAB
 L2C5C2:
         LDAA    $0194,Z
-        CMPA    $0A5A,Z
+        CMPA    >AirTempAlt,Z
         BEQ     L2C5E6
         BCS     L2C5DC
         NEGB
         ABA
         BCC     L2C628
-        CMPA    $0A5A,Z
+        CMPA    >AirTempAlt,Z
         BCC     L2C628
         BRA     L2C5E6
 L2C5DC:
         ABA
         BCS     L2C5E6
-        CMPA    $0A5A,Z
+        CMPA    >AirTempAlt,Z
         BCS     L2C628
 L2C5E6:
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         BRA     L2C628
 L2C5EC:
         LDAA    >MainLoopCounter,Z
@@ -13521,7 +13521,7 @@ L2C5EC:
         BNE     L2C634
         LDAA    $0194,Z
         LDE     $0A5F,Z
-        CMPA    $0A5A,Z
+        CMPA    >AirTempAlt,Z
         BEQ     L2C624
         BCC     L2C606
         ADDE    #$02
@@ -14586,7 +14586,7 @@ L2D10A:
         BCS     L2D15C
         LDAB    $0365,Z
         BNE     L2D144
-        LDX     #IdleCoolant4
+        LDX     #IdleCoolant2
         JSR     Lookup2D
         TSTA
         BEQ     L2D15C
@@ -16623,7 +16623,7 @@ Sub_2FB1E:
         LDAA    >CoolantTemp,Z
         CMPA    $04DD
         LBCS    L2FCAA
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         CMPA    $04DE
         LBCS    L2FCAA
         BRCLR   >ThrottleState,Z,#$40,L2FCAA

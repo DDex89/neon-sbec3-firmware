@@ -7,11 +7,13 @@ UnexpectedIrqStack4 equ $0002        ; $F8002
 UnexpectedIrqStack6 equ $0004        ; $F8004
 ResetCheckWord   equ $0006        ; $F8006
 ThrottleClosed   equ $0009        ; $F8009
+IacPosition      equ $000B        ; $F800B
 Baro             equ $000D        ; $F800D
 FlexEthanol      equ $000E        ; $F800E
 Count3s          equ $013B        ; $F813B
 MainLoopCounter  equ $013C        ; $F813C
 MainLoopPhaseMask equ $013D        ; $F813D
+IacBase          equ $01F0        ; $F81F0
 SegmentRpm       equ $0218        ; $F8218
 MapRaw           equ $0283        ; $F8283
 LookupResult     equ $02FE        ; $F82FE
@@ -57,6 +59,7 @@ MapAccelFuel     equ $05D0        ; $F85D0
 AccelFactor      equ $05D4        ; $F85D4
 AccelMapGain     equ $05D8        ; $F85D8
 IdleTarget       equ $0660        ; $F8660
+IacTarget        equ $067A        ; $F867A
 ADCMCR           equ $7700        ; $FF700
 ADCTL0_L         equ $770B        ; $FF70B
 ADCTL1_L         equ $770D        ; $FF70D

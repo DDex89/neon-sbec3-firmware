@@ -10,12 +10,16 @@ ResetCountsExtSw equ $0008        ; $F8008
 ResetCountsHltPow equ $0009        ; $F8009
 ThrottleClosed   equ $000B        ; $F800B
 Baro             equ $000C        ; $F800C
+IacPosition      equ $0018        ; $F8018
 EngineOffTime    equ $017C        ; $F817C
 Temp3            equ $0195        ; $F8195
 FuelLevelFiltered equ $0196        ; $F8196
 FlexEthanolLearned equ $0197        ; $F8197
 FlexEthanol      equ $0198        ; $F8198
 IdleTarget       equ $0300        ; $F8300
+IdleRpmError     equ $0308        ; $F8308
+IacBase          equ $0362        ; $F8362
+IacTarget        equ $0366        ; $F8366
 SegmentRpm       equ $05C2        ; $F85C2
 ShortTermTrim1   equ $0700        ; $F8700
 O2UpBank1Raw     equ $0701        ; $F8701
@@ -48,6 +52,7 @@ FuelPulseAdder   equ $080C        ; $F880C
 BaroFuelAdder    equ $080E        ; $F880E
 BatteryVolts     equ $0A50        ; $F8A50
 BatteryVolts2    equ $0A51        ; $F8A51
+AirTempAlt       equ $0A5A        ; $F8A5A
 AirTempRaw       equ $0A61        ; $F8A61
 AirTemp          equ $0A62        ; $F8A62
 StartCoolantTemp equ $0A68        ; $F8A68

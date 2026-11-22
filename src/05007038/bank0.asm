@@ -730,13 +730,13 @@ Tab2D_06CF:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleThrottleScale ($06DB): 2D table, 5 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: ThrottleAboveClosed.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; IacRollThrottleScale ($06DB): 2D table, 5 points, unsigned
+; IAC target while rolling: throttle opening to row position of IacRollThrottleRpm
+; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $050A8, $05728
 ;---------------------------------------------------------------------------------------------------
-IdleThrottleScale:
+IacRollThrottleScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    10,0, 20,64, 41,153, 51,192, 102,255     ; x, y
 
@@ -3333,104 +3333,104 @@ Tab2D_222A:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit ($2234): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.
+; IacGearDelayCoolant ($2234): 2D table, 1 points, unsigned
+; Delay timer ($0349,Z) started when $0C31,Z bit 7 sets, against coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054A6
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit:
+IacGearDelayCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimitAC ($223E): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.
+; IacGearDelayCoolantAC ($223E): 2D table, 1 points, unsigned
+; As IacGearDelayCoolant with A/C requested
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054A6
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimitAC:
+IacGearDelayCoolantAC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit2 ($2248): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; IacGearTimeCoolant ($2248): 2D table, 1 points, unsigned
+; Duration of the gear-change idle air ($034A,Z) against coolant, below $279A; scaled by IacGearTimeFactor
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit2:
+IacGearTimeCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimitAC2 ($2252): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; IacGearTimeCoolantAC ($2252): 2D table, 1 points, unsigned
+; As IacGearTimeCoolant with A/C requested
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimitAC2:
+IacGearTimeCoolantAC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348Factor ($225C): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; IacGearTimeFactor ($225C): 2D table, 1 points, unsigned
+; Factor on IacGearTimeCoolant against the time counter $0348,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01BB,Z
 ; Read at $05532
 ;---------------------------------------------------------------------------------------------------
-IdleV0348Factor:
+IacGearTimeFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348FactorAC ($2266): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; IacGearTimeFactorAC ($2266): 2D table, 1 points, unsigned
+; As IacGearTimeFactor with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01BB,Z
 ; Read at $05532
 ;---------------------------------------------------------------------------------------------------
-IdleV0348FactorAC:
+IacGearTimeFactorAC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantFactor ($2270): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; IacDroopStepCoolant ($2270): 2D table, 1 points, unsigned
+; IAC opening when the rpm drops below the target in gear ($0317,Z bit 3, $0C31,Z bit 7), against coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0545C, $0558C
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantFactor:
+IacDroopStepCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantFactorAC ($227A): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; IacDroopStepCoolantAC ($227A): 2D table, 1 points, unsigned
+; As IacDroopStepCoolant with A/C requested
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0545C, $0558C
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantFactorAC:
+IacDroopStepCoolantAC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3459,78 +3459,78 @@ Tab2D_228C:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimitPN ($2294): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; IacGearTimeCoolantPN ($2294): 2D table, 1 points, unsigned
+; As IacGearTimeCoolant in P/N
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimitPN:
+IacGearTimeCoolantPN:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimitAC3 ($229E): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; IacGearTimeCoolantPNAC ($229E): 2D table, 1 points, unsigned
+; As IacGearTimeCoolant in P/N with A/C requested
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimitAC3:
+IacGearTimeCoolantPNAC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348Factor2 ($22A8): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; IacGearTimeFactorPN ($22A8): 2D table, 1 points, unsigned
+; As IacGearTimeFactor in P/N
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01BB,Z
 ; Read at $05532
 ;---------------------------------------------------------------------------------------------------
-IdleV0348Factor2:
+IacGearTimeFactorPN:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348FactorAC2 ($22B2): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; IacGearTimeFactorPNAC ($22B2): 2D table, 1 points, unsigned
+; As IacGearTimeFactor in P/N with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01BB,Z
 ; Read at $05532
 ;---------------------------------------------------------------------------------------------------
-IdleV0348FactorAC2:
+IacGearTimeFactorPNAC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolant5 ($22BC): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; IacGearStepCoolantPN ($22BC): 2D table, 1 points, unsigned
+; IAC step when the gear-change timer runs out, against coolant (P/N)
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0558C
 ;---------------------------------------------------------------------------------------------------
-IdleCoolant5:
+IacGearStepCoolantPN:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantAC ($22C6): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; IacGearStepCoolantPNAC ($22C6): 2D table, 1 points, unsigned
+; As IacGearStepCoolantPN with A/C requested
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0558C
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantAC:
+IacGearStepCoolantPNAC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3587,13 +3587,13 @@ IdleV0341Scale:
         dc.b    $00,$00,$00,$00,$C0,$80,$14
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0A5AFactor ($2316): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1A6E2). Inputs: $0A5A,Z. Result to $0334,Z.
+; IdleAirTempAltFactor ($2316): 2D table, 3 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1A6E2). Inputs: AirTempAlt. Result to $0334,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $16,Z
 ; Read at $05B00
 ;---------------------------------------------------------------------------------------------------
-IdleV0A5AFactor:
+IdleAirTempAltFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    128,18, 163,24, 199,29                   ; x, y
 
@@ -3660,78 +3660,78 @@ IacCoastThrottleLimit:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$9A,$1A,$A6,$00
 
 ;---------------------------------------------------------------------------------------------------
-; IdleSpeedScale ($236D): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed.
+; IacRollSpeedBase ($236D): 2D table, 1 points, unsigned
+; IAC target while rolling: base against vehicle speed
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $18,Z
 ; Read at $05098, $05718
 ;---------------------------------------------------------------------------------------------------
-IdleSpeedScale:
+IacRollSpeedBase:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,30                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0345Factor ($2379): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0345,Z.
+; IacRollFactorV0345 ($2379): 2D table, 1 points, unsigned
+; Factor on the rolling IAC target against $0345,Z (centred on 128), with calibration bit $0331.7
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01B8,Z
 ; Read at $050EC, $0576E
 ;---------------------------------------------------------------------------------------------------
-IdleV0345Factor:
+IacRollFactorV0345:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0A5AFactor2 ($2385): 2D table, 2 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0A5A,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; IacRollFactorAirTempAlt ($2385): 2D table, 2 points, unsigned
+; Factor on the rolling IAC target against the alternative air temperature $0A5A,Z (centred on 128)
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: $16,Z
 ; Read at $050EC, $0576E
 ;---------------------------------------------------------------------------------------------------
-IdleV0A5AFactor2:
+IacRollFactorAirTempAlt:
         dc.b    2,$80                                    ; points, flags
         dc.b    121,77, 160,128                          ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleSegRpmFactor ($238F): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm. Result to $00FC,Z.
+; IacRollRpmFactor2 ($238F): 2D table, 3 points, unsigned
+; Second rolling IAC factor against segment rpm
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $057A0
 ;---------------------------------------------------------------------------------------------------
-IdleSegRpmFactor:
+IacRollRpmFactor2:
         dc.b    3,$80                                    ; points, flags
         dc.b    47,5, 78,5, 109,10                       ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleSegRpmFactor2 ($2399): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm.
+; IacRollRpmFactor ($2399): 2D table, 3 points, unsigned
+; Factor on the rolling IAC target against segment rpm
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $05108
 ;---------------------------------------------------------------------------------------------------
-IdleSegRpmFactor2:
+IacRollRpmFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    56,122, 63,64, 93,48                     ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleThrottleSegRpmAdder ($23A3): 3D table, 5 rows x 5 columns, signed
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: result of Lookup2D x SegmentRpm.
+; IacRollThrottleRpm ($23A3): 3D table, 5 rows x 5 columns, signed
+; IAC target while rolling: addition against throttle (rows) and segment rpm (signed); result into $0366,Z limited by $2642
 ; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x SegmentRpm
 ; Read at $050B4, $05734
 ;---------------------------------------------------------------------------------------------------
-IdleThrottleSegRpmAdder:
+IacRollThrottleRpm:
         dc.b    5,5,$FF                                  ; rows, columns, signed
         dc.b    31,63,94,125,156                         ; column axis
         dc.b    10,12,12,12,15                           ; row 0
@@ -5331,7 +5331,7 @@ L04718:
         STAA    $018C,Z
         BRA     L04726
 L0471E:
-        LDAA    $075F,Z
+        LDAA    >IacTarget,Z
         STAA    $018C,Z
 L04726:
         RTS
@@ -5754,7 +5754,7 @@ L04B7E:
         LBRA    L04C3E
 L04B9E:
         CLR     $01C3,Z
-        LDAB    $075F,Z
+        LDAB    >IacTarget,Z
         CLRA
         SUBB    $F4,Z
         SBCA    #$00
@@ -6129,7 +6129,7 @@ L04F90:
         BLS     L04F9C
         TBA
 L04F9C:
-        STAA    $075F,Z
+        STAA    >IacTarget,Z
         BRA     L04FB6
 L04FA2:
         LDD     #$FF00
@@ -6204,15 +6204,15 @@ L05060:
         BRA     L05100
 L05092:
         LDAA    $18,Z
-        LDX     #IdleSpeedScale
+        LDX     #IacRollSpeedBase
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #IdleThrottleScale
+        LDX     #IacRollThrottleScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleThrottleSegRpmAdder
+        LDX     #IacRollThrottleRpm
         JSR     Lookup3D
         SXT
         ADE
@@ -6228,11 +6228,11 @@ L050CC:
         XGAB
         TDE
         LDAA    $16,Z
-        LDX     #IdleV0A5AFactor2
+        LDX     #IacRollFactorAirTempAlt
         BRCLR   $032B,#$80,L050EC
         BRSET   $00F8,Z,#$02,L050EC
         LDAA    $01B8,Z
-        LDX     #IdleV0345Factor
+        LDX     #IacRollFactorV0345
 L050EC:
         JSR     Lookup2D
         SUBA    #$80
@@ -6245,7 +6245,7 @@ L050FE:
         EMUL
 L05100:
         LDAA    >SegmentRpm,Z
-        LDX     #IdleSegRpmFactor2
+        LDX     #IacRollRpmFactor
         JSR     Lookup2D
         CLRA
         ASLD
@@ -6282,7 +6282,7 @@ L05144:
         BLS     L05150
         TBA
 L05150:
-        STAA    $075F,Z
+        STAA    >IacTarget,Z
 L05154:
         BRCLR   $0022,Z,#$44,L051CA
         BRSET   $0189,Z,#$08,L051CA
@@ -6366,8 +6366,8 @@ L05256:
         BSET    $1A,Z,#$20
         LBRA    L05958
 L05290:
-        LDAA    $42,Z
-        CMPA    $075F,Z
+        LDAA    <IacPosition,Z
+        CMPA    >IacTarget,Z
         LBNE    L05958
         BCLR    $0184,Z,#$08
         BCLR    $018A,Z,#$02
@@ -6404,8 +6404,8 @@ L052F0:
         BCLR    $1A,Z,#$20
         LBRA    L05958
 L05318:
-        LDAA    $42,Z
-        CMPA    $075F,Z
+        LDAA    <IacPosition,Z
+        CMPA    >IacTarget,Z
         LBNE    L05958
         BCLR    $0184,Z,#$04
         BCLR    $018A,Z,#$02
@@ -6436,8 +6436,8 @@ L0536A:
         BCLR    $1A,Z,#$20
         LBRA    L05958
 L05392:
-        LDAA    $42,Z
-        CMPA    $075F,Z
+        LDAA    <IacPosition,Z
+        CMPA    >IacTarget,Z
         LBNE    L05958
         BCLR    $0185,Z,#$20
         BCLR    $0185,Z,#$10
@@ -6466,8 +6466,8 @@ L053D4:
         BSET    $1A,Z,#$20
         LBRA    L05958
 L05406:
-        LDAA    $42,Z
-        CMPA    $075F,Z
+        LDAA    <IacPosition,Z
+        CMPA    >IacTarget,Z
         LBNE    L05958
         BCLR    $0185,Z,#$80
         BCLR    $018A,Z,#$02
@@ -6485,9 +6485,9 @@ L05424:
 L05446:
         BRSET   $0184,Z,#$20,L055FE
         LDAA    $0C,Z
-        LDX     #IdleCoolantFactor
+        LDX     #IacDroopStepCoolant
         BRCLR   $0056,Z,#$20,L0545C
-        LDX     #IdleCoolantFactorAC
+        LDX     #IacDroopStepCoolantAC
 L0545C:
         JSR     Lookup2D
         SXT
@@ -6509,9 +6509,9 @@ L0548C:
         BRSET   $0187,Z,#$80,L054B4
         BSET    $0187,Z,#$80
         LDAA    $0C,Z
-        LDX     #IdleCoolantLimit
+        LDX     #IacGearDelayCoolant
         BRCLR   $0056,Z,#$20,L054A6
-        LDX     #IdleCoolantLimitAC
+        LDX     #IacGearDelayCoolantAC
 L054A6:
         JSR     Lookup2D
         CMPA    #$FF
@@ -6530,14 +6530,14 @@ L054C0:
         LDAB    $0187,Z
         ORAB    #$08
         ANDB    #$FB
-        LDX     #IdleCoolantLimit2
+        LDX     #IacGearTimeCoolant
         BRCLR   $0056,Z,#$20,L054E0
-        LDX     #IdleCoolantLimitAC2
+        LDX     #IacGearTimeCoolantAC
 L054E0:
         BRCLR   $001D,Z,#$20,L054F8
-        LDX     #IdleCoolantLimitPN
+        LDX     #IacGearTimeCoolantPN
         BRCLR   $0056,Z,#$20,L054F4
-        LDX     #IdleCoolantLimitAC3
+        LDX     #IacGearTimeCoolantPNAC
 L054F4:
         ORAB    #$04
         ANDB    #$F7
@@ -6550,14 +6550,14 @@ L054F8:
         BCC     L05544
         STAB    $FE,Z
         LDAA    $01BB,Z
-        LDX     #IdleV0348Factor2
+        LDX     #IacGearTimeFactorPN
         BRCLR   $0056,Z,#$20,L0551E
-        LDX     #IdleV0348FactorAC2
+        LDX     #IacGearTimeFactorPNAC
 L0551E:
         BRSET   $001D,Z,#$20,L05532
-        LDX     #IdleV0348Factor
+        LDX     #IacGearTimeFactor
         BRCLR   $0056,Z,#$20,L05532
-        LDX     #IdleV0348FactorAC
+        LDX     #IacGearTimeFactorAC
 L05532:
         JSR     Lookup2D
         LDAB    $FE,Z
@@ -6580,14 +6580,14 @@ L05556:
         BRSET   $0184,Z,#$20,L05610
         BSET    $0184,Z,#$20
         LDAA    $0C,Z
-        LDX     #IdleCoolant5
+        LDX     #IacGearStepCoolantPN
         BRCLR   $0056,Z,#$20,L05578
-        LDX     #IdleCoolantAC
+        LDX     #IacGearStepCoolantPNAC
 L05578:
         BRSET   $001D,Z,#$20,L0558C
-        LDX     #IdleCoolantFactor
+        LDX     #IacDroopStepCoolant
         BRCLR   $0056,Z,#$20,L0558C
-        LDX     #IdleCoolantFactorAC
+        LDX     #IacDroopStepCoolantAC
 L0558C:
         JSR     Lookup2D
         SXT
@@ -6600,7 +6600,7 @@ L0558C:
         XGDX
         BRCLR   $0184,Z,#$40,L055B8
         TDE
-        LDAB    $01CE,Z
+        LDAB    >IacBase,Z
         CLRA
         ADE
         LDAB    $F0,Z
@@ -6730,15 +6730,15 @@ L056F8:
         BRA     L05784
 L05712:
         LDAA    $18,Z
-        LDX     #IdleSpeedScale
+        LDX     #IacRollSpeedBase
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    >ThrottleAboveClosed,Z
-        LDX     #IdleThrottleScale
+        LDX     #IacRollThrottleScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
-        LDX     #IdleThrottleSegRpmAdder
+        LDX     #IacRollThrottleRpm
         JSR     Lookup3D
         SXT
         ADE
@@ -6754,11 +6754,11 @@ L0574C:
         EMULS
         TDE
         LDAA    $16,Z
-        LDX     #IdleV0A5AFactor2
+        LDX     #IacRollFactorAirTempAlt
         BRCLR   $032B,#$80,L0576E
         BRSET   $00F8,Z,#$02,L0576E
         LDAA    $01B8,Z
-        LDX     #IdleV0345Factor
+        LDX     #IacRollFactorV0345
 L0576E:
         JSR     Lookup2D
         SUBA    #$80
@@ -6782,7 +6782,7 @@ L05790:
         STAA    $FB,Z
         BRSET   $021F,Z,#$01,L057AE
         LDAA    >SegmentRpm,Z
-        LDX     #IdleSegRpmFactor
+        LDX     #IacRollRpmFactor2
         JSR     Lookup2D
         CLRA
         TDE
@@ -6877,7 +6877,7 @@ L058A0:
         BLS     L058AA
         LDAA    $20EE
 L058AA:
-        STAA    $075F,Z
+        STAA    >IacTarget,Z
         LBRA    L05958
 L058B2:
         BRSET   $0186,Z,#$04,L05900
@@ -6908,7 +6908,7 @@ L058EE:
         BLS     L058F8
         LDAA    $20EE
 L058F8:
-        STAA    $075F,Z
+        STAA    >IacTarget,Z
         LBRA    L05958
 L05900:
         BCLR    $0186,Z,#$04
@@ -6932,16 +6932,16 @@ L05932:
         TBA
         BRA     L05954
 L0593E:
-        CMPA    $075F,Z
+        CMPA    >IacTarget,Z
         BCC     L05954
         LDAB    <MainLoopCounter,Z
         BITB    $2348
         BNE     L05958
-        LDAA    $075F,Z
+        LDAA    >IacTarget,Z
         BEQ     L05958
         DECA
 L05954:
-        STAA    $075F,Z
+        STAA    >IacTarget,Z
 L05958:
         RTS
 
@@ -6954,7 +6954,7 @@ Sub_0595A:
         TAB
         SXT
         TDE
-        LDAB    $075F,Z
+        LDAB    >IacTarget,Z
         CLRA
         ADE
         BRCLR   $0041,Z,#$01,L059B8
@@ -7002,7 +7002,7 @@ L059C0:
         BCC     L059D0
         TED
 L059D0:
-        STAB    $075F,Z
+        STAB    >IacTarget,Z
         ANDP    #$FF1F
         RTS
 
@@ -7086,7 +7086,7 @@ Sub_05A92:
         LDAA    #$40
         STAA    $41,Z
         LDAA    #$FF
-        STAA    $42,Z
+        STAA    <IacPosition,Z
         LDAA    <Baro,Z
         LDX     #IacStartBaro
         JSR     Lookup2D
@@ -7131,7 +7131,7 @@ Sub_05AEC:
         LDAA    #$01
         TDE
         LDAA    $16,Z
-        LDX     #IdleV0A5AFactor
+        LDX     #IdleAirTempAltFactor
         JSR     Lookup2D
         CLRA
         EMUL
@@ -7163,8 +7163,8 @@ L05B5A:
         BRSET   >ThrottleState,Z,#$01,L05B8C
         BSET    $FC,Z,#$02
         BRCLR   $00F8,Z,#$40,L05B8C
-        LDAA    $075F,Z
-        CMPA    $42,Z
+        LDAA    >IacTarget,Z
+        CMPA    <IacPosition,Z
         BNE     L05B8C
         LDAA    $2538
         BRCLR   $0186,Z,#$80,L05B82
@@ -7298,7 +7298,7 @@ L05CB4:
         LDAB    <MainLoopCounter,Z
         BITB    $253D
         BNE     L05CFC
-        LDAA    $075F,Z
+        LDAA    >IacTarget,Z
         CMPA    $0196,Z
         BEQ     L05CFC
         BCS     L05CE0
@@ -7314,8 +7314,8 @@ L05CE0:
         TBA
 L05CEC:
         STAA    $018C,Z
-        STAA    $42,Z
-        STAA    $075F,Z
+        STAA    <IacPosition,Z
+        STAA    >IacTarget,Z
         BSET    $0185,Z,#$02
         BRA     L05D00
 L05CFC:
@@ -7446,7 +7446,7 @@ L05DF6:
 ;---------------------------------------------------------------------------------------------------
 Sub_05DFC:
         BRCLR   >MainLoopPhaseMask,Z,#$40,L05E3C
-        LDAA    $075F,Z
+        LDAA    >IacTarget,Z
         CMPA    #$04
         BLS     L05E10
         BCLR    $41,Z,#$10
@@ -7455,13 +7455,13 @@ L05E10:
         BRSET   >ThrottleState,Z,#$01,L05E3C
         BRSET   $00F8,Z,#$01,L05E3C
         ORP     #$00E0
-        LDAA    $075F,Z
-        ORAA    $42,Z
+        LDAA    >IacTarget,Z
+        ORAA    <IacPosition,Z
         BNE     L05E38
         LDAA    #$02
         STAA    $018C,Z
-        STAA    $42,Z
-        STAA    $075F,Z
+        STAA    <IacPosition,Z
+        STAA    >IacTarget,Z
         BSET    $41,Z,#$10
 L05E38:
         ANDP    #$FF1F
@@ -7834,7 +7834,7 @@ L061AE:
         BLS     L061B8
         TBA
 L061B8:
-        STAA    $075F,Z
+        STAA    >IacTarget,Z
         BRCLR   $0020,Z,#$80,L061CE
         LDAA    $01C7,Z
         ADDA    #$01
@@ -7971,7 +7971,7 @@ Sub_06334:
         JSR     Lookup3D
         STAA    $F0,Z
         BRSET   $0184,Z,#$40,L06354
-        STAA    $01CE,Z
+        STAA    >IacBase,Z
 L06354:
         LDAA    <Baro,Z
         LDX     #IdleBaroScale
@@ -11358,7 +11358,7 @@ Sub_08874:
         BCS     L088DA
 L08886:
         LDAA    $018C,Z
-        SUBA    $42,Z
+        SUBA    <IacPosition,Z
         BCS     L088DA
         STAA    $F0,Z
         LDAA    $0C,Z
@@ -20832,7 +20832,7 @@ L0E88E:
 Sub_0E892:
         CLRB
         TBXK
-        LDAB    $42,Z
+        LDAB    <IacPosition,Z
         BRSET   $0041,Z,#$40,L0E8A6
         CMPB    $018C,Z
         LBEQ    L0E964
@@ -20868,8 +20868,8 @@ L0E8EC:
         BRA     L0E900
 L0E8F8:
         TAB
-        ADDA    $42,Z
-        STAA    $42,Z
+        ADDA    <IacPosition,Z
+        STAA    <IacPosition,Z
         BRA     L0E902
 L0E900:
         CLRB

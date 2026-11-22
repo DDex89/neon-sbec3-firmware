@@ -637,7 +637,7 @@ L30768:
         LDAA    #$8C
         STAA    $097C,Z
         LDAA    >CoolantTemp,Z
-        LDAB    $0A5A,Z
+        LDAB    >AirTempAlt,Z
         RTS
 L30778:
         LDAA    #$75
@@ -2393,7 +2393,7 @@ L319E8:
         BCC     L31A06
         CLRA
 L31A06:
-        LDAB    $0A5A,Z
+        LDAB    >AirTempAlt,Z
         SUBB    #$58
         BCC     L31A10
         CLRB
@@ -6898,7 +6898,7 @@ L35C56:
         ORP     #$00E0
         BSET    $17,Z,#$40
         LDAA    #$DF
-        STAA    $18,Z
+        STAA    <IacPosition,Z
         ANDP    #$FF1F
         BRA     L35C6E
 L35C68:
@@ -7798,7 +7798,7 @@ L3653E:
 L36540:
         LDAA    >EngineRpm,Z
         BNE     L36562
-        LDAA    $18,Z
+        LDAA    <IacPosition,Z
         LDAB    $031D,Z
         BNE     L36552
         STAA    $031D,Z
@@ -7817,7 +7817,7 @@ L36564:
 L36566:
         LDAA    >EngineRpm,Z
         BNE     L36590
-        LDAA    $18,Z
+        LDAA    <IacPosition,Z
         LDAB    $031D,Z
         BNE     L36578
         STAA    $031D,Z
@@ -9700,7 +9700,7 @@ L39270:
 Sub_39272:
         BRCLR   $032D,#$20,L39288
         BRCLR   $0503,Z,#$01,L39288
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         CMPA    $035F
         BLS     L392E8
 L39288:
@@ -9782,7 +9782,7 @@ L3937C:
         BRSET   $0C21,Z,#$40,L393A2
         BSET    $0C22,Z,#$02
 L39386:
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         CMPA    $0568
         BLS     L393A2
         CMPA    $0569
@@ -10100,7 +10100,7 @@ L39706:
 L39722:
         BCLR    $0B2C,Z,#$08
         BRSET   $06B4,Z,#$01,L3983E
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         CMPA    $058F
         LBCS    L3983E
         BRCLR   $0B2D,Z,#$08,L39746
@@ -10265,7 +10265,7 @@ L39908:
 L39924:
         BCLR    $0B2C,Z,#$08
         BRSET   $06B4,Z,#$01,L39A28
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         CMPA    $058F
         LBCS    L39A28
         BRCLR   $0B2D,Z,#$08,L39948
@@ -14708,7 +14708,7 @@ Sub_3DC64:
         BRCLR   $042A,Z,#$04,L3DC70
         BRSET   $0774,Z,#$80,L3DCBE
 L3DC70:
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         CMPA    $1994
         BCS     L3DC98
         CMPA    $1995
@@ -16329,7 +16329,7 @@ L3ED66:
         CMPA    $2F84
         BCS     L3EDBE
         BRSET   $0330,#$20,L3ED7C
-        LDAA    $0A5A,Z
+        LDAA    >AirTempAlt,Z
         BRA     L3ED80
 L3ED7C:
         LDAA    >AirTemp,Z

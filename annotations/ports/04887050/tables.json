@@ -17,7 +17,7 @@
  "tables": {
   "0EE2": {
    "name": "StartCoolantFactor",
-   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to $0A5A,Z, $0A5B,Z.",
+   "desc": "Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to AirTempAlt, $0A5B,Z.",
    "category": "Startup",
    "auto": true,
    "x": "tempc",
@@ -152,12 +152,12 @@
    "y": "raw"
   },
   "051F": {
-   "name": "IdleThrottleScale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: ThrottleAboveClosed.",
+   "name": "IacRollThrottleScale",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC target while rolling: throttle opening to row position of IacRollThrottleRpm",
    "x": "raw",
-   "y": "raw"
+   "y": "pos256",
+   "auto": false
   },
   "04B3": {
    "name": "IacCoastSpeedScale",
@@ -730,60 +730,60 @@
    "auto": false
   },
   "1F4E": {
-   "name": "IdleCoolantLimit",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.",
+   "name": "IacGearDelayCoolant",
    "category": "Idle",
-   "auto": true,
+   "desc": "Delay timer ($0349,Z) started when $0C31,Z bit 7 sets, against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1F62": {
-   "name": "IdleV0348Factor",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.",
+   "name": "IacGearTimeFactor",
    "category": "Idle",
-   "auto": true,
+   "desc": "Factor on IacGearTimeCoolant against the time counter $0348,Z",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1F6C": {
-   "name": "IdleCoolantFactor",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.",
+   "name": "IacDroopStepCoolant",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC opening when the rpm drops below the target in gear ($0317,Z bit 3, $0C31,Z bit 7), against coolant",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1F58": {
-   "name": "IdleCoolantLimitPN",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
+   "name": "IacGearTimeCoolantPN",
    "category": "Idle",
-   "auto": true,
+   "desc": "As IacGearTimeCoolant in P/N",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1F7E": {
-   "name": "IdleCoolantLimitAC3",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.",
+   "name": "IacGearTimeCoolantPNAC",
    "category": "Idle",
-   "auto": true,
+   "desc": "As IacGearTimeCoolant in P/N with A/C requested",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1F88": {
-   "name": "IdleV0348FactorAC2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.",
+   "name": "IacGearTimeFactorPNAC",
    "category": "Idle",
-   "auto": true,
+   "desc": "As IacGearTimeFactor in P/N with A/C requested",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1F92": {
-   "name": "IdleCoolantAC",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.",
+   "name": "IacGearStepCoolantPNAC",
    "category": "Idle",
-   "auto": true,
+   "desc": "As IacGearStepCoolantPN with A/C requested",
    "x": "tempc",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "1FA5": {
    "name": "IdleMapScale",
@@ -826,53 +826,53 @@
    "auto": false
   },
   "2069": {
-   "name": "IdleSpeedScale",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed.",
+   "name": "IacRollSpeedBase",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC target while rolling: base against vehicle speed",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2075": {
-   "name": "IdleV0345Factor",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0345,Z.",
+   "name": "IacRollFactorV0345",
    "category": "Idle",
-   "auto": true,
+   "desc": "Factor on the rolling IAC target against $0345,Z (centred on 128), with calibration bit $0331.7",
    "x": "raw",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2081": {
-   "name": "IdleV0A5AFactor2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0A5A,Z.",
+   "name": "IacRollFactorAirTempAlt",
    "category": "Idle",
-   "auto": true,
-   "x": "raw",
-   "y": "raw"
+   "desc": "Factor on the rolling IAC target against the alternative air temperature $0A5A,Z (centred on 128)",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
   },
   "208B": {
-   "name": "IdleSegRpmFactor",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm. Result to $00FC,Z.",
+   "name": "IacRollRpmFactor2",
    "category": "Idle",
-   "auto": true,
+   "desc": "Second rolling IAC factor against segment rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "2095": {
-   "name": "IdleSegRpmFactor2",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm.",
+   "name": "IacRollRpmFactor",
    "category": "Idle",
-   "auto": true,
+   "desc": "Factor on the rolling IAC target against segment rpm",
    "x": "rpm32",
-   "y": "raw"
+   "y": "raw",
+   "auto": false
   },
   "209F": {
-   "name": "IdleThrottleSegRpmAdder",
-   "desc": "Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: result of Lookup2D x SegmentRpm.",
+   "name": "IacRollThrottleRpm",
    "category": "Idle",
-   "auto": true,
+   "desc": "IAC target while rolling: addition against throttle (rows) and segment rpm (signed); result into $0366,Z limited by $2642",
    "x": "rpm32",
    "y": "pos256",
-   "z": "raw"
+   "z": "raw",
+   "auto": false
   },
   "1FE7": {
    "name": "IacCoastSpeedRpm",

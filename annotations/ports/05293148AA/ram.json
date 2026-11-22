@@ -14,6 +14,8 @@
  "0025": "ThrottleState",
  "002B": "ThrottleClosed",
  "002C": "Baro",
+ "0042": "IacPosition",
+ "01CE": "IacBase",
  "0286": "SegmentRpm",
  "0324": "MapRaw",
  "039E": "ShortTermTrim1",
@@ -54,5 +56,6 @@
  "0566": "VehicleSpeedRaw",
  "0572": "VehicleSpeedCoarse",
  "058C": "Ic2OverflowCount",
- "0627": "LookupResult"
+ "0627": "LookupResult",
+ "075F": "IacTarget"
 }

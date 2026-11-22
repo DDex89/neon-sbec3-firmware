@@ -499,7 +499,7 @@ SensorV00F0Adder:
 
 ;---------------------------------------------------------------------------------------------------
 ; StartCoolantFactor ($04CC): 2D table, 4 points, unsigned
-; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to $0A5A,Z, $0A5B,Z.
+; Subsystem: initialisation at reset (by the routine that reads it, Reset). Inputs: CoolantTemp. Result to AirTempAlt, $0A5B,Z.
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0D97A, $2C4EE
@@ -1128,25 +1128,25 @@ Tab2D_099A:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0A5A ($09A6): 2D table, 5 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: $0A5A,Z.
+; IdleAirTempAlt ($09A6): 2D table, 5 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: AirTempAlt.
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0A5F,Z
+; Inputs: AirTempAlt
 ; Read at $1B566
 ;---------------------------------------------------------------------------------------------------
-IdleV0A5A:
+IdleAirTempAlt:
         dc.b    5,$80                                    ; points, flags
         dc.b    99,0, 110,64, 121,128, 132,192, 143,255  ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleThrottleScale ($09B2): 2D table, 5 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: ThrottleAboveClosed.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; IacRollThrottleScale ($09B2): 2D table, 5 points, unsigned
+; IAC target while rolling: throttle opening to row position of IacRollThrottleRpm
+; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $19B94, $1A2EA
 ;---------------------------------------------------------------------------------------------------
-IdleThrottleScale:
+IacRollThrottleScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 5,64, 15,128, 26,192, 51,255        ; x, y
 
@@ -3223,7 +3223,7 @@ Tab3D_24C6:
 ; AirTempSparkFactor ($2523): 2D table, 4 points, unsigned
 ; Weight of AirTempSparkMapRpm against intake air temperature (or $0A5A,Z with calibration bit $0330.5 clear)
 ; x: tempc, y: mult256 (units: docs/en/calibration.md)
-; Inputs: AirTemp; $0A5F,Z
+; Inputs: AirTemp; AirTempAlt
 ; Read at $1D216
 ;---------------------------------------------------------------------------------------------------
 AirTempSparkFactor:
@@ -4228,87 +4228,87 @@ SparkTrim4:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$80,$00,$AD,$01,$04,$1A
 
 ;---------------------------------------------------------------------------------------------------
-; SparkCoolant ($2EE4): 2D table, 1 points, unsigned
-; Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: CoolantTemp.
+; IdleSparkFilterCoolant ($2EE4): 2D table, 1 points, unsigned
+; Idle spark control: filter weight of the rpm error against coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1E812
 ;---------------------------------------------------------------------------------------------------
-SparkCoolant:
+IdleSparkFilterCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; SparkTable ($2EEC): 2D table, 5 points, signed
-; Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; IdleSparkRpmError ($2EEC): 2D table, 5 points, signed
+; Idle spark control: spark change against the (signed) idle rpm error, into $0DA1,Z
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: TBA; #$7F; #$80
 ; Read at $1E88A
 ;---------------------------------------------------------------------------------------------------
-SparkTable:
+IdleSparkRpmError:
         dc.b    5,$20                                    ; points, flags
         dc.b    106,10, 112,8, 119,5, 122,2, 128,0       ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkTable2 ($2EF8): 2D table, 5 points, signed
-; Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; IdleSparkRpmErrorAlt ($2EF8): 2D table, 5 points, signed
+; As IdleSparkRpmError, second variant (calibration bit $032E.6)
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: TBA; #$7F; #$80
 ; Read at $1E88A
 ;---------------------------------------------------------------------------------------------------
-SparkTable2:
+IdleSparkRpmErrorAlt:
         dc.b    5,$20                                    ; points, flags
         dc.b    128,0, 134,-6, 137,-8, 151,-12, 156,-16  ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkPN ($2F04): 2D table, 5 points, signed
-; Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; IdleSparkRpmErrorPN ($2F04): 2D table, 5 points, signed
+; As IdleSparkRpmError in P/N
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: TBA; #$7F; #$80
 ; Read at $1E88A
 ;---------------------------------------------------------------------------------------------------
-SparkPN:
+IdleSparkRpmErrorPN:
         dc.b    5,$20                                    ; points, flags
         dc.b    103,16, 112,10, 119,5, 122,2, 128,0      ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; SparkPN2 ($2F10): 2D table, 5 points, signed
-; Subsystem: spark advance (by the routine that reads it, Sub_1E76A). Inputs: TBA; #$7F; #$80. Result to $0DA1,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
+; IdleSparkRpmErrorPNAlt ($2F10): 2D table, 5 points, signed
+; As IdleSparkRpmErrorPN, second variant
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: TBA; #$7F; #$80
 ; Read at $1E88A
 ;---------------------------------------------------------------------------------------------------
-SparkPN2:
+IdleSparkRpmErrorPNAlt:
         dc.b    5,$20                                    ; points, flags
         dc.b    128,0, 134,-6, 136,-12, 151,-20, 156,-22 ; x, y
 
         dc.b    $06,$00
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FE ($2F1E): 2D table, 3 points, signed
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FE,Z. Result to $0343,Z.
+; IdleStepClose ($2F1E): 2D table, 3 points, signed
+; Idle speed control: closing step against the accumulated error, added to $033E,Z (limited by $2611/$2612)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FE,Z
 ; Read at $19346
 ;---------------------------------------------------------------------------------------------------
-IdleV00FE:
+IdleStepClose:
         dc.b    3,$20                                    ; points, flags
         dc.b    128,-1, 136,-3, 140,-6                   ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FE2 ($2F26): 2D table, 3 points, signed
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FE,Z. Result to $0343,Z.
+; IdleStepOpen ($2F26): 2D table, 3 points, signed
+; Idle speed control: opening step against the accumulated error, added to $033E,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FE,Z
 ; Read at $193AA
 ;---------------------------------------------------------------------------------------------------
-IdleV00FE2:
+IdleStepOpen:
         dc.b    3,$20                                    ; points, flags
         dc.b    119,6, 123,3, 128,1                      ; x, y
 
@@ -4318,7 +4318,7 @@ IdleV00FE2:
 ; AirTempSparkFactor2 ($2F2F): 2D table, 4 points, unsigned
 ; Weight of AirTempSparkMap against intake air temperature
 ; x: tempc, y: mult256 (units: docs/en/calibration.md)
-; Inputs: AirTemp; $0A5F,Z
+; Inputs: AirTemp; AirTempAlt
 ; Read at $1D1BC
 ;---------------------------------------------------------------------------------------------------
 AirTempSparkFactor2:
@@ -4429,13 +4429,13 @@ IdleV0381Scale:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0A5AV030EFactor ($2FBD): 3D table, 5 rows x 5 columns, unsigned
+; IdleAirTempAltV030EFactor ($2FBD): 3D table, 5 rows x 5 columns, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: result of Lookup2D x $030E,Z. Result to $035E,Z.
 ; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $030E,Z
 ; Read at $1B582
 ;---------------------------------------------------------------------------------------------------
-IdleV0A5AV030EFactor:
+IdleAirTempAltV030EFactor:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    4,20,40,60,80                            ; column axis
         dc.b    125,125,125,125,125                      ; row 0
@@ -4446,13 +4446,13 @@ IdleV0A5AV030EFactor:
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0A5AV030EFactorPN ($2FDE): 3D table, 5 rows x 5 columns, unsigned
+; IdleAirTempAltV030EFactorPN ($2FDE): 3D table, 5 rows x 5 columns, unsigned
 ; Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: result of Lookup2D x $030E,Z. Result to $035E,Z.
 ; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $030E,Z
 ; Read at $1B582
 ;---------------------------------------------------------------------------------------------------
-IdleV0A5AV030EFactorPN:
+IdleAirTempAltV030EFactorPN:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    4,20,40,60,80                            ; column axis
         dc.b    113,113,113,113,113                      ; row 0
@@ -4464,164 +4464,164 @@ IdleV0A5AV030EFactorPN:
         dc.b    $06,$03,$C0,$01,$80,$40,$08,$00,$28,$01
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0A5ALimit ($3009): 2D table, 2 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: $0A5A,Z. Result to $035D,Z.
+; IdleAirTempAltLimit ($3009): 2D table, 2 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: AirTempAlt. Result to $035D,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0A5F,Z
+; Inputs: AirTempAlt
 ; Read at $1B5D4
 ;---------------------------------------------------------------------------------------------------
-IdleV0A5ALimit:
+IdleAirTempAltLimit:
         dc.b    2,$80                                    ; points, flags
         dc.b    105,12, 121,19                           ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0A5ALimit2 ($3013): 2D table, 2 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: $0A5A,Z.
+; IdleAirTempAltLimit2 ($3013): 2D table, 2 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1B182). Inputs: AirTempAlt.
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0A5F,Z
+; Inputs: AirTempAlt
 ; Read at $1B688
 ;---------------------------------------------------------------------------------------------------
-IdleV0A5ALimit2:
+IdleAirTempAltLimit2:
         dc.b    2,$80                                    ; points, flags
         dc.b    105,75, 121,75                           ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolant2 ($301D): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: CoolantTemp. Result to $00FF,Z.
+; IdleRateFilterCoolant ($301D): 2D table, 1 points, unsigned
+; Idle speed control: filter weight of the rpm rate term ($030A,Z) against coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19244
 ;---------------------------------------------------------------------------------------------------
-IdleCoolant2:
+IdleRateFilterCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FC ($3025): 2D table, 8 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $0336,Z.
+; IdleErrorTermCoarse ($3025): 2D table, 8 points, unsigned
+; Idle speed control: proportional term against the coarse rpm error (segment rpm minus target), used for errors above $26EC; result minus 128 into $0336,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FC,Z
 ; Read at $19188
 ;---------------------------------------------------------------------------------------------------
-IdleV00FC:
+IdleErrorTermCoarse:
         dc.b    8,$80                                    ; points, flags
         dc.b    36,224, 52,203, 56,141, 64,128, 72,109, 87,103, 111,91, 189,72 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FD ($3037): 2D table, 7 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FD,Z. Result to $0336,Z.
+; IdleErrorTermFine ($3037): 2D table, 7 points, unsigned
+; Idle speed control: proportional term against the fine rpm error, used for errors below $26EC
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FD,Z
 ; Read at $19188
 ;---------------------------------------------------------------------------------------------------
-IdleV00FD:
+IdleErrorTermFine:
         dc.b    7,$80                                    ; points, flags
         dc.b    0,175, 64,147, 96,128, 128,128, 160,120, 192,102, 255,97 ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FCPN ($3049): 2D table, 8 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $0336,Z.
+; IdleErrorTermCoarsePN ($3049): 2D table, 8 points, unsigned
+; As IdleErrorTermCoarse, in P/N
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FC,Z
 ; Read at $19188
 ;---------------------------------------------------------------------------------------------------
-IdleV00FCPN:
+IdleErrorTermCoarsePN:
         dc.b    8,$80                                    ; points, flags
         dc.b    36,208, 56,180, 64,128, 68,108, 92,100, 111,58, 189,17, 205,0 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FDPN ($305B): 2D table, 5 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FD,Z. Result to $0336,Z.
+; IdleErrorTermFinePN ($305B): 2D table, 5 points, unsigned
+; As IdleErrorTermFine, in P/N
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FD,Z
 ; Read at $19188
 ;---------------------------------------------------------------------------------------------------
-IdleV00FDPN:
+IdleErrorTermFinePN:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,143, 104,131, 128,128, 152,123, 255,96 ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolant3 ($306D): 2D table, 2 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: CoolantTemp. Result to $033B,Z.
+; IdleDeadbandCoolant ($306D): 2D table, 2 points, unsigned
+; Idle speed control: part of the action threshold ($0337,Z) against coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $192AC
 ;---------------------------------------------------------------------------------------------------
-IdleCoolant3:
+IdleDeadbandCoolant:
         dc.b    2,$80                                    ; points, flags
         dc.b    177,31, 205,0                            ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleMap ($3077): 2D table, 4 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: Map. Result to $033D,Z.
+; IdleDeadbandMap ($3077): 2D table, 4 points, unsigned
+; Idle speed control: part of the action threshold ($0337,Z) against MAP
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $1929C
 ;---------------------------------------------------------------------------------------------------
-IdleMap:
+IdleDeadbandMap:
         dc.b    4,$80                                    ; points, flags
         dc.b    24,113, 40,97, 57,95, 73,91              ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FEScale ($3081): 2D table, 4 points, steps, no interpolation
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FE,Z.
+; IdleStepOpenScale ($3081): 2D table, 4 points, steps, no interpolation
+; Idle speed control: accumulated error to the size of an IAC opening step
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FE,Z
 ; Read at $19382
 ;---------------------------------------------------------------------------------------------------
-IdleV00FEScale:
+IdleStepOpenScale:
         dc.b    4,$10                                    ; points, flags
         dc.b    17,5, 79,3, 116,2, 124,0                 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FC2 ($308B): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $033F,Z.
+; IdleStepOpenFactor ($308B): 2D table, 3 points, unsigned
+; Idle speed control: opening step factor against the coarse rpm error, into $033F,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FC,Z
 ; Read at $19390
 ;---------------------------------------------------------------------------------------------------
-IdleV00FC2:
+IdleStepOpenFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,253, 62,154, 77,13                     ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0339Scale ($3095): 2D table, 4 points, steps, no interpolation
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $0339,Z.
+; IdleStepCloseScale ($3095): 2D table, 4 points, steps, no interpolation
+; Idle speed control: accumulated error to the size of an IAC closing step
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0339,Z
 ; Read at $1931C
 ;---------------------------------------------------------------------------------------------------
-IdleV0339Scale:
+IdleStepCloseScale:
         dc.b    4,$10                                    ; points, flags
         dc.b    128,0, 132,1, 160,1, 216,2               ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV00FC3 ($309F): 2D table, 4 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1908C). Inputs: $FC,Z. Result to $033A,Z.
+; IdleStepCloseFactor ($309F): 2D table, 4 points, unsigned
+; Idle speed control: closing step factor against the coarse rpm error, into $033A,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $FC,Z
 ; Read at $1932A
 ;---------------------------------------------------------------------------------------------------
-IdleV00FC3:
+IdleStepCloseFactor:
         dc.b    4,$80                                    ; points, flags
         dc.b    51,16, 64,128, 104,148, 189,253          ; x, y
 
@@ -4651,104 +4651,104 @@ Tab2D_30B5:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit ($30BF): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.
+; IacGearDelayCoolant ($30BF): 2D table, 3 points, unsigned
+; Delay timer ($0349,Z) started when $0C31,Z bit 7 sets, against coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19FA0
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit:
+IacGearDelayCoolant:
         dc.b    3,$80                                    ; points, flags
         dc.b    99,76, 121,22, 141,10                    ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimitAC ($30C9): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z.
+; IacGearDelayCoolantAC ($30C9): 2D table, 3 points, unsigned
+; As IacGearDelayCoolant with A/C requested
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19FA0
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimitAC:
+IacGearDelayCoolantAC:
         dc.b    3,$80                                    ; points, flags
         dc.b    99,76, 121,22, 141,10                    ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimit2 ($30D3): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; IacGearTimeCoolant ($30D3): 2D table, 3 points, unsigned
+; Duration of the gear-change idle air ($034A,Z) against coolant, below $279A; scaled by IacGearTimeFactor
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19FFA
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimit2:
+IacGearTimeCoolant:
         dc.b    3,$80                                    ; points, flags
         dc.b    99,160, 121,10, 141,4                    ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimitAC2 ($30DD): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; IacGearTimeCoolantAC ($30DD): 2D table, 3 points, unsigned
+; As IacGearTimeCoolant with A/C requested
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19FFA
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimitAC2:
+IacGearTimeCoolantAC:
         dc.b    3,$80                                    ; points, flags
         dc.b    99,160, 121,10, 141,4                    ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348Factor ($30E7): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; IacGearTimeFactor ($30E7): 2D table, 1 points, unsigned
+; Factor on IacGearTimeCoolant against the time counter $0348,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0348,Z
 ; Read at $1A030
 ;---------------------------------------------------------------------------------------------------
-IdleV0348Factor:
+IacGearTimeFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348FactorAC ($30F1): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; IacGearTimeFactorAC ($30F1): 2D table, 1 points, unsigned
+; As IacGearTimeFactor with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0348,Z
 ; Read at $1A030
 ;---------------------------------------------------------------------------------------------------
-IdleV0348FactorAC:
+IacGearTimeFactorAC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantFactor ($30FB): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; IacDroopStepCoolant ($30FB): 2D table, 3 points, unsigned
+; IAC opening when the rpm drops below the target in gear ($0317,Z bit 3, $0C31,Z bit 7), against coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19F54, $1A08C
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantFactor:
+IacDroopStepCoolant:
         dc.b    3,$80                                    ; points, flags
         dc.b    110,80, 141,23, 199,8                    ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantFactorAC ($3105): 2D table, 4 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; IacDroopStepCoolantAC ($3105): 2D table, 4 points, unsigned
+; As IacDroopStepCoolant with A/C requested
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19F54, $1A08C
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantFactorAC:
+IacDroopStepCoolantAC:
         dc.b    4,$80                                    ; points, flags
         dc.b    110,45, 144,20, 177,15, 210,11           ; x, y
 
@@ -4776,78 +4776,78 @@ Tab2D_3117:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimitPN ($311F): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; IacGearTimeCoolantPN ($311F): 2D table, 3 points, unsigned
+; As IacGearTimeCoolant in P/N
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19FFA
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimitPN:
+IacGearTimeCoolantPN:
         dc.b    3,$80                                    ; points, flags
         dc.b    99,48, 121,40, 141,8                     ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantLimitAC3 ($3129): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z.
+; IacGearTimeCoolantPNAC ($3129): 2D table, 3 points, unsigned
+; As IacGearTimeCoolant in P/N with A/C requested
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $19FFA
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantLimitAC3:
+IacGearTimeCoolantPNAC:
         dc.b    3,$80                                    ; points, flags
         dc.b    99,48, 121,40, 141,8                     ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348Factor2 ($3133): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; IacGearTimeFactorPN ($3133): 2D table, 1 points, unsigned
+; As IacGearTimeFactor in P/N
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0348,Z
 ; Read at $1A030
 ;---------------------------------------------------------------------------------------------------
-IdleV0348Factor2:
+IacGearTimeFactorPN:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0348FactorAC2 ($313D): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z.
+; IacGearTimeFactorPNAC ($313D): 2D table, 1 points, unsigned
+; As IacGearTimeFactor in P/N with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0348,Z
 ; Read at $1A030
 ;---------------------------------------------------------------------------------------------------
-IdleV0348FactorAC2:
+IacGearTimeFactorPNAC:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolant5 ($3147): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; IacGearStepCoolantPN ($3147): 2D table, 3 points, unsigned
+; IAC step when the gear-change timer runs out, against coolant (P/N)
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1A08C
 ;---------------------------------------------------------------------------------------------------
-IdleCoolant5:
+IacGearStepCoolantPN:
         dc.b    3,$80                                    ; points, flags
         dc.b    110,218, 141,246, 199,252                ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantAC ($3151): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp.
+; IacGearStepCoolantPNAC ($3151): 2D table, 3 points, unsigned
+; As IacGearStepCoolantPN with A/C requested
 ; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1A08C
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantAC:
+IacGearStepCoolantPNAC:
         dc.b    3,$80                                    ; points, flags
         dc.b    110,218, 141,246, 199,252                ; x, y
 
@@ -4905,13 +4905,13 @@ IdleV0341Scale:
         dc.b    $50,$50,$28,$00
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0A5AFactor ($31C5): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1A6E2). Inputs: $0A5A,Z. Result to $0334,Z.
+; IdleAirTempAltFactor ($31C5): 2D table, 1 points, unsigned
+; Subsystem: idle speed control (by the routine that reads it, Sub_1A6E2). Inputs: AirTempAlt. Result to $0334,Z.
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0A5F,Z
+; Inputs: AirTempAlt
 ; Read at $1A63E
 ;---------------------------------------------------------------------------------------------------
-IdleV0A5AFactor:
+IdleAirTempAltFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -4984,77 +4984,77 @@ IacCoastThrottleLimit:
         dc.b    $FF,$D0,$84,$00
 
 ;---------------------------------------------------------------------------------------------------
-; IdleSpeedScale ($3234): 2D table, 4 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed.
+; IacRollSpeedBase ($3234): 2D table, 4 points, unsigned
+; IAC target while rolling: base against vehicle speed
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $19B84, $1A2DA
 ;---------------------------------------------------------------------------------------------------
-IdleSpeedScale:
+IacRollSpeedBase:
         dc.b    4,$80                                    ; points, flags
         dc.b    12,10, 20,16, 100,33, 140,54             ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0345Factor ($3240): 2D table, 4 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0345,Z.
+; IacRollFactorV0345 ($3240): 2D table, 4 points, unsigned
+; Factor on the rolling IAC target against $0345,Z (centred on 128), with calibration bit $0331.7
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0345,Z
 ; Read at $19BDA, $1A332
 ;---------------------------------------------------------------------------------------------------
-IdleV0345Factor:
+IacRollFactorV0345:
         dc.b    4,$80                                    ; points, flags
         dc.b    38,54, 51,128, 127,194, 204,238          ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0A5AFactor2 ($324C): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0A5A,Z.
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0A5F,Z
+; IacRollFactorAirTempAlt ($324C): 2D table, 1 points, unsigned
+; Factor on the rolling IAC target against the alternative air temperature $0A5A,Z (centred on 128)
+; x: tempc, y: raw (units: docs/en/calibration.md)
+; Inputs: AirTempAlt
 ; Read at $19BDA, $1A332
 ;---------------------------------------------------------------------------------------------------
-IdleV0A5AFactor2:
+IacRollFactorAirTempAlt:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleSegRpmFactor ($3256): 2D table, 4 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm. Result to $00FC,Z.
+; IacRollRpmFactor2 ($3256): 2D table, 4 points, unsigned
+; Second rolling IAC factor against segment rpm
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $1A364
 ;---------------------------------------------------------------------------------------------------
-IdleSegRpmFactor:
+IacRollRpmFactor2:
         dc.b    4,$80                                    ; points, flags
         dc.b    29,3, 75,10, 113,15, 163,20              ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleSegRpmFactor2 ($3260): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm.
+; IacRollRpmFactor ($3260): 2D table, 1 points, unsigned
+; Factor on the rolling IAC target against segment rpm
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $19BF6
 ;---------------------------------------------------------------------------------------------------
-IdleSegRpmFactor2:
+IacRollRpmFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleThrottleSegRpmAdder ($326A): 3D table, 5 rows x 5 columns, signed
-; Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: result of Lookup2D x SegmentRpm.
+; IacRollThrottleRpm ($326A): 3D table, 5 rows x 5 columns, signed
+; IAC target while rolling: addition against throttle (rows) and segment rpm (signed); result into $0366,Z limited by $2642
 ; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x SegmentRpm
 ; Read at $19BA0, $1A2F6
 ;---------------------------------------------------------------------------------------------------
-IdleThrottleSegRpmAdder:
+IacRollThrottleRpm:
         dc.b    5,5,$FF                                  ; rows, columns, signed
         dc.b    31,47,63,78,94                           ; column axis
         dc.b    0,0,0,0,0                                ; row 0
@@ -5195,38 +5195,38 @@ IacWarmupCoolantAdder:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleSegRpm ($3363): 2D table, 4 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: SegmentRpm. Result to $00FE,Z.
+; IacRpmAdder ($3363): 2D table, 4 points, unsigned
+; IAC addition against segment rpm, weighted by IacRpmAdderCoolantWeight
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $1AC8C
 ;---------------------------------------------------------------------------------------------------
-IdleSegRpm:
+IacRpmAdder:
         dc.b    4,$80                                    ; points, flags
         dc.b    31,0, 69,2, 109,4, 188,7                 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; IdleCoolantFactor2 ($336D): 2D table, 2 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: CoolantTemp.
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; IacRpmAdderCoolantWeight ($336D): 2D table, 2 points, unsigned
+; Weight of IacRpmAdder against coolant
+; x: tempc, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1AC9A
 ;---------------------------------------------------------------------------------------------------
-IdleCoolantFactor2:
+IacRpmAdderCoolantWeight:
         dc.b    2,$80                                    ; points, flags
         dc.b    144,128, 199,255                         ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleBaroAdder ($3377): 2D table, 1 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: Baro.
+; IacBaroAdder ($3377): 2D table, 1 points, unsigned
+; IAC addition against barometric pressure
 ; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $1ACB0
 ;---------------------------------------------------------------------------------------------------
-IdleBaroAdder:
+IacBaroAdder:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -5272,26 +5272,26 @@ IdleTable3:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0335Adder ($339F): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: $0335,Z.
+; IacAdderV0335 ($339F): 2D table, 3 points, unsigned
+; IAC addition against $0335,Z (Sub_1AC64)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0335,Z
 ; Read at $1AC22
 ;---------------------------------------------------------------------------------------------------
-IdleV0335Adder:
+IacAdderV0335:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,5, 26,42, 48,56                        ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; IdleV0335Adder2 ($33A9): 2D table, 3 points, unsigned
-; Subsystem: idle speed control (by the routine that reads it, Sub_1AC64). Inputs: $0335,Z.
+; IacAdderV0335b ($33A9): 2D table, 3 points, unsigned
+; Second IAC addition against $0335,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0335,Z
 ; Read at $1AC22
 ;---------------------------------------------------------------------------------------------------
-IdleV0335Adder2:
+IacAdderV0335b:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,5, 26,42, 48,56                        ; x, y
 
@@ -8235,7 +8235,7 @@ Sub_08456:
         LDAA    >BatteryVolts2,Z
         CMPA    $2F6D
         BCS     L084B0
-        LDAB    $18,Z
+        LDAB    <IacPosition,Z
         BRCLR   $0017,Z,#$40,L0847C
         TSTB
         BNE     L0848A
@@ -8269,8 +8269,8 @@ L084C0:
 L084C6:
         BCLR    $17,Z,#$80
         TAB
-        ADDA    $18,Z
-        STAA    $18,Z
+        ADDA    <IacPosition,Z
+        STAA    <IacPosition,Z
         BRA     L084D4
 L084D2:
         CLRB
@@ -13476,7 +13476,7 @@ L0D966:
         ADCA    #$00
         TAB
 L0D986:
-        STAB    $0A5F,Z
+        STAB    >AirTempAlt,Z
         STAB    $0A63,Z
         LDE     >ResetCheckWord,Z
         CPE     #$4AB6
@@ -13496,7 +13496,7 @@ L0D9B0:
         MUL
         STD     $0458,Z
 L0D9C2:
-        LDAA    $0A5F,Z
+        LDAA    >AirTempAlt,Z
         JSR     Sub_2C766
         STAA    $0DB1,Z
         LDAA    $0450

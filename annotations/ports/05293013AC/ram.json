@@ -5,11 +5,13 @@
  "0004": "UnexpectedIrqStack6",
  "0006": "ResetCheckWord",
  "0009": "ThrottleClosed",
+ "000B": "IacPosition",
  "000D": "Baro",
  "000E": "FlexEthanol",
  "013B": "Count3s",
  "013C": "MainLoopCounter",
  "013D": "MainLoopPhaseMask",
+ "01F0": "IacBase",
  "0218": "SegmentRpm",
  "0283": "MapRaw",
  "02FE": "LookupResult",
@@ -54,5 +56,6 @@
  "05D0": "MapAccelFuel",
  "05D4": "AccelFactor",
  "05D8": "AccelMapGain",
- "0660": "IdleTarget"
+ "0660": "IdleTarget",
+ "067A": "IacTarget"
 }

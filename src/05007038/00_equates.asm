@@ -16,6 +16,8 @@ MainLoopPhaseMask equ $001B        ; $F801B
 ThrottleState    equ $0025        ; $F8025
 ThrottleClosed   equ $002B        ; $F802B
 Baro             equ $002C        ; $F802C
+IacPosition      equ $0042        ; $F8042
+IacBase          equ $01CE        ; $F81CE
 SegmentRpm       equ $0286        ; $F8286
 MapRaw           equ $0324        ; $F8324
 ShortTermTrim1   equ $039E        ; $F839E
@@ -57,6 +59,7 @@ VehicleSpeedRaw  equ $0566        ; $F8566
 VehicleSpeedCoarse equ $0572        ; $F8572
 Ic2OverflowCount equ $058C        ; $F858C
 LookupResult     equ $0627        ; $F8627
+IacTarget        equ $075F        ; $F875F
 ADCMCR           equ $7700        ; $FF700
 ADCTL0_L         equ $770B        ; $FF70B
 ADCTL1_L         equ $770D        ; $FF70D

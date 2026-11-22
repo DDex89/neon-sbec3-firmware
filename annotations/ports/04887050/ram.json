@@ -5,11 +5,13 @@
  "0004": "UnexpectedIrqStack6",
  "0006": "ResetCheckWord",
  "0009": "ThrottleClosed",
+ "000B": "IacPosition",
  "000D": "Baro",
  "000E": "FlexEthanol",
  "010B": "Count3s",
  "010C": "MainLoopCounter",
  "010D": "MainLoopPhaseMask",
+ "01F0": "IacBase",
  "0200": "SegmentRpm",
  "0306": "EngineRpm",
  "030C": "VehicleSpeed",
@@ -52,5 +54,6 @@
  "05C0": "MapAccelFuel",
  "05C4": "AccelFactor",
  "05C8": "AccelMapGain",
- "0652": "IdleTarget"
+ "0652": "IdleTarget",
+ "066C": "IacTarget"
 }

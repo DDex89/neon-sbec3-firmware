@@ -1319,8 +1319,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x125" flags="0x0">
-  <title>IdleThrottleScale</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: ThrottleAboveClosed. $06DB, 2D; inputs: ThrottleAboveClosed</description>
+  <title>IacRollThrottleScale</title>
+  <description>IAC target while rolling: throttle opening to row position of IacRollThrottleRpm $06DB, 2D; inputs: ThrottleAboveClosed</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1346,7 +1346,7 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x6DE" mmedelementsizebits="8" mmedrowcount="5" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>position 0-255</units>
    <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
    <MATH equation="X">
@@ -8437,8 +8437,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E4" flags="0x0">
-  <title>IdleCoolantLimit</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z. $2234, 2D; inputs: $0C,Z</description>
+  <title>IacGearDelayCoolant</title>
+  <description>Delay timer ($0349,Z) started when $0C31,Z bit 7 sets, against coolant $2234, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8473,8 +8473,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E5" flags="0x0">
-  <title>IdleCoolantLimitAC</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $0349,Z, $0376,Z. $223E, 2D; inputs: $0C,Z</description>
+  <title>IacGearDelayCoolantAC</title>
+  <description>As IacGearDelayCoolant with A/C requested $223E, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8509,8 +8509,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E6" flags="0x0">
-  <title>IdleCoolantLimit2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $2248, 2D; inputs: $0C,Z</description>
+  <title>IacGearTimeCoolant</title>
+  <description>Duration of the gear-change idle air ($034A,Z) against coolant, below $279A; scaled by IacGearTimeFactor $2248, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8545,8 +8545,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E7" flags="0x0">
-  <title>IdleCoolantLimitAC2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $2252, 2D; inputs: $0C,Z</description>
+  <title>IacGearTimeCoolantAC</title>
+  <description>As IacGearTimeCoolant with A/C requested $2252, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8581,8 +8581,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E8" flags="0x0">
-  <title>IdleV0348Factor</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z. $225C, 2D; inputs: $01BB,Z</description>
+  <title>IacGearTimeFactor</title>
+  <description>Factor on IacGearTimeCoolant against the time counter $0348,Z $225C, 2D; inputs: $01BB,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8617,8 +8617,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E9" flags="0x0">
-  <title>IdleV0348FactorAC</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z. $2266, 2D; inputs: $01BB,Z</description>
+  <title>IacGearTimeFactorAC</title>
+  <description>As IacGearTimeFactor with A/C requested $2266, 2D; inputs: $01BB,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8653,8 +8653,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1EA" flags="0x0">
-  <title>IdleCoolantFactor</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. $2270, 2D; inputs: $0C,Z</description>
+  <title>IacDroopStepCoolant</title>
+  <description>IAC opening when the rpm drops below the target in gear ($0317,Z bit 3, $0C31,Z bit 7), against coolant $2270, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8689,8 +8689,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1EB" flags="0x0">
-  <title>IdleCoolantFactorAC</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. $227A, 2D; inputs: $0C,Z</description>
+  <title>IacDroopStepCoolantAC</title>
+  <description>As IacDroopStepCoolant with A/C requested $227A, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8797,8 +8797,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1EE" flags="0x0">
-  <title>IdleCoolantLimitPN</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $2294, 2D; inputs: $0C,Z</description>
+  <title>IacGearTimeCoolantPN</title>
+  <description>As IacGearTimeCoolant in P/N $2294, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8833,8 +8833,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1EF" flags="0x0">
-  <title>IdleCoolantLimitAC3</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. Result to $00FE,Z. $229E, 2D; inputs: $0C,Z</description>
+  <title>IacGearTimeCoolantPNAC</title>
+  <description>As IacGearTimeCoolant in P/N with A/C requested $229E, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8869,8 +8869,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F0" flags="0x0">
-  <title>IdleV0348Factor2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z. $22A8, 2D; inputs: $01BB,Z</description>
+  <title>IacGearTimeFactorPN</title>
+  <description>As IacGearTimeFactor in P/N $22A8, 2D; inputs: $01BB,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8905,8 +8905,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F1" flags="0x0">
-  <title>IdleV0348FactorAC2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0348,Z. $22B2, 2D; inputs: $01BB,Z</description>
+  <title>IacGearTimeFactorPNAC</title>
+  <description>As IacGearTimeFactor in P/N with A/C requested $22B2, 2D; inputs: $01BB,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8941,8 +8941,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F2" flags="0x0">
-  <title>IdleCoolant5</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. $22BC, 2D; inputs: $0C,Z</description>
+  <title>IacGearStepCoolantPN</title>
+  <description>IAC step when the gear-change timer runs out, against coolant (P/N) $22BC, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8977,8 +8977,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F3" flags="0x0">
-  <title>IdleCoolantAC</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: CoolantTemp. $22C6, 2D; inputs: $0C,Z</description>
+  <title>IacGearStepCoolantPNAC</title>
+  <description>As IacGearStepCoolantPN with A/C requested $22C6, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9157,8 +9157,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F8" flags="0x0">
-  <title>IdleV0A5AFactor</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1A6E2). Inputs: $0A5A,Z. Result to $0334,Z. $2316, 2D; inputs: $16,Z</description>
+  <title>IdleAirTempAltFactor</title>
+  <description>Subsystem: idle speed control (by the routine that reads it, Sub_1A6E2). Inputs: AirTempAlt. Result to $0334,Z. $2316, 2D; inputs: $16,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9373,8 +9373,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FE" flags="0x0">
-  <title>IdleSpeedScale</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: VehicleSpeed. $236D, 2D; inputs: $18,Z</description>
+  <title>IacRollSpeedBase</title>
+  <description>IAC target while rolling: base against vehicle speed $236D, 2D; inputs: $18,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9409,8 +9409,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FF" flags="0x0">
-  <title>IdleV0345Factor</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0345,Z. $2379, 2D; inputs: $01B8,Z</description>
+  <title>IacRollFactorV0345</title>
+  <description>Factor on the rolling IAC target against $0345,Z (centred on 128), with calibration bit $0331.7 $2379, 2D; inputs: $01B8,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9445,8 +9445,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x200" flags="0x0">
-  <title>IdleV0A5AFactor2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: $0A5A,Z. $2385, 2D; inputs: $16,Z</description>
+  <title>IacRollFactorAirTempAlt</title>
+  <description>Factor on the rolling IAC target against the alternative air temperature $0A5A,Z (centred on 128) $2385, 2D; inputs: $16,Z</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9460,13 +9460,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2387" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
+   <units>deg C</units>
    <indexcount>2</indexcount>
    <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X">
+   <MATH equation="X-128">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -9481,8 +9481,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x201" flags="0x0">
-  <title>IdleSegRpmFactor</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm. Result to $00FC,Z. $238F, 2D; inputs: SegmentRpm</description>
+  <title>IacRollRpmFactor2</title>
+  <description>Second rolling IAC factor against segment rpm $238F, 2D; inputs: SegmentRpm</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9517,8 +9517,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x202" flags="0x0">
-  <title>IdleSegRpmFactor2</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: SegmentRpm. $2399, 2D; inputs: SegmentRpm</description>
+  <title>IacRollRpmFactor</title>
+  <description>Factor on the rolling IAC target against segment rpm $2399, 2D; inputs: SegmentRpm</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9553,8 +9553,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x203" flags="0x0">
-  <title>IdleThrottleSegRpmAdder</title>
-  <description>Subsystem: idle speed control (by the routine that reads it, Sub_19808). Inputs: result of Lookup2D x SegmentRpm. $23A3, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <title>IacRollThrottleRpm</title>
+  <description>IAC target while rolling: addition against throttle (rows) and segment rpm (signed); result into $0366,Z limited by $2642 $23A3, 3D; inputs: result of Lookup2D x SegmentRpm</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x23A6" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -9569,7 +9569,7 @@
    </MATH>
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
-   <units> (rows set by IdleThrottleScale)</units>
+   <units> (rows set by IacRollThrottleScale)</units>
    <indexcount>5</indexcount>
    <outputtype>4</outputtype>
    <DALINK index="0" />

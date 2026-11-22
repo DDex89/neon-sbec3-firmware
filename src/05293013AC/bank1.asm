@@ -819,11 +819,11 @@ L10862:
         BCC     L108CC
         BRA     L108CA
 L10884:
-        STD     $01F0,Z
+        STD     >IacBase,Z
         LDX     #Tab2D_22DD
         LDAA    >VehicleSpeed,Z
         JSR     Lookup2D
-        LDAA    $01F0,Z
+        LDAA    >IacBase,Z
         CMPB    $01F1,Z
         BCS     L108CC
         ORAA    $22FC
@@ -1075,9 +1075,9 @@ Sub_10AC4:
         LDE     $2332
         EMUL
         ANDP    #$FEFF
-        STAA    $01F0,Z
+        STAA    >IacBase,Z
         LDAA    $0162,Z
-        SUBA    $01F0,Z
+        SUBA    >IacBase,Z
         BCC     L10B0E
         CLRA
         BRA     L10B0E
@@ -1111,11 +1111,11 @@ Sub_10B14:
         BHI     L10B2C
         LDAB    $2326
 L10B2C:
-        STAB    $01F0,Z
+        STAB    >IacBase,Z
         LDE     >EngineRpm,Z
         LDD     $0142,Z
         PSHM    D,E
-        LDAA    $01F0,Z
+        LDAA    >IacBase,Z
         JSR     Blend16
         AIS     #$04
         STD     $0142,Z
@@ -1301,15 +1301,15 @@ L10D20:
         LDAA    $049E,Z
         ANDA    #$C0
         BEQ     L10D80
-        STAA    $01F0,Z
+        STAA    >IacBase,Z
         EORA    $049A,Z
-        ANDA    $01F0,Z
-        STAA    $01F0,Z
+        ANDA    >IacBase,Z
+        STAA    >IacBase,Z
         BEQ     L10D56
         BRCLR   $031D,#$0A,L10D56
         BRCLR   $0149,Z,#$80,L10D56
         LDAA    #$7F
-        BRSET   $01F0,Z,#$C0,L10D50
+        BRSET   >IacBase,Z,#$C0,L10D50
         LDAA    #$07
 L10D50:
         BITA    >MainLoopCounter,Z
@@ -1319,7 +1319,7 @@ L10D56:
         LDY     #$35C6
         JSR     Sub_1E68C
         PULM    Y
-        BRCLR   $01F0,Z,#$FF,L10D80
+        BRCLR   >IacBase,Z,#$FF,L10D80
         TZX
         LDX     #$8183
         LDAA    #$0F
@@ -2271,10 +2271,10 @@ L1177A:
 L1177E:
         LDAB    $031C,Z
         ANDB    #$20
-        STAB    $01F0,Z
+        STAB    >IacBase,Z
         LDAB    $031B,Z
         ANDB    #$20
-        EORB    $01F0,Z
+        EORB    >IacBase,Z
         BNE     L117A2
         INC     $06BE,Z
         BRSET   $031C,Z,#$02,L1188A
@@ -2746,7 +2746,7 @@ L11CCE:
         ADDD    >EngineRpm,Z
         RORA
         RORB
-        STD     $01F0,Z
+        STD     >IacBase,Z
         STE     >EngineRpm,Z
         CPE     #$1FFF
         BCS     L11CEC
@@ -2764,7 +2764,7 @@ L11CF4:
         BSET    $36,Z,#$80
         BCLR    $060E,Z,#$40
 L11D0A:
-        CLRW    $01F0,Z
+        CLRW    >IacBase,Z
         CLRW    $01F2,Z
         LDD     >EngineRpm,Z
         LDX     $0321,Z
@@ -2774,7 +2774,7 @@ L11D0A:
         IDIV
         CPX     #$0020
         BCC     L11D5E
-        STX     $01F0,Z
+        STX     >IacBase,Z
         LDX     $0321,Z
 L11D32:
         FDIV
@@ -3138,7 +3138,7 @@ L120FA:
         TZY
         LDY     #$FD1E
         CLRW    $04A4,Z
-        CLRW    $01F0,Z
+        CLRW    >IacBase,Z
 L12114:
         LDD     $00,X
         SUBD    $00,Y
@@ -3149,7 +3149,7 @@ L12114:
         BCS     L12132
         STD     $04A4,Z
         LDAA    $01F1,Z
-        STAA    $01F0,Z
+        STAA    >IacBase,Z
 L12132:
         CPX     #$FD1E
         BEQ     L12150
@@ -3177,7 +3177,7 @@ L12168:
         BCLR    $0325,Z,#$04
         BSET    $04A6,Z,#$C0
         INCW    $04A4,Z
-        LDAB    $01F0,Z
+        LDAB    >IacBase,Z
         INCB
         ASLB
         CMPB    #$08
@@ -3235,7 +3235,7 @@ L121FC:
 L12200:
         ADE
         TED
-        STD     $01F0,Z
+        STD     >IacBase,Z
         EORD    $035B,Z
         ANDD    #$01E0
         BEQ     L12222
@@ -3246,7 +3246,7 @@ L12200:
         ADE
 L12222:
         STE     $031A,Z
-        LDE     $01F0,Z
+        LDE     >IacBase,Z
         STE     $035B,Z
         BRCLR   $031A,Z,#$01,L12248
         BRCLR   >MainLoopPhaseMask,Z,#$40,L1224C
@@ -4048,11 +4048,11 @@ L12ADA:
         LDX     #Tab2D_1C41
 L12AE2:
         JSR     Lookup2D
-        STAA    $01F0,Z
+        STAA    >IacBase,Z
         LDAA    >Map,Z
         LDX     #Tab2D_1C51
         JSR     Lookup2D
-        LDAA    $01F0,Z
+        LDAA    >IacBase,Z
         MUL
         ADCA    #$00
         STAA    $0653,Z
@@ -4863,7 +4863,7 @@ L13400:
         BLS     L13408
         ORAB    #$01
 L13408:
-        STAB    $01F0,Z
+        STAB    >IacBase,Z
         CLRB
         BRSET   $0325,#$20,L1343E
         BRSET   $0170,Z,#$01,L1343E
@@ -4908,7 +4908,7 @@ L13466:
         CMPA    $00,Y
         BCC     L134F4
         BRSET   $01F2,Z,#$08,L134F4
-        BRSET   $01F0,Z,#$08,L134F4
+        BRSET   >IacBase,Z,#$08,L134F4
         BRSET   $0499,Z,#$08,L134AE
         LDY     $02,X
         CMPA    $00,Y
@@ -4916,7 +4916,7 @@ L13466:
         LDAB    $01F2,Z
         BITB    #$04
         LBNE    L135B0
-        LDAB    $01F0,Z
+        LDAB    >IacBase,Z
         BITB    #$04
         LBNE    L135B0
         LBRA    L13556
@@ -4925,7 +4925,7 @@ L134AE:
         CMPA    $00,Y
         BCC     L134C0
         BRSET   $01F2,Z,#$02,L134C0
-        BRCLR   $01F0,Z,#$02,L134C8
+        BRCLR   >IacBase,Z,#$02,L134C8
 L134C0:
         BCLR    $0402,Z,#$04
         LBRA    L13556
@@ -4936,7 +4936,7 @@ L134C8:
         CMPA    $00,Y
         LBHI    L135B0
         BRSET   $01F2,Z,#$01,L135B0
-        BRSET   $01F0,Z,#$01,L135B0
+        BRSET   >IacBase,Z,#$01,L135B0
         LBRA    L1357E
 L134EA:
         JSR     Sub_139C8
@@ -5275,7 +5275,7 @@ L138E0:
 ; Called from: Sub_13632
 ;---------------------------------------------------------------------------------------------------
 Sub_13906:
-        STD     $01F0,Z
+        STD     >IacBase,Z
         LDAB    #$01
         TBXK
         LDX     #$38E2
@@ -5323,12 +5323,12 @@ L1397C:
         STAA    $0402,Z
         TSTB
         BPL     L1398E
-        LDD     $01F0,Z
+        LDD     >IacBase,Z
         BRA     L139C2
 L1398E:
         SXT
         ADE
-        LDAA    $01F0,Z
+        LDAA    >IacBase,Z
         LDAB    E,X
         CPE     #$000C
         BNE     L139A6
@@ -5420,7 +5420,7 @@ L13A5A:
 Sub_13A5C:
         BRCLR   $0321,#$20,L13BA6
         LDAA    $02A8,Z
-        STAA    $01F0,Z
+        STAA    >IacBase,Z
         LDAA    >MainLoopCounter,Z
         ANDA    $0381
         BNE     L13A7C
@@ -5441,7 +5441,7 @@ L13AA2:
         CMPA    $0382
         BCC     L13ACC
         LDAA    >Map,Z
-        SUBA    $01F0,Z
+        SUBA    >IacBase,Z
         BCS     L13ACC
         CMPA    $0380
         BCS     L13B04
@@ -5451,7 +5451,7 @@ L13ABC:
         CLR     $02A7,Z
         JMP     L13BA6
 L13ACC:
-        LDAA    $01F0,Z
+        LDAA    >IacBase,Z
         SUBA    >Map,Z
         BCS     L13B04
         BRSET   $02A6,Z,#$80,L13AF0
@@ -6320,9 +6320,9 @@ L14470:
         STAA    $0627,Z
 L1448A:
         JSR     Sub_1453E
-        STAA    $01F0,Z
+        STAA    >IacBase,Z
         LDAA    $0627,Z
-        CMPA    $01F0,Z
+        CMPA    >IacBase,Z
         BCC     L144CC
         LDAB    $0628,Z
         CMPB    $0626,Z
@@ -6332,7 +6332,7 @@ L144AC:
         ASL     $0625,Z
         ASL     $0625,Z
         LDAB    $0627,Z
-        LDAA    $01F0,Z
+        LDAA    >IacBase,Z
         SBCA    $0627,Z
         STAA    $0627,Z
         CLR     $0624,Z
@@ -6396,11 +6396,11 @@ Sub_1453E:
         LDAB    >EngineRpm,Z
         JSR     Lookup3D
         NEGA
-        STAA    $01F0,Z
+        STAA    >IacBase,Z
         LDX     #AfterStartSparkCoolantWeight
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
-        LDAA    $01F0,Z
+        LDAA    >IacBase,Z
         MUL
         RTS
 
@@ -9103,9 +9103,9 @@ L160E0:
         CLRA
 L160EA:
         LDAB    $3DD1
-        STAA    $01F0,Z
+        STAA    >IacBase,Z
         MUL
-        ADCA    $01F0,Z
+        ADCA    >IacBase,Z
         BCC     L160FC
         LDAA    #$FF
 L160FC:
@@ -9421,7 +9421,7 @@ L1645A:
         ORP     #$00E0
         BSET    $0A,Z,#$40
         LDAA    #$DF
-        STAA    $0B,Z
+        STAA    <IacPosition,Z
         ANDP    #$FF1F
         BRA     L16472
 L1646C:
@@ -9901,7 +9901,7 @@ Sub_168E8:
         BRSET   >MainLoopCounter,Z,#$80,L168F2
         LDAA    #$70
 L168F2:
-        STAA    $067A,Z
+        STAA    >IacTarget,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -10109,7 +10109,7 @@ L16AE2:
 L16AE8:
         LDAA    >EngineRpm,Z
         BNE     L16B0A
-        LDAA    $0B,Z
+        LDAA    <IacPosition,Z
         LDAB    $067C,Z
         BNE     L16AFA
         STAA    $067C,Z
@@ -10119,7 +10119,7 @@ L16AFA:
         CMPA    #$06
         BCC     L16B0A
 L16B04:
-        INC     $067A,Z
+        INC     >IacTarget,Z
         BRA     L16B0C
 L16B0A:
         CLRA
@@ -10128,7 +10128,7 @@ L16B0C:
 L16B0E:
         LDAA    >EngineRpm,Z
         BNE     L16B38
-        LDAA    $0B,Z
+        LDAA    <IacPosition,Z
         LDAB    $067C,Z
         BNE     L16B20
         STAA    $067C,Z
@@ -10140,7 +10140,7 @@ L16B20:
         CMPA    #$06
         BCC     L16B38
 L16B32:
-        DEC     $067A,Z
+        DEC     >IacTarget,Z
         BRA     L16B3A
 L16B38:
         CLRA
@@ -12785,8 +12785,8 @@ Sub_18864:
         BEQ     L188AC
         LDAA    $050C,Z
         ANDA    #$40
-        STAA    $01F0,Z
-        ORAB    $01F0,Z
+        STAA    >IacBase,Z
+        ORAB    >IacBase,Z
         STAB    $0504,Z
         TBA
         BRA     L188D2
@@ -15442,7 +15442,7 @@ Sub_1A588:
         LDAB    $0309,Z
         STAB    $01F6,Z
         LDAB    $030A,Z
-        STAB    $01F0,Z
+        STAB    >IacBase,Z
         LBSR    Sub_1A460
         LDY     #$A0D6
 L1A5B0:
@@ -15489,7 +15489,7 @@ L1A5F4:
         STAB    $0308,Z
         LDAB    $01F6,Z
         STAB    $0309,Z
-        LDAB    $01F0,Z
+        LDAB    >IacBase,Z
         STAB    $030A,Z
         LBRA    L1A6AA
 L1A620:
@@ -15820,8 +15820,8 @@ L1A8EC:
         CMPA    $2487
         LBCC    L1ACD6
         BRSET   $000A,Z,#$10,L1ACD6
-        LDAA    $067A,Z
-        SUBA    $0B,Z
+        LDAA    >IacTarget,Z
+        SUBA    <IacPosition,Z
         BCC     L1A96C
         NEGA
         BVC     L1A96C
@@ -15876,7 +15876,7 @@ L1A9F2:
         CLR     $01D1,Z
         CLR     $03D3,Z
         CLR     $06DA,Z
-        LDAA    $0B,Z
+        LDAA    <IacPosition,Z
         STAA    $01D3,Z
         LDAA    $03D0,Z
         STAA    $01D2,Z
@@ -15893,7 +15893,7 @@ L1A9F2:
         LBRA    L1AD40
 L1AA40:
         BRSET   $00E7,Z,#$01,L1ACD6
-        LDAA    $0B,Z
+        LDAA    <IacPosition,Z
         SUBA    $01D3,Z
         BLS     L1AA56
         CMPA    $248A
@@ -15940,7 +15940,7 @@ L1AADC:
 L1AAE2:
         CLRW    $01F2,Z
         LDAA    $01D3,Z
-        SUBA    $0B,Z
+        SUBA    <IacPosition,Z
         BCS     L1AB0C
         STAA    $01F2,Z
         BRSET   $0672,Z,#$40,L1AAFE
@@ -18833,7 +18833,7 @@ L1C928:
 Sub_1C95E:
         BRCLR   $0598,Z,#$80,L1CA10
         CLRD
-        STD     $01F0,Z
+        STD     >IacBase,Z
         STD     $01F2,Z
         STD     $01F4,Z
         LDX     #Tab2D_26B4
@@ -18883,7 +18883,7 @@ L1C9B2:
         LDX     #$4000
         EDIVS
         XGDX
-        ADDD    $01F0,Z
+        ADDD    >IacBase,Z
         ADDD    $01F2,Z
         ADDD    $01F4,Z
         TSTA
@@ -18910,7 +18910,7 @@ L1CA30:
         CLRA
         LDE     $022C,Z
         EMUL
-        STE     $01F0,Z
+        STE     >IacBase,Z
         STD     $01F2,Z
         LDE     $01F1,Z
         STE     $022C,Z
@@ -19271,7 +19271,7 @@ Sub_1CDF6:
         LDAB    $24A3
         MUL
         ADCA    #$00
-        STAA    $01F0,Z
+        STAA    >IacBase,Z
         BRSET   $0037,Z,#$10,L1CE1C
         LDAA    #$FF
         STAA    $01F4,Z
@@ -19290,7 +19290,7 @@ L1CE42:
         BRCLR   $0598,Z,#$80,L1CFF6
         BRSET   >ThrottleState,Z,#$80,L1CE62
         LDAA    >Map,Z
-        CMPA    $01F0,Z
+        CMPA    >IacBase,Z
         BCS     L1CE62
         LDAA    $24AD
         STAA    $01F4,Z
@@ -19351,7 +19351,7 @@ L1CEF0:
         CMPA    $24A8
         BCS     L1CF58
         LDAA    >Map,Z
-        CMPA    $01F0,Z
+        CMPA    >IacBase,Z
         BCS     L1CF58
 L1CF1E:
         BRCLR   $031A,Z,#$01,L1CF58
@@ -19404,7 +19404,7 @@ L1CFAA:
         CMPA    $24AC
         BCC     L1CFC6
         LDAA    >Map,Z
-        CMPA    $01F0,Z
+        CMPA    >IacBase,Z
         BCC     L1CFEA
 L1CFC6:
         LDAA    #$FF
@@ -22935,19 +22935,19 @@ L1F5CE:
 ;---------------------------------------------------------------------------------------------------
 Sub_1F604:
         PSHM    D,E,X,Y,K
-        CLR     $01F0,Z
+        CLR     >IacBase,Z
 L1F60A:
-        LDAB    $01F0,Z
+        LDAB    >IacBase,Z
         CMPB    #$0D
         BCC     L1F65A
-        LDAB    $01F0,Z
+        LDAB    >IacBase,Z
         LDAA    #$14
         MUL
         LDX     #$F006
         ADX
         LDAB    #$01
         TBXK
-        LDAB    $01F0,Z
+        LDAB    >IacBase,Z
         LDAA    #$04
         MUL
         LDY     #$F5D0
@@ -22970,7 +22970,7 @@ L1F650:
         ANDA    #$7F
 L1F652:
         STAA    E,Z
-        INC     $01F0,Z
+        INC     >IacBase,Z
         BRA     L1F60A
 L1F65A:
         PULM    K,Y,X,E,D
@@ -23514,7 +23514,7 @@ L1FAF4:
         BEQ     L1FB04
         BCLR    $00,Y,#$80
 L1FB04:
-        STY     $01F0,Z
+        STY     >IacBase,Z
         CLRW    $01F6,Z
 L1FB0C:
         LBSR    Sub_1F2C4
@@ -23527,7 +23527,7 @@ L1FB0C:
         STY     $01F8,Z
         JSR     Sub_1E68C
         TZY
-        LDY     $01F0,Z
+        LDY     >IacBase,Z
         LBCC    L1FC18
         CLRB
         TBYK
@@ -23539,7 +23539,7 @@ L1FB48:
         BNE     L1FB0C
 L1FB4E:
         TZY
-        LDY     $01F0,Z
+        LDY     >IacBase,Z
         BRCLR   $01F7,Z,#$04,L1FC18
         BSET    $E7,Z,#$04
         CLR     $C1,Z
@@ -23692,7 +23692,7 @@ L1FC8C:
         BEQ     L1FCE4
         BITA    #$08
         BNE     L1FCE4
-        STD     $01F0,Z
+        STD     >IacBase,Z
         STE     $01F2,Z
         TPD
         TBYK
@@ -23713,12 +23713,12 @@ L1FCBE:
         BITA    #$02
         BNE     L1FCD4
 L1FCC6:
-        LDD     $01F0,Z
+        LDD     >IacBase,Z
         ANDA    #$EF
-        STD     $01F0,Z
+        STD     >IacBase,Z
         LBSR    Sub_1F2A2
 L1FCD4:
-        LDD     $01F0,Z
+        LDD     >IacBase,Z
         LDE     $01F2,Z
         BITA    #$20
         BNE     L1FCE4

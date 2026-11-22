@@ -96,9 +96,9 @@ pulse width computed from MAP (next section).
 
 ## Table names
 
-Every table of the reference image has a name. 154 are named by hand from the code (and checked
+Every table of the reference image has a name. 198 are named by hand from the code (and checked
 against 2GNT where it has them), among them the whole fuel path described below, the spark
-corrections, dwell, idle targets and the sensor curves. The other 256 have **structural names** made by `tools/autoname.py` and marked `"auto": true` in
+corrections, dwell, idle targets and the sensor curves. The other 212 have **structural names** made by `tools/autoname.py` and marked `"auto": true` in
 `annotations/tables.json` (and with * in the catalogue):
 
 - the prefix is the subsystem, taken from the routine that reads the table and the scheduled routine
@@ -222,7 +222,7 @@ applies only to the reference image.
 
 ## Open points
 
-- 256 tables have structural names only; giving them exact names means reading each routine.
+- 212 tables have structural names only; giving them exact names means reading each routine.
 - The 1,455 directly read constants are not catalogued one by one yet.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.

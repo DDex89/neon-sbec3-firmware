@@ -9471,7 +9471,7 @@ L16468:
         BRSET   $0256,Z,#$10,L16556
         BSET    $0256,Z,#$04
         LDAA    $018C,Z
-        SUBA    $42,Z
+        SUBA    <IacPosition,Z
         BCC     L1649A
         NEGA
 L1649A:
@@ -9495,7 +9495,7 @@ L164BA:
 L164D6:
         BSET    $0256,Z,#$08
         BSET    $BD,Z,#$04
-        LDAA    $42,Z
+        LDAA    <IacPosition,Z
         STAA    $025C,Z
         LDAA    $0263,Z
         STAA    $0261,Z
@@ -9531,7 +9531,7 @@ L16556:
         BSET    $0256,Z,#$10
         LDAA    $062F,Z
         STAA    $025B,Z
-        LDAA    $42,Z
+        LDAA    <IacPosition,Z
         SUBA    $025C,Z
         BCS     L16572
         CMPA    $2ABD
@@ -9579,7 +9579,7 @@ L16600:
         CLRW    $00F2,Z
         BRSET   $0335,#$02,L1662E
         LDAA    $025C,Z
-        SUBA    $42,Z
+        SUBA    <IacPosition,Z
         BCS     L1662E
         STAA    $F2,Z
         BRSET   $0184,Z,#$40,L16620
@@ -16993,7 +16993,7 @@ L1B2B8:
         ORP     #$00E0
         BSET    $41,Z,#$40
         LDAA    #$DF
-        STAA    $42,Z
+        STAA    <IacPosition,Z
         ANDP    #$FF1F
         BRA     L1B2D0
 L1B2CA:
@@ -17701,7 +17701,7 @@ L1B98C:
 L1B996:
         LDAA    <EngineRpm,Z
         BNE     L1B9B6
-        LDAA    $42,Z
+        LDAA    <IacPosition,Z
         LDAB    $018E,Z
         BNE     L1B9A6
         STAA    $018E,Z
@@ -17720,7 +17720,7 @@ L1B9B8:
 L1B9BA:
         LDAA    <EngineRpm,Z
         BNE     L1B9E2
-        LDAA    $42,Z
+        LDAA    <IacPosition,Z
         LDAB    $018E,Z
         BNE     L1B9CA
         STAA    $018E,Z
