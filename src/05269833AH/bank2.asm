@@ -453,9 +453,9 @@ L20578:
         BSET    >FaultSet10,Z,#$02
         BSET    >FaultMem10,Z,#$02
         LDAA    $44E2
-        STAA    $0149,Z
+        STAA    >FaultListLast,Z
         LDAB    <Scratch9,Z
-        STAB    $014C,Z
+        STAB    >FaultListInfo1,Z
         CLRB
         TBYK
         LDY     #$44E2
@@ -932,7 +932,7 @@ ObdClearCodes:
         BCLR    <DiagStatusFlags,Z,#$90                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
         CLR     <MisfireRecordD9,Z
         LDAA    #$FF
-        STAA    $3F,Z
+        STAA    <ReadinessIncomplete,Z
         BCLR    <DiagStatusFlags,Z,#$20                  ; bit 5: readiness: every supported monitor complete (ObdReadiness)
         RTS
 
@@ -1393,7 +1393,7 @@ L20DBC:
         BCLR    <MonRecordBF,Z,#$04
         BCLR    <MonRecordC7,Z,#$04
         BCLR    <MisfireRecordD9,Z,#$80
-        BCLR    $0526,Z,#$80
+        BCLR    >DiagModeFlags,Z,#$80
         CLR     <MonStatusO2Heater,Z
         RTS
 
@@ -1410,7 +1410,7 @@ ObdReadiness:
         BRCLR   >MonStatusA2,Z,#$02,L20E22
         BRSET   >MonStatusA2,Z,#$10,L20E22
 L20E1E:
-        BCLR    $3F,Z,#$01
+        BCLR    <ReadinessIncomplete,Z,#$01
 L20E22:
         BRCLR   >Options033E,#$80,L20E46                 ; bit 7: readiness: monitor supported (ObdReadiness)
         BRCLR   >MonStatusA3,Z,#$02,L20E4A
@@ -1419,13 +1419,13 @@ L20E22:
         BRCLR   >MonStatusA4,Z,#$02,L20E4A
         BRSET   >MonStatusA4,Z,#$10,L20E4A
 L20E46:
-        BCLR    $3F,Z,#$20
+        BCLR    <ReadinessIncomplete,Z,#$20
 L20E4A:
         BRCLR   >Options033E,#$01,L20E5C                 ; bit 0: EGR flow monitor supported (EgrFlowMonitor, ObdReadiness)
         BRCLR   >MonStatusEgrFlow,Z,#$02,L20E60
         BRSET   >MonStatusEgrFlow,Z,#$10,L20E60
 L20E5C:
-        BCLR    $3F,Z,#$80
+        BCLR    <ReadinessIncomplete,Z,#$80
 L20E60:
         BRCLR   >Options033E,#$02,L20EA8                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRSET   >FaultMem15,Z,#$02,L20EA8
@@ -1440,7 +1440,7 @@ L20E60:
         BRCLR   >MonStatusPurge,Z,#$02,L20EAC
         BRSET   >MonStatusPurge,Z,#$10,L20EAC
 L20EA8:
-        BCLR    $3F,Z,#$04
+        BCLR    <ReadinessIncomplete,Z,#$04
 L20EAC:
         BRCLR   >Options033F,#$80,L20EF4                 ; bit 7: heater monitor for O2 sensor 1 supported (O2HeaterMonitor, ObdReadiness)
         BRCLR   >MonStatusO2Sensor1,Z,#$02,L20EF8
@@ -1457,10 +1457,10 @@ L20EE2:
         BRCLR   >MonStatusO2Sensor4,Z,#$02,L20EF8
         BRSET   >MonStatusO2Sensor4,Z,#$10,L20EF8
 L20EF4:
-        BCLR    $3F,Z,#$40
+        BCLR    <ReadinessIncomplete,Z,#$40
 L20EF8:
-        BCLR    $3F,Z,#$1A
-        TST     $3F,Z
+        BCLR    <ReadinessIncomplete,Z,#$1A
+        TST     <ReadinessIncomplete,Z
         BNE     L20F06
         BSET    <DiagStatusFlags,Z,#$20                  ; bit 5: readiness: every supported monitor complete (ObdReadiness)
         BRA     L20F0A
@@ -4329,7 +4329,7 @@ L233D6:
         CMPA    >TccMonSpeedMax
         LBHI    L23500
         BRSET   >ControlFlags943,Z,#$80,L234C2           ; bit 7: A/C cut active (AcCutControl timer running)
-        BRCLR   $0B4E,Z,#$20,L23412
+        BRCLR   >AcCutFlags,Z,#$20,L23412
         CLRB
         LDAA    >RpmSpeedRatio,Z
         CPD     >RpmSpeedRatioFiltered,Z
@@ -4340,7 +4340,7 @@ L233FE:
         STD     $0670,Z
         LDD     >TccThrottleAvg,Z
         STD     $0674,Z
-        BCLR    $0B4E,Z,#$20
+        BCLR    >AcCutFlags,Z,#$20
 L23412:
         LDAA    >RpmSpeedRatioFiltered,Z
         CMPA    >TccRatioMax
@@ -4401,9 +4401,9 @@ L234B4:
         STAA    >TccTestTimer,Z
         BRA     L23508
 L234C2:
-        BRSET   $0B4E,Z,#$20,L234D0
+        BRSET   >AcCutFlags,Z,#$20,L234D0
         CLR     >TccStableTimer,Z
-        BSET    $0B4E,Z,#$20
+        BSET    >AcCutFlags,Z,#$20
 L234D0:
         LDAA    >TccStableTimer,Z
         INCA
@@ -4906,7 +4906,7 @@ L23A12:
         INCA
         CMPA    #$32
         BCS     L23A32
-        CLR     $83,Z
+        CLR     <LimitCauseFlags,Z
         CLRA
 L23A32:
         STAA    $84,Z
@@ -5298,8 +5298,8 @@ MilLampUpdate:
         BRCLR   >EngineStateFlags,Z,#$80,L2415E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >ControlFlagsC33,Z,#$01,L2415E
         BSET    >ControlFlagsC33,Z,#$01
-        BRCLR   $0149,Z,#$FF,L24152
-        LDAA    $014C,Z
+        BRCLR   >FaultListLast,Z,#$FF,L24152
+        LDAA    >FaultListInfo1,Z
         CMPA    #$32
         BCS     L24132
         TST     <FreezeFrameFault,Z
@@ -5307,23 +5307,23 @@ MilLampUpdate:
         JSR     MilFaultIncrement
         BRA     L2415E
 L24132:
-        LDD     $014A,Z
+        LDD     >FaultListInfo3,Z
         TST     $0147,Z
         BEQ     L24144
         INCA
         BEQ     L24144
-        STAA    $014A,Z
+        STAA    >FaultListInfo3,Z
 L24144:
         TST     $0148,Z
         BEQ     L24152
         INCB
         BEQ     L24152
-        STAB    $014B,Z
+        STAB    >FaultListInfo2,Z
 L24152:
-        LDAA    $014C,Z
+        LDAA    >FaultListInfo1,Z
         INCA
         BEQ     L2415E
-        STAA    $014C,Z
+        STAA    >FaultListInfo1,Z
 L2415E:
         RTS
 
@@ -5426,7 +5426,7 @@ L241FE:
 ; Called from: MilFaultIncrement
 ;---------------------------------------------------------------------------------------------------
 MilRequest:
-        BCLR    $064B,Z,#$03
+        BCLR    >MilRequestFlags,Z,#$03
         BCLR    <DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
         BCLR    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
         BCLR    >ControlFlagsC39,Z,#$10
@@ -5453,21 +5453,21 @@ L2423A:
         BLS     L24274
         CPX     #$8149
         BNE     L2425C
-        LDAA    $014B,Z
-        STAA    $014C,Z
-        LDAA    $014A,Z
-        STAA    $014B,Z
-        CLR     $014A,Z
+        LDAA    >FaultListInfo2,Z
+        STAA    >FaultListInfo1,Z
+        LDAA    >FaultListInfo3,Z
+        STAA    >FaultListInfo2,Z
+        CLR     >FaultListInfo3,Z
         BRA     L24274
 L2425C:
         CPX     #$8148
         BNE     L24270
-        LDAA    $014A,Z
-        STAA    $014B,Z
-        CLR     $014A,Z
+        LDAA    >FaultListInfo3,Z
+        STAA    >FaultListInfo2,Z
+        CLR     >FaultListInfo3,Z
         BRA     L24274
 L24270:
-        CLR     $014A,Z
+        CLR     >FaultListInfo3,Z
 L24274:
         AIX     #$FF
         CPX     #$8142
@@ -5534,22 +5534,22 @@ L242F0:
 MisfireFaultLookup:
         BSET    <Scratch8,Z,#$01
         CLRB
-        LDAA    $0149,Z
+        LDAA    >FaultListLast,Z
         CMPA    $44E2
         BNE     L24308
-        LDAB    $014C,Z
+        LDAB    >FaultListInfo1,Z
         BRA     L24326
 L24308:
         LDAA    $0148,Z
         CMPA    $44E2
         BNE     L24318
-        LDAB    $014B,Z
+        LDAB    >FaultListInfo2,Z
         BRA     L24326
 L24318:
         LDAA    $0148,Z
         CMPA    $44E2
         BNE     L24326
-        LDAB    $014A,Z
+        LDAB    >FaultListInfo3,Z
 L24326:
         STAB    <Scratch9,Z
         RTS
@@ -5572,8 +5572,8 @@ DiagModeUpdate:
         LDAA    >Count191ms,Z
         CMPA    #$0A
         BCS     L24392
-        BRSET   $064B,Z,#$01,L2439C
-        BRSET   $064B,Z,#$02,L24392
+        BRSET   >MilRequestFlags,Z,#$01,L2439C
+        BRSET   >MilRequestFlags,Z,#$02,L24392
         BRSET   >EngineStateFlags,Z,#$80,L2435E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >DiagCommand,Z
         CMPA    #$18
@@ -5584,7 +5584,7 @@ L2435E:
         BRSET   >DiagStatusFlags,Z,#$10,L2439C           ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
         TST     >DiagTimer527,Z
         BNE     L2439C
-        TST     $0149,Z
+        TST     >FaultListLast,Z
         BEQ     L24388
         BRSET   >DiagStatusFlags,Z,#$80,L24392           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
         BRCLR   >EquipmentFlags,Z,#$20,L24388            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
@@ -5643,7 +5643,7 @@ L24408:
 ; Called from: DiagModeUpdate
 ;---------------------------------------------------------------------------------------------------
 DiagModeTimer:
-        LDAA    $0526,Z
+        LDAA    >DiagModeFlags,Z
         TAB
         ANDB    #$80
         ANDA    #$7F
@@ -5651,7 +5651,7 @@ DiagModeTimer:
         DECA
         BRA     L2445C
 L2441A:
-        BRSET   $0526,Z,#$80,L24454
+        BRSET   >DiagModeFlags,Z,#$80,L24454
         BRCLR   <DiagStatusFlags,Z,#$10,L2443E           ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
         BCLR    <DiagStatusFlags,Z,#$10                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
         LDAA    >EngineRpm,Z
@@ -5674,10 +5674,10 @@ L24458:
 L2445A:
         LDAA    #$27
 L2445C:
-        STAA    $0526,Z
-        ORAB    $0526,Z
-        STAB    $0526,Z
-        BRCLR   $0526,Z,#$80,L24474
+        STAA    >DiagModeFlags,Z
+        ORAB    >DiagModeFlags,Z
+        STAB    >DiagModeFlags,Z
+        BRCLR   >DiagModeFlags,Z,#$80,L24474
         BCLR    >ControlFlagsC39,Z,#$10
         BRA     L24478
 L24474:
@@ -5932,7 +5932,7 @@ L24692:
         BNE     L246AA
         LDAB    $04,X
         STAB    $03,X
-        LDAB    $0149,Z
+        LDAB    >FaultListLast,Z
         STAB    $00,X
         BRA     L246B6
 L246AA:
@@ -5942,8 +5942,8 @@ L246AA:
         CPX     #$814C
         BCS     L246AA
 L246B6:
-        STAA    $0149,Z
-        CLR     $014C,Z
+        STAA    >FaultListLast,Z
+        CLR     >FaultListInfo1,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -5987,9 +5987,9 @@ L246FC:
         CLRA
         CMPA    >CylinderIndex,Z
         BNE     L24718
-        BRCLR   $0631,Z,#$FF,L24718
-        DEC     $0631,Z
-        TST     $0631,Z
+        BRCLR   >EventOptionTimer,Z,#$FF,L24718
+        DEC     >EventOptionTimer,Z
+        TST     >EventOptionTimer,Z
         BNE     L24718
         BSET    $0632,Z,#$01
 L24718:
@@ -5997,7 +5997,7 @@ L24718:
         ANDA    #$3F
         ANDA    $062F,Z
         LBEQ    L2472E
-        TST     $0631,Z
+        TST     >EventOptionTimer,Z
         LBEQ    L247C8
 L2472E:
         JMP     L247D0
@@ -6014,16 +6014,16 @@ L2474E:
         CLRA
         CMPA    >CylinderIndex,Z
         BNE     L2476A
-        BRCLR   $0631,Z,#$FF,L2476A
-        DEC     $0631,Z
-        TST     $0631,Z
+        BRCLR   >EventOptionTimer,Z,#$FF,L2476A
+        DEC     >EventOptionTimer,Z
+        TST     >EventOptionTimer,Z
         BNE     L2476A
         BSET    $0632,Z,#$01
 L2476A:
         LDAA    $0633,Z
         ANDA    $062F,Z
         LBEQ    L247D0
-        TST     $0631,Z
+        TST     >EventOptionTimer,Z
         LBNE    L247D0
         JSR     EventOptionStep
         BRA     L247C8
@@ -6073,7 +6073,7 @@ L247D8:
         CMPA    >CylinderIndex,Z
         BNE     L247F0
         LDAA    $2EA7
-        STAA    $0631,Z
+        STAA    >EventOptionTimer,Z
         BCLR    $0632,Z,#$01
 L247F0:
         RTS
@@ -9345,7 +9345,7 @@ L28E50:
         STAB    >O2HeaterSample,Z
         CLR     >O2HeaterFlags2,Z
         CLR     >O2HeaterFlags,Z
-        CLR     $0108,Z
+        CLR     >O2HeaterWork,Z
         CLR     $0102,Z
         CLR     $0103,Z
         CLR     $0104,Z
@@ -9367,7 +9367,7 @@ L28E50:
         BCLRW   >IoCfg18,Z,#$0020
         BCLRW   $100C,Z,#$0800
         ANDP    #$FF1F
-        BSET    $0108,Z,#$80
+        BSET    >O2HeaterWork,Z,#$80
         BRCLR   >Options032F,#$80,L28ED0                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         BRSET   >FuelLevelFlags,Z,#$08,L28ED0
         BRSET   >FaultSet0D,Z,#$40,L28ED0
@@ -9403,7 +9403,7 @@ L28F38:
         STAB    >O2HeaterSample,Z
 L28F3E:
         JSR     KickWatchdogsLong
-        BCLR    $0108,Z,#$40
+        BCLR    >O2HeaterWork,Z,#$40
         LDD     >TCNT,Z
         STD     $054E,Z
         INCW    >O2HeaterTimer,Z
@@ -9444,7 +9444,7 @@ L28FAC:
         AIY     #$2A
         CPY     #$8D4E
         BLS     L28FA2
-        BSET    $0108,Z,#$60
+        BSET    >O2HeaterWork,Z,#$60
         BRA     L28FD4
 L28FBA:
         LDAB    >O2HeaterSample,Z
@@ -9458,7 +9458,7 @@ L28FC8:
         BNE     L28FF6
         LBSR    O2HeaterResult
 L28FD4:
-        BRSET   $0108,Z,#$40,L28FF6
+        BRSET   >O2HeaterWork,Z,#$40,L28FF6
 L28FDA:
         LDD     >TCNT,Z
         SUBD    $054E,Z
@@ -9469,7 +9469,7 @@ L28FDA:
         BNE     L28FDA
         JSR     KickWatchdogsLong
 L28FF6:
-        BRSET   $0108,Z,#$20,L2905A
+        BRSET   >O2HeaterWork,Z,#$20,L2905A
         LDD     >O2HeaterTimer,Z
         CPD     >O2HeaterTestTime
         LBLS    L2905A
@@ -9646,7 +9646,7 @@ L291D2:
         LDAB    >O2HeaterFlags,Z
         BITB    #$F0
         BNE     L291E8
-        BSET    $0108,Z,#$40
+        BSET    >O2HeaterWork,Z,#$40
         BRA     L291EE
 L291E8:
         LDAB    #$03
@@ -9759,7 +9759,7 @@ L292DE:
         LDAB    >O2HeaterFlags,Z
         BITB    #$F0
         BNE     L292F4
-        BSET    $0108,Z,#$40
+        BSET    >O2HeaterWork,Z,#$40
         BRA     L2931C
 L292F4:
         LDE     >O2HeaterTimer,Z
@@ -9970,7 +9970,7 @@ L294D4:
         BITB    #$F0
         BNE     L294E0
 L294DC:
-        BSET    $0108,Z,#$40
+        BSET    >O2HeaterWork,Z,#$40
 L294E0:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -10224,7 +10224,7 @@ L2A0BC:
         INC     >FuelSysCount3,Z
         LDAA    >FuelSysCount3,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A0D4
-        CMPA    $0656,Z
+        CMPA    >FuelSysWork,Z
         BRA     L2A0D8
 L2A0D4:
         CMPA    >FuelSysLeanCount
@@ -10287,7 +10287,7 @@ L2A174:
         INC     >FuelSysCount1,Z
         LDAA    >FuelSysCount1,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A18C
-        CMPA    $0656,Z
+        CMPA    >FuelSysWork,Z
         BRA     L2A190
 L2A18C:
         CMPA    >FuelSysLeanFaultCount
@@ -10415,7 +10415,7 @@ L2A2CE:
         INC     >FuelSysRichCount2,Z
         LDAA    >FuelSysRichCount2,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A2E6
-        CMPA    $0656,Z
+        CMPA    >FuelSysWork,Z
         BRA     L2A2EA
 L2A2E6:
         CMPA    >FuelSysLeanCount
@@ -10478,7 +10478,7 @@ L2A386:
         INC     >FuelSysCount2,Z
         LDAA    >FuelSysCount2,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A39E
-        CMPA    $0656,Z
+        CMPA    >FuelSysWork,Z
         BRA     L2A3A2
 L2A39E:
         CMPA    >FuelSysLeanFaultCount
@@ -10592,7 +10592,7 @@ L2A4BE:
         INC     >FuelSysCount3,Z
         LDAA    >FuelSysCount3,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A4D6
-        CMPA    $0656,Z
+        CMPA    >FuelSysWork,Z
         BRA     L2A4DA
 L2A4D6:
         CMPA    >FuelSysRichCount
@@ -10643,7 +10643,7 @@ L2A554:
         INC     >FuelSysCount1,Z
         LDAA    >FuelSysCount1,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A56C
-        CMPA    $0656,Z
+        CMPA    >FuelSysWork,Z
         BRA     L2A570
 L2A56C:
         CMPA    >FuelSysRichFaultCount
@@ -10757,7 +10757,7 @@ L2A68C:
         INC     >FuelSysRichCount2,Z
         LDAA    >FuelSysRichCount2,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A6A4
-        CMPA    $0656,Z
+        CMPA    >FuelSysWork,Z
         BRA     L2A6A8
 L2A6A4:
         CMPA    >FuelSysRichCount
@@ -10808,7 +10808,7 @@ L2A722:
         INC     >FuelSysCount2,Z
         LDAA    >FuelSysCount2,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A73A
-        CMPA    $0656,Z
+        CMPA    >FuelSysWork,Z
         BRA     L2A73E
 L2A73A:
         CMPA    >FuelSysRichFaultCount
@@ -10938,7 +10938,7 @@ L2A832:
         CLRW    >SegmentRpm,Z
         CLRW    >MisfireRpmRef,Z
         CLRW    >MisfireRpmCol,Z
-        CLRW    $05C8,Z
+        CLRW    >MisfireWork5C8,Z
         CLRW    $05CA,Z
         CLRW    $05CC,Z
         CLRW    $05CE,Z
@@ -11065,7 +11065,7 @@ L2A9A2:
         BNE     L2AA1C
         CLRE
         LDD     >SegmentRpm,Z
-        SUBD    $05C8,Z
+        SUBD    >MisfireWork5C8,Z
         BCC     L2A9C4
         LDE     #$FFFF
 L2A9C4:
@@ -11075,7 +11075,7 @@ L2A9C4:
         XGDX
         ASLD
         ROLE
-        ADDD    $05C8,Z
+        ADDD    >MisfireWork5C8,Z
         ADCE    #$0000
         SUBD    >MisfireRpmRef,Z
         SBCE    #$0000
@@ -11091,7 +11091,7 @@ L2A9F2:
         LDED    >SegmentRpmConst3
         JSR     MisfireDevCalc
         LDD     >MisfireWork,Z
-        ADDD    $05C8,Z
+        ADDD    >MisfireWork5C8,Z
         ADCE    #$0000
         SUBD    >MisfireRpmCol,Z
         SBCE    #$0000
@@ -11323,7 +11323,7 @@ MisfireThreshold:
         LBNE    L2AE1C
         LDD     $05D0,Z
         LBLE    L2ADCC
-        LDE     $05D2,Z
+        LDE     >MisfireWork5D2,Z
         STE     >Temp4FC,Z
         LBMI    L2ADCC
         CPE     >MisfireChangeMax
@@ -11368,12 +11368,12 @@ L2AC78:
         LDE     #$FFFF
 L2ACA6:
         STE     >MisfireThreshValue,Z
-        CPE     $05D2,Z
+        CPE     >MisfireWork5D2,Z
         LBHI    L2ADCC
 L2ACB2:
-        LDE     $05D2,Z
+        LDE     >MisfireWork5D2,Z
         STE     $05E4,Z
-        BSET    $0628,Z,#$80
+        BSET    >MisfireWork628,Z,#$80
         BRCLR   >ClosedLoopMonFlags,Z,#$40,L2ACC8
         BSET    >MonEnableFlags2,Z,#$01
 L2ACC8:
@@ -11458,9 +11458,9 @@ L2AD96:
 L2ADA8:
         STAA    $061D,Z
 L2ADAC:
-        LDAB    $0628,Z
+        LDAB    >MisfireWork628,Z
         ORAB    $04F1,Z
-        STAB    $0628,Z
+        STAB    >MisfireWork628,Z
         LDAA    <MonRecordB7,Z
         BITA    #$18
         BNE     L2ADD0
@@ -11595,7 +11595,7 @@ L2AF28:
 L2AF32:
         LDD     $060D,Z
         STD     $062D,Z
-        CLR     $0628,Z
+        CLR     >MisfireWork628,Z
         CLR     $060C,Z
         CLRW    $060D,Z
         CLRW    $0600,Z
@@ -11967,9 +11967,9 @@ L2B344:
         STD     >MisfireWork,Z
         STD     $05D0,Z
         LDAB    #$01
-        STAB    $04FA,Z
+        STAB    >SegmentTimeWork,Z
 L2B366:
-        LDAB    $04FA,Z
+        LDAB    >SegmentTimeWork,Z
         CMPB    >CylinderCount
         LBCC    L2B400
         TXY
@@ -11980,7 +11980,7 @@ L2B366:
         LDE     $0000,Y
         STE     >Temp4FC,Z
         STD     >Temp4FE,Z
-        LDAB    $04FA,Z
+        LDAB    >SegmentTimeWork,Z
         DECB
         STAB    $04FB,Z
 L2B392:
@@ -12024,7 +12024,7 @@ L2B3DA:
         LDD     >Temp4FE,Z
         STE     $0000,Y
         STD     $02,Y
-        INC     $04FA,Z
+        INC     >SegmentTimeWork,Z
         LBRA    L2B366
 L2B400:
         TXY
@@ -12209,11 +12209,11 @@ MisfireReset:
         CLRW    >SegmentRpm,Z
         CLRW    >MisfireRpmRef,Z
         CLRW    >MisfireRpmCol,Z
-        CLRW    $05C8,Z
+        CLRW    >MisfireWork5C8,Z
         CLRW    $05CA,Z
         CLRW    $05CC,Z
         CLRW    $05CE,Z
-        CLRW    $05D2,Z
+        CLRW    >MisfireWork5D2,Z
         CLRW    >MisfireDevInput,Z
         CLRW    >MisfireChangeFiltered,Z
         CLRW    >MisfireRef,Z
@@ -12251,7 +12251,7 @@ MisfireReset:
         CLR     >MisfireFlags2,Z
         CLR     >MisfireFlags5,Z
         CLR     >MisfireFlags4,Z
-        CLR     $0628,Z
+        CLR     >MisfireWork628,Z
         CLR     >MisfireBaroWeight,Z
         CLR     >MisfireHold,Z
         CLR     >MisfireNoiseTimer,Z
@@ -12262,8 +12262,8 @@ MisfireReset:
 ; Called from: MisfireMonitorEvent (2 calls)
 ;---------------------------------------------------------------------------------------------------
 MisfireNoiseCalc:
-        LDE     $05D2,Z
-        STD     $05D2,Z
+        LDE     >MisfireWork5D2,Z
+        STD     >MisfireWork5D2,Z
         SDE
         BPL     L2B696
         NEGE
@@ -12276,18 +12276,18 @@ L2B696:
         AIS     #$04
         STD     >MisfireChangeFiltered,Z
         LDE     >MisfireRef,Z
-        LDD     $05D2,Z
+        LDD     >MisfireWork5D2,Z
         BPL     L2B6CA
         NEGD
         CPD     >MisfireRefChangeMin
         BLS     L2B6CA
-        BRSET   $0628,Z,#$80,L2B6CA
+        BRSET   >MisfireWork628,Z,#$80,L2B6CA
         STD     >MisfireRef,Z
 L2B6CA:
-        BRCLR   $0628,Z,#$80,L2B6DA
-        LDD     $05D2,Z
+        BRCLR   >MisfireWork628,Z,#$80,L2B6DA
+        LDD     >MisfireWork5D2,Z
         BPL     L2B6DA
-        BCLR    $0628,Z,#$80
+        BCLR    >MisfireWork628,Z,#$80
 L2B6DA:
         SUBE    >MisfireRef,Z
         BPL     L2B6E2
@@ -12345,10 +12345,10 @@ L2B758:
         STD     $05CE,Z
         LDD     $05CA,Z
         STD     $05CC,Z
-        LDD     $05C8,Z
+        LDD     >MisfireWork5C8,Z
         STD     $05CA,Z
         LDD     >MisfireRpmCol,Z
-        STD     $05C8,Z
+        STD     >MisfireWork5C8,Z
         LDD     >MisfireRpmRef,Z
         STD     >MisfireRpmCol,Z
         LDD     >SegmentRpm,Z
@@ -12493,7 +12493,7 @@ L2B8F8:
         STX     $05CE,Z
         STX     $05CC,Z
         STX     $05CA,Z
-        STX     $05C8,Z
+        STX     >MisfireWork5C8,Z
         STX     >MisfireRpmCol,Z
         STX     >MisfireRpmRef,Z
         BCLR    <MonRecordB7,Z,#$10
@@ -13054,16 +13054,16 @@ L2C3DA:
         BHI     L2C42C
         LDAA    >Temp3,Z
         BEQ     L2C42C
-        BSET    $0A5C,Z,#$08
-        BCLR    $0A5C,Z,#$07
+        BSET    >BatteryTempFlags,Z,#$08
+        BCLR    >BatteryTempFlags,Z,#$07
         LBRA    L2C4B2
 L2C412:
         LDAA    >BattTempStored,Z
         LDAB    >BattTempDriveCount,Z
         CMPB    >BattTempDriveCountMin
         BCC     L2C42C
-        BSET    $0A5C,Z,#$02
-        BCLR    $0A5C,Z,#$0D
+        BSET    >BatteryTempFlags,Z,#$02
+        BCLR    >BatteryTempFlags,Z,#$0D
         LBRA    L2C4B2
 L2C42C:
         BRSET   >FaultSet0D,Z,#$02,L2C468
@@ -13077,12 +13077,12 @@ L2C42C:
 L2C456:
         JSR     Lookup2D
         STAA    >Temp3,Z
-        BSET    $0A5C,Z,#$04
-        BCLR    $0A5C,Z,#$0B
+        BSET    >BatteryTempFlags,Z,#$04
+        BCLR    >BatteryTempFlags,Z,#$0B
         BRA     L2C4B2
 L2C468:
-        BSET    $0A5C,Z,#$01
-        BCLR    $0A5C,Z,#$0E
+        BSET    >BatteryTempFlags,Z,#$01
+        BCLR    >BatteryTempFlags,Z,#$0E
         LDAB    #$BE
         BRSET   >SensorFaultFlags,Z,#$01,L2C4C8          ; bit 0: battery temperature sensor fault (P1492 or P1493)
         LDAA    >BatteryTempRaw,Z
@@ -14725,9 +14725,9 @@ VssStore:
         LDAA    #$7F
         STAA    $0AAD,Z
         STE     $0AAE,Z
-        STAA    $0AB3,Z
+        STAA    >VssBusValue,Z
         STE     $0AB4,Z
-        STE     $0A9E,Z
+        STE     >VssBusValue2,Z
         CLR     $0AAC,Z
         CLR     $0AB2,Z
         CLRW    >VehicleSpeedRaw,Z
@@ -14919,10 +14919,10 @@ L2D78A:
         CLR     >CrankSyncFlags,Z
         BCLR    >CrankSyncFlags2,Z,#$70
         BSET    >TMSK2,Z,#$10
-        CLRW    $0ACE,Z
+        CLRW    >HighRpmTimer,Z
         CLR     $0C48,Z
         BRCLR   >FuelPulseFlags,Z,#$08,L2D7C0
-        CLR     $0828,Z
+        CLR     >InjSeqWork,Z
         CLR     >InjectorMask2,Z
         CLR     >InjectorMask,Z
         BCLR    >FuelPulseFlags,Z,#$08
@@ -15162,7 +15162,7 @@ HighRpmTimerPit:
         CPD     #$1900
         BCS     L2DA32
         BSET    >CrankFlags2,Z,#$40
-        LDD     $0ACE,Z
+        LDD     >HighRpmTimer,Z
         CPD     #$0E39
         BCS     L2DA22
         LDD     #$FFFF
@@ -15171,11 +15171,11 @@ L2DA22:
         LDE     #$0012
         EMUL
 L2DA28:
-        STD     $0ACE,Z
+        STD     >HighRpmTimer,Z
         BCLR    >CrankFlags2,Z,#$02
         BRA     L2DA3A
 L2DA32:
-        INCW    $0ACE,Z
+        INCW    >HighRpmTimer,Z
         BSET    >CrankFlags2,Z,#$02
 L2DA3A:
         RTS
@@ -15186,27 +15186,27 @@ L2DA3A:
 ;---------------------------------------------------------------------------------------------------
 HighRpmTimerUpdate:
         BRCLR   >CrankFlags2,Z,#$20,L2DA48
-        INCW    $0ACE,Z
+        INCW    >HighRpmTimer,Z
         BRA     L2DA62
 L2DA48:
         BRCLR   >CrankFlags2,Z,#$10,L2DA62
-        LDD     $0ACE,Z
+        LDD     >HighRpmTimer,Z
         LSRD
         LSRD
-        ADDD    $0ACE,Z
-        STD     $0ACE,Z
+        ADDD    >HighRpmTimer,Z
+        STD     >HighRpmTimer,Z
         BCLR    >CrankFlags2,Z,#$10
 L2DA62:
         BRCLR   >CrankFlags2,Z,#$08,L2DA6E
-        INCW    $0AA7,Z
+        INCW    >HighRpmTimer2,Z
         BRA     L2DA88
 L2DA6E:
         BRCLR   >CrankFlags2,Z,#$04,L2DA88
-        LDD     $0AA7,Z
+        LDD     >HighRpmTimer2,Z
         LSRD
         LSRD
-        ADDD    $0AA7,Z
-        STD     $0AA7,Z
+        ADDD    >HighRpmTimer2,Z
+        STD     >HighRpmTimer2,Z
         BCLR    >CrankFlags2,Z,#$04
 L2DA88:
         RTS
@@ -15863,7 +15863,7 @@ L2F0AA:
         LDAA    >Map,Z
         SUBA    >AcCutMapRef,Z
         BCS     L2F0EA
-        BCLR    $0B4E,Z,#$C0
+        BCLR    >AcCutFlags,Z,#$C0
         LDAB    >VehicleSpeed,Z
         CMPB    >AcCutSpeed
         BCC     L2F118
@@ -15872,17 +15872,17 @@ L2F0AA:
         LBRA    L2F196
 L2F0EA:
         NEGA
-        BRSET   $0B4E,Z,#$80,L2F106
-        BRSET   $0B4E,Z,#$40,L2F110
+        BRSET   >AcCutFlags,Z,#$80,L2F106
+        BRSET   >AcCutFlags,Z,#$40,L2F110
         LDAB    >ThrottleAboveClosed,Z
         CMPB    >AcCutThrottle
         BCS     L2F10C
-        BSET    $0B4E,Z,#$80
+        BSET    >AcCutFlags,Z,#$80
 L2F106:
         LDAB    >AcCutMapDrop
         BRA     L2F114
 L2F10C:
-        BSET    $0B4E,Z,#$40
+        BSET    >AcCutFlags,Z,#$40
 L2F110:
         LDAB    >AcCutMapDropLow
 L2F114:
@@ -15932,7 +15932,7 @@ L2F190:
         BRA     L2F1A2
 L2F196:
         BSET    >ControlFlags943,Z,#$80                  ; bit 7: A/C cut active (AcCutControl timer running)
-        BCLR    $0B4E,Z,#$C0
+        BCLR    >AcCutFlags,Z,#$C0
         CLR     >AcCutTimer,Z
 L2F1A2:
         LDAA    >MainLoopCounter,Z

@@ -9653,19 +9653,19 @@ L0806C:
         JSR     PeriodChangeTrack
         LDAA    $0AB2,Z
         LSRA
-        STAA    $0AB3,Z
+        STAA    >VssBusValue,Z
         LDE     >TIC3,Z
         SUBE    $0AB6,Z
         STE     $0AB4,Z
         CLR     $0AB2,Z
         LDE     >TIC3,Z
         STE     $0AB6,Z
-        LDE     $0A9E,Z
+        LDE     >VssBusValue2,Z
         LDD     #$E000
         EMUL
         ADCE    #$0000
         XGEX
-        LDE     $0AB3,Z
+        LDE     >VssBusValue,Z
         LDAA    $0AB5,Z
         ROLA
         ROLE
@@ -9674,7 +9674,7 @@ L0806C:
         BCC     L080C8
         LDE     #$FFFF
 L080C8:
-        STE     $0A9E,Z
+        STE     >VssBusValue2,Z
         BRCLR   >CrankFlags2,Z,#$08,L080E6
         LDD     $0AA9,Z
         ADDD    #$01
@@ -9689,12 +9689,12 @@ L080E6:
         BCS     L080F8
         BCLR    >CrankFlags2,Z,#$20
 L080F8:
-        LDAA    $0AB3,Z
+        LDAA    >VssBusValue,Z
         CMPA    #$7F
         BCS     L08110
         BSET    >CrankFlags2,Z,#$3C
-        CLRW    $0ACE,Z
-        CLRW    $0AA7,Z
+        CLRW    >HighRpmTimer,Z
+        CLRW    >HighRpmTimer2,Z
         CLRW    $0AA9,Z
 L08110:
         LDD     >VehicleSpeedRaw,Z
@@ -9749,12 +9749,12 @@ L0818C:
         LDD     $0AA4,Z
         LDE     #$00C4
         EMULS
-        LDX     $0AB3,Z
+        LDX     >VssBusValue,Z
         BEQ     L081AE
         EDIVS
 L081AE:
         STX     $0AA4,Z
-        LDAA    $0AB3,Z
+        LDAA    >VssBusValue,Z
         STAA    $06F0,Z
         LBRA    L0825C
 L081BE:
@@ -10040,11 +10040,11 @@ L084A8:
 L084BC:
         BRCLR   >ChargeMonFlags,Z,#$40,L084E4
         TAB
-        TST     $0DBA,Z
+        TST     >ChargeStepCount,Z
         BNE     L084CE
-        STAB    $0DBA,Z
+        STAB    >ChargeStepCount,Z
 L084CE:
-        SUBB    $0DBA,Z
+        SUBB    >ChargeStepCount,Z
         BHI     L08538
         NEGB
         CMPB    >FieldVoltsStep
@@ -10052,7 +10052,7 @@ L084CE:
         BSET    >ChargeMonFlags,Z,#$80
         BCLR    >ChargeMonFlags,Z,#$40
 L084E4:
-        CLR     $0DBA,Z
+        CLR     >ChargeStepCount,Z
         BRCLR   >FieldFlags,Z,#$05,L084F2
         LDAA    $0DC8,Z
 L084F2:
@@ -10433,7 +10433,7 @@ L08880:
 Isr_IRQ2:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
-        BCLR    $0C60,Z,#$02
+        BCLR    >Irq2HandledFlags,Z,#$02
         BRCLR   >FaultSet04,Z,#$01,L088AA
         LDD     >IoDriver6E,Z
         BITA    #$08
@@ -10442,21 +10442,21 @@ Isr_IRQ2:
         BITA    #$01
         BEQ     L088AA
         JSR     Sub_0AC80
-        BSET    $0C60,Z,#$02
+        BSET    >Irq2HandledFlags,Z,#$02
 L088AA:
         BRCLR   $100F,Z,#$08,L088C0
         JSR     Sub_0890C
         LDD     #$0108
         STD     >IoIrqStatus,Z
-        BSET    $0C60,Z,#$02
+        BSET    >Irq2HandledFlags,Z,#$02
 L088C0:
         BRCLR   >IoIrqStatus,Z,#$02,L088D6               ; bit 1: timer event: Isr_IRQ2 counts it in Irq2Counter for the misfire segment times
         INC     >Irq2Counter,Z
         LDD     #$0300
         STD     >IoIrqStatus,Z
-        BSET    $0C60,Z,#$02
+        BSET    >Irq2HandledFlags,Z,#$02
 L088D6:
-        BRSET   $0C60,Z,#$02,L088F4
+        BRSET   >Irq2HandledFlags,Z,#$02,L088F4
         LDD     #$FFFF
         STD     >IoIrqStatus,Z
         SUBD    #$0100
@@ -11571,7 +11571,7 @@ L0A50A:
         STAA    >ADCTL1_L,Z
         JSR     CrankPeriodDelta2
         STAA    $0AD9,Z
-        CLR     $0AD8,Z
+        CLR     >CrankPeriodWork,Z
         BRSET   >SparkFlags3,Z,#$02,L0A528
         STAA    >RefPeriod,Z
         STE     >RefPeriodLow,Z
@@ -12342,9 +12342,9 @@ L0AD2C:
         SDE
         TED
         STAA    $0DA3,Z
-        LDAA    $0AD8,Z
+        LDAA    >CrankPeriodWork,Z
         LSRD
-        LDAA    $0AD8,Z
+        LDAA    >CrankPeriodWork,Z
         EORB    $0DA3,Z
         BPL     L0AD4E
         INCA
@@ -13128,16 +13128,16 @@ PeriodChangeTrack2:
         SUBE    $0AC2,Z
         TED
         STAA    $00,Y
-        LDAA    $0AD8,Z
+        LDAA    >CrankPeriodWork,Z
         LSRD
         EORB    $00,Y
         BPL     L0C202
-        LDAA    $0AD8,Z
+        LDAA    >CrankPeriodWork,Z
         INCA
         BEQ     L0C202
-        STAA    $0AD8,Z
+        STAA    >CrankPeriodWork,Z
 L0C202:
-        LDAA    $0AD8,Z
+        LDAA    >CrankPeriodWork,Z
         LSRA
         CMPA    $0AD9,Z
         BCS     L0C212
@@ -15134,7 +15134,7 @@ L0D78E:
         LDD     #$FFFF
         STD     >RefPeriodLow,Z
         STD     >RunModeCounter,Z
-        STD     $0AD8,Z
+        STD     >CrankPeriodWork,Z
         STD     $0AAC,Z
         STD     $0AAE,Z
         STD     $0AB2,Z
@@ -15144,7 +15144,7 @@ L0D78E:
         STAA    >InjectorKillCyl1,Z
         STAA    >InjectorKillCyl2,Z
         LDAA    #$0F
-        STD     $0A9E,Z
+        STD     >VssBusValue2,Z
         LDAA    $3E,Z
         CMPA    #$32
         BCS     L0D864
@@ -15398,7 +15398,7 @@ L0DB42:
         STAA    >Options033FCopy,Z
         BCLR    <FlexStartFlags,Z,#$20
         LDAA    #$36
-        STAA    $0526,Z
+        STAA    >DiagModeFlags,Z
         LDX     #$1388
 L0DB78:
         BRSET   >IoInputs0,Z,#$04,L0DB82                 ; bit 2: ASD relay output present, probably (AsdRelayCheck, the reference-event code)
@@ -16395,7 +16395,7 @@ L0E792:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 MeasureLoopTime:
-        BRSET   $0C60,Z,#$80,L0E876
+        BRSET   >Irq2HandledFlags,Z,#$80,L0E876
         PSHM    D
         CLRW    $0C66,Z
         TST     $0C63,Z
@@ -16416,7 +16416,7 @@ L0E7C4:
 L0E7CE:
         CMPA    #$0E
         BCS     L0E7E4
-        BSET    $0C60,Z,#$01
+        BSET    >Irq2HandledFlags,Z,#$01
         LDAB    $0C61,Z
         CMPB    #$FF
         BEQ     L0E7E4
@@ -16460,13 +16460,13 @@ L0E7E4:
         STAA    $0C69,Z
 L0E86C:
         STAA    $0C62,Z
-        BSET    $0C60,Z,#$80
+        BSET    >Irq2HandledFlags,Z,#$80
         PULM    D
 L0E876:
         INCW    $0C66,Z
         CMPA    #$0E
         BCS     L0E882
-        BCLR    $0C60,Z,#$80
+        BCLR    >Irq2HandledFlags,Z,#$80
 L0E882:
         RTS
 
@@ -16751,7 +16751,7 @@ L0EB66:
         BRCLR   >ControlFlagsC39,Z,#$80,L0EB92
         TSTW    >EngineRpm,Z
         BEQ     L0EB80
-        CLR     $08FE,Z
+        CLR     >PciLinkCounter,Z
         BCLR    >PciFlags6,Z,#$40
         BCLR    >ControlFlagsC39,Z,#$84
         BRA     L0EB92

@@ -2789,7 +2789,7 @@ L11E5A:
         BCLR    >CrankSyncFlags2,Z,#$70
         BSET    >TMSK2,Z,#$10
         CLR     >CrankFlags2,Z
-        CLRW    $0350,Z
+        CLRW    >HighRpmTimer,Z
         CLR     $03A6,Z
         LDAA    #$74
         LDAB    >Options032A
@@ -3252,7 +3252,7 @@ HighRpmTimerPit:
         CPD     #$1900
         BCS     L12372
         BSET    >CrankFlags2,Z,#$40
-        LDD     $0350,Z
+        LDD     >HighRpmTimer,Z
         CPD     #$0E39
         BCS     L12362
         LDD     #$FFFF
@@ -3261,11 +3261,11 @@ L12362:
         LDE     #$0012
         EMUL
 L12368:
-        STD     $0350,Z
+        STD     >HighRpmTimer,Z
         BCLR    >CrankFlags2,Z,#$02
         BRA     L1237A
 L12372:
-        INCW    $0350,Z
+        INCW    >HighRpmTimer,Z
         BSET    >CrankFlags2,Z,#$02
 L1237A:
         RTS
@@ -3276,27 +3276,27 @@ L1237A:
 ;---------------------------------------------------------------------------------------------------
 HighRpmTimerUpdate:
         BRCLR   >CrankFlags2,Z,#$20,L12388
-        INCW    $0350,Z
+        INCW    >HighRpmTimer,Z
         BRA     L123A2
 L12388:
         BRCLR   >CrankFlags2,Z,#$10,L123A2
-        LDD     $0350,Z
+        LDD     >HighRpmTimer,Z
         LSRD
         LSRD
-        ADDD    $0350,Z
-        STD     $0350,Z
+        ADDD    >HighRpmTimer,Z
+        STD     >HighRpmTimer,Z
         BCLR    >CrankFlags2,Z,#$10
 L123A2:
         BRCLR   >CrankFlags2,Z,#$08,L123AE
-        INCW    $0352,Z
+        INCW    >HighRpmTimer2,Z
         BRA     L123C8
 L123AE:
         BRCLR   >CrankFlags2,Z,#$04,L123C8
-        LDD     $0352,Z
+        LDD     >HighRpmTimer2,Z
         LSRD
         LSRD
-        ADDD    $0352,Z
-        STD     $0352,Z
+        ADDD    >HighRpmTimer2,Z
+        STD     >HighRpmTimer2,Z
         BCLR    >CrankFlags2,Z,#$04
 L123C8:
         RTS
@@ -4040,7 +4040,7 @@ Sub_12C72:
         BRSET   >ThrottleState,Z,#$80,L12C9A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
         BNE     L12C9A
-        CLR     $0673,Z
+        CLR     >IdleCount0322,Z
         BRA     L12CB8
 L12C96:
         INC     >SystemTestRejects,Z
@@ -13022,7 +13022,7 @@ MisfireMonitorEvent:
         CLRW    >SegmentRpm,Z
         CLRW    >MisfireRpmRef,Z
         CLRW    >MisfireRpmCol,Z
-        CLRW    $0206,Z
+        CLRW    >MisfireWork5C8,Z
         CLRW    $0208,Z
         CLRW    $020A,Z
         CLRW    $020C,Z
@@ -13120,7 +13120,7 @@ L18F3E:
         BNE     L18FB0
         CLRE
         LDD     >SegmentRpm,Z
-        SUBD    $0206,Z
+        SUBD    >MisfireWork5C8,Z
         BCC     L18F5E
         LDE     #$FFFF
 L18F5E:
@@ -13130,7 +13130,7 @@ L18F5E:
         XGDX
         ASLD
         ROLE
-        ADDD    $0206,Z
+        ADDD    >MisfireWork5C8,Z
         ADCE    #$0000
         SUBD    >MisfireRpmRef,Z
         SBCE    #$0000
@@ -13146,7 +13146,7 @@ L18F88:
         LDED    $2649
         JSR     Sub_19C04
         LDD     <MisfireWork,Z
-        ADDD    $0206,Z
+        ADDD    >MisfireWork5C8,Z
         ADCE    #$0000
         SUBD    >MisfireRpmCol,Z
         SBCE    #$0000
@@ -13378,7 +13378,7 @@ L19194:
 L191CC:
         LDE     >Temp4FC,Z
         STE     $0220,Z
-        BSET    $0246,Z,#$80
+        BSET    >MisfireWork628,Z,#$80
         LDE     >MisfireChangeFiltered,Z
         CPE     >MisfireNoiseLevel,Z
         BCC     L191FC
@@ -13457,9 +13457,9 @@ L19288:
 L19298:
         STAA    $0237,Z
 L1929C:
-        LDAB    $0246,Z
+        LDAB    >MisfireWork628,Z
         ORAB    $F1,Z
-        STAB    $0246,Z
+        STAB    >MisfireWork628,Z
         LDAA    <MonRecordB7,Z
         BITA    #$18
         BNE     L192B8
@@ -13523,7 +13523,7 @@ L1934A:
         BRSET   $022D,Z,#$80,L19354
         BCLR    <DiagStatusFlags,Z,#$10                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
 L19354:
-        CLR     $0246,Z
+        CLR     >MisfireWork628,Z
         CLR     $023A,Z
         CLR     $0228,Z
         CLR     $0229,Z
@@ -14130,7 +14130,7 @@ Sub_199A6:
         CLRW    >SegmentRpm,Z
         CLRW    >MisfireRpmRef,Z
         CLRW    >MisfireRpmCol,Z
-        CLRW    $0206,Z
+        CLRW    >MisfireWork5C8,Z
         CLRW    $0208,Z
         CLRW    $020A,Z
         CLRW    $020C,Z
@@ -14177,7 +14177,7 @@ Sub_199A6:
         CLR     >MisfireFlags2,Z
         CLR     $0244,Z
         CLR     >MisfireFlags4,Z
-        CLR     $0246,Z
+        CLR     >MisfireWork628,Z
         CLR     $0248,Z
         CLR     >MisfireHold,Z
         CLR     $0249,Z
@@ -14207,10 +14207,10 @@ L19A8E:
         NEGD
         CPD     $294D
         BLS     L19AC6
-        BRSET   $0246,Z,#$80,L19AC2
+        BRSET   >MisfireWork628,Z,#$80,L19AC2
         STD     $0218,Z
 L19AC2:
-        BCLR    $0246,Z,#$80
+        BCLR    >MisfireWork628,Z,#$80
 L19AC6:
         SUBE    $0218,Z
         BPL     L19ACE
@@ -14268,10 +14268,10 @@ L19B42:
         STD     $020C,Z
         LDD     $0208,Z
         STD     $020A,Z
-        LDD     $0206,Z
+        LDD     >MisfireWork5C8,Z
         STD     $0208,Z
         LDD     >MisfireRpmCol,Z
-        STD     $0206,Z
+        STD     >MisfireWork5C8,Z
         LDD     >MisfireRpmRef,Z
         STD     >MisfireRpmCol,Z
         LDD     >SegmentRpm,Z
@@ -14318,7 +14318,7 @@ L19BD6:
         STX     $020C,Z
         STX     $020A,Z
         STX     $0208,Z
-        STX     $0206,Z
+        STX     >MisfireWork5C8,Z
         STX     >MisfireRpmCol,Z
         STX     >MisfireRpmRef,Z
         LDAA    #$FF

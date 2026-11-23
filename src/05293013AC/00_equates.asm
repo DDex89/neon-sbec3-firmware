@@ -106,6 +106,7 @@ Scratch8         equ $01F8        ; $F81F8
 SegmentRpm       equ $0218        ; $F8218
 MisfireRpmRef    equ $021A        ; $F821A
 MisfireRpmCol    equ $021C        ; $F821C
+MisfireWork5C8   equ $021E        ; $F821E
 MisfireChangeFiltered equ $0228        ; $F8228
 MisfireNoiseLevel equ $022A        ; $F822A
 IdleMapIacFlag   equ $0234        ; $F8234
@@ -114,6 +115,7 @@ MisfireLoad      equ $0257        ; $F8257
 MisfireTransientHold equ $0259        ; $F8259
 MisfireFlags2    equ $025B        ; $F825B
 MisfireFlags4    equ $025D        ; $F825D
+MisfireWork628   equ $025E        ; $F825E
 MisfireHold      equ $025F        ; $F825F
 DiagBusFlags     equ $0269        ; $F8269
 LoadValueObd     equ $0282        ; $F8282
@@ -192,6 +194,8 @@ FlexEthanolScaled equ $035D        ; $F835D
 FuelTrimAdjustValue equ $0361        ; $F8361
 MonSteadyRate    equ $0366        ; $F8366
 CrankFlags2      equ $0368        ; $F8368
+HighRpmTimer     equ $036A        ; $F836A
+HighRpmTimer2    equ $036C        ; $F836C
 RefPeriod        equ $037D        ; $F837D
 SparkPeriod      equ $037E        ; $F837E
 KnockMapThreshold equ $0388        ; $F8388
@@ -288,12 +292,15 @@ DiagRamFlags     equ $04D9        ; $F84D9
 MonEnableFlags2  equ $0500        ; $F8500
 MonData643       equ $0501        ; $F8501
 MonData644       equ $0502        ; $F8502
+MonData645       equ $0503        ; $F8503
 MonData646       equ $0504        ; $F8504
 MonData647       equ $0505        ; $F8505
 LdpPurgeTestFlags equ $0507        ; $F8507
 ClosedLoopMonFlags equ $0508        ; $F8508
+MilRequestFlags  equ $0509        ; $F8509
 MonFlags64D      equ $050B        ; $F850B
 MonFlags64E      equ $050C        ; $F850C
+MonData64F       equ $050D        ; $F850D
 ShortTermTrim1   equ $050F        ; $F850F
 O2UpBank1Raw     equ $0510        ; $F8510
 O2DownBank1Raw   equ $051A        ; $F851A
@@ -438,6 +445,7 @@ IdleFlags3       equ $0677        ; $F8677
 IdleFlags8       equ $0678        ; $F8678
 IdleAcFlags      equ $0679        ; $F8679
 IacTarget        equ $067A        ; $F867A
+IdleCount0322    equ $0681        ; $F8681
 IacCoastPosition equ $068E        ; $F868E
 FieldDuty        equ $0690        ; $F8690
 IacLearned       equ $0697        ; $F8697

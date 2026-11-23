@@ -251,8 +251,8 @@ L102E8:
         LDX     #$7513
         JSR     CollectBits
         STAA    >RevLimitFlags,Z
-        ORAA    $83,Z
-        STAA    $83,Z
+        ORAA    <LimitCauseFlags,Z
+        STAA    <LimitCauseFlags,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -3256,14 +3256,14 @@ L121B0:
 L121C4:
         LDAB    >CoolantTemp,Z
         BRCLR   >MonEnableFlags2,Z,#$80,L121DE
-        BRCLR   >CrankIsrFlags,Z,#$20,L121DE
+        BRCLR   >MonData64F,Z,#$20,L121DE
         CMPB    $05FE,Z
         BLS     L121DE
         LDAB    $05FE,Z
 L121DE:
         STAB    <ScratchC,Z
         BRCLR   >MonEnableFlags2,Z,#$80,L121EC
-        BRSET   >CrankIsrFlags,Z,#$20,L12200
+        BRSET   >MonData64F,Z,#$20,L12200
 L121EC:
         LDAB    >CrankCoolant,Z
         BRSET   >ThrottleState,Z,#$80,L12200             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -3612,7 +3612,7 @@ L12592:
 ;---------------------------------------------------------------------------------------------------
 InjectorSequence:
         PSHM    D,E,X,Y,K
-        LDAB    $0828,Z
+        LDAB    >InjSeqWork,Z
         CMPB    #$00
         BEQ     L125BA
         CMPB    #$01
@@ -3622,7 +3622,7 @@ InjectorSequence:
         CMPB    #$03
         LBEQ    L12812
         LDAB    #$FF
-        STAB    $0828,Z
+        STAB    >InjSeqWork,Z
 L125B6:
         PULM    K,Y,X,E,D
         RTS
@@ -3674,7 +3674,7 @@ L125DE:
         LDE     >CrankPulseCoolant,Z
         JSR     StartInjectorPulse
         PULM    K,Y,X,E
-        INC     $0828,Z
+        INC     >InjSeqWork,Z
 L12646:
         LBRA    L125B6
 L1264A:
@@ -3738,7 +3738,7 @@ L126C8:
         JSR     StartInjectorPulse
         PULM    K,Y,X,E
 L126F2:
-        INC     $0828,Z
+        INC     >InjSeqWork,Z
 L126F6:
         LBRA    L125B6
 L126FA:
@@ -3843,10 +3843,10 @@ L127E6:
         LDE     >FuelPulseBank1,Z
         JSR     StartInjectorPulse
 L1280A:
-        INC     $0828,Z
+        INC     >InjSeqWork,Z
         LBRA    L125B6
 L12812:
-        INC     $0828,Z
+        INC     >InjSeqWork,Z
         BSET    >FuelPulseFlags,Z,#$01
         LBRA    L125B6
 
@@ -4015,9 +4015,9 @@ L129D2:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 LimitReasonCode:
-        BRSET   $0083,Z,#$80,L12A12
-        BRSET   $0083,Z,#$40,L12A16
-        BRSET   $0083,Z,#$20,L12A1A
+        BRSET   >LimitCauseFlags,Z,#$80,L12A12
+        BRSET   >LimitCauseFlags,Z,#$40,L12A16
+        BRSET   >LimitCauseFlags,Z,#$20,L12A1A
         BRSET   >LimpFlags,Z,#$20,L12A1E
         BRSET   >IdleFlareFlags,Z,#$40,L12A22
         BRSET   >SecurityFlags,Z,#$20,L12A26
@@ -4470,7 +4470,7 @@ ClosedLoopMain:
         CLR     $0739,Z
         BSET    >O2ResetFlags,Z,#$03
         BSET    <PurgeCellRichFlags,Z,#$40
-        CLR     $07B2,Z
+        CLR     >O2CellWork,Z
         CLR     >O2AdaptValue1,Z
         CLR     <PurgeCellTrim1,Z
         CLR     <PurgeCellTrim2,Z
@@ -5498,16 +5498,16 @@ L14C8C:
         BSET    >O2InactiveFlags,Z,#$C0
         BSET    <Scratch0,Z,#$70
         BSET    <Scratch1,Z,#$70
-        TST     $0727,Z
+        TST     >O2TrimAvgCount,Z
         BPL     L14CB0
         BSET    <Scratch0,Z,#$80
-        CLR     $0727,Z
+        CLR     >O2TrimAvgCount,Z
 L14CB0:
         CLR     $02,X
         CLR     $03,X
         CLR     $06,X
         CLR     $07,X
-        LDAA    $0727,Z
+        LDAA    >O2TrimAvgCount,Z
         CLRB
         STD     $04,X
         STAA    $00,X
@@ -6743,7 +6743,7 @@ L158F8:
         STAA    >O2MemChangeHold2,Z
         BSET    >O2ResetFlags2,Z,#$10
 L15912:
-        CLR     $07B2,Z
+        CLR     >O2CellWork,Z
         CLR     >O2LearnTimer2,Z
         CLR     >PurgeCellCount,Z
         BRCLR   >Options032C,#$40,L15928                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
@@ -6964,7 +6964,7 @@ L15B80:
         BRA     L15BCA
 L15B82:
         CLRA
-        STAA    $07B2,Z
+        STAA    >O2CellWork,Z
         STAA    >O2LearnTimer2,Z
         BRSET   >O2LearnFlags,Z,#$10,L15B9A
         STAA    >O2AdaptValue1,Z
@@ -7060,10 +7060,10 @@ L15C6C:
         STAA    >O2LearnTimer2,Z
         BRA     L15C94
 L15C88:
-        LDAA    $07B2,Z
+        LDAA    >O2CellWork,Z
         SBA
         BCS     L15D0A
-        STAA    $07B2,Z
+        STAA    >O2CellWork,Z
 L15C94:
         ANDP    #$FF1F
         LDAA    <Scratch3,Z
@@ -7195,10 +7195,10 @@ L15DA8:
         STAB    >O2LearnTimer2,Z
         BRA     L15DD0
 L15DC4:
-        LDAA    $07B2,Z
+        LDAA    >O2CellWork,Z
         CBA
         BCS     L15DD0
-        STAB    $07B2,Z
+        STAB    >O2CellWork,Z
 L15DD0:
         ANDP    #$FF1F
         RTS
@@ -7534,13 +7534,13 @@ O2TrimAverage:
         LDAB    >ShortTermTrim1,Z
         SXT
         TDE
-        LDAB    $0727,Z
+        LDAB    >O2TrimAvgCount,Z
         SXT
         PSHM    D,E
         LDAA    >O2TrimAvgFilter
         JSR     Blend16Signed
         AIS     #$04
-        STAB    $0727,Z
+        STAB    >O2TrimAvgCount,Z
 L16066:
         BRSET   >O2Bank2Flags,Z,#$20,L16090
         BRCLR   >O2ActiveFlags,Z,#$40,L16090             ; bit 6: upstream O2 sensor 2 active (as bit 7)
@@ -10334,7 +10334,7 @@ L194D0:
         LDE     #$0006
 L194E4:
         TED
-        CMPB    $0369,Z
+        CMPB    >IacLearnCellB,Z
         BEQ     L194F6
         BCC     L19516
         CLRW    $0370,Z
@@ -10342,11 +10342,11 @@ L194E4:
 L194F6:
         TSTB
         BNE     L19512
-        STAB    $0368,Z
+        STAB    >IacLearnCellA,Z
         INCB
-        STAB    $0369,Z
+        STAB    >IacLearnCellB,Z
 L19504:
-        CLRW    $036E,Z
+        CLRW    >IacLearnSum,Z
         LDD     #$FFFF
         STD     $036C,Z
         BRA     L19578
@@ -10355,20 +10355,20 @@ L19512:
         BNE     L19530
 L19516:
         LDAB    #$06
-        STAB    $0369,Z
+        STAB    >IacLearnCellB,Z
         DECB
-        STAB    $0368,Z
+        STAB    >IacLearnCellA,Z
         CLRW    $036C,Z
         LDD     #$FFFF
-        STD     $036E,Z
+        STD     >IacLearnSum,Z
         BRA     L19578
 L19530:
-        STAB    $0369,Z
+        STAB    >IacLearnCellB,Z
         LDAB    E,X
         STAB    $036B,Z
         SUBE    #$0001
         TED
-        STAB    $0368,Z
+        STAB    >IacLearnCellA,Z
         LDAB    E,X
         LDAA    >AcSensorFiltered,Z
         SBA
@@ -10383,14 +10383,14 @@ L19530:
         CLRA
         LDAB    $036A,Z
         FDIV
-        STX     $036E,Z
+        STX     >IacLearnSum,Z
         LDD     #$FFFF
-        SUBD    $036E,Z
+        SUBD    >IacLearnSum,Z
         STD     $036C,Z
 L19578:
         TZY
         CLRA
-        LDAB    $0369,Z
+        LDAB    >IacLearnCellB,Z
         BRSET   >Options032E,#$40,L19592                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BRCLR   >DriveFlags,Z,#$20,L19592                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDY     #$801A
@@ -10400,12 +10400,12 @@ L19592:
 L19596:
         TDE
         LDAB    E,Y
-        LDE     $036E,Z
+        LDE     >IacLearnSum,Z
         EMUL
         TED
         STAB    $036B,Z
         CLRA
-        LDAB    $0368,Z
+        LDAB    >IacLearnCellA,Z
         TDE
         LDAB    E,Y
         LDE     $036C,Z
@@ -10488,7 +10488,7 @@ IacLearnCells:
         BCC     L19682
         PSHM    E
         CLRA
-        LDAB    $0368,Z
+        LDAB    >IacLearnCellA,Z
         TDE
         LDAB    E,Y
         CMPB    #$FF
@@ -10499,12 +10499,12 @@ L19680:
         PULM    E
 L19682:
         STE     $0370,Z
-        LDE     $036E,Z
+        LDE     >IacLearnSum,Z
         ADDE    $0372,Z
         BCC     L196A6
         PSHM    E
         CLRA
-        LDAB    $0369,Z
+        LDAB    >IacLearnCellB,Z
         TDE
         LDAB    E,Y
         CMPB    #$FF
@@ -10522,7 +10522,7 @@ L196AC:
         BCC     L196CA
         PSHM    E
         CLRA
-        LDAB    $0368,Z
+        LDAB    >IacLearnCellA,Z
         TDE
         LDAB    E,Y
         BEQ     L196C8
@@ -10533,11 +10533,11 @@ L196C8:
 L196CA:
         STE     $0370,Z
         LDE     $0372,Z
-        SUBE    $036E,Z
+        SUBE    >IacLearnSum,Z
         BCC     L196EC
         PSHM    E
         CLRA
-        LDAB    $0369,Z
+        LDAB    >IacLearnCellB,Z
         TDE
         LDAB    E,Y
         BEQ     L196EA
@@ -11039,7 +11039,7 @@ L19C38:
         LBRA    L1A44A
 L19C50:
         BCLR    >IdleFlags5,Z,#$04
-        CLR     $0322,Z
+        CLR     >IdleCount0322,Z
         BCLR    >ControlFlagsC33,Z,#$44
         LBRA    L19EF2
 L19C60:
@@ -11185,7 +11185,7 @@ L19E60:
         BCLR    >IdleFlags5,Z,#$10
         BCLR    >IdleFlags8,Z,#$02
         BSET    >MisfireFlags4,Z,#$40
-        CLR     $0322,Z
+        CLR     >IdleCount0322,Z
         LBRA    L1A44A
 L19E82:
         BRSET   >IdleFlags3,Z,#$08,L19EF2
@@ -11215,7 +11215,7 @@ L19ED4:
         BCLR    >IdleFlags8,Z,#$02
         BCLR    >IdleFlags5,Z,#$08
         BSET    >MisfireFlags4,Z,#$40
-        CLR     $0322,Z
+        CLR     >IdleCount0322,Z
 L19EF2:
         BRSET   >Options032E,#$40,L1A0D8                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BRCLR   >IdleFlags3,Z,#$08,L19F4C
@@ -12538,7 +12538,7 @@ L1AC72:
         LDAA    >ThrottleState,Z
         BITA    #$80
         BEQ     L1AC88
-        CLR     $0322,Z
+        CLR     >IdleCount0322,Z
         BSET    >IdleFlags5,Z,#$01
         BRA     L1AC9C
 L1AC88:
@@ -12546,9 +12546,9 @@ L1AC88:
         BEQ     L1AC9C
         TST     >DashpotTimerMoving,Z
         BNE     L1AC9C
-        INC     $0322,Z
+        INC     >IdleCount0322,Z
         BNE     L1AC9C
-        DEC     $0322,Z
+        DEC     >IdleCount0322,Z
 L1AC9C:
         BCLR    >IdleFlags5,Z,#$40
         BRCLR   >Scratch8,Z,#$10,L1AD3A
@@ -12575,13 +12575,13 @@ L1ACE0:
         ANDA    #$1C
         BNE     L1AD3A
         BSET    >IdleFlags5,Z,#$40
-        LDAA    $0322,Z
+        LDAA    >IdleCount0322,Z
         CMPA    >IdleMapStepTimeClosed
         BRSET   >IdleFlags5,Z,#$01,L1ACFE
         CMPA    >IdleMapStepTime
 L1ACFE:
         BCS     L1AD3A
-        CLR     $0322,Z
+        CLR     >IdleCount0322,Z
         CLRA
         LDAB    >IdleMapTarget,Z
         TDE

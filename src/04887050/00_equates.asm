@@ -90,6 +90,7 @@ Scratch8         equ $01F8        ; $F81F8
 SegmentRpm       equ $0200        ; $F8200
 MisfireRpmRef    equ $0202        ; $F8202
 MisfireRpmCol    equ $0204        ; $F8204
+MisfireWork5C8   equ $0206        ; $F8206
 MisfireChangeFiltered equ $0210        ; $F8210
 MisfireNoiseLevel equ $0212        ; $F8212
 IdleMapIacFlag   equ $021C        ; $F821C
@@ -99,6 +100,7 @@ MisfireLoad      equ $023F        ; $F823F
 MisfireTransientHold equ $0241        ; $F8241
 MisfireFlags2    equ $0243        ; $F8243
 MisfireFlags4    equ $0245        ; $F8245
+MisfireWork628   equ $0246        ; $F8246
 MisfireHold      equ $0247        ; $F8247
 DiagBusFlags     equ $024E        ; $F824E
 LoadValueObd     equ $0268        ; $F8268
@@ -176,6 +178,8 @@ FlexEthanolScaled equ $0343        ; $F8343
 FuelTrimAdjustValue equ $0347        ; $F8347
 MonSteadyRate    equ $034C        ; $F834C
 CrankFlags2      equ $034E        ; $F834E
+HighRpmTimer     equ $0350        ; $F8350
+HighRpmTimer2    equ $0352        ; $F8352
 RefPeriod        equ $0363        ; $F8363
 SparkPeriod      equ $0364        ; $F8364
 KnockMapThreshold equ $036E        ; $F836E
@@ -403,6 +407,7 @@ IdleFlags3       equ $0669        ; $F8669
 IdleFlags8       equ $066A        ; $F866A
 IdleAcFlags      equ $066B        ; $F866B
 IacTarget        equ $066C        ; $F866C
+IdleCount0322    equ $0673        ; $F8673
 IacCoastPosition equ $0680        ; $F8680
 FieldDuty        equ $0682        ; $F8682
 IacLearned       equ $0689        ; $F8689

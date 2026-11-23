@@ -179,6 +179,10 @@ ObdTid22Result   equ $0138        ; $F8138
 LdpStrokeResult  equ $0147        ; $F8147
 FaultMem05       equ $0152        ; $F8152
 FaultMem07       equ $0154        ; $F8154
+FaultListLast    equ $0170        ; $F8170
+FaultListInfo3   equ $0171        ; $F8171
+FaultListInfo2   equ $0172        ; $F8172
+FaultListInfo1   equ $0173        ; $F8173
 GearStateFlags   equ $0182        ; $F8182
 IdleFlags        equ $0184        ; $F8184
 ;                 bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
@@ -196,6 +200,7 @@ IdleFlags8       equ $018A        ; $F818A
 IdleAcFlags      equ $018B        ; $F818B
 IacTargetCmd     equ $018C        ; $F818C
 IdleMapTarget    equ $018F        ; $F818F
+IdleCount0322    equ $0193        ; $F8193
 DashpotTimer     equ $0194        ; $F8194
 IacCoastPosition equ $019F        ; $F819F
 FieldDuty        equ $01A1        ; $F81A1
@@ -237,6 +242,7 @@ Temp4F2          equ $01F2        ; $F81F2
 Temp4F4          equ $01F4        ; $F81F4
 Temp4F6          equ $01F6        ; $F81F6
 MisfireWork      equ $01F8        ; $F81F8
+SegmentTimeWork  equ $01FA        ; $F81FA
 Temp4FC          equ $01FC        ; $F81FC
 Temp4FE          equ $01FE        ; $F81FE
 Temp4FF          equ $01FF        ; $F81FF
@@ -289,6 +295,8 @@ CatMonSteadyTimer equ $027A        ; $F827A
 SegmentRpm       equ $0286        ; $F8286
 MisfireRpmRef    equ $0288        ; $F8288
 MisfireRpmCol    equ $028A        ; $F828A
+MisfireWork5C8   equ $028C        ; $F828C
+MisfireWork5D2   equ $0296        ; $F8296
 MisfireChangeFiltered equ $0298        ; $F8298
 MisfireNoiseLevel equ $029A        ; $F829A
 MisfireNoisePeak equ $029C        ; $F829C
@@ -304,6 +312,7 @@ MisfireFilter    equ $02C4        ; $F82C4
 MisfireFlags2    equ $02C5        ; $F82C5
 MisfireFlags5    equ $02C6        ; $F82C6
 MisfireFlags4    equ $02C7        ; $F82C7
+MisfireWork628   equ $02C8        ; $F82C8
 MisfireHold      equ $02C9        ; $F82C9
 MisfireNoiseTimer equ $02CB        ; $F82CB
 SwitchMonFlags   equ $02CE        ; $F82CE
@@ -311,13 +320,17 @@ O2MonFlags       equ $02CF        ; $F82CF
 MonEnableFlags2  equ $02D6        ; $F82D6
 MonData643       equ $02D7        ; $F82D7
 MonData644       equ $02D8        ; $F82D8
+MonData645       equ $02D9        ; $F82D9
 MonData646       equ $02DA        ; $F82DA
 MonData647       equ $02DB        ; $F82DB
 LdpFlags3        equ $02DD        ; $F82DD
 ClosedLoopMonFlags equ $02DE        ; $F82DE
+MilRequestFlags  equ $02DF        ; $F82DF
 MonFlags64D      equ $02E1        ; $F82E1
 MonFlags64E      equ $02E2        ; $F82E2
+MonData64F       equ $02E3        ; $F82E3
 EventOption      equ $0301        ; $F8301
+EventOptionTimer equ $0302        ; $F8302
 MisfireHoldRpmValue equ $030C        ; $F830C
 LimpFlags        equ $0310        ; $F8310
 DiagBusFlags     equ $0316        ; $F8316
@@ -414,6 +427,7 @@ WotTimer         equ $0453        ; $F8453
 O2WarmDelay      equ $0457        ; $F8457
 O2AdaptValue1    equ $0458        ; $F8458
 O2AdaptValue2    equ $0459        ; $F8459
+O2CellWork       equ $045A        ; $F845A
 O2LearnTimer2    equ $045B        ; $F845B
 O2ColdTrim1      equ $045D        ; $F845D
 O2ColdTrim2      equ $045E        ; $F845E
@@ -517,7 +531,10 @@ KnockThresholdNow equ $055D        ; $F855D
 FlexEthanolScaled equ $0561        ; $F8561
 FuelSenderScaled equ $0563        ; $F8563
 VehicleSpeedRaw  equ $0566        ; $F8566
+VssBusValue2     equ $056A        ; $F856A
 VehicleSpeedCoarse equ $0572        ; $F8572
+CrankPeriodWork  equ $0574        ; $F8574
+VssBusValue      equ $057B        ; $F857B
 MonSteadyRate    equ $0582        ; $F8582
 RunModeCounter   equ $0584        ; $F8584
 RefPeriod        equ $0585        ; $F8585
@@ -525,6 +542,8 @@ SparkPeriod      equ $0586        ; $F8586
 Ic2OverflowCount equ $058C        ; $F858C
 FuelTrimAdjustValue equ $0592        ; $F8592
 CrankFlags2      equ $0593        ; $F8593
+HighRpmTimer     equ $0594        ; $F8594
+HighRpmTimer2    equ $0596        ; $F8596
 O2SensorReady2   equ $059B        ; $F859B
 RpmSpeedRatio    equ $059C        ; $F859C
 KnockMapThreshold equ $059D        ; $F859D
@@ -637,6 +656,7 @@ BusMsg91Byte2    equ $06D6        ; $F86D6
 IacAcBusTimer    equ $06DB        ; $F86DB
 CcdRxFlags       equ $0700        ; $F8700
 IacTarget        equ $075F        ; $F875F
+FuelSysWork      equ $0772        ; $F8772
 Options033ECopy  equ $0773        ; $F8773
 Options033FCopy  equ $0774        ; $F8774
 IoInputs0        equ $0800        ; $F8800

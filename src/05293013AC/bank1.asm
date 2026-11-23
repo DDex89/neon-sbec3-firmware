@@ -2818,7 +2818,7 @@ L11D78:
         BCLR    >CrankSyncFlags2,Z,#$70
         BSET    >TMSK2,Z,#$10
         CLR     >CrankFlags2,Z
-        CLRW    $036A,Z
+        CLRW    >HighRpmTimer,Z
         CLR     $03C0,Z
         LDAA    #$74
         LDAB    >Options032A
@@ -3284,7 +3284,7 @@ HighRpmTimerPit:
         CPD     #$1900
         BCS     L12296
         BSET    >CrankFlags2,Z,#$40
-        LDD     $036A,Z
+        LDD     >HighRpmTimer,Z
         CPD     #$0E39
         BCS     L12286
         LDD     #$FFFF
@@ -3293,11 +3293,11 @@ L12286:
         LDE     #$0012
         EMUL
 L1228C:
-        STD     $036A,Z
+        STD     >HighRpmTimer,Z
         BCLR    >CrankFlags2,Z,#$02
         BRA     L1229E
 L12296:
-        INCW    $036A,Z
+        INCW    >HighRpmTimer,Z
         BSET    >CrankFlags2,Z,#$02
 L1229E:
         RTS
@@ -3308,27 +3308,27 @@ L1229E:
 ;---------------------------------------------------------------------------------------------------
 HighRpmTimerUpdate:
         BRCLR   >CrankFlags2,Z,#$20,L122AC
-        INCW    $036A,Z
+        INCW    >HighRpmTimer,Z
         BRA     L122C6
 L122AC:
         BRCLR   >CrankFlags2,Z,#$10,L122C6
-        LDD     $036A,Z
+        LDD     >HighRpmTimer,Z
         LSRD
         LSRD
-        ADDD    $036A,Z
-        STD     $036A,Z
+        ADDD    >HighRpmTimer,Z
+        STD     >HighRpmTimer,Z
         BCLR    >CrankFlags2,Z,#$10
 L122C6:
         BRCLR   >CrankFlags2,Z,#$08,L122D2
-        INCW    $036C,Z
+        INCW    >HighRpmTimer2,Z
         BRA     L122EC
 L122D2:
         BRCLR   >CrankFlags2,Z,#$04,L122EC
-        LDD     $036C,Z
+        LDD     >HighRpmTimer2,Z
         LSRD
         LSRD
-        ADDD    $036C,Z
-        STD     $036C,Z
+        ADDD    >HighRpmTimer2,Z
+        STD     >HighRpmTimer2,Z
         BCLR    >CrankFlags2,Z,#$04
 L122EC:
         RTS
@@ -8825,7 +8825,7 @@ Sub_15E46:
         BRSET   >ThrottleState,Z,#$80,L15E6E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
         BNE     L15E6E
-        CLR     $0681,Z
+        CLR     >IdleCount0322,Z
         BRA     L15E8C
 L15E6A:
         INC     >SystemTestRejects,Z
@@ -12725,7 +12725,7 @@ L187DA:
         CLR     >MonEnableFlags2,Z
         BSET    >MonEnableFlags2,Z,#$40
         CLR     $04E5,Z
-        BCLR    $0509,Z,#$03
+        BCLR    >MilRequestFlags,Z,#$03
         BRA     L18814
 L18802:
         BRSET   >MonEnableFlags2,Z,#$80,L18814
@@ -12743,10 +12743,10 @@ MonDataReset:
         LDAA    $050A,Z
         STAA    >MonData644,Z
         LDAA    >MonFlags64D,Z
-        STAA    $0503,Z
+        STAA    >MonData645,Z
         LDAA    >MonFlags64E,Z
         STAA    >MonData646,Z
-        LDAA    $050D,Z
+        LDAA    >MonData64F,Z
         STAA    >MonData647,Z
         LDD     $04E9,Z
         STD     $04E3,Z
@@ -12773,7 +12773,7 @@ MonDataStore:
         CMPA    $050A,Z
         BNE     L188D2
         ADDE    #$01
-        LDAA    $0503,Z
+        LDAA    >MonData645,Z
         CMPA    >MonFlags64D,Z
         BNE     L188D2
         ADDE    #$01
@@ -12793,7 +12793,7 @@ MonDataStore:
 L188AC:
         ADDE    #$01
         LDAA    >MonData647,Z
-        CMPA    $050D,Z
+        CMPA    >MonData64F,Z
         BNE     L188D2
         ADDE    #$01
         LDAA    $0506,Z
@@ -12845,9 +12845,9 @@ L18936:
 L1893C:
         TST     $9F,Z
         BNE     L18944
-        BCLR    $0503,Z,#$10
+        BCLR    >MonData645,Z,#$10
 L18944:
-        BCLR    $0503,Z,#$08
+        BCLR    >MonData645,Z,#$08
 L18948:
         BCLR    >LdpPurgeTestFlags,Z,#$80
 L1894C:
@@ -12893,7 +12893,7 @@ L189A4:
 L189C4:
         BRA     L189D2
 L189C6:
-        BCLR    $0503,Z,#$20
+        BCLR    >MonData645,Z,#$20
 L189CA:
         BCLR    >OutputTestFlags,Z,#$04
         BCLR    >LdpPurgeTestFlags,Z,#$40
@@ -12938,7 +12938,7 @@ L18A5A:
         BCS     L18A44
 L18A62:
         CLR     >MonData643,Z
-        BCLR    $0503,Z,#$03
+        BCLR    >MonData645,Z,#$03
         BSETW   >IoCtl12,Z,#$4000
         BSET    >LdpPurgeTestFlags,Z,#$04
 L18A74:
@@ -13021,7 +13021,7 @@ L18B3C:
         BCS     L18AFC
         BRA     L18B78
 L18B46:
-        BCLR    $0503,Z,#$04
+        BCLR    >MonData645,Z,#$04
 L18B4A:
         BRCLR   >LdpPurgeTestFlags,Z,#$08,L18B54
         BSET    >IoCfg1FL,Z,#$10                         ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
@@ -13129,14 +13129,14 @@ MonTaskE:
         ANDA    #$FD
 L18C74:
         BEQ     L18C8C
-        BRSET   $0509,Z,#$01,L18D0E
-        BSET    $0509,Z,#$03
+        BRSET   >MilRequestFlags,Z,#$01,L18D0E
+        BSET    >MilRequestFlags,Z,#$03
         LDAA    #$28
         STAA    $040E,Z
         BSET    <DiagStatusFlags,Z,#$10                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
         BRA     L18D0E
 L18C8C:
-        BCLR    $0509,Z,#$01
+        BCLR    >MilRequestFlags,Z,#$01
         BRSET   >MonFlags64D,Z,#$04,L18CA4
         TST     $050A,Z
         BNE     L18D04
@@ -13152,7 +13152,7 @@ L18CB0:
         LDAA    >MonFlags64D,Z
         ANDA    #$18
         BNE     L18D04
-        BRSET   $050D,Z,#$01,L18D04
+        BRSET   >MonData64F,Z,#$01,L18D04
 L18CCA:
         BRSET   >MonFlags64D,Z,#$40,L18D04
         BRSET   >MonFlags64D,Z,#$80,L18D04
@@ -13175,10 +13175,10 @@ L18CF4:
         TST     $0417,Z
         BEQ     L18D0A
 L18D04:
-        BSET    $0509,Z,#$02
+        BSET    >MilRequestFlags,Z,#$02
         BRA     L18D0E
 L18D0A:
-        BCLR    $0509,Z,#$03
+        BCLR    >MilRequestFlags,Z,#$03
 L18D0E:
         RTS
 
@@ -13191,10 +13191,10 @@ ClosedLoopMemClear:
         BRCLR   >EngineStateFlags,Z,#$80,L18D36          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BSET    >ClosedLoopMonFlags,Z,#$80
         BRCLR   >FuelSysFlags1,Z,#$AA,L18D2A
-        BSET    $0503,Z,#$80
+        BSET    >MonData645,Z,#$80
 L18D2A:
         BRCLR   >FuelSysFlags2,Z,#$AA,L18D34
-        BSET    $0503,Z,#$80
+        BSET    >MonData645,Z,#$80
 L18D34:
         BRA     L18D4A
 L18D36:
@@ -13220,7 +13220,7 @@ ClosedLoopMonTimer:
         LDAA    $04E1,Z
         CMPA    $04E6,Z
         BCS     L18D7E
-        BSET    $0503,Z,#$40
+        BSET    >MonData645,Z,#$40
         BSET    $04E5,Z,#$80
         BRA     L18D7E
 L18D7A:
@@ -17768,7 +17768,7 @@ MisfireMonitorEvent:
         CLRW    >SegmentRpm,Z
         CLRW    >MisfireRpmRef,Z
         CLRW    >MisfireRpmCol,Z
-        CLRW    $021E,Z
+        CLRW    >MisfireWork5C8,Z
         CLRW    $0220,Z
         CLRW    $0222,Z
         CLRW    $0224,Z
@@ -17868,7 +17868,7 @@ L1BF60:
         BNE     L1BFD2
         CLRE
         LDD     >SegmentRpm,Z
-        SUBD    $021E,Z
+        SUBD    >MisfireWork5C8,Z
         BCC     L1BF80
         LDE     #$FFFF
 L1BF80:
@@ -17878,7 +17878,7 @@ L1BF80:
         XGDX
         ASLD
         ROLE
-        ADDD    $021E,Z
+        ADDD    >MisfireWork5C8,Z
         ADCE    #$0000
         SUBD    >MisfireRpmRef,Z
         SBCE    #$0000
@@ -17894,7 +17894,7 @@ L1BFAA:
         LDED    $2669
         JSR     Sub_1CCF2
         LDD     <MisfireWork,Z
-        ADDD    $021E,Z
+        ADDD    >MisfireWork5C8,Z
         ADCE    #$0000
         SUBD    >MisfireRpmCol,Z
         SBCE    #$0000
@@ -18131,7 +18131,7 @@ L1C1C2:
 L1C1FA:
         LDE     >Temp4FC,Z
         STE     $0238,Z
-        BSET    $025E,Z,#$80
+        BSET    >MisfireWork628,Z,#$80
         BRCLR   >ClosedLoopMonFlags,Z,#$40,L1C210
         BSET    >MonEnableFlags2,Z,#$01
 L1C210:
@@ -18213,9 +18213,9 @@ L1C2C0:
 L1C2D0:
         STAA    $024F,Z
 L1C2D4:
-        LDAB    $025E,Z
+        LDAB    >MisfireWork628,Z
         ORAB    $F1,Z
-        STAB    $025E,Z
+        STAB    >MisfireWork628,Z
         LDAA    <MonRecordB7,Z
         BITA    #$18
         BNE     L1C2F0
@@ -18332,7 +18332,7 @@ L1C41A:
         BRSET   $0245,Z,#$80,L1C424
         BCLR    <DiagStatusFlags,Z,#$10                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
 L1C424:
-        CLR     $025E,Z
+        CLR     >MisfireWork628,Z
         CLR     $0252,Z
         CLR     $0240,Z
         CLR     $0241,Z
@@ -18947,7 +18947,7 @@ Sub_1CA94:
         CLRW    >SegmentRpm,Z
         CLRW    >MisfireRpmRef,Z
         CLRW    >MisfireRpmCol,Z
-        CLRW    $021E,Z
+        CLRW    >MisfireWork5C8,Z
         CLRW    $0220,Z
         CLRW    $0222,Z
         CLRW    $0224,Z
@@ -18994,7 +18994,7 @@ Sub_1CA94:
         CLR     >MisfireFlags2,Z
         CLR     $025C,Z
         CLR     >MisfireFlags4,Z
-        CLR     $025E,Z
+        CLR     >MisfireWork628,Z
         CLR     $0260,Z
         CLR     >MisfireHold,Z
         CLR     $0261,Z
@@ -19024,10 +19024,10 @@ L1CB7C:
         NEGD
         CPD     $296D
         BLS     L1CBB4
-        BRSET   $025E,Z,#$80,L1CBB0
+        BRSET   >MisfireWork628,Z,#$80,L1CBB0
         STD     $0230,Z
 L1CBB0:
-        BCLR    $025E,Z,#$80
+        BCLR    >MisfireWork628,Z,#$80
 L1CBB4:
         SUBE    $0230,Z
         BPL     L1CBBC
@@ -19085,10 +19085,10 @@ L1CC30:
         STD     $0224,Z
         LDD     $0220,Z
         STD     $0222,Z
-        LDD     $021E,Z
+        LDD     >MisfireWork5C8,Z
         STD     $0220,Z
         LDD     >MisfireRpmCol,Z
-        STD     $021E,Z
+        STD     >MisfireWork5C8,Z
         LDD     >MisfireRpmRef,Z
         STD     >MisfireRpmCol,Z
         LDD     >SegmentRpm,Z
@@ -19135,7 +19135,7 @@ L1CCC4:
         STX     $0224,Z
         STX     $0222,Z
         STX     $0220,Z
-        STX     $021E,Z
+        STX     >MisfireWork5C8,Z
         STX     >MisfireRpmCol,Z
         STX     >MisfireRpmRef,Z
         LDAA    #$FF
@@ -21424,8 +21424,8 @@ L1E56E:
 ;---------------------------------------------------------------------------------------------------
 Sub_1E570:
         LDAB    $0140,Z
-        BRCLR   $0509,Z,#$03,L1E594
-        BRCLR   $0509,Z,#$01,L1E630
+        BRCLR   >MilRequestFlags,Z,#$03,L1E594
+        BRCLR   >MilRequestFlags,Z,#$01,L1E630
         DEC     $040E,Z
         LBNE    L1E670
         LDAA    #$28

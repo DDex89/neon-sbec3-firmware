@@ -18,6 +18,7 @@ SegmentTimePair3 equ $0013        ; $F8013
 IacStepFlags     equ $0017        ; $F8017
 IacPosition      equ $0018        ; $F8018
 IdleMapLearned   equ $002A        ; $F802A
+ReadinessIncomplete equ $003F        ; $F803F
 EgrZeroPos       equ $0040        ; $F8040
 FlexStartFlags   equ $0050        ; $F8050
 VacLeakFlags     equ $0051        ; $F8051
@@ -39,6 +40,7 @@ PurgeCellTrim1B2 equ $007D        ; $F807D
 PurgeCellTrim2B2 equ $007E        ; $F807E
 PurgeCellTrim3B2 equ $007F        ; $F807F
 PurgeCellRichFlags equ $0080        ; $F8080
+LimitCauseFlags  equ $0083        ; $F8083
 MonitorDisableFlags equ $009C        ; $F809C
 ;                 bit 5: flex-fuel learning hold active (FlexLearnHold not zero): misfire, catalyst, O2, EGR, purge and leak monitors wait
 ;                 bit 4: fuel level below MonEnableFuelEmpty
@@ -138,6 +140,7 @@ O2NoActivityFlags equ $0100        ; $F8100
 MonFlags101      equ $0101        ; $F8101
 O2HeaterFlags2   equ $0106        ; $F8106
 O2HeaterFlags    equ $0107        ; $F8107
+O2HeaterWork     equ $0108        ; $F8108
 O2HeaterTimer    equ $010A        ; $F810A
 O2HeaterCount    equ $010E        ; $F810E
 LdpFlags2        equ $011B        ; $F811B
@@ -160,6 +163,10 @@ FaultMem15       equ $0137        ; $F8137
 FaultMem16       equ $0138        ; $F8138
 FaultMem17       equ $0139        ; $F8139
 FaultMem1B       equ $013D        ; $F813D
+FaultListLast    equ $0149        ; $F8149
+FaultListInfo3   equ $014A        ; $F814A
+FaultListInfo2   equ $014B        ; $F814B
+FaultListInfo1   equ $014C        ; $F814C
 MilFaultCount    equ $014D        ; $F814D
 ObdTid21Status   equ $0166        ; $F8166
 ObdTid21Result   equ $0167        ; $F8167
@@ -207,6 +214,7 @@ FlexEstimate1    equ $01C4        ; $F81C4
 FlexEstimate2    equ $01C5        ; $F81C5
 EgrResultFails   equ $01EC        ; $F81EC
 EgrTrackFails    equ $01ED        ; $F81ED
+EgrPosMonFlags   equ $01EE        ; $F81EE
 EgrMonFlags2     equ $01EF        ; $F81EF
 IdleTarget       equ $0300        ; $F8300
 IacDecelRefRpm   equ $0302        ; $F8302
@@ -234,6 +242,7 @@ IdleFlags9       equ $0319        ; $F8319
 IdleAcFlags      equ $031A        ; $F831A
 IacTargetCmd     equ $031B        ; $F831B
 IdleMapTarget    equ $031E        ; $F831E
+IdleCount0322    equ $0322        ; $F8322
 DashpotTimer     equ $0323        ; $F8323
 IdleRampDelay    equ $0324        ; $F8324
 IdleMapHold      equ $032A        ; $F832A
@@ -282,6 +291,9 @@ IacBase          equ $0362        ; $F8362
 IacResetLoops    equ $0364        ; $F8364
 ShiftIdleDelay   equ $0365        ; $F8365
 IacTarget        equ $0366        ; $F8366
+IacLearnCellA    equ $0368        ; $F8368
+IacLearnCellB    equ $0369        ; $F8369
+IacLearnSum      equ $036E        ; $F836E
 IacDriveOffset   equ $0374        ; $F8374
 ObdWork          equ $03F0        ; $F83F0
 SpeedCtlState    equ $0400        ; $F8400
@@ -366,6 +378,7 @@ Temp4F2          equ $04F2        ; $F84F2
 Temp4F4          equ $04F4        ; $F84F4
 Temp4F6          equ $04F6        ; $F84F6
 MisfireWork      equ $04F8        ; $F84F8
+SegmentTimeWork  equ $04FA        ; $F84FA
 Temp4FC          equ $04FC        ; $F84FC
 Temp4FE          equ $04FE        ; $F84FE
 Temp4FF          equ $04FF        ; $F84FF
@@ -398,6 +411,7 @@ FaultPending1    equ $0520        ; $F8520
 FaultPending2    equ $0521        ; $F8521
 FaultPendingCount1 equ $0522        ; $F8522
 FaultPendingCount2 equ $0523        ; $F8523
+DiagModeFlags    equ $0526        ; $F8526
 DiagTimer527     equ $0527        ; $F8527
 FuelSystemStatusPid equ $0528        ; $F8528
 MonStatusBits1   equ $052A        ; $F852A
@@ -456,6 +470,8 @@ PurgeCircuitErrors equ $05C0        ; $F85C0
 SegmentRpm       equ $05C2        ; $F85C2
 MisfireRpmRef    equ $05C4        ; $F85C4
 MisfireRpmCol    equ $05C6        ; $F85C6
+MisfireWork5C8   equ $05C8        ; $F85C8
+MisfireWork5D2   equ $05D2        ; $F85D2
 MisfireChangeFiltered equ $05D4        ; $F85D4
 MisfireNoiseLevel equ $05D6        ; $F85D6
 MisfireNoisePeak equ $05D8        ; $F85D8
@@ -474,21 +490,26 @@ MisfireFlags2    equ $0624        ; $F8624
 MisfireFlags5    equ $0625        ; $F8625
 MisfireFlags4    equ $0626        ; $F8626
 MisfireFlags3    equ $0627        ; $F8627
+MisfireWork628   equ $0628        ; $F8628
 MisfireHold      equ $0629        ; $F8629
 MisfireBaroWeight equ $062A        ; $F862A
 MisfireNoiseTimer equ $062B        ; $F862B
 EventOption      equ $0630        ; $F8630
+EventOptionTimer equ $0631        ; $F8631
 MisfireHoldRpmValue equ $063B        ; $F863B
 MonEnableFlags2  equ $0642        ; $F8642
 MonData643       equ $0643        ; $F8643
 MonData644       equ $0644        ; $F8644
+MonData645       equ $0645        ; $F8645
 MonData646       equ $0646        ; $F8646
 MonData647       equ $0647        ; $F8647
 LdpFlags3        equ $0649        ; $F8649
 ClosedLoopMonFlags equ $064A        ; $F864A
+MilRequestFlags  equ $064B        ; $F864B
 MonFlags64D      equ $064D        ; $F864D
 MonFlags64E      equ $064E        ; $F864E
-CrankIsrFlags    equ $064F        ; $F864F
+MonData64F       equ $064F        ; $F864F
+FuelSysWork      equ $0656        ; $F8656
 SwitchMonFlags   equ $0658        ; $F8658
 O2MonFlags       equ $0659        ; $F8659
 MonFlags65A      equ $065A        ; $F865A
@@ -551,6 +572,7 @@ O2UpBank1Raw     equ $0701        ; $F8701
 O2DownBank1Raw   equ $070B        ; $F870B
 O2UpBank1        equ $0714        ; $F8714
 O2Bank1Flags     equ $071D        ; $F871D
+O2TrimAvgCount   equ $0727        ; $F8727
 ShortTermTrim2   equ $0728        ; $F8728
 O2UpBank2Raw     equ $0729        ; $F8729
 O2DownBank2Raw   equ $0733        ; $F8733
@@ -636,6 +658,7 @@ WotTimer         equ $07AB        ; $F87AB
 O2WarmDelay      equ $07AF        ; $F87AF
 O2AdaptValue1    equ $07B0        ; $F87B0
 O2AdaptValue2    equ $07B1        ; $F87B1
+O2CellWork       equ $07B2        ; $F87B2
 O2LearnTimer2    equ $07B3        ; $F87B3
 O2ColdTrim1      equ $07B5        ; $F87B5
 O2ColdTrim2      equ $07B6        ; $F87B6
@@ -676,6 +699,7 @@ PurgeVaporEstimate equ $07E8        ; $F87E8
 PurgeVaporEstimate2 equ $07E9        ; $F87E9
 PurgeVaporPart   equ $07EA        ; $F87EA
 PurgeVaporClosed equ $07EB        ; $F87EB
+PurgeLearnCount  equ $07EC        ; $F87EC
 FlexStartFuel    equ $07EE        ; $F87EE
 O2CellIndex      equ $0800        ; $F8800
 O2MemCell        equ $0801        ; $F8801
@@ -690,6 +714,7 @@ PurgeTrimCount   equ $0818        ; $F8818
 PurgeTrimLatched equ $0819        ; $F8819
 WotEnrich        equ $081A        ; $F881A
 WotFlagTimer     equ $081B        ; $F881B
+InjSeqWork       equ $0828        ; $F8828
 InjectorMask     equ $0829        ; $F8829
 InjectorMask2    equ $082A        ; $F882A
 O2LearnFlags     equ $0854        ; $F8854
@@ -713,6 +738,7 @@ SkimData1        equ $08F8        ; $F88F8
 SkimData2        equ $08F9        ; $F88F9
 SkimData3        equ $08FA        ; $F88FA
 SkimData4        equ $08FB        ; $F88FB
+PciLinkCounter   equ $08FE        ; $F88FE
 BodyMsgTimeout2  equ $08FF        ; $F88FF
 DiagCommand      equ $092E        ; $F892E
 DiagParam1       equ $092F        ; $F892F
@@ -792,6 +818,10 @@ BusMsgFlags      equ $09D5        ; $F89D5
 BusMsg91Byte1    equ $09D6        ; $F89D6
 BusMsg91Byte2    equ $09D7        ; $F89D7
 BusMsg91Gate     equ $09D8        ; $F89D8
+SkimCalcA        equ $09F6        ; $F89F6
+SkimCalcB        equ $09F7        ; $F89F7
+SkimCalcC        equ $09F8        ; $F89F8
+SkimCalcD        equ $09F9        ; $F89F9
 RpmFilteredIdle  equ $09FC        ; $F89FC
 PciFlags         equ $0A00        ; $F8A00
 PciFlags2        equ $0A01        ; $F8A01
@@ -816,12 +846,16 @@ ObdFlags         equ $0A20        ; $F8A20
 SkimFlags2       equ $0A21        ; $F8A21
 PciRxFlags       equ $0A22        ; $F8A22
 ObdRequestId     equ $0A23        ; $F8A23
+SciObdCount      equ $0A24        ; $F8A24
+SciObdIndex      equ $0A26        ; $F8A26
+SciObdState      equ $0A27        ; $F8A27
 ObdResponse      equ $0A29        ; $F8A29
 ObdRespByte2     equ $0A2A        ; $F8A2A
 SciTimer         equ $0A2F        ; $F8A2F
 DiagBusFlags     equ $0A30        ; $F8A30
 SciByteTimer     equ $0A32        ; $F8A32
 SciCounter       equ $0A34        ; $F8A34
+SciObdByte       equ $0A41        ; $F8A41
 LoadValueObd     equ $0A42        ; $F8A42
 SwitchInputs     equ $0A46        ; $F8A46
 ;                 bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
@@ -843,6 +877,7 @@ BatteryVoltsDwell equ $0A57        ; $F8A57
 BatteryTempRaw   equ $0A59        ; $F8A59
 BatteryTemp      equ $0A5A        ; $F8A5A
 BattTempStored   equ $0A5B        ; $F8A5B
+BatteryTempFlags equ $0A5C        ; $F8A5C
 BattTempDriveCount equ $0A5D        ; $F8A5D
 BatteryTempStart equ $0A5E        ; $F8A5E
 BattTempModelAcc equ $0A5F        ; $F8A5F
@@ -884,7 +919,10 @@ FuelSenderFiltered equ $0A94        ; $F8A94
 VehicleSpeedRaw  equ $0A98        ; $F8A98
 VehicleSpeed     equ $0A9A        ; $F8A9A
 VehicleSpeedCoarse equ $0A9B        ; $F8A9B
+VssBusValue2     equ $0A9E        ; $F8A9E
 RpmSpeedRatio    equ $0AA6        ; $F8AA6
+HighRpmTimer2    equ $0AA7        ; $F8AA7
+VssBusValue      equ $0AB3        ; $F8AB3
 MonSteadyRate    equ $0ABA        ; $F8ABA
 RunModeCounter   equ $0ABC        ; $F8ABC
 RefPeriod        equ $0ABD        ; $F8ABD
@@ -892,7 +930,9 @@ RefPeriodLow     equ $0ABE        ; $F8ABE
 Ic2OverflowCount equ $0AC4        ; $F8AC4
 FuelTrimAdjustValue equ $0ACA        ; $F8ACA
 CrankFlags2      equ $0ACC        ; $F8ACC
+HighRpmTimer     equ $0ACE        ; $F8ACE
 RpmForBus        equ $0AD0        ; $F8AD0
+CrankPeriodWork  equ $0AD8        ; $F8AD8
 CrankPeriodSum   equ $0AFC        ; $F8AFC
 FanFlags         equ $0B00        ; $F8B00
 FanStageTimer    equ $0B01        ; $F8B01
@@ -904,6 +944,7 @@ FanPwmDuty       equ $0B0E        ; $F8B0E
 FanPwmPeriodCount equ $0B12        ; $F8B12
 FanPwmStepCoolantValue equ $0B15        ; $F8B15
 FanPwmStepAcValue equ $0B1B        ; $F8B1B
+FanPwmCount      equ $0B1C        ; $F8B1C
 FanPwmStepBusValue equ $0B28        ; $F8B28
 EgrFlags         equ $0B2C        ; $F8B2C
 EgrFlags2        equ $0B2D        ; $F8B2D
@@ -919,6 +960,7 @@ EgrPidIntegral   equ $0B42        ; $F8B42
 EgrDuty          equ $0B48        ; $F8B48
 EgrZeroFlags     equ $0B4C        ; $F8B4C
 EgrZeroTimer     equ $0B4D        ; $F8B4D
+AcCutFlags       equ $0B4E        ; $F8B4E
 AcCutTimer       equ $0B4F        ; $F8B4F
 AcCutMapRef      equ $0B50        ; $F8B50
 BrakeOnTime      equ $0B51        ; $F8B51
@@ -996,6 +1038,7 @@ RpmPrev          equ $0C4E        ; $F8C4E
 SciUnlockState   equ $0C54        ; $F8C54
 SciSecurityState equ $0C58        ; $F8C58
 LookupResult     equ $0C5D        ; $F8C5D
+Irq2HandledFlags equ $0C60        ; $F8C60
 SparkFlags       equ $0D00        ; $F8D00
 ;                 bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
 ;                 bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
@@ -1069,6 +1112,7 @@ KnockWindowFactor equ $0DB5        ; $F8DB5
 KnockSampleCount equ $0DB6        ; $F8DB6
 ChargeMonFlags   equ $0DB8        ; $F8DB8
 ChargeTargetVolts equ $0DB9        ; $F8DB9
+ChargeStepCount  equ $0DBA        ; $F8DBA
 ChargeMonTimer   equ $0DBB        ; $F8DBB
 FieldRampCounter equ $0DBE        ; $F8DBE
 FieldDutyLimit   equ $0DC1        ; $F8DC1

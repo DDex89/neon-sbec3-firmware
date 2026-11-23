@@ -7409,7 +7409,7 @@ L0516C:
         LBRA    L05958
 L05184:
         BCLR    >IdleFlags5,Z,#$04
-        CLR     $0193,Z
+        CLR     >IdleCount0322,Z
         BCLR    <ControlFlagsC33,Z,#$44
         LBRA    L05424
 L05194:
@@ -7555,7 +7555,7 @@ L05392:
         BCLR    >IdleFlags5,Z,#$10
         BCLR    >IdleFlags8,Z,#$02
         BSET    >MisfireFlags4,Z,#$40
-        CLR     $0193,Z
+        CLR     >IdleCount0322,Z
         LBRA    L05958
 L053B4:
         BRSET   >IdleFlags3,Z,#$08,L05424
@@ -7585,7 +7585,7 @@ L05406:
         BCLR    >IdleFlags8,Z,#$02
         BCLR    >IdleFlags5,Z,#$08
         BSET    >MisfireFlags4,Z,#$40
-        CLR     $0193,Z
+        CLR     >IdleCount0322,Z
 L05424:
         BRSET   >Options032E,#$08,L055FE                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
         BRCLR   >IdleFlags3,Z,#$08,L0547C
@@ -8841,7 +8841,7 @@ L060A6:
         LDAA    <ThrottleState,Z
         BITA    #$80
         BEQ     L060BA
-        CLR     $0193,Z
+        CLR     >IdleCount0322,Z
         BSET    >IdleFlags5,Z,#$01
         BRA     L060CE
 L060BA:
@@ -8849,9 +8849,9 @@ L060BA:
         BEQ     L060CE
         TST     >DashpotTimerMoving,Z
         BNE     L060CE
-        INC     $0193,Z
+        INC     >IdleCount0322,Z
         BNE     L060CE
-        DEC     $0193,Z
+        DEC     >IdleCount0322,Z
 L060CE:
         BCLR    >IdleFlags5,Z,#$40
         BRCLR   >Scratch8,Z,#$10,L0616A
@@ -8878,13 +8878,13 @@ L06110:
         ANDA    #$1C
         BNE     L0616A
         BSET    >IdleFlags5,Z,#$40
-        LDAA    $0193,Z
+        LDAA    >IdleCount0322,Z
         CMPA    $2471
         BRSET   >IdleFlags5,Z,#$01,L0612E
         CMPA    $2473
 L0612E:
         BCS     L0616A
-        CLR     $0193,Z
+        CLR     >IdleCount0322,Z
         CLRA
         LDAB    >IdleMapTarget,Z
         TDE
@@ -10251,7 +10251,7 @@ L07032:
         LDD     #$FFFF
         STD     >SparkPeriod,Z
         STD     >RunModeCounter,Z
-        STD     $0574,Z
+        STD     >CrankPeriodWork,Z
         STD     $0576,Z
         STD     $057A,Z
         STD     $057C,Z
@@ -10261,7 +10261,7 @@ L07032:
         STAA    >InjectorKillCyl1,Z
         STAA    >InjectorKillCyl2,Z
         LDAA    #$0F
-        STD     $056A,Z
+        STD     >VssBusValue2,Z
         LDAA    $3F,Z
         CMPA    #$32
         BCS     L0708E
@@ -16666,7 +16666,7 @@ ClosedLoopMain:
         CLR     $03D0,Z
         BSET    >O2ResetFlags,Z,#$03
         BSET    <PurgeCellRichFlags,Z,#$40
-        CLR     $045A,Z
+        CLR     >O2CellWork,Z
         CLR     >O2AdaptValue1,Z
         CLR     <PurgeCellTrim1,Z
         CLR     <PurgeCellTrim2,Z
@@ -18878,7 +18878,7 @@ L0C680:
         STAA    >O2MemChangeHold2,Z
         BSET    >O2ResetFlags2,Z,#$10
 L0C69A:
-        CLR     $045A,Z
+        CLR     >O2CellWork,Z
         CLR     >O2LearnTimer2,Z
         CLR     >PurgeCellCount,Z
         LDAA    #$20
@@ -19086,7 +19086,7 @@ L0C8A0:
         BRA     L0C918
 L0C8D6:
         CLRA
-        STAA    $045A,Z
+        STAA    >O2CellWork,Z
         STAA    >O2LearnTimer2,Z
         STAA    >O2AdaptValue1,Z
         STAA    >O2AdaptValue2,Z
@@ -19173,10 +19173,10 @@ L0C99A:
         STAA    >O2LearnTimer2,Z
         BRA     L0C9C0
 L0C9B4:
-        LDAA    $045A,Z
+        LDAA    >O2CellWork,Z
         SBA
         BCS     L0CA12
-        STAA    $045A,Z
+        STAA    >O2CellWork,Z
 L0C9C0:
         ANDP    #$FF1F
         LDAA    <Scratch3,Z
@@ -19295,10 +19295,10 @@ L0CA9C:
         STAB    >O2LearnTimer2,Z
         BRA     L0CAC4
 L0CAB8:
-        LDAA    $045A,Z
+        LDAA    >O2CellWork,Z
         CBA
         BCS     L0CAC4
-        STAB    $045A,Z
+        STAB    >O2CellWork,Z
 L0CAC4:
         ANDP    #$FF1F
         RTS
@@ -21706,19 +21706,19 @@ L0E5E4:
         JSR     PeriodChangeTrack
         LDAA    $057A,Z
         LSRA
-        STAA    $057B,Z
+        STAA    >VssBusValue,Z
         LDE     >TIC3,Z
         SUBE    $057E,Z
         STE     $057C,Z
         CLR     $057A,Z
         LDE     >TIC3,Z
         STE     $057E,Z
-        LDE     $056A,Z
+        LDE     >VssBusValue2,Z
         LDD     #$E000
         EMUL
         ADCE    #$0000
         XGEX
-        LDE     $057B,Z
+        LDE     >VssBusValue,Z
         LDAA    $057D,Z
         ROLA
         ROLE
@@ -21727,7 +21727,7 @@ L0E5E4:
         BCC     L0E640
         LDE     #$FFFF
 L0E640:
-        STE     $056A,Z
+        STE     >VssBusValue2,Z
         BRCLR   >CrankFlags2,Z,#$08,L0E65E
         LDD     $0598,Z
         ADDD    #$01
@@ -21742,12 +21742,12 @@ L0E65E:
         BCS     L0E66E
         BCLR    >CrankFlags2,Z,#$20
 L0E66E:
-        LDAA    $057B,Z
+        LDAA    >VssBusValue,Z
         CMPA    #$7F
         BCS     L0E686
         BSET    >CrankFlags2,Z,#$3C
-        CLRW    $0594,Z
-        CLRW    $0596,Z
+        CLRW    >HighRpmTimer,Z
+        CLRW    >HighRpmTimer2,Z
         CLRW    $0598,Z
 L0E686:
         LDD     >VehicleSpeedRaw,Z
@@ -21762,7 +21762,7 @@ L0E686:
 L0E6A4:
         ANDA    #$1F
         STAA    >VssFlags,Z
-        CLR     $0574,Z
+        CLR     >CrankPeriodWork,Z
         LDD     $056E,Z
         STD     $056C,Z
         ORP     #$0100
@@ -21802,12 +21802,12 @@ L0E702:
         LDD     $0570,Z
         LDE     #$00C4
         EMULS
-        LDX     $057B,Z
+        LDX     >VssBusValue,Z
         BEQ     L0E724
         EDIVS
 L0E724:
         STX     $0570,Z
-        LDAA    $057B,Z
+        LDAA    >VssBusValue,Z
         STAA    $05F0,Z
         LBRA    L0E7CC
 L0E734:
@@ -21841,7 +21841,7 @@ L0E770:
         LDX     #$8574
         LDY     #$81F0
         JSR     PeriodChangeTrack
-        LDAA    $0574,Z
+        LDAA    >CrankPeriodWork,Z
         LSRA
         STAA    $0575,Z
         LDE     >TIC3,Z
@@ -21866,7 +21866,7 @@ L0E7A8:
 L0E7CC:
         LDD     >TIC3,Z
         STD     $0578,Z
-        CLR     $0574,Z
+        CLR     >CrankPeriodWork,Z
 L0E7D8:
         LDAA    >TFLG1,Z
         EORA    #$04

@@ -6505,8 +6505,8 @@ L052E0:
         CMPA    #$7F
         BCS     L052F8
         BSET    >CrankFlags2,Z,#$3C
-        CLRW    $036A,Z
-        CLRW    $036C,Z
+        CLRW    >HighRpmTimer,Z
+        CLRW    >HighRpmTimer2,Z
         CLRW    $036E,Z
 L052F8:
         LDD     $0321,Z
@@ -14538,7 +14538,7 @@ L0AD9E:
         LBRA    L0B57E
 L0ADB6:
         BCLR    >IdleFlags5,Z,#$04
-        CLR     $0681,Z
+        CLR     >IdleCount0322,Z
         BCLR    >ControlFlagsC33,Z,#$44
         LBRA    L0B072
 L0ADC6:
@@ -14690,7 +14690,7 @@ L0AFDC:
         BCLR    >IdleFlags5,Z,#$10
         BCLR    >IdleFlags8,Z,#$02
         BSET    >MisfireFlags4,Z,#$20
-        CLR     $0681,Z
+        CLR     >IdleCount0322,Z
         LBRA    L0B57E
 L0AFFE:
         BRSET   >IdleFlags3,Z,#$08,L0B072
@@ -14721,7 +14721,7 @@ L0B054:
         BCLR    >IdleFlags8,Z,#$02
         BCLR    >IdleFlags5,Z,#$08
         BSET    >MisfireFlags4,Z,#$20
-        CLR     $0681,Z
+        CLR     >IdleCount0322,Z
 L0B072:
         BRSET   >Options0339,#$20,L0B22C                 ; bit 5: selects a branch in SparkEventCalc
         BRCLR   >IdleFlags3,Z,#$08,L0B0C4
@@ -15970,7 +15970,7 @@ L0BD96:
         LDAA    >ThrottleState,Z
         BITA    #$80
         BEQ     L0BDAC
-        CLR     $0681,Z
+        CLR     >IdleCount0322,Z
         BSET    >IdleFlags5,Z,#$01
         BRA     L0BDC0
 L0BDAC:
@@ -15978,9 +15978,9 @@ L0BDAC:
         BEQ     L0BDC0
         TST     >DashpotTimerMoving,Z
         BNE     L0BDC0
-        INC     $0681,Z
+        INC     >IdleCount0322,Z
         BNE     L0BDC0
-        DEC     $0681,Z
+        DEC     >IdleCount0322,Z
 L0BDC0:
         BCLR    >IdleFlags5,Z,#$80
         BRCLR   >Scratch8,Z,#$10,L0BE5E
@@ -16007,13 +16007,13 @@ L0BE04:
         ANDA    #$1C
         BNE     L0BE5E
         BSET    >IdleFlags5,Z,#$80
-        LDAA    $0681,Z
+        LDAA    >IdleCount0322,Z
         CMPA    $20E6
         BRSET   >IdleFlags5,Z,#$01,L0BE22
         CMPA    $20E8
 L0BE22:
         BCS     L0BE5E
-        CLR     $0681,Z
+        CLR     >IdleCount0322,Z
         CLRA
         LDAB    $067D,Z
         TDE

@@ -75,3 +75,17 @@ by the high byte of EngineRpm). $080E,Z is added at the end; the result goes to 
 
 ## 1105E ScaleByFraction
 E = E * (1 + A / 256), saturating at $FFFF.
+
+## 246A0 FaultListAdd
+Called by ReportFault with the fault row index in A. The list of stored faults is $0142-$0149,Z
+(newest in FaultListLast, $0149). An index already in the list is moved to the newest place, a new
+one pushes the oldest out. FaultListInfo1-3 ($014C-$014A) hold one byte for each of the three newest
+entries, cleared for a new entry.
+
+## 24222 FaultListRemove
+Removes the index in A from the list $0142-$0149,Z and shifts FaultListInfo1-3 with it.
+
+## 242F2 MisfireFaultLookup
+Looks for the misfire fault row ($45AC) among the three newest list entries and returns its
+FaultListInfo byte in Scratch9. The third compare reads $0148,Z again instead of $0147,Z, so the
+third entry is never found; this looks like a slip in the original code.
