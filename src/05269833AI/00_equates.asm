@@ -370,6 +370,7 @@ DiagTimer527     equ $0527        ; $F8527
 MonStatusBits1   equ $052A        ; $F852A
 MonStatusBits2   equ $052C        ; $F852C
 MonStatusBits3   equ $052E        ; $F852E
+LoadValue        equ $0530        ; $F8530
 O2MonData        equ $0531        ; $F8531
 O2MonData2       equ $0532        ; $F8532
 O2MonIdleTimer   equ $053F        ; $F853F
@@ -715,6 +716,7 @@ SciTimer         equ $0A2F        ; $F8A2F
 DiagBusFlags     equ $0A30        ; $F8A30
 SciByteTimer     equ $0A32        ; $F8A32
 SciCounter       equ $0A34        ; $F8A34
+LoadValueObd     equ $0A42        ; $F8A42
 SwitchInputs     equ $0A46        ; $F8A46
 SwitchInputs2    equ $0A47        ; $F8A47
 AdcFlags         equ $0A4A        ; $F8A4A

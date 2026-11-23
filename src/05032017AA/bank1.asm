@@ -8,7 +8,7 @@
 
 ;---------------------------------------------------------------------------------------------------
 ; CalcDeadTime ($1001C)
-; Called from: Reset, Sub_0DBEA
+; Called from: Reset, EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 CalcDeadTime:
         LDAA    >BatteryVolts2,Z
@@ -22,10 +22,10 @@ CalcDeadTime:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10036 ($10036)
-; Called from: Sub_0DBEA
+; FuelCorrections ($10036)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_10036:
+FuelCorrections:
         JSR     Sub_12BDC
         LBNE    L102E8
         BCLR    >RevLimitFlags,Z,#$04
@@ -256,17 +256,17 @@ L102FC:
 L102FE:
         STAB    >FuelModeFlags2,Z
         LDX     #$753D
-        JSR     Sub_0C4CE
+        JSR     CollectBits
         STAA    >RevLimitFlags,Z
         ORAA    $84,Z
         STAA    $84,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10314 ($10314)
-; Called from: Sub_0DBEA
+; WotEnrichControl ($10314)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_10314:
+WotEnrichControl:
         BRSET   >SensorFaultFlags,Z,#$10,L10364
         BRCLR   >ThrottleState,Z,#$40,L1036A
         CLRW    $07AD,Z
@@ -356,7 +356,7 @@ L1040E:
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleFlareCheck ($10410)
-; Called from: Sub_0DBEA
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 IdleFlareCheck:
         BRCLR   >ThrottleState,Z,#$80,L1041A
@@ -418,10 +418,10 @@ L104C2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_104C4 ($104C4)
-; Called from: Sub_0DBEA
+; DecelFuelRampControl ($104C4)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_104C4:
+DecelFuelRampControl:
         LDX     #DecelBaroMapOffset
         LDAA    <Baro,Z
         JSR     Lookup2D
@@ -548,7 +548,7 @@ L10614:
 
 ;---------------------------------------------------------------------------------------------------
 ; CalcBaroFuelAdder ($10616)
-; Called from: Sub_0DBEA
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 CalcBaroFuelAdder:
         LDAA    <Baro,Z
@@ -562,10 +562,10 @@ CalcBaroFuelAdder:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1062E ($1062E)
-; Called from: Sub_0DBEA
+; KnockEnrichment ($1062E)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1062E:
+KnockEnrichment:
         CLRD
         STAA    >KnockFuel,Z
         CLRW    >Scratch0,Z
@@ -662,10 +662,10 @@ L10714:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10716 ($10716)
-; Called from: Sub_0DBEA
+; AccelEnrichFactors ($10716)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_10716:
+AccelEnrichFactors:
         CLRW    >Scratch6,Z
         BRCLR   >EngineStateFlags,Z,#$80,L107CE
         BRCLR   >MainLoopPhaseMask,Z,#$04,L1076A
@@ -754,10 +754,10 @@ L1080E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10814 ($10814)
-; Called from: Sub_0DBEA
+; TipInFuelControl ($10814)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_10814:
+TipInFuelControl:
         LDAB    >TipInMode
         LBEQ    L10996
         CMPB    #$02
@@ -866,7 +866,7 @@ L10914:
         STE     >Scratch3,Z
         STAA    <Scratch5,Z
         LDE     >Scratch4,Z
-        JSR     Sub_10A46
+        JSR     FlexFactorApply
         LDX     #Tab2D_0B9C
         LDAA    >ManifoldVacuum,Z
         JSR     Lookup2D
@@ -884,25 +884,25 @@ L10914:
         LDAB    >CylinderCount
         DECB
 L10966:
-        JSR     Sub_1099C
+        JSR     InjectorFuelAccount
         INCB
         CMPB    >CylinderCount
         BCS     L10974
         CLRB
 L10974:
-        JSR     Sub_1099C
+        JSR     InjectorFuelAccount
         INCB
         CMPB    >CylinderCount
         BCS     L10982
         CLRB
 L10982:
-        JSR     Sub_1099C
+        JSR     InjectorFuelAccount
         INCB
         CMPB    >CylinderCount
         BCS     L10990
         CLRB
 L10990:
-        JSR     Sub_1099C
+        JSR     InjectorFuelAccount
         BRA     L1099A
 L10996:
         CLRW    >TipInFuel,Z
@@ -910,10 +910,10 @@ L1099A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1099C ($1099C)
-; Called from: Sub_10814 (4 calls)
+; InjectorFuelAccount ($1099C)
+; Called from: TipInFuelControl (4 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1099C:
+InjectorFuelAccount:
         TDE
         CLRB
         TBYK
@@ -933,7 +933,7 @@ L109B6:
         ABY
         BRCLR   >Options032C,#$40,L109E2
         BRSET   >Options032F,#$08,L109DA
-        JSR     Sub_179D2
+        JSR     FlexLearnFuelCount2
         BRA     L109E2
 L109DA:
         LDE     >TipInFuel,Z
@@ -979,10 +979,10 @@ L10A3A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10A46 ($10A46)
-; Called from: Sub_10814, Sub_10A98
+; FlexFactorApply ($10A46)
+; Called from: TipInFuelControl, IacFuelControl
 ;---------------------------------------------------------------------------------------------------
-Sub_10A46:
+FlexFactorApply:
         CLRB
         LDAA    >FlexFactorCoolant3,Z
         CMPA    #$40
@@ -1000,10 +1000,10 @@ L10A62:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10A64 ($10A64)
-; Called from: Sub_10A98
+; FlexFuelFactorLimit ($10A64)
+; Called from: IacFuelControl
 ;---------------------------------------------------------------------------------------------------
-Sub_10A64:
+FlexFuelFactorLimit:
         STE     >Scratch0,Z
         CLRB
         LDAA    >FlexFactorCoolant3,Z
@@ -1029,10 +1029,10 @@ L10A96:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10A98 ($10A98)
-; Called from: Sub_0DBEA
+; IacFuelControl ($10A98)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_10A98:
+IacFuelControl:
         CLRE
         BRSET   >ThrottleState,Z,#$80,L10B10
         TST     >Count3s,Z
@@ -1068,10 +1068,10 @@ L10AD0:
         ASLD
         TDE
         BRCLR   >Options032C,#$40,L10B04
-        JSR     Sub_10A64
+        JSR     FlexFuelFactorLimit
         BRA     L10B08
 L10B04:
-        JSR     Sub_10A46
+        JSR     FlexFactorApply
 L10B08:
         CPE     >FuelPulseAdder,Z
         BCC     L10B10
@@ -1083,12 +1083,12 @@ L10B14:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_10B16 ($10B16)
-; Called from: Sub_0DBEA
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 Sub_10B16:
-        JSR     Sub_10C1C
-        JSR     Sub_10D4C
-        JSR     Sub_10D86
+        JSR     FlexFuelFactors
+        JSR     ThrottleRelearn
+        JSR     WarmupFuel
         JSR     Sub_10F80
         LDX     #Tab2D_0B9C
         LDAA    >ManifoldVacuum,Z
@@ -1183,10 +1183,10 @@ L10C0A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10C1C ($10C1C)
+; FlexFuelFactors ($10C1C)
 ; Called from: Sub_10B16
 ;---------------------------------------------------------------------------------------------------
-Sub_10C1C:
+FlexFuelFactors:
         BRSET   >Options032C,#$40,L10C4C
         LDD     #$0040
         STAA    >FlexFactorCoolant1,Z
@@ -1288,10 +1288,10 @@ L10D4A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10D4C ($10D4C)
+; ThrottleRelearn ($10D4C)
 ; Called from: Sub_10B16
 ;---------------------------------------------------------------------------------------------------
-Sub_10D4C:
+ThrottleRelearn:
         LDAA    >MainLoopCounter,Z
         BITA    >ThrottleSampleMask
         BNE     L10D5E
@@ -1314,10 +1314,10 @@ L10D84:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10D86 ($10D86)
+; WarmupFuel ($10D86)
 ; Called from: Sub_10B16
 ;---------------------------------------------------------------------------------------------------
-Sub_10D86:
+WarmupFuel:
         CLRW    >Scratch4,Z
         LDAA    >TimeSinceStart,Z
         CMPA    #$FF
@@ -1620,7 +1620,7 @@ L110D0:
 
 ;---------------------------------------------------------------------------------------------------
 ; ScaleByFraction ($110D6)
-; Called from: Sub_10B16, Sub_10C1C, Sub_10D86, Sub_10F80, Sub_10FE6, Sub_1105E, FinishFuelPulse, CalcFuelPulse and 1 more routines (17 calls)
+; Called from: Sub_10B16, FlexFuelFactors, WarmupFuel, Sub_10F80, Sub_10FE6, Sub_1105E, FinishFuelPulse, CalcFuelPulse and 1 more routines (17 calls)
 ;---------------------------------------------------------------------------------------------------
 ScaleByFraction:
         CLRB
@@ -1635,10 +1635,10 @@ L110E6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_110EC ($110EC)
-; Called from: Sub_0DBEA
+; IdleEnrichment ($110EC)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_110EC:
+IdleEnrichment:
         BRSET   >EngineStateFlags,Z,#$80,L11114
         TST     >MainLoopCounter,Z
         BNE     L1112E
@@ -1776,10 +1776,10 @@ L11256:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_11258 ($11258)
-; Called from: Sub_0DBEA
+; HotEngineEnrichCalc ($11258)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_11258:
+HotEngineEnrichCalc:
         BRCLR   >SensorFaultFlags,Z,#$B0,L11260
         BRA     L112AC
 L11260:
@@ -1811,10 +1811,10 @@ L112B2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_112B8 ($112B8)
+; FuelEventStart ($112B8)
 ; Called from: Isr_GPT_IC1 (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_112B8:
+FuelEventStart:
         BRCLR   >EngineStateFlags,Z,#$80,L11340
         TST     $076E,Z
         BNE     L11340
@@ -1844,7 +1844,7 @@ L11308:
         BRCLR   >InjectorIndex,Z,#$01,L11316
         LDE     >FuelPulseBank2,Z
 L11316:
-        JSR     Sub_12AE6
+        JSR     StartPulseCurrent
 L1131A:
         LDAB    >InjectorIndex,Z
 L1131E:
@@ -1858,17 +1858,17 @@ L1132C:
         PSHM    D
         JSR     FinishFuelPulse
         PULM    D
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         DEC     $0F62,Z
         BRA     L1131E
 L11340:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_11342 ($11342)
+; FuelEventSchedule ($11342)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_11342:
+FuelEventSchedule:
         BRSET   >Options0338,#$04,L1134E
         BRCLR   >FuelPulseFlags,Z,#$04,L11522
 L1134E:
@@ -1918,13 +1918,13 @@ L113D0:
         STAA    >InjectorIndex,Z
         BSET    >FuelEventFlags,Z,#$02
         JSR     FinishFuelPulse
-        JSR     Sub_12AE6
+        JSR     StartPulseCurrent
 L113E0:
         LDAA    >CylinderIndex,Z
         STAA    >InjectorIndex,Z
         JSR     FinishFuelPulse
         BRSET   >FuelEventFlags,Z,#$04,L113F6
-        JSR     Sub_12AE6
+        JSR     StartPulseCurrent
 L113F6:
         LDAA    #$28
         CMPA    >FuelEventHoldCount,Z
@@ -1956,7 +1956,7 @@ L11430:
         CLRB
 L1143A:
         STAB    >InjectorIndex,Z
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         LBRA    L11518
 L11446:
         BITA    #$10
@@ -1965,7 +1965,7 @@ L11446:
         LDAA    >CylinderIndex,Z
         STAA    >InjectorIndex,Z
         JSR     FinishFuelPulse
-        JSR     Sub_12AE6
+        JSR     StartPulseCurrent
 L11460:
         LDAA    >CylinderIndex,Z
         INCA
@@ -1980,7 +1980,7 @@ L1146E:
         LBNE    L11518
         BRSET   >FuelEventFlags,Z,#$02,L11518
         BSET    >FuelEventFlags,Z,#$02
-        JSR     Sub_12AE6
+        JSR     StartPulseCurrent
         JMP     L11518
 L11492:
         LDAA    >CylinderIndex,Z
@@ -2014,7 +2014,7 @@ L114D2:
         BEQ     L114F0
         EMUL
 L114F0:
-        JSR     Sub_12AE6
+        JSR     StartPulseCurrent
         BRA     L11504
 L114F6:
         LDE     >FuelPulseBank1,Z
@@ -2022,14 +2022,14 @@ L114F6:
         BEQ     L11500
         EMUL
 L11500:
-        JSR     Sub_12AE6
+        JSR     StartPulseCurrent
 L11504:
         LDAA    >FuelEventHold
         STAA    >FuelEventHoldCount,Z
         JMP     L11522
 L11510:
         BSET    >FuelEventFlags,Z,#$04
-        JSR     Sub_12AE6
+        JSR     StartPulseCurrent
 L11518:
         BRCLR   >FuelEventFlags,Z,#$08,L11522
         BCLR    >FuelEventFlags,Z,#$F8
@@ -2038,16 +2038,16 @@ L11522:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_11524 ($11524)
-; Called from: Sub_12AE6 (2 calls)
+; Called from: StartPulseCurrent (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_11524:
         LDAB    >InjectorIndex,Z
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_11528 ($11528)
-; Called from: Sub_112B8, Sub_11342, Sub_1249A, Sub_126FC, Sub_12AE6 (16 calls)
+; StartInjectorPulse ($11528)
+; Called from: FuelEventStart, FuelEventSchedule, FuelEventCalc, InjectorSequence, StartPulseCurrent (16 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_11528:
+StartInjectorPulse:
         CMPB    >InjectorKillCyl1,Z
         LBEQ    L1172A
         BRSET   >Options0338,#$04,L1153C
@@ -2113,7 +2113,7 @@ L115C2:
         ASLB
         ABX
         LDX     $00,X
-        JSR     Sub_0C8C6
+        JSR     MulFractionSigned
         BCC     L115E2
         LDE     #$FFFF
 L115E2:
@@ -2200,7 +2200,7 @@ L11690:
 L116B2:
         BRCLR   >Options032C,#$40,L116C8
         BRSET   >Options032F,#$08,L116C4
-        JSR     Sub_17984
+        JSR     FlexLearnFuelCount
         BRA     L116C8
 L116C4:
         JSR     Sub_2CB68
@@ -2240,14 +2240,14 @@ L116E4:
         STE     $0000,Y
         STE     $0788,Z
         LDAA    >InjectorIndex,Z
-        JSR     Sub_12AA4
+        JSR     EventHistoryShift
         PULM    K,Y,X,E,D
 L1172A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; FinishFuelPulse ($1172C)
-; Called from: Sub_112B8, Sub_11342 (6 calls)
+; Called from: FuelEventStart, FuelEventSchedule (6 calls)
 ;---------------------------------------------------------------------------------------------------
 FinishFuelPulse:
         LDE     >AdaptiveFuel1,Z
@@ -2258,7 +2258,7 @@ FinishFuelPulse:
         ADCE    >AdaptiveFuel1,Z
         BRCLR   >Options032C,#$40,L1174E
         BRSET   >Options032F,#$08,L1174E
-        JSR     Sub_17F84
+        JSR     FlexPulseTrim
 L1174E:
         STE     $078C,Z
         LDE     >AdaptiveFuel2,Z
@@ -2269,7 +2269,7 @@ L1174E:
         ADCE    >AdaptiveFuel2,Z
         BRCLR   >Options032C,#$40,L11774
         BRSET   >Options032F,#$08,L11774
-        JSR     Sub_17F84
+        JSR     FlexPulseTrim
 L11774:
         STE     $0796,Z
         LDD     $078C,Z
@@ -2538,10 +2538,10 @@ L11A42:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_11A44 ($11A44)
+; EventCorrections ($11A44)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_11A44:
+EventCorrections:
         BRCLR   >Options0337,#$80,L11ACA
         BRCLR   >EventSparkFlags,Z,#$0C,L11ACA
         LDAB    >EventSparkPeriodA,Z
@@ -2667,7 +2667,7 @@ L11BC0:
         STAB    $07A9,Z
         LDAB    >EventFuelDelay4
         STAB    >Temp4F0,Z
-        JSR     Sub_11CFE
+        JSR     LookupStepHyst
         BRA     L11C3E
 L11BE2:
         LDAB    >Map,Z
@@ -2689,11 +2689,11 @@ L11C0A:
         LDAB    >EventFuelDelay2
         STAB    >Temp4F0,Z
 L11C20:
-        JSR     Sub_11CFE
+        JSR     LookupStepHyst
         STD     >Temp4F2,Z
         LDE     $079E,Z
         LDX     #$1E58
-        JSR     Sub_11D2A
+        JSR     LookupWordStep
         CMPA    >Temp4F2,Z
         BHI     L11C3E
         LDD     >Temp4F2,Z
@@ -2764,10 +2764,10 @@ L11CFC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_11CFE ($11CFE)
-; Called from: Sub_11A44 (2 calls)
+; LookupStepHyst ($11CFE)
+; Called from: EventCorrections (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_11CFE:
+LookupStepHyst:
         LDAB    $00,X
         AIX     #$01
 L11D02:
@@ -2795,10 +2795,10 @@ L11D24:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_11D2A ($11D2A)
-; Called from: Sub_11A44
+; LookupWordStep ($11D2A)
+; Called from: EventCorrections
 ;---------------------------------------------------------------------------------------------------
-Sub_11D2A:
+LookupWordStep:
         LDAB    $00,X
         AIX     #$01
 L11D2E:
@@ -2916,29 +2916,29 @@ L11E46:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_11E50 ($11E50)
-; Called from: Sub_0DBEA
+; InputFilters ($11E50)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_11E50:
+InputFilters:
         LDAB    >FuelPulseMode
         CMPB    #$0B
         BNE     L11E64
         CLRA
-        JSR     Sub_11E70
-        JSR     Sub_11F68
+        JSR     MapTpsFilters
+        JSR     DecelLeanControl
         BRA     L11E6E
 L11E64:
-        JSR     Sub_11F68
+        JSR     DecelLeanControl
         CLRA
-        JSR     Sub_11E70
+        JSR     MapTpsFilters
 L11E6E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_11E70 ($11E70)
-; Called from: Isr_GPT_IC1, Sub_11E50 (3 calls)
+; MapTpsFilters ($11E70)
+; Called from: Isr_GPT_IC1, InputFilters (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_11E70:
+MapTpsFilters:
         TSTA
         LBNE    L11F3E
         LDAA    >MapLast,Z
@@ -2969,7 +2969,7 @@ L11EAC:
         TZX
         LDX     #$8A80
         ORP     #$00E0
-        JSR     Sub_0C3CA
+        JSR     FilterWord
         ANDP    #$FF1F
 L11ECE:
         LDAA    >ThrottleLast,Z
@@ -2989,7 +2989,7 @@ L11EEC:
         TZX
         LDX     #$8A74
         ORP     #$00E0
-        JSR     Sub_0C3CA
+        JSR     FilterWord
         ANDP    #$FF1F
 L11F0E:
         LDAA    $0805,Z
@@ -3005,7 +3005,7 @@ L11F1C:
         TZX
         LDX     #$8A6C
         ORP     #$00E0
-        JSR     Sub_0C3CA
+        JSR     FilterWord
         ANDP    #$FF1F
         BRA     L11F66
 L11F3E:
@@ -3014,22 +3014,22 @@ L11F3E:
         BCC     L11F52
         TZX
         LDX     #$8A80
-        JSR     Sub_0C3CA
+        JSR     FilterWord
 L11F52:
         LDAA    >ThrottleLast,Z
         CMPA    >Throttle,Z
         BCC     L11F66
         TZX
         LDX     #$8A74
-        JSR     Sub_0C3CA
+        JSR     FilterWord
 L11F66:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_11F68 ($11F68)
-; Called from: Sub_11E50 (2 calls)
+; DecelLeanControl ($11F68)
+; Called from: InputFilters (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_11F68:
+DecelLeanControl:
         LDAB    >VehicleSpeed,Z
         CMPB    >DecelLeanSpeedMin
         BCS     L11F78
@@ -3264,10 +3264,10 @@ L121E4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_121E6 ($121E6)
-; Called from: Reset, Sub_0DBEA
+; CrankFuel ($121E6)
+; Called from: Reset, EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_121E6:
+CrankFuel:
         LDAB    >CoolantTemp,Z
         CMPB    >CrankFuelCoolantMax
         BHI     L12210
@@ -3525,10 +3525,10 @@ L12498:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1249A ($1249A)
+; FuelEventCalc ($1249A)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_1249A:
+FuelEventCalc:
         BRCLR   >EngineStateFlags,Z,#$80,L124E0
         BRSET   >Options0338,#$04,L124AC
         BRCLR   >FuelPulseFlags,Z,#$04,L12508
@@ -3555,7 +3555,7 @@ L124E0:
 L124EE:
         BRCLR   >Options0338,#$04,L12508
         BRSET   >FuelPulseFlags,Z,#$01,L12602
-        JSR     Sub_126FC
+        JSR     InjectorSequence
         BRSET   >FuelPulseFlags,Z,#$01,L12602
         LBRA    L126FA
 L12508:
@@ -3619,7 +3619,7 @@ L125A4:
 L125A8:
         DECB
         BMI     L125B2
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         BRA     L125A8
 L125B2:
         BRSET   >FuelPulseFlags,Z,#$20,L126FA
@@ -3691,7 +3691,7 @@ L12668:
         LDAB    E,Y
         STAB    >Temp4FC,Z
         LDE     >FuelPulseBank1,Z
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         BRCLR   >FuelPulseFlags,Z,#$40,L126CA
         BCLR    >FuelPulseFlags,Z,#$40
         LDAA    #$01
@@ -3715,7 +3715,7 @@ L126B6:
         LDAB    >CylinderCount
 L126BE:
         DECB
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         DECA
         BNE     L126B6
         BRA     L126FA
@@ -3729,7 +3729,7 @@ L126CE:
         LDAB    >CylinderCount
 L126DC:
         DECB
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         DEC     $076F,Z
         BRA     L126CE
 L126E8:
@@ -3738,16 +3738,16 @@ L126E8:
 L126F0:
         DECB
         BMI     L126FA
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         BRA     L126F0
 L126FA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_126FC ($126FC)
-; Called from: Sub_1249A
+; InjectorSequence ($126FC)
+; Called from: FuelEventCalc
 ;---------------------------------------------------------------------------------------------------
-Sub_126FC:
+InjectorSequence:
         PSHM    D,E,X,Y,K
         LDAB    $0828,Z
         CMPB    #$00
@@ -3798,7 +3798,7 @@ L12746:
         STAA    >InjectorMask,Z
         PSHM    E,X,Y,K
         LDE     >CrankPulseCoolant,Z
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         PULM    K,Y,X,E
         PULM    D
         CLRA
@@ -3809,7 +3809,7 @@ L12746:
         STAA    >InjectorMask,Z
         PSHM    E,X,Y,K
         LDE     >CrankPulseCoolant,Z
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         PULM    K,Y,X,E
         INC     $0828,Z
 L127AE:
@@ -3845,7 +3845,7 @@ L127DC:
         LDAB    >CylinderIndex,Z
         PSHM    E,X,Y,K
         LDE     >FuelPulseBank1,Z
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         PULM    K,Y,X,E
 L12818:
         LDAB    #$00
@@ -3872,7 +3872,7 @@ L12830:
         LDD     E,X
         PSHM    E,X,Y,K
         LDE     >FuelPulseBank1,Z
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         PULM    K,Y,X,E
 L1285A:
         INC     $0828,Z
@@ -3916,7 +3916,7 @@ L128A8:
         LDD     E,X
         PSHM    X,K
         LDE     >FuelPulseBank1,Z
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         PULM    K,X
 L128D2:
         LDAB    >InjectorMask2,Z
@@ -3939,7 +3939,7 @@ L128E2:
         STAB    >InjectorMask,Z
         LDD     E,X
         LDE     >FuelPulseBank1,Z
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         BRA     L12972
 L1290A:
         LDAB    #$00
@@ -3959,7 +3959,7 @@ L1290A:
         LDAB    >CylinderIndex,Z
         PSHM    X,K
         LDE     >FuelPulseBank1,Z
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         PULM    K,X
 L12942:
         ADDE    #$02
@@ -3978,7 +3978,7 @@ L1294E:
         LDAB    >CylinderIndex,Z
         INCB
         LDE     >FuelPulseBank1,Z
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
 L12972:
         INC     $0828,Z
         LBRA    L1271E
@@ -3988,10 +3988,10 @@ L1297A:
         LBRA    L1271E
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_12986 ($12986)
+; EventCellSelect ($12986)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_12986:
+EventCellSelect:
         CLRB
         TBXK
         LDX     #$0BBE
@@ -4047,10 +4047,10 @@ L12A0E:
         dc.b    $B6,$FE,$37,$15,$37,$4F,$C5,$00,$17,$EA,$07,$7B,$27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_12A72 ($12A72)
-; Called from: Isr_GPT_IC4OC5, Sub_12AE6 (3 calls)
+; CylinderBit ($12A72)
+; Called from: Isr_GPT_IC4OC5, StartPulseCurrent (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_12A72:
+CylinderBit:
         PSHM    X,K
         BRCLR   >Options032B,#$80,L12A80
         LDX     #$532D
@@ -4076,10 +4076,10 @@ L12AA0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_12AA4 ($12AA4)
-; Called from: Isr_GPT_IC1, Sub_11528
+; EventHistoryShift ($12AA4)
+; Called from: Isr_GPT_IC1, StartInjectorPulse
 ;---------------------------------------------------------------------------------------------------
-Sub_12AA4:
+EventHistoryShift:
         BRCLR   >EventSparkFlags,Z,#$20,L12AE4
         BRSET   >FuelModeFlags,Z,#$08,L12AE4
         LDAB    >CylinderCount
@@ -4101,14 +4101,14 @@ L12AE4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_12AE6 ($12AE6)
-; Called from: Sub_112B8, Sub_11342 (8 calls)
+; StartPulseCurrent ($12AE6)
+; Called from: FuelEventStart, FuelEventSchedule (8 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_12AE6:
+StartPulseCurrent:
         PSHM    E
         BRCLR   >FuelModeFlags,Z,#$08,L12B44
         LDAA    >InjectorIndex,Z
-        JSR     Sub_12A72
+        JSR     CylinderBit
         ANDB    $0F61,Z
         BNE     L12B00
         JSR     Sub_11524
@@ -4128,7 +4128,7 @@ L12B1A:
         TBA
         PSHM    D
         PULM    X
-        JSR     Sub_12A72
+        JSR     CylinderBit
         ANDB    $0F61,Z
         BEQ     L12B4A
         COMB
@@ -4138,7 +4138,7 @@ L12B1A:
         LDAA    $2827
         EMUL
         XGDX
-        JSR     Sub_11528
+        JSR     StartInjectorPulse
         BRA     L12B4A
 L12B44:
         PULM    E
@@ -4147,10 +4147,10 @@ L12B4A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_12B4C ($12B4C)
+; EventTableCheck ($12B4C)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_12B4C:
+EventTableCheck:
         BRCLR   >FuelModeFlags,Z,#$08,L12B60
         TST     $0F61,Z
         BNE     L12B60
@@ -4160,10 +4160,10 @@ L12B60:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_12B62 ($12B62)
-; Called from: Sub_0DBEA
+; LimitReasonCode ($12B62)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_12B62:
+LimitReasonCode:
         BRSET   $0084,Z,#$80,L12BA0
         BRSET   $0084,Z,#$40,L12BA4
         BRSET   $0084,Z,#$20,L12BA8
@@ -4216,7 +4216,7 @@ L12BDA:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_12BDC ($12BDC)
-; Called from: Sub_10036
+; Called from: FuelCorrections
 ;---------------------------------------------------------------------------------------------------
 Sub_12BDC:
         PSHM    X
@@ -4289,7 +4289,7 @@ L12C9C:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_12CA0 ($12CA0)
-; Called from: Sub_0DBEA
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 Sub_12CA0:
         PSHM    D,E,X
@@ -4654,10 +4654,10 @@ L12CE0:
         dc.b    $56,$97,$56,$93,$56,$95,$56,$82
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14160 ($14160)
-; Called from: Sub_0DBEA
+; ClosedLoopMain ($14160)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_14160:
+ClosedLoopMain:
         BRCLR   >Options032C,#$80,L14218
         BCLR    >O2ActiveFlags,Z,#$F0
         CLR     >ShortTermTrim1,Z
@@ -4715,7 +4715,7 @@ L1420C:
         BRA     L1424A
 L14218:
         BRCLR   >EngineStateFlags,Z,#$80,L14246
-        JSR     Sub_1430C
+        JSR     O2CellSelect3x3
         JSR     ClosedLoopTiming
         BRCLR   >MainLoopPhaseMask,Z,#$10,L14238
         CLRA
@@ -4724,19 +4724,19 @@ L14218:
         JSR     O2CrossCheck
 L14238:
         JSR     ClosedLoopManager
-        JSR     Sub_15860
+        JSR     O2PostFuelCheck
         JSR     O2CellSelect
         BRA     L1424A
 L14246:
-        JSR     Sub_14740
+        JSR     O2StartDelays
 L1424A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1424C ($1424C)
+; O2UpdateUpstream ($1424C)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_1424C:
+O2UpdateUpstream:
         BRSET   >Options032C,#$80,L142C6
         BRCLR   >EngineStateFlags,Z,#$80,L142C6
         BRCLR   >Options032D,#$18,L14268
@@ -4761,7 +4761,7 @@ L14290:
         BRSET   >Options032F,#$20,L142A2
         LDAA    $075A,Z
         STAA    >O2UpBank1,Z
-        JSR     Sub_161C2
+        JSR     O2ScaleVoltage
 L142A2:
         JSR     O2UpTrim
         BRCLR   >Options032F,#$40,L142C6
@@ -4769,17 +4769,17 @@ L142A2:
         BRSET   >Options032F,#$10,L142C2
         LDAA    >O2UpBank1,Z
         STAA    >O2UpBank2,Z
-        JSR     Sub_161C2
+        JSR     O2ScaleVoltage
 L142C2:
         JSR     O2UpTrim
 L142C6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_142C8 ($142C8)
+; O2UpdateDownstream ($142C8)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_142C8:
+O2UpdateDownstream:
         BRSET   >Options032C,#$80,L1430A
         BRCLR   >EngineStateFlags,Z,#$80,L1430A
         BRCLR   >O2SwitchFlags,Z,#$02,L142FE
@@ -4803,10 +4803,10 @@ L1430A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1430C ($1430C)
-; Called from: Sub_14160
+; O2CellSelect3x3 ($1430C)
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
-Sub_1430C:
+O2CellSelect3x3:
         LDAA    >O2SwitchFlags,Z
         STAA    <Scratch0,Z
         BCLR    <Scratch0,Z,#$04
@@ -4876,7 +4876,7 @@ L143C0:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2DownTrim ($143C2)
-; Called from: Sub_142C8 (2 calls)
+; Called from: O2UpdateDownstream (2 calls)
 ;---------------------------------------------------------------------------------------------------
 O2DownTrim:
         PSHM    X
@@ -5096,7 +5096,7 @@ L145D0:
         LDAB    >O2TrimMin
 L145DA:
         STAB    $14,X
-        JSR     Sub_161C2
+        JSR     O2ScaleVoltage
 L145E0:
         RTS
         dc.b    $07,$01,$07,$0B,$08,$16,$80,$20,$80,$20,$07,$29,$07,$33,$08,$17
@@ -5104,7 +5104,7 @@ L145E0:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2CrossCheck ($145F6)
-; Called from: Sub_14160 (2 calls)
+; Called from: ClosedLoopMain (2 calls)
 ;---------------------------------------------------------------------------------------------------
 O2CrossCheck:
         BRCLR   >Options0339,#$40,L146C8
@@ -5189,10 +5189,10 @@ L146C8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_146CA ($146CA)
+; O2ResetStart ($146CA)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_146CA:
+O2ResetStart:
         CLRE
 L146CC:
         CPE     #$0010
@@ -5212,7 +5212,7 @@ L146CC:
         BRA     L146CC
 L146F4:
         BRCLR   >Options032C,#$40,L146FE
-        JSR     Sub_15F9E
+        JSR     FlexCellCheck
 L146FE:
         LDAA    $82,Z
         STAA    $0711,Z
@@ -5247,10 +5247,10 @@ L1473A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14740 ($14740)
-; Called from: Sub_14160
+; O2StartDelays ($14740)
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
-Sub_14740:
+O2StartDelays:
         BSET    >O2ResetFlags,Z,#$03
         LDAB    >O2DelayWarm
         LDAA    >CoolantTemp,Z
@@ -5311,7 +5311,7 @@ L14798:
 
 ;---------------------------------------------------------------------------------------------------
 ; ClosedLoopManager ($14802)
-; Called from: Sub_14160
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
 ClosedLoopManager:
         ORP     #$00E0
@@ -5480,7 +5480,7 @@ L149BE:
         PULM    K,X
         BRA     L149D4
 L149D0:
-        JSR     Sub_1604C
+        JSR     O2MemClearRichBank1
 L149D4:
         BRCLR   >FuelLevelFlags,Z,#$04,L14A10
         BCLR    >O2ActiveFlags,Z,#$44
@@ -5501,7 +5501,7 @@ L149FA:
         PULM    K,X
         BRA     L14A10
 L14A0C:
-        JSR     Sub_1606A
+        JSR     O2MemClearRichBank2
 L14A10:
         BRCLR   >FuelLevelFlags,Z,#$02,L14A24
         BCLR    >O2ActiveFlags,Z,#$22
@@ -5592,9 +5592,9 @@ L14AF8:
         BRCLR   >MisfireFlags2,Z,#$10,L14B18
         BSET    <Scratch0,Z,#$F0
         BSET    <Scratch1,Z,#$F0
-        JSR     Sub_15FD6
-        JSR     Sub_15FF8
-        JSR     Sub_1601A
+        JSR     O2MemClearLeanBank1
+        JSR     O2MemClearLeanBank2
+        JSR     PurgeCellClearLean
 L14B18:
         TST     <SriMileage,Z
         BNE     L14B30
@@ -5922,7 +5922,7 @@ L14EBC:
         LDAB    >O2TrimMin
 L14EC6:
         STAB    $14,X
-        JSR     Sub_161C2
+        JSR     O2ScaleVoltage
 L14ECC:
         BRCLR   >O2Bank2Flags,Z,#$40,L14F32
         BCLR    $1E,Y,#$14
@@ -5961,7 +5961,7 @@ L14F22:
         LDAB    >O2TrimMin
 L14F2C:
         STAB    $14,Y
-        JSR     Sub_161C2
+        JSR     O2ScaleVoltage
 L14F32:
         BRCLR   >Options032F,#$80,L14F4A
         BRSET   >O2Bank1Flags,Z,#$10,L14F64
@@ -5986,12 +5986,12 @@ L14F6C:
 
 ;---------------------------------------------------------------------------------------------------
 ; ClosedLoopTiming ($14F82)
-; Called from: Sub_14160
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
 ClosedLoopTiming:
         BRCLR   >Options032C,#$40,L14F92
         BRSET   >Options032F,#$08,L14F92
-        JSR     Sub_18D48
+        JSR     FlexColdLeanCount
 L14F92:
         LDAA    >O2SwitchFlags,Z
         STAA    <Scratch0,Z
@@ -6495,7 +6495,7 @@ L154BE:
         LDAB    #$FF
 L154C0:
         STAB    $14,X
-        JSR     Sub_161C2
+        JSR     O2ScaleVoltage
         ANDP    #$FF7F
         BRA     L15530
 L154CC:
@@ -6576,7 +6576,7 @@ L1554A:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2UpTrim ($15572)
-; Called from: Sub_1424C (2 calls)
+; Called from: O2UpdateUpstream (2 calls)
 ;---------------------------------------------------------------------------------------------------
 O2UpTrim:
         LDAA    $01,X
@@ -6888,10 +6888,10 @@ L1585E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_15860 ($15860)
-; Called from: Sub_14160
+; O2PostFuelCheck ($15860)
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
-Sub_15860:
+O2PostFuelCheck:
         TST     >O2PostFuelHold
         BEQ     L158DE
         TST     >PurgeCellCount,Z
@@ -6942,7 +6942,7 @@ L158F2:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2CellSelect ($158F4)
-; Called from: Sub_14160
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
 O2CellSelect:
         LDAA    >EgrMonFlags,Z
@@ -7461,7 +7461,7 @@ L15E66:
         TED
 L15E68:
         BRSET   >O2LearnFlags,Z,#$10,L15E82
-        JSR     Sub_161EE
+        JSR     TrimLimits
         CPX     #$805B
         BEQ     L15E7E
         STAA    >O2AdaptValue2,Z
@@ -7500,7 +7500,7 @@ L15EBC:
         TED
 L15EBE:
         BRSET   >O2LearnFlags,Z,#$10,L15ED8
-        JSR     Sub_161EE
+        JSR     TrimLimits
         CPX     #$806E
         BEQ     L15ED4
         STAA    >O2AdaptValue1,Z
@@ -7609,10 +7609,10 @@ L15F9A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_15F9E ($15F9E)
-; Called from: Sub_146CA
+; FlexCellCheck ($15F9E)
+; Called from: O2ResetStart
 ;---------------------------------------------------------------------------------------------------
-Sub_15F9E:
+FlexCellCheck:
         LDAA    >O2FlexCellRef
         LDAB    >O2FlexCellRef2
         TZX
@@ -7639,10 +7639,10 @@ L15FCC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_15FD6 ($15FD6)
+; O2MemClearLeanBank1 ($15FD6)
 ; Called from: ClosedLoopManager, Sub_33A9A
 ;---------------------------------------------------------------------------------------------------
-Sub_15FD6:
+O2MemClearLeanBank1:
         PSHM    X,K
         BSET    >O2Bank1Flags,Z,#$C0
         TZX
@@ -7660,10 +7660,10 @@ L15FE8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_15FF8 ($15FF8)
+; O2MemClearLeanBank2 ($15FF8)
 ; Called from: ClosedLoopManager, Sub_33A9A
 ;---------------------------------------------------------------------------------------------------
-Sub_15FF8:
+O2MemClearLeanBank2:
         PSHM    X,K
         BSET    >O2Bank2Flags,Z,#$C0
         BSET    >O2ResetFlags,Z,#$01
@@ -7681,10 +7681,10 @@ L1600E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1601A ($1601A)
+; PurgeCellClearLean ($1601A)
 ; Called from: ClosedLoopManager
 ;---------------------------------------------------------------------------------------------------
-Sub_1601A:
+PurgeCellClearLean:
         PSHM    X,K
         TZX
         LDX     #$806B
@@ -7710,10 +7710,10 @@ L16048:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1604C ($1604C)
+; O2MemClearRichBank1 ($1604C)
 ; Called from: ClosedLoopManager, Sub_33A9A
 ;---------------------------------------------------------------------------------------------------
-Sub_1604C:
+O2MemClearRichBank1:
         PSHM    X,K
         TZX
         LDX     #$805B
@@ -7730,10 +7730,10 @@ L1605A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1606A ($1606A)
+; O2MemClearRichBank2 ($1606A)
 ; Called from: ClosedLoopManager, Sub_33A9A
 ;---------------------------------------------------------------------------------------------------
-Sub_1606A:
+O2MemClearRichBank2:
         PSHM    X,K
         BSET    >O2ResetFlags,Z,#$01
         TZX
@@ -7752,10 +7752,10 @@ L1607C:
         dc.b    $07,$4C,$07,$4D,$07,$4E,$07,$46
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_160A0 ($160A0)
-; Called from: Sub_0DBEA
+; TrimPeakTrack ($160A0)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_160A0:
+TrimPeakTrack:
         TPD
         TBXK
         LDX     #$6088
@@ -7849,10 +7849,10 @@ L1615A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1616C ($1616C)
-; Called from: Sub_0DBEA
+; O2TrimAverage ($1616C)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1616C:
+O2TrimAverage:
         BRSET   >O2Bank1Flags,Z,#$20,L16196
         BRCLR   >O2ActiveFlags,Z,#$80,L16196
         LDAB    >ShortTermTrim1,Z
@@ -7882,10 +7882,10 @@ L161C0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_161C2 ($161C2)
-; Called from: Sub_1424C, O2DownTrim, ClosedLoopManager, O2SwitchState (6 calls)
+; O2ScaleVoltage ($161C2)
+; Called from: O2UpdateUpstream, O2DownTrim, ClosedLoopManager, O2SwitchState (6 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_161C2:
+O2ScaleVoltage:
         PSHM    D,X,K
         LDAA    >O2UpBank1,Z
         LDX     #O2VoltageScale
@@ -7901,10 +7901,10 @@ L161EA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_161EE ($161EE)
+; TrimLimits ($161EE)
 ; Called from: O2CellUpdate (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_161EE:
+TrimLimits:
         CPX     #$805B
         PSHM    X
         BNE     L1625A
@@ -7992,7 +7992,7 @@ L162BC:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_162C0 ($162C0)
-; Called from: Sub_0DBEA
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 Sub_162C0:
         BRCLR   >EngineStateFlags,Z,#$80,L162F0
@@ -8679,7 +8679,7 @@ L168F0:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_168F2 ($168F2)
-; Called from: Sub_0DBEA
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 Sub_168F2:
         PSHM    D,E
@@ -9019,7 +9019,7 @@ L17174:
         STAA    $0F43,Z
         BRA     L171CE
 L171B0:
-        JSR     Sub_17B1E
+        JSR     PurgeCellTrimClear
         BRA     L171CE
 L171B6:
         CLR     $0F43,Z
@@ -9032,17 +9032,17 @@ L171BA:
 L171CE:
         BSET    >FlexLearnFlags7,Z,#$20
 L171D2:
-        JSR     Sub_181C4
+        JSR     FlexLevelDrive
         BRCLR   >Options0333,#$10,L171E2
-        JSR     Sub_17B84
+        JSR     FlexColdStart
         BRA     L171E6
 L171E2:
-        JSR     Sub_18BB0
+        JSR     FlexColdPurge
 L171E6:
         BRCLR   >FlexLearnFlags,Z,#$20,L171F6
         LDAA    >FlexLearnStartCoolantValue,Z
         BNE     L171F6
-        JSR     Sub_187A0
+        JSR     FlexChangeDetect
 L171F6:
         BRSET   >FaultSet13,Z,#$80,L1722C
         BRSET   >FaultSet13,Z,#$40,L1722C
@@ -9076,7 +9076,7 @@ L1723A:
         BSET    >FlexLearnFlags7,Z,#$20
         BCLR    >FlexLearnFlags3,Z,#$23
         CLR     >FlexLearnCounter2,Z
-        JSR     Sub_1819A
+        JSR     FlexLearnRestart2
         BSET    >FlexLearnFlags3,Z,#$40
 L17280:
         BRCLR   >FlexLearnFlags,Z,#$20,L172D8
@@ -9089,7 +9089,7 @@ L17280:
         BSET    >FlexLearnFlags3,Z,#$04
         LDD     >FlexLearnFuelSum,Z
         STD     >FlexLearnFuelMark,Z
-        JSR     Sub_17A4E
+        JSR     FlexLevelTrack
         BRA     L172B4
 L172B0:
         BCLR    >FlexLearnFlags,Z,#$10
@@ -9113,7 +9113,7 @@ L172D8:
         BSET    >FlexLearnFlags5,Z,#$80
 L172E2:
         BRCLR   >FlexLearnFlags,Z,#$80,L172F0
-        JSR     Sub_17CBE
+        JSR     FlexIdleLearn
         LBRA    L174B8
 L172F0:
         BRCLR   >FlexLearnFlags,Z,#$20,L174A8
@@ -9181,7 +9181,7 @@ L173B6:
         LDAA    >FlexLearnBase,Z
         CMPA    >FlexEthanolLimit,Z
         BCS     L173FA
-        JSR     Sub_17B1E
+        JSR     PurgeCellTrimClear
         LDAA    $0F4D,Z
         INCA
         BEQ     L173D8
@@ -9261,10 +9261,10 @@ L174A8:
         BRCLR   >FlexLearnFlags,Z,#$20,L174B4
         BRCLR   >FlexLearnFlags2,Z,#$10,L174B8
 L174B4:
-        JSR     Sub_17A22
+        JSR     FlexPurgeRichCheck
 L174B8:
         BRSET   >FlexLearnFlags3,Z,#$40,L174C2
-        JSR     Sub_18170
+        JSR     FlexLearnRestart
 L174C2:
         BRCLR   >FlexLearnFlags3,Z,#$20,L17512
         BRSET   >FlexLearnFlags3,Z,#$02,L174E4
@@ -9290,7 +9290,7 @@ L174E4:
 L1750E:
         BSET    >FlexLearnFlags3,Z,#$01
 L17512:
-        JSR     Sub_187EE
+        JSR     FlexPurgeFactor
         RTS
         dc.b    $2B,$80,$06,$42,$00,$9C,$2B,$01,$05,$05,$00,$96,$2B,$40,$05,$06
         dc.b    $00,$90,$2B,$06,$05,$09,$00,$8A,$2B,$08,$05,$12,$00,$84,$2B,$20
@@ -9365,10 +9365,10 @@ L17512:
         dc.b    $07,$72,$00,$02,$37,$05,$17,$6A,$01,$B8,$27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17984 ($17984)
-; Called from: Sub_11528
+; FlexLearnFuelCount ($17984)
+; Called from: StartInjectorPulse
 ;---------------------------------------------------------------------------------------------------
-Sub_17984:
+FlexLearnFuelCount:
         BRSET   >MonEnableFlags2,Z,#$80,L179D0
         BRSET   >FaultSet05,Z,#$01,L179D0
         BRSET   >FaultSet06,Z,#$40,L179D0
@@ -9385,17 +9385,17 @@ Sub_17984:
         STE     >FlexSensorRef,Z
         BCC     L179CE
         INCW    >FlexLearnFuelSum,Z
-        JSR     Sub_183C8
+        JSR     FlexEstimate
 L179CE:
         PULM    X,E,D
 L179D0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_179D2 ($179D2)
-; Called from: Sub_1099C
+; FlexLearnFuelCount2 ($179D2)
+; Called from: InjectorFuelAccount
 ;---------------------------------------------------------------------------------------------------
-Sub_179D2:
+FlexLearnFuelCount2:
         BRSET   >MonEnableFlags2,Z,#$80,L17A20
         BRSET   >FaultSet05,Z,#$01,L17A20
         BRSET   >FaultSet06,Z,#$40,L17A20
@@ -9412,17 +9412,17 @@ Sub_179D2:
         STD     >FlexSensorRef,Z
         BCC     L17A1E
         INCW    >FlexLearnFuelSum,Z
-        JSR     Sub_183C8
+        JSR     FlexEstimate
 L17A1E:
         PULM    X,D
 L17A20:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17A22 ($17A22)
+; FlexPurgeRichCheck ($17A22)
 ; Called from: Sub_17000
 ;---------------------------------------------------------------------------------------------------
-Sub_17A22:
+FlexPurgeRichCheck:
         LDAA    >FlexLearnTrimSum,Z
         BPL     L17A4C
         NEGA
@@ -9441,10 +9441,10 @@ L17A4C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17A4E ($17A4E)
+; FlexLevelTrack ($17A4E)
 ; Called from: Sub_17000
 ;---------------------------------------------------------------------------------------------------
-Sub_17A4E:
+FlexLevelTrack:
         PSHM    D,E,X
         LDAB    >FlexLearnBase,Z
         LDAA    >FuelLevelStart,Z
@@ -9521,10 +9521,10 @@ L17B0A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17B1E ($17B1E)
+; PurgeCellTrimClear ($17B1E)
 ; Called from: Sub_17000 (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_17B1E:
+PurgeCellTrimClear:
         CLRD
         TZX
 L17B22:
@@ -9545,10 +9545,10 @@ L17B22:
         dc.b    $0F,$14,$17,$75,$07,$89,$17,$6A,$0F,$13,$27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17B84 ($17B84)
+; FlexColdStart ($17B84)
 ; Called from: Sub_17000
 ;---------------------------------------------------------------------------------------------------
-Sub_17B84:
+FlexColdStart:
         BRSET   >FlexLearnFlags,Z,#$40,L17BDA
         BSET    >FlexLearnFlags,Z,#$40
         LDAA    >FlexColdCounter,Z
@@ -9641,36 +9641,36 @@ L17CBC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17CBE ($17CBE)
+; FlexIdleLearn ($17CBE)
 ; Called from: Sub_17000
 ;---------------------------------------------------------------------------------------------------
-Sub_17CBE:
+FlexIdleLearn:
         BRCLR   >FlexLearnFlags,Z,#$20,L17CEA
         BSET    >FlexLearnFlags7,Z,#$20
         BRSET   >FlexLearnFlags,Z,#$10,L17CE0
         BRCLR   >Options0333,#$10,L17CDA
-        JSR     Sub_17CFC
+        JSR     FlexIdleEnable
         BRA     L17CFA
 L17CDA:
-        JSR     Sub_18B28
+        JSR     FlexTrimLearn2
         BRA     L17CFA
 L17CE0:
         BRSET   >FlexLearnFlags6,Z,#$01,L17CEA
         BSET    >FlexLearnFlags6,Z,#$21
 L17CEA:
         BRCLR   >Options0333,#$10,L17CF6
-        JSR     Sub_17D4A
+        JSR     FlexIdleStep
         BRA     L17CFA
 L17CF6:
-        JSR     Sub_18A94
+        JSR     FlexTrimLearn
 L17CFA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17CFC ($17CFC)
-; Called from: Sub_17CBE
+; FlexIdleEnable ($17CFC)
+; Called from: FlexIdleLearn
 ;---------------------------------------------------------------------------------------------------
-Sub_17CFC:
+FlexIdleEnable:
         BSET    >FlexLearnFlags6,Z,#$40
         BSET    >FanBusFlags,Z,#$04
         BCLR    >FlexLearnFlags6,Z,#$31
@@ -9694,10 +9694,10 @@ L17D48:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17D4A ($17D4A)
-; Called from: Sub_17CBE
+; FlexIdleStep ($17D4A)
+; Called from: FlexIdleLearn
 ;---------------------------------------------------------------------------------------------------
-Sub_17D4A:
+FlexIdleStep:
         LDAA    >CoolantTemp,Z
         CMPA    >FlexLearnCoolantMin3
         BCC     L17D68
@@ -9730,7 +9730,7 @@ L17DB0:
         BRCLR   >FlexLearnFlags6,Z,#$40,L17DD4
         BRCLR   >IdleFlags,Z,#$80,L17DC4
         LDAA    >FlexLearnIacStep
-        JSR     Sub_1A538
+        JSR     IacSetTarget
 L17DC4:
         BCLR    >FlexLearnFlags6,Z,#$04
         BCLR    >FlexLearnFlags6,Z,#$40
@@ -9780,7 +9780,7 @@ L17E4C:
         BRCLR   >IdleFlags,Z,#$80,L17E62
         LDAA    >FlexLearnIacStep
         NEGA
-        JSR     Sub_1A538
+        JSR     IacSetTarget
 L17E62:
         BSET    >FlexLearnFlags6,Z,#$40
         BSET    >FanBusFlags,Z,#$04
@@ -9823,10 +9823,10 @@ L17EC2:
         dc.b    $07,$AC,$B4,$00,$17,$75,$07,$AC,$17,$6A,$01,$BF,$27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17F32 ($17F32)
-; Called from: Sub_17FCA, Sub_2C790
+; FlexLearnReset ($17F32)
+; Called from: FlexLearnInitRun, Sub_2C790
 ;---------------------------------------------------------------------------------------------------
-Sub_17F32:
+FlexLearnReset:
         CLR     >FlexLearnFlags,Z
         CLR     >FlexLearnFlags2,Z
         CLR     >FlexLearnFlags10,Z
@@ -9850,10 +9850,10 @@ Sub_17F32:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17F84 ($17F84)
+; FlexPulseTrim ($17F84)
 ; Called from: FinishFuelPulse (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_17F84:
+FlexPulseTrim:
         BRCLR   >FlexLearnFlags6,Z,#$04,L17FAA
         BRSET   >O2Bank1Flags,Z,#$20,L17FAA
         BRCLR   >O2ActiveFlags,Z,#$80,L17FAA
@@ -9878,14 +9878,14 @@ L17FC8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_17FCA ($17FCA)
+; FlexLearnInitRun ($17FCA)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_17FCA:
+FlexLearnInitRun:
         BRCLR   >Options032C,#$40,L17FD6
         BRCLR   >Options032F,#$08,L17FDE
 L17FD6:
-        JSR     Sub_17F32
+        JSR     FlexLearnReset
         LBRA    L1811E
 L17FDE:
         LDAA    >FlexLearnCounter3,Z
@@ -9907,7 +9907,7 @@ L17FDE:
         BSET    >FlexLearnFlags7,Z,#$20
         BCLR    >FlexLearnFlags3,Z,#$23
         CLR     >FlexLearnCounter2,Z
-        JSR     Sub_1819A
+        JSR     FlexLearnRestart2
         BSET    >FlexLearnFlags3,Z,#$40
 L1802E:
         LDAA    >FlexLearnCounter3,Z
@@ -10007,10 +10007,10 @@ L1814A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_18170 ($18170)
+; FlexLearnRestart ($18170)
 ; Called from: Sub_17000
 ;---------------------------------------------------------------------------------------------------
-Sub_18170:
+FlexLearnRestart:
         LDAA    >FlexLearnFlags,Z
         ANDA    #$C0
         STAA    >FlexLearnFlags,Z
@@ -10025,10 +10025,10 @@ Sub_18170:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1819A ($1819A)
-; Called from: Sub_17000, Sub_17FCA
+; FlexLearnRestart2 ($1819A)
+; Called from: Sub_17000, FlexLearnInitRun
 ;---------------------------------------------------------------------------------------------------
-Sub_1819A:
+FlexLearnRestart2:
         LDAA    >FlexLearnFlags,Z
         ANDA    #$E0
         STAA    >FlexLearnFlags,Z
@@ -10043,10 +10043,10 @@ Sub_1819A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_181C4 ($181C4)
+; FlexLevelDrive ($181C4)
 ; Called from: Sub_17000
 ;---------------------------------------------------------------------------------------------------
-Sub_181C4:
+FlexLevelDrive:
         BRCLR   >FlexLearnFlags,Z,#$20,L181D0
         BRCLR   >FlexLearnFlags,Z,#$10,L18202
 L181D0:
@@ -10130,10 +10130,10 @@ L18250:
         dc.b    $37,$BC,$07,$DE,$FA,$00,$C0,$8E,$17,$6A,$01,$B5,$27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_183C8 ($183C8)
-; Called from: Sub_17984, Sub_179D2
+; FlexEstimate ($183C8)
+; Called from: FlexLearnFuelCount, FlexLearnFuelCount2
 ;---------------------------------------------------------------------------------------------------
-Sub_183C8:
+FlexEstimate:
         LDD     >FlexLearnFuelSum,Z
         CPD     >FlexRefuelFuelMin2
         BNE     L183E2
@@ -10473,10 +10473,10 @@ L1879E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_187A0 ($187A0)
+; FlexChangeDetect ($187A0)
 ; Called from: Sub_17000
 ;---------------------------------------------------------------------------------------------------
-Sub_187A0:
+FlexChangeDetect:
         BRCLR   >FlexLearnFlags,Z,#$10,L187E4
         BRSET   >FlexLearnFlags2,Z,#$10,L187E4
         LDAA    >FlexEthanolRef,Z
@@ -10503,10 +10503,10 @@ L187EC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_187EE ($187EE)
+; FlexPurgeFactor ($187EE)
 ; Called from: Sub_17000
 ;---------------------------------------------------------------------------------------------------
-Sub_187EE:
+FlexPurgeFactor:
         BRCLR   >FlexLearnFlags,Z,#$80,L1883A
         LDAA    >PurgeRamp,Z
         LDX     #FlexLearnPurgeFactor
@@ -10535,10 +10535,10 @@ L1883A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1883C ($1883C)
+; FlexMisfireCheck ($1883C)
 ; Called from: Sub_2A81A
 ;---------------------------------------------------------------------------------------------------
-Sub_1883C:
+FlexMisfireCheck:
         BRSET   >MonEnableFlags2,Z,#$80,L18A64
         BRSET   >FaultSet05,Z,#$01,L18A64
         BRSET   >FaultSet06,Z,#$40,L18A64
@@ -10702,10 +10702,10 @@ L18A64:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_18A66 ($18A66)
+; FlexLearnStall ($18A66)
 ; Called from: CalcEngineRpm
 ;---------------------------------------------------------------------------------------------------
-Sub_18A66:
+FlexLearnStall:
         BCLR    >FlexLearnFlags,Z,#$04
         BCLR    >FlexLearnFlags10,Z,#$01
         BCLR    >FlexLearnFlags7,Z,#$10
@@ -10720,10 +10720,10 @@ Sub_18A66:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_18A94 ($18A94)
-; Called from: Sub_17CBE
+; FlexTrimLearn ($18A94)
+; Called from: FlexIdleLearn
 ;---------------------------------------------------------------------------------------------------
-Sub_18A94:
+FlexTrimLearn:
         LDAA    >FlexLearnTimer2Init
         STAA    >FlexLearnTimer2,Z
         LDAA    >CoolantTemp,Z
@@ -10772,10 +10772,10 @@ L18B26:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_18B28 ($18B28)
-; Called from: Sub_17CBE
+; FlexTrimLearn2 ($18B28)
+; Called from: FlexIdleLearn
 ;---------------------------------------------------------------------------------------------------
-Sub_18B28:
+FlexTrimLearn2:
         LDAA    >FlexLearnTimer2Init
         STAA    >FlexLearnTimer2,Z
         BCLR    >FlexLearnFlags6,Z,#$31
@@ -10817,10 +10817,10 @@ L18BAE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_18BB0 ($18BB0)
+; FlexColdPurge ($18BB0)
 ; Called from: Sub_17000
 ;---------------------------------------------------------------------------------------------------
-Sub_18BB0:
+FlexColdPurge:
         BRCLR   >O2ActiveFlags,Z,#$80,L18C02
         LDAA    >FlexColdCounter,Z
         CMPA    >FlexColdCountMin
@@ -10939,10 +10939,10 @@ L18D46:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_18D48 ($18D48)
+; FlexColdLeanCount ($18D48)
 ; Called from: ClosedLoopTiming
 ;---------------------------------------------------------------------------------------------------
-Sub_18D48:
+FlexColdLeanCount:
         LDAA    >O2UpBank1Raw,Z
         CMPA    >O2ColdLeanRaw
         BHI     L18D5C
@@ -11000,14 +11000,14 @@ L18D6A:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_19000 ($19000)
-; Called from: Sub_0DBEA
+; IdleControl ($19000)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_19000:
-        JSR     Sub_1AE60
-        JSR     Sub_1AF5E
-        JSR     Sub_1AD9E
-        JSR     Sub_1B0EC
+IdleControl:
+        JSR     IdleStateFlags
+        JSR     IacBaseCalc
+        JSR     IacCrankControl
+        JSR     IdleRpmTarget
         LDAA    >SystemTestMode,Z
         CMPA    #$05
         BCS     L1901C
@@ -11015,21 +11015,21 @@ Sub_19000:
         BCS     L1903A
 L1901C:
         BRCLR   >EngineStateFlags,Z,#$80,L1903A
-        JSR     Sub_193EC
-        JSR     Sub_1AA2C
-        JSR     Sub_19820
-        JSR     Sub_1908C
-        JSR     Sub_1A8B2
-        JSR     Sub_1ABD2
+        JSR     IacLearn
+        JSR     IacRollingControl
+        JSR     IdleTargetControl
+        JSR     IdleRpmLoop
+        JSR     IdleStopRpmCheck
+        JSR     IdleMapTargetCalc
 L1903A:
-        JSR     Sub_1B8F6
+        JSR     PwmC18Control
         BSET    <IacStepFlags,Z,#$02
         STAA    >IacTargetCmd,Z
         BRCLR   >EngineStateFlags,Z,#$80,L19054
-        JSR     Sub_1A666
-        JSR     Sub_1A9E4
+        JSR     IdleMapLoop
+        JSR     IacFixedTarget
 L19054:
-        JSR     Sub_1906C
+        JSR     IacFaultTarget
         BRCLR   >Options033D,#$08,L19066
         LDAA    >IacTargetCmdFixed
         STAA    >IacTargetCmd,Z
@@ -11038,10 +11038,10 @@ L19066:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1906C ($1906C)
-; Called from: Sub_19000
+; IacFaultTarget ($1906C)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1906C:
+IacFaultTarget:
         BRSET   >Scratch8,Z,#$01,L19078
         BRCLR   >FaultSet05,Z,#$08,L1908A
 L19078:
@@ -11055,10 +11055,10 @@ L1908A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1908C ($1908C)
-; Called from: Sub_19000
+; IdleRpmLoop ($1908C)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1908C:
+IdleRpmLoop:
         BRCLR   >SwitchInputs,Z,#$01,L190AC
         BRSET   >IdleFlags,Z,#$01,L190A6
         LDAA    >IdleLoopHoldTime
@@ -11111,12 +11111,12 @@ L19126:
         PSHM    D,E
         LDX     #$0080
         LDY     #$0040
-        JSR     Sub_1ABB0
+        JSR     DivSignedSat
         STAB    <ScratchC,Z
         PULM    E,D
         LDX     #$0010
         LDY     #$0080
-        JSR     Sub_1ABB0
+        JSR     DivSignedSat
         STAB    <ScratchD,Z
         LDE     >IdleRpmError,Z
         BPL     L19154
@@ -11362,15 +11362,15 @@ L193DC:
         LDAA    #$01
 L193E2:
         STAA    $0344,Z
-        JSR     Sub_1A538
+        JSR     IacSetTarget
 L193EA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_193EC ($193EC)
-; Called from: Sub_19000
+; IacLearn ($193EC)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_193EC:
+IacLearn:
         BRCLR   >ControlFlags943,Z,#$01,L193FE
         LDAA    >IacAcClutchHold
         STAA    >IacAcClutchTimer,Z
@@ -11560,7 +11560,7 @@ L1960C:
         CLR     >IacLearnCount,Z
         LDAB    >IacDriveOffset,Z
         LDAA    >IacLearned,Z
-        JSR     Sub_1968A
+        JSR     IacLearnCells
 L1961C:
         RTS
 L1961E:
@@ -11576,12 +11576,12 @@ L19634:
         BRSET   >Options032E,#$40,L19654
         BRCLR   >DriveFlags,Z,#$20,L19654
         LDAA    >IacStartHold2,Z
-        BSR     Sub_1967C
+        BSR     StepToward
         STAA    >IacStartHold2,Z
         BRA     L19676
 L19654:
         LDAA    >IacStartHold,Z
-        BSR     Sub_1967C
+        BSR     StepToward
         STAA    >IacStartHold,Z
         BRA     L19676
 L19660:
@@ -11596,10 +11596,10 @@ L19676:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1967C ($1967C)
-; Called from: Sub_193EC (2 calls)
+; StepToward ($1967C)
+; Called from: IacLearn (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1967C:
+StepToward:
         CBA
         BEQ     L19688
         BHI     L19686
@@ -11611,10 +11611,10 @@ L19688:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1968A ($1968A)
-; Called from: Sub_193EC
+; IacLearnCells ($1968A)
+; Called from: IacLearn
 ;---------------------------------------------------------------------------------------------------
-Sub_1968A:
+IacLearnCells:
         CBA
         LBEQ    L19720
         BHI     L196DC
@@ -11687,10 +11687,10 @@ L19720:
         dc.b    $31,$D7,$31,$CD,$31,$C1,$31,$A5,$31,$EB,$31,$E1,$31,$C2,$31,$A2
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_19732 ($19732)
-; Called from: Sub_19820 (10 calls)
+; IacShiftKick ($19732)
+; Called from: IdleTargetControl (10 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_19732:
+IacShiftKick:
         BRSET   >FaultSet03,Z,#$01,L1981E
         LDY     #$9722
         CMPA    #$00
@@ -11774,7 +11774,7 @@ L197EA:
         XGAB
         EMULS
         STAA    $0329,Z
-        JSR     Sub_1A538
+        JSR     IacSetTarget
         PULM    E
         ANDE    #$00FF
         BNE     L1981E
@@ -11797,10 +11797,10 @@ L1981E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_19820 ($19820)
-; Called from: Sub_19000
+; IdleTargetControl ($19820)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_19820:
+IdleTargetControl:
         BRCLR   >MainLoopPhaseMask,Z,#$02,L19836
         LDAA    >IacGearTime2,Z
         CMPA    #$FF
@@ -12006,10 +12006,10 @@ L19A82:
         BRA     L19A9C
 L19A88:
         LDD     #$FF00
-        JSR     Sub_19732
+        JSR     IacShiftKick
         CLR     >IacShiftTimer,Z
         LDD     #$FFFF
-        JSR     Sub_19732
+        JSR     IacShiftKick
 L19A9C:
         BSET    >AcFlags,Z,#$20
         BCLR    >IdleFlags3,Z,#$10
@@ -12166,7 +12166,7 @@ L19C5A:
         BRSET   >IdleFlags2,Z,#$80,L19F1A
         BRSET   >IdleFlags5,Z,#$04,L19C72
         BSET    >IdleFlags5,Z,#$04
-        JSR     Sub_1A982
+        JSR     IacShiftStepApply
         LBRA    L1A536
 L19C72:
         BCLR    >IdleFlags5,Z,#$04
@@ -12182,7 +12182,7 @@ L19C94:
         BRSET   >IdleFlags2,Z,#$80,L19F1A
         BRSET   >IdleFlags,Z,#$02,L19CAC
         BSET    >IdleFlags,Z,#$02
-        JSR     Sub_1A982
+        JSR     IacShiftStepApply
         LBRA    L1A536
 L19CAC:
         BCLR    >IdleFlags,Z,#$02
@@ -12222,14 +12222,14 @@ L19D32:
         BRSET   >IdleFlags,Z,#$08,L19D46
         BSET    >IdleFlags,Z,#$08
         CLRD
-        JSR     Sub_19732
+        JSR     IacShiftKick
         LBRA    L1A536
 L19D46:
         BRSET   >IdleAcFlags,Z,#$04,L19F1A
         BRSET   >IdleFlags5,Z,#$80,L19D80
         BSET    >IdleFlags5,Z,#$80
         LDD     #$00FF
-        JSR     Sub_19732
+        JSR     IacShiftKick
         CLR     $0B02,Z
         LDAA    >IacGearStepCount
         STAA    >IacGearSteps,Z
@@ -12265,13 +12265,13 @@ L19DCC:
         BSET    >IdleFlags,Z,#$04
         BSET    >IdleFlags8,Z,#$02
         LDD     #$FF00
-        JSR     Sub_19732
+        JSR     IacShiftKick
         LBRA    L1A536
 L19DE6:
         BRSET   >IdleFlags5,Z,#$20,L19E0E
         BSET    >IdleFlags5,Z,#$20
         LDD     #$FFFF
-        JSR     Sub_19732
+        JSR     IacShiftKick
         BCLR    >IdleFlags3,Z,#$10
         BSET    >AcFlags,Z,#$20
         BRSET   >AcFlags,Z,#$80,L1A536
@@ -12297,13 +12297,13 @@ L19E40:
         BSET    >IdleFlags5,Z,#$10
         BSET    >IdleFlags8,Z,#$02
         LDD     #$FF00
-        JSR     Sub_19732
+        JSR     IacShiftKick
         LBRA    L1A536
 L19E60:
         BRSET   >IdleFlags5,Z,#$20,L19E88
         BSET    >IdleFlags5,Z,#$20
         LDD     #$FFFF
-        JSR     Sub_19732
+        JSR     IacShiftKick
         BCLR    >IdleFlags3,Z,#$10
         BSET    >AcFlags,Z,#$20
         BRSET   >AcFlags,Z,#$80,L1A536
@@ -12325,14 +12325,14 @@ L19EAA:
         BRSET   >IdleFlags5,Z,#$08,L19ECA
         BSET    >IdleFlags5,Z,#$08
         CLRD
-        JSR     Sub_19732
+        JSR     IacShiftKick
         LBRA    L1A536
 L19ECA:
         BRSET   >IdleAcFlags,Z,#$04,L19F1A
         BRSET   >IdleFlags5,Z,#$80,L19EFC
         BSET    >IdleFlags5,Z,#$80
         LDD     #$00FF
-        JSR     Sub_19732
+        JSR     IacShiftKick
         CLR     $0B02,Z
         BCLR    >IdleFlags3,Z,#$10
         BCLR    >AcFlags,Z,#$20
@@ -12373,7 +12373,7 @@ L19F54:
         BLS     L19F6C
         LDD     #$7F00
 L19F6C:
-        JSR     Sub_1A538
+        JSR     IacSetTarget
         LBRA    L1A100
 L19F74:
         BRSET   >DriveFlags,Z,#$80,L19F84
@@ -12491,7 +12491,7 @@ L1A0C4:
         LDD     #$007F
 L1A0CE:
         TBA
-        JSR     Sub_1A538
+        JSR     IacSetTarget
         LBRA    L1A536
 L1A0D8:
         BRSET   >SwitchInputs2,Z,#$20,L1A0E6
@@ -12575,7 +12575,7 @@ L1A1C4:
         LBRA    L1A536
 L1A1D2:
         BSET    >IdleFlags,Z,#$10
-        JSR     Sub_1A538
+        JSR     IacSetTarget
         LBRA    L1A536
 L1A1DE:
         BRSET   >ThrottleState,Z,#$01,L1A20A
@@ -12631,7 +12631,7 @@ L1A250:
 L1A27A:
         TBA
         STAA    >IacKick,Z
-        JSR     Sub_1A538
+        JSR     IacSetTarget
         LBRA    L1A536
 L1A288:
         BRSET   >IdleFlags2,Z,#$80,L1A536
@@ -12887,10 +12887,10 @@ L1A536:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1A538 ($1A538)
-; Called from: Sub_17D4A, Sub_1908C, Sub_19732, Sub_19820, Sub_1A982, Sub_1ABD2, Sub_1BA2E, Sub_1BAEC (12 calls)
+; IacSetTarget ($1A538)
+; Called from: FlexIdleStep, IdleRpmLoop, IacShiftKick, IdleTargetControl, IacShiftStepApply, IdleMapTargetCalc, Sub_1BA2E, IacChargeStep2 (12 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1A538:
+IacSetTarget:
         ORP     #$00E0
         TAB
         SXT
@@ -12954,10 +12954,10 @@ L1A5C4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1A5CE ($1A5CE)
+; IacResetBaro ($1A5CE)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1A5CE:
+IacResetBaro:
         LDAA    #$80
         STAA    $19,Z
         LDAA    #$40
@@ -12998,10 +12998,10 @@ L1A626:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1A628 ($1A628)
+; IacResetHold ($1A628)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1A628:
+IacResetHold:
         LDAA    <Baro,Z
         LDX     #IacStepBaroFactor
         JSR     Lookup2D
@@ -13023,10 +13023,10 @@ Sub_1A628:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1A666 ($1A666)
-; Called from: Sub_19000
+; IdleMapLoop ($1A666)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1A666:
+IdleMapLoop:
         CLRW    >ScratchC,Z
         CLRW    >ScratchE,Z
         BRCLR   >Scratch8,Z,#$04,L1A6DC
@@ -13236,10 +13236,10 @@ L1A8B0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1A8B2 ($1A8B2)
-; Called from: Sub_19000
+; IdleStopRpmCheck ($1A8B2)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1A8B2:
+IdleStopRpmCheck:
         BRCLR   >Scratch8,Z,#$40,L1A980
         BRSET   >FaultSet05,Z,#$08,L1A980
         TST     >VehicleSpeed,Z
@@ -13323,10 +13323,10 @@ L1A980:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1A982 ($1A982)
-; Called from: Sub_19820 (2 calls)
+; IacShiftStepApply ($1A982)
+; Called from: IdleTargetControl (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1A982:
+IacShiftStepApply:
         LDAA    >IacShiftMode,Z
         BNE     L1A9A2
         BRSET   >ControlFlagsC33,Z,#$40,L1A998
@@ -13358,7 +13358,7 @@ L1A9C8:
         LDAA    #$7F
 L1A9CA:
         STAA    <ScratchE,Z
-        JSR     Sub_1A538
+        JSR     IacSetTarget
         LDAA    <ScratchE,Z
         LDAB    #$92
         MUL
@@ -13371,10 +13371,10 @@ L1A9DE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1A9E4 ($1A9E4)
-; Called from: Sub_19000
+; IacFixedTarget ($1A9E4)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1A9E4:
+IacFixedTarget:
         BRCLR   >MainLoopPhaseMask,Z,#$40,L1AA2A
         BRSET   >Options033D,#$08,L1AA2A
         LDAA    >IacTarget,Z
@@ -13400,10 +13400,10 @@ L1AA2A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1AA2C ($1AA2C)
-; Called from: Sub_19000
+; IacRollingControl ($1AA2C)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1AA2C:
+IacRollingControl:
         BRSET   >IacStepFlags,Z,#$01,L1AA9A
         BRCLR   >IdleFlags3,Z,#$04,L1AA56
         LDAA    >VehicleSpeed,Z
@@ -13547,10 +13547,10 @@ L1ABAE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1ABB0 ($1ABB0)
-; Called from: Sub_1908C (2 calls)
+; DivSignedSat ($1ABB0)
+; Called from: IdleRpmLoop (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1ABB0:
+DivSignedSat:
         EDIVS
         XGDX
         BCC     L1ABC0
@@ -13574,10 +13574,10 @@ L1ABD0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1ABD2 ($1ABD2)
-; Called from: Sub_19000
+; IdleMapTargetCalc ($1ABD2)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1ABD2:
+IdleMapTargetCalc:
         LDAB    $19,Z
         CLRA
         ASRD
@@ -13746,15 +13746,15 @@ L1AD82:
         LDX     #IacMapHighStep
 L1AD94:
         JSR     Lookup2D
-        JSR     Sub_1A538
+        JSR     IacSetTarget
 L1AD9C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1AD9E ($1AD9E)
-; Called from: Sub_19000
+; IacCrankControl ($1AD9E)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1AD9E:
+IacCrankControl:
         BRSET   >EngineStateFlags,Z,#$80,L1ADAC
         BSET    <IacStepFlags,Z,#$20
         CLR     $0354,Z
@@ -13832,10 +13832,10 @@ L1AE5E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1AE60 ($1AE60)
-; Called from: Sub_19000
+; IdleStateFlags ($1AE60)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1AE60:
+IdleStateFlags:
         CLRW    >Scratch8,Z
         BRCLR   >SensorFaultFlags,Z,#$20,L1AE6E
         BSET    <Scratch8,Z,#$01
@@ -13912,10 +13912,10 @@ L1AF5C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1AF5E ($1AF5E)
-; Called from: Sub_19000
+; IacBaseCalc ($1AF5E)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1AF5E:
+IacBaseCalc:
         LDAA    <Baro,Z
         LDX     #IacBaroScale
         JSR     Lookup2D
@@ -14042,10 +14042,10 @@ L1B0D2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1B0EC ($1B0EC)
-; Called from: Sub_19000
+; IdleRpmTarget ($1B0EC)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1B0EC:
+IdleRpmTarget:
         BRCLR   >EngineStateFlags,Z,#$80,L1B110
         BRCLR   >MainLoopPhaseMask,Z,#$08,L1B114
         LDD     >IdleRunTimer,Z
@@ -14699,10 +14699,10 @@ L1B8F4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1B8F6 ($1B8F6)
-; Called from: Sub_19000
+; PwmC18Control ($1B8F6)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1B8F6:
+PwmC18Control:
         LDAA    >IacTarget,Z
         BRSET   >FaultSet1A,Z,#$04,L1B986
         BRSET   >ControlFlags943,Z,#$10,L1B986
@@ -14758,10 +14758,10 @@ L1B986:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1B988 ($1B988)
+; IacResetLoop ($1B988)
 ; Called from: CheckPowerDown
 ;---------------------------------------------------------------------------------------------------
-Sub_1B988:
+IacResetLoop:
         ORP     #$00E0
         CLRW    >TMSK1,Z
         BCLRW   $1018,Z,#$0020
@@ -14791,10 +14791,10 @@ L1B9D6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1B9E4 ($1B9E4)
-; Called from: Sub_0DBEA
+; ChargeDeficitCalc ($1B9E4)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1B9E4:
+ChargeDeficitCalc:
         LDAA    >ChargeTargetVolts,Z
         SUBA    $0DC9,Z
         BCC     L1B9F0
@@ -14823,7 +14823,7 @@ L1B9FC:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1BA2E ($1BA2E)
-; Called from: Sub_0853C
+; Called from: ChargeControl
 ;---------------------------------------------------------------------------------------------------
 Sub_1BA2E:
         PSHM    E,X,K
@@ -14861,7 +14861,7 @@ L1BA58:
         EMUL
         TSTA
         BEQ     L1BAE0
-        JSR     Sub_1A538
+        JSR     IacSetTarget
         LDAB    >BatteryVolts2,Z
         STAB    $0DC0,Z
         BSET    >FieldFlags,Z,#$01
@@ -14892,10 +14892,10 @@ L1BAE8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1BAEC ($1BAEC)
-; Called from: Sub_08DAC
+; IacChargeStep2 ($1BAEC)
+; Called from: ChargeControl2
 ;---------------------------------------------------------------------------------------------------
-Sub_1BAEC:
+IacChargeStep2:
         PSHM    E,X,K
         BRSET   >SensorFaultFlags,Z,#$20,L1BB76
         BRSET   >FaultSet05,Z,#$08,L1BB76
@@ -14919,7 +14919,7 @@ Sub_1BAEC:
         EMUL
         TSTA
         BEQ     L1BB76
-        JSR     Sub_1A538
+        JSR     IacSetTarget
         BSET    >FieldFlags,Z,#$01
         BCLR    >FieldFlags,Z,#$02
         BRA     L1BB7E
@@ -15277,11 +15277,11 @@ L1BB7E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1D000 ($1D000)
-; Called from: Sub_0DBEA
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 Sub_1D000:
         BRCLR   >Options032B,#$20,L1D00C
-        JSR     Sub_1DBC2
+        JSR     DwellCalc
         STAA    $88,Z
 L1D00C:
         BRCLR   >Options032B,#$40,L1D016
@@ -15289,35 +15289,35 @@ L1D00C:
 L1D016:
         JSR     Sub_1D28A
         STAA    $0D03,Z
-        JSR     Sub_1D35E
+        JSR     SparkCoolantCorr
         STAA    $0D0E,Z
         JSR     Sub_1DB22
         STAA    $0D05,Z
-        JSR     Sub_1D384
+        JSR     SparkBaroCorr
         STAA    $0D06,Z
-        JSR     Sub_1DA8A
+        JSR     EgrSparkCalc
         STAA    $0D08,Z
-        JSR     Sub_1D85A
+        JSR     CoolantSparkCalc
         STAA    $0D07,Z
-        JSR     Sub_1D490
+        JSR     AfterStartSpark
         STAA    $0D0A,Z
-        JSR     Sub_1D160
+        JSR     SparkHook
         STAA    $0D09,Z
         JSR     Sub_1F13E
         STAA    $0405,Z
         JSR     Sub_1DF54
         STAA    $0D0C,Z
         JSR     Sub_1D906
-        JSR     Sub_1F02A
-        JSR     Sub_1D638
+        JSR     KnockLearn
+        JSR     DecelSparkCalc
         STAA    $0D0D,Z
-        JSR     Sub_1D648
+        JSR     TipInSparkControl
         STAA    $0D10,Z
-        JSR     Sub_1DEB2
+        JSR     HighSpeedSparkFlag
         STAA    $0D0B,Z
         JSR     Sub_1E724
         BRCLR   >SparkFlags3,Z,#$01,L1D094
-        JSR     Sub_1E7E0
+        JSR     IdleSparkCalc
 L1D094:
         LDAB    $0D03,Z
         SXT
@@ -15400,10 +15400,10 @@ L1D15A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D160 ($1D160)
+; SparkHook ($1D160)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1D160:
+SparkHook:
         AIS     #$FC
         TSY
         BRCLR   >Options0338,#$20,L1D184
@@ -15481,10 +15481,10 @@ L1D224:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D228 ($1D228)
+; SparkSpeedFlags ($1D228)
 ; Called from: Sub_1D28A
 ;---------------------------------------------------------------------------------------------------
-Sub_1D228:
+SparkSpeedFlags:
         BRSET   >ThrottleState,Z,#$80,L1D280
         LDAA    >VehicleSpeed,Z
         BRCLR   >SparkFlags2,Z,#$40,L1D240
@@ -15529,7 +15529,7 @@ L1D288:
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
 Sub_1D28A:
-        JSR     Sub_1D228
+        JSR     SparkSpeedFlags
         CLRA
         BRCLR   >Options0337,#$02,L1D2AC
         BRCLR   >SparkFlags2,Z,#$02,L1D2AC
@@ -15600,10 +15600,10 @@ L1D35C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D35E ($1D35E)
+; SparkCoolantCorr ($1D35E)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1D35E:
+SparkCoolantCorr:
         CLRA
         BRCLR   >SparkFlags2,Z,#$02,L1D382
         LDAA    >CoolantTemp,Z
@@ -15617,10 +15617,10 @@ L1D382:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D384 ($1D384)
+; SparkBaroCorr ($1D384)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1D384:
+SparkBaroCorr:
         CLRA
         BRSET   >ThrottleState,Z,#$40,L1D3B0
         AIS     #$FC
@@ -15640,10 +15640,10 @@ L1D3B0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D3B2 ($1D3B2)
-; Called from: Sub_1E338
+; O2SparkTrimCalc ($1D3B2)
+; Called from: SparkEventCalc
 ;---------------------------------------------------------------------------------------------------
-Sub_1D3B2:
+O2SparkTrimCalc:
         BRSET   >ThrottleState,Z,#$80,L1D42A
         BRSET   >ThrottleState,Z,#$01,L1D42A
         BRCLR   >EngineStateFlags,Z,#$80,L1D42A
@@ -15719,10 +15719,10 @@ L1D48A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D490 ($1D490)
+; AfterStartSpark ($1D490)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1D490:
+AfterStartSpark:
         BRCLR   >SparkFlags,Z,#$20,L1D5D8
         BRSET   >AfterStartSparkFlags,Z,#$20,L1D5D8
         LDAA    >AfterStartSparkStart,Z
@@ -15777,7 +15777,7 @@ L1D52E:
         BEQ     L1D548
         STAA    >AfterStartSparkCount,Z
 L1D548:
-        JSR     Sub_1D5F6
+        JSR     AfterStartSparkLookup
         STAA    <Scratch0,Z
         LDAA    >AfterStartSparkCount,Z
         CMPA    <Scratch0,Z
@@ -15802,7 +15802,7 @@ L1D584:
 L1D58C:
         BRA     L1D5DA
 L1D58E:
-        JSR     Sub_1D5F6
+        JSR     AfterStartSparkLookup
         BRCLR   >ControlFlags943,Z,#$01,L1D5A2
         LDAB    $0D1D,Z
         CMPB    >AfterStartSparkStart,Z
@@ -15820,7 +15820,7 @@ L1D5A8:
         BEQ     L1D5C2
         STAA    >AfterStartSparkCount,Z
 L1D5C2:
-        JSR     Sub_1D5F6
+        JSR     AfterStartSparkLookup
         SUBA    >AfterStartSparkCount,Z
         BCC     L1D5D6
         CLRA
@@ -15843,10 +15843,10 @@ L1D5F4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D5F6 ($1D5F6)
-; Called from: Sub_1D490 (3 calls)
+; AfterStartSparkLookup ($1D5F6)
+; Called from: AfterStartSpark (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1D5F6:
+AfterStartSparkLookup:
         LDX     #Tab2D_0976
         LDAA    >Map,Z
         CMPA    $13DB
@@ -15871,10 +15871,10 @@ L1D61A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D638 ($1D638)
+; DecelSparkCalc ($1D638)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1D638:
+DecelSparkCalc:
         LDAA    >DecelFuelFactor,Z
         BEQ     L1D646
         LDX     #DecelSpark
@@ -15883,10 +15883,10 @@ L1D646:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D648 ($1D648)
+; TipInSparkControl ($1D648)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1D648:
+TipInSparkControl:
         LDAA    >ThrottleAboveClosed,Z
         CLRB
         TDE
@@ -16068,10 +16068,10 @@ L1D858:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D85A ($1D85A)
+; CoolantSparkCalc ($1D85A)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1D85A:
+CoolantSparkCalc:
         BRSET   >ThrottleState,Z,#$80,L1D864
         CLRA
         BRA     L1D890
@@ -16094,10 +16094,10 @@ L1D890:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D892 ($1D892)
-; Called from: Sub_1E338
+; AcSparkRate ($1D892)
+; Called from: SparkEventCalc
 ;---------------------------------------------------------------------------------------------------
-Sub_1D892:
+AcSparkRate:
         CLRB
         BRCLR   >IacAcFlags,Z,#$01,L1D900
         TST     >AcClutchSparkHoldTime,Z
@@ -16276,10 +16276,10 @@ L1DA88:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DA8A ($1DA8A)
+; EgrSparkCalc ($1DA8A)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1DA8A:
+EgrSparkCalc:
         LDAA    >Map,Z
         BRSET   >SensorFaultFlags,Z,#$20,L1DAA6
         LDAA    <Baro,Z
@@ -16381,10 +16381,10 @@ L1DB88:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DB8C ($1DB8C)
-; Called from: Sub_0DBEA
+; KnockLearnDecayStep ($1DB8C)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1DB8C:
+KnockLearnDecayStep:
         BRSET   >Options032B,#$20,L1DBC0
         BRCLR   >SparkFlags,Z,#$80,L1DBC0
         TZX
@@ -16408,10 +16408,10 @@ L1DBC0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DBC2 ($1DBC2)
+; DwellCalc ($1DBC2)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1DBC2:
+DwellCalc:
         BRSET   >Options032B,#$20,L1DBCC
         CLRA
         BRA     L1DBFA
@@ -16435,10 +16435,10 @@ L1DBFA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DBFC ($1DBFC)
-; Called from: Sub_0DBEA
+; EventSparkControl ($1DBFC)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1DBFC:
+EventSparkControl:
         BRCLR   >Options0337,#$80,L1DC92
         BRCLR   >EventSparkFlags,Z,#$10,L1DC60
         BRCLR   >EventSparkFlags,Z,#$04,L1DC34
@@ -16496,10 +16496,10 @@ L1DC92:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DC98 ($1DC98)
-; Called from: Sub_0DBEA
+; SpeedDampControl ($1DC98)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1DC98:
+SpeedDampControl:
         BRCLR   >Options0337,#$40,L1DEB0
         BRSET   >EventSparkFlags,Z,#$08,L1DD40
         BRSET   >EventSparkFlags,Z,#$04,L1DD40
@@ -16714,10 +16714,10 @@ L1DEB0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DEB2 ($1DEB2)
+; HighSpeedSparkFlag ($1DEB2)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1DEB2:
+HighSpeedSparkFlag:
         LDAA    >VehicleSpeedCoarse,Z
         CMPA    >HighSpeedSparkOn
         BCC     L1DEC8
@@ -16738,10 +16738,10 @@ L1DEE2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DEE4 ($1DEE4)
-; Called from: Sub_0DBEA
+; CamSignalCheck ($1DEE4)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1DEE4:
+CamSignalCheck:
         BRCLR   >Options0337,#$80,L1DF4E
         ORP     #$00E0
         BRCLR   >EngineStateFlags,Z,#$80,L1DEFE
@@ -16753,7 +16753,7 @@ L1DEFE:
         BRSET   >PORTGP,Z,#$80,L1DF16
         LDX     #$8866
         LDY     #$80F0
-        JSR     Sub_0C1A8
+        JSR     PeriodChangeTrack
         BRA     L1DF4E
 L1DF16:
         LDAA    >CamSignalCount,Z
@@ -16777,7 +16777,7 @@ L1DF4E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1DF54 ($1DF54)
-; Called from: Sub_0DBEA, Sub_1D000
+; Called from: EquipmentInit, Sub_1D000
 ;---------------------------------------------------------------------------------------------------
 Sub_1DF54:
         CLRB
@@ -16996,10 +16996,10 @@ L1E1CC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E1D0 ($1E1D0)
+; SurgeFilters ($1E1D0)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_1E1D0:
+SurgeFilters:
         CLRB
         LDAA    >Map,Z
         TDE
@@ -17122,10 +17122,10 @@ L1E2FA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E314 ($1E314)
-; Called from: Sub_0DBEA
+; SparkStartTimer ($1E314)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1E314:
+SparkStartTimer:
         CLRA
         BRCLR   >EngineStateFlags,Z,#$80,L1E324
         LDAA    >SparkStartTime,Z
@@ -17138,21 +17138,21 @@ L1E328:
         dc.b    $00,$02,$03,$01,$02,$03,$01,$00,$00,$01,$02,$03,$04,$05
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E338 ($1E338)
+; SparkEventCalc ($1E338)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_1E338:
+SparkEventCalc:
         LDAA    #$12
         BRCLR   >SparkFlags,Z,#$20,L1E558
-        JSR     Sub_1D892
-        JSR     Sub_1D3B2
+        JSR     AcSparkRate
+        JSR     O2SparkTrimCalc
         LDD     >SparkPeriod,Z
         CPD     #$5DC0
         BLS     L1E358
         BSET    >SparkFlags3,Z,#$01
         BRA     L1E35C
 L1E358:
-        JSR     Sub_1E7E0
+        JSR     IdleSparkCalc
 L1E35C:
         LDAB    >SparkValueD0F,Z
         SXT
@@ -17207,7 +17207,7 @@ L1E3E4:
         SDE
 L1E3E8:
         STE     $0D48,Z
-        JSR     Sub_1E624
+        JSR     AfterStartSparkCapCalc
         XGEY
         LDX     #AfterStartSparkMin
         LDAA    >SparkStartTime,Z
@@ -17332,7 +17332,7 @@ L1E558:
 
 ;---------------------------------------------------------------------------------------------------
 ; DwellModeSelect ($1E55E)
-; Called from: Sub_0DBEA
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 DwellModeSelect:
         BRSET   >FaultSet01,Z,#$02,L1E56A
@@ -17415,10 +17415,10 @@ L1E60C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E624 ($1E624)
-; Called from: Sub_1E338
+; AfterStartSparkCapCalc ($1E624)
+; Called from: SparkEventCalc
 ;---------------------------------------------------------------------------------------------------
-Sub_1E624:
+AfterStartSparkCapCalc:
         PSHM    D,X,Y
         LDAB    >SparkFlags2,Z
         BRCLR   >FaultSet02,Z,#$C0,L1E634
@@ -17490,10 +17490,10 @@ L1E6CE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E6D2 ($1E6D2)
-; Called from: Isr_GPT_OC4, Sub_08936, Sub_1F658
+; GetSparkAdvance ($1E6D2)
+; Called from: Isr_GPT_OC4, SparkOutputOc2, KnockCylinderRetard
 ;---------------------------------------------------------------------------------------------------
-Sub_1E6D2:
+GetSparkAdvance:
         LDAA    >SparkAdvanceD11,Z
         RTS
         dc.b    $34,$24,$34,$01,$17,$F5,$03,$25,$37,$1F,$37,$1F,$37,$1F,$37,$1F
@@ -17567,10 +17567,10 @@ L1E7DE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E7E0 ($1E7E0)
-; Called from: Sub_1D000, Sub_1E338
+; IdleSparkCalc ($1E7E0)
+; Called from: Sub_1D000, SparkEventCalc
 ;---------------------------------------------------------------------------------------------------
-Sub_1E7E0:
+IdleSparkCalc:
         BRCLR   >SparkFlags3,Z,#$80,L1E894
         BRCLR   >SparkFlags3,Z,#$40,L1E894
         PSHM    D,E,X
@@ -17754,28 +17754,28 @@ L1E894:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; CalcSpark ($1F000)
-; Called from: Sub_0DBEA
+; KnockControl ($1F000)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-CalcSpark:
+KnockControl:
         BRCLR   >Options032F,#$06,L1F024
-        JSR     Sub_1F430
-        JSR     Sub_1F398
-        JSR     Sub_1F304
-        JSR     Sub_1F3C4
-        JSR     Sub_1F34E
+        JSR     KnockNoiseCalc
+        JSR     KnockLearnDecayFlag
+        JSR     KnockRetardMaxCalc
+        JSR     KnockThresholdCalc
+        JSR     KnockRpmBand
         TST     >MainLoopCounter,Z
         BNE     L1F024
-        JSR     Sub_1F28A
+        JSR     KnockCylRetardDecayStep
 L1F024:
-        JSR     Sub_1F1D8
+        JSR     KnockRetardCalc
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F02A ($1F02A)
+; KnockLearn ($1F02A)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1F02A:
+KnockLearn:
         BRCLR   >Options032F,#$06,L1F138
         BRSET   >FaultSet06,Z,#$08,L1F048
         BRSET   >FaultSet0B,Z,#$08,L1F048
@@ -17826,7 +17826,7 @@ L1F0B0:
         SUBE    #$0001
         BPL     L1F0AA
         STAA    >KnockSignalLearn,Z
-        JSR     Sub_1F242
+        JSR     KnockEventDecayStep
         LDAB    >KnockSampleCount,Z
         CMPB    >KnockSampleCountMax
         BCC     L1F0CE
@@ -17874,7 +17874,7 @@ L1F0F2:
 L1F136:
         STAA    $00,Y
 L1F138:
-        JSR     Sub_1F1D8
+        JSR     KnockRetardCalc
 L1F13C:
         RTS
 
@@ -17946,10 +17946,10 @@ L1F1D6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F1D8 ($1F1D8)
-; Called from: CalcSpark, Sub_1F02A, Sub_1F28A
+; KnockRetardCalc ($1F1D8)
+; Called from: KnockControl, KnockLearn, KnockCylRetardDecayStep
 ;---------------------------------------------------------------------------------------------------
-Sub_1F1D8:
+KnockRetardCalc:
         CLRA
         BRCLR   >Options032F,#$06,L1F23C
         LDAB    >CoolantTemp,Z
@@ -17988,10 +17988,10 @@ L1F23C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F242 ($1F242)
-; Called from: Sub_1F02A
+; KnockEventDecayStep ($1F242)
+; Called from: KnockLearn
 ;---------------------------------------------------------------------------------------------------
-Sub_1F242:
+KnockEventDecayStep:
         PSHM    D
         LDAB    >CoolantTemp,Z
         CMPB    >KnockLearnCoolantMin
@@ -18021,10 +18021,10 @@ L1F286:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F28A ($1F28A)
-; Called from: CalcSpark
+; KnockCylRetardDecayStep ($1F28A)
+; Called from: KnockControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1F28A:
+KnockCylRetardDecayStep:
         LDAA    >CoolantTemp,Z
         CMPA    >KnockLearnCoolantMin
         BCS     L1F29A
@@ -18072,15 +18072,15 @@ L1F2F4:
         AIX     #$01
         CPX     #$809C
         BLS     L1F2E0
-        JSR     Sub_1F1D8
+        JSR     KnockRetardCalc
 L1F302:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F304 ($1F304)
-; Called from: CalcSpark
+; KnockRetardMaxCalc ($1F304)
+; Called from: KnockControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1F304:
+KnockRetardMaxCalc:
         LDAA    >CoolantTemp,Z
         CMPA    >KnockCoolantMin
         BCS     L1F340
@@ -18111,10 +18111,10 @@ L1F348:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F34E ($1F34E)
-; Called from: CalcSpark
+; KnockRpmBand ($1F34E)
+; Called from: KnockControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1F34E:
+KnockRpmBand:
         CLR     <Scratch6,Z
         CLRB
         TBXK
@@ -18150,10 +18150,10 @@ L1F38E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F398 ($1F398)
-; Called from: CalcSpark
+; KnockLearnDecayFlag ($1F398)
+; Called from: KnockControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1F398:
+KnockLearnDecayFlag:
         BRCLR   >SparkFlags,Z,#$20,L1F3C2
         BRSET   >ControlFlagsC33,Z,#$80,L1F3C2
         BSET    >ControlFlagsC33,Z,#$80
@@ -18173,10 +18173,10 @@ L1F3C2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F3C4 ($1F3C4)
-; Called from: CalcSpark
+; KnockThresholdCalc ($1F3C4)
+; Called from: KnockControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1F3C4:
+KnockThresholdCalc:
         LDAB    #$00
         TBXK
         LDX     #$2CBD
@@ -18230,10 +18230,10 @@ L1F42A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F430 ($1F430)
-; Called from: CalcSpark
+; KnockNoiseCalc ($1F430)
+; Called from: KnockControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1F430:
+KnockNoiseCalc:
         LDAA    >EngineRpm,Z
         LDX     #KnockNoiseMax
         JSR     Lookup2D
@@ -18272,10 +18272,10 @@ Sub_1F430:
         dc.b    $01,$00,$02,$03,$00,$02,$03,$01,$05,$00,$01,$02,$03,$04
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F4C0 ($1F4C0)
+; KnockSample ($1F4C0)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_1F4C0:
+KnockSample:
         BRCLR   >Options032F,#$06,L1F656
 L1F4C6:
         BRCLR   >ADCSTAT,Z,#$80,L1F4C6
@@ -18416,10 +18416,10 @@ L1F656:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F658 ($1F658)
+; KnockCylinderRetard ($1F658)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_1F658:
+KnockCylinderRetard:
         BRCLR   >Options032F,#$06,L1F7AE
         LDE     >RefPeriod,Z
         CPE     #$3C00
@@ -18428,7 +18428,7 @@ Sub_1F658:
         SUBD    $0AC6,Z
         STD     >Temp4F0,Z
         LDAA    >CylinderIndex,Z
-        JSR     Sub_1E6D2
+        JSR     GetSparkAdvance
         TAB
         LSRB
         SUBB    >KnockCylRetardOffset
@@ -18548,10 +18548,10 @@ L1F7AE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F7B0 ($1F7B0)
+; KnockWindowInit ($1F7B0)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1F7B0:
+KnockWindowInit:
         BRCLR   >Options032F,#$01,L1F7C6
         LDAB    #$00
         TBXK
@@ -18562,10 +18562,10 @@ L1F7C6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F7C8 ($1F7C8)
-; Called from: Sub_0DBEA
+; KnockWindowUpdate ($1F7C8)
+; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1F7C8:
+KnockWindowUpdate:
         BRCLR   >Options032F,#$01,L1F814
         LDAB    #$00
         TBXK

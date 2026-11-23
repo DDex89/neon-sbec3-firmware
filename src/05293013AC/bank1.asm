@@ -2687,7 +2687,7 @@ L11C26:
         LDX     #$8370
         ORP     #$00E0
         LDD     >TCNT,Z
-        JSR     Sub_0E616
+        JSR     PeriodChangeTrack
         ANDP    #$FF1F
         LDAA    $01,X
         CMPA    #$20
@@ -2697,7 +2697,7 @@ L11C4C:
         LDX     #$8376
         ORP     #$00E0
         LDD     >TCNT,Z
-        JSR     Sub_0E616
+        JSR     PeriodChangeTrack
         ANDP    #$FF1F
         LDAA    $0377,Z
         CMPA    #$1E
@@ -2718,7 +2718,7 @@ Sub_11C72:
         LDX     #$837C
         ORP     #$00E0
         LDD     >TCNT,Z
-        JSR     Sub_0E616
+        JSR     PeriodChangeTrack
         CLRD
         LDE     >RefPeriod,Z
         CPE     #$7F00
@@ -2859,7 +2859,7 @@ L11DFA:
         CLR     $0432,Z
         CLR     $01DC,Z
         JSR     Sub_1CA94
-        JSR     Sub_1FE30
+        JSR     ObdClearRecordBits
         CLRW    $028C,Z
         CLR     $028F,Z
         CLR     $028E,Z
@@ -3262,7 +3262,7 @@ L1224C:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1224E ($1224E)
-; Called from: Reset, ReadMap, Sub_17794, Sub_1D0E6, Sub_1F904, Sub_1F99E, Sub_1FF4C
+; Called from: Reset, ReadMap, Sub_17794, Sub_1D0E6, FreezeFrameCapture, FuelSysConditions2, Sub_1FF4C
 ;---------------------------------------------------------------------------------------------------
 Sub_1224E:
         LDAB    #$F4
@@ -3512,14 +3512,14 @@ Sub_12484:
         BITA    #$05
         BNE     L124C6
         LDX     #$FF0C
-        JSR     Sub_0E822
+        JSR     PowerInputHold
         BCS     L124C6
         LDX     #$FF0C
-        JSR     Sub_0E822
+        JSR     PowerInputHold
         BCS     L124C6
         BSETW   $0812,Z,#$0080
         LDX     #$7F86
-        JSR     Sub_0E822
+        JSR     PowerInputHold
         BCS     L124C0
         BRCLR   $0812,Z,#$01,L124C0
         BSET    >EquipmentFlags,Z,#$40
@@ -4435,7 +4435,7 @@ L12F10:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_12F12 ($12F12)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 Sub_12F12:
         BRCLR   $032B,#$01,L12F78
@@ -5889,35 +5889,35 @@ L13FE4:
 Sub_14000:
         JSR     Sub_142D6
         BRCLR   >Options0337,#$40,L14010
-        JSR     Sub_14AF0
+        JSR     DwellCalc
         STAA    $67,Z
 L14010:
         JSR     CalcBaseSpark
         STAA    >FlexSparkValue,Z
-        JSR     Sub_14A32
+        JSR     FlexSparkCalc
         STAA    $0613,Z
         JSR     Sub_1429C
         STAA    $0615,Z
         JSR     Sub_1499A
         STAA    $0617,Z
-        JSR     Sub_14778
+        JSR     CoolantSparkCalc
         STAA    $0616,Z
-        JSR     Sub_143D2
+        JSR     AfterStartSpark
         STAA    $0619,Z
-        JSR     Sub_14150
+        JSR     SparkHook
         STAA    $0618,Z
-        JSR     Sub_14D72
+        JSR     SurgeControl
         STAA    $061B,Z
         JSR     Sub_1486A
         JSR     Sub_1526E
         STAA    $0612,Z
-        JSR     Sub_14570
+        JSR     DecelSparkCalc
         STAA    $061C,Z
         JSR     Sub_1421E
         STAA    $061D,Z
         JSR     Sub_14580
         STAA    $061F,Z
-        JSR     Sub_14D02
+        JSR     HighSpeedSparkFlag
         STAA    $061A,Z
         LDAB    >FlexSparkValue,Z
         SXT
@@ -6003,10 +6003,10 @@ L1414A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14150 ($14150)
+; SparkHook ($14150)
 ; Called from: Sub_14000
 ;---------------------------------------------------------------------------------------------------
-Sub_14150:
+SparkHook:
         AIS     #$FC
         TSY
         BRCLR   $0324,#$20,L14174
@@ -6261,10 +6261,10 @@ L143D0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_143D2 ($143D2)
+; AfterStartSpark ($143D2)
 ; Called from: Sub_14000
 ;---------------------------------------------------------------------------------------------------
-Sub_143D2:
+AfterStartSpark:
         BRCLR   >SparkFlags,Z,#$20,L14520
         BRSET   >AfterStartSparkFlags,Z,#$20,L14520
         LDAA    >AfterStartSparkStart,Z
@@ -6319,7 +6319,7 @@ L14470:
         BEQ     L1448A
         STAA    >AfterStartSparkCount,Z
 L1448A:
-        JSR     Sub_1453E
+        JSR     AfterStartSparkLookup
         STAA    >IacBase,Z
         LDAA    >AfterStartSparkCount,Z
         CMPA    >IacBase,Z
@@ -6344,7 +6344,7 @@ L144CC:
 L144D4:
         BRA     L14522
 L144D6:
-        JSR     Sub_1453E
+        JSR     AfterStartSparkLookup
         BRCLR   >ControlFlags943,Z,#$01,L144EA
         LDAB    $0628,Z
         CMPB    >AfterStartSparkStart,Z
@@ -6362,7 +6362,7 @@ L144F0:
         BEQ     L1450A
         STAA    >AfterStartSparkCount,Z
 L1450A:
-        JSR     Sub_1453E
+        JSR     AfterStartSparkLookup
         SUBA    >AfterStartSparkCount,Z
         BCC     L1451E
         CLRA
@@ -6385,10 +6385,10 @@ L1453C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1453E ($1453E)
-; Called from: Sub_143D2 (3 calls)
+; AfterStartSparkLookup ($1453E)
+; Called from: AfterStartSpark (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1453E:
+AfterStartSparkLookup:
         LDX     #AfterStartSparkMapScale
         LDAA    >Map,Z
         JSR     Lookup2D
@@ -6405,10 +6405,10 @@ Sub_1453E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14570 ($14570)
+; DecelSparkCalc ($14570)
 ; Called from: Sub_14000
 ;---------------------------------------------------------------------------------------------------
-Sub_14570:
+DecelSparkCalc:
         LDAA    >DecelFuelFactor,Z
         BEQ     L1457E
         LDX     #DecelSpark
@@ -6594,10 +6594,10 @@ L14776:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14778 ($14778)
+; CoolantSparkCalc ($14778)
 ; Called from: Sub_14000
 ;---------------------------------------------------------------------------------------------------
-Sub_14778:
+CoolantSparkCalc:
         BRSET   >ThrottleState,Z,#$80,L14782
         CLRA
         BRA     L1479A
@@ -6612,10 +6612,10 @@ L1479A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1479C ($1479C)
+; AcSparkRate ($1479C)
 ; Called from: Sub_15168
 ;---------------------------------------------------------------------------------------------------
-Sub_1479C:
+AcSparkRate:
         BRSET   >IacAcFlags,Z,#$20,L147B8
         CLR     >AcSparkHoldCounter,Z
         CLRW    >AcSparkRateChange,Z
@@ -6860,10 +6860,10 @@ L14A30:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14A32 ($14A32)
+; FlexSparkCalc ($14A32)
 ; Called from: Sub_14000
 ;---------------------------------------------------------------------------------------------------
-Sub_14A32:
+FlexSparkCalc:
         AIS     #$FC
         TSY
         BRCLR   $0324,#$01,L14A52
@@ -6939,10 +6939,10 @@ L14AEE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14AF0 ($14AF0)
+; DwellCalc ($14AF0)
 ; Called from: Sub_14000
 ;---------------------------------------------------------------------------------------------------
-Sub_14AF0:
+DwellCalc:
         BRSET   >Options0337,#$40,L14AFA
         CLRA
         BRA     L14B28
@@ -6966,10 +6966,10 @@ L14B28:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14B2A ($14B2A)
+; EventSparkControl ($14B2A)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_14B2A:
+EventSparkControl:
         BRCLR   >Options0337,#$80,L14BC0
         BRCLR   >EventSparkFlags,Z,#$10,L14B8E
         BRCLR   >EventSparkFlags,Z,#$04,L14B62
@@ -7142,10 +7142,10 @@ L14D00:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14D02 ($14D02)
+; HighSpeedSparkFlag ($14D02)
 ; Called from: Sub_14000
 ;---------------------------------------------------------------------------------------------------
-Sub_14D02:
+HighSpeedSparkFlag:
         LDAA    >VehicleSpeedCoarse,Z
         CMPA    >HighSpeedSparkOn
         BCC     L14D18
@@ -7175,7 +7175,7 @@ Sub_14D34:
         BRSET   >PORTGP,Z,#$80,L14D50
         LDX     #$8428
         LDY     #$81F0
-        JSR     Sub_0E616
+        JSR     PeriodChangeTrack
         BRA     L14D6C
 L14D50:
         LDAA    $0425,Z
@@ -7193,10 +7193,10 @@ L14D6C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14D72 ($14D72)
+; SurgeControl ($14D72)
 ; Called from: Reset, Sub_14000
 ;---------------------------------------------------------------------------------------------------
-Sub_14D72:
+SurgeControl:
         CLRB
         BRCLR   >Options0337,#$04,L15002
         BRCLR   >SparkFlags,Z,#$20,L15002
@@ -7529,10 +7529,10 @@ L1512A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_15144 ($15144)
+; SparkStartTimer ($15144)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_15144:
+SparkStartTimer:
         CLRA
         BRCLR   >EngineStateFlags,Z,#$80,L15154
         LDAA    >SparkStartTime,Z
@@ -7561,7 +7561,7 @@ Sub_15168:
         STD     <MisfireWork,Z
         BRSET   $03AF,Z,#$02,L151FC
         BRSET   >SparkFaultFlags,Z,#$20,L151FC
-        JSR     Sub_1479C
+        JSR     AcSparkRate
         LDAB    >AcSpark,Z
         SXT
         STD     <Temp4F2,Z
@@ -7860,10 +7860,10 @@ L15454:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_15456 ($15456)
+; KnockRetardMaxCalc ($15456)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_15456:
+KnockRetardMaxCalc:
         LDAA    >CoolantTemp,Z
         CMPA    >KnockCoolantMin
         BCS     L15488
@@ -7890,10 +7890,10 @@ L15490:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_15496 ($15496)
+; KnockRpmBand ($15496)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_15496:
+KnockRpmBand:
         CLR     $01F6,Z
         CLRB
         TBXK
@@ -7954,10 +7954,10 @@ L1551A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1551C ($1551C)
+; KnockThresholdCalc ($1551C)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1551C:
+KnockThresholdCalc:
         LDAB    #$00
         TBXK
         LDX     #$1C8D
@@ -8039,10 +8039,10 @@ Sub_1558C:
         dc.b    $01,$00,$02,$03,$00,$02,$03,$01,$05,$00,$01,$02,$03,$04
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_155EC ($155EC)
+; KnockSample ($155EC)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_155EC:
+KnockSample:
         BRCLR   $031F,#$C0,L1575C
 L155F2:
         BRCLR   >ADCSTAT_L,Z,#$04,L155F2
@@ -8170,10 +8170,10 @@ L1575C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1575E ($1575E)
+; O2UpdateUpstream ($1575E)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_1575E:
+O2UpdateUpstream:
         BRCLR   $031F,#$C0,L158B0
         LDE     >RefPeriod,Z
         CPE     #$3C00
@@ -9188,25 +9188,25 @@ L161EE:
         JMP     $15968,X
 L16216:
         LDX     #$414E
-        JSR     Sub_0E888
+        JSR     CollectBits
         JMP     Sub_1610A
 L16222:
         LDX     #$418E
-        JSR     Sub_0E888
+        JSR     CollectBits
         EORA    #$20
         JMP     Sub_1610A
 L16230:
         LDX     #$41AE
-        JSR     Sub_0E888
+        JSR     CollectBits
         EORA    #$10
         JMP     Sub_1610A
 L1623E:
         LDX     #$416E
-        JSR     Sub_0E888
+        JSR     CollectBits
         JMP     Sub_1610A
 L1624A:
         LDX     #$41CE
-        JSR     Sub_0E888
+        JSR     CollectBits
         JMP     Sub_1610A
 L16256:
         BSET    >DiagFlags,Z,#$40
@@ -10438,7 +10438,7 @@ L16EDA:
 ;---------------------------------------------------------------------------------------------------
 Sub_16EDC:
         LDX     #$428E
-        JSR     Sub_0E888
+        JSR     CollectBits
         STAA    $02EE,Z
         RTS
         dc.b    $27,$4C,$80,$40,$20,$10,$08,$04,$02,$01,$00,$00,$00,$00,$35,$A8
@@ -11679,7 +11679,7 @@ L17C34:
 L17C44:
         LBRA    L17DB8
 L17C48:
-        LDAA    $0282,Z
+        LDAA    >LoadValueObd,Z
         LBRA    L17DAE
 L17C50:
         LDAA    >CoolantRaw,Z
@@ -13198,10 +13198,10 @@ L18D2A:
 L18D34:
         BRA     L18D4A
 L18D36:
-        JSR     Sub_0A27C
-        JSR     Sub_0A2C0
-        JSR     Sub_0A29E
-        JSR     Sub_0A2DE
+        JSR     O2MemClearLeanBank1
+        JSR     O2MemClearRichBank1
+        JSR     O2MemClearLeanBank2
+        JSR     O2MemClearRichBank2
         BCLR    >ClosedLoopMonFlags,Z,#$80
 L18D4A:
         RTS
@@ -14060,7 +14060,7 @@ Sub_196A2:
         AIS     #$FE
         TSY
         LDX     #$422E
-        JSR     Sub_0E888
+        JSR     CollectBits
         BRCLR   >EquipmentFlags,Z,#$40,L196D6
         BRSET   >EngineStateFlags,Z,#$80,L196C2
         TST     >Count3s,Z
@@ -14092,7 +14092,7 @@ L196F8:
 L19700:
         STAA    $01,Y
         LDX     #$424E
-        JSR     Sub_0E888
+        JSR     CollectBits
         BRCLR   >EquipmentFlags,Z,#$40,L19726
         BRSET   >EngineStateFlags,Z,#$80,L1971E
         LDAA    >Count3s,Z
@@ -14110,7 +14110,7 @@ L1972C:
         LDAA    #$EC
         STAA    $043F,Z
         LDX     #$41EE
-        JSR     Sub_0E888
+        JSR     CollectBits
         BRCLR   $0175,Z,#$06,L19742
         ORAA    #$80
 L19742:
@@ -14509,7 +14509,7 @@ L19AC8:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_19AE0 ($19AE0)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 Sub_19AE0:
         TST     $01BB,Z
@@ -14568,7 +14568,7 @@ L19B6C:
         BRSET   $D2,Z,#$08,L19B92
         BSET    $D2,Z,#$08
         LDX     #$F0CE
-        JSR     Sub_1F99E
+        JSR     FuelSysConditions2
 L19B92:
         CLR     $01BD,Z
 L19B96:
@@ -14621,7 +14621,7 @@ L19C12:
         BRSET   $D2,Z,#$08,L19C6A
         BSET    $D2,Z,#$08
         LDX     #$F0CE
-        JSR     Sub_1F99E
+        JSR     FuelSysConditions2
         BRA     L19C6A
 L19C3C:
         BRSET   $CF,Z,#$80,L19C6A
@@ -14649,7 +14649,7 @@ L19C72:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_19C74 ($19C74)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 Sub_19C74:
         TST     $01C0,Z
@@ -14708,7 +14708,7 @@ L19D06:
         BRSET   $D6,Z,#$08,L19D2C
         BSET    $D6,Z,#$08
         LDX     #$F0E2
-        JSR     Sub_1F99E
+        JSR     FuelSysConditions2
 L19D2C:
         CLR     $01BF,Z
 L19D30:
@@ -14762,7 +14762,7 @@ L19DB8:
         BRSET   $D6,Z,#$08,L19E10
         BSET    $D6,Z,#$08
         LDX     #$F0E2
-        JSR     Sub_1F99E
+        JSR     FuelSysConditions2
         BRA     L19E10
 L19DE2:
         BRSET   $D3,Z,#$80,L19E10
@@ -14790,7 +14790,7 @@ L19E18:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_19E1A ($19E1A)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 Sub_19E1A:
         BRCLR   <DiagStatusFlags,Z,#$01,L19E2E
@@ -14832,7 +14832,7 @@ L19E78:
         BRSET   $CA,Z,#$08,L19EA0
         BSET    $CA,Z,#$08
         LDX     #$F0A6
-        JSR     Sub_1F99E
+        JSR     FuelSysConditions2
 L19EA0:
         CLR     $01BC,Z
 L19EA4:
@@ -14875,7 +14875,7 @@ L19EFE:
         BRSET   $CA,Z,#$08,L19F56
         BSET    $CA,Z,#$08
         LDX     #$F0A6
-        JSR     Sub_1F99E
+        JSR     FuelSysConditions2
         BRA     L19F56
 L19F28:
         BRSET   $C7,Z,#$80,L19F56
@@ -14903,7 +14903,7 @@ L19F5E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_19F60 ($19F60)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 Sub_19F60:
         BRCLR   <DiagStatusFlags,Z,#$01,L19F74
@@ -14945,7 +14945,7 @@ L19FBE:
         BRSET   $CE,Z,#$08,L19FE6
         BSET    $CE,Z,#$08
         LDX     #$F0BA
-        JSR     Sub_1F99E
+        JSR     FuelSysConditions2
 L19FE6:
         CLR     $01BE,Z
 L19FEA:
@@ -14988,7 +14988,7 @@ L1A044:
         BRSET   $CE,Z,#$08,L1A09C
         BSET    $CE,Z,#$08
         LDX     #$F0BA
-        JSR     Sub_1F99E
+        JSR     FuelSysConditions2
         BRA     L1A09C
 L1A06E:
         BRSET   $CB,Z,#$80,L1A09C
@@ -15062,7 +15062,7 @@ Sub_1A17E:
         CLRB
         TBYK
         LDY     #$2DA8
-        JSR     Sub_1F9DA
+        JSR     ConditionTable
         BEQ     L1A19E
         BSET    $C0,Z,#$02
         BRA     L1A1A2
@@ -15070,7 +15070,7 @@ L1A19E:
         BCLR    $C0,Z,#$02
 L1A1A2:
         LDY     #$2D6B
-        JSR     Sub_1F9DA
+        JSR     ConditionTable
         BEQ     L1A1B2
         BSET    $C0,Z,#$01
         BRA     L1A20E
@@ -15174,7 +15174,7 @@ L1A2F8:
         BSETW   $0812,Z,#$4000
         BCLRW   $0812,Z,#$2000
         LDX     #$BF53
-        JSR     Sub_0E822
+        JSR     PowerInputHold
         BCC     L1A312
         LBRA    L1A452
 L1A312:
@@ -15307,7 +15307,7 @@ L1A44E:
         STAB    $B7,Z
 L1A452:
         LDX     #$BF53
-        JSR     Sub_0E822
+        JSR     PowerInputHold
         ORP     #$00E0
         RTS
 
@@ -15363,7 +15363,7 @@ L1A4C6:
         STAB    $0312,Z
         BSETW   $0812,Z,#$2000
         LDX     #$0476
-        JSR     Sub_0E822
+        JSR     PowerInputHold
         LDAA    >PORTC,Z
         ORAA    #$07
         ANDA    #$F8
@@ -15751,7 +15751,7 @@ L1A850:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeFlowTest ($1A852)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 PurgeFlowTest:
         BRCLR   $032B,#$28,L1AD40
@@ -16208,7 +16208,7 @@ L1ADA4:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1AE20 ($1AE20)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 Sub_1AE20:
         PSHM    X,Y,K
@@ -16217,7 +16217,7 @@ Sub_1AE20:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2IdleMonitor ($1AE28)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 O2IdleMonitor:
         PSHM    X,Y,K
@@ -17105,7 +17105,7 @@ L1B770:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1B772 ($1B772)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 Sub_1B772:
         BRCLR   $0200,Z,#$80,L1B956
@@ -17310,7 +17310,7 @@ L1B9A4:
 
 ;---------------------------------------------------------------------------------------------------
 ; CatMonSwitchRatio ($1B9A6)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 CatMonSwitchRatio:
         BRCLR   $0201,Z,#$80,L1BB90
@@ -18030,12 +18030,12 @@ L1C0F8:
 L1C104:
         BCLR    >MisfireFlags2,Z,#$02
         LDY     #$3059
-        JSR     Sub_1F9DA
+        JSR     ConditionTable
         BEQ     L1C116
         BSET    >MisfireFlags2,Z,#$02
 L1C116:
         LDY     #$301C
-        JSR     Sub_1F9DA
+        JSR     ConditionTable
         BEQ     L1C126
         BSET    >MisfireFlags2,Z,#$01
         BRA     L1C12E
@@ -18221,7 +18221,7 @@ L1C2D4:
         BNE     L1C2F0
         BSET    <MonRecordB7,Z,#$10
         LDX     #$F0F6
-        JSR     Sub_1F99E
+        JSR     FuelSysConditions2
 L1C2F0:
         BRA     L1C30E
 L1C2F2:
@@ -20121,12 +20121,12 @@ L1D77C:
         STAA    >O2ActiveFlags,Z
 L1D794:
         BRCLR   $0168,Z,#$01,L1D7A8
-        JSR     Sub_0A27C
+        JSR     O2MemClearLeanBank1
         BRCLR   $016C,Z,#$02,L1D7A8
         BCLR    >O2ActiveFlags,Z,#$CC
 L1D7A8:
         BRCLR   $016C,Z,#$02,L1D7B2
-        JSR     Sub_0A29E
+        JSR     O2MemClearLeanBank2
 L1D7B2:
         BCLRW   $0812,Z,#$6000
         LDAA    $0193,Z
@@ -20188,14 +20188,14 @@ L1D86C:
         BRCLR   >FaultSet06,Z,#$40,L1D892
         BRCLR   >O2ActiveFlags,Z,#$08,L1D892
         BCLR    >O2ActiveFlags,Z,#$08
-        JSR     Sub_0A27C
+        JSR     O2MemClearLeanBank1
         BRCLR   $016C,Z,#$04,L1D892
         BCLR    >O2ActiveFlags,Z,#$CC
 L1D892:
         BRCLR   $016C,Z,#$04,L1D8A6
         BRCLR   >O2ActiveFlags,Z,#$04,L1D8A6
         BCLR    >O2ActiveFlags,Z,#$04
-        JSR     Sub_0A29E
+        JSR     O2MemClearLeanBank2
 L1D8A6:
         RTS
 
@@ -21029,7 +21029,7 @@ L1E1C4:
 ;---------------------------------------------------------------------------------------------------
 Sub_1E1CA:
         LDX     #$4312
-        JSR     Sub_0E888
+        JSR     CollectBits
         STAA    >SensorFaultFlags,Z
         RTS
 
@@ -21604,7 +21604,7 @@ L1E72C:
         LDAB    $00,Y
         LDAA    $03,Y
         ANDA    #$07
-        JSR     Sub_1F904
+        JSR     FreezeFrameCapture
         LDAA    $00,Y
         CMPA    $3A8A
         BEQ     L1E75C
@@ -21675,7 +21675,7 @@ Sub_1E7A8:
 
 ;---------------------------------------------------------------------------------------------------
 ; LdpMonitor ($1E7C2)
-; Called from: Sub_1FC1A
+; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 LdpMonitor:
         BRCLR   $032C,#$80,L1ED84
@@ -22506,7 +22506,7 @@ L1F1F2:
         CLRB
         TBYK
         LDY     $08,X
-        LBSR    Sub_1F9DA
+        LBSR    ConditionTable
         BEQ     L1F20E
         LDY     $01F6,Z
         TZKB
@@ -22518,12 +22518,12 @@ L1F20E:
         LDAA    <DiagStatusFlags,Z
         ANDA    #$FC
         LDY     $0A,X
-        LBSR    Sub_1F9DA
+        LBSR    ConditionTable
         BEQ     L1F21C
         ORAA    #$01
 L1F21C:
         LDY     $0C,X
-        LBSR    Sub_1F9DA
+        LBSR    ConditionTable
         BEQ     L1F226
         ORAA    #$02
 L1F226:
@@ -22532,7 +22532,7 @@ L1F226:
         TZKB
         TBYK
 L1F230:
-        LBSR    Sub_1FC1A
+        LBSR    ObdRunMonitors
         BRCLR   $0000,Y,#$40,L1F242
         LBSR    Sub_1FA50
         BSET    $00,Y,#$02
@@ -22588,10 +22588,10 @@ L1F29E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F2A2 ($1F2A2)
+; ObdRecordClear ($1F2A2)
 ; Called from: Sub_1FC68, Sub_1FE52
 ;---------------------------------------------------------------------------------------------------
-Sub_1F2A2:
+ObdRecordClear:
         PSHM    D,E,Y,K
         TPD
         TBYK
@@ -22815,10 +22815,10 @@ Sub_1F4A8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F4C8 ($1F4C8)
+; CalcLoadValue ($1F4C8)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1F4C8:
+CalcLoadValue:
         PSHM    D,E,X
         LDAA    <ScratchC,Z
         LDAB    >RevLimit
@@ -22838,8 +22838,8 @@ L1F4DA:
         BEQ     L1F4F8
         LDAB    #$FF
 L1F4F8:
-        STAB    $0418,Z
-        STAB    $0282,Z
+        STAB    >LoadValue,Z
+        STAB    >LoadValueObd,Z
         PULM    X,E,D
         RTS
 
@@ -23283,10 +23283,10 @@ L1F902:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F904 ($1F904)
+; FreezeFrameCapture ($1F904)
 ; Called from: ReportFault, Sub_1FA50 (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1F904:
+FreezeFrameCapture:
         PSHM    X,Y,K
         CMPA    #$05
         LBCC    L1F99A
@@ -23316,7 +23316,7 @@ L1F93A:
         JSR     Sub_1224E
         STAA    <FreezeFrame0A,Z
 L1F94A:
-        LDAB    $0418,Z
+        LDAB    >LoadValue,Z
         STAB    <FreezeFrame04,Z
         LDAA    $0410,Z
         STAA    <FreezeFrame02,Z
@@ -23346,10 +23346,10 @@ L1F99A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F99E ($1F99E)
+; FuelSysConditions2 ($1F99E)
 ; Called from: Sub_19AE0, Sub_19C74, Sub_19E1A, Sub_19F60, Sub_1C166 (9 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1F99E:
+FuelSysConditions2:
         PSHM    D,E,Y,K
         TPD
         TBYK
@@ -23375,10 +23375,10 @@ L1F9D4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F9DA ($1F9DA)
+; ConditionTable ($1F9DA)
 ; Called from: Sub_1A17E, Sub_1C0C4, Sub_1F16E (7 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1F9DA:
+ConditionTable:
         PSHM    D,E,X,K
         TPD
         TBXK
@@ -23400,13 +23400,13 @@ L1F9EE:
         LDX     $00,X
         JMP     $1FA06,X
 JumpTable_1FA06:
-        JSR     Sub_1FA34
+        JSR     ConditionBitSet
         BRA     L1FA1C
 L1FA0C:
-        JSR     Sub_1FA38
+        JSR     ConditionBitsClear
         BRA     L1FA1C
 L1FA12:
-        JSR     Sub_1FA3E
+        JSR     ConditionAbove
         BRA     L1FA1C
         dc.b    $FA,$01,$FA,$44
 L1FA1C:
@@ -23421,27 +23421,27 @@ L1FA28:
         dc.b    $00,$00,$00,$06,$00,$0C,$00,$12
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1FA34 ($1FA34)
-; Called from: Sub_1F9DA
+; ConditionBitSet ($1FA34)
+; Called from: ConditionTable
 ;---------------------------------------------------------------------------------------------------
-Sub_1FA34:
+ConditionBitSet:
         BITA    $03,Y
         BRA     L1FA4E
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1FA38 ($1FA38)
-; Called from: Sub_1F9DA
+; ConditionBitsClear ($1FA38)
+; Called from: ConditionTable
 ;---------------------------------------------------------------------------------------------------
-Sub_1FA38:
+ConditionBitsClear:
         ANDA    $03,Y
         EORA    $03,Y
         BRA     L1FA4E
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1FA3E ($1FA3E)
-; Called from: Sub_1F9DA
+; ConditionAbove ($1FA3E)
+; Called from: ConditionTable
 ;---------------------------------------------------------------------------------------------------
-Sub_1FA3E:
+ConditionAbove:
         CMPA    $03,Y
         BHI     L1FA48
         BRA     L1FA4C
@@ -23502,7 +23502,7 @@ L1FAC8:
         BRSET   $01F4,Z,#$80,L1FADE
         LDAA    #$01
 L1FADE:
-        LBSR    Sub_1F904
+        LBSR    FreezeFrameCapture
         BRCLR   $01F4,Z,#$40,L1FC0A
 L1FAE8:
         BRCLR   $0000,Y,#$01,L1FC0A
@@ -23560,7 +23560,7 @@ L1FB4E:
 L1FB86:
         LDAB    $01F5,Z
         STAB    <FreezeFrameFault,Z
-        LBSR    Sub_1F904
+        LBSR    FreezeFrameCapture
         BRA     L1FC0A
 L1FB92:
         BRSET   <DiagStatusFlags,Z,#$04,L1FBEE
@@ -23621,10 +23621,10 @@ L1FC18:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1FC1A ($1FC1A)
+; ObdRunMonitors ($1FC1A)
 ; Called from: Sub_1F16E
 ;---------------------------------------------------------------------------------------------------
-Sub_1FC1A:
+ObdRunMonitors:
         PSHM    D,E,X,Y,K
         LDY     $00,X
         JMP     $1FC22,Y
@@ -23716,7 +23716,7 @@ L1FCC6:
         LDD     >IacBase,Z
         ANDA    #$EF
         STD     >IacBase,Z
-        LBSR    Sub_1F2A2
+        LBSR    ObdRecordClear
 L1FCD4:
         LDD     >IacBase,Z
         LDE     $01F2,Z
@@ -23838,10 +23838,10 @@ Sub_1FD26:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1FE30 ($1FE30)
+; ObdClearRecordBits ($1FE30)
 ; Called from: Sub_11C72
 ;---------------------------------------------------------------------------------------------------
-Sub_1FE30:
+ObdClearRecordBits:
         TPD
         TBXK
         LDX     #$F006
@@ -23955,7 +23955,7 @@ L1FF0A:
         PULM    K,Y
         BITA    #$02
         BNE     L1FF38
-        LBSR    Sub_1F2A2
+        LBSR    ObdRecordClear
         BCLR    $00,Y,#$10
         CLR     $012F,Z
 L1FF38:

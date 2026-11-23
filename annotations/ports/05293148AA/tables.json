@@ -130,7 +130,7 @@
   "06AB": {
    "name": "SurgeMapScale",
    "category": "Spark",
-   "desc": "Driveline surge spark control (Sub_1DEDC): MAP to row position ($F6,Z, $0D39,Z)",
+   "desc": "Driveline surge spark control (SurgeControl): MAP to row position ($F6,Z, $0D39,Z)",
    "x": "kpa",
    "y": "pos256",
    "auto": false
@@ -284,7 +284,7 @@
   "08AA": {
    "name": "InjectionModeRpmFactor",
    "category": "Fuel",
-   "desc": "Factor against rpm on the bank pulse ($0780,Z / $0782,Z) during the change of injection mode in Sub_112A8",
+   "desc": "Factor against rpm on the bank pulse ($0780,Z / $0782,Z) during the change of injection mode in FuelEventSchedule",
    "x": "rpm32",
    "y": "mult256",
    "auto": false
@@ -443,7 +443,7 @@
   "13B9": {
    "name": "O2StartDelayCoolant",
    "category": "Closed loop",
-   "desc": "Closed-loop entry (Sub_14740): delay against coolant (plus $323D with an O2 fault flag)",
+   "desc": "Closed-loop entry (O2StartDelays): delay against coolant (plus $323D with an O2 fault flag)",
    "x": "tempc",
    "y": "raw",
    "auto": false
@@ -1589,7 +1589,7 @@
   },
   "0336": {
    "name": "Options033F",
-   "desc": "Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in Sub_20E1E and Sub_28D78",
+   "desc": "Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in ObdReadiness and Sub_28D78",
    "category": "Options",
    "size": 1
   },
@@ -1702,7 +1702,7 @@
   },
   "04B4": {
    "name": "IacHotCoolantMin",
-   "desc": "Coolant above which the hot-engine IAC handling of Sub_19808 applies",
+   "desc": "Coolant above which the hot-engine IAC handling of IdleTargetControl applies",
    "unit": "tempc",
    "size": 1,
    "category": "Idle"
@@ -1728,21 +1728,21 @@
   },
   "0506": {
    "name": "IacLowRpm",
-   "desc": "Segment rpm below which the low-rpm branch of Sub_19808 applies",
+   "desc": "Segment rpm below which the low-rpm branch of IdleTargetControl applies",
    "unit": "rpmw",
    "size": 2,
    "category": "Idle"
   },
   "0508": {
    "name": "AcCutRpmLow",
-   "desc": "A/C logic: engine rpm limit used in Sub_19808 and Sub_39412 (FF00 = off)",
+   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and Sub_39412 (FF00 = off)",
    "unit": "rpmw",
    "size": 2,
    "category": "A/C"
   },
   "050A": {
    "name": "IacStartTimeMin",
-   "desc": "Time since start before the event logic of Sub_19808 runs",
+   "desc": "Time since start before the event logic of IdleTargetControl runs",
    "size": 1,
    "category": "Idle"
   },
@@ -1784,7 +1784,7 @@
   },
   "0754": {
    "name": "FuelEventColdOffset",
-   "desc": "Per-event fuel (Sub_12680): value minus 110 gives the cold correction step",
+   "desc": "Per-event fuel (FuelEventCalc): value minus 110 gives the cold correction step",
    "size": 1,
    "category": "Fuel"
   },
@@ -1889,7 +1889,7 @@
   },
   "0872": {
    "name": "EventCellRpmLowCold",
-   "desc": "Per-event hold cells (SelectCell3x3 from Sub_12B6C), cold (coolant below EventCellCoolantMin): rpm between low and middle cells; the 3x3 hold values are at $0BAE",
+   "desc": "Per-event hold cells (SelectCell3x3 from EventCellSelect), cold (coolant below EventCellCoolantMin): rpm between low and middle cells; the 3x3 hold values are at $0BAE",
    "unit": "rpmw",
    "category": "Other",
    "size": 2
@@ -1979,7 +1979,7 @@
   },
   "0B48": {
    "name": "DecelRampStart",
-   "desc": "Decel fuel reduction (Sub_104AE): starts when the drop sum is at or below this value",
+   "desc": "Decel fuel reduction (DecelFuelRampControl): starts when the drop sum is at or below this value",
    "size": 1,
    "category": "Fuel"
   },
@@ -2148,7 +2148,7 @@
   },
   "11F8": {
    "name": "FuelPulseMode",
-   "desc": "Fuel pulse output mode; 11 selects the second branch of Sub_1202A",
+   "desc": "Fuel pulse output mode; 11 selects the second branch of InputFilters",
    "size": 1,
    "category": "Fuel"
   },
@@ -2283,7 +2283,7 @@
   },
   "13B7": {
    "name": "O2ColdLeanRaw",
-   "desc": "Cold-start O2 logic: bank 1 upstream O2 at or below this value counts as lean ($07B9,Z; also Sub_18D42)",
+   "desc": "Cold-start O2 logic: bank 1 upstream O2 at or below this value counts as lean ($07B9,Z; also FlexColdLeanCount)",
    "category": "Closed loop",
    "size": 1
   },
@@ -2320,7 +2320,7 @@
   },
   "143F": {
    "name": "O2CellRpmLow",
-   "desc": "Adaptive trim cells (SelectCell3x3 from Sub_1430C): engine rpm between the low and middle cells",
+   "desc": "Adaptive trim cells (SelectCell3x3 from O2CellSelect3x3): engine rpm between the low and middle cells",
    "unit": "rpmw",
    "category": "Closed loop",
    "size": 2
@@ -2434,7 +2434,7 @@
   },
   "14E7": {
    "name": "O2ColdLeanCount",
-   "desc": "Cold-start O2 logic: lean counts before the cold trim of the bank is reduced (also Sub_18D42)",
+   "desc": "Cold-start O2 logic: lean counts before the cold trim of the bank is reduced (also FlexColdLeanCount)",
    "category": "Closed loop",
    "size": 1
   },
@@ -2496,7 +2496,7 @@
   },
   "150D": {
    "name": "O2StepPeriod",
-   "desc": "Sub_1424C: count $0759,Z that wraps at this value (O2 step timing)",
+   "desc": "O2UpdateUpstream: count $0759,Z that wraps at this value (O2 step timing)",
    "category": "Closed loop",
    "size": 1
   },
@@ -2731,13 +2731,13 @@
   },
   "1563": {
    "name": "O2PostFuelHold",
-   "desc": "Sub_158B6: value loaded into $0750,Z (0 = off)",
+   "desc": "O2PostFuelCheck: value loaded into $0750,Z (0 = off)",
    "category": "Closed loop",
    "size": 1
   },
   "1564": {
    "name": "O2AccelFuelMax",
-   "desc": "Sub_158B6: accel fuel ($07C8,Z) and tip-in fuel below this value (word)",
+   "desc": "O2PostFuelCheck: accel fuel ($07C8,Z) and tip-in fuel below this value (word)",
    "category": "Closed loop",
    "size": 2
   },
@@ -2756,14 +2756,14 @@
   },
   "161E": {
    "name": "RevLimit",
-   "desc": "Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral)",
+   "desc": "Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral); also scales the calculated load with baro (CalcLoadValue)",
    "size": 1,
    "unit": "rpm32",
    "category": "Fuel"
   },
   "1620": {
    "name": "RevLimitAlt",
-   "desc": "Rev limit, used while $0C31,Z bit 5 is clear",
+   "desc": "Rev limit, used while $0C31,Z bit 5 is clear; also scales the calculated load with baro (CalcLoadValue)",
    "size": 1,
    "unit": "rpm32",
    "category": "Fuel"
@@ -2867,7 +2867,7 @@
   },
   "1755": {
    "name": "FlexSoakCoolantMax",
-   "desc": "Sub_17FC4: start coolant below this value (and at or above SoakStartCoolantMin) clears $01B8,Z",
+   "desc": "FlexLearnInitRun: start coolant below this value (and at or above SoakStartCoolantMin) clears $01B8,Z",
    "unit": "tempc",
    "category": "Fuel",
    "size": 1
@@ -2880,7 +2880,7 @@
   },
   "1757": {
    "name": "PurgeCellRichMax2",
-   "desc": "As PurgeCellRichMax1 for PurgeCell2 ($0080,Z bit 4; also Sub_17A1C)",
+   "desc": "As PurgeCellRichMax1 for PurgeCell2 ($0080,Z bit 4; also FlexPurgeRichCheck)",
    "category": "EVAP purge",
    "size": 1
   },
@@ -2898,7 +2898,7 @@
   },
   "175A": {
    "name": "PurgeCellRichHyst2",
-   "desc": "As PurgeCellRichHyst1 for PurgeCell2 (also Sub_17A1C)",
+   "desc": "As PurgeCellRichHyst1 for PurgeCell2 (also FlexPurgeRichCheck)",
    "category": "EVAP purge",
    "size": 1
   },
@@ -2941,7 +2941,7 @@
   },
   "1A7C": {
    "name": "AfterStartSparkEvents",
-   "desc": "After-start spark retard (Sub_1D448): crank events ($076D,Z) before the retard starts",
+   "desc": "After-start spark retard (AfterStartSpark): crank events ($076D,Z) before the retard starts",
    "category": "Spark",
    "size": 1
   },
@@ -3259,13 +3259,13 @@
   },
   "1FCC": {
    "name": "KnockLearnDecay",
-   "desc": "Knock learning (Sub_1F2E0): decrease of the learned value at the first timed-spark pass",
+   "desc": "Knock learning (KnockLearnDecayFlag): decrease of the learned value at the first timed-spark pass",
    "category": "Knock",
    "size": 1
   },
   "1FCD": {
    "name": "KnockDecayMask",
-   "desc": "Knock events (Sub_1F194): mask tested before the event count is reduced",
+   "desc": "Knock events (KnockEventDecayStep): mask tested before the event count is reduced",
    "category": "Knock",
    "size": 1
   },
@@ -3295,7 +3295,7 @@
   },
   "1FD2": {
    "name": "KnockBandMapBase",
-   "desc": "Knock rpm bands (Sub_1F296): starting MAP value of the band search",
+   "desc": "Knock rpm bands (KnockRpmBand): starting MAP value of the band search",
    "unit": "kpa",
    "category": "Knock",
    "size": 1
@@ -3336,7 +3336,7 @@
   },
   "20D2": {
    "name": "SparkHookCoolantMin",
-   "desc": "Spark hook (Sub_1D15C, bit $0338.5): coolant at or above this value",
+   "desc": "Spark hook (SparkHook, bit $0338.5): coolant at or above this value",
    "unit": "tempc",
    "category": "Spark",
    "size": 1
@@ -3456,7 +3456,7 @@
   },
   "2301": {
    "name": "IacShiftStep",
-   "desc": "Gear-change IAC step (Sub_1AA32): step size, scaled by IacShiftBaroFactor",
+   "desc": "Gear-change IAC step (IacShiftStepApply): step size, scaled by IacShiftBaroFactor",
    "category": "Idle",
    "size": 1
   },
@@ -3492,7 +3492,7 @@
   },
   "2369": {
    "name": "IacAcKickFactor",
-   "desc": "A/C IAC kick (Sub_19808): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3)",
+   "desc": "A/C IAC kick (IdleTargetControl): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3)",
    "category": "Idle",
    "size": 1
   },
@@ -4497,7 +4497,7 @@
   },
   "2B85": {
    "name": "O2ColdTrimHeaterAdder",
-   "desc": "Cold-start O2 trim (Sub_14740): added to the start trim when a heater monitor status has bit 5 set",
+   "desc": "Cold-start O2 trim (O2StartDelays): added to the start trim when a heater monitor status has bit 5 set",
    "category": "Closed loop",
    "size": 1
   },
@@ -4756,7 +4756,7 @@
   },
   "417C": {
    "name": "KnockHighLoadValue",
-   "desc": "Knock (Sub_1F408, Options032F bit 1): value used above the knock MAP threshold",
+   "desc": "Knock (KnockSample, Options032F bit 1): value used above the knock MAP threshold",
    "category": "Knock",
    "size": 1
   },
@@ -4938,7 +4938,7 @@
   },
   "46B0": {
    "name": "FieldRpmMin",
-   "desc": "Generator field control (Sub_0EB62): engine rpm at which the field is enabled",
+   "desc": "Generator field control (FieldRampControl): engine rpm at which the field is enabled",
    "unit": "rpm32",
    "category": "Other",
    "size": 1

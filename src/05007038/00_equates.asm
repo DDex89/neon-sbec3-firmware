@@ -240,6 +240,7 @@ EventOption      equ $0301        ; $F8301
 MisfireHoldRpmValue equ $030C        ; $F830C
 LimpFlags        equ $0310        ; $F8310
 DiagBusFlags     equ $0316        ; $F8316
+LoadValueObd     equ $0323        ; $F8323
 MapRaw           equ $0324        ; $F8324
 LdpFlags         equ $0330        ; $F8330
 LdpState         equ $0331        ; $F8331
@@ -269,6 +270,7 @@ EgrMonPhaseTimer equ $0377        ; $F8377
 MonStatusBits1   equ $0385        ; $F8385
 MonStatusBits2   equ $0387        ; $F8387
 MonStatusBits3   equ $0389        ; $F8389
+LoadValue        equ $038B        ; $F838B
 CatTempFiltered  equ $038E        ; $F838E
 CatTempInputRaw  equ $038F        ; $F838F
 CatTempFaultCounter equ $0391        ; $F8391

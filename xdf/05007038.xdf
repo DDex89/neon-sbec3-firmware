@@ -17,14 +17,16 @@
   <CATEGORY index="0x7" name="Knock" />
   <CATEGORY index="0x8" name="Idle" />
   <CATEGORY index="0x9" name="Diagnostics" />
-  <CATEGORY index="0xA" name="Unidentified: Reset" />
-  <CATEGORY index="0xB" name="Closed loop" />
-  <CATEGORY index="0xC" name="Speed control" />
-  <CATEGORY index="0xD" name="Faults" />
-  <CATEGORY index="0xE" name="Options" />
-  <CATEGORY index="0xF" name="Cooling fan" />
-  <CATEGORY index="0x10" name="A/C" />
-  <CATEGORY index="0x11" name="EGR" />
+  <CATEGORY index="0xA" name="Unidentified: CrankFuel" />
+  <CATEGORY index="0xB" name="Unidentified: MapTpsFilters" />
+  <CATEGORY index="0xC" name="Unidentified: Reset" />
+  <CATEGORY index="0xD" name="Closed loop" />
+  <CATEGORY index="0xE" name="Speed control" />
+  <CATEGORY index="0xF" name="Faults" />
+  <CATEGORY index="0x10" name="Options" />
+  <CATEGORY index="0x11" name="Cooling fan" />
+  <CATEGORY index="0x12" name="A/C" />
+  <CATEGORY index="0x13" name="EGR" />
  </XDFHEADER>
  <XDFTABLE uniqueid="0x101" flags="0x0">
   <title>BaroUpdateMapOffset</title>
@@ -1180,7 +1182,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x121" flags="0x0">
   <title>SurgeMapScale</title>
-  <description>Driveline surge spark control (Sub_1DEDC): MAP to row position ($F6,Z, $0D39,Z) $06AB, 2D; inputs: Map</description>
+  <description>Driveline surge spark control (SurgeControl): MAP to row position ($F6,Z, $0D39,Z) $06AB, 2D; inputs: Map</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1730,6 +1732,7 @@
   <title>Tab2D_07C1</title>
   <description>$07C1, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="2" />
+  <CATEGORYMEM index="1" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -2200,7 +2203,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x13D" flags="0x0">
   <title>InjectionModeRpmFactor</title>
-  <description>Factor against rpm on the bank pulse ($0780,Z / $0782,Z) during the change of injection mode in Sub_112A8 $08AA, 2D; inputs: EngineRpm</description>
+  <description>Factor against rpm on the bank pulse ($0780,Z / $0782,Z) during the change of injection mode in FuelEventSchedule $08AA, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3334,6 +3337,7 @@
   <title>Tab2D_110C</title>
   <description>$110C, 2D; inputs: $0A,Z</description>
   <CATEGORYMEM index="0" category="2" />
+  <CATEGORYMEM index="1" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3622,7 +3626,7 @@
   <title>Tab2D_116F</title>
   <description>$116F, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="2" />
-  <CATEGORYMEM index="1" category="11" />
+  <CATEGORYMEM index="1" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3839,6 +3843,7 @@
   <title>Tab2D_121F</title>
   <description>$121F, 2D; inputs: $0A,Z</description>
   <CATEGORYMEM index="0" category="2" />
+  <CATEGORYMEM index="1" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -3911,7 +3916,7 @@
   <title>Tab2D_122F</title>
   <description>$122F, 2D; inputs: $0C,Z</description>
   <CATEGORYMEM index="0" category="2" />
-  <CATEGORYMEM index="1" category="11" />
+  <CATEGORYMEM index="1" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4268,8 +4273,8 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x173" flags="0x0">
   <title>O2StartDelayCoolant</title>
-  <description>Closed-loop entry (Sub_14740): delay against coolant (plus $323D with an O2 fault flag) $13B9, 2D; inputs: $0C,Z</description>
-  <CATEGORYMEM index="0" category="12" />
+  <description>Closed-loop entry (O2StartDelays): delay against coolant (plus $323D with an O2 fault flag) $13B9, 2D; inputs: $0C,Z</description>
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4305,7 +4310,7 @@
  <XDFTABLE uniqueid="0x174" flags="0x0">
   <title>O2PurgeLimit</title>
   <description>Closed loop: limit of $0752,Z against the purge ramp $042C,Z $13FC, 2D; inputs: PurgeRamp</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4341,7 +4346,7 @@
  <XDFTABLE uniqueid="0x175" flags="0x0">
   <title>O2VoltageScale</title>
   <description>Upstream O2 sensor ADC counts to the value used by closed loop and its monitor $141F, 2D; inputs: LDAA IND8, X; O2UpBank1; O2UpBank2</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4377,7 +4382,7 @@
  <XDFTABLE uniqueid="0x176" flags="0x0">
   <title>O2VoltageScale2</title>
   <description>Second copy of the O2 voltage scale (same values as O2VoltageScale) $142F, 2D; inputs: LDAA IND8, X</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -4413,7 +4418,7 @@
  <XDFTABLE uniqueid="0x177" flags="0x0">
   <title>O2StepScale</title>
   <description>Closed loop: trim step against the size of the O2 error $F3,Z (doubled while purge is active and duty is zero) $1566, 2D; inputs: Scratch3</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -10847,7 +10852,7 @@
  <XDFTABLE uniqueid="0x226" flags="0x0">
   <title>SpeedCtlOverrideThrottle</title>
   <description>Value $041E,Z against throttle above the level latched in $0420,Z (driver override) $267A, 2D; inputs: ThrottleAboveClosed</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -11987,7 +11992,7 @@
  <XDFTABLE uniqueid="0x244" flags="0x0">
   <title>FaultTable</title>
   <description>Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes $385F</description>
-  <CATEGORYMEM index="0" category="14" />
+  <CATEGORYMEM index="0" category="16" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>10</indexcount>
@@ -12855,7 +12860,7 @@
  <XDFCONSTANT uniqueid="0x256" flags="0x0">
   <title>Options032A</title>
   <description>Option byte; bit tests in the reference-event and spark code (bits 7-6: spark cap and ignition variants) $0323</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12867,119 +12872,119 @@
  <XDFFLAG uniqueid="0x257" flags="0x0">
   <title>Options032E bit $04</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $04</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x258" flags="0x0">
   <title>Options032E bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $08</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x259" flags="0x0">
   <title>Options032E bit $10</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $10</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25A" flags="0x0">
   <title>Options032E bit $20</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $20</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25B" flags="0x0">
   <title>Options032E bit $40 ManualTransmission</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $40</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25C" flags="0x0">
   <title>Options032E bit $80</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $80</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25D" flags="0x0">
   <title>Options032C bit $40 FlexFuelOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $40</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25E" flags="0x0">
   <title>Options032C bit $80</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $80</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25F" flags="0x0">
   <title>Options032D bit $02</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $02</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x260" flags="0x0">
   <title>Options032D bit $04</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $04</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x261" flags="0x0">
   <title>Options032D bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $08</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x262" flags="0x0">
   <title>Options032D bit $10</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $10</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x263" flags="0x0">
   <title>Options032D bit $18</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $18</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x18</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x264" flags="0x0">
   <title>Options032D bit $20 AcClutchLogicOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $20</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x265" flags="0x0">
   <title>Options032D bit $40</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $40</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x266" flags="0x0">
   <title>Options032D bit $80</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $80</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFCONSTANT uniqueid="0x267" flags="0x0">
   <title>Options032F</title>
   <description>Option byte; bit tests in the event, fuel and closed-loop code (bits 2-1: output timing set-up) $0329</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x329" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12991,98 +12996,98 @@
  <XDFFLAG uniqueid="0x268" flags="0x0">
   <title>Options0331 bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $08</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x269" flags="0x0">
   <title>Options0331 bit $10</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $10</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26A" flags="0x0">
   <title>Options0331 bit $20</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $20</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26B" flags="0x0">
   <title>Options0331 bit $40</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $40</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26C" flags="0x0">
   <title>Options0331 bit $80 AcPressureSensor</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $80</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26D" flags="0x0">
   <title>Options0335 bit $02</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $02</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26E" flags="0x0">
   <title>Options0335 bit $04 EgrSparkScaled</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $04</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26F" flags="0x0">
   <title>Options0335 bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $08</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x270" flags="0x0">
   <title>Options0335 bit $0C</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $0C</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x0C</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x271" flags="0x0">
   <title>Options0335 bit $10</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $10</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x272" flags="0x0">
   <title>Options0335 bit $20</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $20</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x273" flags="0x0">
   <title>Options0335 bit $40</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $40</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x274" flags="0x0">
   <title>Options0335 bit $80</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $80</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFCONSTANT uniqueid="0x275" flags="0x0">
   <title>Options0334</title>
   <description>Option byte (bit 4: output-compare set-up at reset and in the PIT code) $032D</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13094,203 +13099,203 @@
  <XDFFLAG uniqueid="0x276" flags="0x0">
   <title>Options0337 bit $01 IdleDipKickMode</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $01</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x277" flags="0x0">
   <title>Options0337 bit $02</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $02</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x278" flags="0x0">
   <title>Options0337 bit $04</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $04</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x279" flags="0x0">
   <title>Options0337 bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $08</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27A" flags="0x0">
   <title>Options0337 bit $10 SurgeSparkOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $10</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27B" flags="0x0">
   <title>Options0337 bit $20 SpeedLimitOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $20</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27C" flags="0x0">
   <title>Options0337 bit $40 SpeedDampOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $40</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27D" flags="0x0">
   <title>Options0337 bit $80 EventSparkOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $80</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27E" flags="0x0">
   <title>Options0338 bit $02 FieldControlAlt</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $02</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27F" flags="0x0">
   <title>Options0338 bit $04 FuelEventOffsetAlt</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $04</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x280" flags="0x0">
   <title>Options0338 bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $08</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x281" flags="0x0">
   <title>Options0338 bit $10</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $10</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x282" flags="0x0">
   <title>Options0338 bit $20</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $20</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x283" flags="0x0">
   <title>Options0338 bit $40</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $40</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x284" flags="0x0">
   <title>Options0338 bit $80</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $80</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x285" flags="0x0">
   <title>Options0339 bit $01 TipInRetardHold</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $01</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x286" flags="0x0">
   <title>Options0339 bit $02</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $02</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x287" flags="0x0">
   <title>Options0339 bit $04 PurgeDutyAltClosed</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $04</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x288" flags="0x0">
   <title>Options0339 bit $08 PurgeDutyAltOther</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $08</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x289" flags="0x0">
   <title>Options0339 bit $10</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $10</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28A" flags="0x0">
   <title>Options0339 bit $20</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $20</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28B" flags="0x0">
   <title>Options0339 bit $40</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $40</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28C" flags="0x0">
   <title>Options0339 bit $80</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $80</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28D" flags="0x0">
   <title>Options033A bit $01</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0331 mask $01</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x331" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28E" flags="0x0">
   <title>Options033A bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0331 mask $08</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x331" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28F" flags="0x0">
   <title>Options033A bit $10 AcSparkOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0331 mask $10</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x331" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x290" flags="0x0">
   <title>Options033A bit $40</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0331 mask $40</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x331" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x291" flags="0x0">
   <title>Options033A bit $80</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0331 mask $80</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x331" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFCONSTANT uniqueid="0x292" flags="0x0">
   <title>Options033E</title>
   <description>Option byte copied to $06B8,Z at reset; bit 1 selects branches in the start and closed-loop code $0335</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x335" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13301,8 +13306,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x293" flags="0x0">
   <title>Options033F</title>
-  <description>Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in Sub_20E1E and Sub_28D78 $0336</description>
-  <CATEGORYMEM index="0" category="15" />
+  <description>Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in ObdReadiness and Sub_28D78 $0336</description>
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x336" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13314,56 +13319,56 @@
  <XDFFLAG uniqueid="0x294" flags="0x0">
   <title>Options0340 bit $01</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $01</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x295" flags="0x0">
   <title>Options0340 bit $02</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $02</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x296" flags="0x0">
   <title>Options0340 bit $04</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $04</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x297" flags="0x0">
   <title>Options0340 bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $08</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x298" flags="0x0">
   <title>Options0340 bit $10</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $10</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x299" flags="0x0">
   <title>Options0340 bit $20</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $20</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x29A" flags="0x0">
   <title>Options0340 bit $40</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $40</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x29B" flags="0x0">
   <title>Options0340 bit $80</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $80</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
@@ -13406,7 +13411,7 @@
  <XDFCONSTANT uniqueid="0x29F" flags="0x0">
   <title>O2DecelHold</title>
   <description>Closed-loop timing: hold time ($0753,Z) after decel fuel cut or FuelModeFlags bit 5 $0363</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x363" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13478,7 +13483,7 @@
  <XDFCONSTANT uniqueid="0x2A5" flags="0x0">
   <title>FanAcSensorStage1</title>
   <description>Fan with A/C: A/C sensor at or above this value sets stage bit 1 $0486</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x486" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13490,7 +13495,7 @@
  <XDFCONSTANT uniqueid="0x2A6" flags="0x0">
   <title>FanAcSensorLow</title>
   <description>Fan with A/C: A/C sensor at or below this value starts the low-pressure delay $0487</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x487" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13502,7 +13507,7 @@
  <XDFCONSTANT uniqueid="0x2A7" flags="0x0">
   <title>FanAcSensorStage3</title>
   <description>Fan with A/C: A/C sensor at or above this value sets stage bit 3 $0488</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x488" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13514,7 +13519,7 @@
  <XDFCONSTANT uniqueid="0x2A8" flags="0x0">
   <title>FanAcSensorStage2</title>
   <description>Fan with A/C: A/C sensor above this value sets stage bit 2 $0489</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x489" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13526,7 +13531,7 @@
  <XDFCONSTANT uniqueid="0x2A9" flags="0x0">
   <title>FanBusTempStage1</title>
   <description>Fan: bus temperature at or above this value sets stage bit 1 $0496</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x496" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13538,7 +13543,7 @@
  <XDFCONSTANT uniqueid="0x2AA" flags="0x0">
   <title>FanBusTempStage0</title>
   <description>Fan: bus temperature above this value sets stage bit 0 $0497</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x497" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13550,7 +13555,7 @@
  <XDFCONSTANT uniqueid="0x2AB" flags="0x0">
   <title>FanBusTempStage3</title>
   <description>Fan: bus temperature at or above this value sets stage bit 3 $0498</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x498" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13562,7 +13567,7 @@
  <XDFCONSTANT uniqueid="0x2AC" flags="0x0">
   <title>FanBusTempStage2</title>
   <description>Fan: bus temperature above this value sets stage bit 2 $0499</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x499" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13574,7 +13579,7 @@
  <XDFCONSTANT uniqueid="0x2AD" flags="0x0">
   <title>FanStageDelay</title>
   <description>Fan stage change: delay ($0B01,Z) before the stage output changes $049A</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x49A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13586,7 +13591,7 @@
  <XDFCONSTANT uniqueid="0x2AE" flags="0x0">
   <title>FanStageDelay2</title>
   <description>Fan stage change: shorter delay $049B</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x49B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13598,7 +13603,7 @@
  <XDFCONSTANT uniqueid="0x2AF" flags="0x0">
   <title>FanIdleRpmMax</title>
   <description>Fan at idle (FanIdleState): engine rpm below this value $04B0</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x4B0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -13610,7 +13615,7 @@
  <XDFCONSTANT uniqueid="0x2B0" flags="0x0">
   <title>FanIdleBusTempMax</title>
   <description>Fan at idle: bus temperature below this value with A/C requested $04B2</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x4B2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13621,7 +13626,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2B1" flags="0x0">
   <title>IacHotCoolantMin</title>
-  <description>Coolant above which the hot-engine IAC handling of Sub_19808 applies $04B4</description>
+  <description>Coolant above which the hot-engine IAC handling of IdleTargetControl applies $04B4</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x4B4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -13634,7 +13639,7 @@
  <XDFCONSTANT uniqueid="0x2B2" flags="0x0">
   <title>FanIdleSpeedMax</title>
   <description>Fan idle state: vehicle speed at or below this value to enter the state $04B6</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x4B6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13645,7 +13650,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2B3" flags="0x0">
   <title>IacLowRpm</title>
-  <description>Segment rpm below which the low-rpm branch of Sub_19808 applies $0506</description>
+  <description>Segment rpm below which the low-rpm branch of IdleTargetControl applies $0506</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x506" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -13657,8 +13662,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2B4" flags="0x0">
   <title>AcCutRpmLow</title>
-  <description>A/C logic: engine rpm limit used in Sub_19808 and Sub_39412 (FF00 = off) $0508</description>
-  <CATEGORYMEM index="0" category="17" />
+  <description>A/C logic: engine rpm limit used in IdleTargetControl and Sub_39412 (FF00 = off) $0508</description>
+  <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x508" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -13669,7 +13674,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2B5" flags="0x0">
   <title>IacStartTimeMin</title>
-  <description>Time since start before the event logic of Sub_19808 runs $050A</description>
+  <description>Time since start before the event logic of IdleTargetControl runs $050A</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x50A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13753,7 +13758,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2BC" flags="0x0">
   <title>FuelEventColdOffset</title>
-  <description>Per-event fuel (Sub_12680): value minus 110 gives the cold correction step $0754</description>
+  <description>Per-event fuel (FuelEventCalc): value minus 110 gives the cold correction step $0754</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x754" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13933,7 +13938,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2CB" flags="0x0">
   <title>EventCellRpmLowCold</title>
-  <description>Per-event hold cells (SelectCell3x3 from Sub_12B6C), cold (coolant below EventCellCoolantMin): rpm between low and middle cells; the 3x3 hold values are at $0BAE $0872</description>
+  <description>Per-event hold cells (SelectCell3x3 from EventCellSelect), cold (coolant below EventCellCoolantMin): rpm between low and middle cells; the 3x3 hold values are at $0BAE $0872</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x872" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -14089,7 +14094,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D8" flags="0x0">
   <title>DecelRampStart</title>
-  <description>Decel fuel reduction (Sub_104AE): starts when the drop sum is at or below this value $0B48</description>
+  <description>Decel fuel reduction (DecelFuelRampControl): starts when the drop sum is at or below this value $0B48</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0xB48" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14294,7 +14299,7 @@
  <XDFCONSTANT uniqueid="0x2E9" flags="0x0">
   <title>AccelMapRiseOffset</title>
   <description>MAP acceleration fuel: MAP rise (MAP minus MapLast) above this offset counts $10E9</description>
-  <CATEGORYMEM index="0" category="17" />
+  <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x10E9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -14389,7 +14394,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F1" flags="0x0">
   <title>FuelPulseMode</title>
-  <description>Fuel pulse output mode; 11 selects the second branch of Sub_1202A $11F8</description>
+  <description>Fuel pulse output mode; 11 selects the second branch of InputFilters $11F8</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x11F8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14414,7 +14419,7 @@
  <XDFCONSTANT uniqueid="0x2F3" flags="0x0">
   <title>O2ColdCoolantMax</title>
   <description>Closed-loop manager: coolant below this value with cold enrichment ($07C3,Z) keeps open loop $11FA</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x11FA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -14450,7 +14455,7 @@
  <XDFCONSTANT uniqueid="0x2F6" flags="0x0">
   <title>O2ActiveHigh</title>
   <description>O2 sensor (upstream, both banks): raw value at or above this counts as switching high $13A5</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13A5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14462,7 +14467,7 @@
  <XDFCONSTANT uniqueid="0x2F7" flags="0x0">
   <title>O2ActiveLow</title>
   <description>O2 sensor (upstream): raw value below this marks the sensor as active ($075D,Z) $13A6</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13A6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14510,7 +14515,7 @@
  <XDFCONSTANT uniqueid="0x2FB" flags="0x0">
   <title>O2CrossCheckMax</title>
   <description>O2 cross-check (O2CrossCheck, Options0339 bit 6): first sensor reading at or below this value $13AC</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13AC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14522,7 +14527,7 @@
  <XDFCONSTANT uniqueid="0x2FC" flags="0x0">
   <title>O2CrossCheckMin</title>
   <description>O2 cross-check: second sensor reading at or above this value $13AD</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13AD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14534,7 +14539,7 @@
  <XDFCONSTANT uniqueid="0x2FD" flags="0x0">
   <title>O2CrossClearCount</title>
   <description>O2 cross-check: counts of the clear condition before the flag clears $13AE</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13AE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14546,7 +14551,7 @@
  <XDFCONSTANT uniqueid="0x2FE" flags="0x0">
   <title>O2CrossCheckCount</title>
   <description>O2 cross-check: counts of the condition before the bank flag in $017D,Z is set $13AF</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13AF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14558,7 +14563,7 @@
  <XDFCONSTANT uniqueid="0x2FF" flags="0x0">
   <title>O2CrossClearMin</title>
   <description>O2 cross-check: first sensor reading at or above which the flag clears $13B0</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13B0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14582,7 +14587,7 @@
  <XDFCONSTANT uniqueid="0x301" flags="0x0">
   <title>O2DecelHoldAlt</title>
   <description>Closed-loop timing (ClosedLoopTiming): hold time ($0753,Z) after decel fuel cut or the fuel mode flag, with $0770,Z bit 6 $13B2</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13B2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14594,7 +14599,7 @@
  <XDFCONSTANT uniqueid="0x302" flags="0x0">
   <title>O2ColdStartCoolant</title>
   <description>Closed loop: start coolant below which the cold-start delay additions apply $13B3</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13B3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -14606,7 +14611,7 @@
  <XDFCONSTANT uniqueid="0x303" flags="0x0">
   <title>O2ColdStartAdder</title>
   <description>Closed loop: addition to the entry delay after a cold start $13B4</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13B4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14618,7 +14623,7 @@
  <XDFCONSTANT uniqueid="0x304" flags="0x0">
   <title>O2ColdPurgeCount</title>
   <description>Cold-start O2 logic: purging counts ($07B8,Z) before the cold trims are reduced $13B5</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13B5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14630,7 +14635,7 @@
  <XDFCONSTANT uniqueid="0x305" flags="0x0">
   <title>O2ColdPurgeRampMin</title>
   <description>Cold-start O2 logic: purge ramp at or above this value (2 less once set) counts as purging $13B6</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13B6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14641,8 +14646,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x306" flags="0x0">
   <title>O2ColdLeanRaw</title>
-  <description>Cold-start O2 logic: bank 1 upstream O2 at or below this value counts as lean ($07B9,Z; also Sub_18D42) $13B7</description>
-  <CATEGORYMEM index="0" category="12" />
+  <description>Cold-start O2 logic: bank 1 upstream O2 at or below this value counts as lean ($07B9,Z; also FlexColdLeanCount) $13B7</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13B7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14654,7 +14659,7 @@
  <XDFCONSTANT uniqueid="0x307" flags="0x0">
   <title>O2ColdLeanRaw2</title>
   <description>Cold-start O2 logic: bank 2 upstream O2 at or below this value counts as lean ($07BA,Z) $13B8</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13B8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14666,7 +14671,7 @@
  <XDFCONSTANT uniqueid="0x308" flags="0x0">
   <title>O2NewMileageOpenMax</title>
   <description>Closed-loop manager: SRI mileage below this value (with $000D,Z zero) holds the integrators $13C9</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13C9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14690,7 +14695,7 @@
  <XDFCONSTANT uniqueid="0x30A" flags="0x0">
   <title>O2PurgeRampMin</title>
   <description>Closed loop: purge ramp at or above which the purge correction of the trim applies $13CB</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13CB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14702,7 +14707,7 @@
  <XDFCONSTANT uniqueid="0x30B" flags="0x0">
   <title>O2PurgeHoldTime</title>
   <description>Closed-loop manager: hold time ($075C,Z) after the purge ramp drops below O2PurgeRampMin $13CD</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x13CD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14713,8 +14718,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30C" flags="0x0">
   <title>O2CellRpmLow</title>
-  <description>Adaptive trim cells (SelectCell3x3 from Sub_1430C): engine rpm between the low and middle cells $143F</description>
-  <CATEGORYMEM index="0" category="12" />
+  <description>Adaptive trim cells (SelectCell3x3 from O2CellSelect3x3): engine rpm between the low and middle cells $143F</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x143F" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -14726,7 +14731,7 @@
  <XDFCONSTANT uniqueid="0x30D" flags="0x0">
   <title>O2CellRpmHigh</title>
   <description>Adaptive trim cells: engine rpm between the middle and high cells $1441</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1441" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -14738,7 +14743,7 @@
  <XDFCONSTANT uniqueid="0x30E" flags="0x0">
   <title>O2CellRpmHyst</title>
   <description>Adaptive trim cells: rpm hysteresis $1443</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1443" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -14750,7 +14755,7 @@
  <XDFCONSTANT uniqueid="0x30F" flags="0x0">
   <title>O2CellMapLow</title>
   <description>Adaptive trim cells: MAP between the low and middle cells $1445</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1445" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -14762,7 +14767,7 @@
  <XDFCONSTANT uniqueid="0x310" flags="0x0">
   <title>O2CellMapHigh</title>
   <description>Adaptive trim cells: MAP between the middle and high cells $1446</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1446" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -14774,7 +14779,7 @@
  <XDFCONSTANT uniqueid="0x311" flags="0x0">
   <title>O2CellMapHyst</title>
   <description>Adaptive trim cells: MAP hysteresis $1447</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1447" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -14786,7 +14791,7 @@
  <XDFCONSTANT uniqueid="0x312" flags="0x0">
   <title>O2CellRpmLowAC</title>
   <description>As O2CellRpmLow with A/C requested $1448</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1448" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -14798,7 +14803,7 @@
  <XDFCONSTANT uniqueid="0x313" flags="0x0">
   <title>O2CellRpmHighAC</title>
   <description>As O2CellRpmHigh with A/C requested $144A</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x144A" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -14810,7 +14815,7 @@
  <XDFCONSTANT uniqueid="0x314" flags="0x0">
   <title>O2CellRpmHystAC</title>
   <description>As O2CellRpmHyst with A/C requested $144C</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x144C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -14822,7 +14827,7 @@
  <XDFCONSTANT uniqueid="0x315" flags="0x0">
   <title>O2CellMapLowAC</title>
   <description>As O2CellMapLow with A/C requested $144E</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x144E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -14834,7 +14839,7 @@
  <XDFCONSTANT uniqueid="0x316" flags="0x0">
   <title>O2CellMapHighAC</title>
   <description>As O2CellMapHigh with A/C requested $144F</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x144F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -14846,7 +14851,7 @@
  <XDFCONSTANT uniqueid="0x317" flags="0x0">
   <title>O2CellMapHystAC</title>
   <description>As O2CellMapHyst with A/C requested $1450</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1450" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -14858,7 +14863,7 @@
  <XDFCONSTANT uniqueid="0x318" flags="0x0">
   <title>O2AdaptIntegralMax</title>
   <description>Adaptive cell integrator upper limit (signed word) $14E0</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14E0" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14870,7 +14875,7 @@
  <XDFCONSTANT uniqueid="0x319" flags="0x0">
   <title>O2AdaptIntegralMin</title>
   <description>Adaptive cell integrator lower limit (signed word) $14E2</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14E2" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14882,7 +14887,7 @@
  <XDFCONSTANT uniqueid="0x31A" flags="0x0">
   <title>O2DerivGainDefault</title>
   <description>O2 feedback: derivative gain $15,X loaded when the gains come from the cell tables $14E4</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14E4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14894,7 +14899,7 @@
  <XDFCONSTANT uniqueid="0x31B" flags="0x0">
   <title>O2AdaptCellMax</title>
   <description>Adaptive cell value upper limit (signed) $14E5</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14E5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14906,7 +14911,7 @@
  <XDFCONSTANT uniqueid="0x31C" flags="0x0">
   <title>O2AdaptCellMin</title>
   <description>Adaptive cell value lower limit (signed) $14E6</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14E6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14917,8 +14922,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x31D" flags="0x0">
   <title>O2ColdLeanCount</title>
-  <description>Cold-start O2 logic: lean counts before the cold trim of the bank is reduced (also Sub_18D42) $14E7</description>
-  <CATEGORYMEM index="0" category="12" />
+  <description>Cold-start O2 logic: lean counts before the cold trim of the bank is reduced (also FlexColdLeanCount) $14E7</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14E7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14930,7 +14935,7 @@
  <XDFCONSTANT uniqueid="0x31E" flags="0x0">
   <title>O2ColdTrimMin</title>
   <description>Upstream O2 trim (O2UpTrim): signed lower limit of the trim with the cold-start flag ($017D,Z bit 1) $14E8</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14E8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14942,7 +14947,7 @@
  <XDFCONSTANT uniqueid="0x31F" flags="0x0">
   <title>O2ColdStartTime</title>
   <description>Cold-start O2 logic (start coolant below O2ColdStartCoolant): time ($07B7,Z) up to which the cold-start flag ($017D,Z bit 1) is set $14E9</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14E9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14954,7 +14959,7 @@
  <XDFCONSTANT uniqueid="0x320" flags="0x0">
   <title>O2ColdTrimMinDrive</title>
   <description>As O2ColdTrimMin in gear ($0C31,Z bit 5) $14EA</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14EA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14966,7 +14971,7 @@
  <XDFCONSTANT uniqueid="0x321" flags="0x0">
   <title>O2ColdStartTimeDrive</title>
   <description>As O2ColdStartTime in gear ($0C31,Z bit 5) $14EB</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14EB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14978,7 +14983,7 @@
  <XDFCONSTANT uniqueid="0x322" flags="0x0">
   <title>O2CellResetCoolantMin</title>
   <description>Cell reset (O2CellSelect): coolant at or above this value $14F2</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14F2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -14990,7 +14995,7 @@
  <XDFCONSTANT uniqueid="0x323" flags="0x0">
   <title>O2CellResetTrimMax</title>
   <description>Cell reset: the short-term trim is cleared while it is not above this value $14F3</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14F3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15002,7 +15007,7 @@
  <XDFCONSTANT uniqueid="0x324" flags="0x0">
   <title>O2CellResetSpeedMax</title>
   <description>Cell reset: vehicle speed at or below this value $14F4</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14F4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15014,7 +15019,7 @@
  <XDFCONSTANT uniqueid="0x325" flags="0x0">
   <title>O2CellResetVacuumMax</title>
   <description>Cell reset: manifold vacuum at or below this value $14F5</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14F5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -15026,7 +15031,7 @@
  <XDFCONSTANT uniqueid="0x326" flags="0x0">
   <title>O2CellResetThrottleMin</title>
   <description>Cell reset: throttle at or above this value $14F6</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x14F6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15037,8 +15042,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x327" flags="0x0">
   <title>O2StepPeriod</title>
-  <description>Sub_1424C: count $0759,Z that wraps at this value (O2 step timing) $150D</description>
-  <CATEGORYMEM index="0" category="12" />
+  <description>O2UpdateUpstream: count $0759,Z that wraps at this value (O2 step timing) $150D</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x150D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15050,7 +15055,7 @@
  <XDFCONSTANT uniqueid="0x328" flags="0x0">
   <title>O2PropGain</title>
   <description>O2 feedback (O2DownTrim): gain of the proportional term $0E,X (error × gain × 4 / 51, limited to ±127) $1519</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1519" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15062,7 +15067,7 @@
  <XDFCONSTANT uniqueid="0x329" flags="0x0">
   <title>O2TrimMax</title>
   <description>Short-term trim upper limit (128 = no correction) $1525</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1525" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15074,7 +15079,7 @@
  <XDFCONSTANT uniqueid="0x32A" flags="0x0">
   <title>O2TrimMin</title>
   <description>Short-term trim lower limit $1526</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1526" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15086,7 +15091,7 @@
  <XDFCONSTANT uniqueid="0x32B" flags="0x0">
   <title>O2IntegralMax</title>
   <description>O2 integrator upper limit (signed word) $1527</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1527" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15098,7 +15103,7 @@
  <XDFCONSTANT uniqueid="0x32C" flags="0x0">
   <title>O2IntegralMin</title>
   <description>O2 integrator lower limit (signed word) $1529</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1529" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15110,7 +15115,7 @@
  <XDFCONSTANT uniqueid="0x32D" flags="0x0">
   <title>O2IntegralHighFlag</title>
   <description>O2 feedback: integral term $0C,X (word) above this value counts as saturated high $152B</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x152B" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15122,7 +15127,7 @@
  <XDFCONSTANT uniqueid="0x32E" flags="0x0">
   <title>O2IntegralLowFlag</title>
   <description>O2 feedback: integral term below this (signed) value counts as saturated low $152D</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x152D" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15134,7 +15139,7 @@
  <XDFCONSTANT uniqueid="0x32F" flags="0x0">
   <title>O2SlowStepPeriod</title>
   <description>O2 feedback: period ($12,X) between steps of the slow term $11,X while the integral is saturated (also used by ClosedLoopManager, ClosedLoopTiming, O2SwitchState) $152F</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x152F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15146,7 +15151,7 @@
  <XDFCONSTANT uniqueid="0x330" flags="0x0">
   <title>O2ReopenHoldTime</title>
   <description>Closed-loop manager: hold time ($075B,Z) after a bank leaves closed loop $1530</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1530" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15158,7 +15163,7 @@
  <XDFCONSTANT uniqueid="0x331" flags="0x0">
   <title>O2NewMileageMax</title>
   <description>O2 feedback: SRI mileage ($000E,Z with $000D,Z zero) below this value selects the new-vehicle limits of the slow term $1531</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1531" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15170,7 +15175,7 @@
  <XDFCONSTANT uniqueid="0x332" flags="0x0">
   <title>O2SlowMinNew</title>
   <description>O2 feedback: lower (signed) limit of the slow term for a new vehicle $1532</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1532" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15182,7 +15187,7 @@
  <XDFCONSTANT uniqueid="0x333" flags="0x0">
   <title>O2SlowMaxNew</title>
   <description>O2 feedback: upper limit of the slow term for a new vehicle $1533</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1533" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15194,7 +15199,7 @@
  <XDFCONSTANT uniqueid="0x334" flags="0x0">
   <title>O2SlowMin</title>
   <description>O2 feedback: lower (signed) limit of the slow term $1534</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1534" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15206,7 +15211,7 @@
  <XDFCONSTANT uniqueid="0x335" flags="0x0">
   <title>O2SlowMax</title>
   <description>O2 feedback: upper limit of the slow term $1535</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1535" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15218,7 +15223,7 @@
  <XDFCONSTANT uniqueid="0x336" flags="0x0">
   <title>O2SlowEnableCoolant</title>
   <description>Coolant at or above which the slow-term delay $0758,Z counts down $1536</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1536" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -15230,7 +15235,7 @@
  <XDFCONSTANT uniqueid="0x337" flags="0x0">
   <title>O2SlowPurgeRampMin</title>
   <description>Purge ramp below this value reloads the slow-term periods ($0712/$073A,Z) $1537</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1537" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15242,7 +15247,7 @@
  <XDFCONSTANT uniqueid="0x338" flags="0x0">
   <title>O2PurgeRampMax</title>
   <description>Closed-loop manager: purge ramp above this value holds the integrators $1538</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1538" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15254,7 +15259,7 @@
  <XDFCONSTANT uniqueid="0x339" flags="0x0">
   <title>O2WarmDelayCoolant</title>
   <description>Coolant at or above which the warm delay $07AF,Z counts down (below it the delay is reloaded with O2DelayWarm) $1547</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1547" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -15266,7 +15271,7 @@
  <XDFCONSTANT uniqueid="0x33A" flags="0x0">
   <title>O2DelayCold</title>
   <description>Closed-loop entry delay ($07AF,Z) below O2DelayCoolantMax $1548</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1548" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15278,7 +15283,7 @@
  <XDFCONSTANT uniqueid="0x33B" flags="0x0">
   <title>O2DelayWarm</title>
   <description>Closed-loop entry delay when warm $1549</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1549" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15290,7 +15295,7 @@
  <XDFCONSTANT uniqueid="0x33C" flags="0x0">
   <title>O2DelayCoolantMax</title>
   <description>Closed loop: below this coolant the entry delay O2DelayCold is used $154A</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x154A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -15302,7 +15307,7 @@
  <XDFCONSTANT uniqueid="0x33D" flags="0x0">
   <title>O2MemMapHyst</title>
   <description>Long-term memory cell selection (O2CellSelect): MAP hysteresis added to the breakpoints at $18E2 when moving down $1550</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1550" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -15314,7 +15319,7 @@
  <XDFCONSTANT uniqueid="0x33E" flags="0x0">
   <title>O2MemCoastRpmSplit</title>
   <description>Long-term memory cell selection: rpm that splits the closed-throttle off-idle cells $0E/$0F $1551</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1551" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -15326,7 +15331,7 @@
  <XDFCONSTANT uniqueid="0x33F" flags="0x0">
   <title>O2MemRpmSplit</title>
   <description>Long-term memory cell selection: rpm that splits each MAP band into a low and a high cell $1552</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1552" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -15338,7 +15343,7 @@
  <XDFCONSTANT uniqueid="0x340" flags="0x0">
   <title>O2MemRpmHyst</title>
   <description>Long-term memory cell selection: rpm hysteresis of the cell splits $1553</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1553" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -15350,7 +15355,7 @@
  <XDFCONSTANT uniqueid="0x341" flags="0x0">
   <title>O2IdleRpmMargin</title>
   <description>Closed loop: rpm within idle target plus this margin counts as idle (bit $0339.7) $1554</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1554" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -15362,7 +15367,7 @@
  <XDFCONSTANT uniqueid="0x342" flags="0x0">
   <title>O2IdleSpeedMax</title>
   <description>Closed loop: vehicle speed below which the idle cell is used $1555</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1555" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15374,7 +15379,7 @@
  <XDFCONSTANT uniqueid="0x343" flags="0x0">
   <title>O2MemIdleRpmHyst</title>
   <description>Long-term memory cell selection: rpm hysteresis of the idle cell when Options0339 bit 7 selects the rpm test $1556</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1556" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -15386,7 +15391,7 @@
  <XDFCONSTANT uniqueid="0x344" flags="0x0">
   <title>O2LearnMapMax</title>
   <description>Long-term learning (O2LearnEnable): MAP at or below this value (and above O2MapMin) $1557</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1557" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -15398,7 +15403,7 @@
  <XDFCONSTANT uniqueid="0x345" flags="0x0">
   <title>O2MapMin</title>
   <description>Closed loop and the fuel system monitor: MAP at or above this value $1558</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1558" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -15410,7 +15415,7 @@
  <XDFCONSTANT uniqueid="0x346" flags="0x0">
   <title>O2LearnRpmMax</title>
   <description>Long-term learning: rpm below this value $1559</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1559" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -15422,7 +15427,7 @@
  <XDFCONSTANT uniqueid="0x347" flags="0x0">
   <title>O2LearnRpmHyst</title>
   <description>Long-term learning: rpm hysteresis of O2LearnRpmMax ($075F,Z bit 1) $155A</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x155A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -15434,7 +15439,7 @@
  <XDFCONSTANT uniqueid="0x348" flags="0x0">
   <title>O2PulseWidthMin</title>
   <description>Closed-loop timing: fuel pulse widths ($0780/$0782,Z, word) at or above this value for closed-loop entry $155B</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x155B" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15446,7 +15451,7 @@
  <XDFCONSTANT uniqueid="0x349" flags="0x0">
   <title>O2LearnRate</title>
   <description>Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer ($07B2/$07B3,Z) per pass $155F</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x155F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15458,7 +15463,7 @@
  <XDFCONSTANT uniqueid="0x34A" flags="0x0">
   <title>O2LearnRateWotFlex</title>
   <description>As O2LearnRateWot with the flex fuel flag $1560</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1560" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15470,7 +15475,7 @@
  <XDFCONSTANT uniqueid="0x34B" flags="0x0">
   <title>O2AdaptMax</title>
   <description>Long-term adaptive value ($07B0,Z, $07B1,Z) upper limit (signed); at the limit the fuel system monitor counts $1561</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1561" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15482,7 +15487,7 @@
  <XDFCONSTANT uniqueid="0x34C" flags="0x0">
   <title>O2AdaptMin</title>
   <description>Long-term adaptive value lower limit (signed) $1562</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1562" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15493,8 +15498,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x34D" flags="0x0">
   <title>O2PostFuelHold</title>
-  <description>Sub_158B6: value loaded into $0750,Z (0 = off) $1563</description>
-  <CATEGORYMEM index="0" category="12" />
+  <description>O2PostFuelCheck: value loaded into $0750,Z (0 = off) $1563</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1563" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15505,8 +15510,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x34E" flags="0x0">
   <title>O2AccelFuelMax</title>
-  <description>Sub_158B6: accel fuel ($07C8,Z) and tip-in fuel below this value (word) $1564</description>
-  <CATEGORYMEM index="0" category="12" />
+  <description>O2PostFuelCheck: accel fuel ($07C8,Z) and tip-in fuel below this value (word) $1564</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1564" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15541,7 +15546,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x351" flags="0x0">
   <title>RevLimit</title>
-  <description>Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral) $161E</description>
+  <description>Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral); also scales the calculated load with baro (CalcLoadValue) $161E</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x161E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -15553,7 +15558,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x352" flags="0x0">
   <title>RevLimitAlt</title>
-  <description>Rev limit, used while $0C31,Z bit 5 is clear $1620</description>
+  <description>Rev limit, used while $0C31,Z bit 5 is clear; also scales the calculated load with baro (CalcLoadValue) $1620</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1620" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -15662,7 +15667,7 @@
  <XDFCONSTANT uniqueid="0x35B" flags="0x0">
   <title>O2MemFlexDiffMax</title>
   <description>Long-term cell update: with $0770,Z bit 7 a cell more than this below the flex reference cell is replaced by it $1645</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1645" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15734,7 +15739,7 @@
  <XDFCONSTANT uniqueid="0x361" flags="0x0">
   <title>O2LearnPurgeCountMax</title>
   <description>Long-term learning: purge cell count $0439,Z above which learning is allowed (zero also allows it) $1752</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x1752" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15745,7 +15750,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x362" flags="0x0">
   <title>FlexSoakCoolantMax</title>
-  <description>Sub_17FC4: start coolant below this value (and at or above SoakStartCoolantMin) clears $01B8,Z $1755</description>
+  <description>FlexLearnInitRun: start coolant below this value (and at or above SoakStartCoolantMin) clears $01B8,Z $1755</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1755" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -15769,7 +15774,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x364" flags="0x0">
   <title>PurgeCellRichMax2</title>
-  <description>As PurgeCellRichMax1 for PurgeCell2 ($0080,Z bit 4; also Sub_17A1C) $1757</description>
+  <description>As PurgeCellRichMax1 for PurgeCell2 ($0080,Z bit 4; also FlexPurgeRichCheck) $1757</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x1757" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15805,7 +15810,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x367" flags="0x0">
   <title>PurgeCellRichHyst2</title>
-  <description>As PurgeCellRichHyst1 for PurgeCell2 (also Sub_17A1C) $175A</description>
+  <description>As PurgeCellRichHyst1 for PurgeCell2 (also FlexPurgeRichCheck) $175A</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x175A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15830,7 +15835,7 @@
  <XDFCONSTANT uniqueid="0x369" flags="0x0">
   <title>O2TrimResetValue</title>
   <description>Closed-loop manager: value loaded into the bank trim when $0760,Z bits 2-3 request a reset $175D</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x175D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15889,7 +15894,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x36E" flags="0x0">
   <title>AfterStartSparkEvents</title>
-  <description>After-start spark retard (Sub_1D448): crank events ($076D,Z) before the retard starts $1A7C</description>
+  <description>After-start spark retard (AfterStartSpark): crank events ($076D,Z) before the retard starts $1A7C</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1A7C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -16262,7 +16267,7 @@
  <XDFCONSTANT uniqueid="0x38D" flags="0x0">
   <title>AcSparkRateChangeMin</title>
   <description>A/C spark: rpm-rate change ($0D4E,Z) at or above which the compensation starts, A/C clutch off $1DBA</description>
-  <CATEGORYMEM index="0" category="17" />
+  <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x1DBA" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -16274,7 +16279,7 @@
  <XDFCONSTANT uniqueid="0x38E" flags="0x0">
   <title>AcSparkRateChangeMinAcOn</title>
   <description>As AcSparkRateChangeMin with the A/C clutch on $1DBC</description>
-  <CATEGORYMEM index="0" category="17" />
+  <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x1DBC" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -16286,7 +16291,7 @@
  <XDFCONSTANT uniqueid="0x38F" flags="0x0">
   <title>AcSparkHoldCount</title>
   <description>A/C spark: hold count $0D56,Z, A/C clutch off $1DBE</description>
-  <CATEGORYMEM index="0" category="17" />
+  <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x1DBE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -16298,7 +16303,7 @@
  <XDFCONSTANT uniqueid="0x390" flags="0x0">
   <title>AcSparkHoldCountAcOn</title>
   <description>As AcSparkHoldCount with the A/C clutch on $1DBF</description>
-  <CATEGORYMEM index="0" category="17" />
+  <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x1DBF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -16346,7 +16351,7 @@
  <XDFCONSTANT uniqueid="0x394" flags="0x0">
   <title>EgrZeroPositionInit</title>
   <description>Start value of the learned EGR closed position $0040,Z $1F57</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x1F57" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -16501,7 +16506,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3A1" flags="0x0">
   <title>KnockLearnDecay</title>
-  <description>Knock learning (Sub_1F2E0): decrease of the learned value at the first timed-spark pass $1FCC</description>
+  <description>Knock learning (KnockLearnDecayFlag): decrease of the learned value at the first timed-spark pass $1FCC</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x1FCC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -16513,7 +16518,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3A2" flags="0x0">
   <title>KnockDecayMask</title>
-  <description>Knock events (Sub_1F194): mask tested before the event count is reduced $1FCD</description>
+  <description>Knock events (KnockEventDecayStep): mask tested before the event count is reduced $1FCD</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x1FCD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -16573,7 +16578,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3A7" flags="0x0">
   <title>KnockBandMapBase</title>
-  <description>Knock rpm bands (Sub_1F296): starting MAP value of the band search $1FD2</description>
+  <description>Knock rpm bands (KnockRpmBand): starting MAP value of the band search $1FD2</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x1FD2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
@@ -16610,7 +16615,7 @@
  <XDFCONSTANT uniqueid="0x3AA" flags="0x0">
   <title>O2SparkTrimCoolantMin</title>
   <description>O2 spark trim runs above this coolant temperature $204E</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x204E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -16622,7 +16627,7 @@
  <XDFCONSTANT uniqueid="0x3AB" flags="0x0">
   <title>O2SparkTrimTimeMin</title>
   <description>O2 spark trim runs after this time since start $204F</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x204F" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -16634,7 +16639,7 @@
  <XDFCONSTANT uniqueid="0x3AC" flags="0x0">
   <title>O2SparkTrimRpmMin</title>
   <description>O2 spark trim runs above this engine rpm $2051</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2051" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -16645,7 +16650,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3AD" flags="0x0">
   <title>SparkHookCoolantMin</title>
-  <description>Spark hook (Sub_1D15C, bit $0338.5): coolant at or above this value $20D2</description>
+  <description>Spark hook (SparkHook, bit $0338.5): coolant at or above this value $20D2</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x20D2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -16873,7 +16878,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3C0" flags="0x0">
   <title>IacShiftStep</title>
-  <description>Gear-change IAC step (Sub_1AA32): step size, scaled by IacShiftBaroFactor $2301</description>
+  <description>Gear-change IAC step (IacShiftStepApply): step size, scaled by IacShiftBaroFactor $2301</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2301" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -16945,7 +16950,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3C6" flags="0x0">
   <title>IacAcKickFactor</title>
-  <description>A/C IAC kick (Sub_19808): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3) $2369</description>
+  <description>A/C IAC kick (IdleTargetControl): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3) $2369</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2369" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -17090,7 +17095,7 @@
  <XDFCONSTANT uniqueid="0x3D2" flags="0x0">
   <title>SpeedCtlShiftHoldTime</title>
   <description>Speed control shift handling: servo hold time (SpeedCtlOverrideTimer) after a clutch/up-shift event $266C</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x266C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17102,7 +17107,7 @@
  <XDFCONSTANT uniqueid="0x3D3" flags="0x0">
   <title>SpeedCtlShiftThrottleSlope</title>
   <description>Speed control shift handling: speed slope of the throttle reference, first event $266D</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x266D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17114,7 +17119,7 @@
  <XDFCONSTANT uniqueid="0x3D4" flags="0x0">
   <title>SpeedCtlShiftThrottleBase</title>
   <description>Speed control shift handling: throttle reference = this + slope × speed (SpeedCtlThrottleRef), first event $266E</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x266E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17126,7 +17131,7 @@
  <XDFCONSTANT uniqueid="0x3D5" flags="0x0">
   <title>SpeedCtlShiftHoldTime2</title>
   <description>Speed control shift handling: servo hold time after the second shift event ($09CE,Z bit 3) $266F</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x266F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17138,7 +17143,7 @@
  <XDFCONSTANT uniqueid="0x3D6" flags="0x0">
   <title>SpeedCtlShiftThrottleSlope2</title>
   <description>As SpeedCtlShiftThrottleSlope for the second event $2670</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x2670" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17150,7 +17155,7 @@
  <XDFCONSTANT uniqueid="0x3D7" flags="0x0">
   <title>SpeedCtlShiftThrottleBase2</title>
   <description>As SpeedCtlShiftThrottleBase for the second event $2671</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x2671" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17162,7 +17167,7 @@
  <XDFCONSTANT uniqueid="0x3D8" flags="0x0">
   <title>SpeedCtlGearRatioMax</title>
   <description>Speed control shift handling (SpeedCtlShift, manual): rpm/speed ratio at or below this value counts as in gear $2672</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x2672" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17174,7 +17179,7 @@
  <XDFCONSTANT uniqueid="0x3D9" flags="0x0">
   <title>SpeedCtlRpmFilterLow</title>
   <description>As SpeedCtlRpmFilter with rpm at or below $0C4E,Z $269A</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x269A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17186,7 +17191,7 @@
  <XDFCONSTANT uniqueid="0x3DA" flags="0x0">
   <title>SpeedCtlRpmJump</title>
   <description>Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only) $269C</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x269C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -17198,7 +17203,7 @@
  <XDFCONSTANT uniqueid="0x3DB" flags="0x0">
   <title>SpeedCtlRpmJumpMinRpm</title>
   <description>Speed control rpm-jump check: engine rpm at or above this value $269E</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x269E" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -17210,7 +17215,7 @@
  <XDFCONSTANT uniqueid="0x3DC" flags="0x0">
   <title>SpeedCtlThrottleFilter</title>
   <description>Speed control rpm-jump check: filter weight of the throttle average $040C,Z $26A0</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x26A0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17222,7 +17227,7 @@
  <XDFCONSTANT uniqueid="0x3DD" flags="0x0">
   <title>SpeedCtlRpmJumpThrottle</title>
   <description>Speed control: the rpm-jump cancel needs the throttle within this value of the reference $26A1</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x26A1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17234,7 +17239,7 @@
  <XDFCONSTANT uniqueid="0x3DE" flags="0x0">
   <title>SpeedCtlRpmJumpHold</title>
   <description>Speed control rpm-jump check: hold count ($0417,Z) set by an rpm jump (clutch pressed) $26A2</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x26A2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18315,7 +18320,7 @@
  <XDFCONSTANT uniqueid="0x43B" flags="0x0">
   <title>O2SwitchMargin</title>
   <description>O2 feedback (O2SwitchState): margin added to the target before the scaled O2 value counts as rich $2AC7</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2AC7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18435,7 +18440,7 @@
  <XDFCONSTANT uniqueid="0x445" flags="0x0">
   <title>EgrMonVacuumMin</title>
   <description>EGR flow monitor: manifold vacuum at or above this value $2AD9</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2AD9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -18447,7 +18452,7 @@
  <XDFCONSTANT uniqueid="0x446" flags="0x0">
   <title>EgrMonSpeedMin</title>
   <description>EGR flow monitor: vehicle speed at or above this value $2ADA</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2ADA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18459,7 +18464,7 @@
  <XDFCONSTANT uniqueid="0x447" flags="0x0">
   <title>EgrMonMapAccelMax</title>
   <description>EGR flow monitor: MAP acceleration fuel at or below this value $2ADB</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2ADB" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18471,7 +18476,7 @@
  <XDFCONSTANT uniqueid="0x448" flags="0x0">
   <title>EgrMonTpsAccelMax</title>
   <description>EGR flow monitor: throttle acceleration fuel at or below this value $2ADD</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2ADD" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18483,7 +18488,7 @@
  <XDFCONSTANT uniqueid="0x449" flags="0x0">
   <title>EgrMonTipInMax</title>
   <description>EGR flow monitor: tip-in fuel at or below this value $2ADF</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2ADF" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18495,7 +18500,7 @@
  <XDFCONSTANT uniqueid="0x44A" flags="0x0">
   <title>EgrMonDecelLeanMin</title>
   <description>EGR flow monitor: decel enleanment, when present, at or above this value $2AE1</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2AE1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18507,7 +18512,7 @@
  <XDFCONSTANT uniqueid="0x44B" flags="0x0">
   <title>EgrMonPhaseTime</title>
   <description>EGR flow monitor: length of the first test phase ($057E,Z) $2AE9</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2AE9" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18519,7 +18524,7 @@
  <XDFCONSTANT uniqueid="0x44C" flags="0x0">
   <title>EgrMonTrimMin</title>
   <description>EGR flow monitor: short-term trim at or above this value (signed) $2AF7</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2AF7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18531,7 +18536,7 @@
  <XDFCONSTANT uniqueid="0x44D" flags="0x0">
   <title>EgrMonTrimMax</title>
   <description>EGR flow monitor: short-term trim at or below this value (signed) $2AF8</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2AF8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18543,7 +18548,7 @@
  <XDFCONSTANT uniqueid="0x44E" flags="0x0">
   <title>EgrMonPhaseTime2</title>
   <description>EGR flow monitor: length of the second test phase $2AF9</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2AF9" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18555,7 +18560,7 @@
  <XDFCONSTANT uniqueid="0x44F" flags="0x0">
   <title>EgrMonResultMin</title>
   <description>EGR flow monitor: trim response below this value fails the test $2B07</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2B07" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18567,7 +18572,7 @@
  <XDFCONSTANT uniqueid="0x450" flags="0x0">
   <title>EgrMonResultMax</title>
   <description>EGR flow monitor: trim response above this value passes it $2B08</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2B08" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18579,7 +18584,7 @@
  <XDFCONSTANT uniqueid="0x451" flags="0x0">
   <title>EgrMonFailCount</title>
   <description>EGR flow monitor: failed tests before the fault $2B09</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="20" />
   <EMBEDDEDDATA mmedaddress="0x2B09" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18663,7 +18668,7 @@
  <XDFCONSTANT uniqueid="0x458" flags="0x0">
   <title>O2MemChangeHold</title>
   <description>Long-term memory cell selection: hold time ($05A5/$05A6,Z) after the trim is cleared on a cell change $2B11</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2B11" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18855,7 +18860,7 @@
  <XDFCONSTANT uniqueid="0x468" flags="0x0">
   <title>O2TrimResetValue2</title>
   <description>Closed-loop manager: value loaded into the bank trim when $0761,Z bits 6-7 request a reset $2B4E</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2B4E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18914,8 +18919,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x46D" flags="0x0">
   <title>O2ColdTrimHeaterAdder</title>
-  <description>Cold-start O2 trim (Sub_14740): added to the start trim when a heater monitor status has bit 5 set $2B85</description>
-  <CATEGORYMEM index="0" category="12" />
+  <description>Cold-start O2 trim (O2StartDelays): added to the start trim when a heater monitor status has bit 5 set $2B85</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2B85" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19071,7 +19076,7 @@
  <XDFCONSTANT uniqueid="0x47A" flags="0x0">
   <title>O2SwitchLean</title>
   <description>Catalyst/O2 switch analysis (CatMonSwitchRatio): raw O2 below this value counts as lean (one direction) $2BBA</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2BBA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19083,7 +19088,7 @@
  <XDFCONSTANT uniqueid="0x47B" flags="0x0">
   <title>O2SwitchRich</title>
   <description>Catalyst/O2 switch analysis: raw O2 above this value counts as rich $2BBB</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2BBB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19131,7 +19136,7 @@
  <XDFCONSTANT uniqueid="0x47F" flags="0x0">
   <title>O2SwitchFilterLean</title>
   <description>Catalyst/O2 switch analysis: filter weight of the lean peak $2BBF</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2BBF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19143,7 +19148,7 @@
  <XDFCONSTANT uniqueid="0x480" flags="0x0">
   <title>O2SwitchFilterRich</title>
   <description>Catalyst/O2 switch analysis: filter weight of the rich peak $2BC0</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2BC0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19419,7 +19424,7 @@
  <XDFCONSTANT uniqueid="0x497" flags="0x0">
   <title>AcSensorRawHigh</title>
   <description>A/C sensor circuit check: raw value above this counts as open/high $414A</description>
-  <CATEGORYMEM index="0" category="17" />
+  <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x414A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19431,7 +19436,7 @@
  <XDFCONSTANT uniqueid="0x498" flags="0x0">
   <title>AcSensorRawLow</title>
   <description>A/C sensor circuit check: raw value below this counts as shorted/low $414B</description>
-  <CATEGORYMEM index="0" category="17" />
+  <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x414B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19443,7 +19448,7 @@
  <XDFCONSTANT uniqueid="0x499" flags="0x0">
   <title>AcSensorFaultValue</title>
   <description>A/C sensor value used with a sensor fault $414C</description>
-  <CATEGORYMEM index="0" category="17" />
+  <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x414C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19551,7 +19556,7 @@
  <XDFCONSTANT uniqueid="0x4A2" flags="0x0">
   <title>O2RawHigh</title>
   <description>O2 sensor raw value at or above which the high-voltage check counts $416F</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x416F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19575,7 +19580,7 @@
  <XDFCONSTANT uniqueid="0x4A4" flags="0x0">
   <title>O2MemResetValue</title>
   <description>Closed-loop manager: value written into the 16 adaptive cells of a bank when its memory is reset after a fault $417B</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x417B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19586,7 +19591,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4A5" flags="0x0">
   <title>KnockHighLoadValue</title>
-  <description>Knock (Sub_1F408, Options032F bit 1): value used above the knock MAP threshold $417C</description>
+  <description>Knock (KnockSample, Options032F bit 1): value used above the knock MAP threshold $417C</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x417C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -19754,7 +19759,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4B3" flags="0x0">
   <title>FieldRpmMin</title>
-  <description>Generator field control (Sub_0EB62): engine rpm at which the field is enabled $46B0</description>
+  <description>Generator field control (FieldRampControl): engine rpm at which the field is enabled $46B0</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x46B0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>

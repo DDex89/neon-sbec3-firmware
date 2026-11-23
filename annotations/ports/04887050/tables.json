@@ -267,7 +267,7 @@
   "1466": {
    "name": "InjectionModeRpmFactor",
    "category": "Fuel",
-   "desc": "Factor against rpm on the bank pulse ($0780,Z / $0782,Z) during the change of injection mode in Sub_112A8",
+   "desc": "Factor against rpm on the bank pulse ($0780,Z / $0782,Z) during the change of injection mode in FuelEventSchedule",
    "x": "rpm32",
    "y": "mult256",
    "auto": false
@@ -1263,28 +1263,28 @@
   },
   "03D0": {
    "name": "IacHotCoolantMin",
-   "desc": "Coolant above which the hot-engine IAC handling of Sub_19808 applies",
+   "desc": "Coolant above which the hot-engine IAC handling of IdleTargetControl applies",
    "unit": "tempc",
    "size": 1,
    "category": "Idle"
   },
   "0402": {
    "name": "IacLowRpm",
-   "desc": "Segment rpm below which the low-rpm branch of Sub_19808 applies",
+   "desc": "Segment rpm below which the low-rpm branch of IdleTargetControl applies",
    "unit": "rpmw",
    "size": 2,
    "category": "Idle"
   },
   "0404": {
    "name": "AcCutRpmLow",
-   "desc": "A/C logic: engine rpm limit used in Sub_19808 and Sub_39412 (FF00 = off)",
+   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and Sub_39412 (FF00 = off)",
    "unit": "rpmw",
    "size": 2,
    "category": "A/C"
   },
   "0407": {
    "name": "IacStartTimeMin",
-   "desc": "Time since start before the event logic of Sub_19808 runs",
+   "desc": "Time since start before the event logic of IdleTargetControl runs",
    "size": 1,
    "category": "Idle"
   },
@@ -1320,14 +1320,14 @@
   },
   "0597": {
    "name": "FuelEventCoolantMax",
-   "desc": "Per-event fuel: the coolant correction of Sub_12680 applies below this coolant",
+   "desc": "Per-event fuel: the coolant correction of FuelEventCalc applies below this coolant",
    "unit": "tempc",
    "size": 1,
    "category": "Fuel"
   },
   "0598": {
    "name": "FuelEventColdOffset",
-   "desc": "Per-event fuel (Sub_12680): value minus 110 gives the cold correction step",
+   "desc": "Per-event fuel (FuelEventCalc): value minus 110 gives the cold correction step",
    "size": 1,
    "category": "Fuel"
   },
@@ -1380,7 +1380,7 @@
   },
   "1463": {
    "name": "FuelEventCoolantMin",
-   "desc": "Per-event fuel (Sub_112A8): runs above this coolant with the throttle not closed",
+   "desc": "Per-event fuel (FuelEventSchedule): runs above this coolant with the throttle not closed",
    "unit": "tempc",
    "size": 1,
    "category": "Fuel"
@@ -1406,7 +1406,7 @@
   },
   "0E54": {
    "name": "DecelRampStart",
-   "desc": "Decel fuel reduction (Sub_104AE): starts when the drop sum is at or below this value",
+   "desc": "Decel fuel reduction (DecelFuelRampControl): starts when the drop sum is at or below this value",
    "size": 1,
    "category": "Fuel"
   },
@@ -1479,13 +1479,13 @@
   },
   "0711": {
    "name": "O2FlexCellRef",
-   "desc": "Sub_15FF4: value compared with the bank 1 memory cells from $805A (loaded with O2FlexCellRef2)",
+   "desc": "FlexCellCheck: value compared with the bank 1 memory cells from $805A (loaded with O2FlexCellRef2)",
    "category": "Closed loop",
    "size": 1
   },
   "0714": {
    "name": "O2FlexCellRef2",
-   "desc": "Sub_15FF4: second value used with O2FlexCellRef",
+   "desc": "FlexCellCheck: second value used with O2FlexCellRef",
    "category": "Closed loop",
    "size": 1
   },
@@ -1554,7 +1554,7 @@
   },
   "0F6E": {
    "name": "FuelPulseMode",
-   "desc": "Fuel pulse output mode; 11 selects the second branch of Sub_1202A",
+   "desc": "Fuel pulse output mode; 11 selects the second branch of InputFilters",
    "size": 1,
    "category": "Fuel"
   },
@@ -1687,14 +1687,14 @@
   },
   "10F8": {
    "name": "RevLimit",
-   "desc": "Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral)",
+   "desc": "Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral); also scales the calculated load with baro (CalcLoadValue)",
    "size": 1,
    "unit": "rpm32",
    "category": "Fuel"
   },
   "10FA": {
    "name": "RevLimitAlt",
-   "desc": "Rev limit, used while $0C31,Z bit 5 is clear",
+   "desc": "Rev limit, used while $0C31,Z bit 5 is clear; also scales the calculated load with baro (CalcLoadValue)",
    "size": 1,
    "unit": "rpm32",
    "category": "Fuel"
@@ -1766,7 +1766,7 @@
   },
   "1A03": {
    "name": "AfterStartSparkEvents",
-   "desc": "After-start spark retard (Sub_1D448): crank events ($076D,Z) before the retard starts",
+   "desc": "After-start spark retard (AfterStartSpark): crank events ($076D,Z) before the retard starts",
    "category": "Spark",
    "size": 1
   },
@@ -1997,7 +1997,7 @@
   },
   "1CCA": {
    "name": "KnockBandMapBase",
-   "desc": "Knock rpm bands (Sub_1F296): starting MAP value of the band search",
+   "desc": "Knock rpm bands (KnockRpmBand): starting MAP value of the band search",
    "unit": "kpa",
    "category": "Knock",
    "size": 1
@@ -2018,7 +2018,7 @@
   },
   "1ADA": {
    "name": "SparkHookCoolantMin",
-   "desc": "Spark hook (Sub_1D15C, bit $0338.5): coolant at or above this value",
+   "desc": "Spark hook (SparkHook, bit $0338.5): coolant at or above this value",
    "unit": "tempc",
    "category": "Spark",
    "size": 1
@@ -2126,7 +2126,7 @@
   },
   "1EFC": {
    "name": "IacShiftStep",
-   "desc": "Gear-change IAC step (Sub_1AA32): step size, scaled by IacShiftBaroFactor",
+   "desc": "Gear-change IAC step (IacShiftStepApply): step size, scaled by IacShiftBaroFactor",
    "category": "Idle",
    "size": 1
   },
@@ -2162,7 +2162,7 @@
   },
   "2066": {
    "name": "IacAcKickFactor",
-   "desc": "A/C IAC kick (Sub_19808): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3)",
+   "desc": "A/C IAC kick (IdleTargetControl): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3)",
    "category": "Idle",
    "size": 1
   },
@@ -2576,7 +2576,7 @@
   },
   "3DAB": {
    "name": "KnockHighLoadValue",
-   "desc": "Knock (Sub_1F408, Options032F bit 1): value used above the knock MAP threshold",
+   "desc": "Knock (KnockSample, Options032F bit 1): value used above the knock MAP threshold",
    "category": "Knock",
    "size": 1
   },

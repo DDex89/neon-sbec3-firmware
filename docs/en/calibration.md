@@ -128,29 +128,29 @@ entries are marked `"auto": true` and get a * in the catalogue.
 
 ## Idle and spark control
 
-The idle air valve is driven by several routines that all end in the step routine `Sub_1A54A`:
+The idle air valve is driven by several routines that all end in the step routine `IacSetTarget`:
 
 | Routine | What it does | Tables |
 |---|---|---|
-| `Sub_1B182` | idle target ($0300,Z): coolant table (P/N variant), additions for an rpm dip in gear, hot intake air, and a ramped target against battery temperature and run time | `IdleTargetRpm*`, `IdleTargetDip*`, `IdleTargetHotAirAdder`, `IdleBattTemp*` |
-| `Sub_1908C` | closed loop on rpm: error term (coarse/fine, P/N), rate filter, deadband from MAP and coolant, integrator that takes opening or closing IAC steps | `IdleErrorTerm*`, `IdleRateFilterCoolant`, `IdleDeadband*`, `IdleStep*` |
-| `Sub_1AC64` | closed loop on MAP: idle MAP target ($031E,Z) from base, time, coolant, rpm and baro, then IAC steps against the MAP error | `IdleMap*`, `IacMap*Step*` |
-| `Sub_1AFDE` | base IAC position against baro and idle target, coasting target, generator field duty, A/C engagement | `IacBase*`, `IacCoast*`, `IacFieldDuty*`, `IacAcEngageAdder` |
-| `Sub_19808`, `Sub_2D086` | events: gear change (delay, duration, step; A/C and P/N variants), rpm droop and dip kicks, A/C clutch kick, rolling target | `IacGear*`, `IacDroop*`, `IacDipKick*`, `IacAcKick*`, `IacRoll*`, `ShiftIdle*` |
+| `IdleRpmTarget` | idle target ($0300,Z): coolant table (P/N variant), additions for an rpm dip in gear, hot intake air, and a ramped target against battery temperature and run time | `IdleTargetRpm*`, `IdleTargetDip*`, `IdleTargetHotAirAdder`, `IdleBattTemp*` |
+| `IdleRpmLoop` | closed loop on rpm: error term (coarse/fine, P/N), rate filter, deadband from MAP and coolant, integrator that takes opening or closing IAC steps | `IdleErrorTerm*`, `IdleRateFilterCoolant`, `IdleDeadband*`, `IdleStep*` |
+| `IdleMapTargetCalc` | closed loop on MAP: idle MAP target ($031E,Z) from base, time, coolant, rpm and baro, then IAC steps against the MAP error | `IdleMap*`, `IacMap*Step*` |
+| `IacBaseCalc` | base IAC position against baro and idle target, coasting target, generator field duty, A/C engagement | `IacBase*`, `IacCoast*`, `IacFieldDuty*`, `IacAcEngageAdder` |
+| `IdleTargetControl`, `Sub_2D086` | events: gear change (delay, duration, step; A/C and P/N variants), rpm droop and dip kicks, A/C clutch kick, rolling target | `IacGear*`, `IacDroop*`, `IacDipKick*`, `IacAcKick*`, `IacRoll*`, `ShiftIdle*` |
 | `Sub_1A5CA` | extra air when the battery voltage stays below the charging target | `IacChargeStep` |
-| `Sub_1AE22` | IAC position while cranking and in start mode | `IacCrankCoolant`, `IacRunUpCoolant` |
+| `IacCrankControl` | IAC position while cranking and in start mode | `IacCrankCoolant`, `IacRunUpCoolant` |
 
 Spark corrections besides the base tables:
 
 | Routine | What it does | Tables |
 |---|---|---|
-| `Sub_1DEDC`, `Sub_1E14E` | driveline surge: a staged retard from rpm acceleration and jerk (band-passed segment rpm), weighted by gear (rpm/speed ratio), MAP rise and coolant | `Surge*` |
-| `Sub_1D5EC` | tip-in retard near idle against throttle rise and air temperature | `TipInRetard*` |
-| `Sub_1DC20` | low-speed surge damping: P, D and I terms on the deviation of rpm from an expected rpm for the vehicle speed | `SpeedRpmRef*`, `SpeedDamp*` |
-| `Sub_1E76A` | idle spark against the idle rpm error | `IdleSpark*` |
-| `Sub_1D822`, `Sub_1D8F0` | spark compensation around A/C clutch engagement | `AcEngageSpark*`, `AcClutchSpark*`, `AcSpark*` |
-| `Sub_1D36A` | spark change against the short-term fuel trim deviation | `O2SparkTrim*` |
-| `Sub_1DA26` | addition with EGR active (17x17) | `EgrSpark` |
+| `SurgeControl`, `SurgeFilters` | driveline surge: a staged retard from rpm acceleration and jerk (band-passed segment rpm), weighted by gear (rpm/speed ratio), MAP rise and coolant | `Surge*` |
+| `TipInSparkControl` | tip-in retard near idle against throttle rise and air temperature | `TipInRetard*` |
+| `SpeedDampControl` | low-speed surge damping: P, D and I terms on the deviation of rpm from an expected rpm for the vehicle speed | `SpeedRpmRef*`, `SpeedDamp*` |
+| `IdleSparkCalc` | idle spark against the idle rpm error | `IdleSpark*` |
+| `AcSparkRate`, `AcClutchSpark` | spark compensation around A/C clutch engagement | `AcEngageSpark*`, `AcClutchSpark*`, `AcSpark*` |
+| `O2SparkTrimCalc` | spark change against the short-term fuel trim deviation | `O2SparkTrim*` |
+| `EgrSparkCalc` | addition with EGR active (17x17) | `EgrSpark` |
 | `DwellLookup` | coil dwell against battery voltage | `DwellBattery*` |
 
 Knock control learns a noise level per rpm band (`KnockNoise*`), runs above a MAP threshold
@@ -237,24 +237,24 @@ Besides the base pulse, the code builds these corrections (names as in the sourc
 
 | Part | Routine | Tables | Result |
 |---|---|---|---|
-| Warm-up enrichment | `Sub_10D5E` | `WarmupMapCoolant` (MAP x coolant), `WarmupMapCoolantLowSpeed` (below a vehicle speed), `WarmupRpmCoolantIdle` (throttle closed), `WarmupCoolantAdder` (WOT), factors for baro, run time and rpm | `WarmupFuelFactor` ($07E4,Z) |
-| After-start decay | `Sub_10D5E` | `AfterStartTimeScale`, `AfterStartDecay` (time since start x cranking coolant) | part of the warm-up factor |
-| Cold-soak | `Sub_10D5E` | `ColdSoakMapCoolant`, used when the coolant at start is close to $0A5E,Z | `$07E7,Z` |
-| Cranking | `Sub_123C0` | `CrankBasePulse` (ethanol x cranking coolant), reductions against rpm, $0769,Z and baro, each weighted by coolant; `CrankVacuumFactor` | `CrankPulse` ($0766,Z) |
-| Throttle tip-in | `Sub_107EA` | `TipInMatrix` (9 x 9, rows by throttle opening, columns by throttle step), coolant, air temperature and baro factors | `TipInFuel` ($07C6,Z) |
-| MAP-rate and throttle-rate enrichment | `Sub_106EC` | `AccelMapGainCoolant`, `AccelTpsRateLimit`, `AccelTpsCoolantFactor`, baro terms, `AccelRpmFactor` | `AccelMapGain`, `AccelTpsFuel`, `AccelFactor` |
-| Deceleration enleanment | `Sub_12142` | `DecelLeanAirflow` (rpm x throttle), coolant, time, rpm, MAP and baro factors | `DecelLeanFuel` ($07C2,Z) |
-| Deceleration fuel cut-off | `Sub_10036` | `DecelCutMapThreshold`, `DecelCutDelay`, minimum rpm against coolant; rev and speed limits | `$0770,Z` flags, `DecelCutRpmFactor` |
-| Deceleration fuel reduction | `Sub_104AE` | `DecelMapRpmLimit` (MAP x rpm) | `DecelFuelFactor` ($077A,Z) |
-| WOT enrichment over time | `Sub_102FE` | `WotTimeEnrichMax` | `WotTimeEnrich` ($07AA,Z) |
-| Idle enrichment | `Sub_11074` | run time, ethanol x start air temperature, engine-off time | `IdleEnrichFactor` ($07DA,Z) |
-| Hot-engine enrichment | `Sub_111E0` | `HotEngineEnrich` | `$0811,Z` |
-| Air temperature | `Sub_10AEC` | `FuelAirTempCorr` with rpm and MAP weights | multiplies the fuel |
-| MAP and throttle filters | `Sub_1204A` | filter coefficients for rising and falling MAP and throttle against start coolant | `MapFilterCoef`, `TpsFilterCoef` |
+| Warm-up enrichment | `WarmupFuel` | `WarmupMapCoolant` (MAP x coolant), `WarmupMapCoolantLowSpeed` (below a vehicle speed), `WarmupRpmCoolantIdle` (throttle closed), `WarmupCoolantAdder` (WOT), factors for baro, run time and rpm | `WarmupFuelFactor` ($07E4,Z) |
+| After-start decay | `WarmupFuel` | `AfterStartTimeScale`, `AfterStartDecay` (time since start x cranking coolant) | part of the warm-up factor |
+| Cold-soak | `WarmupFuel` | `ColdSoakMapCoolant`, used when the coolant at start is close to $0A5E,Z | `$07E7,Z` |
+| Cranking | `CrankFuel` | `CrankBasePulse` (ethanol x cranking coolant), reductions against rpm, $0769,Z and baro, each weighted by coolant; `CrankVacuumFactor` | `CrankPulse` ($0766,Z) |
+| Throttle tip-in | `TipInFuelControl` | `TipInMatrix` (9 x 9, rows by throttle opening, columns by throttle step), coolant, air temperature and baro factors | `TipInFuel` ($07C6,Z) |
+| MAP-rate and throttle-rate enrichment | `AccelEnrichFactors` | `AccelMapGainCoolant`, `AccelTpsRateLimit`, `AccelTpsCoolantFactor`, baro terms, `AccelRpmFactor` | `AccelMapGain`, `AccelTpsFuel`, `AccelFactor` |
+| Deceleration enleanment | `DecelLeanControl` | `DecelLeanAirflow` (rpm x throttle), coolant, time, rpm, MAP and baro factors | `DecelLeanFuel` ($07C2,Z) |
+| Deceleration fuel cut-off | `FuelCutControl` | `DecelCutMapThreshold`, `DecelCutDelay`, minimum rpm against coolant; rev and speed limits | `$0770,Z` flags, `DecelCutRpmFactor` |
+| Deceleration fuel reduction | `DecelFuelRampControl` | `DecelMapRpmLimit` (MAP x rpm) | `DecelFuelFactor` ($077A,Z) |
+| WOT enrichment over time | `WotEnrichControl` | `WotTimeEnrichMax` | `WotTimeEnrich` ($07AA,Z) |
+| Idle enrichment | `IdleEnrichment` | run time, ethanol x start air temperature, engine-off time | `IdleEnrichFactor` ($07DA,Z) |
+| Hot-engine enrichment | `HotEngineEnrichCalc` | `HotEngineEnrich` | `$0811,Z` |
+| Air temperature | `FuelCorrections` | `FuelAirTempCorr` with rpm and MAP weights | multiplies the fuel |
+| MAP and throttle filters | `MapTpsFilters` | filter coefficients for rising and falling MAP and throttle against start coolant | `MapFilterCoef`, `TpsFilterCoef` |
 
 **Flex fuel.** The program supports flexible-fuel vehicles: `FlexSensorCheck` checks the fuel composition
 sensor (`FlexSensorRaw`, $0A8E,Z) and the flex-fuel learning code (`FlexLearn...`, around
-`Sub_17000`) learns the ethanol content from the oxygen-sensor trims (`FlexEthanolLearned` $0197,Z,
+`FlexLearnMain`) learns the ethanol content from the oxygen-sensor trims (`FlexEthanolLearned` $0197,Z,
 0-170, and `FlexEthanol` $0198,Z). The ethanol content then selects rows in the `Flex...` fuel and
 spark tables and in the cranking table. Calibration bit $032C.6 enables it; in 05293190AC (a
 gasoline car) the flex tables are neutral.
@@ -269,7 +269,7 @@ fault bit, `ReportPass` ($24160) counts a passed one and clears it; both take in
 | Routine | Codes | Test |
 |---|---|---|
 | `Reset` | P1602 | PCM not programmed |
-| `Sub_0EE54` | P1687, P1695 | no cluster / body bus messages |
+| `BusTimeoutCheck` | P1687, P1695 | no cluster / body bus messages |
 | `ChecksumCheck` | P0601 | checksum |
 | `VacuumLeakMonitor` | P1299 | vacuum leak (expected MAP against throttle and rpm) |
 | `MapKeyOnCheck, Sub_21EFE` | P0106, P0107, P0108 | MAP rationality, low, high |

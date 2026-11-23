@@ -91,6 +91,7 @@ MisfireFlags2    equ $025B        ; $F825B
 MisfireFlags4    equ $025D        ; $F825D
 MisfireHold      equ $025F        ; $F825F
 DiagBusFlags     equ $0269        ; $F8269
+LoadValueObd     equ $0282        ; $F8282
 MapRaw           equ $0283        ; $F8283
 LimpFlags        equ $0285        ; $F8285
 LdpState         equ $02B7        ; $F82B7
@@ -176,6 +177,7 @@ FanFlags         equ $0402        ; $F8402
 MonStatusBits1   equ $0412        ; $F8412
 MonStatusBits2   equ $0414        ; $F8414
 MonStatusBits3   equ $0416        ; $F8416
+LoadValue        equ $0418        ; $F8418
 EventSparkFlags  equ $041A        ; $F841A
 EventSpark       equ $041C        ; $F841C
 EventSparkTimer  equ $041D        ; $F841D
