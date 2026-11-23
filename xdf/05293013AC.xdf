@@ -9915,9 +9915,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x20B" flags="0x0">
-  <title>DiagLevelLimit2</title>
-  <description>As DiagLevelLimit with $0649,Z bit 1 set $2348, 2D; inputs: FuelLevelScaled</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpTimeByLevel2</title>
+  <description>As LdpPumpTimeByLevel with $0649,Z bit 1 set $2348, 2D; inputs: FuelLevelScaled</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -10875,9 +10875,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x224" flags="0x0">
-  <title>DiagLevelLimit</title>
-  <description>Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z $2992, 2D; inputs: FuelLevelScaled</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpTimeByLevel</title>
+  <description>Leak detection pump, pump-up state: state time limit ($0590,Z) against fuel level $2992, 2D; inputs: FuelLevelScaled</description>
+  <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -14527,9 +14527,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x311" flags="0x0">
-  <title>DiagThresh4</title>
-  <description>Byte compared with; read by Sub_25784. $2337</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpTestTimeAlt</title>
+  <description>Leak detection pump, test state: state time with $0649,Z bit 1 set $2337</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2337" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14731,7 +14731,7 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x322" flags="0x0">
-  <title>DiagThresh12</title>
+  <title>DiagThresh6</title>
   <description>Byte compared with; read by Sub_2877A. $2568</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2568" mmedelementsizebits="8" mmedtypeflags="0x00" />
@@ -14743,7 +14743,7 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x323" flags="0x0">
-  <title>DiagThresh13</title>
+  <title>DiagThresh7</title>
   <description>Byte compared with; read by Sub_2877A. $2571</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2571" mmedelementsizebits="8" mmedtypeflags="0x00" />
@@ -14755,7 +14755,7 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x324" flags="0x0">
-  <title>DiagThresh14</title>
+  <title>DiagThresh8</title>
   <description>Byte compared with; read by Sub_2877A. $257B</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x257B" mmedelementsizebits="8" mmedtypeflags="0x00" />
@@ -14767,7 +14767,7 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x325" flags="0x0">
-  <title>DiagThresh15</title>
+  <title>DiagThresh9</title>
   <description>Byte compared with; read by Sub_2877A. $257C</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x257C" mmedelementsizebits="8" mmedtypeflags="0x00" />
@@ -14853,7 +14853,7 @@
  <XDFCONSTANT uniqueid="0x32C" flags="0x0">
   <title>LdpBattTempMax</title>
   <description>EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value $2972</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2972" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -14865,7 +14865,7 @@
  <XDFCONSTANT uniqueid="0x32D" flags="0x0">
   <title>LdpBattTempMin</title>
   <description>EVAP leak test: battery temperature at or above this value $2973</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2973" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -14877,7 +14877,7 @@
  <XDFCONSTANT uniqueid="0x32E" flags="0x0">
   <title>LdpVoltsMax</title>
   <description>EVAP leak test: battery voltage at or below this value $2976</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2976" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
   <decimalpl>2</decimalpl>
@@ -14889,7 +14889,7 @@
  <XDFCONSTANT uniqueid="0x32F" flags="0x0">
   <title>LdpVoltsMin</title>
   <description>EVAP leak test: battery voltage at or above this value $2977</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2977" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
   <decimalpl>2</decimalpl>
@@ -14901,7 +14901,7 @@
  <XDFCONSTANT uniqueid="0x330" flags="0x0">
   <title>LdpVacuumMin</title>
   <description>EVAP leak test: manifold vacuum at or above this value for the test states $2978</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2978" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -14911,9 +14911,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x331" flags="0x0">
-  <title>DiagV0591Thresh</title>
-  <description>Byte compared with V0591; read by Sub_25DA8. $2979</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpOnTime</title>
+  <description>Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke $2979</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2979" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14923,9 +14923,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x332" flags="0x0">
-  <title>DiagV0592Thresh</title>
-  <description>Byte compared with V0592; read by Sub_25784, Sub_25DA8. $297A</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpOffTime</title>
+  <description>Leak detection pump: pump-off count ($0592,Z) per stroke $297A</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x297A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14935,9 +14935,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x333" flags="0x0">
-  <title>DiagMonPeakThresh1</title>
-  <description>Byte compared with DiagMonPeak; read by Sub_25DA8. $297B</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpStrokeTimeValid</title>
+  <description>Leak detection pump: stroke time at or above which it is stored as the result ($0595,Z) before filtering starts $297B</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x297B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14947,9 +14947,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x334" flags="0x0">
-  <title>DiagValue1</title>
-  <description>Byte used with; read by Sub_25DA8. $297C</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpStrokeFilter</title>
+  <description>Leak detection pump: filter weight of the averaged stroke time ($0595,Z) $297C</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x297C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14959,9 +14959,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x335" flags="0x0">
-  <title>DiagThresh1</title>
-  <description>Byte compared with; read by Sub_25784. $297D</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpOnTimeStart</title>
+  <description>Leak detection pump, start state: pump-on count before the first stroke $297D</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x297D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14971,9 +14971,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x336" flags="0x0">
-  <title>DiagThresh2</title>
-  <description>Byte compared with; read by Sub_25784. $297E</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpGrossTime</title>
+  <description>Leak detection pump, gross-leak state: state time ($0590,Z) for the first strokes $297E</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x297E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14983,9 +14983,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x337" flags="0x0">
-  <title>DiagV0596Thresh1</title>
-  <description>Byte compared with V0596; read by Sub_25784. $297F</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpGrossStrokes</title>
+  <description>Leak detection pump, gross-leak state: strokes ($0596,Z) before the stroke time is judged $297F</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x297F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14995,9 +14995,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x338" flags="0x0">
-  <title>DiagMonPeakThresh2</title>
-  <description>Byte compared with DiagMonPeak; read by Sub_25784. $2980</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpSealedStrokeTime</title>
+  <description>Leak detection pump, gross-leak state: stroke time at or above which the system holds pressure (no gross leak) $2980</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2980" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15007,9 +15007,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x339" flags="0x0">
-  <title>DiagV0593Thresh</title>
-  <description>Byte compared with V0593; read by Sub_25784. $2981</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpStrokeTimeMax</title>
+  <description>Leak detection pump, pump-up state: stroke time ($0593,Z) at or above which the stroke counts restart $2981</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2981" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15019,9 +15019,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33A" flags="0x0">
-  <title>DiagV0597Thresh1</title>
-  <description>Byte compared with V0597; read by Sub_25784. $2982</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpWindowStrokes</title>
+  <description>Leak detection pump, pump-up state: strokes per time-out window ($0597,Z) $2982</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2982" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15031,9 +15031,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33B" flags="0x0">
-  <title>DiagV0590Thresh</title>
-  <description>Byte compared with V0590; read by Sub_25784. $2983</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpTimeMin</title>
+  <description>Leak detection pump, pump-up state: state time limit after refuelling; also taken off the time-out count $0598,Z per stroke window $2983</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2983" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15043,9 +15043,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33C" flags="0x0">
-  <title>DiagV0598Thresh</title>
-  <description>Byte compared with V0598; read by Sub_25784. $2984</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpUpTimeMax</title>
+  <description>Leak detection pump, pump-up state: time-out count ($0598,Z) that ends the state $2984</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2984" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15055,9 +15055,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33D" flags="0x0">
-  <title>DiagThresh3</title>
-  <description>Byte compared with; read by Sub_25784. $2985</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpRecheckTime</title>
+  <description>Leak detection pump, recheck state: state time for the strokes $2985</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2985" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15067,9 +15067,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33E" flags="0x0">
-  <title>DiagV0596Thresh2</title>
-  <description>Byte compared with V0596; read by Sub_25784. $2986</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpRecheckStrokes</title>
+  <description>Leak detection pump, recheck state: strokes before the stroke time is judged $2986</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2986" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15079,9 +15079,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33F" flags="0x0">
-  <title>DiagMonPeakThresh3</title>
-  <description>Byte compared with DiagMonPeak; read by Sub_25784. $2987</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpSealedStrokeTime2</title>
+  <description>Leak detection pump, recheck state: stroke time at or above which the system holds pressure $2987</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2987" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15091,9 +15091,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x340" flags="0x0">
-  <title>DiagV0595Thresh</title>
-  <description>Byte compared with V0595; read by Sub_25784. $2988</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpSmallLeakStrokeTime</title>
+  <description>Leak detection pump, test state: averaged stroke time below this value is a small leak (also the mode $06 limit, result in $0171,Z) $2988</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2988" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15103,9 +15103,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x341" flags="0x0">
-  <title>DiagThresh6</title>
-  <description>Byte compared with; read by Sub_25784. $2989</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpLargeLeakStrokeTime</title>
+  <description>Leak detection pump, test state: averaged stroke time below this value is a large leak $2989</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2989" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15115,9 +15115,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x342" flags="0x0">
-  <title>DiagMonPeakThresh4</title>
-  <description>Byte compared with DiagMonPeak; read by Sub_25784. $298A</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPurgeStrokeTimeMin</title>
+  <description>Leak detection pump, purge check state: stroke time below this value ends the state $298A</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x298A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15127,9 +15127,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x343" flags="0x0">
-  <title>DiagThresh5</title>
-  <description>Byte compared with; read by Sub_25784. $298B</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpTestTime</title>
+  <description>Leak detection pump, test state: state time before the result is judged $298B</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x298B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15141,7 +15141,7 @@
  <XDFCONSTANT uniqueid="0x344" flags="0x0">
   <title>LdpVacuumMin2</title>
   <description>EVAP leak test: manifold vacuum limit of the last state $298C</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x298C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -15151,9 +15151,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x345" flags="0x0">
-  <title>DiagV0599Thresh</title>
-  <description>Byte compared with V0599; read by Sub_25784. $298D</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpVacLowCountMax</title>
+  <description>Leak detection pump: low-vacuum counts ($0599,Z) allowed in the end state $298D</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x298D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15163,9 +15163,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x346" flags="0x0">
-  <title>DiagV059AThresh</title>
-  <description>Byte compared with V059A; read by Sub_25784. $298E</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpVacLowTotalMax</title>
+  <description>Leak detection pump: total low-vacuum counts ($059A,Z) that abort the test $298E</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x298E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15175,9 +15175,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x347" flags="0x0">
-  <title>DiagV0597Thresh2</title>
-  <description>Byte compared with V0597; read by Sub_25784. $298F</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpWindowStrokes2</title>
+  <description>Leak detection pump, end state: strokes needed with few low-vacuum counts $298F</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x298F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>

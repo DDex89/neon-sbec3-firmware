@@ -2678,17 +2678,17 @@
    "auto": false
   },
   "3055": {
-   "name": "DiagLevelLimit",
-   "category": "Diagnostics",
-   "desc": "Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z",
+   "name": "LdpPumpTimeByLevel",
+   "category": "EVAP purge",
+   "desc": "Leak detection pump, pump-up state: state time limit ($0590,Z) against fuel level",
    "x": "raw",
    "y": "raw",
    "auto": false
   },
   "3061": {
-   "name": "DiagLevelLimit2",
-   "category": "Diagnostics",
-   "desc": "As DiagLevelLimit with $0649,Z bit 1 set",
+   "name": "LdpPumpTimeByLevel2",
+   "category": "EVAP purge",
+   "desc": "As LdpPumpTimeByLevel with $0649,Z bit 1 set",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -2962,12 +2962,10 @@
    "name": "CalThresh1"
   },
   "0315": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_32318.",
-   "name": "ThermistorValue1"
+   "name": "ObdStandardIndex",
+   "desc": "Index into the OBD-requirements value list at $32178 sent for mode $01 PID $1C (7 selects $01, OBD II as defined by CARB)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "0316": {
    "size": 1,
@@ -3404,8 +3402,8 @@
    "size": 1
   },
   "034C": {
-   "name": "ObdStandard",
-   "desc": "Value sent for the OBD-requirements PID",
+   "name": "ObdO2SensorsPresent",
+   "desc": "OBD-II mode $01 PID $13: oxygen sensors present ($03 = bank 1 sensors 1 and 2)",
    "category": "Diagnostics",
    "size": 1
   },
@@ -8645,28 +8643,22 @@
    "size": 1
   },
   "2AAA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlOverspeedBand",
+   "desc": "Speed control: overspeed below this value ends the accel/resume state bits ($0400,Z bit 2)",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh1"
+   "size": 1
   },
   "2AAB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlResumeHoldInit",
+   "desc": "Speed control: start value of $041F,Z when resume engages",
    "category": "Speed control",
-   "desc": "Byte stored into V041F; read by Sub_3B800.",
-   "name": "SpeedCtlV041FInit"
+   "size": 1
   },
   "2ABE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlErrorBias",
+   "desc": "Speed control: bias added to the speed error term (set speed × 4 − speed) kept in $040F,Z",
    "category": "Speed control",
-   "desc": "Byte added to SpeedCtlSetSpeed; read by Sub_3B800.",
-   "name": "SpeedCtlSetSpeedAdder"
+   "size": 1
   },
   "2ABF": {
    "name": "SpeedCtlServoSplitSpeed",
@@ -8675,12 +8667,10 @@
    "size": 1
   },
   "2AC0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlAdaptPeriod",
+   "desc": "Speed control gain adaptation: SpeedCtlTimer count between adaptation steps",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh2"
+   "size": 1
   },
   "2AC1": {
    "name": "SpeedCtlTimerMax",
@@ -8689,60 +8679,46 @@
    "size": 1
   },
   "2AC2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlAdaptErrorMin",
+   "desc": "Speed control gain adaptation: peak speed error ($040F,Z) at or above which the gain is adapted",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh3"
+   "size": 1
   },
   "2AC3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlAdaptSumHigh",
+   "desc": "Speed control gain adaptation: error sum above this value raises the gain",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh4"
+   "size": 1
   },
   "2AC4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlAdaptSumLow",
+   "desc": "Speed control gain adaptation: error sum below this (signed) value lowers the gain",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh5"
+   "size": 1
   },
   "2AC5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlAdaptStepUp",
+   "desc": "Speed control gain adaptation: gain increase per step",
    "category": "Speed control",
-   "desc": "Byte added to; read by Sub_3B800.",
-   "name": "SpeedCtlAdder1"
+   "size": 1
   },
   "2AC6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlAdaptStepDown",
+   "desc": "Speed control gain adaptation: gain decrease per step",
    "category": "Speed control",
-   "desc": "Byte subtracted from; read by Sub_3B800.",
-   "name": "SpeedCtlOffset"
+   "size": 1
   },
   "2AC7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlAdaptGainMax",
+   "desc": "Speed control gain adaptation: upper limit of the learned gains ($0190/$0191,Z)",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh6"
+   "size": 1
   },
   "2AC8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlAdaptGainMin",
+   "desc": "Speed control gain adaptation: lower (signed) limit of the learned gains",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh7"
+   "size": 1
   },
   "2AC9": {
    "name": "SpeedCtlVacuumMax",
@@ -8759,60 +8735,46 @@
    "size": 1
   },
   "2ACB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlVentPulseMin",
+   "desc": "Speed control: minimum vent pulse (ORed into the servo command $0418,Z)",
    "category": "Speed control",
-   "desc": "Byte mask for V00F0; read by Sub_3B800.",
-   "name": "SpeedCtlV00F0Mask"
+   "size": 1
   },
   "2ACC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlApplyPulseMin",
+   "desc": "Speed control: minimum vacuum pulse (ORed into the servo command)",
    "category": "Speed control",
-   "desc": "Byte mask for; read by Sub_3B800.",
-   "name": "SpeedCtlMask"
+   "size": 1
   },
   "2B07": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlOutputDeadband",
+   "desc": "Speed control: servo output at or below this value with a small speed error gives no pulse",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh8"
+   "size": 1
   },
   "2B08": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlSpeedDeadband",
+   "desc": "Speed control: speed error at or below this value gives no pulse",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh9"
+   "size": 1
   },
   "2B09": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlSettleTime",
+   "desc": "Speed control: SpeedCtlTimer count after which the engage state bit ($0401,Z bit 2) clears",
    "category": "Speed control",
-   "desc": "Byte compared with SpeedCtlTimer; read by Sub_3B800.",
-   "name": "SpeedCtlTimerThresh2"
+   "size": 1
   },
   "2B1A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlTapUpPulse",
+   "desc": "Speed control: vacuum pulse added to the servo command on a tap-up of the set speed",
    "category": "Speed control",
-   "desc": "Byte used with; read by Sub_3B800.",
-   "name": "SpeedCtlValue1"
+   "size": 1
   },
   "2B1B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlAccelHoldTime",
+   "desc": "Speed control: hold count ($0412,Z) of the accel/resume switch before accel mode starts",
    "category": "Speed control",
-   "desc": "Byte compared with V0412; read by Sub_3B800.",
-   "name": "SpeedCtlV0412Thresh"
+   "size": 1
   },
   "2B1C": {
    "name": "SpeedCtlAccelLead",
@@ -8821,12 +8783,10 @@
    "size": 1
   },
   "2B1D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlAccelLeadMax",
+   "desc": "Speed control: limit of the resume target speed above vehicle speed in accel mode",
    "category": "Speed control",
-   "desc": "Byte added to; read by Sub_3B800.",
-   "name": "SpeedCtlAdder2"
+   "size": 1
   },
   "2B1E": {
    "name": "SpeedCtlResumeOffset",
@@ -8835,12 +8795,10 @@
    "size": 1
   },
   "2B1F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlVentPulseAccel",
+   "desc": "Speed control: added to the vent pulse in accel mode ($0400,Z bit 3)",
    "category": "Speed control",
-   "desc": "Byte added to V00F0; read by Sub_3B800.",
-   "name": "SpeedCtlV00F0Adder"
+   "size": 1
   },
   "2B34": {
    "name": "SpeedCtlSpeedErrorMax",
@@ -8855,28 +8813,22 @@
    "size": 1
   },
   "2B36": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlSetPulse",
+   "desc": "Speed control: vacuum pulse added to the servo command when the speed is set",
    "category": "Speed control",
-   "desc": "Byte used with; read by Sub_3B800.",
-   "name": "SpeedCtlValue2"
+   "size": 1
   },
   "2B37": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlTapTime",
+   "desc": "Speed control: switch time (SpeedCtlTimer2) below which a press is a tap (also the post-tap hold $0415,Z)",
    "category": "Speed control",
-   "desc": "Byte compared with SpeedCtlTimer2; read by Sub_3B800.",
-   "name": "SpeedCtlTimer2Thresh1"
+   "size": 1
   },
   "2B38": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlCoastHoldTime",
+   "desc": "Speed control: switch hold time before coast mode starts (with Options0332 bits 3-4 clear)",
    "category": "Speed control",
-   "desc": "Byte compared with SpeedCtlTimer2; read by Sub_3B800.",
-   "name": "SpeedCtlTimer2Thresh2"
+   "size": 1
   },
   "2B39": {
    "name": "SpeedCtlResumeOffset2",
@@ -8885,36 +8837,28 @@
    "size": 1
   },
   "2B3A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlHoldGain",
+   "desc": "Speed control: signed fraction applied to the switch hold count $0412,Z for the servo pulse",
    "category": "Speed control",
-   "desc": "Byte used with; read by Sub_3B800.",
-   "name": "SpeedCtlValue3"
+   "size": 1
   },
   "2B3B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlApplyPulseResume",
+   "desc": "Speed control: added to the vacuum pulse in resume mode ($0400,Z bit 4)",
    "category": "Speed control",
-   "desc": "Byte added to; read by Sub_3B800.",
-   "name": "SpeedCtlAdder3"
+   "size": 1
   },
   "2B46": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlUnderspeedLarge",
+   "desc": "Speed control: underspeed at or above this value gives the long fixed vacuum pulse ($0F)",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh11"
+   "size": 1
   },
   "2B47": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlUnderspeedMedium",
+   "desc": "Speed control: underspeed at or above this value gives the short fixed vacuum pulse ($05)",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh12"
+   "size": 1
   },
   "2B48": {
    "name": "SpeedCtlRatioMax",
@@ -8964,12 +8908,10 @@
    "category": "Sensors"
   },
   "2B4F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlApplyThrottleMin",
+   "desc": "Speed control: throttle opening at or above which the vacuum pulse is limited by the tables at $2BB5/$2BBD",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh13"
+   "size": 1
   },
   "2B5C": {
    "size": 1,
@@ -9028,12 +8970,11 @@
    "name": "SpeedCtlRpmSpeedRatioThresh3"
   },
   "2B63": {
-   "size": 1,
+   "name": "SpeedCtlOverrideCoolantMin",
+   "desc": "Speed control: coolant at or above this value for the driver-override throttle check",
    "unit": "tempc",
-   "auto": true,
    "category": "Speed control",
-   "desc": "Byte compared with CoolantTemp; read by Sub_3B800.",
-   "name": "SpeedCtlCoolantThresh"
+   "size": 1
   },
   "2B64": {
    "size": 2,
@@ -9052,20 +8993,16 @@
    "name": "SpeedCtlFactor2"
   },
   "2B68": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlOverrideMargin",
+   "desc": "Speed control: throttle opened this much beyond the servo opening counts as driver override",
    "category": "Speed control",
-   "desc": "Byte compared with; read by Sub_3B800.",
-   "name": "SpeedCtlThresh14"
+   "size": 1
   },
   "2B69": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlOverrideLoopMask",
+   "desc": "Speed control: main loop mask that sets the period of the driver-override check",
    "category": "Speed control",
-   "desc": "Byte mask for MainLoopCounter; read by Sub_3B800.",
-   "name": "SpeedCtlLoopMask"
+   "size": 1
   },
   "2B8A": {
    "size": 1,
@@ -9129,12 +9066,10 @@
    "name": "SpeedCtlV0423Thresh"
   },
   "2B95": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlVentDelayCount",
+   "desc": "Speed control: vent requests ($0424,Z) with $0406,Z bit 6 set before the vent acts",
    "category": "Speed control",
-   "desc": "Byte compared with V0424; read by Sub_3B800.",
-   "name": "SpeedCtlV0424Thresh"
+   "size": 1
   },
   "2BB6": {
    "size": 1,
@@ -9517,233 +9452,187 @@
    "name": "LdpBattTempMax",
    "desc": "EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "3036": {
    "name": "LdpBattTempMin",
    "desc": "EVAP leak test: battery temperature at or above this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "3037": {
    "name": "LdpSoakDiffMax",
    "desc": "EVAP leak test: coolant minus battery temperature below this value (cold soak)",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "3038": {
    "name": "LdpVoltsMax",
    "desc": "EVAP leak test: battery voltage at or below this value",
    "unit": "volt16",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "3039": {
    "name": "LdpVoltsMin",
    "desc": "EVAP leak test: battery voltage at or above this value",
    "unit": "volt16",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "303A": {
    "name": "LdpVacuumMin",
    "desc": "EVAP leak test: manifold vacuum at or above this value for the test states",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "303B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0591; read by Sub_25DA8.",
-   "name": "DiagV0591Thresh"
+   "name": "LdpPumpOnTime",
+   "desc": "Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke",
+   "category": "EVAP purge",
+   "size": 1
   },
   "303C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0593; read by Sub_25784.",
-   "name": "DiagV0593Thresh"
+   "name": "LdpStrokeTimeMax",
+   "desc": "Leak detection pump, pump-up state: stroke time ($0593,Z) at or above which the stroke counts restart",
+   "category": "EVAP purge",
+   "size": 1
   },
   "303D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0592; read by Sub_25784, Sub_25DA8.",
-   "name": "DiagV0592Thresh"
+   "name": "LdpPumpOffTime",
+   "desc": "Leak detection pump: pump-off count ($0592,Z) per stroke",
+   "category": "EVAP purge",
+   "size": 1
   },
   "303E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_25DA8.",
-   "name": "DiagValue1"
+   "name": "LdpStrokeFilter",
+   "desc": "Leak detection pump: filter weight of the averaged stroke time ($0595,Z)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "303F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with DiagMonPeak; read by Sub_25DA8.",
-   "name": "DiagMonPeakThresh1"
+   "name": "LdpStrokeTimeValid",
+   "desc": "Leak detection pump: stroke time at or above which it is stored as the result ($0595,Z) before filtering starts",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3040": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh1"
+   "name": "LdpPumpOnTimeStart",
+   "desc": "Leak detection pump, start state: pump-on count before the first stroke",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3041": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh2"
+   "name": "LdpGrossTime",
+   "desc": "Leak detection pump, gross-leak state: state time ($0590,Z) for the first strokes",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3042": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0590; read by Sub_25784.",
-   "name": "DiagV0590Thresh"
+   "name": "LdpPumpTimeMin",
+   "desc": "Leak detection pump, pump-up state: state time limit after refuelling; also taken off the time-out count $0598,Z per stroke window",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3043": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0598; read by Sub_25784.",
-   "name": "DiagV0598Thresh"
+   "name": "LdpPumpUpTimeMax",
+   "desc": "Leak detection pump, pump-up state: time-out count ($0598,Z) that ends the state",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3044": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh3"
+   "name": "LdpRecheckTime",
+   "desc": "Leak detection pump, recheck state: state time for the strokes",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3045": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh4"
+   "name": "LdpTestTimeAlt",
+   "desc": "Leak detection pump, test state: state time with $0649,Z bit 1 set",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3046": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh5"
+   "name": "LdpTestTime",
+   "desc": "Leak detection pump, test state: state time before the result is judged",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3047": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0599; read by Sub_25784.",
-   "name": "DiagV0599Thresh"
+   "name": "LdpVacLowCountMax",
+   "desc": "Leak detection pump: low-vacuum counts ($0599,Z) allowed in the end state",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3048": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V059A; read by Sub_25784.",
-   "name": "DiagV059AThresh"
+   "name": "LdpVacLowTotalMax",
+   "desc": "Leak detection pump: total low-vacuum counts ($059A,Z) that abort the test",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3049": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0596; read by Sub_25784.",
-   "name": "DiagV0596Thresh1"
+   "name": "LdpGrossStrokes",
+   "desc": "Leak detection pump, gross-leak state: strokes ($0596,Z) before the stroke time is judged",
+   "category": "EVAP purge",
+   "size": 1
   },
   "304A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0597; read by Sub_25784.",
-   "name": "DiagV0597Thresh1"
+   "name": "LdpWindowStrokes",
+   "desc": "Leak detection pump, pump-up state: strokes per time-out window ($0597,Z)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "304B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0596; read by Sub_25784.",
-   "name": "DiagV0596Thresh2"
+   "name": "LdpRecheckStrokes",
+   "desc": "Leak detection pump, recheck state: strokes before the stroke time is judged",
+   "category": "EVAP purge",
+   "size": 1
   },
   "304C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0597; read by Sub_25784.",
-   "name": "DiagV0597Thresh2"
+   "name": "LdpWindowStrokes2",
+   "desc": "Leak detection pump, end state: strokes needed with few low-vacuum counts",
+   "category": "EVAP purge",
+   "size": 1
   },
   "304D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with DiagMonPeak; read by Sub_25784.",
-   "name": "DiagMonPeakThresh2"
+   "name": "LdpSealedStrokeTime",
+   "desc": "Leak detection pump, gross-leak state: stroke time at or above which the system holds pressure (no gross leak)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "304E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with DiagMonPeak; read by Sub_25784.",
-   "name": "DiagMonPeakThresh3"
+   "name": "LdpSealedStrokeTime2",
+   "desc": "Leak detection pump, recheck state: stroke time at or above which the system holds pressure",
+   "category": "EVAP purge",
+   "size": 1
   },
   "304F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0595; read by Sub_25784.",
-   "name": "DiagV0595Thresh"
+   "name": "LdpSmallLeakStrokeTime",
+   "desc": "Leak detection pump, test state: averaged stroke time below this value is a small leak (also the mode $06 limit, result in $0171,Z)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3050": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh6"
+   "name": "LdpLargeLeakStrokeTime",
+   "desc": "Leak detection pump, test state: averaged stroke time below this value is a large leak",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3051": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with DiagMonPeak; read by Sub_25784.",
-   "name": "DiagMonPeakThresh4"
+   "name": "LdpPurgeStrokeTimeMin",
+   "desc": "Leak detection pump, purge check state: stroke time below this value ends the state",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3052": {
    "name": "LdpVacuumMin2",
    "desc": "EVAP leak test: manifold vacuum limit of the last state",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "3053": {
@@ -9796,20 +9685,16 @@
    "size": 2
   },
   "306F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte used with V05B1; read by Sub_252A8.",
-   "name": "DiagV05B1Value"
+   "name": "PurgeFlowSettleCount",
+   "desc": "EVAP purge flow test (Sub_252A8): settle count ($05B1,Z) before the test starts",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3070": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_252A8.",
-   "name": "DiagValue2"
+   "name": "PurgeFlowSettleStart",
+   "desc": "EVAP purge flow test: start value of the settle count = PurgeFlowSettleCount × (256 − this)/256 (0 = start at zero)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3071": {
    "name": "PurgeMonIacBand",
@@ -9845,60 +9730,48 @@
    "name": "O2Adder5"
   },
   "3081": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V042D; read by Sub_252A8.",
-   "name": "DiagV042DThresh"
+   "name": "PurgeFlowDutyRise",
+   "desc": "EVAP purge flow test: purge duty rise ($042D,Z minus the start value) needed before the rpm check",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3082": {
-   "size": 2,
+   "name": "PurgeFlowRpmRise",
+   "desc": "EVAP purge flow test: rpm rise that counts as purge flow (also the mode $06 test $53 limit; $FF00 = off)",
    "unit": "rpmw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word used with EngineRpm; read by Sub_252A8, Sub_32318.",
-   "name": "ThermistorRpmValue"
+   "category": "EVAP purge",
+   "size": 2
   },
   "3084": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word used with; read by Sub_252A8, Sub_32318.",
-   "name": "ThermistorValue6"
+   "name": "PurgeFlowRpmRiseAlt",
+   "desc": "As PurgeFlowRpmRise with $0312,Z bit 6 set",
+   "unit": "rpmw",
+   "category": "EVAP purge",
+   "size": 2
   },
   "3086": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V05B4; read by Sub_252A8.",
-   "name": "DiagV05B4Thresh"
+   "name": "PurgeFlowIacDrop",
+   "desc": "EVAP purge flow test: IAC position drop that counts as purge flow",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3087": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_252A8.",
-   "name": "DiagThresh7"
+   "name": "PurgeFlowIacDropAlt",
+   "desc": "As PurgeFlowIacDrop with $0312,Z bit 6 set",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3088": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Closed loop",
-   "desc": "Byte compared with V05B9; read by Sub_155C8, Sub_252A8.",
-   "name": "O2V05B9Thresh"
+   "name": "PurgeFlowTrimDrop",
+   "desc": "EVAP purge flow test: short-term trim drop that counts as purge flow (also used by Sub_155C8)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "3089": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_155C8, Sub_252A8.",
-   "name": "O2Thresh21"
+   "name": "PurgeFlowTrimDropAlt",
+   "desc": "As PurgeFlowTrimDrop with $0312,Z bit 6 set",
+   "category": "EVAP purge",
+   "size": 1
   },
   "308A": {
    "size": 1,
@@ -9909,12 +9782,10 @@
    "name": "PurgeV006AThresh"
   },
   "308B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V05BD; read by Sub_252A8.",
-   "name": "DiagV05BDThresh"
+   "name": "PurgeFlowFailCount",
+   "desc": "EVAP purge flow test: tests without a response ($05BD,Z) before the monitor sets its result",
+   "category": "EVAP purge",
+   "size": 1
   },
   "308C": {
    "name": "EgrMonSteadyTime",
@@ -10037,7 +9908,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_2A496, Sub_2A664.",
-   "name": "DiagThresh8"
+   "name": "DiagThresh2"
   },
   "30C3": {
    "size": 1,
@@ -10045,7 +9916,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_2A07E, Sub_2A290.",
-   "name": "DiagThresh9"
+   "name": "DiagThresh3"
   },
   "30C4": {
    "size": 1,
@@ -10169,7 +10040,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh12"
+   "name": "DiagThresh6"
   },
   "313C": {
    "size": 1,
@@ -10177,7 +10048,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh13"
+   "name": "DiagThresh7"
   },
   "313D": {
    "size": 1,
@@ -10193,7 +10064,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh14"
+   "name": "DiagThresh8"
   },
   "3150": {
    "size": 1,
@@ -10201,7 +10072,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh15"
+   "name": "DiagThresh9"
   },
   "3154": {
    "size": 1,
@@ -10306,7 +10177,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh16"
+   "name": "DiagThresh10"
   },
   "318B": {
    "name": "CatMonTestLength",
@@ -10348,7 +10219,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh20"
+   "name": "DiagThresh14"
   },
   "31AB": {
    "size": 1,
@@ -10356,7 +10227,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh21"
+   "name": "DiagThresh15"
   },
   "31AC": {
    "size": 1,
@@ -10364,7 +10235,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh22"
+   "name": "DiagThresh16"
   },
   "31AD": {
    "name": "O2SwitchFilterLean",
@@ -10379,36 +10250,28 @@
    "size": 1
   },
   "31AF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_32318.",
-   "name": "ThermistorThresh1"
+   "name": "ObdTid21Limit",
+   "desc": "OBD-II mode $06 test $21: limit sent with the result $0167,Z (result only cleared in this code)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "31B0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_32318.",
-   "name": "ThermistorThresh2"
+   "name": "ObdTid21LimitAlt",
+   "desc": "OBD-II mode $06 test $21: limit used when the result is above ObdTid21Limit and $0166,Z bit 4 is clear",
+   "category": "Diagnostics",
+   "size": 1
   },
   "31B1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_32318.",
-   "name": "ThermistorThresh3"
+   "name": "ObdTid22Limit",
+   "desc": "OBD-II mode $06 test $22: limit sent with the result $0169,Z (result only cleared in this code)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "31B2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_32318.",
-   "name": "ThermistorThresh4"
+   "name": "ObdTid22LimitAlt",
+   "desc": "OBD-II mode $06 test $22: second limit, as ObdTid21LimitAlt",
+   "category": "Diagnostics",
+   "size": 1
   },
   "31B3": {
    "size": 1,
@@ -10416,7 +10279,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh23"
+   "name": "DiagThresh17"
   },
   "31B4": {
    "name": "O2SwitchLean2",

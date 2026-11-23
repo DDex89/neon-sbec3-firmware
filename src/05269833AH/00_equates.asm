@@ -63,7 +63,12 @@ SpeedCtlOverrideTimer equ $041D        ; $F841D
 PurgeRamp        equ $042C        ; $F842C
 PurgeCommand     equ $042E        ; $F842E
 PurgeDuty        equ $0431        ; $F8431
-DiagMonPeak      equ $0594        ; $F8594
+LdpState         equ $058F        ; $F858F
+LdpStateTime     equ $0590        ; $F8590
+LdpStrokeCount   equ $0593        ; $F8593
+LdpStrokeTime    equ $0594        ; $F8594
+LdpStrokeTimeAvg equ $0595        ; $F8595
+LdpStrokes       equ $0596        ; $F8596
 SegmentRpm       equ $05C2        ; $F85C2
 MisfireChangeFiltered equ $05D4        ; $F85D4
 MisfireNoiseLevel equ $05D6        ; $F85D6

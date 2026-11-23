@@ -16,6 +16,10 @@
  "0E8A6": "Blend16Signed",
  "123F8": "EmptyHook",
  "1240C": "ReadMap",
+ "17AEA": "PurgeFlowTest",
+ "19CCA": "LdpMonitor",
+ "1A19E": "LdpStateTimer",
+ "1A1BE": "LdpPumpStroke",
  "1BAB0": "ReportPass",
  "1BD48": "ReportFault",
  "1C082": "CalcBaseSpark"

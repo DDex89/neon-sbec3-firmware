@@ -279,8 +279,8 @@
 CalThresh1:
         dc.b    $33                                      ; Byte compared with; read by Sub_2191E. Fault: P0601.
         dc.b    $41,$48,$A0,$20,$20,$20,$20,$20,$20,$73,$04,$09,$B3,$96,$04
-ThermistorValue1:
-        dc.b    $07                                      ; Byte used with; read by Sub_32318.
+ObdStandardIndex:
+        dc.b    $07                                      ; Index into the OBD-requirements value list at $32178 sent for mode $01 PID $1C (7 selects $01, OBD II as defined by CARB)
 StartValue1:
         dc.b    $07                                      ; Byte used with; read by Reset. Fault: P1602.
         dc.b    $01,$04,$01,$08,$10,$07,$01,$07,$04
@@ -361,8 +361,8 @@ ObdMonitorByte:
         dc.b    $07                                      ; OBD-II monitor status: value sent in the second byte ($0A2A,Z)
 ObdMonitorMask:
         dc.b    $E5                                      ; OBD-II monitor status: mask applied to the monitor flags $3F,Z (and sent as the supported monitors)
-ObdStandard:
-        dc.b    $03                                      ; Value sent for the OBD-requirements PID
+ObdO2SensorsPresent:
+        dc.b    $03                                      ; OBD-II mode $01 PID $13: oxygen sensors present ($03 = bank 1 sensors 1 and 2)
         dc.b    $00,$00,$A8,$F1,$80,$00,$00,$01,$80,$00,$E0,$01,$80,$00,$00,$00
 ThrottleCloseConfirm:
         dc.b    $01                                      ; Throttle-closed detection: loops the throttle must stay near the closed value ($0E01,Z) before it counts as closed
@@ -6445,10 +6445,10 @@ SpeedCtlEngageBaro:
         dc.b    255,128                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-SpeedCtlThresh1:
-        dc.b    $09                                      ; Byte compared with; read by Sub_3B800.
-SpeedCtlV041FInit:
-        dc.b    $FF                                      ; Byte stored into V041F; read by Sub_3B800.
+SpeedCtlOverspeedBand:
+        dc.b    $09                                      ; Speed control: overspeed below this value ends the accel/resume state bits ($0400,Z bit 2)
+SpeedCtlResumeHoldInit:
+        dc.b    $FF                                      ; Speed control: start value of $041F,Z when resume engages
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlEngageErrorAdder ($2AAC): 2D table, 3 points, unsigned
@@ -6462,46 +6462,46 @@ SpeedCtlEngageErrorAdder:
         dc.b    112,120, 128,128, 144,155                ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-SpeedCtlSetSpeedAdder:
-        dc.b    $04                                      ; Byte added to SpeedCtlSetSpeed; read by Sub_3B800.
+SpeedCtlErrorBias:
+        dc.b    $04                                      ; Speed control: bias added to the speed error term (set speed × 4 − speed) kept in $040F,Z
 SpeedCtlServoSplitSpeed:
         dc.b    $64                                      ; Speed control: set speed that selects the servo table at $8190 or $8191
-SpeedCtlThresh2:
-        dc.b    $0F                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlAdaptPeriod:
+        dc.b    $0F                                      ; Speed control gain adaptation: SpeedCtlTimer count between adaptation steps
 SpeedCtlTimerMax:
         dc.b    $13                                      ; Speed control: limit of SpeedCtlTimer
-SpeedCtlThresh3:
-        dc.b    $06                                      ; Byte compared with; read by Sub_3B800.
-SpeedCtlThresh4:
-        dc.b    $07                                      ; Byte compared with; read by Sub_3B800.
-SpeedCtlThresh5:
-        dc.b    $F8                                      ; Byte compared with; read by Sub_3B800.
-SpeedCtlAdder1:
-        dc.b    $01                                      ; Byte added to; read by Sub_3B800.
-SpeedCtlOffset:
-        dc.b    $02                                      ; Byte subtracted from; read by Sub_3B800.
-SpeedCtlThresh6:
-        dc.b    $1B                                      ; Byte compared with; read by Sub_3B800.
-SpeedCtlThresh7:
-        dc.b    $E5                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlAdaptErrorMin:
+        dc.b    $06                                      ; Speed control gain adaptation: peak speed error ($040F,Z) at or above which the gain is adapted
+SpeedCtlAdaptSumHigh:
+        dc.b    $07                                      ; Speed control gain adaptation: error sum above this value raises the gain
+SpeedCtlAdaptSumLow:
+        dc.b    $F8                                      ; Speed control gain adaptation: error sum below this (signed) value lowers the gain
+SpeedCtlAdaptStepUp:
+        dc.b    $01                                      ; Speed control gain adaptation: gain increase per step
+SpeedCtlAdaptStepDown:
+        dc.b    $02                                      ; Speed control gain adaptation: gain decrease per step
+SpeedCtlAdaptGainMax:
+        dc.b    $1B                                      ; Speed control gain adaptation: upper limit of the learned gains ($0190/$0191,Z)
+SpeedCtlAdaptGainMin:
+        dc.b    $E5                                      ; Speed control gain adaptation: lower (signed) limit of the learned gains
 SpeedCtlVacuumMax:
         dc.b    $A2                                      ; Speed control: manifold vacuum upper limit for $0401,Z bit 0
 SpeedCtlVacuumMin:
         dc.b    $20                                      ; Speed control: manifold vacuum lower limit for $0401,Z bit 0
-SpeedCtlV00F0Mask:
-        dc.b    $01                                      ; Byte mask for V00F0; read by Sub_3B800.
-SpeedCtlMask:
-        dc.b    $01                                      ; Byte mask for; read by Sub_3B800.
+SpeedCtlVentPulseMin:
+        dc.b    $01                                      ; Speed control: minimum vent pulse (ORed into the servo command $0418,Z)
+SpeedCtlApplyPulseMin:
+        dc.b    $01                                      ; Speed control: minimum vacuum pulse (ORed into the servo command)
         dc.b    $05,$80,$00,$01,$08,$02,$2C,$05,$4D,$10,$FF,$40,$02,$20,$33,$00
         dc.b    $80,$F2,$FF,$FF,$FF,$FF,$02,$80,$93,$01,$9A,$03,$FF,$FF,$02,$80
         dc.b    $78,$80,$80,$FF,$FF,$FF,$02,$80,$4D,$02,$60,$01,$FF,$FF,$03,$80
         dc.b    $60,$80,$68,$FF,$88,$40,$FF,$FF,$FF,$FF
-SpeedCtlThresh8:
-        dc.b    $00                                      ; Byte compared with; read by Sub_3B800.
-SpeedCtlThresh9:
-        dc.b    $0C                                      ; Byte compared with; read by Sub_3B800.
-SpeedCtlTimerThresh2:
-        dc.b    $03                                      ; Byte compared with SpeedCtlTimer; read by Sub_3B800.
+SpeedCtlOutputDeadband:
+        dc.b    $00                                      ; Speed control: servo output at or below this value with a small speed error gives no pulse
+SpeedCtlSpeedDeadband:
+        dc.b    $0C                                      ; Speed control: speed error at or below this value gives no pulse
+SpeedCtlSettleTime:
+        dc.b    $03                                      ; Speed control: SpeedCtlTimer count after which the engage state bit ($0401,Z bit 2) clears
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlThrottleTerm ($2B0A): 2D table, 2 points, unsigned
@@ -6528,18 +6528,18 @@ SpeedCtlSpeedTerm:
         dc.b    60,22, 130,16                            ; x, y
 
         dc.b    $FF,$FF
-SpeedCtlValue1:
-        dc.b    $04                                      ; Byte used with; read by Sub_3B800.
-SpeedCtlV0412Thresh:
-        dc.b    $00                                      ; Byte compared with V0412; read by Sub_3B800.
+SpeedCtlTapUpPulse:
+        dc.b    $04                                      ; Speed control: vacuum pulse added to the servo command on a tap-up of the set speed
+SpeedCtlAccelHoldTime:
+        dc.b    $00                                      ; Speed control: hold count ($0412,Z) of the accel/resume switch before accel mode starts
 SpeedCtlAccelLead:
         dc.b    $12                                      ; Speed control: lead added to the vehicle speed in the accelerate branch
-SpeedCtlAdder2:
-        dc.b    $12                                      ; Byte added to; read by Sub_3B800.
+SpeedCtlAccelLeadMax:
+        dc.b    $12                                      ; Speed control: limit of the resume target speed above vehicle speed in accel mode
 SpeedCtlResumeOffset:
         dc.b    $01                                      ; Speed control: offset subtracted from the resume speed
-SpeedCtlV00F0Adder:
-        dc.b    $07                                      ; Byte added to V00F0; read by Sub_3B800.
+SpeedCtlVentPulseAccel:
+        dc.b    $07                                      ; Speed control: added to the vent pulse in accel mode ($0400,Z bit 3)
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlErrorGain ($2B20): 2D table, 3 points, unsigned
@@ -6570,18 +6570,18 @@ SpeedCtlSpeedErrorMax:
         dc.b    $06                                      ; Speed control: speed error (set minus actual) above which the step branch is skipped
 SpeedCtlCoastStep:
         dc.b    $02                                      ; Speed control: set-speed decrease per coast step
-SpeedCtlValue2:
-        dc.b    $03                                      ; Byte used with; read by Sub_3B800.
-SpeedCtlTimer2Thresh1:
-        dc.b    $30                                      ; Byte compared with SpeedCtlTimer2; read by Sub_3B800.
-SpeedCtlTimer2Thresh2:
-        dc.b    $00                                      ; Byte compared with SpeedCtlTimer2; read by Sub_3B800.
+SpeedCtlSetPulse:
+        dc.b    $03                                      ; Speed control: vacuum pulse added to the servo command when the speed is set
+SpeedCtlTapTime:
+        dc.b    $30                                      ; Speed control: switch time (SpeedCtlTimer2) below which a press is a tap (also the post-tap hold $0415,Z)
+SpeedCtlCoastHoldTime:
+        dc.b    $00                                      ; Speed control: switch hold time before coast mode starts (with Options0332 bits 3-4 clear)
 SpeedCtlResumeOffset2:
         dc.b    $08                                      ; Speed control: second resume-speed offset
-SpeedCtlValue3:
-        dc.b    $4D                                      ; Byte used with; read by Sub_3B800.
-SpeedCtlAdder3:
-        dc.b    $05                                      ; Byte added to; read by Sub_3B800.
+SpeedCtlHoldGain:
+        dc.b    $4D                                      ; Speed control: signed fraction applied to the switch hold count $0412,Z for the servo pulse
+SpeedCtlApplyPulseResume:
+        dc.b    $05                                      ; Speed control: added to the vacuum pulse in resume mode ($0400,Z bit 4)
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlErrorGainResume ($2B3C): 2D table, 3 points, signed
@@ -6595,10 +6595,10 @@ SpeedCtlErrorGainResume:
         dc.b    0,-2, 64,-48, 255,-80                    ; x, y
 
         dc.b    $FF,$FF
-SpeedCtlThresh11:
-        dc.b    $C0                                      ; Byte compared with; read by Sub_3B800.
-SpeedCtlThresh12:
-        dc.b    $A0                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlUnderspeedLarge:
+        dc.b    $C0                                      ; Speed control: underspeed at or above this value gives the long fixed vacuum pulse ($0F)
+SpeedCtlUnderspeedMedium:
+        dc.b    $A0                                      ; Speed control: underspeed at or above this value gives the short fixed vacuum pulse ($05)
 SpeedCtlRatioMax:
         dc.b    $55                                      ; Speed control engagement: rpm/speed ratio (gear) below this value
 SpeedCtlRatioMin:
@@ -6613,8 +6613,8 @@ SpeedCtlRpmMax:
         dc.b    $BC                                      ; Speed control engagement: engine rpm below this value
 ThrottleCloseHold:
         dc.b    $3C                                      ; Hold time $041C,Z loaded when the throttle closes
-SpeedCtlThresh13:
-        dc.b    $01                                      ; Byte compared with; read by Sub_3B800.
+SpeedCtlApplyThrottleMin:
+        dc.b    $01                                      ; Speed control: throttle opening at or above which the vacuum pulse is limited by the tables at $2BB5/$2BBD
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlSpeedMin ($2B50): 2D table, 1 points, unsigned
@@ -6642,16 +6642,16 @@ SpeedCtlValue7:
         dc.b    $00                                      ; Byte used with; read by Sub_3C46E.
 SpeedCtlRpmSpeedRatioThresh3:
         dc.b    $40                                      ; Byte compared with RpmSpeedRatio; read by Sub_3C46E.
-SpeedCtlCoolantThresh:
-        dc.b    $69                                      ; Byte compared with CoolantTemp; read by Sub_3B800.
+SpeedCtlOverrideCoolantMin:
+        dc.b    $69                                      ; Speed control: coolant at or above this value for the driver-override throttle check
 SpeedCtlFactor1:
         dc.b    $02,$37                                  ; Word multiplied; read by Sub_3C65C.
 SpeedCtlFactor2:
         dc.b    $02,$D6                                  ; Word multiplied; read by Sub_3C65C.
-SpeedCtlThresh14:
-        dc.b    $0A                                      ; Byte compared with; read by Sub_3B800.
-SpeedCtlLoopMask:
-        dc.b    $7F                                      ; Byte mask for MainLoopCounter; read by Sub_3B800.
+SpeedCtlOverrideMargin:
+        dc.b    $0A                                      ; Speed control: throttle opened this much beyond the servo opening counts as driver override
+SpeedCtlOverrideLoopMask:
+        dc.b    $7F                                      ; Speed control: main loop mask that sets the period of the driver-override check
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlOverrideThrottle ($2B6A): 2D table, 1 points, unsigned
@@ -6683,8 +6683,8 @@ SensorValue13:
 SpeedCtlV0423Thresh:
         dc.b    $00                                      ; Byte compared with V0423; read by Sub_3C690.
         dc.b    $00
-SpeedCtlV0424Thresh:
-        dc.b    $00                                      ; Byte compared with V0424; read by Sub_3B800.
+SpeedCtlVentDelayCount:
+        dc.b    $00                                      ; Speed control: vent requests ($0424,Z) with $0406,Z bit 6 set before the vent acts
 
 ;---------------------------------------------------------------------------------------------------
 ; MapHighThresholdRpm ($2B96): 2D table, 7 points, unsigned
@@ -7204,52 +7204,52 @@ LdpVoltsMin:
         dc.b    $92                                      ; EVAP leak test: battery voltage at or above this value
 LdpVacuumMin:
         dc.b    $20                                      ; EVAP leak test: manifold vacuum at or above this value for the test states
-DiagV0591Thresh:
-        dc.b    $14                                      ; Byte compared with V0591; read by Sub_25DA8.
-DiagV0593Thresh:
-        dc.b    $1C                                      ; Byte compared with V0593; read by Sub_25784.
-DiagV0592Thresh:
-        dc.b    $01                                      ; Byte compared with V0592; read by Sub_25784, Sub_25DA8.
-DiagValue1:
-        dc.b    $3A                                      ; Byte used with; read by Sub_25DA8.
-DiagMonPeakThresh1:
-        dc.b    $55                                      ; Byte compared with DiagMonPeak; read by Sub_25DA8.
-DiagThresh1:
-        dc.b    $29                                      ; Byte compared with; read by Sub_25784.
-DiagThresh2:
-        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
-DiagV0590Thresh:
-        dc.b    $06                                      ; Byte compared with V0590; read by Sub_25784.
-DiagV0598Thresh:
-        dc.b    $3E                                      ; Byte compared with V0598; read by Sub_25784.
-DiagThresh3:
-        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
-DiagThresh4:
-        dc.b    $18                                      ; Byte compared with; read by Sub_25784.
-DiagThresh5:
-        dc.b    $18                                      ; Byte compared with; read by Sub_25784.
-DiagV0599Thresh:
-        dc.b    $06                                      ; Byte compared with V0599; read by Sub_25784.
-DiagV059AThresh:
-        dc.b    $12                                      ; Byte compared with V059A; read by Sub_25784.
-DiagV0596Thresh1:
-        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
-DiagV0597Thresh1:
-        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
-DiagV0596Thresh2:
-        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
-DiagV0597Thresh2:
-        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
-DiagMonPeakThresh2:
-        dc.b    $27                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
-DiagMonPeakThresh3:
-        dc.b    $1E                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
-DiagV0595Thresh:
-        dc.b    $10                                      ; Byte compared with V0595; read by Sub_25784.
-DiagThresh6:
-        dc.b    $07                                      ; Byte compared with; read by Sub_25784.
-DiagMonPeakThresh4:
-        dc.b    $12                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+LdpPumpOnTime:
+        dc.b    $14                                      ; Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke
+LdpStrokeTimeMax:
+        dc.b    $1C                                      ; Leak detection pump, pump-up state: stroke time ($0593,Z) at or above which the stroke counts restart
+LdpPumpOffTime:
+        dc.b    $01                                      ; Leak detection pump: pump-off count ($0592,Z) per stroke
+LdpStrokeFilter:
+        dc.b    $3A                                      ; Leak detection pump: filter weight of the averaged stroke time ($0595,Z)
+LdpStrokeTimeValid:
+        dc.b    $55                                      ; Leak detection pump: stroke time at or above which it is stored as the result ($0595,Z) before filtering starts
+LdpPumpOnTimeStart:
+        dc.b    $29                                      ; Leak detection pump, start state: pump-on count before the first stroke
+LdpGrossTime:
+        dc.b    $06                                      ; Leak detection pump, gross-leak state: state time ($0590,Z) for the first strokes
+LdpPumpTimeMin:
+        dc.b    $06                                      ; Leak detection pump, pump-up state: state time limit after refuelling; also taken off the time-out count $0598,Z per stroke window
+LdpPumpUpTimeMax:
+        dc.b    $3E                                      ; Leak detection pump, pump-up state: time-out count ($0598,Z) that ends the state
+LdpRecheckTime:
+        dc.b    $06                                      ; Leak detection pump, recheck state: state time for the strokes
+LdpTestTimeAlt:
+        dc.b    $18                                      ; Leak detection pump, test state: state time with $0649,Z bit 1 set
+LdpTestTime:
+        dc.b    $18                                      ; Leak detection pump, test state: state time before the result is judged
+LdpVacLowCountMax:
+        dc.b    $06                                      ; Leak detection pump: low-vacuum counts ($0599,Z) allowed in the end state
+LdpVacLowTotalMax:
+        dc.b    $12                                      ; Leak detection pump: total low-vacuum counts ($059A,Z) that abort the test
+LdpGrossStrokes:
+        dc.b    $03                                      ; Leak detection pump, gross-leak state: strokes ($0596,Z) before the stroke time is judged
+LdpWindowStrokes:
+        dc.b    $05                                      ; Leak detection pump, pump-up state: strokes per time-out window ($0597,Z)
+LdpRecheckStrokes:
+        dc.b    $03                                      ; Leak detection pump, recheck state: strokes before the stroke time is judged
+LdpWindowStrokes2:
+        dc.b    $05                                      ; Leak detection pump, end state: strokes needed with few low-vacuum counts
+LdpSealedStrokeTime:
+        dc.b    $27                                      ; Leak detection pump, gross-leak state: stroke time at or above which the system holds pressure (no gross leak)
+LdpSealedStrokeTime2:
+        dc.b    $1E                                      ; Leak detection pump, recheck state: stroke time at or above which the system holds pressure
+LdpSmallLeakStrokeTime:
+        dc.b    $10                                      ; Leak detection pump, test state: averaged stroke time below this value is a small leak (also the mode $06 limit, result in $0171,Z)
+LdpLargeLeakStrokeTime:
+        dc.b    $07                                      ; Leak detection pump, test state: averaged stroke time below this value is a large leak
+LdpPurgeStrokeTimeMin:
+        dc.b    $12                                      ; Leak detection pump, purge check state: stroke time below this value ends the state
 LdpVacuumMin2:
         dc.b    $0D                                      ; EVAP leak test: manifold vacuum limit of the last state
 SensorPurgeDutyThresh1:
@@ -7258,26 +7258,26 @@ SensorV059BThresh:
         dc.b    $96                                      ; Byte compared with V059B; read by Sub_25E9E.
 
 ;---------------------------------------------------------------------------------------------------
-; DiagLevelLimit ($3055): 2D table, 1 points, unsigned
-; Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z
+; LdpPumpTimeByLevel ($3055): 2D table, 1 points, unsigned
+; Leak detection pump, pump-up state: state time limit ($0590,Z) against fuel level
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: FuelLevelScaled
 ; Read at $25A7E
 ;---------------------------------------------------------------------------------------------------
-DiagLevelLimit:
+LdpPumpTimeByLevel:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,27                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DiagLevelLimit2 ($3061): 2D table, 1 points, unsigned
-; As DiagLevelLimit with $0649,Z bit 1 set
+; LdpPumpTimeByLevel2 ($3061): 2D table, 1 points, unsigned
+; As LdpPumpTimeByLevel with $0649,Z bit 1 set
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: FuelLevelScaled
 ; Read at $25A6E
 ;---------------------------------------------------------------------------------------------------
-DiagLevelLimit2:
+LdpPumpTimeByLevel2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,27                                   ; x, y
 
@@ -7292,10 +7292,10 @@ PurgeMonMapMax:
         dc.b    $BA                                      ; Purge flow monitor: MAP at or below this value
 PurgeMonRpmBand:
         dc.b    $09,$10                                  ; Purge flow monitor: engine rpm within the idle target plus or minus this value
-DiagV05B1Value:
-        dc.b    $3C                                      ; Byte used with V05B1; read by Sub_252A8.
-DiagValue2:
-        dc.b    $EF                                      ; Byte used with; read by Sub_252A8.
+PurgeFlowSettleCount:
+        dc.b    $3C                                      ; EVAP purge flow test (Sub_252A8): settle count ($05B1,Z) before the test starts
+PurgeFlowSettleStart:
+        dc.b    $EF                                      ; EVAP purge flow test: start value of the settle count = PurgeFlowSettleCount × (256 − this)/256 (0 = start at zero)
 PurgeMonIacBand:
         dc.b    $01                                      ; Purge flow monitor: IAC command within this many steps of the IAC position
 PurgeMonIacDrift:
@@ -7308,24 +7308,24 @@ PurgeMonFilter:
 O2Adder5:
         dc.b    $00                                      ; Byte added to; read by Sub_15364.
         dc.b    $0F,$25,$05,$0E
-DiagV042DThresh:
-        dc.b    $A6                                      ; Byte compared with V042D; read by Sub_252A8.
-ThermistorRpmValue:
-        dc.b    $FF,$00                                  ; Word used with EngineRpm; read by Sub_252A8, Sub_32318.
-ThermistorValue6:
-        dc.b    $FF,$00                                  ; Word used with; read by Sub_252A8, Sub_32318.
-DiagV05B4Thresh:
-        dc.b    $7F                                      ; Byte compared with V05B4; read by Sub_252A8.
-DiagThresh7:
-        dc.b    $7F                                      ; Byte compared with; read by Sub_252A8.
-O2V05B9Thresh:
-        dc.b    $1E                                      ; Byte compared with V05B9; read by Sub_155C8, Sub_252A8.
-O2Thresh21:
-        dc.b    $1E                                      ; Byte compared with; read by Sub_155C8, Sub_252A8.
+PurgeFlowDutyRise:
+        dc.b    $A6                                      ; EVAP purge flow test: purge duty rise ($042D,Z minus the start value) needed before the rpm check
+PurgeFlowRpmRise:
+        dc.b    $FF,$00                                  ; EVAP purge flow test: rpm rise that counts as purge flow (also the mode $06 test $53 limit; $FF00 = off)
+PurgeFlowRpmRiseAlt:
+        dc.b    $FF,$00                                  ; As PurgeFlowRpmRise with $0312,Z bit 6 set
+PurgeFlowIacDrop:
+        dc.b    $7F                                      ; EVAP purge flow test: IAC position drop that counts as purge flow
+PurgeFlowIacDropAlt:
+        dc.b    $7F                                      ; As PurgeFlowIacDrop with $0312,Z bit 6 set
+PurgeFlowTrimDrop:
+        dc.b    $1E                                      ; EVAP purge flow test: short-term trim drop that counts as purge flow (also used by Sub_155C8)
+PurgeFlowTrimDropAlt:
+        dc.b    $1E                                      ; As PurgeFlowTrimDrop with $0312,Z bit 6 set
 PurgeV006AThresh:
         dc.b    $29                                      ; Byte compared with V006A; read by Sub_3DD3C.
-DiagV05BDThresh:
-        dc.b    $02                                      ; Byte compared with V05BD; read by Sub_252A8.
+PurgeFlowFailCount:
+        dc.b    $02                                      ; EVAP purge flow test: tests without a response ($05BD,Z) before the monitor sets its result
 EgrMonSteadyTime:
         dc.b    $49                                      ; EGR flow monitor: steady time ($0581,Z) before the test
 EgrMonCoolantMin:
@@ -7365,9 +7365,9 @@ FuelOffset4:
         dc.b    $03                                      ; Byte subtracted from result of FuelSysLimit2; read by Sub_2A4F2, Sub_2A6C0.
 FuelAdder:
         dc.b    $04                                      ; Byte added to result of FuelSysLimit; read by Sub_2A0F0, Sub_2A302.
-DiagThresh8:
+DiagThresh2:
         dc.b    $32                                      ; Byte compared with; read by Sub_2A496, Sub_2A664.
-DiagThresh9:
+DiagThresh3:
         dc.b    $32                                      ; Byte compared with; read by Sub_2A07E, Sub_2A290.
 FuelV05ABThresh:
         dc.b    $32                                      ; Byte compared with V05AB; read by Sub_2A4F2, Sub_2A6C0.
@@ -7460,18 +7460,18 @@ DiagV0A4EThresh:
 DiagV0543Thresh:
         dc.b    $1E                                      ; Byte compared with V0543; read by Sub_2877A.
         dc.b    $89,$85,$00,$00,$02,$00,$01,$00
-DiagThresh12:
+DiagThresh6:
         dc.b    $0B                                      ; Byte compared with; read by Sub_2877A.
         dc.b    $05,$2D,$00,$00
-DiagThresh13:
+DiagThresh7:
         dc.b    $7F                                      ; Byte compared with; read by Sub_2877A.
 O2Value36:
         dc.b    $00                                      ; Byte used with; read by Sub_14802.
         dc.b    $05,$FB,$00,$00,$0F,$F1,$00,$00,$15,$15,$00,$00,$15,$84,$8A,$00
         dc.b    $00
-DiagThresh14:
+DiagThresh8:
         dc.b    $70                                      ; Byte compared with; read by Sub_2877A.
-DiagThresh15:
+DiagThresh9:
         dc.b    $0C                                      ; Byte compared with; read by Sub_2877A.
         dc.b    $12,$80,$80
 CalRunTimeThresh:
@@ -7506,7 +7506,7 @@ CatMonTipInMax:
         dc.b    $01,$00                                  ; Catalyst monitor: tip-in fuel at or below this value
 CatMonDecelLeanMin:
         dc.b    $FA                                      ; Catalyst monitor: decel enleanment, when present, at or above this value
-DiagThresh16:
+DiagThresh10:
         dc.b    $50                                      ; Byte compared with; read by Sub_281E2.
         dc.b    $57,$7E,$31,$5F,$00,$00,$00,$00
 CatMonTestLength:
@@ -7521,25 +7521,25 @@ O2SwitchLean:
         dc.b    $15                                      ; Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction)
 O2SwitchRich:
         dc.b    $26                                      ; Catalyst/O2 switch analysis: raw O2 above this value counts as rich
-DiagThresh20:
+DiagThresh14:
         dc.b    $08                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh21:
+DiagThresh15:
         dc.b    $26                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh22:
+DiagThresh16:
         dc.b    $06                                      ; Byte compared with; read by Sub_281E2.
 O2SwitchFilterLean:
         dc.b    $26                                      ; Catalyst/O2 switch analysis: filter weight of the lean peak
 O2SwitchFilterRich:
         dc.b    $57                                      ; Catalyst/O2 switch analysis: filter weight of the rich peak
-ThermistorThresh1:
-        dc.b    $AD                                      ; Byte compared with; read by Sub_32318.
-ThermistorThresh2:
-        dc.b    $80                                      ; Byte compared with; read by Sub_32318.
-ThermistorThresh3:
-        dc.b    $00                                      ; Byte compared with; read by Sub_32318.
-ThermistorThresh4:
-        dc.b    $00                                      ; Byte compared with; read by Sub_32318.
-DiagThresh23:
+ObdTid21Limit:
+        dc.b    $AD                                      ; OBD-II mode $06 test $21: limit sent with the result $0167,Z (result only cleared in this code)
+ObdTid21LimitAlt:
+        dc.b    $80                                      ; OBD-II mode $06 test $21: limit used when the result is above ObdTid21Limit and $0166,Z bit 4 is clear
+ObdTid22Limit:
+        dc.b    $00                                      ; OBD-II mode $06 test $22: limit sent with the result $0169,Z (result only cleared in this code)
+ObdTid22LimitAlt:
+        dc.b    $00                                      ; OBD-II mode $06 test $22: second limit, as ObdTid21LimitAlt
+DiagThresh17:
         dc.b    $FF                                      ; Byte compared with; read by Sub_281E2.
 O2SwitchLean2:
         dc.b    $15                                      ; As O2SwitchLean for the other direction
@@ -13799,7 +13799,7 @@ L0C7B4:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16 ($0C7B8)
-; Called from: Sub_1824A, Sub_185DC, Sub_1A622, Sub_1AEB6, Sub_1D5CC, Sub_1E11A, Sub_23364, Sub_25D48 and 8 more routines (26 calls)
+; Called from: Sub_1824A, Sub_185DC, Sub_1A622, Sub_1AEB6, Sub_1D5CC, Sub_1E11A, Sub_23364, LdpPumpStroke and 8 more routines (26 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16:
         PSHM    E,X,Y,K,CCR
@@ -13859,7 +13859,7 @@ L0C834:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16Signed ($0C83A)
-; Called from: Sub_1603C, Sub_1908C, Sub_1E11A, Sub_1E72C, Sub_252A8, Sub_2B934, Sub_3E340 (12 calls)
+; Called from: Sub_1603C, Sub_1908C, Sub_1E11A, Sub_1E72C, PurgeFlowTest, Sub_2B934, Sub_3E340 (12 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16Signed:
         PSHM    E,X,Y,K,CCR
@@ -16722,7 +16722,7 @@ L0EB1E:
         BRA     L0EB48
 L0EB24:
         BRCLR   $0A1F,Z,#$80,L0EB3E
-        JSR     Sub_32288
+        JSR     ObdRequest
         JSR     Sub_316F0
         TST     $0A20,Z
         BEQ     L0EB48

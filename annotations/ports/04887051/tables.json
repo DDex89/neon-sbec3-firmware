@@ -2345,210 +2345,168 @@
    "name": "LdpBattTempMax",
    "desc": "EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2950": {
    "name": "LdpBattTempMin",
    "desc": "EVAP leak test: battery temperature at or above this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2953": {
    "name": "LdpVoltsMax",
    "desc": "EVAP leak test: battery voltage at or below this value",
    "unit": "volt16",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2954": {
    "name": "LdpVoltsMin",
    "desc": "EVAP leak test: battery voltage at or above this value",
    "unit": "volt16",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2955": {
    "name": "LdpVacuumMin",
    "desc": "EVAP leak test: manifold vacuum at or above this value for the test states",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2956": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0591; read by Sub_25DA8.",
-   "name": "DiagV0591Thresh"
+   "name": "LdpPumpOnTime",
+   "desc": "Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke",
+   "category": "EVAP purge",
+   "size": 1
   },
   "295E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0593; read by Sub_25784.",
-   "name": "DiagV0593Thresh"
+   "name": "LdpStrokeTimeMax",
+   "desc": "Leak detection pump, pump-up state: stroke time ($0593,Z) at or above which the stroke counts restart",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2957": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0592; read by Sub_25784, Sub_25DA8.",
-   "name": "DiagV0592Thresh"
+   "name": "LdpPumpOffTime",
+   "desc": "Leak detection pump: pump-off count ($0592,Z) per stroke",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2959": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_25DA8.",
-   "name": "DiagValue1"
+   "name": "LdpStrokeFilter",
+   "desc": "Leak detection pump: filter weight of the averaged stroke time ($0595,Z)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2958": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with DiagMonPeak; read by Sub_25DA8.",
-   "name": "DiagMonPeakThresh1"
+   "name": "LdpStrokeTimeValid",
+   "desc": "Leak detection pump: stroke time at or above which it is stored as the result ($0595,Z) before filtering starts",
+   "category": "EVAP purge",
+   "size": 1
   },
   "295A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh1"
+   "name": "LdpPumpOnTimeStart",
+   "desc": "Leak detection pump, start state: pump-on count before the first stroke",
+   "category": "EVAP purge",
+   "size": 1
   },
   "295B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh2"
+   "name": "LdpGrossTime",
+   "desc": "Leak detection pump, gross-leak state: state time ($0590,Z) for the first strokes",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2960": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0590; read by Sub_25784.",
-   "name": "DiagV0590Thresh"
+   "name": "LdpPumpTimeMin",
+   "desc": "Leak detection pump, pump-up state: state time limit after refuelling; also taken off the time-out count $0598,Z per stroke window",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2961": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0598; read by Sub_25784.",
-   "name": "DiagV0598Thresh"
+   "name": "LdpPumpUpTimeMax",
+   "desc": "Leak detection pump, pump-up state: time-out count ($0598,Z) that ends the state",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2962": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh3"
+   "name": "LdpRecheckTime",
+   "desc": "Leak detection pump, recheck state: state time for the strokes",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2968": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh5"
+   "name": "LdpTestTime",
+   "desc": "Leak detection pump, test state: state time before the result is judged",
+   "category": "EVAP purge",
+   "size": 1
   },
   "296A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0599; read by Sub_25784.",
-   "name": "DiagV0599Thresh"
+   "name": "LdpVacLowCountMax",
+   "desc": "Leak detection pump: low-vacuum counts ($0599,Z) allowed in the end state",
+   "category": "EVAP purge",
+   "size": 1
   },
   "296B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V059A; read by Sub_25784.",
-   "name": "DiagV059AThresh"
+   "name": "LdpVacLowTotalMax",
+   "desc": "Leak detection pump: total low-vacuum counts ($059A,Z) that abort the test",
+   "category": "EVAP purge",
+   "size": 1
   },
   "295C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0596; read by Sub_25784.",
-   "name": "DiagV0596Thresh1"
+   "name": "LdpGrossStrokes",
+   "desc": "Leak detection pump, gross-leak state: strokes ($0596,Z) before the stroke time is judged",
+   "category": "EVAP purge",
+   "size": 1
   },
   "295F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0597; read by Sub_25784.",
-   "name": "DiagV0597Thresh1"
+   "name": "LdpWindowStrokes",
+   "desc": "Leak detection pump, pump-up state: strokes per time-out window ($0597,Z)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2963": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0596; read by Sub_25784.",
-   "name": "DiagV0596Thresh2"
+   "name": "LdpRecheckStrokes",
+   "desc": "Leak detection pump, recheck state: strokes before the stroke time is judged",
+   "category": "EVAP purge",
+   "size": 1
   },
   "296C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with V0597; read by Sub_25784.",
-   "name": "DiagV0597Thresh2"
+   "name": "LdpWindowStrokes2",
+   "desc": "Leak detection pump, end state: strokes needed with few low-vacuum counts",
+   "category": "EVAP purge",
+   "size": 1
   },
   "295D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with DiagMonPeak; read by Sub_25784.",
-   "name": "DiagMonPeakThresh2"
+   "name": "LdpSealedStrokeTime",
+   "desc": "Leak detection pump, gross-leak state: stroke time at or above which the system holds pressure (no gross leak)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2964": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with DiagMonPeak; read by Sub_25784.",
-   "name": "DiagMonPeakThresh3"
+   "name": "LdpSealedStrokeTime2",
+   "desc": "Leak detection pump, recheck state: stroke time at or above which the system holds pressure",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2966": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_25784.",
-   "name": "DiagThresh6"
+   "name": "LdpLargeLeakStrokeTime",
+   "desc": "Leak detection pump, test state: averaged stroke time below this value is a large leak",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2967": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with DiagMonPeak; read by Sub_25784.",
-   "name": "DiagMonPeakThresh4"
+   "name": "LdpPurgeStrokeTimeMin",
+   "desc": "Leak detection pump, purge check state: stroke time below this value ends the state",
+   "category": "EVAP purge",
+   "size": 1
   },
   "2969": {
    "name": "LdpVacuumMin2",
    "desc": "EVAP leak test: manifold vacuum limit of the last state",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "231A": {
@@ -2641,7 +2599,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh12"
+   "name": "DiagThresh6"
   },
   "2557": {
    "size": 1,
@@ -2649,7 +2607,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh13"
+   "name": "DiagThresh7"
   },
   "2561": {
    "size": 1,
@@ -2657,7 +2615,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh14"
+   "name": "DiagThresh8"
   },
   "2562": {
    "size": 1,
@@ -2665,7 +2623,7 @@
    "auto": true,
    "category": "Diagnostics",
    "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh15"
+   "name": "DiagThresh9"
   },
   "2568": {
    "size": 2,

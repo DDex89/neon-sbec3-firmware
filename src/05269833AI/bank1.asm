@@ -6574,9 +6574,9 @@ L156E6:
 L156F6:
         SXT
         TDE
-        LDAB    >O2Thresh21
+        LDAB    >PurgeFlowTrimDropAlt
         BRSET   $0312,Z,#$40,L15708
-        LDAB    >O2V05B9Thresh
+        LDAB    >PurgeFlowTrimDrop
 L15708:
         ADDB    >O2Adder7
         BCC     L15710

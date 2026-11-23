@@ -22,7 +22,12 @@ MisfireLoad      equ $0257        ; $F8257
 MisfireTransientHold equ $0259        ; $F8259
 MisfireHold      equ $025F        ; $F825F
 MapRaw           equ $0283        ; $F8283
-DiagMonPeak      equ $02BD        ; $F82BD
+LdpState         equ $02B7        ; $F82B7
+LdpStateTime     equ $02B9        ; $F82B9
+LdpStrokeCount   equ $02BC        ; $F82BC
+LdpStrokeTime    equ $02BD        ; $F82BD
+LdpStrokeTimeAvg equ $02BE        ; $F82BE
+LdpStrokes       equ $02BF        ; $F82BF
 LookupResult     equ $02FE        ; $F82FE
 EngineRpm        equ $031D        ; $F831D
 VehicleSpeed     equ $0323        ; $F8323

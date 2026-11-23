@@ -20,7 +20,12 @@ MisfireNoiseLevel equ $0212        ; $F8212
 MisfireLoad      equ $023F        ; $F823F
 MisfireTransientHold equ $0241        ; $F8241
 MisfireHold      equ $0247        ; $F8247
-DiagMonPeak      equ $02A3        ; $F82A3
+LdpState         equ $029D        ; $F829D
+LdpStateTime     equ $029F        ; $F829F
+LdpStrokeCount   equ $02A2        ; $F82A2
+LdpStrokeTime    equ $02A3        ; $F82A3
+LdpStrokeTimeAvg equ $02A4        ; $F82A4
+LdpStrokes       equ $02A5        ; $F82A5
 EngineRpm        equ $0306        ; $F8306
 VehicleSpeed     equ $030C        ; $F830C
 VehicleSpeedCoarse equ $030D        ; $F830D

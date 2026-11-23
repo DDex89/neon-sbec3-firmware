@@ -42,7 +42,12 @@ MisfireEnable    equ $02C2        ; $F82C2
 MisfireTransientHold equ $02C3        ; $F82C3
 MisfireHold      equ $02C9        ; $F82C9
 MapRaw           equ $0324        ; $F8324
-DiagMonPeak      equ $0335        ; $F8335
+LdpState         equ $0331        ; $F8331
+LdpStateTime     equ $0332        ; $F8332
+LdpStrokeCount   equ $0334        ; $F8334
+LdpStrokeTime    equ $0335        ; $F8335
+LdpStrokeTimeAvg equ $0336        ; $F8336
+LdpStrokes       equ $033A        ; $F833A
 ShortTermTrim1   equ $039E        ; $F839E
 O2UpBank1Raw     equ $039F        ; $F839F
 O2UpBank1        equ $03B2        ; $F83B2

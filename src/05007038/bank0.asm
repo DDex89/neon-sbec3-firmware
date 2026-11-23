@@ -319,7 +319,7 @@ Options0340:
         dc.b    $00,$00,$01,$80,$00,$E0,$01,$80,$00,$00,$00,$02,$03,$02,$00
 ChargeVoltsOffset:
         dc.b    $04                                      ; Charging target: offset subtracted from ChargeVoltsBattTemp (at most ChargeVoltsOffsetMax)
-DiagThresh23:
+DiagThresh17:
         dc.b    $FF                                      ; Byte compared with; read by Sub_281E2.
         dc.b    $14,$EC,$1F,$E1,$18,$18
 CalValue7:
@@ -5223,54 +5223,54 @@ LdpVoltsMin:
         dc.b    $92                                      ; EVAP leak test: battery voltage at or above this value
 LdpVacuumMin:
         dc.b    $20                                      ; EVAP leak test: manifold vacuum at or above this value for the test states
-DiagV0591Thresh:
-        dc.b    $14                                      ; Byte compared with V0591; read by Sub_25DA8.
-DiagV0593Thresh:
-        dc.b    $1C                                      ; Byte compared with V0593; read by Sub_25784.
-DiagV0592Thresh:
-        dc.b    $04                                      ; Byte compared with V0592; read by Sub_25784, Sub_25DA8.
-DiagValue1:
-        dc.b    $55                                      ; Byte used with; read by Sub_25DA8.
-DiagMonPeakThresh1:
-        dc.b    $28                                      ; Byte compared with DiagMonPeak; read by Sub_25DA8.
+LdpPumpOnTime:
+        dc.b    $14                                      ; Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke
+LdpStrokeTimeMax:
+        dc.b    $1C                                      ; Leak detection pump, pump-up state: stroke time ($0593,Z) at or above which the stroke counts restart
+LdpPumpOffTime:
+        dc.b    $04                                      ; Leak detection pump: pump-off count ($0592,Z) per stroke
+LdpStrokeFilter:
+        dc.b    $55                                      ; Leak detection pump: filter weight of the averaged stroke time ($0595,Z)
+LdpStrokeTimeValid:
+        dc.b    $28                                      ; Leak detection pump: stroke time at or above which it is stored as the result ($0595,Z) before filtering starts
         dc.b    $00
-DiagThresh1:
-        dc.b    $28                                      ; Byte compared with; read by Sub_25784.
-DiagThresh2:
-        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
-DiagV0590Thresh:
-        dc.b    $06                                      ; Byte compared with V0590; read by Sub_25784.
-DiagV0598Thresh:
-        dc.b    $3E                                      ; Byte compared with V0598; read by Sub_25784.
-DiagThresh3:
-        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
-DiagThresh4:
-        dc.b    $0C                                      ; Byte compared with; read by Sub_25784.
-DiagThresh5:
-        dc.b    $18                                      ; Byte compared with; read by Sub_25784.
-DiagV0599Thresh:
-        dc.b    $06                                      ; Byte compared with V0599; read by Sub_25784.
-DiagV059AThresh:
-        dc.b    $15                                      ; Byte compared with V059A; read by Sub_25784.
-DiagV0596Thresh1:
-        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
-DiagV0597Thresh1:
-        dc.b    $03                                      ; Byte compared with V0597; read by Sub_25784.
-DiagV0596Thresh2:
-        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
-DiagV0597Thresh2:
-        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
-DiagMonPeakThresh2:
-        dc.b    $3C                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
-DiagMonPeakThresh3:
-        dc.b    $1E                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+LdpPumpOnTimeStart:
+        dc.b    $28                                      ; Leak detection pump, start state: pump-on count before the first stroke
+LdpGrossTime:
+        dc.b    $06                                      ; Leak detection pump, gross-leak state: state time ($0590,Z) for the first strokes
+LdpPumpTimeMin:
+        dc.b    $06                                      ; Leak detection pump, pump-up state: state time limit after refuelling; also taken off the time-out count $0598,Z per stroke window
+LdpPumpUpTimeMax:
+        dc.b    $3E                                      ; Leak detection pump, pump-up state: time-out count ($0598,Z) that ends the state
+LdpRecheckTime:
+        dc.b    $06                                      ; Leak detection pump, recheck state: state time for the strokes
+LdpTestTimeAlt:
+        dc.b    $0C                                      ; Leak detection pump, test state: state time with $0649,Z bit 1 set
+LdpTestTime:
+        dc.b    $18                                      ; Leak detection pump, test state: state time before the result is judged
+LdpVacLowCountMax:
+        dc.b    $06                                      ; Leak detection pump: low-vacuum counts ($0599,Z) allowed in the end state
+LdpVacLowTotalMax:
+        dc.b    $15                                      ; Leak detection pump: total low-vacuum counts ($059A,Z) that abort the test
+LdpGrossStrokes:
+        dc.b    $03                                      ; Leak detection pump, gross-leak state: strokes ($0596,Z) before the stroke time is judged
+LdpWindowStrokes:
+        dc.b    $03                                      ; Leak detection pump, pump-up state: strokes per time-out window ($0597,Z)
+LdpRecheckStrokes:
+        dc.b    $03                                      ; Leak detection pump, recheck state: strokes before the stroke time is judged
+LdpWindowStrokes2:
+        dc.b    $05                                      ; Leak detection pump, end state: strokes needed with few low-vacuum counts
+LdpSealedStrokeTime:
+        dc.b    $3C                                      ; Leak detection pump, gross-leak state: stroke time at or above which the system holds pressure (no gross leak)
+LdpSealedStrokeTime2:
+        dc.b    $1E                                      ; Leak detection pump, recheck state: stroke time at or above which the system holds pressure
         dc.b    $05
-DiagV0595Thresh:
-        dc.b    $12                                      ; Byte compared with V0595; read by Sub_25784.
-DiagThresh6:
-        dc.b    $0A                                      ; Byte compared with; read by Sub_25784.
-DiagMonPeakThresh4:
-        dc.b    $13                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
+LdpSmallLeakStrokeTime:
+        dc.b    $12                                      ; Leak detection pump, test state: averaged stroke time below this value is a small leak (also the mode $06 limit, result in $0171,Z)
+LdpLargeLeakStrokeTime:
+        dc.b    $0A                                      ; Leak detection pump, test state: averaged stroke time below this value is a large leak
+LdpPurgeStrokeTimeMin:
+        dc.b    $13                                      ; Leak detection pump, purge check state: stroke time below this value ends the state
 LdpVacuumMin2:
         dc.b    $0D                                      ; EVAP leak test: manifold vacuum limit of the last state
 SensorPurgeDutyThresh1:
@@ -5279,26 +5279,26 @@ SensorV059BThresh:
         dc.b    $96                                      ; Byte compared with V059B; read by Sub_25E9E.
 
 ;---------------------------------------------------------------------------------------------------
-; DiagLevelLimit ($2AA0): 2D table, 3 points, unsigned
-; Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z
+; LdpPumpTimeByLevel ($2AA0): 2D table, 3 points, unsigned
+; Leak detection pump, pump-up state: state time limit ($0590,Z) against fuel level
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $31,Z
 ; Read at $16AB8
 ;---------------------------------------------------------------------------------------------------
-DiagLevelLimit:
+LdpPumpTimeByLevel:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,45, 80,30, 100,26                      ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; DiagLevelLimit2 ($2AAC): 2D table, 3 points, unsigned
-; As DiagLevelLimit with $0649,Z bit 1 set
+; LdpPumpTimeByLevel2 ($2AAC): 2D table, 3 points, unsigned
+; As LdpPumpTimeByLevel with $0649,Z bit 1 set
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $31,Z
 ; Read at $16AA8
 ;---------------------------------------------------------------------------------------------------
-DiagLevelLimit2:
+LdpPumpTimeByLevel2:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,45, 80,30, 100,26                      ; x, y
 
@@ -5311,10 +5311,10 @@ PurgeMonMapMax:
         dc.b    $B2                                      ; Purge flow monitor: MAP at or below this value
 PurgeMonRpmBand:
         dc.b    $03,$40                                  ; Purge flow monitor: engine rpm within the idle target plus or minus this value
-DiagV05B1Value:
-        dc.b    $20                                      ; Byte used with V05B1; read by Sub_252A8.
-DiagValue2:
-        dc.b    $00                                      ; Byte used with; read by Sub_252A8.
+PurgeFlowSettleCount:
+        dc.b    $20                                      ; EVAP purge flow test (Sub_252A8): settle count ($05B1,Z) before the test starts
+PurgeFlowSettleStart:
+        dc.b    $00                                      ; EVAP purge flow test: start value of the settle count = PurgeFlowSettleCount × (256 − this)/256 (0 = start at zero)
 PurgeMonIacBand:
         dc.b    $04                                      ; Purge flow monitor: IAC command within this many steps of the IAC position
 PurgeMonIacDrift:
@@ -5327,24 +5327,24 @@ PurgeMonFilter:
 O2Adder5:
         dc.b    $04                                      ; Byte added to; read by Sub_15364.
         dc.b    $0F,$0C,$0F,$0C
-DiagV042DThresh:
-        dc.b    $B5                                      ; Byte compared with V042D; read by Sub_252A8.
-ThermistorRpmValue:
-        dc.b    $FF,$F8                                  ; Word used with EngineRpm; read by Sub_252A8, Sub_32318.
-ThermistorValue6:
-        dc.b    $FF,$F8                                  ; Word used with; read by Sub_252A8, Sub_32318.
-DiagV05B4Thresh:
-        dc.b    $FF                                      ; Byte compared with V05B4; read by Sub_252A8.
-DiagThresh7:
-        dc.b    $FF                                      ; Byte compared with; read by Sub_252A8.
-O2V05B9Thresh:
-        dc.b    $1E                                      ; Byte compared with V05B9; read by Sub_155C8, Sub_252A8.
-O2Thresh21:
-        dc.b    $1E                                      ; Byte compared with; read by Sub_155C8, Sub_252A8.
+PurgeFlowDutyRise:
+        dc.b    $B5                                      ; EVAP purge flow test: purge duty rise ($042D,Z minus the start value) needed before the rpm check
+PurgeFlowRpmRise:
+        dc.b    $FF,$F8                                  ; EVAP purge flow test: rpm rise that counts as purge flow (also the mode $06 test $53 limit; $FF00 = off)
+PurgeFlowRpmRiseAlt:
+        dc.b    $FF,$F8                                  ; As PurgeFlowRpmRise with $0312,Z bit 6 set
+PurgeFlowIacDrop:
+        dc.b    $FF                                      ; EVAP purge flow test: IAC position drop that counts as purge flow
+PurgeFlowIacDropAlt:
+        dc.b    $FF                                      ; As PurgeFlowIacDrop with $0312,Z bit 6 set
+PurgeFlowTrimDrop:
+        dc.b    $1E                                      ; EVAP purge flow test: short-term trim drop that counts as purge flow (also used by Sub_155C8)
+PurgeFlowTrimDropAlt:
+        dc.b    $1E                                      ; As PurgeFlowTrimDrop with $0312,Z bit 6 set
 PurgeV006AThresh:
         dc.b    $29                                      ; Byte compared with V006A; read by Sub_3DD3C.
-DiagV05BDThresh:
-        dc.b    $02                                      ; Byte compared with V05BD; read by Sub_252A8.
+PurgeFlowFailCount:
+        dc.b    $02                                      ; EVAP purge flow test: tests without a response ($05BD,Z) before the monitor sets its result
         dc.b    $41,$58
 EgrMonVacuumMin:
         dc.b    $31                                      ; EGR flow monitor: manifold vacuum at or above this value
@@ -5380,9 +5380,9 @@ FuelOffset4:
         dc.b    $03                                      ; Byte subtracted from result of FuelSysLimit2; read by Sub_2A4F2, Sub_2A6C0.
 FuelAdder:
         dc.b    $04                                      ; Byte added to result of FuelSysLimit; read by Sub_2A0F0, Sub_2A302.
-DiagThresh8:
+DiagThresh2:
         dc.b    $32                                      ; Byte compared with; read by Sub_2A496, Sub_2A664.
-DiagThresh9:
+DiagThresh3:
         dc.b    $32                                      ; Byte compared with; read by Sub_2A07E, Sub_2A290.
 FuelV05ABThresh:
         dc.b    $32                                      ; Byte compared with V05AB; read by Sub_2A4F2, Sub_2A6C0.
@@ -5442,18 +5442,18 @@ DiagV0A4EThresh:
 DiagV0543Thresh:
         dc.b    $14                                      ; Byte compared with V0543; read by Sub_2877A.
         dc.b    $88,$7A,$00,$00,$04,$00,$01
-DiagThresh12:
+DiagThresh6:
         dc.b    $09                                      ; Byte compared with; read by Sub_2877A.
         dc.b    $14,$32,$00,$00
-DiagThresh13:
+DiagThresh7:
         dc.b    $00                                      ; Byte compared with; read by Sub_2877A.
 O2Value36:
         dc.b    $F4                                      ; Byte used with; read by Sub_14802.
         dc.b    $05,$FB,$00,$00,$05,$FB,$00,$00,$1B,$1B,$00,$00,$13,$73,$8C,$00
         dc.b    $00
-DiagThresh14:
+DiagThresh8:
         dc.b    $95                                      ; Byte compared with; read by Sub_2877A.
-DiagThresh15:
+DiagThresh9:
         dc.b    $13                                      ; Byte compared with; read by Sub_2877A.
         dc.b    $0B,$40,$40,$AA,$45,$50,$81,$81
 CalV010AThresh1:
@@ -5482,7 +5482,7 @@ CatMonTipInMax:
         dc.b    $01,$00                                  ; Catalyst monitor: tip-in fuel at or below this value
 CatMonDecelLeanMin:
         dc.b    $FA                                      ; Catalyst monitor: decel enleanment, when present, at or above this value
-DiagThresh16:
+DiagThresh10:
         dc.b    $50                                      ; Byte compared with; read by Sub_281E2.
         dc.b    $48,$96,$27,$59,$48,$96,$27,$59
 CatMonTestLength:
@@ -5497,11 +5497,11 @@ O2SwitchLean:
         dc.b    $81                                      ; Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction)
 O2SwitchRich:
         dc.b    $85                                      ; Catalyst/O2 switch analysis: raw O2 above this value counts as rich
-DiagThresh20:
+DiagThresh14:
         dc.b    $08                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh21:
+DiagThresh15:
         dc.b    $26                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh22:
+DiagThresh16:
         dc.b    $06                                      ; Byte compared with; read by Sub_281E2.
 O2SwitchFilterLean:
         dc.b    $33                                      ; Catalyst/O2 switch analysis: filter weight of the lean peak
@@ -15583,7 +15583,7 @@ L0A58C:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16 ($0A596)
-; Called from: Sub_05B28, Sub_06334, Sub_12E3A, Sub_133F0, Sub_16D7A, Sub_16FAC, Sub_17162, Sub_18DF2 and 4 more routines (21 calls)
+; Called from: Sub_05B28, Sub_06334, Sub_12E3A, Sub_133F0, LdpPumpStroke, Sub_16FAC, Sub_17162, Sub_18DF2 and 4 more routines (21 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16:
         PSHM    E,X,Y,K,CCR
@@ -15643,7 +15643,7 @@ L0A612:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16Signed ($0A618)
-; Called from: Sub_04728, Sub_0D060, Sub_16308, Sub_199B8, Sub_1E41A (9 calls)
+; Called from: Sub_04728, Sub_0D060, PurgeFlowTest, Sub_199B8, Sub_1E41A (9 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16Signed:
         PSHM    E,X,Y,K,CCR

@@ -6852,9 +6852,9 @@ L1573C:
 L1574C:
         SXT
         TDE
-        LDAB    >O2Thresh21
+        LDAB    >PurgeFlowTrimDropAlt
         BRSET   $0312,Z,#$40,L1575E
-        LDAB    >O2V05B9Thresh
+        LDAB    >PurgeFlowTrimDrop
 L1575E:
         ADDB    >O2Adder7
         BCC     L15766

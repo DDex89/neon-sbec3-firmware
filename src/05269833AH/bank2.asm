@@ -142,13 +142,13 @@ L2028C:
         JSR     Sub_2877A
         BRA     L202BC
 L20292:
-        JSR     Sub_252A8
+        JSR     PurgeFlowTest
         BRA     L202BC
 L20298:
         JSR     Sub_25000
         BRA     L202BC
 L2029E:
-        JSR     Sub_2576A
+        JSR     LdpMonitor
         BRA     L202BC
 L202A4:
         JSR     Sub_2A424
@@ -827,7 +827,7 @@ Sub_208B4:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_208D6 ($208D6)
-; Called from: Reset, Sub_32288, Sub_3589E (4 calls)
+; Called from: Reset, ObdRequest, Sub_3589E (4 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_208D6:
         CLR     $B2,Z
@@ -5399,7 +5399,7 @@ L241E2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_241E4 ($241E4)
-; Called from: Sub_204BE, Sub_2410A, Sub_32288, Sub_3589E (5 calls)
+; Called from: Sub_204BE, Sub_2410A, ObdRequest, Sub_3589E (5 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_241E4:
         PSHM    X,K
@@ -5813,7 +5813,7 @@ L2457E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_24582 ($24582)
-; Called from: Sub_32288, Sub_3589E (3 calls)
+; Called from: ObdRequest, Sub_3589E (3 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_24582:
         CLR     $0658,Z
@@ -6413,10 +6413,10 @@ L252A6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_252A8 ($252A8)
+; PurgeFlowTest ($252A8)
 ; Called from: Sub_20272
 ;---------------------------------------------------------------------------------------------------
-Sub_252A8:
+PurgeFlowTest:
         BRCLR   >Options033E,#$20,L25768
         BRSET   $00A9,Z,#$02,L25768
         BRCLR   $00A9,Z,#$80,L2574A
@@ -6462,8 +6462,8 @@ L252FE:
 L25346:
         BRSET   $05AE,Z,#$02,L25368
         BRCLR   $0438,Z,#$04,L2572A
-        LDAA    >DiagV05B1Value
-        LDAB    >DiagValue2
+        LDAA    >PurgeFlowSettleCount
+        LDAB    >PurgeFlowSettleStart
         BEQ     L25360
         NEGB
         MUL
@@ -6528,7 +6528,7 @@ L2543C:
         CMPA    >PurgeMonIacBand
         LBHI    L2572A
         LDAA    $05B1,Z
-        CMPA    >DiagV05B1Value
+        CMPA    >PurgeFlowSettleCount
         BCC     L2545C
         BRCLR   >MainLoopPhaseMask,Z,#$02,L25768
         INC     $05B1,Z
@@ -6633,10 +6633,10 @@ L255A4:
         BCS     L255D2
         STAA    $F2,Z
         BRSET   $0312,Z,#$40,L255C4
-        CMPA    >DiagV05B4Thresh
+        CMPA    >PurgeFlowIacDrop
         BRA     L255C8
 L255C4:
-        CMPA    >DiagThresh7
+        CMPA    >PurgeFlowIacDropAlt
 L255C8:
         BCS     L255D2
         BSET    $05AF,Z,#$04
@@ -6648,10 +6648,10 @@ L255D2:
         BLT     L255FC
         STAA    $F4,Z
         BRSET   $0312,Z,#$40,L255EE
-        CMPA    >O2V05B9Thresh
+        CMPA    >PurgeFlowTrimDrop
         BRA     L255F2
 L255EE:
-        CMPA    >O2Thresh21
+        CMPA    >PurgeFlowTrimDropAlt
 L255F2:
         BCS     L255FC
         BSET    $05AF,Z,#$08
@@ -6663,10 +6663,10 @@ L255FC:
         BLT     L25628
         STAA    $F5,Z
         BRSET   $0312,Z,#$40,L2561A
-        CMPA    >O2V05B9Thresh
+        CMPA    >PurgeFlowTrimDrop
         BRA     L2561E
 L2561A:
-        CMPA    >O2Thresh21
+        CMPA    >PurgeFlowTrimDropAlt
 L2561E:
         BCS     L25628
         BSET    $05AF,Z,#$10
@@ -6674,7 +6674,7 @@ L2561E:
 L25628:
         LDAA    $042D,Z
         SUBA    $05B7,Z
-        CMPA    >DiagV042DThresh
+        CMPA    >PurgeFlowDutyRise
         BCC     L2563A
         JMP     L25768
 L2563A:
@@ -6685,10 +6685,10 @@ L2563A:
         BCS     L25668
         STD     $F6,Z
         BRSET   $0312,Z,#$40,L2565C
-        CPD     >ThermistorRpmValue
+        CPD     >PurgeFlowRpmRise
         BRA     L25660
 L2565C:
-        CPD     >ThermistorValue6
+        CPD     >PurgeFlowRpmRiseAlt
 L25660:
         BCS     L25668
         BSET    $05AF,Z,#$20
@@ -6696,7 +6696,7 @@ L25660:
 L25668:
         INC     $05BD,Z
         LDAA    $05BD,Z
-        CMPA    >DiagV05BDThresh
+        CMPA    >PurgeFlowFailCount
         LBCS    L2572A
         BSET    $A9,Z,#$08
         BSET    $05AF,Z,#$80
@@ -6777,15 +6777,15 @@ L25768:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2576A ($2576A)
+; LdpMonitor ($2576A)
 ; Called from: Sub_20272
 ;---------------------------------------------------------------------------------------------------
-Sub_2576A:
+LdpMonitor:
         BRCLR   >Options033E,#$02,L25D26
         BRSET   $00B0,Z,#$02,L25D26
         BRSET   $00D8,Z,#$01,L25D26
         BRCLR   $0774,Z,#$80,L25D26
-        LDAA    $058F,Z
+        LDAA    >LdpState,Z
         ANDA    #$0F
         CMPA    #$09
         BEQ     L257D0
@@ -6805,12 +6805,12 @@ Sub_2576A:
 L257C6:
         BSET    $058E,Z,#$08
         LDAA    #$09
-        STAA    $058F,Z
+        STAA    >LdpState,Z
 L257D0:
         TPD
         TBXK
         LDX     #$57EA
-        LDAB    $058F,Z
+        LDAB    >LdpState,Z
         ANDB    #$0F
         ASLB
         ASLB
@@ -6863,12 +6863,12 @@ L2584C:
 L25862:
         BSET    $058E,Z,#$08
         LDAA    #$09
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         BRA     L25884
 L2586E:
         LDAA    #$01
-        STAA    $058F,Z
-        CLR     $0590,Z
+        STAA    >LdpState,Z
+        CLR     >LdpStateTime,Z
         CLR     $0591,Z
         CLR     $0592,Z
         BSET    $058E,Z,#$01
@@ -6881,7 +6881,7 @@ L25888:
 L25894:
         BSET    $058E,Z,#$08
         LDAA    #$19
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         LBRA    L25934
 L258A2:
         LDAA    >ManifoldVacuum,Z
@@ -6898,7 +6898,7 @@ L258B2:
         INC     $0591,Z
         BRA     L258E2
 L258CE:
-        CMPA    >DiagThresh1
+        CMPA    >LdpPumpOnTimeStart
         BCC     L258E8
         BRCLR   >MainLoopPhaseMask,Z,#$02,L258E2
         INCA
@@ -6910,7 +6910,7 @@ L258E2:
 L258E8:
         BCLR    $058E,Z,#$01
         LDAA    $0592,Z
-        CMPA    >DiagV0592Thresh
+        CMPA    >LdpPumpOffTime
         BCC     L25900
         INCA
         BEQ     L258FE
@@ -6925,13 +6925,13 @@ L2590C:
         BCLR    $058E,Z,#$04
         BRCLR   $011B,Z,#$01,L25894
         LDAA    #$12
-        STAA    $058F,Z
-        CLR     $0590,Z
+        STAA    >LdpState,Z
+        CLR     >LdpStateTime,Z
         CLR     $059A,Z
-        CLR     $0596,Z
-        CLR     $0593,Z
-        CLR     >DiagMonPeak,Z
-        CLR     $0595,Z
+        CLR     >LdpStrokes,Z
+        CLR     >LdpStrokeCount,Z
+        CLR     >LdpStrokeTime,Z
+        CLR     >LdpStrokeTimeAvg,Z
 L25934:
         LBRA    L25D26
 L25938:
@@ -6941,38 +6941,38 @@ L25938:
         BNE     L25954
         BSET    $058E,Z,#$08
         LDAA    #$29
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         BRA     L259C4
 L25954:
-        JSR     Sub_25D28
-        CMPA    >DiagThresh2
+        JSR     LdpStateTimer
+        CMPA    >LdpGrossTime
         BCC     L2596E
-        JSR     Sub_25D48
-        LDAA    $0596,Z
-        CMPA    >DiagV0596Thresh1
+        JSR     LdpPumpStroke
+        LDAA    >LdpStrokes,Z
+        CMPA    >LdpGrossStrokes
         BCC     L2596E
         BRA     L259C4
 L2596E:
-        LDAA    >DiagMonPeak,Z
-        CMPA    >DiagMonPeakThresh2
+        LDAA    >LdpStrokeTime,Z
+        CMPA    >LdpSealedStrokeTime
         BCS     L259A6
         LDAA    #$25
-        STAA    $058F,Z
-        CLR     $0590,Z
+        STAA    >LdpState,Z
+        CLR     >LdpStateTime,Z
         BRCLR   $0649,Z,#$02,L2599C
         BRSET   $011B,Z,#$20,L259C4
         BSET    $A9,Z,#$48
         BCLR    $A9,Z,#$80
         LDAA    #$29
-        STAA    $058F,Z
+        STAA    >LdpState,Z
 L2599C:
         BSET    $058E,Z,#$10
         BCLR    $011B,Z,#$20
         BRA     L259C4
 L259A6:
         LDAA    #$23
-        STAA    $058F,Z
-        CLR     $0590,Z
+        STAA    >LdpState,Z
+        CLR     >LdpStateTime,Z
         CLR     $0598,Z
         CLR     $0597,Z
         BCLR    $058E,Z,#$10
@@ -6987,7 +6987,7 @@ L259C8:
 L259D4:
         BSET    $058E,Z,#$08
         LDAA    #$39
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         LBRA    L25AB8
 L259E2:
         LDAA    >ManifoldVacuum,Z
@@ -6996,36 +6996,36 @@ L259E2:
         BRSET   $0649,Z,#$02,L259D4
         BRA     L25A18
 L259F4:
-        JSR     Sub_25D28
+        JSR     LdpStateTimer
         BCC     L25A18
         LDAA    $0598,Z
         INCA
         BEQ     L25A0E
         STAA    $0598,Z
-        CMPA    >DiagV0598Thresh
+        CMPA    >LdpPumpUpTimeMax
         BCC     L25A0E
         BRA     L25A18
 L25A0E:
         LDAA    #$35
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         LBRA    L25A9C
 L25A18:
-        JSR     Sub_25D48
-        LDAA    $0593,Z
-        CMPA    >DiagV0593Thresh
+        JSR     LdpPumpStroke
+        LDAA    >LdpStrokeCount,Z
+        CMPA    >LdpStrokeTimeMax
         BCS     L25A3C
         CLR     $0597,Z
-        CLR     $0593,Z
+        CLR     >LdpStrokeCount,Z
         CLR     $0591,Z
         CLR     $0592,Z
         BSET    $058E,Z,#$01
         BRA     L25A5A
 L25A3C:
         LDAA    $0597,Z
-        CMPA    >DiagV0597Thresh1
+        CMPA    >LdpWindowStrokes
         BCS     L25A5A
         LDAA    $0598,Z
-        SUBA    >DiagV0590Thresh
+        SUBA    >LdpPumpTimeMin
         BCC     L25A52
         LDAA    #$00
 L25A52:
@@ -7035,30 +7035,30 @@ L25A5A:
         BRSET   $011B,Z,#$02,L25A8A
         LDAA    >FuelLevelScaled,Z
         BRCLR   $0649,Z,#$02,L25A7A
-        LDX     #DiagLevelLimit2
+        LDX     #LdpPumpTimeByLevel2
         JSR     Lookup2D
-        CMPA    $0590,Z
+        CMPA    >LdpStateTime,Z
         BLS     L25A0E
         BRA     L25AB8
 L25A7A:
-        LDX     #DiagLevelLimit
+        LDX     #LdpPumpTimeByLevel
         JSR     Lookup2D
-        CMPA    $0590,Z
+        CMPA    >LdpStateTime,Z
         BLS     L25A96
         BRA     L25AB8
 L25A8A:
-        LDAA    $0590,Z
-        CMPA    >DiagV0590Thresh
+        LDAA    >LdpStateTime,Z
+        CMPA    >LdpPumpTimeMin
         BCC     L25A96
         BRA     L25AB8
 L25A96:
         LDAA    #$34
-        STAA    $058F,Z
+        STAA    >LdpState,Z
 L25A9C:
         BSET    $011B,Z,#$02
-        CLR     $0590,Z
-        CLR     $0596,Z
-        CLR     $0593,Z
+        CLR     >LdpStateTime,Z
+        CLR     >LdpStrokes,Z
+        CLR     >LdpStrokeCount,Z
         CLR     $0591,Z
         CLR     $0592,Z
         BSET    $058E,Z,#$01
@@ -7069,40 +7069,40 @@ L25ABC:
         BNE     L25ACE
         BSET    $058E,Z,#$08
         LDAA    #$49
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         BRA     L25B2A
 L25ACE:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L25AE8
         LDAA    #$48
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         CLR     $0599,Z
         CLR     $0597,Z
         BRA     L25B2A
 L25AE8:
-        JSR     Sub_25D28
-        CMPA    >DiagThresh3
+        JSR     LdpStateTimer
+        CMPA    >LdpRecheckTime
         BCC     L25B02
-        JSR     Sub_25D48
-        LDAA    $0596,Z
-        CMPA    >DiagV0596Thresh2
+        JSR     LdpPumpStroke
+        LDAA    >LdpStrokes,Z
+        CMPA    >LdpRecheckStrokes
         BCC     L25B02
         BRA     L25B2A
 L25B02:
-        LDAA    >DiagMonPeak,Z
-        CMPA    >DiagMonPeakThresh3
+        LDAA    >LdpStrokeTime,Z
+        CMPA    >LdpSealedStrokeTime2
         BCC     L25B1C
         LDAA    #$43
-        STAA    $058F,Z
-        CLR     $0590,Z
+        STAA    >LdpState,Z
+        CLR     >LdpStateTime,Z
         CLR     $0597,Z
         BRA     L25B2A
 L25B1C:
         LDAA    #$45
-        STAA    $058F,Z
-        CLR     $0590,Z
-        CLR     $0596,Z
+        STAA    >LdpState,Z
+        CLR     >LdpStateTime,Z
+        CLR     >LdpStrokes,Z
 L25B2A:
         LBRA    L25D26
 L25B2E:
@@ -7112,7 +7112,7 @@ L25B2E:
 L25B3A:
         BSET    $058E,Z,#$08
         LDAA    #$59
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         LBRA    L25C0A
 L25B48:
         LDAA    >ManifoldVacuum,Z
@@ -7120,9 +7120,9 @@ L25B48:
         BCC     L25B78
         BRSET   $0649,Z,#$02,L25B3A
         LDAA    #$58
-        STAA    $058F,Z
-        LDAA    >DiagMonPeak,Z
-        CMPA    >DiagMonPeakThresh3
+        STAA    >LdpState,Z
+        LDAA    >LdpStrokeTime,Z
+        CMPA    >LdpSealedStrokeTime2
         BCS     L25B70
         BSET    $011B,Z,#$04
         LBRA    L25C0A
@@ -7130,27 +7130,27 @@ L25B70:
         BCLR    $011B,Z,#$04
         LBRA    L25C0A
 L25B78:
-        JSR     Sub_25D28
+        JSR     LdpStateTimer
         BRCLR   $0649,Z,#$02,L25B88
-        CMPA    >DiagThresh4
+        CMPA    >LdpTestTimeAlt
         BRA     L25B8C
 L25B88:
-        CMPA    >DiagThresh5
+        CMPA    >LdpTestTime
 L25B8C:
         BCC     L25B94
-        JSR     Sub_25D48
+        JSR     LdpPumpStroke
         BRA     L25C0A
 L25B94:
         BRCLR   $0649,Z,#$02,L25BBC
         BCLR    $0646,Z,#$01
         BCLR    $011B,Z,#$20
-        LDAA    $0595,Z
+        LDAA    >LdpStrokeTimeAvg,Z
         CMPA    $059C,Z
         BCS     L25BF4
         BSET    $058E,Z,#$80
         BCLR    $0646,Z,#$02
         LDAA    #$59
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         BRA     L25C0A
 L25BBC:
         LDAB    $0170,Z
@@ -7159,13 +7159,13 @@ L25BBC:
         ORAB    #$C0
         STAB    $0170,Z
         BSET    $011B,Z,#$08
-        LDAA    $0595,Z
+        LDAA    >LdpStrokeTimeAvg,Z
         STAA    $0171,Z
-        CMPA    >DiagV0595Thresh
+        CMPA    >LdpSmallLeakStrokeTime
         BCC     L25BFC
         ORAB    #$20
         STAB    $0170,Z
-        CMPA    >DiagThresh6
+        CMPA    >LdpLargeLeakStrokeTime
         BCC     L25BF4
         BSET    $058E,Z,#$40
         BSET    $0170,Z,#$01
@@ -7175,7 +7175,7 @@ L25BF4:
         LBRA    L25B3A
 L25BFC:
         LDAA    #$56
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         BCLR    $058E,Z,#$60
         BSET    $058E,Z,#$80
 L25C0A:
@@ -7187,9 +7187,9 @@ L25C0E:
         BRA     L25C26
 L25C1A:
         LDAA    #$67
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         LDAA    #$FF
-        STAA    >DiagMonPeak,Z
+        STAA    >LdpStrokeTime,Z
 L25C26:
         LBRA    L25D26
 L25C2A:
@@ -7197,19 +7197,19 @@ L25C2A:
         CMPA    >LdpVacuumMin2
         BCC     L25C3C
         LDAA    #$79
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         BRA     L25C58
 L25C3C:
-        JSR     Sub_25D48
-        LDAA    >DiagMonPeak,Z
-        CMPA    >DiagMonPeakThresh4
+        JSR     LdpPumpStroke
+        LDAA    >LdpStrokeTime,Z
+        CMPA    >LdpPurgeStrokeTimeMin
         BCS     L25C52
         TST     $042F,Z
         BEQ     L25C52
         BRA     L25C58
 L25C52:
         LDAA    #$79
-        STAA    $058F,Z
+        STAA    >LdpState,Z
 L25C58:
         LBRA    L25D26
 L25C5C:
@@ -7218,7 +7218,7 @@ L25C5C:
 L25C62:
         BSET    $058E,Z,#$08
         LDAA    #$89
-        STAA    $058F,Z
+        STAA    >LdpState,Z
         LBRA    L25D24
 L25C70:
         LDAA    >ManifoldVacuum,Z
@@ -7236,14 +7236,14 @@ L25C8C:
         INCA
         STAA    $059A,Z
 L25C9A:
-        CMPA    >DiagV059AThresh
+        CMPA    >LdpVacLowTotalMax
         BCC     L25C62
         STAA    $059A,Z
 L25CA4:
-        JSR     Sub_25D48
+        JSR     LdpPumpStroke
         BRA     L25CFA
 L25CAA:
-        LDAA    $058F,Z
+        LDAA    >LdpState,Z
         ANDA    #$F0
         CMPA    #$40
         BEQ     L25CBA
@@ -7252,28 +7252,28 @@ L25CAA:
         BRA     L25C62
 L25CBA:
         LDAA    $0599,Z
-        CMPA    >DiagV0599Thresh
+        CMPA    >LdpVacLowCountMax
         BCC     L25CE0
         LDAA    $0597,Z
-        CMPA    >DiagV0597Thresh2
+        CMPA    >LdpWindowStrokes2
         BCS     L25CE0
         BRA     L25CE4
 L25CD0:
         BRCLR   $011B,Z,#$04,L25CF4
-        LDAA    >DiagMonPeak,Z
-        CMPA    >DiagMonPeakThresh3
+        LDAA    >LdpStrokeTime,Z
+        CMPA    >LdpSealedStrokeTime2
         BCC     L25CF4
 L25CE0:
         CLR     $0598,Z
 L25CE4:
         LDAA    #$84
-        STAA    $058F,Z
-        CLR     $0590,Z
-        CLR     $0596,Z
+        STAA    >LdpState,Z
+        CLR     >LdpStateTime,Z
+        CLR     >LdpStrokes,Z
         BRA     L25CFA
 L25CF4:
         LDAA    #$85
-        STAA    $058F,Z
+        STAA    >LdpState,Z
 L25CFA:
         BRA     L25D26
 L25CFC:
@@ -7293,16 +7293,16 @@ L25D26:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_25D28 ($25D28)
-; Called from: Sub_2576A (4 calls)
+; LdpStateTimer ($25D28)
+; Called from: LdpMonitor (4 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_25D28:
-        LDAA    $0590,Z
+LdpStateTimer:
+        LDAA    >LdpStateTime,Z
         BRCLR   >MainLoopPhaseMask,Z,#$40,L25D42
         CMPA    #$FF
         BEQ     L25D3C
         INCA
-        STAA    $0590,Z
+        STAA    >LdpStateTime,Z
 L25D3C:
         ORP     #$0100
         BRA     L25D46
@@ -7312,12 +7312,12 @@ L25D46:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_25D48 ($25D48)
-; Called from: Sub_2576A (6 calls)
+; LdpPumpStroke ($25D48)
+; Called from: LdpMonitor (6 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_25D48:
+LdpPumpStroke:
         LDAA    $0591,Z
-        CMPA    >DiagV0591Thresh
+        CMPA    >LdpPumpOnTime
         BCC     L25D62
         INCA
         BEQ     L25D5A
@@ -7327,26 +7327,26 @@ L25D5A:
         LBRA    L25E40
 L25D62:
         BCLR    $058E,Z,#$01
-        LDAA    $058F,Z
+        LDAA    >LdpState,Z
         ANDA    #$0F
         CMPA    #$03
         BNE     L25D7E
-        LDAA    $0593,Z
+        LDAA    >LdpStrokeCount,Z
         INCA
         BEQ     L25D92
-        STAA    $0593,Z
+        STAA    >LdpStrokeCount,Z
         BRA     L25D92
 L25D7E:
         BRSET   >MainLoopPhaseMask,Z,#$04,L25D86
         BRA     L25D92
 L25D86:
-        LDAA    $0593,Z
+        LDAA    >LdpStrokeCount,Z
         INCA
         BEQ     L25D92
-        STAA    $0593,Z
+        STAA    >LdpStrokeCount,Z
 L25D92:
         LDAA    $0592,Z
-        CMPA    >DiagV0592Thresh
+        CMPA    >LdpPumpOffTime
         BCC     L25DAA
         INCA
         LBEQ    L25E40
@@ -7355,53 +7355,53 @@ L25D92:
 L25DAA:
         BRSET   $1000,Z,#$02,L25DE4
         CLR     $0597,Z
-        LDAA    $058F,Z
+        LDAA    >LdpState,Z
         ANDA    #$0F
         CMPA    #$03
         BNE     L25DC0
         BRA     L25E40
 L25DC0:
-        LDAA    $0593,Z
-        CMPA    >DiagMonPeak,Z
+        LDAA    >LdpStrokeCount,Z
+        CMPA    >LdpStrokeTime,Z
         BCS     L25DCE
-        STAA    >DiagMonPeak,Z
+        STAA    >LdpStrokeTime,Z
 L25DCE:
         BRSET   $011B,Z,#$08,L25E40
-        LDAA    >DiagMonPeak,Z
-        CMPA    >DiagMonPeakThresh1
+        LDAA    >LdpStrokeTime,Z
+        CMPA    >LdpStrokeTimeValid
         BCS     L25E40
-        STAA    $0595,Z
+        STAA    >LdpStrokeTimeAvg,Z
         BRA     L25E40
 L25DE4:
         BRSET   $011B,Z,#$08,L25E10
-        LDAA    $058F,Z
+        LDAA    >LdpState,Z
         ANDA    #$0F
         CMPA    #$03
         BEQ     L25E18
-        LDAB    $0593,Z
+        LDAB    >LdpStrokeCount,Z
         CLRA
         TDE
-        LDAB    $0595,Z
+        LDAB    >LdpStrokeTimeAvg,Z
         PSHM    D,E
-        LDAA    >DiagValue1
+        LDAA    >LdpStrokeFilter
         JSR     Blend16
         AIS     #$04
-        STAB    $0595,Z
+        STAB    >LdpStrokeTimeAvg,Z
 L25E10:
-        LDAA    $0593,Z
-        STAA    >DiagMonPeak,Z
+        LDAA    >LdpStrokeCount,Z
+        STAA    >LdpStrokeTime,Z
 L25E18:
-        LDAA    $0596,Z
+        LDAA    >LdpStrokes,Z
         INCA
         BEQ     L25E24
-        STAA    $0596,Z
+        STAA    >LdpStrokes,Z
 L25E24:
         LDAA    $0597,Z
         INCA
         BEQ     L25E30
         STAA    $0597,Z
 L25E30:
-        CLR     $0593,Z
+        CLR     >LdpStrokeCount,Z
         CLR     $0591,Z
         CLR     $0592,Z
         BSET    $058E,Z,#$01
@@ -7420,7 +7420,7 @@ Sub_25E42:
 L25E54:
         BCLR    $058E,Z,#$02
 L25E58:
-        LDAA    $058F,Z
+        LDAA    >LdpState,Z
         ANDA    #$0F
         CMPA    #$09
         LBNE    L25EDE
@@ -8239,7 +8239,7 @@ L281F4:
         BRCLR   >Options0338,#$08,L28272
         LDE     $0002,Y
         LDAA    E,Z
-        CMPA    >DiagThresh23
+        CMPA    >DiagThresh17
         BCC     L28270
         LDE     $0006,Y
         LDAA    E,Z
@@ -8261,7 +8261,7 @@ L28282:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L285C8
         LDE     $0012,Y
         LDAA    E,Z
-        CMPA    >DiagThresh16
+        CMPA    >DiagThresh10
         BCC     L282A4
         INCA
         STAA    E,Z
@@ -8393,7 +8393,7 @@ L283C8:
         LDAA    E,Z
         LDE     $0010,Y
         STAA    E,Z
-        CMPA    >DiagThresh20
+        CMPA    >DiagThresh14
         LBCC    L2841A
         LDX     $2A,Y
         LDE     $0008,Y
@@ -8484,13 +8484,13 @@ L28478:
         LDAA    E,Z
         SBA
         BCS     L284FE
-        CMPA    >DiagThresh21
+        CMPA    >DiagThresh15
         BCS     L284FE
         LDE     $0006,Y
         LDAA    E,Z
         INCA
         BEQ     L284FA
-        CMPA    >DiagThresh22
+        CMPA    >DiagThresh16
         BHI     L284FA
         STAA    E,Z
         BRCLR   >Options0338,#$08,L284E8
@@ -8897,7 +8897,7 @@ L28992:
         JSR     Sub_28B36
         LDE     $000A,Y
         LDAA    E,Z
-        CMPA    >DiagThresh12
+        CMPA    >DiagThresh6
         BCC     L289CC
         BRCLR   >MainLoopPhaseMask,Z,#$20,L28AD6
         INCA
@@ -8948,7 +8948,7 @@ L28A0A:
 L28A2C:
         LDE     $000C,Y
         LDAA    E,Z
-        CMPA    >DiagThresh14
+        CMPA    >DiagThresh8
         BLS     L28A56
         LDAB    $3D,Y
         COMB
@@ -8963,7 +8963,7 @@ L28A2C:
 L28A56:
         LDE     $000C,Y
         LDAA    E,Z
-        CMPA    >DiagThresh15
+        CMPA    >DiagThresh9
         BCS     L28AD6
         LDE     $001C,Y
         LDAA    E,Z
@@ -9006,7 +9006,7 @@ L28AB4:
         BVC     L28AC6
         LDAA    #$7F
 L28AC6:
-        CMPA    >DiagThresh13
+        CMPA    >DiagThresh7
         BCS     L28AD6
         LDAA    $3A,Y
         ORAA    $0761,Z
@@ -10227,7 +10227,7 @@ L2A0BC:
         CMPA    $0656,Z
         BRA     L2A0D8
 L2A0D4:
-        CMPA    >DiagThresh9
+        CMPA    >DiagThresh3
 L2A0D8:
         BCS     L2A0EE
         BSET    $059D,Z,#$80
@@ -10418,7 +10418,7 @@ L2A2CE:
         CMPA    $0656,Z
         BRA     L2A2EA
 L2A2E6:
-        CMPA    >DiagThresh9
+        CMPA    >DiagThresh3
 L2A2EA:
         BCS     L2A300
         BSET    $059E,Z,#$80
@@ -10595,7 +10595,7 @@ L2A4BE:
         CMPA    $0656,Z
         BRA     L2A4DA
 L2A4D6:
-        CMPA    >DiagThresh8
+        CMPA    >DiagThresh2
 L2A4DA:
         BCS     L2A4F0
         BSET    $059D,Z,#$08
@@ -10760,7 +10760,7 @@ L2A68C:
         CMPA    $0656,Z
         BRA     L2A6A8
 L2A6A4:
-        CMPA    >DiagThresh8
+        CMPA    >DiagThresh2
 L2A6A8:
         BCS     L2A6BE
         BSET    $059E,Z,#$08
@@ -15123,7 +15123,7 @@ L2D9DE:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2D9E0 ($2D9E0)
-; Called from: ReadAnalogInputs, Sub_32288
+; Called from: ReadAnalogInputs, ObdRequest
 ;---------------------------------------------------------------------------------------------------
 Sub_2D9E0:
         BSR     Sub_2D9EA

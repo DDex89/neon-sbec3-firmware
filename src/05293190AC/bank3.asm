@@ -3262,7 +3262,7 @@ L321AE:
         BCS     L3220C
         BSET    $0A1F,Z,#$20
 L321D4:
-        JSR     Sub_32318
+        JSR     ObdRequest
         LDD     $0A24,Z
         CPD     #$486B
         BNE     L3220C
@@ -3307,7 +3307,7 @@ L3222A:
 L3222E:
         LDAB    $0A41,Z
         BNE     L32244
-        JSR     Sub_32318
+        JSR     ObdRequest
         LDAA    #$0A
         STAA    $0A40,Z
         LDAB    #$03
@@ -3408,10 +3408,10 @@ L32316:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_32318 ($32318)
+; ObdRequest ($32318)
 ; Called from: Sub_0EC3A, Sub_32188, Sub_32214
 ;---------------------------------------------------------------------------------------------------
-Sub_32318:
+ObdRequest:
         CLRW    $0A27,Z
         CLRW    $0A29,Z
         CLRW    $0A2B,Z
@@ -3618,7 +3618,7 @@ L32534:
         LDAA    >ThrottleRaw,Z
         LBRA    L325E2
 L3253C:
-        LDAA    >ObdStandard
+        LDAA    >ObdO2SensorsPresent
         LBRA    L325E2
 L32544:
         BRCLR   >ObdPidSupport3,#$10,L32BC2
@@ -3670,7 +3670,7 @@ L325B6:
         LDAB    #$03
         TBXK
         LDX     #$2178
-        LDAB    >ThermistorValue1
+        LDAB    >ObdStandardIndex
         ABX
         CPX     #$2188
         BCS     L325CE
@@ -4058,18 +4058,18 @@ L32A30:
         CLRA
         LDAB    $0167,Z
         TDE
-        CMPB    >ThermistorThresh1
+        CMPB    >ObdTid21Limit
         BLS     L32A56
-        CMPB    >ThermistorThresh2
+        CMPB    >ObdTid21LimitAlt
         BLS     L32A60
         BRCLR   $0166,Z,#$10,L32A60
 L32A56:
         CLRA
-        LDAB    >ThermistorThresh1
+        LDAB    >ObdTid21Limit
         LBRA    L32AE0
 L32A60:
         CLRA
-        LDAB    >ThermistorThresh2
+        LDAB    >ObdTid21LimitAlt
         LBRA    L32AE0
 L32A6A:
         BRCLR   $0168,Z,#$80,L32BC2
@@ -4078,18 +4078,18 @@ L32A6A:
         CLRA
         LDAB    $0169,Z
         TDE
-        CMPB    >ThermistorThresh3
+        CMPB    >ObdTid22Limit
         BLS     L32A90
-        CMPB    >ThermistorThresh4
+        CMPB    >ObdTid22LimitAlt
         BLS     L32A9A
         BRCLR   $0168,Z,#$10,L32A9A
 L32A90:
         CLRA
-        LDAB    >ThermistorThresh3
+        LDAB    >ObdTid22Limit
         LBRA    L32AE0
 L32A9A:
         CLRA
-        LDAB    >ThermistorThresh4
+        LDAB    >ObdTid22LimitAlt
         LBRA    L32AE0
 L32AA4:
         BRCLR   $016E,Z,#$80,L32BC2
@@ -4120,9 +4120,9 @@ L32AEE:
         LDAA    #$80
         STAA    $0A29,Z
         LDE     $0177,Z
-        LDD     >ThermistorRpmValue
+        LDD     >PurgeFlowRpmRise
         BRCLR   $0176,Z,#$01,L32B0C
-        LDD     >ThermistorValue6
+        LDD     >PurgeFlowRpmRiseAlt
 L32B0C:
         LBRA    L32AE0
 L32B10:
@@ -5270,7 +5270,7 @@ L33A8C:
         BRSET   $064E,Z,#$02,L33AEA
         BRA     L33AB6
 L33AA6:
-        LDAA    $058F,Z
+        LDAA    >LdpState,Z
         ASLA
         ASLA
         ASLA
@@ -5365,7 +5365,7 @@ L33B78:
         BRA     L33BA8
 L33B92:
         BSET    $0649,Z,#$02
-        CLR     $058F,Z
+        CLR     >LdpState,Z
         BRA     L33BC8
 L33B9C:
         BRCLR   $0774,Z,#$80,L33BC8
@@ -5373,7 +5373,7 @@ L33B9C:
 L33BA8:
         BRCLR   $0649,Z,#$02,L33BC8
         BCLR    $0649,Z,#$02
-        LDAA    $058F,Z
+        LDAA    >LdpState,Z
         ASLA
         ASLA
         ASLA
@@ -5381,7 +5381,7 @@ L33BA8:
         CMPA    #$90
         BEQ     L33BC8
         ORAA    #$09
-        STAA    $058F,Z
+        STAA    >LdpState,Z
 L33BC8:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -12813,7 +12813,7 @@ L3B93C:
         LDAA    >SpeedCtlSetSpeed,Z
         CMPA    >SpeedCtlSetSpeedMin
         BLS     L3B97C
-        LDAB    >SpeedCtlValue2
+        LDAB    >SpeedCtlSetPulse
         LDAA    $0418,Z
         BPL     L3B97A
         ANDA    #$7F
@@ -12868,7 +12868,7 @@ L3B9F6:
         LBRA    L3BD68
 L3BA0C:
         LDAB    >SpeedCtlTimer2,Z
-        CMPB    >SpeedCtlTimer2Thresh2
+        CMPB    >SpeedCtlCoastHoldTime
         LBLS    L3BD68
 L3BA18:
         BSET    $0400,Z,#$10
@@ -12905,7 +12905,7 @@ L3BA56:
 L3BA82:
         CLR     $02,Y
         LDAB    >SpeedCtlTimer2,Z
-        CMPB    >SpeedCtlTimer2Thresh1
+        CMPB    >SpeedCtlTapTime
         BCC     L3BAD4
         LDAA    $0415,Z
         LBNE    L3BB34
@@ -12927,9 +12927,9 @@ L3BABC:
         LDAA    >SpeedCtlSetSpeedMin
 L3BAC0:
         STAA    >SpeedCtlSetSpeed,Z
-        LDAA    >SpeedCtlTimer2Thresh1
+        LDAA    >SpeedCtlTapTime
         STAA    $0415,Z
-        LDAB    >SpeedCtlValue2
+        LDAB    >SpeedCtlSetPulse
         ORAB    #$80
         BRA     L3BB40
 L3BAD4:
@@ -12938,7 +12938,7 @@ L3BAD4:
         LBRA    L3BB1A
 L3BAE0:
         LDAA    $0412,Z
-        LDAB    >SpeedCtlValue3
+        LDAB    >SpeedCtlHoldGain
         ADDB    #$80
         BMI     L3BAF6
         MUL
@@ -13008,7 +13008,7 @@ L3BB8A:
         BSET    $0400,Z,#$20
         BCLR    $0400,Z,#$80
         BSET    $0403,Z,#$04
-        LDAA    >SpeedCtlV041FInit
+        LDAA    >SpeedCtlResumeHoldInit
         STAA    $041F,Z
         JSR     Sub_3C222
         STAA    $02,Y
@@ -13047,7 +13047,7 @@ L3BBFE:
         SUBA    #$03
         CMPA    >SpeedCtlSetSpeedMax
         BHI     L3BC24
-        LDAB    >SpeedCtlValue1
+        LDAB    >SpeedCtlTapUpPulse
         LDAA    $0418,Z
         BMI     L3BC24
         ABA
@@ -13080,7 +13080,7 @@ L3BC5A:
         BRSET   $0400,Z,#$20,L3BD68
         BRSET   $0400,Z,#$08,L3BC8A
         LDAB    $0412,Z
-        CMPB    >SpeedCtlV0412Thresh
+        CMPB    >SpeedCtlAccelHoldTime
         LBLS    L3BD68
         BSET    $0400,Z,#$08
         BSET    $0401,Z,#$08
@@ -13108,7 +13108,7 @@ L3BCA0:
 L3BCB6:
         CMPB    >SpeedCtlSetSpeedMax
         BCC     L3BCD2
-        ADDA    >SpeedCtlAdder2
+        ADDA    >SpeedCtlAccelLeadMax
         BCS     L3BCCE
         CBA
         BLS     L3BCD2
@@ -13166,7 +13166,7 @@ L3BD3E:
         BNE     L3BD68
         LDAB    >SpeedCtlTimer,Z
         INCB
-        CMPB    >SpeedCtlTimerThresh2
+        CMPB    >SpeedCtlSettleTime
         BCS     L3BD64
         BCLR    $0401,Z,#$04
         CLRB
@@ -13189,11 +13189,11 @@ L3BD8E:
         STAB    $0404,Z
         BRSET   $0400,Z,#$80,L3BDF0
         LDAA    >MainLoopCounter,Z
-        ANDA    >SpeedCtlLoopMask
-        CMPA    >SpeedCtlLoopMask
+        ANDA    >SpeedCtlOverrideLoopMask
+        CMPA    >SpeedCtlOverrideLoopMask
         BNE     L3BE08
         LDAA    >CoolantTemp,Z
-        CMPA    >SpeedCtlCoolantThresh
+        CMPA    >SpeedCtlOverrideCoolantMin
         BCS     L3BDF0
         JSR     Sub_3C65C
         LDAA    >ThrottleAboveClosed,Z
@@ -13203,7 +13203,7 @@ L3BD8E:
 L3BDC0:
         SUBA    $0422,Z
         BLS     L3BDE0
-        CMPA    >SpeedCtlThresh14
+        CMPA    >SpeedCtlOverrideMargin
         BLS     L3BDE0
         BSET    $0403,Z,#$08
         LDAA    >VehicleSpeed,Z
@@ -13256,14 +13256,14 @@ L3BE5E:
         CLRA
         STAA    >SpeedCtlTimer,Z
 L3BE68:
-        CMPA    >SpeedCtlThresh2
+        CMPA    >SpeedCtlAdaptPeriod
         BCS     L3BED8
         LDAB    $040F,Z
         TBA
         BPL     L3BE78
         NEGB
 L3BE78:
-        CMPB    >SpeedCtlThresh3
+        CMPB    >SpeedCtlAdaptErrorMin
         BCS     L3BECE
         TZX
         LDX     #$8190
@@ -13280,20 +13280,20 @@ L3BE92:
         SBCA    #$00
 L3BE9E:
         STAA    $02,X
-        CMPA    >SpeedCtlThresh4
+        CMPA    >SpeedCtlAdaptSumHigh
         BGT     L3BEBC
-        CMPA    >SpeedCtlThresh5
+        CMPA    >SpeedCtlAdaptSumLow
         BGE     L3BECE
-        SUBB    >SpeedCtlOffset
-        CMPB    >SpeedCtlThresh7
+        SUBB    >SpeedCtlAdaptStepDown
+        CMPB    >SpeedCtlAdaptGainMin
         BGE     L3BECA
-        LDAB    >SpeedCtlThresh7
+        LDAB    >SpeedCtlAdaptGainMin
         BRA     L3BECA
 L3BEBC:
-        ADDB    >SpeedCtlAdder1
-        CMPB    >SpeedCtlThresh6
+        ADDB    >SpeedCtlAdaptStepUp
+        CMPB    >SpeedCtlAdaptGainMax
         BLE     L3BECA
-        LDAB    >SpeedCtlThresh6
+        LDAB    >SpeedCtlAdaptGainMax
 L3BECA:
         STAB    $00,X
         CLR     $02,X
@@ -13312,7 +13312,7 @@ L3BED8:
         ASLA
         ASLA
         SBA
-        ADDA    >SpeedCtlSetSpeedAdder
+        ADDA    >SpeedCtlErrorBias
         BMI     L3BF0A
         LDAB    $040F,Z
         BPL     L3BF00
@@ -13397,11 +13397,11 @@ L3BFB0:
 L3BFC6:
         TSTA
         BNE     L3BFDE
-        CMPB    >SpeedCtlThresh11
+        CMPB    >SpeedCtlUnderspeedLarge
         BCC     L3BFDE
         TBA
         LDAB    $00,Y
-        CMPA    >SpeedCtlThresh12
+        CMPA    >SpeedCtlUnderspeedMedium
         BCS     L3C00C
         LDAA    #$05
         BRA     L3BFE0
@@ -13421,7 +13421,7 @@ L3BFF8:
         BEQ     L3BFFE
         LDAB    #$FF
 L3BFFE:
-        CMPB    >SpeedCtlThresh1
+        CMPB    >SpeedCtlOverspeedBand
         BCC     L3C00C
         BCLR    $0400,Z,#$04
         BCLR    $0403,Z,#$04
@@ -13472,7 +13472,7 @@ L3C068:
         BEQ     L3C06E
         LDAB    #$FF
 L3C06E:
-        CMPB    >SpeedCtlThresh8
+        CMPB    >SpeedCtlOutputDeadband
         BHI     L3C094
         CLRB
         LDAA    >SpeedCtlSetSpeed,Z
@@ -13485,7 +13485,7 @@ L3C06E:
 L3C088:
         TSTA
         BNE     L3C094
-        CMPB    >SpeedCtlThresh9
+        CMPB    >SpeedCtlSpeedDeadband
         LBLS    L3C170
 L3C094:
         CLRA
@@ -13525,14 +13525,14 @@ L3C0D6:
 L3C0E0:
         TSTA
         BPL     L3C118
-        ORAA    >SpeedCtlMask
+        ORAA    >SpeedCtlApplyPulseMin
         BRCLR   $0400,Z,#$10,L3C0F6
-        ADDA    >SpeedCtlAdder3
+        ADDA    >SpeedCtlApplyPulseResume
         LBRA    L3C16C
 L3C0F6:
         STAA    $04,Y
         CLRA
-        CMPB    >SpeedCtlThresh13
+        CMPB    >SpeedCtlApplyThrottleMin
         BCS     L3C16C
         LDX     #$2BB5
         STX     $02,Y
@@ -13551,9 +13551,9 @@ L3C118:
         LDAA    $F0,Z
         CMPB    $F1,Z
         BCS     L3C16C
-        ORAA    >SpeedCtlV00F0Mask
+        ORAA    >SpeedCtlVentPulseMin
         BRCLR   $0400,Z,#$08,L3C13C
-        ADDA    >SpeedCtlV00F0Adder
+        ADDA    >SpeedCtlVentPulseAccel
         BRA     L3C16C
 L3C13C:
         BRSET   $0400,Z,#$04,L3C16C
@@ -13596,7 +13596,7 @@ L3C1A6:
         LDAA    $0424,Z
         INCA
         STAA    $0424,Z
-        CMPA    >SpeedCtlV0424Thresh
+        CMPA    >SpeedCtlVentDelayCount
         BLS     L3C1EE
         CLR     $0424,Z
 L3C1C0:

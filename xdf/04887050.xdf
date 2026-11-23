@@ -17,12 +17,13 @@
   <CATEGORY index="0x7" name="Closed loop" />
   <CATEGORY index="0x8" name="EVAP purge" />
   <CATEGORY index="0x9" name="Knock" />
-  <CATEGORY index="0xA" name="Faults" />
-  <CATEGORY index="0xB" name="Other" />
-  <CATEGORY index="0xC" name="Options" />
-  <CATEGORY index="0xD" name="Cooling fan" />
-  <CATEGORY index="0xE" name="A/C" />
-  <CATEGORY index="0xF" name="Speed control" />
+  <CATEGORY index="0xA" name="Unidentified: LdpMonitor" />
+  <CATEGORY index="0xB" name="Faults" />
+  <CATEGORY index="0xC" name="Other" />
+  <CATEGORY index="0xD" name="Options" />
+  <CATEGORY index="0xE" name="Cooling fan" />
+  <CATEGORY index="0xF" name="A/C" />
+  <CATEGORY index="0x10" name="Speed control" />
  </XDFHEADER>
  <XDFTABLE uniqueid="0x101" flags="0x0">
   <title>Tab2D_033B</title>
@@ -10842,6 +10843,7 @@
   <title>Tab2D_296F</title>
   <description>$296F, 2D; inputs: FuelLevelScaled</description>
   <CATEGORYMEM index="0" category="1" />
+  <CATEGORYMEM index="1" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -10877,7 +10879,7 @@
  <XDFTABLE uniqueid="0x224" flags="0x0">
   <title>FaultTable</title>
   <description>Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes $3505</description>
-  <CATEGORYMEM index="0" category="11" />
+  <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>10</indexcount>
@@ -12077,7 +12079,7 @@
  <XDFTABLE uniqueid="0x23F" flags="0x0">
   <title>EventTimingLimit</title>
   <description>Output-compare set-up in the GPT IC1 interrupt: limit against $0D11,Z compared with $0ABE,Z $51E1, 2D; inputs: $0612,Z</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
    <indexcount>1</indexcount>
@@ -12149,7 +12151,7 @@
  <XDFCONSTANT uniqueid="0x241" flags="0x0">
   <title>Options032A</title>
   <description>Option byte; bit tests in the reference-event and spark code (bits 7-6: spark cap and ignition variants) $031D</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x31D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12161,189 +12163,189 @@
  <XDFFLAG uniqueid="0x242" flags="0x0">
   <title>Options0331 bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $031E mask $08</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x243" flags="0x0">
   <title>Options0331 bit $10</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $031E mask $10</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x244" flags="0x0">
   <title>Options0331 bit $20</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $031E mask $20</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x245" flags="0x0">
   <title>Options0331 bit $40</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $031E mask $40</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x246" flags="0x0">
   <title>Options0331 bit $80 AcPressureSensor</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $031E mask $80</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x247" flags="0x0">
   <title>Options0337 bit $01 IdleDipKickMode</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $01</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x248" flags="0x0">
   <title>Options0337 bit $02</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $02</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x249" flags="0x0">
   <title>Options0337 bit $04</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $04</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x24A" flags="0x0">
   <title>Options0337 bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $08</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x24B" flags="0x0">
   <title>Options0337 bit $10 SurgeSparkOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $10</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x24C" flags="0x0">
   <title>Options0337 bit $20 SpeedLimitOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $20</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x24D" flags="0x0">
   <title>Options0337 bit $40 SpeedDampOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $40</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x24E" flags="0x0">
   <title>Options0337 bit $80 EventSparkOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $80</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x24F" flags="0x0">
   <title>Options0339 bit $01 TipInRetardHold</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $01</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x250" flags="0x0">
   <title>Options0339 bit $02</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $02</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x251" flags="0x0">
   <title>Options0339 bit $04 PurgeDutyAltClosed</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $04</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x252" flags="0x0">
   <title>Options0339 bit $08 PurgeDutyAltOther</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $08</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x253" flags="0x0">
   <title>Options0339 bit $10</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $10</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x254" flags="0x0">
   <title>Options0339 bit $20</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $20</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x255" flags="0x0">
   <title>Options0339 bit $40</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $40</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x256" flags="0x0">
   <title>Options0339 bit $80</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $80</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x257" flags="0x0">
   <title>Options033A bit $01</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $01</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x258" flags="0x0">
   <title>Options033A bit $08</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $08</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x259" flags="0x0">
   <title>Options033A bit $10 AcSparkOn</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $10</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25A" flags="0x0">
   <title>Options033A bit $40</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $40</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25B" flags="0x0">
   <title>Options033A bit $80</title>
   <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $80</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFCONSTANT uniqueid="0x25C" flags="0x0">
   <title>CalRpmOffset1</title>
   <description>Word subtracted from EngineRpm; read by Sub_2F800. $0356</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x356" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -12355,7 +12357,7 @@
  <XDFCONSTANT uniqueid="0x25D" flags="0x0">
   <title>CalRpmOffset2</title>
   <description>Word subtracted from EngineRpm; read by Sub_2F800. $0358</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x358" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -12367,7 +12369,7 @@
  <XDFCONSTANT uniqueid="0x25E" flags="0x0">
   <title>CalV0C08Thresh1</title>
   <description>Word compared with V0C08; read by Sub_2F800. $035A</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x35A" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12379,7 +12381,7 @@
  <XDFCONSTANT uniqueid="0x25F" flags="0x0">
   <title>CalOffset1</title>
   <description>Word subtracted from; read by Sub_2F800. $035C</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x35C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12391,7 +12393,7 @@
  <XDFCONSTANT uniqueid="0x260" flags="0x0">
   <title>CalOffset2</title>
   <description>Word subtracted from; read by Sub_2F800. $035E</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x35E" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12403,7 +12405,7 @@
  <XDFCONSTANT uniqueid="0x261" flags="0x0">
   <title>CalOffset3</title>
   <description>Word subtracted from; read by Sub_2F800. $0360</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x360" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12427,7 +12429,7 @@
  <XDFCONSTANT uniqueid="0x263" flags="0x0">
   <title>CalV0C08Thresh2</title>
   <description>Word compared with V0C08; read by Sub_2F800. $0363</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x363" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12439,7 +12441,7 @@
  <XDFCONSTANT uniqueid="0x264" flags="0x0">
   <title>CalCoolantThresh1</title>
   <description>Byte compared with CoolantTemp; read by Sub_2F800. $0365</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x365" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -12451,7 +12453,7 @@
  <XDFCONSTANT uniqueid="0x265" flags="0x0">
   <title>FanAcSensorStage1</title>
   <description>Fan with A/C: A/C sensor at or above this value sets stage bit 1 $03A5</description>
-  <CATEGORYMEM index="0" category="14" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3A5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12463,7 +12465,7 @@
  <XDFCONSTANT uniqueid="0x266" flags="0x0">
   <title>FanAcSensorLow</title>
   <description>Fan with A/C: A/C sensor at or below this value starts the low-pressure delay $03A6</description>
-  <CATEGORYMEM index="0" category="14" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3A6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12475,7 +12477,7 @@
  <XDFCONSTANT uniqueid="0x267" flags="0x0">
   <title>FanAcSensorStage3</title>
   <description>Fan with A/C: A/C sensor at or above this value sets stage bit 3 $03A7</description>
-  <CATEGORYMEM index="0" category="14" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3A7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12487,7 +12489,7 @@
  <XDFCONSTANT uniqueid="0x268" flags="0x0">
   <title>FanAcSensorStage2</title>
   <description>Fan with A/C: A/C sensor above this value sets stage bit 2 $03A8</description>
-  <CATEGORYMEM index="0" category="14" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3A8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12523,7 +12525,7 @@
  <XDFCONSTANT uniqueid="0x26B" flags="0x0">
   <title>AcCutRpmLow</title>
   <description>A/C logic: engine rpm limit used in Sub_19808 and Sub_39412 (FF00 = off) $0404</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x404" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -12559,7 +12561,7 @@
  <XDFCONSTANT uniqueid="0x26E" flags="0x0">
   <title>EventV0ABDThresh1</title>
   <description>Word compared with V0ABD; read by Isr_GPT_IC1. $052F</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x52F" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12571,7 +12573,7 @@
  <XDFCONSTANT uniqueid="0x26F" flags="0x0">
   <title>EventV0ABDThresh2</title>
   <description>Word compared with V0ABD; read by Isr_GPT_IC1. $0531</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x531" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13413,7 +13415,7 @@
  <XDFCONSTANT uniqueid="0x2B6" flags="0x0">
   <title>EventV0ABDThresh3</title>
   <description>Word compared with V0ABD; read by Isr_GPT_IC1. $199F</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x199F" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13629,7 +13631,7 @@
  <XDFCONSTANT uniqueid="0x2C8" flags="0x0">
   <title>AcSparkHoldCount</title>
   <description>A/C spark: hold count $0D56,Z, A/C clutch off $1C07</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1C07" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13641,7 +13643,7 @@
  <XDFCONSTANT uniqueid="0x2C9" flags="0x0">
   <title>AcSparkHoldCountAcOn</title>
   <description>As AcSparkHoldCount with the A/C clutch on $1C08</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1C08" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13653,7 +13655,7 @@
  <XDFCONSTANT uniqueid="0x2CA" flags="0x0">
   <title>AcSparkRateChangeMin</title>
   <description>A/C spark: rpm-rate change ($0D4E,Z) at or above which the compensation starts, A/C clutch off $1C0D</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1C0D" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13665,7 +13667,7 @@
  <XDFCONSTANT uniqueid="0x2CB" flags="0x0">
   <title>AcSparkRateChangeMinAcOn</title>
   <description>As AcSparkRateChangeMin with the A/C clutch on $1C0F</description>
-  <CATEGORYMEM index="0" category="15" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1C0F" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14301,7 +14303,7 @@
  <XDFCONSTANT uniqueid="0x300" flags="0x0">
   <title>SpeedCtlRpmJump</title>
   <description>Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only) $2301</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x2301" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -14337,7 +14339,7 @@
  <XDFCONSTANT uniqueid="0x303" flags="0x0">
   <title>SpeedCtlRpmJumpThrottle</title>
   <description>Speed control: the rpm-jump cancel needs the throttle within this value of the reference $2306</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x2306" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14575,7 +14577,7 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x317" flags="0x0">
-  <title>DiagThresh12</title>
+  <title>DiagThresh6</title>
   <description>Byte compared with; read by Sub_2877A. $254E</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x254E" mmedelementsizebits="8" mmedtypeflags="0x00" />
@@ -14587,7 +14589,7 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x318" flags="0x0">
-  <title>DiagThresh13</title>
+  <title>DiagThresh7</title>
   <description>Byte compared with; read by Sub_2877A. $2557</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2557" mmedelementsizebits="8" mmedtypeflags="0x00" />
@@ -14599,7 +14601,7 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x319" flags="0x0">
-  <title>DiagThresh14</title>
+  <title>DiagThresh8</title>
   <description>Byte compared with; read by Sub_2877A. $2561</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2561" mmedelementsizebits="8" mmedtypeflags="0x00" />
@@ -14611,7 +14613,7 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x31A" flags="0x0">
-  <title>DiagThresh15</title>
+  <title>DiagThresh9</title>
   <description>Byte compared with; read by Sub_2877A. $2562</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2562" mmedelementsizebits="8" mmedtypeflags="0x00" />
@@ -14625,7 +14627,7 @@
  <XDFCONSTANT uniqueid="0x31B" flags="0x0">
   <title>CalV010AThresh1</title>
   <description>Word compared with V010A; read by Sub_2919A. $2568</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x2568" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14661,7 +14663,7 @@
  <XDFCONSTANT uniqueid="0x31E" flags="0x0">
   <title>LdpBattTempMax</title>
   <description>EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value $294F</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x294F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -14673,7 +14675,7 @@
  <XDFCONSTANT uniqueid="0x31F" flags="0x0">
   <title>LdpBattTempMin</title>
   <description>EVAP leak test: battery temperature at or above this value $2950</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2950" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -14685,7 +14687,7 @@
  <XDFCONSTANT uniqueid="0x320" flags="0x0">
   <title>LdpVoltsMax</title>
   <description>EVAP leak test: battery voltage at or below this value $2953</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2953" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
   <decimalpl>2</decimalpl>
@@ -14697,7 +14699,7 @@
  <XDFCONSTANT uniqueid="0x321" flags="0x0">
   <title>LdpVoltsMin</title>
   <description>EVAP leak test: battery voltage at or above this value $2954</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2954" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
   <decimalpl>2</decimalpl>
@@ -14709,7 +14711,7 @@
  <XDFCONSTANT uniqueid="0x322" flags="0x0">
   <title>LdpVacuumMin</title>
   <description>EVAP leak test: manifold vacuum at or above this value for the test states $2955</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2955" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -14719,9 +14721,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x323" flags="0x0">
-  <title>DiagV0591Thresh</title>
-  <description>Byte compared with V0591; read by Sub_25DA8. $2956</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpOnTime</title>
+  <description>Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke $2956</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2956" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14731,9 +14733,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x324" flags="0x0">
-  <title>DiagV0592Thresh</title>
-  <description>Byte compared with V0592; read by Sub_25784, Sub_25DA8. $2957</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpOffTime</title>
+  <description>Leak detection pump: pump-off count ($0592,Z) per stroke $2957</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2957" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14743,9 +14745,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x325" flags="0x0">
-  <title>DiagMonPeakThresh1</title>
-  <description>Byte compared with DiagMonPeak; read by Sub_25DA8. $2958</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpStrokeTimeValid</title>
+  <description>Leak detection pump: stroke time at or above which it is stored as the result ($0595,Z) before filtering starts $2958</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2958" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14755,9 +14757,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x326" flags="0x0">
-  <title>DiagValue1</title>
-  <description>Byte used with; read by Sub_25DA8. $2959</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpStrokeFilter</title>
+  <description>Leak detection pump: filter weight of the averaged stroke time ($0595,Z) $2959</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2959" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14767,9 +14769,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x327" flags="0x0">
-  <title>DiagThresh1</title>
-  <description>Byte compared with; read by Sub_25784. $295A</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpOnTimeStart</title>
+  <description>Leak detection pump, start state: pump-on count before the first stroke $295A</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x295A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14779,9 +14781,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x328" flags="0x0">
-  <title>DiagThresh2</title>
-  <description>Byte compared with; read by Sub_25784. $295B</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpGrossTime</title>
+  <description>Leak detection pump, gross-leak state: state time ($0590,Z) for the first strokes $295B</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x295B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14791,9 +14793,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x329" flags="0x0">
-  <title>DiagV0596Thresh1</title>
-  <description>Byte compared with V0596; read by Sub_25784. $295C</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpGrossStrokes</title>
+  <description>Leak detection pump, gross-leak state: strokes ($0596,Z) before the stroke time is judged $295C</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x295C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14803,9 +14805,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x32A" flags="0x0">
-  <title>DiagMonPeakThresh2</title>
-  <description>Byte compared with DiagMonPeak; read by Sub_25784. $295D</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpSealedStrokeTime</title>
+  <description>Leak detection pump, gross-leak state: stroke time at or above which the system holds pressure (no gross leak) $295D</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x295D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14815,9 +14817,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x32B" flags="0x0">
-  <title>DiagV0593Thresh</title>
-  <description>Byte compared with V0593; read by Sub_25784. $295E</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpStrokeTimeMax</title>
+  <description>Leak detection pump, pump-up state: stroke time ($0593,Z) at or above which the stroke counts restart $295E</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x295E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14827,9 +14829,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x32C" flags="0x0">
-  <title>DiagV0597Thresh1</title>
-  <description>Byte compared with V0597; read by Sub_25784. $295F</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpWindowStrokes</title>
+  <description>Leak detection pump, pump-up state: strokes per time-out window ($0597,Z) $295F</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x295F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14839,9 +14841,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x32D" flags="0x0">
-  <title>DiagV0590Thresh</title>
-  <description>Byte compared with V0590; read by Sub_25784. $2960</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpTimeMin</title>
+  <description>Leak detection pump, pump-up state: state time limit after refuelling; also taken off the time-out count $0598,Z per stroke window $2960</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2960" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14851,9 +14853,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x32E" flags="0x0">
-  <title>DiagV0598Thresh</title>
-  <description>Byte compared with V0598; read by Sub_25784. $2961</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPumpUpTimeMax</title>
+  <description>Leak detection pump, pump-up state: time-out count ($0598,Z) that ends the state $2961</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2961" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14863,9 +14865,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x32F" flags="0x0">
-  <title>DiagThresh3</title>
-  <description>Byte compared with; read by Sub_25784. $2962</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpRecheckTime</title>
+  <description>Leak detection pump, recheck state: state time for the strokes $2962</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2962" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14875,9 +14877,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x330" flags="0x0">
-  <title>DiagV0596Thresh2</title>
-  <description>Byte compared with V0596; read by Sub_25784. $2963</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpRecheckStrokes</title>
+  <description>Leak detection pump, recheck state: strokes before the stroke time is judged $2963</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2963" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14887,9 +14889,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x331" flags="0x0">
-  <title>DiagMonPeakThresh3</title>
-  <description>Byte compared with DiagMonPeak; read by Sub_25784. $2964</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpSealedStrokeTime2</title>
+  <description>Leak detection pump, recheck state: stroke time at or above which the system holds pressure $2964</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2964" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14899,9 +14901,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x332" flags="0x0">
-  <title>DiagThresh6</title>
-  <description>Byte compared with; read by Sub_25784. $2966</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpLargeLeakStrokeTime</title>
+  <description>Leak detection pump, test state: averaged stroke time below this value is a large leak $2966</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2966" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14911,9 +14913,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x333" flags="0x0">
-  <title>DiagMonPeakThresh4</title>
-  <description>Byte compared with DiagMonPeak; read by Sub_25784. $2967</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPurgeStrokeTimeMin</title>
+  <description>Leak detection pump, purge check state: stroke time below this value ends the state $2967</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2967" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14923,9 +14925,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x334" flags="0x0">
-  <title>DiagThresh5</title>
-  <description>Byte compared with; read by Sub_25784. $2968</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpTestTime</title>
+  <description>Leak detection pump, test state: state time before the result is judged $2968</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2968" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14937,7 +14939,7 @@
  <XDFCONSTANT uniqueid="0x335" flags="0x0">
   <title>LdpVacuumMin2</title>
   <description>EVAP leak test: manifold vacuum limit of the last state $2969</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2969" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -14947,9 +14949,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x336" flags="0x0">
-  <title>DiagV0599Thresh</title>
-  <description>Byte compared with V0599; read by Sub_25784. $296A</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpVacLowCountMax</title>
+  <description>Leak detection pump: low-vacuum counts ($0599,Z) allowed in the end state $296A</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x296A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14959,9 +14961,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x337" flags="0x0">
-  <title>DiagV059AThresh</title>
-  <description>Byte compared with V059A; read by Sub_25784. $296B</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpVacLowTotalMax</title>
+  <description>Leak detection pump: total low-vacuum counts ($059A,Z) that abort the test $296B</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x296B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14971,9 +14973,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x338" flags="0x0">
-  <title>DiagV0597Thresh2</title>
-  <description>Byte compared with V0597; read by Sub_25784. $296C</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpWindowStrokes2</title>
+  <description>Leak detection pump, end state: strokes needed with few low-vacuum counts $296C</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x296C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15129,7 +15131,7 @@
  <XDFCONSTANT uniqueid="0x345" flags="0x0">
   <title>CylinderCount</title>
   <description>Number of cylinders (4): the cylinder index $0C46,Z counts up to it and the per-event code uses it $51D3</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x51D3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>

@@ -18,6 +18,10 @@
  "1231C": "EmptyHook",
  "12330": "ReadMap",
  "141E4": "CalcBaseSpark",
+ "1A852": "PurgeFlowTest",
  "1E3CC": "ReportPass",
- "1E68C": "ReportFault"
+ "1E68C": "ReportFault",
+ "1E7C2": "LdpMonitor",
+ "1ED86": "LdpStateTimer",
+ "1EDA6": "LdpPumpStroke"
 }

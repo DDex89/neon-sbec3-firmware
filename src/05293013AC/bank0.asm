@@ -4124,18 +4124,18 @@ SpeedCtlRpmJumpThrottle:
 SensorValue13:
         dc.b    $10                                      ; Byte used with; read by Sub_3C3C6.
         dc.b    $69,$02,$37,$02,$D6,$0A,$7F,$00
-DiagThresh4:
-        dc.b    $0C                                      ; Byte compared with; read by Sub_25784.
+LdpTestTimeAlt:
+        dc.b    $0C                                      ; Leak detection pump, test state: state time with $0649,Z bit 1 set
         dc.b    $01,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; DiagLevelLimit2 ($2348): 2D table, 1 points, unsigned
-; As DiagLevelLimit with $0649,Z bit 1 set
+; LdpPumpTimeByLevel2 ($2348): 2D table, 1 points, unsigned
+; As LdpPumpTimeByLevel with $0649,Z bit 1 set
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: FuelLevelScaled
 ; Read at $1EAB4
 ;---------------------------------------------------------------------------------------------------
-DiagLevelLimit2:
+LdpPumpTimeByLevel2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,34                                   ; x, y
 
@@ -4263,15 +4263,15 @@ DiagV0A4EThresh:
         dc.b    $35                                      ; Byte compared with V0A4E; read by Sub_2877A.
         dc.b    $06,$FA,$06,$FA,$06,$FA,$06,$FA,$10,$10,$10,$10,$00,$86,$8A,$86
         dc.b    $8A,$00,$00,$00
-DiagThresh12:
+DiagThresh6:
         dc.b    $08                                      ; Byte compared with; read by Sub_2877A.
         dc.b    $00,$0A,$00,$23,$00,$0A,$00,$23
-DiagThresh13:
+DiagThresh7:
         dc.b    $7F                                      ; Byte compared with; read by Sub_2877A.
         dc.b    $00,$01,$33,$FE,$FE,$FF,$FF,$33,$01
-DiagThresh14:
+DiagThresh8:
         dc.b    $95                                      ; Byte compared with; read by Sub_2877A.
-DiagThresh15:
+DiagThresh9:
         dc.b    $13                                      ; Byte compared with; read by Sub_2877A.
         dc.b    $08,$80,$04,$A2,$60
 CalV010AThresh1:
@@ -4585,62 +4585,62 @@ LdpVoltsMin:
         dc.b    $92                                      ; EVAP leak test: battery voltage at or above this value
 LdpVacuumMin:
         dc.b    $20                                      ; EVAP leak test: manifold vacuum at or above this value for the test states
-DiagV0591Thresh:
-        dc.b    $14                                      ; Byte compared with V0591; read by Sub_25DA8.
-DiagV0592Thresh:
-        dc.b    $01                                      ; Byte compared with V0592; read by Sub_25784, Sub_25DA8.
-DiagMonPeakThresh1:
-        dc.b    $3A                                      ; Byte compared with DiagMonPeak; read by Sub_25DA8.
-DiagValue1:
-        dc.b    $55                                      ; Byte used with; read by Sub_25DA8.
-DiagThresh1:
-        dc.b    $29                                      ; Byte compared with; read by Sub_25784.
-DiagThresh2:
-        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
-DiagV0596Thresh1:
-        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
-DiagMonPeakThresh2:
-        dc.b    $27                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
-DiagV0593Thresh:
-        dc.b    $1C                                      ; Byte compared with V0593; read by Sub_25784.
-DiagV0597Thresh1:
-        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
-DiagV0590Thresh:
-        dc.b    $06                                      ; Byte compared with V0590; read by Sub_25784.
-DiagV0598Thresh:
-        dc.b    $3E                                      ; Byte compared with V0598; read by Sub_25784.
-DiagThresh3:
-        dc.b    $06                                      ; Byte compared with; read by Sub_25784.
-DiagV0596Thresh2:
-        dc.b    $03                                      ; Byte compared with V0596; read by Sub_25784.
-DiagMonPeakThresh3:
-        dc.b    $1E                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
-DiagV0595Thresh:
-        dc.b    $12                                      ; Byte compared with V0595; read by Sub_25784.
-DiagThresh6:
-        dc.b    $08                                      ; Byte compared with; read by Sub_25784.
-DiagMonPeakThresh4:
-        dc.b    $12                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
-DiagThresh5:
-        dc.b    $18                                      ; Byte compared with; read by Sub_25784.
+LdpPumpOnTime:
+        dc.b    $14                                      ; Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke
+LdpPumpOffTime:
+        dc.b    $01                                      ; Leak detection pump: pump-off count ($0592,Z) per stroke
+LdpStrokeTimeValid:
+        dc.b    $3A                                      ; Leak detection pump: stroke time at or above which it is stored as the result ($0595,Z) before filtering starts
+LdpStrokeFilter:
+        dc.b    $55                                      ; Leak detection pump: filter weight of the averaged stroke time ($0595,Z)
+LdpPumpOnTimeStart:
+        dc.b    $29                                      ; Leak detection pump, start state: pump-on count before the first stroke
+LdpGrossTime:
+        dc.b    $06                                      ; Leak detection pump, gross-leak state: state time ($0590,Z) for the first strokes
+LdpGrossStrokes:
+        dc.b    $03                                      ; Leak detection pump, gross-leak state: strokes ($0596,Z) before the stroke time is judged
+LdpSealedStrokeTime:
+        dc.b    $27                                      ; Leak detection pump, gross-leak state: stroke time at or above which the system holds pressure (no gross leak)
+LdpStrokeTimeMax:
+        dc.b    $1C                                      ; Leak detection pump, pump-up state: stroke time ($0593,Z) at or above which the stroke counts restart
+LdpWindowStrokes:
+        dc.b    $05                                      ; Leak detection pump, pump-up state: strokes per time-out window ($0597,Z)
+LdpPumpTimeMin:
+        dc.b    $06                                      ; Leak detection pump, pump-up state: state time limit after refuelling; also taken off the time-out count $0598,Z per stroke window
+LdpPumpUpTimeMax:
+        dc.b    $3E                                      ; Leak detection pump, pump-up state: time-out count ($0598,Z) that ends the state
+LdpRecheckTime:
+        dc.b    $06                                      ; Leak detection pump, recheck state: state time for the strokes
+LdpRecheckStrokes:
+        dc.b    $03                                      ; Leak detection pump, recheck state: strokes before the stroke time is judged
+LdpSealedStrokeTime2:
+        dc.b    $1E                                      ; Leak detection pump, recheck state: stroke time at or above which the system holds pressure
+LdpSmallLeakStrokeTime:
+        dc.b    $12                                      ; Leak detection pump, test state: averaged stroke time below this value is a small leak (also the mode $06 limit, result in $0171,Z)
+LdpLargeLeakStrokeTime:
+        dc.b    $08                                      ; Leak detection pump, test state: averaged stroke time below this value is a large leak
+LdpPurgeStrokeTimeMin:
+        dc.b    $12                                      ; Leak detection pump, purge check state: stroke time below this value ends the state
+LdpTestTime:
+        dc.b    $18                                      ; Leak detection pump, test state: state time before the result is judged
 LdpVacuumMin2:
         dc.b    $0D                                      ; EVAP leak test: manifold vacuum limit of the last state
-DiagV0599Thresh:
-        dc.b    $06                                      ; Byte compared with V0599; read by Sub_25784.
-DiagV059AThresh:
-        dc.b    $12                                      ; Byte compared with V059A; read by Sub_25784.
-DiagV0597Thresh2:
-        dc.b    $05                                      ; Byte compared with V0597; read by Sub_25784.
+LdpVacLowCountMax:
+        dc.b    $06                                      ; Leak detection pump: low-vacuum counts ($0599,Z) allowed in the end state
+LdpVacLowTotalMax:
+        dc.b    $12                                      ; Leak detection pump: total low-vacuum counts ($059A,Z) that abort the test
+LdpWindowStrokes2:
+        dc.b    $05                                      ; Leak detection pump, end state: strokes needed with few low-vacuum counts
         dc.b    $0F,$96
 
 ;---------------------------------------------------------------------------------------------------
-; DiagLevelLimit ($2992): 2D table, 1 points, unsigned
-; Monitor in Sub_25784 (fault codes $34/$35): limit of $0590,Z against $019C,Z
+; LdpPumpTimeByLevel ($2992): 2D table, 1 points, unsigned
+; Leak detection pump, pump-up state: state time limit ($0590,Z) against fuel level
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: FuelLevelScaled
 ; Read at $1EAC4
 ;---------------------------------------------------------------------------------------------------
-DiagLevelLimit:
+LdpPumpTimeByLevel:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,27                                   ; x, y
 
