@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Memory and code inventory of an image: what an improvement can use.
 
-    python3 tools/revision.py roms/05007038.bin            # report as text
+    python3 tools/revision.py roms/05007038.bin            # report as text (or build/05007038.bin)
     python3 tools/revision.py roms/05007038.bin --json     # the same as JSON
 
 Flash: every byte is classed as code (decoded instructions), table (calibration items), constant,
