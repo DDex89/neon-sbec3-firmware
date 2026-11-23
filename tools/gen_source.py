@@ -226,7 +226,7 @@ class Calibration:
                 while n < 256 and a + v["row_size"] * (n + 1) <= len(data) and data[a + v["row_size"] * n] == n:
                     n += 1
                 v["rows"] = n
-            self.items[a] = dict(v, size=v["rows"] * v["row_size"], cur=v, calls=[])
+            self.items[a] = dict(v, size=v.get("size") or v["rows"] * v["row_size"], cur=v, calls=[])
         self.add_condition_tables(an)
         # a table that overlaps the one before it cannot be laid out; keep the first
         end = -1
@@ -413,6 +413,24 @@ class Calibration:
                 note = "%s: %s & $%02X" % (pc, self.names.ram.get(w[1], "$%04X,Z" % w[1]), w[2] & 0xFF)
                 if w[3]:
                     note += ", %s & $%02X" % (self.names.ram.get(w[3], "$%04X,Z" % w[3]), w[4] & 0xFF)
+                out.append("        dc.b    %-40s ; %s" % (",".join("$%02X" % x for x in b), note))
+        elif kind == "words":
+            def wname(w):
+                if w == 0xFFFF:
+                    return "end"
+                if w in self.names.ram:
+                    return self.names.ram[w]
+                if FAULT_TABLE <= w < FAULT_TABLE + 10 * FAULT_ROWS and (w - FAULT_TABLE) % 10 == 0:
+                    return "P%02X%02X row" % (d[w + 6], d[w + 7])
+                return "$%04X" % w
+            n = t["size"]
+            for p in range(a, a + n, 8):
+                b = d[p:min(p + 8, a + n)]
+                ws = [(b[i] << 8) | b[i + 1] for i in range(0, len(b) - 1, 2)]
+                if c.get("pairs"):
+                    note = ", ".join("EEPROM $%02X -> %s" % (ws[i], wname(ws[i + 1])) for i in range(0, len(ws) - 1, 2))
+                else:
+                    note = ", ".join(wname(w) for w in ws)
                 out.append("        dc.b    %-40s ; %s" % (",".join("$%02X" % x for x in b), note))
         elif kind == "monitors":
             for r in range(t["rows"]):

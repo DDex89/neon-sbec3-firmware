@@ -12658,6 +12658,143 @@
    "rows": 43,
    "row_size": 10,
    "desc": "Fault-to-status map: fault table row, monitor status byte and bit, second status byte and bit (read by ObdFaultReport and the OBD request code)"
+  },
+  "38448": {
+   "name": "EepromShadowMap",
+   "kind": "words",
+   "size": 420,
+   "rows": 1,
+   "row_size": 420,
+   "desc": "EEPROM map read by EepromWriteQueue, EepromReadInit and EepromWriteService: pairs of EEPROM word index and RAM address of its copy",
+   "pairs": true
+  },
+  "379FE": {
+   "name": "DiagDataList1",
+   "kind": "words",
+   "size": 478,
+   "rows": 1,
+   "row_size": 478,
+   "desc": "Lists of RAM addresses ($FFFF ends a group): data the SCI diagnostic service can send, probably"
+  },
+  "37BFC": {
+   "name": "DiagDataList2",
+   "kind": "words",
+   "size": 88,
+   "rows": 1,
+   "row_size": 88,
+   "desc": "Lists of RAM addresses: monitor status and closed-loop data for the diagnostic service, probably"
+  },
+  "37C5A": {
+   "name": "DiagDataList3",
+   "kind": "words",
+   "size": 76,
+   "rows": 1,
+   "row_size": 76,
+   "desc": "Lists of RAM addresses: leak detection pump and fuel system monitor data, probably"
+  },
+  "37800": {
+   "name": "DiagDataList4",
+   "kind": "words",
+   "size": 62,
+   "rows": 1,
+   "row_size": 62,
+   "desc": "Lists of RAM addresses: O2 heater status and EGR data, probably"
+  },
+  "378AE": {
+   "name": "DiagDataList5",
+   "kind": "words",
+   "size": 64,
+   "rows": 1,
+   "row_size": 64,
+   "desc": "Lists of RAM addresses: fault bits and flex learning data, probably"
+  },
+  "3795E": {
+   "name": "DiagDataList6",
+   "kind": "words",
+   "size": 66,
+   "rows": 1,
+   "row_size": 66,
+   "desc": "Lists of RAM addresses: misfire counters, probably"
+  },
+  "37CAE": {
+   "name": "DiagDataList7",
+   "kind": "words",
+   "size": 190,
+   "rows": 1,
+   "row_size": 190,
+   "desc": "Lists of RAM addresses: segment times and misfire data, probably"
+  },
+  "37D74": {
+   "name": "DiagDataList8",
+   "kind": "words",
+   "size": 66,
+   "rows": 1,
+   "row_size": 66,
+   "desc": "Lists of RAM addresses: O2 monitor and other monitor data, probably"
+  },
+  "20140": {
+   "name": "ObdRecordPointers",
+   "kind": "words",
+   "size": 80,
+   "rows": 1,
+   "row_size": 80,
+   "desc": "RAM addresses of the OBD monitor records MonRecordB4-C7"
+  },
+  "28162": {
+   "name": "CatMonDescBank1",
+   "kind": "words",
+   "size": 56,
+   "rows": 1,
+   "row_size": 56,
+   "desc": "Catalyst monitor descriptor, bank 1: RAM addresses of its work and result bytes"
+  },
+  "281AA": {
+   "name": "CatMonDescBank2",
+   "kind": "words",
+   "size": 56,
+   "rows": 1,
+   "row_size": 56,
+   "desc": "Catalyst monitor descriptor, bank 2"
+  },
+  "286F2": {
+   "name": "O2MonDescriptors",
+   "kind": "words",
+   "size": 128,
+   "rows": 1,
+   "row_size": 128,
+   "desc": "O2 monitor descriptors: RAM addresses of status, trim, adaptive and record bytes"
+  },
+  "0C584": {
+   "name": "IncSaturateList",
+   "kind": "words",
+   "size": 48,
+   "rows": 1,
+   "row_size": 48,
+   "desc": "Pairs of RAM counter address and limit used by EventCounters"
+  },
+  "2239C": {
+   "name": "O2DownDescriptors",
+   "kind": "words",
+   "size": 48,
+   "rows": 1,
+   "row_size": 48,
+   "desc": "Downstream O2 circuit check descriptors: raw value, work bytes and fault rows per sensor"
+  },
+  "28CD0": {
+   "name": "O2HeaterDescriptors",
+   "kind": "words",
+   "size": 168,
+   "rows": 1,
+   "row_size": 168,
+   "desc": "O2 heater monitor descriptors (four sensors, $2A bytes each): RAM addresses of sample, timer and result bytes"
+  },
+  "30000": {
+   "name": "CcdTransmitList",
+   "kind": "words",
+   "size": 256,
+   "rows": 1,
+   "row_size": 256,
+   "desc": "Transmit rotation for CcdTransmit and PciPitTick: RAM addresses of the values sent, probably"
   }
  }
 }

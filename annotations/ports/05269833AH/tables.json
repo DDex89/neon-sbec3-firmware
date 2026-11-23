@@ -10988,6 +10988,14 @@
    "rows": 43,
    "row_size": 10,
    "desc": "Fault-to-status map: fault table row, monitor status byte and bit, second status byte and bit (read by ObdFaultReport and the OBD request code)"
+  },
+  "C584": {
+   "name": "IncSaturateList",
+   "kind": "words",
+   "size": 48,
+   "rows": 1,
+   "row_size": 48,
+   "desc": "Pairs of RAM counter address and limit used by EventCounters"
   }
  }
 }

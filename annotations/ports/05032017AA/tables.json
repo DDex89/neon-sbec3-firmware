@@ -11397,6 +11397,14 @@
    "rows": 29,
    "row_size": 32,
    "desc": "Bit maps for CollectBits: 8 entries of RAM offset, mask and output bit build one status byte (switch inputs for SwitchInputsRead and SwitchBitsCollect, output and fault status bytes for the SCI and bus messages)"
+  },
+  "C56A": {
+   "name": "IncSaturateList",
+   "kind": "words",
+   "size": 48,
+   "rows": 1,
+   "row_size": 48,
+   "desc": "Pairs of RAM counter address and limit used by EventCounters"
   }
  }
 }

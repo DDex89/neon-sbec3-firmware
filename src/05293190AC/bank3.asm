@@ -3,22 +3,45 @@
 
         org     $30000
 
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48,$06,$A6,$07,$9A,$07,$02,$06,$9E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48,$06,$A6,$06,$B6,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48,$06,$A6,$07,$D4,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48,$06,$A6,$06,$B6,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48,$06,$A6,$07,$68,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48,$06,$A6,$06,$B6,$08,$02,$06,$9E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48,$06,$A6,$07,$AA,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48,$06,$A6,$06,$B6,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48,$06,$A6,$07,$9A,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48,$06,$A6,$06,$B6,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48,$06,$A6,$09,$6C,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48,$06,$A6,$06,$B6,$07,$78,$06,$9E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48,$06,$A6,$07,$68,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48,$06,$A6,$06,$B6,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48,$06,$A6,$07,$52,$06,$9E,$06,$9E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48,$06,$A6,$06,$B6,$06,$D2,$06,$9E
+
+;---------------------------------------------------------------------------------------------------
+; CcdTransmitList ($30000): 1 rows of 256 bytes
+; Transmit rotation for CcdTransmit and PciPitTick: RAM addresses of the values sent, probably
+;---------------------------------------------------------------------------------------------------
+CcdTransmitList:
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
+        dc.b    $06,$A6,$07,$9A,$07,$02,$06,$9E          ; $06A6, $079A, ClosedLoop702, $069E
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
+        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; $06A6, HwErrorFlags, $069E, $069E
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
+        dc.b    $06,$A6,$07,$D4,$06,$9E,$06,$9E          ; $06A6, AccelMapGain, $069E, $069E
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
+        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; $06A6, HwErrorFlags, $069E, $069E
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
+        dc.b    $06,$A6,$07,$68,$06,$9E,$06,$9E          ; $06A6, CrankCoolant, $069E, $069E
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
+        dc.b    $06,$A6,$06,$B6,$08,$02,$06,$9E          ; $06A6, HwErrorFlags, TipIn802, $069E
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
+        dc.b    $06,$A6,$07,$AA,$06,$9E,$06,$9E          ; $06A6, WotTimeEnrich, $069E, $069E
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
+        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; $06A6, HwErrorFlags, $069E, $069E
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
+        dc.b    $06,$A6,$07,$9A,$06,$9E,$06,$9E          ; $06A6, $079A, $069E, $069E
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
+        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; $06A6, HwErrorFlags, $069E, $069E
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
+        dc.b    $06,$A6,$09,$6C,$06,$9E,$06,$9E          ; $06A6, $096C, $069E, $069E
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
+        dc.b    $06,$A6,$06,$B6,$07,$78,$06,$9E          ; $06A6, HwErrorFlags, DecelFuelRamp, $069E
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
+        dc.b    $06,$A6,$07,$68,$06,$9E,$06,$9E          ; $06A6, CrankCoolant, $069E, $069E
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
+        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; $06A6, HwErrorFlags, $069E, $069E
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
+        dc.b    $06,$A6,$07,$52,$06,$9E,$06,$9E          ; $06A6, O2PurgeCount, $069E, $069E
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
+        dc.b    $06,$A6,$06,$B6,$06,$D2,$06,$9E          ; $06A6, HwErrorFlags, SpeedCtlSw6D2, $069E
+
 JumpTable_30100:
         JMP     L306A6
 L30104:
@@ -8468,108 +8491,232 @@ L36A7C:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$57
-        dc.b    $00,$A5,$00,$A6,$00,$A7,$00,$A8,$0B,$37,$0B,$3D,$0B,$3E,$0B,$40
-        dc.b    $0B,$41,$0B,$4C,$0B,$50,$00,$40,$0B,$35,$0B,$3C,$0B,$4D,$05,$8A
-        dc.b    $05,$8B,$05,$8D,$0A,$8D,$04,$5E,$04,$5F,$04,$56,$04,$57,$04,$58
-        dc.b    $04,$59,$04,$5A,$04,$5B,$04,$5C,$04,$5D,$04,$60,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$01,$72,$01,$73,$01,$74,$01,$75,$01,$76,$01,$77
-        dc.b    $01,$78,$00,$85,$00,$86,$00,$87,$00,$88,$00,$89,$00,$8A,$00,$8B
-        dc.b    $00,$8C,$00,$8D,$00,$8E,$00,$8F,$00,$90,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$0A,$CB,$0A,$5C,$FF,$FF,$FF,$FF,$00,$2B
-        dc.b    $00,$2C,$00,$2D,$00,$2E,$00,$2F,$00,$30,$00,$31,$00,$32,$00,$33
-        dc.b    $00,$34,$00,$35,$00,$36,$00,$37,$00,$38,$00,$39,$00,$3A,$00,$3B
-        dc.b    $00,$3C,$00,$3D,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$05,$04,$05,$06
-        dc.b    $05,$08,$05,$1A,$05,$05,$05,$19,$05,$1B,$FF,$FF,$01,$C0,$01,$C1
-        dc.b    $01,$B8,$01,$B5,$01,$B4,$01,$97,$01,$B6,$01,$B9,$01,$BA,$01,$9D
-        dc.b    $01,$AD,$01,$AE,$01,$AF,$01,$B0,$01,$AC,$FF,$FF,$01,$A2,$01,$A3
-        dc.b    $01,$A0,$01,$A1,$0F,$3E,$01,$C2,$0F,$24,$0F,$49,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList4 ($37800): 1 rows of 62 bytes
+; Lists of RAM addresses: O2 heater status and EGR data, probably
+;---------------------------------------------------------------------------------------------------
+DiagDataList4:
+        dc.b    $00,$57,$00,$A5,$00,$A6,$00,$A7          ; $0057, MonStatusO2Sensor1, MonStatusO2Sensor2, MonStatusO2Sensor3
+        dc.b    $00,$A8,$0B,$37,$0B,$3D,$0B,$3E          ; MonStatusO2Sensor4, EgrPressureFactor, EgrB3D, EgrTargetPos
+        dc.b    $0B,$40,$0B,$41,$0B,$4C,$0B,$50          ; EgrPosError, $0B41, EgrDuty, EgrZeroFlags
+        dc.b    $00,$40,$0B,$35,$0B,$3C,$0B,$4D          ; EgrZeroPos, EgrFlowFactor, EgrFlowEstimate, EgrB4D
+        dc.b    $05,$8A,$05,$8B,$05,$8D,$0A,$8D          ; EgrPosition58A, EgrCircuitCount2, EgrTrackPasses, EgrPosition
+        dc.b    $04,$5E,$04,$5F,$04,$56,$04,$57          ; PurgeFlowTarget, PurgeFlowMeasured, PurgeFlowErrorSum, $0457
+        dc.b    $04,$58,$04,$59,$04,$5A,$04,$5B          ; PurgeFlowErrorDiff, $0459, PurgeFlowError, $045B
+        dc.b    $04,$5C,$04,$5D,$04,$60                  ; PurgeFlow45C, $045D, PurgePwmDuty
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$01,$72,$01,$73,$01,$74,$01,$75
+        dc.b    $01,$76,$01,$77,$01,$78,$00,$85,$00,$86,$00,$87,$00,$88,$00,$89
+        dc.b    $00,$8A,$00,$8B,$00,$8C,$00,$8D,$00,$8E,$00,$8F,$00,$90,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$0A,$CB,$0A,$5C,$FF,$FF
+        dc.b    $FF,$FF,$00,$2B,$00,$2C,$00,$2D,$00,$2E,$00,$2F,$00,$30,$00,$31
+        dc.b    $00,$32,$00,$33,$00,$34,$00,$35,$00,$36,$00,$37,$00,$38,$00,$39
+        dc.b    $00,$3A,$00,$3B,$00,$3C,$00,$3D,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList5 ($378AE): 1 rows of 64 bytes
+; Lists of RAM addresses: fault bits and flex learning data, probably
+;---------------------------------------------------------------------------------------------------
+DiagDataList5:
+        dc.b    $05,$04,$05,$06,$05,$08,$05,$1A          ; FaultSet04, FaultSet06, FaultSet08, FaultSet1A
+        dc.b    $05,$05,$05,$19,$05,$1B,$FF,$FF          ; FaultSet05, FaultSet19, FaultSet1B, end
+        dc.b    $01,$C0,$01,$C1,$01,$B8,$01,$B5          ; FlexPurge1C0, FlexPulse1C1, FlexLearnTrimSum, FlexLearnBase
+        dc.b    $01,$B4,$01,$97,$01,$B6,$01,$B9          ; FlexEthanolStart, FlexEthanolLearned, FuelLevelStart, FlexLearnEthanol1
+        dc.b    $01,$BA,$01,$9D,$01,$AD,$01,$AE          ; FlexLearnEthanol2, Flex19D, FlexLearnFlags, FlexLearnFlags2
+        dc.b    $01,$AF,$01,$B0,$01,$AC,$FF,$FF          ; FlexLearnFlags3, FlexLearnFlags4, RefuelFlags, end
+        dc.b    $01,$A2,$01,$A3,$01,$A0,$01,$A1          ; FlexSensorRef, $01A3, FlexLearnFuelSum, $01A1
+        dc.b    $0F,$3E,$01,$C2,$0F,$24,$0F,$49          ; FlexLearnCounter3, FlexLearnHold, FlexLearnStartCoolantValue, FlexF49
+
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$06,$13
-        dc.b    $06,$14,$06,$15,$06,$16,$06,$17,$06,$18,$FF,$FF,$06,$C2,$06,$C3
-        dc.b    $06,$C4,$06,$C5,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $01,$4E,$01,$50,$01,$52,$01,$54,$01,$56,$01,$58,$01,$5A,$01,$5C
-        dc.b    $01,$5E,$01,$60,$01,$62,$01,$64,$01,$66,$01,$68,$01,$6A,$01,$6C
-        dc.b    $01,$6E,$01,$70,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$06,$27,$FF,$FF
-        dc.b    $06,$10,$06,$11,$06,$0D,$06,$0E,$06,$00,$06,$01,$06,$02,$06,$03
-        dc.b    $06,$04,$06,$05,$06,$06,$06,$07,$06,$08,$06,$09,$06,$0A,$06,$0B
-        dc.b    $06,$93,$06,$94,$06,$90,$06,$8A,$0C,$35,$06,$BD,$0C,$46,$10,$00
-        dc.b    $10,$01,$10,$02,$10,$03,$10,$12,$10,$13,$10,$1E,$10,$1F,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$01,$49,$01,$42
-        dc.b    $01,$4C,$01,$4B,$01,$4A,$05,$20,$05,$22,$05,$21,$05,$23,$0C,$4C
-        dc.b    $0C,$4D,$0A,$98,$0A,$99,$0A,$47,$0A,$51,$0A,$59,$0A,$5A,$0A,$74
-        dc.b    $00,$0B,$0A,$72,$0A,$6C,$0A,$6A,$0A,$80,$0A,$7E,$00,$0C,$0A,$85
-        dc.b    $07,$01,$07,$29,$0A,$61,$0A,$62,$0A,$89,$0A,$8A,$0A,$4B,$0A,$1B
-        dc.b    $0A,$8E,$01,$98,$0A,$87,$0A,$88,$07,$80,$07,$81,$07,$82,$07,$83
-        dc.b    $07,$B0,$07,$B1,$07,$14,$07,$3C,$0D,$11,$0D,$AB,$0D,$AC,$0D,$AD
-        dc.b    $0D,$AE,$0D,$AF,$03,$00,$03,$01,$03,$1B,$07,$74,$0A,$9A,$0D,$B9
-        dc.b    $04,$08,$09,$3A,$09,$3B,$00,$18,$04,$02,$09,$BC,$0C,$36,$05,$28
-        dc.b    $08,$01,$07,$00,$07,$28,$06,$B8,$06,$B9,$07,$0B,$07,$33,$07,$B5
-        dc.b    $0C,$3C,$0C,$3D,$01,$79,$07,$73,$00,$83,$FF,$FF,$07,$C2,$07,$C6
-        dc.b    $07,$C7,$07,$C8,$07,$C9,$07,$BB,$0A,$A6,$09,$CE,$09,$C0,$01,$87
-        dc.b    $01,$88,$01,$89,$0B,$12,$00,$0D,$00,$0E,$0C,$21,$00,$52,$00,$5A
-        dc.b    $00,$5B,$00,$5C,$00,$5D,$00,$5E,$00,$5F,$00,$60,$00,$61,$00,$62
-        dc.b    $00,$63,$00,$64,$00,$65,$00,$66,$00,$67,$00,$6A,$00,$6B,$00,$6C
-        dc.b    $06,$B4,$01,$48,$01,$47,$01,$46,$01,$45,$01,$44,$01,$43,$09,$3C
-        dc.b    $09,$3D,$00,$6D,$00,$6E,$00,$6F,$00,$70,$00,$71,$00,$72,$00,$73
-        dc.b    $00,$74,$00,$75,$00,$76,$00,$77,$00,$78,$00,$79,$00,$7A,$00,$7D
-        dc.b    $00,$7E,$00,$7F,$04,$2C,$0A,$46,$07,$11,$07,$08,$07,$30,$07,$0F
-        dc.b    $07,$37,$0B,$4C,$0A,$8D,$04,$5F,$04,$60,$07,$39,$07,$62,$07,$63
-        dc.b    $09,$BF,$06,$B5,$10,$01,$10,$02,$00,$68,$00,$69,$00,$7B,$00,$7C
-        dc.b    $06,$8F,$00,$B2,$00,$D9,$00,$3F,$00,$C8,$00,$C9,$00,$CA,$00,$CB
-        dc.b    $00,$CC,$00,$CD,$00,$CE,$00,$CF,$00,$D0,$00,$D1,$00,$D2,$00,$D4
-        dc.b    $00,$D5,$00,$D3,$00,$B3,$0A,$63,$04,$31,$06,$89,$06,$95,$06,$62
-        dc.b    $06,$63,$06,$60,$01,$1C,$01,$1D,$06,$6A,$0A,$64,$06,$C1,$01,$1E
-        dc.b    $01,$1F,$01,$21,$06,$65,$06,$5D,$06,$6E,$06,$6F,$06,$70,$06,$71
-        dc.b    $06,$72,$06,$73,$06,$74,$06,$75,$06,$76,$06,$77,$06,$78,$00,$9D
-        dc.b    $06,$58,$00,$9E,$06,$59,$06,$5C,$00,$9F,$06,$5A,$10,$1F,$09,$50
-        dc.b    $0A,$94,$01,$20,$00,$55,$0A,$93,$01,$9C,$0A,$96,$03,$1C,$0D,$00
-        dc.b    $05,$30,$0B,$30,$00,$56,$03,$30,$04,$3A,$04,$3B,$04,$3C,$00,$0A
-        dc.b    $00,$51,$05,$29,$04,$02,$04,$04,$0A,$75,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$D8,$00,$A1,$00,$A2
-        dc.b    $00,$A3,$00,$A4,$00,$AB,$00,$A9,$00,$B0,$00,$AC,$00,$AE,$00,$AD
-        dc.b    $00,$AF,$00,$AA,$FF,$FF,$05,$2A,$05,$68,$05,$69,$05,$6A,$05,$74
-        dc.b    $05,$75,$05,$76,$05,$77,$05,$78,$05,$79,$05,$70,$05,$71,$05,$72
-        dc.b    $05,$73,$05,$6D,$01,$10,$01,$16,$01,$0F,$01,$15,$05,$80,$05,$82
-        dc.b    $05,$83,$05,$85,$05,$86,$05,$84,$05,$87,$05,$88,$05,$7E,$05,$7F
-        dc.b    $05,$89,$FF,$FF,$FF,$FF,$FF,$FF,$05,$8E,$05,$8F,$05,$90,$05,$91
-        dc.b    $05,$93,$05,$94,$05,$95,$05,$9A,$05,$98,$05,$96,$01,$1B,$FF,$FF
-        dc.b    $05,$9D,$05,$9E,$05,$9F,$05,$A0,$05,$A1,$05,$A2,$00,$B8,$00,$B9
-        dc.b    $00,$BA,$00,$BB,$00,$BC,$00,$BD,$00,$BE,$00,$BF,$00,$C0,$00,$C1
-        dc.b    $00,$C2,$00,$C3,$00,$C4,$00,$C5,$00,$C6,$00,$C7,$05,$AA,$05,$AB
-        dc.b    $05,$AC,$05,$AD,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$13,$00,$14
-        dc.b    $00,$15,$00,$16,$00,$0F,$00,$10,$00,$11,$00,$12,$00,$DE,$00,$DF
-        dc.b    $00,$E0,$00,$E1,$00,$E2,$00,$E3,$06,$1F,$05,$C2,$05,$C3,$06,$0E
-        dc.b    $06,$19,$06,$0C,$06,$1A,$06,$28,$06,$12,$06,$1E,$06,$21,$06,$24
-        dc.b    $06,$25,$06,$26,$00,$DC,$06,$22,$06,$0F,$06,$1C,$05,$D4,$05,$D5
-        dc.b    $05,$D8,$05,$D9,$00,$DD,$05,$D0,$05,$D1,$06,$2E,$06,$2C,$00,$E7
-        dc.b    $00,$E4,$00,$E5,$00,$E6,$06,$01,$06,$03,$06,$05,$06,$07,$06,$09
-        dc.b    $06,$0B,$00,$B4,$00,$B5,$00,$B6,$00,$B7,$05,$D2,$05,$D3,$05,$D6
-        dc.b    $05,$D7,$05,$DA,$05,$DB,$05,$E2,$05,$E3,$05,$E4,$05,$E5,$06,$1B
-        dc.b    $01,$06,$01,$07,$01,$0E,$05,$51,$05,$53,$05,$61,$05,$63,$05,$50
-        dc.b    $01,$0C,$01,$0D,$01,$0A,$01,$0B,$05,$5D,$05,$59,$05,$5F,$05,$5B
-        dc.b    $05,$55,$05,$57,$05,$67,$05,$52,$05,$54,$05,$5E,$05,$5A,$05,$60
-        dc.b    $05,$5C,$05,$56,$05,$58,$05,$62,$05,$64,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$05,$32,$05,$33,$05,$35,$05,$34,$05,$36,$05,$3B,$05,$3C
-        dc.b    $05,$46,$05,$31,$FF,$FF,$04,$43,$0A,$6D,$06,$BC,$06,$79,$00,$DA
-        dc.b    $00,$DB,$06,$BE,$05,$0C,$05,$0F,$05,$11,$05,$10,$05,$13,$05,$12
-        dc.b    $06,$67,$00,$9C,$0C,$40,$07,$57,$07,$58,$05,$0E,$05,$14,$05,$17
-        dc.b    $06,$68,$06,$AC,$FF,$FF,$FF,$FF,$FF,$FF,$01,$11,$01,$17,$05,$AE
-        dc.b    $05,$AF,$05,$BB,$05,$BC,$05,$B4,$05,$B9,$05,$BA,$05,$B5,$05,$B6
-        dc.b    $05,$B7,$05,$B3,$05,$BD,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$27,$4C,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$06,$13,$06,$14,$06,$15,$06,$16,$06,$17,$06,$18,$FF,$FF
+        dc.b    $06,$C2,$06,$C3,$06,$C4,$06,$C5,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$01,$4E,$01,$50,$01,$52,$01,$54,$01,$56,$01,$58
+        dc.b    $01,$5A,$01,$5C,$01,$5E,$01,$60,$01,$62,$01,$64,$01,$66,$01,$68
+        dc.b    $01,$6A,$01,$6C,$01,$6E,$01,$70,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList6 ($3795E): 1 rows of 66 bytes
+; Lists of RAM addresses: misfire counters, probably
+;---------------------------------------------------------------------------------------------------
+DiagDataList6:
+        dc.b    $06,$27,$FF,$FF,$06,$10,$06,$11          ; MisfireFlags3, end, MisfireTotal2, $0611
+        dc.b    $06,$0D,$06,$0E,$06,$00,$06,$01          ; MisfireTotal1, $060E, Misfire600, $0601
+        dc.b    $06,$02,$06,$03,$06,$04,$06,$05          ; Misfire602, $0603, Misfire604, $0605
+        dc.b    $06,$06,$06,$07,$06,$08,$06,$09          ; Misfire606, $0607, Misfire608, $0609
+        dc.b    $06,$0A,$06,$0B,$06,$93,$06,$94          ; Misfire60A, $060B, Cam693, CamWindowCount
+        dc.b    $06,$90,$06,$8A,$0C,$35,$06,$BD          ; CamCrank690, CamCrankFaultCounter, CrankSyncFlags, OutputDriverFaults
+        dc.b    $0C,$46,$10,$00,$10,$01,$10,$02          ; CylinderIndex, IoInputs0, IoInputs1, IoStatus2
+        dc.b    $10,$03,$10,$12,$10,$13,$10,$1E          ; IoStatus3, IoCtl12, IoCtl13, IoCfg1E
+        dc.b    $10,$1F                                  ; IoCfg1FL
+
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList1 ($379FE): 1 rows of 478 bytes
+; Lists of RAM addresses ($FFFF ends a group): data the SCI diagnostic service can send, probably
+;---------------------------------------------------------------------------------------------------
+DiagDataList1:
+        dc.b    $01,$49,$01,$42,$01,$4C,$01,$4B          ; FaultListLast, FaultList0, FaultListInfo1, FaultListInfo2
+        dc.b    $01,$4A,$05,$20,$05,$22,$05,$21          ; FaultListInfo3, FaultPending1, FaultPendingCount1, FaultPending2
+        dc.b    $05,$23,$0C,$4C,$0C,$4D,$0A,$98          ; FaultPendingCount2, EngineRpm, $0C4D, VehicleSpeedRaw
+        dc.b    $0A,$99,$0A,$47,$0A,$51,$0A,$59          ; $0A99, SwitchInputs2, BatteryVolts2, BatteryTempRaw
+        dc.b    $0A,$5A,$0A,$74,$00,$0B,$0A,$72          ; BatteryTemp, ThrottleRaw, ThrottleClosed, Throttle
+        dc.b    $0A,$6C,$0A,$6A,$0A,$80,$0A,$7E          ; CoolantRaw, CoolantTemp, MapRawStart, Map
+        dc.b    $00,$0C,$0A,$85,$07,$01,$07,$29          ; Baro, ManifoldVacuum, O2UpBank1Raw, O2UpBank2Raw
+        dc.b    $0A,$61,$0A,$62,$0A,$89,$0A,$8A          ; AirTempRaw, AirTemp, KnockSampleA89, KnockSampleA8A
+        dc.b    $0A,$4B,$0A,$1B,$0A,$8E,$01,$98          ; ReadAnalogA4B, BusTempRaw3, FlexSensorRaw, FlexEthanol
+        dc.b    $0A,$87,$0A,$88,$07,$80,$07,$81          ; AcSensorRaw, AcSensor, FuelPulseBank1, $0781
+        dc.b    $07,$82,$07,$83,$07,$B0,$07,$B1          ; FuelPulseBank2, $0783, O2AdaptValue1, O2AdaptValue2
+        dc.b    $07,$14,$07,$3C,$0D,$11,$0D,$AB          ; O2UpBank1, O2UpBank2, SparkAdvanceD11, KnockSignalLearn
+        dc.b    $0D,$AC,$0D,$AD,$0D,$AE,$0D,$AF          ; KnockSampleDAC, KnockSampleDAD, KnockSampleDAE, KnockSampleDAF
+        dc.b    $03,$00,$03,$01,$03,$1B,$07,$74          ; IdleTarget, $0301, IacTargetCmd, EngineStateFlags
+        dc.b    $0A,$9A,$0D,$B9,$04,$08,$09,$3A          ; VehicleSpeed, ChargeTargetVolts, SpeedCtlSetSpeed, SwitchBits0
+        dc.b    $09,$3B,$00,$18,$04,$02,$09,$BC          ; SwitchBits93B, IacPosition, SpeedCtlNibble, SecurityFlags
+        dc.b    $0C,$36,$05,$28,$08,$01,$07,$00          ; CrankSyncFlags2, FuelSystemStatusPid, O2MemCell, ShortTermTrim1
+        dc.b    $07,$28,$06,$B8,$06,$B9,$07,$0B          ; ShortTermTrim2, Options033ECopy, Options033FCopy, O2DownBank1Raw
+        dc.b    $07,$33,$07,$B5,$0C,$3C,$0C,$3D          ; O2DownBank2Raw, O2ColdTrim1, Count3s, MainLoopCounter
+        dc.b    $01,$79,$07,$73,$00,$83,$FF,$FF          ; CalcEngine179, RevLimitFlags, LimitCauseFlags, end
+        dc.b    $07,$C2,$07,$C6,$07,$C7,$07,$C8          ; DecelLeanFuel, TipInFuel, $07C7, AccelFuel
+        dc.b    $07,$C9,$07,$BB,$0A,$A6,$09,$CE          ; $07C9, DecelLeanFlags, RpmSpeedRatio, BusFlags9CE
+        dc.b    $09,$C0,$01,$87,$01,$88,$01,$89          ; BusMsg52Value, Nv187, $0188, Nv189
+        dc.b    $0B,$12,$00,$0D,$00,$0E,$0C,$21          ; FanPwmDuty, SriMileage, SriMileageLow, AcFlags
+        dc.b    $00,$52,$00,$5A,$00,$5B,$00,$5C          ; Vss052, $005A, $005B, $005C
+        dc.b    $00,$5D,$00,$5E,$00,$5F,$00,$60          ; $005D, $005E, $005F, $0060
+        dc.b    $00,$61,$00,$62,$00,$63,$00,$64          ; $0061, $0062, $0063, $0064
+        dc.b    $00,$65,$00,$66,$00,$67,$00,$6A          ; $0065, $0066, $0067, PurgeCellTrim1
+        dc.b    $00,$6B,$00,$6C,$06,$B4,$01,$48          ; PurgeCellTrim2, PurgeCellTrim3, SensorFaultFlags, FaultList6
+        dc.b    $01,$47,$01,$46,$01,$45,$01,$44          ; FaultList5, FaultList4, FaultList3, FaultList2
+        dc.b    $01,$43,$09,$3C,$09,$3D,$00,$6D          ; FaultList1, OutputStatusWord, $093D, $006D
+        dc.b    $00,$6E,$00,$6F,$00,$70,$00,$71          ; $006E, $006F, $0070, $0071
+        dc.b    $00,$72,$00,$73,$00,$74,$00,$75          ; $0072, $0073, $0074, $0075
+        dc.b    $00,$76,$00,$77,$00,$78,$00,$79          ; $0076, $0077, $0078, $0079
+        dc.b    $00,$7A,$00,$7D,$00,$7E,$00,$7F          ; $007A, PurgeCellTrim1B2, PurgeCellTrim2B2, PurgeCellTrim3B2
+        dc.b    $04,$2C,$0A,$46,$07,$11,$07,$08          ; PurgeRamp, SwitchInputs, ClosedLoop711, $0708
+        dc.b    $07,$30,$07,$0F,$07,$37,$0B,$4C          ; $0730, $070F, $0737, EgrDuty
+        dc.b    $0A,$8D,$04,$5F,$04,$60,$07,$39          ; EgrPosition, PurgeFlowMeasured, PurgePwmDuty, ClosedLoop739
+        dc.b    $07,$62,$07,$63,$09,$BF,$06,$B5          ; O2Scale762, O2Scale763, BusTemp, SensorFaultFlags2
+        dc.b    $10,$01,$10,$02,$00,$68,$00,$69          ; IoInputs1, IoStatus2, $0068, $0069
+        dc.b    $00,$7B,$00,$7C,$06,$8F,$00,$B2          ; $007B, $007C, CamCrankOffset, FreezeFrameCount
+        dc.b    $00,$D9,$00,$3F,$00,$C8,$00,$C9          ; MisfireRecordD9, ReadinessIncomplete, FreezeFrame00, FreezeFrame01
+        dc.b    $00,$CA,$00,$CB,$00,$CC,$00,$CD          ; FreezeFrame02, FreezeFrame03, FreezeFrame04, FreezeFrame05
+        dc.b    $00,$CE,$00,$CF,$00,$D0,$00,$D1          ; FreezeFrame06, FreezeFrame07, FreezeFrame08, FreezeFrame09
+        dc.b    $00,$D2,$00,$D4,$00,$D5,$00,$D3          ; FreezeFrame0A, FreezeFrame0C, FreezeFrame0D, FreezeFrame0B
+        dc.b    $00,$B3,$0A,$63,$04,$31,$06,$89          ; FreezeFrameFault, CatTempInputRaw, PurgeDuty, CamCrankCount689
+        dc.b    $06,$95,$06,$62,$06,$63,$06,$60          ; CamSensor695, IdleDropRpmRef, $0663, IdleMonTimer
+        dc.b    $01,$1C,$01,$1D,$06,$6A,$0A,$64          ; BrakeSwStopCounter, BrakeSwDriveCounter, BrakeSwDriveTimer, CatTempFiltered
+        dc.b    $06,$C1,$01,$1E,$01,$1F,$01,$21          ; FuelLevelFlags2, FuelSender11E, FuelSenderFuelUsed, MonitorEnable121
+        dc.b    $06,$65,$06,$5D,$06,$6E,$06,$6F          ; PnSwitch665, Vss65D, RpmSpeedRatioFiltered, $066F
+        dc.b    $06,$70,$06,$71,$06,$72,$06,$73          ; TccMonTimer, $0671, TccThrottleAvg, $0673
+        dc.b    $06,$74,$06,$75,$06,$76,$06,$77          ; Tcc674, $0675, TccStableTimer, TccTestTimer
+        dc.b    $06,$78,$00,$9D,$06,$58,$00,$9E          ; TccFailCount, MonFlags09D, SwitchMonFlags, MonFlags09E
+        dc.b    $06,$59,$06,$5C,$00,$9F,$06,$5A          ; O2MonFlags, Tcc65C, MonFlags09F, MonFlags65A
+        dc.b    $10,$1F,$09,$50,$0A,$94,$01,$20          ; IoCfg1FL, CamCrank950, FuelSenderFiltered, FuelSenderShutdown
+        dc.b    $00,$55,$0A,$93,$01,$9C,$0A,$96          ; EquipmentFlags, FuelSenderScaled, FuelLevelScaled, FuelLevelA96
+        dc.b    $03,$1C,$0D,$00,$05,$30,$0B,$30          ; IacStepper31C, SparkFlags, LoadValue, EgrFlags
+        dc.b    $00,$56,$03,$30,$04,$3A,$04,$3B          ; BusTempFlags2, FieldDutyRaw, PurgeCellNum1, PurgeCellNum2
+        dc.b    $04,$3C,$00,$0A,$00,$51,$05,$29          ; PurgeCellNum3, SystemFlags00A, VacLeakFlags, FuelSystem529
+        dc.b    $04,$02,$04,$04,$0A,$75                  ; SpeedCtlNibble, SpeedCtl404, ThrottleAboveClosed
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList2 ($37BFC): 1 rows of 88 bytes
+; Lists of RAM addresses: monitor status and closed-loop data for the diagnostic service, probably
+;---------------------------------------------------------------------------------------------------
+DiagDataList2:
+        dc.b    $00,$D8,$00,$A1,$00,$A2,$00,$A3          ; DiagStatusFlags, MonStatusCatBank1, MonStatusCatBank2, MonStatusO2Resp1
+        dc.b    $00,$A4,$00,$AB,$00,$A9,$00,$B0          ; MonStatusO2Resp2, MonStatusMisfire, MonStatusPurge, MonStatusLdp
+        dc.b    $00,$AC,$00,$AE,$00,$AD,$00,$AF          ; MonStatusFuelSysTooLean1, MonStatusFuelSysTooRich1, MonStatusFuelSysTooLean2, MonStatusFuelSysTooRich2
+        dc.b    $00,$AA,$FF,$FF,$05,$2A,$05,$68          ; MonStatusEgrFlow, end, MonStatusBits1, O2Switch568
+        dc.b    $05,$69,$05,$6A,$05,$74,$05,$75          ; O2Switch569, CatMonFlags, CalcEngine574, CalcEngine575
+        dc.b    $05,$76,$05,$77,$05,$78,$05,$79          ; CalcEngine576, CalcEngine577, $0578, $0579
+        dc.b    $05,$70,$05,$71,$05,$72,$05,$73          ; CalcEngine570, $0571, CalcEngine572, $0573
+        dc.b    $05,$6D,$01,$10,$01,$16,$01,$0F          ; O2Activity56D, ObdRec110, ObdRec116, ObdRec10F
+        dc.b    $01,$15,$05,$80,$05,$82,$05,$83          ; ObdRec115, EgrMonFlags, EgrFlow582, EgrFlow583
+        dc.b    $05,$85,$05,$86,$05,$84,$05,$87          ; EgrFlow585, EgrFlow586, EgrFlow584, EgrFlow587
+        dc.b    $05,$88,$05,$7E,$05,$7F,$05,$89          ; EgrFlow588, EgrMonPhaseTimer, $057F, EgrFlow589
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList3 ($37C5A): 1 rows of 76 bytes
+; Lists of RAM addresses: leak detection pump and fuel system monitor data, probably
+;---------------------------------------------------------------------------------------------------
+DiagDataList3:
+        dc.b    $05,$8E,$05,$8F,$05,$90,$05,$91          ; LdpFlags, LdpState, LdpStateTime, LdpPumpOnCount
+        dc.b    $05,$93,$05,$94,$05,$95,$05,$9A          ; LdpStrokeCount, LdpStrokeTime, LdpStrokeTimeAvg, LdpVacLowTotal
+        dc.b    $05,$98,$05,$96,$01,$1B,$FF,$FF          ; LdpPumpUpTimer, LdpStrokes, LdpFlags2, end
+        dc.b    $05,$9D,$05,$9E,$05,$9F,$05,$A0          ; FuelSysFlags1, FuelSysFlags2, FuelSys59F, FuelSys5A0
+        dc.b    $05,$A1,$05,$A2,$00,$B8,$00,$B9          ; FuelSysCount1, FuelSysCount2, MonRecordB8, MonRecordB9
+        dc.b    $00,$BA,$00,$BB,$00,$BC,$00,$BD          ; MonRecordBA, MonRecordBB, MonRecordBC, MonRecordBD
+        dc.b    $00,$BE,$00,$BF,$00,$C0,$00,$C1          ; MonRecordBE, MonRecordBF, MonRecordC0, MonRecordC1
+        dc.b    $00,$C2,$00,$C3,$00,$C4,$00,$C5          ; MonRecordC2, MonRecordC3, MonRecordC4, MonRecordC5
+        dc.b    $00,$C6,$00,$C7,$05,$AA,$05,$AB          ; MonRecordC6, MonRecordC7, FuelSysTooLeanFaults, FuelSysCount2B
+        dc.b    $05,$AC,$05,$AD                          ; FuelSysTooRichFaults, FuelSys5AD
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList7 ($37CAE): 1 rows of 190 bytes
+; Lists of RAM addresses: segment times and misfire data, probably
+;---------------------------------------------------------------------------------------------------
+DiagDataList7:
+        dc.b    $00,$13,$00,$14,$00,$15,$00,$16          ; SegmentTimePair3, $0014, MisfirePeriod15, $0016
+        dc.b    $00,$0F,$00,$10,$00,$11,$00,$12          ; SegmentTimePair2, $0010, MisfirePeriod11, $0012
+        dc.b    $00,$DE,$00,$DF,$00,$E0,$00,$E1          ; MisfireEventCount, $00DF, MisfireRpmDev, $00E1
+        dc.b    $00,$E2,$00,$E3,$06,$1F,$05,$C2          ; MisfireDeviation0E2, $00E3, MisfireTransient61F, SegmentRpm
+        dc.b    $05,$C3,$06,$0E,$06,$19,$06,$0C          ; $05C3, $060E, MisfireCount2, MisfireEvents
+        dc.b    $06,$1A,$06,$28,$06,$12,$06,$1E          ; MisfireCount61A, MisfireWork628, MisfireRecFlags, MisfireRecFlags2
+        dc.b    $06,$21,$06,$24,$06,$25,$06,$26          ; MisfireEnable, MisfireFlags2, MisfireFlags5, MisfireFlags4
+        dc.b    $00,$DC,$06,$22,$06,$0F,$06,$1C          ; MisfireFlags, MisfireTransientHold, MisfireEvents2, MisfireCount61C
+        dc.b    $05,$D4,$05,$D5,$05,$D8,$05,$D9          ; MisfireChangeFiltered, $05D5, MisfireNoisePeak, $05D9
+        dc.b    $00,$DD,$05,$D0,$05,$D1,$06,$2E          ; MisfireRecordDD, MisfireThreshold5D0, $05D1, $062E
+        dc.b    $06,$2C,$00,$E7,$00,$E4,$00,$E5          ; Misfire62C, MisfireRecordE7, MisfireRecordE4, MisfireRecordE5
+        dc.b    $00,$E6,$06,$01,$06,$03,$06,$05          ; $00E6, $0601, $0603, $0605
+        dc.b    $06,$07,$06,$09,$06,$0B,$00,$B4          ; $0607, $0609, $060B, MonRecordB4
+        dc.b    $00,$B5,$00,$B6,$00,$B7,$05,$D2          ; MonRecordB5, MonRecordB6, MonRecordB7, MisfireWork5D2
+        dc.b    $05,$D3,$05,$D6,$05,$D7,$05,$DA          ; $05D3, MisfireNoiseLevel, $05D7, MisfireDevInput
+        dc.b    $05,$DB,$05,$E2,$05,$E3,$05,$E4          ; $05DB, MisfireThreshValue, $05E3, MisfireThreshold5E4
+        dc.b    $05,$E5,$06,$1B,$01,$06,$01,$07          ; $05E5, MisfireFailWindows, O2HeaterFlags2, O2HeaterFlags
+        dc.b    $01,$0E,$05,$51,$05,$53,$05,$61          ; O2HeaterCount, O2Heater551, O2Heater553, $0561
+        dc.b    $05,$63,$05,$50,$01,$0C,$01,$0D          ; $0563, O2HeaterSample, O2Heater10C, $010D
+        dc.b    $01,$0A,$01,$0B,$05,$5D,$05,$59          ; O2HeaterTimer, $010B, O2Heater55D, O2Heater559
+        dc.b    $05,$5F,$05,$5B,$05,$55,$05,$57          ; O2Heater55F, O2Heater55B, O2Heater555, O2Heater557
+        dc.b    $05,$67,$05,$52,$05,$54,$05,$5E          ; O2Activity567, O2Heater552, O2Heater554, O2Heater55E
+        dc.b    $05,$5A,$05,$60,$05,$5C,$05,$56          ; O2Heater55A, O2Heater560, O2Heater55C, O2Heater556
+        dc.b    $05,$58,$05,$62,$05,$64                  ; O2Heater558, $0562, $0564
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList8 ($37D74): 1 rows of 66 bytes
+; Lists of RAM addresses: O2 monitor and other monitor data, probably
+;---------------------------------------------------------------------------------------------------
+DiagDataList8:
+        dc.b    $05,$32,$05,$33,$05,$35,$05,$34          ; O2MonData2, CalcEngine533, CalcEngine535, CalcEngine534
+        dc.b    $05,$36,$05,$3B,$05,$3C,$05,$46          ; CalcEngine536, CalcEngine53B, CalcEngine53C, O2Activity546
+        dc.b    $05,$31,$FF,$FF,$04,$43,$0A,$6D          ; O2MonData, end, PurgeLearnFlags, StartCoolantTemp2
+        dc.b    $06,$BC,$06,$79,$00,$DA,$00,$DB          ; CamCrankFlags, O2TestFlags, MisfireRecordDA, $00DB
+        dc.b    $06,$BE,$05,$0C,$05,$0F,$05,$11          ; BusModuleFlags, FaultSet0C, FaultSet0F, FaultSet11
+        dc.b    $05,$10,$05,$13,$05,$12,$06,$67          ; FaultSet10, FaultSet13, FaultSet12, PspSwitch667
+        dc.b    $00,$9C,$0C,$40,$07,$57,$07,$58          ; MonitorDisableFlags, MonStartDelay, O2DownDelay, O2SlowDelay
+        dc.b    $05,$0E,$05,$14,$05,$17,$06,$68          ; FaultSet0E, FaultSet14, FaultSet17, PspSwitch668
+        dc.b    $06,$AC                                  ; LimpFlags
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$01,$11,$01,$17,$05,$AE,$05,$AF,$05,$BB
+        dc.b    $05,$BC,$05,$B4,$05,$B9,$05,$BA,$05,$B5,$05,$B6,$05,$B7,$05,$B3
+        dc.b    $05,$BD,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$27,$4C,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -8596,14 +8743,19 @@ L36A7C:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$80,$40
-        dc.b    $20,$10,$08,$04,$02,$01,$40,$CA,$00,$00,$00,$00,$40,$B6,$44,$44
-        dc.b    $49,$44,$00,$00,$40,$F2,$00,$00,$00,$00,$00,$00,$40,$B6,$44,$44
-        dc.b    $49,$4E,$00,$00,$40,$F2,$00,$00,$00,$00,$00,$00,$40,$B6,$44,$44
-        dc.b    $48,$04,$00,$00,$40,$F2,$00,$00,$00,$00,$00,$00,$43,$EA,$43,$F4
-        dc.b    $40,$FC,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$43,$EA,$43,$F4
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$45,$C0,$43,$EA,$43,$F4
-        dc.b    $40,$FC,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$80,$40,$20,$10,$08,$04
+        dc.b    $02,$01,$40,$CA,$00,$00,$00,$00,$40,$B6,$44,$44,$49,$44,$00,$00
+        dc.b    $40,$F2,$00,$00,$00,$00,$00,$00,$40,$B6,$44,$44,$49,$4E,$00,$00
+        dc.b    $40,$F2,$00,$00,$00,$00,$00,$00,$40,$B6,$44,$44,$48,$04,$00,$00
+        dc.b    $40,$F2,$00,$00,$00,$00,$00,$00,$43,$EA,$43,$F4,$40,$FC,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$43,$EA,$43,$F4,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$45,$C0,$43,$EA,$43,$F4,$40,$FC,$00,$00
+        dc.b    $00,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; QspiOutputStatus ($38068)
@@ -8987,33 +9139,66 @@ L38440:
 L38444:
         PULM    CCR
         RTS
-        dc.b    $00,$00,$0A,$D0,$00,$01,$0A,$D1,$00,$02,$0A,$D2,$00,$03,$0A,$D3
-        dc.b    $00,$04,$0A,$D4,$00,$05,$0A,$D5,$00,$06,$0A,$D6,$00,$07,$0A,$D7
-        dc.b    $00,$08,$09,$4C,$00,$09,$09,$4D,$00,$97,$0C,$27,$00,$98,$0C,$28
-        dc.b    $00,$0C,$0A,$90,$00,$0F,$09,$50,$00,$62,$09,$51,$00,$63,$09,$52
-        dc.b    $00,$64,$09,$53,$00,$65,$09,$54,$00,$66,$09,$55,$00,$67,$09,$56
-        dc.b    $00,$68,$09,$57,$00,$69,$09,$58,$00,$6A,$09,$59,$00,$6B,$09,$5A
-        dc.b    $00,$6C,$09,$5B,$00,$6D,$09,$5C,$00,$6E,$09,$5D,$00,$6F,$09,$5E
-        dc.b    $00,$70,$09,$5F,$00,$71,$09,$60,$00,$72,$09,$61,$00,$50,$09,$62
-        dc.b    $00,$51,$09,$63,$00,$52,$09,$64,$00,$53,$09,$65,$00,$54,$09,$66
-        dc.b    $00,$55,$09,$67,$00,$56,$09,$68,$00,$57,$09,$69,$00,$58,$09,$6A
-        dc.b    $00,$59,$09,$6B,$00,$5A,$09,$6C,$00,$5B,$09,$6D,$00,$5C,$09,$6E
-        dc.b    $00,$5D,$09,$6F,$00,$5E,$09,$70,$00,$5F,$09,$71,$00,$60,$09,$73
-        dc.b    $00,$61,$09,$74,$00,$90,$09,$76,$00,$91,$09,$77,$00,$92,$09,$78
-        dc.b    $00,$93,$09,$72,$00,$C4,$01,$7F,$00,$C5,$01,$80,$00,$C6,$01,$81
-        dc.b    $00,$C7,$01,$82,$00,$C8,$01,$83,$00,$C9,$01,$84,$00,$CA,$01,$85
-        dc.b    $00,$CB,$01,$86,$00,$CC,$06,$4C,$00,$CD,$06,$4D,$00,$CE,$06,$4E
-        dc.b    $00,$CF,$06,$4F,$00,$D0,$06,$50,$00,$80,$06,$34,$00,$81,$06,$3A
-        dc.b    $00,$82,$06,$39,$00,$83,$06,$3B,$00,$84,$06,$3C,$00,$85,$06,$3D
-        dc.b    $01,$E0,$0A,$55,$01,$E1,$0A,$56,$01,$EF,$09,$75,$00,$D1,$05,$F0
-        dc.b    $00,$D2,$05,$F1,$00,$D3,$05,$F2,$00,$D4,$05,$F3,$00,$D5,$05,$F4
-        dc.b    $00,$D6,$05,$F5,$00,$D7,$05,$F6,$00,$D8,$05,$F7,$00,$D9,$05,$F8
-        dc.b    $00,$DA,$05,$F9,$00,$DB,$05,$FA,$00,$DC,$05,$FB,$00,$DD,$05,$FC
-        dc.b    $00,$DE,$06,$3E,$00,$DF,$06,$3F,$00,$E0,$06,$40,$00,$8A,$05,$9C
-        dc.b    $00,$8B,$06,$56,$00,$8C,$06,$41,$00,$8F,$06,$57,$00,$8D,$05,$FD
-        dc.b    $00,$8E,$05,$FE,$01,$00,$0E,$0B,$01,$01,$0E,$0C,$01,$02,$0E,$0D
-        dc.b    $00,$77,$06,$51,$00,$E8,$04,$6E,$00,$E9,$04,$6F,$00,$EF,$0F,$3E
-        dc.b    $00,$FC,$0F,$49
+
+;---------------------------------------------------------------------------------------------------
+; EepromShadowMap ($38448): 1 rows of 420 bytes
+; EEPROM map read by EepromWriteQueue, EepromReadInit and EepromWriteService: pairs of EEPROM word index and RAM address of its copy
+;---------------------------------------------------------------------------------------------------
+EepromShadowMap:
+        dc.b    $00,$00,$0A,$D0,$00,$01,$0A,$D1          ; EEPROM $00 -> RpmForBus, EEPROM $01 -> $0AD1
+        dc.b    $00,$02,$0A,$D2,$00,$03,$0A,$D3          ; EEPROM $02 -> EepromReadAD2, EEPROM $03 -> $0AD3
+        dc.b    $00,$04,$0A,$D4,$00,$05,$0A,$D5          ; EEPROM $04 -> EepromReadAD4, EEPROM $05 -> $0AD5
+        dc.b    $00,$06,$0A,$D6,$00,$07,$0A,$D7          ; EEPROM $06 -> EepromReadAD6, EEPROM $07 -> $0AD7
+        dc.b    $00,$08,$09,$4C,$00,$09,$09,$4D          ; EEPROM $08 -> BusConfigFlags, EEPROM $09 -> OutputTest94D
+        dc.b    $00,$97,$0C,$27,$00,$98,$0C,$28          ; EEPROM $97 -> OutputTestC27, EEPROM $98 -> $0C28
+        dc.b    $00,$0C,$0A,$90,$00,$0F,$09,$50          ; EEPROM $0C -> PowerDownCount, EEPROM $0F -> CamCrank950
+        dc.b    $00,$62,$09,$51,$00,$63,$09,$52          ; EEPROM $62 -> Vin01, EEPROM $63 -> Vin02
+        dc.b    $00,$64,$09,$53,$00,$65,$09,$54          ; EEPROM $64 -> Vin03, EEPROM $65 -> Vin04
+        dc.b    $00,$66,$09,$55,$00,$67,$09,$56          ; EEPROM $66 -> Vin05, EEPROM $67 -> Vin06
+        dc.b    $00,$68,$09,$57,$00,$69,$09,$58          ; EEPROM $68 -> Vin07, EEPROM $69 -> Vin08
+        dc.b    $00,$6A,$09,$59,$00,$6B,$09,$5A          ; EEPROM $6A -> Vin09, EEPROM $6B -> Vin10
+        dc.b    $00,$6C,$09,$5B,$00,$6D,$09,$5C          ; EEPROM $6C -> Vin11, EEPROM $6D -> Vin12
+        dc.b    $00,$6E,$09,$5D,$00,$6F,$09,$5E          ; EEPROM $6E -> Vin13, EEPROM $6F -> Vin14
+        dc.b    $00,$70,$09,$5F,$00,$71,$09,$60          ; EEPROM $70 -> Vin15, EEPROM $71 -> Vin16
+        dc.b    $00,$72,$09,$61,$00,$50,$09,$62          ; EEPROM $72 -> Vin17, EEPROM $50 -> PciBuild962
+        dc.b    $00,$51,$09,$63,$00,$52,$09,$64          ; EEPROM $51 -> $0963, EEPROM $52 -> PciBuild964
+        dc.b    $00,$53,$09,$65,$00,$54,$09,$66          ; EEPROM $53 -> $0965, EEPROM $54 -> PciBuild966
+        dc.b    $00,$55,$09,$67,$00,$56,$09,$68          ; EEPROM $55 -> $0967, EEPROM $56 -> PciBuild968
+        dc.b    $00,$57,$09,$69,$00,$58,$09,$6A          ; EEPROM $57 -> $0969, EEPROM $58 -> $096A
+        dc.b    $00,$59,$09,$6B,$00,$5A,$09,$6C          ; EEPROM $59 -> $096B, EEPROM $5A -> $096C
+        dc.b    $00,$5B,$09,$6D,$00,$5C,$09,$6E          ; EEPROM $5B -> $096D, EEPROM $5C -> $096E
+        dc.b    $00,$5D,$09,$6F,$00,$5E,$09,$70          ; EEPROM $5D -> $096F, EEPROM $5E -> $0970
+        dc.b    $00,$5F,$09,$71,$00,$60,$09,$73          ; EEPROM $5F -> $0971, EEPROM $60 -> $0973
+        dc.b    $00,$61,$09,$74,$00,$90,$09,$76          ; EEPROM $61 -> PciBuild974, EEPROM $90 -> FuelTrim976
+        dc.b    $00,$91,$09,$77,$00,$92,$09,$78          ; EEPROM $91 -> FuelTrim977, EEPROM $92 -> FuelTrim978
+        dc.b    $00,$93,$09,$72,$00,$C4,$01,$7F          ; EEPROM $93 -> FuelTrim972, EEPROM $C4 -> $017F
+        dc.b    $00,$C5,$01,$80,$00,$C6,$01,$81          ; EEPROM $C5 -> $0180, EEPROM $C6 -> $0181
+        dc.b    $00,$C7,$01,$82,$00,$C8,$01,$83          ; EEPROM $C7 -> $0182, EEPROM $C8 -> $0183
+        dc.b    $00,$C9,$01,$84,$00,$CA,$01,$85          ; EEPROM $C9 -> $0184, EEPROM $CA -> $0185
+        dc.b    $00,$CB,$01,$86,$00,$CC,$06,$4C          ; EEPROM $CB -> $0186, EEPROM $CC -> MonData64C
+        dc.b    $00,$CD,$06,$4D,$00,$CE,$06,$4E          ; EEPROM $CD -> MonFlags64D, EEPROM $CE -> MonFlags64E
+        dc.b    $00,$CF,$06,$4F,$00,$D0,$06,$50          ; EEPROM $CF -> MonData64F, EEPROM $D0 -> MonData650
+        dc.b    $00,$80,$06,$34,$00,$81,$06,$3A          ; EEPROM $80 -> MisfireThreshold634, EEPROM $81 -> MisfireThreshold63A
+        dc.b    $00,$82,$06,$39,$00,$83,$06,$3B          ; EEPROM $82 -> ClosedLoop639, EEPROM $83 -> MisfireHoldRpmValue
+        dc.b    $00,$84,$06,$3C,$00,$85,$06,$3D          ; EEPROM $84 -> MonData63C, EEPROM $85 -> $063D
+        dc.b    $01,$E0,$0A,$55,$01,$E1,$0A,$56          ; EEPROM $1E0 -> BatteryVoltsA55, EEPROM $1E1 -> $0A56
+        dc.b    $01,$EF,$09,$75,$00,$D1,$05,$F0          ; EEPROM $1EF -> $0975, EEPROM $D1 -> MonTask5F0
+        dc.b    $00,$D2,$05,$F1,$00,$D3,$05,$F2          ; EEPROM $D2 -> MonTask5F1, EEPROM $D3 -> MonTask5F2
+        dc.b    $00,$D4,$05,$F3,$00,$D5,$05,$F4          ; EEPROM $D4 -> MonTask5F3, EEPROM $D5 -> MonData6435F4
+        dc.b    $00,$D6,$05,$F5,$00,$D7,$05,$F6          ; EEPROM $D6 -> MonTask5F5, EEPROM $D7 -> Ldp5F6
+        dc.b    $00,$D8,$05,$F7,$00,$D9,$05,$F8          ; EEPROM $D8 -> IdleRpm5F7, EEPROM $D9 -> MonTask5F8
+        dc.b    $00,$DA,$05,$F9,$00,$DB,$05,$FA          ; EEPROM $DA -> MonTask5F9, EEPROM $DB -> MonEnable5FA
+        dc.b    $00,$DC,$05,$FB,$00,$DD,$05,$FC          ; EEPROM $DC -> MonTask5FB, EEPROM $DD -> MonTask5FC
+        dc.b    $00,$DE,$06,$3E,$00,$DF,$06,$3F          ; EEPROM $DE -> Misfire63E, EEPROM $DF -> MisfireThreshold63F
+        dc.b    $00,$E0,$06,$40,$00,$8A,$05,$9C          ; EEPROM $E0 -> $0640, EEPROM $8A -> Ldp59C
+        dc.b    $00,$8B,$06,$56,$00,$8C,$06,$41          ; EEPROM $8B -> FuelSysWork, EEPROM $8C -> ClosedLoop641
+        dc.b    $00,$8F,$06,$57,$00,$8D,$05,$FD          ; EEPROM $8F -> MonTask657, EEPROM $8D -> MonTask5FD
+        dc.b    $00,$8E,$05,$FE,$01,$00,$0E,$0B          ; EEPROM $8E -> CrankFuel5FE, EEPROM $100 -> SegmentTimeE0B
+        dc.b    $01,$01,$0E,$0C,$01,$02,$0E,$0D          ; EEPROM $101 -> SegmentTimeE0C, EEPROM $102 -> SegmentTimeE0D
+        dc.b    $00,$77,$06,$51,$00,$E8,$04,$6E          ; EEPROM $77 -> MonTask651, EEPROM $E8 -> PurgeFlow46E
+        dc.b    $00,$E9,$04,$6F,$00,$EF,$0F,$3E          ; EEPROM $E9 -> PurgeFlow46F, EEPROM $EF -> FlexLearnCounter3
+        dc.b    $00,$FC,$0F,$49                          ; EEPROM $FC -> FlexF49
+
 
 ;---------------------------------------------------------------------------------------------------
 ; EepromWriteQueue ($385EC)

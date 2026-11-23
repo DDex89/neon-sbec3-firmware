@@ -362,6 +362,11 @@ P1899, P0703, P0500, P1294, P0125, P1281, P0551, the O2 and fuel level codes). `
 output bit build one byte, for the switch inputs and for the status bytes the SCI and bus messages
 send.
 
+Lists of RAM addresses in the code banks are laid out with each word named: the EEPROM map
+(`EepromShadowMap`, $38448: EEPROM word and the RAM copy), the descriptors of the O2, O2 heater,
+downstream O2 and catalyst monitors, the OBD record pointers, the CCD transmit rotation and eight
+lists the SCI diagnostic service probably sends from (`DiagDataList1-8`).
+
 ## Tools
 
 ```sh

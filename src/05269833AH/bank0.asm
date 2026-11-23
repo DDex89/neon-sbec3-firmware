@@ -13955,9 +13955,19 @@ IncSaturate:
         STAA    $00,X
 L0C582:
         RTS
-        dc.b    $07,$B2,$00,$FF,$07,$B3,$00,$FF,$07,$69,$00,$FF,$07,$EC,$00,$FF
-        dc.b    $0C,$47,$00,$FF,$07,$77,$00,$FF,$05,$B2,$00,$FF,$0B,$2E,$00,$FF
-        dc.b    $07,$A0,$00,$FF,$0D,$3F,$00,$FF,$0D,$41,$00,$FF,$07,$9E,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; IncSaturateList ($C584): 1 rows of 48 bytes
+; Pairs of RAM counter address and limit used by EventCounters
+;---------------------------------------------------------------------------------------------------
+IncSaturateList:
+        dc.b    $07,$B2,$00,$FF,$07,$B3,$00,$FF          ; O2CellWork, ScratchF, O2LearnTimer2, ScratchF
+        dc.b    $07,$69,$00,$FF,$07,$EC,$00,$FF          ; CrankDecayIndex, ScratchF, $07EC, ScratchF
+        dc.b    $0C,$47,$00,$FF,$07,$77,$00,$FF          ; ThrottleRelearnCounter, ScratchF, DecelRampTimer, ScratchF
+        dc.b    $05,$B2,$00,$FF,$0B,$2E,$00,$FF          ; PurgeFlowStep, ScratchF, EgrOnTimer, ScratchF
+        dc.b    $07,$A0,$00,$FF,$0D,$3F,$00,$FF          ; SparkStartRampValue, ScratchF, SparkTrim1, ScratchF
+        dc.b    $0D,$41,$00,$FF,$07,$9E,$FF,$FF          ; SparkTrim2, ScratchF, EventCorrections79E, end
+
 
 ;---------------------------------------------------------------------------------------------------
 ; EventCounters ($0C5B4)
@@ -13966,7 +13976,7 @@ L0C582:
 EventCounters:
         TPD
         TBXK
-        LDX     #$C584
+        LDX     #IncSaturateList
 L0C5BC:
         LDE     $0000,X
         LDAB    E,Z
