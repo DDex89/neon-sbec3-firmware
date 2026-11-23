@@ -1143,7 +1143,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x120" flags="0x0">
   <title>CrankRpmDecayWeight</title>
-  <description>Weight of the rpm reduction against the cranking coolant $057A, 2D; inputs: Baro</description>
+  <description>Weight of the rpm reduction against the cranking coolant $057A, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1335,7 +1335,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x125" flags="0x0">
   <title>Tab2D_0619</title>
-  <description>$0619, 2D; inputs: Baro</description>
+  <description>$0619, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1349,13 +1349,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x61B" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>2</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -1371,7 +1371,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x126" flags="0x0">
   <title>Tab2D_0625</title>
-  <description>$0625, 2D; inputs: Baro</description>
+  <description>$0625, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1385,13 +1385,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x627" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>2</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -1839,7 +1839,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x133" flags="0x0">
   <title>Tab2D_06E2</title>
-  <description>$06E2, 2D; inputs: Baro</description>
+  <description>$06E2, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1853,13 +1853,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x6E4" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>1</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -1875,7 +1875,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x134" flags="0x0">
   <title>Tab2D_06F1</title>
-  <description>$06F1, 2D; inputs: Baro</description>
+  <description>$06F1, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1889,13 +1889,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x6F3" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>4</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -2505,7 +2505,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x142" flags="0x0">
   <title>DecelBaroMapOffset</title>
-  <description>Added to MAP against barometric pressure before DecelMapScale $0E5D, 2D; inputs: Baro</description>
+  <description>Added to MAP against barometric pressure before DecelMapScale $0E5D, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2613,7 +2613,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x145" flags="0x0">
   <title>Tab2D_0E7F</title>
-  <description>$0E7F, 2D; inputs: Baro</description>
+  <description>$0E7F, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2627,13 +2627,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xE81" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>1</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -2649,7 +2649,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x146" flags="0x0">
   <title>Tab2D_0E8B</title>
-  <description>$0E8B, 2D; inputs: Baro</description>
+  <description>$0E8B, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2663,13 +2663,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xE8D" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>1</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -3265,7 +3265,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x157" flags="0x0">
   <title>DecelLeanBaroFactor</title>
-  <description>Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is $07C2,Z $0F7B, 2D; inputs: Baro</description>
+  <description>Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is $07C2,Z $0F7B, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3943,7 +3943,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x169" flags="0x0">
   <title>Tab2D_11C2</title>
-  <description>$11C2, 2D; inputs: $01F3,Z</description>
+  <description>$11C2, 2D; inputs: Scratch3</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5181,7 +5181,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x189" flags="0x0">
   <title>Tab2D_1A2B</title>
-  <description>$1A2B, 2D; inputs: Baro</description>
+  <description>$1A2B, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5195,13 +5195,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1A2D" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>2</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -7037,7 +7037,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1BC" flags="0x0">
   <title>Tab2D_1DC0</title>
-  <description>$1DC0, 2D; inputs: Baro</description>
+  <description>$1DC0, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -7051,13 +7051,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1DC2" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>5</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -8717,7 +8717,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1EA" flags="0x0">
   <title>Tab2D_20C7</title>
-  <description>$20C7, 2D; inputs: Baro</description>
+  <description>$20C7, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8731,13 +8731,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x20C9" mmedelementsizebits="8" mmedcolcount="4" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>4</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -8897,7 +8897,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1EF" flags="0x0">
   <title>Tab2D_20FF</title>
-  <description>$20FF, 2D; inputs: Baro</description>
+  <description>$20FF, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8911,13 +8911,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2101" mmedelementsizebits="8" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>1</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -9189,7 +9189,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F7" flags="0x0">
   <title>Tab2D_2180</title>
-  <description>$2180, 2D; inputs: Baro</description>
+  <description>$2180, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9203,13 +9203,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2182" mmedelementsizebits="8" mmedcolcount="2" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>2</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -9265,7 +9265,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F9" flags="0x0">
   <title>IacStartBaro</title>
-  <description>Idle air position at reset against barometric pressure, into $2A,Z $21AD, 2D; inputs: Baro</description>
+  <description>Idle air position at reset against barometric pressure, into $2A,Z $21AD, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9413,7 +9413,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FD" flags="0x0">
   <title>IacStepBaroFactor</title>
-  <description>Multiplier on IAC steps and start positions against barometric pressure $21E8, 2D; inputs: Baro</description>
+  <description>Multiplier on IAC steps and start positions against barometric pressure $21E8, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9449,7 +9449,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FE" flags="0x0">
   <title>IacShiftBaroFactor</title>
-  <description>Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure $21F2, 2D; inputs: Baro</description>
+  <description>Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure $21F2, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9485,7 +9485,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FF" flags="0x0">
   <title>IacKickBaroFactor</title>
-  <description>Factor on the A/C and rpm-dip IAC steps against barometric pressure $21FC, 2D; inputs: Baro</description>
+  <description>Factor on the A/C and rpm-dip IAC steps against barometric pressure $21FC, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9521,7 +9521,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x200" flags="0x0">
   <title>Tab2D_2206</title>
-  <description>$2206, 2D; inputs: Baro</description>
+  <description>$2206, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9535,13 +9535,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2208" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>3</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -9665,7 +9665,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x204" flags="0x0">
   <title>Tab2D_227E</title>
-  <description>$227E, 2D; inputs: Baro</description>
+  <description>$227E, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9679,13 +9679,13 @@
   </XDFAXIS>
   <XDFAXIS id="y" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2280" mmedelementsizebits="8" mmedcolcount="3" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>kPa</units>
+   <units />
    <indexcount>3</indexcount>
-   <decimalpl>1</decimalpl>
+   <decimalpl>0</decimalpl>
    <embedinfo type="1" />
    <outputtype>1</outputtype>
    <DALINK index="0" />
-   <MATH equation="X/2.428">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
@@ -12042,7 +12042,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23E" flags="0x0">
   <title>IacBaroScale</title>
-  <description>Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2 $433F, 2D; inputs: Baro</description>
+  <description>Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2 $433F, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />

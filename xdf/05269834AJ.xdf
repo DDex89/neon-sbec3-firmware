@@ -62,8 +62,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x102" flags="0x0">
-  <title>FlexLearnLimitV006B</title>
-  <description>Flex-fuel learning: limit $0F41,Z against $6B,Z (negative values as 0) $0390, 2D; inputs: $6B,Z</description>
+  <title>FlexLearnLimitPurgeTrim</title>
+  <description>Flex-fuel learning: limit $0F41,Z against PurgeCellTrim2 (negative values as 0) $0390, 2D; inputs: PurgeCellTrim2</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -315,7 +315,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x109" flags="0x0">
   <title>AccelMapGainAdder</title>
-  <description>Added to AccelMapGainCoolant against $0474,Z $03E4, 2D; inputs: $0474,Z</description>
+  <description>Added to AccelMapGainCoolant against $0474,Z $03E4, 2D; inputs: PurgeLoad</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -350,8 +350,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10A" flags="0x0">
-  <title>MapFilterRiseV0474</title>
-  <description>Subtracted from MapFilterRiseCoolant against $0474,Z $03F0, 2D; inputs: $0474,Z</description>
+  <title>MapFilterRisePurgeLoad</title>
+  <description>Subtracted from MapFilterRiseCoolant against PurgeLoad $03F0, 2D; inputs: PurgeLoad</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -603,7 +603,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x111" flags="0x0">
   <title>BattTempSoakAdder</title>
-  <description>Battery temperature model at start: addition to $0194,Z against the engine-off time $04AD, 2D; inputs: $F0,Z</description>
+  <description>Battery temperature model at start: addition to $0194,Z against the engine-off time $04AD, 2D; inputs: Scratch0</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1107,7 +1107,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11F" flags="0x0">
   <title>EgrTarget</title>
-  <description>EGR valve position target ($0B3E,Z) against part-throttle MAP position (rows) and engine rpm (columns); EGR off below $035E $0637, 3D; inputs: $F0,Z x EngineRpm</description>
+  <description>EGR valve position target ($0B3E,Z) against part-throttle MAP position (rows) and engine rpm (columns); EGR off below $035E $0637, 3D; inputs: Scratch0 x EngineRpm</description>
   <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x63A" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -1446,8 +1446,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x128" flags="0x0">
-  <title>FlexLearnLimitV006B2</title>
-  <description>Flex-fuel learning: limit $0F40,Z against $6B,Z, compared with $01B5,Z $0848, 2D; inputs: $6B,Z</description>
+  <title>FlexLearnLimitPurgeTrim2</title>
+  <description>Flex-fuel learning: limit $0F40,Z against PurgeCellTrim2, compared with $01B5,Z $0848, 2D; inputs: PurgeCellTrim2</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1915,7 +1915,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x135" flags="0x0">
   <title>TipInRateIndex</title>
-  <description>Tip-in enrichment: throttle opening step to column index 1-9 of TipInMatrix $0900, 2D; inputs: $F4,Z</description>
+  <description>Tip-in enrichment: throttle opening step to column index 1-9 of TipInMatrix $0900, 2D; inputs: Scratch4</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2059,7 +2059,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x139" flags="0x0">
   <title>IacFuelScale</title>
-  <description>Extra idle air ($031B,Z minus $18,Z) to row position of IacFuelCoolant $0938, 2D; inputs: $F0,Z</description>
+  <description>Extra idle air ($031B,Z minus $18,Z) to row position of IacFuelCoolant $0938, 2D; inputs: Scratch0</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2599,7 +2599,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x148" flags="0x0">
   <title>CrankPulseCoolantFactor</title>
-  <description>Factor on the cranking pulse against the cranking coolant, result into $076B,Z $09F9, 2D; inputs: $FC,Z</description>
+  <description>Factor on the cranking pulse against the cranking coolant, result into $076B,Z $09F9, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2751,7 +2751,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x14C" flags="0x0">
   <title>CrankRpmDecayWeight</title>
-  <description>Weight of the rpm reduction against the cranking coolant $0A76, 2D; inputs: $FC,Z</description>
+  <description>Weight of the rpm reduction against the cranking coolant $0A76, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2823,7 +2823,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x14E" flags="0x0">
   <title>CrankV0769DecayWeight</title>
-  <description>Weight of CrankV0769Decay against the cranking coolant $0A8E, 2D; inputs: $FC,Z</description>
+  <description>Weight of CrankV0769Decay against the cranking coolant $0A8E, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2859,7 +2859,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x14F" flags="0x0">
   <title>CrankCoolantAdder2</title>
-  <description>Cranking pulse addition against the cranking coolant, used while $0A5A,Z is not above the raw MAP $0A9A, 2D; inputs: $FC,Z</description>
+  <description>Cranking pulse addition against the cranking coolant, used while $0A5A,Z is not above the raw MAP $0A9A, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2931,7 +2931,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x151" flags="0x0">
   <title>CrankBaroDecayWeight</title>
-  <description>Weight of CrankBaroDecay against the cranking coolant $0AAC, 2D; inputs: $FC,Z</description>
+  <description>Weight of CrankBaroDecay against the cranking coolant $0AAC, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5377,7 +5377,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x191" flags="0x0">
   <title>DecelLeanAirflow</title>
-  <description>Deceleration enleanment: airflow value against rpm and throttle position; the drop between last and current throttle goes to $0804,Z $1572, 3Dn; inputs: $F0,Z</description>
+  <description>Deceleration enleanment: airflow value against rpm and throttle position; the drop between last and current throttle goes to $0804,Z $1572, 3Dn; inputs: Scratch0</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
@@ -5735,7 +5735,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19A" flags="0x0">
   <title>O2StepScale</title>
-  <description>Closed loop: trim step against the size of the O2 error $F3,Z (doubled while purge is active and duty is zero) $1873, 2D; inputs: $F3,Z</description>
+  <description>Closed loop: trim step against the size of the O2 error $F3,Z (doubled while purge is active and duty is zero) $1873, 2D; inputs: Scratch3</description>
   <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -7437,7 +7437,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1C7" flags="0x0">
   <title>SpeedDampP</title>
-  <description>Low-speed surge spark control: spark against the rpm deviation from SpeedRpmRef (sign kept) $204F, 2D; inputs: $F1,Z</description>
+  <description>Low-speed surge spark control: spark against the rpm deviation from SpeedRpmRef (sign kept) $204F, 2D; inputs: Scratch1</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -7473,7 +7473,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1C8" flags="0x0">
   <title>SpeedDampD</title>
-  <description>Low-speed surge spark control: spark against the change of the rpm deviation $2059, 2D; inputs: $F2,Z</description>
+  <description>Low-speed surge spark control: spark against the change of the rpm deviation $2059, 2D; inputs: Scratch2</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -7509,7 +7509,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1C9" flags="0x0">
   <title>SpeedDampI</title>
-  <description>Low-speed surge spark control: spark against the accumulated rpm deviation $2063, 2D; inputs: $F3,Z</description>
+  <description>Low-speed surge spark control: spark against the accumulated rpm deviation $2063, 2D; inputs: Scratch3</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -7989,7 +7989,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D6" flags="0x0">
   <title>SurgeDecay</title>
-  <description>Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage $0D37,Z (columns) $215E, 3D; inputs: result of Lookup2D x $F2,Z</description>
+  <description>Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage $0D37,Z (columns) $215E, 3D; inputs: result of Lookup2D x Scratch2</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2161" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -8101,7 +8101,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D9" flags="0x0">
   <title>SurgeJerkGain</title>
-  <description>Driveline surge spark control: jerk retard gain against MAP position (rows) and fast rpm (columns) $21AF, 3D; inputs: $F6,Z x SegmentRpmFast</description>
+  <description>Driveline surge spark control: jerk retard gain against MAP position (rows) and fast rpm (columns) $21AF, 3D; inputs: Scratch6 x SegmentRpmFast</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x21B2" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -8141,7 +8141,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DA" flags="0x0">
   <title>SurgeJerkLimit</title>
-  <description>Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into $0D36,Z $21D0, 3D; inputs: $F6,Z x SegmentRpmFast</description>
+  <description>Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into $0D36,Z $21D0, 3D; inputs: Scratch6 x SegmentRpmFast</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x21D3" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -9429,7 +9429,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FD" flags="0x0">
   <title>IdleStepClose</title>
-  <description>Idle speed control: closing step against the accumulated error, added to $033E,Z (limited by $2611/$2612) $2587, 2D; inputs: $FE,Z</description>
+  <description>Idle speed control: closing step against the accumulated error, added to $033E,Z (limited by $2611/$2612) $2587, 2D; inputs: ScratchE</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9465,7 +9465,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FE" flags="0x0">
   <title>IdleStepOpen</title>
-  <description>Idle speed control: opening step against the accumulated error, added to $033E,Z $258F, 2D; inputs: $FE,Z</description>
+  <description>Idle speed control: opening step against the accumulated error, added to $033E,Z $258F, 2D; inputs: ScratchE</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9941,7 +9941,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x20B" flags="0x0">
   <title>IdleErrorTermCoarse</title>
-  <description>Idle speed control: proportional term against the coarse rpm error (segment rpm minus target), used for errors above $26EC; result minus 128 into $0336,Z $2678, 2D; inputs: $FC,Z</description>
+  <description>Idle speed control: proportional term against the coarse rpm error (segment rpm minus target), used for errors above $26EC; result minus 128 into $0336,Z $2678, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9977,7 +9977,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x20C" flags="0x0">
   <title>IdleErrorTermFine</title>
-  <description>Idle speed control: proportional term against the fine rpm error, used for errors below $26EC $268A, 2D; inputs: $FD,Z</description>
+  <description>Idle speed control: proportional term against the fine rpm error, used for errors below $26EC $268A, 2D; inputs: ScratchD</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10013,7 +10013,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x20D" flags="0x0">
   <title>IdleErrorTermCoarsePN</title>
-  <description>As IdleErrorTermCoarse, in P/N $269C, 2D; inputs: $FC,Z</description>
+  <description>As IdleErrorTermCoarse, in P/N $269C, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10049,7 +10049,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x20E" flags="0x0">
   <title>IdleErrorTermFinePN</title>
-  <description>As IdleErrorTermFine, in P/N $26AE, 2D; inputs: $FD,Z</description>
+  <description>As IdleErrorTermFine, in P/N $26AE, 2D; inputs: ScratchD</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10157,7 +10157,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x211" flags="0x0">
   <title>IdleStepOpenScale</title>
-  <description>Idle speed control: accumulated error to the size of an IAC opening step $26D4, 2D; inputs: $FE,Z</description>
+  <description>Idle speed control: accumulated error to the size of an IAC opening step $26D4, 2D; inputs: ScratchE</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10193,7 +10193,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x212" flags="0x0">
   <title>IdleStepOpenFactor</title>
-  <description>Idle speed control: opening step factor against the coarse rpm error, into $033F,Z $26DE, 2D; inputs: $FC,Z</description>
+  <description>Idle speed control: opening step factor against the coarse rpm error, into $033F,Z $26DE, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10265,7 +10265,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x214" flags="0x0">
   <title>IdleStepCloseFactor</title>
-  <description>Idle speed control: closing step factor against the coarse rpm error, into $033A,Z $26F2, 2D; inputs: $FC,Z</description>
+  <description>Idle speed control: closing step factor against the coarse rpm error, into $033A,Z $26F2, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -14041,7 +14041,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x27A" flags="0x0">
   <title>FuelSenderCurve2</title>
-  <description>Corrected analog input $0A92,Z to $019C,Z (read by the flex-fuel learning) $31FF, 2D; inputs: $F0,Z</description>
+  <description>Corrected analog input $0A92,Z to $019C,Z (read by the flex-fuel learning) $31FF, 2D; inputs: Scratch0</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />

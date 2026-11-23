@@ -24,9 +24,9 @@
    "auto": false
   },
   "0390": {
-   "name": "FlexLearnLimitV006B",
+   "name": "FlexLearnLimitPurgeTrim",
    "category": "Fuel",
-   "desc": "Flex-fuel learning: limit $0F41,Z against $6B,Z (negative values as 0)",
+   "desc": "Flex-fuel learning: limit $0F41,Z against PurgeCellTrim2 (negative values as 0)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -88,9 +88,9 @@
    "auto": false
   },
   "03F0": {
-   "name": "MapFilterRiseV0474",
+   "name": "MapFilterRisePurgeLoad",
    "category": "Fuel",
-   "desc": "Subtracted from MapFilterRiseCoolant against $0474,Z",
+   "desc": "Subtracted from MapFilterRiseCoolant against PurgeLoad",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -329,9 +329,9 @@
    "auto": false
   },
   "0848": {
-   "name": "FlexLearnLimitV006B2",
+   "name": "FlexLearnLimitPurgeTrim2",
    "category": "Fuel",
-   "desc": "Flex-fuel learning: limit $0F40,Z against $6B,Z, compared with $01B5,Z",
+   "desc": "Flex-fuel learning: limit $0F40,Z against PurgeCellTrim2, compared with $01B5,Z",
    "x": "raw",
    "y": "raw",
    "auto": false

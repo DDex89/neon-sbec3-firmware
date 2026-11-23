@@ -856,7 +856,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x118" flags="0x0">
   <title>Tab2D_062F</title>
-  <description>$062F, 2D; inputs: $F4,Z</description>
+  <description>$062F, 2D; inputs: Scratch4</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1000,7 +1000,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11C" flags="0x0">
   <title>Tab2D_0667</title>
-  <description>$0667, 2D; inputs: $F0,Z</description>
+  <description>$0667, 2D; inputs: FanSoakFlags</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4054,7 +4054,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x16E" flags="0x0">
   <title>DecelLeanAirflow</title>
-  <description>Deceleration enleanment: airflow value against rpm and throttle position; the drop between last and current throttle goes to $0804,Z $126D, 3Dn; inputs: $F0,Z</description>
+  <description>Deceleration enleanment: airflow value against rpm and throttle position; the drop between last and current throttle goes to $0804,Z $126D, 3Dn; inputs: FanSoakFlags</description>
   <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
@@ -4412,7 +4412,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x177" flags="0x0">
   <title>O2StepScale</title>
-  <description>Closed loop: trim step against the size of the O2 error $F3,Z (doubled while purge is active and duty is zero) $1566, 2D; inputs: $F3,Z</description>
+  <description>Closed loop: trim step against the size of the O2 error $F3,Z (doubled while purge is active and duty is zero) $1566, 2D; inputs: Scratch3</description>
   <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4844,7 +4844,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x183" flags="0x0">
   <title>Tab2D_1672</title>
-  <description>$1672, 2D; inputs: $F0,Z; #$FF</description>
+  <description>$1672, 2D; inputs: FanSoakFlags; #$FF</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4880,7 +4880,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x184" flags="0x0">
   <title>Tab2D_1684</title>
-  <description>$1684, 2D; inputs: $F0,Z; #$FF</description>
+  <description>$1684, 2D; inputs: FanSoakFlags; #$FF</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4916,7 +4916,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x185" flags="0x0">
   <title>Tab2D_169A</title>
-  <description>$169A, 2D; inputs: ?; #$FF; $F0,Z</description>
+  <description>$169A, 2D; inputs: ?; #$FF; FanSoakFlags</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5854,7 +5854,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19D" flags="0x0">
   <title>Tab2D_1C53</title>
-  <description>$1C53, 2D; inputs: $F1,Z</description>
+  <description>$1C53, 2D; inputs: Scratch1</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5890,7 +5890,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19E" flags="0x0">
   <title>Tab2D_1C5D</title>
-  <description>$1C5D, 2D; inputs: $F2,Z</description>
+  <description>$1C5D, 2D; inputs: Scratch2</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5926,7 +5926,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19F" flags="0x0">
   <title>Tab2D_1C67</title>
-  <description>$1C67, 2D; inputs: $F3,Z</description>
+  <description>$1C67, 2D; inputs: Scratch3</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6362,7 +6362,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AB" flags="0x0">
   <title>SurgeDecay</title>
-  <description>Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage $0D37,Z (columns) $1D23, 3D; inputs: result of Lookup2D x $F2,Z</description>
+  <description>Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage $0D37,Z (columns) $1D23, 3D; inputs: result of Lookup2D x Scratch2</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1D26" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -6474,7 +6474,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AE" flags="0x0">
   <title>SurgeJerkGain</title>
-  <description>Driveline surge spark control: jerk retard gain against MAP position (rows) and fast rpm (columns) $1D74, 3D; inputs: $F6,Z x SegmentRpmFast</description>
+  <description>Driveline surge spark control: jerk retard gain against MAP position (rows) and fast rpm (columns) $1D74, 3D; inputs: Scratch6 x SegmentRpmFast</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1D77" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -6514,7 +6514,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AF" flags="0x0">
   <title>SurgeJerkLimit</title>
-  <description>Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into $0D36,Z $1D95, 3D; inputs: $F6,Z x SegmentRpmFast</description>
+  <description>Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into $0D36,Z $1D95, 3D; inputs: Scratch6 x SegmentRpmFast</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1D98" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -7570,7 +7570,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1CC" flags="0x0">
   <title>Tab2D_20C2</title>
-  <description>$20C2, 2D; inputs: $FE,Z</description>
+  <description>$20C2, 2D; inputs: ScratchE</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -7606,7 +7606,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1CD" flags="0x0">
   <title>Tab2D_20CA</title>
-  <description>$20CA, 2D; inputs: $FE,Z</description>
+  <description>$20CA, 2D; inputs: ScratchE</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8226,7 +8226,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DE" flags="0x0">
   <title>Tab2D_21F6</title>
-  <description>$21F6, 2D; inputs: $FE,Z</description>
+  <description>$21F6, 2D; inputs: ScratchE</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11690,7 +11690,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23C" flags="0x0">
   <title>Tab2D_2C04</title>
-  <description>$2C04, 2D; inputs: $F0,Z</description>
+  <description>$2C04, 2D; inputs: FanSoakFlags</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />

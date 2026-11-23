@@ -424,13 +424,13 @@ IacCoolantAdder:
 
 
 ;---------------------------------------------------------------------------------------------------
-; FlexLearnLimitV006B ($0390): 2D table, 1 points, unsigned
-; Flex-fuel learning: limit $0F41,Z against $6B,Z (negative values as 0)
+; FlexLearnLimitPurgeTrim ($0390): 2D table, 1 points, unsigned
+; Flex-fuel learning: limit $0F41,Z against PurgeCellTrim2 (negative values as 0)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $6B,Z
+; Inputs: PurgeCellTrim2
 ; Read at $17178
 ;---------------------------------------------------------------------------------------------------
-FlexLearnLimitV006B:
+FlexLearnLimitPurgeTrim:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,170                                  ; x, y
 
@@ -518,7 +518,7 @@ PurgeMonitorLimit:
 ; AccelMapGainAdder ($03E4): 2D table, 2 points, unsigned
 ; Added to AccelMapGainCoolant against $0474,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0474,Z
+; Inputs: PurgeLoad
 ; Read at $10714
 ;---------------------------------------------------------------------------------------------------
 AccelMapGainAdder:
@@ -528,13 +528,13 @@ AccelMapGainAdder:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MapFilterRiseV0474 ($03F0): 2D table, 3 points, unsigned
-; Subtracted from MapFilterRiseCoolant against $0474,Z
+; MapFilterRisePurgeLoad ($03F0): 2D table, 3 points, unsigned
+; Subtracted from MapFilterRiseCoolant against PurgeLoad
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0474,Z
+; Inputs: PurgeLoad
 ; Read at $11DD0
 ;---------------------------------------------------------------------------------------------------
-MapFilterRiseV0474:
+MapFilterRisePurgeLoad:
         dc.b    3,$80                                    ; points, flags
         dc.b    112,56, 254,40, 255,0                    ; x, y
 
@@ -724,7 +724,7 @@ BattTempSoakLimit:
 ; BattTempSoakAdder ($04AD): 2D table, 6 points, unsigned
 ; Battery temperature model at start: addition to $0194,Z against the engine-off time
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $F0,Z
+; Inputs: Scratch0
 ; Read at $2C56A
 ;---------------------------------------------------------------------------------------------------
 BattTempSoakAdder:
@@ -1142,7 +1142,7 @@ EgrPressureRatio:
 ; EgrTarget ($0637): 3D table, 17 rows x 17 columns, unsigned
 ; EGR valve position target ($0B3E,Z) against part-throttle MAP position (rows) and engine rpm (columns); EGR off below $035E
 ; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
-; Inputs: $F0,Z x EngineRpm
+; Inputs: Scratch0 x EngineRpm
 ; Read at $39BB4
 ;---------------------------------------------------------------------------------------------------
 EgrTarget:
@@ -1397,13 +1397,13 @@ FlexLearnTrimWeight:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FlexLearnLimitV006B2 ($0848): 2D table, 1 points, unsigned
-; Flex-fuel learning: limit $0F40,Z against $6B,Z, compared with $01B5,Z
+; FlexLearnLimitPurgeTrim2 ($0848): 2D table, 1 points, unsigned
+; Flex-fuel learning: limit $0F40,Z against PurgeCellTrim2, compared with $01B5,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $6B,Z
+; Inputs: PurgeCellTrim2
 ; Read at $17166, $18040
 ;---------------------------------------------------------------------------------------------------
-FlexLearnLimitV006B2:
+FlexLearnLimitPurgeTrim2:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,170                                  ; x, y
 
@@ -1589,7 +1589,7 @@ TipInThrottleIndex:
 ; TipInRateIndex ($0900): 2D table, 9 points, steps, no interpolation
 ; Tip-in enrichment: throttle opening step to column index 1-9 of TipInMatrix
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $F4,Z
+; Inputs: Scratch4
 ; Read at $10860
 ;---------------------------------------------------------------------------------------------------
 TipInRateIndex:
@@ -1640,7 +1640,7 @@ DecelLeanTimeScale:
 ; IacFuelScale ($0938): 2D table, 5 points, unsigned
 ; Extra idle air ($031B,Z minus $18,Z) to row position of IacFuelCoolant
 ; x: raw, y: pos256 (units: docs/en/calibration.md)
-; Inputs: $F0,Z
+; Inputs: Scratch0
 ; Read at $10AB0
 ;---------------------------------------------------------------------------------------------------
 IacFuelScale:
@@ -1848,7 +1848,7 @@ CrankFuelBattTempMax:
 ; CrankPulseCoolantFactor ($09F9): 2D table, 1 points, unsigned
 ; Factor on the cranking pulse against the cranking coolant, result into $076B,Z
 ; x: tempc, y: mult256 (units: docs/en/calibration.md)
-; Inputs: $FC,Z
+; Inputs: ScratchC
 ; Read at $123C2
 ;---------------------------------------------------------------------------------------------------
 CrankPulseCoolantFactor:
@@ -1908,7 +1908,7 @@ CrankRpmDecayClosed:
 ; CrankRpmDecayWeight ($0A76): 2D table, 1 points, unsigned
 ; Weight of the rpm reduction against the cranking coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
-; Inputs: $FC,Z
+; Inputs: ScratchC
 ; Read at $122CC
 ;---------------------------------------------------------------------------------------------------
 CrankRpmDecayWeight:
@@ -1934,7 +1934,7 @@ CrankV0769Decay:
 ; CrankV0769DecayWeight ($0A8E): 2D table, 2 points, unsigned
 ; Weight of CrankV0769Decay against the cranking coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
-; Inputs: $FC,Z
+; Inputs: ScratchC
 ; Read at $122EC
 ;---------------------------------------------------------------------------------------------------
 CrankV0769DecayWeight:
@@ -1947,7 +1947,7 @@ CrankV0769DecayWeight:
 ; CrankCoolantAdder2 ($0A9A): 2D table, 1 points, unsigned
 ; Cranking pulse addition against the cranking coolant, used while $0A5A,Z is not above the raw MAP
 ; x: tempc, y: raw (units: docs/en/calibration.md)
-; Inputs: $FC,Z
+; Inputs: ScratchC
 ; Read at $12336
 ;---------------------------------------------------------------------------------------------------
 CrankCoolantAdder2:
@@ -1973,7 +1973,7 @@ CrankBaroDecay:
 ; CrankBaroDecayWeight ($0AAC): 2D table, 1 points, unsigned
 ; Weight of CrankBaroDecay against the cranking coolant
 ; x: tempc, y: raw (units: docs/en/calibration.md)
-; Inputs: $FC,Z
+; Inputs: ScratchC
 ; Read at $1230A
 ;---------------------------------------------------------------------------------------------------
 CrankBaroDecayWeight:
@@ -3172,7 +3172,7 @@ DecelLeanRpmFactor:
 ; DecelLeanAirflow ($1572): 3D table, 9 rows x 17 columns, unsigned, columns by position 0-255
 ; Deceleration enleanment: airflow value against rpm and throttle position; the drop between last and current throttle goes to $0804,Z
 ; columns: pos256, rows: pos256, values: raw (units: docs/en/calibration.md)
-; Inputs: $F0,Z
+; Inputs: Scratch0
 ; Read at $11F42, $11F60
 ;---------------------------------------------------------------------------------------------------
 DecelLeanAirflow:
@@ -3542,7 +3542,7 @@ O2AccelFuelMax:
 ; O2StepScale ($1873): 2D table, 4 points, unsigned
 ; Closed loop: trim step against the size of the O2 error $F3,Z (doubled while purge is active and duty is zero)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $F3,Z
+; Inputs: Scratch3
 ; Read at $15DD4
 ;---------------------------------------------------------------------------------------------------
 O2StepScale:
@@ -4580,7 +4580,7 @@ SpeedRpmRef2AC:
 ; SpeedDampP ($204F): 2D table, 4 points, unsigned
 ; Low-speed surge spark control: spark against the rpm deviation from SpeedRpmRef (sign kept)
 ; x: raw, y: spark (units: docs/en/calibration.md)
-; Inputs: $F1,Z
+; Inputs: Scratch1
 ; Read at $1DD84, $1DD8A
 ;---------------------------------------------------------------------------------------------------
 SpeedDampP:
@@ -4592,7 +4592,7 @@ SpeedDampP:
 ; SpeedDampD ($2059): 2D table, 4 points, unsigned
 ; Low-speed surge spark control: spark against the change of the rpm deviation
 ; x: raw, y: spark (units: docs/en/calibration.md)
-; Inputs: $F2,Z
+; Inputs: Scratch2
 ; Read at $1DDAA, $1DDB0
 ;---------------------------------------------------------------------------------------------------
 SpeedDampD:
@@ -4604,7 +4604,7 @@ SpeedDampD:
 ; SpeedDampI ($2063): 2D table, 1 points, unsigned
 ; Low-speed surge spark control: spark against the accumulated rpm deviation
 ; x: raw, y: spark (units: docs/en/calibration.md)
-; Inputs: $F3,Z
+; Inputs: Scratch3
 ; Read at $1DDEC, $1DDF2
 ;---------------------------------------------------------------------------------------------------
 SpeedDampI:
@@ -4858,7 +4858,7 @@ SurgeRetardBase:
 ; SurgeDecay ($215E): 3D table, 5 rows x 9 columns, unsigned
 ; Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage $0D37,Z (columns)
 ; columns: raw, rows: pos256, values: mult256 (units: docs/en/calibration.md)
-; Inputs: result of Lookup2D x $F2,Z
+; Inputs: result of Lookup2D x Scratch2
 ; Read at $1E10C
 ;---------------------------------------------------------------------------------------------------
 SurgeDecay:
@@ -4900,7 +4900,7 @@ SurgeRetardCoolantFactor:
 ; SurgeJerkGain ($21AF): 3D table, 5 rows x 5 columns, unsigned
 ; Driveline surge spark control: jerk retard gain against MAP position (rows) and fast rpm (columns)
 ; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
-; Inputs: $F6,Z x SegmentRpmFast
+; Inputs: Scratch6 x SegmentRpmFast
 ; Read at $1DFC8
 ;---------------------------------------------------------------------------------------------------
 SurgeJerkGain:
@@ -4917,7 +4917,7 @@ SurgeJerkGain:
 ; SurgeJerkLimit ($21D0): 3D table, 5 rows x 5 columns, unsigned
 ; Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into $0D36,Z
 ; columns: raw, rows: pos256, values: spark (units: docs/en/calibration.md)
-; Inputs: $F6,Z x SegmentRpmFast
+; Inputs: Scratch6 x SegmentRpmFast
 ; Read at $1E006
 ;---------------------------------------------------------------------------------------------------
 SurgeJerkLimit:
@@ -5506,7 +5506,7 @@ IacStepSumReset:
 ; IdleStepClose ($2587): 2D table, 1 points, signed
 ; Idle speed control: closing step against the accumulated error, added to $033E,Z (limited by $2611/$2612)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $FE,Z
+; Inputs: ScratchE
 ; Read at $19346
 ;---------------------------------------------------------------------------------------------------
 IdleStepClose:
@@ -5519,7 +5519,7 @@ IdleStepClose:
 ; IdleStepOpen ($258F): 2D table, 1 points, signed
 ; Idle speed control: opening step against the accumulated error, added to $033E,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $FE,Z
+; Inputs: ScratchE
 ; Read at $193AA
 ;---------------------------------------------------------------------------------------------------
 IdleStepOpen:
@@ -5785,7 +5785,7 @@ IdleRateFilterCoolant:
 ; IdleErrorTermCoarse ($2678): 2D table, 7 points, unsigned
 ; Idle speed control: proportional term against the coarse rpm error (segment rpm minus target), used for errors above $26EC; result minus 128 into $0336,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $FC,Z
+; Inputs: ScratchC
 ; Read at $19188
 ;---------------------------------------------------------------------------------------------------
 IdleErrorTermCoarse:
@@ -5798,7 +5798,7 @@ IdleErrorTermCoarse:
 ; IdleErrorTermFine ($268A): 2D table, 6 points, unsigned
 ; Idle speed control: proportional term against the fine rpm error, used for errors below $26EC
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $FD,Z
+; Inputs: ScratchD
 ; Read at $19188
 ;---------------------------------------------------------------------------------------------------
 IdleErrorTermFine:
@@ -5811,7 +5811,7 @@ IdleErrorTermFine:
 ; IdleErrorTermCoarsePN ($269C): 2D table, 5 points, unsigned
 ; As IdleErrorTermCoarse, in P/N
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $FC,Z
+; Inputs: ScratchC
 ; Read at $19188
 ;---------------------------------------------------------------------------------------------------
 IdleErrorTermCoarsePN:
@@ -5824,7 +5824,7 @@ IdleErrorTermCoarsePN:
 ; IdleErrorTermFinePN ($26AE): 2D table, 4 points, unsigned
 ; As IdleErrorTermFine, in P/N
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $FD,Z
+; Inputs: ScratchD
 ; Read at $19188
 ;---------------------------------------------------------------------------------------------------
 IdleErrorTermFinePN:
@@ -5862,7 +5862,7 @@ IdleDeadbandMap:
 ; IdleStepOpenScale ($26D4): 2D table, 4 points, steps, no interpolation
 ; Idle speed control: accumulated error to the size of an IAC opening step
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $FE,Z
+; Inputs: ScratchE
 ; Read at $19382
 ;---------------------------------------------------------------------------------------------------
 IdleStepOpenScale:
@@ -5874,7 +5874,7 @@ IdleStepOpenScale:
 ; IdleStepOpenFactor ($26DE): 2D table, 4 points, unsigned
 ; Idle speed control: opening step factor against the coarse rpm error, into $033F,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $FC,Z
+; Inputs: ScratchC
 ; Read at $19390
 ;---------------------------------------------------------------------------------------------------
 IdleStepOpenFactor:
@@ -5899,7 +5899,7 @@ IdleStepCloseScale:
 ; IdleStepCloseFactor ($26F2): 2D table, 4 points, unsigned
 ; Idle speed control: closing step factor against the coarse rpm error, into $033A,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $FC,Z
+; Inputs: ScratchC
 ; Read at $1932A
 ;---------------------------------------------------------------------------------------------------
 IdleStepCloseFactor:
@@ -8040,7 +8040,7 @@ FuelSenderVoltsAdder:
 ; FuelSenderCurve2 ($31FF): 2D table, 2 points, unsigned
 ; Corrected analog input $0A92,Z to $019C,Z (read by the flex-fuel learning)
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $F0,Z
+; Inputs: Scratch0
 ; Read at $2C752
 ;---------------------------------------------------------------------------------------------------
 FuelSenderCurve2:
@@ -10517,7 +10517,7 @@ L084B8:
         LDAA    >BatteryVolts2,Z
         CMPA    #$A0
         BCS     L084E2
-        BRCLR   $0774,Z,#$80,L084E2
+        BRCLR   >EngineStateFlags,Z,#$80,L084E2
         BSET    $06B6,Z,#$80
 L084E2:
         PULM    D
@@ -10564,7 +10564,7 @@ L08554:
 L0855A:
         BSET    $06B6,Z,#$08
         LDAA    >FieldFaultDuty
-        BRSET   $0774,Z,#$80,L0856C
+        BRSET   >EngineStateFlags,Z,#$80,L0856C
         LDAA    >FieldFaultDutyCrank
 L0856C:
         STAA    $0DC1,Z
@@ -10899,9 +10899,9 @@ L08894:
 L088AC:
         BRCLR   $0C35,Z,#$40,L0890C
 L088B2:
-        LDAB    $0ABD,Z
+        LDAB    >RefPeriod,Z
         BNE     L0890C
-        BRCLR   $0D00,Z,#$20,L0890C
+        BRCLR   >SparkFlags,Z,#$20,L0890C
         LDAB    >TCTL1,Z
         BITB    $01,Y
         BEQ     L0890C
@@ -10950,14 +10950,14 @@ Sub_0891A:
         EORA    #$10
         STAA    >TFLG1,Z
         BRCLR   $0C35,Z,#$40,L08998
-        LDAB    $0ABD,Z
+        LDAB    >RefPeriod,Z
         BNE     L08998
-        BRCLR   $0D00,Z,#$20,L08998
+        BRCLR   >SparkFlags,Z,#$20,L08998
         LDAB    >TCTL1,Z
         EORB    #$01
         BITB    #$01
         BEQ     L08946
-        BRCLR   $0D00,Z,#$10,L08998
+        BRCLR   >SparkFlags,Z,#$10,L08998
 L08946:
         STAB    >TCTL1,Z
         LSRB
@@ -10981,7 +10981,7 @@ L08964:
         STD     >TOC2,Z
         BRA     L08998
 L0897A:
-        BCLR    $0D00,Z,#$10
+        BCLR    >SparkFlags,Z,#$10
         LDD     $0ABE,Z
         SUBD    $85,Z
         ADDD    >TOC2,Z
@@ -11332,17 +11332,17 @@ Sub_08CE2:
         BNE     L08D44
         BITA    #$20
         BNE     L08D34
-        BRSET   $0B00,Z,#$02,L08D7C
-        BSET    $0B00,Z,#$02
-        BCLR    $0B00,Z,#$01
+        BRSET   >FanFlags,Z,#$02,L08D7C
+        BSET    >FanFlags,Z,#$02
+        BCLR    >FanFlags,Z,#$01
         BRA     L08DA8
 L08D34:
-        BRSET   $0B00,Z,#$01,L08D86
-        BSET    $0B00,Z,#$01
-        BCLR    $0B00,Z,#$02
+        BRSET   >FanFlags,Z,#$01,L08D86
+        BSET    >FanFlags,Z,#$01
+        BCLR    >FanFlags,Z,#$02
         BRA     L08DA8
 L08D44:
-        BCLR    $0B00,Z,#$02
+        BCLR    >FanFlags,Z,#$02
         LDD     $04F2,Z
         CPD     #$0004
         BLS     L08DA8
@@ -11404,7 +11404,7 @@ L08DDE:
 L08DE4:
         BSET    $06B6,Z,#$08
         LDAA    >FieldFaultDuty
-        BRSET   $0774,Z,#$80,L08DF6
+        BRSET   >EngineStateFlags,Z,#$80,L08DF6
         LDAA    >FieldFaultDutyCrank
 L08DF6:
         STAA    $0DC1,Z
@@ -11850,7 +11850,7 @@ Isr_GPT_IC1:
         LDE     >EngineRpm,Z
         CPE     #$5DC0
         BCC     L0A078
-        TST     $0ABD,Z
+        TST     >RefPeriod,Z
         BNE     L0A078
         LDD     >TIC1,Z
         SUBD    >TIC2,Z
@@ -11990,9 +11990,9 @@ L0A1C0:
 L0A1D2:
         BCLR    $0C36,Z,#$70
         CLRA
-        BRCLR   $0774,Z,#$80,L0A206
-        BRCLR   $0D00,Z,#$20,L0A206
-        LDE     $0ABD,Z
+        BRCLR   >EngineStateFlags,Z,#$80,L0A206
+        BRCLR   >SparkFlags,Z,#$20,L0A206
+        LDE     >RefPeriod,Z
         CPE     #$00EA
         BCC     L0A206
         BCLR    $0C36,Z,#$01
@@ -12075,7 +12075,7 @@ L0A2B4:
         BCC     L0A2C4
         LDAA    #$01
 L0A2C4:
-        STAA    $0ABD,Z
+        STAA    >RefPeriod,Z
         STE     $0ABE,Z
         JSR     Sub_0C77E
         BRA     L0A2D6
@@ -12089,7 +12089,7 @@ L0A2D6:
         BLS     L0A2EC
         BSET    $0DA2,Z,#$01
 L0A2EC:
-        BSET    $0D00,Z,#$40
+        BSET    >SparkFlags,Z,#$40
         JSR     Sub_123D0
         JSR     Sub_23D64
 L0A2F8:
@@ -12143,21 +12143,21 @@ L0A34E:
         STE     $04F4,Z
         SUBE    $04F6,Z
         STE     $04F6,Z
-        LDD     $0ABD,Z
+        LDD     >RefPeriod,Z
         CPD     >TimedSparkPeriodMax
         BCS     L0A3C4
         CPD     #$00FF
         BCS     L0A3BE
 L0A3AA:
-        BCLR    $0D00,Z,#$20
+        BCLR    >SparkFlags,Z,#$20
         CLR     >SurgeEnableTime,Z
         BCLR    $0D02,Z,#$08
         BCLR    $0D02,Z,#$04
         JMP     L0A4D4
 L0A3BE:
-        BRCLR   $0D00,Z,#$20,L0A3AA
+        BRCLR   >SparkFlags,Z,#$20,L0A3AA
 L0A3C4:
-        BSET    $0D00,Z,#$20
+        BSET    >SparkFlags,Z,#$20
         LDE     $0005,Y
         LDD     $04F6,Z
         STD     E,Z
@@ -12217,7 +12217,7 @@ L0A44E:
         LDAA    >TFLG1,Z
         EORA    $02,Y
         STAA    >TFLG1,Z
-        LDD     $0ABD,Z
+        LDD     >RefPeriod,Z
         TSTA
         BNE     L0A4D4
         CMPB    #$4E
@@ -12274,7 +12274,7 @@ L0A50A:
         STAA    $0AD9,Z
         CLR     $0AD8,Z
         BRSET   $0DA2,Z,#$02,L0A528
-        STAA    $0ABD,Z
+        STAA    >RefPeriod,Z
         STE     $0ABE,Z
 L0A528:
         BRCLR   $0C35,Z,#$20,L0A538
@@ -12286,12 +12286,12 @@ L0A538:
         STE     $0D82,Z
 L0A540:
         BRCLR   $0C35,Z,#$40,L0A704
-        LDD     $0ABD,Z
+        LDD     >RefPeriod,Z
         CPD     #$00FF
         BCS     L0A554
-        BCLR    $0D00,Z,#$20
+        BCLR    >SparkFlags,Z,#$20
 L0A554:
-        BRCLR   $0D00,Z,#$20,L0A598
+        BRCLR   >SparkFlags,Z,#$20,L0A598
         LDD     $0D94,Z
         CPD     #$5DC0
         LBHI    L0A6BC
@@ -12327,7 +12327,7 @@ L0A5B6:
         LDY     #$A010
         LDAB    $85,Z
 L0A5BC:
-        BRSET   $0D00,Z,#$20,L0A5E0
+        BRSET   >SparkFlags,Z,#$20,L0A5E0
         LDAA    >TCTL1,Z
         ORAA    $00,Y
         STAA    >TCTL1,Z
@@ -12448,7 +12448,7 @@ L0A71A:
         CLR     >PACNT,Z
         BCLR    >TFLG2,Z,#$10
         BSET    >TMSK2,Z,#$10
-        BRCLR   $0D00,Z,#$20,L0A88A
+        BRCLR   >SparkFlags,Z,#$20,L0A88A
         LDD     $0D94,Z
         CPD     #$5DC0
         LBHI    L0A88A
@@ -12486,7 +12486,7 @@ L0A7A6:
         LDE     $04F6,Z
         CPE     #$1C55
         BCS     L0A7DC
-        BCLR    $0D00,Z,#$20
+        BCLR    >SparkFlags,Z,#$20
         LDAA    >TCTL1,Z
         ORAA    $00,Y
         STAA    >TCTL1,Z
@@ -12573,7 +12573,7 @@ L0A8AE:
         JSR     EmptyHook
         JSR     Sub_2DAC2
         JSR     Sub_128BC
-        BRSET   $0D00,Z,#$20,L0A8F6
+        BRSET   >SparkFlags,Z,#$20,L0A8F6
         BRCLR   $0C35,Z,#$40,L0A8F6
         LDAB    #$00
         TBYK
@@ -12602,10 +12602,10 @@ L0A904:
         BRCLR   >Options032F,#$06,L0A914
         BCLRW   $1002,Z,#$0400
 L0A914:
-        BCLR    $0D00,Z,#$80
+        BCLR    >SparkFlags,Z,#$80
         BRCLR   $0C35,Z,#$40,L0A9F6
         LDAA    #$8A
-        BRCLR   $0D00,Z,#$20,L0A928
+        BRCLR   >SparkFlags,Z,#$20,L0A928
         LDAA    #$CA
 L0A928:
         CMPA    >BatteryVolts2,Z
@@ -12634,7 +12634,7 @@ L0A95E:
         BITA    #$70
         LBNE    L0A9E6
         BRCLR   $1000,Z,#$04,L0A9E6
-        BSET    $0D00,Z,#$80
+        BSET    >SparkFlags,Z,#$80
         LDD     $100E,Z
         ANDD    #$0010
         LBNE    L0A9E6
@@ -12649,7 +12649,7 @@ L0A9A2:
 L0A9A4:
         CLRA
         TDE
-        BRCLR   $0D00,Z,#$20,L0A9C6
+        BRCLR   >SparkFlags,Z,#$20,L0A9C6
         TZX
         LDX     #$8085
         LDAA    E,X
@@ -12666,7 +12666,7 @@ L0A9C6:
         LDAB    #$00
         TBXK
         LDX     #$A8A4
-        BRCLR   $0D00,Z,#$20,L0A9DC
+        BRCLR   >SparkFlags,Z,#$20,L0A9DC
         LDAA    >BatteryVolts2,Z
         CMPA    #$D2
         BCS     L0A9E6
@@ -12688,25 +12688,25 @@ L0A9F6:
         JSR     Sub_2A81A
         BSET    $0317,Z,#$40
         JSR     Sub_1E142
-        LDX     $0ABD,Z
+        LDX     >RefPeriod,Z
         CPX     >RunPeriodOn
         BCS     L0AA3E
         CPX     >RunPeriodOff
         BCS     L0AA78
-        BRCLR   $0774,Z,#$80,L0AA34
+        BRCLR   >EngineStateFlags,Z,#$80,L0AA34
         BRCLR   >Options033B,#$40,L0AA34
         BCLR    $043D,Z,#$20
 L0AA34:
-        BCLR    $0774,Z,#$80
+        BCLR    >EngineStateFlags,Z,#$80
         BCLR    $0764,Z,#$10
         BRA     L0AA78
 L0AA3E:
-        BRSET   $0774,Z,#$80,L0AA78
-        BSET    $0774,Z,#$80
+        BRSET   >EngineStateFlags,Z,#$80,L0AA78
+        BSET    >EngineStateFlags,Z,#$80
         BSET    $0775,Z,#$86
-        LDD     $0780,Z
+        LDD     >FuelPulseBank1,Z
         STD     >CrankPulse,Z
-        BSET    $0774,Z,#$01
+        BSET    >EngineStateFlags,Z,#$01
         CLRW    >Count3s,Z
         CLR     >RunTime,Z
         CLR     >CrankEvents,Z
@@ -12717,7 +12717,7 @@ L0AA3E:
         STAA    >MapLast,Z
 L0AA78:
         BSET    $0C35,Z,#$40
-        BRCLR   $0774,Z,#$80,L0AADA
+        BRCLR   >EngineStateFlags,Z,#$80,L0AADA
         BRCLR   $0764,Z,#$04,L0AAA0
         BSET    $0764,Z,#$10
         TST     $076E,Z
@@ -12725,7 +12725,7 @@ L0AA78:
         DEC     $076E,Z
         BRA     L0AAA0
 L0AA98:
-        BSET    $0774,Z,#$10
+        BSET    >EngineStateFlags,Z,#$10
         BCLR    $0764,Z,#$10
 L0AAA0:
         JSR     Sub_119A0
@@ -13329,7 +13329,7 @@ L0C00E:
         INCA
         BEQ     L0C038
         STAA    >Count3s,Z
-        BRCLR   $0774,Z,#$80,L0C038
+        BRCLR   >EngineStateFlags,Z,#$80,L0C038
         STAA    >RunTime,Z
         TST     $0F24,Z
         BEQ     L0C038
@@ -14025,7 +14025,7 @@ L0C4FE:
 Sub_0C50A:
         TZX
         LDX     #$8C49
-        LDAA    $0801,Z
+        LDAA    >O2MemCell,Z
         CMPA    >PurgeCell1
         BNE     L0C522
         BSET    $0C31,Z,#$01
@@ -14043,13 +14043,13 @@ L0C534:
         CLR     $00,X
 L0C53C:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L0C54E
-        BRCLR   $0438,Z,#$04,L0C54E
+        BRCLR   >PurgeCellFlags,Z,#$04,L0C54E
         LDX     #$8543
         BSR     Sub_0C57A
 L0C54E:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L0C564
         LDX     #$86C8
-        BRCLR   $075D,Z,#$80,L0C562
+        BRCLR   >O2ActiveFlags,Z,#$80,L0C562
         BSR     Sub_0C57A
         BRA     L0C564
 L0C562:
@@ -14110,13 +14110,13 @@ L0C5E4:
         AIX     #$04
         CPX     #$C5B4
         BCS     L0C5D6
-        BRCLR   $0D00,Z,#$02,L0C5FE
+        BRCLR   >SparkFlags,Z,#$02,L0C5FE
         LDAA    >TipInSteps,Z
         INCA
         BEQ     L0C5FE
         STAA    >TipInSteps,Z
 L0C5FE:
-        BRCLR   $0774,Z,#$80,L0C610
+        BRCLR   >EngineStateFlags,Z,#$80,L0C610
         BRCLR   $0D1A,Z,#$3C,L0C60C
         BRA     L0C610
 L0C60C:
@@ -14166,9 +14166,9 @@ L0C690:
         BRSET   $050D,Z,#$10,L0C69C
         BRCLR   $050B,Z,#$30,L0C71C
 L0C69C:
-        BRCLR   $075D,Z,#$80,L0C71C
+        BRCLR   >O2ActiveFlags,Z,#$80,L0C71C
         LDAA    >ShortTermTrim1,Z
-        BRSET   $075D,Z,#$08,L0C6B0
+        BRSET   >O2ActiveFlags,Z,#$08,L0C6B0
         LDAA    >ShortTermTrim2,Z
 L0C6B0:
         BPL     L0C6E8
@@ -14228,14 +14228,14 @@ L0C71C:
 Sub_0C77E:
         PSHM    E,X,Y,K
         TZX
-        LDE     $0ABD,Z
+        LDE     >RefPeriod,Z
         CLRD
         CPE     #$7F00
         BCC     L0C7B4
         LDX     $0ABE,Z
         LDED    $ABAD
-        BRCLR   $0ABD,Z,#$FF,L0C7A4
-        LDX     $0ABD,Z
+        BRCLR   >RefPeriod,Z,#$FF,L0C7A4
+        LDX     >RefPeriod,Z
         LDED    >RpmPeriodConstant
 L0C7A4:
         CPX     #$0000
@@ -14660,33 +14660,33 @@ L0CB68:
 ;---------------------------------------------------------------------------------------------------
 Sub_0CB76:
         TXY
-        STAB    $F0,Z
-        STAB    $F1,Z
+        STAB    <Scratch0,Z
+        STAB    <Scratch1,Z
         CLRA
         ASLD
         SUBD    #$0002
         ADY
-        STY     $F2,Z
-        CLRW    $00F4,Z
-        CLRW    $00F6,Z
-        CLRW    $00F8,Z
+        STY     <Scratch2,Z
+        CLRW    >Scratch4,Z
+        CLRW    >Scratch6,Z
+        CLRW    >Scratch8,Z
         CLRE
 L0CB96:
         LDD     E,X
         SUBD    $00,Y
         CPD     #$0001
         BNE     L0CBB0
-        BSET    $F8,Z,#$01
+        BSET    <Scratch8,Z,#$01
         LDD     E,X
-        CPD     $F4,Z
+        CPD     <Scratch4,Z
         BCS     L0CBB0
-        STD     $F4,Z
-        STE     $00F6,Z
+        STD     <Scratch4,Z
+        STE     >Scratch6,Z
 L0CBB0:
-        DEC     $F0,Z
+        DEC     <Scratch0,Z
         BEQ     L0CBC2
         ADDE    #$02
-        CPY     $F2,Z
+        CPY     <Scratch2,Z
         BNE     L0CBBE
         TXY
         BRA     L0CB96
@@ -14694,10 +14694,10 @@ L0CBBE:
         AIY     #$02
         BRA     L0CB96
 L0CBC2:
-        LDD     $F6,Z
+        LDD     <Scratch6,Z
         TXY
         ADY
-        CPY     $F2,Z
+        CPY     <Scratch2,Z
         BNE     L0CBD0
         TXY
         BRA     L0CBD2
@@ -14708,13 +14708,13 @@ L0CBD2:
         LSRD
         TBA
         INCB
-        CMPB    $F1,Z
+        CMPB    <Scratch1,Z
         BCS     L0CBE0
         CLRB
 L0CBE0:
         LDE     $0000,X
         ANDP    #$FEFF
-        BRSET   $F8,Z,#$01,L0CBF0
+        BRSET   <Scratch8,Z,#$01,L0CBF0
         ORP     #$0100
 L0CBF0:
         RTS
@@ -14797,13 +14797,13 @@ Sub_0CCB8:
         BRSET   >Options032E,#$04,L0CD3A
         LDX     #$73DB
         JSR     Sub_0C4E8
-        BRCLR   $0055,Z,#$40,L0CCEC
-        BRSET   $0774,Z,#$80,L0CCDE
+        BRCLR   >EquipmentFlags,Z,#$40,L0CCEC
+        BRSET   >EngineStateFlags,Z,#$80,L0CCDE
         TST     >Count3s,Z
         BNE     L0CCEC
         BEQ     L0CCEA
 L0CCDE:
-        BRSET   $0400,Z,#$80,L0CCEC
+        BRSET   >SpeedCtlState,Z,#$80,L0CCEC
         LDAB    >SpeedCtlSetSpeed,Z
         BEQ     L0CCEC
 L0CCEA:
@@ -14821,8 +14821,8 @@ L0CCFE:
         LDX     #$73FB
         JSR     Sub_0C4E8
         EORB    #$10
-        BRCLR   $0055,Z,#$40,L0CD34
-        BRSET   $0774,Z,#$80,L0CD1E
+        BRCLR   >EquipmentFlags,Z,#$40,L0CD34
+        BRSET   >EngineStateFlags,Z,#$80,L0CD1E
         LDAA    >Count3s,Z
         BEQ     L0CD32
 L0CD1E:
@@ -14990,15 +14990,15 @@ L0D022:
         STD     >RAMBAL,Z
         LDAA    #$08
         STAA    >RAMMCR,Z
-        STE     $00F0,Z
+        STE     >Scratch0,Z
         ORE     >UnexpectedIrqFlags,Z
         STE     >UnexpectedIrqFlags,Z
         TSX
         LDD     $02,X
-        STD     $F2,Z
+        STD     <Scratch2,Z
         STD     <UnexpectedIrqStack6,Z
         LDD     $00,X
-        STD     $F4,Z
+        STD     <Scratch4,Z
         STD     <UnexpectedIrqStack4,Z
         LDAB    #$0F
         TBSK
@@ -15035,9 +15035,9 @@ Reset:
         STD     >RAMBAL,Z
         LDAA    #$08
         STAA    >RAMMCR,Z
-        CLRW    $00F0,Z
-        CLRW    $00F2,Z
-        CLRW    $00F4,Z
+        CLRW    >Scratch0,Z
+        CLRW    >Scratch2,Z
+        CLRW    >Scratch4,Z
         JSR     KickWatchdogsLong
         JSR     Sub_0C3F0
         LDY     #$4AB5
@@ -15310,11 +15310,11 @@ L0D422:
         LDY     <ResetCheckWord,Z
         CPY     #$4AB5
         LBEQ    L0D4BE
-        LDD     $F0,Z
+        LDD     <Scratch0,Z
         STD     <UnexpectedIrqFlags,Z
-        LDD     $F2,Z
+        LDD     <Scratch2,Z
         STD     <UnexpectedIrqStack6,Z
-        LDD     $F4,Z
+        LDD     <Scratch4,Z
         STD     <UnexpectedIrqStack4,Z
         CLR     <ResetCountsExtSw,Z
         CLR     <ResetCountsHltPow,Z
@@ -15573,7 +15573,7 @@ L0D6F2:
         BSET    $0C32,Z,#$10
         BSET    >ThrottleState,Z,#$10
         BSET    $0C21,Z,#$B0
-        BSET    $0400,Z,#$A0
+        BSET    >SpeedCtlState,Z,#$A0
         BSET    $0A47,Z,#$04
         BSET    $0A4A,Z,#$04
         LDD     #$8013
@@ -15610,16 +15610,16 @@ L0D7D0:
 L0D7EC:
         STAA    $59,Z
         LDAA    #$04
-        BRSET   $0055,Z,#$20,L0D808
+        BRSET   >EquipmentFlags,Z,#$20,L0D808
         LDAA    #$02
         BRSET   >Options032E,#$40,L0D808
         LDAA    #$03
-        BRSET   $0055,Z,#$10,L0D808
+        BRSET   >EquipmentFlags,Z,#$10,L0D808
         LDAA    #$01
 L0D808:
         STAA    $58,Z
         BRCLR   >Options033E,#$02,L0D814
-        BSET    $55,Z,#$08
+        BSET    <EquipmentFlags,Z,#$08
 L0D814:
         LDD     #$0097
         JSR     Sub_383FA
@@ -15712,11 +15712,11 @@ L0D908:
 L0D928:
         JSR     Lookup2D
         BRCLR   >Options0330,#$01,L0D948
-        STAA    $F0,Z
+        STAA    <Scratch0,Z
         LDAA    >CoolantTemp,Z
         LDX     #BattTempHeatFactor
         JSR     Lookup2D
-        LDAA    $F0,Z
+        LDAA    <Scratch0,Z
         MUL
         ADCA    #$00
         TAB
@@ -15745,12 +15745,12 @@ L0D984:
         JSR     Sub_2C6DE
         STAA    >ChargeTargetVolts,Z
         LDAA    >MtvPeriod
-        STAA    $0C03,Z
+        STAA    >MtvPeriodCount,Z
         LDD     #$FFFF
-        STD     $0C04,Z
+        STD     >MtvSwitchTime,Z
         BSET    $0C02,Z,#$10
         LDAA    >PurgeDelayInit
-        STAA    $042F,Z
+        STAA    >PurgeStartRamp,Z
         LDAA    #$64
         STAA    $0434,Z
         LDAA    >ThrottleRaw,Z
@@ -15819,7 +15819,7 @@ L0DA6E:
         LDAA    >CoolantTemp,Z
         CMPA    >HotRestartCoolantMin
         BCS     L0DA7C
-        BSET    $0774,Z,#$10
+        BSET    >EngineStateFlags,Z,#$10
 L0DA7C:
         LDX     #ResetCoolantFuelInit
         LDAA    >CoolantTemp,Z
@@ -15920,16 +15920,16 @@ L0DBA6:
 ;---------------------------------------------------------------------------------------------------
 Sub_0DBB2:
         BRCLR   >Options0330,#$10,L0DBBC
-        BSET    $55,Z,#$01
+        BSET    <EquipmentFlags,Z,#$01
 L0DBBC:
         BRCLR   >Options032F,#$08,L0DBC6
         BSET    $56,Z,#$20
 L0DBC6:
         BRCLR   >Options0331,#$08,L0DBD0
-        BSET    $55,Z,#$04
+        BSET    <EquipmentFlags,Z,#$04
 L0DBD0:
         BRCLR   >Options0335,#$08,L0DBDA
-        BSET    $55,Z,#$02
+        BSET    <EquipmentFlags,Z,#$02
 L0DBDA:
         BRCLR   >Options0333,#$01,L0DBE4
         BSET    $56,Z,#$10
@@ -15947,7 +15947,7 @@ L0DC02:
         BSET    $56,Z,#$04
 L0DC0C:
         BRCLR   >Options032E,#$20,L0DC16
-        BSET    $55,Z,#$20
+        BSET    <EquipmentFlags,Z,#$20
 L0DC16:
         RTS
 MainLoop:
@@ -16150,7 +16150,7 @@ CheckPowerDown:
         LDAA    $0C40,Z
         BNE     L0DEC6
         LDAA    #$14
-        LDAB    $0ABD,Z
+        LDAB    >RefPeriod,Z
         CMPB    #$04
         BCS     L0DEC6
         LDAA    #$08
@@ -16339,8 +16339,8 @@ L0E0CE:
         LDZ     #$8000
         LDY     #$8FFE
         AIY     #$FC
-        STY     $FE,Z
-        CPS     $FE,Z
+        STY     <ScratchE,Z
+        CPS     <ScratchE,Z
         BEQ     L0E10C
         ORP     #$00E0
         AIY     #$02
@@ -17259,7 +17259,7 @@ L0EB60:
         ADDE    #$01
         SBCE    #$0000
         STE     $0DBE,Z
-        BRCLR   $0774,Z,#$80,L0EB8A
+        BRCLR   >EngineStateFlags,Z,#$80,L0EB8A
         LDAA    >Count3s,Z
         CMPA    >FieldRampTimeMin
         BCS     L0EB8A
@@ -17426,7 +17426,7 @@ L0ED56:
         JSR     Sub_316D4
 L0ED5A:
         BRSET   $0A22,Z,#$10,L0ED8C
-        BRCLR   $0774,Z,#$80,L0ED8C
+        BRCLR   >EngineStateFlags,Z,#$80,L0ED8C
         BRSET   $094C,Z,#$40,L0ED82
         BRSET   >Options032E,#$04,L0ED82
         BRSET   $0A1E,Z,#$10,L0ED82
@@ -17530,7 +17530,7 @@ Sub_0EE32:
         BCLR    $0A22,Z,#$01
         LBRA    L0EF42
 L0EE46:
-        BRCLR   $0774,Z,#$80,L0EF42
+        BRCLR   >EngineStateFlags,Z,#$80,L0EF42
         BRCLR   $0C31,Z,#$20,L0EF42
         BRSET   $0A01,Z,#$04,L0EF52
         BRCLR   >Options032E,#$08,L0EE96
@@ -17596,7 +17596,7 @@ L0EEFE:
         CLR     $017B,Z
         BCLR    $0C21,Z,#$08
 L0EF16:
-        BRCLR   $0055,Z,#$20,L0EF52
+        BRCLR   >EquipmentFlags,Z,#$20,L0EF52
         LDAB    $09C7,Z
         INCB
         BEQ     L0EF3C
@@ -17718,7 +17718,7 @@ L0F036:
         TST     $0C40,Z
         LBNE    L0F176
         LDAB    $09BE,Z
-        BRCLR   $0774,Z,#$80,L0F050
+        BRCLR   >EngineStateFlags,Z,#$80,L0F050
         INCB
         BNE     L0F056
         DECB
@@ -17849,7 +17849,7 @@ L0F1C4:
         BRCLR   $0A1E,Z,#$04,L0F216
 L0F1CA:
         BRCLR   >Options0328,#$02,L0F1F8
-        BRCLR   $0774,Z,#$80,L0F220
+        BRCLR   >EngineStateFlags,Z,#$80,L0F220
         BRSET   $094C,Z,#$1F,L0F1F0
         BSET    $0A1E,Z,#$02
         TAB

@@ -100,7 +100,7 @@ All 410 tables of the reference image are named by hand from the code (and check
 where it has them). The name says what the table does; the description in
 `annotations/tables.json` (and in the catalogue and the XDF) says which routine reads it, its inputs
 and where the result goes. Where the meaning of a RAM variable is still open, the name keeps its
-address (`FlexLearnLimitV006B`), and readings that rest only on how the code uses a value say
+address (`FlexLearnLimitPurgeTrim`), and readings that rest only on how the code uses a value say
 "probably".
 
 | Category | Tables | Main prefixes |
@@ -344,7 +344,7 @@ applies only to the reference image.
   duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
   subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
   them on a running car would settle them.
-- 223 RAM variables have names; about 1,600 other Z offsets used in the code (many of them flag
+- 310 RAM variables have names; about 1,500 other Z offsets used in the code (many of them flag
   bytes and array elements) are still known by address. Constant descriptions give these as
   $xxxx,Z.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
