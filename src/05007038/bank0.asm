@@ -9320,7 +9320,7 @@ L06606:
         STD     <ScratchE,Z
         LBRA    L068B2
 L0660C:
-        BRCLR   >LdpFlags3,Z,#$20,L06622
+        BRCLR   >LdpFlags3,Z,#$20,L06622                 ; bit 5: MonTaskD first phase started
         CLRB
         LDAA    $04F7,Z
         BSET    >SparkFlags3,Z,#$10
@@ -20002,7 +20002,7 @@ L0D0BE:
 L0D0C4:
         STAB    >PurgeRamp,Z
         BRSET   >ClosedLoopMonFlags,Z,#$80,L0D628
-        BRSET   >LdpFlags3,Z,#$02,L0D628
+        BRSET   >LdpFlags3,Z,#$02,L0D628                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >MisfireFlags4,Z,#$10,L0D628
         BRSET   >PurgeFlags,Z,#$10,L0D628                ; bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
         BRCLR   <PurgeCellRichFlags,Z,#$80,L0D0F2

@@ -91,6 +91,31 @@
   "1": "copy of calibration bit $0335.3 at reset; not read",
   "0": "copy of calibration bit $0330.4 at reset; not read"
  },
+ "FlexLearnFlags": {
+  "7": "cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)",
+  "6": "cold start handled once (FlexColdStart)",
+  "5": "refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)",
+  "4": "enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine",
+  "3": "fuel used past FlexRefuelFuelMin2 (FlexLearnMain)",
+  "2": "cleared at stall (FlexLearnStall)",
+  "1": "closed-loop flex trim allowed: run time past O2FlexRunTimeMin (ClosedLoopManager)"
+ },
+ "FlexLearnFlags6": {
+  "7": "flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)",
+  "6": "flex idle learning enabled (FlexIdleEnable, FlexColdStart)",
+  "5": "flex idle learning step active (FlexIdleLearn)",
+  "4": "cleared with bit 5 by the idle learning steps",
+  "3": "cold purge learning allowed (FlexColdStart, read by FlexColdPurge)",
+  "2": "upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim",
+  "1": "learning restarted (set when FlexLearnFlags6 is reset)",
+  "0": "idle learning first step done (FlexIdleLearn)"
+ },
+ "FlexLearnFlags7": {
+  "7": "cleared by FlexLearnMain at the end of a learning pass",
+  "5": "flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)",
+  "4": "flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)",
+  "1": "cold purge learning time reached (FlexColdPurge)"
+ },
  "FlexLearnOptions": {
   "7": "clear the start estimate (FlexLearnMain)",
   "6": "clear $01B8,Z (FlexLearnMain)",
@@ -222,6 +247,25 @@
   "2": "pump switch closed in the current step (IoInputs0 bit 1)",
   "1": "pump switch closed (LdpPurgedCheck)",
   "0": "pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it"
+ },
+ "LdpFlags3": {
+  "7": "MonData643Update first pass done (counter MonData643 cleared)",
+  "6": "MonTaskB first pass done",
+  "5": "MonTaskD first phase started",
+  "4": "MonTaskD second phase started",
+  "3": "MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test",
+  "2": "MonTaskC phase 1 started (IoCtl12 bit 14 set)",
+  "1": "leak detection monitor restart requested (MonTaskLdp)"
+ },
+ "LdpPurgeTestFlags": {
+  "7": "purge test step started (LdpPurgeTest)",
+  "6": "sign of the last change in LdpPurgeTest",
+  "5": "idle phase of the purge test reached (LdpPurgeTest)",
+  "4": "purge test finished: purge duty back to zero; monitors wait until then",
+  "3": "purge hold time reached (LdpPurgeHoldTime)",
+  "2": "purge test requested (LdpPurgeTestRun); monitors hold off while it runs",
+  "1": "second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)",
+  "0": "third kind of purge test request (LdpPurgeTestRun)"
  },
  "MisfireFlags": {
   "7": "misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)",
@@ -483,6 +527,16 @@
   "4": "cleared by SparkOutputOc2 only",
   "2": "tip-in spark retard started (TipInSparkControl)",
   "1": "tip-in spark retard armed (TipInSparkControl)"
+ },
+ "SpeedCtlFlags": {
+  "7": "switch command from bit 5 of the switch byte (SpeedCtlShift)",
+  "6": "switch command from bit 4 of the switch byte (SpeedCtlShift)",
+  "5": "switch command from bit 3 of the switch byte (SpeedCtlShift)",
+  "4": "switch command accepted (SpeedCtlShift)",
+  "3": "driver override: throttle past SpeedCtlOverrideMargin (SpeedCtlControl)",
+  "2": "cleared on engage (SpeedCtlControl); read by SpeedCtlShift",
+  "1": "switch count at 8 or more (SpeedCtlSwitchCheck)",
+  "0": "switch event handled (SpeedCtlSwitchRead)"
  },
  "SpeedCtlState": {
   "7": "speed control off: not engaged or cancelled (set at reset and on cancel)",

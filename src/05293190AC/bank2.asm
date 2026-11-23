@@ -52,8 +52,8 @@ L2019C:
         ANDB    >MainLoopCounter,Z
         LBNE    L20264
         BRSET   >MonEnableFlags2,Z,#$80,L201DA
-        BRSET   >LdpPurgeTestFlags,Z,#$01,L201DA
-        BRCLR   >LdpPurgeTestFlags,Z,#$04,L201F6
+        BRSET   >LdpPurgeTestFlags,Z,#$01,L201DA         ; bit 0: third kind of purge test request (LdpPurgeTestRun)
+        BRCLR   >LdpPurgeTestFlags,Z,#$04,L201F6         ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
         BRCLR   >MonStatusPurge,Z,#$80,L201F6
 L201DA:
         BCLR    <DiagStatusFlags,Z,#$03                  ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
@@ -665,7 +665,7 @@ L20770:
         TBYK
         BRSET   $0003,Y,#$80,L207B0
 L2078C:
-        BRCLR   >LdpPurgeTestFlags,Z,#$14,L207AC
+        BRCLR   >LdpPurgeTestFlags,Z,#$14,L207AC         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
         BRCLR   >LdpFlags,Z,#$10,L207AC                  ; bit 4: leak test running (LDP state machine)
         LDY     #$0184
         LDAB    #$02
@@ -1804,8 +1804,8 @@ L210C0:
 ;---------------------------------------------------------------------------------------------------
 MonitorEnable:
         BRSET   >MonEnableFlags2,Z,#$80,L21818
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L21818
-        BRCLR   >LdpPurgeTestFlags,Z,#$04,L2181E
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L21818         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
+        BRCLR   >LdpPurgeTestFlags,Z,#$04,L2181E         ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
         BRCLR   >MonStatusPurge,Z,#$80,L2181E
 L21818:
         CLR     <MonitorDisableFlags,Z
@@ -2714,8 +2714,8 @@ L221BC:
         BEQ     L221DA
         CMPA    #$42
         BEQ     L221DA
-        BRSET   >LdpFlags3,Z,#$04,L221DA
-        BRSET   >LdpFlags3,Z,#$08,L221DA
+        BRSET   >LdpFlags3,Z,#$04,L221DA                 ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
+        BRSET   >LdpFlags3,Z,#$08,L221DA                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
         BCLRW   >IoCtl12,Z,#$6000
 L221DA:
         LDAA    >O2InactiveTimer,Z
@@ -6923,7 +6923,7 @@ L25782:
 LdpMonitor:
         BRCLR   >Options033E,#$02,L25D86                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRSET   >MonStatusLdp,Z,#$02,L25D86
-        BRSET   >LdpPurgeTestFlags,Z,#$20,L25D86
+        BRSET   >LdpPurgeTestFlags,Z,#$20,L25D86         ; bit 5: idle phase of the purge test reached (LdpPurgeTest)
         BRSET   >DiagStatusFlags,Z,#$01,L25D86           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BRCLR   >EngineStateFlags,Z,#$80,L25D86          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >LdpState,Z
@@ -6935,7 +6935,7 @@ LdpMonitor:
         CMPA    #$1D
         BNE     L257E4
 L257B6:
-        BRSET   >LdpFlags3,Z,#$02,L257EE
+        BRSET   >LdpFlags3,Z,#$02,L257EE                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >MonitorDisableFlags,Z,#$08,L257E4       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
         BRSET   >MonitorDisableFlags,Z,#$10,L257E4       ; bit 4: fuel level below MonEnableFuelEmpty
         BRSET   >MonitorDisableFlags,Z,#$02,L257E4       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
@@ -6982,8 +6982,8 @@ L2582C:
         JMP     L25D50
 L25830:
         BCLR    >LdpFlags2,Z,#$0F
-        BRSET   >LdpFlags3,Z,#$02,L25860
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L25860
+        BRSET   >LdpFlags3,Z,#$02,L25860                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L25860         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         LDAA    >BatteryTemp,Z
         CMPA    >LdpBattTempMax
         BHI     L2588C
@@ -6997,11 +6997,11 @@ L25830:
 L25860:
         BSET    >LdpFlags2,Z,#$01
 L25864:
-        BRCLR   >LdpFlags3,Z,#$02,L25870
+        BRCLR   >LdpFlags3,Z,#$02,L25870                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >LdpFlags2,Z,#$20,L25898
 L25870:
         BRSET   >IoInputs0,Z,#$02,L25898                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L25888
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L25888         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         BRSET   >LdpFlags2,Z,#$80,L2588C
         BRCLR   >LdpFlags2,Z,#$10,L2588C
 L25888:
@@ -7021,8 +7021,8 @@ L25898:
 L258AE:
         LBRA    L25D86
 L258B2:
-        BRSET   >LdpFlags3,Z,#$02,L258D2
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L258D2
+        BRSET   >LdpFlags3,Z,#$02,L258D2                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L258D2         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         TST     >PurgeDelay,Z
         BNE     L258D2
 L258C4:
@@ -7038,7 +7038,7 @@ L258D2:
         BRA     L25912
 L258E2:
         LDAA    >LdpPumpOnCount,Z
-        BRCLR   >LdpFlags3,Z,#$02,L258FE
+        BRCLR   >LdpFlags3,Z,#$02,L258FE                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         CMPA    $05F6,Z
         BCC     L25918
         BRCLR   >MainLoopPhaseMask,Z,#$80,L25912
@@ -7080,8 +7080,8 @@ L25960:
         LBRA    L25D86
 L25964:
         BSET    <MonStatusLdp,Z,#$04
-        BRSET   >LdpFlags3,Z,#$02,L25986
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L25986
+        BRSET   >LdpFlags3,Z,#$02,L25986                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L25986         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         TST     >PurgeDelay,Z
         BNE     L25986
         BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
@@ -7104,7 +7104,7 @@ L259A0:
         LDAA    #$25
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
-        BRCLR   >LdpFlags3,Z,#$02,L259CE
+        BRCLR   >LdpFlags3,Z,#$02,L259CE                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >LdpFlags2,Z,#$20,L259F6
         BSET    <MonStatusPurge,Z,#$48
         BCLR    <MonStatusPurge,Z,#$80
@@ -7126,8 +7126,8 @@ L259D8:
 L259F6:
         LBRA    L25D86
 L259FA:
-        BRSET   >LdpFlags3,Z,#$02,L25A1A
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L25A1A
+        BRSET   >LdpFlags3,Z,#$02,L25A1A                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L25A1A         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         TST     >PurgeDelay,Z
         BNE     L25A1A
 L25A0C:
@@ -7139,7 +7139,7 @@ L25A1A:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L25A2C
-        BRSET   >LdpFlags3,Z,#$02,L25A0C
+        BRSET   >LdpFlags3,Z,#$02,L25A0C                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRA     L25A50
 L25A2C:
         JSR     LdpStateTimer
@@ -7180,7 +7180,7 @@ L25A8A:
 L25A92:
         BRSET   >LdpFlags2,Z,#$02,L25AC2
         LDAA    >FuelLevelScaled,Z
-        BRCLR   >LdpFlags3,Z,#$02,L25AB2
+        BRCLR   >LdpFlags3,Z,#$02,L25AB2                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDX     #LdpPumpTimeByLevel2
         JSR     Lookup2D
         CMPA    >LdpStateTime,Z
@@ -7211,7 +7211,7 @@ L25AD4:
 L25AF0:
         LBRA    L25D86
 L25AF4:
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L25B0C
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L25B0C         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         TST     >PurgeDelay,Z
         BNE     L25B0C
         BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
@@ -7253,8 +7253,8 @@ L25B5A:
 L25B68:
         LBRA    L25D86
 L25B6C:
-        BRSET   >LdpFlags3,Z,#$02,L25B8C
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L25B8C
+        BRSET   >LdpFlags3,Z,#$02,L25B8C                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L25B8C         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         TST     >PurgeDelay,Z
         BNE     L25B8C
 L25B7E:
@@ -7266,7 +7266,7 @@ L25B8C:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L25BBC
-        BRSET   >LdpFlags3,Z,#$02,L25B7E
+        BRSET   >LdpFlags3,Z,#$02,L25B7E                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDAA    #$58
         STAA    >LdpState,Z
         LDAA    >LdpStrokeTime,Z
@@ -7279,7 +7279,7 @@ L25BB4:
         LBRA    L25C58
 L25BBC:
         JSR     LdpStateTimer
-        BRCLR   >LdpFlags3,Z,#$02,L25BCC
+        BRCLR   >LdpFlags3,Z,#$02,L25BCC                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         CMPA    >LdpTestTimeAlt
         BRA     L25BD0
 L25BCC:
@@ -7289,7 +7289,7 @@ L25BD0:
         JSR     LdpPumpStroke
         LBRA    L25C58
 L25BDA:
-        BRCLR   >LdpFlags3,Z,#$02,L25C02
+        BRCLR   >LdpFlags3,Z,#$02,L25C02                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BCLR    >MonData646,Z,#$01
         BCLR    >LdpFlags2,Z,#$20
         LDAA    >LdpStrokeTimeAvg,Z
@@ -7323,7 +7323,7 @@ L25C3A:
         LBRA    L25B7E
 L25C42:
         LDAA    #$59
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L25C4C
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L25C4C         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         LDAA    #$56
 L25C4C:
         STAA    >LdpState,Z
@@ -7364,7 +7364,7 @@ L25CA0:
 L25CA6:
         LBRA    L25D86
 L25CAA:
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L25CC4
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L25CC4         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         TST     >PurgeDelay,Z
         BNE     L25CC4
 L25CB6:
@@ -7429,7 +7429,7 @@ L25D48:
 L25D4E:
         BRA     L25D86
 L25D50:
-        BRCLR   >LdpPurgeTestFlags,Z,#$10,L25D5C
+        BRCLR   >LdpPurgeTestFlags,Z,#$10,L25D5C         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         BRSET   >LdpFlags,Z,#$10,L25D68                  ; bit 4: leak test running (LDP state machine)
 L25D5C:
         BRCLR   >LdpFlags,Z,#$64,L25D76                  ; bit 6: large leak: pump strokes faster than LdpLargeLeakStrokeTime; bit 5: leak test step result: small leak or not settled, probably; bit 2: pump switch closed in the current step (IoInputs0 bit 1)
@@ -7673,7 +7673,7 @@ L25FBA:
 ;---------------------------------------------------------------------------------------------------
 LdpPurgeTestRun:
         BRCLR   >Options033E,#$02,L26028                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
-        BRSET   >LdpFlags3,Z,#$02,L26028
+        BRSET   >LdpFlags3,Z,#$02,L26028                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRCLR   >EngineStateFlags,Z,#$80,L26028          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >DriveFlags,Z,#$20,L26028                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BRSET   >ThrottleState,Z,#$80,L26028             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -7683,17 +7683,17 @@ LdpPurgeTestRun:
         CMPA    #$01
         BEQ     L25FF4
         CLR     >LdpPurgeTestFlags,Z
-        BSET    >LdpPurgeTestFlags,Z,#$04
+        BSET    >LdpPurgeTestFlags,Z,#$04                ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
         BRA     L26050
 L25FF4:
-        BRSET   >LdpPurgeTestFlags,Z,#$02,L2603A
-        BRSET   >LdpPurgeTestFlags,Z,#$04,L26046
-        BRSET   >LdpPurgeTestFlags,Z,#$01,L26012
-        BSET    >LdpPurgeTestFlags,Z,#$01
+        BRSET   >LdpPurgeTestFlags,Z,#$02,L2603A         ; bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
+        BRSET   >LdpPurgeTestFlags,Z,#$04,L26046         ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
+        BRSET   >LdpPurgeTestFlags,Z,#$01,L26012         ; bit 0: third kind of purge test request (LdpPurgeTestRun)
+        BSET    >LdpPurgeTestFlags,Z,#$01                ; bit 0: third kind of purge test request (LdpPurgeTestRun)
         CLR     >LdpIdleTimer,Z
         CLR     >LdpPurgeStepCount,Z
 L26012:
-        BRCLR   >LdpPurgeTestFlags,Z,#$10,L26036
+        BRCLR   >LdpPurgeTestFlags,Z,#$10,L26036         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         BRSET   >MonStatusLdp,Z,#$02,L26046
         BRCLR   >MonStatusLdp,Z,#$80,L2603A
         LBRA    L26036
@@ -7709,12 +7709,12 @@ L26036:
 L2603A:
         LDAA    #$FE
         CLR     >LdpPurgeTestFlags,Z
-        BSET    >LdpPurgeTestFlags,Z,#$06
+        BSET    >LdpPurgeTestFlags,Z,#$06                ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs; bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
         BRA     L26050
 L26046:
         LDAA    #$ED
         CLR     >LdpPurgeTestFlags,Z
-        BSET    >LdpPurgeTestFlags,Z,#$04
+        BSET    >LdpPurgeTestFlags,Z,#$04                ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
 L26050:
         RTS
 
@@ -7723,9 +7723,9 @@ L26050:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 LdpPurgeTest:
-        BRCLR   >LdpPurgeTestFlags,Z,#$01,L26204
-        BRSET   >LdpPurgeTestFlags,Z,#$04,L26204
-        BRSET   >LdpPurgeTestFlags,Z,#$10,L26204
+        BRCLR   >LdpPurgeTestFlags,Z,#$01,L26204         ; bit 0: third kind of purge test request (LdpPurgeTestRun)
+        BRSET   >LdpPurgeTestFlags,Z,#$04,L26204         ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
+        BRSET   >LdpPurgeTestFlags,Z,#$10,L26204         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         LDE     >EngineRpm,Z
         SUBE    >IdleTarget,Z
         BCC     L26070
@@ -7737,17 +7737,17 @@ L26070:
         LSRD
         SDE
         BCC     L26084
-        BSET    >LdpPurgeTestFlags,Z,#$40
+        BSET    >LdpPurgeTestFlags,Z,#$40                ; bit 6: sign of the last change in LdpPurgeTest
         BRA     L26088
 L26084:
-        BCLR    >LdpPurgeTestFlags,Z,#$40
+        BCLR    >LdpPurgeTestFlags,Z,#$40                ; bit 6: sign of the last change in LdpPurgeTest
 L26088:
-        BRSET   >LdpPurgeTestFlags,Z,#$20,L260C6
-        BRSET   >LdpPurgeTestFlags,Z,#$80,L2609C
-        BSET    >LdpPurgeTestFlags,Z,#$80
+        BRSET   >LdpPurgeTestFlags,Z,#$20,L260C6         ; bit 5: idle phase of the purge test reached (LdpPurgeTest)
+        BRSET   >LdpPurgeTestFlags,Z,#$80,L2609C         ; bit 7: purge test step started (LdpPurgeTest)
+        BSET    >LdpPurgeTestFlags,Z,#$80                ; bit 7: purge test step started (LdpPurgeTest)
         LBRA    L26204
 L2609C:
-        BRSET   >LdpPurgeTestFlags,Z,#$40,L260BE
+        BRSET   >LdpPurgeTestFlags,Z,#$40,L260BE         ; bit 6: sign of the last change in LdpPurgeTest
         LDAA    >LdpIdleTimer,Z
         CMPA    >IdleTestStepMax
         LBHI    L26200
@@ -7756,10 +7756,10 @@ L2609C:
         STAA    >LdpIdleTimer,Z
         LBRA    L26204
 L260BE:
-        BSET    >LdpPurgeTestFlags,Z,#$20
+        BSET    >LdpPurgeTestFlags,Z,#$20                ; bit 5: idle phase of the purge test reached (LdpPurgeTest)
         CLR     >LdpIdleTimer,Z
 L260C6:
-        BRSET   >LdpPurgeTestFlags,Z,#$40,L260EC
+        BRSET   >LdpPurgeTestFlags,Z,#$40,L260EC         ; bit 6: sign of the last change in LdpPurgeTest
         CLR     >LdpPurgeStepCount,Z
         LDAA    >LdpIdleTimer,Z
         CMPA    >LdpIdleUnstableMax
@@ -7769,7 +7769,7 @@ L260C6:
         STAA    >LdpIdleTimer,Z
         LBRA    L26204
 L260EC:
-        BRSET   >LdpPurgeTestFlags,Z,#$08,L26156
+        BRSET   >LdpPurgeTestFlags,Z,#$08,L26156         ; bit 3: purge hold time reached (LdpPurgeHoldTime)
         LDAA    >PurgeDuty,Z
         CMPA    >LdpPurgeDutyMax
         BCC     L26138
@@ -7804,7 +7804,7 @@ L2614E:
         CMPA    >LdpPurgeHoldTime
         LBCS    L26204
 L26156:
-        BSET    >LdpPurgeTestFlags,Z,#$08
+        BSET    >LdpPurgeTestFlags,Z,#$08                ; bit 3: purge hold time reached (LdpPurgeHoldTime)
         LDAA    >LdpPurgeStepCount,Z
         INCA
         BEQ     L26166
@@ -7820,8 +7820,8 @@ L26166:
 L2617E:
         STAA    >PurgeDuty,Z
         LBNE    L26204
-        BCLR    >LdpPurgeTestFlags,Z,#$E8
-        BSET    >LdpPurgeTestFlags,Z,#$10
+        BCLR    >LdpPurgeTestFlags,Z,#$E8                ; bit 7: purge test step started (LdpPurgeTest); bit 6: sign of the last change in LdpPurgeTest; bit 5: idle phase of the purge test reached (LdpPurgeTest); bit 3: purge hold time reached (LdpPurgeHoldTime)
+        BSET    >LdpPurgeTestFlags,Z,#$10                ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         CLR     >LdpState,Z
         CLR     >LdpFlags,Z
         CLR     >LdpStateTime,Z
@@ -7856,7 +7856,7 @@ L2617E:
         STAA    <MonStatusPurge,Z
         BRA     L26204
 L26200:
-        BSET    >LdpPurgeTestFlags,Z,#$02
+        BSET    >LdpPurgeTestFlags,Z,#$02                ; bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
 L26204:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -14376,8 +14376,8 @@ L2CE9E:
 L2CEA2:
         JMP     L2CF2C
 L2CEA6:
-        BRSET   >SpeedCtlFlags,Z,#$01,L2D03C
-        BSET    >SpeedCtlFlags,Z,#$01
+        BRSET   >SpeedCtlFlags,Z,#$01,L2D03C             ; bit 0: switch event handled (SpeedCtlSwitchRead)
+        BSET    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         BRSET   >SpeedCtlSwitchFlags,Z,#$10,L2CEBC
         BSET    >SpeedCtlSwitchFlags,Z,#$10
         BRA     L2CEC0
@@ -14400,26 +14400,26 @@ L2CEDE:
 L2CEF0:
         BCLR    >SpeedCtlSwitchFlags,Z,#$0A
         BSET    >SpeedCtlSwitchFlags,Z,#$05
-        BCLR    >SpeedCtlFlags,Z,#$01
+        BCLR    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L2D03C
 L2CF00:
         BCLR    >SpeedCtlSwitchFlags,Z,#$0F
-        BCLR    >SpeedCtlFlags,Z,#$01
+        BCLR    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L2D03C
 L2CF0C:
         BCLR    >SpeedCtlSwitchFlags,Z,#$03
         BSET    >SpeedCtlSwitchFlags,Z,#$0C
-        BCLR    >SpeedCtlFlags,Z,#$01
+        BCLR    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L2D03C
 L2CF1C:
         BCLR    >SpeedCtlSwitchFlags,Z,#$09
         BSET    >SpeedCtlSwitchFlags,Z,#$06
-        BCLR    >SpeedCtlFlags,Z,#$01
+        BCLR    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L2D03C
 L2CF2C:
         BCLR    >SpeedCtlSwitchFlags,Z,#$0B
         BSET    >SpeedCtlSwitchFlags,Z,#$04
-        BCLR    >SpeedCtlFlags,Z,#$01
+        BCLR    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L2D03C
         dc.b    $27,$33,$4A,$6C,$84,$9B,$C0,$D4,$FC,$FF
 L2CF46:

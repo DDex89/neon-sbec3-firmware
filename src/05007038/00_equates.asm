@@ -80,6 +80,14 @@ FuelSysFlags1    equ $0026        ; $F8026
 FuelSysFlags2    equ $0027        ; $F8027
 FieldFlags       equ $0028        ; $F8028
 SpeedCtlFlags    equ $0029        ; $F8029
+;                 bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift)
+;                 bit 6: switch command from bit 4 of the switch byte (SpeedCtlShift)
+;                 bit 5: switch command from bit 3 of the switch byte (SpeedCtlShift)
+;                 bit 4: switch command accepted (SpeedCtlShift)
+;                 bit 3: driver override: throttle past SpeedCtlOverrideMargin (SpeedCtlControl)
+;                 bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
+;                 bit 1: switch count at 8 or more (SpeedCtlSwitchCheck)
+;                 bit 0: switch event handled (SpeedCtlSwitchRead)
 SystemFlags00A   equ $002A        ; $F802A
 ThrottleClosed   equ $002B        ; $F802B
 Baro             equ $002C        ; $F802C
@@ -351,6 +359,13 @@ MonData645       equ $02D9        ; $F82D9
 MonData646       equ $02DA        ; $F82DA
 MonData647       equ $02DB        ; $F82DB
 LdpFlags3        equ $02DD        ; $F82DD
+;                 bit 7: MonData643Update first pass done (counter MonData643 cleared)
+;                 bit 6: MonTaskB first pass done
+;                 bit 5: MonTaskD first phase started
+;                 bit 4: MonTaskD second phase started
+;                 bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
+;                 bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
+;                 bit 1: leak detection monitor restart requested (MonTaskLdp)
 ClosedLoopMonFlags equ $02DE        ; $F82DE
 MilRequestFlags  equ $02DF        ; $F82DF
 MonFlags64D      equ $02E1        ; $F82E1

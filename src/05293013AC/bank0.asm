@@ -16465,7 +16465,7 @@ L0C35C:
         STD     $01FE,Z
         LBRA    L0C640
 L0C364:
-        BRCLR   >LdpPurgeTestFlags,Z,#$20,L0C37C
+        BRCLR   >LdpPurgeTestFlags,Z,#$20,L0C37C         ; bit 5: idle phase of the purge test reached (LdpPurgeTest)
         CLRB
         LDAA    $0716,Z
         BSET    >SparkFlags3,Z,#$10
@@ -20616,7 +20616,7 @@ L0F178:
         LBRA    L0F714
 L0F180:
         BRSET   >ClosedLoopMonFlags,Z,#$80,L0F6DA
-        BRSET   >LdpPurgeTestFlags,Z,#$02,L0F6DA
+        BRSET   >LdpPurgeTestFlags,Z,#$02,L0F6DA         ; bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
         BRCLR   $0327,#$02,L0F198
         BRSET   >FuelModeFlags2,Z,#$80,L0F6DA            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L0F198:

@@ -14467,11 +14467,11 @@ L19D3C:
 L19D40:
         JMP     L1A16E
 L19D44:
-        BCLR    >LdpPurgeTestFlags,Z,#$07
+        BCLR    >LdpPurgeTestFlags,Z,#$07                ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs; bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest); bit 0: third kind of purge test request (LdpPurgeTestRun)
         BRSET   >IoInputs0,Z,#$02,L19D66                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
         BRSET   $35,Z,#$80,L19D5A
         BRCLR   $35,Z,#$40,L19D5A
-        BSET    >LdpPurgeTestFlags,Z,#$20
+        BSET    >LdpPurgeTestFlags,Z,#$20                ; bit 5: idle phase of the purge test reached (LdpPurgeTest)
 L19D5A:
         BSET    $029C,Z,#$80
         LDAA    #$09
@@ -14495,7 +14495,7 @@ L19D84:
         LDAA    >ScratchC,Z
         CMPA    $2952
         BCS     L19D9A
-        BSET    >LdpPurgeTestFlags,Z,#$04
+        BSET    >LdpPurgeTestFlags,Z,#$04                ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
 L19D9A:
         LDAA    #$01
         STAA    >LdpState,Z
@@ -14542,11 +14542,11 @@ L19E10:
         BRA     L19E46
 L19E12:
         BRCLR   >IoInputs0,Z,#$02,L19E1E                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
-        BSET    >LdpPurgeTestFlags,Z,#$20
+        BSET    >LdpPurgeTestFlags,Z,#$20                ; bit 5: idle phase of the purge test reached (LdpPurgeTest)
         BRA     L19DBC
 L19E1E:
-        BCLR    >LdpPurgeTestFlags,Z,#$20
-        BRCLR   >LdpPurgeTestFlags,Z,#$04,L19DBC
+        BCLR    >LdpPurgeTestFlags,Z,#$20                ; bit 5: idle phase of the purge test reached (LdpPurgeTest)
+        BRCLR   >LdpPurgeTestFlags,Z,#$04,L19DBC         ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
         LDAA    #$12
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
@@ -14578,17 +14578,17 @@ L19E7A:
         LDAA    >LdpStrokeTime,Z
         CMPA    >LdpSealedStrokeTime
         BCS     L19E94
-        BSET    >LdpPurgeTestFlags,Z,#$08
+        BSET    >LdpPurgeTestFlags,Z,#$08                ; bit 3: purge hold time reached (LdpPurgeHoldTime)
         LDAA    #$25
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
         BRA     L19EAE
 L19E94:
-        BCLR    >LdpPurgeTestFlags,Z,#$08
+        BCLR    >LdpPurgeTestFlags,Z,#$08                ; bit 3: purge hold time reached (LdpPurgeHoldTime)
         LDAA    #$23
         STAA    >LdpState,Z
         CLR     >LdpPumpUpTimer,Z
-        BCLR    >LdpPurgeTestFlags,Z,#$02
+        BCLR    >LdpPurgeTestFlags,Z,#$02                ; bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
         CLR     >LdpStateTime,Z
         CLR     >LdpWindowStrokeCount,Z
 L19EAE:
@@ -14640,7 +14640,7 @@ L19F2E:
         STAA    >LdpPumpUpTimer,Z
         CLR     >LdpWindowStrokeCount,Z
 L19F36:
-        BRSET   >LdpPurgeTestFlags,Z,#$02,L19F58
+        BRSET   >LdpPurgeTestFlags,Z,#$02,L19F58         ; bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
         LDAA    >FuelLevelScaled,Z
         LDX     #Tab2D_296F
         JSR     Lookup2D
@@ -14658,7 +14658,7 @@ L19F64:
         LDAA    #$34
         STAA    >LdpState,Z
 L19F6A:
-        BSET    >LdpPurgeTestFlags,Z,#$02
+        BSET    >LdpPurgeTestFlags,Z,#$02                ; bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
         CLR     >LdpStateTime,Z
         CLR     >LdpStrokes,Z
         CLR     >LdpStrokeCount,Z
@@ -14730,10 +14730,10 @@ L1A016:
         LDAA    >LdpStrokeTime,Z
         CMPA    >LdpSealedStrokeTime2
         BCS     L1A040
-        BSET    >LdpPurgeTestFlags,Z,#$01
+        BSET    >LdpPurgeTestFlags,Z,#$01                ; bit 0: third kind of purge test request (LdpPurgeTestRun)
         BRA     L1A07C
 L1A040:
-        BCLR    >LdpPurgeTestFlags,Z,#$01
+        BCLR    >LdpPurgeTestFlags,Z,#$01                ; bit 0: third kind of purge test request (LdpPurgeTestRun)
         BRA     L1A07C
 L1A046:
         JSR     LdpStateTimer
@@ -14747,15 +14747,15 @@ L1A056:
         BCC     L1A072
         CMPA    >LdpLargeLeakStrokeTime
         BCC     L1A06C
-        BSET    >LdpPurgeTestFlags,Z,#$40
+        BSET    >LdpPurgeTestFlags,Z,#$40                ; bit 6: sign of the last change in LdpPurgeTest
         BRA     L1A00A
 L1A06C:
-        BSET    >LdpPurgeTestFlags,Z,#$80
+        BSET    >LdpPurgeTestFlags,Z,#$80                ; bit 7: purge test step started (LdpPurgeTest)
         BRA     L1A00A
 L1A072:
         LDAA    #$56
         STAA    >LdpState,Z
-        BCLR    >LdpPurgeTestFlags,Z,#$C0
+        BCLR    >LdpPurgeTestFlags,Z,#$C0                ; bit 7: purge test step started (LdpPurgeTest); bit 6: sign of the last change in LdpPurgeTest
 L1A07C:
         LBRA    L1A19C
 L1A080:
@@ -14836,7 +14836,7 @@ L1A12C:
         BCS     L1A152
         BRA     L1A156
 L1A142:
-        BRCLR   >LdpPurgeTestFlags,Z,#$01,L1A166
+        BRCLR   >LdpPurgeTestFlags,Z,#$01,L1A166         ; bit 0: third kind of purge test request (LdpPurgeTestRun)
         LDAA    >LdpStrokeTime,Z
         CMPA    >LdpSealedStrokeTime2
         BCC     L1A166
@@ -14854,14 +14854,14 @@ L1A166:
 L1A16C:
         BRA     L1A19C
 L1A16E:
-        BRCLR   >LdpPurgeTestFlags,Z,#$E0,L1A188
-        BRCLR   >LdpPurgeTestFlags,Z,#$04,L1A188
+        BRCLR   >LdpPurgeTestFlags,Z,#$E0,L1A188         ; bit 7: purge test step started (LdpPurgeTest); bit 6: sign of the last change in LdpPurgeTest; bit 5: idle phase of the purge test reached (LdpPurgeTest)
+        BRCLR   >LdpPurgeTestFlags,Z,#$04,L1A188         ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
         BSET    $00B7,Z,#$48
         BRSET   <DiagStatusFlags,Z,#$02,L1A19A           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BCLR    $00B7,Z,#$80
         BRA     L1A19A
 L1A188:
-        BCLR    >LdpPurgeTestFlags,Z,#$E0
+        BCLR    >LdpPurgeTestFlags,Z,#$E0                ; bit 7: purge test step started (LdpPurgeTest); bit 6: sign of the last change in LdpPurgeTest; bit 5: idle phase of the purge test reached (LdpPurgeTest)
         BCLR    $00B7,Z,#$88
         BRSET   $029C,Z,#$80,L1A19A
         BSET    $00B7,Z,#$40
@@ -15009,10 +15009,10 @@ L1A2EA:
         JSR     ReportFault
 L1A2F8:
         BRCLR   >IoInputs0,Z,#$02,L1A304                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
-        BSET    >LdpPurgeTestFlags,Z,#$10
+        BSET    >LdpPurgeTestFlags,Z,#$10                ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         BRA     L1A308
 L1A304:
-        BCLR    >LdpPurgeTestFlags,Z,#$10
+        BCLR    >LdpPurgeTestFlags,Z,#$10                ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
 L1A308:
         BRSET   >EngineStateFlags,Z,#$80,L1A34C          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >LdpState,Z
@@ -21589,7 +21589,7 @@ Sub_1F28A:
 L1F2AE:
         BSET    $01F7,Z,#$06
         LDY     #$F14E
-        BRSET   >LdpPurgeTestFlags,Z,#$08,L1F3A2
+        BRSET   >LdpPurgeTestFlags,Z,#$08,L1F3A2         ; bit 3: purge hold time reached (LdpPurgeHoldTime)
         LDY     #$F14C
         LBRA    L1F3A2
 L1F2C4:

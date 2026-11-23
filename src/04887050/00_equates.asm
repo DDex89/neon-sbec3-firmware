@@ -122,6 +122,14 @@ DiagBusFlags     equ $024E        ; $F824E
 LoadValueObd     equ $0268        ; $F8268
 LimpFlags        equ $026B        ; $F826B
 LdpPurgeTestFlags equ $029B        ; $F829B
+;                 bit 7: purge test step started (LdpPurgeTest)
+;                 bit 6: sign of the last change in LdpPurgeTest
+;                 bit 5: idle phase of the purge test reached (LdpPurgeTest)
+;                 bit 4: purge test finished: purge duty back to zero; monitors wait until then
+;                 bit 3: purge hold time reached (LdpPurgeHoldTime)
+;                 bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
+;                 bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
+;                 bit 0: third kind of purge test request (LdpPurgeTestRun)
 LdpState         equ $029D        ; $F829D
 LdpStateTime     equ $029F        ; $F829F
 LdpPumpOnCount   equ $02A0        ; $F82A0

@@ -2698,8 +2698,8 @@ L221AA:
         BEQ     L221C8
         CMPA    #$42
         BEQ     L221C8
-        BRSET   >LdpFlags3,Z,#$04,L221C8
-        BRSET   >LdpFlags3,Z,#$08,L221C8
+        BRSET   >LdpFlags3,Z,#$04,L221C8                 ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
+        BRSET   >LdpFlags3,Z,#$08,L221C8                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
         BCLRW   >IoCtl12,Z,#$6000
 L221C8:
         LDAA    >O2InactiveTimer,Z
@@ -6792,7 +6792,7 @@ LdpMonitor:
         TST     >SystemTestMode,Z
         BNE     L257C6
         BRSET   >SensorFaultFlags,Z,#$01,L257C6          ; bit 0: battery temperature sensor fault (P1492 or P1493)
-        BRSET   >LdpFlags3,Z,#$02,L257D0
+        BRSET   >LdpFlags3,Z,#$02,L257D0                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >MonitorDisableFlags,Z,#$08,L257C6       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
         BRSET   >MonitorDisableFlags,Z,#$10,L257C6       ; bit 4: fuel level below MonEnableFuelEmpty
         BRSET   >MonitorDisableFlags,Z,#$02,L257C6       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
@@ -6839,7 +6839,7 @@ L2580E:
         JMP     L25CFC
 L25812:
         BCLR    >LdpFlags2,Z,#$0F
-        BRSET   >LdpFlags3,Z,#$02,L2583C
+        BRSET   >LdpFlags3,Z,#$02,L2583C                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDAA    >BatteryTemp,Z
         CMPA    >LdpBattTempMax
         BHI     L25862
@@ -6853,7 +6853,7 @@ L25812:
 L2583C:
         BSET    >LdpFlags2,Z,#$01
 L25840:
-        BRCLR   >LdpFlags3,Z,#$02,L2584C
+        BRCLR   >LdpFlags3,Z,#$02,L2584C                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >LdpFlags2,Z,#$20,L2586E
 L2584C:
         BRSET   >IoInputs0,Z,#$02,L2586E                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
@@ -6875,7 +6875,7 @@ L2586E:
 L25884:
         LBRA    L25D26
 L25888:
-        BRSET   >LdpFlags3,Z,#$02,L258A2
+        BRSET   >LdpFlags3,Z,#$02,L258A2                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         TST     >PurgeDelay,Z
         BNE     L258A2
 L25894:
@@ -6891,7 +6891,7 @@ L258A2:
         BRA     L258E2
 L258B2:
         LDAA    >LdpPumpOnCount,Z
-        BRCLR   >LdpFlags3,Z,#$02,L258CE
+        BRCLR   >LdpFlags3,Z,#$02,L258CE                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         CMPA    $05F6,Z
         BCC     L258E8
         BRCLR   >MainLoopPhaseMask,Z,#$80,L258E2
@@ -6936,7 +6936,7 @@ L25934:
         LBRA    L25D26
 L25938:
         BSET    <MonStatusLdp,Z,#$04
-        BRSET   >LdpFlags3,Z,#$02,L25954
+        BRSET   >LdpFlags3,Z,#$02,L25954                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         TST     >PurgeDelay,Z
         BNE     L25954
         BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
@@ -6959,7 +6959,7 @@ L2596E:
         LDAA    #$25
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
-        BRCLR   >LdpFlags3,Z,#$02,L2599C
+        BRCLR   >LdpFlags3,Z,#$02,L2599C                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >LdpFlags2,Z,#$20,L259C4
         BSET    <MonStatusPurge,Z,#$48
         BCLR    <MonStatusPurge,Z,#$80
@@ -6981,7 +6981,7 @@ L259A6:
 L259C4:
         LBRA    L25D26
 L259C8:
-        BRSET   >LdpFlags3,Z,#$02,L259E2
+        BRSET   >LdpFlags3,Z,#$02,L259E2                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         TST     >PurgeDelay,Z
         BNE     L259E2
 L259D4:
@@ -6993,7 +6993,7 @@ L259E2:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L259F4
-        BRSET   >LdpFlags3,Z,#$02,L259D4
+        BRSET   >LdpFlags3,Z,#$02,L259D4                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRA     L25A18
 L259F4:
         JSR     LdpStateTimer
@@ -7034,7 +7034,7 @@ L25A52:
 L25A5A:
         BRSET   >LdpFlags2,Z,#$02,L25A8A
         LDAA    >FuelLevelScaled,Z
-        BRCLR   >LdpFlags3,Z,#$02,L25A7A
+        BRCLR   >LdpFlags3,Z,#$02,L25A7A                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDX     #LdpPumpTimeByLevel2
         JSR     Lookup2D
         CMPA    >LdpStateTime,Z
@@ -7106,7 +7106,7 @@ L25B1C:
 L25B2A:
         LBRA    L25D26
 L25B2E:
-        BRSET   >LdpFlags3,Z,#$02,L25B48
+        BRSET   >LdpFlags3,Z,#$02,L25B48                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         TST     >PurgeDelay,Z
         BNE     L25B48
 L25B3A:
@@ -7118,7 +7118,7 @@ L25B48:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L25B78
-        BRSET   >LdpFlags3,Z,#$02,L25B3A
+        BRSET   >LdpFlags3,Z,#$02,L25B3A                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDAA    #$58
         STAA    >LdpState,Z
         LDAA    >LdpStrokeTime,Z
@@ -7131,7 +7131,7 @@ L25B70:
         LBRA    L25C0A
 L25B78:
         JSR     LdpStateTimer
-        BRCLR   >LdpFlags3,Z,#$02,L25B88
+        BRCLR   >LdpFlags3,Z,#$02,L25B88                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         CMPA    >LdpTestTimeAlt
         BRA     L25B8C
 L25B88:
@@ -7141,7 +7141,7 @@ L25B8C:
         JSR     LdpPumpStroke
         BRA     L25C0A
 L25B94:
-        BRCLR   >LdpFlags3,Z,#$02,L25BBC
+        BRCLR   >LdpFlags3,Z,#$02,L25BBC                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BCLR    >MonData646,Z,#$01
         BCLR    >LdpFlags2,Z,#$20
         LDAA    >LdpStrokeTimeAvg,Z
@@ -14044,8 +14044,8 @@ L2CE56:
 L2CE5A:
         JMP     L2CEE4
 L2CE5E:
-        BRSET   >SpeedCtlFlags,Z,#$01,L2CFF4
-        BSET    >SpeedCtlFlags,Z,#$01
+        BRSET   >SpeedCtlFlags,Z,#$01,L2CFF4             ; bit 0: switch event handled (SpeedCtlSwitchRead)
+        BSET    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         BRSET   >SpeedCtlSwitchFlags,Z,#$10,L2CE74
         BSET    >SpeedCtlSwitchFlags,Z,#$10
         BRA     L2CE78
@@ -14068,26 +14068,26 @@ L2CE96:
 L2CEA8:
         BCLR    >SpeedCtlSwitchFlags,Z,#$0A
         BSET    >SpeedCtlSwitchFlags,Z,#$05
-        BCLR    >SpeedCtlFlags,Z,#$01
+        BCLR    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L2CFF4
 L2CEB8:
         BCLR    >SpeedCtlSwitchFlags,Z,#$0F
-        BCLR    >SpeedCtlFlags,Z,#$01
+        BCLR    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L2CFF4
 L2CEC4:
         BCLR    >SpeedCtlSwitchFlags,Z,#$03
         BSET    >SpeedCtlSwitchFlags,Z,#$0C
-        BCLR    >SpeedCtlFlags,Z,#$01
+        BCLR    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L2CFF4
 L2CED4:
         BCLR    >SpeedCtlSwitchFlags,Z,#$09
         BSET    >SpeedCtlSwitchFlags,Z,#$06
-        BCLR    >SpeedCtlFlags,Z,#$01
+        BCLR    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L2CFF4
 L2CEE4:
         BCLR    >SpeedCtlSwitchFlags,Z,#$0B
         BSET    >SpeedCtlSwitchFlags,Z,#$04
-        BCLR    >SpeedCtlFlags,Z,#$01
+        BCLR    >SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L2CFF4
         dc.b    $27,$33,$4A,$6C,$84,$9B,$C0,$D4,$FC,$FF
 L2CEFE:

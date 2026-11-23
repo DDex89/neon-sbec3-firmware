@@ -201,6 +201,13 @@ RefuelSensorTimer equ $01A4        ; $F81A4
 FlexLearnFuelMark equ $01A9        ; $F81A9
 RefuelFlags      equ $01AC        ; $F81AC
 FlexLearnFlags   equ $01AD        ; $F81AD
+;                 bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+;                 bit 6: cold start handled once (FlexColdStart)
+;                 bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+;                 bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
+;                 bit 3: fuel used past FlexRefuelFuelMin2 (FlexLearnMain)
+;                 bit 2: cleared at stall (FlexLearnStall)
+;                 bit 1: closed-loop flex trim allowed: run time past O2FlexRunTimeMin (ClosedLoopManager)
 FlexLearnFlags2  equ $01AE        ; $F81AE
 FlexLearnFlags3  equ $01AF        ; $F81AF
 FlexLearnFlags4  equ $01B0        ; $F81B0
@@ -310,6 +317,14 @@ SpeedCtlState    equ $0400        ; $F8400
 ;                 bit 0: set or resume engaged, probably
 SpeedCtlState2   equ $0401        ; $F8401
 SpeedCtlFlags    equ $0403        ; $F8403
+;                 bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift)
+;                 bit 6: switch command from bit 4 of the switch byte (SpeedCtlShift)
+;                 bit 5: switch command from bit 3 of the switch byte (SpeedCtlShift)
+;                 bit 4: switch command accepted (SpeedCtlShift)
+;                 bit 3: driver override: throttle past SpeedCtlOverrideMargin (SpeedCtlControl)
+;                 bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
+;                 bit 1: switch count at 8 or more (SpeedCtlSwitchCheck)
+;                 bit 0: switch event handled (SpeedCtlSwitchRead)
 SpeedCtlFlags2   equ $0405        ; $F8405
 SpeedCtlFlags3   equ $0406        ; $F8406
 SpeedCtlSetSpeed equ $0408        ; $F8408
@@ -500,6 +515,13 @@ MonData645       equ $0645        ; $F8645
 MonData646       equ $0646        ; $F8646
 MonData647       equ $0647        ; $F8647
 LdpFlags3        equ $0649        ; $F8649
+;                 bit 7: MonData643Update first pass done (counter MonData643 cleared)
+;                 bit 6: MonTaskB first pass done
+;                 bit 5: MonTaskD first phase started
+;                 bit 4: MonTaskD second phase started
+;                 bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
+;                 bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
+;                 bit 1: leak detection monitor restart requested (MonTaskLdp)
 ClosedLoopMonFlags equ $064A        ; $F864A
 MilRequestFlags  equ $064B        ; $F864B
 MonFlags64D      equ $064D        ; $F864D
@@ -1125,7 +1147,19 @@ FlexTrimUpCounter equ $0F07        ; $F8F07
 FlexTrimDownCounter equ $0F08        ; $F8F08
 FlexLearnFlags10 equ $0F0B        ; $F8F0B
 FlexLearnFlags7  equ $0F0C        ; $F8F0C
+;                 bit 7: cleared by FlexLearnMain at the end of a learning pass
+;                 bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
+;                 bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
+;                 bit 1: cold purge learning time reached (FlexColdPurge)
 FlexLearnFlags6  equ $0F0D        ; $F8F0D
+;                 bit 7: flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)
+;                 bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
+;                 bit 5: flex idle learning step active (FlexIdleLearn)
+;                 bit 4: cleared with bit 5 by the idle learning steps
+;                 bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
+;                 bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
+;                 bit 1: learning restarted (set when FlexLearnFlags6 is reset)
+;                 bit 0: idle learning first step done (FlexIdleLearn)
 FlexLearnFlags9  equ $0F0E        ; $F8F0E
 FlexLearnTimeCount equ $0F14        ; $F8F14
 FlexIdleTimer1   equ $0F18        ; $F8F18

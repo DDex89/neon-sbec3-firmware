@@ -40,9 +40,9 @@ Sub_10000:
         LBEQ    L10156
         CMPA    #$40
         LBEQ    L10156
-        BRSET   >LdpFlags3,Z,#$40,L10144
-        BRSET   >LdpFlags3,Z,#$08,L10156
-        BRSET   >LdpFlags3,Z,#$80,L10156
+        BRSET   >LdpFlags3,Z,#$40,L10144                 ; bit 6: MonTaskB first pass done
+        BRSET   >LdpFlags3,Z,#$08,L10156                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
+        BRSET   >LdpFlags3,Z,#$80,L10156                 ; bit 7: MonData643Update first pass done (counter MonData643 cleared)
         LDAA    >DiagCommand,Z
         CMPA    #$0A
         LBEQ    L1013E
@@ -3457,7 +3457,7 @@ L1245A:
 L1246A:
         LDAB    #$07
         BRSET   $021C,Z,#$80,L1248A
-        BRSET   >SpeedCtlFlags,Z,#$02,L1248A
+        BRSET   >SpeedCtlFlags,Z,#$02,L1248A             ; bit 1: switch count at 8 or more (SpeedCtlSwitchCheck)
         LDAB    #$0F
         BRSET   >FaultSet0B,Z,#$04,L1248A
         LDAB    #$0E
@@ -3486,7 +3486,7 @@ L124AE:
         BCLR    >SpeedCtlState,Z,#$1F                    ; bit 4: coast hold, probably (after SpeedCtlCoastHoldTime); bit 0: set or resume engaged, probably
         BSET    >SpeedCtlState,Z,#$A0                    ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel); bit 5: set at reset, on cancel and on engage; meaning not settled
         BCLR    $01D8,Z,#$0F
-        BCLR    <SpeedCtlFlags,Z,#$04
+        BCLR    <SpeedCtlFlags,Z,#$04                    ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
         BCLR    $01DB,Z,#$20
         BSET    $01DD,Z,#$80
         LBRA    L12704
@@ -3520,7 +3520,7 @@ L1252C:
         BSET    >SpeedCtlState,Z,#$21                    ; bit 5: set at reset, on cancel and on engage; meaning not settled; bit 0: set or resume engaged, probably
         BCLR    >SpeedCtlState,Z,#$0E
         BSET    $01D8,Z,#$04
-        BCLR    <SpeedCtlFlags,Z,#$04
+        BCLR    <SpeedCtlFlags,Z,#$04                    ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
         CLR     $01E6,Z
         CLR     $01DE,Z
         LBRA    L12844
@@ -3537,7 +3537,7 @@ L1257C:
         BCLR    $01D8,Z,#$03
         BCLR    >SpeedCtlState,Z,#$0E
         BSET    $01D8,Z,#$04
-        BCLR    <SpeedCtlFlags,Z,#$04
+        BCLR    <SpeedCtlFlags,Z,#$04                    ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
         CLR     $01E6,Z
         LDAA    $18,Z
         STAA    $01DE,Z
@@ -3628,7 +3628,7 @@ L12672:
         BRCLR   >SpeedCtlState,Z,#$80,L126CC             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         BSET    >SpeedCtlState,Z,#$20                    ; bit 5: set at reset, on cancel and on engage; meaning not settled
         BCLR    >SpeedCtlState,Z,#$80                    ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
-        BSET    <SpeedCtlFlags,Z,#$04
+        BSET    <SpeedCtlFlags,Z,#$04                    ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
         LDAA    $0357
         STAA    >SpeedCtlResumeTimer,Z
         JSR     Sub_12CA4
@@ -3830,14 +3830,14 @@ L1289C:
         LDAB    <Scratch1,Z
         CBA
         BCC     L128AC
-        BSET    <SpeedCtlFlags,Z,#$08
+        BSET    <SpeedCtlFlags,Z,#$08                    ; bit 3: driver override: throttle past SpeedCtlOverrideMargin (SpeedCtlControl)
         BRA     L128B8
 L128AC:
         LDAA    >SpeedCtlSetSpeed,Z
         SUBA    $18,Z
         BCS     L128B8
 L128B4:
-        BCLR    <SpeedCtlFlags,Z,#$08
+        BCLR    <SpeedCtlFlags,Z,#$08                    ; bit 3: driver override: throttle past SpeedCtlOverrideMargin (SpeedCtlControl)
 L128B8:
         JSR     SpeedCtlShift
         LDAA    $01D8,Z
@@ -3959,7 +3959,7 @@ L129DE:
         JSR     ClampSigned8
         STAB    $01E4,Z
         BRSET   >SpeedCtlState,Z,#$80,L12C30             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
-        BRCLR   >SpeedCtlFlags,Z,#$10,L12A12
+        BRCLR   >SpeedCtlFlags,Z,#$10,L12A12             ; bit 4: switch command accepted (SpeedCtlShift)
         LDAA    >SpeedCtlOverrideTimer,Z
         BEQ     L12A00
         CLRA
@@ -3973,7 +3973,7 @@ L12A06:
         LBRA    L12C30
 L12A12:
         LDX     #$25D3
-        BRSET   >SpeedCtlFlags,Z,#$80,L12A20
+        BRSET   >SpeedCtlFlags,Z,#$80,L12A20             ; bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift)
         LDX     #$2684
 L12A20:
         CLRB
@@ -3987,10 +3987,10 @@ L12A30:
         SUBD    >VehicleSpeedRaw,Z
         BCC     L12A9E
         BCLR    >SpeedCtlState,Z,#$04
-        BCLR    <SpeedCtlFlags,Z,#$04
+        BCLR    <SpeedCtlFlags,Z,#$04                    ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
         NOP
         LDX     #$25DF
-        BRSET   >SpeedCtlFlags,Z,#$80,L12A54
+        BRSET   >SpeedCtlFlags,Z,#$80,L12A54             ; bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift)
         LDX     #$2690
 L12A54:
         NEGD
@@ -4038,7 +4038,7 @@ L12AB2:
         CMPB    $25B3
         BCC     L12AC0
         BCLR    >SpeedCtlState,Z,#$04
-        BCLR    <SpeedCtlFlags,Z,#$04
+        BCLR    <SpeedCtlFlags,Z,#$04                    ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
 L12AC0:
         TBA
 L12AC2:
@@ -4495,7 +4495,7 @@ SpeedCtlShift:
         DEC     >SpeedCtlResumeTimer,Z
         BRA     L12EEC
 L12EE8:
-        BCLR    <SpeedCtlFlags,Z,#$04
+        BCLR    <SpeedCtlFlags,Z,#$04                    ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
 L12EEC:
         BRSET   >SpeedCtlState,Z,#$80,L12FBA             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         BRSET   <EquipmentFlags,Z,#$20,L12F08            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
@@ -4510,19 +4510,19 @@ L12F08:
         BITA    #$20
         BEQ     L12F22
 L12F16:
-        BSET    <SpeedCtlFlags,Z,#$80
-        BCLR    <SpeedCtlFlags,Z,#$60
+        BSET    <SpeedCtlFlags,Z,#$80                    ; bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift)
+        BCLR    <SpeedCtlFlags,Z,#$60                    ; bit 6: switch command from bit 4 of the switch byte (SpeedCtlShift); bit 5: switch command from bit 3 of the switch byte (SpeedCtlShift)
         LBRA    L12FC2
 L12F22:
         BITA    #$10
         BEQ     L12F54
 L12F26:
-        BSET    <SpeedCtlFlags,Z,#$40
-        BCLR    <SpeedCtlFlags,Z,#$20
-        BRCLR   >SpeedCtlFlags,Z,#$80,L12F8A
-        BCLR    <SpeedCtlFlags,Z,#$80
-        BRSET   >SpeedCtlFlags,Z,#$04,L12F8A
-        BSET    <SpeedCtlFlags,Z,#$10
+        BSET    <SpeedCtlFlags,Z,#$40                    ; bit 6: switch command from bit 4 of the switch byte (SpeedCtlShift)
+        BCLR    <SpeedCtlFlags,Z,#$20                    ; bit 5: switch command from bit 3 of the switch byte (SpeedCtlShift)
+        BRCLR   >SpeedCtlFlags,Z,#$80,L12F8A             ; bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift)
+        BCLR    <SpeedCtlFlags,Z,#$80                    ; bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift)
+        BRSET   >SpeedCtlFlags,Z,#$04,L12F8A             ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
+        BSET    <SpeedCtlFlags,Z,#$10                    ; bit 4: switch command accepted (SpeedCtlShift)
         LDAA    >SpeedCtlShiftHoldTime
         STAA    >SpeedCtlOverrideTimer,Z
         LDAA    >SpeedCtlShiftThrottleBase
@@ -4531,11 +4531,11 @@ L12F26:
 L12F54:
         BITA    #$08
         LBEQ    L12FBA
-        BSET    <SpeedCtlFlags,Z,#$20
-        BRCLR   >SpeedCtlFlags,Z,#$C0,L12F8A
-        BCLR    <SpeedCtlFlags,Z,#$C0
-        BRSET   >SpeedCtlFlags,Z,#$04,L12F8A
-        BSET    <SpeedCtlFlags,Z,#$10
+        BSET    <SpeedCtlFlags,Z,#$20                    ; bit 5: switch command from bit 3 of the switch byte (SpeedCtlShift)
+        BRCLR   >SpeedCtlFlags,Z,#$C0,L12F8A             ; bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift); bit 6: switch command from bit 4 of the switch byte (SpeedCtlShift)
+        BCLR    <SpeedCtlFlags,Z,#$C0                    ; bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift); bit 6: switch command from bit 4 of the switch byte (SpeedCtlShift)
+        BRSET   >SpeedCtlFlags,Z,#$04,L12F8A             ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
+        BSET    <SpeedCtlFlags,Z,#$10                    ; bit 4: switch command accepted (SpeedCtlShift)
         LDAA    >SpeedCtlShiftHoldTime2
         STAA    >SpeedCtlOverrideTimer,Z
         LDAA    >SpeedCtlShiftThrottleBase2
@@ -4544,7 +4544,7 @@ L12F82:
         JSR     SpeedCtlThrottleRef
         STAA    >SpeedCtlShiftThrottle,Z
 L12F8A:
-        BRCLR   >SpeedCtlFlags,Z,#$10,L12FC6
+        BRCLR   >SpeedCtlFlags,Z,#$10,L12FC6             ; bit 4: switch command accepted (SpeedCtlShift)
         LDAA    >SpeedCtlOverrideTimer,Z
         BEQ     L12FA2
         DECA
@@ -4560,10 +4560,10 @@ L12FA2:
         STAA    >SpeedCtlOverrideCmd,Z
         BRA     L12FD2
 L12FBA:
-        BCLR    <SpeedCtlFlags,Z,#$E0
-        BCLR    <SpeedCtlFlags,Z,#$04
+        BCLR    <SpeedCtlFlags,Z,#$E0                    ; bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift); bit 6: switch command from bit 4 of the switch byte (SpeedCtlShift); bit 5: switch command from bit 3 of the switch byte (SpeedCtlShift)
+        BCLR    <SpeedCtlFlags,Z,#$04                    ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
 L12FC2:
-        BCLR    <SpeedCtlFlags,Z,#$10
+        BCLR    <SpeedCtlFlags,Z,#$10                    ; bit 4: switch command accepted (SpeedCtlShift)
 L12FC6:
         CLR     >SpeedCtlShiftThrottle,Z
         CLR     >SpeedCtlOverrideTimer,Z
@@ -4663,10 +4663,10 @@ L13090:
         CMPB    #$08
         BCC     L1309C
 L13096:
-        BCLR    <SpeedCtlFlags,Z,#$02
+        BCLR    <SpeedCtlFlags,Z,#$02                    ; bit 1: switch count at 8 or more (SpeedCtlSwitchCheck)
         BRA     L130A0
 L1309C:
-        BSET    <SpeedCtlFlags,Z,#$02
+        BSET    <SpeedCtlFlags,Z,#$02                    ; bit 1: switch count at 8 or more (SpeedCtlSwitchCheck)
 L130A0:
         RTS
 
@@ -5326,8 +5326,8 @@ L13718:
 L1371C:
         JMP     L137A6
 L13720:
-        BRSET   >SpeedCtlFlags,Z,#$01,L138C2
-        BSET    <SpeedCtlFlags,Z,#$01
+        BRSET   >SpeedCtlFlags,Z,#$01,L138C2             ; bit 0: switch event handled (SpeedCtlSwitchRead)
+        BSET    <SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         BRSET   >SpeedCtlSwitchFlags,Z,#$10,L13736
         BSET    >SpeedCtlSwitchFlags,Z,#$10
         BRA     L1373A
@@ -5350,26 +5350,26 @@ L13758:
 L1376A:
         BCLR    >SpeedCtlSwitchFlags,Z,#$0A
         BSET    >SpeedCtlSwitchFlags,Z,#$05
-        BCLR    <SpeedCtlFlags,Z,#$01
+        BCLR    <SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L138C2
 L1377A:
         BCLR    >SpeedCtlSwitchFlags,Z,#$0F
-        BCLR    <SpeedCtlFlags,Z,#$01
+        BCLR    <SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L138C2
 L13786:
         BCLR    >SpeedCtlSwitchFlags,Z,#$03
         BSET    >SpeedCtlSwitchFlags,Z,#$0C
-        BCLR    <SpeedCtlFlags,Z,#$01
+        BCLR    <SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L138C2
 L13796:
         BCLR    >SpeedCtlSwitchFlags,Z,#$09
         BSET    >SpeedCtlSwitchFlags,Z,#$06
-        BCLR    <SpeedCtlFlags,Z,#$01
+        BCLR    <SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L138C2
 L137A6:
         BCLR    >SpeedCtlSwitchFlags,Z,#$0B
         BSET    >SpeedCtlSwitchFlags,Z,#$04
-        BCLR    <SpeedCtlFlags,Z,#$01
+        BCLR    <SpeedCtlFlags,Z,#$01                    ; bit 0: switch event handled (SpeedCtlSwitchRead)
         LBRA    L138C2
         dc.b    $27,$33,$4A,$6C,$84,$9B,$C0,$D4,$FC,$FF
 L137C0:
@@ -7593,8 +7593,8 @@ L14EE4:
         BEQ     L14F02
         CMPA    #$42
         BEQ     L14F02
-        BRSET   >LdpFlags3,Z,#$04,L14F02
-        BRSET   >LdpFlags3,Z,#$08,L14F02
+        BRSET   >LdpFlags3,Z,#$04,L14F02                 ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
+        BRSET   >LdpFlags3,Z,#$08,L14F02                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
         BCLRW   >IoCtl12,Z,#$6000
 L14F02:
         LDAA    >O2InactiveTimer,Z
@@ -9741,7 +9741,7 @@ LdpMonitor:
         BEQ     L1681C
         TST     >SystemTestMode,Z
         BNE     L16812
-        BRSET   >LdpFlags3,Z,#$02,L1681C
+        BRSET   >LdpFlags3,Z,#$02,L1681C                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >MonitorDisableFlags,Z,#$04,L16812       ; bit 2: battery voltage at or below MonEnableVoltsMin
         BRSET   >MonitorDisableFlags,Z,#$08,L16812       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
         BRSET   >MonitorDisableFlags,Z,#$02,L16812       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
@@ -9787,7 +9787,7 @@ L1685A:
         JMP     L16D2E
 L1685E:
         BCLR    <LdpFlags2,Z,#$07
-        BRSET   >LdpFlags3,Z,#$02,L16882
+        BRSET   >LdpFlags3,Z,#$02,L16882                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDAA    $16,Z
         CMPA    >LdpBattTempMax
         BHI     L168A4
@@ -9802,7 +9802,7 @@ L1687C:
 L16882:
         BSET    <LdpFlags2,Z,#$01
 L16886:
-        BRCLR   >LdpFlags3,Z,#$02,L16892
+        BRCLR   >LdpFlags3,Z,#$02,L16892                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >LdpFlags2,Z,#$10,L168B0
 L16892:
         BRSET   >IoInputs0,Z,#$02,L168B0                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
@@ -9824,7 +9824,7 @@ L168B0:
 L168C6:
         LBRA    L16D5A
 L168CA:
-        BRSET   >LdpFlags3,Z,#$02,L168E4
+        BRSET   >LdpFlags3,Z,#$02,L168E4                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         TST     >PurgeDelay,Z
         BNE     L168E4
 L168D6:
@@ -9840,7 +9840,7 @@ L168E4:
         BRA     L16922
 L168F4:
         LDAA    >LdpPumpOnCount,Z
-        BRCLR   >LdpFlags3,Z,#$02,L16910
+        BRCLR   >LdpFlags3,Z,#$02,L16910                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         CMPA    $04F6,Z
         BCC     L16928
         BRCLR   >MainLoopPhaseMask,Z,#$80,L16922
@@ -9885,7 +9885,7 @@ L16972:
         LBRA    L16D5A
 L16976:
         BSET    <MonStatusLdp,Z,#$04
-        BRSET   >LdpFlags3,Z,#$02,L16992
+        BRSET   >LdpFlags3,Z,#$02,L16992                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         TST     >PurgeDelay,Z
         BNE     L16992
         BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
@@ -9908,7 +9908,7 @@ L169AC:
         LDAA    #$25
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
-        BRCLR   >LdpFlags3,Z,#$02,L169DA
+        BRCLR   >LdpFlags3,Z,#$02,L169DA                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >LdpFlags2,Z,#$10,L16A02
         BSET    <MonStatusPurge,Z,#$48
         BCLR    <MonStatusPurge,Z,#$80
@@ -9930,7 +9930,7 @@ L169E4:
 L16A02:
         LBRA    L16D5A
 L16A06:
-        BRSET   >LdpFlags3,Z,#$02,L16A20
+        BRSET   >LdpFlags3,Z,#$02,L16A20                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         TST     >PurgeDelay,Z
         BNE     L16A20
 L16A12:
@@ -9942,7 +9942,7 @@ L16A20:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L16A32
-        BRSET   >LdpFlags3,Z,#$02,L16A12
+        BRSET   >LdpFlags3,Z,#$02,L16A12                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRA     L16A56
 L16A32:
         JSR     LdpStateTimer
@@ -9983,7 +9983,7 @@ L16A90:
 L16A98:
         BRSET   <LdpFlags2,Z,#$02,L16AC4
         LDAA    $31,Z
-        BRCLR   >LdpFlags3,Z,#$02,L16AB4
+        BRCLR   >LdpFlags3,Z,#$02,L16AB4                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDX     #LdpPumpTimeByLevel2
         JSR     Lookup2D
         CMPA    >LdpStateTime,Z
@@ -10055,7 +10055,7 @@ L16B56:
 L16B64:
         LBRA    L16D5A
 L16B68:
-        BRSET   >LdpFlags3,Z,#$02,L16B82
+        BRSET   >LdpFlags3,Z,#$02,L16B82                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         TST     >PurgeDelay,Z
         BNE     L16B82
 L16B74:
@@ -10067,7 +10067,7 @@ L16B82:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L16BB2
-        BRSET   >LdpFlags3,Z,#$02,L16B74
+        BRSET   >LdpFlags3,Z,#$02,L16B74                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDAA    #$58
         STAA    >LdpState,Z
         LDAA    >LdpStrokeTime,Z
@@ -10080,7 +10080,7 @@ L16BAA:
         LBRA    L16C40
 L16BB2:
         JSR     LdpStateTimer
-        BRCLR   >LdpFlags3,Z,#$02,L16BC2
+        BRCLR   >LdpFlags3,Z,#$02,L16BC2                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         CMPA    >LdpTestTimeAlt
         BRA     L16BC6
 L16BC2:
@@ -10090,7 +10090,7 @@ L16BC6:
         JSR     LdpPumpStroke
         BRA     L16C40
 L16BCE:
-        BRCLR   >LdpFlags3,Z,#$02,L16BF6
+        BRCLR   >LdpFlags3,Z,#$02,L16BF6                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BCLR    >MonData646,Z,#$01
         BCLR    <LdpFlags2,Z,#$10
         LDAA    >LdpStrokeTimeAvg,Z
@@ -17253,8 +17253,8 @@ L1B532:
 L1B542:
         CLR     >ActuatorTest,Z
 L1B546:
-        BRSET   >LdpFlags3,Z,#$08,L1B55E
-        BRSET   >LdpFlags3,Z,#$04,L1B55E
+        BRSET   >LdpFlags3,Z,#$08,L1B55E                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
+        BRSET   >LdpFlags3,Z,#$04,L1B55E                 ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
         BRSET   >O2TestFlags,Z,#$10,L1B55E
         BCLRW   >IoCtl12,Z,#$4000
 L1B55E:
@@ -19735,9 +19735,9 @@ MonData643Update:
         LDAB    >RefPeriod,Z
         CMPB    #$30
         BLS     L1D0A8
-        BRSET   >LdpFlags3,Z,#$80,L1D07E
+        BRSET   >LdpFlags3,Z,#$80,L1D07E                 ; bit 7: MonData643Update first pass done (counter MonData643 cleared)
         CLR     >MonData643,Z
-        BSET    >LdpFlags3,Z,#$80
+        BSET    >LdpFlags3,Z,#$80                        ; bit 7: MonData643Update first pass done (counter MonData643 cleared)
 L1D07E:
         LDAA    <MainLoopCounter,Z
         ANDA    #$0F
@@ -19757,7 +19757,7 @@ L1D09A:
 L1D0A4:
         BCLR    >MonData645,Z,#$08
 L1D0A8:
-        BCLR    >LdpFlags3,Z,#$80
+        BCLR    >LdpFlags3,Z,#$80                        ; bit 7: MonData643Update first pass done (counter MonData643 cleared)
 L1D0AC:
         RTS
 
@@ -19781,9 +19781,9 @@ L1D0E6:
         LDAA    >FuelSenderScaled,Z
         CMPA    $0779,Z
         BHI     L1D11E
-        BRSET   >LdpFlags3,Z,#$40,L1D0FE
+        BRSET   >LdpFlags3,Z,#$40,L1D0FE                 ; bit 6: MonTaskB first pass done
         CLR     >MonData643,Z
-        BSET    >LdpFlags3,Z,#$40
+        BSET    >LdpFlags3,Z,#$40                        ; bit 6: MonTaskB first pass done
 L1D0FE:
         LDAA    <MainLoopCounter,Z
         ANDA    #$1F
@@ -19800,7 +19800,7 @@ L1D11A:
         BCLR    >MonData645,Z,#$20
 L1D11E:
         BCLR    >OutputTestFlags,Z,#$04
-        BCLR    >LdpFlags3,Z,#$40
+        BCLR    >LdpFlags3,Z,#$40                        ; bit 6: MonTaskB first pass done
 L1D126:
         RTS
         dc.b    $03,$9F,$00,$FE,$00,$EF,$03,$29,$00,$80,$02,$E5,$03,$C0,$00,$FB
@@ -19819,8 +19819,8 @@ MonTaskC:
         CMPB    #$30
         LBLS    L1D29E
         BRCLR   >MainLoopPhaseMask,Z,#$40,L1D2CC
-        BRSET   >LdpFlags3,Z,#$08,L1D220
-        BRSET   >LdpFlags3,Z,#$04,L1D1C8
+        BRSET   >LdpFlags3,Z,#$08,L1D220                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
+        BRSET   >LdpFlags3,Z,#$04,L1D1C8                 ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
         TPD
         TBXK
         CLRB
@@ -19844,7 +19844,7 @@ L1D1B6:
         CLR     >MonData643,Z
         BCLR    >MonData645,Z,#$03
         BSETW   >IoCtl12,Z,#$4000
-        BSET    >LdpFlags3,Z,#$04
+        BSET    >LdpFlags3,Z,#$04                        ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
 L1D1C8:
         LDAA    $04F0,Z
         CMPA    >MonData643,Z
@@ -19879,11 +19879,11 @@ L1D214:
         BCS     L1D1E2
         LBRA    L1D2CC
 L1D220:
-        BRSET   >LdpFlags3,Z,#$08,L1D236
+        BRSET   >LdpFlags3,Z,#$08,L1D236                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
         CLR     >MonData643,Z
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
-        BSET    >LdpFlags3,Z,#$08
-        BCLR    >LdpFlags3,Z,#$04
+        BSET    >LdpFlags3,Z,#$08                        ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
+        BCLR    >LdpFlags3,Z,#$04                        ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
 L1D236:
         LDAA    $04F1,Z
         CMPA    >MonData643,Z
@@ -19927,11 +19927,11 @@ L1D290:
 L1D29A:
         BCLR    >MonData645,Z,#$04
 L1D29E:
-        BRCLR   >LdpFlags3,Z,#$08,L1D2A8
+        BRCLR   >LdpFlags3,Z,#$08,L1D2A8                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
         BSET    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L1D2A8:
-        BCLR    >LdpFlags3,Z,#$04
-        BCLR    >LdpFlags3,Z,#$08
+        BCLR    >LdpFlags3,Z,#$04                        ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
+        BCLR    >LdpFlags3,Z,#$08                        ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
         CLR     $02E5,Z
         CLR     $02E6,Z
         CLR     $02E7,Z
@@ -19956,10 +19956,10 @@ MonTaskD:
         LDAA    $04F6,Z
         CMPA    <Count3s,Z
         LBCC    L1D396
-        BRSET   >LdpFlags3,Z,#$10,L1D35A
-        BRSET   >LdpFlags3,Z,#$20,L1D310
+        BRSET   >LdpFlags3,Z,#$10,L1D35A                 ; bit 4: MonTaskD second phase started
+        BRSET   >LdpFlags3,Z,#$20,L1D310                 ; bit 5: MonTaskD first phase started
         CLR     >MonData643,Z
-        BSET    >LdpFlags3,Z,#$20
+        BSET    >LdpFlags3,Z,#$20                        ; bit 5: MonTaskD first phase started
 L1D310:
         LDAA    <EngineRpm,Z
         SUBA    $04F7,Z
@@ -19987,8 +19987,8 @@ L1D33A:
         BRA     L1D39A
 L1D34E:
         CLR     >MonData643,Z
-        BCLR    >LdpFlags3,Z,#$20
-        BSET    >LdpFlags3,Z,#$10
+        BCLR    >LdpFlags3,Z,#$20                        ; bit 5: MonTaskD first phase started
+        BSET    >LdpFlags3,Z,#$10                        ; bit 4: MonTaskD second phase started
 L1D35A:
         LDAA    <IdleTarget,Z
         SUBA    <EngineRpm,Z
@@ -20017,7 +20017,7 @@ L1D380:
 L1D392:
         BCLR    >MonData646,Z,#$20
 L1D396:
-        BCLR    >LdpFlags3,Z,#$30
+        BCLR    >LdpFlags3,Z,#$30                        ; bit 5: MonTaskD first phase started; bit 4: MonTaskD second phase started
 L1D39A:
         RTS
 
@@ -20144,21 +20144,21 @@ MonTaskLdp:
         BCLR    >MonData646,Z,#$03
         BRA     L1D524
 L1D4D4:
-        BRSET   >LdpFlags3,Z,#$02,L1D4F8
+        BRSET   >LdpFlags3,Z,#$02,L1D4F8                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >MonStatusLdp,Z,#$04,L1D524
         BRSET   >MonStatusLdp,Z,#$80,L1D4EE
         BRCLR   >EngineStateFlags,Z,#$80,L1D524          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRA     L1D504
 L1D4EE:
-        BSET    >LdpFlags3,Z,#$02
+        BSET    >LdpFlags3,Z,#$02                        ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         CLR     >LdpState,Z
         BRA     L1D524
 L1D4F8:
         BRCLR   >EngineStateFlags,Z,#$80,L1D524          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >MonStatusLdp,Z,#$80,L1D524
 L1D504:
-        BRCLR   >LdpFlags3,Z,#$02,L1D524
-        BCLR    >LdpFlags3,Z,#$02
+        BRCLR   >LdpFlags3,Z,#$02,L1D524                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
+        BCLR    >LdpFlags3,Z,#$02                        ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDAA    >LdpState,Z
         ASLA
         ASLA

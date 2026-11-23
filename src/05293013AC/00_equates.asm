@@ -320,6 +320,14 @@ MonData645       equ $0503        ; $F8503
 MonData646       equ $0504        ; $F8504
 MonData647       equ $0505        ; $F8505
 LdpPurgeTestFlags equ $0507        ; $F8507
+;                 bit 7: purge test step started (LdpPurgeTest)
+;                 bit 6: sign of the last change in LdpPurgeTest
+;                 bit 5: idle phase of the purge test reached (LdpPurgeTest)
+;                 bit 4: purge test finished: purge duty back to zero; monitors wait until then
+;                 bit 3: purge hold time reached (LdpPurgeHoldTime)
+;                 bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
+;                 bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
+;                 bit 0: third kind of purge test request (LdpPurgeTestRun)
 ClosedLoopMonFlags equ $0508        ; $F8508
 MilRequestFlags  equ $0509        ; $F8509
 MonFlags64D      equ $050B        ; $F850B

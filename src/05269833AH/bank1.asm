@@ -5110,26 +5110,26 @@ ClosedLoopManager:
         TST     >O2InactiveTimer,Z
         LBNE    L14900
         BRCLR   >Options032F,#$80,L1489E                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
-        BRSET   >FlexLearnFlags,Z,#$02,L1487E
+        BRSET   >FlexLearnFlags,Z,#$02,L1487E            ; bit 1: closed-loop flex trim allowed: run time past O2FlexRunTimeMin (ClosedLoopManager)
         BRCLR   >Options032C,#$40,L1487E                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >Options032F,#$08,L1487E                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         TST     >O2ColdTrim1,Z
         BNE     L14854
-        BCLR    >FlexLearnFlags,Z,#$02
+        BCLR    >FlexLearnFlags,Z,#$02                   ; bit 1: closed-loop flex trim allowed: run time past O2FlexRunTimeMin (ClosedLoopManager)
         BRA     L1488A
 L14854:
-        BRCLR   >FlexLearnFlags,Z,#$10,L14878
+        BRCLR   >FlexLearnFlags,Z,#$10,L14878            ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
         LDAA    >FlexLearnBase,Z
         CMPA    >FlexLearnBaseReadyMin
         BCS     L14878
         LDAA    >RunTime,Z
         CMPA    >O2FlexRunTimeMin
         BCS     L14878
-        BSET    >FlexLearnFlags,Z,#$02
+        BSET    >FlexLearnFlags,Z,#$02                   ; bit 1: closed-loop flex trim allowed: run time past O2FlexRunTimeMin (ClosedLoopManager)
         CLR     >O2ColdTrim1,Z
         BRA     L1488A
 L14878:
-        BCLR    >FlexLearnFlags,Z,#$02
+        BCLR    >FlexLearnFlags,Z,#$02                   ; bit 1: closed-loop flex trim allowed: run time past O2FlexRunTimeMin (ClosedLoopManager)
         BRA     L14884
 L1487E:
         TST     >O2ColdTrim1,Z
@@ -6831,7 +6831,7 @@ L159F2:
         ORAB    >O2WarmDelay,Z
 L15A00:
         LBNE    L15AC2
-        BRSET   >FlexLearnFlags7,Z,#$20,L15AC2
+        BRSET   >FlexLearnFlags7,Z,#$20,L15AC2           ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
         BRSET   >RefuelFlags,Z,#$80,L15AC2
         LDAA    >SystemTestMode,Z
         CMPA    #$01
@@ -7928,16 +7928,16 @@ L17032:
         STAA    >FlexLearnBase,Z
         LDAA    >FlexLearnTimerStart
         STAA    >FlexLearnTimer,Z
-        BCLR    >FlexLearnFlags,Z,#$80
+        BCLR    >FlexLearnFlags,Z,#$80                   ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         CLR     >FlexLearnFlags6,Z
-        BSET    >FlexLearnFlags6,Z,#$02
+        BSET    >FlexLearnFlags6,Z,#$02                  ; bit 1: learning restarted (set when FlexLearnFlags6 is reset)
         BCLR    >FlexLearnFlags8,Z,#$03
         CLR     >FlexColdCounter,Z
         CLRW    $0F16,Z
         CLR     >FlexLearnCounter,Z
         CLR     >FlexLearnPurgeCounter,Z
         CLRW    >FlexPurgeTimer,Z
-        BCLR    >FlexLearnFlags7,Z,#$02
+        BCLR    >FlexLearnFlags7,Z,#$02                  ; bit 1: cold purge learning time reached (FlexColdPurge)
         LBRA    L1749A
 L17092:
         BRCLR   >MainLoopPhaseMask,Z,#$20,L1749A
@@ -8019,10 +8019,10 @@ L1718E:
         LDAA    >FlexLearnCycleCount,Z
         CMPA    #$01
         BCS     L171A2
-        BRSET   >FlexLearnFlags,Z,#$20,L171A2
-        BRCLR   >FlexLearnFlags,Z,#$80,L171A6
+        BRSET   >FlexLearnFlags,Z,#$20,L171A2            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        BRCLR   >FlexLearnFlags,Z,#$80,L171A6            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
 L171A2:
-        BSET    >FlexLearnFlags7,Z,#$20
+        BSET    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
 L171A6:
         JSR     FlexLevelDrive
         BRCLR   >Options0333,#$10,L171B6                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
@@ -8031,7 +8031,7 @@ L171A6:
 L171B6:
         JSR     FlexColdPurge
 L171BA:
-        BRCLR   >FlexLearnFlags,Z,#$20,L171CA
+        BRCLR   >FlexLearnFlags,Z,#$20,L171CA            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         LDAA    >FlexLearnStartCoolantValue,Z
         BNE     L171CA
         JSR     FlexChangeDetect
@@ -8048,7 +8048,7 @@ L171E2:
         BSET    >FlexLearnFlags8,Z,#$04
 L171F0:
         BRSET   >FlexLearnFlags5,Z,#$08,L17236
-        BSET    >FlexLearnFlags,Z,#$20
+        BSET    >FlexLearnFlags,Z,#$20                   ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         BSET    >FlexLearnFlags5,Z,#$08
         LDAA    >FlexEthanolStart,Z
         STAA    >FlexLearnState,Z
@@ -8059,18 +8059,18 @@ L171F0:
         STAA    >FlexEstimate1,Z
         STAA    >FlexEstimate2,Z
         BCLR    >FlexLearnFlags4,Z,#$D0
-        BSET    >FlexLearnFlags7,Z,#$20
+        BSET    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
         BCLR    >FlexLearnFlags3,Z,#$23
         CLR     >FlexLearnCounter2,Z
         JSR     FlexLearnRestart2
         BSET    >FlexLearnFlags3,Z,#$40
 L17236:
-        BRCLR   >FlexLearnFlags,Z,#$20,L1728E
+        BRCLR   >FlexLearnFlags,Z,#$20,L1728E            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         LDD     >FlexLearnFuelSum,Z
         CPD     >FlexRefuelFuelMin
         BCS     L17266
         BCLR    >FlexLearnFlags5,Z,#$08
-        BSET    >FlexLearnFlags,Z,#$10
+        BSET    >FlexLearnFlags,Z,#$10                   ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
         BRSET   >FlexLearnFlags3,Z,#$04,L1726A
         BSET    >FlexLearnFlags3,Z,#$04
         LDD     >FlexLearnFuelSum,Z
@@ -8078,15 +8078,15 @@ L17236:
         JSR     FlexLevelTrack
         BRA     L1726A
 L17266:
-        BCLR    >FlexLearnFlags,Z,#$10
+        BCLR    >FlexLearnFlags,Z,#$10                   ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
 L1726A:
         LDD     >FlexLearnFuelSum,Z
         CPD     >FlexRefuelFuelMin2
         BCS     L1727A
-        BSET    >FlexLearnFlags,Z,#$08
+        BSET    >FlexLearnFlags,Z,#$08                   ; bit 3: fuel used past FlexRefuelFuelMin2 (FlexLearnMain)
         BRA     L1727E
 L1727A:
-        BCLR    >FlexLearnFlags,Z,#$08
+        BCLR    >FlexLearnFlags,Z,#$08                   ; bit 3: fuel used past FlexRefuelFuelMin2 (FlexLearnMain)
 L1727E:
         CPD     >FlexRefuelFuelMin3
         BCS     L1728A
@@ -8100,26 +8100,26 @@ L1728E:
         BSET    >FlexLearnFlags9,Z,#$10
         BSET    >FlexLearnFlags5,Z,#$80
 L172A2:
-        BRCLR   >FlexLearnFlags,Z,#$80,L172B0
+        BRCLR   >FlexLearnFlags,Z,#$80,L172B0            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         JSR     FlexIdleLearn
         LBRA    L17440
 L172B0:
-        BRCLR   >FlexLearnFlags,Z,#$20,L17430
+        BRCLR   >FlexLearnFlags,Z,#$20,L17430            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         BRSET   >FlexLearnFlags2,Z,#$10,L173F8
-        BRCLR   >FlexLearnFlags,Z,#$10,L172DC
+        BRCLR   >FlexLearnFlags,Z,#$10,L172DC            ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
         BRSET   >O2Bank1Flags,Z,#$20,L172DC
         BRCLR   >O2ActiveFlags,Z,#$80,L172DC             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BSET    >FlexLearnFlags5,Z,#$80
         BSET    >FlexLearnFlags2,Z,#$80
-        BSET    >FlexLearnFlags7,Z,#$30
+        BSET    >FlexLearnFlags7,Z,#$30                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable); bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         BRA     L172E8
 L172DC:
         BCLR    >FlexLearnFlags2,Z,#$80
-        BCLR    >FlexLearnFlags7,Z,#$10
+        BCLR    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         LBRA    L17440
 L172E8:
         BRSET   >FlexLearnFlags2,Z,#$20,L1734C
-        BRCLR   >FlexLearnFlags,Z,#$08,L17344
+        BRCLR   >FlexLearnFlags,Z,#$08,L17344            ; bit 3: fuel used past FlexRefuelFuelMin2 (FlexLearnMain)
         BRCLR   >SensorFaultFlags,Z,#$80,L17302          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRCLR   >FaultSet05,Z,#$02,L17302
         BRA     L17328
@@ -8141,8 +8141,8 @@ L17328:
         LDAA    >RunTime,Z
         CMPA    >FlexLearnRunTimeMin
         BCS     L17344
-        BRCLR   >FlexLearnFlags,Z,#$08,L17344
-        BRSET   >FlexLearnFlags,Z,#$80,L17344
+        BRCLR   >FlexLearnFlags,Z,#$08,L17344            ; bit 3: fuel used past FlexRefuelFuelMin2 (FlexLearnMain)
+        BRSET   >FlexLearnFlags,Z,#$80,L17344            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         BSET    >FlexLearnFlags2,Z,#$20
         BRA     L1734C
 L17344:
@@ -8150,7 +8150,7 @@ L17344:
         LBRA    L17440
 L1734C:
         BCLR    >FlexLearnFlags2,Z,#$80
-        BCLR    >FlexLearnFlags7,Z,#$10
+        BCLR    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         BSET    >FlexLearnFlags2,Z,#$10
         CLR     >FlexLearnTrimSum,Z
         LDAA    >FlexLearnBase,Z
@@ -8189,7 +8189,7 @@ L173B6:
         CMPA    #$01
         BCS     L173F4
         BCLR    >FlexLearnFlags4,Z,#$10
-        BCLR    >FlexLearnFlags7,Z,#$30
+        BCLR    >FlexLearnFlags7,Z,#$30                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable); bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         CLR     >FlexLearnTrimSum,Z
         LDAA    >FlexEthanolStart,Z
         SUBA    >FlexEthanolStartStepDown
@@ -8207,7 +8207,7 @@ L173D6:
 L173F4:
         BSET    >FlexLearnFlags4,Z,#$10
 L173F8:
-        BRCLR   >FlexLearnFlags7,Z,#$80,L17430
+        BRCLR   >FlexLearnFlags7,Z,#$80,L17430           ; bit 7: cleared by FlexLearnMain at the end of a learning pass
         LDAA    >CoolantTemp,Z
         CMPA    >FlexLearnCoolantMin
         BCS     L17430
@@ -8222,10 +8222,10 @@ L173F8:
 L17420:
         BSET    >FlexLearnFlags3,Z,#$20
         BCLR    >FlexLearnFlags2,Z,#$80
-        BCLR    >FlexLearnFlags7,Z,#$80
+        BCLR    >FlexLearnFlags7,Z,#$80                  ; bit 7: cleared by FlexLearnMain at the end of a learning pass
         BCLR    >FlexLearnFlags3,Z,#$40
 L17430:
-        BRCLR   >FlexLearnFlags,Z,#$20,L1743C
+        BRCLR   >FlexLearnFlags,Z,#$20,L1743C            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         BRCLR   >FlexLearnFlags2,Z,#$10,L17440
 L1743C:
         JSR     FlexPurgeRichCheck
@@ -8245,7 +8245,7 @@ L1744A:
 L1746C:
         BRCLR   >FlexLearnFlags3,Z,#$02,L1749A
         BRSET   >FlexLearnFlags3,Z,#$01,L1749A
-        BRCLR   >FlexLearnFlags7,Z,#$80,L1749A
+        BRCLR   >FlexLearnFlags7,Z,#$80,L1749A           ; bit 7: cleared by FlexLearnMain at the end of a learning pass
         LDAA    >FlexLearnCounter2,Z
         CMPA    #$FF
         BCC     L17496
@@ -8335,7 +8335,7 @@ L1749A:
 ;---------------------------------------------------------------------------------------------------
 FlexLearnFuelCount:
         PSHM    D,E,X
-        BRCLR   >FlexLearnFlags,Z,#$20,L1790E
+        BRCLR   >FlexLearnFlags,Z,#$20,L1790E            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         LDD     >FlexLearnFuelSum,Z
         CPD     #$FFFF
         BCC     L1790E
@@ -8355,7 +8355,7 @@ L1790E:
 ;---------------------------------------------------------------------------------------------------
 FlexLearnFuelCount2:
         PSHM    D,X
-        BRCLR   >FlexLearnFlags,Z,#$20,L1793A
+        BRCLR   >FlexLearnFlags,Z,#$20,L1793A            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         LDD     >FlexLearnFuelSum,Z
         CPD     #$FFFF
         BCC     L1793A
@@ -8500,8 +8500,8 @@ L17A3E:
 ; Called from: FlexLearnMain
 ;---------------------------------------------------------------------------------------------------
 FlexColdStart:
-        BRSET   >FlexLearnFlags,Z,#$40,L17AF6
-        BSET    >FlexLearnFlags,Z,#$40
+        BRSET   >FlexLearnFlags,Z,#$40,L17AF6            ; bit 6: cold start handled once (FlexColdStart)
+        BSET    >FlexLearnFlags,Z,#$40                   ; bit 6: cold start handled once (FlexColdStart)
         LDAA    >FlexColdCounter,Z
         CMPA    >FlexColdCountMin
         BCS     L17AF2
@@ -8519,18 +8519,18 @@ L17ACE:
         CMPA    >FlexLearnColdCoolantMax
         BCC     L17AF2
 L17AE4:
-        BSET    >FlexLearnFlags,Z,#$80
+        BSET    >FlexLearnFlags,Z,#$80                   ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         LDAA    >FlexLearnTimerStart
         STAA    >FlexLearnTimer,Z
         BRA     L17AF6
 L17AF2:
-        BCLR    >FlexLearnFlags,Z,#$80
+        BCLR    >FlexLearnFlags,Z,#$80                   ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
 L17AF6:
-        BRCLR   >FlexLearnFlags,Z,#$80,L17BD8
+        BRCLR   >FlexLearnFlags,Z,#$80,L17BD8            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         LDAA    >FlexLearnTimer,Z
         CMPA    >FlexLearnTimeMin
         BCS     L17B68
-        BRCLR   >FlexLearnFlags6,Z,#$40,L17B6C
+        BRCLR   >FlexLearnFlags6,Z,#$40,L17B6C           ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
         BRSET   >O2Bank1Flags,Z,#$20,L17B6C
         BRCLR   >O2ActiveFlags,Z,#$80,L17B6C             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >CoolantTemp,Z
@@ -8547,47 +8547,47 @@ L17AF6:
         BCS     L17B6C
         LDAA    >FlexLearnTimerStart
         STAA    >FlexLearnTimer,Z
-        BCLR    >FlexLearnFlags,Z,#$80
+        BCLR    >FlexLearnFlags,Z,#$80                   ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         CLR     >FlexLearnFlags6,Z
-        BSET    >FlexLearnFlags6,Z,#$42
+        BSET    >FlexLearnFlags6,Z,#$42                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart); bit 1: learning restarted (set when FlexLearnFlags6 is reset)
         CLR     >FlexColdCounter,Z
         CLRW    $0F16,Z
         CLR     >FlexLearnCounter,Z
-        BSET    >FlexLearnFlags7,Z,#$10
+        BSET    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         CLR     >FlexLearnPurgeCounter,Z
         BRA     L17BD8
 L17B68:
         CLR     >FlexLearnPurgeCounter,Z
 L17B6C:
-        BSET    >FlexLearnFlags7,Z,#$20
-        BRSET   >FlexLearnFlags6,Z,#$80,L17B9A
-        BCLR    >FlexLearnFlags6,Z,#$0C
+        BSET    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
+        BRSET   >FlexLearnFlags6,Z,#$80,L17B9A           ; bit 7: flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)
+        BCLR    >FlexLearnFlags6,Z,#$0C                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge); bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         LDAA    >FlexLearnTimerStart
         STAA    >FlexLearnTimer,Z
         INCW    >FlexLearnTimeCount,Z
         LDD     >FlexLearnTimeCount,Z
         CPD     >FlexLearnTimeMax
         BCC     L17B96
-        BCLR    >FlexLearnFlags6,Z,#$80
+        BCLR    >FlexLearnFlags6,Z,#$80                  ; bit 7: flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)
         BRA     L17BD8
 L17B96:
-        BSET    >FlexLearnFlags6,Z,#$80
+        BSET    >FlexLearnFlags6,Z,#$80                  ; bit 7: flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)
 L17B9A:
-        BRSET   >FlexLearnFlags,Z,#$20,L17BD8
-        BSET    >FlexLearnFlags6,Z,#$40
+        BRSET   >FlexLearnFlags,Z,#$20,L17BD8            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        BSET    >FlexLearnFlags6,Z,#$40                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
         BSET    >FanBusFlags,Z,#$04
-        BCLR    >FlexLearnFlags6,Z,#$30
+        BCLR    >FlexLearnFlags6,Z,#$30                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 4: cleared with bit 5 by the idle learning steps
         BRSET   >O2Bank1Flags,Z,#$20,L17BD4
         BRCLR   >O2ActiveFlags,Z,#$80,L17BD4             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
-        BSET    >FlexLearnFlags6,Z,#$04
+        BSET    >FlexLearnFlags6,Z,#$04                  ; bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         BRCLR   >FlexLearnFlags10,Z,#$01,L17BD4
-        BSET    >FlexLearnFlags6,Z,#$08
+        BSET    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
         LDAA    >FlexLearnTimer2Init
         STAA    >FlexLearnTimer2,Z
-        BCLR    >FlexLearnFlags7,Z,#$10
+        BCLR    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         BRA     L17BD8
 L17BD4:
-        BCLR    >FlexLearnFlags6,Z,#$08
+        BCLR    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
 L17BD8:
         RTS
 
@@ -8596,9 +8596,9 @@ L17BD8:
 ; Called from: FlexLearnMain
 ;---------------------------------------------------------------------------------------------------
 FlexIdleLearn:
-        BRCLR   >FlexLearnFlags,Z,#$20,L17C06
-        BSET    >FlexLearnFlags7,Z,#$20
-        BRSET   >FlexLearnFlags,Z,#$10,L17BFC
+        BRCLR   >FlexLearnFlags,Z,#$20,L17C06            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        BSET    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
+        BRSET   >FlexLearnFlags,Z,#$10,L17BFC            ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
         BRCLR   >Options0333,#$10,L17BF6                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
         JSR     FlexIdleEnable
         BRA     L17C16
@@ -8606,8 +8606,8 @@ L17BF6:
         JSR     FlexTrimLearn2
         BRA     L17C16
 L17BFC:
-        BRSET   >FlexLearnFlags6,Z,#$01,L17C06
-        BSET    >FlexLearnFlags6,Z,#$21
+        BRSET   >FlexLearnFlags6,Z,#$01,L17C06           ; bit 0: idle learning first step done (FlexIdleLearn)
+        BSET    >FlexLearnFlags6,Z,#$21                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 0: idle learning first step done (FlexIdleLearn)
 L17C06:
         BRCLR   >Options0333,#$10,L17C12                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
         JSR     FlexIdleStep
@@ -8622,25 +8622,25 @@ L17C16:
 ; Called from: FlexIdleLearn
 ;---------------------------------------------------------------------------------------------------
 FlexIdleEnable:
-        BSET    >FlexLearnFlags6,Z,#$40
+        BSET    >FlexLearnFlags6,Z,#$40                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
         BSET    >FanBusFlags,Z,#$04
-        BCLR    >FlexLearnFlags6,Z,#$31
-        BRCLR   >FlexLearnFlags6,Z,#$80,L17C64
+        BCLR    >FlexLearnFlags6,Z,#$31                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 4: cleared with bit 5 by the idle learning steps; bit 0: idle learning first step done (FlexIdleLearn)
+        BRCLR   >FlexLearnFlags6,Z,#$80,L17C64           ; bit 7: flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)
         BRSET   >O2Bank1Flags,Z,#$20,L17C5C
         BRCLR   >O2ActiveFlags,Z,#$80,L17C5C             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >CoolantTemp,Z
         CMPA    >FlexLearnCoolantMin3
         BCS     L17C5C
-        BSET    >FlexLearnFlags6,Z,#$04
+        BSET    >FlexLearnFlags6,Z,#$04                  ; bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         BRCLR   >FlexLearnFlags10,Z,#$01,L17C5C
-        BSET    >FlexLearnFlags6,Z,#$08
+        BSET    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
         LDAA    >FlexLearnTimer2Init
         STAA    >FlexLearnTimer2,Z
-        BCLR    >FlexLearnFlags7,Z,#$10
+        BCLR    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         BRA     L17C64
 L17C5C:
-        BSET    >FlexLearnFlags7,Z,#$10
-        BCLR    >FlexLearnFlags6,Z,#$08
+        BSET    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
+        BCLR    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
 L17C64:
         RTS
 
@@ -8652,7 +8652,7 @@ FlexIdleStep:
         LDAA    >CoolantTemp,Z
         CMPA    >FlexLearnCoolantMin3
         BCC     L17C84
-        BSET    >FlexLearnFlags6,Z,#$60
+        BSET    >FlexLearnFlags6,Z,#$60                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart); bit 5: flex idle learning step active (FlexIdleLearn)
         BSET    >FanBusFlags,Z,#$04
         CLR     >FlexIdleTimer1,Z
         CLR     >FlexIdleTimer2,Z
@@ -8664,54 +8664,54 @@ L17C84:
         CLR     >FlexIdleTimer1,Z
         BSET    >FlexLearnFlags9,Z,#$02
         CLR     >FlexIdleTimer2,Z
-        BSET    >FlexLearnFlags6,Z,#$60
+        BSET    >FlexLearnFlags6,Z,#$60                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart); bit 5: flex idle learning step active (FlexIdleLearn)
         BSET    >FanBusFlags,Z,#$04
         BRA     L17D1C
 L17CA4:
-        BRCLR   >FlexLearnFlags,Z,#$20,L17D64
+        BRCLR   >FlexLearnFlags,Z,#$20,L17D64            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         BRSET   $051D,Z,#$20,L17D64
         BRCLR   >FlexLearnFlags9,Z,#$02,L17CBE
         BCLR    >FlexLearnFlags9,Z,#$02
-        BCLR    >FlexLearnFlags6,Z,#$20
+        BCLR    >FlexLearnFlags6,Z,#$20                  ; bit 5: flex idle learning step active (FlexIdleLearn)
 L17CBE:
-        BRCLR   >FlexLearnFlags6,Z,#$20,L17D68
+        BRCLR   >FlexLearnFlags6,Z,#$20,L17D68           ; bit 5: flex idle learning step active (FlexIdleLearn)
         LDAA    >FlexLearnTimer2Init
         STAA    >FlexLearnTimer2,Z
 L17CCC:
-        BRCLR   >FlexLearnFlags6,Z,#$40,L17CF0
+        BRCLR   >FlexLearnFlags6,Z,#$40,L17CF0           ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
         BRCLR   >IdleFlags,Z,#$80,L17CE0                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         LDAA    >FlexLearnIacStep
         JSR     IacSetTarget
 L17CE0:
-        BCLR    >FlexLearnFlags6,Z,#$04
-        BCLR    >FlexLearnFlags6,Z,#$40
+        BCLR    >FlexLearnFlags6,Z,#$04                  ; bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
+        BCLR    >FlexLearnFlags6,Z,#$40                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
         BCLR    >FanBusFlags,Z,#$04
         CLR     >FlexIdleTimer1,Z
 L17CF0:
-        BSET    >FlexLearnFlags7,Z,#$10
+        BSET    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         LDAA    >FlexIdleTimer1,Z
         CMPA    >FlexIdleTimer1Max
         BCC     L17D04
         INC     >FlexIdleTimer1,Z
         BRA     L17D60
 L17D04:
-        BCLR    >FlexLearnFlags6,Z,#$04
+        BCLR    >FlexLearnFlags6,Z,#$04                  ; bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         LDAA    >FlexIdleTimer3,Z
         CMPA    >FlexIdleTimer3Max
         BCS     L17D1C
-        BCLR    >FlexLearnFlags6,Z,#$30
+        BCLR    >FlexLearnFlags6,Z,#$30                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 4: cleared with bit 5 by the idle learning steps
         CLR     >FlexIdleTimer3,Z
         BRA     L17D68
 L17D1C:
-        BCLR    >FlexLearnFlags6,Z,#$0C
-        BRCLR   >FlexLearnFlags,Z,#$20,L17D3E
+        BCLR    >FlexLearnFlags6,Z,#$0C                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge); bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
+        BRCLR   >FlexLearnFlags,Z,#$20,L17D3E            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         BRCLR   >FlexLearnFlags10,Z,#$01,L17D3E
         BRSET   >O2Bank1Flags,Z,#$20,L17D3E
         BRCLR   >O2ActiveFlags,Z,#$80,L17D3E             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
-        BSET    >FlexLearnFlags6,Z,#$10
+        BSET    >FlexLearnFlags6,Z,#$10                  ; bit 4: cleared with bit 5 by the idle learning steps
         BRA     L17D42
 L17D3E:
-        BCLR    >FlexLearnFlags6,Z,#$10
+        BCLR    >FlexLearnFlags6,Z,#$10                  ; bit 4: cleared with bit 5 by the idle learning steps
 L17D42:
         INC     >FlexIdleTimer3,Z
         LDAA    >CoolantTemp,Z
@@ -8727,34 +8727,34 @@ L17D60:
 L17D64:
         CLR     >FlexIdleTimer2,Z
 L17D68:
-        BRSET   >FlexLearnFlags6,Z,#$40,L17D8A
+        BRSET   >FlexLearnFlags6,Z,#$40,L17D8A           ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
         BRCLR   >IdleFlags,Z,#$80,L17D7E                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         LDAA    >FlexLearnIacStep
         NEGA
         JSR     IacSetTarget
 L17D7E:
-        BSET    >FlexLearnFlags6,Z,#$40
+        BSET    >FlexLearnFlags6,Z,#$40                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
         BSET    >FanBusFlags,Z,#$04
         CLR     >FlexIdleTimer1,Z
 L17D8A:
-        BSET    >FlexLearnFlags6,Z,#$04
-        BCLR    >FlexLearnFlags7,Z,#$10
+        BSET    >FlexLearnFlags6,Z,#$04                  ; bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
+        BCLR    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         LDAA    >FlexIdleTimer2,Z
         CMPA    >FlexIdleTimer2Max
         BCS     L17DAC
-        BCLR    >FlexLearnFlags6,Z,#$08
-        BSET    >FlexLearnFlags6,Z,#$20
+        BCLR    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
+        BSET    >FlexLearnFlags6,Z,#$20                  ; bit 5: flex idle learning step active (FlexIdleLearn)
         CLR     >FlexIdleTimer2,Z
         LBRA    L17CCC
 L17DAC:
         BRSET   >O2Bank1Flags,Z,#$20,L17DBE
         BRCLR   >O2ActiveFlags,Z,#$80,L17DBE             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
-        BSET    >FlexLearnFlags6,Z,#$08
+        BSET    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
         BRA     L17DC2
 L17DBE:
-        BCLR    >FlexLearnFlags6,Z,#$08
+        BCLR    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
 L17DC2:
-        BCLR    >FlexLearnFlags6,Z,#$30
+        BCLR    >FlexLearnFlags6,Z,#$30                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 4: cleared with bit 5 by the idle learning steps
         INC     >FlexIdleTimer2,Z
         LDAA    >ShortTermTrim1,Z
         BPL     L17DD2
@@ -8805,7 +8805,7 @@ FlexLearnReset:
 ; Called from: FinishFuelPulse (2 calls)
 ;---------------------------------------------------------------------------------------------------
 FlexPulseTrim:
-        BRCLR   >FlexLearnFlags6,Z,#$04,L17EC6
+        BRCLR   >FlexLearnFlags6,Z,#$04,L17EC6           ; bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         BRSET   >O2Bank1Flags,Z,#$20,L17EC6
         BRCLR   >O2ActiveFlags,Z,#$80,L17EC6             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         STE     >Temp4F4,Z
@@ -8845,7 +8845,7 @@ L17EFA:
         LDAA    >FuelLevelScaled,Z
         CMPA    >FlexRefuelLevelMax
         BCC     L17F4A
-        BSET    >FlexLearnFlags,Z,#$20
+        BSET    >FlexLearnFlags,Z,#$20                   ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         LDAA    >FlexEthanolStart,Z
         STAA    >FlexLearnState,Z
         STAA    >FlexEthanolRef,Z
@@ -8855,7 +8855,7 @@ L17EFA:
         STAA    >FlexEstimate1,Z
         STAA    >FlexEstimate2,Z
         BCLR    >FlexLearnFlags4,Z,#$D0
-        BSET    >FlexLearnFlags7,Z,#$20
+        BSET    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
         BCLR    >FlexLearnFlags3,Z,#$23
         CLR     >FlexLearnCounter2,Z
         JSR     FlexLearnRestart2
@@ -8874,7 +8874,7 @@ L17F4A:
         CLR     >FlexLearnFlags2,Z
         CLRW    >FlexLearnFuelSum,Z
         CLRW    >FlexSensorRef,Z
-        BRSET   >FlexLearnFlags,Z,#$80,L17F8A
+        BRSET   >FlexLearnFlags,Z,#$80,L17F8A            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         CLR     >FlexLearnFlags,Z
         LBRA    L18010
 L17F8A:
@@ -8894,7 +8894,7 @@ L17FB4:
         STAA    >FlexLearnFlags,Z
         BRA     L18010
 L17FC0:
-        BRSET   >FlexLearnFlags,Z,#$80,L17FD2
+        BRSET   >FlexLearnFlags,Z,#$80,L17FD2            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         LDAA    >FlexLearnFlags,Z
         ANDA    #$38
         STAA    >FlexLearnFlags,Z
@@ -8932,16 +8932,16 @@ L18032:
         LDAA    >FlexLearnCycleCount,Z
         CMPA    #$01
         BCS     L18046
-        BRSET   >FlexLearnFlags,Z,#$20,L18046
-        BRCLR   >FlexLearnFlags,Z,#$80,L1804C
+        BRSET   >FlexLearnFlags,Z,#$20,L18046            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        BRCLR   >FlexLearnFlags,Z,#$80,L1804C            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
 L18046:
-        BSET    >FlexLearnFlags7,Z,#$20
+        BSET    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
         BRA     L18050
 L1804C:
-        BCLR    >FlexLearnFlags7,Z,#$20
+        BCLR    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
 L18050:
         BRCLR   >Options0333,#$10,L1805E                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
-        BSET    >FlexLearnFlags6,Z,#$40
+        BSET    >FlexLearnFlags6,Z,#$40                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
         BSET    >FanBusFlags,Z,#$04
 L1805E:
         LDAA    >FlexEthanolStart,Z
@@ -8996,8 +8996,8 @@ FlexLearnRestart2:
 ; Called from: FlexLearnMain
 ;---------------------------------------------------------------------------------------------------
 FlexLevelDrive:
-        BRCLR   >FlexLearnFlags,Z,#$20,L180E4
-        BRCLR   >FlexLearnFlags,Z,#$10,L18116
+        BRCLR   >FlexLearnFlags,Z,#$20,L180E4            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        BRCLR   >FlexLearnFlags,Z,#$10,L18116            ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
 L180E4:
         BRSET   >FaultSet05,Z,#$08,L18130
         TSTW    $0F12,Z
@@ -9132,20 +9132,20 @@ L182A2:
         AIS     #$04
         STAB    >FlexEstimate1,Z
 L18308:
-        BRCLR   >FlexLearnFlags,Z,#$10,L1852E
+        BRCLR   >FlexLearnFlags,Z,#$10,L1852E            ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
         BRSET   >FlexLearnFlags2,Z,#$10,L1852E
         BRCLR   >O2Bank1Flags,Z,#$20,L1852E
         BRSET   >O2ActiveFlags,Z,#$80,L1852E             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
-        BRSET   >FlexLearnFlags,Z,#$02,L1852E
+        BRSET   >FlexLearnFlags,Z,#$02,L1852E            ; bit 1: closed-loop flex trim allowed: run time past O2FlexRunTimeMin (ClosedLoopManager)
         TST     >FlexLearnStartCoolantValue,Z
         BEQ     L1833C
         BRSET   >FlexLearnFlags4,Z,#$80,L184C6
         BRSET   >FlexLearnFlags4,Z,#$40,L184E4
         LBRA    L1852E
 L1833C:
-        BRCLR   >FlexLearnFlags,Z,#$80,L18362
+        BRCLR   >FlexLearnFlags,Z,#$80,L18362            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         BRCLR   >Options0333,#$10,L1834E                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
-        BRCLR   >FlexLearnFlags6,Z,#$40,L18362
+        BRCLR   >FlexLearnFlags6,Z,#$40,L18362           ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
 L1834E:
         BRCLR   >FlexLearnFlags8,Z,#$01,L18362
         LDD     >FlexSum3,Z
@@ -9340,7 +9340,7 @@ L1853E:
 ; Called from: FlexLearnMain
 ;---------------------------------------------------------------------------------------------------
 FlexChangeDetect:
-        BRCLR   >FlexLearnFlags,Z,#$10,L18584
+        BRCLR   >FlexLearnFlags,Z,#$10,L18584            ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
         BRSET   >FlexLearnFlags2,Z,#$10,L18584
         LDAA    >FlexEthanolRef,Z
         SUBA    >FlexEthanolStart,Z
@@ -9370,7 +9370,7 @@ L1858C:
 ; Called from: FlexLearnMain
 ;---------------------------------------------------------------------------------------------------
 FlexPurgeFactor:
-        BRCLR   >FlexLearnFlags,Z,#$80,L185DA
+        BRCLR   >FlexLearnFlags,Z,#$80,L185DA            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         LDAA    >PurgeRamp,Z
         LDX     #FlexLearnPurgeFactor
         JSR     Lookup2D
@@ -9405,12 +9405,12 @@ FlexMisfireCheck:
         BRCLR   >O2Bank1Flags,Z,#$20,L18754
         BRSET   >O2ActiveFlags,Z,#$80,L18754             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BRSET   >FlexLearnFlags9,Z,#$10,L18754
-        BRSET   >FlexLearnFlags,Z,#$02,L18754
+        BRSET   >FlexLearnFlags,Z,#$02,L18754            ; bit 1: closed-loop flex trim allowed: run time past O2FlexRunTimeMin (ClosedLoopManager)
         LDAA    >FlexLearnStartCoolantValue,Z
         LBEQ    L18754
-        BRCLR   >FlexLearnFlags,Z,#$20,L18754
-        BRSET   >FlexLearnFlags,Z,#$80,L18754
-        BRCLR   >FlexLearnFlags,Z,#$10,L18754
+        BRCLR   >FlexLearnFlags,Z,#$20,L18754            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        BRSET   >FlexLearnFlags,Z,#$80,L18754            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRCLR   >FlexLearnFlags,Z,#$10,L18754            ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
         LDAA    >CoolantTemp,Z
         CMPA    >FlexLearnCoolantMax
         LBCC    L18754
@@ -9529,11 +9529,11 @@ L18754:
 ; Called from: CalcEngineRpm
 ;---------------------------------------------------------------------------------------------------
 FlexLearnStall:
-        BCLR    >FlexLearnFlags,Z,#$04
+        BCLR    >FlexLearnFlags,Z,#$04                   ; bit 2: cleared at stall (FlexLearnStall)
         BCLR    >FlexLearnFlags10,Z,#$01
-        BCLR    >FlexLearnFlags7,Z,#$10
-        BCLR    >FlexLearnFlags6,Z,#$30
-        BCLR    >FlexLearnFlags6,Z,#$0C
+        BCLR    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
+        BCLR    >FlexLearnFlags6,Z,#$30                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 4: cleared with bit 5 by the idle learning steps
+        BCLR    >FlexLearnFlags6,Z,#$0C                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge); bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         BCLR    >FlexLearnFlags9,Z,#$02
         CLR     >FlexIdleTimer1,Z
         CLR     >FlexIdleTimer3,Z
@@ -9558,16 +9558,16 @@ FlexTrimLearn:
         BSET    >FlexLearnFlags9,Z,#$02
         BRA     L187E2
 L187A6:
-        BSET    >FlexLearnFlags6,Z,#$04
-        BCLR    >FlexLearnFlags7,Z,#$10
+        BSET    >FlexLearnFlags6,Z,#$04                  ; bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
+        BCLR    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         BRSET   >O2Bank1Flags,Z,#$20,L187C0
         BRCLR   >O2ActiveFlags,Z,#$80,L187C0             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
-        BSET    >FlexLearnFlags6,Z,#$08
+        BSET    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
         BRA     L187C4
 L187C0:
-        BCLR    >FlexLearnFlags6,Z,#$08
+        BCLR    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
 L187C4:
-        BCLR    >FlexLearnFlags6,Z,#$30
+        BCLR    >FlexLearnFlags6,Z,#$30                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 4: cleared with bit 5 by the idle learning steps
         BCLR    >FlexLearnFlags8,Z,#$03
         LDAA    >ShortTermTrim1,Z
         BPL     L187D4
@@ -9578,18 +9578,18 @@ L187D4:
         STAA    >FlexLearnTrimWeightValue,Z
         BRA     L18816
 L187E2:
-        BCLR    >FlexLearnFlags6,Z,#$0C
+        BCLR    >FlexLearnFlags6,Z,#$0C                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge); bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         BSET    >FlexLearnFlags8,Z,#$01
-        BSET    >FlexLearnFlags6,Z,#$20
-        BSET    >FlexLearnFlags7,Z,#$10
+        BSET    >FlexLearnFlags6,Z,#$20                  ; bit 5: flex idle learning step active (FlexIdleLearn)
+        BSET    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         BRCLR   >FlexLearnFlags10,Z,#$01,L1880E
         BRSET   >O2Bank1Flags,Z,#$20,L1880E
         BRCLR   >O2ActiveFlags,Z,#$80,L1880E             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
-        BSET    >FlexLearnFlags6,Z,#$10
+        BSET    >FlexLearnFlags6,Z,#$10                  ; bit 4: cleared with bit 5 by the idle learning steps
         BSET    >FlexLearnFlags8,Z,#$02
         BRA     L18816
 L1880E:
-        BCLR    >FlexLearnFlags6,Z,#$10
+        BCLR    >FlexLearnFlags6,Z,#$10                  ; bit 4: cleared with bit 5 by the idle learning steps
         BCLR    >FlexLearnFlags8,Z,#$02
 L18816:
         RTS
@@ -9601,9 +9601,9 @@ L18816:
 FlexTrimLearn2:
         LDAA    >FlexLearnTimer2Init
         STAA    >FlexLearnTimer2,Z
-        BCLR    >FlexLearnFlags6,Z,#$31
+        BCLR    >FlexLearnFlags6,Z,#$31                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 4: cleared with bit 5 by the idle learning steps; bit 0: idle learning first step done (FlexIdleLearn)
         BCLR    >FlexLearnFlags8,Z,#$03
-        BRCLR   >FlexLearnFlags6,Z,#$80,L1889E
+        BRCLR   >FlexLearnFlags6,Z,#$80,L1889E           ; bit 7: flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)
         BRSET   >O2Bank1Flags,Z,#$20,L18896
         BRCLR   >O2ActiveFlags,Z,#$80,L18896             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >CoolantTemp,Z
@@ -9612,10 +9612,10 @@ FlexTrimLearn2:
         LDAA    >PurgeRamp,Z
         CMPA    >FlexLearnPurgeRampMin
         BCC     L18876
-        BSET    >FlexLearnFlags6,Z,#$04
+        BSET    >FlexLearnFlags6,Z,#$04                  ; bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         BRCLR   >FlexLearnFlags10,Z,#$01,L18896
-        BSET    >FlexLearnFlags6,Z,#$08
-        BCLR    >FlexLearnFlags7,Z,#$10
+        BSET    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
+        BCLR    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         LDAA    >ShortTermTrim1,Z
         BPL     L18868
         COMA
@@ -9625,17 +9625,17 @@ L18868:
         STAA    >FlexLearnTrimWeightValue,Z
         BRA     L1889E
 L18876:
-        BCLR    >FlexLearnFlags6,Z,#$0C
+        BCLR    >FlexLearnFlags6,Z,#$0C                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge); bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         BSET    >FlexLearnFlags8,Z,#$01
-        BSET    >FlexLearnFlags6,Z,#$20
-        BSET    >FlexLearnFlags7,Z,#$10
+        BSET    >FlexLearnFlags6,Z,#$20                  ; bit 5: flex idle learning step active (FlexIdleLearn)
+        BSET    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         BRCLR   >FlexLearnFlags10,Z,#$01,L1889E
-        BSET    >FlexLearnFlags6,Z,#$10
+        BSET    >FlexLearnFlags6,Z,#$10                  ; bit 4: cleared with bit 5 by the idle learning steps
         BSET    >FlexLearnFlags8,Z,#$02
         BRA     L1889E
 L18896:
-        BSET    >FlexLearnFlags7,Z,#$10
-        BCLR    >FlexLearnFlags6,Z,#$08
+        BSET    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
+        BCLR    >FlexLearnFlags6,Z,#$08                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
 L1889E:
         RTS
 
@@ -9661,14 +9661,14 @@ L188C4:
         CMPA    >FlexLearnColdCoolantMax
         BCC     L188EC
 L188DA:
-        BRSET   >FlexLearnFlags,Z,#$80,L188EC
-        BSET    >FlexLearnFlags,Z,#$80
+        BRSET   >FlexLearnFlags,Z,#$80,L188EC            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BSET    >FlexLearnFlags,Z,#$80                   ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         LDAA    >FlexLearnTimerStart
         STAA    >FlexLearnTimer,Z
 L188EC:
-        BRCLR   >FlexLearnFlags,Z,#$80,L18A54
+        BRCLR   >FlexLearnFlags,Z,#$80,L18A54            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         BRCLR   >ThrottleState,Z,#$40,L18918             ; bit 6: wide-open throttle (DetectWot)
-        BRSET   >FlexLearnFlags,Z,#$20,L18918
+        BRSET   >FlexLearnFlags,Z,#$20,L18918            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         LDAA    >FlexEthanolStart,Z
         CMPA    >FlexLearnState,Z
         BCS     L18918
@@ -9688,7 +9688,7 @@ L18918:
 L18936:
         BRSET   >FlexLearnFlags4,Z,#$80,L1894A
         BRSET   >FlexLearnFlags4,Z,#$40,L1894A
-        BRSET   >FlexLearnFlags,Z,#$08,L1894A
+        BRSET   >FlexLearnFlags,Z,#$08,L1894A            ; bit 3: fuel used past FlexRefuelFuelMin2 (FlexLearnMain)
         BRA     L1894E
 L1894A:
         BSET    >FlexLearnFlags3,Z,#$08
@@ -9696,7 +9696,7 @@ L1894E:
         LDAA    >FlexLearnTimer,Z
         CMPA    >FlexLearnTimeMin
         LBCS    L18A12
-        BSET    >FlexLearnFlags7,Z,#$02
+        BSET    >FlexLearnFlags7,Z,#$02                  ; bit 1: cold purge learning time reached (FlexColdPurge)
         LDAA    >CoolantTemp,Z
         CMPA    >FlexLearnCoolantMin2
         BCS     L18986
@@ -9711,7 +9711,7 @@ L1894E:
 L18986:
         CPX     >FlexPurgeTimeMin
         LBCS    L18A1E
-        BRCLR   >FlexLearnFlags6,Z,#$08,L18A1E
+        BRCLR   >FlexLearnFlags6,Z,#$08,L18A1E           ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
         BRSET   >O2Bank1Flags,Z,#$20,L18A1E
         BRCLR   >O2ActiveFlags,Z,#$80,L18A1E             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BRCLR   >FlexLearnFlags10,Z,#$01,L18A1E
@@ -9723,18 +9723,18 @@ L18986:
         BCS     L18A1E
         LDAA    >FlexLearnTimerStart
         STAA    >FlexLearnTimer,Z
-        BCLR    >FlexLearnFlags,Z,#$80
+        BCLR    >FlexLearnFlags,Z,#$80                   ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
         CLR     >FlexLearnFlags6,Z
-        BSET    >FlexLearnFlags6,Z,#$02
+        BSET    >FlexLearnFlags6,Z,#$02                  ; bit 1: learning restarted (set when FlexLearnFlags6 is reset)
         BCLR    >FlexLearnFlags8,Z,#$03
         CLR     >FlexColdCounter,Z
         CLRW    $0F16,Z
         CLR     >FlexLearnCounter,Z
-        BSET    >FlexLearnFlags7,Z,#$10
+        BSET    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
         CLR     >FlexLearnPurgeCounter,Z
         CLRW    >FlexPurgeTimer,Z
-        BCLR    >FlexLearnFlags7,Z,#$02
-        BRCLR   >FlexLearnFlags,Z,#$20,L189FC
+        BCLR    >FlexLearnFlags7,Z,#$02                  ; bit 1: cold purge learning time reached (FlexColdPurge)
+        BRCLR   >FlexLearnFlags,Z,#$20,L189FC            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         LDAA    >FlexLearnState,Z
         STAA    >FlexEthanolStart,Z
         BRA     L18A04
@@ -9749,23 +9749,23 @@ L18A04:
 L18A12:
         CLR     >FlexLearnPurgeCounter,Z
         CLRW    >FlexPurgeTimer,Z
-        BCLR    >FlexLearnFlags7,Z,#$02
+        BCLR    >FlexLearnFlags7,Z,#$02                  ; bit 1: cold purge learning time reached (FlexColdPurge)
 L18A1E:
-        BSET    >FlexLearnFlags7,Z,#$20
-        BRSET   >FlexLearnFlags6,Z,#$80,L18A4C
-        BCLR    >FlexLearnFlags6,Z,#$0C
+        BSET    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
+        BRSET   >FlexLearnFlags6,Z,#$80,L18A4C           ; bit 7: flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)
+        BCLR    >FlexLearnFlags6,Z,#$0C                  ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge); bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         LDAA    >FlexLearnTimerStart
         STAA    >FlexLearnTimer,Z
         INCW    >FlexLearnTimeCount,Z
         LDD     >FlexLearnTimeCount,Z
         CPD     >FlexLearnTimeMax
         BCC     L18A48
-        BCLR    >FlexLearnFlags6,Z,#$80
+        BCLR    >FlexLearnFlags6,Z,#$80                  ; bit 7: flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)
         BRA     L18A54
 L18A48:
-        BSET    >FlexLearnFlags6,Z,#$80
+        BSET    >FlexLearnFlags6,Z,#$80                  ; bit 7: flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)
 L18A4C:
-        BCLR    >FlexLearnFlags6,Z,#$30
+        BCLR    >FlexLearnFlags6,Z,#$30                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 4: cleared with bit 5 by the idle learning steps
         BCLR    >FlexLearnFlags8,Z,#$03
 L18A54:
         RTS
@@ -10286,8 +10286,8 @@ L1943C:
 L19460:
         BRCLR   >Options032C,#$40,L19478                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >Options032F,#$08,L19478                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
-        BRCLR   >FlexLearnFlags,Z,#$80,L19478
-        BRSET   >FlexLearnFlags,Z,#$20,L1947E
+        BRCLR   >FlexLearnFlags,Z,#$80,L19478            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRSET   >FlexLearnFlags,Z,#$20,L1947E            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
 L19478:
         BSET    >IdleFlags6,Z,#$40
         BRA     L19482
@@ -11998,8 +11998,8 @@ L1A73C:
 L1A754:
         BRCLR   >Options032C,#$40,L1A76C                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >Options032F,#$08,L1A76C                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
-        BRCLR   >FlexLearnFlags,Z,#$80,L1A76C
-        BRSET   >FlexLearnFlags,Z,#$20,L1A7AC
+        BRCLR   >FlexLearnFlags,Z,#$80,L1A76C            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRSET   >FlexLearnFlags,Z,#$20,L1A7AC            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
 L1A76C:
         TST     >IdleLoopHold,Z
         BNE     L1A7AC
@@ -12119,8 +12119,8 @@ IdleStopRpmCheck:
 L1A898:
         BRCLR   >Options032C,#$40,L1A8B0                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >Options032F,#$08,L1A8B0                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
-        BRCLR   >FlexLearnFlags,Z,#$80,L1A8B0
-        BRSET   >FlexLearnFlags,Z,#$20,L1A932
+        BRCLR   >FlexLearnFlags,Z,#$80,L1A8B0            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRSET   >FlexLearnFlags,Z,#$20,L1A932            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
 L1A8B0:
         BRCLR   >ControlFlags943,Z,#$01,L1A932           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAA    >IdleFlags5,Z
@@ -13009,7 +13009,7 @@ L1B1D6:
         STD     <ScratchE,Z
         LBRA    L1B5AA
 L1B1DC:
-        BRCLR   >LdpFlags3,Z,#$20,L1B1F2
+        BRCLR   >LdpFlags3,Z,#$20,L1B1F2                 ; bit 5: MonTaskD first phase started
         CLRB
         LDAA    $05F7,Z
         BSET    >IdleFlags7,Z,#$10
@@ -13172,8 +13172,8 @@ L1B3C0:
         BRSET   >ThrottleState,Z,#$01,L1B408             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BRCLR   >Options032C,#$40,L1B3F8                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >Options032F,#$08,L1B3F8                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
-        BRCLR   >FlexLearnFlags,Z,#$80,L1B3F8
-        BRSET   >FlexLearnFlags,Z,#$20,L1B408
+        BRCLR   >FlexLearnFlags,Z,#$80,L1B3F8            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRSET   >FlexLearnFlags,Z,#$20,L1B408            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
 L1B3F8:
         BSET    >IdleFlags2,Z,#$40
         TST     >IdleRampDelay,Z
