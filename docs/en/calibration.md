@@ -333,6 +333,26 @@ word at `SriMileage` ($000D,Z) is the SRI (service reminder) mileage (`SriMileag
 83 rows carry a P-code; the list is in the catalogue. Codes for cylinders 5 and 6 (P0205, P0206,
 P0355) are present, so the program also covers six-cylinder engines.
 
+## OBD monitor table and condition lists
+
+`ObdMonitorTable` ($20000, in the code area) has 16 rows of 20 bytes, one per OBD monitor, read by
+`ObdMonitorMain`: the record offset, the monitor status byte (`MonStatus*`), the run period (low
+six bits of byte 5, tested against `MainLoopCounter`), the fault table row of the monitor's P-code,
+the addresses of three condition lists, and the result byte and bit. The rows show which status
+byte belongs to which code: `MonStatusCatBank1/2` are the catalyst monitors (P0420, P0432),
+`MonStatusO2Resp1/2` the O2 response monitors (P0133, P0153), `MonStatusO2Sensor1-4` the heater
+monitors (P0135, P0155, P0141, P0161), and the fuel system monitors give P0171/P0174 for "too lean"
+(adaptive at its upper limit) and P0172/P0175 for "too rich". The fuel system routines and
+constants were renamed after this (`FuelSysTooLean*`, `FuelSysTooRich*`).
+
+`ConditionTable` ($20B1C) checks such a list: a count, then 4-byte entries of RAM offset, test and
+mask. Test 0 needs the masked bits clear, test 2 needs them all set, test 4 needs the value above
+the mask byte; the check fails at the first entry that does not hold. The 48 lists lie in bank 0
+between $33CA and $4015 and are laid out in the source with each entry decoded, for example
+`CatBank1Conds1`: the catalyst monitor runs only while none of 19 bytes of stored faults (`FaultMem*`,
+about 70 P-codes) are set. These lists are calibration: changing them changes which faults suspend
+which monitor.
+
 ## Tools
 
 ```sh

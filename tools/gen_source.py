@@ -226,6 +226,7 @@ class Calibration:
                     n += 1
                 v["rows"] = n
             self.items[a] = dict(v, size=v["rows"] * v["row_size"], cur=v, calls=[])
+        self.add_condition_tables(an)
         # a table that overlaps the one before it cannot be laid out; keep the first
         end = -1
         for a in sorted(self.items):
@@ -240,6 +241,57 @@ class Calibration:
                 self.scalars[a] = v
         self.labels = {a: t["name"] for a, t in self.items.items()}
         self.labels.update({a: v["name"] for a, v in self.scalars.items()})
+
+    def add_condition_tables(self, an):
+        """Condition lists read by ConditionTable (count, then 4-byte entries: RAM offset, test, mask),
+        found from LDY #table before JSR ConditionTable and from the OBD monitor table."""
+        d = self.data
+        rev = {v: k for k, v in self.names.labels_ann.items()}
+        ct = rev.get("ConditionTable")
+        found = {}
+        if ct is not None:
+            order = sorted(an.insn)
+            idx = {a: n for n, a in enumerate(order)}
+            for a, i in an.insn.items():
+                if i.mn == "JSR" and i.target() == ct:
+                    for k in range(idx[a] - 1, max(idx[a] - 4, 0), -1):
+                        j = an.insn[order[k]]
+                        y = dict(j.vals).get("jjkk")
+                        if j.mn == "LDY" and y is not None:
+                            starts = [x for x in self.names.labels_ann if x <= a]
+                            caller = self.names.labels_ann[max(starts)] if starts else None
+                            found.setdefault(y, (caller or "Cond", []))[1].append(a)
+                            break
+        for a, t in list(self.items.items()):
+            if t.get("kind") == "monitors":
+                for r in range(t["rows"]):
+                    row = a + r * t["row_size"]
+                    st = self.names.ram.get(int.from_bytes(d[row + 2:row + 4], "big"), "Monitor%d" % r)
+                    for n in range(3):
+                        y = int.from_bytes(d[row + 8 + 2 * n:row + 10 + 2 * n], "big")
+                        found.setdefault(y, ("%sConds%d" % (st.replace("MonStatus", ""), n + 1), []))
+        used = {}
+        for y, (base, calls) in sorted(found.items()):
+            if y >= 0x8000 or y + 1 > len(d) or y in self.items:
+                continue
+            size = 1 + 4 * d[y]
+            if any(x in an.insn for x in range(y, y + size)):
+                continue
+            name = base if base.endswith(("1", "2", "3")) and "Conds" in base else base + "Conds"
+            used[name] = used.get(name, 0) + 1
+            if used[name] > 1:
+                name += "%d" % used[name]
+            self.items[y] = dict(kind="cond", size=size, name=name, cur={}, calls=sorted(calls))
+
+    def cond_text(self, off, op, m):
+        """Meaning of one condition entry."""
+        sym = self.names.ram.get(off, "$%04X,Z" % off)
+        bits = dict(self.names.bits.get(sym, {}))
+        names = [bits.get(str(b), "bit %d" % b) for b in range(7, -1, -1) if m >> b & 1]
+        what = {0: "needs clear", 2: "needs all set", 4: "needs above"}.get(op, "test %d" % op)
+        if op == 4:
+            return "%s %s $%02X" % (sym, what, m)
+        return "%s %s: %s" % (sym, what, "; ".join(names)) if names else "%s %s $%02X" % (sym, what, m)
 
     def immsym(self, ins, value):
         if ins.mn in ("LDX", "LDY", "ADDD") and value in self.items:
@@ -279,6 +331,9 @@ class Calibration:
             out.append("; %s ($%04X): 3D table, %d rows x %d columns, %s%s" % (
                 t["name"], a, d[a], d[a + 1], "signed" if d[a + 2] else "unsigned",
                 "" if kind == "3D" else ", columns by position 0-255"))
+        elif kind == "cond":
+            out.append("; %s ($%04X): condition list, %d entries (ConditionTable: the check passes only if every entry holds)" % (
+                t["name"], a, d[a]))
         else:
             out.append("; %s ($%04X): %d rows of %d bytes" % (t["name"], a, t["rows"], t["row_size"]))
         if c.get("desc"):
@@ -318,6 +373,27 @@ class Calibration:
                 p += nx
             for r in range(ny):
                 out.append(row(d[p + r * nx:p + (r + 1) * nx], sg != 0, "row %d" % r))
+        elif kind == "cond":
+            out.append("        dc.b    %-40s ; entries" % ("$%02X" % d[a]))
+            for e in range(d[a]):
+                p = a + 1 + 4 * e
+                b = d[p:p + 4]
+                out.append("        dc.b    %-40s ; %s" % (",".join("$%02X" % x for x in b),
+                                                          self.cond_text((b[0] << 8) | b[1], b[2], b[3])))
+        elif kind == "monitors":
+            for r in range(t["rows"]):
+                p = a + r * t["row_size"]
+                b = d[p:p + t["row_size"]]
+                w = [(b[i] << 8) | b[i + 1] for i in range(0, len(b), 2)]
+                fr = self.data[w[3]:w[3] + 10]
+                conds = ", ".join(self.items[x]["name"] if x in self.items else "$%04X" % x for x in w[4:7])
+                note = "%s, %s, run when MainLoopCounter & $%02X = 0; conditions %s; result %s & $%02X" % (
+                    self.names.ram.get(w[1], "$%04X,Z" % w[1]),
+                    "P%02X%02X" % (fr[6], fr[7]) if FAULT_TABLE <= w[3] < FAULT_TABLE + 10 * FAULT_ROWS and (w[3] - FAULT_TABLE) % 10 == 0
+                    else "data " + self.names.ram.get(w[3], "$%04X" % w[3]),
+                    b[5] & 0x3F, conds, self.names.ram.get(w[8], "$%04X" % w[8]), w[9] & 0xFF)
+                out.append("        dc.b    " + ",".join("$%02X" % x for x in b[:10]) + " ; " + note)
+                out.append("        dc.b    " + ",".join("$%02X" % x for x in b[10:]))
         else:
             for r in range(t["rows"]):
                 b = d[a + r * t["row_size"]:a + (r + 1) * t["row_size"]]

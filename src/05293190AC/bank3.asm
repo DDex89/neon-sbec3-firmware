@@ -5309,10 +5309,10 @@ ClosedLoopMemClear:
         BRCLR   >MonEnableFlags2,Z,#$80,L33B16           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRCLR   >EngineStateFlags,Z,#$80,L33B16          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BSET    >ClosedLoopMonFlags,Z,#$80               ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
-        BRCLR   >FuelSysFlags1,Z,#$AA,L33B0A             ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 1; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 1
+        BRCLR   >FuelSysFlags1,Z,#$AA,L33B0A             ; bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 1; bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 1; bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 1; bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 1
         BSET    >MonData645,Z,#$80
 L33B0A:
-        BRCLR   >FuelSysFlags2,Z,#$AA,L33B14             ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 2; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 2
+        BRCLR   >FuelSysFlags2,Z,#$AA,L33B14             ; bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 2; bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 2; bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 2; bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 2
         BSET    >MonData645,Z,#$80
 L33B14:
         BRA     L33B2A
@@ -9815,8 +9815,8 @@ L3935C:
 L39362:
         BRCLR   >AcCycleCount,Z,#$04,L39400
         BRSET   >AcPressureFlags,Z,#$02,L39386           ; bit 1: A/C clutch cycle time running (AcCycleTimeMin, AcClutchControl)
-        BRSET   >MonStatusA3,Z,#$04,L3937C
-        BRSET   >MonStatusA4,Z,#$04,L3937C
+        BRSET   >MonStatusO2Resp1,Z,#$04,L3937C
+        BRSET   >MonStatusO2Resp2,Z,#$04,L3937C
         BRA     L393A2
 L3937C:
         BRSET   >AcFlags,Z,#$40,L393A2                   ; bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7

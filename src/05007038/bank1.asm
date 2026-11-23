@@ -6246,7 +6246,7 @@ L14096:
         CLR     $0282,Z
         CLR     $0283,Z
         CLR     >FuelSysCount3,Z
-        CLR     >FuelSysRichCount2,Z
+        CLR     >FuelSysTooLeanCount2,Z
         CLR     >FuelSysCount1,Z
         CLR     >FuelSysCount2,Z
         JSR     PurgeReset
@@ -11670,7 +11670,7 @@ Sub_17CA0:
         BRCLR   >MonStatusO2Sensor4,Z,#$80,L17D20
         CLRB
         TBYK
-        LDY     #$30FF
+        LDY     #O2MonData2StepConds2
         JSR     ConditionTable
         BEQ     L17CC0
         BSET    $C5,Z,#$02
@@ -11678,7 +11678,7 @@ Sub_17CA0:
 L17CC0:
         BCLR    $C5,Z,#$02
 L17CC4:
-        LDY     #$30C2
+        LDY     #O2MonData2StepConds
         JSR     ConditionTable
         BEQ     L17CD4
         BSET    $C5,Z,#$01
@@ -12354,17 +12354,17 @@ L18356:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysLean1Monitor ($18358)
+; FuelSysTooRich1Monitor ($18358)
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
-FuelSysLean1Monitor:
+FuelSysTooRich1Monitor:
         TST     >FuelSys5A5,Z
         BEQ     L18364
         DEC     >FuelSys5A5,Z
         BRA     L183CE
 L18364:
         BRCLR   >MonitorDisableFlags,Z,#$07,L18370       ; bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude); bit 0: battery (ambient) temperature below MonEnableBattTempMin
-        CLR     >FuelSysLeanFaults,Z
+        CLR     >FuelSysTooRichFaults,Z
         BRA     L183B2
 L18370:
         BRCLR   >DiagStatusFlags,Z,#$01,L18380           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
@@ -12379,14 +12379,14 @@ L18380:
         BRCLR   >Options032F,#$80,L183B2                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         TST     >SystemTestMode,Z
         BNE     L183B2
-        JSR     FuelSysLean1Adapt
-        JSR     FuelSysLean1Check
-        BRCLR   >FuelSysFlags1,Z,#$A0,L183CE             ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 1
-        JSR     FuelSysLean1Done
+        JSR     FuelSysTooRich1Adapt
+        JSR     FuelSysTooRich1Check
+        BRCLR   >FuelSysFlags1,Z,#$A0,L183CE             ; bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 1; bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 1
+        JSR     FuelSysTooRich1Done
         BRA     L183CE
 L183B2:
-        BRCLR   >FuelSysFlags1,Z,#$10,L183C0             ; bit 4: lean condition counted in the current window, bank 1
-        BCLR    <FuelSysFlags1,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 1
+        BRCLR   >FuelSysFlags1,Z,#$10,L183C0             ; bit 4: rich condition counted in the current window, bank 1
+        BCLR    <FuelSysFlags1,Z,#$10                    ; bit 4: rich condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L183C0:
         BRCLR   >FuelSysFlags1,Z,#$40,L183CE             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
@@ -12396,10 +12396,10 @@ L183CE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysLean1Adapt ($183D0)
-; Called from: FuelSysLean1Monitor
+; FuelSysTooRich1Adapt ($183D0)
+; Called from: FuelSysTooRich1Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysLean1Adapt:
+FuelSysTooRich1Adapt:
         LDAA    >O2AdaptValue1,Z
         CMPA    >O2AdaptMin
         BNE     L1842C
@@ -12419,17 +12419,17 @@ L183FA:
         BSET    <FuelSysFlags1,Z,#$40                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
         CLR     >FuelSysCount3,Z
 L18408:
-        CLR     >FuelSysLeanFaults,Z
+        CLR     >FuelSysTooRichFaults,Z
         INC     >FuelSysCount3,Z
         LDAA    >FuelSysCount3,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L18420        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L18424
 L18420:
-        CMPA    >FuelSysLeanCount
+        CMPA    >FuelSysTooRichCount
 L18424:
         BCS     L1843A
-        BSET    <FuelSysFlags1,Z,#$80                    ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1
+        BSET    <FuelSysFlags1,Z,#$80                    ; bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 1
         BRA     L1843A
 L1842C:
         BRCLR   >FuelSysFlags1,Z,#$40,L1843A             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
@@ -12439,10 +12439,10 @@ L1843A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysLean1Check ($1843C)
-; Called from: FuelSysLean1Monitor
+; FuelSysTooRich1Check ($1843C)
+; Called from: FuelSysTooRich1Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysLean1Check:
+FuelSysTooRich1Check:
         LDAA    >O2AdaptValue1,Z
         LDAB    >ShortTermTrim1,Z
         JSR     FuelSysWarmupScale
@@ -12459,39 +12459,39 @@ L18462:
         LDAA    >PurgeRamp,Z
         LDX     #FuelSysLimitScale
         JSR     Lookup2D
-        BRCLR   >FuelSysFlags1,Z,#$10,L18478             ; bit 4: lean condition counted in the current window, bank 1
-        ADDB    >FuelSysLeanHyst
+        BRCLR   >FuelSysFlags1,Z,#$10,L18478             ; bit 4: rich condition counted in the current window, bank 1
+        ADDB    >FuelSysTooRichHyst
 L18478:
         STAB    <Scratch2,Z
         CMPB    >FuelSys59F,Z
         BCS     L184B2
-        BRSET   >FuelSysFlags1,Z,#$10,L1848E             ; bit 4: lean condition counted in the current window, bank 1
-        BSET    <FuelSysFlags1,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 1
+        BRSET   >FuelSysFlags1,Z,#$10,L1848E             ; bit 4: rich condition counted in the current window, bank 1
+        BSET    <FuelSysFlags1,Z,#$10                    ; bit 4: rich condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L1848E:
-        CLR     >FuelSysLeanFaults,Z
+        CLR     >FuelSysTooRichFaults,Z
         INC     >FuelSysCount1,Z
         LDAA    >FuelSysCount1,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L184A6        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L184AA
 L184A6:
-        CMPA    >FuelSysLeanFaultCount
+        CMPA    >FuelSysTooRichFaultCount
 L184AA:
         BCS     L184F0
-        BSET    <FuelSysFlags1,Z,#$20                    ; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 1
+        BSET    <FuelSysFlags1,Z,#$20                    ; bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 1
         BRA     L184F0
 L184B2:
         BRSET   >MonRecordC0,Z,#$80,L184E2
         LDX     #$EF28
         JSR     FuelSysConditions
         BNE     L184E2
-        LDAA    >FuelSysLeanFaults,Z
+        LDAA    >FuelSysTooRichFaults,Z
         INCA
-        STAA    >FuelSysLeanFaults,Z
-        CMPA    >FuelSysLeanFaultCount
+        STAA    >FuelSysTooRichFaults,Z
+        CMPA    >FuelSysTooRichFaultCount
         BCS     L184E2
-        BSET    <MonStatusFuelSysLean1,Z,#$40
+        BSET    <MonStatusFuelSysTooRich1,Z,#$40
         LDAA    <MonRecordC0,Z
         INCA
         BPL     L184DE
@@ -12500,26 +12500,26 @@ L184DE:
         ORAA    #$80
         STAA    <MonRecordC0,Z
 L184E2:
-        BRCLR   >FuelSysFlags1,Z,#$10,L184F0             ; bit 4: lean condition counted in the current window, bank 1
-        BCLR    <FuelSysFlags1,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 1
+        BRCLR   >FuelSysFlags1,Z,#$10,L184F0             ; bit 4: rich condition counted in the current window, bank 1
+        BCLR    <FuelSysFlags1,Z,#$10                    ; bit 4: rich condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L184F0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysLean1Done ($184F2)
-; Called from: FuelSysLean1Monitor
+; FuelSysTooRich1Done ($184F2)
+; Called from: FuelSysTooRich1Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysLean1Done:
-        BCLR    <FuelSysFlags1,Z,#$50                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1; bit 4: lean condition counted in the current window, bank 1
+FuelSysTooRich1Done:
+        BCLR    <FuelSysFlags1,Z,#$50                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1; bit 4: rich condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
         CLR     >FuelSysCount3,Z
         LDAA    #$80
         CMPA    <MonRecordC0,Z
         BEQ     L18520
         STAA    <MonRecordC0,Z
-        BSET    <MonStatusFuelSysLean1,Z,#$48
-        BCLR    <MonStatusFuelSysLean1,Z,#$84
+        BSET    <MonStatusFuelSysTooRich1,Z,#$48
+        BCLR    <MonStatusFuelSysTooRich1,Z,#$84
         BRSET   $00D7,Z,#$08,L18520
         BSET    $D7,Z,#$08
         LDX     #$EF28
@@ -12528,17 +12528,17 @@ L18520:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysLean2Monitor ($18522)
+; FuelSysTooRich2Monitor ($18522)
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
-FuelSysLean2Monitor:
+FuelSysTooRich2Monitor:
         TST     >O2MemChangeHold2,Z
         BEQ     L1852E
         DEC     >O2MemChangeHold2,Z
         BRA     L18598
 L1852E:
         BRCLR   >MonitorDisableFlags,Z,#$07,L1853A       ; bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude); bit 0: battery (ambient) temperature below MonEnableBattTempMin
-        CLR     >FuelSysLeanFaults,Z
+        CLR     >FuelSysTooRichFaults,Z
         BRA     L1857C
 L1853A:
         BRCLR   >DiagStatusFlags,Z,#$01,L1854A           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
@@ -12553,27 +12553,27 @@ L1854A:
         BRCLR   >Options032F,#$40,L1857C                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         TST     >SystemTestMode,Z
         BNE     L1857C
-        JSR     FuelSysLean2Adapt
-        JSR     FuelSysLean2Check
-        BRCLR   >FuelSysFlags2,Z,#$A0,L18598             ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 2
-        JSR     FuelSysLean2Done
+        JSR     FuelSysTooRich2Adapt
+        JSR     FuelSysTooRich2Check
+        BRCLR   >FuelSysFlags2,Z,#$A0,L18598             ; bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 2; bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 2
+        JSR     FuelSysTooRich2Done
         BRA     L18598
 L1857C:
-        BRCLR   >FuelSysFlags2,Z,#$10,L1858A             ; bit 4: lean condition counted in the current window, bank 2
-        BCLR    <FuelSysFlags2,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 2
+        BRCLR   >FuelSysFlags2,Z,#$10,L1858A             ; bit 4: rich condition counted in the current window, bank 2
+        BCLR    <FuelSysFlags2,Z,#$10                    ; bit 4: rich condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L1858A:
         BRCLR   >FuelSysFlags2,Z,#$40,L18598             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
         BCLR    <FuelSysFlags2,Z,#$40                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
-        CLR     >FuelSysRichCount2,Z
+        CLR     >FuelSysTooLeanCount2,Z
 L18598:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysLean2Adapt ($1859A)
-; Called from: FuelSysLean2Monitor
+; FuelSysTooRich2Adapt ($1859A)
+; Called from: FuelSysTooRich2Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysLean2Adapt:
+FuelSysTooRich2Adapt:
         LDAA    >O2AdaptValue2,Z
         CMPA    >O2AdaptMin
         BNE     L185F6
@@ -12591,32 +12591,32 @@ FuelSysLean2Adapt:
 L185C4:
         BRSET   >FuelSysFlags2,Z,#$40,L185D2             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
         BSET    <FuelSysFlags2,Z,#$40                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
-        CLR     >FuelSysRichCount2,Z
+        CLR     >FuelSysTooLeanCount2,Z
 L185D2:
         CLR     >FuelSys5AD,Z
-        INC     >FuelSysRichCount2,Z
-        LDAA    >FuelSysRichCount2,Z
+        INC     >FuelSysTooLeanCount2,Z
+        LDAA    >FuelSysTooLeanCount2,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L185EA        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L185EE
 L185EA:
-        CMPA    >FuelSysLeanCount
+        CMPA    >FuelSysTooRichCount
 L185EE:
         BCS     L18604
-        BSET    <FuelSysFlags2,Z,#$80                    ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2
+        BSET    <FuelSysFlags2,Z,#$80                    ; bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 2
         BRA     L18604
 L185F6:
         BRCLR   >FuelSysFlags2,Z,#$40,L18604             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
         BCLR    <FuelSysFlags2,Z,#$40                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
-        CLR     >FuelSysRichCount2,Z
+        CLR     >FuelSysTooLeanCount2,Z
 L18604:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysLean2Check ($18606)
-; Called from: FuelSysLean2Monitor
+; FuelSysTooRich2Check ($18606)
+; Called from: FuelSysTooRich2Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysLean2Check:
+FuelSysTooRich2Check:
         LDAA    >O2AdaptValue2,Z
         LDAB    >ShortTermTrim2,Z
         JSR     FuelSysWarmupScale
@@ -12633,14 +12633,14 @@ L1862C:
         LDAA    >PurgeRamp,Z
         LDX     #FuelSysLimitScale
         JSR     Lookup2D
-        BRCLR   >FuelSysFlags2,Z,#$10,L18642             ; bit 4: lean condition counted in the current window, bank 2
-        ADDB    >FuelSysLeanHyst
+        BRCLR   >FuelSysFlags2,Z,#$10,L18642             ; bit 4: rich condition counted in the current window, bank 2
+        ADDB    >FuelSysTooRichHyst
 L18642:
         STAB    <Scratch2,Z
         CMPB    >FuelSys5A0,Z
         BCS     L1867C
-        BRSET   >FuelSysFlags2,Z,#$10,L18658             ; bit 4: lean condition counted in the current window, bank 2
-        BSET    <FuelSysFlags2,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 2
+        BRSET   >FuelSysFlags2,Z,#$10,L18658             ; bit 4: rich condition counted in the current window, bank 2
+        BSET    <FuelSysFlags2,Z,#$10                    ; bit 4: rich condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L18658:
         CLR     >FuelSys5AD,Z
@@ -12650,10 +12650,10 @@ L18658:
         CMPA    >FuelSysWork,Z
         BRA     L18674
 L18670:
-        CMPA    >FuelSysLeanFaultCount
+        CMPA    >FuelSysTooRichFaultCount
 L18674:
         BCS     L186BA
-        BSET    <FuelSysFlags2,Z,#$20                    ; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 2
+        BSET    <FuelSysFlags2,Z,#$20                    ; bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 2
         BRA     L186BA
 L1867C:
         BRSET   >MonRecordC4,Z,#$80,L186AC
@@ -12663,9 +12663,9 @@ L1867C:
         LDAA    >FuelSys5AD,Z
         INCA
         STAA    >FuelSys5AD,Z
-        CMPA    >FuelSysLeanFaultCount
+        CMPA    >FuelSysTooRichFaultCount
         BCS     L186AC
-        BSET    <MonStatusFuelSysLean2,Z,#$40
+        BSET    <MonStatusFuelSysTooRich2,Z,#$40
         LDAA    <MonRecordC4,Z
         INCA
         BPL     L186A8
@@ -12674,26 +12674,26 @@ L186A8:
         ORAA    #$80
         STAA    <MonRecordC4,Z
 L186AC:
-        BRCLR   >FuelSysFlags2,Z,#$10,L186BA             ; bit 4: lean condition counted in the current window, bank 2
-        BCLR    <FuelSysFlags2,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 2
+        BRCLR   >FuelSysFlags2,Z,#$10,L186BA             ; bit 4: rich condition counted in the current window, bank 2
+        BCLR    <FuelSysFlags2,Z,#$10                    ; bit 4: rich condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L186BA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysLean2Done ($186BC)
-; Called from: FuelSysLean2Monitor
+; FuelSysTooRich2Done ($186BC)
+; Called from: FuelSysTooRich2Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysLean2Done:
-        BCLR    <FuelSysFlags2,Z,#$50                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2; bit 4: lean condition counted in the current window, bank 2
+FuelSysTooRich2Done:
+        BCLR    <FuelSysFlags2,Z,#$50                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2; bit 4: rich condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
-        CLR     >FuelSysRichCount2,Z
+        CLR     >FuelSysTooLeanCount2,Z
         LDAA    #$80
         CMPA    <MonRecordC4,Z
         BEQ     L186EA
         STAA    <MonRecordC4,Z
-        BSET    <MonStatusFuelSysLean2,Z,#$48
-        BCLR    <MonStatusFuelSysLean2,Z,#$84
+        BSET    <MonStatusFuelSysTooRich2,Z,#$48
+        BCLR    <MonStatusFuelSysTooRich2,Z,#$84
         BRSET   >MisfireRecordD9,Z,#$08,L186EA
         BSET    <MisfireRecordD9,Z,#$08
         LDX     #$EF3C
@@ -12702,12 +12702,12 @@ L186EA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysRich1Monitor ($186EC)
+; FuelSysTooLean1Monitor ($186EC)
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
-FuelSysRich1Monitor:
+FuelSysTooLean1Monitor:
         BRCLR   >MonitorDisableFlags,Z,#$07,L186F8       ; bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude); bit 0: battery (ambient) temperature below MonEnableBattTempMin
-        CLR     >FuelSysRichFaults,Z
+        CLR     >FuelSysTooLeanFaults,Z
         BRA     L1873A
 L186F8:
         BRCLR   >DiagStatusFlags,Z,#$01,L18708           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
@@ -12722,14 +12722,14 @@ L18708:
         BRCLR   >Options032F,#$80,L1873A                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         TST     >SystemTestMode,Z
         BNE     L1873A
-        JSR     FuelSysRich1Adapt
-        JSR     FuelSysRich1Check
-        BRCLR   >FuelSysFlags1,Z,#$0A,L18756             ; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 1
-        JSR     FuelSysRich1Done
+        JSR     FuelSysTooLean1Adapt
+        JSR     FuelSysTooLean1Check
+        BRCLR   >FuelSysFlags1,Z,#$0A,L18756             ; bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 1; bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 1
+        JSR     FuelSysTooLean1Done
         BRA     L18756
 L1873A:
-        BRCLR   >FuelSysFlags1,Z,#$01,L18748             ; bit 0: rich condition counted in the current window, bank 1
-        BCLR    <FuelSysFlags1,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 1
+        BRCLR   >FuelSysFlags1,Z,#$01,L18748             ; bit 0: lean condition counted in the current window, bank 1
+        BCLR    <FuelSysFlags1,Z,#$01                    ; bit 0: lean condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L18748:
         BRCLR   >FuelSysFlags1,Z,#$04,L18756             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
@@ -12739,10 +12739,10 @@ L18756:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysRich1Adapt ($18758)
-; Called from: FuelSysRich1Monitor
+; FuelSysTooLean1Adapt ($18758)
+; Called from: FuelSysTooLean1Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysRich1Adapt:
+FuelSysTooLean1Adapt:
         LDAA    >O2AdaptValue1,Z
         CMPA    >O2AdaptMax
         BNE     L1879E
@@ -12753,17 +12753,17 @@ FuelSysRich1Adapt:
         BSET    <FuelSysFlags1,Z,#$04                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
         CLR     >FuelSysCount3,Z
 L1877A:
-        CLR     >FuelSysRichFaults,Z
+        CLR     >FuelSysTooLeanFaults,Z
         INC     >FuelSysCount3,Z
         LDAA    >FuelSysCount3,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L18792        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L18796
 L18792:
-        CMPA    >FuelSysRichCount
+        CMPA    >FuelSysTooLeanCount
 L18796:
         BCS     L187AC
-        BSET    <FuelSysFlags1,Z,#$08                    ; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1
+        BSET    <FuelSysFlags1,Z,#$08                    ; bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 1
         BRA     L187AC
 L1879E:
         BRCLR   >FuelSysFlags1,Z,#$04,L187AC             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
@@ -12773,10 +12773,10 @@ L187AC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysRich1Check ($187AE)
-; Called from: FuelSysRich1Monitor
+; FuelSysTooLean1Check ($187AE)
+; Called from: FuelSysTooLean1Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysRich1Check:
+FuelSysTooLean1Check:
         LDAA    >O2AdaptValue1,Z
         LDAB    >ShortTermTrim1,Z
         JSR     FuelSysWarmupScale
@@ -12784,39 +12784,39 @@ FuelSysRich1Check:
         LDAA    >PurgeRamp,Z
         LDX     #Tab2D_2B14
         JSR     Lookup2D
-        BRCLR   >FuelSysFlags1,Z,#$01,L187D4             ; bit 0: rich condition counted in the current window, bank 1
-        SUBB    >FuelSysRichHyst
+        BRCLR   >FuelSysFlags1,Z,#$01,L187D4             ; bit 0: lean condition counted in the current window, bank 1
+        SUBB    >FuelSysTooLeanHyst
 L187D4:
         STAB    <Scratch2,Z
         CMPB    >FuelSys59F,Z
         BHI     L1880E
-        BRSET   >FuelSysFlags1,Z,#$01,L187EA             ; bit 0: rich condition counted in the current window, bank 1
-        BSET    <FuelSysFlags1,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 1
+        BRSET   >FuelSysFlags1,Z,#$01,L187EA             ; bit 0: lean condition counted in the current window, bank 1
+        BSET    <FuelSysFlags1,Z,#$01                    ; bit 0: lean condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L187EA:
-        CLR     >FuelSysRichFaults,Z
+        CLR     >FuelSysTooLeanFaults,Z
         INC     >FuelSysCount1,Z
         LDAA    >FuelSysCount1,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L18802        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L18806
 L18802:
-        CMPA    >FuelSysRichFaultCount
+        CMPA    >FuelSysTooLeanFaultCount
 L18806:
         BCS     L1884C
-        BSET    <FuelSysFlags1,Z,#$02                    ; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 1
+        BSET    <FuelSysFlags1,Z,#$02                    ; bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 1
         BRA     L1884C
 L1880E:
         BRSET   >MonRecordB8,Z,#$80,L1883E
         LDX     #$EF00
         JSR     FuelSysConditions
         BNE     L1883E
-        LDAA    >FuelSysRichFaults,Z
+        LDAA    >FuelSysTooLeanFaults,Z
         INCA
-        STAA    >FuelSysRichFaults,Z
-        CMPA    >FuelSysRichFaultCount
+        STAA    >FuelSysTooLeanFaults,Z
+        CMPA    >FuelSysTooLeanFaultCount
         BCS     L1883E
-        BSET    <MonStatusFuelSysRich1,Z,#$40
+        BSET    <MonStatusFuelSysTooLean1,Z,#$40
         LDAA    <MonRecordB8,Z
         INCA
         BPL     L1883A
@@ -12825,26 +12825,26 @@ L1883A:
         ORAA    #$80
         STAA    <MonRecordB8,Z
 L1883E:
-        BRCLR   >FuelSysFlags1,Z,#$01,L1884C             ; bit 0: rich condition counted in the current window, bank 1
-        BCLR    <FuelSysFlags1,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 1
+        BRCLR   >FuelSysFlags1,Z,#$01,L1884C             ; bit 0: lean condition counted in the current window, bank 1
+        BCLR    <FuelSysFlags1,Z,#$01                    ; bit 0: lean condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L1884C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysRich1Done ($1884E)
-; Called from: FuelSysRich1Monitor
+; FuelSysTooLean1Done ($1884E)
+; Called from: FuelSysTooLean1Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysRich1Done:
-        BCLR    <FuelSysFlags1,Z,#$05                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1; bit 0: rich condition counted in the current window, bank 1
+FuelSysTooLean1Done:
+        BCLR    <FuelSysFlags1,Z,#$05                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1; bit 0: lean condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
         CLR     >FuelSysCount3,Z
         LDAA    #$80
         CMPA    <MonRecordB8,Z
         BEQ     L1887C
         STAA    <MonRecordB8,Z
-        BSET    <MonStatusFuelSysRich1,Z,#$48
-        BCLR    <MonStatusFuelSysRich1,Z,#$84
+        BSET    <MonStatusFuelSysTooLean1,Z,#$48
+        BCLR    <MonStatusFuelSysTooLean1,Z,#$84
         BRSET   $00CF,Z,#$08,L1887C
         BSET    $CF,Z,#$08
         LDX     #$EF00
@@ -12853,10 +12853,10 @@ L1887C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysRich2Monitor ($1887E)
+; FuelSysTooLean2Monitor ($1887E)
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
-FuelSysRich2Monitor:
+FuelSysTooLean2Monitor:
         BRCLR   >MonitorDisableFlags,Z,#$07,L1888A       ; bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude); bit 0: battery (ambient) temperature below MonEnableBattTempMin
         CLR     >FuelSysCount2B,Z
         BRA     L188CC
@@ -12873,27 +12873,27 @@ L1889A:
         BRCLR   >Options032F,#$40,L188CC                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         TST     >SystemTestMode,Z
         BNE     L188CC
-        JSR     FuelSysRich2Adapt
-        JSR     FuelSysRich2Check
-        BRCLR   >FuelSysFlags2,Z,#$0A,L188E8             ; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 2
-        JSR     FuelSysRich2Done
+        JSR     FuelSysTooLean2Adapt
+        JSR     FuelSysTooLean2Check
+        BRCLR   >FuelSysFlags2,Z,#$0A,L188E8             ; bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 2; bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 2
+        JSR     FuelSysTooLean2Done
         BRA     L188E8
 L188CC:
-        BRCLR   >FuelSysFlags2,Z,#$01,L188DA             ; bit 0: rich condition counted in the current window, bank 2
-        BCLR    <FuelSysFlags2,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 2
+        BRCLR   >FuelSysFlags2,Z,#$01,L188DA             ; bit 0: lean condition counted in the current window, bank 2
+        BCLR    <FuelSysFlags2,Z,#$01                    ; bit 0: lean condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L188DA:
         BRCLR   >FuelSysFlags2,Z,#$04,L188E8             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
         BCLR    <FuelSysFlags2,Z,#$04                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
-        CLR     >FuelSysRichCount2,Z
+        CLR     >FuelSysTooLeanCount2,Z
 L188E8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysRich2Adapt ($188EA)
-; Called from: FuelSysRich2Monitor
+; FuelSysTooLean2Adapt ($188EA)
+; Called from: FuelSysTooLean2Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysRich2Adapt:
+FuelSysTooLean2Adapt:
         LDAA    >O2AdaptValue2,Z
         CMPA    >O2AdaptMax
         BNE     L18930
@@ -12902,32 +12902,32 @@ FuelSysRich2Adapt:
         BNE     L18930
         BRSET   >FuelSysFlags2,Z,#$04,L1890C             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
         BSET    <FuelSysFlags2,Z,#$04                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
-        CLR     >FuelSysRichCount2,Z
+        CLR     >FuelSysTooLeanCount2,Z
 L1890C:
         CLR     >FuelSysCount2B,Z
-        INC     >FuelSysRichCount2,Z
-        LDAA    >FuelSysRichCount2,Z
+        INC     >FuelSysTooLeanCount2,Z
+        LDAA    >FuelSysTooLeanCount2,Z
         BRCLR   >ClosedLoopMonFlags,Z,#$80,L18924        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L18928
 L18924:
-        CMPA    >FuelSysRichCount
+        CMPA    >FuelSysTooLeanCount
 L18928:
         BCS     L1893E
-        BSET    <FuelSysFlags2,Z,#$08                    ; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2
+        BSET    <FuelSysFlags2,Z,#$08                    ; bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 2
         BRA     L1893E
 L18930:
         BRCLR   >FuelSysFlags2,Z,#$04,L1893E             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
         BCLR    <FuelSysFlags2,Z,#$04                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
-        CLR     >FuelSysRichCount2,Z
+        CLR     >FuelSysTooLeanCount2,Z
 L1893E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysRich2Check ($18940)
-; Called from: FuelSysRich2Monitor
+; FuelSysTooLean2Check ($18940)
+; Called from: FuelSysTooLean2Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysRich2Check:
+FuelSysTooLean2Check:
         LDAA    >O2AdaptValue2,Z
         LDAB    >ShortTermTrim2,Z
         JSR     FuelSysWarmupScale
@@ -12935,14 +12935,14 @@ FuelSysRich2Check:
         LDAA    >PurgeRamp,Z
         LDX     #Tab2D_2B14
         JSR     Lookup2D
-        BRCLR   >FuelSysFlags2,Z,#$01,L18966             ; bit 0: rich condition counted in the current window, bank 2
-        SUBB    >FuelSysRichHyst
+        BRCLR   >FuelSysFlags2,Z,#$01,L18966             ; bit 0: lean condition counted in the current window, bank 2
+        SUBB    >FuelSysTooLeanHyst
 L18966:
         STAB    <Scratch2,Z
         CMPB    >FuelSys5A0,Z
         BHI     L189A0
-        BRSET   >FuelSysFlags2,Z,#$01,L1897C             ; bit 0: rich condition counted in the current window, bank 2
-        BSET    <FuelSysFlags2,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 2
+        BRSET   >FuelSysFlags2,Z,#$01,L1897C             ; bit 0: lean condition counted in the current window, bank 2
+        BSET    <FuelSysFlags2,Z,#$01                    ; bit 0: lean condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L1897C:
         CLR     >FuelSysCount2B,Z
@@ -12952,10 +12952,10 @@ L1897C:
         CMPA    >FuelSysWork,Z
         BRA     L18998
 L18994:
-        CMPA    >FuelSysRichFaultCount
+        CMPA    >FuelSysTooLeanFaultCount
 L18998:
         BCS     L189DE
-        BSET    <FuelSysFlags2,Z,#$02                    ; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 2
+        BSET    <FuelSysFlags2,Z,#$02                    ; bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 2
         BRA     L189DE
 L189A0:
         BRSET   >MonRecordBC,Z,#$80,L189D0
@@ -12965,9 +12965,9 @@ L189A0:
         LDAA    >FuelSysCount2B,Z
         INCA
         STAA    >FuelSysCount2B,Z
-        CMPA    >FuelSysRichFaultCount
+        CMPA    >FuelSysTooLeanFaultCount
         BCS     L189D0
-        BSET    <MonStatusFuelSysRich2,Z,#$40
+        BSET    <MonStatusFuelSysTooLean2,Z,#$40
         LDAA    <MonRecordBC,Z
         INCA
         BPL     L189CC
@@ -12976,26 +12976,26 @@ L189CC:
         ORAA    #$80
         STAA    <MonRecordBC,Z
 L189D0:
-        BRCLR   >FuelSysFlags2,Z,#$01,L188E8             ; bit 0: rich condition counted in the current window, bank 2
-        BCLR    <FuelSysFlags2,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 2
+        BRCLR   >FuelSysFlags2,Z,#$01,L188E8             ; bit 0: lean condition counted in the current window, bank 2
+        BCLR    <FuelSysFlags2,Z,#$01                    ; bit 0: lean condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L189DE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysRich2Done ($189E0)
-; Called from: FuelSysRich2Monitor
+; FuelSysTooLean2Done ($189E0)
+; Called from: FuelSysTooLean2Monitor
 ;---------------------------------------------------------------------------------------------------
-FuelSysRich2Done:
-        BCLR    <FuelSysFlags2,Z,#$05                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2; bit 0: rich condition counted in the current window, bank 2
+FuelSysTooLean2Done:
+        BCLR    <FuelSysFlags2,Z,#$05                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2; bit 0: lean condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
-        CLR     >FuelSysRichCount2,Z
+        CLR     >FuelSysTooLeanCount2,Z
         LDAA    #$80
         CMPA    <MonRecordBC,Z
         BEQ     L18A0E
         STAA    <MonRecordBC,Z
-        BSET    <MonStatusFuelSysRich2,Z,#$48
-        BCLR    <MonStatusFuelSysRich2,Z,#$84
+        BSET    <MonStatusFuelSysTooLean2,Z,#$48
+        BCLR    <MonStatusFuelSysTooLean2,Z,#$84
         BRSET   $00D3,Z,#$08,L18A0E
         BSET    $D3,Z,#$08
         LDX     #$EF14
@@ -13027,7 +13027,7 @@ FuelSysScaleMul:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysWarmupScale ($18A32)
-; Called from: FuelSysLean1Check, FuelSysLean2Check, FuelSysRich1Check, FuelSysRich2Check
+; Called from: FuelSysTooRich1Check, FuelSysTooRich2Check, FuelSysTooLean1Check, FuelSysTooLean2Check
 ;---------------------------------------------------------------------------------------------------
 FuelSysWarmupScale:
         JSR     FuelSysScaleMul
@@ -13361,12 +13361,12 @@ L18D84:
         BRA     L18DB6
 L18D90:
         BCLR    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
-        LDY     #$33B0
+        LDY     #MisfireEnableCheckConds2
         JSR     ConditionTable
         BEQ     L18DA2
         BSET    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
 L18DA2:
-        LDY     #$3373
+        LDY     #MisfireEnableCheckConds
         JSR     ConditionTable
         BEQ     L18DB2
         BSET    >MisfireFlags2,Z,#$01                    ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
@@ -20095,10 +20095,10 @@ ClosedLoopMemClear:
         BRCLR   >MonEnableFlags2,Z,#$80,L1D476           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRCLR   <EngineStateFlags,Z,#$80,L1D476          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BSET    >ClosedLoopMonFlags,Z,#$80               ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
-        BRCLR   >FuelSysFlags1,Z,#$AA,L1D46A             ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 1; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 1
+        BRCLR   >FuelSysFlags1,Z,#$AA,L1D46A             ; bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 1; bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 1; bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 1; bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 1
         BSET    >MonData645,Z,#$80
 L1D46A:
-        BRCLR   >FuelSysFlags2,Z,#$AA,L1D474             ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 2; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 2
+        BRCLR   >FuelSysFlags2,Z,#$AA,L1D474             ; bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 2; bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 2; bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 2; bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 2
         BSET    >MonData645,Z,#$80
 L1D474:
         BRA     L1D48A
@@ -22644,16 +22644,16 @@ L1F0D0:
         JSR     LdpMonitor
         BRA     L1F0EE
 L1F0D6:
-        JSR     FuelSysRich1Monitor
+        JSR     FuelSysTooLean1Monitor
         BRA     L1F0EE
 L1F0DC:
-        JSR     FuelSysRich2Monitor
+        JSR     FuelSysTooLean2Monitor
         BRA     L1F0EE
 L1F0E2:
-        JSR     FuelSysLean1Monitor
+        JSR     FuelSysTooRich1Monitor
         BRA     L1F0EE
 L1F0E8:
-        JSR     FuelSysLean2Monitor
+        JSR     FuelSysTooRich2Monitor
         BRA     L1F0EE
 L1F0EE:
         PULM    K,Y,X,E,D
@@ -23391,10 +23391,10 @@ ObdClearCodes:
         CLR     <MonStatusPurge,Z
         CLR     <MonStatusEgrFlow,Z
         CLR     <MisfireRecordE4,Z
-        CLR     <MonStatusFuelSysRich1,Z
-        CLR     <MonStatusFuelSysRich2,Z
-        CLR     <MonStatusFuelSysLean1,Z
-        CLR     <MonStatusFuelSysLean2,Z
+        CLR     <MonStatusFuelSysTooLean1,Z
+        CLR     <MonStatusFuelSysTooLean2,Z
+        CLR     <MonStatusFuelSysTooRich1,Z
+        CLR     <MonStatusFuelSysTooRich2,Z
         LBSR    ObdRecordFlags
         CLR     >ObdRec14F,Z
         CLR     >ObdRec151,Z
@@ -23621,7 +23621,7 @@ L1F9E8:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysConditions ($1F9EA)
-; Called from: FuelSysLean1Check, FuelSysLean2Check, FuelSysRich1Check, FuelSysRich2Check, MisfireTransient
+; Called from: FuelSysTooRich1Check, FuelSysTooRich2Check, FuelSysTooLean1Check, FuelSysTooLean2Check, MisfireTransient
 ;---------------------------------------------------------------------------------------------------
 FuelSysConditions:
         PSHM    D,E,Y,K
@@ -23678,7 +23678,7 @@ L1FA52:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysConditions2 ($1FA56)
-; Called from: FuelSysLean1Done, FuelSysLean2Done, FuelSysRich1Done, FuelSysRich2Done, MisfireThreshold
+; Called from: FuelSysTooRich1Done, FuelSysTooRich2Done, FuelSysTooLean1Done, FuelSysTooLean2Done, MisfireThreshold
 ;---------------------------------------------------------------------------------------------------
 FuelSysConditions2:
         PSHM    D,E,Y,K
@@ -23987,8 +23987,8 @@ L1FD3C:
         CPX     #$EF3C
         BNE     L1FD90
 L1FD50:
-        LDAA    <MonStatusFuelSysLean1,Z
-        LDAB    <MonStatusFuelSysLean2,Z
+        LDAA    <MonStatusFuelSysTooRich1,Z
+        LDAB    <MonStatusFuelSysTooRich2,Z
         BITA    #$04
         BNE     L1FD5C
         BITB    #$04
@@ -24025,8 +24025,8 @@ L1FD90:
         CPX     #$EF14
         BNE     L1FDDC
 L1FD9C:
-        LDAA    <MonStatusFuelSysRich1,Z
-        LDAB    <MonStatusFuelSysRich2,Z
+        LDAA    <MonStatusFuelSysTooLean1,Z
+        LDAB    <MonStatusFuelSysTooLean2,Z
         BITA    #$04
         BNE     L1FDA8
         BITB    #$04

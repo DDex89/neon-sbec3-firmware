@@ -103,23 +103,23 @@ ThrottleState    equ $0025        ; $F8025
 ;                 bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
 ;                 bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
 FuelSysFlags1    equ $0026        ; $F8026
-;                 bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1
+;                 bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 1
 ;                 bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
-;                 bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 1
-;                 bit 4: lean condition counted in the current window, bank 1
-;                 bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1
+;                 bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 1
+;                 bit 4: rich condition counted in the current window, bank 1
+;                 bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 1
 ;                 bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
-;                 bit 1: rich fault count reached (FuelSysRichFaultCount), bank 1
-;                 bit 0: rich condition counted in the current window, bank 1
+;                 bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 1
+;                 bit 0: lean condition counted in the current window, bank 1
 FuelSysFlags2    equ $0027        ; $F8027
-;                 bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2
+;                 bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 2
 ;                 bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
-;                 bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 2
-;                 bit 4: lean condition counted in the current window, bank 2
-;                 bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2
+;                 bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 2
+;                 bit 4: rich condition counted in the current window, bank 2
+;                 bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 2
 ;                 bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
-;                 bit 1: rich fault count reached (FuelSysRichFaultCount), bank 2
-;                 bit 0: rich condition counted in the current window, bank 2
+;                 bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 2
+;                 bit 0: lean condition counted in the current window, bank 2
 FieldFlags       equ $0028        ; $F8028
 ;                 bit 6: field ramp minimum time after start passed (FieldRampTimeMin)
 ;                 bit 5: field ramp reached its end step (FieldRampControl)
@@ -226,10 +226,10 @@ MonStatusPurge   equ $00BD        ; $F80BD
 ;                 bit 1: read by ObdReadiness and PurgeFlowTest
 MonStatusEgrFlow equ $00BE        ; $F80BE
 MisfireRecordE4  equ $00BF        ; $F80BF
-MonStatusFuelSysRich1 equ $00C0        ; $F80C0
-MonStatusFuelSysRich2 equ $00C1        ; $F80C1
-MonStatusFuelSysLean1 equ $00C2        ; $F80C2
-MonStatusFuelSysLean2 equ $00C3        ; $F80C3
+MonStatusFuelSysTooLean1 equ $00C0        ; $F80C0
+MonStatusFuelSysTooLean2 equ $00C1        ; $F80C1
+MonStatusFuelSysTooRich1 equ $00C2        ; $F80C2
+MonStatusFuelSysTooRich2 equ $00C3        ; $F80C3
 MonStatusLdp     equ $00C4        ; $F80C4
 FreezeFrameCount equ $00C6        ; $F80C6
 FreezeFrameFault equ $00C7        ; $F80C7
@@ -595,14 +595,14 @@ FuelSys5A0       equ $0267        ; $F8267
 FuelSysCount1    equ $0268        ; $F8268
 FuelSysCount2    equ $0269        ; $F8269
 FuelSysCount3    equ $026A        ; $F826A
-FuelSysRichCount2 equ $026B        ; $F826B
+FuelSysTooLeanCount2 equ $026B        ; $F826B
 FuelSys5A5       equ $026C        ; $F826C
 O2MemChangeHold2 equ $026D        ; $F826D
 FuelSysDelay1    equ $026E        ; $F826E
 FuelSysDelay2    equ $026F        ; $F826F
-FuelSysRichFaults equ $0270        ; $F8270
+FuelSysTooLeanFaults equ $0270        ; $F8270
 FuelSysCount2B   equ $0271        ; $F8271
-FuelSysLeanFaults equ $0272        ; $F8272
+FuelSysTooRichFaults equ $0272        ; $F8272
 FuelSys5AD       equ $0273        ; $F8273
 O2Switch568      equ $0274        ; $F8274
 O2Switch569      equ $0275        ; $F8275

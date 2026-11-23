@@ -21,8 +21,8 @@
   <CATEGORY index="0xB" name="Knock" />
   <CATEGORY index="0xC" name="Unidentified: IacBaseCalc" />
   <CATEGORY index="0xD" name="Unidentified: IdleTargetControl" />
-  <CATEGORY index="0xE" name="Unidentified: FuelSysRich1Monitor" />
-  <CATEGORY index="0xF" name="Unidentified: FuelSysLean1Monitor" />
+  <CATEGORY index="0xE" name="Unidentified: FuelSysTooLean1Monitor" />
+  <CATEGORY index="0xF" name="Unidentified: FuelSysTooRich1Monitor" />
   <CATEGORY index="0x10" name="Faults" />
   <CATEGORY index="0x11" name="Other" />
   <CATEGORY index="0x12" name="Options" />

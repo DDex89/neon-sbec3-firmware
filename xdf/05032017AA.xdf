@@ -16426,7 +16426,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x2B0" flags="0x0">
   <title>FuelSysLimit2</title>
-  <description>As FuelSysLimit for the second pair of routines (FuelSysRich1Check, FuelSysRich2Check) $55C7, 3D; inputs: result of Lookup2D x FlexEthanol</description>
+  <description>As FuelSysLimit for the second pair of routines (FuelSysTooLean1Check, FuelSysTooLean2Check) $55C7, 3D; inputs: result of Lookup2D x FlexEthanol</description>
   <CATEGORYMEM index="0" category="27" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x55CA" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -16466,7 +16466,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x2B1" flags="0x0">
   <title>FuelSysLimitScale</title>
-  <description>Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): purge ramp PurgeRamp to row position of FuelSysLimit $55E8, 2D; inputs: PurgeRamp</description>
+  <description>Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): purge ramp PurgeRamp to row position of FuelSysLimit $55E8, 2D; inputs: PurgeRamp</description>
   <CATEGORYMEM index="0" category="27" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -16502,7 +16502,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x2B2" flags="0x0">
   <title>FuelSysLimitScale2</title>
-  <description>As FuelSysLimitScale for FuelSysRich1Check, FuelSysRich2Check $55F4, 2D; inputs: PurgeRamp</description>
+  <description>As FuelSysLimitScale for FuelSysTooLean1Check, FuelSysTooLean2Check $55F4, 2D; inputs: PurgeRamp</description>
   <CATEGORYMEM index="0" category="27" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -20961,7 +20961,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x416" flags="0x0">
   <title>FlexLearnBaseReadyMin</title>
-  <description>FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines FuelSysLean1Check-FuelSysRich2Check) $078C</description>
+  <description>FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines FuelSysTooRich1Check-FuelSysTooLean2Check) $078C</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x78C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31295,8 +31295,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x777" flags="0x0">
-  <title>FuelSysRichHyst</title>
-  <description>Fuel system monitor (FuelSysRich1Check, FuelSysRich2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set $559D</description>
+  <title>FuelSysTooLeanHyst</title>
+  <description>Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set $559D</description>
   <CATEGORYMEM index="0" category="27" />
   <EMBEDDEDDATA mmedaddress="0x559D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31307,8 +31307,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x778" flags="0x0">
-  <title>FuelSysLeanHyst</title>
-  <description>Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set $559E</description>
+  <title>FuelSysTooRichHyst</title>
+  <description>Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set $559E</description>
   <CATEGORYMEM index="0" category="27" />
   <EMBEDDEDDATA mmedaddress="0x559E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31319,8 +31319,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x779" flags="0x0">
-  <title>FuelSysRichCount</title>
-  <description>Fuel system monitor: rich-condition counts ($05A3/FuelSysRichCount2) before the rich flag (FuelSysRich1Adapt, FuelSysRich2Adapt) $559F</description>
+  <title>FuelSysTooLeanCount</title>
+  <description>Fuel system monitor: rich-condition counts ($05A3/FuelSysTooLeanCount2) before the rich flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt) $559F</description>
   <CATEGORYMEM index="0" category="27" />
   <EMBEDDEDDATA mmedaddress="0x559F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31331,8 +31331,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x77A" flags="0x0">
-  <title>FuelSysLeanCount</title>
-  <description>Fuel system monitor: lean-condition counts before the lean flag (FuelSysLean1Adapt, FuelSysLean2Adapt) $55A0</description>
+  <title>FuelSysTooRichCount</title>
+  <description>Fuel system monitor: lean-condition counts before the lean flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt) $55A0</description>
   <CATEGORYMEM index="0" category="27" />
   <EMBEDDEDDATA mmedaddress="0x55A0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31343,8 +31343,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x77B" flags="0x0">
-  <title>FuelSysRichFaultCount</title>
-  <description>Fuel system monitor: rich counts ($05A1/FuelSysRichFaults) before the rich result $55A1</description>
+  <title>FuelSysTooLeanFaultCount</title>
+  <description>Fuel system monitor: rich counts ($05A1/FuelSysTooLeanFaults) before the rich result $55A1</description>
   <CATEGORYMEM index="0" category="27" />
   <EMBEDDEDDATA mmedaddress="0x55A1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31355,8 +31355,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x77C" flags="0x0">
-  <title>FuelSysLeanFaultCount</title>
-  <description>Fuel system monitor: lean counts ($05A1/FuelSysLeanFaults) before the lean result $55A2</description>
+  <title>FuelSysTooRichFaultCount</title>
+  <description>Fuel system monitor: lean counts ($05A1/FuelSysTooRichFaults) before the lean result $55A2</description>
   <CATEGORYMEM index="0" category="27" />
   <EMBEDDEDDATA mmedaddress="0x55A2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

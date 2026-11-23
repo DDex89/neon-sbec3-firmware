@@ -9872,10 +9872,10 @@ L16B84:
         CMPA    $0482
         BCC     L16BB6
         BCLR    $03D8,Z,#$02
-        BRSET   >MonStatusA1,Z,#$04,L16BB6
-        BRSET   >MonStatusA2,Z,#$04,L16BB6
-        BRSET   >MonStatusA3,Z,#$04,L16BB6
-        BRSET   >MonStatusA4,Z,#$04,L16BB6
+        BRSET   >MonStatusCatBank1,Z,#$04,L16BB6
+        BRSET   >MonStatusCatBank2,Z,#$04,L16BB6
+        BRSET   >MonStatusO2Resp1,Z,#$04,L16BB6
+        BRSET   >MonStatusO2Resp2,Z,#$04,L16BB6
 L16BA6:
         TST     $03D7,Z
         BEQ     L16BB6
@@ -10128,16 +10128,16 @@ L16E6E:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysLean1Monitor ($16F00)
+; FuelSysTooRich1Monitor ($16F00)
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
-FuelSysLean1Monitor:
+FuelSysTooRich1Monitor:
         TST     $0182,Z
         BEQ     L16F0E
         DEC     $0182,Z
         LBRA    L17066
 L16F0E:
-        BRCLR   <MonStatusFuelSysLean1,Z,#$80,L16F1E
+        BRCLR   <MonStatusFuelSysTooRich1,Z,#$80,L16F1E
         BRCLR   <DiagStatusFlags,Z,#$01,L16F26           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         LDAA    $25DC
         STAA    $0194,Z
@@ -10174,10 +10174,10 @@ L16F6A:
         CMPA    $C7,Z
         BEQ     L16F9C
         STAA    $C7,Z
-        LDAA    <MonStatusFuelSysLean1,Z
+        LDAA    <MonStatusFuelSysTooRich1,Z
         ORAA    #$48
         ANDA    #$7B
-        STAA    <MonStatusFuelSysLean1,Z
+        STAA    <MonStatusFuelSysTooRich1,Z
         BRSET   $CA,Z,#$08,L16F9C
         BSET    $CA,Z,#$08
         LDX     #$F0C8
@@ -10222,8 +10222,8 @@ L16FE6:
         CMPA    $C7,Z
         BEQ     L1705E
         STAA    $C7,Z
-        BSET    <MonStatusFuelSysLean1,Z,#$48
-        BCLR    <MonStatusFuelSysLean1,Z,#$80
+        BSET    <MonStatusFuelSysTooRich1,Z,#$48
+        BCLR    <MonStatusFuelSysTooRich1,Z,#$80
         BRSET   $CA,Z,#$08,L1705E
         BSET    $CA,Z,#$08
         LDX     #$F0C8
@@ -10239,7 +10239,7 @@ L17030:
         STAA    $018A,Z
         CMPA    $25DA
         BCS     L1705E
-        BSET    <MonStatusFuelSysLean1,Z,#$40
+        BSET    <MonStatusFuelSysTooRich1,Z,#$40
         LDAA    $C7,Z
         INCA
         BPL     L1705A
@@ -10254,16 +10254,16 @@ L17066:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysLean2Monitor ($17068)
+; FuelSysTooRich2Monitor ($17068)
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
-FuelSysLean2Monitor:
+FuelSysTooRich2Monitor:
         TST     $0187,Z
         BEQ     L17076
         DEC     $0187,Z
         LBRA    L171E0
 L17076:
-        BRCLR   <MonStatusFuelSysLean2,Z,#$80,L17086
+        BRCLR   <MonStatusFuelSysTooRich2,Z,#$80,L17086
         BRCLR   <DiagStatusFlags,Z,#$01,L1708E           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         LDAA    $25DC
         STAA    $0195,Z
@@ -10300,10 +10300,10 @@ L170D8:
         CMPA    $CB,Z
         BEQ     L1710A
         STAA    $CB,Z
-        LDAA    <MonStatusFuelSysLean2,Z
+        LDAA    <MonStatusFuelSysTooRich2,Z
         ORAA    #$48
         ANDA    #$7B
-        STAA    <MonStatusFuelSysLean2,Z
+        STAA    <MonStatusFuelSysTooRich2,Z
         BRSET   $CE,Z,#$08,L1710A
         BSET    $CE,Z,#$08
         LDX     #$F0DC
@@ -10349,8 +10349,8 @@ L17160:
         CMPA    $CB,Z
         BEQ     L171D8
         STAA    $CB,Z
-        BSET    <MonStatusFuelSysLean2,Z,#$48
-        BCLR    <MonStatusFuelSysLean2,Z,#$80
+        BSET    <MonStatusFuelSysTooRich2,Z,#$48
+        BCLR    <MonStatusFuelSysTooRich2,Z,#$80
         BRSET   $CE,Z,#$08,L171D8
         BSET    $CE,Z,#$08
         LDX     #$F0DC
@@ -10366,7 +10366,7 @@ L171AA:
         STAA    $018B,Z
         CMPA    $25DA
         BCS     L171D8
-        BSET    <MonStatusFuelSysLean2,Z,#$40
+        BSET    <MonStatusFuelSysTooRich2,Z,#$40
         LDAA    $CB,Z
         INCA
         BPL     L171D4
@@ -10381,10 +10381,10 @@ L171E0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysRich1Monitor ($171E2)
+; FuelSysTooLean1Monitor ($171E2)
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
-FuelSysRich1Monitor:
+FuelSysTooLean1Monitor:
         BRCLR   <DiagStatusFlags,Z,#$01,L171F6           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         LDAA    $25DC
         STAA    $0192,Z
@@ -10411,10 +10411,10 @@ L171F6:
         CMPA    $BF,Z
         BEQ     L17256
         STAA    $BF,Z
-        LDAA    <MonStatusFuelSysRich1,Z
+        LDAA    <MonStatusFuelSysTooLean1,Z
         ORAA    #$48
         ANDA    #$7B
-        STAA    <MonStatusFuelSysRich1,Z
+        STAA    <MonStatusFuelSysTooLean1,Z
         BRSET   $C2,Z,#$08,L17256
         BSET    $C2,Z,#$08
         LDX     #$F0A0
@@ -10448,10 +10448,10 @@ L17286:
         CMPA    $BF,Z
         BEQ     L172FA
         STAA    $BF,Z
-        LDAA    <MonStatusFuelSysRich1,Z
+        LDAA    <MonStatusFuelSysTooLean1,Z
         ORAA    #$48
         ANDA    #$7B
-        STAA    <MonStatusFuelSysRich1,Z
+        STAA    <MonStatusFuelSysTooLean1,Z
         BRSET   $C2,Z,#$08,L172FA
         BSET    $C2,Z,#$08
         LDX     #$F0A0
@@ -10467,7 +10467,7 @@ L172CC:
         STAA    $0188,Z
         CMPA    $25D9
         BCS     L172FA
-        BSET    <MonStatusFuelSysRich1,Z,#$40
+        BSET    <MonStatusFuelSysTooLean1,Z,#$40
         LDAA    $BF,Z
         INCA
         BPL     L172F6
@@ -10482,10 +10482,10 @@ L17302:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysRich2Monitor ($17304)
+; FuelSysTooLean2Monitor ($17304)
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
-FuelSysRich2Monitor:
+FuelSysTooLean2Monitor:
         BRCLR   <DiagStatusFlags,Z,#$01,L17318           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         LDAA    $25DC
         STAA    $0193,Z
@@ -10512,10 +10512,10 @@ L17318:
         CMPA    $C3,Z
         BEQ     L17378
         STAA    $C3,Z
-        LDAA    <MonStatusFuelSysRich2,Z
+        LDAA    <MonStatusFuelSysTooLean2,Z
         ORAA    #$48
         ANDA    #$7B
-        STAA    <MonStatusFuelSysRich2,Z
+        STAA    <MonStatusFuelSysTooLean2,Z
         BRSET   $C6,Z,#$08,L17378
         BSET    $C6,Z,#$08
         LDX     #$F0B4
@@ -10549,10 +10549,10 @@ L173A8:
         CMPA    $C3,Z
         BEQ     L1741C
         STAA    $C3,Z
-        LDAA    <MonStatusFuelSysRich2,Z
+        LDAA    <MonStatusFuelSysTooLean2,Z
         ORAA    #$48
         ANDA    #$7B
-        STAA    <MonStatusFuelSysRich2,Z
+        STAA    <MonStatusFuelSysTooLean2,Z
         BRSET   $C6,Z,#$08,L1741C
         BSET    $C6,Z,#$08
         LDX     #$F0B4
@@ -10568,7 +10568,7 @@ L173EE:
         STAA    $0189,Z
         CMPA    $25D9
         BCS     L1741C
-        BSET    <MonStatusFuelSysRich2,Z,#$40
+        BSET    <MonStatusFuelSysTooLean2,Z,#$40
         LDAA    $C3,Z
         INCA
         BPL     L17418
@@ -10584,7 +10584,7 @@ L17424:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_17426 ($17426)
-; Called from: FuelSysLean1Monitor, FuelSysLean2Monitor, FuelSysRich1Monitor, FuelSysRich2Monitor
+; Called from: FuelSysTooRich1Monitor, FuelSysTooRich2Monitor, FuelSysTooLean1Monitor, FuelSysTooLean2Monitor
 ;---------------------------------------------------------------------------------------------------
 Sub_17426:
         PSHM    E
@@ -10627,7 +10627,7 @@ Sub_174DA:
         BRCLR   $00AF,Z,#$80,L1756A
         CLRB
         TBYK
-        LDY     #$2D7D
+        LDY     #FuelSysTooLean2MonitorConds2
         JSR     ConditionTable
         BEQ     L174FA
         BSET    $B8,Z,#$02
@@ -10635,7 +10635,7 @@ Sub_174DA:
 L174FA:
         BCLR    $B8,Z,#$02
 L174FE:
-        LDY     #$2D40
+        LDY     #FuelSysTooLean2MonitorConds
         JSR     ConditionTable
         BEQ     L1750E
         BSET    $B8,Z,#$01
@@ -12444,10 +12444,10 @@ L18844:
 CatMonitorSetup:
         BRCLR   $01A6,Z,#$80,L18A00
         BRCLR   $0329,#$10,L189EC
-        BRCLR   >MonStatusA1,Z,#$80,L189F0
+        BRCLR   >MonStatusCatBank1,Z,#$80,L189F0
         BRSET   $009D,Z,#$80,L189EC
-        BRSET   >MonStatusA1,Z,#$08,L189C0
-        BRSET   >MonStatusA1,Z,#$40,L189E4
+        BRSET   >MonStatusCatBank1,Z,#$08,L189C0
+        BRSET   >MonStatusCatBank1,Z,#$40,L189E4
         JSR     Sub_18738
         BSET    $01A5,Z,#$02
         BRSET   $01A5,Z,#$04,L18A00
@@ -12459,7 +12459,7 @@ CatMonitorSetup:
 L18894:
         BRCLR   $01A5,Z,#$10,L189F4
         BSET    $01A6,Z,#$20
-        BSET    >MonStatusA1,Z,#$04
+        BSET    >MonStatusCatBank1,Z,#$04
         BRSET   $01A6,Z,#$10,L188C4
         BRCLR   >MainLoopPhaseMask,Z,#$01,L18A00         ; bit 0: one pass in 2 (about 24 ms)
         LDAA    $01A8,Z
@@ -12539,7 +12539,7 @@ L18960:
         LBRA    L18A00
 L18968:
         BCLR    $01A6,Z,#$20
-        BCLR    >MonStatusA1,Z,#$04
+        BCLR    >MonStatusCatBank1,Z,#$04
         CLRD
         LDE     $01B6,Z
         BEQ     L18990
@@ -12572,7 +12572,7 @@ L189B0:
         ANDB    #$07
         CMPB    $2613
         BCS     L189CE
-        BSET    >MonStatusA1,Z,#$48
+        BSET    >MonStatusCatBank1,Z,#$48
 L189C0:
         BRSET   <DiagStatusFlags,Z,#$02,L18A00           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BRSET   $9D,Z,#$40,L189EC
@@ -12587,18 +12587,18 @@ L189DC:
         ORAB    #$20
 L189DE:
         STAB    $9D,Z
-        BSET    >MonStatusA1,Z,#$40
+        BSET    >MonStatusCatBank1,Z,#$40
 L189E4:
         BRSET   <DiagStatusFlags,Z,#$02,L18A00           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BSET    $9D,Z,#$C0
 L189EC:
-        BCLR    >MonStatusA1,Z,#$80
+        BCLR    >MonStatusCatBank1,Z,#$80
 L189F0:
         BCLR    $01A6,Z,#$80
 L189F4:
         CLR     $01A8,Z
         BCLR    $01A6,Z,#$70
-        BCLR    >MonStatusA1,Z,#$04
+        BCLR    >MonStatusCatBank1,Z,#$04
 L18A00:
         RTS
 
@@ -12609,10 +12609,10 @@ L18A00:
 CatMonSwitchRatio:
         BRCLR   $01A7,Z,#$80,L18BC2
         BRCLR   $032A,#$20,L18BAE
-        BRCLR   >MonStatusA2,Z,#$80,L18BB2
+        BRCLR   >MonStatusCatBank2,Z,#$80,L18BB2
         BRSET   $009E,Z,#$80,L18BAE
-        BRSET   >MonStatusA2,Z,#$08,L18B82
-        BRSET   >MonStatusA2,Z,#$40,L18BA6
+        BRSET   >MonStatusCatBank2,Z,#$08,L18B82
+        BRSET   >MonStatusCatBank2,Z,#$40,L18BA6
         BRSET   $01A5,Z,#$02,L18A30
         JSR     Sub_18738
 L18A30:
@@ -12626,7 +12626,7 @@ L18A30:
 L18A56:
         BRCLR   $01A5,Z,#$10,L18BB6
         BSET    $01A7,Z,#$20
-        BSET    >MonStatusA2,Z,#$04
+        BSET    >MonStatusCatBank2,Z,#$04
         BRSET   $01A7,Z,#$10,L18A86
         BRCLR   >MainLoopPhaseMask,Z,#$01,L18BC2         ; bit 0: one pass in 2 (about 24 ms)
         LDAA    $01A9,Z
@@ -12706,7 +12706,7 @@ L18B22:
         LBRA    L18BC2
 L18B2A:
         BCLR    $01A7,Z,#$20
-        BCLR    >MonStatusA2,Z,#$04
+        BCLR    >MonStatusCatBank2,Z,#$04
         CLRD
         LDE     $01B8,Z
         BEQ     L18B52
@@ -12739,7 +12739,7 @@ L18B72:
         ANDB    #$07
         CMPB    $2613
         BCS     L18B90
-        BSET    >MonStatusA2,Z,#$48
+        BSET    >MonStatusCatBank2,Z,#$48
 L18B82:
         BRSET   <DiagStatusFlags,Z,#$02,L18BC2           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BRSET   $9E,Z,#$40,L18BAE
@@ -12754,18 +12754,18 @@ L18B9E:
         ORAB    #$20
 L18BA0:
         STAB    $9E,Z
-        BSET    >MonStatusA2,Z,#$40
+        BSET    >MonStatusCatBank2,Z,#$40
 L18BA6:
         BRSET   <DiagStatusFlags,Z,#$02,L18BC2           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BSET    $9E,Z,#$C0
 L18BAE:
-        BCLR    >MonStatusA2,Z,#$80
+        BCLR    >MonStatusCatBank2,Z,#$80
 L18BB2:
         BCLR    $01A7,Z,#$80
 L18BB6:
         CLR     $01A9,Z
         BCLR    $01A7,Z,#$70
-        BCLR    >MonStatusA2,Z,#$04
+        BCLR    >MonStatusCatBank2,Z,#$04
 L18BC2:
         RTS
 
@@ -13277,12 +13277,12 @@ L190D0:
         BLS     L19100
 L190D6:
         BCLR    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
-        LDY     #$302E
+        LDY     #CountBitsConds2
         JSR     ConditionTable
         BEQ     L190E8
         BSET    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
 L190E8:
-        LDY     #$2FF1
+        LDY     #CountBitsConds
         JSR     ConditionTable
         BEQ     L190F8
         BSET    >MisfireFlags2,Z,#$01                    ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
@@ -22029,8 +22029,8 @@ L1F6D6:
         CPX     #$F0DC
         BNE     L1F72A
 L1F6EA:
-        LDAA    <MonStatusFuelSysLean1,Z
-        LDAB    <MonStatusFuelSysLean2,Z
+        LDAA    <MonStatusFuelSysTooRich1,Z
+        LDAB    <MonStatusFuelSysTooRich2,Z
         BITA    #$04
         BNE     L1F6F6
         BITB    #$04
@@ -22067,8 +22067,8 @@ L1F72A:
         CPX     #$F0B4
         BNE     L1F776
 L1F736:
-        LDAA    <MonStatusFuelSysRich1,Z
-        LDAB    <MonStatusFuelSysRich2,Z
+        LDAA    <MonStatusFuelSysTooLean1,Z
+        LDAB    <MonStatusFuelSysTooLean2,Z
         BITA    #$04
         BNE     L1F742
         BITB    #$04
@@ -22105,8 +22105,8 @@ L1F776:
         CPX     #$F014
         BNE     L1F7C2
 L1F782:
-        LDAA    <MonStatusA1,Z
-        LDAB    <MonStatusA2,Z
+        LDAA    <MonStatusCatBank1,Z
+        LDAB    <MonStatusCatBank2,Z
         BITA    #$04
         BNE     L1F78E
         BITB    #$04
@@ -22143,8 +22143,8 @@ L1F7C2:
         CPX     #$F03C
         BNE     L1F80A
 L1F7CE:
-        LDAA    <MonStatusA3,Z
-        LDAB    <MonStatusA4,Z
+        LDAA    <MonStatusO2Resp1,Z
+        LDAB    <MonStatusO2Resp2,Z
         BITA    #$04
         BNE     L1F7DA
         BITB    #$04
@@ -22261,7 +22261,7 @@ L1F8D0:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysConditions2 ($1F8D4)
-; Called from: FuelSysLean1Monitor, FuelSysLean2Monitor, FuelSysRich1Monitor, FuelSysRich2Monitor, MisfireThreshold (9 calls)
+; Called from: FuelSysTooRich1Monitor, FuelSysTooRich2Monitor, FuelSysTooLean1Monitor, FuelSysTooLean2Monitor, MisfireThreshold (9 calls)
 ;---------------------------------------------------------------------------------------------------
 FuelSysConditions2:
         PSHM    D,E,Y,K
@@ -22521,16 +22521,16 @@ L1FB06:
         JSR     LdpMonitor
         BRA     L1FB24
 L1FB0C:
-        JSR     FuelSysRich1Monitor
+        JSR     FuelSysTooLean1Monitor
         BRA     L1FB24
 L1FB12:
-        JSR     FuelSysRich2Monitor
+        JSR     FuelSysTooLean2Monitor
         BRA     L1FB24
 L1FB18:
-        JSR     FuelSysLean1Monitor
+        JSR     FuelSysTooRich1Monitor
         BRA     L1FB24
 L1FB1E:
-        JSR     FuelSysLean2Monitor
+        JSR     FuelSysTooRich2Monitor
         BRA     L1FB24
 L1FB24:
         PULM    K,Y,X,E,D
@@ -22645,19 +22645,19 @@ Sub_1FBE6:
         CLR     $BC,Z
         CLR     $BD,Z
         CLR     <MonRecordB7,Z
-        CLR     <MonStatusA1,Z
-        CLR     <MonStatusA2,Z
-        CLR     <MonStatusA3,Z
-        CLR     <MonStatusA4,Z
+        CLR     <MonStatusCatBank1,Z
+        CLR     <MonStatusCatBank2,Z
+        CLR     <MonStatusO2Resp1,Z
+        CLR     <MonStatusO2Resp2,Z
         CLR     $B7,Z
         CLR     $AF,Z
         CLR     $B0,Z
         CLR     $B1,Z
         CLR     $B2,Z
-        CLR     <MonStatusFuelSysRich1,Z
-        CLR     <MonStatusFuelSysRich2,Z
-        CLR     <MonStatusFuelSysLean1,Z
-        CLR     <MonStatusFuelSysLean2,Z
+        CLR     <MonStatusFuelSysTooLean1,Z
+        CLR     <MonStatusFuelSysTooLean2,Z
+        CLR     <MonStatusFuelSysTooRich1,Z
+        CLR     <MonStatusFuelSysTooRich2,Z
         LBSR    Sub_1F584
         BCLR    <DiagStatusFlags,Z,#$98                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
         CLR     $E0,Z
@@ -22796,7 +22796,7 @@ L1FD56:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1FD58 ($1FD58)
-; Called from: FuelSysLean1Monitor, FuelSysLean2Monitor, FuelSysRich1Monitor, FuelSysRich2Monitor, Sub_194B0
+; Called from: FuelSysTooRich1Monitor, FuelSysTooRich2Monitor, FuelSysTooLean1Monitor, FuelSysTooLean2Monitor, Sub_194B0
 ;---------------------------------------------------------------------------------------------------
 Sub_1FD58:
         PSHM    D,E,Y,K

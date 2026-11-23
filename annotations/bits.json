@@ -269,7 +269,7 @@
   "5": "EGR position tracking good (EgrPositionMonitor)",
   "4": "EGR position tracking error (EgrPositionMonitor)",
   "3": "deceleration fuel ramp limited (DecelFuelRampControl); EGR code reads it",
-  "2": "EGR position monitor allowed: no other monitor of group A running (EgrPositionMonitor)",
+  "2": "EGR position monitor allowed: no catalyst or O2 response monitor running (EgrPositionMonitor)",
   "1": "EGR duty above the position-based limit (EgrControl)",
   "0": "EGR solenoid check step running (EgrSolenoidCheck)"
  },
@@ -459,24 +459,24 @@
   "0": "injector sequence step taken (InjectorSequence)"
  },
  "FuelSysFlags1": {
-  "7": "lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1",
+  "7": "rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 1",
   "6": "adaptive at its lower limit (O2AdaptMin) this pass, bank 1",
-  "5": "lean fault count reached (FuelSysLeanFaultCount), bank 1",
-  "4": "lean condition counted in the current window, bank 1",
-  "3": "rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1",
+  "5": "rich fault count reached (FuelSysTooRichFaultCount), bank 1",
+  "4": "rich condition counted in the current window, bank 1",
+  "3": "lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 1",
   "2": "adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1",
-  "1": "rich fault count reached (FuelSysRichFaultCount), bank 1",
-  "0": "rich condition counted in the current window, bank 1"
+  "1": "lean fault count reached (FuelSysTooLeanFaultCount), bank 1",
+  "0": "lean condition counted in the current window, bank 1"
  },
  "FuelSysFlags2": {
-  "7": "lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2",
+  "7": "rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 2",
   "6": "adaptive at its lower limit (O2AdaptMin) this pass, bank 2",
-  "5": "lean fault count reached (FuelSysLeanFaultCount), bank 2",
-  "4": "lean condition counted in the current window, bank 2",
-  "3": "rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2",
+  "5": "rich fault count reached (FuelSysTooRichFaultCount), bank 2",
+  "4": "rich condition counted in the current window, bank 2",
+  "3": "lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 2",
   "2": "adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2",
-  "1": "rich fault count reached (FuelSysRichFaultCount), bank 2",
-  "0": "rich condition counted in the current window, bank 2"
+  "1": "lean fault count reached (FuelSysTooLeanFaultCount), bank 2",
+  "0": "lean condition counted in the current window, bank 2"
  },
  "GearStateFlags": {
   "7": "gear engaged and shift idle delay done (GearStateUpdate)",

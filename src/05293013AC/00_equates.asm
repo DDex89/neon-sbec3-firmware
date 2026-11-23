@@ -40,15 +40,15 @@ EquipmentFlags   equ $0011        ; $F8011
 SriMileage       equ $0020        ; $F8020
 FaultMem05       equ $007D        ; $F807D
 FaultMem07       equ $007F        ; $F807F
-MonStatusA1      equ $00B3        ; $F80B3
-MonStatusA2      equ $00B4        ; $F80B4
-MonStatusA3      equ $00B5        ; $F80B5
-MonStatusA4      equ $00B6        ; $F80B6
+MonStatusCatBank1 equ $00B3        ; $F80B3
+MonStatusCatBank2 equ $00B4        ; $F80B4
+MonStatusO2Resp1 equ $00B5        ; $F80B5
+MonStatusO2Resp2 equ $00B6        ; $F80B6
 MisfireRecordE4  equ $00BA        ; $F80BA
-MonStatusFuelSysRich1 equ $00BB        ; $F80BB
-MonStatusFuelSysRich2 equ $00BC        ; $F80BC
-MonStatusFuelSysLean1 equ $00BD        ; $F80BD
-MonStatusFuelSysLean2 equ $00BE        ; $F80BE
+MonStatusFuelSysTooLean1 equ $00BB        ; $F80BB
+MonStatusFuelSysTooLean2 equ $00BC        ; $F80BC
+MonStatusFuelSysTooRich1 equ $00BD        ; $F80BD
+MonStatusFuelSysTooRich2 equ $00BE        ; $F80BE
 FreezeFrameFault equ $00C2        ; $F80C2
 MonRecordB4      equ $00C3        ; $F80C3
 MonRecordB7      equ $00C6        ; $F80C6
@@ -895,23 +895,23 @@ EventHistory877  equ $0709        ; $F8709
 EventHistory878  equ $070A        ; $F870A
 EventHistory879  equ $070B        ; $F870B
 FuelSysFlags1    equ $070C        ; $F870C
-;                 bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1
+;                 bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 1
 ;                 bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
-;                 bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 1
-;                 bit 4: lean condition counted in the current window, bank 1
-;                 bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1
+;                 bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 1
+;                 bit 4: rich condition counted in the current window, bank 1
+;                 bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 1
 ;                 bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
-;                 bit 1: rich fault count reached (FuelSysRichFaultCount), bank 1
-;                 bit 0: rich condition counted in the current window, bank 1
+;                 bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 1
+;                 bit 0: lean condition counted in the current window, bank 1
 FuelSysFlags2    equ $070D        ; $F870D
-;                 bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2
+;                 bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 2
 ;                 bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
-;                 bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 2
-;                 bit 4: lean condition counted in the current window, bank 2
-;                 bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2
+;                 bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 2
+;                 bit 4: rich condition counted in the current window, bank 2
+;                 bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 2
 ;                 bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
-;                 bit 1: rich fault count reached (FuelSysRichFaultCount), bank 2
-;                 bit 0: rich condition counted in the current window, bank 2
+;                 bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 2
+;                 bit 0: lean condition counted in the current window, bank 2
 MonTask5F0       equ $070F        ; $F870F
 MonTask5F1       equ $0710        ; $F8710
 MonTask5F2       equ $0711        ; $F8711

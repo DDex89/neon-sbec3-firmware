@@ -100,10 +100,10 @@ MonFlags09D      equ $009D        ; $F809D
 MonFlags09E      equ $009E        ; $F809E
 MonFlags09F      equ $009F        ; $F809F
 MonTask0A0       equ $00A0        ; $F80A0
-MonStatusA1      equ $00A1        ; $F80A1
-MonStatusA2      equ $00A2        ; $F80A2
-MonStatusA3      equ $00A3        ; $F80A3
-MonStatusA4      equ $00A4        ; $F80A4
+MonStatusCatBank1 equ $00A1        ; $F80A1
+MonStatusCatBank2 equ $00A2        ; $F80A2
+MonStatusO2Resp1 equ $00A3        ; $F80A3
+MonStatusO2Resp2 equ $00A4        ; $F80A4
 MonStatusO2Sensor1 equ $00A5        ; $F80A5
 MonStatusO2Sensor2 equ $00A6        ; $F80A6
 MonStatusO2Sensor3 equ $00A7        ; $F80A7
@@ -117,10 +117,10 @@ MonStatusPurge   equ $00A9        ; $F80A9
 ;                 bit 1: read by ObdReadiness and PurgeFlowTest
 MonStatusEgrFlow equ $00AA        ; $F80AA
 MonStatusMisfire equ $00AB        ; $F80AB
-MonStatusFuelSysRich1 equ $00AC        ; $F80AC
-MonStatusFuelSysRich2 equ $00AD        ; $F80AD
-MonStatusFuelSysLean1 equ $00AE        ; $F80AE
-MonStatusFuelSysLean2 equ $00AF        ; $F80AF
+MonStatusFuelSysTooLean1 equ $00AC        ; $F80AC
+MonStatusFuelSysTooLean2 equ $00AD        ; $F80AD
+MonStatusFuelSysTooRich1 equ $00AE        ; $F80AE
+MonStatusFuelSysTooRich2 equ $00AF        ; $F80AF
 MonStatusLdp     equ $00B0        ; $F80B0
 MonStatusO2Heater equ $00B1        ; $F80B1
 FreezeFrameCount equ $00B2        ; $F80B2
@@ -874,36 +874,36 @@ LdpVacLowTotal   equ $059A        ; $F859A
 LdpPurgedTimer   equ $059B        ; $F859B
 Ldp59C           equ $059C        ; $F859C
 FuelSysFlags1    equ $059D        ; $F859D
-;                 bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1
+;                 bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 1
 ;                 bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
-;                 bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 1
-;                 bit 4: lean condition counted in the current window, bank 1
-;                 bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1
+;                 bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 1
+;                 bit 4: rich condition counted in the current window, bank 1
+;                 bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 1
 ;                 bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
-;                 bit 1: rich fault count reached (FuelSysRichFaultCount), bank 1
-;                 bit 0: rich condition counted in the current window, bank 1
+;                 bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 1
+;                 bit 0: lean condition counted in the current window, bank 1
 FuelSysFlags2    equ $059E        ; $F859E
-;                 bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2
+;                 bit 7: rich (adaptive at its lower limit, removing fuel) for FuelSysTooRichCount passes: rich monitor armed, bank 2
 ;                 bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
-;                 bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 2
-;                 bit 4: lean condition counted in the current window, bank 2
-;                 bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2
+;                 bit 5: rich fault count reached (FuelSysTooRichFaultCount), bank 2
+;                 bit 4: rich condition counted in the current window, bank 2
+;                 bit 3: lean (adaptive at its upper limit, adding fuel) for FuelSysTooLeanCount passes: lean monitor armed, bank 2
 ;                 bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
-;                 bit 1: rich fault count reached (FuelSysRichFaultCount), bank 2
-;                 bit 0: rich condition counted in the current window, bank 2
+;                 bit 1: lean fault count reached (FuelSysTooLeanFaultCount), bank 2
+;                 bit 0: lean condition counted in the current window, bank 2
 FuelSys59F       equ $059F        ; $F859F
 FuelSys5A0       equ $05A0        ; $F85A0
 FuelSysCount1    equ $05A1        ; $F85A1
 FuelSysCount2    equ $05A2        ; $F85A2
 FuelSysCount3    equ $05A3        ; $F85A3
-FuelSysRichCount2 equ $05A4        ; $F85A4
+FuelSysTooLeanCount2 equ $05A4        ; $F85A4
 FuelSys5A5       equ $05A5        ; $F85A5
 O2MemChangeHold2 equ $05A6        ; $F85A6
 FuelSysDelay1    equ $05A7        ; $F85A7
 FuelSysDelay2    equ $05A8        ; $F85A8
-FuelSysRichFaults equ $05AA        ; $F85AA
+FuelSysTooLeanFaults equ $05AA        ; $F85AA
 FuelSysCount2B   equ $05AB        ; $F85AB
-FuelSysLeanFaults equ $05AC        ; $F85AC
+FuelSysTooRichFaults equ $05AC        ; $F85AC
 FuelSys5AD       equ $05AD        ; $F85AD
 PurgeFlowTestFlags equ $05AE        ; $F85AE
 ;                 bit 7: purge flow test started (PurgeFlowTest, only with the LDP fitted)
@@ -2056,7 +2056,7 @@ EgrFlags2        equ $0B2D        ; $F8B2D
 ;                 bit 5: EGR position tracking good (EgrPositionMonitor)
 ;                 bit 4: EGR position tracking error (EgrPositionMonitor)
 ;                 bit 3: deceleration fuel ramp limited (DecelFuelRampControl); EGR code reads it
-;                 bit 2: EGR position monitor allowed: no other monitor of group A running (EgrPositionMonitor)
+;                 bit 2: EGR position monitor allowed: no catalyst or O2 response monitor running (EgrPositionMonitor)
 ;                 bit 1: EGR duty above the position-based limit (EgrControl)
 ;                 bit 0: EGR solenoid check step running (EgrSolenoidCheck)
 EgrOnTimer       equ $0B2E        ; $F8B2E

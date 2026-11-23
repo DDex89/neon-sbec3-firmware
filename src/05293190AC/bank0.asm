@@ -1259,7 +1259,7 @@ FlexEthanolStartStepDown:
         dc.b    $FF                                      ; Flex learning: decrease of the start estimate when the learned base stays below its limit
         dc.b    $00,$00,$58,$00,$00,$7F,$80,$7F,$80,$7F,$80,$00
 FlexLearnBaseReadyMin:
-        dc.b    $AA                                      ; FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines FuelSysLean1Check-FuelSysRich2Check)
+        dc.b    $AA                                      ; FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines FuelSysTooRich1Check-FuelSysTooLean2Check)
 O2FlexRunTimeMin:
         dc.b    $FF                                      ; Closed-loop manager (ClosedLoopManager): run time at or above which closed loop returns during flex learning
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7957,18 +7957,18 @@ EgrMonResultMax:
         dc.b    $5A                                      ; EGR flow monitor: trim response above this value passes it
 EgrMonFailCount:
         dc.b    $03                                      ; EGR flow monitor: failed tests before the fault
-FuelSysRichHyst:
-        dc.b    $03                                      ; Fuel system monitor (FuelSysRich1Check, FuelSysRich2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set
-FuelSysLeanHyst:
-        dc.b    $04                                      ; Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set
-FuelSysRichCount:
-        dc.b    $32                                      ; Fuel system monitor: rich-condition counts ($05A3/FuelSysRichCount2) before the rich flag (FuelSysRich1Adapt, FuelSysRich2Adapt)
-FuelSysLeanCount:
-        dc.b    $32                                      ; Fuel system monitor: lean-condition counts before the lean flag (FuelSysLean1Adapt, FuelSysLean2Adapt)
-FuelSysRichFaultCount:
-        dc.b    $32                                      ; Fuel system monitor: rich counts ($05A1/FuelSysRichFaults) before the rich result
-FuelSysLeanFaultCount:
-        dc.b    $32                                      ; Fuel system monitor: lean counts ($05A1/FuelSysLeanFaults) before the lean result
+FuelSysTooLeanHyst:
+        dc.b    $03                                      ; Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set
+FuelSysTooRichHyst:
+        dc.b    $04                                      ; Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set
+FuelSysTooLeanCount:
+        dc.b    $32                                      ; Fuel system monitor: rich-condition counts ($05A3/FuelSysTooLeanCount2) before the rich flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt)
+FuelSysTooRichCount:
+        dc.b    $32                                      ; Fuel system monitor: lean-condition counts before the lean flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt)
+FuelSysTooLeanFaultCount:
+        dc.b    $32                                      ; Fuel system monitor: rich counts ($05A1/FuelSysTooLeanFaults) before the rich result
+FuelSysTooRichFaultCount:
+        dc.b    $32                                      ; Fuel system monitor: lean counts ($05A1/FuelSysTooRichFaults) before the lean result
 O2MemChangeHold:
         dc.b    $0F                                      ; Long-term memory cell selection: hold time ($05A5/O2MemChangeHold2) after the trim is cleared on a cell change
 FuelSysDelay:
@@ -7995,7 +7995,7 @@ FuelSysLimit:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysLimit2 ($31B4): 3D table, 5 rows x 5 columns, unsigned
-; As FuelSysLimit for the second pair of routines (FuelSysRich1Check, FuelSysRich2Check)
+; As FuelSysLimit for the second pair of routines (FuelSysTooLean1Check, FuelSysTooLean2Check)
 ; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x FlexEthanol
 ; Read at $2A530, $2A6FE
@@ -8012,7 +8012,7 @@ FuelSysLimit2:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysLimitScale ($31D5): 2D table, 5 points, unsigned
-; Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): purge ramp PurgeRamp to row position of FuelSysLimit
+; Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): purge ramp PurgeRamp to row position of FuelSysLimit
 ; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: PurgeRamp
 ; Read at $2A144, $2A356
@@ -8024,7 +8024,7 @@ FuelSysLimitScale:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysLimitScale2 ($31E1): 2D table, 5 points, unsigned
-; As FuelSysLimitScale for FuelSysRich1Check, FuelSysRich2Check
+; As FuelSysLimitScale for FuelSysTooLean1Check, FuelSysTooLean2Check
 ; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: PurgeRamp
 ; Read at $2A524, $2A6F2
@@ -8484,207 +8484,890 @@ BrakeSwDriveTime:
         dc.b    $00                                      ; Brake switch monitor: time (BrakeSwDriveTimer) of brake-on driving per count
 BrakeSwSeenTime:
         dc.b    $00                                      ; Brake switch monitor: time ($066B/BrakeSwSeenTimer) each switch state must be seen to pass
-        dc.b    $13,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00
-        dc.b    $B9,$01,$26,$00,$4E,$01,$28,$00,$76,$01,$2B,$00,$F0,$01,$2A,$00
-        dc.b    $30,$01,$2F,$00,$C0,$01,$2E,$00,$7E,$01,$31,$00,$C6,$01,$30,$00
-        dc.b    $40,$01,$33,$00,$13,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34,$00
-        dc.b    $3F,$01,$36,$00,$C0,$01,$3D,$00,$F0,$01,$3C,$00,$01,$FF,$FF,$FF
-        dc.b    $FF,$04,$0A,$9A,$04,$24,$00,$AA,$00,$04,$07,$7A,$00,$FF,$04,$43
-        dc.b    $00,$88,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$0C,$00,$A3,$00,$90,$00,$A3,$02,$02,$00
-        dc.b    $A5,$00,$10,$00,$A7,$00,$10,$00,$A9,$00,$10,$00,$AA,$00,$10,$00
-        dc.b    $AB,$00,$10,$00,$AC,$00,$10,$00,$AE,$00,$10,$00,$9D,$00,$7C,$00
-        dc.b    $9E,$00,$A9,$00,$9F,$00,$18,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$13,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE
-        dc.b    $01,$27,$00,$B8,$01,$26,$00,$4E,$01,$28,$00,$36,$01,$2B,$00,$F6
-        dc.b    $01,$2A,$00,$30,$01,$2E,$00,$7C,$01,$31,$00,$06,$01,$30,$00,$B7
-        dc.b    $01,$33,$00,$15,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34,$00,$27
-        dc.b    $01,$36,$00,$C0,$01,$39,$00,$60,$01,$3D,$00,$F0,$01,$3C,$00,$01
-        dc.b    $FF,$FF,$FF,$FF,$04,$0A,$9A,$04,$24,$00,$AA,$00,$04,$07,$7A,$00
-        dc.b    $FF,$04,$43,$00,$88,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$0C,$00,$A4,$00,$90,$00,$A4
-        dc.b    $02,$02,$00,$A6,$00,$10,$00,$A8,$00,$10,$00,$A9,$00,$10,$00,$AA
-        dc.b    $00,$10,$00,$AB,$00,$10,$00,$AD,$00,$10,$00,$AF,$00,$10,$00,$9D
-        dc.b    $00,$7C,$00,$9E,$00,$56,$00,$9F,$00,$18,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$14,$01,$23,$00,$06,$01,$25,$00,$3E,$01
-        dc.b    $24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00,$4E,$01,$28,$00,$76,$01
-        dc.b    $2B,$00,$F0,$01,$2A,$00,$30,$01,$2C,$00,$0C,$01,$2F,$00,$80,$01
-        dc.b    $2E,$00,$7E,$01,$31,$00,$0C,$01,$30,$00,$40,$01,$33,$00,$13,$01
-        dc.b    $32,$00,$06,$01,$35,$00,$06,$01,$34,$00,$3E,$01,$36,$00,$C0,$01
-        dc.b    $3D,$00,$F0,$01,$3C,$00,$01,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$01,$00,$A9,$00,$04
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$05,$00,$A5,$00,$10,$00,$AB,$00
-        dc.b    $10,$00,$9D,$00,$5C,$00,$9E,$00,$A9,$00,$9F,$00,$18,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$14,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27
-        dc.b    $00,$B8,$01,$26,$00,$4E,$01,$28,$00,$36,$01,$2B,$00,$F6,$01,$2A
-        dc.b    $00,$30,$01,$2C,$00,$0C,$01,$2E,$00,$7C,$01,$31,$00,$0C,$01,$30
-        dc.b    $00,$B0,$01,$33,$00,$15,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34
-        dc.b    $00,$26,$01,$36,$00,$C0,$01,$39,$00,$60,$01,$3D,$00,$F0,$01,$3C
-        dc.b    $00,$01,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$01,$00,$A9,$00,$04,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$05,$00,$A6,$00,$10,$00,$AB,$00,$10,$00,$9D,$00,$5C
-        dc.b    $00,$9E,$00,$56,$00,$9F,$00,$18,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$0F,$01,$23,$00
-        dc.b    $04,$01,$25,$00,$38,$01,$24,$00,$C0,$01,$27,$00,$09,$01,$26,$00
-        dc.b    $0E,$01,$28,$00,$60,$01,$2B,$00,$70,$01,$2A,$00,$30,$01,$2E,$00
-        dc.b    $7C,$01,$31,$00,$C0,$01,$33,$00,$01,$01,$35,$00,$04,$01,$34,$00
-        dc.b    $08,$01,$36,$00,$C0,$01,$3C,$00,$01,$01,$0A,$9A,$06,$03,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$01,$00,$9D,$00,$10,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$0F
-        dc.b    $01,$23,$00,$04,$01,$25,$00,$38,$01,$24,$00,$C0,$01,$27,$00,$08
-        dc.b    $01,$26,$00,$0E,$01,$28,$00,$20,$01,$2B,$00,$76,$01,$2A,$00,$30
-        dc.b    $01,$2E,$00,$7C,$01,$30,$00,$07,$01,$33,$00,$01,$01,$35,$00,$04
-        dc.b    $01,$36,$00,$C0,$01,$39,$00,$20,$01,$3C,$00,$01,$01,$0A,$9A,$06
-        dc.b    $03,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$01,$00,$9D,$00,$10,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$0F,$01,$23,$00,$04,$01,$25,$00,$38,$01,$24,$00,$C0,$01
-        dc.b    $26,$00,$0E,$01,$28,$00,$20,$01,$2B,$00,$70,$01,$2A,$00,$30,$01
-        dc.b    $2E,$00,$7C,$01,$31,$00,$C0,$01,$30,$00,$40,$01,$33,$00,$03,$01
-        dc.b    $35,$00,$04,$01,$34,$00,$10,$01,$36,$00,$C0,$01,$3C,$00,$01,$01
-        dc.b    $0A,$9A,$06,$03,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$01,$00,$9D,$00
-        dc.b    $10,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$0F,$01,$23,$00,$04,$01,$25,$00,$38,$01,$24
-        dc.b    $00,$C0,$01,$27,$00,$08,$01,$26,$00,$0E,$01,$28,$00,$20,$01,$2B
-        dc.b    $00,$70,$01,$2A,$00,$30,$01,$2E,$00,$7C,$01,$30,$00,$83,$01,$33
-        dc.b    $00,$05,$01,$35,$00,$04,$01,$36,$00,$C0,$01,$39,$00,$40,$01,$3C
-        dc.b    $00,$01,$01,$0A,$9A,$06,$03,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$01
-        dc.b    $00,$9D,$00,$10,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$17,$01,$23,$00,$06,$01,$25,$00
-        dc.b    $3E,$01,$24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00,$4E,$01,$28,$00
-        dc.b    $76,$01,$2B,$00,$F6,$01,$2A,$00,$30,$01,$2F,$00,$C0,$01,$2E,$00
-        dc.b    $7E,$01,$31,$00,$C4,$01,$30,$00,$F7,$01,$33,$00,$17,$01,$32,$00
-        dc.b    $06,$01,$35,$00,$06,$01,$34,$00,$3F,$01,$37,$00,$03,$01,$36,$00
-        dc.b    $C0,$01,$39,$00,$E0,$01,$38,$00,$09,$01,$3B,$00,$03,$01,$3D,$00
-        dc.b    $F0,$01,$3C,$00,$01,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$03,$00,$A3
-        dc.b    $00,$04,$00,$A4,$00,$04,$00,$AB,$00,$04,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; CatBank1Conds1 ($33CA): condition list, 19 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+CatBank1Conds1:
+        dc.b    $13                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3E                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B9                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500; P0134
+        dc.b    $01,$26,$00,$4E                          ; FaultMem04 needs clear: P0401; P0351; P0352; P0353
+        dc.b    $01,$28,$00,$76                          ; FaultMem06 needs clear: P0132; P0204; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$F0                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2F,$00,$C0                          ; FaultMem0D needs clear: P0135; P0133
+        dc.b    $01,$2E,$00,$7E                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300; P0141
+        dc.b    $01,$31,$00,$C6                          ; FaultMem0F needs clear: P0171; P0172; P1899; P0441
+        dc.b    $01,$30,$00,$40                          ; FaultMem0E needs clear: P0138
+        dc.b    $01,$33,$00,$13                          ; FaultMem11 needs clear: P0121; P0140; P0125
+        dc.b    $01,$32,$00,$06                          ; FaultMem10 needs clear: P1294; P0700
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$3F                          ; FaultMem12 needs clear: P1391; P0137; P0131; P1492; P1493; P0703
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; CatBank1Conds2 ($341B): condition list, 4 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+CatBank1Conds2:
+        dc.b    $04                                      ; entries
+        dc.b    $0A,$9A,$04,$24                          ; VehicleSpeed needs above $24
+        dc.b    $00,$AA,$00,$04                          ; MonStatusEgrFlow needs clear: bit 2
+        dc.b    $07,$7A,$00,$FF                          ; DecelFuelFactor needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2; bit 1; bit 0
+        dc.b    $04,$43,$00,$88                          ; PurgeLearnFlags needs clear: purge vapour learning running (PurgeVaporLearn); purge vapour learning step state (PurgeVaporLearn)
+
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$0F,$00,$A3,$00,$10,$00,$A4,$00,$10,$00,$A3,$02,$02,$00
-        dc.b    $A4,$00,$00,$00,$A5,$00,$10,$00,$A6,$00,$10,$00,$AB,$00,$10,$00
-        dc.b    $AC,$00,$10,$00,$AE,$00,$10,$00,$AD,$00,$10,$00,$AF,$00,$10,$00
-        dc.b    $AA,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$FF,$00,$9F,$00,$18,$15
-        dc.b    $01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$BB
-        dc.b    $01,$26,$00,$0E,$01,$28,$00,$76,$01,$2B,$00,$F6,$01,$2A,$00,$30
-        dc.b    $01,$2F,$00,$C0,$01,$2E,$00,$7E,$01,$31,$00,$C6,$01,$30,$00,$F7
-        dc.b    $01,$33,$00,$17,$01,$32,$00,$06,$01,$35,$00,$06,$01,$34,$00,$3F
-        dc.b    $01,$36,$00,$C0,$01,$39,$00,$60,$01,$3B,$00,$03,$01,$3D,$00,$F0
-        dc.b    $01,$3C,$00,$01,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$04,$00,$A1,$00,$04,$00,$A2,$00,$04,$07,$7A,$00
-        dc.b    $FF,$04,$43,$00,$88,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; CatBank1Conds3 ($3480): condition list, 12 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+CatBank1Conds3:
+        dc.b    $0C                                      ; entries
+        dc.b    $00,$A3,$00,$90                          ; MonStatusO2Resp1 needs clear: bit 7; bit 4
+        dc.b    $00,$A3,$02,$02                          ; MonStatusO2Resp1 needs all set: bit 1
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
+        dc.b    $00,$A7,$00,$10                          ; MonStatusO2Sensor3 needs clear: bit 4
+        dc.b    $00,$A9,$00,$10                          ; MonStatusPurge needs clear: read by ObdReadiness
+        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: bit 4
+        dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
+        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
+        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
+        dc.b    $00,$9D,$00,$7C                          ; MonFlags09D needs clear: bit 6; bit 5; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: bit 7; bit 5; bit 3; bit 0
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: bit 4; bit 3
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; CatBank2Conds1 ($34BD): condition list, 19 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+CatBank2Conds1:
+        dc.b    $13                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3E                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B8                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500
+        dc.b    $01,$26,$00,$4E                          ; FaultMem04 needs clear: P0401; P0351; P0352; P0353
+        dc.b    $01,$28,$00,$36                          ; FaultMem06 needs clear: P0204; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$F6                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600; P0152; P0154
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2E,$00,$7C                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300
+        dc.b    $01,$31,$00,$06                          ; FaultMem0F needs clear: P1899; P0441
+        dc.b    $01,$30,$00,$B7                          ; FaultMem0E needs clear: P0158; P0161; P0155; P0153; P0174; P0175
+        dc.b    $01,$33,$00,$15                          ; FaultMem11 needs clear: P0121; P0160; P0125
+        dc.b    $01,$32,$00,$06                          ; FaultMem10 needs clear: P1294; P0700
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$27                          ; FaultMem12 needs clear: P1391; P1492; P1493; P0703
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$39,$00,$60                          ; FaultMem17 needs clear: P0157; P0151
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; CatBank2Conds2 ($350E): condition list, 4 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+CatBank2Conds2:
+        dc.b    $04                                      ; entries
+        dc.b    $0A,$9A,$04,$24                          ; VehicleSpeed needs above $24
+        dc.b    $00,$AA,$00,$04                          ; MonStatusEgrFlow needs clear: bit 2
+        dc.b    $07,$7A,$00,$FF                          ; DecelFuelFactor needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2; bit 1; bit 0
+        dc.b    $04,$43,$00,$88                          ; PurgeLearnFlags needs clear: purge vapour learning running (PurgeVaporLearn); purge vapour learning step state (PurgeVaporLearn)
+
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$0E,$00,$A3,$00,$90,$00,$A4
-        dc.b    $00,$90,$00,$A3,$02,$02,$00,$A4,$00,$00,$00,$A5,$00,$10,$00,$A6
-        dc.b    $00,$10,$00,$AB,$00,$10,$00,$AC,$00,$10,$00,$AE,$00,$10,$00,$AD
-        dc.b    $00,$10,$00,$AF,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$FF,$00,$9F
-        dc.b    $00,$18,$FF,$FF,$FF,$FF,$11,$01,$23,$00,$06,$01,$25,$00,$06,$01
-        dc.b    $24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00,$40,$01,$28,$00,$56,$01
-        dc.b    $2B,$00,$96,$01,$2F,$00,$40,$01,$31,$00,$C0,$01,$30,$00,$C7,$01
-        dc.b    $33,$00,$11,$01,$32,$00,$04,$01,$35,$00,$06,$01,$34,$00,$3E,$01
-        dc.b    $39,$00,$60,$01,$3B,$00,$03,$01,$3D,$00,$F0,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$02,$00,$A9,$00,$04,$00,$AA,$00,$04
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; CatBank2Conds3 ($3573): condition list, 12 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+CatBank2Conds3:
+        dc.b    $0C                                      ; entries
+        dc.b    $00,$A4,$00,$90                          ; MonStatusO2Resp2 needs clear: bit 7; bit 4
+        dc.b    $00,$A4,$02,$02                          ; MonStatusO2Resp2 needs all set: bit 1
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
+        dc.b    $00,$A8,$00,$10                          ; MonStatusO2Sensor4 needs clear: bit 4
+        dc.b    $00,$A9,$00,$10                          ; MonStatusPurge needs clear: read by ObdReadiness
+        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: bit 4
+        dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
+        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: bit 4
+        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: bit 4
+        dc.b    $00,$9D,$00,$7C                          ; MonFlags09D needs clear: bit 6; bit 5; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: bit 6; bit 4; bit 2; bit 1
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: bit 4; bit 3
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2Resp1Conds1 ($35B0): condition list, 20 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+O2Resp1Conds1:
+        dc.b    $14                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3E                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B9                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500; P0134
+        dc.b    $01,$26,$00,$4E                          ; FaultMem04 needs clear: P0401; P0351; P0352; P0353
+        dc.b    $01,$28,$00,$76                          ; FaultMem06 needs clear: P0132; P0204; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$F0                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2C,$00,$0C                          ; FaultMem0A needs clear: fault row $5B, no P-code; fault row $5A, no P-code
+        dc.b    $01,$2F,$00,$80                          ; FaultMem0D needs clear: P0135
+        dc.b    $01,$2E,$00,$7E                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300; P0141
+        dc.b    $01,$31,$00,$0C                          ; FaultMem0F needs clear: P0551; P1899
+        dc.b    $01,$30,$00,$40                          ; FaultMem0E needs clear: P0138
+        dc.b    $01,$33,$00,$13                          ; FaultMem11 needs clear: P0121; P0140; P0125
+        dc.b    $01,$32,$00,$06                          ; FaultMem10 needs clear: P1294; P0700
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$3E                          ; FaultMem12 needs clear: P1391; P0137; P0131; P1492; P1493
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2Resp1Conds2 ($3615): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+O2Resp1Conds2:
+        dc.b    $01                                      ; entries
+        dc.b    $00,$A9,$00,$04                          ; MonStatusPurge needs clear: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
+
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$07,$00,$AC,$00,$10,$00,$AE,$00,$10,$00,$AD,$00
-        dc.b    $10,$00,$AF,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$FF,$00,$9F,$00
-        dc.b    $08,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$14,$01,$23
-        dc.b    $00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$B9,$01,$26
-        dc.b    $00,$4E,$01,$28,$00,$36,$01,$2B,$00,$F0,$01,$2A,$00,$30,$01,$2F
-        dc.b    $00,$C0,$01,$2E,$00,$7E,$01,$31,$00,$02,$01,$30,$00,$40,$01,$33
-        dc.b    $00,$13,$01,$32,$00,$04,$01,$35,$00,$06,$01,$34,$00,$3E,$01,$36
-        dc.b    $00,$C0,$01,$3B,$00,$01,$01,$3D,$00,$F0,$01,$3C,$00,$01,$02,$00
-        dc.b    $AA,$00,$04,$04,$43,$00,$88,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$05,$00,$A3,$00,$10
-        dc.b    $00,$A5,$00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$A9,$00,$9F,$00,$08
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$14,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00
-        dc.b    $CE,$01,$27,$00,$B9,$01,$26,$00,$4E,$01,$28,$00,$76,$01,$2B,$00
-        dc.b    $F0,$01,$2A,$00,$30,$01,$2F,$00,$C0,$01,$2E,$00,$7E,$01,$31,$00
-        dc.b    $02,$01,$30,$00,$40,$01,$33,$00,$13,$01,$32,$00,$04,$01,$35,$00
-        dc.b    $06,$01,$34,$00,$3E,$01,$36,$00,$C0,$01,$3B,$00,$01,$01,$3D,$00
-        dc.b    $F0,$01,$3C,$00,$01,$02,$00,$AA,$00,$04,$04,$43,$00,$88,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$06,$00,$A3,$00,$10,$00,$A5,$00,$10,$00,$AA,$00,$10,$00
-        dc.b    $9D,$00,$FC,$00,$9E,$00,$A9,$00,$9F,$00,$08,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$14,$01,$23,$00,$06
-        dc.b    $01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$B8,$01,$26,$00,$4E
-        dc.b    $01,$28,$00,$36,$01,$2B,$00,$F2,$01,$2A,$00,$30,$01,$2E,$00,$7C
-        dc.b    $01,$31,$00,$02,$01,$30,$00,$B4,$01,$33,$00,$15,$01,$32,$00,$04
-        dc.b    $01,$35,$00,$06,$01,$34,$00,$26,$01,$36,$00,$C0,$01,$39,$00,$60
-        dc.b    $01,$3B,$00,$02,$01,$3D,$00,$F0,$01,$3C,$00,$01,$02,$00,$AA,$00
-        dc.b    $04,$04,$43,$00,$88,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$05,$00,$A4,$00,$10,$00,$A6
-        dc.b    $00,$10,$00,$9D,$00,$FC,$00,$9E,$00,$56,$00,$9F,$00,$08,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$13,$01,$23,$00,$06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01
-        dc.b    $27,$00,$B8,$01,$26,$00,$4E,$01,$28,$00,$36,$01,$2B,$00,$F6,$01
-        dc.b    $2A,$00,$30,$01,$2E,$00,$7C,$01,$31,$00,$02,$01,$30,$00,$B4,$01
-        dc.b    $33,$00,$15,$01,$32,$00,$04,$01,$35,$00,$06,$01,$34,$00,$26,$01
-        dc.b    $36,$00,$C0,$01,$3B,$00,$02,$01,$3D,$00,$F0,$01,$3C,$00,$01,$FF
-        dc.b    $FF,$FF,$FF,$02,$00,$AA,$00,$04,$04,$43,$00,$88,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $06,$00,$A4,$00,$10,$00,$A6,$00,$10,$00,$AA,$00,$10,$00,$9D,$00
-        dc.b    $FC,$00,$9E,$00,$56,$00,$9F,$00,$10,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$11,$01,$23,$00,$06,$01,$25
-        dc.b    $00,$3C,$01,$24,$00,$CE,$01,$27,$00,$B0,$01,$26,$00,$0E,$01,$28
-        dc.b    $00,$30,$01,$2B,$00,$F0,$01,$2A,$00,$30,$01,$2E,$00,$7C,$01,$31
-        dc.b    $00,$C0,$01,$30,$00,$03,$01,$33,$00,$11,$01,$35,$00,$06,$01,$34
-        dc.b    $00,$26,$01,$36,$00,$C0,$01,$3D,$00,$F0,$01,$3C,$00,$01,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$02,$00,$AB,$00,$04
-        dc.b    $00,$9F,$00,$08,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2Resp1Conds3 ($3652): condition list, 5 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+O2Resp1Conds3:
+        dc.b    $05                                      ; entries
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
+        dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
+        dc.b    $00,$9D,$00,$5C                          ; MonFlags09D needs clear: bit 6; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: bit 7; bit 5; bit 3; bit 0
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: bit 4; bit 3
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2Resp2Conds1 ($367B): condition list, 20 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+O2Resp2Conds1:
+        dc.b    $14                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3E                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B8                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500
+        dc.b    $01,$26,$00,$4E                          ; FaultMem04 needs clear: P0401; P0351; P0352; P0353
+        dc.b    $01,$28,$00,$36                          ; FaultMem06 needs clear: P0204; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$F6                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600; P0152; P0154
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2C,$00,$0C                          ; FaultMem0A needs clear: fault row $5B, no P-code; fault row $5A, no P-code
+        dc.b    $01,$2E,$00,$7C                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300
+        dc.b    $01,$31,$00,$0C                          ; FaultMem0F needs clear: P0551; P1899
+        dc.b    $01,$30,$00,$B0                          ; FaultMem0E needs clear: P0158; P0161; P0155
+        dc.b    $01,$33,$00,$15                          ; FaultMem11 needs clear: P0121; P0160; P0125
+        dc.b    $01,$32,$00,$06                          ; FaultMem10 needs clear: P1294; P0700
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$26                          ; FaultMem12 needs clear: P1391; P1492; P1493
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$39,$00,$60                          ; FaultMem17 needs clear: P0157; P0151
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2Resp2Conds2 ($36E0): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+O2Resp2Conds2:
+        dc.b    $01                                      ; entries
+        dc.b    $00,$A9,$00,$04                          ; MonStatusPurge needs clear: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2Resp2Conds3 ($371D): condition list, 5 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+O2Resp2Conds3:
+        dc.b    $05                                      ; entries
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
+        dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
+        dc.b    $00,$9D,$00,$5C                          ; MonFlags09D needs clear: bit 6; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: bit 6; bit 4; bit 2; bit 1
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: bit 4; bit 3
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2Sensor1Conds1 ($3746): condition list, 15 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+O2Sensor1Conds1:
+        dc.b    $0F                                      ; entries
+        dc.b    $01,$23,$00,$04                          ; FaultMem01 needs clear: P0601
+        dc.b    $01,$25,$00,$38                          ; FaultMem03 needs clear: P0201; P0202; P0203
+        dc.b    $01,$24,$00,$C0                          ; FaultMem02 needs clear: P0118; P0117
+        dc.b    $01,$27,$00,$09                          ; FaultMem05 needs clear: P0500; P0134
+        dc.b    $01,$26,$00,$0E                          ; FaultMem04 needs clear: P0351; P0352; P0353
+        dc.b    $01,$28,$00,$60                          ; FaultMem06 needs clear: P0132; P0204
+        dc.b    $01,$2B,$00,$70                          ; FaultMem09 needs clear: P0206; P0205; P0600
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2E,$00,$7C                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300
+        dc.b    $01,$31,$00,$C0                          ; FaultMem0F needs clear: P0171; P0172
+        dc.b    $01,$33,$00,$01                          ; FaultMem11 needs clear: P0125
+        dc.b    $01,$35,$00,$04                          ; FaultMem13 needs clear: P1496
+        dc.b    $01,$34,$00,$08                          ; FaultMem12 needs clear: P0131
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+
+;---------------------------------------------------------------------------------------------------
+; O2HeaterMonitorConds ($3783): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; Read at $28DD4
+;---------------------------------------------------------------------------------------------------
+O2HeaterMonitorConds:
+        dc.b    $01                                      ; entries
+        dc.b    $0A,$9A,$06,$03                          ; VehicleSpeed test 6: bit 1; bit 0
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2HeaterMonitorConds2 ($37C0): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; Read at $28DA2
+;---------------------------------------------------------------------------------------------------
+O2HeaterMonitorConds2:
+        dc.b    $01                                      ; entries
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: bit 4
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2Sensor2Conds1 ($37E9): condition list, 15 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+O2Sensor2Conds1:
+        dc.b    $0F                                      ; entries
+        dc.b    $01,$23,$00,$04                          ; FaultMem01 needs clear: P0601
+        dc.b    $01,$25,$00,$38                          ; FaultMem03 needs clear: P0201; P0202; P0203
+        dc.b    $01,$24,$00,$C0                          ; FaultMem02 needs clear: P0118; P0117
+        dc.b    $01,$27,$00,$08                          ; FaultMem05 needs clear: P0500
+        dc.b    $01,$26,$00,$0E                          ; FaultMem04 needs clear: P0351; P0352; P0353
+        dc.b    $01,$28,$00,$20                          ; FaultMem06 needs clear: P0204
+        dc.b    $01,$2B,$00,$76                          ; FaultMem09 needs clear: P0206; P0205; P0600; P0152; P0154
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2E,$00,$7C                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300
+        dc.b    $01,$30,$00,$07                          ; FaultMem0E needs clear: P0153; P0174; P0175
+        dc.b    $01,$33,$00,$01                          ; FaultMem11 needs clear: P0125
+        dc.b    $01,$35,$00,$04                          ; FaultMem13 needs clear: P1496
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$39,$00,$20                          ; FaultMem17 needs clear: P0151
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+
+;---------------------------------------------------------------------------------------------------
+; O2HeaterMonitorConds3 ($3826): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; Read at $28DDE
+;---------------------------------------------------------------------------------------------------
+O2HeaterMonitorConds3:
+        dc.b    $01                                      ; entries
+        dc.b    $0A,$9A,$06,$03                          ; VehicleSpeed test 6: bit 1; bit 0
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2HeaterMonitorConds4 ($3863): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; Read at $28DAC
+;---------------------------------------------------------------------------------------------------
+O2HeaterMonitorConds4:
+        dc.b    $01                                      ; entries
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: bit 4
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2Sensor3Conds1 ($388C): condition list, 15 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+O2Sensor3Conds1:
+        dc.b    $0F                                      ; entries
+        dc.b    $01,$23,$00,$04                          ; FaultMem01 needs clear: P0601
+        dc.b    $01,$25,$00,$38                          ; FaultMem03 needs clear: P0201; P0202; P0203
+        dc.b    $01,$24,$00,$C0                          ; FaultMem02 needs clear: P0118; P0117
+        dc.b    $01,$26,$00,$0E                          ; FaultMem04 needs clear: P0351; P0352; P0353
+        dc.b    $01,$28,$00,$20                          ; FaultMem06 needs clear: P0204
+        dc.b    $01,$2B,$00,$70                          ; FaultMem09 needs clear: P0206; P0205; P0600
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2E,$00,$7C                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300
+        dc.b    $01,$31,$00,$C0                          ; FaultMem0F needs clear: P0171; P0172
+        dc.b    $01,$30,$00,$40                          ; FaultMem0E needs clear: P0138
+        dc.b    $01,$33,$00,$03                          ; FaultMem11 needs clear: P0140; P0125
+        dc.b    $01,$35,$00,$04                          ; FaultMem13 needs clear: P1496
+        dc.b    $01,$34,$00,$10                          ; FaultMem12 needs clear: P0137
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+
+;---------------------------------------------------------------------------------------------------
+; O2HeaterMonitorConds5 ($38C9): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; Read at $28DE8
+;---------------------------------------------------------------------------------------------------
+O2HeaterMonitorConds5:
+        dc.b    $01                                      ; entries
+        dc.b    $0A,$9A,$06,$03                          ; VehicleSpeed test 6: bit 1; bit 0
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2HeaterMonitorConds6 ($3906): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; Read at $28DB6
+;---------------------------------------------------------------------------------------------------
+O2HeaterMonitorConds6:
+        dc.b    $01                                      ; entries
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: bit 4
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2Sensor4Conds1 ($392F): condition list, 15 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+O2Sensor4Conds1:
+        dc.b    $0F                                      ; entries
+        dc.b    $01,$23,$00,$04                          ; FaultMem01 needs clear: P0601
+        dc.b    $01,$25,$00,$38                          ; FaultMem03 needs clear: P0201; P0202; P0203
+        dc.b    $01,$24,$00,$C0                          ; FaultMem02 needs clear: P0118; P0117
+        dc.b    $01,$27,$00,$08                          ; FaultMem05 needs clear: P0500
+        dc.b    $01,$26,$00,$0E                          ; FaultMem04 needs clear: P0351; P0352; P0353
+        dc.b    $01,$28,$00,$20                          ; FaultMem06 needs clear: P0204
+        dc.b    $01,$2B,$00,$70                          ; FaultMem09 needs clear: P0206; P0205; P0600
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2E,$00,$7C                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300
+        dc.b    $01,$30,$00,$83                          ; FaultMem0E needs clear: P0158; P0174; P0175
+        dc.b    $01,$33,$00,$05                          ; FaultMem11 needs clear: P0160; P0125
+        dc.b    $01,$35,$00,$04                          ; FaultMem13 needs clear: P1496
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$39,$00,$40                          ; FaultMem17 needs clear: P0157
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+
+;---------------------------------------------------------------------------------------------------
+; O2HeaterMonitorConds7 ($396C): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; Read at $28DF2
+;---------------------------------------------------------------------------------------------------
+O2HeaterMonitorConds7:
+        dc.b    $01                                      ; entries
+        dc.b    $0A,$9A,$06,$03                          ; VehicleSpeed test 6: bit 1; bit 0
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; O2HeaterMonitorConds8 ($39A9): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; Read at $28DC0
+;---------------------------------------------------------------------------------------------------
+O2HeaterMonitorConds8:
+        dc.b    $01                                      ; entries
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: bit 4
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; PurgeConds1 ($39D2): condition list, 23 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+PurgeConds1:
+        dc.b    $17                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3E                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B9                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500; P0134
+        dc.b    $01,$26,$00,$4E                          ; FaultMem04 needs clear: P0401; P0351; P0352; P0353
+        dc.b    $01,$28,$00,$76                          ; FaultMem06 needs clear: P0132; P0204; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$F6                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600; P0152; P0154
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2F,$00,$C0                          ; FaultMem0D needs clear: P0135; P0133
+        dc.b    $01,$2E,$00,$7E                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300; P0141
+        dc.b    $01,$31,$00,$C4                          ; FaultMem0F needs clear: P0171; P0172; P1899
+        dc.b    $01,$30,$00,$F7                          ; FaultMem0E needs clear: P0158; P0138; P0161; P0155; P0153; P0174; P0175
+        dc.b    $01,$33,$00,$17                          ; FaultMem11 needs clear: P0121; P0160; P0140; P0125
+        dc.b    $01,$32,$00,$06                          ; FaultMem10 needs clear: P1294; P0700
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$3F                          ; FaultMem12 needs clear: P1391; P0137; P0131; P1492; P1493; P0703
+        dc.b    $01,$37,$00,$03                          ; FaultMem15 needs clear: P0455; P0442
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$39,$00,$E0                          ; FaultMem17 needs clear: P1495; P0157; P0151
+        dc.b    $01,$38,$00,$09                          ; FaultMem16 needs clear: P1486; P1494
+        dc.b    $01,$3B,$00,$03                          ; FaultMem19 needs clear: P0153; P0133
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; PurgeConds2 ($3A37): condition list, 3 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+PurgeConds2:
+        dc.b    $03                                      ; entries
+        dc.b    $00,$A3,$00,$04                          ; MonStatusO2Resp1 needs clear: bit 2
+        dc.b    $00,$A4,$00,$04                          ; MonStatusO2Resp2 needs clear: bit 2
+        dc.b    $00,$AB,$00,$04                          ; MonStatusMisfire needs clear: bit 2
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; PurgeConds3 ($3A9C): condition list, 15 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+PurgeConds3:
+        dc.b    $0F                                      ; entries
+        dc.b    $00,$A3,$00,$10                          ; MonStatusO2Resp1 needs clear: bit 4
+        dc.b    $00,$A4,$00,$10                          ; MonStatusO2Resp2 needs clear: bit 4
+        dc.b    $00,$A3,$02,$02                          ; MonStatusO2Resp1 needs all set: bit 1
+        dc.b    $00,$A4,$00,$00                          ; MonStatusO2Resp2 needs clear $00
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
+        dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
+        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
+        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
+        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: bit 4
+        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: bit 4
+        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: bit 4
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2; bit 1; bit 0
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: bit 4; bit 3
+
+
+;---------------------------------------------------------------------------------------------------
+; EgrFlowConds1 ($3AD9): condition list, 21 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+EgrFlowConds1:
+        dc.b    $15                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3E                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$BB                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500; P1281; P0134
+        dc.b    $01,$26,$00,$0E                          ; FaultMem04 needs clear: P0351; P0352; P0353
+        dc.b    $01,$28,$00,$76                          ; FaultMem06 needs clear: P0132; P0204; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$F6                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600; P0152; P0154
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2F,$00,$C0                          ; FaultMem0D needs clear: P0135; P0133
+        dc.b    $01,$2E,$00,$7E                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300; P0141
+        dc.b    $01,$31,$00,$C6                          ; FaultMem0F needs clear: P0171; P0172; P1899; P0441
+        dc.b    $01,$30,$00,$F7                          ; FaultMem0E needs clear: P0158; P0138; P0161; P0155; P0153; P0174; P0175
+        dc.b    $01,$33,$00,$17                          ; FaultMem11 needs clear: P0121; P0160; P0140; P0125
+        dc.b    $01,$32,$00,$06                          ; FaultMem10 needs clear: P1294; P0700
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$3F                          ; FaultMem12 needs clear: P1391; P0137; P0131; P1492; P1493; P0703
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$39,$00,$60                          ; FaultMem17 needs clear: P0157; P0151
+        dc.b    $01,$3B,$00,$03                          ; FaultMem19 needs clear: P0153; P0133
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; EgrFlowConds2 ($3B3E): condition list, 4 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+EgrFlowConds2:
+        dc.b    $04                                      ; entries
+        dc.b    $00,$A1,$00,$04                          ; MonStatusCatBank1 needs clear: bit 2
+        dc.b    $00,$A2,$00,$04                          ; MonStatusCatBank2 needs clear: bit 2
+        dc.b    $07,$7A,$00,$FF                          ; DecelFuelFactor needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2; bit 1; bit 0
+        dc.b    $04,$43,$00,$88                          ; PurgeLearnFlags needs clear: purge vapour learning running (PurgeVaporLearn); purge vapour learning step state (PurgeVaporLearn)
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; EgrFlowConds3 ($3BA3): condition list, 14 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+EgrFlowConds3:
+        dc.b    $0E                                      ; entries
+        dc.b    $00,$A3,$00,$90                          ; MonStatusO2Resp1 needs clear: bit 7; bit 4
+        dc.b    $00,$A4,$00,$90                          ; MonStatusO2Resp2 needs clear: bit 7; bit 4
+        dc.b    $00,$A3,$02,$02                          ; MonStatusO2Resp1 needs all set: bit 1
+        dc.b    $00,$A4,$00,$00                          ; MonStatusO2Resp2 needs clear $00
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
+        dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
+        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
+        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
+        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: bit 4
+        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: bit 4
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2; bit 1; bit 0
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: bit 4; bit 3
+
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; MisfireConds1 ($3BE0): condition list, 17 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+MisfireConds1:
+        dc.b    $11                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$06                          ; FaultMem03 needs clear: P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B9                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500; P0134
+        dc.b    $01,$26,$00,$40                          ; FaultMem04 needs clear: P0401
+        dc.b    $01,$28,$00,$56                          ; FaultMem06 needs clear: P0132; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$96                          ; FaultMem09 needs clear: P1478; P0600; P0152; P0154
+        dc.b    $01,$2F,$00,$40                          ; FaultMem0D needs clear: P0133
+        dc.b    $01,$31,$00,$C0                          ; FaultMem0F needs clear: P0171; P0172
+        dc.b    $01,$30,$00,$C7                          ; FaultMem0E needs clear: P0158; P0138; P0153; P0174; P0175
+        dc.b    $01,$33,$00,$11                          ; FaultMem11 needs clear: P0121; P0125
+        dc.b    $01,$32,$00,$04                          ; FaultMem10 needs clear: P1294
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$3E                          ; FaultMem12 needs clear: P1391; P0137; P0131; P1492; P1493
+        dc.b    $01,$39,$00,$60                          ; FaultMem17 needs clear: P0157; P0151
+        dc.b    $01,$3B,$00,$03                          ; FaultMem19 needs clear: P0153; P0133
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; MisfireEnableCheckConds ($3C31): condition list, 2 entries (ConditionTable: the check passes only if every entry holds)
+; Read at $2AB84
+;---------------------------------------------------------------------------------------------------
+MisfireEnableCheckConds:
+        dc.b    $02                                      ; entries
+        dc.b    $00,$A9,$00,$04                          ; MonStatusPurge needs clear: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
+        dc.b    $00,$AA,$00,$04                          ; MonStatusEgrFlow needs clear: bit 2
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; MisfireEnableCheckConds2 ($3C6E): condition list, 7 entries (ConditionTable: the check passes only if every entry holds)
+; Read at $2AB76
+;---------------------------------------------------------------------------------------------------
+MisfireEnableCheckConds2:
+        dc.b    $07                                      ; entries
+        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
+        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
+        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: bit 4
+        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: bit 4
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2; bit 1; bit 0
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: bit 3
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooLean1Conds1 ($3C97): condition list, 20 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooLean1Conds1:
+        dc.b    $14                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3E                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B9                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500; P0134
+        dc.b    $01,$26,$00,$4E                          ; FaultMem04 needs clear: P0401; P0351; P0352; P0353
+        dc.b    $01,$28,$00,$36                          ; FaultMem06 needs clear: P0204; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$F0                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2F,$00,$C0                          ; FaultMem0D needs clear: P0135; P0133
+        dc.b    $01,$2E,$00,$7E                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300; P0141
+        dc.b    $01,$31,$00,$02                          ; FaultMem0F needs clear: P0441
+        dc.b    $01,$30,$00,$40                          ; FaultMem0E needs clear: P0138
+        dc.b    $01,$33,$00,$13                          ; FaultMem11 needs clear: P0121; P0140; P0125
+        dc.b    $01,$32,$00,$04                          ; FaultMem10 needs clear: P1294
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$3E                          ; FaultMem12 needs clear: P1391; P0137; P0131; P1492; P1493
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$3B,$00,$01                          ; FaultMem19 needs clear: P0133
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooLean1Conds2 ($3CE8): condition list, 2 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooLean1Conds2:
+        dc.b    $02                                      ; entries
+        dc.b    $00,$AA,$00,$04                          ; MonStatusEgrFlow needs clear: bit 2
+        dc.b    $04,$43,$00,$88                          ; PurgeLearnFlags needs clear: purge vapour learning running (PurgeVaporLearn); purge vapour learning step state (PurgeVaporLearn)
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooLean1Conds3 ($3D25): condition list, 5 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooLean1Conds3:
+        dc.b    $05                                      ; entries
+        dc.b    $00,$A3,$00,$10                          ; MonStatusO2Resp1 needs clear: bit 4
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: bit 7; bit 5; bit 3; bit 0
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: bit 3
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooRich1Conds1 ($3D4E): condition list, 20 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooRich1Conds1:
+        dc.b    $14                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3E                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B9                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500; P0134
+        dc.b    $01,$26,$00,$4E                          ; FaultMem04 needs clear: P0401; P0351; P0352; P0353
+        dc.b    $01,$28,$00,$76                          ; FaultMem06 needs clear: P0132; P0204; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$F0                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2F,$00,$C0                          ; FaultMem0D needs clear: P0135; P0133
+        dc.b    $01,$2E,$00,$7E                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300; P0141
+        dc.b    $01,$31,$00,$02                          ; FaultMem0F needs clear: P0441
+        dc.b    $01,$30,$00,$40                          ; FaultMem0E needs clear: P0138
+        dc.b    $01,$33,$00,$13                          ; FaultMem11 needs clear: P0121; P0140; P0125
+        dc.b    $01,$32,$00,$04                          ; FaultMem10 needs clear: P1294
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$3E                          ; FaultMem12 needs clear: P1391; P0137; P0131; P1492; P1493
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$3B,$00,$01                          ; FaultMem19 needs clear: P0133
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooRich1Conds2 ($3D9F): condition list, 2 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooRich1Conds2:
+        dc.b    $02                                      ; entries
+        dc.b    $00,$AA,$00,$04                          ; MonStatusEgrFlow needs clear: bit 2
+        dc.b    $04,$43,$00,$88                          ; PurgeLearnFlags needs clear: purge vapour learning running (PurgeVaporLearn); purge vapour learning step state (PurgeVaporLearn)
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooRich1Conds3 ($3DDC): condition list, 6 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooRich1Conds3:
+        dc.b    $06                                      ; entries
+        dc.b    $00,$A3,$00,$10                          ; MonStatusO2Resp1 needs clear: bit 4
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
+        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: bit 4
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: bit 7; bit 5; bit 3; bit 0
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: bit 3
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooLean2Conds1 ($3E05): condition list, 20 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooLean2Conds1:
+        dc.b    $14                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3E                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B8                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500
+        dc.b    $01,$26,$00,$4E                          ; FaultMem04 needs clear: P0401; P0351; P0352; P0353
+        dc.b    $01,$28,$00,$36                          ; FaultMem06 needs clear: P0204; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$F2                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600; P0154
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2E,$00,$7C                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300
+        dc.b    $01,$31,$00,$02                          ; FaultMem0F needs clear: P0441
+        dc.b    $01,$30,$00,$B4                          ; FaultMem0E needs clear: P0158; P0161; P0155; P0153
+        dc.b    $01,$33,$00,$15                          ; FaultMem11 needs clear: P0121; P0160; P0125
+        dc.b    $01,$32,$00,$04                          ; FaultMem10 needs clear: P1294
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$26                          ; FaultMem12 needs clear: P1391; P1492; P1493
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$39,$00,$60                          ; FaultMem17 needs clear: P0157; P0151
+        dc.b    $01,$3B,$00,$02                          ; FaultMem19 needs clear: P0153
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooLean2Conds2 ($3E56): condition list, 2 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooLean2Conds2:
+        dc.b    $02                                      ; entries
+        dc.b    $00,$AA,$00,$04                          ; MonStatusEgrFlow needs clear: bit 2
+        dc.b    $04,$43,$00,$88                          ; PurgeLearnFlags needs clear: purge vapour learning running (PurgeVaporLearn); purge vapour learning step state (PurgeVaporLearn)
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooLean2Conds3 ($3E93): condition list, 5 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooLean2Conds3:
+        dc.b    $05                                      ; entries
+        dc.b    $00,$A4,$00,$10                          ; MonStatusO2Resp2 needs clear: bit 4
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: bit 6; bit 4; bit 2; bit 1
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: bit 3
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooRich2Conds1 ($3EBC): condition list, 19 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooRich2Conds1:
+        dc.b    $13                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3E                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443; P0403
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B8                          ; FaultMem05 needs clear: P1297; P0108; P0107; P0500
+        dc.b    $01,$26,$00,$4E                          ; FaultMem04 needs clear: P0401; P0351; P0352; P0353
+        dc.b    $01,$28,$00,$36                          ; FaultMem06 needs clear: P0204; P0106; P0113; P0112
+        dc.b    $01,$2B,$00,$F6                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600; P0152; P0154
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2E,$00,$7C                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300
+        dc.b    $01,$31,$00,$02                          ; FaultMem0F needs clear: P0441
+        dc.b    $01,$30,$00,$B4                          ; FaultMem0E needs clear: P0158; P0161; P0155; P0153
+        dc.b    $01,$33,$00,$15                          ; FaultMem11 needs clear: P0121; P0160; P0125
+        dc.b    $01,$32,$00,$04                          ; FaultMem10 needs clear: P1294
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$26                          ; FaultMem12 needs clear: P1391; P1492; P1493
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$3B,$00,$02                          ; FaultMem19 needs clear: P0153
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooRich2Conds2 ($3F0D): condition list, 2 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooRich2Conds2:
+        dc.b    $02                                      ; entries
+        dc.b    $00,$AA,$00,$04                          ; MonStatusEgrFlow needs clear: bit 2
+        dc.b    $04,$43,$00,$88                          ; PurgeLearnFlags needs clear: purge vapour learning running (PurgeVaporLearn); purge vapour learning step state (PurgeVaporLearn)
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; FuelSysTooRich2Conds3 ($3F4A): condition list, 6 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+FuelSysTooRich2Conds3:
+        dc.b    $06                                      ; entries
+        dc.b    $00,$A4,$00,$10                          ; MonStatusO2Resp2 needs clear: bit 4
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
+        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: bit 4
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2
+        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: bit 6; bit 4; bit 2; bit 1
+        dc.b    $00,$9F,$00,$10                          ; MonFlags09F needs clear: bit 4
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; LdpConds1 ($3F73): condition list, 17 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+LdpConds1:
+        dc.b    $11                                      ; entries
+        dc.b    $01,$23,$00,$06                          ; FaultMem01 needs clear: P0601; P0340
+        dc.b    $01,$25,$00,$3C                          ; FaultMem03 needs clear: P0201; P0202; P0203; P0443
+        dc.b    $01,$24,$00,$CE                          ; FaultMem02 needs clear: P0118; P0117; P0123; P0122; P0505
+        dc.b    $01,$27,$00,$B0                          ; FaultMem05 needs clear: P1297; P0108; P0107
+        dc.b    $01,$26,$00,$0E                          ; FaultMem04 needs clear: P0351; P0352; P0353
+        dc.b    $01,$28,$00,$30                          ; FaultMem06 needs clear: P0204; P0106
+        dc.b    $01,$2B,$00,$F0                          ; FaultMem09 needs clear: P1478; P0206; P0205; P0600
+        dc.b    $01,$2A,$00,$30                          ; FaultMem08 needs clear: P0355; P0354
+        dc.b    $01,$2E,$00,$7C                          ; FaultMem0C needs clear: P0304; P0303; P0302; P0301; P0300
+        dc.b    $01,$31,$00,$C0                          ; FaultMem0F needs clear: P0171; P0172
+        dc.b    $01,$30,$00,$03                          ; FaultMem0E needs clear: P0174; P0175
+        dc.b    $01,$33,$00,$11                          ; FaultMem11 needs clear: P0121; P0125
+        dc.b    $01,$35,$00,$06                          ; FaultMem13 needs clear: P1496; P1299
+        dc.b    $01,$34,$00,$26                          ; FaultMem12 needs clear: P1391; P1492; P1493
+        dc.b    $01,$36,$00,$C0                          ; FaultMem14 needs clear: P0306; P0305
+        dc.b    $01,$3D,$00,$F0                          ; FaultMem1B needs clear: P0404; fault row $D6, no P-code; P0406; P0405
+        dc.b    $01,$3C,$00,$01                          ; FaultMem1A needs clear: P0356
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; LdpConds2 ($3FC4): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+LdpConds2:
+        dc.b    $00                                      ; entries
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; LdpConds3 ($4015): condition list, 2 entries (ConditionTable: the check passes only if every entry holds)
+;---------------------------------------------------------------------------------------------------
+LdpConds3:
+        dc.b    $02                                      ; entries
+        dc.b    $00,$AB,$00,$04                          ; MonStatusMisfire needs clear: bit 2
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: bit 3
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; FaultTable ($4052): 256 rows of 10 bytes

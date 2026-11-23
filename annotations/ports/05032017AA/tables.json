@@ -2645,7 +2645,7 @@
   "55C7": {
    "name": "FuelSysLimit2",
    "category": "Diagnostics",
-   "desc": "As FuelSysLimit for the second pair of routines (FuelSysRich1Check, FuelSysRich2Check)",
+   "desc": "As FuelSysLimit for the second pair of routines (FuelSysTooLean1Check, FuelSysTooLean2Check)",
    "x": "raw",
    "y": "pos256",
    "z": "raw",
@@ -2654,7 +2654,7 @@
   "55E8": {
    "name": "FuelSysLimitScale",
    "category": "Diagnostics",
-   "desc": "Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): purge ramp PurgeRamp to row position of FuelSysLimit",
+   "desc": "Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): purge ramp PurgeRamp to row position of FuelSysLimit",
    "x": "raw",
    "y": "pos256",
    "auto": false
@@ -2662,7 +2662,7 @@
   "55F4": {
    "name": "FuelSysLimitScale2",
    "category": "Diagnostics",
-   "desc": "As FuelSysLimitScale for FuelSysRich1Check, FuelSysRich2Check",
+   "desc": "As FuelSysLimitScale for FuelSysTooLean1Check, FuelSysTooLean2Check",
    "x": "raw",
    "y": "pos256",
    "auto": false
@@ -4539,7 +4539,7 @@
   },
   "078C": {
    "name": "FlexLearnBaseReadyMin",
-   "desc": "FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines FuelSysLean1Check-FuelSysRich2Check)",
+   "desc": "FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines FuelSysTooRich1Check-FuelSysTooLean2Check)",
    "size": 1,
    "category": "Fuel"
   },
@@ -9712,38 +9712,38 @@
    "size": 1
   },
   "559D": {
-   "name": "FuelSysRichHyst",
-   "desc": "Fuel system monitor (FuelSysRich1Check, FuelSysRich2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set",
+   "name": "FuelSysTooLeanHyst",
+   "desc": "Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set",
    "category": "Diagnostics",
    "size": 1
   },
   "559E": {
-   "name": "FuelSysLeanHyst",
-   "desc": "Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set",
+   "name": "FuelSysTooRichHyst",
+   "desc": "Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set",
    "category": "Diagnostics",
    "size": 1
   },
   "559F": {
-   "name": "FuelSysRichCount",
-   "desc": "Fuel system monitor: rich-condition counts ($05A3/FuelSysRichCount2) before the rich flag (FuelSysRich1Adapt, FuelSysRich2Adapt)",
+   "name": "FuelSysTooLeanCount",
+   "desc": "Fuel system monitor: rich-condition counts ($05A3/FuelSysTooLeanCount2) before the rich flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt)",
    "category": "Diagnostics",
    "size": 1
   },
   "55A0": {
-   "name": "FuelSysLeanCount",
-   "desc": "Fuel system monitor: lean-condition counts before the lean flag (FuelSysLean1Adapt, FuelSysLean2Adapt)",
+   "name": "FuelSysTooRichCount",
+   "desc": "Fuel system monitor: lean-condition counts before the lean flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt)",
    "category": "Diagnostics",
    "size": 1
   },
   "55A1": {
-   "name": "FuelSysRichFaultCount",
-   "desc": "Fuel system monitor: rich counts ($05A1/FuelSysRichFaults) before the rich result",
+   "name": "FuelSysTooLeanFaultCount",
+   "desc": "Fuel system monitor: rich counts ($05A1/FuelSysTooLeanFaults) before the rich result",
    "category": "Diagnostics",
    "size": 1
   },
   "55A2": {
-   "name": "FuelSysLeanFaultCount",
-   "desc": "Fuel system monitor: lean counts ($05A1/FuelSysLeanFaults) before the lean result",
+   "name": "FuelSysTooRichFaultCount",
+   "desc": "Fuel system monitor: lean counts ($05A1/FuelSysTooRichFaults) before the lean result",
    "category": "Diagnostics",
    "size": 1
   },
