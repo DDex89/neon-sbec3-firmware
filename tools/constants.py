@@ -376,6 +376,12 @@ def main():
     bad = sorted(v["name"] for v in hand.values() if v["name"] in tnames)
     if bad:
         raise SystemExit("constant names already used by a table or RAM variable: " + ", ".join(bad))
+    seen = {}
+    for k, v in sorted(hand.items()):
+        seen.setdefault(v["name"], []).append(k)
+    dup = sorted("%s (%s)" % (n, ", ".join(a)) for n, a in seen.items() if len(a) > 1)
+    if dup:
+        raise SystemExit("constant names used twice: " + "; ".join(dup))
     used = {v["name"] for v in hand.values()} | tnames
     used |= set(names.ram.values())
     out = dict(hand)

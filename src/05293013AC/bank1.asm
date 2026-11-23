@@ -6011,7 +6011,7 @@ Sub_14150:
         TSY
         BRCLR   $0324,#$20,L14174
         LDAA    >CoolantTemp,Z
-        CMPA    >AirCoolantThresh
+        CMPA    >SparkHookCoolantMin
         BCS     L14174
         BRSET   >ThrottleState,Z,#$80,L141A8
         LDAA    >VehicleSpeed,Z
@@ -6277,7 +6277,7 @@ Sub_143D2:
         BVC     L143FC
         LDD     #$7FFF
 L143FC:
-        CPD     >AfterThresh
+        CPD     >AfterStartSparkRpmBand
         BCS     L1441C
         LDAB    $0628,Z
         CMPB    $0626,Z
@@ -6290,7 +6290,7 @@ L14414:
 L1441C:
         BRSET   >ThrottleState,Z,#$40,L14520
         LDAA    <Baro,Z
-        CMPA    >AfterBaroThresh2
+        CMPA    >AfterStartRetardBaroMin
         LBCS    L14520
         BRSET   $0625,Z,#$10,L144F0
         BRSET   $0625,Z,#$08,L144D6
@@ -6305,13 +6305,13 @@ L14444:
         LBRA    L14520
 L1445C:
         LDAA    $0566,Z
-        CMPA    >AfterV076DThresh
+        CMPA    >AfterStartSparkEvents
         LBCS    L14520
         ASL     $0625,Z
         LBRA    L14520
 L14470:
         LDAA    $0624,Z
-        CMPA    >AfterV0D19Thresh1
+        CMPA    >AfterStartSparkStepEvents
         BCS     L1448A
         CLR     $0624,Z
         LDAA    $0627,Z
@@ -6354,7 +6354,7 @@ L144EA:
         BRA     L14522
 L144F0:
         LDAA    $0624,Z
-        CMPA    >AfterV0D19Thresh2
+        CMPA    >AfterStartSparkStepEvents2
         BCS     L1450A
         CLR     $0624,Z
         LDAA    $0627,Z
@@ -7907,17 +7907,17 @@ L154A2:
         LDAA    $00,X
         CMPB    $01F6,Z
         BCC     L154C0
-        ADDA    >KnockAdder2
+        ADDA    >KnockBandRpmStep
 L154C0:
         CMPA    >EngineRpm,Z
         BCC     L154CA
         AIX     #$01
         BRA     L154A2
 L154CA:
-        LDAA    >KnockValue2
+        LDAA    >KnockBandMapBase
         LSRB
         BCS     L154D6
-        ADDA    >KnockAdder1
+        ADDA    >KnockBandMapStep
 L154D6:
         CMPA    >Map,Z
         BCS     L154E0
@@ -18354,7 +18354,7 @@ L1C424:
         CLRA
 L1C46E:
         BRSET   $0508,Z,#$40,L1C4EC
-        CMPA    >FuelThresh6
+        CMPA    >MisfireCountLimitAlt
         BRSET   $00EF,Z,#$20,L1C482
         CMPA    >MisfireCountLimitCat
 L1C482:
@@ -18379,7 +18379,7 @@ L1C4BE:
         LDX     #$8246
         TZY
         LDY     #$8251
-        LDAB    >FuelValue16
+        LDAB    >MisfireWindowCat
         JSR     Sub_1C138
         LDAB    $0251,Z
         ANDB    #$3F

@@ -4583,7 +4583,7 @@ L236AC:
         BEQ     L23700
 L236C4:
         LDAA    >Count3s,Z
-        CMPA    >IdleTimeThresh
+        CMPA    >IdleStableTimeMin
         BCS     L23700
         LDAA    $0801,Z
         CMPA    #$0D
@@ -11575,7 +11575,7 @@ L2AEF8:
         LDX     #$8600
         TZY
         LDY     #$8612
-        LDD     >FuelValue15
+        LDD     >MisfireWindow
         JSR     Sub_2ABD0
         LDAB    $0612,Z
         ANDB    #$3F
@@ -11616,7 +11616,7 @@ L2AF32:
         LBCS    L2B05E
         BRA     L2AFB2
 L2AF8A:
-        CMPA    >FuelThresh6
+        CMPA    >MisfireCountLimitAlt
         BRSET   $00DC,Z,#$20,L2AF98
         CMPA    >MisfireCountLimitCat
 L2AF98:
@@ -11665,9 +11665,9 @@ L2B024:
         LDX     #$8613
         TZY
         LDY     #$861E
-        LDAB    >FuelValue16
+        LDAB    >MisfireWindowCat
         BRSET   $0627,Z,#$80,L2B03E
-        LDAB    >FuelValue17
+        LDAB    >MisfireWindowCat2
 L2B03E:
         JSR     Sub_2ABA2
         LDAB    $061E,Z
@@ -11805,7 +11805,7 @@ L2B182:
 L2B19C:
         BCLR    $0625,Z,#$10
 L2B1A0:
-        LDAA    >FuelValue13
+        LDAA    >MisfireHoldDefault
         BRCLR   $064A,Z,#$40,L2B1B4
         BRSET   $0626,Z,#$02,L2B1B4
         LDAA    $063B,Z
@@ -13339,13 +13339,13 @@ L2C6F6:
 L2C712:
         BRCLR   $06B5,Z,#$80,L2C726
 L2C718:
-        LDAA    >StartV01B6Value
+        LDAA    >FuelLevelRef
         LDAB    #$CC
         MUL
         ADCA    #$00
         STAA    >FuelLevelScaled,Z
 L2C726:
-        LDAA    >StartV01B6Value
+        LDAA    >FuelLevelRef
         SUBA    >FuelLevelScaled,Z
         BCC     L2C732
         CLRA
@@ -13374,7 +13374,7 @@ L2C762:
         CLR     $06C6,Z
         BRA     L2C79E
 L2C788:
-        CMPA    >AnalogTimeThresh
+        CMPA    >AnalogV0A92ReadTime
         BCC     L2C79A
         BRCLR   >MainLoopPhaseMask,Z,#$80,L2C79E
         INC     $06C6,Z
@@ -14410,7 +14410,7 @@ L2D252:
         STAB    <ThrottleClosed,Z
         BCLR    >ThrottleState,Z,#$10
 L2D25A:
-        LDAA    >ThrottleV0A78Init
+        LDAA    >ThrottleFilterInit
 L2D25E:
         STAA    $0A78,Z
         LDAA    >ThrottleClosedMarginHyst
@@ -14439,7 +14439,7 @@ L2D294:
         BSET    >ThrottleState,Z,#$10
 L2D2AA:
         LDAA    $0C47,Z
-        CMPA    >ThrottleV0C47Thresh
+        CMPA    >ThrottleRelearnCount
         BCS     L2D2B8
         CLR     $0C47,Z
 L2D2B8:
@@ -14937,7 +14937,7 @@ L2D7D0:
         STAA    >PACTL,Z
 L2D7D4:
         LDAA    $0812,Z
-        CMPA    >FuelV0812Thresh
+        CMPA    >EngineOffTimeMin
         BCS     L2D7E2
         CLR     >EngineOffTime,Z
 L2D7E2:

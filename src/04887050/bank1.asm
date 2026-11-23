@@ -17681,7 +17681,7 @@ Sub_1BFEE:
         TSY
         BRCLR   $0324,#$20,L1C012
         LDAA    >CoolantTemp,Z
-        CMPA    >AirCoolantThresh
+        CMPA    >SparkHookCoolantMin
         BCS     L1C012
         BRSET   >ThrottleState,Z,#$80,L1C046
         LDAA    >VehicleSpeed,Z
@@ -17947,7 +17947,7 @@ Sub_1C270:
         BVC     L1C29A
         LDD     #$7FFF
 L1C29A:
-        CPD     >AfterThresh
+        CPD     >AfterStartSparkRpmBand
         BCS     L1C2BA
         LDAB    $061A,Z
         CMPB    $0618,Z
@@ -17960,7 +17960,7 @@ L1C2B2:
 L1C2BA:
         BRSET   >ThrottleState,Z,#$40,L1C3BE
         LDAA    <Baro,Z
-        CMPA    >AfterBaroThresh2
+        CMPA    >AfterStartRetardBaroMin
         LBCS    L1C3BE
         BRSET   $0617,Z,#$10,L1C38E
         BRSET   $0617,Z,#$08,L1C374
@@ -17975,13 +17975,13 @@ L1C2E2:
         LBRA    L1C3BE
 L1C2FA:
         LDAA    $0557,Z
-        CMPA    >AfterV076DThresh
+        CMPA    >AfterStartSparkEvents
         LBCS    L1C3BE
         ASL     $0617,Z
         LBRA    L1C3BE
 L1C30E:
         LDAA    $0616,Z
-        CMPA    >AfterV0D19Thresh1
+        CMPA    >AfterStartSparkStepEvents
         BCS     L1C328
         CLR     $0616,Z
         LDAA    $0619,Z
@@ -18024,7 +18024,7 @@ L1C388:
         BRA     L1C3C0
 L1C38E:
         LDAA    $0616,Z
-        CMPA    >AfterV0D19Thresh2
+        CMPA    >AfterStartSparkStepEvents2
         BCS     L1C3A8
         CLR     $0616,Z
         LDAA    $0619,Z
@@ -19597,17 +19597,17 @@ L1D340:
         LDAA    $00,X
         CMPB    $01F6,Z
         BCC     L1D35E
-        ADDA    >KnockAdder2
+        ADDA    >KnockBandRpmStep
 L1D35E:
         CMPA    >EngineRpm,Z
         BCC     L1D368
         AIX     #$01
         BRA     L1D340
 L1D368:
-        LDAA    >KnockValue2
+        LDAA    >KnockBandMapBase
         LSRB
         BCS     L1D374
-        ADDA    >KnockAdder1
+        ADDA    >KnockBandMapStep
 L1D374:
         CMPA    >MapRaw,Z
         BCS     L1D37E

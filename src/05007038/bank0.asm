@@ -483,8 +483,8 @@ AcCutRpmLow:
         dc.b    $CC,$E8                                  ; A/C logic: engine rpm limit used in Sub_19808 and Sub_39412 (FF00 = off)
 IacStartTimeMin:
         dc.b    $02                                      ; Time since start before the event logic of Sub_19808 runs
-IacV0C24Init:
-        dc.b    $06                                      ; Byte stored into V0C24; read by Sub_19808.
+IacEventTimerInit:
+        dc.b    $06                                      ; Value of the IAC event timer $0C24,Z when the gear-change IAC starts
         dc.b    $F9,$F6,$FF,$00,$8A,$95,$38,$00,$00,$00,$00,$90,$33,$FF,$07,$14
         dc.b    $1E,$32,$76,$FF,$0A,$13,$74,$81,$B1,$FC,$FC,$14,$06,$14,$08,$10
 
@@ -948,10 +948,10 @@ CrankClearFloodThrottle:
 StartFlexEthanolThresh:
         dc.b    $58                                      ; Byte compared with FlexEthanol; read by Reset. Fault: P1602.
         dc.b    $02,$84
-FuelEventValue3:
-        dc.b    $70                                      ; Byte used with; read by Sub_12680.
-FuelEventValue4:
-        dc.b    $76                                      ; Byte used with; read by Sub_12680.
+FuelEventColdOffset:
+        dc.b    $70                                      ; Per-event fuel (Sub_12680): value minus 110 gives the cold correction step
+FuelEventColdOffset2:
+        dc.b    $76                                      ; Per-event fuel: second value minus 110 used below FuelEventCoolantMax
 FuelEventOffsetInAlt:
         dc.b    $06                                      ; As FuelEventOffsetIn with calibration bit $0338.2 set
 CrankFuelBattTempMax:
@@ -1393,14 +1393,14 @@ WotEnrichRpmMin:
         dc.b    $FE                                      ; WOT time enrichment runs at or above this engine rpm
 WotEnrichStep:
         dc.b    $05                                      ; WOT time enrichment: increase per step up to WotTimeEnrichMax
-FuelV081AOffset:
-        dc.b    $32                                      ; Byte subtracted from V081A; read by Sub_102FE.
-FuelV07ADThresh:
-        dc.b    $00,$04                                  ; Word compared with V07AD; read by Sub_102FE.
+WotEnrichDecay:
+        dc.b    $32                                      ; WOT time enrichment: decrease of $081A,Z per step after WOT
+WotEnrichDecayTime:
+        dc.b    $00,$04                                  ; WOT time enrichment: loops between decreases (word)
 WotEnrichDelay:
         dc.b    $00,$06                                  ; WOT time enrichment: loops at WOT before it starts (FuelModeFlags bit 0)
-FuelV07ABThresh:
-        dc.b    $00,$0B                                  ; Word compared with V07AB; read by Sub_102FE.
+WotEnrichTimeMax:
+        dc.b    $00,$0B                                  ; WOT time enrichment: time at WOT ($07AB,Z) up to which the enrichment grows (word)
 
 ;---------------------------------------------------------------------------------------------------
 ; WotTimeEnrichMax ($0C1F): 2D table, 4 points, unsigned
@@ -1662,8 +1662,8 @@ Tab3D_0EBF:
         dc.b    $40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40
         dc.b    $40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40
         dc.b    $40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40,$40
-DecelMapOffset:
-        dc.b    $08                                      ; Byte subtracted from Map; read by FinishFuelPulse.
+AccelMapRiseOffset:
+        dc.b    $08                                      ; MAP acceleration fuel: MAP rise (MAP minus MapLast) above this offset counts
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_10EA ($10EA): 2D table, 1 points, unsigned
@@ -1851,8 +1851,8 @@ DecelLeanFuelMax:
         dc.b    $07
 DecelLeanRpmMin:
         dc.b    $22                                      ; Decel enleanment runs at or above this engine rpm
-FuelEventValue9:
-        dc.b    $0B                                      ; Byte used with; read by Sub_1202A.
+FuelPulseMode:
+        dc.b    $0B                                      ; Fuel pulse output mode; 11 selects the second branch of Sub_1202A
 DecelLeanFuelMin:
         dc.b    $00                                      ; Decel enleanment: lower limit of the result
 O2CoolantThresh1:
@@ -2307,8 +2307,8 @@ O2StepScale:
         dc.b    3,0, 4,1, 5,1, 77,6                      ; x, y
 
         dc.b    $FF,$FF
-StartV07EEValue:
-        dc.b    $80                                      ; Byte used with V07EE; read by Reset, Sub_10AEC. Fault: P1602.
+FlexStartValue:
+        dc.b    $80                                      ; Start value of $07EE,Z (flex start fuel)
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1573 ($1573): 2D table, 1 points, unsigned
@@ -2331,8 +2331,8 @@ Tab2D_157D:
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$80,$29,$14,$90,$D2,$0A,$0A,$A1,$0C,$24
-FuelMapThresh3:
-        dc.b    $24                                      ; Byte compared with Map; read by Sub_11C44.
+EventFuelMapMin:
+        dc.b    $24                                      ; Event fuel (Sub_11DE6): MAP at or above this value
         dc.b    $38,$00,$82,$A8,$32,$F6,$10
 
 ;---------------------------------------------------------------------------------------------------
@@ -2564,8 +2564,8 @@ PurgeFuelBase:
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 7
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 8
 
-FlexLearnStartCoolantThresh2:
-        dc.b    $84                                      ; Byte compared with StartCoolantTemp2; read by Sub_17FC4, Sub_3DE9C.
+SoakStartCoolantMin:
+        dc.b    $84                                      ; Start coolant at or above which flex learning and purge treat the start as warm
         dc.b    $00,$00
 PurgeCell1:
         dc.b    $0C                                      ; Adaptive cell number ($0801,Z) used for purge learning (copied to $043A,Z); cell 12 also sets $0C31,Z bit 0
@@ -2723,16 +2723,16 @@ AirTempSparkMapRpm:
         dc.b    -11,-6,-6,-8,-8,-7,-7,-7,-7              ; row 3
         dc.b    -11,-6,-6,-8,-7,-7,-7,-7,-7              ; row 4
 
-AfterV076DThresh:
-        dc.b    $06                                      ; Byte compared with V076D; read by Sub_1D448.
-AfterBaroThresh2:
-        dc.b    $FF                                      ; Byte compared with Baro; read by Sub_1D448.
-AfterV0D19Thresh1:
-        dc.b    $04                                      ; Byte compared with V0D19; read by Sub_1D448.
-AfterV0D19Thresh2:
-        dc.b    $00                                      ; Byte compared with V0D19; read by Sub_1D448.
-AfterThresh:
-        dc.b    $01,$90                                  ; Word compared with; read by Sub_1D448.
+AfterStartSparkEvents:
+        dc.b    $06                                      ; After-start spark retard (Sub_1D448): crank events ($076D,Z) before the retard starts
+AfterStartRetardBaroMin:
+        dc.b    $FF                                      ; After-start spark retard runs at or above this barometric pressure (not at WOT)
+AfterStartSparkStepEvents:
+        dc.b    $04                                      ; After-start spark retard: events per step of the first ramp
+AfterStartSparkStepEvents2:
+        dc.b    $00                                      ; After-start spark retard: events per step of the last ramp
+AfterStartSparkRpmBand:
+        dc.b    $01,$90                                  ; After-start spark retard: ends early in gear when rpm is more than this away from the idle target
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSparkCoolant ($1A82): 2D table, 10 points, unsigned
@@ -2852,23 +2852,23 @@ WotSpark:
         dc.b    0,8,8,9,10,20,33,36,41,49,54,54,55,56,56,56,56 ; row 8
 
         dc.b    $00,$00,$00,$00,$00
-FuelEventSparkTimerInit1:
-        dc.b    $00                                      ; Byte stored into EventSparkTimer; read by Sub_11C44.
-FuelV0863Offset:
-        dc.b    $00                                      ; Byte subtracted from V0863; read by Sub_11C44.
-FuelEventSparkTimerInit2:
-        dc.b    $00                                      ; Byte stored into EventSparkTimer; read by Sub_11C44.
-FuelV0863Adder:
-        dc.b    $00                                      ; Byte added to V0863; read by Isr_GPT_IC4OC5, Sub_11C44.
+EventSparkPeriod:
+        dc.b    $00                                      ; Event spark: period of EventSparkTimer between steps
+EventSparkStepDown:
+        dc.b    $00                                      ; Event spark: decrease of $0863,Z per period
+EventSparkPeriod2:
+        dc.b    $00                                      ; Event spark: period in the second branch
+EventSparkStepUp:
+        dc.b    $00                                      ; Event spark: increase of $085E,Z and $0863,Z per step
 EventSparkInit:
         dc.b    $00                                      ; Event spark value at the start of an event
 FuelV0862Init:
         dc.b    $00                                      ; Byte stored into V0862; read by Sub_11C44.
-StartV0863Thresh:
-        dc.b    $06                                      ; Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44. Fault: P1602.
+EventSparkCountMax:
+        dc.b    $06                                      ; Event spark: upper limit of $085E,Z and $0863,Z
         dc.b    $06
-FuelEventValue10:
-        dc.b    $80                                      ; Byte used with; read by Sub_12CCC.
+EventFuelScale:
+        dc.b    $80                                      ; Event fuel: factor (ScaleByFraction) while the event counter runs
         dc.b    $01,$FF,$00,$0C,$00,$00,$00,$00,$00,$00,$00,$00,$00,$01,$FF,$00
         dc.b    $0C,$00,$00,$00,$00,$00,$00,$00,$00,$00,$01,$80,$FF,$00,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$0E,$00
@@ -3348,11 +3348,11 @@ AcSparkMapLimit:
         dc.b    $24,$2A,$2A,$28,$32,$32,$06,$06,$06,$0A,$12,$12,$14,$14,$14,$1D
         dc.b    $1F,$24,$2A,$2A,$28,$32,$32,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF
-FuelV04F2Thresh:
-        dc.b    $09                                      ; Byte compared with V04F2; read by Sub_1F58A.
+KnockCylRetardMaxSteps:
+        dc.b    $09                                      ; Per-cylinder knock retard: upper limit of the half-value ($04F2,Z)
         dc.b    $BA
-FuelOffset2:
-        dc.b    $01                                      ; Byte subtracted from; read by Sub_1F58A.
+KnockCylRetardOffset:
+        dc.b    $01                                      ; Per-cylinder knock retard: offset subtracted from the half-value
 StartV0040Init:
         dc.b    $22                                      ; Byte stored into V0040; read by Reset. Fault: P1602.
         dc.b    $22,$22,$22,$22
@@ -3484,15 +3484,15 @@ KnockCylRetardDecay:
         dc.b    $03                                      ; Decrease of the per-cylinder retard values per step
 KnockCylRetardMin:
         dc.b    $00                                      ; Lower limit of the per-cylinder retard values ($8092,Z)
-KnockV0DA9Thresh:
-        dc.b    $01                                      ; Byte compared with V0DA9; read by Sub_1F1DC.
-KnockValue2:
-        dc.b    $00                                      ; Byte used with; read by Sub_1F296.
+KnockMapCountMin:
+        dc.b    $01                                      ; Knock control: counts above the knock MAP threshold ($0DA9,Z) before it acts
+KnockBandMapBase:
+        dc.b    $00                                      ; Knock rpm bands (Sub_1F296): starting MAP value of the band search
         dc.b    $7D,$FF,$FF,$FF
-KnockAdder1:
-        dc.b    $00                                      ; Byte added to; read by Sub_1F296.
-KnockAdder2:
-        dc.b    $00                                      ; Byte added to; read by Sub_1F296.
+KnockBandMapStep:
+        dc.b    $00                                      ; Knock rpm bands: MAP step between bands
+KnockBandRpmStep:
+        dc.b    $00                                      ; Knock rpm bands: rpm hysteresis between bands
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardLimit ($1FD9): 3D table, 9 rows x 9 columns, signed
@@ -3659,8 +3659,8 @@ Tab2D_20CA:
         dc.b    3,$20                                    ; points, flags
         dc.b    125,2, 126,2, 127,0                      ; x, y
 
-AirCoolantThresh:
-        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_1D15C.
+SparkHookCoolantMin:
+        dc.b    $58                                      ; Spark hook (Sub_1D15C, bit $0338.5): coolant at or above this value
 
 ;---------------------------------------------------------------------------------------------------
 ; AirTempSparkFactor2 ($20D3): 2D table, 1 points, unsigned
@@ -3689,8 +3689,8 @@ AirTempSparkMap:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$64
 SparkStartRampStep:
         dc.b    $01                                      ; Increase of SparkStartRamp per step
-SparkV07A0Offset1:
-        dc.b    $01                                      ; Byte subtracted from V07A0; read by Sub_1E2B6.
+SparkStartRampStep2:
+        dc.b    $01                                      ; Decrease of $07A0,Z per step (bit $0339.5)
         dc.b    $96,$00
 IacTargetMax:
         dc.b    $96                                      ; Upper limit of the IAC target position
@@ -4188,29 +4188,29 @@ IacAcKickMapLatched:
 IacGearStepCount:
         dc.b    $0E                                      ; Number of gear-change IAC steps ($0352,Z)
         dc.b    $20,$EF,$20
-IacAdder1:
-        dc.b    $0C                                      ; Byte added to; read by Sub_19808.
+IacAcLoadAdder:
+        dc.b    $0C                                      ; A/C IAC: addition to the A/C sensor term (without $0D57,Z bit 3)
 IacAdder2:
         dc.b    $02                                      ; Byte added to; read by Sub_19808.
 IacKickHold:
         dc.b    $50                                      ; A/C and rpm-dip kicks: hold time $035A,Z
-IacValue2:
-        dc.b    $B3                                      ; Byte used with; read by Sub_1AFDE.
+IacAcSensorFilter:
+        dc.b    $B3                                      ; A/C IAC: filter weight of the filtered A/C sensor
         dc.b    $0A
 IacShiftHold:
         dc.b    $9F                                      ; Value of $034F,Z (gear-change IAC timer) when $0772,Z bit 7 sets
-IacValue3:
-        dc.b    $18                                      ; Byte used with; read by Sub_1AA32.
-IacValue4:
-        dc.b    $18                                      ; Byte used with; read by Sub_1AA32.
-IacValue5:
-        dc.b    $00                                      ; Byte used with; read by Sub_1AA32.
-IacValue6:
-        dc.b    $0B                                      ; Byte used with; read by Sub_1AA32.
-IacValue7:
-        dc.b    $0B                                      ; Byte used with; read by Sub_1AA32.
-IacValue8:
-        dc.b    $00                                      ; Byte used with; read by Sub_1AA32.
+IacShiftTimeAlt:
+        dc.b    $18                                      ; As IacShiftTime with $0C33,Z bit 6 set
+IacShiftTime:
+        dc.b    $18                                      ; Gear-change IAC step: time added to $034F,Z (with the step × 0.57)
+IacShiftTime2:
+        dc.b    $00                                      ; As IacShiftTime while $0353,Z is not zero
+IacShiftStepAlt:
+        dc.b    $0B                                      ; As IacShiftStep with $0C33,Z bit 6 set
+IacShiftStep:
+        dc.b    $0B                                      ; Gear-change IAC step (Sub_1AA32): step size, scaled by IacShiftBaroFactor
+IacShiftStep2:
+        dc.b    $00                                      ; As IacShiftStep while $0353,Z is not zero
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $C0,$80
 IacAccelHold:
@@ -4633,15 +4633,15 @@ IdleMapBase:
         dc.b    42,42,42,48,55                           ; row 4
 
         dc.b    $EC,$02,$01,$01,$00,$1D,$B0,$08,$00,$1F,$40
-IdleValue17:
-        dc.b    $2A                                      ; Byte used with; read by Sub_1A54A.
-IdleValue18:
-        dc.b    $00                                      ; Byte used with; read by Sub_1A54A.
+IacCoastOffsetUp:
+        dc.b    $2A                                      ; Coast IAC: signed offset added to $032C,Z (first branch)
+IacCoastOffsetDown:
+        dc.b    $00                                      ; Coast IAC: signed offset added to $032C,Z (second branch)
         dc.b    $00
 IdleRollSpeed:
         dc.b    $06                                      ; Vehicle speed that separates standing from rolling for idle air, dashpot and coast logic
-IdleTimeThresh:
-        dc.b    $13                                      ; Byte compared with Count3s; read by Sub_1AEE0, Sub_23816.
+IdleStableTimeMin:
+        dc.b    $13                                      ; Idle state flags: time since start above this value (also used by Sub_23970)
         dc.b    $CD,$02,$92,$0F
 SensorRpmAdder:
         dc.b    $00,$98                                  ; Word added to EngineRpm; read by Sub_2CBC8.
@@ -4863,7 +4863,7 @@ SpeedCtlRpmJumpThrottle:
 SensorValue13:
         dc.b    $10                                      ; Byte used with; read by Sub_3C3C6.
 MisfireOptions:
-        dc.b    $88                                      ; Option byte; bits tested: $02, $04, $08, $10, $20, $40, $80. Read by Sub_14802, Sub_22E06, Sub_2A906 +5.
+        dc.b    $88                                      ; Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve)
 MisfireMapChangeMax:
         dc.b    $12                                      ; Misfire monitor: MAP change above this value starts the transient hold-off
 MisfireHoldMap:
@@ -4876,8 +4876,8 @@ MisfireDecelLeanMin:
         dc.b    $F0                                      ; Misfire monitor: decel enleanment at or above this value starts the hold-off
 MisfireHoldDecel:
         dc.b    $04                                      ; Hold-off during deceleration fuel changes
-FuelValue13:
-        dc.b    $6D                                      ; Byte used with; read by Sub_2B0FA.
+MisfireHoldDefault:
+        dc.b    $6D                                      ; Misfire monitor: hold-off value without the special conditions
 MisfireHoldRpm:
         dc.b    $04                                      ; Hold-off when segment rpm is above $063B,Z
 MisfireSparkMin:
@@ -5137,8 +5137,8 @@ Tab2D_2933:
         dc.b    $C0,$20,$00
 MisfireCountLimitCat:
         dc.b    $50                                      ; Misfire counter limit (catalyst-damage level)
-FuelValue16:
-        dc.b    $0D                                      ; Byte used with; read by Sub_2AE1E.
+MisfireWindowCat:
+        dc.b    $0D                                      ; Misfire monitor: window length for the catalyst counter with $0627,Z bit 7
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00
 MisfireIdleCoolantMax:
         dc.b    $D0                                      ; Idle hold-off branch: coolant up to this value
@@ -5150,8 +5150,8 @@ MisfireIdleRpmMax:
         dc.b    $7D                                      ; Idle hold-off branch: segment rpm below this value
 MisfireIdleRpmMin:
         dc.b    $26                                      ; Idle hold-off branch: segment rpm above this value
-FuelThresh6:
-        dc.b    $60                                      ; Byte compared with; read by Sub_2AE1E.
+MisfireCountLimitAlt:
+        dc.b    $60                                      ; Misfire counter limit while $0627,Z bit 7 is clear
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireLoadScaleDrive ($2950): 2D table, 5 points, unsigned
@@ -7204,7 +7204,7 @@ L04F0C:
         BSET    $1A,Z,#$20
         BCLR    $0189,Z,#$10
         CLR     $01C2,Z
-        LDAA    >IacV0C24Init
+        LDAA    >IacEventTimerInit
         STAA    $05B4,Z
         LBRA    L04FE6
 L04F42:
@@ -7942,7 +7942,7 @@ L05824:
         MUL
         ADCA    #$00
         BRSET   $05CC,Z,#$08,L0583A
-        ADDA    >IacAdder1
+        ADDA    >IacAcLoadAdder
         BCC     L0583A
         LDAA    #$FF
 L0583A:
@@ -8079,7 +8079,7 @@ Sub_0595A:
         LDAB    $019F,Z
         CLRA
         TDE
-        LDAB    >IdleValue17
+        LDAB    >IacCoastOffsetUp
         SXT
         ADE
         PULM    D
@@ -8091,7 +8091,7 @@ Sub_0595A:
         LDAB    $019F,Z
         CLRA
         TDE
-        LDAB    >IdleValue18
+        LDAB    >IacCoastOffsetDown
         SXT
         ADE
         PULM    D
@@ -8512,16 +8512,16 @@ Sub_05D9A:
         LDAA    $01C6,Z
         BNE     L05DBA
         BRSET   $0022,Z,#$40,L05DB0
-        LDAA    >IacValue7
-        LDAB    >IacValue4
+        LDAA    >IacShiftStep
+        LDAB    >IacShiftTime
         BRA     L05DC2
 L05DB0:
-        LDAA    >IacValue6
-        LDAB    >IacValue3
+        LDAA    >IacShiftStepAlt
+        LDAB    >IacShiftTimeAlt
         BRA     L05DC2
 L05DBA:
-        LDAA    >IacValue8
-        LDAB    >IacValue5
+        LDAA    >IacShiftStep2
+        LDAB    >IacShiftTime2
 L05DC2:
         STD     $FE,Z
         TAB
@@ -8993,7 +8993,7 @@ L0621A:
         CMPA    $253B
         BCC     L0622C
         LDAA    <Count3s,Z
-        CMPA    >IdleTimeThresh
+        CMPA    >IdleStableTimeMin
         BLS     L0622C
         BSET    $F8,Z,#$04
 L0622C:
@@ -9153,7 +9153,7 @@ L063FA:
         TDE
         LDAB    >AcSensorFiltered,Z
         PSHM    D,E
-        LDAA    >IacValue2
+        LDAA    >IacAcSensorFilter
         JSR     Blend16
         AIS     #$04
         STAB    >AcSensorFiltered,Z
@@ -10267,7 +10267,7 @@ L07032:
         BCS     L0708E
         BSET    $0611,Z,#$01
 L0708E:
-        LDAA    >StartV0863Thresh
+        LDAA    >EventSparkCountMax
         STAA    $06A3,Z
         BRCLR   >Options032F,#$04,L070A0
         BSET    $56,Z,#$01
@@ -10508,7 +10508,7 @@ L0732C:
         BRA     L0736C
 L0735E:
         BSET    $22,Z,#$10
-        LDAA    >StartV07EEValue
+        LDAA    >FlexStartValue
         STAA    $049E,Z
         LDAA    #$80
 L0736C:
@@ -11746,7 +11746,7 @@ Sub_0817E:
         CMPA    >WotEnrichRpmMin
         LBCS    L081CA
         LDE     $0453,Z
-        CPE     >FuelV07ABThresh
+        CPE     >WotEnrichTimeMax
         BCC     L081BE
         BRCLR   >MainLoopPhaseMask,Z,#$80,L081BE
         ADDE    #$01
@@ -11787,7 +11787,7 @@ L08202:
         ADDD    #$01
         STD     $0455,Z
 L08212:
-        CPD     >FuelV07ADThresh
+        CPD     >WotEnrichDecayTime
         BCS     L08220
         CLRW    $0455,Z
         CLRW    $0453,Z
@@ -11797,7 +11797,7 @@ L08224:
         BRCLR   >FuelModeFlags,Z,#$01,L08266
         ORP     #$00E0
         LDAA    $04B6,Z
-        SUBA    >FuelV081AOffset
+        SUBA    >WotEnrichDecay
         BCS     L08260
         STAA    $04B6,Z
         ANDP    #$FF1F
@@ -12553,7 +12553,7 @@ L0893C:
         JSR     ScaleByFraction
 L08958:
         BRCLR   >Options032C,#$80,L089A2
-        LDAA    >StartV07EEValue
+        LDAA    >FlexStartValue
         BRSET   $22,Z,#$10,L0896A
         LDAA    $0592,Z
 L0896A:
@@ -13421,7 +13421,7 @@ L091CE:
         LDAA    >Map,Z
         SUBA    >MapLast,Z
         BCS     L09204
-        SUBA    >DecelMapOffset
+        SUBA    >AccelMapRiseOffset
         BCS     L09204
         CBA
         BCS     L091E8
@@ -13616,13 +13616,13 @@ Sub_093A8:
         DEC     >EventSparkTimer,Z
         BNE     L09406
 L093C6:
-        LDAA    >FuelEventSparkTimerInit1
+        LDAA    >EventSparkPeriod
         STAA    >EventSparkTimer,Z
         LDAA    $06A3,Z
-        SUBA    >FuelV0863Offset
+        SUBA    >EventSparkStepDown
         BCS     L093E6
         STAA    $06A3,Z
-        ADDB    >FuelV0863Offset
+        ADDB    >EventSparkStepDown
         CMPB    $069C,Z
         BCS     L093F2
 L093E6:
@@ -13661,17 +13661,17 @@ L0942E:
         DEC     >EventSparkTimer,Z
         LBRA    L09406
 L09442:
-        LDAA    >FuelEventSparkTimerInit2
+        LDAA    >EventSparkPeriod2
         SUBA    #$01
         ADCA    #$00
         STAA    >EventSparkTimer,Z
         LDAA    $06A3,Z
-        ADDA    >FuelV0863Adder
-        CMPA    >StartV0863Thresh
+        ADDA    >EventSparkStepUp
+        CMPA    >EventSparkCountMax
         BCC     L09472
         STAA    $06A3,Z
         LDAB    $06A2,Z
-        SUBB    >FuelV0863Adder
+        SUBB    >EventSparkStepUp
         BCS     L09472
         STAB    $06A2,Z
         LBNE    L093F2
@@ -13679,7 +13679,7 @@ L09472:
         LDAB    >FuelV0862Init
         STAB    $06A2,Z
         STAB    $069D,Z
-        LDAA    >StartV0863Thresh
+        LDAA    >EventSparkCountMax
         STAA    $06A3,Z
         STAA    $069E,Z
         LDAA    >EventSparkInit
@@ -13722,7 +13722,7 @@ L094FC:
         BRA     L09544
 L0950C:
         LDAB    >Map,Z
-        CMPB    >FuelMapThresh3
+        CMPB    >EventFuelMapMin
         BCS     L09522
         BRSET   $0527,Z,#$01,L09522
         LDX     #$15AD
@@ -13905,7 +13905,7 @@ L096D8:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_096E2:
-        LDAB    >FuelEventValue9
+        LDAB    >FuelPulseMode
         CMPB    #$0B
         BNE     L096F6
         CLRA
@@ -14528,7 +14528,7 @@ L09D12:
         CMPA    $0753
         BCC     L09D50
         LDAB    $E5,Z
-        LDAA    >FuelEventValue4
+        LDAA    >FuelEventColdOffset2
         SUBA    #$6E
         BCC     L09D30
         CLRA
@@ -14540,7 +14540,7 @@ L09D36:
         CMPA    $0C,Z
         BLS     L09D50
         TBA
-        LDAB    >FuelEventValue3
+        LDAB    >FuelEventColdOffset
         SUBB    #$6E
         BCC     L09D46
         CLRB
@@ -14811,7 +14811,7 @@ L09FCC:
         TST     $00,Y
         BEQ     L09FDA
         DEC     $00,Y
-        LDAA    >FuelEventValue10
+        LDAA    >EventFuelScale
         JSR     ScaleByFraction
 L09FDA:
         PULM    D
@@ -16131,7 +16131,7 @@ L0A9DE:
         BCS     L0AA3E
         LDAA    $05A2,Z
         INCA
-        CMPA    >KnockV0DA9Thresh
+        CMPA    >KnockMapCountMin
         BCC     L0A9FA
         STAA    $05A2,Z
         BRA     L0AA3E
@@ -16216,17 +16216,17 @@ L0AA86:
         LDAA    $00,X
         CMPB    $F6,Z
         BCC     L0AA9E
-        ADDA    >KnockAdder2
+        ADDA    >KnockBandRpmStep
 L0AA9E:
         CMPA    <EngineRpm,Z
         BCC     L0AAA6
         AIX     #$01
         BRA     L0AA86
 L0AAA6:
-        LDAA    >KnockValue2
+        LDAA    >KnockBandMapBase
         LSRB
         BCS     L0AAB2
-        ADDA    >KnockAdder1
+        ADDA    >KnockBandMapStep
 L0AAB2:
         CMPA    >Map,Z
         BCS     L0AABA
@@ -16490,10 +16490,10 @@ Sub_0AD1C:
         STD     $01F0,Z
         LDAB    $0664,Z
         LSRB
-        SUBB    >FuelOffset2
-        CMPB    >FuelV04F2Thresh
+        SUBB    >KnockCylRetardOffset
+        CMPB    >KnockCylRetardMaxSteps
         BLE     L0AD4E
-        LDAB    >FuelV04F2Thresh
+        LDAB    >KnockCylRetardMaxSteps
 L0AD4E:
         STAB    $01F2,Z
         SXT
@@ -19550,7 +19550,7 @@ Sub_0CC8A:
         LDAB    >SensorV042BInit
 L0CCB0:
         STAB    $062E,Z
-        CMPA    >FlexLearnStartCoolantThresh2
+        CMPA    >SoakStartCoolantMin
         BCC     L0CCBE
         BSET    $062D,Z,#$40
 L0CCBE:
@@ -22634,32 +22634,32 @@ L0EF96:
         BCLR    $0695,Z,#$0C
         LDAA    $069D,Z
         BEQ     L0EFFA
-        LDAB    >StartV0863Thresh
+        LDAB    >EventSparkCountMax
         LDAA    $069E,Z
-        ADDA    >FuelV0863Adder
-        CMPA    >StartV0863Thresh
+        ADDA    >EventSparkStepUp
+        CMPA    >EventSparkCountMax
         BCC     L0EFBA
         TAB
 L0EFBA:
         STAB    $069E,Z
-        LDAB    >StartV0863Thresh
+        LDAB    >EventSparkCountMax
         LDAA    $06A3,Z
-        ADDA    >FuelV0863Adder
-        CMPA    >StartV0863Thresh
+        ADDA    >EventSparkStepUp
+        CMPA    >EventSparkCountMax
         BCC     L0EFD2
         TAB
 L0EFD2:
         STAB    $06A3,Z
         CLRB
         LDAA    $069D,Z
-        SUBA    >FuelV0863Adder
+        SUBA    >EventSparkStepUp
         BCC     L0EFE4
         TBA
 L0EFE4:
         STAA    $069D,Z
         CLRB
         LDAA    $06A2,Z
-        SUBA    >FuelV0863Adder
+        SUBA    >EventSparkStepUp
         BCC     L0EFF6
         TBA
 L0EFF6:

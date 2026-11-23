@@ -1304,12 +1304,10 @@
    "category": "Idle"
   },
   "0408": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacEventTimerInit",
+   "desc": "Value of the IAC event timer $0C24,Z when the gear-change IAC starts",
    "category": "Idle",
-   "desc": "Byte stored into V0C24; read by Sub_19808.",
-   "name": "IacV0C24Init"
+   "size": 1
   },
   "052F": {
    "size": 2,
@@ -1347,20 +1345,16 @@
    "category": "Fuel"
   },
   "0598": {
+   "name": "FuelEventColdOffset",
+   "desc": "Per-event fuel (Sub_12680): value minus 110 gives the cold correction step",
    "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte used with; read by Sub_12680.",
-   "name": "FuelEventValue3"
+   "category": "Fuel"
   },
   "0599": {
+   "name": "FuelEventColdOffset2",
+   "desc": "Per-event fuel: second value minus 110 used below FuelEventCoolantMax",
    "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte used with; read by Sub_12680.",
-   "name": "FuelEventValue4"
+   "category": "Fuel"
   },
   "059A": {
    "name": "FuelEventOffsetInAlt",
@@ -1531,12 +1525,11 @@
    "name": "O2Value4"
   },
   "0EBD": {
-   "size": 1,
+   "name": "AccelMapRiseOffset",
+   "desc": "MAP acceleration fuel: MAP rise (MAP minus MapLast) above this offset counts",
    "unit": "kpa",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte subtracted from Map; read by FinishFuelPulse.",
-   "name": "DecelMapOffset"
+   "size": 1,
+   "category": "Fuel"
   },
   "0F5E": {
    "name": "DecelLeanMapDrop",
@@ -1589,12 +1582,10 @@
    "category": "Fuel"
   },
   "0F6E": {
+   "name": "FuelPulseMode",
+   "desc": "Fuel pulse output mode; 11 selects the second branch of Sub_1202A",
    "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte used with; read by Sub_1202A.",
-   "name": "FuelEventValue9"
+   "category": "Fuel"
   },
   "0F6F": {
    "name": "DecelLeanTimerInit",
@@ -1738,12 +1729,11 @@
    "name": "AccelFuelOptions"
   },
   "1103": {
-   "size": 1,
+   "name": "EventFuelMapMin",
+   "desc": "Event fuel (Sub_11DE6): MAP at or above this value",
    "unit": "kpa",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with Map; read by Sub_11C44.",
-   "name": "FuelMapThresh3"
+   "size": 1,
+   "category": "Fuel"
   },
   "10F8": {
    "name": "RevLimit",
@@ -1834,44 +1824,36 @@
    "name": "EventV0ABDThresh3"
   },
   "1A03": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "AfterStartSparkEvents",
+   "desc": "After-start spark retard (Sub_1D448): crank events ($076D,Z) before the retard starts",
    "category": "Spark",
-   "desc": "Byte compared with V076D; read by Sub_1D448.",
-   "name": "AfterV076DThresh"
+   "size": 1
   },
   "1A04": {
-   "size": 1,
+   "name": "AfterStartRetardBaroMin",
+   "desc": "After-start spark retard runs at or above this barometric pressure (not at WOT)",
    "unit": "kpa",
-   "auto": true,
    "category": "Spark",
-   "desc": "Byte compared with Baro; read by Sub_1D448.",
-   "name": "AfterBaroThresh2"
+   "size": 1
   },
   "1A05": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "AfterStartSparkStepEvents",
+   "desc": "After-start spark retard: events per step of the first ramp",
    "category": "Spark",
-   "desc": "Byte compared with V0D19; read by Sub_1D448.",
-   "name": "AfterV0D19Thresh1"
+   "size": 1
   },
   "1A06": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "AfterStartSparkStepEvents2",
+   "desc": "After-start spark retard: events per step of the last ramp",
    "category": "Spark",
-   "desc": "Byte compared with V0D19; read by Sub_1D448.",
-   "name": "AfterV0D19Thresh2"
+   "size": 1
   },
   "1A07": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "AfterStartSparkRpmBand",
+   "desc": "After-start spark retard: ends early in gear when rpm is more than this away from the idle target",
+   "unit": "rpmw",
    "category": "Spark",
-   "desc": "Word compared with; read by Sub_1D448.",
-   "name": "AfterThresh"
+   "size": 2
   },
   "19F1": {
    "name": "HighSpeedSparkOff",
@@ -1910,35 +1892,29 @@
    "category": "Spark"
   },
   "1D28": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte stored into EventSparkTimer; read by Sub_11C44.",
-   "name": "FuelEventSparkTimerInit1"
+   "name": "EventSparkPeriod",
+   "desc": "Event spark: period of EventSparkTimer between steps",
+   "category": "Spark",
+   "size": 1
   },
   "1D29": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte subtracted from V0863; read by Sub_11C44.",
-   "name": "FuelV0863Offset"
+   "name": "EventSparkStepDown",
+   "desc": "Event spark: decrease of $0863,Z per period",
+   "category": "Spark",
+   "size": 1
   },
   "1D2B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte added to V0863; read by Isr_GPT_IC4OC5, Sub_11C44.",
-   "name": "FuelV0863Adder"
+   "name": "EventSparkStepUp",
+   "desc": "Event spark: increase of $085E,Z and $0863,Z per step",
+   "category": "Spark",
+   "size": 1
   },
   "1D2C": {
    "name": "EventSparkInit",
    "desc": "Event spark value at the start of an event",
    "unit": "spark",
    "size": 1,
-   "category": "Fuel"
+   "category": "Spark"
   },
   "1D2D": {
    "size": 1,
@@ -1949,12 +1925,10 @@
    "name": "FuelV0862Init"
   },
   "1D2E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44. Fault: P1602.",
-   "name": "StartV0863Thresh"
+   "name": "EventSparkCountMax",
+   "desc": "Event spark: upper limit of $085E,Z and $0863,Z",
+   "category": "Spark",
+   "size": 1
   },
   "1BA1": {
    "name": "SurgeJerkNegMin",
@@ -2041,7 +2015,7 @@
    "desc": "Knock retard and its maximum apply above this coolant temperature",
    "unit": "tempc",
    "size": 1,
-   "category": "Spark"
+   "category": "Knock"
   },
   "1CAF": {
    "name": "KnockRetardMaxRpmMin",
@@ -2074,45 +2048,41 @@
    "name": "KnockFirstStepFactor",
    "desc": "Factor on KnockRetardStep for the first knock event",
    "size": 1,
-   "category": "Spark"
+   "category": "Knock"
   },
   "1CC9": {
    "name": "KnockStepFactor",
    "desc": "Factor on KnockRetardStep for later knock events",
    "size": 1,
-   "category": "Spark"
+   "category": "Knock"
   },
   "1CCA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Spark",
-   "desc": "Byte used with; read by Sub_1F296.",
-   "name": "KnockValue2"
+   "name": "KnockBandMapBase",
+   "desc": "Knock rpm bands (Sub_1F296): starting MAP value of the band search",
+   "unit": "kpa",
+   "category": "Knock",
+   "size": 1
   },
   "1CCF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Spark",
-   "desc": "Byte added to; read by Sub_1F296.",
-   "name": "KnockAdder1"
+   "name": "KnockBandMapStep",
+   "desc": "Knock rpm bands: MAP step between bands",
+   "unit": "kpa",
+   "category": "Knock",
+   "size": 1
   },
   "1CD0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Spark",
-   "desc": "Byte added to; read by Sub_1F296.",
-   "name": "KnockAdder2"
+   "name": "KnockBandRpmStep",
+   "desc": "Knock rpm bands: rpm hysteresis between bands",
+   "unit": "rpm32",
+   "category": "Knock",
+   "size": 1
   },
   "1ADA": {
-   "size": 1,
+   "name": "SparkHookCoolantMin",
+   "desc": "Spark hook (Sub_1D15C, bit $0338.5): coolant at or above this value",
    "unit": "tempc",
-   "auto": true,
    "category": "Spark",
-   "desc": "Byte compared with CoolantTemp; read by Sub_1D15C.",
-   "name": "AirCoolantThresh"
+   "size": 1
   },
   "216F": {
    "name": "IacTargetMax",
@@ -2162,12 +2132,10 @@
    "category": "Idle"
   },
   "1EF3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcLoadAdder",
+   "desc": "A/C IAC: addition to the A/C sensor term (without $0D57,Z bit 3)",
    "category": "Idle",
-   "desc": "Byte added to; read by Sub_19808.",
-   "name": "IacAdder1"
+   "size": 1
   },
   "1EF0": {
    "size": 1,
@@ -2184,12 +2152,10 @@
    "category": "Idle"
   },
   "1EF5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcSensorFilter",
+   "desc": "A/C IAC: filter weight of the filtered A/C sensor",
    "category": "Idle",
-   "desc": "Byte used with; read by Sub_1AFDE.",
-   "name": "IacValue2"
+   "size": 1
   },
   "1EF7": {
    "name": "IacShiftHold",
@@ -2198,52 +2164,40 @@
    "category": "Idle"
   },
   "1EF8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacShiftTimeAlt",
+   "desc": "As IacShiftTime with $0C33,Z bit 6 set",
    "category": "Idle",
-   "desc": "Byte used with; read by Sub_1AA32.",
-   "name": "IacValue3"
+   "size": 1
   },
   "1EF9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacShiftTime",
+   "desc": "Gear-change IAC step: time added to $034F,Z (with the step × 0.57)",
    "category": "Idle",
-   "desc": "Byte used with; read by Sub_1AA32.",
-   "name": "IacValue4"
+   "size": 1
   },
   "1EFA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacShiftTime2",
+   "desc": "As IacShiftTime while $0353,Z is not zero",
    "category": "Idle",
-   "desc": "Byte used with; read by Sub_1AA32.",
-   "name": "IacValue5"
+   "size": 1
   },
   "1EFB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacShiftStepAlt",
+   "desc": "As IacShiftStep with $0C33,Z bit 6 set",
    "category": "Idle",
-   "desc": "Byte used with; read by Sub_1AA32.",
-   "name": "IacValue6"
+   "size": 1
   },
   "1EFC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacShiftStep",
+   "desc": "Gear-change IAC step (Sub_1AA32): step size, scaled by IacShiftBaroFactor",
    "category": "Idle",
-   "desc": "Byte used with; read by Sub_1AA32.",
-   "name": "IacValue7"
+   "size": 1
   },
   "1EFD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacShiftStep2",
+   "desc": "As IacShiftStep while $0353,Z is not zero",
    "category": "Idle",
-   "desc": "Byte used with; read by Sub_1AA32.",
-   "name": "IacValue8"
+   "size": 1
   },
   "216E": {
    "name": "IacAccelHold",
@@ -2305,20 +2259,16 @@
    "category": "Sensors"
   },
   "2166": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacCoastOffsetUp",
+   "desc": "Coast IAC: signed offset added to $032C,Z (first branch)",
    "category": "Idle",
-   "desc": "Byte used with; read by Sub_1A54A.",
-   "name": "IdleValue17"
+   "size": 1
   },
   "2167": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacCoastOffsetDown",
+   "desc": "Coast IAC: signed offset added to $032C,Z (second branch)",
    "category": "Idle",
-   "desc": "Byte used with; read by Sub_1A54A.",
-   "name": "IdleValue18"
+   "size": 1
   },
   "215C": {
    "name": "IdleRollSpeed",
@@ -2777,7 +2727,7 @@
    "name": "KnockSignalMax",
    "desc": "Knock sensor check: filtered knock signal above this value counts as a fault",
    "size": 1,
-   "category": "Spark"
+   "category": "Knock"
   },
   "3DA7": {
    "size": 1,

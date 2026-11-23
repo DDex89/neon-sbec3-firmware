@@ -8284,7 +8284,7 @@ L1569C:
         BEQ     L156EE
 L156B4:
         LDAA    <Count3s,Z
-        CMPA    >IdleTimeThresh
+        CMPA    >IdleStableTimeMin
         BCS     L156EE
         LDAA    $04A0,Z
         CMPA    #$0D
@@ -13672,7 +13672,7 @@ L1909A:
         LBCS    L19178
         BRSET   $02DE,Z,#$40,L19150
         LDAA    $02BB,Z
-        CMPA    >FuelThresh6
+        CMPA    >MisfireCountLimitAlt
         BRSET   $00EF,Z,#$20,L190F0
         CMPA    >MisfireCountLimitCat
 L190F0:
@@ -13695,7 +13695,7 @@ L19124:
         LDX     #$82B5
         TZY
         LDY     #$82BF
-        LDAB    >FuelValue16
+        LDAB    >MisfireWindowCat
         JSR     Sub_18DC4
         LDAB    $02BF,Z
         ANDB    #$3F
@@ -13828,7 +13828,7 @@ L1926C:
 L19286:
         BCLR    $02C6,Z,#$10
 L1928A:
-        LDAA    >FuelValue13
+        LDAA    >MisfireHoldDefault
         BRCLR   $02DE,Z,#$40,L1929E
         BRSET   $02C7,Z,#$02,L1929E
         LDAA    $030C,Z
@@ -20293,7 +20293,7 @@ Sub_1D65C:
         TSY
         BRCLR   >Options0338,#$20,L1D682
         LDAA    $0C,Z
-        CMPA    >AirCoolantThresh
+        CMPA    >SparkHookCoolantMin
         BCS     L1D682
         BRSET   >ThrottleState,Z,#$80,L1D6B6
         BRSET   >Options032D,#$40,L1D686
@@ -20578,7 +20578,7 @@ Sub_1D8F0:
         BVC     L1D914
         LDD     #$7FFF
 L1D914:
-        CPD     >AfterThresh
+        CPD     >AfterStartSparkRpmBand
         BCS     L1D934
         LDAB    $066C,Z
         CMPB    $066A,Z
@@ -20591,7 +20591,7 @@ L1D92C:
 L1D934:
         BRSET   >ThrottleState,Z,#$40,L1DA30
         LDAA    <Baro,Z
-        CMPA    >AfterBaroThresh2
+        CMPA    >AfterStartRetardBaroMin
         LBCS    L1DA30
         BRSET   $0669,Z,#$10,L1DA00
         BRSET   $0669,Z,#$08,L1D9E6
@@ -20606,13 +20606,13 @@ L1D95C:
         LBRA    L1DA30
 L1D972:
         LDAA    $0424,Z
-        CMPA    >AfterV076DThresh
+        CMPA    >AfterStartSparkEvents
         LBCS    L1DA30
         ASL     $0669,Z
         LBRA    L1DA30
 L1D986:
         LDAA    $0668,Z
-        CMPA    >AfterV0D19Thresh1
+        CMPA    >AfterStartSparkStepEvents
         BCS     L1D9A0
         CLR     $0668,Z
         LDAA    $066B,Z
@@ -20655,7 +20655,7 @@ L1D9FA:
         BRA     L1DA32
 L1DA00:
         LDAA    $0668,Z
-        CMPA    >AfterV0D19Thresh2
+        CMPA    >AfterStartSparkStepEvents2
         BCS     L1DA1A
         CLR     $0668,Z
         LDAA    $066B,Z
@@ -21892,7 +21892,7 @@ L1E630:
         BRSET   <ThrottleState,Z,#$01,L1E65C
 L1E642:
         LDAB    $044C,Z
-        SUBB    >SparkV07A0Offset1
+        SUBB    >SparkStartRampStep2
         BCS     L1E660
         STAB    $044C,Z
         LDAB    >SparkStartRamp,Z

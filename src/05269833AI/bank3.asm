@@ -243,7 +243,7 @@ L3035E:
         LDAA    $01,Y
         STAA    $017B,Z
         LDAA    $0812,Z
-        CMPA    >FuelV0812Thresh
+        CMPA    >EngineOffTimeMin
         LBCC    L3051A
         BRSET   $0770,Z,#$01,L3051A
         ADDA    >EngineOffTime,Z
@@ -1822,7 +1822,7 @@ L314B2:
 L314C6:
         STAB    $017B,Z
         LDAA    $0812,Z
-        CMPA    >FuelV0812Thresh
+        CMPA    >EngineOffTimeMin
         BCC     L314EA
         BRSET   $0770,Z,#$01,L314EA
         ADDA    >EngineOffTime,Z
@@ -14937,7 +14937,7 @@ Sub_3DE9C:
         LDAB    >SensorV042BInit
 L3DEE0:
         STAB    $042B,Z
-        CMPA    >FlexLearnStartCoolantThresh2
+        CMPA    >SoakStartCoolantMin
         BCC     L3DEEE
         BSET    $0438,Z,#$40
 L3DEEE:
