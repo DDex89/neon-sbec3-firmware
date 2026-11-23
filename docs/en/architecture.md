@@ -48,8 +48,8 @@ meaning after every `BSET`/`BCLR`/`BRSET`/`BRCLR` on such a bit and under the by
 each row gives its byte, its bit and its P-code.
 
 Configuration bits of the calibration live around $0328-$0338 and are tested with `BRSET`/`BRCLR`
-on extended addresses, for example `BRSET $032E,#$04,...` (see below). Their meaning is a stage 4
-topic.
+on extended addresses, for example `BRSET $032E,#$04,...` (see below). The meaning of each used bit
+is in `annotations/bits.json` as well; the source and the XDF flags show it.
 
 ## Interrupts
 

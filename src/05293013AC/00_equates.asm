@@ -143,7 +143,7 @@ SwitchInputs2    equ $031B        ; $F831B
 DriveFlags       equ $031C        ; $F831C
 ;                 bit 7: drive engagement handling in progress (GearStateUpdate), probably
 ;                 bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
-;                 bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+;                 bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 ;                 bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
 ;                 bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
 ;                 bit 1: reference pulses seen since key-on (Isr_GPT_IC1); MapKeyOnCheck needs it clear

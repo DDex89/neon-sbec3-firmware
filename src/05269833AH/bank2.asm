@@ -1235,7 +1235,7 @@ CalcLoadValue:
         PSHM    D,E,X
         LDAA    <Baro,Z
         LDAB    >RevLimit
-        BRSET   >DriveFlags,Z,#$20,L20C6A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >DriveFlags,Z,#$20,L20C6A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDAB    >RevLimitAlt
 L20C6A:
         MUL
@@ -1403,31 +1403,31 @@ L20DBC:
 ;---------------------------------------------------------------------------------------------------
 ObdReadiness:
         BRSET   >DiagStatusFlags,Z,#$20,L20F0A           ; bit 5: readiness: every supported monitor complete (ObdReadiness)
-        BRCLR   >Options033E,#$10,L20E1E
+        BRCLR   >Options033E,#$10,L20E1E                 ; bit 4: readiness: monitor supported (ObdReadiness)
         BRCLR   >MonStatusA1,Z,#$02,L20E22
         BRSET   >MonStatusA1,Z,#$10,L20E22
-        BRCLR   >Options033E,#$08,L20E1E
+        BRCLR   >Options033E,#$08,L20E1E                 ; bit 3: readiness: monitor supported (ObdReadiness)
         BRCLR   >MonStatusA2,Z,#$02,L20E22
         BRSET   >MonStatusA2,Z,#$10,L20E22
 L20E1E:
         BCLR    $3F,Z,#$01
 L20E22:
-        BRCLR   >Options033E,#$80,L20E46
+        BRCLR   >Options033E,#$80,L20E46                 ; bit 7: readiness: monitor supported (ObdReadiness)
         BRCLR   >MonStatusA3,Z,#$02,L20E4A
         BRSET   >MonStatusA3,Z,#$10,L20E4A
-        BRCLR   >Options033E,#$40,L20E46
+        BRCLR   >Options033E,#$40,L20E46                 ; bit 6: readiness: monitor supported (ObdReadiness)
         BRCLR   >MonStatusA4,Z,#$02,L20E4A
         BRSET   >MonStatusA4,Z,#$10,L20E4A
 L20E46:
         BCLR    $3F,Z,#$20
 L20E4A:
-        BRCLR   >Options033E,#$01,L20E5C
+        BRCLR   >Options033E,#$01,L20E5C                 ; bit 0: EGR flow monitor supported (EgrFlowMonitor, ObdReadiness)
         BRCLR   >MonStatusEgrFlow,Z,#$02,L20E60
         BRSET   >MonStatusEgrFlow,Z,#$10,L20E60
 L20E5C:
         BCLR    $3F,Z,#$80
 L20E60:
-        BRCLR   >Options033E,#$02,L20EA8
+        BRCLR   >Options033E,#$02,L20EA8                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRSET   >FaultMem15,Z,#$02,L20EA8
         BRSET   >FaultMem15,Z,#$01,L20EA8
         BRSET   >FaultMem17,Z,#$80,L20EA8
@@ -1442,18 +1442,18 @@ L20E60:
 L20EA8:
         BCLR    $3F,Z,#$04
 L20EAC:
-        BRCLR   >Options033F,#$80,L20EF4
+        BRCLR   >Options033F,#$80,L20EF4                 ; bit 7: heater monitor for O2 sensor 1 supported (O2HeaterMonitor, ObdReadiness)
         BRCLR   >MonStatusO2Sensor1,Z,#$02,L20EF8
         BRSET   >MonStatusO2Sensor1,Z,#$10,L20EF8
-        BRCLR   >Options033F,#$40,L20ED0
+        BRCLR   >Options033F,#$40,L20ED0                 ; bit 6: heater monitor for O2 sensor 2 supported
         BRCLR   >MonStatusO2Sensor2,Z,#$02,L20EF8
         BRSET   >MonStatusO2Sensor2,Z,#$10,L20EF8
 L20ED0:
-        BRCLR   >Options033F,#$20,L20EE2
+        BRCLR   >Options033F,#$20,L20EE2                 ; bit 5: heater monitor for O2 sensor 3 (downstream 1) supported
         BRCLR   >MonStatusO2Sensor3,Z,#$02,L20EF8
         BRSET   >MonStatusO2Sensor3,Z,#$10,L20EF8
 L20EE2:
-        BRCLR   >Options033F,#$10,L20EF4
+        BRCLR   >Options033F,#$10,L20EF4                 ; bit 4: heater monitor for O2 sensor 4 (downstream 2) supported
         BRCLR   >MonStatusO2Sensor4,Z,#$02,L20EF8
         BRSET   >MonStatusO2Sensor4,Z,#$10,L20EF8
 L20EF4:
@@ -1813,7 +1813,7 @@ L21826:
 L2183A:
         BSET    <MonitorDisableFlags,Z,#$02              ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
 L2183E:
-        BRCLR   >Options0331,#$10,L2184A
+        BRCLR   >Options0331,#$10,L2184A                 ; bit 4: fuel level from the bus instead of the sender, probably
         BRSET   >FaultSet0D,Z,#$02,L21862
 L2184A:
         BRCLR   >FuelLevelFlags2,Z,#$02,L218C2
@@ -1854,7 +1854,7 @@ L218B2:
 L218BE:
         BCLR    <MonitorDisableFlags,Z,#$10              ; bit 4: fuel level below MonEnableFuelEmpty
 L218C2:
-        BRCLR   >Options032C,#$40,L218EA
+        BRCLR   >Options032C,#$40,L218EA                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >FaultSet0B,Z,#$10,L218E0
         BRSET   >FaultSet0B,Z,#$20,L218E0
         BRSET   >FaultSet0D,Z,#$10,L218E0
@@ -2508,7 +2508,7 @@ O2NoActivityCold:
         LDAB    #$02
         TBXK
         LDX     #$1F4C
-        BRCLR   >Options0340,#$01,L22042
+        BRCLR   >Options0340,#$01,L22042                 ; bit 0: O2 activity checks variant (O2NoActivityCold, O2DownEnable)
         BRSET   $067F,Z,#$80,L22020
         BRCLR   >O2NoActivityFlags,Z,#$80,L22020
         LDAA    >Count191ms,Z
@@ -2826,34 +2826,34 @@ O2DownEnable:
         BRSET   >O2TestFlags,Z,#$10,L22380
         LDAA    >O2DownCount,Z
         ANDA    #$C3
-        BRCLR   >Options032F,#$80,L22316
+        BRCLR   >Options032F,#$80,L22316                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         ORAA    #$20
 L22316:
-        BRCLR   >Options032F,#$40,L2231E
+        BRCLR   >Options032F,#$40,L2231E                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         ORAA    #$10
 L2231E:
-        BRCLR   >Options032F,#$20,L22326
+        BRCLR   >Options032F,#$20,L22326                 ; bit 5: downstream O2 sensor 1 fitted
         ORAA    #$08
 L22326:
-        BRCLR   >Options032F,#$10,L2232E
+        BRCLR   >Options032F,#$10,L2232E                 ; bit 4: downstream O2 sensor 2 fitted
         ORAA    #$04
 L2232E:
         STAA    >O2DownCount,Z
-        BRCLR   >Options0340,#$01,L22384
+        BRCLR   >Options0340,#$01,L22384                 ; bit 0: O2 activity checks variant (O2NoActivityCold, O2DownEnable)
         LDAA    >VehicleSpeed,Z
         CMPA    >O2DownCheckSpeedMin
         BCS     L22384
         BRCLR   >ThrottleState,Z,#$80,L22384             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >O2DownCount,Z
         ANDA    #$FC
-        BRCLR   >Options032F,#$20,L22364
+        BRCLR   >Options032F,#$20,L22364                 ; bit 5: downstream O2 sensor 1 fitted
         BRSET   >FaultSet12,Z,#$10,L22364
         BRCLR   >O2Bank1Flags,Z,#$70,L22362
         BRA     L22364
 L22362:
         ORAA    #$02
 L22364:
-        BRCLR   >Options032F,#$10,L2237A
+        BRCLR   >Options032F,#$10,L2237A                 ; bit 4: downstream O2 sensor 2 fitted
         BRSET   >FaultSet17,Z,#$40,L2237A
         BRCLR   >O2Bank2Flags,Z,#$70,L22378
         BRA     L2237A
@@ -3200,7 +3200,7 @@ L226AA:
 ; Called from: O2SensorChecks
 ;---------------------------------------------------------------------------------------------------
 O2CheckEnable:
-        BRCLR   >Options032F,#$80,L226CA
+        BRCLR   >Options032F,#$80,L226CA                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         BRSET   >FaultSet05,Z,#$01,L226C4
         BRSET   >FaultSet06,Z,#$40,L226C4
         BRCLR   >FaultSet12,Z,#$08,L226CA
@@ -3210,7 +3210,7 @@ L226C4:
 L226CA:
         BCLR    >FuelLevelFlags,Z,#$08
 L226CE:
-        BRCLR   >Options032F,#$20,L226F8
+        BRCLR   >Options032F,#$20,L226F8                 ; bit 5: downstream O2 sensor 1 fitted
         BRSET   >FaultSet12,Z,#$10,L226F2
         BRSET   >O2MonFlags,Z,#$08,L226F2
         BRSET   >MonFlags09E,Z,#$20,L226F2
@@ -3222,7 +3222,7 @@ L226F2:
 L226F8:
         BCLR    >FuelLevelFlags,Z,#$02
 L226FC:
-        BRCLR   >Options032F,#$40,L2271A
+        BRCLR   >Options032F,#$40,L2271A                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >FaultSet09,Z,#$02,L22714
         BRSET   >FaultSet09,Z,#$04,L22714
         BRCLR   >FaultSet17,Z,#$20,L2271A
@@ -3232,7 +3232,7 @@ L22714:
 L2271A:
         BCLR    >FuelLevelFlags,Z,#$04
 L2271E:
-        BRCLR   >Options032F,#$10,L22748
+        BRCLR   >Options032F,#$10,L22748                 ; bit 4: downstream O2 sensor 2 fitted
         BRSET   >FaultSet17,Z,#$40,L22742
         BRSET   >O2MonFlags,Z,#$04,L22742
         BRSET   >MonFlags09E,Z,#$10,L22742
@@ -3263,7 +3263,7 @@ PurgeSolenoidCheck:
         BSET    $05BE,Z,#$80
         LBRA    L227EA
 L22776:
-        BRCLR   >Options0333,#$80,L227F2
+        BRCLR   >Options0333,#$80,L227F2                 ; bit 7: EVAP purge solenoid fitted
         TST     >PurgePwmDuty,Z
         BEQ     L2278C
         CLR     >PurgeCloseTimer,Z
@@ -3429,7 +3429,7 @@ L22954:
 ;---------------------------------------------------------------------------------------------------
 EgrSolenoidCheck:
         BRSET   >EgrFlags,Z,#$01,L22A4E
-        BRCLR   >Options0335,#$02,L22968
+        BRCLR   >Options0335,#$02,L22968                 ; bit 1: EGR position/solenoid monitor variant
         BRSET   >ControlFlags943,Z,#$10,L22A4E           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L22968:
         PSHM    D,E,Y,K,CCR
@@ -3530,7 +3530,7 @@ L22A5A:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 WotLeanMonitor:
-        BRCLR   >Options032C,#$40,L22B16
+        BRCLR   >Options032C,#$40,L22B16                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         TST     >O2ColdTrim1,Z
         LBNE    L22B16
         TST     >O2ColdTrim2,Z
@@ -3555,7 +3555,7 @@ L22A96:
         LDAA    >O2UpBank1Raw,Z
         CMPA    >WotLeanO2Max
         BCC     L22AE2
-        BRCLR   >Options032F,#$40,L22AD4
+        BRCLR   >Options032F,#$40,L22AD4                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >FuelLevelFlags,Z,#$04,L22AE2
         BRSET   >FaultSet0E,Z,#$04,L22AE2
         LDAA    >O2UpBank2Raw,Z
@@ -3698,7 +3698,7 @@ FuelSystemStatus:
         LDAA    #$01
         BRCLR   $07B4,Z,#$80,L22C7A
         LDAA    #$08
-        BRCLR   >MisfireOptions,#$80,L22C5C
+        BRCLR   >MisfireOptions,#$80,L22C5C              ; bit 7: MisfireFlags2 bit 4 handling in ClosedLoopManager and FuelSystemStatus
         BRSET   >MisfireFlags2,Z,#$10,L22C7A
 L22C5C:
         LDAA    #$04
@@ -3712,7 +3712,7 @@ L22C5C:
         BEQ     L22C8E
 L22C7A:
         STAA    >FuelSystemStatusPid,Z
-        BRSET   >Options032F,#$40,L22C86
+        BRSET   >Options032F,#$40,L22C86                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         CLRA
 L22C86:
         STAA    $0529,Z
@@ -3724,14 +3724,14 @@ L22C8E:
         BRA     L22CB4
 L22C9E:
         LDAA    #$08
-        BRCLR   >Options032F,#$40,L22CB4
+        BRCLR   >Options032F,#$40,L22CB4                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >FuelLevelFlags,Z,#$04,L22CB4
         BRCLR   >O2ActiveFlags,Z,#$04,L22CB4             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
         LDAA    #$10
 L22CB4:
         STAA    >FuelSystemStatusPid,Z
         CLRA
-        BRCLR   >Options032F,#$40,L22CE0
+        BRCLR   >Options032F,#$40,L22CE0                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         LDAA    #$02
         BRSET   >FuelLevelFlags,Z,#$04,L22CD0
         BRCLR   >O2ActiveFlags,Z,#$04,L22CD0             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
@@ -3751,7 +3751,7 @@ L22CE4:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 FuelSenderMonitor:
-        BRCLR   >Options0331,#$10,L22CF2
+        BRCLR   >Options0331,#$10,L22CF2                 ; bit 4: fuel level from the bus instead of the sender, probably
         BRSET   >FaultSet0D,Z,#$02,L22ED6
 L22CF2:
         BRCLR   >FuelLevelFlags2,Z,#$02,L22EDE
@@ -3834,7 +3834,7 @@ L22DF2:
         BSET    >MonFlags101,Z,#$10
         BSET    >O2DownFlags,Z,#$10
 L22DFA:
-        BRCLR   >Options0340,#$02,L22EDE
+        BRCLR   >Options0340,#$02,L22EDE                 ; bit 1: fuel sender monitor on (FuelSenderMonitor)
         BRSET   >FuelLevelFlags2,Z,#$80,L22EDE
         BRSET   >FaultSet05,Z,#$08,L22ED6
         BRCLR   >SparkFlags,Z,#$20,L22EDE
@@ -3927,7 +3927,7 @@ L22EF6:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 PwmC18CircuitCheck:
-        BRCLR   >Options0333,#$40,L22F88
+        BRCLR   >Options0333,#$40,L22F88                 ; bit 6: PWM output C18 fitted (PwmC18Main, PwmC18CircuitCheck)
         BRSET   >FaultSet1A,Z,#$04,L22F88
         TST     >MonStartDelay,Z
         BNE     L22F88
@@ -3982,9 +3982,9 @@ L22F88:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 MtvCheck:
-        BRCLR   >Options0335,#$80,L22FDC
+        BRCLR   >Options0335,#$80,L22FDC                 ; bit 7: second tuning valve fitted (TuneValve2Control in the PIT code)
         BRSET   >FaultSet1A,Z,#$02,L22FDC
-        BRCLR   >Options0335,#$40,L22FA6
+        BRCLR   >Options0335,#$40,L22FA6                 ; bit 6: second tuning valve variant
         BRSET   >ControlFlags943,Z,#$10,L22FDC           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L22FA6:
         TST     >MonStartDelay,Z
@@ -4092,13 +4092,13 @@ L230B8:
 ;---------------------------------------------------------------------------------------------------
 BrakeSwitchMonitor:
         BRSET   >BrakeSwFlags,Z,#$0C,L2322A
-        BRCLR   >Options0340,#$20,L230EC
+        BRCLR   >Options0340,#$20,L230EC                 ; bit 5: brake switch, VSS and purge flow monitors variant
         BRSET   >FaultSet12,Z,#$01,L230EC
         TST     >MonStartDelay,Z
         LBNE    L230EC
         BRCLR   >EngineStateFlags,Z,#$80,L230EC          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >Options032E,#$40,L230E6
-        BRCLR   >DriveFlags,Z,#$20,L230EC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >Options032E,#$40,L230E6                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
+        BRCLR   >DriveFlags,Z,#$20,L230EC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L230E6:
         BRCLR   >MonitorDisableFlags,Z,#$0E,L230F8       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow); bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude)
 L230EC:
@@ -4210,9 +4210,9 @@ L23236:
 PnSwitchMonitor:
         BRSET   $0664,Z,#$C0,L23356
         BRSET   >CamCrankFlags,Z,#$80,L2329C
-        BRSET   >Options0333,#$04,L23294
-        BRCLR   >Options0340,#$40,L23298
-        BRSET   >Options032E,#$40,L23298
+        BRSET   >Options0333,#$04,L23294                 ; bit 2: starter cut / park-neutral variant (StarterCut, PnSwitchMonitor)
+        BRCLR   >Options0340,#$40,L23298                 ; bit 6: park/neutral switch monitor on (PnSwitchMonitor)
+        BRSET   >Options032E,#$40,L23298                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BRSET   >EngineStateFlags,Z,#$80,L23298          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >VehicleSpeed,Z
         CMPA    >PnSwitchStartSpeedMax
@@ -4233,8 +4233,8 @@ L23298:
 L2329C:
         ANDP    #$FF1F
         BRSET   $0664,Z,#$40,L23344
-        BRCLR   >Options0340,#$40,L23344
-        BRSET   >Options032E,#$40,L23344
+        BRCLR   >Options0340,#$40,L23344                 ; bit 6: park/neutral switch monitor on (PnSwitchMonitor)
+        BRSET   >Options032E,#$40,L23344                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BRCLR   >EngineStateFlags,Z,#$80,L23344          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         TST     >MonStartDelay,Z
         LBNE    L23344
@@ -4487,7 +4487,7 @@ L2358E:
 ; Called from: SwitchMonitors
 ;---------------------------------------------------------------------------------------------------
 IdleRpmMonitor:
-        BRCLR   >Options0340,#$80,L2364A
+        BRCLR   >Options0340,#$80,L2364A                 ; bit 7: idle rpm monitor on (IdleRpmMonitor)
         TST     >MonStartDelay,Z
         LBNE    L23630
         JSR     IdleMonitorEnable
@@ -4587,7 +4587,7 @@ L236C4:
         BCS     L23700
         LDAA    >O2MemCell,Z
         CMPA    #$0D
-        BRCLR   >Options032E,#$40,L236DC
+        BRCLR   >Options032E,#$40,L236DC                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         CMPA    #$0C
 L236DC:
         BNE     L23700
@@ -4613,7 +4613,7 @@ L23704:
 ; Called from: SwitchMonitors
 ;---------------------------------------------------------------------------------------------------
 PspSwitchMonitor:
-        BRCLR   >Options0340,#$08,L237A4
+        BRCLR   >Options0340,#$08,L237A4                 ; bit 3: power steering switch monitor on (PspSwitchMonitor)
         BRCLR   >EquipmentFlags,Z,#$04,L237A4            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >CamCrankFlags,Z,#$08,L237A4
         CLRB
@@ -4681,10 +4681,10 @@ L237CE:
         LDAA    >CoolantTemp,Z
         CMPA    >VssCheckCoolantMin
         LBCS    L23876
-        BRSET   >Options032E,#$40,L237F0
-        BRCLR   >DriveFlags,Z,#$20,L23876                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >Options032E,#$40,L237F0                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
+        BRCLR   >DriveFlags,Z,#$20,L23876                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L237F0:
-        BRCLR   >Options0340,#$20,L237FC
+        BRCLR   >Options0340,#$20,L237FC                 ; bit 5: brake switch, VSS and purge flow monitors variant
         BRSET   >SwitchInputs,Z,#$01,L23876
 L237FC:
         BRCLR   >ThrottleState,Z,#$80,L23876             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -4737,7 +4737,7 @@ L2387E:
 ;---------------------------------------------------------------------------------------------------
 ThermostatWarmCheck:
         BRSET   >CamCrankFlags,Z,#$40,L238D8
-        BRCLR   >Options0340,#$10,L238D4
+        BRCLR   >Options0340,#$10,L238D4                 ; bit 4: thermostat monitor on (ThermostatWarmCheck)
         BRCLR   >EngineStateFlags,Z,#$80,L238D8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >MonitorDisableFlags,Z,#$08,L238D8       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
         BRCLR   >FaultSet02,Z,#$C0,L238A0
@@ -4822,7 +4822,7 @@ L23952:
         BRA     L23986
 L2396A:
         LDAA    $0694,Z
-        BRSET   >Options032B,#$80,L2397A
+        BRSET   >Options032B,#$80,L2397A                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         CMPA    #$28
         BCS     L23986
         BRA     L2397E
@@ -4922,7 +4922,7 @@ L23A44:
 L23A48:
         BSET    >CamCrankFlags,Z,#$10
 L23A4C:
-        BRCLR   >Options0340,#$04,L23A68
+        BRCLR   >Options0340,#$04,L23A68                 ; bit 2: cam/crank sync monitor on (CamCrankSyncMonitor)
         BRSET   <MonitorDisableFlags,Z,#$08,L23A68       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
         LDAA    >CamCrankFaultCounter,Z
         CMPA    >CamCrankFaultCount
@@ -5060,8 +5060,8 @@ L23BC0:
         LBRA    L23C64
 L23BC6:
         LDAA    >CylinderIndex,Z
-        BRCLR   >Options032B,#$80,L23BDE
-        BRCLR   >Options032B,#$20,L23BE6
+        BRCLR   >Options032B,#$80,L23BDE                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
+        BRCLR   >Options032B,#$20,L23BE6                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         CMPA    #$03
         BEQ     L23BEE
         LBRA    L23C9E
@@ -5076,14 +5076,14 @@ L23BE6:
 L23BEE:
         LDE     >CrankPeriodSum,Z
         SUBE    $0691,Z
-        BRCLR   >Options032B,#$80,L23C02
+        BRCLR   >Options032B,#$80,L23C02                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         LDD     #$F000
         BRA     L23C06
 L23C02:
         LDD     #$B400
 L23C06:
         EMUL
-        BRCLR   >Options032B,#$80,L23C16
+        BRCLR   >Options032B,#$80,L23C16                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         XGDE
         LDX     >RefPeriod,Z
         BRA     L23C26
@@ -5599,7 +5599,7 @@ L24392:
         BRA     L243AA
 L2439C:
         BSET    >ControlFlagsC39,Z,#$40
-        BRSET   >Options032E,#$04,L243AA
+        BRSET   >Options032E,#$04,L243AA                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     DiagModeTimer
 L243AA:
         JSR     DiagModeInit
@@ -5710,7 +5710,7 @@ L2449E:
 ; Called from: BusLampOutputs
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlLampOutput:
-        BRCLR   >Options032D,#$20,L244E8
+        BRCLR   >Options032D,#$20,L244E8                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         BRSET   >EngineStateFlags,Z,#$80,L244B4          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAB    >Count3s,Z
         BNE     L244DC
@@ -6212,7 +6212,7 @@ L247F0:
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 EgrFlowMonitor:
-        BRCLR   >Options033E,#$01,L252A6
+        BRCLR   >Options033E,#$01,L252A6                 ; bit 0: EGR flow monitor supported (EgrFlowMonitor, ObdReadiness)
         BRSET   >MonStatusEgrFlow,Z,#$02,L252A6
         BRCLR   >MonStatusEgrFlow,Z,#$80,L25296
         BRSET   >DiagStatusFlags,Z,#$01,L25296           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
@@ -6243,7 +6243,7 @@ L2507A:
         LBNE    L25296
         BRCLR   >O2ActiveFlags,Z,#$80,L25296             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BRSET   >O2Bank1Flags,Z,#$20,L25296
-        BRCLR   >Options032F,#$40,L250A0
+        BRCLR   >Options032F,#$40,L250A0                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRCLR   >O2ActiveFlags,Z,#$40,L25296             ; bit 6: upstream O2 sensor 2 active (as bit 7)
         BRSET   >O2Bank2Flags,Z,#$20,L25296
 L250A0:
@@ -6311,7 +6311,7 @@ L2512E:
         LBLT    L2529A
         CMPA    >EgrMonTrimMax
         LBGT    L2529A
-        BRCLR   >Options032F,#$40,L25196
+        BRCLR   >Options032F,#$40,L25196                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         LDAA    >ShortTermTrim2,Z
         CMPA    >EgrMonTrimMin
         LBLT    L2529A
@@ -6324,7 +6324,7 @@ L25196:
         INCW    >EgrMonPhaseTimer,Z
         LDAB    $0723,Z
         STAB    $0582,Z
-        BRCLR   >Options032F,#$40,L251C8
+        BRCLR   >Options032F,#$40,L251C8                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         SXT
         TDE
         LDAB    $074B,Z
@@ -6349,7 +6349,7 @@ L251E0:
         INCW    >EgrMonPhaseTimer,Z
         LDAB    $0723,Z
         STAB    $0585,Z
-        BRCLR   >Options032F,#$40,L25216
+        BRCLR   >Options032F,#$40,L25216                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         SXT
         TDE
         LDAB    $074B,Z
@@ -6417,11 +6417,11 @@ L252A6:
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 PurgeFlowTest:
-        BRCLR   >Options033E,#$20,L25768
+        BRCLR   >Options033E,#$20,L25768                 ; bit 5: purge flow test on (PurgeFlowTest)
         BRSET   >MonStatusPurge,Z,#$02,L25768
         BRCLR   >MonStatusPurge,Z,#$80,L2574A
         BRSET   >DiagStatusFlags,Z,#$01,L2574A           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
-        BRCLR   >Options033E,#$02,L252DE
+        BRCLR   >Options033E,#$02,L252DE                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRSET   >MonStatusLdp,Z,#$80,L25768
         BRSET   >LdpFlags,Z,#$80,L252DE
         BSET    >PurgeFlowTestFlags,Z,#$80
@@ -6448,7 +6448,7 @@ L252FE:
         JSR     Blend16Signed
         AIS     #$04
         STAB    $05BB,Z
-        BRCLR   >Options032F,#$40,L25346
+        BRCLR   >Options032F,#$40,L25346                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         LDAB    >ShortTermTrim2,Z
         SXT
         TDE
@@ -6498,11 +6498,11 @@ L253A4:
         LBHI    L2572A
         BRSET   >ThrottleState,Z,#$80,L2572A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >ThrottleState,Z,#$01,L2572A             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
-        BRSET   >Options032E,#$40,L253EC
-        BRCLR   >DriveFlags,Z,#$20,L2572A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >Options032E,#$40,L253EC                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
+        BRCLR   >DriveFlags,Z,#$20,L2572A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L253EC:
         BRCLR   >DriveFlags,Z,#$01,L2572A                ; bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
-        BRCLR   >Options0340,#$20,L253FE
+        BRCLR   >Options0340,#$20,L253FE                 ; bit 5: brake switch, VSS and purge flow monitors variant
         BRCLR   >SwitchInputs,Z,#$01,L2572A
 L253FE:
         LDD     >EngineRpm,Z
@@ -6570,7 +6570,7 @@ L254D2:
         BRSET   >AcFlags,Z,#$04,L254DC                   ; bit 2: bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test
         BSET    >PurgeFlowTestFlags2,Z,#$08
 L254DC:
-        BRSET   >Options0334,#$10,L254FA
+        BRSET   >Options0334,#$10,L254FA                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         BCLR    >PurgeFlowTestFlags2,Z,#$30
         BRCLR   >ControlFlags944,Z,#$10,L254F0           ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
         BSET    >PurgeFlowTestFlags2,Z,#$10
@@ -6611,7 +6611,7 @@ L25556:
 L25564:
         BRSET   >PurgeFlowTestFlags2,Z,#$04,L2572A
 L2556A:
-        BRSET   >Options0334,#$10,L255A4
+        BRSET   >Options0334,#$10,L255A4                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         BRSET   >ControlFlagsC33,Z,#$04,L2572A
         BRSET   >ControlFlagsC33,Z,#$40,L2572A
         BRCLR   >ControlFlags944,Z,#$10,L2558A           ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
@@ -6627,7 +6627,7 @@ L2559E:
         BRSET   >PurgeFlowTestFlags2,Z,#$20,L2572A
 L255A4:
         CLRW    >Scratch2,Z
-        BRSET   >Options033E,#$02,L255D2
+        BRSET   >Options033E,#$02,L255D2                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         LDAA    $05B4,Z
         SUBA    <IacPosition,Z
         BCS     L255D2
@@ -6657,7 +6657,7 @@ L255F2:
         BSET    >PurgeFlowTestResult,Z,#$08
         LBRA    L25680
 L255FC:
-        BRCLR   >Options032F,#$40,L25628
+        BRCLR   >Options032F,#$40,L25628                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         LDAA    $05BA,Z
         SUBA    >ShortTermTrim2,Z
         BLT     L25628
@@ -6679,7 +6679,7 @@ L25628:
         JMP     L25768
 L2563A:
         CLRW    >Scratch6,Z
-        BRSET   >Options033E,#$02,L25668
+        BRSET   >Options033E,#$02,L25668                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         LDD     >EngineRpm,Z
         SUBD    $05B5,Z
         BCS     L25668
@@ -6723,7 +6723,7 @@ L256A6:
         LSRA
         ORAA    #$C0
         BRSET   >PurgeFlowTestResult,Z,#$08,L256DA
-        BRCLR   >Options032F,#$40,L256CE
+        BRCLR   >Options032F,#$40,L256CE                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         LDAB    <Scratch5,Z
         BRSET   >PurgeFlowTestResult,Z,#$10,L256DA
 L256CE:
@@ -6781,7 +6781,7 @@ L25768:
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 LdpMonitor:
-        BRCLR   >Options033E,#$02,L25D26
+        BRCLR   >Options033E,#$02,L25D26                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRSET   >MonStatusLdp,Z,#$02,L25D26
         BRSET   >DiagStatusFlags,Z,#$01,L25D26           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BRCLR   >EngineStateFlags,Z,#$80,L25D26          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -7413,7 +7413,7 @@ L25E40:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 LdpPurgedCheck:
-        BRCLR   >Options033E,#$02,L25EE2
+        BRCLR   >Options033E,#$02,L25EE2                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRCLR   $1000,Z,#$02,L25E54
         BSET    >LdpFlags,Z,#$02
         BRA     L25E58
@@ -8236,7 +8236,7 @@ L281F4:
         LDE     $0022,Y
         LDAB    E,Z
         ANDB    #$F3
-        BRCLR   >Options0338,#$08,L28272
+        BRCLR   >Options0338,#$08,L28272                 ; bit 3: selects a branch in CatMonSwitchRatio
         LDE     $0002,Y
         LDAA    E,Z
         CMPA    >CatMonRetestRatioMax
@@ -8493,7 +8493,7 @@ L28478:
         CMPA    >CatMonRatioJumpCount
         BHI     L284FA
         STAA    E,Z
-        BRCLR   >Options0338,#$08,L284E8
+        BRCLR   >Options0338,#$08,L284E8                 ; bit 3: selects a branch in CatMonSwitchRatio
         LDE     $0022,Y
         LDAB    E,Z
         BITB    #$04
@@ -9270,7 +9270,7 @@ O2MonData2Step:
 ; Called from: CheckPowerDown
 ;---------------------------------------------------------------------------------------------------
 O2HeaterMonitor:
-        BRCLR   >Options033F,#$F0,L28E48
+        BRCLR   >Options033F,#$F0,L28E48                 ; bit 7: heater monitor for O2 sensor 1 supported (O2HeaterMonitor, ObdReadiness); bit 6: heater monitor for O2 sensor 2 supported; bit 5: heater monitor for O2 sensor 3 (downstream 1) supported; bit 4: heater monitor for O2 sensor 4 (downstream 2) supported
         BRSET   >MonStatusO2Sensor1,Z,#$80,L28D9A
         BRSET   >MonStatusO2Sensor2,Z,#$80,L28D9A
         BRSET   >MonStatusO2Sensor3,Z,#$80,L28D9A
@@ -9368,25 +9368,25 @@ L28E50:
         BCLRW   $100C,Z,#$0800
         ANDP    #$FF1F
         BSET    $0108,Z,#$80
-        BRCLR   >Options032F,#$80,L28ED0
+        BRCLR   >Options032F,#$80,L28ED0                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         BRSET   >FuelLevelFlags,Z,#$08,L28ED0
         BRSET   >FaultSet0D,Z,#$40,L28ED0
         BSET    >O2HeaterFlags,Z,#$80
         BSET    <MonStatusO2Sensor1,Z,#$04
 L28ED0:
-        BRCLR   >Options032F,#$40,L28EEA
+        BRCLR   >Options032F,#$40,L28EEA                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >FuelLevelFlags,Z,#$04,L28EEA
         BRSET   >FaultSet0E,Z,#$04,L28EEA
         BSET    >O2HeaterFlags,Z,#$40
         BSET    <MonStatusO2Sensor2,Z,#$04
 L28EEA:
-        BRCLR   >Options032F,#$20,L28F04
+        BRCLR   >Options032F,#$20,L28F04                 ; bit 5: downstream O2 sensor 1 fitted
         BRSET   >FuelLevelFlags,Z,#$02,L28F04
         BRSET   >FaultSet0C,Z,#$01,L28F04
         BSET    >O2HeaterFlags,Z,#$20
         BSET    <MonStatusO2Sensor3,Z,#$04
 L28F04:
-        BRCLR   >Options032F,#$10,L28F1E
+        BRCLR   >Options032F,#$10,L28F1E                 ; bit 4: downstream O2 sensor 2 fitted
         BRSET   >FuelLevelFlags,Z,#$01,L28F1E
         BRSET   >FaultSet0E,Z,#$08,L28F1E
         BSET    >O2HeaterFlags,Z,#$10
@@ -10175,7 +10175,7 @@ L2A028:
         BNE     L2A060
         BRCLR   >EngineStateFlags,Z,#$80,L2A060          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >O2ActiveFlags,Z,#$80,L2A060             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
-        BRCLR   >Options032F,#$80,L2A060
+        BRCLR   >Options032F,#$80,L2A060                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         TST     >SystemTestMode,Z
         BNE     L2A060
         BRSET   >MonStatusFuelSysLean1,Z,#$08,L2A07C
@@ -10200,7 +10200,7 @@ L2A07C:
 ; Called from: FuelSysLean1Monitor
 ;---------------------------------------------------------------------------------------------------
 FuelSysLean1Adapt:
-        BRSET   >Options032C,#$40,L2A0EE
+        BRSET   >Options032C,#$40,L2A0EE                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         LDAA    >O2AdaptValue1,Z
         CMPA    >O2AdaptMin
         BNE     L2A0E0
@@ -10245,8 +10245,8 @@ L2A0EE:
 ;---------------------------------------------------------------------------------------------------
 FuelSysLean1Check:
         LDAA    >O2AdaptValue1,Z
-        BRCLR   >Options032C,#$40,L2A10E
-        BRSET   >Options032F,#$08,L2A10E
+        BRCLR   >Options032C,#$40,L2A10E                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
+        BRSET   >Options032F,#$08,L2A10E                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         LDAB    >FlexLearnBase,Z
         CMPB    >FlexLearnBaseReadyMin
         BCS     L2A10E
@@ -10256,8 +10256,8 @@ L2A10E:
         JSR     FuelSysWarmupScale
         STAB    $059F,Z
         BRSET   >ClosedLoopMonFlags,Z,#$80,L2A13C
-        BRCLR   >Options032C,#$40,L2A12C
-        BRCLR   >Options032F,#$08,L2A13C
+        BRCLR   >Options032C,#$40,L2A12C                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
+        BRCLR   >Options032F,#$08,L2A13C                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
 L2A12C:
         LDAA    >FuelSysCellMin
         CMPA    <PurgeCellTrim1,Z
@@ -10366,7 +10366,7 @@ L2A23A:
         BNE     L2A272
         BRCLR   >EngineStateFlags,Z,#$80,L2A272          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >O2ActiveFlags,Z,#$40,L2A272             ; bit 6: upstream O2 sensor 2 active (as bit 7)
-        BRCLR   >Options032F,#$40,L2A272
+        BRCLR   >Options032F,#$40,L2A272                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         TST     >SystemTestMode,Z
         BNE     L2A272
         BRSET   >MonStatusFuelSysLean2,Z,#$08,L2A28E
@@ -10391,7 +10391,7 @@ L2A28E:
 ; Called from: FuelSysLean2Monitor
 ;---------------------------------------------------------------------------------------------------
 FuelSysLean2Adapt:
-        BRSET   >Options032C,#$40,L2A300
+        BRSET   >Options032C,#$40,L2A300                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         LDAA    >O2AdaptValue2,Z
         CMPA    >O2AdaptMin
         BNE     L2A2F2
@@ -10436,8 +10436,8 @@ L2A300:
 ;---------------------------------------------------------------------------------------------------
 FuelSysLean2Check:
         LDAA    >O2AdaptValue2,Z
-        BRCLR   >Options032C,#$40,L2A320
-        BRSET   >Options032F,#$08,L2A320
+        BRCLR   >Options032C,#$40,L2A320                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
+        BRSET   >Options032F,#$08,L2A320                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         LDAB    >FlexLearnBase,Z
         CMPB    >FlexLearnBaseReadyMin
         BCS     L2A320
@@ -10447,8 +10447,8 @@ L2A320:
         JSR     FuelSysWarmupScale
         STAB    $05A0,Z
         BRSET   >ClosedLoopMonFlags,Z,#$80,L2A34E
-        BRCLR   >Options032C,#$40,L2A33E
-        BRCLR   >Options032F,#$08,L2A34E
+        BRCLR   >Options032C,#$40,L2A33E                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
+        BRCLR   >Options032F,#$08,L2A34E                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
 L2A33E:
         LDAA    >FuelSysCellMin
         CMPA    <PurgeCellTrim1B2,Z
@@ -10552,7 +10552,7 @@ L2A440:
         BNE     L2A478
         BRCLR   >EngineStateFlags,Z,#$80,L2A478          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >O2ActiveFlags,Z,#$80,L2A478             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
-        BRCLR   >Options032F,#$80,L2A478
+        BRCLR   >Options032F,#$80,L2A478                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         TST     >SystemTestMode,Z
         BNE     L2A478
         BRSET   >MonStatusFuelSysRich1,Z,#$08,L2A494
@@ -10578,7 +10578,7 @@ L2A494:
 ;---------------------------------------------------------------------------------------------------
 FuelSysRich1Adapt:
         LDAA    >O2AdaptValue1,Z
-        BRSET   >Options032C,#$40,L2A4F0
+        BRSET   >Options032C,#$40,L2A4F0                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         CMPA    >O2AdaptMax
         BNE     L2A4E2
         LDAA    >ShortTermTrim1,Z
@@ -10613,8 +10613,8 @@ L2A4F0:
 ;---------------------------------------------------------------------------------------------------
 FuelSysRich1Check:
         LDAA    >O2AdaptValue1,Z
-        BRCLR   >Options032C,#$40,L2A510
-        BRSET   >Options032F,#$08,L2A510
+        BRCLR   >Options032C,#$40,L2A510                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
+        BRSET   >Options032F,#$08,L2A510                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         LDAB    >FlexLearnBase,Z
         CMPB    >FlexLearnBaseReadyMin
         BCS     L2A510
@@ -10717,7 +10717,7 @@ L2A60E:
         BNE     L2A646
         BRCLR   >EngineStateFlags,Z,#$80,L2A646          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >O2ActiveFlags,Z,#$40,L2A646             ; bit 6: upstream O2 sensor 2 active (as bit 7)
-        BRCLR   >Options032F,#$40,L2A646
+        BRCLR   >Options032F,#$40,L2A646                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         TST     >SystemTestMode,Z
         BNE     L2A646
         BRSET   >MonStatusFuelSysRich2,Z,#$08,L2A662
@@ -10743,7 +10743,7 @@ L2A662:
 ;---------------------------------------------------------------------------------------------------
 FuelSysRich2Adapt:
         LDAA    >O2AdaptValue2,Z
-        BRSET   >Options032C,#$40,L2A6BE
+        BRSET   >Options032C,#$40,L2A6BE                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         CMPA    >O2AdaptMax
         BNE     L2A6B0
         LDAA    >ShortTermTrim2,Z
@@ -10778,8 +10778,8 @@ L2A6BE:
 ;---------------------------------------------------------------------------------------------------
 FuelSysRich2Check:
         LDAA    >O2AdaptValue2,Z
-        BRCLR   >Options032C,#$40,L2A6DE
-        BRSET   >Options032F,#$08,L2A6DE
+        BRCLR   >Options032C,#$40,L2A6DE                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
+        BRSET   >Options032F,#$08,L2A6DE                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         LDAB    >FlexLearnBase,Z
         CMPB    >FlexLearnBaseReadyMin
         BCS     L2A6DE
@@ -10947,8 +10947,8 @@ L2A84E:
         LBRA    L2A8F6
 L2A856:
         LBSR    MisfireSegmentTime
-        BRCLR   >Options032C,#$40,L2A872
-        BRSET   >Options032F,#$08,L2A872
+        BRCLR   >Options032C,#$40,L2A872                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
+        BRSET   >Options032F,#$08,L2A872                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         LBSR    MisfireSegmentStore
         LBSR    MisfireNoiseCalc
         JSR     FlexMisfireCheck
@@ -10964,8 +10964,8 @@ L2A872:
 L2A890:
         TST     >MisfireTransientHold,Z
         BNE     L2A8F6
-        BRSET   >Options032F,#$08,L2A8A2
-        BRSET   >Options032C,#$40,L2A8AA
+        BRSET   >Options032F,#$08,L2A8A2                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
+        BRSET   >Options032C,#$40,L2A8AA                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
 L2A8A2:
         LBSR    MisfireSegmentStore
         LBSR    MisfireNoiseCalc
@@ -11011,7 +11011,7 @@ L2A8FA:
 ; Called from: MisfireMonitorEvent
 ;---------------------------------------------------------------------------------------------------
 MisfireDeviation:
-        BRCLR   >MisfireOptions,#$10,L2A92C
+        BRCLR   >MisfireOptions,#$10,L2A92C              ; bit 4: segment time start values (MisfireDeviation)
         LDED    >SegmentRpmConst2
         STE     >SegmentTimePair2,Z
         STD     $11,Z
@@ -11207,7 +11207,7 @@ L2AB0C:
 ; Called from: MisfireMonitorEvent
 ;---------------------------------------------------------------------------------------------------
 MisfireEnableCheck:
-        BRCLR   >Options033E,#$04,L2AB98
+        BRCLR   >Options033E,#$04,L2AB98                 ; bit 2: misfire monitor variant (MisfireEnableCheck)
         BRCLR   >MonStatusMisfire,Z,#$80,L2AB98
         BRCLR   >MisfireFlags2,Z,#$04,L2AB98
         TST     >SystemTestMode,Z
@@ -11336,7 +11336,7 @@ MisfireThreshold:
         CPE     >MisfireNoiseLevel,Z
         BCC     L2AC74
         BRSET   >MisfireFlags,Z,#$20,L2AC58
-        BRSET   >Options032E,#$40,L2AC6E
+        BRSET   >Options032E,#$40,L2AC6E                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BRSET   >SwitchInputs2,Z,#$20,L2AC6E
 L2AC58:
         LDAA    >MisfireLoad,Z
@@ -11557,7 +11557,7 @@ L2AE72:
 L2AEB8:
         BSET    <DiagStatusFlags,Z,#$18                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
         BRSET   >MisfireOptions,#$01,L2AEF8
-        BRSET   >MisfireOptions,#$02,L2AEE6
+        BRSET   >MisfireOptions,#$02,L2AEE6              ; bit 1: selects a branch in MisfireCount
         BRSET   >MisfireFlags3,Z,#$10,L2AF32
         BSET    >MisfireFlags3,Z,#$10
         BSET    <MonStatusMisfire,Z,#$48
@@ -11791,7 +11791,7 @@ L2B170:
         BCLR    >MisfireFlags5,Z,#$20
 L2B174:
         LDAA    >RevLimit
-        BRSET   >DriveFlags,Z,#$20,L2B182                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >DriveFlags,Z,#$20,L2B182                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDAA    >RevLimitAlt
 L2B182:
         CMPA    >SegmentRpm,Z
@@ -11903,7 +11903,7 @@ L2B2AC:
 L2B2C0:
         BCLR    >MisfireFlags5,Z,#$40
 L2B2C4:
-        BRCLR   >MisfireOptions,#$40,L2B2FE
+        BRCLR   >MisfireOptions,#$40,L2B2FE              ; bit 6: selects a branch in MisfireTransient
         BRSET   >EventSparkFlags,Z,#$10,L2B2D6
         BRCLR   >EventSparkFlags2,Z,#$04,L2B2FE
 L2B2D6:
@@ -12186,7 +12186,7 @@ L2B586:
         JSR     Lookup2D
         LDAB    >MisfireRpmCol,Z
         ANDP    #$FF1F
-        BRCLR   >MisfireOptions,#$20,L2B5B6
+        BRCLR   >MisfireOptions,#$20,L2B5B6              ; bit 5: selects a branch in MisfireEnableMain
         LDX     #MisfireNoiseLimit
         JSR     Lookup3D
         LDAB    #$08
@@ -12329,7 +12329,7 @@ MisfireSegmentTime:
         BEQ     L2B74C
         LDE     $0AC2,Z
         LDX     #$74FB
-        BRSET   >Options032A,#$40,L2B74C
+        BRSET   >Options032A,#$40,L2B74C                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         LDX     #$7507
 L2B74C:
         LDAA    >CylinderIndex,Z
@@ -12353,7 +12353,7 @@ L2B758:
         STD     >MisfireRpmCol,Z
         LDD     >SegmentRpm,Z
         STD     >MisfireRpmRef,Z
-        BRSET   >MisfireOptions,#$04,L2B7F2
+        BRSET   >MisfireOptions,#$04,L2B7F2              ; bit 2: selects a branch in MisfireSegmentTime and MisfireDevCalc
         LDD     >CrankPeriodSum,Z
         SDE
         NEGE
@@ -12521,7 +12521,7 @@ MisfireDevCalc:
         AIS     #$04
         STD     $00,Y
         BCLR    >MisfireFlags4,Z,#$20
-        BRCLR   >MisfireOptions,#$08,L2BA2C
+        BRCLR   >MisfireOptions,#$08,L2BA2C              ; bit 3: deviation curve (MisfireDevCalc)
         BSET    >MisfireFlags4,Z,#$20
         PSHM    X,K
         LDD     >Temp4F6,Z
@@ -12542,7 +12542,7 @@ L2B96C:
         JSR     Lookup2D
         PULB
         MUL
-        BRCLR   >MisfireOptions,#$04,L2B99E
+        BRCLR   >MisfireOptions,#$04,L2B99E              ; bit 2: selects a branch in MisfireSegmentTime and MisfireDevCalc
         TDE
         CLRA
         LDAB    #$08
@@ -12849,7 +12849,7 @@ TempInputs:
 ;---------------------------------------------------------------------------------------------------
 ProcessCoolantTemp:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C2DE
-        BRCLR   >Options033D,#$20,L2C1E2
+        BRCLR   >Options033D,#$20,L2C1E2                 ; bit 5: coolant processing variant (ProcessCoolantTemp)
         LDAA    >CoolantSlowInit
         STAA    >CoolantTempSlow,Z
         LBRA    L2C2AE
@@ -12922,7 +12922,7 @@ L2C292:
 L2C2AA:
         BSET    >SensorFaultFlags,Z,#$80                 ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
 L2C2AE:
-        BRCLR   >Options033D,#$10,L2C2D6
+        BRCLR   >Options033D,#$10,L2C2D6                 ; bit 4: coolant processing variant (ProcessCoolantTemp)
         LDAA    >CoolantTempSlow,Z
         LDAB    >CoolantSlowOffset
         BITB    #$80
@@ -13025,7 +13025,7 @@ L2C3A4:
 ;---------------------------------------------------------------------------------------------------
 BatteryTempModel:
         JSR     BatteryTempSensorCheck
-        BRCLR   >Options0330,#$01,L2C3DA
+        BRCLR   >Options0330,#$01,L2C3DA                 ; bit 0: battery temperature model on (BattTempModelOn); PciReceive also reads it
         BRCLR   >MainLoopPhaseMask,Z,#$40,L2C3DA
         LDAB    >BattTempDriveCount,Z
         LDAA    >VehicleSpeed,Z
@@ -13044,7 +13044,7 @@ L2C3D6:
         STAB    >BattTempDriveCount,Z
 L2C3DA:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C5F2
-        BRCLR   >Options0330,#$01,L2C468
+        BRCLR   >Options0330,#$01,L2C468                 ; bit 0: battery temperature model on (BattTempModelOn); PciReceive also reads it
         LDAB    >Count191ms,Z
         CMPB    >BattTempStartTime
         BHI     L2C412
@@ -13072,7 +13072,7 @@ L2C42C:
         BRCLR   $0A1C,Z,#$02,L2C468
         LDAA    $0A1B,Z
         LDX     #Thermistor3Curve
-        BRCLR   >Options0330,#$04,L2C456
+        BRCLR   >Options0330,#$04,L2C456                 ; bit 2: alternative battery temperature curve (BattTempCurveAlt)
         LDX     #Thermistor3CurveAlt
 L2C456:
         JSR     Lookup2D
@@ -13087,11 +13087,11 @@ L2C468:
         BRSET   >SensorFaultFlags,Z,#$01,L2C4C8          ; bit 0: battery temperature sensor fault (P1492 or P1493)
         LDAA    >BatteryTempRaw,Z
         LDX     #Thermistor3Curve
-        BRCLR   >Options0330,#$04,L2C48A
+        BRCLR   >Options0330,#$04,L2C48A                 ; bit 2: alternative battery temperature curve (BattTempCurveAlt)
         LDX     #Thermistor3CurveAlt
 L2C48A:
         JSR     Lookup2D
-        BRCLR   >Options0330,#$01,L2C4B2
+        BRCLR   >Options0330,#$01,L2C4B2                 ; bit 0: battery temperature model on (BattTempModelOn); PciReceive also reads it
         CMPA    #$6E
         BLS     L2C4B2
         SUBA    #$6E
@@ -13118,7 +13118,7 @@ L2C4C2:
 L2C4C8:
         STAB    >BatteryTemp,Z
         LDAA    >BatteryTemp,Z
-        BRCLR   >Options0330,#$02,L2C5EA
+        BRCLR   >Options0330,#$02,L2C5EA                 ; bit 1: battery temperature model variant (BatteryTempModel)
         LDAA    #$98
         BRSET   >SensorFaultFlags,Z,#$01,L2C5E6          ; bit 0: battery temperature sensor fault (P1492 or P1493)
         BRSET   >ChargeMonFlags,Z,#$02,L2C5AA
@@ -13234,7 +13234,7 @@ L2C5F2:
 ;---------------------------------------------------------------------------------------------------
 BatteryTempSensorCheck:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C694
-        BRCLR   >Options0330,#$08,L2C624
+        BRCLR   >Options0330,#$08,L2C624                 ; bit 3: battery temperature sensor check variant (both branches exist in BatteryTempSensorCheck)
         LDAA    >BatteryTempRaw,Z
         LDY     #$424E
         CMPA    >BatteryTempRawHigh
@@ -13248,7 +13248,7 @@ L2C620:
         JSR     ReportFault
 L2C624:
         LDAA    >BatteryTempRaw,Z
-        BRCLR   >Options0330,#$01,L2C638
+        BRCLR   >Options0330,#$01,L2C638                 ; bit 0: battery temperature model on (BattTempModelOn); PciReceive also reads it
         BRCLR   $0A1C,Z,#$02,L2C666
         LDAA    $0A1B,Z
 L2C638:
@@ -13267,9 +13267,9 @@ L2C64C:
 L2C662:
         JSR     ReportFault
 L2C666:
-        BRCLR   >Options0330,#$08,L2C684
+        BRCLR   >Options0330,#$08,L2C684                 ; bit 3: battery temperature sensor check variant (both branches exist in BatteryTempSensorCheck)
         BRCLR   >FaultSet09,Z,#$80,L2C690
-        BRCLR   >Options0330,#$01,L2C68A
+        BRCLR   >Options0330,#$01,L2C68A                 ; bit 0: battery temperature model on (BattTempModelOn); PciReceive also reads it
         BRSET   >FaultSet0D,Z,#$02,L2C68A
         BRCLR   $0A1C,Z,#$02,L2C68A
 L2C684:
@@ -13310,7 +13310,7 @@ L2C6BC:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 FuelLevelProcess:
-        BRCLR   >Options0331,#$10,L2C6D6
+        BRCLR   >Options0331,#$10,L2C6D6                 ; bit 4: fuel level from the bus instead of the sender, probably
         BRSET   >FaultSet0D,Z,#$02,L2C718
         BRSET   >FuelLevelFlags2,Z,#$01,L2C712
         JMP     L2C79E
@@ -13367,7 +13367,7 @@ L2C74E:
 L2C762:
         BRCLR   >EngineStateFlags,Z,#$80,L2C79E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    $06C6,Z
-        BRCLR   >Options0331,#$10,L2C788
+        BRCLR   >Options0331,#$10,L2C788                 ; bit 4: fuel level from the bus instead of the sender, probably
         BRCLR   >FuelLevelFlags2,Z,#$01,L2C79E
         BRCLR   >FaultSet0D,Z,#$02,L2C788
         BCLR    >FuelLevelFlags2,Z,#$03
@@ -13382,11 +13382,11 @@ L2C788:
 L2C79A:
         BSET    >FuelLevelFlags2,Z,#$02
 L2C79E:
-        BRSET   >Options032C,#$40,L2C7AA
+        BRSET   >Options032C,#$40,L2C7AA                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         JSR     FlexLearnReset
         BRA     L2C7B4
 L2C7AA:
-        BRSET   >Options032F,#$08,L2C7B4
+        BRSET   >Options032F,#$08,L2C7B4                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         JSR     FlexLearnMain
 L2C7B4:
         RTS
@@ -13396,7 +13396,7 @@ L2C7B4:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 FlexSensorCheck:
-        BRSET   >Options032C,#$40,L2C7C2
+        BRSET   >Options032C,#$40,L2C7C2                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         CLRA
         JMP     L2CA72
 L2C7C2:
@@ -13472,7 +13472,7 @@ L2C888:
 L2C88A:
         STAA    >FlexEthanolLearned,Z
 L2C88E:
-        BRCLR   >Options032F,#$08,L2CA6E
+        BRCLR   >Options032F,#$08,L2CA6E                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         BRSET   >RefuelFlags,Z,#$20,L2C9DA
         BRSET   >RefuelFlags,Z,#$04,L2C9A2
         BRSET   >RefuelFlags,Z,#$08,L2C9A2
@@ -13900,10 +13900,10 @@ L2CCDE:
         TBXK
         LDAA    $0A4B,Z
         LDAB    #$FF
-        BRSET   >Options0332,#$08,L2CDC8
-        BRSET   >Options0332,#$02,L2CEFE
-        BRSET   >Options0332,#$04,L2CDC2
-        BRSET   >Options0332,#$01,L2CD0E
+        BRSET   >Options0332,#$08,L2CDC8                 ; bit 3: speed control switch variant
+        BRSET   >Options0332,#$02,L2CEFE                 ; bit 1: speed control switch variant; also used by EquipmentDetect
+        BRSET   >Options0332,#$04,L2CDC2                 ; bit 2: speed control switch variant; also used by EquipmentDetect
+        BRSET   >Options0332,#$01,L2CD0E                 ; bit 0: speed control switch variant
         LBRA    L2CDCE
         dc.b    $19,$41,$4E,$84,$9A,$9F,$FF,$FF,$FF,$FF
 L2CD0E:
@@ -14000,8 +14000,8 @@ L2CDEE:
         ASLB
         CLRA
         XGDX
-        BRSET   >Options0332,#$08,L2CE12
-        BRSET   >Options0332,#$04,L2CE0E
+        BRSET   >Options0332,#$08,L2CE12                 ; bit 3: speed control switch variant
+        BRSET   >Options0332,#$04,L2CE0E                 ; bit 2: speed control switch variant; also used by EquipmentDetect
         JMP     $2CE16,X
 L2CE0E:
         JMP     $2CE2E,X
@@ -14186,7 +14186,7 @@ L2CFF4:
         LDAA    $0A4B,Z
         CMPA    #$16
         BCS     L2D008
-        BRCLR   >Options0332,#$02,L2D034
+        BRCLR   >Options0332,#$02,L2D034                 ; bit 1: speed control switch variant; also used by EquipmentDetect
         CMPA    #$FD
         BCC     L2D03C
         BRA     L2D034
@@ -14219,12 +14219,12 @@ GearStateUpdate:
         BRCLR   >SwitchInputs2,Z,#$20,L2D048
         BCLR    >SparkFaultFlags,Z,#$20
 L2D048:
-        BRCLR   >Options032E,#$40,L2D056
-        BCLR    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRCLR   >Options032E,#$40,L2D056                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
+        BCLR    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         JMP     L2D1A4
 L2D056:
         BRCLR   >EquipmentFlags,Z,#$20,L2D06A            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >Options0338,#$40,L2D06A
+        BRSET   >Options0338,#$40,L2D06A                 ; bit 6: selects a branch in GearStateUpdate
         BRSET   >GearStateFlags,Z,#$10,L2D178
         BRA     L2D06E
 L2D06A:
@@ -14283,7 +14283,7 @@ L2D114:
         BNE     L2D162
         BSET    >GearStateFlags,Z,#$02
         LDAA    >CoolantTemp,Z
-        BRCLR   >DriveFlags,Z,#$20,L2D146                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRCLR   >DriveFlags,Z,#$20,L2D146                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDX     #ShiftIdleRateCoolantPN
         BRCLR   >EquipmentFlags,Z,#$20,L2D136            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #ShiftIdleRateCoolantPNAC
@@ -14309,14 +14309,14 @@ L2D162:
         BNE     L2D1A4
 L2D168:
         BRCLR   >SwitchInputs2,Z,#$20,L2D178
-        BSET    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BSET    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BCLR    >GearStateFlags,Z,#$40
         BRA     L2D186
 L2D178:
         BRSET   >BusModuleFlags,Z,#$02,L2D182
         BSET    >GearStateFlags,Z,#$40
 L2D182:
-        BCLR    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BCLR    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L2D186:
         LDAA    >VehicleSpeed,Z
         CMPA    >IdleRollSpeed
@@ -14760,7 +14760,7 @@ L2D5FC:
         CLRB
         TBXK
         LDX     #$74DB
-        BRCLR   >Options032D,#$20,L2D60C
+        BRCLR   >Options032D,#$20,L2D60C                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         AIX     #$05
 L2D60C:
         PSHM    CCR
@@ -14898,7 +14898,7 @@ L2D73C:
         BCLR    >EngineStateFlags,Z,#$8E                 ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm); bit 3: cleared at stall only, never set in 05293190AC; bit 2: cleared at stall only, never set in 05293190AC; bit 1: cleared at stall only, never set in 05293190AC
         BCLR    >SparkFlags,Z,#$20
         BRCLR   >FaultSet04,Z,#$01,L2D76C
-        BRCLR   >Options032B,#$40,L2D7D4
+        BRCLR   >Options032B,#$40,L2D7D4                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         BRCLR   >CrankSyncFlags,Z,#$20,L2D7D4
         LDAA    $0C5F,Z
         ANDA    #$0F
@@ -14912,7 +14912,7 @@ L2D76C:
         CMPA    #$20
         BCS     L2D7D4
         BRCLR   >FaultSet01,Z,#$02,L2D78A
-        BRCLR   >Options032B,#$40,L2D78A
+        BRCLR   >Options032B,#$40,L2D78A                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         BRCLR   >CrankSyncFlags,Z,#$20,L2D7D4
 L2D78A:
         BCLR    >CamCrankFlags,Z,#$20
@@ -14929,7 +14929,7 @@ L2D78A:
         BCLR    >FuelPulseFlags,Z,#$02
         BCLR    >FuelPulseFlags,Z,#$01
 L2D7C0:
-        BRCLR   >Options032A,#$C0,L2D7D4
+        BRCLR   >Options032A,#$C0,L2D7D4                 ; bit 7: engine/ignition variant used by the event, spark, knock and rpm code; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         LDAA    #$65
         BRSET   >PACTL,Z,#$80,L2D7D0
         LDAA    #$75
@@ -14961,8 +14961,8 @@ L2D812:
         STD     >RefPeriodLow,Z
         CLR     $0689,Z
         CLR     $0DBC,Z
-        BRCLR   >Options032C,#$40,L2D836
-        BRSET   >Options032F,#$08,L2D836
+        BRCLR   >Options032C,#$40,L2D836                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
+        BRSET   >Options032F,#$08,L2D836                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         JSR     FlexLearnStall
 L2D836:
         CLR     $056B,Z
@@ -14995,7 +14995,7 @@ L2D836:
         CLR     >FuelSysRichCount2,Z
         CLR     >FuelSysCount1,Z
         CLR     >FuelSysCount2,Z
-        BRCLR   >Options032C,#$40,L2D8BA
+        BRCLR   >Options032C,#$40,L2D8BA                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRCLR   <FlexStartFlags,Z,#$28,L2D8BA
         BRA     L2D8BE
 L2D8BA:
@@ -15062,10 +15062,10 @@ SwitchInputsRead:
         STE     $0A48,Z
         LDX     #$729B
         LDE     #$72BB
-        BRSET   >Options032D,#$80,L2D94A
+        BRSET   >Options032D,#$80,L2D94A                 ; bit 7: selects branches in SwitchInputsRead, SecurityStatusCalc, SciSendByte and AcClutchControl
         LDX     #$725B
         LDE     #$727B
-        BRSET   >Options032D,#$20,L2D94A
+        BRSET   >Options032D,#$20,L2D94A                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         LDX     #$721B
         LDE     #$723B
 L2D94A:
@@ -15077,7 +15077,7 @@ L2D94A:
         LDE     >Scratch0,Z
         TED
         BRCLR   >EquipmentFlags,Z,#$04,L2D980            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
-        BRCLR   >Options032D,#$20,L2D96E
+        BRCLR   >Options032D,#$20,L2D96E                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         EORD    #$0040
 L2D96E:
         EORD    $0A4C,Z
@@ -15086,7 +15086,7 @@ L2D96E:
         BRSET   >FaultSet0F,Z,#$08,L2D980
         BSET    >DriveFlags,Z,#$40                       ; bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
 L2D980:
-        BRCLR   >Options032D,#$20,L2D98A
+        BRCLR   >Options032D,#$20,L2D98A                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         EORE    #$0040
 L2D98A:
         TED
@@ -15272,7 +15272,7 @@ L2DAFA:
         RORA
         JSR     RawScaleF4
 L2DB06:
-        BRCLR   >Options0337,#$08,L2DB18
+        BRCLR   >Options0337,#$08,L2DB18                 ; bit 3: selects a branch in ReadMap
         TAB
         ADDA    $0A81,Z
         RORA
@@ -15296,15 +15296,15 @@ L2DB30:
 ;---------------------------------------------------------------------------------------------------
 EquipmentDetect:
         BRSET   >EquipmentFlags,Z,#$80,L2DB90            ; bit 7: A/C fitted (EquipmentDetect)
-        BRCLR   >Options0331,#$80,L2DB52
+        BRCLR   >Options0331,#$80,L2DB52                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         LDAA    >AcSensorRaw,Z
         CMPA    >AcSensorRawHigh
         BHI     L2DB52
         CMPA    >AcSensorRawLow
         BHI     L2DB76
 L2DB52:
-        BRSET   >Options0331,#$40,L2DB6E
-        BRCLR   >Options0331,#$20,L2DB66
+        BRSET   >Options0331,#$40,L2DB6E                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
+        BRCLR   >Options0331,#$20,L2DB66                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
         BRCLR   >SwitchInputs2,Z,#$80,L2DB8C
         BRA     L2DB76
 L2DB66:
@@ -15326,7 +15326,7 @@ L2DB8C:
         CLR     >AcPresentCounter,Z
 L2DB90:
         BRSET   >EquipmentFlags,Z,#$40,L2DBE2            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
-        BRCLR   >Options032D,#$20,L2DBB4
+        BRCLR   >Options032D,#$20,L2DBB4                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         BRCLR   >SwitchInputs2,Z,#$10,L2DBB4
         LDAA    >SpeedCtlPresentCounter,Z
         CMPA    >SpeedCtlPresentCount
@@ -15339,11 +15339,11 @@ L2DBB4:
 L2DBB8:
         BRSET   >SwitchInputs2,Z,#$08,L2DBDE
         BRCLR   >SwitchInputs2,Z,#$04,L2DBDE
-        BRCLR   >Options0332,#$02,L2DBD2
+        BRCLR   >Options0332,#$02,L2DBD2                 ; bit 1: speed control switch variant; also used by EquipmentDetect
         BRSET   >SwitchInputs2,Z,#$10,L2DBDE
         BRA     L2DBE2
 L2DBD2:
-        BRCLR   >Options0332,#$04,L2DBE2
+        BRCLR   >Options0332,#$04,L2DBE2                 ; bit 2: speed control switch variant; also used by EquipmentDetect
         BRCLR   >SwitchInputs2,Z,#$11,L2DBE2
 L2DBDE:
         BSET    <EquipmentFlags,Z,#$40                   ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
@@ -15426,7 +15426,7 @@ L2DC86:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 CatTempMonitor:
-        BRCLR   >Options0330,#$10,L2DD4C
+        BRCLR   >Options0330,#$10,L2DD4C                 ; bit 4: catalyst temperature sensor fitted (CatTempMonitor; sets EquipmentFlags bit 0)
         JSR     CatTempInput
         BRSET   >FaultSet1A,Z,#$08,L2DD4C
         BRSET   >FaultSet1A,Z,#$10,L2DD4C
@@ -15800,8 +15800,8 @@ L2F00E:
 ;---------------------------------------------------------------------------------------------------
 AcRequestUpdate:
         BRSET   >EquipmentFlags,Z,#$20,L2F064            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >Options032E,#$40,L2F064
-        BRSET   >Options0333,#$20,L2F05A
+        BRSET   >Options032E,#$40,L2F064                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
+        BRSET   >Options0333,#$20,L2F05A                 ; bit 5: A/C request variant (AcRequestUpdate)
         BRSET   >EquipmentFlags,Z,#$10,L2F068            ; bit 4: A/C requested (AcRequestUpdate)
         BRCLR   >EngineStateFlags,Z,#$80,L2F052          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >BusMsgBEFlags,Z,#$40,L2F03A
@@ -15846,7 +15846,7 @@ L2F076:
         LBRA    L2F196
 L2F080:
         BRCLR   >ThrottleState,Z,#$80,L2F196             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRCLR   >DriveFlags,Z,#$20,L2F196                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRCLR   >DriveFlags,Z,#$20,L2F196                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDAA    >CoolantTemp,Z
         CMPA    >AcCutCoolantMin
         LBCS    L2F196
@@ -16244,7 +16244,7 @@ L2FA42:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 Sub_2FA52:
-        BRCLR   >Options0335,#$20,L2FAB0
+        BRCLR   >Options0335,#$20,L2FAB0                 ; bit 5: manifold tuning valve fitted (MtvTiming in the PIT code)
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2FAB0
         LDD     $1000,Z
         ANDD    #$0800
@@ -16254,7 +16254,7 @@ Sub_2FA52:
         BCS     L2FAB0
         TST     >MonStartDelay,Z
         BNE     L2FAB0
-        BRCLR   >Options0335,#$10,L2FA82
+        BRCLR   >Options0335,#$10,L2FA82                 ; bit 4: manifold tuning valve variant
         BRSET   >ControlFlags943,Z,#$10,L2FAB0           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L2FA82:
         ORP     #$00E0

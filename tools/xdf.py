@@ -19,8 +19,10 @@ from xml.etree.ElementTree import Element, SubElement, ElementTree, indent
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 from analyse import Analysis
-from gen_source import Calibration, Names, annotation_set
+from gen_source import Calibration, Names, annotation_set, load
 from xref import Xref
+
+BITS = {k: v for k, v in load("bits.json").items() if isinstance(v, dict)}
 
 # unit -> (equation, unit text, decimals)
 UNITS = {
@@ -251,9 +253,11 @@ def main():
                                                               ["Constants"])
         if v.get("bits"):
             bn = v.get("bitnames", {})
+            bt = BITS.get(v["name"], {})
             for m in v["bits"]:
+                text = bt.get(str(int(m, 16).bit_length() - 1))
                 e = X.item("XDFFLAG", "%s bit $%s%s" % (v["name"], m, " " + bn[m] if m in bn else ""),
-                           v.get("desc", "") + " $%04X mask $%s" % (a, m), cat)
+                           (text + ". " if text else "") + v.get("desc", "") + " $%04X mask $%s" % (a, m), cat)
                 SubElement(e, "EMBEDDEDDATA", mmedaddress="0x%X" % a, mmedelementsizebits="8")
                 SubElement(e, "mask").text = "0x%s" % m
                 n_flags += 1

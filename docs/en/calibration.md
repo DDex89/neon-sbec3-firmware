@@ -171,6 +171,14 @@ the `scalars` of `annotations/tables.json`, so the sources show `CMPA >IdleCoola
 (and every option bit as a flag), and the port carries them to the other images (from 239 in family
 A to 1,404 in family E).
 
+All 120 used option bits are described in `annotations/bits.json`. The polarity was read from the
+code: most bits switch a function on (`BRCLR` skips it when the bit is clear), a few switch it off
+(for example $033A.7 skips the idle flare check, $0328.0 the SKIM handling). Bits that only pick one
+of two code paths without a clear purpose are described as "selects a branch in ...". Settled ones
+include $032C.7 closed loop off, $032C.6 flex fuel, $032E.6 manual transmission, $032E.2 PCI bus
+instead of CCD, $032F.7-4 the O2 sensors fitted (upstream 1 and 2, downstream 1 and 2) and
+$033F.7-4 the matching heater monitors. The XDF puts the text in the description of each flag.
+
 For each constant the script looks at how it is used: what the register held before the compare,
 add or subtract (`LDAA >CoolantTemp,Z` then `CMPA $2853`), or what a loaded value is compared with
 or stored into. That gives the unit (temperature, rpm, kPa, volts) and a structural name: the

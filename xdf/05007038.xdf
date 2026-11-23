@@ -12877,112 +12877,112 @@
  </XDFCONSTANT>
  <XDFFLAG uniqueid="0x257" flags="0x0">
   <title>Options032E bit $04</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $04</description>
+  <description>PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit. Option byte (global configuration); bits used are listed with their names where known $0324 mask $04</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x258" flags="0x0">
   <title>Options032E bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $08</description>
+  <description>PCI link variant (PciLinkCheck, PciBuildMessage). Option byte (global configuration); bits used are listed with their names where known $0324 mask $08</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x259" flags="0x0">
   <title>Options032E bit $10</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $10</description>
+  <description>bus timeout variant (BusTimeoutCheck). Option byte (global configuration); bits used are listed with their names where known $0324 mask $10</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25A" flags="0x0">
   <title>Options032E bit $20</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $20</description>
+  <description>transmission controller on the bus (sets EquipmentFlags bit 5). Option byte (global configuration); bits used are listed with their names where known $0324 mask $20</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25B" flags="0x0">
   <title>Options032E bit $40 ManualTransmission</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $40</description>
+  <description>manual transmission: GearStateUpdate and the park/neutral monitor are skipped. Option byte (global configuration); bits used are listed with their names where known $0324 mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25C" flags="0x0">
   <title>Options032E bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $80</description>
+  <description>bus message variant (CcdTransmit, PciBuildMessage). Option byte (global configuration); bits used are listed with their names where known $0324 mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25D" flags="0x0">
   <title>Options032C bit $40 FlexFuelOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $40</description>
+  <description>flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used. Option byte (global configuration); bits used are listed with their names where known $0325 mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25E" flags="0x0">
   <title>Options032C bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $80</description>
+  <description>closed loop off: ClosedLoopMain clears the O2 state and the short-term trim. Option byte (global configuration); bits used are listed with their names where known $0325 mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25F" flags="0x0">
   <title>Options032D bit $02</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $02</description>
+  <description>output driver variant (QspiOutputStatus). Option byte (global configuration); bits used are listed with their names where known $0326 mask $02</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x260" flags="0x0">
   <title>Options032D bit $04</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $04</description>
+  <description>output driver variant (QspiOutputStatus). Option byte (global configuration); bits used are listed with their names where known $0326 mask $04</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x261" flags="0x0">
   <title>Options032D bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $08</description>
+  <description>board variant: switch-input map (SwitchBitsCollect), O2UpdateUpstream, SciSendByte, QspiOutputStatus. Option byte (global configuration); bits used are listed with their names where known $0326 mask $08</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x262" flags="0x0">
   <title>Options032D bit $10</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $10</description>
+  <description>board variant used by O2UpdateUpstream, SciSendByte and QspiOutputStatus. Option byte (global configuration); bits used are listed with their names where known $0326 mask $10</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x263" flags="0x0">
   <title>Options032D bit $18</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $18</description>
+  <description>board variant used by O2UpdateUpstream, SciSendByte and QspiOutputStatus. Option byte (global configuration); bits used are listed with their names where known $0326 mask $18</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x18</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x264" flags="0x0">
   <title>Options032D bit $20 AcClutchLogicOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $20</description>
+  <description>A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp. Option byte (global configuration); bits used are listed with their names where known $0326 mask $20</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x265" flags="0x0">
   <title>Options032D bit $40</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $40</description>
+  <description>fan output variant (FanStatusByte, FanRelayControl, output tests). Option byte (global configuration); bits used are listed with their names where known $0326 mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x266" flags="0x0">
   <title>Options032D bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $80</description>
+  <description>selects branches in SwitchInputsRead, SecurityStatusCalc, SciSendByte and AcClutchControl. Option byte (global configuration); bits used are listed with their names where known $0326 mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x80</mask>
@@ -13001,91 +13001,91 @@
  </XDFCONSTANT>
  <XDFFLAG uniqueid="0x268" flags="0x0">
   <title>Options0331 bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $08</description>
+  <description>power steering pressure switch fitted (sets EquipmentFlags bit 2). Option byte (global configuration); bits used are listed with their names where known $032B mask $08</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x269" flags="0x0">
   <title>Options0331 bit $10</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $10</description>
+  <description>fuel level from the bus instead of the sender, probably. Option byte (global configuration); bits used are listed with their names where known $032B mask $10</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26A" flags="0x0">
   <title>Options0331 bit $20</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $20</description>
+  <description>A/C detection variant (EquipmentDetect, AcClutchControl). Option byte (global configuration); bits used are listed with their names where known $032B mask $20</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26B" flags="0x0">
   <title>Options0331 bit $40</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $40</description>
+  <description>A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl). Option byte (global configuration); bits used are listed with their names where known $032B mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26C" flags="0x0">
   <title>Options0331 bit $80 AcPressureSensor</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $80</description>
+  <description>A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan. Option byte (global configuration); bits used are listed with their names where known $032B mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26D" flags="0x0">
   <title>Options0335 bit $02</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $02</description>
+  <description>EGR position/solenoid monitor variant. Option byte (global configuration); bits used are listed with their names where known $032C mask $02</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26E" flags="0x0">
   <title>Options0335 bit $04 EgrSparkScaled</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $04</description>
+  <description>EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc. Option byte (global configuration); bits used are listed with their names where known $032C mask $04</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26F" flags="0x0">
   <title>Options0335 bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $08</description>
+  <description>EGR fitted (EgrMain). Option byte (global configuration); bits used are listed with their names where known $032C mask $08</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x270" flags="0x0">
   <title>Options0335 bit $0C</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $0C</description>
+  <description>EGR fitted (EgrMain). Option byte (global configuration); bits used are listed with their names where known $032C mask $0C</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x0C</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x271" flags="0x0">
   <title>Options0335 bit $10</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $10</description>
+  <description>manifold tuning valve variant. Option byte (global configuration); bits used are listed with their names where known $032C mask $10</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x272" flags="0x0">
   <title>Options0335 bit $20</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $20</description>
+  <description>manifold tuning valve fitted (MtvTiming in the PIT code). Option byte (global configuration); bits used are listed with their names where known $032C mask $20</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x273" flags="0x0">
   <title>Options0335 bit $40</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $40</description>
+  <description>second tuning valve variant. Option byte (global configuration); bits used are listed with their names where known $032C mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x274" flags="0x0">
   <title>Options0335 bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032C mask $80</description>
+  <description>second tuning valve fitted (TuneValve2Control in the PIT code). Option byte (global configuration); bits used are listed with their names where known $032C mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32C" mmedelementsizebits="8" />
   <mask>0x80</mask>
@@ -13104,196 +13104,196 @@
  </XDFCONSTANT>
  <XDFFLAG uniqueid="0x276" flags="0x0">
   <title>Options0337 bit $01 IdleDipKickMode</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $01</description>
+  <description>idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect. Option byte (global configuration); bits used are listed with their names where known $032E mask $01</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x277" flags="0x0">
   <title>Options0337 bit $02</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $02</description>
+  <description>selects a branch in CalcBaseSpark. Option byte (global configuration); bits used are listed with their names where known $032E mask $02</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x278" flags="0x0">
   <title>Options0337 bit $04</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $04</description>
+  <description>selects a branch in CalcFuelPulse. Option byte (global configuration); bits used are listed with their names where known $032E mask $04</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x279" flags="0x0">
   <title>Options0337 bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $08</description>
+  <description>selects a branch in ReadMap. Option byte (global configuration); bits used are listed with their names where known $032E mask $08</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27A" flags="0x0">
   <title>Options0337 bit $10 SurgeSparkOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $10</description>
+  <description>surge spark control on (SurgeSparkOn). Option byte (global configuration); bits used are listed with their names where known $032E mask $10</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27B" flags="0x0">
   <title>Options0337 bit $20 SpeedLimitOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $20</description>
+  <description>speed limiter on (SpeedLimitOn, FuelCutControl). Option byte (global configuration); bits used are listed with their names where known $032E mask $20</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27C" flags="0x0">
   <title>Options0337 bit $40 SpeedDampOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $40</description>
+  <description>speed damping spark on (SpeedDampOn). Option byte (global configuration); bits used are listed with their names where known $032E mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27D" flags="0x0">
   <title>Options0337 bit $80 EventSparkOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032E mask $80</description>
+  <description>per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck). Option byte (global configuration); bits used are listed with their names where known $032E mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27E" flags="0x0">
   <title>Options0338 bit $02 FieldControlAlt</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $02</description>
+  <description>alternative field control: ChargeControl2 instead of ChargeControl in the PIT code (FieldControlAlt). Option byte (global configuration); bits used are listed with their names where known $032F mask $02</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x27F" flags="0x0">
   <title>Options0338 bit $04 FuelEventOffsetAlt</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $04</description>
+  <description>alternative fuel event offset (FuelEventOffsetAlt). Option byte (global configuration); bits used are listed with their names where known $032F mask $04</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x280" flags="0x0">
   <title>Options0338 bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $08</description>
+  <description>selects a branch in CatMonSwitchRatio. Option byte (global configuration); bits used are listed with their names where known $032F mask $08</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x281" flags="0x0">
   <title>Options0338 bit $10</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $10</description>
+  <description>selects a branch in FinishFuelPulse. Option byte (global configuration); bits used are listed with their names where known $032F mask $10</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x282" flags="0x0">
   <title>Options0338 bit $20</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $20</description>
+  <description>knock enrichment on (KnockEnrichment, SparkHook). Option byte (global configuration); bits used are listed with their names where known $032F mask $20</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x283" flags="0x0">
   <title>Options0338 bit $40</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $40</description>
+  <description>selects a branch in GearStateUpdate. Option byte (global configuration); bits used are listed with their names where known $032F mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x284" flags="0x0">
   <title>Options0338 bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032F mask $80</description>
+  <description>purge variant (PurgeRampControl, PurgeVaporLearn). Option byte (global configuration); bits used are listed with their names where known $032F mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32F" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x285" flags="0x0">
   <title>Options0339 bit $01 TipInRetardHold</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $01</description>
+  <description>tip-in retard hold (TipInRetardHold). Option byte (global configuration); bits used are listed with their names where known $0330 mask $01</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x286" flags="0x0">
   <title>Options0339 bit $02</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $02</description>
+  <description>selects a branch in FinishFuelPulse. Option byte (global configuration); bits used are listed with their names where known $0330 mask $02</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x287" flags="0x0">
   <title>Options0339 bit $04 PurgeDutyAltClosed</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $04</description>
+  <description>alternative purge duty at closed throttle (PurgeDutyAltClosed). Option byte (global configuration); bits used are listed with their names where known $0330 mask $04</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x288" flags="0x0">
   <title>Options0339 bit $08 PurgeDutyAltOther</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $08</description>
+  <description>alternative purge duty off closed throttle (PurgeDutyAltOther). Option byte (global configuration); bits used are listed with their names where known $0330 mask $08</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x289" flags="0x0">
   <title>Options0339 bit $10</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $10</description>
+  <description>selects a branch in KnockSample. Option byte (global configuration); bits used are listed with their names where known $0330 mask $10</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28A" flags="0x0">
   <title>Options0339 bit $20</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $20</description>
+  <description>selects a branch in SparkEventCalc. Option byte (global configuration); bits used are listed with their names where known $0330 mask $20</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28B" flags="0x0">
   <title>Options0339 bit $40</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $40</description>
+  <description>O2 cross check on (O2CrossCheck). Option byte (global configuration); bits used are listed with their names where known $0330 mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28C" flags="0x0">
   <title>Options0339 bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0330 mask $80</description>
+  <description>O2 cell selection variant (O2CellSelect3x3, O2CellSelect). Option byte (global configuration); bits used are listed with their names where known $0330 mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x330" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28D" flags="0x0">
   <title>Options033A bit $01</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0331 mask $01</description>
+  <description>start injector / spark variant (StartInjectorPulse, FinishFuelPulse, SparkEventCalc). Option byte (global configuration); bits used are listed with their names where known $0331 mask $01</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x331" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28E" flags="0x0">
   <title>Options033A bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0331 mask $08</description>
+  <description>selects a branch in IdleTargetControl. Option byte (global configuration); bits used are listed with their names where known $0331 mask $08</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x331" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x28F" flags="0x0">
   <title>Options033A bit $10 AcSparkOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0331 mask $10</description>
+  <description>A/C spark on (AcSparkOn, AcClutchSpark). Option byte (global configuration); bits used are listed with their names where known $0331 mask $10</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x331" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x290" flags="0x0">
   <title>Options033A bit $40</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0331 mask $40</description>
+  <description>selects a branch in IdleRpmTarget. Option byte (global configuration); bits used are listed with their names where known $0331 mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x331" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x291" flags="0x0">
   <title>Options033A bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0331 mask $80</description>
+  <description>idle flare check off (IdleFlareCheck skips when set). Option byte (global configuration); bits used are listed with their names where known $0331 mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x331" mmedelementsizebits="8" />
   <mask>0x80</mask>
@@ -13324,56 +13324,56 @@
  </XDFCONSTANT>
  <XDFFLAG uniqueid="0x294" flags="0x0">
   <title>Options0340 bit $01</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $01</description>
+  <description>O2 activity checks variant (O2NoActivityCold, O2DownEnable). Option byte (global configuration); bits used are listed with their names where known $0338 mask $01</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x295" flags="0x0">
   <title>Options0340 bit $02</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $02</description>
+  <description>fuel sender monitor on (FuelSenderMonitor). Option byte (global configuration); bits used are listed with their names where known $0338 mask $02</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x296" flags="0x0">
   <title>Options0340 bit $04</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $04</description>
+  <description>cam/crank sync monitor on (CamCrankSyncMonitor). Option byte (global configuration); bits used are listed with their names where known $0338 mask $04</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x297" flags="0x0">
   <title>Options0340 bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $08</description>
+  <description>power steering switch monitor on (PspSwitchMonitor). Option byte (global configuration); bits used are listed with their names where known $0338 mask $08</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x298" flags="0x0">
   <title>Options0340 bit $10</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $10</description>
+  <description>thermostat monitor on (ThermostatWarmCheck). Option byte (global configuration); bits used are listed with their names where known $0338 mask $10</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x299" flags="0x0">
   <title>Options0340 bit $20</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $20</description>
+  <description>brake switch, VSS and purge flow monitors variant. Option byte (global configuration); bits used are listed with their names where known $0338 mask $20</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x29A" flags="0x0">
   <title>Options0340 bit $40</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $40</description>
+  <description>park/neutral switch monitor on (PnSwitchMonitor). Option byte (global configuration); bits used are listed with their names where known $0338 mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x29B" flags="0x0">
   <title>Options0340 bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0338 mask $80</description>
+  <description>idle rpm monitor on (IdleRpmMonitor). Option byte (global configuration); bits used are listed with their names where known $0338 mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x338" mmedelementsizebits="8" />
   <mask>0x80</mask>
@@ -17256,49 +17256,49 @@
  </XDFCONSTANT>
  <XDFFLAG uniqueid="0x3DF" flags="0x0">
   <title>MisfireOptions bit $02</title>
-  <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $02</description>
+  <description>selects a branch in MisfireCount. Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $02</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x26A3" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x3E0" flags="0x0">
   <title>MisfireOptions bit $04</title>
-  <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $04</description>
+  <description>selects a branch in MisfireSegmentTime and MisfireDevCalc. Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $04</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x26A3" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x3E1" flags="0x0">
   <title>MisfireOptions bit $08</title>
-  <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $08</description>
+  <description>deviation curve (MisfireDevCalc). Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $08</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x26A3" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x3E2" flags="0x0">
   <title>MisfireOptions bit $10</title>
-  <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $10</description>
+  <description>segment time start values (MisfireDeviation). Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $10</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x26A3" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x3E3" flags="0x0">
   <title>MisfireOptions bit $20</title>
-  <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $20</description>
+  <description>selects a branch in MisfireEnableMain. Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $20</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x26A3" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x3E4" flags="0x0">
   <title>MisfireOptions bit $40</title>
-  <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $40</description>
+  <description>selects a branch in MisfireTransient. Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $40</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x26A3" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x3E5" flags="0x0">
   <title>MisfireOptions bit $80</title>
-  <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $80</description>
+  <description>MisfireFlags2 bit 4 handling in ClosedLoopManager and FuelSystemStatus. Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $26A3 mask $80</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x26A3" mmedelementsizebits="8" />
   <mask>0x80</mask>

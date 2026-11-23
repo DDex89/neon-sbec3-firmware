@@ -187,7 +187,7 @@ L302BA:
         BEQ     L302E6
         BSET    >GearStateFlags,Z,#$08
         BCLR    >GearStateFlags,Z,#$D0
-        BRCLR   >DriveFlags,Z,#$20,L302DA                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRCLR   >DriveFlags,Z,#$20,L302DA                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BCLR    >DriveFlags,Z,#$80                       ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         LBRA    L3051A
 L302DA:
@@ -196,7 +196,7 @@ L302DA:
         LBRA    L3051A
 L302E6:
         BCLR    >GearStateFlags,Z,#$20
-        BRSET   >DriveFlags,Z,#$20,L302F8                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >DriveFlags,Z,#$20,L302F8                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BCLR    >DriveFlags,Z,#$80                       ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         LBRA    L3051A
 L302F8:
@@ -256,7 +256,7 @@ L30386:
 L30392:
         CMPA    #$95
         BNE     L303B8
-        BRCLR   >Options0331,#$10,L3051A
+        BRCLR   >Options0331,#$10,L3051A                 ; bit 4: fuel level from the bus instead of the sender, probably
         BSET    >FuelLevelFlags2,Z,#$01
         LDD     $01,Y
         STAA    >FuelSenderScaled,Z
@@ -629,7 +629,7 @@ L30752:
         STAA    >CcdTxId,Z
         LDD     >BusMsgAcData
         ANDB    #$F7
-        BRCLR   >Options032E,#$80,L30766
+        BRCLR   >Options032E,#$80,L30766                 ; bit 7: bus message variant (CcdTransmit, PciBuildMessage)
         ORAB    #$08
 L30766:
         RTS
@@ -644,9 +644,9 @@ L30778:
         STAA    >CcdTxId,Z
         LDAA    >AcSensor,Z
         CLRB
-        BRCLR   >Options032C,#$40,L30798
+        BRCLR   >Options032C,#$40,L30798                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         LDAB    >FlexEthanol,Z
-        BRSET   >Options032F,#$08,L30798
+        BRSET   >Options032F,#$08,L30798                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         LDAB    >FlexLearnBase,Z
 L30798:
         RTS
@@ -737,7 +737,7 @@ L30844:
 L30848:
         LDAA    #$B4
         STAA    >CcdTxId,Z
-        BRCLR   >Options032E,#$40,L30864
+        BRCLR   >Options032E,#$40,L30864                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         LDD     >VehicleSpeedRaw,Z
         CPD     #$0140
         BCS     L30864
@@ -874,7 +874,7 @@ SecurityStatusCalc:
         LDAA    $09D2,Z
         LDAB    >BusMsgEcData
         ANDB    #$FC
-        BRCLR   >Options032D,#$80,L3098A
+        BRCLR   >Options032D,#$80,L3098A                 ; bit 7: selects branches in SwitchInputsRead, SecurityStatusCalc, SciSendByte and AcClutchControl
         BRSET   >BusConfigFlags,Z,#$C0,L30990
         BRA     L30992
 L3098A:
@@ -964,7 +964,7 @@ FanStatusByte:
         BNE     L30A52
         BITA    #$80
         BEQ     L30A5A
-        BRSET   >Options032D,#$40,L30A4C
+        BRSET   >Options032D,#$40,L30A4C                 ; bit 6: fan output variant (FanStatusByte, FanRelayControl, output tests)
         BITB    #$20
         BEQ     L30A62
         BITB    #$10
@@ -1752,7 +1752,7 @@ L31406:
         BEQ     L3142C
         BSET    >GearStateFlags,Z,#$08
         BCLR    >GearStateFlags,Z,#$D0
-        BRCLR   >DriveFlags,Z,#$20,L31422                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRCLR   >DriveFlags,Z,#$20,L31422                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BCLR    >DriveFlags,Z,#$80                       ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         BRA     L31440
 L31422:
@@ -1761,7 +1761,7 @@ L31422:
         BRA     L31440
 L3142C:
         BCLR    >GearStateFlags,Z,#$20
-        BRSET   >DriveFlags,Z,#$20,L3143C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >DriveFlags,Z,#$20,L3143C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BCLR    >DriveFlags,Z,#$80                       ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         BRA     L31440
 L3143C:
@@ -1859,7 +1859,7 @@ L31516:
         CLR     >BusTimeout1,Z
         RTS
 L31520:
-        BRCLR   >Options0331,#$10,L3153C
+        BRCLR   >Options0331,#$10,L3153C                 ; bit 4: fuel level from the bus instead of the sender, probably
         BSET    >FuelLevelFlags2,Z,#$01
         LDD     $02,Y
         STAA    >FuelSenderScaled,Z
@@ -1884,7 +1884,7 @@ L31546:
 L31560:
         LDD     $02,Y
         STD     $0A19,Z
-        BRCLR   >Options0330,#$01,L31570
+        BRCLR   >Options0330,#$01,L31570                 ; bit 0: battery temperature model on (BattTempModelOn); PciReceive also reads it
         BSET    $0A1C,Z,#$01
 L31570:
         BCLR    >FaultSet0D,Z,#$02                       ; bit 1: P1695
@@ -2016,7 +2016,7 @@ L316B0:
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
 PciStateSet1:
-        BRCLR   >Options032E,#$08,L317B4
+        BRCLR   >Options032E,#$08,L317B4                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
         BSET    >PciFlags4,Z,#$20
         LDX     #$0030
         BRA     L316F6
@@ -2158,7 +2158,7 @@ L317B4:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 PciPitTick:
-        BRCLR   >Options032E,#$04,L31898
+        BRCLR   >Options032E,#$04,L31898                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags3,Z,#$08,L31898
         LDAB    #$03
         TBYK
@@ -2269,7 +2269,7 @@ L318D2:
         LDAA    #$03
         LDAB    #$14
         STD     $00,Y
-        BRCLR   >Options032E,#$40,L318EE
+        BRCLR   >Options032E,#$40,L318EE                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         LDD     >VehicleSpeedRaw,Z
         CPD     #$0140
         BCS     L318EE
@@ -2448,7 +2448,7 @@ L31A58:
         LDAA    >BusInfoByte4
         STAA    $05,Y
         LDAA    >BusInfoByte5
-        BRCLR   >Options032E,#$80,L31A82
+        BRCLR   >Options032E,#$80,L31A82                 ; bit 7: bus message variant (CcdTransmit, PciBuildMessage)
         ORAA    #$40
 L31A82:
         STAA    $06,Y
@@ -2561,7 +2561,7 @@ L31B68:
 L31B74:
         RTS
 L31B76:
-        BRCLR   >Options032E,#$08,L31B96
+        BRCLR   >Options032E,#$08,L31B96                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
         LDAA    #$03
         LDAB    #$AF
         STD     $00,Y
@@ -2576,7 +2576,7 @@ L31B76:
 L31B96:
         RTS
 L31B98:
-        BRCLR   >Options032E,#$08,L31C6A
+        BRCLR   >Options032E,#$08,L31C6A                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
         LDAA    #$04
         LDAB    #$B0
         STD     $00,Y
@@ -2926,7 +2926,7 @@ QspiService:
         LDD     >RR0,Z
         STD     $093C,Z
 L31EC6:
-        BRCLR   >Options032E,#$04,L31EF4
+        BRCLR   >Options032E,#$04,L31EF4                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$04,L31F48
         PSHM    D,E,X,Y,K
         TST     >RR4_L,Z
@@ -4196,7 +4196,7 @@ L32BCC:
         LDD     #$486B
         STD     $0A24,Z
         LDAA    #$10
-        BRSET   >Options032E,#$04,L32BEA
+        BRSET   >Options032E,#$04,L32BEA                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDAA    #$40
 L32BEA:
         STAA    $0A26,Z
@@ -4310,7 +4310,7 @@ L33044:
 SciPitService:
         BRSET   >DiagBusFlags,Z,#$10,L330EC
         BRSET   >PciFlags5,Z,#$40,L330EC
-        BRSET   >Options032E,#$04,L330EC
+        BRSET   >Options032E,#$04,L330EC                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >CrankFlags2,Z,#$02,L330EC
         LDAA    $0A33,Z
         INCA
@@ -4962,7 +4962,7 @@ L336EA:
         LDAB    >RefPeriod,Z
         CMPB    #$30
         BLS     L3376C
-        BRCLR   >Options0331,#$10,L33716
+        BRCLR   >Options0331,#$10,L33716                 ; bit 4: fuel level from the bus instead of the sender, probably
         BRSET   >FaultSet0D,Z,#$02,L3376C                ; bit 1: P1695
         BRCLR   >FuelLevelFlags2,Z,#$01,L3376C
 L33716:
@@ -5145,7 +5145,7 @@ MonTaskD:
         BRCLR   >MonEnableFlags2,Z,#$80,L33A0A
         BRCLR   >MonFlags64E,Z,#$20,L33A0A
         BRCLR   >EngineStateFlags,Z,#$80,L33A0A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >DriveFlags,Z,#$20,L33A0A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >DriveFlags,Z,#$20,L33A0A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BRSET   >ThrottleState,Z,#$80,L33A0A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         TST     >VehicleSpeed,Z
         LBNE    L33A0A
@@ -5166,7 +5166,7 @@ L3396E:
         BHI     L339A6
         BCLR    >MonData646,Z,#$08
         BCLR    >MonData647,Z,#$08
-        BRCLR   >Options032C,#$40,L3398C
+        BRCLR   >Options032C,#$40,L3398C                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         LDAB    $0A90,Z
         CMPB    $05FD,Z
         BCC     L33990
@@ -5354,7 +5354,7 @@ L33B5E:
 MonTaskLdp:
         BRCLR   >MonEnableFlags2,Z,#$80,L33BA8
         BRCLR   >MonFlags64E,Z,#$01,L33BA8
-        BRSET   >Options033E,#$02,L33B78
+        BRSET   >Options033E,#$02,L33B78                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BCLR    >MonData646,Z,#$03
         BRA     L33BC8
 L33B78:
@@ -6446,7 +6446,7 @@ L35750:
         LDX     $02,X
         CPX     #$57B4
         BEQ     L357B4
-        BRCLR   >Options032B,#$40,L357C8
+        BRCLR   >Options032B,#$40,L357C8                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         CPX     #$6344
         BEQ     L357B4
         CPX     #$637E
@@ -6494,8 +6494,8 @@ L35802:
         BRA     L35828
 L35808:
         BRSET   >ThrottleState,Z,#$80,L3581E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRSET   >Options032E,#$40,L35824
-        BRCLR   >DriveFlags,Z,#$20,L35824                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >Options032E,#$40,L35824                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
+        BRCLR   >DriveFlags,Z,#$20,L35824                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BCLR    >DriveFlags,Z,#$80                       ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
 L3581E:
         BCLR    >ThrottleState,Z,#$02                    ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
@@ -6668,10 +6668,10 @@ L359EC:
         JMP     SciSendByte
 L359F8:
         LDX     #$71BB
-        BRSET   >Options032D,#$80,L35A16
+        BRSET   >Options032D,#$80,L35A16                 ; bit 7: selects branches in SwitchInputsRead, SecurityStatusCalc, SciSendByte and AcClutchControl
         LDX     #$719B
-        BRSET   >Options032D,#$10,L35A16
-        BRSET   >Options032D,#$08,L35A16
+        BRSET   >Options032D,#$10,L35A16                 ; bit 4: board variant used by O2UpdateUpstream, SciSendByte and QspiOutputStatus
+        BRSET   >Options032D,#$08,L35A16                 ; bit 3: board variant: switch-input map (SwitchBitsCollect), O2UpdateUpstream, SciSendByte, QspiOutputStatus
         LDX     #$717B
 L35A16:
         JSR     CollectBits
@@ -6790,8 +6790,8 @@ L35B0E:
         LDAA    >DiagParam2,Z
         BNE     L35B48
         BRSET   >ThrottleState,Z,#$80,L35B3A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRSET   >Options032E,#$40,L35B26
-        BRSET   >DriveFlags,Z,#$20,L35B3E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >Options032E,#$40,L35B26                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
+        BRSET   >DriveFlags,Z,#$20,L35B3E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L35B26:
         COMA
         STAA    >DiagParam2,Z
@@ -6811,8 +6811,8 @@ L35B40:
         JMP     SciSendByte
 L35B48:
         BRSET   >ThrottleState,Z,#$80,L35B5A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRSET   >Options032E,#$40,L35B5E
-        BRCLR   >DriveFlags,Z,#$20,L35B5E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >Options032E,#$40,L35B5E                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
+        BRCLR   >DriveFlags,Z,#$20,L35B5E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L35B5A:
         CLR     >DiagCommand,Z
 L35B5E:
@@ -7007,11 +7007,11 @@ L35D26:
         LBEQ    L35E1A
         CMPA    #$02
         BLS     L35D50
-        BRCLR   >Options0333,#$80,L35D3C
+        BRCLR   >Options0333,#$80,L35D3C                 ; bit 7: EVAP purge solenoid fitted
         CMPB    #$01
         BEQ     L35D48
 L35D3C:
-        BRCLR   >Options0335,#$04,L35E18
+        BRCLR   >Options0335,#$04,L35E18                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
         CMPB    #$04
         LBNE    L35E18
 L35D48:
@@ -7058,7 +7058,7 @@ L35D90:
         LDX     #$5329
         BRA     L35DCC
 L35DBC:
-        BRSET   >Options032A,#$80,L35DC8
+        BRSET   >Options032A,#$80,L35DC8                 ; bit 7: engine/ignition variant used by the event, spark, knock and rpm code
         LDX     #$5323
         BRA     L35DCC
 L35DC8:
@@ -7267,7 +7267,7 @@ L35FBA:
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
 FanTestToggle2:
-        BRCLR   >Options0333,#$20,L35FD0
+        BRCLR   >Options0333,#$20,L35FD0                 ; bit 5: A/C request variant (AcRequestUpdate)
         BSET    >FanBusFlags,Z,#$04
         BRSET   >MainLoopCounter,Z,#$80,L35FD0
         BCLR    >FanBusFlags,Z,#$04
@@ -7279,8 +7279,8 @@ L35FD0:
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
 OutputTest3:
-        BRCLR   >Options0335,#$20,L35FFA
-        BRCLR   >Options0335,#$10,L35FE8
+        BRCLR   >Options0335,#$20,L35FFA                 ; bit 5: manifold tuning valve fitted (MtvTiming in the PIT code)
+        BRCLR   >Options0335,#$10,L35FE8                 ; bit 4: manifold tuning valve variant
         BRSET   >FaultSet00,Z,#$04,L35FFA                ; bit 2: fault row $0A, no P-code
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L35FE8:
@@ -7295,12 +7295,12 @@ L35FFA:
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
 EgrOutputTest:
-        BRCLR   >Options0335,#$0C,L36046
-        BRCLR   >Options0335,#$02,L36012
+        BRCLR   >Options0335,#$0C,L36046                 ; bit 3: EGR fitted (EgrMain); bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
+        BRCLR   >Options0335,#$02,L36012                 ; bit 1: EGR position/solenoid monitor variant
         BRSET   >FaultSet00,Z,#$04,L36046                ; bit 2: fault row $0A, no P-code
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L36012:
-        BRSET   >Options0335,#$04,L36028
+        BRSET   >Options0335,#$04,L36028                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
         BSET    >ControlFlags944,Z,#$04                  ; bit 2: EGR solenoid on (EgrEnable)
         BRSET   >MainLoopCounter,Z,#$80,L36026
         BCLR    >ControlFlags944,Z,#$04                  ; bit 2: EGR solenoid on (EgrEnable)
@@ -7325,7 +7325,7 @@ L36048:
 L36056:
         RTS
 L36058:
-        BRCLR   >Options0334,#$10,L36062
+        BRCLR   >Options0334,#$10,L36062                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         JMP     L357B4
 L36062:
         LDAB    >Options0334
@@ -7341,8 +7341,8 @@ L36074:
 L36078:
         BSET    >ControlFlags944,Z,#$20                  ; bit 5: output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read
 L3607C:
-        BRSET   >Options032D,#$40,L36088
-        BRCLR   >Options032D,#$20,L3608E
+        BRSET   >Options032D,#$40,L36088                 ; bit 6: fan output variant (FanStatusByte, FanRelayControl, output tests)
+        BRCLR   >Options032D,#$20,L3608E                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
 L36088:
         BRCLR   >EquipmentFlags,Z,#$80,L36092            ; bit 7: A/C fitted (EquipmentDetect)
 L3608E:
@@ -7356,7 +7356,7 @@ L36092:
 L360A2:
         RTS
 L360A4:
-        BRCLR   >Options0334,#$10,L360AE
+        BRCLR   >Options0334,#$10,L360AE                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         JMP     L357B4
 L360AE:
         LDAB    >Options0334
@@ -7372,8 +7372,8 @@ L360C0:
 L360C4:
         BSET    >ControlFlags944,Z,#$20                  ; bit 5: output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read
 L360C8:
-        BRSET   >Options032D,#$40,L360D4
-        BRCLR   >Options032D,#$20,L360DA
+        BRSET   >Options032D,#$40,L360D4                 ; bit 6: fan output variant (FanStatusByte, FanRelayControl, output tests)
+        BRCLR   >Options032D,#$20,L360DA                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
 L360D4:
         BRCLR   >EquipmentFlags,Z,#$80,L360DE            ; bit 7: A/C fitted (EquipmentDetect)
 L360DA:
@@ -7396,13 +7396,13 @@ L360FC:
 L36100:
         BCLR    >ControlFlags944,Z,#$20                  ; bit 5: output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read
 L36104:
-        BRSET   >Options032D,#$40,L36110
-        BRCLR   >Options032D,#$20,L36116
+        BRSET   >Options032D,#$40,L36110                 ; bit 6: fan output variant (FanStatusByte, FanRelayControl, output tests)
+        BRCLR   >Options032D,#$20,L36116                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
 L36110:
         BRCLR   >EquipmentFlags,Z,#$80,L36122            ; bit 7: A/C fitted (EquipmentDetect)
 L36116:
         BCLR    >ControlFlags944,Z,#$08                  ; bit 3: second fan relay, probably; driven only with A/C fitted
-        BRSET   >Options0334,#$20,L36122
+        BRSET   >Options0334,#$20,L36122                 ; bit 5: fan relay variant (FanControl, output tests)
         BRA     L36126
 L36122:
         BCLR    >ControlFlags944,Z,#$10                  ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
@@ -7414,7 +7414,7 @@ L36126:
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
 OutputTestRelay:
-        BRSET   >Options0334,#$10,L36216
+        BRSET   >Options0334,#$10,L36216                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         LDAA    >ActuatorTest,Z
         CMPA    #$14
         BNE     L3618C
@@ -7469,8 +7469,8 @@ L3619E:
 L361A2:
         BSET    >ControlFlags944,Z,#$20                  ; bit 5: output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read
 L361A6:
-        BRSET   >Options032D,#$40,L361B2
-        BRCLR   >Options032D,#$20,L361B8
+        BRSET   >Options032D,#$40,L361B2                 ; bit 6: fan output variant (FanStatusByte, FanRelayControl, output tests)
+        BRCLR   >Options032D,#$20,L361B8                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
 L361B2:
         BRCLR   >EquipmentFlags,Z,#$80,L361BC            ; bit 7: A/C fitted (EquipmentDetect)
 L361B8:
@@ -7498,19 +7498,19 @@ L361EA:
 L361EE:
         BCLR    >ControlFlags944,Z,#$20                  ; bit 5: output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read
 L361F2:
-        BRSET   >Options032D,#$40,L361FE
-        BRCLR   >Options032D,#$20,L36204
+        BRSET   >Options032D,#$40,L361FE                 ; bit 6: fan output variant (FanStatusByte, FanRelayControl, output tests)
+        BRCLR   >Options032D,#$20,L36204                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
 L361FE:
         BRCLR   >EquipmentFlags,Z,#$80,L36210            ; bit 7: A/C fitted (EquipmentDetect)
 L36204:
         BCLR    >ControlFlags944,Z,#$08                  ; bit 3: second fan relay, probably; driven only with A/C fitted
-        BRSET   >Options0334,#$20,L36210
+        BRSET   >Options0334,#$20,L36210                 ; bit 5: fan relay variant (FanControl, output tests)
         BRA     L36236
 L36210:
         BCLR    >ControlFlags944,Z,#$10                  ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
         BRA     L36236
 L36216:
-        BRCLR   >Options0334,#$10,L36236
+        BRCLR   >Options0334,#$10,L36236                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         BRCLR   >MainLoopCounter,Z,#$80,L3622A
         BCLRW   $1068,Z,#$E000
         BRA     L36236
@@ -7589,7 +7589,7 @@ OutputTestOff:
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
 PurgeOutputTest:
-        BRCLR   >Options0333,#$80,L362E8
+        BRCLR   >Options0333,#$80,L362E8                 ; bit 7: EVAP purge solenoid fitted
         CLRB
         BRSET   >MainLoopCounter,Z,#$80,L362E2
         LDAB    #$7F
@@ -7611,7 +7611,7 @@ L362FA:
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
 OutputTestB:
-        BRCLR   >Options0333,#$40,L36318
+        BRCLR   >Options0333,#$40,L36318                 ; bit 6: PWM output C18 fitted (PwmC18Main, PwmC18CircuitCheck)
         LDD     $1064,Z
         ANDD    #$1FFF
         BRSET   >MainLoopCounter,Z,#$80,L36314
@@ -7626,8 +7626,8 @@ L36318:
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
 OutputTestOc:
-        BRCLR   >Options0335,#$80,L36342
-        BRCLR   >Options0335,#$40,L36330
+        BRCLR   >Options0335,#$80,L36342                 ; bit 7: second tuning valve fitted (TuneValve2Control in the PIT code)
+        BRCLR   >Options0335,#$40,L36330                 ; bit 6: second tuning valve variant
         BRSET   >FaultSet00,Z,#$04,L36342                ; bit 2: fault row $0A, no P-code
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L36330:
@@ -7641,8 +7641,8 @@ L36344:
         LDX     #$F916
         LDE     $101E,Z
         ANDE    #$FFF0
-        BRSET   >Options032B,#$20,L36364
-        BRSET   >Options032B,#$40,L36364
+        BRSET   >Options032B,#$20,L36364                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
+        BRSET   >Options032B,#$40,L36364                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         ORE     #$000E
         BRA     L3636C
 L36364:
@@ -7650,19 +7650,19 @@ L36364:
         STE     $101E,Z
 L3636C:
         LDAA    #$02
-        BRSET   >Options032B,#$20,L36376
+        BRSET   >Options032B,#$20,L36376                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         LDAA    #$03
 L36376:
         LDAB    #$10
         JSR     OutputTestOcFire
         RTS
 L3637E:
-        BRSET   >Options032B,#$20,L363AE
+        BRSET   >Options032B,#$20,L363AE                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         TZX
         LDX     #$F918
         LDE     $101E,Z
         ANDE    #$FFF0
-        BRSET   >Options032B,#$40,L3639E
+        BRSET   >Options032B,#$40,L3639E                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         ORE     #$000E
         BRA     L363A6
 L3639E:
@@ -7675,12 +7675,12 @@ L363A6:
 L363AE:
         RTS
 L363B0:
-        BRSET   >Options032B,#$20,L363E0
+        BRSET   >Options032B,#$20,L363E0                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         TZX
         LDX     #$F91A
         LDE     $101E,Z
         ANDE    #$FFF0
-        BRSET   >Options032B,#$40,L363D0
+        BRSET   >Options032B,#$40,L363D0                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         ORE     #$000E
         BRA     L363D8
 L363D0:
@@ -7693,8 +7693,8 @@ L363D8:
 L363E0:
         RTS
 L363E2:
-        BRSET   >Options032B,#$20,L3640C
-        BRCLR   >Options032B,#$40,L3640C
+        BRSET   >Options032B,#$20,L3640C                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
+        BRCLR   >Options032B,#$40,L3640C                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         TZX
         LDX     #$F916
         LDE     $101E,Z
@@ -7707,8 +7707,8 @@ L363E2:
 L3640C:
         RTS
 L3640E:
-        BRSET   >Options032B,#$20,L36438
-        BRCLR   >Options032B,#$40,L36438
+        BRSET   >Options032B,#$20,L36438                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
+        BRCLR   >Options032B,#$40,L36438                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         TZX
         LDX     #$F918
         LDE     $101E,Z
@@ -7721,8 +7721,8 @@ L3640E:
 L36438:
         RTS
 L3643A:
-        BRSET   >Options032B,#$20,L36464
-        BRCLR   >Options032B,#$40,L36464
+        BRSET   >Options032B,#$20,L36464                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
+        BRCLR   >Options032B,#$40,L36464                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         TZX
         LDX     #$F91A
         LDE     $101E,Z
@@ -7745,7 +7745,7 @@ OutputTestOcFire:
         BRA     L364A0
 L36472:
         LDE     >TCNT,Z
-        BRSET   >Options032B,#$40,L36482
+        BRSET   >Options032B,#$40,L36482                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         ADDE    #$1388
         BRA     L36486
 L36482:
@@ -7755,7 +7755,7 @@ L36486:
         STAA    >TCTL1,Z
         STAB    >CFORC,Z
         LDAA    #$2A
-        BRCLR   >Options032B,#$20,L3649C
+        BRCLR   >Options032B,#$20,L3649C                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         LDAA    #$03
 L3649C:
         STAA    >TCTL1,Z
@@ -7802,7 +7802,7 @@ L364E8:
 L364F8:
         RTS
 L364FA:
-        BRCLR   >Options0333,#$02,L36508
+        BRCLR   >Options0333,#$02,L36508                 ; bit 1: ignition output variant (Isr_GPT_IC1, OutputTestOcFire)
         LDE     #$0177
         STE     $1048,Z
 L36508:
@@ -7883,7 +7883,7 @@ L365B6:
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
 OutputTestLdp:
-        BRCLR   >Options033E,#$02,L365D0
+        BRCLR   >Options033E,#$02,L365D0                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRCLR   >MainLoopPhaseMask,Z,#$40,L365D0
         LDE     $1062,Z
         EORE    #$2000
@@ -8145,7 +8145,7 @@ OcOutputsReset:
         STD     $1034,Z
         STD     $1038,Z
         LDAA    #$2B
-        BRSET   >Options032B,#$20,L36870
+        BRSET   >Options032B,#$20,L36870                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         LDAA    #$2A
 L36870:
         LDAB    #$70
@@ -8643,10 +8643,10 @@ QspiOutputStatus:
         TBYK
         LDX     #$8000
         LDY     #$8008
-        BRCLR   >Options032D,#$08,L380EA
+        BRCLR   >Options032D,#$08,L380EA                 ; bit 3: board variant: switch-input map (SwitchBitsCollect), O2UpdateUpstream, SciSendByte, QspiOutputStatus
         LDY     #$8018
 L380EA:
-        BRCLR   >Options032D,#$20,L380F4
+        BRCLR   >Options032D,#$20,L380F4                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         LDY     #$8028
 L380F4:
         LDAB    >MainLoopCounter,Z
@@ -8662,17 +8662,17 @@ L380F4:
         LBEQ    L3815A
         CPY     #$4804
         BNE     L38120
-        BRCLR   >Options0334,#$08,L3815A
+        BRCLR   >Options0334,#$08,L3815A                 ; bit 3: output driver variant (QspiOutputStatus)
         BRA     L38156
 L38120:
         CPY     #$494E
         BNE     L3812E
-        BRCLR   >Options0333,#$01,L3815A
+        BRCLR   >Options0333,#$01,L3815A                 ; bit 0: output driver variant (EquipmentInit, QspiOutputStatus)
         BRA     L38156
 L3812E:
         CPY     #$4944
         BNE     L3813C
-        BRCLR   >Options0333,#$10,L3815A
+        BRCLR   >Options0333,#$10,L3815A                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
         BRA     L38156
 L3813C:
         CPY     #$40F2
@@ -8691,10 +8691,10 @@ L3815A:
         TBYK
         LDX     #$8000
         LDY     #$8038
-        BRCLR   >Options032D,#$08,L38172
+        BRCLR   >Options032D,#$08,L38172                 ; bit 3: board variant: switch-input map (SwitchBitsCollect), O2UpdateUpstream, SciSendByte, QspiOutputStatus
         LDY     #$8048
 L38172:
-        BRCLR   >Options032D,#$20,L3817C
+        BRCLR   >Options032D,#$20,L3817C                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         LDY     #$8058
 L3817C:
         LDAB    >MainLoopCounter,Z
@@ -8710,25 +8710,25 @@ L3817C:
         LBEQ    L3821A
         CPY     #$45C0
         BNE     L381A8
-        BRCLR   >Options0334,#$0C,L3821A
+        BRCLR   >Options0334,#$0C,L3821A                 ; bit 3: output driver variant (QspiOutputStatus); bit 2: output driver variant (QspiOutputStatus)
         BRA     L38204
 L381A8:
         CPY     #$43F4
         BNE     L381DA
-        BRSET   >Options0334,#$10,L3821A
-        BRSET   >Options0334,#$01,L3821A
-        BRSET   >Options032D,#$10,L38204
-        BRSET   >Options032D,#$04,L38204
-        BRSET   >Options032D,#$02,L38204
-        BRSET   >Options032D,#$08,L38204
+        BRSET   >Options0334,#$10,L3821A                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
+        BRSET   >Options0334,#$01,L3821A                 ; bit 0: fan relay variant (FanRelayControl, QspiOutputStatus)
+        BRSET   >Options032D,#$10,L38204                 ; bit 4: board variant used by O2UpdateUpstream, SciSendByte and QspiOutputStatus
+        BRSET   >Options032D,#$04,L38204                 ; bit 2: output driver variant (QspiOutputStatus)
+        BRSET   >Options032D,#$02,L38204                 ; bit 1: output driver variant (QspiOutputStatus)
+        BRSET   >Options032D,#$08,L38204                 ; bit 3: board variant: switch-input map (SwitchBitsCollect), O2UpdateUpstream, SciSendByte, QspiOutputStatus
         BRCLR   >EquipmentFlags,Z,#$80,L3821A            ; bit 7: A/C fitted (EquipmentDetect)
         BRA     L38204
 L381DA:
         CPY     #$40FC
         BNE     L38204
-        BRSET   >Options0335,#$04,L3821A
-        BRCLR   >Options0335,#$08,L3821A
-        BRCLR   >Options0335,#$02,L381FE
+        BRSET   >Options0335,#$04,L3821A                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
+        BRCLR   >Options0335,#$08,L3821A                 ; bit 3: EGR fitted (EgrMain)
+        BRCLR   >Options0335,#$02,L381FE                 ; bit 1: EGR position/solenoid monitor variant
         BRSET   >FaultSet00,Z,#$04,L3821A                ; bit 2: fault row $0A, no P-code
         BRSET   >ControlFlags943,Z,#$10,L3821A           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L381FE:
@@ -8753,8 +8753,8 @@ L3821A:
 SwitchBitsCollect:
         PSHM    E,X,CCR
         ORP     #$00E0
-        BRSET   >Options032D,#$08,L38238
-        BRSET   >Options032D,#$20,L38242
+        BRSET   >Options032D,#$08,L38238                 ; bit 3: board variant: switch-input map (SwitchBitsCollect), O2UpdateUpstream, SciSendByte, QspiOutputStatus
+        BRSET   >Options032D,#$20,L38242                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         LDX     #$72DB
         LDE     #$72FB
         BRA     L3824A
@@ -9609,7 +9609,7 @@ L390EE:
         CLR     >ActuatorTest,Z
         JSR     SciSendByte
 L390FE:
-        BRCLR   >Options032B,#$40,L39116
+        BRCLR   >Options032B,#$40,L39116                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         BRCLR   >FaultSet01,Z,#$02,L39116                ; bit 1: P0340
         TSTW    >CamFaultTimer,Z
         BEQ     L39116
@@ -9738,7 +9738,7 @@ L39270:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 AcClutchControl:
-        BRCLR   >Options032D,#$20,L39288
+        BRCLR   >Options032D,#$20,L39288                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         BRCLR   >FaultSet03,Z,#$01,L39288                ; bit 0: fault row $10, no P-code
         LDAA    >BatteryTemp,Z
         CMPA    >AcBattTempMinFault
@@ -9751,7 +9751,7 @@ L39298:
         LDAB    >AcClutchTimer,Z
         LBRA    L393F6
 L392A0:
-        BRCLR   >Options0331,#$80,L392D2
+        BRCLR   >Options0331,#$80,L392D2                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         LDAA    >AcSensor,Z
         LDAB    >FaultSet0A,Z
         BITB    #$0C
@@ -9782,8 +9782,8 @@ L392E8:
         STAB    $0C2B,Z
         LBRA    L3940C
 L392F6:
-        BRSET   >Options0331,#$40,L39312
-        BRCLR   >Options0331,#$20,L3930A
+        BRSET   >Options0331,#$40,L39312                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
+        BRCLR   >Options0331,#$20,L3930A                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
         BRCLR   >SwitchInputs2,Z,#$80,L3933A
         BRA     L39318
 L3930A:
@@ -9801,7 +9801,7 @@ L3932E:
         BCLR    >AcFlags,Z,#$40                          ; bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7
         BRA     L3934A
 L3933A:
-        BRCLR   >Options0331,#$80,L39346
+        BRCLR   >Options0331,#$80,L39346                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         BRSET   >BusReqFlags,Z,#$10,L3934A
 L39346:
         BSET    >AcFlags,Z,#$40                          ; bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7
@@ -9832,7 +9832,7 @@ L39386:
         BCLR    >AcPressureFlags,Z,#$02
         BRA     L393D8
 L393A2:
-        BRSET   >Options032D,#$80,L393AC
+        BRSET   >Options032D,#$80,L393AC                 ; bit 7: selects branches in SwitchInputsRead, SecurityStatusCalc, SciSendByte and AcClutchControl
         LDAA    #$0A
         BRA     L393D4
 L393AC:
@@ -9879,7 +9879,7 @@ L39410:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 AcCutLogic:
-        BRCLR   >Options032D,#$20,L39430
+        BRCLR   >Options032D,#$20,L39430                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         BRCLR   >FaultSet03,Z,#$01,L39430                ; bit 0: fault row $10, no P-code
         BRCLR   >AcFlags,Z,#$80,L39430                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BSET    >ControlFlags943,Z,#$01                  ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
@@ -10025,7 +10025,7 @@ L395CC:
         BRSET   >ControlFlags943,Z,#$01,L39618           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         BSET    >ControlFlags943,Z,#$01                  ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         BRCLR   >IacAcFlags,Z,#$20,L39618
-        BRSET   >Options0331,#$80,L395EC
+        BRSET   >Options0331,#$80,L395EC                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         LDAA    >IacLearned,Z
         LDX     #AcClutchSparkTimeIac
         BRA     L395F4
@@ -10084,8 +10084,8 @@ L39684:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 EgrMain:
-        BRSET   >Options0335,#$04,L39698
-        BRCLR   >Options0335,#$08,L3969C
+        BRSET   >Options0335,#$04,L39698                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
+        BRCLR   >Options0335,#$08,L3969C                 ; bit 3: EGR fitted (EgrMain)
         JSR     EgrEnable
         BRA     L3969C
 L39698:
@@ -10771,11 +10771,11 @@ L39E18:
 ;---------------------------------------------------------------------------------------------------
 FanMain:
         JSR     FanWarmupState
-        BRCLR   >Options0334,#$10,L39E2A
+        BRCLR   >Options0334,#$10,L39E2A                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         JSR     FanPwmMain
         BRA     L39E3A
 L39E2A:
-        BRCLR   >Options0334,#$80,L39E36
+        BRCLR   >Options0334,#$80,L39E36                 ; bit 7: fan control variant (FanMain)
         JSR     FanRelayControl
         BRA     L39E3A
 L39E36:
@@ -10854,7 +10854,7 @@ L39EFA:
         BITA    #$10
         BNE     L39F0A
         BRCLR   >SensorFaultFlags,Z,#$80,L39F1E          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
-        BRSET   >Options0334,#$20,L39F16
+        BRSET   >Options0334,#$20,L39F16                 ; bit 5: fan relay variant (FanControl, output tests)
 L39F0A:
         BSET    >ControlFlags944,Z,#$10                  ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
         BCLR    >ControlFlags944,Z,#$08                  ; bit 3: second fan relay, probably; driven only with A/C fitted
@@ -10999,7 +10999,7 @@ L3A0AC:
 L3A0B4:
         CLRB
         BRCLR   <EquipmentFlags,Z,#$80,L3A110            ; bit 7: A/C fitted (EquipmentDetect)
-        BRCLR   >Options0331,#$80,L3A110
+        BRCLR   >Options0331,#$80,L3A110                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         LDAA    >FaultSet0A,Z
         BITA    #$0C
         BNE     L3A110
@@ -11035,7 +11035,7 @@ L3A10E:
 L3A110:
         STAB    <Scratch0,Z
         CLRB
-        BRSET   >Options032E,#$40,L3A144
+        BRSET   >Options032E,#$40,L3A144                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BRSET   >BusModuleFlags,Z,#$02,L3A144
         LDAA    >BusTemp,Z
         CMPA    >FanBusTempStage3
@@ -11138,7 +11138,7 @@ L3A244:
         BRA     L3A2B4
 L3A24A:
         BCLR    >ControlFlags944,Z,#$08                  ; bit 3: second fan relay, probably; driven only with A/C fitted
-        BRSET   >Options0334,#$20,L3A2B4
+        BRSET   >Options0334,#$20,L3A2B4                 ; bit 5: fan relay variant (FanControl, output tests)
         BSET    >ControlFlags944,Z,#$10                  ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
         BRA     L3A2B4
 L3A25A:
@@ -11240,7 +11240,7 @@ L3A3DC:
         LBNE    L3A5EE
         BRCLR   <EquipmentFlags,Z,#$80,L3A3FC            ; bit 7: A/C fitted (EquipmentDetect)
         BRCLR   >AcFlags,Z,#$80,L3A402                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
-        BRSET   >Options0331,#$40,L3A3FC
+        BRSET   >Options0331,#$40,L3A3FC                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRSET   >IdleFlags8,Z,#$02,L3A402
 L3A3FC:
         BCLR    >BusTempFlags,Z,#$04
@@ -11339,7 +11339,7 @@ L3A4D6:
         LDX     <Scratch2,Z
         LDAA    >FanState,Z
         LDAB    E,X
-        BRCLR   >Options0331,#$80,L3A4EC
+        BRCLR   >Options0331,#$80,L3A4EC                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         JSR     FanAcStage
 L3A4EC:
         TSTB
@@ -11362,7 +11362,7 @@ L3A4F8:
 L3A51C:
         CMPB    #$02
         BNE     L3A576
-        BRSET   >Options0334,#$01,L3A540
+        BRSET   >Options0334,#$01,L3A540                 ; bit 0: fan relay variant (FanRelayControl, QspiOutputStatus)
         BRCLR   >MainLoopPhaseMask,Z,#$10,L3A536
         INC     >FanStageTimer,Z
         BNE     L3A536
@@ -11390,8 +11390,8 @@ L3A570:
         LDE     #$0004
         BRA     L3A598
 L3A576:
-        BRSET   >Options0334,#$01,L3A540
-        BRCLR   >Options032D,#$40,L3A586
+        BRSET   >Options0334,#$01,L3A540                 ; bit 0: fan relay variant (FanRelayControl, QspiOutputStatus)
+        BRCLR   >Options032D,#$40,L3A586                 ; bit 6: fan output variant (FanStatusByte, FanRelayControl, output tests)
         BRCLR   <EquipmentFlags,Z,#$80,L3A540            ; bit 7: A/C fitted (EquipmentDetect)
 L3A586:
         BSET    >ControlFlagsC33,Z,#$04
@@ -11630,7 +11630,7 @@ L3A7CC:
         BRCLR   >FanFlags,Z,#$08,L3A7EE
         CLR     $0B20,Z
 L3A7EE:
-        BRCLR   >Options033D,#$04,L3A7F8
+        BRCLR   >Options033D,#$04,L3A7F8                 ; bit 2: selects a branch in FanPwmMain
         JSR     FanPwmFixed
 L3A7F8:
         BRSET   >BusReqFlags,Z,#$10,L3A804
@@ -11879,7 +11879,7 @@ FanPwmControl:
         LDAA    >AcSensorFiltered,Z
         CMPA    >FanPwmAcMax
         LBCC    L3ABF8
-        BRCLR   >Options0331,#$80,L3AB88
+        BRCLR   >Options0331,#$80,L3AB88                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         LDE     $0B1A,Z
         DECW    $0B1C,Z
         LBNE    L3ABFC
@@ -12216,7 +12216,7 @@ L3AD7C:
 L3AD86:
         BRCLR   >FanFlags,Z,#$04,L3ADA6
         LDAA    >FanWarmupDuty
-        BRSET   >Options0331,#$80,L3AD98
+        BRSET   >Options0331,#$80,L3AD98                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         LDAA    #$64
 L3AD98:
         CLRB
@@ -12370,9 +12370,9 @@ L3AECA:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 StarterCut:
-        BRCLR   >Options0333,#$04,L3AF4A
+        BRCLR   >Options0333,#$04,L3AF4A                 ; bit 2: starter cut / park-neutral variant (StarterCut, PnSwitchMonitor)
         BRSET   >SecurityFlags,Z,#$20,L3AF32
-        BRSET   >Options032E,#$40,L3AEE4
+        BRSET   >Options032E,#$40,L3AEE4                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BRSET   >SwitchInputs2,Z,#$20,L3AF32
 L3AEE4:
         BRSET   >ControlFlags944,Z,#$01,L3AF1A           ; bit 0: starter cut active (StarterCut)
@@ -12421,7 +12421,7 @@ L3AF4A:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 PwmC18Main:
-        BRCLR   >Options0333,#$40,L3B03A
+        BRCLR   >Options0333,#$40,L3B03A                 ; bit 6: PWM output C18 fitted (PwmC18Main, PwmC18CircuitCheck)
         PSHM    D,E,X
         LDAA    >ActuatorTest,Z
         CMPA    #$47
@@ -12725,7 +12725,7 @@ SpeedCtlControl:
         BRSET   >SwitchInputs,Z,#$01,L3B8AC
         LDAB    #$0D
         BRSET   >SwitchInputs2,Z,#$01,L3B8AC
-        BRSET   >Options032E,#$40,L3B854
+        BRSET   >Options032E,#$40,L3B854                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         JSR     SpeedCtlBusState
         BCS     L3B8AC
         LDAB    #$04
@@ -12864,7 +12864,7 @@ L3B9CE:
 L3B9F6:
         BRSET   >SpeedCtlState,Z,#$80,L3BD68             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         BRSET   >SpeedCtlState,Z,#$10,L3BA38             ; bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
-        BRCLR   >Options0332,#$18,L3BA0C
+        BRCLR   >Options0332,#$18,L3BA0C                 ; bit 4: speed control variant (SpeedCtlControl, SpeedCtlLampState); bit 3: speed control switch variant
         LBRA    L3BD68
 L3BA0C:
         LDAB    >SpeedCtlTimer2,Z
@@ -12895,7 +12895,7 @@ L3BA56:
         LDAA    #$7F
         BRSET   >SpeedCtlState,Z,#$80,L3BB02             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         BRSET   >SpeedCtlState2,Z,#$08,L3BAD4
-        BRSET   >Options033B,#$04,L3BA82
+        BRSET   >Options033B,#$04,L3BA82                 ; bit 2: selects a branch in SpeedCtlControl
         LDAB    >SpeedCtlSetSpeed,Z
         SUBB    >VehicleSpeed,Z
         BCC     L3BAD4
@@ -13039,7 +13039,7 @@ L3BBEC:
         BCLR    >SpeedCtlState2,Z,#$03
         LDAB    >SpeedCtlServoCmd,Z
         LDAA    #$04
-        BRCLR   >Options0332,#$01,L3BBFE
+        BRCLR   >Options0332,#$01,L3BBFE                 ; bit 0: speed control switch variant
         LDAA    #$02
 L3BBFE:
         ADDA    >SpeedCtlSetSpeed,Z
@@ -13721,7 +13721,7 @@ L3C2E6:
         BITA    #$C0
         BNE     L3C368
         BRCLR   >SwitchInputs2,Z,#$10,L3C364
-        BRCLR   >Options032E,#$40,L3C322
+        BRCLR   >Options032E,#$40,L3C322                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         TST     >SpeedCtlRpmJumpTimer,Z
         BEQ     L3C310
         LDAA    >SpeedCtlCancelHold
@@ -13826,7 +13826,7 @@ L3C3C4:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlRpmJumpCheck:
-        BRCLR   >Options032E,#$40,L3C466
+        BRCLR   >Options032E,#$40,L3C466                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         LDAB    >SpeedCtlRpmFilter
         LDAA    >EngineRpm,Z
         CMPA    >RpmPrev,Z
@@ -13898,7 +13898,7 @@ L3C47A:
 L3C47E:
         BRSET   >SpeedCtlState,Z,#$80,L3C54C             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         BRSET   <EquipmentFlags,Z,#$20,L3C49A            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRCLR   >Options032E,#$40,L3C54C
+        BRCLR   >Options032E,#$40,L3C54C                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         LDAA    >RpmSpeedRatio,Z
         CMPA    >SpeedCtlGearRatioMax
         BLS     L3C4A8
@@ -13983,7 +13983,7 @@ SpeedCtlBusState:
         BEQ     L3C58A
         CMPA    #$30
         BNE     L3C582
-        BRSET   >Options033B,#$02,L3C58A
+        BRSET   >Options033B,#$02,L3C58A                 ; bit 1: selects a branch in SpeedCtlBusState
 L3C582:
         ORP     #$0100
         LDAB    #$09
@@ -14033,7 +14033,7 @@ SpeedCtlSwitchCheck:
         BRSET   $1000,Z,#$01,L3C65A
         BRSET   >SwitchInputs,Z,#$01,L3C65A
         BRSET   >FaultSet00,Z,#$80,L3C65A                ; bit 7: fault row $0F, no P-code
-        BRSET   >Options032D,#$20,L3C5F4
+        BRSET   >Options032D,#$20,L3C5F4                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         BRSET   >FaultSet0B,Z,#$04,L3C65A                ; bit 2: fault row $52, no P-code
         BRCLR   $1013,Z,#$80,L3C65A
         BRCLR   $1012,Z,#$01,L3C65A
@@ -14048,7 +14048,7 @@ L3C5F4:
         ABA
         STAA    <Scratch0,Z
         BEQ     L3C628
-        BRCLR   >Options032D,#$20,L3C628
+        BRCLR   >Options032D,#$20,L3C628                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         BRCLR   >SpeedCtlState,Z,#$80,L3C628             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         LDAA    #$7F
         BRSET   >Scratch0,Z,#$42,L3C622
@@ -14156,11 +14156,11 @@ L3C6EA:
         BRCLR   >FaultSet0B,Z,#$C4,L3C6F8                ; bit 7: fault row $57, no P-code; bit 6: fault row $56, no P-code; bit 2: fault row $52, no P-code
         BRA     L3C73C
 L3C6F8:
-        BRSET   >Options0332,#$08,L3C718
-        BRSET   >Options0332,#$10,L3C718
-        BRSET   >Options0332,#$01,L3C720
-        BRSET   >Options0332,#$04,L3C730
-        BRSET   >Options0332,#$02,L3C730
+        BRSET   >Options0332,#$08,L3C718                 ; bit 3: speed control switch variant
+        BRSET   >Options0332,#$10,L3C718                 ; bit 4: speed control variant (SpeedCtlControl, SpeedCtlLampState)
+        BRSET   >Options0332,#$01,L3C720                 ; bit 0: speed control switch variant
+        BRSET   >Options0332,#$04,L3C730                 ; bit 2: speed control switch variant; also used by EquipmentDetect
+        BRSET   >Options0332,#$02,L3C730                 ; bit 1: speed control switch variant; also used by EquipmentDetect
         BRA     L3C748
 L3C718:
         BRCLR   >SwitchInputs2,Z,#$10,L3C73C
@@ -14486,10 +14486,10 @@ L3D80A:
         BRSET   >PurgeFlags,Z,#$80,L3D83C
         JSR     PurgeRampControl
 L3D83C:
-        BRSET   >Options033B,#$20,L3D848
+        BRSET   >Options033B,#$20,L3D848                 ; bit 5: selects a branch in PurgeMain
         BRSET   >EgrMonFlags,Z,#$04,L3D85C
 L3D848:
-        BRCLR   >Options0333,#$80,L3D854
+        BRCLR   >Options0333,#$80,L3D854                 ; bit 7: EVAP purge solenoid fitted
         JSR     PurgeFlowControl
         BRA     L3D858
 L3D854:
@@ -14504,7 +14504,7 @@ L3D85C:
 ; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeRampControl:
-        BRCLR   >Options0338,#$80,L3D870
+        BRCLR   >Options0338,#$80,L3D870                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
         LDD     $0448,Z
         CPD     #$FFFF
         LBNE    L3DA36
@@ -14564,7 +14564,7 @@ L3D8F8:
         STAB    $02,Y
 L3D900:
         BRSET   >O2Bank1Flags,Z,#$20,L3DA34
-        BRCLR   >Options032F,#$40,L3D912
+        BRCLR   >Options032F,#$40,L3D912                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$20,L3DA34
 L3D912:
         JSR     PurgeVaporLoad
@@ -14687,7 +14687,7 @@ L3DA36:
         CMPB    >PurgeFlowStepTime
         BCS     L3DAB6
         BRSET   >O2Bank1Flags,Z,#$08,L3DA78
-        BRCLR   >Options032F,#$40,L3DAB6
+        BRCLR   >Options032F,#$40,L3DAB6                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRCLR   >O2Bank2Flags,Z,#$08,L3DAB6
 L3DA78:
         SUBA    >PurgeFlowDutyStepDown
@@ -14730,7 +14730,7 @@ L3DADC:
         TST     >PurgeStartRamp,Z
         BEQ     L3DB60
         BRSET   >O2Bank1Flags,Z,#$20,L3DB1A
-        BRCLR   >Options032F,#$40,L3DAF4
+        BRCLR   >Options032F,#$40,L3DAF4                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$20,L3DB1A
 L3DAF4:
         LDD     >PurgeStartCounter,Z
@@ -14788,7 +14788,7 @@ L3DB76:
         STAA    <Scratch0,Z
         BRA     L3DBC4
 L3DB7A:
-        BRSET   >Options032C,#$80,L3DBC4
+        BRSET   >Options032C,#$80,L3DBC4                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         LDAB    >PurgeLoad,Z
         BEQ     L3DB96
         LDAA    <Scratch0,Z
@@ -14819,7 +14819,7 @@ L3DBA2:
 L3DBC2:
         STAA    <Scratch0,Z
 L3DBC4:
-        BRSET   >Options0333,#$80,L3DBF0
+        BRSET   >Options0333,#$80,L3DBF0                 ; bit 7: EVAP purge solenoid fitted
         LDAB    <Scratch0,Z
         CLRA
         TDE
@@ -14837,8 +14837,8 @@ L3DBEC:
         BRA     L3DC12
 L3DBF0:
         LDAA    <Scratch0,Z
-        BRSET   >Options032E,#$40,L3DBFE
-        BRSET   >DriveFlags,Z,#$20,L3DC12                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >Options032E,#$40,L3DBFE                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
+        BRSET   >DriveFlags,Z,#$20,L3DC12                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L3DBFE:
         LDAB    >VehicleSpeed,Z
         CMPB    >PurgeStandingSpeed
@@ -14862,10 +14862,10 @@ PurgeDutySelect:
         BRA     L3DC52
 L3DC2C:
         BRSET   >ThrottleState,Z,#$01,L3DC3A             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
-        BRCLR   >Options0339,#$04,L3DC4A
+        BRCLR   >Options0339,#$04,L3DC4A                 ; bit 2: alternative purge duty at closed throttle (PurgeDutyAltClosed)
         BRA     L3DC40
 L3DC3A:
-        BRCLR   >Options0339,#$08,L3DC4A
+        BRCLR   >Options0339,#$08,L3DC4A                 ; bit 3: alternative purge duty off closed throttle (PurgeDutyAltOther)
 L3DC40:
         LDX     #PurgeDutyAlt
         BSET    >SciLogFlags,Z,#$40
@@ -14981,7 +14981,7 @@ L3DD72:
         CMPA    >PurgeCellRichMax1
         BCC     L3DDAC
 L3DD78:
-        BRCLR   >Options032F,#$40,L3DDB2
+        BRCLR   >Options032F,#$40,L3DDB2                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         LDX     #$806D
         LDAB    >PurgeCell1
         ABX
@@ -15024,7 +15024,7 @@ L3DDE4:
         CMPA    >PurgeCellRichMax2
         BCC     L3DE1E
 L3DDEA:
-        BRCLR   >Options032F,#$40,L3DE24
+        BRCLR   >Options032F,#$40,L3DE24                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         LDX     #$806D
         LDAB    >PurgeCell2
         ABX
@@ -15067,7 +15067,7 @@ L3DE56:
         CMPA    >PurgeCellRichMax3
         BCC     L3DE90
 L3DE5C:
-        BRCLR   >Options032F,#$40,L3DE96
+        BRCLR   >Options032F,#$40,L3DE96                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         LDX     #$806D
         LDAB    >PurgeCell3
         ABX
@@ -15237,7 +15237,7 @@ PurgeCellRichCheck:
         JSR     PurgeCellMax
         BCLR    <PurgeCellRichFlags,Z,#$38
 L3DFF0:
-        BRSET   >Options032E,#$40,L3E024
+        BRSET   >Options032E,#$40,L3E024                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         TZX
         LDX     #$8066
         LDAB    $01,X
@@ -15319,7 +15319,7 @@ L3E070:
 PurgeFlowControl:
         PSHM    D,E,X,Y,K
         JSR     PurgeFlowAdaptation
-        BRSET   >Options033B,#$10,L3E08A
+        BRSET   >Options033B,#$10,L3E08A                 ; bit 4: purge flow monitor on (PurgeFlowControl, PurgeVaporLoad, PurgeMonStep)
         BCLR    >PurgeMonFlags,Z,#$F0
         CLR     >PurgeMonTimer,Z
         BRA     L3E098
@@ -15633,7 +15633,7 @@ L3E3DE:
 ;---------------------------------------------------------------------------------------------------
 PurgePwmOutput:
         PSHM    D,E,X
-        BRSET   >Options0333,#$80,L3E418
+        BRSET   >Options0333,#$80,L3E418                 ; bit 7: EVAP purge solenoid fitted
         LDAA    >PurgeDuty,Z
         BEQ     L3E454
         CMPA    #$64
@@ -15784,13 +15784,13 @@ L3E53E:
         STAB    >PurgeDelay,Z
         LBRA    L3E56E
 L3E55A:
-        BRCLR   >Options032C,#$40,L3E566
+        BRCLR   >Options032C,#$40,L3E566                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >FlexStartFlags,Z,#$08,L3EABC
 L3E566:
         BRSET   >PurgeFlags,Z,#$40,L3E9AA
         BRA     L3E59C
 L3E56E:
-        BRCLR   >Options0338,#$80,L3EA96
+        BRCLR   >Options0338,#$80,L3EA96                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
         BRSET   >PurgeLearnFlags,Z,#$02,L3E9AA
         LDAB    >ShortTermTrim1,Z
         SXT
@@ -15804,7 +15804,7 @@ L3E56E:
         STAB    >PurgeTrimAvgOff,Z
         LBRA    L3EA96
 L3E59C:
-        BRCLR   >Options0338,#$80,L3E9AA
+        BRCLR   >Options0338,#$80,L3E9AA                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
         BRSET   >PurgeLearnFlags,Z,#$02,L3E9AA
         BRCLR   >EngineStateFlags,Z,#$80,L3EA96          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >ThrottleState,Z,#$40,L3EA96             ; bit 6: wide-open throttle (DetectWot)
@@ -15813,7 +15813,7 @@ L3E59C:
         BRSET   >PurgeLearnFlags,Z,#$80,L3E76E
         BRSET   >PurgeLearnFlags,Z,#$20,L3E9AA
         BRSET   >PurgeLearnFlags,Z,#$08,L3E62A
-        BRSET   >Options032C,#$80,L3E982
+        BRSET   >Options032C,#$80,L3E982                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         LDAA    >PurgeRamp,Z
         CMPA    >PurgeRampLearnMin
         LBLS    L3E982
@@ -16189,7 +16189,7 @@ L3E9EC:
         LBCS    L3EABC
 L3EA0E:
         BRSET   >O2Bank1Flags,Z,#$20,L3EABC
-        BRCLR   >Options032F,#$40,L3EA20
+        BRCLR   >Options032F,#$40,L3EA20                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$20,L3EABC
 L3EA20:
         BRSET   >PurgeCellRichFlags,Z,#$40,L3EABC
@@ -16250,7 +16250,7 @@ L3EAA8:
 L3EABC:
         CLR     >PurgeCellCount,Z
 L3EAC0:
-        BRSET   >Options032C,#$80,L3EACC
+        BRSET   >Options032C,#$80,L3EACC                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         BRCLR   >O2ActiveFlags,Z,#$C0,L3EA96             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7)
 L3EACC:
         BRCLR   >EngineStateFlags,Z,#$80,L3EA96          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -16317,7 +16317,7 @@ PurgeFlowAdaptation:
         TST     >PurgeStartRamp,Z
         LBNE    L3ECC4
         BRSET   >O2Bank1Flags,Z,#$20,L3EBAE
-        BRCLR   >Options032F,#$40,L3EB66
+        BRCLR   >Options032F,#$40,L3EB66                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$20,L3EBAE
 L3EB66:
         TST     >PurgeCellCount,Z
@@ -16440,7 +16440,7 @@ L3ECC4:
 ; Called from: PurgeRampControl
 ;---------------------------------------------------------------------------------------------------
 PurgeVaporLoad:
-        BRSET   >Options033B,#$10,L3ECD4
+        BRSET   >Options033B,#$10,L3ECD4                 ; bit 4: purge flow monitor on (PurgeFlowControl, PurgeVaporLoad, PurgeMonStep)
         CLR     >PurgeLoad,Z
         LBRA    L3ED64
 L3ECD4:
@@ -16512,7 +16512,7 @@ L3ED76:
         LDAA    >CoolantTemp,Z
         CMPA    >PurgeMonCoolantMin2
         BCS     L3EDCE
-        BRSET   >Options0330,#$20,L3ED8C
+        BRSET   >Options0330,#$20,L3ED8C                 ; bit 5: tip-in air temperature check on (TipInAirTempCheck); also used by SparkHook and PurgeMonitorArm
         LDAA    >BatteryTemp,Z
         BRA     L3ED90
 L3ED8C:
@@ -16554,7 +16554,7 @@ L3EDE8:
 ; Called from: PurgeFlowControl
 ;---------------------------------------------------------------------------------------------------
 PurgeMonStep:
-        BRCLR   >Options033B,#$10,L3EE7E
+        BRCLR   >Options033B,#$10,L3EE7E                 ; bit 4: purge flow monitor on (PurgeFlowControl, PurgeVaporLoad, PurgeMonStep)
         BRCLR   >PurgeMonFlags,Z,#$80,L3EE28
         BRCLR   >PurgeMonFlags,Z,#$40,L3EE10
         LDAA    >PurgeMonTimer,Z

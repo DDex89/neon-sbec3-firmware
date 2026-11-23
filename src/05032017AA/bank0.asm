@@ -10514,7 +10514,7 @@ Isr_GPT_IC3:
         BRSET   >PORTGP,Z,#$04,L08332
         INC     >DistancePulses,Z
         INCW    $0053,Z
-        BRSET   >Options032D,#$20,L080F4
+        BRSET   >Options032D,#$20,L080F4                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         TSTW    $0053,Z
         BNE     L08104
         BRA     L08100
@@ -10658,7 +10658,7 @@ L08288:
         BEQ     L082B6
         ANDA    #$EF
         STAA    >VssFlags,Z
-        BRCLR   >Options032D,#$20,L082A0
+        BRCLR   >Options032D,#$20,L082A0                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         LDAB    #$05
         LDE     #$5BF0
         BRA     L082A6
@@ -10689,7 +10689,7 @@ L082C4:
         STAA    $0AB1,Z
         LDE     >TIC3,Z
         SUBE    $0AB4,Z
-        BRSET   >Options032D,#$20,L082F8
+        BRSET   >Options032D,#$20,L082F8                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         CMPA    #$02
         BCS     L08302
 L082F8:
@@ -10751,17 +10751,17 @@ L08378:
         BNE     L08392
         DEC     $032F,Z
 L08392:
-        BRCLR   >Options0338,#$02,L0839E
+        BRCLR   >Options0338,#$02,L0839E                 ; bit 1: alternative field control: ChargeControl2 instead of ChargeControl in the PIT code (FieldControlAlt)
         JSR     ChargeControl2
         BRA     L083C4
 L0839E:
         JSR     ChargeControl
         BRA     L083C4
 L083A4:
-        BRCLR   >Options0335,#$20,L083AE
+        BRCLR   >Options0335,#$20,L083AE                 ; bit 5: manifold tuning valve fitted (MtvTiming in the PIT code)
         JSR     MtvTiming
 L083AE:
-        BRCLR   >Options0335,#$80,L083B8
+        BRCLR   >Options0335,#$80,L083B8                 ; bit 7: second tuning valve fitted (TuneValve2Control in the PIT code)
         JSR     TuneValve2Control
 L083B8:
         JSR     HighRpmTimerPit
@@ -10775,7 +10775,7 @@ L083C4:
         BEQ     L083DC
         STAA    $0F56,Z
 L083DC:
-        BRCLR   >Options0338,#$02,L0841E
+        BRCLR   >Options0338,#$02,L0841E                 ; bit 1: alternative field control: ChargeControl2 instead of ChargeControl in the PIT code (FieldControlAlt)
         BRCLR   $0DCC,Z,#$01,L0841E
         LDAA    $0DC5,Z
         ADDA    >FieldRampSteps,Z
@@ -10794,7 +10794,7 @@ L0840C:
         BCLRW   $106E,Z,#$2000
         BCLR    >ChargeMonFlags,Z,#$20
 L0841E:
-        BRCLR   >Options0334,#$10,L08428
+        BRCLR   >Options0334,#$10,L08428                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         JSR     FanPwmOutputCheck
 L08428:
         ORP     #$00E0
@@ -10802,7 +10802,7 @@ L08428:
         BNE     L0844E
         LDAA    #$18
         STAA    $097D,Z
-        BRSET   >Options032E,#$04,L08444
+        BRSET   >Options032E,#$04,L08444                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     CcdTransmit
         BRA     L0844E
 L08444:
@@ -11168,7 +11168,7 @@ L087DE:
 Isr_GPT_OC2:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
-        BRCLR   >Options032B,#$20,L08804
+        BRCLR   >Options032B,#$20,L08804                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         JSR     SparkOutputOc2
         JMP     L08932
 L08804:
@@ -11177,7 +11177,7 @@ L08804:
         LDY     #$87E0
         TZX
         LDX     #$F916
-        BRSET   >Options032B,#$40,L0881C
+        BRSET   >Options032B,#$40,L0881C                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         LDAB    $86,Z
         BRA     L0889A
 L0881C:
@@ -11201,7 +11201,7 @@ Isr_GPT_OC3:
         LDY     #$87E5
         TZX
         LDX     #$F918
-        BRSET   >Options032B,#$40,L0884C
+        BRSET   >Options032B,#$40,L0884C                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         LDAB    $87,Z
         BRA     L0889A
 L0884C:
@@ -11225,7 +11225,7 @@ Isr_GPT_OC4:
         LDY     #$87EA
         TZX
         LDX     #$F91A
-        BRSET   >Options032B,#$40,L0887C
+        BRSET   >Options032B,#$40,L0887C                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         LDAB    $88,Z
         BRA     L0889A
 L0887C:
@@ -11252,7 +11252,7 @@ L088B0:
         LDAA    >TFLG1,Z
         ANDA    $04,Y
         STAA    >TFLG1,Z
-        BRCLR   >Options032B,#$40,L088C8
+        BRCLR   >Options032B,#$40,L088C8                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         BRCLR   >CrankSyncFlags,Z,#$20,L08928
         BRA     L088CE
 L088C8:
@@ -11271,7 +11271,7 @@ L088CE:
         ANDA    #$18
         CMPA    $02,Y
         BNE     L08928
-        BRSET   >Options032B,#$40,L08918
+        BRSET   >Options032B,#$40,L08918                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
 L088FA:
         LDAB    #$02
         LDAA    >CylinderIndex,Z
@@ -11406,7 +11406,7 @@ Isr_SCI:
 ; Called from: Isr_IRQ2
 ;---------------------------------------------------------------------------------------------------
 Irq2Dispatch:
-        BRSET   >Options032E,#$04,L08A2A
+        BRSET   >Options032E,#$04,L08A2A                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     Irq2BusHandler
         BRA     L08A2E
 L08A2A:
@@ -11451,7 +11451,7 @@ L08A7E:
 Isr_GPT_IC4OC5:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
-        BRCLR   >Options0337,#$80,L08CD4
+        BRCLR   >Options0337,#$80,L08CD4                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         BRCLR   $0E05,Z,#$01,L08CD4
         LDD     >TI4O5,Z
         TDE
@@ -11505,7 +11505,7 @@ L08B26:
 L08B32:
         BCLR    >EventSparkFlags2,Z,#$01
         BCLR    >EventSparkFlags,Z,#$CC
-        BRSET   >Options032E,#$04,L08CB4
+        BRSET   >Options032E,#$04,L08CB4                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LBRA    L08CC0
 L08B44:
         BRCLR   >SwitchInputs2,Z,#$20,L08B60
@@ -11613,7 +11613,7 @@ L08C6C:
         BPL     L08C5A
         LDAB    >Temp4FE,Z
         COMB
-        BRCLR   >Options032B,#$80,L08C82
+        BRCLR   >Options032B,#$80,L08C82                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         ANDB    #$3F
         BRA     L08C84
 L08C82:
@@ -11628,7 +11628,7 @@ L08C8A:
         BCLR    >TCTL2,Z,#$80
         BRA     L08CD4
 L08C9C:
-        BRSET   >Options032E,#$04,L08CB4
+        BRSET   >Options032E,#$04,L08CB4                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   $0855,Z,#$10,L08CAE
         JSR     BusTxSparkEvent
         BRA     L08CBC
@@ -12473,10 +12473,10 @@ L0A32E:
         LDY     #$A017
         LDAB    $87,Z
         BRSET   >CrankSyncFlags,Z,#$20,L0A34E
-        BRSET   >Options032A,#$40,L0A35A
+        BRSET   >Options032A,#$40,L0A35A                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRA     L0A354
 L0A34E:
-        BRCLR   >Options032A,#$40,L0A35A
+        BRCLR   >Options032A,#$40,L0A35A                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
 L0A354:
         LDY     #$A010
         LDAB    $86,Z
@@ -12557,10 +12557,10 @@ L0A436:
         LDY     #$A010
         LDAB    $86,Z
         BRSET   >CrankSyncFlags,Z,#$20,L0A44E
-        BRSET   >Options032A,#$40,L0A45A
+        BRSET   >Options032A,#$40,L0A45A                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRA     L0A454
 L0A44E:
-        BRCLR   >Options032A,#$40,L0A45A
+        BRCLR   >Options032A,#$40,L0A45A                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
 L0A454:
         LDY     #$A017
         LDAB    $87,Z
@@ -12618,7 +12618,7 @@ L0A4E6:
         dc.b    $27,$4C,$27,$4C
 L0A4EE:
         JSR     EmptyHook
-        BRCLR   >Options0333,#$02,L0A500
+        BRCLR   >Options0333,#$02,L0A500                 ; bit 1: ignition output variant (Isr_GPT_IC1, OutputTestOcFire)
         LDE     #$0177
         STE     $1048,Z
 L0A500:
@@ -12681,10 +12681,10 @@ L0A5A4:
         LDY     #$A017
         LDAB    $87,Z
         BRSET   >CrankSyncFlags,Z,#$20,L0A5BC
-        BRSET   >Options032A,#$40,L0A5C8
+        BRSET   >Options032A,#$40,L0A5C8                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRA     L0A5C2
 L0A5BC:
-        BRCLR   >Options032A,#$40,L0A5C8
+        BRCLR   >Options032A,#$40,L0A5C8                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
 L0A5C2:
         LDY     #$A010
         LDAB    $86,Z
@@ -12837,10 +12837,10 @@ L0A726:
         LDY     #$A017
         LDAB    $87,Z
         BRSET   >CrankSyncFlags,Z,#$20,L0A7A6
-        BRSET   >Options032A,#$40,L0A7B2
+        BRSET   >Options032A,#$40,L0A7B2                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRA     L0A7AC
 L0A7A6:
-        BRCLR   >Options032A,#$40,L0A7B2
+        BRCLR   >Options032A,#$40,L0A7B2                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
 L0A7AC:
         LDY     #$A010
         LDAB    $86,Z
@@ -12941,10 +12941,10 @@ L0A8BA:
         TBYK
         LDY     #$A010
         BRSET   >CrankSyncFlags,Z,#$20,L0A8E8
-        BRSET   >Options032A,#$40,L0A8F2
+        BRSET   >Options032A,#$40,L0A8F2                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRA     L0A8EE
 L0A8E8:
-        BRCLR   >Options032A,#$40,L0A8F2
+        BRCLR   >Options032A,#$40,L0A8F2                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
 L0A8EE:
         LDY     #$A017
 L0A8F2:
@@ -12961,7 +12961,7 @@ L0A902:
         CLRA
 L0A910:
         STAA    >CylinderIndex,Z
-        BRCLR   >Options032F,#$06,L0A920
+        BRCLR   >Options032F,#$06,L0A920                 ; bit 2: knock sensor variant (knock sample, retard, learn and spark code); bit 1: knock sensor variant (as bit 2)
         BCLRW   $1002,Z,#$0400
 L0A920:
         BCLR    >SparkFlags,Z,#$80
@@ -13002,10 +13002,10 @@ L0A96A:
         LBNE    L0A9F2
         LDAB    #$00
         BRSET   >CrankSyncFlags,Z,#$20,L0A9A8
-        BRSET   >Options032A,#$40,L0A9B0
+        BRSET   >Options032A,#$40,L0A9B0                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRA     L0A9AE
 L0A9A8:
-        BRCLR   >Options032A,#$40,L0A9B0
+        BRCLR   >Options032A,#$40,L0A9B0                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
 L0A9AE:
         LDAB    #$01
 L0A9B0:
@@ -13056,7 +13056,7 @@ L0AA02:
         CPX     >RunPeriodOff
         BCS     L0AA84
         BRCLR   >EngineStateFlags,Z,#$80,L0AA40          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >Options033B,#$40,L0AA40
+        BRCLR   >Options033B,#$40,L0AA40                 ; bit 6: selects a branch in Isr_GPT_IC1 (purge flag at stall)
         BCLR    >PurgeFlags2,Z,#$20
 L0AA40:
         BCLR    >EngineStateFlags,Z,#$80                 ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -13680,7 +13680,7 @@ L0AD0A:
 ;---------------------------------------------------------------------------------------------------
 MainLoopCounters:
         ORP     #$00E0
-        BRCLR   >Options0333,#$40,L0C00E
+        BRCLR   >Options0333,#$40,L0C00E                 ; bit 6: PWM output C18 fitted (PwmC18Main, PwmC18CircuitCheck)
         JSR     PwmC18Timer
 L0C00E:
         INC     >MainLoopCounter,Z
@@ -13926,7 +13926,7 @@ L0C1C8:
         BCS     L0C1D2
         STAA    $01,X
 L0C1D2:
-        BRSET   >Options032B,#$80,L0C1DA
+        BRSET   >Options032B,#$80,L0C1DA                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         BSR     PeriodChangeTrack2
 L0C1DA:
         PULM    K,E
@@ -15120,7 +15120,7 @@ L0CC12:
 ;---------------------------------------------------------------------------------------------------
 BusStatusByte:
         ORP     #$00E0
-        BRSET   >Options032E,#$04,L0CC80
+        BRSET   >Options032E,#$04,L0CC80                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDX     #$73C5
         BRA     L0CC84
 L0CC80:
@@ -15141,7 +15141,7 @@ L0CC90:
 ;---------------------------------------------------------------------------------------------------
 BusStatusBytes:
         ORP     #$00E0
-        BRSET   >Options032E,#$04,L0CD1A
+        BRSET   >Options032E,#$04,L0CD1A                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDX     #$7405
         JSR     CollectBits
         BRCLR   >EquipmentFlags,Z,#$40,L0CCCE            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
@@ -15159,7 +15159,7 @@ L0CCCE:
         BCS     L0CCD8
         ORAA    #$02
 L0CCD8:
-        BRCLR   >Options032E,#$40,L0CCE0
+        BRCLR   >Options032E,#$40,L0CCE0                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         ORAA    #$80
 L0CCE0:
         STAA    $09D5,Z
@@ -15185,7 +15185,7 @@ L0CD1A:
         STAA    $0A15,Z
         LDX     #$74E5
         JSR     CollectBits
-        BRCLR   >Options032E,#$40,L0CD36
+        BRCLR   >Options032E,#$40,L0CD36                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         ORAA    #$80
 L0CD36:
         LDAB    >ThrottleAboveClosed,Z
@@ -15491,7 +15491,7 @@ L0D206:
         STAA    >DDRGP,Z
         LDAA    #$08
         STAA    >OC1M,Z
-        BRCLR   >Options032A,#$E0,L0D242
+        BRCLR   >Options032A,#$E0,L0D242                 ; bit 7: engine/ignition variant used by the event, spark, knock and rpm code; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably); bit 5: hardware set-up variant at reset (Reset, HardwareCheck)
         BRCLR   >PACTL,Z,#$80,L0D23A
         LDAA    #$65
         STAA    >PACTL,Z
@@ -15505,27 +15505,27 @@ L0D242:
         STAA    >PACTL,Z
 L0D248:
         LDAA    #$2A
-        BRCLR   >Options032B,#$20,L0D252
+        BRCLR   >Options032B,#$20,L0D252                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         ORAA    #$01
 L0D252:
         STAA    >TCTL1,Z
         LDAA    #$29
-        BRCLR   >Options0337,#$80,L0D260
+        BRCLR   >Options0337,#$80,L0D260                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         LDAA    #$A9
 L0D260:
         STAA    >TCTL2,Z
         LDAA    #$05
-        BRSET   >Options032B,#$80,L0D26E
+        BRSET   >Options032B,#$80,L0D26E                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         ORAA    #$02
 L0D26E:
-        BRCLR   >Options0337,#$80,L0D276
+        BRCLR   >Options0337,#$80,L0D276                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         ORAA    #$80
 L0D276:
         STAA    >TMSK1,Z
         LDAA    #$12
         STAA    >TMSK2,Z
         BSET    >CFORC,Z,#$F8
-        BRCLR   >Options0335,#$04,L0D29A
+        BRCLR   >Options0335,#$04,L0D29A                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
         LDAA    #$18
         STAA    >PWMC,Z
         CLRA
@@ -15533,7 +15533,7 @@ L0D276:
         STAA    >PWMA,Z
 L0D29A:
         LDD     #$0003
-        BRSET   >Options032E,#$04,L0D2A8
+        BRSET   >Options032E,#$04,L0D2A8                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$0803
 L0D2A8:
         STD     $100C,Z
@@ -15571,14 +15571,14 @@ L0D2A8:
         LDAA    #$07
         STAA    >ADCTL0_L,Z
         LDD     #$FA91
-        BRSET   >Options032E,#$04,L0D330
+        BRSET   >Options032E,#$04,L0D330                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$F891
 L0D330:
         STD     $1014,Z
         LDD     #$1800
         STD     $1012,Z
         LDD     #$0000
-        BRSET   >Options032E,#$04,L0D34A
+        BRSET   >Options032E,#$04,L0D34A                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$202C
 L0D34A:
         STD     $1018,Z
@@ -15587,15 +15587,15 @@ L0D34A:
         LDD     #$0005
         STD     $101C,Z
         LDD     #$003F
-        BRCLR   >Options0335,#$20,L0D36C
+        BRCLR   >Options0335,#$20,L0D36C                 ; bit 5: manifold tuning valve fitted (MtvTiming in the PIT code)
         LDD     #$002F
 L0D36C:
         STD     $1020,Z
-        BRCLR   >Options032B,#$20,L0D37C
+        BRCLR   >Options032B,#$20,L0D37C                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         LDD     #$0002
         BRA     L0D38C
 L0D37C:
-        BRCLR   >Options032B,#$80,L0D388
+        BRCLR   >Options032B,#$80,L0D388                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         LDD     #$000E
         BRA     L0D38C
 L0D388:
@@ -15607,7 +15607,7 @@ L0D38C:
         STD     $1058,Z
         STD     $105A,Z
         STD     $105C,Z
-        BRSET   >Options032B,#$80,L0D3AC
+        BRSET   >Options032B,#$80,L0D3AC                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         CLRD
 L0D3AC:
         STD     $105E,Z
@@ -15617,34 +15617,34 @@ L0D3AC:
         STD     $1028,Z
         STD     $102C,Z
         STD     $1030,Z
-        BRCLR   >Options032B,#$80,L0D3D6
+        BRCLR   >Options032B,#$80,L0D3D6                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         STD     $1034,Z
         STD     $1038,Z
 L0D3D6:
         CLRD
         STD     $1062,Z
         CLRD
-        BRCLR   >Options0333,#$40,L0D3E8
+        BRCLR   >Options0333,#$40,L0D3E8                 ; bit 6: PWM output C18 fitted (PwmC18Main, PwmC18CircuitCheck)
         LDD     #$061B
 L0D3E8:
         STD     $1064,Z
         CLRD
         STD     $1066,Z
         CLRD
-        BRCLR   >Options0333,#$02,L0D400
+        BRCLR   >Options0333,#$02,L0D400                 ; bit 1: ignition output variant (Isr_GPT_IC1, OutputTestOcFire)
         LDD     #$E01B
         BRA     L0D40A
 L0D400:
-        BRCLR   >Options0334,#$10,L0D40A
+        BRCLR   >Options0334,#$10,L0D40A                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         LDD     #$C61B
 L0D40A:
         STD     $1068,Z
         CLRD
-        BRCLR   >Options032F,#$06,L0D41A
+        BRCLR   >Options032F,#$06,L0D41A                 ; bit 2: knock sensor variant (knock sample, retard, learn and spark code); bit 1: knock sensor variant (as bit 2)
         LDD     #$C209
 L0D41A:
         STD     $106A,Z
-        BRCLR   >Options032F,#$06,L0D42C
+        BRCLR   >Options032F,#$06,L0D42C                 ; bit 2: knock sensor variant (knock sample, retard, learn and spark code); bit 1: knock sensor variant (as bit 2)
         LDD     #$00FA
         STD     $104C,Z
 L0D42C:
@@ -15719,7 +15719,7 @@ L0D4E6:
         CPX     #$8FFF
         BCS     L0D4E6
         BRCLR   >SystemFlags00A,Z,#$10,L0D54C
-        BRCLR   >Options032C,#$40,L0D53E
+        BRCLR   >Options032C,#$40,L0D53E                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         LDAA    #$E3
         STAA    >FlexSensorStart,Z
         LDD     #$000C
@@ -15748,7 +15748,7 @@ L0D53E:
         ADCA    #$00
         STAA    >FuelLevelScaled,Z
 L0D54C:
-        BRCLR   >Options032E,#$04,L0D556
+        BRCLR   >Options032E,#$04,L0D556                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     PciFlagsInit
 L0D556:
         LDAA    #$02
@@ -15854,7 +15854,7 @@ L0D6AA:
         LDAA    >RJURR1_L,Z
         STAA    >BatteryTempRaw,Z
         JSR     Sub_2C67A
-        BRCLR   >Options0330,#$10,L0D6E4
+        BRCLR   >Options0330,#$10,L0D6E4                 ; bit 4: catalyst temperature sensor fitted (CatTempMonitor; sets EquipmentFlags bit 0)
         LDAA    >PORTF0,Z
         ANDA    #$1F
         ORAA    #$60
@@ -15967,20 +15967,20 @@ L0D80E:
         LDAA    >CalTypeCode
         CMPA    #$05
         BCS     L0D82A
-        BRCLR   >Options032E,#$80,L0D82A
+        BRCLR   >Options032E,#$80,L0D82A                 ; bit 7: bus message variant (CcdTransmit, PciBuildMessage)
         ADDA    #$04
 L0D82A:
         STAA    <CalTypeCopy,Z
         LDAA    #$04
         BRSET   >EquipmentFlags,Z,#$20,L0D846            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDAA    #$02
-        BRSET   >Options032E,#$40,L0D846
+        BRSET   >Options032E,#$40,L0D846                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         LDAA    #$03
         BRSET   >EquipmentFlags,Z,#$10,L0D846            ; bit 4: A/C requested (AcRequestUpdate)
         LDAA    #$01
 L0D846:
         STAA    $59,Z
-        BRCLR   >Options033E,#$02,L0D852
+        BRCLR   >Options033E,#$02,L0D852                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BSET    <EquipmentFlags,Z,#$08                   ; bit 3: copy of calibration bit $033E.1 at reset; not read
 L0D852:
         LDD     #$0097
@@ -16056,7 +16056,7 @@ L0D914:
         JSR     Lookup2D
 L0D930:
         STAB    >AcSensor,Z
-        BRCLR   >Options0333,#$40,L0D946
+        BRCLR   >Options0333,#$40,L0D946                 ; bit 6: PWM output C18 fitted (PwmC18Main, PwmC18CircuitCheck)
         LDAA    >PwmPeriodC18
         LDAB    #$FA
         MUL
@@ -16069,11 +16069,11 @@ L0D946:
         CMPA    >BatteryTempRawLow
         BCS     L0D986
         LDX     #Thermistor3Curve
-        BRCLR   >Options0330,#$04,L0D966
+        BRCLR   >Options0330,#$04,L0D966                 ; bit 2: alternative battery temperature curve (BattTempCurveAlt)
         LDX     #Thermistor3CurveAlt
 L0D966:
         JSR     Lookup2D
-        BRCLR   >Options0330,#$01,L0D986
+        BRCLR   >Options0330,#$01,L0D986                 ; bit 0: battery temperature model on (BattTempModelOn); PciReceive also reads it
         STAA    <Scratch0,Z
         LDAA    >CoolantTemp,Z
         LDX     #BattTempHeatFactor
@@ -16090,14 +16090,14 @@ L0D986:
         BNE     L0D99C
         STAB    >BattTempModelValue,Z
 L0D99C:
-        BRSET   >Options033D,#$08,L0D9AC
+        BRSET   >Options033D,#$08,L0D9AC                 ; bit 3: idle air coast mode off (IacCoastOff)
         LDE     >ResetCheckWord,Z
         CPE     #$4AB6
         BNE     L0D9B0
 L0D9AC:
         JSR     IacResetBaro
 L0D9B0:
-        BRCLR   >Options0333,#$80,L0D9C2
+        BRCLR   >Options0333,#$80,L0D9C2                 ; bit 7: EVAP purge solenoid fitted
         LDAA    >PurgePwmPeriod
         LDAB    #$FA
         MUL
@@ -16138,7 +16138,7 @@ L0DA20:
         BEQ     L0DA2A
         BSET    >ThrottleState,Z,#$80                    ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
 L0DA2A:
-        BRSET   >Options032B,#$80,L0DA66
+        BRSET   >Options032B,#$80,L0DA66                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         LDAA    #$80
         LDAB    >RpmEventFilter
         MUL
@@ -16156,7 +16156,7 @@ L0DA2A:
         STD     $0D80,Z
 L0DA66:
         JSR     EmptyHook
-        BRCLR   >Options032C,#$40,L0DAA2
+        BRCLR   >Options032C,#$40,L0DAA2                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         LDAA    >FlexEthanol,Z
         LDX     #FlexEthanolScale
         JSR     Lookup2D
@@ -16183,7 +16183,7 @@ L0DAB0:
         STAA    >ResetCoolantFuel,Z
         JSR     CalcDeadTime
         JSR     CrankFuel
-        BRCLR   >Options032C,#$40,L0DAE0
+        BRCLR   >Options032C,#$40,L0DAE0                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRCLR   >FlexStartFlags,Z,#$28,L0DAE0
         BRSET   >FlexStartFlags,Z,#$08,L0DAE4
         BCLR    <FlexStartFlags,Z,#$10
@@ -16232,7 +16232,7 @@ L0DB28:
         JSR     EepromReadInit
         JSR     SecurityState
         JSR     SkimState
-        BRCLR   >Options032C,#$80,L0DBB4
+        BRCLR   >Options032C,#$80,L0DBB4                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         LDAA    $0978,Z
         CMPA    #$19
         BNE     L0DBA2
@@ -16276,34 +16276,34 @@ L0DBDE:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 EquipmentInit:
-        BRCLR   >Options0330,#$10,L0DBF4
+        BRCLR   >Options0330,#$10,L0DBF4                 ; bit 4: catalyst temperature sensor fitted (CatTempMonitor; sets EquipmentFlags bit 0)
         BSET    <EquipmentFlags,Z,#$01                   ; bit 0: copy of calibration bit $0330.4 at reset; not read
 L0DBF4:
-        BRCLR   >Options032F,#$08,L0DBFE
+        BRCLR   >Options032F,#$08,L0DBFE                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
         BSET    <BusTempFlags2,Z,#$20
 L0DBFE:
-        BRCLR   >Options0331,#$08,L0DC08
+        BRCLR   >Options0331,#$08,L0DC08                 ; bit 3: power steering pressure switch fitted (sets EquipmentFlags bit 2)
         BSET    <EquipmentFlags,Z,#$04                   ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
 L0DC08:
-        BRCLR   >Options0335,#$08,L0DC12
+        BRCLR   >Options0335,#$08,L0DC12                 ; bit 3: EGR fitted (EgrMain)
         BSET    <EquipmentFlags,Z,#$02                   ; bit 1: copy of calibration bit $0335.3 at reset; not read
 L0DC12:
-        BRCLR   >Options0333,#$01,L0DC1C
+        BRCLR   >Options0333,#$01,L0DC1C                 ; bit 0: output driver variant (EquipmentInit, QspiOutputStatus)
         BSET    <BusTempFlags2,Z,#$10
 L0DC1C:
-        BRCLR   >Options0333,#$10,L0DC26
+        BRCLR   >Options0333,#$10,L0DC26                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
         BSET    <BusTempFlags2,Z,#$40
 L0DC26:
-        BRCLR   >Options0335,#$04,L0DC30
+        BRCLR   >Options0335,#$04,L0DC30                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
         BSET    <BusTempFlags2,Z,#$80
 L0DC30:
-        BRCLR   >Options0333,#$80,L0DC3A
+        BRCLR   >Options0333,#$80,L0DC3A                 ; bit 7: EVAP purge solenoid fitted
         BSET    <BusTempFlags2,Z,#$08
 L0DC3A:
-        BRCLR   >Options032E,#$04,L0DC44
+        BRCLR   >Options032E,#$04,L0DC44                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BSET    <BusTempFlags2,Z,#$04
 L0DC44:
-        BRCLR   >Options032E,#$20,L0DC4E
+        BRCLR   >Options032E,#$20,L0DC4E                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BSET    <EquipmentFlags,Z,#$20                   ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
 L0DC4E:
         RTS
@@ -16467,7 +16467,7 @@ L0DDCE:
         JSR     Sub_38068
         JSR     EepromWriteService
         JSR     EepromWriteQueue
-        BRSET   >Options032E,#$04,L0DE9A
+        BRSET   >Options032E,#$04,L0DE9A                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     CcdReceive
         BRA     L0DEA2
 L0DE9A:
@@ -16545,12 +16545,12 @@ L0DF52:
         RTS
 L0DF58:
         LDAA    #$2B
-        BRSET   >Options032B,#$20,L0DF62
+        BRSET   >Options032B,#$20,L0DF62                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         LDAA    #$2A
 L0DF62:
         STAA    >TCTL1,Z
         LDD     #$7200
-        BRCLR   >Options0335,#$04,L0DF74
+        BRCLR   >Options0335,#$04,L0DF74                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
         LDD     #$7218
 L0DF74:
         STD     >CFORC,Z
@@ -16594,7 +16594,7 @@ L0DFE6:
         BNE     L0DFE6
         BCLR    <SystemFlags00A,Z,#$20
 L0E000:
-        BRCLR   >Options032C,#$40,L0E05C
+        BRCLR   >Options032C,#$40,L0E05C                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BCLR    <FlexStartFlags,Z,#$10
         BRCLR   >FlexStartFlags,Z,#$08,L0E030
         LDD     <SriMileage,Z
@@ -17006,7 +17006,7 @@ L0E4C2:
         LDE     #$002B
         STE     $06BA,Z
 L0E4D6:
-        BRCLR   >Options032A,#$E0,L0E500
+        BRCLR   >Options032A,#$E0,L0E500                 ; bit 7: engine/ignition variant used by the event, spark, knock and rpm code; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably); bit 5: hardware set-up variant at reset (Reset, HardwareCheck)
         LDAA    >PACNT,Z
         CMPA    #$FF
         BNE     L0E518
@@ -17045,7 +17045,7 @@ L0E52E:
         STE     $06BA,Z
 L0E540:
         LDAA    >TCTL2,Z
-        BRSET   >Options0337,#$80,L0E552
+        BRSET   >Options0337,#$80,L0E552                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         CMPA    #$29
         BEQ     L0E56C
         LDAA    #$29
@@ -17065,7 +17065,7 @@ L0E56C:
         ORP     #$00E0
         LDAA    >TMSK1,Z
         ANDA    #$85
-        BRSET   >Options0337,#$80,L0E58A
+        BRSET   >Options0337,#$80,L0E58A                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         CMPA    #$05
         BEQ     L0E5A0
         LDAA    >TMSK1,Z
@@ -17084,7 +17084,7 @@ L0E594:
 L0E5A0:
         LDAA    >TMSK1,Z
         TAB
-        BRSET   >Options032B,#$80,L0E5B6
+        BRSET   >Options032B,#$80,L0E5B6                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         ANDB    #$02
         CMPB    #$02
         BEQ     L0E5C8
@@ -17100,7 +17100,7 @@ L0E5BC:
         STE     $06BA,Z
 L0E5C8:
         LDAA    >TMSK2,Z
-        BRCLR   >Options032A,#$E0,L0E5E2
+        BRCLR   >Options032A,#$E0,L0E5E2                 ; bit 7: engine/ignition variant used by the event, spark, knock and rpm code; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably); bit 5: hardware set-up variant at reset (Reset, HardwareCheck)
         ANDA    #$3F
         CMPA    #$12
         BEQ     L0E600
@@ -17122,7 +17122,7 @@ L0E5F0:
         ANDP    #$FF1F
 L0E600:
         LDAA    >PWMC,Z
-        BRSET   >Options0335,#$04,L0E610
+        BRSET   >Options0335,#$04,L0E610                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
         BEQ     L0E628
         CLRA
         BRA     L0E61C
@@ -17235,7 +17235,7 @@ L0E738:
 L0E74E:
         ANDP    #$FF1F
         LDD     #$FA91
-        BRSET   >Options032E,#$04,L0E760
+        BRSET   >Options032E,#$04,L0E760                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$F891
 L0E760:
         CPD     $1014,Z
@@ -17246,7 +17246,7 @@ L0E760:
 L0E772:
         ORP     #$00E0
         LDD     $1018,Z
-        BRSET   >Options032E,#$04,L0E798
+        BRSET   >Options032E,#$04,L0E798                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         ANDD    #$38FD
         CPD     #$202C
         BEQ     L0E7AC
@@ -17275,7 +17275,7 @@ L0E7C4:
         STE     $06BA,Z
 L0E7D8:
         LDD     #$003F
-        BRCLR   >Options0335,#$20,L0E7E6
+        BRCLR   >Options0335,#$20,L0E7E6                 ; bit 5: manifold tuning valve fitted (MtvTiming in the PIT code)
         LDD     #$002F
 L0E7E6:
         LDE     $1020,Z
@@ -17291,7 +17291,7 @@ L0E7FE:
         CPD     #$0003
         BEQ     L0E82E
         LDD     #$0803
-        BRCLR   >Options032E,#$04,L0E822
+        BRCLR   >Options032E,#$04,L0E822                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     $100C,Z
         ANDD    #$0800
         ORD     #$0003
@@ -17329,7 +17329,7 @@ L0E876:
         LDE     #$004C
         STE     $06BA,Z
 L0E888:
-        BRSET   >Options032B,#$80,L0E890
+        BRSET   >Options032B,#$80,L0E890                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         CLRD
 L0E890:
         CPD     $105E,Z
@@ -17350,21 +17350,21 @@ L0E8B4:
         LDE     #$004F
         STE     $06BA,Z
 L0E8CC:
-        BRSET   >Options0333,#$40,L0E8E6
+        BRSET   >Options0333,#$40,L0E8E6                 ; bit 6: PWM output C18 fitted (PwmC18Main, PwmC18CircuitCheck)
         BRCLR   $1064,Z,#$C0,L0E8E6
         BCLRW   $1064,Z,#$DFFF
         LDE     #$0050
         STE     $06BA,Z
 L0E8E6:
-        BRSET   >Options0335,#$80,L0E900
+        BRSET   >Options0335,#$80,L0E900                 ; bit 7: second tuning valve fitted (TuneValve2Control in the PIT code)
         BRCLR   $1066,Z,#$C0,L0E900
         BCLRW   $1066,Z,#$DFFF
         LDE     #$0051
         STE     $06BA,Z
 L0E900:
-        BRSET   >Options0334,#$10,L0E92C
+        BRSET   >Options0334,#$10,L0E92C                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         CLRD
-        BRCLR   >Options0333,#$02,L0E91A
+        BRCLR   >Options0333,#$02,L0E91A                 ; bit 1: ignition output variant (Isr_GPT_IC1, OutputTestOcFire)
         LDD     #$E01B
         CPD     $1068,Z
         BEQ     L0E92C
@@ -17378,7 +17378,7 @@ L0E920:
         STE     $06BA,Z
 L0E92C:
         CLRD
-        BRCLR   >Options032F,#$06,L0E938
+        BRCLR   >Options032F,#$06,L0E938                 ; bit 2: knock sensor variant (knock sample, retard, learn and spark code); bit 1: knock sensor variant (as bit 2)
         LDD     #$C209
 L0E938:
         CPD     $106A,Z
@@ -17406,17 +17406,17 @@ L0E974:
         LDE     #$0055
         STE     $06BA,Z
 L0E988:
-        BRSET   >Options032B,#$40,L0E9E8
+        BRSET   >Options032B,#$40,L0E9E8                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         LDD     $101E,Z
         ANDD    #$000F
-        BRCLR   >Options032B,#$20,L0E9AC
+        BRCLR   >Options032B,#$20,L0E9AC                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         CPD     #$0002
         BEQ     L0E9E8
         LDE     #$FFF2
         LDD     #$0002
         BRA     L0E9D0
 L0E9AC:
-        BRCLR   >Options032B,#$80,L0E9C2
+        BRCLR   >Options032B,#$80,L0E9C2                 ; bit 7: event layout variant: segment times, fuel accounting, spark events
         CPD     #$000E
         BEQ     L0E9E8
         LDE     #$FFFE
@@ -17694,7 +17694,7 @@ L0EC8C:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 PciService:
-        BRSET   >Options032E,#$04,L0ED00
+        BRSET   >Options032E,#$04,L0ED00                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         ORP     #$00E0
         LDAA    >SkimFlags2,Z
         LBEQ    L0EDD0
@@ -17803,7 +17803,7 @@ L0EDD0:
         BRSET   >PciRxFlags,Z,#$10,L0EE02
         BRCLR   >EngineStateFlags,Z,#$80,L0EE02          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >BusConfigFlags,Z,#$40,L0EDF8
-        BRSET   >Options032E,#$04,L0EDF8
+        BRSET   >Options032E,#$04,L0EDF8                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >SkimFlags,Z,#$10,L0EDF8
         BRSET   >BusMsgFlags,Z,#$04,L0EDF8
         JSR     BusRxAck
@@ -17820,7 +17820,7 @@ L0EE02:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 PciLinkCheck:
-        BRCLR   >Options032E,#$08,L0EE60
+        BRCLR   >Options032E,#$08,L0EE60                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
         BRSET   >PciFlags2,Z,#$04,L0EE60
         BRCLR   >PciFlags4,Z,#$10,L0EE20
         BCLR    >PciFlags4,Z,#$10
@@ -17906,14 +17906,14 @@ BusTimeoutCheck:
         LBRA    L0EFCC
 L0EEBC:
         BRCLR   >EngineStateFlags,Z,#$80,L0EFCC          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >DriveFlags,Z,#$20,L0EFCC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRCLR   >DriveFlags,Z,#$20,L0EFCC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BRSET   >PciFlags2,Z,#$04,L0EFDC
-        BRCLR   >Options032E,#$08,L0EF16
+        BRCLR   >Options032E,#$08,L0EF16                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
         LDAB    >PciTimeout,Z
         INCB
         BEQ     L0EEF8
         STAB    >PciTimeout,Z
-        BRCLR   >Options032E,#$04,L0EEF4
+        BRCLR   >Options032E,#$04,L0EEF4                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0EEF4
         CMPB    #$64
         BCS     L0EF16
@@ -17936,7 +17936,7 @@ L0EF16:
         INCB
         BEQ     L0EF40
         STAB    >SkimTimeout,Z
-        BRCLR   >Options032E,#$04,L0EF3C
+        BRCLR   >Options032E,#$04,L0EF3C                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0EF3C
         CMPB    #$64
         BCS     L0EF54
@@ -17952,12 +17952,12 @@ L0EF40:
         NOP
         NOP
 L0EF54:
-        BRCLR   >Options032E,#$10,L0EFA0
+        BRCLR   >Options032E,#$10,L0EFA0                 ; bit 4: bus timeout variant (BusTimeoutCheck)
         LDAB    >BusTimeout1,Z
         INCB
         BEQ     L0EF7E
         STAB    >BusTimeout1,Z
-        BRCLR   >Options032E,#$04,L0EF7A
+        BRCLR   >Options032E,#$04,L0EF7A                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0EF7A
         CMPB    #$64
         BCS     L0EFA0
@@ -17972,7 +17972,7 @@ L0EF7E:
         BCC     L0EFA0
         CLR     >EngineOffTimeBus,Z
         BCLR    >AcFlags,Z,#$08                          ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
-        BRCLR   >Options0331,#$10,L0EFA0
+        BRCLR   >Options0331,#$10,L0EFA0                 ; bit 4: fuel level from the bus instead of the sender, probably
         BSET    >PciRxFlags,Z,#$20
 L0EFA0:
         BRCLR   >EquipmentFlags,Z,#$20,L0EFDC            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
@@ -17980,7 +17980,7 @@ L0EFA0:
         INCB
         BEQ     L0EFC6
         STAB    >BodyMsgTimeout,Z
-        BRCLR   >Options032E,#$04,L0EFC6
+        BRCLR   >Options032E,#$04,L0EFC6                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0EFC6
         CMPB    #$64
         BCS     L0EFDC
@@ -18075,7 +18075,7 @@ L0F086:
         JSR     EepromSkimRead
         BRA     L0F0A4
 L0F094:
-        BRSET   >Options032E,#$04,L0F0A0
+        BRSET   >Options032E,#$04,L0F0A0                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     SkimTimerService
         BRA     L0F0A4
 L0F0A0:
@@ -18090,7 +18090,7 @@ L0F0A4:
 ;---------------------------------------------------------------------------------------------------
 SkimState:
         ORP     #$00E0
-        BRSET   >Options0328,#$01,L0F0C0
+        BRSET   >Options0328,#$01,L0F0C0                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
         BRSET   >SkimFlags,Z,#$02,L0F0C0
         BRSET   >BusConfigFlags,Z,#$C0,L0F1FC
 L0F0C0:
@@ -18108,7 +18108,7 @@ L0F0DA:
 L0F0E0:
         STAB    >SecurityTimer,Z
         LDAA    >BusConfigFlags,Z
-        BRSET   >Options0328,#$01,L0F11A
+        BRSET   >Options0328,#$01,L0F11A                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
         BRSET   >SkimFlags,Z,#$01,L0F106
         BRSET   >SecurityFlags,Z,#$80,L0F102
         CMPB    #$C9
@@ -18147,7 +18147,7 @@ L0F154:
         BRSET   >SkimFlags,Z,#$10,L0F16E
         BITA    #$40
         BEQ     L0F18E
-        BRSET   >Options032E,#$04,L0F18E
+        BRSET   >Options032E,#$04,L0F18E                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRCLR   >SecurityFlags,Z,#$08,L0F18E
 L0F16E:
         BRSET   >FaultSet07,Z,#$02,L0F198
@@ -18165,8 +18165,8 @@ L0F18E:
         LDAA    >BusConfigFlags,Z
 L0F198:
         BRSET   >SkimFlags,Z,#$10,L0F1FC
-        BRSET   >Options0328,#$01,L0F1BA
-        BRSET   >Options032E,#$04,L0F1B6
+        BRSET   >Options0328,#$01,L0F1BA                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
+        BRSET   >Options032E,#$04,L0F1B6                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >SecurityFlags,Z,#$08,L0F1FC
         BRSET   >SecurityFlags,Z,#$04,L0F1BA
 L0F1B6:
@@ -18216,7 +18216,7 @@ SecurityState:
         BCLR    <BusTempFlags2,Z,#$01
         BRA     L0F2A6
 L0F22E:
-        BRSET   >Options0328,#$01,L0F28C
+        BRSET   >Options0328,#$01,L0F28C                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
         BRSET   >SkimFlags,Z,#$08,L0F254
         BITA    #$80
         BNE     L0F24E
@@ -18227,7 +18227,7 @@ L0F22E:
 L0F24E:
         BRCLR   >SkimFlags,Z,#$04,L0F2A0
 L0F254:
-        BRCLR   >Options0328,#$02,L0F282
+        BRCLR   >Options0328,#$02,L0F282                 ; bit 1: security variant: selects a branch in SecurityState
         BRCLR   >EngineStateFlags,Z,#$80,L0F2AA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >BusConfigFlags,Z,#$1F,L0F27A
         BSET    >SkimFlags,Z,#$02
