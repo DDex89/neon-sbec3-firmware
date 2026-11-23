@@ -4054,6 +4054,12 @@
    "category": "Fuel",
    "size": 2
   },
+  "04A2": {
+   "name": "CylSparkOverrideBase",
+   "category": "Not used",
+   "size": 1,
+   "desc": "Not used: common part of the per-cylinder spark values (UnusedCylSparkSet, with Options033D bit 0 set and FuelPulseOptFlags bit 1 clear); that code is always skipped"
+  },
   "04A9": {
    "name": "IacTargetCmdFixed",
    "desc": "IAC target command loaded every pass with Options033D bit 3 (IdleControl)",
@@ -12848,13 +12854,13 @@
    "category": "Fuel"
   },
   "048A": {
-   "name": "StartPulseWords",
+   "name": "StartPulseOffset",
    "kind": "grid",
-   "rows": 1,
-   "cols": 31,
-   "row_size": 31,
-   "desc": "Words indexed by the injector number in StartInjectorPulse (all zero in 05293190AC)",
-   "category": "Fuel"
+   "rows": 6,
+   "cols": 2,
+   "row_size": 2,
+   "category": "Fuel",
+   "desc": "Start injector pulse, per injector (StartInjectorPulse, index StartInjector808): signed word added to the pulse after StartPulseFactor; a negative word is subtracted, the result held within $0000-$FFFF. All 0 in 05293190AC"
   },
   "20CBE": {
    "name": "ObdMonitorOptionBits",
@@ -12926,6 +12932,24 @@
    "rows": 1,
    "row_size": 32,
    "desc": "The 16 one-bit masks $0001-$8000 as words, used by the code that follows ($0C9F8)"
+  },
+  "0496": {
+   "name": "StartPulseFactor",
+   "kind": "grid",
+   "rows": 6,
+   "cols": 2,
+   "row_size": 2,
+   "category": "Fuel",
+   "desc": "Start injector pulse, per injector: factor word applied by MulFractionSigned before StartPulseOffset. $8000 = x1.0, $8001-$FFFF = x1.0 to x2.0, $0001-$7FFF = x(word/65536), $0000 = pulse 0. All $8000 in 05293190AC"
+  },
+  "04A3": {
+   "name": "CylSparkOverrideValues",
+   "kind": "grid",
+   "rows": 1,
+   "cols": 6,
+   "row_size": 6,
+   "category": "Not used",
+   "desc": "Not used: per-cylinder spark values (signed, one byte per cylinder) that UnusedCylSparkSet would add to CylSparkOverrideBase into CylSparkOverride; that code is always skipped. All 0 in 05293190AC"
   }
  }
 }

@@ -46,7 +46,12 @@ texts themselves.
 - The O2 heater constants belong to `O2HeaterMonitor`, which runs at key-off from `CheckPowerDown`.
 - `KnockRpmSteps` are rpm break points compared with `EngineRpm`; PCI is SAE J1850 VPW.
 - Four more unreached routines ($0C482, $0C9F8, $0CA5C and a skipped block at $1E418 inside the spark
-  start ramp) and the bit-mask word tables at $0C9D8 and $367F4.
+  start ramp) and the bit-mask word tables at $0C9D8 and $367F4. The skipped block and
+  `UnusedCylSparkOverride` ($1E65C) are a disabled per-cylinder spark override driven by the bus (see
+  architecture.md, unreached code).
+- The 31 bytes at $048A are three things: `StartPulseOffset` (6 signed words) and `StartPulseFactor`
+  (6 factor words) of the live per-injector start pulse in `StartInjectorPulse`, then the unused
+  `CylSparkOverrideBase` and `CylSparkOverrideValues`.
 - Bit texts for the GPT, SCI, QSPI, SIM and ADC register bits the code uses, and bit 7 (and, where
   the fault map uses it, bit 4) of all 16 monitor status bytes.
 

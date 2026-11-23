@@ -198,9 +198,15 @@ $F3-$F5). `SciRequestReceive` takes the ordinary requests (`DiagCommand`,
 Thirteen routines (about 2.2 KB) are never called, jumped to or pointed at: an older copy of the
 flex fuel learning with its helpers ($17512-$17F2x and $18264), a rpm-window flag and fuel hold
 table ($12BFA), a crank period delta, a period tracker and five small arithmetic helpers in bank 0
-(two of them, $0C9F8 and $0CA5C, use the bit-mask words at $0C9D8), and a spark limit by a bus value
-($1E65C). A fourteenth piece, $1E418, sits inside the spark start ramp behind a `BRA` that always
-skips it: a per-cylinder spark trim from the calibration bytes $04A2/$04A3 into RAM $0D7A. They
+(two of them, $0C9F8 and $0CA5C, use the bit-mask words at $0C9D8), and `UnusedCylSparkOverride`
+($1E65C). A fourteenth piece, `UnusedCylSparkSet` ($1E418), sits inside the spark start ramp behind
+a `BRA` that always skips it. Together they are the remains of a per-cylinder spark override: the
+skipped block fills `CylSparkOverride` (RAM $0D7A, one byte per cylinder) from
+`CylSparkOverrideBase` ($04A2) plus `CylSparkOverrideValues` ($04A3, 6 bytes), and the uncalled
+routine would return that value instead of the spark advance for cylinders selected by a byte from
+the bus. It replaces the angle rather than adding to the spark map, so it looks like a test
+function. The same code, equally skipped, is in families D and E; families A, B, C and G do not
+have it. The calibration bytes are 0 and appear in the XDF under "Not used". They
 decode cleanly and end in RTS (the skipped block falls through to the code after it), so they are listed in
 `annotations/analysis.json` (`unreached_code`) and disassembled; their names start with `Unused`.
 The string `COPYRIGHT 1996 CHRYSLER CORPORATION` sits at $07000.

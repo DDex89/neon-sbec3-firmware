@@ -2049,7 +2049,7 @@ L1152C:
         STAB    >StartInjector808,Z
         LDAB    #$00
         TBXK
-        LDX     #$0496
+        LDX     #StartPulseFactor
         LDAB    >StartInjector808,Z
         ASLB
         ABX
@@ -2060,7 +2060,7 @@ L1152C:
 L1154C:
         LDAB    #$00
         TBXK
-        LDX     #StartPulseWords
+        LDX     #StartPulseOffset
         LDAB    >StartInjector808,Z
         ASLB
         ABX
@@ -17176,17 +17176,22 @@ L1E416:
         BRA     L1E452
 
 ;---------------------------------------------------------------------------------------------------
-; UnusedCylSparkTrim ($1E418)
+; UnusedCylSparkSet ($1E418)
+;
+; Never runs: the BRA just before it ($1E416) always jumps over it, here and in families D and E.
+; Writes CylSparkOverride[CylinderIndex] (RAM $0D7A, one byte per cylinder) = CylSparkOverrideBase
+; ($04A2, only with Options033D bit 0 set and FuelPulseOptFlags bit 1 clear; otherwise A as left by
+; the code before) + CylSparkOverrideValues[CylinderIndex] ($04A3), signed, held at -128/+127.
 ;---------------------------------------------------------------------------------------------------
-UnusedCylSparkTrim:
+UnusedCylSparkSet:
         BRSET   >FuelPulseOptFlags,Z,#$02,L1E428
         BRCLR   >Options033D,#$01,L1E428
-        LDAA    $04A2
+        LDAA    >CylSparkOverrideBase
 L1E428:
         PSHM    D,X,Y,K
         LDAB    #$00
         TBXK
-        LDX     #$04A3
+        LDX     #CylSparkOverrideValues
         TZY
         LDY     #$8D7A
         LDAB    >CylinderIndex,Z
@@ -17424,9 +17429,16 @@ GetSparkAdvance:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; UnusedSparkBusLimit ($1E65C)
+; UnusedCylSparkOverride ($1E65C)
+;
+; Never called. Takes the cylinder number in A; if it is below the high nibble of BusInfoByte3, it
+; returns CylSparkOverride[cylinder] instead of SparkAdvanceD11, but only if the value lies between
+; $D6 and $62 (signed) and RefPeriodLow passes a limit ($4400 or $0C00 depending on the value);
+; otherwise SparkAdvanceD11. So the value replaces the spark advance of one cylinder on a request
+; from the bus, which looks like a test function; the live GetSparkAdvance only returns
+; SparkAdvanceD11.
 ;---------------------------------------------------------------------------------------------------
-UnusedSparkBusLimit:
+UnusedCylSparkOverride:
         PSHM    X,K
         PSHM    D
         LDAB    >BusInfoByte3

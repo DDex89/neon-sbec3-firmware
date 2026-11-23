@@ -2043,7 +2043,7 @@ L1151E:
         STAB    >StartInjector808,Z
         LDAB    #$00
         TBXK
-        LDX     #$040A
+        LDX     #StartPulseFactor
         LDAB    >StartInjector808,Z
         ASLB
         ABX
@@ -2054,7 +2054,7 @@ L1151E:
 L1153E:
         LDAB    #$00
         TBXK
-        LDX     #StartPulseWords
+        LDX     #StartPulseOffset
         LDAB    >StartInjector808,Z
         ASLB
         ABX

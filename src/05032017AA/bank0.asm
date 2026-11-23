@@ -542,12 +542,31 @@ FuelPulseFixed:
         dc.b    $00,$00                                  ; Fixed injector pulse (word) used with Options033D bit 1 (StartInjectorPulse)
 
 ;---------------------------------------------------------------------------------------------------
-; StartPulseWords ($03FE): 1 rows of 31 bytes
-; Words indexed by the injector number in StartInjectorPulse (all zero in 05293190AC)
+; StartPulseOffset ($03FE): 6 rows of 2 bytes
+; Start injector pulse, per injector (StartInjectorPulse, index StartInjector808): signed word added to the pulse after StartPulseFactor; a negative word is subtracted, the result held within $0000-$FFFF. All 0 in 05293190AC
 ;---------------------------------------------------------------------------------------------------
-StartPulseWords:
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$80,$00,$80,$00,$80,$00,$80,$00,$80,$00,$80,$00,$00,$00,$00,$00,$00,$00,$00
+StartPulseOffset:
+        dc.b    $00,$00
+        dc.b    $00,$00
+        dc.b    $00,$00
+        dc.b    $00,$00
+        dc.b    $00,$00
+        dc.b    $00,$00
 
+
+;---------------------------------------------------------------------------------------------------
+; StartPulseFactor ($040A): 6 rows of 2 bytes
+; Start injector pulse, per injector: factor word applied by MulFractionSigned before StartPulseOffset. $8000 = x1.0, $8001-$FFFF = x1.0 to x2.0, $0001-$7FFF = x(word/65536), $0000 = pulse 0. All $8000 in 05293190AC
+;---------------------------------------------------------------------------------------------------
+StartPulseFactor:
+        dc.b    $80,$00
+        dc.b    $80,$00
+        dc.b    $80,$00
+        dc.b    $80,$00
+        dc.b    $80,$00
+        dc.b    $80,$00
+
+        dc.b    $00,$00,$00,$00,$00,$00,$00
 IacTargetCmdFixed:
         dc.b    $00                                      ; IAC target command loaded every pass with Options033D bit 3 (IdleControl)
 FanPwmFixedDuty:

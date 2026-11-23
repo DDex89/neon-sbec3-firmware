@@ -1867,5 +1867,7 @@
  "107A": "IoEvent7A",
  "107E": "IoPwmC18Read",
  "1082": "IoFanPwmRead",
- "1084": "IoKnockRead"
+ "1084": "IoKnockRead",
+ "081C": "StartPulseInjector",
+ "0D7A": "CylSparkOverride"
 }

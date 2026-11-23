@@ -2108,7 +2108,7 @@ L115C2:
         STAB    >StartInjector808,Z
         LDAB    #$00
         TBXK
-        LDX     #$040A
+        LDX     #StartPulseFactor
         LDAB    >StartInjector808,Z
         ASLB
         ABX
@@ -2119,7 +2119,7 @@ L115C2:
 L115E2:
         LDAB    #$00
         TBXK
-        LDX     #StartPulseWords
+        LDX     #StartPulseOffset
         LDAB    >StartInjector808,Z
         ASLB
         ABX

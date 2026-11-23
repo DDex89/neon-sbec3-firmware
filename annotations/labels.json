@@ -235,7 +235,7 @@
  "1E582": "DwellLookup",
  "1E5A8": "AfterStartSparkCapCalc",
  "1E656": "GetSparkAdvance",
- "1E65C": "UnusedSparkBusLimit",
+ "1E65C": "UnusedCylSparkOverride",
  "1E6A8": "IdleSparkControl",
  "1E76A": "IdleSparkCalc",
  "1F000": "KnockControl",
@@ -674,5 +674,5 @@
  "0C9F8": "UnusedShiftDivide",
  "0C482": "UnusedCalcC482",
  "0CA5C": "UnusedShiftMulDiv",
- "1E418": "UnusedCylSparkTrim"
+ "1E418": "UnusedCylSparkSet"
 }

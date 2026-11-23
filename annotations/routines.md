@@ -89,3 +89,17 @@ Removes the index in A from the list $0142-FaultListLast and shifts FaultListInf
 Looks for the misfire fault row ($45AC) among the three newest list entries and returns its
 FaultListInfo byte in Scratch9. The third compare reads FaultList6 again instead of FaultList5, so the
 third entry is never found; this looks like a slip in the original code.
+
+## 1E418 UnusedCylSparkSet
+Never runs: the BRA just before it ($1E416) always jumps over it, here and in families D and E.
+Writes CylSparkOverride[CylinderIndex] (RAM $0D7A, one byte per cylinder) = CylSparkOverrideBase
+($04A2, only with Options033D bit 0 set and FuelPulseOptFlags bit 1 clear; otherwise A as left by
+the code before) + CylSparkOverrideValues[CylinderIndex] ($04A3), signed, held at -128/+127.
+
+## 1E65C UnusedCylSparkOverride
+Never called. Takes the cylinder number in A; if it is below the high nibble of BusInfoByte3, it
+returns CylSparkOverride[cylinder] instead of SparkAdvanceD11, but only if the value lies between
+$D6 and $62 (signed) and RefPeriodLow passes a limit ($4400 or $0C00 depending on the value);
+otherwise SparkAdvanceD11. So the value replaces the spark advance of one cylinder on a request
+from the bus, which looks like a test function; the live GetSparkAdvance only returns
+SparkAdvanceD11.

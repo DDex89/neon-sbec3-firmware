@@ -12346,13 +12346,22 @@
    "category": "Fuel"
   },
   "03FE": {
-   "name": "StartPulseWords",
+   "name": "StartPulseOffset",
    "kind": "grid",
-   "rows": 1,
-   "cols": 31,
-   "row_size": 31,
-   "desc": "Words indexed by the injector number in StartInjectorPulse (all zero in 05293190AC)",
-   "category": "Fuel"
+   "rows": 6,
+   "cols": 2,
+   "row_size": 2,
+   "category": "Fuel",
+   "desc": "Start injector pulse, per injector (StartInjectorPulse, index StartInjector808): signed word added to the pulse after StartPulseFactor; a negative word is subtracted, the result held within $0000-$FFFF. All 0 in 05293190AC"
+  },
+  "040A": {
+   "name": "StartPulseFactor",
+   "kind": "grid",
+   "rows": 6,
+   "cols": 2,
+   "row_size": 2,
+   "category": "Fuel",
+   "desc": "Start injector pulse, per injector: factor word applied by MulFractionSigned before StartPulseOffset. $8000 = x1.0, $8001-$FFFF = x1.0 to x2.0, $0001-$7FFF = x(word/65536), $0000 = pulse 0. All $8000 in 05293190AC"
   }
  }
 }
