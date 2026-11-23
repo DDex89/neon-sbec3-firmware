@@ -3373,7 +3373,7 @@
   },
   "0320": {
    "name": "BusMsgAcData",
-   "desc": "Data word sent in the bus message $AC (Sub_3060E; bit 3 set with Options032E bit 7)",
+   "desc": "Data word sent in the bus message $AC (CcdTransmit; bit 3 set with Options032E bit 7)",
    "category": "Other",
    "size": 2
   },
@@ -4736,7 +4736,7 @@
   },
   "05EE": {
    "name": "BusReqHoldTime",
-   "desc": "Bus request from the body (Sub_3017C, Sub_3123A): hold time ($086D,Z) of the request flag $086C,Z bit 4",
+   "desc": "Bus request from the body (CcdReceive, PciReceive): hold time ($086D,Z) of the request flag $086C,Z bit 4",
    "category": "Other",
    "size": 1
   },
@@ -12514,7 +12514,7 @@
   },
   "753A": {
    "name": "SciErrorCount",
-   "desc": "Serial receive (Sub_08684): error count ($09B3,Z) at or above which reception restarts",
+   "desc": "Serial receive (SciLogReceive): error count ($09B3,Z) at or above which reception restarts",
    "category": "Other",
    "size": 1
   },

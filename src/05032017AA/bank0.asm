@@ -285,7 +285,7 @@ CalTypeCode:
         dc.b    $08                                      ; Header byte (7): copied to $0059,Z at reset, plus 4 when it is 5 or more and Options032E bit 7 is set (no reader of $0059 found)
         dc.b    $03,$04,$01,$0B,$0D,$06,$01,$12,$18
 BusMsgAcData:
-        dc.b    $0D,$B0                                  ; Data word sent in the bus message $AC (Sub_3060E; bit 3 set with Options032E bit 7)
+        dc.b    $0D,$B0                                  ; Data word sent in the bus message $AC (CcdTransmit; bit 3 set with Options032E bit 7)
 BusMsgEcData:
         dc.b    $64                                      ; Data byte sent in the bus message $EC (Sub_30972; low two bits replaced)
 BusInfoByte1:
@@ -903,7 +903,7 @@ IacStartTimeMin:
 IacEventTimerInit:
         dc.b    $01                                      ; Value of the IAC event timer $0C24,Z when the gear-change IAC starts
 BusReqHoldTime:
-        dc.b    $FF                                      ; Bus request from the body (Sub_3017C, Sub_3123A): hold time ($086D,Z) of the request flag $086C,Z bit 4
+        dc.b    $FF                                      ; Bus request from the body (CcdReceive, PciReceive): hold time ($086D,Z) of the request flag $086C,Z bit 4
 BusReqThrottleMax:
         dc.b    $4C                                      ; Bus request: throttle opening below this value for the request flag to be set
 AcCutCoolantOn:
@@ -10195,7 +10195,7 @@ FieldFaultDutyCrank:
         dc.b    $3F                                      ; Generator field: value of $0DC1,Z with a field circuit fault while not running
         dc.b    $00,$00,$00
 SciErrorCount:
-        dc.b    $0A                                      ; Serial receive (Sub_08684): error count ($09B3,Z) at or above which reception restarts
+        dc.b    $0A                                      ; Serial receive (SciLogReceive): error count ($09B3,Z) at or above which reception restarts
 SciRxIndexMax:
         dc.b    $0F                                      ; Serial receive: largest receive index ($09B1,Z)
 CamFaultClearSwitch:
@@ -10512,7 +10512,7 @@ Isr_GPT_IC3:
         LDE     #$0010
         JSR     Sub_0C4A4
         BRSET   >PORTGP,Z,#$04,L08332
-        INC     $09CE,Z
+        INC     >DistancePulses,Z
         INCW    $0053,Z
         BRSET   >Options032D,#$20,L080F4
         TSTW    $0053,Z
@@ -10728,7 +10728,7 @@ Isr_PIT:
         ORP     #$0060
         PSHM    D,E,X,Y,K
         JSR     EmptyHook
-        JSR     Sub_0867C
+        JSR     SciLogReceive
         TST     $0550,Z
         LBNE    L0844E
         INC     >PitTickCounter,Z
@@ -10803,10 +10803,10 @@ L08428:
         LDAA    #$18
         STAA    $097D,Z
         BRSET   >Options032E,#$04,L08444
-        JSR     Sub_30626
+        JSR     CcdTransmit
         BRA     L0844E
 L08444:
-        BRSET   $0A02,Z,#$04,L0844E
+        BRSET   >PciFlags2,Z,#$04,L0844E
         JSR     Sub_3181A
 L0844E:
         PULM    K,Y,X,E,D
@@ -11022,10 +11022,10 @@ L0867A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0867C ($0867C)
+; SciLogReceive ($0867C)
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
-Sub_0867C:
+SciLogReceive:
         BRCLR   >DiagFlags,Z,#$80,L087DE
         LDD     >SCSR,Z
         BITB    #$0E
@@ -11045,7 +11045,7 @@ L08696:
 L086AE:
         CLR     >SciErrors,Z
         BCLR    >DiagFlags,Z,#$B0
-        BCLR    $0C34,Z,#$0F
+        BCLR    >SciLogFlags,Z,#$0F
         LBRA    L087DE
 L086BE:
         BITB    #$40
@@ -11053,43 +11053,43 @@ L086BE:
         CLR     >SciErrors,Z
         LDD     >SCDR,Z
         TBA
-        BRCLR   $0C34,Z,#$0E,L086D6
+        BRCLR   >SciLogFlags,Z,#$0E,L086D6
         BRA     L086EC
 L086D6:
-        BRSET   $0C34,Z,#$01,L0876C
-        CMPA    $09B2,Z
+        BRSET   >SciLogFlags,Z,#$01,L0876C
+        CMPA    >SciLogLast,Z
         LBEQ    L0877C
-        STAA    $09B2,Z
-        INC     $09B2,Z
+        STAA    >SciLogLast,Z
+        INC     >SciLogLast,Z
 L086EC:
         CMPA    #$F2
         BNE     L086FC
         CLR     >SciRxIndex,Z
-        BCLR    $0C34,Z,#$0F
+        BCLR    >SciLogFlags,Z,#$0F
         LBRA    L087DA
 L086FC:
         CMPA    #$F6
         BNE     L0870C
-        BCLR    $0C34,Z,#$0E
-        BSET    $0C34,Z,#$01
+        BCLR    >SciLogFlags,Z,#$0E
+        BSET    >SciLogFlags,Z,#$01
         LBRA    L087DA
 L0870C:
         CMPA    #$F4
         BNE     L0871C
-        BCLR    $0C34,Z,#$0D
-        BSET    $0C34,Z,#$02
+        BCLR    >SciLogFlags,Z,#$0D
+        BSET    >SciLogFlags,Z,#$02
         LBRA    L087DA
 L0871C:
         CMPA    #$F5
         BNE     L0872C
-        BCLR    $0C34,Z,#$0B
-        BSET    $0C34,Z,#$04
+        BCLR    >SciLogFlags,Z,#$0B
+        BSET    >SciLogFlags,Z,#$04
         LBRA    L087DA
 L0872C:
         CMPA    #$F3
         BNE     L0873C
-        BCLR    $0C34,Z,#$07
-        BSET    $0C34,Z,#$08
+        BCLR    >SciLogFlags,Z,#$07
+        BSET    >SciLogFlags,Z,#$08
         LBRA    L087DA
 L0873C:
         CMPA    #$FE
@@ -11097,10 +11097,10 @@ L0873C:
 L08740:
         CLR     >SciErrors,Z
         BCLR    >DiagFlags,Z,#$B0
-        BCLR    $0C34,Z,#$0F
+        BCLR    >SciLogFlags,Z,#$0F
         LBRA    L087DA
 L08750:
-        BRCLR   $0C34,Z,#$0E,L08758
+        BRCLR   >SciLogFlags,Z,#$0E,L08758
         BRA     L087A0
 L08758:
         LDAA    >SciRxIndex,Z
@@ -11108,22 +11108,22 @@ L08758:
         BHI     L08794
         TDE
         LDD     E,Z
-        STAB    $09B4,Z
+        STAB    >SciLogByte,Z
         BRA     L087DA
 L0876C:
         CMPA    >SciRxIndexMax
         BHI     L08740
         STAA    >SciRxIndex,Z
-        BCLR    $0C34,Z,#$01
+        BCLR    >SciLogFlags,Z,#$01
         BRA     L087DA
 L0877C:
         LDAA    >SciRxIndex,Z
         INCB
-        STAB    $09B2,Z
+        STAB    >SciLogLast,Z
         TDE
         LDAB    E,Z
-        LDAA    $09B4,Z
-        STAB    $09B4,Z
+        LDAA    >SciLogByte,Z
+        STAB    >SciLogByte,Z
         BRA     L087DA
 L08794:
         LDAA    #$F0
@@ -11140,8 +11140,8 @@ L087A0:
         TDE
         LDAB    #$03
         TBXK
-        BRSET   $0C34,Z,#$02,L087C8
-        BRSET   $0C34,Z,#$04,L087C2
+        BRSET   >SciLogFlags,Z,#$02,L087C8
+        BRSET   >SciLogFlags,Z,#$04,L087C2
         LDX     #$77FE
         BRA     L087CC
 L087C2:
@@ -11519,7 +11519,7 @@ L08B44:
 L08B60:
         BSET    $0855,Z,#$10
         BCLR    >EventSparkFlags2,Z,#$01
-        BSET    $0A26,Z,#$20
+        BSET    >SkimFlags2,Z,#$20
         INC     $0F54,Z
         LBRA    L08C9C
 L08B74:
@@ -11553,7 +11553,7 @@ L08BBA:
         LBRA    L08C9C
 L08BC8:
         BCLR    >EventSparkFlags,Z,#$01
-        BSET    $0A27,Z,#$02
+        BSET    >PciRxFlags,Z,#$02
         BRCLR   >EventSparkFlags2,Z,#$01,L08C8A
         BCLR    >EventSparkFlags,Z,#$0C
         LDAA    >EventSparkPeriodB,Z
@@ -11637,9 +11637,9 @@ L08CAE:
         BRA     L08CC0
 L08CB4:
         JSR     Sub_31E28
-        BSET    $0A27,Z,#$0C
+        BSET    >PciRxFlags,Z,#$0C
 L08CBC:
-        BSET    $0A26,Z,#$10
+        BSET    >SkimFlags2,Z,#$10
 L08CC0:
         CLR     >CamSignalCount,Z
         BCLR    $0855,Z,#$10
@@ -14344,7 +14344,7 @@ L0C4CC:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_0C4CE ($0C4CE)
-; Called from: Sub_0CC70, Sub_0CC9E, Sub_10036, Sub_2DA02, Sub_358BE, Sub_38224 (17 calls)
+; Called from: Sub_0CC70, Sub_0CC9E, Sub_10036, Sub_2DA02, SciSendByte, Sub_38224 (17 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_0C4CE:
         PSHM    E,Y,K
@@ -15207,7 +15207,7 @@ L0CD5E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_0CD64 ($0CD64)
-; Called from: Sub_3123E, Sub_318C4
+; Called from: PciReceive, Sub_318C4
 ;---------------------------------------------------------------------------------------------------
 Sub_0CD64:
         PSHM    CCR
@@ -15560,7 +15560,7 @@ L0D2A8:
         STAA    >SPCR3,Z
         JSR     KickWatchdogsLong
         CLR     $0947,Z
-        CLR     $094C,Z
+        CLR     >EepromFlags,Z
         JSR     Sub_382FA
         LDD     #$0040
         STD     >SCCR0,Z
@@ -15753,7 +15753,7 @@ L0D54C:
 L0D556:
         LDAA    #$02
         STAA    $097D,Z
-        BSET    $08FF,Z,#$FF
+        BSET    >BodyMsgTimeout2,Z,#$FF
         BSET    >EventSparkFlags,Z,#$01
         BRCLR   $0052,Z,#$04,L0D572
         BCLR    $0052,Z,#$04
@@ -16222,7 +16222,7 @@ L0DB28:
         LDD     #$0000
         STD     $1010,Z
         ANDP    #$FF1F
-        BSET    $0A26,Z,#$40
+        BSET    >SkimFlags2,Z,#$40
         JSR     KickWatchdogsLong
         LDAA    $0C39,Z
         ORAA    #$10
@@ -16459,7 +16459,7 @@ L0DDCE:
         JSR     Sub_367B4
         JSR     Sub_36638
         JSR     BusDataRequest
-        JSR     Sub_35334
+        JSR     SciRequestReceive
         JSR     LdpPurgeTest
         JSR     Sub_35EDA
         JSR     Sub_35578
@@ -16468,10 +16468,10 @@ L0DDCE:
         JSR     Sub_387FE
         JSR     Sub_385EC
         BRSET   >Options032E,#$04,L0DE9A
-        JSR     Sub_3017C
+        JSR     CcdReceive
         BRA     L0DEA2
 L0DE9A:
-        JSR     Sub_3123E
+        JSR     PciReceive
         JSR     Sub_32028
 L0DEA2:
         JSR     Sub_3057C
@@ -16613,7 +16613,7 @@ L0E02C:
 L0E030:
         BRSET   >FaultSet07,Z,#$02,L0E05C
         LDAA    >FlexEthanol,Z
-        STAA    $094A,Z
+        STAA    >EepromData,Z
         SUBA    $0A94,Z
         BCC     L0E046
         NEGA
@@ -16621,18 +16621,18 @@ L0E046:
         CMPA    #$18
         BCS     L0E05C
         LDD     #$000C
-        STD     $0948,Z
+        STD     >EepromAddr,Z
         JSR     Sub_38368
         BCS     L0E05C
         STAA    $0A94,Z
 L0E05C:
         BRSET   >FaultSet07,Z,#$02,L0E080
         LDAA    $DC,Z
-        STAA    $094A,Z
+        STAA    >EepromData,Z
         CMPA    $0DDB,Z
         BEQ     L0E080
         LDD     #$0100
-        STD     $0948,Z
+        STD     >EepromAddr,Z
         JSR     Sub_38368
         BCS     L0E080
         STAA    $0DDB,Z
@@ -17139,7 +17139,7 @@ L0E61C:
         STE     $06BA,Z
 L0E628:
         ORP     #$00E0
-        BRSET   $0A02,Z,#$04,L0E6E6
+        BRSET   >PciFlags2,Z,#$04,L0E6E6
         BRSET   $0947,Z,#$80,L0E6E6
         BRSET   >SPCR1,Z,#$00,L0E6E6
         LDD     #$4089
@@ -17199,7 +17199,7 @@ L0E6D2:
         LDE     #$003B
         STE     $06BA,Z
 L0E6E6:
-        BRCLR   $0A35,Z,#$40,L0E6F4
+        BRCLR   >DiagBusFlags,Z,#$40,L0E6F4
         LDD     >SCCR1,Z
         BITB    #$A0
         BNE     L0E70A
@@ -17596,9 +17596,9 @@ L0EB7A:
 ;---------------------------------------------------------------------------------------------------
 Sub_0EB7C:
         BRCLR   $018A,Z,#$20,L0EBB4
-        BRSET   $094C,Z,#$80,L0EBB4
+        BRSET   >EepromFlags,Z,#$80,L0EBB4
         LDD     $0187,Z
-        STD     $094A,Z
+        STD     >EepromData,Z
         CPD     #$9C40
         BCS     L0EB9A
         BSET    $018A,Z,#$40
@@ -17608,8 +17608,8 @@ L0EB9A:
         CLRA
         ASLD
         ADDD    #$00C4
-        STD     $0948,Z
-        BSET    $094C,Z,#$C0
+        STD     >EepromAddr,Z
+        BSET    >EepromFlags,Z,#$C0
         BCLR    $018A,Z,#$20
 L0EBB4:
         RTS
@@ -17696,7 +17696,7 @@ L0EC8C:
 Sub_0EC8E:
         BRSET   >Options032E,#$04,L0ED00
         ORP     #$00E0
-        LDAA    $0A26,Z
+        LDAA    >SkimFlags2,Z
         LBEQ    L0EDD0
         BITA    #$10
         BNE     L0ECAE
@@ -17706,9 +17706,9 @@ Sub_0EC8E:
         BRA     L0ECB6
 L0ECAE:
         JSR     Sub_30BC0
-        BCLR    $0A27,Z,#$02
+        BCLR    >PciRxFlags,Z,#$02
 L0ECB6:
-        BCLR    $0A26,Z,#$17
+        BCLR    >SkimFlags2,Z,#$17
         LBRA    L0EDD0
 L0ECBE:
         BITA    #$08
@@ -17720,24 +17720,24 @@ L0ECBE:
         BITA    #$20
         LBEQ    L0EDD0
         JSR     Sub_30BC0
-        BCLR    $0A26,Z,#$20
+        BCLR    >SkimFlags2,Z,#$20
         LBRA    L0EDD0
 L0ECDC:
         JSR     Sub_307FA
-        BCLR    $0A26,Z,#$08
+        BCLR    >SkimFlags2,Z,#$08
         LBRA    L0EDD0
 L0ECE8:
         JSR     Sub_30964
-        BCLR    $0A26,Z,#$40
+        BCLR    >SkimFlags2,Z,#$40
         LBRA    L0EDD0
 L0ECF4:
         JSR     Sub_309B6
-        BCLR    $0A26,Z,#$80
+        BCLR    >SkimFlags2,Z,#$80
         LBRA    L0EDD0
 L0ED00:
         BRSET   $100B,Z,#$08,L0EDD0
         ORP     #$00E0
-        BRSET   $0A02,Z,#$04,L0EDD0
+        BRSET   >PciFlags2,Z,#$04,L0EDD0
         BRSET   $0947,Z,#$80,L0EDD0
         BRSET   $0A09,Z,#$01,L0ED50
         LDAB    $097D,Z
@@ -17752,15 +17752,15 @@ L0ED00:
         BSET    $0A24,Z,#$80
         LBRA    L0EDD0
 L0ED4A:
-        TSTW    $0A07,Z
+        TSTW    >PciMsgWord,Z
         BEQ     L0ED56
 L0ED50:
         JSR     Sub_31768
         BRA     L0EDD0
 L0ED56:
-        BRSET   $0A03,Z,#$08,L0EDD0
-        BRSET   $0A04,Z,#$08,L0EDCC
-        LDAA    $0A26,Z
+        BRSET   >PciFlags3,Z,#$08,L0EDD0
+        BRSET   >PciFlags4,Z,#$08,L0EDCC
+        LDAA    >SkimFlags2,Z
         BEQ     L0EDD0
         BITA    #$38
         BNE     L0ED7E
@@ -17769,48 +17769,48 @@ L0ED56:
         BITA    #$80
         BNE     L0EDBC
         JSR     Sub_3173E
-        BCLR    $0A26,Z,#$46
+        BCLR    >SkimFlags2,Z,#$46
         BRA     L0EDD0
 L0ED7E:
-        BRSET   $0A04,Z,#$80,L0EDA6
-        BRCLR   $0A27,Z,#$08,L0ED90
-        BCLR    $0A27,Z,#$08
+        BRSET   >PciFlags4,Z,#$80,L0EDA6
+        BRCLR   >PciRxFlags,Z,#$08,L0ED90
+        BCLR    >PciRxFlags,Z,#$08
         BRA     L0EDA6
 L0ED90:
-        BRCLR   $0A27,Z,#$04,L0ED9C
-        BCLR    $0A27,Z,#$04
+        BRCLR   >PciRxFlags,Z,#$04,L0ED9C
+        BCLR    >PciRxFlags,Z,#$04
         BRA     L0EDA6
 L0ED9C:
-        BCLR    $0A27,Z,#$02
-        BCLR    $0A26,Z,#$38
+        BCLR    >PciRxFlags,Z,#$02
+        BCLR    >SkimFlags2,Z,#$38
         BRA     L0EDD0
 L0EDA6:
         JSR     Sub_3172A
         BRA     L0EDD0
 L0EDAC:
         JSR     Sub_3171A
-        BRSET   $0A04,Z,#$20,L0EDD0
-        BCLR    $0A26,Z,#$01
+        BRSET   >PciFlags4,Z,#$20,L0EDD0
+        BCLR    >SkimFlags2,Z,#$01
         BRA     L0EDD0
 L0EDBC:
         JSR     Sub_31748
-        BRSET   $0A04,Z,#$04,L0EDD0
-        BCLR    $0A26,Z,#$80
+        BRSET   >PciFlags4,Z,#$04,L0EDD0
+        BCLR    >SkimFlags2,Z,#$80
         BRA     L0EDD0
 L0EDCC:
         JSR     Sub_31738
 L0EDD0:
-        BRSET   $0A27,Z,#$10,L0EE02
+        BRSET   >PciRxFlags,Z,#$10,L0EE02
         BRCLR   >EngineStateFlags,Z,#$80,L0EE02
-        BRSET   $094E,Z,#$40,L0EDF8
+        BRSET   >BusConfigFlags,Z,#$40,L0EDF8
         BRSET   >Options032E,#$04,L0EDF8
-        BRSET   $0A23,Z,#$10,L0EDF8
-        BRSET   $09D7,Z,#$04,L0EDF8
+        BRSET   >SkimFlags,Z,#$10,L0EDF8
+        BRSET   >BusMsgFlags,Z,#$04,L0EDF8
         JSR     Sub_309EE
 L0EDF8:
         TST     >Count3s,Z
         BEQ     L0EE02
-        BSET    $0A27,Z,#$10
+        BSET    >PciRxFlags,Z,#$10
 L0EE02:
         ANDP    #$FF1F
         RTS
@@ -17821,9 +17821,9 @@ L0EE02:
 ;---------------------------------------------------------------------------------------------------
 Sub_0EE08:
         BRCLR   >Options032E,#$08,L0EE60
-        BRSET   $0A02,Z,#$04,L0EE60
-        BRCLR   $0A04,Z,#$10,L0EE20
-        BCLR    $0A04,Z,#$10
+        BRSET   >PciFlags2,Z,#$04,L0EE60
+        BRCLR   >PciFlags4,Z,#$10,L0EE20
+        BCLR    >PciFlags4,Z,#$10
         BRA     L0EE60
 L0EE20:
         BRCLR   $0C39,Z,#$80,L0EE4C
@@ -17835,16 +17835,16 @@ L0EE20:
         BRA     L0EE4C
 L0EE3A:
         BSET    $0A0D,Z,#$40
-        BRSET   $0A0E,Z,#$40,L0EE60
+        BRSET   >PciMsg10Data,Z,#$40,L0EE60
         BRSET   $0C39,Z,#$04,L0EE60
         BRA     L0EE5C
 L0EE4C:
         BRSET   $051D,Z,#$02,L0EE60
         LDAA    $0A0D,Z
-        CMPA    $0A0E,Z
+        CMPA    >PciMsg10Data,Z
         BEQ     L0EE60
 L0EE5C:
-        BSET    $0A26,Z,#$01
+        BSET    >SkimFlags2,Z,#$01
 L0EE60:
         RTS
 
@@ -17853,7 +17853,7 @@ L0EE60:
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
 Sub_0EE62:
-        LDAA    $08FF,Z
+        LDAA    >BodyMsgTimeout2,Z
         BNE     L0EE72
         TST     $09FE,Z
         BEQ     L0EE72
@@ -17861,7 +17861,7 @@ Sub_0EE62:
 L0EE72:
         INCA
         BEQ     L0EE7A
-        STAA    $08FF,Z
+        STAA    >BodyMsgTimeout2,Z
 L0EE7A:
         RTS
 
@@ -17885,13 +17885,13 @@ L0EE8E:
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
 Sub_0EE90:
-        BRCLR   $0A03,Z,#$08,L0EEA6
+        BRCLR   >PciFlags3,Z,#$08,L0EEA6
         TSTW    >EngineRpm,Z
         BNE     L0EEA2
         DEC     $0A06,Z
         BNE     L0EEA6
 L0EEA2:
-        BCLR    $0A03,Z,#$08
+        BCLR    >PciFlags3,Z,#$08
 L0EEA6:
         RTS
 
@@ -17900,24 +17900,24 @@ L0EEA6:
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
 Sub_0EEA8:
-        BRSET   $0A03,Z,#$04,L0EFCC
-        BRCLR   $0A27,Z,#$01,L0EEBC
-        BCLR    $0A27,Z,#$01
+        BRSET   >PciFlags3,Z,#$04,L0EFCC
+        BRCLR   >PciRxFlags,Z,#$01,L0EEBC
+        BCLR    >PciRxFlags,Z,#$01
         LBRA    L0EFCC
 L0EEBC:
         BRCLR   >EngineStateFlags,Z,#$80,L0EFCC
         BRCLR   >DriveFlags,Z,#$20,L0EFCC
-        BRSET   $0A02,Z,#$04,L0EFDC
+        BRSET   >PciFlags2,Z,#$04,L0EFDC
         BRCLR   >Options032E,#$08,L0EF16
-        LDAB    $0A17,Z
+        LDAB    >PciTimeout,Z
         INCB
         BEQ     L0EEF8
-        STAB    $0A17,Z
+        STAB    >PciTimeout,Z
         BRCLR   >Options032E,#$04,L0EEF4
-        BRSET   $0A02,Z,#$08,L0EEF4
+        BRSET   >PciFlags2,Z,#$08,L0EEF4
         CMPB    #$64
         BCS     L0EF16
-        BSET    $0A02,Z,#$2D
+        BSET    >PciFlags2,Z,#$2D
 L0EEF4:
         CMPB    #$C8
         BCS     L0EF16
@@ -17927,20 +17927,20 @@ L0EEF8:
         JSR     ReportFault
         BCC     L0EF16
         BRCLR   >Options0330,#$40,L0EF16
-        BSET    $0A27,Z,#$20
+        BSET    >PciRxFlags,Z,#$20
         NOP
         NOP
 L0EF16:
-        BRSET   $094E,Z,#$40,L0EF54
-        LDAB    $0A18,Z
+        BRSET   >BusConfigFlags,Z,#$40,L0EF54
+        LDAB    >SkimTimeout,Z
         INCB
         BEQ     L0EF40
-        STAB    $0A18,Z
+        STAB    >SkimTimeout,Z
         BRCLR   >Options032E,#$04,L0EF3C
-        BRSET   $0A02,Z,#$08,L0EF3C
+        BRSET   >PciFlags2,Z,#$08,L0EF3C
         CMPB    #$64
         BCS     L0EF54
-        BSET    $0A02,Z,#$1D
+        BSET    >PciFlags2,Z,#$1D
 L0EF3C:
         CMPB    #$C8
         BCS     L0EF54
@@ -17953,15 +17953,15 @@ L0EF40:
         NOP
 L0EF54:
         BRCLR   >Options032E,#$10,L0EFA0
-        LDAB    $09BD,Z
+        LDAB    >BusTimeout1,Z
         INCB
         BEQ     L0EF7E
-        STAB    $09BD,Z
+        STAB    >BusTimeout1,Z
         BRCLR   >Options032E,#$04,L0EF7A
-        BRSET   $0A02,Z,#$08,L0EF7A
+        BRSET   >PciFlags2,Z,#$08,L0EF7A
         CMPB    #$64
         BCS     L0EFA0
-        BSET    $0A02,Z,#$8D
+        BSET    >PciFlags2,Z,#$8D
 L0EF7A:
         CMPB    #$C8
         BCS     L0EFA0
@@ -17973,26 +17973,26 @@ L0EF7E:
         CLR     >EngineOffTimeBus,Z
         BCLR    $0C21,Z,#$08
         BRCLR   >Options0331,#$10,L0EFA0
-        BSET    $0A27,Z,#$20
+        BSET    >PciRxFlags,Z,#$20
 L0EFA0:
         BRCLR   >EquipmentFlags,Z,#$20,L0EFDC
-        LDAB    $09C9,Z
+        LDAB    >BodyMsgTimeout,Z
         INCB
         BEQ     L0EFC6
-        STAB    $09C9,Z
+        STAB    >BodyMsgTimeout,Z
         BRCLR   >Options032E,#$04,L0EFC6
-        BRSET   $0A02,Z,#$08,L0EFC6
+        BRSET   >PciFlags2,Z,#$08,L0EFC6
         CMPB    #$64
         BCS     L0EFDC
-        BSET    $0A02,Z,#$4D
+        BSET    >PciFlags2,Z,#$4D
 L0EFC6:
         JSR     Sub_22D9C
         BRA     L0EFDC
 L0EFCC:
-        CLR     $0A17,Z
-        CLR     $0A18,Z
-        CLR     $09BD,Z
-        CLR     $09C9,Z
+        CLR     >PciTimeout,Z
+        CLR     >SkimTimeout,Z
+        CLR     >BusTimeout1,Z
+        CLR     >BodyMsgTimeout,Z
 L0EFDC:
         RTS
 
@@ -18001,13 +18001,13 @@ L0EFDC:
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
 Sub_0EFDE:
-        LDAA    $08F6,Z
+        LDAA    >SkimDataFlags,Z
         LBEQ    L0F068
         ORP     #$00E0
-        CLR     $08F0,Z
+        CLR     >SkimTimer,Z
         BRSET   >FaultSet07,Z,#$02,L0F060
-        BRSET   $094C,Z,#$80,L0F064
-        BSET    $094C,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L0F064
+        BSET    >EepromFlags,Z,#$80
         BITA    #$08
         BNE     L0F04A
         BITA    #$10
@@ -18018,35 +18018,35 @@ Sub_0EFDE:
         BNE     L0F020
         BITA    #$80
         BEQ     L0F060
-        BCLR    $08F6,Z,#$80
-        LDAB    $08F7,Z
+        BCLR    >SkimDataFlags,Z,#$80
+        LDAB    >SkimData0,Z
         LDE     #$01D8
         BRA     L0F056
 L0F020:
-        BCLR    $08F6,Z,#$40
-        LDAB    $08F8,Z
+        BCLR    >SkimDataFlags,Z,#$40
+        LDAB    >SkimData1,Z
         LDE     #$01D9
         BRA     L0F056
 L0F02E:
-        BCLR    $08F6,Z,#$20
-        LDAB    $08F9,Z
+        BCLR    >SkimDataFlags,Z,#$20
+        LDAB    >SkimData2,Z
         LDE     #$01DA
         BRA     L0F056
 L0F03C:
-        BCLR    $08F6,Z,#$10
-        LDAB    $08FA,Z
+        BCLR    >SkimDataFlags,Z,#$10
+        LDAB    >SkimData3,Z
         LDE     #$01DB
         BRA     L0F056
 L0F04A:
-        BCLR    $08F6,Z,#$08
-        LDAB    $08FB,Z
+        BCLR    >SkimDataFlags,Z,#$08
+        LDAB    >SkimData4,Z
         LDE     #$01DC
 L0F056:
-        STAB    $094A,Z
-        STE     $0948,Z
+        STAB    >EepromData,Z
+        STE     >EepromAddr,Z
         BRA     L0F064
 L0F060:
-        CLR     $08F6,Z
+        CLR     >SkimDataFlags,Z
 L0F064:
         ANDP    #$FF1F
 L0F068:
@@ -18058,18 +18058,18 @@ L0F068:
 ;---------------------------------------------------------------------------------------------------
 Sub_0F06A:
         ORP     #$00E0
-        BRCLR   $0A04,Z,#$02,L0F086
-        TST     $08F0,Z
+        BRCLR   >PciFlags4,Z,#$02,L0F086
+        TST     >SkimTimer,Z
         BEQ     L0F07E
         LDAA    #$85
         BRA     L0F080
 L0F07E:
         LDAA    #$82
 L0F080:
-        STAA    $08F0,Z
+        STAA    >SkimTimer,Z
         BRA     L0F0A0
 L0F086:
-        TST     $08F0,Z
+        TST     >SkimTimer,Z
         BEQ     L0F0A4
         BMI     L0F094
         JSR     Sub_38712
@@ -18091,12 +18091,12 @@ L0F0A4:
 Sub_0F0AA:
         ORP     #$00E0
         BRSET   >Options0328,#$01,L0F0C0
-        BRSET   $0A23,Z,#$02,L0F0C0
-        BRSET   $094E,Z,#$C0,L0F1FC
+        BRSET   >SkimFlags,Z,#$02,L0F0C0
+        BRSET   >BusConfigFlags,Z,#$C0,L0F1FC
 L0F0C0:
         TST     $0C40,Z
         LBNE    L0F200
-        LDAB    $09C0,Z
+        LDAB    >SecurityTimer,Z
         BRCLR   >EngineStateFlags,Z,#$80,L0F0DA
         INCB
         BNE     L0F0E0
@@ -18104,71 +18104,71 @@ L0F0C0:
         BRA     L0F0E0
 L0F0DA:
         CLRB
-        BCLR    $0A23,Z,#$02
+        BCLR    >SkimFlags,Z,#$02
 L0F0E0:
-        STAB    $09C0,Z
-        LDAA    $094E,Z
+        STAB    >SecurityTimer,Z
+        LDAA    >BusConfigFlags,Z
         BRSET   >Options0328,#$01,L0F11A
-        BRSET   $0A23,Z,#$01,L0F106
-        BRSET   $09BE,Z,#$80,L0F102
+        BRSET   >SkimFlags,Z,#$01,L0F106
+        BRSET   >SecurityFlags,Z,#$80,L0F102
         CMPB    #$C9
         BCS     L0F11A
-        BCLR    $09BE,Z,#$40
+        BCLR    >SecurityFlags,Z,#$40
 L0F102:
-        BSET    $0A23,Z,#$01
+        BSET    >SkimFlags,Z,#$01
 L0F106:
-        BRSET   $0A23,Z,#$02,L0F110
+        BRSET   >SkimFlags,Z,#$02,L0F110
         BITA    #$20
         BNE     L0F154
 L0F110:
         ORAA    #$20
         ANDA    #$E0
-        BCLR    $0A23,Z,#$02
+        BCLR    >SkimFlags,Z,#$02
         BRA     L0F138
 L0F11A:
         BITA    #$20
         BEQ     L0F154
-        BRCLR   $09BE,Z,#$40,L0F154
-        BRCLR   $0A27,Z,#$10,L0F136
-        BRSET   $0A23,Z,#$10,L0F136
-        BRCLR   $09BE,Z,#$08,L0F154
+        BRCLR   >SecurityFlags,Z,#$40,L0F154
+        BRCLR   >PciRxFlags,Z,#$10,L0F136
+        BRSET   >SkimFlags,Z,#$10,L0F136
+        BRCLR   >SecurityFlags,Z,#$08,L0F154
 L0F136:
         ANDA    #$DF
 L0F138:
         BRSET   >FaultSet07,Z,#$02,L0F198
-        BRSET   $094C,Z,#$80,L0F154
-        BSET    $094C,Z,#$80
-        STAA    $094A,Z
+        BRSET   >EepromFlags,Z,#$80,L0F154
+        BSET    >EepromFlags,Z,#$80
+        STAA    >EepromData,Z
         LDE     #$0008
-        STE     $0948,Z
+        STE     >EepromAddr,Z
 L0F154:
         BITA    #$1F
         BEQ     L0F198
-        BRSET   $0A23,Z,#$10,L0F16E
+        BRSET   >SkimFlags,Z,#$10,L0F16E
         BITA    #$40
         BEQ     L0F18E
         BRSET   >Options032E,#$04,L0F18E
-        BRCLR   $09BE,Z,#$08,L0F18E
+        BRCLR   >SecurityFlags,Z,#$08,L0F18E
 L0F16E:
         BRSET   >FaultSet07,Z,#$02,L0F198
-        BRSET   $094C,Z,#$80,L0F198
+        BRSET   >EepromFlags,Z,#$80,L0F198
         ANDA    #$E0
-        BSET    $094C,Z,#$80
-        STAA    $094A,Z
+        BSET    >EepromFlags,Z,#$80
+        STAA    >EepromData,Z
         LDE     #$0008
-        STE     $0948,Z
+        STE     >EepromAddr,Z
         BRA     L0F1FC
 L0F18E:
         ANDA    #$1F
         CMPA    #$06
         BCC     L0F1BE
-        LDAA    $094E,Z
+        LDAA    >BusConfigFlags,Z
 L0F198:
-        BRSET   $0A23,Z,#$10,L0F1FC
+        BRSET   >SkimFlags,Z,#$10,L0F1FC
         BRSET   >Options0328,#$01,L0F1BA
         BRSET   >Options032E,#$04,L0F1B6
-        BRSET   $09BE,Z,#$08,L0F1FC
-        BRSET   $09BE,Z,#$04,L0F1BA
+        BRSET   >SecurityFlags,Z,#$08,L0F1FC
+        BRSET   >SecurityFlags,Z,#$04,L0F1BA
 L0F1B6:
         BITA    #$20
         BNE     L0F1FC
@@ -18176,11 +18176,11 @@ L0F1BA:
         CMPB    #$14
         BCS     L0F200
 L0F1BE:
-        BSET    $09BE,Z,#$20
-        BRSET   $0A23,Z,#$02,L0F200
+        BSET    >SecurityFlags,Z,#$20
+        BRSET   >SkimFlags,Z,#$02,L0F200
         BRSET   >FaultSet07,Z,#$02,L0F200
-        BRSET   $094C,Z,#$80,L0F200
-        LDAA    $094E,Z
+        BRSET   >EepromFlags,Z,#$80,L0F200
+        LDAA    >BusConfigFlags,Z
         TAB
         ANDB    #$E0
         ANDA    #$1F
@@ -18188,14 +18188,14 @@ L0F1BE:
         BCC     L0F200
         INCA
         ABA
-        BSET    $094C,Z,#$80
-        STAA    $094A,Z
+        BSET    >EepromFlags,Z,#$80
+        STAA    >EepromData,Z
         LDE     #$0008
-        STE     $0948,Z
-        BSET    $0A23,Z,#$02
+        STE     >EepromAddr,Z
+        BSET    >SkimFlags,Z,#$02
         BRA     L0F200
 L0F1FC:
-        BCLR    $09BE,Z,#$20
+        BCLR    >SecurityFlags,Z,#$20
 L0F200:
         ANDP    #$FF1F
         RTS
@@ -18205,10 +18205,10 @@ L0F200:
 ; Called from: Reset, Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
 Sub_0F206:
-        BRSET   $09BE,Z,#$10,L0F2AE
+        BRSET   >SecurityFlags,Z,#$10,L0F2AE
         ORP     #$00E0
-        BRSET   $094C,Z,#$80,L0F2AA
-        LDAA    $094E,Z
+        BRSET   >EepromFlags,Z,#$80,L0F2AA
+        LDAA    >BusConfigFlags,Z
         BITA    #$40
         BNE     L0F22E
         BRSET   $0057,Z,#$02,L0F2A6
@@ -18217,7 +18217,7 @@ Sub_0F206:
         BRA     L0F2A6
 L0F22E:
         BRSET   >Options0328,#$01,L0F28C
-        BRSET   $0A23,Z,#$08,L0F254
+        BRSET   >SkimFlags,Z,#$08,L0F254
         BITA    #$80
         BNE     L0F24E
         BRSET   $0057,Z,#$01,L0F2A0
@@ -18225,12 +18225,12 @@ L0F22E:
         BCLR    $57,Z,#$02
         BRA     L0F2A0
 L0F24E:
-        BRCLR   $0A23,Z,#$04,L0F2A0
+        BRCLR   >SkimFlags,Z,#$04,L0F2A0
 L0F254:
         BRCLR   >Options0328,#$02,L0F282
         BRCLR   >EngineStateFlags,Z,#$80,L0F2AA
-        BRSET   $094E,Z,#$1F,L0F27A
-        BSET    $0A23,Z,#$02
+        BRSET   >BusConfigFlags,Z,#$1F,L0F27A
+        BSET    >SkimFlags,Z,#$02
         TAB
         ANDB    #$E0
         ANDA    #$1F
@@ -18241,25 +18241,25 @@ L0F254:
         BRA     L0F28E
 L0F27A:
         ANDA    #$E1
-        BSET    $09BE,Z,#$10
+        BSET    >SecurityFlags,Z,#$10
         BRA     L0F28E
 L0F282:
-        BRSET   $0A23,Z,#$08,L0F28C
+        BRSET   >SkimFlags,Z,#$08,L0F28C
         LDAA    #$40
         BRA     L0F28E
 L0F28C:
         LDAA    #$80
 L0F28E:
-        BSET    $094C,Z,#$80
-        STAA    $094A,Z
+        BSET    >EepromFlags,Z,#$80
+        STAA    >EepromData,Z
         LDD     #$0008
-        STD     $0948,Z
+        STD     >EepromAddr,Z
         BRA     L0F2AA
 L0F2A0:
-        INC     $09C0,Z
+        INC     >SecurityTimer,Z
         BNE     L0F2AA
 L0F2A6:
-        BSET    $09BE,Z,#$10
+        BSET    >SecurityFlags,Z,#$10
 L0F2AA:
         ANDP    #$FF1F
 L0F2AE:

@@ -22,6 +22,7 @@
  "10CF6": "SpeedCtlThrottleRef",
  "123F8": "EmptyHook",
  "1240C": "ReadMap",
+ "129BA": "SciRequestReceive",
  "16BC4": "MtvTiming",
  "17AEA": "PurgeFlowTest",
  "17FA0": "O2IdleMonitor",

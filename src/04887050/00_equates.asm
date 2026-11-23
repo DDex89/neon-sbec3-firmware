@@ -45,6 +45,7 @@ O2CrossFlags     equ $0104        ; $F8104
 Count3s          equ $010B        ; $F810B
 MainLoopCounter  equ $010C        ; $F810C
 MainLoopPhaseMask equ $010D        ; $F810D
+SciLogFlags      equ $010E        ; $F810E
 ControlFlagsC33  equ $010F        ; $F810F
 SpeedCtlRpmAvg   equ $0112        ; $F8112
 SpeedCtlThrottleAvg equ $0114        ; $F8114
@@ -76,6 +77,7 @@ MisfireLoad      equ $023F        ; $F823F
 MisfireTransientHold equ $0241        ; $F8241
 MisfireFlags2    equ $0243        ; $F8243
 MisfireHold      equ $0247        ; $F8247
+DiagBusFlags     equ $024E        ; $F824E
 LimpFlags        equ $026B        ; $F826B
 LdpPurgeTestFlags equ $029B        ; $F829B
 LdpState         equ $029D        ; $F829D
@@ -135,6 +137,7 @@ MtvSwitchTime    equ $0380        ; $F8380
 MtvRpmRate       equ $0384        ; $F8384
 MtvHoldCount     equ $0386        ; $F8386
 IacEventTimer    equ $038A        ; $F838A
+SciUnlockState   equ $0399        ; $F8399
 RunTime          equ $03A0        ; $F83A0
 CylinderIndex    equ $03A4        ; $F83A4
 LookupResult     equ $03B0        ; $F83B0
@@ -157,6 +160,9 @@ ChargeTargetVolts equ $0415        ; $F8415
 ChargeMonTimer   equ $0417        ; $F8417
 ChargeDeficitAvg equ $041D        ; $F841D
 FieldFlags       equ $041F        ; $F841F
+PciRxFlags       equ $0422        ; $F8422
+CcdRxFlags       equ $0426        ; $F8426
+SecurityFlags    equ $0459        ; $F8459
 FuelLevelScaled  equ $046B        ; $F846B
 DiagCommand      equ $0472        ; $F8472
 DiagParam1       equ $0473        ; $F8473
@@ -169,6 +175,9 @@ SystemTestMode   equ $047B        ; $F847B
 SystemTestValue  equ $047C        ; $F847C
 ControlFlags943  equ $047E        ; $F847E
 ControlFlags944  equ $047F        ; $F847F
+EepromAddr       equ $0486        ; $F8486
+EepromData       equ $0488        ; $F8488
+EepromFlags      equ $048A        ; $F848A
 SciErrors        equ $04BC        ; $F84BC
 ShortTermTrim1   equ $0500        ; $F8500
 O2UpBank1Raw     equ $0501        ; $F8501
@@ -252,9 +261,15 @@ IacAcFlags       equ $0649        ; $F8649
 ShiftIdleDelay   equ $064A        ; $F864A
 SparkStartTime   equ $0650        ; $F8650
 IdleTarget       equ $0652        ; $F8652
+GearStateFlags   equ $0662        ; $F8662
 IdleFlags        equ $0664        ; $F8664
+IdleFlags5       equ $0665        ; $F8665
+IdleFlags6       equ $0666        ; $F8666
+IdleFlags7       equ $0667        ; $F8667
 IdleFlags2       equ $0668        ; $F8668
 IdleFlags3       equ $0669        ; $F8669
+IdleFlags8       equ $066A        ; $F866A
+IdleAcFlags      equ $066B        ; $F866B
 IacTarget        equ $066C        ; $F866C
 IacCoastPosition equ $0680        ; $F8680
 FieldDuty        equ $0682        ; $F8682

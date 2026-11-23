@@ -115,10 +115,24 @@ every 24 ticks (20.5 ms) `Sub_3060E` or `Sub_317B6`, chosen by calibration bit $
 ## Two communication variants
 
 Calibration bit $032E.2 is tested in 30 places. In several of them it selects between two sets of
-routines: in the main loop (see above), in the PIT interrupt (`Sub_3060E` / `Sub_317B6`), in
-`Isr_IRQ2` (`Sub_30D58` / `Sub_31DF8`) and in the reset code. The pattern suggests two vehicle-bus
-interfaces in one program (CCD and J1850 PCI are the candidates); this is a hypothesis until the
-routines are read.
+routines: in the main loop (see above), in the PIT interrupt (`CcdTransmit` / `Sub_317B6`), in
+`Isr_IRQ2` (`Sub_30D58` / `Sub_31DF8`) and in the reset code. Reading the receive side confirms two
+vehicle-bus interfaces:
+
+- `CcdReceive` takes one-byte message IDs with up to two data bytes from two receive buffers
+  ($89A2, $89A8). `CcdTransmit` sends a fixed rotation of messages built by small routines; each
+  message is an ID, two data bytes and a checksum byte (the sum of the other three). The message
+  set includes MAP, throttle with the speed control set or resume speed, coolant and battery
+  temperature, battery and target voltage, engine rpm with the idle target, baro and air temperature, fuel used and
+  distance pulses, and the VIN one character at a time (`Vin01`-`Vin17`).
+- `PciReceive` takes frames of up to 11 bytes; the low bits of the first byte are tested as a
+  header and the second byte selects the handler from a jump table at $3105A. Its handlers store
+  the same values as the CCD ones. Together with the header byte this points to J1850 PCI, but
+  the bus type is still an inference.
+
+Both receive routines handle the SKIM (immobiliser) exchange: messages $0B and $C2 carry the
+status and the key data (`SkimStatus`, `SkimData0`-`SkimData4`). `SkimKeyCheck` ($320D6) works out
+the expected key from the VIN bytes, and a wrong key reports P1685.
 
 ## Diagnostics over the SCI line
 
@@ -129,10 +143,17 @@ its checksum and the final `RTS`, runs it (`DiagRunRamCode`, `JMP $F8700`). A te
 run its own code in the controller without reflashing. This is separate from the bootstrap mode that
 `third_party/SBECBootLoader` uses.
 
+The same line also carries a high-speed logging mode (`SciLogReceive`): command bytes $F2 and
+$F3-$F6 set the mode bits in `SciLogFlags` and $FE leaves the mode; after that, each received byte
+selects a value that is sent back (from a RAM index list, or a word from a bank-3 page chosen by
+$F3-$F5). `SciRequestReceive` takes the ordinary requests (`DiagCommand`,
+`DiagParam1`-`DiagParam3`); a fixed byte sequence ($F8, $F7, $F5, $F3, $14), tracked in
+`SciUnlockState`, switches to command $52.
+
 ## Open questions
 
 - What the CS2 device at $F9000 is, and what IRQ2 and IRQ4 signal.
 - Which input captures carry crank, cam and vehicle speed; which output compares drive coils and
   injectors.
-- What the two variants selected by $032E.2 are.
+- Whether the second bus variant is J1850 PCI (see above).
 - Names of the scheduled routines: stage 4 (tables they read) and stage 5 (detailed annotation).

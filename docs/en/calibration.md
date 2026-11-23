@@ -298,7 +298,7 @@ fault bit, `ReportPass` ($24160) counts a passed one and clears it; both take in
 | `Sub_2CC42, Sub_387FE` | P1697, P1696 | SRI mileage not stored, EEPROM write denied |
 | `CatTempMonitor` | P1482, P1483, P1484 | catalyst temperature sensor low/high, catalyst overheat (input $0A8E, shared with the flex sensor) |
 | `MtvCheck` | P1289 | manifold tune valve |
-| `Sub_3017C, Sub_3123A` | P1685 | SKIM invalid key |
+| `CcdReceive, PciReceive` | P1685 | SKIM invalid key |
 
 Misfire, catalyst, O2-sensor, EVAP-leak and purge-flow monitors report through their own state
 machines; their constants are named after the monitor (`Misfire...`, `CatMon...`, `O2Mon...`,
@@ -344,7 +344,7 @@ applies only to the reference image.
   duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
   subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
   them on a running car would settle them.
-- 858 RAM variables have names (fault bit arrays FaultSet00-1B and FaultMem00-1B, monitor status and freeze-frame bytes included); about 920 other Z offsets used in the code (many of them flag
+- 933 RAM variables have names (fault bit arrays FaultSet00-1B and FaultMem00-1B, monitor status and freeze-frame bytes included); about 870 other Z offsets used in the code (many of them flag
   bytes and array elements) are still known by address. Constant descriptions give these as
   $xxxx,Z.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at

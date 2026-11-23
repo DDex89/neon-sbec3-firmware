@@ -62,7 +62,7 @@ L2019C:
         CPX     #$0140
         BCS     L20240
 L201E4:
-        BRSET   $06BE,Z,#$01,L201F4
+        BRSET   >BusModuleFlags,Z,#$01,L201F4
         BRCLR   <DiagStatusFlags,Z,#$80,L2020E
         LDAA    <FreezeFrameCount,Z
         CMPA    #$03
@@ -830,7 +830,7 @@ Sub_208B4:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_208D6 ($208D6)
-; Called from: Reset, ObdRequest, Sub_358C8 (4 calls)
+; Called from: Reset, ObdRequest, SciSendByte (4 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_208D6:
         CLR     <FreezeFrameCount,Z
@@ -954,14 +954,14 @@ Sub_20A20:
         BNE     L20A48
         CMPB    $44E2
         LBNE    L20AEE
-        LDE     $06D6,Z
+        LDE     >TransBusWord,Z
         CPE     >MisfireRecordDA,Z
         LBEQ    L20AEE
 L20A48:
         STAB    <FreezeFrame01,Z
         CMPB    $44E2
         BNE     L20A58
-        LDE     $06D6,Z
+        LDE     >TransBusWord,Z
         STE     >MisfireRecordDA,Z
 L20A58:
         TBA
@@ -3736,13 +3736,13 @@ L22CDC:
 ;---------------------------------------------------------------------------------------------------
 Sub_22CDE:
         BRCLR   >EquipmentFlags,Z,#$20,L22D7C
-        BRCLR   $06BE,Z,#$40,L22D7C
-        BCLR    $06BE,Z,#$40
-        BRCLR   $09C4,Z,#$03,L22D1E
-        BRSET   $09C4,Z,#$0A,L22D3C
-        BRCLR   $09C4,Z,#$02,L22D7C
-        BRSET   $09C4,Z,#$01,L22D50
-        BCLR    $06BE,Z,#$01
+        BRCLR   >BusModuleFlags,Z,#$40,L22D7C
+        BCLR    >BusModuleFlags,Z,#$40
+        BRCLR   >TransBusStatus,Z,#$03,L22D1E
+        BRSET   >TransBusStatus,Z,#$0A,L22D3C
+        BRCLR   >TransBusStatus,Z,#$02,L22D7C
+        BRSET   >TransBusStatus,Z,#$01,L22D50
+        BCLR    >BusModuleFlags,Z,#$01
         BRCLR   $009F,Z,#$10,L22D7C
         LDAA    $44E2
         BCLR    $065A,Z,#$10
@@ -3765,7 +3765,7 @@ L22D3C:
         BRA     L22D7C
 L22D50:
         BRSET   >FaultSet10,Z,#$02,L22D64
-        BRCLR   $09C4,Z,#$10,L22D64
+        BRCLR   >TransBusStatus,Z,#$10,L22D64
         LDY     #$44E2
         JSR     ReportFault
 L22D64:
@@ -3774,7 +3774,7 @@ L22D64:
         LDY     #$44E2
         BRCLR   $0003,Y,#$80,L22D7C
         BRCLR   $0003,Y,#$40,L22D7C
-        BSET    $06BE,Z,#$01
+        BSET    >BusModuleFlags,Z,#$01
 L22D7C:
         RTS
 
@@ -3792,23 +3792,23 @@ Sub_22D7E:
         JSR     Sub_244EA
 L22DA0:
         BRSET   $065A,Z,#$04,L22DF2
-        LDAA    $09C7,Z
+        LDAA    >BodyMsgTimeout,Z
         CMPA    #$C8
         BCS     L22DDA
         BCLR    $0686,Z,#$80
         BCLR    $0101,Z,#$80
-        BSET    $06BE,Z,#$02
+        BSET    >BusModuleFlags,Z,#$02
         BSET    $065A,Z,#$04
         LDAA    $4348
         JSR     Sub_244EA
         BSET    >BusReqFlags,Z,#$03
-        BCLR    $0310,Z,#$40
+        BCLR    >GearStateFlags,Z,#$40
         LDAB    #$80
-        STAB    $0311,Z
-        CLR     $09C0,Z
+        STAB    >BusIdleByte,Z
+        CLR     >BusMsg52Value,Z
         BRA     L22DF2
 L22DDA:
-        BRCLR   $06BE,Z,#$80,L22DF2
+        BRCLR   >BusModuleFlags,Z,#$80,L22DF2
         LDAA    >Count3s,Z
         CMPA    #$2C
         LBCS    L22DF2
@@ -5161,11 +5161,11 @@ L23D42:
         BSET    $51,Z,#$02
         BRA     L23D62
 L23D48:
-        BRSET   $094A,Z,#$80,L23D62
-        BSET    $094A,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L23D62
+        BSET    >EepromFlags,Z,#$80
         LDY     #$000F
-        STY     $0946,Z
-        CLR     $0948,Z
+        STY     >EepromAddr,Z
+        CLR     >EepromData,Z
 L23D5E:
         BCLR    $51,Z,#$03
 L23D62:
@@ -5268,11 +5268,11 @@ L23E40:
         JSR     ReportFault
         BRA     L23E60
 L23E4A:
-        BRSET   $094A,Z,#$80,L23E60
-        BSET    $094A,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L23E60
+        BSET    >EepromFlags,Z,#$80
         LDY     #$000F
-        STY     $0946,Z
-        STAB    $0948,Z
+        STY     >EepromAddr,Z
+        STAB    >EepromData,Z
 L23E60:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -5502,7 +5502,7 @@ L241E2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_241E4 ($241E4)
-; Called from: Sub_204BE, Sub_2410A, ObdRequest, Sub_358C8 (5 calls)
+; Called from: Sub_204BE, Sub_2410A, ObdRequest, SciSendByte (5 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_241E4:
         PSHM    X,K
@@ -5594,7 +5594,7 @@ Sub_24288:
         LDAA    $44E2
         JSR     Sub_208AA
         JSR     Sub_24222
-        BCLR    $06BE,Z,#$01
+        BCLR    >BusModuleFlags,Z,#$01
         CLRB
         TBYK
         LDY     #$44E2
@@ -5691,7 +5691,7 @@ L2435E:
         BEQ     L24388
         BRSET   >DiagStatusFlags,Z,#$80,L24392
         BRCLR   >EquipmentFlags,Z,#$20,L24388
-        BRSET   $06BE,Z,#$01,L24392
+        BRSET   >BusModuleFlags,Z,#$01,L24392
 L24388:
         BCLR    $0C39,Z,#$10
         BCLR    $0C39,Z,#$40
@@ -5722,7 +5722,7 @@ L243C0:
         BCLR    $0C39,Z,#$20
         BCLR    $0A09,Z,#$20
 L243CE:
-        BSET    $0A21,Z,#$01
+        BSET    >SkimFlags2,Z,#$01
 L243D2:
         BRSET   $0C39,Z,#$10,L243EC
         BRCLR   $0C39,Z,#$08,L24402
@@ -5736,7 +5736,7 @@ L243EC:
         BSET    $0A09,Z,#$80
         BCLR    >ControlFlags944,Z,#$80
 L243FE:
-        BSET    $0A21,Z,#$01
+        BSET    >SkimFlags2,Z,#$01
 L24402:
         RTS
 
@@ -5916,7 +5916,7 @@ L2457E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_24582 ($24582)
-; Called from: ObdRequest, Sub_358C8 (3 calls)
+; Called from: ObdRequest, SciSendByte (3 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_24582:
         CLR     $0658,Z
@@ -13163,7 +13163,7 @@ L2C3E0:
         LDAB    >Count191ms,Z
         CMPB    >BattTempStartTime
         BHI     L2C418
-        BRCLR   $09D5,Z,#$01,L2C46E
+        BRCLR   >BusMsgFlags,Z,#$01,L2C46E
         LDAA    >EngineOffTimeBus,Z
         CMPA    >BattTempOffTimeMin
         BHI     L2C432
@@ -13237,7 +13237,7 @@ L2C4CE:
         LDAA    #$98
         BRSET   >SensorFaultFlags,Z,#$01,L2C628
         BRSET   >ChargeMonFlags,Z,#$02,L2C5EC
-        BRCLR   $09D5,Z,#$01,L2C510
+        BRCLR   >BusMsgFlags,Z,#$01,L2C510
         BRCLR   >Options0330,#$01,L2C526
         BRCLR   $0A1C,Z,#$02,L2C510
         LDAA    >BattTempBusCount,Z
@@ -13876,7 +13876,7 @@ L2CB9E:
         BHI     L2CBA8
         BSET    >BusReqFlags,Z,#$04
 L2CBA4:
-        BSET    $0A21,Z,#$08
+        BSET    >SkimFlags2,Z,#$08
 L2CBA8:
         BRSET   >BusReqFlags,Z,#$01,L2CBB6
         BRCLR   >BusReqFlags,Z,#$02,L2CBC2
@@ -13947,7 +13947,7 @@ L2CC40:
 ; Called from: Sub_0DBB2
 ;---------------------------------------------------------------------------------------------------
 Sub_2CC42:
-        BRSET   $094A,Z,#$80,L2CCA6
+        BRSET   >EepromFlags,Z,#$80,L2CCA6
         BRCLR   $0C32,Z,#$04,L2CCA6
         BRSET   >FaultSet07,Z,#$01,L2CC6C
         TZX
@@ -13964,13 +13964,13 @@ L2CC6C:
         JMP     L2CCA6
 L2CC78:
         BCLR    $0C32,Z,#$04
-        BSET    $094A,Z,#$C0
+        BSET    >EepromFlags,Z,#$C0
         ADDE    #$01
         STE     >SriMileage,Z
-        STE     $0948,Z
+        STE     >EepromData,Z
         CLRA
         ASLD
-        STD     $0946,Z
+        STD     >EepromAddr,Z
         BRCLR   $000A,Z,#$08,L2CC9C
         INC     >FuelSenderFuelUsed,Z
 L2CC9C:
@@ -14277,7 +14277,7 @@ L2CFA4:
         LDAA    $0A4A,Z
         EORA    #$10
         STAA    $0A4A,Z
-        BSET    $0A21,Z,#$02
+        BSET    >SkimFlags2,Z,#$02
         BRA     L2D008
 L2CFCA:
         BSET    >SpeedCtlFlags2,Z,#$10
@@ -14311,7 +14311,7 @@ L2D010:
         BCLR    $0A4A,Z,#$08
         BRA     L2D03C
 L2D016:
-        BSET    $0A21,Z,#$02
+        BSET    >SkimFlags2,Z,#$02
         BRA     L2D03C
 L2D01C:
         BRCLR   >EquipmentFlags,Z,#$40,L2D084
@@ -14364,10 +14364,10 @@ L2D090:
 L2D09E:
         BRCLR   >EquipmentFlags,Z,#$20,L2D0B2
         BRSET   >Options0338,#$40,L2D0B2
-        BRSET   $0310,Z,#$10,L2D1C0
+        BRSET   >GearStateFlags,Z,#$10,L2D1C0
         BRA     L2D0B6
 L2D0B2:
-        BSET    $0310,Z,#$80
+        BSET    >GearStateFlags,Z,#$80
 L2D0B6:
         LDAB    >DriveFlags,Z
         ANDB    #$20
@@ -14376,7 +14376,7 @@ L2D0B6:
         ANDB    #$20
         EORB    <Scratch0,Z
         BNE     L2D0D2
-        BRSET   $0310,Z,#$02,L2D1B0
+        BRSET   >GearStateFlags,Z,#$02,L2D1B0
         LBRA    L2D1DC
 L2D0D2:
         BSET    $0F0E,Z,#$08
@@ -14390,15 +14390,15 @@ L2D0F0:
         CPD     >SegmentRpm,Z
         LBLS    L2D1B0
 L2D0F8:
-        BRSET   $0310,Z,#$80,L2D10A
-        BRCLR   $0310,Z,#$08,L2D10A
-        BRSET   $0310,Z,#$40,L2D1EC
+        BRSET   >GearStateFlags,Z,#$80,L2D10A
+        BRCLR   >GearStateFlags,Z,#$08,L2D10A
+        BRSET   >GearStateFlags,Z,#$40,L2D1EC
 L2D10A:
         BRSET   >IdleFlags3,Z,#$08,L2D1B0
         BSET    >DriveFlags,Z,#$80
         BRCLR   $0A47,Z,#$20,L2D15C
-        BRSET   $0310,Z,#$04,L2D15C
-        BRSET   $0310,Z,#$20,L2D15C
+        BRSET   >GearStateFlags,Z,#$04,L2D15C
+        BRSET   >GearStateFlags,Z,#$20,L2D15C
         LDAA    >CoolantTemp,Z
         CMPA    >ShiftIdleCoolantMin
         BCS     L2D15C
@@ -14415,12 +14415,12 @@ L2D144:
 L2D14C:
         STAB    >ShiftIdleDelay,Z
         LBNE    L2D1EC
-        BSET    $0310,Z,#$84
+        BSET    >GearStateFlags,Z,#$84
         JMP     L2D1EC
 L2D15C:
         LDAA    >IacGearDuration,Z
         BNE     L2D1AA
-        BSET    $0310,Z,#$02
+        BSET    >GearStateFlags,Z,#$02
         LDAA    >CoolantTemp,Z
         BRCLR   >DriveFlags,Z,#$20,L2D18E
         LDX     #ShiftIdleRateCoolantPN
@@ -14449,11 +14449,11 @@ L2D1AA:
 L2D1B0:
         BRCLR   $0A47,Z,#$20,L2D1C0
         BSET    >DriveFlags,Z,#$20
-        BCLR    $0310,Z,#$40
+        BCLR    >GearStateFlags,Z,#$40
         BRA     L2D1CE
 L2D1C0:
-        BRSET   $06BE,Z,#$02,L2D1CA
-        BSET    $0310,Z,#$40
+        BRSET   >BusModuleFlags,Z,#$02,L2D1CA
+        BSET    >GearStateFlags,Z,#$40
 L2D1CA:
         BCLR    >DriveFlags,Z,#$20
 L2D1CE:
@@ -14462,10 +14462,10 @@ L2D1CE:
         BCC     L2D1DC
         BCLR    >ThrottleState,Z,#$01
 L2D1DC:
-        BCLR    $0310,Z,#$34
+        BCLR    >GearStateFlags,Z,#$34
         BCLR    >DriveFlags,Z,#$80
         CLR     >ShiftIdleDelay,Z
-        BCLR    $0310,Z,#$02
+        BCLR    >GearStateFlags,Z,#$02
 L2D1EC:
         RTS
 
@@ -15039,7 +15039,7 @@ L2D784:
         LDAA    >RefPeriod,Z
         CMPA    #$20
         BCS     L2D7F4
-        BSET    $0315,Z,#$40
+        BSET    >IdleFlags7,Z,#$40
         BCLR    $06BC,Z,#$20
         CLR     $0C35,Z
         BCLR    $0C36,Z,#$70
@@ -15232,7 +15232,7 @@ L2D9C4:
         STE     $0A4C,Z
         BITA    #$01
         BEQ     L2D9D8
-        BSET    $0A21,Z,#$04
+        BSET    >SkimFlags2,Z,#$04
 L2D9D8:
         BRCLR   >SwitchInputs,Z,#$01,L2D9F2
         BRCLR   >MainLoopPhaseMask,Z,#$40,L2D9F6
@@ -15927,8 +15927,8 @@ Sub_2F010:
         BRSET   >Options0333,#$20,L2F05A
         BRSET   >EquipmentFlags,Z,#$10,L2F068
         BRCLR   >EngineStateFlags,Z,#$80,L2F052
-        BRSET   $09D0,Z,#$40,L2F03A
-        BRSET   $09D0,Z,#$10,L2F052
+        BRSET   >BusMsgBEFlags,Z,#$40,L2F03A
+        BRSET   >BusMsgBEFlags,Z,#$10,L2F052
 L2F03A:
         LDAB    >MainLoopCounter,Z
         BNE     L2F068

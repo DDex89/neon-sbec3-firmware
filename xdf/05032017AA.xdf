@@ -17591,7 +17591,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D3" flags="0x0">
   <title>BusMsgAcData</title>
-  <description>Data word sent in the bus message $AC (Sub_3060E; bit 3 set with Options032E bit 7) $0320</description>
+  <description>Data word sent in the bus message $AC (CcdTransmit; bit 3 set with Options032E bit 7) $0320</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x320" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -20119,7 +20119,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3D1" flags="0x0">
   <title>BusReqHoldTime</title>
-  <description>Bus request from the body (Sub_3017C, Sub_3123A): hold time ($086D,Z) of the request flag $086C,Z bit 4 $0568</description>
+  <description>Bus request from the body (CcdReceive, PciReceive): hold time ($086D,Z) of the request flag $086C,Z bit 4 $0568</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x568" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33887,7 +33887,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x853" flags="0x0">
   <title>SciErrorCount</title>
-  <description>Serial receive (Sub_08684): error count ($09B3,Z) at or above which reception restarts $7564</description>
+  <description>Serial receive (SciLogReceive): error count ($09B3,Z) at or above which reception restarts $7564</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x7564" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

@@ -51,5 +51,6 @@
  "18B2E": "MisfireDeviation",
  "19BD8": "ReportPass",
  "19EE4": "ReportFault",
+ "1A9F2": "SciRequestReceive",
  "1D6F0": "CalcBaseSpark"
 }
