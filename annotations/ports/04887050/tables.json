@@ -945,7 +945,7 @@
   "1C11": {
    "name": "AcEngageSparkHoldSensor",
    "category": "Spark",
-   "desc": "A/C spark compensation: hold count (AcSparkHold) against the A/C sensor (calibration bit Options0331 bit 7 set)",
+   "desc": "A/C spark compensation: hold count (AcSparkHold) against the A/C sensor (calibration bit Options031E bit 7 set)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -953,7 +953,7 @@
   "1C19": {
    "name": "AcEngageSparkHoldIac",
    "category": "Spark",
-   "desc": "As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit Options0331 bit 7 clear)",
+   "desc": "As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit Options031E bit 7 clear)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1129,7 +1129,7 @@
   "1DE8": {
    "name": "IdleTargetRpmPN",
    "category": "Idle",
-   "desc": "Target idle speed against coolant in P/N (with calibration bit Options032E bit 6 clear)",
+   "desc": "Target idle speed against coolant in P/N (with calibration bit Options0325 bit 6 clear)",
    "x": "tempc",
    "y": "rpm8",
    "auto": false
@@ -1355,7 +1355,7 @@
   "2075": {
    "name": "IacRollFactorAcSensor",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options0331 bit 7",
+   "desc": "Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options031E bit 7",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1972,23 +1972,86 @@
    "x": "raw",
    "y": "raw",
    "auto": false
+  },
+  "0B18": {
+   "name": "FlexEthanolRpm",
+   "category": "Fuel",
+   "desc": "Flex fuel: value against ethanol content (rows) and RpmCurveValue (columns), both as positions; read in FuelCorrections like FlexEthanolRpm in 05293190AC",
+   "x": "pos256",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "0C11": {
+   "name": "FlexEthanolCoolantFactor1",
+   "category": "Fuel",
+   "desc": "Flex fuel: factor against ethanol content (rows) and coolant, first of the three coolant factors read in FuelCorrections (order as in 05293190AC)",
+   "x": "tempc",
+   "y": "pos256",
+   "z": "mult256",
+   "auto": false
+  },
+  "0BB4": {
+   "name": "FlexEthanolCoolantFactor2",
+   "category": "Fuel",
+   "desc": "Flex fuel: second coolant factor against ethanol content and coolant (FuelCorrections)",
+   "x": "tempc",
+   "y": "pos256",
+   "z": "mult256",
+   "auto": false
+  },
+  "0CC2": {
+   "name": "FlexEthanolCoolantFactor3",
+   "category": "Fuel",
+   "desc": "Flex fuel: third coolant factor against ethanol content and coolant (FuelCorrections)",
+   "x": "tempc",
+   "y": "pos256",
+   "z": "mult256",
+   "auto": false
+  },
+  "09B1": {
+   "name": "AfterStartDecay",
+   "category": "Fuel",
+   "desc": "After-start enrichment against time since start (rows) and CrankCoolant (columns); part of the warm-up factor in FuelCorrections",
+   "x": "raw",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "0D1F": {
+   "name": "EgrFuelCorrection",
+   "category": "Fuel",
+   "desc": "17 x 17 fuel correction against MAP (rows, through PartThrottleMapScale) and rpm, applied in FuelCorrections only while the EGR solenoid is on (ControlFlags944 bit 2); in 05293190AC EgrControl reads PartThrottleFuelMain for this; its rpm axis is the same as that of PartThrottleFuelMain in 05293190AC",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "180B": {
+   "name": "EgrSpark",
+   "category": "Spark",
+   "desc": "Spark correction with EGR on, MAP x rpm (EgrSparkCalc), as EgrSpark in 05293190AC",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "spark",
+   "auto": false
   }
  },
  "scalars": {
   "0338": {
    "name": "BusMsgAcData",
-   "desc": "Data word sent in the bus message $AC (CcdTxACAcData; bit 3 set with Options032E bit 7)",
+   "desc": "Data word sent in the bus message $AC (CcdTxACAcData; bit 3 set with Options0325 bit 7)",
    "category": "Other",
    "size": 2
   },
   "031D": {
-   "name": "Options032A",
+   "name": "Options031D",
    "desc": "Option byte; bit tests in the reference-event and spark code (bits 7-6: spark cap and ignition variants)",
    "category": "Options",
    "size": 1
   },
   "0324": {
-   "name": "Options032C",
+   "name": "Options0324",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2002,7 +2065,7 @@
    ]
   },
   "0325": {
-   "name": "Options032E",
+   "name": "Options0325",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2020,7 +2083,7 @@
    ]
   },
   "031E": {
-   "name": "Options0331",
+   "name": "Options031E",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2037,13 +2100,13 @@
    ]
   },
   "0321": {
-   "name": "Options0334",
+   "name": "Options0321",
    "desc": "Option byte (bit 4: output-compare set-up at reset and in the PIT code)",
    "category": "Options",
    "size": 1
   },
   "0323": {
-   "name": "Options0337",
+   "name": "Options0323",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2067,7 +2130,7 @@
    ]
   },
   "0326": {
-   "name": "Options033A",
+   "name": "Options0326",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2084,7 +2147,7 @@
    ]
   },
   "032B": {
-   "name": "Options0340",
+   "name": "Options032B",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -3358,7 +3421,7 @@
   },
   "1198": {
    "name": "IdleFlareAcRpmOn",
-   "desc": "Idle flare flags: rpm above the target at or above this value sets IdleFlareFlags bit 6 (A/C or Options033A bit 7)",
+   "desc": "Idle flare flags: rpm above the target at or above this value sets IdleFlareFlags bit 6 (A/C or Options0326 bit 7)",
    "unit": "rpm32",
    "category": "Idle",
    "size": 1
@@ -4279,7 +4342,7 @@
   },
   "1DDD": {
    "name": "IdleRampBlockAcOff",
-   "desc": "Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit Options033A bit 6 clear)",
+   "desc": "Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit Options0326 bit 6 clear)",
    "size": 1,
    "category": "Idle"
   },
@@ -6147,28 +6210,8 @@
    "category": "Diagnostics",
    "size": 1
   },
-  "031F": {
-   "name": "Options0330",
-   "desc": "Option byte (global configuration); bits used are listed with their names where known",
-   "category": "Options",
-   "unit": "raw",
-   "bitnames": {
-    "01": "BattTempModelOn",
-    "04": "BattTempCurveAlt",
-    "20": "TipInAirTempCheck"
-   },
-   "size": 1,
-   "bits": [
-    "01",
-    "02",
-    "04",
-    "08",
-    "10",
-    "20"
-   ]
-  },
   "0329": {
-   "name": "Options033F",
+   "name": "Options0329",
    "desc": "Option byte copied to Options033FCopy at reset; bits 7-4 enable monitor branches in ObdReadiness and O2HeaterMonitor",
    "category": "Options",
    "size": 1
@@ -6305,7 +6348,7 @@
   },
   "1AD9": {
    "name": "SparkStartRampStep2",
-   "desc": "Decrease of SparkStartRampValue per step (bit Options0339 bit 5)",
+   "desc": "Decrease of SparkStartRampValue per step (bit Options0330 bit 5)",
    "category": "Spark",
    "size": 1
   },

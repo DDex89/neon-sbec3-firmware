@@ -3,16 +3,19 @@
 Read from the code of 04887050; also valid for 04887051 (same code). Routines not listed here carry
 their name over from 05293190AC or 05293013AC (tools/port.py).
 
-## 06EFC FlexFactorCalc
-Flex fuel factors: with Options032C bit 0 every 8th pass from ethanol content and coolant (3D
-tables), otherwise the neutral values. 05007038 has only the neutral part (FlexFactorDefaults).
+## 06EFC FuelCorrections
+Main-loop fuel corrections with everything inline that later programs call as subroutines
+(FlexFuelFactors, WarmupFuel, PartThrottleFuelCalc in 05293190AC): the flex fuel factors (with
+Options0324 bit 0 every 8th pass from ethanol content and coolant, otherwise neutral; 05007038 keeps
+only the neutral part, FlexFactorDefaults), the warm-up factors, EgrFuelCorrection while the EGR
+solenoid is on, the returnless fuel pressure scale and the air temperature and MAP corrections.
 
 ## 11212 FlexSensorCheck
 Flex fuel sensor: P0176 (circuit), P0178 and P0179 (signal low and high).
 
 ## 0DB5A GptRegisterCheck
 GPT register check of HardwareCheck (HwCheckCode). There are three variants of it for different
-hardware: HardwareCheck calls GptRegisterCheck with Options032A bits 5-6, GptRegisterCheck2 with
+hardware: HardwareCheck calls GptRegisterCheck with Options031D bits 5-6, GptRegisterCheck2 with
 bits 3-4, GptRegisterCheck3 with bits 0-2 or 7.
 
 ## 158AE EgrFlowMonitor

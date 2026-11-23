@@ -18,7 +18,7 @@
  "06DDA": "InjectorFuelAccount",
  "06E64": "FlexFactorApply",
  "06E82": "IacFuelControl",
- "06EFC": "FlexFactorCalc",
+ "06EFC": "FuelCorrections",
  "07342": "ScaleByFraction",
  "07358": "IdleEnrichment",
  "074E0": "HotEngineEnrichCalc",

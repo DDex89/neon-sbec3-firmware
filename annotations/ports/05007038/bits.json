@@ -1,6 +1,141 @@
 {
- "_comment": "Hand names for 05007038 (family C; also used for 05293148AA, same code), read from the code. tools/port.py lays them over the names carried over from 05293190AC.",
- "Options033A": {
-  "4": "development port on: external 16 KB dual-port RAM on chip select 1 at $20000 (DevPortInit, DevPortService, DevPortChannel1-8; FinishFuelPulse, StartInjectorPulse and SparkEventCalc write per-event values to it)"
+ "_comment": "Carried over from 05293190AC by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
+ "Options0323": {
+  "7": "engine/ignition variant used by the event, spark, knock and rpm code",
+  "6": "engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)",
+  "5": "hardware set-up variant at reset (Reset, HardwareCheck)"
+ },
+ "Options0324": {
+  "7": "bus message variant (CcdTransmit, PciBuildMessage)",
+  "6": "manual transmission: GearStateUpdate and the park/neutral monitor are skipped",
+  "5": "transmission controller on the bus (sets EquipmentFlags bit 5)",
+  "4": "bus timeout variant (BusTimeoutCheck)",
+  "3": "PCI link variant (PciLinkCheck, PciBuildMessage)",
+  "2": "PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit"
+ },
+ "Options0325": {
+  "7": "closed loop off: ClosedLoopMain clears the O2 state and the short-term trim",
+  "6": "flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used"
+ },
+ "Options0326": {
+  "7": "selects branches in SwitchInputsRead, SecurityStatusCalc, SciSendByte and AcClutchControl",
+  "6": "fan output variant (FanStatusByte, FanRelayControl, output tests)",
+  "5": "A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp",
+  "4": "board variant used by O2UpdateUpstream, SciSendByte and QspiOutputStatus",
+  "3": "board variant: switch-input map (SwitchBitsCollect), O2UpdateUpstream, SciSendByte, QspiOutputStatus",
+  "2": "output driver variant (QspiOutputStatus)",
+  "1": "output driver variant (QspiOutputStatus)"
+ },
+ "Options0329": {
+  "7": "upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)",
+  "6": "upstream O2 sensor 2 fitted (second bank)",
+  "5": "downstream O2 sensor 1 fitted",
+  "4": "downstream O2 sensor 2 fitted",
+  "3": "selects branches in the fuel event, closed-loop timing, idle and flex code",
+  "2": "knock sensor variant (knock sample, retard, learn and spark code)",
+  "1": "knock sensor variant (as bit 2)",
+  "0": "knock window variant (KnockWindowInit, KnockWindowUpdate)"
+ },
+ "Options032A": {
+  "5": "tip-in air temperature check on (TipInAirTempCheck); also used by SparkHook and PurgeMonitorArm",
+  "4": "catalyst temperature sensor fitted (CatTempMonitor; sets EquipmentFlags bit 0)",
+  "3": "battery temperature sensor check variant (both branches exist in BatteryTempSensorCheck)",
+  "2": "alternative battery temperature curve (BattTempCurveAlt)",
+  "1": "battery temperature model variant (BatteryTempModel)",
+  "0": "battery temperature model on (BattTempModelOn); PciReceive also reads it"
+ },
+ "Options032B": {
+  "7": "A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan",
+  "6": "A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)",
+  "5": "A/C detection variant (EquipmentDetect, AcClutchControl)",
+  "4": "fuel level from the bus instead of the sender, probably",
+  "3": "power steering pressure switch fitted (sets EquipmentFlags bit 2)"
+ },
+ "Options032C": {
+  "7": "EVAP purge solenoid fitted",
+  "6": "PWM output C18 fitted (PwmC18Main, PwmC18CircuitCheck)",
+  "5": "A/C request variant (AcRequestUpdate)",
+  "4": "flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)",
+  "2": "starter cut / park-neutral variant (StarterCut, PnSwitchMonitor)",
+  "1": "ignition output variant (Isr_GPT_IC1, OutputTestOcFire)",
+  "0": "output driver variant (EquipmentInit, QspiOutputStatus)"
+ },
+ "Options032D": {
+  "7": "fan control variant (FanMain)",
+  "5": "fan relay variant (FanControl, output tests)",
+  "4": "PWM fan output: output-compare set-up at reset and in the PIT code",
+  "3": "output driver variant (QspiOutputStatus)",
+  "2": "output driver variant (QspiOutputStatus)",
+  "0": "fan relay variant (FanRelayControl, QspiOutputStatus)"
+ },
+ "Options032E": {
+  "7": "per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)",
+  "6": "speed damping spark on (SpeedDampOn)",
+  "5": "speed limiter on (SpeedLimitOn, FuelCutControl)",
+  "4": "surge spark control on (SurgeSparkOn)",
+  "3": "selects a branch in ReadMap",
+  "2": "part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)",
+  "1": "selects a branch in CalcBaseSpark",
+  "0": "idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect"
+ },
+ "Options032F": {
+  "7": "purge variant (PurgeRampControl, PurgeVaporLearn)",
+  "6": "selects a branch in GearStateUpdate",
+  "5": "knock enrichment on (KnockEnrichment, SparkHook)",
+  "4": "selects a branch in FinishFuelPulse",
+  "3": "selects a branch in CatMonSwitchRatio",
+  "2": "alternative fuel event offset (FuelEventOffsetAlt)",
+  "1": "alternative field control: ChargeControl2 instead of ChargeControl in the PIT code (FieldControlAlt)"
+ },
+ "Options0330": {
+  "7": "O2 cell selection variant (O2CellSelect3x3, O2CellSelect)",
+  "6": "O2 cross check on (O2CrossCheck)",
+  "5": "selects a branch in SparkEventCalc",
+  "4": "selects a branch in KnockSample",
+  "3": "alternative purge duty off closed throttle (PurgeDutyAltOther)",
+  "2": "alternative purge duty at closed throttle (PurgeDutyAltClosed)",
+  "1": "selects a branch in FinishFuelPulse",
+  "0": "tip-in retard hold (TipInRetardHold)"
+ },
+ "Options0331": {
+  "7": "idle flare check off (IdleFlareCheck skips when set)",
+  "6": "selects a branch in IdleRpmTarget",
+  "4": "development port on: external 16 KB device on chip select 1 at $20000, probably the dual-port RAM of a calibration tool (DevPortInit, DevPortService, DevPortChannel1-8; FinishFuelPulse, StartInjectorPulse and SparkEventCalc write per-event values to it); clear in 05007038 and 05293148AA",
+  "3": "selects a branch in IdleTargetControl",
+  "0": "start injector / spark variant (StartInjectorPulse, FinishFuelPulse, SparkEventCalc)"
+ },
+ "Options0332": {
+  "4": "speed control variant (SpeedCtlControl, SpeedCtlLampState)",
+  "3": "speed control switch variant",
+  "2": "speed control switch variant; also used by EquipmentDetect",
+  "1": "speed control switch variant; also used by EquipmentDetect",
+  "0": "speed control switch variant"
+ },
+ "Options0335": {
+  "7": "O2 response monitor, sensor 1 (P0133) on: ObdMonitorOptionBits row 2; also readiness (ObdReadiness)",
+  "6": "O2 response monitor, sensor 2 (P0153) on: ObdMonitorOptionBits row 3; also readiness (ObdReadiness)",
+  "5": "purge flow test on (PurgeFlowTest); purge monitor row 4 of ObdMonitorOptionBits",
+  "4": "catalyst monitor bank 1 (P0420) on: ObdMonitorOptionBits row 0; also readiness (ObdReadiness)",
+  "3": "catalyst monitor bank 2 (P0432) on: ObdMonitorOptionBits row 1; also readiness (ObdReadiness)",
+  "2": "misfire monitor variant (MisfireEnableCheck); misfire monitor row 15 of ObdMonitorOptionBits",
+  "1": "leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits",
+  "0": "EGR flow monitor supported (EgrFlowMonitor, ObdReadiness); row 5 of ObdMonitorOptionBits"
+ },
+ "Options0336": {
+  "7": "heater monitor for O2 sensor 1 supported (O2HeaterMonitor, ObdReadiness)",
+  "6": "heater monitor for O2 sensor 2 supported",
+  "5": "heater monitor for O2 sensor 3 (downstream 1) supported",
+  "4": "heater monitor for O2 sensor 4 (downstream 2) supported",
+  "3": "fuel system monitors (P0171/P0172/P0174/P0175) on: ObdMonitorOptionBits rows 11-14"
+ },
+ "Options0338": {
+  "7": "idle rpm monitor on (IdleRpmMonitor)",
+  "6": "park/neutral switch monitor on (PnSwitchMonitor)",
+  "5": "brake switch, VSS and purge flow monitors variant",
+  "4": "thermostat monitor on (ThermostatWarmCheck)",
+  "3": "power steering switch monitor on (PspSwitchMonitor)",
+  "2": "cam/crank sync monitor on (CamCrankSyncMonitor)",
+  "1": "fuel sender monitor on (FuelSenderMonitor)",
+  "0": "O2 activity checks variant (O2NoActivityCold, O2DownEnable)"
  }
 }

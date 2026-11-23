@@ -1,0 +1,68 @@
+{
+ "_comment": "Hand names for 04887050 tables (family A), read from the code; also used for 04887051.",
+ "tables": {
+  "0B18": {
+   "name": "FlexEthanolRpm",
+   "category": "Fuel",
+   "desc": "Flex fuel: value against ethanol content (rows) and RpmCurveValue (columns), both as positions; read in FuelCorrections like FlexEthanolRpm in 05293190AC",
+   "x": "pos256",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "0C11": {
+   "name": "FlexEthanolCoolantFactor1",
+   "category": "Fuel",
+   "desc": "Flex fuel: factor against ethanol content (rows) and coolant, first of the three coolant factors read in FuelCorrections (order as in 05293190AC)",
+   "x": "tempc",
+   "y": "pos256",
+   "z": "mult256",
+   "auto": false
+  },
+  "0BB4": {
+   "name": "FlexEthanolCoolantFactor2",
+   "category": "Fuel",
+   "desc": "Flex fuel: second coolant factor against ethanol content and coolant (FuelCorrections)",
+   "x": "tempc",
+   "y": "pos256",
+   "z": "mult256",
+   "auto": false
+  },
+  "0CC2": {
+   "name": "FlexEthanolCoolantFactor3",
+   "category": "Fuel",
+   "desc": "Flex fuel: third coolant factor against ethanol content and coolant (FuelCorrections)",
+   "x": "tempc",
+   "y": "pos256",
+   "z": "mult256",
+   "auto": false
+  },
+  "09B1": {
+   "name": "AfterStartDecay",
+   "category": "Fuel",
+   "desc": "After-start enrichment against time since start (rows) and CrankCoolant (columns); part of the warm-up factor in FuelCorrections",
+   "x": "raw",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "0D1F": {
+   "name": "EgrFuelCorrection",
+   "category": "Fuel",
+   "desc": "17 x 17 fuel correction against MAP (rows, through PartThrottleMapScale) and rpm, applied in FuelCorrections only while the EGR solenoid is on (ControlFlags944 bit 2); in 05293190AC EgrControl reads PartThrottleFuelMain for this; its rpm axis is the same as that of PartThrottleFuelMain in 05293190AC",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "180B": {
+   "name": "EgrSpark",
+   "category": "Spark",
+   "desc": "Spark correction with EGR on, MAP x rpm (EgrSparkCalc), as EgrSpark in 05293190AC",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "spark",
+   "auto": false
+  }
+ }
+}

@@ -945,7 +945,7 @@
   "1C29": {
    "name": "AcEngageSparkHoldSensor",
    "category": "Spark",
-   "desc": "A/C spark compensation: hold count (AcSparkHold) against the A/C sensor (calibration bit Options0331 bit 7 set)",
+   "desc": "A/C spark compensation: hold count (AcSparkHold) against the A/C sensor (calibration bit Options031E bit 7 set)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -953,7 +953,7 @@
   "1C31": {
    "name": "AcEngageSparkHoldIac",
    "category": "Spark",
-   "desc": "As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit Options0331 bit 7 clear)",
+   "desc": "As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit Options031E bit 7 clear)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1137,7 +1137,7 @@
   "1E03": {
    "name": "IdleTargetRpmPN",
    "category": "Idle",
-   "desc": "Target idle speed against coolant in P/N (with calibration bit Options032E bit 6 clear)",
+   "desc": "Target idle speed against coolant in P/N (with calibration bit Options0325 bit 6 clear)",
    "x": "tempc",
    "y": "rpm8",
    "auto": false
@@ -1363,7 +1363,7 @@
   "209B": {
    "name": "IacRollFactorAcSensor",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options0331 bit 7",
+   "desc": "Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options031E bit 7",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1985,18 +1985,18 @@
  "scalars": {
   "034A": {
    "name": "BusMsgAcData",
-   "desc": "Data word sent in the bus message $AC (CcdTxACAcData; bit 3 set with Options032E bit 7)",
+   "desc": "Data word sent in the bus message $AC (CcdTxACAcData; bit 3 set with Options0325 bit 7)",
    "category": "Other",
    "size": 2
   },
   "031D": {
-   "name": "Options032A",
+   "name": "Options031D",
    "desc": "Option byte; bit tests in the reference-event and spark code (bits 7-6: spark cap and ignition variants)",
    "category": "Options",
    "size": 1
   },
   "0324": {
-   "name": "Options032C",
+   "name": "Options0324",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2010,7 +2010,7 @@
    ]
   },
   "0325": {
-   "name": "Options032E",
+   "name": "Options0325",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2028,7 +2028,7 @@
    ]
   },
   "031E": {
-   "name": "Options0331",
+   "name": "Options031E",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2045,13 +2045,13 @@
    ]
   },
   "0321": {
-   "name": "Options0334",
+   "name": "Options0321",
    "desc": "Option byte (bit 4: output-compare set-up at reset and in the PIT code)",
    "category": "Options",
    "size": 1
   },
   "0323": {
-   "name": "Options0337",
+   "name": "Options0323",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2075,7 +2075,7 @@
    ]
   },
   "0326": {
-   "name": "Options033A",
+   "name": "Options0326",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2092,7 +2092,7 @@
    ]
   },
   "032D": {
-   "name": "Options0340",
+   "name": "Options032D",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -3439,7 +3439,7 @@
   },
   "11AB": {
    "name": "IdleFlareAcRpmOn",
-   "desc": "Idle flare flags: rpm above the target at or above this value sets IdleFlareFlags bit 6 (A/C or Options033A bit 7)",
+   "desc": "Idle flare flags: rpm above the target at or above this value sets IdleFlareFlags bit 6 (A/C or Options0326 bit 7)",
    "unit": "rpm32",
    "category": "Idle",
    "size": 1
@@ -4379,7 +4379,7 @@
   },
   "1DF6": {
    "name": "IdleRampBlockAcOff",
-   "desc": "Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit Options033A bit 6 clear)",
+   "desc": "Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit Options0326 bit 6 clear)",
    "size": 1,
    "category": "Idle"
   },
@@ -6191,28 +6191,8 @@
    "category": "Sensors",
    "size": 2
   },
-  "031F": {
-   "name": "Options0330",
-   "desc": "Option byte (global configuration); bits used are listed with their names where known",
-   "category": "Options",
-   "unit": "raw",
-   "bitnames": {
-    "01": "BattTempModelOn",
-    "04": "BattTempCurveAlt",
-    "20": "TipInAirTempCheck"
-   },
-   "size": 1,
-   "bits": [
-    "01",
-    "02",
-    "04",
-    "08",
-    "10",
-    "20"
-   ]
-  },
   "032B": {
-   "name": "Options033F",
+   "name": "Options032B",
    "desc": "Option byte copied to Options033FCopy at reset; bits 7-4 enable monitor branches in ObdReadiness and O2HeaterMonitor",
    "category": "Options",
    "size": 1
@@ -6349,7 +6329,7 @@
   },
   "1AF1": {
    "name": "SparkStartRampStep2",
-   "desc": "Decrease of SparkStartRampValue per step (bit Options0339 bit 5)",
+   "desc": "Decrease of SparkStartRampValue per step (bit Options0330 bit 5)",
    "category": "Spark",
    "size": 1
   },

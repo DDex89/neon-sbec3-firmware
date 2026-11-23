@@ -18,3 +18,5 @@ jobs:
         run: python3 -c "import glob, xml.etree.ElementTree as ET; [ET.parse(f) for f in glob.glob('xdf/*.xdf')]; print(len(glob.glob('xdf/*.xdf')), 'XDF files OK')"
       - name: Edit test (source edit, XDF addresses, checksum repair)
         run: python3 tools/edittest.py
+      - name: Inventory tool runs on a 128 KB and a 256 KB image
+        run: python3 tools/revision.py roms/05007038.bin && python3 tools/revision.py roms/05293190AC.bin

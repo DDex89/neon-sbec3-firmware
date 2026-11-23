@@ -444,6 +444,23 @@ def carry(ref, new, base, routines):
     return m, ram, labels, ramn, tables_out, analysis
 
 
+def rename_options(tables_out):
+    """Option bytes are named by their address (Options0331); in another image the same byte can sit
+    elsewhere, so a carried-over option takes the name of its new address. Returns old -> new."""
+    alias = {}
+    for k, v in tables_out["scalars"].items():
+        if re.match(r"^Options[0-9A-F]{4}$", v["name"]):
+            alias[v["name"]] = "Options" + k
+    sub = lambda t: re.sub(r"\bOptions[0-9A-F]{4}\b", lambda m: alias.get(m.group(0), m.group(0)), t)
+    for part in ("tables", "scalars", "special"):
+        for k, v in tables_out[part].items():
+            v = dict(v, name=alias.get(v["name"], v["name"]))
+            if "desc" in v:
+                v["desc"] = sub(v["desc"])
+            tables_out[part][k] = v
+    return alias
+
+
 def clamp(new, tables_out):
     """A structure taken over with the reference's row count must not run into the next item or code."""
     starts = sorted({int(k, 16) for part in ("tables", "scalars", "special") for k in tables_out[part]} |
@@ -511,6 +528,13 @@ def main():
     if hand:
         labels, ramn, tables_out = hand
     clamp(new, tables_out)
+    hand_bits = json.loads(hand_files.pop("bits.json", "{}"))
+    hand_bits.pop("_comment", None)
+    alias = rename_options(tables_out)
+    ref_bits = load("bits.json")
+    bits = {n: dict(ref_bits.get(o, {})) for o, n in alias.items()}
+    for k, v in hand_bits.items():
+        bits[k] = dict(bits.get(k, ref_bits.get(k, {})), **v)
 
     out = os.path.join(ANN, "ports", pn)
     os.makedirs(out, exist_ok=True)
@@ -525,17 +549,20 @@ def main():
     dump("ram.json", ramn)
     dump("tables.json", tables_out)
     dump("analysis.json", analysis)
-    for f in ("routines.md", "bits.json"):
-        p = os.path.join(out, f)
-        if f in hand_files:
-            open(p, "w", encoding="utf-8").write(hand_files[f])
-        elif os.path.exists(p):
-            os.remove(p)
+    p = os.path.join(out, "routines.md")
+    if "routines.md" in hand_files:
+        open(p, "w", encoding="utf-8").write(hand_files["routines.md"])
+    elif os.path.exists(p):
+        os.remove(p)
+    # bit texts for this image: the option bytes under their new names, plus the hand texts; they
+    # replace the reference texts of the same name
+    dump("bits.json", bits)
     nr = len(ref.body)
     stats = {
         "sha256": hashlib.sha256(new.data).hexdigest(),
         "routines_matched": len(m.pairs), "routines_ref": nr,
         "instructions_mapped": len(m.insn), "instructions_ref": len(ref.an.insn),
+        "options_renamed": {o: n for o, n in sorted(alias.items()) if o != n},
         "via": via, "hand": HAND.get(pn) if hand_files or hand else None,
         "labels": "%d of %d" % (len(labels), len({int(k, 16) for k in load("labels.json")} | set(gen_source.load_routines()))),
         "ram": "%d of %d" % (len(ramn), len(load("ram.json"))),

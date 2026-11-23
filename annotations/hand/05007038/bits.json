@@ -1,6 +1,6 @@
 {
  "_comment": "Hand names for 05007038 (family C; also used for 05293148AA, same code), read from the code. tools/port.py lays them over the names carried over from 05293190AC.",
- "Options033A": {
-  "4": "development port on: external 16 KB dual-port RAM on chip select 1 at $20000 (DevPortInit, DevPortService, DevPortChannel1-8; FinishFuelPulse, StartInjectorPulse and SparkEventCalc write per-event values to it)"
+ "Options0331": {
+  "4": "development port on: external 16 KB device on chip select 1 at $20000, probably the dual-port RAM of a calibration tool (DevPortInit, DevPortService, DevPortChannel1-8; FinishFuelPulse, StartInjectorPulse and SparkEventCalc write per-event values to it); clear in 05007038 and 05293148AA"
  }
 }

@@ -117,10 +117,10 @@ class Names:
             self.labels.setdefault(a, r["name"])
         self.used = {}
         self.bits = {k: v for k, v in load("bits.json").items() if isinstance(v, dict)}
-        if not ref:     # hand bit texts of a ported image replace single bits
+        if not ref:     # bit texts of a ported image (renamed option bytes, hand texts) replace
             for k, v in own("bits.json").items():
                 if isinstance(v, dict):
-                    self.bits[k] = dict(self.bits.get(k, {}), **v)
+                    self.bits[k] = v
         if ref:
             self.bits.update(fault_bits(data))
 

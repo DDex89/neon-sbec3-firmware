@@ -33,7 +33,10 @@ The aligned instructions give the address map for code labels. Their operands gi
 RAM offsets (`$xxxx,Z`) and calibration addresses (`LDX #table`, `$xxxx`); a name is carried over
 only when at least 80 % of the aligned instructions agree on the new address. When two reference
 names land on the same new address, the one with more votes keeps it; on a tie neither does.
-Structures taken over with the row count of the reference (bit maps, word lists, fault rows) are
+Option bytes are named by their address (`Options0331`); the same option byte can sit elsewhere
+in another image, so a carried-over option takes the name of its new address, with the bit texts
+of the reference byte (in 05007038 the byte the reference calls `Options033A` is `Options0331`).
+`stats.json` lists these renames. Structures taken over with the row count of the reference (bit maps, word lists, fault rows) are
 cut where the next named item or code starts, so a shorter list in an older program does not run
 into the code after it.
 

@@ -842,7 +842,7 @@
   "1573": {
    "name": "FuelTrimAdjust",
    "category": "Fuel",
-   "desc": "Signed fuel adjustment (centred on 128) from calibration $1923 or, with ControlFlagsC33 bit 4 clear, from FuelTrimAdjustValue (set over the SCI line); enabled by calibration bit Options032C bit 7",
+   "desc": "Signed fuel adjustment (centred on 128) from calibration $1923 or, with ControlFlagsC33 bit 4 clear, from FuelTrimAdjustValue (set over the SCI line); enabled by calibration bit Options0325 bit 7",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -959,7 +959,7 @@
   "1A39": {
    "name": "AirTempSparkFactor",
    "category": "Spark",
-   "desc": "Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit Options0330 bit 5 clear)",
+   "desc": "Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit Options032A bit 5 clear)",
    "x": "tempc",
    "y": "mult256",
    "auto": false
@@ -1223,7 +1223,7 @@
   "1DC3": {
    "name": "AcEngageSparkHoldSensor",
    "category": "Spark",
-   "desc": "A/C spark compensation: hold count (AcSparkHold) against the A/C sensor (calibration bit Options0331 bit 7 set)",
+   "desc": "A/C spark compensation: hold count (AcSparkHold) against the A/C sensor (calibration bit Options032B bit 7 set)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1231,7 +1231,7 @@
   "1DCB": {
    "name": "AcEngageSparkHoldIac",
    "category": "Spark",
-   "desc": "As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit Options0331 bit 7 clear)",
+   "desc": "As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit Options032B bit 7 clear)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1439,7 +1439,7 @@
   "2134": {
    "name": "IdleTargetRpmPN",
    "category": "Idle",
-   "desc": "Target idle speed against coolant in P/N (with calibration bit Options032E bit 6 clear); read here with another input than in 05293190AC, so the x unit is not carried",
+   "desc": "Target idle speed against coolant in P/N (with calibration bit Options0324 bit 6 clear); read here with another input than in 05293190AC, so the x unit is not carried",
    "x": "raw",
    "y": "rpm8",
    "auto": false
@@ -1737,7 +1737,7 @@
   "2379": {
    "name": "IacRollFactorAcSensor",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options0331 bit 7",
+   "desc": "Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options032B bit 7",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -2349,7 +2349,7 @@
   "4277": {
    "name": "Thermistor3CurveAlt",
    "category": "Sensors",
-   "desc": "Alternative curve for the third thermistor input, chosen by calibration bit Options0330 bit 2",
+   "desc": "Alternative curve for the third thermistor input, chosen by calibration bit Options032A bit 2",
    "x": "raw",
    "y": "tempc",
    "auto": false
@@ -2373,7 +2373,7 @@
   "42AD": {
    "name": "CatTempSensorCurve",
    "category": "Sensors",
-   "desc": "Catalyst temperature sensor (Options0330 bit 4; CatTempMonitor reports P1482/P1483 shorted low/high and P1484 overheat): analog input $0A8E to CatTempFiltered. The same input serves the flex-fuel sensor (FlexSensorCheck, P0176/P0178/P0179) where that is fitted",
+   "desc": "Catalyst temperature sensor (Options032A bit 4; CatTempMonitor reports P1482/P1483 shorted low/high and P1484 overheat): analog input $0A8E to CatTempFiltered. The same input serves the flex-fuel sensor (FlexSensorCheck, P0176/P0178/P0179) where that is fitted",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -2414,7 +2414,7 @@
   "FD65": {
    "name": "FuelEventOffset",
    "category": "Fuel",
-   "desc": "Per-event fuel offset against the calibration value $0A83 (or $7563 with bit Options0338 bit 2), added before the per-cylinder table $ABC3",
+   "desc": "Per-event fuel offset against the calibration value $0A83 (or $7563 with bit Options032F bit 2), added before the per-cylinder table $ABC3",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -2429,24 +2429,24 @@
   },
   "0311": {
    "name": "CalTypeCode",
-   "desc": "Header byte (7): copied to CalTypeCopy at reset, plus 4 when it is 5 or more and Options032E bit 7 is set (no reader of $0059 found)",
+   "desc": "Header byte (7): copied to CalTypeCopy at reset, plus 4 when it is 5 or more and Options0324 bit 7 is set (no reader of $0059 found)",
    "category": "Startup",
    "size": 1
   },
   "0320": {
    "name": "BusMsgAcData",
-   "desc": "Data word sent in the bus message $AC (CcdTxACAcData; bit 3 set with Options032E bit 7)",
+   "desc": "Data word sent in the bus message $AC (CcdTxACAcData; bit 3 set with Options0324 bit 7)",
    "category": "Other",
    "size": 2
   },
   "0323": {
-   "name": "Options032A",
+   "name": "Options0323",
    "desc": "Option byte; bit tests in the reference-event and spark code (bits 7-6: spark cap and ignition variants)",
    "category": "Options",
    "size": 1
   },
   "0325": {
-   "name": "Options032C",
+   "name": "Options0325",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2460,7 +2460,7 @@
    ]
   },
   "0326": {
-   "name": "Options032D",
+   "name": "Options0326",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2480,7 +2480,7 @@
    ]
   },
   "0324": {
-   "name": "Options032E",
+   "name": "Options0324",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2498,13 +2498,13 @@
    ]
   },
   "0329": {
-   "name": "Options032F",
+   "name": "Options0329",
    "desc": "Option byte; bit tests in the event, fuel and closed-loop code (bits 2-1: output timing set-up)",
    "category": "Options",
    "size": 1
   },
   "032A": {
-   "name": "Options0330",
+   "name": "Options032A",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2524,7 +2524,7 @@
    ]
   },
   "032B": {
-   "name": "Options0331",
+   "name": "Options032B",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2556,7 +2556,7 @@
    ]
   },
   "032C": {
-   "name": "Options0333",
+   "name": "Options032C",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2572,13 +2572,13 @@
    ]
   },
   "032D": {
-   "name": "Options0334",
+   "name": "Options032D",
    "desc": "Option byte (bit 4: output-compare set-up at reset and in the PIT code)",
    "category": "Options",
    "size": 1
   },
   "032E": {
-   "name": "Options0337",
+   "name": "Options032E",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2602,7 +2602,7 @@
    ]
   },
   "032F": {
-   "name": "Options0338",
+   "name": "Options032F",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2622,7 +2622,7 @@
    ]
   },
   "0330": {
-   "name": "Options0339",
+   "name": "Options0330",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2644,7 +2644,7 @@
    ]
   },
   "0331": {
-   "name": "Options033A",
+   "name": "Options0331",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -2661,19 +2661,19 @@
    ]
   },
   "0335": {
-   "name": "Options033E",
+   "name": "Options0335",
    "desc": "Option byte copied to Options033ECopy at reset; bit 1 selects branches in the start and closed-loop code",
    "category": "Options",
    "size": 1
   },
   "0336": {
-   "name": "Options033F",
+   "name": "Options0336",
    "desc": "Option byte copied to Options033FCopy at reset; bits 7-4 enable monitor branches in ObdReadiness and O2HeaterMonitor",
    "category": "Options",
    "size": 1
   },
   "0338": {
-   "name": "Options0340",
+   "name": "Options0338",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
@@ -3024,7 +3024,7 @@
   },
   "0580": {
    "name": "StarterCutHold",
-   "desc": "Starter control (StarterCut, Options0333 bit 2, probably the starter relay): hold count (StarterCutTimer) after rpm drops",
+   "desc": "Starter control (StarterCut, Options032C bit 2, probably the starter relay): hold count (StarterCutTimer) after rpm drops",
    "category": "Startup",
    "size": 1
   },
@@ -3105,7 +3105,7 @@
   },
   "0756": {
    "name": "FuelEventOffsetIn",
-   "desc": "Input value of FuelEventOffset (and of the cranking event timing); bit Options0338 bit 2 selects FuelEventOffsetInAlt",
+   "desc": "Input value of FuelEventOffset (and of the cranking event timing); bit Options032F bit 2 selects FuelEventOffsetInAlt",
    "size": 1,
    "category": "Fuel"
   },
@@ -3609,7 +3609,7 @@
   },
   "13AC": {
    "name": "O2CrossCheckMax",
-   "desc": "O2 cross-check (O2CrossCheck, Options0339 bit 6): first sensor reading at or below this value",
+   "desc": "O2 cross-check (O2CrossCheck, Options0330 bit 6): first sensor reading at or below this value",
    "category": "Closed loop",
    "size": 1
   },
@@ -4059,7 +4059,7 @@
   },
   "1554": {
    "name": "O2IdleRpmMargin",
-   "desc": "Closed loop: rpm within idle target plus this margin counts as idle (bit Options0339 bit 7)",
+   "desc": "Closed loop: rpm within idle target plus this margin counts as idle (bit Options0330 bit 7)",
    "unit": "rpm32",
    "category": "Closed loop",
    "size": 1
@@ -4072,7 +4072,7 @@
   },
   "1556": {
    "name": "O2MemIdleRpmHyst",
-   "desc": "Long-term memory cell selection: rpm hysteresis of the idle cell when Options0339 bit 7 selects the rpm test",
+   "desc": "Long-term memory cell selection: rpm hysteresis of the idle cell when Options0330 bit 7 selects the rpm test",
    "unit": "rpm32",
    "category": "Closed loop",
    "size": 1
@@ -4194,7 +4194,7 @@
   },
   "162A": {
    "name": "IdleFlareAcRpmOn",
-   "desc": "Idle flare flags: rpm above the target at or above this value sets IdleFlareFlags bit 6 (A/C or Options033A bit 7)",
+   "desc": "Idle flare flags: rpm above the target at or above this value sets IdleFlareFlags bit 6 (A/C or Options0331 bit 7)",
    "unit": "rpm32",
    "category": "Idle",
    "size": 1
@@ -4775,7 +4775,7 @@
   },
   "1C72": {
    "name": "TipInAirTempMin",
-   "desc": "Tip-in retard runs above this air temperature (with calibration bit Options0330 bit 5)",
+   "desc": "Tip-in retard runs above this air temperature (with calibration bit Options032A bit 5)",
    "unit": "tempc",
    "size": 1,
    "category": "Spark"
@@ -5272,7 +5272,7 @@
   },
   "20D2": {
    "name": "SparkHookCoolantMin",
-   "desc": "Spark hook (SparkHook, bit Options0338 bit 5): coolant at or above this value",
+   "desc": "Spark hook (SparkHook, bit Options032F bit 5): coolant at or above this value",
    "unit": "tempc",
    "category": "Spark",
    "size": 1
@@ -5285,7 +5285,7 @@
   },
   "20EB": {
    "name": "SparkStartRampStep2",
-   "desc": "Decrease of SparkStartRampValue per step (bit Options0339 bit 5)",
+   "desc": "Decrease of SparkStartRampValue per step (bit Options0330 bit 5)",
    "category": "Spark",
    "size": 1
   },
@@ -5447,7 +5447,7 @@
   },
   "2115": {
    "name": "IdleRampBlockAcOff",
-   "desc": "Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit Options033A bit 6 clear)",
+   "desc": "Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit Options0331 bit 6 clear)",
    "size": 1,
    "category": "Idle"
   },
@@ -7048,7 +7048,7 @@
   },
   "2B66": {
    "name": "O2HeaterRunTimeMin",
-   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterMonitor, Options0336 bits 4-7): run time at or above this value",
    "category": "Diagnostics",
    "size": 1
   },
@@ -7217,7 +7217,7 @@
   },
   "0359": {
    "name": "CatMonRetestRatioMax",
-   "desc": "Catalyst monitor (CatMonSwitchRatio, Options0338 bit 3): previous switch ratio below this value (or a pending recheck) selects the second switch levels",
+   "desc": "Catalyst monitor (CatMonSwitchRatio, Options032F bit 3): previous switch ratio below this value (or a pending recheck) selects the second switch levels",
    "category": "Diagnostics",
    "size": 1
   },
@@ -7689,7 +7689,7 @@
   },
   "417C": {
    "name": "KnockHighLoadValue",
-   "desc": "Knock (KnockSample, Options032F bit 1): value used above the knock MAP threshold",
+   "desc": "Knock (KnockSample, Options0329 bit 1): value used above the knock MAP threshold",
    "category": "Knock",
    "size": 1
   },
@@ -7870,7 +7870,7 @@
   },
   "4195": {
    "name": "CatTempSensorHigh",
-   "desc": "Catalyst temperature sensor (CatTempMonitor, Options0330 bit 4, input $0A8E shared with the flex sensor): reading at or above this value is a high fault (P1483)",
+   "desc": "Catalyst temperature sensor (CatTempMonitor, Options032A bit 4, input $0A8E shared with the flex sensor): reading at or above this value is a high fault (P1483)",
    "category": "Diagnostics",
    "size": 1
   },

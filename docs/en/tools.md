@@ -34,6 +34,7 @@ python3 tools/survey.py roms/*.bin  # header, checksum and families of all image
 | `tools/catalogue.py` | Writes the calibration catalogue (`docs/catalogue/`) |
 | `tools/xref.py` | Cross-reference of RAM variables and calibration addresses: who reads and writes them |
 | `tools/port.py` | Carries the reference annotations over to another image (`annotations/ports/`) |
+| `tools/revision.py` | Flash and RAM inventory of an image: free space, stubs, routines switched off by the calibration ([revision.md](revision.md)) |
 | `tools/caldiff.py` | Compares two images of one family table by table (`docs/diffs/`) |
 | `tools/xdf.py` | Writes the TunerPro definition of an image (`xdf/`) |
 | `tools/fixsum.py` | Checks or corrects the image checksum after editing |

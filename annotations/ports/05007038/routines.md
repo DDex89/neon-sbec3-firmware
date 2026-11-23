@@ -13,26 +13,28 @@ GPT part of HardwareCheck: GPTMCR, ICR, DDRGP, OC1M, TCTL1/2, TMSK1/2, PACTL, PW
 found changed is rewritten and its code ($0028, $0029, ...) stored in HwCheckCode.
 
 ## 0DA94 DevPortInit
-Development port, reset part. Only with Options033A bit 4. Chip select 1 is set up at reset for a
-16 KB block at $20000 (CSBAR1 $0203); the 256 KB families have flash there. Clears the channel
+Development port, reset part. Only with Options0331 bit 4, which is clear in 05007038 and
+05293148AA: the port is off in both. Chip select 1 is set up at reset for a
+16 KB block at $20000 (CSBAR1 $0203), probably the dual-port RAM of a calibration tool; the
+256 KB families have flash there. Clears the channel
 masks and the work words, and writes 1 to the eight mailbox words at $24000-$2400E. With the same
 bit FinishFuelPulse, StartInjectorPulse and SparkEventCalc also write per-injector and per-event
 values to the device ($2262A-$22652 and up), each selected by a bit of FinishFuel911.
 
 ## 0DAFC DevPortService
-Development port, main loop. Only with Options033A bit 4. Writes three calibration words
+Development port, main loop. Only with Options0331 bit 4. Writes three calibration words
 ($03F4-$03F8) to the device and compares a device word with $03FA. On a mismatch (no device) all
 channel masks are cleared; otherwise the write and read channel masks and three parameter words
 are taken from the device. The mailbox at $24000 is a busy flag: written 0, read back until 0.
 
 ## 0DBDC DevPortChannel1
 One of eight copies (channels 1-8, called from the main loop, the PIT and the reference interrupt,
-so at different rates). Only with Options033A bit 4 and the channel's bit in DevPortWriteMask or
+so at different rates). Only with Options0331 bit 4 and the channel's bit in DevPortWriteMask or
 DevPortReadMask. Write part: a list of RAM addresses at $20400 (bytes, then words, each list ended
 by 0) gets the values from $20600: the device overrides RAM. Read part: the RAM at the addresses
 listed at $20500 is copied to $20700: the device logs RAM. Channel n uses the block at
-$20000 + n * $400. This is a calibration tool interface (live RAM override and logging), not used
-by the car.
+$20000 + n * $400. This looks like a calibration tool interface (live RAM override and logging); the
+car does not use it.
 
 ## 089FA FlexFactorDefaults
 Sets the flex fuel factors to their neutral values (factor $0100, coolant factors $40).
@@ -44,7 +46,7 @@ is the same for bank 2.
 
 ## 07F22 FuelCutControl
 Deceleration fuel cut, rev limiter (RevLimit, RevLimitAlt in gear), speed limiter
-(Options0337 bit 5) and the fuel-cut delay counter; the flags go to RevLimitFlags.
+(Options032E bit 5) and the fuel-cut delay counter; the flags go to RevLimitFlags.
 
 ## 0831A WotModeDelay
 WOT mode with a delay: above a vehicle speed the WOT flag in FuelModeFlags is set only after
@@ -142,4 +144,4 @@ QSPI transmit RAM and SPCR2 set-up at reset, then QspiCommandInit when the QSPI 
 ## 08872 EmptyHook08872
 RTS only. Called from TipInFuelControl and IacFuelControl where 05293190AC calls FlexFactorApply.
 The other EmptyHook routines are also RTS only: empty slots of the main loop (08DBC, 102DA,
-10896, 10898, 15564, 1DF30) and of the PIT (0AE60, with Options0333 bit 4).
+10896, 10898, 15564, 1DF30) and of the PIT (0AE60, with Options032C bit 4).

@@ -1,0 +1,63 @@
+{
+ "_comment": "Carried over from 05293190AC (gaps filled through 05007038) by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
+ "Options031D": {
+  "7": "engine/ignition variant used by the event, spark, knock and rpm code",
+  "6": "engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)",
+  "5": "hardware set-up variant at reset (Reset, HardwareCheck)"
+ },
+ "Options031E": {
+  "7": "A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan",
+  "6": "A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)",
+  "5": "A/C detection variant (EquipmentDetect, AcClutchControl)",
+  "4": "fuel level from the bus instead of the sender, probably",
+  "3": "power steering pressure switch fitted (sets EquipmentFlags bit 2)"
+ },
+ "Options0321": {
+  "7": "fan control variant (FanMain)",
+  "5": "fan relay variant (FanControl, output tests)",
+  "4": "PWM fan output: output-compare set-up at reset and in the PIT code",
+  "3": "output driver variant (QspiOutputStatus)",
+  "2": "output driver variant (QspiOutputStatus)",
+  "0": "fan relay variant (FanRelayControl, QspiOutputStatus)"
+ },
+ "Options0323": {
+  "7": "per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)",
+  "6": "speed damping spark on (SpeedDampOn)",
+  "5": "speed limiter on (SpeedLimitOn, FuelCutControl)",
+  "4": "surge spark control on (SurgeSparkOn)",
+  "3": "selects a branch in ReadMap",
+  "2": "part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)",
+  "1": "selects a branch in CalcBaseSpark",
+  "0": "idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect"
+ },
+ "Options0324": {
+  "7": "closed loop off: ClosedLoopMain clears the O2 state and the short-term trim",
+  "6": "flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used"
+ },
+ "Options0325": {
+  "7": "bus message variant (CcdTransmit, PciBuildMessage)",
+  "6": "manual transmission: GearStateUpdate and the park/neutral monitor are skipped",
+  "5": "transmission controller on the bus (sets EquipmentFlags bit 5)",
+  "4": "bus timeout variant (BusTimeoutCheck)",
+  "3": "PCI link variant (PciLinkCheck, PciBuildMessage)",
+  "2": "PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit"
+ },
+ "Options0326": {
+  "7": "idle flare check off (IdleFlareCheck skips when set)",
+  "6": "selects a branch in IdleRpmTarget",
+  "4": "A/C spark on (AcSparkOn, AcClutchSpark)",
+  "3": "selects a branch in IdleTargetControl",
+  "0": "start injector / spark variant (StartInjectorPulse, FinishFuelPulse, SparkEventCalc)"
+ },
+ "Options032B": {},
+ "Options032D": {
+  "7": "idle rpm monitor on (IdleRpmMonitor)",
+  "6": "park/neutral switch monitor on (PnSwitchMonitor)",
+  "5": "brake switch, VSS and purge flow monitors variant",
+  "4": "thermostat monitor on (ThermostatWarmCheck)",
+  "3": "power steering switch monitor on (PspSwitchMonitor)",
+  "2": "cam/crank sync monitor on (CamCrankSyncMonitor)",
+  "1": "fuel sender monitor on (FuelSenderMonitor)",
+  "0": "O2 activity checks variant (O2NoActivityCold, O2DownEnable)"
+ }
+}

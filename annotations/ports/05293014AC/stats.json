@@ -4,12 +4,23 @@
  "routines_ref": 657,
  "instructions_mapped": 16963,
  "instructions_ref": 43370,
+ "options_renamed": {
+  "Options032A": "Options031D",
+  "Options032C": "Options0324",
+  "Options032E": "Options0325",
+  "Options0331": "Options031E",
+  "Options0334": "Options0321",
+  "Options0336": "Options032B",
+  "Options0337": "Options0323",
+  "Options033A": "Options0326",
+  "Options0340": "Options032D"
+ },
  "via": "05007038",
  "hand": null,
  "labels": "355 of 680",
  "ram": "955 of 1871",
  "tables": "241 of 410",
- "scalars": "701 of 1451",
+ "scalars": "700 of 1451",
  "ram_identity": 46,
  "ram_moved": 867
 }
