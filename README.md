@@ -32,7 +32,7 @@ has its source in the repository.
 ```
 docs/en, docs/ru        documentation
 src/<part number>/      generated source, one file per 64 KB bank; one image per family
-annotations/            names and notes the generator uses: labels, RAM, registers, vectors, tables
+annotations/            names and notes the generator uses: labels, RAM, flag bits, registers, vectors, tables
 annotations/ports/      the same, carried over to the other images by tools/port.py
 docs/catalogue/         generated calibration catalogue of each image
 docs/diffs/             generated calibration differences inside each family

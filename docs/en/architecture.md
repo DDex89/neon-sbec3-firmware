@@ -42,6 +42,11 @@ main-loop pass and checked at reset to tell a warm restart from a cold start.
 | $F9000-$F97FF | external device (CS2) | `$1xxx,Z` |
 | $FF700-$FFDFF | module registers (ADC, MRM, GPT, SIM, SRAM, QSM) | `$7xxx,Z`, named in `00_equates.asm` |
 
+Single bits of RAM flag bytes are described in `annotations/bits.json`. The generator writes the
+meaning after every `BSET`/`BCLR`/`BRSET`/`BRCLR` on such a bit and under the byte in
+`00_equates.asm`. The bits of `FaultSet00-1B` and `FaultMem00-1B` come from the fault table itself:
+each row gives its byte, its bit and its P-code.
+
 Configuration bits of the calibration live around $0328-$0338 and are tested with `BRSET`/`BRCLR`
 on extended addresses, for example `BRSET $032E,#$04,...` (see below). Their meaning is a stage 4
 topic.

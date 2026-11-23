@@ -13,6 +13,14 @@ IacPosition      equ $000B        ; $F800B
 ScratchC         equ $000D        ; $F800D
 FlexEthanol      equ $000E        ; $F800E
 EquipmentFlags   equ $0011        ; $F8011
+;                 bit 7: A/C fitted (EquipmentDetect)
+;                 bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
+;                 bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
+;                 bit 4: A/C requested (AcRequestUpdate)
+;                 bit 3: copy of calibration bit $033E.1 at reset; not read
+;                 bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
+;                 bit 1: copy of calibration bit $0335.3 at reset; not read
+;                 bit 0: copy of calibration bit $0330.4 at reset; not read
 SriMileage       equ $0020        ; $F8020
 FaultMem05       equ $007D        ; $F807D
 FaultMem07       equ $007F        ; $F807F
@@ -42,6 +50,14 @@ FreezeFrame0A    equ $00E1        ; $F80E1
 FreezeFrame0C    equ $00E3        ; $F80E3
 FreezeFrame0D    equ $00E4        ; $F80E4
 DiagStatusFlags  equ $00E7        ; $F80E7
+;                 bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+;                 bit 6: a fault aged out this pass, probably (ObdFaultAging)
+;                 bit 5: readiness: every supported monitor complete (ObdReadiness)
+;                 bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
+;                 bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+;                 bit 2: freeze frame to be updated (ObdFaultProcess)
+;                 bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+;                 bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 MisfireFlags     equ $00EF        ; $F80EF
 Temp4F0          equ $00F0        ; $F80F0
 Temp4F2          equ $00F2        ; $F80F2
@@ -62,6 +78,10 @@ SpeedCtlRpmAvg   equ $0142        ; $F8142
 SpeedCtlThrottleAvg equ $0144        ; $F8144
 SpeedCtlRpmJumpTimer equ $0146        ; $F8146
 SpeedCtlState    equ $0149        ; $F8149
+;                 bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
+;                 bit 5: set at reset, on cancel and on engage; meaning not settled
+;                 bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
+;                 bit 0: set or resume engaged, probably
 FaultSet00       equ $0163        ; $F8163
 FaultSet01       equ $0164        ; $F8164
 FaultSet06       equ $0169        ; $F8169
@@ -75,6 +95,11 @@ CamCrankOffset   equ $01AB        ; $F81AB
 CamCrankStable   equ $01AC        ; $F81AC
 CamCrankFlags    equ $01B4        ; $F81B4
 SensorFaultFlags equ $01B5        ; $F81B5
+;                 bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
+;                 bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
+;                 bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
+;                 bit 3: air temperature sensor fault (P0112 or P0113)
+;                 bit 0: battery temperature sensor fault (P1492 or P1493)
 IacBase          equ $01F0        ; $F81F0
 Scratch3         equ $01F3        ; $F81F3
 Scratch8         equ $01F8        ; $F81F8
@@ -116,6 +141,13 @@ LookupResult     equ $02FE        ; $F82FE
 O2HeaterSample   equ $0302        ; $F8302
 SwitchInputs2    equ $031B        ; $F831B
 DriveFlags       equ $031C        ; $F831C
+;                 bit 7: drive engagement handling in progress (GearStateUpdate), probably
+;                 bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
+;                 bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+;                 bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
+;                 bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
+;                 bit 1: reference pulses seen since key-on (Isr_GPT_IC1); MapKeyOnCheck needs it clear
+;                 bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
 EngineRpm        equ $031D        ; $F831D
 RpmPrev          equ $031F        ; $F831F
 VehicleSpeed     equ $0323        ; $F8323
@@ -128,6 +160,12 @@ BatteryVolts2    equ $032E        ; $F832E
 AcSensor         equ $032F        ; $F832F
 ThrottleAboveClosed equ $0332        ; $F8332
 ThrottleState    equ $0336        ; $F8336
+;                 bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
+;                 bit 6: wide-open throttle (DetectWot)
+;                 bit 4: closed position stepped to a new minimum, probably (ThrottleClosedLearn only)
+;                 bit 3: closed position taken from the calibration default, probably (ThrottleClosedLearn only)
+;                 bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
+;                 bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
 KnockSignal      equ $0339        ; $F8339
 KnockThresholdNow equ $033A        ; $F833A
 ManifoldVacuum   equ $033B        ; $F833B
@@ -158,6 +196,13 @@ MtvSwitchTime    equ $039A        ; $F839A
 MtvRpmRate       equ $039E        ; $F839E
 MtvHoldCount     equ $03A0        ; $F83A0
 AcFlags          equ $03A1        ; $F83A1
+;                 bit 7: A/C clutch engaged (AcClutchControl); set at reset
+;                 bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7
+;                 bit 5: A/C idle step active (IdleTargetControl); set at reset
+;                 bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
+;                 bit 3: A/C request from the bus (message bit 0 in CcdReceive)
+;                 bit 2: bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test
+;                 bit 1: A/C clutch output changed since the last pass (AcCutLogic)
 OutputTestFlags  equ $03A3        ; $F83A3
 IacEventTimer    equ $03A4        ; $F83A4
 MonStartDelay    equ $03AE        ; $F83AE
@@ -206,7 +251,20 @@ SystemTestRejects equ $0494        ; $F8494
 SystemTestMode   equ $0495        ; $F8495
 SystemTestValue  equ $0496        ; $F8496
 ControlFlags943  equ $0498        ; $F8498
+;                 bit 7: A/C cut active (AcCutControl timer running)
+;                 bit 6: set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)
+;                 bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
+;                 bit 3: fuel pump relay on, probably (set and cleared with bit 4)
+;                 bit 2: output toggled by EgrOutputTest, not read
+;                 bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 ControlFlags944  equ $0499        ; $F8499
+;                 bit 7: set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7)
+;                 bit 5: output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read
+;                 bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
+;                 bit 3: second fan relay, probably; driven only with A/C fitted
+;                 bit 2: EGR solenoid on (EgrEnable)
+;                 bit 1: toggled by ActuatorTestMain, not read
+;                 bit 0: starter cut active (StarterCut)
 EepromAddr       equ $04A2        ; $F84A2
 EepromData       equ $04A4        ; $F84A4
 EepromFlags      equ $04A6        ; $F84A6
@@ -231,6 +289,14 @@ O2Bank2Flags     equ $054D        ; $F854D
 O2DownDelay      equ $0555        ; $F8555
 O2SlowDelay      equ $0556        ; $F8556
 O2ActiveFlags    equ $0558        ; $F8558
+;                 bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
+;                 bit 6: upstream O2 sensor 2 active (as bit 7)
+;                 bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow
+;                 bit 4: downstream O2 sensor 2 active (as bit 5)
+;                 bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+;                 bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+;                 bit 1: as bit 5, cleared by FuelLevelFlags bit 1
+;                 bit 0: as bit 4, cleared by FuelLevelFlags bit 0
 O2SwitchFlags    equ $0559        ; $F8559
 FuelPulseFlags   equ $055D        ; $F855D
 CrankEthanolFactor equ $055E        ; $F855E
@@ -259,6 +325,12 @@ DecelLeanTimeFactor equ $0592        ; $F8592
 DecelLeanFuel    equ $0593        ; $F8593
 DecelLeanTimer   equ $0594        ; $F8594
 EngineStateFlags equ $0598        ; $F8598
+;                 bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
+;                 bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
+;                 bit 3: cleared at stall only, never set in 05293190AC
+;                 bit 2: cleared at stall only, never set in 05293190AC
+;                 bit 1: cleared at stall only, never set in 05293190AC
+;                 bit 0: first reference pulse seen, start pulse still due (cleared by StartInjectorPulse)
 FuelPulseAdder   equ $059B        ; $F859B
 DecelFlags       equ $059D        ; $F859D
 DecelRampTimer   equ $059E        ; $F859E
@@ -315,6 +387,12 @@ SparkStartTime   equ $065E        ; $F865E
 IdleTarget       equ $0660        ; $F8660
 GearStateFlags   equ $0670        ; $F8670
 IdleFlags        equ $0672        ; $F8672
+;                 bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
+;                 bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
+;                 bit 5: gear-engagement idle step started (IdleTargetControl)
+;                 bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
+;                 bit 1: shift idle step applied (IacShiftStepApply)
+;                 bit 0: idle rpm loop hold timer started (IdleRpmLoop)
 IdleFlags5       equ $0673        ; $F8673
 IdleFlags6       equ $0674        ; $F8674
 SparkFlags3      equ $0675        ; $F8675

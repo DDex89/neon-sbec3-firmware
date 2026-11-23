@@ -10700,7 +10700,7 @@ L084B8:
         LDAA    >BatteryVolts2,Z
         CMPA    #$A0
         BCS     L084E2
-        BRCLR   >EngineStateFlags,Z,#$80,L084E2
+        BRCLR   >EngineStateFlags,Z,#$80,L084E2          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BSET    $06B6,Z,#$80
 L084E2:
         PULM    D
@@ -10737,7 +10737,7 @@ ChargeControl:
         DEC     >FieldDutyLimit,Z
         BRA     L08570
 L0853A:
-        BRSET   >FaultSet00,Z,#$08,L08570
+        BRSET   >FaultSet00,Z,#$08,L08570                ; bit 3: fault row $0B, no P-code
         BRCLR   $1000,Z,#$04,L08570
         BRCLR   $1013,Z,#$20,L08554
         BRCLR   $106E,Z,#$20,L08570
@@ -10747,7 +10747,7 @@ L08554:
 L0855A:
         BSET    $06B6,Z,#$08
         LDAA    >FieldFaultDuty
-        BRSET   >EngineStateFlags,Z,#$80,L0856C
+        BRSET   >EngineStateFlags,Z,#$80,L0856C          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >FieldFaultDutyCrank
 L0856C:
         STAA    >FieldDutyLimit,Z
@@ -10761,7 +10761,7 @@ L0857C:
         BRSET   >MainLoopCounter,Z,#$80,L08674
         LBRA    L0865C
 L08586:
-        BRCLR   >ThrottleState,Z,#$02,L085AA
+        BRCLR   >ThrottleState,Z,#$02,L085AA             ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
         LDAB    #$1C
         LDAA    >FieldControlMode
         LBEQ    L08674
@@ -11571,7 +11571,7 @@ L08DB0:
         LDD     #$061B
         STD     >Temp4F0,Z
 L08DC0:
-        BRSET   >FaultSet00,Z,#$40,L08DCA
+        BRSET   >FaultSet00,Z,#$40,L08DCA                ; bit 6: P1491
         BSET    $06B6,Z,#$10
 L08DCA:
         LDD     >Temp4F0,Z
@@ -11591,7 +11591,7 @@ ChargeControl2:
         DEC     >FieldDutyLimit,Z
         BRA     L08E24
 L08DEE:
-        BRSET   >FaultSet00,Z,#$08,L08E24
+        BRSET   >FaultSet00,Z,#$08,L08E24                ; bit 3: fault row $0B, no P-code
         BRCLR   $1000,Z,#$04,L08E24
         BRCLR   $1013,Z,#$20,L08E08
         BRCLR   $106E,Z,#$20,L08E24
@@ -11601,7 +11601,7 @@ L08E08:
 L08E0E:
         BSET    $06B6,Z,#$08
         LDAA    >FieldFaultDuty
-        BRSET   >EngineStateFlags,Z,#$80,L08E20
+        BRSET   >EngineStateFlags,Z,#$80,L08E20          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >FieldFaultDutyCrank
 L08E20:
         STAA    >FieldDutyLimit,Z
@@ -11615,7 +11615,7 @@ L08E30:
         BRSET   >MainLoopCounter,Z,#$80,L09000
         LBRA    L08FE8
 L08E3A:
-        BRCLR   >ThrottleState,Z,#$02,L08E5E
+        BRCLR   >ThrottleState,Z,#$02,L08E5E             ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
         LDAB    #$1C
         LDAA    >FieldControlMode
         LBEQ    L09000
@@ -12122,9 +12122,9 @@ L0A0FA:
         LDAB    >Ic2OverflowCount,Z
         STAB    $0AC5,Z
         STE     $0AC6,Z
-        BRCLR   >FaultSet01,Z,#$02,L0A196
-        BRCLR   >ControlFlags943,Z,#$10,L0A13E
-        BCLR    >ControlFlags943,Z,#$18
+        BRCLR   >FaultSet01,Z,#$02,L0A196                ; bit 1: P0340
+        BRCLR   >ControlFlags943,Z,#$10,L0A13E           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
+        BCLR    >ControlFlags943,Z,#$18                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it; bit 3: fuel pump relay on, probably (set and cleared with bit 4)
         JSR     SwitchBitsCollect
         LDD     $093A,Z
         STD     >TR0,Z
@@ -12197,7 +12197,7 @@ L0A1C0:
 L0A1D2:
         BCLR    >CrankSyncFlags2,Z,#$70
         CLRA
-        BRCLR   >EngineStateFlags,Z,#$80,L0A206
+        BRCLR   >EngineStateFlags,Z,#$80,L0A206          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >SparkFlags,Z,#$20,L0A206
         LDE     >RefPeriod,Z
         CPE     #$00EA
@@ -12231,7 +12231,7 @@ L0A222:
         ORAB    #$10
         STD     >TMSK1,Z
 L0A234:
-        BSET    >DriveFlags,Z,#$02
+        BSET    >DriveFlags,Z,#$02                       ; bit 1: reference pulses seen since key-on (Isr_GPT_IC1); MapKeyOnCheck needs it clear
 L0A238:
         PULM    K,Y,X,E,D
         RTI
@@ -12901,20 +12901,20 @@ L0A9FA:
         BCS     L0AA42
         CPX     >RunPeriodOff
         BCS     L0AA7C
-        BRCLR   >EngineStateFlags,Z,#$80,L0AA38
+        BRCLR   >EngineStateFlags,Z,#$80,L0AA38          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >Options033B,#$40,L0AA38
         BCLR    >PurgeFlags2,Z,#$20
 L0AA38:
-        BCLR    >EngineStateFlags,Z,#$80
+        BCLR    >EngineStateFlags,Z,#$80                 ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BCLR    >FuelPulseFlags,Z,#$10
         BRA     L0AA7C
 L0AA42:
-        BRSET   >EngineStateFlags,Z,#$80,L0AA7C
-        BSET    >EngineStateFlags,Z,#$80
+        BRSET   >EngineStateFlags,Z,#$80,L0AA7C          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
+        BSET    >EngineStateFlags,Z,#$80                 ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BSET    >FuelEventFlags,Z,#$86
         LDD     >FuelPulseBank1,Z
         STD     >CrankPulse,Z
-        BSET    >EngineStateFlags,Z,#$01
+        BSET    >EngineStateFlags,Z,#$01                 ; bit 0: first reference pulse seen, start pulse still due (cleared by StartInjectorPulse)
         CLRW    >Count3s,Z
         CLR     >RunTime,Z
         CLR     >CrankEvents,Z
@@ -12925,7 +12925,7 @@ L0AA42:
         STAA    >MapLast,Z
 L0AA7C:
         BSET    >CrankSyncFlags,Z,#$40
-        BRCLR   >EngineStateFlags,Z,#$80,L0AADE
+        BRCLR   >EngineStateFlags,Z,#$80,L0AADE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >FuelPulseFlags,Z,#$04,L0AAA4
         BSET    >FuelPulseFlags,Z,#$10
         TST     $076E,Z
@@ -12933,7 +12933,7 @@ L0AA7C:
         DEC     $076E,Z
         BRA     L0AAA4
 L0AA9C:
-        BSET    >EngineStateFlags,Z,#$10
+        BSET    >EngineStateFlags,Z,#$10                 ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         BCLR    >FuelPulseFlags,Z,#$10
 L0AAA4:
         JSR     EventCorrections
@@ -12975,14 +12975,14 @@ Isr_GPT_PAI:
         BRSET   >CrankSyncFlags,Z,#$84,L0AB54
         LDAA    #$84
         STAA    >CrankSyncFlags,Z
-        BSET    >DriveFlags,Z,#$04
+        BSET    >DriveFlags,Z,#$04                       ; bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
         CLRW    >Count3s,Z
         BCLR    >CrankSyncFlags2,Z,#$40
         BCLR    >CamCrankFlags,Z,#$20
         BRCLR   >SwitchInputs2,Z,#$20,L0AB2C
         BSET    >CamCrankFlags,Z,#$20
 L0AB2C:
-        BCLR    >ControlFlags943,Z,#$18
+        BCLR    >ControlFlags943,Z,#$18                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it; bit 3: fuel pump relay on, probably (set and cleared with bit 4)
         JSR     SwitchBitsCollect
         LDD     $093A,Z
         STD     >TR0,Z
@@ -13542,7 +13542,7 @@ L0C00E:
         INCA
         BEQ     L0C038
         STAA    >Count3s,Z
-        BRCLR   >EngineStateFlags,Z,#$80,L0C038
+        BRCLR   >EngineStateFlags,Z,#$80,L0C038          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         STAA    >RunTime,Z
         TST     >FlexLearnStartCoolantValue,Z
         BEQ     L0C038
@@ -14257,18 +14257,18 @@ UpdateDriveFlags:
         LDAA    >O2MemCell,Z
         CMPA    >PurgeCell1
         BNE     L0C522
-        BSET    >DriveFlags,Z,#$01
+        BSET    >DriveFlags,Z,#$01                       ; bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
         BSR     IncSaturate
         BRA     L0C528
 L0C522:
-        BCLR    >DriveFlags,Z,#$01
+        BCLR    >DriveFlags,Z,#$01                       ; bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
         CLR     $00,X
 L0C528:
         LDX     #$8A4E
         BRCLR   >MainLoopPhaseMask,Z,#$08,L0C534
         BSR     IncSaturate
 L0C534:
-        BRCLR   >AcFlags,Z,#$02,L0C53C
+        BRCLR   >AcFlags,Z,#$02,L0C53C                   ; bit 1: A/C clutch output changed since the last pass (AcCutLogic)
         CLR     $00,X
 L0C53C:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L0C54E
@@ -14278,7 +14278,7 @@ L0C53C:
 L0C54E:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L0C564
         LDX     #$86C8
-        BRCLR   >O2ActiveFlags,Z,#$80,L0C562
+        BRCLR   >O2ActiveFlags,Z,#$80,L0C562             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BSR     IncSaturate
         BRA     L0C564
 L0C562:
@@ -14288,7 +14288,7 @@ L0C564:
         BRCLR   >MainLoopPhaseMask,Z,#$08,L0C570
         BSR     IncSaturate
 L0C570:
-        BRCLR   >DriveFlags,Z,#$40,L0C578
+        BRCLR   >DriveFlags,Z,#$40,L0C578                ; bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
         CLR     $00,X
 L0C578:
         RTS
@@ -14345,7 +14345,7 @@ L0C5E4:
         BEQ     L0C5FE
         STAA    >TipInSteps,Z
 L0C5FE:
-        BRCLR   >EngineStateFlags,Z,#$80,L0C610
+        BRCLR   >EngineStateFlags,Z,#$80,L0C610          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >AfterStartSparkFlags,Z,#$3C,L0C60C
         BRA     L0C610
 L0C60C:
@@ -14359,7 +14359,7 @@ L0C61A:
 L0C624:
         BRCLR   >StartFlags,Z,#$08,L0C658
         BRCLR   >FuelModeFlags2,Z,#$08,L0C648
-        BRSET   >ThrottleState,Z,#$40,L0C648
+        BRSET   >ThrottleState,Z,#$40,L0C648             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >IdleFuelUpCount,Z
         INCA
         CMPA    >IdleFuelStepsUp
@@ -14392,12 +14392,12 @@ L0C682:
 L0C68C:
         CLR     >SparkStartRampValue,Z
 L0C690:
-        BRSET   >FaultSet0D,Z,#$10,L0C69C
-        BRCLR   >FaultSet0B,Z,#$30,L0C71C
+        BRSET   >FaultSet0D,Z,#$10,L0C69C                ; bit 4: P0176
+        BRCLR   >FaultSet0B,Z,#$30,L0C71C                ; bit 5: P0178; bit 4: P0179
 L0C69C:
-        BRCLR   >O2ActiveFlags,Z,#$80,L0C71C
+        BRCLR   >O2ActiveFlags,Z,#$80,L0C71C             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >ShortTermTrim1,Z
-        BRSET   >O2ActiveFlags,Z,#$08,L0C6B0
+        BRSET   >O2ActiveFlags,Z,#$08,L0C6B0             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
         LDAA    >ShortTermTrim2,Z
 L0C6B0:
         BPL     L0C6E8
@@ -15009,7 +15009,7 @@ L0CC9A:
         LDX     #$747B
 L0CC9E:
         JSR     CollectBits
-        BRCLR   >FaultSet0D,Z,#$10,L0CCAA
+        BRCLR   >FaultSet0D,Z,#$10,L0CCAA                ; bit 4: P0176
         ORAA    #$20
 L0CCAA:
         STAA    $09D2,Z
@@ -15026,13 +15026,13 @@ BusStatusBytes:
         BRSET   >Options032E,#$04,L0CD3A
         LDX     #$73DB
         JSR     CollectBits
-        BRCLR   >EquipmentFlags,Z,#$40,L0CCEC
-        BRSET   >EngineStateFlags,Z,#$80,L0CCDE
+        BRCLR   >EquipmentFlags,Z,#$40,L0CCEC            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
+        BRSET   >EngineStateFlags,Z,#$80,L0CCDE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         TST     >Count3s,Z
         BNE     L0CCEC
         BEQ     L0CCEA
 L0CCDE:
-        BRSET   >SpeedCtlState,Z,#$80,L0CCEC
+        BRSET   >SpeedCtlState,Z,#$80,L0CCEC             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         LDAB    >SpeedCtlSetSpeed,Z
         BEQ     L0CCEC
 L0CCEA:
@@ -15050,14 +15050,14 @@ L0CCFE:
         LDX     #$73FB
         JSR     CollectBits
         EORB    #$10
-        BRCLR   >EquipmentFlags,Z,#$40,L0CD34
-        BRSET   >EngineStateFlags,Z,#$80,L0CD1E
+        BRCLR   >EquipmentFlags,Z,#$40,L0CD34            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
+        BRSET   >EngineStateFlags,Z,#$80,L0CD1E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >Count3s,Z
         BEQ     L0CD32
 L0CD1E:
         BRCLR   >AdcFlags,Z,#$10,L0CD34
-        BRSET   >FaultSet00,Z,#$80,L0CD34
-        BRCLR   >FaultSet0B,Z,#$C4,L0CD32
+        BRSET   >FaultSet00,Z,#$80,L0CD34                ; bit 7: fault row $0F, no P-code
+        BRCLR   >FaultSet0B,Z,#$C4,L0CD32                ; bit 7: fault row $57, no P-code; bit 6: fault row $56, no P-code; bit 2: fault row $52, no P-code
         BRA     L0CD34
 L0CD32:
         ORAB    #$04
@@ -15807,9 +15807,9 @@ L0D6F2:
         LDAA    #$7F
         STAA    >SparkStartRamp,Z
         BSET    >VssFlags,Z,#$10
-        BSET    >ThrottleState,Z,#$10
-        BSET    >AcFlags,Z,#$B0
-        BSET    >SpeedCtlState,Z,#$A0
+        BSET    >ThrottleState,Z,#$10                    ; bit 4: closed position stepped to a new minimum, probably (ThrottleClosedLearn only)
+        BSET    >AcFlags,Z,#$B0                          ; bit 7: A/C clutch engaged (AcClutchControl); set at reset; bit 5: A/C idle step active (IdleTargetControl); set at reset; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
+        BSET    >SpeedCtlState,Z,#$A0                    ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel); bit 5: set at reset, on cancel and on engage; meaning not settled
         BSET    >SwitchInputs2,Z,#$04
         BSET    >AdcFlags,Z,#$04
         LDD     #$8013
@@ -15846,16 +15846,16 @@ L0D7D0:
 L0D7EC:
         STAA    <CalTypeCopy,Z
         LDAA    #$04
-        BRSET   >EquipmentFlags,Z,#$20,L0D808
+        BRSET   >EquipmentFlags,Z,#$20,L0D808            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDAA    #$02
         BRSET   >Options032E,#$40,L0D808
         LDAA    #$03
-        BRSET   >EquipmentFlags,Z,#$10,L0D808
+        BRSET   >EquipmentFlags,Z,#$10,L0D808            ; bit 4: A/C requested (AcRequestUpdate)
         LDAA    #$01
 L0D808:
         STAA    $58,Z
         BRCLR   >Options033E,#$02,L0D814
-        BSET    <EquipmentFlags,Z,#$08
+        BSET    <EquipmentFlags,Z,#$08                   ; bit 3: copy of calibration bit $033E.1 at reset; not read
 L0D814:
         LDD     #$0097
         JSR     EepromReadByte
@@ -16010,7 +16010,7 @@ L0D9D6:
 L0D9E2:
         STAA    >ThrottleAboveClosed,Z
         BEQ     L0D9EC
-        BSET    >ThrottleState,Z,#$80
+        BSET    >ThrottleState,Z,#$80                    ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
 L0D9EC:
         LDAA    <Baro,Z
         CMPA    #$80
@@ -16058,7 +16058,7 @@ L0DA74:
         LDAA    >CoolantTemp,Z
         CMPA    >HotRestartCoolantMin
         BCS     L0DA82
-        BSET    >EngineStateFlags,Z,#$10
+        BSET    >EngineStateFlags,Z,#$10                 ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
 L0DA82:
         LDX     #ResetCoolantFuelInit
         LDAA    >CoolantTemp,Z
@@ -16164,17 +16164,17 @@ L0DBBE:
 ;---------------------------------------------------------------------------------------------------
 EquipmentInit:
         BRCLR   >Options0330,#$10,L0DBD4
-        BSET    <EquipmentFlags,Z,#$01
+        BSET    <EquipmentFlags,Z,#$01                   ; bit 0: copy of calibration bit $0330.4 at reset; not read
 L0DBD4:
         BRCLR   >Options032F,#$08,L0DBDE
         BSET    <BusTempFlags2,Z,#$20
 L0DBDE:
         BRSET   >Options0337,#$01,L0DBEE
         BRCLR   >Options0331,#$08,L0DBEE
-        BSET    <EquipmentFlags,Z,#$04
+        BSET    <EquipmentFlags,Z,#$04                   ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
 L0DBEE:
         BRCLR   >Options0335,#$08,L0DBF8
-        BSET    <EquipmentFlags,Z,#$02
+        BSET    <EquipmentFlags,Z,#$02                   ; bit 1: copy of calibration bit $0335.3 at reset; not read
 L0DBF8:
         BRCLR   >Options0333,#$01,L0DC02
         BSET    <BusTempFlags2,Z,#$10
@@ -16192,7 +16192,7 @@ L0DC20:
         BSET    <BusTempFlags2,Z,#$04
 L0DC2A:
         BRCLR   >Options032E,#$20,L0DC34
-        BSET    <EquipmentFlags,Z,#$20
+        BSET    <EquipmentFlags,Z,#$20                   ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
 L0DC34:
         RTS
 
@@ -16505,7 +16505,7 @@ L0DFFC:
 L0E006:
         BCLR    <FlexStartFlags,Z,#$28
 L0E00A:
-        BRSET   >FaultSet07,Z,#$02,L0E036
+        BRSET   >FaultSet07,Z,#$02,L0E036                ; bit 1: P1696
         LDAA    >FlexEthanol,Z
         STAA    >EepromData,Z
         SUBA    $0A90,Z
@@ -17514,7 +17514,7 @@ L0EB82:
         ADDE    #$01
         SBCE    #$0000
         STE     >FieldRampCounter,Z
-        BRCLR   >EngineStateFlags,Z,#$80,L0EBAC
+        BRCLR   >EngineStateFlags,Z,#$80,L0EBAC          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >Count3s,Z
         CMPA    >FieldRampTimeMin
         BCS     L0EBAC
@@ -17681,7 +17681,7 @@ L0ED78:
         JSR     PciStateSet3
 L0ED7C:
         BRSET   >PciRxFlags,Z,#$10,L0EDAE
-        BRCLR   >EngineStateFlags,Z,#$80,L0EDAE
+        BRCLR   >EngineStateFlags,Z,#$80,L0EDAE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >BusConfigFlags,Z,#$40,L0EDA4
         BRSET   >Options032E,#$04,L0EDA4
         BRSET   >SkimFlags,Z,#$10,L0EDA4
@@ -17785,8 +17785,8 @@ BusTimeoutCheck:
         BCLR    >PciRxFlags,Z,#$01
         LBRA    L0EF64
 L0EE68:
-        BRCLR   >EngineStateFlags,Z,#$80,L0EF64
-        BRCLR   >DriveFlags,Z,#$20,L0EF64
+        BRCLR   >EngineStateFlags,Z,#$80,L0EF64          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
+        BRCLR   >DriveFlags,Z,#$20,L0EF64                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         BRSET   >PciFlags2,Z,#$04,L0EF74
         BRCLR   >Options032E,#$08,L0EEB8
         LDAB    >PciTimeout,Z
@@ -17844,14 +17844,14 @@ L0EF1C:
         CMPB    #$C8
         BCS     L0EF38
 L0EF20:
-        BRSET   >FaultSet0D,Z,#$02,L0EF38
+        BRSET   >FaultSet0D,Z,#$02,L0EF38                ; bit 1: P1695
         LDY     #$441C
         JSR     ReportFault
         BCC     L0EF38
         CLR     >EngineOffTimeBus,Z
-        BCLR    >AcFlags,Z,#$08
+        BCLR    >AcFlags,Z,#$08                          ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
 L0EF38:
-        BRCLR   >EquipmentFlags,Z,#$20,L0EF74
+        BRCLR   >EquipmentFlags,Z,#$20,L0EF74            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDAB    >BodyMsgTimeout,Z
         INCB
         BEQ     L0EF5E
@@ -17881,7 +17881,7 @@ SkimEepromSave:
         LBEQ    L0F000
         ORP     #$00E0
         CLR     >SkimTimer,Z
-        BRSET   >FaultSet07,Z,#$02,L0EFF8
+        BRSET   >FaultSet07,Z,#$02,L0EFF8                ; bit 1: P1696
         BRSET   >EepromFlags,Z,#$80,L0EFFC
         BSET    >EepromFlags,Z,#$80
         BITA    #$08
@@ -17973,7 +17973,7 @@ L0F058:
         TST     >MonStartDelay,Z
         LBNE    L0F198
         LDAB    >SecurityTimer,Z
-        BRCLR   >EngineStateFlags,Z,#$80,L0F072
+        BRCLR   >EngineStateFlags,Z,#$80,L0F072          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         INCB
         BNE     L0F078
         DECB
@@ -18011,7 +18011,7 @@ L0F0B2:
 L0F0CE:
         ANDA    #$DF
 L0F0D0:
-        BRSET   >FaultSet07,Z,#$02,L0F130
+        BRSET   >FaultSet07,Z,#$02,L0F130                ; bit 1: P1696
         BRSET   >EepromFlags,Z,#$80,L0F0EC
         BSET    >EepromFlags,Z,#$80
         STAA    >EepromData,Z
@@ -18026,7 +18026,7 @@ L0F0EC:
         BRSET   >Options032E,#$04,L0F126
         BRCLR   >SecurityFlags,Z,#$08,L0F126
 L0F106:
-        BRSET   >FaultSet07,Z,#$02,L0F130
+        BRSET   >FaultSet07,Z,#$02,L0F130                ; bit 1: P1696
         BRSET   >EepromFlags,Z,#$80,L0F130
         ANDA    #$E0
         BSET    >EepromFlags,Z,#$80
@@ -18054,7 +18054,7 @@ L0F152:
 L0F156:
         BSET    >SecurityFlags,Z,#$20
         BRSET   >SkimFlags,Z,#$02,L0F198
-        BRSET   >FaultSet07,Z,#$02,L0F198
+        BRSET   >FaultSet07,Z,#$02,L0F198                ; bit 1: P1696
         BRSET   >EepromFlags,Z,#$80,L0F198
         LDAA    >BusConfigFlags,Z
         TAB
@@ -18104,7 +18104,7 @@ L0F1E6:
         BRCLR   >SkimFlags,Z,#$04,L0F238
 L0F1EC:
         BRCLR   >Options0328,#$02,L0F21A
-        BRCLR   >EngineStateFlags,Z,#$80,L0F242
+        BRCLR   >EngineStateFlags,Z,#$80,L0F242          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >BusConfigFlags,Z,#$1F,L0F212
         BSET    >SkimFlags,Z,#$02
         TAB

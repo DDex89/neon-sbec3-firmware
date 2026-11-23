@@ -22,6 +22,14 @@ EgrZeroPos       equ $0040        ; $F8040
 FlexStartFlags   equ $0050        ; $F8050
 VacLeakFlags     equ $0051        ; $F8051
 EquipmentFlags   equ $0055        ; $F8055
+;                 bit 7: A/C fitted (EquipmentDetect)
+;                 bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
+;                 bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
+;                 bit 4: A/C requested (AcRequestUpdate)
+;                 bit 3: copy of calibration bit $033E.1 at reset; not read
+;                 bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
+;                 bit 1: copy of calibration bit $0335.3 at reset; not read
+;                 bit 0: copy of calibration bit $0330.4 at reset; not read
 BusTempFlags2    equ $0056        ; $F8056
 CalTypeCopy      equ $0059        ; $F8059
 PurgeCellTrim1   equ $006A        ; $F806A
@@ -32,6 +40,12 @@ PurgeCellTrim2B2 equ $007E        ; $F807E
 PurgeCellTrim3B2 equ $007F        ; $F807F
 PurgeCellRichFlags equ $0080        ; $F8080
 MonitorDisableFlags equ $009C        ; $F809C
+;                 bit 5: flex-fuel learning hold active (FlexLearnHold not zero): misfire, catalyst, O2, EGR, purge and leak monitors wait
+;                 bit 4: fuel level below MonEnableFuelEmpty
+;                 bit 3: fuel level outside the monitor window (MonEnableFuelLow)
+;                 bit 2: battery voltage at or below MonEnableVoltsMin
+;                 bit 1: barometric pressure below MonEnableBaroMin (altitude)
+;                 bit 0: battery (ambient) temperature below MonEnableBattTempMin
 MonFlags09E      equ $009E        ; $F809E
 MonStatusA1      equ $00A1        ; $F80A1
 MonStatusA2      equ $00A2        ; $F80A2
@@ -87,6 +101,14 @@ FreezeFrame0B    equ $00D3        ; $F80D3
 FreezeFrame0C    equ $00D4        ; $F80D4
 FreezeFrame0D    equ $00D5        ; $F80D5
 DiagStatusFlags  equ $00D8        ; $F80D8
+;                 bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+;                 bit 6: a fault aged out this pass, probably (ObdFaultAging)
+;                 bit 5: readiness: every supported monitor complete (ObdReadiness)
+;                 bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
+;                 bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+;                 bit 2: freeze frame to be updated (ObdFaultProcess)
+;                 bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+;                 bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 MisfireRecordD9  equ $00D9        ; $F80D9
 MisfireRecordDA  equ $00DA        ; $F80DA
 MisfireFlags     equ $00DC        ; $F80DC
@@ -125,20 +147,140 @@ BrakeSwDriveCounter equ $011D        ; $F811D
 FuelSenderFuelUsed equ $011F        ; $F811F
 FuelSenderShutdown equ $0120        ; $F8120
 FaultMem01       equ $0123        ; $F8123
+;                 bit 7: fault row $07, no P-code
+;                 bit 6: fault row $06, no P-code
+;                 bit 5: fault row $05, no P-code
+;                 bit 4: fault row $04, no P-code
+;                 bit 3: fault row $03, no P-code
+;                 bit 2: P0601
+;                 bit 1: P0340
+;                 bit 0: fault row $00, no P-code
 FaultMem03       equ $0125        ; $F8125
+;                 bit 7: fault row $17, no P-code
+;                 bit 6: fault row $16, no P-code
+;                 bit 5: P0201
+;                 bit 4: P0202
+;                 bit 3: P0203
+;                 bit 2: P0443
+;                 bit 1: P0403
+;                 bit 0: fault row $10, no P-code
 FaultMem04       equ $0126        ; $F8126
+;                 bit 7: fault row $2F, no P-code
+;                 bit 6: P0401
+;                 bit 5: fault row $2D, no P-code
+;                 bit 4: fault row $2C, no P-code
+;                 bit 3: P0351
+;                 bit 2: P0352
+;                 bit 1: P0353
+;                 bit 0: fault row $28, no P-code
 FaultMem05       equ $0127        ; $F8127
+;                 bit 7: P1297
+;                 bit 6: fault row $26, no P-code
+;                 bit 5: P0108
+;                 bit 4: P0107
+;                 bit 3: P0500
+;                 bit 2: fault row $22, no P-code
+;                 bit 1: P1281
+;                 bit 0: P0134
 FaultMem06       equ $0128        ; $F8128
+;                 bit 7: fault row $3F, no P-code
+;                 bit 6: P0132
+;                 bit 5: P0204
+;                 bit 4: P0106
+;                 bit 3: fault row $3B, no P-code
+;                 bit 2: P0113
+;                 bit 1: P0112
+;                 bit 0: fault row $38, no P-code
 FaultMem07       equ $0129        ; $F8129
+;                 bit 7: fault row $37, no P-code
+;                 bit 6: fault row $36, no P-code
+;                 bit 5: fault row $35, no P-code
+;                 bit 4: fault row $34, no P-code
+;                 bit 3: fault row $33, no P-code
+;                 bit 2: fault row $32, no P-code
+;                 bit 1: P1696
+;                 bit 0: P1697
 FaultMem09       equ $012B        ; $F812B
+;                 bit 7: P1478
+;                 bit 6: P0206
+;                 bit 5: P0205
+;                 bit 4: P0600
+;                 bit 3: fault row $43, no P-code
+;                 bit 2: P0152
+;                 bit 1: P0154
+;                 bit 0: fault row $40, no P-code
 FaultMem0F       equ $0131        ; $F8131
+;                 bit 7: P0171
+;                 bit 6: P0172
+;                 bit 5: fault row $75, no P-code
+;                 bit 4: fault row $74, no P-code
+;                 bit 3: P0551
+;                 bit 2: P1899
+;                 bit 1: P0441
+;                 bit 0: P0420
 FaultMem10       equ $0132        ; $F8132
+;                 bit 7: fault row $8F, no P-code
+;                 bit 6: fault row $8E, no P-code
+;                 bit 5: fault row $8D, no P-code
+;                 bit 4: fault row $8C, no P-code
+;                 bit 3: P1487
+;                 bit 2: P1294
+;                 bit 1: P0700
+;                 bit 0: fault row $88, no P-code
 FaultMem12       equ $0134        ; $F8134
+;                 bit 7: fault row $9F, no P-code
+;                 bit 6: fault row $9E, no P-code
+;                 bit 5: P1391
+;                 bit 4: P0137
+;                 bit 3: P0131
+;                 bit 2: P1492
+;                 bit 1: P1493
+;                 bit 0: P0703
 FaultMem13       equ $0135        ; $F8135
+;                 bit 7: P0460
+;                 bit 6: P0463
+;                 bit 5: P0462
+;                 bit 4: P0740
+;                 bit 3: fault row $93, no P-code
+;                 bit 2: P1496
+;                 bit 1: P1299
+;                 bit 0: fault row $90, no P-code
 FaultMem15       equ $0137        ; $F8137
+;                 bit 7: fault row $A7, no P-code
+;                 bit 6: fault row $A6, no P-code
+;                 bit 5: fault row $A5, no P-code
+;                 bit 4: fault row $A4, no P-code
+;                 bit 3: fault row $A3, no P-code
+;                 bit 2: fault row $A2, no P-code
+;                 bit 1: P0455
+;                 bit 0: P0442
 FaultMem16       equ $0138        ; $F8138
+;                 bit 7: fault row $BF, no P-code
+;                 bit 6: fault row $BE, no P-code
+;                 bit 5: fault row $BD, no P-code
+;                 bit 4: fault row $BC, no P-code
+;                 bit 3: P1486
+;                 bit 2: P1398
+;                 bit 1: fault row $B9, no P-code
+;                 bit 0: P1494
 FaultMem17       equ $0139        ; $F8139
+;                 bit 7: P1495
+;                 bit 6: P0157
+;                 bit 5: P0151
+;                 bit 4: P0432
+;                 bit 3: fault row $B3, no P-code
+;                 bit 2: fault row $B2, no P-code
+;                 bit 1: fault row $B1, no P-code
+;                 bit 0: fault row $B0, no P-code
 FaultMem1B       equ $013D        ; $F813D
+;                 bit 7: P0404
+;                 bit 6: fault row $D6, no P-code
+;                 bit 5: P0406
+;                 bit 4: P0405
+;                 bit 3: fault row $D3, no P-code
+;                 bit 2: fault row $D2, no P-code
+;                 bit 1: fault row $D1, no P-code
+;                 bit 0: fault row $D0, no P-code
 MilFaultCount    equ $014D        ; $F814D
 ObdTid21Status   equ $0166        ; $F8166
 ObdTid21Result   equ $0167        ; $F8167
@@ -197,6 +339,12 @@ IdleRunTimer     equ $030E        ; $F830E
 GearStateFlags   equ $0310        ; $F8310
 BusIdleByte      equ $0311        ; $F8311
 IdleFlags        equ $0312        ; $F8312
+;                 bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
+;                 bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
+;                 bit 5: gear-engagement idle step started (IdleTargetControl)
+;                 bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
+;                 bit 1: shift idle step applied (IacShiftStepApply)
+;                 bit 0: idle rpm loop hold timer started (IdleRpmLoop)
 IdleFlags5       equ $0313        ; $F8313
 IdleFlags6       equ $0314        ; $F8314
 IdleFlags7       equ $0315        ; $F8315
@@ -268,6 +416,10 @@ IdleDipTimer     equ $0382        ; $F8382
 IdleDipFlags     equ $0383        ; $F8383
 ObdWork          equ $03F0        ; $F83F0
 SpeedCtlState    equ $0400        ; $F8400
+;                 bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
+;                 bit 5: set at reset, on cancel and on engage; meaning not settled
+;                 bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
+;                 bit 0: set or resume engaged, probably
 SpeedCtlState2   equ $0401        ; $F8401
 SpeedCtlFlags    equ $0403        ; $F8403
 SpeedCtlFlags2   equ $0405        ; $F8405
@@ -349,30 +501,230 @@ Temp4FC          equ $04FC        ; $F84FC
 Temp4FE          equ $04FE        ; $F84FE
 Temp4FF          equ $04FF        ; $F84FF
 FaultSet00       equ $0500        ; $F8500
+;                 bit 7: fault row $0F, no P-code
+;                 bit 6: P1491
+;                 bit 5: fault row $0D, no P-code
+;                 bit 4: P0743
+;                 bit 3: fault row $0B, no P-code
+;                 bit 2: fault row $0A, no P-code
+;                 bit 1: fault row $09, no P-code
+;                 bit 0: fault row $08, no P-code
 FaultSet01       equ $0501        ; $F8501
+;                 bit 7: fault row $07, no P-code
+;                 bit 6: fault row $06, no P-code
+;                 bit 5: fault row $05, no P-code
+;                 bit 4: fault row $04, no P-code
+;                 bit 3: fault row $03, no P-code
+;                 bit 2: P0601
+;                 bit 1: P0340
+;                 bit 0: fault row $00, no P-code
 FaultSet02       equ $0502        ; $F8502
+;                 bit 7: P0118
+;                 bit 6: P0117
+;                 bit 5: fault row $1D, no P-code
+;                 bit 4: fault row $1C, no P-code
+;                 bit 3: P0123
+;                 bit 2: P0122
+;                 bit 1: P0505
+;                 bit 0: fault row $18, no P-code
 FaultSet03       equ $0503        ; $F8503
+;                 bit 7: fault row $17, no P-code
+;                 bit 6: fault row $16, no P-code
+;                 bit 5: P0201
+;                 bit 4: P0202
+;                 bit 3: P0203
+;                 bit 2: P0443
+;                 bit 1: P0403
+;                 bit 0: fault row $10, no P-code
 FaultSet04       equ $0504        ; $F8504
+;                 bit 7: fault row $2F, no P-code
+;                 bit 6: P0401
+;                 bit 5: fault row $2D, no P-code
+;                 bit 4: fault row $2C, no P-code
+;                 bit 3: P0351
+;                 bit 2: P0352
+;                 bit 1: P0353
+;                 bit 0: fault row $28, no P-code
 FaultSet05       equ $0505        ; $F8505
+;                 bit 7: P1297
+;                 bit 6: fault row $26, no P-code
+;                 bit 5: P0108
+;                 bit 4: P0107
+;                 bit 3: P0500
+;                 bit 2: fault row $22, no P-code
+;                 bit 1: P1281
+;                 bit 0: P0134
 FaultSet06       equ $0506        ; $F8506
+;                 bit 7: fault row $3F, no P-code
+;                 bit 6: P0132
+;                 bit 5: P0204
+;                 bit 4: P0106
+;                 bit 3: fault row $3B, no P-code
+;                 bit 2: P0113
+;                 bit 1: P0112
+;                 bit 0: fault row $38, no P-code
 FaultSet07       equ $0507        ; $F8507
+;                 bit 7: fault row $37, no P-code
+;                 bit 6: fault row $36, no P-code
+;                 bit 5: fault row $35, no P-code
+;                 bit 4: fault row $34, no P-code
+;                 bit 3: fault row $33, no P-code
+;                 bit 2: fault row $32, no P-code
+;                 bit 1: P1696
+;                 bit 0: P1697
 FaultSet08       equ $0508        ; $F8508
+;                 bit 7: fault row $4F, no P-code
+;                 bit 6: fault row $4E, no P-code
+;                 bit 5: P0355
+;                 bit 4: P0354
+;                 bit 3: fault row $4B, no P-code
+;                 bit 2: fault row $4A, no P-code
+;                 bit 1: fault row $49, no P-code
+;                 bit 0: fault row $48, no P-code
 FaultSet09       equ $0509        ; $F8509
+;                 bit 7: P1478
+;                 bit 6: P0206
+;                 bit 5: P0205
+;                 bit 4: P0600
+;                 bit 3: fault row $43, no P-code
+;                 bit 2: P0152
+;                 bit 1: P0154
+;                 bit 0: fault row $40, no P-code
 FaultSet0A       equ $050A        ; $F850A
+;                 bit 7: fault row $5F, no P-code
+;                 bit 6: fault row $5E, no P-code
+;                 bit 5: P1489
+;                 bit 4: P1490
+;                 bit 3: fault row $5B, no P-code
+;                 bit 2: fault row $5A, no P-code
+;                 bit 1: fault row $59, no P-code
+;                 bit 0: P1289
 FaultSet0B       equ $050B        ; $F850B
+;                 bit 7: fault row $57, no P-code
+;                 bit 6: fault row $56, no P-code
+;                 bit 5: P0178
+;                 bit 4: P0179
+;                 bit 3: fault row $53, no P-code
+;                 bit 2: fault row $52, no P-code
+;                 bit 1: fault row $51, no P-code
+;                 bit 0: fault row $50, no P-code
 FaultSet0C       equ $050C        ; $F850C
+;                 bit 7: fault row $6F, no P-code
+;                 bit 6: P0304
+;                 bit 5: P0303
+;                 bit 4: P0302
+;                 bit 3: P0301
+;                 bit 2: P0300
+;                 bit 1: P0141
+;                 bit 0: P0139
 FaultSet0D       equ $050D        ; $F850D
+;                 bit 7: P0135
+;                 bit 6: P0133
+;                 bit 5: fault row $65, no P-code
+;                 bit 4: P0176
+;                 bit 3: fault row $63, no P-code
+;                 bit 2: fault row $62, no P-code
+;                 bit 1: P1695
+;                 bit 0: P1698
 FaultSet0E       equ $050E        ; $F850E
+;                 bit 7: P0158
+;                 bit 6: P0138
+;                 bit 5: P0161
+;                 bit 4: P0155
+;                 bit 3: P0159
+;                 bit 2: P0153
+;                 bit 1: P0174
+;                 bit 0: P0175
 FaultSet0F       equ $050F        ; $F850F
+;                 bit 7: P0171
+;                 bit 6: P0172
+;                 bit 5: fault row $75, no P-code
+;                 bit 4: fault row $74, no P-code
+;                 bit 3: P0551
+;                 bit 2: P1899
+;                 bit 1: P0441
+;                 bit 0: P0420
 FaultSet10       equ $0510        ; $F8510
+;                 bit 7: fault row $8F, no P-code
+;                 bit 6: fault row $8E, no P-code
+;                 bit 5: fault row $8D, no P-code
+;                 bit 4: fault row $8C, no P-code
+;                 bit 3: P1487
+;                 bit 2: P1294
+;                 bit 1: P0700
+;                 bit 0: fault row $88, no P-code
 FaultSet11       equ $0511        ; $F8511
+;                 bit 7: fault row $87, no P-code
+;                 bit 6: fault row $86, no P-code
+;                 bit 5: P1390
+;                 bit 4: P0121
+;                 bit 3: P1298
+;                 bit 2: P0160
+;                 bit 1: P0140
+;                 bit 0: P0125
 FaultSet12       equ $0512        ; $F8512
+;                 bit 7: fault row $9F, no P-code
+;                 bit 6: fault row $9E, no P-code
+;                 bit 5: P1391
+;                 bit 4: P0137
+;                 bit 3: P0131
+;                 bit 2: P1492
+;                 bit 1: P1493
+;                 bit 0: P0703
 FaultSet13       equ $0513        ; $F8513
+;                 bit 7: P0460
+;                 bit 6: P0463
+;                 bit 5: P0462
+;                 bit 4: P0740
+;                 bit 3: fault row $93, no P-code
+;                 bit 2: P1496
+;                 bit 1: P1299
+;                 bit 0: fault row $90, no P-code
 FaultSet16       equ $0516        ; $F8516
+;                 bit 7: fault row $BF, no P-code
+;                 bit 6: fault row $BE, no P-code
+;                 bit 5: fault row $BD, no P-code
+;                 bit 4: fault row $BC, no P-code
+;                 bit 3: P1486
+;                 bit 2: P1398
+;                 bit 1: fault row $B9, no P-code
+;                 bit 0: P1494
 FaultSet17       equ $0517        ; $F8517
+;                 bit 7: P1495
+;                 bit 6: P0157
+;                 bit 5: P0151
+;                 bit 4: P0432
+;                 bit 3: fault row $B3, no P-code
+;                 bit 2: fault row $B2, no P-code
+;                 bit 1: fault row $B1, no P-code
+;                 bit 0: fault row $B0, no P-code
 FaultSet19       equ $0519        ; $F8519
+;                 bit 7: fault row $C7, no P-code
+;                 bit 6: fault row $C6, no P-code
+;                 bit 5: P1498
+;                 bit 4: fault row $C4, no P-code
+;                 bit 3: P1484
+;                 bit 2: fault row $C2, no P-code
+;                 bit 1: P0153
+;                 bit 0: P0133
 FaultSet1A       equ $051A        ; $F851A
+;                 bit 7: fault row $DF, no P-code
+;                 bit 6: fault row $DE, no P-code
+;                 bit 5: P1481
+;                 bit 4: P1482
+;                 bit 3: P1483
+;                 bit 2: fault row $DA, no P-code
+;                 bit 1: fault row $D9, no P-code
+;                 bit 0: P0356
 FaultSet1B       equ $051B        ; $F851B
+;                 bit 7: P0404
+;                 bit 6: fault row $D6, no P-code
+;                 bit 5: P0406
+;                 bit 4: P0405
+;                 bit 3: fault row $D3, no P-code
+;                 bit 2: fault row $D2, no P-code
+;                 bit 1: fault row $D1, no P-code
+;                 bit 0: fault row $D0, no P-code
 FaultPending1    equ $0520        ; $F8520
 FaultPending2    equ $0521        ; $F8521
 FaultPendingCount1 equ $0522        ; $F8522
@@ -497,6 +849,11 @@ VacLeakRecoverCounter equ $06AE        ; $F86AE
 VacLeakCounter   equ $06AF        ; $F86AF
 CatTempFaultCounter equ $06B2        ; $F86B2
 SensorFaultFlags equ $06B4        ; $F86B4
+;                 bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
+;                 bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
+;                 bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
+;                 bit 3: air temperature sensor fault (P0112 or P0113)
+;                 bit 0: battery temperature sensor fault (P1492 or P1493)
 FuelLevelFlags   equ $06B5        ; $F86B5
 Options033ECopy  equ $06B8        ; $F86B8
 Options033FCopy  equ $06B9        ; $F86B9
@@ -538,6 +895,14 @@ O2StepCount      equ $0759        ; $F8759
 O2ReopenTimer    equ $075B        ; $F875B
 O2PurgeHoldTimer equ $075C        ; $F875C
 O2ActiveFlags    equ $075D        ; $F875D
+;                 bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
+;                 bit 6: upstream O2 sensor 2 active (as bit 7)
+;                 bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow
+;                 bit 4: downstream O2 sensor 2 active (as bit 5)
+;                 bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+;                 bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+;                 bit 1: as bit 5, cleared by FuelLevelFlags bit 1
+;                 bit 0: as bit 4, cleared by FuelLevelFlags bit 0
 O2SwitchFlags    equ $075E        ; $F875E
 O2InactiveFlags  equ $075F        ; $F875F
 O2ResetFlags2    equ $0760        ; $F8760
@@ -554,6 +919,12 @@ FuelModeFlags    equ $0771        ; $F8771
 IdleFlareFlags   equ $0772        ; $F8772
 RevLimitFlags    equ $0773        ; $F8773
 EngineStateFlags equ $0774        ; $F8774
+;                 bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
+;                 bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
+;                 bit 3: cleared at stall only, never set in 05293190AC
+;                 bit 2: cleared at stall only, never set in 05293190AC
+;                 bit 1: cleared at stall only, never set in 05293190AC
+;                 bit 0: first reference pulse seen, start pulse still due (cleared by StartInjectorPulse)
 FuelEventFlags   equ $0775        ; $F8775
 DecelFlags       equ $0776        ; $F8776
 DecelRampTimer   equ $0777        ; $F8777
@@ -666,7 +1037,20 @@ SystemTestMode   equ $0937        ; $F8937
 SystemTestValue  equ $0938        ; $F8938
 FanBusFlags      equ $0942        ; $F8942
 ControlFlags943  equ $0943        ; $F8943
+;                 bit 7: A/C cut active (AcCutControl timer running)
+;                 bit 6: set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)
+;                 bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
+;                 bit 3: fuel pump relay on, probably (set and cleared with bit 4)
+;                 bit 2: output toggled by EgrOutputTest, not read
+;                 bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 ControlFlags944  equ $0944        ; $F8944
+;                 bit 7: set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7)
+;                 bit 5: output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read
+;                 bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
+;                 bit 3: second fan relay, probably; driven only with A/C fitted
+;                 bit 2: EGR solenoid on (EgrEnable)
+;                 bit 1: toggled by ActuatorTestMain, not read
+;                 bit 0: starter cut active (StarterCut)
 SystemFlags945   equ $0945        ; $F8945
 EepromAddr       equ $0946        ; $F8946
 EepromData       equ $0948        ; $F8948
@@ -845,6 +1229,13 @@ PwmC18Period     equ $0C18        ; $F8C18
 PwmC18StepTimer  equ $0C1C        ; $F8C1C
 PwmC18Duty       equ $0C20        ; $F8C20
 AcFlags          equ $0C21        ; $F8C21
+;                 bit 7: A/C clutch engaged (AcClutchControl); set at reset
+;                 bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7
+;                 bit 5: A/C idle step active (IdleTargetControl); set at reset
+;                 bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
+;                 bit 3: A/C request from the bus (message bit 0 in CcdReceive)
+;                 bit 2: bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test
+;                 bit 1: A/C clutch output changed since the last pass (AcCutLogic)
 AcPressureFlags  equ $0C22        ; $F8C22
 OutputTestFlags  equ $0C23        ; $F8C23
 IacEventTimer    equ $0C24        ; $F8C24
@@ -852,7 +1243,20 @@ AcClutchTimer    equ $0C29        ; $F8C29
 AcWotCutTimer    equ $0C2E        ; $F8C2E
 AcLaunchCutTimer equ $0C2F        ; $F8C2F
 ThrottleState    equ $0C30        ; $F8C30
+;                 bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
+;                 bit 6: wide-open throttle (DetectWot)
+;                 bit 4: closed position stepped to a new minimum, probably (ThrottleClosedLearn only)
+;                 bit 3: closed position taken from the calibration default, probably (ThrottleClosedLearn only)
+;                 bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
+;                 bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
 DriveFlags       equ $0C31        ; $F8C31
+;                 bit 7: drive engagement handling in progress (GearStateUpdate), probably
+;                 bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
+;                 bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+;                 bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
+;                 bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
+;                 bit 1: reference pulses seen since key-on (Isr_GPT_IC1); MapKeyOnCheck needs it clear
+;                 bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
 VssFlags         equ $0C32        ; $F8C32
 ControlFlagsC33  equ $0C33        ; $F8C33
 SciLogFlags      equ $0C34        ; $F8C34

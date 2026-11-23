@@ -27,7 +27,7 @@ CalcDeadTime:
 ;---------------------------------------------------------------------------------------------------
 FuelCutControl:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L10070
-        BRSET   >ThrottleState,Z,#$80,L10064
+        BRSET   >ThrottleState,Z,#$80,L10064             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >EngineRpm,Z
         LDX     #DecelCutMapThreshold
         JSR     Lookup2D
@@ -53,7 +53,7 @@ L10070:
         BSET    >FuelModeFlags2,Z,#$20
 L10084:
         LDAB    >FuelModeFlags2,Z
-        BRCLR   >ThrottleState,Z,#$80,L10096
+        BRCLR   >ThrottleState,Z,#$80,L10096             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >DecelCutResumeDelay
         STAA    >DecelResumeTimer,Z
 L10096:
@@ -62,7 +62,7 @@ L10096:
         LBEQ    L100C0
         BITB    #$80
         LBEQ    L101CE
-        BRSET   >ThrottleState,Z,#$01,L10212
+        BRSET   >ThrottleState,Z,#$01,L10212             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LBRA    L102C6
 L100B2:
         LDAA    >RevLimitFlags,Z
@@ -71,7 +71,7 @@ L100B2:
         LBRA    L102C6
 L100C0:
         LDAA    >EngineRpm,Z
-        BRSET   >DriveFlags,Z,#$20,L100D0
+        BRSET   >DriveFlags,Z,#$20,L100D0                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         CMPA    >RevLimitActiveAlt
         BRA     L100D4
 L100D0:
@@ -85,7 +85,7 @@ L100D4:
         CMPA    >SpeedLimitActive
         LBCC    L102D6
 L100F0:
-        BRCLR   >ThrottleState,Z,#$01,L102C6
+        BRCLR   >ThrottleState,Z,#$01,L102C6             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDAA    >EngineRpm,Z
         CMPA    >DecelCutRpmAlt
         LBCS    L10114
@@ -135,7 +135,7 @@ L1017E:
         LDAA    >Map,Z
         CMPA    >DecelCutMapMax
         LBHI    L102E8
-        BRCLR   >SensorFaultFlags,Z,#$B0,L1019C
+        BRCLR   >SensorFaultFlags,Z,#$B0,L1019C          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         LBRA    L102E8
 L1019C:
         BRSET   >Scratch1,Z,#$FF,L101BC
@@ -146,7 +146,7 @@ L1019C:
         CMPA    >DecelCutSpeedMax2
         BHI     L101BC
 L101B6:
-        BRCLR   >ControlFlags943,Z,#$01,L102E8
+        BRCLR   >ControlFlags943,Z,#$01,L102E8           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L101BC:
         LDAA    >DecelResumeTimer,Z
         LBEQ    L102DC
@@ -164,7 +164,7 @@ L101CE:
         LDAA    >EngineRpm,Z
         BCLR    >RevLimitFlags,Z,#$80
 L101F2:
-        BRCLR   >DriveFlags,Z,#$20,L10202
+        BRCLR   >DriveFlags,Z,#$20,L10202                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         CMPA    >RevLimit
         BCS     L1020A
         LBRA    L102E8
@@ -181,7 +181,7 @@ L10212:
         LDAA    >Map,Z
         CMPA    >DecelCutMapMax2
         LBHI    L102C6
-        BRCLR   >SensorFaultFlags,Z,#$B0,L10234
+        BRCLR   >SensorFaultFlags,Z,#$B0,L10234          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         LBRA    L102C6
 L10234:
         BRCLR   >FuelModeFlags,Z,#$02,L10256
@@ -198,7 +198,7 @@ L10256:
         LBCS    L102C6
         STAB    <Scratch0,Z
         LDAA    >CoolantTemp,Z
-        BRSET   >ControlFlags943,Z,#$01,L102A0
+        BRSET   >ControlFlags943,Z,#$01,L102A0           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDX     #DecelCutMinRpmCoolant
         JSR     Lookup2D
         STAA    <Scratch2,Z
@@ -260,8 +260,8 @@ L102E8:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 WotEnrichControl:
-        BRSET   >SensorFaultFlags,Z,#$10,L1034E
-        BRCLR   >ThrottleState,Z,#$40,L10354
+        BRSET   >SensorFaultFlags,Z,#$10,L1034E          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
+        BRCLR   >ThrottleState,Z,#$40,L10354             ; bit 6: wide-open throttle (DetectWot)
         CLRW    $07AD,Z
         LDAA    >CoolantTemp,Z
         CMPA    >WotEnrichCoolantMin
@@ -352,18 +352,18 @@ L103F8:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 FuelCorrections:
-        BRCLR   >ThrottleState,Z,#$80,L10404
+        BRCLR   >ThrottleState,Z,#$80,L10404             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BSET    >IdleFlareFlags,Z,#$08
 L10404:
         BRSET   >Options032E,#$40,L10410
-        BRSET   >DriveFlags,Z,#$20,L104A4
+        BRSET   >DriveFlags,Z,#$20,L104A4                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
 L10410:
-        BRSET   >ThrottleState,Z,#$80,L104A4
+        BRSET   >ThrottleState,Z,#$80,L104A4             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRCLR   >IdleFlareFlags,Z,#$08,L104A4
         LDAA    >VehicleSpeed,Z
         CMPA    >IdleRollSpeed
         BCC     L104A4
-        BRCLR   >EngineStateFlags,Z,#$80,L104A4
+        BRCLR   >EngineStateFlags,Z,#$80,L104A4          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >Count3s,Z
         CMPA    >IdleFlareTimeMin
         BCS     L104A4
@@ -393,7 +393,7 @@ L10474:
         CMPB    >IdleFlareAcRpmOn
         BCS     L1048C
         BRSET   >Options033A,#$80,L10486
-        BRCLR   >ControlFlags943,Z,#$01,L104A8
+        BRCLR   >ControlFlags943,Z,#$01,L104A8           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L10486:
         BSET    >IdleFlareFlags,Z,#$40
         BRA     L104AC
@@ -402,7 +402,7 @@ L1048C:
         CMPB    >IdleFlareAcRpmOff
         BCS     L104A8
         BRSET   >Options033A,#$80,L104AC
-        BRSET   >ControlFlags943,Z,#$01,L104AC
+        BRSET   >ControlFlags943,Z,#$01,L104AC           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L104A4:
         BCLR    >IdleFlareFlags,Z,#$80
 L104A8:
@@ -428,7 +428,7 @@ L104C0:
         LDX     #DecelMapRpmLimit
         JSR     Lookup3D
         STAA    <Scratch4,Z
-        BRCLR   >ThrottleState,Z,#$80,L1050C
+        BRCLR   >ThrottleState,Z,#$80,L1050C             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >FuelModeFlags,Z,#$20,L10550
         ADDA    >KnockFuel,Z
         BCC     L104EA
@@ -599,7 +599,7 @@ L1067C:
         STD     <Scratch0,Z
 L10684:
         BRCLR   >Options0338,#$20,L106A8
-        BRCLR   >ThrottleState,Z,#$80,L106A8
+        BRCLR   >ThrottleState,Z,#$80,L106A8             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    $0D09,Z
         BMI     L1069A
         CLRA
@@ -652,7 +652,7 @@ L106EA:
 ;---------------------------------------------------------------------------------------------------
 Sub_106EC:
         CLRW    >Scratch6,Z
-        BRCLR   >EngineStateFlags,Z,#$80,L1078E
+        BRCLR   >EngineStateFlags,Z,#$80,L1078E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >MainLoopPhaseMask,Z,#$04,L1072A
         LDAA    >CoolantTemp,Z
         LDX     #Tab2D_1405
@@ -753,9 +753,9 @@ L107F6:
         SUBA    >TipInThrottleDeadband
         LBCS    L10956
         STAA    <Scratch4,Z
-        BRCLR   >EngineStateFlags,Z,#$80,L10956
+        BRCLR   >EngineStateFlags,Z,#$80,L10956          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >FuelModeFlags2,Z,#$40,L10956
-        BRCLR   >ThrottleState,Z,#$80,L10956
+        BRCLR   >ThrottleState,Z,#$80,L10956             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAB    >EngineRpm,Z
         CMPB    >TipInRpmMax
         LBCC    L10956
@@ -1010,7 +1010,7 @@ L10A56:
 ;---------------------------------------------------------------------------------------------------
 IacFuelControl:
         CLRE
-        BRSET   >ThrottleState,Z,#$80,L10AD0
+        BRSET   >ThrottleState,Z,#$80,L10AD0             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         TST     >Count3s,Z
         BNE     L10A70
         LDAA    >MainLoopCounter,Z
@@ -1100,7 +1100,7 @@ L10B32:
 L10B3C:
         LDAA    >DecelFuelFactor,Z
         JSR     ScaleByFraction
-        BRCLR   >ThrottleState,Z,#$40,L10B58
+        BRCLR   >ThrottleState,Z,#$40,L10B58             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BNE     L10B58
         LDAA    >KnockFuel,Z
@@ -1253,7 +1253,7 @@ WarmupFuel:
         LDAA    >TimeSinceStart,Z
         CMPA    #$FF
         BEQ     L10D2A
-        BRCLR   >EngineStateFlags,Z,#$80,L10CEA
+        BRCLR   >EngineStateFlags,Z,#$80,L10CEA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAB    >MainLoopCounter,Z
         BITB    #$1F
         BNE     L10CEA
@@ -1266,7 +1266,7 @@ L10CEA:
         LDAB    >CrankCoolant,Z
         LDX     #AfterStartDecay
         JSR     Lookup3D
-        BRCLR   >ThrottleState,Z,#$40,L10D16
+        BRCLR   >ThrottleState,Z,#$40,L10D16             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >WarmupWotFactor
         MUL
         ADCA    #$00
@@ -1284,8 +1284,8 @@ L10D18:
 L10D26:
         STE     >Scratch4,Z
 L10D2A:
-        BRSET   >ThrottleState,Z,#$40,L10DB8
-        BRSET   >ThrottleState,Z,#$80,L10D68
+        BRSET   >ThrottleState,Z,#$40,L10DB8             ; bit 6: wide-open throttle (DetectWot)
+        BRSET   >ThrottleState,Z,#$80,L10D68             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >WarmupClosedThrottle
         BRCLR   >FuelModeFlags,Z,#$04,L10D46
         ADDA    #$03
@@ -1360,18 +1360,18 @@ L10DC4:
         EMUL
         ADCE    >Scratch0,Z
 L10E0C:
-        BRSET   >ThrottleState,Z,#$40,L10E78
+        BRSET   >ThrottleState,Z,#$40,L10E78             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >EngineRpm,Z
         LDX     #WarmupRpmFactorIdle
-        BRSET   >ThrottleState,Z,#$80,L10E24
+        BRSET   >ThrottleState,Z,#$80,L10E24             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDX     #WarmupRpmFactor
 L10E24:
         JSR     Lookup2D
         CLRB
         EMUL
-        BRSET   >SensorFaultFlags,Z,#$01,L10E78
+        BRSET   >SensorFaultFlags,Z,#$01,L10E78          ; bit 0: battery temperature sensor fault (P1492 or P1493)
         BRSET   >FaultSet09,Z,#$80,L10E78
-        BRSET   >SensorFaultFlags,Z,#$80,L10E78
+        BRSET   >SensorFaultFlags,Z,#$80,L10E78          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         TST     >O2WarmDelay,Z
         BEQ     L10E78
         LDAA    >BatteryTempStart,Z
@@ -1407,7 +1407,7 @@ PartThrottleFuelCalc:
         BRSET   >Options0335,#$04,L10ECE
         BRCLR   >EgrFlags,Z,#$02,L10ED8
         LDAA    >Map,Z
-        BRSET   >SensorFaultFlags,Z,#$20,L10EB2
+        BRSET   >SensorFaultFlags,Z,#$20,L10EB2          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
         LDAA    <Baro,Z
         LDX     #MapBaroOffset
         JSR     Lookup2D
@@ -1438,11 +1438,11 @@ L10ED8:
 Sub_10EDA:
         BRSET   >Options032C,#$80,L10F4C
         BRCLR   >PurgeLearnFlags,Z,#$80,L10F06
-        BRSET   >ThrottleState,Z,#$40,L10F06
+        BRSET   >ThrottleState,Z,#$40,L10F06             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BNE     L10F06
         LDAA    $07E8,Z
-        BRSET   >ThrottleState,Z,#$80,L10F00
+        BRSET   >ThrottleState,Z,#$80,L10F00             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    $07EA,Z
 L10F00:
         BEQ     L10F06
@@ -1452,8 +1452,8 @@ L10F06:
         BRSET   >PurgeFlags2,Z,#$0A,L10F3A
         BRSET   <FlexStartFlags,Z,#$28,L10F3A
         BRSET   >PurgeFlags2,Z,#$80,L10F3A
-        BRSET   >SensorFaultFlags,Z,#$80,L10F3A
-        BRSET   >ThrottleState,Z,#$40,L10F3A
+        BRSET   >SensorFaultFlags,Z,#$80,L10F3A          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
+        BRSET   >ThrottleState,Z,#$40,L10F3A             ; bit 6: wide-open throttle (DetectWot)
         LDAB    >O2MemCell,Z
         CMPB    #$0C
         BCC     L10F30
@@ -1482,11 +1482,11 @@ L10F4C:
 Sub_10F52:
         BRSET   >Options032C,#$80,L10FC4
         BRCLR   >PurgeLearnFlags,Z,#$80,L10F7E
-        BRSET   >ThrottleState,Z,#$40,L10F7E
+        BRSET   >ThrottleState,Z,#$40,L10F7E             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BNE     L10F7E
         LDAA    $07E9,Z
-        BRSET   >ThrottleState,Z,#$80,L10F78
+        BRSET   >ThrottleState,Z,#$80,L10F78             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    $07EA,Z
 L10F78:
         BEQ     L10F7E
@@ -1496,8 +1496,8 @@ L10F7E:
         BRSET   >PurgeFlags2,Z,#$05,L10FB2
         BRSET   <FlexStartFlags,Z,#$28,L10FB2
         BRSET   >PurgeFlags2,Z,#$80,L10FB2
-        BRSET   >SensorFaultFlags,Z,#$80,L10FB2
-        BRSET   >ThrottleState,Z,#$40,L10FB2
+        BRSET   >SensorFaultFlags,Z,#$80,L10FB2          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
+        BRSET   >ThrottleState,Z,#$40,L10FB2             ; bit 6: wide-open throttle (DetectWot)
         LDAB    >O2MemCell,Z
         CMPB    #$0C
         BCC     L10FA8
@@ -1540,7 +1540,7 @@ L10FDA:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 IdleEnrichment:
-        BRSET   >EngineStateFlags,Z,#$80,L11008
+        BRSET   >EngineStateFlags,Z,#$80,L11008          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         TST     >MainLoopCounter,Z
         BNE     L11022
         LDAA    $0813,Z
@@ -1567,10 +1567,10 @@ L11008:
         STAA    >EngineOffTimeStart,Z
 L11022:
         BRCLR   >StartFlags,Z,#$08,L11146
-        BRCLR   >SensorFaultFlags,Z,#$B0,L11032
+        BRCLR   >SensorFaultFlags,Z,#$B0,L11032          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         LBRA    L11146
 L11032:
-        BRCLR   >EngineStateFlags,Z,#$80,L110C8
+        BRCLR   >EngineStateFlags,Z,#$80,L110C8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >MainLoopCounter,Z
         BITA    #$0F
         BNE     L1104C
@@ -1579,7 +1579,7 @@ L11032:
         BEQ     L1104C
         STAA    >IdleEnrichRun,Z
 L1104C:
-        BRSET   >ThrottleState,Z,#$40,L11098
+        BRSET   >ThrottleState,Z,#$40,L11098             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >EngineRpm,Z
         CMPA    >IdleFuelRpmMax
         BCC     L11098
@@ -1681,12 +1681,12 @@ L1114A:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 HotEngineEnrichCalc:
-        BRCLR   >SensorFaultFlags,Z,#$B0,L11154
+        BRCLR   >SensorFaultFlags,Z,#$B0,L11154          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         BRA     L111A0
 L11154:
-        BRSET   >O2ActiveFlags,Z,#$80,L111A0
+        BRSET   >O2ActiveFlags,Z,#$80,L111A0             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BRCLR   >HotEngineOn,#$FF,L111A0
-        BRCLR   >EngineStateFlags,Z,#$80,L111A0
+        BRCLR   >EngineStateFlags,Z,#$80,L111A0          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >Count3s,Z
         CMPA    >HotEngineTimeMin
         BCS     L111A0
@@ -1716,13 +1716,13 @@ L111A6:
 ; Called from: Isr_GPT_IC1 (3 calls)
 ;---------------------------------------------------------------------------------------------------
 FuelEventStart:
-        BRCLR   >EngineStateFlags,Z,#$80,L11212
+        BRCLR   >EngineStateFlags,Z,#$80,L11212          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         TST     $076E,Z
         BNE     L11212
         BRSET   >Options0338,#$04,L111C4
         BRCLR   >FuelPulseFlags,Z,#$04,L11212
 L111C4:
-        BSET    >EngineStateFlags,Z,#$10
+        BSET    >EngineStateFlags,Z,#$10                 ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         BCLR    >FuelPulseFlags,Z,#$10
         BITB    >FuelEventHoldCount,Z
         BEQ     L11212
@@ -1762,13 +1762,13 @@ L11220:
         BEQ     L1126E
         BRSET   >FuelEventFlags,Z,#$08,L1125A
         BRSET   >FuelEventFlags,Z,#$80,L1123A
-        BRSET   >ThrottleState,Z,#$80,L1123A
+        BRSET   >ThrottleState,Z,#$80,L1123A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRA     L1125A
 L1123A:
         LDAA    >CoolantTemp,Z
         CMPA    >FuelEventCoolantMin
         BCS     L1126E
-        BRSET   >ThrottleState,Z,#$80,L1126E
+        BRSET   >ThrottleState,Z,#$80,L1126E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >EngineRpm,Z
         SUBA    >IdleTarget,Z
         BCS     L1125A
@@ -1949,7 +1949,7 @@ L11418:
         LDE     >FuelPulseFixed
 L11430:
         PSHM    D
-        BRCLR   >EngineStateFlags,Z,#$01,L11462
+        BRCLR   >EngineStateFlags,Z,#$01,L11462          ; bit 0: first reference pulse seen, start pulse still due (cleared by StartInjectorPulse)
         LDAA    >CrankEthanolFactor,Z
         CLRB
         LSRD
@@ -1967,7 +1967,7 @@ L11430:
 L1145C:
         XGDE
 L1145E:
-        BCLR    >EngineStateFlags,Z,#$01
+        BCLR    >EngineStateFlags,Z,#$01                 ; bit 0: first reference pulse seen, start pulse still due (cleared by StartInjectorPulse)
 L11462:
         PULM    D
         PSHM    D,X,K
@@ -2207,7 +2207,7 @@ L116CE:
         ADCE    #$0000
         STE     >Temp4F4,Z
 L116E2:
-        BRSET   >ThrottleState,Z,#$80,L116EE
+        BRSET   >ThrottleState,Z,#$80,L116EE             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >Options0338,#$10,L1174A
 L116EE:
         LDAB    >AccelMapCoolantFactor,Z
@@ -2560,7 +2560,7 @@ L11AB8:
         LDAB    >Map,Z
         CMPB    >EventFuelMapMin
         BCS     L11AE0
-        BRSET   >ControlFlags943,Z,#$01,L11AE0
+        BRSET   >ControlFlags943,Z,#$01,L11AE0           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDX     #$18DA
         LDY     #$87A6
         LDAB    #$02
@@ -2992,7 +2992,7 @@ L11F12:
         CMPA    >DecelLeanRpmMin
         BCS     L11F30
         BRSET   >Options032E,#$40,L11F34
-        BRSET   >DriveFlags,Z,#$20,L11F34
+        BRSET   >DriveFlags,Z,#$20,L11F34                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
 L11F30:
         CLRB
         BRA     L11F54
@@ -3218,7 +3218,7 @@ L12146:
 L12156:
         IDIV
         XGDX
-        BRCLR   >EngineStateFlags,Z,#$80,L1217A
+        BRCLR   >EngineStateFlags,Z,#$80,L1217A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >FuelEventHoldCount,Z
         CMPA    #$28
         BEQ     L12170
@@ -3232,7 +3232,7 @@ L12172:
         STAB    $076F,Z
         LBRA    L12330
 L1217A:
-        BRSET   >EngineStateFlags,Z,#$10,L1218A
+        BRSET   >EngineStateFlags,Z,#$10,L1218A          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         LDAB    #$03
         BRSET   >CylinderCount,#$06,L1218A
         LDAB    #$02
@@ -3266,7 +3266,7 @@ L121DE:
         BRSET   >CrankIsrFlags,Z,#$20,L12200
 L121EC:
         LDAB    >CrankCoolant,Z
-        BRSET   >ThrottleState,Z,#$80,L12200
+        BRSET   >ThrottleState,Z,#$80,L12200             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         CMPB    >CrankCoolantFloor
         BCC     L12200
         LDAB    >CrankCoolantFloor
@@ -3277,7 +3277,7 @@ L12200:
         MUL
         STD     <Scratch0,Z
         LDX     #CrankRpmDecayClosed
-        BRSET   >ThrottleState,Z,#$80,L1221E
+        BRSET   >ThrottleState,Z,#$80,L1221E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDX     #CrankRpmDecay
 L1221E:
         LDAA    >EngineRpm,Z
@@ -3392,7 +3392,7 @@ L12330:
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
 FuelEventCalc:
-        BRCLR   >EngineStateFlags,Z,#$80,L12378
+        BRCLR   >EngineStateFlags,Z,#$80,L12378          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >Options0338,#$04,L12344
         BRCLR   >FuelPulseFlags,Z,#$04,L123A0
 L12344:
@@ -3438,7 +3438,7 @@ L123AC:
         STE     $1060,Z
 L123D4:
         BSET    >FuelPulseFlags,Z,#$80
-        BRCLR   >EngineStateFlags,Z,#$10,L1241A
+        BRCLR   >EngineStateFlags,Z,#$10,L1241A          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         LDAA    >CoolantTemp,Z
         CMPA    >FuelEventCoolantMax
         BCC     L1241A
@@ -3470,7 +3470,7 @@ L1241A:
         BRSET   >FuelModeFlags,Z,#$10,L1244A
         BSET    >FuelModeFlags,Z,#$10
         LDE     >CrankPulseCoolant,Z
-        BRSET   >EngineStateFlags,Z,#$10,L1243C
+        BRSET   >EngineStateFlags,Z,#$10,L1243C          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         CLRA
         LDAB    >CylinderCount
         XGDX
@@ -3487,7 +3487,7 @@ L12440:
 L1244A:
         BRSET   >FuelPulseFlags,Z,#$20,L12592
         BSET    >FuelPulseFlags,Z,#$20
-        BRSET   >EngineStateFlags,Z,#$10,L12462
+        BRSET   >EngineStateFlags,Z,#$10,L12462          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         CLR     $076A,Z
         LBRA    L12592
 L12462:
@@ -3532,7 +3532,7 @@ L124A8:
 L124CC:
         BCLR    >FuelPulseFlags,Z,#$80
         BSET    >FuelPulseFlags,Z,#$04
-        BRCLR   >EngineStateFlags,Z,#$10,L12580
+        BRCLR   >EngineStateFlags,Z,#$10,L12580          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         BRCLR   >Options032B,#$40,L124E6
         BRCLR   >CrankSyncFlags,Z,#$20,L12592
 L124E6:
@@ -3875,7 +3875,7 @@ EventCellSelect:
         STAB    >EventCellIndex,Z
         ABX
         LDAB    $00,X
-        BRSET   >SensorFaultFlags,Z,#$80,L128A6
+        BRSET   >SensorFaultFlags,Z,#$80,L128A6          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         LDAA    >CoolantTemp,Z
         CMPA    >EventCellCoolantMin
         BCC     L128A6
@@ -4441,7 +4441,7 @@ L12A4C:
 ;---------------------------------------------------------------------------------------------------
 ClosedLoopMain:
         BRCLR   >Options032C,#$80,L14218
-        BCLR    >O2ActiveFlags,Z,#$F0
+        BCLR    >O2ActiveFlags,Z,#$F0                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 4: downstream O2 sensor 2 active (as bit 5)
         CLR     >ShortTermTrim1,Z
         CLR     $0723,Z
         CLR     $0725,Z
@@ -4496,7 +4496,7 @@ L1420C:
         BNE     L1420C
         BRA     L1424A
 L14218:
-        BRCLR   >EngineStateFlags,Z,#$80,L14246
+        BRCLR   >EngineStateFlags,Z,#$80,L14246          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         JSR     O2CellSelect3x3
         JSR     ClosedLoopTiming
         BRCLR   >MainLoopPhaseMask,Z,#$10,L14238
@@ -4520,7 +4520,7 @@ L1424A:
 ;---------------------------------------------------------------------------------------------------
 O2UpdateUpstream:
         BRSET   >Options032C,#$80,L142C6
-        BRCLR   >EngineStateFlags,Z,#$80,L142C6
+        BRCLR   >EngineStateFlags,Z,#$80,L142C6          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >Options032D,#$18,L14268
         LDD     >EngineRpm,Z
         CPD     #$ABE0
@@ -4563,7 +4563,7 @@ L142C6:
 ;---------------------------------------------------------------------------------------------------
 O2UpdateDownstream:
         BRSET   >Options032C,#$80,L1430A
-        BRCLR   >EngineStateFlags,Z,#$80,L1430A
+        BRCLR   >EngineStateFlags,Z,#$80,L1430A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >O2SwitchFlags,Z,#$02,L142FE
         BRCLR   >Options032F,#$20,L142EC
         LDAB    #$0F
@@ -4615,14 +4615,14 @@ L14346:
         STAA    >O2SwitchFlags,Z
         BRCLR   >O2SwitchFlags,Z,#$04,L1435E
         LDAB    #$0A
-        BRSET   >DriveFlags,Z,#$20,L143BC
+        BRSET   >DriveFlags,Z,#$20,L143BC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDAB    #$09
         BRA     L143BC
 L1435E:
         LDAA    >EgrMonFlags,Z
         BITA    #$06
         BNE     L143C0
-        BRCLR   >EquipmentFlags,Z,#$20,L14390
+        BRCLR   >EquipmentFlags,Z,#$20,L14390            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDD     >O2CellRpmHystAC
         LDE     >O2CellRpmHighAC
         LDY     >O2CellRpmLowAC
@@ -4890,7 +4890,7 @@ L145E0:
 ;---------------------------------------------------------------------------------------------------
 O2CrossCheck:
         BRCLR   >Options0339,#$40,L146C8
-        BRCLR   >EngineStateFlags,Z,#$80,L146C8
+        BRCLR   >EngineStateFlags,Z,#$80,L146C8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAB    <MonStatusO2Sensor1,Z
         BITB    #$30
         LBNE    L146C8
@@ -5041,8 +5041,8 @@ O2StartDelays:
         LDAB    >O2DelayCold
 L14756:
         STAB    >O2WarmDelay,Z
-        BCLR    >O2ActiveFlags,Z,#$F0
-        BCLR    >O2ActiveFlags,Z,#$0F
+        BCLR    >O2ActiveFlags,Z,#$F0                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 4: downstream O2 sensor 2 active (as bit 5)
+        BCLR    >O2ActiveFlags,Z,#$0F                    ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3); bit 2: as bit 6, cleared by FuelLevelFlags bit 2; bit 1: as bit 5, cleared by FuelLevelFlags bit 1; bit 0: as bit 4, cleared by FuelLevelFlags bit 0
         PSHM    X,K
         LDX     #O2StartDelayCoolant
         JSR     Lookup2D
@@ -5144,7 +5144,7 @@ L1488A:
         CMPA    >O2ActiveLow
         BCC     L1489E
 L1489A:
-        BSET    >O2ActiveFlags,Z,#$88
+        BSET    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
 L1489E:
         BRCLR   >Options032F,#$40,L148C4
         TST     >O2ColdTrim2,Z
@@ -5158,7 +5158,7 @@ L148B0:
         CMPA    >O2ActiveLow
         BCC     L148C4
 L148C0:
-        BSET    >O2ActiveFlags,Z,#$44
+        BSET    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by FuelLevelFlags bit 2
 L148C4:
         TST     >O2DownDelay,Z
         LBNE    L14900
@@ -5169,7 +5169,7 @@ L148C4:
         CMPA    >O2DownActiveLow
         BCC     L148E6
 L148E2:
-        BSET    >O2ActiveFlags,Z,#$22
+        BSET    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by FuelLevelFlags bit 1
 L148E6:
         BRCLR   >Options032F,#$10,L14900
         LDAA    >O2DownBank2Raw,Z
@@ -5178,7 +5178,7 @@ L148E6:
         CMPA    >O2DownActiveLow
         BCC     L14900
 L148FC:
-        BSET    >O2ActiveFlags,Z,#$11
+        BSET    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by FuelLevelFlags bit 0
 L14900:
         PSHM    X,Y,K
         CLRE
@@ -5244,7 +5244,7 @@ L1498E:
 L14996:
         PULM    K,Y,X
         BRCLR   >FuelLevelFlags,Z,#$08,L149D4
-        BCLR    >O2ActiveFlags,Z,#$88
+        BCLR    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
         BSET    <Scratch0,Z,#$C0
         CLR     $11,X
         BRCLR   >FaultSet12,Z,#$08,L149D0
@@ -5265,7 +5265,7 @@ L149D0:
         JSR     O2MemClearRichBank1
 L149D4:
         BRCLR   >FuelLevelFlags,Z,#$04,L14A10
-        BCLR    >O2ActiveFlags,Z,#$44
+        BCLR    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by FuelLevelFlags bit 2
         BSET    <Scratch0,Z,#$C0
         CLR     $11,Y
         BRCLR   >FaultSet17,Z,#$20,L14A0C
@@ -5286,13 +5286,13 @@ L14A0C:
         JSR     O2MemClearRichBank2
 L14A10:
         BRCLR   >FuelLevelFlags,Z,#$02,L14A24
-        BCLR    >O2ActiveFlags,Z,#$22
+        BCLR    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by FuelLevelFlags bit 1
         CLR     $11,X
         BSET    <Scratch0,Z,#$50
         BSET    >O2InactiveFlags,Z,#$80
 L14A24:
         BRCLR   >FuelLevelFlags,Z,#$01,L14A38
-        BCLR    >O2ActiveFlags,Z,#$11
+        BCLR    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by FuelLevelFlags bit 0
         CLR     $11,Y
         BSET    <Scratch1,Z,#$50
         BSET    >O2InactiveFlags,Z,#$40
@@ -5305,7 +5305,7 @@ L14A38:
         LBRA    L14D84
 L14A4C:
         BRCLR   >Options032F,#$80,L14A58
-        BRSET   >O2ActiveFlags,Z,#$08,L14A78
+        BRSET   >O2ActiveFlags,Z,#$08,L14A78             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
 L14A58:
         BSET    >O2ResetFlags,Z,#$02
         BSET    <Scratch0,Z,#$70
@@ -5323,7 +5323,7 @@ L14A58:
         STAA    $07,X
 L14A78:
         BRCLR   >Options032F,#$40,L14A84
-        BRSET   >O2ActiveFlags,Z,#$04,L14AA4
+        BRSET   >O2ActiveFlags,Z,#$04,L14AA4             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
 L14A84:
         BSET    >O2ResetFlags,Z,#$01
         BSET    <Scratch1,Z,#$70
@@ -5341,12 +5341,12 @@ L14A84:
         STAA    $07,Y
 L14AA4:
         BRCLR   >Options032F,#$20,L14AB0
-        BRSET   >O2ActiveFlags,Z,#$02,L14AB4
+        BRSET   >O2ActiveFlags,Z,#$02,L14AB4             ; bit 1: as bit 5, cleared by FuelLevelFlags bit 1
 L14AB0:
         BSET    <Scratch0,Z,#$50
 L14AB4:
         BRCLR   >Options032F,#$10,L14AC0
-        BRSET   >O2ActiveFlags,Z,#$01,L14AC4
+        BRSET   >O2ActiveFlags,Z,#$01,L14AC4             ; bit 0: as bit 4, cleared by FuelLevelFlags bit 0
 L14AC0:
         BSET    <Scratch1,Z,#$50
 L14AC4:
@@ -5440,7 +5440,7 @@ L14BDC:
         BSET    <Scratch1,Z,#$A0
         BSET    >O2ResetFlags,Z,#$03
 L14BEE:
-        BRSET   >IdleFlags,Z,#$80,L14BFE
+        BRSET   >IdleFlags,Z,#$80,L14BFE                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         LDAA    >PurgeRamp,Z
         CMPA    >O2PurgeRampMin
         BCC     L14C10
@@ -5798,7 +5798,7 @@ L14FB4:
         TAB
 L14FD4:
         CMPB    >O2ColdStartTime
-        BRCLR   >DriveFlags,Z,#$20,L14FE2
+        BRCLR   >DriveFlags,Z,#$20,L14FE2                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         CMPB    >O2ColdStartTimeDrive
 L14FE2:
         BCC     L14FEA
@@ -5811,7 +5811,7 @@ L14FEE:
         CMPB    >O2ColdStartCoolant
         LBCC    L15112
         BRSET   >O2ResetFlags2,Z,#$03,L15106
-        BRCLR   >ThrottleState,Z,#$80,L15034
+        BRCLR   >ThrottleState,Z,#$80,L15034             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >PurgeRamp,Z
         LDAB    >O2ColdPurgeRampMin
         BRCLR   >O2CrossFlags,Z,#$01,L1501A
@@ -5849,7 +5849,7 @@ L1505C:
         DEC     >O2ColdLeanCount2,Z
 L15070:
         BRSET   >ClosedLoopMonFlags,Z,#$80,L15086
-        BRCLR   >ThrottleState,Z,#$80,L150BC
+        BRCLR   >ThrottleState,Z,#$80,L150BC             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >O2ColdPurgeCounter,Z
         CMPA    >O2ColdPurgeCount
         BCS     L150BC
@@ -5991,7 +5991,7 @@ L151F2:
         BRA     L15256
 L15200:
         BRCLR   >MainLoopPhaseMask,Z,#$08,L15256
-        BRSET   >O2ActiveFlags,Z,#$80,L15216
+        BRSET   >O2ActiveFlags,Z,#$80,L15216             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAB    >O2SlowStepPeriod
         STAB    $0712,Z
         BRA     L1522E
@@ -6004,7 +6004,7 @@ L15216:
         BEQ     L1522E
         DEC     $0712,Z
 L1522E:
-        BRSET   >O2ActiveFlags,Z,#$40,L1523E
+        BRSET   >O2ActiveFlags,Z,#$40,L1523E             ; bit 6: upstream O2 sensor 2 active (as bit 7)
         LDAB    >O2SlowStepPeriod
         STAB    >O2SlowPeriod2,Z
         BRA     L15256
@@ -6027,7 +6027,7 @@ L15256:
         DEC     >O2ReopenTimer,Z
 L15272:
         CLRB
-        BRSET   >IdleFlags,Z,#$80,L15294
+        BRSET   >IdleFlags,Z,#$80,L15294                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         LDAB    >O2HoldCountMax
         LDAA    <PurgeCellRichFlags,Z
         ANDA    #$38
@@ -6376,7 +6376,7 @@ L1557C:
         STAB    $02,X
         BRCLR   $001E,X,#$01,L15594
         LDAA    >O2ColdTrimMin
-        BRCLR   >DriveFlags,Z,#$20,L1559E
+        BRCLR   >DriveFlags,Z,#$20,L1559E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDAA    >O2ColdTrimMinDrive
         BRA     L1559E
 L15594:
@@ -6541,7 +6541,7 @@ L156F4:
         BCLR    $1E,X,#$01
         BRCLR   >O2CrossFlags,Z,#$02,L15718
         LDAA    >O2ColdTrimMin
-        BRCLR   >DriveFlags,Z,#$20,L1570C
+        BRCLR   >DriveFlags,Z,#$20,L1570C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDAA    >O2ColdTrimMinDrive
 L1570C:
         CBA
@@ -6635,13 +6635,13 @@ O2CellSelect:
         CLRB
         TBXK
         LDX     #$1856
-        BRSET   >ThrottleState,Z,#$80,L1587A
+        BRSET   >ThrottleState,Z,#$80,L1587A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAB    #$0C
         BRSET   >Options032E,#$40,L1580C
-        BRCLR   >DriveFlags,Z,#$80,L15804
+        BRCLR   >DriveFlags,Z,#$80,L15804                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         JMP     L15956
 L15804:
-        BRCLR   >DriveFlags,Z,#$20,L1580C
+        BRCLR   >DriveFlags,Z,#$20,L1580C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         INCB
 L1580C:
         BRSET   >Options0339,#$80,L15834
@@ -6778,7 +6778,7 @@ L15956:
         ANDA    #$08
         STAA    <Scratch6,Z
         JSR     O2LearnEnable
-        BRCLR   >O2ActiveFlags,Z,#$04,L15998
+        BRCLR   >O2ActiveFlags,Z,#$04,L15998             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
         TZY
         LDY     #$8794
         LDAA    >ShortTermTrim2,Z
@@ -6918,8 +6918,8 @@ L15AD6:
         LBNE    L15B82
         BRSET   >FaultSet0D,Z,#$10,L15B82
         BRSET   >Options032C,#$80,L15B82
-        BRSET   >O2ActiveFlags,Z,#$08,L15AFC
-        BRSET   >O2ActiveFlags,Z,#$04,L15B46
+        BRSET   >O2ActiveFlags,Z,#$08,L15AFC             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRSET   >O2ActiveFlags,Z,#$04,L15B46             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
         BSET    >O2ResetFlags2,Z,#$C0
 L15AFC:
         TZX
@@ -6933,16 +6933,16 @@ L15AFC:
         LDAA    $0704,Z
         STAA    <Scratch3,Z
         JSR     O2CellUpdate
-        BRCLR   >O2ActiveFlags,Z,#$08,L15B3A
-        BRSET   >O2ActiveFlags,Z,#$04,L15B46
+        BRCLR   >O2ActiveFlags,Z,#$08,L15B3A             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRSET   >O2ActiveFlags,Z,#$04,L15B46             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
         BRSET   >O2LearnFlags,Z,#$10,L15B36
         LDAA    >O2AdaptValue1,Z
         STAA    >O2AdaptValue2,Z
 L15B36:
         LBRA    L15BCA
 L15B3A:
-        BRSET   >O2ActiveFlags,Z,#$04,L15B46
-        BRSET   >O2ActiveFlags,Z,#$08,L15BCA
+        BRSET   >O2ActiveFlags,Z,#$04,L15B46             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRSET   >O2ActiveFlags,Z,#$08,L15BCA             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
 L15B46:
         TZX
         LDX     #$806D
@@ -6955,8 +6955,8 @@ L15B46:
         LDAA    $072C,Z
         STAA    <Scratch3,Z
         JSR     O2CellUpdate
-        BRCLR   >O2ActiveFlags,Z,#$04,L15BCA
-        BRSET   >O2ActiveFlags,Z,#$08,L15BCA
+        BRCLR   >O2ActiveFlags,Z,#$04,L15BCA             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRSET   >O2ActiveFlags,Z,#$08,L15BCA             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
         BRSET   >O2LearnFlags,Z,#$10,L15B80
         LDAA    >O2AdaptValue2,Z
         STAA    >O2AdaptValue1,Z
@@ -7032,7 +7032,7 @@ L15C14:
         BRCLR   >FlexStartFlags,Z,#$10,L15C28
         LDAB    >O2LearnRateFlex
 L15C28:
-        BRSET   >ThrottleState,Z,#$80,L15C42
+        BRSET   >ThrottleState,Z,#$80,L15C42             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAB    >O2LearnRateWot
         BRCLR   >Options032C,#$40,L15C42
         BRCLR   >FlexStartFlags,Z,#$10,L15C42
@@ -7438,7 +7438,7 @@ TrimPeakTrack:
         CLRB
         TBYK
         LDY     #$17F5
-        BRCLR   >ThrottleState,Z,#$81,L15F8A
+        BRCLR   >ThrottleState,Z,#$81,L15F8A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set); bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDY     #$17F8
 L15F8A:
         LDE     $000A,X
@@ -7530,7 +7530,7 @@ L1602A:
 ;---------------------------------------------------------------------------------------------------
 O2TrimAverage:
         BRSET   >O2Bank1Flags,Z,#$20,L16066
-        BRCLR   >O2ActiveFlags,Z,#$80,L16066
+        BRCLR   >O2ActiveFlags,Z,#$80,L16066             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAB    >ShortTermTrim1,Z
         SXT
         TDE
@@ -7543,7 +7543,7 @@ O2TrimAverage:
         STAB    $0727,Z
 L16066:
         BRSET   >O2Bank2Flags,Z,#$20,L16090
-        BRCLR   >O2ActiveFlags,Z,#$40,L16090
+        BRCLR   >O2ActiveFlags,Z,#$40,L16090             ; bit 6: upstream O2 sensor 2 active (as bit 7)
         LDAB    >ShortTermTrim2,Z
         SXT
         TDE
@@ -7951,7 +7951,7 @@ L17092:
         LDE     #$00EF
         STE     >EepromAddr,Z
 L170BE:
-        BRCLR   >EngineStateFlags,Z,#$80,L1749A
+        BRCLR   >EngineStateFlags,Z,#$80,L1749A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >FlexLearnOptions,#$80,L170D2
         CLR     >FlexEthanolStart,Z
         CLR     >FlexLearnBase,Z
@@ -8002,7 +8002,7 @@ L17148:
         BCS     L1718A
         BRCLR   >FlexLearnFlags10,Z,#$01,L1718E
         BRSET   >O2Bank1Flags,Z,#$20,L1718E
-        BRCLR   >O2ActiveFlags,Z,#$80,L1718E
+        BRCLR   >O2ActiveFlags,Z,#$80,L1718E             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >FlexLearnSettle,Z
         INCA
         BEQ     L17184
@@ -8096,7 +8096,7 @@ L1728A:
         BCLR    >FlexLearnFlags2,Z,#$01
 L1728E:
         BRSET   >O2Bank1Flags,Z,#$20,L172A2
-        BRCLR   >O2ActiveFlags,Z,#$80,L172A2
+        BRCLR   >O2ActiveFlags,Z,#$80,L172A2             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BSET    >FlexLearnFlags9,Z,#$10
         BSET    >FlexLearnFlags5,Z,#$80
 L172A2:
@@ -8108,7 +8108,7 @@ L172B0:
         BRSET   >FlexLearnFlags2,Z,#$10,L173F8
         BRCLR   >FlexLearnFlags,Z,#$10,L172DC
         BRSET   >O2Bank1Flags,Z,#$20,L172DC
-        BRCLR   >O2ActiveFlags,Z,#$80,L172DC
+        BRCLR   >O2ActiveFlags,Z,#$80,L172DC             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BSET    >FlexLearnFlags5,Z,#$80
         BSET    >FlexLearnFlags2,Z,#$80
         BSET    >FlexLearnFlags7,Z,#$30
@@ -8120,7 +8120,7 @@ L172DC:
 L172E8:
         BRSET   >FlexLearnFlags2,Z,#$20,L1734C
         BRCLR   >FlexLearnFlags,Z,#$08,L17344
-        BRCLR   >SensorFaultFlags,Z,#$80,L17302
+        BRCLR   >SensorFaultFlags,Z,#$80,L17302          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRCLR   >FaultSet05,Z,#$02,L17302
         BRA     L17328
 L17302:
@@ -8513,7 +8513,7 @@ FlexColdStart:
         CMPA    >FlexLearnBattTempMax
         BCC     L17AF2
 L17ACE:
-        BRSET   >SensorFaultFlags,Z,#$80,L17AE4
+        BRSET   >SensorFaultFlags,Z,#$80,L17AE4          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   >FaultSet05,Z,#$02,L17AE4
         LDAA    >CoolantTemp,Z
         CMPA    >FlexLearnColdCoolantMax
@@ -8532,7 +8532,7 @@ L17AF6:
         BCS     L17B68
         BRCLR   >FlexLearnFlags6,Z,#$40,L17B6C
         BRSET   >O2Bank1Flags,Z,#$20,L17B6C
-        BRCLR   >O2ActiveFlags,Z,#$80,L17B6C
+        BRCLR   >O2ActiveFlags,Z,#$80,L17B6C             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >CoolantTemp,Z
         CMPA    >FlexLearnCoolantMin2
         BCS     L17B6C
@@ -8578,7 +8578,7 @@ L17B9A:
         BSET    >FanBusFlags,Z,#$04
         BCLR    >FlexLearnFlags6,Z,#$30
         BRSET   >O2Bank1Flags,Z,#$20,L17BD4
-        BRCLR   >O2ActiveFlags,Z,#$80,L17BD4
+        BRCLR   >O2ActiveFlags,Z,#$80,L17BD4             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BSET    >FlexLearnFlags6,Z,#$04
         BRCLR   >FlexLearnFlags10,Z,#$01,L17BD4
         BSET    >FlexLearnFlags6,Z,#$08
@@ -8627,7 +8627,7 @@ FlexIdleEnable:
         BCLR    >FlexLearnFlags6,Z,#$31
         BRCLR   >FlexLearnFlags6,Z,#$80,L17C64
         BRSET   >O2Bank1Flags,Z,#$20,L17C5C
-        BRCLR   >O2ActiveFlags,Z,#$80,L17C5C
+        BRCLR   >O2ActiveFlags,Z,#$80,L17C5C             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >CoolantTemp,Z
         CMPA    >FlexLearnCoolantMin3
         BCS     L17C5C
@@ -8679,7 +8679,7 @@ L17CBE:
         STAA    >FlexLearnTimer2,Z
 L17CCC:
         BRCLR   >FlexLearnFlags6,Z,#$40,L17CF0
-        BRCLR   >IdleFlags,Z,#$80,L17CE0
+        BRCLR   >IdleFlags,Z,#$80,L17CE0                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         LDAA    >FlexLearnIacStep
         JSR     IacSetTarget
 L17CE0:
@@ -8707,7 +8707,7 @@ L17D1C:
         BRCLR   >FlexLearnFlags,Z,#$20,L17D3E
         BRCLR   >FlexLearnFlags10,Z,#$01,L17D3E
         BRSET   >O2Bank1Flags,Z,#$20,L17D3E
-        BRCLR   >O2ActiveFlags,Z,#$80,L17D3E
+        BRCLR   >O2ActiveFlags,Z,#$80,L17D3E             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BSET    >FlexLearnFlags6,Z,#$10
         BRA     L17D42
 L17D3E:
@@ -8728,7 +8728,7 @@ L17D64:
         CLR     >FlexIdleTimer2,Z
 L17D68:
         BRSET   >FlexLearnFlags6,Z,#$40,L17D8A
-        BRCLR   >IdleFlags,Z,#$80,L17D7E
+        BRCLR   >IdleFlags,Z,#$80,L17D7E                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         LDAA    >FlexLearnIacStep
         NEGA
         JSR     IacSetTarget
@@ -8748,7 +8748,7 @@ L17D8A:
         LBRA    L17CCC
 L17DAC:
         BRSET   >O2Bank1Flags,Z,#$20,L17DBE
-        BRCLR   >O2ActiveFlags,Z,#$80,L17DBE
+        BRCLR   >O2ActiveFlags,Z,#$80,L17DBE             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BSET    >FlexLearnFlags6,Z,#$08
         BRA     L17DC2
 L17DBE:
@@ -8807,7 +8807,7 @@ FlexLearnReset:
 FlexPulseTrim:
         BRCLR   >FlexLearnFlags6,Z,#$04,L17EC6
         BRSET   >O2Bank1Flags,Z,#$20,L17EC6
-        BRCLR   >O2ActiveFlags,Z,#$80,L17EC6
+        BRCLR   >O2ActiveFlags,Z,#$80,L17EC6             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         STE     >Temp4F4,Z
         LDAA    $01C1,Z
         ASRA
@@ -8818,7 +8818,7 @@ FlexPulseTrim:
 L17EC6:
         TST     >PurgeDuty,Z
         BEQ     L17EE4
-        BRSET   >ThrottleState,Z,#$40,L17EE4
+        BRSET   >ThrottleState,Z,#$40,L17EE4             ; bit 6: wide-open throttle (DetectWot)
         STE     >Temp4F4,Z
         LDAA    >FlexLearnTrimSum,Z
         ASRA
@@ -9028,7 +9028,7 @@ L1812A:
         STAA    $019D,Z
         BRA     L18142
 L18130:
-        BRSET   >DriveFlags,Z,#$20,L1811E
+        BRSET   >DriveFlags,Z,#$20,L1811E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         BRCLR   >FlexLearnFlags9,Z,#$08,L1811E
         BCLR    >FlexLearnFlags9,Z,#$08
         BRA     L180F6
@@ -9135,7 +9135,7 @@ L18308:
         BRCLR   >FlexLearnFlags,Z,#$10,L1852E
         BRSET   >FlexLearnFlags2,Z,#$10,L1852E
         BRCLR   >O2Bank1Flags,Z,#$20,L1852E
-        BRSET   >O2ActiveFlags,Z,#$80,L1852E
+        BRSET   >O2ActiveFlags,Z,#$80,L1852E             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BRSET   >FlexLearnFlags,Z,#$02,L1852E
         TST     >FlexLearnStartCoolantValue,Z
         BEQ     L1833C
@@ -9403,7 +9403,7 @@ L185DA:
 ;---------------------------------------------------------------------------------------------------
 FlexMisfireCheck:
         BRCLR   >O2Bank1Flags,Z,#$20,L18754
-        BRSET   >O2ActiveFlags,Z,#$80,L18754
+        BRSET   >O2ActiveFlags,Z,#$80,L18754             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BRSET   >FlexLearnFlags9,Z,#$10,L18754
         BRSET   >FlexLearnFlags,Z,#$02,L18754
         LDAA    >FlexLearnStartCoolantValue,Z
@@ -9561,7 +9561,7 @@ L187A6:
         BSET    >FlexLearnFlags6,Z,#$04
         BCLR    >FlexLearnFlags7,Z,#$10
         BRSET   >O2Bank1Flags,Z,#$20,L187C0
-        BRCLR   >O2ActiveFlags,Z,#$80,L187C0
+        BRCLR   >O2ActiveFlags,Z,#$80,L187C0             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BSET    >FlexLearnFlags6,Z,#$08
         BRA     L187C4
 L187C0:
@@ -9584,7 +9584,7 @@ L187E2:
         BSET    >FlexLearnFlags7,Z,#$10
         BRCLR   >FlexLearnFlags10,Z,#$01,L1880E
         BRSET   >O2Bank1Flags,Z,#$20,L1880E
-        BRCLR   >O2ActiveFlags,Z,#$80,L1880E
+        BRCLR   >O2ActiveFlags,Z,#$80,L1880E             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BSET    >FlexLearnFlags6,Z,#$10
         BSET    >FlexLearnFlags8,Z,#$02
         BRA     L18816
@@ -9605,7 +9605,7 @@ FlexTrimLearn2:
         BCLR    >FlexLearnFlags8,Z,#$03
         BRCLR   >FlexLearnFlags6,Z,#$80,L1889E
         BRSET   >O2Bank1Flags,Z,#$20,L18896
-        BRCLR   >O2ActiveFlags,Z,#$80,L18896
+        BRCLR   >O2ActiveFlags,Z,#$80,L18896             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >CoolantTemp,Z
         CMPA    >FlexLearnCoolantMin3
         BCS     L18896
@@ -9655,7 +9655,7 @@ FlexColdPurge:
         CMPA    >FlexLearnBattTempMax
         BCC     L188EC
 L188C4:
-        BRSET   >SensorFaultFlags,Z,#$80,L188DA
+        BRSET   >SensorFaultFlags,Z,#$80,L188DA          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   >FaultSet05,Z,#$02,L188DA
         LDAA    >StartCoolantTemp2,Z
         CMPA    >FlexLearnColdCoolantMax
@@ -9667,7 +9667,7 @@ L188DA:
         STAA    >FlexLearnTimer,Z
 L188EC:
         BRCLR   >FlexLearnFlags,Z,#$80,L18A54
-        BRCLR   >ThrottleState,Z,#$40,L18918
+        BRCLR   >ThrottleState,Z,#$40,L18918             ; bit 6: wide-open throttle (DetectWot)
         BRSET   >FlexLearnFlags,Z,#$20,L18918
         LDAA    >FlexEthanolStart,Z
         CMPA    >FlexLearnState,Z
@@ -9713,7 +9713,7 @@ L18986:
         LBCS    L18A1E
         BRCLR   >FlexLearnFlags6,Z,#$08,L18A1E
         BRSET   >O2Bank1Flags,Z,#$20,L18A1E
-        BRCLR   >O2ActiveFlags,Z,#$80,L18A1E
+        BRCLR   >O2ActiveFlags,Z,#$80,L18A1E             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BRCLR   >FlexLearnFlags10,Z,#$01,L18A1E
         LDAA    >FlexLearnPurgeCounter,Z
         INCA
@@ -9893,7 +9893,7 @@ IdleControl:
         CMPA    #$0B
         BCS     L1903A
 L1901C:
-        BRCLR   >EngineStateFlags,Z,#$80,L1903A
+        BRCLR   >EngineStateFlags,Z,#$80,L1903A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         JSR     IacLearn
         JSR     IacRollingControl
         JSR     IdleTargetControl
@@ -9904,7 +9904,7 @@ L1903A:
         JSR     PwmC18Control
         BSET    <IacStepFlags,Z,#$02
         STAA    >IacTargetCmd,Z
-        BRCLR   >EngineStateFlags,Z,#$80,L19054
+        BRCLR   >EngineStateFlags,Z,#$80,L19054          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         JSR     IdleMapLoop
         JSR     IacFixedTarget
 L19054:
@@ -9939,16 +9939,16 @@ L1908A:
 ;---------------------------------------------------------------------------------------------------
 IdleRpmLoop:
         BRCLR   >SwitchInputs,Z,#$01,L190AC
-        BRSET   >IdleFlags,Z,#$01,L190A6
+        BRSET   >IdleFlags,Z,#$01,L190A6                 ; bit 0: idle rpm loop hold timer started (IdleRpmLoop)
         LDAA    >IdleLoopHoldTime
         STAA    >IdleLoopHold,Z
-        BSET    >IdleFlags,Z,#$01
+        BSET    >IdleFlags,Z,#$01                        ; bit 0: idle rpm loop hold timer started (IdleRpmLoop)
         BRA     L190C0
 L190A6:
-        BSET    >IdleFlags,Z,#$01
+        BSET    >IdleFlags,Z,#$01                        ; bit 0: idle rpm loop hold timer started (IdleRpmLoop)
         BRA     L190B0
 L190AC:
-        BCLR    >IdleFlags,Z,#$01
+        BCLR    >IdleFlags,Z,#$01                        ; bit 0: idle rpm loop hold timer started (IdleRpmLoop)
 L190B0:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L190C0
         TST     >IdleLoopHold,Z
@@ -10008,14 +10008,14 @@ L19154:
         LDAA    <ScratchC,Z
         LDX     #IdleErrorTermCoarse
         BRSET   >Options032E,#$40,L19188
-        BRCLR   >DriveFlags,Z,#$20,L19188
+        BRCLR   >DriveFlags,Z,#$20,L19188                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #IdleErrorTermCoarsePN
         BRA     L19188
 L19172:
         LDAA    <ScratchD,Z
         LDX     #IdleErrorTermFine
         BRSET   >Options032E,#$40,L19188
-        BRCLR   >DriveFlags,Z,#$20,L19188
+        BRCLR   >DriveFlags,Z,#$20,L19188                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #IdleErrorTermFinePN
 L19188:
         JSR     Lookup2D
@@ -10250,7 +10250,7 @@ L193EA:
 ; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
 IacLearn:
-        BRCLR   >ControlFlags943,Z,#$01,L193FC
+        BRCLR   >ControlFlags943,Z,#$01,L193FC           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAA    >IacAcClutchHold
         STAA    >IacAcClutchTimer,Z
         BRA     L1947E
@@ -10278,11 +10278,11 @@ L19426:
 L1943C:
         CMPA    >VehicleSpeed,Z
         BLS     L1947E
-        BRCLR   >EquipmentFlags,Z,#$04,L19460
+        BRCLR   >EquipmentFlags,Z,#$04,L19460            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L19460
         BRSET   >SwitchInputs2,Z,#$40,L1947E
-        BRSET   >DriveFlags,Z,#$08,L1947E
-        BRSET   >IdleFlags,Z,#$10,L1947E
+        BRSET   >DriveFlags,Z,#$08,L1947E                ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
+        BRSET   >IdleFlags,Z,#$10,L1947E                 ; bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
 L19460:
         BRCLR   >Options032C,#$40,L19478
         BRSET   >Options032F,#$08,L19478
@@ -10299,7 +10299,7 @@ L19482:
         SUBB    <Scratch4,Z
         SBCA    #$00
         BRSET   >Options032E,#$40,L19498
-        BRCLR   >DriveFlags,Z,#$20,L1949E
+        BRCLR   >DriveFlags,Z,#$20,L1949E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
 L19498:
         SUBB    <Scratch0,Z
         SBCA    #$00
@@ -10392,7 +10392,7 @@ L19578:
         CLRA
         LDAB    $0369,Z
         BRSET   >Options032E,#$40,L19592
-        BRCLR   >DriveFlags,Z,#$20,L19592
+        BRCLR   >DriveFlags,Z,#$20,L19592                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDY     #$801A
         BRA     L19596
 L19592:
@@ -10439,7 +10439,7 @@ L19604:
         CLR     >IacLearnCount,Z
         LDAB    >IacDriveOffset,Z
         BRSET   >Options032E,#$40,L19624
-        BRCLR   >DriveFlags,Z,#$20,L19624
+        BRCLR   >DriveFlags,Z,#$20,L19624                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDAA    >IacStartHold2,Z
         BSR     StepToward
         STAA    >IacStartHold2,Z
@@ -10451,7 +10451,7 @@ L19624:
         BRA     L19646
 L19630:
         BRSET   >Options032E,#$40,L19642
-        BRCLR   >DriveFlags,Z,#$20,L19642
+        BRCLR   >DriveFlags,Z,#$20,L19642                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDAA    >IacStartHold2,Z
         BRA     L19646
 L19642:
@@ -10571,14 +10571,14 @@ L19712:
         LDAA    >IacLearned,Z
         LDX     $02,Y
         BRSET   >Options032E,#$40,L19732
-        BRCLR   >DriveFlags,Z,#$20,L19732
+        BRCLR   >DriveFlags,Z,#$20,L19732                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     $00,Y
 L19732:
         JSR     Lookup2D
         SXT
         TDE
         BRSET   >Options032E,#$40,L19746
-        BRCLR   >DriveFlags,Z,#$20,L19762
+        BRCLR   >DriveFlags,Z,#$20,L19762                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
 L19746:
         LDAA    >VehicleSpeed,Z
         LDX     #IacShiftSpeedFactor
@@ -10731,11 +10731,11 @@ L19894:
         BEQ     L1989E
         DEC     >IacAcBusTimer,Z
 L1989E:
-        BRSET   >AcFlags,Z,#$80,L198EC
-        BRCLR   >AcFlags,Z,#$10,L1990E
+        BRSET   >AcFlags,Z,#$80,L198EC                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
+        BRCLR   >AcFlags,Z,#$10,L1990E                   ; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
         BRCLR   >Options033A,#$08,L198E0
         BRSET   >IacAcFlags,Z,#$08,L198D4
-        BRCLR   >EquipmentFlags,Z,#$20,L198E0
+        BRCLR   >EquipmentFlags,Z,#$20,L198E0            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >BusModuleFlags,Z,#$02,L198E0
         BRCLR   >BusFlags9CE,Z,#$C0,L198E0
         BSET    >IacAcFlags,Z,#$08
@@ -10746,15 +10746,15 @@ L198D4:
         BEQ     L198E0
         BRCLR   >IacAcFlags,Z,#$04,L1990A
 L198E0:
-        BCLR    >AcFlags,Z,#$10
-        BRCLR   >ControlFlags943,Z,#$01,L1990A
+        BCLR    >AcFlags,Z,#$10                          ; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
+        BRCLR   >ControlFlags943,Z,#$01,L1990A           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         BRA     L19904
 L198EC:
         BCLR    >IacAcFlags,Z,#$08
         CLR     >IacAcBusTimer,Z
-        BRSET   >AcFlags,Z,#$10,L1990E
-        BSET    >AcFlags,Z,#$10
-        BRSET   >ControlFlags943,Z,#$01,L1990A
+        BRSET   >AcFlags,Z,#$10,L1990E                   ; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
+        BSET    >AcFlags,Z,#$10                          ; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
+        BRSET   >ControlFlags943,Z,#$01,L1990A           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L19904:
         BSET    >IdleFlags3,Z,#$10
         BRA     L1990E
@@ -10779,7 +10779,7 @@ L1992C:
         BCLR    >IdleFlags5,Z,#$80
         BCLR    >IdleFlags5,Z,#$0C
         BCLR    >IdleFlags6,Z,#$02
-        BCLR    >IdleFlags,Z,#$0A
+        BCLR    >IdleFlags,Z,#$0A                        ; bit 1: shift idle step applied (IacShiftStepApply)
         LDAA    >CoolantTemp,Z
         CMPA    >IacHotCoolantMin
         BLS     L19956
@@ -10797,7 +10797,7 @@ L1996E:
         BRCLR   >Options032D,#$20,L1999A
         BRCLR   >FaultSet03,Z,#$01,L1999A
         BCLR    >IdleAcFlags,Z,#$0F
-        BCLR    >AcFlags,Z,#$20
+        BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         BCLR    >IdleFlags,Z,#$0C
         BCLR    >IdleFlags5,Z,#$18
         BCLR    >IdleFlags6,Z,#$06
@@ -10830,7 +10830,7 @@ L199D0:
         BCLR    >IdleFlags6,Z,#$06
         BCLR    >IdleFlags5,Z,#$A0
         BSET    >IdleAcFlags,Z,#$C0
-        BSET    >AcFlags,Z,#$20
+        BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         BCLR    >IdleFlags3,Z,#$10
         CLR     >IacShiftTimer,Z
         LDAA    >IacEventTimerInit
@@ -10842,8 +10842,8 @@ L19A06:
         BCLR    >IdleFlags7,Z,#$02
         BRCLR   >IdleAcFlags,Z,#$01,L19A9C
         BSET    >IdleAcFlags,Z,#$80
-        BRSET   >IdleFlags,Z,#$80,L19A66
-        BRSET   >ThrottleState,Z,#$01,L19A66
+        BRSET   >IdleFlags,Z,#$80,L19A66                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
+        BRSET   >ThrottleState,Z,#$01,L19A66             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDAB    <Scratch1,Z
         LDAA    #$01
         TDE
@@ -10879,7 +10879,7 @@ L19A66:
         LDD     #$FFFF
         JSR     IacShiftKick
 L19A7A:
-        BSET    >AcFlags,Z,#$20
+        BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         BCLR    >IdleFlags3,Z,#$10
         BCLR    >IdleAcFlags,Z,#$01
         CLR     >IacShiftTimer,Z
@@ -10914,14 +10914,14 @@ L19AAA:
         BITA    #$04
         LBNE    L1A1AE
 L19AE6:
-        BRSET   >IdleFlags,Z,#$80,L19B16
-        BRSET   >ThrottleState,Z,#$01,L19B16
+        BRSET   >IdleFlags,Z,#$80,L19B16                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
+        BRSET   >ThrottleState,Z,#$01,L19B16             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDAA    #$FF
         STAA    >IacGearTime2,Z
         STAA    >IacGearDuration,Z
         BCLR    >IdleFlags7,Z,#$8C
-        BCLR    >IdleFlags,Z,#$20
-        BCLR    >IdleFlags,Z,#$10
+        BCLR    >IdleFlags,Z,#$20                        ; bit 5: gear-engagement idle step started (IdleTargetControl)
+        BCLR    >IdleFlags,Z,#$10                        ; bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
         BRSET   >IdleAcFlags,Z,#$04,L1A1AE
         BSET    >IdleFlags7,Z,#$02
         LBRA    L1A1AE
@@ -10932,8 +10932,8 @@ L19B16:
 L19B24:
         BRCLR   >IdleFlags7,Z,#$02,L19C20
         BCLR    >IdleFlags7,Z,#$02
-        BRSET   >ControlFlags943,Z,#$01,L19C20
-        BRSET   >AcFlags,Z,#$80,L19C20
+        BRSET   >ControlFlags943,Z,#$01,L19C20           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
+        BRSET   >AcFlags,Z,#$80,L19C20                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         LDAA    >VehicleSpeed,Z
         CMPA    >IacRollSpeedMin
         LBCS    L19C20
@@ -11028,7 +11028,7 @@ L19C1C:
 L19C20:
         BRCLR   >ControlFlagsC33,Z,#$44,L19C96
         BRSET   >IdleFlags3,Z,#$08,L19C96
-        BRCLR   >ThrottleState,Z,#$01,L19C60
+        BRCLR   >ThrottleState,Z,#$01,L19C60             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         TST     >DashpotTimerMoving,Z
         BNE     L19C60
 L19C38:
@@ -11043,18 +11043,18 @@ L19C50:
         BCLR    >ControlFlagsC33,Z,#$44
         LBRA    L19EF2
 L19C60:
-        BRCLR   >IdleFlags,Z,#$80,L19C96
-        BRSET   >DriveFlags,Z,#$80,L19C96
+        BRCLR   >IdleFlags,Z,#$80,L19C96                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
+        BRSET   >DriveFlags,Z,#$80,L19C96                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         TST     >ShiftIdleDelay,Z
         BNE     L19C96
 L19C72:
         BRSET   >IdleFlags2,Z,#$80,L19EF2
-        BRSET   >IdleFlags,Z,#$02,L19C8A
-        BSET    >IdleFlags,Z,#$02
+        BRSET   >IdleFlags,Z,#$02,L19C8A                 ; bit 1: shift idle step applied (IacShiftStepApply)
+        BSET    >IdleFlags,Z,#$02                        ; bit 1: shift idle step applied (IacShiftStepApply)
         JSR     IacShiftStepApply
         LBRA    L1A44A
 L19C8A:
-        BCLR    >IdleFlags,Z,#$02
+        BCLR    >IdleFlags,Z,#$02                        ; bit 1: shift idle step applied (IacShiftStepApply)
         BCLR    >ControlFlagsC33,Z,#$44
         LBRA    L19EF2
 L19C96:
@@ -11063,15 +11063,15 @@ L19C96:
         LBCS    L19EF2
         BRSET   >IdleAcFlags,Z,#$80,L19EF2
         BRCLR   >IdleFlags3,Z,#$10,L19EF2
-        BRSET   >AcFlags,Z,#$80,L19CC4
+        BRSET   >AcFlags,Z,#$80,L19CC4                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         LDAA    #$05
         CMPA    $0B02,Z
         BLS     L19CC4
         INC     $0B02,Z
         LBRA    L19EF2
 L19CC4:
-        BRCLR   >IdleFlags,Z,#$80,L19E04
-        BRSET   >AcFlags,Z,#$80,L19D7C
+        BRCLR   >IdleFlags,Z,#$80,L19E04                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
+        BRSET   >AcFlags,Z,#$80,L19D7C                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
 L19CD0:
         TST     >IacKickTimer,Z
         LBNE    L19EF2
@@ -11079,7 +11079,7 @@ L19CD0:
         BRSET   >IdleFlags2,Z,#$80,L19EF2
         TST     >ShiftIdleDelay,Z
         LBNE    L19EF2
-        BRSET   >DriveFlags,Z,#$80,L19EF2
+        BRSET   >DriveFlags,Z,#$80,L19EF2                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         TST     >IacAccelTimer,Z
         LBNE    L19EF2
         BRCLR   >IdleFlags3,Z,#$20,L19D10
@@ -11103,9 +11103,9 @@ L19D24:
         LDAA    >IacGearStepCount
         STAA    >IacGearSteps,Z
         BCLR    >IdleFlags3,Z,#$10
-        BCLR    >AcFlags,Z,#$20
-        BRCLR   >AcFlags,Z,#$80,L1A44A
-        BSET    >AcFlags,Z,#$20
+        BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
+        BRCLR   >AcFlags,Z,#$80,L1A44A                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
+        BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         LBRA    L1A44A
 L19D5E:
         LDAA    <IacPosition,Z
@@ -11141,9 +11141,9 @@ L19DBE:
         LDD     #$FFFF
         JSR     IacShiftKick
         BCLR    >IdleFlags3,Z,#$10
-        BSET    >AcFlags,Z,#$20
-        BRSET   >AcFlags,Z,#$80,L1A44A
-        BCLR    >AcFlags,Z,#$20
+        BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
+        BRSET   >AcFlags,Z,#$80,L1A44A                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
+        BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         LBRA    L1A44A
 L19DE6:
         LDAA    <IacPosition,Z
@@ -11155,10 +11155,10 @@ L19DE6:
         BSET    >MisfireFlags4,Z,#$40
         LBRA    L1A44A
 L19E04:
-        BRCLR   >ThrottleState,Z,#$01,L19EF2
+        BRCLR   >ThrottleState,Z,#$01,L19EF2             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         TST     >DashpotTimerMoving,Z
         LBNE    L19EF2
-        BRCLR   >AcFlags,Z,#$80,L19E82
+        BRCLR   >AcFlags,Z,#$80,L19E82                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
 L19E18:
         BRSET   >IdleFlags2,Z,#$80,L19EF2
         BRSET   >IdleFlags5,Z,#$10,L19E38
@@ -11173,9 +11173,9 @@ L19E38:
         LDD     #$FFFF
         JSR     IacShiftKick
         BCLR    >IdleFlags3,Z,#$10
-        BSET    >AcFlags,Z,#$20
-        BRSET   >AcFlags,Z,#$80,L1A44A
-        BCLR    >AcFlags,Z,#$20
+        BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
+        BRSET   >AcFlags,Z,#$80,L1A44A                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
+        BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         LBRA    L1A44A
 L19E60:
         LDAA    <IacPosition,Z
@@ -11203,9 +11203,9 @@ L19EA2:
         JSR     IacShiftKick
         CLR     $0B02,Z
         BCLR    >IdleFlags3,Z,#$10
-        BCLR    >AcFlags,Z,#$20
-        BRCLR   >AcFlags,Z,#$80,L1A44A
-        BSET    >AcFlags,Z,#$20
+        BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
+        BRCLR   >AcFlags,Z,#$80,L1A44A                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
+        BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         LBRA    L1A44A
 L19ED4:
         LDAA    <IacPosition,Z
@@ -11219,16 +11219,16 @@ L19ED4:
 L19EF2:
         BRSET   >Options032E,#$40,L1A0D8
         BRCLR   >IdleFlags3,Z,#$08,L19F4C
-        BRCLR   >DriveFlags,Z,#$80,L1A0D8
-        BRSET   >DriveFlags,Z,#$20,L1A0D8
+        BRCLR   >DriveFlags,Z,#$80,L1A0D8                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
+        BRSET   >DriveFlags,Z,#$20,L1A0D8                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         INC     >IacGearTime,Z
         BNE     L19F14
         DEC     >IacGearTime,Z
 L19F14:
-        BRSET   >IdleFlags,Z,#$20,L1A0D8
+        BRSET   >IdleFlags,Z,#$20,L1A0D8                 ; bit 5: gear-engagement idle step started (IdleTargetControl)
         LDAA    >CoolantTemp,Z
         LDX     #IacDroopStepCoolant
-        BRCLR   >EquipmentFlags,Z,#$20,L19F2C
+        BRCLR   >EquipmentFlags,Z,#$20,L19F2C            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #IacDroopStepCoolantAC
 L19F2C:
         JSR     Lookup2D
@@ -11244,15 +11244,15 @@ L19F44:
         JSR     IacSetTarget
         LBRA    L1A0D8
 L19F4C:
-        BRSET   >DriveFlags,Z,#$80,L19F5C
-        BRSET   >IdleFlags,Z,#$20,L1A0B0
+        BRSET   >DriveFlags,Z,#$80,L19F5C                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
+        BRSET   >IdleFlags,Z,#$20,L1A0B0                 ; bit 5: gear-engagement idle step started (IdleTargetControl)
         LBRA    L1A0D8
 L19F5C:
         BRSET   >IdleFlags7,Z,#$80,L19F86
         BSET    >IdleFlags7,Z,#$80
         LDAA    >CoolantTemp,Z
         LDX     #IacGearDelayCoolant
-        BRCLR   >EquipmentFlags,Z,#$20,L19F78
+        BRCLR   >EquipmentFlags,Z,#$20,L19F78            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #IacGearDelayCoolantAC
 L19F78:
         JSR     Lookup2D
@@ -11273,12 +11273,12 @@ L19F92:
         ORAB    #$08
         ANDB    #$FB
         LDX     #IacGearTimeCoolant
-        BRCLR   >EquipmentFlags,Z,#$20,L19FB2
+        BRCLR   >EquipmentFlags,Z,#$20,L19FB2            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #IacGearTimeCoolantAC
 L19FB2:
-        BRCLR   >DriveFlags,Z,#$20,L19FCA
+        BRCLR   >DriveFlags,Z,#$20,L19FCA                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #IacGearTimeCoolantPN
-        BRCLR   >EquipmentFlags,Z,#$20,L19FC6
+        BRCLR   >EquipmentFlags,Z,#$20,L19FC6            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #IacGearTimeCoolantPNAC
 L19FC6:
         ORAB    #$04
@@ -11293,12 +11293,12 @@ L19FCA:
         STAB    <ScratchE,Z
         LDAA    >IacGearTime,Z
         LDX     #IacGearTimeFactorPN
-        BRCLR   >EquipmentFlags,Z,#$20,L19FF4
+        BRCLR   >EquipmentFlags,Z,#$20,L19FF4            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #IacGearTimeFactorPNAC
 L19FF4:
-        BRSET   >DriveFlags,Z,#$20,L1A008
+        BRSET   >DriveFlags,Z,#$20,L1A008                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #IacGearTimeFactor
-        BRCLR   >EquipmentFlags,Z,#$20,L1A008
+        BRCLR   >EquipmentFlags,Z,#$20,L1A008            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #IacGearTimeFactorAC
 L1A008:
         JSR     Lookup2D
@@ -11319,16 +11319,16 @@ L1A01E:
 L1A02C:
         TST     >ShiftIdleDelay,Z
         LBNE    L1A0EA
-        BRSET   >IdleFlags,Z,#$20,L1A0EA
-        BSET    >IdleFlags,Z,#$20
+        BRSET   >IdleFlags,Z,#$20,L1A0EA                 ; bit 5: gear-engagement idle step started (IdleTargetControl)
+        BSET    >IdleFlags,Z,#$20                        ; bit 5: gear-engagement idle step started (IdleTargetControl)
         LDAA    >CoolantTemp,Z
         LDX     #IacGearStepCoolantPN
-        BRCLR   >EquipmentFlags,Z,#$20,L1A050
+        BRCLR   >EquipmentFlags,Z,#$20,L1A050            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #IacGearStepCoolantPNAC
 L1A050:
-        BRSET   >DriveFlags,Z,#$20,L1A064
+        BRSET   >DriveFlags,Z,#$20,L1A064                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #IacDroopStepCoolant
-        BRCLR   >EquipmentFlags,Z,#$20,L1A064
+        BRCLR   >EquipmentFlags,Z,#$20,L1A064            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #IacDroopStepCoolantAC
 L1A064:
         JSR     Lookup2D
@@ -11340,7 +11340,7 @@ L1A064:
         LDX     #$0100
         EDIVS
         XGDX
-        BRCLR   >IdleFlags,Z,#$40,L1A090
+        BRCLR   >IdleFlags,Z,#$40,L1A090                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         TDE
         LDAB    >IacBase,Z
         CLRA
@@ -11363,10 +11363,10 @@ L1A0A6:
         LBRA    L1A44A
 L1A0B0:
         BRSET   >SwitchInputs2,Z,#$20,L1A0BE
-        BRSET   >DriveFlags,Z,#$20,L1A0EA
+        BRSET   >DriveFlags,Z,#$20,L1A0EA                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         BRA     L1A0D8
 L1A0BE:
-        BRCLR   >DriveFlags,Z,#$20,L1A0EA
+        BRCLR   >DriveFlags,Z,#$20,L1A0EA                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDAA    >CoolantTemp,Z
         CMPA    >IacGearCoolantMax
         BCC     L1A0D8
@@ -11378,31 +11378,31 @@ L1A0D8:
         STAA    >IacGearTime2,Z
         STAA    >IacGearDuration,Z
         BCLR    >IdleFlags7,Z,#$8C
-        BCLR    >IdleFlags,Z,#$20
+        BCLR    >IdleFlags,Z,#$20                        ; bit 5: gear-engagement idle step started (IdleTargetControl)
 L1A0EA:
-        BRCLR   >EquipmentFlags,Z,#$04,L1A128
+        BRCLR   >EquipmentFlags,Z,#$04,L1A128            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1A128
         BRSET   >SwitchInputs2,Z,#$40,L1A108
-        BRCLR   >DriveFlags,Z,#$08,L1A128
-        BCLR    >DriveFlags,Z,#$08
+        BRCLR   >DriveFlags,Z,#$08,L1A128                ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
+        BCLR    >DriveFlags,Z,#$08                       ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         BRA     L1A112
 L1A108:
-        BRSET   >DriveFlags,Z,#$08,L1A128
-        BSET    >DriveFlags,Z,#$08
+        BRSET   >DriveFlags,Z,#$08,L1A128                ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
+        BSET    >DriveFlags,Z,#$08                       ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
 L1A112:
-        BRSET   >ThrottleState,Z,#$01,L1A128
+        BRSET   >ThrottleState,Z,#$01,L1A128             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         TST     >DashpotTimer2,Z
         BNE     L1A128
         LDAA    >CoolantTemp,Z
         CMPA    >IdleCoolantMin
         BHI     L1A130
 L1A128:
-        BCLR    >IdleFlags,Z,#$10
+        BCLR    >IdleFlags,Z,#$10                        ; bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
         LBRA    L1A44A
 L1A130:
         LDAA    >IacKickHold
         STAA    >IacKickTimer,Z
-        BRCLR   >DriveFlags,Z,#$08,L1A14C
+        BRCLR   >DriveFlags,Z,#$08,L1A14C                ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         LDAA    >Map,Z
         STAA    >IacAcKickMapLatch,Z
         LDX     #IacAcKickMap
@@ -11433,13 +11433,13 @@ L1A17E:
 L1A188:
         TBA
         STAA    >IacKick,Z
-        BRCLR   >DriveFlags,Z,#$08,L1A1A2
+        BRCLR   >DriveFlags,Z,#$08,L1A1A2                ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         LDAB    >SegmentRpm,Z
         CMPB    >IacKickRpmMax
         BCS     L1A1A2
         LBRA    L1A44A
 L1A1A2:
-        BSET    >IdleFlags,Z,#$10
+        BSET    >IdleFlags,Z,#$10                        ; bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
         JSR     IacSetTarget
         LBRA    L1A44A
 L1A1AE:
@@ -11545,7 +11545,7 @@ L1A298:
         BRCLR   >IdleFlags3,Z,#$10,L1A40E
         TST     >IacAccelTimer,Z
         LBNE    L1A40E
-        BRSET   >AcFlags,Z,#$80,L1A3A2
+        BRSET   >AcFlags,Z,#$80,L1A3A2                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
 L1A2CC:
         LDD     >SegmentRpm,Z
         CPD     >AcCutRpmLow
@@ -11591,9 +11591,9 @@ L1A33A:
         BRCLR   >IacAcFlags,Z,#$80,L1A34C
         BRCLR   >IacAcFlags,Z,#$40,L1A44A
 L1A34C:
-        BCLR    >AcFlags,Z,#$20
-        BRCLR   >AcFlags,Z,#$80,L1A35A
-        BSET    >AcFlags,Z,#$20
+        BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
+        BRCLR   >AcFlags,Z,#$80,L1A35A                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
+        BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
 L1A35A:
         BCLR    >IdleFlags3,Z,#$10
         BCLR    >IdleFlags8,Z,#$02
@@ -11659,14 +11659,14 @@ L1A3F0:
         BCLR    >IdleFlags6,Z,#$04
         BCLR    >IdleFlags8,Z,#$02
         BCLR    >IdleFlags3,Z,#$10
-        BSET    >AcFlags,Z,#$20
-        BRSET   >AcFlags,Z,#$80,L1A44A
-        BCLR    >AcFlags,Z,#$20
+        BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
+        BRSET   >AcFlags,Z,#$80,L1A44A                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
+        BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         LBRA    L1A44A
 L1A40E:
         LDAA    <ScratchA,Z
         BRSET   >IdleAcFlags,Z,#$80,L1A422
-        BRSET   >AcFlags,Z,#$20,L1A422
+        BRSET   >AcFlags,Z,#$20,L1A422                   ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         ADDA    <ScratchB,Z
         BCC     L1A422
         LDAA    #$FF
@@ -11757,7 +11757,7 @@ L1A4C2:
 ;---------------------------------------------------------------------------------------------------
 IacChargeStepCalc:
         PSHM    E,X,K
-        BRSET   >SensorFaultFlags,Z,#$20,L1A57E
+        BRSET   >SensorFaultFlags,Z,#$20,L1A57E          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
         BRSET   >FaultSet05,Z,#$08,L1A57E
         LDAB    >ChargeTargetVolts,Z
         SUBB    >BatteryVolts2,Z
@@ -11772,7 +11772,7 @@ L1A4E6:
 L1A4F6:
         STAA    >ChargeDeficit,Z
         BRSET   >FieldFlags,Z,#$04,L1A57E
-        BRCLR   >IdleFlags,Z,#$80,L1A57E
+        BRCLR   >IdleFlags,Z,#$80,L1A57E                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRSET   >IacStepFlags,Z,#$01,L1A57E
         LDAB    >FieldFlags,Z
         BITB    #$01
@@ -11899,13 +11899,13 @@ IdleMapLoop:
         CLRW    >ScratchE,Z
         BRCLR   >Scratch8,Z,#$04,L1A698
         BRCLR   >IdleFlags7,Z,#$20,L1A698
-        BRSET   >SensorFaultFlags,Z,#$10,L1A698
-        BRSET   >SensorFaultFlags,Z,#$80,L1A698
+        BRSET   >SensorFaultFlags,Z,#$10,L1A698          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
+        BRSET   >SensorFaultFlags,Z,#$80,L1A698          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   >Scratch8,Z,#$01,L1A698
-        BRSET   >ThrottleState,Z,#$01,L1A698
+        BRSET   >ThrottleState,Z,#$01,L1A698             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BSET    <ScratchC,Z,#$02
         BRCLR   >Scratch8,Z,#$10,L1A698
-        BRSET   >ThrottleState,Z,#$01,L1A698
+        BRSET   >ThrottleState,Z,#$01,L1A698             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         TST     >DashpotTimerMoving,Z
         BNE     L1A698
         TST     >DashpotTimer2,Z
@@ -11978,9 +11978,9 @@ L1A706:
 L1A714:
         BRCLR   >ScratchC,Z,#$02,L1A7AC
         BRSET   >Options032E,#$40,L1A726
-        BRCLR   >DriveFlags,Z,#$20,L1A7AC
+        BRCLR   >DriveFlags,Z,#$20,L1A7AC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
 L1A726:
-        BRCLR   >ControlFlags943,Z,#$01,L1A7AC
+        BRCLR   >ControlFlags943,Z,#$01,L1A7AC           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAA    >Map,Z
         SUBA    <Scratch7,Z
         BCC     L1A736
@@ -11992,7 +11992,7 @@ L1A736:
 L1A73C:
         CMPA    >IdleMapLearnBand
         BCC     L1A7AC
-        BRCLR   >EquipmentFlags,Z,#$04,L1A754
+        BRCLR   >EquipmentFlags,Z,#$04,L1A754            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1A754
         BRSET   >SwitchInputs2,Z,#$40,L1A7AC
 L1A754:
@@ -12041,7 +12041,7 @@ L1A7C4:
         SUBB    <IdleMapLearned,Z
         SBCA    #$00
         BRSET   >Options032E,#$40,L1A7DA
-        BRCLR   >DriveFlags,Z,#$20,L1A7E0
+        BRCLR   >DriveFlags,Z,#$20,L1A7E0                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
 L1A7DA:
         TSTA
         BEQ     L1A7E0
@@ -12059,7 +12059,7 @@ L1A7E0:
         ADDB    <Scratch0,Z
         ADCA    #$00
         BRSET   >Options032E,#$40,L1A80E
-        BRSET   >DriveFlags,Z,#$20,L1A80E
+        BRSET   >DriveFlags,Z,#$20,L1A80E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         SUBB    >IacCoastOffsetDrive
         SBCA    #$00
 L1A80E:
@@ -12113,7 +12113,7 @@ IdleStopRpmCheck:
         BRSET   >FaultSet05,Z,#$08,L1A932
         TST     >VehicleSpeed,Z
         LBNE    L1A932
-        BRCLR   >EquipmentFlags,Z,#$04,L1A898
+        BRCLR   >EquipmentFlags,Z,#$04,L1A898            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1A898
         BRSET   >SwitchInputs2,Z,#$40,L1A932
 L1A898:
@@ -12122,7 +12122,7 @@ L1A898:
         BRCLR   >FlexLearnFlags,Z,#$80,L1A8B0
         BRSET   >FlexLearnFlags,Z,#$20,L1A932
 L1A8B0:
-        BRCLR   >ControlFlags943,Z,#$01,L1A932
+        BRCLR   >ControlFlags943,Z,#$01,L1A932           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAA    >IdleFlags5,Z
         BITA    #$1C
         LBNE    L1A932
@@ -12248,7 +12248,7 @@ IacFixedTarget:
         BCLR    <IacStepFlags,Z,#$10
         BRA     L1A9DC
 L1A9B0:
-        BRSET   >ThrottleState,Z,#$01,L1A9DC
+        BRSET   >ThrottleState,Z,#$01,L1A9DC             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BRSET   >Scratch8,Z,#$01,L1A9DC
         ORP     #$00E0
         LDAA    >IacTarget,Z
@@ -12283,7 +12283,7 @@ L1A9FA:
         CMPA    >IacRollSpeedMax
         BCC     L1AA7C
 L1AA0A:
-        BRCLR   >ThrottleState,Z,#$01,L1AA2A
+        BRCLR   >ThrottleState,Z,#$01,L1AA2A             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDAA    >VehicleSpeed,Z
         CMPA    >IdleRollSpeed
         BLS     L1AA7C
@@ -12302,12 +12302,12 @@ L1AA2A:
 L1AA38:
         CPD     >SegmentRpm,Z
         BLS     L1AA7C
-        BRSET   >ThrottleState,Z,#$80,L1AA7C
+        BRSET   >ThrottleState,Z,#$80,L1AA7C             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         TST     >DashpotTimerMoving,Z
         BNE     L1AA7C
         BRA     L1AA84
 L1AA4C:
-        BRSET   >ThrottleState,Z,#$80,L1AA7C
+        BRSET   >ThrottleState,Z,#$80,L1AA7C             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
         CMPA    >IacRollSpeedMax
         BHI     L1AA7C
@@ -12330,7 +12330,7 @@ L1AA84:
         BRSET   >IacStepFlags,Z,#$01,L1AAA0
         BSET    <IacStepFlags,Z,#$01
         LDD     >IdleTarget,Z
-        BRCLR   >ThrottleState,Z,#$01,L1AAD8
+        BRCLR   >ThrottleState,Z,#$01,L1AAD8             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDD     >SegmentRpm,Z
         STD     >IacDecelRefRpm,Z
 L1AAA0:
@@ -12373,18 +12373,18 @@ L1AADC:
         LDAB    <Scratch4,Z
         CLRA
         ADE
-        BRSET   >AcFlags,Z,#$80,L1AB26
+        BRSET   >AcFlags,Z,#$80,L1AB26                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         LDAA    >IacLearned,Z
         LDX     #Tab2D_27FE
         BRSET   >Options032E,#$40,L1AB1E
-        BRCLR   >DriveFlags,Z,#$20,L1AB1E
+        BRCLR   >DriveFlags,Z,#$20,L1AB1E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #Tab2D_2808
 L1AB1E:
         JSR     Lookup2D
         CLRA
         ADE
 L1AB26:
-        BRCLR   >EquipmentFlags,Z,#$04,L1AB40
+        BRCLR   >EquipmentFlags,Z,#$04,L1AB40            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1AB40
         BRCLR   >SwitchInputs2,Z,#$40,L1AB40
         LDAB    >IacAcRequestAdder
@@ -12456,7 +12456,7 @@ IdleMapTargetCalc:
         JSR     Lookup2D
         CLRA
         ADE
-        BRSET   >ControlFlags943,Z,#$01,L1ABD6
+        BRSET   >ControlFlags943,Z,#$01,L1ABD6           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAA    >IacLearned,Z
         LDX     #IdleMapAdderIac
         LDAB    >FuelModeFlags2,Z
@@ -12470,7 +12470,7 @@ L1ABCE:
         CLRA
         ADE
 L1ABD6:
-        BRCLR   >EquipmentFlags,Z,#$04,L1ABF0
+        BRCLR   >EquipmentFlags,Z,#$04,L1ABF0            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1ABF0
         BRCLR   >SwitchInputs2,Z,#$40,L1ABF0
         LDAB    >IdleMapAcAdder
@@ -12610,7 +12610,7 @@ L1AD3A:
 ; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
 IacCrankControl:
-        BRSET   >EngineStateFlags,Z,#$80,L1AD4A
+        BRSET   >EngineStateFlags,Z,#$80,L1AD4A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BSET    <IacStepFlags,Z,#$20
         CLR     $0354,Z
 L1AD4A:
@@ -12644,7 +12644,7 @@ L1AD82:
         TBA
 L1AD8C:
         STAA    >IacTarget,Z
-        BRCLR   >EngineStateFlags,Z,#$80,L1ADA2
+        BRCLR   >EngineStateFlags,Z,#$80,L1ADA2          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    $0354,Z
         ADDA    #$01
         SBCA    #$00
@@ -12666,7 +12666,7 @@ L1ADB6:
 ;---------------------------------------------------------------------------------------------------
 IdleStateFlags:
         CLRW    >Scratch8,Z
-        BRCLR   >SensorFaultFlags,Z,#$20,L1ADC6
+        BRCLR   >SensorFaultFlags,Z,#$20,L1ADC6          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
         BSET    <Scratch8,Z,#$01
 L1ADC6:
         LDAA    >FaultSet0A,Z
@@ -12694,23 +12694,23 @@ L1ADF4:
         BLS     L1AE08
         BSET    <Scratch8,Z,#$04
 L1AE08:
-        BRCLR   >EngineStateFlags,Z,#$80,L1AE1E
+        BRCLR   >EngineStateFlags,Z,#$80,L1AE1E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >IacStepFlags,Z,#$20,L1AE1E
         BRSET   >Scratch8,Z,#$01,L1AE1E
         BSET    <Scratch8,Z,#$10
 L1AE1E:
-        BRCLR   >IdleFlags,Z,#$80,L1AE3A
+        BRCLR   >IdleFlags,Z,#$80,L1AE3A                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         TST     >DashpotTimer2,Z
         BNE     L1AE3A
         BRSET   >IdleFlareFlags,Z,#$80,L1AE3A
-        BRSET   >ThrottleState,Z,#$01,L1AE3A
+        BRSET   >ThrottleState,Z,#$01,L1AE3A             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BSET    <Scratch8,Z,#$20
 L1AE3A:
         BRCLR   >Scratch8,Z,#$04,L1AE72
         BRCLR   >Scratch8,Z,#$10,L1AE72
-        BRSET   >ThrottleState,Z,#$01,L1AE72
+        BRSET   >ThrottleState,Z,#$01,L1AE72             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BRSET   >Options032E,#$40,L1AE58
-        BRCLR   >DriveFlags,Z,#$20,L1AE72
+        BRCLR   >DriveFlags,Z,#$20,L1AE72                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
 L1AE58:
         TST     >DashpotTimerMoving,Z
         BNE     L1AE72
@@ -12733,7 +12733,7 @@ L1AE72:
         LDAB    >IdleFlags,Z
         ANDB    #$0E
         BNE     L1AEB4
-        BRSET   >DriveFlags,Z,#$80,L1AEB4
+        BRSET   >DriveFlags,Z,#$80,L1AEB4                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         TST     >ShiftIdleDelay,Z
         BNE     L1AEB4
         BSET    >IdleFlags7,Z,#$20
@@ -12752,7 +12752,7 @@ IacBaseCalc:
         LDX     #IacBaseBaroTarget
         JSR     Lookup3D
         STAA    <Scratch0,Z
-        BRSET   >IdleFlags,Z,#$40,L1AED8
+        BRSET   >IdleFlags,Z,#$40,L1AED8                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         STAA    >IacBase,Z
 L1AED8:
         LDAA    <Baro,Z
@@ -12798,12 +12798,12 @@ L1AF24:
         CLRA
         ADE
         BRSET   >Options032E,#$40,L1AF6A
-        BRSET   >DriveFlags,Z,#$20,L1AF6A
+        BRSET   >DriveFlags,Z,#$20,L1AF6A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDAB    >IacDriveAdder
         SXT
         ADE
 L1AF6A:
-        BRCLR   >EquipmentFlags,Z,#$04,L1AF84
+        BRCLR   >EquipmentFlags,Z,#$04,L1AF84            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1AF84
         BRCLR   >SwitchInputs2,Z,#$40,L1AF84
         LDAB    >IacAcRequestAdder
@@ -12827,7 +12827,7 @@ L1AF84:
         JSR     Blend16
         AIS     #$04
         STAB    >AcSensorFiltered,Z
-        BRSET   >ControlFlags943,Z,#$01,L1AFD0
+        BRSET   >ControlFlags943,Z,#$01,L1AFD0           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAA    >AcSensorFiltered,Z
         STAA    >IacAcSensorLatched,Z
         BSET    >IdleFlags6,Z,#$01
@@ -12880,7 +12880,7 @@ L1B01E:
 ; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
 IdleRpmTarget:
-        BRCLR   >EngineStateFlags,Z,#$80,L1B078
+        BRCLR   >EngineStateFlags,Z,#$80,L1B078          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >MainLoopPhaseMask,Z,#$08,L1B07C
         LDD     >IdleRunTimer,Z
         INCB
@@ -12896,7 +12896,7 @@ L1B072:
 L1B078:
         CLRW    >IdleRunTimer,Z
 L1B07C:
-        BRSET   >ThrottleState,Z,#$01,L1B08E
+        BRSET   >ThrottleState,Z,#$01,L1B08E             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BRSET   >IacStepFlags,Z,#$01,L1B08E
         BRCLR   >IdleFlags2,Z,#$20,L1B098
 L1B08E:
@@ -12909,20 +12909,20 @@ L1B098:
         BEQ     L1B0A8
         DEC     >IdleRampHold,Z
 L1B0A8:
-        BRSET   >EngineStateFlags,Z,#$80,L1B0BC
+        BRSET   >EngineStateFlags,Z,#$80,L1B0BC          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >IdleRampBlockStart
         CMPA    >IdleRampBlockTimer,Z
         BLS     L1B0BC
         STAA    >IdleRampBlockTimer,Z
 L1B0BC:
         BRSET   >Options033A,#$40,L1B0D6
-        BRSET   >ControlFlags943,Z,#$01,L1B0D6
+        BRSET   >ControlFlags943,Z,#$01,L1B0D6           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAA    >IdleRampBlockAcOff
         CMPA    >IdleRampBlockTimer,Z
         BLS     L1B0D6
         STAA    >IdleRampBlockTimer,Z
 L1B0D6:
-        BRCLR   >EquipmentFlags,Z,#$04,L1B0F6
+        BRCLR   >EquipmentFlags,Z,#$04,L1B0F6            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1B0F6
         BRCLR   >SwitchInputs2,Z,#$40,L1B0F6
         LDAA    >IdleRampBlockEvent
@@ -12947,11 +12947,11 @@ L1B122:
         CLR     >IdleLowVoltsTimer,Z
 L1B126:
         BCLR    >IdleFlags7,Z,#$10
-        BRCLR   >ThrottleState,Z,#$02,L1B150
-        BRSET   >DriveFlags,Z,#$20,L1B13C
-        BRCLR   >ThrottleState,Z,#$80,L1B142
+        BRCLR   >ThrottleState,Z,#$02,L1B150             ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
+        BRSET   >DriveFlags,Z,#$20,L1B13C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRCLR   >ThrottleState,Z,#$80,L1B142             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
 L1B13C:
-        BCLR    >ThrottleState,Z,#$02
+        BCLR    >ThrottleState,Z,#$02                    ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
         BRA     L1B150
 L1B142:
         BSET    >IdleFlags7,Z,#$10
@@ -12959,7 +12959,7 @@ L1B142:
         STD     <ScratchE,Z
         LBRA    L1B5AA
 L1B150:
-        BRSET   >DriveFlags,Z,#$20,L1B190
+        BRSET   >DriveFlags,Z,#$20,L1B190                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDAA    >DiagCommand,Z
         CMPA    #$19
         BNE     L1B178
@@ -13019,7 +13019,7 @@ L1B1F2:
         LDAA    >CoolantTemp,Z
         LDX     #IdleTargetRpm
         BRSET   >Options032E,#$40,L1B20A
-        BRCLR   >DriveFlags,Z,#$20,L1B20A
+        BRCLR   >DriveFlags,Z,#$20,L1B20A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #IdleTargetRpmPN
 L1B20A:
         JSR     Lookup2D
@@ -13056,7 +13056,7 @@ L1B258:
         LDAB    #$40
         MUL
         STD     <ScratchE,Z
-        BRSET   >ThrottleState,Z,#$01,L1B274
+        BRSET   >ThrottleState,Z,#$01,L1B274             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BRCLR   >IdleFlags2,Z,#$10,L1B26E
         BCLR    >IdleFlags2,Z,#$20
 L1B26E:
@@ -13074,8 +13074,8 @@ L1B288:
 L1B28E:
         BSET    >IdleFlags6,Z,#$20
 L1B292:
-        BRCLR   >IdleFlags,Z,#$40,L1B29E
-        BRSET   >DriveFlags,Z,#$80,L1B424
+        BRCLR   >IdleFlags,Z,#$40,L1B29E                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
+        BRSET   >DriveFlags,Z,#$80,L1B424                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
 L1B29E:
         BRSET   >IdleFlags2,Z,#$20,L1B408
         BRCLR   >IdleFlags6,Z,#$10,L1B408
@@ -13086,7 +13086,7 @@ L1B29E:
         CMPA    >IdleHotAirOn
         BLS     L1B2DE
 L1B2C0:
-        BRCLR   >IdleFlags,Z,#$40,L1B408
+        BRCLR   >IdleFlags,Z,#$40,L1B408                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BSET    >IdleFlags2,Z,#$01
         LBRA    L1B408
 L1B2CE:
@@ -13106,7 +13106,7 @@ L1B2F0:
 L1B2F6:
         CMPA    >BatteryVoltsFiltered,Z
         BLS     L1B30A
-        BRCLR   >IdleFlags,Z,#$40,L1B408
+        BRCLR   >IdleFlags,Z,#$40,L1B408                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BSET    >IdleFlags2,Z,#$04
         LBRA    L1B408
 L1B30A:
@@ -13117,7 +13117,7 @@ L1B30A:
         CMPA    >IdleRampCoolantMax
         BLS     L1B33E
 L1B320:
-        BRCLR   >IdleFlags,Z,#$40,L1B408
+        BRCLR   >IdleFlags,Z,#$40,L1B408                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BSET    >IdleFlags2,Z,#$02
         LBRA    L1B408
 L1B32E:
@@ -13133,7 +13133,7 @@ L1B33E:
         CMPA    >IdleRampBattTempMax
         BLS     L1B372
 L1B354:
-        BRCLR   >IdleFlags,Z,#$40,L1B408
+        BRCLR   >IdleFlags,Z,#$40,L1B408                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BSET    >IdleFlags2,Z,#$08
         LBRA    L1B408
 L1B362:
@@ -13149,7 +13149,7 @@ L1B372:
         LBRA    L1B408
 L1B386:
         BRSET   >Options033A,#$40,L1B39A
-        BRSET   >AcFlags,Z,#$40,L1B39A
+        BRSET   >AcFlags,Z,#$40,L1B39A                   ; bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7
         BSET    >IdleFlags3,Z,#$20
         LBRA    L1B408
 L1B39A:
@@ -13160,7 +13160,7 @@ L1B39A:
         LBHI    L1B408
         BRSET   >BusIdleByte,Z,#$80,L1B408
         BRSET   >Options032E,#$40,L1B3C0
-        BRCLR   >DriveFlags,Z,#$20,L1B408
+        BRCLR   >DriveFlags,Z,#$20,L1B408                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
 L1B3C0:
         LDD     >IdleRampCountMin
         CPD     <SriMileage,Z
@@ -13169,7 +13169,7 @@ L1B3C0:
         CMPA    >IdleRampBaroMin
         LBCS    L1B408
         BRSET   >IacStepFlags,Z,#$01,L1B408
-        BRSET   >ThrottleState,Z,#$01,L1B408
+        BRSET   >ThrottleState,Z,#$01,L1B408             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BRCLR   >Options032C,#$40,L1B3F8
         BRSET   >Options032F,#$08,L1B3F8
         BRCLR   >FlexLearnFlags,Z,#$80,L1B3F8
@@ -13184,8 +13184,8 @@ L1B408:
         LDAA    >IdleRampDelayInit
         STAA    >IdleRampDelay,Z
         BCLR    >IdleFlags2,Z,#$40
-        BRCLR   >IdleFlags,Z,#$40,L1B422
-        BCLR    >IdleFlags,Z,#$40
+        BRCLR   >IdleFlags,Z,#$40,L1B422                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
+        BCLR    >IdleFlags,Z,#$40                        ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BSET    >IdleFlags2,Z,#$20
 L1B422:
         BRA     L1B438
@@ -13197,9 +13197,9 @@ L1B424:
 L1B42E:
         STD     <ScratchE,Z
         BCLR    >IdleFlags2,Z,#$0F
-        BSET    >IdleFlags,Z,#$40
+        BSET    >IdleFlags,Z,#$40                        ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
 L1B438:
-        BRCLR   >EquipmentFlags,Z,#$20,L1B44E
+        BRCLR   >EquipmentFlags,Z,#$20,L1B44E            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRCLR   >BusFlags9CE,Z,#$02,L1B44E
         LDD     >IdleAcTargetMin
         CPD     <ScratchE,Z
@@ -13211,7 +13211,7 @@ L1B44E:
         JSR     Lookup2D
         LDX     #IdleBattTempTarget
         BRSET   >Options032E,#$40,L1B46E
-        BRCLR   >DriveFlags,Z,#$20,L1B46E
+        BRCLR   >DriveFlags,Z,#$20,L1B46E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #IdleBattTempTargetPN
 L1B46E:
         LDAB    >IdleRunTimer,Z
@@ -13223,12 +13223,12 @@ L1B46E:
         BRSET   >IdleFlags9,Z,#$04,L1B52C
         BRSET   >IdleFlags9,Z,#$02,L1B4E2
         BRSET   >IdleFlags9,Z,#$01,L1B4A8
-        BRCLR   >IdleFlags,Z,#$80,L1B586
+        BRCLR   >IdleFlags,Z,#$80,L1B586                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         CLR     >IdleRampTimer,Z
         BSET    >IdleFlags9,Z,#$01
         LBRA    L1B586
 L1B4A8:
-        BRCLR   >IdleFlags,Z,#$80,L1B55C
+        BRCLR   >IdleFlags,Z,#$80,L1B55C                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRCLR   >MainLoopPhaseMask,Z,#$40,L1B4B8
         INC     >IdleRampTimer,Z
 L1B4B8:
@@ -13244,7 +13244,7 @@ L1B4B8:
         STAA    >IdleRampCount,Z
         LBRA    L1B586
 L1B4E2:
-        BRCLR   >IdleFlags,Z,#$80,L1B520
+        BRCLR   >IdleFlags,Z,#$80,L1B520                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRCLR   >MainLoopPhaseMask,Z,#$40,L1B4F2
         INC     >IdleRampTimer,Z
 L1B4F2:
@@ -13277,7 +13277,7 @@ L1B52C:
         BCS     L1B536
         STD     <ScratchE,Z
 L1B536:
-        BRSET   >IdleFlags,Z,#$80,L1B586
+        BRSET   >IdleFlags,Z,#$80,L1B586                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BSET    >IdleFlags9,Z,#$08
         CLR     >IdleRampEndHold,Z
         BRA     L1B586
@@ -13287,7 +13287,7 @@ L1B546:
         BCS     L1B550
         STD     <ScratchE,Z
 L1B550:
-        BRCLR   >IdleFlags,Z,#$80,L1B55C
+        BRCLR   >IdleFlags,Z,#$80,L1B55C                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BCLR    >IdleFlags9,Z,#$08
         BRA     L1B586
 L1B55C:
@@ -13305,7 +13305,7 @@ L1B570:
         CLR     >IdleFlags9,Z
 L1B586:
         BRCLR   >OutputTestFlags,Z,#$40,L1B5AA
-        BRSET   >AcFlags,Z,#$80,L1B5AA
+        BRSET   >AcFlags,Z,#$80,L1B5AA                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         LDD     >Count3s,Z
         CPD     #$063A
         BLS     L1B5AA
@@ -13327,7 +13327,7 @@ L1B5B0:
 PwmC18Control:
         LDAA    >IacTarget,Z
         BRSET   >FaultSet1A,Z,#$04,L1B642
-        BRSET   >ControlFlags943,Z,#$10,L1B642
+        BRSET   >ControlFlags943,Z,#$10,L1B642           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
         LDAB    >PwmC18Flags,Z
         BITB    #$01
         BEQ     L1B642
@@ -13947,7 +13947,7 @@ SparkHook:
         LDAA    >CoolantTemp,Z
         CMPA    >SparkHookCoolantMin
         BCS     L1D174
-        BRSET   >ThrottleState,Z,#$80,L1D1A8
+        BRSET   >ThrottleState,Z,#$80,L1D1A8             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
         CMPA    >IdleRollSpeed
         BCS     L1D178
@@ -14004,7 +14004,7 @@ L1D1E0:
 ; Called from: CalcBaseSpark
 ;---------------------------------------------------------------------------------------------------
 SparkSpeedFlags:
-        BRSET   >ThrottleState,Z,#$80,L1D23C
+        BRSET   >ThrottleState,Z,#$80,L1D23C             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
         BRCLR   >SparkFlags2,Z,#$40,L1D1FC
         SUBA    >SparkSpeedFlagHyst
@@ -14053,7 +14053,7 @@ CalcBaseSpark:
         BRCLR   >Options0337,#$02,L1D268
         BRCLR   >SparkFlags2,Z,#$02,L1D268
         BRSET   >Options032E,#$40,L1D264
-        BRSET   >DriveFlags,Z,#$20,L1D268
+        BRSET   >DriveFlags,Z,#$20,L1D268                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
 L1D264:
         JMP     L1D2F4
 L1D268:
@@ -14114,7 +14114,7 @@ SparkCoolantCorr:
         LDAA    >CoolantTemp,Z
         LDX     #SparkCoolantCorrA
         BRSET   >Options032E,#$40,L1D316
-        BRCLR   >DriveFlags,Z,#$20,L1D316
+        BRCLR   >DriveFlags,Z,#$20,L1D316                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #SparkCoolantCorrB
 L1D316:
         JSR     Lookup2D
@@ -14127,7 +14127,7 @@ L1D31A:
 ;---------------------------------------------------------------------------------------------------
 SparkBaroCorr:
         CLRA
-        BRSET   >ThrottleState,Z,#$40,L1D348
+        BRSET   >ThrottleState,Z,#$40,L1D348             ; bit 6: wide-open throttle (DetectWot)
         AIS     #$FC
         TSY
         LDX     #BaroSpark
@@ -14149,9 +14149,9 @@ L1D348:
 ; Called from: SparkEventCalc
 ;---------------------------------------------------------------------------------------------------
 O2SparkTrimCalc:
-        BRSET   >ThrottleState,Z,#$80,L1D3C2
-        BRSET   >ThrottleState,Z,#$01,L1D3C2
-        BRCLR   >EngineStateFlags,Z,#$80,L1D3C2
+        BRSET   >ThrottleState,Z,#$80,L1D3C2             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
+        BRSET   >ThrottleState,Z,#$01,L1D3C2             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
+        BRCLR   >EngineStateFlags,Z,#$80,L1D3C2          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >ControlFlagsC33,Z,#$44,L1D364
         BRA     L1D3C2
 L1D364:
@@ -14169,14 +14169,14 @@ L1D364:
         LDAB    >CoolantTemp,Z
         CMPB    >O2SparkTrimCoolantMin
         BLS     L1D3C2
-        BRSET   >ThrottleState,Z,#$02,L1D3C2
+        BRSET   >ThrottleState,Z,#$02,L1D3C2             ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
         LDX     >Count3s,Z
         CPX     >O2SparkTrimTimeMin
         BCS     L1D3C2
-        BRCLR   >O2ActiveFlags,Z,#$80,L1D3C2
+        BRCLR   >O2ActiveFlags,Z,#$80,L1D3C2             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BRSET   >O2Bank1Flags,Z,#$20,L1D3C2
         BRCLR   >Options032F,#$50,L1D3BC
-        BRCLR   >O2ActiveFlags,Z,#$40,L1D3C2
+        BRCLR   >O2ActiveFlags,Z,#$40,L1D3C2             ; bit 6: upstream O2 sensor 2 active (as bit 7)
         BRSET   >O2Bank2Flags,Z,#$20,L1D3C2
 L1D3BC:
         TST     >O2WarmDelay,Z
@@ -14205,14 +14205,14 @@ L1D3F6:
         TSTA
         BPL     L1D40E
         NEGA
-        BRSET   >DriveFlags,Z,#$20,L1D408
+        BRSET   >DriveFlags,Z,#$20,L1D408                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #O2SparkTrimNeg
         BRA     L1D41E
 L1D408:
         LDX     #O2SparkTrimNegPN
         BRA     L1D41E
 L1D40E:
-        BRSET   >DriveFlags,Z,#$20,L1D41A
+        BRSET   >DriveFlags,Z,#$20,L1D41A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #O2SparkTrimPos
         BRA     L1D41E
 L1D41A:
@@ -14232,7 +14232,7 @@ AfterStartSpark:
         BRSET   >AfterStartSparkFlags,Z,#$20,L1D570
         LDAA    >AfterStartSparkStart,Z
         BEQ     L1D49A
-        BRSET   >DriveFlags,Z,#$20,L1D472
+        BRSET   >DriveFlags,Z,#$20,L1D472                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDD     >EngineRpm,Z
         SUBD    >IdleTarget,Z
         BCC     L1D472
@@ -14251,7 +14251,7 @@ L1D46A:
         BSET    >AfterStartSparkFlags,Z,#$20
         LBRA    L1D570
 L1D472:
-        BRSET   >ThrottleState,Z,#$40,L1D570
+        BRSET   >ThrottleState,Z,#$40,L1D570             ; bit 6: wide-open throttle (DetectWot)
         LDAA    <Baro,Z
         CMPA    >AfterStartRetardBaroMin
         LBCS    L1D570
@@ -14290,7 +14290,7 @@ L1D4E0:
         LDAB    $0D1D,Z
         CMPB    >AfterStartSparkStart,Z
         BCC     L1D4FE
-        BRSET   >ControlFlags943,Z,#$01,L1D524
+        BRSET   >ControlFlags943,Z,#$01,L1D524           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L1D4FE:
         ASL     >AfterStartSparkFlags,Z
         ASL     >AfterStartSparkFlags,Z
@@ -14308,7 +14308,7 @@ L1D524:
         BRA     L1D572
 L1D526:
         JSR     AfterStartSparkLookup
-        BRCLR   >ControlFlags943,Z,#$01,L1D53A
+        BRCLR   >ControlFlags943,Z,#$01,L1D53A           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAB    $0D1D,Z
         CMPB    >AfterStartSparkStart,Z
         BCS     L1D572
@@ -14550,7 +14550,7 @@ L1D7AC:
         ANDP    #$FF1F
         CLRA
         BRCLR   >Options0339,#$01,L1D7CA
-        BRSET   >ThrottleState,Z,#$80,L1D7CA
+        BRSET   >ThrottleState,Z,#$80,L1D7CA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BCLR    >SparkFaultFlags,Z,#$10
 L1D7CA:
         NEGA
@@ -14569,7 +14569,7 @@ L1D7DC:
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
 CoolantSparkCalc:
-        BRSET   >ThrottleState,Z,#$80,L1D7E8
+        BRSET   >ThrottleState,Z,#$80,L1D7E8             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         CLRA
         BRA     L1D800
 L1D7E8:
@@ -14624,7 +14624,7 @@ L1D85E:
         BNE     L1D884
         LDE     >AcSparkRateChangeMin
         LDAA    >AcSparkHoldCount
-        BRCLR   >ControlFlags943,Z,#$01,L1D87A
+        BRCLR   >ControlFlags943,Z,#$01,L1D87A           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDE     >AcSparkRateChangeMinAcOn
         LDAA    >AcSparkHoldCountAcOn
 L1D87A:
@@ -14641,7 +14641,7 @@ L1D884:
 L1D892:
         TBA
         LDX     #AcSparkRateDown
-        BRCLR   >ControlFlags943,Z,#$01,L1D8A2
+        BRCLR   >ControlFlags943,Z,#$01,L1D8A2           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDX     #AcSparkRateDownAcOn
 L1D8A2:
         BRA     L1D8B0
@@ -14672,7 +14672,7 @@ L1D8CA:
 ;---------------------------------------------------------------------------------------------------
 AcClutchSpark:
         BRCLR   >Options033A,#$10,L1D90E
-        BRCLR   >ThrottleState,Z,#$80,L1D90E
+        BRCLR   >ThrottleState,Z,#$80,L1D90E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
         BRCLR   >IacAcFlags,Z,#$20,L1D8E8
         ADDA    #$04
@@ -14680,11 +14680,11 @@ L1D8E8:
         CMPA    >AcSparkSpeedMin
         BCS     L1D90E
         BRSET   >Options032E,#$40,L1D92A
-        BRCLR   >EquipmentFlags,Z,#$20,L1D902
+        BRCLR   >EquipmentFlags,Z,#$20,L1D902            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >BusFlags9CE,Z,#$80,L1D92A
         BRA     L1D908
 L1D902:
-        BRCLR   >ControlFlags943,Z,#$80,L1D92A
+        BRCLR   >ControlFlags943,Z,#$80,L1D92A           ; bit 7: A/C cut active (AcCutControl timer running)
 L1D908:
         BCLR    >IacAcFlags,Z,#$01
         BRA     L1D92E
@@ -14700,7 +14700,7 @@ L1D92A:
         BSET    >IacAcFlags,Z,#$01
 L1D92E:
         BSET    >IacAcFlags,Z,#$20
-        BRCLR   >ControlFlags943,Z,#$01,L1D9E0
+        BRCLR   >ControlFlags943,Z,#$01,L1D9E0           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         BRSET   >IacAcFlags,Z,#$10,L1D970
         CLR     >AcSparkWindow,Z
         LDAA    >AcClutchSparkHoldTime,Z
@@ -14781,7 +14781,7 @@ Sub_1DA06:
         CLRA
         BRCLR   >EgrFlags,Z,#$02,L1DAAA
         LDAA    >Map,Z
-        BRSET   >SensorFaultFlags,Z,#$20,L1DA32
+        BRSET   >SensorFaultFlags,Z,#$20,L1DA32          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
         LDAA    <Baro,Z
         LDX     #MapBaroOffset
         JSR     Lookup2D
@@ -14847,8 +14847,8 @@ FlexSparkCalc:
         LDAA    >FlexEthanol,Z
         BEQ     L1DACE
         BRSET   >Options032E,#$40,L1DAD2
-        BRSET   >DriveFlags,Z,#$20,L1DAD2
-        BRSET   >ThrottleState,Z,#$80,L1DAD2
+        BRSET   >DriveFlags,Z,#$20,L1DAD2                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
+        BRSET   >ThrottleState,Z,#$80,L1DAD2             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
 L1DACE:
         CLRA
         BRA     L1DB08
@@ -15000,34 +15000,34 @@ SpeedDampControl:
         BRSET   >EventSparkFlags,Z,#$08,L1DCC0
         BRSET   >EventSparkFlags,Z,#$04,L1DCC0
         BRSET   $009D,Z,#$10,L1DC9C
-        BRCLR   >EquipmentFlags,Z,#$20,L1DC4A
+        BRCLR   >EquipmentFlags,Z,#$20,L1DC4A            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >BusModuleFlags,Z,#$02,L1DC4A
         BRSET   >BusFlags9CE,Z,#$01,L1DC9C
         BRCLR   >BusFlags9CE,Z,#$FF,L1DC4A
         BRA     L1DC50
 L1DC4A:
-        BRCLR   >DriveFlags,Z,#$20,L1DC9C
+        BRCLR   >DriveFlags,Z,#$20,L1DC9C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
 L1DC50:
         LDAA    >ThrottleAboveClosed,Z
         CMPA    >SpeedDampThrottleMinAC
-        BRSET   >EquipmentFlags,Z,#$20,L1DC62
+        BRSET   >EquipmentFlags,Z,#$20,L1DC62            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         CMPA    >SpeedDampThrottleMin
 L1DC62:
         BLS     L1DC9C
         LDAA    >Map,Z
         CMPA    >SpeedDampMapMinAC
-        BRSET   >EquipmentFlags,Z,#$20,L1DC76
+        BRSET   >EquipmentFlags,Z,#$20,L1DC76            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         CMPA    >SpeedDampMapMin
 L1DC76:
         BLS     L1DC9C
         LDAB    >VehicleSpeed,Z
         CMPB    >SpeedDampSpeedMinAC
-        BRSET   >EquipmentFlags,Z,#$20,L1DC8A
+        BRSET   >EquipmentFlags,Z,#$20,L1DC8A            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         CMPB    >SpeedDampSpeedMin
 L1DC8A:
         BCS     L1DCEA
         CMPB    >SpeedDampSpeedMaxAC
-        BRSET   >EquipmentFlags,Z,#$20,L1DC9A
+        BRSET   >EquipmentFlags,Z,#$20,L1DC9A            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         CMPB    >SpeedDampSpeedMax
 L1DC9A:
         BLS     L1DCD4
@@ -15075,12 +15075,12 @@ L1DD02:
         STAA    <Scratch5,Z
         LDAA    >VehicleSpeed,Z
         LDX     #SpeedRpmRefAC
-        BRSET   >EquipmentFlags,Z,#$20,L1DD16
+        BRSET   >EquipmentFlags,Z,#$20,L1DD16            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #SpeedRpmRef
 L1DD16:
         BRSET   >SwitchInputs,Z,#$01,L1DD2A
         LDX     #SpeedRpmRef2AC
-        BRSET   >EquipmentFlags,Z,#$20,L1DD2A
+        BRSET   >EquipmentFlags,Z,#$20,L1DD2A            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #SpeedRpmRef2
 L1DD2A:
         JSR     Lookup2D
@@ -15288,7 +15288,7 @@ SurgeControl:
         INC     >SurgeEnableTime,Z
         LBRA    L1E106
 L1DEFE:
-        BRSET   >ThrottleState,Z,#$80,L1DF6A
+        BRSET   >ThrottleState,Z,#$80,L1DF6A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         CLR     >SurgeRetard,Z
         CLR     $0D34,Z
         CLR     $0D35,Z
@@ -15609,7 +15609,7 @@ L1E244:
 ;---------------------------------------------------------------------------------------------------
 SparkStartTimer:
         CLRA
-        BRCLR   >EngineStateFlags,Z,#$80,L1E26E
+        BRCLR   >EngineStateFlags,Z,#$80,L1E26E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >SparkStartTime,Z
         INCA
         BEQ     L1E272
@@ -15717,7 +15717,7 @@ L1E36E:
 L1E370:
         BRSET   >FuelModeFlags2,Z,#$80,L1E3A2
         BRCLR   >Options0339,#$20,L1E382
-        BRSET   >ThrottleState,Z,#$01,L1E3A2
+        BRSET   >ThrottleState,Z,#$01,L1E3A2             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
 L1E382:
         BCLR    >EventFlags,Z,#$40
         LDAB    >SparkStartRampValue,Z
@@ -15984,7 +15984,7 @@ GetSparkAdvance:
 ;---------------------------------------------------------------------------------------------------
 Sub_1E662:
         BRCLR   >SparkFlags,Z,#$20,L1E66E
-        BRSET   >EngineStateFlags,Z,#$80,L1E67A
+        BRSET   >EngineStateFlags,Z,#$80,L1E67A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
 L1E66E:
         LDD     >EngineRpm,Z
         STD     >SparkPeriod,Z
@@ -16011,8 +16011,8 @@ L1E698:
 L1E6B4:
         BRCLR   >SparkFlags3,Z,#$20,L1E704
         BRSET   >SparkFaultFlags,Z,#$20,L1E704
-        BRSET   >SensorFaultFlags,Z,#$80,L1E704
-        BRSET   >ThrottleState,Z,#$80,L1E704
+        BRSET   >SensorFaultFlags,Z,#$80,L1E704          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
+        BRSET   >ThrottleState,Z,#$80,L1E704             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDE     $254A
         LDAA    >CylinderCount
         CMPA    #$04
@@ -16021,11 +16021,11 @@ L1E6B4:
 L1E6DC:
         CPE     >RefPeriod,Z
         BLS     L1E704
-        BRCLR   >IdleFlags,Z,#$80,L1E704
+        BRCLR   >IdleFlags,Z,#$80,L1E704                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         TST     >DashpotTimer2,Z
         BNE     L1E704
         BRSET   >IdleFlareFlags,Z,#$80,L1E704
-        BRSET   >ThrottleState,Z,#$01,L1E704
+        BRSET   >ThrottleState,Z,#$01,L1E704             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BSET    >SparkFlags3,Z,#$40
         BRA     L1E72A
 L1E700:
@@ -16097,13 +16097,13 @@ L1E7A4:
         BMI     L1E7C2
         LDX     #IdleSparkRpmError
         BRSET   >Options032E,#$40,L1E7D6
-        BRCLR   >DriveFlags,Z,#$20,L1E7D6
+        BRCLR   >DriveFlags,Z,#$20,L1E7D6                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #IdleSparkRpmErrorPN
         BRA     L1E7D6
 L1E7C2:
         LDX     #IdleSparkRpmErrorAlt
         BRSET   >Options032E,#$40,L1E7D6
-        BRCLR   >DriveFlags,Z,#$20,L1E7D6
+        BRCLR   >DriveFlags,Z,#$20,L1E7D6                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)
         LDX     #IdleSparkRpmErrorPNAlt
 L1E7D6:
         JSR     Lookup2D
@@ -16884,7 +16884,7 @@ L1F62C:
         LDAA    >KnockMapThreshold,Z
         CMPA    >Map,Z
         LBLS    L1F6E0
-        BRSET   >SensorFaultFlags,Z,#$20,L1F6E0
+        BRSET   >SensorFaultFlags,Z,#$20,L1F6E0          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
         LDAA    >AirTemp,Z
         CMPA    >KnockLearnAirTempMax
         LBCC    L1F6E0

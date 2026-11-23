@@ -1,0 +1,113 @@
+{
+ "_comment": "Meaning of single bits in flag bytes, by RAM or calibration name: {name: {bit: text}}. tools/gen_source.py puts the text after each BSET/BCLR/BRSET/BRCLR on that bit. FaultSetNN/FaultMemNN bits come from the fault table itself.",
+ "AcFlags": {
+  "7": "A/C clutch engaged (AcClutchControl); set at reset",
+  "6": "A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7",
+  "5": "A/C idle step active (IdleTargetControl); set at reset",
+  "4": "A/C idle bump pending, probably (IdleTargetControl); set at reset",
+  "3": "A/C request from the bus (message bit 0 in CcdReceive)",
+  "2": "bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test",
+  "1": "A/C clutch output changed since the last pass (AcCutLogic)"
+ },
+ "ControlFlags943": {
+  "7": "A/C cut active (AcCutControl timer running)",
+  "6": "set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)",
+  "4": "ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it",
+  "3": "fuel pump relay on, probably (set and cleared with bit 4)",
+  "2": "output toggled by EgrOutputTest, not read",
+  "0": "A/C clutch relay on (AcCutLogic); the idle code reads it"
+ },
+ "ControlFlags944": {
+  "7": "set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7)",
+  "5": "output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read",
+  "4": "radiator fan relay, probably (FanControl, BusTempFlag, output test)",
+  "3": "second fan relay, probably; driven only with A/C fitted",
+  "2": "EGR solenoid on (EgrEnable)",
+  "1": "toggled by ActuatorTestMain, not read",
+  "0": "starter cut active (StarterCut)"
+ },
+ "DiagStatusFlags": {
+  "7": "fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)",
+  "6": "a fault aged out this pass, probably (ObdFaultAging)",
+  "5": "readiness: every supported monitor complete (ObdReadiness)",
+  "4": "misfire record taken (MisfireCount), cleared by DiagModeTimer",
+  "3": "misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer",
+  "2": "freeze frame to be updated (ObdFaultProcess)",
+  "1": "cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it",
+  "0": "cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it"
+ },
+ "DriveFlags": {
+  "7": "drive engagement handling in progress (GearStateUpdate), probably",
+  "6": "switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch",
+  "5": "transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6)",
+  "3": "follows SwitchInputs2 bit 6 (IdleTargetControl)",
+  "2": "crank and cam synchronised since key-on (Isr_GPT_PAI)",
+  "1": "reference pulses seen since key-on (Isr_GPT_IC1); MapKeyOnCheck needs it clear",
+  "0": "the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)"
+ },
+ "EngineStateFlags": {
+  "7": "engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)",
+  "4": "start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel",
+  "3": "cleared at stall only, never set in 05293190AC",
+  "2": "cleared at stall only, never set in 05293190AC",
+  "1": "cleared at stall only, never set in 05293190AC",
+  "0": "first reference pulse seen, start pulse still due (cleared by StartInjectorPulse)"
+ },
+ "EquipmentFlags": {
+  "7": "A/C fitted (EquipmentDetect)",
+  "6": "speed control fitted (EquipmentDetect, EquipmentProbe)",
+  "5": "automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus",
+  "4": "A/C requested (AcRequestUpdate)",
+  "3": "copy of calibration bit $033E.1 at reset; not read",
+  "2": "power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)",
+  "1": "copy of calibration bit $0335.3 at reset; not read",
+  "0": "copy of calibration bit $0330.4 at reset; not read"
+ },
+ "IdleFlags": {
+  "7": "closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)",
+  "6": "set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled",
+  "5": "gear-engagement idle step started (IdleTargetControl)",
+  "4": "idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn",
+  "1": "shift idle step applied (IacShiftStepApply)",
+  "0": "idle rpm loop hold timer started (IdleRpmLoop)"
+ },
+ "MonitorDisableFlags": {
+  "5": "flex-fuel learning hold active (FlexLearnHold not zero): misfire, catalyst, O2, EGR, purge and leak monitors wait",
+  "4": "fuel level below MonEnableFuelEmpty",
+  "3": "fuel level outside the monitor window (MonEnableFuelLow)",
+  "2": "battery voltage at or below MonEnableVoltsMin",
+  "1": "barometric pressure below MonEnableBaroMin (altitude)",
+  "0": "battery (ambient) temperature below MonEnableBattTempMin"
+ },
+ "O2ActiveFlags": {
+  "7": "upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)",
+  "6": "upstream O2 sensor 2 active (as bit 7)",
+  "5": "downstream O2 sensor 1 active: output passed O2DownActiveLow",
+  "4": "downstream O2 sensor 2 active (as bit 5)",
+  "3": "as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)",
+  "2": "as bit 6, cleared by FuelLevelFlags bit 2",
+  "1": "as bit 5, cleared by FuelLevelFlags bit 1",
+  "0": "as bit 4, cleared by FuelLevelFlags bit 0"
+ },
+ "SensorFaultFlags": {
+  "7": "coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use",
+  "5": "MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use",
+  "4": "throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)",
+  "3": "air temperature sensor fault (P0112 or P0113)",
+  "0": "battery temperature sensor fault (P1492 or P1493)"
+ },
+ "SpeedCtlState": {
+  "7": "speed control off: not engaged or cancelled (set at reset and on cancel)",
+  "5": "set at reset, on cancel and on engage; meaning not settled",
+  "4": "coast hold, probably (after SpeedCtlCoastHoldTime)",
+  "0": "set or resume engaged, probably"
+ },
+ "ThrottleState": {
+  "7": "throttle open: above the learned closed position plus a margin (hysteresis when set)",
+  "6": "wide-open throttle (DetectWot)",
+  "4": "closed position stepped to a new minimum, probably (ThrottleClosedLearn only)",
+  "3": "closed position taken from the calibration default, probably (ThrottleClosedLearn only)",
+  "1": "set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark",
+  "0": "idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)"
+ }
+}
