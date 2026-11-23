@@ -633,12 +633,12 @@ Sub_106F2:
         LDAA    $0F,Z
         CMPA    $0523
         BHI     L10708
-        BSET    <EgrFlags,Z,#$04
+        BSET    <EgrFlags,Z,#$04                         ; bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
         LBRA    L1086E
 L10708:
         CMPA    $0524
         LBHI    L1086E
-        BSET    <EgrFlags,Z,#$08
+        BSET    <EgrFlags,Z,#$08                         ; bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
         LDX     #Tab2D_0574
         JSR     Lookup2D
         STAA    $039D,Z
@@ -653,12 +653,12 @@ L10724:
         LBEQ    L10866
         LBRA    L10890
 L1073C:
-        BRCLR   >EgrFlags,Z,#$04,L1074E
+        BRCLR   >EgrFlags,Z,#$04,L1074E                  ; bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
         TST     >O2WarmDelay,Z
         LBNE    L1086E
-        BCLR    <EgrFlags,Z,#$04
+        BCLR    <EgrFlags,Z,#$04                         ; bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
 L1074E:
-        BRCLR   >EgrFlags,Z,#$08,L10768
+        BRCLR   >EgrFlags,Z,#$08,L10768                  ; bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
         TST     $039D,Z
         BEQ     L10768
         LDAA    <MainLoopCounter,Z
@@ -666,29 +666,29 @@ L1074E:
         DEC     $039D,Z
         LBRA    L1086E
 L10768:
-        BCLR    <EgrFlags,Z,#$08
-        LDAA    >FuelLevelFlags,Z
+        BCLR    <EgrFlags,Z,#$08                         ; bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
+        LDAA    >SensorFaultFlags2,Z
         BITA    #$06
         LBNE    L1086E
         LDAA    $16,Z
         CMPA    $0522
         LBCS    L1086E
         LDAA    $0C,Z
-        BRSET   >EgrFlags,Z,#$10,L10792
+        BRSET   >EgrFlags,Z,#$10,L10792                  ; bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
         CMPA    $0525
         BCS     L1079E
-        BSET    <EgrFlags,Z,#$10
+        BSET    <EgrFlags,Z,#$10                         ; bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
 L10792:
         CMPA    $0526
         LBCC    L1086E
-        BCLR    <EgrFlags,Z,#$10
+        BCLR    <EgrFlags,Z,#$10                         ; bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
 L1079E:
         BRSET   >ThrottleState,Z,#$40,L1086E             ; bit 6: wide-open throttle (DetectWot)
         BRCLR   >ThrottleState,Z,#$80,L1086E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    <EngineRpm,Z
         LDX     #Tab2D_0550
         JSR     Lookup2D
-        BRCLR   >EgrFlags,Z,#$01,L107C2
+        BRCLR   >EgrFlags,Z,#$01,L107C2                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         ADDA    $0529
         BCC     L107C2
         LDAA    #$FF
@@ -696,7 +696,7 @@ L107C2:
         CMPA    >Map,Z
         LBCC    L1086E
         LDAA    >ManifoldVacuum,Z
-        BRCLR   >EgrFlags,Z,#$01,L107DC
+        BRCLR   >EgrFlags,Z,#$01,L107DC                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         SUBA    $0528
         BCC     L107DC
         CLRA
@@ -704,7 +704,7 @@ L107DC:
         CMPA    $0527
         LBLS    L1086E
         LDAA    $18,Z
-        BRSET   >EgrFlags,Z,#$01,L107FC
+        BRSET   >EgrFlags,Z,#$01,L107FC                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         LDX     #Tab2D_052C
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
@@ -716,10 +716,10 @@ L107FC:
         CMPA    >ThrottleAboveClosed,Z
         BCC     L1086E
 L1080A:
-        BCLR    <EgrFlags,Z,#$01
+        BCLR    <EgrFlags,Z,#$01                         ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         BRSET   >EgrMonFlags,Z,#$04,L10890
         BRSET   >EgrMonFlags,Z,#$02,L10848
-        BCLR    <EgrFlags,Z,#$20
+        BCLR    <EgrFlags,Z,#$20                         ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
         BRSET   $0220,Z,#$40,L10842
         BRSET   >FaultSet03,Z,#$02,L10842
         BRCLR   >ControlFlagsC39,Z,#$10,L10848
@@ -727,33 +727,33 @@ L1080A:
         BRSET   $0151,Z,#$40,L10842
         BRCLR   $0150,Z,#$02,L10848
 L10842:
-        BSET    <EgrFlags,Z,#$20
+        BSET    <EgrFlags,Z,#$20                         ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
         BRA     L10872
 L10848:
         BRSET   >ControlFlags944,Z,#$04,L10852           ; bit 2: EGR solenoid on (EgrEnable)
         CLR     $039C,Z
 L10852:
-        BRSET   >EgrFlags,Z,#$02,L10862
+        BRSET   >EgrFlags,Z,#$02,L10862                  ; bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
         LDAA    $039C,Z
         CMPA    $052A
         BCS     L10866
 L10862:
-        BSET    <EgrFlags,Z,#$02
+        BSET    <EgrFlags,Z,#$02                         ; bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
 L10866:
         BSET    >ControlFlags944,Z,#$04                  ; bit 2: EGR solenoid on (EgrEnable)
         JMP     L10894
 L1086E:
-        BSET    <EgrFlags,Z,#$01
+        BSET    <EgrFlags,Z,#$01                         ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
 L10872:
         BRCLR   >ControlFlags944,Z,#$04,L1087C           ; bit 2: EGR solenoid on (EgrEnable)
         CLR     $039C,Z
 L1087C:
-        BRCLR   >EgrFlags,Z,#$02,L1088C
+        BRCLR   >EgrFlags,Z,#$02,L1088C                  ; bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
         LDAA    $039C,Z
         CMPA    $052B
         BCS     L10890
 L1088C:
-        BCLR    <EgrFlags,Z,#$02
+        BCLR    <EgrFlags,Z,#$02                         ; bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
 L10890:
         BCLR    >ControlFlags944,Z,#$04                  ; bit 2: EGR solenoid on (EgrEnable)
 L10894:
@@ -2997,7 +2997,7 @@ L12026:
         LDAA    <Count3s,Z
         BEQ     L12048
 L12034:
-        BRCLR   >AdcFlags,Z,#$10,L1204A
+        BRCLR   >SpeedCtlSwitchFlags,Z,#$10,L1204A
         BRSET   $021C,Z,#$80,L1204A
         BRCLR   >FaultSet0B,Z,#$C4,L12048
         BRA     L1204A
@@ -3012,7 +3012,7 @@ L12050:
         STAA    $06BE,Z
         LDX     #$45DB
         JSR     CollectBits
-        BRCLR   >FuelLevelFlags,Z,#$06,L12066
+        BRCLR   >SensorFaultFlags2,Z,#$06,L12066         ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152); bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
         ORAA    #$80
 L12066:
         BRCLR   $022D,Z,#$10,L1206E
@@ -4926,14 +4926,14 @@ Sub_1335C:
         LDY     #$3E63
         CMPA    >BatteryTempRawHigh
         BHI     L1338C
-        BRCLR   >FuelLevelFlags,Z,#$04,L13376
+        BRCLR   >SensorFaultFlags2,Z,#$04,L13376         ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
         JSR     ReportPass
         BRA     L133BA
 L13376:
         LDY     #$3E59
         CMPA    >BatteryTempRawLow
         BCS     L1338C
-        BRCLR   >FuelLevelFlags,Z,#$02,L13396
+        BRCLR   >SensorFaultFlags2,Z,#$02,L13396         ; bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
         JSR     ReportPass
         BRA     L133BA
 L1338C:
@@ -5128,7 +5128,7 @@ L13532:
 L1353A:
         STAA    >DashpotTimer,Z
 L1353E:
-        BRSET   <IacStepFlags,Z,#$01,L1356A
+        BRSET   <IacStepFlags,Z,#$01,L1356A              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRSET   <ThrottleState,Z,#$80,L13576             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >IdleRollSpeed
         LDAB    $18,Z
@@ -5328,47 +5328,47 @@ L1371C:
 L13720:
         BRSET   >SpeedCtlFlags,Z,#$01,L138C2
         BSET    <SpeedCtlFlags,Z,#$01
-        BRSET   >AdcFlags,Z,#$10,L13736
-        BSET    >AdcFlags,Z,#$10
+        BRSET   >SpeedCtlSwitchFlags,Z,#$10,L13736
+        BSET    >SpeedCtlSwitchFlags,Z,#$10
         BRA     L1373A
 L13736:
-        BCLR    >AdcFlags,Z,#$10
+        BCLR    >SpeedCtlSwitchFlags,Z,#$10
 L1373A:
-        BSET    >AdcFlags,Z,#$04
-        BCLR    >AdcFlags,Z,#$0B
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
+        BCLR    >SpeedCtlSwitchFlags,Z,#$0B
         JMP     L13896
 L13746:
-        BRCLR   >AdcFlags,Z,#$10,L138C2
-        BCLR    >AdcFlags,Z,#$19
-        BSET    >AdcFlags,Z,#$04
+        BRCLR   >SpeedCtlSwitchFlags,Z,#$10,L138C2
+        BCLR    >SpeedCtlSwitchFlags,Z,#$19
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
         JMP     L13896
 L13758:
-        BRSET   >AdcFlags,Z,#$10,L138C2
-        BCLR    >AdcFlags,Z,#$09
-        BSET    >AdcFlags,Z,#$14
+        BRSET   >SpeedCtlSwitchFlags,Z,#$10,L138C2
+        BCLR    >SpeedCtlSwitchFlags,Z,#$09
+        BSET    >SpeedCtlSwitchFlags,Z,#$14
         JMP     L13896
 L1376A:
-        BCLR    >AdcFlags,Z,#$0A
-        BSET    >AdcFlags,Z,#$05
+        BCLR    >SpeedCtlSwitchFlags,Z,#$0A
+        BSET    >SpeedCtlSwitchFlags,Z,#$05
         BCLR    <SpeedCtlFlags,Z,#$01
         LBRA    L138C2
 L1377A:
-        BCLR    >AdcFlags,Z,#$0F
+        BCLR    >SpeedCtlSwitchFlags,Z,#$0F
         BCLR    <SpeedCtlFlags,Z,#$01
         LBRA    L138C2
 L13786:
-        BCLR    >AdcFlags,Z,#$03
-        BSET    >AdcFlags,Z,#$0C
+        BCLR    >SpeedCtlSwitchFlags,Z,#$03
+        BSET    >SpeedCtlSwitchFlags,Z,#$0C
         BCLR    <SpeedCtlFlags,Z,#$01
         LBRA    L138C2
 L13796:
-        BCLR    >AdcFlags,Z,#$09
-        BSET    >AdcFlags,Z,#$06
+        BCLR    >SpeedCtlSwitchFlags,Z,#$09
+        BSET    >SpeedCtlSwitchFlags,Z,#$06
         BCLR    <SpeedCtlFlags,Z,#$01
         LBRA    L138C2
 L137A6:
-        BCLR    >AdcFlags,Z,#$0B
-        BSET    >AdcFlags,Z,#$04
+        BCLR    >SpeedCtlSwitchFlags,Z,#$0B
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
         BCLR    <SpeedCtlFlags,Z,#$01
         LBRA    L138C2
         dc.b    $27,$33,$4A,$6C,$84,$9B,$C0,$D4,$FC,$FF
@@ -5409,7 +5409,7 @@ L1380C:
         BSET    $01DB,Z,#$1C
         TST     $01D5,Z
         LBNE    L138C2
-        BSET    >AdcFlags,Z,#$01
+        BSET    >SpeedCtlSwitchFlags,Z,#$01
         BRA     L1388C
 L1381E:
         BSET    $01DB,Z,#$18
@@ -5417,9 +5417,9 @@ L1381E:
         LBNE    L138C2
         BRSET   $01DB,Z,#$04,L13888
         BSET    $01DB,Z,#$04
-        LDAA    >AdcFlags,Z
+        LDAA    >SpeedCtlSwitchFlags,Z
         EORA    #$10
-        STAA    >AdcFlags,Z
+        STAA    >SpeedCtlSwitchFlags,Z
         BRCLR   >Options033A,#$08,L13888                 ; bit 3: selects a branch in IdleTargetControl
         JSR     Sub_11FAA
         BRA     L13888
@@ -5428,13 +5428,13 @@ L1384A:
         TST     $01D5,Z
         BNE     L138C2
         BRSET   $01DB,Z,#$08,L138C2
-        BCLR    >AdcFlags,Z,#$04
+        BCLR    >SpeedCtlSwitchFlags,Z,#$04
         BRA     L13890
 L13860:
         TST     $01D5,Z
         BNE     L138C2
         BRSET   $01DB,Z,#$10,L13890
-        BSET    >AdcFlags,Z,#$08
+        BSET    >SpeedCtlSwitchFlags,Z,#$08
         BRA     L138C2
 L13872:
         TST     $01D5,Z
@@ -5448,11 +5448,11 @@ L13882:
         LDAA    #$04
         STAA    $01D5,Z
 L13888:
-        BCLR    >AdcFlags,Z,#$01
+        BCLR    >SpeedCtlSwitchFlags,Z,#$01
 L1388C:
-        BSET    >AdcFlags,Z,#$04
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
 L13890:
-        BCLR    >AdcFlags,Z,#$08
+        BCLR    >SpeedCtlSwitchFlags,Z,#$08
         BRA     L138C2
 L13896:
         BRCLR   >Options033A,#$08,L138C2                 ; bit 3: selects a branch in IdleTargetControl
@@ -5463,8 +5463,8 @@ L138A2:
         BRSET   >FaultSet0B,Z,#$40,L13908
         LDY     #$3BBB
         JSR     ReportFault
-        BSET    >AdcFlags,Z,#$04
-        BCLR    >AdcFlags,Z,#$19
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
+        BCLR    >SpeedCtlSwitchFlags,Z,#$19
         CLR     $01D5,Z
 L138C2:
         LDAA    $0538,Z
@@ -6715,8 +6715,8 @@ Sub_1458A:
         CLR     <MonitorDisableFlags,Z
         JMP     L1465A
 L14596:
-        BRSET   >FuelLevelFlags,Z,#$04,L145B0
-        BRSET   >FuelLevelFlags,Z,#$02,L145B0
+        BRSET   >SensorFaultFlags2,Z,#$04,L145B0         ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
+        BRSET   >SensorFaultFlags2,Z,#$02,L145B0         ; bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
         LDAA    $16,Z
         CMPA    $2BE7
         BCS     L145B0
@@ -8357,7 +8357,7 @@ L15754:
         BCS     L15788
         BRSET   >FaultSet01,Z,#$02,L15788
         BRSET   $0220,Z,#$01,L15788
-        BRSET   >FuelLevelFlags,Z,#$20,L15788
+        BRSET   >SensorFaultFlags2,Z,#$20,L15788
         BRSET   $022D,Z,#$20,L15788
         BSET    >CamCrankFlags,Z,#$02
         BRA     L1578E
@@ -8841,7 +8841,7 @@ L15C84:
         BSET    >CamCrankFlags,Z,#$10
 L15C88:
         BRCLR   $0337,#$04,L15CAC
-        BRSET   >FuelLevelFlags,Z,#$20,L15CAC
+        BRSET   >SensorFaultFlags2,Z,#$20,L15CAC
         LDAA    $0615,Z
         CMPA    $2CCE
         BCS     L15CAC
@@ -8885,7 +8885,7 @@ L15CF6:
         BRSET   >FaultSet01,Z,#$10,L15D1E
         BRSET   >FaultSet05,Z,#$01,L15D1E
         BRSET   >FaultSet06,Z,#$40,L15D1E
-        BRSET   >FuelLevelFlags,Z,#$08,L15D1E
+        BRSET   >SensorFaultFlags2,Z,#$08,L15D1E         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
         BRCLR   >O2LearnFlags,Z,#$08,L15D1E
         BRA     L15D4C
 L15D1E:
@@ -8916,7 +8916,7 @@ L15D80:
         BRSET   >FaultSet01,Z,#$10,L15DA8
         BRSET   >FaultSet05,Z,#$01,L15DA8
         BRSET   >FaultSet06,Z,#$40,L15DA8
-        BRSET   >FuelLevelFlags,Z,#$08,L15DA8
+        BRSET   >SensorFaultFlags2,Z,#$08,L15DA8         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
         BRCLR   >O2LearnFlags,Z,#$08,L15DA8
         LDAA    #$10
 L15DA8:
@@ -9038,7 +9038,7 @@ L15ED6:
 Sub_15ED8:
         BRSET   $02EC,Z,#$0C,L1605A
         BRCLR   >Options0340,#$02,L15F12                 ; bit 1: fuel sender monitor on (FuelSenderMonitor)
-        BRSET   >FuelLevelFlags,Z,#$01,L15F12
+        BRSET   >SensorFaultFlags2,Z,#$01,L15F12         ; bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
         TST     >MonStartDelay,Z
         LBNE    L15F12
         BRCLR   >EngineStateFlags,Z,#$80,L15F12          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -9194,7 +9194,7 @@ L1609A:
         BRCLR   >O2LearnFlags,Z,#$40,L162F6
         BRSET   >O2Bank2Flags,Z,#$20,L162F6
 L160FA:
-        BRSET   >EgrFlags,Z,#$01,L162F6
+        BRSET   >EgrFlags,Z,#$01,L162F6                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         TST     >PurgeCellCount,Z
         LBNE    L162F6
         LDAA    <Count3s,Z
@@ -9484,7 +9484,7 @@ L1649A:
         INC     >PurgeFlowSettle,Z
         JMP     L167C2
 L164BA:
-        BRSET   >IacStepFlags,Z,#$20,L16784
+        BRSET   >IacStepFlags,Z,#$20,L16784              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         TST     >DashpotTimer,Z
         LBNE    L16784
         LDAA    >IacGearDuration,Z
@@ -11747,14 +11747,14 @@ L17D28:
         BRSET   >FaultSet05,Z,#$01,L17DA8
         BRSET   >FaultSet06,Z,#$40,L17DA8
         BRSET   >BusModuleFlags,Z,#$40,L17DA8            ; bit 6: new transmission status received (TransBusStatus), not handled yet by TransMilRequest
-        BRSET   >FuelLevelFlags,Z,#$08,L17DA8
+        BRSET   >SensorFaultFlags2,Z,#$08,L17DA8         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
         BSET    $AE,Z,#$80
 L17DA8:
         BRCLR   >Options032F,#$40,L17DCA                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   $022D,Z,#$02,L17DCA
         BRSET   $022A,Z,#$40,L17DCA
         BRSET   $0228,Z,#$01,L17DCA
-        BRSET   >FuelLevelFlags,Z,#$10,L17DCA
+        BRSET   >SensorFaultFlags2,Z,#$10,L17DCA
         BSET    $AE,Z,#$40
 L17DCA:
         BRCLR   >Options032F,#$20,L17DE8                 ; bit 5: downstream O2 sensor 1 fitted
@@ -15523,7 +15523,7 @@ Sub_1A352:
         BRSET   >SensorFaultFlags,Z,#$10,L1A51C          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         BRSET   $0220,Z,#$01,L1A51C
         BRSET   >FaultSet05,Z,#$08,L1A51C
-        BRSET   >FuelLevelFlags,Z,#$20,L1A51C
+        BRSET   >SensorFaultFlags2,Z,#$20,L1A51C
         LDAA    $17,Z
         CMPA    $2CF5
         LBCS    L1A51C
@@ -16991,7 +16991,7 @@ L1B290:
         BRA     L1B2D0
 L1B2B8:
         ORP     #$00E0
-        BSET    <IacStepFlags,Z,#$40
+        BSET    <IacStepFlags,Z,#$40                     ; bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
         LDAA    #$DF
         STAA    <IacPosition,Z
         ANDP    #$FF1F
@@ -17725,7 +17725,7 @@ L1B9BA:
         BNE     L1B9CA
         STAA    $018E,Z
 L1B9CA:
-        BRSET   >IacStepFlags,Z,#$10,L1B9E2
+        BRSET   >IacStepFlags,Z,#$10,L1B9E2              ; bit 4: idle air at the fixed target (IacFixedTarget)
         SUBA    $018E,Z
         BCC     L1B9DC
         NEGA
@@ -21108,7 +21108,7 @@ L1DE90:
 ;---------------------------------------------------------------------------------------------------
 Sub_1DE92:
         CLRA
-        BRCLR   >EgrFlags,Z,#$02,L1DECA
+        BRCLR   >EgrFlags,Z,#$02,L1DECA                  ; bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
         LDAA    >Map,Z
         BRSET   >SensorFaultFlags,Z,#$20,L1DEB8          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
         LDAA    <Baro,Z

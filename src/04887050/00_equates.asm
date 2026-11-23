@@ -9,6 +9,14 @@ ResetCheckWord   equ $0006        ; $F8006
 SystemFlags00A   equ $0008        ; $F8008
 ThrottleClosed   equ $0009        ; $F8009
 IacStepFlags     equ $000A        ; $F800A
+;                 bit 7: stepper phase toggle (IacStepperDrive)
+;                 bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
+;                 bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
+;                 bit 4: idle air at the fixed target (IacFixedTarget)
+;                 bit 3: stepper direction: opening, probably (IacStepperDrive)
+;                 bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
+;                 bit 1: idle air target from the MAP loop instead of the fixed command (IdleControl)
+;                 bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
 IacPosition      equ $000B        ; $F800B
 ScratchC         equ $000D        ; $F800D
 FlexEthanol      equ $000E        ; $F800E
@@ -288,12 +296,20 @@ O2ActiveFlags    equ $0549        ; $F8549
 ;                 bit 6: upstream O2 sensor 2 active (as bit 7)
 ;                 bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow
 ;                 bit 4: downstream O2 sensor 2 active (as bit 5)
-;                 bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
-;                 bit 2: as bit 6, cleared by FuelLevelFlags bit 2
-;                 bit 1: as bit 5, cleared by FuelLevelFlags bit 1
-;                 bit 0: as bit 4, cleared by FuelLevelFlags bit 0
+;                 bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+;                 bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+;                 bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
+;                 bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
 O2SwitchFlags    equ $054A        ; $F854A
 FuelPulseFlags   equ $054E        ; $F854E
+;                 bit 7: injector timers loaded for the current event (FuelEventCalc), probably
+;                 bit 6: set in FuelEventCalc for event code $42, cleared for the others
+;                 bit 5: first pass of the fuel event code done (FuelEventCalc)
+;                 bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
+;                 bit 3: cleared at stall (CalcEngineRpm)
+;                 bit 2: sequential fuel started (FuelEventCalc); read by the start and event code
+;                 bit 1: cleared at stall; read by InjectorSequence
+;                 bit 0: injector sequence step taken (InjectorSequence)
 CrankEthanolFactor equ $054F        ; $F854F
 CrankPulse       equ $0550        ; $F8550
 CrankCoolant     equ $0552        ; $F8552

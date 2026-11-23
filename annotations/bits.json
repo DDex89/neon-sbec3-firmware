@@ -65,6 +65,14 @@
   "1": "write retry pending, retry count at $094B,Z (EepromWriteService)",
   "0": "write started, waiting for the EEPROM to finish (EepromWriteService)"
  },
+ "EgrFlags": {
+  "5": "EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)",
+  "4": "coolant above EgrCoolantOn (off again below EgrCoolantOff)",
+  "3": "warm start: start coolant at or below EgrStartWarmMax, start delay running",
+  "2": "cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay",
+  "1": "EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply",
+  "0": "EGR conditions not met (EgrEnable, EgrControl)"
+ },
  "EngineStateFlags": {
   "7": "engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)",
   "4": "start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel",
@@ -111,6 +119,26 @@
   "2": "ethanol content above O2FlexEthanolMin (O2FlexOffset)",
   "1": "hot engine enrichment active (HotEngineEnrichCalc)",
   "0": "engine-off time received from the bus (CcdReceive, PciReceive)"
+ },
+ "FuelPulseFlags": {
+  "7": "injector timers loaded for the current event (FuelEventCalc), probably",
+  "6": "set in FuelEventCalc for event code $42, cleared for the others",
+  "5": "first pass of the fuel event code done (FuelEventCalc)",
+  "4": "start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)",
+  "3": "cleared at stall (CalcEngineRpm)",
+  "2": "sequential fuel started (FuelEventCalc); read by the start and event code",
+  "1": "cleared at stall; read by InjectorSequence",
+  "0": "injector sequence step taken (InjectorSequence)"
+ },
+ "IacStepFlags": {
+  "7": "stepper phase toggle (IacStepperDrive)",
+  "6": "stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive",
+  "5": "start hold of the idle air control active (IacCrankControl, IacResetHold)",
+  "4": "idle air at the fixed target (IacFixedTarget)",
+  "3": "stepper direction: opening, probably (IacStepperDrive)",
+  "2": "diagnostic idle air command active (IdleRpmTarget, DiagCommand)",
+  "1": "idle air target from the MAP loop instead of the fixed command (IdleControl)",
+  "0": "rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle"
  },
  "IdleFlags": {
   "7": "closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)",
@@ -207,10 +235,10 @@
   "6": "upstream O2 sensor 2 active (as bit 7)",
   "5": "downstream O2 sensor 1 active: output passed O2DownActiveLow",
   "4": "downstream O2 sensor 2 active (as bit 5)",
-  "3": "as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)",
-  "2": "as bit 6, cleared by FuelLevelFlags bit 2",
-  "1": "as bit 5, cleared by FuelLevelFlags bit 1",
-  "0": "as bit 4, cleared by FuelLevelFlags bit 0"
+  "3": "as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)",
+  "2": "as bit 6, cleared by SensorFaultFlags2 bit 2",
+  "1": "as bit 5, cleared by SensorFaultFlags2 bit 1",
+  "0": "as bit 4, cleared by SensorFaultFlags2 bit 0"
  },
  "Options0328": {
   "1": "security variant: selects a branch in SecurityState",
@@ -394,6 +422,13 @@
   "4": "throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)",
   "3": "air temperature sensor fault (P0112 or P0113)",
   "0": "battery temperature sensor fault (P1492 or P1493)"
+ },
+ "SensorFaultFlags2": {
+  "7": "fuel level sender fault (FuelSenderMonitor)",
+  "3": "upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used",
+  "2": "upstream O2 sensor 2 circuit fault (P0151 or P0152)",
+  "1": "downstream O2 sensor 1 failed (O2CheckEnable)",
+  "0": "downstream O2 sensor 2 failed (O2CheckEnable)"
  },
  "SkimFlags": {
   "5": "SKIM key message received (CcdReceive/PciReceive -> SkimKeyCheck)",

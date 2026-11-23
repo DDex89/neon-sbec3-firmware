@@ -9893,15 +9893,15 @@ L0831A:
 IacStepperDrive:
         CLRB
         TBXK
-        BRSET   >IacStepFlags,Z,#$02,L0837C
+        BRSET   >IacStepFlags,Z,#$02,L0837C              ; bit 1: idle air target from the MAP loop instead of the fixed command (IdleControl)
         LDAA    >BatteryVolts2,Z
         CMPA    >IacStepVoltsMin
         BCS     L0837C
         LDAB    <IacPosition,Z
-        BRCLR   >IacStepFlags,Z,#$40,L08348
+        BRCLR   >IacStepFlags,Z,#$40,L08348              ; bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
         TSTB
         BNE     L08356
-        BCLR    <IacStepFlags,Z,#$40
+        BCLR    <IacStepFlags,Z,#$40                     ; bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
         BRA     L0837C
 L08348:
         TST     $0363,Z
@@ -9911,25 +9911,25 @@ L08348:
         BCS     L0836A
 L08356:
         LDAA    #$FF
-        BRCLR   >IacStepFlags,Z,#$08,L08392
-        BCLR    <IacStepFlags,Z,#$08
-        BRSET   >IacStepFlags,Z,#$80,L08392
+        BRCLR   >IacStepFlags,Z,#$08,L08392              ; bit 3: stepper direction: opening, probably (IacStepperDrive)
+        BCLR    <IacStepFlags,Z,#$08                     ; bit 3: stepper direction: opening, probably (IacStepperDrive)
+        BRSET   >IacStepFlags,Z,#$80,L08392              ; bit 7: stepper phase toggle (IacStepperDrive)
         BRA     L0837C
 L0836A:
         LDAA    #$01
-        BRSET   >IacStepFlags,Z,#$08,L08392
-        BSET    <IacStepFlags,Z,#$08
-        BRSET   >IacStepFlags,Z,#$80,L08392
+        BRSET   >IacStepFlags,Z,#$08,L08392              ; bit 3: stepper direction: opening, probably (IacStepperDrive)
+        BSET    <IacStepFlags,Z,#$08                     ; bit 3: stepper direction: opening, probably (IacStepperDrive)
+        BRSET   >IacStepFlags,Z,#$80,L08392              ; bit 7: stepper phase toggle (IacStepperDrive)
 L0837C:
-        BRSET   >IacStepFlags,Z,#$80,L0839E
-        BSET    <IacStepFlags,Z,#$80
+        BRSET   >IacStepFlags,Z,#$80,L0839E              ; bit 7: stepper phase toggle (IacStepperDrive)
+        BSET    <IacStepFlags,Z,#$80                     ; bit 7: stepper phase toggle (IacStepperDrive)
         LDAB    #$02
         STAB    $0363,Z
 L0838C:
         DEC     $0363,Z
         BRA     L0839E
 L08392:
-        BCLR    <IacStepFlags,Z,#$80
+        BCLR    <IacStepFlags,Z,#$80                     ; bit 7: stepper phase toggle (IacStepperDrive)
         TAB
         ADDA    <IacPosition,Z
         STAA    <IacPosition,Z
@@ -12012,15 +12012,15 @@ L0AA2A:
 L0AA64:
         BSET    >CrankSyncFlags,Z,#$40
         BRCLR   >EngineStateFlags,Z,#$80,L0AAC6          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >FuelPulseFlags,Z,#$04,L0AA8C
-        BSET    >FuelPulseFlags,Z,#$10
+        BRCLR   >FuelPulseFlags,Z,#$04,L0AA8C            ; bit 2: sequential fuel started (FuelEventCalc); read by the start and event code
+        BSET    >FuelPulseFlags,Z,#$10                   ; bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
         TST     $076E,Z
         BEQ     L0AA84
         DEC     $076E,Z
         BRA     L0AA8C
 L0AA84:
         BSET    >EngineStateFlags,Z,#$10                 ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
-        BCLR    >FuelPulseFlags,Z,#$10
+        BCLR    >FuelPulseFlags,Z,#$10                   ; bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
 L0AA8C:
         JSR     EventCorrections
         LBCS    L0AAC0
@@ -12524,7 +12524,7 @@ L0AF0C:
 L0AF10:
         ORP     #$00E0
         LDD     #$C01B
-        BRCLR   >FuelPulseFlags,Z,#$80,L0AF22
+        BRCLR   >FuelPulseFlags,Z,#$80,L0AF22            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         LDD     #$C02D
 L0AF22:
         CPD     >IoInjector0,Z
@@ -13715,7 +13715,7 @@ L0C690:
 L0C69C:
         BRCLR   >O2ActiveFlags,Z,#$80,L0C71C             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >ShortTermTrim1,Z
-        BRSET   >O2ActiveFlags,Z,#$08,L0C6B0             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRSET   >O2ActiveFlags,Z,#$08,L0C6B0             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         LDAA    >ShortTermTrim2,Z
 L0C6B0:
         BPL     L0C6E8
@@ -14374,7 +14374,7 @@ L0CD02:
         LDAA    >Count3s,Z
         BEQ     L0CD36
 L0CD22:
-        BRCLR   >AdcFlags,Z,#$10,L0CD38
+        BRCLR   >SpeedCtlSwitchFlags,Z,#$10,L0CD38
         BRSET   >FaultSet00,Z,#$80,L0CD38
         BRCLR   >FaultSet0B,Z,#$C4,L0CD36
         BRA     L0CD38
@@ -15126,7 +15126,7 @@ L0D78E:
         BSET    >AcFlags,Z,#$B0                          ; bit 7: A/C clutch engaged (AcClutchControl); set at reset; bit 5: A/C idle step active (IdleTargetControl); set at reset; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
         BSET    >SpeedCtlState,Z,#$A0                    ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel); bit 5: set at reset, on cancel and on engage; meaning not settled
         BSET    >SwitchInputs2,Z,#$04                    ; bit 2: speed control switch (set at reset)
-        BSET    >AdcFlags,Z,#$04
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
         LDD     #$8013
         STAA    $0402,Z
         STAA    >BattTempModelAcc,Z

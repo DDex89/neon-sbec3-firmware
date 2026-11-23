@@ -6257,14 +6257,14 @@ L05070:
 L050A6:
         BSET    >CrankSyncFlags,Z,#$40
         BRCLR   >EngineStateFlags,Z,#$80,L050FA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BSET    >FuelPulseFlags,Z,#$10
+        BSET    >FuelPulseFlags,Z,#$10                   ; bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
         TST     $0558,Z
         BEQ     L050C0
         DEC     $0558,Z
         BRA     L050C8
 L050C0:
         BSET    >EngineStateFlags,Z,#$10                 ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
-        BCLR    >FuelPulseFlags,Z,#$10
+        BCLR    >FuelPulseFlags,Z,#$10                   ; bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
 L050C8:
         JSR     EventCorrections
         LBCS    L050FA
@@ -6640,7 +6640,7 @@ Sub_054BA:
         CLRB
         TBXK
         LDAB    <IacPosition,Z
-        BRSET   >IacStepFlags,Z,#$40,L054CE
+        BRSET   >IacStepFlags,Z,#$40,L054CE              ; bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
         CMPB    >IacTarget,Z
         LBEQ    L0557C
 L054CE:
@@ -6648,22 +6648,22 @@ L054CE:
         CMPA    $1DBA
         LBCS    L0557C
         LDAA    #$01
-        BRCLR   >IacStepFlags,Z,#$40,L054EC
+        BRCLR   >IacStepFlags,Z,#$40,L054EC              ; bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
         TSTB
         BNE     L054F2
-        BCLR    <IacStepFlags,Z,#$40
+        BCLR    <IacStepFlags,Z,#$40                     ; bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
         BRA     L05514
 L054EC:
         CMPB    >IacTarget,Z
         BCS     L05500
 L054F2:
         NEGA
-        BRCLR   >IacStepFlags,Z,#$08,L0550C
-        BCLR    <IacStepFlags,Z,#$08
+        BRCLR   >IacStepFlags,Z,#$08,L0550C              ; bit 3: stepper direction: opening, probably (IacStepperDrive)
+        BCLR    <IacStepFlags,Z,#$08                     ; bit 3: stepper direction: opening, probably (IacStepperDrive)
         BRA     L05514
 L05500:
-        BRSET   >IacStepFlags,Z,#$08,L0550C
-        BSET    <IacStepFlags,Z,#$08
+        BRSET   >IacStepFlags,Z,#$08,L0550C              ; bit 3: stepper direction: opening, probably (IacStepperDrive)
+        BSET    <IacStepFlags,Z,#$08                     ; bit 3: stepper direction: opening, probably (IacStepperDrive)
         BRA     L05514
 L0550C:
         TAB
@@ -9152,7 +9152,7 @@ FuelEventStart:
         TST     $0558,Z
         BNE     L07606
         BSET    >EngineStateFlags,Z,#$10                 ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
-        BCLR    >FuelPulseFlags,Z,#$10
+        BCLR    >FuelPulseFlags,Z,#$10                   ; bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
         BITB    >FuelEventHoldCount,Z
         BEQ     L07606
         LDAA    >FuelEventHoldCount,Z
@@ -9363,7 +9363,7 @@ StartPulseCurrent:
 StartInjectorPulse:
         CMPB    $0478,Z
         LBEQ    L078B0
-        BRSET   >FuelPulseFlags,Z,#$10,L078B0
+        BRSET   >FuelPulseFlags,Z,#$10,L078B0            ; bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
         CMPB    $0479,Z
         LBEQ    L078B0
         PSHM    D
@@ -9392,7 +9392,7 @@ L0782E:
         PSHM    D
         PSHM    E
         LDAA    $0463,Z
-        BRCLR   >FuelPulseFlags,Z,#$80,L0784C
+        BRCLR   >FuelPulseFlags,Z,#$80,L0784C            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         ASLE
         ADCA    #$00
         BCS     L07854
@@ -9411,7 +9411,7 @@ L0785A:
         STE     $0464,Z
         PULM    E
         LDD     $0589,Z
-        BRCLR   >FuelPulseFlags,Z,#$80,L07872
+        BRCLR   >FuelPulseFlags,Z,#$80,L07872            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         LSRD
         LSRD
 L07872:
@@ -10546,7 +10546,7 @@ FuelEventCalc:
         STE     >IoInjector4,Z
         STE     >IoInjector5,Z
 L0847C:
-        BCLR    >FuelPulseFlags,Z,#$80
+        BCLR    >FuelPulseFlags,Z,#$80                   ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         LBRA    L08652
 L08484:
         BRSET   >CrankSyncFlags,Z,#$40,L08574
@@ -10561,7 +10561,7 @@ L08484:
         STE     >IoInjector4,Z
         STE     >IoInjector5,Z
 L084AE:
-        BSET    >FuelPulseFlags,Z,#$80
+        BSET    >FuelPulseFlags,Z,#$80                   ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         BRCLR   >EngineStateFlags,Z,#$10,L084F4          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         LDAA    >CoolantTemp,Z
         CMPA    >FuelEventCoolantMax
@@ -10609,8 +10609,8 @@ L0851A:
         JSR     StartInjectorPulse
         BRA     L0851A
 L08524:
-        BRSET   >FuelPulseFlags,Z,#$20,L08652
-        BSET    >FuelPulseFlags,Z,#$20
+        BRSET   >FuelPulseFlags,Z,#$20,L08652            ; bit 5: first pass of the fuel event code done (FuelEventCalc)
+        BSET    >FuelPulseFlags,Z,#$20                   ; bit 5: first pass of the fuel event code done (FuelEventCalc)
         BRSET   >EngineStateFlags,Z,#$10,L0853C          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         CLR     $0554,Z
         LBRA    L08652
@@ -10620,20 +10620,20 @@ L0853C:
         LDAB    #$01
         CMPA    #$42
         BNE     L08552
-        BSET    >FuelPulseFlags,Z,#$40
+        BSET    >FuelPulseFlags,Z,#$40                   ; bit 6: set in FuelEventCalc for event code $42, cleared for the others
         BRA     L0856C
 L08552:
-        BCLR    >FuelPulseFlags,Z,#$40
+        BCLR    >FuelPulseFlags,Z,#$40                   ; bit 6: set in FuelEventCalc for event code $42, cleared for the others
         CMPA    #$06
         BNE     L0856C
         LDAB    #$02
         BRA     L0856C
 L0855E:
         LDAB    #$03
-        BCLR    >FuelPulseFlags,Z,#$40
+        BCLR    >FuelPulseFlags,Z,#$40                   ; bit 6: set in FuelEventCalc for event code $42, cleared for the others
         CMPA    #$06
         BEQ     L0856C
-        BSET    >FuelPulseFlags,Z,#$40
+        BSET    >FuelPulseFlags,Z,#$40                   ; bit 6: set in FuelEventCalc for event code $42, cleared for the others
 L0856C:
         STAB    $0554,Z
         LBRA    L08652
@@ -10654,7 +10654,7 @@ L08582:
         STE     >IoInjector4,Z
         STE     >IoInjector5,Z
 L085A6:
-        BCLR    >FuelPulseFlags,Z,#$80
+        BCLR    >FuelPulseFlags,Z,#$80                   ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         BRCLR   >EngineStateFlags,Z,#$10,L08640          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         LDAA    >FuelEventCylFactor
         LDAB    >CylinderIndex,Z
@@ -10672,8 +10672,8 @@ L085A6:
         STAB    >Temp4FC,Z
         LDE     >FuelPulseBank1,Z
         JSR     StartInjectorPulse
-        BRCLR   >FuelPulseFlags,Z,#$40,L08622
-        BCLR    >FuelPulseFlags,Z,#$40
+        BRCLR   >FuelPulseFlags,Z,#$40,L08622            ; bit 6: set in FuelEventCalc for event code $42, cleared for the others
+        BCLR    >FuelPulseFlags,Z,#$40                   ; bit 6: set in FuelEventCalc for event code $42, cleared for the others
         LDAA    #$01
         LDAB    >CylinderCount
         CMPB    #$06
@@ -11341,7 +11341,7 @@ Sub_08D50:
 L08D66:
         STAB    $0560,Z
         BCLR    >O2ActiveFlags,Z,#$F0                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 4: downstream O2 sensor 2 active (as bit 5)
-        BCLR    >O2ActiveFlags,Z,#$0F                    ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3); bit 2: as bit 6, cleared by FuelLevelFlags bit 2; bit 1: as bit 5, cleared by FuelLevelFlags bit 1; bit 0: as bit 4, cleared by FuelLevelFlags bit 0
+        BCLR    >O2ActiveFlags,Z,#$0F                    ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1; bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
         PSHM    X,K
         LDX     #Tab2D_11D6
         JSR     Lookup2D
@@ -11409,7 +11409,7 @@ L08E30:
         CMPA    $11F4
         BCC     L08E44
 L08E40:
-        BSET    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BSET    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
 L08E44:
         BRCLR   >Options0331,#$40,L08E6A                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         TST     $059B,Z
@@ -11423,7 +11423,7 @@ L08E56:
         CMPA    $11F4
         BCC     L08E6A
 L08E66:
-        BSET    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BSET    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
 L08E6A:
         TST     >O2DownDelay,Z
         LBNE    L08EA6
@@ -11434,7 +11434,7 @@ L08E6A:
         CMPA    $12C5
         BCC     L08E8C
 L08E88:
-        BSET    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by FuelLevelFlags bit 1
+        BSET    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
 L08E8C:
         BRCLR   >Options0331,#$10,L08EA6                 ; bit 4: fuel level from the bus instead of the sender, probably
         LDAA    $052C,Z
@@ -11443,14 +11443,14 @@ L08E8C:
         CMPA    $12C5
         BCC     L08EA6
 L08EA2:
-        BSET    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by FuelLevelFlags bit 0
+        BSET    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
 L08EA6:
         BRCLR   >Options0331,#$80,L08EC4                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         BRSET   $0138,Z,#$01,L08EBE
         BRSET   >FaultSet06,Z,#$40,L08EBE
         BRCLR   $0145,Z,#$08,L08EC4
 L08EBE:
-        BCLR    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BCLR    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         BRA     L08EE6
 L08EC4:
         BRCLR   >Options0331,#$20,L08EE6                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
@@ -11459,7 +11459,7 @@ L08EC4:
         BRSET   $0144,Z,#$02,L08EE2
         BRCLR   $0145,Z,#$10,L08EE8
 L08EE2:
-        BCLR    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by FuelLevelFlags bit 1
+        BCLR    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
 L08EE6:
         CLR     $11,X
 L08EE8:
@@ -11468,7 +11468,7 @@ L08EE8:
         BRSET   $013C,Z,#$04,L08F00
         BRCLR   $014A,Z,#$20,L08F06
 L08F00:
-        BCLR    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BCLR    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         BRA     L08F24
 L08F06:
         BRCLR   >Options0331,#$10,L08F24                 ; bit 4: fuel level from the bus instead of the sender, probably
@@ -11478,7 +11478,7 @@ L08F06:
         BRSET   $0144,Z,#$04,L08F20
         BRCLR   $014A,Z,#$40,L08F26
 L08F20:
-        BCLR    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by FuelLevelFlags bit 0
+        BCLR    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
 L08F24:
         CLR     $11,Y
 L08F26:
@@ -11544,7 +11544,7 @@ L08FB6:
         PULM    K,Y,X
         BRCLR   $0145,Z,#$08,L08FDE
         BSET    >IacBase,Z,#$F0
-        BCLR    >O2ActiveFlags,Z,#$08                    ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BCLR    >O2ActiveFlags,Z,#$08                    ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         TZX
         LDX     #$803F
         LDAA    $3D2F
@@ -11557,7 +11557,7 @@ L08FD0:
 L08FDE:
         BRCLR   $014A,Z,#$20,L09004
         BSET    $01F1,Z,#$F0
-        BCLR    >O2ActiveFlags,Z,#$04                    ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BCLR    >O2ActiveFlags,Z,#$04                    ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         TZX
         LDX     #$8050
         LDAA    $3D2F
@@ -11570,11 +11570,11 @@ L08FF6:
 L09004:
         BRCLR   $0145,Z,#$10,L09012
         BSET    >IacBase,Z,#$50
-        BCLR    >O2ActiveFlags,Z,#$02                    ; bit 1: as bit 5, cleared by FuelLevelFlags bit 1
+        BCLR    >O2ActiveFlags,Z,#$02                    ; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
 L09012:
         BRCLR   $014A,Z,#$40,L09020
         BSET    $01F1,Z,#$50
-        BCLR    >O2ActiveFlags,Z,#$01                    ; bit 0: as bit 4, cleared by FuelLevelFlags bit 0
+        BCLR    >O2ActiveFlags,Z,#$01                    ; bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
 L09020:
         LDAA    >O2ActiveFlags,Z
         BITA    #$0C
@@ -11584,7 +11584,7 @@ L09020:
         LBRA    L092F4
 L09034:
         BRCLR   >Options0331,#$80,L09040                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
-        BRSET   >O2ActiveFlags,Z,#$08,L09060             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRSET   >O2ActiveFlags,Z,#$08,L09060             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
 L09040:
         BSET    >O2TestFlags,Z,#$20
         BSET    >IacBase,Z,#$70
@@ -11602,7 +11602,7 @@ L09040:
         STAA    $07,X
 L09060:
         BRCLR   >Options0331,#$40,L0906C                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
-        BRSET   >O2ActiveFlags,Z,#$04,L0908C             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRSET   >O2ActiveFlags,Z,#$04,L0908C             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
 L0906C:
         BSET    >O2TestFlags,Z,#$10
         BSET    $01F1,Z,#$70
@@ -11620,12 +11620,12 @@ L0906C:
         STAA    $07,Y
 L0908C:
         BRCLR   >Options0331,#$20,L09098                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
-        BRSET   >O2ActiveFlags,Z,#$02,L0909C             ; bit 1: as bit 5, cleared by FuelLevelFlags bit 1
+        BRSET   >O2ActiveFlags,Z,#$02,L0909C             ; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
 L09098:
         BSET    >IacBase,Z,#$50
 L0909C:
         BRCLR   >Options0331,#$10,L090A8                 ; bit 4: fuel level from the bus instead of the sender, probably
-        BRSET   >O2ActiveFlags,Z,#$01,L090AC             ; bit 0: as bit 4, cleared by FuelLevelFlags bit 0
+        BRSET   >O2ActiveFlags,Z,#$01,L090AC             ; bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
 L090A8:
         BSET    $01F1,Z,#$50
 L090AC:
@@ -12787,7 +12787,7 @@ L09C40:
         ANDA    #$08
         STAA    $01F6,Z
         JSR     Sub_09C88
-        BRCLR   >O2ActiveFlags,Z,#$04,L09C86             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRCLR   >O2ActiveFlags,Z,#$04,L09C86             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         TZY
         LDY     #$85A8
         LDAA    >ShortTermTrim2,Z
@@ -12920,8 +12920,8 @@ L09DB0:
         LBNE    L09C04
         BRSET   $0140,Z,#$10,L09C04
         BRSET   >Options0337,#$20,L09EBE                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
-        BRSET   >O2ActiveFlags,Z,#$08,L09DD6             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
-        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRSET   >O2ActiveFlags,Z,#$08,L09DD6             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         BSET    $054C,Z,#$C0
 L09DD6:
         TZX
@@ -12950,14 +12950,14 @@ L09DD6:
         LDAB    $004D,Z
         STAB    >O2AdaptValue1,Z
 L09E2C:
-        BRCLR   >O2ActiveFlags,Z,#$08,L09E44             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
-        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRCLR   >O2ActiveFlags,Z,#$08,L09E44             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         LDAA    >O2AdaptValue1,Z
         STAA    >O2AdaptValue2,Z
         LBRA    L09F0C
 L09E44:
-        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
-        BRSET   >O2ActiveFlags,Z,#$08,L09F0C             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRSET   >O2ActiveFlags,Z,#$08,L09F0C             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
 L09E50:
         TZX
         LDX     #$8050
@@ -12985,8 +12985,8 @@ L09E50:
         LDAB    $005E,Z
         STAB    >O2AdaptValue2,Z
 L09EA6:
-        BRCLR   >O2ActiveFlags,Z,#$04,L09F0C             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
-        BRSET   >O2ActiveFlags,Z,#$08,L09F0C             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRCLR   >O2ActiveFlags,Z,#$04,L09F0C             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRSET   >O2ActiveFlags,Z,#$08,L09F0C             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         LDAA    >O2AdaptValue2,Z
         STAA    >O2AdaptValue1,Z
         LBRA    L09F0C
@@ -13390,7 +13390,7 @@ L0A286:
         DEC     $06AB,Z
 L0A296:
         BRCLR   >SparkFlags3,Z,#$20,L0A2A2
-        BRCLR   >IacStepFlags,Z,#$01,L0A2A6
+        BRCLR   >IacStepFlags,Z,#$01,L0A2A6              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
 L0A2A2:
         CLR     $06AB,Z
 L0A2A6:
@@ -13411,7 +13411,7 @@ L0A2C6:
 L0A2DC:
         CLRE
         LDD     >SegmentRpm,Z
-        BRCLR   >IacStepFlags,Z,#$01,L0A2EE
+        BRCLR   >IacStepFlags,Z,#$01,L0A2EE              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         SUBD    $0654,Z
         BRA     L0A2F2
 L0A2EE:
@@ -13475,7 +13475,7 @@ L0A396:
 L0A3A0:
         BCLR    >IdleFlags8,Z,#$40
 L0A3A4:
-        BRCLR   >IacStepFlags,Z,#$20,L0A3B0
+        BRCLR   >IacStepFlags,Z,#$20,L0A3B0              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BSET    >IdleFlags8,Z,#$20
         BRA     L0A3BE
 L0A3B0:
@@ -13562,7 +13562,7 @@ L0A472:
         LDAA    #$7F
 L0A49E:
         STAA    $068B,Z
-        BRSET   >IacStepFlags,Z,#$20,L0A4AE
+        BRSET   >IacStepFlags,Z,#$20,L0A4AE              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BRSET   >SparkFlags3,Z,#$40,L0A4B2
 L0A4AE:
         CLRA
@@ -14926,7 +14926,7 @@ IacSetTarget:
         LDAB    >IacTarget,Z
         CLRA
         ADE
-        BRCLR   >IacStepFlags,Z,#$01,L0B4D8
+        BRCLR   >IacStepFlags,Z,#$01,L0B4D8              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         PSHM    E
         LDAB    >IacCoastPosition,Z
         CLRA
@@ -14995,7 +14995,7 @@ L0B52E:
         STAA    $041E,Z
         BRSET   >FieldFlags,Z,#$04,L0B5B6
         BRCLR   >IdleFlags,Z,#$80,L0B5B6                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
-        BRSET   >IacStepFlags,Z,#$01,L0B5B6
+        BRSET   >IacStepFlags,Z,#$01,L0B5B6              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         LDAB    >FieldFlags,Z
         BITB    #$01
         BNE     L0B588
@@ -15105,8 +15105,8 @@ Sub_0B628:
         STAA    $0688,Z
         STAA    $0687,Z
         BSET    >GearStateFlags,Z,#$40
-        BSET    <IacStepFlags,Z,#$20
-        BCLR    <IacStepFlags,Z,#$10
+        BSET    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
+        BCLR    <IacStepFlags,Z,#$10                     ; bit 4: idle air at the fixed target (IacFixedTarget)
         LDAA    #$FF
         STAA    >IacGearTime2,Z
         STAA    >IacGearDuration,Z
@@ -15460,7 +15460,7 @@ Sub_0B9EE:
         LDAA    >IacTarget,Z
         CMPA    #$04
         BLS     L0BA02
-        BCLR    <IacStepFlags,Z,#$10
+        BCLR    <IacStepFlags,Z,#$10                     ; bit 4: idle air at the fixed target (IacFixedTarget)
         BRA     L0BA2A
 L0BA02:
         BRSET   >ThrottleState,Z,#$01,L0BA2A             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
@@ -15472,7 +15472,7 @@ L0BA02:
         LDAA    #$02
         STAA    >IacTarget,Z
         STAA    <IacPosition,Z
-        BSET    <IacStepFlags,Z,#$10
+        BSET    <IacStepFlags,Z,#$10                     ; bit 4: idle air at the fixed target (IacFixedTarget)
 L0BA26:
         ANDP    #$FF1F
 L0BA2A:
@@ -15483,7 +15483,7 @@ L0BA2A:
 ; Called from: Sub_0A200
 ;---------------------------------------------------------------------------------------------------
 Sub_0BA2C:
-        BRSET   >IacStepFlags,Z,#$01,L0BA9A
+        BRSET   >IacStepFlags,Z,#$01,L0BA9A              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRCLR   >IdleFlags3,Z,#$04,L0BA58
         LDAA    >VehicleSpeed,Z
         LDAB    >IdleRollSpeed
@@ -15538,11 +15538,11 @@ L0BAC4:
         CPD     >SegmentRpm,Z
         BCC     L0BAD2
 L0BACA:
-        BCLR    <IacStepFlags,Z,#$01
+        BCLR    <IacStepFlags,Z,#$01                     ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         LBRA    L0BB8E
 L0BAD2:
-        BRSET   >IacStepFlags,Z,#$01,L0BAE4
-        BSET    <IacStepFlags,Z,#$01
+        BRSET   >IacStepFlags,Z,#$01,L0BAE4              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
+        BSET    <IacStepFlags,Z,#$01                     ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         LDD     >SegmentRpm,Z
         STD     $0654,Z
 L0BAE4:
@@ -15749,7 +15749,7 @@ L0BCCC:
         LDAA    >ThrottleState,Z
         BITA    #$01
         LBEQ    L0BD6A
-        BRSET   >IacStepFlags,Z,#$01,L0BD6A
+        BRSET   >IacStepFlags,Z,#$01,L0BD6A              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         TST     >DashpotTimerMoving,Z
         BEQ     L0BCF8
         LDAA    $20C1
@@ -15812,10 +15812,10 @@ Sub_0BD6C:
 L0BD7C:
         CPX     >RefPeriod,Z
         BCC     L0BD8A
-        BSET    <IacStepFlags,Z,#$20
+        BSET    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         CLR     $06A8,Z
 L0BD8A:
-        BRCLR   >IacStepFlags,Z,#$20,L0BE12
+        BRCLR   >IacStepFlags,Z,#$20,L0BE12              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         LDAB    $1DA7
         BEQ     L0BD9E
         LDAA    >EngineRpm,Z
@@ -15864,10 +15864,10 @@ L0BDE4:
 L0BE02:
         CMPB    $1E15
         BLS     L0BE0E
-        BCLR    <IacStepFlags,Z,#$20
+        BCLR    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BRA     L0BE12
 L0BE0E:
-        BSET    <IacStepFlags,Z,#$20
+        BSET    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
 L0BE12:
         RTS
 
@@ -15912,7 +15912,7 @@ L0BE5E:
         BSET    >Scratch8,Z,#$04
 L0BE72:
         BRCLR   >EngineStateFlags,Z,#$80,L0BE88          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >IacStepFlags,Z,#$20,L0BE88
+        BRSET   >IacStepFlags,Z,#$20,L0BE88              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BRSET   >Scratch8,Z,#$01,L0BE88
         BSET    >Scratch8,Z,#$10
 L0BE88:
@@ -15978,7 +15978,7 @@ L0BF3E:
         BSET    >SparkFlags3,Z,#$40
 L0BF4E:
         BRCLR   >Scratch8,Z,#$20,L0BF88
-        BRSET   >IacStepFlags,Z,#$20,L0BF88
+        BRSET   >IacStepFlags,Z,#$20,L0BF88              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BRSET   >Scratch8,Z,#$01,L0BF88
         BRSET   $0138,Z,#$08,L0BF88
         BSET    >IdleFlags6,Z,#$10
@@ -16140,7 +16140,7 @@ L0C13A:
         CLRW    $0660,Z
 L0C13E:
         BRSET   >ThrottleState,Z,#$01,L0C150             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
-        BRSET   >IacStepFlags,Z,#$01,L0C150
+        BRSET   >IacStepFlags,Z,#$01,L0C150              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRCLR   >IdleFlags2,Z,#$20,L0C15A
 L0C150:
         LDAA    $1DDC
@@ -16208,14 +16208,14 @@ L0C214:
         BNE     L0C23C
         BRSET   >DiagFlags,Z,#$10,L0C572
         CLR     >DiagCommand,Z
-        BSET    <IacStepFlags,Z,#$04
+        BSET    <IacStepFlags,Z,#$04                     ; bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
         LDAA    >DiagParam1,Z
         LSRA
         LSRA
         LDAB    #$38
         BRA     L0C24A
 L0C23C:
-        BRCLR   >IacStepFlags,Z,#$04,L0C256
+        BRCLR   >IacStepFlags,Z,#$04,L0C256              ; bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
         LDD     >IdleTarget,Z
         DECB
         BEQ     L0C256
@@ -16224,7 +16224,7 @@ L0C24A:
         BSET    >SparkFlags3,Z,#$10
         LBRA    L0C56A
 L0C256:
-        BCLR    <IacStepFlags,Z,#$04
+        BCLR    <IacStepFlags,Z,#$04                     ; bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
         BRSET   >SparkFaultFlags,Z,#$20,L0C268
         LDAB    $0135,Z
         ANDB    #$C0
@@ -16303,7 +16303,7 @@ L0C334:
 L0C33A:
         BSET    >IdleFlags2,Z,#$10
 L0C33E:
-        BRSET   >IacStepFlags,Z,#$01,L0C354
+        BRSET   >IacStepFlags,Z,#$01,L0C354              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRCLR   >IdleFlags6,Z,#$20,L0C34E
         BCLR    >IdleFlags2,Z,#$20
 L0C34E:
@@ -16406,7 +16406,7 @@ L0C486:
         LDAA    <ScratchC,Z
         CMPA    $1DD4
         LBCS    L0C4B8
-        BRSET   >IacStepFlags,Z,#$01,L0C4B8
+        BRSET   >IacStepFlags,Z,#$01,L0C4B8              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRSET   >ThrottleState,Z,#$01,L0C4B8             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BSET    >IdleFlags2,Z,#$40
         TST     $0675,Z
@@ -18446,7 +18446,7 @@ L0DC64:
         STE     $0179,Z
 L0DC7A:
         LDD     #$C01B
-        BRCLR   >FuelPulseFlags,Z,#$80,L0DC88
+        BRCLR   >FuelPulseFlags,Z,#$80,L0DC88            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         LDD     #$C02D
 L0DC88:
         CPD     >IoInjector0,Z
@@ -18615,7 +18615,7 @@ L0DE52:
         STE     $0179,Z
 L0DE68:
         LDD     #$C01B
-        BRCLR   >FuelPulseFlags,Z,#$80,L0DE76
+        BRCLR   >FuelPulseFlags,Z,#$80,L0DE76            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         LDD     #$C02D
 L0DE76:
         CPD     >IoInjector0,Z
@@ -18784,7 +18784,7 @@ L0E04C:
         STE     $0179,Z
 L0E062:
         LDD     #$C01B
-        BRCLR   >FuelPulseFlags,Z,#$80,L0E070
+        BRCLR   >FuelPulseFlags,Z,#$80,L0E070            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         LDD     #$C02D
 L0E070:
         CPD     >IoInjector0,Z
@@ -19839,7 +19839,7 @@ L0EB3E:
 L0EB4A:
         BRCLR   >O2ActiveFlags,Z,#$80,L0EBCA             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >ShortTermTrim1,Z
-        BRSET   >O2ActiveFlags,Z,#$08,L0EB5E             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRSET   >O2ActiveFlags,Z,#$08,L0EB5E             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         LDAA    >ShortTermTrim2,Z
 L0EB5E:
         BPL     L0EB96
@@ -20708,7 +20708,7 @@ Sub_0F474:
         BRCLR   $0324,#$80,L0F480
         BRCLR   $03C9,Z,#$80,L0F5EC
 L0F480:
-        BRCLR   >O2ActiveFlags,Z,#$08,L0F4BE             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRCLR   >O2ActiveFlags,Z,#$08,L0F4BE             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         LDAA    >ShortTermTrim1,Z
         ASRA
         LDAB    >O2AdaptValue1,Z

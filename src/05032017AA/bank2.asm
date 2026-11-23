@@ -1818,7 +1818,7 @@ L2183A:
 L2183E:
         BRSET   >PciRxFlags,Z,#$20,L2185C
         BRCLR   >FuelLevelFlags2,Z,#$02,L218BC
-        BRSET   >FuelLevelFlags,Z,#$80,L2185C
+        BRSET   >SensorFaultFlags2,Z,#$80,L2185C         ; bit 7: fuel level sender fault (FuelSenderMonitor)
         BRCLR   $0135,Z,#$80,L21862
         BRSET   >FuelLevelFlags2,Z,#$80,L21862
 L2185C:
@@ -3220,10 +3220,10 @@ O2CheckEnable:
         BRSET   >FaultSet06,Z,#$40,L226E4
         BRCLR   >FaultSet12,Z,#$08,L226EA
 L226E4:
-        BSET    >FuelLevelFlags,Z,#$08
+        BSET    >SensorFaultFlags2,Z,#$08                ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
         BRA     L226EE
 L226EA:
-        BCLR    >FuelLevelFlags,Z,#$08
+        BCLR    >SensorFaultFlags2,Z,#$08                ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
 L226EE:
         BRCLR   >Options032F,#$20,L22718                 ; bit 5: downstream O2 sensor 1 fitted
         BRSET   >FaultSet12,Z,#$10,L22712
@@ -3232,20 +3232,20 @@ L226EE:
         BRCLR   >MonFlags09E,Z,#$80,L22718
         BRSET   >O2DownFlags,Z,#$08,L22718
 L22712:
-        BSET    >FuelLevelFlags,Z,#$02
+        BSET    >SensorFaultFlags2,Z,#$02                ; bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
         BRA     L2271C
 L22718:
-        BCLR    >FuelLevelFlags,Z,#$02
+        BCLR    >SensorFaultFlags2,Z,#$02                ; bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
 L2271C:
         BRCLR   >Options032F,#$40,L2273A                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >FaultSet09,Z,#$02,L22734
         BRSET   >FaultSet09,Z,#$04,L22734
         BRCLR   >FaultSet17,Z,#$20,L2273A
 L22734:
-        BSET    >FuelLevelFlags,Z,#$04
+        BSET    >SensorFaultFlags2,Z,#$04                ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
         BRA     L2273E
 L2273A:
-        BCLR    >FuelLevelFlags,Z,#$04
+        BCLR    >SensorFaultFlags2,Z,#$04                ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
 L2273E:
         BRCLR   >Options032F,#$10,L22768                 ; bit 4: downstream O2 sensor 2 fitted
         BRSET   >FaultSet17,Z,#$40,L22762
@@ -3254,10 +3254,10 @@ L2273E:
         BRCLR   >MonFlags09E,Z,#$40,L22768
         BRSET   >O2DownFlags,Z,#$04,L22768
 L22762:
-        BSET    >FuelLevelFlags,Z,#$01
+        BSET    >SensorFaultFlags2,Z,#$01                ; bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
         BRA     L2276C
 L22768:
-        BCLR    >FuelLevelFlags,Z,#$01
+        BCLR    >SensorFaultFlags2,Z,#$01                ; bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
 L2276C:
         RTS
 
@@ -3565,7 +3565,7 @@ L22B20:
 ; Called from: EgrPositionMonitor
 ;---------------------------------------------------------------------------------------------------
 EgrSolenoidCheck:
-        BRSET   >EgrFlags,Z,#$01,L22C1A
+        BRSET   >EgrFlags,Z,#$01,L22C1A                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         BRCLR   >Options0335,#$02,L22B34                 ; bit 1: EGR position/solenoid monitor variant
         BRSET   >ControlFlags943,Z,#$10,L22C1A           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L22B34:
@@ -3687,13 +3687,13 @@ L22C62:
         CPE     >WotLeanRpmMin
         BLS     L22CAE
         BRSET   >DecelLeanFlags,Z,#$80,L22CCC
-        BRSET   >FuelLevelFlags,Z,#$08,L22CAE
+        BRSET   >SensorFaultFlags2,Z,#$08,L22CAE         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
         BRSET   >FaultSet0D,Z,#$40,L22CAE
         LDAA    >O2UpBank1Raw,Z
         CMPA    >WotLeanO2Max
         BCC     L22CAE
         BRCLR   >Options032F,#$40,L22CA0                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
-        BRSET   >FuelLevelFlags,Z,#$04,L22CAE
+        BRSET   >SensorFaultFlags2,Z,#$04,L22CAE         ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
         BRSET   >FaultSet0E,Z,#$04,L22CAE
         LDAA    >O2UpBank2Raw,Z
         CMPA    >WotLeanO2Max2
@@ -3856,27 +3856,27 @@ L22E52:
         LBRA    L22EB0
 L22E5A:
         LDAA    #$02
-        BRSET   >FuelLevelFlags,Z,#$08,L22E6A
-        BRCLR   >O2ActiveFlags,Z,#$08,L22E6A             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRSET   >SensorFaultFlags2,Z,#$08,L22E6A         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
+        BRCLR   >O2ActiveFlags,Z,#$08,L22E6A             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         BRA     L22E80
 L22E6A:
         LDAA    #$08
         BRCLR   >Options032F,#$40,L22E80                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
-        BRSET   >FuelLevelFlags,Z,#$04,L22E80
-        BRCLR   >O2ActiveFlags,Z,#$04,L22E80             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRSET   >SensorFaultFlags2,Z,#$04,L22E80         ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
+        BRCLR   >O2ActiveFlags,Z,#$04,L22E80             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         LDAA    #$10
 L22E80:
         STAA    >FuelSystemStatusPid,Z
         CLRA
         BRCLR   >Options032F,#$40,L22EAC                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         LDAA    #$02
-        BRSET   >FuelLevelFlags,Z,#$04,L22E9C
-        BRCLR   >O2ActiveFlags,Z,#$04,L22E9C             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRSET   >SensorFaultFlags2,Z,#$04,L22E9C         ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
+        BRCLR   >O2ActiveFlags,Z,#$04,L22E9C             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         BRA     L22EAC
 L22E9C:
         LDAA    #$08
-        BRSET   >FuelLevelFlags,Z,#$08,L22EAC
-        BRCLR   >O2ActiveFlags,Z,#$08,L22EAC             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRSET   >SensorFaultFlags2,Z,#$08,L22EAC         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
+        BRCLR   >O2ActiveFlags,Z,#$08,L22EAC             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         LDAA    #$10
 L22EAC:
         STAA    $0529,Z
@@ -4050,10 +4050,10 @@ L230A4:
         LDAA    $A0,Z
         BITA    #$E0
         BNE     L230B8
-        BCLR    >FuelLevelFlags,Z,#$80
+        BCLR    >SensorFaultFlags2,Z,#$80                ; bit 7: fuel level sender fault (FuelSenderMonitor)
         BRA     L230BC
 L230B8:
-        BSET    >FuelLevelFlags,Z,#$80
+        BSET    >SensorFaultFlags2,Z,#$80                ; bit 7: fuel level sender fault (FuelSenderMonitor)
 L230BC:
         RTS
 
@@ -6366,7 +6366,7 @@ L2507A:
         BRCLR   >O2ActiveFlags,Z,#$40,L25296             ; bit 6: upstream O2 sensor 2 active (as bit 7)
         BRSET   >O2Bank2Flags,Z,#$20,L25296
 L250A0:
-        BRSET   >EgrFlags,Z,#$01,L25296
+        BRSET   >EgrFlags,Z,#$01,L25296                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         TST     >PurgeCellCount,Z
         LBNE    L25296
         LDAA    >ManifoldVacuum,Z
@@ -6654,7 +6654,7 @@ L25442:
         INC     >PurgeFlowSettle,Z
         JMP     L25782
 L25462:
-        BRSET   >IacStepFlags,Z,#$20,L25730
+        BRSET   >IacStepFlags,Z,#$20,L25730              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         TST     >DashpotTimer,Z
         LBNE    L25730
         LDAA    >IacGearDuration,Z
@@ -9487,25 +9487,25 @@ L28E50:
         ANDP    #$FF1F
         BSET    >O2HeaterWork,Z,#$80
         BRCLR   >Options032F,#$80,L28ED0                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
-        BRSET   >FuelLevelFlags,Z,#$08,L28ED0
+        BRSET   >SensorFaultFlags2,Z,#$08,L28ED0         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
         BRSET   >FaultSet0D,Z,#$40,L28ED0
         BSET    >O2HeaterFlags,Z,#$80
         BSET    <MonStatusO2Sensor1,Z,#$04
 L28ED0:
         BRCLR   >Options032F,#$40,L28EEA                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
-        BRSET   >FuelLevelFlags,Z,#$04,L28EEA
+        BRSET   >SensorFaultFlags2,Z,#$04,L28EEA         ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
         BRSET   >FaultSet0E,Z,#$04,L28EEA
         BSET    >O2HeaterFlags,Z,#$40
         BSET    <MonStatusO2Sensor2,Z,#$04
 L28EEA:
         BRCLR   >Options032F,#$20,L28F04                 ; bit 5: downstream O2 sensor 1 fitted
-        BRSET   >FuelLevelFlags,Z,#$02,L28F04
+        BRSET   >SensorFaultFlags2,Z,#$02,L28F04         ; bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
         BRSET   >FaultSet0C,Z,#$01,L28F04
         BSET    >O2HeaterFlags,Z,#$20
         BSET    <MonStatusO2Sensor3,Z,#$04
 L28F04:
         BRCLR   >Options032F,#$10,L28F1E                 ; bit 4: downstream O2 sensor 2 fitted
-        BRSET   >FuelLevelFlags,Z,#$01,L28F1E
+        BRSET   >SensorFaultFlags2,Z,#$01,L28F1E         ; bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
         BRSET   >FaultSet0E,Z,#$08,L28F1E
         BSET    >O2HeaterFlags,Z,#$10
         BSET    <MonStatusO2Sensor4,Z,#$04
@@ -13052,7 +13052,7 @@ L2C2B8:
         LDAA    >CoolantFaultValue
         STAA    >CoolantTempSlow,Z
         BRSET   >SensorFaultFlags,Z,#$80,L2C2DC          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
-        BCLR    >O2ActiveFlags,Z,#$CC                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3); bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BCLR    >O2ActiveFlags,Z,#$CC                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         CLR     >O2ColdTrim1,Z
         CLR     >O2ColdTrim2,Z
         CLR     >MonSpeedCounter,Z
@@ -13538,7 +13538,7 @@ L2C7CE:
         JSR     Lookup2D
         STAA    >FuelLevelScaled,Z
 L2C7EA:
-        BRCLR   >FuelLevelFlags,Z,#$80,L2C7FE
+        BRCLR   >SensorFaultFlags2,Z,#$80,L2C7FE         ; bit 7: fuel level sender fault (FuelSenderMonitor)
 L2C7F0:
         LDAA    >FuelLevelRef
         LDAB    #$CC
@@ -13991,7 +13991,7 @@ L2CCBC:
 L2CCC4:
         STAA    >DashpotTimer,Z
 L2CCC8:
-        BRSET   <IacStepFlags,Z,#$01,L2CCFA
+        BRSET   <IacStepFlags,Z,#$01,L2CCFA              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRSET   >ThrottleState,Z,#$80,L2CD06             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >IdleRollSpeed
         LDAB    >VehicleSpeed,Z
@@ -14157,20 +14157,20 @@ L2CE70:
         BSET    >SpeedCtlFlags2,Z,#$18
         TST     >SpeedCtlSwitchState,Z
         LBNE    L2D10A
-        BSET    >AdcFlags,Z,#$01
+        BSET    >SpeedCtlSwitchFlags,Z,#$01
         BRA     L2CEC6
 L2CE82:
         BSET    >SpeedCtlFlags2,Z,#$08
         TST     >SpeedCtlSwitchState,Z
         LBNE    L2D10A
         BRSET   >SpeedCtlFlags2,Z,#$10,L2CEC6
-        BSET    >AdcFlags,Z,#$08
+        BSET    >SpeedCtlSwitchFlags,Z,#$08
         BRA     L2CECA
 L2CE9A:
         TST     >SpeedCtlSwitchState,Z
         LBNE    L2D10A
         BRSET   >SpeedCtlFlags2,Z,#$08,L2CECA
-        BCLR    >AdcFlags,Z,#$04
+        BCLR    >SpeedCtlSwitchFlags,Z,#$04
         LBRA    L2D10A
 L2CEB0:
         TST     >SpeedCtlSwitchState,Z
@@ -14181,11 +14181,11 @@ L2CEBC:
         LDAA    #$03
         STAA    >SpeedCtlSwitchState,Z
 L2CEC2:
-        BCLR    >AdcFlags,Z,#$01
+        BCLR    >SpeedCtlSwitchFlags,Z,#$01
 L2CEC6:
-        BCLR    >AdcFlags,Z,#$08
+        BCLR    >SpeedCtlSwitchFlags,Z,#$08
 L2CECA:
-        BSET    >AdcFlags,Z,#$04
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
         LBRA    L2D10A
         dc.b    $1F,$62,$A3,$D3,$F0,$FF
 L2CED8:
@@ -14260,47 +14260,47 @@ L2CF70:
 L2CF74:
         BRSET   >SpeedCtlFlags,Z,#$01,L2D10A
         BSET    >SpeedCtlFlags,Z,#$01
-        BRSET   >AdcFlags,Z,#$10,L2CF8A
-        BSET    >AdcFlags,Z,#$10
+        BRSET   >SpeedCtlSwitchFlags,Z,#$10,L2CF8A
+        BSET    >SpeedCtlSwitchFlags,Z,#$10
         BRA     L2CF8E
 L2CF8A:
-        BCLR    >AdcFlags,Z,#$10
+        BCLR    >SpeedCtlSwitchFlags,Z,#$10
 L2CF8E:
-        BSET    >AdcFlags,Z,#$04
-        BCLR    >AdcFlags,Z,#$0B
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
+        BCLR    >SpeedCtlSwitchFlags,Z,#$0B
         JMP     L2D0E4
 L2CF9A:
-        BRCLR   >AdcFlags,Z,#$10,L2D10A
-        BCLR    >AdcFlags,Z,#$19
-        BSET    >AdcFlags,Z,#$04
+        BRCLR   >SpeedCtlSwitchFlags,Z,#$10,L2D10A
+        BCLR    >SpeedCtlSwitchFlags,Z,#$19
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
         JMP     L2D0E4
 L2CFAC:
-        BRSET   >AdcFlags,Z,#$10,L2D10A
-        BCLR    >AdcFlags,Z,#$09
-        BSET    >AdcFlags,Z,#$14
+        BRSET   >SpeedCtlSwitchFlags,Z,#$10,L2D10A
+        BCLR    >SpeedCtlSwitchFlags,Z,#$09
+        BSET    >SpeedCtlSwitchFlags,Z,#$14
         JMP     L2D0E4
 L2CFBE:
-        BCLR    >AdcFlags,Z,#$0A
-        BSET    >AdcFlags,Z,#$05
+        BCLR    >SpeedCtlSwitchFlags,Z,#$0A
+        BSET    >SpeedCtlSwitchFlags,Z,#$05
         BCLR    >SpeedCtlFlags,Z,#$01
         LBRA    L2D10A
 L2CFCE:
-        BCLR    >AdcFlags,Z,#$0F
+        BCLR    >SpeedCtlSwitchFlags,Z,#$0F
         BCLR    >SpeedCtlFlags,Z,#$01
         LBRA    L2D10A
 L2CFDA:
-        BCLR    >AdcFlags,Z,#$03
-        BSET    >AdcFlags,Z,#$0C
+        BCLR    >SpeedCtlSwitchFlags,Z,#$03
+        BSET    >SpeedCtlSwitchFlags,Z,#$0C
         BCLR    >SpeedCtlFlags,Z,#$01
         LBRA    L2D10A
 L2CFEA:
-        BCLR    >AdcFlags,Z,#$09
-        BSET    >AdcFlags,Z,#$06
+        BCLR    >SpeedCtlSwitchFlags,Z,#$09
+        BSET    >SpeedCtlSwitchFlags,Z,#$06
         BCLR    >SpeedCtlFlags,Z,#$01
         LBRA    L2D10A
 L2CFFA:
-        BCLR    >AdcFlags,Z,#$0B
-        BSET    >AdcFlags,Z,#$04
+        BCLR    >SpeedCtlSwitchFlags,Z,#$0B
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
         BCLR    >SpeedCtlFlags,Z,#$01
         LBRA    L2D10A
         dc.b    $27,$33,$4A,$6C,$84,$9B,$C0,$D4,$FC,$FF
@@ -14341,7 +14341,7 @@ L2D060:
         BSET    >SpeedCtlFlags2,Z,#$1C
         TST     >SpeedCtlSwitchState,Z
         LBNE    L2D10A
-        BSET    >AdcFlags,Z,#$01
+        BSET    >SpeedCtlSwitchFlags,Z,#$01
         BRA     L2D0DA
 L2D072:
         BSET    >SpeedCtlFlags2,Z,#$18
@@ -14349,9 +14349,9 @@ L2D072:
         LBNE    L2D10A
         BRSET   >SpeedCtlFlags2,Z,#$04,L2D0D6
         BSET    >SpeedCtlFlags2,Z,#$04
-        LDAA    >AdcFlags,Z
+        LDAA    >SpeedCtlSwitchFlags,Z
         EORA    #$10
-        STAA    >AdcFlags,Z
+        STAA    >SpeedCtlSwitchFlags,Z
         BSET    >SkimFlags2,Z,#$02
         BRA     L2D0D6
 L2D098:
@@ -14359,13 +14359,13 @@ L2D098:
         TST     >SpeedCtlSwitchState,Z
         BNE     L2D10A
         BRSET   >SpeedCtlFlags2,Z,#$08,L2D10A
-        BCLR    >AdcFlags,Z,#$04
+        BCLR    >SpeedCtlSwitchFlags,Z,#$04
         BRA     L2D0DE
 L2D0AE:
         TST     >SpeedCtlSwitchState,Z
         BNE     L2D10A
         BRSET   >SpeedCtlFlags2,Z,#$10,L2D0DE
-        BSET    >AdcFlags,Z,#$08
+        BSET    >SpeedCtlSwitchFlags,Z,#$08
         BRA     L2D10A
 L2D0C0:
         TST     >SpeedCtlSwitchState,Z
@@ -14379,11 +14379,11 @@ L2D0D0:
         LDAA    #$04
         STAA    >SpeedCtlSwitchState,Z
 L2D0D6:
-        BCLR    >AdcFlags,Z,#$01
+        BCLR    >SpeedCtlSwitchFlags,Z,#$01
 L2D0DA:
-        BSET    >AdcFlags,Z,#$04
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
 L2D0DE:
-        BCLR    >AdcFlags,Z,#$08
+        BCLR    >SpeedCtlSwitchFlags,Z,#$08
         BRA     L2D10A
 L2D0E4:
         BSET    >SkimFlags2,Z,#$02
@@ -14393,8 +14393,8 @@ L2D0EA:
         BRSET   >FaultSet0B,Z,#$40,L2D152
         LDY     #$4955
         JSR     ReportFault
-        BSET    >AdcFlags,Z,#$04
-        BCLR    >AdcFlags,Z,#$19
+        BSET    >SpeedCtlSwitchFlags,Z,#$04
+        BCLR    >SpeedCtlSwitchFlags,Z,#$19
         CLR     >SpeedCtlSwitchState,Z
 L2D10A:
         LDAA    $0A50,Z
@@ -15123,13 +15123,13 @@ L2D854:
         CLR     $0C48,Z
         CLR     >IdleSparkSteps,Z
         BCLR    $0E05,Z,#$01
-        BRCLR   >FuelPulseFlags,Z,#$08,L2D8B0
+        BRCLR   >FuelPulseFlags,Z,#$08,L2D8B0            ; bit 3: cleared at stall (CalcEngineRpm)
         CLR     >InjSeqWork,Z
         CLR     >InjectorMask2,Z
         CLR     >InjectorMask,Z
-        BCLR    >FuelPulseFlags,Z,#$08
-        BCLR    >FuelPulseFlags,Z,#$02
-        BCLR    >FuelPulseFlags,Z,#$01
+        BCLR    >FuelPulseFlags,Z,#$08                   ; bit 3: cleared at stall (CalcEngineRpm)
+        BCLR    >FuelPulseFlags,Z,#$02                   ; bit 1: cleared at stall; read by InjectorSequence
+        BCLR    >FuelPulseFlags,Z,#$01                   ; bit 0: injector sequence step taken (InjectorSequence)
 L2D8B0:
         BRCLR   >Options032A,#$C0,L2D8C4                 ; bit 7: engine/ignition variant used by the event, spark, knock and rpm code; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         LDAA    #$65

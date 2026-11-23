@@ -1540,7 +1540,7 @@ L11148:
         BCC     L11166
         LDAA    $3D8B
         STAA    >CoolantTemp,Z
-        BCLR    >O2ActiveFlags,Z,#$CC                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3); bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BCLR    >O2ActiveFlags,Z,#$CC                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         CLR     $059A,Z
         CLR     $059B,Z
         CLR     $0160,Z
@@ -1735,7 +1735,7 @@ L11332:
 L1133A:
         STAA    $0674,Z
 L1133E:
-        BRSET   <IacStepFlags,Z,#$01,L11380
+        BRSET   <IacStepFlags,Z,#$01,L11380              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRSET   >ThrottleState,Z,#$80,L1138A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >IdleRollSpeed
         LDAB    >VehicleSpeed,Z
@@ -4639,7 +4639,7 @@ L13212:
         BRA     L13252
 L1323A:
         ORP     #$00E0
-        BSET    <IacStepFlags,Z,#$40
+        BSET    <IacStepFlags,Z,#$40                     ; bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
         LDAA    #$DF
         STAA    <IacPosition,Z
         ANDP    #$FF1F
@@ -5348,7 +5348,7 @@ L138EE:
         BNE     L13900
         STAA    $066E,Z
 L13900:
-        BRSET   >IacStepFlags,Z,#$10,L13918
+        BRSET   >IacStepFlags,Z,#$10,L13918              ; bit 4: idle air at the fixed target (IacFixedTarget)
         SUBA    $066E,Z
         BCC     L13912
         NEGA
@@ -11293,7 +11293,7 @@ L17B84:
         LBNE    L17E56
         TST     $0674,Z
         LBNE    L17E56
-        BRSET   >IacStepFlags,Z,#$20,L17E56
+        BRSET   >IacStepFlags,Z,#$20,L17E56              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         LDAA    >Count3s,Z
         CMPA    $216A
         LBCS    L17E56
@@ -11306,7 +11306,7 @@ L17B84:
         LDAA    >MapRaw,Z
         CMPA    $246E
         LBCC    L17E56
-        BRSET   >IacStepFlags,Z,#$10,L17E56
+        BRSET   >IacStepFlags,Z,#$10,L17E56              ; bit 4: idle air at the fixed target (IacFixedTarget)
         LDAA    >IacTarget,Z
         SUBA    <IacPosition,Z
         BCC     L17C04
@@ -12454,7 +12454,7 @@ CatMonitorSetup:
         BRSET   $01A5,Z,#$08,L189F4
         BRSET   >DiagStatusFlags,Z,#$01,L189F4           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BRSET   >O2Bank1Flags,Z,#$20,L189F4
-        BRSET   >O2ActiveFlags,Z,#$88,L18894             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRSET   >O2ActiveFlags,Z,#$88,L18894             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         LBRA    L189F4
 L18894:
         BRCLR   $01A5,Z,#$10,L189F4
@@ -12621,7 +12621,7 @@ L18A30:
         BRSET   $01A5,Z,#$08,L18BB6
         BRSET   >DiagStatusFlags,Z,#$01,L18BB6           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BRSET   >O2Bank2Flags,Z,#$20,L18BB6
-        BRSET   >O2ActiveFlags,Z,#$44,L18A56             ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRSET   >O2ActiveFlags,Z,#$44,L18A56             ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         LBRA    L18BB6
 L18A56:
         BRCLR   $01A5,Z,#$10,L18BB6
@@ -16017,7 +16017,7 @@ L1AECE:
         BRCLR   $0138,Z,#$01,L1AEE2
         JSR     O2MemClearLeanBank1
         BRCLR   $013C,Z,#$02,L1AEE2
-        BCLR    >O2ActiveFlags,Z,#$CC                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3); bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BCLR    >O2ActiveFlags,Z,#$CC                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
 L1AEE2:
         BRCLR   $013C,Z,#$02,L1AEEC
         JSR     O2MemClearLeanBank2
@@ -16080,15 +16080,15 @@ L1AFA6:
         CPX     #$AF40
         BCS     L1AF70
         BRCLR   >FaultSet06,Z,#$40,L1AFCC
-        BRCLR   >O2ActiveFlags,Z,#$08,L1AFCC             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
-        BCLR    >O2ActiveFlags,Z,#$08                    ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRCLR   >O2ActiveFlags,Z,#$08,L1AFCC             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BCLR    >O2ActiveFlags,Z,#$08                    ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         JSR     O2MemClearLeanBank1
         BRCLR   $013C,Z,#$04,L1AFCC
-        BCLR    >O2ActiveFlags,Z,#$CC                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3); bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BCLR    >O2ActiveFlags,Z,#$CC                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
 L1AFCC:
         BRCLR   $013C,Z,#$04,L1AFE0
-        BRCLR   >O2ActiveFlags,Z,#$04,L1AFE0             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
-        BCLR    >O2ActiveFlags,Z,#$04                    ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRCLR   >O2ActiveFlags,Z,#$04,L1AFE0             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BCLR    >O2ActiveFlags,Z,#$04                    ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         JSR     O2MemClearLeanBank2
 L1AFE0:
         RTS
@@ -16240,7 +16240,7 @@ L1B12A:
         CMPA    $216C
         BHI     L1B1A2
         BRCLR   >DriveFlags,Z,#$01,L1B1A2                ; bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
-        BRCLR   <IacStepFlags,Z,#$10,L1B1A2
+        BRCLR   <IacStepFlags,Z,#$10,L1B1A2              ; bit 4: idle air at the fixed target (IacFixedTarget)
         LDAA    $0155,Z
         INCA
         CMPA    $25A9
@@ -16830,9 +16830,9 @@ L1B7D6:
         BRCLR   $2644,#$80,L1B7E2
         BRSET   >MisfireFlags2,Z,#$10,L1B7F4
 L1B7E2:
-        BRSET   >O2ActiveFlags,Z,#$08,L1B7F8             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRSET   >O2ActiveFlags,Z,#$08,L1B7F8             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         BRCLR   >Options0331,#$40,L1B7F4                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
-        BRSET   >O2ActiveFlags,Z,#$04,L1B7F8             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRSET   >O2ActiveFlags,Z,#$04,L1B7F8             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
 L1B7F4:
         LDAA    #$08
         BRA     L1B86C
@@ -16878,19 +16878,19 @@ L1B876:
         STAA    $03E8,Z
 L1B87A:
         LDAA    $05A0,Z
-        BRCLR   >O2ActiveFlags,Z,#$08,L1B888             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
+        BRCLR   >O2ActiveFlags,Z,#$08,L1B888             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         ORAA    #$20
         BRA     L1B88A
 L1B888:
         ANDA    #$DF
 L1B88A:
-        BRCLR   >O2ActiveFlags,Z,#$04,L1B894             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRCLR   >O2ActiveFlags,Z,#$04,L1B894             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         ORAA    #$10
         BRA     L1B896
 L1B894:
         ANDA    #$EF
 L1B896:
-        BRCLR   >O2ActiveFlags,Z,#$0C,L1B8A6             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3); bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRCLR   >O2ActiveFlags,Z,#$0C,L1B8A6             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         BRSET   >FuelSystemStatusPid,Z,#$04,L1B8A6
         ORAA    #$40
         BRA     L1B8A8

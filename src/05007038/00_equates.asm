@@ -33,6 +33,12 @@ DriveFlags       equ $001D        ; $F801D
 ;                 bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
 CrankSyncFlags   equ $001E        ; $F801E
 EgrFlags         equ $001F        ; $F801F
+;                 bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
+;                 bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
+;                 bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
+;                 bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
+;                 bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
+;                 bit 0: EGR conditions not met (EgrEnable, EgrControl)
 EngineStateFlags equ $0020        ; $F8020
 ;                 bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
 ;                 bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
@@ -83,6 +89,14 @@ EgrZeroPos       equ $0032        ; $F8032
 SegmentTimePair2 equ $0037        ; $F8037
 SegmentTimePair3 equ $003B        ; $F803B
 IacStepFlags     equ $0041        ; $F8041
+;                 bit 7: stepper phase toggle (IacStepperDrive)
+;                 bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
+;                 bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
+;                 bit 4: idle air at the fixed target (IacFixedTarget)
+;                 bit 3: stepper direction: opening, probably (IacStepperDrive)
+;                 bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
+;                 bit 1: idle air target from the MAP loop instead of the fixed command (IdleControl)
+;                 bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
 IacPosition      equ $0042        ; $F8042
 IdleMapLearned   equ $0054        ; $F8054
 MonitorDisableFlags equ $0055        ; $F8055
@@ -264,7 +278,12 @@ BusModuleFlags   equ $0229        ; $F8229
 ;                 bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
 ;                 bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
 FaultSet0F       equ $022B        ; $F822B
-FuelLevelFlags   equ $022E        ; $F822E
+SensorFaultFlags2 equ $022E        ; $F822E
+;                 bit 7: fuel level sender fault (FuelSenderMonitor)
+;                 bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
+;                 bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
+;                 bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
+;                 bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
 FaultSet16       equ $0232        ; $F8232
 FaultSet17       equ $0233        ; $F8233
 FaultSet19       equ $0235        ; $F8235
@@ -393,6 +412,14 @@ O2InactiveFlags  equ $040E        ; $F840E
 O2ResetFlags2    equ $040F        ; $F840F
 O2ResetFlags     equ $0410        ; $F8410
 FuelPulseFlags   equ $041B        ; $F841B
+;                 bit 7: injector timers loaded for the current event (FuelEventCalc), probably
+;                 bit 6: set in FuelEventCalc for event code $42, cleared for the others
+;                 bit 5: first pass of the fuel event code done (FuelEventCalc)
+;                 bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
+;                 bit 3: cleared at stall (CalcEngineRpm)
+;                 bit 2: sequential fuel started (FuelEventCalc); read by the start and event code
+;                 bit 1: cleared at stall; read by InjectorSequence
+;                 bit 0: injector sequence step taken (InjectorSequence)
 CrankEthanolFactor equ $041C        ; $F841C
 CrankPulse       equ $041D        ; $F841D
 CoolantTemp      equ $041F        ; $F841F
@@ -507,7 +534,7 @@ SwitchInputs2    equ $0532        ; $F8532
 ;                 bit 2: speed control switch (set at reset)
 ;                 bit 1: speed control switch
 ;                 bit 0: speed control switch
-AdcFlags         equ $0535        ; $F8535
+SpeedCtlSwitchFlags equ $0535        ; $F8535
 BatteryVoltsFiltered equ $053A        ; $F853A
 BatteryTempRaw   equ $053F        ; $F853F
 BattTempModelAcc equ $0540        ; $F8540

@@ -260,7 +260,7 @@ L30392:
         BSET    >FuelLevelFlags2,Z,#$01
         LDD     $01,Y
         STAA    >FuelSenderScaled,Z
-        LDAA    >FuelLevelFlags,Z
+        LDAA    >SensorFaultFlags2,Z
         BITA    #$80
         LBNE    L3051A
         STAB    >FuelLevelScaled,Z
@@ -1863,7 +1863,7 @@ L31520:
         BSET    >FuelLevelFlags2,Z,#$01
         LDD     $02,Y
         STAA    >FuelSenderScaled,Z
-        LDAA    >FuelLevelFlags,Z
+        LDAA    >SensorFaultFlags2,Z
         BITA    #$80
         BNE     L3153C
         STAB    >FuelLevelScaled,Z
@@ -6930,7 +6930,7 @@ L35C42:
         BRA     L35C82
 L35C6A:
         ORP     #$00E0
-        BSET    <IacStepFlags,Z,#$40
+        BSET    <IacStepFlags,Z,#$40                     ; bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
         LDAA    #$DF
         STAA    <IacPosition,Z
         ANDP    #$FF1F
@@ -7864,7 +7864,7 @@ L3658A:
         BNE     L3659C
         STAA    $031D,Z
 L3659C:
-        BRSET   >IacStepFlags,Z,#$10,L365B4
+        BRSET   >IacStepFlags,Z,#$10,L365B4              ; bit 4: idle air at the fixed target (IacFixedTarget)
         SUBA    $031D,Z
         BCC     L365AE
         NEGA
@@ -10105,12 +10105,12 @@ EgrEnable:
         LDAA    >StartCoolantTemp2,Z
         CMPA    >EgrStartColdMax
         BHI     L396C0
-        BSET    >EgrFlags,Z,#$04
+        BSET    >EgrFlags,Z,#$04                         ; bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
         LBRA    L3983E
 L396C0:
         CMPA    >EgrStartWarmMax
         LBHI    L3983E
-        BSET    >EgrFlags,Z,#$08
+        BSET    >EgrFlags,Z,#$08                         ; bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
         LDX     #EgrStartDelayCoolant
         JSR     Lookup2D
         STAA    >EgrStartDelay,Z
@@ -10125,12 +10125,12 @@ L396DC:
         LBEQ    L39836
         LBRA    L39860
 L396F4:
-        BRCLR   >EgrFlags,Z,#$04,L39706
+        BRCLR   >EgrFlags,Z,#$04,L39706                  ; bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
         TST     >O2WarmDelay,Z
         LBNE    L3983E
-        BCLR    >EgrFlags,Z,#$04
+        BCLR    >EgrFlags,Z,#$04                         ; bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
 L39706:
-        BRCLR   >EgrFlags,Z,#$08,L39722
+        BRCLR   >EgrFlags,Z,#$08,L39722                  ; bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
         TST     >EgrStartDelay,Z
         BEQ     L39722
         LDAA    >MainLoopCounter,Z
@@ -10138,7 +10138,7 @@ L39706:
         DEC     >EgrStartDelay,Z
         LBRA    L3983E
 L39722:
-        BCLR    >EgrFlags,Z,#$08
+        BCLR    >EgrFlags,Z,#$08                         ; bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
         BRSET   >SensorFaultFlags,Z,#$01,L3983E          ; bit 0: battery temperature sensor fault (P1492 or P1493)
         LDAA    >BatteryTemp,Z
         CMPA    >EgrBattTempMin
@@ -10148,21 +10148,21 @@ L39722:
         LBCC    L3983E
 L39746:
         LDAA    >CoolantTemp,Z
-        BRSET   >EgrFlags,Z,#$10,L3975A
+        BRSET   >EgrFlags,Z,#$10,L3975A                  ; bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
         CMPA    >EgrCoolantOn
         BCS     L39766
-        BSET    >EgrFlags,Z,#$10
+        BSET    >EgrFlags,Z,#$10                         ; bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
 L3975A:
         CMPA    >EgrCoolantOff
         LBCC    L3983E
-        BCLR    >EgrFlags,Z,#$10
+        BCLR    >EgrFlags,Z,#$10                         ; bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
 L39766:
         BRSET   >ThrottleState,Z,#$40,L3983E             ; bit 6: wide-open throttle (DetectWot)
         BRCLR   >ThrottleState,Z,#$80,L3983E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >EngineRpm,Z
         LDX     #EgrMapMinRpm
         JSR     Lookup2D
-        BRCLR   >EgrFlags,Z,#$01,L3978C
+        BRCLR   >EgrFlags,Z,#$01,L3978C                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         ADDA    >EgrMapHyst
         BCC     L3978C
         LDAA    #$FF
@@ -10170,7 +10170,7 @@ L3978C:
         CMPA    >Map,Z
         LBCC    L3983E
         LDAA    >ManifoldVacuum,Z
-        BRCLR   >EgrFlags,Z,#$01,L397A6
+        BRCLR   >EgrFlags,Z,#$01,L397A6                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         SUBA    >EgrVacuumHyst
         BCC     L397A6
         CLRA
@@ -10178,7 +10178,7 @@ L397A6:
         CMPA    >EgrVacuumMin
         LBLS    L3983E
         LDAA    >VehicleSpeed,Z
-        BRSET   >EgrFlags,Z,#$01,L397C8
+        BRSET   >EgrFlags,Z,#$01,L397C8                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         LDX     #EgrThrottleMax
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
@@ -10190,7 +10190,7 @@ L397C8:
         CMPA    >ThrottleAboveClosed,Z
         BCC     L3983E
 L397D6:
-        BCLR    >EgrFlags,Z,#$21
+        BCLR    >EgrFlags,Z,#$21                         ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1); bit 0: EGR conditions not met (EgrEnable, EgrControl)
         BRSET   >EgrMonFlags,Z,#$04,L39860
         BRSET   >EgrMonFlags,Z,#$02,L39810
         BRSET   >FaultSet04,Z,#$40,L3980A                ; bit 6: P0401
@@ -10200,33 +10200,33 @@ L397D6:
         BRSET   >FaultMem04,Z,#$40,L3980A                ; bit 6: P0401
         BRCLR   >FaultMem03,Z,#$02,L39810                ; bit 1: P0403
 L3980A:
-        BSET    >EgrFlags,Z,#$20
+        BSET    >EgrFlags,Z,#$20                         ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
         BRA     L39842
 L39810:
         BRSET   >ControlFlags944,Z,#$04,L3981A           ; bit 2: EGR solenoid on (EgrEnable)
         CLR     >EgrOnTimer,Z
 L3981A:
-        BRSET   >EgrFlags,Z,#$02,L39836
+        BRSET   >EgrFlags,Z,#$02,L39836                  ; bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
         LDAA    >EgrOnTimer,Z
         CMPA    >EgrOnDelay
         BCS     L39836
-        BSET    >EgrFlags,Z,#$02
+        BSET    >EgrFlags,Z,#$02                         ; bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
         BCLR    >SparkFlags2,Z,#$01
         CLR     >SparkTrim2,Z
 L39836:
         BSET    >ControlFlags944,Z,#$04                  ; bit 2: EGR solenoid on (EgrEnable)
         JMP     L39864
 L3983E:
-        BSET    >EgrFlags,Z,#$01
+        BSET    >EgrFlags,Z,#$01                         ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
 L39842:
         BRCLR   >ControlFlags944,Z,#$04,L3984C           ; bit 2: EGR solenoid on (EgrEnable)
         CLR     >EgrOnTimer,Z
 L3984C:
-        BRCLR   >EgrFlags,Z,#$02,L39860
+        BRCLR   >EgrFlags,Z,#$02,L39860                  ; bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
         LDAA    >EgrOnTimer,Z
         CMPA    >EgrOffDelay
         BCS     L39860
-        BCLR    >EgrFlags,Z,#$02
+        BCLR    >EgrFlags,Z,#$02                         ; bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
 L39860:
         BCLR    >ControlFlags944,Z,#$04                  ; bit 2: EGR solenoid on (EgrEnable)
 L39864:
@@ -10244,12 +10244,12 @@ EgrControl:
         LDAA    >StartCoolantTemp2,Z
         CMPA    >EgrStartColdMax
         BHI     L39888
-        BSET    >EgrFlags,Z,#$04
+        BSET    >EgrFlags,Z,#$04                         ; bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
         LBRA    L39A28
 L39888:
         CMPA    >EgrStartWarmMax
         LBHI    L39A28
-        BSET    >EgrFlags,Z,#$08
+        BSET    >EgrFlags,Z,#$08                         ; bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
         LDX     #EgrStartDelayCoolant
         JSR     Lookup2D
         STAA    >EgrStartDelay,Z
@@ -10270,10 +10270,10 @@ L398A4:
         BEQ     L398C4
         BRA     L398CA
 L398C4:
-        BSET    >EgrFlags,Z,#$01
+        BSET    >EgrFlags,Z,#$01                         ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         BRA     L398CE
 L398CA:
-        BCLR    >EgrFlags,Z,#$01
+        BCLR    >EgrFlags,Z,#$01                         ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
 L398CE:
         LDAA    #$FF
         MUL
@@ -10286,16 +10286,16 @@ L398DE:
         BNE     L398F6
         TST     >EgrDutyFixed
         BEQ     L398F6
-        BCLR    >EgrFlags,Z,#$01
-        BCLR    >EgrFlags,Z,#$20
+        BCLR    >EgrFlags,Z,#$01                         ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
+        BCLR    >EgrFlags,Z,#$20                         ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
         LBRA    L39A2C
 L398F6:
-        BRCLR   >EgrFlags,Z,#$04,L39908
+        BRCLR   >EgrFlags,Z,#$04,L39908                  ; bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
         TST     >O2WarmDelay,Z
         LBNE    L39A28
-        BCLR    >EgrFlags,Z,#$04
+        BCLR    >EgrFlags,Z,#$04                         ; bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
 L39908:
-        BRCLR   >EgrFlags,Z,#$08,L39924
+        BRCLR   >EgrFlags,Z,#$08,L39924                  ; bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
         TST     >EgrStartDelay,Z
         BEQ     L39924
         LDAA    >MainLoopCounter,Z
@@ -10303,7 +10303,7 @@ L39908:
         DEC     >EgrStartDelay,Z
         LBRA    L39A28
 L39924:
-        BCLR    >EgrFlags,Z,#$08
+        BCLR    >EgrFlags,Z,#$08                         ; bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
         BRSET   >SensorFaultFlags,Z,#$01,L39A28          ; bit 0: battery temperature sensor fault (P1492 or P1493)
         LDAA    >BatteryTemp,Z
         CMPA    >EgrBattTempMin
@@ -10313,21 +10313,21 @@ L39924:
         LBCC    L39A28
 L39948:
         LDAA    >CoolantTemp,Z
-        BRSET   >EgrFlags,Z,#$10,L3995C
+        BRSET   >EgrFlags,Z,#$10,L3995C                  ; bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
         CMPA    >EgrCoolantOn
         BCS     L39968
-        BSET    >EgrFlags,Z,#$10
+        BSET    >EgrFlags,Z,#$10                         ; bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
 L3995C:
         CMPA    >EgrCoolantOff
         LBCC    L39A28
-        BCLR    >EgrFlags,Z,#$10
+        BCLR    >EgrFlags,Z,#$10                         ; bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
 L39968:
         BRSET   >ThrottleState,Z,#$40,L39A28             ; bit 6: wide-open throttle (DetectWot)
         BRCLR   >ThrottleState,Z,#$80,L39A28             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >EngineRpm,Z
         LDX     #EgrMapMinRpm
         JSR     Lookup2D
-        BRCLR   >EgrFlags,Z,#$01,L3998E
+        BRCLR   >EgrFlags,Z,#$01,L3998E                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         ADDA    >EgrMapHyst
         BCC     L3998E
         LDAA    #$FF
@@ -10335,7 +10335,7 @@ L3998E:
         CMPA    >Map,Z
         LBCC    L39A28
         LDAA    >ManifoldVacuum,Z
-        BRCLR   >EgrFlags,Z,#$01,L399A8
+        BRCLR   >EgrFlags,Z,#$01,L399A8                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         SUBA    >EgrVacuumHyst
         BCC     L399A8
         CLRA
@@ -10343,7 +10343,7 @@ L399A8:
         CMPA    >EgrVacuumMin
         LBLS    L39A28
         LDAA    >VehicleSpeed,Z
-        BRSET   >EgrFlags,Z,#$01,L399CA
+        BRSET   >EgrFlags,Z,#$01,L399CA                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         LDX     #EgrThrottleMax
         JSR     Lookup2D
         CMPA    >ThrottleAboveClosed,Z
@@ -10355,7 +10355,7 @@ L399CA:
         CMPA    >ThrottleAboveClosed,Z
         BCC     L39A28
 L399D8:
-        BCLR    >EgrFlags,Z,#$21
+        BCLR    >EgrFlags,Z,#$21                         ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1); bit 0: EGR conditions not met (EgrEnable, EgrControl)
         BRSET   >EgrMonFlags,Z,#$04,L39A2C
         BRSET   >EgrMonFlags,Z,#$02,L39A2C
         BRSET   >FaultSet04,Z,#$40,L39A22                ; bit 6: P0401
@@ -10372,10 +10372,10 @@ L399D8:
         BITA    #$30
         BEQ     L39A2C
 L39A22:
-        BSET    >EgrFlags,Z,#$20
+        BSET    >EgrFlags,Z,#$20                         ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
         BRA     L39A2C
 L39A28:
-        BSET    >EgrFlags,Z,#$01
+        BSET    >EgrFlags,Z,#$01                         ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
 L39A2C:
         LDAA    >Map,Z
         BRSET   >SensorFaultFlags,Z,#$20,L39A48          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
@@ -10396,7 +10396,7 @@ L39A48:
         LDAA    #$01
 L39A62:
         NEGA
-        BRCLR   >EgrFlags,Z,#$21,L39A6C
+        BRCLR   >EgrFlags,Z,#$21,L39A6C                  ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1); bit 0: EGR conditions not met (EgrEnable, EgrControl)
         CLRA
 L39A6C:
         STAA    $0B3B,Z
@@ -10507,8 +10507,8 @@ L39B7A:
         LDAA    #$FF
 L39B7C:
         STAA    >EgrFlowFactor,Z
-        BRSET   >EgrFlags,Z,#$01,L39D08
-        BRSET   >EgrFlags,Z,#$20,L39D08
+        BRSET   >EgrFlags,Z,#$01,L39D08                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
+        BRSET   >EgrFlags,Z,#$20,L39D08                  ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
         BRSET   >EgrMonFlags,Z,#$04,L39D08
         BRCLR   >EgrMonFlags,Z,#$02,L39BA4
         LDAB    >EgrTargetFixed
@@ -10527,7 +10527,7 @@ L39BBA:
         STAB    >EgrTargetPos,Z
         CMPB    >EgrTargetMin
         BHI     L39BCC
-        BSET    >EgrFlags,Z,#$01
+        BSET    >EgrFlags,Z,#$01                         ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         LBRA    L39D08
 L39BCC:
         LDAA    <EgrZeroPos,Z
@@ -14527,13 +14527,13 @@ L3D888:
         CLRB
 L3D89C:
         STAB    $01,Y
-        BRCLR   >O2ActiveFlags,Z,#$08,L3D8B0             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
-        BRCLR   >O2ActiveFlags,Z,#$04,L3D8C8             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRCLR   >O2ActiveFlags,Z,#$08,L3D8B0             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRCLR   >O2ActiveFlags,Z,#$04,L3D8C8             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         CMPB    $00,Y
         BCS     L3D8B6
         BRA     L3D8C8
 L3D8B0:
-        BRCLR   >O2ActiveFlags,Z,#$04,L3D8F8             ; bit 2: as bit 6, cleared by FuelLevelFlags bit 2
+        BRCLR   >O2ActiveFlags,Z,#$04,L3D8F8             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
 L3D8B6:
         STAB    >PurgeTrimLatched,Z
         LDAB    >O2Bank2Flags,Z
@@ -15828,7 +15828,7 @@ L3E59C:
         BRSET   >SensorFaultFlags,Z,#$80,L3E982          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   >SensorFaultFlags,Z,#$10,L3E982          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         BRSET   >SensorFaultFlags,Z,#$20,L3E982          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
-        LDAA    >FuelLevelFlags,Z
+        LDAA    >SensorFaultFlags2,Z
         BITA    #$0F
         LBNE    L3E982
         BCLR    >PurgeLearnFlags,Z,#$80

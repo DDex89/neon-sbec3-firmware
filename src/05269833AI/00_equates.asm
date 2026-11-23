@@ -16,6 +16,14 @@ SriMileageLow    equ $000E        ; $F800E
 SegmentTimePair2 equ $000F        ; $F800F
 SegmentTimePair3 equ $0013        ; $F8013
 IacStepFlags     equ $0017        ; $F8017
+;                 bit 7: stepper phase toggle (IacStepperDrive)
+;                 bit 6: stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive
+;                 bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
+;                 bit 4: idle air at the fixed target (IacFixedTarget)
+;                 bit 3: stepper direction: opening, probably (IacStepperDrive)
+;                 bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
+;                 bit 1: idle air target from the MAP loop instead of the fixed command (IdleControl)
+;                 bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
 IacPosition      equ $0018        ; $F8018
 IdleMapLearned   equ $002A        ; $F802A
 ReadinessIncomplete equ $003F        ; $F803F
@@ -545,7 +553,12 @@ SensorFaultFlags equ $06B4        ; $F86B4
 ;                 bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
 ;                 bit 3: air temperature sensor fault (P0112 or P0113)
 ;                 bit 0: battery temperature sensor fault (P1492 or P1493)
-FuelLevelFlags   equ $06B5        ; $F86B5
+SensorFaultFlags2 equ $06B5        ; $F86B5
+;                 bit 7: fuel level sender fault (FuelSenderMonitor)
+;                 bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
+;                 bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
+;                 bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
+;                 bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
 Options033ECopy  equ $06B8        ; $F86B8
 Options033FCopy  equ $06B9        ; $F86B9
 ResetCheckCode   equ $06BA        ; $F86BA
@@ -595,15 +608,23 @@ O2ActiveFlags    equ $075D        ; $F875D
 ;                 bit 6: upstream O2 sensor 2 active (as bit 7)
 ;                 bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow
 ;                 bit 4: downstream O2 sensor 2 active (as bit 5)
-;                 bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (FuelLevelFlags bit 3)
-;                 bit 2: as bit 6, cleared by FuelLevelFlags bit 2
-;                 bit 1: as bit 5, cleared by FuelLevelFlags bit 1
-;                 bit 0: as bit 4, cleared by FuelLevelFlags bit 0
+;                 bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+;                 bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+;                 bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
+;                 bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
 O2SwitchFlags    equ $075E        ; $F875E
 O2InactiveFlags  equ $075F        ; $F875F
 O2ResetFlags2    equ $0760        ; $F8760
 O2ResetFlags     equ $0761        ; $F8761
 FuelPulseFlags   equ $0764        ; $F8764
+;                 bit 7: injector timers loaded for the current event (FuelEventCalc), probably
+;                 bit 6: set in FuelEventCalc for event code $42, cleared for the others
+;                 bit 5: first pass of the fuel event code done (FuelEventCalc)
+;                 bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
+;                 bit 3: cleared at stall (CalcEngineRpm)
+;                 bit 2: sequential fuel started (FuelEventCalc); read by the start and event code
+;                 bit 1: cleared at stall; read by InjectorSequence
+;                 bit 0: injector sequence step taken (InjectorSequence)
 CrankEthanolFactor equ $0765        ; $F8765
 CrankPulse       equ $0766        ; $F8766
 CrankCoolant     equ $0768        ; $F8768
@@ -868,7 +889,7 @@ SwitchInputs2    equ $0A47        ; $F8A47
 ;                 bit 2: speed control switch (set at reset)
 ;                 bit 1: speed control switch
 ;                 bit 0: speed control switch
-AdcFlags         equ $0A4A        ; $F8A4A
+SpeedCtlSwitchFlags equ $0A4A        ; $F8A4A
 O2SensorReady2   equ $0A4F        ; $F8A4F
 BatteryVolts     equ $0A50        ; $F8A50
 BatteryVolts2    equ $0A51        ; $F8A51
@@ -947,6 +968,12 @@ FanPwmStepAcValue equ $0B1B        ; $F8B1B
 FanPwmCount      equ $0B1C        ; $F8B1C
 FanPwmStepBusValue equ $0B28        ; $F8B28
 EgrFlags         equ $0B2C        ; $F8B2C
+;                 bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
+;                 bit 4: coolant above EgrCoolantOn (off again below EgrCoolantOff)
+;                 bit 3: warm start: start coolant at or below EgrStartWarmMax, start delay running
+;                 bit 2: cold start: start coolant at or below EgrStartColdMax, waits for the O2 warm-up delay
+;                 bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
+;                 bit 0: EGR conditions not met (EgrEnable, EgrControl)
 EgrFlags2        equ $0B2D        ; $F8B2D
 EgrOnTimer       equ $0B2E        ; $F8B2E
 EgrStartDelay    equ $0B2F        ; $F8B2F
