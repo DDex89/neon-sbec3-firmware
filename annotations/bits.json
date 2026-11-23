@@ -145,6 +145,29 @@
   "5": "pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP",
   "2": "set with bit 7 by Isr_GPT_PAI ($84 = synchronised)"
  },
+ "DiagBusFlags": {
+  "7": "SCI transmit pending (SciPitService, cleared by SciInterrupt)",
+  "6": "OBD request of $33 bytes taken: reply pending (SciPitService)",
+  "5": "freeze frame holds more than two entries (JumpTable_32600)",
+  "4": "output-compare test pulse running (diagnostic test, JumpTable_35BB0)",
+  "3": "OBD reply in progress (SciPitService)"
+ },
+ "DiagFlags": {
+  "7": "bus data request answered (BusDataRequest); cleared by the SCI receive code",
+  "6": "SCI security exchange passed (SciSecurityReceive, code $1B)",
+  "5": "SCI request state bit (SciRequestReceive)",
+  "4": "SCI request state bit (SciRequestReceive); IdleRpmTarget reads it"
+ },
+ "DiagRamFlags": {
+  "7": "RAM session of type 1 open (DiagRamSession1, parameter 1)",
+  "6": "RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)",
+  "5": "key accepted for session 1 (DiagRamSession2)",
+  "4": "key accepted for session 2 (DiagRamSession2)",
+  "3": "reply byte 1 pending (DiagRamSession1)",
+  "2": "reply byte 2 pending (DiagRamSession1)",
+  "1": "reply word pending (DiagRamSession1)",
+  "0": "diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)"
+ },
  "DiagStatusFlags": {
   "7": "fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)",
   "6": "a fault aged out this pass, probably (ObdFaultAging)",
@@ -846,6 +869,41 @@
   "2": "key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it",
   "1": "EEPROM test pattern written (OutputTestEeprom)"
  },
+ "PciFlags2": {
+  "7": "PCI message timeout, first kind (BusTimeoutCheck, 100 passes)",
+  "6": "PCI message timeout, second kind (BusTimeoutCheck)",
+  "5": "PCI message timeout, third kind (BusTimeoutCheck)",
+  "4": "PCI message timeout, fourth kind (BusTimeoutCheck)",
+  "3": "a PCI timeout already reported (BusTimeoutCheck)",
+  "2": "PCI link down: set with each timeout and at init; the PCI code waits while it is set",
+  "1": "QSPI link restart pending (PciFlagsInit, QspiCheck)",
+  "0": "set with any PCI timeout; cleared by QspiCheck"
+ },
+ "PciFlags3": {
+  "7": "PCI frame timer expired (PciPitTick)",
+  "6": "PCI frame received (PciRxProcess), to be handled by PciReceive",
+  "5": "PCI frame to process (QspiService -> PciReceive)",
+  "4": "PCI transmit retry (PciTxStep, PciPitTick)",
+  "3": "PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)",
+  "2": "PCI message $28 received (PciReceive); read by BusTimeoutCheck",
+  "1": "PCI spark status frame queued (PciSparkStatus, PciStateSet2)",
+  "0": "PCI frame in the transmit buffer (PciTxStep)"
+ },
+ "PciFlags4": {
+  "7": "PCI message $16 to send (PciStateSet2)",
+  "5": "PCI message $B0 to send (PciStateSet1, only with calibration bit $032E.3)",
+  "4": "PCI message $B0 sent (PciTxStep); PciLinkCheck reads it",
+  "3": "PCI message $5D to send (PciPitTick)",
+  "2": "PCI message $3F to send (PciStateSet5)",
+  "1": "PCI message $4F to send (PciStateSet6, SKIM timer)",
+  "0": "PCI message $35 to send (PciStateSet4)"
+ },
+ "PciRxFlags": {
+  "4": "PCI service: three seconds since key-on passed (PciService); SkimState reads it",
+  "3": "spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)",
+  "2": "spark status message pending, second copy",
+  "1": "per-event spark change to report (Isr_GPT_IC4OC5)"
+ },
  "PurgeFlags": {
   "7": "purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain",
   "6": "purge battery-temperature timer running (PurgeEnable)",
@@ -888,6 +946,21 @@
   "2": "refuel detected by the flex sensor, second kind (FlexSensorCheck)",
   "1": "fuel level rose by RefuelLevelRise or more (FlexSensorCheck)",
   "0": "vehicle stopped: refuel stop timer running (FlexSensorCheck)"
+ },
+ "SciLogFlags": {
+  "7": "knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)",
+  "6": "alternative purge duty table in use (PurgeDutySelect)",
+  "3": "SCI log mode bit (SciLogReceive, commands $F2-$F6)",
+  "2": "SCI log mode bit (SciLogReceive)",
+  "1": "SCI log mode bit (SciLogReceive)",
+  "0": "SCI log mode $F6 selected (SciLogReceive)"
+ },
+ "SciUnlockState": {
+  "4": "unlock sequence step: $12 seen (SciRequestReceive)",
+  "3": "unlock sequence broken: wrong byte (SciRequestReceive)",
+  "2": "unlock sequence step counter bit (SciRequestReceive)",
+  "1": "unlock sequence step counter bit (SciRequestReceive)",
+  "0": "unlock sequence step counter bit (SciRequestReceive)"
  },
  "SecurityFlags": {
   "7": "security message of the first kind received (CcdReceive); SkimState reads it",

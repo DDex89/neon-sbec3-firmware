@@ -12963,7 +12963,7 @@ L1B150:
         LDAA    >DiagCommand,Z
         CMPA    #$19
         BNE     L1B178
-        BRSET   >DiagFlags,Z,#$10,L1B5B0
+        BRSET   >DiagFlags,Z,#$10,L1B5B0                 ; bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
         CLR     >DiagCommand,Z
         BSET    <IacStepFlags,Z,#$04                     ; bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
         LDAA    >DiagParam1,Z
@@ -16272,7 +16272,7 @@ KnockLearn:
         BRCLR   >FaultSet09,Z,#$10,L1F068
 L1F048:
         CLR     >KnockEventCount,Z
-        BCLR    >SciLogFlags,Z,#$80
+        BCLR    >SciLogFlags,Z,#$80                      ; bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
         LDAA    >KnockLearnResetValue
         TZX
         LDX     #$8092
@@ -16298,7 +16298,7 @@ L1F082:
         BPL     L1F082
         CLR     >KnockEventCount,Z
         CLR     >KnockSignalLearn,Z
-        BCLR    >SciLogFlags,Z,#$80
+        BCLR    >SciLogFlags,Z,#$80                      ; bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
         LBRA    L1F138
 L1F09A:
         TZX
@@ -16429,7 +16429,7 @@ L1F1BC:
 L1F1CE:
         STAA    >KnockEventCount,Z
         BNE     L1F1D8
-        BCLR    >SciLogFlags,Z,#$80
+        BCLR    >SciLogFlags,Z,#$80                      ; bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
 L1F1D8:
         PULM    D
         RTS
@@ -16762,8 +16762,8 @@ L1F4D6:
         LBCS    L1F588
         LDX     #KnockRetardStep
         JSR     Lookup2D
-        BRSET   >SciLogFlags,Z,#$80,L1F516
-        BSET    >SciLogFlags,Z,#$80
+        BRSET   >SciLogFlags,Z,#$80,L1F516               ; bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
+        BSET    >SciLogFlags,Z,#$80                      ; bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
         CLR     >KnockEventCount,Z
         LDAB    >KnockFirstStepFactor
         BRA     L1F51A

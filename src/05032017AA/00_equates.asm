@@ -1028,6 +1028,10 @@ DiagParam1       equ $092F        ; $F892F
 DiagParam2       equ $0930        ; $F8930
 DiagParam3       equ $0931        ; $F8931
 DiagFlags        equ $0932        ; $F8932
+;                 bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
+;                 bit 6: SCI security exchange passed (SciSecurityReceive, code $1B)
+;                 bit 5: SCI request state bit (SciRequestReceive)
+;                 bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
 ActuatorTest     equ $0933        ; $F8933
 InjectorKillCyl1 equ $0935        ; $F8935
 InjectorKillCyl2 equ $0936        ; $F8936
@@ -1090,6 +1094,14 @@ SciRxIndex       equ $09B3        ; $F89B3
 SciLogByte       equ $09B4        ; $F89B4
 SciErrors        equ $09B5        ; $F89B5
 DiagRamFlags     equ $09B6        ; $F89B6
+;                 bit 7: RAM session of type 1 open (DiagRamSession1, parameter 1)
+;                 bit 6: RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)
+;                 bit 5: key accepted for session 1 (DiagRamSession2)
+;                 bit 4: key accepted for session 2 (DiagRamSession2)
+;                 bit 3: reply byte 1 pending (DiagRamSession1)
+;                 bit 2: reply byte 2 pending (DiagRamSession1)
+;                 bit 1: reply word pending (DiagRamSession1)
+;                 bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
 BusTimeout1      equ $09BD        ; $F89BD
 SecurityFlags    equ $09BE        ; $F89BE
 ;                 bit 7: security message of the first kind received (CcdReceive); SkimState reads it
@@ -1123,8 +1135,31 @@ SkimCalcD        equ $09F9        ; $F89F9
 RpmFilteredIdle  equ $09FC        ; $F89FC
 PciFlags         equ $0A01        ; $F8A01
 PciFlags2        equ $0A02        ; $F8A02
+;                 bit 7: PCI message timeout, first kind (BusTimeoutCheck, 100 passes)
+;                 bit 6: PCI message timeout, second kind (BusTimeoutCheck)
+;                 bit 5: PCI message timeout, third kind (BusTimeoutCheck)
+;                 bit 4: PCI message timeout, fourth kind (BusTimeoutCheck)
+;                 bit 3: a PCI timeout already reported (BusTimeoutCheck)
+;                 bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
+;                 bit 1: QSPI link restart pending (PciFlagsInit, QspiCheck)
+;                 bit 0: set with any PCI timeout; cleared by QspiCheck
 PciFlags3        equ $0A03        ; $F8A03
+;                 bit 7: PCI frame timer expired (PciPitTick)
+;                 bit 6: PCI frame received (PciRxProcess), to be handled by PciReceive
+;                 bit 5: PCI frame to process (QspiService -> PciReceive)
+;                 bit 4: PCI transmit retry (PciTxStep, PciPitTick)
+;                 bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
+;                 bit 2: PCI message $28 received (PciReceive); read by BusTimeoutCheck
+;                 bit 1: PCI spark status frame queued (PciSparkStatus, PciStateSet2)
+;                 bit 0: PCI frame in the transmit buffer (PciTxStep)
 PciFlags4        equ $0A04        ; $F8A04
+;                 bit 7: PCI message $16 to send (PciStateSet2)
+;                 bit 5: PCI message $B0 to send (PciStateSet1, only with calibration bit $032E.3)
+;                 bit 4: PCI message $B0 sent (PciTxStep); PciLinkCheck reads it
+;                 bit 3: PCI message $5D to send (PciPitTick)
+;                 bit 2: PCI message $3F to send (PciStateSet5)
+;                 bit 1: PCI message $4F to send (PciStateSet6, SKIM timer)
+;                 bit 0: PCI message $35 to send (PciStateSet4)
 PciMsgWord       equ $0A07        ; $F8A07
 PciFlags6        equ $0A0D        ; $F8A0D
 PciMsg10Data     equ $0A0E        ; $F8A0E
@@ -1151,6 +1186,10 @@ BusTxRequest     equ $0A26        ; $F8A26
 ;                 bit 1: speed control switch state changed: send it (speed control switch code)
 ;                 bit 0: PCI link data changed: send it (PciLinkCheck)
 PciRxFlags       equ $0A27        ; $F8A27
+;                 bit 4: PCI service: three seconds since key-on passed (PciService); SkimState reads it
+;                 bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
+;                 bit 2: spark status message pending, second copy
+;                 bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
 ObdRequestId     equ $0A28        ; $F8A28
 SciObdCount      equ $0A29        ; $F8A29
 SciObdIndex      equ $0A2B        ; $F8A2B
@@ -1159,6 +1198,11 @@ ObdResponse      equ $0A2E        ; $F8A2E
 ObdRespByte2     equ $0A2F        ; $F8A2F
 SciTimer         equ $0A34        ; $F8A34
 DiagBusFlags     equ $0A35        ; $F8A35
+;                 bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
+;                 bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
+;                 bit 5: freeze frame holds more than two entries (JumpTable_32600)
+;                 bit 4: output-compare test pulse running (diagnostic test, JumpTable_35BB0)
+;                 bit 3: OBD reply in progress (SciPitService)
 SciByteTimer     equ $0A37        ; $F8A37
 SciCounter       equ $0A39        ; $F8A39
 SciObdByte       equ $0A46        ; $F8A46
@@ -1372,6 +1416,12 @@ ControlFlagsC33  equ $0C33        ; $F8C33
 ;                 bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
 ;                 bit 0: MIL lamp check done since the engine started (MilLampUpdate)
 SciLogFlags      equ $0C34        ; $F8C34
+;                 bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
+;                 bit 6: alternative purge duty table in use (PurgeDutySelect)
+;                 bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6)
+;                 bit 2: SCI log mode bit (SciLogReceive)
+;                 bit 1: SCI log mode bit (SciLogReceive)
+;                 bit 0: SCI log mode $F6 selected (SciLogReceive)
 CrankSyncFlags   equ $0C35        ; $F8C35
 ;                 bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)
 ;                 bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
@@ -1410,6 +1460,11 @@ RpmCurveValue    equ $0C4A        ; $F8C4A
 EngineRpm        equ $0C4C        ; $F8C4C
 RpmPrev          equ $0C4E        ; $F8C4E
 SciUnlockState   equ $0C54        ; $F8C54
+;                 bit 4: unlock sequence step: $12 seen (SciRequestReceive)
+;                 bit 3: unlock sequence broken: wrong byte (SciRequestReceive)
+;                 bit 2: unlock sequence step counter bit (SciRequestReceive)
+;                 bit 1: unlock sequence step counter bit (SciRequestReceive)
+;                 bit 0: unlock sequence step counter bit (SciRequestReceive)
 SciSecurityState equ $0C58        ; $F8C58
 LookupResult     equ $0C5D        ; $F8C5D
 Irq2HandledFlags equ $0C60        ; $F8C60

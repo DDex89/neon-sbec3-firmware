@@ -97,6 +97,12 @@ MainLoopPhaseMask equ $013D        ; $F813D
 ;                 bit 1: one pass in 4 (about 48 ms)
 ;                 bit 0: one pass in 2 (about 24 ms)
 SciLogFlags      equ $013E        ; $F813E
+;                 bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
+;                 bit 6: alternative purge duty table in use (PurgeDutySelect)
+;                 bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6)
+;                 bit 2: SCI log mode bit (SciLogReceive)
+;                 bit 1: SCI log mode bit (SciLogReceive)
+;                 bit 0: SCI log mode $F6 selected (SciLogReceive)
 ControlFlagsC33  equ $013F        ; $F813F
 ;                 bit 7: knock learn decay pass armed (KnockLearnDecayFlag)
 ;                 bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test
@@ -162,6 +168,11 @@ MisfireFlags4    equ $025D        ; $F825D
 MisfireWork628   equ $025E        ; $F825E
 MisfireHold      equ $025F        ; $F825F
 DiagBusFlags     equ $0269        ; $F8269
+;                 bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
+;                 bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
+;                 bit 5: freeze frame holds more than two entries (JumpTable_32600)
+;                 bit 4: output-compare test pulse running (diagnostic test, JumpTable_35BB0)
+;                 bit 3: OBD reply in progress (SciPitService)
 LoadValueObd     equ $0282        ; $F8282
 MapRaw           equ $0283        ; $F8283
 LimpFlags        equ $0285        ; $F8285
@@ -277,6 +288,11 @@ OutputTestFlags  equ $03A3        ; $F83A3
 IacEventTimer    equ $03A4        ; $F83A4
 MonStartDelay    equ $03AE        ; $F83AE
 SciUnlockState   equ $03B3        ; $F83B3
+;                 bit 4: unlock sequence step: $12 seen (SciRequestReceive)
+;                 bit 3: unlock sequence broken: wrong byte (SciRequestReceive)
+;                 bit 2: unlock sequence step counter bit (SciRequestReceive)
+;                 bit 1: unlock sequence step counter bit (SciRequestReceive)
+;                 bit 0: unlock sequence step counter bit (SciRequestReceive)
 SciSecurityState equ $03B4        ; $F83B4
 RunTime          equ $03BA        ; $F83BA
 CrankSyncFlags   equ $03BB        ; $F83BB
@@ -347,6 +363,10 @@ FieldFlags       equ $0439        ; $F8439
 ;                 bit 1: idle air charge step: voltage recovered, timer running (IacChargeStepCalc)
 ;                 bit 0: idle air charge step applied (IacChargeStepCalc)
 PciRxFlags       equ $043C        ; $F843C
+;                 bit 4: PCI service: three seconds since key-on passed (PciService); SkimState reads it
+;                 bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
+;                 bit 2: spark status message pending, second copy
+;                 bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
 CcdRxFlags       equ $0440        ; $F8440
 SecurityFlags    equ $0473        ; $F8473
 ;                 bit 7: security message of the first kind received (CcdReceive); SkimState reads it
@@ -363,6 +383,10 @@ DiagParam1       equ $048D        ; $F848D
 DiagParam2       equ $048E        ; $F848E
 DiagParam3       equ $048F        ; $F848F
 DiagFlags        equ $0490        ; $F8490
+;                 bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
+;                 bit 6: SCI security exchange passed (SciSecurityReceive, code $1B)
+;                 bit 5: SCI request state bit (SciRequestReceive)
+;                 bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
 ActuatorTest     equ $0491        ; $F8491
 SystemTestRejects equ $0494        ; $F8494
 SystemTestMode   equ $0495        ; $F8495
@@ -394,6 +418,14 @@ EepromFlags      equ $04A6        ; $F84A6
 ;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
 SciErrors        equ $04D8        ; $F84D8
 DiagRamFlags     equ $04D9        ; $F84D9
+;                 bit 7: RAM session of type 1 open (DiagRamSession1, parameter 1)
+;                 bit 6: RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)
+;                 bit 5: key accepted for session 1 (DiagRamSession2)
+;                 bit 4: key accepted for session 2 (DiagRamSession2)
+;                 bit 3: reply byte 1 pending (DiagRamSession1)
+;                 bit 2: reply byte 2 pending (DiagRamSession1)
+;                 bit 1: reply word pending (DiagRamSession1)
+;                 bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
 MonEnableFlags2  equ $0500        ; $F8500
 ;                 bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
 ;                 bit 6: monitor data to be reset (set at reset and by MonEnableCheck)

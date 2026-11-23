@@ -10447,7 +10447,7 @@ L0840C:
         JSR     CcdTransmit
         BRA     L08432
 L08428:
-        BRSET   >PciFlags2,Z,#$04,L08432
+        BRSET   >PciFlags2,Z,#$04,L08432                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         JSR     PciPitTick
 L08432:
         PULM    K,Y,X,E,D
@@ -10667,7 +10667,7 @@ L0865E:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 SciLogReceive:
-        BRCLR   >DiagFlags,Z,#$80,L087C2
+        BRCLR   >DiagFlags,Z,#$80,L087C2                 ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
         LDD     >SCSR,Z
         BITB    #$0E
         BEQ     L086A2
@@ -10685,8 +10685,8 @@ L0867A:
         LBRA    L087C2
 L08692:
         CLR     >SciErrors,Z
-        BCLR    >DiagFlags,Z,#$B0
-        BCLR    >SciLogFlags,Z,#$0F
+        BCLR    >DiagFlags,Z,#$B0                        ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code; bit 5: SCI request state bit (SciRequestReceive); bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
+        BCLR    >SciLogFlags,Z,#$0F                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive); bit 1: SCI log mode bit (SciLogReceive); bit 0: SCI log mode $F6 selected (SciLogReceive)
         LBRA    L087C2
 L086A2:
         BITB    #$40
@@ -10694,10 +10694,10 @@ L086A2:
         CLR     >SciErrors,Z
         LDD     >SCDR,Z
         TBA
-        BRCLR   >SciLogFlags,Z,#$0E,L086BA
+        BRCLR   >SciLogFlags,Z,#$0E,L086BA               ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive); bit 1: SCI log mode bit (SciLogReceive)
         BRA     L086D0
 L086BA:
-        BRSET   >SciLogFlags,Z,#$01,L08750
+        BRSET   >SciLogFlags,Z,#$01,L08750               ; bit 0: SCI log mode $F6 selected (SciLogReceive)
         CMPA    >SciLogLast,Z
         LBEQ    L08760
         STAA    >SciLogLast,Z
@@ -10706,42 +10706,42 @@ L086D0:
         CMPA    #$F2
         BNE     L086E0
         CLR     >SciRxIndex,Z
-        BCLR    >SciLogFlags,Z,#$0F
+        BCLR    >SciLogFlags,Z,#$0F                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive); bit 1: SCI log mode bit (SciLogReceive); bit 0: SCI log mode $F6 selected (SciLogReceive)
         LBRA    L087BE
 L086E0:
         CMPA    #$F6
         BNE     L086F0
-        BCLR    >SciLogFlags,Z,#$0E
-        BSET    >SciLogFlags,Z,#$01
+        BCLR    >SciLogFlags,Z,#$0E                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive); bit 1: SCI log mode bit (SciLogReceive)
+        BSET    >SciLogFlags,Z,#$01                      ; bit 0: SCI log mode $F6 selected (SciLogReceive)
         LBRA    L087BE
 L086F0:
         CMPA    #$F4
         BNE     L08700
-        BCLR    >SciLogFlags,Z,#$0D
-        BSET    >SciLogFlags,Z,#$02
+        BCLR    >SciLogFlags,Z,#$0D                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive); bit 0: SCI log mode $F6 selected (SciLogReceive)
+        BSET    >SciLogFlags,Z,#$02                      ; bit 1: SCI log mode bit (SciLogReceive)
         LBRA    L087BE
 L08700:
         CMPA    #$F5
         BNE     L08710
-        BCLR    >SciLogFlags,Z,#$0B
-        BSET    >SciLogFlags,Z,#$04
+        BCLR    >SciLogFlags,Z,#$0B                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 1: SCI log mode bit (SciLogReceive); bit 0: SCI log mode $F6 selected (SciLogReceive)
+        BSET    >SciLogFlags,Z,#$04                      ; bit 2: SCI log mode bit (SciLogReceive)
         LBRA    L087BE
 L08710:
         CMPA    #$F3
         BNE     L08720
-        BCLR    >SciLogFlags,Z,#$07
-        BSET    >SciLogFlags,Z,#$08
+        BCLR    >SciLogFlags,Z,#$07                      ; bit 2: SCI log mode bit (SciLogReceive); bit 1: SCI log mode bit (SciLogReceive); bit 0: SCI log mode $F6 selected (SciLogReceive)
+        BSET    >SciLogFlags,Z,#$08                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6)
         LBRA    L087BE
 L08720:
         CMPA    #$FE
         BNE     L08734
 L08724:
         CLR     >SciErrors,Z
-        BCLR    >DiagFlags,Z,#$B0
-        BCLR    >SciLogFlags,Z,#$0F
+        BCLR    >DiagFlags,Z,#$B0                        ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code; bit 5: SCI request state bit (SciRequestReceive); bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
+        BCLR    >SciLogFlags,Z,#$0F                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive); bit 1: SCI log mode bit (SciLogReceive); bit 0: SCI log mode $F6 selected (SciLogReceive)
         LBRA    L087BE
 L08734:
-        BRCLR   >SciLogFlags,Z,#$0E,L0873C
+        BRCLR   >SciLogFlags,Z,#$0E,L0873C               ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive); bit 1: SCI log mode bit (SciLogReceive)
         BRA     L08784
 L0873C:
         LDAA    >SciRxIndex,Z
@@ -10755,7 +10755,7 @@ L08750:
         CMPA    >SciRxIndexMax
         BHI     L08724
         STAA    >SciRxIndex,Z
-        BCLR    >SciLogFlags,Z,#$01
+        BCLR    >SciLogFlags,Z,#$01                      ; bit 0: SCI log mode $F6 selected (SciLogReceive)
         BRA     L087BE
 L08760:
         LDAA    >SciRxIndex,Z
@@ -10781,8 +10781,8 @@ L08784:
         TDE
         LDAB    #$03
         TBXK
-        BRSET   >SciLogFlags,Z,#$02,L087AC
-        BRSET   >SciLogFlags,Z,#$04,L087A6
+        BRSET   >SciLogFlags,Z,#$02,L087AC               ; bit 1: SCI log mode bit (SciLogReceive)
+        BRSET   >SciLogFlags,Z,#$04,L087A6               ; bit 2: SCI log mode bit (SciLogReceive)
         LDX     #$77FE
         BRA     L087B0
 L087A6:
@@ -11194,7 +11194,7 @@ L08B9E:
         LBRA    L08C9A
 L08BAC:
         BCLR    >EventSparkFlags,Z,#$01                  ; bit 0: input capture 4 edge was the first kind (TCTL2 bit 7 clear) (Isr_GPT_IC4OC5)
-        BSET    >PciRxFlags,Z,#$02
+        BSET    >PciRxFlags,Z,#$02                       ; bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
         BRCLR   >EventSparkFlags2,Z,#$01,L08C88
         BCLR    >EventSparkFlags,Z,#$0C                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         LDAA    >EventSparkPeriodB,Z
@@ -11290,7 +11290,7 @@ L08CAC:
         BRA     L08CBE
 L08CB2:
         JSR     PciSparkStatus
-        BSET    >PciRxFlags,Z,#$0C
+        BSET    >PciRxFlags,Z,#$0C                       ; bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck); bit 2: spark status message pending, second copy
 L08CBA:
         BSET    >BusTxRequest,Z,#$10                     ; bit 4: send the spark status message (set in Isr_GPT_IC4OC5)
 L08CBE:
@@ -16764,7 +16764,7 @@ L0E5A6:
         STE     >ResetCheckCode,Z
 L0E5B2:
         ORP     #$00E0
-        BRSET   >PciFlags2,Z,#$04,L0E670
+        BRSET   >PciFlags2,Z,#$04,L0E670                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         BRSET   >SystemFlags945,Z,#$80,L0E670            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         BRSET   >SPCR1,Z,#$00,L0E670
         LDD     #$4089
@@ -16824,7 +16824,7 @@ L0E65C:
         LDE     #$003B
         STE     >ResetCheckCode,Z
 L0E670:
-        BRCLR   >DiagBusFlags,Z,#$40,L0E67E
+        BRCLR   >DiagBusFlags,Z,#$40,L0E67E              ; bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
         LDD     >SCCR1,Z
         BITB    #$A0
         BNE     L0E694
@@ -17331,7 +17331,7 @@ PciService:
         BRA     L0EC40
 L0EC38:
         JSR     BusTxStart
-        BCLR    >PciRxFlags,Z,#$02
+        BCLR    >PciRxFlags,Z,#$02                       ; bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
 L0EC40:
         BCLR    >BusTxRequest,Z,#$17                     ; bit 4: send the spark status message (set in Isr_GPT_IC4OC5); bit 2: switch inputs changed: send them (SwitchInputsRead); bit 1: speed control switch state changed: send it (speed control switch code); bit 0: PCI link data changed: send it (PciLinkCheck)
         LBRA    L0ED5A
@@ -17362,13 +17362,13 @@ L0EC7E:
 L0EC8A:
         BRSET   >IoStatus0B,Z,#$08,L0ED5A                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
         ORP     #$00E0
-        BRSET   >PciFlags2,Z,#$04,L0ED5A
+        BRSET   >PciFlags2,Z,#$04,L0ED5A                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         BRSET   >SystemFlags945,Z,#$80,L0ED5A            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         LDAB    $097B,Z
         CMPB    #$06
         LBCS    L0ED5A
         BRSET   $0A08,Z,#$01,L0ECE0
-        BRSET   >PciFlags3,Z,#$08,L0ECE0
+        BRSET   >PciFlags3,Z,#$08,L0ECE0                 ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         BRCLR   >PciFlags5,Z,#$80,L0ECDA
         JSR     ObdRequest
         BRCLR   >PciFlags5,Z,#$80,L0ECDA
@@ -17384,7 +17384,7 @@ L0ECE0:
         JSR     PciTxStep
         BRA     L0ED5A
 L0ECE6:
-        BRSET   >PciFlags4,Z,#$08,L0ED56
+        BRSET   >PciFlags4,Z,#$08,L0ED56                 ; bit 3: PCI message $5D to send (PciPitTick)
         LDAA    >BusTxRequest,Z
         BEQ     L0ED5A
         BITA    #$38
@@ -17397,16 +17397,16 @@ L0ECE6:
         BCLR    >BusTxRequest,Z,#$46                     ; bit 6: send the security message (BusTxSecurity); set at reset; bit 2: switch inputs changed: send them (SwitchInputsRead); bit 1: speed control switch state changed: send it (speed control switch code)
         BRA     L0ED5A
 L0ED08:
-        BRSET   >PciFlags4,Z,#$80,L0ED30
-        BRCLR   >PciRxFlags,Z,#$08,L0ED1A
-        BCLR    >PciRxFlags,Z,#$08
+        BRSET   >PciFlags4,Z,#$80,L0ED30                 ; bit 7: PCI message $16 to send (PciStateSet2)
+        BRCLR   >PciRxFlags,Z,#$08,L0ED1A                ; bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
+        BCLR    >PciRxFlags,Z,#$08                       ; bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
         BRA     L0ED30
 L0ED1A:
-        BRCLR   >PciRxFlags,Z,#$04,L0ED26
-        BCLR    >PciRxFlags,Z,#$04
+        BRCLR   >PciRxFlags,Z,#$04,L0ED26                ; bit 2: spark status message pending, second copy
+        BCLR    >PciRxFlags,Z,#$04                       ; bit 2: spark status message pending, second copy
         BRA     L0ED30
 L0ED26:
-        BCLR    >PciRxFlags,Z,#$02
+        BCLR    >PciRxFlags,Z,#$02                       ; bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
         BCLR    >BusTxRequest,Z,#$38                     ; bit 5: send the per-event spark message (set in Isr_GPT_IC4OC5); bit 4: send the spark status message (set in Isr_GPT_IC4OC5); bit 3: send message $91 (BusTxMsg91); set when the MAP-high bus flag changes (MapHighBusFlag)
         BRA     L0ED5A
 L0ED30:
@@ -17414,18 +17414,18 @@ L0ED30:
         BRA     L0ED5A
 L0ED36:
         JSR     PciStateSet1
-        BRSET   >PciFlags4,Z,#$20,L0ED5A
+        BRSET   >PciFlags4,Z,#$20,L0ED5A                 ; bit 5: PCI message $B0 to send (PciStateSet1, only with calibration bit $032E.3)
         BCLR    >BusTxRequest,Z,#$01                     ; bit 0: PCI link data changed: send it (PciLinkCheck)
         BRA     L0ED5A
 L0ED46:
         JSR     PciStateSet5
-        BRSET   >PciFlags4,Z,#$04,L0ED5A
+        BRSET   >PciFlags4,Z,#$04,L0ED5A                 ; bit 2: PCI message $3F to send (PciStateSet5)
         BCLR    >BusTxRequest,Z,#$80                     ; bit 7: send the reply to bus message $C8 (set by CcdReceive, cleared when PciService sends it)
         BRA     L0ED5A
 L0ED56:
         JSR     PciStateSet3
 L0ED5A:
-        BRSET   >PciRxFlags,Z,#$10,L0ED8C
+        BRSET   >PciRxFlags,Z,#$10,L0ED8C                ; bit 4: PCI service: three seconds since key-on passed (PciService); SkimState reads it
         BRCLR   >EngineStateFlags,Z,#$80,L0ED8C          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >BusConfigFlags,Z,#$40,L0ED82
         BRSET   >Options032E,#$04,L0ED82                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
@@ -17435,7 +17435,7 @@ L0ED5A:
 L0ED82:
         TST     >Count3s,Z
         BEQ     L0ED8C
-        BSET    >PciRxFlags,Z,#$10
+        BSET    >PciRxFlags,Z,#$10                       ; bit 4: PCI service: three seconds since key-on passed (PciService); SkimState reads it
 L0ED8C:
         ANDP    #$FF1F
         RTS
@@ -17446,9 +17446,9 @@ L0ED8C:
 ;---------------------------------------------------------------------------------------------------
 PciLinkCheck:
         BRCLR   >Options032E,#$08,L0EDEA                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
-        BRSET   >PciFlags2,Z,#$04,L0EDEA
-        BRCLR   >PciFlags4,Z,#$10,L0EDAA
-        BCLR    >PciFlags4,Z,#$10
+        BRSET   >PciFlags2,Z,#$04,L0EDEA                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
+        BRCLR   >PciFlags4,Z,#$10,L0EDAA                 ; bit 4: PCI message $B0 sent (PciTxStep); PciLinkCheck reads it
+        BCLR    >PciFlags4,Z,#$10                        ; bit 4: PCI message $B0 sent (PciTxStep); PciLinkCheck reads it
         BRA     L0EDEA
 L0EDAA:
         BRCLR   >ControlFlagsC39,Z,#$80,L0EDD6           ; bit 7: PCI link variant: set at reset from the bus configuration, cleared when the link check fails
@@ -17510,13 +17510,13 @@ L0EE18:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 PciRpmTimeout:
-        BRCLR   >PciFlags3,Z,#$08,L0EE30
+        BRCLR   >PciFlags3,Z,#$08,L0EE30                 ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         TSTW    >EngineRpm,Z
         BNE     L0EE2C
         DEC     $0A05,Z
         BNE     L0EE30
 L0EE2C:
-        BCLR    >PciFlags3,Z,#$08
+        BCLR    >PciFlags3,Z,#$08                        ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
 L0EE30:
         RTS
 
@@ -17525,24 +17525,24 @@ L0EE30:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 BusTimeoutCheck:
-        BRSET   >PciFlags3,Z,#$04,L0EF42
+        BRSET   >PciFlags3,Z,#$04,L0EF42                 ; bit 2: PCI message $28 received (PciReceive); read by BusTimeoutCheck
         BRCLR   >PciRxFlags,Z,#$01,L0EE46
         BCLR    >PciRxFlags,Z,#$01
         LBRA    L0EF42
 L0EE46:
         BRCLR   >EngineStateFlags,Z,#$80,L0EF42          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >DriveFlags,Z,#$20,L0EF42                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        BRSET   >PciFlags2,Z,#$04,L0EF52
+        BRSET   >PciFlags2,Z,#$04,L0EF52                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         BRCLR   >Options032E,#$08,L0EE96                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
         LDAB    >PciTimeout,Z
         INCB
         BEQ     L0EE82
         STAB    >PciTimeout,Z
         BRCLR   >Options032E,#$04,L0EE7E                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
-        BRSET   >PciFlags2,Z,#$08,L0EE7E
+        BRSET   >PciFlags2,Z,#$08,L0EE7E                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0EE96
-        BSET    >PciFlags2,Z,#$2D
+        BSET    >PciFlags2,Z,#$2D                        ; bit 5: PCI message timeout, third kind (BusTimeoutCheck); bit 3: a PCI timeout already reported (BusTimeoutCheck); bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set; bit 0: set with any PCI timeout; cleared by QspiCheck
 L0EE7E:
         CMPB    #$C8
         BCS     L0EE96
@@ -17560,10 +17560,10 @@ L0EE96:
         BEQ     L0EEC0
         STAB    >SkimTimeout,Z
         BRCLR   >Options032E,#$04,L0EEBC                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
-        BRSET   >PciFlags2,Z,#$08,L0EEBC
+        BRSET   >PciFlags2,Z,#$08,L0EEBC                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0EED4
-        BSET    >PciFlags2,Z,#$1D
+        BSET    >PciFlags2,Z,#$1D                        ; bit 4: PCI message timeout, fourth kind (BusTimeoutCheck); bit 3: a PCI timeout already reported (BusTimeoutCheck); bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set; bit 0: set with any PCI timeout; cleared by QspiCheck
 L0EEBC:
         CMPB    #$C8
         BCS     L0EED4
@@ -17581,10 +17581,10 @@ L0EED4:
         BEQ     L0EEFE
         STAB    >BusTimeout1,Z
         BRCLR   >Options032E,#$04,L0EEFA                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
-        BRSET   >PciFlags2,Z,#$08,L0EEFA
+        BRSET   >PciFlags2,Z,#$08,L0EEFA                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0EF16
-        BSET    >PciFlags2,Z,#$8D
+        BSET    >PciFlags2,Z,#$8D                        ; bit 7: PCI message timeout, first kind (BusTimeoutCheck, 100 passes); bit 3: a PCI timeout already reported (BusTimeoutCheck); bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set; bit 0: set with any PCI timeout; cleared by QspiCheck
 L0EEFA:
         CMPB    #$C8
         BCS     L0EF16
@@ -17602,10 +17602,10 @@ L0EF16:
         BEQ     L0EF3C
         STAB    >BodyMsgTimeout,Z
         BRCLR   >Options032E,#$04,L0EF3C                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
-        BRSET   >PciFlags2,Z,#$08,L0EF3C
+        BRSET   >PciFlags2,Z,#$08,L0EF3C                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0EF52
-        BSET    >PciFlags2,Z,#$4D
+        BSET    >PciFlags2,Z,#$4D                        ; bit 6: PCI message timeout, second kind (BusTimeoutCheck); bit 3: a PCI timeout already reported (BusTimeoutCheck); bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set; bit 0: set with any PCI timeout; cleared by QspiCheck
 L0EF3C:
         JSR     BodyBusTimeout
         BRA     L0EF52
@@ -17679,7 +17679,7 @@ L0EFDE:
 ;---------------------------------------------------------------------------------------------------
 SkimTimerTick:
         ORP     #$00E0
-        BRCLR   >PciFlags4,Z,#$02,L0EFFC
+        BRCLR   >PciFlags4,Z,#$02,L0EFFC                 ; bit 1: PCI message $4F to send (PciStateSet6, SKIM timer)
         TST     >SkimTimer,Z
         BEQ     L0EFF4
         LDAA    #$85
@@ -17750,7 +17750,7 @@ L0F090:
         BITA    #$20
         BEQ     L0F0CA
         BRCLR   >SecurityFlags,Z,#$40,L0F0CA             ; bit 6: security/SKIM message received recently (CcdReceive, PciReceive; cleared by SkimState)
-        BRCLR   >PciRxFlags,Z,#$10,L0F0AC
+        BRCLR   >PciRxFlags,Z,#$10,L0F0AC                ; bit 4: PCI service: three seconds since key-on passed (PciService); SkimState reads it
         BRSET   >SkimFlags,Z,#$10,L0F0AC                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BRCLR   >SecurityFlags,Z,#$08,L0F0CA             ; bit 3: security exchange step 2 (CcdReceive)
 L0F0AC:

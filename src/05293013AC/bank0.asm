@@ -5578,7 +5578,7 @@ L04872:
         TST     >MonStartDelay,Z
         BNE     L04892
         BSET    >CrankSyncFlags2,Z,#$20
-        BCLR    >SciLogFlags,Z,#$02
+        BCLR    >SciLogFlags,Z,#$02                      ; bit 1: SCI log mode bit (SciLogReceive)
         INC     $01A7,Z
         CLR     $01A5,Z
 L04892:
@@ -6394,7 +6394,7 @@ L051A8:
         CMPA    #$0A
         BNE     L051D4
         CLR     >DiagCommand,Z
-        BCLR    >DiagFlags,Z,#$30
+        BCLR    >DiagFlags,Z,#$30                        ; bit 5: SCI request state bit (SciRequestReceive); bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
 L051D4:
         PULM    E,D
         RTI
@@ -6910,7 +6910,7 @@ L05720:
 ; Called from: Isr_PIT (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_05722:
-        BRCLR   >DiagFlags,Z,#$80,L0585C
+        BRCLR   >DiagFlags,Z,#$80,L0585C                 ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
         LDD     >SCSR,Z
         BITB    #$0E
         BEQ     L05748
@@ -6927,9 +6927,9 @@ L05748:
         CLR     >SciErrors,Z
         LDD     >SCDR,Z
         TBA
-        BRSET   >SciLogFlags,Z,#$04,L057EC
-        BRSET   >SciLogFlags,Z,#$01,L0577A
-        BRSET   >SciLogFlags,Z,#$08,L0577A
+        BRSET   >SciLogFlags,Z,#$04,L057EC               ; bit 2: SCI log mode bit (SciLogReceive)
+        BRSET   >SciLogFlags,Z,#$01,L0577A               ; bit 0: SCI log mode $F6 selected (SciLogReceive)
+        BRSET   >SciLogFlags,Z,#$08,L0577A               ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6)
         CMPA    $04D5,Z
         LBEQ    L057FA
         STAA    $04D5,Z
@@ -6938,37 +6938,37 @@ L0577A:
         CMPA    #$F2
         BNE     L0578A
         CLR     $04D6,Z
-        BCLR    >SciLogFlags,Z,#$0D
+        BCLR    >SciLogFlags,Z,#$0D                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive); bit 0: SCI log mode $F6 selected (SciLogReceive)
         JMP     L05858
 L0578A:
         CMPA    #$F6
         BNE     L0579A
-        BCLR    >SciLogFlags,Z,#$09
-        BSET    >SciLogFlags,Z,#$04
+        BCLR    >SciLogFlags,Z,#$09                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 0: SCI log mode $F6 selected (SciLogReceive)
+        BSET    >SciLogFlags,Z,#$04                      ; bit 2: SCI log mode bit (SciLogReceive)
         LBRA    L05858
 L0579A:
         CMPA    #$F4
         BNE     L057AA
-        BCLR    >SciLogFlags,Z,#$0C
-        BSET    >SciLogFlags,Z,#$01
+        BCLR    >SciLogFlags,Z,#$0C                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive)
+        BSET    >SciLogFlags,Z,#$01                      ; bit 0: SCI log mode $F6 selected (SciLogReceive)
         LBRA    L05858
 L057AA:
         CMPA    #$F5
         BNE     L057BA
-        BCLR    >SciLogFlags,Z,#$05
-        BSET    >SciLogFlags,Z,#$08
+        BCLR    >SciLogFlags,Z,#$05                      ; bit 2: SCI log mode bit (SciLogReceive); bit 0: SCI log mode $F6 selected (SciLogReceive)
+        BSET    >SciLogFlags,Z,#$08                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6)
         LBRA    L05858
 L057BA:
         CMPA    #$FE
         BNE     L057CE
 L057BE:
         CLR     >SciErrors,Z
-        BCLR    >DiagFlags,Z,#$B0
-        BCLR    >SciLogFlags,Z,#$0D
+        BCLR    >DiagFlags,Z,#$B0                        ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code; bit 5: SCI request state bit (SciRequestReceive); bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
+        BCLR    >SciLogFlags,Z,#$0D                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive); bit 0: SCI log mode $F6 selected (SciLogReceive)
         LBRA    L05858
 L057CE:
-        BRSET   >SciLogFlags,Z,#$01,L0581E
-        BRSET   >SciLogFlags,Z,#$08,L0581E
+        BRSET   >SciLogFlags,Z,#$01,L0581E               ; bit 0: SCI log mode $F6 selected (SciLogReceive)
+        BRSET   >SciLogFlags,Z,#$08,L0581E               ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6)
         LDAA    $04D6,Z
         CMPA    #$09
         BCC     L05812
@@ -6980,7 +6980,7 @@ L057EC:
         CMPA    #$09
         BCC     L057BE
         STAA    $04D6,Z
-        BCLR    >SciLogFlags,Z,#$04
+        BCLR    >SciLogFlags,Z,#$04                      ; bit 2: SCI log mode bit (SciLogReceive)
         BRA     L05858
 L057FA:
         LDAA    $04D6,Z
@@ -7003,14 +7003,14 @@ L0581E:
         TBXK
         PULM    D
         LDX     #$585C
-        BRSET   >SciLogFlags,Z,#$01,L05834
+        BRSET   >SciLogFlags,Z,#$01,L05834               ; bit 0: SCI log mode $F6 selected (SciLogReceive)
         LDX     #$5A58
 L05834:
         CLRA
         ASLD
         BEQ     L05812
         CPD     #$01FC
-        BRSET   >SciLogFlags,Z,#$01,L05848
+        BRSET   >SciLogFlags,Z,#$01,L05848               ; bit 0: SCI log mode $F6 selected (SciLogReceive)
         CPD     #$01FC
 L05848:
         BCC     L05812
@@ -16419,7 +16419,7 @@ L0C2D2:
         LDAA    >DiagCommand,Z
         CMPA    #$19
         BNE     L0C2FA
-        BRSET   >DiagFlags,Z,#$10,L0C648
+        BRSET   >DiagFlags,Z,#$10,L0C648                 ; bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
         CLR     >DiagCommand,Z
         BSET    <IacStepFlags,Z,#$04                     ; bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
         LDAA    >DiagParam1,Z
@@ -17392,7 +17392,7 @@ L0CDE4:
         BSET    $0357,Z,#$03
         LDAA    #$7F
         STAA    $05BF,Z
-        BSET    >SciLogFlags,Z,#$02
+        BSET    >SciLogFlags,Z,#$02                      ; bit 1: SCI log mode bit (SciLogReceive)
         BSET    $0325,Z,#$10
         BSET    >ThrottleState,Z,#$10                    ; bit 4: closed position stepped to a new minimum, probably (ThrottleClosedLearn only)
         BSET    >AcFlags,Z,#$B0                          ; bit 7: A/C clutch engaged (AcClutchControl); set at reset; bit 5: A/C idle step active (IdleTargetControl); set at reset; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
@@ -18421,7 +18421,7 @@ L0DA60:
         LDE     #$003B
         STE     $01B2,Z
 L0DA74:
-        BRCLR   >DiagBusFlags,Z,#$40,L0DA82
+        BRCLR   >DiagBusFlags,Z,#$40,L0DA82              ; bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
         LDD     >SCCR1,Z
         BITB    #$A0
         BNE     L0DA98
@@ -20735,7 +20735,7 @@ L0F308:
         STAA    $03D0,Z
         STAA    $03EC,Z
         ORP     #$00E0
-        BSET    >SciLogFlags,Z,#$40
+        BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
         LDAA    $03E4,Z
         CMPA    $13F6
@@ -20821,7 +20821,7 @@ L0F3F2:
         LDAA    $13E9
         ORP     #$00E0
         STAA    $03D0,Z
-        BCLR    >SciLogFlags,Z,#$40
+        BCLR    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
         BRA     L0F44E
 L0F40E:
@@ -20843,7 +20843,7 @@ L0F43A:
         ORP     #$00E0
         STAA    $03D0,Z
         STAA    $03EC,Z
-        BSET    >SciLogFlags,Z,#$40
+        BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
 L0F44E:
         LDAA    >PurgeRamp,Z
@@ -21291,7 +21291,7 @@ L0F94C:
         ORP     #$00E0
         STAA    >IacBase,Z
         BRCLR   >ThrottleState,Z,#$80,L0F964             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BSET    >SciLogFlags,Z,#$40
+        BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         LDX     #Tab2D_1367
         BRA     L0F98A
 L0F964:
@@ -21302,11 +21302,11 @@ L0F972:
         BRCLR   >Options0339,#$08,L0F982                 ; bit 3: alternative purge duty off closed throttle (PurgeDutyAltOther)
 L0F978:
         LDX     #Tab2D_137D
-        BSET    >SciLogFlags,Z,#$40
+        BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         BRA     L0F98A
 L0F982:
         LDX     #Tab2D_1355
-        BCLR    >SciLogFlags,Z,#$40
+        BCLR    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
 L0F98A:
         JSR     Lookup2D
         BRCLR   >FaultSet0B,Z,#$30,L0F99C
@@ -21352,7 +21352,7 @@ L0F9E8:
         LDAB    #$FA
         MUL
         SDE
-        BRSET   >SciLogFlags,Z,#$40,L0F9F8
+        BRSET   >SciLogFlags,Z,#$40,L0F9F8               ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ASLE
         ASLD
 L0F9F8:

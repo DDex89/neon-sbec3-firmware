@@ -13256,7 +13256,7 @@ L1B198:
         LDAA    >DiagCommand,Z
         CMPA    #$19
         BNE     L1B1C0
-        BRSET   >DiagFlags,Z,#$10,L1B5F8
+        BRSET   >DiagFlags,Z,#$10,L1B5F8                 ; bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
         CLR     >DiagCommand,Z
         BSET    <IacStepFlags,Z,#$04                     ; bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
         LDAA    >DiagParam1,Z
@@ -13681,7 +13681,7 @@ IacResetLoop:
         CLRW    >TMSK1,Z
         BCLRW   >IoCfg18,Z,#$0020
         BCLRW   >IoIrqEnable,Z,#$0800                    ; IoIrqEnable.3: bus timer interrupt enable (word bit 11; PciTimeoutRestart sets it)
-        BSET    >PciFlags3,Z,#$08
+        BSET    >PciFlags3,Z,#$08                        ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         ANDP    #$FF1F
 L1B6A8:
         JSR     KickWatchdogsLong
@@ -13702,7 +13702,7 @@ L1B6C2:
 L1B6DA:
         JSR     KickWatchdogsLong
         ORP     #$00E0
-        BCLR    >PciFlags3,Z,#$08
+        BCLR    >PciFlags3,Z,#$08                        ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -15629,7 +15629,7 @@ L1DEA2:
         INC     $0F51,Z
         BRCLR   >Options032E,#$04,L1DECA                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     PciSparkStatus
-        BSET    >PciRxFlags,Z,#$0E
+        BSET    >PciRxFlags,Z,#$0E                       ; bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck); bit 2: spark status message pending, second copy; bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
         BSET    >BusTxRequest,Z,#$10                     ; bit 4: send the spark status message (set in Isr_GPT_IC4OC5)
 L1DECA:
         ANDP    #$FF1F
@@ -16648,7 +16648,7 @@ KnockLearn:
         BRCLR   >FaultSet09,Z,#$10,L1F068
 L1F048:
         CLR     >KnockEventCount,Z
-        BCLR    >SciLogFlags,Z,#$80
+        BCLR    >SciLogFlags,Z,#$80                      ; bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
         LDAA    >KnockLearnResetValue
         TZX
         LDX     #$8092
@@ -16674,7 +16674,7 @@ L1F082:
         BPL     L1F082
         CLR     >KnockEventCount,Z
         CLR     >KnockSignalLearn,Z
-        BCLR    >SciLogFlags,Z,#$80
+        BCLR    >SciLogFlags,Z,#$80                      ; bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
         LBRA    L1F138
 L1F09A:
         TZX
@@ -16805,7 +16805,7 @@ L1F1BC:
 L1F1CE:
         STAA    >KnockEventCount,Z
         BNE     L1F1D8
-        BCLR    >SciLogFlags,Z,#$80
+        BCLR    >SciLogFlags,Z,#$80                      ; bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
 L1F1D8:
         PULM    D
         RTS
@@ -17138,8 +17138,8 @@ L1F4D6:
         LBCS    L1F588
         LDX     #KnockRetardStep
         JSR     Lookup2D
-        BRSET   >SciLogFlags,Z,#$80,L1F516
-        BSET    >SciLogFlags,Z,#$80
+        BRSET   >SciLogFlags,Z,#$80,L1F516               ; bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
+        BSET    >SciLogFlags,Z,#$80                      ; bit 7: knock events counted, knock sample pending (cleared by KnockLearn and KnockEventDecayStep)
         CLR     >KnockEventCount,Z
         LDAB    >KnockFirstStepFactor
         BRA     L1F51A

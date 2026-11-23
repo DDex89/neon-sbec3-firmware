@@ -1565,7 +1565,7 @@ L3123A:
 PciReceive:
         ORP     #$00E0
 L31242:
-        BRCLR   >PciFlags3,Z,#$40,L312A2
+        BRCLR   >PciFlags3,Z,#$40,L312A2                 ; bit 6: PCI frame received (PciRxProcess), to be handled by PciReceive
         TZY
         LDY     #$89A4
         LDAA    $00,Y
@@ -1588,21 +1588,21 @@ L31260:
         ABX
         JSR     $3105A,X
 L31278:
-        BCLR    >PciFlags3,Z,#$40
+        BCLR    >PciFlags3,Z,#$40                        ; bit 6: PCI frame received (PciRxProcess), to be handled by PciReceive
         CLRW    $0000,Y
         CLRW    $0002,Y
         CLRW    $0004,Y
         CLRW    $0006,Y
         CLRW    $0008,Y
         CLR     $0A,Y
-        BRCLR   >PciFlags3,Z,#$20,L312A2
+        BRCLR   >PciFlags3,Z,#$20,L312A2                 ; bit 5: PCI frame to process (QspiService -> PciReceive)
         JSR     PciRxProcess
-        BCLR    >PciFlags3,Z,#$20
+        BCLR    >PciFlags3,Z,#$20                        ; bit 5: PCI frame to process (QspiService -> PciReceive)
         BRA     L31242
 L312A2:
         BRCLR   >IoCtl13,Z,#$08,L312C8
         BRSET   >SystemFlags945,Z,#$80,L312C8            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
-        BRSET   >PciFlags2,Z,#$04,L312C8
+        BRSET   >PciFlags2,Z,#$04,L312C8                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         LDAB    $097D,Z
         CMPB    #$06
         BCS     L312C8
@@ -1623,7 +1623,7 @@ L312DE:
         LDD     $02,Y
         CMPB    #$28
         BNE     L312E8
-        BSET    >PciFlags3,Z,#$04
+        BSET    >PciFlags3,Z,#$04                        ; bit 2: PCI message $28 received (PciReceive); read by BusTimeoutCheck
 L312E8:
         CMPA    #$10
         BEQ     L312F0
@@ -2050,7 +2050,7 @@ L31714:
 ;---------------------------------------------------------------------------------------------------
 PciStateSet1:
         BRCLR   >Options032E,#$08,L31818                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
-        BSET    >PciFlags4,Z,#$20
+        BSET    >PciFlags4,Z,#$20                        ; bit 5: PCI message $B0 to send (PciStateSet1, only with calibration bit $032E.3)
         LDX     #$0034
         BRA     L3175A
 
@@ -2059,9 +2059,9 @@ PciStateSet1:
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
 PciStateSet2:
-        BSET    >PciFlags4,Z,#$80
+        BSET    >PciFlags4,Z,#$80                        ; bit 7: PCI message $16 to send (PciStateSet2)
         LDX     #$003C
-        BSET    >PciFlags3,Z,#$02
+        BSET    >PciFlags3,Z,#$02                        ; bit 1: PCI spark status frame queued (PciSparkStatus, PciStateSet2)
         BRA     L3175A
 
 ;---------------------------------------------------------------------------------------------------
@@ -2077,7 +2077,7 @@ PciStateSet3:
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
 PciStateSet4:
-        BSET    >PciFlags4,Z,#$01
+        BSET    >PciFlags4,Z,#$01                        ; bit 0: PCI message $35 to send (PciStateSet4)
         LDX     #$0014
         BRA     L3175A
 
@@ -2086,7 +2086,7 @@ PciStateSet4:
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
 PciStateSet5:
-        BSET    >PciFlags4,Z,#$04
+        BSET    >PciFlags4,Z,#$04                        ; bit 2: PCI message $3F to send (PciStateSet5)
         LDX     #$0048
         BRA     L3175A
 
@@ -2095,10 +2095,10 @@ PciStateSet5:
 ; Called from: SkimTimerTick
 ;---------------------------------------------------------------------------------------------------
 PciStateSet6:
-        BSET    >PciFlags4,Z,#$02
+        BSET    >PciFlags4,Z,#$02                        ; bit 1: PCI message $4F to send (PciStateSet6, SKIM timer)
         LDX     #$004C
 L3175A:
-        BRSET   >PciFlags3,Z,#$08,L31818
+        BRSET   >PciFlags3,Z,#$08,L31818                 ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         BRA     L3176C
 
 ;---------------------------------------------------------------------------------------------------
@@ -2116,15 +2116,15 @@ PciStateSet7:
 PciTxStep:
         LDX     #$005C
 L3176C:
-        BRSET   >PciFlags2,Z,#$04,L31818
+        BRSET   >PciFlags2,Z,#$04,L31818                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         BRSET   >IoStatus0B,Z,#$08,L31818                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
         LDAB    #$03
         TBXK
-        BRCLR   >PciFlags3,Z,#$01,L31786
-        BSET    >PciFlags3,Z,#$10
+        BRCLR   >PciFlags3,Z,#$01,L31786                 ; bit 0: PCI frame in the transmit buffer (PciTxStep)
+        BSET    >PciFlags3,Z,#$10                        ; bit 4: PCI transmit retry (PciTxStep, PciPitTick)
 L31786:
         TZY
-        BRCLR   >PciFlags3,Z,#$02,L31798
+        BRCLR   >PciFlags3,Z,#$02,L31798                 ; bit 1: PCI spark status frame queued (PciSparkStatus, PciStateSet2)
         LDY     #$8980
         LDAA    $01,Y
         CMPA    #$16
@@ -2139,40 +2139,40 @@ L31798:
         JSR     $311DE,X
         TST     $01,Y
         BEQ     L31818
-        BSET    >PciFlags3,Z,#$01
+        BSET    >PciFlags3,Z,#$01                        ; bit 0: PCI frame in the transmit buffer (PciTxStep)
 L317BC:
         JSR     QspiSendFrame
         LDAA    $01,Y
         CMPA    #$B0
         BNE     L317D0
-        BCLR    >PciFlags4,Z,#$20
-        BSET    >PciFlags4,Z,#$10
+        BCLR    >PciFlags4,Z,#$20                        ; bit 5: PCI message $B0 to send (PciStateSet1, only with calibration bit $032E.3)
+        BSET    >PciFlags4,Z,#$10                        ; bit 4: PCI message $B0 sent (PciTxStep); PciLinkCheck reads it
         BRA     L31818
 L317D0:
         CMPA    #$16
         BNE     L317DE
-        BCLR    >PciFlags4,Z,#$80
-        BCLR    >PciFlags3,Z,#$02
+        BCLR    >PciFlags4,Z,#$80                        ; bit 7: PCI message $16 to send (PciStateSet2)
+        BCLR    >PciFlags3,Z,#$02                        ; bit 1: PCI spark status frame queued (PciSparkStatus, PciStateSet2)
         BRA     L31818
 L317DE:
         CMPA    #$35
         BNE     L317E8
-        BCLR    >PciFlags4,Z,#$01
+        BCLR    >PciFlags4,Z,#$01                        ; bit 0: PCI message $35 to send (PciStateSet4)
         BRA     L31818
 L317E8:
         CMPA    #$5D
         BNE     L317F2
-        BCLR    >PciFlags4,Z,#$08
+        BCLR    >PciFlags4,Z,#$08                        ; bit 3: PCI message $5D to send (PciPitTick)
         BRA     L31818
 L317F2:
         CMPA    #$3F
         BNE     L317FC
-        BCLR    >PciFlags4,Z,#$04
+        BCLR    >PciFlags4,Z,#$04                        ; bit 2: PCI message $3F to send (PciStateSet5)
         BRA     L31818
 L317FC:
         CMPA    #$4F
         BNE     L31806
-        BCLR    >PciFlags4,Z,#$02
+        BCLR    >PciFlags4,Z,#$02                        ; bit 1: PCI message $4F to send (PciStateSet6, SKIM timer)
         BRA     L31818
 L31806:
         CMPA    #$48
@@ -2192,7 +2192,7 @@ L31818:
 ;---------------------------------------------------------------------------------------------------
 PciPitTick:
         BRCLR   >Options032E,#$04,L318FC                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
-        BRSET   >PciFlags3,Z,#$08,L318FC
+        BRSET   >PciFlags3,Z,#$08,L318FC                 ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         LDAB    #$03
         TBYK
         LDY     #$11DE
@@ -2206,7 +2206,7 @@ PciPitTick:
         LDX     #$0000
         CPE     #$1E32
         BNE     L31854
-        BRSET   >PciRxFlags,Z,#$02,L318FC
+        BRSET   >PciRxFlags,Z,#$02,L318FC                ; bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
 L31854:
         CPE     $0002,Y
         BEQ     L31868
@@ -2216,8 +2216,8 @@ L31854:
         BCS     L31854
         LBRA    L318FC
 L31868:
-        BRCLR   >PciFlags3,Z,#$80,L31872
-        BSET    >PciFlags3,Z,#$10
+        BRCLR   >PciFlags3,Z,#$80,L31872                 ; bit 7: PCI frame timer expired (PciPitTick)
+        BSET    >PciFlags3,Z,#$10                        ; bit 4: PCI transmit retry (PciTxStep, PciPitTick)
 L31872:
         TZY
         LDY     #$8998
@@ -2227,12 +2227,12 @@ L31872:
         CLRW    $0005,Y
         CLRW    $0007,Y
         CLRW    $0009,Y
-        BRSET   >PciFlags2,Z,#$04,L3189A
+        BRSET   >PciFlags2,Z,#$04,L3189A                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         BRCLR   >SystemFlags945,Z,#$80,L318A6            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
 L3189A:
         CPE     #$1986
         BNE     L318FC
-        BSET    >PciFlags4,Z,#$08
+        BSET    >PciFlags4,Z,#$08                        ; bit 3: PCI message $5D to send (PciPitTick)
         BRA     L318FC
 L318A6:
         JSR     $311DE,X
@@ -2241,7 +2241,7 @@ L318A6:
         BRSET   >IoCtl13,Z,#$08,PciBuildMessage
         BRA     L318FC
 L318B6:
-        BSET    >PciFlags3,Z,#$80
+        BSET    >PciFlags3,Z,#$80                        ; bit 7: PCI frame timer expired (PciPitTick)
         JSR     PciTimeoutRestart
         BRSET   >PciFlags,Z,#$40,L318FC
 
@@ -2254,25 +2254,25 @@ PciBuildMessage:
         LDAA    $01,Y
         CMPA    #$35
         BNE     L318D8
-        BCLR    >PciFlags4,Z,#$01
+        BCLR    >PciFlags4,Z,#$01                        ; bit 0: PCI message $35 to send (PciStateSet4)
         BCLR    >BusTxRequest,Z,#$46                     ; bit 6: send the security message (BusTxSecurity); set at reset; bit 2: switch inputs changed: send them (SwitchInputsRead); bit 1: speed control switch state changed: send it (speed control switch code)
         BRA     L318FC
 L318D8:
         CMPA    #$16
         BNE     L318E6
-        BCLR    >PciFlags4,Z,#$80
+        BCLR    >PciFlags4,Z,#$80                        ; bit 7: PCI message $16 to send (PciStateSet2)
         BCLR    >BusTxRequest,Z,#$38                     ; bit 5: send the per-event spark message (set in Isr_GPT_IC4OC5); bit 4: send the spark status message (set in Isr_GPT_IC4OC5); bit 3: send message $91 (BusTxMsg91); set when the MAP-high bus flag changes (MapHighBusFlag)
         BRA     L318FC
 L318E6:
         CMPA    #$B0
         BNE     L318F4
-        BCLR    >PciFlags4,Z,#$20
+        BCLR    >PciFlags4,Z,#$20                        ; bit 5: PCI message $B0 to send (PciStateSet1, only with calibration bit $032E.3)
         BCLR    >BusTxRequest,Z,#$01                     ; bit 0: PCI link data changed: send it (PciLinkCheck)
         BRA     L318FC
 L318F4:
         CMPA    #$5D
         BNE     L318FC
-        BCLR    >PciFlags4,Z,#$08
+        BCLR    >PciFlags4,Z,#$08                        ; bit 3: PCI message $5D to send (PciPitTick)
 L318FC:
         RTS
 L318FE:
@@ -2818,11 +2818,11 @@ L31DE2:
         LDAA    #$96
         STAA    $0A06,Z
         CLR     $0A1A,Z
-        BSET    >PciFlags3,Z,#$08
+        BSET    >PciFlags3,Z,#$08                        ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         LDAA    #$68
         BRA     L31E00
 L31DFA:
-        BCLR    >PciFlags3,Z,#$08
+        BCLR    >PciFlags3,Z,#$08                        ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         LDAA    #$69
 L31E00:
         CLRB
@@ -2855,7 +2855,7 @@ L31E26:
 PciSparkStatus:
         TZY
         LDY     #$8980
-        BSET    >PciFlags3,Z,#$02
+        BSET    >PciFlags3,Z,#$02                        ; bit 1: PCI spark status frame queued (PciSparkStatus, PciStateSet2)
 L31E32:
         LDAA    #$04
         LDAB    #$16
@@ -2898,7 +2898,7 @@ PciIrq2Start:
         BCLR    >PciFlags,Z,#$40
         BCLR    >SystemFlags945,Z,#$01                   ; bit 0: PCI frame timer running, probably (PciTimeoutRestart)
         BRSET   >SystemFlags945,Z,#$80,L31EA6            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
-        BRSET   >PciFlags2,Z,#$04,L31EA6
+        BRSET   >PciFlags2,Z,#$04,L31EA6                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         TZY
         LDY     #$8998
         JSR     PciBuildMessage
@@ -2929,7 +2929,7 @@ L31EB4:
         BSET    >SystemFlags945,Z,#$80                   ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         BSET    >SystemFlags945,Z,#$02                   ; bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
         BSET    >SPCR1,Z,#$80
-        BCLR    >PciFlags3,Z,#$91
+        BCLR    >PciFlags3,Z,#$91                        ; bit 7: PCI frame timer expired (PciPitTick); bit 4: PCI transmit retry (PciTxStep, PciPitTick); bit 0: PCI frame in the transmit buffer (PciTxStep)
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -2975,7 +2975,7 @@ QspiService:
         STD     $093E,Z
 L31F56:
         BRCLR   >Options032E,#$04,L31F84                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
-        BRSET   >PciFlags2,Z,#$04,L31FD8
+        BRSET   >PciFlags2,Z,#$04,L31FD8                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         PSHM    D,E,X,Y,K
         TST     >RR4_L,Z
         BEQ     L31F82
@@ -2983,8 +2983,8 @@ L31F56:
         JSR     PciRxFrame
         BRA     L31F82
 L31F72:
-        BRCLR   >PciFlags3,Z,#$40,L31F7E
-        BSET    >PciFlags3,Z,#$20
+        BRCLR   >PciFlags3,Z,#$40,L31F7E                 ; bit 6: PCI frame received (PciRxProcess), to be handled by PciReceive
+        BSET    >PciFlags3,Z,#$20                        ; bit 5: PCI frame to process (QspiService -> PciReceive)
         BRA     L31F82
 L31F7E:
         JSR     PciRxProcess
@@ -3029,7 +3029,7 @@ L31FC2:
         BCC     L31FC2
         BRA     L31FD6
 L31FD2:
-        BSET    >PciFlags3,Z,#$40
+        BSET    >PciFlags3,Z,#$40                        ; bit 6: PCI frame received (PciRxProcess), to be handled by PciReceive
 L31FD6:
         RTS
 L31FD8:
@@ -3058,7 +3058,7 @@ L31FF2:
         JSR     QspiSendFrame
         BRA     L32024
 L32014:
-        BCLR    >PciFlags2,Z,#$04
+        BCLR    >PciFlags2,Z,#$04                        ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         BCLR    >PciFlags,Z,#$04
         CLR     $0A1A,Z
         BSET    >BusTxRequest,Z,#$40                     ; bit 6: send the security message (BusTxSecurity); set at reset
@@ -3074,10 +3074,10 @@ QspiCheck:
         ORP     #$00E0
         LDE     >IoInputs0,Z
         STE     $0F52,Z
-        BRCLR   >PciFlags2,Z,#$03,L32072
+        BRCLR   >PciFlags2,Z,#$03,L32072                 ; bit 1: QSPI link restart pending (PciFlagsInit, QspiCheck); bit 0: set with any PCI timeout; cleared by QspiCheck
         INC     $0A05,Z
         LDAA    $0A05,Z
-        BRSET   >PciFlags2,Z,#$02,L3204E
+        BRSET   >PciFlags2,Z,#$02,L3204E                 ; bit 1: QSPI link restart pending (PciFlagsInit, QspiCheck)
         CMPA    #$03
         BCS     L32082
         BRA     L3205E
@@ -3089,7 +3089,7 @@ L3205A:
         CMPA    #$11
         BCS     L32082
 L3205E:
-        BCLR    >PciFlags2,Z,#$03
+        BCLR    >PciFlags2,Z,#$03                        ; bit 1: QSPI link restart pending (PciFlagsInit, QspiCheck); bit 0: set with any PCI timeout; cleared by QspiCheck
         LDAA    #$12
         STAA    $097D,Z
         CLR     $0A05,Z
@@ -3133,7 +3133,7 @@ L320B8:
         DECA
         BNE     L320B8
         BSETW   >IoCtl12,Z,#$0200
-        BSET    >PciFlags2,Z,#$06
+        BSET    >PciFlags2,Z,#$06                        ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set; bit 1: QSPI link restart pending (PciFlagsInit, QspiCheck)
         BSET    $0A09,Z,#$01
         CLR     $0A05,Z
         PULM    CCR,D
@@ -3169,8 +3169,8 @@ L32108:
         CMPB    #$88
         BNE     L32124
         BSET    >PciFlags,Z,#$80
-        BRSET   >PciFlags2,Z,#$04,L3211A
-        BSET    >PciFlags2,Z,#$05
+        BRSET   >PciFlags2,Z,#$04,L3211A                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
+        BSET    >PciFlags2,Z,#$05                        ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set; bit 0: set with any PCI timeout; cleared by QspiCheck
 L3211A:
         LDAA    $02,X
         LDAB    $04,X
@@ -3784,10 +3784,10 @@ L326CC:
         LDAA    <FreezeFrame00,Z
         CMPA    #$02
         BLS     L326EE
-        BSET    >DiagBusFlags,Z,#$20
+        BSET    >DiagBusFlags,Z,#$20                     ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         BRA     L326F2
 L326EE:
-        BCLR    >DiagBusFlags,Z,#$20
+        BCLR    >DiagBusFlags,Z,#$20                     ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
 L326F2:
         CLRA
         STAA    >ObdResponse,Z
@@ -3830,7 +3830,7 @@ L32744:
         LBRA    L3282E
 L32760:
         BRCLR   >ObdPidSupport5,#$20,L32C56
-        BRCLR   >DiagBusFlags,Z,#$20,L3282C
+        BRCLR   >DiagBusFlags,Z,#$20,L3282C              ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         LDAA    <FreezeFrame02,Z
         CLRB
         BRCLR   >ObdPidSupport5,#$01,L32778
@@ -3838,33 +3838,33 @@ L32760:
 L32778:
         LBRA    L3282E
 L3277C:
-        BRCLR   >DiagBusFlags,Z,#$20,L32820
+        BRCLR   >DiagBusFlags,Z,#$20,L32820              ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         LDAA    <FreezeFrame04,Z
         LBRA    L32822
 L32788:
-        BRCLR   >DiagBusFlags,Z,#$20,L32820
+        BRCLR   >DiagBusFlags,Z,#$20,L32820              ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         LDAA    <FreezeFrame05,Z
         SUBA    #$58
         LBCC    L32822
         LBRA    L32820
 L3279A:
         BRCLR   >ObdPidSupport5,#$04,L32C56
-        BRCLR   >DiagBusFlags,Z,#$20,L32820
+        BRCLR   >DiagBusFlags,Z,#$20,L32820              ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         LDAB    <FreezeFrame06,Z
         BRA     L327D8
 L327AA:
         BRCLR   >ObdPidSupport5,#$02,L32C56
-        BRCLR   >DiagBusFlags,Z,#$20,L32820
+        BRCLR   >DiagBusFlags,Z,#$20,L32820              ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         LDAB    <FreezeFrame07,Z
         BRA     L327D8
 L327BA:
         BRCLR   >ObdPidSupport5,#$01,L32C56
-        BRCLR   >DiagBusFlags,Z,#$20,L32820
+        BRCLR   >DiagBusFlags,Z,#$20,L32820              ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         LDAB    <FreezeFrame08,Z
         BRA     L327D8
 L327CA:
         BRCLR   >ObdPidSupport6,#$80,L32C56
-        BRCLR   >DiagBusFlags,Z,#$20,L32820
+        BRCLR   >DiagBusFlags,Z,#$20,L32820              ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         LDAB    <FreezeFrame09,Z
 L327D8:
         LDAA    #$01
@@ -3877,20 +3877,20 @@ L327E0:
         TBA
         BRA     L32822
 L327E8:
-        BRCLR   >DiagBusFlags,Z,#$20,L32820
+        BRCLR   >DiagBusFlags,Z,#$20,L32820              ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         LDAA    <FreezeFrame0A,Z
         LDAB    #$69
         MUL
         ADCA    #$00
         BRA     L32822
 L327F8:
-        BRCLR   >DiagBusFlags,Z,#$20,L3282C
+        BRCLR   >DiagBusFlags,Z,#$20,L3282C              ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         LDAA    <FreezeFrame0C,Z
         CLRB
         LSRD
         BRA     L3282E
 L32806:
-        BRCLR   >DiagBusFlags,Z,#$20,L32820
+        BRCLR   >DiagBusFlags,Z,#$20,L32820              ; bit 5: freeze frame holds more than two entries (JumpTable_32600)
         LDAA    <FreezeFrame0D,Z
         LDAB    #$CE
         MUL
@@ -4349,7 +4349,7 @@ L33044:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 SciPitService:
-        BRSET   >DiagBusFlags,Z,#$10,L330EC
+        BRSET   >DiagBusFlags,Z,#$10,L330EC              ; bit 4: output-compare test pulse running (diagnostic test, JumpTable_35BB0)
         BRSET   >PciFlags5,Z,#$40,L330EC
         BRSET   >Options032E,#$04,L330EC                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >CrankFlags2,Z,#$02,L330EC               ; bit 1: engine rpm below $1900: HighRpmTimer counting (HighRpmTimerPit); AsdRelayCheck and others read it
@@ -4374,7 +4374,7 @@ L33082:
         JMP     $33000,X
 L33092:
         BCLR    >SCCR1_L,Z,#$A0
-        BCLR    >DiagBusFlags,Z,#$08
+        BCLR    >DiagBusFlags,Z,#$08                     ; bit 3: OBD reply in progress (SciPitService)
         BRSET   >IoInputs0,Z,#$08,L330EC                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         BRSET   >IoStatus0B,Z,#$20,L330BC                ; bit 5: SCI line status, probably (SciPitService)
         LDAA    #$05
@@ -4385,7 +4385,7 @@ L33092:
         INC     >SciTimer,Z
         BRA     L330EC
 L330BC:
-        BRCLR   >DiagBusFlags,Z,#$40,L330EC
+        BRCLR   >DiagBusFlags,Z,#$40,L330EC              ; bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
         LDD     $0A36,Z
         CPD     #$0AE7
         BCC     L330D2
@@ -4394,7 +4394,7 @@ L330BC:
 L330D2:
         LDAA    >SCSR_L,Z
         LDAA    >SCDR_L,Z
-        BCLR    >DiagBusFlags,Z,#$40
+        BCLR    >DiagBusFlags,Z,#$40                     ; bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
         BCLR    >PciFlags5,Z,#$20
         BCLR    >OC1D,Z,#$08
         LDAA    #$08
@@ -4484,8 +4484,8 @@ L331B2:
         LDAA    >SciObdCount,Z
         CMPA    #$33
         BNE     L331F0
-        BSET    >DiagBusFlags,Z,#$40
-        BSET    >DiagBusFlags,Z,#$08
+        BSET    >DiagBusFlags,Z,#$40                     ; bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
+        BSET    >DiagBusFlags,Z,#$08                     ; bit 3: OBD reply in progress (SciPitService)
         LDD     #$0030
         STD     >SCCR0,Z
         BSET    >OC1D,Z,#$08
@@ -4657,7 +4657,7 @@ L33378:
         CMPA    #$15
         BCS     L333B2
         BCLR    >SCCR1_L,Z,#$20
-        BSET    >DiagBusFlags,Z,#$80
+        BSET    >DiagBusFlags,Z,#$80                     ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
         LDAA    >SCSR_L,Z
         LDAA    >SciObdCount,Z
         STAA    >SCDR_L,Z
@@ -4678,7 +4678,7 @@ L333B4:
         CMPA    #$15
         BLS     L333E4
         BCLR    >SCCR1_L,Z,#$20
-        BSET    >DiagBusFlags,Z,#$80
+        BSET    >DiagBusFlags,Z,#$80                     ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
         LDAA    >SCSR_L,Z
         LDAA    >SciObdCount,Z
         STAA    >SCDR_L,Z
@@ -4733,7 +4733,7 @@ SciInterrupt:
         CLR     $0A38,Z
         LDD     #$0AE7
         STD     $0A36,Z
-        BRSET   >DiagBusFlags,Z,#$80,L3347E
+        BRSET   >DiagBusFlags,Z,#$80,L3347E              ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
         BRCLR   >SCSR_L,Z,#$0E,L3345C
         LDAB    >SCDR_L,Z
         BRA     L334A4
@@ -4766,7 +4766,7 @@ L3347E:
         STAA    >SCDR_L,Z
         BRA     L334AC
 L334A4:
-        BCLR    >DiagBusFlags,Z,#$80
+        BCLR    >DiagBusFlags,Z,#$80                     ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
         BCLR    >SCCR1_L,Z,#$80
 L334AC:
         PULM    E,D
@@ -6012,10 +6012,10 @@ L35224:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 ActuatorTestMain:
-        BRSET   >DiagBusFlags,Z,#$40,L35440
+        BRSET   >DiagBusFlags,Z,#$40,L35440              ; bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
         LDE     >SCCR0,Z
-        BRSET   >DiagFlags,Z,#$80,L35378
-        BRCLR   >DiagFlags,Z,#$40,L35378
+        BRSET   >DiagFlags,Z,#$80,L35378                 ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
+        BRCLR   >DiagFlags,Z,#$40,L35378                 ; bit 6: SCI security exchange passed (SciSecurityReceive, code $1B)
         JSR     SciSecurityReceive
         LBCS    L35440
         LDE     >SCCR0,Z
@@ -6059,8 +6059,8 @@ L353BC:
         INCB
         BRA     L3543C
 L353CA:
-        BRCLR   >DiagFlags,Z,#$30,L35440
-        BCLR    >DiagFlags,Z,#$30
+        BRCLR   >DiagFlags,Z,#$30,L35440                 ; bit 5: SCI request state bit (SciRequestReceive); bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
+        BCLR    >DiagFlags,Z,#$30                        ; bit 5: SCI request state bit (SciRequestReceive); bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
         CLR     >DiagCommand,Z
         BRA     L35440
 L353DA:
@@ -6140,15 +6140,15 @@ L35470:
 L354AA:
         LDAA    #$28
         STAA    >DiagCommand,Z
-        BRSET   >SciUnlockState,Z,#$08,L35504
-        BRSET   >SciUnlockState,Z,#$10,L354C6
-        BSET    >SciUnlockState,Z,#$10
+        BRSET   >SciUnlockState,Z,#$08,L35504            ; bit 3: unlock sequence broken: wrong byte (SciRequestReceive)
+        BRSET   >SciUnlockState,Z,#$10,L354C6            ; bit 4: unlock sequence step: $12 seen (SciRequestReceive)
+        BSET    >SciUnlockState,Z,#$10                   ; bit 4: unlock sequence step: $12 seen (SciRequestReceive)
         STAB    >DiagParam1,Z
         BRA     L3553A
 L354C6:
         CMPB    >DiagParam1,Z
         BNE     L354F6
-        BCLR    >SciUnlockState,Z,#$10
+        BCLR    >SciUnlockState,Z,#$10                   ; bit 4: unlock sequence step: $12 seen (SciRequestReceive)
         TBA
         LDAB    >SciUnlockState,Z
         ANDB    #$07
@@ -6163,24 +6163,24 @@ L354C6:
 L354EC:
         CMPA    #$12
         BNE     L3553A
-        BCLR    >SciUnlockState,Z,#$07
+        BCLR    >SciUnlockState,Z,#$07                   ; bit 2: unlock sequence step counter bit (SciRequestReceive); bit 1: unlock sequence step counter bit (SciRequestReceive); bit 0: unlock sequence step counter bit (SciRequestReceive)
         BRA     L3553A
 L354F6:
-        BSET    >SciUnlockState,Z,#$08
+        BSET    >SciUnlockState,Z,#$08                   ; bit 3: unlock sequence broken: wrong byte (SciRequestReceive)
         CMPB    #$12
         BNE     L35508
 L354FE:
-        BSET    >SciUnlockState,Z,#$10
+        BSET    >SciUnlockState,Z,#$10                   ; bit 4: unlock sequence step: $12 seen (SciRequestReceive)
         BRA     L3553A
 L35504:
         CMPB    #$12
         BEQ     L3550E
 L35508:
-        BCLR    >SciUnlockState,Z,#$10
+        BCLR    >SciUnlockState,Z,#$10                   ; bit 4: unlock sequence step: $12 seen (SciRequestReceive)
         BRA     L3553A
 L3550E:
-        BRCLR   >SciUnlockState,Z,#$10,L354FE
-        BCLR    >SciUnlockState,Z,#$1F
+        BRCLR   >SciUnlockState,Z,#$10,L354FE            ; bit 4: unlock sequence step: $12 seen (SciRequestReceive)
+        BCLR    >SciUnlockState,Z,#$1F                   ; bit 4: unlock sequence step: $12 seen (SciRequestReceive); bit 3: unlock sequence broken: wrong byte (SciRequestReceive); bit 2: unlock sequence step counter bit (SciRequestReceive); bit 1: unlock sequence step counter bit (SciRequestReceive); bit 0: unlock sequence step counter bit (SciRequestReceive)
         BRA     L3553A
 L3551A:
         BRSET   >SciUnlockState,Z,#$E0,L35522
@@ -6210,7 +6210,7 @@ L35544:
         LDAB    >SciUnlockState,Z
         ADDB    #$20
         STAB    >SciUnlockState,Z
-        BSET    >DiagFlags,Z,#$30
+        BSET    >DiagFlags,Z,#$30                        ; bit 5: SCI request state bit (SciRequestReceive); bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
         LDD     >SCSR,Z
         LDD     >SCDR,Z
         LDAB    #$14
@@ -6379,7 +6379,7 @@ LdpPurgeTest:
         XGEX
         JMP     $35000,X
 L356C6:
-        BCLR    >DiagFlags,Z,#$30
+        BCLR    >DiagFlags,Z,#$30                        ; bit 5: SCI request state bit (SciRequestReceive); bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
         CLR     >DiagCommand,Z
 L356CE:
         RTS
@@ -6400,7 +6400,7 @@ L356F2:
         JSR     SciSendByte
         RTS
 L356FE:
-        BSET    >DiagFlags,Z,#$80
+        BSET    >DiagFlags,Z,#$80                        ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
         CLR     >DiagCommand,Z
 L35706:
         BRCLR   >SCSR_L,Z,#$80,L35706
@@ -6682,12 +6682,12 @@ L35A18:
         JSR     CollectBits
         JMP     SciSendByte
 L35A24:
-        BSET    >DiagFlags,Z,#$40
+        BSET    >DiagFlags,Z,#$40                        ; bit 6: SCI security exchange passed (SciSecurityReceive, code $1B)
         CLR     >DiagCommand,Z
         RTS
 DiagWriteRamByte:
         LDAA    #$F1
-        BRCLR   >DiagRamFlags,Z,#$01,L35A58
+        BRCLR   >DiagRamFlags,Z,#$01,L35A58              ; bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
         TZX
         LDX     #$8700
         LDAA    >DiagParam2,Z
@@ -6964,7 +6964,7 @@ L35CC0:
         TST     >SkimDataFlags,Z
         LBNE    SciSendByte
         LDAA    #$03
-        BRCLR   >DiagRamFlags,Z,#$10,SciSendByte
+        BRCLR   >DiagRamFlags,Z,#$10,SciSendByte         ; bit 4: key accepted for session 2 (DiagRamSession2)
         LDAB    #$05
         STAB    >SkimTimer,Z
         LBRA    L35C64
@@ -7010,7 +7010,7 @@ L35D42:
         BCLR    >OC1D,Z,#$08
         LDAB    #$08
         STAB    >CFORC,Z
-        BSET    >DiagBusFlags,Z,#$10
+        BSET    >DiagBusFlags,Z,#$10                     ; bit 4: output-compare test pulse running (diagnostic test, JumpTable_35BB0)
         LBRA    L35E02
 L35D62:
         SUBB    #$05
@@ -7070,7 +7070,7 @@ L35DEA:
 L35DEC:
         CLR     >SystemTestMode,Z
         CLR     >SystemTestValue,Z
-        BCLR    >DiagBusFlags,Z,#$10
+        BCLR    >DiagBusFlags,Z,#$10                     ; bit 4: output-compare test pulse running (diagnostic test, JumpTable_35BB0)
 L35DF8:
         LDAB    #$FF
         STAB    >InjectorKillCyl1,Z
@@ -7147,7 +7147,7 @@ L35EB2:
         LDAB    >DiagParam2,Z
         TDE
         LDAA    #$F1
-        BRCLR   >DiagRamFlags,Z,#$01,L35ED2
+        BRCLR   >DiagRamFlags,Z,#$01,L35ED2              ; bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
         LDAA    #$F0
         BCC     L35ED2
         LDAB    >DiagParam1,Z
@@ -7572,7 +7572,7 @@ L362C6:
         STAB    >PurgePwmDuty,Z
         BRA     L362DE
 L362CC:
-        BCLR    >SciLogFlags,Z,#$40
+        BCLR    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         CLRB
         BRSET   >MainLoopCounter,Z,#$80,L362DA
         LDAB    #$32
@@ -7938,23 +7938,23 @@ DiagRamSession1:
         LDAB    >DiagParam1,Z
         CMPB    #$01
         BNE     L3665A
-        BSET    >DiagRamFlags,Z,#$80
-        BCLR    >DiagRamFlags,Z,#$40
+        BSET    >DiagRamFlags,Z,#$80                     ; bit 7: RAM session of type 1 open (DiagRamSession1, parameter 1)
+        BCLR    >DiagRamFlags,Z,#$40                     ; bit 6: RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)
         BRA     L36676
 L3665A:
         CMPB    #$02
         LBNE    L366F0
-        BSET    >DiagRamFlags,Z,#$40
-        BCLR    >DiagRamFlags,Z,#$80
+        BSET    >DiagRamFlags,Z,#$40                     ; bit 6: RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)
+        BCLR    >DiagRamFlags,Z,#$80                     ; bit 7: RAM session of type 1 open (DiagRamSession1, parameter 1)
         JSR     DiagSeedSend
         BRA     L3669C
 L3666E:
         CMPA    #$2B
         BNE     L366F0
-        BCLR    >DiagRamFlags,Z,#$C0
+        BCLR    >DiagRamFlags,Z,#$C0                     ; bit 7: RAM session of type 1 open (DiagRamSession1, parameter 1); bit 6: RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)
 L36676:
         CLR     >DiagCommand,Z
-        BRCLR   >DiagRamFlags,Z,#$01,L36688
+        BRCLR   >DiagRamFlags,Z,#$01,L36688              ; bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
         CLRD
         CLRW    $09B9,Z
         BRA     L366A0
@@ -7971,29 +7971,29 @@ L3669C:
         STE     $09B9,Z
 L366A0:
         STD     $09BB,Z
-        BSET    >DiagRamFlags,Z,#$0E
+        BSET    >DiagRamFlags,Z,#$0E                     ; bit 3: reply byte 1 pending (DiagRamSession1); bit 2: reply byte 2 pending (DiagRamSession1); bit 1: reply word pending (DiagRamSession1)
         BRA     L366F0
 L366AA:
         BITB    #$08
         BEQ     L366BC
-        BCLR    >DiagRamFlags,Z,#$08
+        BCLR    >DiagRamFlags,Z,#$08                     ; bit 3: reply byte 1 pending (DiagRamSession1)
         LDAA    $09BB,Z
         JSR     SciSendByte
         BRA     L366F0
 L366BC:
         BITB    #$04
         BEQ     L366CE
-        BCLR    >DiagRamFlags,Z,#$04
+        BCLR    >DiagRamFlags,Z,#$04                     ; bit 2: reply byte 2 pending (DiagRamSession1)
         LDAA    $09BC,Z
         JSR     SciSendByte
         BRA     L366F0
 L366CE:
-        BCLR    >DiagRamFlags,Z,#$02
+        BCLR    >DiagRamFlags,Z,#$02                     ; bit 1: reply word pending (DiagRamSession1)
         LDD     $09BB,Z
         ABA
-        BRCLR   >DiagRamFlags,Z,#$C0,L366EA
+        BRCLR   >DiagRamFlags,Z,#$C0,L366EA              ; bit 7: RAM session of type 1 open (DiagRamSession1, parameter 1); bit 6: RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)
         ADDA    #$36
-        BRSET   >DiagRamFlags,Z,#$80,L366EC
+        BRSET   >DiagRamFlags,Z,#$80,L366EC              ; bit 7: RAM session of type 1 open (DiagRamSession1, parameter 1)
         ADDA    #$01
         BRA     L366EC
 L366EA:
@@ -8022,11 +8022,11 @@ L36706:
         BITA    #$30
         BNE     L3678E
         LDAA    #$02
-        BRSET   >DiagRamFlags,Z,#$40,L36726
-        BRSET   >DiagRamFlags,Z,#$20,L36786
+        BRSET   >DiagRamFlags,Z,#$40,L36726              ; bit 6: RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)
+        BRSET   >DiagRamFlags,Z,#$20,L36786              ; bit 5: key accepted for session 1 (DiagRamSession2)
         BRA     L3672C
 L36726:
-        BRSET   >DiagRamFlags,Z,#$10,L36786
+        BRSET   >DiagRamFlags,Z,#$10,L36786              ; bit 4: key accepted for session 2 (DiagRamSession2)
 L3672C:
         TST     $09B8,Z
         BNE     L36742
@@ -8049,11 +8049,11 @@ L36752:
         LDAB    >DiagParam2,Z
         CPD     $09B9,Z
         BNE     L36774
-        BRSET   >DiagRamFlags,Z,#$40,L3676C
-        BSET    >DiagRamFlags,Z,#$21
+        BRSET   >DiagRamFlags,Z,#$40,L3676C              ; bit 6: RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)
+        BSET    >DiagRamFlags,Z,#$21                     ; bit 5: key accepted for session 1 (DiagRamSession2); bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
         BRA     L36770
 L3676C:
-        BSET    >DiagRamFlags,Z,#$10
+        BSET    >DiagRamFlags,Z,#$10                     ; bit 4: key accepted for session 2 (DiagRamSession2)
 L36770:
         CLRA
         BRA     L36786
@@ -8077,7 +8077,7 @@ L3678E:
 ;---------------------------------------------------------------------------------------------------
 DiagSeedSend:
         CLR     >DiagCommand,Z
-        BRCLR   >DiagRamFlags,Z,#$10,L367A0
+        BRCLR   >DiagRamFlags,Z,#$10,L367A0              ; bit 4: key accepted for session 2 (DiagRamSession2)
         CLRD
         CLRE
         BRA     L367B2
@@ -8149,7 +8149,7 @@ DiagRamAddrAllowed:
         LDD     E,Y
         ANDD    $6848,X
         BEQ     L36894
-        BRCLR   >DiagRamFlags,Z,#$01,L36894
+        BRCLR   >DiagRamFlags,Z,#$01,L36894              ; bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
         CLRA
 L36894:
         PULM    K,Y,X,E,D
@@ -9684,7 +9684,7 @@ RunModeSwitch:
         BITA    #$30
         LBNE    L390FE
         LDAA    #$F1
-        BRCLR   >DiagRamFlags,Z,#$01,L390EE
+        BRCLR   >DiagRamFlags,Z,#$01,L390EE              ; bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
         LDAA    >RefPeriod,Z
         CMPA    #$50
         BLS     L390EC
@@ -14943,7 +14943,7 @@ L3DC12:
 PurgeDutySelect:
         LDAA    >PurgeCommand,Z
         BRCLR   >ThrottleState,Z,#$80,L3DC2C             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BSET    >SciLogFlags,Z,#$40
+        BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         LDX     #PurgeDutyClosed
         BRA     L3DC52
 L3DC2C:
@@ -14954,11 +14954,11 @@ L3DC3A:
         BRCLR   >Options0339,#$08,L3DC4A                 ; bit 3: alternative purge duty off closed throttle (PurgeDutyAltOther)
 L3DC40:
         LDX     #PurgeDutyAlt
-        BSET    >SciLogFlags,Z,#$40
+        BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         BRA     L3DC52
 L3DC4A:
         LDX     #PurgeDutyPart
-        BCLR    >SciLogFlags,Z,#$40
+        BCLR    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
 L3DC52:
         JSR     Lookup2D
         BRCLR   >FlexLearnFlags7,Z,#$10,L3DC5E           ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
@@ -15730,7 +15730,7 @@ PurgePwmOutput:
         LDAB    #$FA
         MUL
         SDE
-        BRSET   >SciLogFlags,Z,#$40,L3E40E
+        BRSET   >SciLogFlags,Z,#$40,L3E40E               ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ASLD
         ASLE
 L3E40E:
@@ -15942,7 +15942,7 @@ L3E650:
 L3E65A:
         STAA    >PurgeLearnRate,Z
         ORP     #$00E0
-        BSET    >SciLogFlags,Z,#$40
+        BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
         LDAA    >PurgeVaporSettle,Z
         CMPA    >PurgeVaporSettleTime
@@ -16049,7 +16049,7 @@ L3E774:
         LDAA    >PurgeLearnRateInit2
         ORP     #$00E0
         STAA    >PurgeLearnRate,Z
-        BCLR    >SciLogFlags,Z,#$40
+        BCLR    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
         BRA     L3E7CC
 L3E790:
@@ -16070,7 +16070,7 @@ L3E7B2:
 L3E7BC:
         ORP     #$00E0
         STAA    >PurgeLearnRate,Z
-        BSET    >SciLogFlags,Z,#$40
+        BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
 L3E7CC:
         LDAA    >PurgeRamp,Z
@@ -16941,10 +16941,10 @@ L3F8E2:
         BEQ     L3F8FC
 L3F8E6:
         CLR     >SciSecurityState,Z
-        BCLR    >DiagFlags,Z,#$40
+        BCLR    >DiagFlags,Z,#$40                        ; bit 6: SCI security exchange passed (SciSecurityReceive, code $1B)
         CMPB    #$1B
         LBNE    L3F9D8
-        BSET    >DiagFlags,Z,#$40
+        BSET    >DiagFlags,Z,#$40                        ; bit 6: SCI security exchange passed (SciSecurityReceive, code $1B)
         JMP     L3F9D8
 L3F8FC:
         LDAA    >SciSecurityState,Z
@@ -16955,7 +16955,7 @@ L3F8FC:
         BCS     L3F91C
 L3F90E:
         CLR     >SciSecurityState,Z
-        BCLR    >DiagFlags,Z,#$40
+        BCLR    >DiagFlags,Z,#$40                        ; bit 6: SCI security exchange passed (SciSecurityReceive, code $1B)
         LDAB    #$17
         JMP     L3F9D8
 L3F91C:
@@ -16985,7 +16985,7 @@ L3F948:
         LDAB    $00,Y
 L3F950:
         CLR     >SciSecurityState,Z
-        BCLR    >DiagFlags,Z,#$40
+        BCLR    >DiagFlags,Z,#$40                        ; bit 6: SCI security exchange passed (SciSecurityReceive, code $1B)
         ANDP    #$FF1F
         JMP     L3F9D8
 L3F960:
@@ -17004,7 +17004,7 @@ L3F96C:
         DECW    $0C59,Z
         BNE     L3F98E
         CLR     >SciSecurityState,Z
-        BCLR    >DiagFlags,Z,#$40
+        BCLR    >DiagFlags,Z,#$40                        ; bit 6: SCI security exchange passed (SciSecurityReceive, code $1B)
         BRA     L3F9E4
 L3F98E:
         CBA
