@@ -8842,14 +8842,14 @@ Sub_17A1C:
         BPL     L17A46
         NEGA
         BRSET   $01AF,Z,#$80,L17A3C
-        LDAB    >PurgeThresh6
-        ADDB    >PurgeAdder6
+        LDAB    >PurgeCellRichMax2
+        ADDB    >PurgeCellRichHyst2
         CBA
         BCS     L17A46
         BSET    $01AF,Z,#$80
         BRA     L17A46
 L17A3C:
-        CMPA    >PurgeThresh6
+        CMPA    >PurgeCellRichMax2
         BCC     L17A46
         BCLR    $01AF,Z,#$80
 L17A46:

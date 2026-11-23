@@ -1100,16 +1100,16 @@ L10B0E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10B14 ($10B14)
+; SpeedCtlRpmJumpCheck ($10B14)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_10B14:
+SpeedCtlRpmJumpCheck:
         BRCLR   >Options0339,#$20,L10BB8
-        LDAB    >SensorValue11
+        LDAB    >SpeedCtlRpmFilter
         LDAA    >EngineRpm,Z
         CMPA    $031F,Z
         BHI     L10B2C
-        LDAB    >SensorV00F0Init
+        LDAB    >SpeedCtlRpmFilterLow
 L10B2C:
         STAB    >IacBase,Z
         LDE     >EngineRpm,Z
@@ -1124,14 +1124,14 @@ L10B2C:
         TDE
         LDD     $0144,Z
         PSHM    D,E
-        LDAA    >SensorValue12
+        LDAA    >SpeedCtlThrottleFilter
         JSR     Blend16
         AIS     #$04
         STD     $0144,Z
         BRCLR   $031B,Z,#$10,L10BB8
         BRSET   $01B5,Z,#$10,L10BB8
         LDD     >EngineRpm,Z
-        CPD     >SensorRpmThresh7
+        CPD     >SpeedCtlRpmJumpMinRpm
         BCS     L10BB8
         LDAA    >ThrottleAboveClosed,Z
         SUBA    $0144,Z
@@ -1151,7 +1151,7 @@ L10B98:
         BCS     L10BB8
         CPD     >SpeedCtlRpmJump
         BCS     L10BB8
-        LDAB    >SensorValue13
+        LDAB    >SpeedCtlRpmJumpHold
         BRA     L10BBA
 L10BB4:
         DECB
@@ -1209,7 +1209,7 @@ L10C24:
         LDAA    $2318
         LDAB    $2317
 L10C4C:
-        JSR     Sub_10CC8
+        JSR     SpeedCtlThrottleRef
         STAA    $015E,Z
 L10C54:
         BRCLR   $014C,Z,#$10,L10C90
@@ -1263,10 +1263,10 @@ L10CC6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10CC8 ($10CC8)
+; SpeedCtlThrottleRef ($10CC8)
 ; Called from: Sub_10BC0
 ;---------------------------------------------------------------------------------------------------
-Sub_10CC8:
+SpeedCtlThrottleRef:
         STAA    $05,Y
         LDAA    >VehicleSpeed,Z
         LSRA
@@ -16216,10 +16216,10 @@ Sub_1AE20:
         BRA     L1AE2E
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1AE28 ($1AE28)
+; O2IdleMonitor ($1AE28)
 ; Called from: Sub_1FC1A
 ;---------------------------------------------------------------------------------------------------
-Sub_1AE28:
+O2IdleMonitor:
         PSHM    X,Y,K
         LDY     #$ADE4
 L1AE2E:
@@ -16292,11 +16292,11 @@ L1AE7A:
         CMPA    >O2MonCoolantMin
         LBCS    L1AFB4
         LDAA    $0326,Z
-        CMPA    >DiagV0A4EThresh
+        CMPA    >O2MonSensorReadyMin
         LBCS    L1AFB4
         BRCLR   $0011,Z,#$04,L1AF3A
         LDAA    $0327,Z
-        CMPA    >DiagV0A4EThresh
+        CMPA    >O2MonSensorReadyMin
         LBCS    L1AFB4
 L1AF3A:
         LDAB    >BatteryVolts2,Z
@@ -16317,7 +16317,7 @@ L1AF5A:
         BNE     L1AF84
         BRCLR   $03CE,Z,#$04,L1AF7C
         LDAA    $02E0,Z
-        CMPA    >DiagV0543Thresh
+        CMPA    >O2MonPurgeOffTime
         LBCS    L1AFB4
         BRA     L1AF84
 L1AF7C:
@@ -16332,7 +16332,7 @@ L1AF96:
         BRSET   $02C6,Z,#$40,L1AFAC
         BSET    $02C6,Z,#$40
 L1AFA0:
-        LDAA    >DiagV0541Init
+        LDAA    >O2MonRestartDelay
         STAA    $02D8,Z
         LBRA    L1AFB4
 L1AFAC:
@@ -16350,7 +16350,7 @@ L1AFB4:
 L1AFCA:
         BRSET   $00E7,Z,#$01,L1AFF8
         LDAA    $02D9,Z
-        CMPA    >DiagV0542Thresh
+        CMPA    >O2MonStableTime
         LBCS    L1AFF8
         LDAA    $02D7,Z
         ANDA    $32,Y
@@ -16407,14 +16407,14 @@ L1B02A:
         LDE     $000C,Y
         ADDA    E,Z
         BCS     L1B07E
-        CMPA    >DiagThresh8
+        CMPA    >O2MonWindowMax
         BCS     L1B080
 L1B07E:
         LDAA    #$FF
 L1B080:
         LDE     $000A,Y
         LDAA    E,Z
-        CMPA    >DiagThresh6
+        CMPA    >O2MonSettleCount
         BCC     L1B09E
         BRCLR   >MainLoopPhaseMask,Z,#$20,L1B1C6
         INCA
@@ -16467,7 +16467,7 @@ L1B0E4:
 L1B106:
         LDE     $000C,Y
         LDAA    E,Z
-        CMPA    >DiagThresh8
+        CMPA    >O2MonWindowMax
         BLS     L1B132
         LDAB    $3B,Y
         COMB
@@ -16482,7 +16482,7 @@ L1B106:
 L1B132:
         LDE     $000C,Y
         LDAA    E,Z
-        CMPA    >DiagThresh9
+        CMPA    >O2MonWindowMin
         LBCS    L1B1C6
         LDE     $001C,Y
         LDD     E,Z
@@ -16532,7 +16532,7 @@ L1B1A4:
         BVC     L1B1B6
         LDAA    #$7F
 L1B1B6:
-        CMPA    >DiagThresh7
+        CMPA    >O2MonTrimResetMin
         BCS     L1B1C6
         LDAA    $38,Y
         ORAA    $055C,Z
@@ -16543,7 +16543,7 @@ L1B1C6:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1B1CA ($1B1CA)
-; Called from: Sub_1AE28
+; Called from: O2IdleMonitor
 ;---------------------------------------------------------------------------------------------------
 Sub_1B1CA:
         LDE     $001E,Y
@@ -16577,7 +16577,7 @@ L1B1FA:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1B208 ($1B208)
-; Called from: Sub_1AE28
+; Called from: O2IdleMonitor
 ;---------------------------------------------------------------------------------------------------
 Sub_1B208:
         PSHM    X,K
@@ -16665,7 +16665,7 @@ L1B2AA:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1B2BC ($1B2BC)
-; Called from: Sub_1AE28, Sub_1B346
+; Called from: O2IdleMonitor, Sub_1B346
 ;---------------------------------------------------------------------------------------------------
 Sub_1B2BC:
         LDAA    $32,Y
@@ -16730,7 +16730,7 @@ L1B33E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1B346 ($1B346)
-; Called from: Sub_1AE28 (2 calls)
+; Called from: O2IdleMonitor (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_1B346:
         LDE     $0000,Y
@@ -17016,7 +17016,7 @@ L1B64A:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1B664 ($1B664)
-; Called from: Sub_1B772, Sub_1B9A6
+; Called from: Sub_1B772, CatMonSwitchRatio
 ;---------------------------------------------------------------------------------------------------
 Sub_1B664:
         BCLR    $0217,Z,#$0C
@@ -17309,10 +17309,10 @@ L1B9A4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1B9A6 ($1B9A6)
+; CatMonSwitchRatio ($1B9A6)
 ; Called from: Sub_1FC1A
 ;---------------------------------------------------------------------------------------------------
-Sub_1B9A6:
+CatMonSwitchRatio:
         BRCLR   $0201,Z,#$80,L1BB90
         BRCLR   $00B4,Z,#$80,L1BB80
         BRSET   $00A5,Z,#$80,L1BB7C
@@ -23632,13 +23632,13 @@ JumpTable_1FC22:
         JSR     Sub_1B772
         BRA     L1FC64
 L1FC28:
-        JSR     Sub_1B9A6
+        JSR     CatMonSwitchRatio
         BRA     L1FC64
 L1FC2E:
         JSR     Sub_1AE20
         BRA     L1FC64
 L1FC34:
-        JSR     Sub_1AE28
+        JSR     O2IdleMonitor
         BRA     L1FC64
 L1FC3A:
         JSR     PurgeFlowTest

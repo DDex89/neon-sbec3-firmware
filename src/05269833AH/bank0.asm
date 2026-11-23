@@ -3534,12 +3534,12 @@ SensorThresh8:
         dc.b    $00,$00
 PurgeCoolantMin:
         dc.b    $90                                      ; Purge runs at or above this coolant temperature
-SensorCoolantThresh4:
-        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_3DE9C.
-SensorValue9:
-        dc.b    $3E                                      ; Byte used with; read by Sub_3DE9C.
-SensorV042BInit:
-        dc.b    $1A                                      ; Byte stored into V042B; read by Sub_3DE9C.
+PurgeWarmCoolant:
+        dc.b    $CD                                      ; Purge reset: coolant at or above this value selects the warm delay
+PurgeColdDelay:
+        dc.b    $3E                                      ; Purge reset (PurgeReset): purge delay $042B,Z with coolant below PurgeWarmCoolant
+PurgeWarmDelay:
+        dc.b    $1A                                      ; Purge reset: purge delay $042B,Z with a warm engine
 PurgeBattTempMin:
         dc.b    $58                                      ; Purge start: battery temperature lower limit
 PurgeBattTempMax:
@@ -3554,7 +3554,7 @@ PurgeFactor1:
         dc.b    $01,$84                                  ; Word multiplied; read by Sub_3E4CA.
         dc.b    $07,$02
 PurgeDelayInit:
-        dc.b    $80                                      ; Start value of the purge delay $042F,Z (reset, Sub_3DC64, Sub_3DE9C)
+        dc.b    $80                                      ; Start value of the purge delay $042F,Z (reset, Sub_3DC64, PurgeReset)
         dc.b    $96,$02,$05,$04,$00,$1C,$04,$05,$20,$B3,$CD,$BC,$1E,$40,$20,$39
         dc.b    $0A,$0A,$02,$01,$00,$58,$FE,$C0,$9D,$91,$28,$01,$FF,$00,$01,$28
         dc.b    $FA,$50,$FE,$00
@@ -3727,18 +3727,18 @@ O2LearnPurgeCountMax:
         dc.b    $12,$0D
 FlexLearnCoolantThresh6:
         dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_17FC4, Sub_3DFCA.
-PurgeThresh5:
-        dc.b    $2C                                      ; Byte compared with; read by Sub_3DD3C.
-PurgeThresh6:
-        dc.b    $2C                                      ; Byte compared with; read by Sub_17A1C, Sub_3DD3C.
-PurgeThresh7:
-        dc.b    $2C                                      ; Byte compared with; read by Sub_3DD3C.
-PurgeAdder5:
-        dc.b    $05                                      ; Byte added to; read by Sub_3DD3C.
-PurgeAdder6:
-        dc.b    $05                                      ; Byte added to; read by Sub_17A1C, Sub_3DD3C.
-PurgeAdder7:
-        dc.b    $05                                      ; Byte added to; read by Sub_3DD3C.
+PurgeCellRichMax1:
+        dc.b    $2C                                      ; Purge cell check (PurgeCellCheck): learned-cell rise ($6A,Z minus the memory cell at PurgeCell1) at or above this value sets $0080,Z bit 5
+PurgeCellRichMax2:
+        dc.b    $2C                                      ; As PurgeCellRichMax1 for PurgeCell2 ($0080,Z bit 4; also Sub_17A1C)
+PurgeCellRichMax3:
+        dc.b    $2C                                      ; As PurgeCellRichMax1 for PurgeCell3 ($0080,Z bit 3)
+PurgeCellRichHyst1:
+        dc.b    $05                                      ; Purge cell check: hysteresis added while the PurgeCell1 bit is set
+PurgeCellRichHyst2:
+        dc.b    $05                                      ; As PurgeCellRichHyst1 for PurgeCell2 (also Sub_17A1C)
+PurgeCellRichHyst3:
+        dc.b    $05                                      ; As PurgeCellRichHyst1 for PurgeCell3
         dc.b    $D7
 O2TrimResetValue:
         dc.b    $00                                      ; Closed-loop manager: value loaded into the bank trim when $0760,Z bits 2-3 request a reset
@@ -6628,20 +6628,20 @@ SpeedCtlSpeedMin:
         dc.b    255,138                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-SpeedCtlOverrideTimerInit1:
-        dc.b    $00                                      ; Byte stored into SpeedCtlOverrideTimer; read by Sub_3C46E.
-SpeedCtlValue4:
-        dc.b    $00                                      ; Byte used with; read by Sub_3C46E.
-SpeedCtlValue5:
-        dc.b    $00                                      ; Byte used with; read by Sub_3C46E.
-SpeedCtlOverrideTimerInit2:
-        dc.b    $00                                      ; Byte stored into SpeedCtlOverrideTimer; read by Sub_3C46E.
-SpeedCtlValue6:
-        dc.b    $00                                      ; Byte used with; read by Sub_3C46E.
-SpeedCtlValue7:
-        dc.b    $00                                      ; Byte used with; read by Sub_3C46E.
-SpeedCtlRpmSpeedRatioThresh3:
-        dc.b    $40                                      ; Byte compared with RpmSpeedRatio; read by Sub_3C46E.
+SpeedCtlShiftHoldTime:
+        dc.b    $00                                      ; Speed control shift handling: servo hold time (SpeedCtlOverrideTimer) after a clutch/up-shift event
+SpeedCtlShiftThrottleSlope:
+        dc.b    $00                                      ; Speed control shift handling: speed slope of the throttle reference, first event
+SpeedCtlShiftThrottleBase:
+        dc.b    $00                                      ; Speed control shift handling: throttle reference = this + slope × speed (SpeedCtlThrottleRef), first event
+SpeedCtlShiftHoldTime2:
+        dc.b    $00                                      ; Speed control shift handling: servo hold time after the second shift event ($09CE,Z bit 3)
+SpeedCtlShiftThrottleSlope2:
+        dc.b    $00                                      ; As SpeedCtlShiftThrottleSlope for the second event
+SpeedCtlShiftThrottleBase2:
+        dc.b    $00                                      ; As SpeedCtlShiftThrottleBase for the second event
+SpeedCtlGearRatioMax:
+        dc.b    $40                                      ; Speed control shift handling (SpeedCtlShift, manual): rpm/speed ratio at or below this value counts as in gear
 SpeedCtlOverrideCoolantMin:
         dc.b    $69                                      ; Speed control: coolant at or above this value for the driver-override throttle check
 SpeedCtlFactor1:
@@ -6666,20 +6666,20 @@ SpeedCtlOverrideThrottle:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$05,$80,$00,$01,$08,$02,$2C,$05,$4D,$0A
         dc.b    $FF,$10,$02,$20,$33,$00,$80,$F2,$FF,$FF,$FF,$FF
-SensorV00F0Init:
-        dc.b    $04                                      ; Byte stored into V00F0; read by Sub_3C3C6.
-SensorValue11:
-        dc.b    $09                                      ; Byte used with; read by Sub_3C3C6.
+SpeedCtlRpmFilterLow:
+        dc.b    $04                                      ; As SpeedCtlRpmFilter with rpm at or below $0C4E,Z
+SpeedCtlRpmFilter:
+        dc.b    $09                                      ; Speed control rpm-jump check (SpeedCtlRpmJump): filter weight of the rpm average $040A,Z
 SpeedCtlRpmJump:
-        dc.b    $0A,$20                                  ; Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)
-SensorRpmThresh7:
-        dc.b    $26,$00                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
-SensorValue12:
-        dc.b    $40                                      ; Byte used with; read by Sub_3C3C6.
+        dc.b    $0A,$20                                  ; Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)
+SpeedCtlRpmJumpMinRpm:
+        dc.b    $26,$00                                  ; Speed control rpm-jump check: engine rpm at or above this value
+SpeedCtlThrottleFilter:
+        dc.b    $40                                      ; Speed control rpm-jump check: filter weight of the throttle average $040C,Z
 SpeedCtlRpmJumpThrottle:
         dc.b    $0D                                      ; Speed control: the rpm-jump cancel needs the throttle within this value of the reference
-SensorValue13:
-        dc.b    $10                                      ; Byte used with; read by Sub_3C3C6.
+SpeedCtlRpmJumpHold:
+        dc.b    $10                                      ; Speed control rpm-jump check: hold count ($0417,Z) set by an rpm jump (clutch pressed)
 SpeedCtlV0423Thresh:
         dc.b    $00                                      ; Byte compared with V0423; read by Sub_3C690.
         dc.b    $00
@@ -7322,8 +7322,8 @@ PurgeFlowTrimDrop:
         dc.b    $1E                                      ; EVAP purge flow test: short-term trim drop that counts as purge flow (also used by O2UpTrim)
 PurgeFlowTrimDropAlt:
         dc.b    $1E                                      ; As PurgeFlowTrimDrop with $0312,Z bit 6 set
-PurgeV006AThresh:
-        dc.b    $29                                      ; Byte compared with V006A; read by Sub_3DD3C.
+PurgeCellFaultRise:
+        dc.b    $29                                      ; Purge cell check: cell rise at or above this value also sets $05B0,Z bit 0
 PurgeFlowFailCount:
         dc.b    $02                                      ; EVAP purge flow test: tests without a response ($05BD,Z) before the monitor sets its result
 EgrMonSteadyTime:
@@ -7438,7 +7438,7 @@ FuelSysLimitScale2:
         dc.b    15,0, 30,64, 50,128, 85,192, 255,255     ; x, y
 
 O2MonTimeMin:
-        dc.b    $41                                      ; O2 sensor monitor at idle (Sub_2877A): time since start at or above this value
+        dc.b    $41                                      ; O2 sensor monitor at idle (O2IdleMonitor): time since start at or above this value
 O2MonCoolantMin:
         dc.b    $C7                                      ; O2 sensor monitor at idle: coolant at or above this value
 O2MonSpeedMax:
@@ -7451,28 +7451,28 @@ O2MonTrimMax:
         dc.b    $7B                                      ; O2 sensor monitor at idle: short-term trim at or below this value
 O2MonTrimMin:
         dc.b    $85                                      ; O2 sensor monitor at idle: short-term trim at or above this value
-DiagV0542Thresh:
-        dc.b    $08                                      ; Byte compared with V0542; read by Sub_2877A.
-DiagV0541Init:
-        dc.b    $08                                      ; Byte stored into V0541; read by Sub_2877A.
-DiagV0A4EThresh:
-        dc.b    $11                                      ; Byte compared with V0A4E; read by Sub_2877A.
-DiagV0543Thresh:
-        dc.b    $1E                                      ; Byte compared with V0543; read by Sub_2877A.
+O2MonStableTime:
+        dc.b    $08                                      ; O2 sensor monitor at idle (O2IdleMonitor): stable-condition count ($0542,Z) at or above which the sensors are tested
+O2MonRestartDelay:
+        dc.b    $08                                      ; O2 sensor monitor at idle: delay ($0541,Z) loaded when the test conditions start again
+O2MonSensorReadyMin:
+        dc.b    $11                                      ; O2 sensor monitor at idle: sensor ready counts ($0A4E/$0A4F,Z) at or above this value
+O2MonPurgeOffTime:
+        dc.b    $1E                                      ; O2 sensor monitor at idle: purge-off time ($0543,Z) needed when purge is not finished
         dc.b    $89,$85,$00,$00,$02,$00,$01,$00
-DiagThresh6:
-        dc.b    $0B                                      ; Byte compared with; read by Sub_2877A.
+O2MonSettleCount:
+        dc.b    $0B                                      ; O2 sensor monitor at idle: settle passes ($0A,Y) before the switch counts are summed
         dc.b    $05,$2D,$00,$00
-DiagThresh7:
-        dc.b    $7F                                      ; Byte compared with; read by Sub_2877A.
+O2MonTrimResetMin:
+        dc.b    $7F                                      ; O2 sensor monitor at idle: trim size at or above which a bank trim reset is requested ($0761,Z)
 O2TrimResetValue2:
         dc.b    $00                                      ; Closed-loop manager: value loaded into the bank trim when $0761,Z bits 6-7 request a reset
         dc.b    $05,$FB,$00,$00,$0F,$F1,$00,$00,$15,$15,$00,$00,$15,$84,$8A,$00
         dc.b    $00
-DiagThresh8:
-        dc.b    $70                                      ; Byte compared with; read by Sub_2877A.
-DiagThresh9:
-        dc.b    $0C                                      ; Byte compared with; read by Sub_2877A.
+O2MonWindowMax:
+        dc.b    $70                                      ; O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6)
+O2MonWindowMin:
+        dc.b    $0C                                      ; O2 sensor monitor at idle: window count at or above which the switch counts are judged
         dc.b    $12,$80,$80
 CalRunTimeThresh:
         dc.b    $60                                      ; Byte compared with RunTime; read by Sub_28D78.
@@ -7506,27 +7506,27 @@ CatMonTipInMax:
         dc.b    $01,$00                                  ; Catalyst monitor: tip-in fuel at or below this value
 CatMonDecelLeanMin:
         dc.b    $FA                                      ; Catalyst monitor: decel enleanment, when present, at or above this value
-DiagThresh10:
-        dc.b    $50                                      ; Byte compared with; read by Sub_281E2.
+CatMonStartDelay:
+        dc.b    $50                                      ; Catalyst monitor: delay count ($12,Y) before a test starts
         dc.b    $57,$7E,$31,$5F,$00,$00,$00,$00
 CatMonTestLength:
         dc.b    $05,$5F                                  ; Catalyst/O2 switch analysis: test length (word counter)
         dc.b    $44,$81,$2F,$61,$00,$00,$00,$00,$0B,$F5,$00,$FB,$24,$DC,$00,$FB
         dc.b    $28,$28,$00,$00,$1F,$87,$89,$00,$00
-DiagValue4:
-        dc.b    $87                                      ; Byte used with; read by Sub_281E2.
-DiagValue5:
-        dc.b    $89                                      ; Byte used with; read by Sub_281E2.
+CatMonUpRichLevel:
+        dc.b    $87                                      ; Catalyst monitor: upstream O2 level (through AddSignedClamp) below which a rich upstream reading turns lean
+CatMonUpLeanLevel:
+        dc.b    $89                                      ; Catalyst monitor: upstream O2 level above which a lean upstream reading turns rich (counted as a switch)
 O2SwitchLean:
-        dc.b    $15                                      ; Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction)
+        dc.b    $15                                      ; Catalyst/O2 switch analysis (CatMonSwitchRatio): raw O2 below this value counts as lean (one direction)
 O2SwitchRich:
         dc.b    $26                                      ; Catalyst/O2 switch analysis: raw O2 above this value counts as rich
-DiagThresh14:
-        dc.b    $08                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh15:
-        dc.b    $26                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh16:
-        dc.b    $06                                      ; Byte compared with; read by Sub_281E2.
+CatMonUpSwitchMin:
+        dc.b    $08                                      ; Catalyst monitor: upstream switches per test below which the test does not count (retried by the retry table)
+CatMonRatioJumpMin:
+        dc.b    $26                                      ; Catalyst monitor: rise of the switch ratio over its filtered value at or above which the result is rechecked
+CatMonRatioJumpCount:
+        dc.b    $06                                      ; Catalyst monitor: rechecks ($06,Y) before a high ratio is accepted
 O2SwitchFilterLean:
         dc.b    $26                                      ; Catalyst/O2 switch analysis: filter weight of the lean peak
 O2SwitchFilterRich:
@@ -7539,8 +7539,8 @@ ObdTid22Limit:
         dc.b    $00                                      ; OBD-II mode $06 test $22: limit sent with the result $0169,Z (result only cleared in this code)
 ObdTid22LimitAlt:
         dc.b    $00                                      ; OBD-II mode $06 test $22: second limit, as ObdTid21LimitAlt
-DiagThresh17:
-        dc.b    $FF                                      ; Byte compared with; read by Sub_281E2.
+CatMonRetestRatioMax:
+        dc.b    $FF                                      ; Catalyst monitor (CatMonSwitchRatio, Options0338 bit 3): previous switch ratio below this value (or a pending recheck) selects the second switch levels
 O2SwitchLean2:
         dc.b    $15                                      ; As O2SwitchLean for the other direction
 O2SwitchRich2:
@@ -7555,16 +7555,16 @@ SensorV06B2Thresh:
         dc.b    $00                                      ; Byte compared with V06B2; read by Sub_2DCC2. Fault: P1484.
 SensorTimeThresh4:
         dc.b    $00                                      ; Byte compared with Count3s; read by Sub_2DCC2. Fault: P1484.
-SensorCoolantThresh7:
-        dc.b    $9B                                      ; Byte compared with CoolantTemp; read by Sub_2802A.
-SensorSpeedThresh2:
-        dc.b    $24                                      ; Byte compared with VehicleSpeed; read by Sub_2802A.
-SensorV057BThresh:
-        dc.b    $05                                      ; Byte compared with V057B; read by Sub_2802A.
-SensorThresh9:
-        dc.b    $FF                                      ; Byte compared with; read by Sub_2802A.
-SensorValue15:
-        dc.b    $FF                                      ; Byte used with; read by Sub_2802A.
+O2ActivityCoolantMin:
+        dc.b    $9B                                      ; O2 activity counters (O2ActivityCount): coolant at or above this value, else all counters clear
+O2ActivitySpeedMin:
+        dc.b    $24                                      ; O2 activity counters: vehicle speed at or above this value
+O2ActivityThrottleDelay:
+        dc.b    $05                                      ; O2 activity counters: delay ($057B,Z) after ThrottleState bit 7 clears before the second counter set runs
+O2ActivityPurgeMax:
+        dc.b    $FF                                      ; O2 activity counters: filtered purge ramp ($057C,Z) at or above this value sets $057A,Z bit 3 (heavy purge)
+O2ActivityPurgeFilter:
+        dc.b    $FF                                      ; O2 activity counters: filter weight of the purge ramp average $057C,Z
 MonEnableBattTempMin:
         dc.b    $79                                      ; OBD monitor enable flags ($9C,Z, Sub_21800): battery temperature at or above this value
 MonEnableBaroMin:
@@ -15384,7 +15384,7 @@ L0DB10:
         BCLR    $50,Z,#$10
         BRA     L0DB42
 L0DB3E:
-        JSR     Sub_3DDC4
+        JSR     PurgeReset
 L0DB42:
         LDAA    >PurgeCell1
         STAA    $043A,Z
@@ -15552,7 +15552,7 @@ MainLoop:
         LSRA
         LBCC    L0DE14
         JSR     Sub_2CBFA
-        JSR     Sub_2802A
+        JSR     O2ActivityCount
         JSR     Sub_240B8
         JSR     Sub_22B30
         JSR     Sub_0E8B8
@@ -15612,7 +15612,7 @@ L0DE14:
         JSR     EmptyHook
         JSR     Sub_2432A
         JSR     Sub_3C288
-        JSR     Sub_3C3C6
+        JSR     SpeedCtlRpmJumpCheck
         JSR     SpeedCtlControl
         JSR     Sub_3AC3A
         JSR     Sub_10FE0

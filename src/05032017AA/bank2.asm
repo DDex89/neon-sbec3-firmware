@@ -133,13 +133,13 @@ JumpTable_2027A:
         JSR     Sub_2819A
         BRA     L202BC
 L20280:
-        JSR     Sub_281E2
+        JSR     CatMonSwitchRatio
         BRA     L202BC
 L20286:
         JSR     Sub_28772
         BRA     L202BC
 L2028C:
-        JSR     Sub_2877A
+        JSR     O2IdleMonitor
         BRA     L202BC
 L20292:
         JSR     PurgeFlowTest
@@ -8158,24 +8158,24 @@ L25F6A:
         dc.b    $05,$44,$56,$2F,$05,$45,$56,$30,$05,$46,$56,$2E,$00,$02
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2802A ($2802A)
+; O2ActivityCount ($2802A)
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
-Sub_2802A:
+O2ActivityCount:
         BRCLR   $0774,Z,#$80,L28124
         LDAA    >CoolantTemp,Z
-        CMPA    >SensorCoolantThresh7
+        CMPA    >O2ActivityCoolantMin
         LBCS    L280F8
         CLRA
         LDAB    >PurgeRamp,Z
         TDE
         LDAB    $057C,Z
         PSHM    D,E
-        LDAA    >SensorValue15
+        LDAA    >O2ActivityPurgeFilter
         JSR     Blend16
         AIS     #$04
         STAB    $057C,Z
-        CMPB    >SensorThresh9
+        CMPB    >O2ActivityPurgeMax
         BCS     L28064
         BSET    $057A,Z,#$08
         BRA     L28068
@@ -8190,7 +8190,7 @@ L28068:
         BRCLR   >ThrottleState,Z,#$80,L280B4
         CLR     $057B,Z
         LDAA    >VehicleSpeed,Z
-        CMPA    >SensorSpeedThresh2
+        CMPA    >O2ActivitySpeedMin
         LBCS    L28124
 L2808A:
         LDE     $0000,X
@@ -8208,10 +8208,10 @@ L2808A:
         JMP     L28124
 L280B4:
         LDAA    >VehicleSpeed,Z
-        CMPA    >SensorSpeedThresh2
+        CMPA    >O2ActivitySpeedMin
         BCS     L280D0
         LDAA    $057B,Z
-        CMPA    >SensorV057BThresh
+        CMPA    >O2ActivityThrottleDelay
         BCC     L280D0
         INC     $057B,Z
         JMP     L28124
@@ -8245,7 +8245,7 @@ L28124:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_28126 ($28126)
-; Called from: Sub_2802A (2 calls)
+; Called from: O2ActivityCount (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_28126:
         LDAA    E,Z
@@ -8258,7 +8258,7 @@ L28130:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_28132 ($28132)
-; Called from: Sub_2802A (2 calls)
+; Called from: O2ActivityCount (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_28132:
         LDAA    E,Z
@@ -8270,7 +8270,7 @@ L2813A:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2813C ($2813C)
-; Called from: Sub_2802A (2 calls)
+; Called from: O2ActivityCount (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_2813C:
         LDE     $0008,X
@@ -8311,10 +8311,10 @@ Sub_2819A:
         dc.b    $4D,$83,$08,$20,$40,$04,$02,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_281E2 ($281E2)
+; CatMonSwitchRatio ($281E2)
 ; Called from: Sub_20272
 ;---------------------------------------------------------------------------------------------------
-Sub_281E2:
+CatMonSwitchRatio:
         BRSET   $056A,Z,#$80,L281EC
         JSR     Sub_285CA
 L281EC:
@@ -8357,7 +8357,7 @@ L281F4:
         BRCLR   >Options0338,#$08,L28272
         LDE     $0002,Y
         LDAA    E,Z
-        CMPA    >DiagThresh17
+        CMPA    >CatMonRetestRatioMax
         BCC     L28270
         LDE     $0006,Y
         LDAA    E,Z
@@ -8379,7 +8379,7 @@ L28282:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L285C8
         LDE     $0012,Y
         LDAA    E,Z
-        CMPA    >DiagThresh10
+        CMPA    >CatMonStartDelay
         BCC     L282A4
         INCA
         STAA    E,Z
@@ -8408,8 +8408,8 @@ L282B6:
         LDAB    E,Z
         BITB    #$02
         BEQ     L282FA
-        LDAB    >DiagValue4
-        JSR     Sub_286E2
+        LDAB    >CatMonUpRichLevel
+        JSR     AddSignedClamp
         LDE     $0016,Y
         CMPB    E,Z
         BCS     L28320
@@ -8419,8 +8419,8 @@ L282B6:
         STAB    E,Z
         BRA     L28320
 L282FA:
-        LDAB    >DiagValue5
-        JSR     Sub_286E2
+        LDAB    >CatMonUpLeanLevel
+        JSR     AddSignedClamp
         LDE     $0016,Y
         CMPB    E,Z
         BHI     L28320
@@ -8511,7 +8511,7 @@ L283C8:
         LDAA    E,Z
         LDE     $0010,Y
         STAA    E,Z
-        CMPA    >DiagThresh14
+        CMPA    >CatMonUpSwitchMin
         LBCC    L2841A
         LDX     $2A,Y
         LDE     $0008,Y
@@ -8602,13 +8602,13 @@ L28478:
         LDAA    E,Z
         SBA
         BCS     L284FE
-        CMPA    >DiagThresh15
+        CMPA    >CatMonRatioJumpMin
         BCS     L284FE
         LDE     $0006,Y
         LDAA    E,Z
         INCA
         BEQ     L284FA
-        CMPA    >DiagThresh16
+        CMPA    >CatMonRatioJumpCount
         BHI     L284FA
         STAA    E,Z
         BRCLR   >Options0338,#$08,L284E8
@@ -8716,7 +8716,7 @@ L285C8:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_285CA ($285CA)
-; Called from: Sub_2819A, Sub_281E2
+; Called from: Sub_2819A, CatMonSwitchRatio
 ;---------------------------------------------------------------------------------------------------
 Sub_285CA:
         BRCLR   $0774,Z,#$80,L286D8
@@ -8803,10 +8803,10 @@ L286E0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_286E2 ($286E2)
-; Called from: Sub_281E2 (2 calls)
+; AddSignedClamp ($286E2)
+; Called from: CatMonSwitchRatio (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_286E2:
+AddSignedClamp:
         ADDD    $F0,Z
         TSTA
         BEQ     L286F0
@@ -8836,10 +8836,10 @@ Sub_28772:
         BRA     L28780
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2877A ($2877A)
+; O2IdleMonitor ($2877A)
 ; Called from: Sub_20272
 ;---------------------------------------------------------------------------------------------------
-Sub_2877A:
+O2IdleMonitor:
         PSHM    X,Y,K
         LDY     #$8732
 L28780:
@@ -8924,11 +8924,11 @@ L287FE:
         CMPA    >O2MonCoolantMin
         LBCS    L2891C
         LDAA    $0A53,Z
-        CMPA    >DiagV0A4EThresh
+        CMPA    >O2MonSensorReadyMin
         LBCS    L2891C
         BRCLR   $0056,Z,#$04,L288B6
         LDAA    $0A54,Z
-        CMPA    >DiagV0A4EThresh
+        CMPA    >O2MonSensorReadyMin
         LBCS    L2891C
 L288B6:
         LDE     >IdleTarget,Z
@@ -8942,7 +8942,7 @@ L288C2:
         BNE     L288EC
         BRCLR   $043E,Z,#$04,L288E4
         LDAA    $0543,Z
-        CMPA    >DiagV0543Thresh
+        CMPA    >O2MonPurgeOffTime
         LBCS    L2891C
         BRA     L288EC
 L288E4:
@@ -8957,7 +8957,7 @@ L288FE:
         BRSET   $0679,Z,#$40,L28914
         BSET    $0679,Z,#$40
 L28908:
-        LDAA    >DiagV0541Init
+        LDAA    >O2MonRestartDelay
         STAA    $0541,Z
         LBRA    L2891C
 L28914:
@@ -8975,7 +8975,7 @@ L2891C:
 L28932:
         BRSET   $00D9,Z,#$01,L28958
         LDAA    $0542,Z
-        CMPA    >DiagV0542Thresh
+        CMPA    >O2MonStableTime
         LBCS    L28958
         LDAA    $0532,Z
         ANDA    $34,Y
@@ -9015,7 +9015,7 @@ L28992:
         JSR     Sub_28B36
         LDE     $000A,Y
         LDAA    E,Z
-        CMPA    >DiagThresh6
+        CMPA    >O2MonSettleCount
         BCC     L289CC
         BRCLR   >MainLoopPhaseMask,Z,#$20,L28AD6
         INCA
@@ -9066,7 +9066,7 @@ L28A0A:
 L28A2C:
         LDE     $000C,Y
         LDAA    E,Z
-        CMPA    >DiagThresh8
+        CMPA    >O2MonWindowMax
         BLS     L28A56
         LDAB    $3D,Y
         COMB
@@ -9081,7 +9081,7 @@ L28A2C:
 L28A56:
         LDE     $000C,Y
         LDAA    E,Z
-        CMPA    >DiagThresh9
+        CMPA    >O2MonWindowMin
         BCS     L28AD6
         LDE     $001C,Y
         LDAA    E,Z
@@ -9124,7 +9124,7 @@ L28AB4:
         BVC     L28AC6
         LDAA    #$7F
 L28AC6:
-        CMPA    >DiagThresh7
+        CMPA    >O2MonTrimResetMin
         BCS     L28AD6
         LDAA    $3A,Y
         ORAA    $0761,Z
@@ -9135,7 +9135,7 @@ L28AD6:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_28ADA ($28ADA)
-; Called from: Sub_2877A
+; Called from: O2IdleMonitor
 ;---------------------------------------------------------------------------------------------------
 Sub_28ADA:
         LDE     $0026,Y
@@ -9184,7 +9184,7 @@ L28B34:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_28B36 ($28B36)
-; Called from: Sub_2877A
+; Called from: O2IdleMonitor
 ;---------------------------------------------------------------------------------------------------
 Sub_28B36:
         PSHM    X,K
@@ -9279,7 +9279,7 @@ L28BF6:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_28C08 ($28C08)
-; Called from: Sub_2877A, Sub_28CB6
+; Called from: O2IdleMonitor, Sub_28CB6
 ;---------------------------------------------------------------------------------------------------
 Sub_28C08:
         LDAA    $34,Y
@@ -9359,7 +9359,7 @@ L28CAE:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_28CB6 ($28CB6)
-; Called from: Sub_2877A
+; Called from: O2IdleMonitor
 ;---------------------------------------------------------------------------------------------------
 Sub_28CB6:
         LDE     $0000,Y
@@ -10984,7 +10984,7 @@ L2A7BE:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2A7C0 ($2A7C0)
-; Called from: Sub_2A7E2, Sub_3D85E (3 calls)
+; Called from: Sub_2A7E2, PurgeRampControl (3 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_2A7C0:
         PSHM    E

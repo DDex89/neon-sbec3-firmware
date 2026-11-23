@@ -4084,20 +4084,20 @@ Tab2D_22F3:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$F0,$0A
-SensorV00F0Init:
-        dc.b    $04                                      ; Byte stored into V00F0; read by Sub_3C3C6.
-SensorValue11:
-        dc.b    $09                                      ; Byte used with; read by Sub_3C3C6.
+SpeedCtlRpmFilterLow:
+        dc.b    $04                                      ; As SpeedCtlRpmFilter with rpm at or below $0C4E,Z
+SpeedCtlRpmFilter:
+        dc.b    $09                                      ; Speed control rpm-jump check (SpeedCtlRpmJump): filter weight of the rpm average $040A,Z
 SpeedCtlRpmJump:
-        dc.b    $0A,$20                                  ; Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)
-SensorRpmThresh7:
-        dc.b    $25,$80                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
-SensorValue12:
-        dc.b    $40                                      ; Byte used with; read by Sub_3C3C6.
+        dc.b    $0A,$20                                  ; Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)
+SpeedCtlRpmJumpMinRpm:
+        dc.b    $25,$80                                  ; Speed control rpm-jump check: engine rpm at or above this value
+SpeedCtlThrottleFilter:
+        dc.b    $40                                      ; Speed control rpm-jump check: filter weight of the throttle average $040C,Z
 SpeedCtlRpmJumpThrottle:
         dc.b    $0D                                      ; Speed control: the rpm-jump cancel needs the throttle within this value of the reference
-SensorValue13:
-        dc.b    $10                                      ; Byte used with; read by Sub_3C3C6.
+SpeedCtlRpmJumpHold:
+        dc.b    $10                                      ; Speed control rpm-jump check: hold count ($0417,Z) set by an rpm jump (clutch pressed)
         dc.b    $69,$02,$37,$02,$D6,$0A,$7F,$00,$00,$00,$00,$00,$00,$00
 O2SlowMinNew:
         dc.b    $00                                      ; O2 feedback: lower (signed) limit of the slow term for a new vehicle
@@ -4204,11 +4204,11 @@ Tab3D_24B4:
         dc.b    $01,$14,$CD,$AB,$04,$F0,$F0,$20,$07,$26,$25,$1A,$1C,$04,$02,$80
         dc.b    $40,$05,$05,$01,$03,$03,$86,$82,$86,$82,$02,$02
 O2MonTimeMin:
-        dc.b    $28                                      ; O2 sensor monitor at idle (Sub_2877A): time since start at or above this value
+        dc.b    $28                                      ; O2 sensor monitor at idle (O2IdleMonitor): time since start at or above this value
 O2MonIdleTime:
         dc.b    $17                                      ; O2 sensor monitor at idle: idle time ($053F,Z) at or above this value
-DiagV0543Thresh:
-        dc.b    $1C                                      ; Byte compared with V0543; read by Sub_2877A.
+O2MonPurgeOffTime:
+        dc.b    $1C                                      ; O2 sensor monitor at idle: purge-off time ($0543,Z) needed when purge is not finished
 O2MonSpeedMax:
         dc.b    $30                                      ; O2 sensor monitor at idle: vehicle speed at or below this value
 O2MonCoolantMin:
@@ -4219,25 +4219,25 @@ O2MonTrimMax:
         dc.b    $7F                                      ; O2 sensor monitor at idle: short-term trim at or below this value
 O2MonRpmBand:
         dc.b    $03,$80                                  ; O2 sensor monitor at idle: engine rpm within the idle target plus or minus this value
-DiagV0542Thresh:
-        dc.b    $07                                      ; Byte compared with V0542; read by Sub_2877A.
+O2MonStableTime:
+        dc.b    $07                                      ; O2 sensor monitor at idle (O2IdleMonitor): stable-condition count ($0542,Z) at or above which the sensors are tested
         dc.b    $18
-DiagV0541Init:
-        dc.b    $0D                                      ; Byte stored into V0541; read by Sub_2877A.
-DiagV0A4EThresh:
-        dc.b    $35                                      ; Byte compared with V0A4E; read by Sub_2877A.
+O2MonRestartDelay:
+        dc.b    $0D                                      ; O2 sensor monitor at idle: delay ($0541,Z) loaded when the test conditions start again
+O2MonSensorReadyMin:
+        dc.b    $35                                      ; O2 sensor monitor at idle: sensor ready counts ($0A4E/$0A4F,Z) at or above this value
         dc.b    $06,$FA,$06,$FA,$06,$FA,$06,$FA,$10,$10,$10,$10,$00,$82,$86,$82
         dc.b    $86,$00,$00,$00
-DiagThresh6:
-        dc.b    $08                                      ; Byte compared with; read by Sub_2877A.
+O2MonSettleCount:
+        dc.b    $08                                      ; O2 sensor monitor at idle: settle passes ($0A,Y) before the switch counts are summed
         dc.b    $00,$19,$00,$1E,$00,$19,$00,$1E
-DiagThresh7:
-        dc.b    $7F                                      ; Byte compared with; read by Sub_2877A.
+O2MonTrimResetMin:
+        dc.b    $7F                                      ; O2 sensor monitor at idle: trim size at or above which a bank trim reset is requested ($0761,Z)
         dc.b    $00,$01,$33,$FE,$FE,$FF,$FF,$33,$01
-DiagThresh8:
-        dc.b    $89                                      ; Byte compared with; read by Sub_2877A.
-DiagThresh9:
-        dc.b    $13                                      ; Byte compared with; read by Sub_2877A.
+O2MonWindowMax:
+        dc.b    $89                                      ; O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6)
+O2MonWindowMin:
+        dc.b    $13                                      ; O2 sensor monitor at idle: window count at or above which the switch counts are judged
         dc.b    $08,$80,$04,$A2,$60
 CalV010AThresh1:
         dc.b    $00,$64                                  ; Word compared with V010A; read by Sub_2919A.
@@ -17475,7 +17475,7 @@ L0D0AE:
         JSR     Sub_11458
         JSR     Sub_15FDA
         JSR     Sub_109B4
-        JSR     Sub_10B42
+        JSR     SpeedCtlRpmJumpCheck
         JSR     Sub_10000
         JSR     CalcDeadTime
         JSR     Sub_11D54
@@ -19485,7 +19485,7 @@ L0E822:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16 ($0E824)
-; Called from: Sub_0B670, Sub_0BF8A, Sub_10B42, Sub_10FE8, Sub_14612, Sub_168A8, Sub_19A80, LdpPumpStroke and 2 more routines (18 calls)
+; Called from: Sub_0B670, Sub_0BF8A, SpeedCtlRpmJumpCheck, Sub_10FE8, Sub_14612, Sub_168A8, Sub_19A80, LdpPumpStroke and 2 more routines (18 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16:
         PSHM    E,X,Y,K,CCR

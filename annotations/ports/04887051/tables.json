@@ -2237,43 +2237,36 @@
    "category": "Idle"
   },
   "22FF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte stored into V00F0; read by Sub_3C3C6.",
-   "name": "SensorV00F0Init"
+   "name": "SpeedCtlRpmFilterLow",
+   "desc": "As SpeedCtlRpmFilter with rpm at or below $0C4E,Z",
+   "category": "Speed control",
+   "size": 1
   },
   "2300": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_3C3C6.",
-   "name": "SensorValue11"
+   "name": "SpeedCtlRpmFilter",
+   "desc": "Speed control rpm-jump check (SpeedCtlRpmJump): filter weight of the rpm average $040A,Z",
+   "category": "Speed control",
+   "size": 1
   },
   "2301": {
    "name": "SpeedCtlRpmJump",
-   "desc": "Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)",
+   "desc": "Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)",
    "unit": "rpmw",
    "category": "Speed control",
    "size": 2
   },
   "2303": {
-   "size": 2,
+   "name": "SpeedCtlRpmJumpMinRpm",
+   "desc": "Speed control rpm-jump check: engine rpm at or above this value",
    "unit": "rpmw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with EngineRpm; read by Sub_3C3C6.",
-   "name": "SensorRpmThresh7"
+   "category": "Speed control",
+   "size": 2
   },
   "2305": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_3C3C6.",
-   "name": "SensorValue12"
+   "name": "SpeedCtlThrottleFilter",
+   "desc": "Speed control rpm-jump check: filter weight of the throttle average $040C,Z",
+   "category": "Speed control",
+   "size": 1
   },
   "2306": {
    "name": "SpeedCtlRpmJumpThrottle",
@@ -2282,12 +2275,10 @@
    "size": 1
   },
   "2307": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_3C3C6.",
-   "name": "SensorValue13"
+   "name": "SpeedCtlRpmJumpHold",
+   "desc": "Speed control rpm-jump check: hold count ($0417,Z) set by an rpm jump (clutch pressed)",
+   "category": "Speed control",
+   "size": 1
   },
   "26F8": {
    "name": "MisfireChangeMax",
@@ -2477,111 +2468,95 @@
   },
   "252D": {
    "name": "O2MonTimeMin",
-   "desc": "O2 sensor monitor at idle (Sub_2877A): time since start at or above this value",
-   "category": "Closed loop",
+   "desc": "O2 sensor monitor at idle (O2IdleMonitor): time since start at or above this value",
+   "category": "Diagnostics",
    "size": 1
   },
   "2531": {
    "name": "O2MonCoolantMin",
    "desc": "O2 sensor monitor at idle: coolant at or above this value",
    "unit": "tempc",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "2530": {
    "name": "O2MonSpeedMax",
    "desc": "O2 sensor monitor at idle: vehicle speed at or below this value",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "252E": {
    "name": "O2MonIdleTime",
    "desc": "O2 sensor monitor at idle: idle time ($053F,Z) at or above this value",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "2534": {
    "name": "O2MonRpmBand",
    "desc": "O2 sensor monitor at idle: engine rpm within the idle target plus or minus this value",
    "unit": "rpmw",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 2
   },
   "2533": {
    "name": "O2MonTrimMax",
    "desc": "O2 sensor monitor at idle: short-term trim at or below this value",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "2532": {
    "name": "O2MonTrimMin",
    "desc": "O2 sensor monitor at idle: short-term trim at or above this value",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "2536": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonStableTime",
+   "desc": "O2 sensor monitor at idle (O2IdleMonitor): stable-condition count ($0542,Z) at or above which the sensors are tested",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0542; read by Sub_2877A.",
-   "name": "DiagV0542Thresh"
+   "size": 1
   },
   "2538": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonRestartDelay",
+   "desc": "O2 sensor monitor at idle: delay ($0541,Z) loaded when the test conditions start again",
    "category": "Diagnostics",
-   "desc": "Byte stored into V0541; read by Sub_2877A.",
-   "name": "DiagV0541Init"
+   "size": 1
   },
   "2539": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonSensorReadyMin",
+   "desc": "O2 sensor monitor at idle: sensor ready counts ($0A4E/$0A4F,Z) at or above this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0A4E; read by Sub_2877A.",
-   "name": "DiagV0A4EThresh"
+   "size": 1
   },
   "252F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonPurgeOffTime",
+   "desc": "O2 sensor monitor at idle: purge-off time ($0543,Z) needed when purge is not finished",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0543; read by Sub_2877A.",
-   "name": "DiagV0543Thresh"
+   "size": 1
   },
   "254E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonSettleCount",
+   "desc": "O2 sensor monitor at idle: settle passes ($0A,Y) before the switch counts are summed",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh6"
+   "size": 1
   },
   "2557": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonTrimResetMin",
+   "desc": "O2 sensor monitor at idle: trim size at or above which a bank trim reset is requested ($0761,Z)",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh7"
+   "size": 1
   },
   "2561": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonWindowMax",
+   "desc": "O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6)",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh8"
+   "size": 1
   },
   "2562": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonWindowMin",
+   "desc": "O2 sensor monitor at idle: window count at or above which the switch counts are judged",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh9"
+   "size": 1
   },
   "2568": {
    "size": 2,

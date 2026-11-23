@@ -8378,14 +8378,14 @@ Sub_1793E:
         BPL     L17968
         NEGA
         BRSET   $01AF,Z,#$80,L1795E
-        LDAB    >PurgeThresh6
-        ADDB    >PurgeAdder6
+        LDAB    >PurgeCellRichMax2
+        ADDB    >PurgeCellRichHyst2
         CBA
         BCS     L17968
         BSET    $01AF,Z,#$80
         BRA     L17968
 L1795E:
-        CMPA    >PurgeThresh6
+        CMPA    >PurgeCellRichMax2
         BCC     L17968
         BCLR    $01AF,Z,#$80
 L17968:

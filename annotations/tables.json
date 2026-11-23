@@ -3933,28 +3933,22 @@
    "size": 1
   },
   "036D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLoadLeanTrim",
+   "desc": "Purge vapour load (PurgeVaporLoad, Options033B bit 4): latched trim above this (signed) value counts as low vapour",
    "category": "EVAP purge",
-   "desc": "Byte compared with PurgeTrimLatched; read by Sub_3ECC6.",
-   "name": "PurgeTrimLatchedThresh1"
+   "size": 1
   },
   "036E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLoadRichTrim",
+   "desc": "Purge vapour load: latched trim below this (signed) value counts as high vapour",
    "category": "EVAP purge",
-   "desc": "Byte compared with PurgeTrimLatched; read by Sub_3ECC6.",
-   "name": "PurgeTrimLatchedThresh2"
+   "size": 1
   },
   "036F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLoadRampMax",
+   "desc": "Purge vapour load: the low-vapour count runs only with the purge ramp below this value",
    "category": "EVAP purge",
-   "desc": "Byte compared with PurgeRamp; read by Sub_3ECC6.",
-   "name": "PurgeRampThresh1"
+   "size": 1
   },
   "0370": {
    "name": "FanLowSpeed",
@@ -7574,28 +7568,23 @@
    "size": 1
   },
   "1A1D": {
-   "size": 1,
+   "name": "PurgeWarmCoolant",
+   "desc": "Purge reset: coolant at or above this value selects the warm delay",
    "unit": "tempc",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with CoolantTemp; read by Sub_3DE9C.",
-   "name": "SensorCoolantThresh4"
+   "category": "EVAP purge",
+   "size": 1
   },
   "1A1E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_3DE9C.",
-   "name": "SensorValue9"
+   "name": "PurgeColdDelay",
+   "desc": "Purge reset (PurgeReset): purge delay $042B,Z with coolant below PurgeWarmCoolant",
+   "category": "EVAP purge",
+   "size": 1
   },
   "1A1F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte stored into V042B; read by Sub_3DE9C.",
-   "name": "SensorV042BInit"
+   "name": "PurgeWarmDelay",
+   "desc": "Purge reset: purge delay $042B,Z with a warm engine",
+   "category": "EVAP purge",
+   "size": 1
   },
   "1A20": {
    "name": "PurgeBattTempMin",
@@ -7641,24 +7630,20 @@
    "name": "PurgeFactor1"
   },
   "1A28": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeStartRampMask",
+   "desc": "Purge start ramp: the factor $042F,Z rises when the counter low byte has these bits all set",
    "category": "EVAP purge",
-   "desc": "Byte mask for; read by Sub_3D85E.",
-   "name": "PurgeMask"
+   "size": 1
   },
   "1A29": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeStartRampTime",
+   "desc": "Purge start ramp: high byte of the counter $0436,Z (word) after which the ramp factor $042F,Z starts to rise",
    "category": "EVAP purge",
-   "desc": "Byte compared with V0436; read by Sub_3D85E.",
-   "name": "PurgeV0436Thresh"
+   "size": 1
   },
   "1A2A": {
    "name": "PurgeDelayInit",
-   "desc": "Start value of the purge delay $042F,Z (reset, Sub_3DC64, Sub_3DE9C)",
+   "desc": "Start value of the purge delay $042F,Z (reset, Sub_3DC64, PurgeReset)",
    "category": "EVAP purge",
    "size": 1
   },
@@ -7687,12 +7672,10 @@
    "size": 1
   },
   "1A2F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeRampOffIdle",
+   "desc": "Purge ramp (PurgeRampControl): when zero the ramp step is changed only with ThrottleState bit 7 set",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3D85E.",
-   "name": "PurgeValue1"
+   "size": 1
   },
   "1A30": {
    "name": "PurgeLearnTime",
@@ -7812,20 +7795,16 @@
    "size": 1
   },
   "1A43": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeAdaptRichSmall",
+   "desc": "Purge flow adaptation (PurgeFlowAdaptation): latched trim at or above this (signed) value raises PurgeFlowAdapt",
    "category": "EVAP purge",
-   "desc": "Byte compared with PurgeTrimLatched; read by Sub_3EB4C.",
-   "name": "PurgeTrimLatchedThresh5"
+   "size": 1
   },
   "1A44": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeAdaptRichLarge",
+   "desc": "Purge flow adaptation: latched trim below this (signed) value lowers PurgeFlowAdapt; between the two the adaptation holds",
    "category": "EVAP purge",
-   "desc": "Byte compared with PurgeTrimLatched; read by Sub_3EB4C.",
-   "name": "PurgeTrimLatchedThresh6"
+   "size": 1
   },
   "1A45": {
    "name": "PurgeAdaptHold",
@@ -7840,12 +7819,10 @@
    "size": 1
   },
   "1A47": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeAdaptUpTime",
+   "desc": "Purge flow adaptation: counts ($046C,Z) before each raise",
    "category": "EVAP purge",
-   "desc": "Byte compared with V046C; read by Sub_3EB4C.",
-   "name": "PurgeV046CThresh1"
+   "size": 1
   },
   "1A48": {
    "name": "PurgeFlowAdaptMax",
@@ -7860,12 +7837,10 @@
    "size": 1
   },
   "1A4A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeAdaptDownTime",
+   "desc": "Purge flow adaptation: counts before each lowering",
    "category": "EVAP purge",
-   "desc": "Byte compared with V046C; read by Sub_3EB4C.",
-   "name": "PurgeV046CThresh2"
+   "size": 1
   },
   "1A4B": {
    "name": "PurgeFlowAdaptMin",
@@ -7874,28 +7849,22 @@
    "size": 1
   },
   "1A4C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeAdaptStateTime",
+   "desc": "Purge flow adaptation: counts ($046D,Z) of a steady trim state before $0469,Z bit 5 is set",
    "category": "EVAP purge",
-   "desc": "Byte compared with V046D; read by Sub_3EB4C.",
-   "name": "PurgeV046DThresh"
+   "size": 1
   },
   "1A4D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeAdaptRampStepMax",
+   "desc": "Purge flow adaptation at closed throttle: purge ramp step above this value raises the adaptation",
    "category": "EVAP purge",
-   "desc": "Byte compared with PurgeRampStep; read by Sub_3EB4C.",
-   "name": "PurgeRampStepThresh2"
+   "size": 1
   },
   "1A4E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeAdaptRampStepMin",
+   "desc": "Purge flow adaptation at closed throttle: ramp step below this value with $0080,Z bits 3-4 lowers it",
    "category": "EVAP purge",
-   "desc": "Byte compared with PurgeRampStep; read by Sub_3EB4C.",
-   "name": "PurgeRampStepThresh3"
+   "size": 1
   },
   "1B14": {
    "name": "PurgeStartCoolantMax",
@@ -8112,52 +8081,40 @@
    "name": "FlexLearnCoolantThresh6"
   },
   "1BBF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCellRichMax1",
+   "desc": "Purge cell check (PurgeCellCheck): learned-cell rise ($6A,Z minus the memory cell at PurgeCell1) at or above this value sets $0080,Z bit 5",
    "category": "EVAP purge",
-   "desc": "Byte compared with; read by Sub_3DD3C.",
-   "name": "PurgeThresh5"
+   "size": 1
   },
   "1BC0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCellRichMax2",
+   "desc": "As PurgeCellRichMax1 for PurgeCell2 ($0080,Z bit 4; also Sub_17A1C)",
    "category": "EVAP purge",
-   "desc": "Byte compared with; read by Sub_17A1C, Sub_3DD3C.",
-   "name": "PurgeThresh6"
+   "size": 1
   },
   "1BC1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCellRichMax3",
+   "desc": "As PurgeCellRichMax1 for PurgeCell3 ($0080,Z bit 3)",
    "category": "EVAP purge",
-   "desc": "Byte compared with; read by Sub_3DD3C.",
-   "name": "PurgeThresh7"
+   "size": 1
   },
   "1BC2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCellRichHyst1",
+   "desc": "Purge cell check: hysteresis added while the PurgeCell1 bit is set",
    "category": "EVAP purge",
-   "desc": "Byte added to; read by Sub_3DD3C.",
-   "name": "PurgeAdder5"
+   "size": 1
   },
   "1BC3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCellRichHyst2",
+   "desc": "As PurgeCellRichHyst1 for PurgeCell2 (also Sub_17A1C)",
    "category": "EVAP purge",
-   "desc": "Byte added to; read by Sub_17A1C, Sub_3DD3C.",
-   "name": "PurgeAdder6"
+   "size": 1
   },
   "1BC4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCellRichHyst3",
+   "desc": "As PurgeCellRichHyst1 for PurgeCell3",
    "category": "EVAP purge",
-   "desc": "Byte added to; read by Sub_3DD3C.",
-   "name": "PurgeAdder7"
+   "size": 1
   },
   "1BC5": {
    "name": "PurgeLearnTrimMin",
@@ -10181,60 +10138,46 @@
    "size": 1
   },
   "2C1E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlShiftHoldTime",
+   "desc": "Speed control shift handling: servo hold time (SpeedCtlOverrideTimer) after a clutch/up-shift event",
    "category": "Speed control",
-   "desc": "Byte stored into SpeedCtlOverrideTimer; read by Sub_3C46E.",
-   "name": "SpeedCtlOverrideTimerInit1"
+   "size": 1
   },
   "2C1F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlShiftThrottleSlope",
+   "desc": "Speed control shift handling: speed slope of the throttle reference, first event",
    "category": "Speed control",
-   "desc": "Byte used with; read by Sub_3C46E.",
-   "name": "SpeedCtlValue4"
+   "size": 1
   },
   "2C20": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlShiftThrottleBase",
+   "desc": "Speed control shift handling: throttle reference = this + slope \u00d7 speed (SpeedCtlThrottleRef), first event",
    "category": "Speed control",
-   "desc": "Byte used with; read by Sub_3C46E.",
-   "name": "SpeedCtlValue5"
+   "size": 1
   },
   "2C21": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlShiftHoldTime2",
+   "desc": "Speed control shift handling: servo hold time after the second shift event ($09CE,Z bit 3)",
    "category": "Speed control",
-   "desc": "Byte stored into SpeedCtlOverrideTimer; read by Sub_3C46E.",
-   "name": "SpeedCtlOverrideTimerInit2"
+   "size": 1
   },
   "2C22": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlShiftThrottleSlope2",
+   "desc": "As SpeedCtlShiftThrottleSlope for the second event",
    "category": "Speed control",
-   "desc": "Byte used with; read by Sub_3C46E.",
-   "name": "SpeedCtlValue6"
+   "size": 1
   },
   "2C23": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlShiftThrottleBase2",
+   "desc": "As SpeedCtlShiftThrottleBase for the second event",
    "category": "Speed control",
-   "desc": "Byte used with; read by Sub_3C46E.",
-   "name": "SpeedCtlValue7"
+   "size": 1
   },
   "2C24": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "SpeedCtlGearRatioMax",
+   "desc": "Speed control shift handling (SpeedCtlShift, manual): rpm/speed ratio at or below this value counts as in gear",
    "category": "Speed control",
-   "desc": "Byte compared with RpmSpeedRatio; read by Sub_3C46E.",
-   "name": "SpeedCtlRpmSpeedRatioThresh3"
+   "size": 1
   },
   "2C25": {
    "name": "SpeedCtlOverrideCoolantMin",
@@ -10272,43 +10215,36 @@
    "size": 1
   },
   "2C4C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte stored into V00F0; read by Sub_3C3C6.",
-   "name": "SensorV00F0Init"
+   "name": "SpeedCtlRpmFilterLow",
+   "desc": "As SpeedCtlRpmFilter with rpm at or below $0C4E,Z",
+   "category": "Speed control",
+   "size": 1
   },
   "2C4D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_3C3C6.",
-   "name": "SensorValue11"
+   "name": "SpeedCtlRpmFilter",
+   "desc": "Speed control rpm-jump check (SpeedCtlRpmJump): filter weight of the rpm average $040A,Z",
+   "category": "Speed control",
+   "size": 1
   },
   "2C4E": {
    "name": "SpeedCtlRpmJump",
-   "desc": "Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)",
+   "desc": "Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)",
    "unit": "rpmw",
    "category": "Speed control",
    "size": 2
   },
   "2C50": {
-   "size": 2,
+   "name": "SpeedCtlRpmJumpMinRpm",
+   "desc": "Speed control rpm-jump check: engine rpm at or above this value",
    "unit": "rpmw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with EngineRpm; read by Sub_3C3C6.",
-   "name": "SensorRpmThresh7"
+   "category": "Speed control",
+   "size": 2
   },
   "2C52": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_3C3C6.",
-   "name": "SensorValue12"
+   "name": "SpeedCtlThrottleFilter",
+   "desc": "Speed control rpm-jump check: filter weight of the throttle average $040C,Z",
+   "category": "Speed control",
+   "size": 1
   },
   "2C53": {
    "name": "SpeedCtlRpmJumpThrottle",
@@ -10317,12 +10253,10 @@
    "size": 1
   },
   "2C54": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_3C3C6.",
-   "name": "SensorValue13"
+   "name": "SpeedCtlRpmJumpHold",
+   "desc": "Speed control rpm-jump check: hold count ($0417,Z) set by an rpm jump (clutch pressed)",
+   "category": "Speed control",
+   "size": 1
   },
   "2C55": {
    "size": 1,
@@ -10622,12 +10556,10 @@
    "size": 2
   },
   "2FC9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLoadMin",
+   "desc": "Purge vapour load: the load falls only while above this value (or from its first step)",
    "category": "EVAP purge",
-   "desc": "Byte compared with V0474; read by Sub_3ECC6.",
-   "name": "PurgeV0474Thresh"
+   "size": 1
   },
   "2FCA": {
    "name": "MisfireCountLimitCat",
@@ -10730,34 +10662,30 @@
    "size": 2
   },
   "3046": {
-   "size": 1,
+   "name": "PurgeMonCoolantMin2",
+   "desc": "Purge monitor arm (PurgeMonitorArm): coolant at or above this value",
    "unit": "tempc",
-   "auto": true,
    "category": "EVAP purge",
-   "desc": "Byte compared with CoolantTemp; read by Sub_3ED66.",
-   "name": "PurgeCoolantThresh2"
+   "size": 1
   },
   "3047": {
-   "size": 1,
+   "name": "PurgeMonAmbientMin",
+   "desc": "Purge monitor arm: battery or air temperature (Options0330 bit 5) at or above this value",
    "unit": "tempc",
-   "auto": true,
    "category": "EVAP purge",
-   "desc": "Byte compared with AirTemp; read by Sub_3ED66.",
-   "name": "PurgeAirTempThresh"
+   "size": 1
   },
   "3048": {
    "name": "PurgeMonCommand",
-   "desc": "Purge command used for the flow value $047F,Z of the purge monitor (also read by Sub_3ED66)",
+   "desc": "Purge command used for the flow value $047F,Z of the purge monitor (also read by PurgeMonitorArm)",
    "category": "EVAP purge",
    "size": 1
   },
   "3049": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeMonCommandArmed",
+   "desc": "Purge monitor arm: purge command limit used once armed ($047A,Z bit 7), instead of PurgeMonCommand",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3ED66.",
-   "name": "PurgeValue11"
+   "size": 1
   },
   "30F7": {
    "name": "LdpBattTempMax",
@@ -11100,36 +11028,28 @@
    "size": 1
   },
   "3147": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeFlowDutyStepUp",
+   "desc": "Purge flow test: purge duty increase per step (up phase)",
    "category": "EVAP purge",
-   "desc": "Byte added to; read by Sub_3D85E.",
-   "name": "PurgeAdder8"
+   "size": 1
   },
   "3148": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeFlowStepTimeUp",
+   "desc": "Purge flow test: step count between duty steps up",
    "category": "EVAP purge",
-   "desc": "Byte compared with; read by Sub_3D85E.",
-   "name": "PurgeThresh8"
+   "size": 1
   },
   "3149": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeFlowDutyStepDown",
+   "desc": "Purge flow test: purge duty decrease per step (down phase)",
    "category": "EVAP purge",
-   "desc": "Byte subtracted from; read by Sub_3D85E.",
-   "name": "PurgeOffset2"
+   "size": 1
   },
   "314A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeFlowStepTime",
+   "desc": "Purge flow test: step count ($05B2,Z) between duty steps down",
    "category": "EVAP purge",
-   "desc": "Byte compared with V05B2; read by Sub_3D85E.",
-   "name": "PurgeV05B2Thresh"
+   "size": 1
   },
   "314B": {
    "name": "PurgeFlowDutyRise",
@@ -11176,12 +11096,10 @@
    "size": 1
   },
   "3154": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCellFaultRise",
+   "desc": "Purge cell check: cell rise at or above this value also sets $05B0,Z bit 0",
    "category": "EVAP purge",
-   "desc": "Byte compared with V006A; read by Sub_3DD3C.",
-   "name": "PurgeV006AThresh"
+   "size": 1
   },
   "3155": {
    "name": "PurgeFlowFailCount",
@@ -11360,95 +11278,83 @@
   },
   "31ED": {
    "name": "O2MonTimeMin",
-   "desc": "O2 sensor monitor at idle (Sub_2877A): time since start at or above this value",
-   "category": "Closed loop",
+   "desc": "O2 sensor monitor at idle (O2IdleMonitor): time since start at or above this value",
+   "category": "Diagnostics",
    "size": 1
   },
   "31EE": {
    "name": "O2MonCoolantMin",
    "desc": "O2 sensor monitor at idle: coolant at or above this value",
    "unit": "tempc",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "31EF": {
    "name": "O2MonSpeedMax",
    "desc": "O2 sensor monitor at idle: vehicle speed at or below this value",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "31F0": {
    "name": "O2MonIdleTime",
    "desc": "O2 sensor monitor at idle: idle time ($053F,Z) at or above this value",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "31F1": {
    "name": "O2MonRpmBand",
    "desc": "O2 sensor monitor at idle: engine rpm within the idle target plus or minus this value",
    "unit": "rpmw",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 2
   },
   "31F3": {
    "name": "O2MonTrimMax",
    "desc": "O2 sensor monitor at idle: short-term trim at or below this value",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "31F4": {
    "name": "O2MonTrimMin",
    "desc": "O2 sensor monitor at idle: short-term trim at or above this value",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "31F5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonStableTime",
+   "desc": "O2 sensor monitor at idle (O2IdleMonitor): stable-condition count ($0542,Z) at or above which the sensors are tested",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0542; read by Sub_2877A.",
-   "name": "DiagV0542Thresh"
+   "size": 1
   },
   "31F6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonRestartDelay",
+   "desc": "O2 sensor monitor at idle: delay ($0541,Z) loaded when the test conditions start again",
    "category": "Diagnostics",
-   "desc": "Byte stored into V0541; read by Sub_2877A.",
-   "name": "DiagV0541Init"
+   "size": 1
   },
   "31F7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonSensorReadyMin",
+   "desc": "O2 sensor monitor at idle: sensor ready counts ($0A4E/$0A4F,Z) at or above this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0A4E; read by Sub_2877A.",
-   "name": "DiagV0A4EThresh"
+   "size": 1
   },
   "31F8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonPurgeOffTime",
+   "desc": "O2 sensor monitor at idle: purge-off time ($0543,Z) needed when purge is not finished",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0543; read by Sub_2877A.",
-   "name": "DiagV0543Thresh"
+   "size": 1
   },
   "3201": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonSettleCount",
+   "desc": "O2 sensor monitor at idle: settle passes ($0A,Y) before the switch counts are summed",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh6"
+   "size": 1
   },
   "3206": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonTrimResetMin",
+   "desc": "O2 sensor monitor at idle: trim size at or above which a bank trim reset is requested ($0761,Z)",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh7"
+   "size": 1
   },
   "3207": {
    "name": "O2TrimResetValue2",
@@ -11457,20 +11363,16 @@
    "size": 1
   },
   "3219": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonWindowMax",
+   "desc": "O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6)",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh8"
+   "size": 1
   },
   "321A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonWindowMin",
+   "desc": "O2 sensor monitor at idle: window count at or above which the switch counts are judged",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh9"
+   "size": 1
   },
   "321E": {
    "size": 1,
@@ -11570,12 +11472,10 @@
    "size": 1
   },
   "324C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "CatMonStartDelay",
+   "desc": "Catalyst monitor: delay count ($12,Y) before a test starts",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh10"
+   "size": 1
   },
   "3255": {
    "name": "CatMonTestLength",
@@ -11584,24 +11484,20 @@
    "size": 2
   },
   "3270": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "CatMonUpRichLevel",
+   "desc": "Catalyst monitor: upstream O2 level (through AddSignedClamp) below which a rich upstream reading turns lean",
    "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_281E2.",
-   "name": "DiagValue4"
+   "size": 1
   },
   "3271": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "CatMonUpLeanLevel",
+   "desc": "Catalyst monitor: upstream O2 level above which a lean upstream reading turns rich (counted as a switch)",
    "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_281E2.",
-   "name": "DiagValue5"
+   "size": 1
   },
   "3272": {
    "name": "O2SwitchLean",
-   "desc": "Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction)",
+   "desc": "Catalyst/O2 switch analysis (CatMonSwitchRatio): raw O2 below this value counts as lean (one direction)",
    "category": "Closed loop",
    "size": 1
   },
@@ -11612,28 +11508,22 @@
    "size": 1
   },
   "3274": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "CatMonUpSwitchMin",
+   "desc": "Catalyst monitor: upstream switches per test below which the test does not count (retried by the retry table)",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh14"
+   "size": 1
   },
   "3275": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "CatMonRatioJumpMin",
+   "desc": "Catalyst monitor: rise of the switch ratio over its filtered value at or above which the result is rechecked",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh15"
+   "size": 1
   },
   "3276": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "CatMonRatioJumpCount",
+   "desc": "Catalyst monitor: rechecks ($06,Y) before a high ratio is accepted",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh16"
+   "size": 1
   },
   "3277": {
    "name": "O2SwitchFilterLean",
@@ -11672,12 +11562,10 @@
    "size": 1
   },
   "327D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "CatMonRetestRatioMax",
+   "desc": "Catalyst monitor (CatMonSwitchRatio, Options0338 bit 3): previous switch ratio below this value (or a pending recheck) selects the second switch levels",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh17"
+   "size": 1
   },
   "327E": {
    "name": "O2SwitchLean2",
@@ -11724,44 +11612,35 @@
    "name": "SensorTimeThresh4"
   },
   "32A2": {
-   "size": 1,
+   "name": "O2ActivityCoolantMin",
+   "desc": "O2 activity counters (O2ActivityCount): coolant at or above this value, else all counters clear",
    "unit": "tempc",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with CoolantTemp; read by Sub_2802A.",
-   "name": "SensorCoolantThresh7"
+   "category": "Diagnostics",
+   "size": 1
   },
   "32A3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_2802A.",
-   "name": "SensorSpeedThresh2"
+   "name": "O2ActivitySpeedMin",
+   "desc": "O2 activity counters: vehicle speed at or above this value",
+   "category": "Diagnostics",
+   "size": 1
   },
   "32A4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V057B; read by Sub_2802A.",
-   "name": "SensorV057BThresh"
+   "name": "O2ActivityThrottleDelay",
+   "desc": "O2 activity counters: delay ($057B,Z) after ThrottleState bit 7 clears before the second counter set runs",
+   "category": "Diagnostics",
+   "size": 1
   },
   "32A5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_2802A.",
-   "name": "SensorThresh9"
+   "name": "O2ActivityPurgeMax",
+   "desc": "O2 activity counters: filtered purge ramp ($057C,Z) at or above this value sets $057A,Z bit 3 (heavy purge)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "32A6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_2802A.",
-   "name": "SensorValue15"
+   "name": "O2ActivityPurgeFilter",
+   "desc": "O2 activity counters: filter weight of the purge ramp average $057C,Z",
+   "category": "Diagnostics",
+   "size": 1
   },
   "32A7": {
    "name": "MonEnableBattTempMin",
@@ -11809,20 +11688,16 @@
    "name": "CalThresh3"
   },
   "32AD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLoadUpTime",
+   "desc": "Purge vapour load: counts ($0472,Z) before the load $0474,Z rises (0 = off)",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3ECC6.",
-   "name": "PurgeValue12"
+   "size": 1
   },
   "32AE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLoadDownTime",
+   "desc": "Purge vapour load: counts ($0473,Z) before the load falls (0 = off)",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3ECC6.",
-   "name": "PurgeValue13"
+   "size": 1
   },
   "32AF": {
    "name": "FuelLevelRef",

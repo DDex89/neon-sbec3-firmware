@@ -42,6 +42,10 @@
  "25784": "LdpMonitor",
  "25D38": "LdpStateTimer",
  "25D58": "LdpPumpStroke",
+ "2802A": "O2ActivityCount",
+ "281E2": "CatMonSwitchRatio",
+ "286E2": "AddSignedClamp",
+ "2877A": "O2IdleMonitor",
  "2C20E": "ProcessCoolantTemp",
  "2C32A": "ProcessAirTemp",
  "2C3F0": "BatteryTempModel",
@@ -64,7 +68,16 @@
  "39EA2": "EgrZeroCheck",
  "39FB8": "FanControl",
  "3B800": "SpeedCtlControl",
+ "3C3C6": "SpeedCtlRpmJumpCheck",
+ "3C46E": "SpeedCtlShift",
+ "3C590": "SpeedCtlThrottleRef",
  "3D000": "EmptyHook",
+ "3D85E": "PurgeRampControl",
+ "3DD3C": "PurgeCellCheck",
+ "3DE9C": "PurgeReset",
  "3E074": "PurgeFlowControl",
- "3E4F6": "PurgeVaporLearn"
+ "3E4F6": "PurgeVaporLearn",
+ "3EB3C": "PurgeFlowAdaptation",
+ "3ECB6": "PurgeVaporLoad",
+ "3ED56": "PurgeMonitorArm"
 }

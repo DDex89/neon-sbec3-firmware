@@ -13312,7 +13312,7 @@ L3BDF8:
         STAA    $0428,Z
 L3BE08:
         LBSR    Sub_3C6C8
-        LBSR    Sub_3C46E
+        LBSR    SpeedCtlShift
         LDAA    $0408,Z
         ADDA    #$10
         CMPA    #$A0
@@ -13907,16 +13907,16 @@ L3C3C4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C3C6 ($3C3C6)
+; SpeedCtlRpmJumpCheck ($3C3C6)
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
-Sub_3C3C6:
+SpeedCtlRpmJumpCheck:
         BRCLR   >Options032E,#$40,L3C466
-        LDAB    >SensorValue11
+        LDAB    >SpeedCtlRpmFilter
         LDAA    >EngineRpm,Z
         CMPA    $0C4E,Z
         BHI     L3C3DE
-        LDAB    >SensorV00F0Init
+        LDAB    >SpeedCtlRpmFilterLow
 L3C3DE:
         STAB    $F0,Z
         LDE     >EngineRpm,Z
@@ -13931,14 +13931,14 @@ L3C3DE:
         TDE
         LDD     $0413,Z
         PSHM    D,E
-        LDAA    >SensorValue12
+        LDAA    >SpeedCtlThrottleFilter
         JSR     Blend16
         AIS     #$04
         STD     $0413,Z
         BRCLR   $0A4B,Z,#$10,L3C466
         BRSET   $06B4,Z,#$10,L3C466
         LDD     >EngineRpm,Z
-        CPD     >SensorRpmThresh7
+        CPD     >SpeedCtlRpmJumpMinRpm
         BCS     L3C466
         LDAA    >ThrottleAboveClosed,Z
         SUBA    $0413,Z
@@ -13958,7 +13958,7 @@ L3C446:
         BCS     L3C466
         CPD     >SpeedCtlRpmJump
         BCS     L3C466
-        LDAB    >SensorValue13
+        LDAB    >SpeedCtlRpmJumpHold
         BRA     L3C468
 L3C462:
         DECB
@@ -13970,10 +13970,10 @@ L3C468:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C46E ($3C46E)
+; SpeedCtlShift ($3C46E)
 ; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3C46E:
+SpeedCtlShift:
         TST     $0426,Z
         BEQ     L3C47A
         DEC     $0426,Z
@@ -13985,7 +13985,7 @@ L3C47E:
         BRSET   $56,Z,#$20,L3C49A
         BRCLR   >Options032E,#$40,L3C54C
         LDAA    >RpmSpeedRatio,Z
-        CMPA    >SpeedCtlRpmSpeedRatioThresh3
+        CMPA    >SpeedCtlGearRatioMax
         BLS     L3C4A8
         BHI     L3C4B8
 L3C49A:
@@ -14007,10 +14007,10 @@ L3C4B8:
         BCLR    $040A,Z,#$80
         BRSET   $040A,Z,#$04,L3C51C
         BSET    $040A,Z,#$10
-        LDAA    >SpeedCtlOverrideTimerInit1
+        LDAA    >SpeedCtlShiftHoldTime
         STAA    >SpeedCtlOverrideTimer,Z
-        LDAA    >SpeedCtlValue5
-        LDAB    >SpeedCtlValue4
+        LDAA    >SpeedCtlShiftThrottleBase
+        LDAB    >SpeedCtlShiftThrottleSlope
         BRA     L3C514
 L3C4E6:
         BITA    #$08
@@ -14020,12 +14020,12 @@ L3C4E6:
         BCLR    $040A,Z,#$C0
         BRSET   $040A,Z,#$04,L3C51C
         BSET    $040A,Z,#$10
-        LDAA    >SpeedCtlOverrideTimerInit2
+        LDAA    >SpeedCtlShiftHoldTime2
         STAA    >SpeedCtlOverrideTimer,Z
-        LDAA    >SpeedCtlValue7
-        LDAB    >SpeedCtlValue6
+        LDAA    >SpeedCtlShiftThrottleBase2
+        LDAB    >SpeedCtlShiftThrottleSlope2
 L3C514:
-        JSR     Sub_3C590
+        JSR     SpeedCtlThrottleRef
         STAA    $0427,Z
 L3C51C:
         BRCLR   $040A,Z,#$10,L3C558
@@ -14079,10 +14079,10 @@ L3C58E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C590 ($3C590)
-; Called from: Sub_3C46E
+; SpeedCtlThrottleRef ($3C590)
+; Called from: SpeedCtlShift
 ;---------------------------------------------------------------------------------------------------
-Sub_3C590:
+SpeedCtlThrottleRef:
         STAA    $05,Y
         LDAA    >VehicleSpeed,Z
         LSRA
@@ -14556,10 +14556,10 @@ EmptyHook:
 ;---------------------------------------------------------------------------------------------------
 Sub_3D800:
         BRSET   $0443,Z,#$20,L3D80A
-        JSR     Sub_3DE9C
+        JSR     PurgeReset
 L3D80A:
         JSR     Sub_3DC64
-        JSR     Sub_3DD3C
+        JSR     PurgeCellCheck
         JSR     Sub_3E344
         JSR     Sub_2276E
         JSR     Sub_3EB02
@@ -14570,7 +14570,7 @@ L3D80A:
         BCLR    $0430,Z,#$80
         JSR     PurgeVaporLearn
         BRSET   $0430,Z,#$80,L3D83C
-        JSR     Sub_3D85E
+        JSR     PurgeRampControl
 L3D83C:
         BRSET   >Options033B,#$20,L3D848
         BRSET   $0580,Z,#$04,L3D85C
@@ -14586,10 +14586,10 @@ L3D85C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3D85E ($3D85E)
+; PurgeRampControl ($3D85E)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3D85E:
+PurgeRampControl:
         BRCLR   >Options0338,#$80,L3D870
         LDD     $044E,Z
         CPD     #$FFFF
@@ -14653,7 +14653,7 @@ L3D900:
         BRCLR   >Options032F,#$40,L3D912
         BRSET   $0745,Z,#$20,L3DA34
 L3D912:
-        JSR     Sub_3ECB6
+        JSR     PurgeVaporLoad
         TST     $047A,Z
         BEQ     L3D924
         CLR     >PurgeRampStep,Z
@@ -14706,7 +14706,7 @@ L3D9A6:
         LDAA    $0435,Z
         BNE     L3D9F0
         BRSET   >ThrottleState,Z,#$80,L3D9B8
-        LDAA    >PurgeValue1
+        LDAA    >PurgeRampOffIdle
         BEQ     L3D9F0
 L3D9B8:
         LDAA    $0456,Z
@@ -14753,7 +14753,7 @@ L3DA06:
         LDAB    $0435,Z
         BNE     L3DA34
         BRSET   >ThrottleState,Z,#$80,L3DA30
-        LDAB    >PurgeValue1
+        LDAB    >PurgeRampOffIdle
         BEQ     L3DA34
 L3DA30:
         DEC     >PurgeRampStep,Z
@@ -14770,13 +14770,13 @@ L3DA36:
         LDAA    $0433,Z
         LDAB    $05B2,Z
         BRSET   $05AE,Z,#$10,L3DA9A
-        CMPB    >PurgeV05B2Thresh
+        CMPB    >PurgeFlowStepTime
         BCS     L3DAB6
         BRSET   $071D,Z,#$08,L3DA78
         BRCLR   >Options032F,#$40,L3DAB6
         BRCLR   $0745,Z,#$08,L3DAB6
 L3DA78:
-        SUBA    >PurgeOffset2
+        SUBA    >PurgeFlowDutyStepDown
         BCC     L3DA80
         CLRA
 L3DA80:
@@ -14790,10 +14790,10 @@ L3DA80:
         BSET    $05AE,Z,#$40
         BRA     L3DAAE
 L3DA9A:
-        CMPB    >PurgeThresh8
+        CMPB    >PurgeFlowStepTimeUp
         BCS     L3DAB6
         BRSET   $05B0,Z,#$80,L3DAB6
-        ADDA    >PurgeAdder8
+        ADDA    >PurgeFlowDutyStepUp
         BCC     L3DAAE
         LDAA    #$FF
 L3DAAE:
@@ -14820,15 +14820,15 @@ L3DADC:
         BRSET   $0745,Z,#$20,L3DB1A
 L3DAF4:
         LDD     $043C,Z
-        CMPA    >PurgeV0436Thresh
+        CMPA    >PurgeStartRampTime
         BCC     L3DB04
         INCW    $043C,Z
         BRA     L3DB1A
 L3DB04:
         INCB
         STD     $043C,Z
-        ANDB    >PurgeMask
-        CMPB    >PurgeMask
+        ANDB    >PurgeStartRampMask
+        CMPB    >PurgeStartRampMask
         BNE     L3DB1A
         INC     $0435,Z
         BEQ     L3DB60
@@ -14887,7 +14887,7 @@ L3DB92:
         BRA     L3DBC4
 L3DB96:
         BRSET   >ThrottleState,Z,#$80,L3DBA2
-        TST     >PurgeValue1
+        TST     >PurgeRampOffIdle
         BEQ     L3DBC4
 L3DBA2:
         LDAB    >PurgeRampStep,Z
@@ -15042,10 +15042,10 @@ L3DD3A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DD3C ($3DD3C)
+; PurgeCellCheck ($3DD3C)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3DD3C:
+PurgeCellCheck:
         BRSET   $043E,Z,#$40,L3DE9A
         TZX
         BRCLR   $0081,Z,#$04,L3DDB2
@@ -15055,16 +15055,16 @@ Sub_3DD3C:
         LDAA    $6B,Z
         SUBA    $00,X
         BLT     L3DD78
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DD64
         BSET    $05B0,Z,#$01
 L3DD64:
         BRCLR   $0081,Z,#$20,L3DD72
-        ADDA    >PurgeAdder5
+        ADDA    >PurgeCellRichHyst1
         BCC     L3DD72
         LDAA    #$FF
 L3DD72:
-        CMPA    >PurgeThresh5
+        CMPA    >PurgeCellRichMax1
         BCC     L3DDAC
 L3DD78:
         BRCLR   >Options032F,#$40,L3DDB2
@@ -15074,16 +15074,16 @@ L3DD78:
         LDAA    $7E,Z
         SUBA    $00,X
         BLT     L3DDB2
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DD98
         BSET    $05B0,Z,#$01
 L3DD98:
         BRCLR   $0081,Z,#$20,L3DDA6
-        ADDA    >PurgeAdder5
+        ADDA    >PurgeCellRichHyst1
         BCC     L3DDA6
         LDAA    #$FF
 L3DDA6:
-        CMPA    >PurgeThresh5
+        CMPA    >PurgeCellRichMax1
         BCS     L3DDB2
 L3DDAC:
         BSET    $81,Z,#$20
@@ -15098,16 +15098,16 @@ L3DDB6:
         LDAA    $6C,Z
         SUBA    $00,X
         BLT     L3DDEA
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DDD6
         BSET    $05B0,Z,#$01
 L3DDD6:
         BRCLR   $0081,Z,#$10,L3DDE4
-        ADDA    >PurgeAdder6
+        ADDA    >PurgeCellRichHyst2
         BCC     L3DDE4
         LDAA    #$FF
 L3DDE4:
-        CMPA    >PurgeThresh6
+        CMPA    >PurgeCellRichMax2
         BCC     L3DE1E
 L3DDEA:
         BRCLR   >Options032F,#$40,L3DE24
@@ -15117,16 +15117,16 @@ L3DDEA:
         LDAA    $7F,Z
         SUBA    $00,X
         BLT     L3DE24
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DE0A
         BSET    $05B0,Z,#$01
 L3DE0A:
         BRCLR   $0081,Z,#$10,L3DE18
-        ADDA    >PurgeAdder6
+        ADDA    >PurgeCellRichHyst2
         BCC     L3DE18
         LDAA    #$FF
 L3DE18:
-        CMPA    >PurgeThresh6
+        CMPA    >PurgeCellRichMax2
         BCS     L3DE24
 L3DE1E:
         BSET    $81,Z,#$10
@@ -15141,16 +15141,16 @@ L3DE28:
         LDAA    $6D,Z
         SUBA    $00,X
         BLT     L3DE5C
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DE48
         BSET    $05B0,Z,#$01
 L3DE48:
         BRCLR   $0081,Z,#$08,L3DE56
-        ADDA    >PurgeAdder7
+        ADDA    >PurgeCellRichHyst3
         BCC     L3DE56
         LDAA    #$FF
 L3DE56:
-        CMPA    >PurgeThresh7
+        CMPA    >PurgeCellRichMax3
         BCC     L3DE90
 L3DE5C:
         BRCLR   >Options032F,#$40,L3DE96
@@ -15160,16 +15160,16 @@ L3DE5C:
         LDAA    $80,Z
         SUBA    $00,X
         BLT     L3DE96
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DE7C
         BSET    $05B0,Z,#$01
 L3DE7C:
         BRCLR   $0081,Z,#$08,L3DE8A
-        ADDA    >PurgeAdder7
+        ADDA    >PurgeCellRichHyst3
         BCC     L3DE8A
         LDAA    #$FF
 L3DE8A:
-        CMPA    >PurgeThresh7
+        CMPA    >PurgeCellRichMax3
         BCS     L3DE96
 L3DE90:
         BSET    $81,Z,#$08
@@ -15180,10 +15180,10 @@ L3DE9A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DE9C ($3DE9C)
+; PurgeReset ($3DE9C)
 ; Called from: Reset, Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3DE9C:
+PurgeReset:
         BSET    $0443,Z,#$20
         CLR     $047A,Z
         CLR     $0478,Z
@@ -15194,14 +15194,14 @@ Sub_3DE9C:
         BSET    $81,Z,#$40
         BSET    $043E,Z,#$80
         BSET    $81,Z,#$80
-        LDAB    >SensorValue9
+        LDAB    >PurgeColdDelay
         LDAA    >CoolantTemp,Z
         CMPA    >PurgeCoolantMin
         BCS     L3DEE0
         BCLR    $81,Z,#$80
-        CMPA    >SensorCoolantThresh4
+        CMPA    >PurgeWarmCoolant
         BCS     L3DEE0
-        LDAB    >SensorV042BInit
+        LDAB    >PurgeWarmDelay
 L3DEE0:
         STAB    $0431,Z
         CMPA    >SoakStartCoolantMin
@@ -15214,7 +15214,7 @@ L3DEEE:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3DEF8 ($3DEF8)
-; Called from: Sub_3DE9C
+; Called from: PurgeReset
 ;---------------------------------------------------------------------------------------------------
 Sub_3DEF8:
         LDAA    >CoolantTemp,Z
@@ -15307,7 +15307,7 @@ L3DFC8:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3DFCA ($3DFCA)
-; Called from: Sub_3DE9C
+; Called from: PurgeReset
 ;---------------------------------------------------------------------------------------------------
 Sub_3DFCA:
         LDAA    >CoolantTemp,Z
@@ -15404,13 +15404,13 @@ L3E070:
 ;---------------------------------------------------------------------------------------------------
 PurgeFlowControl:
         PSHM    D,E,X,Y,K
-        JSR     Sub_3EB3C
+        JSR     PurgeFlowAdaptation
         BRSET   >Options033B,#$10,L3E08A
         BCLR    $0480,Z,#$F0
         CLR     $0483,Z
         BRA     L3E098
 L3E08A:
-        JSR     Sub_3ED56
+        JSR     PurgeMonitorArm
         BRSET   $0480,Z,#$80,L3E0A4
         BCLR    $0480,Z,#$70
 L3E098:
@@ -16393,10 +16393,10 @@ L3EB34:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3EB3C ($3EB3C)
+; PurgeFlowAdaptation ($3EB3C)
 ; Called from: PurgeFlowControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3EB3C:
+PurgeFlowAdaptation:
         TST     $0435,Z
         LBNE    L3ECB4
         BRSET   $071D,Z,#$20,L3EB9E
@@ -16418,9 +16418,9 @@ L3EB86:
         BCLR    $046F,Z,#$10
         LDAA    >PurgeTrimLatched,Z
         BPL     L3EBE0
-        CMPA    >PurgeTrimLatchedThresh5
+        CMPA    >PurgeAdaptRichSmall
         BCC     L3EBE0
-        CMPA    >PurgeTrimLatchedThresh6
+        CMPA    >PurgeAdaptRichLarge
         LBCS    L3EC2A
 L3EB9E:
         BSET    $046F,Z,#$10
@@ -16434,9 +16434,9 @@ L3EBBA:
         LDAA    >PurgeAdaptHold
         STAA    $0471,Z
         LDAA    >PurgeRampStep,Z
-        CMPA    >PurgeRampStepThresh2
+        CMPA    >PurgeAdaptRampStepMax
         BHI     L3EBF4
-        CMPA    >PurgeRampStepThresh3
+        CMPA    >PurgeAdaptRampStepMin
         LBCC    L3ECB4
         LDAA    $81,Z
         ANDA    #$18
@@ -16449,7 +16449,7 @@ L3EBE0:
         BRSET   $046F,Z,#$20,L3EC70
 L3EBF4:
         LDAA    $0472,Z
-        CMPA    >PurgeV046CThresh1
+        CMPA    >PurgeAdaptUpTime
         BCC     L3EC0A
         BRCLR   >MainLoopPhaseMask,Z,#$02,L3EC70
         INC     $0472,Z
@@ -16474,7 +16474,7 @@ L3EC2A:
         BRSET   $046F,Z,#$20,L3EC70
 L3EC3C:
         LDAA    $0472,Z
-        CMPA    >PurgeV046CThresh2
+        CMPA    >PurgeAdaptDownTime
         BCC     L3EC52
         BRCLR   >MainLoopPhaseMask,Z,#$02,L3EC70
         INC     $0472,Z
@@ -16499,7 +16499,7 @@ L3EC7E:
         BRCLR   $046F,Z,#$40,L3EC9C
 L3EC84:
         LDAA    $0473,Z
-        CMPA    >PurgeV046DThresh
+        CMPA    >PurgeAdaptStateTime
         BCC     L3EC96
         INCA
         STAA    $0473,Z
@@ -16519,30 +16519,30 @@ L3ECB4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3ECB6 ($3ECB6)
-; Called from: Sub_3D85E
+; PurgeVaporLoad ($3ECB6)
+; Called from: PurgeRampControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3ECB6:
+PurgeVaporLoad:
         BRSET   >Options033B,#$10,L3ECC4
         CLR     $047A,Z
         LBRA    L3ED54
 L3ECC4:
         LDAA    >PurgeTrimLatched,Z
         LBEQ    L3ED4C
-        CMPA    >PurgeTrimLatchedThresh1
+        CMPA    >PurgeLoadLeanTrim
         BHI     L3ECDA
-        CMPA    >PurgeTrimLatchedThresh2
+        CMPA    >PurgeLoadRichTrim
         BCS     L3ED0E
         BRA     L3ED4C
 L3ECDA:
         LDAA    >PurgeRamp,Z
-        CMPA    >PurgeRampThresh1
+        CMPA    >PurgeLoadRampMax
         BCC     L3ED4C
         BRSET   $0430,Z,#$08,L3ED54
         CLR     $0479,Z
         LDAA    $0478,Z
         BNE     L3ECFA
-        LDAA    >PurgeValue12
+        LDAA    >PurgeLoadUpTime
         BEQ     L3ED4C
 L3ECFA:
         DECA
@@ -16560,7 +16560,7 @@ L3ED0E:
         CLR     $0478,Z
         LDAA    $0479,Z
         BNE     L3ED2E
-        LDAA    >PurgeValue13
+        LDAA    >PurgeLoadDownTime
         BEQ     L3ED4C
 L3ED2E:
         DECA
@@ -16568,7 +16568,7 @@ L3ED2E:
         BNE     L3ED54
         LDAA    $047A,Z
         BEQ     L3ED46
-        CMPA    >PurgeV0474Thresh
+        CMPA    >PurgeLoadMin
         BLS     L3ED54
         CMPA    #$01
         BEQ     L3ED54
@@ -16582,10 +16582,10 @@ L3ED54:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3ED56 ($3ED56)
+; PurgeMonitorArm ($3ED56)
 ; Called from: PurgeFlowControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3ED56:
+PurgeMonitorArm:
         BRSET   $0480,Z,#$40,L3ED62
         BCLR    $0480,Z,#$20
         BRA     L3ED66
@@ -16593,7 +16593,7 @@ L3ED62:
         BSET    $0480,Z,#$20
 L3ED66:
         LDAA    >CoolantTemp,Z
-        CMPA    >PurgeCoolantThresh2
+        CMPA    >PurgeMonCoolantMin2
         BCS     L3EDBE
         BRSET   >Options0330,#$20,L3ED7C
         LDAA    >BatteryTemp,Z
@@ -16601,7 +16601,7 @@ L3ED66:
 L3ED7C:
         LDAA    >AirTemp,Z
 L3ED80:
-        CMPA    >PurgeAirTempThresh
+        CMPA    >PurgeMonAmbientMin
         BCS     L3EDBE
         BRSET   $0770,Z,#$80,L3EDBE
         LDAA    $043F,Z
@@ -16613,7 +16613,7 @@ L3ED80:
         LDAB    >PurgeMonCommand
         BRA     L3EDAA
 L3EDA6:
-        LDAB    >PurgeValue11
+        LDAB    >PurgeMonCommandArmed
 L3EDAA:
         CBA
         BHI     L3EDBE

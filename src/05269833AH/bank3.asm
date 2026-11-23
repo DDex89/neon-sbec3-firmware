@@ -12908,7 +12908,7 @@ L3BDF8:
         STAA    $0421,Z
 L3BE08:
         LBSR    Sub_3C6C8
-        LBSR    Sub_3C46E
+        LBSR    SpeedCtlShift
         LDAA    $0401,Z
         ADDA    #$10
         CMPA    #$A0
@@ -13503,16 +13503,16 @@ L3C3C4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C3C6 ($3C3C6)
+; SpeedCtlRpmJumpCheck ($3C3C6)
 ; Called from: Sub_0DC40
 ;---------------------------------------------------------------------------------------------------
-Sub_3C3C6:
+SpeedCtlRpmJumpCheck:
         BRCLR   >Options032E,#$40,L3C466
-        LDAB    >SensorValue11
+        LDAB    >SpeedCtlRpmFilter
         LDAA    >EngineRpm,Z
         CMPA    $0C4E,Z
         BHI     L3C3DE
-        LDAB    >SensorV00F0Init
+        LDAB    >SpeedCtlRpmFilterLow
 L3C3DE:
         STAB    $F0,Z
         LDE     >EngineRpm,Z
@@ -13527,14 +13527,14 @@ L3C3DE:
         TDE
         LDD     $040C,Z
         PSHM    D,E
-        LDAA    >SensorValue12
+        LDAA    >SpeedCtlThrottleFilter
         JSR     Blend16
         AIS     #$04
         STD     $040C,Z
         BRCLR   $0A47,Z,#$10,L3C466
         BRSET   $06B4,Z,#$10,L3C466
         LDD     >EngineRpm,Z
-        CPD     >SensorRpmThresh7
+        CPD     >SpeedCtlRpmJumpMinRpm
         BCS     L3C466
         LDAA    >ThrottleAboveClosed,Z
         SUBA    $040C,Z
@@ -13554,7 +13554,7 @@ L3C446:
         BCS     L3C466
         CPD     >SpeedCtlRpmJump
         BCS     L3C466
-        LDAB    >SensorValue13
+        LDAB    >SpeedCtlRpmJumpHold
         BRA     L3C468
 L3C462:
         DECB
@@ -13566,10 +13566,10 @@ L3C468:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C46E ($3C46E)
+; SpeedCtlShift ($3C46E)
 ; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3C46E:
+SpeedCtlShift:
         TST     $041F,Z
         BEQ     L3C47A
         DEC     $041F,Z
@@ -13581,7 +13581,7 @@ L3C47E:
         BRSET   $55,Z,#$20,L3C49A
         BRCLR   >Options032E,#$40,L3C54C
         LDAA    >RpmSpeedRatio,Z
-        CMPA    >SpeedCtlRpmSpeedRatioThresh3
+        CMPA    >SpeedCtlGearRatioMax
         BLS     L3C4A8
         BHI     L3C4B8
 L3C49A:
@@ -13603,10 +13603,10 @@ L3C4B8:
         BCLR    $0403,Z,#$80
         BRSET   $0403,Z,#$04,L3C51C
         BSET    $0403,Z,#$10
-        LDAA    >SpeedCtlOverrideTimerInit1
+        LDAA    >SpeedCtlShiftHoldTime
         STAA    >SpeedCtlOverrideTimer,Z
-        LDAA    >SpeedCtlValue5
-        LDAB    >SpeedCtlValue4
+        LDAA    >SpeedCtlShiftThrottleBase
+        LDAB    >SpeedCtlShiftThrottleSlope
         BRA     L3C514
 L3C4E6:
         BITA    #$08
@@ -13616,12 +13616,12 @@ L3C4E6:
         BCLR    $0403,Z,#$C0
         BRSET   $0403,Z,#$04,L3C51C
         BSET    $0403,Z,#$10
-        LDAA    >SpeedCtlOverrideTimerInit2
+        LDAA    >SpeedCtlShiftHoldTime2
         STAA    >SpeedCtlOverrideTimer,Z
-        LDAA    >SpeedCtlValue7
-        LDAB    >SpeedCtlValue6
+        LDAA    >SpeedCtlShiftThrottleBase2
+        LDAB    >SpeedCtlShiftThrottleSlope2
 L3C514:
-        JSR     Sub_3C590
+        JSR     SpeedCtlThrottleRef
         STAA    $0420,Z
 L3C51C:
         BRCLR   $0403,Z,#$10,L3C558
@@ -13675,10 +13675,10 @@ L3C58E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C590 ($3C590)
-; Called from: Sub_3C46E
+; SpeedCtlThrottleRef ($3C590)
+; Called from: SpeedCtlShift
 ;---------------------------------------------------------------------------------------------------
-Sub_3C590:
+SpeedCtlThrottleRef:
         STAA    $05,Y
         LDAA    >VehicleSpeed,Z
         LSRA
@@ -14149,7 +14149,7 @@ EmptyHook:
 ;---------------------------------------------------------------------------------------------------
 Sub_3D800:
         JSR     Sub_3DB8C
-        JSR     Sub_3DC64
+        JSR     PurgeCellCheck
         JSR     Sub_3E18E
         JSR     Sub_2274E
         JSR     Sub_3E938
@@ -14558,10 +14558,10 @@ L3DC62:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DC64 ($3DC64)
+; PurgeCellCheck ($3DC64)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3DC64:
+PurgeCellCheck:
         BRSET   $0438,Z,#$40,L3DDC2
         TZX
         BRCLR   $0080,Z,#$04,L3DCDA
@@ -14571,16 +14571,16 @@ Sub_3DC64:
         LDAA    $6A,Z
         SUBA    $00,X
         BLT     L3DCA0
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DC8C
         BSET    $05B0,Z,#$01
 L3DC8C:
         BRCLR   $0080,Z,#$20,L3DC9A
-        ADDA    >PurgeAdder5
+        ADDA    >PurgeCellRichHyst1
         BCC     L3DC9A
         LDAA    #$FF
 L3DC9A:
-        CMPA    >PurgeThresh5
+        CMPA    >PurgeCellRichMax1
         BCC     L3DCD4
 L3DCA0:
         BRCLR   >Options032F,#$40,L3DCDA
@@ -14590,16 +14590,16 @@ L3DCA0:
         LDAA    $7D,Z
         SUBA    $00,X
         BLT     L3DCDA
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DCC0
         BSET    $05B0,Z,#$01
 L3DCC0:
         BRCLR   $0080,Z,#$20,L3DCCE
-        ADDA    >PurgeAdder5
+        ADDA    >PurgeCellRichHyst1
         BCC     L3DCCE
         LDAA    #$FF
 L3DCCE:
-        CMPA    >PurgeThresh5
+        CMPA    >PurgeCellRichMax1
         BCS     L3DCDA
 L3DCD4:
         BSET    $80,Z,#$20
@@ -14614,16 +14614,16 @@ L3DCDE:
         LDAA    $6B,Z
         SUBA    $00,X
         BLT     L3DD12
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DCFE
         BSET    $05B0,Z,#$01
 L3DCFE:
         BRCLR   $0080,Z,#$10,L3DD0C
-        ADDA    >PurgeAdder6
+        ADDA    >PurgeCellRichHyst2
         BCC     L3DD0C
         LDAA    #$FF
 L3DD0C:
-        CMPA    >PurgeThresh6
+        CMPA    >PurgeCellRichMax2
         BCC     L3DD46
 L3DD12:
         BRCLR   >Options032F,#$40,L3DD4C
@@ -14633,16 +14633,16 @@ L3DD12:
         LDAA    $7E,Z
         SUBA    $00,X
         BLT     L3DD4C
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DD32
         BSET    $05B0,Z,#$01
 L3DD32:
         BRCLR   $0080,Z,#$10,L3DD40
-        ADDA    >PurgeAdder6
+        ADDA    >PurgeCellRichHyst2
         BCC     L3DD40
         LDAA    #$FF
 L3DD40:
-        CMPA    >PurgeThresh6
+        CMPA    >PurgeCellRichMax2
         BCS     L3DD4C
 L3DD46:
         BSET    $80,Z,#$10
@@ -14657,16 +14657,16 @@ L3DD50:
         LDAA    $6C,Z
         SUBA    $00,X
         BLT     L3DD84
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DD70
         BSET    $05B0,Z,#$01
 L3DD70:
         BRCLR   $0080,Z,#$08,L3DD7E
-        ADDA    >PurgeAdder7
+        ADDA    >PurgeCellRichHyst3
         BCC     L3DD7E
         LDAA    #$FF
 L3DD7E:
-        CMPA    >PurgeThresh7
+        CMPA    >PurgeCellRichMax3
         BCC     L3DDB8
 L3DD84:
         BRCLR   >Options032F,#$40,L3DDBE
@@ -14676,16 +14676,16 @@ L3DD84:
         LDAA    $7F,Z
         SUBA    $00,X
         BLT     L3DDBE
-        CMPA    >PurgeV006AThresh
+        CMPA    >PurgeCellFaultRise
         BCS     L3DDA4
         BSET    $05B0,Z,#$01
 L3DDA4:
         BRCLR   $0080,Z,#$08,L3DDB2
-        ADDA    >PurgeAdder7
+        ADDA    >PurgeCellRichHyst3
         BCC     L3DDB2
         LDAA    #$FF
 L3DDB2:
-        CMPA    >PurgeThresh7
+        CMPA    >PurgeCellRichMax3
         BCS     L3DDBE
 L3DDB8:
         BSET    $80,Z,#$08
@@ -14696,21 +14696,21 @@ L3DDC2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DDC4 ($3DDC4)
+; PurgeReset ($3DDC4)
 ; Called from: Reset, CalcEngineRpm
 ;---------------------------------------------------------------------------------------------------
-Sub_3DDC4:
+PurgeReset:
         BSET    $80,Z,#$40
         BSET    $0438,Z,#$80
         BSET    $80,Z,#$80
-        LDAB    >SensorValue9
+        LDAB    >PurgeColdDelay
         LDAA    >CoolantTemp,Z
         CMPA    >PurgeCoolantMin
         BCS     L3DDEC
         BCLR    $80,Z,#$80
-        CMPA    >SensorCoolantThresh4
+        CMPA    >PurgeWarmCoolant
         BCS     L3DDEC
-        LDAB    >SensorV042BInit
+        LDAB    >PurgeWarmDelay
 L3DDEC:
         STAB    $042B,Z
         CMPA    >SoakStartCoolantMin
@@ -14723,7 +14723,7 @@ L3DDFA:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3DE04 ($3DE04)
-; Called from: Sub_3DDC4
+; Called from: PurgeReset
 ;---------------------------------------------------------------------------------------------------
 Sub_3DE04:
         LDAA    >CoolantTemp,Z
@@ -14816,7 +14816,7 @@ L3DED4:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3DED6 ($3DED6)
-; Called from: Sub_3DDC4
+; Called from: PurgeReset
 ;---------------------------------------------------------------------------------------------------
 Sub_3DED6:
         LDAA    >CoolantTemp,Z

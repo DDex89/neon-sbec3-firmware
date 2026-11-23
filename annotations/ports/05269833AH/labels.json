@@ -42,6 +42,10 @@
  "2576A": "LdpMonitor",
  "25D28": "LdpStateTimer",
  "25D48": "LdpPumpStroke",
+ "2802A": "O2ActivityCount",
+ "281E2": "CatMonSwitchRatio",
+ "286E2": "AddSignedClamp",
+ "2877A": "O2IdleMonitor",
  "2C028": "ReadAnalogInputs",
  "2C1CA": "ProcessCoolantTemp",
  "2C2E0": "ProcessAirTemp",
@@ -62,5 +66,10 @@
  "39272": "AcClutchControl",
  "39E08": "FanControl",
  "3B800": "SpeedCtlControl",
- "3D000": "EmptyHook"
+ "3C3C6": "SpeedCtlRpmJumpCheck",
+ "3C46E": "SpeedCtlShift",
+ "3C590": "SpeedCtlThrottleRef",
+ "3D000": "EmptyHook",
+ "3DC64": "PurgeCellCheck",
+ "3DDC4": "PurgeReset"
 }

@@ -14443,9 +14443,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30A" flags="0x0">
-  <title>SensorV00F0Init</title>
-  <description>Byte stored into V00F0; read by Sub_3C3C6. $2326</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>SpeedCtlRpmFilterLow</title>
+  <description>As SpeedCtlRpmFilter with rpm at or below $0C4E,Z $2326</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x2326" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14455,9 +14455,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30B" flags="0x0">
-  <title>SensorValue11</title>
-  <description>Byte used with; read by Sub_3C3C6. $2327</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>SpeedCtlRpmFilter</title>
+  <description>Speed control rpm-jump check (SpeedCtlRpmJump): filter weight of the rpm average $040A,Z $2327</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x2327" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14468,7 +14468,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30C" flags="0x0">
   <title>SpeedCtlRpmJump</title>
-  <description>Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only) $2328</description>
+  <description>Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only) $2328</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x2328" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -14479,9 +14479,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30D" flags="0x0">
-  <title>SensorRpmThresh7</title>
-  <description>Word compared with EngineRpm; read by Sub_3C3C6. $232A</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>SpeedCtlRpmJumpMinRpm</title>
+  <description>Speed control rpm-jump check: engine rpm at or above this value $232A</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x232A" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -14491,9 +14491,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30E" flags="0x0">
-  <title>SensorValue12</title>
-  <description>Byte used with; read by Sub_3C3C6. $232C</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>SpeedCtlThrottleFilter</title>
+  <description>Speed control rpm-jump check: filter weight of the throttle average $040C,Z $232C</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x232C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14515,9 +14515,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x310" flags="0x0">
-  <title>SensorValue13</title>
-  <description>Byte used with; read by Sub_3C3C6. $232E</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>SpeedCtlRpmJumpHold</title>
+  <description>Speed control rpm-jump check: hold count ($0417,Z) set by an rpm jump (clutch pressed) $232E</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x232E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14600,8 +14600,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x317" flags="0x0">
   <title>O2MonTimeMin</title>
-  <description>O2 sensor monitor at idle (Sub_2877A): time since start at or above this value $2547</description>
-  <CATEGORYMEM index="0" category="8" />
+  <description>O2 sensor monitor at idle (O2IdleMonitor): time since start at or above this value $2547</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2547" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14613,7 +14613,7 @@
  <XDFCONSTANT uniqueid="0x318" flags="0x0">
   <title>O2MonIdleTime</title>
   <description>O2 sensor monitor at idle: idle time ($053F,Z) at or above this value $2548</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2548" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14623,8 +14623,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x319" flags="0x0">
-  <title>DiagV0543Thresh</title>
-  <description>Byte compared with V0543; read by Sub_2877A. $2549</description>
+  <title>O2MonPurgeOffTime</title>
+  <description>O2 sensor monitor at idle: purge-off time ($0543,Z) needed when purge is not finished $2549</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2549" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14637,7 +14637,7 @@
  <XDFCONSTANT uniqueid="0x31A" flags="0x0">
   <title>O2MonSpeedMax</title>
   <description>O2 sensor monitor at idle: vehicle speed at or below this value $254A</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x254A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14649,7 +14649,7 @@
  <XDFCONSTANT uniqueid="0x31B" flags="0x0">
   <title>O2MonCoolantMin</title>
   <description>O2 sensor monitor at idle: coolant at or above this value $254B</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x254B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -14661,7 +14661,7 @@
  <XDFCONSTANT uniqueid="0x31C" flags="0x0">
   <title>O2MonTrimMin</title>
   <description>O2 sensor monitor at idle: short-term trim at or above this value $254C</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x254C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14673,7 +14673,7 @@
  <XDFCONSTANT uniqueid="0x31D" flags="0x0">
   <title>O2MonTrimMax</title>
   <description>O2 sensor monitor at idle: short-term trim at or below this value $254D</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x254D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14685,7 +14685,7 @@
  <XDFCONSTANT uniqueid="0x31E" flags="0x0">
   <title>O2MonRpmBand</title>
   <description>O2 sensor monitor at idle: engine rpm within the idle target plus or minus this value $254E</description>
-  <CATEGORYMEM index="0" category="8" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x254E" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -14695,8 +14695,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x31F" flags="0x0">
-  <title>DiagV0542Thresh</title>
-  <description>Byte compared with V0542; read by Sub_2877A. $2550</description>
+  <title>O2MonStableTime</title>
+  <description>O2 sensor monitor at idle (O2IdleMonitor): stable-condition count ($0542,Z) at or above which the sensors are tested $2550</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2550" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14707,8 +14707,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x320" flags="0x0">
-  <title>DiagV0541Init</title>
-  <description>Byte stored into V0541; read by Sub_2877A. $2552</description>
+  <title>O2MonRestartDelay</title>
+  <description>O2 sensor monitor at idle: delay ($0541,Z) loaded when the test conditions start again $2552</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2552" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14719,8 +14719,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x321" flags="0x0">
-  <title>DiagV0A4EThresh</title>
-  <description>Byte compared with V0A4E; read by Sub_2877A. $2553</description>
+  <title>O2MonSensorReadyMin</title>
+  <description>O2 sensor monitor at idle: sensor ready counts ($0A4E/$0A4F,Z) at or above this value $2553</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2553" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14731,8 +14731,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x322" flags="0x0">
-  <title>DiagThresh6</title>
-  <description>Byte compared with; read by Sub_2877A. $2568</description>
+  <title>O2MonSettleCount</title>
+  <description>O2 sensor monitor at idle: settle passes ($0A,Y) before the switch counts are summed $2568</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2568" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14743,8 +14743,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x323" flags="0x0">
-  <title>DiagThresh7</title>
-  <description>Byte compared with; read by Sub_2877A. $2571</description>
+  <title>O2MonTrimResetMin</title>
+  <description>O2 sensor monitor at idle: trim size at or above which a bank trim reset is requested ($0761,Z) $2571</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2571" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14755,8 +14755,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x324" flags="0x0">
-  <title>DiagThresh8</title>
-  <description>Byte compared with; read by Sub_2877A. $257B</description>
+  <title>O2MonWindowMax</title>
+  <description>O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6) $257B</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x257B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14767,8 +14767,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x325" flags="0x0">
-  <title>DiagThresh9</title>
-  <description>Byte compared with; read by Sub_2877A. $257C</description>
+  <title>O2MonWindowMin</title>
+  <description>O2 sensor monitor at idle: window count at or above which the switch counts are judged $257C</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x257C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
