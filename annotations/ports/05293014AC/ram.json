@@ -64,6 +64,7 @@
  "055F": "CrankPulse",
  "0561": "CrankCoolant",
  "056A": "FuelModeFlags",
+ "0572": "O2CellIndex",
  "0588": "FlexFuelFactor",
  "0593": "DecelLeanFuel",
  "0594": "DecelLeanTimer",

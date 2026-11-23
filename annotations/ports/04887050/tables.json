@@ -1485,12 +1485,10 @@
    "category": "Fuel"
   },
   "070A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2FlexEthanolMin",
+   "desc": "Closed loop: ethanol content below which $0770,Z bit 2 is set (flex fuel)",
    "category": "Closed loop",
-   "desc": "Byte compared with FlexEthanol; read by Sub_15F5C.",
-   "name": "O2FlexEthanolThresh"
+   "size": 1
   },
   "070B": {
    "size": 1,
@@ -1810,28 +1808,22 @@
    "name": "SensorThresh8"
   },
   "138D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602.",
-   "name": "StartV0801Thresh"
+   "name": "PurgeCell1",
+   "desc": "Adaptive cell number ($0801,Z) used for purge learning (copied to $043A,Z); cell 12 also sets $0C31,Z bit 0",
+   "category": "EVAP purge",
+   "size": 1
   },
   "138E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.",
-   "name": "StartV043BValue"
+   "name": "PurgeCell2",
+   "desc": "Second adaptive cell number for purge learning ($043B,Z)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "138F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.",
-   "name": "StartV043CThresh"
+   "name": "PurgeCell3",
+   "desc": "Third adaptive cell number for purge learning ($043C,Z)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "199F": {
    "size": 2,
@@ -2351,12 +2343,11 @@
    "name": "SensorValue11"
   },
   "2301": {
-   "size": 2,
+   "name": "SpeedCtlRpmJump",
+   "desc": "Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)",
    "unit": "rpmw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with EngineRpm; read by Sub_3C3C6.",
-   "name": "SensorRpmThresh6"
+   "category": "Speed control",
+   "size": 2
   },
   "2303": {
    "size": 2,
@@ -2375,12 +2366,10 @@
    "name": "SensorValue12"
   },
   "2306": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_3C3C6.",
-   "name": "SensorThrottleThresh3"
+   "name": "SpeedCtlRpmJumpThrottle",
+   "desc": "Speed control: the rpm-jump cancel needs the throttle within this value of the reference",
+   "category": "Speed control",
+   "size": 1
   },
   "2307": {
    "size": 1,
@@ -2815,44 +2804,36 @@
    "name": "SensorThrottleThresh4"
   },
   "3DBA": {
-   "size": 1,
+   "name": "ChargeMonVoltsMargin",
+   "desc": "Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging",
    "unit": "volt16",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte added to BatteryVolts2; read by Sub_21C78.",
-   "name": "SensorVoltsAdder"
+   "category": "Diagnostics",
+   "size": 1
   },
   "3DBB": {
-   "size": 1,
+   "name": "ChargeMonRpmMin",
+   "desc": "Charging monitor: engine rpm at or above this value",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_21C78.",
-   "name": "SensorRpmThresh10"
+   "category": "Diagnostics",
+   "size": 1
   },
   "3DBC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V0DBB; read by Sub_21C78.",
-   "name": "SensorV0DBBThresh"
+   "name": "ChargeMonTime",
+   "desc": "Charging monitor: time ($0DBB,Z) before $0DB8,Z bit 3 sets",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3DBD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_21C78.",
-   "name": "SensorThresh23"
+   "name": "ChargeMonClearTime",
+   "desc": "Charging monitor: time before $0DB8,Z bit 6 clears",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3DBE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_21C78.",
-   "name": "SensorThresh24"
+   "name": "ChargeMonFailTime",
+   "desc": "Charging monitor: time before $0DB8,Z bit 6 (fault) sets",
+   "category": "Diagnostics",
+   "size": 1
   },
   "51D3": {
    "name": "CylinderCount",

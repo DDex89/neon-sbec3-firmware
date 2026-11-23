@@ -1180,34 +1180,34 @@ Tab2D_0868:
         dc.b    4,$40                                    ; points, flags
         dc.b    0,255, 65,246, 129,236, 255,223          ; x, y
 
-FuelValue1:
-        dc.b    $1D,$00                                  ; Word used with; read by Sub_12B6C.
-FuelValue2:
-        dc.b    $3F,$00                                  ; Word used with; read by Sub_12B6C.
-FuelValue3:
-        dc.b    $61                                      ; Byte used with; read by Sub_12B6C.
-FuelValue4:
-        dc.b    $E9                                      ; Byte used with; read by Sub_12B6C.
+EventCellRpmLowCold:
+        dc.b    $1D,$00                                  ; Per-event hold cells (SelectCell3x3 from Sub_12B6C), cold (coolant below EventCellCoolantMin): rpm between low and middle cells; the 3x3 hold values are at $0BAE
+EventCellRpmHighCold:
+        dc.b    $3F,$00                                  ; Per-event hold cells, cold: rpm between middle and high cells
+EventCellMapLowCold:
+        dc.b    $61                                      ; Per-event hold cells, cold: MAP between low and middle cells
+EventCellMapHighCold:
+        dc.b    $E9                                      ; Per-event hold cells, cold: MAP between middle and high cells
         dc.b    $14,$14,$14,$14,$14,$14,$14,$14,$14,$C2
 FuelEventRpmAboveIdle:
         dc.b    $1F                                      ; Per-event fuel: engine rpm above the idle target by less than this value
 FuelEventHold:
         dc.b    $14                                      ; Per-event fuel: hold count $077B,Z
-FuelValue5:
-        dc.b    $1D,$00                                  ; Word used with; read by Sub_12B6C.
-FuelValue6:
-        dc.b    $3F,$00                                  ; Word used with; read by Sub_12B6C.
-FuelValue7:
-        dc.b    $61                                      ; Byte used with; read by Sub_12B6C.
-FuelValue8:
-        dc.b    $E9                                      ; Byte used with; read by Sub_12B6C.
+EventCellRpmLow:
+        dc.b    $1D,$00                                  ; Per-event hold cells, warm: rpm between low and middle cells; the 3x3 hold values ($077B,Z) are at $0BC0
+EventCellRpmHigh:
+        dc.b    $3F,$00                                  ; Per-event hold cells, warm: rpm between middle and high cells
+EventCellMapLow:
+        dc.b    $61                                      ; Per-event hold cells, warm: MAP between low and middle cells
+EventCellMapHigh:
+        dc.b    $E9                                      ; Per-event hold cells, warm: MAP between middle and high cells
         dc.b    $14,$14,$14,$14,$14,$14,$14,$14,$14
-FuelCoolantThresh1:
-        dc.b    $A0                                      ; Byte compared with CoolantTemp; read by Sub_12B6C.
-FuelValue9:
-        dc.b    $0A                                      ; Byte used with; read by Sub_12B6C.
-FuelValue10:
-        dc.b    $00,$A0                                  ; Word used with; read by Sub_12B6C.
+EventCellCoolantMin:
+        dc.b    $A0                                      ; Per-event hold cells: the cold set ($0BAE) is used below this coolant
+EventCellMapHyst:
+        dc.b    $0A                                      ; Per-event hold cells: MAP hysteresis
+EventCellRpmHyst:
+        dc.b    $00,$A0                                  ; Per-event hold cells: rpm hysteresis
         dc.b    $FF,$FF,$FF,$00,$00,$01,$40,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF
 
@@ -2143,30 +2143,30 @@ O2VoltageScale2:
         dc.b    1,5, 2,64, 12,119, 38,136, 48,140, 50,178 ; x, y
 
         dc.b    $FF,$FF
-O2Value8:
-        dc.b    $25,$80                                  ; Word used with; read by Sub_1430C.
-O2Value9:
-        dc.b    $40,$00                                  ; Word used with; read by Sub_1430C.
-O2Value10:
-        dc.b    $01,$00                                  ; Word used with; read by Sub_1430C.
-O2Value11:
-        dc.b    $4A                                      ; Byte used with; read by Sub_1430C.
-O2Value12:
-        dc.b    $A0                                      ; Byte used with; read by Sub_1430C.
-O2Value13:
-        dc.b    $05                                      ; Byte used with; read by Sub_1430C.
-O2Value14:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_1430C.
-O2Value15:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_1430C.
-O2Value16:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_1430C.
-O2Value17:
-        dc.b    $00                                      ; Byte used with; read by Sub_1430C.
-O2Value18:
-        dc.b    $00                                      ; Byte used with; read by Sub_1430C.
-O2Value19:
-        dc.b    $00                                      ; Byte used with; read by Sub_1430C.
+O2CellRpmLow:
+        dc.b    $25,$80                                  ; Adaptive trim cells (SelectCell3x3 from Sub_1430C): engine rpm between the low and middle cells
+O2CellRpmHigh:
+        dc.b    $40,$00                                  ; Adaptive trim cells: engine rpm between the middle and high cells
+O2CellRpmHyst:
+        dc.b    $01,$00                                  ; Adaptive trim cells: rpm hysteresis
+O2CellMapLow:
+        dc.b    $4A                                      ; Adaptive trim cells: MAP between the low and middle cells
+O2CellMapHigh:
+        dc.b    $A0                                      ; Adaptive trim cells: MAP between the middle and high cells
+O2CellMapHyst:
+        dc.b    $05                                      ; Adaptive trim cells: MAP hysteresis
+O2CellRpmLowAC:
+        dc.b    $00,$00                                  ; As O2CellRpmLow with A/C requested
+O2CellRpmHighAC:
+        dc.b    $00,$00                                  ; As O2CellRpmHigh with A/C requested
+O2CellRpmHystAC:
+        dc.b    $00,$00                                  ; As O2CellRpmHyst with A/C requested
+O2CellMapLowAC:
+        dc.b    $00                                      ; As O2CellMapLow with A/C requested
+O2CellMapHighAC:
+        dc.b    $00                                      ; As O2CellMapHigh with A/C requested
+O2CellMapHystAC:
+        dc.b    $00                                      ; As O2CellMapHyst with A/C requested
         dc.b    $0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$08,$08,$F3,$F3,$F3,$F3,$F3
         dc.b    $F3,$F3,$F3,$F3,$F8,$F8,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$0D,$08
         dc.b    $08,$F3,$F3,$F3,$F3,$F3,$F3,$F3,$F3,$F3,$F8,$F8,$00,$00,$00,$00
@@ -2286,10 +2286,10 @@ O2Value33:
         dc.b    $09                                      ; Byte used with; read by Sub_15D56.
 O2Value3:
         dc.b    $08                                      ; Byte used with; read by Sub_15D56.
-O2V07B1Thresh1:
-        dc.b    $7F                                      ; Byte compared with V07B1; read by Sub_15D56, Sub_2A496, Sub_2A664.
-O2V07B1Thresh2:
-        dc.b    $80                                      ; Byte compared with V07B1; read by Sub_15D56, Sub_2A07E, Sub_2A290.
+O2AdaptMax:
+        dc.b    $7F                                      ; Long-term adaptive value ($07B0,Z, $07B1,Z) upper limit (signed); at the limit the fuel system monitor counts
+O2AdaptMin:
+        dc.b    $80                                      ; Long-term adaptive value lower limit (signed)
 O2V0750Switch:
         dc.b    $64                                      ; Byte tested (zero = off) V0750; read by Sub_158B6.
 O2V07C8Thresh:
@@ -2567,12 +2567,12 @@ PurgeFuelBase:
 FlexLearnStartCoolantThresh2:
         dc.b    $84                                      ; Byte compared with StartCoolantTemp2; read by Sub_17FC4, Sub_3DE9C.
         dc.b    $00,$00
-StartV0801Thresh:
-        dc.b    $0C                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602.
-StartV043BValue:
-        dc.b    $02                                      ; Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.
-StartV043CThresh:
-        dc.b    $05                                      ; Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.
+PurgeCell1:
+        dc.b    $0C                                      ; Adaptive cell number ($0801,Z) used for purge learning (copied to $043A,Z); cell 12 also sets $0C31,Z bit 0
+PurgeCell2:
+        dc.b    $02                                      ; Second adaptive cell number for purge learning ($043B,Z)
+PurgeCell3:
+        dc.b    $05                                      ; Third adaptive cell number for purge learning ($043C,Z)
 O2V0439Thresh:
         dc.b    $06                                      ; Byte compared with V0439; read by Sub_15B20.
         dc.b    $12,$0F
@@ -4852,14 +4852,14 @@ SpeedCtlOverrideThrottle:
 SensorV00F0Init:
         dc.b    $0D                                      ; Byte stored into V00F0; read by Sub_3C3C6.
         dc.b    $0D
-SensorRpmThresh6:
-        dc.b    $06,$40                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
+SpeedCtlRpmJump:
+        dc.b    $06,$40                                  ; Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)
 SensorRpmThresh7:
         dc.b    $26,$00                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
 SensorValue12:
         dc.b    $0D                                      ; Byte used with; read by Sub_3C3C6.
-SensorThrottleThresh3:
-        dc.b    $1F                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3C3C6.
+SpeedCtlRpmJumpThrottle:
+        dc.b    $1F                                      ; Speed control: the rpm-jump cancel needs the throttle within this value of the reference
 SensorValue13:
         dc.b    $10                                      ; Byte used with; read by Sub_3C3C6.
 MisfireOptions:
@@ -6166,24 +6166,24 @@ KnockRetardMaxRpm:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04
-SensorVoltsAdder:
-        dc.b    $10                                      ; Byte added to BatteryVolts2; read by Sub_21C78.
-SensorRpmThresh10:
-        dc.b    $24                                      ; Byte compared with EngineRpm; read by Sub_21C78.
+ChargeMonVoltsMargin:
+        dc.b    $10                                      ; Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging
+ChargeMonRpmMin:
+        dc.b    $24                                      ; Charging monitor: engine rpm at or above this value
         dc.b    $3C
-SensorThresh23:
-        dc.b    $05                                      ; Byte compared with; read by Sub_21C78.
+ChargeMonClearTime:
+        dc.b    $05                                      ; Charging monitor: time before $0DB8,Z bit 6 clears
         dc.b    $6D
-SensorVoltsThresh2:
-        dc.b    $BA                                      ; Byte compared with BatteryVolts2; read by Sub_21D02.
-SensorVoltsThresh3:
-        dc.b    $B7                                      ; Byte compared with BatteryVolts2; read by Sub_21D02.
-SensorThresh17:
-        dc.b    $19                                      ; Byte compared with; read by Sub_21D02.
-SensorThresh18:
-        dc.b    $9A                                      ; Byte compared with; read by Sub_21D02.
-SensorTimeThresh5:
-        dc.b    $03                                      ; Byte compared with Count3s; read by Sub_21D02.
+BattLowVolts:
+        dc.b    $BA                                      ; Low-voltage monitor (Sub_21D02): battery voltage below this value counts as low
+BattLowVoltsClear:
+        dc.b    $B7                                      ; Low-voltage monitor: battery voltage at or above this value counts as normal
+BattLowSetCount:
+        dc.b    $19                                      ; Low-voltage monitor: counts before $0DB8,Z bit 2 sets
+BattLowClearCount:
+        dc.b    $9A                                      ; Low-voltage monitor: counts before $0DB8,Z bit 2 clears
+BattLowStartTime:
+        dc.b    $03                                      ; Low-voltage monitor: runs after this time since start
 SensorV0A63Thresh1:
         dc.b    $FF                                      ; Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.
 SensorV0A63Thresh2:
@@ -10444,11 +10444,11 @@ L07274:
         JSR     CalcBaroFuelAdder
         JSR     Sub_09A3A
         JSR     Sub_0CC8A
-        LDAA    >StartV0801Thresh
+        LDAA    >PurgeCell1
         STAA    $064F,Z
-        LDAA    >StartV043BValue
+        LDAA    >PurgeCell2
         STAA    $0650,Z
-        LDAA    >StartV043CThresh
+        LDAA    >PurgeCell3
         STAA    $0651,Z
         LDAA    >Options033E
         STAA    $0773,Z
@@ -14692,45 +14692,45 @@ Sub_09EAE:
         CLRB
         TBXK
         LDX     #$088A
-        LDD     >FuelValue10
-        LDE     >FuelValue6
-        LDY     >FuelValue5
+        LDD     >EventCellRpmHyst
+        LDE     >EventCellRpmHigh
+        LDY     >EventCellRpmLow
         PSHM    D,E,Y
         CLRA
-        LDAB    >FuelValue9
+        LDAB    >EventCellMapHyst
         PSHM    D
-        LDAB    >FuelValue8
+        LDAB    >EventCellMapHigh
         PSHM    D
-        LDAB    >FuelValue7
+        LDAB    >EventCellMapLow
         PSHM    D
-        LDAB    $0432,Z
-        JSR     Sub_0A68C
+        LDAB    >EventCellIndex,Z
+        JSR     SelectCell3x3
         AIS     #$0C
-        STAB    $0432,Z
+        STAB    >EventCellIndex,Z
         ABX
         LDAB    $00,X
         BRSET   $0023,Z,#$80,L09F34
         LDAA    $0C,Z
-        CMPA    >FuelCoolantThresh1
+        CMPA    >EventCellCoolantMin
         BCC     L09F34
         CLRB
         TBXK
         LDX     #$0878
-        LDD     >FuelValue10
-        LDE     >FuelValue2
-        LDY     >FuelValue1
+        LDD     >EventCellRpmHyst
+        LDE     >EventCellRpmHighCold
+        LDY     >EventCellRpmLowCold
         PSHM    D,E,Y
         CLRA
-        LDAB    >FuelValue9
+        LDAB    >EventCellMapHyst
         PSHM    D
-        LDAB    >FuelValue4
+        LDAB    >EventCellMapHighCold
         PSHM    D
-        LDAB    >FuelValue3
+        LDAB    >EventCellMapLowCold
         PSHM    D
-        LDAB    $0432,Z
-        JSR     Sub_0A68C
+        LDAB    >EventCellIndex,Z
+        JSR     SelectCell3x3
         AIS     #$0C
-        STAB    $0432,Z
+        STAB    >EventCellIndex,Z
         ABX
         LDAB    $00,X
 L09F34:
@@ -15435,7 +15435,7 @@ Sub_0A414:
         TZX
         LDX     #$860A
         LDAA    $04A0,Z
-        CMPA    >StartV0801Thresh
+        CMPA    >PurgeCell1
         BNE     L0A42C
         BSET    $1D,Z,#$01
         BSR     Sub_0A478
@@ -15693,10 +15693,10 @@ L0A672:
         dc.b    $27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0A68C ($0A68C)
+; SelectCell3x3 ($0A68C)
 ; Called from: Sub_09EAE, Sub_0B172 (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0A68C:
+SelectCell3x3:
         PSHM    E,X,Y,K
         AIS     #$FC
         TSY
@@ -16820,36 +16820,36 @@ L0B1BC:
         BITA    #$06
         BNE     L0B21E
         BRCLR   $0056,Z,#$20,L0B1EE
-        LDD     >O2Value16
-        LDE     >O2Value15
-        LDY     >O2Value14
+        LDD     >O2CellRpmHystAC
+        LDE     >O2CellRpmHighAC
+        LDY     >O2CellRpmLowAC
         PSHM    D,E,Y
         CLRA
-        LDAB    >O2Value19
+        LDAB    >O2CellMapHystAC
         PSHM    D
-        LDAB    >O2Value18
+        LDAB    >O2CellMapHighAC
         PSHM    D
-        LDAB    >O2Value17
+        LDAB    >O2CellMapLowAC
         PSHM    D
         BRA     L0B210
 L0B1EE:
-        LDD     >O2Value10
-        LDE     >O2Value9
-        LDY     >O2Value8
+        LDD     >O2CellRpmHyst
+        LDE     >O2CellRpmHigh
+        LDY     >O2CellRpmLow
         PSHM    D,E,Y
         CLRA
-        LDAB    >O2Value13
+        LDAB    >O2CellMapHyst
         PSHM    D
-        LDAB    >O2Value12
+        LDAB    >O2CellMapHigh
         PSHM    D
-        LDAB    >O2Value11
+        LDAB    >O2CellMapLow
         PSHM    D
 L0B210:
-        LDAB    $049F,Z
-        JSR     Sub_0A68C
+        LDAB    >O2CellIndex,Z
+        JSR     SelectCell3x3
         AIS     #$0C
 L0B21A:
-        STAB    $049F,Z
+        STAB    >O2CellIndex,Z
 L0B21E:
         RTS
 
@@ -16907,7 +16907,7 @@ L0B28E:
         LDAB    $10,X
         SXT
         TDE
-        LDAB    $049F,Z
+        LDAB    >O2CellIndex,Z
         LDY     #$151A
         ABY
         CLRD
@@ -18418,7 +18418,7 @@ L0C25A:
         TPD
         TBYK
         LDY     $00,Y
-        LDAB    $049F,Z
+        LDAB    >O2CellIndex,Z
         ABY
 L0C268:
         CLRB
@@ -18450,14 +18450,14 @@ L0C29A:
         STAB    $0A,X
         PSHM    Y,K
         LDY     $26,Y
-        LDAB    $049F,Z
+        LDAB    >O2CellIndex,Z
         ABY
         CLRB
         TBYK
         LDAA    $00,Y
         STAA    $1C,X
         LDY     #$150E
-        LDAB    $049F,Z
+        LDAB    >O2CellIndex,Z
         ABY
         LDAA    $00,Y
         STAA    $0409,Z
@@ -18882,18 +18882,18 @@ L0C69A:
         CLR     $045B,Z
         CLR     $062C,Z
         LDAA    #$20
-        CMPB    >StartV0801Thresh
+        CMPB    >PurgeCell1
         BEQ     L0C6C8
         LDAA    #$10
-        CMPB    >StartV043BValue
+        CMPB    >PurgeCell2
         BNE     L0C6C0
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BNE     L0C6C8
         ORAA    #$08
         BRA     L0C6C8
 L0C6C0:
         LDAA    #$08
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BNE     L0C6D0
 L0C6C8:
         EORA    $062D,Z
@@ -19130,18 +19130,18 @@ Sub_0C91E:
         LDAA    $062E,Z
         BNE     L0C962
         BRSET   $0087,Z,#$80,L0C962
-        CMPB    >StartV0801Thresh
+        CMPB    >PurgeCell1
         BEQ     L0C95E
         AIY     #$01
-        CMPB    >StartV043BValue
+        CMPB    >PurgeCell2
         BNE     L0C956
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BNE     L0C95E
         COM     $F0,Z
         BRA     L0C95E
 L0C956:
         AIY     #$01
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BNE     L0C962
 L0C95E:
         XGDY
@@ -19197,17 +19197,17 @@ L0C9E4:
         BPL     L0C9EA
         NEGA
 L0C9EA:
-        LDAB    >O2V07B1Thresh1
+        LDAB    >O2AdaptMax
         ADDA    $00,X
         BVC     L0C9FC
         LDAA    $00,X
         BPL     L0CA08
-        LDAB    >O2V07B1Thresh2
+        LDAB    >O2AdaptMin
         TBA
 L0C9FC:
         CBA
         BGE     L0CA08
-        LDAB    >O2V07B1Thresh2
+        LDAB    >O2AdaptMin
         CBA
         BGE     L0CA0A
 L0CA08:
@@ -19583,7 +19583,7 @@ Sub_0CCC8:
         BCLR    $063E,Z,#$0F
         TZX
         LDX     #$8061
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $71,Z
         LBSR    Sub_0CD9A
@@ -19592,12 +19592,12 @@ Sub_0CCC8:
         BSET    $063E,Z,#$08
 L0CD24:
         LDX     #$8061
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $72,Z
         BSR     Sub_0CD9A
         LDX     #$8061
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    $73,Z
@@ -19611,7 +19611,7 @@ L0CD48:
         BSET    $063E,Z,#$02
 L0CD52:
         LDX     #$8074
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $84,Z
         BSR     Sub_0CD9A
@@ -19620,12 +19620,12 @@ L0CD52:
         BSET    $063E,Z,#$04
 L0CD6A:
         LDX     #$8074
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $85,Z
         BSR     Sub_0CD9A
         LDX     #$8074
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    $86,Z
@@ -19714,11 +19714,11 @@ Sub_0CE06:
 L0CE10:
         CLRB
 L0CE12:
-        CMPB    >StartV0801Thresh
+        CMPB    >PurgeCell1
         BEQ     L0CE26
-        CMPB    >StartV043BValue
+        CMPB    >PurgeCell2
         BEQ     L0CE26
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BEQ     L0CE26
         BSR     Sub_0CE46
 L0CE26:
@@ -19726,13 +19726,13 @@ L0CE26:
         CMPB    #$0F
         BLS     L0CE12
         LDAA    $10,X
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         BSR     Sub_0CE46
         LDAA    $11,X
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         BSR     Sub_0CE46
         LDAA    $12,X
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         BSR     Sub_0CE46
         RTS
 
@@ -19759,7 +19759,7 @@ Sub_0CE54:
         TZX
         BRCLR   $0087,Z,#$04,L0CECA
         LDX     #$8061
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $71,Z
         SUBA    $00,X
@@ -19778,7 +19778,7 @@ L0CE8A:
 L0CE90:
         BRCLR   >Options032F,#$40,L0CECA
         LDX     #$8074
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $84,Z
         SUBA    $00,X
@@ -19802,7 +19802,7 @@ L0CECA:
 L0CECE:
         BRCLR   $0087,Z,#$02,L0CF3C
         LDX     #$8061
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $72,Z
         SUBA    $00,X
@@ -19821,7 +19821,7 @@ L0CEFC:
 L0CF02:
         BRCLR   >Options032F,#$40,L0CF3C
         LDX     #$8074
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $85,Z
         SUBA    $00,X
@@ -19845,7 +19845,7 @@ L0CF3C:
 L0CF40:
         BRCLR   $0087,Z,#$01,L0CFAE
         LDX     #$8061
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         LDAA    $73,Z
         SUBA    $00,X
@@ -19864,7 +19864,7 @@ L0CF6E:
 L0CF74:
         BRCLR   >Options032F,#$40,L0CFAE
         LDX     #$8074
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         LDAA    $86,Z
         SUBA    $00,X
@@ -20380,13 +20380,13 @@ L0D536:
         LDX     #$1753
         LDAB    #$04
         LDAA    $04A0,Z
-        CMPA    >StartV0801Thresh
+        CMPA    >PurgeCell1
         BEQ     L0D5A2
         LDX     #$1754
         LDAB    #$02
-        CMPA    >StartV043BValue
+        CMPA    >PurgeCell2
         BNE     L0D57C
-        CMPA    >StartV043CThresh
+        CMPA    >PurgeCell3
         BNE     L0D55E
         ORAB    #$01
 L0D55E:
@@ -20399,7 +20399,7 @@ L0D55E:
         LBRA    L0D642
 L0D57C:
         LDAB    #$01
-        CMPA    >StartV043CThresh
+        CMPA    >PurgeCell3
         LBNE    L0D642
         BRCLR   $0645,Z,#$10,L0D5A2
         BRSET   $0645,Z,#$20,L0D5A2

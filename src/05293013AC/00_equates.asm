@@ -66,6 +66,7 @@ O2UpBank2Raw     equ $0531        ; $F8531
 CrankPulse       equ $055F        ; $F855F
 CrankCoolant     equ $0561        ; $F8561
 FuelModeFlags    equ $056A        ; $F856A
+O2CellIndex      equ $0572        ; $F8572
 FlexFuelFactor   equ $0588        ; $F8588
 DecelLeanFuel    equ $0593        ; $F8593
 DecelLeanTimer   equ $0594        ; $F8594

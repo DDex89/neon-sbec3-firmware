@@ -62,6 +62,7 @@ ShortTermTrim2   equ $0521        ; $F8521
 O2UpBank2Raw     equ $0522        ; $F8522
 CrankPulse       equ $0550        ; $F8550
 CrankCoolant     equ $0552        ; $F8552
+O2CellIndex      equ $0563        ; $F8563
 FlexFuelFactor   equ $0578        ; $F8578
 DecelLeanFuel    equ $0583        ; $F8583
 DecelLeanTimer   equ $0584        ; $F8584

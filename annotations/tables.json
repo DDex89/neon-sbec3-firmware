@@ -3394,44 +3394,34 @@
    "name": "CalValue2"
   },
   "0323": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BusInfoByte1",
+   "desc": "First data byte of the bus information message built by Sub_31860 (after $06 $ED)",
    "category": "Other",
-   "desc": "Byte used with; read by Sub_31860.",
-   "name": "CalValue3"
+   "size": 1
   },
   "0324": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BusInfoByte2",
+   "desc": "Second data byte of the bus information message",
    "category": "Other",
-   "desc": "Byte used with; read by Sub_31860.",
-   "name": "CalValue4"
+   "size": 1
   },
   "0325": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte used with; read by Sub_1148E, Sub_31860.",
-   "name": "FuelEventValue1"
+   "name": "BusInfoByte3",
+   "desc": "Third data byte of the bus information message (also read by the per-event code)",
+   "category": "Other",
+   "size": 1
   },
   "0326": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BusInfoByte4",
+   "desc": "Fourth data byte of the bus information message",
    "category": "Other",
-   "desc": "Byte used with; read by Sub_31860.",
-   "name": "CalValue5"
+   "size": 1
   },
   "0327": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BusInfoByte5",
+   "desc": "Fifth data byte of the bus information message (bit 6 added with calibration bit $032E.7)",
    "category": "Other",
-   "desc": "Byte used with; read by Sub_31860.",
-   "name": "CalValue6"
+   "size": 1
   },
   "0328": {
    "name": "Options0328",
@@ -6111,36 +6101,32 @@
    "name": "SensorValue2"
   },
   "0BA8": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventCellRpmLowCold",
+   "desc": "Per-event hold cells (SelectCell3x3 from Sub_12B6C), cold (coolant below EventCellCoolantMin): rpm between low and middle cells; the 3x3 hold values are at $0BAE",
+   "unit": "rpmw",
    "category": "Fuel",
-   "desc": "Word used with; read by Sub_12B6C.",
-   "name": "FuelValue1"
+   "size": 2
   },
   "0BAA": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventCellRpmHighCold",
+   "desc": "Per-event hold cells, cold: rpm between middle and high cells",
+   "unit": "rpmw",
    "category": "Fuel",
-   "desc": "Word used with; read by Sub_12B6C.",
-   "name": "FuelValue2"
+   "size": 2
   },
   "0BAC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventCellMapLowCold",
+   "desc": "Per-event hold cells, cold: MAP between low and middle cells",
+   "unit": "kpa",
    "category": "Fuel",
-   "desc": "Byte used with; read by Sub_12B6C.",
-   "name": "FuelValue3"
+   "size": 1
   },
   "0BAD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventCellMapHighCold",
+   "desc": "Per-event hold cells, cold: MAP between middle and high cells",
+   "unit": "kpa",
    "category": "Fuel",
-   "desc": "Byte used with; read by Sub_12B6C.",
-   "name": "FuelValue4"
+   "size": 1
   },
   "0BB7": {
    "name": "FuelEventCoolantMin",
@@ -6163,60 +6149,53 @@
    "category": "Fuel"
   },
   "0BBA": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventCellRpmLow",
+   "desc": "Per-event hold cells, warm: rpm between low and middle cells; the 3x3 hold values ($077B,Z) are at $0BC0",
+   "unit": "rpmw",
    "category": "Fuel",
-   "desc": "Word used with; read by Sub_12B6C.",
-   "name": "FuelValue5"
+   "size": 2
   },
   "0BBC": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventCellRpmHigh",
+   "desc": "Per-event hold cells, warm: rpm between middle and high cells",
+   "unit": "rpmw",
    "category": "Fuel",
-   "desc": "Word used with; read by Sub_12B6C.",
-   "name": "FuelValue6"
+   "size": 2
   },
   "0BBE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventCellMapLow",
+   "desc": "Per-event hold cells, warm: MAP between low and middle cells",
+   "unit": "kpa",
    "category": "Fuel",
-   "desc": "Byte used with; read by Sub_12B6C.",
-   "name": "FuelValue7"
+   "size": 1
   },
   "0BBF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventCellMapHigh",
+   "desc": "Per-event hold cells, warm: MAP between middle and high cells",
+   "unit": "kpa",
    "category": "Fuel",
-   "desc": "Byte used with; read by Sub_12B6C.",
-   "name": "FuelValue8"
+   "size": 1
   },
   "0BC9": {
-   "size": 1,
+   "name": "EventCellCoolantMin",
+   "desc": "Per-event hold cells: the cold set ($0BAE) is used below this coolant",
    "unit": "tempc",
-   "auto": true,
    "category": "Fuel",
-   "desc": "Byte compared with CoolantTemp; read by Sub_12B6C.",
-   "name": "FuelCoolantThresh1"
+   "size": 1
   },
   "0BCA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventCellMapHyst",
+   "desc": "Per-event hold cells: MAP hysteresis",
+   "unit": "kpa",
    "category": "Fuel",
-   "desc": "Byte used with; read by Sub_12B6C.",
-   "name": "FuelValue9"
+   "size": 1
   },
   "0BCB": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventCellRpmHyst",
+   "desc": "Per-event hold cells: rpm hysteresis",
+   "unit": "rpmw",
    "category": "Fuel",
-   "desc": "Word used with; read by Sub_12B6C.",
-   "name": "FuelValue10"
+   "size": 2
   },
   "0BD9": {
    "name": "HotEngineCoolantMin",
@@ -6535,12 +6514,10 @@
    "name": "SensorOffset2"
   },
   "1285": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2FlexEthanolMin",
+   "desc": "Closed loop: ethanol content below which $0770,Z bit 2 is set (flex fuel)",
    "category": "Closed loop",
-   "desc": "Byte compared with FlexEthanol; read by Sub_15F5C.",
-   "name": "O2FlexEthanolThresh"
+   "size": 1
   },
   "1286": {
    "size": 1,
@@ -7072,100 +7049,88 @@
    "name": "O2V075CInit"
   },
   "17D2": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellRpmLow",
+   "desc": "Adaptive trim cells (SelectCell3x3 from Sub_1430C): engine rpm between the low and middle cells",
+   "unit": "rpmw",
    "category": "Closed loop",
-   "desc": "Word used with; read by Sub_1430C.",
-   "name": "O2Value8"
+   "size": 2
   },
   "17D4": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellRpmHigh",
+   "desc": "Adaptive trim cells: engine rpm between the middle and high cells",
+   "unit": "rpmw",
    "category": "Closed loop",
-   "desc": "Word used with; read by Sub_1430C.",
-   "name": "O2Value9"
+   "size": 2
   },
   "17D6": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellRpmHyst",
+   "desc": "Adaptive trim cells: rpm hysteresis",
+   "unit": "rpmw",
    "category": "Closed loop",
-   "desc": "Word used with; read by Sub_1430C.",
-   "name": "O2Value10"
+   "size": 2
   },
   "17D8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellMapLow",
+   "desc": "Adaptive trim cells: MAP between the low and middle cells",
+   "unit": "kpa",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_1430C.",
-   "name": "O2Value11"
+   "size": 1
   },
   "17D9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellMapHigh",
+   "desc": "Adaptive trim cells: MAP between the middle and high cells",
+   "unit": "kpa",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_1430C.",
-   "name": "O2Value12"
+   "size": 1
   },
   "17DA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellMapHyst",
+   "desc": "Adaptive trim cells: MAP hysteresis",
+   "unit": "kpa",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_1430C.",
-   "name": "O2Value13"
+   "size": 1
   },
   "17DB": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellRpmLowAC",
+   "desc": "As O2CellRpmLow with A/C requested",
+   "unit": "rpmw",
    "category": "Closed loop",
-   "desc": "Word used with; read by Sub_1430C.",
-   "name": "O2Value14"
+   "size": 2
   },
   "17DD": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellRpmHighAC",
+   "desc": "As O2CellRpmHigh with A/C requested",
+   "unit": "rpmw",
    "category": "Closed loop",
-   "desc": "Word used with; read by Sub_1430C.",
-   "name": "O2Value15"
+   "size": 2
   },
   "17DF": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellRpmHystAC",
+   "desc": "As O2CellRpmHyst with A/C requested",
+   "unit": "rpmw",
    "category": "Closed loop",
-   "desc": "Word used with; read by Sub_1430C.",
-   "name": "O2Value16"
+   "size": 2
   },
   "17E1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellMapLowAC",
+   "desc": "As O2CellMapLow with A/C requested",
+   "unit": "kpa",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_1430C.",
-   "name": "O2Value17"
+   "size": 1
   },
   "17E2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellMapHighAC",
+   "desc": "As O2CellMapHigh with A/C requested",
+   "unit": "kpa",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_1430C.",
-   "name": "O2Value18"
+   "size": 1
   },
   "17E3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellMapHystAC",
+   "desc": "As O2CellMapHyst with A/C requested",
+   "unit": "kpa",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_1430C.",
-   "name": "O2Value19"
+   "size": 1
   },
   "1873": {
    "name": "O2AdaptIntegralMax",
@@ -7567,20 +7532,16 @@
    "name": "O2Value34"
   },
   "18F8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2AdaptMax",
+   "desc": "Long-term adaptive value ($07B0,Z, $07B1,Z) upper limit (signed); at the limit the fuel system monitor counts",
    "category": "Closed loop",
-   "desc": "Byte compared with V07B1; read by Sub_15D56, Sub_2A496, Sub_2A664.",
-   "name": "O2V07B1Thresh1"
+   "size": 1
   },
   "18F9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2AdaptMin",
+   "desc": "Long-term adaptive value lower limit (signed)",
    "category": "Closed loop",
-   "desc": "Byte compared with V07B1; read by Sub_15D56, Sub_2A07E, Sub_2A290.",
-   "name": "O2V07B1Thresh2"
+   "size": 1
   },
   "18FA": {
    "size": 1,
@@ -8462,28 +8423,22 @@
    "size": 1
   },
   "1BB8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602.",
-   "name": "StartV0801Thresh"
+   "name": "PurgeCell1",
+   "desc": "Adaptive cell number ($0801,Z) used for purge learning (copied to $043A,Z); cell 12 also sets $0C31,Z bit 0",
+   "category": "EVAP purge",
+   "size": 1
   },
   "1BB9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.",
-   "name": "StartV043BValue"
+   "name": "PurgeCell2",
+   "desc": "Second adaptive cell number for purge learning ($043B,Z)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "1BBA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.",
-   "name": "StartV043CThresh"
+   "name": "PurgeCell3",
+   "desc": "Third adaptive cell number for purge learning ($043C,Z)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "1BBB": {
    "size": 1,
@@ -10833,12 +10788,11 @@
    "name": "SensorValue11"
   },
   "2C4E": {
-   "size": 2,
+   "name": "SpeedCtlRpmJump",
+   "desc": "Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)",
    "unit": "rpmw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with EngineRpm; read by Sub_3C3C6.",
-   "name": "SensorRpmThresh6"
+   "category": "Speed control",
+   "size": 2
   },
   "2C50": {
    "size": 2,
@@ -10857,12 +10811,10 @@
    "name": "SensorValue12"
   },
   "2C53": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_3C3C6.",
-   "name": "SensorThrottleThresh3"
+   "name": "SpeedCtlRpmJumpThrottle",
+   "desc": "Speed control: the rpm-jump cancel needs the throttle within this value of the reference",
+   "category": "Speed control",
+   "size": 1
   },
   "2C54": {
    "size": 1,
@@ -13346,44 +13298,36 @@
    "category": "Spark"
   },
   "4AA0": {
-   "size": 1,
+   "name": "BattLowVolts",
+   "desc": "Low-voltage monitor (Sub_21D02): battery voltage below this value counts as low",
    "unit": "volt16",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with BatteryVolts2; read by Sub_21D02.",
-   "name": "SensorVoltsThresh2"
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AA1": {
-   "size": 1,
+   "name": "BattLowVoltsClear",
+   "desc": "Low-voltage monitor: battery voltage at or above this value counts as normal",
    "unit": "volt16",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with BatteryVolts2; read by Sub_21D02.",
-   "name": "SensorVoltsThresh3"
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AA2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_21D02.",
-   "name": "SensorThresh17"
+   "name": "BattLowSetCount",
+   "desc": "Low-voltage monitor: counts before $0DB8,Z bit 2 sets",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AA3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_21D02.",
-   "name": "SensorThresh18"
+   "name": "BattLowClearCount",
+   "desc": "Low-voltage monitor: counts before $0DB8,Z bit 2 clears",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AA4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with Count3s; read by Sub_21D02.",
-   "name": "SensorTimeThresh5"
+   "name": "BattLowStartTime",
+   "desc": "Low-voltage monitor: runs after this time since start",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AA5": {
    "size": 1,
@@ -13690,44 +13634,36 @@
    "name": "FieldThresh"
   },
   "4AD3": {
-   "size": 1,
+   "name": "ChargeMonVoltsMargin",
+   "desc": "Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging",
    "unit": "volt16",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte added to BatteryVolts2; read by Sub_21C78.",
-   "name": "SensorVoltsAdder"
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AD4": {
-   "size": 1,
+   "name": "ChargeMonRpmMin",
+   "desc": "Charging monitor: engine rpm at or above this value",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_21C78.",
-   "name": "SensorRpmThresh10"
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AD5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V0DBB; read by Sub_21C78.",
-   "name": "SensorV0DBBThresh"
+   "name": "ChargeMonTime",
+   "desc": "Charging monitor: time ($0DBB,Z) before $0DB8,Z bit 3 sets",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AD6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_21C78.",
-   "name": "SensorThresh23"
+   "name": "ChargeMonClearTime",
+   "desc": "Charging monitor: time before $0DB8,Z bit 6 clears",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AD7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_21C78.",
-   "name": "SensorThresh24"
+   "name": "ChargeMonFailTime",
+   "desc": "Charging monitor: time before $0DB8,Z bit 6 (fault) sets",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AD8": {
    "size": 1,

@@ -22,6 +22,7 @@
   <CATEGORY index="0xC" name="Options" />
   <CATEGORY index="0xD" name="Cooling fan" />
   <CATEGORY index="0xE" name="A/C" />
+  <CATEGORY index="0xF" name="Speed control" />
  </XDFHEADER>
  <XDFTABLE uniqueid="0x101" flags="0x0">
   <title>Tab2D_034D</title>
@@ -12762,8 +12763,8 @@
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFCONSTANT uniqueid="0x27E" flags="0x0">
-  <title>O2FlexEthanolThresh</title>
-  <description>Byte compared with FlexEthanol; read by Sub_15F5C. $071D</description>
+  <title>O2FlexEthanolMin</title>
+  <description>Closed loop: ethanol content below which $0770,Z bit 2 is set (flex fuel) $071D</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x71D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13470,9 +13471,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2B9" flags="0x0">
-  <title>StartV0801Thresh</title>
-  <description>Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602. $13A4</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>PurgeCell1</title>
+  <description>Adaptive cell number ($0801,Z) used for purge learning (copied to $043A,Z); cell 12 also sets $0C31,Z bit 0 $13A4</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x13A4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13482,9 +13483,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2BA" flags="0x0">
-  <title>StartV043BValue</title>
-  <description>Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602. $13A5</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>PurgeCell2</title>
+  <description>Second adaptive cell number for purge learning ($043B,Z) $13A5</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x13A5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13494,9 +13495,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2BB" flags="0x0">
-  <title>StartV043CThresh</title>
-  <description>Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602. $13A6</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>PurgeCell3</title>
+  <description>Third adaptive cell number for purge learning ($043C,Z) $13A6</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x13A6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14466,9 +14467,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30C" flags="0x0">
-  <title>SensorRpmThresh6</title>
-  <description>Word compared with EngineRpm; read by Sub_3C3C6. $2328</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>SpeedCtlRpmJump</title>
+  <description>Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only) $2328</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x2328" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -14502,9 +14503,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30F" flags="0x0">
-  <title>SensorThrottleThresh3</title>
-  <description>Byte compared with ThrottleAboveClosed; read by Sub_3C3C6. $232D</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>SpeedCtlRpmJumpThrottle</title>
+  <description>Speed control: the rpm-jump cancel needs the throttle within this value of the reference $232D</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x232D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15246,9 +15247,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x34D" flags="0x0">
-  <title>SensorVoltsAdder</title>
-  <description>Byte added to BatteryVolts2; read by Sub_21C78. $3DE5</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>ChargeMonVoltsMargin</title>
+  <description>Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging $3DE5</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x3DE5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
   <decimalpl>2</decimalpl>
@@ -15258,9 +15259,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x34E" flags="0x0">
-  <title>SensorRpmThresh10</title>
-  <description>Byte compared with EngineRpm; read by Sub_21C78. $3DE6</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>ChargeMonRpmMin</title>
+  <description>Charging monitor: engine rpm at or above this value $3DE6</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x3DE6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -15270,9 +15271,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x34F" flags="0x0">
-  <title>SensorV0DBBThresh</title>
-  <description>Byte compared with V0DBB; read by Sub_21C78. $3DE7</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>ChargeMonTime</title>
+  <description>Charging monitor: time ($0DBB,Z) before $0DB8,Z bit 3 sets $3DE7</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x3DE7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15282,9 +15283,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x350" flags="0x0">
-  <title>SensorThresh23</title>
-  <description>Byte compared with; read by Sub_21C78. $3DE8</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>ChargeMonClearTime</title>
+  <description>Charging monitor: time before $0DB8,Z bit 6 clears $3DE8</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x3DE8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15294,9 +15295,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x351" flags="0x0">
-  <title>SensorThresh24</title>
-  <description>Byte compared with; read by Sub_21C78. $3DE9</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>ChargeMonFailTime</title>
+  <description>Charging monitor: time before $0DB8,Z bit 6 (fault) sets $3DE9</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x3DE9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>

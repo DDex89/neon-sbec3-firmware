@@ -1136,7 +1136,7 @@ L10B2C:
         LDAA    >ThrottleAboveClosed,Z
         SUBA    $0144,Z
         BCS     L10B8A
-        CMPA    >SensorThrottleThresh3
+        CMPA    >SpeedCtlRpmJumpThrottle
         BCC     L10BB8
 L10B8A:
         BRCLR   $0149,Z,#$80,L10B98
@@ -1149,7 +1149,7 @@ L10B98:
         LDD     >EngineRpm,Z
         SUBD    $0142,Z
         BCS     L10BB8
-        CPD     >SensorRpmThresh6
+        CPD     >SpeedCtlRpmJump
         BCS     L10BB8
         LDAB    >SensorValue13
         BRA     L10BBA
@@ -19627,12 +19627,12 @@ Sub_1D22A:
         BRSET   $0164,Z,#$20,L1D2AA
         BRSET   $0163,Z,#$08,L1D2AA
         LDAA    >BatteryVolts2,Z
-        ADDA    >SensorVoltsAdder
+        ADDA    >ChargeMonVoltsMargin
         BCS     L1D2AA
         CMPA    >ChargeTargetVolts,Z
         BCC     L1D2AA
         LDAA    >EngineRpm,Z
-        CMPA    >SensorRpmThresh10
+        CMPA    >ChargeMonRpmMin
         BCS     L1D2AA
         LDAA    #$0F
         BRCLR   $042E,Z,#$08,L1D260
@@ -19646,18 +19646,18 @@ L1D260:
         STAA    $0431,Z
 L1D272:
         BRSET   $042E,Z,#$08,L1D284
-        CMPA    >SensorV0DBBThresh
+        CMPA    >ChargeMonTime
         BCS     L1D2B2
         BSET    $042E,Z,#$08
         BRA     L1D2AE
 L1D284:
         BRSET   $042E,Z,#$40,L1D296
-        CMPA    >SensorThresh24
+        CMPA    >ChargeMonFailTime
         BCS     L1D2B2
         BSET    $042E,Z,#$40
         BRA     L1D2AE
 L1D296:
-        CMPA    >SensorThresh23
+        CMPA    >ChargeMonClearTime
         BCS     L1D2B2
         BCLR    $042E,Z,#$40
         LDY     #$3562

@@ -289,8 +289,8 @@ CalValue1:
 CalValue2:
         dc.b    $00                                      ; Byte used with; read by Sub_30972.
         dc.b    $01,$14
-FuelEventValue1:
-        dc.b    $44                                      ; Byte used with; read by Sub_1148E, Sub_31860.
+BusInfoByte3:
+        dc.b    $44                                      ; Third data byte of the bus information message (also read by the per-event code)
         dc.b    $28,$0C
 Options0328:
         dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
@@ -1882,14 +1882,14 @@ ReturnlessFuelScale:
         dc.b    4,$80                                    ; points, flags
         dc.b    0,255, 65,246, 130,236, 255,223          ; x, y
 
-FuelValue1:
-        dc.b    $2F,$00                                  ; Word used with; read by Sub_12B6C.
-FuelValue2:
-        dc.b    $43,$00                                  ; Word used with; read by Sub_12B6C.
-FuelValue3:
-        dc.b    $61                                      ; Byte used with; read by Sub_12B6C.
-FuelValue4:
-        dc.b    $E3                                      ; Byte used with; read by Sub_12B6C.
+EventCellRpmLowCold:
+        dc.b    $2F,$00                                  ; Per-event hold cells (SelectCell3x3 from Sub_12B6C), cold (coolant below EventCellCoolantMin): rpm between low and middle cells; the 3x3 hold values are at $0BAE
+EventCellRpmHighCold:
+        dc.b    $43,$00                                  ; Per-event hold cells, cold: rpm between middle and high cells
+EventCellMapLowCold:
+        dc.b    $61                                      ; Per-event hold cells, cold: MAP between low and middle cells
+EventCellMapHighCold:
+        dc.b    $E3                                      ; Per-event hold cells, cold: MAP between middle and high cells
         dc.b    $14,$14,$14,$14,$14,$14,$14,$14,$14
 FuelEventCoolantMin:
         dc.b    $C2                                      ; Per-event fuel (Sub_112A8): runs above this coolant with the throttle not closed
@@ -1897,21 +1897,21 @@ FuelEventRpmAboveIdle:
         dc.b    $1F                                      ; Per-event fuel: engine rpm above the idle target by less than this value
 FuelEventHold:
         dc.b    $14                                      ; Per-event fuel: hold count $077B,Z
-FuelValue5:
-        dc.b    $2F,$00                                  ; Word used with; read by Sub_12B6C.
-FuelValue6:
-        dc.b    $43,$00                                  ; Word used with; read by Sub_12B6C.
-FuelValue7:
-        dc.b    $61                                      ; Byte used with; read by Sub_12B6C.
-FuelValue8:
-        dc.b    $E3                                      ; Byte used with; read by Sub_12B6C.
+EventCellRpmLow:
+        dc.b    $2F,$00                                  ; Per-event hold cells, warm: rpm between low and middle cells; the 3x3 hold values ($077B,Z) are at $0BC0
+EventCellRpmHigh:
+        dc.b    $43,$00                                  ; Per-event hold cells, warm: rpm between middle and high cells
+EventCellMapLow:
+        dc.b    $61                                      ; Per-event hold cells, warm: MAP between low and middle cells
+EventCellMapHigh:
+        dc.b    $E3                                      ; Per-event hold cells, warm: MAP between middle and high cells
         dc.b    $14,$14,$14,$14,$14,$14,$14,$14,$14
-FuelCoolantThresh1:
-        dc.b    $A0                                      ; Byte compared with CoolantTemp; read by Sub_12B6C.
-FuelValue9:
-        dc.b    $08                                      ; Byte used with; read by Sub_12B6C.
-FuelValue10:
-        dc.b    $03,$00                                  ; Word used with; read by Sub_12B6C.
+EventCellCoolantMin:
+        dc.b    $A0                                      ; Per-event hold cells: the cold set ($0BAE) is used below this coolant
+EventCellMapHyst:
+        dc.b    $08                                      ; Per-event hold cells: MAP hysteresis
+EventCellRpmHyst:
+        dc.b    $03,$00                                  ; Per-event hold cells: rpm hysteresis
         dc.b    $14,$14,$14,$14,$14,$14,$00,$00,$00,$00,$00,$00
 HotEngineCoolantMin:
         dc.b    $FF                                      ; Hot-engine enrichment runs at or above this coolant
@@ -2451,8 +2451,8 @@ SensorAdder4:
         dc.b    $00                                      ; Byte added to; read by Sub_2C7FE. Fault: P0176.
 SensorOffset2:
         dc.b    $00                                      ; Byte subtracted from; read by Sub_2C7FE. Fault: P0176.
-O2FlexEthanolThresh:
-        dc.b    $28                                      ; Byte compared with FlexEthanol; read by Sub_15F5C.
+O2FlexEthanolMin:
+        dc.b    $28                                      ; Closed loop: ethanol content below which $0770,Z bit 2 is set (flex fuel)
 O2Adder1:
         dc.b    $02                                      ; Byte added to; read by Sub_15F5C.
 O2Adder2:
@@ -3130,30 +3130,30 @@ O2VoltageScale2:
         dc.b    2,64, 5,119, 38,136, 46,178              ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
-O2Value8:
-        dc.b    $3B,$00                                  ; Word used with; read by Sub_1430C.
-O2Value9:
-        dc.b    $4B,$00                                  ; Word used with; read by Sub_1430C.
-O2Value10:
-        dc.b    $02,$00                                  ; Word used with; read by Sub_1430C.
-O2Value11:
-        dc.b    $49                                      ; Byte used with; read by Sub_1430C.
-O2Value12:
-        dc.b    $61                                      ; Byte used with; read by Sub_1430C.
-O2Value13:
-        dc.b    $06                                      ; Byte used with; read by Sub_1430C.
-O2Value14:
-        dc.b    $3B,$00                                  ; Word used with; read by Sub_1430C.
-O2Value15:
-        dc.b    $4B,$00                                  ; Word used with; read by Sub_1430C.
-O2Value16:
-        dc.b    $02,$00                                  ; Word used with; read by Sub_1430C.
-O2Value17:
-        dc.b    $49                                      ; Byte used with; read by Sub_1430C.
-O2Value18:
-        dc.b    $61                                      ; Byte used with; read by Sub_1430C.
-O2Value19:
-        dc.b    $06                                      ; Byte used with; read by Sub_1430C.
+O2CellRpmLow:
+        dc.b    $3B,$00                                  ; Adaptive trim cells (SelectCell3x3 from Sub_1430C): engine rpm between the low and middle cells
+O2CellRpmHigh:
+        dc.b    $4B,$00                                  ; Adaptive trim cells: engine rpm between the middle and high cells
+O2CellRpmHyst:
+        dc.b    $02,$00                                  ; Adaptive trim cells: rpm hysteresis
+O2CellMapLow:
+        dc.b    $49                                      ; Adaptive trim cells: MAP between the low and middle cells
+O2CellMapHigh:
+        dc.b    $61                                      ; Adaptive trim cells: MAP between the middle and high cells
+O2CellMapHyst:
+        dc.b    $06                                      ; Adaptive trim cells: MAP hysteresis
+O2CellRpmLowAC:
+        dc.b    $3B,$00                                  ; As O2CellRpmLow with A/C requested
+O2CellRpmHighAC:
+        dc.b    $4B,$00                                  ; As O2CellRpmHigh with A/C requested
+O2CellRpmHystAC:
+        dc.b    $02,$00                                  ; As O2CellRpmHyst with A/C requested
+O2CellMapLowAC:
+        dc.b    $49                                      ; As O2CellMapLow with A/C requested
+O2CellMapHighAC:
+        dc.b    $61                                      ; As O2CellMapHigh with A/C requested
+O2CellMapHystAC:
+        dc.b    $06                                      ; As O2CellMapHyst with A/C requested
         dc.b    $06,$06,$06,$06,$06,$06,$06,$06,$06,$06,$06,$FA,$FA,$FA,$FA,$FA
         dc.b    $FA,$FA,$FA,$FA,$FA,$FA,$0F,$12,$12,$0C,$12,$0C,$12,$12,$12,$06
         dc.b    $06,$F1,$EE,$EE,$F4,$EE,$F4,$EE,$EE,$EE,$FA,$FA,$06,$06,$06,$06
@@ -3279,10 +3279,10 @@ O2Value33:
         dc.b    $09                                      ; Byte used with; read by Sub_15D56.
 O2Value34:
         dc.b    $08                                      ; Byte used with; read by Sub_15D56.
-O2V07B1Thresh1:
-        dc.b    $7F                                      ; Byte compared with V07B1; read by Sub_15D56, Sub_2A496, Sub_2A664.
-O2V07B1Thresh2:
-        dc.b    $80                                      ; Byte compared with V07B1; read by Sub_15D56, Sub_2A07E, Sub_2A290.
+O2AdaptMax:
+        dc.b    $7F                                      ; Long-term adaptive value ($07B0,Z, $07B1,Z) upper limit (signed); at the limit the fuel system monitor counts
+O2AdaptMin:
+        dc.b    $80                                      ; Long-term adaptive value lower limit (signed)
 TrimThresh1:
         dc.b    $1A                                      ; Byte compared with; read by Sub_16244.
 TrimThresh2:
@@ -3716,12 +3716,12 @@ PurgeFuelBase:
 FlexLearnStartCoolantThresh2:
         dc.b    $84                                      ; Byte compared with StartCoolantTemp2; read by Sub_17FC4, Sub_3DE9C.
         dc.b    $28,$3C
-StartV0801Thresh:
-        dc.b    $0C                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602.
-StartV043BValue:
-        dc.b    $03                                      ; Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.
-StartV043CThresh:
-        dc.b    $05                                      ; Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.
+PurgeCell1:
+        dc.b    $0C                                      ; Adaptive cell number ($0801,Z) used for purge learning (copied to $043A,Z); cell 12 also sets $0C31,Z bit 0
+PurgeCell2:
+        dc.b    $03                                      ; Second adaptive cell number for purge learning ($043B,Z)
+PurgeCell3:
+        dc.b    $05                                      ; Third adaptive cell number for purge learning ($043C,Z)
 O2V0439Thresh:
         dc.b    $05                                      ; Byte compared with V0439; read by Sub_15B20.
         dc.b    $12,$0D
@@ -6670,14 +6670,14 @@ SensorV00F0Init:
         dc.b    $04                                      ; Byte stored into V00F0; read by Sub_3C3C6.
 SensorValue11:
         dc.b    $09                                      ; Byte used with; read by Sub_3C3C6.
-SensorRpmThresh6:
-        dc.b    $0A,$20                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
+SpeedCtlRpmJump:
+        dc.b    $0A,$20                                  ; Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)
 SensorRpmThresh7:
         dc.b    $26,$00                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
 SensorValue12:
         dc.b    $40                                      ; Byte used with; read by Sub_3C3C6.
-SensorThrottleThresh3:
-        dc.b    $0D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3C3C6.
+SpeedCtlRpmJumpThrottle:
+        dc.b    $0D                                      ; Speed control: the rpm-jump cancel needs the throttle within this value of the reference
 SensorValue13:
         dc.b    $10                                      ; Byte used with; read by Sub_3C3C6.
 SpeedCtlV0423Thresh:
@@ -8448,16 +8448,16 @@ KnockSensorCheckRpm:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-SensorVoltsThresh2:
-        dc.b    $BD                                      ; Byte compared with BatteryVolts2; read by Sub_21D02.
-SensorVoltsThresh3:
-        dc.b    $BA                                      ; Byte compared with BatteryVolts2; read by Sub_21D02.
-SensorThresh17:
-        dc.b    $19                                      ; Byte compared with; read by Sub_21D02.
-SensorThresh18:
-        dc.b    $95                                      ; Byte compared with; read by Sub_21D02.
-SensorTimeThresh5:
-        dc.b    $03                                      ; Byte compared with Count3s; read by Sub_21D02.
+BattLowVolts:
+        dc.b    $BD                                      ; Low-voltage monitor (Sub_21D02): battery voltage below this value counts as low
+BattLowVoltsClear:
+        dc.b    $BA                                      ; Low-voltage monitor: battery voltage at or above this value counts as normal
+BattLowSetCount:
+        dc.b    $19                                      ; Low-voltage monitor: counts before $0DB8,Z bit 2 sets
+BattLowClearCount:
+        dc.b    $95                                      ; Low-voltage monitor: counts before $0DB8,Z bit 2 clears
+BattLowStartTime:
+        dc.b    $03                                      ; Low-voltage monitor: runs after this time since start
         dc.b    $66,$FF,$64,$FF
 ThrottleRawLow:
         dc.b    $08                                      ; Throttle sensor raw value below which it counts as shorted (P0122)
@@ -8529,16 +8529,16 @@ CalThresh15:
         dc.b    $4B                                      ; Byte compared with; read by Sub_223CC.
 FieldThresh:
         dc.b    $04                                      ; Byte compared with; read by Sub_08520, Sub_08DD4.
-SensorVoltsAdder:
-        dc.b    $10                                      ; Byte added to BatteryVolts2; read by Sub_21C78.
-SensorRpmThresh10:
-        dc.b    $24                                      ; Byte compared with EngineRpm; read by Sub_21C78.
-SensorV0DBBThresh:
-        dc.b    $3C                                      ; Byte compared with V0DBB; read by Sub_21C78.
-SensorThresh23:
-        dc.b    $05                                      ; Byte compared with; read by Sub_21C78.
-SensorThresh24:
-        dc.b    $6D                                      ; Byte compared with; read by Sub_21C78.
+ChargeMonVoltsMargin:
+        dc.b    $10                                      ; Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging
+ChargeMonRpmMin:
+        dc.b    $24                                      ; Charging monitor: engine rpm at or above this value
+ChargeMonTime:
+        dc.b    $3C                                      ; Charging monitor: time ($0DBB,Z) before $0DB8,Z bit 3 sets
+ChargeMonClearTime:
+        dc.b    $05                                      ; Charging monitor: time before $0DB8,Z bit 6 clears
+ChargeMonFailTime:
+        dc.b    $6D                                      ; Charging monitor: time before $0DB8,Z bit 6 (fault) sets
 SensorV0A63Thresh1:
         dc.b    $FF                                      ; Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.
 SensorV0A63Thresh2:
@@ -13573,7 +13573,7 @@ Sub_0C50A:
         TZX
         LDX     #$8C49
         LDAA    $0801,Z
-        CMPA    >StartV0801Thresh
+        CMPA    >PurgeCell1
         BNE     L0C522
         BSET    $0C31,Z,#$01
         BSR     Sub_0C57A
@@ -14069,10 +14069,10 @@ L0C9D4:
         dc.b    $95,$00,$37,$55,$00,$02,$37,$29,$DD,$04,$3F,$0A,$27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0CA96 ($0CA96)
+; SelectCell3x3 ($0CA96)
 ; Called from: Sub_1281E, Sub_1430C (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0CA96:
+SelectCell3x3:
         PSHM    E,X,Y,K
         AIS     #$FC
         TSY
@@ -15386,11 +15386,11 @@ L0DB10:
 L0DB3E:
         JSR     Sub_3DDC4
 L0DB42:
-        LDAA    >StartV0801Thresh
+        LDAA    >PurgeCell1
         STAA    $043A,Z
-        LDAA    >StartV043BValue
+        LDAA    >PurgeCell2
         STAA    $043B,Z
-        LDAA    >StartV043CThresh
+        LDAA    >PurgeCell3
         STAA    $043C,Z
         LDAA    >Options033E
         STAA    $06B8,Z

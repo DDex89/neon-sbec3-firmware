@@ -996,8 +996,8 @@ Tab2D_070E:
         dc.b    0,0, 87,0, 127,0, 217,0, 255,0           ; x, y
 
         dc.b    $00,$00,$00
-O2FlexEthanolThresh:
-        dc.b    $28                                      ; Byte compared with FlexEthanol; read by Sub_15F5C.
+O2FlexEthanolMin:
+        dc.b    $28                                      ; Closed loop: ethanol content below which $0770,Z bit 2 is set (flex fuel)
 O2Adder1:
         dc.b    $02                                      ; Byte added to; read by Sub_15F5C.
 O2Adder2:
@@ -1969,12 +1969,12 @@ Tab2D_138F:
         dc.b    5,12, 32,42, 64,63, 80,77, 200,108       ; x, y
 
         dc.b    $27,$6E,$84,$02,$30,$90,$CD,$3E,$1A
-StartV0801Thresh:
-        dc.b    $0C                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602.
-StartV043BValue:
-        dc.b    $03                                      ; Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.
-StartV043CThresh:
-        dc.b    $05                                      ; Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.
+PurgeCell1:
+        dc.b    $0C                                      ; Adaptive cell number ($0801,Z) used for purge learning (copied to $043A,Z); cell 12 also sets $0C31,Z bit 0
+PurgeCell2:
+        dc.b    $03                                      ; Second adaptive cell number for purge learning ($043B,Z)
+PurgeCell3:
+        dc.b    $05                                      ; Third adaptive cell number for purge learning ($043C,Z)
         dc.b    $2C,$2C,$2C,$05,$05,$05,$12,$0D,$05,$00,$D7,$00,$FF,$84,$33,$BC
         dc.b    $0F,$00
 
@@ -4113,14 +4113,14 @@ SensorV00F0Init:
         dc.b    $04                                      ; Byte stored into V00F0; read by Sub_3C3C6.
 SensorValue11:
         dc.b    $09                                      ; Byte used with; read by Sub_3C3C6.
-SensorRpmThresh6:
-        dc.b    $0A,$20                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
+SpeedCtlRpmJump:
+        dc.b    $0A,$20                                  ; Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only)
 SensorRpmThresh7:
         dc.b    $26,$00                                  ; Word compared with EngineRpm; read by Sub_3C3C6.
 SensorValue12:
         dc.b    $40                                      ; Byte used with; read by Sub_3C3C6.
-SensorThrottleThresh3:
-        dc.b    $0D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3C3C6.
+SpeedCtlRpmJumpThrottle:
+        dc.b    $0D                                      ; Speed control: the rpm-jump cancel needs the throttle within this value of the reference
 SensorValue13:
         dc.b    $10                                      ; Byte used with; read by Sub_3C3C6.
         dc.b    $69,$02,$37,$02,$D6,$0A,$7F,$00
@@ -5124,16 +5124,16 @@ Tab2D_3DD8:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04
-SensorVoltsAdder:
-        dc.b    $10                                      ; Byte added to BatteryVolts2; read by Sub_21C78.
-SensorRpmThresh10:
-        dc.b    $24                                      ; Byte compared with EngineRpm; read by Sub_21C78.
-SensorV0DBBThresh:
-        dc.b    $3C                                      ; Byte compared with V0DBB; read by Sub_21C78.
-SensorThresh23:
-        dc.b    $05                                      ; Byte compared with; read by Sub_21C78.
-SensorThresh24:
-        dc.b    $6D                                      ; Byte compared with; read by Sub_21C78.
+ChargeMonVoltsMargin:
+        dc.b    $10                                      ; Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging
+ChargeMonRpmMin:
+        dc.b    $24                                      ; Charging monitor: engine rpm at or above this value
+ChargeMonTime:
+        dc.b    $3C                                      ; Charging monitor: time ($0DBB,Z) before $0DB8,Z bit 3 sets
+ChargeMonClearTime:
+        dc.b    $05                                      ; Charging monitor: time before $0DB8,Z bit 6 clears
+ChargeMonFailTime:
+        dc.b    $6D                                      ; Charging monitor: time before $0DB8,Z bit 6 (fault) sets
         dc.b    $BD,$BD,$64,$95,$00,$79,$E4,$C7,$FF,$02,$00,$E3,$07,$01
 
 ;---------------------------------------------------------------------------------------------------
@@ -9201,7 +9201,7 @@ L07574:
 ;---------------------------------------------------------------------------------------------------
 Sub_0757A:
         LDAA    $0577,Z
-        CMPA    >StartV0801Thresh
+        CMPA    >PurgeCell1
         BNE     L075BC
         BRCLR   >Options0331,#$80,L075BC
         LDAB    $248B
@@ -10837,7 +10837,7 @@ Sub_08674:
         LDAB    $148C
         PSHM    D
         LDAB    $0580,Z
-        JSR     Sub_0EA1A
+        JSR     SelectCell3x3
         AIS     #$0C
         STAB    $0580,Z
         ABX
@@ -11169,11 +11169,11 @@ L08AC8:
         PSHM    D
         LDAB    $12F5
         PSHM    D
-        LDAB    $0572,Z
-        JSR     Sub_0EA1A
+        LDAB    >O2CellIndex,Z
+        JSR     SelectCell3x3
         AIS     #$0C
 L08AF4:
-        STAB    $0572,Z
+        STAB    >O2CellIndex,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -11230,7 +11230,7 @@ L08B68:
         LDAB    $10,X
         SXT
         TDE
-        LDAB    $0572,Z
+        LDAB    >O2CellIndex,Z
         LDY     #$12B7
         ABY
         CLRD
@@ -12563,7 +12563,7 @@ L09950:
         TPD
         TBYK
         LDY     $00,Y
-        LDAB    $0572,Z
+        LDAB    >O2CellIndex,Z
         ABY
 L0995E:
         CLRB
@@ -12596,7 +12596,7 @@ L09994:
         STAB    $0A,X
         PSHM    Y,K
         LDY     $26,Y
-        LDAB    $0572,Z
+        LDAB    >O2CellIndex,Z
         ABY
         CLRB
         TBYK
@@ -12967,13 +12967,13 @@ L09D00:
         BRSET   $0036,Z,#$08,L09D38
 L09D18:
         LDAA    #$20
-        CMPB    >StartV0801Thresh
+        CMPB    >PurgeCell1
         BEQ     L09D30
         LSRA
-        CMPB    >StartV043BValue
+        CMPB    >PurgeCell2
         BEQ     L09D30
         LSRA
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BNE     L09D38
 L09D30:
         EORA    $03CE,Z
@@ -13240,13 +13240,13 @@ Sub_0A014:
         LDAA    $03CF,Z
         BNE     L0A04C
         BRSET   $0062,Z,#$80,L0A04C
-        CMPB    >StartV0801Thresh
+        CMPB    >PurgeCell1
         BEQ     L0A048
         AIY     #$01
-        CMPB    >StartV043BValue
+        CMPB    >PurgeCell2
         BEQ     L0A048
         AIY     #$01
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BNE     L0A04C
 L0A048:
         XGDY
@@ -13384,17 +13384,17 @@ Sub_0A192:
         BRSET   $031F,#$04,L0A1A8
         LDAA    $071A
 L0A1A8:
-        CMPA    >O2FlexEthanolThresh
+        CMPA    >O2FlexEthanolMin
         BCC     L0A1C4
         BRCLR   $0569,Z,#$04,L0A240
         ADDA    #$0A
-        CMPA    >O2FlexEthanolThresh
+        CMPA    >O2FlexEthanolMin
         BCC     L0A1C4
         BCLR    $0569,Z,#$04
         LBRA    L0A240
 L0A1C4:
         BSET    $0569,Z,#$04
-        LDAA    $0572,Z
+        LDAA    >O2CellIndex,Z
         LDAB    >O2Value4
         CMPA    #$00
         BNE     L0A1DE
@@ -19689,7 +19689,7 @@ Sub_0E8B4:
         TZX
         LDX     #$83C1
         LDAA    $0577,Z
-        CMPA    >StartV0801Thresh
+        CMPA    >PurgeCell1
         BNE     L0E8CC
         BSET    $031C,Z,#$01
         BSR     Sub_0E8AA
@@ -19839,10 +19839,10 @@ L0EA00:
         dc.b    $27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0EA1A ($0EA1A)
+; SelectCell3x3 ($0EA1A)
 ; Called from: Sub_08674, Sub_08A72
 ;---------------------------------------------------------------------------------------------------
-Sub_0EA1A:
+SelectCell3x3:
         PSHM    E,X,Y,K
         AIS     #$FC
         TSY
@@ -20324,7 +20324,7 @@ Sub_0EEA4:
         BCLR    $03DF,Z,#$0F
         TZX
         LDX     #$8040
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $4E,Z
         LBSR    Sub_0EF78
@@ -20333,7 +20333,7 @@ Sub_0EEA4:
         BSET    $03DF,Z,#$08
 L0EF02:
         LDX     #$8051
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $5F,Z
         BSR     Sub_0EF78
@@ -20342,12 +20342,12 @@ L0EF02:
         BSET    $03DF,Z,#$04
 L0EF1A:
         LDX     #$8040
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $4F,Z
         BSR     Sub_0EF78
         LDX     #$8040
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    $50,Z
@@ -20361,12 +20361,12 @@ L0EF3E:
         BSET    $03DF,Z,#$02
 L0EF48:
         LDX     #$8051
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $60,Z
         BSR     Sub_0EF78
         LDX     #$8051
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    $61,Z
@@ -20464,11 +20464,11 @@ Sub_0F016:
 L0F020:
         CLRB
 L0F022:
-        CMPB    >StartV0801Thresh
+        CMPB    >PurgeCell1
         BEQ     L0F036
-        CMPB    >StartV043BValue
+        CMPB    >PurgeCell2
         BEQ     L0F036
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BEQ     L0F036
         BSR     Sub_0F056
 L0F036:
@@ -20476,13 +20476,13 @@ L0F036:
         CMPB    #$0D
         BCS     L0F022
         LDAA    $0E,X
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         BSR     Sub_0F056
         LDAA    $0F,X
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         BSR     Sub_0F056
         LDAA    $10,X
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         BSR     Sub_0F056
         RTS
 
@@ -21001,11 +21001,11 @@ L0F5FC:
         LDX     #$13AD
         LDAB    #$04
         LDAA    $0577,Z
-        CMPA    >StartV0801Thresh
+        CMPA    >PurgeCell1
         BEQ     L0F64C
         LDX     #$13AE
         LDAB    #$02
-        CMPA    >StartV043BValue
+        CMPA    >PurgeCell2
         BNE     L0F62C
         BRCLR   $03E1,Z,#$01,L0F64C
         LDAA    >VehicleSpeed,Z
@@ -21014,7 +21014,7 @@ L0F5FC:
 L0F62C:
         LDAB    #$01
         LDAA    $0577,Z
-        CMPA    >StartV043CThresh
+        CMPA    >PurgeCell3
         LBNE    L0F6F4
         BRCLR   $03E1,Z,#$01,L0F64C
         LDAA    >VehicleSpeed,Z
@@ -21369,7 +21369,7 @@ Sub_0FA02:
         TZX
         BRCLR   $62,Z,#$04,L0FA58
         LDX     #$8040
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $4E,Z
         SUBA    $00,X
@@ -21386,7 +21386,7 @@ L0FA30:
         BRA     L0FA5C
 L0FA36:
         LDX     #$8051
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $5F,Z
         SUBA    $00,X
@@ -21403,7 +21403,7 @@ L0FA58:
 L0FA5C:
         BRCLR   $62,Z,#$02,L0FAAA
         LDX     #$8040
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $4F,Z
         SUBA    $00,X
@@ -21420,7 +21420,7 @@ L0FA82:
         BRA     L0FAAE
 L0FA88:
         LDX     #$8051
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $60,Z
         SUBA    $00,X
@@ -21437,7 +21437,7 @@ L0FAAA:
 L0FAAE:
         BRCLR   $62,Z,#$01,L0FAFC
         LDX     #$8040
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         LDAA    $50,Z
         SUBA    $00,X
@@ -21454,7 +21454,7 @@ L0FAD4:
         BRA     L0FB00
 L0FADA:
         LDX     #$8051
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         LDAA    $61,Z
         SUBA    $00,X

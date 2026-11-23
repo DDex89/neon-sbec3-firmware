@@ -1971,7 +1971,7 @@ L1145E:
 L11462:
         PULM    D
         PSHM    D,X,K
-        LDAB    >FuelEventValue1
+        LDAB    >BusInfoByte3
         LSRB
         LSRB
         LSRB
@@ -3858,45 +3858,45 @@ Sub_1281E:
         CLRB
         TBXK
         LDX     #$0B34
-        LDD     >FuelValue10
-        LDE     >FuelValue6
-        LDY     >FuelValue5
+        LDD     >EventCellRpmHyst
+        LDE     >EventCellRpmHigh
+        LDY     >EventCellRpmLow
         PSHM    D,E,Y
         CLRA
-        LDAB    >FuelValue9
+        LDAB    >EventCellMapHyst
         PSHM    D
-        LDAB    >FuelValue8
+        LDAB    >EventCellMapHigh
         PSHM    D
-        LDAB    >FuelValue7
+        LDAB    >EventCellMapLow
         PSHM    D
-        LDAB    $077D,Z
-        JSR     Sub_0CA96
+        LDAB    >EventCellIndex,Z
+        JSR     SelectCell3x3
         AIS     #$0C
-        STAB    $077D,Z
+        STAB    >EventCellIndex,Z
         ABX
         LDAB    $00,X
         BRSET   $06B4,Z,#$80,L128A6
         LDAA    >CoolantTemp,Z
-        CMPA    >FuelCoolantThresh1
+        CMPA    >EventCellCoolantMin
         BCC     L128A6
         CLRB
         TBXK
         LDX     #$0B22
-        LDD     >FuelValue10
-        LDE     >FuelValue2
-        LDY     >FuelValue1
+        LDD     >EventCellRpmHyst
+        LDE     >EventCellRpmHighCold
+        LDY     >EventCellRpmLowCold
         PSHM    D,E,Y
         CLRA
-        LDAB    >FuelValue9
+        LDAB    >EventCellMapHyst
         PSHM    D
-        LDAB    >FuelValue4
+        LDAB    >EventCellMapHighCold
         PSHM    D
-        LDAB    >FuelValue3
+        LDAB    >EventCellMapLowCold
         PSHM    D
-        LDAB    $077D,Z
-        JSR     Sub_0CA96
+        LDAB    >EventCellIndex,Z
+        JSR     SelectCell3x3
         AIS     #$0C
-        STAB    $077D,Z
+        STAB    >EventCellIndex,Z
         ABX
         LDAB    $00,X
 L128A6:
@@ -4623,36 +4623,36 @@ L1435E:
         BITA    #$06
         BNE     L143C0
         BRCLR   $0055,Z,#$20,L14390
-        LDD     >O2Value16
-        LDE     >O2Value15
-        LDY     >O2Value14
+        LDD     >O2CellRpmHystAC
+        LDE     >O2CellRpmHighAC
+        LDY     >O2CellRpmLowAC
         PSHM    D,E,Y
         CLRA
-        LDAB    >O2Value19
+        LDAB    >O2CellMapHystAC
         PSHM    D
-        LDAB    >O2Value18
+        LDAB    >O2CellMapHighAC
         PSHM    D
-        LDAB    >O2Value17
+        LDAB    >O2CellMapLowAC
         PSHM    D
         BRA     L143B2
 L14390:
-        LDD     >O2Value10
-        LDE     >O2Value9
-        LDY     >O2Value8
+        LDD     >O2CellRpmHyst
+        LDE     >O2CellRpmHigh
+        LDY     >O2CellRpmLow
         PSHM    D,E,Y
         CLRA
-        LDAB    >O2Value13
+        LDAB    >O2CellMapHyst
         PSHM    D
-        LDAB    >O2Value12
+        LDAB    >O2CellMapHigh
         PSHM    D
-        LDAB    >O2Value11
+        LDAB    >O2CellMapLow
         PSHM    D
 L143B2:
-        LDAB    $0800,Z
-        JSR     Sub_0CA96
+        LDAB    >O2CellIndex,Z
+        JSR     SelectCell3x3
         AIS     #$0C
 L143BC:
-        STAB    $0800,Z
+        STAB    >O2CellIndex,Z
 L143C0:
         RTS
 
@@ -4710,7 +4710,7 @@ L14430:
         LDAB    $10,X
         SXT
         TDE
-        LDAB    $0800,Z
+        LDAB    >O2CellIndex,Z
         LDY     #$1823
         ABY
         CLRD
@@ -6271,7 +6271,7 @@ L1549A:
         TPD
         TBYK
         LDY     $00,Y
-        LDAB    $0800,Z
+        LDAB    >O2CellIndex,Z
         ABY
 L154A8:
         CLRB
@@ -6304,14 +6304,14 @@ L154DE:
         STAB    $0A,X
         PSHM    Y,K
         LDY     $26,Y
-        LDAB    $0800,Z
+        LDAB    >O2CellIndex,Z
         ABY
         CLRB
         TBYK
         LDAA    $00,Y
         STAA    $1C,X
         LDY     #$1817
-        LDAB    $0800,Z
+        LDAB    >O2CellIndex,Z
         ABY
         LDAA    $00,Y
         STAA    $075A,Z
@@ -6750,18 +6750,18 @@ L15912:
         BRSET   $50,Z,#$08,L15952
 L15928:
         LDAA    #$20
-        CMPB    >StartV0801Thresh
+        CMPB    >PurgeCell1
         BEQ     L1594A
         LDAA    #$10
-        CMPB    >StartV043BValue
+        CMPB    >PurgeCell2
         BNE     L15942
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BNE     L1594A
         ORAA    #$08
         BRA     L1594A
 L15942:
         LDAA    #$08
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BNE     L15952
 L1594A:
         EORA    $0438,Z
@@ -7010,18 +7010,18 @@ Sub_15BD0:
         LDAA    $042B,Z
         BNE     L15C14
         BRSET   $0080,Z,#$80,L15C14
-        CMPB    >StartV0801Thresh
+        CMPB    >PurgeCell1
         BEQ     L15C10
         AIY     #$01
-        CMPB    >StartV043BValue
+        CMPB    >PurgeCell2
         BNE     L15C08
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BNE     L15C10
         COM     $F0,Z
         BRA     L15C10
 L15C08:
         AIY     #$01
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BNE     L15C14
 L15C10:
         XGDY
@@ -7092,17 +7092,17 @@ L15CCE:
         BSET    $0854,Z,#$01
         BCLR    $0854,Z,#$02
 L15CDC:
-        LDAB    >O2V07B1Thresh1
+        LDAB    >O2AdaptMax
         ADDA    $00,X
         BVC     L15CEE
         LDAA    $00,X
         BPL     L15CFA
-        LDAB    >O2V07B1Thresh2
+        LDAB    >O2AdaptMin
         TBA
 L15CEE:
         CBA
         BGE     L15CFA
-        LDAB    >O2V07B1Thresh2
+        LDAB    >O2AdaptMin
         CBA
         BGE     L15CFC
 L15CFA:
@@ -7211,17 +7211,17 @@ Sub_15DD6:
         PSHM    D
         BRCLR   >Options032C,#$40,L15E6A
         LDAA    >FlexEthanol,Z
-        CMPA    >O2FlexEthanolThresh
+        CMPA    >O2FlexEthanolMin
         BCC     L15DFC
         BRCLR   $0770,Z,#$04,L15E6A
         ADDA    #$0A
-        CMPA    >O2FlexEthanolThresh
+        CMPA    >O2FlexEthanolMin
         BCC     L15DFC
         BCLR    $0770,Z,#$04
         BRA     L15E6A
 L15DFC:
         BSET    $0770,Z,#$04
-        LDAA    $0800,Z
+        LDAA    >O2CellIndex,Z
         LDAB    >O2Value4
         CMPA    #$00
         BNE     L15E12

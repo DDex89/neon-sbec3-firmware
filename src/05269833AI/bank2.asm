@@ -2198,12 +2198,12 @@ Sub_21C66:
         BRSET   $0501,Z,#$20,L21CE6
         BRSET   $0500,Z,#$08,L21CE6
         LDAA    >BatteryVolts2,Z
-        ADDA    >SensorVoltsAdder
+        ADDA    >ChargeMonVoltsMargin
         BCS     L21CE6
         CMPA    >ChargeTargetVolts,Z
         BCC     L21CE6
         LDAA    >EngineRpm,Z
-        CMPA    >SensorRpmThresh10
+        CMPA    >ChargeMonRpmMin
         BCS     L21CE6
         LDAA    #$0F
         BRCLR   $0DB8,Z,#$08,L21C9C
@@ -2217,18 +2217,18 @@ L21C9C:
         STAA    $0DBB,Z
 L21CAE:
         BRSET   $0DB8,Z,#$08,L21CC0
-        CMPA    >SensorV0DBBThresh
+        CMPA    >ChargeMonTime
         BCS     L21CEE
         BSET    $0DB8,Z,#$08
         BRA     L21CEA
 L21CC0:
         BRSET   $0DB8,Z,#$40,L21CD2
-        CMPA    >SensorThresh24
+        CMPA    >ChargeMonFailTime
         BCS     L21CEE
         BSET    $0DB8,Z,#$40
         BRA     L21CEA
 L21CD2:
-        CMPA    >SensorThresh23
+        CMPA    >ChargeMonClearTime
         BCS     L21CEE
         BCLR    $0DB8,Z,#$40
         LDY     #$3FBA
@@ -2249,11 +2249,11 @@ Sub_21CF0:
         BRSET   $0DB8,Z,#$04,L21D30
         BRCLR   $0774,Z,#$80,L21D56
         LDAA    >Count3s,Z
-        CMPA    >SensorTimeThresh5
+        CMPA    >BattLowStartTime
         BCS     L21D52
         BRCLR   $0DC7,Z,#$08,L21D52
         LDAA    >BatteryVolts2,Z
-        CMPA    >SensorVoltsThresh2
+        CMPA    >BattLowVolts
         BCC     L21D52
         LDAB    $0DBC,Z
         INCB
@@ -2261,13 +2261,13 @@ Sub_21CF0:
         LDAB    #$FF
 L21D20:
         STAB    $0DBC,Z
-        CMPB    >SensorThresh17
+        CMPB    >BattLowSetCount
         BCS     L21D56
         BSET    $0DB8,Z,#$04
         BRA     L21D52
 L21D30:
         LDAA    >BatteryVolts2,Z
-        CMPA    >SensorVoltsThresh3
+        CMPA    >BattLowVoltsClear
         BCS     L21D52
         LDAB    $0DBC,Z
         INCB
@@ -2275,7 +2275,7 @@ L21D30:
         LDAB    #$FF
 L21D44:
         STAB    $0DBC,Z
-        CMPB    >SensorThresh18
+        CMPB    >BattLowClearCount
         BCS     L21D56
         BCLR    $0DB8,Z,#$04
 L21D52:
@@ -10313,7 +10313,7 @@ L2A07C:
 Sub_2A07E:
         BRSET   >Options032C,#$40,L2A0EE
         LDAA    $07B0,Z
-        CMPA    >O2V07B1Thresh2
+        CMPA    >O2AdaptMin
         BNE     L2A0E0
         LDAA    >ShortTermTrim1,Z
         CMPA    >O2AdaptCellMin
@@ -10504,7 +10504,7 @@ L2A28E:
 Sub_2A290:
         BRSET   >Options032C,#$40,L2A300
         LDAA    $07B1,Z
-        CMPA    >O2V07B1Thresh2
+        CMPA    >O2AdaptMin
         BNE     L2A2F2
         LDAA    >ShortTermTrim2,Z
         CMPA    >O2AdaptCellMin
@@ -10690,7 +10690,7 @@ L2A494:
 Sub_2A496:
         LDAA    $07B0,Z
         BRSET   >Options032C,#$40,L2A4F0
-        CMPA    >O2V07B1Thresh1
+        CMPA    >O2AdaptMax
         BNE     L2A4E2
         LDAA    >ShortTermTrim1,Z
         CMPA    >O2AdaptCellMax
@@ -10855,7 +10855,7 @@ L2A662:
 Sub_2A664:
         LDAA    $07B1,Z
         BRSET   >Options032C,#$40,L2A6BE
-        CMPA    >O2V07B1Thresh1
+        CMPA    >O2AdaptMax
         BNE     L2A6B0
         LDAA    >ShortTermTrim2,Z
         CMPA    >O2AdaptCellMax

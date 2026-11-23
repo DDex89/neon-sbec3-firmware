@@ -13931,50 +13931,50 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2CB" flags="0x0">
-  <title>FuelValue1</title>
-  <description>Word used with; read by Sub_12B6C. $0872</description>
+  <title>EventCellRpmLowCold</title>
+  <description>Per-event hold cells (SelectCell3x3 from Sub_12B6C), cold (coolant below EventCellCoolantMin): rpm between low and middle cells; the 3x3 hold values are at $0BAE $0872</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x872" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2CC" flags="0x0">
-  <title>FuelValue2</title>
-  <description>Word used with; read by Sub_12B6C. $0874</description>
+  <title>EventCellRpmHighCold</title>
+  <description>Per-event hold cells, cold: rpm between middle and high cells $0874</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x874" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2CD" flags="0x0">
-  <title>FuelValue3</title>
-  <description>Byte used with; read by Sub_12B6C. $0876</description>
+  <title>EventCellMapLowCold</title>
+  <description>Per-event hold cells, cold: MAP between low and middle cells $0876</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x876" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2CE" flags="0x0">
-  <title>FuelValue4</title>
-  <description>Byte used with; read by Sub_12B6C. $0877</description>
+  <title>EventCellMapHighCold</title>
+  <description>Per-event hold cells, cold: MAP between middle and high cells $0877</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x877" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
@@ -14003,56 +14003,56 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D1" flags="0x0">
-  <title>FuelValue5</title>
-  <description>Word used with; read by Sub_12B6C. $0884</description>
+  <title>EventCellRpmLow</title>
+  <description>Per-event hold cells, warm: rpm between low and middle cells; the 3x3 hold values ($077B,Z) are at $0BC0 $0884</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x884" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D2" flags="0x0">
-  <title>FuelValue6</title>
-  <description>Word used with; read by Sub_12B6C. $0886</description>
+  <title>EventCellRpmHigh</title>
+  <description>Per-event hold cells, warm: rpm between middle and high cells $0886</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x886" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D3" flags="0x0">
-  <title>FuelValue7</title>
-  <description>Byte used with; read by Sub_12B6C. $0888</description>
+  <title>EventCellMapLow</title>
+  <description>Per-event hold cells, warm: MAP between low and middle cells $0888</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x888" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D4" flags="0x0">
-  <title>FuelValue8</title>
-  <description>Byte used with; read by Sub_12B6C. $0889</description>
+  <title>EventCellMapHigh</title>
+  <description>Per-event hold cells, warm: MAP between middle and high cells $0889</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x889" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D5" flags="0x0">
-  <title>FuelCoolantThresh1</title>
-  <description>Byte compared with CoolantTemp; read by Sub_12B6C. $0893</description>
+  <title>EventCellCoolantMin</title>
+  <description>Per-event hold cells: the cold set ($0BAE) is used below this coolant $0893</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x893" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -14063,26 +14063,26 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D6" flags="0x0">
-  <title>FuelValue9</title>
-  <description>Byte used with; read by Sub_12B6C. $0894</description>
+  <title>EventCellMapHyst</title>
+  <description>Per-event hold cells: MAP hysteresis $0894</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x894" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D7" flags="0x0">
-  <title>FuelValue10</title>
-  <description>Word used with; read by Sub_12B6C. $0895</description>
+  <title>EventCellRpmHyst</title>
+  <description>Per-event hold cells: rpm hysteresis $0895</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x895" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
@@ -14711,146 +14711,146 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30C" flags="0x0">
-  <title>O2Value8</title>
-  <description>Word used with; read by Sub_1430C. $143F</description>
+  <title>O2CellRpmLow</title>
+  <description>Adaptive trim cells (SelectCell3x3 from Sub_1430C): engine rpm between the low and middle cells $143F</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x143F" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30D" flags="0x0">
-  <title>O2Value9</title>
-  <description>Word used with; read by Sub_1430C. $1441</description>
+  <title>O2CellRpmHigh</title>
+  <description>Adaptive trim cells: engine rpm between the middle and high cells $1441</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x1441" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30E" flags="0x0">
-  <title>O2Value10</title>
-  <description>Word used with; read by Sub_1430C. $1443</description>
+  <title>O2CellRpmHyst</title>
+  <description>Adaptive trim cells: rpm hysteresis $1443</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x1443" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30F" flags="0x0">
-  <title>O2Value11</title>
-  <description>Byte used with; read by Sub_1430C. $1445</description>
+  <title>O2CellMapLow</title>
+  <description>Adaptive trim cells: MAP between the low and middle cells $1445</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x1445" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x310" flags="0x0">
-  <title>O2Value12</title>
-  <description>Byte used with; read by Sub_1430C. $1446</description>
+  <title>O2CellMapHigh</title>
+  <description>Adaptive trim cells: MAP between the middle and high cells $1446</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x1446" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x311" flags="0x0">
-  <title>O2Value13</title>
-  <description>Byte used with; read by Sub_1430C. $1447</description>
+  <title>O2CellMapHyst</title>
+  <description>Adaptive trim cells: MAP hysteresis $1447</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x1447" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x312" flags="0x0">
-  <title>O2Value14</title>
-  <description>Word used with; read by Sub_1430C. $1448</description>
+  <title>O2CellRpmLowAC</title>
+  <description>As O2CellRpmLow with A/C requested $1448</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x1448" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x313" flags="0x0">
-  <title>O2Value15</title>
-  <description>Word used with; read by Sub_1430C. $144A</description>
+  <title>O2CellRpmHighAC</title>
+  <description>As O2CellRpmHigh with A/C requested $144A</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x144A" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x314" flags="0x0">
-  <title>O2Value16</title>
-  <description>Word used with; read by Sub_1430C. $144C</description>
+  <title>O2CellRpmHystAC</title>
+  <description>As O2CellRpmHyst with A/C requested $144C</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x144C" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x315" flags="0x0">
-  <title>O2Value17</title>
-  <description>Byte used with; read by Sub_1430C. $144E</description>
+  <title>O2CellMapLowAC</title>
+  <description>As O2CellMapLow with A/C requested $144E</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x144E" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x316" flags="0x0">
-  <title>O2Value18</title>
-  <description>Byte used with; read by Sub_1430C. $144F</description>
+  <title>O2CellMapHighAC</title>
+  <description>As O2CellMapHigh with A/C requested $144F</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x144F" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x317" flags="0x0">
-  <title>O2Value19</title>
-  <description>Byte used with; read by Sub_1430C. $1450</description>
+  <title>O2CellMapHystAC</title>
+  <description>As O2CellMapHyst with A/C requested $1450</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x1450" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
@@ -15467,8 +15467,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x34B" flags="0x0">
-  <title>O2V07B1Thresh1</title>
-  <description>Byte compared with V07B1; read by Sub_15D56, Sub_2A496, Sub_2A664. $1561</description>
+  <title>O2AdaptMax</title>
+  <description>Long-term adaptive value ($07B0,Z, $07B1,Z) upper limit (signed); at the limit the fuel system monitor counts $1561</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x1561" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15479,8 +15479,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x34C" flags="0x0">
-  <title>O2V07B1Thresh2</title>
-  <description>Byte compared with V07B1; read by Sub_15D56, Sub_2A07E, Sub_2A290. $1562</description>
+  <title>O2AdaptMin</title>
+  <description>Long-term adaptive value lower limit (signed) $1562</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x1562" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15695,9 +15695,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x35E" flags="0x0">
-  <title>StartV0801Thresh</title>
-  <description>Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602. $174F</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeCell1</title>
+  <description>Adaptive cell number ($0801,Z) used for purge learning (copied to $043A,Z); cell 12 also sets $0C31,Z bit 0 $174F</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x174F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15707,9 +15707,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x35F" flags="0x0">
-  <title>StartV043BValue</title>
-  <description>Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602. $1750</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeCell2</title>
+  <description>Second adaptive cell number for purge learning ($043B,Z) $1750</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x1750" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15719,9 +15719,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x360" flags="0x0">
-  <title>StartV043CThresh</title>
-  <description>Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602. $1751</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeCell3</title>
+  <description>Third adaptive cell number for purge learning ($043C,Z) $1751</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x1751" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17183,9 +17183,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3DA" flags="0x0">
-  <title>SensorRpmThresh6</title>
-  <description>Word compared with EngineRpm; read by Sub_3C3C6. $269C</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SpeedCtlRpmJump</title>
+  <description>Speed control (Sub_3C3C6): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only) $269C</description>
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x269C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -17219,9 +17219,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3DD" flags="0x0">
-  <title>SensorThrottleThresh3</title>
-  <description>Byte compared with ThrottleAboveClosed; read by Sub_3C3C6. $26A1</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>SpeedCtlRpmJumpThrottle</title>
+  <description>Speed control: the rpm-jump cancel needs the throttle within this value of the reference $26A1</description>
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x26A1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19608,9 +19608,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4A7" flags="0x0">
-  <title>SensorVoltsAdder</title>
-  <description>Byte added to BatteryVolts2; read by Sub_21C78. $418B</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>ChargeMonVoltsMargin</title>
+  <description>Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging $418B</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x418B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
   <decimalpl>2</decimalpl>
@@ -19620,9 +19620,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4A8" flags="0x0">
-  <title>SensorRpmThresh10</title>
-  <description>Byte compared with EngineRpm; read by Sub_21C78. $418C</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>ChargeMonRpmMin</title>
+  <description>Charging monitor: engine rpm at or above this value $418C</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x418C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -19632,9 +19632,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4A9" flags="0x0">
-  <title>SensorThresh23</title>
-  <description>Byte compared with; read by Sub_21C78. $418E</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>ChargeMonClearTime</title>
+  <description>Charging monitor: time before $0DB8,Z bit 6 clears $418E</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x418E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19644,9 +19644,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4AA" flags="0x0">
-  <title>SensorVoltsThresh2</title>
-  <description>Byte compared with BatteryVolts2; read by Sub_21D02. $4190</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>BattLowVolts</title>
+  <description>Low-voltage monitor (Sub_21D02): battery voltage below this value counts as low $4190</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x4190" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
   <decimalpl>2</decimalpl>
@@ -19656,9 +19656,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4AB" flags="0x0">
-  <title>SensorVoltsThresh3</title>
-  <description>Byte compared with BatteryVolts2; read by Sub_21D02. $4191</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>BattLowVoltsClear</title>
+  <description>Low-voltage monitor: battery voltage at or above this value counts as normal $4191</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x4191" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
   <decimalpl>2</decimalpl>
@@ -19668,9 +19668,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4AC" flags="0x0">
-  <title>SensorThresh17</title>
-  <description>Byte compared with; read by Sub_21D02. $4192</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>BattLowSetCount</title>
+  <description>Low-voltage monitor: counts before $0DB8,Z bit 2 sets $4192</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x4192" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19680,9 +19680,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4AD" flags="0x0">
-  <title>SensorThresh18</title>
-  <description>Byte compared with; read by Sub_21D02. $4193</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>BattLowClearCount</title>
+  <description>Low-voltage monitor: counts before $0DB8,Z bit 2 clears $4193</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x4193" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19692,9 +19692,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4AE" flags="0x0">
-  <title>SensorTimeThresh5</title>
-  <description>Byte compared with Count3s; read by Sub_21D02. $4194</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>BattLowStartTime</title>
+  <description>Low-voltage monitor: runs after this time since start $4194</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x4194" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>

@@ -60,6 +60,7 @@
  "0522": "O2UpBank2Raw",
  "0550": "CrankPulse",
  "0552": "CrankCoolant",
+ "0563": "O2CellIndex",
  "0578": "FlexFuelFactor",
  "0583": "DecelLeanFuel",
  "0584": "DecelLeanTimer",

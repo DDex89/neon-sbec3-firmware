@@ -4459,7 +4459,7 @@ L12E50:
         LDAA    >ThrottleAboveClosed,Z
         SUBA    $01D2,Z
         BCS     L12EA8
-        CMPA    >SensorThrottleThresh3
+        CMPA    >SpeedCtlRpmJumpThrottle
         BCC     L12ED4
 L12EA8:
         BRCLR   $01D7,Z,#$80,L12EB6
@@ -4472,7 +4472,7 @@ L12EB6:
         LDD     <EngineRpm,Z
         SUBD    $01D0,Z
         BCS     L12ED4
-        CPD     >SensorRpmThresh6
+        CPD     >SpeedCtlRpmJump
         BCS     L12ED4
         LDAB    >SensorValue13
         BRA     L12ED6
@@ -7202,12 +7202,12 @@ Sub_14AD8:
         BRSET   $021D,Z,#$20,L14B4A
         BRSET   $021C,Z,#$08,L14B4A
         LDAA    $17,Z
-        ADDA    >SensorVoltsAdder
+        ADDA    >ChargeMonVoltsMargin
         BCS     L14B4A
         CMPA    >ChargeTargetVolts,Z
         BCC     L14B4A
         LDAA    <EngineRpm,Z
-        CMPA    >SensorRpmThresh10
+        CMPA    >ChargeMonRpmMin
         BCS     L14B4A
         LDAA    #$0F
         BRCLR   $1C,Z,#$08,L14B06
@@ -7232,7 +7232,7 @@ L14B26:
         BSET    $1C,Z,#$40
         BRA     L14B4E
 L14B36:
-        CMPA    >SensorThresh23
+        CMPA    >ChargeMonClearTime
         BCS     L14B52
         BCLR    $1C,Z,#$40
         LDY     #$3891
@@ -7253,11 +7253,11 @@ Sub_14B54:
         BRSET   $1C,Z,#$04,L14B8E
         BRCLR   $0020,Z,#$80,L14BB2
         LDAA    <Count3s,Z
-        CMPA    >SensorTimeThresh5
+        CMPA    >BattLowStartTime
         BCS     L14BAE
         BRCLR   $0028,Z,#$08,L14BAE
         LDAA    $17,Z
-        CMPA    >SensorVoltsThresh2
+        CMPA    >BattLowVolts
         BCC     L14BAE
         LDAB    $06AF,Z
         INCB
@@ -7265,13 +7265,13 @@ Sub_14B54:
         LDAB    #$FF
 L14B7E:
         STAB    $06AF,Z
-        CMPB    >SensorThresh17
+        CMPB    >BattLowSetCount
         BCS     L14BB2
         BSET    $1C,Z,#$04
         BRA     L14BAE
 L14B8E:
         LDAA    $17,Z
-        CMPA    >SensorVoltsThresh3
+        CMPA    >BattLowVoltsClear
         BCS     L14BAE
         LDAB    $06AF,Z
         INCB
@@ -7279,7 +7279,7 @@ L14B8E:
         LDAB    #$FF
 L14BA0:
         STAB    $06AF,Z
-        CMPB    >SensorThresh18
+        CMPB    >BattLowClearCount
         BCS     L14BB2
         BCLR    $1C,Z,#$04
 L14BAE:
@@ -12401,7 +12401,7 @@ L183CE:
 ;---------------------------------------------------------------------------------------------------
 Sub_183D0:
         LDAA    $0458,Z
-        CMPA    >O2V07B1Thresh2
+        CMPA    >O2AdaptMin
         BNE     L1842C
         LDAA    >ShortTermTrim1,Z
         CMPA    >O2AdaptCellMin
@@ -12575,7 +12575,7 @@ L18598:
 ;---------------------------------------------------------------------------------------------------
 Sub_1859A:
         LDAA    $0459,Z
-        CMPA    >O2V07B1Thresh2
+        CMPA    >O2AdaptMin
         BNE     L185F6
         LDAA    >ShortTermTrim2,Z
         CMPA    >O2AdaptCellMin
@@ -12744,7 +12744,7 @@ L18756:
 ;---------------------------------------------------------------------------------------------------
 Sub_18758:
         LDAA    $0458,Z
-        CMPA    >O2V07B1Thresh1
+        CMPA    >O2AdaptMax
         BNE     L1879E
         LDAA    >ShortTermTrim1,Z
         CMPA    >O2AdaptCellMax
@@ -12895,7 +12895,7 @@ L188E8:
 ;---------------------------------------------------------------------------------------------------
 Sub_188EA:
         LDAA    $0459,Z
-        CMPA    >O2V07B1Thresh1
+        CMPA    >O2AdaptMax
         BNE     L18930
         LDAA    >ShortTermTrim2,Z
         CMPA    >O2AdaptCellMax

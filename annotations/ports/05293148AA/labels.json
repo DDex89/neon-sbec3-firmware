@@ -15,6 +15,7 @@
  "0A364": "KickWatchdogsLong",
  "0A596": "Blend16",
  "0A618": "Blend16Signed",
+ "0A68C": "SelectCell3x3",
  "0E0C8": "EmptyHook",
  "0E7E6": "Isr_PIT",
  "1430C": "ReadMap",

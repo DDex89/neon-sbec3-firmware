@@ -54,6 +54,7 @@ CoolantTemp      equ $041F        ; $F841F
 FuelModeFlags    equ $0427        ; $F8427
 DecelFuelRamp    equ $042D        ; $F842D
 DecelFuelFactor  equ $042F        ; $F842F
+EventCellIndex   equ $0432        ; $F8432
 SparkStartRamp   equ $044B        ; $F844B
 WotTimeEnrich    equ $0452        ; $F8452
 DecelLeanTimer   equ $0464        ; $F8464
@@ -67,6 +68,7 @@ FlexFuelFactor   equ $0480        ; $F8480
 IdleFuelRamp     equ $0490        ; $F8490
 FuelPulse        equ $0494        ; $F8494
 WarmupFuelFactor equ $0496        ; $F8496
+O2CellIndex      equ $049F        ; $F849F
 StartAirTemp     equ $04A2        ; $F84A2
 FuelPulseAdder   equ $04A8        ; $F84A8
 FanStageTimer    equ $04B9        ; $F84B9

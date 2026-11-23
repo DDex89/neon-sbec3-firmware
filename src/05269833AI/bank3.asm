@@ -2437,15 +2437,15 @@ L31A5C:
         LDAA    #$06
         LDAB    #$ED
         STD     $00,Y
-        LDAA    >CalValue3
+        LDAA    >BusInfoByte1
         STAA    $02,Y
-        LDAA    >CalValue4
+        LDAA    >BusInfoByte2
         STAA    $03,Y
-        LDAA    >FuelEventValue1
+        LDAA    >BusInfoByte3
         STAA    $04,Y
-        LDAA    >CalValue5
+        LDAA    >BusInfoByte4
         STAA    $05,Y
-        LDAA    >CalValue6
+        LDAA    >BusInfoByte5
         BRCLR   >Options032E,#$80,L31A86
         ORAA    #$40
 L31A86:
@@ -13679,7 +13679,7 @@ L3C3DE:
         LDAA    >ThrottleAboveClosed,Z
         SUBA    $040C,Z
         BCS     L3C438
-        CMPA    >SensorThrottleThresh3
+        CMPA    >SpeedCtlRpmJumpThrottle
         BCC     L3C466
 L3C438:
         BRCLR   $0400,Z,#$80,L3C446
@@ -13692,7 +13692,7 @@ L3C446:
         LDD     >EngineRpm,Z
         SUBD    $040A,Z
         BCS     L3C466
-        CPD     >SensorRpmThresh6
+        CPD     >SpeedCtlRpmJump
         BCS     L3C466
         LDAB    >SensorValue13
         BRA     L3C468
@@ -14783,7 +14783,7 @@ Sub_3DD3C:
         TZX
         BRCLR   $0080,Z,#$04,L3DDB2
         LDX     #$805A
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $6A,Z
         SUBA    $00,X
@@ -14802,7 +14802,7 @@ L3DD72:
 L3DD78:
         BRCLR   >Options032F,#$40,L3DDB2
         LDX     #$806D
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $7D,Z
         SUBA    $00,X
@@ -14826,7 +14826,7 @@ L3DDB2:
 L3DDB6:
         BRCLR   $0080,Z,#$02,L3DE24
         LDX     #$805A
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $6B,Z
         SUBA    $00,X
@@ -14845,7 +14845,7 @@ L3DDE4:
 L3DDEA:
         BRCLR   >Options032F,#$40,L3DE24
         LDX     #$806D
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $7E,Z
         SUBA    $00,X
@@ -14869,7 +14869,7 @@ L3DE24:
 L3DE28:
         BRCLR   $0080,Z,#$01,L3DE96
         LDX     #$805A
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         LDAA    $6C,Z
         SUBA    $00,X
@@ -14888,7 +14888,7 @@ L3DE56:
 L3DE5C:
         BRCLR   >Options032F,#$40,L3DE96
         LDX     #$806D
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         LDAA    $7F,Z
         SUBA    $00,X
@@ -14964,7 +14964,7 @@ Sub_3DEF8:
         BCLR    $043D,Z,#$0F
         TZX
         LDX     #$805A
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $6A,Z
         LBSR    Sub_3DFB8
@@ -14973,12 +14973,12 @@ Sub_3DEF8:
         BSET    $043D,Z,#$08
 L3DF42:
         LDX     #$805A
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $6B,Z
         BSR     Sub_3DFB8
         LDX     #$805A
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    $6C,Z
@@ -14992,7 +14992,7 @@ L3DF66:
         BSET    $043D,Z,#$02
 L3DF70:
         LDX     #$806D
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         ABX
         LDAA    $7D,Z
         BSR     Sub_3DFB8
@@ -15001,12 +15001,12 @@ L3DF70:
         BSET    $043D,Z,#$04
 L3DF88:
         LDX     #$806D
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         ABX
         LDAA    $7E,Z
         BSR     Sub_3DFB8
         LDX     #$806D
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    $7F,Z
@@ -15095,11 +15095,11 @@ Sub_3E026:
 L3E030:
         CLRB
 L3E032:
-        CMPB    >StartV0801Thresh
+        CMPB    >PurgeCell1
         BEQ     L3E046
-        CMPB    >StartV043BValue
+        CMPB    >PurgeCell2
         BEQ     L3E046
-        CMPB    >StartV043CThresh
+        CMPB    >PurgeCell3
         BEQ     L3E046
         BSR     Sub_3E066
 L3E046:
@@ -15107,13 +15107,13 @@ L3E046:
         CMPB    #$10
         BCS     L3E032
         LDAA    $10,X
-        LDAB    >StartV0801Thresh
+        LDAB    >PurgeCell1
         BSR     Sub_3E066
         LDAA    $11,X
-        LDAB    >StartV043BValue
+        LDAB    >PurgeCell2
         BSR     Sub_3E066
         LDAA    $12,X
-        LDAB    >StartV043CThresh
+        LDAB    >PurgeCell3
         BSR     Sub_3E066
         RTS
 
@@ -15978,13 +15978,13 @@ L3E99A:
         LDX     #$1B30
         LDAB    #$04
         LDAA    $0801,Z
-        CMPA    >StartV0801Thresh
+        CMPA    >PurgeCell1
         BEQ     L3E9FE
         LDX     #$1B31
         LDAB    #$02
-        CMPA    >StartV043BValue
+        CMPA    >PurgeCell2
         BNE     L3E9DC
-        CMPA    >StartV043CThresh
+        CMPA    >PurgeCell3
         BNE     L3E9C2
         ORAB    #$01
 L3E9C2:
@@ -15996,7 +15996,7 @@ L3E9C2:
         LBRA    L3EAAC
 L3E9DC:
         LDAB    #$01
-        CMPA    >StartV043CThresh
+        CMPA    >PurgeCell3
         LBNE    L3EAAC
         BRCLR   $0443,Z,#$10,L3E9FE
         BRSET   $0443,Z,#$20,L3E9FE

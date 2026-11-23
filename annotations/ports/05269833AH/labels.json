@@ -12,6 +12,7 @@
  "0C440": "KickWatchdogsLong",
  "0C7B8": "Blend16",
  "0C83A": "Blend16Signed",
+ "0CA96": "SelectCell3x3",
  "0D132": "Reset",
  "0DCA6": "MainLoop",
  "0DF3E": "CheckPowerDown",

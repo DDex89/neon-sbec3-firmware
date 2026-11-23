@@ -88,6 +88,7 @@ CrankCoolant     equ $0768        ; $F8768
 FuelModeFlags    equ $0771        ; $F8771
 DecelFuelRamp    equ $0778        ; $F8778
 DecelFuelFactor  equ $077A        ; $F877A
+EventCellIndex   equ $077D        ; $F877D
 AdaptiveFuel1    equ $0791        ; $F8791
 AdaptiveFuel2    equ $079B        ; $F879B
 SparkStartRamp   equ $079D        ; $F879D
@@ -105,6 +106,7 @@ IdleFuelRamp     equ $07DD        ; $F87DD
 FuelPulse        equ $07E2        ; $F87E2
 WarmupFuelFactor equ $07E4        ; $F87E4
 TimeSinceStart   equ $07E6        ; $F87E6
+O2CellIndex      equ $0800        ; $F8800
 StartAirTemp     equ $0803        ; $F8803
 FuelPulseAdder   equ $080C        ; $F880C
 BaroFuelAdder    equ $080E        ; $F880E
