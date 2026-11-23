@@ -7734,7 +7734,7 @@ MisfireLoadScaleDrive:
 
 ;---------------------------------------------------------------------------------------------------
 ; ExpectedMapThrottleScale ($3965): 2D table, 3 points, unsigned
-; Vacuum-leak check (Sub_2197C, P1299): throttle to row position of ExpectedMap
+; Vacuum-leak check (VacuumLeakMonitor, P1299): throttle to row position of ExpectedMap
 ; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $219FA
@@ -8246,12 +8246,12 @@ DiagV0662Thresh:
         dc.b    $02,$00                                  ; Word compared with V0662; read by Sub_2375A.
 IdleMonCount:
         dc.b    $02                                      ; Idle speed monitor: failed tests before the result
-DiagV0668Thresh:
-        dc.b    $95                                      ; Byte compared with V0668; read by Sub_238D0.
-DiagSpeedThresh8:
-        dc.b    $50                                      ; Byte compared with VehicleSpeed; read by Sub_238D0.
-DiagRpmThresh8:
-        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_238D0.
+PspSwitchCount:
+        dc.b    $95                                      ; Power steering pressure switch monitor (PspSwitchMonitor, P0551): counts of the switch on while driving (fault) or of the switch seen off (pass)
+PspSwitchSpeedMin:
+        dc.b    $50                                      ; Power steering pressure switch monitor: vehicle speed above this value for the switch-on check
+PspSwitchRpmMax:
+        dc.b    $FF                                      ; Power steering pressure switch monitor: engine rpm below this value for the switch-on check
 TccThrottleFilter:
         dc.b    $E6                                      ; Torque converter clutch monitor (TccMonitor, P0740): filter weight of the throttle average $0672,Z
 TccRatioFilter:
@@ -9172,25 +9172,25 @@ Tab2D_56E8:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 VacLeakBaroFactor:
-        dc.b    $FF                                      ; Vacuum-leak check (Sub_2197C, P1299): factor on baro
+        dc.b    $FF                                      ; Vacuum-leak check (VacuumLeakMonitor, P1299): factor on baro
 VacLeakAcAdder:
         dc.b    $00                                      ; Vacuum-leak check: expected-MAP addition with the A/C clutch on
 VacLeakAcReqAdder:
         dc.b    $00                                      ; Vacuum-leak check: expected-MAP addition with A/C requested
-DiagV06AFThresh:
-        dc.b    $FF                                      ; Byte compared with V06AF; read by Sub_2197C. Fault: P1299.
+VacLeakCount:
+        dc.b    $FF                                      ; Vacuum leak monitor (VacuumLeakMonitor, P1299): counts ($06AF,Z) of MAP above the expected value (brake off) before the fault
 VacLeakSpeedMax:
         dc.b    $00                                      ; Vacuum-leak check: vehicle speed below this value
 VacLeakRpmMin:
         dc.b    $FF                                      ; Vacuum-leak check: engine rpm at or above this value
-DiagRpmThresh3:
-        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2197C. Fault: P1299.
-DiagV06AEThresh:
-        dc.b    $00                                      ; Byte compared with V06AE; read by Sub_2197C. Fault: P1299.
+VacLeakRecoverRpmMax:
+        dc.b    $FF                                      ; Vacuum leak monitor: after a fault, rpm below this value off idle counts towards clearing the rpm limit
+VacLeakRecoverCount:
+        dc.b    $00                                      ; Vacuum leak monitor: counts ($06AE,Z) below VacLeakRecoverRpmMax that clear the fault rpm limit
 ExpectedMapRpmMin:
         dc.b    $FF                                      ; MAP/throttle rationality runs above this engine rpm
-DiagSpeedThresh5:
-        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2197C. Fault: P1299.
+LimpMapSpeedMax:
+        dc.b    $00                                      ; Limp-home with a MAP fault ($06B4,Z bit 4): speed below which a high MAP counts towards the MAP-fault rpm limit
 LimpRpmMapFault:
         dc.b    $FF                                      ; Rpm limit with the MAP fault
 LimpMapFaultTime:
@@ -9400,16 +9400,16 @@ VssCheckVacuumRpm:
         dc.b    62,0, 63,45                              ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-CalCoolantThresh4:
-        dc.b    $C0                                      ; Byte compared with CoolantTemp; read by Sub_21F82.
-CalStartCoolantThresh:
-        dc.b    $A6                                      ; Byte compared with StartCoolantTemp2; read by Sub_21F82.
-CalThresh5:
-        dc.b    $04                                      ; Byte compared with; read by Sub_21F82.
-CalCount191msThresh:
-        dc.b    $19                                      ; Byte compared with Count191ms; read by Sub_21F82.
-CalThresh6:
-        dc.b    $04                                      ; Byte compared with; read by Sub_21F82, Sub_291F0.
+O2NoActivityArmCoolant:
+        dc.b    $C0                                      ; O2 no-activity check: coolant at or above this value at power-down arms the check for the next start ($0100,Z bit 7)
+O2NoActivityStartCoolantMax:
+        dc.b    $A6                                      ; O2 no-activity check: start coolant below this value
+O2NoActivitySoakDiffMax:
+        dc.b    $04                                      ; O2 no-activity check: start coolant within this value of the battery temperature (a cold soak)
+O2NoActivityTime:
+        dc.b    $19                                      ; O2 no-activity check at a cold start (O2NoActivityCold, P0134/P0154/P0140/P0160): time after start (Count191ms) at which the result is reported
+O2NoActivityLowRaw:
+        dc.b    $04                                      ; O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0)
 CalSpeedThresh2:
         dc.b    $50                                      ; Byte compared with VehicleSpeed; read by Sub_222FA.
 O2DownLowRaw:
@@ -9459,16 +9459,16 @@ ThrottleRawLow:
         dc.b    $08                                      ; Throttle sensor raw value below which it counts as shorted (P0122)
 ThrottleRawHigh:
         dc.b    $E4                                      ; Throttle sensor raw value at or above which it counts as open (P0123)
-SensorMapRawThresh1:
-        dc.b    $02                                      ; Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108.
+MapRawLowLimit:
+        dc.b    $02                                      ; Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)
 SensorMapRawThresh2:
         dc.b    $FD                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
-CalV06D1Thresh:
-        dc.b    $18                                      ; Byte compared with V06D1; read by Sub_21E38. Fault: P0106.
-CalThresh10:
-        dc.b    $1C                                      ; Byte compared with; read by Sub_21E38. Fault: P0106.
-CalMapRawThresh:
-        dc.b    $36                                      ; Byte compared with MapRaw; read by Sub_21E38. Fault: P0106.
+MapKeyOnCount:
+        dc.b    $18                                      ; MAP rationality at key-on: counts ($06D1,Z) before the fault (the barometric value is then set to $F0)
+MapKeyOnTimeMax:
+        dc.b    $1C                                      ; MAP rationality at key-on (MapKeyOnCheck, P0106): run only within this time (Count3s) below 250 rpm
+MapKeyOnRawMax:
+        dc.b    $36                                      ; MAP rationality at key-on: raw MAP below this value (too low for barometric pressure) counts
 SensorThrottleThresh4:
         dc.b    $3D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
 AcSensorRawHigh:
@@ -9508,12 +9508,12 @@ FlexSensorRatioHigh:
 FlexSensorRatioLow:
         dc.b    $00                                      ; Flex sensor check: ratio below this value is a fault (P0178)
         dc.b    $0A,$B7
-CalV06CBThresh:
-        dc.b    $6E                                      ; Byte compared with V06CB; read by Sub_220AE.
-CalThresh12:
-        dc.b    $4D                                      ; Byte compared with; read by Sub_220AE.
-CalSpeedThresh3:
-        dc.b    $50                                      ; Byte compared with VehicleSpeed; read by Sub_220AE.
+O2InactiveTestTime:
+        dc.b    $6E                                      ; O2 activity test when warm (O2ActivityWarm, P0134/P0154/P0140/P0160): test time ($06CB,Z) with the heater output switched
+O2InactiveBiasRaw:
+        dc.b    $4D                                      ; O2 activity test when warm: a reading at or above this value during the test counts towards the fault
+O2InactiveDownSpeedMin:
+        dc.b    $50                                      ; O2 activity test when warm: vehicle speed at or above this value for the downstream sensors
         dc.b    $13,$13,$1E,$12,$1E,$12
 O2RawHigh:
         dc.b    $3E                                      ; O2 sensor raw value at or above which the high-voltage check counts
@@ -9543,12 +9543,12 @@ EgrPosSensorLow:
         dc.b    $08                                      ; EGR position sensor below this value is a low-input fault
 EgrPosSensorHigh:
         dc.b    $FA                                      ; EGR position sensor ($0A8D,Z) above this value is a high-input fault (EgrPositionMonitor)
-EgrThresh10:
-        dc.b    $03                                      ; Byte compared with; read by Sub_22B16. Fault: P0403.
-EgrV7926Offset:
-        dc.b    $05                                      ; Byte subtracted from V7926; read by Sub_22B16. Fault: P0403.
-EgrThresh11:
-        dc.b    $FF                                      ; Byte compared with; read by Sub_22B16. Fault: P0403.
+EgrCircuitEdgeMargin:
+        dc.b    $03                                      ; EGR solenoid circuit check (EgrSolenoidCheck, P0403): PWM counter position within this value of an edge is not sampled
+EgrCircuitDutyMargin:
+        dc.b    $05                                      ; EGR solenoid circuit check: margin around the commanded duty (PWMA) for the on/off sample window
+EgrCircuitCount:
+        dc.b    $FF                                      ; EGR solenoid circuit check: wrong-level counts ($058A/$058B,Z) before the fault
 PurgeCircuitFlowMax:
         dc.b    $66                                      ; Purge solenoid check: measured flow ($045F,Z) at or above this value with the valve closed is a fault
 PurgeCircuitErrorMax:
@@ -16337,7 +16337,7 @@ L0DC50:
         JSR     Sub_20C5A
         JSR     Sub_25E4E
         JSR     Sub_1062E
-        JSR     Sub_21964
+        JSR     VacuumLeakMonitor
         JSR     Sub_3ADA2
         JSR     Sub_1F7C8
         JSR     Sub_2C200

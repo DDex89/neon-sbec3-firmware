@@ -2919,7 +2919,7 @@
   "2CB5": {
    "name": "ExpectedMapThrottleScale",
    "category": "Diagnostics",
-   "desc": "Vacuum-leak check (Sub_2197C, P1299): throttle to row position of ExpectedMap",
+   "desc": "Vacuum-leak check (VacuumLeakMonitor, P1299): throttle to row position of ExpectedMap",
    "x": "raw",
    "y": "pos256",
    "auto": false
@@ -6673,7 +6673,7 @@
   "173B": {
    "name": "O2InactiveCountMax",
    "desc": "Closed-loop manager: counts of an out-of-range O2 reading before the sensor is marked inactive ($075F,Z)",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "173C": {
@@ -11624,7 +11624,7 @@
   },
   "32A7": {
    "name": "MonEnableBattTempMin",
-   "desc": "OBD monitor enable flags ($9C,Z, Sub_21800): battery temperature at or above this value",
+   "desc": "OBD monitor enable flags ($9C,Z, MonitorEnable): battery temperature at or above this value",
    "unit": "tempc",
    "category": "Diagnostics",
    "size": 1
@@ -11644,28 +11644,22 @@
    "size": 1
   },
   "32AA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_21800.",
-   "name": "CalThresh2"
+   "name": "MonEnableFuelLow",
+   "desc": "OBD monitor enable flags (MonitorEnable): fuel sender reading above this value sets the low-fuel flag ($9C,Z bit 3)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "32AB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with FuelSenderFiltered; read by Sub_21800.",
-   "name": "CalFuelSenderFilteredThresh"
+   "name": "MonEnableFuelLowHold",
+   "desc": "OBD monitor enable flags: once set, the low-fuel flag holds while the reading stays above this value",
+   "category": "Diagnostics",
+   "size": 1
   },
   "32AC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_21800.",
-   "name": "CalThresh3"
+   "name": "MonEnableFuelEmpty",
+   "desc": "OBD monitor enable flags: fuel sender reading below this value sets $9C,Z bit 4",
+   "category": "Diagnostics",
+   "size": 1
   },
   "32AD": {
    "name": "PurgeLoadUpTime",
@@ -11767,7 +11761,7 @@
   },
   "32E1": {
    "name": "VacLeakBaroFactor",
-   "desc": "Vacuum-leak check (Sub_2197C, P1299): factor on baro",
+   "desc": "Vacuum-leak check (VacuumLeakMonitor, P1299): factor on baro",
    "category": "Diagnostics",
    "size": 1
   },
@@ -11784,12 +11778,10 @@
    "size": 1
   },
   "32E4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "VacLeakCount",
+   "desc": "Vacuum leak monitor (VacuumLeakMonitor, P1299): counts ($06AF,Z) of MAP above the expected value (brake off) before the fault",
    "category": "Diagnostics",
-   "desc": "Byte compared with V06AF; read by Sub_2197C. Fault: P1299.",
-   "name": "DiagV06AFThresh"
+   "size": 1
   },
   "32E5": {
    "name": "VacLeakSpeedMax",
@@ -11805,20 +11797,17 @@
    "size": 1
   },
   "32E7": {
-   "size": 1,
+   "name": "VacLeakRecoverRpmMax",
+   "desc": "Vacuum leak monitor: after a fault, rpm below this value off idle counts towards clearing the rpm limit",
    "unit": "rpm32",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Byte compared with EngineRpm; read by Sub_2197C. Fault: P1299.",
-   "name": "DiagRpmThresh3"
+   "size": 1
   },
   "32E8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "VacLeakRecoverCount",
+   "desc": "Vacuum leak monitor: counts ($06AE,Z) below VacLeakRecoverRpmMax that clear the fault rpm limit",
    "category": "Diagnostics",
-   "desc": "Byte compared with V06AE; read by Sub_2197C. Fault: P1299.",
-   "name": "DiagV06AEThresh"
+   "size": 1
   },
   "32E9": {
    "name": "ExpectedMapRpmMin",
@@ -11828,12 +11817,10 @@
    "category": "Diagnostics"
   },
   "32EA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "LimpMapSpeedMax",
+   "desc": "Limp-home with a MAP fault ($06B4,Z bit 4): speed below which a high MAP counts towards the MAP-fault rpm limit",
    "category": "Diagnostics",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_2197C. Fault: P1299.",
-   "name": "DiagSpeedThresh5"
+   "size": 1
   },
   "32EB": {
    "name": "LimpRpmMapFault",
@@ -12151,28 +12138,23 @@
    "size": 1
   },
   "33B4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PspSwitchCount",
+   "desc": "Power steering pressure switch monitor (PspSwitchMonitor, P0551): counts of the switch on while driving (fault) or of the switch seen off (pass)",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0668; read by Sub_238D0.",
-   "name": "DiagV0668Thresh"
+   "size": 1
   },
   "33B5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PspSwitchSpeedMin",
+   "desc": "Power steering pressure switch monitor: vehicle speed above this value for the switch-on check",
    "category": "Diagnostics",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_238D0.",
-   "name": "DiagSpeedThresh8"
+   "size": 1
   },
   "33B6": {
-   "size": 1,
+   "name": "PspSwitchRpmMax",
+   "desc": "Power steering pressure switch monitor: engine rpm below this value for the switch-on check",
    "unit": "rpm32",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Byte compared with EngineRpm; read by Sub_238D0.",
-   "name": "DiagRpmThresh8"
+   "size": 1
   },
   "33B7": {
    "name": "TccThrottleFilter",
@@ -12384,44 +12366,36 @@
    "category": "Diagnostics"
   },
   "4A88": {
-   "size": 1,
+   "name": "O2NoActivityArmCoolant",
+   "desc": "O2 no-activity check: coolant at or above this value at power-down arms the check for the next start ($0100,Z bit 7)",
    "unit": "tempc",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with CoolantTemp; read by Sub_21F82.",
-   "name": "CalCoolantThresh4"
+   "category": "Diagnostics",
+   "size": 1
   },
   "4A89": {
-   "size": 1,
+   "name": "O2NoActivityStartCoolantMax",
+   "desc": "O2 no-activity check: start coolant below this value",
    "unit": "tempc",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with StartCoolantTemp2; read by Sub_21F82.",
-   "name": "CalStartCoolantThresh"
+   "category": "Diagnostics",
+   "size": 1
   },
   "4A8A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_21F82.",
-   "name": "CalThresh5"
+   "name": "O2NoActivitySoakDiffMax",
+   "desc": "O2 no-activity check: start coolant within this value of the battery temperature (a cold soak)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4A8B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with Count191ms; read by Sub_21F82.",
-   "name": "CalCount191msThresh"
+   "name": "O2NoActivityTime",
+   "desc": "O2 no-activity check at a cold start (O2NoActivityCold, P0134/P0154/P0140/P0160): time after start (Count191ms) at which the result is reported",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4A8C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_21F82, Sub_291F0.",
-   "name": "CalThresh6"
+   "name": "O2NoActivityLowRaw",
+   "desc": "O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4A8D": {
    "size": 1,
@@ -12538,12 +12512,10 @@
    "size": 1
   },
   "4AAB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "MapRawLowLimit",
+   "desc": "Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)",
    "category": "Sensors",
-   "desc": "Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108.",
-   "name": "SensorMapRawThresh1"
+   "size": 1
   },
   "4AAC": {
    "size": 1,
@@ -12554,28 +12526,22 @@
    "name": "SensorMapRawThresh2"
   },
   "4AAD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with V06D1; read by Sub_21E38. Fault: P0106.",
-   "name": "CalV06D1Thresh"
+   "name": "MapKeyOnCount",
+   "desc": "MAP rationality at key-on: counts ($06D1,Z) before the fault (the barometric value is then set to $F0)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AAE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_21E38. Fault: P0106.",
-   "name": "CalThresh10"
+   "name": "MapKeyOnTimeMax",
+   "desc": "MAP rationality at key-on (MapKeyOnCheck, P0106): run only within this time (Count3s) below 250 rpm",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AAF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with MapRaw; read by Sub_21E38. Fault: P0106.",
-   "name": "CalMapRawThresh"
+   "name": "MapKeyOnRawMax",
+   "desc": "MAP rationality at key-on: raw MAP below this value (too low for barometric pressure) counts",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AB0": {
    "size": 1,
@@ -12716,28 +12682,22 @@
    "size": 1
   },
   "4AC5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with V06CB; read by Sub_220AE.",
-   "name": "CalV06CBThresh"
+   "name": "O2InactiveTestTime",
+   "desc": "O2 activity test when warm (O2ActivityWarm, P0134/P0154/P0140/P0160): test time ($06CB,Z) with the heater output switched",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AC6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_220AE.",
-   "name": "CalThresh12"
+   "name": "O2InactiveBiasRaw",
+   "desc": "O2 activity test when warm: a reading at or above this value during the test counts towards the fault",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4AC7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_220AE.",
-   "name": "CalSpeedThresh3"
+   "name": "O2InactiveDownSpeedMin",
+   "desc": "O2 activity test when warm: vehicle speed at or above this value for the downstream sensors",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4ACA": {
    "size": 1,
@@ -12844,28 +12804,22 @@
    "size": 1
   },
   "4ADC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrCircuitEdgeMargin",
+   "desc": "EGR solenoid circuit check (EgrSolenoidCheck, P0403): PWM counter position within this value of an edge is not sampled",
    "category": "EGR",
-   "desc": "Byte compared with; read by Sub_22B16. Fault: P0403.",
-   "name": "EgrThresh10"
+   "size": 1
   },
   "4ADD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrCircuitDutyMargin",
+   "desc": "EGR solenoid circuit check: margin around the commanded duty (PWMA) for the on/off sample window",
    "category": "EGR",
-   "desc": "Byte subtracted from V7926; read by Sub_22B16. Fault: P0403.",
-   "name": "EgrV7926Offset"
+   "size": 1
   },
   "4ADE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrCircuitCount",
+   "desc": "EGR solenoid circuit check: wrong-level counts ($058A/$058B,Z) before the fault",
    "category": "EGR",
-   "desc": "Byte compared with; read by Sub_22B16. Fault: P0403.",
-   "name": "EgrThresh11"
+   "size": 1
   },
   "4ADF": {
    "name": "PurgeCircuitFlowMax",

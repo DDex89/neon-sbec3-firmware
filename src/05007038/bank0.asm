@@ -6083,8 +6083,8 @@ MapCheckVacuumMin:
         dc.b    $07                                      ; MAP checks: manifold vacuum limit (low altitude)
 MapCheckVacuumMinAlt:
         dc.b    $03                                      ; MAP checks: manifold vacuum limit (high altitude)
-SensorMapRawThresh1:
-        dc.b    $02                                      ; Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108.
+MapRawLowLimit:
+        dc.b    $02                                      ; Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)
 SensorMapRawThresh2:
         dc.b    $FD                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
         dc.b    $18,$1C,$70
@@ -6144,8 +6144,8 @@ Tab2D_415B:
 O2RawHigh:
         dc.b    $3E                                      ; O2 sensor raw value at or above which the high-voltage check counts
         dc.b    $42,$96,$1B,$12,$CD,$A6,$07,$32
-CalThresh6:
-        dc.b    $08                                      ; Byte compared with; read by Sub_21F82, Sub_291F0.
+O2NoActivityLowRaw:
+        dc.b    $08                                      ; O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0)
         dc.b    $04,$50
 O2MemResetValue:
         dc.b    $33                                      ; Closed-loop manager: value written into the 16 adaptive cells of a bank when its memory is reset after a fault

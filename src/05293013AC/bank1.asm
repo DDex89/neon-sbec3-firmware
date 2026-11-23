@@ -3392,7 +3392,7 @@ ReadMap:
         BCC     L12360
         CMPA    >SensorMapRawThresh2
         BCC     L1236E
-        CMPA    >SensorMapRawThresh1
+        CMPA    >MapRawLowLimit
         BCS     L1236E
 L12360:
         BRSET   $0169,Z,#$10,L1236E
@@ -19877,7 +19877,7 @@ L1D4D0:
         CMPA    >SensorMapRawThresh2
         BCC     L1D4F2
         LDY     #$3698
-        CMPA    >SensorMapRawThresh1
+        CMPA    >MapRawLowLimit
         BCC     L1D4F8
 L1D4F2:
         JSR     ReportFault

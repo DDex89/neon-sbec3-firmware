@@ -176,7 +176,7 @@ add or subtract (`LDAA >CoolantTemp,Z` then `CMPA $2853`), or what a loaded valu
 or stored into. That gives the unit (temperature, rpm, kPa, volts) and a structural name: the
 prefix of the tables of the same routine or the subsystem, the variable, and the role (`Thresh` for
 a compare, `Adder`, `Offset`, `Factor`, `Init` for a value stored into RAM, `Value` otherwise),
-numbered when repeated. 1203 constants have hand names from the code read so far (idle, spark,
+numbered when repeated. 1228 constants have hand names from the code read so far (idle, spark,
 knock, EGR, fan, A/C, diagnostics, the fuel constants and limits); the rest keep the structural
 name with * in the catalogue. Word rpm values use the unit `rpmw` (rpm = x / 8).
 
@@ -271,11 +271,11 @@ fault bit, `ReportPass` ($24160) counts a passed one and clears it; both take in
 | `Reset` | P1602 | PCM not programmed |
 | `Sub_0EE54` | P1687, P1695 | no cluster / body bus messages |
 | `Sub_2191E` | P0601 | checksum |
-| `Sub_2197C` | P1299 | vacuum leak (expected MAP against throttle and rpm) |
-| `Sub_21E38, Sub_21EFE` | P0106, P0107, P0108 | MAP rationality, low, high |
+| `VacuumLeakMonitor` | P1299 | vacuum leak (expected MAP against throttle and rpm) |
+| `MapKeyOnCheck, Sub_21EFE` | P0106, P0107, P0108 | MAP rationality, low, high |
 | `Sub_22688` | P0132, P0152 | upstream O2 high, banks 1 and 2 |
 | `PurgeSolenoidCheck` | P0443 | purge solenoid circuit |
-| `EgrPositionMonitor, Sub_22B16` | P0405, P0406, P0403 | EGR position sensor low and high, EGR solenoid circuit |
+| `EgrPositionMonitor, EgrSolenoidCheck` | P0405, P0406, P0403 | EGR position sensor low and high, EGR solenoid circuit |
 | `WotLeanMonitor` | P1298 | lean at WOT |
 | `Sub_22CD8` | P1496 | 5 V supply low |
 | `Sub_22CF0` | P0700 | transmission control |
@@ -284,6 +284,8 @@ fault bit, `ReportPass` ($24160) counts a passed one and clears it; both take in
 | `FuelSenderMonitor` | P0460, P0462, P0463 | fuel level sender stuck, low, high (analog $0A92) |
 | `BrakeSwitchMonitor` | P0703 | brake switch performance |
 | `PnSwitchMonitor` | P1899 | P/N switch stuck |
+| `O2NoActivityCold, O2ActivityWarm` | P0134, P0154, P0140, P0160 | O2 sensors inactive (cold-start soak check and heater-switched check when warm) |
+| `PspSwitchMonitor` | P0551 | power steering pressure switch |
 | `Sub_236D4, ProcessThrottle` | P0121, P0122, P0123 | throttle sensor rationality, low, high |
 | `Sub_23970` | P0500 | vehicle speed sensor (load without speed) |
 | `Sub_23AB2, Sub_23B84` | P0340, P1391 | cam sensor, intermittent cam/crank |
@@ -341,7 +343,7 @@ applies only to the reference image.
   duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
   subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
   them on a running car would settle them.
-- 245 constants have structural names only, and about 270 RAM variables are still known by
+- 220 constants have structural names only, and about 270 RAM variables are still known by
   address.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.

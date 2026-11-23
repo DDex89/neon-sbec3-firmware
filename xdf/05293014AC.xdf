@@ -15187,8 +15187,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x348" flags="0x0">
-  <title>SensorMapRawThresh1</title>
-  <description>Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108. $3DD2</description>
+  <title>MapRawLowLimit</title>
+  <description>Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck) $3DD2</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x3DD2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

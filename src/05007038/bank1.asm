@@ -6484,7 +6484,7 @@ ReadMap:
         BCC     L1433A
         CMPA    >SensorMapRawThresh2
         BCC     L14340
-        CMPA    >SensorMapRawThresh1
+        CMPA    >MapRawLowLimit
         BCS     L14340
 L1433A:
         BRCLR   $0023,Z,#$20,L14346
@@ -7360,7 +7360,7 @@ L14C62:
         LDAB    $F0,Z
         CMPB    $413A
         BCC     L14C8A
-        CMPB    >SensorMapRawThresh1
+        CMPB    >MapRawLowLimit
         BCS     L14C8A
         INC     $0210,Z
         LDAB    $0210,Z
@@ -7420,7 +7420,7 @@ L14CE0:
 L14D0A:
         LDY     #$39C7
         LDAA    $F0,Z
-        CMPA    >SensorMapRawThresh1
+        CMPA    >MapRawLowLimit
         BCS     L14D1C
         JSR     ReportPass
         BRA     L14D20
@@ -7926,7 +7926,7 @@ L152D6:
         LDAB    E,Z
         LDE     $0002,X
         CLRA
-        CMPB    >CalThresh6
+        CMPB    >O2NoActivityLowRaw
         BCC     L152F8
         LDAA    E,Z
         CMPA    #$28
@@ -12107,7 +12107,7 @@ L18126:
         BNE     L1814A
         LDE     $0000,Y
         LDAB    E,Z
-        CMPB    >CalThresh6
+        CMPB    >O2NoActivityLowRaw
         BCC     L1814A
         LDAB    $9C,Z
         ORAB    $25,Y

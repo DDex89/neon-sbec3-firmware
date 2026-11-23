@@ -2621,12 +2621,10 @@
    "category": "Knock"
   },
   "3DA7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "MapRawLowLimit",
+   "desc": "Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)",
    "category": "Sensors",
-   "desc": "Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108.",
-   "name": "SensorMapRawThresh1"
+   "size": 1
   },
   "3DA8": {
    "size": 1,

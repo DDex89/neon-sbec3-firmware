@@ -2198,7 +2198,7 @@
   "13A9": {
    "name": "O2InactiveCountMax",
    "desc": "Closed-loop manager: counts of an out-of-range O2 reading before the sensor is marked inactive ($075F,Z)",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "13AA": {
@@ -4828,12 +4828,10 @@
    "name": "MapThrottleAdder"
   },
   "4178": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_21F82, Sub_291F0.",
-   "name": "CalThresh6"
+   "name": "O2NoActivityLowRaw",
+   "desc": "O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "417B": {
    "name": "O2MemResetValue",
@@ -4888,12 +4886,10 @@
    "size": 1
   },
   "4136": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "MapRawLowLimit",
+   "desc": "Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)",
    "category": "Sensors",
-   "desc": "Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108.",
-   "name": "SensorMapRawThresh1"
+   "size": 1
   },
   "4137": {
    "size": 1,

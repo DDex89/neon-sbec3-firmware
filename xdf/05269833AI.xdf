@@ -13029,7 +13029,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x260" flags="0x0">
   <title>ExpectedMapThrottleScale</title>
-  <description>Vacuum-leak check (Sub_2197C, P1299): throttle to row position of ExpectedMap $2BF3, 2D; inputs: ThrottleAboveClosed</description>
+  <description>Vacuum-leak check (VacuumLeakMonitor, P1299): throttle to row position of ExpectedMap $2BF3, 2D; inputs: ThrottleAboveClosed</description>
   <CATEGORYMEM index="0" category="15" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -21199,7 +21199,7 @@
  <XDFCONSTANT uniqueid="0x4AD" flags="0x0">
   <title>O2InactiveCountMax</title>
   <description>Closed-loop manager: counts of an out-of-range O2 reading before the sensor is marked inactive ($075F,Z) $16AF</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x16AF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -30165,7 +30165,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x79C" flags="0x0">
   <title>MonEnableBattTempMin</title>
-  <description>OBD monitor enable flags ($9C,Z, Sub_21800): battery temperature at or above this value $31DD</description>
+  <description>OBD monitor enable flags ($9C,Z, MonitorEnable): battery temperature at or above this value $31DD</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x31DD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -30200,9 +30200,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x79F" flags="0x0">
-  <title>CalThresh2</title>
-  <description>Byte compared with; read by Sub_21800. $31E0</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MonEnableFuelLow</title>
+  <description>OBD monitor enable flags (MonitorEnable): fuel sender reading above this value sets the low-fuel flag ($9C,Z bit 3) $31E0</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x31E0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -30212,9 +30212,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7A0" flags="0x0">
-  <title>CalFuelSenderFilteredThresh</title>
-  <description>Byte compared with FuelSenderFiltered; read by Sub_21800. $31E1</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MonEnableFuelLowHold</title>
+  <description>OBD monitor enable flags: once set, the low-fuel flag holds while the reading stays above this value $31E1</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x31E1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -30224,9 +30224,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7A1" flags="0x0">
-  <title>CalThresh3</title>
-  <description>Byte compared with; read by Sub_21800. $31E2</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MonEnableFuelEmpty</title>
+  <description>OBD monitor enable flags: fuel sender reading below this value sets $9C,Z bit 4 $31E2</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x31E2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -30429,7 +30429,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7B2" flags="0x0">
   <title>VacLeakBaroFactor</title>
-  <description>Vacuum-leak check (Sub_2197C, P1299): factor on baro $3217</description>
+  <description>Vacuum-leak check (VacuumLeakMonitor, P1299): factor on baro $3217</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3217" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -30464,8 +30464,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7B5" flags="0x0">
-  <title>DiagV06AFThresh</title>
-  <description>Byte compared with V06AF; read by Sub_2197C. Fault: P1299. $321A</description>
+  <title>VacLeakCount</title>
+  <description>Vacuum leak monitor (VacuumLeakMonitor, P1299): counts ($06AF,Z) of MAP above the expected value (brake off) before the fault $321A</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x321A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -30500,8 +30500,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7B8" flags="0x0">
-  <title>DiagRpmThresh3</title>
-  <description>Byte compared with EngineRpm; read by Sub_2197C. Fault: P1299. $321D</description>
+  <title>VacLeakRecoverRpmMax</title>
+  <description>Vacuum leak monitor: after a fault, rpm below this value off idle counts towards clearing the rpm limit $321D</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x321D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -30512,8 +30512,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7B9" flags="0x0">
-  <title>DiagV06AEThresh</title>
-  <description>Byte compared with V06AE; read by Sub_2197C. Fault: P1299. $321E</description>
+  <title>VacLeakRecoverCount</title>
+  <description>Vacuum leak monitor: counts ($06AE,Z) below VacLeakRecoverRpmMax that clear the fault rpm limit $321E</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x321E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -30536,8 +30536,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7BB" flags="0x0">
-  <title>DiagSpeedThresh5</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_2197C. Fault: P1299. $3220</description>
+  <title>LimpMapSpeedMax</title>
+  <description>Limp-home with a MAP fault ($06B4,Z bit 4): speed below which a high MAP counts towards the MAP-fault rpm limit $3220</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3220" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31112,8 +31112,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7EB" flags="0x0">
-  <title>DiagV0668Thresh</title>
-  <description>Byte compared with V0668; read by Sub_238D0. $32EA</description>
+  <title>PspSwitchCount</title>
+  <description>Power steering pressure switch monitor (PspSwitchMonitor, P0551): counts of the switch on while driving (fault) or of the switch seen off (pass) $32EA</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x32EA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31124,8 +31124,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7EC" flags="0x0">
-  <title>DiagSpeedThresh8</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_238D0. $32EB</description>
+  <title>PspSwitchSpeedMin</title>
+  <description>Power steering pressure switch monitor: vehicle speed above this value for the switch-on check $32EB</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x32EB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31136,8 +31136,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7ED" flags="0x0">
-  <title>DiagRpmThresh8</title>
-  <description>Byte compared with EngineRpm; read by Sub_238D0. $32EC</description>
+  <title>PspSwitchRpmMax</title>
+  <description>Power steering pressure switch monitor: engine rpm below this value for the switch-on check $32EC</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x32EC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -31532,9 +31532,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x80E" flags="0x0">
-  <title>CalCoolantThresh4</title>
-  <description>Byte compared with CoolantTemp; read by Sub_21F82. $49BE</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2NoActivityArmCoolant</title>
+  <description>O2 no-activity check: coolant at or above this value at power-down arms the check for the next start ($0100,Z bit 7) $49BE</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49BE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -31544,9 +31544,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x80F" flags="0x0">
-  <title>CalStartCoolantThresh</title>
-  <description>Byte compared with StartCoolantTemp2; read by Sub_21F82. $49BF</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2NoActivityStartCoolantMax</title>
+  <description>O2 no-activity check: start coolant below this value $49BF</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49BF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -31556,9 +31556,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x810" flags="0x0">
-  <title>CalThresh5</title>
-  <description>Byte compared with; read by Sub_21F82. $49C0</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2NoActivitySoakDiffMax</title>
+  <description>O2 no-activity check: start coolant within this value of the battery temperature (a cold soak) $49C0</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49C0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31568,9 +31568,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x811" flags="0x0">
-  <title>CalCount191msThresh</title>
-  <description>Byte compared with Count191ms; read by Sub_21F82. $49C1</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2NoActivityTime</title>
+  <description>O2 no-activity check at a cold start (O2NoActivityCold, P0134/P0154/P0140/P0160): time after start (Count191ms) at which the result is reported $49C1</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49C1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31580,9 +31580,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x812" flags="0x0">
-  <title>CalThresh6</title>
-  <description>Byte compared with; read by Sub_21F82, Sub_291F0. $49C2</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2NoActivityLowRaw</title>
+  <description>O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0) $49C2</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49C2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31808,8 +31808,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x825" flags="0x0">
-  <title>SensorMapRawThresh1</title>
-  <description>Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108. $49E1</description>
+  <title>MapRawLowLimit</title>
+  <description>Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck) $49E1</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x49E1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31832,9 +31832,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x827" flags="0x0">
-  <title>CalV06D1Thresh</title>
-  <description>Byte compared with V06D1; read by Sub_21E38. Fault: P0106. $49E3</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MapKeyOnCount</title>
+  <description>MAP rationality at key-on: counts ($06D1,Z) before the fault (the barometric value is then set to $F0) $49E3</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49E3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31844,9 +31844,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x828" flags="0x0">
-  <title>CalThresh10</title>
-  <description>Byte compared with; read by Sub_21E38. Fault: P0106. $49E4</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MapKeyOnTimeMax</title>
+  <description>MAP rationality at key-on (MapKeyOnCheck, P0106): run only within this time (Count3s) below 250 rpm $49E4</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49E4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31856,9 +31856,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x829" flags="0x0">
-  <title>CalMapRawThresh</title>
-  <description>Byte compared with MapRaw; read by Sub_21E38. Fault: P0106. $49E5</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MapKeyOnRawMax</title>
+  <description>MAP rationality at key-on: raw MAP below this value (too low for barometric pressure) counts $49E5</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49E5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32120,9 +32120,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x83F" flags="0x0">
-  <title>CalV06CBThresh</title>
-  <description>Byte compared with V06CB; read by Sub_220AE. $49FB</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2InactiveTestTime</title>
+  <description>O2 activity test when warm (O2ActivityWarm, P0134/P0154/P0140/P0160): test time ($06CB,Z) with the heater output switched $49FB</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49FB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32132,9 +32132,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x840" flags="0x0">
-  <title>CalThresh12</title>
-  <description>Byte compared with; read by Sub_220AE. $49FC</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2InactiveBiasRaw</title>
+  <description>O2 activity test when warm: a reading at or above this value during the test counts towards the fault $49FC</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49FC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32144,9 +32144,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x841" flags="0x0">
-  <title>CalSpeedThresh3</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_220AE. $49FD</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2InactiveDownSpeedMin</title>
+  <description>O2 activity test when warm: vehicle speed at or above this value for the downstream sensors $49FD</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x49FD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32348,8 +32348,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x852" flags="0x0">
-  <title>EgrThresh10</title>
-  <description>Byte compared with; read by Sub_22B16. Fault: P0403. $4A12</description>
+  <title>EgrCircuitEdgeMargin</title>
+  <description>EGR solenoid circuit check (EgrSolenoidCheck, P0403): PWM counter position within this value of an edge is not sampled $4A12</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x4A12" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32360,8 +32360,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x853" flags="0x0">
-  <title>EgrV7926Offset</title>
-  <description>Byte subtracted from V7926; read by Sub_22B16. Fault: P0403. $4A13</description>
+  <title>EgrCircuitDutyMargin</title>
+  <description>EGR solenoid circuit check: margin around the commanded duty (PWMA) for the on/off sample window $4A13</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x4A13" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32372,8 +32372,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x854" flags="0x0">
-  <title>EgrThresh11</title>
-  <description>Byte compared with; read by Sub_22B16. Fault: P0403. $4A14</description>
+  <title>EgrCircuitCount</title>
+  <description>EGR solenoid circuit check: wrong-level counts ($058A/$058B,Z) before the fault $4A14</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x4A14" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

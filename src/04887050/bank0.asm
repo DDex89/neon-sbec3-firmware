@@ -5058,8 +5058,8 @@ Tab2D_3D8E:
         dc.b    69,0, 72,97, 81,97, 84,0                 ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$05,$FA,$08,$E4,$1A,$28,$2F,$20,$66
-SensorMapRawThresh1:
-        dc.b    $01                                      ; Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108.
+MapRawLowLimit:
+        dc.b    $01                                      ; Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)
 SensorMapRawThresh2:
         dc.b    $EE                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
         dc.b    $3D

@@ -34,7 +34,7 @@
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 Sub_20190:
-        JSR     Sub_21800
+        JSR     MonitorEnable
         TPD
         TBXK
         LDX     #$0000
@@ -1799,10 +1799,10 @@ L210C0:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_21800 ($21800)
+; MonitorEnable ($21800)
 ; Called from: Sub_20190
 ;---------------------------------------------------------------------------------------------------
-Sub_21800:
+MonitorEnable:
         BRSET   $0642,Z,#$80,L21818
         BRSET   $0E10,Z,#$10,L21818
         BRCLR   $0E10,Z,#$04,L2181E
@@ -1845,7 +1845,7 @@ L2187A:
         BRSET   $0507,Z,#$02,L218BC
         BRSET   $0507,Z,#$01,L218BC
         BRCLR   $009C,Z,#$08,L218AC
-        CMPA    >CalFuelSenderFilteredThresh
+        CMPA    >MonEnableFuelLowHold
         BHI     L218C0
         BRSET   $06C1,Z,#$04,L218BC
         LDAB    $0121,Z
@@ -1853,7 +1853,7 @@ L2187A:
         BCC     L218BC
         BRA     L218C4
 L218AC:
-        CMPA    >CalThresh2
+        CMPA    >MonEnableFuelLow
         BLS     L218BC
         BSET    $9C,Z,#$08
         BSET    $06C1,Z,#$04
@@ -1863,7 +1863,7 @@ L218BC:
 L218C0:
         CLR     $0121,Z
 L218C4:
-        CMPA    >CalThresh3
+        CMPA    >MonEnableFuelEmpty
         BCC     L218D0
         BSET    $9C,Z,#$10
         BRA     L218D4
@@ -1941,10 +1941,10 @@ L21966:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2197C ($2197C)
+; VacuumLeakMonitor ($2197C)
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
-Sub_2197C:
+VacuumLeakMonitor:
         LDAA    #$FF
         STAA    $F4,Z
         BRSET   >ThrottleState,Z,#$02,L21BA6
@@ -2045,7 +2045,7 @@ L21A72:
 L21A9C:
         BRCLR   $0A46,Z,#$01,L21AD4
         LDAA    $06AF,Z
-        CMPA    >DiagV06AFThresh
+        CMPA    >VacLeakCount
         BCC     L21AB2
         INC     $06AF,Z
         BRA     L21AD8
@@ -2071,10 +2071,10 @@ L21AE2:
         STAA    $F4,Z
         BRSET   >ThrottleState,Z,#$80,L21B7E
         LDAA    >EngineRpm,Z
-        CMPA    >DiagRpmThresh3
+        CMPA    >VacLeakRecoverRpmMax
         BCC     L21B7E
         LDAA    $06AE,Z
-        CMPA    >DiagV06AEThresh
+        CMPA    >VacLeakRecoverCount
         BCC     L21B10
         INC     $06AE,Z
         BRA     L21B7E
@@ -2088,7 +2088,7 @@ L21B10:
 L21B22:
         BRSET   $06B4,Z,#$20,L21B9E
         LDAA    >VehicleSpeed,Z
-        CMPA    >DiagSpeedThresh5
+        CMPA    >LimpMapSpeedMax
         BCC     L21B54
         LDAA    >Map,Z
         CMPA    $F0,Z
@@ -2374,7 +2374,7 @@ L21E06:
 Sub_21E08:
         TST     $0C40,Z
         BNE     L21E20
-        JSR     Sub_21E38
+        JSR     MapKeyOnCheck
         BRCLR   >MainLoopPhaseMask,Z,#$04,L21E20
         JSR     Sub_21EA6
         JSR     Sub_21EFE
@@ -2390,10 +2390,10 @@ L21E36:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_21E38 ($21E38)
+; MapKeyOnCheck ($21E38)
 ; Called from: Sub_21E08
 ;---------------------------------------------------------------------------------------------------
-Sub_21E38:
+MapKeyOnCheck:
         BRSET   $0669,Z,#$02,L21EA4
         LDE     >EngineRpm,Z
         CPE     #$07D0
@@ -2409,20 +2409,20 @@ L21E64:
 L21E6A:
         TSTA
         BNE     L21E74
-        CMPB    >CalThresh10
+        CMPB    >MapKeyOnTimeMax
         BCS     L21E7A
 L21E74:
         BSET    $0669,Z,#$02
         BRA     L21EA4
 L21E7A:
         LDAB    >MapRaw,Z
-        CMPB    >CalMapRawThresh
+        CMPB    >MapKeyOnRawMax
         BCC     L21EA4
-        CMPB    >SensorMapRawThresh1
+        CMPB    >MapRawLowLimit
         BCS     L21EA4
         INC     $06D1,Z
         LDAB    $06D1,Z
-        CMPB    >CalV06D1Thresh
+        CMPB    >MapKeyOnCount
         BCS     L21EA4
         LDY     #$42AA
         JSR     ReportFault
@@ -2489,7 +2489,7 @@ Sub_21EFE:
 L21F2A:
         LDY     #$41BA
         LDAA    >MapRaw,Z
-        CMPA    >SensorMapRawThresh1
+        CMPA    >MapRawLowLimit
         BCS     L21F3E
         JSR     ReportPass
         BRA     L21F42
@@ -2503,8 +2503,8 @@ L21F42:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 Sub_21F44:
-        JSR     Sub_21F82
-        JSR     Sub_220AE
+        JSR     O2NoActivityCold
+        JSR     O2ActivityWarm
         JSR     Sub_222FA
         JSR     O2DownCircuitCheck
         JSR     Sub_22688
@@ -2515,10 +2515,10 @@ Sub_21F44:
         dc.b    $6E,$10,$08,$08
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_21F82 ($21F82)
+; O2NoActivityCold ($21F82)
 ; Called from: Sub_21F44
 ;---------------------------------------------------------------------------------------------------
-Sub_21F82:
+O2NoActivityCold:
         CLRB
         TBYK
         LDAB    #$02
@@ -2528,16 +2528,16 @@ Sub_21F82:
         BRSET   $067F,Z,#$80,L22032
         BRCLR   $0100,Z,#$80,L22032
         LDAA    >Count191ms,Z
-        CMPA    >CalCount191msThresh
+        CMPA    >O2NoActivityTime
         LBCC    L22004
         LDAA    >StartCoolantTemp2,Z
-        CMPA    >CalStartCoolantThresh
+        CMPA    >O2NoActivityStartCoolantMax
         LBCC    L22032
         SUBA    >BatteryTemp,Z
         BCC     L21FC0
         NEGA
 L21FC0:
-        CMPA    >CalThresh5
+        CMPA    >O2NoActivitySoakDiffMax
         LBCC    L22054
 L21FC8:
         LDAB    >Options032F
@@ -2547,7 +2547,7 @@ L21FC8:
         LDAB    E,Z
         LDE     $0002,X
         CLRA
-        CMPB    >CalThresh6
+        CMPB    >O2NoActivityLowRaw
         BCC     L21FEA
         LDAA    E,Z
         CMPA    #$28
@@ -2588,7 +2588,7 @@ L22032:
         TST     $0C40,Z
         BEQ     L22054
         LDAA    >CoolantTemp,Z
-        CMPA    >CalCoolantThresh4
+        CMPA    >O2NoActivityArmCoolant
         BCS     L2204C
         BSET    $0100,Z,#$80
         BRA     L22050
@@ -2606,10 +2606,10 @@ L22054:
         dc.b    $07,$45,$10,$04,$00,$08,$10,$10
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_220AE ($220AE)
+; O2ActivityWarm ($220AE)
 ; Called from: Sub_21F44
 ;---------------------------------------------------------------------------------------------------
-Sub_220AE:
+O2ActivityWarm:
         BRSET   $1000,Z,#$08,L222F8
         BRCLR   $0774,Z,#$80,L221A4
         BRSET   $07BB,Z,#$80,L221A4
@@ -2653,7 +2653,7 @@ L220E6:
         CPE     #$0729
         BEQ     L22136
         LDAB    >VehicleSpeed,Z
-        CMPB    >CalSpeedThresh3
+        CMPB    >O2InactiveDownSpeedMin
         BCS     L22184
 L22136:
         LDE     $0004,X
@@ -2735,7 +2735,7 @@ L221EA:
         LBRA    L222F8
 L2220E:
         LDAA    $06CB,Z
-        CMPA    >CalV06CBThresh
+        CMPA    >O2InactiveTestTime
         BCC     L22220
         INC     $06CB,Z
         LBRA    L222F8
@@ -2758,12 +2758,12 @@ L2223C:
         CPE     #$0729
         BEQ     L22256
         LDAB    >VehicleSpeed,Z
-        CMPB    >CalSpeedThresh3
+        CMPB    >O2InactiveDownSpeedMin
         BCS     L222CE
 L22256:
         LDE     $0002,X
         LDAA    E,Z
-        CMPA    >CalThresh12
+        CMPA    >O2InactiveBiasRaw
         BCC     L2227E
         LDAA    $9E,Z
         BITA    $14,X
@@ -3358,7 +3358,7 @@ L22850:
         LDAA    $0937,Z
         CMPA    #$04
         LBEQ    L22B14
-        JSR     Sub_22B16
+        JSR     EgrSolenoidCheck
         BRSET   $0E04,Z,#$02,L2289C
         BRCLR   $01EF,Z,#$02,L2289C
         BRSET   $0E03,Z,#$02,L2289C
@@ -3564,10 +3564,10 @@ L22B14:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_22B16 ($22B16)
+; EgrSolenoidCheck ($22B16)
 ; Called from: EgrPositionMonitor
 ;---------------------------------------------------------------------------------------------------
-Sub_22B16:
+EgrSolenoidCheck:
         BRSET   $0B30,Z,#$01,L22C0E
         BRCLR   >Options0335,#$02,L22B28
         BRSET   $0943,Z,#$10,L22C0E
@@ -3617,19 +3617,19 @@ L22B90:
         TBA
         LDAB    >PWMA,Z
         BEQ     L22BC2
-        CMPA    >EgrThresh10
+        CMPA    >EgrCircuitEdgeMargin
         BCS     L22C0A
-        SUBB    >EgrV7926Offset
+        SUBB    >EgrCircuitDutyMargin
         CBA
         BCS     L22BDA
         LDAB    >PWMA,Z
-        ADDB    >EgrV7926Offset
+        ADDB    >EgrCircuitDutyMargin
         BCS     L22C0A
         CBA
         BCS     L22C0A
 L22BC2:
         CLRB
-        SUBB    >EgrThresh10
+        SUBB    >EgrCircuitEdgeMargin
         CBA
         BCC     L22C0A
 L22BCC:
@@ -3644,7 +3644,7 @@ L22BDA:
 L22BE6:
         BRCLR   >MainLoopPhaseMask,Z,#$20,L22C0A
         LDAA    $00,Y
-        CMPA    >EgrThresh11
+        CMPA    >EgrCircuitCount
         BCC     L22BF8
         INC     $00,Y
         BRA     L22C0A
@@ -4167,7 +4167,7 @@ L231BE:
         JSR     Sub_2375A
 L231CC:
         BRCLR   >MainLoopPhaseMask,Z,#$08,L231D6
-        JSR     Sub_238D0
+        JSR     PspSwitchMonitor
 L231D6:
         BRCLR   >MainLoopPhaseMask,Z,#$10,L231E0
         JSR     Sub_23970
@@ -4750,10 +4750,10 @@ L238CE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_238D0 ($238D0)
+; PspSwitchMonitor ($238D0)
 ; Called from: Sub_231A8
 ;---------------------------------------------------------------------------------------------------
-Sub_238D0:
+PspSwitchMonitor:
         BRCLR   >Options0340,#$08,L2396E
         BRCLR   $0055,Z,#$04,L2396E
         BRSET   $06BC,Z,#$08,L2396E
@@ -4770,7 +4770,7 @@ Sub_238D0:
         CLR     $0667,Z
         LDAB    $0668,Z
         INCB
-        CMPB    >DiagV0668Thresh
+        CMPB    >PspSwitchCount
         BCS     L2392E
         BCLR    $0658,Z,#$01
         LDAA    $44D0
@@ -4783,14 +4783,14 @@ L2392E:
 L23934:
         CLR     $0668,Z
         LDAA    >VehicleSpeed,Z
-        CMPA    >DiagSpeedThresh8
+        CMPA    >PspSwitchSpeedMin
         BLS     L2396A
         LDAA    >EngineRpm,Z
-        CMPA    >DiagRpmThresh8
+        CMPA    >PspSwitchRpmMax
         BCC     L2396A
         LDAB    $0667,Z
         INCB
-        CMPB    >DiagV0668Thresh
+        CMPB    >PspSwitchCount
         BCS     L2396A
         BSET    $0658,Z,#$01
         LDAA    $44D0
@@ -5848,7 +5848,7 @@ L244E0:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_244E2 ($244E2)
-; Called from: Sub_220AE, O2DownCircuitCheck, Sub_22604, EgrPositionMonitor, Sub_22CF0, Sub_22D90, FuelSenderMonitor, Sub_231EC and 8 more routines (37 calls)
+; Called from: O2ActivityWarm, O2DownCircuitCheck, Sub_22604, EgrPositionMonitor, Sub_22CF0, Sub_22D90, FuelSenderMonitor, Sub_231EC and 8 more routines (37 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_244E2:
         PSHM    X,Y,K
@@ -5955,7 +5955,7 @@ Sub_2457A:
 
 ;---------------------------------------------------------------------------------------------------
 ; ReportFault ($245CC)
-; Called from: Reset, Sub_0EE54, Sub_202D2, Sub_2191E, Sub_2197C, Sub_21BDE, Sub_21C78, Sub_21D6A and 40 more routines (58 calls)
+; Called from: Reset, Sub_0EE54, Sub_202D2, Sub_2191E, VacuumLeakMonitor, Sub_21BDE, Sub_21C78, Sub_21D6A and 40 more routines (58 calls)
 ;---------------------------------------------------------------------------------------------------
 ReportFault:
         PSHM    D,E,X,Y,K
@@ -10021,7 +10021,7 @@ L29286:
         BNE     L292AE
         LDE     $0000,Y
         LDAB    E,Z
-        CMPB    >CalThresh6
+        CMPB    >O2NoActivityLowRaw
         BCC     L292AE
         LDAB    $0100,Z
         ORAB    $25,Y
@@ -15568,7 +15568,7 @@ ReadMap:
         BCC     L2DB0E
         CMPA    >SensorMapRawThresh2
         BCC     L2DB14
-        CMPA    >SensorMapRawThresh1
+        CMPA    >MapRawLowLimit
         BCS     L2DB14
 L2DB0E:
         BRCLR   $06B4,Z,#$20,L2DB1A

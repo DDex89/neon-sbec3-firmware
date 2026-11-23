@@ -14474,7 +14474,7 @@
  <XDFCONSTANT uniqueid="0x2F8" flags="0x0">
   <title>O2InactiveCountMax</title>
   <description>Closed-loop manager: counts of an out-of-range O2 reading before the sensor is marked inactive ($075F,Z) $13A9</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x13A9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19357,8 +19357,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x492" flags="0x0">
-  <title>SensorMapRawThresh1</title>
-  <description>Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108. $4136</description>
+  <title>MapRawLowLimit</title>
+  <description>Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck) $4136</description>
   <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x4136" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -19561,9 +19561,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4A3" flags="0x0">
-  <title>CalThresh6</title>
-  <description>Byte compared with; read by Sub_21F82, Sub_291F0. $4178</description>
-  <CATEGORYMEM index="0" category="5" />
+  <title>O2NoActivityLowRaw</title>
+  <description>O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0) $4178</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x4178" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
