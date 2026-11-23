@@ -124,6 +124,14 @@ O2MonStableCount equ $02BF        ; $F82BF
 O2MonPurgeOffTimer equ $02C6        ; $F82C6
 O2HeaterSample   equ $02D4        ; $F82D4
 SwitchInputs2    equ $0304        ; $F8304
+;                 bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
+;                 bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+;                 bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
+;                 bit 4: speed control switch (on/off, probably)
+;                 bit 3: speed control switch
+;                 bit 2: speed control switch (set at reset)
+;                 bit 1: speed control switch
+;                 bit 0: speed control switch
 DriveFlags       equ $0305        ; $F8305
 ;                 bit 7: drive engagement handling in progress (GearStateUpdate), probably
 ;                 bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
@@ -253,6 +261,14 @@ ControlFlags944  equ $047F        ; $F847F
 EepromAddr       equ $0486        ; $F8486
 EepromData       equ $0488        ; $F8488
 EepromFlags      equ $048A        ; $F848A
+;                 bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+;                 bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
+;                 bit 5: write in progress (EepromWriteService)
+;                 bit 4: second byte of a word write in progress (EepromWriteService)
+;                 bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
+;                 bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
+;                 bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
 SciErrors        equ $04BC        ; $F84BC
 DiagRamFlags     equ $04BD        ; $F84BD
 ShortTermTrim1   equ $0500        ; $F8500
@@ -281,6 +297,14 @@ CrankCoolant     equ $0552        ; $F8552
 CrankPulseCoolant equ $0555        ; $F8555
 CrankEventCount  equ $0557        ; $F8557
 FuelModeFlags2   equ $055A        ; $F855A
+;                 bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
+;                 bit 6: byte writes only; read by tip-in fuel, event corrections and purge
+;                 bit 5: throttle closed quickly: deceleration fuel cut armed (FuelCutControl)
+;                 bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
+;                 bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
+;                 bit 2: ethanol content above O2FlexEthanolMin (O2FlexOffset)
+;                 bit 1: hot engine enrichment active (HotEngineEnrichCalc)
+;                 bit 0: engine-off time received from the bus (CcdReceive, PciReceive)
 EventFlags       equ $055C        ; $F855C
 FuelEventFlags   equ $055D        ; $F855D
 DecelLeanFlags   equ $055F        ; $F855F
@@ -330,6 +354,12 @@ HotEnrich        equ $05D8        ; $F85D8
 AccelMapBaroFactor equ $05DE        ; $F85DE
 AccelTpsBaroFactor equ $05DF        ; $F85DF
 SparkFlags       equ $0600        ; $F8600
+;                 bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
+;                 bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
+;                 bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
+;                 bit 4: cleared by SparkOutputOc2 only
+;                 bit 2: tip-in spark retard started (TipInSparkControl)
+;                 bit 1: tip-in spark retard armed (TipInSparkControl)
 SparkFaultFlags  equ $0601        ; $F8601
 SparkFlags2      equ $0602        ; $F8602
 FlexSparkValue   equ $0603        ; $F8603

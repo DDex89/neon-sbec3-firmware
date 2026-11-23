@@ -66,7 +66,7 @@ L201DA:
         CPX     #$0140
         BCS     L20252
 L201F6:
-        BRSET   >BusModuleFlags,Z,#$01,L20206
+        BRSET   >BusModuleFlags,Z,#$01,L20206            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         BRCLR   <DiagStatusFlags,Z,#$80,L20220           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
         LDAA    <FreezeFrameCount,Z
         CMPA    #$03
@@ -2024,7 +2024,7 @@ L21A56:
         STAA    <Scratch2,Z
         BRCLR   >EquipmentFlags,Z,#$04,L21A72            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L21A72                ; bit 3: P0551
-        BRCLR   >SwitchInputs2,Z,#$40,L21A72
+        BRCLR   >SwitchInputs2,Z,#$40,L21A72             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         ADDA    >VacLeakAcReqAdder
         BCC     L21A72
         LDAA    #$FF
@@ -2043,7 +2043,7 @@ L21A72:
         CMPA    <Scratch0,Z
         BCS     L21AD4
 L21A9C:
-        BRCLR   >SwitchInputs,Z,#$01,L21AD4
+        BRCLR   >SwitchInputs,Z,#$01,L21AD4              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    >VacLeakCounter,Z
         CMPA    >VacLeakCount
         BCC     L21AB2
@@ -2107,7 +2107,7 @@ L21B50:
 L21B54:
         LDAA    #$FF
         STAA    <Scratch4,Z
-        BRCLR   >SwitchInputs,Z,#$01,L21B7E
+        BRCLR   >SwitchInputs,Z,#$01,L21B7E              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRCLR   >LimpFlags,Z,#$40,L21B7E
         LDAA    >VehicleSpeed,Z
         LDX     #LimpRpmSpeed
@@ -3722,10 +3722,10 @@ L22CC0:
 L22CC6:
         CPE     >WotLeanFallbackRpmOff
         BCC     L22CD6
-        BCLR    >FuelModeFlags2,Z,#$10
+        BCLR    >FuelModeFlags2,Z,#$10                   ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
         BRA     L22CD6
 L22CD2:
-        BSET    >FuelModeFlags2,Z,#$10
+        BSET    >FuelModeFlags2,Z,#$10                   ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
 L22CD6:
         RTS
 
@@ -3749,13 +3749,13 @@ L22CEE:
 ;---------------------------------------------------------------------------------------------------
 TransMilRequest:
         BRCLR   >EquipmentFlags,Z,#$20,L22D8E            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRCLR   >BusModuleFlags,Z,#$40,L22D8E
-        BCLR    >BusModuleFlags,Z,#$40
+        BRCLR   >BusModuleFlags,Z,#$40,L22D8E            ; bit 6: new transmission status received (TransBusStatus), not handled yet by TransMilRequest
+        BCLR    >BusModuleFlags,Z,#$40                   ; bit 6: new transmission status received (TransBusStatus), not handled yet by TransMilRequest
         BRCLR   >TransBusStatus,Z,#$03,L22D30
         BRSET   >TransBusStatus,Z,#$0A,L22D4E
         BRCLR   >TransBusStatus,Z,#$02,L22D8E
         BRSET   >TransBusStatus,Z,#$01,L22D62
-        BCLR    >BusModuleFlags,Z,#$01
+        BCLR    >BusModuleFlags,Z,#$01                   ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         BRCLR   $009F,Z,#$10,L22D8E
         LDAA    $45AC
         BCLR    >MonFlags65A,Z,#$10
@@ -3787,7 +3787,7 @@ L22D76:
         LDY     #$45AC
         BRCLR   $0003,Y,#$80,L22D8E
         BRCLR   $0003,Y,#$40,L22D8E
-        BSET    >BusModuleFlags,Z,#$01
+        BSET    >BusModuleFlags,Z,#$01                   ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
 L22D8E:
         RTS
 
@@ -3810,7 +3810,7 @@ L22DB2:
         BCS     L22DEC
         BCLR    >O2DownFlags,Z,#$80
         BCLR    >MonFlags101,Z,#$80
-        BSET    >BusModuleFlags,Z,#$02
+        BSET    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BSET    >MonFlags65A,Z,#$04
         LDAA    $4412
         JSR     ObdFaultReport
@@ -3821,7 +3821,7 @@ L22DB2:
         CLR     >BusMsg52Value,Z
         BRA     L22E04
 L22DEC:
-        BRCLR   >BusModuleFlags,Z,#$80,L22E04
+        BRCLR   >BusModuleFlags,Z,#$80,L22E04            ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
         LDAA    >Count3s,Z
         CMPA    #$2C
         LBCS    L22E04
@@ -3977,7 +3977,7 @@ L22FBA:
         BRCLR   >Options0340,#$02,L2309E                 ; bit 1: fuel sender monitor on (FuelSenderMonitor)
         BRSET   >FuelLevelFlags2,Z,#$80,L2309E
         BRSET   >FaultSet05,Z,#$08,L23096                ; bit 3: P0500
-        BRCLR   >SparkFlags,Z,#$20,L2309E
+        BRCLR   >SparkFlags,Z,#$20,L2309E                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >FaultSet13,Z,#$40,L2309E                ; bit 6: P0463
         BRSET   >FaultSet13,Z,#$20,L2309E                ; bit 5: P0462
         LDAB    >FuelSenderFiltered,Z
@@ -4248,7 +4248,7 @@ L232B2:
         LBRA    L233FC
 L232BE:
         BRSET   >BrakeSwFlags,Z,#$08,L23300
-        BRSET   >SwitchInputs,Z,#$01,L232F2
+        BRSET   >SwitchInputs,Z,#$01,L232F2              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    >VehicleSpeed,Z
         CMPA    >BrakeSwStopSpeed
         BCC     L232FC
@@ -4269,7 +4269,7 @@ L232FC:
         BSET    >BrakeSwFlags,Z,#$80
 L23300:
         BRSET   >BrakeSwFlags,Z,#$04,L2336A
-        BRCLR   >SwitchInputs,Z,#$01,L23352
+        BRCLR   >SwitchInputs,Z,#$01,L23352              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    >VehicleSpeed,Z
         CMPA    >BrakeSwDriveSpeed
         BCS     L23360
@@ -4301,7 +4301,7 @@ L23360:
         BSET    >BrakeSwFlags,Z,#$40
 L2336A:
         BRSET   >BrakeSwFlags,Z,#$08,L233A4
-        BRCLR   >SwitchInputs,Z,#$01,L233A0
+        BRCLR   >SwitchInputs,Z,#$01,L233A0              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >ThrottleState,Z,#$80,L233A0             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
         CMPA    >BrakeSwStopSpeed
@@ -4317,7 +4317,7 @@ L233A0:
         CLR     $066B,Z
 L233A4:
         BRSET   >BrakeSwFlags,Z,#$04,L233DE
-        BRSET   >SwitchInputs,Z,#$01,L233DA
+        BRSET   >SwitchInputs,Z,#$01,L233DA              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRCLR   >ThrottleState,Z,#$80,L233DA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
         CMPA    >BrakeSwDriveSpeed
@@ -4401,7 +4401,7 @@ L2348E:
         CMPB    >Map,Z
         BCC     L23502
         BRCLR   >MainLoopPhaseMask,Z,#$20,L2350A
-        BRSET   >SwitchInputs2,Z,#$20,L234EC
+        BRSET   >SwitchInputs2,Z,#$20,L234EC             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         CLR     >PnSwitchCounter,Z
         INC     $0665,Z
         LDAA    $0665,Z
@@ -4697,9 +4697,9 @@ L23814:
 IdleMonitorEnable:
         BRSET   >SwitchMonFlags,Z,#$08,L238CA
         BRCLR   >EngineStateFlags,Z,#$80,L238CA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >SparkFlags,Z,#$20,L238CA
+        BRCLR   >SparkFlags,Z,#$20,L238CA                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >ThrottleState,Z,#$80,L238CA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRCLR   >SwitchInputs,Z,#$01,L238CA
+        BRCLR   >SwitchInputs,Z,#$01,L238CA              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >MonStatusPurge,Z,#$04,L238CA
         BRSET   >FaultSet02,Z,#$02,L238CA                ; bit 1: P0505
         BRSET   >SensorFaultFlags,Z,#$20,L238CA          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
@@ -4710,7 +4710,7 @@ IdleMonitorEnable:
         BRSET   >MonitorDisableFlags,Z,#$02,L238CA       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
         BRCLR   >EquipmentFlags,Z,#$04,L23876            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L23876                ; bit 3: P0551
-        BRSET   >SwitchInputs2,Z,#$40,L238CA
+        BRSET   >SwitchInputs2,Z,#$40,L238CA             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
 L23876:
         TSTW    >VehicleSpeedRaw,Z
         BNE     L238CA
@@ -4765,7 +4765,7 @@ PspSwitchMonitor:
         BRSET   <MonitorDisableFlags,Z,#$04,L2396A       ; bit 2: battery voltage at or below MonEnableVoltsMin
         TST     >MonStartDelay,Z
         BNE     L2396A
-        BRSET   >SwitchInputs2,Z,#$40,L23934
+        BRSET   >SwitchInputs2,Z,#$40,L23934             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         BRCLR   $009D,Z,#$01,L2396E
         CLR     $0667,Z
         LDAB    $0668,Z
@@ -4826,7 +4826,7 @@ L23998:
         BRCLR   >DriveFlags,Z,#$20,L23A40                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L239BA:
         BRCLR   >Options0340,#$20,L239C6                 ; bit 5: brake switch, VSS and purge flow monitors variant
-        BRSET   >SwitchInputs,Z,#$01,L23A40
+        BRSET   >SwitchInputs,Z,#$01,L23A40              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
 L239C6:
         BRCLR   >ThrottleState,Z,#$80,L23A40             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >EngineRpm,Z
@@ -5174,8 +5174,8 @@ L23D54:
         BSET    <VacLeakFlags,Z,#$02
         BRA     L23D74
 L23D5A:
-        BRSET   >EepromFlags,Z,#$80,L23D74
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L23D74               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDY     #$000F
         STY     >EepromAddr,Z
         CLR     >EepromData,Z
@@ -5281,8 +5281,8 @@ L23E52:
         JSR     ReportFault
         BRA     L23E72
 L23E5C:
-        BRSET   >EepromFlags,Z,#$80,L23E72
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L23E72               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDY     #$000F
         STY     >EepromAddr,Z
         STAB    >EepromData,Z
@@ -5605,7 +5605,7 @@ TransFaultStore:
         LDAA    $45AC
         JSR     FreezeFrameStore
         JSR     FaultListRemove
-        BCLR    >BusModuleFlags,Z,#$01
+        BCLR    >BusModuleFlags,Z,#$01                   ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         CLRB
         TBYK
         LDY     #$45AC
@@ -5699,7 +5699,7 @@ L2435E:
         BEQ     L2437C
         BRSET   >DiagStatusFlags,Z,#$80,L24386           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
         BRCLR   >EquipmentFlags,Z,#$20,L2437C            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$01,L24386
+        BRSET   >BusModuleFlags,Z,#$01,L24386            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
 L2437C:
         BCLR    >ControlFlagsC39,Z,#$10
         BCLR    >ControlFlagsC39,Z,#$40
@@ -6626,7 +6626,7 @@ L253AA:
 L253F2:
         BRCLR   >DriveFlags,Z,#$01,L25730                ; bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
         BRCLR   >Options0340,#$20,L25404                 ; bit 5: brake switch, VSS and purge flow monitors variant
-        BRCLR   >SwitchInputs,Z,#$01,L25730
+        BRCLR   >SwitchInputs,Z,#$01,L25730              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
 L25404:
         LDD     >EngineRpm,Z
         SUBD    >IdleTarget,Z
@@ -11420,7 +11420,7 @@ L2AA66:
         LDD     <MisfireEventCount,Z
         CPD     >MisfireEventCountMax
         BLS     L2AA7C
-        BRSET   >FuelModeFlags2,Z,#$80,L2AA7C
+        BRSET   >FuelModeFlags2,Z,#$80,L2AA7C            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         BSET    >MisfireFlags4,Z,#$02
 L2AA7C:
         LDD     >MisfireRpmDevLimit
@@ -11630,7 +11630,7 @@ MisfireThreshold:
         BCC     L2AC74
         BRSET   >MisfireFlags,Z,#$20,L2AC58
         BRSET   >Options032E,#$40,L2AC6E                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
-        BRSET   >SwitchInputs2,Z,#$20,L2AC6E
+        BRSET   >SwitchInputs2,Z,#$20,L2AC6E             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
 L2AC58:
         LDAA    >MisfireLoad,Z
         LDX     #MisfireLoadScaleDrive
@@ -13941,10 +13941,10 @@ L2CA92:
         BCC     L2CAAC
         CMPA    >FlexFaultRpmLow
         LBCC    L2CAB6
-        BCLR    >FuelModeFlags2,Z,#$10
+        BCLR    >FuelModeFlags2,Z,#$10                   ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
         LBRA    L2CAB6
 L2CAAC:
-        BSET    >FuelModeFlags2,Z,#$10
+        BSET    >FuelModeFlags2,Z,#$10                   ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
         BSET    >O2ResetFlags2,Z,#$30
         BRA     L2CABE
 L2CAB6:
@@ -14129,7 +14129,7 @@ L2CC40:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 SriMileageStore:
-        BRSET   >EepromFlags,Z,#$80,L2CCA6
+        BRSET   >EepromFlags,Z,#$80,L2CCA6               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   >VssFlags,Z,#$04,L2CCA6
         BRSET   >FaultSet07,Z,#$01,L2CC6C                ; bit 0: P1697
         TZX
@@ -14146,7 +14146,7 @@ L2CC6C:
         JMP     L2CCA6
 L2CC78:
         BCLR    >VssFlags,Z,#$04
-        BSET    >EepromFlags,Z,#$C0
+        BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         ADDE    #$01
         STE     >SriMileage,Z
         STE     >EepromData,Z
@@ -14537,7 +14537,7 @@ L2D084:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 GearStateUpdate:
-        BRCLR   >SwitchInputs2,Z,#$20,L2D090
+        BRCLR   >SwitchInputs2,Z,#$20,L2D090             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BCLR    >SparkFaultFlags,Z,#$20
 L2D090:
         BRCLR   >Options032E,#$40,L2D09E                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
@@ -14578,7 +14578,7 @@ L2D0F8:
 L2D10A:
         BRSET   >IdleFlags3,Z,#$08,L2D1B4
         BSET    >DriveFlags,Z,#$80                       ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
-        BRCLR   >SwitchInputs2,Z,#$20,L2D15C
+        BRCLR   >SwitchInputs2,Z,#$20,L2D15C             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BRSET   >GearStateFlags,Z,#$04,L2D15C
         BRSET   >GearStateFlags,Z,#$20,L2D15C
         LDAA    >CoolantTemp,Z
@@ -14630,12 +14630,12 @@ L2D1AA:
         BNE     L2D1F4
         CLR     >IacGearTime2,Z
 L2D1B4:
-        BRCLR   >SwitchInputs2,Z,#$20,L2D1C4
+        BRCLR   >SwitchInputs2,Z,#$20,L2D1C4             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BSET    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BCLR    >GearStateFlags,Z,#$40
         BRA     L2D1D6
 L2D1C4:
-        BRSET   >BusModuleFlags,Z,#$02,L2D1CE
+        BRSET   >BusModuleFlags,Z,#$02,L2D1CE            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BSET    >GearStateFlags,Z,#$40
 L2D1CE:
         BCLR    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
@@ -14835,7 +14835,7 @@ L2D3D4:
         STAA    >DashpotTimer2,Z
 L2D3E4:
         BRSET   >ThrottleState,Z,#$08,L2D418             ; bit 3: closed position taken from the calibration default, probably (ThrottleClosedLearn only)
-        BRCLR   >SwitchInputs,Z,#$01,L2D418
+        BRCLR   >SwitchInputs,Z,#$01,L2D418              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    >EngineRpm,Z
         CMPA    >ThrottleRelearnRpmMin
         BCS     L2D418
@@ -14890,7 +14890,7 @@ L2D450:
         DECA
         STAA    >WotFlagTimer,Z
 L2D46E:
-        BCLR    >FuelModeFlags,Z,#$20
+        BCLR    >FuelModeFlags,Z,#$20                    ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         BRA     L2D4A8
 L2D474:
         LDAA    >VehicleSpeed,Z
@@ -14910,7 +14910,7 @@ L2D49C:
         LDAA    >WotFlagDelay
         STAA    >WotFlagTimer,Z
 L2D4A4:
-        BSET    >FuelModeFlags,Z,#$20
+        BSET    >FuelModeFlags,Z,#$20                    ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
 L2D4A8:
         RTS
 
@@ -15169,10 +15169,10 @@ L2D70A:
         ASLD
 L2D712:
         STAA    $0C4B,Z
-        BRCLR   >SparkFlags,Z,#$40,L2D728
+        BRCLR   >SparkFlags,Z,#$40,L2D728                ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
         BSET    >EventSparkFlags2,Z,#$80
         BSET    <FlexStartFlags,Z,#$80
-        BCLR    >SparkFlags,Z,#$40
+        BCLR    >SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
 L2D728:
         CLRW    >Scratch0,Z
         CLRW    >Scratch2,Z
@@ -15219,7 +15219,7 @@ L2D78C:
         STAB    >RpmCurveValue,Z
         BRCLR   >ControlFlags943,Z,#$10,L2D8E2           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
         BCLR    >EngineStateFlags,Z,#$8E                 ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm); bit 3: cleared at stall only, never set in 05293190AC; bit 2: cleared at stall only, never set in 05293190AC; bit 1: cleared at stall only, never set in 05293190AC
-        BCLR    >SparkFlags,Z,#$20
+        BCLR    >SparkFlags,Z,#$20                       ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    >RefPeriod,Z
         CMPA    #$20
         BCS     L2D7FC
@@ -15418,7 +15418,7 @@ L2D9CC:
         BEQ     L2D9E0
         BSET    >SkimFlags2,Z,#$04
 L2D9E0:
-        BRCLR   >SwitchInputs,Z,#$01,L2D9FA
+        BRCLR   >SwitchInputs,Z,#$01,L2D9FA              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRCLR   >MainLoopPhaseMask,Z,#$40,L2D9FE
         LDAA    >BrakeOnTime,Z
         INCA
@@ -15614,10 +15614,10 @@ EquipmentDetect:
 L2DB72:
         BRSET   >Options0331,#$40,L2DB8E                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRCLR   >Options0331,#$20,L2DB86                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
-        BRCLR   >SwitchInputs2,Z,#$80,L2DBAC
+        BRCLR   >SwitchInputs2,Z,#$80,L2DBAC             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
         BRA     L2DB96
 L2DB86:
-        BRSET   >SwitchInputs2,Z,#$80,L2DBAC
+        BRSET   >SwitchInputs2,Z,#$80,L2DBAC             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
         BRA     L2DB96
 L2DB8E:
         BRCLR   >AcFlags,Z,#$08,L2DBAC                   ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
@@ -15636,7 +15636,7 @@ L2DBAC:
 L2DBB0:
         BRSET   >EquipmentFlags,Z,#$40,L2DC02            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
         BRCLR   >Options032D,#$20,L2DBD4                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
-        BRCLR   >SwitchInputs2,Z,#$10,L2DBD4
+        BRCLR   >SwitchInputs2,Z,#$10,L2DBD4             ; bit 4: speed control switch (on/off, probably)
         LDAA    >SpeedCtlPresentCounter,Z
         CMPA    >SpeedCtlPresentCount
         BCC     L2DBFE
@@ -15646,14 +15646,14 @@ L2DBB0:
 L2DBD4:
         CLR     >SpeedCtlPresentCounter,Z
 L2DBD8:
-        BRSET   >SwitchInputs2,Z,#$08,L2DBFE
-        BRCLR   >SwitchInputs2,Z,#$04,L2DBFE
+        BRSET   >SwitchInputs2,Z,#$08,L2DBFE             ; bit 3: speed control switch
+        BRCLR   >SwitchInputs2,Z,#$04,L2DBFE             ; bit 2: speed control switch (set at reset)
         BRCLR   >Options0332,#$02,L2DBF2                 ; bit 1: speed control switch variant; also used by EquipmentDetect
-        BRSET   >SwitchInputs2,Z,#$10,L2DBFE
+        BRSET   >SwitchInputs2,Z,#$10,L2DBFE             ; bit 4: speed control switch (on/off, probably)
         BRA     L2DC02
 L2DBF2:
         BRCLR   >Options0332,#$04,L2DC02                 ; bit 2: speed control switch variant; also used by EquipmentDetect
-        BRCLR   >SwitchInputs2,Z,#$11,L2DC02
+        BRCLR   >SwitchInputs2,Z,#$11,L2DC02             ; bit 4: speed control switch (on/off, probably); bit 0: speed control switch
 L2DBFE:
         BSET    <EquipmentFlags,Z,#$40                   ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
 L2DC02:
@@ -15664,7 +15664,7 @@ L2DC02:
         LDAA    >BatteryVolts2,Z
         CMPA    #$C2
         BCS     L2DC3E
-        BRSET   >SwitchInputs2,Z,#$40,L2DC3E
+        BRSET   >SwitchInputs2,Z,#$40,L2DC3E             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         LDAA    >PspPresentCounter,Z
         CMPA    >PspPresentCount
         BCC     L2DC3A
@@ -16157,7 +16157,7 @@ L2F080:
         LDAA    >CoolantTemp,Z
         CMPA    >AcCutCoolantMin
         LBCS    L2F196
-        BRCLR   >SwitchInputs,Z,#$01,L2F0AA
+        BRCLR   >SwitchInputs,Z,#$01,L2F0AA              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    >BrakeOnTime,Z
         CMPA    >AcCutBrakeTimeMin
         LBLS    L2F196

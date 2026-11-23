@@ -496,6 +496,10 @@ Options033FCopy  equ $06B9        ; $F86B9
 ResetCheckCode   equ $06BA        ; $F86BA
 CamCrankFlags    equ $06BC        ; $F86BC
 BusModuleFlags   equ $06BE        ; $F86BE
+;                 bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
+;                 bit 6: new transmission status received (TransBusStatus), not handled yet by TransMilRequest
+;                 bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
+;                 bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
 FuelLevelFlags2  equ $06C1        ; $F86C1
 StartFlags       equ $06C7        ; $F86C7
 MonSpeedCounter  equ $06C9        ; $F86C9
@@ -550,7 +554,23 @@ CrankDecayIndex  equ $0769        ; $F8769
 CrankPulseCoolant equ $076B        ; $F876B
 CrankEventCount  equ $076D        ; $F876D
 FuelModeFlags2   equ $0770        ; $F8770
+;                 bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
+;                 bit 6: byte writes only; read by tip-in fuel, event corrections and purge
+;                 bit 5: throttle closed quickly: deceleration fuel cut armed (FuelCutControl)
+;                 bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
+;                 bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
+;                 bit 2: ethanol content above O2FlexEthanolMin (O2FlexOffset)
+;                 bit 1: hot engine enrichment active (HotEngineEnrichCalc)
+;                 bit 0: engine-off time received from the bus (CcdReceive, PciReceive)
 FuelModeFlags    equ $0771        ; $F8771
+;                 bit 7: idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1
+;                 bit 6: first fuel event calculation done (FuelEventCalc)
+;                 bit 5: WOT delay running (DetectWot, WotFlagTimer)
+;                 bit 4: crank pulse taken from the coolant table (FuelEventCalc)
+;                 bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
+;                 bit 2: vehicle speed above the warm-up fuel speed limit (WarmupFuel)
+;                 bit 1: deceleration fuel cut active (FuelCutControl)
+;                 bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
 IdleFlareFlags   equ $0772        ; $F8772
 RevLimitFlags    equ $0773        ; $F8773
 EngineStateFlags equ $0774        ; $F8774
@@ -680,9 +700,24 @@ ControlFlags944  equ $0944        ; $F8944
 ;                 bit 1: toggled by ActuatorTestMain, not read
 ;                 bit 0: starter cut active (StarterCut)
 SystemFlags945   equ $0945        ; $F8945
+;                 bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
+;                 bit 6: QSPI command RAM reloaded for an output driver status read, probably (QspiOutputStatus)
+;                 bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
+;                 bit 4: knock chip configured (KnockChipConfig); cleared before a new window is set
+;                 bit 2: switch inputs to be collected at the end of the QSPI frame (QspiService)
+;                 bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
+;                 bit 0: PCI frame timer running, probably (PciTimeoutRestart)
 EepromAddr       equ $0946        ; $F8946
 EepromData       equ $0948        ; $F8948
 EepromFlags      equ $094A        ; $F894A
+;                 bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+;                 bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
+;                 bit 5: write in progress (EepromWriteService)
+;                 bit 4: second byte of a word write in progress (EepromWriteService)
+;                 bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
+;                 bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
+;                 bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
 BusConfigFlags   equ $094C        ; $F894C
 Vin09            equ $0959        ; $F8959
 Vin14            equ $095E        ; $F895E
@@ -727,6 +762,12 @@ SkimStatus       equ $0A0D        ; $F8A0D
 PciTimeout       equ $0A12        ; $F8A12
 SkimTimeout      equ $0A13        ; $F8A13
 SkimFlags        equ $0A1E        ; $F8A1E
+;                 bit 5: SKIM key message received (CcdReceive/PciReceive -> SkimKeyCheck)
+;                 bit 4: SKIM key matches (CcdReceive, PciReceive)
+;                 bit 3: SKIM status message received
+;                 bit 2: SKIM present on the bus, probably
+;                 bit 1: SKIM state to be written to the EEPROM (SkimState)
+;                 bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
 PciFlags5        equ $0A1F        ; $F8A1F
 ObdFlags         equ $0A20        ; $F8A20
 SkimFlags2       equ $0A21        ; $F8A21
@@ -739,7 +780,16 @@ SciByteTimer     equ $0A32        ; $F8A32
 SciCounter       equ $0A34        ; $F8A34
 LoadValueObd     equ $0A42        ; $F8A42
 SwitchInputs     equ $0A46        ; $F8A46
+;                 bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
 SwitchInputs2    equ $0A47        ; $F8A47
+;                 bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
+;                 bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+;                 bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
+;                 bit 4: speed control switch (on/off, probably)
+;                 bit 3: speed control switch
+;                 bit 2: speed control switch (set at reset)
+;                 bit 1: speed control switch
+;                 bit 0: speed control switch
 AdcFlags         equ $0A4A        ; $F8A4A
 O2SensorReady2   equ $0A4F        ; $F8A4F
 BatteryVolts     equ $0A50        ; $F8A50
@@ -890,6 +940,12 @@ SciUnlockState   equ $0C54        ; $F8C54
 SciSecurityState equ $0C58        ; $F8C58
 LookupResult     equ $0C5D        ; $F8C5D
 SparkFlags       equ $0D00        ; $F8D00
+;                 bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
+;                 bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
+;                 bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
+;                 bit 4: cleared by SparkOutputOc2 only
+;                 bit 2: tip-in spark retard started (TipInSparkControl)
+;                 bit 1: tip-in spark retard armed (TipInSparkControl)
 SparkFaultFlags  equ $0D01        ; $F8D01
 SparkFlags2      equ $0D02        ; $F8D02
 FlexSparkValue   equ $0D03        ; $F8D03

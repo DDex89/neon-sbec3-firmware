@@ -13,6 +13,12 @@
   "7": "WOT fuel branch in TipInFuelControl",
   "6": "index shift in CalcFuelPulse"
  },
+ "BusModuleFlags": {
+  "7": "transmission module message seen on the bus (CcdReceive, PciReceive)",
+  "6": "new transmission status received (TransBusStatus), not handled yet by TransMilRequest",
+  "1": "body/transmission bus message timed out (BodyBusTimeout); cleared by each received message",
+  "0": "transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)"
+ },
  "ControlFlags943": {
   "7": "A/C cut active (AcCutControl timer running)",
   "6": "set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)",
@@ -49,6 +55,16 @@
   "1": "reference pulses seen since key-on (Isr_GPT_IC1); MapKeyOnCheck needs it clear",
   "0": "the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)"
  },
+ "EepromFlags": {
+  "7": "EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)",
+  "6": "word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)",
+  "5": "write in progress (EepromWriteService)",
+  "4": "second byte of a word write in progress (EepromWriteService)",
+  "3": "bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)",
+  "2": "bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)",
+  "1": "write retry pending, retry count at $094B,Z (EepromWriteService)",
+  "0": "write started, waiting for the EEPROM to finish (EepromWriteService)"
+ },
  "EngineStateFlags": {
   "7": "engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)",
   "4": "start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel",
@@ -75,6 +91,26 @@
   "3": "reset the cycle counts (FlexLearnMain)",
   "2": "load FlexEthanolStartInit (FlexLearnMain, FlexMisfireCheck)",
   "0": "selects a branch in FlexLearnMain"
+ },
+ "FuelModeFlags": {
+  "7": "idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1",
+  "6": "first fuel event calculation done (FuelEventCalc)",
+  "5": "WOT delay running (DetectWot, WotFlagTimer)",
+  "4": "crank pulse taken from the coolant table (FuelEventCalc)",
+  "3": "per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)",
+  "2": "vehicle speed above the warm-up fuel speed limit (WarmupFuel)",
+  "1": "deceleration fuel cut active (FuelCutControl)",
+  "0": "WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)"
+ },
+ "FuelModeFlags2": {
+  "7": "byte writes only; read by the event fuel, spark, misfire and purge code",
+  "6": "byte writes only; read by tip-in fuel, event corrections and purge",
+  "5": "throttle closed quickly: deceleration fuel cut armed (FuelCutControl)",
+  "4": "WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)",
+  "3": "idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)",
+  "2": "ethanol content above O2FlexEthanolMin (O2FlexOffset)",
+  "1": "hot engine enrichment active (HotEngineEnrichCalc)",
+  "0": "engine-off time received from the bus (CcdReceive, PciReceive)"
  },
  "IdleFlags": {
   "7": "closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)",
@@ -294,11 +330,49 @@
   "3": "air temperature sensor fault (P0112 or P0113)",
   "0": "battery temperature sensor fault (P1492 or P1493)"
  },
+ "SkimFlags": {
+  "5": "SKIM key message received (CcdReceive/PciReceive -> SkimKeyCheck)",
+  "4": "SKIM key matches (CcdReceive, PciReceive)",
+  "3": "SKIM status message received",
+  "2": "SKIM present on the bus, probably",
+  "1": "SKIM state to be written to the EEPROM (SkimState)",
+  "0": "SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)"
+ },
+ "SparkFlags": {
+  "7": "knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)",
+  "6": "reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)",
+  "5": "reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell",
+  "4": "cleared by SparkOutputOc2 only",
+  "2": "tip-in spark retard started (TipInSparkControl)",
+  "1": "tip-in spark retard armed (TipInSparkControl)"
+ },
  "SpeedCtlState": {
   "7": "speed control off: not engaged or cancelled (set at reset and on cancel)",
   "5": "set at reset, on cancel and on engage; meaning not settled",
   "4": "coast hold, probably (after SpeedCtlCoastHoldTime)",
   "0": "set or resume engaged, probably"
+ },
+ "SwitchInputs": {
+  "0": "brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)"
+ },
+ "SwitchInputs2": {
+  "7": "switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)",
+  "6": "switch input used by the idle air code (load switch, probably power steering or A/C)",
+  "5": "park/neutral switch (gear state, starter cut, park/neutral monitor)",
+  "4": "speed control switch (on/off, probably)",
+  "3": "speed control switch",
+  "2": "speed control switch (set at reset)",
+  "1": "speed control switch",
+  "0": "speed control switch"
+ },
+ "SystemFlags945": {
+  "7": "QSPI transfer running (set by QspiSendFrame, cleared by QspiService)",
+  "6": "QSPI command RAM reloaded for an output driver status read, probably (QspiOutputStatus)",
+  "5": "EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)",
+  "4": "knock chip configured (KnockChipConfig); cleared before a new window is set",
+  "2": "switch inputs to be collected at the end of the QSPI frame (QspiService)",
+  "1": "QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)",
+  "0": "PCI frame timer running, probably (PciTimeoutRestart)"
  },
  "ThrottleState": {
   "7": "throttle open: above the learned closed position plus a margin (hysteresis when set)",

@@ -53,7 +53,7 @@ L1007C:
         BCS     L10090
         CMPA    $1DDF
         BLS     L10090
-        BSET    >FuelModeFlags2,Z,#$20
+        BSET    >FuelModeFlags2,Z,#$20                   ; bit 5: throttle closed quickly: deceleration fuel cut armed (FuelCutControl)
 L10090:
         LDAB    >FuelModeFlags2,Z
         BRCLR   >ThrottleState,Z,#$80,L100A2             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -95,7 +95,7 @@ L100FC:
         LDAA    >VehicleSpeed,Z
         CMPA    $1DE8
         LBCS    L10120
-        BSET    >FuelModeFlags,Z,#$02
+        BSET    >FuelModeFlags,Z,#$02                    ; bit 1: deceleration fuel cut active (FuelCutControl)
         BRA     L10138
 L10120:
         LDAA    >EngineRpm,Z
@@ -119,8 +119,8 @@ L10154:
         LDAA    >Map,Z
         CMPA    $1DE0
         BCS     L1016A
-        BRSET   >FuelModeFlags,Z,#$02,L1016A
-        BRCLR   >FuelModeFlags2,Z,#$20,L102FE
+        BRSET   >FuelModeFlags,Z,#$02,L1016A             ; bit 1: deceleration fuel cut active (FuelCutControl)
+        BRCLR   >FuelModeFlags2,Z,#$20,L102FE            ; bit 5: throttle closed quickly: deceleration fuel cut armed (FuelCutControl)
 L1016A:
         LDAA    >CoolantTemp,Z
         CMPA    $1DDA
@@ -187,14 +187,14 @@ L1021E:
         BRCLR   >SensorFaultFlags,Z,#$B0,L10240          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         LBRA    L102D2
 L10240:
-        BRCLR   >FuelModeFlags,Z,#$02,L10262
+        BRCLR   >FuelModeFlags,Z,#$02,L10262             ; bit 1: deceleration fuel cut active (FuelCutControl)
         LDAA    >VehicleSpeed,Z
         CMPA    $1DE7
         LBCS    L102D2
         LDAA    >EngineRpm,Z
         CMPA    $1DE9
         LBCC    L102F2
-        BCLR    >FuelModeFlags,Z,#$02
+        BCLR    >FuelModeFlags,Z,#$02                    ; bit 1: deceleration fuel cut active (FuelCutControl)
 L10262:
         LDAA    >VehicleSpeed,Z
         CMPA    $1DE3
@@ -235,7 +235,7 @@ L102CA:
         LBCS    L102F2
 L102D2:
         ANDB    #$1F
-        BCLR    >FuelModeFlags,Z,#$02
+        BCLR    >FuelModeFlags,Z,#$02                    ; bit 1: deceleration fuel cut active (FuelCutControl)
         LBRA    L102FE
 L102DC:
         BSET    >RevLimitFlags,Z,#$40
@@ -250,7 +250,7 @@ L102E8:
 L102F2:
         ORAB    #$80
         BSET    >O2ResetFlags2,Z,#$30
-        BCLR    >FuelModeFlags2,Z,#$20
+        BCLR    >FuelModeFlags2,Z,#$20                   ; bit 5: throttle closed quickly: deceleration fuel cut armed (FuelCutControl)
 L102FC:
         ORAB    #$40
 L102FE:
@@ -288,10 +288,10 @@ L10354:
 L10358:
         CPE     >WotEnrichDelay
         BCS     L10364
-        BSET    >FuelModeFlags,Z,#$01
+        BSET    >FuelModeFlags,Z,#$01                    ; bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
         BRA     L103C2
 L10364:
-        BCLR    >FuelModeFlags,Z,#$01
+        BCLR    >FuelModeFlags,Z,#$01                    ; bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
         BRA     L103C2
 L1036A:
         LDD     >WotTimer,Z
@@ -323,9 +323,9 @@ L103B0:
         CLRW    $07AD,Z
         CLRW    >WotTimer,Z
 L103BE:
-        BCLR    >FuelModeFlags,Z,#$01
+        BCLR    >FuelModeFlags,Z,#$01                    ; bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
 L103C2:
-        BRCLR   >FuelModeFlags,Z,#$01,L10406
+        BRCLR   >FuelModeFlags,Z,#$01,L10406             ; bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
         ORP     #$00E0
         LDAA    >WotEnrich,Z
         SUBA    >WotEnrichDecay
@@ -444,7 +444,7 @@ L104F6:
         JSR     Lookup3D
         STAA    <Scratch4,Z
         BRCLR   >ThrottleState,Z,#$80,L10536             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRSET   >FuelModeFlags,Z,#$20,L1057A
+        BRSET   >FuelModeFlags,Z,#$20,L1057A             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         ADDA    >KnockFuel,Z
         BCC     L10514
         LDAA    #$FF
@@ -529,7 +529,7 @@ L105DC:
 L105E4:
         ANDP    #$FF1F
         LDAA    $0779,Z
-        BRCLR   >FuelModeFlags,Z,#$20,L105F6
+        BRCLR   >FuelModeFlags,Z,#$20,L105F6             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         CLRA
         BRA     L10600
 L105F6:
@@ -778,7 +778,7 @@ L10836:
         LBCS    L10996
         STAA    <Scratch4,Z
         BRCLR   >EngineStateFlags,Z,#$80,L10996          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >FuelModeFlags2,Z,#$40,L10996
+        BRSET   >FuelModeFlags2,Z,#$40,L10996            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRCLR   >ThrottleState,Z,#$80,L10996             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAB    >EngineRpm,Z
         CMPB    >TipInRpmMax
@@ -1050,10 +1050,10 @@ L10AB0:
         JSR     Lookup2D
         CMPA    <Scratch0,Z
         BCS     L10AD0
-        BSET    >FuelModeFlags,Z,#$80
+        BSET    >FuelModeFlags,Z,#$80                    ; bit 7: idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1
         BRA     L10B14
 L10AD0:
-        BCLR    >FuelModeFlags,Z,#$80
+        BCLR    >FuelModeFlags,Z,#$80                    ; bit 7: idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1
         LDAA    <Scratch0,Z
         LDX     #IacFuelScale
         JSR     Lookup2D
@@ -1160,7 +1160,7 @@ L10BE0:
         CLRB
         EMUL
 L10BE4:
-        BRCLR   >FuelModeFlags2,Z,#$08,L10C0A
+        BRCLR   >FuelModeFlags2,Z,#$08,L10C0A            ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
         LDAA    >IdleEnrichFactor,Z
         CLRB
         EMUL
@@ -1356,17 +1356,17 @@ L10DE6:
         BRSET   >ThrottleState,Z,#$40,L10E9C             ; bit 6: wide-open throttle (DetectWot)
         BRSET   >ThrottleState,Z,#$80,L10E38             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >WarmupClosedThrottle
-        BRCLR   >FuelModeFlags,Z,#$04,L10E02
+        BRCLR   >FuelModeFlags,Z,#$04,L10E02             ; bit 2: vehicle speed above the warm-up fuel speed limit (WarmupFuel)
         ADDA    #$03
         BCC     L10E02
         LDAA    #$FF
 L10E02:
         CMPA    >VehicleSpeed,Z
         BHI     L10E0E
-        BCLR    >FuelModeFlags,Z,#$04
+        BCLR    >FuelModeFlags,Z,#$04                    ; bit 2: vehicle speed above the warm-up fuel speed limit (WarmupFuel)
         BRA     L10E6E
 L10E0E:
-        BSET    >FuelModeFlags,Z,#$04
+        BSET    >FuelModeFlags,Z,#$04                    ; bit 2: vehicle speed above the warm-up fuel speed limit (WarmupFuel)
         LDAA    >Map,Z
         CMPA    $13DB
         BCC     L10E2A
@@ -1433,7 +1433,7 @@ L10EA8:
         ADDE    >Scratch4,Z
         LDAA    <SriMileage,Z
         BNE     L10EF0
-        BRSET   >FuelModeFlags,Z,#$20,L10EF0
+        BRSET   >FuelModeFlags,Z,#$20,L10EF0             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         BRSET   >FaultSet05,Z,#$08,L10EF0
         STE     >Scratch0,Z
         LDAA    <SriMileageLow,Z
@@ -1685,7 +1685,7 @@ L11158:
         LDAA    >Map,Z
         CMPA    >IdleFuelMapMax
         BCC     L111A4
-        BSET    >FuelModeFlags2,Z,#$08
+        BSET    >FuelModeFlags2,Z,#$08                   ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
         LDD     >Count3s,Z
         TSTA
         BNE     L11184
@@ -1704,7 +1704,7 @@ L1119E:
         STAA    >IdleFuelRamp,Z
         BRA     L111D4
 L111A4:
-        BCLR    >FuelModeFlags2,Z,#$08
+        BCLR    >FuelModeFlags2,Z,#$08                   ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
         LDD     >Count3s,Z
         TSTA
         BNE     L111B6
@@ -1771,7 +1771,7 @@ L11244:
         TST     <Scratch0,Z
         BNE     L11256
 L11252:
-        BCLR    >FuelModeFlags2,Z,#$08
+        BCLR    >FuelModeFlags2,Z,#$08                   ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
 L11256:
         RTS
 
@@ -1801,11 +1801,11 @@ L11260:
         LDX     #HotEngineEnrich
         JSR     Lookup2D
         STAA    >HotEnrich,Z
-        BSET    >FuelModeFlags2,Z,#$02
+        BSET    >FuelModeFlags2,Z,#$02                   ; bit 1: hot engine enrichment active (HotEngineEnrichCalc)
         BRA     L112B2
 L112AC:
         CLRA
-        BCLR    >FuelModeFlags2,Z,#$02
+        BCLR    >FuelModeFlags2,Z,#$02                   ; bit 1: hot engine enrichment active (HotEngineEnrichCalc)
 L112B2:
         STAA    >HotEnrich,Z
         RTS
@@ -2307,7 +2307,7 @@ L117C4:
         STE     >Temp4F4,Z
 L117E4:
         PULM    K,Y,X
-        BRCLR   >FuelModeFlags2,Z,#$80,L1180C
+        BRCLR   >FuelModeFlags2,Z,#$80,L1180C            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         LDD     >EngineRpm,Z
         SUBD    >IdleTarget,Z
         BCC     L117F8
@@ -2497,7 +2497,7 @@ L119BC:
         TDE
 L119D2:
         STE     >Temp4F4,Z
-        BRCLR   >FuelModeFlags2,Z,#$02,L11A10
+        BRCLR   >FuelModeFlags2,Z,#$02,L11A10            ; bit 1: hot engine enrichment active (HotEngineEnrichCalc)
         TPD
         TBXK
         LDX     #$0009
@@ -2627,11 +2627,11 @@ L11B34:
         LBNE    L11C8E
         BRSET   >LimpFlags,Z,#$20,L11C8E
         BRSET   >SecurityFlags,Z,#$20,L11C8E
-        BRSET   >FuelModeFlags2,Z,#$10,L11C8E
+        BRSET   >FuelModeFlags2,Z,#$10,L11C8E            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
         BRSET   >EventFlags,Z,#$10,L11C8E
         BRSET   >IdleFlareFlags,Z,#$40,L11B66
-        BRCLR   >FuelModeFlags2,Z,#$40,L11CD2
-        BRCLR   >FuelModeFlags2,Z,#$80,L11C8E
+        BRCLR   >FuelModeFlags2,Z,#$40,L11CD2            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
+        BRCLR   >FuelModeFlags2,Z,#$80,L11C8E            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L11B66:
         LDAB    $07A4,Z
         LBNE    L11C78
@@ -2647,7 +2647,7 @@ L11B82:
         TZY
         BRSET   >MisfireFlags,Z,#$04,L11B9A
         BRCLR   >MisfireFlags4,Z,#$08,L11BC0
-        BRCLR   >FuelModeFlags2,Z,#$80,L11BC0
+        BRCLR   >FuelModeFlags2,Z,#$80,L11BC0            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L11B9A:
         BRSET   >MisfireFlags2,Z,#$01,L11BC0
         BRCLR   <MonStatusMisfire,Z,#$80,L11BC0
@@ -2821,7 +2821,7 @@ CalcFuelPulse:
         STAA    >Temp4F0,Z
         LDAA    >PartThrottleFuelMapOffset
         LDAB    >PartThrottleFuelK
-        BRCLR   >FuelModeFlags,Z,#$20,L11D60
+        BRCLR   >FuelModeFlags,Z,#$20,L11D60             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         LDAA    >WotFuelMapOffset
         LDAB    >WotFuelK
         BRA     L11D7C
@@ -2852,7 +2852,7 @@ L11D88:
         LSRE
         STE     >LookupResult,Z
         LDAA    >Temp4F0,Z
-        BRSET   >FuelModeFlags,Z,#$20,L11DCA
+        BRSET   >FuelModeFlags,Z,#$20,L11DCA             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         CMPA    $13DB
         BCC     L11DBC
         LDX     #Tab2D_0872
@@ -2901,8 +2901,8 @@ L11E1E:
         TED
         LSRD
         STD     $0438,Z
-        BRCLR   >FuelModeFlags,Z,#$20,L11E3C
-        BRCLR   >FuelModeFlags,Z,#$01,L11E3C
+        BRCLR   >FuelModeFlags,Z,#$20,L11E3C             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRCLR   >FuelModeFlags,Z,#$01,L11E3C             ; bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
         LDAA    >WotTimeEnrich,Z
         BEQ     L11E3C
         JSR     ScaleByFraction
@@ -3559,10 +3559,10 @@ L124EE:
         BRSET   >FuelPulseFlags,Z,#$01,L12602
         LBRA    L126FA
 L12508:
-        BRCLR   >FuelModeFlags,Z,#$40,L12514
+        BRCLR   >FuelModeFlags,Z,#$40,L12514             ; bit 6: first fuel event calculation done (FuelEventCalc)
         BRSET   >CrankSyncFlags,Z,#$40,L12602
 L12514:
-        BSET    >FuelModeFlags,Z,#$40
+        BSET    >FuelModeFlags,Z,#$40                    ; bit 6: first fuel event calculation done (FuelEventCalc)
         LDE     #$C02D
         STE     $1056,Z
         STE     $1058,Z
@@ -3604,8 +3604,8 @@ L1257C:
         CMPA    >CoolantTemp,Z
         BCS     L125B2
 L12582:
-        BRSET   >FuelModeFlags,Z,#$10,L125B2
-        BSET    >FuelModeFlags,Z,#$10
+        BRSET   >FuelModeFlags,Z,#$10,L125B2             ; bit 4: crank pulse taken from the coolant table (FuelEventCalc)
+        BSET    >FuelModeFlags,Z,#$10                    ; bit 4: crank pulse taken from the coolant table (FuelEventCalc)
         LDE     >CrankPulseCoolant,Z
         BRSET   >EngineStateFlags,Z,#$10,L125A4          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
         CLRA
@@ -4081,7 +4081,7 @@ L12AA0:
 ;---------------------------------------------------------------------------------------------------
 EventHistoryShift:
         BRCLR   >EventSparkFlags,Z,#$20,L12AE4
-        BRSET   >FuelModeFlags,Z,#$08,L12AE4
+        BRSET   >FuelModeFlags,Z,#$08,L12AE4             ; bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
         LDAB    >CylinderCount
         CMPB    #$06
         BNE     L12AC8
@@ -4106,7 +4106,7 @@ L12AE4:
 ;---------------------------------------------------------------------------------------------------
 StartPulseCurrent:
         PSHM    E
-        BRCLR   >FuelModeFlags,Z,#$08,L12B44
+        BRCLR   >FuelModeFlags,Z,#$08,L12B44             ; bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
         LDAA    >InjectorIndex,Z
         JSR     CylinderBit
         ANDB    $0F61,Z
@@ -4151,11 +4151,11 @@ L12B4A:
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
 EventTableCheck:
-        BRCLR   >FuelModeFlags,Z,#$08,L12B60
+        BRCLR   >FuelModeFlags,Z,#$08,L12B60             ; bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
         TST     $0F61,Z
         BNE     L12B60
         BCLR    >EventSparkFlags,Z,#$20
-        BCLR    >FuelModeFlags,Z,#$08
+        BCLR    >FuelModeFlags,Z,#$08                    ; bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
 L12B60:
         RTS
 
@@ -4170,7 +4170,7 @@ LimitReasonCode:
         BRSET   >LimpFlags,Z,#$20,L12BAC
         BRSET   >IdleFlareFlags,Z,#$40,L12BB0
         BRSET   >SecurityFlags,Z,#$20,L12BB4
-        BRSET   >FuelModeFlags2,Z,#$10,L12BB8
+        BRSET   >FuelModeFlags2,Z,#$10,L12BB8            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
         BRSET   >MisfireFlags,Z,#$04,L12BBC
         BRSET   >EventFlags,Z,#$10,L12BC0
         BRSET   >EventFlags,Z,#$08,L12BC4
@@ -5641,7 +5641,7 @@ L14B8A:
         CLR     $0740,Z
         CLR     $0741,Z
 L14BB4:
-        BRCLR   >FuelModeFlags,Z,#$20,L14BCA
+        BRCLR   >FuelModeFlags,Z,#$20,L14BCA             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         BSET    >O2ResetFlags,Z,#$03
         BSET    >O2InactiveFlags,Z,#$C0
         BSET    <Scratch0,Z,#$F0
@@ -6008,7 +6008,7 @@ L14F92:
 L14FB8:
         BCLR    <Scratch0,Z,#$40
         LDAB    >O2DecelHold
-        BRSET   >FuelModeFlags,Z,#$20,L14FCC
+        BRSET   >FuelModeFlags,Z,#$20,L14FCC             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         TST     >DecelFuelFactor,Z
         BEQ     L14FD2
 L14FCC:
@@ -7363,7 +7363,7 @@ L15D58:
         LDAB    >O2LearnRateWotFlex
 L15D72:
         CLRA
-        BRSET   >FuelModeFlags,Z,#$20,L15E86
+        BRSET   >FuelModeFlags,Z,#$20,L15E86             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         LDY     <Scratch4,Z
         CPY     #$806B
         BEQ     L15D90
@@ -7442,7 +7442,7 @@ L15E3A:
         LDAA    $00,X
         TDE
         LDX     <Scratch6,Z
-        BRCLR   >FuelModeFlags2,Z,#$80,L15E66
+        BRCLR   >FuelModeFlags2,Z,#$80,L15E66            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         CPX     #$805B
         BEQ     L15E54
         LDAB    <PurgeCellTrim1B2,Z
@@ -7481,7 +7481,7 @@ L15E92:
 L15E96:
         TDE
         LDX     <Scratch6,Z
-        BRCLR   >FuelModeFlags2,Z,#$80,L15EBC
+        BRCLR   >FuelModeFlags2,Z,#$80,L15EBC            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         CPX     #$805B
         BEQ     L15EAA
         LDAB    <PurgeCellTrim1B2,Z
@@ -7537,14 +7537,14 @@ O2FlexOffset:
         LDAA    >FlexEthanol,Z
         CMPA    >O2FlexEthanolMin
         BCC     L15F2C
-        BRCLR   >FuelModeFlags2,Z,#$04,L15F9A
+        BRCLR   >FuelModeFlags2,Z,#$04,L15F9A            ; bit 2: ethanol content above O2FlexEthanolMin (O2FlexOffset)
         ADDA    #$0A
         CMPA    >O2FlexEthanolMin
         BCC     L15F2C
-        BCLR    >FuelModeFlags2,Z,#$04
+        BCLR    >FuelModeFlags2,Z,#$04                   ; bit 2: ethanol content above O2FlexEthanolMin (O2FlexOffset)
         BRA     L15F9A
 L15F2C:
-        BSET    >FuelModeFlags2,Z,#$04
+        BSET    >FuelModeFlags2,Z,#$04                   ; bit 2: ethanol content above O2FlexEthanolMin (O2FlexOffset)
         LDAA    >O2CellIndex,Z
         LDAB    >O2FlexCellMask
         CMPA    #$00
@@ -8943,8 +8943,8 @@ L17098:
         CMPA    >FlexLearnCounter3,Z
         BEQ     L170C4
         BRSET   >FaultSet07,Z,#$02,L170C4
-        BRSET   >EepromFlags,Z,#$80,L170C4
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L170C4               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         LDE     #$00EF
         STE     >EepromAddr,Z
@@ -8953,8 +8953,8 @@ L170C4:
         CMPA    $0F4D,Z
         BEQ     L170EA
         BRSET   >FaultSet07,Z,#$02,L170EA
-        BRSET   >EepromFlags,Z,#$80,L170EA
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L170EA               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         LDE     #$00FC
         STE     >EepromAddr,Z
@@ -11059,7 +11059,7 @@ L1908A:
 ; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
 IdleRpmLoop:
-        BRCLR   >SwitchInputs,Z,#$01,L190AC
+        BRCLR   >SwitchInputs,Z,#$01,L190AC              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >IdleFlags,Z,#$01,L190A6                 ; bit 0: idle rpm loop hold timer started (IdleRpmLoop)
         LDAA    >IdleLoopHoldTime
         STAA    >IdleLoopHold,Z
@@ -11401,7 +11401,7 @@ L19440:
         BLS     L19496
         BRCLR   >EquipmentFlags,Z,#$04,L19466            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L19478
-        BRSET   >SwitchInputs2,Z,#$40,L19496
+        BRSET   >SwitchInputs2,Z,#$40,L19496             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         BRSET   >DriveFlags,Z,#$08,L19496                ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         BRSET   >IdleFlags,Z,#$10,L19496                 ; bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
         BRA     L19478
@@ -11871,7 +11871,7 @@ L198CE:
         BRCLR   >Options033A,#$08,L1991C                 ; bit 3: selects a branch in IdleTargetControl
         BRSET   >IacAcFlags,Z,#$08,L19910
         BRCLR   >EquipmentFlags,Z,#$20,L1991C            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$02,L1991C
+        BRSET   >BusModuleFlags,Z,#$02,L1991C            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BRCLR   >BusFlags9CE,Z,#$C0,L1991C
         BSET    >IacAcFlags,Z,#$08
         JSR     PciSparkStatus
@@ -12494,7 +12494,7 @@ L1A0CE:
         JSR     IacSetTarget
         LBRA    L1A536
 L1A0D8:
-        BRSET   >SwitchInputs2,Z,#$20,L1A0E6
+        BRSET   >SwitchInputs2,Z,#$20,L1A0E6             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BRSET   >DriveFlags,Z,#$20,L1A112                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BRA     L1A100
 L1A0E6:
@@ -12515,7 +12515,7 @@ L1A112:
         BRSET   >Options0337,#$01,L1A1DE                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
         BRCLR   >EquipmentFlags,Z,#$04,L1A14A            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1A14A
-        BRSET   >SwitchInputs2,Z,#$40,L1A136
+        BRSET   >SwitchInputs2,Z,#$40,L1A136             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         BRCLR   >DriveFlags,Z,#$08,L1A14A                ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         BCLR    >DriveFlags,Z,#$08                       ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         BRA     L1A140
@@ -12599,7 +12599,7 @@ L1A212:
         BSET    >IdleDipFlags,Z,#$08
         BRSET   >Options032E,#$40,L1A232                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         LDX     #IacDipKick
-        BRCLR   >SwitchInputs2,Z,#$20,L1A240
+        BRCLR   >SwitchInputs2,Z,#$20,L1A240             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
 L1A232:
         LDX     #IacDipKickPN
         BRSET   >IdleFlags,Z,#$40,L1A240                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
@@ -13130,7 +13130,7 @@ L1A780:
 L1A794:
         BRCLR   >EquipmentFlags,Z,#$04,L1A7A6            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1A7A6
-        BRSET   >SwitchInputs2,Z,#$40,L1A7FE
+        BRSET   >SwitchInputs2,Z,#$40,L1A7FE             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
 L1A7A6:
         BRCLR   >Options032C,#$40,L1A7BE                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >Options032F,#$08,L1A7BE                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
@@ -13246,7 +13246,7 @@ IdleStopRpmCheck:
         LBNE    L1A980
         BRCLR   >EquipmentFlags,Z,#$04,L1A8DA            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1A8E6
-        BRSET   >SwitchInputs2,Z,#$40,L1A980
+        BRSET   >SwitchInputs2,Z,#$40,L1A980             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         BRA     L1A8E6
 L1A8DA:
         BRCLR   >Options0337,#$01,L1A8E6                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
@@ -13517,7 +13517,7 @@ L1AB3A:
 L1AB66:
         BRCLR   >EquipmentFlags,Z,#$04,L1AB7A            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1AB8E
-        BRSET   >SwitchInputs2,Z,#$40,L1AB86
+        BRSET   >SwitchInputs2,Z,#$40,L1AB86             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         BRA     L1AB8E
 L1AB7A:
         BRCLR   >Options0337,#$01,L1AB8E                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
@@ -13612,7 +13612,7 @@ L1AC22:
 L1AC2A:
         BRCLR   >EquipmentFlags,Z,#$04,L1AC3E            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1AC52
-        BRSET   >SwitchInputs2,Z,#$40,L1AC4A
+        BRSET   >SwitchInputs2,Z,#$40,L1AC4A             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         BRA     L1AC52
 L1AC3E:
         BRCLR   >Options0337,#$01,L1AC52                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
@@ -13975,7 +13975,7 @@ L1AFCA:
 L1B010:
         BRCLR   >EquipmentFlags,Z,#$04,L1B024            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1B038
-        BRSET   >SwitchInputs2,Z,#$40,L1B030
+        BRSET   >SwitchInputs2,Z,#$40,L1B030             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         BRA     L1B038
 L1B024:
         BRCLR   >Options0337,#$01,L1B038                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
@@ -14091,7 +14091,7 @@ L1B16E:
         BRSET   >IdleDipFlags,Z,#$40,L1B186
         BRCLR   >EquipmentFlags,Z,#$04,L1B194            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1B194
-        BRCLR   >SwitchInputs2,Z,#$40,L1B194
+        BRCLR   >SwitchInputs2,Z,#$40,L1B194             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
 L1B186:
         LDAA    >IdleRampBlockEvent
         CMPA    >IdleRampBlockTimer,Z
@@ -14169,7 +14169,7 @@ L1B258:
         BPL     L1B280
         ANDA    #$7F
         BEQ     L1B280
-        BRCLR   >SwitchInputs,Z,#$01,L1B280
+        BRCLR   >SwitchInputs,Z,#$01,L1B280              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BSET    >IdleFlags7,Z,#$10
         CLRB
         LSRD
@@ -14530,7 +14530,7 @@ L1B6BA:
         DEC     >IdleRpmRefGearTimer,Z
 L1B6CA:
         BRCLR   >DriveFlags,Z,#$80,L1B6DE                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
-        BRSET   >SwitchInputs2,Z,#$20,L1B6DE
+        BRSET   >SwitchInputs2,Z,#$20,L1B6DE             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         LDAA    >IdleRpmRefGearHold
         STAA    >IdleRpmRefGearTimer,Z
 L1B6DE:
@@ -14639,7 +14639,7 @@ L1B840:
         TBXK
         BRSET   >Options032E,#$40,L1B856                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         LDX     #$3180
-        BRCLR   >SwitchInputs2,Z,#$20,L1B868
+        BRCLR   >SwitchInputs2,Z,#$20,L1B868             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
 L1B856:
         LDX     #$317A
         BRCLR   >IdleFlags,Z,#$40,L1B868                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
@@ -14660,7 +14660,7 @@ L1B884:
         BCC     L1B88A
         LDE     #$FFFF
 L1B88A:
-        BRSET   >SwitchInputs2,Z,#$20,L1B896
+        BRSET   >SwitchInputs2,Z,#$20,L1B896             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BCLR    >IdleDipFlags,Z,#$01
         BRA     L1B8AE
 L1B896:
@@ -15538,7 +15538,7 @@ Sub_1D28A:
 L1D2A8:
         JMP     L1D35C
 L1D2AC:
-        BRSET   >FuelModeFlags,Z,#$20,L1D2EA
+        BRSET   >FuelModeFlags,Z,#$20,L1D2EA             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         BCLR    >SparkFlags2,Z,#$10
         CLR     $0D3F,Z
         LDX     #$20CA
@@ -15723,7 +15723,7 @@ L1D48A:
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
 AfterStartSpark:
-        BRCLR   >SparkFlags,Z,#$20,L1D5D8
+        BRCLR   >SparkFlags,Z,#$20,L1D5D8                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >AfterStartSparkFlags,Z,#$20,L1D5D8
         LDAA    >AfterStartSparkStart,Z
         BEQ     L1D502
@@ -15987,7 +15987,7 @@ L1D76A:
         LBCS    L1D828
 L1D772:
         BRSET   >SparkFaultFlags,Z,#$10,L1D7CC
-        BSET    >SparkFlags,Z,#$02
+        BSET    >SparkFlags,Z,#$02                       ; bit 1: tip-in spark retard armed (TipInSparkControl)
         LDAA    >AirTemp,Z
         LDX     #TipInRetardDuration
         LDAB    >KnockRetard,Z
@@ -16017,8 +16017,8 @@ L1D7CC:
         BSET    >SparkFaultFlags,Z,#$10
 L1D7D6:
         ORP     #$00E0
-        BRSET   >SparkFlags,Z,#$04,L1D7E8
-        BSET    >SparkFlags,Z,#$04
+        BRSET   >SparkFlags,Z,#$04,L1D7E8                ; bit 2: tip-in spark retard started (TipInSparkControl)
+        BSET    >SparkFlags,Z,#$04                       ; bit 2: tip-in spark retard started (TipInSparkControl)
         CLR     >TipInSteps,Z
 L1D7E8:
         LDAB    >TipInSteps,Z
@@ -16048,7 +16048,7 @@ L1D81A:
 L1D824:
         BSET    >SparkFaultFlags,Z,#$10
 L1D828:
-        BCLR    >SparkFlags,Z,#$06
+        BCLR    >SparkFlags,Z,#$06                       ; bit 2: tip-in spark retard started (TipInSparkControl); bit 1: tip-in spark retard armed (TipInSparkControl)
         CLR     >TipInSteps,Z
         ANDP    #$FF1F
         CLRA
@@ -16386,7 +16386,7 @@ L1DB88:
 ;---------------------------------------------------------------------------------------------------
 KnockLearnDecayStep:
         BRSET   >Options032B,#$20,L1DBC0                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
-        BRCLR   >SparkFlags,Z,#$80,L1DBC0
+        BRCLR   >SparkFlags,Z,#$80,L1DBC0                ; bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
         TZX
         LDX     #$8086
         BRCLR   >Options032B,#$40,L1DBAE                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
@@ -16505,7 +16505,7 @@ SpeedDampControl:
         BRSET   >EventSparkFlags,Z,#$04,L1DD40
         BRSET   $009E,Z,#$10,L1DD1C
         BRCLR   >EquipmentFlags,Z,#$20,L1DCCA            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$02,L1DCCA
+        BRSET   >BusModuleFlags,Z,#$02,L1DCCA            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BRSET   >BusFlags9CE,Z,#$01,L1DD1C
         BRCLR   >BusFlags9CE,Z,#$FF,L1DCCA
         BRA     L1DCD0
@@ -16582,7 +16582,7 @@ L1DD82:
         BRSET   >EquipmentFlags,Z,#$20,L1DD96            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #SpeedRpmRef
 L1DD96:
-        BRSET   >SwitchInputs,Z,#$01,L1DDAA
+        BRSET   >SwitchInputs,Z,#$01,L1DDAA              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDX     #SpeedRpmRef2AC
         BRSET   >EquipmentFlags,Z,#$20,L1DDAA            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #SpeedRpmRef2
@@ -16782,7 +16782,7 @@ L1DF4E:
 Sub_1DF54:
         CLRB
         BRCLR   >Options0337,#$10,L1E1CC                 ; bit 4: surge spark control on (SurgeSparkOn)
-        BRCLR   >SparkFlags,Z,#$20,L1E1CC
+        BRCLR   >SparkFlags,Z,#$20,L1E1CC                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    >VehicleSpeed,Z
         CMPA    $2937
         LBCS    L1E1BC
@@ -17143,7 +17143,7 @@ L1E328:
 ;---------------------------------------------------------------------------------------------------
 SparkEventCalc:
         LDAA    #$12
-        BRCLR   >SparkFlags,Z,#$20,L1E558
+        BRCLR   >SparkFlags,Z,#$20,L1E558                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         JSR     AcSparkRate
         JSR     O2SparkTrimCalc
         LDD     >SparkPeriod,Z
@@ -17233,7 +17233,7 @@ L1E41C:
 L1E424:
         TBA
 L1E426:
-        BRSET   >FuelModeFlags2,Z,#$80,L1E458
+        BRSET   >FuelModeFlags2,Z,#$80,L1E458            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         BRCLR   >Options0339,#$20,L1E438                 ; bit 5: selects a branch in SparkEventCalc
         BRSET   >ThrottleState,Z,#$01,L1E458             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
 L1E438:
@@ -17370,7 +17370,7 @@ L1E582:
         LDAA    >CoolantTemp,Z
         CMPA    >DwellAltCoolantMax
         BHI     L1E5F2
-        BRSET   >SparkFlags,Z,#$20,L1E5CE
+        BRSET   >SparkFlags,Z,#$20,L1E5CE                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >Options033C,#$08,L1E5F8                 ; bit 3: dwell mode select bit (DwellModeSelect)
         BRA     L1E5F2
 L1E5CE:
@@ -17437,7 +17437,7 @@ L1E642:
         ANDB    #$F7
         BRA     L1E6A0
 L1E64E:
-        BRSET   >SparkFlags,Z,#$20,L1E656
+        BRSET   >SparkFlags,Z,#$20,L1E656                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRA     L1E6A0
 L1E656:
         BITB    #$04
@@ -17507,7 +17507,7 @@ GetSparkAdvance:
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
 Sub_1E724:
-        BRCLR   >SparkFlags,Z,#$20,L1E730
+        BRCLR   >SparkFlags,Z,#$20,L1E730                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >EngineStateFlags,Z,#$80,L1E73C          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
 L1E730:
         LDD     >EngineRpm,Z
@@ -18154,7 +18154,7 @@ L1F38E:
 ; Called from: KnockControl
 ;---------------------------------------------------------------------------------------------------
 KnockLearnDecayFlag:
-        BRCLR   >SparkFlags,Z,#$20,L1F3C2
+        BRCLR   >SparkFlags,Z,#$20,L1F3C2                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >ControlFlagsC33,Z,#$80,L1F3C2
         BSET    >ControlFlagsC33,Z,#$80
         TZX
@@ -18580,7 +18580,7 @@ L1F7DC:
         CMPB    #$08
         BCS     L1F7DC
 L1F7EA:
-        BRSET   >SystemFlags945,Z,#$10,L1F802
+        BRSET   >SystemFlags945,Z,#$10,L1F802            ; bit 4: knock chip configured (KnockChipConfig); cleared before a new window is set
         CMPB    >KnockWindow,Z
         BEQ     L1F814
         BHI     L1F802
@@ -18591,7 +18591,7 @@ L1F802:
         STAB    >KnockWindow,Z
         LDX     #$2E59
         ABX
-        BCLR    >SystemFlags945,Z,#$10
+        BCLR    >SystemFlags945,Z,#$10                   ; bit 4: knock chip configured (KnockChipConfig); cleared before a new window is set
         JSR     KnockChipConfig
 L1F814:
         RTS

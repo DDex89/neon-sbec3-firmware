@@ -102,11 +102,11 @@ L301E0:
 L301E6:
         CLR     >SecurityTimer,Z
 L301EA:
-        BCLR    >SkimFlags,Z,#$01
+        BCLR    >SkimFlags,Z,#$01                        ; bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
 L301EE:
         CLR     >BusTimeout1,Z
         BSET    >SecurityFlags,Z,#$41
-        BSET    >SkimFlags,Z,#$04
+        BSET    >SkimFlags,Z,#$04                        ; bit 2: SKIM present on the bus, probably
         LBRA    L3051A
 L301FE:
         CMPA    #$91
@@ -146,8 +146,8 @@ L30252:
 L3025A:
         CMPA    #$A1
         LBNE    L30300
-        BSET    >BusModuleFlags,Z,#$80
-        BCLR    >BusModuleFlags,Z,#$02
+        BSET    >BusModuleFlags,Z,#$80                   ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
         LDAB    $01,Y
@@ -207,8 +207,8 @@ L30300:
         BNE     L3032E
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
-        BCLR    >BusModuleFlags,Z,#$02
-        BRCLR   >BusModuleFlags,Z,#$80,L3031E
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
+        BRCLR   >BusModuleFlags,Z,#$80,L3031E            ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
         BSET    <EquipmentFlags,Z,#$20                   ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDAB    #$04
         STAB    $58,Z
@@ -222,8 +222,8 @@ L3031E:
 L3032E:
         CMPA    #$DC
         BNE     L3035E
-        BSET    >BusModuleFlags,Z,#$80
-        BCLR    >BusModuleFlags,Z,#$02
+        BSET    >BusModuleFlags,Z,#$80                   ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
         LDAA    $01,Y
@@ -245,13 +245,13 @@ L3035E:
         LDAA    >EngineOffTimeStart,Z
         CMPA    >EngineOffTimeMin
         LBCC    L3051A
-        BRSET   >FuelModeFlags2,Z,#$01,L3051A
+        BRSET   >FuelModeFlags2,Z,#$01,L3051A            ; bit 0: engine-off time received from the bus (CcdReceive, PciReceive)
         ADDA    >EngineOffTime,Z
         BCC     L30386
         LDAA    #$FF
 L30386:
         STAA    >EngineOffTime,Z
-        BSET    >FuelModeFlags2,Z,#$01
+        BSET    >FuelModeFlags2,Z,#$01                   ; bit 0: engine-off time received from the bus (CcdReceive, PciReceive)
         LBRA    L3051A
 L30392:
         CMPA    #$95
@@ -276,8 +276,8 @@ L303B8:
 L303CE:
         CMPA    #$7C
         BNE     L303EC
-        BSET    >BusModuleFlags,Z,#$80
-        BCLR    >BusModuleFlags,Z,#$02
+        BSET    >BusModuleFlags,Z,#$80                   ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
         LDAA    $01,Y
@@ -286,8 +286,8 @@ L303CE:
 L303EC:
         CMPA    #$52
         BNE     L3040A
-        BSET    >BusModuleFlags,Z,#$80
-        BCLR    >BusModuleFlags,Z,#$02
+        BSET    >BusModuleFlags,Z,#$80                   ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
         LDAA    $01,Y
@@ -299,8 +299,8 @@ L3040A:
         LDAA    $01,Y
         CMPA    #$41
         LBNE    L3051A
-        BSET    >BusModuleFlags,Z,#$C0
-        BCLR    >BusModuleFlags,Z,#$02
+        BSET    >BusModuleFlags,Z,#$C0                   ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive); bit 6: new transmission status received (TransBusStatus), not handled yet by TransMilRequest
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
         LDE     $0002,Y
@@ -322,19 +322,19 @@ L3044C:
         LDAB    $01,Y
         STAB    >SkimStatus,Z
         CLR     >SkimTimeout,Z
-        BSET    >SkimFlags,Z,#$08
+        BSET    >SkimFlags,Z,#$08                        ; bit 3: SKIM status message received
         BSET    >SecurityFlags,Z,#$40
-        BRCLR   >SkimFlags,Z,#$10,L3051A
+        BRCLR   >SkimFlags,Z,#$10,L3051A                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         CLR     >SecurityTimer,Z
         BITB    #$02
         LBEQ    L3051A
-        BSET    >SkimFlags,Z,#$01
+        BSET    >SkimFlags,Z,#$01                        ; bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
         LBRA    L3051A
 L3047A:
         CMPA    #$C2
         LBNE    L3051A
         CLR     >SkimTimeout,Z
-        BSET    >SkimFlags,Z,#$08
+        BSET    >SkimFlags,Z,#$08                        ; bit 3: SKIM status message received
         BSET    >SecurityFlags,Z,#$40
         LDAA    $01,Y
         CMPA    #$C8
@@ -344,14 +344,14 @@ L3047A:
 L30498:
         CMPA    #$C0
         BNE     L304DC
-        BSET    >SkimFlags,Z,#$20
+        BSET    >SkimFlags,Z,#$20                        ; bit 5: SKIM key message received (CcdReceive/PciReceive -> SkimKeyCheck)
         JSR     SkimKeyCheck
         CMPA    $02,Y
         BNE     L304BC
         CPE     $0003,Y
         BNE     L304BC
-        BSET    >SkimFlags,Z,#$10
-        BCLR    >SkimFlags,Z,#$01
+        BSET    >SkimFlags,Z,#$10                        ; bit 4: SKIM key matches (CcdReceive, PciReceive)
+        BCLR    >SkimFlags,Z,#$01                        ; bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
         CLR     >SecurityTimer,Z
         BRA     L304D6
 L304BC:
@@ -433,9 +433,9 @@ BusEepromWrite:
         BRCLR   >BusMsgFlags,Z,#$20,L3060C
         BRSET   >BusMsg91Byte1,Z,#$40,L30608
         BRSET   >BusMsg91Byte1,Z,#$80,L30602
-        BRSET   >EepromFlags,Z,#$80,L3060C
-        BRSET   >EepromFlags,Z,#$08,L3060C
-        BRSET   >EepromFlags,Z,#$04,L3060C
+        BRSET   >EepromFlags,Z,#$80,L3060C               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BRSET   >EepromFlags,Z,#$08,L3060C               ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
+        BRSET   >EepromFlags,Z,#$04,L3060C               ; bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
         BRSET   >FaultSet07,Z,#$02,L30602
         TZX
         LDX     #$8962
@@ -447,7 +447,7 @@ BusEepromWrite:
         LDAA    >BusMsg91Byte2,Z
         CMPA    $00,X
         BEQ     L305B0
-        BSET    >EepromFlags,Z,#$08
+        BSET    >EepromFlags,Z,#$08                      ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
         BRA     L305E2
 L305B0:
         LDX     #$8973
@@ -472,15 +472,15 @@ L305D8:
         ANDA    $00,X
         CMPA    $00,X
         BEQ     L30602
-        BSET    >EepromFlags,Z,#$04
+        BSET    >EepromFlags,Z,#$04                      ; bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
 L305E2:
         PSHM    CCR
         ORP     #$00E0
-        BRCLR   >EepromFlags,Z,#$80,L305F2
+        BRCLR   >EepromFlags,Z,#$80,L305F2               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         PULM    CCR
         BRA     L3060C
 L305F2:
-        BSET    >EepromFlags,Z,#$80
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         PULM    CCR
         STAA    >EepromData,Z
         STY     >EepromAddr,Z
@@ -573,7 +573,7 @@ L306CE:
         RTS
 L306D2:
         CLRD
-        BRCLR   >EepromFlags,Z,#$80,L306E0
+        BRCLR   >EepromFlags,Z,#$80,L306E0               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >CcdTxId,Z
         BRA     L30700
 L306E0:
@@ -659,7 +659,7 @@ L3079A:
 L307AA:
         LDAA    #$CC
         STAA    >CcdTxId,Z
-        BRSET   >EepromFlags,Z,#$80,L30844
+        BRSET   >EepromFlags,Z,#$80,L30844               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDE     >RpmForBus,Z
         ASLE
         ASLE
@@ -769,7 +769,7 @@ L30894:
         STD     >LookupResult,Z
         RTS
 L3089A:
-        BRSET   >EepromFlags,Z,#$80,L30844
+        BRSET   >EepromFlags,Z,#$80,L30844               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         TZX
         LDX     #$8962
         TPD
@@ -878,7 +878,7 @@ L30980:
 L30986:
         ORAB    #$02
 L30988:
-        BRSET   >SkimFlags,Z,#$10,L3099E
+        BRSET   >SkimFlags,Z,#$10,L3099E                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BRCLR   >BusConfigFlags,Z,#$40,L309A0
         BRCLR   >SecurityFlags,Z,#$01,L309A0
         BCLR    >SecurityFlags,Z,#$01
@@ -1549,7 +1549,7 @@ L31274:
         BRA     L3123E
 L3129E:
         BRCLR   $1013,Z,#$08,L312BC
-        BRSET   >SystemFlags945,Z,#$80,L312BC
+        BRSET   >SystemFlags945,Z,#$80,L312BC            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         BRSET   >PciFlags2,Z,#$04,L312BC
         LDAB    #$03
         TBYK
@@ -1642,8 +1642,8 @@ L3136A:
 L31370:
         BSET    >BusFlags9CE,Z,#$01
 L31374:
-        BSET    >BusModuleFlags,Z,#$80
-        BCLR    >BusModuleFlags,Z,#$02
+        BSET    >BusModuleFlags,Z,#$80                   ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
         RTS
@@ -1655,12 +1655,12 @@ L31386:
         STAB    >BusMsg02Value,Z
         LDAA    $03,Y
         STAA    >BusMsg52Value,Z
-        BRCLR   >BusModuleFlags,Z,#$80,L313A6
+        BRCLR   >BusModuleFlags,Z,#$80,L313A6            ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
         BSET    <EquipmentFlags,Z,#$20                   ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDAB    #$04
         STAB    $58,Z
 L313A6:
-        BCLR    >BusModuleFlags,Z,#$02
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
         RTS
@@ -1717,8 +1717,8 @@ L31424:
 L31434:
         BSET    >GearStateFlags,Z,#$10
 L31438:
-        BCLR    >BusModuleFlags,Z,#$02
-        BSET    >BusModuleFlags,Z,#$80
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
+        BSET    >BusModuleFlags,Z,#$80                   ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
         RTS
@@ -1745,8 +1745,8 @@ L31472:
         ORAA    #$08
 L3147C:
         STAA    >TransBusStatus,Z
-        BCLR    >BusModuleFlags,Z,#$02
-        BSET    >BusModuleFlags,Z,#$C0
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
+        BSET    >BusModuleFlags,Z,#$C0                   ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive); bit 6: new transmission status received (TransBusStatus), not handled yet by TransMilRequest
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
 L31490:
@@ -1776,13 +1776,13 @@ L314BE:
         LDAA    >EngineOffTimeStart,Z
         CMPA    >EngineOffTimeMin
         BCC     L314E2
-        BRSET   >FuelModeFlags2,Z,#$01,L314E2
+        BRSET   >FuelModeFlags2,Z,#$01,L314E2            ; bit 0: engine-off time received from the bus (CcdReceive, PciReceive)
         ADDA    >EngineOffTime,Z
         BCC     L314DA
         LDAA    #$FF
 L314DA:
         STAA    >EngineOffTime,Z
-        BSET    >FuelModeFlags2,Z,#$01
+        BSET    >FuelModeFlags2,Z,#$01                   ; bit 0: engine-off time received from the bus (CcdReceive, PciReceive)
 L314E2:
         BCLR    >FaultSet0D,Z,#$02
         CLR     >BusTimeout1,Z
@@ -1845,27 +1845,27 @@ L31572:
         STAB    $0A0C,Z
         CLR     >BusTimeout1,Z
         BRCLR   >BusConfigFlags,Z,#$40,L31598
-        BSET    >SkimFlags,Z,#$04
+        BSET    >SkimFlags,Z,#$04                        ; bit 2: SKIM present on the bus, probably
         BSET    >SecurityFlags,Z,#$40
-        BRCLR   >SkimFlags,Z,#$10,L31598
+        BRCLR   >SkimFlags,Z,#$10,L31598                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         CLR     >SecurityTimer,Z
-        BCLR    >SkimFlags,Z,#$01
+        BCLR    >SkimFlags,Z,#$01                        ; bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
 L31598:
         RTS
 L3159A:
         LDAB    $02,Y
         STAB    >SkimStatus,Z
         CLR     >SkimTimeout,Z
-        BSET    >SkimFlags,Z,#$08
+        BSET    >SkimFlags,Z,#$08                        ; bit 3: SKIM status message received
         BSET    >SecurityFlags,Z,#$40
-        BRCLR   >SkimFlags,Z,#$10,L315C4
+        BRCLR   >SkimFlags,Z,#$10,L315C4                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         CLR     >SecurityTimer,Z
         BITB    #$02
         BNE     L315C0
-        BCLR    >SkimFlags,Z,#$01
+        BCLR    >SkimFlags,Z,#$01                        ; bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
         BRA     L315C4
 L315C0:
-        BSET    >SkimFlags,Z,#$01
+        BSET    >SkimFlags,Z,#$01                        ; bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
 L315C4:
         RTS
 L315C6:
@@ -1888,14 +1888,14 @@ L315E4:
         BSET    >SkimFlags2,Z,#$80
         BRA     L3162E
 L315F0:
-        BSET    >SkimFlags,Z,#$20
+        BSET    >SkimFlags,Z,#$20                        ; bit 5: SKIM key message received (CcdReceive/PciReceive -> SkimKeyCheck)
         JSR     SkimKeyCheck
         CMPA    $04,Y
         BNE     L31610
         CPE     $0005,Y
         BNE     L31610
-        BSET    >SkimFlags,Z,#$10
-        BCLR    >SkimFlags,Z,#$01
+        BSET    >SkimFlags,Z,#$10                        ; bit 4: SKIM key matches (CcdReceive, PciReceive)
+        BCLR    >SkimFlags,Z,#$01                        ; bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
         CLR     >SecurityTimer,Z
         BRA     L3162A
 L31610:
@@ -1952,8 +1952,8 @@ L3168A:
         MUL
         SUBA    #$0A
         STAA    >BusTemp,Z
-        BCLR    >BusModuleFlags,Z,#$02
-        BSET    >BusModuleFlags,Z,#$80
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
+        BSET    >BusModuleFlags,Z,#$80                   ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
         CLR     >BodyMsgTimeout,Z
         CLR     >BodyMsgTimeout2,Z
         RTS
@@ -2448,7 +2448,7 @@ L31ACC:
         STAA    >VinIndex,Z
         RTS
 L31AD2:
-        BRSET   >EepromFlags,Z,#$80,L31B4E
+        BRSET   >EepromFlags,Z,#$80,L31B4E               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDAB    >BusMsg91Gate,Z
         CMPB    #$04
         BCS     L31AF6
@@ -2752,7 +2752,7 @@ L31D94:
         CLRB
         ORAB    #$00
         STD     $03,Y
-        BRSET   >BusModuleFlags,Z,#$02,L31DB2
+        BRSET   >BusModuleFlags,Z,#$02,L31DB2            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         LDAB    >BodyMsgTimeout2,Z
         CMPB    #$0A
         BCC     L31DB2
@@ -2768,9 +2768,9 @@ L31DB2:
 Sub_31DB4:
         BCLRW   $100C,Z,#$0800
         BCLR    >PciFlags,Z,#$40
-        BCLR    >SystemFlags945,Z,#$01
-        BRSET   >SystemFlags945,Z,#$80,L31E18
-        BRSET   >SystemFlags945,Z,#$02,L31E18
+        BCLR    >SystemFlags945,Z,#$01                   ; bit 0: PCI frame timer running, probably (PciTimeoutRestart)
+        BRSET   >SystemFlags945,Z,#$80,L31E18            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
+        BRSET   >SystemFlags945,Z,#$02,L31E18            ; bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
         TZY
         LDY     #$8996
         TST     $01,Y
@@ -2799,8 +2799,8 @@ L31DEA:
         BCLR    >SPSR,Z,#$80
         LDD     #$8F04
         STD     >SPCR2,Z
-        BSET    >SystemFlags945,Z,#$80
-        BSET    >SystemFlags945,Z,#$02
+        BSET    >SystemFlags945,Z,#$80                   ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
+        BSET    >SystemFlags945,Z,#$02                   ; bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
         BSET    >SPCR1,Z,#$80
         BCLR    >PciFlags3,Z,#$91
 L31E18:
@@ -2811,9 +2811,9 @@ L31E18:
 ; Called from: PciPitTick
 ;---------------------------------------------------------------------------------------------------
 Sub_31E1A:
-        BRSET   >SystemFlags945,Z,#$80,L31E52
+        BRSET   >SystemFlags945,Z,#$80,L31E52            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         BRSET   >PciFlags2,Z,#$04,L31E52
-        BRSET   >SystemFlags945,Z,#$02,L31E52
+        BRSET   >SystemFlags945,Z,#$02,L31E52            ; bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_31E2C ($31E2C)
@@ -2830,7 +2830,7 @@ Sub_31E2C:
         LDY     #$10D2
         JSR     QspiSendFrame
 L31E52:
-        BSET    >SystemFlags945,Z,#$01
+        BSET    >SystemFlags945,Z,#$01                   ; bit 0: PCI frame timer running, probably (PciTimeoutRestart)
         ORP     #$0100
 L31E5A:
         RTS
@@ -2842,8 +2842,8 @@ L31E5A:
 QspiService:
         BCLR    >SPSR,Z,#$80
         CLRW    >SPCR2,Z
-        BCLR    >SystemFlags945,Z,#$80
-        BCLR    >SystemFlags945,Z,#$02
+        BCLR    >SystemFlags945,Z,#$80                   ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
+        BCLR    >SystemFlags945,Z,#$02                   ; bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
         BRCLR   >Options032E,#$04,L31EB8                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$04,L31F08
         PSHM    D,E,X,Y,K
@@ -2859,8 +2859,8 @@ L31E88:
 L31E94:
         JSR     PciRxProcess
 L31E98:
-        BRCLR   >SystemFlags945,Z,#$01,L31EB6
-        BCLR    >SystemFlags945,Z,#$01
+        BRCLR   >SystemFlags945,Z,#$01,L31EB6            ; bit 0: PCI frame timer running, probably (PciTimeoutRestart)
+        BCLR    >SystemFlags945,Z,#$01                   ; bit 0: PCI frame timer running, probably (PciTimeoutRestart)
         JSR     Sub_31E2C
         BCS     L31EB6
         TZY
@@ -2963,9 +2963,9 @@ L31F6C:
         JSR     QspiStop
         BRA     L31F90
 L31F80:
-        BRSET   >SystemFlags945,Z,#$80,L31F90
+        BRSET   >SystemFlags945,Z,#$80,L31F90            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         BRCLR   >SPSR,Z,#$80,L31F90
-        BCLR    >SystemFlags945,Z,#$02
+        BCLR    >SystemFlags945,Z,#$02                   ; bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
 L31F90:
         ANDP    #$FF1F
         RTS
@@ -3427,7 +3427,7 @@ L323A2:
         STAA    >MilFaultCount,Z
 L323AE:
         BRCLR   >ControlFlagsC39,Z,#$10,L323BC
-        BRSET   >BusModuleFlags,Z,#$01,L323BC
+        BRSET   >BusModuleFlags,Z,#$01,L323BC            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         ORAA    #$80
 L323BC:
         STAA    >ObdResponse,Z
@@ -4800,8 +4800,8 @@ L33630:
         BEQ     L3366E
 L33656:
         BSET    >MonEnableFlags2,Z,#$20
-        BRSET   >EepromFlags,Z,#$80,L33672
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L33672               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         STE     >EepromAddr,Z
         BRA     L33672
@@ -4887,8 +4887,8 @@ L33746:
         BSET    >OutputTestFlags,Z,#$04
         TST     $0A90,Z
         BEQ     L33766
-        BRSET   >EepromFlags,Z,#$80,L33766
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L33766               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         CLR     >EepromData,Z
         LDE     #$000C
         STE     >EepromAddr,Z
@@ -6141,8 +6141,8 @@ L355A4:
 L355AA:
         LDE     #$0091
 L355AE:
-        BRSET   >EepromFlags,Z,#$80,L355C0
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L355C0               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         STE     >EepromAddr,Z
 L355C0:
@@ -6841,7 +6841,7 @@ L35C82:
         LDAA    #$01
         JMP     SciSendByte
 L35C88:
-        BRSET   >EepromFlags,Z,#$80,SciSendByte
+        BRSET   >EepromFlags,Z,#$80,SciSendByte          ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         COM     <ResetCheckWord,Z
         LDAA    #$F0
         JSR     SciSendByte
@@ -6849,7 +6849,7 @@ L35C96:
         BRCLR   >SCSR,Z,#$01,L35C96
         JMP     Reset
 L35CA0:
-        BRSET   >EepromFlags,Z,#$80,SciSendByte
+        BRSET   >EepromFlags,Z,#$80,SciSendByte          ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         TST     >SkimDataFlags,Z
         LBNE    SciSendByte
         LDAA    #$03
@@ -6858,8 +6858,8 @@ L35CA0:
         STAB    >SkimTimer,Z
         LBRA    L35C44
 L35CC0:
-        BRSET   >EepromFlags,Z,#$80,SciSendByte
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,SciSendByte          ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STE     >EepromAddr,Z
         STAB    >EepromData,Z
         LBRA    L35C44
@@ -6989,8 +6989,8 @@ L35E0E:
         CLRA
         STAA    >DiagCommand,Z
         ORP     #$00E0
-        BRSET   >EepromFlags,Z,#$80,L35E5E
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L35E5E               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDAA    >DiagParam3,Z
         LDAB    >DiagParam2,Z
         TDE
@@ -7011,19 +7011,19 @@ L35E50:
         ANDP    #$FF1F
         JMP     SciSendByte
 L35E5A:
-        BCLR    >EepromFlags,Z,#$80
+        BCLR    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
 L35E5E:
         ANDP    #$FF1F
         JMP     SciSendByte
 L35E66:
-        BRSET   >EepromFlags,Z,#$80,L35E86
+        BRSET   >EepromFlags,Z,#$80,L35E86               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         CLR     >DiagCommand,Z
         LDAA    >DiagParam2,Z
         BITA    #$FE
         BNE     L35E86
         LDAB    >DiagParam1,Z
         JSR     EepromReadByte
-        BRCLR   >SystemFlags945,Z,#$20,SciSendByte
+        BRCLR   >SystemFlags945,Z,#$20,SciSendByte       ; bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
 L35E86:
         RTS
 L35E88:
@@ -8474,13 +8474,13 @@ L36A18:
 QspiOutputStatus:
         PSHM    CCR
         ORP     #$00E0
-        BRSET   >SystemFlags945,Z,#$80,L3820E
+        BRSET   >SystemFlags945,Z,#$80,L3820E            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         CLRW    >SPCR2,Z
         LDD     $093A,Z
         STD     >TR0,Z
         JSR     QspiWaitIdle
         LDE     >RR0,Z
-        BCLR    >SystemFlags945,Z,#$40
+        BCLR    >SystemFlags945,Z,#$40                   ; bit 6: QSPI command RAM reloaded for an output driver status read, probably (QspiOutputStatus)
         PULM    CCR
         TSTA
         LBEQ    L38204
@@ -8599,10 +8599,10 @@ L381FE:
         BRA     L38214
 L38204:
         JSR     QspiCommandInit
-        BSET    >SystemFlags945,Z,#$40
+        BSET    >SystemFlags945,Z,#$40                   ; bit 6: QSPI command RAM reloaded for an output driver status read, probably (QspiOutputStatus)
         BRA     L38214
 L3820E:
-        BSET    >SystemFlags945,Z,#$40
+        BSET    >SystemFlags945,Z,#$40                   ; bit 6: QSPI command RAM reloaded for an output driver status read, probably (QspiOutputStatus)
         PULM    CCR
 L38214:
         RTS
@@ -8683,7 +8683,7 @@ L382AA:
 QspiRecover:
         PSHM    CCR
         ORP     #$00E0
-        BRCLR   >SystemFlags945,Z,#$40,L382E0
+        BRCLR   >SystemFlags945,Z,#$40,L382E0            ; bit 6: QSPI command RAM reloaded for an output driver status read, probably (QspiOutputStatus)
         BRSET   >PciFlags2,Z,#$04,L382E0
         INC     $0A14,Z
         LDAA    $0A14,Z
@@ -8693,7 +8693,7 @@ QspiRecover:
         STAB    $0A16,Z
         CMPA    #$06
         BCS     L382E4
-        BCLR    >SystemFlags945,Z,#$C2
+        BCLR    >SystemFlags945,Z,#$C2                   ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService); bit 6: QSPI command RAM reloaded for an output driver status read, probably (QspiOutputStatus); bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
         JSR     QspiCommandInit
 L382E0:
         CLR     $0A14,Z
@@ -8725,7 +8725,7 @@ L382FA:
 QspiDevice1Xfer:
         PSHM    CCR
         ORP     #$00E0
-        BRSET   >SystemFlags945,Z,#$80,L38328
+        BRSET   >SystemFlags945,Z,#$80,L38328            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         LDAA    #$4B
         STAA    >CR1,Z
         LDD     #$0500
@@ -8745,7 +8745,7 @@ L38328:
 QspiDevice2Xfer:
         PSHM    CCR
         ORP     #$00E0
-        BRSET   >SystemFlags945,Z,#$80,L38352
+        BRSET   >SystemFlags945,Z,#$80,L38352            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         LDAA    #$4B
         STAA    >CR2,Z
         LDD     #$0100
@@ -8764,8 +8764,8 @@ L38352:
 EepromPowerDownWrite:
         PSHM    CCR
         ORP     #$00E0
-        BCLR    >SystemFlags945,Z,#$20
-        BRSET   >SystemFlags945,Z,#$80,L383E0
+        BCLR    >SystemFlags945,Z,#$20                   ; bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
+        BRSET   >SystemFlags945,Z,#$80,L383E0            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         CLR     >EepromFlags,Z
         LDAA    #$0B
         STAA    >CR1,Z
@@ -8798,13 +8798,13 @@ EepromPowerDownWrite:
         JSR     DelayLoop
         LDD     >EepromAddr,Z
         JSR     EepromReadByte
-        BRSET   >SystemFlags945,Z,#$20,L383EC
+        BRSET   >SystemFlags945,Z,#$20,L383EC            ; bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
         CMPA    >EepromData,Z
         BEQ     L383E6
 L383DC:
         JSR     QspiCommandInit
 L383E0:
-        BSET    >SystemFlags945,Z,#$20
+        BSET    >SystemFlags945,Z,#$20                   ; bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
         BRA     L383EC
 L383E6:
         BSETW   >EepromAddr,Z,#$FFFF
@@ -8819,8 +8819,8 @@ L383EC:
 EepromReadByte:
         PSHM    CCR
         ORP     #$00E0
-        BCLR    >SystemFlags945,Z,#$20
-        BRSET   >SystemFlags945,Z,#$80,L38436
+        BCLR    >SystemFlags945,Z,#$20                   ; bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
+        BRSET   >SystemFlags945,Z,#$80,L38436            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         CLR     >EepromFlags,Z
         CPD     #$0200
         BCC     L38432
@@ -8841,7 +8841,7 @@ EepromReadByte:
 L38432:
         JSR     QspiCommandInit
 L38436:
-        BSET    >SystemFlags945,Z,#$20
+        BSET    >SystemFlags945,Z,#$20                   ; bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
 L3843A:
         PULM    CCR
         RTS
@@ -8879,33 +8879,33 @@ L3843A:
 EepromWriteQueue:
         PSHM    CCR
         ORP     #$00E0
-        BRSET   >SystemFlags945,Z,#$80,L38656
-        BCLR    >SystemFlags945,Z,#$20
-        BRSET   >EepromFlags,Z,#$20,L38656
-        BRSET   >EepromFlags,Z,#$10,L385F4
-        BRSET   >EepromFlags,Z,#$80,L38656
+        BRSET   >SystemFlags945,Z,#$80,L38656            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
+        BCLR    >SystemFlags945,Z,#$20                   ; bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
+        BRSET   >EepromFlags,Z,#$20,L38656               ; bit 5: write in progress (EepromWriteService)
+        BRSET   >EepromFlags,Z,#$10,L385F4               ; bit 4: second byte of a word write in progress (EepromWriteService)
+        BRSET   >EepromFlags,Z,#$80,L38656               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
 L385F4:
         LDAB    #$03
         TBXK
         LDX     #$843E
         LDAB    $094B,Z
-        BRSET   >EepromFlags,Z,#$02,L3862E
+        BRSET   >EepromFlags,Z,#$02,L3862E               ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
         LDAA    >BusMsg91Byte1,Z
-        BRCLR   >EepromFlags,Z,#$08,L3861C
-        BCLR    >EepromFlags,Z,#$08
+        BRCLR   >EepromFlags,Z,#$08,L3861C               ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
+        BCLR    >EepromFlags,Z,#$08                      ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
         ANDA    #$0F
         ADDA    #$1F
         TAB
         BRA     L3863A
 L3861C:
-        BRCLR   >EepromFlags,Z,#$04,L38632
-        BCLR    >EepromFlags,Z,#$04
+        BRCLR   >EepromFlags,Z,#$04,L38632               ; bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
+        BCLR    >EepromFlags,Z,#$04                      ; bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
         LDAB    #$2F
         BITA    #$08
         BNE     L3863A
         BRA     L38632
 L3862E:
-        BCLR    >EepromFlags,Z,#$02
+        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
 L38632:
         INCB
         CMPB    #$65
@@ -8953,8 +8953,8 @@ L38668:
 EepromReadStartup:
         PSHM    CCR
         ORP     #$00E0
-        BRSET   >SystemFlags945,Z,#$80,L386F4
-        BRSET   >EepromFlags,Z,#$80,L386F4
+        BRSET   >SystemFlags945,Z,#$80,L386F4            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
+        BRSET   >EepromFlags,Z,#$80,L386F4               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         JSR     QspiDevice1Xfer
         BITB    #$03
         BNE     L386F0
@@ -8999,8 +8999,8 @@ L386F4:
 EepromSkimRead:
         PSHM    CCR
         ORP     #$00E0
-        BRSET   >SystemFlags945,Z,#$80,L38784
-        BRSET   >EepromFlags,Z,#$80,L38784
+        BRSET   >SystemFlags945,Z,#$80,L38784            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
+        BRSET   >EepromFlags,Z,#$80,L38784               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         JSR     QspiDevice1Xfer
         BITB    #$03
         BNE     L38780
@@ -9048,8 +9048,8 @@ L38784:
 ; Called from: EepromWriteQueue
 ;---------------------------------------------------------------------------------------------------
 EepromWriteStart:
-        BRSET   >SystemFlags945,Z,#$80,L387DE
-        BRSET   >EepromFlags,Z,#$80,L387DE
+        BRSET   >SystemFlags945,Z,#$80,L387DE            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
+        BRSET   >EepromFlags,Z,#$80,L387DE               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         JSR     QspiDevice1Xfer
         BITB    #$03
         BNE     L387DA
@@ -9093,12 +9093,12 @@ L387E2:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 EepromWriteService:
-        BCLR    >SystemFlags945,Z,#$20
-        BRCLR   >EepromFlags,Z,#$80,L38950
-        BRSET   >SystemFlags945,Z,#$80,L3894C
-        BRSET   >EepromFlags,Z,#$20,L388CA
-        BRCLR   >EepromFlags,Z,#$10,L38810
-        BCLR    >EepromFlags,Z,#$10
+        BCLR    >SystemFlags945,Z,#$20                   ; bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
+        BRCLR   >EepromFlags,Z,#$80,L38950               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BRSET   >SystemFlags945,Z,#$80,L3894C            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
+        BRSET   >EepromFlags,Z,#$20,L388CA               ; bit 5: write in progress (EepromWriteService)
+        BRCLR   >EepromFlags,Z,#$10,L38810               ; bit 4: second byte of a word write in progress (EepromWriteService)
+        BCLR    >EepromFlags,Z,#$10                      ; bit 4: second byte of a word write in progress (EepromWriteService)
         INCW    >EepromAddr,Z
         LDAA    $0949,Z
         STAA    >EepromData,Z
@@ -9126,7 +9126,7 @@ L38810:
         CLRA
         LDAB    >EepromData,Z
         STD     >TR2,Z
-        BRCLR   >EepromFlags,Z,#$40,L38886
+        BRCLR   >EepromFlags,Z,#$40,L38886               ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         BRSET   $0947,Z,#$03,L3887E
         LDAB    $0949,Z
         STD     >TR3,Z
@@ -9137,8 +9137,8 @@ L38810:
         LDE     #$0301
         BRA     L3888E
 L3887E:
-        BSET    >EepromFlags,Z,#$10
-        BCLR    >EepromFlags,Z,#$40
+        BSET    >EepromFlags,Z,#$10                      ; bit 4: second byte of a word write in progress (EepromWriteService)
+        BCLR    >EepromFlags,Z,#$40                      ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
 L38886:
         LDAA    #$CB
         LDAB    #$0B
@@ -9152,7 +9152,7 @@ L3888E:
         PULM    CCR
         TSTA
         BEQ     L38902
-        BSET    >EepromFlags,Z,#$20
+        BSET    >EepromFlags,Z,#$20                      ; bit 5: write in progress (EepromWriteService)
         LDAA    >MonStartDelay,Z
         LBEQ    L38950
         LDAB    #$08
@@ -9170,14 +9170,14 @@ L388CA:
         JSR     EepromStatusRead
         CMPA    >EepromData,Z
         BNE     L38902
-        BRSET   >EepromFlags,Z,#$10,L38918
-        BRCLR   >EepromFlags,Z,#$40,L38914
-        BCLR    >EepromFlags,Z,#$40
+        BRSET   >EepromFlags,Z,#$10,L38918               ; bit 4: second byte of a word write in progress (EepromWriteService)
+        BRCLR   >EepromFlags,Z,#$40,L38914               ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
+        BCLR    >EepromFlags,Z,#$40                      ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         CMPB    $0949,Z
         BEQ     L38914
 L388F6:
-        BRSET   >EepromFlags,Z,#$01,L38902
-        BSET    >EepromFlags,Z,#$01
+        BRSET   >EepromFlags,Z,#$01,L38902               ; bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
+        BSET    >EepromFlags,Z,#$01                      ; bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
         BRA     L38950
 L38902:
         JSR     QspiCommandInit
@@ -9185,7 +9185,7 @@ L38902:
         LDY     #$4172
         JSR     ReportFault
 L38914:
-        BCLR    >EepromFlags,Z,#$80
+        BCLR    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
 L38918:
         LDAB    #$03
         TBXK
@@ -9203,13 +9203,13 @@ L38926:
 L38936:
         DECB
         STAB    $094B,Z
-        BSET    >EepromFlags,Z,#$02
+        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
 L38940:
-        BCLR    >EepromFlags,Z,#$A1
+        BCLR    >EepromFlags,Z,#$A1                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 5: write in progress (EepromWriteService); bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
         BSETW   >EepromAddr,Z,#$FFFF
         BRA     L38950
 L3894C:
-        BSET    >SystemFlags945,Z,#$20
+        BSET    >SystemFlags945,Z,#$20                   ; bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
 L38950:
         RTS
         dc.b    $37,$3B,$00,$E0,$28,$20,$09,$45,$2B,$80,$09,$4A,$00,$8E,$2B,$80
@@ -9236,7 +9236,7 @@ L38950:
 KnockChipConfig:
         PSHM    CCR
         ORP     #$00E0
-        BRSET   >SystemFlags945,Z,#$80,L38AF4
+        BRSET   >SystemFlags945,Z,#$80,L38AF4            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         LDE     $1084,Z
         CPE     #$0050
         LBCS    L38AF4
@@ -9291,7 +9291,7 @@ L38AD4:
         STAA    >CR9,Z
         BRA     L38AF8
 L38AF4:
-        BSET    >SystemFlags945,Z,#$10
+        BSET    >SystemFlags945,Z,#$10                   ; bit 4: knock chip configured (KnockChipConfig); cleared before a new window is set
 L38AF8:
         PULM    CCR
         RTS
@@ -9441,8 +9441,8 @@ RunModeSwitch:
         BSET    >OutputTestFlags,Z,#$04
         TST     $0A90,Z
         BEQ     L390CC
-        BRSET   >EepromFlags,Z,#$80,L390CC
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L390CC               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         CLR     >EepromData,Z
         LDE     #$000C
         STE     >EepromAddr,Z
@@ -9529,7 +9529,7 @@ OutputTestEeprom:
 L39194:
         BSET    >OutputTestFlags,Z,#$20
 L39198:
-        BRSET   >EepromFlags,Z,#$80,L391D8
+        BRSET   >EepromFlags,Z,#$80,L391D8               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   >EngineStateFlags,Z,#$80,L391D8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >OutputTestFlags,Z,#$80,L391D8
         ORP     #$00E0
@@ -9542,7 +9542,7 @@ L39198:
         STAB    >EepromData,Z
         LDD     #$0009
         STD     >EepromAddr,Z
-        BSET    >EepromFlags,Z,#$80
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRA     L391D4
 L391D0:
         BSET    >OutputTestFlags,Z,#$20
@@ -9550,7 +9550,7 @@ L391D4:
         ANDP    #$FF1F
 L391D8:
         ORP     #$00E0
-        BRSET   >EepromFlags,Z,#$80,L39240
+        BRSET   >EepromFlags,Z,#$80,L39240               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   >OutputTestFlags,Z,#$04,L3922C
         BRSET   >OutputTestFlags,Z,#$10,L3922C
         BRCLR   >OutputTestFlags,Z,#$02,L39212
@@ -9558,7 +9558,7 @@ L391D8:
         LDD     #$0009
         STD     >EepromAddr,Z
         CLR     >EepromData,Z
-        BSET    >EepromFlags,Z,#$80
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BSET    >OutputTestFlags,Z,#$10
         BCLR    >OutputTestFlags,Z,#$02
         BRA     L39240
@@ -9567,7 +9567,7 @@ L39212:
         STD     >EepromAddr,Z
         LDD     #$4AB5
         STD     >EepromData,Z
-        BSET    >EepromFlags,Z,#$C0
+        BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         BSET    >OutputTestFlags,Z,#$02
         BRA     L39240
 L3922C:
@@ -9581,13 +9581,13 @@ L3923C:
 L39240:
         ANDP    #$FF1F
         BRCLR   >OutputTestFlags,Z,#$20,L39270
-        BRSET   >EepromFlags,Z,#$80,L39270
+        BRSET   >EepromFlags,Z,#$80,L39270               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         ORP     #$00E0
         LDD     #$0097
         STD     >EepromAddr,Z
         LDD     #$EEEE
         STD     >EepromData,Z
-        BSET    >EepromFlags,Z,#$C0
+        BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         BCLR    >OutputTestFlags,Z,#$20
         ANDP    #$FF1F
 L39270:
@@ -9644,10 +9644,10 @@ L392E8:
 L392F6:
         BRSET   >Options0331,#$40,L39312                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRCLR   >Options0331,#$20,L3930A                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
-        BRCLR   >SwitchInputs2,Z,#$80,L3933A
+        BRCLR   >SwitchInputs2,Z,#$80,L3933A             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
         BRA     L39318
 L3930A:
-        BRSET   >SwitchInputs2,Z,#$80,L3933A
+        BRSET   >SwitchInputs2,Z,#$80,L3933A             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
         BRA     L39318
 L39312:
         BRCLR   >AcFlags,Z,#$08,L3933A                   ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
@@ -10707,7 +10707,7 @@ L39EDA:
         STAB    <Scratch0,Z
         CLRB
         BRSET   >Options032E,#$40,L39F0E                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
-        BRSET   >BusModuleFlags,Z,#$02,L39F0E
+        BRSET   >BusModuleFlags,Z,#$02,L39F0E            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         LDAA    >BusTemp,Z
         CMPA    >FanBusTempStage3
         BLT     L39EF6
@@ -11210,7 +11210,7 @@ L3A4B8:
         CMPA    >VehicleSpeed,Z
         BCS     L3A4EE
         BRCLR   >EquipmentFlags,Z,#$20,L3A4D4            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$02,L3A4D4
+        BRSET   >BusModuleFlags,Z,#$02,L3A4D4            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         LDAA    >BusTemp,Z
         CMPA    >FanIdleBusTempMax
         BGE     L3A4EE
@@ -11720,7 +11720,7 @@ L3A9B2:
 FanPwmBusPid:
         CLRE
         BRCLR   >EquipmentFlags,Z,#$20,L3AB1E            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$02,L3AB1E
+        BRSET   >BusModuleFlags,Z,#$02,L3AB1E            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         LDE     #$6400
         LDAA    >BusTemp,Z
         CMPA    >FanPwmBusMax
@@ -11952,7 +11952,7 @@ L3ABAA:
 ;---------------------------------------------------------------------------------------------------
 BusTempFlag:
         BRCLR   >BusTempFlags2,Z,#$10,L3ABEC
-        BRSET   >BusModuleFlags,Z,#$02,L3ABE6
+        BRSET   >BusModuleFlags,Z,#$02,L3ABE6            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         LDAA    >BusTemp,Z
         CMPA    >BusTempLatchOn
         BLT     L3ABCA
@@ -12013,7 +12013,7 @@ StarterCut:
         BRCLR   >Options0333,#$04,L3ACB8                 ; bit 2: starter cut / park-neutral variant (StarterCut, PnSwitchMonitor)
         BRSET   >SecurityFlags,Z,#$20,L3ACA0
         BRSET   >Options032E,#$40,L3AC52                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
-        BRSET   >SwitchInputs2,Z,#$20,L3ACA0
+        BRSET   >SwitchInputs2,Z,#$20,L3ACA0             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
 L3AC52:
         BRSET   >ControlFlags944,Z,#$01,L3AC88           ; bit 0: starter cut active (StarterCut)
         LDAA    >EngineRpm,Z
@@ -12393,7 +12393,7 @@ SpeedCtlControl:
         JSR     SpeedCtlSwitchCheck
         JSR     SpeedCtlBusCheck
         LDAB    #$00
-        BRCLR   >SwitchInputs2,Z,#$10,L3B8AC
+        BRCLR   >SwitchInputs2,Z,#$10,L3B8AC             ; bit 4: speed control switch (on/off, probably)
         LDAB    #$01
         LDAA    >VehicleSpeed,Z
         CMPA    >SpeedCtlEngageSpeedMin
@@ -12403,14 +12403,14 @@ SpeedCtlControl:
         CMPA    >SpeedCtlRpmMax
         BCC     L3B8AC
         LDAB    #$03
-        BRSET   >SwitchInputs,Z,#$01,L3B8AC
+        BRSET   >SwitchInputs,Z,#$01,L3B8AC              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAB    #$0D
-        BRSET   >SwitchInputs2,Z,#$01,L3B8AC
+        BRSET   >SwitchInputs2,Z,#$01,L3B8AC             ; bit 0: speed control switch
         BRSET   >Options032E,#$40,L3B854                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         JSR     SpeedCtlBusState
         BCS     L3B8AC
         LDAB    #$04
-        BRCLR   >SwitchInputs2,Z,#$20,L3B8AC
+        BRCLR   >SwitchInputs2,Z,#$20,L3B8AC             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BRA     L3B87C
 L3B854:
         LDAB    #$05
@@ -12444,7 +12444,7 @@ L3B894:
 L3B8AC:
         JSR     Nibble402Add
         CLRA
-        BRCLR   >SwitchInputs2,Z,#$10,L3B8D8
+        BRCLR   >SwitchInputs2,Z,#$10,L3B8D8             ; bit 4: speed control switch (on/off, probably)
         BRCLR   >SpeedCtlState,Z,#$18,L3B8DC             ; bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
         LDAA    >VehicleSpeed,Z
         BRCLR   >SpeedCtlState,Z,#$10,L3B8D8             ; bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
@@ -12478,7 +12478,7 @@ L3B8F0:
         BSET    >SpeedCtlFlags2,Z,#$01
         LBRA    L3BC24
 L3B92A:
-        BRCLR   >SwitchInputs2,Z,#$02,L3B984
+        BRCLR   >SwitchInputs2,Z,#$02,L3B984             ; bit 1: speed control switch
         LDAB    $0413,Z
         INCB
         BEQ     L3B93C
@@ -12527,7 +12527,7 @@ L3B9AC:
         LBRA    L3BB40
 L3B9B8:
         CLR     $0413,Z
-        BRSET   >SwitchInputs2,Z,#$04,L3BA56
+        BRSET   >SwitchInputs2,Z,#$04,L3BA56             ; bit 2: speed control switch (set at reset)
         LDAB    >SpeedCtlTimer2,Z
         INCB
         BEQ     L3B9CE
@@ -12671,7 +12671,7 @@ L3BB40:
 L3BB64:
         CLR     >SpeedCtlTimer2,Z
         BCLR    >SpeedCtlFlags2,Z,#$01
-        BRCLR   >SwitchInputs2,Z,#$08,L3BCDA
+        BRCLR   >SwitchInputs2,Z,#$08,L3BCDA             ; bit 3: speed control switch
         LDAB    >SpeedCtlHoldCount,Z
         INCB
         BNE     L3BB7C
@@ -13389,7 +13389,7 @@ SpeedCtlCancelMonitor:
         BRCLR   >EquipmentFlags,Z,#$40,L3C368            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
         BRSET   >FaultSet00,Z,#$80,L3C368
         BRSET   $1000,Z,#$01,L3C2E6
-        BRSET   >SwitchInputs,Z,#$01,L3C2E6
+        BRSET   >SwitchInputs,Z,#$01,L3C2E6              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   $1012,Z,#$01,L3C2E6
         BRCLR   >MainLoopPhaseMask,Z,#$04,L3C36E
         LDY     #$42BC
@@ -13401,7 +13401,7 @@ L3C2E6:
         LDAA    >FaultSet0B,Z
         BITA    #$C0
         BNE     L3C368
-        BRCLR   >SwitchInputs2,Z,#$10,L3C364
+        BRCLR   >SwitchInputs2,Z,#$10,L3C364             ; bit 4: speed control switch (on/off, probably)
         BRCLR   >Options032E,#$40,L3C322                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         TST     >SpeedCtlRpmJumpTimer,Z
         BEQ     L3C310
@@ -13531,7 +13531,7 @@ L3C3DE:
         JSR     Blend16
         AIS     #$04
         STD     >SpeedCtlThrottleAvg,Z
-        BRCLR   >SwitchInputs2,Z,#$10,L3C466
+        BRCLR   >SwitchInputs2,Z,#$10,L3C466             ; bit 4: speed control switch (on/off, probably)
         BRSET   >SensorFaultFlags,Z,#$10,L3C466          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         LDD     >EngineRpm,Z
         CPD     >SpeedCtlRpmJumpMinRpm
@@ -13585,7 +13585,7 @@ L3C47E:
         BLS     L3C4A8
         BHI     L3C4B8
 L3C49A:
-        BRSET   >BusModuleFlags,Z,#$02,L3C54C
+        BRSET   >BusModuleFlags,Z,#$02,L3C54C            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         LDAA    >BusFlags9CE,Z
         BITA    #$20
         BEQ     L3C4B4
@@ -13710,9 +13710,9 @@ Nibble402Add:
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlSwitchCheck:
         BRCLR   >EquipmentFlags,Z,#$40,L3C65A            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
-        BRCLR   >SwitchInputs2,Z,#$10,L3C65A
+        BRCLR   >SwitchInputs2,Z,#$10,L3C65A             ; bit 4: speed control switch (on/off, probably)
         BRSET   $1000,Z,#$01,L3C65A
-        BRSET   >SwitchInputs,Z,#$01,L3C65A
+        BRSET   >SwitchInputs,Z,#$01,L3C65A              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >FaultSet00,Z,#$80,L3C65A
         BRSET   >Options032D,#$20,L3C5F4                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         BRSET   >FaultSet0B,Z,#$04,L3C65A
@@ -13799,7 +13799,7 @@ L3C68A:
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlBusCheck:
         BRCLR   >EquipmentFlags,Z,#$20,L3C6B4            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$02,L3C6B4
+        BRSET   >BusModuleFlags,Z,#$02,L3C6B4            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BRCLR   >BusReqFlags,Z,#$08,L3C6BE
         LDAA    >SpeedCtlBusCounter,Z
         CMPA    >SpeedCtlBusCount
@@ -13844,7 +13844,7 @@ L3C6F8:
         BRSET   >Options0332,#$02,L3C730                 ; bit 1: speed control switch variant; also used by EquipmentDetect
         BRA     L3C748
 L3C718:
-        BRCLR   >SwitchInputs2,Z,#$10,L3C73C
+        BRCLR   >SwitchInputs2,Z,#$10,L3C73C             ; bit 4: speed control switch (on/off, probably)
         ORAB    #$01
 L3C720:
         BRSET   >SpeedCtlState,Z,#$80,L3C73C             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
@@ -13853,7 +13853,7 @@ L3C720:
         ORAB    #$02
         BRA     L3C73C
 L3C730:
-        BRCLR   >SwitchInputs2,Z,#$10,L3C73C
+        BRCLR   >SwitchInputs2,Z,#$10,L3C73C             ; bit 4: speed control switch (on/off, probably)
         ORAB    #$01
         BRA     L3C73C
 L3C73A:
@@ -14544,8 +14544,8 @@ L3DC30:
         LDAA    >Map,Z
         CMPA    >PurgeMapMax
         BCC     L3DC5E
-        BRSET   >FuelModeFlags2,Z,#$80,L3DC58
-        BRCLR   >FuelModeFlags2,Z,#$40,L3DC5E
+        BRSET   >FuelModeFlags2,Z,#$80,L3DC58            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
+        BRCLR   >FuelModeFlags2,Z,#$40,L3DC5E            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRSET   >RevLimitFlags,Z,#$40,L3DC58
         BRSET   >RevLimitFlags,Z,#$80,L3DC58
         BRCLR   >PurgeFlags,Z,#$20,L3DC5E

@@ -70,8 +70,8 @@ Sub_10000:
         BSET    >OutputTestFlags,Z,#$04
         TST     $0560,Z
         BEQ     L100D2
-        BRSET   >EepromFlags,Z,#$80,L100D2
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L100D2               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         CLR     >EepromData,Z
         LDE     #$000C
         STE     >EepromAddr,Z
@@ -151,7 +151,7 @@ OutputTestEeprom:
 L10178:
         BSET    >OutputTestFlags,Z,#$20
 L1017C:
-        BRSET   >EepromFlags,Z,#$80,L101BA
+        BRSET   >EepromFlags,Z,#$80,L101BA               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   <EngineStateFlags,Z,#$80,L101BA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >OutputTestFlags,Z,#$80,L101BA
         ORP     #$00E0
@@ -164,7 +164,7 @@ L1017C:
         STAB    >EepromData,Z
         LDD     #$0009
         STD     >EepromAddr,Z
-        BSET    >EepromFlags,Z,#$80
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRA     L101B6
 L101B2:
         BSET    >OutputTestFlags,Z,#$20
@@ -172,7 +172,7 @@ L101B6:
         ANDP    #$FF1F
 L101BA:
         ORP     #$00E0
-        BRSET   >EepromFlags,Z,#$80,L10222
+        BRSET   >EepromFlags,Z,#$80,L10222               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   >OutputTestFlags,Z,#$04,L1020E
         BRSET   >OutputTestFlags,Z,#$10,L1020E
         BRCLR   >OutputTestFlags,Z,#$02,L101F4
@@ -180,7 +180,7 @@ L101BA:
         LDD     #$0009
         STD     >EepromAddr,Z
         CLR     >EepromData,Z
-        BSET    >EepromFlags,Z,#$80
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BSET    >OutputTestFlags,Z,#$10
         BCLR    >OutputTestFlags,Z,#$02
         BRA     L10222
@@ -189,7 +189,7 @@ L101F4:
         STD     >EepromAddr,Z
         LDD     #$4AB5
         STD     >EepromData,Z
-        BSET    >EepromFlags,Z,#$C0
+        BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         BSET    >OutputTestFlags,Z,#$02
         BRA     L10222
 L1020E:
@@ -203,13 +203,13 @@ L1021E:
 L10222:
         ANDP    #$FF1F
         BRCLR   >OutputTestFlags,Z,#$20,L10252
-        BRSET   >EepromFlags,Z,#$80,L10252
+        BRSET   >EepromFlags,Z,#$80,L10252               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         ORP     #$00E0
         LDD     #$0097
         STD     >EepromAddr,Z
         LDD     #$EEEE
         STD     >EepromData,Z
-        BSET    >EepromFlags,Z,#$C0
+        BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         BCLR    >OutputTestFlags,Z,#$20
         ANDP    #$FF1F
 L10252:
@@ -244,7 +244,7 @@ L10282:
         BCS     L102CC
 L10298:
         BRCLR   >EquipmentFlags,Z,#$20,L102AE            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$01,L102AE
+        BRSET   >BusModuleFlags,Z,#$01,L102AE            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         LDAA    >BusTemp,Z
         CMPA    >FanIdleBusTempMax
         BCC     L102CC
@@ -318,10 +318,10 @@ L10332:
 L10348:
         BRCLR   >Options0331,#$40,L10364                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRCLR   >Options0331,#$20,L1035C                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
-        BRCLR   >SwitchInputs2,Z,#$80,L10382
+        BRCLR   >SwitchInputs2,Z,#$80,L10382             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
         BRA     L10368
 L1035C:
-        BRSET   >SwitchInputs2,Z,#$80,L10382
+        BRSET   >SwitchInputs2,Z,#$80,L10382             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
         BRA     L10368
 L10364:
         BRCLR   <AcFlags,Z,#$08,L10382                   ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
@@ -862,7 +862,7 @@ L10978:
         STAB    <FanSoakFlags,Z
         CLRB
         BRSET   >Options032E,#$08,L109B6                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
-        BRCLR   >BusModuleFlags,Z,#$01,L10992
+        BRCLR   >BusModuleFlags,Z,#$01,L10992            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         BRCLR   >Options032D,#$08,L109B6                 ; bit 3: board variant: switch-input map (SwitchBitsCollect), O2UpdateUpstream, SciSendByte, QspiOutputStatus
         ORAB    #$02
         BRA     L109B6
@@ -1429,7 +1429,7 @@ L10FB2:
 ;---------------------------------------------------------------------------------------------------
 Sub_10FB4:
         BRSET   >Options032E,#$08,L10FC0                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
-        BRSET   >SwitchInputs2,Z,#$20,L1100A
+        BRSET   >SwitchInputs2,Z,#$20,L1100A             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
 L10FC0:
         BRSET   $0526,Z,#$40,L10FF4
         LDAA    <EngineRpm,Z
@@ -1817,7 +1817,7 @@ L11370:
 L11374:
         CLRE
         BRCLR   >EquipmentFlags,Z,#$20,L114CE            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$01,L114CE
+        BRSET   >BusModuleFlags,Z,#$01,L114CE            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         LDE     $04D9,Z
         DECW    $04DB,Z
         LBNE    L114D2
@@ -2020,7 +2020,7 @@ L11554:
         LDAB    #$64
 L11560:
         BRCLR   >EquipmentFlags,Z,#$20,L11578            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$01,L11578
+        BRSET   >BusModuleFlags,Z,#$01,L11578            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         LDAA    $04F3
         CMPA    >BusTemp,Z
         BGE     L11578
@@ -2262,7 +2262,7 @@ L118E2:
         CMPA    #$7E
         BNE     L11916
         CLR     $0530,Z
-        BCLR    >BusModuleFlags,Z,#$02
+        BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         LDAB    $01,Y
         BITB    #$04
         BNE     L118FE
@@ -2285,7 +2285,7 @@ L11916:
         BNE     L1197E
         BSET    $030F,Z,#$80
         CLR     $06C9,Z
-        BCLR    >BusModuleFlags,Z,#$01
+        BCLR    >BusModuleFlags,Z,#$01                   ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         LDAB    $01,Y
         STAB    $0183,Z
         LDAB    $02,Y
@@ -2348,13 +2348,13 @@ L119BA:
         LDAA    $04AE,Z
         CMPA    $0EA2
         LBCC    L11A98
-        BRSET   >FuelModeFlags2,Z,#$01,L11A98
+        BRSET   >FuelModeFlags2,Z,#$01,L11A98            ; bit 0: engine-off time received from the bus (CcdReceive, PciReceive)
         ADDA    $96,Z
         BCC     L119DE
         LDAA    #$FF
 L119DE:
         STAA    $96,Z
-        BSET    <FuelModeFlags2,Z,#$01
+        BSET    <FuelModeFlags2,Z,#$01                   ; bit 0: engine-off time received from the bus (CcdReceive, PciReceive)
         LBRA    L11A98
 L119E8:
         CMPA    #$95
@@ -2439,7 +2439,7 @@ L11AB4:
         CMPB    #$C8
         BCS     L11AE4
 L11ACE:
-        BRSET   >BusModuleFlags,Z,#$02,L11AE4
+        BRSET   >BusModuleFlags,Z,#$02,L11AE4            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         LDY     #$3C29
         JSR     ReportFault
         BCC     L11AE4
@@ -2456,7 +2456,7 @@ L11AE4:
         BCS     L11B26
 L11AFC:
         BRCLR   >EquipmentFlags,Z,#$20,L11B26            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$01,L11B26
+        BRSET   >BusModuleFlags,Z,#$01,L11B26            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         LDY     #$3C1F
         JSR     ReportFault
         BCC     L11B26
@@ -2480,8 +2480,8 @@ Sub_11B28:
         BRSET   >FaultSet07,Z,#$02,L11B8A
         PSHM    CCR
         ORP     #$00E0
-        BRSET   >EepromFlags,Z,#$80,L11B86
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L11B86               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDAA    $0500,Z
         BRCLR   >Options0337,#$02,L11B78                 ; bit 1: selects a branch in CalcBaseSpark
         BSET    $06C0,Z,#$01
@@ -2553,8 +2553,8 @@ L11BE8:
         BRSET   >FaultSet07,Z,#$02,L11C50
         PSHM    CCR
         ORP     #$00E0
-        BRSET   >EepromFlags,Z,#$80,L11C0A
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L11C0A               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         LDD     #$0008
         STD     >EepromAddr,Z
@@ -2598,9 +2598,9 @@ BusEepromWrite:
         BRCLR   >BusMsgFlags,Z,#$20,L11CFE
         BRSET   >BusMsg91Byte1,Z,#$40,L11CFA
         BRSET   >BusMsg91Byte1,Z,#$80,L11CF4
-        BRSET   >EepromFlags,Z,#$80,L11CFE
-        BRSET   >EepromFlags,Z,#$08,L11CFE
-        BRSET   >EepromFlags,Z,#$04,L11CFE
+        BRSET   >EepromFlags,Z,#$80,L11CFE               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BRSET   >EepromFlags,Z,#$08,L11CFE               ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
+        BRSET   >EepromFlags,Z,#$04,L11CFE               ; bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
         BRSET   >FaultSet07,Z,#$02,L11CF4
         TZX
         LDX     #$86F0
@@ -2612,7 +2612,7 @@ BusEepromWrite:
         LDAA    >BusMsg91Byte2,Z
         CMPA    $00,X
         BEQ     L11CA2
-        BSET    >EepromFlags,Z,#$08
+        BSET    >EepromFlags,Z,#$08                      ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
         BRA     L11CD4
 L11CA2:
         LDX     #$8517
@@ -2637,15 +2637,15 @@ L11CCA:
         ANDA    $00,X
         CMPA    $00,X
         BEQ     L11CF4
-        BSET    >EepromFlags,Z,#$04
+        BSET    >EepromFlags,Z,#$04                      ; bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
 L11CD4:
         PSHM    CCR
         ORP     #$00E0
-        BRCLR   >EepromFlags,Z,#$80,L11CE4
+        BRCLR   >EepromFlags,Z,#$80,L11CE4               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         PULM    CCR
         BRA     L11CFE
 L11CE4:
-        BSET    >EepromFlags,Z,#$80
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         PULM    CCR
         STAA    >EepromData,Z
         STY     >EepromAddr,Z
@@ -2738,7 +2738,7 @@ L11DC0:
         RTS
 L11DC4:
         CLRD
-        BRCLR   >EepromFlags,Z,#$80,L11DD2
+        BRCLR   >EepromFlags,Z,#$80,L11DD2               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    $06BE,Z
         BRA     L11DF2
 L11DD2:
@@ -2815,7 +2815,7 @@ L11E6A:
 L11E78:
         LDAA    #$CC
         STAA    $06BE,Z
-        BRSET   >EepromFlags,Z,#$80,L11EDA
+        BRSET   >EepromFlags,Z,#$80,L11EDA               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDE     >RRC,Z
         ASLE
         ASLE
@@ -2891,7 +2891,7 @@ L11F2A:
         STD     >LookupResult,Z
         RTS
 L11F30:
-        BRSET   >EepromFlags,Z,#$80,L11EDA
+        BRSET   >EepromFlags,Z,#$80,L11EDA               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         TZX
         LDX     #$86F0
         TPD
@@ -3418,7 +3418,7 @@ Sub_123E0:
         LDAB    #$0C
         LBRA    L1248A
 L123F8:
-        BRSET   >SwitchInputs2,Z,#$10,L12406
+        BRSET   >SwitchInputs2,Z,#$10,L12406             ; bit 4: speed control switch (on/off, probably)
         CLR     >SpeedCtlSetSpeed,Z
         LBRA    L1249A
 L12406:
@@ -3431,14 +3431,14 @@ L12406:
         CMPA    $265D
         BCC     L1248A
         LDAB    #$03
-        BRSET   >SwitchInputs,Z,#$01,L1248A
+        BRSET   >SwitchInputs,Z,#$01,L1248A              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAB    #$0D
-        BRSET   >SwitchInputs2,Z,#$01,L1248A
+        BRSET   >SwitchInputs2,Z,#$01,L1248A             ; bit 0: speed control switch
         BRSET   >Options032E,#$08,L12442                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
         JSR     Sub_12FD4
         BCS     L1248A
         LDAB    #$04
-        BRCLR   >SwitchInputs2,Z,#$20,L1248A
+        BRCLR   >SwitchInputs2,Z,#$20,L1248A             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         LBRA    L1246A
 L12442:
         LDAB    #$05
@@ -3493,7 +3493,7 @@ L124AE:
 L124E4:
         LDAB    #$08
         JSR     Nibble402Add
-        BRCLR   >SwitchInputs2,Z,#$02,L1250E
+        BRCLR   >SwitchInputs2,Z,#$02,L1250E             ; bit 1: speed control switch
         BRSET   $01DB,Z,#$20,L1259A
         BRSET   >SpeedCtlState,Z,#$80,L12844             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         BSET    $01DB,Z,#$20
@@ -3506,7 +3506,7 @@ L1250E:
         BCLR    $01DB,Z,#$20
         LBRA    L125E8
 L1251C:
-        BRSET   >SwitchInputs2,Z,#$04,L125B8
+        BRSET   >SwitchInputs2,Z,#$04,L125B8             ; bit 2: speed control switch (set at reset)
         LDAB    $01DD,Z
         INCB
         BNE     L1252C
@@ -3607,7 +3607,7 @@ L12626:
         LBRA    L12704
 L12642:
         CLR     $01DD,Z
-        BRCLR   >SwitchInputs2,Z,#$08,L127B6
+        BRCLR   >SwitchInputs2,Z,#$08,L127B6             ; bit 3: speed control switch
         LDAB    $01E6,Z
         INCB
         BNE     L12656
@@ -4309,7 +4309,7 @@ Sub_12D00:
         BRCLR   >EquipmentFlags,Z,#$40,L12DDC            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
         BRSET   $021C,Z,#$80,L12DDC
         BRSET   $0800,Z,#$01,L12D5E
-        BRSET   >SwitchInputs,Z,#$01,L12D5E
+        BRSET   >SwitchInputs,Z,#$01,L12D5E              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   $0812,Z,#$01,L12D5E
         BRCLR   >MainLoopPhaseMask,Z,#$04,L12DE2
         LDY     #$3B93
@@ -4321,7 +4321,7 @@ L12D5E:
         LDAA    >FaultSet0B,Z
         BITA    #$C0
         BNE     L12DDC
-        BRCLR   >SwitchInputs2,Z,#$10,L12DD8
+        BRCLR   >SwitchInputs2,Z,#$10,L12DD8             ; bit 4: speed control switch (on/off, probably)
         BRCLR   >Options032E,#$08,L12D98                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
         TST     >SpeedCtlRpmJumpTimer,Z
         BEQ     L12D88
@@ -4451,7 +4451,7 @@ L12E50:
         JSR     Blend16
         AIS     #$04
         STD     >SpeedCtlThrottleAvg,Z
-        BRCLR   >SwitchInputs2,Z,#$10,L12ED4
+        BRCLR   >SwitchInputs2,Z,#$10,L12ED4             ; bit 4: speed control switch (on/off, probably)
         BRSET   >SensorFaultFlags,Z,#$10,L12ED4          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         LDD     <EngineRpm,Z
         CPD     >SpeedCtlRpmJumpMinRpm
@@ -4505,7 +4505,7 @@ L12EEC:
         BLS     L12F16
         BHI     L12F26
 L12F08:
-        BRSET   >BusModuleFlags,Z,#$01,L12FBA
+        BRSET   >BusModuleFlags,Z,#$01,L12FBA            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         LDAA    >BusFlags9CE,Z
         BITA    #$20
         BEQ     L12F22
@@ -4629,9 +4629,9 @@ Nibble402Add:
 ;---------------------------------------------------------------------------------------------------
 Sub_13028:
         BRCLR   <EquipmentFlags,Z,#$40,L130A0            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
-        BRCLR   >SwitchInputs2,Z,#$10,L130A0
+        BRCLR   >SwitchInputs2,Z,#$10,L130A0             ; bit 4: speed control switch (on/off, probably)
         BRSET   $0800,Z,#$01,L130A0
-        BRSET   >SwitchInputs,Z,#$01,L130A0
+        BRSET   >SwitchInputs,Z,#$01,L130A0              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   $021C,Z,#$80,L130A0
         BRSET   $0332,#$10,L1305C
         BRSET   >FaultSet0B,Z,#$04,L130A0
@@ -4993,7 +4993,7 @@ L133EC:
 ;---------------------------------------------------------------------------------------------------
 Sub_133F0:
         BRSET   $032A,#$10,L13406
-        BRSET   >BusModuleFlags,Z,#$02,L13444
+        BRSET   >BusModuleFlags,Z,#$02,L13444            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BRSET   >FuelLevelFlags2,Z,#$01,L1343E
         JMP     L134BC
 L13406:
@@ -5048,7 +5048,7 @@ L13480:
         LDAA    $0777,Z
         BRSET   $032A,#$10,L134A6
         BRCLR   >FuelLevelFlags2,Z,#$01,L134BC
-        BRCLR   >BusModuleFlags,Z,#$02,L134A6
+        BRCLR   >BusModuleFlags,Z,#$02,L134A6            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BCLR    >FuelLevelFlags2,Z,#$03
         CLR     $0777,Z
         BRA     L134BC
@@ -5159,7 +5159,7 @@ L1357E:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 SriMileageStore:
-        BRSET   >EepromFlags,Z,#$80,L135E0
+        BRSET   >EepromFlags,Z,#$80,L135E0               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   >VssFlags,Z,#$04,L135E0
         BRSET   >FaultSet07,Z,#$01,L135AA
         TZX
@@ -5176,7 +5176,7 @@ L135AA:
         JMP     L135E0
 L135B6:
         BCLR    >VssFlags,Z,#$04
-        BSET    >EepromFlags,Z,#$C0
+        BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         ADDE    #$01
         STE     >SriMileage,Z
         STE     >EepromData,Z
@@ -5500,7 +5500,7 @@ L13908:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1390A:
-        BRCLR   >SwitchInputs2,Z,#$20,L13914
+        BRCLR   >SwitchInputs2,Z,#$20,L13914             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BCLR    >SparkFaultFlags,Z,#$20
 L13914:
         BRCLR   >Options032E,#$08,L13922                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
@@ -5540,7 +5540,7 @@ L13974:
 L13986:
         BRSET   >IdleFlags3,Z,#$08,L13A24
         BSET    <DriveFlags,Z,#$80                       ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
-        BRCLR   >SwitchInputs2,Z,#$20,L139D6
+        BRCLR   >SwitchInputs2,Z,#$20,L139D6             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BRSET   >GearStateFlags,Z,#$04,L139D6
         BRSET   >GearStateFlags,Z,#$20,L139D6
         LDAA    $0C,Z
@@ -5591,12 +5591,12 @@ L13A1E:
         LDAA    >IacGearTime2,Z
         BNE     L13A5E
 L13A24:
-        BRCLR   >SwitchInputs2,Z,#$20,L13A34
+        BRCLR   >SwitchInputs2,Z,#$20,L13A34             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BSET    <DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BCLR    >GearStateFlags,Z,#$40
         BRA     L13A42
 L13A34:
-        BRSET   >BusModuleFlags,Z,#$01,L13A3E
+        BRSET   >BusModuleFlags,Z,#$01,L13A3E            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         BSET    >GearStateFlags,Z,#$40
 L13A3E:
         BCLR    <DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
@@ -5832,7 +5832,7 @@ L13CAE:
         STAA    >DashpotTimer2,Z
 L13CBE:
         BRSET   <ThrottleState,Z,#$08,L13CEE             ; bit 3: closed position taken from the calibration default, probably (ThrottleClosedLearn only)
-        BRCLR   >SwitchInputs,Z,#$01,L13CEE
+        BRCLR   >SwitchInputs,Z,#$01,L13CEE              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    <EngineRpm,Z
         CMPA    $040C
         BCS     L13CEE
@@ -6129,10 +6129,10 @@ L13F9E:
         ASLD
 L13FA6:
         STAA    $060C,Z
-        BRCLR   <SparkFlags,Z,#$40,L13FBA
+        BRCLR   <SparkFlags,Z,#$40,L13FBA                ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
         BSET    $0696,Z,#$80
         BSET    <FlexStartFlags,Z,#$80
-        BCLR    <SparkFlags,Z,#$40
+        BCLR    <SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
 L13FBA:
         CLRW    >FanSoakFlags,Z
         CLRW    >Scratch2,Z
@@ -6179,7 +6179,7 @@ L1401A:
         STAB    $060B,Z
         BRCLR   >ControlFlags943,Z,#$10,L14140           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
         BCLR    <EngineStateFlags,Z,#$8E                 ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm); bit 3: cleared at stall only, never set in 05293190AC; bit 2: cleared at stall only, never set in 05293190AC; bit 1: cleared at stall only, never set in 05293190AC
-        BCLR    <SparkFlags,Z,#$20
+        BCLR    <SparkFlags,Z,#$20                       ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    >RefPeriod,Z
         CMPA    #$20
         BCS     L14066
@@ -6351,7 +6351,7 @@ L14206:
         BEQ     L1421A
         JSR     Sub_11FAA
 L1421A:
-        BRCLR   >SwitchInputs,Z,#$01,L14234
+        BRCLR   >SwitchInputs,Z,#$01,L14234              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRCLR   >MainLoopPhaseMask,Z,#$40,L14238
         LDAA    $05B0,Z
         INCA
@@ -6528,10 +6528,10 @@ Sub_14378:
 L14394:
         BRCLR   >Options0331,#$40,L143B0                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRCLR   >Options0331,#$20,L143A8                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
-        BRCLR   >SwitchInputs2,Z,#$80,L143CE
+        BRCLR   >SwitchInputs2,Z,#$80,L143CE             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
         BRA     L143B8
 L143A8:
-        BRSET   >SwitchInputs2,Z,#$80,L143CE
+        BRSET   >SwitchInputs2,Z,#$80,L143CE             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
         BRA     L143B8
 L143B0:
         BRCLR   >AcFlags,Z,#$08,L143CE                   ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
@@ -6550,7 +6550,7 @@ L143CE:
 L143D2:
         BRSET   >EquipmentFlags,Z,#$40,L14424            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
         BRCLR   >Options032D,#$20,L143F6                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
-        BRCLR   >SwitchInputs2,Z,#$10,L143F6
+        BRCLR   >SwitchInputs2,Z,#$10,L143F6             ; bit 4: speed control switch (on/off, probably)
         LDAA    $024E,Z
         CMPA    $0423
         BCC     L14420
@@ -6560,14 +6560,14 @@ L143D2:
 L143F6:
         CLR     $024E,Z
 L143FA:
-        BRSET   >SwitchInputs2,Z,#$08,L14420
-        BRCLR   >SwitchInputs2,Z,#$04,L14420
+        BRSET   >SwitchInputs2,Z,#$08,L14420             ; bit 3: speed control switch
+        BRCLR   >SwitchInputs2,Z,#$04,L14420             ; bit 2: speed control switch (set at reset)
         BRCLR   $0332,#$40,L14414
-        BRSET   >SwitchInputs2,Z,#$10,L14420
+        BRSET   >SwitchInputs2,Z,#$10,L14420             ; bit 4: speed control switch (on/off, probably)
         BRA     L14424
 L14414:
         BRCLR   $0332,#$20,L14424
-        BRCLR   >SwitchInputs2,Z,#$11,L14424
+        BRCLR   >SwitchInputs2,Z,#$11,L14424             ; bit 4: speed control switch (on/off, probably); bit 0: speed control switch
 L14420:
         BSET    <EquipmentFlags,Z,#$40                   ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
 L14424:
@@ -6577,7 +6577,7 @@ L14424:
         LDAA    $17,Z
         CMPA    #$C2
         BCS     L14458
-        BRSET   >SwitchInputs2,Z,#$40,L14458
+        BRSET   >SwitchInputs2,Z,#$40,L14458             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         LDAA    $024F,Z
         CMPA    $0425
         BCC     L14454
@@ -6735,7 +6735,7 @@ L145C8:
         BSET    <MonitorDisableFlags,Z,#$02              ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
 L145CC:
         BRSET   $032A,#$10,L145D8
-        BRSET   >BusModuleFlags,Z,#$02,L145FC
+        BRSET   >BusModuleFlags,Z,#$02,L145FC            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
 L145D8:
         BRCLR   >FuelLevelFlags2,Z,#$02,L1465A
         BRSET   $022F,Z,#$40,L145FC
@@ -6883,7 +6883,7 @@ L14756:
         STAA    <Scratch2,Z
         BRCLR   >EquipmentFlags,Z,#$04,L14772            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L14772
-        BRCLR   >SwitchInputs2,Z,#$40,L14772
+        BRCLR   >SwitchInputs2,Z,#$40,L14772             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         ADDA    $2C1E
         BCC     L14772
         LDAA    #$FF
@@ -6902,7 +6902,7 @@ L14772:
         CMPA    <FanSoakFlags,Z
         BCS     L147D0
 L14798:
-        BRCLR   >SwitchInputs,Z,#$01,L147D0
+        BRCLR   >SwitchInputs,Z,#$01,L147D0              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    $0313,Z
         CMPA    $2C1F
         BCC     L147AE
@@ -6955,7 +6955,7 @@ L1481C:
 L14832:
         LDAA    #$FF
         STAA    <Scratch4,Z
-        BRCLR   >SwitchInputs,Z,#$01,L1485A
+        BRCLR   >SwitchInputs,Z,#$01,L1485A              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRCLR   >LimpFlags,Z,#$40,L1485A
         LDAA    $18,Z
         LDX     #Tab2D_2C27
@@ -7136,7 +7136,7 @@ L14A0C:
         BRCLR   >DriveFlags,Z,#$20,L14ACE                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L14A2A:
         BRCLR   >Options0340,#$02,L14A36                 ; bit 1: fuel sender monitor on (FuelSenderMonitor)
-        BRSET   >SwitchInputs,Z,#$01,L14ACE
+        BRSET   >SwitchInputs,Z,#$01,L14ACE              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
 L14A36:
         BRCLR   >ThrottleState,Z,#$80,L14ACE             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    <EngineRpm,Z
@@ -8257,9 +8257,9 @@ L1563A:
 IdleMonitorEnable:
         BRSET   >SwitchMonFlags,Z,#$08,L156EE
         BRCLR   >EngineStateFlags,Z,#$80,L156EE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >SparkFlags,Z,#$20,L156EE
+        BRCLR   >SparkFlags,Z,#$20,L156EE                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >ThrottleState,Z,#$80,L156EE             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRCLR   >SwitchInputs,Z,#$01,L156EE
+        BRCLR   >SwitchInputs,Z,#$01,L156EE              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >MonStatusPurge,Z,#$04,L156EE
         BRSET   $021E,Z,#$02,L156EE
         BRSET   >SensorFaultFlags,Z,#$20,L156EE          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
@@ -8270,7 +8270,7 @@ IdleMonitorEnable:
         BRSET   >MonitorDisableFlags,Z,#$02,L156EE       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
         BRCLR   >EquipmentFlags,Z,#$04,L1569C            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1569C
-        BRSET   >SwitchInputs2,Z,#$40,L156EE
+        BRSET   >SwitchInputs2,Z,#$40,L156EE             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
 L1569C:
         TSTW    >VehicleSpeedRaw,Z
         BNE     L156EE
@@ -8407,8 +8407,8 @@ L15802:
         BSET    <VacLeakFlags,Z,#$02
         BRA     L15822
 L15808:
-        BRSET   >EepromFlags,Z,#$80,L15822
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L15822               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDY     #$000F
         STY     >EepromAddr,Z
         CLR     >EepromData,Z
@@ -8516,8 +8516,8 @@ L158FC:
         JSR     ReportFault
         BRA     L1591C
 L15906:
-        BRSET   >EepromFlags,Z,#$80,L1591C
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L1591C               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDY     #$000F
         STY     >EepromAddr,Z
         STAB    >EepromData,Z
@@ -8580,7 +8580,7 @@ L15980:
         CMPB    >Map,Z
         BCC     L15A22
         BRCLR   >MainLoopPhaseMask,Z,#$20,L15A2A
-        BRSET   >SwitchInputs2,Z,#$20,L15A0C
+        BRSET   >SwitchInputs2,Z,#$20,L15A0C             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         CLR     $0204,Z
         INC     $0203,Z
         LDAA    $0203,Z
@@ -8702,7 +8702,7 @@ Sub_15B2C:
         CLRB
         BRSET   >FaultSet0F,Z,#$08,L15B78
         BRCLR   <EngineStateFlags,Z,#$80,L15B80          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >SwitchInputs2,Z,#$40,L15B80
+        BRCLR   >SwitchInputs2,Z,#$40,L15B80             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
         BRCLR   $0337,#$08,L15B80
         TST     >MonStartDelay,Z
         BNE     L15B80
@@ -8930,7 +8930,7 @@ L15DAC:
 ;---------------------------------------------------------------------------------------------------
 Sub_15DAE:
         BRSET   $032A,#$10,L15DBA
-        BRSET   >BusModuleFlags,Z,#$02,L15ECA
+        BRSET   >BusModuleFlags,Z,#$02,L15ECA            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
 L15DBA:
         BRCLR   >FuelLevelFlags2,Z,#$02,L15ED6
         LDAA    $17,Z
@@ -8958,7 +8958,7 @@ L15E08:
         BRCLR   $0337,#$02,L15ED6
         BRSET   >FuelLevelFlags2,Z,#$80,L15ED6
         BRSET   >FaultSet05,Z,#$08,L15ECE
-        BRCLR   >SparkFlags,Z,#$20,L15ED6
+        BRCLR   >SparkFlags,Z,#$20,L15ED6                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   $022F,Z,#$40,L15ED6
         BRSET   $022F,Z,#$20,L15ED6
         LDAB    $0564,Z
@@ -9054,7 +9054,7 @@ L15F12:
         LBRA    L16070
 L15F1E:
         BRSET   $02EC,Z,#$08,L15F56
-        BRSET   >SwitchInputs,Z,#$01,L15F4A
+        BRSET   >SwitchInputs,Z,#$01,L15F4A              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    $18,Z
         CMPA    $2D04
         BCC     L15F52
@@ -9075,7 +9075,7 @@ L15F52:
         BSET    $02EC,Z,#$80
 L15F56:
         BRSET   $02EC,Z,#$04,L15FB6
-        BRCLR   >SwitchInputs,Z,#$01,L15FA2
+        BRCLR   >SwitchInputs,Z,#$01,L15FA2              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    $18,Z
         CMPA    $2D05
         BCS     L15FAE
@@ -9107,7 +9107,7 @@ L15FAE:
         BSET    $02EC,Z,#$40
 L15FB6:
         BRSET   $02EC,Z,#$08,L15FEE
-        BRCLR   >SwitchInputs,Z,#$01,L15FEA
+        BRCLR   >SwitchInputs,Z,#$01,L15FEA              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >ThrottleState,Z,#$80,L15FEA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    $18,Z
         CMPA    $2D04
@@ -9123,7 +9123,7 @@ L15FEA:
         CLR     $02EE,Z
 L15FEE:
         BRSET   $02EC,Z,#$04,L16026
-        BRSET   >SwitchInputs,Z,#$01,L16022
+        BRSET   >SwitchInputs,Z,#$01,L16022              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRCLR   >ThrottleState,Z,#$80,L16022             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    $18,Z
         CMPA    $2D05
@@ -9453,7 +9453,7 @@ L1640C:
 L1644E:
         BRCLR   >DriveFlags,Z,#$01,L16784                ; bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
         BRCLR   >Options0340,#$02,L16460                 ; bit 1: fuel sender monitor on (FuelSenderMonitor)
-        BRCLR   >SwitchInputs,Z,#$01,L16784
+        BRCLR   >SwitchInputs,Z,#$01,L16784              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
 L16460:
         LDD     <EngineRpm,Z
         SUBD    <IdleTarget,Z
@@ -11746,7 +11746,7 @@ L17D28:
         BRCLR   >Options032F,#$80,L17DA8                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         BRSET   >FaultSet05,Z,#$01,L17DA8
         BRSET   >FaultSet06,Z,#$40,L17DA8
-        BRSET   >BusModuleFlags,Z,#$40,L17DA8
+        BRSET   >BusModuleFlags,Z,#$40,L17DA8            ; bit 6: new transmission status received (TransBusStatus), not handled yet by TransMilRequest
         BRSET   >FuelLevelFlags,Z,#$08,L17DA8
         BSET    $AE,Z,#$80
 L17DA8:
@@ -13254,7 +13254,7 @@ L18C8A:
         LDD     <MisfireEventCount,Z
         CPD     >MisfireEventCountMax
         BLS     L18CA0
-        BRSET   >FuelModeFlags2,Z,#$80,L18CA0
+        BRSET   >FuelModeFlags2,Z,#$80,L18CA0            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         BSET    >MisfireFlags4,Z,#$02
 L18CA0:
         LDD     >MisfireRpmDevLimit
@@ -15399,7 +15399,7 @@ L1A22C:
         LDAA    $0C,Z
         CMPA    $0426
         LBCS    L1A334
-        BRCLR   >SwitchInputs,Z,#$01,L1A254
+        BRCLR   >SwitchInputs,Z,#$01,L1A254              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    $05B0,Z
         CMPA    $042F
         LBLS    L1A334
@@ -16346,8 +16346,8 @@ L1AC66:
 L1AC6C:
         LDE     #$0091
 L1AC70:
-        BRSET   >EepromFlags,Z,#$80,L1AC82
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L1AC82               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         STE     >EepromAddr,Z
 L1AC82:
@@ -17034,8 +17034,8 @@ L1B308:
         BRA     L1B312
         dc.b    $27,$F7
 L1B312:
-        BRSET   >EepromFlags,Z,#$80,Sub_1AF54
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,Sub_1AF54            ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STE     >EepromAddr,Z
         STAB    >EepromData,Z
         LBRA    L1B2D0
@@ -17173,8 +17173,8 @@ L1B472:
 L1B474:
         CLRA
         STAA    >DiagCommand,Z
-        BRSET   >EepromFlags,Z,#$80,Sub_1AF54
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,Sub_1AF54            ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDAA    >DiagParam3,Z
         LDAB    >DiagParam2,Z
         TDE
@@ -17190,10 +17190,10 @@ L1B474:
         LDAA    #$E2
         JMP     Sub_1AF54
 L1B4AE:
-        BCLR    >EepromFlags,Z,#$80
+        BCLR    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         JMP     Sub_1AF54
 L1B4B6:
-        BRSET   >EepromFlags,Z,#$80,L1B4DC
+        BRSET   >EepromFlags,Z,#$80,L1B4DC               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         CLR     >DiagCommand,Z
         LDAA    >DiagParam2,Z
         BITA    #$FE
@@ -19713,8 +19713,8 @@ L1D00C:
         BEQ     L1D04A
 L1D032:
         BSET    >MonEnableFlags2,Z,#$20
-        BRSET   >EepromFlags,Z,#$80,L1D04E
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L1D04E               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         STE     >EepromAddr,Z
         BRA     L1D04E
@@ -19775,7 +19775,7 @@ MonTaskB:
         CMPB    #$30
         BLS     L1D11E
         BRSET   $032A,#$10,L1D0E6
-        BRSET   >BusModuleFlags,Z,#$02,L1D11E
+        BRSET   >BusModuleFlags,Z,#$02,L1D11E            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BRCLR   >FuelLevelFlags2,Z,#$01,L1D11E
 L1D0E6:
         LDAA    >FuelSenderScaled,Z
@@ -20353,7 +20353,7 @@ L1D6EC:
 ; Called from: Sub_1D526
 ;---------------------------------------------------------------------------------------------------
 CalcBaseSpark:
-        BRSET   >FuelModeFlags,Z,#$20,L1D71A
+        BRSET   >FuelModeFlags,Z,#$20,L1D71A             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         BCLR    >SparkFlags2,Z,#$10
         CLR     >SparkTrim1,Z
         LDX     #PartThrottleMapScale
@@ -20566,7 +20566,7 @@ L1D8EA:
 ; Called from: Sub_1D526
 ;---------------------------------------------------------------------------------------------------
 AfterStartSpark:
-        BRCLR   >SparkFlags,Z,#$20,L1DA30
+        BRCLR   >SparkFlags,Z,#$20,L1DA30                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >AfterStartSparkFlags,Z,#$20,L1DA30
         LDAA    >AfterStartSparkStart,Z
         BEQ     L1D95C
@@ -20822,7 +20822,7 @@ L1DB9A:
         LBCS    L1DC4A
 L1DBA0:
         BRSET   >SparkFaultFlags,Z,#$10,L1DBEE
-        BSET    <SparkFlags,Z,#$02
+        BSET    <SparkFlags,Z,#$02                       ; bit 1: tip-in spark retard armed (TipInSparkControl)
         LDAA    >AirTemp,Z
         LDX     #Tab2D_1C86
         LDAB    >KnockRetard,Z
@@ -20849,8 +20849,8 @@ L1DBEE:
         BSET    >SparkFaultFlags,Z,#$10
 L1DBF8:
         ORP     #$00E0
-        BRSET   >SparkFlags,Z,#$04,L1DC0A
-        BSET    <SparkFlags,Z,#$04
+        BRSET   >SparkFlags,Z,#$04,L1DC0A                ; bit 2: tip-in spark retard started (TipInSparkControl)
+        BSET    <SparkFlags,Z,#$04                       ; bit 2: tip-in spark retard started (TipInSparkControl)
         CLR     $0666,Z
 L1DC0A:
         LDAB    $0666,Z
@@ -20880,7 +20880,7 @@ L1DC3C:
 L1DC46:
         BSET    >SparkFaultFlags,Z,#$10
 L1DC4A:
-        BCLR    <SparkFlags,Z,#$06
+        BCLR    <SparkFlags,Z,#$06                       ; bit 2: tip-in spark retard started (TipInSparkControl); bit 1: tip-in spark retard armed (TipInSparkControl)
         CLR     $0666,Z
         ANDP    #$FF1F
         CLRA
@@ -21133,8 +21133,8 @@ L1DECA:
 ;---------------------------------------------------------------------------------------------------
 Sub_1DECC:
         BRSET   >Options032E,#$20,L1DEF8                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
-        BRCLR   <SparkFlags,Z,#$80,L1DEF8
-        BRCLR   <SparkFlags,Z,#$20,L1DEF8
+        BRCLR   <SparkFlags,Z,#$80,L1DEF8                ; bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
+        BRCLR   <SparkFlags,Z,#$20,L1DEF8                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    $88,Z
         SUBA    #$04
         BCC     L1DEE2
@@ -21200,7 +21200,7 @@ Sub_1DF32:
         BRSET   >EventSparkFlags,Z,#$04,L1DFD2
         BRSET   $00B5,Z,#$10,L1DFAE
         BRCLR   >EquipmentFlags,Z,#$20,L1DF5E            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRSET   >BusModuleFlags,Z,#$01,L1DF5E
+        BRSET   >BusModuleFlags,Z,#$01,L1DF5E            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         BRSET   >BusFlags9CE,Z,#$01,L1DFAE
         BRA     L1DF64
 L1DF5E:
@@ -21276,7 +21276,7 @@ L1E012:
         BRSET   >EquipmentFlags,Z,#$20,L1E024            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #Tab2D_1C1B
 L1E024:
-        BRSET   >SwitchInputs,Z,#$01,L1E038
+        BRSET   >SwitchInputs,Z,#$01,L1E038              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDX     #Tab2D_1C47
         BRSET   >EquipmentFlags,Z,#$20,L1E038            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDX     #Tab2D_1C2B
@@ -21466,7 +21466,7 @@ L1E1AA:
 SurgeControl:
         CLRB
         BRCLR   >Options0337,#$10,L1E416                 ; bit 4: surge spark control on (SurgeSparkOn)
-        BRCLR   >SparkFlags,Z,#$20,L1E416
+        BRCLR   >SparkFlags,Z,#$20,L1E416                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    $18,Z
         CMPA    >SurgeSpeedMin
         LBCS    L1E406
@@ -21823,7 +21823,7 @@ L1E572:
 ;---------------------------------------------------------------------------------------------------
 SparkEventCalc:
         LDAA    #$12
-        BRCLR   >SparkFlags,Z,#$20,L1E6E4
+        BRCLR   >SparkFlags,Z,#$20,L1E6E4                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         JSR     AcSparkRate
         JSR     O2SparkTrimCalc
         LDAB    >SparkValueD0F,Z
@@ -21887,7 +21887,7 @@ L1E62E:
         TBA
 L1E630:
         LDAB    $20E9
-        BRSET   <FuelModeFlags2,Z,#$80,L1E65C
+        BRSET   <FuelModeFlags2,Z,#$80,L1E65C            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         BRCLR   >Options0339,#$20,L1E642                 ; bit 5: selects a branch in SparkEventCalc
         BRSET   <ThrottleState,Z,#$01,L1E65C             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
 L1E642:
@@ -22030,7 +22030,7 @@ L1E816:
         BNE     L1E830
         BRCLR   >EquipmentFlags,Z,#$80,L1E840            ; bit 7: A/C fitted (EquipmentDetect)
         BRCLR   >Options032D,#$20,L1E83C                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
-        BRCLR   >SwitchInputs2,Z,#$80,L1E840
+        BRCLR   >SwitchInputs2,Z,#$80,L1E840             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
         BRA     L1E83C
 L1E830:
         CPY     #$38D7
@@ -22251,31 +22251,31 @@ L1EA7E:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1EBE0:
-        BRSET   >EepromFlags,Z,#$20,L1EC76
-        BRSET   >EepromFlags,Z,#$10,L1EBF2
-        BRSET   >EepromFlags,Z,#$80,L1EC76
+        BRSET   >EepromFlags,Z,#$20,L1EC76               ; bit 5: write in progress (EepromWriteService)
+        BRSET   >EepromFlags,Z,#$10,L1EBF2               ; bit 4: second byte of a word write in progress (EepromWriteService)
+        BRSET   >EepromFlags,Z,#$80,L1EC76               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
 L1EBF2:
         TPD
         TBXK
         LDX     #$EA80
         LDAB    $05FF,Z
-        BRSET   >EepromFlags,Z,#$02,L1EC2C
+        BRSET   >EepromFlags,Z,#$02,L1EC2C               ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
         LDAA    >BusMsg91Byte1,Z
-        BRCLR   >EepromFlags,Z,#$08,L1EC1A
-        BCLR    >EepromFlags,Z,#$08
+        BRCLR   >EepromFlags,Z,#$08,L1EC1A               ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
+        BCLR    >EepromFlags,Z,#$08                      ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
         ANDA    #$0F
         ADDA    #$18
         TAB
         BRA     L1EC36
 L1EC1A:
-        BRCLR   >EepromFlags,Z,#$04,L1EC30
-        BCLR    >EepromFlags,Z,#$04
+        BRCLR   >EepromFlags,Z,#$04,L1EC30               ; bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
+        BCLR    >EepromFlags,Z,#$04                      ; bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
         LDAB    #$28
         BITA    #$08
         BNE     L1EC36
         BRA     L1EC30
 L1EC2C:
-        BCLR    >EepromFlags,Z,#$02
+        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
 L1EC30:
         INCB
         CMPB    #$58
@@ -22350,7 +22350,7 @@ L1ECC0:
 ; Called from: Sub_1EBE0
 ;---------------------------------------------------------------------------------------------------
 Sub_1ECC2:
-        BRSET   >EepromFlags,Z,#$80,L1ED0E
+        BRSET   >EepromFlags,Z,#$80,L1ED0E               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         JSR     Sub_1E990
         BITB    #$03
         BNE     L1ED0A
@@ -22392,10 +22392,10 @@ L1ED12:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1ED14:
-        BRCLR   >EepromFlags,Z,#$80,L1EE5E
-        BRSET   >EepromFlags,Z,#$20,L1EDDE
-        BRCLR   >EepromFlags,Z,#$10,L1ED36
-        BCLR    >EepromFlags,Z,#$10
+        BRCLR   >EepromFlags,Z,#$80,L1EE5E               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BRSET   >EepromFlags,Z,#$20,L1EDDE               ; bit 5: write in progress (EepromWriteService)
+        BRCLR   >EepromFlags,Z,#$10,L1ED36               ; bit 4: second byte of a word write in progress (EepromWriteService)
+        BCLR    >EepromFlags,Z,#$10                      ; bit 4: second byte of a word write in progress (EepromWriteService)
         INCW    >EepromAddr,Z
         LDAA    $05FD,Z
         STAA    >EepromData,Z
@@ -22421,7 +22421,7 @@ L1ED36:
         CLRA
         LDAB    >EepromData,Z
         STD     >TR6,Z
-        BRCLR   >EepromFlags,Z,#$40,L1EDA0
+        BRCLR   >EepromFlags,Z,#$40,L1EDA0               ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         BRSET   $05FB,Z,#$03,L1ED98
         BSET    >CR6,Z,#$80
         LDAB    $05FD,Z
@@ -22429,8 +22429,8 @@ L1ED36:
         LDD     #$0705
         BRA     L1EDA8
 L1ED98:
-        BSET    >EepromFlags,Z,#$10
-        BCLR    >EepromFlags,Z,#$40
+        BSET    >EepromFlags,Z,#$10                      ; bit 4: second byte of a word write in progress (EepromWriteService)
+        BCLR    >EepromFlags,Z,#$40                      ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
 L1EDA0:
         BCLR    >CR6,Z,#$80
         LDD     #$0605
@@ -22442,7 +22442,7 @@ L1EDA8:
         PULM    CCR
         TSTA
         BEQ     L1EE16
-        BSET    >EepromFlags,Z,#$20
+        BSET    >EepromFlags,Z,#$20                      ; bit 5: write in progress (EepromWriteService)
         LDAA    >MonStartDelay,Z
         LBEQ    L1EE5E
         LDAB    #$08
@@ -22460,14 +22460,14 @@ L1EDDE:
         JSR     Sub_1ECD0
         CMPA    >EepromData,Z
         BNE     L1EE16
-        BRSET   >EepromFlags,Z,#$10,L1EE2C
-        BRCLR   >EepromFlags,Z,#$40,L1EE28
-        BCLR    >EepromFlags,Z,#$40
+        BRSET   >EepromFlags,Z,#$10,L1EE2C               ; bit 4: second byte of a word write in progress (EepromWriteService)
+        BRCLR   >EepromFlags,Z,#$40,L1EE28               ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
+        BCLR    >EepromFlags,Z,#$40                      ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         CMPB    $05FD,Z
         BEQ     L1EE28
 L1EE0A:
-        BRSET   >EepromFlags,Z,#$01,L1EE16
-        BSET    >EepromFlags,Z,#$01
+        BRSET   >EepromFlags,Z,#$01,L1EE16               ; bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
+        BSET    >EepromFlags,Z,#$01                      ; bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
         BRA     L1EE5E
 L1EE16:
         JSR     Sub_1E93E
@@ -22475,7 +22475,7 @@ L1EE16:
         LDY     #$3A49
         JSR     ReportFault
 L1EE28:
-        BCLR    >EepromFlags,Z,#$80
+        BCLR    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
 L1EE2C:
         TPD
         TBXK
@@ -22493,9 +22493,9 @@ L1EE3A:
 L1EE4A:
         DECB
         STAB    $05FF,Z
-        BSET    >EepromFlags,Z,#$02
+        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
 L1EE54:
-        BCLR    >EepromFlags,Z,#$A1
+        BCLR    >EepromFlags,Z,#$A1                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 5: write in progress (EepromWriteService); bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
         BSETW   >EepromAddr,Z,#$FFFF
 L1EE5E:
         RTS

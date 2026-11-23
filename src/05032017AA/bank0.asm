@@ -11260,7 +11260,7 @@ L088C8:
 L088CE:
         LDAB    >RefPeriod,Z
         BNE     L08928
-        BRCLR   >SparkFlags,Z,#$20,L08928
+        BRCLR   >SparkFlags,Z,#$20,L08928                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAB    >TCTL1,Z
         BITB    $01,Y
         BEQ     L08928
@@ -11311,12 +11311,12 @@ SparkOutputOc2:
         BRCLR   >CrankSyncFlags,Z,#$40,L089B4
         LDAB    >RefPeriod,Z
         BNE     L089B4
-        BRCLR   >SparkFlags,Z,#$20,L089B4
+        BRCLR   >SparkFlags,Z,#$20,L089B4                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAB    >TCTL1,Z
         EORB    #$01
         BITB    #$01
         BEQ     L08962
-        BRCLR   >SparkFlags,Z,#$10,L089B4
+        BRCLR   >SparkFlags,Z,#$10,L089B4                ; bit 4: cleared by SparkOutputOc2 only
 L08962:
         STAB    >TCTL1,Z
         LSRB
@@ -11340,7 +11340,7 @@ L08980:
         STD     >TOC2,Z
         BRA     L089B4
 L08996:
-        BCLR    >SparkFlags,Z,#$10
+        BCLR    >SparkFlags,Z,#$10                       ; bit 4: cleared by SparkOutputOc2 only
         LDD     >RefPeriodLow,Z
         SUBD    $86,Z
         ADDD    >TOC2,Z
@@ -11490,7 +11490,7 @@ L08AEA:
         LBCC    L08B60
         JMP     $00000,X
 L08B0A:
-        BRCLR   >SwitchInputs2,Z,#$20,L08B60
+        BRCLR   >SwitchInputs2,Z,#$20,L08B60             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BSET    >EventSparkFlags,Z,#$88
         BCLR    >EventSparkFlags,Z,#$44
         BCLR    >EventSparkFlags2,Z,#$10
@@ -11508,7 +11508,7 @@ L08B32:
         BRSET   >Options032E,#$04,L08CB4                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LBRA    L08CC0
 L08B44:
-        BRCLR   >SwitchInputs2,Z,#$20,L08B60
+        BRCLR   >SwitchInputs2,Z,#$20,L08B60             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BSET    >EventSparkFlags,Z,#$44
         BCLR    >EventSparkFlags,Z,#$88
         BSET    >EventSparkFlags2,Z,#$10
@@ -11593,7 +11593,7 @@ L08C34:
         ADDA    >EventSparkCount2,Z
         STAA    >EventSparkTimer,Z
         PSHM    E
-        BSET    >FuelModeFlags,Z,#$08
+        BSET    >FuelModeFlags,Z,#$08                    ; bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
         CLR     >Temp4FE,Z
         LDAB    >CylinderCount
         DECB
@@ -12349,7 +12349,7 @@ L0A1D2:
         BCLR    >CrankSyncFlags2,Z,#$70
         CLRA
         BRCLR   >EngineStateFlags,Z,#$80,L0A206          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >SparkFlags,Z,#$20,L0A206
+        BRCLR   >SparkFlags,Z,#$20,L0A206                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDE     >RefPeriod,Z
         CPE     #$00EA
         BCC     L0A206
@@ -12447,7 +12447,7 @@ L0A2D6:
         BLS     L0A2EC
         BSET    >SparkFlags3,Z,#$01
 L0A2EC:
-        BSET    >SparkFlags,Z,#$40
+        BSET    >SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
         JSR     FuelEventCalc
         JSR     CamCrankMeasure
 L0A2F8:
@@ -12511,15 +12511,15 @@ L0A35A:
         CPD     #$00FF
         BCS     L0A3CA
 L0A3B6:
-        BCLR    >SparkFlags,Z,#$20
+        BCLR    >SparkFlags,Z,#$20                       ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         CLR     >SurgeEnableTime,Z
         BCLR    >SparkFlags2,Z,#$08
         BCLR    >SparkFlags2,Z,#$04
         JMP     L0A4E0
 L0A3CA:
-        BRCLR   >SparkFlags,Z,#$20,L0A3B6
+        BRCLR   >SparkFlags,Z,#$20,L0A3B6                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
 L0A3D0:
-        BSET    >SparkFlags,Z,#$20
+        BSET    >SparkFlags,Z,#$20                       ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDE     $0005,Y
         LDD     >Temp4F6,Z
         STD     E,Z
@@ -12651,9 +12651,9 @@ L0A54C:
         LDD     >RefPeriod,Z
         CPD     #$00FF
         BCS     L0A560
-        BCLR    >SparkFlags,Z,#$20
+        BCLR    >SparkFlags,Z,#$20                       ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
 L0A560:
-        BRCLR   >SparkFlags,Z,#$20,L0A5A4
+        BRCLR   >SparkFlags,Z,#$20,L0A5A4                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDD     >SparkPeriod,Z
         CPD     #$5DC0
         LBHI    L0A6C8
@@ -12689,7 +12689,7 @@ L0A5C2:
         LDY     #$A010
         LDAB    $86,Z
 L0A5C8:
-        BRSET   >SparkFlags,Z,#$20,L0A5EC
+        BRSET   >SparkFlags,Z,#$20,L0A5EC                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    >TCTL1,Z
         ORAA    $00,Y
         STAA    >TCTL1,Z
@@ -12810,7 +12810,7 @@ L0A726:
         CLR     >PACNT,Z
         BCLR    >TFLG2,Z,#$10
         BSET    >TMSK2,Z,#$10
-        BRCLR   >SparkFlags,Z,#$20,L0A896
+        BRCLR   >SparkFlags,Z,#$20,L0A896                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDD     >SparkPeriod,Z
         CPD     #$5DC0
         LBHI    L0A896
@@ -12848,7 +12848,7 @@ L0A7B2:
         LDE     >Temp4F6,Z
         CPE     #$1C55
         BCS     L0A7E8
-        BCLR    >SparkFlags,Z,#$20
+        BCLR    >SparkFlags,Z,#$20                       ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    >TCTL1,Z
         ORAA    $00,Y
         STAA    >TCTL1,Z
@@ -12935,7 +12935,7 @@ L0A8BA:
         JSR     EmptyHook
         JSR     Sub_2DB96
         JSR     EventCellSelect
-        BRSET   >SparkFlags,Z,#$20,L0A902
+        BRSET   >SparkFlags,Z,#$20,L0A902                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRCLR   >CrankSyncFlags,Z,#$40,L0A902
         LDAB    #$00
         TBYK
@@ -12964,10 +12964,10 @@ L0A910:
         BRCLR   >Options032F,#$06,L0A920                 ; bit 2: knock sensor variant (knock sample, retard, learn and spark code); bit 1: knock sensor variant (as bit 2)
         BCLRW   $1002,Z,#$0400
 L0A920:
-        BCLR    >SparkFlags,Z,#$80
+        BCLR    >SparkFlags,Z,#$80                       ; bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
         BRCLR   >CrankSyncFlags,Z,#$40,L0AA02
         LDAA    #$8A
-        BRCLR   >SparkFlags,Z,#$20,L0A934
+        BRCLR   >SparkFlags,Z,#$20,L0A934                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    #$CA
 L0A934:
         CMPA    >BatteryVolts2,Z
@@ -12996,7 +12996,7 @@ L0A96A:
         BITA    #$70
         LBNE    L0A9F2
         BRCLR   $1000,Z,#$04,L0A9F2
-        BSET    >SparkFlags,Z,#$80
+        BSET    >SparkFlags,Z,#$80                       ; bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
         LDD     $100E,Z
         ANDD    #$0010
         LBNE    L0A9F2
@@ -13011,7 +13011,7 @@ L0A9AE:
 L0A9B0:
         CLRA
         TDE
-        BRCLR   >SparkFlags,Z,#$20,L0A9D2
+        BRCLR   >SparkFlags,Z,#$20,L0A9D2                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         TZX
         LDX     #$8086
         LDAA    E,X
@@ -13028,7 +13028,7 @@ L0A9D2:
         LDAB    #$00
         TBXK
         LDX     #$A8B0
-        BRCLR   >SparkFlags,Z,#$20,L0A9E8
+        BRCLR   >SparkFlags,Z,#$20,L0A9E8                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    >BatteryVolts2,Z
         CMPA    #$D2
         BCS     L0A9F2
@@ -13094,7 +13094,7 @@ L0AAAC:
         LBCS    L0AAE0
         JSR     CalcFuelPulse
         JSR     FuelEventSchedule
-        BRCLR   >FuelModeFlags,Z,#$80,L0AAE6
+        BRCLR   >FuelModeFlags,Z,#$80,L0AAE6             ; bit 7: idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1
         LDAA    >CoolantTemp,Z
         LDX     #EventFuelCoolantSub
         JSR     Lookup2D
@@ -13133,7 +13133,7 @@ Isr_GPT_PAI:
         CLRW    >Count3s,Z
         BCLR    >CrankSyncFlags2,Z,#$40
         BCLR    >CamCrankFlags,Z,#$20
-        BRCLR   >SwitchInputs2,Z,#$20,L0AB34
+        BRCLR   >SwitchInputs2,Z,#$20,L0AB34             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BSET    >CamCrankFlags,Z,#$20
 L0AB34:
         BCLR    >ControlFlags943,Z,#$18                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it; bit 3: fuel pump relay on, probably (set and cleared with bit 4)
@@ -14457,7 +14457,7 @@ L0C5CA:
         AIX     #$04
         CPX     #$C59A
         BCS     L0C5BC
-        BRCLR   >SparkFlags,Z,#$02,L0C5E4
+        BRCLR   >SparkFlags,Z,#$02,L0C5E4                ; bit 1: tip-in spark retard armed (TipInSparkControl)
         LDAA    >TipInSteps,Z
         INCA
         BEQ     L0C5E4
@@ -14472,11 +14472,11 @@ L0C5F6:
         BRCLR   >AfterStartSparkFlags,Z,#$14,L0C600
         INC     $0D19,Z
 L0C600:
-        BRSET   >FuelModeFlags2,Z,#$80,L0C60A
+        BRSET   >FuelModeFlags2,Z,#$80,L0C60A            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         CLRW    $079E,Z
 L0C60A:
         BRCLR   >StartFlags,Z,#$08,L0C63E
-        BRCLR   >FuelModeFlags2,Z,#$08,L0C62E
+        BRCLR   >FuelModeFlags2,Z,#$08,L0C62E            ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
         BRSET   >ThrottleState,Z,#$40,L0C62E             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >IdleFuelUpCount,Z
         INCA
@@ -14491,7 +14491,7 @@ L0C62E:
         BHI     L0C63E
         STAA    >IdleFuelDownCount,Z
 L0C63E:
-        BRCLR   >FuelModeFlags,Z,#$01,L0C652
+        BRCLR   >FuelModeFlags,Z,#$01,L0C652             ; bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
         LDAA    >WotEnrich,Z
         INCA
         BEQ     L0C656
@@ -14500,7 +14500,7 @@ L0C63E:
 L0C652:
         CLR     >WotEnrich,Z
 L0C656:
-        BRSET   >FuelModeFlags2,Z,#$40,L0C668
+        BRSET   >FuelModeFlags2,Z,#$40,L0C668            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRCLR   >EventFlags,Z,#$80,L0C676
         BCLR    >EventFlags,Z,#$80
         BRA     L0C672
@@ -15936,7 +15936,7 @@ L0D730:
         BSET    >ThrottleState,Z,#$10                    ; bit 4: closed position stepped to a new minimum, probably (ThrottleClosedLearn only)
         BSET    >AcFlags,Z,#$B0                          ; bit 7: A/C clutch engaged (AcClutchControl); set at reset; bit 5: A/C idle step active (IdleTargetControl); set at reset; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
         BSET    >SpeedCtlState,Z,#$A0                    ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel); bit 5: set at reset, on cancel and on engage; meaning not settled
-        BSET    >SwitchInputs2,Z,#$04
+        BSET    >SwitchInputs2,Z,#$04                    ; bit 2: speed control switch (set at reset)
         BSET    >AdcFlags,Z,#$04
         LDD     #$8013
         STAA    $0409,Z
@@ -16523,7 +16523,7 @@ L0DF0E:
 L0DF18:
         TSTW    >SPCR2,Z
         BPL     L0DF24
-        BRSET   >SystemFlags945,Z,#$80,L0DF18
+        BRSET   >SystemFlags945,Z,#$80,L0DF18            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
 L0DF24:
         ORP     #$00E0
         BCLR    <FlexStartFlags,Z,#$04
@@ -17140,7 +17140,7 @@ L0E61C:
 L0E628:
         ORP     #$00E0
         BRSET   >PciFlags2,Z,#$04,L0E6E6
-        BRSET   >SystemFlags945,Z,#$80,L0E6E6
+        BRSET   >SystemFlags945,Z,#$80,L0E6E6            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         BRSET   >SPCR1,Z,#$00,L0E6E6
         LDD     #$4089
         CPD     >QSMCR,Z
@@ -17596,7 +17596,7 @@ L0EB7A:
 ;---------------------------------------------------------------------------------------------------
 NvWriteRequest:
         BRCLR   >NvFlags18A,Z,#$20,L0EBB4
-        BRSET   >EepromFlags,Z,#$80,L0EBB4
+        BRSET   >EepromFlags,Z,#$80,L0EBB4               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDD     $0187,Z
         STD     >EepromData,Z
         CPD     #$9C40
@@ -17609,7 +17609,7 @@ L0EB9A:
         ASLD
         ADDD    #$00C4
         STD     >EepromAddr,Z
-        BSET    >EepromFlags,Z,#$C0
+        BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         BCLR    >NvFlags18A,Z,#$20
 L0EBB4:
         RTS
@@ -17738,7 +17738,7 @@ L0ED00:
         BRSET   $100B,Z,#$08,L0EDD0
         ORP     #$00E0
         BRSET   >PciFlags2,Z,#$04,L0EDD0
-        BRSET   >SystemFlags945,Z,#$80,L0EDD0
+        BRSET   >SystemFlags945,Z,#$80,L0EDD0            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         BRSET   $0A09,Z,#$01,L0ED50
         LDAB    $097D,Z
         CMPB    #$06
@@ -17804,7 +17804,7 @@ L0EDD0:
         BRCLR   >EngineStateFlags,Z,#$80,L0EE02          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >BusConfigFlags,Z,#$40,L0EDF8
         BRSET   >Options032E,#$04,L0EDF8                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
-        BRSET   >SkimFlags,Z,#$10,L0EDF8
+        BRSET   >SkimFlags,Z,#$10,L0EDF8                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BRSET   >BusMsgFlags,Z,#$04,L0EDF8
         JSR     BusRxAck
 L0EDF8:
@@ -18006,8 +18006,8 @@ SkimEepromSave:
         ORP     #$00E0
         CLR     >SkimTimer,Z
         BRSET   >FaultSet07,Z,#$02,L0F060
-        BRSET   >EepromFlags,Z,#$80,L0F064
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L0F064               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BITA    #$08
         BNE     L0F04A
         BITA    #$10
@@ -18091,7 +18091,7 @@ L0F0A4:
 SkimState:
         ORP     #$00E0
         BRSET   >Options0328,#$01,L0F0C0                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
-        BRSET   >SkimFlags,Z,#$02,L0F0C0
+        BRSET   >SkimFlags,Z,#$02,L0F0C0                 ; bit 1: SKIM state to be written to the EEPROM (SkimState)
         BRSET   >BusConfigFlags,Z,#$C0,L0F1FC
 L0F0C0:
         TST     >MonStartDelay,Z
@@ -18104,56 +18104,56 @@ L0F0C0:
         BRA     L0F0E0
 L0F0DA:
         CLRB
-        BCLR    >SkimFlags,Z,#$02
+        BCLR    >SkimFlags,Z,#$02                        ; bit 1: SKIM state to be written to the EEPROM (SkimState)
 L0F0E0:
         STAB    >SecurityTimer,Z
         LDAA    >BusConfigFlags,Z
         BRSET   >Options0328,#$01,L0F11A                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
-        BRSET   >SkimFlags,Z,#$01,L0F106
+        BRSET   >SkimFlags,Z,#$01,L0F106                 ; bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
         BRSET   >SecurityFlags,Z,#$80,L0F102
         CMPB    #$C9
         BCS     L0F11A
         BCLR    >SecurityFlags,Z,#$40
 L0F102:
-        BSET    >SkimFlags,Z,#$01
+        BSET    >SkimFlags,Z,#$01                        ; bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
 L0F106:
-        BRSET   >SkimFlags,Z,#$02,L0F110
+        BRSET   >SkimFlags,Z,#$02,L0F110                 ; bit 1: SKIM state to be written to the EEPROM (SkimState)
         BITA    #$20
         BNE     L0F154
 L0F110:
         ORAA    #$20
         ANDA    #$E0
-        BCLR    >SkimFlags,Z,#$02
+        BCLR    >SkimFlags,Z,#$02                        ; bit 1: SKIM state to be written to the EEPROM (SkimState)
         BRA     L0F138
 L0F11A:
         BITA    #$20
         BEQ     L0F154
         BRCLR   >SecurityFlags,Z,#$40,L0F154
         BRCLR   >PciRxFlags,Z,#$10,L0F136
-        BRSET   >SkimFlags,Z,#$10,L0F136
+        BRSET   >SkimFlags,Z,#$10,L0F136                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BRCLR   >SecurityFlags,Z,#$08,L0F154
 L0F136:
         ANDA    #$DF
 L0F138:
         BRSET   >FaultSet07,Z,#$02,L0F198
-        BRSET   >EepromFlags,Z,#$80,L0F154
-        BSET    >EepromFlags,Z,#$80
+        BRSET   >EepromFlags,Z,#$80,L0F154               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         LDE     #$0008
         STE     >EepromAddr,Z
 L0F154:
         BITA    #$1F
         BEQ     L0F198
-        BRSET   >SkimFlags,Z,#$10,L0F16E
+        BRSET   >SkimFlags,Z,#$10,L0F16E                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BITA    #$40
         BEQ     L0F18E
         BRSET   >Options032E,#$04,L0F18E                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRCLR   >SecurityFlags,Z,#$08,L0F18E
 L0F16E:
         BRSET   >FaultSet07,Z,#$02,L0F198
-        BRSET   >EepromFlags,Z,#$80,L0F198
+        BRSET   >EepromFlags,Z,#$80,L0F198               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         ANDA    #$E0
-        BSET    >EepromFlags,Z,#$80
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         LDE     #$0008
         STE     >EepromAddr,Z
@@ -18164,7 +18164,7 @@ L0F18E:
         BCC     L0F1BE
         LDAA    >BusConfigFlags,Z
 L0F198:
-        BRSET   >SkimFlags,Z,#$10,L0F1FC
+        BRSET   >SkimFlags,Z,#$10,L0F1FC                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BRSET   >Options0328,#$01,L0F1BA                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
         BRSET   >Options032E,#$04,L0F1B6                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >SecurityFlags,Z,#$08,L0F1FC
@@ -18177,9 +18177,9 @@ L0F1BA:
         BCS     L0F200
 L0F1BE:
         BSET    >SecurityFlags,Z,#$20
-        BRSET   >SkimFlags,Z,#$02,L0F200
+        BRSET   >SkimFlags,Z,#$02,L0F200                 ; bit 1: SKIM state to be written to the EEPROM (SkimState)
         BRSET   >FaultSet07,Z,#$02,L0F200
-        BRSET   >EepromFlags,Z,#$80,L0F200
+        BRSET   >EepromFlags,Z,#$80,L0F200               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDAA    >BusConfigFlags,Z
         TAB
         ANDB    #$E0
@@ -18188,11 +18188,11 @@ L0F1BE:
         BCC     L0F200
         INCA
         ABA
-        BSET    >EepromFlags,Z,#$80
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         LDE     #$0008
         STE     >EepromAddr,Z
-        BSET    >SkimFlags,Z,#$02
+        BSET    >SkimFlags,Z,#$02                        ; bit 1: SKIM state to be written to the EEPROM (SkimState)
         BRA     L0F200
 L0F1FC:
         BCLR    >SecurityFlags,Z,#$20
@@ -18207,7 +18207,7 @@ L0F200:
 SecurityState:
         BRSET   >SecurityFlags,Z,#$10,L0F2AE
         ORP     #$00E0
-        BRSET   >EepromFlags,Z,#$80,L0F2AA
+        BRSET   >EepromFlags,Z,#$80,L0F2AA               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         LDAA    >BusConfigFlags,Z
         BITA    #$40
         BNE     L0F22E
@@ -18217,7 +18217,7 @@ SecurityState:
         BRA     L0F2A6
 L0F22E:
         BRSET   >Options0328,#$01,L0F28C                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
-        BRSET   >SkimFlags,Z,#$08,L0F254
+        BRSET   >SkimFlags,Z,#$08,L0F254                 ; bit 3: SKIM status message received
         BITA    #$80
         BNE     L0F24E
         BRSET   >BusTempFlags2,Z,#$01,L0F2A0
@@ -18225,12 +18225,12 @@ L0F22E:
         BCLR    <BusTempFlags2,Z,#$02
         BRA     L0F2A0
 L0F24E:
-        BRCLR   >SkimFlags,Z,#$04,L0F2A0
+        BRCLR   >SkimFlags,Z,#$04,L0F2A0                 ; bit 2: SKIM present on the bus, probably
 L0F254:
         BRCLR   >Options0328,#$02,L0F282                 ; bit 1: security variant: selects a branch in SecurityState
         BRCLR   >EngineStateFlags,Z,#$80,L0F2AA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >BusConfigFlags,Z,#$1F,L0F27A
-        BSET    >SkimFlags,Z,#$02
+        BSET    >SkimFlags,Z,#$02                        ; bit 1: SKIM state to be written to the EEPROM (SkimState)
         TAB
         ANDB    #$E0
         ANDA    #$1F
@@ -18244,13 +18244,13 @@ L0F27A:
         BSET    >SecurityFlags,Z,#$10
         BRA     L0F28E
 L0F282:
-        BRSET   >SkimFlags,Z,#$08,L0F28C
+        BRSET   >SkimFlags,Z,#$08,L0F28C                 ; bit 3: SKIM status message received
         LDAA    #$40
         BRA     L0F28E
 L0F28C:
         LDAA    #$80
 L0F28E:
-        BSET    >EepromFlags,Z,#$80
+        BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >EepromData,Z
         LDD     #$0008
         STD     >EepromAddr,Z
