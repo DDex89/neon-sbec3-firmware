@@ -1,5 +1,5 @@
 {
- "_comment": "Carried over from 05293190AC by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
+ "_comment": "Carried over from 05293190AC (gaps filled through 05007038) by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
  "units": {
   "rpm32": "rpm = x * 32",
   "rpm8": "rpm = x * 8",
@@ -58,17 +58,49 @@
    "category": "Sensors"
   },
   "0495": {
-   "name": "DecelMapScale",
-   "category": "Fuel",
-   "desc": "Corrected MAP to row position of DecelMapRpmLimit",
+   "name": "WotMapScale",
+   "desc": "MAP to row position of the WOT spark and fuel tables",
    "x": "kpa",
    "y": "pos256",
-   "auto": false
+   "x_in": "Map",
+   "category": "Other"
   },
   "0FB2": {
    "name": "FlexEthanolScale",
    "category": "Fuel",
    "desc": "Flex-fuel: ethanol content (FlexEthanol) to the scaled value FlexEthanolScaled used as table input",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "4136": {
+   "name": "RpmCurveV0C4A",
+   "category": "Sensors",
+   "desc": "Engine rpm (high byte) to RpmCurveValue; all points 255 in the reference image",
+   "x": "rpm8",
+   "y": "raw",
+   "auto": false
+  },
+  "4142": {
+   "name": "IdleEnrichEthanolScale",
+   "category": "Fuel",
+   "desc": "Flex-fuel ethanol content to row position of IdleEnrichEthanolAirTemp",
+   "x": "raw",
+   "y": "pos256",
+   "auto": false
+  },
+  "06B9": {
+   "name": "TipInThrottleIndex",
+   "category": "Fuel",
+   "desc": "Tip-in enrichment: throttle opening to row index 1-9 of TipInMatrix",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "06CD": {
+   "name": "TipInRateIndex",
+   "category": "Fuel",
+   "desc": "Tip-in enrichment: throttle opening step to column index 1-9 of TipInMatrix",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -93,6 +125,14 @@
    "name": "DecelLeanTimeScale",
    "category": "Fuel",
    "desc": "Deceleration enleanment: time since start to row position of DecelLeanTimeCoolant",
+   "x": "raw",
+   "y": "pos256",
+   "auto": false
+  },
+  "04F5": {
+   "name": "IacFuelScale",
+   "category": "Fuel",
+   "desc": "Extra idle air (IacTargetCmd minus IacPosition) to row position of IacFuelCoolant",
    "x": "raw",
    "y": "pos256",
    "auto": false
@@ -137,19 +177,19 @@
    "y": "pos256",
    "auto": false
   },
-  "0501": {
-   "name": "MisfireCoolantLoadScale",
-   "category": "Diagnostics",
-   "desc": "Load to row position of MisfireThreshCoolant",
-   "x": "raw",
-   "y": "pos256",
-   "auto": false
-  },
   "04AD": {
    "name": "SurgeDecayGearScale",
    "category": "Spark",
    "desc": "Driveline surge spark control: rpm/speed ratio (gear) to row position of SurgeDecay",
    "x": "raw",
+   "y": "pos256",
+   "auto": false
+  },
+  "0525": {
+   "name": "IdleBattTempScale",
+   "category": "Idle",
+   "desc": "Battery temperature to row position of IdleBattTempTarget",
+   "x": "tempc",
    "y": "pos256",
    "auto": false
   },
@@ -221,8 +261,8 @@
   "058C": {
    "name": "CrankRpmDecayWeight",
    "category": "Fuel",
-   "desc": "Weight of the rpm reduction against the cranking coolant",
-   "x": "tempc",
+   "desc": "Weight of the rpm reduction against the cranking coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -265,6 +305,21 @@
    "x": "volt16",
    "y": "pwus32",
    "category": "Fuel"
+  },
+  "1101": {
+   "name": "ReturnlessFuelScale",
+   "desc": "Global fuel multiplier of the returnless fuel system",
+   "x": "kpa",
+   "y": "mult256",
+   "category": "Fuel"
+  },
+  "14A1": {
+   "name": "HotEngineEnrich",
+   "category": "Fuel",
+   "desc": "Enrichment against coolant above $0BD9 (with rpm, MAP and time above their limits), into HotEnrich; sets FuelModeFlags2 bit 1",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
   },
   "147E": {
    "name": "InjectionModeRpmFactor",
@@ -327,6 +382,71 @@
    "y_in": "WotMapScale",
    "category": "Fuel"
   },
+  "0704": {
+   "name": "BaroFuel",
+   "desc": "Pulse width added to the fuel pulse against barometric pressure (result x 8)",
+   "x": "kpa",
+   "y": "raw",
+   "x_in": "Baro",
+   "category": "Fuel"
+  },
+  "0674": {
+   "name": "IdleEnrichSoakTime",
+   "category": "Fuel",
+   "desc": "Idle enrichment against the engine-off time EngineOffTime, into IdleEnrichSoak",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "0683": {
+   "name": "IdleEnrichRunTime",
+   "category": "Fuel",
+   "desc": "Idle enrichment against run time (IdleEnrichRun); with the others into IdleEnrichFactor, which multiplies the fuel while FuelModeFlags2 bit 3 is set (low rpm and MAP)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "0ACE": {
+   "name": "IdleEnrichEthanolAirTemp",
+   "category": "Fuel",
+   "desc": "Idle enrichment against ethanol content (rows) and intake air temperature at start (StartAirTemp)",
+   "x": "tempc",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "0ED1": {
+   "name": "AccelMapCoolant2",
+   "category": "Fuel",
+   "desc": "MAP-rate acceleration enrichment term against coolant into AccelMapCoolantFactor",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "0EDD": {
+   "name": "AccelMapGainCoolant",
+   "category": "Fuel",
+   "desc": "MAP-rate acceleration enrichment gain against coolant, plus AccelMapGainAdder, into AccelMapGain",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "0E92": {
+   "name": "AccelMapBaro",
+   "category": "Fuel",
+   "desc": "MAP-rate acceleration enrichment term against barometric pressure into AccelMapBaroFactor",
+   "x": "kpa",
+   "y": "raw",
+   "auto": false
+  },
+  "0EAB": {
+   "name": "AccelTpsRateLimit",
+   "category": "Fuel",
+   "desc": "Throttle-rate acceleration enrichment: the throttle step above $14B5 is limited to this value, against coolant",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
   "0EC3": {
    "name": "TpsFilterRiseCoolant",
    "category": "Fuel",
@@ -335,11 +455,59 @@
    "y": "raw",
    "auto": false
   },
+  "0E9E": {
+   "name": "AccelTpsBaro",
+   "category": "Fuel",
+   "desc": "Throttle-rate acceleration enrichment term against barometric pressure into AccelTpsBaroFactor",
+   "x": "kpa",
+   "y": "raw",
+   "auto": false
+  },
+  "0E7A": {
+   "name": "AccelMapAdder",
+   "category": "Fuel",
+   "desc": "Added to AccelRpmFactor against MAP",
+   "x": "kpa",
+   "y": "mult256",
+   "auto": false
+  },
+  "0E86": {
+   "name": "AccelRpmFactor",
+   "category": "Fuel",
+   "desc": "Acceleration enrichment factor against rpm; plus AccelMapAdder, limited to 1.0, into AccelFactor",
+   "x": "rpm32",
+   "y": "mult256",
+   "auto": false
+  },
   "0452": {
    "name": "ResetCoolantFuelInit",
    "category": "Startup",
    "desc": "At reset: ResetCoolantFuel (cranking fuel set-up) against coolant; read here with another input than in 05293190AC, so the x unit is not carried",
    "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "06E1": {
+   "name": "TipInCoolantFactor",
+   "category": "Fuel",
+   "desc": "Tip-in enrichment factor against coolant",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "06EB": {
+   "name": "TipInAirTempFactor",
+   "category": "Fuel",
+   "desc": "Tip-in enrichment factor against intake air temperature",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "06F5": {
+   "name": "TipInBaroFactor",
+   "category": "Fuel",
+   "desc": "Tip-in enrichment factor against barometric pressure; result (with ReturnlessFuelScale) into TipInFuel and spread over the next injectors",
+   "x": "kpa",
    "y": "raw",
    "auto": false
   },
@@ -425,6 +593,14 @@
    "z": "raw",
    "auto": false
   },
+  "0F22": {
+   "name": "IacFuelCoolantLimit",
+   "category": "Fuel",
+   "desc": "Above this (against coolant) the extra idle air (IacTargetCmd minus IacPosition) sets FuelModeFlags bit 7 instead of adding fuel",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
   "0F2C": {
    "name": "EventFuelCoolantSub",
    "category": "Fuel",
@@ -432,6 +608,31 @@
    "x": "tempc",
    "y": "pwus32",
    "auto": false
+  },
+  "0F01": {
+   "name": "IacFuelCoolant",
+   "category": "Fuel",
+   "desc": "Fuel pulse added for extra idle air, rows by IacFuelScale, columns coolant; x 16 into FuelPulseAdder",
+   "x": "tempc",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "11E9": {
+   "name": "O2StartDelayCoolant",
+   "category": "Closed loop",
+   "desc": "Closed-loop entry (O2StartDelays): delay against coolant (plus $323D with an O2 fault flag)",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "1283": {
+   "name": "O2VoltageScale",
+   "desc": "Upstream O2 sensor ADC counts to the value used by closed loop and its monitor",
+   "category": "Closed loop",
+   "auto": false,
+   "x": "raw",
+   "y": "raw"
   },
   "12DF": {
    "name": "O2VoltageScale2",
@@ -441,12 +642,52 @@
    "x": "raw",
    "y": "raw"
   },
+  "11D5": {
+   "name": "O2StepScale",
+   "category": "Closed loop",
+   "desc": "Closed loop: trim step against the size of the O2 error Scratch3 (doubled while purge is active and duty is zero)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
   "1199": {
    "name": "DecelCutRpmFactor",
    "category": "Fuel",
    "desc": "Factor on the fuel pulse while the deceleration cut-off flag (FuelModeFlags2 bit 7) is set, against rpm above the idle target",
    "x": "raw",
    "y": "mult256",
+   "auto": false
+  },
+  "140F": {
+   "name": "PurgeLearnUpClosed",
+   "category": "EVAP purge",
+   "desc": "Purge vapor learning, closed throttle: step added to PurgeVaporClosed when the trim is above $1B2C",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "141B": {
+   "name": "PurgeLearnDownClosed",
+   "category": "EVAP purge",
+   "desc": "Purge vapor learning, closed throttle: step subtracted from PurgeVaporClosed when the trim is below −$1B2D",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "13F7": {
+   "name": "PurgeLearnUpPart",
+   "category": "EVAP purge",
+   "desc": "Purge vapor learning, part throttle: step added to PurgeVaporPart when the short-term trim is above $1B2C",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1403": {
+   "name": "PurgeLearnDownPart",
+   "category": "EVAP purge",
+   "desc": "Purge vapor learning, part throttle: step subtracted from PurgeVaporPart when the trim is below −$1B2D",
+   "x": "raw",
+   "y": "raw",
    "auto": false
   },
   "1427": {
@@ -519,6 +760,22 @@
    "z": "spark",
    "auto": false
   },
+  "1A43": {
+   "name": "BaroSpark",
+   "category": "Spark",
+   "desc": "Spark change against barometric pressure, weighted by BaroSparkRpmWeight",
+   "x": "kpa",
+   "y": "spark",
+   "auto": false
+  },
+  "1A4B": {
+   "name": "BaroSparkRpmWeight",
+   "category": "Spark",
+   "desc": "Weight of BaroSpark against rpm",
+   "x": "rpm32",
+   "y": "mult256",
+   "auto": false
+  },
   "19FD": {
    "name": "DecelSpark",
    "category": "Spark",
@@ -559,6 +816,30 @@
    "desc": "As EventSparkThrottle while EventSparkFlags bit 3 is set (raised by $205E per loop)",
    "x": "raw",
    "y": "spark",
+   "auto": false
+  },
+  "19D8": {
+   "name": "TipInRetardDuration",
+   "category": "Spark",
+   "desc": "Tip-in spark retard near idle (TipInSparkControl): number of steps (TipInSteps) against air temperature",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "19F5": {
+   "name": "TipInRetardDurationKnock",
+   "category": "Spark",
+   "desc": "As TipInRetardDuration while a knock retard is applied (KnockRetard non-zero)",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "19D0": {
+   "name": "TipInRetardAirScale",
+   "category": "Spark",
+   "desc": "Tip-in spark retard: air temperature to row position; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
+   "y": "pos256",
    "auto": false
   },
   "1BBB": {
@@ -609,6 +890,15 @@
    "y": "mult256",
    "auto": false
   },
+  "1B55": {
+   "name": "SurgeRetardBase",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: base retard (SurgeRetardRaw) against MAP position (rows) and the fast segment rpm SegmentRpmFast (columns)",
+   "x": "raw",
+   "y": "pos256",
+   "z": "spark",
+   "auto": false
+  },
   "1B76": {
    "name": "SurgeDecay",
    "category": "Spark",
@@ -650,6 +940,54 @@
    "x": "raw",
    "y": "pos256",
    "z": "spark",
+   "auto": false
+  },
+  "1C29": {
+   "name": "AcEngageSparkHoldSensor",
+   "category": "Spark",
+   "desc": "A/C spark compensation: hold count (AcSparkHold) against the A/C sensor (calibration bit Options0331 bit 7 set)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1C31": {
+   "name": "AcEngageSparkHoldIac",
+   "category": "Spark",
+   "desc": "As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit Options0331 bit 7 clear)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1C39": {
+   "name": "AcEngageSparkHoldMap",
+   "category": "Spark",
+   "desc": "Factor on the A/C spark hold count against MAP",
+   "x": "kpa",
+   "y": "mult256",
+   "auto": false
+  },
+  "1C41": {
+   "name": "AcClutchSparkTimeSensor",
+   "category": "Spark",
+   "desc": "A/C clutch engage (AcCutLogic): spark window AcClutchSparkTime against the A/C sensor",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1C49": {
+   "name": "AcClutchSparkTimeIac",
+   "category": "Spark",
+   "desc": "As AcClutchSparkTimeSensor against the learned IAC position IacLearned",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1C51": {
+   "name": "AcClutchSparkTimeMap",
+   "category": "Spark",
+   "desc": "Factor on the A/C clutch spark window against MAP",
+   "x": "kpa",
+   "y": "mult256",
    "auto": false
   },
   "1C59": {
@@ -701,6 +1039,22 @@
    "y": "mult256",
    "auto": false
   },
+  "1CA3": {
+   "name": "KnockNoiseLearnWeight",
+   "category": "Knock",
+   "desc": "Filter weight of the learned knock noise level per rpm band (KnockNoiseLevel)",
+   "x": "rpm32",
+   "y": "mult256",
+   "auto": false
+  },
+  "1C97": {
+   "name": "KnockWindowRpm",
+   "category": "Knock",
+   "desc": "Knock sampling window length factor (KnockWindowFactor) against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
   "1CBB": {
    "name": "KnockThreshold",
    "desc": "Knock sensor voltage threshold against rpm",
@@ -724,6 +1078,30 @@
    "y": "spark",
    "auto": false
   },
+  "3DD8": {
+   "name": "KnockRetardMaxRpm",
+   "category": "Knock",
+   "desc": "Limit of the per-cylinder knock retard (KnockCylRetardMax) against engine rpm",
+   "x": "rpm32",
+   "y": "spark",
+   "auto": false
+  },
+  "1DAF": {
+   "name": "IdleStepClose",
+   "category": "Idle",
+   "desc": "Idle speed control: closing step against the accumulated error, added to IacStepSum (limited by $2611/$2612)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1DB7": {
+   "name": "IdleStepOpen",
+   "category": "Idle",
+   "desc": "Idle speed control: opening step against the accumulated error, added to IacStepSum",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
   "1AF3": {
    "name": "AirTempSparkFactor2",
    "category": "Spark",
@@ -738,6 +1116,136 @@
    "desc": "Second air-temperature spark term against MAP (signed), scaled by AirTempSparkFactor2",
    "x": "kpa",
    "y": "spark",
+   "auto": false
+  },
+  "1DC1": {
+   "name": "IacCrankCoolant",
+   "category": "Idle",
+   "desc": "IAC position while cranking (engine rpm below $2641) against coolant; scaled by IacStepBaroFactor and limited by $2642",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "1E0F": {
+   "name": "IdleTargetRpm",
+   "desc": "Target idle speed against coolant temperature",
+   "x": "tempc",
+   "y": "rpm8",
+   "x_in": "CoolantTemp",
+   "category": "Idle"
+  },
+  "1E03": {
+   "name": "IdleTargetRpmPN",
+   "category": "Idle",
+   "desc": "Target idle speed against coolant in P/N (with calibration bit Options032E bit 6 clear)",
+   "x": "tempc",
+   "y": "rpm8",
+   "auto": false
+  },
+  "1E23": {
+   "name": "IdleTargetHotAirAdder",
+   "category": "Idle",
+   "desc": "Idle target addition against air temperature above $265A (hysteresis down to $2659)",
+   "x": "tempc",
+   "y": "rpm8",
+   "auto": false
+  },
+  "1EE8": {
+   "name": "IdleBattTempTarget",
+   "category": "Idle",
+   "desc": "Ramped idle target (IdleTargetRamped) against battery temperature (rows) and run time IdleRunTimer (columns)",
+   "x": "raw",
+   "y": "pos256",
+   "z": "rpm8",
+   "auto": false
+  },
+  "1EC7": {
+   "name": "IdleBattTempTargetPN",
+   "category": "Idle",
+   "desc": "As IdleBattTempTarget in P/N",
+   "x": "raw",
+   "y": "pos256",
+   "z": "rpm8",
+   "auto": false
+  },
+  "1E33": {
+   "name": "IdleRateFilterCoolant",
+   "category": "Idle",
+   "desc": "Idle speed control: filter weight of the rpm rate term (IdleRpmRateFiltered) against coolant",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "1E4D": {
+   "name": "IdleErrorTermFine",
+   "category": "Idle",
+   "desc": "Idle speed control: proportional term against the fine rpm error, used for errors below $26EC",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1E71": {
+   "name": "IdleErrorTermFinePN",
+   "category": "Idle",
+   "desc": "As IdleErrorTermFine, in P/N",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1E83": {
+   "name": "IdleDeadbandCoolant",
+   "category": "Idle",
+   "desc": "Idle speed control: part of the action threshold (IdleDeadband) against coolant",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "1E8D": {
+   "name": "IdleDeadbandMap",
+   "category": "Idle",
+   "desc": "Idle speed control: part of the action threshold (IdleDeadband) against MAP",
+   "x": "kpa",
+   "y": "raw",
+   "auto": false
+  },
+  "1E97": {
+   "name": "IdleStepOpenScale",
+   "category": "Idle",
+   "desc": "Idle speed control: accumulated error to the size of an IAC opening step",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1EA1": {
+   "name": "IdleStepOpenFactor",
+   "category": "Idle",
+   "desc": "Idle speed control: opening step factor against the coarse rpm error, into IdleStepOpenValue",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1EAB": {
+   "name": "IdleStepCloseScale",
+   "category": "Idle",
+   "desc": "Idle speed control: accumulated error to the size of an IAC closing step",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1EB5": {
+   "name": "IdleStepCloseFactor",
+   "category": "Idle",
+   "desc": "Idle speed control: closing step factor against the coarse rpm error, into IdleStepCloseValue",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1F5F": {
+   "name": "ShiftIdleDelayCoolant",
+   "category": "Idle",
+   "desc": "Delay (ShiftIdleDelay) on a shift into P/N against coolant (above $279B)",
+   "x": "tempc",
+   "y": "raw",
    "auto": false
   },
   "1F69": {
@@ -812,6 +1320,14 @@
    "y": "raw",
    "auto": false
   },
+  "1F19": {
+   "name": "IacStartBattTemp",
+   "category": "Idle",
+   "desc": "IAC hold at start (IacStartHold/IacStartHold2) against battery temperature, scaled by IacStepBaroFactor",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
   "1FED": {
    "name": "IacRunTimeAdder",
    "category": "Idle",
@@ -855,8 +1371,8 @@
   "20A7": {
    "name": "IacRollFactorBattTemp",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against battery temperature (centred on 128); read here with another input than in 05293190AC, so the x unit is not carried",
-   "x": "raw",
+   "desc": "Factor on the rolling IAC target against battery temperature (centred on 128)",
+   "x": "tempc",
    "y": "raw",
    "auto": false
   },
@@ -927,6 +1443,86 @@
    "z": "raw",
    "auto": false
   },
+  "20F7": {
+   "name": "IdleMapAfterStart",
+   "category": "Idle",
+   "desc": "Idle MAP target addition against time since start",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "2101": {
+   "name": "IdleMapWarmup",
+   "category": "Idle",
+   "desc": "Idle MAP target addition against coolant",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "2111": {
+   "name": "IdleMapRpm",
+   "category": "Idle",
+   "desc": "Idle MAP target addition against segment rpm, weighted by IdleMapRpmCoolantWeight",
+   "x": "rpm32",
+   "y": "raw",
+   "auto": false
+  },
+  "211B": {
+   "name": "IdleMapRpmCoolantWeight",
+   "category": "Idle",
+   "desc": "Weight of IdleMapRpm against coolant",
+   "x": "tempc",
+   "y": "mult256",
+   "auto": false
+  },
+  "2125": {
+   "name": "IdleMapBaro",
+   "category": "Idle",
+   "desc": "Idle MAP target addition against barometric pressure",
+   "x": "kpa",
+   "y": "raw",
+   "auto": false
+  },
+  "2150": {
+   "name": "IacMapHighStepClosed",
+   "category": "Idle",
+   "desc": "IAC closing step against how far MAP is above the idle MAP target, closed throttle",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "215A": {
+   "name": "IacMapHighStep",
+   "category": "Idle",
+   "desc": "As IacMapHighStepClosed, throttle not closed",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "2164": {
+   "name": "IacMapLowStep",
+   "category": "Idle",
+   "desc": "IAC opening step against how far MAP is below the idle MAP target (IdleMapTarget)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "216E": {
+   "name": "IdleMapAdderIac",
+   "category": "Idle",
+   "desc": "Idle MAP target addition against the learned IAC position IacLearned (without A/C clutch)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "2178": {
+   "name": "IdleMapAdderIac2",
+   "category": "Idle",
+   "desc": "As IdleMapAdderIac when FuelModeFlags2 bits 7-6 are not both clear and IdleMapIacFlag is zero",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
   "212F": {
    "name": "IacFieldDutyRpm2",
    "category": "Idle",
@@ -945,10 +1541,26 @@
    "z": "raw",
    "auto": false
   },
+  "21A6": {
+   "name": "IacDriveOffsetBaro",
+   "category": "Idle",
+   "desc": "IAC offset removed from the IAC target in drive, against barometric pressure, giving IacDriveOffset",
+   "x": "kpa",
+   "y": "raw",
+   "auto": false
+  },
   "21D3": {
    "name": "IacStartBaro",
    "category": "Idle",
    "desc": "Idle air position at reset against barometric pressure, into IdleMapLearned",
+   "x": "kpa",
+   "y": "raw",
+   "auto": false
+  },
+  "1DD9": {
+   "name": "IacCoastMapGain",
+   "category": "Idle",
+   "desc": "Coasting IAC target: gain of the MAP error (MAP minus learned idle MAP IdleMapLearned) against barometric pressure",
    "x": "kpa",
    "y": "raw",
    "auto": false
@@ -962,10 +1574,90 @@
    "z": "raw",
    "auto": false
   },
+  "2299": {
+   "name": "SpeedCtlEngagePosAC",
+   "category": "Speed control",
+   "desc": "As SpeedCtlEngagePos with A/C requested",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "22A5": {
+   "name": "SpeedCtlEngageBaro",
+   "category": "Speed control",
+   "desc": "Factor on the engagement position against barometric pressure; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
+   "y": "mult256",
+   "auto": false
+  },
+  "22B3": {
+   "name": "SpeedCtlEngageErrorAdder",
+   "category": "Speed control",
+   "desc": "Correction of the engagement position against the speed error (set speed minus speed, centred on 128)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "22C5": {
+   "name": "SpeedCtlThrottleTerm",
+   "category": "Speed control",
+   "desc": "Servo term against throttle above closed ($03,Y)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "22CD": {
+   "name": "SpeedCtlSpeedTerm",
+   "category": "Speed control",
+   "desc": "Servo term against raw vehicle speed ×8, added to SpeedCtlThrottleTerm",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "224F": {
+   "name": "SpeedCtlErrorGain",
+   "category": "Speed control",
+   "desc": "Servo step against the speed error (one of the error curves of SpeedCtlControl, by SpeedCtlState bits 2-3)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "22D5": {
+   "name": "SpeedCtlCancelStep",
+   "category": "Speed control",
+   "desc": "Step against speed plus 4 minus the set speed, when the set speed is replaced by the current speed",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "226B": {
+   "name": "SpeedCtlErrorGainResume",
+   "category": "Speed control",
+   "desc": "Servo step against the speed error with SpeedCtlState bit 4 set",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "231A": {
+   "name": "SpeedCtlOverrideThrottle",
+   "category": "Speed control",
+   "desc": "Value SpeedCtlOverrideCmd against throttle above the level latched in SpeedCtlShiftThrottle (driver override)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
   "0519": {
-   "name": "MisfireWeightLoadScale",
+   "name": "MisfireLoadScale",
    "category": "Diagnostics",
-   "desc": "Load to row position of MisfireWeight",
+   "desc": "Misfire monitor: load MisfireLoad to row position of the misfire thresholds",
+   "x": "raw",
+   "y": "pos256",
+   "auto": false
+  },
+  "0501": {
+   "name": "MisfireCoolantLoadScale",
+   "category": "Diagnostics",
+   "desc": "Load to row position of MisfireThreshCoolant",
    "x": "raw",
    "y": "pos256",
    "auto": false
@@ -978,10 +1670,27 @@
    "y": "pos256",
    "auto": false
   },
+  "050D": {
+   "name": "ExpectedMapThrottleScale",
+   "category": "Diagnostics",
+   "desc": "Vacuum-leak check (VacuumLeakMonitor, P1299): throttle to row position of ExpectedMap",
+   "x": "raw",
+   "y": "pos256",
+   "auto": false
+  },
   "27F5": {
    "name": "MisfireThresh",
    "category": "Diagnostics",
    "desc": "Misfire threshold of the segment-time change against load (rows) and segment rpm MisfireRpmCol (columns), P/N",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "2852": {
+   "name": "MisfireNoiseRef",
+   "category": "Diagnostics",
+   "desc": "Reference for the filtered segment-time change (MisfireNoiseLevel) against load and segment rpm; selects MisfireThreshNoisy",
    "x": "rpm32",
    "y": "pos256",
    "z": "raw",
@@ -1031,6 +1740,23 @@
    "y": "raw",
    "auto": false
   },
+  "20ED": {
+   "name": "MisfireEnableBaro",
+   "category": "Diagnostics",
+   "desc": "Misfire monitor enable weight term against barometric pressure (MisfireBaroWeight)",
+   "x": "kpa",
+   "y": "raw",
+   "auto": false
+  },
+  "290C": {
+   "name": "MisfireNoiseLimit",
+   "category": "Diagnostics",
+   "desc": "Rough-signal limit against load and segment rpm; the peak MisfireNoisePeak above it sets MisfireFlags bit 4",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
   "2992": {
    "name": "LdpPumpTimeByLevel",
    "category": "EVAP purge",
@@ -1047,12 +1773,69 @@
    "y": "raw",
    "auto": false
   },
+  "24AE": {
+   "name": "LimpRpmSpeed",
+   "category": "Diagnostics",
+   "desc": "Rpm limit against vehicle speed (MAP fault branch, LimpFlags bit 6)",
+   "x": "raw",
+   "y": "rpm8",
+   "auto": false
+  },
+  "24B8": {
+   "name": "LimpRpmThrottle",
+   "category": "Diagnostics",
+   "desc": "Rpm limit (LimpRpmLimit) against throttle while the MAP/throttle fault is set",
+   "x": "raw",
+   "y": "rpm8",
+   "auto": false
+  },
+  "24C2": {
+   "name": "ExpectedMapCoolant",
+   "category": "Diagnostics",
+   "desc": "Expected MAP addition against coolant",
+   "x": "tempc",
+   "y": "kpa",
+   "auto": false
+  },
+  "24C8": {
+   "name": "ExpectedMapFieldDuty",
+   "category": "Diagnostics",
+   "desc": "Expected MAP addition against the raw generator field duty FieldDutyRaw",
+   "x": "raw",
+   "y": "kpa",
+   "auto": false
+  },
+  "24CE": {
+   "name": "ExpectedMap",
+   "category": "Diagnostics",
+   "desc": "Expected MAP against throttle (rows) and engine rpm (columns); additions for coolant, field duty, A/C",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "kpa",
+   "auto": false
+  },
   "3DF8": {
    "name": "MapLimpFromThrottle",
    "category": "Sensors",
    "desc": "Substitute MAP from the throttle position when the MAP sensor has failed",
    "x": "raw",
    "y": "kpa",
+   "auto": false
+  },
+  "3DB9": {
+   "name": "VssCheckVacuumRpm",
+   "category": "Diagnostics",
+   "desc": "Vehicle speed sensor check (VssMonitor, P0500): manifold vacuum limit against engine rpm (closed throttle, P/N, warm)",
+   "x": "rpm32",
+   "y": "raw",
+   "auto": false
+  },
+  "1C7B": {
+   "name": "KnockSensorCheckRpm",
+   "category": "Knock",
+   "desc": "Minimum filtered knock signal for the sensor check (KnockSensorCheck) against engine rpm",
+   "x": "rpm32",
+   "y": "raw",
    "auto": false
   },
   "4024": {
@@ -1117,29 +1900,125 @@
    "x": "raw",
    "y": "raw",
    "auto": false
+  },
+  "034D": {
+   "name": "BaroUpdateMapOffset",
+   "category": "Sensors",
+   "desc": "Barometric pressure update while running: offset added to MAP against engine rpm (throttle above $04C1)",
+   "x": "rpm32",
+   "y": "raw",
+   "auto": false
+  },
+  "0EB7": {
+   "name": "AccelTpsCoolantFactor",
+   "category": "Fuel",
+   "desc": "Throttle-rate acceleration enrichment: amount per throttle step against coolant; product into AccelTpsFuel; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "138F": {
+   "name": "PurgeCommandBase",
+   "category": "EVAP purge",
+   "desc": "Purge command base against the purge ramp PurgeRamp, into Scratch0 (then scaled by learning and vacuum, into PurgeCommand)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "13B9": {
+   "name": "PurgeCommandVacuum",
+   "category": "EVAP purge",
+   "desc": "Factor on the purge command against manifold vacuum",
+   "x": "raw",
+   "y": "mult256",
+   "auto": false
+  },
+  "19B9": {
+   "name": "AfterStartSparkMin",
+   "category": "Spark",
+   "desc": "Lower limit of the spark change against time since start (SparkStartTime), into Temp4FC",
+   "x": "raw",
+   "y": "spark",
+   "auto": false
+  },
+  "1CAF": {
+   "name": "KnockNoiseMax",
+   "category": "Knock",
+   "desc": "Upper limit of the learned knock noise level against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1E3B": {
+   "name": "IdleErrorTermCoarse",
+   "category": "Idle",
+   "desc": "Idle speed control: proportional term against the coarse rpm error (segment rpm minus target), used for errors above $26EC; result minus 128 into IdleErrorTerm",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1E5F": {
+   "name": "IdleErrorTermCoarsePN",
+   "category": "Idle",
+   "desc": "As IdleErrorTermCoarse, in P/N",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1FE1": {
+   "name": "IacChargeStep",
+   "category": "Idle",
+   "desc": "IAC opening step against the charging deficit ChargeDeficit (target charging voltage minus battery voltage)",
+   "x": "volt16",
+   "y": "raw",
+   "auto": false
+  },
+  "26B4": {
+   "name": "MisfireEnableCoolant",
+   "category": "Diagnostics",
+   "desc": "Misfire monitor enable weight (MisfireEnable) term against coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
   }
  },
  "scalars": {
+  "034A": {
+   "name": "BusMsgAcData",
+   "desc": "Data word sent in the bus message $AC (CcdTxACAcData; bit 3 set with Options032E bit 7)",
+   "category": "Other",
+   "size": 2
+  },
   "031D": {
    "name": "Options032A",
    "desc": "Option byte; bit tests in the reference-event and spark code (bits 7-6: spark cap and ignition variants)",
    "category": "Options",
    "size": 1
   },
-  "0325": {
-   "name": "Options0339",
+  "0324": {
+   "name": "Options032C",
    "desc": "Option byte (global configuration); bits used are listed with their names where known",
    "category": "Options",
    "unit": "raw",
    "bitnames": {
-    "01": "TipInRetardHold",
-    "04": "PurgeDutyAltClosed",
-    "08": "PurgeDutyAltOther"
+    "40": "FlexFuelOn"
    },
    "size": 1,
    "bits": [
-    "01",
-    "02",
+    "40",
+    "80"
+   ]
+  },
+  "0325": {
+   "name": "Options032E",
+   "desc": "Option byte (global configuration); bits used are listed with their names where known",
+   "category": "Options",
+   "unit": "raw",
+   "bitnames": {
+    "40": "ManualTransmission"
+   },
+   "size": 1,
+   "bits": [
     "04",
     "08",
     "10",
@@ -1164,6 +2043,12 @@
     "40",
     "80"
    ]
+  },
+  "0321": {
+   "name": "Options0334",
+   "desc": "Option byte (bit 4: output-compare set-up at reset and in the PIT code)",
+   "category": "Options",
+   "size": 1
   },
   "0323": {
    "name": "Options0337",
@@ -1205,6 +2090,95 @@
     "40",
     "80"
    ]
+  },
+  "032D": {
+   "name": "Options0340",
+   "desc": "Option byte (global configuration); bits used are listed with their names where known",
+   "category": "Options",
+   "unit": "raw",
+   "size": 1,
+   "bits": [
+    "01",
+    "02",
+    "04",
+    "08",
+    "10",
+    "20",
+    "40",
+    "80"
+   ]
+  },
+  "032F": {
+   "name": "ObdPidSupport1",
+   "desc": "OBD-II mode $01: first byte of the supported-PID bit map for PIDs $01-$20 (sent for PID $00)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0330": {
+   "name": "ObdPidSupport2",
+   "desc": "Second byte of the supported-PID bit map $01-$20",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0331": {
+   "name": "ObdPidSupport3",
+   "desc": "Third byte of the supported-PID bit map $01-$20",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0332": {
+   "name": "ObdPidSupport4",
+   "desc": "Fourth byte of the supported-PID bit map $01-$20 (bit 0: PIDs $21-$40 follow)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0333": {
+   "name": "ObdPidSupport5",
+   "desc": "First byte of the supported-PID bit map for PIDs $21-$40",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0334": {
+   "name": "ObdPidSupport6",
+   "desc": "Second byte of the supported-PID bit map $21-$40",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0335": {
+   "name": "ObdPidSupport7",
+   "desc": "Third byte of the supported-PID bit map $21-$40",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0336": {
+   "name": "ObdPidSupport8",
+   "desc": "Fourth byte of the supported-PID bit map $21-$40",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0337": {
+   "name": "ObdMonitorByte",
+   "desc": "OBD-II monitor status: value sent in the second byte (ObdRespByte2)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0338": {
+   "name": "ObdMonitorMask",
+   "desc": "OBD-II monitor status: mask applied to the monitor flags ReadinessIncomplete (and sent as the supported monitors)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0339": {
+   "name": "ObdO2SensorsPresent",
+   "desc": "OBD-II mode $01 PID $13: oxygen sensors present ($03 = bank 1 sensors 1 and 2)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "0317": {
+   "name": "ThrottleClosedDefault",
+   "desc": "Closed-throttle value at reset and its upper bound",
+   "size": 1,
+   "category": "Sensors"
   },
   "0368": {
    "name": "MtvRpmLow",
@@ -1263,6 +2237,24 @@
    "category": "Other",
    "size": 1
   },
+  "037A": {
+   "name": "SpeedCtlPresentCount",
+   "desc": "Equipment detection: counts (SpeedCtlPresentCounter) of the speed control on switch before speed control is marked fitted (EquipmentFlags bit 6)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "037B": {
+   "name": "AcPresentCount",
+   "desc": "Equipment detection (EquipmentDetect): counts (AcPresentCounter) of a valid A/C sensor or request before A/C is marked fitted (EquipmentFlags bit 7)",
+   "category": "A/C",
+   "size": 1
+  },
+  "037C": {
+   "name": "PspPresentCount",
+   "desc": "Equipment detection: counts (PspPresentCounter) of the power steering switch input low with the engine running before it is marked fitted (EquipmentFlags bit 2)",
+   "category": "Sensors",
+   "size": 1
+  },
   "03B7": {
    "name": "FanAcSensorStage1",
    "desc": "Fan with A/C: A/C sensor at or above this value sets stage bit 1",
@@ -1287,12 +2279,73 @@
    "category": "Cooling fan",
    "size": 1
   },
+  "03C7": {
+   "name": "FanBusTempStage1",
+   "desc": "Fan: bus temperature at or above this value sets stage bit 1",
+   "category": "Cooling fan",
+   "size": 1
+  },
+  "03C8": {
+   "name": "FanBusTempStage0",
+   "desc": "Fan: bus temperature above this value sets stage bit 0",
+   "category": "Cooling fan",
+   "size": 1
+  },
+  "03C9": {
+   "name": "FanBusTempStage3",
+   "desc": "Fan: bus temperature at or above this value sets stage bit 3",
+   "category": "Cooling fan",
+   "size": 1
+  },
+  "03CA": {
+   "name": "FanBusTempStage2",
+   "desc": "Fan: bus temperature above this value sets stage bit 2",
+   "category": "Cooling fan",
+   "size": 1
+  },
+  "03CB": {
+   "name": "FanStageDelay",
+   "desc": "Fan stage change: delay (FanStageTimer) before the stage output changes",
+   "category": "Cooling fan",
+   "size": 1
+  },
+  "03CC": {
+   "name": "FanStageDelay2",
+   "desc": "Fan stage change: shorter delay",
+   "category": "Cooling fan",
+   "size": 1
+  },
   "03E2": {
    "name": "IacHotCoolantMin",
    "desc": "Coolant above which the hot-engine IAC handling of IdleTargetControl applies",
    "unit": "tempc",
    "size": 1,
    "category": "Idle"
+  },
+  "03E3": {
+   "name": "FanIdleBusTempMax",
+   "desc": "Fan at idle: bus temperature below this value with A/C requested",
+   "category": "Cooling fan",
+   "size": 1
+  },
+  "03E5": {
+   "name": "FanIdleRpmMax",
+   "desc": "Fan at idle (FanIdleState): engine rpm below this value",
+   "unit": "rpm32",
+   "category": "Cooling fan",
+   "size": 1
+  },
+  "03E7": {
+   "name": "FanIdleSpeedMax",
+   "desc": "Fan idle state: vehicle speed at or below this value to enter the state",
+   "category": "Cooling fan",
+   "size": 1
+  },
+  "03E8": {
+   "name": "FanIdleSpeedMaxSet",
+   "desc": "Fan idle state: vehicle speed limit while the state is set",
+   "category": "Cooling fan",
+   "size": 1
   },
   "0414": {
    "name": "IacLowRpm",
@@ -1320,6 +2373,25 @@
    "category": "Idle",
    "size": 1
   },
+  "0422": {
+   "name": "AcLaunchCutThrottle",
+   "desc": "A/C cut-out 2: throttle at or above this value",
+   "size": 1,
+   "category": "A/C"
+  },
+  "0423": {
+   "name": "AcLaunchCutRpmMax",
+   "desc": "A/C cut-out 2: below this engine rpm",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "A/C"
+  },
+  "0427": {
+   "name": "AcLaunchCutSpeedMax",
+   "desc": "A/C cut-out 2: below this vehicle speed",
+   "size": 1,
+   "category": "A/C"
+  },
   "0541": {
    "name": "RunPeriodOn",
    "desc": "Crank ISR (Isr_GPT_IC1): reference period (RefPeriod, word) below which the engine counts as running",
@@ -1344,6 +2416,13 @@
    "size": 1,
    "category": "Fuel"
   },
+  "0553": {
+   "name": "HotRestartCoolantMin",
+   "desc": "Coolant at or above which EngineStateFlags bit 4 (warm engine for the per-event fuel) sets",
+   "unit": "tempc",
+   "category": "Startup",
+   "size": 1
+  },
   "05A9": {
    "name": "FuelEventCoolantMax",
    "desc": "Per-event fuel: the coolant correction of FuelEventCalc applies below this coolant",
@@ -1364,8 +2443,8 @@
    "category": "Fuel"
   },
   "05AC": {
-   "name": "FuelEventOffsetInAlt",
-   "desc": "As FuelEventOffsetIn with calibration bit Options0338 bit 2 set",
+   "name": "FuelEventOffsetIn",
+   "desc": "Input value of FuelEventOffset (and of the cranking event timing); bit Options0338 bit 2 selects FuelEventOffsetInAlt",
    "size": 1,
    "category": "Fuel"
   },
@@ -1421,6 +2500,75 @@
   "147D": {
    "name": "FuelEventHold",
    "desc": "Per-event fuel: hold count FuelEventHoldCount",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1488": {
+   "name": "EventCellRpmLow",
+   "desc": "Per-event hold cells, warm: rpm between low and middle cells; the 3x3 hold values (FuelEventHoldCount) are at $0BC0",
+   "unit": "rpmw",
+   "category": "Other",
+   "size": 2
+  },
+  "148A": {
+   "name": "EventCellRpmHigh",
+   "desc": "Per-event hold cells, warm: rpm between middle and high cells",
+   "unit": "rpmw",
+   "category": "Other",
+   "size": 2
+  },
+  "148C": {
+   "name": "EventCellMapLow",
+   "desc": "Per-event hold cells, warm: MAP between low and middle cells",
+   "unit": "kpa",
+   "category": "Other",
+   "size": 1
+  },
+  "148D": {
+   "name": "EventCellMapHigh",
+   "desc": "Per-event hold cells, warm: MAP between middle and high cells",
+   "unit": "kpa",
+   "category": "Other",
+   "size": 1
+  },
+  "1499": {
+   "name": "EventCellMapHyst",
+   "desc": "Per-event hold cells: MAP hysteresis",
+   "unit": "kpa",
+   "category": "Other",
+   "size": 1
+  },
+  "149A": {
+   "name": "EventCellRpmHyst",
+   "desc": "Per-event hold cells: rpm hysteresis",
+   "unit": "rpmw",
+   "category": "Other",
+   "size": 2
+  },
+  "149C": {
+   "name": "HotEngineCoolantMin",
+   "desc": "Hot-engine enrichment runs at or above this coolant",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "149D": {
+   "name": "HotEngineRpmMin",
+   "desc": "Hot-engine enrichment runs at or above this engine rpm",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "149E": {
+   "name": "HotEngineMapMin",
+   "desc": "Hot-engine enrichment runs at or above this MAP",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "149F": {
+   "name": "HotEngineTimeMin",
+   "desc": "Hot-engine enrichment runs after this time since start",
    "size": 1,
    "category": "Fuel"
   },
@@ -1529,6 +2677,56 @@
    "size": 2,
    "category": "Fuel"
   },
+  "066D": {
+   "name": "IdleFuelRpmMax",
+   "desc": "Idle enrichment (IdleEnrichment): below this engine rpm",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "066E": {
+   "name": "IdleFuelMapMax",
+   "desc": "Idle enrichment: below this MAP",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "066F": {
+   "name": "IdleFuelStepsDown",
+   "desc": "Idle enrichment: counts (IdleFuelDownCount) per step down",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "0670": {
+   "name": "IdleFuelStepsUp",
+   "desc": "Idle enrichment: counts (IdleFuelUpCount) per step up",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "0671": {
+   "name": "IdleFuelRampDown",
+   "desc": "Idle enrichment: step down of IdleFuelRamp",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "0672": {
+   "name": "IdleFuelRampUp",
+   "desc": "Idle enrichment: step up of IdleFuelRamp",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "0673": {
+   "name": "IdleFuelTimeMin",
+   "desc": "Idle enrichment steps run after this time since start",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "0682": {
+   "name": "EngineOffTimeMin",
+   "desc": "Engine-off time (EngineOffTimeStart) at or above which EngineOffTime is cleared at start (hot restart logic)",
+   "size": 1,
+   "category": "Fuel"
+  },
   "071D": {
    "name": "O2FlexEthanolMin",
    "desc": "Closed loop: ethanol content below which FuelModeFlags2 bit 2 is set (flex fuel)",
@@ -1547,9 +2745,27 @@
    "category": "Closed loop",
    "size": 1
   },
+  "0723": {
+   "name": "FlexColdStartMiles",
+   "desc": "SRI mileage since the flex cold-start flag was set after which it changes to FlexStartFlags bit 5 (CheckPowerDown)",
+   "category": "Fuel",
+   "size": 1
+  },
   "0724": {
    "name": "O2FlexCellRef",
    "desc": "FlexCellCheck: value compared with the bank 1 memory cells from $805A (loaded with O2FlexCellRef2)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "0725": {
+   "name": "O2LearnRateFlex",
+   "desc": "As O2LearnRate with the flex fuel flag FlexStartFlags bit 4",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "0726": {
+   "name": "O2LearnRateWotFlex",
+   "desc": "As O2LearnRateWot with the flex fuel flag",
    "category": "Closed loop",
    "size": 1
   },
@@ -1571,6 +2787,43 @@
    "unit": "kpa",
    "size": 1,
    "category": "A/C"
+  },
+  "0EAA": {
+   "name": "AccelThrottleDeadband",
+   "desc": "Throttle acceleration: rise (Throttle minus ThrottleLast) below this value is ignored",
+   "size": 1,
+   "category": "A/C"
+  },
+  "0EFF": {
+   "name": "TipInFuelTimeMin",
+   "desc": "Tip-in fuel: scaled throttle rate above which the timer TipInTimer is decreased",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "0F00": {
+   "name": "TipInFuelDecay",
+   "desc": "Tip-in fuel: decrease of the timer TipInTimer",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "0701": {
+   "name": "TipInRpmMax",
+   "desc": "Tip-in fuel runs below this engine rpm (closed throttle start)",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "0702": {
+   "name": "TipInThrottleDeadband",
+   "desc": "Tip-in fuel: throttle rise below this value is ignored",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "0703": {
+   "name": "TipInMode",
+   "desc": "Tip-in fuel mode (0 = off; 1, 2 select the branch)",
+   "size": 1,
+   "category": "Fuel"
   },
   "0F71": {
    "name": "DecelLeanMapDrop",
@@ -1647,15 +2900,279 @@
    "size": 2,
    "category": "Fuel"
   },
+  "0F6C": {
+   "name": "KnockFuelMax",
+   "desc": "Knock enrichment: upper limit of the enrichment KnockFuel",
+   "category": "Knock",
+   "size": 1
+  },
+  "0F6D": {
+   "name": "KnockFuelVacuumMax",
+   "desc": "Knock enrichment: runs below this manifold vacuum",
+   "unit": "kpa",
+   "category": "Knock",
+   "size": 1
+  },
+  "0F6E": {
+   "name": "KnockFuelCoolantMin",
+   "desc": "Knock enrichment: runs at or above this coolant temperature",
+   "unit": "tempc",
+   "category": "Knock",
+   "size": 1
+  },
+  "0F6F": {
+   "name": "KnockFuelGain2",
+   "desc": "Knock enrichment: gain on the second term",
+   "category": "Knock",
+   "size": 1
+  },
+  "0F70": {
+   "name": "KnockFuelGain3",
+   "desc": "Knock enrichment: gain on the third term",
+   "category": "Knock",
+   "size": 1
+  },
+  "1206": {
+   "name": "O2ActiveHigh",
+   "desc": "O2 sensor (upstream, both banks): raw value at or above this counts as switching high",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1207": {
+   "name": "O2ActiveLow",
+   "desc": "O2 sensor (upstream): raw value below this marks the sensor as active (O2ActiveFlags)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "12DB": {
+   "name": "O2DownActiveHigh",
+   "desc": "Downstream O2 sensor: raw value at or above this counts as switching high",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "12DC": {
+   "name": "O2DownActiveLow",
+   "desc": "Downstream O2 sensor: raw value below this marks it as active",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "1350": {
+   "name": "O2CrossCheckMax",
+   "desc": "O2 cross-check (O2CrossCheck, Options0339 bit 6): first sensor reading at or below this value",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1351": {
+   "name": "O2CrossCheckMin",
+   "desc": "O2 cross-check: second sensor reading at or above this value",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1354": {
+   "name": "O2CrossClearCount",
+   "desc": "O2 cross-check: counts of the clear condition before the flag clears",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1353": {
+   "name": "O2CrossCheckCount",
+   "desc": "O2 cross-check: counts of the condition before the bank flag in O2CrossFlags is set",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1352": {
+   "name": "O2CrossClearMin",
+   "desc": "O2 cross-check: first sensor reading at or above which the flag clears",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11F9": {
+   "name": "ThermostatCoolant",
+   "desc": "Coolant the warm-up monitor waits for (also the closed-loop coolant limit)",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Diagnostics"
+  },
+  "11FA": {
+   "name": "O2ColdStartCoolant",
+   "desc": "Closed loop: start coolant below which the cold-start delay additions apply",
+   "unit": "tempc",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11FB": {
+   "name": "O2ColdStartAdder",
+   "desc": "Closed loop: addition to the entry delay after a cold start",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11FD": {
+   "name": "O2ColdPurgeCount",
+   "desc": "Cold-start O2 logic: purging counts (O2ColdPurgeCounter) before the cold trims are reduced",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11FC": {
+   "name": "O2ColdPurgeRampMin",
+   "desc": "Cold-start O2 logic: purge ramp at or above this value (2 less once set) counts as purging",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1208": {
+   "name": "O2ColdLeanRaw",
+   "desc": "Cold-start O2 logic: bank 1 upstream O2 at or below this value counts as lean (O2ColdLeanCount1; also FlexColdLeanCount)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1209": {
+   "name": "O2ColdLeanRaw2",
+   "desc": "Cold-start O2 logic: bank 2 upstream O2 at or below this value counts as lean (O2ColdLeanCount2)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1297": {
+   "name": "O2DownEnableCoolant",
+   "desc": "Coolant at or above which the downstream O2 delay O2DownDelay counts down",
+   "unit": "tempc",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "12AA": {
    "name": "O2PurgeRampMin",
    "desc": "Closed loop: purge ramp at or above which the purge correction of the trim applies",
    "category": "Closed loop",
    "size": 1
   },
+  "12EF": {
+   "name": "O2CellRpmLow",
+   "desc": "Adaptive trim cells (SelectCell3x3 from O2CellSelect3x3): engine rpm between the low and middle cells",
+   "unit": "rpmw",
+   "category": "Closed loop",
+   "size": 2
+  },
+  "12F1": {
+   "name": "O2CellRpmHigh",
+   "desc": "Adaptive trim cells: engine rpm between the middle and high cells",
+   "unit": "rpmw",
+   "category": "Closed loop",
+   "size": 2
+  },
+  "12F3": {
+   "name": "O2CellRpmHyst",
+   "desc": "Adaptive trim cells: rpm hysteresis",
+   "unit": "rpmw",
+   "category": "Closed loop",
+   "size": 2
+  },
+  "12F5": {
+   "name": "O2CellMapLow",
+   "desc": "Adaptive trim cells: MAP between the low and middle cells",
+   "unit": "kpa",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "12F6": {
+   "name": "O2CellMapHigh",
+   "desc": "Adaptive trim cells: MAP between the middle and high cells",
+   "unit": "kpa",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "12F7": {
+   "name": "O2CellMapHyst",
+   "desc": "Adaptive trim cells: MAP hysteresis",
+   "unit": "kpa",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "127F": {
+   "name": "O2AdaptIntegralMax",
+   "desc": "Adaptive cell integrator upper limit (signed word)",
+   "category": "Closed loop",
+   "size": 2
+  },
+  "1281": {
+   "name": "O2AdaptIntegralMin",
+   "desc": "Adaptive cell integrator lower limit (signed word)",
+   "category": "Closed loop",
+   "size": 2
+  },
   "1247": {
    "name": "O2DerivGainDefault",
    "desc": "O2 feedback: derivative gain $15,X loaded when the gains come from the cell tables",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1202": {
+   "name": "O2AdaptCellMax",
+   "desc": "Adaptive cell value upper limit (signed)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1203": {
+   "name": "O2AdaptCellMin",
+   "desc": "Adaptive cell value lower limit (signed)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1205": {
+   "name": "O2ColdLeanCount",
+   "desc": "Cold-start O2 logic: lean counts before the cold trim of the bank is reduced (also FlexColdLeanCount)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11FE": {
+   "name": "O2ColdTrimMin",
+   "desc": "Upstream O2 trim (O2UpTrim): signed lower limit of the trim with the cold-start flag (O2CrossFlags bit 1)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11FF": {
+   "name": "O2ColdStartTime",
+   "desc": "Cold-start O2 logic (start coolant below O2ColdStartCoolant): time (O2ColdStartTimer) up to which the cold-start flag (O2CrossFlags bit 1) is set",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1200": {
+   "name": "O2ColdTrimMinDrive",
+   "desc": "As O2ColdTrimMin in gear (DriveFlags bit 5)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "1201": {
+   "name": "O2ColdStartTimeDrive",
+   "desc": "As O2ColdStartTime in gear (DriveFlags bit 5)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11CD": {
+   "name": "O2CellResetTrimMax",
+   "desc": "Cell reset: the short-term trim is cleared while it is not above this value",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11CE": {
+   "name": "O2CellResetSpeedMax",
+   "desc": "Cell reset: vehicle speed at or below this value",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11CF": {
+   "name": "O2CellResetVacuumMax",
+   "desc": "Cell reset: manifold vacuum at or below this value",
+   "unit": "kpa",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11D0": {
+   "name": "O2CellResetThrottleMin",
+   "desc": "Cell reset: throttle at or above this value",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "120B": {
+   "name": "O2StepPeriod",
+   "desc": "O2UpdateUpstream: count O2StepCount that wraps at this value (O2 step timing)",
    "category": "Closed loop",
    "size": 1
   },
@@ -1731,10 +3248,134 @@
    "category": "Closed loop",
    "size": 1
   },
+  "1298": {
+   "name": "O2SlowEnableCoolant",
+   "desc": "Coolant at or above which the slow-term delay O2SlowDelay counts down",
+   "unit": "tempc",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "12A9": {
+   "name": "O2SlowPurgeRampMin",
+   "desc": "Purge ramp below this value reloads the slow-term periods (ClosedLoop712/O2SlowPeriod2)",
+   "category": "Closed loop",
+   "size": 1
+  },
   "11BD": {
    "name": "O2WarmDelayCoolant",
    "desc": "Coolant at or above which the warm delay O2WarmDelay counts down (below it the delay is reloaded with O2DelayWarm)",
    "unit": "tempc",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11BE": {
+   "name": "O2DelayCold",
+   "desc": "Closed-loop entry delay (O2WarmDelay) below O2DelayCoolantMax",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11BF": {
+   "name": "O2DelayWarm",
+   "desc": "Closed-loop entry delay when warm",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11C0": {
+   "name": "O2DelayCoolantMax",
+   "desc": "Closed loop: below this coolant the entry delay O2DelayCold is used",
+   "unit": "tempc",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11C6": {
+   "name": "O2MemMapHyst",
+   "desc": "Long-term memory cell selection (O2CellSelect): MAP hysteresis added to the breakpoints at $18E2 when moving down",
+   "unit": "kpa",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11C7": {
+   "name": "O2MemRpmSplit",
+   "desc": "Long-term memory cell selection: rpm that splits each MAP band into a low and a high cell",
+   "unit": "rpm32",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11C8": {
+   "name": "O2MemRpmHyst",
+   "desc": "Long-term memory cell selection: rpm hysteresis of the cell splits",
+   "unit": "rpm32",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11C9": {
+   "name": "O2IdleRpmMargin",
+   "desc": "Closed loop: rpm within idle target plus this margin counts as idle (bit Options0339 bit 7)",
+   "unit": "rpm32",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11CA": {
+   "name": "O2IdleSpeedMax",
+   "desc": "Closed loop: vehicle speed below which the idle cell is used",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11E1": {
+   "name": "O2LearnMapMax",
+   "desc": "Long-term learning (O2LearnEnable): MAP at or below this value (and above O2MapMin)",
+   "unit": "kpa",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11E2": {
+   "name": "O2MapMin",
+   "desc": "Closed loop and the fuel system monitor: MAP at or above this value",
+   "unit": "kpa",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11E3": {
+   "name": "O2LearnRpmMax",
+   "desc": "Long-term learning: rpm below this value",
+   "unit": "rpm32",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11E4": {
+   "name": "O2LearnRpmHyst",
+   "desc": "Long-term learning: rpm hysteresis of O2LearnRpmMax (O2InactiveFlags bit 1)",
+   "unit": "rpm32",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11E5": {
+   "name": "O2PulseWidthMin",
+   "desc": "Closed-loop timing: fuel pulse widths (FuelPulseBank1/FuelPulseBank2, word) at or above this value for closed-loop entry",
+   "category": "Closed loop",
+   "size": 2
+  },
+  "11D1": {
+   "name": "O2LearnRate",
+   "desc": "Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer (O2CellWork) per pass",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11D2": {
+   "name": "O2LearnRateWot",
+   "desc": "As O2LearnRate at WOT",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11E7": {
+   "name": "O2AdaptMax",
+   "desc": "Long-term adaptive value (O2AdaptValue1, O2AdaptValue2) upper limit (signed); at the limit the fuel system monitor counts",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "11E8": {
+   "name": "O2AdaptMin",
+   "desc": "Long-term adaptive value lower limit (signed)",
    "category": "Closed loop",
    "size": 1
   },
@@ -1810,6 +3451,166 @@
    "category": "Idle",
    "size": 1
   },
+  "13A0": {
+   "name": "PurgeCoolantMin",
+   "desc": "Purge runs at or above this coolant temperature",
+   "unit": "tempc",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "139C": {
+   "name": "PurgeBattTempMin",
+   "desc": "Purge start: battery temperature lower limit",
+   "unit": "tempc",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "139D": {
+   "name": "PurgeBattTempMax",
+   "desc": "Purge start: battery temperature upper limit of the start window",
+   "unit": "tempc",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "139E": {
+   "name": "PurgeBattTimerInit",
+   "desc": "Purge (PurgeEnable): start value of the timer PurgeBattTimer (word) inside the battery temperature window",
+   "category": "EVAP purge",
+   "size": 2
+  },
+  "139B": {
+   "name": "PurgeMapMax",
+   "desc": "Purge runs below this MAP",
+   "unit": "kpa",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13D8": {
+   "name": "PurgeDelayInit",
+   "desc": "Start value of the purge delay PurgeStartRamp (reset, PurgeEnable, PurgeReset)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13DB": {
+   "name": "PurgeTrimFilterOff",
+   "desc": "Purge vapour learning (PurgeVaporLearn): filter weight of the short-term trim average without purge (PurgeTrimAvgOff)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13DC": {
+   "name": "PurgeTrimFilterOn",
+   "desc": "Purge vapour learning: filter weight of the short-term trim average with purge (PurgeTrimAvgOn)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13DD": {
+   "name": "PurgeLearnTimeMax",
+   "desc": "Purge vapor learning (PurgeVaporLearn): length of the part-throttle phase (word)",
+   "category": "EVAP purge",
+   "size": 2
+  },
+  "13E0": {
+   "name": "PurgeLearnRateStep",
+   "desc": "Purge vapor learning: increase of the learning rate",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13E1": {
+   "name": "PurgeLearnRateTime",
+   "desc": "Purge vapor learning: loops between learning-rate increases",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13E2": {
+   "name": "PurgeLearnRateMax",
+   "desc": "Purge vapor learning: upper limit of the learning rate",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13E3": {
+   "name": "PurgeVaporTrimDrop",
+   "desc": "Purge vapour learning: signed offset added to the no-purge trim average; a purge trim average below it counts as vapour",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13E4": {
+   "name": "PurgeVaporDetectCount",
+   "desc": "Purge vapour learning: counts (PurgeVaporCount) of the vapour condition before the vapour learning starts",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13E7": {
+   "name": "PurgeLearnRateTipStep",
+   "desc": "Purge vapour learning: learning rate (PurgeLearnRate) increase after a throttle event (O2Bank1Flags bit 3)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13E8": {
+   "name": "PurgeLearnRateTipMax",
+   "desc": "Purge vapour learning: upper limit of that increase",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13E9": {
+   "name": "PurgeLearnRateInit2",
+   "desc": "Purge vapor learning: learning rate at closed throttle",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13E5": {
+   "name": "PurgeLearnTimeClosed",
+   "desc": "Purge vapor learning: length of the closed-throttle phase (word)",
+   "category": "EVAP purge",
+   "size": 2
+  },
+  "13EE": {
+   "name": "PurgeLearnRampMin",
+   "desc": "Purge vapor learning runs at or above this purge ramp",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13EF": {
+   "name": "PurgeLearnRampFull",
+   "desc": "Purge vapor learning: ramp at or above which the full step applies",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13F1": {
+   "name": "PurgeVaporPartMax",
+   "desc": "Purge vapor learning: upper limit of PurgeVaporPart",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13F4": {
+   "name": "PurgeLearnTrimBandUp",
+   "desc": "Purge vapour learning: positive short-term trim at or below this value changes nothing",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13F5": {
+   "name": "PurgeLearnTrimBandDown",
+   "desc": "Purge vapour learning: negative trim band (complemented / negated before the compare)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13F6": {
+   "name": "PurgeVaporSettleTime",
+   "desc": "Purge vapour learning: time (PurgeVaporSettle) after the learning start before the trims are compared",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13EC": {
+   "name": "PurgeLearnTrimCount",
+   "desc": "Purge vapor learning: trim events before a step",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13ED": {
+   "name": "PurgeLearnTrimCount2",
+   "desc": "Purge vapor learning: trim events before a step (second branch)",
+   "category": "EVAP purge",
+   "size": 1
+  },
   "13A4": {
    "name": "PurgeCell1",
    "desc": "Adaptive cell number (O2MemCell) used for purge learning (copied to PurgeCellNum1); cell 12 also sets DriveFlags bit 0",
@@ -1828,11 +3629,47 @@
    "category": "EVAP purge",
    "size": 1
   },
+  "13AF": {
+   "name": "O2LearnPurgeCountMax",
+   "desc": "Long-term learning: purge cell count PurgeCellCount above which learning is allowed (zero also allows it)",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "13B1": {
+   "name": "PurgeLearnTrimMin",
+   "desc": "Purge vapor learning: short-term trim at or below this value (signed) marks the rich limit",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13B2": {
+   "name": "O2TrimResetValue",
+   "desc": "Closed-loop manager: value loaded into the bank trim when O2ResetFlags2 bits 2-3 request a reset",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "13B5": {
+   "name": "PurgeCellRefMargin",
+   "desc": "Purge cell reference (PurgeCellRichCheck): margin added to the stored cells $8066/$8079 before compare",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13B8": {
+   "name": "PurgeCellUpdateCount",
+   "desc": "Purge (PurgeCellUpdateGate): counts (PurgeCellUpdateCounter) between updates",
+   "category": "EVAP purge",
+   "size": 1
+  },
   "19B7": {
    "name": "TimedSparkPeriodMax",
    "desc": "Crank ISR: reference period below which timed spark (SparkFlags bit 5) is used",
    "category": "Spark",
    "size": 2
+  },
+  "1A58": {
+   "name": "SparkFaultValue",
+   "desc": "Spark value SparkValueD0F with a fault (SparkFaultFlags bit 5)",
+   "category": "Spark",
+   "size": 1
   },
   "1A1B": {
    "name": "AfterStartSparkEvents",
@@ -1951,6 +3788,150 @@
    "category": "Spark",
    "size": 1
   },
+  "19C3": {
+   "name": "TipInBaroMin",
+   "desc": "Tip-in retard runs above this barometric pressure",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19C4": {
+   "name": "TipInAirTempMin",
+   "desc": "Tip-in retard runs above this air temperature (with calibration bit Options0330 bit 5)",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19C5": {
+   "name": "TipInCoolantMin",
+   "desc": "Tip-in retard runs above this coolant temperature",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19C6": {
+   "name": "TipInMapMin",
+   "desc": "Tip-in retard runs above this MAP",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19C7": {
+   "name": "TipInRpmBelowTarget",
+   "desc": "Tip-in retard window: engine rpm above idle target minus this value",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Spark"
+  },
+  "19C9": {
+   "name": "TipInRpmAboveTarget",
+   "desc": "Tip-in retard window: engine rpm below idle target plus this value",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Spark"
+  },
+  "19CB": {
+   "name": "TipInThrottleMin",
+   "desc": "Tip-in retard runs above this throttle opening",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19CC": {
+   "name": "TipInThrottleRiseMin",
+   "desc": "Tip-in retard: throttle rise (ThrottleRise) above which it starts",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19CD": {
+   "name": "TipInThrottleFilter",
+   "desc": "Tip-in retard: filter weight of the throttle reference TipInThrottleRef",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19CE": {
+   "name": "TipInRetardDecay",
+   "desc": "Tip-in retard: decrease per step",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19CF": {
+   "name": "TipInRetardEnd",
+   "desc": "Tip-in retard: value below which it ends",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19E0": {
+   "name": "TipInBaroMinKnock",
+   "desc": "As TipInBaroMin while a knock retard is applied",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19E1": {
+   "name": "TipInAirTempMinKnock",
+   "desc": "As TipInAirTempMin while a knock retard is applied",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19E2": {
+   "name": "TipInCoolantMinKnock",
+   "desc": "As TipInCoolantMin while a knock retard is applied",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19E3": {
+   "name": "TipInMapMinKnock",
+   "desc": "As TipInMapMin while a knock retard is applied",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19E4": {
+   "name": "TipInRpmBelowTargetKnock",
+   "desc": "As TipInRpmBelowTarget while a knock retard is applied",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Spark"
+  },
+  "19E6": {
+   "name": "TipInRpmAboveTargetKnock",
+   "desc": "As TipInRpmAboveTarget while a knock retard is applied",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Spark"
+  },
+  "19E8": {
+   "name": "TipInThrottleMinKnock",
+   "desc": "As TipInThrottleMin while a knock retard is applied",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19E9": {
+   "name": "TipInThrottleRiseMinKnock",
+   "desc": "As TipInThrottleRiseMin while a knock retard is applied",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19EA": {
+   "name": "TipInThrottleFilterKnock",
+   "desc": "As TipInThrottleFilter while a knock retard is applied",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19EB": {
+   "name": "TipInRetardDecayKnock",
+   "desc": "As TipInRetardDecay while a knock retard is applied",
+   "size": 1,
+   "category": "Spark"
+  },
+  "19EC": {
+   "name": "TipInRetardEndKnock",
+   "desc": "As TipInRetardEnd while a knock retard is applied",
+   "size": 1,
+   "category": "Spark"
+  },
   "1BB9": {
    "name": "SurgeJerkNegMin",
    "desc": "Throttle open: negative jerk beyond which SurgeJerkAdvanceOpen applies",
@@ -1967,6 +3948,36 @@
    "name": "SurgeRpmAccelEnd",
    "desc": "Driveline surge: rpm acceleration change (RpmAccelChange) below which the retard stage ends early",
    "size": 2,
+   "category": "Spark"
+  },
+  "1BCD": {
+   "name": "SurgeRpmFilter",
+   "desc": "Driveline surge: filter weight of the fast rpm (SurgeRpmFast)",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BCE": {
+   "name": "SurgeAccelFilter",
+   "desc": "Driveline surge: filter weight of the rpm acceleration (SurgeAccelFast)",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BCF": {
+   "name": "SurgeRpmFilter2",
+   "desc": "Driveline surge: second filter (SurgeRpmSlow); the difference of the two is the rpm acceleration",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BD0": {
+   "name": "SurgeAccelFilter2",
+   "desc": "Driveline surge: second acceleration filter (SurgeAccelSlow)",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1BD2": {
+   "name": "SurgeMapFilter",
+   "desc": "Driveline surge: filter weight of the MAP reference SurgeMapRef (MapRise = MAP minus it)",
+   "size": 1,
    "category": "Spark"
   },
   "1BD5": {
@@ -2007,6 +4018,24 @@
    "size": 1,
    "category": "Spark"
   },
+  "1C1D": {
+   "name": "AcSparkSpeedMin",
+   "desc": "A/C spark compensation runs above this vehicle speed (closed throttle)",
+   "size": 1,
+   "category": "A/C"
+  },
+  "1C23": {
+   "name": "AcSparkRateEnd",
+   "desc": "A/C spark: the window ends when the rpm rate is above this value",
+   "size": 2,
+   "category": "A/C"
+  },
+  "1C1E": {
+   "name": "AcSparkLoopMask",
+   "desc": "A/C clutch spark (AcClutchSpark): main loop mask between steps",
+   "category": "A/C",
+   "size": 1
+  },
   "1C25": {
    "name": "AcSparkRateChangeMin",
    "desc": "A/C spark: rpm-rate change (AcSparkRateChange) at or above which the compensation starts, A/C clutch off",
@@ -2030,6 +4059,51 @@
    "desc": "As AcSparkHoldCount with the A/C clutch on",
    "size": 1,
    "category": "A/C"
+  },
+  "1C21": {
+   "name": "AcSparkWindowInit",
+   "desc": "A/C spark window AcSparkWindow loaded when the A/C clutch releases",
+   "size": 1,
+   "category": "A/C"
+  },
+  "1D0E": {
+   "name": "KnockCylRetardMaxSteps",
+   "desc": "Per-cylinder knock retard: upper limit of the half-value (Temp4F2)",
+   "category": "Knock",
+   "size": 1
+  },
+  "1D10": {
+   "name": "KnockCylRetardOffset",
+   "desc": "Per-cylinder knock retard: offset subtracted from the half-value",
+   "category": "Knock",
+   "size": 1
+  },
+  "1C79": {
+   "name": "KnockLearnCoolantMin",
+   "desc": "Knock noise learning and the knock retard limit run above this coolant temperature",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Knock"
+  },
+  "1C89": {
+   "name": "KnockLearnRpmBand",
+   "desc": "Knock noise learning: half width of an rpm band around each band centre ($2435-$2459)",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Knock"
+  },
+  "1C8B": {
+   "name": "KnockLearnTimeMin",
+   "desc": "Knock noise learning runs after this time since start",
+   "size": 1,
+   "category": "Knock"
+  },
+  "1C8C": {
+   "name": "KnockLearnAirTempMax",
+   "desc": "Knock noise learning runs below this air temperature",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Knock"
   },
   "1CF0": {
    "name": "KnockCoolantMin",
@@ -2077,6 +4151,36 @@
    "size": 1,
    "category": "Knock"
   },
+  "1CE9": {
+   "name": "KnockLearnMask",
+   "desc": "Knock learning: main-loop mask for counting knock events",
+   "size": 1,
+   "category": "Knock"
+  },
+  "1CEA": {
+   "name": "KnockEventsMin",
+   "desc": "Knock learning: knock events (KnockEventCount) needed before a cylinder retard step",
+   "size": 1,
+   "category": "Knock"
+  },
+  "1CF3": {
+   "name": "KnockSignalMin",
+   "desc": "Knock learning: knock signal (KnockSignalLearn) at or above this value with KnockEventsMin events",
+   "category": "Knock",
+   "size": 1
+  },
+  "1CEC": {
+   "name": "KnockDecayMask",
+   "desc": "Knock events (KnockEventDecayStep): mask tested before the event count is reduced",
+   "category": "Knock",
+   "size": 1
+  },
+  "1CED": {
+   "name": "KnockEventDecay",
+   "desc": "Knock events: reduction of KnockEventCount",
+   "category": "Knock",
+   "size": 1
+  },
   "1CE2": {
    "name": "KnockBandMapBase",
    "desc": "Knock rpm bands (KnockRpmBand): starting MAP value of the band search",
@@ -2098,6 +4202,31 @@
    "category": "Knock",
    "size": 1
   },
+  "1AED": {
+   "name": "SparkSpeedFlagMin",
+   "desc": "SparkFlags2 bit 6 sets below this vehicle speed (hysteresis SparkSpeedFlagHyst)",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1AEE": {
+   "name": "SparkRpmFlagMin",
+   "desc": "SparkFlags2 bit 5 sets below this engine rpm (hysteresis SparkRpmFlagHyst)",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1DAD": {
+   "name": "IacStepSumMax",
+   "desc": "Idle speed control: limit of the summed IAC steps IacStepSum; beyond it the sum is reset to IacStepSumReset",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DAE": {
+   "name": "IacStepSumReset",
+   "desc": "Idle speed control: value IacStepSum is set to when IacStepSumMax is exceeded",
+   "size": 1,
+   "category": "Idle"
+  },
   "1AF2": {
    "name": "SparkHookCoolantMin",
    "desc": "Spark hook (SparkHook, bit Options0338 bit 5): coolant at or above this value",
@@ -2105,10 +4234,171 @@
    "category": "Spark",
    "size": 1
   },
+  "1DC0": {
+   "name": "IacCrankRpm",
+   "desc": "Engine rpm that ends the cranking IAC position (IacCrankCoolant) and starts IacRunUpCoolant",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Idle"
+  },
   "2195": {
    "name": "IacTargetMax",
    "desc": "Upper limit of the IAC target position",
    "size": 1,
+   "category": "Idle"
+  },
+  "2196": {
+   "name": "IdleTargetFault",
+   "desc": "Idle target used with a fault (SparkFaultFlags bit 5 or FaultSet02 bits 7-6), ×64",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DE5": {
+   "name": "IdleRampAirMin",
+   "desc": "Battery-temperature idle ramp: air temperature window lower limit (IdleHotAirOn is the upper)",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DE6": {
+   "name": "IdleHotAirOff",
+   "desc": "Air temperature below which IdleTargetHotAirAdder stops (hysteresis)",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DE7": {
+   "name": "IdleHotAirOn",
+   "desc": "Air temperature above which IdleTargetHotAirAdder applies",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DE8": {
+   "name": "IdleRampAirMinOff",
+   "desc": "As IdleRampAirMin once active (hysteresis; IdleHotAirOff is the upper)",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DE9": {
+   "name": "IdleRampBattTempMaxOff",
+   "desc": "Idle ramp: battery temperature upper limit once active",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DEA": {
+   "name": "IdleRampBattTempMax",
+   "desc": "Idle ramp: battery temperature window upper limit",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DEB": {
+   "name": "IdleRampBattTempMinOff",
+   "desc": "Idle ramp: battery temperature lower limit once active",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DEC": {
+   "name": "IdleRampBattTempMin",
+   "desc": "Idle ramp: battery temperature window lower limit",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DEE": {
+   "name": "IdleRampCoolantMinOff",
+   "desc": "Idle ramp: coolant lower limit once active",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DEF": {
+   "name": "IdleRampCoolantMin",
+   "desc": "Idle ramp: coolant window lower limit",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DF0": {
+   "name": "IdleRampCoolantMaxOff",
+   "desc": "Idle ramp: coolant upper limit once active",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DF1": {
+   "name": "IdleRampCoolantMax",
+   "desc": "Idle ramp: coolant window upper limit",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DF2": {
+   "name": "IdleRampVoltsMargin",
+   "desc": "Idle ramp: charging target minus this margin is compared with the filtered battery voltage",
+   "unit": "volt16",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1E01": {
+   "name": "IdleLowVoltsMin",
+   "desc": "Battery voltage below which the low-voltage timer IdleLowVoltsTimer counts",
+   "unit": "volt16",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1E02": {
+   "name": "IdleLowVoltsTime",
+   "desc": "Low-voltage time (IdleLowVoltsTimer) above which the battery-temperature idle ramp is blocked",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DF3": {
+   "name": "IdleRampVoltsMarginOn",
+   "desc": "As IdleRampVoltsMargin once IdleFlags2 bit 2 is set",
+   "unit": "volt16",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DF4": {
+   "name": "IdleRampDelayInit",
+   "desc": "Idle ramp: delay IdleRampDelay before the ramp starts",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DF5": {
+   "name": "IdleRampHoldInit",
+   "desc": "Idle ramp: hold time IdleRampHold",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DF6": {
+   "name": "IdleRampBlockAcOff",
+   "desc": "Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit Options033A bit 6 clear)",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DF7": {
+   "name": "IdleRampBlockEvent",
+   "desc": "Idle ramp block time after an rpm dip or with A/C requested",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DF8": {
+   "name": "IdleRampBlockStart",
+   "desc": "Idle ramp block time while the engine is not running",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DFD": {
+   "name": "IdleRampCountMin",
+   "desc": "Idle ramp: runs only once the SRI mileage SriMileage (word) is at or above this value",
+   "size": 2,
    "category": "Idle"
   },
   "1DFF": {
@@ -2116,6 +4406,12 @@
    "desc": "Gear-change IAC ends above this segment rpm",
    "unit": "rpmw",
    "size": 2,
+   "category": "Idle"
+  },
+  "1E2B": {
+   "name": "IdleLoopHoldTime",
+   "desc": "Idle speed control: hold-off IdleLoopHold loaded when SwitchInputs bit 0 first sets; no closing steps while it runs",
+   "size": 1,
    "category": "Idle"
   },
   "1E2C": {
@@ -2132,9 +4428,36 @@
    "size": 2,
    "category": "Idle"
   },
+  "1E30": {
+   "name": "IacStartLoops",
+   "desc": "Main loops after start before the IAC start logic ends (also the IAC start step counter limit)",
+   "category": "Idle",
+   "size": 1
+  },
+  "1E31": {
+   "name": "IdleErrorCoarseMin",
+   "desc": "Idle speed control: rpm error from which the coarse error term (IdleErrorTermCoarse) is used instead of the fine one",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Idle"
+  },
+  "1F5B": {
+   "name": "ShiftIdleRpmMargin",
+   "desc": "Shift into drive: idle target plus this margin; segment rpm above it ends the transition",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Idle"
+  },
   "1F5D": {
    "name": "IacGearCoolantMax",
    "desc": "Gear-change IAC: coolant below which the IacGearTimeCoolant tables and the time counter IacGearTime apply",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1F5E": {
+   "name": "ShiftIdleCoolantMin",
+   "desc": "Shift into P/N: coolant above which ShiftIdleDelayCoolant applies",
    "unit": "tempc",
    "size": 1,
    "category": "Idle"
@@ -2261,6 +4584,12 @@
    "size": 1,
    "category": "Idle"
   },
+  "1DD1": {
+   "name": "FieldDutyFilter",
+   "desc": "Filter weight of the generator field duty FieldDuty",
+   "size": 1,
+   "category": "Other"
+  },
   "1DD2": {
    "name": "BatteryVoltsFilter",
    "desc": "Filter weight of the filtered battery voltage BatteryVoltsFiltered",
@@ -2272,6 +4601,88 @@
    "desc": "Filter weight of the charging deficit average ChargeDeficitAvg",
    "size": 1,
    "category": "Other"
+  },
+  "20EC": {
+   "name": "IdleMapTargetMin",
+   "desc": "Lower limit of the idle MAP target IdleMapTarget",
+   "size": 1,
+   "category": "Idle"
+  },
+  "20E6": {
+   "name": "IdleMapStepTimeClosed",
+   "desc": "Idle MAP loop: time between IAC steps, closed throttle",
+   "size": 1,
+   "category": "Idle"
+  },
+  "20E7": {
+   "name": "IdleMapHoldTime",
+   "desc": "Idle MAP loop: hold-off (IdleMapHold) while the dashpot timer runs",
+   "size": 1,
+   "category": "Idle"
+  },
+  "20E8": {
+   "name": "IdleMapStepTime",
+   "desc": "Idle MAP loop: time between IAC steps, throttle not closed",
+   "size": 1,
+   "category": "Idle"
+  },
+  "20E9": {
+   "name": "IdleMapRpmAccelMax",
+   "desc": "Idle MAP loop: closed-throttle mode ends when IdleMapRpmAccel (rpm acceleration) exceeds this value",
+   "size": 1,
+   "category": "Idle"
+  },
+  "20EA": {
+   "name": "IdleMapAcAdder",
+   "desc": "Idle MAP target addition with A/C requested",
+   "size": 1,
+   "category": "Idle"
+  },
+  "2183": {
+   "name": "IacRollSpeedMax",
+   "desc": "Rolling IAC target applies up to this vehicle speed",
+   "size": 1,
+   "category": "Idle"
+  },
+  "2184": {
+   "name": "IacRollSpeedHyst",
+   "desc": "Hysteresis on IdleRollSpeed and IacRollSpeedMax",
+   "size": 1,
+   "category": "Idle"
+  },
+  "2185": {
+   "name": "IacDecelHoldCount",
+   "desc": "Decel reference: loops before the reference rpm (IacDecelRefRpm) is taken",
+   "size": 1,
+   "category": "Idle"
+  },
+  "2186": {
+   "name": "IacDecelRefOffset",
+   "desc": "Decel reference: offset subtracted from the latched rpm",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Idle"
+  },
+  "2188": {
+   "name": "IacDecelTargetMax",
+   "desc": "Decel reference (IacRollingControl): upper limit of the idle target used for it (the smaller of this value and IdleTarget is taken)",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Idle"
+  },
+  "218A": {
+   "name": "IacRollTargetAdder",
+   "desc": "Rolling: idle target plus this value",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Idle"
+  },
+  "218E": {
+   "name": "IacRollTargetAdder2",
+   "desc": "Rolling: further addition on IacRollTargetAdder",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Idle"
   },
   "218C": {
    "name": "IacCoastOffsetUp",
@@ -2290,6 +4701,324 @@
    "desc": "Vehicle speed that separates standing from rolling for idle air, dashpot and coast logic",
    "size": 1,
    "category": "Idle"
+  },
+  "2190": {
+   "name": "IdleStableTimeMin",
+   "desc": "Idle state flags (IdleStateFlags): time since start above this value (also used by IdleMonitorEnable)",
+   "category": "Idle",
+   "size": 1
+  },
+  "2191": {
+   "name": "IdleStableCoolantMin",
+   "desc": "Idle state flags (IdleStateFlags): stable idle needs coolant above this value",
+   "unit": "tempc",
+   "category": "Idle",
+   "size": 1
+  },
+  "2192": {
+   "name": "IdleStableRpmBand",
+   "desc": "Idle state flags: segment rpm within the idle target plus or minus this value",
+   "unit": "rpm32",
+   "category": "Idle",
+   "size": 1
+  },
+  "2193": {
+   "name": "IacCoastMapMax",
+   "desc": "Coast IAC mode runs below this MAP",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Idle"
+  },
+  "20EB": {
+   "name": "IacCoastLoopMask",
+   "desc": "Coast IAC: main-loop mask for the update rate of the IAC target",
+   "size": 1,
+   "category": "Idle"
+  },
+  "2198": {
+   "name": "IdleUnderTargetMargin",
+   "desc": "IdleStateUpdate: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target",
+   "unit": "rpmw",
+   "category": "Idle",
+   "size": 2
+  },
+  "1DD4": {
+   "name": "IdleMapLearnedMin",
+   "desc": "Lower limit of the learned idle MAP IdleMapLearned (outside the range it is reset from IacStartBaro)",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1DD5": {
+   "name": "IdleMapLearnedMax",
+   "desc": "Upper limit of the learned idle MAP",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Idle"
+  },
+  "22EF": {
+   "name": "SpeedCtlSetSpeedMax",
+   "desc": "Speed control (probable): upper limit of the set speed",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22F0": {
+   "name": "SpeedCtlSetSpeedMin",
+   "desc": "Speed control: lower limit of the set speed (no engagement below it)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22ED": {
+   "name": "SpeedCtlOverspeedBand",
+   "desc": "Speed control: overspeed below this value ends the accel/resume state bits (SpeedCtlState bit 2)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2309": {
+   "name": "SpeedCtlErrorBias",
+   "desc": "Speed control: bias added to the speed error term (set speed × 4 − speed) kept in SpeedCtlErrorPeak",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2308": {
+   "name": "SpeedCtlServoSplitSpeed",
+   "desc": "Speed control: set speed that selects the servo table at $8190 or $8191",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2311": {
+   "name": "SpeedCtlAdaptPeriod",
+   "desc": "Speed control gain adaptation: SpeedCtlTimer count between adaptation steps",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2312": {
+   "name": "SpeedCtlTimerMax",
+   "desc": "Speed control: limit of SpeedCtlTimer",
+   "category": "Speed control",
+   "size": 1
+  },
+  "230A": {
+   "name": "SpeedCtlAdaptErrorMin",
+   "desc": "Speed control gain adaptation: peak speed error (SpeedCtlErrorPeak) at or above which the gain is adapted",
+   "category": "Speed control",
+   "size": 1
+  },
+  "230B": {
+   "name": "SpeedCtlAdaptSumHigh",
+   "desc": "Speed control gain adaptation: error sum above this value raises the gain",
+   "category": "Speed control",
+   "size": 1
+  },
+  "230C": {
+   "name": "SpeedCtlAdaptSumLow",
+   "desc": "Speed control gain adaptation: error sum below this (signed) value lowers the gain",
+   "category": "Speed control",
+   "size": 1
+  },
+  "230D": {
+   "name": "SpeedCtlAdaptStepUp",
+   "desc": "Speed control gain adaptation: gain increase per step",
+   "category": "Speed control",
+   "size": 1
+  },
+  "230E": {
+   "name": "SpeedCtlAdaptStepDown",
+   "desc": "Speed control gain adaptation: gain decrease per step",
+   "category": "Speed control",
+   "size": 1
+  },
+  "230F": {
+   "name": "SpeedCtlAdaptGainMax",
+   "desc": "Speed control gain adaptation: upper limit of the learned gains (SpeedCtlGainLow, SpeedCtlGainHigh)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2310": {
+   "name": "SpeedCtlAdaptGainMin",
+   "desc": "Speed control gain adaptation: lower (signed) limit of the learned gains",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22FC": {
+   "name": "SpeedCtlVentPulseMin",
+   "desc": "Speed control: minimum vent pulse (ORed into the servo command SpeedCtlServoCmd)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22FD": {
+   "name": "SpeedCtlApplyPulseMin",
+   "desc": "Speed control: minimum vacuum pulse (ORed into the servo command)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22F9": {
+   "name": "SpeedCtlOutputDeadband",
+   "desc": "Speed control: servo output at or below this value with a small speed error gives no pulse",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22FA": {
+   "name": "SpeedCtlSpeedDeadband",
+   "desc": "Speed control: speed error at or below this value gives no pulse",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22FB": {
+   "name": "SpeedCtlSettleTime",
+   "desc": "Speed control: SpeedCtlTimer count after which the engage state bit (SpeedCtlState2 bit 2) clears",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22F6": {
+   "name": "SpeedCtlTapUpPulse",
+   "desc": "Speed control: vacuum pulse added to the servo command on a tap-up of the set speed",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22EC": {
+   "name": "SpeedCtlAccelHoldTime",
+   "desc": "Speed control: hold count (SpeedCtlHoldCount) of the accel/resume switch before accel mode starts",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2303": {
+   "name": "SpeedCtlAccelLead",
+   "desc": "Speed control: lead added to the vehicle speed in the accelerate branch",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2304": {
+   "name": "SpeedCtlAccelLeadMax",
+   "desc": "Speed control: limit of the resume target speed above vehicle speed in accel mode",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2302": {
+   "name": "SpeedCtlResumeOffset",
+   "desc": "Speed control: offset subtracted from the resume speed",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22FE": {
+   "name": "SpeedCtlVentPulseAccel",
+   "desc": "Speed control: added to the vent pulse in accel mode (SpeedCtlState bit 3)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2306": {
+   "name": "SpeedCtlSpeedErrorMax",
+   "desc": "Speed control: speed error (set minus actual) above which the step branch is skipped",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2307": {
+   "name": "SpeedCtlCoastStep",
+   "desc": "Speed control: set-speed decrease per coast step",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22F7": {
+   "name": "SpeedCtlSetPulse",
+   "desc": "Speed control: vacuum pulse added to the servo command when the speed is set",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22F8": {
+   "name": "SpeedCtlTapTime",
+   "desc": "Speed control: switch time (SpeedCtlTimer2) below which a press is a tap (also the post-tap hold SpeedCtlTapHold)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2301": {
+   "name": "SpeedCtlResumeOffset2",
+   "desc": "Speed control: second resume-speed offset",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2300": {
+   "name": "SpeedCtlHoldGain",
+   "desc": "Speed control: signed fraction applied to the switch hold count SpeedCtlHoldCount for the servo pulse",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22FF": {
+   "name": "SpeedCtlApplyPulseResume",
+   "desc": "Speed control: added to the vacuum pulse in resume mode (SpeedCtlState bit 4)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22E9": {
+   "name": "SpeedCtlUnderspeedLarge",
+   "desc": "Speed control: underspeed at or above this value gives the long fixed vacuum pulse ($0F)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22EA": {
+   "name": "SpeedCtlUnderspeedMedium",
+   "desc": "Speed control: underspeed at or above this value gives the short fixed vacuum pulse ($05)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2324": {
+   "name": "SpeedCtlSpeedErrorTrip",
+   "desc": "Speed control (SpeedCtlCancelMonitor): speed drop that trips the cancel (2 less with SpeedCtlFlags2 bit 6; 0 = off)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2325": {
+   "name": "SpeedCtlCancelHold",
+   "desc": "Speed control: hold count (SpeedCtlCancelTimer) set on the cancel condition",
+   "category": "Speed control",
+   "size": 1
+  },
+  "22EE": {
+   "name": "SpeedCtlApplyThrottleMin",
+   "desc": "Speed control: throttle opening at or above which the vacuum pulse is limited by the tables at $2BB5/$2BBD",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2313": {
+   "name": "SpeedCtlShiftHoldTime",
+   "desc": "Speed control shift handling: servo hold time (SpeedCtlOverrideTimer) after a clutch/up-shift event",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2314": {
+   "name": "SpeedCtlShiftThrottleSlope",
+   "desc": "Speed control shift handling: speed slope of the throttle reference, first event",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2315": {
+   "name": "SpeedCtlShiftThrottleBase",
+   "desc": "Speed control shift handling: throttle reference = this + slope × speed (SpeedCtlThrottleRef), first event",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2316": {
+   "name": "SpeedCtlShiftHoldTime2",
+   "desc": "Speed control shift handling: servo hold time after the second shift event (BusFlags9CE bit 3)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2317": {
+   "name": "SpeedCtlShiftThrottleSlope2",
+   "desc": "As SpeedCtlShiftThrottleSlope for the second event",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2318": {
+   "name": "SpeedCtlShiftThrottleBase2",
+   "desc": "As SpeedCtlShiftThrottleBase for the second event",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2319": {
+   "name": "SpeedCtlGearRatioMax",
+   "desc": "Speed control shift handling (SpeedCtlShift, manual): rpm/speed ratio at or below this value counts as in gear",
+   "category": "Speed control",
+   "size": 1
   },
   "2326": {
    "name": "SpeedCtlRpmFilterLow",
@@ -2335,17 +5064,207 @@
    "category": "Speed control",
    "size": 1
   },
+  "2664": {
+   "name": "MisfireOptions",
+   "desc": "Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve)",
+   "category": "Diagnostics",
+   "size": 1,
+   "bits": [
+    "02",
+    "04",
+    "08",
+    "10",
+    "20",
+    "40",
+    "80"
+   ]
+  },
+  "26CC": {
+   "name": "MisfireMapChangeMax",
+   "desc": "Misfire monitor: MAP change above this value starts the transient hold-off",
+   "unit": "kpa",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26CD": {
+   "name": "MisfireHoldMap",
+   "desc": "Hold-off (MisfireTransientHold) after a MAP change",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26CE": {
+   "name": "MisfireThrottleChangeMax",
+   "desc": "Misfire monitor: throttle change above this value starts the hold-off",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26CF": {
+   "name": "MisfireHoldThrottle",
+   "desc": "Hold-off after a throttle change",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26D0": {
+   "name": "MisfireDecelLeanMin",
+   "desc": "Misfire monitor: decel enleanment at or above this value starts the hold-off",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26D1": {
+   "name": "MisfireHoldDecel",
+   "desc": "Hold-off during deceleration fuel changes",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26D3": {
+   "name": "MisfireHoldRpm",
+   "desc": "Hold-off when segment rpm is above MisfireHoldRpmValue",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26D4": {
+   "name": "MisfireSparkMin",
+   "desc": "Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6); compared signed (BLT)",
+   "unit": "sparks",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26D5": {
+   "name": "MisfireHoldSpark",
+   "desc": "Hold-off for the spark interventions",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26D6": {
+   "name": "MisfireHoldEnable",
+   "desc": "Hold-off while the enable weight is low",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26D7": {
+   "name": "MisfireHoldRevLimit",
+   "desc": "Hold-off above RevLimitAlt",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26D8": {
+   "name": "MisfireHoldStart",
+   "desc": "Hold-off at start",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26D9": {
+   "name": "MisfireHoldEvent",
+   "desc": "Hold-off after MisfireFlags2 bit 6 events",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26AF": {
+   "name": "MisfireEnableBase",
+   "desc": "Misfire enable weight: base term",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "26B1": {
+   "name": "MisfireEnableGain",
+   "desc": "Misfire enable weight: gain on the baro and IAC terms",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26B2": {
+   "name": "MisfireEnableIacOffset",
+   "desc": "Misfire enable weight: offset on IacBaroRef",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26B3": {
+   "name": "MisfireEnableBaroOffset",
+   "desc": "Misfire enable weight: offset on the baro term",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26C8": {
+   "name": "MisfireColdStartMax",
+   "desc": "Misfire monitor: start coolant upper limit of the cold-start branch",
+   "unit": "tempc",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26C9": {
+   "name": "MisfireColdStartMin",
+   "desc": "Misfire monitor: start coolant lower limit of the cold-start branch",
+   "unit": "tempc",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26CA": {
+   "name": "MisfireCoolantLimit",
+   "desc": "Misfire monitor: coolant limit in the cold-start branch",
+   "unit": "tempc",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26CB": {
+   "name": "MisfireCoolantLimit2",
+   "desc": "Misfire monitor: second coolant limit",
+   "unit": "tempc",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "2718": {
    "name": "MisfireChangeMax",
    "desc": "Misfire monitor: segment-time change above which a misfire is taken without the thresholds",
    "size": 2,
    "category": "Diagnostics"
   },
+  "2665": {
+   "name": "SegmentRpmConst2",
+   "desc": "Start value of the segment time pair SegmentTimePair2 (long word)",
+   "category": "Sensors",
+   "size": 4
+  },
+  "2669": {
+   "name": "SegmentRpmConst3",
+   "desc": "Start value of the segment time pair SegmentTimePair3 (long word)",
+   "category": "Sensors",
+   "size": 4
+  },
+  "2671": {
+   "name": "MisfireRpmDevLimit",
+   "desc": "Misfire (MisfireDeviation): word compared with the rpm deviation MisfireRpmDev after the event count limit",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "2673": {
+   "name": "MisfireIdleMargin",
+   "desc": "Misfire monitor (MisfireDeviation): idle target plus this margin",
+   "unit": "rpmw",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "2677": {
+   "name": "MisfireFilterSlow",
+   "desc": "Misfire: value of MisfireFilter set in the first branch",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "2678": {
+   "name": "MisfireFilterFast",
+   "desc": "Misfire: value of MisfireFilter set in the second branch",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "26F5": {
    "name": "MisfireHoldSpeedMin",
    "desc": "Misfire hold-off (MisfireHoldSegRpm) applies above this vehicle speed",
    "size": 1,
    "category": "Diagnostics"
+  },
+  "2679": {
+   "name": "MisfireDevFilter",
+   "desc": "Misfire monitor: filter weight of the segment-time deviation",
+   "category": "Diagnostics",
+   "size": 1
   },
   "2708": {
    "name": "MisfireCountLimitCat",
@@ -2359,11 +5278,69 @@
    "category": "Diagnostics",
    "size": 1
   },
+  "26F4": {
+   "name": "MisfireIdleCoolantMax",
+   "desc": "Idle hold-off branch: coolant up to this value",
+   "unit": "tempc",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26F6": {
+   "name": "MisfireIdleMapMax",
+   "desc": "Idle hold-off branch: MAP below this value",
+   "unit": "kpa",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26F7": {
+   "name": "MisfireIdleRpmMax",
+   "desc": "Idle hold-off branch: segment rpm below this value",
+   "unit": "rpm32",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "26F8": {
+   "name": "MisfireIdleRpmMin",
+   "desc": "Idle hold-off branch: segment rpm above this value",
+   "unit": "rpm32",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "26F9": {
    "name": "MisfireCountLimitAlt",
    "desc": "Misfire counter limit while MisfireFlags3 bit 7 is clear",
    "category": "Diagnostics",
    "size": 1
+  },
+  "2969": {
+   "name": "MisfireChangeFilter",
+   "desc": "Misfire monitor: filter weight of MisfireChangeFiltered",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "296A": {
+   "name": "MisfireNoiseGain",
+   "desc": "Misfire monitor: gain giving the noise level reference",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "296B": {
+   "name": "MisfireNoiseDecay",
+   "desc": "Misfire monitor: decay factor of the noise peak (0 = off)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "296C": {
+   "name": "MisfireNoiseHold",
+   "desc": "Misfire monitor: hold time MisfireNoiseTimer between noise decays",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "296D": {
+   "name": "MisfireRefChangeMin",
+   "desc": "Misfire monitor: change above which the reference MisfireRef is taken",
+   "category": "Diagnostics",
+   "size": 2
   },
   "2972": {
    "name": "LdpBattTempMax",
@@ -2551,6 +5528,24 @@
    "category": "Closed loop",
    "size": 1
   },
+  "2633": {
+   "name": "EgrMonResultMin",
+   "desc": "EGR flow monitor: trim response below this value fails the test",
+   "category": "EGR",
+   "size": 1
+  },
+  "2650": {
+   "name": "EgrMonResultMax",
+   "desc": "EGR flow monitor: trim response above this value passes it",
+   "category": "EGR",
+   "size": 1
+  },
+  "25F9": {
+   "name": "O2MemChangeHold",
+   "desc": "Long-term memory cell selection: hold time (FuelSys5A5/O2MemChangeHold2) after the trim is cleared on a cell change",
+   "category": "Closed loop",
+   "size": 1
+  },
   "2547": {
    "name": "O2MonTimeMin",
    "desc": "O2 sensor monitor at idle (O2IdleMonitor): time since start at or above this value",
@@ -2631,6 +5626,12 @@
    "category": "Diagnostics",
    "size": 1
   },
+  "2572": {
+   "name": "O2TrimResetValue2",
+   "desc": "Closed-loop manager: value loaded into the bank trim when O2ResetFlags bits 6-7 request a reset",
+   "category": "Closed loop",
+   "size": 1
+  },
   "257B": {
    "name": "O2MonWindowMax",
    "desc": "O2 sensor monitor at idle: window count above which the test restarts (O2MonData2Step)",
@@ -2643,11 +5644,227 @@
    "category": "Diagnostics",
    "size": 1
   },
+  "2580": {
+   "name": "O2HeaterRunTimeMin",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "2582": {
    "name": "O2HeaterSampleTime",
    "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled",
    "category": "Diagnostics",
    "size": 2
+  },
+  "2584": {
+   "name": "O2HeaterTestTime",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown): timer O2HeaterTimer (word) limit of the test",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "25A0": {
+   "name": "O2ColdTrimHeaterAdder",
+   "desc": "Cold-start O2 trim (O2StartDelays): added to the start trim when a heater monitor status has bit 5 set",
+   "category": "Closed loop",
+   "size": 1
+  },
+  "2626": {
+   "name": "ObdTid21Limit",
+   "desc": "OBD-II mode $06 test $21: limit sent with the result ObdTid21Result (result only cleared in this code)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "2627": {
+   "name": "ObdTid21LimitAlt",
+   "desc": "OBD-II mode $06 test $21: limit used when the result is above ObdTid21Limit and ObdTid21Status bit 4 is clear",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "2628": {
+   "name": "ObdTid22Limit",
+   "desc": "OBD-II mode $06 test $22: limit sent with the result ObdTid22Result (result only cleared in this code)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "2629": {
+   "name": "ObdTid22LimitAlt",
+   "desc": "OBD-II mode $06 test $22: second limit, as ObdTid21LimitAlt",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "24A5": {
+   "name": "VacLeakAcReqAdder",
+   "desc": "Vacuum-leak check: expected-MAP addition with A/C requested",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "24A6": {
+   "name": "VacLeakCount",
+   "desc": "Vacuum leak monitor (VacuumLeakMonitor, P1299): counts (VacLeakCounter) of MAP above the expected value (brake off) before the fault",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "24A7": {
+   "name": "VacLeakSpeedMax",
+   "desc": "Vacuum-leak check: vehicle speed below this value",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "24A8": {
+   "name": "VacLeakRpmMin",
+   "desc": "Vacuum-leak check: engine rpm at or above this value",
+   "unit": "rpm32",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "24A9": {
+   "name": "VacLeakRecoverRpmMax",
+   "desc": "Vacuum leak monitor: after a fault, rpm below this value off idle counts towards clearing the rpm limit",
+   "unit": "rpm32",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "24AA": {
+   "name": "VacLeakRecoverCount",
+   "desc": "Vacuum leak monitor: counts (VacLeakRecoverCounter) below VacLeakRecoverRpmMax that clear the fault rpm limit",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "24AB": {
+   "name": "ExpectedMapRpmMin",
+   "desc": "MAP/throttle rationality runs above this engine rpm",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Diagnostics"
+  },
+  "3DA3": {
+   "name": "WotLeanDelay",
+   "desc": "Lean-at-WOT monitor (WotLeanMonitor, P1298, flex only): WOT time (WotLeanTimer) before the test",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DA4": {
+   "name": "WotLeanRpmMin",
+   "desc": "Lean-at-WOT monitor: engine rpm above this value (word)",
+   "unit": "rpmw",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "3DA6": {
+   "name": "WotLeanCount",
+   "desc": "Lean-at-WOT monitor: lean counts (WotLeanCounter) before the fault",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DA7": {
+   "name": "WotLeanFallbackRpm",
+   "desc": "Lean-at-WOT monitor: after a lean fault, rpm at or above this value sets the fallback flag FuelModeFlags2 bit 4",
+   "unit": "rpmw",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "3DA9": {
+   "name": "WotLeanFallbackRpmOff",
+   "desc": "Lean-at-WOT monitor: rpm below this value clears the fallback flag",
+   "unit": "rpmw",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "3DAC": {
+   "name": "WotLeanO2Max2",
+   "desc": "Lean-at-WOT monitor: bank 2 upstream O2 below this value counts as lean",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DA0": {
+   "name": "FlexTrimBand",
+   "desc": "Trim-based ethanol estimate with a flex sensor fault (EventCounters): short-term trim (bank 1 with O2ActiveFlags bit 3, else bank 2) beyond plus or minus this value counts",
+   "category": "Fuel",
+   "size": 1
+  },
+  "3DA1": {
+   "name": "FlexTrimUpCount",
+   "desc": "Trim-based ethanol estimate (flex sensor fault): positive-trim counts (FlexTrimUpCounter) per FlexEthanol step up (to at most 170)",
+   "category": "Fuel",
+   "size": 1
+  },
+  "3DA2": {
+   "name": "FlexTrimDownCount",
+   "desc": "Trim-based ethanol estimate (flex sensor fault): negative-trim counts (FlexTrimDownCounter) per FlexEthanol step down",
+   "category": "Fuel",
+   "size": 1
+  },
+  "2473": {
+   "name": "CamCrankOffsetBase",
+   "desc": "Cam/crank relation: base subtracted from the measured offset CamCrankOffset",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "2462": {
+   "name": "MonSteadyTimeMin",
+   "desc": "Steady-state condition (CamCrankRelation): time since start at or above this value",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "2463": {
+   "name": "MonSteadyCoolantMin",
+   "desc": "Steady-state condition: coolant above this value",
+   "unit": "tempc",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "2464": {
+   "name": "MonSteadyMapDelta",
+   "desc": "Steady-state condition: MAP change below this value",
+   "unit": "kpa",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "2465": {
+   "name": "MonSteadyRateMax",
+   "desc": "Steady-state condition: size of MonSteadyRate below this value",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "2467": {
+   "name": "MonSteadyThrottleDelta",
+   "desc": "Steady-state condition: throttle change below this value",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "2468": {
+   "name": "MonSteadyRpmMin",
+   "desc": "Steady-state condition (CamCrankRelation, P1390): first rpm window, engine rpm above this value",
+   "unit": "rpm32",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "2469": {
+   "name": "MonSteadyRpmHighMin",
+   "desc": "Steady-state condition: second rpm window, engine rpm above this value (with vehicle speed at most MonSteadySpeedMax)",
+   "unit": "rpm32",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "246A": {
+   "name": "MonSteadyRpmLowMax",
+   "desc": "Steady-state condition: first rpm window, engine rpm below this value",
+   "unit": "rpm32",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "246B": {
+   "name": "MonSteadyRpmHighMax",
+   "desc": "Steady-state condition: second rpm window, engine rpm below this value",
+   "unit": "rpm32",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "246C": {
+   "name": "MonSteadySpeedMax",
+   "desc": "Steady-state condition: vehicle speed at or below this value",
+   "category": "Diagnostics",
+   "size": 1
   },
   "246D": {
    "name": "CamCrankOffsetMin",
@@ -2673,6 +5890,72 @@
    "category": "Diagnostics",
    "size": 1
   },
+  "2472": {
+   "name": "CamCrankWindow",
+   "desc": "Cam/crank relation monitor: window around the stored relation (CamCrankOffset)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "247C": {
+   "name": "CamCrankHold",
+   "desc": "Cam/crank monitor: hold count (CamCrankHoldCount) set on a change",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "299F": {
+   "name": "TccThrottleFilter",
+   "desc": "Torque converter clutch monitor (TccMonitor, P0740): filter weight of the throttle average TccThrottleAvg",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "29A0": {
+   "name": "TccRatioFilter",
+   "desc": "Torque converter clutch monitor: filter weight of RpmSpeedRatioFiltered",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "29A2": {
+   "name": "TccRatioStableBand",
+   "desc": "Torque converter clutch monitor: ratio change (word) at or above which the stable time restarts before lock-up",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "29A4": {
+   "name": "TccRatioMax",
+   "desc": "Torque converter clutch monitor: filtered rpm/speed ratio below this value",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "29A5": {
+   "name": "TccStableTimeMin",
+   "desc": "Torque converter clutch monitor: stable time (TccStableTimer) before the lock-up is judged",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "29A6": {
+   "name": "TccThrottleMin",
+   "desc": "Torque converter clutch monitor: throttle average above this value",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "29A7": {
+   "name": "TccRatioDropMin",
+   "desc": "Torque converter clutch monitor: signed ratio drop (word) that counts as lock-up; its low byte ($33C1) is also read directly as the fail count limit of TccFailCount",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "29A9": {
+   "name": "TccTestDelay",
+   "desc": "Torque converter clutch monitor: delay (TccTestTimer) after lock-up before the ratio drop is checked",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DD1": {
+   "name": "BusDataThrottleScale",
+   "desc": "Diagnostic bus data: throttle opening is sent as opening × (1 + this / 256)",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "3E04": {
    "name": "MapLimpOffset",
    "desc": "Limp-home MAP from throttle (LimpMapCalc): offset added to MapLimpFromThrottle",
@@ -2686,6 +5969,43 @@
    "category": "Sensors",
    "size": 1
   },
+  "3DB7": {
+   "name": "VssCheckCount",
+   "desc": "Vehicle speed sensor monitor (VssMonitor): counts (Vss65D/VssCheckCounter) before the result changes",
+   "category": "Sensors",
+   "size": 1
+  },
+  "3D55": {
+   "name": "O2NoActivityStartCoolantMax",
+   "desc": "O2 no-activity check: start coolant below this value",
+   "unit": "tempc",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3D56": {
+   "name": "O2NoActivitySoakDiffMax",
+   "desc": "O2 no-activity check: start coolant within this value of the battery temperature (a cold soak)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3D57": {
+   "name": "O2NoActivityTime",
+   "desc": "O2 no-activity check at a cold start (O2NoActivityCold, P0134/P0154/P0140/P0160): time after start (Count191ms) at which the result is reported",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3D58": {
+   "name": "O2NoActivityLowRaw",
+   "desc": "O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also O2HeaterTest)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3D5A": {
+   "name": "O2MemResetValue",
+   "desc": "Closed-loop manager: value written into the 16 adaptive cells of a bank when its memory is reset after a fault",
+   "category": "Closed loop",
+   "size": 1
+  },
   "3DD6": {
    "name": "KnockHighLoadValue",
    "desc": "Knock (KnockSample, Options032F bit 1): value used above the knock MAP threshold",
@@ -2697,6 +6017,32 @@
    "desc": "Knock sensor check: filtered knock signal above this value counts as a fault",
    "size": 1,
    "category": "Knock"
+  },
+  "3DEA": {
+   "name": "BattLowVolts",
+   "desc": "Low-voltage monitor (BatteryLowFlag): battery voltage below this value counts as low",
+   "unit": "volt16",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DEB": {
+   "name": "BattLowVoltsClear",
+   "desc": "Low-voltage monitor: battery voltage at or above this value counts as normal",
+   "unit": "volt16",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DEC": {
+   "name": "BattLowSetCount",
+   "desc": "Low-voltage monitor: counts before ChargeMonFlags bit 2 sets",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DED": {
+   "name": "BattLowClearCount",
+   "desc": "Low-voltage monitor: counts before ChargeMonFlags bit 2 clears",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3DD2": {
    "name": "MapRawLowLimit",
@@ -2714,6 +6060,49 @@
    "name": "MapRationalThrottleMax",
    "desc": "MAP rationality (MapCircuitCheck, ReadMap): throttle opening below this value for the rpm/MAP check",
    "category": "Diagnostics",
+   "size": 1
+  },
+  "3DAD": {
+   "name": "AcSensorRawHigh",
+   "desc": "A/C sensor circuit check: raw value above this counts as open/high",
+   "category": "A/C",
+   "size": 1
+  },
+  "3DAE": {
+   "name": "AcSensorRawLow",
+   "desc": "A/C sensor circuit check: raw value below this counts as shorted/low",
+   "category": "A/C",
+   "size": 1
+  },
+  "3DB1": {
+   "name": "AcSensorFaultValue",
+   "desc": "A/C sensor value used with a sensor fault",
+   "category": "A/C",
+   "size": 1
+  },
+  "3DB2": {
+   "name": "CamCheckMapMin",
+   "desc": "Cam sensor check (CamSensorMonitor): MAP differs from baro by at least this value",
+   "unit": "kpa",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3D53": {
+   "name": "BusDataO2High",
+   "desc": "Diagnostic bus data (BusDataRequest): O2 raw reading above this value is reported as state $B1",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3D54": {
+   "name": "BusDataO2Mid",
+   "desc": "Diagnostic bus data: O2 raw reading above this value (and not above BusDataO2High) is reported as $FF, otherwise $A0",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3D52": {
+   "name": "O2RawHigh",
+   "desc": "O2 sensor raw value at or above which the high-voltage check counts",
+   "category": "Closed loop",
    "size": 1
   },
   "3DE5": {
@@ -2748,31 +6137,370 @@
    "category": "Diagnostics",
    "size": 1
   },
+  "51DA": {
+   "name": "RpmPeriodConstant",
+   "desc": "Dividend (long, also read from $ABB1) for engine rpm from the reference period (CalcEngineRpm, CalcRpmFromPeriod)",
+   "category": "Sensors",
+   "size": 4
+  },
   "51DF": {
    "name": "CylinderCount",
    "desc": "Number of cylinders (4): the cylinder index CylinderIndex counts up to it and the per-event code uses it",
    "size": 1,
    "category": "Other"
   },
+  "51E2": {
+   "name": "RunModeTimeWarm",
+   "desc": "Run-mode switch (RunModeSwitch): time after start (Count3s, word) with coolant at or above 15 °C before ControlFlags943 bits 3-4 are set",
+   "category": "Startup",
+   "size": 2
+  },
+  "51E4": {
+   "name": "RunModeTimeCold",
+   "desc": "As RunModeTimeWarm with colder coolant",
+   "category": "Startup",
+   "size": 2
+  },
+  "51E6": {
+   "name": "RunModeCountRunning",
+   "desc": "Run-mode switch: count needed once the engine has run (ControlFlagsC33 bit 5) and the battery is at or above 11.0 V",
+   "category": "Startup",
+   "size": 1
+  },
+  "51E7": {
+   "name": "RunModeCount",
+   "desc": "Run-mode switch: count RunModeCounter needed (battery at or above 11.0 V, or warm)",
+   "category": "Startup",
+   "size": 1
+  },
+  "51E8": {
+   "name": "RunModeCountColdLowVolts",
+   "desc": "Run-mode switch: count needed cold with the battery below 11.0 V",
+   "category": "Startup",
+   "size": 1
+  },
   "5207": {
    "name": "FuelEventCylFactor",
    "desc": "Per-cylinder offset factor (multiplied by the cylinder index CylinderIndex)",
    "size": 1,
    "category": "Fuel"
+  },
+  "5214": {
+   "name": "RpmRateDivisor",
+   "desc": "Divisor of the rpm rate terms (IdleRpmRate, RpmRateTerm): rpm change × segment rpm / this value (word)",
+   "category": "Sensors",
+   "size": 2
+  },
+  "031F": {
+   "name": "Options0330",
+   "desc": "Option byte (global configuration); bits used are listed with their names where known",
+   "category": "Options",
+   "unit": "raw",
+   "bitnames": {
+    "01": "BattTempModelOn",
+    "04": "BattTempCurveAlt",
+    "20": "TipInAirTempCheck"
+   },
+   "size": 1,
+   "bits": [
+    "01",
+    "02",
+    "04",
+    "08",
+    "10",
+    "20"
+   ]
+  },
+  "032B": {
+   "name": "Options033F",
+   "desc": "Option byte copied to Options033FCopy at reset; bits 7-4 enable monitor branches in ObdReadiness and O2HeaterMonitor",
+   "category": "Options",
+   "size": 1
+  },
+  "0314": {
+   "name": "ThrottleClosedResetMargin",
+   "desc": "At reset: closed-throttle value plus this margin is compared with ThrottleClosedDefault",
+   "category": "Sensors",
+   "size": 1
+  },
+  "041F": {
+   "name": "AcPressureHighCut",
+   "desc": "A/C clutch (AcClutchControl): A/C sensor at or above this value cuts the clutch (high pressure); also used by the IAC A/C logic",
+   "category": "A/C",
+   "size": 1
+  },
+  "1D11": {
+   "name": "EgrZeroPositionInit",
+   "desc": "Start value of the learned EGR closed position EgrZeroPos",
+   "category": "EGR",
+   "size": 1
+  },
+  "066B": {
+   "name": "HotStartCoolantMin",
+   "desc": "Reset: coolant at or above this value (with air at or above HotStartAirMin) sets StartFlags bit 3",
+   "unit": "tempc",
+   "category": "Startup",
+   "size": 1
+  },
+  "066C": {
+   "name": "HotStartAirMin",
+   "desc": "Reset: air temperature at or above this value for StartFlags bit 3",
+   "unit": "tempc",
+   "category": "Startup",
+   "size": 1
+  },
+  "0721": {
+   "name": "FlexColdStartEthanolMin",
+   "desc": "Reset: FlexEthanol at or above this value with a cold engine sets the flex cold-start flag (FlexStartFlags bit 3)",
+   "category": "Startup",
+   "size": 1
+  },
+  "0691": {
+   "name": "FlexStartValue",
+   "desc": "Start value of FlexStartFuel (flex start fuel)",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "13C9": {
+   "name": "PurgeRampFull",
+   "desc": "Purge ramp value at or above which the ramp-up stops",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13CA": {
+   "name": "PurgeRampMin",
+   "desc": "Purge ramp value below which the vapor learning is skipped",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13CB": {
+   "name": "PurgeRampStepUp",
+   "desc": "Purge ramp step increase (learning not settled)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13CC": {
+   "name": "PurgeRampStepUp2",
+   "desc": "Purge ramp step increase (learning settled)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13CD": {
+   "name": "PurgeRampOffIdle",
+   "desc": "Purge ramp (PurgeRampControl): when zero the ramp step is changed only with ThrottleState bit 7 set",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13CE": {
+   "name": "PurgeLearnTime",
+   "desc": "Purge learning window length (PurgeLearnTimer)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13D1": {
+   "name": "PurgeVacuumMin",
+   "desc": "Purge ramp-up runs above this manifold vacuum",
+   "unit": "kpa",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13D2": {
+   "name": "PurgeTrimRichLimit",
+   "desc": "Purge learning: short-term trim limit on the rich side",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13D3": {
+   "name": "PurgeTrimLatchedLimit",
+   "desc": "Purge learning: latched trim limit",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13D4": {
+   "name": "PurgeTrimLatchedLimit2",
+   "desc": "Purge learning: latched trim limit (second branch)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13D5": {
+   "name": "PurgeLearnMask",
+   "desc": "Purge learning: main-loop mask (update rate)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "13F0": {
+   "name": "PurgeVaporMax",
+   "desc": "Purge vapor learning: upper limit of PurgeVaporEstimate",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "11CB": {
+   "name": "SparkRpmFlagHyst",
+   "desc": "Hysteresis for SparkRpmFlagMin",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1AF0": {
+   "name": "SparkStartRampStep",
+   "desc": "Increase of SparkStartRamp per step",
+   "size": 1,
+   "category": "Spark"
+  },
+  "1AF1": {
+   "name": "SparkStartRampStep2",
+   "desc": "Decrease of SparkStartRampValue per step (bit Options0339 bit 5)",
+   "category": "Spark",
+   "size": 1
+  },
+  "1DED": {
+   "name": "IdleRampBaroMin",
+   "desc": "Idle ramp: runs above this barometric pressure",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1FDE": {
+   "name": "IacChargeStepWait",
+   "desc": "Charging IAC step: wait after a step (IacChargeTimer)",
+   "size": 1,
+   "category": "Idle"
+  },
+  "1FDF": {
+   "name": "IacChargeStepRest",
+   "desc": "Charging IAC step: pause before the next step",
+   "size": 2,
+   "category": "Idle"
+  },
+  "22EB": {
+   "name": "SpeedCtlCoastHoldTime",
+   "desc": "Speed control: switch hold time before coast mode starts (with Options0332 bits 3-4 clear)",
+   "category": "Speed control",
+   "size": 1
+  },
+  "2481": {
+   "name": "PurgeFlowTrimDrop",
+   "desc": "EVAP purge flow test: short-term trim drop that counts as purge flow (also used by O2UpTrim)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "2492": {
+   "name": "PurgeFlowTrimDropAlt",
+   "desc": "As PurgeFlowTrimDrop with IdleFlags bit 6 set",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "2586": {
+   "name": "O2HeaterSettleTime",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated",
+   "category": "Diagnostics",
+   "size": 2
+  },
+  "3D5F": {
+   "name": "FuelSenderReadTime",
+   "desc": "Time since start after which the fuel level sender ($0A92) is read for FuelLevelScaled",
+   "category": "Sensors",
+   "size": 1
+  },
+  "24A3": {
+   "name": "VacLeakBaroFactor",
+   "desc": "Vacuum-leak check (VacuumLeakMonitor, P1299): factor on baro",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "24A4": {
+   "name": "VacLeakAcAdder",
+   "desc": "Vacuum-leak check: expected-MAP addition with the A/C clutch on",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DF5": {
+   "name": "MapCheckBaroMax",
+   "desc": "MAP checks: barometric pressure above which the high-altitude vacuum limit is not used",
+   "unit": "kpa",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DF6": {
+   "name": "MapCheckVacuumMin",
+   "desc": "MAP checks: manifold vacuum limit (low altitude)",
+   "unit": "kpa",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DF7": {
+   "name": "MapCheckVacuumMinAlt",
+   "desc": "MAP checks: manifold vacuum limit (high altitude)",
+   "unit": "kpa",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "3DB4": {
+   "name": "CoolantRawLow",
+   "desc": "Coolant sensor raw value below which it counts as shorted (fault)",
+   "category": "Sensors",
+   "size": 1
+  },
+  "3DB5": {
+   "name": "CoolantRawHigh",
+   "desc": "Coolant sensor raw value at or above which it counts as open (fault)",
+   "category": "Sensors",
+   "size": 1
+  },
+  "3DB6": {
+   "name": "CoolantFaultValue",
+   "desc": "Coolant value used with a coolant sensor fault",
+   "unit": "tempc",
+   "category": "Sensors",
+   "size": 1
+  },
+  "3D5B": {
+   "name": "AirTempRawLow",
+   "desc": "Air temperature sensor raw value below which it counts as shorted",
+   "category": "Sensors",
+   "size": 1
+  },
+  "3D5C": {
+   "name": "AirTempRawHigh",
+   "desc": "Air temperature sensor raw value at or above which it counts as open",
+   "category": "Sensors",
+   "size": 1
+  },
+  "3D5D": {
+   "name": "AirTempFaultValue",
+   "desc": "Air temperature used with a sensor fault (otherwise coolant is used)",
+   "unit": "tempc",
+   "category": "Sensors",
+   "size": 1
   }
  },
  "special": {
   "3530": {
    "name": "FaultTable",
    "kind": "fault",
-   "rows": 256,
+   "rows": 208,
    "row_size": 10,
    "desc": "Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes"
+  },
+  "414E": {
+   "name": "BitCollectMaps",
+   "kind": "bitmaps",
+   "rows": 11,
+   "row_size": 32,
+   "desc": "Bit maps for CollectBits: 8 entries of RAM offset, mask and output bit build one status byte (switch inputs for SwitchInputsRead and SwitchBitsCollect, output and fault status bytes for the SCI and bus messages)"
+  },
+  "EAFA": {
+   "name": "IncSaturateList",
+   "kind": "words",
+   "size": 40,
+   "rows": 1,
+   "row_size": 48,
+   "desc": "Pairs of RAM counter address and limit used by EventCounters"
   },
   "1C8D": {
    "name": "KnockRpmSteps",
    "kind": "grid",
-   "rows": 19,
+   "rows": 5,
    "cols": 2,
    "row_size": 2,
    "desc": "Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables",
@@ -2781,7 +6509,7 @@
   "11AD": {
    "name": "EventCorrSequenceA",
    "kind": "grid",
-   "rows": 5,
+   "rows": 1,
    "cols": 10,
    "row_size": 10,
    "desc": "Byte sequence read by EventCorrections (first branch, with RAM $87A8): step data for the per-event correction",

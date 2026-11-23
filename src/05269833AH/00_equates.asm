@@ -306,6 +306,7 @@ FaultMem13       equ $0135        ; $F8135
 FaultMem15       equ $0137        ; $F8137
 FaultMem16       equ $0138        ; $F8138
 FaultMem17       equ $0139        ; $F8139
+FaultMem1B       equ $013D        ; $F813D
 FaultList5       equ $0147        ; $F8147
 FaultList6       equ $0148        ; $F8148
 FaultListLast    equ $0149        ; $F8149
@@ -552,7 +553,7 @@ AcSensorFiltered equ $0345        ; $F8345
 IacAcClutchTimer equ $0346        ; $F8346
 DashpotTimer2    equ $0347        ; $F8347
 IacGearTime      equ $0348        ; $F8348
-IacGearTime2     equ $0349        ; $F8349
+IacGearDelay     equ $0349        ; $F8349
 IacGearDuration  equ $034A        ; $F834A
 IdleRampBlockTimer equ $034B        ; $F834B
 IdleRampHold     equ $034C        ; $F834C
@@ -667,6 +668,7 @@ PurgeRamp        equ $042C        ; $F842C
 PurgeDutyTarget  equ $042D        ; $F842D
 PurgeCommand     equ $042E        ; $F842E
 PurgeStartRamp   equ $042F        ; $F842F
+PurgeRampStep    equ $0430        ; $F8430
 PurgeDuty        equ $0431        ; $F8431
 CalcFuel432      equ $0432        ; $F8432
 Reset434         equ $0434        ; $F8434
@@ -697,11 +699,41 @@ PurgeLearnFlags  equ $0443        ; $F8443
 ;                 bit 2: trim at or below the learning limit (PurgeVaporLearn)
 ;                 bit 1: purge vapour learning ended (PurgeVaporLearn)
 ;                 bit 0: bank 1 learning rate step (PurgeVaporLearn)
+PurgeLearnRate   equ $0444        ; $F8444
+PurgeVapor446    equ $0446        ; $F8446
+PurgeVaporCount  equ $0447        ; $F8447
+PurgeVapor448    equ $0448        ; $F8448
+PurgeVapor44A    equ $044A        ; $F844A
+PurgeTrimAvgOff  equ $044C        ; $F844C
+PurgeTrimAvgOn   equ $044D        ; $F844D
+PurgeVaporSettle equ $044E        ; $F844E
+PurgeLearnTimer  equ $0450        ; $F8450
 PurgePwmPeriodCount equ $0452        ; $F8452
+PurgeFlowErrorSum equ $0456        ; $F8456
+PurgeFlowErrorDiff equ $0458        ; $F8458
 PurgeFlowError   equ $045A        ; $F845A
+PurgeFlow45C     equ $045C        ; $F845C
 PurgeFlowTarget  equ $045E        ; $F845E
 PurgeFlowMeasured equ $045F        ; $F845F
 PurgePwmDuty     equ $0460        ; $F8460
+PurgeFlow463     equ $0463        ; $F8463
+PurgeTargetChange equ $0464        ; $F8464
+PurgeSoftStepCount equ $0465        ; $F8465
+PurgeFlow466     equ $0466        ; $F8466
+PurgeFlow467     equ $0467        ; $F8467
+PurgeFlow468     equ $0468        ; $F8468
+PurgeCtlFlags    equ $0469        ; $F8469
+;                 bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation)
+;                 bit 5: purge adaptation state counted (PurgeFlowAdaptation)
+;                 bit 4: purge adaptation: large rich error (PurgeAdaptRichLarge)
+;                 bit 3: battery temperature at start below PurgeBattTempStartMax (PurgeRampControl)
+;                 bit 2: purge soft step running (PurgeFlowControl, PurgeSoftStepCount)
+;                 bit 1: purge target change pending (PurgeFlowControl)
+;                 bit 0: purge target change small (under PurgeTargetChangeMax) (PurgeFlowControl)
+PurgeFlowAdapt   equ $046A        ; $F846A
+PurgeAdaptHoldTimer equ $046B        ; $F846B
+PurgeAdaptCounter equ $046C        ; $F846C
+PurgeAdaptStateCount equ $046D        ; $F846D
 PurgeFlow46E     equ $046E        ; $F846E
 PurgeFlow46F     equ $046F        ; $F846F
 ReadAnalog470    equ $0470        ; $F8470
@@ -746,6 +778,7 @@ FaultSet16       equ $0516        ; $F8516
 FaultSet17       equ $0517        ; $F8517
 FaultSet19       equ $0519        ; $F8519
 FaultSet1A       equ $051A        ; $F851A
+FaultSet1B       equ $051B        ; $F851B
 Ccd51C           equ $051C        ; $F851C
 BusTimeoutFlags  equ $051D        ; $F851D
 FaultPending1    equ $0520        ; $F8520
@@ -1094,7 +1127,13 @@ O2MonFlags       equ $0659        ; $F8659
 ;                 bit 2: P0157 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
 ;                 bit 1: P0153 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
 ;                 bit 0: P0133 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-ObdRec65B        equ $065A        ; $F865A
+MonFlags65A      equ $065A        ; $F865A
+;                 bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
+;                 bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
+;                 bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
+;                 bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
+;                 bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
+;                 bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
 EgrPosMonFlags2  equ $065B        ; $F865B
 EgrMonFlags2     equ $065C        ; $F865C
 Vss65D           equ $065D        ; $F865D
@@ -1161,6 +1200,7 @@ CamCrank690      equ $0690        ; $F8690
 Cam691           equ $0691        ; $F8691
 Cam693           equ $0693        ; $F8693
 CamWindowCount   equ $0694        ; $F8694
+CamSensor695     equ $0695        ; $F8695
 LimpFlags        equ $06AC        ; $F86AC
 ;                 bit 7: vacuum leak / throttle-MAP disagreement confirmed: limp mode (VacuumLeakMonitor)
 ;                 bit 6: limp rpm limit taken from LimpRpmMapFault (VacuumLeakMonitor)
@@ -1233,6 +1273,7 @@ KnockSample6CF   equ $06CF        ; $F86CF
 KnockSample6D0   equ $06D0        ; $F86D0
 MapKeyOnCounter  equ $06D1        ; $F86D1
 SpeedCtlSw6D2    equ $06D2        ; $F86D2
+CalcSpark6D3     equ $06D3        ; $F86D3
 FinishFuel6D4    equ $06D4        ; $F86D4
 TransBusWord     equ $06D6        ; $F86D6
 AcPresentCounter equ $06E2        ; $F86E2
@@ -1483,10 +1524,16 @@ IdleFuelUpCount  equ $07DB        ; $F87DB
 IdleFuelDownCount equ $07DC        ; $F87DC
 IdleFuelRamp     equ $07DD        ; $F87DD
 IdleEnrichSoak   equ $07DE        ; $F87DE
+FuelCorrections7E0 equ $07E0        ; $F87E0
 FuelPulse        equ $07E2        ; $F87E2
 WarmupFuelFactor equ $07E4        ; $F87E4
 TimeSinceStart   equ $07E6        ; $F87E6
 ColdSoakMap      equ $07E7        ; $F87E7
+PurgeVaporEstimate equ $07E8        ; $F87E8
+PurgeVaporEstimate2 equ $07E9        ; $F87E9
+PurgeVaporPart   equ $07EA        ; $F87EA
+PurgeVaporClosed equ $07EB        ; $F87EB
+PurgeLearnCount  equ $07EC        ; $F87EC
 FlexStartFuel    equ $07EE        ; $F87EE
 O2CellIndex      equ $0800        ; $F8800
 O2MemCell        equ $0801        ; $F8801
@@ -1507,6 +1554,8 @@ BaroFuelAdder    equ $080E        ; $F880E
 HotEnrich        equ $0811        ; $F8811
 EngineOffTimeStart equ $0812        ; $F8812
 IdleEnrichment813 equ $0813        ; $F8813
+PurgeTrimCount   equ $0818        ; $F8818
+PurgeTrimLatched equ $0819        ; $F8819
 WotEnrich        equ $081A        ; $F881A
 WotFlagTimer     equ $081B        ; $F881B
 InjSeqWork       equ $0828        ; $F8828
@@ -1546,6 +1595,7 @@ SpeedDamp860     equ $0860        ; $F8860
 SpeedDamp861     equ $0861        ; $F8861
 EventSparkPeriodA equ $0862        ; $F8862
 EventSparkCount  equ $0863        ; $F8863
+CamSignalCount   equ $0864        ; $F8864
 SpeedDampTimer   equ $0865        ; $F8865
 Ic4866           equ $0866        ; $F8866
 Ic4867           equ $0867        ; $F8867
@@ -1581,6 +1631,7 @@ BodyMsgTimeout2  equ $08FF        ; $F88FF
 SparkEvent907    equ $0907        ; $F8907
 SparkEvent908    equ $0908        ; $F8908
 FinishFuel911    equ $0911        ; $F8911
+BusData92D       equ $092D        ; $F892D
 DiagCommand      equ $092E        ; $F892E
 DiagParam1       equ $092F        ; $F892F
 DiagParam2       equ $0930        ; $F8930
@@ -2030,15 +2081,36 @@ EgrFlags2        equ $0B2D        ; $F8B2D
 ;                 bit 0: EGR solenoid check step running (EgrSolenoidCheck)
 EgrOnTimer       equ $0B2E        ; $F8B2E
 EgrStartDelay    equ $0B2F        ; $F8B2F
+EgrMapFiltered   equ $0B30        ; $F8B30
+EgrFlowFactor    equ $0B31        ; $F8B31
+EgrPressureFactor equ $0B33        ; $F8B33
 PartThrottleB3A  equ $0B36        ; $F8B36
+EgrB3B           equ $0B37        ; $F8B37
+EgrFlowEstimate  equ $0B38        ; $F8B38
+EgrB3D           equ $0B39        ; $F8B39
+EgrTargetPos     equ $0B3A        ; $F8B3A
+EgrPosError      equ $0B3C        ; $F8B3C
+EgrB42           equ $0B3E        ; $F8B3E
+EgrB44           equ $0B40        ; $F8B40
+EgrPidIntegral   equ $0B42        ; $F8B42
+EgrB48           equ $0B44        ; $F8B44
 EgrSolenoidB4A   equ $0B46        ; $F8B46
 EgrDuty          equ $0B48        ; $F8B48
+EgrB4D           equ $0B49        ; $F8B49
+EgrB4E           equ $0B4A        ; $F8B4A
 EgrSolenoidB4F   equ $0B4B        ; $F8B4B
+EgrZeroFlags     equ $0B4C        ; $F8B4C
+;                 bit 7: EGR zero position below EgrZeroPosMin (EgrZeroCheck)
+;                 bit 2: EGR zero check running (EgrZeroCheck); EgrPositionMonitor waits for it
+;                 bit 1: EGR zero check step started (EgrZeroCheck)
+;                 bit 0: EGR zero position learnt (EgrZeroPos, EgrZeroCheck)
+EgrZeroTimer     equ $0B4D        ; $F8B4D
 AcCutFlags       equ $0B4E        ; $F8B4E
 AcCutTimer       equ $0B4F        ; $F8B4F
 AcCutMapRef      equ $0B50        ; $F8B50
 BrakeOnTime      equ $0B51        ; $F8B51
 AcB56            equ $0B52        ; $F8B52
+EgrMonTimer      equ $0B54        ; $F8B54
 IdleRpmRefStart  equ $0C00        ; $F8C00
 StarterCutTimer  equ $0C01        ; $F8C01
 MtvFlags         equ $0C02        ; $F8C02
@@ -2058,6 +2130,7 @@ TuneValve2Rate   equ $0C0E        ; $F8C0E
 TuneValve2C10    equ $0C10        ; $F8C10
 TuneValve2Timer  equ $0C12        ; $F8C12
 TuneValve2Hold   equ $0C13        ; $F8C13
+TuneValve2C15    equ $0C15        ; $F8C15
 PwmC18Flags      equ $0C16        ; $F8C16
 PwmC18Step       equ $0C17        ; $F8C17
 PwmC18Period     equ $0C18        ; $F8C18
@@ -2180,6 +2253,7 @@ CalcEngineC4B    equ $0C4B        ; $F8C4B
 EngineRpm        equ $0C4C        ; $F8C4C
 RpmPrev          equ $0C4E        ; $F8C4E
 FuelPulseOptFlags equ $0C50        ; $F8C50
+CalcSparkC51     equ $0C51        ; $F8C51
 FinishFuelC52    equ $0C52        ; $F8C52
 FinishFuelC53    equ $0C53        ; $F8C53
 SciUnlockState   equ $0C54        ; $F8C54
@@ -2241,10 +2315,16 @@ SparkFlags2      equ $0D02        ; $F8D02
 ;                 bit 0: EGR spark correction applied (EgrSparkCalc, cleared by EgrEnable)
 FlexSparkValue   equ $0D03        ; $F8D03
 KnockRetard      equ $0D04        ; $F8D04
+CalcSparkD05     equ $0D05        ; $F8D05
+CalcSparkD06     equ $0D06        ; $F8D06
 CalcSparkD07     equ $0D07        ; $F8D07
+CalcSparkD08     equ $0D08        ; $F8D08
 CalcSparkD09     equ $0D09        ; $F8D09
 CalcSparkD0A     equ $0D0A        ; $F8D0A
+CalcSparkD0B     equ $0D0B        ; $F8D0B
 CalcSparkD0C     equ $0D0C        ; $F8D0C
+CalcSparkD0D     equ $0D0D        ; $F8D0D
+CalcSparkD0E     equ $0D0E        ; $F8D0E
 SparkValueD0F    equ $0D0F        ; $F8D0F
 CalcSparkD10     equ $0D10        ; $F8D10
 SparkAdvanceD11  equ $0D11        ; $F8D11
@@ -2393,8 +2473,11 @@ FieldTestVolts   equ $0DC8        ; $F8DC8
 Irq2E00          equ $0E00        ; $F8E00
 ThrottleCloseCount equ $0E01        ; $F8E01
 FlexFuelFactor   equ $0F00        ; $F8F00
+FlexFactorEthanol equ $0F02        ; $F8F02
 FlexFactorCoolant2 equ $0F03        ; $F8F03
+FlexFactorCoolant1 equ $0F04        ; $F8F04
 FlexFactorCoolant3 equ $0F05        ; $F8F05
+FlexRpmValue     equ $0F06        ; $F8F06
 FlexTrimUpCounter equ $0F07        ; $F8F07
 FlexTrimDownCounter equ $0F08        ; $F8F08
 ResetF09         equ $0F09        ; $F8F09
@@ -2446,11 +2529,10 @@ FlexLearnState   equ $0F3A        ; $F8F3A
 FlexLearnFlags5  equ $0F3B        ; $F8F3B
 FlexColdCounter  equ $0F3C        ; $F8F3C
 FlexColdF3D      equ $0F3D        ; $F8F3D
-FlexF49          equ $0F3E        ; $F8F3E
+FlexLearnCounter3 equ $0F3E        ; $F8F3E
 FlexLearnSettle  equ $0F3F        ; $F8F3F
 FlexEthanolLimit equ $0F40        ; $F8F40
 FlexEthanolLimit2 equ $0F41        ; $F8F41
-FlexF48          equ $0F42        ; $F8F42
 FlexMisfireF43   equ $0F43        ; $F8F43
 IoInputs0        equ $1000        ; $F9000
 ;                 bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path

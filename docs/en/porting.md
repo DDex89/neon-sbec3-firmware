@@ -18,35 +18,49 @@ The two programs are matched routine by routine:
    addressing modes changed between program versions.
 5. **Propagation**: two matched routines are aligned instruction by instruction (or on their
    common runs when they are at least 60 % alike); the routines they call are matched in turn.
-   The lookups inside two matched routines are paired in call order when the table kinds agree.
+   A callee is taken over from a call site only if the two callees also look alike (35 % alike,
+   or the same first instructions): a run of calls shifts when a call is added or removed, and
+   such a shift would pair the wrong routines. The lookups inside two matched routines are paired
+   in call order when the table kinds agree.
+6. **Fuzzy pass**: each routine still open gets its best candidate by mnemonic similarity and by
+   how many of its matched callers and callees agree; the pair is accepted only when it is the
+   best in both directions by a clear margin. These pairs are aligned on longer runs only, and
+   their operands name RAM and calibration only where the other pairs say nothing.
+7. **Chain** (128 KB families): B also takes names from the port of C, and A from the port of B,
+   for whatever the reference left open. A and B are closer to each other and to C than to F.
 
 The aligned instructions give the address map for code labels. Their operands give the maps for
 RAM offsets (`$xxxx,Z`) and calibration addresses (`LDX #table`, `$xxxx`); a name is carried over
-only when at least 80 % of the aligned instructions agree on the new address.
+only when at least 80 % of the aligned instructions agree on the new address. When two reference
+names land on the same new address, the one with more votes keeps it; on a tie neither does.
+Structures taken over with the row count of the reference (bit maps, word lists, fault rows) are
+cut where the next named item or code starts, so a shorter list in an older program does not run
+into the code after it.
 
 The result is written to `annotations/ports/<part number>/` (labels, RAM, tables, analysis) with
 `stats.json`, which also holds the SHA-256 of the image so that the set is never applied to the
-wrong file. These files are generated: change the reference annotations and re-run the port.
+wrong file. These files are generated: change the reference annotations and re-run the port
+(05007038 before 05293013AC/14AC, those before 04887050/51).
 
 ## Results
 
 | Image | Family | Size | Routines matched | Instructions mapped | Labels | RAM names | Tables | Constants |
 |---|---|---|---|---|---|---|---|---|
-| 05269833AI, 05269834AJ | E | 256 KB | 654 of 657 | 42,461 of 43,370 | 651 of 680 | 1,800 of 1,871 | 402 of 410 | 1,404 of 1,451 |
-| 05269833AH | D | 256 KB | 618 | 37,929 | 615 | 1,670 | 361 | 1,244 |
-| 05032017AA | G | 256 KB | 623 | 39,434 | 621 | 1,772 | 351 | 1,329 |
-| 05007038, 05293148AA | C | 128 KB | 301 | 15,809 | 278 | 905 | 167 | 548 |
-| 05293013AC, 05293014AC | B | 128 KB | 194 | 8,103 | 170 | 521 | 134 | 253 |
-| 04887050, 04887051 | A | 128 KB | 170 | 7,042 | 146 | 442 | 131 | 239 |
+| 05269833AI, 05269834AJ | E | 256 KB | 654 of 657 | 42,460 of 43,370 | 651 of 680 | 1,800 of 1,871 | 402 of 410 | 1,404 of 1,451 |
+| 05269833AH | D | 256 KB | 642 | 40,076 | 639 | 1,735 | 391 | 1,351 |
+| 05032017AA | G | 256 KB | 647 | 42,145 | 644 | 1,802 | 385 | 1,399 |
+| 05007038, 05293148AA | C | 128 KB | 409 | 23,699 | 397 | 1,147 | 295 | 861 |
+| 05293013AC, 05293014AC | B | 128 KB | 320 | 16,963 | 325 | 949 | 241 | 701 |
+| 04887050, 04887051 | A | 128 KB | 297 | 15,417 | 309 | 870 | 240 | 695 |
 
 The 256 KB families are close relatives of the reference: almost everything carries over, and
 the RAM layout is nearly the same. The 128 KB families are an older, smaller program (30,000 to
-33,000 instructions) with a 2 KB RAM laid out differently; there the port covers the skeleton
-(reset, interrupts, scheduler counters, lookup routines) and the main fuel and spark paths:
-`CalcFuelPulse`, `CalcBaseSpark`, both fuel and spark tables, the MAP scales, the fuel constants,
-dead time, knock threshold, the thermistor curves, `EngineRpm`, `Map`, `CoolantTemp`, `Throttle`
-and others. The lookup routines and table formats are the same in all families, so every table is
-found and laid out in every image, named or not.
+33,000 instructions) with a 2 KB RAM laid out differently. There the port now covers about half
+of the code of family C and a third of A and B: the skeleton (reset, interrupts, scheduler,
+lookups, CCD/SCI), the fuel and spark paths (`CalcFuelPulse`, `CalcBaseSpark` and the tables they
+read), idle, fan, purge, the sensor processing and most of the OBD monitors. The lookup routines
+and table formats are the same in all families, so every table is found and laid out in every
+image, named or not.
 
 ## Sources in the repository
 
@@ -79,7 +93,8 @@ program.
 
 ## Open points
 
-- The 128 KB port covers about a quarter of the program. More anchors (named routines in the
-  reference) raise it, since every new match propagates to the routines it calls.
+- The 128 KB port leaves about half of the routines of C unnamed: code that the 256 KB program
+  rewrote or does not have. Naming them needs reading the 128 KB code itself; every new name in
+  C then also reaches A and B through the chain.
 - Vehicle and engine of most images are still unknown; the fault tables (cylinder count) and the
   calibration differences are the next clues.

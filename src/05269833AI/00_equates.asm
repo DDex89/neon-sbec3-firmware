@@ -561,7 +561,7 @@ AcSensorFiltered equ $0345        ; $F8345
 IacAcClutchTimer equ $0346        ; $F8346
 DashpotTimer2    equ $0347        ; $F8347
 IacGearTime      equ $0348        ; $F8348
-IacGearTime2     equ $0349        ; $F8349
+IacGearDelay     equ $0349        ; $F8349
 IacGearDuration  equ $034A        ; $F834A
 IdleRampBlockTimer equ $034B        ; $F834B
 IdleRampHold     equ $034C        ; $F834C

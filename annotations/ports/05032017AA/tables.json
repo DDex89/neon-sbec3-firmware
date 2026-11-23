@@ -25,6 +25,14 @@
    "y": "raw",
    "auto": false
   },
+  "0390": {
+   "name": "FlexLearnLimitPurgeTrim",
+   "category": "Fuel",
+   "desc": "Flex-fuel learning: limit FlexEthanolLimit2 against PurgeCellTrim2 (negative values as 0)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
   "039C": {
    "name": "IacRunUpCoolant",
    "category": "Idle",
@@ -474,6 +482,22 @@
    "y": "pos256",
    "auto": false
   },
+  "0A2A": {
+   "name": "SurgeMapScale",
+   "category": "Spark",
+   "desc": "Driveline surge spark control (SurgeControl): MAP to row position (Scratch6, SurgeMapPos)",
+   "x": "kpa",
+   "y": "pos256",
+   "auto": false
+  },
+  "098E": {
+   "name": "SurgeDecayGearScale",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: rpm/speed ratio (gear) to row position of SurgeDecay",
+   "x": "raw",
+   "y": "pos256",
+   "auto": false
+  },
   "09A6": {
    "name": "IdleBattTempScale",
    "category": "Idle",
@@ -627,6 +651,13 @@
    "y": "pwus32",
    "category": "Fuel"
   },
+  "0B9C": {
+   "name": "ReturnlessFuelScale",
+   "desc": "Global fuel multiplier of the returnless fuel system",
+   "x": "kpa",
+   "y": "mult256",
+   "category": "Fuel"
+  },
   "0BDC": {
    "name": "HotEngineEnrich",
    "category": "Fuel",
@@ -670,28 +701,28 @@
    "x": "kpa",
    "y": "kpa"
   },
-  "1DFB": {
+  "10D4": {
    "name": "FuelAirTempCorr",
-   "desc": "Fuel multiplier against intake air temperature (scaled by the rpm and MAP weights); read here with another input than in 05293190AC, so the x unit is not carried",
+   "desc": "Fuel multiplier against intake air temperature (scaled by the rpm and MAP weights)",
    "category": "Fuel",
    "auto": false,
-   "x": "raw",
+   "x": "tempc",
    "y": "mult256"
   },
-  "1E3C": {
+  "10E2": {
    "name": "FuelAirTempMapWeight",
-   "desc": "Weight of the air-temperature fuel correction against MAP; read here with another input than in 05293190AC, so the x unit is not carried",
+   "desc": "Weight of the air-temperature fuel correction against MAP",
    "category": "Fuel",
    "auto": false,
-   "x": "raw",
+   "x": "kpa",
    "y": "mult256"
   },
-  "1E24": {
+  "10EA": {
    "name": "FuelAirTempRpmWeight",
-   "desc": "Weight of the air-temperature fuel correction against rpm; read here with another input than in 05293190AC, so the x unit is not carried",
+   "desc": "Weight of the air-temperature fuel correction against rpm",
    "category": "Fuel",
    "auto": false,
-   "x": "raw",
+   "x": "rpm32",
    "y": "mult256"
   },
   "10FC": {
@@ -1188,7 +1219,7 @@
    "y": "raw",
    "auto": false
   },
-  "1E18": {
+  "1DC3": {
    "name": "FuelTrimAdjust",
    "category": "Fuel",
    "desc": "Signed fuel adjustment (centred on 128) from calibration $1923 or, with ControlFlagsC33 bit 4 clear, from FuelTrimAdjustValue (set over the SCI line); enabled by calibration bit Options032C bit 7",
@@ -1196,12 +1227,60 @@
    "y": "raw",
    "auto": false
   },
-  "1E30": {
+  "1DCD": {
    "name": "FuelTrimAdjustMapWeight",
    "category": "Fuel",
-   "desc": "Weight of FuelTrimAdjust against MAP; the product goes to FlexStartFuel and multiplies the fuel; read here with another input than in 05293190AC, so the x unit is not carried",
-   "x": "raw",
+   "desc": "Weight of FuelTrimAdjust against MAP; the product goes to FlexStartFuel and multiplies the fuel",
+   "x": "kpa",
    "y": "mult256",
+   "auto": false
+  },
+  "1DF1": {
+   "name": "DecelCutMapThreshold",
+   "category": "Fuel",
+   "desc": "Deceleration fuel cut-off: MAP threshold against rpm; while MAP is under it the decel timer DecelTimer counts up",
+   "x": "rpm32",
+   "y": "kpa",
+   "auto": false
+  },
+  "1DFB": {
+   "name": "DecelCutDelay",
+   "category": "Fuel",
+   "desc": "Deceleration fuel cut-off: decel timer value (DecelTimer) needed against rpm",
+   "x": "rpm32",
+   "y": "raw",
+   "auto": false
+  },
+  "1E18": {
+   "name": "DecelCutMinRpmCoolant2",
+   "category": "Fuel",
+   "desc": "Deceleration fuel cut-off: minimum rpm against coolant (variant with ControlFlags943 bit 0 clear)",
+   "x": "tempc",
+   "y": "rpm32",
+   "auto": false
+  },
+  "1E24": {
+   "name": "DecelCutMinRpmCoolant",
+   "category": "Fuel",
+   "desc": "Deceleration fuel cut-off: minimum rpm against coolant (variant with ControlFlags943 bit 0 set); the higher of this and DecelCutMinRpmFieldDuty applies",
+   "x": "tempc",
+   "y": "rpm32",
+   "auto": false
+  },
+  "1E30": {
+   "name": "DecelCutMinRpmFieldDuty2",
+   "category": "Fuel",
+   "desc": "Deceleration fuel cut-off: minimum rpm against FieldDuty (variant with ControlFlags943 bit 0 clear)",
+   "x": "raw",
+   "y": "rpm32",
+   "auto": false
+  },
+  "1E3C": {
+   "name": "DecelCutMinRpmFieldDuty",
+   "category": "Fuel",
+   "desc": "Deceleration fuel cut-off: minimum rpm against FieldDuty (variant with ControlFlags943 bit 0 set)",
+   "x": "raw",
+   "y": "rpm32",
    "auto": false
   },
   "1E6D": {
@@ -1514,6 +1593,54 @@
    "y": "pos256",
    "auto": false
   },
+  "291B": {
+   "name": "SurgeJerkRetardOpen",
+   "category": "Spark",
+   "desc": "Driveline surge spark control, throttle open: retard against positive rpm jerk (above $2173)",
+   "x": "raw",
+   "y": "spark",
+   "auto": false
+  },
+  "2923": {
+   "name": "SurgeJerkAdvanceOpen",
+   "category": "Spark",
+   "desc": "Driveline surge spark control, throttle open: spark against negative rpm jerk (below $2172)",
+   "x": "raw",
+   "y": "spark",
+   "auto": false
+  },
+  "293C": {
+   "name": "SurgeRateThreshold",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: rpm acceleration (RpmAccel) that starts the retard, against the rpm/speed ratio (gear)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "294A": {
+   "name": "SurgeRetardGearFactor",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: factor on the base retard against the rpm/speed ratio (gear)",
+   "x": "raw",
+   "y": "mult256",
+   "auto": false
+  },
+  "2958": {
+   "name": "SurgeRetardRateFactor",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: factor on the retard against rpm acceleration RpmAccel",
+   "x": "raw",
+   "y": "mult256",
+   "auto": false
+  },
+  "2964": {
+   "name": "SurgeRetardMapRiseFactor",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: factor on the retard against MAP rise MapRise (MAP minus filtered MAP); result into SurgeRetard",
+   "x": "raw",
+   "y": "mult256",
+   "auto": false
+  },
   "2970": {
    "name": "SurgeRetardBase",
    "category": "Spark",
@@ -1521,6 +1648,66 @@
    "x": "raw",
    "y": "pos256",
    "z": "spark",
+   "auto": false
+  },
+  "2991": {
+   "name": "SurgeDecay",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage SurgeStageTime (columns)",
+   "x": "raw",
+   "y": "pos256",
+   "z": "mult256",
+   "auto": false
+  },
+  "29CA": {
+   "name": "SurgeJerkThreshold",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: rpm jerk (RpmJerk) above which the jerk retard applies, against the rpm/speed ratio",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "29D8": {
+   "name": "SurgeRetardCoolantFactor",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: factor on the retard against coolant",
+   "x": "tempc",
+   "y": "mult256",
+   "auto": false
+  },
+  "29E2": {
+   "name": "SurgeJerkGain",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: jerk retard gain against MAP position (rows) and fast rpm (columns)",
+   "x": "raw",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "2A03": {
+   "name": "SurgeJerkLimit",
+   "category": "Spark",
+   "desc": "Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into SurgeJerkRetard",
+   "x": "raw",
+   "y": "pos256",
+   "z": "spark",
+   "auto": false
+  },
+  "2B62": {
+   "name": "FlexSparkMapRpm",
+   "category": "Spark",
+   "desc": "Flex-fuel spark change, MAP x rpm, minus FlexSparkValue, weighted by FlexSparkEthanolWeight",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "spark",
+   "auto": false
+  },
+  "2C97": {
+   "name": "FlexSparkEthanolWeight",
+   "category": "Spark",
+   "desc": "Weight of FlexSparkMapRpm against ethanol content",
+   "x": "raw",
+   "y": "mult256",
    "auto": false
   },
   "2CE3": {
@@ -1900,6 +2087,14 @@
    "y": "raw",
    "auto": false
   },
+  "30B5": {
+   "name": "ShiftIdleDelayCoolant",
+   "category": "Idle",
+   "desc": "Delay (ShiftIdleDelay) on a shift into P/N against coolant (above $279B)",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
   "30BF": {
    "name": "IacGearDelayCoolant",
    "category": "Idle",
@@ -1964,6 +2159,22 @@
    "y": "raw",
    "auto": false
   },
+  "310F": {
+   "name": "ShiftIdleRateCoolant",
+   "category": "Idle",
+   "desc": "Rpm-rate threshold that ends a shift into drive against coolant (compared with IdleRateTerm + 128)",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "3117": {
+   "name": "ShiftIdleRateCoolantAC",
+   "category": "Idle",
+   "desc": "As ShiftIdleRateCoolant with A/C requested",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
   "311F": {
    "name": "IacGearTimeCoolantPN",
    "category": "Idle",
@@ -2008,6 +2219,22 @@
    "name": "IacGearStepCoolantPNAC",
    "category": "Idle",
    "desc": "As IacGearStepCoolantPN with A/C requested",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "315B": {
+   "name": "ShiftIdleRateCoolantPN",
+   "category": "Idle",
+   "desc": "Rpm-rate threshold that ends a shift into P/N against coolant",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "3163": {
+   "name": "ShiftIdleRateCoolantPNAC",
+   "category": "Idle",
+   "desc": "As ShiftIdleRateCoolantPN with A/C requested",
    "x": "tempc",
    "y": "raw",
    "auto": false
@@ -2426,6 +2653,22 @@
    "y": "raw",
    "auto": false
   },
+  "3582": {
+   "name": "MapHighThresholdRpm",
+   "category": "Sensors",
+   "desc": "MAP plausibility: offset subtracted from the baro limit against engine rpm (MAP above sets BusReqFlags bit 2)",
+   "x": "rpm32",
+   "y": "raw",
+   "auto": false
+  },
+  "3592": {
+   "name": "MapHighThresholdBaro",
+   "category": "Sensors",
+   "desc": "MAP plausibility: limit against barometric pressure; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
   "3929": {
    "name": "MisfireLoadScale",
    "category": "Diagnostics",
@@ -2601,6 +2844,14 @@
    "y": "raw",
    "auto": false
   },
+  "5343": {
+   "name": "DiagTimerRpm",
+   "category": "Diagnostics",
+   "desc": "Timer DiagTimer527 of DiagModeTimer loaded against engine rpm",
+   "x": "rpm32",
+   "y": "raw",
+   "auto": false
+  },
   "5357": {
    "name": "MisfireNoiseLimit",
    "category": "Diagnostics",
@@ -2667,6 +2918,30 @@
    "desc": "As FuelSysLimitScale for FuelSysTooLean1Check, FuelSysTooLean2Check",
    "x": "raw",
    "y": "pos256",
+   "auto": false
+  },
+  "56D0": {
+   "name": "FuelSenderVoltsAdder",
+   "category": "Sensors",
+   "desc": "Correction of analog input FuelSenderRaw against battery voltage",
+   "x": "volt16",
+   "y": "raw",
+   "auto": false
+  },
+  "56DC": {
+   "name": "FuelSenderCurve2",
+   "category": "Sensors",
+   "desc": "Corrected analog input FuelSenderRaw to FuelLevelScaled (read by the flex-fuel learning)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "56E8": {
+   "name": "FuelSenderCurve",
+   "category": "Sensors",
+   "desc": "Corrected analog input FuelSenderRaw to FuelSenderScaled (filtered into FuelSenderFiltered)",
+   "x": "raw",
+   "y": "raw",
    "auto": false
   },
   "5700": {
@@ -4539,6 +4814,49 @@
    "category": "Fuel",
    "size": 2
   },
+  "0777": {
+   "name": "FlexRefuelFuelMin3",
+   "desc": "Flex learning after a refuel: fuel used at or above which FlexLearnFlags2 bit 0 is set",
+   "category": "Fuel",
+   "size": 2
+  },
+  "0779": {
+   "name": "FlexLearnWarmCount",
+   "desc": "Flex learning: warm counts (FlexLearnWarmCounter) with coolant at or above FlexLearnCoolantMin",
+   "category": "Fuel",
+   "size": 1
+  },
+  "077A": {
+   "name": "FlexLearnCountMax",
+   "desc": "Flex learning: count limit of FlexLearnCounter",
+   "category": "Fuel",
+   "size": 1
+  },
+  "077B": {
+   "name": "FlexLearnCountMax2",
+   "desc": "Flex learning: count limit of FlexLearnCounter2",
+   "category": "Fuel",
+   "size": 1
+  },
+  "077C": {
+   "name": "FlexLearnCoolantMin",
+   "desc": "Flex-fuel learning: coolant at or above this value",
+   "unit": "tempc",
+   "category": "Fuel",
+   "size": 1
+  },
+  "077E": {
+   "name": "FlexLearnHoldInit",
+   "desc": "Flex learning: start value of the hold FlexLearnHold",
+   "category": "Fuel",
+   "size": 1
+  },
+  "077F": {
+   "name": "FlexEthanolStartStepDown",
+   "desc": "Flex learning: decrease of the start estimate when the learned base stays below its limit",
+   "category": "Fuel",
+   "size": 1
+  },
   "078C": {
    "name": "FlexLearnBaseReadyMin",
    "desc": "FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines FuelSysTooRich1Check-FuelSysTooLean2Check)",
@@ -4741,6 +5059,12 @@
    "category": "Fuel",
    "size": 2
   },
+  "07C9": {
+   "name": "FlexLearnTrimMin",
+   "desc": "Flex-fuel learning: FlexLearnTrimSum at or above this value sets FlexLearnFlags3 bit 1",
+   "category": "Fuel",
+   "size": 1
+  },
   "07CA": {
    "name": "FlexLearnTimeMin",
    "desc": "Flex-fuel learning: FlexLearnTimer at or above this value",
@@ -4759,9 +5083,21 @@
    "category": "Fuel",
    "size": 1
   },
+  "07CE": {
+   "name": "FlexLearnRunTimeMin",
+   "desc": "Flex learning: run time at or above which learning may start with a coolant sensor fault",
+   "category": "Fuel",
+   "size": 1
+  },
   "07CF": {
    "name": "FlexFuelFactorMin",
    "desc": "Flex fuel factor (FlexFuelFactorLimit): lower limit as a fraction of the input value",
+   "category": "Fuel",
+   "size": 1
+  },
+  "07D0": {
+   "name": "FlexLearnMilesMin",
+   "desc": "Flex learning (FlexLearnMain): SRI mileage (SriMileageLow with SriMileage zero) below this value keeps learning off",
    "category": "Fuel",
    "size": 1
   },
@@ -4833,9 +5169,21 @@
    "category": "Fuel",
    "size": 1
   },
+  "085E": {
+   "name": "FlexEthanolStartInit",
+   "desc": "Flex learning: start estimate loaded with FlexLearnOptions bit 2",
+   "category": "Fuel",
+   "size": 1
+  },
   "085F": {
    "name": "FlexRefuelLevelMax",
    "desc": "FlexLearnInitRun: fuel level below this value with FlexLearnCounter3 at or above FlexLearnCountMin sets the refuel flag FlexLearnFlags bit 5",
+   "category": "Fuel",
+   "size": 1
+  },
+  "0860": {
+   "name": "FlexLearnSettleCount",
+   "desc": "Flex learning: settle count (FlexLearnSettle) before PurgeCellTrimClear runs",
    "category": "Fuel",
    "size": 1
   },
@@ -6373,12 +6721,129 @@
     "80"
    ]
   },
+  "1DD8": {
+   "name": "DecelCutRpmMin",
+   "desc": "Deceleration fuel cut: engine rpm at or above this value",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DD9": {
+   "name": "DecelCutSpeedMin",
+   "desc": "Deceleration fuel cut: vehicle speed at or above this value",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DDA": {
+   "name": "DecelCutCoolantMin",
+   "desc": "Deceleration fuel cut: coolant at or above this value",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DDB": {
+   "name": "DecelCutStartCoolantMax",
+   "desc": "Start coolant below which the delay DecelCutStartTimeCold is used",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DDC": {
+   "name": "DecelCutStartTimeCold",
+   "desc": "Time since start needed before deceleration fuel cut, cold start",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DDD": {
+   "name": "DecelCutStartTime",
+   "desc": "Time since start needed before deceleration fuel cut",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DDE": {
+   "name": "DecelCutMapMax",
+   "desc": "Deceleration fuel cut: MAP at or below this value",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DDF": {
+   "name": "DecelCutThrottleDrop",
+   "desc": "Throttle drop (ThrottleLast minus Throttle) that starts the decel state (FuelModeFlags2 bit 5)",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DE0": {
+   "name": "DecelCutMapMin",
+   "desc": "Deceleration fuel cut: MAP below this value skips the delay",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Fuel"
+  },
   "1DE1": {
    "name": "EventFuelMapMin",
    "desc": "Event fuel (EventCorrections): MAP at or above this value",
    "unit": "kpa",
    "size": 1,
    "category": "Other"
+  },
+  "1DE2": {
+   "name": "DecelCutResumeDelay",
+   "desc": "Delay DecelResumeTimer before fuel returns after the throttle closes",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DE3": {
+   "name": "DecelCutSpeedEnd",
+   "desc": "Fuel cut ends below this vehicle speed (FuelModeFlags bit 1 set)",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DE4": {
+   "name": "DecelCutCoolantMin2",
+   "desc": "Throttle-open branch: coolant at or above this value",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DE5": {
+   "name": "DecelCutMapMax2",
+   "desc": "Throttle-open branch: MAP at or below this value",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DE6": {
+   "name": "DecelCutSpeedMax2",
+   "desc": "A/C branch: vehicle speed up to this value",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DE7": {
+   "name": "DecelCutSpeedEnd2",
+   "desc": "Throttle-open branch: fuel cut ends below this vehicle speed",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DE8": {
+   "name": "DecelCutSpeedMinAlt",
+   "desc": "As DecelCutSpeedMin above rpm DecelCutRpmAlt (sets FuelModeFlags bit 1)",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DE9": {
+   "name": "DecelCutRpmEnd",
+   "desc": "Fuel cut ends below this rpm (FuelModeFlags bit 1 set)",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DEA": {
+   "name": "DecelCutRpmAlt",
+   "desc": "Rpm above which DecelCutSpeedMinAlt applies",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Fuel"
   },
   "1DEB": {
    "name": "EventFuelDelay",
@@ -6404,6 +6869,19 @@
    "category": "Other",
    "size": 1
   },
+  "1DEF": {
+   "name": "DecelCutRpmMin2",
+   "desc": "A/C branch: engine rpm above this value",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1DF0": {
+   "name": "DecelCutSpeedMax3",
+   "desc": "Speed limit of the last branch of FuelCutControl",
+   "size": 1,
+   "category": "Fuel"
+  },
   "1E7B": {
    "name": "RevLimit",
    "desc": "Rev limit, used while DriveFlags bit 5 is set (2GNT: manual transmission / park-neutral); also scales the calculated load with baro (CalcLoadValue)",
@@ -6411,9 +6889,50 @@
    "unit": "rpm32",
    "category": "Fuel"
   },
+  "1E7C": {
+   "name": "RevLimitActive",
+   "desc": "With the cut already active (RevLimitFlags bit 7 path) and DriveFlags bit 5 set: rpm above this keeps the fuel cut",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Fuel"
+  },
   "1E7D": {
    "name": "RevLimitAlt",
    "desc": "Rev limit, used while DriveFlags bit 5 is clear; also scales the calculated load with baro (CalcLoadValue)",
+   "size": 1,
+   "unit": "rpm32",
+   "category": "Fuel"
+  },
+  "1E7E": {
+   "name": "RevLimitActiveAlt",
+   "desc": "As RevLimitActive with DriveFlags bit 5 clear",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1E7F": {
+   "name": "SpeedLimitActive",
+   "desc": "With the cut active: coarse vehicle speed at or above this keeps the speed-limit cut (bit Options0337 bit 5)",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1E80": {
+   "name": "SpeedLimit",
+   "desc": "Vehicle speed limit (compared with VehicleSpeedCoarse), active with calibration bit Options0337 bit 5",
+   "size": 1,
+   "unit": "raw",
+   "category": "Fuel"
+  },
+  "1E81": {
+   "name": "SpeedLimitMinRpmActive",
+   "desc": "With the cut active: the speed limit is checked above this rpm",
+   "unit": "rpm32",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1E82": {
+   "name": "SpeedLimitMinRpm",
+   "desc": "The speed limit is checked only above this rpm",
    "size": 1,
    "unit": "rpm32",
    "category": "Fuel"
@@ -7084,6 +7603,12 @@
    "size": 1,
    "category": "Spark"
   },
+  "20BE": {
+   "name": "SparkFaultValue",
+   "desc": "Spark value SparkValueD0F with a fault (SparkFaultFlags bit 5)",
+   "category": "Spark",
+   "size": 1
+  },
   "20C0": {
    "name": "DwellAltCoolantMax",
    "desc": "Alternate dwell select (DwellModeSelect, Options033C bits 2-5): coolant at or below this value with no listed faults selects DwellBatteryAlt (DwellModeFlags bit 6)",
@@ -7109,6 +7634,18 @@
    "desc": "Alternate dwell select: count DwellAltCount (word) at or below which the alternate dwell stays",
    "category": "Spark",
    "size": 2
+  },
+  "20C6": {
+   "name": "SparkTrimStep",
+   "desc": "Step of the spark trim term SparkTrim1 per update",
+   "category": "Spark",
+   "size": 1
+  },
+  "20C7": {
+   "name": "SparkTrimBias",
+   "desc": "Bias added to the spark trim term (SparkTrim1) before the 0-127 limit",
+   "category": "Spark",
+   "size": 1
   },
   "20C8": {
    "name": "SparkTrimStep2",
@@ -7457,6 +7994,24 @@
    "size": 1,
    "category": "Spark"
   },
+  "2919": {
+   "name": "SurgeJerkNegMin",
+   "desc": "Throttle open: negative jerk beyond which SurgeJerkAdvanceOpen applies",
+   "size": 1,
+   "category": "Spark"
+  },
+  "291A": {
+   "name": "SurgeJerkPosMin",
+   "desc": "Throttle open: positive jerk above which SurgeJerkRetardOpen applies",
+   "size": 1,
+   "category": "Spark"
+  },
+  "292D": {
+   "name": "SurgeRpmAccelEnd",
+   "desc": "Driveline surge: rpm acceleration change (RpmAccelChange) below which the retard stage ends early",
+   "size": 2,
+   "category": "Spark"
+  },
   "292F": {
    "name": "SurgeRpmFilter",
    "desc": "Driveline surge: filter weight of the fast rpm (SurgeRpmFast)",
@@ -7490,6 +8045,50 @@
   "2934": {
    "name": "SurgeMapFilter",
    "desc": "Driveline surge: filter weight of the MAP reference SurgeMapRef (MapRise = MAP minus it)",
+   "size": 1,
+   "category": "Spark"
+  },
+  "2935": {
+   "name": "SurgeMapMin",
+   "desc": "Driveline surge spark control runs above this MAP",
+   "unit": "kpa",
+   "size": 1,
+   "category": "Spark"
+  },
+  "2936": {
+   "name": "SurgeRpmMin",
+   "desc": "Driveline surge spark control runs above this fast segment rpm (high byte)",
+   "size": 1,
+   "category": "Spark"
+  },
+  "2937": {
+   "name": "SurgeSpeedMin",
+   "desc": "Driveline surge spark control runs above this vehicle speed",
+   "size": 1,
+   "category": "Spark"
+  },
+  "2938": {
+   "name": "SurgeOpenThrottleTime",
+   "desc": "Throttle open: time (SurgeOpenTime) during which the jerk spark applies",
+   "size": 1,
+   "category": "Spark"
+  },
+  "2939": {
+   "name": "SurgeCoolantMin",
+   "desc": "Driveline surge spark control runs above this coolant temperature",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Spark"
+  },
+  "293A": {
+   "name": "SurgeRetardTime",
+   "desc": "Retard stage length (SurgeStageTime) before the decay stage",
+   "size": 1,
+   "category": "Spark"
+  },
+  "293B": {
+   "name": "SurgeEnableDelay",
+   "desc": "Delay (SurgeEnableTime) after the enable conditions are met",
    "size": 1,
    "category": "Spark"
   },
@@ -7734,6 +8333,24 @@
    "unit": "rpmw",
    "size": 2,
    "category": "Closed loop"
+  },
+  "2EDE": {
+   "name": "IdleSparkRpmRateMax",
+   "desc": "Idle spark (IdleSparkControl): limit of the step counter IdleSparkSteps (0 = off)",
+   "category": "Spark",
+   "size": 1
+  },
+  "2EDF": {
+   "name": "IdleSparkPeriodMin",
+   "desc": "Idle spark: RefPeriod (reference period) limit for engines other than 4 cylinders",
+   "category": "Spark",
+   "size": 2
+  },
+  "2EE1": {
+   "name": "IdleSparkPeriodMin4Cyl",
+   "desc": "Idle spark: RefPeriod limit for 4 cylinders",
+   "category": "Spark",
+   "size": 2
   },
   "2EE3": {
    "name": "RpmEventFilter",
@@ -8056,9 +8673,23 @@
    "size": 1,
    "category": "Idle"
   },
+  "30B1": {
+   "name": "ShiftIdleRpmMargin",
+   "desc": "Shift into drive: idle target plus this margin; segment rpm above it ends the transition",
+   "unit": "rpmw",
+   "size": 2,
+   "category": "Idle"
+  },
   "30B3": {
    "name": "IacGearCoolantMax",
    "desc": "Gear-change IAC: coolant below which the IacGearTimeCoolant tables and the time counter IacGearTime apply",
+   "unit": "tempc",
+   "size": 1,
+   "category": "Idle"
+  },
+  "30B4": {
+   "name": "ShiftIdleCoolantMin",
+   "desc": "Shift into P/N: coolant above which ShiftIdleDelayCoolant applies",
    "unit": "tempc",
    "size": 1,
    "category": "Idle"
@@ -8862,6 +9493,13 @@
    "name": "SpeedCtlVentDelayCount",
    "desc": "Speed control: vent requests (SpeedCtlVentCounter) with SpeedCtlFlags3 bit 6 set before the vent acts",
    "category": "Speed control",
+   "size": 1
+  },
+  "35A2": {
+   "name": "BusMapHyst",
+   "desc": "MapHighBusFlag: MAP hysteresis of the bus flag BusReqFlags bit 2",
+   "unit": "kpa",
+   "category": "Other",
    "size": 1
   },
   "502F": {
@@ -10113,6 +10751,45 @@
    "category": "Diagnostics",
    "size": 1
   },
+  "56BA": {
+   "name": "MonEnableBattTempMin",
+   "desc": "OBD monitor enable flags (MonitorDisableFlags, MonitorEnable): battery temperature at or above this value",
+   "unit": "tempc",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "56BB": {
+   "name": "MonEnableBaroMin",
+   "desc": "OBD monitor enable flags: barometric pressure at or above this value",
+   "unit": "kpa",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "56BC": {
+   "name": "MonEnableVoltsMin",
+   "desc": "OBD monitor enable flags: battery voltage above this value",
+   "unit": "volt16",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "56BD": {
+   "name": "MonEnableFuelLow",
+   "desc": "OBD monitor enable flags (MonitorEnable): fuel sender reading above this value sets the low-fuel flag (MonitorDisableFlags bit 3)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "56BE": {
+   "name": "MonEnableFuelLowHold",
+   "desc": "OBD monitor enable flags: once set, the low-fuel flag holds while the reading stays above this value",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "56BF": {
+   "name": "MonEnableFuelEmpty",
+   "desc": "OBD monitor enable flags: fuel sender reading below this value sets MonitorDisableFlags bit 4",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "56C0": {
    "name": "PurgeLoadUpTime",
    "desc": "Purge vapour load: counts (PurgeLoadUpCounter) before the load PurgeLoad rises (0 = off)",
@@ -10134,6 +10811,12 @@
   "56C3": {
    "name": "FuelSenderReadTime",
    "desc": "Time since start after which the fuel level sender ($0A92) is read for FuelLevelScaled",
+   "category": "Sensors",
+   "size": 1
+  },
+  "56C4": {
+   "name": "FuelSenderFilter",
+   "desc": "Filter weight of FuelSenderFiltered (FuelLevelProcess)",
    "category": "Sensors",
    "size": 1
   },
@@ -10713,6 +11396,12 @@
    "category": "Diagnostics",
    "size": 1
   },
+  "57AB": {
+   "name": "BusDataThrottleScale",
+   "desc": "Diagnostic bus data: throttle opening is sent as opening × (1 + this / 256)",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "57AC": {
    "name": "TpsCheckThrottleMin",
    "desc": "Throttle rationality: raw throttle above this value with low load",
@@ -11072,6 +11761,20 @@
    "category": "Fuel",
    "size": 1
   },
+  "5818": {
+   "name": "CamCheckMapMin",
+   "desc": "Cam sensor check (CamSensorMonitor): MAP differs from baro by at least this value",
+   "unit": "kpa",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "5819": {
+   "name": "CamCheckVoltsMax",
+   "desc": "Cam sensor check: battery voltage below this value",
+   "unit": "volt16",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "581A": {
    "name": "O2InactiveTestTime",
    "desc": "O2 activity test when warm (O2ActivityWarm, P0134/P0154/P0140/P0160): test time (O2InactiveTimer) with the heater output switched",
@@ -11087,6 +11790,18 @@
   "581C": {
    "name": "O2InactiveDownSpeedMin",
    "desc": "O2 activity test when warm: vehicle speed at or above this value for the downstream sensors",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "581F": {
+   "name": "BusDataO2High",
+   "desc": "Diagnostic bus data (BusDataRequest): O2 raw reading above this value is reported as state $B1",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "5820": {
+   "name": "BusDataO2Mid",
+   "desc": "Diagnostic bus data: O2 raw reading above this value (and not above BusDataO2High) is reported as $FF, otherwise $A0",
    "category": "Diagnostics",
    "size": 1
   },
@@ -11311,6 +12026,12 @@
    "desc": "Filter weight of BatteryVoltsDwell (BatteryDwellFilter)",
    "category": "Sensors",
    "size": 1
+  },
+  "777A": {
+   "name": "CamFaultDelay",
+   "desc": "Cam sensor monitor (CamSensorMonitor, P0340): delay (CamFaultTimer, word) set after a fault report",
+   "category": "Diagnostics",
+   "size": 2
   },
   "777C": {
    "name": "PurgeMonitorValueInit",

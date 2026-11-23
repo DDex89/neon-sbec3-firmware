@@ -306,6 +306,7 @@ FaultMem09       equ $012B        ; $F812B
 FaultMem0F       equ $0131        ; $F8131
 FaultMem10       equ $0132        ; $F8132
 FaultMem12       equ $0134        ; $F8134
+FaultMem13       equ $0135        ; $F8135
 FaultMem15       equ $0137        ; $F8137
 FaultMem16       equ $0138        ; $F8138
 FaultMem17       equ $0139        ; $F8139
@@ -560,7 +561,7 @@ AcSensorFiltered equ $0345        ; $F8345
 IacAcClutchTimer equ $0346        ; $F8346
 DashpotTimer2    equ $0347        ; $F8347
 IacGearTime      equ $0348        ; $F8348
-IacGearTime2     equ $0349        ; $F8349
+IacGearDelay     equ $0349        ; $F8349
 IacGearDuration  equ $034A        ; $F834A
 IdleRampBlockTimer equ $034B        ; $F834B
 IdleRampHold     equ $034C        ; $F834C
@@ -849,6 +850,8 @@ O2MonPurgeOffTimer equ $0543        ; $F8543
 O2Activity544    equ $0544        ; $F8544
 O2Activity545    equ $0545        ; $F8545
 O2Activity546    equ $0546        ; $F8546
+ReadAnalog54B    equ $054B        ; $F854B
+ReadAnalog54C    equ $054C        ; $F854C
 IacReset54E      equ $054E        ; $F854E
 O2HeaterSample   equ $0550        ; $F8550
 O2Heater551      equ $0551        ; $F8551
@@ -1240,6 +1243,7 @@ CamCrank690      equ $0690        ; $F8690
 Cam691           equ $0691        ; $F8691
 Cam693           equ $0693        ; $F8693
 CamWindowCount   equ $0694        ; $F8694
+CamSensor695     equ $0695        ; $F8695
 LimpFlags        equ $06AC        ; $F86AC
 ;                 bit 7: vacuum leak / throttle-MAP disagreement confirmed: limp mode (VacuumLeakMonitor)
 ;                 bit 6: limp rpm limit taken from LimpRpmMapFault (VacuumLeakMonitor)
@@ -1267,6 +1271,7 @@ HwErrorFlags     equ $06B6        ; $F86B6
 Crank6B7         equ $06B7        ; $F86B7
 Options033ECopy  equ $06B8        ; $F86B8
 Options033FCopy  equ $06B9        ; $F86B9
+ResetCheckCode   equ $06BA        ; $F86BA
 CamCrankFlags    equ $06BC        ; $F86BC
 ;                 bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
 ;                 bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
@@ -1293,6 +1298,7 @@ FuelSender6C2    equ $06C2        ; $F86C2
 FuelSender6C3    equ $06C3        ; $F86C3
 FuelSender6C4    equ $06C4        ; $F86C4
 FuelSender6C5    equ $06C5        ; $F86C5
+FuelLevel6C6     equ $06C6        ; $F86C6
 StartFlags       equ $06C7        ; $F86C7
 ;                 bit 5: coolant sensor reading out of range at start (ProcessCoolantTemp)
 ;                 bit 4: coolant sensor reading out of range at start, second kind (ProcessCoolantTemp)
@@ -1310,6 +1316,7 @@ KnockSample6CF   equ $06CF        ; $F86CF
 KnockSample6D0   equ $06D0        ; $F86D0
 MapKeyOnCounter  equ $06D1        ; $F86D1
 SpeedCtlSw6D2    equ $06D2        ; $F86D2
+CalcSpark6D3     equ $06D3        ; $F86D3
 FinishFuel6D4    equ $06D5        ; $F86D5
 TransBusWord     equ $06D7        ; $F86D7
 AcPresentCounter equ $06E4        ; $F86E4
@@ -1503,6 +1510,8 @@ AdaptiveFuel2    equ $079B        ; $F879B
 SparkStartRamp   equ $079D        ; $F879D
 EventCorrections79E equ $079E        ; $F879E
 SparkStartRampValue equ $07A0        ; $F87A0
+DecelTimer       equ $07A1        ; $F87A1
+DecelResumeTimer equ $07A2        ; $F87A2
 EventCorrWork1   equ $07A3        ; $F87A3
 EventCorrWork2   equ $07A4        ; $F87A4
 EventCorrections7A5 equ $07A5        ; $F87A5
@@ -1559,6 +1568,7 @@ IdleFuelUpCount  equ $07DB        ; $F87DB
 IdleFuelDownCount equ $07DC        ; $F87DC
 IdleFuelRamp     equ $07DD        ; $F87DD
 IdleEnrichSoak   equ $07DE        ; $F87DE
+FuelCorrections7E0 equ $07E0        ; $F87E0
 FuelPulse        equ $07E2        ; $F87E2
 WarmupFuelFactor equ $07E4        ; $F87E4
 TimeSinceStart   equ $07E6        ; $F87E6
@@ -1666,6 +1676,7 @@ BodyMsgTimeout2  equ $08FF        ; $F88FF
 SparkEvent907    equ $0907        ; $F8907
 SparkEvent908    equ $0908        ; $F8908
 FinishFuel911    equ $0911        ; $F8911
+BusData92D       equ $092D        ; $F892D
 DiagCommand      equ $092E        ; $F892E
 DiagParam1       equ $092F        ; $F892F
 DiagParam2       equ $0930        ; $F8930
@@ -2003,6 +2014,7 @@ MapFilterCoef    equ $0A83        ; $F8A83
 MapRawStart      equ $0A84        ; $F8A84
 ReadMapA81       equ $0A85        ; $F8A85
 ReadMapA82       equ $0A86        ; $F8A86
+ReadAnalogA83    equ $0A87        ; $F8A87
 MapRaw           equ $0A88        ; $F8A88
 ManifoldVacuum   equ $0A89        ; $F8A89
 AcSensorRaw      equ $0A8B        ; $F8A8B
@@ -2015,8 +2027,10 @@ FlexSensorRaw    equ $0A92        ; $F8A92
 FlexSensorA8F    equ $0A93        ; $F8A93
 PowerDownCount   equ $0A94        ; $F8A94
 FlexEthanolScaled equ $0A95        ; $F8A95
+FuelSenderRaw    equ $0A96        ; $F8A96
 FuelSenderScaled equ $0A97        ; $F8A97
 FuelSenderFiltered equ $0A98        ; $F8A98
+FuelLevelA96     equ $0A9A        ; $F8A9A
 VehicleSpeedRaw  equ $0A9C        ; $F8A9C
 VehicleSpeed     equ $0A9E        ; $F8A9E
 VehicleSpeedCoarse equ $0A9F        ; $F8A9F
@@ -2298,6 +2312,7 @@ CalcEngineC4B    equ $0C4B        ; $F8C4B
 EngineRpm        equ $0C4C        ; $F8C4C
 RpmPrev          equ $0C4E        ; $F8C4E
 FuelPulseOptFlags equ $0C50        ; $F8C50
+CalcSparkC51     equ $0C51        ; $F8C51
 FinishFuelC52    equ $0C52        ; $F8C52
 FinishFuelC53    equ $0C53        ; $F8C53
 SciUnlockState   equ $0C54        ; $F8C54
@@ -2358,11 +2373,14 @@ SparkFlags2      equ $0D02        ; $F8D02
 ;                 bit 1: low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)
 ;                 bit 0: EGR spark correction applied (EgrSparkCalc, cleared by EgrEnable)
 KnockRetard      equ $0D04        ; $F8D04
+CalcSparkD06     equ $0D06        ; $F8D06
 CalcSparkD07     equ $0D07        ; $F8D07
 CalcSparkD08     equ $0D08        ; $F8D08
 CalcSparkD09     equ $0D09        ; $F8D09
 CalcSparkD0A     equ $0D0A        ; $F8D0A
+CalcSparkD0B     equ $0D0B        ; $F8D0B
 CalcSparkD0C     equ $0D0C        ; $F8D0C
+CalcSparkD0D     equ $0D0D        ; $F8D0D
 SparkValueD0F    equ $0D0F        ; $F8D0F
 CalcSparkD10     equ $0D10        ; $F8D10
 SparkAdvanceD11  equ $0D11        ; $F8D11
@@ -2388,10 +2406,18 @@ RpmAccelChange   equ $0D2C        ; $F8D2C
 SurgeFiltersD2E  equ $0D2E        ; $F8D2E
 RpmJerk          equ $0D30        ; $F8D30
 SurgeRetardRaw   equ $0D32        ; $F8D32
+SurgeRetard      equ $0D33        ; $F8D33
+SurgeD34         equ $0D34        ; $F8D34
+SurgeD35         equ $0D35        ; $F8D35
+SurgeJerkRetard  equ $0D36        ; $F8D36
+SurgeStageTime   equ $0D37        ; $F8D37
+SurgeOpenTime    equ $0D38        ; $F8D38
 SurgeMapPos      equ $0D39        ; $F8D39
 SurgeMapRef      equ $0D3A        ; $F8D3A
 MapRise          equ $0D3B        ; $F8D3B
 SurgeEnableTime  equ $0D3D        ; $F8D3D
+CalcBaseD3E      equ $0D3E        ; $F8D3E
+SparkTrim1       equ $0D3F        ; $F8D3F
 KnockCylRetardMax equ $0D40        ; $F8D40
 SparkTrim2       equ $0D41        ; $F8D41
 O2SparkTrim      equ $0D42        ; $F8D42
@@ -2400,6 +2426,7 @@ SparkEventD45    equ $0D45        ; $F8D45
 AfterStartD46    equ $0D46        ; $F8D46
 SparkEventD48    equ $0D48        ; $F8D48
 RpmRate          equ $0D4A        ; $F8D4A
+AcSparkWork      equ $0D4C        ; $F8D4C
 AcSpark          equ $0D4E        ; $F8D4E
 IacAcFlags       equ $0D4F        ; $F8D4F
 ;                 bit 7: A/C clutch spark hold during a shift step (AcClutchSpark)
@@ -2568,7 +2595,9 @@ FlexLearnFlags5  equ $0F3F        ; $F8F3F
 FlexColdCounter  equ $0F40        ; $F8F40
 FlexColdF3D      equ $0F41        ; $F8F41
 FlexLearnCounter3 equ $0F42        ; $F8F42
+FlexLearnSettle  equ $0F43        ; $F8F43
 FlexEthanolLimit equ $0F44        ; $F8F44
+FlexEthanolLimit2 equ $0F45        ; $F8F45
 FlexF42          equ $0F46        ; $F8F46
 FlexMisfireF43   equ $0F47        ; $F8F47
 FlexEthanolMapValue equ $0F49        ; $F8F49
@@ -2622,6 +2651,7 @@ IoBusStatus      equ $101A        ; $F901A
 IoBusStatusL     equ $101B        ; $F901B
 ;                 bit 7: tested by BusTxStart before a byte is sent
 IoCfg1C          equ $101C        ; $F901C
+IoCfg1DL         equ $101D        ; $F901D
 IoCfg1E          equ $101E        ; $F901E
 IoCfg1FL         equ $101F        ; $F901F
 ;                 bit 5: manifold tuning valve driver status (MtvCheck)

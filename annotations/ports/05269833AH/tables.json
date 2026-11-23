@@ -169,6 +169,39 @@
    "y": "raw",
    "auto": false
   },
+  "0609": {
+   "name": "EgrFlowFilterVacuum",
+   "category": "EGR",
+   "desc": "EGR flow estimate: filter weight against manifold vacuum (multiplied by rpm)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "0615": {
+   "name": "EgrFeedForward",
+   "category": "EGR",
+   "desc": "EGR valve: base PWM duty against the position target, added to the PID terms (output to PWMA)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "062B": {
+   "name": "EgrPressureRatio",
+   "category": "EGR",
+   "desc": "EGR flow estimate: factor against the ratio ($0684 − MAP)/(baro − MAP), into EgrPressureFactor",
+   "x": "raw",
+   "y": "mult256",
+   "auto": false
+  },
+  "0637": {
+   "name": "EgrTarget",
+   "category": "EGR",
+   "desc": "EGR valve position target (EgrTargetPos) against part-throttle MAP position (rows) and engine rpm (columns); EGR off below $035E",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
   "07D8": {
    "name": "FlexLearnInit",
    "category": "Fuel",
@@ -652,6 +685,30 @@
    "x": "kpa",
    "y": "kpa"
   },
+  "0DE0": {
+   "name": "FuelAirTempCorr",
+   "desc": "Fuel multiplier against intake air temperature (scaled by the rpm and MAP weights)",
+   "category": "Fuel",
+   "auto": false,
+   "x": "tempc",
+   "y": "mult256"
+  },
+  "0DEE": {
+   "name": "FuelAirTempMapWeight",
+   "desc": "Weight of the air-temperature fuel correction against MAP",
+   "category": "Fuel",
+   "auto": false,
+   "x": "kpa",
+   "y": "mult256"
+  },
+  "0DF6": {
+   "name": "FuelAirTempRpmWeight",
+   "desc": "Weight of the air-temperature fuel correction against rpm",
+   "category": "Fuel",
+   "auto": false,
+   "x": "rpm32",
+   "y": "mult256"
+  },
   "0E08": {
    "name": "DecelBaroMapOffset",
    "category": "Fuel",
@@ -821,6 +878,41 @@
    "z": "raw",
    "auto": false
   },
+  "1204": {
+   "name": "FlexEthanolFactor",
+   "category": "Fuel",
+   "desc": "Flex-fuel: factor against ethanol content (FlexEthanol) into FlexFactorEthanol, multiplied into FlexFuelFactor",
+   "x": "raw",
+   "y": "mult256",
+   "auto": false
+  },
+  "1210": {
+   "name": "FlexEthanolRpm",
+   "category": "Fuel",
+   "desc": "Flex-fuel: value against ethanol content (rows) and RpmCurveValue (columns, from CalcEngineRpm), both as positions, into FlexRpmValue",
+   "x": "pos256",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "12AC": {
+   "name": "FlexEthanolCoolantFactor2",
+   "category": "Fuel",
+   "desc": "Flex-fuel: factor against ethanol content and coolant into FlexFactorCoolant2; scales AfterStartDecay",
+   "x": "tempc",
+   "y": "pos256",
+   "z": "mult256",
+   "auto": false
+  },
+  "1366": {
+   "name": "FlexEthanolCoolantFactor3",
+   "category": "Fuel",
+   "desc": "Flex-fuel: value against ethanol content and coolant into FlexFactorCoolant3",
+   "x": "tempc",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
   "13D6": {
    "name": "FlexLearnBlend",
    "category": "Fuel",
@@ -845,12 +937,76 @@
    "y": "raw",
    "auto": false
   },
+  "13F9": {
+   "name": "AccelMapCoolant2",
+   "category": "Fuel",
+   "desc": "MAP-rate acceleration enrichment term against coolant into AccelMapCoolantFactor",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "1405": {
+   "name": "AccelMapGainCoolant",
+   "category": "Fuel",
+   "desc": "MAP-rate acceleration enrichment gain against coolant, plus AccelMapGainAdder, into AccelMapGain",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "141D": {
+   "name": "AccelMapBaro",
+   "category": "Fuel",
+   "desc": "MAP-rate acceleration enrichment term against barometric pressure into AccelMapBaroFactor",
+   "x": "kpa",
+   "y": "raw",
+   "auto": false
+  },
+  "142A": {
+   "name": "AccelTpsRateLimit",
+   "category": "Fuel",
+   "desc": "Throttle-rate acceleration enrichment: the throttle step above $14B5 is limited to this value, against coolant",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
+  "1436": {
+   "name": "AccelTpsCoolantFactor",
+   "category": "Fuel",
+   "desc": "Throttle-rate acceleration enrichment: amount per throttle step against coolant; product into AccelTpsFuel",
+   "x": "tempc",
+   "y": "raw",
+   "auto": false
+  },
   "1442": {
    "name": "TpsFilterRiseCoolant",
    "category": "Fuel",
    "desc": "Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle opens, against coolant at start",
    "x": "tempc",
    "y": "raw",
+   "auto": false
+  },
+  "144E": {
+   "name": "AccelTpsBaro",
+   "category": "Fuel",
+   "desc": "Throttle-rate acceleration enrichment term against barometric pressure into AccelTpsBaroFactor",
+   "x": "kpa",
+   "y": "raw",
+   "auto": false
+  },
+  "145A": {
+   "name": "AccelMapAdder",
+   "category": "Fuel",
+   "desc": "Added to AccelRpmFactor against MAP",
+   "x": "kpa",
+   "y": "mult256",
+   "auto": false
+  },
+  "1466": {
+   "name": "AccelRpmFactor",
+   "category": "Fuel",
+   "desc": "Acceleration enrichment factor against rpm; plus AccelMapAdder, limited to 1.0, into AccelFactor",
+   "x": "rpm32",
+   "y": "mult256",
    "auto": false
   },
   "1474": {
@@ -1048,6 +1204,22 @@
    "y": "raw",
    "auto": false
   },
+  "1898": {
+   "name": "FuelTrimAdjust",
+   "category": "Fuel",
+   "desc": "Signed fuel adjustment (centred on 128) from calibration $1923 or, with ControlFlagsC33 bit 4 clear, from FuelTrimAdjustValue (set over the SCI line); enabled by calibration bit Options032C bit 7",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "18A2": {
+   "name": "FuelTrimAdjustMapWeight",
+   "category": "Fuel",
+   "desc": "Weight of FuelTrimAdjust against MAP; the product goes to FlexStartFuel and multiplies the fuel",
+   "x": "kpa",
+   "y": "mult256",
+   "auto": false
+  },
   "18C6": {
    "name": "DecelCutMapThreshold",
    "category": "Fuel",
@@ -1104,6 +1276,30 @@
    "y": "mult256",
    "auto": false
   },
+  "19C3": {
+   "name": "PurgeFlowScale",
+   "category": "EVAP purge",
+   "desc": "Purge command (or constant $3048) to row position of PurgeFlow",
+   "x": "raw",
+   "y": "pos256",
+   "auto": false
+  },
+  "19D7": {
+   "name": "PurgeCommandBase",
+   "category": "EVAP purge",
+   "desc": "Purge command base against the purge ramp PurgeRamp, into Scratch0 (then scaled by learning and vacuum, into PurgeCommand)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "19E3": {
+   "name": "PurgeCommandVacuum",
+   "category": "EVAP purge",
+   "desc": "Factor on the purge command against manifold vacuum",
+   "x": "raw",
+   "y": "mult256",
+   "auto": false
+  },
   "19F1": {
    "name": "PurgeDutyPart",
    "category": "EVAP purge",
@@ -1124,6 +1320,47 @@
    "name": "PurgeDutyAlt",
    "category": "EVAP purge",
    "desc": "As PurgeDutyPart with calibration bits Options0339 bit 2/Options0339 bit 3 (by ThrottleState bit 0)",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1A2B": {
+   "name": "PurgeFlow",
+   "category": "EVAP purge",
+   "desc": "Purge flow estimate (PurgeMonFlow) against purge command position (rows) and manifold vacuum (columns)",
+   "x": "raw",
+   "y": "pos256",
+   "z": "raw",
+   "auto": false
+  },
+  "1AA5": {
+   "name": "PurgeLearnUpClosed",
+   "category": "EVAP purge",
+   "desc": "Purge vapor learning, closed throttle: step added to PurgeVaporClosed when the trim is above $1B2C",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1AB1": {
+   "name": "PurgeLearnDownClosed",
+   "category": "EVAP purge",
+   "desc": "Purge vapor learning, closed throttle: step subtracted from PurgeVaporClosed when the trim is below −$1B2D",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1ABD": {
+   "name": "PurgeLearnUpPart",
+   "category": "EVAP purge",
+   "desc": "Purge vapor learning, part throttle: step added to PurgeVaporPart when the short-term trim is above $1B2C",
+   "x": "raw",
+   "y": "raw",
+   "auto": false
+  },
+  "1AC9": {
+   "name": "PurgeLearnDownPart",
+   "category": "EVAP purge",
+   "desc": "Purge vapor learning, part throttle: step subtracted from PurgeVaporPart when the trim is below −$1B2D",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1162,6 +1399,15 @@
    "x_in": "EngineRpm",
    "y_in": "PartThrottleMapScale",
    "category": "Spark"
+  },
+  "1CA3": {
+   "name": "EgrSpark",
+   "category": "Spark",
+   "desc": "Spark addition with EGR active (EgrFlags bit 1): part-throttle MAP position (rows) and engine rpm (columns); scaled by EgrFlowFactor with calibration bit Options0335 bit 2",
+   "x": "rpm32",
+   "y": "pos256",
+   "z": "spark",
+   "auto": false
   },
   "1DD8": {
    "name": "CoolantSparkMap",
@@ -3405,6 +3651,12 @@
    "size": 1,
    "category": "Sensors"
   },
+  "035E": {
+   "name": "EgrTargetMin",
+   "desc": "EGR stays off while the EgrTarget position is at or below this value",
+   "category": "EGR",
+   "size": 1
+  },
   "035F": {
    "name": "AcBattTempMinFault",
    "desc": "A/C clutch (Options032D bit 5, FaultSet03 bit 0): battery temperature at or below this value keeps the clutch off",
@@ -3560,6 +3812,18 @@
    "name": "MtvCoolantMin",
    "desc": "Manifold tune valve: coolant at or above this value (at WOT) for the rpm switching",
    "unit": "tempc",
+   "category": "Other",
+   "size": 1
+  },
+  "044E": {
+   "name": "MtvOnHold",
+   "desc": "Manifold tune valve: hold count (MtvHoldCount) when the valve output turns on",
+   "category": "Other",
+   "size": 1
+  },
+  "044F": {
+   "name": "MtvOffHold",
+   "desc": "Manifold tune valve: hold count when the valve output turns off",
    "category": "Other",
    "size": 1
   },
@@ -4322,9 +4586,138 @@
    "category": "EGR",
    "size": 1
   },
+  "05EF": {
+   "name": "EgrTargetFixed",
+   "desc": "EGR: fixed position target used with EgrMonFlags bit 1 (0 = off)",
+   "category": "EGR",
+   "size": 1
+  },
+  "05F0": {
+   "name": "EgrDutyOverride",
+   "desc": "EGR: when not zero the PID is bypassed (output $067D)",
+   "size": 1,
+   "category": "EGR"
+  },
+  "05F1": {
+   "name": "EgrDutyFixed",
+   "desc": "EGR: fixed PWM duty used while EgrDutyOverride is zero and this is not",
+   "size": 1,
+   "category": "EGR"
+  },
+  "05F2": {
+   "name": "EgrFlowUpdatePeriod",
+   "desc": "EGR flow estimate: passes between updates (0 = every pass)",
+   "category": "EGR",
+   "size": 1
+  },
+  "05F3": {
+   "name": "EgrFlowFilterRise",
+   "desc": "EGR flow estimate: filter divisor (word) while MAP rises",
+   "category": "EGR",
+   "size": 2
+  },
+  "05F5": {
+   "name": "EgrFlowFilter",
+   "desc": "EGR flow estimate: filter divisor (word) used normally",
+   "category": "EGR",
+   "size": 2
+  },
+  "05F7": {
+   "name": "EgrMapRiseHyst",
+   "desc": "EGR: MAP hysteresis of the rising-MAP state (EgrFlags2 bit 1) against the filtered MAP EgrMapFiltered",
+   "unit": "kpa",
+   "category": "EGR",
+   "size": 1
+  },
+  "05F8": {
+   "name": "EgrExhaustPressRef",
+   "desc": "EGR (EgrControl): reference pressure for the ratio (ref − MAP)/(baro − MAP) looked up in EgrPressureRatio (0 = factor $FF)",
+   "unit": "kpa",
+   "category": "EGR",
+   "size": 1
+  },
+  "05F9": {
+   "name": "EgrPidP",
+   "desc": "EGR PID: proportional gain",
+   "size": 1,
+   "category": "EGR"
+  },
+  "05FA": {
+   "name": "EgrPidI",
+   "desc": "EGR PID: integral gain",
+   "size": 1,
+   "category": "EGR"
+  },
+  "05FB": {
+   "name": "EgrPidD",
+   "desc": "EGR PID: derivative gain",
+   "size": 1,
+   "category": "EGR"
+  },
+  "05FC": {
+   "name": "EgrPidDeadband",
+   "desc": "EGR PID: position error below which the P and I terms are zero",
+   "size": 1,
+   "category": "EGR"
+  },
+  "05FF": {
+   "name": "EgrZeroDutyMax",
+   "desc": "EGR closed-position check: EGR duty at or below this value (valve commanded closed, not WOT)",
+   "category": "EGR",
+   "size": 1
+  },
+  "0600": {
+   "name": "EgrZeroDelay",
+   "desc": "EGR closed-position check: delay (EgrZeroTimer) after the valve closes before the position is followed",
+   "category": "EGR",
+   "size": 1
+  },
   "0601": {
    "name": "EgrZeroPositionInit",
    "desc": "Start value of the learned EGR closed position EgrZeroPos",
+   "category": "EGR",
+   "size": 1
+  },
+  "0602": {
+   "name": "EgrZeroPosMin",
+   "desc": "EGR closed-position check: followed position below this value fails",
+   "category": "EGR",
+   "size": 1
+  },
+  "0603": {
+   "name": "EgrZeroPosMax",
+   "desc": "EGR closed-position check: followed position above this value fails (EgrZeroFlags bit 7)",
+   "category": "EGR",
+   "size": 1
+  },
+  "0604": {
+   "name": "EgrZeroArmCoolant",
+   "desc": "EGR closed-position check: coolant above this value to arm the check",
+   "unit": "tempc",
+   "category": "EGR",
+   "size": 1
+  },
+  "0605": {
+   "name": "EgrZeroArmTime",
+   "desc": "EGR closed-position check: time (EgrMonTimer) the arm conditions must hold",
+   "category": "EGR",
+   "size": 1
+  },
+  "0606": {
+   "name": "EgrZeroArmTarget",
+   "desc": "EGR closed-position check (EgrZeroCheck): target position above this value arms the check (EgrZeroFlags bit 1)",
+   "category": "EGR",
+   "size": 1
+  },
+  "0607": {
+   "name": "EgrZeroSlewUp",
+   "desc": "EGR closed-position check: largest rise per pass of the followed position",
+   "category": "EGR",
+   "size": 1
+  },
+  "0608": {
+   "name": "EgrZeroSlewDown",
+   "desc": "EGR closed-position check: largest fall per pass of the followed position EgrZeroPos",
    "category": "EGR",
    "size": 1
   },
@@ -5427,6 +5820,24 @@
    "size": 1,
    "category": "A/C"
   },
+  "1429": {
+   "name": "AccelThrottleDeadband",
+   "desc": "Throttle acceleration: rise (Throttle minus ThrottleLast) below this value is ignored",
+   "size": 1,
+   "category": "A/C"
+  },
+  "1472": {
+   "name": "TipInFuelTimeMin",
+   "desc": "Tip-in fuel: scaled throttle rate above which the timer TipInTimer is decreased",
+   "size": 1,
+   "category": "Fuel"
+  },
+  "1473": {
+   "name": "TipInFuelDecay",
+   "desc": "Tip-in fuel: decrease of the timer TipInTimer",
+   "size": 1,
+   "category": "Fuel"
+  },
   "147E": {
    "name": "TipInRpmMax",
    "desc": "Tip-in fuel runs below this engine rpm (closed throttle start)",
@@ -6523,9 +6934,383 @@
    "category": "EVAP purge",
    "size": 2
   },
+  "199C": {
+   "name": "PurgeStartRampMask",
+   "desc": "Purge start ramp: the factor PurgeStartRamp rises when the counter low byte has these bits all set",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "199D": {
+   "name": "PurgeStartRampTime",
+   "desc": "Purge start ramp: high byte of the counter PurgeStartCounter (word) after which the ramp factor PurgeStartRamp starts to rise",
+   "category": "EVAP purge",
+   "size": 1
+  },
   "199E": {
    "name": "PurgeDelayInit",
    "desc": "Start value of the purge delay PurgeStartRamp (reset, PurgeEnable, PurgeReset)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "199F": {
+   "name": "PurgeRampFull",
+   "desc": "Purge ramp value at or above which the ramp-up stops",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19A0": {
+   "name": "PurgeRampMin",
+   "desc": "Purge ramp value below which the vapor learning is skipped",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19A1": {
+   "name": "PurgeRampStepUp",
+   "desc": "Purge ramp step increase (learning not settled)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19A2": {
+   "name": "PurgeRampStepUp2",
+   "desc": "Purge ramp step increase (learning settled)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19A3": {
+   "name": "PurgeRampOffIdle",
+   "desc": "Purge ramp (PurgeRampControl): when zero the ramp step is changed only with ThrottleState bit 7 set",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19A4": {
+   "name": "PurgeLearnTime",
+   "desc": "Purge learning window length (PurgeLearnTimer)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19A6": {
+   "name": "PurgeTrimCountMin2",
+   "desc": "Purge learning: trim events needed in the second branch",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19A7": {
+   "name": "PurgeVacuumMin",
+   "desc": "Purge ramp-up runs above this manifold vacuum",
+   "unit": "kpa",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19A8": {
+   "name": "PurgeTrimRichLimit",
+   "desc": "Purge learning: short-term trim limit on the rich side",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19A9": {
+   "name": "PurgeTrimLatchedLimit",
+   "desc": "Purge learning: latched trim limit",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19AA": {
+   "name": "PurgeTrimLatchedLimit2",
+   "desc": "Purge learning: latched trim limit (second branch)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19AB": {
+   "name": "PurgeLearnMask",
+   "desc": "Purge learning: main-loop mask (update rate)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19AC": {
+   "name": "PurgeCtlGainP",
+   "desc": "Purge flow controller (PurgeFlowControl): gain on the flow error PurgeFlowError (output = sum of the three terms / 128)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19AD": {
+   "name": "PurgeCtlGainD",
+   "desc": "Purge flow controller: gain on the change of the flow error PurgeFlowErrorDiff",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19AE": {
+   "name": "PurgeCtlGainI",
+   "desc": "Purge flow controller: gain on the summed flow error PurgeFlowErrorSum",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19AF": {
+   "name": "PurgeTargetChangeMax",
+   "desc": "Purge flow controller: summed target change (PurgeTargetChange) below which a settled rise starts the soft step",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19B0": {
+   "name": "PurgeSoftStepOffset",
+   "desc": "Purge flow controller: reduction of the flow target during the soft step",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19B1": {
+   "name": "PurgeSoftStepLoops",
+   "desc": "Purge flow controller: loops (PurgeSoftStepCount) of the soft step",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19B2": {
+   "name": "PurgeTargetSettleBand",
+   "desc": "Purge flow controller: target-to-flow difference at or below which the target counts as settled",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19B3": {
+   "name": "PurgeTargetStepMin",
+   "desc": "Purge flow controller: signed change of the flow target that sets the rising/falling flags (PurgeCtlFlags)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19B6": {
+   "name": "PurgeRampStepMax",
+   "desc": "Upper limit of the purge ramp step",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19B7": {
+   "name": "PurgeAdaptRichSmall",
+   "desc": "Purge flow adaptation (PurgeFlowAdaptation): latched trim at or above this (signed) value raises PurgeFlowAdapt",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19B8": {
+   "name": "PurgeAdaptRichLarge",
+   "desc": "Purge flow adaptation: latched trim below this (signed) value lowers PurgeFlowAdapt; between the two the adaptation holds",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19B9": {
+   "name": "PurgeAdaptHold",
+   "desc": "Purge flow adaptation: hold time PurgeAdaptHoldTimer",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19BA": {
+   "name": "PurgeFlowAdaptStep",
+   "desc": "Purge flow adaptation: step up",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19BB": {
+   "name": "PurgeAdaptUpTime",
+   "desc": "Purge flow adaptation: counts (PurgeAdaptCounter) before each raise",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19BC": {
+   "name": "PurgeFlowAdaptMax",
+   "desc": "Purge flow adaptation: upper limit",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19BD": {
+   "name": "PurgeFlowAdaptStepDown",
+   "desc": "Purge flow adaptation: step down",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19BE": {
+   "name": "PurgeAdaptDownTime",
+   "desc": "Purge flow adaptation: counts before each lowering",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19BF": {
+   "name": "PurgeFlowAdaptMin",
+   "desc": "Purge flow adaptation: lower limit",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19C0": {
+   "name": "PurgeAdaptStateTime",
+   "desc": "Purge flow adaptation: counts (PurgeAdaptStateCount) of a steady trim state before PurgeCtlFlags bit 5 is set",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19C1": {
+   "name": "PurgeAdaptRampStepMax",
+   "desc": "Purge flow adaptation at closed throttle: purge ramp step above this value raises the adaptation",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "19C2": {
+   "name": "PurgeAdaptRampStepMin",
+   "desc": "Purge flow adaptation at closed throttle: ramp step below this value with PurgeCellRichFlags bits 3-4 lowers it",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A88": {
+   "name": "PurgeStartCoolantMax",
+   "desc": "Vapor learning (PurgeVaporLearn): start coolant below this value",
+   "unit": "tempc",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A89": {
+   "name": "PurgeRampLearnMin",
+   "desc": "Vapor learning runs above this purge ramp value",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A8A": {
+   "name": "PurgeTrimFilterOff",
+   "desc": "Purge vapour learning (PurgeVaporLearn): filter weight of the short-term trim average without purge (PurgeTrimAvgOff)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A8B": {
+   "name": "PurgeTrimFilterOn",
+   "desc": "Purge vapour learning: filter weight of the short-term trim average with purge (PurgeTrimAvgOn)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A8C": {
+   "name": "PurgeLearnTimeMax",
+   "desc": "Purge vapor learning (PurgeVaporLearn): length of the part-throttle phase (word)",
+   "category": "EVAP purge",
+   "size": 2
+  },
+  "1A8E": {
+   "name": "PurgeVaporBias",
+   "desc": "Purge vapour learning: signed offset added to the vapour estimate (PurgeVaporEstimate) giving PurgeVaporEstimate2",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A8F": {
+   "name": "PurgeLearnRateInit",
+   "desc": "Purge vapor learning: start value of the learning rate PurgeLearnRate",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A90": {
+   "name": "PurgeLearnRateStep",
+   "desc": "Purge vapor learning: increase of the learning rate",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A91": {
+   "name": "PurgeLearnRateTime",
+   "desc": "Purge vapor learning: loops between learning-rate increases",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A92": {
+   "name": "PurgeLearnRateMax",
+   "desc": "Purge vapor learning: upper limit of the learning rate",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A93": {
+   "name": "PurgeVaporTrimDrop",
+   "desc": "Purge vapour learning: signed offset added to the no-purge trim average; a purge trim average below it counts as vapour",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A94": {
+   "name": "PurgeVaporDetectCount",
+   "desc": "Purge vapour learning: counts (PurgeVaporCount) of the vapour condition before the vapour learning starts",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A95": {
+   "name": "PurgeLearnRateTipStep",
+   "desc": "Purge vapour learning: learning rate (PurgeLearnRate) increase after a throttle event (O2Bank1Flags bit 3)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A96": {
+   "name": "PurgeLearnRateTipMax",
+   "desc": "Purge vapour learning: upper limit of that increase",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A97": {
+   "name": "PurgeLearnRateInit2",
+   "desc": "Purge vapor learning: learning rate at closed throttle",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A98": {
+   "name": "PurgeLearnTimeClosed",
+   "desc": "Purge vapor learning: length of the closed-throttle phase (word)",
+   "category": "EVAP purge",
+   "size": 2
+  },
+  "1A9A": {
+   "name": "PurgeVaporInit2",
+   "desc": "Start value of PurgeVaporEstimate (vapor learning)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A9B": {
+   "name": "PurgeVaporPartInit",
+   "desc": "Start value of the learned part-throttle vapor PurgeVaporPart",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A9C": {
+   "name": "PurgeLearnRampMin",
+   "desc": "Purge vapor learning runs at or above this purge ramp",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A9D": {
+   "name": "PurgeLearnRampFull",
+   "desc": "Purge vapor learning: ramp at or above which the full step applies",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A9E": {
+   "name": "PurgeVaporMax",
+   "desc": "Purge vapor learning: upper limit of PurgeVaporEstimate",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1A9F": {
+   "name": "PurgeVaporPartMax",
+   "desc": "Purge vapor learning: upper limit of PurgeVaporPart",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1AA0": {
+   "name": "PurgeLearnTrimBandUp",
+   "desc": "Purge vapour learning: positive short-term trim at or below this value changes nothing",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1AA1": {
+   "name": "PurgeLearnTrimBandDown",
+   "desc": "Purge vapour learning: negative trim band (complemented / negated before the compare)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1AA2": {
+   "name": "PurgeVaporSettleTime",
+   "desc": "Purge vapour learning: time (PurgeVaporSettle) after the learning start before the trims are compared",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1AA3": {
+   "name": "PurgeLearnTrimCount",
+   "desc": "Purge vapor learning: trim events before a step",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1AA4": {
+   "name": "PurgeLearnTrimCount2",
+   "desc": "Purge vapor learning: trim events before a step (second branch)",
    "category": "EVAP purge",
    "size": 1
   },
@@ -6534,6 +7319,18 @@
    "desc": "Start coolant at or above which flex learning and purge treat the start as warm",
    "unit": "tempc",
    "category": "Fuel",
+   "size": 1
+  },
+  "1B2A": {
+   "name": "PurgeLearnSpeedMax",
+   "desc": "Purge vapor learning: closed-throttle branch below this vehicle speed",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "1B2B": {
+   "name": "PurgeLearnSpeedMin",
+   "desc": "Purge vapor learning: part-throttle branch at or above this vehicle speed",
+   "category": "EVAP purge",
    "size": 1
   },
   "1B2C": {
@@ -6603,6 +7400,12 @@
    "category": "EVAP purge",
    "size": 1
   },
+  "1B39": {
+   "name": "PurgeLearnTrimMin",
+   "desc": "Purge vapor learning: short-term trim at or below this value (signed) marks the rich limit",
+   "category": "EVAP purge",
+   "size": 1
+  },
   "1B3A": {
    "name": "O2TrimResetValue",
    "desc": "Closed-loop manager: value loaded into the bank trim when O2ResetFlags2 bits 2-3 request a reset",
@@ -6664,6 +7467,12 @@
    "size": 2,
    "category": "Spark"
   },
+  "1B62": {
+   "name": "SparkFaultValue",
+   "desc": "Spark value SparkValueD0F with a fault (SparkFaultFlags bit 5)",
+   "category": "Spark",
+   "size": 1
+  },
   "1B64": {
    "name": "DwellAltCoolantMax",
    "desc": "Alternate dwell select (DwellModeSelect, Options033C bits 2-5): coolant at or below this value with no listed faults selects DwellBatteryAlt (DwellModeFlags bit 6)",
@@ -6699,6 +7508,18 @@
   "1B6B": {
    "name": "SparkTrimBias",
    "desc": "Bias added to the spark trim term (SparkTrim1) before the 0-127 limit",
+   "category": "Spark",
+   "size": 1
+  },
+  "1B6C": {
+   "name": "SparkTrimStep2",
+   "desc": "Step of the spark trim term SparkTrim2 per update",
+   "category": "Spark",
+   "size": 1
+  },
+  "1B6D": {
+   "name": "SparkTrimBias2",
+   "desc": "Bias added to the spark trim term SparkTrim2 before the 0-127 limit",
    "category": "Spark",
    "size": 1
   },
@@ -7430,6 +8251,24 @@
    "unit": "rpmw",
    "size": 2,
    "category": "Closed loop"
+  },
+  "2547": {
+   "name": "IdleSparkRpmRateMax",
+   "desc": "Idle spark (IdleSparkControl): limit of the step counter IdleSparkSteps (0 = off)",
+   "category": "Spark",
+   "size": 1
+  },
+  "2548": {
+   "name": "IdleSparkPeriodMin",
+   "desc": "Idle spark: RefPeriod (reference period) limit for engines other than 4 cylinders",
+   "category": "Spark",
+   "size": 2
+  },
+  "254A": {
+   "name": "IdleSparkPeriodMin4Cyl",
+   "desc": "Idle spark: RefPeriod limit for 4 cylinders",
+   "category": "Spark",
+   "size": 2
   },
   "254C": {
    "name": "RpmEventFilter",
@@ -9175,6 +10014,30 @@
    "category": "Closed loop",
    "size": 1
   },
+  "307D": {
+   "name": "PurgeFlowDutyStepUp",
+   "desc": "Purge flow test: purge duty increase per step (up phase)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "307E": {
+   "name": "PurgeFlowStepTimeUp",
+   "desc": "Purge flow test: step count between duty steps up",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "307F": {
+   "name": "PurgeFlowDutyStepDown",
+   "desc": "Purge flow test: purge duty decrease per step (down phase)",
+   "category": "EVAP purge",
+   "size": 1
+  },
+  "3080": {
+   "name": "PurgeFlowStepTime",
+   "desc": "Purge flow test: step count (PurgeFlowStep) between duty steps down",
+   "category": "EVAP purge",
+   "size": 1
+  },
   "3081": {
    "name": "PurgeFlowDutyRise",
    "desc": "EVAP purge flow test: purge duty rise (PurgeDutyTarget minus the start value) needed before the rpm check",
@@ -10351,6 +11214,12 @@
    "category": "Diagnostics",
    "size": 1
   },
+  "498C": {
+   "name": "BusDataThrottleScale",
+   "desc": "Diagnostic bus data: throttle opening is sent as opening × (1 + this / 256)",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "498D": {
    "name": "TpsCheckThrottleMin",
    "desc": "Throttle rationality: raw throttle above this value with low load",
@@ -10686,6 +11555,20 @@
    "category": "Fuel",
    "size": 1
   },
+  "49F9": {
+   "name": "CamCheckMapMin",
+   "desc": "Cam sensor check (CamSensorMonitor): MAP differs from baro by at least this value",
+   "unit": "kpa",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "49FA": {
+   "name": "CamCheckVoltsMax",
+   "desc": "Cam sensor check: battery voltage below this value",
+   "unit": "volt16",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "49FB": {
    "name": "O2InactiveTestTime",
    "desc": "O2 activity test when warm (O2ActivityWarm, P0134/P0154/P0140/P0160): test time (O2InactiveTimer) with the heater output switched",
@@ -10701,6 +11584,18 @@
   "49FD": {
    "name": "O2InactiveDownSpeedMin",
    "desc": "O2 activity test when warm: vehicle speed at or above this value for the downstream sensors",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "4A00": {
+   "name": "BusDataO2High",
+   "desc": "Diagnostic bus data (BusDataRequest): O2 raw reading above this value is reported as state $B1",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "4A01": {
+   "name": "BusDataO2Mid",
+   "desc": "Diagnostic bus data: O2 raw reading above this value (and not above BusDataO2High) is reported as $FF, otherwise $A0",
    "category": "Diagnostics",
    "size": 1
   },

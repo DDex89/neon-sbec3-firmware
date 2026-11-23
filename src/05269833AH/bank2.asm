@@ -2127,10 +2127,10 @@ L21B9A:
         dc.b    $00,$40,$42,$3A,$05,$09,$00,$20,$00,$80,$42,$44,$05,$09,$00,$40
 
 ;---------------------------------------------------------------------------------------------------
-; TuneValve2CircuitCheck ($21BCC)
+; OutputDriverCheck ($21BCC)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-TuneValve2CircuitCheck:
+OutputDriverCheck:
         LDAA    >EngineRpm,Z
         CMPA    #$5D
         LBCC    L21C5C
@@ -2352,10 +2352,10 @@ L21DF4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; CamMonitors ($21DF6)
+; MapSensorChecks ($21DF6)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-CamMonitors:
+MapSensorChecks:
         TST     >MonStartDelay,Z
         BNE     L21E0E
         JSR     MapKeyOnCheck
@@ -2375,7 +2375,7 @@ L21E24:
 
 ;---------------------------------------------------------------------------------------------------
 ; MapKeyOnCheck ($21E26)
-; Called from: CamMonitors
+; Called from: MapSensorChecks
 ;---------------------------------------------------------------------------------------------------
 MapKeyOnCheck:
         BRSET   >BrakeSwFlags,Z,#$02,L21E92              ; bit 1: MAP key-on check time exceeded (MapKeyOnTimeMax); this byte also holds MapKeyOnCheck bits
@@ -2417,7 +2417,7 @@ L21E92:
 
 ;---------------------------------------------------------------------------------------------------
 ; MapIdleChangeCheck ($21E94)
-; Called from: CamMonitors
+; Called from: MapSensorChecks
 ;---------------------------------------------------------------------------------------------------
 MapIdleChangeCheck:
         BRSET   >FaultSet05,Z,#$80,L21EEA
@@ -2454,7 +2454,7 @@ L21EEA:
 
 ;---------------------------------------------------------------------------------------------------
 ; MapCircuitCheck ($21EEC)
-; Called from: CamMonitors
+; Called from: MapSensorChecks
 ;---------------------------------------------------------------------------------------------------
 MapCircuitCheck:
         LDAA    >ThrottleAboveClosed,Z
@@ -3248,7 +3248,7 @@ L2274C:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeSolenoidCheck ($2274E)
-; Called from: Sub_3D800
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeSolenoidCheck:
         BRSET   >FaultSet03,Z,#$04,L227F2
@@ -3313,12 +3313,12 @@ L227F2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_227F4 ($227F4)
-; Called from: PciIrq2Start
+; EgrPositionMonitor ($227F4)
+; Called from: EgrControl
 ;---------------------------------------------------------------------------------------------------
-Sub_227F4:
+EgrPositionMonitor:
         BRSET   >FaultSet03,Z,#$02,L2294C
-        LDAA    $051B,Z
+        LDAA    >FaultSet1B,Z
         BITA    #$B0
         LBNE    L22954
         BRSET   >FaultSet04,Z,#$40,L22954
@@ -3341,16 +3341,16 @@ L22830:
         BRCLR   >MonitorDisableFlags,Z,#$0F,L22848       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow); bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude); bit 0: battery (ambient) temperature below MonEnableBattTempMin
         LBRA    L22954
 L22848:
-        BRSET   >ObdRec65B,Z,#$08,L2293E
+        BRSET   >MonFlags65A,Z,#$08,L2293E               ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         BRSET   >EgrFlags,Z,#$01,L2293E                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
-        BRCLR   $0B4C,Z,#$01,L2293E
+        BRCLR   >EgrZeroFlags,Z,#$01,L2293E              ; bit 0: EGR zero position learnt (EgrZeroPos, EgrZeroCheck)
         BRCLR   >ThrottleState,Z,#$80,L2293E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $0B3A,Z
+        LDAA    >EgrTargetPos,Z
         CMPA    $49DB
         LBCS    L22954
         CMPA    $05FD
         LBHI    L22954
-        LDD     $0B3C,Z
+        LDD     >EgrPosError,Z
         BPL     L2287C
         NEGD
 L2287C:
@@ -3377,7 +3377,7 @@ L228B2:
         BSET    >EgrFlags2,Z,#$40                        ; bit 6: EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)
         DEC     $058D,Z
 L228C6:
-        BRSET   $0B4C,Z,#$80,L228E2
+        BRSET   >EgrZeroFlags,Z,#$80,L228E2              ; bit 7: EGR zero position below EgrZeroPosMin (EgrZeroCheck)
         TST     $0B53,Z
         BEQ     L2290A
         BRSET   >EgrFlags2,Z,#$20,L2290A                 ; bit 5: EGR position tracking good (EgrPositionMonitor)
@@ -3395,14 +3395,14 @@ L228E2:
 L228FC:
         BCLR    >MonFlags101,Z,#$40
         BCLR    >O2DownFlags,Z,#$40
-        BSET    >ObdRec65B,Z,#$08
+        BSET    >MonFlags65A,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         BRA     L22924
 L2290A:
         BRCLR   >MonFlags09F,Z,#$08,L22954               ; bit 3: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
         BRSET   >O2DownFlags,Z,#$40,L22954
         BRCLR   >MonFlags101,Z,#$40,L22936
         BCLR    >MonFlags101,Z,#$40
-        BCLR    >ObdRec65B,Z,#$08
+        BCLR    >MonFlags65A,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
 L22924:
         LDAA    $47EE
         JSR     ObdFaultReport
@@ -3425,7 +3425,7 @@ L22954:
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrSolenoidCheck ($22956)
-; Called from: Sub_227F4
+; Called from: EgrPositionMonitor
 ;---------------------------------------------------------------------------------------------------
 EgrSolenoidCheck:
         BRSET   >EgrFlags,Z,#$01,L22A4E                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
@@ -3618,7 +3618,7 @@ TransMilRequest:
         BCLR    >BusModuleFlags,Z,#$01                   ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         BRCLR   >MonFlags09F,Z,#$10,L22BCE               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
         LDAA    $44E2
-        BCLR    >ObdRec65B,Z,#$10
+        BCLR    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22BCE
 L22B70:
@@ -3627,13 +3627,13 @@ L22B70:
 L22B7A:
         BRCLR   >MonFlags09F,Z,#$10,L22BCE               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
         LDAA    $44E2
-        BCLR    >ObdRec65B,Z,#$10
+        BCLR    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22BCE
 L22B8E:
         BRSET   >MonFlags09F,Z,#$10,L22BCE               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
         LDAA    $44E2
-        BSET    >ObdRec65B,Z,#$10
+        BSET    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22BCE
 L22BA2:
@@ -3660,18 +3660,18 @@ BodyBusTimeout:
         BRSET   >O2DownFlags,Z,#$80,L22BF2               ; bit 7: body bus message seen after start (BodyBusTimeout)
         BRCLR   >MonFlags101,Z,#$80,L22BF2               ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
         BCLR    >MonFlags101,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
-        BCLR    >ObdRec65B,Z,#$04
+        BCLR    >MonFlags65A,Z,#$04                      ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
         LDAA    $4348
         JSR     ObdFaultReport
 L22BF2:
-        BRSET   >ObdRec65B,Z,#$04,L22C44
+        BRSET   >MonFlags65A,Z,#$04,L22C44               ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
         LDAA    >BodyMsgTimeout,Z
         CMPA    #$C8
         BCS     L22C2C
         BCLR    >O2DownFlags,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout)
         BCLR    >MonFlags101,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
         BSET    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
-        BSET    >ObdRec65B,Z,#$04
+        BSET    >MonFlags65A,Z,#$04                      ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
         LDAA    $4348
         JSR     ObdFaultReport
         BSET    >BusReqFlags,Z,#$03                      ; bit 1: bus message bit 6 (CcdReceive); set on a body bus timeout; bit 0: bus message status bits = $80 (CcdReceive); set on a body bus timeout
@@ -3761,20 +3761,20 @@ L22CF2:
         LBCC    L22EDE
         BRCLR   >MonFlags101,Z,#$20,L22D24               ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BRSET   >O2DownFlags,Z,#$20,L22D24               ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
-        BCLR    >ObdRec65B,Z,#$80
+        BCLR    >MonFlags65A,Z,#$80                      ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    $4564
         JSR     ObdFaultReport
         BCLR    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
 L22D24:
         BRCLR   >MonFlags101,Z,#$10,L22D40               ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
         BRSET   >O2DownFlags,Z,#$10,L22D40               ; bit 4: fuel sender check result, second kind (FuelSenderMonitor; mirrored in MonFlags101 bit 4)
-        BCLR    >ObdRec65B,Z,#$40
+        BCLR    >MonFlags65A,Z,#$40                      ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    $455A
         JSR     ObdFaultReport
         BCLR    >MonFlags101,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
 L22D40:
         BRSET   >FaultSet13,Z,#$80,L22EDE
-        BRSET   >ObdRec65B,Z,#$80,L22DA0
+        BRSET   >MonFlags65A,Z,#$80,L22DA0               ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    >FuelSenderFiltered,Z
         CMPA    >FuelSenderHigh
         BLS     L22D82
@@ -3788,7 +3788,7 @@ L22D40:
 L22D6C:
         BCLR    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BCLR    >O2DownFlags,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
-        BSET    >ObdRec65B,Z,#$80
+        BSET    >MonFlags65A,Z,#$80                      ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    $4564
         JSR     ObdFaultReport
         BRA     L22DA0
@@ -3804,7 +3804,7 @@ L22D98:
         BSET    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BSET    >O2DownFlags,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
 L22DA0:
-        BRSET   >ObdRec65B,Z,#$40,L22DFA
+        BRSET   >MonFlags65A,Z,#$40,L22DFA               ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    >FuelSenderFiltered,Z
         CMPA    >FuelSenderLow
         BHI     L22DDC
@@ -3818,7 +3818,7 @@ L22DA0:
 L22DC6:
         BCLR    >MonFlags101,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
         BCLR    >O2DownFlags,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor; mirrored in MonFlags101 bit 4)
-        BSET    >ObdRec65B,Z,#$40
+        BSET    >MonFlags65A,Z,#$40                      ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    $455A
         JSR     ObdFaultReport
         BRA     L22DFA
@@ -3891,13 +3891,13 @@ L22E9A:
         BCS     L22EDE
         BRA     L22EC0
 L22EAE:
-        BCLR    >ObdRec65B,Z,#$20
+        BCLR    >MonFlags65A,Z,#$20                      ; bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
         LDAA    $456E
         JSR     ObdFaultReport
         BCLR    >FaultSet13,Z,#$80
         BRA     L22ECC
 L22EC0:
-        BSET    >ObdRec65B,Z,#$20
+        BSET    >MonFlags65A,Z,#$20                      ; bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
         LDAA    $456E
         JSR     ObdFaultReport
 L22ECC:
@@ -3978,10 +3978,10 @@ L22F88:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; MtvCheck ($22F8E)
+; TuneValve2CircuitCheck ($22F8E)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-MtvCheck:
+TuneValve2CircuitCheck:
         BRCLR   >Options0335,#$80,L22FDC                 ; bit 7: second tuning valve fitted (TuneValve2Control in the PIT code)
         BRSET   >FaultSet1A,Z,#$02,L22FDC
         BRCLR   >Options0335,#$40,L22FA6                 ; bit 6: second tuning valve variant
@@ -3994,7 +3994,7 @@ L22FA6:
         BCS     L22FDC
         LDAB    >IoDriver66,Z
         ANDB    #$20
-        CMPB    $0C15,Z
+        CMPB    >TuneValve2C15,Z
         BNE     L22FDC
         BITB    #$20
         BNE     L22FCC
@@ -4007,7 +4007,7 @@ L22FD4:
         LDY     #$4802
         JSR     ReportFault
 L22FDC:
-        STAB    $0C15,Z
+        STAB    >TuneValve2C15,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -4765,20 +4765,20 @@ L238D8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_238DA ($238DA)
+; CamMonitors ($238DA)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_238DA:
-        JSR     Sub_238E8
-        JSR     Sub_23988
+CamMonitors:
+        JSR     CamSensorMonitor
+        JSR     CamCrankMonitors
         JSR     CamCrankRelation
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_238E8 ($238E8)
-; Called from: Sub_238DA
+; CamSensorMonitor ($238E8)
+; Called from: CamMonitors
 ;---------------------------------------------------------------------------------------------------
-Sub_238E8:
+CamSensorMonitor:
         TST     >MonStartDelay,Z
         LBNE    L23986
         TST     >CrankEvents,Z
@@ -4787,7 +4787,7 @@ Sub_238E8:
         LDAB    >BatteryVolts2,Z
         CMPB    #$41
         BCS     L2394E
-        CMPB    $49FA
+        CMPB    >CamCheckVoltsMax
         BCC     L2394E
         ORP     #$00E0
         LDAA    #$20
@@ -4801,17 +4801,17 @@ L23916:
         SUBA    <Baro,Z
         BCC     L2394E
         NEGA
-        CMPA    $49F9
+        CMPA    >CamCheckMapMin
         BCS     L2394E
-        INC     $0695,Z
-        LDAA    $0695,Z
+        INC     >CamSensor695,Z
+        LDAA    >CamSensor695,Z
         CMPA    #$4F
         BCS     L23952
         LDY     #$4118
         JSR     ReportFault
         BRA     L23986
 L2394E:
-        CLR     $0695,Z
+        CLR     >CamSensor695,Z
 L23952:
         BRSET   >MonitorDisableFlags,Z,#$08,L2396A       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
         LDAA    >Cam693,Z
@@ -4836,17 +4836,17 @@ L23986:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_23988 ($23988)
-; Called from: Sub_238DA
+; CamCrankMonitors ($23988)
+; Called from: CamMonitors
 ;---------------------------------------------------------------------------------------------------
-Sub_23988:
+CamCrankMonitors:
         JSR     CamFaultClear
         JSR     CamCrankSyncMonitor
         RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; CamFaultClear ($23992)
-; Called from: Sub_23988
+; Called from: CamCrankMonitors
 ;---------------------------------------------------------------------------------------------------
 CamFaultClear:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L239AE         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
@@ -4861,7 +4861,7 @@ L239AE:
 
 ;---------------------------------------------------------------------------------------------------
 ; CamCrankSyncMonitor ($239B0)
-; Called from: Sub_23988
+; Called from: CamCrankMonitors
 ;---------------------------------------------------------------------------------------------------
 CamCrankSyncMonitor:
         INC     >CamCrank68B,Z
@@ -4934,7 +4934,7 @@ L23A68:
 
 ;---------------------------------------------------------------------------------------------------
 ; CamCrankRelation ($23A6A)
-; Called from: Sub_238DA
+; Called from: CamMonitors
 ;---------------------------------------------------------------------------------------------------
 CamCrankRelation:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L23BA0         ; bit 2: one pass in 8 (about 96 ms)
@@ -5735,7 +5735,7 @@ L244E8:
 
 ;---------------------------------------------------------------------------------------------------
 ; ObdFaultReport ($244EA)
-; Called from: O2ActivityWarm, O2DownCircuitCheck, O2DownResult, Sub_227F4, TransMilRequest, BodyBusTimeout, FuelSenderMonitor, ThermostatMonitor and 8 more routines (34 calls)
+; Called from: O2ActivityWarm, O2DownCircuitCheck, O2DownResult, EgrPositionMonitor, TransMilRequest, BodyBusTimeout, FuelSenderMonitor, ThermostatMonitor and 8 more routines (34 calls)
 ;---------------------------------------------------------------------------------------------------
 ObdFaultReport:
         PSHM    X,Y,K
@@ -5818,7 +5818,7 @@ L2457E:
 MonitorFlagsClear:
         CLR     >SwitchMonFlags,Z
         CLR     >O2MonFlags,Z
-        CLR     >ObdRec65B,Z
+        CLR     >MonFlags65A,Z
         CLR     >EgrPosMonFlags2,Z
         CLR     <MonFlags09D,Z
         CLR     <MonFlags09E,Z
@@ -5831,7 +5831,7 @@ MonitorFlagsClear:
 
 ;---------------------------------------------------------------------------------------------------
 ; ReportFault ($245A8)
-; Called from: BusTimeoutCheck, ObdFaultProcess, ChecksumCheck, VacuumLeakMonitor, TuneValve2CircuitCheck, ChargeLowMonitor, ChargeHighMonitor, AsdRelayCheck and 39 more routines (57 calls)
+; Called from: BusTimeoutCheck, ObdFaultProcess, ChecksumCheck, VacuumLeakMonitor, OutputDriverCheck, ChargeLowMonitor, ChargeHighMonitor, AsdRelayCheck and 39 more routines (57 calls)
 ;---------------------------------------------------------------------------------------------------
 ReportFault:
         PSHM    D,E,X,Y,K
@@ -10866,7 +10866,7 @@ L2A7BE:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysScaleMul ($2A7C0)
-; Called from: FuelSysWarmupScale, Sub_3D84E (3 calls)
+; Called from: FuelSysWarmupScale, PurgeRampControl (3 calls)
 ;---------------------------------------------------------------------------------------------------
 FuelSysScaleMul:
         PSHM    E
@@ -14305,7 +14305,7 @@ L2D154:
         CBA
         BCS     L2D168
 L2D162:
-        LDAA    >IacGearTime2,Z
+        LDAA    >IacGearDelay,Z
         BNE     L2D1A4
 L2D168:
         BRCLR   >SwitchInputs2,Z,#$20,L2D178             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
@@ -15140,7 +15140,7 @@ RawScale69:
 
 ;---------------------------------------------------------------------------------------------------
 ; RawScaleF4 ($2D9EA)
-; Called from: Reset, FreezeFrameCapture, FuelSysConditions, FuelSysConditions2, Sub_238E8, RawScaleChain, ReadMap
+; Called from: Reset, FreezeFrameCapture, FuelSysConditions, FuelSysConditions2, CamSensorMonitor, RawScaleChain, ReadMap
 ;---------------------------------------------------------------------------------------------------
 RawScaleF4:
         LDAB    #$F4
@@ -16240,10 +16240,10 @@ L2FA42:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2FA52 ($2FA52)
+; MtvCheck ($2FA52)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_2FA52:
+MtvCheck:
         BRCLR   >Options0335,#$20,L2FAB0                 ; bit 5: manifold tuning valve fitted (MtvTiming in the PIT code)
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2FAB0         ; bit 2: one pass in 8 (about 96 ms)
         LDD     >IoInputs0,Z
@@ -16292,7 +16292,7 @@ L2FADC:
         BRCLR   >IoCfg1FL,Z,#$10,L2FB00                  ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
         BRSET   >MtvFlags,Z,#$10,L2FB16                  ; bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
         BSETW   >IoCfg1E,Z,#$0020                        ; IoCfg1FL.5: manifold tuning valve driver status (MtvCheck)
-        LDAB    $044E
+        LDAB    >MtvOnHold
         STAB    >MtvHoldCount,Z
         BRA     L2FB16
 L2FB00:
@@ -16300,7 +16300,7 @@ L2FB00:
         BITB    #$10
         BEQ     L2FB16
         BCLRW   >IoCfg1E,Z,#$0020                        ; IoCfg1FL.5: manifold tuning valve driver status (MtvCheck)
-        LDAB    $044F
+        LDAB    >MtvOffHold
         STAB    >MtvHoldCount,Z
 L2FB16:
         RTS

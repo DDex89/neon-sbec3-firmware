@@ -10939,12 +10939,12 @@ L19806:
 ;---------------------------------------------------------------------------------------------------
 IdleTargetControl:
         BRCLR   >MainLoopPhaseMask,Z,#$02,L1981E         ; bit 1: one pass in 4 (about 48 ms)
-        LDAA    >IacGearTime2,Z
+        LDAA    >IacGearDelay,Z
         CMPA    #$FF
         BEQ     L1981E
         TSTA
         BEQ     L1981E
-        DEC     >IacGearTime2,Z
+        DEC     >IacGearDelay,Z
 L1981E:
         LDAA    >IacGearDuration,Z
         CMPA    #$FF
@@ -11189,7 +11189,7 @@ L19AFE:
         BRSET   >IdleFlags,Z,#$80,L19B2E                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRSET   >ThrottleState,Z,#$01,L19B2E             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDAA    #$FF
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
         STAA    >IacGearDuration,Z
         BCLR    >IdleFlags7,Z,#$8C                       ; bit 7: gear idle step started (IdleTargetControl); bit 3: cleared with bits 7 and 2 when the gear step ends; not set by bit instructions; bit 2: cleared with bits 7 and 3 when the gear step ends; not set by bit instructions
         BCLR    >IdleFlags,Z,#$20                        ; bit 5: gear-engagement idle step started (IdleTargetControl)
@@ -11532,7 +11532,7 @@ L19F90:
         BNE     L19F9A
         DECA
 L19F9A:
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
 L19F9E:
         TST     >ShiftIdleDelay,Z
         BEQ     L19FAA
@@ -11647,7 +11647,7 @@ L1A0D6:
         DEC     >IacGearTime,Z
 L1A0F0:
         LDAA    #$FF
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
         STAA    >IacGearDuration,Z
         BCLR    >IdleFlags7,Z,#$8C                       ; bit 7: gear idle step started (IdleTargetControl); bit 3: cleared with bits 7 and 2 when the gear step ends; not set by bit instructions; bit 2: cleared with bits 7 and 3 when the gear step ends; not set by bit instructions
         BCLR    >IdleFlags,Z,#$20                        ; bit 5: gear-engagement idle step started (IdleTargetControl)
@@ -12158,7 +12158,7 @@ IacResetHold:
         BSET    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BCLR    <IacStepFlags,Z,#$10                     ; bit 4: idle air at the fixed target (IacFixedTarget)
         LDAA    #$FF
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
         STAA    >IacGearDuration,Z
         RTS
 

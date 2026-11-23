@@ -962,7 +962,7 @@ L30A22:
 
 ;---------------------------------------------------------------------------------------------------
 ; BusTxQueue ($30A2A)
-; Called from: SkimTimerService, BusTxMsg91, BusTxSparkStatus, BusTxSecurity, BusTxTimer, Sub_30A70, BusTxEvent (11 calls)
+; Called from: SkimTimerService, BusTxMsg91, BusTxSparkStatus, BusTxSecurity, BusTxTimer, BusTxSparkEvent, BusTxEvent (11 calls)
 ;---------------------------------------------------------------------------------------------------
 BusTxQueue:
         LDD     #$8000
@@ -999,10 +999,10 @@ L30A6E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30A70 ($30A70)
+; BusTxSparkEvent ($30A70)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_30A70:
+BusTxSparkEvent:
         LDAA    >BusStatus9D3,Z
         LDAB    >BusStatus9D4,Z
         BRCLR   >EventSparkFlags,Z,#$04,L30A84           ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
@@ -1270,7 +1270,7 @@ L30CD2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Irq2BusHandler ($30CD6)
-; Called from: Sub_0890C
+; Called from: EgrMain
 ;---------------------------------------------------------------------------------------------------
 Irq2BusHandler:
         BSET    >CcdBusFlags,Z,#$80                      ; bit 7: bus ready for the next message (CcdReceive, Irq4BusHandler, Irq2BusHandler)
@@ -2017,18 +2017,18 @@ PciStateSet6:
         BRA     L316FE
 
 ;---------------------------------------------------------------------------------------------------
-; BusRxAck ($316F0)
+; Sub_316F0 ($316F0)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-BusRxAck:
+Sub_316F0:
         LDX     #$0054
         BRA     L316FE
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_316F6 ($316F6)
+; PciTxStep ($316F6)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_316F6:
+PciTxStep:
         BCLR    >PciFlags3,Z,#$08                        ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         LDX     #$0058
 L316FE:
@@ -2763,7 +2763,7 @@ L31DB2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_31DB4 ($31DB4)
-; Called from: Sub_0890C
+; Called from: EgrMain
 ;---------------------------------------------------------------------------------------------------
 Sub_31DB4:
         BCLRW   $100C,Z,#$0800
@@ -2780,7 +2780,7 @@ Sub_31DB4:
 
 ;---------------------------------------------------------------------------------------------------
 ; QspiSendFrame ($31DDE)
-; Called from: PciReceive, Sub_316F6, PciPitTick, Sub_31E2C, QspiService, PciRxProcess, QspiStop
+; Called from: PciReceive, PciTxStep, PciPitTick, Sub_31E2C, QspiService, PciRxProcess, QspiStop
 ;---------------------------------------------------------------------------------------------------
 QspiSendFrame:
         TZX
@@ -2817,7 +2817,7 @@ Sub_31E1A:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_31E2C ($31E2C)
-; Called from: Sub_316F6, Sub_31DB4, QspiService
+; Called from: PciTxStep, Sub_31DB4, QspiService
 ;---------------------------------------------------------------------------------------------------
 Sub_31E2C:
         ANDP    #$FEFF
@@ -5903,10 +5903,10 @@ L35220:
         dc.b    $01,$03,$00,$FF,$FF,$04,$05,$00,$01,$02,$03,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; BusDataRequest ($35330)
+; SciRequestReceive ($35330)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-BusDataRequest:
+SciRequestReceive:
         BRSET   >DiagBusFlags,Z,#$40,L3543C              ; bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
         LDE     >SCCR0,Z
         BRSET   >DiagFlags,Z,#$80,L35374                 ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
@@ -6255,14 +6255,14 @@ L35698:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3569A ($3569A)
+; BusDataRequest ($3569A)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3569A:
+BusDataRequest:
         LDAA    >DiagFlags,Z
         BITA    #$30
         BNE     L356CA
-        LDE     $092D,Z
+        LDE     >BusData92D,Z
         ANDE    #$00FF
         BEQ     L356CA
         SUBE    #$0010
@@ -6437,9 +6437,9 @@ L35856:
         LDAB    >O2DownBank2Raw,Z
 L3585A:
         LDAA    #$FF
-        CMPB    $4A00
+        CMPB    >BusDataO2High
         BHI     L3586A
-        CMPB    $4A01
+        CMPB    >BusDataO2Mid
         BHI     L3586C
         ANDA    #$A0
 L3586A:
@@ -6459,7 +6459,7 @@ L35878:
         BCC     L35882
         CLRA
 L35882:
-        LDAB    $498C
+        LDAB    >BusDataThrottleScale
         STAA    <Scratch0,Z
         MUL
         ADCA    <Scratch0,Z
@@ -6476,7 +6476,7 @@ L35898:
 
 ;---------------------------------------------------------------------------------------------------
 ; SciSendByte ($3589E)
-; Called from: SciDiagCommand, Sub_3569A, SciSendByte, DiagRamSession1, DiagRamSession2, DiagPciCommand, DiagCommandMain, RunModeSwitch (13 calls)
+; Called from: SciDiagCommand, BusDataRequest, SciSendByte, DiagRamSession1, DiagRamSession2, DiagPciCommand, DiagCommandMain, RunModeSwitch (13 calls)
 ;---------------------------------------------------------------------------------------------------
 SciSendByte:
         BRCLR   >SCSR,Z,#$01,SciSendByte                 ; bit 0: TDRE: SCI transmit data register empty
@@ -7005,7 +7005,7 @@ L35E0E:
         STAA    >EepromData,Z
         CPE     #$00EF
         BNE     L35E50
-        STAA    >FlexF48,Z
+        STAA    $0F42,Z
 L35E50:
         LDAA    #$E2
         ANDP    #$FF1F
@@ -9940,21 +9940,21 @@ L39684:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; EgrMain ($39686)
+; Irq2Dispatch ($39686)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-EgrMain:
+Irq2Dispatch:
         BRSET   >Options0335,#$04,L39692                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
         JSR     EgrEnable
         BRA     L39696
 L39692:
-        JSR     PciIrq2Start
+        JSR     EgrControl
 L39696:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrEnable ($39698)
-; Called from: EgrMain
+; Called from: Irq2Dispatch
 ;---------------------------------------------------------------------------------------------------
 EgrEnable:
         BRSET   >EngineStateFlags,Z,#$80,L396D6          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -10092,10 +10092,10 @@ L3985E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; PciIrq2Start ($39860)
-; Called from: EgrMain
+; EgrControl ($39860)
+; Called from: Irq2Dispatch
 ;---------------------------------------------------------------------------------------------------
-PciIrq2Start:
+EgrControl:
         BRSET   >EngineStateFlags,Z,#$80,L3989E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >ActuatorTest,Z
         CMPA    #$10
@@ -10141,9 +10141,9 @@ L398C8:
         XGDX
         LBRA    L39CCE
 L398D8:
-        TST     $05F0
+        TST     >EgrDutyOverride
         BNE     L398F0
-        TST     $05F1
+        TST     >EgrDutyFixed
         BEQ     L398F0
         BCLR    >EgrFlags,Z,#$01                         ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         BCLR    >EgrFlags,Z,#$20                         ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
@@ -10220,14 +10220,14 @@ L399D2:
         BRSET   >FaultSet04,Z,#$40,L39A1C
         BRSET   >FaultSet03,Z,#$02,L39A1C
         BRSET   >SensorFaultFlags,Z,#$20,L39A1C          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
-        LDAA    $051B,Z
+        LDAA    >FaultSet1B,Z
         BITA    #$B0
         BNE     L39A1C
         BRCLR   >ControlFlagsC39,Z,#$10,L39A26           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
         BRSET   >EgrMonFlags,Z,#$80,L39A26               ; bit 7: EGR flow monitor passed (result at or below EgrMonResultMax)
         BRSET   >FaultMem04,Z,#$40,L39A1C
         BRSET   >FaultMem03,Z,#$02,L39A1C
-        LDAA    $013D,Z
+        LDAA    >FaultMem1B,Z
         BITA    #$B0
         BEQ     L39A26
 L39A1C:
@@ -10250,8 +10250,8 @@ L39A44:
         BRCLR   >EgrFlags,Z,#$21,L39A4E                  ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1); bit 0: EGR conditions not met (EgrEnable, EgrControl)
         CLRA
 L39A4E:
-        STAA    $0B37,Z
-        LDAB    $05F8
+        STAA    >EgrB3B,Z
+        LDAB    >EgrExhaustPressRef
         SUBB    >Map,Z
         BCS     L39A7A
         CLRA
@@ -10263,17 +10263,17 @@ L39A4E:
         FDIV
         BVS     L39A7A
         XGDX
-        LDX     #Tab2D_062B
+        LDX     #EgrPressureRatio
         JSR     Lookup2D
         BRA     L39A7C
 L39A7A:
         LDAA    #$FF
 L39A7C:
-        STAA    $0B33,Z
+        STAA    >EgrPressureFactor,Z
         LDAA    >Map,Z
-        LDAB    $0B30,Z
+        LDAB    >EgrMapFiltered,Z
         BRSET   >EgrFlags2,Z,#$02,L39AA0                 ; bit 1: EGR duty above the position-based limit (EgrControl)
-        ADDB    $05F7
+        ADDB    >EgrMapRiseHyst
         BCC     L39A96
         LDAB    #$FF
 L39A96:
@@ -10282,7 +10282,7 @@ L39A96:
         BSET    >EgrFlags2,Z,#$02                        ; bit 1: EGR duty above the position-based limit (EgrControl)
         BRA     L39AB0
 L39AA0:
-        SUBB    $05F7
+        SUBB    >EgrMapRiseHyst
         BCC     L39AA8
         CLRB
 L39AA8:
@@ -10290,22 +10290,22 @@ L39AA8:
         BCC     L39AB0
         BCLR    >EgrFlags2,Z,#$02                        ; bit 1: EGR duty above the position-based limit (EgrControl)
 L39AB0:
-        STAA    $0B30,Z
-        LDX     $05F5
+        STAA    >EgrMapFiltered,Z
+        LDX     >EgrFlowFilter
         BRCLR   >EgrFlags2,Z,#$02,L39AC2                 ; bit 1: EGR duty above the position-based limit (EgrControl)
-        LDX     $05F3
+        LDX     >EgrFlowFilterRise
 L39AC2:
-        INC     $0B49,Z
-        LDAB    $0B49,Z
-        LDAA    $05F2
+        INC     >EgrB4D,Z
+        LDAB    >EgrB4D,Z
+        LDAA    >EgrFlowUpdatePeriod
         BEQ     L39AD8
         CBA
         BNE     L39B24
-        CLR     $0B49,Z
+        CLR     >EgrB4D,Z
 L39AD8:
         PSHM    X
         LDAA    >ManifoldVacuum,Z
-        LDX     #Tab2D_0609
+        LDX     #EgrFlowFilterVacuum
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
         MUL
@@ -10314,26 +10314,26 @@ L39AD8:
         FDIV
         XGDX
         TAB
-        STAB    $0B4A,Z
+        STAB    >EgrB4E,Z
         COMB
-        LDAA    $0B38,Z
+        LDAA    >EgrFlowEstimate,Z
         MUL
         ADCA    #$00
         STAA    <Scratch4,Z
-        LDAA    $0B37,Z
-        LDAB    $0B33,Z
+        LDAA    >EgrB3B,Z
+        LDAB    >EgrPressureFactor,Z
         MUL
         ADCA    #$00
-        LDAB    $0B4A,Z
+        LDAB    >EgrB4E,Z
         MUL
         ADCA    #$00
         ADDA    <Scratch4,Z
         BCC     L39B20
         LDAA    #$FF
 L39B20:
-        STAA    $0B38,Z
+        STAA    >EgrFlowEstimate,Z
 L39B24:
-        LDAA    $0B38,Z
+        LDAA    >EgrFlowEstimate,Z
         BRCLR   >ThrottleState,Z,#$40,L39B30             ; bit 6: wide-open throttle (DetectWot)
         CLRA
 L39B30:
@@ -10344,11 +10344,11 @@ L39B30:
         BRA     L39B5E
 L39B40:
         CLRB
-        LDAA    $0B37,Z
+        LDAA    >EgrB3B,Z
         BEQ     L39B5E
         XGDX
-        LDAA    $0B38,Z
-        CMPA    $0B37,Z
+        LDAA    >EgrFlowEstimate,Z
+        CMPA    >EgrB3B,Z
         BCC     L39B5C
         CLRB
         FDIV
@@ -10357,26 +10357,26 @@ L39B40:
 L39B5C:
         LDAA    #$FF
 L39B5E:
-        STAA    $0B31,Z
+        STAA    >EgrFlowFactor,Z
         BRSET   >EgrFlags,Z,#$01,L39CEA                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         BRSET   >EgrFlags,Z,#$20,L39CEA                  ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
         BRSET   >EgrMonFlags,Z,#$04,L39CEA               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
         BRCLR   >EgrMonFlags,Z,#$02,L39B86               ; bit 1: EGR flow test conditions met, test started (EgrFlowMonitor)
-        LDAB    $05EF
+        LDAB    >EgrTargetFixed
         BEQ     L39B86
-        STAB    $0B3A,Z
+        STAB    >EgrTargetPos,Z
         BRA     L39BAE
 L39B86:
-        LDAB    $05F0
+        LDAB    >EgrDutyOverride
         BNE     L39B9C
         LDAA    <Scratch0,Z
         LDAB    >EngineRpm,Z
-        LDX     #Tab3D_0637
+        LDX     #EgrTarget
         JSR     Lookup3D
         TAB
 L39B9C:
-        STAB    $0B3A,Z
-        CMPB    $035E
+        STAB    >EgrTargetPos,Z
+        CMPB    >EgrTargetMin
         BHI     L39BAE
         BSET    >EgrFlags,Z,#$01                         ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         LBRA    L39CEA
@@ -10386,42 +10386,42 @@ L39BAE:
         BCC     L39BB8
         CLRA
 L39BB8:
-        STAA    $0B39,Z
+        STAA    >EgrB3D,Z
         CLRA
-        LDAB    $0B3A,Z
+        LDAB    >EgrTargetPos,Z
         TDE
-        LDAB    $0B39,Z
+        LDAB    >EgrB3D,Z
         SDE
-        STE     $0B3C,Z
+        STE     >EgrPosError,Z
         TED
         BPL     L39BD4
         NEGD
 L39BD4:
-        CMPB    $05FC
+        CMPB    >EgrPidDeadband
         BCC     L39BDE
         CLRD
         BRA     L39BEC
 L39BDE:
-        LDE     $0B3C,Z
+        LDE     >EgrPosError,Z
         CLRA
-        LDAB    $05F9
+        LDAB    >EgrPidP
         JSR     MulSignedSat
 L39BEC:
-        STD     $0B40,Z
-        LDD     $0B3C,Z
+        STD     >EgrB44,Z
+        LDD     >EgrPosError,Z
         BEQ     L39C2A
         BPL     L39BFA
         NEGD
 L39BFA:
-        CMPB    $05FC
+        CMPB    >EgrPidDeadband
         BLS     L39C2A
-        LDE     $0B3C,Z
+        LDE     >EgrPosError,Z
         CLRA
-        LDAB    $05FA
+        LDAB    >EgrPidI
         JSR     MulSignedSat
         TSTD
         BEQ     L39C2A
-        ADDD    $0B42,Z
+        ADDD    >EgrPidIntegral,Z
         BMI     L39C20
         BVC     L39C26
         LDD     #$8000
@@ -10430,29 +10430,29 @@ L39C20:
         BVC     L39C26
         LDD     #$7FFF
 L39C26:
-        STD     $0B42,Z
+        STD     >EgrPidIntegral,Z
 L39C2A:
-        LDD     $0B3C,Z
+        LDD     >EgrPosError,Z
         BPL     L39C32
         NEGD
 L39C32:
-        CMPB    $05FC
+        CMPB    >EgrPidDeadband
         BCC     L39C3C
         CLRD
         BRA     L39C50
 L39C3C:
-        LDD     $0B3C,Z
-        SUBD    $0B3E,Z
+        LDD     >EgrPosError,Z
+        SUBD    >EgrB42,Z
         TDE
         CLRA
-        LDAB    $05FB
+        LDAB    >EgrPidD
         JSR     MulSignedSat
 L39C50:
-        STD     $0B44,Z
-        LDD     $0B3C,Z
-        STD     $0B3E,Z
-        LDAA    $0B3A,Z
-        LDX     #Tab2D_0615
+        STD     >EgrB48,Z
+        LDD     >EgrPosError,Z
+        STD     >EgrB42,Z
+        LDAA    >EgrTargetPos,Z
+        LDX     #EgrFeedForward
         JSR     Lookup2D
         TAB
         CLRA
@@ -10461,7 +10461,7 @@ L39C50:
         ASLD
         ASLD
         ASLD
-        ADDD    $0B40,Z
+        ADDD    >EgrB44,Z
         BVC     L39C88
         BPL     L39C84
         LDD     #$7FFF
@@ -10469,7 +10469,7 @@ L39C50:
 L39C84:
         LDD     #$8000
 L39C88:
-        ADDD    $0B42,Z
+        ADDD    >EgrPidIntegral,Z
         BVC     L39C9A
         BPL     L39C96
         LDD     #$7FFF
@@ -10477,7 +10477,7 @@ L39C88:
 L39C96:
         LDD     #$8000
 L39C9A:
-        ADDD    $0B44,Z
+        ADDD    >EgrB48,Z
         BVC     L39CA8
         BPL     L39CBE
         LDD     #$00FF
@@ -10498,9 +10498,9 @@ L39CBA:
 L39CBE:
         CLRB
 L39CC0:
-        TST     $05F0
+        TST     >EgrDutyOverride
         BNE     L39CCE
-        LDAA    $05F1
+        LDAA    >EgrDutyFixed
         BEQ     L39CCE
         TAB
 L39CCE:
@@ -10515,58 +10515,58 @@ L39CE2:
         BRA     L39D16
 L39CEA:
         CLRD
-        STD     $0B3C,Z
-        STD     $0B3E,Z
-        STD     $0B42,Z
-        STD     $0B40,Z
-        STD     $0B44,Z
+        STD     >EgrPosError,Z
+        STD     >EgrB42,Z
+        STD     >EgrPidIntegral,Z
+        STD     >EgrB44,Z
+        STD     >EgrB48,Z
         STAB    >EgrDuty,Z
-        STAB    $0B3A,Z
-        STAB    $0B39,Z
+        STAB    >EgrTargetPos,Z
+        STAB    >EgrB3D,Z
         STAB    >PWMA,Z
         BCLRW   >CFORC,Z,#$0202
 L39D16:
-        JSR     Sub_39D20
+        JSR     EgrZeroCheck
 L39D1A:
-        JSR     Sub_227F4
+        JSR     EgrPositionMonitor
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_39D20 ($39D20)
-; Called from: PciIrq2Start
+; EgrZeroCheck ($39D20)
+; Called from: EgrControl
 ;---------------------------------------------------------------------------------------------------
-Sub_39D20:
-        BRSET   $0B4C,Z,#$02,L39D62
-        LDAA    $0B3A,Z
-        CMPA    $0606
+EgrZeroCheck:
+        BRSET   >EgrZeroFlags,Z,#$02,L39D62              ; bit 1: EGR zero check step started (EgrZeroCheck)
+        LDAA    >EgrTargetPos,Z
+        CMPA    >EgrZeroArmTarget
         LBLS    L39D58
         LDAA    >CoolantTemp,Z
-        CMPA    $0604
+        CMPA    >EgrZeroArmCoolant
         LBLS    L39D58
         BRCLR   >MainLoopPhaseMask,Z,#$04,L39DC8         ; bit 2: one pass in 8 (about 96 ms)
-        LDAA    $0B54,Z
-        CMPA    $0605
+        LDAA    >EgrMonTimer,Z
+        CMPA    >EgrZeroArmTime
         BCC     L39D5E
         INCA
         BEQ     L39D5E
-        STAA    $0B54,Z
+        STAA    >EgrMonTimer,Z
         BRA     L39DC8
 L39D58:
-        CLR     $0B54,Z
+        CLR     >EgrMonTimer,Z
         BRA     L39DC8
 L39D5E:
-        BSET    $0B4C,Z,#$02
+        BSET    >EgrZeroFlags,Z,#$02                     ; bit 1: EGR zero check step started (EgrZeroCheck)
 L39D62:
         BRSET   >ThrottleState,Z,#$80,L39DC8             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >EgrDuty,Z
-        CMPA    $05FF
+        CMPA    >EgrZeroDutyMax
         BHI     L39DC8
-        LDAA    $0B4D,Z
-        CMPA    $0600
+        LDAA    >EgrZeroTimer,Z
+        CMPA    >EgrZeroDelay
         BCC     L39D86
         INCA
         BEQ     L39DCC
-        STAA    $0B4D,Z
+        STAA    >EgrZeroTimer,Z
         BRA     L39DCC
 L39D86:
         LDAA    <EgrZeroPos,Z
@@ -10574,13 +10574,13 @@ L39D86:
         CBA
         BEQ     L39DAA
         BCS     L39D9E
-        SUBA    $0608
+        SUBA    >EgrZeroSlewDown
         BCS     L39DA8
         CBA
         BHI     L39DAA
         BRA     L39DA8
 L39D9E:
-        ADDA    $0607
+        ADDA    >EgrZeroSlewUp
         BCS     L39DA8
         CBA
         BLS     L39DAA
@@ -10588,19 +10588,19 @@ L39DA8:
         TBA
 L39DAA:
         STAA    <EgrZeroPos,Z
-        BSET    $0B4C,Z,#$01
-        CMPA    $0603
+        BSET    >EgrZeroFlags,Z,#$01                     ; bit 0: EGR zero position learnt (EgrZeroPos, EgrZeroCheck)
+        CMPA    >EgrZeroPosMax
         BHI     L39DBC
-        CMPA    $0602
+        CMPA    >EgrZeroPosMin
         BCC     L39DC2
 L39DBC:
-        BSET    $0B4C,Z,#$80
+        BSET    >EgrZeroFlags,Z,#$80                     ; bit 7: EGR zero position below EgrZeroPosMin (EgrZeroCheck)
         BRA     L39DCC
 L39DC2:
-        BCLR    $0B4C,Z,#$80
+        BCLR    >EgrZeroFlags,Z,#$80                     ; bit 7: EGR zero position below EgrZeroPosMin (EgrZeroCheck)
         BRA     L39DCC
 L39DC8:
-        CLR     $0B4D,Z
+        CLR     >EgrZeroTimer,Z
 L39DCC:
         RTS
 
@@ -14144,27 +14144,27 @@ EmptyHook:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3D800 ($3D800)
+; PurgeMain ($3D800)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3D800:
+PurgeMain:
         JSR     PurgeEnable
         JSR     PurgeCellCheck
         JSR     PurgeCellUpdateGate
         JSR     PurgeSolenoidCheck
         JSR     PurgeFlowMeasure
         JSR     PurgeRampCalc
-        JSR     Sub_3E2B4
+        JSR     PurgeDutyOverride
         TSTA
         BNE     L3D848
         BCLR    >PurgeFlags,Z,#$80                       ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
-        JSR     Sub_3E340
+        JSR     PurgeVaporLearn
         BRSET   >PurgeFlags,Z,#$80,L3D832                ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
-        JSR     Sub_3D84E
+        JSR     PurgeRampControl
 L3D832:
         BRSET   >EgrMonFlags,Z,#$04,L3D84C               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
         BRCLR   >Options0333,#$80,L3D844                 ; bit 7: EVAP purge solenoid fitted
-        JSR     Sub_3DF80
+        JSR     PurgeFlowControl
         BRA     L3D848
 L3D844:
         JSR     PurgeDutySelect
@@ -14174,12 +14174,12 @@ L3D84C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3D84E ($3D84E)
-; Called from: Sub_3D800
+; PurgeRampControl ($3D84E)
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3D84E:
+PurgeRampControl:
         BRCLR   >Options0338,#$80,L3D860                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
-        LDD     $0448,Z
+        LDD     >PurgeVapor448,Z
         CPD     #$FFFF
         LBNE    L3D9EE
 L3D860:
@@ -14209,7 +14209,7 @@ L3D88C:
 L3D8A0:
         BRCLR   >O2ActiveFlags,Z,#$04,L3D8E8             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L3D8A6:
-        STAB    $0819,Z
+        STAB    >PurgeTrimLatched,Z
         LDAB    >O2Bank2Flags,Z
         STAB    $03,Y
         LDAB    >ShortTermTrim2,Z
@@ -14217,7 +14217,7 @@ L3D8A6:
         BRA     L3D8CA
 L3D8B8:
         LDAB    $00,Y
-        STAB    $0819,Z
+        STAB    >PurgeTrimLatched,Z
         LDAB    >O2Bank1Flags,Z
         STAB    $03,Y
         LDAB    >ShortTermTrim1,Z
@@ -14226,7 +14226,7 @@ L3D8CA:
         BRSET   >PurgeFlags,Z,#$08,L3D8DE                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BRCLR   $03,Y,#$08,L3D8F0
         BSET    >PurgeFlags,Z,#$08                       ; bit 3: purge trim counted for the current cell (PurgeRampControl)
-        INC     $0818,Z
+        INC     >PurgeTrimCount,Z
         BRA     L3D8F0
 L3D8DE:
         BRSET   $03,Y,#$08,L3D8F0
@@ -14234,121 +14234,121 @@ L3D8DE:
         BRA     L3D8F0
 L3D8E8:
         CLRB
-        STAB    $0819,Z
+        STAB    >PurgeTrimLatched,Z
         STAB    $02,Y
 L3D8F0:
         LDAA    >PurgeRamp,Z
-        CMPA    $199F
+        CMPA    >PurgeRampFull
         LBCC    L3D9A4
-        CMPA    $19A0
+        CMPA    >PurgeRampMin
         LBCS    L3D9A4
         LDAA    >ManifoldVacuum,Z
         LBEQ    L3D9A4
-        CMPA    $19A7
+        CMPA    >PurgeVacuumMin
         LBCS    L3D9A4
         LDAA    >MainLoopCounter,Z
         BNE     L3D926
         LDAA    #$FF
-        CMPA    $0450,Z
+        CMPA    >PurgeLearnTimer,Z
         BEQ     L3D926
-        INC     $0450,Z
+        INC     >PurgeLearnTimer,Z
 L3D926:
-        LDAA    $0450,Z
-        CMPA    $19A4
+        LDAA    >PurgeLearnTimer,Z
+        CMPA    >PurgeLearnTime
         BCC     L3D998
-        LDAA    $0818,Z
+        LDAA    >PurgeTrimCount,Z
         CMPA    $19A5
         BCS     L3D9A8
 L3D93A:
-        CLR     $0818,Z
-        LDAB    $0430,Z
-        CMPB    $19B6
+        CLR     >PurgeTrimCount,Z
+        LDAB    >PurgeRampStep,Z
+        CMPB    >PurgeRampStepMax
         BCC     L3D9A8
         LDAA    $02,Y
         BPL     L3D952
-        CMPA    $19A8
+        CMPA    >PurgeTrimRichLimit
         BCS     L3D9A8
 L3D952:
-        LDAA    $0819,Z
+        LDAA    >PurgeTrimLatched,Z
         BPL     L3D95E
-        CMPA    $19A9
+        CMPA    >PurgeTrimLatchedLimit
         BCS     L3D9A8
 L3D95E:
         LDAA    >PurgeStartRamp,Z
         BNE     L3D9A8
         BRSET   >ThrottleState,Z,#$80,L3D970             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $19A3
+        LDAA    >PurgeRampOffIdle
         BEQ     L3D9A8
 L3D970:
-        LDAA    $0450,Z
-        CMPA    $19A4
+        LDAA    >PurgeLearnTimer,Z
+        CMPA    >PurgeLearnTime
         BCC     L3D980
-        ADDB    $19A1
+        ADDB    >PurgeRampStepUp
         BRA     L3D984
 L3D980:
-        ADDB    $19A2
+        ADDB    >PurgeRampStepUp2
 L3D984:
         BCC     L3D988
         LDAB    #$FF
 L3D988:
-        CMPB    $19B6
+        CMPB    >PurgeRampStepMax
         BCS     L3D992
-        LDAB    $19B6
+        LDAB    >PurgeRampStepMax
 L3D992:
-        STAB    $0430,Z
+        STAB    >PurgeRampStep,Z
         BRA     L3D9A8
 L3D998:
-        LDAA    $0818,Z
-        CMPA    $19A6
+        LDAA    >PurgeTrimCount,Z
+        CMPA    >PurgeTrimCountMin2
         BCS     L3D9A8
         BRA     L3D93A
 L3D9A4:
-        CLR     $0818,Z
+        CLR     >PurgeTrimCount,Z
 L3D9A8:
         LDAA    $02,Y
         BPL     L3D9B2
-        CMPA    $19A8
+        CMPA    >PurgeTrimRichLimit
         BCS     L3D9BE
 L3D9B2:
-        LDAA    $0819,Z
+        LDAA    >PurgeTrimLatched,Z
         BPL     L3D9EC
-        CMPA    $19AA
+        CMPA    >PurgeTrimLatchedLimit2
         BCC     L3D9EC
 L3D9BE:
         LDAA    >MainLoopCounter,Z
-        ANDA    $19AB
-        CMPA    $19AB
+        ANDA    >PurgeLearnMask
+        CMPA    >PurgeLearnMask
         BNE     L3D9EC
-        CLR     $0818,Z
-        TST     $0430,Z
+        CLR     >PurgeTrimCount,Z
+        TST     >PurgeRampStep,Z
         BEQ     L3D9EC
         LDAB    >PurgeStartRamp,Z
         BNE     L3D9EC
         BRSET   >ThrottleState,Z,#$80,L3D9E8             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAB    $19A3
+        LDAB    >PurgeRampOffIdle
         BEQ     L3D9EC
 L3D9E8:
-        DEC     $0430,Z
+        DEC     >PurgeRampStep,Z
 L3D9EC:
         AIS     #$06
 L3D9EE:
-        LDAA    $0444,Z
+        LDAA    >PurgeLearnRate,Z
         LBNE    L3DB0E
         LDAA    >PurgeRamp,Z
-        LDX     #Tab2D_19D7
+        LDX     #PurgeCommandBase
         JSR     Lookup2D
         STAA    <Scratch0,Z
         BRCLR   >PurgeFlowTestFlags,Z,#$30,L3DA6A        ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
         LDAA    >PurgeDutyTarget,Z
         LDAB    >PurgeFlowStep,Z
         BRSET   >PurgeFlowTestFlags,Z,#$10,L3DA52        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
-        CMPB    $3080
+        CMPB    >PurgeFlowStepTime
         BCS     L3DA6E
         BRSET   >O2Bank1Flags,Z,#$08,L3DA30              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
         BRCLR   >Options032F,#$40,L3DA6E                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRCLR   >O2Bank2Flags,Z,#$08,L3DA6E
 L3DA30:
-        SUBA    $307F
+        SUBA    >PurgeFlowDutyStepDown
         BCC     L3DA38
         CLRA
 L3DA38:
@@ -14362,10 +14362,10 @@ L3DA38:
         BSET    >PurgeFlowTestFlags,Z,#$40               ; bit 6: purge flow test result stored (PurgeFlowTest, PurgeRampControl)
         BRA     L3DA66
 L3DA52:
-        CMPB    $307E
+        CMPB    >PurgeFlowStepTimeUp
         BCS     L3DA6E
         BRSET   >PurgeFlowTestFlags2,Z,#$80,L3DA6E       ; bit 7: O2 switch state reached the last cell row (O2SwitchState)
-        ADDA    $307D
+        ADDA    >PurgeFlowDutyStepUp
         BCC     L3DA66
         LDAA    #$FF
 L3DA66:
@@ -14376,12 +14376,12 @@ L3DA6E:
         LDAA    >PurgeDutyTarget,Z
         STAA    <Scratch0,Z
         BRSET   >LdpFlags2,Z,#$01,L3DA9C                 ; bit 0: soak difference under LdpSoakDiffMax (LDP state machine); PurgeRampControl reads it
-        BRSET   $0469,Z,#$08,L3DA8A
+        BRSET   >PurgeCtlFlags,Z,#$08,L3DA8A             ; bit 3: battery temperature at start below PurgeBattTempStartMax (PurgeRampControl)
         LDAA    >BatteryTempStart,Z
         CMPA    $19B4
         BCC     L3DA9C
 L3DA8A:
-        BSET    $0469,Z,#$08
+        BSET    >PurgeCtlFlags,Z,#$08                    ; bit 3: battery temperature at start below PurgeBattTempStartMax (PurgeRampControl)
         LDAA    $19B5
         LDAB    <Scratch0,Z
         MUL
@@ -14391,15 +14391,15 @@ L3DA9C:
         TST     >PurgeStartRamp,Z
         BEQ     L3DAD8
         LDD     >PurgeStartCounter,Z
-        CMPA    $199D
+        CMPA    >PurgeStartRampTime
         BCC     L3DAB2
         INCW    >PurgeStartCounter,Z
         BRA     L3DAC8
 L3DAB2:
         INCB
         STD     >PurgeStartCounter,Z
-        ANDB    $199C
-        CMPB    $199C
+        ANDB    >PurgeStartRampMask
+        CMPB    >PurgeStartRampMask
         BNE     L3DAC8
         INC     >PurgeStartRamp,Z
         BEQ     L3DAD8
@@ -14413,11 +14413,11 @@ L3DAC8:
 L3DAD8:
         BRSET   >Options032C,#$80,L3DB10                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         BRSET   >ThrottleState,Z,#$80,L3DAEA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        TST     $19A3
+        TST     >PurgeRampOffIdle
         BEQ     L3DB10
 L3DAEA:
-        BRSET   $0469,Z,#$08,L3DB10
-        LDAB    $0430,Z
+        BRSET   >PurgeCtlFlags,Z,#$08,L3DB10             ; bit 3: battery temperature at start below PurgeBattTempStartMax (PurgeRampControl)
+        LDAB    >PurgeRampStep,Z
         CLRA
         ASLD
         ADDD    #$0100
@@ -14437,7 +14437,7 @@ L3DB10:
         CLRA
         TDE
         LDAA    >ManifoldVacuum,Z
-        LDX     #Tab2D_19E3
+        LDX     #PurgeCommandVacuum
         JSR     Lookup2D
         LDAA    #$01
         EMUL
@@ -14454,7 +14454,7 @@ L3DB38:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeDutySelect ($3DB40)
-; Called from: Sub_3D800
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeDutySelect:
         LDAA    >PurgeCommand,Z
@@ -14485,7 +14485,7 @@ L3DB86:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeEnable ($3DB8C)
-; Called from: Sub_3D800
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeEnable:
         BRCLR   >PurgeFlags,Z,#$04,L3DB98                ; bit 2: battery temperature checked (PurgeEnable)
@@ -14559,7 +14559,7 @@ L3DC62:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeCellCheck ($3DC64)
-; Called from: Sub_3D800
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeCellCheck:
         BRSET   >PurgeCellFlags,Z,#$40,L3DDC2
@@ -14908,24 +14908,24 @@ L3DF7C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DF80 ($3DF80)
-; Called from: Sub_3D800
+; PurgeFlowControl ($3DF80)
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3DF80:
+PurgeFlowControl:
         PSHM    D,E,X,Y,K
-        JSR     Sub_3E972
+        JSR     PurgeFlowAdaptation
         CLRB
         LDAA    >PurgeCommand,Z
         BEQ     L3DFC4
-        LDX     #Tab2D_19C3
+        LDX     #PurgeFlowScale
         JSR     Lookup2D
         LDAB    >ManifoldVacuum,Z
-        LDX     #Tab3D_1A2B
+        LDX     #PurgeFlow
         JSR     Lookup3D
         BRSET   >ThrottleState,Z,#$80,L3DFC4             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         CLRA
         TDE
-        LDAB    $046A,Z
+        LDAB    >PurgeFlowAdapt,Z
         SXT
         ADE
         LDAB    #$00
@@ -14936,28 +14936,28 @@ Sub_3DF80:
         BHI     L3DFC4
         TED
 L3DFC4:
-        LDAA    $0463,Z
-        STAA    $0467,Z
-        STAB    $0463,Z
-        LDAA    $0466,Z
-        STAA    $0468,Z
+        LDAA    >PurgeFlow463,Z
+        STAA    >PurgeFlow467,Z
+        STAB    >PurgeFlow463,Z
+        LDAA    >PurgeFlow466,Z
+        STAA    >PurgeFlow468,Z
         CLRA
         TDE
-        LDAB    $0467,Z
+        LDAB    >PurgeFlow467,Z
         SDE
         TED
         BPL     L3DFE8
         NEGD
 L3DFE8:
-        STAB    $0466,Z
-        ADDB    $0468,Z
+        STAB    >PurgeFlow466,Z
+        ADDB    >PurgeFlow468,Z
         BCC     L3DFF4
         LDAB    #$FF
 L3DFF4:
-        STAB    $0464,Z
+        STAB    >PurgeTargetChange,Z
         PSHM    E
         CLRA
-        LDAB    $19B3
+        LDAB    >PurgeTargetStepMin
         ADE
         BLT     L3E01A
         PULM    E
@@ -14965,69 +14965,69 @@ L3DFF4:
         BGT     L3E00C
         BRA     L3E030
 L3E00C:
-        CLR     $0465,Z
-        LDAA    $0469,Z
+        CLR     >PurgeSoftStepCount,Z
+        LDAA    >PurgeCtlFlags,Z
         ANDA    #$F9
         ORAA    #$01
         BRA     L3E02C
 L3E01A:
         PULM    E
-        CLR     $0464,Z
-        CLR     $0465,Z
-        LDAA    $0469,Z
+        CLR     >PurgeTargetChange,Z
+        CLR     >PurgeSoftStepCount,Z
+        LDAA    >PurgeCtlFlags,Z
         ANDA    #$FA
         ORAA    #$02
 L3E02C:
-        STAA    $0469,Z
+        STAA    >PurgeCtlFlags,Z
 L3E030:
-        TST     $0466,Z
+        TST     >PurgeFlow466,Z
         BNE     L3E078
         CLRA
         LDAB    >PurgeFlowMeasured,Z
         TDE
-        LDAB    $0463,Z
+        LDAB    >PurgeFlow463,Z
         SDE
         BPL     L3E048
         NEGE
 L3E048:
         TED
-        CMPB    $19B2
+        CMPB    >PurgeTargetSettleBand
         BHI     L3E078
-        BRCLR   $0469,Z,#$01,L3E06A
-        LDAA    $0464,Z
-        CMPA    $19AF
+        BRCLR   >PurgeCtlFlags,Z,#$01,L3E06A             ; bit 0: purge target change small (under PurgeTargetChangeMax) (PurgeFlowControl)
+        LDAA    >PurgeTargetChange,Z
+        CMPA    >PurgeTargetChangeMax
         BCC     L3E078
-        BSET    $0469,Z,#$04
-        BCLR    $0469,Z,#$01
+        BSET    >PurgeCtlFlags,Z,#$04                    ; bit 2: purge soft step running (PurgeFlowControl, PurgeSoftStepCount)
+        BCLR    >PurgeCtlFlags,Z,#$01                    ; bit 0: purge target change small (under PurgeTargetChangeMax) (PurgeFlowControl)
         BRA     L3E078
 L3E06A:
-        BRCLR   $0469,Z,#$02,L3E078
-        BSET    $0469,Z,#$04
-        BCLR    $0469,Z,#$02
+        BRCLR   >PurgeCtlFlags,Z,#$02,L3E078             ; bit 1: purge target change pending (PurgeFlowControl)
+        BSET    >PurgeCtlFlags,Z,#$04                    ; bit 2: purge soft step running (PurgeFlowControl, PurgeSoftStepCount)
+        BCLR    >PurgeCtlFlags,Z,#$02                    ; bit 1: purge target change pending (PurgeFlowControl)
 L3E078:
-        LDAB    $0463,Z
-        BRCLR   $0469,Z,#$04,L3E0A6
-        TST     $0465,Z
+        LDAB    >PurgeFlow463,Z
+        BRCLR   >PurgeCtlFlags,Z,#$04,L3E0A6             ; bit 2: purge soft step running (PurgeFlowControl, PurgeSoftStepCount)
+        TST     >PurgeSoftStepCount,Z
         BNE     L3E092
-        LDAA    $19B1
-        STAA    $0465,Z
+        LDAA    >PurgeSoftStepLoops
+        STAA    >PurgeSoftStepCount,Z
         BRA     L3E09E
 L3E092:
-        DEC     $0465,Z
+        DEC     >PurgeSoftStepCount,Z
         BNE     L3E09E
-        BCLR    $0469,Z,#$04
+        BCLR    >PurgeCtlFlags,Z,#$04                    ; bit 2: purge soft step running (PurgeFlowControl, PurgeSoftStepCount)
         BRA     L3E0A6
 L3E09E:
-        SUBB    $19B0
+        SUBB    >PurgeSoftStepOffset
         BCC     L3E0A6
         LDAB    #$00
 L3E0A6:
         STAB    >PurgeFlowTarget,Z
         BRCLR   >PurgeFlags,Z,#$80,L3E0CC                ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
-        CLRW    $045C,Z
+        CLRW    >PurgeFlow45C,Z
         CLRW    >PurgeFlowError,Z
-        CLRW    $0456,Z
-        CLRW    $0458,Z
+        CLRW    >PurgeFlowErrorSum,Z
+        CLRW    >PurgeFlowErrorDiff,Z
         CLR     >PurgePwmDuty,Z
         CLR     >PurgeDuty,Z
         LBRA    L3E18A
@@ -15038,7 +15038,7 @@ L3E0CC:
         LDAB    >PurgeFlowMeasured,Z
         SDE
         STE     >PurgeFlowError,Z
-        LDE     $0456,Z
+        LDE     >PurgeFlowErrorSum,Z
         LDD     >PurgeFlowError,Z
         ADE
         BVC     L3E0F6
@@ -15048,29 +15048,29 @@ L3E0CC:
 L3E0F2:
         LDE     #$8000
 L3E0F6:
-        STE     $0456,Z
+        STE     >PurgeFlowErrorSum,Z
         LDE     >PurgeFlowError,Z
-        LDD     $045C,Z
+        LDD     >PurgeFlow45C,Z
         SDE
-        STE     $0458,Z
+        STE     >PurgeFlowErrorDiff,Z
         LDD     >PurgeFlowError,Z
-        STD     $045C,Z
+        STD     >PurgeFlow45C,Z
         AIS     #$F4
         TSX
         LDD     >PurgeFlowError,Z
         STD     $00,X
-        LDD     $0456,Z
+        LDD     >PurgeFlowErrorSum,Z
         STD     $02,X
-        LDD     $0458,Z
+        LDD     >PurgeFlowErrorDiff,Z
         STD     $04,X
         TSY
         AIY     #$06
         CLRA
-        LDAB    $19AC
+        LDAB    >PurgeCtlGainP
         STD     $00,Y
-        LDAB    $19AE
+        LDAB    >PurgeCtlGainI
         STD     $02,Y
-        LDAB    $19AD
+        LDAB    >PurgeCtlGainD
         STD     $04,Y
         ORP     #$00E0
         PSHM    Z
@@ -15110,7 +15110,7 @@ L3E18A:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeCellUpdateGate ($3E18E)
-; Called from: Sub_3D800
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeCellUpdateGate:
         BRSET   >PurgeFlags2,Z,#$0F,L3E228               ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate); bit 2: purge cell 1 reference reached, bank 2; bit 1: purge cell 2 reference reached, bank 1; bit 0: purge cell 2 reference reached, bank 2
@@ -15168,7 +15168,7 @@ L3E228:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgePwmOutput ($3E22A)
-; Called from: CheckPowerDown, Sub_3D800
+; Called from: CheckPowerDown, PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgePwmOutput:
         PSHM    D,E,X
@@ -15223,10 +15223,10 @@ L3E2B0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3E2B4 ($3E2B4)
-; Called from: Sub_3D800
+; PurgeDutyOverride ($3E2B4)
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3E2B4:
+PurgeDutyOverride:
         PSHM    X
         CLRA
         BRSET   >LdpFlags3,Z,#$80,L3E304                 ; bit 7: MonData643Update first pass done (counter MonData643 cleared)
@@ -15266,7 +15266,7 @@ L3E306:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeRampCalc ($3E30A)
-; Called from: Sub_3D800
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeRampCalc:
         LDD     >CalcFuel432,Z
@@ -15296,10 +15296,10 @@ L3E33A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3E340 ($3E340)
-; Called from: Sub_3D800
+; PurgeVaporLearn ($3E340)
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3E340:
+PurgeVaporLearn:
         BRSET   >ClosedLoopMonFlags,Z,#$80,L3E8C4        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         BRSET   >LdpFlags3,Z,#$02,L3E8C4                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >FaultSet03,Z,#$04,L3E8C4
@@ -15331,13 +15331,13 @@ L3E3A8:
         LDAB    >ShortTermTrim1,Z
         SXT
         TDE
-        LDAB    $044C,Z
+        LDAB    >PurgeTrimAvgOff,Z
         SXT
         PSHM    D,E
-        LDAA    $1A8A
+        LDAA    >PurgeTrimFilterOff
         JSR     Blend16Signed
         AIS     #$04
-        STAB    $044C,Z
+        STAB    >PurgeTrimAvgOff,Z
         LBRA    L3E8C4
 L3E3D6:
         BRCLR   >Options0338,#$80,L3E7D8                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
@@ -15351,10 +15351,10 @@ L3E3D6:
         BRSET   >PurgeLearnFlags,Z,#$08,L3E464           ; bit 3: purge vapour learning step state (PurgeVaporLearn)
         BRSET   >Options032C,#$80,L3E7B0                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         LDAA    >PurgeRamp,Z
-        CMPA    $1A89
+        CMPA    >PurgeRampLearnMin
         LBLS    L3E7B0
         LDAA    >StartCoolantTemp2,Z
-        CMPA    $1A88
+        CMPA    >PurgeStartCoolantMax
         LBCC    L3E7B0
         LDAA    >PurgeFlags,Z
         ANDA    #$03
@@ -15369,56 +15369,56 @@ L3E3D6:
         LBNE    L3E7B0
         BCLR    >PurgeLearnFlags,Z,#$80                  ; bit 7: purge vapour learning running (PurgeVaporLearn)
         BSET    >PurgeLearnFlags,Z,#$48                  ; bit 6: purge vapour learning step state; O2LearnEnable reads it; bit 3: purge vapour learning step state (PurgeVaporLearn)
-        LDAA    $1A8F
-        STAA    $0444,Z
+        LDAA    >PurgeLearnRateInit
+        STAA    >PurgeLearnRate,Z
 L3E464:
-        LDD     $0448,Z
-        CPD     $1A8C
+        LDD     >PurgeVapor448,Z
+        CPD     >PurgeLearnTimeMax
         LBCC    L3E7B4
-        INCW    $0448,Z
-        LDAA    $0444,Z
-        CMPA    $1A92
+        INCW    >PurgeVapor448,Z
+        LDAA    >PurgeLearnRate,Z
+        CMPA    >PurgeLearnRateMax
         BCC     L3E4A4
-        LDAB    $0446,Z
+        LDAB    >PurgeVapor446,Z
         INCB
-        STAB    $0446,Z
-        CMPB    $1A91
+        STAB    >PurgeVapor446,Z
+        CMPB    >PurgeLearnRateTime
         BNE     L3E4A4
-        CLR     $0446,Z
-        ADDA    $1A90
+        CLR     >PurgeVapor446,Z
+        ADDA    >PurgeLearnRateStep
         BCC     L3E49A
         LDAA    #$FF
 L3E49A:
-        CMPA    $1A92
+        CMPA    >PurgeLearnRateMax
         BCS     L3E4A4
-        LDAA    $1A92
+        LDAA    >PurgeLearnRateMax
 L3E4A4:
-        STAA    $0444,Z
+        STAA    >PurgeLearnRate,Z
         ORP     #$00E0
         BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
-        LDAA    $044E,Z
-        CMPA    $1AA2
+        LDAA    >PurgeVaporSettle,Z
+        CMPA    >PurgeVaporSettleTime
         BCS     L3E4C4
         BSET    >PurgeLearnFlags,Z,#$10                  ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         BRA     L3E4C8
 L3E4C4:
-        INC     $044E,Z
+        INC     >PurgeVaporSettle,Z
 L3E4C8:
         LDAB    >ShortTermTrim1,Z
         SXT
         TDE
-        LDAB    $044D,Z
+        LDAB    >PurgeTrimAvgOn,Z
         SXT
         PSHM    D,E
-        LDAA    $1A8B
+        LDAA    >PurgeTrimFilterOn
         JSR     Blend16Signed
         AIS     #$04
-        STAB    $044D,Z
+        STAB    >PurgeTrimAvgOn,Z
         BRCLR   >PurgeLearnFlags,Z,#$10,L3E7D8           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         TBA
-        LDAB    $044C,Z
-        ADDB    $1A93
+        LDAB    >PurgeTrimAvgOff,Z
+        ADDB    >PurgeVaporTrimDrop
         BVC     L3E500
         BPL     L3E4FE
         LDAB    #$7F
@@ -15428,28 +15428,28 @@ L3E4FE:
 L3E500:
         CBA
         BGE     L3E518
-        LDAA    $0447,Z
+        LDAA    >PurgeVaporCount,Z
         INCA
-        CMPA    $1A94
+        CMPA    >PurgeVaporDetectCount
         BCC     L3E520
-        STAA    $0447,Z
+        STAA    >PurgeVaporCount,Z
         JMP     L3E7AC
 L3E518:
-        CLR     $0447,Z
+        CLR     >PurgeVaporCount,Z
         JMP     L3E7AC
 L3E520:
         BSET    >PurgeLearnFlags,Z,#$C0                  ; bit 7: purge vapour learning running (PurgeVaporLearn); bit 6: purge vapour learning step state; O2LearnEnable reads it
         BCLR    >PurgeLearnFlags,Z,#$08                  ; bit 3: purge vapour learning step state (PurgeVaporLearn)
         CLR     >PurgeStartRamp,Z
-        LDAA    $1A9B
-        STAA    $07EA,Z
-        LDAA    $1A9A
-        STAA    $07E8,Z
-        LDAB    $1A8E
+        LDAA    >PurgeVaporPartInit
+        STAA    >PurgeVaporPart,Z
+        LDAA    >PurgeVaporInit2
+        STAA    >PurgeVaporEstimate,Z
+        LDAB    >PurgeVaporBias
         SXT
         TDE
         CLRA
-        LDAB    $07E8,Z
+        LDAB    >PurgeVaporEstimate,Z
         ADE
         BPL     L3E552
         CLRE
@@ -15460,17 +15460,17 @@ L3E552:
         LDE     #$00FF
 L3E55C:
         TED
-        STAB    $07E9,Z
-        CLR     $07EB,Z
+        STAB    >PurgeVaporEstimate2,Z
+        CLR     >PurgeVaporClosed,Z
         JSR     PurgeFuelCalc
         BEQ     L3E59E
-        LDAA    $07E8,Z
+        LDAA    >PurgeVaporEstimate,Z
         CBA
         BLS     L3E59E
         CLRA
         XGDX
         CLRA
-        LDAB    $07E8,Z
+        LDAB    >PurgeVaporEstimate,Z
         BNE     L3E582
         INCA
 L3E582:
@@ -15486,44 +15486,44 @@ L3E582:
         BEQ     L3E59A
         LDAB    #$FF
 L3E59A:
-        STAB    $07EB,Z
+        STAB    >PurgeVaporClosed,Z
 L3E59E:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L3E5B4         ; bit 0: one pass in 2 (about 24 ms)
-        LDD     $1A98
-        INCW    $044A,Z
-        CPD     $044A,Z
+        LDD     >PurgeLearnTimeClosed
+        INCW    >PurgeVapor44A,Z
+        CPD     >PurgeVapor44A,Z
         LBLS    L3E7B4
 L3E5B4:
         BRSET   >ThrottleState,Z,#$80,L3E5D0             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $1A97
+        LDAA    >PurgeLearnRateInit2
         ORP     #$00E0
-        STAA    $0444,Z
+        STAA    >PurgeLearnRate,Z
         BCLR    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
         BRA     L3E60C
 L3E5D0:
-        LDAA    $0444,Z
+        LDAA    >PurgeLearnRate,Z
         BRCLR   >O2Bank1Flags,Z,#$08,L3E5E0              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
         BSET    >PurgeLearnFlags,Z,#$01                  ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
         BRA     L3E5FC
 L3E5E0:
         BRCLR   >PurgeLearnFlags,Z,#$01,L3E60C           ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
         BCLR    >PurgeLearnFlags,Z,#$01                  ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
-        ADDA    $1A95
+        ADDA    >PurgeLearnRateTipStep
         BCC     L3E5F2
         LDAA    #$FF
 L3E5F2:
-        CMPA    $1A96
+        CMPA    >PurgeLearnRateTipMax
         BLS     L3E5FC
-        LDAA    $1A96
+        LDAA    >PurgeLearnRateTipMax
 L3E5FC:
         ORP     #$00E0
-        STAA    $0444,Z
+        STAA    >PurgeLearnRate,Z
         BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
 L3E60C:
         LDAA    >PurgeRamp,Z
-        CMPA    $1A9C
+        CMPA    >PurgeLearnRampMin
         LBCS    L3E7B4
         LDAA    >O2UpBank1Raw,Z
         LDX     #O2VoltageScale
@@ -15538,7 +15538,7 @@ L3E60C:
         LBEQ    L3E66A
         LDAA    >ShortTermTrim1,Z
         BPL     L3E658
-        LDAB    $1AA1
+        LDAB    >PurgeLearnTrimBandDown
         COMB
         CBA
         BGE     L3E658
@@ -15546,7 +15546,7 @@ L3E60C:
 L3E64A:
         LDAA    >ShortTermTrim1,Z
         BMI     L3E658
-        CMPA    $1AA0
+        CMPA    >PurgeLearnTrimBandUp
         BLE     L3E658
         BRA     L3E666
 L3E658:
@@ -15559,83 +15559,83 @@ L3E66A:
         BRSET   >ThrottleState,Z,#$80,L3E6F4             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >ShortTermTrim1,Z
         BMI     L3E6A6
-        LDAB    $1AA0
+        LDAB    >PurgeLearnTrimBandUp
         CBA
         LBLS    L3E7AC
-        LDAB    $07EC,Z
-        CMPB    $1AA3
+        LDAB    >PurgeLearnCount,Z
+        CMPB    >PurgeLearnTrimCount
         LBCS    L3E7AC
-        CLR     $07EC,Z
-        LDX     #Tab2D_1ABD
+        CLR     >PurgeLearnCount,Z
+        LDX     #PurgeLearnUpPart
         JSR     Lookup2D
-        LDAA    $07EA,Z
+        LDAA    >PurgeVaporPart,Z
         BEQ     L3E6D4
         ABA
         BCC     L3E6D4
         LDAA    #$FF
         BRA     L3E6D4
 L3E6A6:
-        LDAB    $1AA1
+        LDAB    >PurgeLearnTrimBandDown
         NEGB
         CBA
         LBCC    L3E7AC
-        LDAB    $07EC,Z
-        CMPB    $1AA3
+        LDAB    >PurgeLearnCount,Z
+        CMPB    >PurgeLearnTrimCount
         LBCS    L3E7AC
-        CLR     $07EC,Z
-        LDX     #Tab2D_1AC9
+        CLR     >PurgeLearnCount,Z
+        LDX     #PurgeLearnDownPart
         JSR     Lookup2D
-        LDAA    $07EA,Z
+        LDAA    >PurgeVaporPart,Z
         SBA
         BCC     L3E6D4
         LDAA    #$01
 L3E6D4:
         LDAB    >PurgeRamp,Z
-        CMPB    $1A9D
+        CMPB    >PurgeLearnRampFull
         BCC     L3E6EC
         TSTA
         LBEQ    L3E7B4
-        CMPA    $1A9F
+        CMPA    >PurgeVaporPartMax
         LBHI    L3E7B4
 L3E6EC:
-        STAA    $07EA,Z
+        STAA    >PurgeVaporPart,Z
         JMP     L3E7AC
 L3E6F4:
         LDAA    >ShortTermTrim1,Z
         BMI     L3E722
-        CMPA    $1AA0
+        CMPA    >PurgeLearnTrimBandUp
         LBLS    L3E750
-        LDAB    $07EC,Z
-        CMPB    $1AA4
+        LDAB    >PurgeLearnCount,Z
+        CMPB    >PurgeLearnTrimCount2
         BCS     L3E750
-        CLR     $07EC,Z
-        LDX     #Tab2D_1AA5
+        CLR     >PurgeLearnCount,Z
+        LDX     #PurgeLearnUpClosed
         JSR     Lookup2D
-        ADDA    $07EB,Z
+        ADDA    >PurgeVaporClosed,Z
         BCC     L3E74C
         LDAA    #$FF
         BRA     L3E74C
 L3E722:
-        LDAB    $1AA1
+        LDAB    >PurgeLearnTrimBandDown
         NEGB
         CBA
         BCC     L3E750
-        LDAB    $07EC,Z
-        CMPB    $1AA4
+        LDAB    >PurgeLearnCount,Z
+        CMPB    >PurgeLearnTrimCount2
         BCS     L3E750
-        CLR     $07EC,Z
-        LDX     #Tab2D_1AB1
+        CLR     >PurgeLearnCount,Z
+        LDX     #PurgeLearnDownClosed
         JSR     Lookup2D
-        LDAA    $07EB,Z
+        LDAA    >PurgeVaporClosed,Z
         SBA
         BCC     L3E74C
         CLRA
 L3E74C:
-        STAA    $07EB,Z
+        STAA    >PurgeVaporClosed,Z
 L3E750:
         JSR     PurgeFuelCalc
         STAA    <Scratch0,Z
-        LDAA    $07EB,Z
+        LDAA    >PurgeVaporClosed,Z
         MUL
         LSRD
         LSRD
@@ -15650,17 +15650,17 @@ L3E76E:
         CLRB
 L3E770:
         LDAA    >PurgeRamp,Z
-        CMPA    $1A9D
+        CMPA    >PurgeLearnRampFull
         BCC     L3E782
-        CMPB    $1A9E
+        CMPB    >PurgeVaporMax
         LBHI    L3E7B4
 L3E782:
-        STAB    $07E8,Z
-        LDAB    $1A8E
+        STAB    >PurgeVaporEstimate,Z
+        LDAB    >PurgeVaporBias
         SXT
         TDE
         CLRA
-        LDAB    $07E8,Z
+        LDAB    >PurgeVaporEstimate,Z
         ADE
         BPL     L3E79C
         CLRE
@@ -15671,7 +15671,7 @@ L3E79C:
         LDE     #$00FF
 L3E7A6:
         TED
-        STAB    $07E9,Z
+        STAB    >PurgeVaporEstimate2,Z
 L3E7AC:
         LBRA    L3E910
 L3E7B0:
@@ -15680,12 +15680,12 @@ L3E7B4:
         BSET    >PurgeLearnFlags,Z,#$02                  ; bit 1: purge vapour learning ended (PurgeVaporLearn)
         BCLR    >PurgeLearnFlags,Z,#$DD                  ; bit 7: purge vapour learning running (PurgeVaporLearn); bit 6: purge vapour learning step state; O2LearnEnable reads it; bit 4: purge vapour settle time reached (PurgeVaporSettleTime); bit 3: purge vapour learning step state (PurgeVaporLearn); bit 2: trim at or below the learning limit (PurgeVaporLearn); bit 0: bank 1 learning rate step (PurgeVaporLearn)
         LDD     #$FFFF
-        STD     $0448,Z
-        CLR     $07E8,Z
-        CLR     $07E9,Z
-        CLR     $07EA,Z
-        CLR     $07EB,Z
-        CLR     $0444,Z
+        STD     >PurgeVapor448,Z
+        CLR     >PurgeVaporEstimate,Z
+        CLR     >PurgeVaporEstimate2,Z
+        CLR     >PurgeVaporPart,Z
+        CLR     >PurgeVaporClosed,Z
+        CLR     >PurgeLearnRate,Z
 L3E7D8:
         CLRB
         TBXK
@@ -15705,7 +15705,7 @@ L3E800:
         BRCLR   >PurgeLearnFlags,Z,#$10,L3E83C           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         BRSET   >PurgeLearnFlags,Z,#$20,L3E83C           ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
         LDAA    >VehicleSpeed,Z
-        CMPA    $1B2A
+        CMPA    >PurgeLearnSpeedMax
         BCC     L3E83C
         LBRA    L3E8E2
 L3E81A:
@@ -15715,7 +15715,7 @@ L3E81A:
         BRCLR   >PurgeLearnFlags,Z,#$10,L3E83C           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         BRSET   >PurgeLearnFlags,Z,#$20,L3E83C           ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
         LDAA    >VehicleSpeed,Z
-        CMPA    $1B2B
+        CMPA    >PurgeLearnSpeedMin
         LBCS    L3E8E2
 L3E83C:
         BRSET   >O2Bank1Flags,Z,#$20,L3E8E2              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
@@ -15754,12 +15754,12 @@ L3E890:
         BNE     L3E8C4
         BRSET   >FaultSet0D,Z,#$10,L3E8C4
         LDAA    >ShortTermTrim1,Z
-        CMPA    $1B39
+        CMPA    >PurgeLearnTrimMin
         BGT     L3E8B6
         BSET    >O2ResetFlags2,Z,#$08                    ; bit 3: bank 1 trim at or below PurgeLearnTrimMin during vapour learning (PurgeVaporLearn)
 L3E8B6:
         LDAA    >ShortTermTrim2,Z
-        CMPA    $1B39
+        CMPA    >PurgeLearnTrimMin
         BGT     L3E8C4
         BSET    >O2ResetFlags2,Z,#$04                    ; bit 2: bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)
 L3E8C4:
@@ -15791,7 +15791,7 @@ L3E910:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeFuelCalc ($3E912)
-; Called from: Sub_3E340 (2 calls)
+; Called from: PurgeVaporLearn (2 calls)
 ;---------------------------------------------------------------------------------------------------
 PurgeFuelCalc:
         LDAA    >EngineRpm,Z
@@ -15808,7 +15808,7 @@ PurgeFuelCalc:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeFlowMeasure ($3E938)
-; Called from: Sub_3D800
+; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeFlowMeasure:
         PSHM    D,E
@@ -15838,121 +15838,121 @@ L3E96A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3E972 ($3E972)
-; Called from: Sub_3DF80
+; PurgeFlowAdaptation ($3E972)
+; Called from: PurgeFlowControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3E972:
+PurgeFlowAdaptation:
         TST     >PurgeStartRamp,Z
         LBNE    L3EACC
         BRSET   <MonStatusPurge,Z,#$04,L3E9B6            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         BRSET   >ThrottleState,Z,#$80,L3E9D2             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRSET   $0469,Z,#$10,L3E99E
-        TST     $046B,Z
+        BRSET   >PurgeCtlFlags,Z,#$10,L3E99E             ; bit 4: purge adaptation: large rich error (PurgeAdaptRichLarge)
+        TST     >PurgeAdaptHoldTimer,Z
         BEQ     L3E99E
         BRCLR   >MainLoopPhaseMask,Z,#$02,L3EACC         ; bit 1: one pass in 4 (about 48 ms)
-        DEC     $046B,Z
+        DEC     >PurgeAdaptHoldTimer,Z
         LBRA    L3EACC
 L3E99E:
-        BCLR    $0469,Z,#$10
-        LDAA    $0819,Z
+        BCLR    >PurgeCtlFlags,Z,#$10                    ; bit 4: purge adaptation: large rich error (PurgeAdaptRichLarge)
+        LDAA    >PurgeTrimLatched,Z
         BPL     L3E9F8
-        CMPA    $19B7
+        CMPA    >PurgeAdaptRichSmall
         BCC     L3E9F8
-        CMPA    $19B8
+        CMPA    >PurgeAdaptRichLarge
         LBCS    L3EA42
 L3E9B6:
-        BSET    $0469,Z,#$10
-        BCLR    $0469,Z,#$60
-        LDAA    $19B9
-        STAA    $046B,Z
-        CLR     $046D,Z
-        CLR     $046C,Z
+        BSET    >PurgeCtlFlags,Z,#$10                    ; bit 4: purge adaptation: large rich error (PurgeAdaptRichLarge)
+        BCLR    >PurgeCtlFlags,Z,#$60                    ; bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation); bit 5: purge adaptation state counted (PurgeFlowAdaptation)
+        LDAA    >PurgeAdaptHold
+        STAA    >PurgeAdaptHoldTimer,Z
+        CLR     >PurgeAdaptStateCount,Z
+        CLR     >PurgeAdaptCounter,Z
         LBRA    L3EACC
 L3E9D2:
-        LDAA    $19B9
-        STAA    $046B,Z
-        LDAA    $0430,Z
-        CMPA    $19C1
+        LDAA    >PurgeAdaptHold
+        STAA    >PurgeAdaptHoldTimer,Z
+        LDAA    >PurgeRampStep,Z
+        CMPA    >PurgeAdaptRampStepMax
         BCC     L3EA0C
-        CMPA    $19C2
+        CMPA    >PurgeAdaptRampStepMin
         LBCC    L3EACC
         LDAA    <PurgeCellRichFlags,Z
         ANDA    #$18
         LBNE    L3EA54
         LBRA    L3EACC
 L3E9F8:
-        TST     $046B,Z
+        TST     >PurgeAdaptHoldTimer,Z
         LBNE    L3EA88
         BRCLR   >PurgeFlags,Z,#$08,L3EA0C                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
-        BRSET   $0469,Z,#$20,L3EA88
+        BRSET   >PurgeCtlFlags,Z,#$20,L3EA88             ; bit 5: purge adaptation state counted (PurgeFlowAdaptation)
 L3EA0C:
-        LDAA    $046C,Z
-        CMPA    $19BB
+        LDAA    >PurgeAdaptCounter,Z
+        CMPA    >PurgeAdaptUpTime
         BCC     L3EA22
         BRCLR   >MainLoopPhaseMask,Z,#$02,L3EA88         ; bit 1: one pass in 4 (about 48 ms)
-        INC     $046C,Z
+        INC     >PurgeAdaptCounter,Z
         BRA     L3EA88
 L3EA22:
-        CLR     $046C,Z
-        LDAA    $046A,Z
-        ADDA    $19BA
+        CLR     >PurgeAdaptCounter,Z
+        LDAA    >PurgeFlowAdapt,Z
+        ADDA    >PurgeFlowAdaptStep
         BVC     L3EA32
         LDAA    #$7F
 L3EA32:
-        CMPA    $19BC
+        CMPA    >PurgeFlowAdaptMax
         BLE     L3EA3C
-        LDAA    $19BC
+        LDAA    >PurgeFlowAdaptMax
 L3EA3C:
-        STAA    $046A,Z
+        STAA    >PurgeFlowAdapt,Z
         BRA     L3EA88
 L3EA42:
-        TST     $046B,Z
+        TST     >PurgeAdaptHoldTimer,Z
         BNE     L3EA88
         BRSET   >PurgeFlags,Z,#$08,L3EA54                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
-        BRSET   $0469,Z,#$20,L3EA88
+        BRSET   >PurgeCtlFlags,Z,#$20,L3EA88             ; bit 5: purge adaptation state counted (PurgeFlowAdaptation)
 L3EA54:
-        LDAA    $046C,Z
-        CMPA    $19BE
+        LDAA    >PurgeAdaptCounter,Z
+        CMPA    >PurgeAdaptDownTime
         BCC     L3EA6A
         BRCLR   >MainLoopPhaseMask,Z,#$02,L3EA88         ; bit 1: one pass in 4 (about 48 ms)
-        INC     $046C,Z
+        INC     >PurgeAdaptCounter,Z
         BRA     L3EA88
 L3EA6A:
-        CLR     $046C,Z
-        LDAA    $046A,Z
-        SUBA    $19BD
+        CLR     >PurgeAdaptCounter,Z
+        LDAA    >PurgeFlowAdapt,Z
+        SUBA    >PurgeFlowAdaptStepDown
         BVC     L3EA7A
         LDAA    #$80
 L3EA7A:
-        CMPA    $19BF
+        CMPA    >PurgeFlowAdaptMin
         BGE     L3EA84
-        LDAA    $19BF
+        LDAA    >PurgeFlowAdaptMin
 L3EA84:
-        STAA    $046A,Z
+        STAA    >PurgeFlowAdapt,Z
 L3EA88:
         BRSET   >PurgeFlags,Z,#$08,L3EA96                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
-        BRSET   $0469,Z,#$40,L3EAB4
+        BRSET   >PurgeCtlFlags,Z,#$40,L3EAB4             ; bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation)
         BRA     L3EA9C
 L3EA96:
-        BRCLR   $0469,Z,#$40,L3EAB4
+        BRCLR   >PurgeCtlFlags,Z,#$40,L3EAB4             ; bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation)
 L3EA9C:
-        LDAA    $046D,Z
-        CMPA    $19C0
+        LDAA    >PurgeAdaptStateCount,Z
+        CMPA    >PurgeAdaptStateTime
         BCC     L3EAAE
         INCA
-        STAA    $046D,Z
+        STAA    >PurgeAdaptStateCount,Z
         BRA     L3EACC
 L3EAAE:
-        BSET    $0469,Z,#$20
+        BSET    >PurgeCtlFlags,Z,#$20                    ; bit 5: purge adaptation state counted (PurgeFlowAdaptation)
         BRA     L3EACC
 L3EAB4:
-        CLR     $046D,Z
-        BCLR    $0469,Z,#$20
+        CLR     >PurgeAdaptStateCount,Z
+        BCLR    >PurgeCtlFlags,Z,#$20                    ; bit 5: purge adaptation state counted (PurgeFlowAdaptation)
         BRSET   >PurgeFlags,Z,#$08,L3EAC8                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
-        BCLR    $0469,Z,#$40
+        BCLR    >PurgeCtlFlags,Z,#$40                    ; bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation)
         BRA     L3EACC
 L3EAC8:
-        BSET    $0469,Z,#$40
+        BSET    >PurgeCtlFlags,Z,#$40                    ; bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation)
 L3EACC:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -16177,7 +16177,7 @@ SpareHook3F000:
 
 ;---------------------------------------------------------------------------------------------------
 ; SciSecurityReceive ($3F800)
-; Called from: BusDataRequest
+; Called from: SciRequestReceive
 ;---------------------------------------------------------------------------------------------------
 SciSecurityReceive:
         LDAA    >DiagFlags,Z

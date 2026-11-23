@@ -343,7 +343,7 @@
  "0346": "IacAcClutchTimer",
  "0347": "DashpotTimer2",
  "0348": "IacGearTime",
- "0349": "IacGearTime2",
+ "0349": "IacGearDelay",
  "034A": "IacGearDuration",
  "034B": "IdleRampBlockTimer",
  "034C": "IdleRampHold",

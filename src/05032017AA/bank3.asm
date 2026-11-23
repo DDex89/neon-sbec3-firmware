@@ -5876,7 +5876,7 @@ L3513C:
 L35140:
         JMP     L3577A
 L35144:
-        JMP     Sub_36378
+        JMP     OutputTestOc
 L35148:
         JMP     L3655E
 L3514C:
@@ -5964,7 +5964,7 @@ L351EC:
 L351F0:
         JMP     L3577A
 L351F4:
-        JMP     OutputTestOc
+        JMP     L3648E
 L351F8:
         JMP     Sub_3632E
 L351FC:
@@ -6008,10 +6008,10 @@ L35224:
         dc.b    $01,$03,$00,$FF,$FF,$04,$05,$00,$01,$02,$03,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; ActuatorTestMain ($35334)
+; SciRequestReceive ($35334)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-ActuatorTestMain:
+SciRequestReceive:
         BRSET   >DiagBusFlags,Z,#$40,L35440              ; bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
         LDE     >SCCR0,Z
         BRSET   >DiagFlags,Z,#$80,L35378                 ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
@@ -6360,14 +6360,14 @@ L3569C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; LdpPurgeTest ($3569E)
+; BusDataRequest ($3569E)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-LdpPurgeTest:
+BusDataRequest:
         LDAA    >DiagFlags,Z
         BITA    #$30
         BNE     L356CE
-        LDE     $092D,Z
+        LDE     >BusData92D,Z
         ANDE    #$00FF
         BEQ     L356CE
         SUBE    #$0010
@@ -6548,9 +6548,9 @@ L35876:
         LDAB    >O2DownBank2Raw,Z
 L3587A:
         LDAA    #$FF
-        CMPB    $581F
+        CMPB    >BusDataO2High
         BHI     L3588A
-        CMPB    $5820
+        CMPB    >BusDataO2Mid
         BHI     L3588C
         ANDA    #$A0
 L3588A:
@@ -6570,7 +6570,7 @@ L35898:
         BCC     L358A2
         CLRA
 L358A2:
-        LDAB    $57AB
+        LDAB    >BusDataThrottleScale
         STAA    <Scratch0,Z
         MUL
         ADCA    <Scratch0,Z
@@ -6587,7 +6587,7 @@ L358B8:
 
 ;---------------------------------------------------------------------------------------------------
 ; SciSendByte ($358BE)
-; Called from: LdpPurgeTest, SciSendByte, DiagRamSession1, DiagRamSession2, DiagPciCommand, Sub_36A34, RunModeSwitch (27 calls)
+; Called from: BusDataRequest, SciSendByte, DiagRamSession1, DiagRamSession2, DiagPciCommand, Sub_36A34, RunModeSwitch (27 calls)
 ;---------------------------------------------------------------------------------------------------
 SciSendByte:
         BRCLR   >SCSR,Z,#$01,SciSendByte                 ; bit 0: TDRE: SCI transmit data register empty
@@ -7158,10 +7158,10 @@ L35ED2:
         JMP     SciSendByte
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_35EDA ($35EDA)
+; ActuatorTestMain ($35EDA)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_35EDA:
+ActuatorTestMain:
         LDAA    >RefPeriod,Z
         CMPA    #$50
         BLS     L35F18
@@ -7547,7 +7547,7 @@ L36274:
         JSR     FanTestToggle2
         JSR     Sub_362FE
         JSR     Sub_36358
-        JSR     Sub_36378
+        JSR     OutputTestOc
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -7647,10 +7647,10 @@ L36376:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_36378 ($36378)
+; OutputTestOc ($36378)
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_36378:
+OutputTestOc:
         BRSET   >FaultSet00,Z,#$04,L36396
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
         BSET    $0934,Z,#$01
@@ -7745,7 +7745,7 @@ L36462:
         JSR     OutputTestOcFire
 L3648C:
         RTS
-OutputTestOc:
+L3648E:
         BRSET   >Options032B,#$20,L364B8                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         BRCLR   >Options032B,#$40,L364B8                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         TZX
@@ -7762,7 +7762,7 @@ L364B8:
 
 ;---------------------------------------------------------------------------------------------------
 ; OutputTestOcFire ($364BA)
-; Called from: Sub_36378 (6 calls)
+; Called from: OutputTestOc (6 calls)
 ;---------------------------------------------------------------------------------------------------
 OutputTestOcFire:
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
@@ -8157,7 +8157,7 @@ L36894:
 
 ;---------------------------------------------------------------------------------------------------
 ; OcOutputsReset ($36898)
-; Called from: CalcEngineRpm, Sub_35EDA, OutputTestOcFire (5 calls)
+; Called from: CalcEngineRpm, ActuatorTestMain, OutputTestOcFire (5 calls)
 ;---------------------------------------------------------------------------------------------------
 OcOutputsReset:
         BRSET   >EngineStateFlags,Z,#$80,L368E0          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -8723,10 +8723,10 @@ L36BF8:
         dc.b    $00,$00,$00,$00,$4B,$67,$49,$91,$49,$9B,$46,$A3,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_38068 ($38068)
+; QspiOutputStatus ($38068)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_38068:
+QspiOutputStatus:
         PSHM    CCR
         ORP     #$00E0
         BRSET   >SystemFlags945,Z,#$80,L3821C            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
@@ -8898,7 +8898,7 @@ L38252:
 
 ;---------------------------------------------------------------------------------------------------
 ; QspiCommandInit ($38278)
-; Called from: Reset, Sub_38068, QspiRecover, EepromPowerDownWrite, EepromReadByte, EepromReadStartup, EepromSkimRead, EepromStatusRead and 1 more routines (11 calls)
+; Called from: Reset, QspiOutputStatus, QspiRecover, EepromPowerDownWrite, EepromReadByte, EepromReadStartup, EepromSkimRead, EepromStatusRead and 1 more routines (11 calls)
 ;---------------------------------------------------------------------------------------------------
 QspiCommandInit:
         PSHM    D,E,X,Y,K
@@ -8918,7 +8918,7 @@ L3828C:
 
 ;---------------------------------------------------------------------------------------------------
 ; QspiWaitIdle ($3829A)
-; Called from: Isr_GPT_IC1, Isr_GPT_PAI, Reset, CheckPowerDown, O2HeaterMonitor, O2HeaterTest, QspiService, Sub_38068 and 9 more routines (22 calls)
+; Called from: Isr_GPT_IC1, Isr_GPT_PAI, Reset, CheckPowerDown, O2HeaterMonitor, O2HeaterTest, QspiService, QspiOutputStatus and 9 more routines (22 calls)
 ;---------------------------------------------------------------------------------------------------
 QspiWaitIdle:
         BCLR    >SPSR,Z,#$80                             ; bit 7: SPIF: QSPI finished flag
@@ -9058,7 +9058,7 @@ EepromPowerDownWrite:
         BEQ     L383EE
         JSR     KickWatchdogsLong
         LDE     #$2710
-        JSR     DelayLoop
+        JSR     Sub_0C4A4
         LDD     >EepromAddr,Z
         JSR     EepromReadByte
         BRSET   >SystemFlags945,Z,#$20,L383FE            ; bit 5: EEPROM transfer on the QSPI in progress (EepromReadByte, EepromPowerDownWrite)
@@ -16842,7 +16842,7 @@ Sub_3F000:
 
 ;---------------------------------------------------------------------------------------------------
 ; SciSecurityReceive ($3F800)
-; Called from: ActuatorTestMain
+; Called from: SciRequestReceive
 ;---------------------------------------------------------------------------------------------------
 SciSecurityReceive:
         LDAA    >DiagFlags,Z

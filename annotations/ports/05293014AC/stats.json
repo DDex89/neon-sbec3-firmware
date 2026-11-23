@@ -1,13 +1,14 @@
 {
  "sha256": "504d2b0cd16be82dc8590188b55885e74e5107e45736d8d2d40fead4c373b487",
- "routines_matched": 194,
+ "routines_matched": 320,
  "routines_ref": 657,
- "instructions_mapped": 8103,
+ "instructions_mapped": 16963,
  "instructions_ref": 43370,
- "labels": "170 of 680",
- "ram": "521 of 1871",
- "tables": "134 of 410",
- "scalars": "253 of 1451",
- "ram_identity": 42,
- "ram_moved": 535
+ "via": "05007038",
+ "labels": "325 of 680",
+ "ram": "949 of 1871",
+ "tables": "241 of 410",
+ "scalars": "701 of 1451",
+ "ram_identity": 46,
+ "ram_moved": 867
 }

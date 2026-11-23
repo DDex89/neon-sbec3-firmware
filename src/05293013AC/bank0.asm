@@ -276,29 +276,73 @@
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $07,$07,$01,$04,$01,$07,$10,$07,$01,$08,$04,$00,$00,$06,$76,$0B
-        dc.b    $55,$AA,$00,$00,$03,$5D,$30,$5C,$08,$02,$01,$85,$03
+        dc.b    $55,$AA,$00,$00
+ThrottleClosedResetMargin:
+        dc.b    $03                                      ; At reset: closed-throttle value plus this margin is compared with ThrottleClosedDefault
+        dc.b    $5D,$30
+ThrottleClosedDefault:
+        dc.b    $5C                                      ; Closed-throttle value at reset and its upper bound
+        dc.b    $08,$02,$01,$85,$03
 Options032A:
         dc.b    $02                                      ; Option byte; bit tests in the reference-event and spark code (bits 7-6: spark cap and ignition variants)
 Options0331:
         dc.b    $A2                                      ; Option byte (global configuration); bits used are listed with their names where known
-        dc.b    $B0,$00,$09,$00
+Options0330:
+        dc.b    $B0                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $00
+Options0334:
+        dc.b    $09                                      ; Option byte (bit 4: output-compare set-up at reset and in the PIT code)
+        dc.b    $00
 Options0337:
         dc.b    $05                                      ; Option byte (global configuration); bits used are listed with their names where known
-        dc.b    $32
-Options0339:
+Options032C:
+        dc.b    $32                                      ; Option byte (global configuration); bits used are listed with their names where known
+Options032E:
         dc.b    $28                                      ; Option byte (global configuration); bits used are listed with their names where known
 Options033A:
         dc.b    $B2                                      ; Option byte (global configuration); bits used are listed with their names where known
-        dc.b    $60,$00,$00,$AA,$BF,$80,$9F,$00,$BE,$3E,$B8,$00,$7E,$38,$00,$00
-        dc.b    $07,$E5,$03,$00,$00,$A8,$F1,$80,$00,$00,$01,$80,$00,$E0,$01,$80
-        dc.b    $00,$00,$00,$0B,$C0,$44
+        dc.b    $60,$00,$00,$AA
+Options033F:
+        dc.b    $BF                                      ; Option byte copied to Options033FCopy at reset; bits 7-4 enable monitor branches in ObdReadiness and O2HeaterMonitor
+        dc.b    $80
+Options0340:
+        dc.b    $9F                                      ; Option byte (global configuration); bits used are listed with their names where known
+        dc.b    $00
+ObdPidSupport1:
+        dc.b    $BE                                      ; OBD-II mode $01: first byte of the supported-PID bit map for PIDs $01-$20 (sent for PID $00)
+ObdPidSupport2:
+        dc.b    $3E                                      ; Second byte of the supported-PID bit map $01-$20
+ObdPidSupport3:
+        dc.b    $B8                                      ; Third byte of the supported-PID bit map $01-$20
+ObdPidSupport4:
+        dc.b    $00                                      ; Fourth byte of the supported-PID bit map $01-$20 (bit 0: PIDs $21-$40 follow)
+ObdPidSupport5:
+        dc.b    $7E                                      ; First byte of the supported-PID bit map for PIDs $21-$40
+ObdPidSupport6:
+        dc.b    $38                                      ; Second byte of the supported-PID bit map $21-$40
+ObdPidSupport7:
+        dc.b    $00                                      ; Third byte of the supported-PID bit map $21-$40
+ObdPidSupport8:
+        dc.b    $00                                      ; Fourth byte of the supported-PID bit map $21-$40
+ObdMonitorByte:
+        dc.b    $07                                      ; OBD-II monitor status: value sent in the second byte (ObdRespByte2)
+ObdMonitorMask:
+        dc.b    $E5                                      ; OBD-II monitor status: mask applied to the monitor flags ReadinessIncomplete (and sent as the supported monitors)
+ObdO2SensorsPresent:
+        dc.b    $03                                      ; OBD-II mode $01 PID $13: oxygen sensors present ($03 = bank 1 sensors 1 and 2)
+        dc.b    $00,$00,$A8,$F1,$80,$00,$00,$01,$80,$00,$E0,$01,$80,$00,$00,$00
+BusMsgAcData:
+        dc.b    $0B,$C0                                  ; Data word sent in the bus message $AC (CcdTxACAcData; bit 3 set with Options032E bit 7)
+        dc.b    $44
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_034D ($034D): 2D table, 4 points, unsigned
+; BaroUpdateMapOffset ($034D): 2D table, 4 points, unsigned
+; Barometric pressure update while running: offset added to MAP against engine rpm (throttle above $04C1)
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $116FC
 ;---------------------------------------------------------------------------------------------------
-Tab2D_034D:
+BaroUpdateMapOffset:
         dc.b    4,$80                                    ; points, flags
         dc.b    63,1, 94,2, 125,4, 188,10                ; x, y
 
@@ -322,7 +366,14 @@ MtvRpmRateMax:
         dc.b    $00,$00                                  ; Manifold tune valve: upper limit of the rpm change per period (word)
 MtvCoolantMin:
         dc.b    $6E                                      ; Manifold tune valve: coolant at or above this value (at WOT) for the rpm switching
-        dc.b    $00,$00,$80,$80,$80,$B9,$25,$25,$E5,$07,$5B,$34,$E5,$A4,$1F
+        dc.b    $00,$00
+SpeedCtlPresentCount:
+        dc.b    $80                                      ; Equipment detection: counts (SpeedCtlPresentCounter) of the speed control on switch before speed control is marked fitted (EquipmentFlags bit 6)
+AcPresentCount:
+        dc.b    $80                                      ; Equipment detection (EquipmentDetect): counts (AcPresentCounter) of a valid A/C sensor or request before A/C is marked fitted (EquipmentFlags bit 7)
+PspPresentCount:
+        dc.b    $80                                      ; Equipment detection: counts (PspPresentCounter) of the power steering switch input low with the engine running before it is marked fitted (EquipmentFlags bit 2)
+        dc.b    $B9,$25,$25,$E5,$07,$5B,$34,$E5,$A4,$1F
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0387 ($0387): 2D table, 5 points, unsigned
@@ -373,13 +424,34 @@ FanAcSensorStage3:
         dc.b    $7F                                      ; Fan with A/C: A/C sensor at or above this value sets stage bit 3
 FanAcSensorStage2:
         dc.b    $75                                      ; Fan with A/C: A/C sensor above this value sets stage bit 2
-        dc.b    $E3,$DD,$EE,$E9,$6E,$6E,$6E,$6E,$6E,$6E,$6E,$6E,$3D,$3C,$3F,$3D
-        dc.b    $14,$0F,$E3,$E2,$E0,$DF,$DE,$DD,$F2,$F0,$E3,$E2,$CD,$CB,$64,$5C
-        dc.b    $38,$30,$64,$5C,$18,$10,$4D
+        dc.b    $E3,$DD,$EE,$E9,$6E,$6E,$6E,$6E,$6E,$6E,$6E,$6E
+FanBusTempStage1:
+        dc.b    $3D                                      ; Fan: bus temperature at or above this value sets stage bit 1
+FanBusTempStage0:
+        dc.b    $3C                                      ; Fan: bus temperature above this value sets stage bit 0
+FanBusTempStage3:
+        dc.b    $3F                                      ; Fan: bus temperature at or above this value sets stage bit 3
+FanBusTempStage2:
+        dc.b    $3D                                      ; Fan: bus temperature above this value sets stage bit 2
+FanStageDelay:
+        dc.b    $14                                      ; Fan stage change: delay (FanStageTimer) before the stage output changes
+FanStageDelay2:
+        dc.b    $0F                                      ; Fan stage change: shorter delay
+        dc.b    $E3,$E2,$E0,$DF,$DE,$DD,$F2,$F0,$E3,$E2,$CD,$CB,$64,$5C,$38,$30
+        dc.b    $64,$5C,$18,$10,$4D
 IacHotCoolantMin:
         dc.b    $F1                                      ; Coolant above which the hot-engine IAC handling of IdleTargetControl applies
-        dc.b    $41,$38,$6D,$05,$00,$28,$38,$A6,$A0,$FE,$28,$06,$0A,$80,$CA,$7F
-        dc.b    $36
+FanIdleBusTempMax:
+        dc.b    $41                                      ; Fan at idle: bus temperature below this value with A/C requested
+        dc.b    $38
+FanIdleRpmMax:
+        dc.b    $6D                                      ; Fan at idle (FanIdleState): engine rpm below this value
+        dc.b    $05
+FanIdleSpeedMax:
+        dc.b    $00                                      ; Fan idle state: vehicle speed at or below this value to enter the state
+FanIdleSpeedMaxSet:
+        dc.b    $28                                      ; Fan idle state: vehicle speed limit while the state is set
+        dc.b    $38,$A6,$A0,$FE,$28,$06,$0A,$80,$CA,$7F,$36
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_03F4 ($03F4): 2D table, 5 points, unsigned
@@ -410,7 +482,18 @@ IacStartTimeMin:
         dc.b    $02                                      ; Time since start before the event logic of IdleTargetControl runs
 IacEventTimerInit:
         dc.b    $0C                                      ; Value of the IAC event timer IacEventTimer when the gear-change IAC starts
-        dc.b    $1F,$F4,$00,$00,$00,$00,$74,$07,$FF,$04,$04,$06,$08,$28
+        dc.b    $1F,$F4,$00,$00
+AcPressureHighCut:
+        dc.b    $00                                      ; A/C clutch (AcClutchControl): A/C sensor at or above this value cuts the clutch (high pressure); also used by the IAC A/C logic
+        dc.b    $00,$74
+AcLaunchCutThrottle:
+        dc.b    $07                                      ; A/C cut-out 2: throttle at or above this value
+AcLaunchCutRpmMax:
+        dc.b    $FF                                      ; A/C cut-out 2: below this engine rpm
+        dc.b    $04,$04,$06
+AcLaunchCutSpeedMax:
+        dc.b    $08                                      ; A/C cut-out 2: below this vehicle speed
+        dc.b    $28
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0429 ($0429): 2D table, 1 points, unsigned
@@ -462,13 +545,13 @@ Tab2D_0461:
         dc.b    $76,$C4,$BC,$00,$00,$00,$00,$02,$59,$51,$26,$29,$6F,$67
 
 ;---------------------------------------------------------------------------------------------------
-; DecelMapScale ($0495): 2D table, 3 points, unsigned
-; Corrected MAP to row position of DecelMapRpmLimit
+; WotMapScale ($0495): 2D table, 3 points, unsigned
+; MAP to row position of the WOT spark and fuel tables
 ; x: kpa, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D; #$FF; Temp4F0
 ; Read at $06948, $07DFE, $1420C
 ;---------------------------------------------------------------------------------------------------
-DecelMapScale:
+WotMapScale:
         dc.b    3,$80                                    ; points, flags
         dc.b    128,0, 240,224, 255,255                  ; x, y
 
@@ -562,11 +645,13 @@ AfterStartSparkMapScale:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_04F5 ($04F5): 2D table, 5 points, unsigned
-; Inputs: IacBase
+; IacFuelScale ($04F5): 2D table, 5 points, unsigned
+; Extra idle air (IacTargetCmd minus IacPosition) to row position of IacFuelCoolant
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: Scratch0
 ; Read at $06EE4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_04F5:
+IacFuelScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 9,64, 23,128, 37,192, 41,255        ; x, y
 
@@ -584,34 +669,38 @@ MisfireCoolantLoadScale:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_050D ($050D): 2D table, 5 points, unsigned
+; ExpectedMapThrottleScale ($050D): 2D table, 5 points, unsigned
+; Vacuum-leak check (VacuumLeakMonitor, P1299): throttle to row position of ExpectedMap
+; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $1CE7C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_050D:
+ExpectedMapThrottleScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    10,0, 61,4, 77,5, 0,0, 0,0               ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireWeightLoadScale ($0519): 2D table, 3 points, unsigned
-; Load to row position of MisfireWeight
+; MisfireLoadScale ($0519): 2D table, 3 points, unsigned
+; Misfire monitor: load MisfireLoad to row position of the misfire thresholds
 ; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: MisfireLoad
 ; Read at $1C190, $1C23C, $1CA64, $1CBE4
 ;---------------------------------------------------------------------------------------------------
-MisfireWeightLoadScale:
+MisfireLoadScale:
         dc.b    3,$80                                    ; points, flags
         dc.b    65,0, 162,190, 227,255                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0525 ($0525): 2D table, 5 points, unsigned
-; Inputs: $032C,Z
+; IdleBattTempScale ($0525): 2D table, 5 points, unsigned
+; Battery temperature to row position of IdleBattTempTarget
+; x: tempc, y: pos256 (units: docs/en/calibration.md)
+; Inputs: BatteryTemp
 ; Read at $0C5EA
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0525:
+IdleBattTempScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    99,0, 110,64, 121,128, 132,192, 143,255  ; x, y
 
@@ -649,7 +738,8 @@ CrankCoolantFloor:
         dc.b    $63                                      ; Cranking fuel: CrankCoolant is raised to at least this value while the throttle is not closed
 CrankClearFloodThrottle:
         dc.b    $85                                      ; Cranking: throttle above this value clears the cranking pulse (clear flood)
-        dc.b    $58
+HotRestartCoolantMin:
+        dc.b    $58                                      ; Coolant at or above which EngineStateFlags bit 4 (warm engine for the per-event fuel) sets
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0554 ($0554): 2D table, 3 points, unsigned
@@ -712,9 +802,9 @@ Tab2D_0580:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankRpmDecayWeight ($058C): 2D table, 1 points, unsigned
-; Weight of the rpm reduction against the cranking coolant
-; x: tempc, y: raw (units: docs/en/calibration.md)
-; Inputs: ScratchC
+; Weight of the rpm reduction against the cranking coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $083AC
 ;---------------------------------------------------------------------------------------------------
 CrankRpmDecayWeight:
@@ -754,8 +844,8 @@ FuelEventColdOffset:
         dc.b    $70                                      ; Per-event fuel (FuelEventCalc): value minus 110 gives the cold correction step
 FuelEventColdOffset2:
         dc.b    $77                                      ; Per-event fuel: second value minus 110 used below FuelEventCoolantMax
-FuelEventOffsetInAlt:
-        dc.b    $42                                      ; As FuelEventOffsetIn with calibration bit Options0338 bit 2 set
+FuelEventOffsetIn:
+        dc.b    $42                                      ; Input value of FuelEventOffset (and of the cranking event timing); bit Options0338 bit 2 selects FuelEventOffsetInAlt
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankEthanolCoolant ($05AD): 3D table, 5 rows x 5 columns, unsigned
@@ -797,7 +887,7 @@ CrankBasePulse:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_062B ($062B): 2D table, 2 points, unsigned
-; Inputs: ScratchC
+; Inputs: Baro
 ; Read at $0711A, $14A0A
 ;---------------------------------------------------------------------------------------------------
 Tab2D_062B:
@@ -808,7 +898,7 @@ Tab2D_062B:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0637 ($0637): 2D table, 2 points, unsigned
-; Inputs: ScratchC
+; Inputs: Baro
 ; Read at $07070
 ;---------------------------------------------------------------------------------------------------
 Tab2D_0637:
@@ -832,7 +922,7 @@ Tab2D_0643:
 ; CrankCoolantAdder ($064F): 2D table, 3 points, unsigned
 ; Cranking: added to the coolant temperature against the number of crank events (CrankEvents), limited to $0B75; result is the cranking coolant CrankCoolant
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $03B7,Z
+; Inputs: CrankEvents
 ; Read at $081FC
 ;---------------------------------------------------------------------------------------------------
 CrankCoolantAdder:
@@ -862,29 +952,54 @@ PartThrottleFuelK:
         dc.b    $41                                      ; K factor of the part-throttle base pulse width: (MAP - offset) * (256 + K) / 16
 PartThrottleFuelMapOffset:
         dc.b    $14                                      ; MAP offset of the part-throttle base pulse width
-        dc.b    $FF,$FF,$FF,$FD,$02,$02,$12,$01,$09
+HotStartCoolantMin:
+        dc.b    $FF                                      ; Reset: coolant at or above this value (with air at or above HotStartAirMin) sets StartFlags bit 3
+HotStartAirMin:
+        dc.b    $FF                                      ; Reset: air temperature at or above this value for StartFlags bit 3
+IdleFuelRpmMax:
+        dc.b    $FF                                      ; Idle enrichment (IdleEnrichment): below this engine rpm
+IdleFuelMapMax:
+        dc.b    $FD                                      ; Idle enrichment: below this MAP
+IdleFuelStepsDown:
+        dc.b    $02                                      ; Idle enrichment: counts (IdleFuelDownCount) per step down
+IdleFuelStepsUp:
+        dc.b    $02                                      ; Idle enrichment: counts (IdleFuelUpCount) per step up
+IdleFuelRampDown:
+        dc.b    $12                                      ; Idle enrichment: step down of IdleFuelRamp
+IdleFuelRampUp:
+        dc.b    $01                                      ; Idle enrichment: step up of IdleFuelRamp
+IdleFuelTimeMin:
+        dc.b    $09                                      ; Idle enrichment steps run after this time since start
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0674 ($0674): 2D table, 1 points, unsigned
+; IdleEnrichSoakTime ($0674): 2D table, 1 points, unsigned
+; Idle enrichment against the engine-off time EngineOffTime, into IdleEnrichSoak
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $73,Z
 ; Read at $074CA
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0674:
+IdleEnrichSoakTime:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$32
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+EngineOffTimeMin:
+        dc.b    $32                                      ; Engine-off time (EngineOffTimeStart) at or above which EngineOffTime is cleared at start (hot restart logic)
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0683 ($0683): 2D table, 1 points, unsigned
-; Inputs: $0583,Z
+; IdleEnrichRunTime ($0683): 2D table, 1 points, unsigned
+; Idle enrichment against run time (IdleEnrichRun); with the others into IdleEnrichFactor, which multiplies the fuel while FuelModeFlags2 bit 3 is set (low rpm and MAP)
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: IdleEnrichRun
 ; Read at $0747A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0683:
+IdleEnrichRunTime:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$80
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+FlexStartValue:
+        dc.b    $80                                      ; Start value of FlexStartFuel (flex start fuel)
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0692 ($0692): 2D table, 1 points, unsigned
@@ -922,66 +1037,84 @@ Tab2D_06A7:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06B9 ($06B9): 2D table, 9 points, steps, no interpolation
+; TipInThrottleIndex ($06B9): 2D table, 9 points, steps, no interpolation
+; Tip-in enrichment: throttle opening to row index 1-9 of TipInMatrix
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $06CB4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06B9:
+TipInThrottleIndex:
         dc.b    9,$10                                    ; points, flags
         dc.b    0,1, 9,2, 18,3, 26,4, 34,5, 42,6, 67,7, 92,8 ; x, y
         dc.b    112,9                                    ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06CD ($06CD): 2D table, 9 points, steps, no interpolation
-; Inputs: $01F4,Z
+; TipInRateIndex ($06CD): 2D table, 9 points, steps, no interpolation
+; Tip-in enrichment: throttle opening step to column index 1-9 of TipInMatrix
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: Scratch4
 ; Read at $06CD2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06CD:
+TipInRateIndex:
         dc.b    9,$10                                    ; points, flags
         dc.b    2,1, 3,2, 4,3, 5,4, 6,5, 7,6, 14,7, 20,8 ; x, y
         dc.b    30,9                                     ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06E1 ($06E1): 2D table, 3 points, unsigned
+; TipInCoolantFactor ($06E1): 2D table, 3 points, unsigned
+; Tip-in enrichment factor against coolant
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $06D24
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06E1:
+TipInCoolantFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    110,19, 146,10, 205,0                    ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06EB ($06EB): 2D table, 3 points, unsigned
+; TipInAirTempFactor ($06EB): 2D table, 3 points, unsigned
+; Tip-in enrichment factor against intake air temperature
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: AirTemp
 ; Read at $06D48
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06EB:
+TipInAirTempFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    138,5, 171,2, 199,1                      ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_06F5 ($06F5): 2D table, 1 points, unsigned
-; Inputs: ScratchC
+; TipInBaroFactor ($06F5): 2D table, 1 points, unsigned
+; Tip-in enrichment factor against barometric pressure; result (with ReturnlessFuelScale) into TipInFuel and spread over the next injectors
+; x: kpa, y: raw (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $06D6C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_06F5:
+TipInBaroFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$55,$03,$01
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+TipInRpmMax:
+        dc.b    $55                                      ; Tip-in fuel runs below this engine rpm (closed throttle start)
+TipInThrottleDeadband:
+        dc.b    $03                                      ; Tip-in fuel: throttle rise below this value is ignored
+TipInMode:
+        dc.b    $01                                      ; Tip-in fuel mode (0 = off; 1, 2 select the branch)
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0704 ($0704): 2D table, 4 points, unsigned
-; Inputs: ScratchC
+; BaroFuel ($0704): 2D table, 4 points, unsigned
+; Pulse width added to the fuel pulse against barometric pressure (result x 8)
+; x: kpa, y: raw (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $06A6A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0704:
+BaroFuel:
         dc.b    4,$80                                    ; points, flags
         dc.b    176,24, 208,14, 233,6, 239,0             ; x, y
 
@@ -1004,10 +1137,17 @@ O2FlexOffsetStepNeg:
         dc.b    $01                                      ; Flex trim offset: step of $19,X while it is negative (limited to zero)
 O2FlexCellMask:
         dc.b    $00                                      ; Flex trim offset (O2FlexOffset): bit map of the O2 cells (bit n = cell n) whose offset $19,X is stepped with high ethanol
-        dc.b    $AA,$58,$00
+FlexColdStartEthanolMin:
+        dc.b    $AA                                      ; Reset: FlexEthanol at or above this value with a cold engine sets the flex cold-start flag (FlexStartFlags bit 3)
+        dc.b    $58
+FlexColdStartMiles:
+        dc.b    $00                                      ; SRI mileage since the flex cold-start flag was set after which it changes to FlexStartFlags bit 5 (CheckPowerDown)
 O2FlexCellRef:
         dc.b    $00                                      ; FlexCellCheck: value compared with the bank 1 memory cells from $805A (loaded with O2FlexCellRef2)
-        dc.b    $00,$00
+O2LearnRateFlex:
+        dc.b    $00                                      ; As O2LearnRate with the flex fuel flag FlexStartFlags bit 4
+O2LearnRateWotFlex:
+        dc.b    $00                                      ; As O2LearnRateWot with the flex fuel flag
 O2FlexCellRef2:
         dc.b    $00                                      ; FlexCellCheck: second value used with O2FlexCellRef
 
@@ -1140,11 +1280,13 @@ DecelMapRpmLimit:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_0ACE ($0ACE): 3D table, 9 rows x 9 columns, unsigned
-; Inputs: result of Lookup2D x $0584,Z
+; IdleEnrichEthanolAirTemp ($0ACE): 3D table, 9 rows x 9 columns, unsigned
+; Idle enrichment against ethanol content (rows) and intake air temperature at start (StartAirTemp)
+; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Inputs: result of Lookup2D x StartAirTemp
 ; Read at $074A8
 ;---------------------------------------------------------------------------------------------------
-Tab3D_0ACE:
+IdleEnrichEthanolAirTemp:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    166,176,187,197,207,218,232,239,249      ; column axis
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 0
@@ -1288,7 +1430,7 @@ DecelRampStepDown:
 ; DecelBaroMapOffset ($0E70): 2D table, 3 points, unsigned
 ; Added to MAP against barometric pressure before DecelMapScale
 ; x: kpa, y: kpa (units: docs/en/calibration.md)
-; Inputs: ScratchC
+; Inputs: Baro
 ; Read at $06938
 ;---------------------------------------------------------------------------------------------------
 DecelBaroMapOffset:
@@ -1298,66 +1440,80 @@ DecelBaroMapOffset:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0E7A ($0E7A): 2D table, 1 points, unsigned
+; AccelMapAdder ($0E7A): 2D table, 1 points, unsigned
+; Added to AccelRpmFactor against MAP
+; x: kpa, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $06C3E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0E7A:
+AccelMapAdder:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0E86 ($0E86): 2D table, 1 points, unsigned
+; AccelRpmFactor ($0E86): 2D table, 1 points, unsigned
+; Acceleration enrichment factor against rpm; plus AccelMapAdder, limited to 1.0, into AccelFactor
+; x: rpm32, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $06C2E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0E86:
+AccelRpmFactor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0E92 ($0E92): 2D table, 1 points, unsigned
-; Inputs: ScratchC
+; AccelMapBaro ($0E92): 2D table, 1 points, unsigned
+; MAP-rate acceleration enrichment term against barometric pressure into AccelMapBaroFactor
+; x: kpa, y: raw (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $06B9C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0E92:
+AccelMapBaro:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0E9E ($0E9E): 2D table, 1 points, unsigned
-; Inputs: ScratchC
+; AccelTpsBaro ($0E9E): 2D table, 1 points, unsigned
+; Throttle-rate acceleration enrichment term against barometric pressure into AccelTpsBaroFactor
+; x: kpa, y: raw (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $06C1E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0E9E:
+AccelTpsBaro:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$03
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+AccelThrottleDeadband:
+        dc.b    $03                                      ; Throttle acceleration: rise (Throttle minus ThrottleLast) below this value is ignored
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0EAB ($0EAB): 2D table, 2 points, unsigned
+; AccelTpsRateLimit ($0EAB): 2D table, 2 points, unsigned
+; Throttle-rate acceleration enrichment: the throttle step above $14B5 is limited to this value, against coolant
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $06BAC
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0EAB:
+AccelTpsRateLimit:
         dc.b    2,$80                                    ; points, flags
         dc.b    121,138, 144,64                          ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0EB7 ($0EB7): 2D table, 3 points, unsigned
+; AccelTpsCoolantFactor ($0EB7): 2D table, 3 points, unsigned
+; Throttle-rate acceleration enrichment: amount per throttle step against coolant; product into AccelTpsFuel; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $06BD2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0EB7:
+AccelTpsCoolantFactor:
         dc.b    3,$80                                    ; points, flags
         dc.b    116,49, 166,32, 194,16                   ; x, y
 
@@ -1379,22 +1535,26 @@ AccelMapRiseOffset:
         dc.b    $13                                      ; MAP acceleration fuel: MAP rise (MAP minus MapLast) above this offset counts
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0ED1 ($0ED1): 2D table, 2 points, unsigned
+; AccelMapCoolant2 ($0ED1): 2D table, 2 points, unsigned
+; MAP-rate acceleration enrichment term against coolant into AccelMapCoolantFactor
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $06B8E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0ED1:
+AccelMapCoolant2:
         dc.b    2,$80                                    ; points, flags
         dc.b    121,122, 144,53                          ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0EDD ($0EDD): 2D table, 4 points, unsigned
+; AccelMapGainCoolant ($0EDD): 2D table, 4 points, unsigned
+; MAP-rate acceleration enrichment gain against coolant, plus AccelMapGainAdder, into AccelMapGain
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $06B7E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0EDD:
+AccelMapGainCoolant:
         dc.b    4,$80                                    ; points, flags
         dc.b    88,20, 121,11, 154,7, 202,3              ; x, y
 
@@ -1422,14 +1582,20 @@ BattTempHeatFactor:
         dc.b    2,$80                                    ; points, flags
         dc.b    121,224, 144,1                           ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$14,$19
+        dc.b    $FF,$FF,$FF,$FF
+TipInFuelTimeMin:
+        dc.b    $14                                      ; Tip-in fuel: scaled throttle rate above which the timer TipInTimer is decreased
+TipInFuelDecay:
+        dc.b    $19                                      ; Tip-in fuel: decrease of the timer TipInTimer
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_0F01 ($0F01): 3D table, 5 rows x 5 columns, unsigned
+; IacFuelCoolant ($0F01): 3D table, 5 rows x 5 columns, unsigned
+; Fuel pulse added for extra idle air, rows by IacFuelScale, columns coolant; x 16 into FuelPulseAdder
+; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x CoolantTemp
 ; Read at $06EF0
 ;---------------------------------------------------------------------------------------------------
-Tab3D_0F01:
+IacFuelCoolant:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    99,110,144,173,202                       ; column axis
         dc.b    0,0,0,0,0                                ; row 0
@@ -1440,11 +1606,13 @@ Tab3D_0F01:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_0F22 ($0F22): 2D table, 1 points, unsigned
+; IacFuelCoolantLimit ($0F22): 2D table, 1 points, unsigned
+; Above this (against coolant) the extra idle air (IacTargetCmd minus IacPosition) sets FuelModeFlags bit 7 instead of adding fuel
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $06EC8
 ;---------------------------------------------------------------------------------------------------
-Tab2D_0F22:
+IacFuelCoolantLimit:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,9                                    ; x, y
 
@@ -1520,7 +1688,17 @@ WotTimeEnrichMax:
         dc.b    2,$80                                    ; points, flags
         dc.b    152,0, 180,33                            ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$04,$29,$51,$6E,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$04
+KnockFuelMax:
+        dc.b    $29                                      ; Knock enrichment: upper limit of the enrichment KnockFuel
+KnockFuelVacuumMax:
+        dc.b    $51                                      ; Knock enrichment: runs below this manifold vacuum
+KnockFuelCoolantMin:
+        dc.b    $6E                                      ; Knock enrichment: runs at or above this coolant temperature
+KnockFuelGain2:
+        dc.b    $00                                      ; Knock enrichment: gain on the second term
+KnockFuelGain3:
+        dc.b    $00                                      ; Knock enrichment: gain on the third term
 DecelLeanMapDrop:
         dc.b    $10                                      ; Decel enleanment: MAP drop (MapLast minus MAP) that keeps DecelLeanFlags bit 2
 DecelLeanThrottleDrop:
@@ -1574,7 +1752,7 @@ MapFilterFallCoolant:
 ; DecelLeanBaroFactor ($0F8E): 2D table, 3 points, unsigned
 ; Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel; read here with another input than in 05293190AC, so the x unit is not carried
 ; x: raw, y: mult256 (units: docs/en/calibration.md)
-; Inputs: ScratchC
+; Inputs: Baro
 ; Read at $0817C
 ;---------------------------------------------------------------------------------------------------
 DecelLeanBaroFactor:
@@ -1677,7 +1855,7 @@ DecelLeanRpmFactor:
 ; DecelLeanAirflow ($1008): 3D table, 9 rows x 17 columns, unsigned, columns by position 0-255
 ; Deceleration enleanment: airflow value against rpm and throttle position; the drop between last and current throttle goes to DecelLeanAir
 ; columns: pos256, rows: pos256, values: raw (units: docs/en/calibration.md)
-; Inputs: IacBase
+; Inputs: Scratch0
 ; Read at $08008, $0802A
 ;---------------------------------------------------------------------------------------------------
 DecelLeanAirflow:
@@ -1715,11 +1893,13 @@ DecelLeanTimeCoolant:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1101 ($1101): 2D table, 4 points, unsigned, y = 0 counts as 256
+; ReturnlessFuelScale ($1101): 2D table, 4 points, unsigned, y = 0 counts as 256
+; Global fuel multiplier of the returnless fuel system
+; x: kpa, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: ManifoldVacuum
 ; Read at $06D90, $0714A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1101:
+ReturnlessFuelScale:
         dc.b    4,$40                                    ; points, flags
         dc.b    0,255, 65,246, 130,236, 255,223          ; x, y
 
@@ -1828,46 +2008,147 @@ IdleFlareAcRpmOff:
         dc.b    $19                                      ; Idle flare flags: rpm above the target below this value clears bit 6
 
 ;---------------------------------------------------------------------------------------------------
-; EventCorrSequenceA ($11AD): 5 rows of 10 bytes
+; EventCorrSequenceA ($11AD): 1 rows of 10 bytes
 ; Byte sequence read by EventCorrections (first branch, with RAM $87A8): step data for the per-event correction
 ;---------------------------------------------------------------------------------------------------
 EventCorrSequenceA:
         dc.b    $01,$0A,$00,$01,$1F,$02,$03,$1B,$01,$01
-        dc.b    $16,$03,$02,$11,$02,$01,$BD,$08,$0F,$BD
-        dc.b    $57,$7E,$A6,$CE,$DA,$05,$3D,$03,$03,$05
-        dc.b    $02,$6E,$DC,$18,$A2,$02,$09,$08,$09,$09
-        dc.b    $03,$80,$03,$00,$04,$01,$1A,$02,$FF,$FF
 
-        dc.b    $FF,$FF,$FF,$1A,$5E,$03,$00,$AF,$7F,$80
+        dc.b    $16,$03,$02,$11,$02,$01
+O2WarmDelayCoolant:
+        dc.b    $BD                                      ; Coolant at or above which the warm delay O2WarmDelay counts down (below it the delay is reloaded with O2DelayWarm)
+O2DelayCold:
+        dc.b    $08                                      ; Closed-loop entry delay (O2WarmDelay) below O2DelayCoolantMax
+O2DelayWarm:
+        dc.b    $0F                                      ; Closed-loop entry delay when warm
+O2DelayCoolantMax:
+        dc.b    $BD                                      ; Closed loop: below this coolant the entry delay O2DelayCold is used
+        dc.b    $57,$7E,$A6,$CE,$DA
+O2MemMapHyst:
+        dc.b    $05                                      ; Long-term memory cell selection (O2CellSelect): MAP hysteresis added to the breakpoints at $18E2 when moving down
+O2MemRpmSplit:
+        dc.b    $3D                                      ; Long-term memory cell selection: rpm that splits each MAP band into a low and a high cell
+O2MemRpmHyst:
+        dc.b    $03                                      ; Long-term memory cell selection: rpm hysteresis of the cell splits
+O2IdleRpmMargin:
+        dc.b    $03                                      ; Closed loop: rpm within idle target plus this margin counts as idle (bit Options0339 bit 7)
+O2IdleSpeedMax:
+        dc.b    $05                                      ; Closed loop: vehicle speed below which the idle cell is used
+SparkRpmFlagHyst:
+        dc.b    $02                                      ; Hysteresis for SparkRpmFlagMin
+        dc.b    $6E
+O2CellResetTrimMax:
+        dc.b    $DC                                      ; Cell reset: the short-term trim is cleared while it is not above this value
+O2CellResetSpeedMax:
+        dc.b    $18                                      ; Cell reset: vehicle speed at or below this value
+O2CellResetVacuumMax:
+        dc.b    $A2                                      ; Cell reset: manifold vacuum at or below this value
+O2CellResetThrottleMin:
+        dc.b    $02                                      ; Cell reset: throttle at or above this value
+O2LearnRate:
+        dc.b    $09                                      ; Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer (O2CellWork) per pass
+O2LearnRateWot:
+        dc.b    $08                                      ; As O2LearnRate at WOT
+        dc.b    $09,$09
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_11E9 ($11E9): 2D table, 5 points, unsigned
+; O2StepScale ($11D5): 2D table, 3 points, unsigned
+; Closed loop: trim step against the size of the O2 error Scratch3 (doubled while purge is active and duty is zero)
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: Scratch3
+; Read at $0A0E4
+;---------------------------------------------------------------------------------------------------
+O2StepScale:
+        dc.b    3,$80                                    ; points, flags
+        dc.b    3,0, 4,1, 26,2                           ; x, y
+
+        dc.b    $FF,$FF,$FF,$FF
+O2LearnMapMax:
+        dc.b    $FF                                      ; Long-term learning (O2LearnEnable): MAP at or below this value (and above O2MapMin)
+O2MapMin:
+        dc.b    $1A                                      ; Closed loop and the fuel system monitor: MAP at or above this value
+O2LearnRpmMax:
+        dc.b    $5E                                      ; Long-term learning: rpm below this value
+O2LearnRpmHyst:
+        dc.b    $03                                      ; Long-term learning: rpm hysteresis of O2LearnRpmMax (O2InactiveFlags bit 1)
+O2PulseWidthMin:
+        dc.b    $00,$AF                                  ; Closed-loop timing: fuel pulse widths (FuelPulseBank1/FuelPulseBank2, word) at or above this value for closed-loop entry
+O2AdaptMax:
+        dc.b    $7F                                      ; Long-term adaptive value (O2AdaptValue1, O2AdaptValue2) upper limit (signed); at the limit the fuel system monitor counts
+O2AdaptMin:
+        dc.b    $80                                      ; Long-term adaptive value lower limit (signed)
+
+;---------------------------------------------------------------------------------------------------
+; O2StartDelayCoolant ($11E9): 2D table, 5 points, unsigned
+; Closed-loop entry (O2StartDelays): delay against coolant (plus $323D with an O2 fault flag)
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $08E66
 ;---------------------------------------------------------------------------------------------------
-Tab2D_11E9:
+O2StartDelayCoolant:
         dc.b    5,$80                                    ; points, flags
         dc.b    130,13, 138,11, 147,6, 155,6, 203,4      ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$7D,$C7,$13,$3D,$05,$80,$00,$80,$00,$7F,$80,$00
-        dc.b    $14,$26,$0F,$0F,$00,$87,$08,$28,$FE,$06,$FA,$06,$FA,$06,$FA,$40
-        dc.b    $10,$1A,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF
-        dc.b    $FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF
-        dc.b    $FF,$FF,$03,$80,$95,$10,$D2,$04,$DB,$00,$01,$80,$FF,$00,$FF,$FF
-        dc.b    $FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+ThermostatCoolant:
+        dc.b    $7D                                      ; Coolant the warm-up monitor waits for (also the closed-loop coolant limit)
+O2ColdStartCoolant:
+        dc.b    $C7                                      ; Closed loop: start coolant below which the cold-start delay additions apply
+O2ColdStartAdder:
+        dc.b    $13                                      ; Closed loop: addition to the entry delay after a cold start
+O2ColdPurgeRampMin:
+        dc.b    $3D                                      ; Cold-start O2 logic: purge ramp at or above this value (2 less once set) counts as purging
+O2ColdPurgeCount:
+        dc.b    $05                                      ; Cold-start O2 logic: purging counts (O2ColdPurgeCounter) before the cold trims are reduced
+O2ColdTrimMin:
+        dc.b    $80                                      ; Upstream O2 trim (O2UpTrim): signed lower limit of the trim with the cold-start flag (O2CrossFlags bit 1)
+O2ColdStartTime:
+        dc.b    $00                                      ; Cold-start O2 logic (start coolant below O2ColdStartCoolant): time (O2ColdStartTimer) up to which the cold-start flag (O2CrossFlags bit 1) is set
+O2ColdTrimMinDrive:
+        dc.b    $80                                      ; As O2ColdTrimMin in gear (DriveFlags bit 5)
+O2ColdStartTimeDrive:
+        dc.b    $00                                      ; As O2ColdStartTime in gear (DriveFlags bit 5)
+O2AdaptCellMax:
+        dc.b    $7F                                      ; Adaptive cell value upper limit (signed)
+O2AdaptCellMin:
+        dc.b    $80                                      ; Adaptive cell value lower limit (signed)
+        dc.b    $00
+O2ColdLeanCount:
+        dc.b    $14                                      ; Cold-start O2 logic: lean counts before the cold trim of the bank is reduced (also FlexColdLeanCount)
+O2ActiveHigh:
+        dc.b    $26                                      ; O2 sensor (upstream, both banks): raw value at or above this counts as switching high
+O2ActiveLow:
+        dc.b    $0F                                      ; O2 sensor (upstream): raw value below this marks the sensor as active (O2ActiveFlags)
+O2ColdLeanRaw:
+        dc.b    $0F                                      ; Cold-start O2 logic: bank 1 upstream O2 at or below this value counts as lean (O2ColdLeanCount1; also FlexColdLeanCount)
+O2ColdLeanRaw2:
+        dc.b    $00                                      ; Cold-start O2 logic: bank 2 upstream O2 at or below this value counts as lean (O2ColdLeanCount2)
+        dc.b    $87
+O2StepPeriod:
+        dc.b    $08                                      ; O2UpdateUpstream: count O2StepCount that wraps at this value (O2 step timing)
+        dc.b    $28,$FE,$06,$FA,$06,$FA,$06,$FA,$40,$10,$1A,$01,$80,$FF,$00,$FF
+        dc.b    $FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$00,$FF
+        dc.b    $FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$03,$80,$95,$10,$D2
+        dc.b    $04,$DB,$00,$01,$80,$FF,$00,$FF,$FF,$FF,$FF
 O2DerivGainDefault:
         dc.b    $01                                      ; O2 feedback: derivative gain $15,X loaded when the gains come from the cell tables
         dc.b    $28,$28,$28,$28,$28,$28,$28,$28,$28,$10,$10,$28,$28,$28,$28,$28
         dc.b    $28,$28,$28,$28,$10,$10,$28,$28,$28,$28,$28,$28,$28,$28,$28,$10
         dc.b    $10,$28,$28,$28,$28,$28,$28,$28,$28,$28,$10,$10,$1F,$1F,$1F,$1F
-        dc.b    $1F,$1F,$1F,$1F,$1F,$00,$00,$7F,$FF,$80,$00
+        dc.b    $1F,$1F,$1F,$1F,$1F,$00,$00
+O2AdaptIntegralMax:
+        dc.b    $7F,$FF                                  ; Adaptive cell integrator upper limit (signed word)
+O2AdaptIntegralMin:
+        dc.b    $80,$00                                  ; Adaptive cell integrator lower limit (signed word)
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1283 ($1283): 2D table, 4 points, unsigned
+; O2VoltageScale ($1283): 2D table, 4 points, unsigned
+; Upstream O2 sensor ADC counts to the value used by closed loop and its monitor
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: LDAA IND8, X; O2UpBank1Raw
 ; Read at $099BC, $0F462
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1283:
+O2VoltageScale:
         dc.b    4,$80                                    ; points, flags
         dc.b    2,64, 5,119, 38,136, 46,178              ; x, y
 
@@ -1876,8 +2157,13 @@ O2IntegralMax:
         dc.b    $0E,$00                                  ; O2 integrator upper limit (signed word)
 O2IntegralMin:
         dc.b    $F2,$00                                  ; O2 integrator lower limit (signed word)
-        dc.b    $B3,$CD,$03,$80,$58,$1F,$79,$18,$95,$0A,$03,$80,$58,$4B,$95,$30
-        dc.b    $CF,$40,$1B
+O2DownEnableCoolant:
+        dc.b    $B3                                      ; Coolant at or above which the downstream O2 delay O2DownDelay counts down
+O2SlowEnableCoolant:
+        dc.b    $CD                                      ; Coolant at or above which the slow-term delay O2SlowDelay counts down
+        dc.b    $03,$80,$58,$1F,$79,$18,$95,$0A,$03,$80,$58,$4B,$95,$30,$CF,$40
+O2SlowPurgeRampMin:
+        dc.b    $1B                                      ; Purge ramp below this value reloads the slow-term periods (ClosedLoop712/O2SlowPeriod2)
 O2PurgeRampMin:
         dc.b    $1B                                      ; Closed loop: purge ramp at or above which the purge correction of the trim applies
         dc.b    $CC
@@ -1903,7 +2189,12 @@ O2TrimMax:
 O2TrimMin:
         dc.b    $60                                      ; Short-term trim lower limit
         dc.b    $87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87
-        dc.b    $87,$87,$87,$87,$87,$87,$25,$0F,$18,$15
+        dc.b    $87,$87,$87,$87,$87,$87
+O2DownActiveHigh:
+        dc.b    $25                                      ; Downstream O2 sensor: raw value at or above this counts as switching high
+O2DownActiveLow:
+        dc.b    $0F                                      ; Downstream O2 sensor: raw value below this marks it as active
+        dc.b    $18,$15
 
 ;---------------------------------------------------------------------------------------------------
 ; O2VoltageScale2 ($12DF): 2D table, 4 points, unsigned
@@ -1916,13 +2207,35 @@ O2VoltageScale2:
         dc.b    4,$80                                    ; points, flags
         dc.b    2,64, 5,119, 38,136, 46,178              ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$3B,$00,$4B,$00,$02,$00,$49,$61,$06,$06
-        dc.b    $06,$06,$06,$06,$06,$06,$06,$06,$06,$06,$FA,$FA,$FA,$FA,$FA,$FA
-        dc.b    $FA,$FA,$FA,$FA,$FA,$0F,$12,$12,$0C,$12,$0C,$12,$12,$12,$06,$06
-        dc.b    $F1,$EE,$EE,$F4,$EE,$F4,$EE,$EE,$EE,$FA,$FA,$06,$06,$06,$06,$06
-        dc.b    $06,$06,$06,$06,$06,$06,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA
-        dc.b    $FA,$0F,$12,$12,$0C,$12,$0C,$12,$12,$12,$06,$06,$F1,$EE,$EE,$F4
-        dc.b    $EE,$F4,$EE,$EE,$EE,$FA,$FA,$00,$FF,$00,$FF,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+O2CellRpmLow:
+        dc.b    $3B,$00                                  ; Adaptive trim cells (SelectCell3x3 from O2CellSelect3x3): engine rpm between the low and middle cells
+O2CellRpmHigh:
+        dc.b    $4B,$00                                  ; Adaptive trim cells: engine rpm between the middle and high cells
+O2CellRpmHyst:
+        dc.b    $02,$00                                  ; Adaptive trim cells: rpm hysteresis
+O2CellMapLow:
+        dc.b    $49                                      ; Adaptive trim cells: MAP between the low and middle cells
+O2CellMapHigh:
+        dc.b    $61                                      ; Adaptive trim cells: MAP between the middle and high cells
+O2CellMapHyst:
+        dc.b    $06                                      ; Adaptive trim cells: MAP hysteresis
+        dc.b    $06,$06,$06,$06,$06,$06,$06,$06,$06,$06,$06,$FA,$FA,$FA,$FA,$FA
+        dc.b    $FA,$FA,$FA,$FA,$FA,$FA,$0F,$12,$12,$0C,$12,$0C,$12,$12,$12,$06
+        dc.b    $06,$F1,$EE,$EE,$F4,$EE,$F4,$EE,$EE,$EE,$FA,$FA,$06,$06,$06,$06
+        dc.b    $06,$06,$06,$06,$06,$06,$06,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA
+        dc.b    $FA,$FA,$0F,$12,$12,$0C,$12,$0C,$12,$12,$12,$06,$06,$F1,$EE,$EE
+        dc.b    $F4,$EE,$F4,$EE,$EE,$EE,$FA,$FA
+O2CrossCheckMax:
+        dc.b    $00                                      ; O2 cross-check (O2CrossCheck, Options0339 bit 6): first sensor reading at or below this value
+O2CrossCheckMin:
+        dc.b    $FF                                      ; O2 cross-check: second sensor reading at or above this value
+O2CrossClearMin:
+        dc.b    $00                                      ; O2 cross-check: first sensor reading at or above which the flag clears
+O2CrossCheckCount:
+        dc.b    $FF                                      ; O2 cross-check: counts of the condition before the bank flag in O2CrossFlags is set
+O2CrossClearCount:
+        dc.b    $00                                      ; O2 cross-check: counts of the clear condition before the flag clears
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1355 ($1355): 2D table, 8 points, unsigned
@@ -1957,77 +2270,180 @@ Tab2D_137D:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_138F ($138F): 2D table, 5 points, unsigned
+; PurgeCommandBase ($138F): 2D table, 5 points, unsigned
+; Purge command base against the purge ramp PurgeRamp, into Scratch0 (then scaled by learning and vacuum, into PurgeCommand)
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: PurgeRamp
 ; Read at $0F896
 ;---------------------------------------------------------------------------------------------------
-Tab2D_138F:
+PurgeCommandBase:
         dc.b    5,$80                                    ; points, flags
         dc.b    5,12, 32,42, 64,63, 80,77, 200,108       ; x, y
 
-        dc.b    $27,$6E,$84,$02,$30,$90,$CD,$3E,$1A
+PurgeMapMax:
+        dc.b    $27                                      ; Purge runs below this MAP
+PurgeBattTempMin:
+        dc.b    $6E                                      ; Purge start: battery temperature lower limit
+PurgeBattTempMax:
+        dc.b    $84                                      ; Purge start: battery temperature upper limit of the start window
+PurgeBattTimerInit:
+        dc.b    $02,$30                                  ; Purge (PurgeEnable): start value of the timer PurgeBattTimer (word) inside the battery temperature window
+PurgeCoolantMin:
+        dc.b    $90                                      ; Purge runs at or above this coolant temperature
+        dc.b    $CD,$3E,$1A
 PurgeCell1:
         dc.b    $0C                                      ; Adaptive cell number (O2MemCell) used for purge learning (copied to PurgeCellNum1); cell 12 also sets DriveFlags bit 0
 PurgeCell2:
         dc.b    $03                                      ; Second adaptive cell number for purge learning (PurgeCellNum2)
 PurgeCell3:
         dc.b    $05                                      ; Third adaptive cell number for purge learning (PurgeCellNum3)
-        dc.b    $2C,$2C,$2C,$05,$05,$05,$12,$0D,$05,$00,$D7,$00,$FF,$84,$33,$BC
-        dc.b    $0F,$00
+        dc.b    $2C,$2C,$2C,$05,$05,$05,$12,$0D
+O2LearnPurgeCountMax:
+        dc.b    $05                                      ; Long-term learning: purge cell count PurgeCellCount above which learning is allowed (zero also allows it)
+        dc.b    $00
+PurgeLearnTrimMin:
+        dc.b    $D7                                      ; Purge vapor learning: short-term trim at or below this value (signed) marks the rich limit
+O2TrimResetValue:
+        dc.b    $00                                      ; Closed-loop manager: value loaded into the bank trim when O2ResetFlags2 bits 2-3 request a reset
+        dc.b    $FF,$84
+PurgeCellRefMargin:
+        dc.b    $33                                      ; Purge cell reference (PurgeCellRichCheck): margin added to the stored cells $8066/$8079 before compare
+        dc.b    $BC,$0F
+PurgeCellUpdateCount:
+        dc.b    $00                                      ; Purge (PurgeCellUpdateGate): counts (PurgeCellUpdateCounter) between updates
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_13B9 ($13B9): 2D table, 5 points, unsigned
+; PurgeCommandVacuum ($13B9): 2D table, 5 points, unsigned
+; Factor on the purge command against manifold vacuum
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: ManifoldVacuum
 ; Read at $0F922
 ;---------------------------------------------------------------------------------------------------
-Tab2D_13B9:
+PurgeCommandVacuum:
         dc.b    5,$80                                    ; points, flags
         dc.b    16,197, 33,105, 49,45, 66,12, 82,1       ; x, y
 
-        dc.b    $FF,$FF,$01,$84,$96,$02,$03,$03,$00,$01,$06,$06,$20,$B3,$B3,$9A
-        dc.b    $7F,$0F,$13,$69,$58,$40,$FF,$FF,$02,$9F,$14,$01,$20,$21,$C0,$0D
-        dc.b    $15,$CC,$10,$64,$20,$E8,$E8,$1A,$1A,$10,$60,$F0,$F0,$28,$3C,$00
-        dc.b    $00,$00
+        dc.b    $FF,$FF,$01,$84
+PurgeRampFull:
+        dc.b    $96                                      ; Purge ramp value at or above which the ramp-up stops
+PurgeRampMin:
+        dc.b    $02                                      ; Purge ramp value below which the vapor learning is skipped
+PurgeRampStepUp:
+        dc.b    $03                                      ; Purge ramp step increase (learning not settled)
+PurgeRampStepUp2:
+        dc.b    $03                                      ; Purge ramp step increase (learning settled)
+PurgeRampOffIdle:
+        dc.b    $00                                      ; Purge ramp (PurgeRampControl): when zero the ramp step is changed only with ThrottleState bit 7 set
+PurgeLearnTime:
+        dc.b    $01                                      ; Purge learning window length (PurgeLearnTimer)
+        dc.b    $06,$06
+PurgeVacuumMin:
+        dc.b    $20                                      ; Purge ramp-up runs above this manifold vacuum
+PurgeTrimRichLimit:
+        dc.b    $B3                                      ; Purge learning: short-term trim limit on the rich side
+PurgeTrimLatchedLimit:
+        dc.b    $B3                                      ; Purge learning: latched trim limit
+PurgeTrimLatchedLimit2:
+        dc.b    $9A                                      ; Purge learning: latched trim limit (second branch)
+PurgeLearnMask:
+        dc.b    $7F                                      ; Purge learning: main-loop mask (update rate)
+        dc.b    $0F,$13
+PurgeDelayInit:
+        dc.b    $69                                      ; Start value of the purge delay PurgeStartRamp (reset, PurgeEnable, PurgeReset)
+        dc.b    $58,$40
+PurgeTrimFilterOff:
+        dc.b    $FF                                      ; Purge vapour learning (PurgeVaporLearn): filter weight of the short-term trim average without purge (PurgeTrimAvgOff)
+PurgeTrimFilterOn:
+        dc.b    $FF                                      ; Purge vapour learning: filter weight of the short-term trim average with purge (PurgeTrimAvgOn)
+PurgeLearnTimeMax:
+        dc.b    $02,$9F                                  ; Purge vapor learning (PurgeVaporLearn): length of the part-throttle phase (word)
+        dc.b    $14
+PurgeLearnRateStep:
+        dc.b    $01                                      ; Purge vapor learning: increase of the learning rate
+PurgeLearnRateTime:
+        dc.b    $20                                      ; Purge vapor learning: loops between learning-rate increases
+PurgeLearnRateMax:
+        dc.b    $21                                      ; Purge vapor learning: upper limit of the learning rate
+PurgeVaporTrimDrop:
+        dc.b    $C0                                      ; Purge vapour learning: signed offset added to the no-purge trim average; a purge trim average below it counts as vapour
+PurgeVaporDetectCount:
+        dc.b    $0D                                      ; Purge vapour learning: counts (PurgeVaporCount) of the vapour condition before the vapour learning starts
+PurgeLearnTimeClosed:
+        dc.b    $15,$CC                                  ; Purge vapor learning: length of the closed-throttle phase (word)
+PurgeLearnRateTipStep:
+        dc.b    $10                                      ; Purge vapour learning: learning rate (PurgeLearnRate) increase after a throttle event (O2Bank1Flags bit 3)
+PurgeLearnRateTipMax:
+        dc.b    $64                                      ; Purge vapour learning: upper limit of that increase
+PurgeLearnRateInit2:
+        dc.b    $20                                      ; Purge vapor learning: learning rate at closed throttle
+        dc.b    $E8,$E8
+PurgeLearnTrimCount:
+        dc.b    $1A                                      ; Purge vapor learning: trim events before a step
+PurgeLearnTrimCount2:
+        dc.b    $1A                                      ; Purge vapor learning: trim events before a step (second branch)
+PurgeLearnRampMin:
+        dc.b    $10                                      ; Purge vapor learning runs at or above this purge ramp
+PurgeLearnRampFull:
+        dc.b    $60                                      ; Purge vapor learning: ramp at or above which the full step applies
+PurgeVaporMax:
+        dc.b    $F0                                      ; Purge vapor learning: upper limit of PurgeVaporEstimate
+PurgeVaporPartMax:
+        dc.b    $F0                                      ; Purge vapor learning: upper limit of PurgeVaporPart
+        dc.b    $28,$3C
+PurgeLearnTrimBandUp:
+        dc.b    $00                                      ; Purge vapour learning: positive short-term trim at or below this value changes nothing
+PurgeLearnTrimBandDown:
+        dc.b    $00                                      ; Purge vapour learning: negative trim band (complemented / negated before the compare)
+PurgeVaporSettleTime:
+        dc.b    $00                                      ; Purge vapour learning: time (PurgeVaporSettle) after the learning start before the trims are compared
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_13F7 ($13F7): 2D table, 2 points, unsigned
+; PurgeLearnUpPart ($13F7): 2D table, 2 points, unsigned
+; Purge vapor learning, part throttle: step added to PurgeVaporPart when the short-term trim is above $1B2C
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim1
 ; Read at $0F4E6
 ;---------------------------------------------------------------------------------------------------
-Tab2D_13F7:
+PurgeLearnUpPart:
         dc.b    2,$80                                    ; points, flags
         dc.b    33,0, 127,1                              ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1403 ($1403): 2D table, 2 points, unsigned
+; PurgeLearnDownPart ($1403): 2D table, 2 points, unsigned
+; Purge vapor learning, part throttle: step subtracted from PurgeVaporPart when the trim is below −$1B2D
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim1
 ; Read at $0F514
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1403:
+PurgeLearnDownPart:
         dc.b    2,$80                                    ; points, flags
         dc.b    129,1, 223,0                             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_140F ($140F): 2D table, 2 points, unsigned
+; PurgeLearnUpClosed ($140F): 2D table, 2 points, unsigned
+; Purge vapor learning, closed throttle: step added to PurgeVaporClosed when the trim is above $1B2C
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim1
 ; Read at $0F562
 ;---------------------------------------------------------------------------------------------------
-Tab2D_140F:
+PurgeLearnUpClosed:
         dc.b    2,$80                                    ; points, flags
         dc.b    33,0, 127,0                              ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_141B ($141B): 2D table, 2 points, unsigned
+; PurgeLearnDownClosed ($141B): 2D table, 2 points, unsigned
+; Purge vapor learning, closed throttle: step subtracted from PurgeVaporClosed when the trim is below −$1B2D
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ShortTermTrim1
 ; Read at $0F58C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_141B:
+PurgeLearnDownClosed:
         dc.b    2,$80                                    ; points, flags
         dc.b    129,1, 223,0                             ; x, y
 
@@ -2070,17 +2486,39 @@ InjectionModeRpmFactor:
         dc.b    2,$80                                    ; points, flags
         dc.b    22,1, 25,205                             ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$2F,$00,$43,$00,$61,$E3,$14,$14,$14,$14,$14,$14
-        dc.b    $14,$14,$14,$A0,$00,$08,$03,$00,$FF,$FF,$FF,$00
+        dc.b    $FF,$FF,$FF,$FF
+EventCellRpmLow:
+        dc.b    $2F,$00                                  ; Per-event hold cells, warm: rpm between low and middle cells; the 3x3 hold values (FuelEventHoldCount) are at $0BC0
+EventCellRpmHigh:
+        dc.b    $43,$00                                  ; Per-event hold cells, warm: rpm between middle and high cells
+EventCellMapLow:
+        dc.b    $61                                      ; Per-event hold cells, warm: MAP between low and middle cells
+EventCellMapHigh:
+        dc.b    $E3                                      ; Per-event hold cells, warm: MAP between middle and high cells
+        dc.b    $14,$14,$14,$14,$14,$14,$14,$14,$14,$A0,$00
+EventCellMapHyst:
+        dc.b    $08                                      ; Per-event hold cells: MAP hysteresis
+EventCellRpmHyst:
+        dc.b    $03,$00                                  ; Per-event hold cells: rpm hysteresis
+HotEngineCoolantMin:
+        dc.b    $FF                                      ; Hot-engine enrichment runs at or above this coolant
+HotEngineRpmMin:
+        dc.b    $FF                                      ; Hot-engine enrichment runs at or above this engine rpm
+HotEngineMapMin:
+        dc.b    $FF                                      ; Hot-engine enrichment runs at or above this MAP
+HotEngineTimeMin:
+        dc.b    $00                                      ; Hot-engine enrichment runs after this time since start
 HotEngineOn:
         dc.b    $00                                      ; Hot-engine enrichment switch (0 = off); also a bit mask in FinishFuelPulse
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_14A1 ($14A1): 2D table, 1 points, unsigned, y = 0 counts as 256
+; HotEngineEnrich ($14A1): 2D table, 1 points, unsigned, y = 0 counts as 256
+; Enrichment against coolant above $0BD9 (with rpm, MAP and time above their limits), into HotEnrich; sets FuelModeFlags2 bit 1
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $07560
 ;---------------------------------------------------------------------------------------------------
-Tab2D_14A1:
+HotEngineEnrich:
         dc.b    1,$40                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
@@ -2238,42 +2676,91 @@ TimedSparkPeriodMax:
         dc.b    $00,$C3                                  ; Crank ISR: reference period below which timed spark (SparkFlags bit 5) is used
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_19B9 ($19B9): 2D table, 3 points, signed
+; AfterStartSparkMin ($19B9): 2D table, 3 points, signed
+; Lower limit of the spark change against time since start (SparkStartTime), into Temp4FC
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: SparkStartTime
 ; Read at $15210
 ;---------------------------------------------------------------------------------------------------
-Tab2D_19B9:
+AfterStartSparkMin:
         dc.b    3,$20                                    ; points, flags
         dc.b    20,18, 40,0, 60,-32                      ; x, y
 
-        dc.b    $FF,$FF,$81,$A0,$FF,$B2,$13,$00,$FF,$00,$01,$01,$5F,$02,$0A
+        dc.b    $FF,$FF
+TipInBaroMin:
+        dc.b    $81                                      ; Tip-in retard runs above this barometric pressure
+TipInAirTempMin:
+        dc.b    $A0                                      ; Tip-in retard runs above this air temperature (with calibration bit Options0330 bit 5)
+TipInCoolantMin:
+        dc.b    $FF                                      ; Tip-in retard runs above this coolant temperature
+TipInMapMin:
+        dc.b    $B2                                      ; Tip-in retard runs above this MAP
+TipInRpmBelowTarget:
+        dc.b    $13,$00                                  ; Tip-in retard window: engine rpm above idle target minus this value
+TipInRpmAboveTarget:
+        dc.b    $FF,$00                                  ; Tip-in retard window: engine rpm below idle target plus this value
+TipInThrottleMin:
+        dc.b    $01                                      ; Tip-in retard runs above this throttle opening
+TipInThrottleRiseMin:
+        dc.b    $01                                      ; Tip-in retard: throttle rise (ThrottleRise) above which it starts
+TipInThrottleFilter:
+        dc.b    $5F                                      ; Tip-in retard: filter weight of the throttle reference TipInThrottleRef
+TipInRetardDecay:
+        dc.b    $02                                      ; Tip-in retard: decrease per step
+TipInRetardEnd:
+        dc.b    $0A                                      ; Tip-in retard: value below which it ends
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_19D0 ($19D0): 2D table, 2 points, unsigned
-; Inputs: $0623,Z
+; TipInRetardAirScale ($19D0): 2D table, 2 points, unsigned
+; Tip-in spark retard: air temperature to row position; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: pos256 (units: docs/en/calibration.md)
+; Inputs: ThrottleRise
 ; Read at $146E4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_19D0:
+TipInRetardAirScale:
         dc.b    2,$80                                    ; points, flags
         dc.b    3,0, 6,10                                ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_19D8 ($19D8): 2D table, 1 points, unsigned
+; TipInRetardDuration ($19D8): 2D table, 1 points, unsigned
+; Tip-in spark retard near idle (TipInSparkControl): number of steps (TipInSteps) against air temperature
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: AirTemp
 ; Read at $146C6
 ;---------------------------------------------------------------------------------------------------
-Tab2D_19D8:
+TipInRetardDuration:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,3                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$81,$A6,$FF,$B2,$03,$20,$15,$E0,$03,$01,$5F,$02
-        dc.b    $0A
+        dc.b    $FF,$FF,$FF,$FF
+TipInBaroMinKnock:
+        dc.b    $81                                      ; As TipInBaroMin while a knock retard is applied
+TipInAirTempMinKnock:
+        dc.b    $A6                                      ; As TipInAirTempMin while a knock retard is applied
+TipInCoolantMinKnock:
+        dc.b    $FF                                      ; As TipInCoolantMin while a knock retard is applied
+TipInMapMinKnock:
+        dc.b    $B2                                      ; As TipInMapMin while a knock retard is applied
+TipInRpmBelowTargetKnock:
+        dc.b    $03,$20                                  ; As TipInRpmBelowTarget while a knock retard is applied
+TipInRpmAboveTargetKnock:
+        dc.b    $15,$E0                                  ; As TipInRpmAboveTarget while a knock retard is applied
+TipInThrottleMinKnock:
+        dc.b    $03                                      ; As TipInThrottleMin while a knock retard is applied
+TipInThrottleRiseMinKnock:
+        dc.b    $01                                      ; As TipInThrottleRiseMin while a knock retard is applied
+TipInThrottleFilterKnock:
+        dc.b    $5F                                      ; As TipInThrottleFilter while a knock retard is applied
+TipInRetardDecayKnock:
+        dc.b    $02                                      ; As TipInRetardDecay while a knock retard is applied
+TipInRetardEndKnock:
+        dc.b    $0A                                      ; As TipInRetardEnd while a knock retard is applied
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_19ED ($19ED): 2D table, 2 points, unsigned
-; Inputs: $0623,Z
+; Inputs: ThrottleRise
 ; Read at $146E4
 ;---------------------------------------------------------------------------------------------------
 Tab2D_19ED:
@@ -2283,11 +2770,13 @@ Tab2D_19ED:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_19F5 ($19F5): 2D table, 1 points, unsigned
+; TipInRetardDurationKnock ($19F5): 2D table, 1 points, unsigned
+; As TipInRetardDuration while a knock retard is applied (KnockRetard non-zero)
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: AirTemp
 ; Read at $146C6
 ;---------------------------------------------------------------------------------------------------
-Tab2D_19F5:
+TipInRetardDurationKnock:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,2                                    ; x, y
 
@@ -2373,26 +2862,33 @@ AfterStartSparkCoolantWeight:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1A43 ($1A43): 2D table, 2 points, unsigned
-; Inputs: ScratchC
+; BaroSpark ($1A43): 2D table, 2 points, unsigned
+; Spark change against barometric pressure, weighted by BaroSparkRpmWeight
+; x: kpa, y: spark (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $142AE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1A43:
+BaroSpark:
         dc.b    2,$80                                    ; points, flags
         dc.b    161,8, 226,0                             ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1A4B ($1A4B): 2D table, 2 points, unsigned, y = 0 counts as 256
+; BaroSparkRpmWeight ($1A4B): 2D table, 2 points, unsigned, y = 0 counts as 256
+; Weight of BaroSpark against rpm
+; x: rpm32, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $142BC
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1A4B:
+BaroSparkRpmWeight:
         dc.b    2,$40                                    ; points, flags
         dc.b    30,0, 47,1                               ; x, y
 
-        dc.b    $FF,$FF,$6E,$00,$00,$00,$00,$18,$18
+        dc.b    $FF,$FF,$6E,$00,$00,$00,$00
+SparkFaultValue:
+        dc.b    $18                                      ; Spark value SparkValueD0F with a fault (SparkFaultFlags bit 5)
+        dc.b    $18
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexSparkEthanolWeight ($1A5A): 2D table, 1 points, unsigned
@@ -2447,7 +2943,15 @@ AirTempSparkMapRpm:
         dc.b    0,0,-2,-4,-6,-8,-8,-8,-8                 ; row 3
         dc.b    0,0,-2,-4,-6,-8,-8,-8,-8                 ; row 4
 
-        dc.b    $07,$7D,$64,$04,$08
+SparkSpeedFlagMin:
+        dc.b    $07                                      ; SparkFlags2 bit 6 sets below this vehicle speed (hysteresis SparkSpeedFlagHyst)
+SparkRpmFlagMin:
+        dc.b    $7D                                      ; SparkFlags2 bit 5 sets below this engine rpm (hysteresis SparkRpmFlagHyst)
+        dc.b    $64
+SparkStartRampStep:
+        dc.b    $04                                      ; Increase of SparkStartRamp per step
+SparkStartRampStep2:
+        dc.b    $08                                      ; Decrease of SparkStartRampValue per step (bit Options0339 bit 5)
 SparkHookCoolantMin:
         dc.b    $58                                      ; Spark hook (SparkHook, bit Options0338 bit 5): coolant at or above this value
 
@@ -2494,7 +2998,7 @@ AirTempSparkFactor:
 ; SurgeJerkLimit ($1B13): 3D table, 5 rows x 5 columns, unsigned
 ; Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into SurgeJerkRetard
 ; columns: raw, rows: pos256, values: spark (units: docs/en/calibration.md)
-; Inputs: $01F6,Z x SegmentRpmFast
+; Inputs: Scratch6 x SegmentRpmFast
 ; Read at $14EAC
 ;---------------------------------------------------------------------------------------------------
 SurgeJerkLimit:
@@ -2525,11 +3029,13 @@ SurgeJerkGain:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_1B55 ($1B55): 3D table, 5 rows x 5 columns, unsigned
+; SurgeRetardBase ($1B55): 3D table, 5 rows x 5 columns, unsigned
+; Driveline surge spark control: base retard (SurgeRetardRaw) against MAP position (rows) and the fast segment rpm SegmentRpmFast (columns)
+; columns: raw, rows: pos256, values: spark (units: docs/en/calibration.md)
 ; Inputs: SurgeMapPos x SegmentRpmFast
 ; Read at $1513A
 ;---------------------------------------------------------------------------------------------------
-Tab3D_1B55:
+SurgeRetardBase:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    31,63,94,125,156                         ; column axis
         dc.b    40,40,40,0,0                             ; row 0
@@ -2543,7 +3049,7 @@ Tab3D_1B55:
 ; SurgeDecay ($1B76): 3D table, 5 rows x 9 columns, unsigned
 ; Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage SurgeStageTime (columns)
 ; columns: raw, rows: pos256, values: mult256 (units: docs/en/calibration.md)
-; Inputs: result of Lookup2D x $01F2,Z
+; Inputs: result of Lookup2D x Scratch2
 ; Read at $14FCC
 ;---------------------------------------------------------------------------------------------------
 SurgeDecay:
@@ -2596,7 +3102,18 @@ SurgeJerkAdvanceOpen:
         dc.b    3,$80                                    ; points, flags
         dc.b    1,4, 8,8, 254,12                         ; x, y
 
-        dc.b    $FF,$FF,$FE,$FE,$30,$01,$01,$01
+        dc.b    $FF,$FF
+SurgeRpmFilter:
+        dc.b    $FE                                      ; Driveline surge: filter weight of the fast rpm (SurgeRpmFast)
+SurgeAccelFilter:
+        dc.b    $FE                                      ; Driveline surge: filter weight of the rpm acceleration (SurgeAccelFast)
+SurgeRpmFilter2:
+        dc.b    $30                                      ; Driveline surge: second filter (SurgeRpmSlow); the difference of the two is the rpm acceleration
+SurgeAccelFilter2:
+        dc.b    $01                                      ; Driveline surge: second acceleration filter (SurgeAccelSlow)
+        dc.b    $01
+SurgeMapFilter:
+        dc.b    $01                                      ; Driveline surge: filter weight of the MAP reference SurgeMapRef (MapRise = MAP minus it)
 SurgeRpmAccelEnd:
         dc.b    $FF,$C0                                  ; Driveline surge: rpm acceleration change (RpmAccelChange) below which the retard stage ends early
 SurgeMapMin:
@@ -2671,78 +3188,97 @@ SurgeJerkThreshold:
         dc.b    6,$80                                    ; points, flags
         dc.b    43,3, 56,3, 73,4, 115,4, 168,6, 229,254  ; x, y
 
-        dc.b    $FF,$00
+AcSparkSpeedMin:
+        dc.b    $FF                                      ; A/C spark compensation runs above this vehicle speed (closed throttle)
+AcSparkLoopMask:
+        dc.b    $00                                      ; A/C clutch spark (AcClutchSpark): main loop mask between steps
 AcSparkHoldCount:
         dc.b    $10                                      ; A/C spark: hold count AcSparkHoldCounter, A/C clutch off
 AcSparkHoldCountAcOn:
         dc.b    $08                                      ; As AcSparkHoldCount with the A/C clutch on
-        dc.b    $10,$10,$00,$08
+AcSparkWindowInit:
+        dc.b    $10                                      ; A/C spark window AcSparkWindow loaded when the A/C clutch releases
+        dc.b    $10
+AcSparkRateEnd:
+        dc.b    $00,$08                                  ; A/C spark: the window ends when the rpm rate is above this value
 AcSparkRateChangeMin:
         dc.b    $FF,$83                                  ; A/C spark: rpm-rate change (AcSparkRateChange) at or above which the compensation starts, A/C clutch off
 AcSparkRateChangeMinAcOn:
         dc.b    $FF,$B5                                  ; As AcSparkRateChangeMin with the A/C clutch on
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1C29 ($1C29): 2D table, 1 points, unsigned
+; AcEngageSparkHoldSensor ($1C29): 2D table, 1 points, unsigned
+; A/C spark compensation: hold count (AcSparkHold) against the A/C sensor (calibration bit Options0331 bit 7 set)
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: AcSensor
 ; Read at $14936
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1C29:
+AcEngageSparkHoldSensor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1C31 ($1C31): 2D table, 1 points, unsigned
+; AcEngageSparkHoldIac ($1C31): 2D table, 1 points, unsigned
+; As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit Options0331 bit 7 clear)
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: IacLearned
 ; Read at $14936
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1C31:
+AcEngageSparkHoldIac:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1C39 ($1C39): 2D table, 2 points, unsigned
+; AcEngageSparkHoldMap ($1C39): 2D table, 2 points, unsigned
+; Factor on the A/C spark hold count against MAP
+; x: kpa, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $14946
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1C39:
+AcEngageSparkHoldMap:
         dc.b    2,$80                                    ; points, flags
         dc.b    177,255, 227,128                         ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1C41 ($1C41): 2D table, 1 points, unsigned
+; AcClutchSparkTimeSensor ($1C41): 2D table, 1 points, unsigned
+; A/C clutch engage (AcCutLogic): spark window AcClutchSparkTime against the A/C sensor
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: AcSensor
 ; Read at $12AE2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1C41:
+AcClutchSparkTimeSensor:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1C49 ($1C49): 2D table, 1 points, unsigned
+; AcClutchSparkTimeIac ($1C49): 2D table, 1 points, unsigned
+; As AcClutchSparkTimeSensor against the learned IAC position IacLearned
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: IacLearned
 ; Read at $12AE2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1C49:
+AcClutchSparkTimeIac:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1C51 ($1C51): 2D table, 2 points, unsigned
+; AcClutchSparkTimeMap ($1C51): 2D table, 2 points, unsigned
+; Factor on the A/C clutch spark window against MAP
+; x: kpa, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $12AF2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1C51:
+AcClutchSparkTimeMap:
         dc.b    2,$80                                    ; points, flags
         dc.b    178,255, 227,128                         ; x, y
 
@@ -2796,21 +3332,32 @@ AcSparkMapLimit:
         dc.b    2,$20                                    ; points, flags
         dc.b    178,-60, 227,-16                         ; x, y
 
-        dc.b    $FF,$FF,$9B,$02
+        dc.b    $FF,$FF
+KnockLearnCoolantMin:
+        dc.b    $9B                                      ; Knock noise learning and the knock retard limit run above this coolant temperature
+        dc.b    $02
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1C7B ($1C7B): 2D table, 1 points, unsigned
+; KnockSensorCheckRpm ($1C7B): 2D table, 1 points, unsigned
+; Minimum filtered knock signal for the sensor check (KnockSensorCheck) against engine rpm
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $155B4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1C7B:
+KnockSensorCheckRpm:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,146                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$03,$20,$13,$C7
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+KnockLearnRpmBand:
+        dc.b    $03,$20                                  ; Knock noise learning: half width of an rpm band around each band centre ($2435-$2459)
+KnockLearnTimeMin:
+        dc.b    $13                                      ; Knock noise learning runs after this time since start
+KnockLearnAirTempMax:
+        dc.b    $C7                                      ; Knock noise learning runs below this air temperature
 
 ;---------------------------------------------------------------------------------------------------
-; KnockRpmSteps ($1C8D): 19 rows of 2 bytes
+; KnockRpmSteps ($1C8D): 5 rows of 2 bytes
 ; Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables
 ;---------------------------------------------------------------------------------------------------
 KnockRpmSteps:
@@ -2819,22 +3366,44 @@ KnockRpmSteps:
         dc.b    $37,$00
         dc.b    $37,$00
         dc.b    $37,$00
-        dc.b    $02,$80
-        dc.b    $53,$E0
-        dc.b    $5E,$F5
-        dc.b    $FF,$FF
-        dc.b    $FF,$FF
-        dc.b    $FF,$FF
-        dc.b    $05,$80
-        dc.b    $30,$16
-        dc.b    $50,$16
-        dc.b    $70,$16
-        dc.b    $90,$1B
-        dc.b    $B0,$1B
-        dc.b    $05,$80
-        dc.b    $30,$3A
 
-        dc.b    $50,$3A,$70,$44,$90,$4C,$B0,$4C
+
+;---------------------------------------------------------------------------------------------------
+; KnockWindowRpm ($1C97): 2D table, 2 points, unsigned
+; Knock sampling window length factor (KnockWindowFactor) against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: EngineRpm
+; Read at $155C4
+;---------------------------------------------------------------------------------------------------
+KnockWindowRpm:
+        dc.b    2,$80                                    ; points, flags
+        dc.b    83,224, 94,245                           ; x, y
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; KnockNoiseLearnWeight ($1CA3): 2D table, 5 points, unsigned
+; Filter weight of the learned knock noise level per rpm band (KnockNoiseLevel)
+; x: rpm32, y: mult256 (units: docs/en/calibration.md)
+; Inputs: EngineRpm
+; Read at $155A4
+;---------------------------------------------------------------------------------------------------
+KnockNoiseLearnWeight:
+        dc.b    5,$80                                    ; points, flags
+        dc.b    48,22, 80,22, 112,22, 144,27, 176,27     ; x, y
+
+
+;---------------------------------------------------------------------------------------------------
+; KnockNoiseMax ($1CAF): 2D table, 5 points, unsigned
+; Upper limit of the learned knock noise level against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: EngineRpm
+; Read at $15594
+;---------------------------------------------------------------------------------------------------
+KnockNoiseMax:
+        dc.b    5,$80                                    ; points, flags
+        dc.b    48,58, 80,58, 112,68, 144,76, 176,76     ; x, y
+
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockThreshold ($1CBB): 2D table, 5 points, unsigned
@@ -2892,10 +3461,21 @@ KnockBandMapStep:
         dc.b    $0A                                      ; Knock rpm bands: MAP step between bands
 KnockBandRpmStep:
         dc.b    $02                                      ; Knock rpm bands: rpm hysteresis between bands
-        dc.b    $3F,$06,$03,$00,$FF,$00,$22
+KnockLearnMask:
+        dc.b    $3F                                      ; Knock learning: main-loop mask for counting knock events
+KnockEventsMin:
+        dc.b    $06                                      ; Knock learning: knock events (KnockEventCount) needed before a cylinder retard step
+        dc.b    $03
+KnockDecayMask:
+        dc.b    $00                                      ; Knock events (KnockEventDecayStep): mask tested before the event count is reduced
+KnockEventDecay:
+        dc.b    $FF                                      ; Knock events: reduction of KnockEventCount
+        dc.b    $00,$22
 KnockCoolantMin:
         dc.b    $6E                                      ; Knock retard and its maximum apply above this coolant temperature
-        dc.b    $01,$00,$08
+        dc.b    $01,$00
+KnockSignalMin:
+        dc.b    $08                                      ; Knock learning: knock signal (KnockSignalLearn) at or above this value with KnockEventsMin events
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1CF4 ($1CF4): 2D table, 2 points, unsigned
@@ -2907,8 +3487,15 @@ Tab2D_1CF4:
         dc.b    28,4, 50,6                               ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FA,$7F,$FF,$00,$01,$80,$FF,$00,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$09,$BA,$01,$1C,$1C,$1C,$3A,$3A,$FF,$FF,$FF,$0E
-        dc.b    $00
+        dc.b    $FF,$FF,$FF,$FF
+KnockCylRetardMaxSteps:
+        dc.b    $09                                      ; Per-cylinder knock retard: upper limit of the half-value (Temp4F2)
+        dc.b    $BA
+KnockCylRetardOffset:
+        dc.b    $01                                      ; Per-cylinder knock retard: offset subtracted from the half-value
+EgrZeroPositionInit:
+        dc.b    $1C                                      ; Start value of the learned EGR closed position EgrZeroPos
+        dc.b    $1C,$1C,$3A,$3A,$FF,$FF,$FF,$0E,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1D1B ($1D1B): 2D table, 2 points, unsigned
@@ -2933,7 +3520,7 @@ Tab2D_1D27:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1D31 ($1D31): 2D table, 4 points, unsigned
-; Inputs: $01F6,Z
+; Inputs: Scratch6
 ; Read at $14C92
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1D31:
@@ -2998,7 +3585,7 @@ EventSparkThrottle2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1D7D ($1D7D): 2D table, 4 points, signed
-; Inputs: $069B,Z
+; Inputs: IdleErrorNet
 ; Read at $0A5E4
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1D7D:
@@ -3009,7 +3596,7 @@ Tab2D_1D7D:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1D89 ($1D89): 2D table, 4 points, signed
-; Inputs: $069B,Z
+; Inputs: IdleErrorNet
 ; Read at $0A5E4
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1D89:
@@ -3020,7 +3607,7 @@ Tab2D_1D89:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1D95 ($1D95): 2D table, 4 points, signed
-; Inputs: $069B,Z
+; Inputs: IdleErrorNet
 ; Read at $0A5E4
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1D95:
@@ -3031,83 +3618,152 @@ Tab2D_1D95:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1DA1 ($1DA1): 2D table, 4 points, signed
-; Inputs: $069B,Z
+; Inputs: IdleErrorNet
 ; Read at $0A5E4
 ;---------------------------------------------------------------------------------------------------
 Tab2D_1DA1:
         dc.b    4,$20                                    ; points, flags
         dc.b    130,0, 133,-4, 138,-6, 144,-12           ; x, y
 
-        dc.b    $FF,$FF,$06,$00
+        dc.b    $FF,$FF
+IacStepSumMax:
+        dc.b    $06                                      ; Idle speed control: limit of the summed IAC steps IacStepSum; beyond it the sum is reset to IacStepSumReset
+IacStepSumReset:
+        dc.b    $00                                      ; Idle speed control: value IacStepSum is set to when IacStepSumMax is exceeded
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1DAF ($1DAF): 2D table, 1 points, signed
-; Inputs: $01FE,Z
+; IdleStepClose ($1DAF): 2D table, 1 points, signed
+; Idle speed control: closing step against the accumulated error, added to IacStepSum (limited by $2611/$2612)
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: ScratchE
 ; Read at $0A676
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1DAF:
+IdleStepClose:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1DB7 ($1DB7): 2D table, 1 points, signed
-; Inputs: $01FE,Z
+; IdleStepOpen ($1DB7): 2D table, 1 points, signed
+; Idle speed control: opening step against the accumulated error, added to IacStepSum
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: ScratchE
 ; Read at $0A6E4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1DB7:
+IdleStepOpen:
         dc.b    1,$20                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$76,$0A
+        dc.b    $FF,$FF,$FF,$FF,$76
+IacCrankRpm:
+        dc.b    $0A                                      ; Engine rpm that ends the cranking IAC position (IacCrankCoolant) and starts IacRunUpCoolant
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1DC1 ($1DC1): 2D table, 4 points, unsigned
+; IacCrankCoolant ($1DC1): 2D table, 4 points, unsigned
+; IAC position while cranking (engine rpm below $2641) against coolant; scaled by IacStepBaroFactor and limited by $2642
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0BE8A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1DC1:
+IacCrankCoolant:
         dc.b    4,$80                                    ; points, flags
         dc.b    105,134, 119,100, 166,60, 207,43         ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$40
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+FieldDutyFilter:
+        dc.b    $40                                      ; Filter weight of the generator field duty FieldDuty
 BatteryVoltsFilter:
         dc.b    $80                                      ; Filter weight of the filtered battery voltage BatteryVoltsFiltered
-        dc.b    $71,$41,$71,$58,$50,$20
+        dc.b    $71
+IdleMapLearnedMin:
+        dc.b    $41                                      ; Lower limit of the learned idle MAP IdleMapLearned (outside the range it is reset from IacStartBaro)
+IdleMapLearnedMax:
+        dc.b    $71                                      ; Upper limit of the learned idle MAP
+        dc.b    $58,$50,$20
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1DD9 ($1DD9): 2D table, 5 points, unsigned
-; Inputs: ScratchC
+; IacCoastMapGain ($1DD9): 2D table, 5 points, unsigned
+; Coasting IAC target: gain of the MAP error (MAP minus learned idle MAP IdleMapLearned) against barometric pressure
+; x: kpa, y: raw (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $0B96E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1DD9:
+IacCoastMapGain:
         dc.b    5,$80                                    ; points, flags
         dc.b    129,201, 172,165, 203,145, 240,111, 255,100 ; x, y
 
-        dc.b    $8A,$CD,$D2,$90,$E0,$EE,$88,$84,$DF,$C6,$C2,$E0,$EE,$15,$0C,$DA
-        dc.b    $05,$13,$13,$13,$01,$90,$19,$00,$01,$31
+IdleRampAirMin:
+        dc.b    $8A                                      ; Battery-temperature idle ramp: air temperature window lower limit (IdleHotAirOn is the upper)
+IdleHotAirOff:
+        dc.b    $CD                                      ; Air temperature below which IdleTargetHotAirAdder stops (hysteresis)
+IdleHotAirOn:
+        dc.b    $D2                                      ; Air temperature above which IdleTargetHotAirAdder applies
+IdleRampAirMinOff:
+        dc.b    $90                                      ; As IdleRampAirMin once active (hysteresis; IdleHotAirOff is the upper)
+IdleRampBattTempMaxOff:
+        dc.b    $E0                                      ; Idle ramp: battery temperature upper limit once active
+IdleRampBattTempMax:
+        dc.b    $EE                                      ; Idle ramp: battery temperature window upper limit
+IdleRampBattTempMinOff:
+        dc.b    $88                                      ; Idle ramp: battery temperature lower limit once active
+IdleRampBattTempMin:
+        dc.b    $84                                      ; Idle ramp: battery temperature window lower limit
+IdleRampBaroMin:
+        dc.b    $DF                                      ; Idle ramp: runs above this barometric pressure
+IdleRampCoolantMinOff:
+        dc.b    $C6                                      ; Idle ramp: coolant lower limit once active
+IdleRampCoolantMin:
+        dc.b    $C2                                      ; Idle ramp: coolant window lower limit
+IdleRampCoolantMaxOff:
+        dc.b    $E0                                      ; Idle ramp: coolant upper limit once active
+IdleRampCoolantMax:
+        dc.b    $EE                                      ; Idle ramp: coolant window upper limit
+IdleRampVoltsMargin:
+        dc.b    $15                                      ; Idle ramp: charging target minus this margin is compared with the filtered battery voltage
+IdleRampVoltsMarginOn:
+        dc.b    $0C                                      ; As IdleRampVoltsMargin once IdleFlags2 bit 2 is set
+IdleRampDelayInit:
+        dc.b    $DA                                      ; Idle ramp: delay IdleRampDelay before the ramp starts
+IdleRampHoldInit:
+        dc.b    $05                                      ; Idle ramp: hold time IdleRampHold
+IdleRampBlockAcOff:
+        dc.b    $13                                      ; Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit Options033A bit 6 clear)
+IdleRampBlockEvent:
+        dc.b    $13                                      ; Idle ramp block time after an rpm dip or with A/C requested
+IdleRampBlockStart:
+        dc.b    $13                                      ; Idle ramp block time while the engine is not running
+        dc.b    $01,$90,$19,$00
+IdleRampCountMin:
+        dc.b    $01,$31                                  ; Idle ramp: runs only once the SRI mileage SriMileage (word) is at or above this value
 IacGearRpmEnd:
         dc.b    $17,$70                                  ; Gear-change IAC ends above this segment rpm
-        dc.b    $00,$00
+IdleLowVoltsMin:
+        dc.b    $00                                      ; Battery voltage below which the low-voltage timer IdleLowVoltsTimer counts
+IdleLowVoltsTime:
+        dc.b    $00                                      ; Low-voltage time (IdleLowVoltsTimer) above which the battery-temperature idle ramp is blocked
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E03 ($1E03): 2D table, 3 points, unsigned
+; IdleTargetRpmPN ($1E03): 2D table, 3 points, unsigned
+; Target idle speed against coolant in P/N (with calibration bit Options032E bit 6 clear)
+; x: tempc, y: rpm8 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0C394
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E03:
+IdleTargetRpmPN:
         dc.b    3,$80                                    ; points, flags
         dc.b    110,125, 166,113, 205,100                ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E0F ($1E0F): 2D table, 3 points, unsigned
+; IdleTargetRpm ($1E0F): 2D table, 3 points, unsigned
+; Target idle speed against coolant temperature
+; x: tempc, y: rpm8 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0C394
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E0F:
+IdleTargetRpm:
         dc.b    3,$80                                    ; points, flags
         dc.b    110,138, 166,125, 205,106                ; x, y
 
@@ -3125,134 +3781,163 @@ Tab2D_1E1B:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E23 ($1E23): 2D table, 1 points, unsigned
+; IdleTargetHotAirAdder ($1E23): 2D table, 1 points, unsigned
+; Idle target addition against air temperature above $265A (hysteresis down to $2659)
+; x: tempc, y: rpm8 (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $0C3E2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E23:
+IdleTargetHotAirAdder:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$00
+        dc.b    $FF,$FF,$FF,$FF
+IdleLoopHoldTime:
+        dc.b    $00                                      ; Idle speed control: hold-off IdleLoopHold loaded when SwitchInputs bit 0 first sets; no closing steps while it runs
 IacDroopMargin:
         dc.b    $03,$C0                                  ; Rpm droop: idle target minus this margin
 IacDroopMargin2:
         dc.b    $01,$80                                  ; Rpm droop: idle target minus this smaller margin
-        dc.b    $40,$00,$00
+IacStartLoops:
+        dc.b    $40                                      ; Main loops after start before the IAC start logic ends (also the IAC start step counter limit)
+IdleErrorCoarseMin:
+        dc.b    $00,$00                                  ; Idle speed control: rpm error from which the coarse error term (IdleErrorTermCoarse) is used instead of the fine one
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E33 ($1E33): 2D table, 1 points, unsigned, y = 0 counts as 256
+; IdleRateFilterCoolant ($1E33): 2D table, 1 points, unsigned, y = 0 counts as 256
+; Idle speed control: filter weight of the rpm rate term (IdleRpmRateFiltered) against coolant
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0A522
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E33:
+IdleRateFilterCoolant:
         dc.b    1,$40                                    ; points, flags
         dc.b    255,64                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E3B ($1E3B): 2D table, 7 points, unsigned
+; IdleErrorTermCoarse ($1E3B): 2D table, 7 points, unsigned
+; Idle speed control: proportional term against the coarse rpm error (segment rpm minus target), used for errors above $26EC; result minus 128 into IdleErrorTerm
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01FC,Z
 ; Read at $0A466
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E3B:
+IdleErrorTermCoarse:
         dc.b    7,$80                                    ; points, flags
         dc.b    57,157, 59,139, 61,133, 64,128, 72,112, 80,104, 92,93 ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E4D ($1E4D): 2D table, 6 points, unsigned
+; IdleErrorTermFine ($1E4D): 2D table, 6 points, unsigned
+; Idle speed control: proportional term against the fine rpm error, used for errors below $26EC
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01FD,Z
 ; Read at $0A466
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E4D:
+IdleErrorTermFine:
         dc.b    6,$80                                    ; points, flags
         dc.b    72,157, 88,139, 104,133, 128,128, 192,112, 255,104 ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E5F ($1E5F): 2D table, 5 points, unsigned
+; IdleErrorTermCoarsePN ($1E5F): 2D table, 5 points, unsigned
+; As IdleErrorTermCoarse, in P/N
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01FC,Z
 ; Read at $0A466
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E5F:
+IdleErrorTermCoarsePN:
         dc.b    5,$80                                    ; points, flags
         dc.b    57,146, 59,144, 64,128, 80,97, 92,81     ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E71 ($1E71): 2D table, 4 points, unsigned
+; IdleErrorTermFinePN ($1E71): 2D table, 4 points, unsigned
+; As IdleErrorTermFine, in P/N
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01FD,Z
 ; Read at $0A466
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E71:
+IdleErrorTermFinePN:
         dc.b    4,$80                                    ; points, flags
         dc.b    72,146, 88,144, 128,128, 255,97          ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E83 ($1E83): 2D table, 3 points, unsigned
+; IdleDeadbandCoolant ($1E83): 2D table, 3 points, unsigned
+; Idle speed control: part of the action threshold (IdleDeadband) against coolant
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0A58E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E83:
+IdleDeadbandCoolant:
         dc.b    3,$80                                    ; points, flags
         dc.b    149,127, 177,80, 205,0                   ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E8D ($1E8D): 2D table, 4 points, unsigned
+; IdleDeadbandMap ($1E8D): 2D table, 4 points, unsigned
+; Idle speed control: part of the action threshold (IdleDeadband) against MAP
+; x: kpa, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $0A57E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E8D:
+IdleDeadbandMap:
         dc.b    4,$80                                    ; points, flags
         dc.b    48,127, 113,127, 130,94, 162,63          ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1E97 ($1E97): 2D table, 4 points, steps, no interpolation
-; Inputs: $01FE,Z
+; IdleStepOpenScale ($1E97): 2D table, 4 points, steps, no interpolation
+; Idle speed control: accumulated error to the size of an IAC opening step
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: ScratchE
 ; Read at $0A6B4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1E97:
+IdleStepOpenScale:
         dc.b    4,$10                                    ; points, flags
         dc.b    16,4, 120,4, 123,2, 124,0                ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1EA1 ($1EA1): 2D table, 4 points, unsigned, y = 0 counts as 256
+; IdleStepOpenFactor ($1EA1): 2D table, 4 points, unsigned, y = 0 counts as 256
+; Idle speed control: opening step factor against the coarse rpm error, into IdleStepOpenValue
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01FC,Z
 ; Read at $0A6C4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1EA1:
+IdleStepOpenFactor:
         dc.b    4,$40                                    ; points, flags
         dc.b    57,255, 59,128, 66,128, 70,255           ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1EAB ($1EAB): 2D table, 3 points, steps, no interpolation
-; Inputs: $069B,Z
+; IdleStepCloseScale ($1EAB): 2D table, 3 points, steps, no interpolation
+; Idle speed control: accumulated error to the size of an IAC closing step
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: IdleErrorNet
 ; Read at $0A64A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1EAB:
+IdleStepCloseScale:
         dc.b    3,$10                                    ; points, flags
         dc.b    132,0, 134,1, 136,2                      ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1EB5 ($1EB5): 2D table, 4 points, unsigned
+; IdleStepCloseFactor ($1EB5): 2D table, 4 points, unsigned
+; Idle speed control: closing step factor against the coarse rpm error, into IdleStepCloseValue
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $01FC,Z
 ; Read at $0A65C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1EB5:
+IdleStepCloseFactor:
         dc.b    4,$80                                    ; points, flags
         dc.b    58,255, 62,128, 67,128, 89,255           ; x, y
 
@@ -3269,11 +3954,13 @@ Tab2D_1EBF:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_1EC7 ($1EC7): 3D table, 5 rows x 5 columns, unsigned
-; Inputs: result of Lookup2D x $066E,Z
+; IdleBattTempTargetPN ($1EC7): 3D table, 5 rows x 5 columns, unsigned
+; As IdleBattTempTarget in P/N
+; columns: raw, rows: pos256, values: rpm8 (units: docs/en/calibration.md)
+; Inputs: result of Lookup2D x IdleRunTimer
 ; Read at $0C606
 ;---------------------------------------------------------------------------------------------------
-Tab3D_1EC7:
+IdleBattTempTargetPN:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    4,20,40,60,80                            ; column axis
         dc.b    138,138,138,125,88                       ; row 0
@@ -3284,11 +3971,13 @@ Tab3D_1EC7:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_1EE8 ($1EE8): 3D table, 5 rows x 5 columns, unsigned
-; Inputs: result of Lookup2D x $066E,Z
+; IdleBattTempTarget ($1EE8): 3D table, 5 rows x 5 columns, unsigned
+; Ramped idle target (IdleTargetRamped) against battery temperature (rows) and run time IdleRunTimer (columns)
+; columns: raw, rows: pos256, values: rpm8 (units: docs/en/calibration.md)
+; Inputs: result of Lookup2D x IdleRunTimer
 ; Read at $0C606
 ;---------------------------------------------------------------------------------------------------
-Tab3D_1EE8:
+IdleBattTempTarget:
         dc.b    5,5,$00                                  ; rows, columns, signed
         dc.b    4,20,40,60,80                            ; column axis
         dc.b    138,138,138,125,100                      ; row 0
@@ -3326,11 +4015,13 @@ IacShiftStep2:
         dc.b    $04                                      ; As IacShiftStep while IacShiftMode is not zero
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1F19 ($1F19): 2D table, 3 points, unsigned
-; Inputs: $032C,Z
+; IacStartBattTemp ($1F19): 2D table, 3 points, unsigned
+; IAC hold at start (IacStartHold/IacStartHold2) against battery temperature, scaled by IacStepBaroFactor
+; x: tempc, y: raw (units: docs/en/calibration.md)
+; Inputs: BatteryTemp
 ; Read at $0B738
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1F19:
+IacStartBattTemp:
         dc.b    3,$80                                    ; points, flags
         dc.b    138,10, 194,25, 221,40                   ; x, y
 
@@ -3358,17 +4049,22 @@ Tab2D_1F3D:
         dc.b    10,15, 49,39                             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$02,$20,$0A,$FB,$31,$CB,$FF,$FF,$FF,$FF,$02,$20
-        dc.b    $0A,$F4,$31,$D5,$FF,$FF,$FF,$FF,$FA,$00
+        dc.b    $0A,$F4,$31,$D5,$FF,$FF,$FF,$FF
+ShiftIdleRpmMargin:
+        dc.b    $FA,$00                                  ; Shift into drive: idle target plus this margin; segment rpm above it ends the transition
 IacGearCoolantMax:
         dc.b    $79                                      ; Gear-change IAC: coolant below which the IacGearTimeCoolant tables and the time counter IacGearTime apply
-        dc.b    $69
+ShiftIdleCoolantMin:
+        dc.b    $69                                      ; Shift into P/N: coolant above which ShiftIdleDelayCoolant applies
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1F5F ($1F5F): 2D table, 2 points, unsigned
+; ShiftIdleDelayCoolant ($1F5F): 2D table, 2 points, unsigned
+; Delay (ShiftIdleDelay) on a shift into P/N against coolant (above $279B)
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1182A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1F5F:
+ShiftIdleDelayCoolant:
         dc.b    2,$80                                    ; points, flags
         dc.b    99,10, 105,0                             ; x, y
 
@@ -3512,14 +4208,19 @@ IacAcKickMapLatched:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$9B
 ChargeDeficitFilter:
         dc.b    $FE                                      ; Filter weight of the charging deficit average ChargeDeficitAvg
-        dc.b    $00,$00,$00
+IacChargeStepWait:
+        dc.b    $00                                      ; Charging IAC step: wait after a step (IacChargeTimer)
+IacChargeStepRest:
+        dc.b    $00,$00                                  ; Charging IAC step: pause before the next step
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1FE1 ($1FE1): 2D table, 1 points, unsigned
-; Inputs: $0438,Z
+; IacChargeStep ($1FE1): 2D table, 1 points, unsigned
+; IAC opening step against the charging deficit ChargeDeficit (target charging voltage minus battery voltage)
+; x: volt16, y: raw (units: docs/en/calibration.md)
+; Inputs: ChargeDeficit
 ; Read at $0B660
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1FE1:
+IacChargeStep:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3641,9 +4342,9 @@ IacRollFactorAcSensor:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollFactorBattTemp ($20A7): 2D table, 1 points, unsigned
-; Factor on the rolling IAC target against battery temperature (centred on 128); read here with another input than in 05293190AC, so the x unit is not carried
-; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $032C,Z
+; Factor on the rolling IAC target against battery temperature (centred on 128)
+; x: tempc, y: raw (units: docs/en/calibration.md)
+; Inputs: BatteryTemp
 ; Read at $0AD2C, $0B386
 ;---------------------------------------------------------------------------------------------------
 IacRollFactorBattTemp:
@@ -3694,67 +4395,92 @@ IacRollThrottleRpm:
         dc.b    0,0,0,0,0                                ; row 3
         dc.b    0,0,0,0,0                                ; row 4
 
-        dc.b    $0E,$20,$0E,$7F,$02,$3F,$20
+IdleMapStepTimeClosed:
+        dc.b    $0E                                      ; Idle MAP loop: time between IAC steps, closed throttle
+IdleMapHoldTime:
+        dc.b    $20                                      ; Idle MAP loop: hold-off (IdleMapHold) while the dashpot timer runs
+IdleMapStepTime:
+        dc.b    $0E                                      ; Idle MAP loop: time between IAC steps, throttle not closed
+IdleMapRpmAccelMax:
+        dc.b    $7F                                      ; Idle MAP loop: closed-throttle mode ends when IdleMapRpmAccel (rpm acceleration) exceeds this value
+IdleMapAcAdder:
+        dc.b    $02                                      ; Idle MAP target addition with A/C requested
+IacCoastLoopMask:
+        dc.b    $3F                                      ; Coast IAC: main-loop mask for the update rate of the IAC target
+IdleMapTargetMin:
+        dc.b    $20                                      ; Lower limit of the idle MAP target IdleMapTarget
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_20ED ($20ED): 2D table, 4 points, unsigned
-; Inputs: ScratchC
+; MisfireEnableBaro ($20ED): 2D table, 4 points, unsigned
+; Misfire monitor enable weight term against barometric pressure (MisfireBaroWeight)
+; x: kpa, y: raw (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $1C9BE
 ;---------------------------------------------------------------------------------------------------
-Tab2D_20ED:
+MisfireEnableBaro:
         dc.b    4,$80                                    ; points, flags
         dc.b    129,28, 194,42, 227,49, 255,55           ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_20F7 ($20F7): 2D table, 2 points, unsigned
+; IdleMapAfterStart ($20F7): 2D table, 2 points, unsigned
+; Idle MAP target addition against time since start
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Count3s
 ; Read at $0BCC2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_20F7:
+IdleMapAfterStart:
         dc.b    2,$80                                    ; points, flags
         dc.b    9,4, 19,0                                ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2101 ($2101): 2D table, 7 points, unsigned
+; IdleMapWarmup ($2101): 2D table, 7 points, unsigned
+; Idle MAP target addition against coolant
+; x: tempc, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0BCD2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2101:
+IdleMapWarmup:
         dc.b    7,$80                                    ; points, flags
         dc.b    99,64, 116,47, 144,18, 171,11, 199,4, 210,2, 216,0 ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2111 ($2111): 2D table, 1 points, unsigned
+; IdleMapRpm ($2111): 2D table, 1 points, unsigned
+; Idle MAP target addition against segment rpm, weighted by IdleMapRpmCoolantWeight
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $0BD48
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2111:
+IdleMapRpm:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_211B ($211B): 2D table, 1 points, unsigned
+; IdleMapRpmCoolantWeight ($211B): 2D table, 1 points, unsigned
+; Weight of IdleMapRpm against coolant
+; x: tempc, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0BD58
 ;---------------------------------------------------------------------------------------------------
-Tab2D_211B:
+IdleMapRpmCoolantWeight:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2125 ($2125): 2D table, 1 points, unsigned
-; Inputs: ScratchC
+; IdleMapBaro ($2125): 2D table, 1 points, unsigned
+; Idle MAP target addition against barometric pressure
+; x: kpa, y: raw (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $0BD70
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2125:
+IdleMapBaro:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -3778,71 +4504,105 @@ IacFieldDutyRpm2:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2150 ($2150): 2D table, 3 points, signed
+; IacMapHighStepClosed ($2150): 2D table, 3 points, signed
+; IAC closing step against how far MAP is above the idle MAP target, closed throttle
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $0BE56
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2150:
+IacMapHighStepClosed:
         dc.b    3,$20                                    ; points, flags
         dc.b    3,0, 10,-3, 20,-5                        ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_215A ($215A): 2D table, 4 points, signed
+; IacMapHighStep ($215A): 2D table, 4 points, signed
+; As IacMapHighStepClosed, throttle not closed
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $0BE56
 ;---------------------------------------------------------------------------------------------------
-Tab2D_215A:
+IacMapHighStep:
         dc.b    4,$20                                    ; points, flags
         dc.b    3,0, 5,-1, 16,-4, 32,-8                  ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2164 ($2164): 2D table, 2 points, unsigned
+; IacMapLowStep ($2164): 2D table, 2 points, unsigned
+; IAC opening step against how far MAP is below the idle MAP target (IdleMapTarget)
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $0BE56
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2164:
+IacMapLowStep:
         dc.b    2,$80                                    ; points, flags
         dc.b    4,0, 10,6                                ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_216E ($216E): 2D table, 2 points, unsigned
+; IdleMapAdderIac ($216E): 2D table, 2 points, unsigned
+; Idle MAP target addition against the learned IAC position IacLearned (without A/C clutch)
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: IacLearned
 ; Read at $0BCFA
 ;---------------------------------------------------------------------------------------------------
-Tab2D_216E:
+IdleMapAdderIac:
         dc.b    2,$80                                    ; points, flags
         dc.b    15,15, 30,20                             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2178 ($2178): 2D table, 2 points, unsigned
+; IdleMapAdderIac2 ($2178): 2D table, 2 points, unsigned
+; As IdleMapAdderIac when FuelModeFlags2 bits 7-6 are not both clear and IdleMapIacFlag is zero
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: IacLearned
 ; Read at $0BCFA
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2178:
+IdleMapAdderIac2:
         dc.b    2,$80                                    ; points, flags
         dc.b    16,13, 41,38                             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 IdleRollSpeed:
         dc.b    $05                                      ; Vehicle speed that separates standing from rolling for idle air, dashpot and coast logic
-        dc.b    $EC,$04,$02,$02,$00,$22,$60,$0F,$A0
+IacRollSpeedMax:
+        dc.b    $EC                                      ; Rolling IAC target applies up to this vehicle speed
+IacRollSpeedHyst:
+        dc.b    $04                                      ; Hysteresis on IdleRollSpeed and IacRollSpeedMax
+IacDecelHoldCount:
+        dc.b    $02                                      ; Decel reference: loops before the reference rpm (IacDecelRefRpm) is taken
+IacDecelRefOffset:
+        dc.b    $02,$00                                  ; Decel reference: offset subtracted from the latched rpm
+IacDecelTargetMax:
+        dc.b    $22,$60                                  ; Decel reference (IacRollingControl): upper limit of the idle target used for it (the smaller of this value and IdleTarget is taken)
+IacRollTargetAdder:
+        dc.b    $0F,$A0                                  ; Rolling: idle target plus this value
 IacCoastOffsetUp:
         dc.b    $0A                                      ; Coast IAC: signed offset added to IacCoastPosition (first branch)
 IacCoastOffsetDown:
         dc.b    $F0                                      ; Coast IAC: signed offset added to IacCoastPosition (second branch)
-        dc.b    $1F,$40,$13,$CA,$04,$A1
+IacRollTargetAdder2:
+        dc.b    $1F,$40                                  ; Rolling: further addition on IacRollTargetAdder
+IdleStableTimeMin:
+        dc.b    $13                                      ; Idle state flags (IdleStateFlags): time since start above this value (also used by IdleMonitorEnable)
+IdleStableCoolantMin:
+        dc.b    $CA                                      ; Idle state flags (IdleStateFlags): stable idle needs coolant above this value
+IdleStableRpmBand:
+        dc.b    $04                                      ; Idle state flags: segment rpm within the idle target plus or minus this value
+IacCoastMapMax:
+        dc.b    $A1                                      ; Coast IAC mode runs below this MAP
 IacAccelHold:
         dc.b    $28                                      ; Hold time IacAccelTimer after acceleration enrichment (MAP or throttle)
 IacTargetMax:
         dc.b    $A0                                      ; Upper limit of the IAC target position
-        dc.b    $64,$1A,$00,$00
+IdleTargetFault:
+        dc.b    $64                                      ; Idle target used with a fault (SparkFaultFlags bit 5 or FaultSet02 bits 7-6), ×64
+        dc.b    $1A
+IdleUnderTargetMargin:
+        dc.b    $00,$00                                  ; IdleStateUpdate: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_219A ($219A): 2D table, 1 points, unsigned
@@ -3856,11 +4616,13 @@ Tab2D_219A:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_21A6 ($21A6): 2D table, 2 points, unsigned
-; Inputs: ScratchC
+; IacDriveOffsetBaro ($21A6): 2D table, 2 points, unsigned
+; IAC offset removed from the IAC target in drive, against barometric pressure, giving IacDriveOffset
+; x: kpa, y: raw (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $0A826
 ;---------------------------------------------------------------------------------------------------
-Tab2D_21A6:
+IacDriveOffsetBaro:
         dc.b    2,$80                                    ; points, flags
         dc.b    240,28, 255,24                           ; x, y
 
@@ -3887,7 +4649,7 @@ IacBaseBaroTarget:
 ; IacStartBaro ($21D3): 2D table, 3 points, unsigned
 ; Idle air position at reset against barometric pressure, into IdleMapLearned
 ; x: kpa, y: raw (units: docs/en/calibration.md)
-; Inputs: ScratchC
+; Inputs: Baro
 ; Read at $0B6D0, $0B850
 ;---------------------------------------------------------------------------------------------------
 IacStartBaro:
@@ -3939,7 +4701,7 @@ Tab2D_2207:
 ; IacStepBaroFactor ($220F): 2D table, 1 points, unsigned
 ; Multiplier on IAC steps and start positions against barometric pressure
 ; x: kpa, y: raw (units: docs/en/calibration.md)
-; Inputs: ScratchC
+; Inputs: Baro
 ; Read at $0B650, $0B728, $0C068
 ;---------------------------------------------------------------------------------------------------
 IacStepBaroFactor:
@@ -3952,7 +4714,7 @@ IacStepBaroFactor:
 ; IacShiftBaroFactor ($2219): 2D table, 1 points, unsigned
 ; Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure
 ; x: kpa, y: raw (units: docs/en/calibration.md)
-; Inputs: ScratchC
+; Inputs: Baro
 ; Read at $0A942, $0B6E4, $0BAB0
 ;---------------------------------------------------------------------------------------------------
 IacShiftBaroFactor:
@@ -3965,7 +4727,7 @@ IacShiftBaroFactor:
 ; IacKickBaroFactor ($2223): 2D table, 3 points, unsigned
 ; Factor on the A/C and rpm-dip IAC steps against barometric pressure
 ; x: kpa, y: raw (units: docs/en/calibration.md)
-; Inputs: ScratchC
+; Inputs: Baro
 ; Read at $0B2B6
 ;---------------------------------------------------------------------------------------------------
 IacKickBaroFactor:
@@ -3976,7 +4738,7 @@ IacKickBaroFactor:
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_222D ($222D): 2D table, 3 points, unsigned
-; Inputs: ScratchC
+; Inputs: Baro
 ; Read at $0B1C4
 ;---------------------------------------------------------------------------------------------------
 Tab2D_222D:
@@ -3987,11 +4749,13 @@ Tab2D_222D:
         dc.b    $00,$01,$08,$02,$2C,$05,$4D,$0A,$FF,$10
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_224F ($224F): 2D table, 3 points, unsigned
+; SpeedCtlErrorGain ($224F): 2D table, 3 points, unsigned
+; Servo step against the speed error (one of the error curves of SpeedCtlControl, by SpeedCtlState bits 2-3)
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1077C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_224F:
+SpeedCtlErrorGain:
         dc.b    3,$80                                    ; points, flags
         dc.b    0,0, 16,8, 144,80                        ; x, y
 
@@ -3999,11 +4763,13 @@ Tab2D_224F:
         dc.b    $80,$F2,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_226B ($226B): 2D table, 3 points, signed
+; SpeedCtlErrorGainResume ($226B): 2D table, 3 points, signed
+; Servo step against the speed error with SpeedCtlState bit 4 set
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: #$FF; TBA
 ; Read at $1077C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_226B:
+SpeedCtlErrorGainResume:
         dc.b    3,$20                                    ; points, flags
         dc.b    0,-2, 64,-48, 255,-80                    ; x, y
 
@@ -4012,66 +4778,78 @@ Tab2D_226B:
         dc.b    $88,$40,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_2299 ($2299): 2D table, 3 points, unsigned
-; Inputs: $014F,Z
+; SpeedCtlEngagePosAC ($2299): 2D table, 3 points, unsigned
+; As SpeedCtlEngagePos with A/C requested
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: SpeedCtlSetSpeed
 ; Read at $10936
 ;---------------------------------------------------------------------------------------------------
-Tab2D_2299:
+SpeedCtlEngagePosAC:
         dc.b    3,$80                                    ; points, flags
         dc.b    70,38, 130,42, 170,50                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22A5 ($22A5): 2D table, 1 points, unsigned
-; Inputs: ScratchC
+; SpeedCtlEngageBaro ($22A5): 2D table, 1 points, unsigned
+; Factor on the engagement position against barometric pressure
+; x: kpa, y: mult256 (units: docs/en/calibration.md)
+; Inputs: Baro
 ; Read at $1094E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22A5:
+SpeedCtlEngageBaro:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,128                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22B3 ($22B3): 2D table, 3 points, unsigned
-; Inputs: $014F,Z; #$80
+; SpeedCtlEngageErrorAdder ($22B3): 2D table, 3 points, unsigned
+; Correction of the engagement position against the speed error (set speed minus speed, centred on 128)
+; x: raw, y: raw (units: docs/en/calibration.md)
+; Inputs: SpeedCtlSetSpeed; #$80
 ; Read at $10328
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22B3:
+SpeedCtlEngageErrorAdder:
         dc.b    3,$80                                    ; points, flags
         dc.b    112,120, 128,128, 144,155                ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22C5 ($22C5): 2D table, 2 points, unsigned
+; SpeedCtlThrottleTerm ($22C5): 2D table, 2 points, unsigned
+; Servo term against throttle above closed ($03,Y)
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Throttle
 ; Read at $10798
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22C5:
+SpeedCtlThrottleTerm:
         dc.b    2,$80                                    ; points, flags
         dc.b    1,8, 3,20                                ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22CD ($22CD): 2D table, 2 points, unsigned
+; SpeedCtlSpeedTerm ($22CD): 2D table, 2 points, unsigned
+; Servo term against raw vehicle speed ×8, added to SpeedCtlThrottleTerm
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: LDD
 ; Read at $107AC
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22CD:
+SpeedCtlSpeedTerm:
         dc.b    2,$80                                    ; points, flags
         dc.b    60,22, 130,16                            ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_22D5 ($22D5): 2D table, 1 points, unsigned
+; SpeedCtlCancelStep ($22D5): 2D table, 1 points, unsigned
+; Step against speed plus 4 minus the set speed, when the set speed is replaced by the current speed
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $1046A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_22D5:
+SpeedCtlCancelStep:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,32                                   ; x, y
 
@@ -4086,21 +4864,112 @@ Tab2D_22DD:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,138                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$80,$30,$00,$00,$09,$00,$AE,$32
-        dc.b    $55,$20,$28,$3C,$BC,$04,$03,$30,$00,$0C,$03,$01,$01,$07,$05,$4D
-        dc.b    $08,$01,$12,$12,$06,$06,$02,$64,$04,$06,$07,$F8,$01,$02,$1B,$E5
-        dc.b    $0F,$13,$00,$00,$00,$00,$00,$00,$40
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+SpeedCtlUnderspeedLarge:
+        dc.b    $80                                      ; Speed control: underspeed at or above this value gives the long fixed vacuum pulse ($0F)
+SpeedCtlUnderspeedMedium:
+        dc.b    $30                                      ; Speed control: underspeed at or above this value gives the short fixed vacuum pulse ($05)
+SpeedCtlCoastHoldTime:
+        dc.b    $00                                      ; Speed control: switch hold time before coast mode starts (with Options0332 bits 3-4 clear)
+SpeedCtlAccelHoldTime:
+        dc.b    $00                                      ; Speed control: hold count (SpeedCtlHoldCount) of the accel/resume switch before accel mode starts
+SpeedCtlOverspeedBand:
+        dc.b    $09                                      ; Speed control: overspeed below this value ends the accel/resume state bits (SpeedCtlState bit 2)
+SpeedCtlApplyThrottleMin:
+        dc.b    $00                                      ; Speed control: throttle opening at or above which the vacuum pulse is limited by the tables at $2BB5/$2BBD
+SpeedCtlSetSpeedMax:
+        dc.b    $AE                                      ; Speed control (probable): upper limit of the set speed
+SpeedCtlSetSpeedMin:
+        dc.b    $32                                      ; Speed control: lower limit of the set speed (no engagement below it)
+        dc.b    $55,$20,$28,$3C,$BC
+SpeedCtlTapUpPulse:
+        dc.b    $04                                      ; Speed control: vacuum pulse added to the servo command on a tap-up of the set speed
+SpeedCtlSetPulse:
+        dc.b    $03                                      ; Speed control: vacuum pulse added to the servo command when the speed is set
+SpeedCtlTapTime:
+        dc.b    $30                                      ; Speed control: switch time (SpeedCtlTimer2) below which a press is a tap (also the post-tap hold SpeedCtlTapHold)
+SpeedCtlOutputDeadband:
+        dc.b    $00                                      ; Speed control: servo output at or below this value with a small speed error gives no pulse
+SpeedCtlSpeedDeadband:
+        dc.b    $0C                                      ; Speed control: speed error at or below this value gives no pulse
+SpeedCtlSettleTime:
+        dc.b    $03                                      ; Speed control: SpeedCtlTimer count after which the engage state bit (SpeedCtlState2 bit 2) clears
+SpeedCtlVentPulseMin:
+        dc.b    $01                                      ; Speed control: minimum vent pulse (ORed into the servo command SpeedCtlServoCmd)
+SpeedCtlApplyPulseMin:
+        dc.b    $01                                      ; Speed control: minimum vacuum pulse (ORed into the servo command)
+SpeedCtlVentPulseAccel:
+        dc.b    $07                                      ; Speed control: added to the vent pulse in accel mode (SpeedCtlState bit 3)
+SpeedCtlApplyPulseResume:
+        dc.b    $05                                      ; Speed control: added to the vacuum pulse in resume mode (SpeedCtlState bit 4)
+SpeedCtlHoldGain:
+        dc.b    $4D                                      ; Speed control: signed fraction applied to the switch hold count SpeedCtlHoldCount for the servo pulse
+SpeedCtlResumeOffset2:
+        dc.b    $08                                      ; Speed control: second resume-speed offset
+SpeedCtlResumeOffset:
+        dc.b    $01                                      ; Speed control: offset subtracted from the resume speed
+SpeedCtlAccelLead:
+        dc.b    $12                                      ; Speed control: lead added to the vehicle speed in the accelerate branch
+SpeedCtlAccelLeadMax:
+        dc.b    $12                                      ; Speed control: limit of the resume target speed above vehicle speed in accel mode
+        dc.b    $06
+SpeedCtlSpeedErrorMax:
+        dc.b    $06                                      ; Speed control: speed error (set minus actual) above which the step branch is skipped
+SpeedCtlCoastStep:
+        dc.b    $02                                      ; Speed control: set-speed decrease per coast step
+SpeedCtlServoSplitSpeed:
+        dc.b    $64                                      ; Speed control: set speed that selects the servo table at $8190 or $8191
+SpeedCtlErrorBias:
+        dc.b    $04                                      ; Speed control: bias added to the speed error term (set speed × 4 − speed) kept in SpeedCtlErrorPeak
+SpeedCtlAdaptErrorMin:
+        dc.b    $06                                      ; Speed control gain adaptation: peak speed error (SpeedCtlErrorPeak) at or above which the gain is adapted
+SpeedCtlAdaptSumHigh:
+        dc.b    $07                                      ; Speed control gain adaptation: error sum above this value raises the gain
+SpeedCtlAdaptSumLow:
+        dc.b    $F8                                      ; Speed control gain adaptation: error sum below this (signed) value lowers the gain
+SpeedCtlAdaptStepUp:
+        dc.b    $01                                      ; Speed control gain adaptation: gain increase per step
+SpeedCtlAdaptStepDown:
+        dc.b    $02                                      ; Speed control gain adaptation: gain decrease per step
+SpeedCtlAdaptGainMax:
+        dc.b    $1B                                      ; Speed control gain adaptation: upper limit of the learned gains (SpeedCtlGainLow, SpeedCtlGainHigh)
+SpeedCtlAdaptGainMin:
+        dc.b    $E5                                      ; Speed control gain adaptation: lower (signed) limit of the learned gains
+SpeedCtlAdaptPeriod:
+        dc.b    $0F                                      ; Speed control gain adaptation: SpeedCtlTimer count between adaptation steps
+SpeedCtlTimerMax:
+        dc.b    $13                                      ; Speed control: limit of SpeedCtlTimer
+SpeedCtlShiftHoldTime:
+        dc.b    $00                                      ; Speed control shift handling: servo hold time (SpeedCtlOverrideTimer) after a clutch/up-shift event
+SpeedCtlShiftThrottleSlope:
+        dc.b    $00                                      ; Speed control shift handling: speed slope of the throttle reference, first event
+SpeedCtlShiftThrottleBase:
+        dc.b    $00                                      ; Speed control shift handling: throttle reference = this + slope × speed (SpeedCtlThrottleRef), first event
+SpeedCtlShiftHoldTime2:
+        dc.b    $00                                      ; Speed control shift handling: servo hold time after the second shift event (BusFlags9CE bit 3)
+SpeedCtlShiftThrottleSlope2:
+        dc.b    $00                                      ; As SpeedCtlShiftThrottleSlope for the second event
+SpeedCtlShiftThrottleBase2:
+        dc.b    $00                                      ; As SpeedCtlShiftThrottleBase for the second event
+SpeedCtlGearRatioMax:
+        dc.b    $40                                      ; Speed control shift handling (SpeedCtlShift, manual): rpm/speed ratio at or below this value counts as in gear
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_231A ($231A): 2D table, 1 points, unsigned
+; SpeedCtlOverrideThrottle ($231A): 2D table, 1 points, unsigned
+; Value SpeedCtlOverrideCmd against throttle above the level latched in SpeedCtlShiftThrottle (driver override)
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $10C7E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_231A:
+SpeedCtlOverrideThrottle:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$F0,$0A
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+SpeedCtlSpeedErrorTrip:
+        dc.b    $F0                                      ; Speed control (SpeedCtlCancelMonitor): speed drop that trips the cancel (2 less with SpeedCtlFlags2 bit 6; 0 = off)
+SpeedCtlCancelHold:
+        dc.b    $0A                                      ; Speed control: hold count (SpeedCtlCancelTimer) set on the cancel condition
 SpeedCtlRpmFilterLow:
         dc.b    $04                                      ; As SpeedCtlRpmFilter with rpm at or below RpmPrev
 SpeedCtlRpmFilter:
@@ -4148,8 +5017,27 @@ LdpPumpTimeByLevel2:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$13,$CD,$02,$02,$80,$02,$12,$21,$1E,$7D
-        dc.b    $C8
+        dc.b    $00,$00,$00,$00,$00,$00
+MonSteadyTimeMin:
+        dc.b    $13                                      ; Steady-state condition (CamCrankRelation): time since start at or above this value
+MonSteadyCoolantMin:
+        dc.b    $CD                                      ; Steady-state condition: coolant above this value
+MonSteadyMapDelta:
+        dc.b    $02                                      ; Steady-state condition: MAP change below this value
+MonSteadyRateMax:
+        dc.b    $02,$80                                  ; Steady-state condition: size of MonSteadyRate below this value
+MonSteadyThrottleDelta:
+        dc.b    $02                                      ; Steady-state condition: throttle change below this value
+MonSteadyRpmMin:
+        dc.b    $12                                      ; Steady-state condition (CamCrankRelation, P1390): first rpm window, engine rpm above this value
+MonSteadyRpmHighMin:
+        dc.b    $21                                      ; Steady-state condition: second rpm window, engine rpm above this value (with vehicle speed at most MonSteadySpeedMax)
+MonSteadyRpmLowMax:
+        dc.b    $1E                                      ; Steady-state condition: first rpm window, engine rpm below this value
+MonSteadyRpmHighMax:
+        dc.b    $7D                                      ; Steady-state condition: second rpm window, engine rpm below this value
+MonSteadySpeedMax:
+        dc.b    $C8                                      ; Steady-state condition: vehicle speed at or below this value
 CamCrankOffsetMin:
         dc.b    $10                                      ; Cam/crank relation (CamCrankMeasure, P1390): offset below this value counts as skipped
 CamCrankOffsetMax:
@@ -4158,64 +5046,104 @@ CamCrankOffsetJitter:
         dc.b    $03                                      ; Cam/crank relation: change of the offset below which a reading is stable
 CamCrankStableCount:
         dc.b    $6A                                      ; Cam/crank relation: stable readings needed (CamCrankStable)
-        dc.b    $3C,$1A,$40,$3F,$C0,$3F,$C0,$FF,$00,$00,$C8,$01,$EF,$B5,$FF,$A6
-        dc.b    $7F,$1D,$7F,$0F,$25,$02,$BA,$EF,$01,$02,$10,$05,$0E,$09,$10,$84
-        dc.b    $02,$7F,$1D,$FF,$06,$FA,$06,$FA
+        dc.b    $3C
+CamCrankWindow:
+        dc.b    $1A                                      ; Cam/crank relation monitor: window around the stored relation (CamCrankOffset)
+CamCrankOffsetBase:
+        dc.b    $40                                      ; Cam/crank relation: base subtracted from the measured offset CamCrankOffset
+        dc.b    $3F,$C0,$3F,$C0,$FF,$00,$00,$C8
+CamCrankHold:
+        dc.b    $01                                      ; Cam/crank monitor: hold count (CamCrankHoldCount) set on a change
+        dc.b    $EF,$B5,$FF,$A6
+PurgeFlowTrimDrop:
+        dc.b    $7F                                      ; EVAP purge flow test: short-term trim drop that counts as purge flow (also used by O2UpTrim)
+        dc.b    $1D,$7F,$0F,$25,$02,$BA,$EF,$01,$02,$10,$05,$0E,$09,$10,$84,$02
+PurgeFlowTrimDropAlt:
+        dc.b    $7F                                      ; As PurgeFlowTrimDrop with IdleFlags bit 6 set
+        dc.b    $1D,$FF,$06,$FA,$06,$FA
 O2SwitchMargin:
         dc.b    $00                                      ; O2 feedback (O2SwitchState): margin added to the target before the scaled O2 value counts as rich
-        dc.b    $02,$10,$10,$05,$FB,$1C,$E4,$20,$20,$FF,$00,$00,$FF,$00,$FF,$FF
-        dc.b    $00,$FF,$00,$FF
+        dc.b    $02,$10,$10,$05,$FB,$1C,$E4,$20,$20
+VacLeakBaroFactor:
+        dc.b    $FF                                      ; Vacuum-leak check (VacuumLeakMonitor, P1299): factor on baro
+VacLeakAcAdder:
+        dc.b    $00                                      ; Vacuum-leak check: expected-MAP addition with the A/C clutch on
+VacLeakAcReqAdder:
+        dc.b    $00                                      ; Vacuum-leak check: expected-MAP addition with A/C requested
+VacLeakCount:
+        dc.b    $FF                                      ; Vacuum leak monitor (VacuumLeakMonitor, P1299): counts (VacLeakCounter) of MAP above the expected value (brake off) before the fault
+VacLeakSpeedMax:
+        dc.b    $00                                      ; Vacuum-leak check: vehicle speed below this value
+VacLeakRpmMin:
+        dc.b    $FF                                      ; Vacuum-leak check: engine rpm at or above this value
+VacLeakRecoverRpmMax:
+        dc.b    $FF                                      ; Vacuum leak monitor: after a fault, rpm below this value off idle counts towards clearing the rpm limit
+VacLeakRecoverCount:
+        dc.b    $00                                      ; Vacuum leak monitor: counts (VacLeakRecoverCounter) below VacLeakRecoverRpmMax that clear the fault rpm limit
+ExpectedMapRpmMin:
+        dc.b    $FF                                      ; MAP/throttle rationality runs above this engine rpm
+        dc.b    $00,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_24AE ($24AE): 2D table, 1 points, unsigned
+; LimpRpmSpeed ($24AE): 2D table, 1 points, unsigned
+; Rpm limit against vehicle speed (MAP fault branch, LimpFlags bit 6)
+; x: raw, y: rpm8 (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $1CFE0
 ;---------------------------------------------------------------------------------------------------
-Tab2D_24AE:
+LimpRpmSpeed:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_24B8 ($24B8): 2D table, 1 points, unsigned
+; LimpRpmThrottle ($24B8): 2D table, 1 points, unsigned
+; Rpm limit (LimpRpmLimit) against throttle while the MAP/throttle fault is set
+; x: raw, y: rpm8 (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $1CE36, $1CF44, $1CF6E
 ;---------------------------------------------------------------------------------------------------
-Tab2D_24B8:
+LimpRpmThrottle:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,255                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_24C2 ($24C2): 2D table, 1 points, unsigned
+; ExpectedMapCoolant ($24C2): 2D table, 1 points, unsigned
+; Expected MAP addition against coolant
+; x: tempc, y: kpa (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1CE98
 ;---------------------------------------------------------------------------------------------------
-Tab2D_24C2:
+ExpectedMapCoolant:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_24C8 ($24C8): 2D table, 1 points, unsigned
-; Inputs: $0692,Z
+; ExpectedMapFieldDuty ($24C8): 2D table, 1 points, unsigned
+; Expected MAP addition against the raw generator field duty FieldDutyRaw
+; x: raw, y: kpa (units: docs/en/calibration.md)
+; Inputs: FieldDutyRaw
 ; Read at $1CEB2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_24C8:
+ExpectedMapFieldDuty:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_24CE ($24CE): 3D table, 9 rows x 9 columns, unsigned
+; ExpectedMap ($24CE): 3D table, 9 rows x 9 columns, unsigned
+; Expected MAP against throttle (rows) and engine rpm (columns); additions for coolant, field duty, A/C
+; columns: rpm32, rows: pos256, values: kpa (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x EngineRpm
 ; Read at $1CE88
 ;---------------------------------------------------------------------------------------------------
-Tab3D_24CE:
+ExpectedMap:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    14,13,25,22,21,19,18,17,16               ; column axis
         dc.b    255,255,255,255,255,255,255,255,255      ; row 0
@@ -4260,17 +5188,29 @@ O2MonSettleCount:
         dc.b    $00,$0A,$00,$23,$00,$0A,$00,$23
 O2MonTrimResetMin:
         dc.b    $7F                                      ; O2 sensor monitor at idle: trim size at or above which a bank trim reset is requested (O2ResetFlags)
-        dc.b    $00,$01,$33,$FE,$FE,$FF,$FF,$33,$01
+O2TrimResetValue2:
+        dc.b    $00                                      ; Closed-loop manager: value loaded into the bank trim when O2ResetFlags bits 6-7 request a reset
+        dc.b    $01,$33,$FE,$FE,$FF,$FF,$33,$01
 O2MonWindowMax:
         dc.b    $95                                      ; O2 sensor monitor at idle: window count above which the test restarts (O2MonData2Step)
 O2MonWindowMin:
         dc.b    $13                                      ; O2 sensor monitor at idle: window count at or above which the switch counts are judged
-        dc.b    $08,$80,$04,$A2,$60
+        dc.b    $08,$80,$04
+O2HeaterRunTimeMin:
+        dc.b    $A2                                      ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value
+        dc.b    $60
 O2HeaterSampleTime:
         dc.b    $00,$64                                  ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled
-        dc.b    $15,$90,$11,$30,$1E,$4D,$4D,$4D,$4D,$1A,$1A,$1A,$1A,$01,$01,$01
-        dc.b    $01,$08,$08,$08,$08,$0A,$0A,$0A,$0A,$05,$04,$80,$25,$FF,$C0,$00
-        dc.b    $00,$FF,$00,$FF,$00,$FF,$00,$00,$10,$10,$28,$28,$01,$02,$80
+O2HeaterTestTime:
+        dc.b    $15,$90                                  ; O2 heater monitor (run at key-off from CheckPowerDown): timer O2HeaterTimer (word) limit of the test
+O2HeaterSettleTime:
+        dc.b    $11,$30                                  ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated
+        dc.b    $1E,$4D,$4D,$4D,$4D,$1A,$1A,$1A,$1A,$01,$01,$01,$01,$08,$08,$08
+        dc.b    $08,$0A,$0A,$0A,$0A,$05,$04,$80
+O2ColdTrimHeaterAdder:
+        dc.b    $25                                      ; Cold-start O2 trim (O2StartDelays): added to the start trim when a heater monitor status has bit 5 set
+        dc.b    $FF,$C0,$00,$00,$FF,$00,$FF,$00,$FF,$00,$00,$10,$10,$28,$28,$01
+        dc.b    $02,$80
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_25B3 ($25B3): 2D table, 6 points, unsigned
@@ -4314,15 +5254,48 @@ Tab2D_25E7:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,91                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$4B,$4B,$4B,$4B,$48,$C8
-        dc.b    $81,$58,$28,$FC,$60,$7E,$57,$81,$44,$4D,$31,$4F,$2F,$FF,$DC,$FF
-        dc.b    $DC,$FF,$DC,$00,$28,$CD,$03,$80,$4A,$19,$0B,$F5,$0B,$F5,$24,$DC
-        dc.b    $24,$DC,$28,$28,$28,$28,$1F,$87,$89,$87,$89,$A5,$BF,$A5,$BF,$50
-        dc.b    $87,$89,$7F,$89,$0A,$4A,$02,$10,$10,$00,$5C,$23,$80,$68,$96,$68
-        dc.b    $96,$08,$39,$00,$01,$00,$01,$00,$01,$80,$07,$39,$48,$52,$48,$54
-        dc.b    $03,$03,$00,$6B,$11,$5A,$58,$31,$48,$05,$12,$1F,$06,$FA,$06,$FA
-        dc.b    $12,$EE,$12,$EE,$80,$80,$80,$80,$1F,$08,$03,$2D,$CD,$55,$04,$C4
-        dc.b    $B4,$00,$00,$17,$54,$38,$00,$0C,$00,$08,$00,$FF,$03,$02,$10,$02
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$4B,$4B,$4B,$4B
+O2MemChangeHold:
+        dc.b    $48                                      ; Long-term memory cell selection: hold time (FuelSys5A5/O2MemChangeHold2) after the trim is cleared on a cell change
+        dc.b    $C8,$81,$58,$28,$FC,$60,$7E,$57,$81,$44,$4D,$31,$4F,$2F,$FF,$DC
+        dc.b    $FF,$DC,$FF,$DC,$00,$28,$CD,$03,$80,$4A,$19,$0B,$F5,$0B,$F5,$24
+        dc.b    $DC,$24,$DC,$28,$28,$28,$28,$1F,$87,$89,$87,$89
+ObdTid21Limit:
+        dc.b    $A5                                      ; OBD-II mode $06 test $21: limit sent with the result ObdTid21Result (result only cleared in this code)
+ObdTid21LimitAlt:
+        dc.b    $BF                                      ; OBD-II mode $06 test $21: limit used when the result is above ObdTid21Limit and ObdTid21Status bit 4 is clear
+ObdTid22Limit:
+        dc.b    $A5                                      ; OBD-II mode $06 test $22: limit sent with the result ObdTid22Result (result only cleared in this code)
+ObdTid22LimitAlt:
+        dc.b    $BF                                      ; OBD-II mode $06 test $22: second limit, as ObdTid21LimitAlt
+        dc.b    $50,$87,$89,$7F,$89,$0A,$4A,$02,$10
+EgrMonResultMin:
+        dc.b    $10                                      ; EGR flow monitor: trim response below this value fails the test
+        dc.b    $00,$5C,$23,$80,$68,$96,$68,$96,$08,$39,$00,$01,$00,$01,$00,$01
+        dc.b    $80,$07,$39,$48,$52,$48,$54,$03,$03,$00,$6B,$11
+EgrMonResultMax:
+        dc.b    $5A                                      ; EGR flow monitor: trim response above this value passes it
+        dc.b    $58,$31,$48,$05,$12,$1F,$06,$FA,$06,$FA,$12,$EE,$12,$EE,$80,$80
+        dc.b    $80,$80,$1F
+MisfireOptions:
+        dc.b    $08                                      ; Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve)
+SegmentRpmConst2:
+        dc.b    $03,$2D,$CD,$55                          ; Start value of the segment time pair SegmentTimePair2 (long word)
+SegmentRpmConst3:
+        dc.b    $04,$C4,$B4,$00                          ; Start value of the segment time pair SegmentTimePair3 (long word)
+        dc.b    $00,$17,$54,$38
+MisfireRpmDevLimit:
+        dc.b    $00,$0C                                  ; Misfire (MisfireDeviation): word compared with the rpm deviation MisfireRpmDev after the event count limit
+MisfireIdleMargin:
+        dc.b    $00,$08                                  ; Misfire monitor (MisfireDeviation): idle target plus this margin
+        dc.b    $00,$FF
+MisfireFilterSlow:
+        dc.b    $03                                      ; Misfire: value of MisfireFilter set in the first branch
+MisfireFilterFast:
+        dc.b    $02                                      ; Misfire: value of MisfireFilter set in the second branch
+MisfireDevFilter:
+        dc.b    $10                                      ; Misfire monitor: filter weight of the segment-time deviation
+        dc.b    $02
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_267B ($267B): 2D table, 5 points, unsigned
@@ -4345,14 +5318,24 @@ Tab2D_269D:
         dc.b    6,$80                                    ; points, flags
         dc.b    19,89, 31,76, 47,70, 63,62, 94,62, 125,62 ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$8A,$31,$C0,$80,$32
+        dc.b    $FF,$FF,$FF,$FF
+MisfireEnableBase:
+        dc.b    $8A,$31                                  ; Misfire enable weight: base term
+MisfireEnableGain:
+        dc.b    $C0                                      ; Misfire enable weight: gain on the baro and IAC terms
+MisfireEnableIacOffset:
+        dc.b    $80                                      ; Misfire enable weight: offset on IacBaroRef
+MisfireEnableBaroOffset:
+        dc.b    $32                                      ; Misfire enable weight: offset on the baro term
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_26B4 ($26B4): 2D table, 4 points, unsigned
+; MisfireEnableCoolant ($26B4): 2D table, 4 points, unsigned
+; Misfire monitor enable weight (MisfireEnable) term against coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1C97A
 ;---------------------------------------------------------------------------------------------------
-Tab2D_26B4:
+MisfireEnableCoolant:
         dc.b    4,$80                                    ; points, flags
         dc.b    110,33, 132,4, 194,4, 210,0              ; x, y
 
@@ -4366,8 +5349,42 @@ Tab2D_26BE:
         dc.b    2,$80                                    ; points, flags
         dc.b    8,2, 16,0                                ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$77,$6E,$95,$95,$12,$0A,$12,$0A,$F0,$04,$74,$04
-        dc.b    $C4,$04,$04,$04,$32,$05
+        dc.b    $FF,$FF,$FF,$FF
+MisfireColdStartMax:
+        dc.b    $77                                      ; Misfire monitor: start coolant upper limit of the cold-start branch
+MisfireColdStartMin:
+        dc.b    $6E                                      ; Misfire monitor: start coolant lower limit of the cold-start branch
+MisfireCoolantLimit:
+        dc.b    $95                                      ; Misfire monitor: coolant limit in the cold-start branch
+MisfireCoolantLimit2:
+        dc.b    $95                                      ; Misfire monitor: second coolant limit
+MisfireMapChangeMax:
+        dc.b    $12                                      ; Misfire monitor: MAP change above this value starts the transient hold-off
+MisfireHoldMap:
+        dc.b    $0A                                      ; Hold-off (MisfireTransientHold) after a MAP change
+MisfireThrottleChangeMax:
+        dc.b    $12                                      ; Misfire monitor: throttle change above this value starts the hold-off
+MisfireHoldThrottle:
+        dc.b    $0A                                      ; Hold-off after a throttle change
+MisfireDecelLeanMin:
+        dc.b    $F0                                      ; Misfire monitor: decel enleanment at or above this value starts the hold-off
+MisfireHoldDecel:
+        dc.b    $04                                      ; Hold-off during deceleration fuel changes
+        dc.b    $74
+MisfireHoldRpm:
+        dc.b    $04                                      ; Hold-off when segment rpm is above MisfireHoldRpmValue
+MisfireSparkMin:
+        dc.b    $C4                                      ; Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6); compared signed (BLT)
+MisfireHoldSpark:
+        dc.b    $04                                      ; Hold-off for the spark interventions
+MisfireHoldEnable:
+        dc.b    $04                                      ; Hold-off while the enable weight is low
+MisfireHoldRevLimit:
+        dc.b    $04                                      ; Hold-off above RevLimitAlt
+MisfireHoldStart:
+        dc.b    $32                                      ; Hold-off at start
+MisfireHoldEvent:
+        dc.b    $05                                      ; Hold-off after MisfireFlags2 bit 6 events
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireHoldSegRpm ($26DA): 2D table, 5 points, unsigned
@@ -4391,10 +5408,16 @@ Tab2D_26EA:
         dc.b    4,$80                                    ; points, flags
         dc.b    25,80, 31,52, 63,36, 94,27               ; x, y
 
-        dc.b    $D0
+MisfireIdleCoolantMax:
+        dc.b    $D0                                      ; Idle hold-off branch: coolant up to this value
 MisfireHoldSpeedMin:
         dc.b    $06                                      ; Misfire hold-off (MisfireHoldSegRpm) applies above this vehicle speed
-        dc.b    $61,$74,$26
+MisfireIdleMapMax:
+        dc.b    $61                                      ; Idle hold-off branch: MAP below this value
+MisfireIdleRpmMax:
+        dc.b    $74                                      ; Idle hold-off branch: segment rpm below this value
+MisfireIdleRpmMin:
+        dc.b    $26                                      ; Idle hold-off branch: segment rpm above this value
 MisfireCountLimitAlt:
         dc.b    $58                                      ; Misfire counter limit while MisfireFlags3 bit 7 is clear
 
@@ -4508,11 +5531,13 @@ MisfireThresh:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_2852 ($2852): 3D table, 9 rows x 9 columns, unsigned
+; MisfireNoiseRef ($2852): 3D table, 9 rows x 9 columns, unsigned
+; Reference for the filtered segment-time change (MisfireNoiseLevel) against load and segment rpm; selects MisfireThreshNoisy
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x MisfireRpmCol
 ; Read at $1CBF0
 ;---------------------------------------------------------------------------------------------------
-Tab3D_2852:
+MisfireNoiseRef:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    16,26,31,47,63,78,94,109,125             ; column axis
         dc.b    48,45,35,20,15,11,10,10,10               ; row 0
@@ -4548,11 +5573,13 @@ MisfireThreshNoisy:
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab3D_290C ($290C): 3D table, 9 rows x 9 columns, unsigned
+; MisfireNoiseLimit ($290C): 3D table, 9 rows x 9 columns, unsigned
+; Rough-signal limit against load and segment rpm; the peak MisfireNoisePeak above it sets MisfireFlags bit 4
+; columns: rpm32, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x MisfireRpmCol
 ; Read at $1CA7A
 ;---------------------------------------------------------------------------------------------------
-Tab3D_290C:
+MisfireNoiseLimit:
         dc.b    9,9,$00                                  ; rows, columns, signed
         dc.b    16,26,31,47,63,78,94,109,125             ; column axis
         dc.b    254,254,254,254,254,254,254,254,254      ; row 0
@@ -4565,7 +5592,17 @@ Tab3D_290C:
         dc.b    254,254,254,254,254,254,254,254,254      ; row 7
         dc.b    254,254,254,254,254,254,254,254,254      ; row 8
 
-        dc.b    $08,$00,$F5,$03,$00,$00,$06,$FF,$FF
+MisfireChangeFilter:
+        dc.b    $08                                      ; Misfire monitor: filter weight of MisfireChangeFiltered
+MisfireNoiseGain:
+        dc.b    $00                                      ; Misfire monitor: gain giving the noise level reference
+MisfireNoiseDecay:
+        dc.b    $F5                                      ; Misfire monitor: decay factor of the noise peak (0 = off)
+MisfireNoiseHold:
+        dc.b    $03                                      ; Misfire monitor: hold time MisfireNoiseTimer between noise decays
+MisfireRefChangeMin:
+        dc.b    $00,$00                                  ; Misfire monitor: change above which the reference MisfireRef is taken
+        dc.b    $06,$FF,$FF
 LdpBattTempMax:
         dc.b    $9F                                      ; EVAP leak test (LdpMonitor, leak detection pump): battery temperature at or below this value
 LdpBattTempMin:
@@ -4636,47 +5673,37 @@ LdpPumpTimeByLevel:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,27                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$10,$FF,$FF,$FF,$00,$FF,$06,$C7
-        dc.b    $FF,$FF,$06,$FF,$12,$0C,$01,$80,$FF,$1B,$FF,$FF,$0A,$00,$84,$00
-        dc.b    $7E,$00,$85,$00,$C0,$00,$87,$00,$C0,$00,$7D,$00,$B9,$00,$7A,$00
-        dc.b    $CC,$00,$89,$00,$92,$00,$7E,$00,$60,$00,$86,$00,$40,$00,$8A,$00
-        dc.b    $18,$00,$7B,$00,$3E,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$10
+TccThrottleFilter:
+        dc.b    $FF                                      ; Torque converter clutch monitor (TccMonitor, P0740): filter weight of the throttle average TccThrottleAvg
+TccRatioFilter:
+        dc.b    $FF                                      ; Torque converter clutch monitor: filter weight of RpmSpeedRatioFiltered
+        dc.b    $FF
+TccRatioStableBand:
+        dc.b    $00,$FF                                  ; Torque converter clutch monitor: ratio change (word) at or above which the stable time restarts before lock-up
+TccRatioMax:
+        dc.b    $06                                      ; Torque converter clutch monitor: filtered rpm/speed ratio below this value
+TccStableTimeMin:
+        dc.b    $C7                                      ; Torque converter clutch monitor: stable time (TccStableTimer) before the lock-up is judged
+TccThrottleMin:
+        dc.b    $FF                                      ; Torque converter clutch monitor: throttle average above this value
+TccRatioDropMin:
+        dc.b    $FF,$06                                  ; Torque converter clutch monitor: signed ratio drop (word) that counts as lock-up; its low byte ($33C1) is also read directly as the fail count limit of TccFailCount
+TccTestDelay:
+        dc.b    $FF                                      ; Torque converter clutch monitor: delay (TccTestTimer) after lock-up before the ratio drop is checked
+        dc.b    $12,$0C,$01,$80,$FF,$1B,$FF,$FF,$0A,$00,$84,$00,$7E,$00,$85,$00
+        dc.b    $C0,$00,$87,$00,$C0,$00,$7D,$00,$B9,$00,$7A,$00,$CC,$00,$89,$00
+        dc.b    $92,$00,$7E,$00,$60,$00,$86,$00,$40,$00,$8A,$00,$18,$00,$7B,$00
+        dc.b    $3E,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$09,$00,$B9
-        dc.b    $00,$04,$00,$BD,$00,$04,$00,$BA,$00,$10,$00,$B7,$00,$10,$03,$36
-        dc.b    $02,$80,$03,$BA,$04,$E9,$00,$37,$00,$08,$03,$2C,$04,$79,$00,$0D
-        dc.b    $04,$B6,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$03,$00,$B5,$00,$80,$00,$B5,$00,$10,$02,$0D,$04,$10,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$09,$00,$B9,$00,$04,$00,$BD
+        dc.b    $00,$04,$00,$BA,$00,$10,$00,$B7,$00,$10,$03,$36,$02,$80,$03,$BA
+        dc.b    $04,$E9,$00,$37,$00,$08,$03,$2C,$04,$79,$00,$0D,$04,$B6,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$09,$00,$84,$00,$7C,$00,$85,$00,$80,$00,$7D,$00,$B9,$00
-        dc.b    $7A,$00,$CC,$00,$78,$00,$04,$00,$7E,$00,$60,$00,$89,$00,$10,$00
-        dc.b    $8A,$00,$08,$00,$7B,$00,$3E,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$0A,$00,$BD,$00,$04,$00,$BA,$00,$10
-        dc.b    $00,$B7,$00,$10,$00,$B8,$00,$04,$03,$BA,$04,$1C,$03,$1C,$00,$10
-        dc.b    $00,$37,$00,$08,$03,$23,$06,$02,$03,$2C,$04,$79,$00,$0D,$04,$B6
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$03,$00
+        dc.b    $B5,$00,$80,$00,$B5,$00,$10,$02,$0D,$04,$10,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -4693,11 +5720,38 @@ LdpPumpTimeByLevel:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$05,$00,$78,$00,$04,$00,$7B,$00
-        dc.b    $38,$00,$7E,$00,$60,$00,$7D,$00,$01,$00,$8A,$00,$08,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$09,$00
+        dc.b    $84,$00,$7C,$00,$85,$00,$80,$00,$7D,$00,$B9,$00,$7A,$00,$CC,$00
+        dc.b    $78,$00,$04,$00,$7E,$00,$60,$00,$89,$00,$10,$00,$8A,$00,$08,$00
+        dc.b    $7B,$00,$3E,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$0A,$00,$BD,$00,$04,$00,$BA,$00,$10,$00,$B7,$00,$10
+        dc.b    $00,$B8,$00,$04,$03,$BA,$04,$1C,$03,$1C,$00,$10,$00,$37,$00,$08
+        dc.b    $03,$23,$06,$02,$03,$2C,$04,$79,$00,$0D,$04,$B6,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$05,$00,$78,$00,$04,$00,$7B,$00,$38,$00,$7E,$00
+        dc.b    $60,$00,$7D,$00,$01,$00,$8A,$00,$08,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00
 
 ;---------------------------------------------------------------------------------------------------
 ; CondList2D6B ($2D6B): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
@@ -4766,12 +5820,12 @@ CondList2DA8:
 CondList301C:
         dc.b    $08                                      ; entries
         dc.b    $00,$BD,$00,$04                          ; MonStatusFuelSysTooRich1 needs clear: bit 2
-        dc.b    $00,$B8,$00,$04                          ; $00B8,Z needs clear: bit 2
-        dc.b    $00,$B9,$00,$04                          ; $00B9,Z needs clear: bit 2
-        dc.b    $00,$37,$00,$08                          ; $0037,Z needs clear: bit 3
-        dc.b    $00,$0D,$04,$B6                          ; ScratchC needs above $B6
+        dc.b    $00,$B8,$00,$04                          ; MonStatusPurge needs clear: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
+        dc.b    $00,$B9,$00,$04                          ; MonStatusEgrFlow needs clear: bit 2
+        dc.b    $00,$37,$00,$08                          ; VacLeakFlags needs clear: VSS pulse calculation hit a zero step (VssPulseCalc)
+        dc.b    $00,$0D,$04,$B6                          ; Baro needs above $B6
         dc.b    $03,$1D,$04,$13                          ; EngineRpm needs above $13
-        dc.b    $03,$2C,$04,$79                          ; $032C,Z needs above $79
+        dc.b    $03,$2C,$04,$79                          ; BatteryTemp needs above $79
         dc.b    $03,$BA,$04,$1C                          ; RunTime needs above $1C
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -5077,7 +6131,33 @@ FaultTable:
         dc.b    $CE,$1B,$00,$03,$40,$18,$00,$00,$00,$00
         dc.b    $CF,$00,$00,$03,$80,$18,$00,$00,$00,$00
 
-        dc.b    $6E,$4D,$42,$1B,$12,$B1,$09,$20,$08,$74,$00,$1A,$FD,$AE,$26,$1C
+        dc.b    $6E,$4D
+O2RawHigh:
+        dc.b    $42                                      ; O2 sensor raw value at or above which the high-voltage check counts
+BusDataO2High:
+        dc.b    $1B                                      ; Diagnostic bus data (BusDataRequest): O2 raw reading above this value is reported as state $B1
+BusDataO2Mid:
+        dc.b    $12                                      ; Diagnostic bus data: O2 raw reading above this value (and not above BusDataO2High) is reported as $FF, otherwise $A0
+O2NoActivityStartCoolantMax:
+        dc.b    $B1                                      ; O2 no-activity check: start coolant below this value
+O2NoActivitySoakDiffMax:
+        dc.b    $09                                      ; O2 no-activity check: start coolant within this value of the battery temperature (a cold soak)
+O2NoActivityTime:
+        dc.b    $20                                      ; O2 no-activity check at a cold start (O2NoActivityCold, P0134/P0154/P0140/P0160): time after start (Count191ms) at which the result is reported
+O2NoActivityLowRaw:
+        dc.b    $08                                      ; O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also O2HeaterTest)
+        dc.b    $74
+O2MemResetValue:
+        dc.b    $00                                      ; Closed-loop manager: value written into the 16 adaptive cells of a bank when its memory is reset after a fault
+AirTempRawLow:
+        dc.b    $1A                                      ; Air temperature sensor raw value below which it counts as shorted
+AirTempRawHigh:
+        dc.b    $FD                                      ; Air temperature sensor raw value at or above which it counts as open
+AirTempFaultValue:
+        dc.b    $AE                                      ; Air temperature used with a sensor fault (otherwise coolant is used)
+        dc.b    $26
+FuelSenderReadTime:
+        dc.b    $1C                                      ; Time since start after which the fuel level sender ($0A92) is read for FuelLevelScaled
         dc.b    $05,$E6,$6D,$6D,$09,$0C,$7A,$0C,$13,$80,$70,$6D
 
 ;---------------------------------------------------------------------------------------------------
@@ -5120,20 +6200,60 @@ Tab2D_3D90:
         dc.b    2,$80                                    ; points, flags
         dc.b    0,255, 255,0                             ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$FF
-        dc.b    $00,$00,$FF,$00,$FF,$00,$00,$FB,$03,$00,$FF,$E0,$0A,$B7,$1A,$FD
-        dc.b    $AE,$32,$B6
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$FF,$FF
+FlexTrimBand:
+        dc.b    $00                                      ; Trim-based ethanol estimate with a flex sensor fault (EventCounters): short-term trim (bank 1 with O2ActiveFlags bit 3, else bank 2) beyond plus or minus this value counts
+FlexTrimUpCount:
+        dc.b    $00                                      ; Trim-based ethanol estimate (flex sensor fault): positive-trim counts (FlexTrimUpCounter) per FlexEthanol step up (to at most 170)
+FlexTrimDownCount:
+        dc.b    $00                                      ; Trim-based ethanol estimate (flex sensor fault): negative-trim counts (FlexTrimDownCounter) per FlexEthanol step down
+WotLeanDelay:
+        dc.b    $00                                      ; Lean-at-WOT monitor (WotLeanMonitor, P1298, flex only): WOT time (WotLeanTimer) before the test
+WotLeanRpmMin:
+        dc.b    $00,$FF                                  ; Lean-at-WOT monitor: engine rpm above this value (word)
+WotLeanCount:
+        dc.b    $00                                      ; Lean-at-WOT monitor: lean counts (WotLeanCounter) before the fault
+WotLeanFallbackRpm:
+        dc.b    $00,$FF                                  ; Lean-at-WOT monitor: after a lean fault, rpm at or above this value sets the fallback flag FuelModeFlags2 bit 4
+WotLeanFallbackRpmOff:
+        dc.b    $00,$FF                                  ; Lean-at-WOT monitor: rpm below this value clears the fallback flag
+        dc.b    $00
+WotLeanO2Max2:
+        dc.b    $00                                      ; Lean-at-WOT monitor: bank 2 upstream O2 below this value counts as lean
+AcSensorRawHigh:
+        dc.b    $FB                                      ; A/C sensor circuit check: raw value above this counts as open/high
+AcSensorRawLow:
+        dc.b    $03                                      ; A/C sensor circuit check: raw value below this counts as shorted/low
+        dc.b    $00,$FF
+AcSensorFaultValue:
+        dc.b    $E0                                      ; A/C sensor value used with a sensor fault
+CamCheckMapMin:
+        dc.b    $0A                                      ; Cam sensor check (CamSensorMonitor): MAP differs from baro by at least this value
+        dc.b    $B7
+CoolantRawLow:
+        dc.b    $1A                                      ; Coolant sensor raw value below which it counts as shorted (fault)
+CoolantRawHigh:
+        dc.b    $FD                                      ; Coolant sensor raw value at or above which it counts as open (fault)
+CoolantFaultValue:
+        dc.b    $AE                                      ; Coolant value used with a coolant sensor fault
+VssCheckCount:
+        dc.b    $32                                      ; Vehicle speed sensor monitor (VssMonitor): counts (Vss65D/VssCheckCounter) before the result changes
+        dc.b    $B6
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_3DB9 ($3DB9): 2D table, 4 points, unsigned
+; VssCheckVacuumRpm ($3DB9): 2D table, 4 points, unsigned
+; Vehicle speed sensor check (VssMonitor, P0500): manifold vacuum limit against engine rpm (closed throttle, P/N, warm)
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1D1E2
 ;---------------------------------------------------------------------------------------------------
-Tab2D_3DB9:
+VssCheckVacuumRpm:
         dc.b    4,$80                                    ; points, flags
         dc.b    63,0, 69,113, 78,113, 80,0               ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$05,$FA,$08,$E4,$1A,$28,$2F,$20,$66
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$05,$FA,$08,$E4,$1A,$28,$2F,$20
+BusDataThrottleScale:
+        dc.b    $66                                      ; Diagnostic bus data: throttle opening is sent as opening × (1 + this / 256)
 MapRawLowLimit:
         dc.b    $01                                      ; Raw MAP below this value is a low input (P0107; ReadMap, MapCircuitCheck, MapKeyOnCheck)
 MapRawHighLimit:
@@ -5147,11 +6267,13 @@ KnockSignalMax:
         dc.b    $F0                                      ; Knock sensor check: filtered knock signal above this value counts as a fault
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_3DD8 ($3DD8): 2D table, 1 points, unsigned
+; KnockRetardMaxRpm ($3DD8): 2D table, 1 points, unsigned
+; Limit of the per-cylinder knock retard (KnockCylRetardMax) against engine rpm
+; x: rpm32, y: spark (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $155D4
 ;---------------------------------------------------------------------------------------------------
-Tab2D_3DD8:
+KnockRetardMaxRpm:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,0                                    ; x, y
 
@@ -5166,7 +6288,21 @@ ChargeMonClearTime:
         dc.b    $05                                      ; Charging monitor: time before ChargeMonFlags bit 6 clears
 ChargeMonFailTime:
         dc.b    $6D                                      ; Charging monitor: time before ChargeMonFlags bit 6 (fault) sets
-        dc.b    $BD,$BD,$64,$95,$00,$79,$E4,$C7,$FF,$02,$00,$E3,$07,$01
+BattLowVolts:
+        dc.b    $BD                                      ; Low-voltage monitor (BatteryLowFlag): battery voltage below this value counts as low
+BattLowVoltsClear:
+        dc.b    $BD                                      ; Low-voltage monitor: battery voltage at or above this value counts as normal
+BattLowSetCount:
+        dc.b    $64                                      ; Low-voltage monitor: counts before ChargeMonFlags bit 2 sets
+BattLowClearCount:
+        dc.b    $95                                      ; Low-voltage monitor: counts before ChargeMonFlags bit 2 clears
+        dc.b    $00,$79,$E4,$C7,$FF,$02,$00
+MapCheckBaroMax:
+        dc.b    $E3                                      ; MAP checks: barometric pressure above which the high-altitude vacuum limit is not used
+MapCheckVacuumMin:
+        dc.b    $07                                      ; MAP checks: manifold vacuum limit (low altitude)
+MapCheckVacuumMinAlt:
+        dc.b    $01                                      ; MAP checks: manifold vacuum limit (high altitude)
 
 ;---------------------------------------------------------------------------------------------------
 ; MapLimpFromThrottle ($3DF8): 2D table, 5 points, unsigned
@@ -5222,7 +6358,7 @@ MapLimpThrottleOffset:
 ; ThermistorCold ($4024): 2D table, 7 points, unsigned
 ; Thermistor ADC counts to temperature, cold range (-55 to 83 C), used after the pull-up is switched
 ; x: raw, y: tempc (units: docs/en/calibration.md)
-; Inputs: CoolantRaw; $0329,Z; ?
+; Inputs: CoolantRaw; AirTempRaw; ?
 ; Read at $0CF46, $0CF70, $11028, $110D6, $17C62, $17CFE, $1F994
 ;---------------------------------------------------------------------------------------------------
 ThermistorCold:
@@ -5234,7 +6370,7 @@ ThermistorCold:
 ; ThermistorHot ($4034): 2D table, 4 points, unsigned
 ; Thermistor ADC counts to temperature, hot range (13 to 127 C); coolant and intake air
 ; x: raw, y: tempc (units: docs/en/calibration.md)
-; Inputs: CoolantRaw; $0329,Z
+; Inputs: CoolantRaw; AirTempRaw
 ; Read at $0CF46, $0CF70, $11028, $110D6, $17C62, $17CFE, $1F994
 ;---------------------------------------------------------------------------------------------------
 ThermistorHot:
@@ -5260,7 +6396,7 @@ ResetCoolantInit2:
 ; ResetCoolantInit ($4064): 2D table, 5 points, unsigned
 ; At reset: IdleRpmRefStart against start coolant temperature; read here with another input than in 05293190AC, so the x unit is not carried
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $032C,Z; $3B,Z; #$98
+; Inputs: BatteryTemp; $3B,Z; #$98
 ; Read at $0D004, $12092
 ;---------------------------------------------------------------------------------------------------
 ResetCoolantInit:
@@ -5272,7 +6408,7 @@ ResetCoolantInit:
 ; FlexLearnEthanolCurve ($4070): 2D table, 2 points, unsigned
 ; Flex-fuel learning: curve from FlexLearnLevel1/FlexLearnLevel2 to FlexLearnEthanol1/FlexLearnEthanol2
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: $0330,Z
+; Inputs: AcSensorRaw
 ; Read at $0CFAC, $1132E
 ;---------------------------------------------------------------------------------------------------
 FlexLearnEthanolCurve:
@@ -5389,46 +6525,134 @@ Tab2D_412A:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_4136 ($4136): 2D table, 5 points, unsigned
+; RpmCurveV0C4A ($4136): 2D table, 5 points, unsigned
+; Engine rpm (high byte) to RpmCurveValue; all points 255 in the reference image
+; x: rpm8, y: raw (units: docs/en/calibration.md)
 ; Inputs: LDD
 ; Read at $11D74
 ;---------------------------------------------------------------------------------------------------
-Tab2D_4136:
+RpmCurveV0C4A:
         dc.b    5,$80                                    ; points, flags
         dc.b    17,0, 32,80, 62,160, 88,192, 188,255     ; x, y
 
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_4142 ($4142): 2D table, 5 points, unsigned
+; IdleEnrichEthanolScale ($4142): 2D table, 5 points, unsigned
+; Flex-fuel ethanol content to row position of IdleEnrichEthanolAirTemp
+; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: FlexEthanol; $071A
 ; Read at $0749C
 ;---------------------------------------------------------------------------------------------------
-Tab2D_4142:
+IdleEnrichEthanolScale:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 40,128, 60,160, 140,224, 170,255    ; x, y
 
-        dc.b    $03,$1B,$40,$80,$08,$01,$80,$40,$03,$1A,$01,$20,$03,$1B,$20,$10
-        dc.b    $03,$1B,$08,$08,$03,$1B,$10,$04,$03,$1B,$04,$02,$03,$1B,$01,$01
-        dc.b    $08,$00,$02,$80,$08,$00,$08,$40,$79,$07,$80,$20,$08,$00,$04,$10
-        dc.b    $03,$A1,$08,$08,$00,$00,$00,$04,$00,$00,$00,$02,$00,$00,$00,$01
-        dc.b    $04,$98,$80,$80,$04,$98,$40,$40,$08,$02,$08,$20,$04,$98,$10,$10
-        dc.b    $04,$99,$20,$08,$04,$98,$08,$04,$04,$99,$04,$02,$04,$98,$01,$01
-        dc.b    $04,$99,$08,$80,$04,$99,$10,$40,$04,$99,$80,$20,$08,$13,$80,$10
-        dc.b    $08,$02,$10,$08,$04,$99,$02,$04,$04,$99,$01,$02,$04,$98,$02,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $00,$00,$00,$08,$00,$00,$00,$04,$08,$03,$40,$02,$04,$98,$20,$01
-        dc.b    $01,$6C,$80,$80,$01,$69,$06,$40,$01,$6E,$30,$20,$01,$6D,$0C,$10
-        dc.b    $04,$2E,$01,$08,$04,$2E,$04,$04,$01,$65,$0C,$02,$01,$65,$C0,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $00,$00,$00,$08,$00,$00,$00,$04,$04,$A8,$01,$02,$04,$73,$01,$01
-        dc.b    $00,$00,$00,$80,$03,$1C,$20,$40,$01,$40,$10,$20,$00,$00,$00,$10
-        dc.b    $04,$98,$01,$08,$03,$1A,$01,$04,$00,$00,$00,$02,$00,$00,$00,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$04,$1B,$40,$03
-        dc.b    $01,$4C,$08,$08,$00,$00,$00,$04,$04,$1A,$08,$02,$04,$1A,$04,$01
-        dc.b    $00,$B9,$02,$80,$00,$B7,$02,$40,$00,$B5,$02,$20,$00,$00,$00,$10
-        dc.b    $00,$00,$00,$08,$00,$B8,$02,$04,$00,$00,$00,$02,$00,$B3,$02,$01
-        dc.b    $02,$5D,$01,$80,$03,$E1,$08,$40,$00,$37,$08,$20,$00,$00,$00,$10
-        dc.b    $00,$00,$00,$08,$00,$00,$00,$04,$00,$00,$00,$02,$00,$00,$00,$01
+
+;---------------------------------------------------------------------------------------------------
+; BitCollectMaps ($414E): 11 rows of 32 bytes
+; Bit maps for CollectBits: 8 entries of RAM offset, mask and output bit build one status byte (switch inputs for SwitchInputsRead and SwitchBitsCollect, output and fault status bytes for the SCI and bus messages)
+;---------------------------------------------------------------------------------------------------
+BitCollectMaps:
+; map 0 ($414E): used by SciSendByte
+        dc.b    $03,$1B,$40,$80                          ; out bit 7 <- SwitchInputs2 & $40 (power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2))
+        dc.b    $08,$01,$80,$40                          ; out bit 6 <- $0801,Z & $80 (bit 7)
+        dc.b    $03,$1A,$01,$20                          ; out bit 5 <- SwitchInputs & $01 (brake switch (BrakeSwitchMonitor, idle, speed damping, purge test))
+        dc.b    $03,$1B,$20,$10                          ; out bit 4 <- SwitchInputs2 & $20 (park/neutral switch (gear state, starter cut, park/neutral monitor))
+        dc.b    $03,$1B,$08,$08                          ; out bit 3 <- SwitchInputs2 & $08 (speed control switch)
+        dc.b    $03,$1B,$10,$04                          ; out bit 2 <- SwitchInputs2 & $10 (speed control on/off switch (speed control code, lamp state, EquipmentDetect))
+        dc.b    $03,$1B,$04,$02                          ; out bit 1 <- SwitchInputs2 & $04 (speed control switch (set at reset))
+        dc.b    $03,$1B,$01,$01                          ; out bit 0 <- SwitchInputs2 & $01 (speed control switch)
+; map 1 ($416E): used by SciSendByte
+        dc.b    $08,$00,$02,$80                          ; out bit 7 <- IoInputs0 & $02 (leak detection pump switch (LdpPumpStroke, LdpPurgedCheck))
+        dc.b    $08,$00,$08,$40                          ; out bit 6 <- IoInputs0 & $08 (key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path)
+        dc.b    $79,$07,$80,$20                          ; out bit 5 <- PORTGP & $80 (GPT port pin 7 level (IC4/OC5))
+        dc.b    $08,$00,$04,$10                          ; out bit 4 <- IoInputs0 & $04 (ASD relay output present, probably (AsdRelayCheck, the reference-event code))
+        dc.b    $03,$A1,$08,$08                          ; out bit 3 <- AcFlags & $08 (A/C request from the bus (message bit 0 in CcdReceive))
+        dc.b    $00,$00,$00,$04                          ; unused
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $00,$00,$00,$01                          ; unused
+; map 2 ($418E): used by SciSendByte
+        dc.b    $04,$98,$80,$80                          ; out bit 7 <- ControlFlags943 & $80 (A/C cut active (AcCutControl timer running))
+        dc.b    $04,$98,$40,$40                          ; out bit 6 <- ControlFlags943 & $40 (set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire))
+        dc.b    $08,$02,$08,$20                          ; out bit 5 <- IoStatus2 & $08 (bit 3)
+        dc.b    $04,$98,$10,$10                          ; out bit 4 <- ControlFlags943 & $10 (ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it)
+        dc.b    $04,$99,$20,$08                          ; out bit 3 <- ControlFlags944 & $20 (output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read)
+        dc.b    $04,$98,$08,$04                          ; out bit 2 <- ControlFlags943 & $08 (fuel pump relay on, probably (set and cleared with bit 4))
+        dc.b    $04,$99,$04,$02                          ; out bit 1 <- ControlFlags944 & $04 (EGR solenoid on (EgrEnable))
+        dc.b    $04,$98,$01,$01                          ; out bit 0 <- ControlFlags943 & $01 (A/C clutch relay on (AcCutLogic); the idle code reads it)
+; map 3 ($41AE): used by SciSendByte
+        dc.b    $04,$99,$08,$80                          ; out bit 7 <- ControlFlags944 & $08 (second fan relay, probably; driven only with A/C fitted)
+        dc.b    $04,$99,$10,$40                          ; out bit 6 <- ControlFlags944 & $10 (radiator fan relay, probably (FanControl, BusTempFlag, output test))
+        dc.b    $04,$99,$80,$20                          ; out bit 5 <- ControlFlags944 & $80 (set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7))
+        dc.b    $08,$13,$80,$10                          ; out bit 4 <- IoCtl13 & $80 (bit 7)
+        dc.b    $08,$02,$10,$08                          ; out bit 3 <- IoStatus2 & $10 (bit 4)
+        dc.b    $04,$99,$02,$04                          ; out bit 2 <- ControlFlags944 & $02 (toggled by ActuatorTestMain, not read)
+        dc.b    $04,$99,$01,$02                          ; out bit 1 <- ControlFlags944 & $01 (starter cut active (StarterCut))
+        dc.b    $04,$98,$02,$01                          ; out bit 0 <- ControlFlags943 & $02 (bit 1)
+; map 4 ($41CE): used by SciSendByte
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $00,$00,$00,$08                          ; unused
+        dc.b    $00,$00,$00,$04                          ; unused
+        dc.b    $08,$03,$40,$02                          ; out bit 1 <- IoStatus3 & $40 (leak detection pump solenoid status (LdpSolenoidCheck))
+        dc.b    $04,$98,$20,$01                          ; out bit 0 <- ControlFlags943 & $20 (bit 5)
+; map 5 ($41EE): used by CcdTx54BaroAir
+        dc.b    $01,$6C,$80,$80                          ; out bit 7 <- FaultSet09 & $80 (bit 7)
+        dc.b    $01,$69,$06,$40                          ; out bit 6 <- FaultSet06 & $06 (bit 2; bit 1)
+        dc.b    $01,$6E,$30,$20                          ; out bit 5 <- FaultSet0B & $30 (bit 5; bit 4)
+        dc.b    $01,$6D,$0C,$10                          ; out bit 4 <- FaultSet0A & $0C (bit 3; bit 2)
+        dc.b    $04,$2E,$01,$08                          ; out bit 3 <- ChargeMonFlags & $01 (a fault with the charge-lamp flag was reported (ReportFault); charge lamp request)
+        dc.b    $04,$2E,$04,$04                          ; out bit 2 <- ChargeMonFlags & $04 (battery voltage low (BattLowVolts for BattLowSetCount passes, BatteryLowFlag); charge lamp)
+        dc.b    $01,$65,$0C,$02                          ; out bit 1 <- FaultSet02 & $0C (bit 3; bit 2)
+        dc.b    $01,$65,$C0,$01                          ; out bit 0 <- FaultSet02 & $C0 (bit 7; bit 6)
+; map 6 ($420E)
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $00,$00,$00,$08                          ; unused
+        dc.b    $00,$00,$00,$04                          ; unused
+        dc.b    $04,$A8,$01,$02                          ; out bit 1 <- $04A8,Z & $01 (bit 0)
+        dc.b    $04,$73,$01,$01                          ; out bit 0 <- SecurityFlags & $01 (security status to be sent (CcdReceive, SecurityStatusCalc))
+; map 7 ($422E): used by CcdTx54BaroAir
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $03,$1C,$20,$40                          ; out bit 6 <- DriveFlags & $20 (transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear))
+        dc.b    $01,$40,$10,$20                          ; out bit 5 <- ControlFlagsC39 & $10 (transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it)
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $04,$98,$01,$08                          ; out bit 3 <- ControlFlags943 & $01 (A/C clutch relay on (AcCutLogic); the idle code reads it)
+        dc.b    $03,$1A,$01,$04                          ; out bit 2 <- SwitchInputs & $01 (brake switch (BrakeSwitchMonitor, idle, speed damping, purge test))
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $00,$00,$00,$01                          ; unused
+; map 8 ($424E): used by CcdTx54BaroAir
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $04,$1B,$40,$03                          ; out bit 1 <- EventSparkFlags2 & $40 (input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus)
+        dc.b    $01,$4C,$08,$08                          ; out bit 3 <- SpeedCtlFlags & $08 (driver override: throttle past SpeedCtlOverrideMargin (SpeedCtlControl))
+        dc.b    $00,$00,$00,$04                          ; unused
+        dc.b    $04,$1A,$08,$02                          ; out bit 1 <- EventSparkFlags & $08 (pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl))
+        dc.b    $04,$1A,$04,$01                          ; out bit 0 <- EventSparkFlags & $04 (pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl))
+; map 9 ($426E)
+        dc.b    $00,$B9,$02,$80                          ; out bit 7 <- MonStatusEgrFlow & $02 (bit 1)
+        dc.b    $00,$B7,$02,$40                          ; out bit 6 <- $00B7,Z & $02 (bit 1)
+        dc.b    $00,$B5,$02,$20                          ; out bit 5 <- MonStatusO2Resp1 & $02 (bit 1)
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $00,$00,$00,$08                          ; unused
+        dc.b    $00,$B8,$02,$04                          ; out bit 2 <- MonStatusPurge & $02 (read by ObdReadiness and PurgeFlowTest)
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $00,$B3,$02,$01                          ; out bit 0 <- MonStatusCatBank1 & $02 (bit 1)
+; map 10 ($428E): used by DiagCommandMain
+        dc.b    $02,$5D,$01,$80                          ; out bit 7 <- MisfireFlags4 & $01 (bit 0)
+        dc.b    $03,$E1,$08,$40                          ; out bit 6 <- PurgeLearnFlags & $08 (purge vapour learning step state (PurgeVaporLearn))
+        dc.b    $00,$37,$08,$20                          ; out bit 5 <- VacLeakFlags & $08 (VSS pulse calculation hit a zero step (VssPulseCalc))
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $00,$00,$00,$08                          ; unused
+        dc.b    $00,$00,$00,$04                          ; unused
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $00,$00,$00,$01                          ; unused
+
         dc.b    $00,$0D,$BB,$A0,$00,$00,$1A,$CB,$C0,$00,$00,$10,$04,$01,$20,$08
         dc.b    $02,$01,$10,$03,$02,$20,$04,$04,$01,$05,$08,$02,$00,$02,$01,$01
         dc.b    $01,$04,$02,$04,$08,$03,$08,$02,$00,$02,$04,$01,$01,$08,$02,$04
@@ -5481,7 +6705,7 @@ IacFieldDutyScale:
 ; IacBaroScale ($435F): 2D table, 5 points, unsigned
 ; Barometric pressure to row position of IacBaseBaroTarget and IdleMapBase
 ; x: kpa, y: pos256 (units: docs/en/calibration.md)
-; Inputs: ScratchC
+; Inputs: Baro
 ; Read at $0C04E, $0C1A2
 ;---------------------------------------------------------------------------------------------------
 IacBaroScale:
@@ -5611,7 +6835,7 @@ L04872:
         BNE     L04892
         BSET    >CrankSyncFlags2,Z,#$20                  ; bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
         BCLR    >SciLogFlags,Z,#$02                      ; bit 1: SCI log mode bit (SciLogReceive)
-        INC     $01A7,Z
+        INC     >CamWindowCount,Z
         CLR     >Cam693,Z
 L04892:
         BSET    >CrankFlags2,Z,#$80                      ; bit 7: reference event seen since the last PIT check (Isr_GPT_IC1, HighRpmTimerPit)
@@ -5665,7 +6889,7 @@ L048FA:
         JMP     $0481A,X
 L04916:
         BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
-        CLRW    $0810,Z
+        CLRW    >IoTimer10,Z
         CLR     >PACNT,Z
         LDD     >TMSK1,Z
         ORAB    #$10
@@ -5674,7 +6898,7 @@ L0492C:
         PULM    K,Y,X,E,D
         RTI
 L04930:
-        JSR     EmptyHook
+        JSR     AdcStartF0
         JSR     Sub_0ECDC
         JSR     FuelEventCalc
         JSR     CamCrankMeasure
@@ -5683,7 +6907,7 @@ L04940:
         LDAA    >RJURR0_L,Z
         STAA    >MapRawStart,Z
         BRSET   >CrankSyncFlags,Z,#$40,L0496E            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
-        CLRW    $0810,Z
+        CLRW    >IoTimer10,Z
         LDAA    #$75
         STAA    >PACTL,Z
         CLR     >PACNT,Z
@@ -5711,12 +6935,12 @@ L04988:
         ASLD
         ADDD    #$109A
         STD     <Temp4F6,Z
-        JSR     Sub_15168
+        JSR     SparkEventCalc
         LDAA    #$8A
         SUBA    >SparkAdvanceD11,Z
         LDAB    #$B6
         MUL
-        LDE     >SparkPeriod,Z
+        LDE     >RefPeriodLow,Z
         EMUL
         ADCE    >CrankAC0,Z
         SUBE    #$003C
@@ -5802,7 +7026,7 @@ L04A60:
         ABY
         ASLB
         LDD     <Temp4F4,Z
-        ADDD    >SparkPeriod,Z
+        ADDD    >RefPeriodLow,Z
         SUBD    <Temp4F6,Z
         STD     $00,X
         LDAA    >TFLG1,Z
@@ -5820,7 +7044,7 @@ L04A60:
         LDX     #EventTimingLimit
         JSR     Lookup2D
         PULM    X
-        CMPA    >SparkPeriod,Z
+        CMPA    >RefPeriodLow,Z
         BCS     L04B0A
 L04AD2:
         LDAB    >TCTL1,Z
@@ -5829,7 +7053,7 @@ L04AD2:
         LDAB    $04,Y
         ORAB    >TMSK1,Z
         STAB    >TMSK1,Z
-        LDAA    >SparkPeriod,Z
+        LDAA    >RefPeriodLow,Z
         CMPA    #$5F
         BCC     L04B0A
         LDD     $00,X
@@ -5851,7 +7075,7 @@ L04B10:
         JMP     L0492C
 L04B1E:
         LDE     #$0177
-        STE     $0848,Z
+        STE     >IoFanPwmB,Z
         LDAA    >PORTC,Z
         ORAA    #$07
         ANDA    #$F8
@@ -5862,15 +7086,15 @@ L04B1E:
         LDX     #$837C
         LDY     #$80F0
         JSR     PeriodChangeTrack
-        LDAA    $037C,Z
+        LDAA    >RunModeCounter,Z
         LSRA
         STAA    >RefPeriod,Z
         LDD     >CrankPeriodSum,Z
         TDE
         SUBD    >CrankPeriodPrev,Z
-        STD     >SparkPeriod,Z
+        STD     >RefPeriodLow,Z
         STE     >CrankPeriodPrev,Z
-        CLR     $037C,Z
+        CLR     >RunModeCounter,Z
         BSET    >SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
         TZX
         BRCLR   >CrankSyncFlags,Z,#$40,L04D60            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
@@ -5882,10 +7106,10 @@ L04B82:
         BRCLR   >SparkFlags,Z,#$20,L04BCE                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDE     >CrankPeriodSum,Z
         STE     >CrankPeriodPrev,Z
-        LDD     >SparkPeriod,Z
+        LDD     >RefPeriodLow,Z
         CPD     #$2710
         LBCS    L04D00
-        LDD     >SparkPeriod,Z
+        LDD     >RefPeriodLow,Z
         LDE     #$1C71
         EMUL
         ASLE
@@ -6041,21 +7265,21 @@ L04D3A:
 L04D52:
         BRCLR   >ADCSTAT,Z,#$80,L04D52                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR1_L,Z
-        STAB    $053B,Z
+        STAB    >O2DownBank2Raw,Z
 L04D60:
         JSR     O2UpdateDownstream
         JMP     L0492C
         dc.b    $30,$00,$50,$00,$70,$00,$90,$00,$B0,$00
 L04D72:
         BRCLR   >CrankSyncFlags,Z,#$40,L04EF0            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
-        CLRW    $0810,Z
+        CLRW    >IoTimer10,Z
         LDAA    #$75
         STAA    >PACTL,Z
         CLR     >PACNT,Z
         BCLR    >TFLG2,Z,#$10                            ; bit 4: PAOVF: pulse accumulator overflow flag
         BSET    >TMSK2,Z,#$10                            ; bit 4: PAOVI: pulse accumulator overflow interrupt enable
         BRCLR   >SparkFlags,Z,#$20,L04EE2                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
-        LDD     >SparkPeriod,Z
+        LDD     >RefPeriodLow,Z
         CPD     #$2710
         LBCS    L04EE2
         LDE     >CrankPeriodSum,Z
@@ -6178,16 +7402,16 @@ L04ECA:
         EORA    $04,Y
         STAA    >TFLG1,Z
 L04EE2:
-        JSR     O2UpdateUpstream
         JSR     KnockCylinderRetard
+        JSR     EventCounters
         LDAB    #$01
         JSR     FuelEventStart
 L04EF0:
         JMP     L0492C
         dc.b    $01,$04,$00,$02,$03,$01,$02,$03,$01,$00
 L04EFE:
-        JSR     EmptyHook
         JSR     AdcStartF0
+        JSR     EventCellSelect
         BRSET   >SparkFlags,Z,#$20,L04F3E                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRCLR   >CrankSyncFlags,Z,#$40,L04F3E            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         TPD
@@ -6214,7 +7438,7 @@ L04F3E:
         CLRA
 L04F4C:
         STAA    >CylinderIndex,Z
-        BRCLR   $031F,#$C0,L04F5C
+        BRCLR   >Options0330,#$C0,L04F5C
         BCLRW   >IoStatus2,Z,#$0400                      ; IoStatus2.2: tested by KnockChipConfig
 L04F5C:
         BCLR    >SparkFlags,Z,#$80                       ; bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
@@ -6236,7 +7460,7 @@ L04F70:
 L04F92:
         CPE     #$0140
         LBCC    L05028
-        LDAA    $061B,Z
+        LDAA    >CalcSparkD0C,Z
         LBNE    L05028
         LDAA    $0621,Z
         SUBA    >SparkAdvanceD11,Z
@@ -6274,7 +7498,7 @@ L04FF6:
         LDAA    #$FF
         STAA    $00,X
 L04FFA:
-        LDAA    $0167,Z
+        LDAA    >FaultSet04,Z
         BITA    #$0E
         BNE     L05028
         BRCLR   >SparkFlags,Z,#$20,L05010                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
@@ -6289,8 +7513,8 @@ L05010:
         LDX     #$4EF4
         ABX
         LDAB    $00,X
-        ORAB    >Crank6B7,Z
-        STAB    >Crank6B7,Z
+        ORAB    >HwErrorFlags,Z
+        STAB    >HwErrorFlags,Z
 L05028:
         LDD     >IoIrqStatus,Z
         ANDD    #$1000
@@ -6304,8 +7528,8 @@ L05038:
         JSR     MapTpsFilters
         JSR     MisfireMonitorEvent
         BSET    >IdleFlags3,Z,#$40                       ; bit 6: reference event since the last idle loop pass (set in Isr_GPT_IC1, cleared by IdleRpmLoop)
+        JSR     O2UpdateUpstream
         JSR     SurgeFilters
-        JSR     Sub_15006
         LDX     >RefPeriod,Z
         CPX     >RunPeriodOn
         BCS     L05070
@@ -6386,11 +7610,11 @@ Isr_GPT_PAI:
         BRCLR   >SwitchInputs2,Z,#$20,L05152             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BSET    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
 L05152:
-        LDD     >IoCfg1FL,Z
+        LDD     >ControlFlags943,Z
         ANDA    #$E7
         STD     >TR0,Z
-        STD     $049C,Z
-        STD     >IoCfg1FL,Z
+        STD     >OutputStatusPrev,Z
+        STD     >ControlFlags943,Z
         CLR     >SPCR2,Z
         JSR     QspiWaitIdle
         LDD     >RR0,Z
@@ -6410,7 +7634,7 @@ L05192:
 L05196:
         TST     >MonStartDelay,Z
         BNE     L051A8
-        CLR     $01A7,Z
+        CLR     >CamWindowCount,Z
         BSET    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
         INC     >Cam693,Z
 L051A8:
@@ -6430,10 +7654,24 @@ L051A8:
 L051D4:
         PULM    E,D
         RTI
-        dc.b    $27,$4C,$00,$0E,$4E,$1C,$00
+        dc.b    $27,$4C
+RpmPeriodConstant:
+        dc.b    $00,$0E,$4E,$1C                          ; Dividend (long, also read from $ABB1) for engine rpm from the reference period (CalcEngineRpm, CalcRpmFromPeriod)
+        dc.b    $00
 CylinderCount:
         dc.b    $04                                      ; Number of cylinders (4): the cylinder index CylinderIndex counts up to it and the per-event code uses it
-        dc.b    $00,$0E,$00,$3A,$00,$76,$10,$18,$45,$03,$2D,$CD,$55
+        dc.b    $00,$0E
+RunModeTimeWarm:
+        dc.b    $00,$3A                                  ; Run-mode switch (RunModeSwitch): time after start (Count3s, word) with coolant at or above 15 °C before ControlFlags943 bits 3-4 are set
+RunModeTimeCold:
+        dc.b    $00,$76                                  ; As RunModeTimeWarm with colder coolant
+RunModeCountRunning:
+        dc.b    $10                                      ; Run-mode switch: count needed once the engine has run (ControlFlagsC33 bit 5) and the battery is at or above 11.0 V
+RunModeCount:
+        dc.b    $18                                      ; Run-mode switch: count RunModeCounter needed (battery at or above 11.0 V, or warm)
+RunModeCountColdLowVolts:
+        dc.b    $45                                      ; Run-mode switch: count needed cold with the battery below 11.0 V
+        dc.b    $03,$2D,$CD,$55
 
 ;---------------------------------------------------------------------------------------------------
 ; EventTimingLimit ($51ED): 2D table, 2 points, unsigned
@@ -6461,7 +7699,10 @@ FuelEventOffset:
 
 FuelEventCylFactor:
         dc.b    $03                                      ; Per-cylinder offset factor (multiplied by the cylinder index CylinderIndex)
-        dc.b    $01,$71,$01,$68,$00,$B4,$00,$A0,$00,$8C,$00,$78,$07,$80,$27,$4C
+        dc.b    $01,$71,$01,$68,$00,$B4,$00,$A0,$00,$8C,$00,$78
+RpmRateDivisor:
+        dc.b    $07,$80                                  ; Divisor of the rpm rate terms (IdleRpmRate, RpmRateTerm): rpm change × segment rpm / this value (word)
+        dc.b    $27,$4C
 
 ;---------------------------------------------------------------------------------------------------
 ; Isr_GPT_IC3 ($05218)
@@ -6471,31 +7712,31 @@ Isr_GPT_IC3:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
         LDE     #$0010
-        JSR     Sub_0E85E
+        JSR     DelayLoop
         BRSET   >PORTGP,Z,#$04,L05418                    ; bit 2: GPT port pin 2 level (IC3)
-        INC     $0480,Z
+        INC     >DistancePulses,Z
         LDD     >TIC3,Z
         TZX
         TZY
         LDX     #$8376
         LDY     #$80F0
         JSR     PeriodChangeTrack
-        LDAA    $0376,Z
+        LDAA    >VssPulseIndex,Z
         LSRA
-        STAA    $0377,Z
+        STAA    >VssBusValue,Z
         LDE     >TIC3,Z
         SUBE    $037A,Z
-        STE     $0378,Z
-        CLR     $0376,Z
+        STE     >VssAB4,Z
+        CLR     >VssPulseIndex,Z
         LDE     >TIC3,Z
         STE     $037A,Z
-        LDE     $0384,Z
+        LDE     >VssBusValue2,Z
         LDD     #$E000
         EMUL
         ADCE    #$0000
         XGEX
-        LDE     $0377,Z
-        LDAA    $0379,Z
+        LDE     >VssBusValue,Z
+        LDAA    >VssAB5,Z
         ROLA
         ROLE
         XGDX
@@ -6503,7 +7744,7 @@ Isr_GPT_IC3:
         BCC     L0528C
         LDE     #$FFFF
 L0528C:
-        STE     $0384,Z
+        STE     >VssBusValue2,Z
         INCW    $0034,Z
         LDAB    >Options032A
         BITB    #$0A
@@ -6533,7 +7774,7 @@ L052CE:
         BCS     L052E0
         BCLR    >CrankFlags2,Z,#$20                      ; bit 5: vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts
 L052E0:
-        LDAA    $0377,Z
+        LDAA    >VssBusValue,Z
         CMPA    #$7F
         BCS     L052F8
         BSET    >CrankFlags2,Z,#$3C                      ; bit 5: vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts; bit 4: timer update due for HighRpmTimer (HighRpmTimerUpdate); bit 3: VSS period long ($07D0 or more) not seen (Isr_GPT_IC3); HighRpmTimerUpdate counts HighRpmTimer2; bit 2: timer update due for HighRpmTimer2 (HighRpmTimerUpdate)
@@ -6541,7 +7782,7 @@ L052E0:
         CLRW    >HighRpmTimer2,Z
         CLRW    $036E,Z
 L052F8:
-        LDD     $0321,Z
+        LDD     >VehicleSpeedRaw,Z
         SUBD    #$0500
         LDAA    $0325,Z
         BCC     L05334
@@ -6553,13 +7794,13 @@ L052F8:
 L05314:
         ANDA    #$1F
         STAA    $0325,Z
-        CLR     $0370,Z
-        LDD     $0321,Z
+        CLR     >VssCountAC,Z
+        LDD     >VehicleSpeedRaw,Z
         ADDD    #$50
         BRCLR   >Options032A,#$0A,L0532C
         ADDD    #$4C
 L0532C:
-        STD     $0321,Z
+        STD     >VehicleSpeedRaw,Z
         JMP     L0540C
 L05334:
         BITA    #$10
@@ -6575,7 +7816,7 @@ L05334:
 L05352:
         STAB    $0371,Z
         XGDE
-        STD     $0372,Z
+        STD     >VssTimeAE,Z
         LBRA    L05404
 L05360:
         ADDA    #$20
@@ -6591,8 +7832,8 @@ L0536E:
         LDX     #$8370
         LDY     #$80F0
         JSR     PeriodChangeTrack
-        BRSET   $031F,#$01,L053D2
-        LDAA    $0370,Z
+        BRSET   >Options0330,#$01,L053D2                 ; bit 0: battery temperature model on (BattTempModelOn); PciReceive also reads it
+        LDAA    >VssCountAC,Z
         LSRA
         TAB
         ORAA    $0371,Z
@@ -6604,30 +7845,30 @@ L0536E:
 L053A8:
         LDD     >TIC3,Z
         SUBD    $0374,Z
-        SUBD    $0372,Z
+        SUBD    >VssTimeAE,Z
         BEQ     L0540C
         ASRD
         ASRD
         BNE     L053BE
         INCB
 L053BE:
-        ADDD    $0372,Z
+        ADDD    >VssTimeAE,Z
 L053C2:
-        STD     $0372,Z
+        STD     >VssTimeAE,Z
         TDE
         CLRA
         LDAB    $0371,Z
         XGDE
         BRA     L05404
 L053D2:
-        LDAB    $0370,Z
+        LDAB    >VssCountAC,Z
         LSRB
         STAB    $0371,Z
         CLRA
         TDE
         LDD     >TIC3,Z
         SUBD    $0374,Z
-        STD     $0372,Z
+        STD     >VssTimeAE,Z
         SUBD    $06E0,Z
         SBCE    $06DE,Z
         ASRE
@@ -6642,7 +7883,7 @@ L05404:
 L0540C:
         LDD     >TIC3,Z
         STD     $0374,Z
-        CLR     $0370,Z
+        CLR     >VssCountAC,Z
 L05418:
         LDAA    >TFLG1,Z
         EORA    #$04
@@ -6659,49 +7900,49 @@ Isr_PIT:
         PSHM    D,E,X,Y,K
         LDAB    >O2HeaterSample,Z
         BEQ     L0543A
-        JSR     Sub_05722
+        JSR     SciLogReceive
         LBRA    L054C2
 L0543A:
         LDAB    #$20
         STAB    >ADCTL1_L,Z
-        INC     $03B6,Z
+        INC     >PitTickCounter,Z
         INC     $03B5,Z
         CLRB
         TBXK
-        JSR     Sub_05722
+        JSR     SciLogReceive
         DEC     $068A,Z
         BGT     L0546C
         LDAA    #$04
         STAA    $068A,Z
         BRCLR   $086E,Z,#$20,L0546C
-        INC     $0691,Z
+        INC     >IdleMap32F,Z
         BNE     L0546C
-        DEC     $0691,Z
+        DEC     >IdleMap32F,Z
 L0546C:
         DEC     $0689,Z
         BGT     L0547C
         LDAA    #$09
         STAA    $0689,Z
-        JSR     Sub_054C6
+        JSR     IacStepperDrive
 L0547C:
         DEC     $043E,Z
         BNE     L05494
         ORP     #$00E0
         LDAA    #$18
         STAA    $043E,Z
-        JSR     Sub_193BC
+        JSR     CcdTransmit
         ANDP    #$FF7F
 L05494:
-        BRSET   $03B6,Z,#$01,L054AE
-        BRCLR   $0321,#$10,L054A4
+        BRSET   >PitTickCounter,Z,#$01,L054AE
+        BRCLR   >Options0334,#$10,L054A4                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         JSR     MtvTiming
 L054A4:
         JSR     HighRpmTimerPit
-        JSR     Sub_17794
+        JSR     ObdRequest
         BRA     L054B8
 L054AE:
-        BRSET   $03B6,Z,#$02,L054B8
-        JSR     Sub_0558A
+        BRSET   >PitTickCounter,Z,#$02,L054B8
+        JSR     ChargeControl
 L054B8:
         BCLR    >PORTC,Z,#$07                            ; bit 2: port C pin 2 output level (chip-select pin used as output); bit 1: port C pin 1 output level (chip-select pin used as output); bit 0: port C pin 0 output level (chip-select pin used as output)
         LDAA    #$30
@@ -6711,10 +7952,10 @@ L054C2:
         RTI
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_054C6 ($054C6)
+; IacStepperDrive ($054C6)
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
-Sub_054C6:
+IacStepperDrive:
         CLRB
         TBXK
         LDAB    <IacPosition,Z
@@ -6752,8 +7993,8 @@ L05520:
         CLRB
 L05522:
         PSHM    D
-        CLRW    $0804,Z
-        LDAB    $38,Z
+        CLRW    >IoCtl04,Z
+        LDAB    <IacStepper054,Z
         CLRA
         XGDX
         LDAA    >IoInputs0,Z
@@ -6764,41 +8005,41 @@ L05522:
         CMPA    #$A0
         BCS     L0554C
         BRCLR   >EngineStateFlags,Z,#$80,L0554C          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BSET    >Crank6B7,Z,#$80
+        BSET    >HwErrorFlags,Z,#$80
 L0554C:
         PULM    D
         LDX     #$4020
-        ADDB    $38,Z
+        ADDB    <IacStepper054,Z
         ANDB    #$03
-        STAB    $38,Z
+        STAB    <IacStepper054,Z
         ABX
         LDD     >IoInputs0,Z
         ANDD    #$0FFF
         ORAA    $00,X
         STD     >IoInputs0,Z
         LDE     #$F000
-        STE     $0804,Z
+        STE     >IoCtl04,Z
         LSRA
         LSRA
         LSRA
         LSRA
-        STAA    $067B,Z
+        STAA    >IacStepper31C,Z
         LDE     #$0020
-        JSR     Sub_0E85E
-        CLRW    $0804,Z
+        JSR     DelayLoop
+        CLRW    >IoCtl04,Z
 L05588:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0558A ($0558A)
+; ChargeControl ($0558A)
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
-Sub_0558A:
+ChargeControl:
         TST     >ADCSTAT,Z
-        BPL     Sub_0558A
+        BPL     ChargeControl
         LDAA    >RJURR3_L,Z
-        STAA    $0351,Z
-        LDAB    $0352,Z
+        STAA    >BatteryVolts,Z
+        LDAB    >ChargeA54,Z
         ADDB    #$F8
         BCS     L055A6
         MUL
@@ -6808,7 +8049,7 @@ L055A6:
         CMPB    #$08
         BHI     L055B4
         MUL
-        ADCA    $0351,Z
+        ADCA    >BatteryVolts,Z
         BCC     L055B4
         LDAA    #$FF
 L055B4:
@@ -6818,7 +8059,7 @@ L055B4:
         LBEQ    L05720
         CMPA    #$14
         LBEQ    L05720
-        JSR     Sub_0B5F4
+        JSR     IacChargeStepCalc
         BRCLR   >EngineStateFlags,Z,#$80,L05688          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >FieldFlags,Z,#$20,L0566E                ; bit 5: field ramp reached its end step (FieldRampControl)
         LDAA    >Count3s,Z
@@ -6915,7 +8156,7 @@ L056E4:
         BCS     L0570A
         LDAB    #$1E
 L056F2:
-        ANDB    $03B6,Z
+        ANDB    >PitTickCounter,Z
         BEQ     L05716
         BRA     L0570A
 L056FA:
@@ -6925,7 +8166,7 @@ L056FA:
         BCC     L05716
         LDAB    #$1E
 L05704:
-        ANDB    $03B6,Z
+        ANDB    >PitTickCounter,Z
         BNE     L05716
 L0570A:
         BSETW   $086E,Z,#$2000
@@ -6938,10 +8179,10 @@ L05720:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_05722 ($05722)
+; SciLogReceive ($05722)
 ; Called from: Isr_PIT (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_05722:
+SciLogReceive:
         BRCLR   >DiagFlags,Z,#$80,L0585C                 ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
         LDD     >SCSR,Z
         BITB    #$0E
@@ -6962,14 +8203,14 @@ L05748:
         BRSET   >SciLogFlags,Z,#$04,L057EC               ; bit 2: SCI log mode bit (SciLogReceive)
         BRSET   >SciLogFlags,Z,#$01,L0577A               ; bit 0: SCI log mode $F6 selected (SciLogReceive)
         BRSET   >SciLogFlags,Z,#$08,L0577A               ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6)
-        CMPA    $04D5,Z
+        CMPA    >SciLogLast,Z
         LBEQ    L057FA
-        STAA    $04D5,Z
-        INC     $04D5,Z
+        STAA    >SciLogLast,Z
+        INC     >SciLogLast,Z
 L0577A:
         CMPA    #$F2
         BNE     L0578A
-        CLR     $04D6,Z
+        CLR     >SciRxIndex,Z
         BCLR    >SciLogFlags,Z,#$0D                      ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6); bit 2: SCI log mode bit (SciLogReceive); bit 0: SCI log mode $F6 selected (SciLogReceive)
         JMP     L05858
 L0578A:
@@ -7001,27 +8242,27 @@ L057BE:
 L057CE:
         BRSET   >SciLogFlags,Z,#$01,L0581E               ; bit 0: SCI log mode $F6 selected (SciLogReceive)
         BRSET   >SciLogFlags,Z,#$08,L0581E               ; bit 3: SCI log mode bit (SciLogReceive, commands $F2-$F6)
-        LDAA    $04D6,Z
+        LDAA    >SciRxIndex,Z
         CMPA    #$09
         BCC     L05812
         TDE
         LDD     E,Z
-        STAB    $04D7,Z
+        STAB    >SciLogByte,Z
         BRA     L05858
 L057EC:
         CMPA    #$09
         BCC     L057BE
-        STAA    $04D6,Z
+        STAA    >SciRxIndex,Z
         BCLR    >SciLogFlags,Z,#$04                      ; bit 2: SCI log mode bit (SciLogReceive)
         BRA     L05858
 L057FA:
-        LDAA    $04D6,Z
+        LDAA    >SciRxIndex,Z
         INCB
-        STAB    $04D5,Z
+        STAB    >SciLogLast,Z
         TDE
         LDAB    E,Z
-        LDAA    $04D7,Z
-        STAB    $04D7,Z
+        LDAA    >SciLogByte,Z
+        STAB    >SciLogByte,Z
         BRA     L05858
 L05812:
         LDAA    #$F0
@@ -7129,7 +8370,7 @@ Isr_GPT_OC2:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
         BRCLR   >Options0337,#$40,L05C7A                 ; bit 6: speed damping spark on (SpeedDampOn)
-        JSR     Sub_05D3A
+        JSR     SparkOutputOc2
         JMP     L05D36
 L05C7A:
         TPD
@@ -7137,7 +8378,7 @@ L05C7A:
         TZX
         LDX     #$F916
         LDY     #$5C56
-        LDAA    $65,Z
+        LDAA    <SparkOcTime2,Z
         STAA    <Temp4F0,Z
         BRA     L05CC0
 
@@ -7153,7 +8394,7 @@ Isr_GPT_OC4:
         TZX
         LDX     #$F91A
         LDY     #$5C5B
-        LDAA    $66,Z
+        LDAA    <SparkOcTime3,Z
         STAA    <Temp4F0,Z
         BRA     L05CC0
 
@@ -7223,10 +8464,10 @@ L05D36:
         RTI
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_05D3A ($05D3A)
+; SparkOutputOc2 ($05D3A)
 ; Called from: Isr_GPT_OC2
 ;---------------------------------------------------------------------------------------------------
-Sub_05D3A:
+SparkOutputOc2:
         LDAA    >TFLG1,Z
         EORA    #$10
         STAA    >TFLG1,Z
@@ -7256,14 +8497,14 @@ L05D80:
         ANDA    #$07
         CBA
         BCS     L05DAA
-        LDD     $65,Z
+        LDD     <SparkOcTime2,Z
         ADDD    >TOC2,Z
         STD     >TOC2,Z
         BRA     L05DB4
 L05D96:
         BCLR    >SparkFlags,Z,#$10                       ; bit 4: cleared by SparkOutputOc2 only
-        LDD     >SparkPeriod,Z
-        SUBD    $65,Z
+        LDD     >RefPeriodLow,Z
+        SUBD    <SparkOcTime2,Z
         ADDD    >TOC2,Z
         STD     >TOC2,Z
         BRA     L05DB4
@@ -7281,7 +8522,7 @@ L05DB4:
 Isr_IRQ2:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
-        LDD     $0808,Z
+        LDD     >IoTimer08,Z
         BITB    #$80
         BNE     L05DF6
         LDD     >IoIrqStatus,Z
@@ -7289,20 +8530,20 @@ Isr_IRQ2:
         BNE     L05DE2
         LDD     #$FFFF
         STD     >IoIrqStatus,Z
-        STD     $0808,Z
-        STD     $0806,Z
+        STD     >IoTimer08,Z
+        STD     >IoTimer06,Z
         STD     >LookupResult,Z
         BRA     L05E08
 L05DE2:
-        JSR     Sub_19A1C
+        JSR     Irq2BusHandler
         LDD     #$0008
         STD     >IoIrqStatus,Z
-        LDD     $0808,Z
+        LDD     >IoTimer08,Z
         BITB    #$80
         BEQ     L05E08
 L05DF6:
         JSR     Sub_0F9AC
-        BSETW   $0808,Z,#$00C0
+        BSETW   >IoTimer08,Z,#$00C0
         LDD     >IoIrqStatus,Z
         BITB    #$08
         BNE     L05DE2
@@ -7325,7 +8566,7 @@ Isr_IRQ4:
 ;---------------------------------------------------------------------------------------------------
 Isr_SCI:
         ORP     #$00E0
-        JSR     Sub_186BC
+        JSR     SciInterrupt
         RTI
         dc.b    $0F,$A0,$2A,$F8,$46,$50,$61,$A8,$7D,$00,$98,$58,$B3,$B0,$CF,$08
         dc.b    $EA,$60,$27,$10,$42,$68,$5D,$C0,$79,$18,$94,$70,$AF,$C8,$CB,$20
@@ -7404,17 +8645,17 @@ L05EF2:
         BCLR    >Ic4Flags,Z,#$10
         BSET    >EventSparkFlags,Z,#$08                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
         BCLR    >EventSparkFlags,Z,#$04                  ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BCLR    $041B,Z,#$50
+        BCLR    >EventSparkFlags2,Z,#$50                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus; bit 4: per-event spark state from the park/neutral switch (Isr_GPT_IC4OC5); EventSparkControl reads it
         LDAB    #$00
         TBXK
         LDX     #$1D6B
         BRA     L05F6E
 L05F12:
         BCLR    >Ic4Flags,Z,#$10
-        BCLR    $041B,Z,#$01
-        BSET    $041B,Z,#$40
+        BCLR    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
+        BSET    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         JSR     Sub_197BA
-        BCLR    $041B,Z,#$40
+        BCLR    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         LBRA    L0603C
 L05F2A:
         BCLR    >Ic4Flags,Z,#$10
@@ -7425,20 +8666,20 @@ L05F36:
         BCLR    >Ic4Flags,Z,#$10
         BSET    >EventSparkFlags,Z,#$04                  ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         BCLR    >EventSparkFlags,Z,#$08                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BSET    $041B,Z,#$10
-        BCLR    $041B,Z,#$40
+        BSET    >EventSparkFlags2,Z,#$10                 ; bit 4: per-event spark state from the park/neutral switch (Isr_GPT_IC4OC5); EventSparkControl reads it
+        BCLR    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         LDAB    #$00
         TBXK
         LDX     #$1D5E
         BRA     L05F6E
 L05F5A:
         BSET    >Ic4Flags,Z,#$10
-        BCLR    $041B,Z,#$01
-        JSR     Sub_197D2
+        BCLR    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
+        JSR     BusTxEvent
         BCLR    >Ic4Flags,Z,#$10
         LBRA    L0603C
 L05F6E:
-        BSET    $041B,Z,#$01
+        BSET    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BSET    >EventSparkFlags,Z,#$10                  ; bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it
         BSET    >EventSparkFlags,Z,#$20                  ; bit 5: per-event history to be refilled (Isr_GPT_IC4OC5, cleared by EventTableCheck)
         LDAA    #$FF
@@ -7465,7 +8706,7 @@ L05FAA:
         JSR     Sub_197BA
         LBRA    L0603C
 L05FBC:
-        BRCLR   $041B,Z,#$01,L0602A
+        BRCLR   >EventSparkFlags2,Z,#$01,L0602A          ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BCLR    >EventSparkFlags,Z,#$0C                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         PSHM    E
         BSET    >FuelModeFlags,Z,#$08                    ; bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
@@ -7515,7 +8756,7 @@ L0602A:
         BCLR    >TCTL2,Z,#$80                            ; bit 7: EDGE4B: IC4 edge select
         BRA     L06048
 L0603C:
-        CLR     $0425,Z
+        CLR     >CamSignalCount,Z
         BSET    >TCTL2,Z,#$80                            ; bit 7: EDGE4B: IC4 edge select
         BCLR    >TCTL2,Z,#$40                            ; bit 6: EDGE4A: IC4 edge select
 L06048:
@@ -7658,10 +8899,10 @@ L064BA:
         LDAA    >Map,Z
         CMPA    $1171
         LBHI    L06578
-        LDAA    $0168,Z
+        LDAA    >FaultSet12,Z
         BITA    #$F0
         LBNE    L06578
-        LDAA    $0165,Z
+        LDAA    >FaultSet02,Z
         BITA    #$CC
         LBNE    L06578
         LDAA    >FaultSet06,Z
@@ -7670,20 +8911,20 @@ L064BA:
         LDAA    $0174,Z
         BITA    #$10
         BNE     L06578
-        STAB    >IacBase,Z
+        STAB    >Scratch0,Z
         LDAA    >CoolantTemp,Z
-        BRSET   >IoCfg1FL,Z,#$01,L0654A
+        BRSET   >ControlFlags943,Z,#$01,L0654A           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDX     #Tab2D_1123
         JSR     Lookup2D
-        STAA    $01F2,Z
+        STAA    >Scratch2,Z
         LDAA    >FieldDuty,Z
         LDX     #Tab2D_113B
         JSR     Lookup2D
-        CMPA    $01F2,Z
+        CMPA    >Scratch2,Z
         BCC     L06532
-        LDAA    $01F2,Z
+        LDAA    >Scratch2,Z
 L06532:
-        LDAB    >IacBase,Z
+        LDAB    >Scratch0,Z
         CMPA    >EngineRpm,Z
         BCC     L06578
         LDAA    >VehicleSpeed,Z
@@ -7693,14 +8934,14 @@ L06532:
 L0654A:
         LDX     #Tab2D_1117
         JSR     Lookup2D
-        STAA    $01F2,Z
+        STAA    >Scratch2,Z
         LDAA    >FieldDuty,Z
         LDX     #Tab2D_112F
         JSR     Lookup2D
-        LDAB    >IacBase,Z
-        CMPA    $01F2,Z
+        LDAB    >Scratch0,Z
+        CMPA    >Scratch2,Z
         BCC     L06570
-        LDAA    $01F2,Z
+        LDAA    >Scratch2,Z
 L06570:
         CMPA    >EngineRpm,Z
         LBCS    L06700
@@ -7716,7 +8957,7 @@ L0657E:
         CMPA    $1173
         LBCC    L06706
         LDAA    >EngineRpm,Z
-        BCLR    $056D,Z,#$80
+        BCLR    >RevLimitFlags,Z,#$80
 L065A2:
         BRCLR   >DriveFlags,Z,#$20,L065B2                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         CMPA    >RevLimit
@@ -7726,7 +8967,7 @@ L065B2:
         CMPA    >RevLimitAlt
         LBCC    L06706
 L065BA:
-        BCLR    $056D,Z,#$40
+        BCLR    >RevLimitFlags,Z,#$40
         ANDB    #$BF
         LBRA    L06706
 L065C4:
@@ -7738,7 +8979,7 @@ L065D4:
         CMPA    $110C
 L065D8:
         LBHI    L066C8
-        BCLR    $056D,Z,#$40
+        BCLR    >RevLimitFlags,Z,#$40
         BRCLR   >Options0337,#$08,L065F8                 ; bit 3: selects a branch in ReadMap
         CMPA    $1174
         BCS     L065F8
@@ -7746,20 +8987,20 @@ L065D8:
         CMPA    $1172
         LBCC    L066D0
 L065F8:
-        BCLR    $056D,Z,#$80
+        BCLR    >RevLimitFlags,Z,#$80
         BRSET   >ThrottleState,Z,#$01,L06608             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         ANDB    #$7F
         LBRA    L06706
 L06608:
-        CLR     $01F1,Z
-        STAB    >IacBase,Z
+        CLR     >Scratch1,Z
+        STAB    >Scratch0,Z
         LDAA    >EngineRpm,Z
         LDX     #Tab2D_1151
         JSR     Lookup2D
-        LDAB    >IacBase,Z
+        LDAB    >Scratch0,Z
         CMPA    $05C2,Z
         BCC     L0662C
-        COM     $01F1,Z
+        COM     >Scratch1,Z
         BRA     L0663C
 L0662C:
         LDAA    >Map,Z
@@ -7782,10 +9023,10 @@ L0663C:
         LDAA    >Map,Z
         CMPA    $1113
         LBHI    L06706
-        LDAA    $0168,Z
+        LDAA    >FaultSet12,Z
         BITA    #$F0
         LBNE    L06706
-        LDAA    $0165,Z
+        LDAA    >FaultSet02,Z
         BITA    #$CC
         BNE     L06706
         LDAA    >FaultSet06,Z
@@ -7794,7 +9035,7 @@ L0663C:
         LDAA    $0174,Z
         BITA    #$10
         BNE     L06706
-        BRSET   $01F1,Z,#$FF,L066BA
+        BRSET   >Scratch1,Z,#$FF,L066BA
         LDAA    >EngineRpm,Z
         CMPA    $1177
         BLS     L066B4
@@ -7802,7 +9043,7 @@ L0663C:
         CMPA    $1176
         BHI     L066BA
 L066B4:
-        BRCLR   >IoCfg1FL,Z,#$01,L06706
+        BRCLR   >ControlFlags943,Z,#$01,L06706           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L066BA:
         LDAA    $05DE,Z
         BEQ     L066D8
@@ -7811,11 +9052,11 @@ L066BA:
         BRA     L06706
 L066C8:
         ANDB    #$7F
-        BSET    $056D,Z,#$40
+        BSET    >RevLimitFlags,Z,#$40
         BRA     L06704
 L066D0:
         ANDB    #$7F
-        BSET    $056D,Z,#$80
+        BSET    >RevLimitFlags,Z,#$80
         BRA     L06704
 L066D8:
         BITB    #$80
@@ -7829,16 +9070,16 @@ L066F0:
 L066F6:
         ORAB    #$80
         LDAA    $1AEF
-        STAA    $05BF,Z
+        STAA    >SparkStartRamp,Z
 L06700:
-        BSET    $055B,Z,#$30
+        BSET    >O2ResetFlags2,Z,#$30                    ; bit 5: bank 1 short-term trim reset, memory change hold started (O2CellSelect, FuelCutControl); bit 4: bank 2 short-term trim reset (O2CellSelect, FuelCutControl)
 L06704:
         ORAB    #$40
 L06706:
         STAB    >FuelModeFlags2,Z
         LDX     #$4332
         JSR     CollectBits
-        STAA    $056D,Z
+        STAA    >RevLimitFlags,Z
         ORAA    $0101,Z
         STAA    $0101,Z
         RTS
@@ -7941,13 +9182,13 @@ L0681A:
 ;---------------------------------------------------------------------------------------------------
 IdleFlareCheck:
         BRCLR   >ThrottleState,Z,#$80,L06826             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BSET    >EventFlags,Z,#$08                       ; bit 3: read by LimitReasonCode
+        BSET    >IdleFlareFlags,Z,#$08                   ; bit 3: throttle opened since the last flare check (IdleFlareCheck)
 L06826:
-        BRSET   >Options0339,#$20,L06832                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L06832                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRSET   >DriveFlags,Z,#$20,L068C6                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L06832:
         BRSET   >ThrottleState,Z,#$80,L068C6             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRCLR   >EventFlags,Z,#$08,L068C6                ; bit 3: read by LimitReasonCode
+        BRCLR   >IdleFlareFlags,Z,#$08,L068C6            ; bit 3: throttle opened since the last flare check (IdleFlareCheck)
         LDAA    >VehicleSpeed,Z
         CMPA    >IdleRollSpeed
         BCC     L068C6
@@ -7963,38 +9204,38 @@ L06832:
         BCC     L0686E
         CLRB
 L0686E:
-        BRCLR   >EventFlags,Z,#$80,L06880                ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+        BRCLR   >IdleFlareFlags,Z,#$80,L06880            ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         CMPB    >IdleFlareRpmOff
         BCC     L0688A
-        BCLR    >EventFlags,Z,#$80                       ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+        BCLR    >IdleFlareFlags,Z,#$80                   ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         BRA     L0688A
 L06880:
         CMPB    >IdleFlareRpmOn
         BCS     L0688A
-        BSET    >EventFlags,Z,#$80                       ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+        BSET    >IdleFlareFlags,Z,#$80                   ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
 L0688A:
-        LDAA    >EventFlags,Z
+        LDAA    >IdleFlareFlags,Z
         BITA    #$C0
         BNE     L06896
-        BCLR    >EventFlags,Z,#$08                       ; bit 3: read by LimitReasonCode
+        BCLR    >IdleFlareFlags,Z,#$08                   ; bit 3: throttle opened since the last flare check (IdleFlareCheck)
 L06896:
         CMPB    >IdleFlareAcRpmOn
         BCS     L068AE
         BRSET   >Options033A,#$80,L068A8                 ; bit 7: idle flare check off (IdleFlareCheck skips when set)
-        BRCLR   >IoCfg1FL,Z,#$01,L068CA
+        BRCLR   >ControlFlags943,Z,#$01,L068CA           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L068A8:
-        BSET    >EventFlags,Z,#$40                       ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
+        BSET    >IdleFlareFlags,Z,#$40                   ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         BRA     L068CE
 L068AE:
-        BRCLR   >EventFlags,Z,#$40,L068CE                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
+        BRCLR   >IdleFlareFlags,Z,#$40,L068CE            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         CMPB    >IdleFlareAcRpmOff
         BCS     L068CA
         BRSET   >Options033A,#$80,L068CE                 ; bit 7: idle flare check off (IdleFlareCheck skips when set)
-        BRSET   >IoCfg1FL,Z,#$01,L068CE
+        BRSET   >ControlFlags943,Z,#$01,L068CE           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L068C6:
-        BCLR    >EventFlags,Z,#$80                       ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+        BCLR    >IdleFlareFlags,Z,#$80                   ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
 L068CA:
-        BCLR    >EventFlags,Z,#$40                       ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
+        BCLR    >IdleFlareFlags,Z,#$40                   ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
 L068CE:
         RTS
 
@@ -8043,18 +9284,18 @@ L06930:
 ;---------------------------------------------------------------------------------------------------
 DecelFuelRampControl:
         LDX     #DecelBaroMapOffset
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         JSR     Lookup2D
         ADDA    >Map,Z
         BCC     L06944
         LDAA    #$FF
 L06944:
-        LDX     #DecelMapScale
+        LDX     #WotMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
         LDX     #DecelMapRpmLimit
         JSR     Lookup3D
-        STAA    $01F4,Z
+        STAA    >Scratch4,Z
         BRCLR   >ThrottleState,Z,#$80,L06994             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >ThrottleState,Z,#$40,L069D8             ; bit 6: wide-open throttle (DetectWot)
         ADDA    >KnockFuel,Z
@@ -8063,7 +9304,7 @@ L06944:
 L06970:
         CMPA    >DecelRampStart
         BHI     L069D8
-        LDAA    $01F4,Z
+        LDAA    >Scratch4,Z
         ADDA    >KnockFuel,Z
         BCC     L06982
         LDAA    #$FF
@@ -8145,20 +9386,20 @@ L06A42:
         CLRA
         BRA     L06A5E
 L06A54:
-        CMPA    $01F4,Z
+        CMPA    >Scratch4,Z
         BCS     L06A5E
-        LDAA    $01F4,Z
+        LDAA    >Scratch4,Z
 L06A5E:
         STAA    >DecelFuelFactor,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_06A64 ($06A64)
+; CalcBaroFuelAdder ($06A64)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_06A64:
-        LDAA    <ScratchC,Z
-        LDX     #Tab2D_0704
+CalcBaroFuelAdder:
+        LDAA    <Baro,Z
+        LDX     #BaroFuel
         JSR     Lookup2D
         CLRA
         ASLD
@@ -8167,23 +9408,23 @@ Sub_06A64:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_06A7A ($06A7A)
+; KnockEnrichment ($06A7A)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_06A7A:
+KnockEnrichment:
         CLRD
         STAA    >KnockFuel,Z
-        CLRW    >IacBase,Z
-        CLRW    $01F2,Z
-        BRCLR   $031F,#$C0,L06AF8
+        CLRW    >Scratch0,Z
+        CLRW    >Scratch2,Z
+        BRCLR   >Options0330,#$C0,L06AF8
         CLRD
         LDAA    >CoolantTemp,Z
-        CMPA    $0F6E
+        CMPA    >KnockFuelCoolantMin
         LBCS    L06B64
         LDAA    >ManifoldVacuum,Z
-        CMPA    $0F6D
+        CMPA    >KnockFuelVacuumMax
         LBCC    L06B64
-        LDAA    $0612,Z
+        LDAA    >KnockRetard,Z
         BMI     L06AB2
         CLRA
         BRA     L06AB8
@@ -8192,7 +9433,7 @@ L06AB2:
         BVC     L06AB8
         LDAA    #$7F
 L06AB8:
-        STAA    >IacBase,Z
+        STAA    >Scratch0,Z
         TZX
         LDX     #$8390
         CLRA
@@ -8210,18 +9451,18 @@ L06AD2:
         BRA     L06AD2
 L06AE0:
         ANDP    #$FF1F
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         ABA
         BVC     L06AEE
         LDAA    #$7F
 L06AEE:
         LDAB    $0F6B
         MUL
-        STD     >IacBase,Z
+        STD     >Scratch0,Z
 L06AF8:
-        BRCLR   $0324,#$20,L06B1E
+        BRCLR   >Options032C,#$20,L06B1E
         BRCLR   >ThrottleState,Z,#$80,L06B1E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $0618,Z
+        LDAA    >CalcSparkD09,Z
         BMI     L06B0E
         CLRA
         BRA     L06B14
@@ -8230,11 +9471,11 @@ L06B0E:
         BVC     L06B14
         LDAA    #$7F
 L06B14:
-        LDAB    $0F6F
+        LDAB    >KnockFuelGain2
         MUL
-        STD     $01F2,Z
+        STD     >Scratch2,Z
 L06B1E:
-        LDAA    $0616,Z
+        LDAA    >CalcSparkD07,Z
         BMI     L06B28
         CLRA
         BRA     L06B2E
@@ -8243,14 +9484,14 @@ L06B28:
         BVC     L06B2E
         LDAA    #$7F
 L06B2E:
-        LDAB    $0F70
+        LDAB    >KnockFuelGain3
         MUL
-        ADDD    >IacBase,Z
+        ADDD    >Scratch0,Z
         BCC     L06B40
         LDD     #$FFFF
         BRA     L06B4A
 L06B40:
-        ADDD    $01F2,Z
+        ADDD    >Scratch2,Z
         BCC     L06B4A
         LDD     #$FFFF
 L06B4A:
@@ -8259,54 +9500,54 @@ L06B4A:
         LDD     #$01FF
 L06B54:
         ASRD
-        CMPB    $0F6C
+        CMPB    >KnockFuelMax
         BCS     L06B60
-        LDAB    $0F6C
+        LDAB    >KnockFuelMax
 L06B60:
         STAB    >KnockFuel,Z
 L06B64:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_06B66 ($06B66)
+; AccelEnrichFactors ($06B66)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_06B66:
-        CLRW    $01F6,Z
+AccelEnrichFactors:
+        CLRW    >Scratch6,Z
         BRCLR   >EngineStateFlags,Z,#$80,L06C0E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >MainLoopPhaseMask,Z,#$04,L06BA4         ; bit 2: one pass in 8 (about 96 ms)
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_0EDD
+        LDX     #AccelMapGainCoolant
         JSR     Lookup2D
         STAA    >AccelMapGain,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_0ED1
+        LDX     #AccelMapCoolant2
         JSR     Lookup2D
         STAA    >AccelMapCoolantFactor,Z
-        LDAA    <ScratchC,Z
-        LDX     #Tab2D_0E92
+        LDAA    <Baro,Z
+        LDX     #AccelMapBaro
         JSR     Lookup2D
         STAA    >AccelMapBaroFactor,Z
 L06BA4:
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_0EAB
+        LDX     #AccelTpsRateLimit
         JSR     Lookup2D
         LDAA    >Throttle,Z
         SUBA    >ThrottleLast,Z
         BCS     L06BE0
-        SUBA    $0EAA
+        SUBA    >AccelThrottleDeadband
         BCS     L06BE0
         CBA
         BCS     L06BC6
         TBA
 L06BC6:
-        STAA    $01F6,Z
-        LDX     #Tab2D_0EB7
+        STAA    >Scratch6,Z
+        LDX     #AccelTpsCoolantFactor
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
-        LDAA    $01F6,Z
+        LDAA    >Scratch6,Z
         MUL
-        STD     $01F6,Z
+        STD     >Scratch6,Z
 L06BE0:
         BRCLR   >TipInTimer,Z,#$FF,L06C0E
         LDD     >Count3s,Z
@@ -8314,31 +9555,31 @@ L06BE0:
         BCS     L06BF8
         ASLD
         BCS     L06BF8
-        CMPA    $0EFF
+        CMPA    >TipInFuelTimeMin
         BLS     L06C0E
 L06BF8:
         BRCLR   >MainLoopPhaseMask,Z,#$10,L06C0E         ; bit 4: one pass in 32 (about 383 ms)
         LDAA    >TipInTimer,Z
-        SUBA    $0F00
+        SUBA    >TipInFuelDecay
         BCC     L06C0A
         CLRA
 L06C0A:
         STAA    >TipInTimer,Z
 L06C0E:
-        LDD     $01F6,Z
+        LDD     >Scratch6,Z
         STD     >AccelTpsFuel,Z
         BEQ     L06C26
-        LDAA    <ScratchC,Z
-        LDX     #Tab2D_0E9E
+        LDAA    <Baro,Z
+        LDX     #AccelTpsBaro
         JSR     Lookup2D
         STAA    >AccelTpsBaroFactor,Z
 L06C26:
-        LDX     #Tab2D_0E86
+        LDX     #AccelRpmFactor
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         CLRA
         XGDE
-        LDX     #Tab2D_0E7A
+        LDX     #AccelMapAdder
         LDAA    >Map,Z
         JSR     Lookup2D
         CLRA
@@ -8351,36 +9592,36 @@ L06C50:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_06C56 ($06C56)
+; TipInFuelControl ($06C56)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_06C56:
-        LDAB    $0703
+TipInFuelControl:
+        LDAB    >TipInMode
         LBEQ    L06DEC
         CMPB    #$02
         BEQ     L06C66
-        CLR     $05D7,Z
+        CLR     >TipIn7D3,Z
 L06C66:
         LDAA    >Throttle,Z
-        LDAB    $05D6,Z
-        STAA    $05D6,Z
+        LDAB    >TipIn7D2,Z
+        STAA    >TipIn7D2,Z
         SBA
         BCC     L06C78
         LDAA    #$00
 L06C78:
-        LDAB    $05D7,Z
-        STAA    $05D7,Z
+        LDAB    >TipIn7D3,Z
+        STAA    >TipIn7D3,Z
         ABA
-        SUBA    $0702
+        SUBA    >TipInThrottleDeadband
         LBCS    L06DEC
-        STAA    $01F4,Z
+        STAA    >Scratch4,Z
         BRCLR   >EngineStateFlags,Z,#$80,L06DEC          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >FuelModeFlags2,Z,#$40,L06DEC            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRCLR   >ThrottleState,Z,#$80,L06DEC             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAB    >EngineRpm,Z
-        CMPB    $0701
+        CMPB    >TipInRpmMax
         LBCC    L06DEC
-        LDX     #Tab2D_06B9
+        LDX     #TipInThrottleIndex
         LDAA    >ThrottleAboveClosed,Z
         JSR     Lookup2D
         BEQ     L06CC6
@@ -8392,9 +9633,9 @@ L06CC0:
         LDAB    #$09
         MUL
 L06CC6:
-        STAB    >IacBase,Z
-        LDX     #Tab2D_06CD
-        LDAA    $01F4,Z
+        STAB    >Scratch0,Z
+        LDX     #TipInRateIndex
+        LDAA    >Scratch4,Z
         JSR     Lookup2D
         BEQ     L06CE0
         CMPA    #$09
@@ -8403,7 +9644,7 @@ L06CC6:
 L06CDE:
         DECA
 L06CE0:
-        ADDA    >IacBase,Z
+        ADDA    >Scratch0,Z
         ADDA    #$03
         CLRB
         TBXK
@@ -8423,18 +9664,18 @@ L06CFC:
         ASLA
         ASLA
         ABA
-        STAA    $0576,Z
+        STAA    >TipIn802,Z
 L06D12:
         LDAA    $00,X
         LBEQ    L06DEC
-        STAA    $01F4,Z
-        LDX     #Tab2D_06E1
+        STAA    >Scratch4,Z
+        LDX     #TipInCoolantFactor
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
-        LDAB    $01F4,Z
+        LDAB    >Scratch4,Z
         MUL
         TDE
-        LDAA    $01F4,Z
+        LDAA    >Scratch4,Z
         CLRB
         LSRD
         LSRD
@@ -8442,7 +9683,7 @@ L06D12:
         RORE
         LSRE
         LDAA    >AirTemp,Z
-        LDX     #Tab2D_06EB
+        LDX     #TipInAirTempFactor
         JSR     Lookup2D
         BEQ     L06D66
         CLRA
@@ -8452,19 +9693,19 @@ L06D12:
         EMUL
         STE     >Scratch3,Z
         STAA    $01F5,Z
-        LDE     $01F4,Z
+        LDE     >Scratch4,Z
 L06D66:
-        LDAA    <ScratchC,Z
-        LDX     #Tab2D_06F5
+        LDAA    <Baro,Z
+        LDX     #TipInBaroFactor
         JSR     Lookup2D
         CLRA
         ADDD    #$0080
         EMUL
         STE     >Scratch3,Z
         STAA    $01F5,Z
-        LDE     $01F4,Z
+        LDE     >Scratch4,Z
         JSR     FlexFactorApply
-        LDX     #Tab2D_1101
+        LDX     #ReturnlessFuelScale
         LDAA    >ManifoldVacuum,Z
         JSR     Lookup2D
         BEQ     L06D9A
@@ -8483,25 +9724,25 @@ L06D9A:
         LDAB    >CylinderCount
         DECB
 L06DBC:
-        JSR     Sub_06DF2
+        JSR     InjectorFuelAccount
         INCB
         CMPB    >CylinderCount
         BCS     L06DCA
         CLRB
 L06DCA:
-        JSR     Sub_06DF2
+        JSR     InjectorFuelAccount
         INCB
         CMPB    >CylinderCount
         BCS     L06DD8
         CLRB
 L06DD8:
-        JSR     Sub_06DF2
+        JSR     InjectorFuelAccount
         INCB
         CMPB    >CylinderCount
         BCS     L06DE6
         CLRB
 L06DE6:
-        JSR     Sub_06DF2
+        JSR     InjectorFuelAccount
         BRA     L06DF0
 L06DEC:
         CLRW    >TipInFuel,Z
@@ -8509,10 +9750,10 @@ L06DF0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_06DF2 ($06DF2)
-; Called from: Sub_06C56 (4 calls)
+; InjectorFuelAccount ($06DF2)
+; Called from: TipInFuelControl (4 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_06DF2:
+InjectorFuelAccount:
         TDE
         CLRB
         TBYK
@@ -8555,22 +9796,22 @@ L06E4E:
 L06E58:
         CLRE
 L06E5A:
-        ADDE    $047E,Z
+        ADDE    >FuelUsedWord,Z
         BCC     L06E70
-        INC     $047D,Z
+        INC     >FuelUsedAccum,Z
         BNE     L06E70
         LDAA    #$FF
         LDE     #$FFFF
-        STAA    $047D,Z
+        STAA    >FuelUsedAccum,Z
 L06E70:
-        STE     $047E,Z
+        STE     >FuelUsedWord,Z
         ANDP    #$FF1F
         PULM    D
         RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexFactorApply ($06E7C)
-; Called from: Sub_06C56, Sub_06E9A
+; Called from: TipInFuelControl, IacFuelControl
 ;---------------------------------------------------------------------------------------------------
 FlexFactorApply:
         CLRB
@@ -8590,36 +9831,36 @@ L06E98:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_06E9A ($06E9A)
+; IacFuelControl ($06E9A)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_06E9A:
+IacFuelControl:
         CLRE
         BRSET   >ThrottleState,Z,#$80,L06F0E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         TST     >Count3s,Z
         BNE     L06EB4
         LDAA    >MainLoopCounter,Z
-        CMPA    $1E30
+        CMPA    >IacStartLoops
         LBCS    L06F12
 L06EB4:
         LDAA    >IacTarget,Z
         SUBA    <IacPosition,Z
         BCS     L06F12
-        STAA    >IacBase,Z
+        STAA    >Scratch0,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_0F22
+        LDX     #IacFuelCoolantLimit
         JSR     Lookup2D
-        CMPA    >IacBase,Z
+        CMPA    >Scratch0,Z
         BCS     L06ED8
         BSET    >FuelModeFlags,Z,#$80                    ; bit 7: idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1
         BRA     L06F12
 L06ED8:
         BCLR    >FuelModeFlags,Z,#$80                    ; bit 7: idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1
-        LDAA    >IacBase,Z
-        LDX     #Tab2D_04F5
+        LDAA    >Scratch0,Z
+        LDX     #IacFuelScale
         JSR     Lookup2D
         LDAB    >CoolantTemp,Z
-        LDX     #Tab3D_0F01
+        LDX     #IacFuelCoolant
         JSR     Lookup3D
         CLRB
         XGAB
@@ -8642,7 +9883,7 @@ L06F12:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_06F14:
-        BRSET   $0324,#$01,L06F40
+        BRSET   >Options032C,#$01,L06F40
         LDD     #$0040
         STAA    $057A,Z
         STAA    $0579,Z
@@ -8679,7 +9920,7 @@ L06F40:
 L06F94:
         LDX     #Tab3DN_0B2B
         LDAA    >FlexEthanolScaled,Z
-        LDAB    $03B8,Z
+        LDAB    >RpmCurveValue,Z
         JSR     Lookup3DNorm
         STAB    $057C,Z
         CLRA
@@ -8695,7 +9936,7 @@ L06FB8:
 L06FC2:
         STE     >FlexFuelFactor,Z
 L06FC6:
-        CLRW    $01F4,Z
+        CLRW    >Scratch4,Z
         LDAA    $05DB,Z
         CMPA    #$FF
         BEQ     L07018
@@ -8720,7 +9961,7 @@ L06FE6:
         BEQ     L07014
         JSR     ScaleByFraction
 L07014:
-        STE     $01F4,Z
+        STE     >Scratch4,Z
 L07018:
         BRSET   >ThrottleState,Z,#$40,L07052             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >Map,Z
@@ -8744,17 +9985,17 @@ L07052:
         JSR     Lookup2D
 L0705E:
         CLRA
-        ADDD    $01F4,Z
+        ADDD    >Scratch4,Z
         ASLD
-        STD     $01F4,Z
-        LDAA    <ScratchC,Z
+        STD     >Scratch4,Z
+        LDAA    <Baro,Z
         LDX     #Tab2D_0637
         JSR     Lookup2D
-        LDE     $01F4,Z
+        LDE     >Scratch4,Z
         CLRB
         EMUL
-        LSRW    $01F4,Z
-        ADDE    $01F4,Z
+        LSRW    >Scratch4,Z
+        ADDE    >Scratch4,Z
         BRSET   >ThrottleState,Z,#$40,L0709A             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >EngineRpm,Z
         LDX     #Tab2D_0643
@@ -8776,7 +10017,7 @@ L0709A:
         BNE     L07108
         LBEQ    L07142
 L070BE:
-        LDAB    $0289,Z
+        LDAB    >EgrMonFlags,Z
         BITB    #$01
         BNE     L07108
         LDAA    >ThrottleState,Z
@@ -8786,12 +10027,12 @@ L070BE:
         BNE     L07142
         BITB    #$14
         BNE     L07108
-        BRCLR   >Options0339,#$40,L070EA                 ; bit 6: O2 cross check on (O2CrossCheck)
-        BRSET   $0167,Z,#$40,L07142
-        BRSET   $0166,Z,#$02,L07142
+        BRCLR   >Options032E,#$40,L070EA                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
+        BRSET   >FaultSet04,Z,#$40,L07142
+        BRSET   >FaultSet03,Z,#$02,L07142
         BRA     L070F8
 L070EA:
-        BRCLR   $00B9,Z,#$20,L070F4
+        BRCLR   >MonStatusEgrFlow,Z,#$20,L070F4
         BITB    #$20
         BEQ     L07142
 L070F4:
@@ -8804,10 +10045,10 @@ L070F8:
         BRCLR   >ControlFlags944,Z,#$04,L07142           ; bit 2: EGR solenoid on (EgrEnable)
 L07108:
         LDAA    >Map,Z
-        LDAB    $0168,Z
+        LDAB    >FaultSet12,Z
         BITB    #$F0
         BNE     L07128
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #Tab2D_062B
         JSR     Lookup2D
         LDAB    >Map,Z
@@ -8823,7 +10064,7 @@ L07128:
         JSR     ScaleByFraction
         LSRE
 L07142:
-        LDX     #Tab2D_1101
+        LDX     #ReturnlessFuelScale
         LDAA    >ManifoldVacuum,Z
         JSR     Lookup2D
         BEQ     L07154
@@ -8864,29 +10105,29 @@ L071A0:
         JSR     ScaleByFraction
 L071BC:
         BRCLR   >Options0337,#$20,L07212                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
-        LDAA    $0691
+        LDAA    >FlexStartValue
         BRSET   >ControlFlagsC33,Z,#$10,L071D0           ; bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
         LDAA    >FuelTrimAdjustValue,Z
 L071D0:
         LDX     #Tab2D_0692
         JSR     Lookup2D
         ADDA    #$80
-        STAA    >IacBase,Z
+        STAA    >Scratch0,Z
         LDX     #Tab2D_069C
         LDAA    >Map,Z
         JSR     Lookup2D
         STAB    $06D4,Z
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         BPL     L071F6
         NEGA
 L071F6:
         MUL
         ADCA    #$00
-        TST     >IacBase,Z
+        TST     >Scratch0,Z
         BPL     L07202
         NEGA
 L07202:
-        STAA    $05ED,Z
+        STAA    >FlexStartFuel,Z
         BLT     L0720E
         JSR     ScaleByFraction
         BRA     L07212
@@ -8895,7 +10136,7 @@ L0720E:
         EMUL
 L07212:
         BRCLR   >FuelModeFlags2,Z,#$08,L07238            ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
-        LDAA    $05E1,Z
+        LDAA    >IdleEnrichFactor,Z
         CLRB
         EMUL
         CPE     #$2000
@@ -8912,33 +10153,33 @@ L07234:
 L07238:
         STE     $05C8,Z
         BRSET   >Options0337,#$20,L072C8                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
-        BRSET   $03DF,Z,#$0A,L07278
-        BRSET   $36,Z,#$28,L07278
-        BRSET   $03DF,Z,#$80,L07278
-        LDAB    $0165,Z
+        BRSET   >PurgeFlags2,Z,#$0A,L07278               ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate); bit 1: purge cell 2 reference reached, bank 1
+        BRSET   <FlexStartFlags,Z,#$28,L07278            ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+        BRSET   >PurgeFlags2,Z,#$80,L07278               ; bit 7: read by the adaptive fuel code, byte writes only
+        LDAB    >FaultSet02,Z
         BITB    #$C0
         BNE     L07278
         BRSET   >ThrottleState,Z,#$40,L07278             ; bit 6: wide-open throttle (DetectWot)
         LDAB    >O2MemCell,Z
         CMPB    #$0C
         BCC     L0726E
-        LDAA    $03DD,Z
+        LDAA    >PurgeCell441,Z
         BRA     L07272
 L0726E:
-        LDAA    $03DB,Z
+        LDAA    >PurgeCell43F,Z
 L07272:
         LSRA
         JSR     ScaleByFraction
 L07278:
         STE     $06C8,Z
-        BRCLR   $03E1,Z,#$08,L072A0
+        BRCLR   >PurgeLearnFlags,Z,#$08,L072A0           ; bit 3: purge vapour learning step state (PurgeVaporLearn)
         BRSET   >ThrottleState,Z,#$40,L072A0             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BNE     L072A0
         CLRB
-        LDAA    $0600,Z
+        LDAA    >PurgeVaporEstimate,Z
         BRSET   >ThrottleState,Z,#$80,L0729E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $0601,Z
+        LDAA    >PurgeVaporEstimate2,Z
 L0729E:
         EMUL
 L072A0:
@@ -8964,32 +10205,32 @@ L072C8:
         STE     >FinishFuel78C,Z
         LDE     $05C8,Z
         BRSET   >Options0337,#$20,L07354                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
-        BRSET   $03DF,Z,#$05,L0730C
-        BRSET   $36,Z,#$28,L0730C
-        BRSET   $03DF,Z,#$80,L0730C
-        LDAB    $0165,Z
+        BRSET   >PurgeFlags2,Z,#$05,L0730C               ; bit 2: purge cell 1 reference reached, bank 2; bit 0: purge cell 2 reference reached, bank 2
+        BRSET   <FlexStartFlags,Z,#$28,L0730C            ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+        BRSET   >PurgeFlags2,Z,#$80,L0730C               ; bit 7: read by the adaptive fuel code, byte writes only
+        LDAB    >FaultSet02,Z
         BITB    #$C0
         BNE     L0730C
         BRSET   >ThrottleState,Z,#$40,L0730C             ; bit 6: wide-open throttle (DetectWot)
         LDAB    >O2MemCell,Z
         CMPB    #$0C
         BCC     L07302
-        LDAA    $03DE,Z
+        LDAA    >PurgeCell442,Z
         BRA     L07306
 L07302:
-        LDAA    $03DC,Z
+        LDAA    >PurgeCell440,Z
 L07306:
         LSRA
         JSR     ScaleByFraction
 L0730C:
-        BRCLR   $03E1,Z,#$08,L07330
+        BRCLR   >PurgeLearnFlags,Z,#$08,L07330           ; bit 3: purge vapour learning step state (PurgeVaporLearn)
         BRSET   >ThrottleState,Z,#$40,L07330             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BNE     L07330
         CLRB
-        LDAA    $0600,Z
+        LDAA    >PurgeVaporEstimate,Z
         BRSET   >ThrottleState,Z,#$80,L0732E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $0601,Z
+        LDAA    >PurgeVaporEstimate2,Z
 L0732E:
         EMUL
 L07330:
@@ -9031,14 +10272,14 @@ L0736A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_07370 ($07370)
+; IdleEnrichment ($07370)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_07370:
+IdleEnrichment:
         BRSET   >EngineStateFlags,Z,#$80,L07394          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         TST     >MainLoopCounter,Z
         BNE     L073AE
-        LDAA    $05EA,Z
+        LDAA    >IdleEnrichment813,Z
         DECA
         BNE     L0738E
         LDAA    $73,Z
@@ -9048,24 +10289,24 @@ Sub_07370:
 L0738C:
         LDAA    #$13
 L0738E:
-        STAA    $05EA,Z
+        STAA    >IdleEnrichment813,Z
         BRA     L073AE
 L07394:
-        LDAA    $05E9,Z
-        CMPA    $0682
+        LDAA    >EngineOffTimeStart,Z
+        CMPA    >EngineOffTimeMin
         BCC     L073AE
         LDAB    >MainLoopCounter,Z
         ANDB    #$07
         BNE     L073AE
         INCA
         BEQ     L073AE
-        STAA    $05E9,Z
+        STAA    >EngineOffTimeStart,Z
 L073AE:
-        BRCLR   $0189,Z,#$08,L074FC
-        LDAA    $0168,Z
+        BRCLR   >StartFlags,Z,#$08,L074FC                ; bit 3: hot start: coolant at reset at or above HotStartCoolantMin
+        LDAA    >FaultSet12,Z
         BITA    #$F0
         LBNE    L074FC
-        LDAA    $0165,Z
+        LDAA    >FaultSet02,Z
         BITA    #$CC
         LBNE    L074FC
         LDAA    $0174,Z
@@ -9078,87 +10319,87 @@ L073AE:
         LDAA    >MainLoopCounter,Z
         BITA    #$0F
         BNE     L073F6
-        LDAA    $0583,Z
+        LDAA    >IdleEnrichRun,Z
         INCA
         BEQ     L073F6
-        STAA    $0583,Z
+        STAA    >IdleEnrichRun,Z
 L073F6:
         BRSET   >ThrottleState,Z,#$40,L07442             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >EngineRpm,Z
-        CMPA    $066D
+        CMPA    >IdleFuelRpmMax
         BCC     L07442
         LDAA    >Map,Z
-        CMPA    $066E
+        CMPA    >IdleFuelMapMax
         BCC     L07442
         BSET    >FuelModeFlags2,Z,#$08                   ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
         LDD     >Count3s,Z
         TSTA
         BNE     L07422
-        CMPB    $0673
+        CMPB    >IdleFuelTimeMin
         BCS     L07472
 L07422:
-        LDAA    $05E3,Z
-        CMPA    $0670
+        LDAA    >IdleFuelUpCount,Z
+        CMPA    >IdleFuelStepsUp
         BNE     L07472
-        CLR     $05E3,Z
-        LDAA    $05E2,Z
-        ADDA    $0672
+        CLR     >IdleFuelUpCount,Z
+        LDAA    >IdleFuelRamp,Z
+        ADDA    >IdleFuelRampUp
         BCC     L0743C
         LDAA    #$FF
 L0743C:
-        STAA    $05E2,Z
+        STAA    >IdleFuelRamp,Z
         BRA     L07472
 L07442:
         BCLR    >FuelModeFlags2,Z,#$08                   ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
         LDD     >Count3s,Z
         TSTA
         BNE     L07454
-        CMPB    $0673
+        CMPB    >IdleFuelTimeMin
         BCS     L07472
 L07454:
-        LDAA    $05E4,Z
-        CMPA    $066F
+        LDAA    >IdleFuelDownCount,Z
+        CMPA    >IdleFuelStepsDown
         BNE     L07472
-        CLR     $05E4,Z
-        LDAA    $05E2,Z
-        SUBA    $0671
+        CLR     >IdleFuelDownCount,Z
+        LDAA    >IdleFuelRamp,Z
+        SUBA    >IdleFuelRampDown
         BCC     L0746E
         CLRA
 L0746E:
-        STAA    $05E2,Z
+        STAA    >IdleFuelRamp,Z
 L07472:
-        LDX     #Tab2D_0683
-        LDAA    $0583,Z
+        LDX     #IdleEnrichRunTime
+        LDAA    >IdleEnrichRun,Z
         JSR     Lookup2D
-        STAA    >IacBase,Z
-        BRSET   $0324,#$01,L0748C
+        STAA    >Scratch0,Z
+        BRSET   >Options032C,#$01,L0748C
         CLRA
         BRA     L074A0
 L0748C:
         LDAA    <FlexEthanol,Z
-        BRSET   $031F,#$04,L07498
+        BRSET   >Options0330,#$04,L07498                 ; bit 2: alternative battery temperature curve (BattTempCurveAlt)
         LDAA    $071A
 L07498:
-        LDX     #Tab2D_4142
+        LDX     #IdleEnrichEthanolScale
         JSR     Lookup2D
 L074A0:
-        LDAB    $0584,Z
-        LDX     #Tab3D_0ACE
+        LDAB    >StartAirTemp,Z
+        LDX     #IdleEnrichEthanolAirTemp
         JSR     Lookup3D
         CLRA
         ASLD
         ASLD
         TDE
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         CLRB
         EMUL
-        LDAA    $05E2,Z
+        LDAA    >IdleFuelRamp,Z
         CLRB
         EMUL
         LDAA    $73,Z
-        LDX     #Tab2D_0674
+        LDX     #IdleEnrichSoakTime
         JSR     Lookup2D
-        STAA    $05EC,Z
+        STAA    >IdleEnrichSoak,Z
         CLRB
         EMUL
         TED
@@ -9175,8 +10416,8 @@ L074EC:
         LSRD
         LSRD
         LSRD
-        STAB    $05E1,Z
-        TST     >IacBase,Z
+        STAB    >IdleEnrichFactor,Z
+        TST     >Scratch0,Z
         BNE     L07500
 L074FC:
         BCLR    >FuelModeFlags2,Z,#$08                   ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
@@ -9184,14 +10425,14 @@ L07500:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_07502 ($07502)
+; HotEngineEnrichCalc ($07502)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_07502:
-        LDAA    $0168,Z
+HotEngineEnrichCalc:
+        LDAA    >FaultSet12,Z
         BITA    #$F0
         BNE     L0756E
-        LDAA    $0165,Z
+        LDAA    >FaultSet02,Z
         BITA    #$CC
         BNE     L0756E
         LDAA    >FaultSet06,Z
@@ -9204,18 +10445,18 @@ Sub_07502:
         BRCLR   >HotEngineOn,#$FF,L0756E
         BRCLR   >EngineStateFlags,Z,#$80,L0756E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >Count3s,Z
-        CMPA    $149F
+        CMPA    >HotEngineTimeMin
         BCS     L0756E
         LDAA    >EngineRpm,Z
-        CMPA    $149D
+        CMPA    >HotEngineRpmMin
         BCS     L0756E
         LDAA    >Map,Z
-        CMPA    $149E
+        CMPA    >HotEngineMapMin
         BCS     L0756E
         LDAA    >CoolantTemp,Z
-        CMPA    $149C
+        CMPA    >HotEngineCoolantMin
         BCS     L0756E
-        LDX     #Tab2D_14A1
+        LDX     #HotEngineEnrich
         JSR     Lookup2D
         STAA    >HotEnrich,Z
         BSET    >FuelModeFlags2,Z,#$02                   ; bit 1: hot engine enrichment active (HotEngineEnrichCalc)
@@ -9492,11 +10733,11 @@ StartPulseCurrent:
 ; Called from: FuelEventSchedule, FuelEventCalc (6 calls)
 ;---------------------------------------------------------------------------------------------------
 StartInjectorPulse:
-        CMPB    $0492,Z
+        CMPB    >InjectorKillCyl1,Z
         LBEQ    L078E6
         JSR     EventFuelScaleApply
         BRSET   >FuelPulseFlags,Z,#$10,L078E6            ; bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
-        CMPB    $0493,Z
+        CMPB    >InjectorKillCyl2,Z
         LBEQ    L078E6
         PSHM    D
         BRCLR   >EngineStateFlags,Z,#$01,L0785C          ; bit 0: first reference pulse seen, start pulse still due (cleared by StartInjectorPulse)
@@ -9523,7 +10764,7 @@ L0785C:
         PSHM    D,E,X,Y,K
         PSHM    D
         PSHM    E
-        LDAA    $047D,Z
+        LDAA    >FuelUsedAccum,Z
         BRCLR   >FuelPulseFlags,Z,#$80,L0787A            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         ASLE
         ADCA    #$00
@@ -9532,15 +10773,15 @@ L0785C:
         ADCA    #$00
         BCS     L07882
 L0787A:
-        ADDE    $047E,Z
+        ADDE    >FuelUsedWord,Z
         ADCA    #$00
         BCC     L07888
 L07882:
         LDE     #$FFFF
         LDAA    #$FF
 L07888:
-        STAA    $047D,Z
-        STE     $047E,Z
+        STAA    >FuelUsedAccum,Z
+        STE     >FuelUsedWord,Z
         PULM    E
         LDD     >InjectorFuel80A,Z
         BRCLR   >FuelPulseFlags,Z,#$80,L078A0            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
@@ -9562,9 +10803,9 @@ L078A8:
 L078BC:
         LDX     #$4804
         ABX
-        LDAA    $01B6,Z
+        LDAA    >OutputDriverFaults,Z
         ORAA    $00,X
-        STAA    $01B6,Z
+        STAA    >OutputDriverFaults,Z
         LDX     #$4808
         ABX
         ABX
@@ -9667,7 +10908,7 @@ L079C2:
         EMUL
 L079C6:
         STE     >Temp4F6,Z
-        BRSET   >Options0339,#$02,L079E0                 ; bit 1: selects a branch in FinishFuelPulse
+        BRSET   >Options032E,#$02,L079E0
         LDD     >MapAccelFuel,Z
         ADE
         BCS     L079DA
@@ -9877,7 +11118,7 @@ L07C02:
         BRSET   >LimpFlags,Z,#$20,L07D10                 ; bit 5: engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)
         BRSET   >SecurityFlags,Z,#$20,L07D10             ; bit 5: SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)
         BRSET   >FuelModeFlags2,Z,#$10,L07D10            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
-        BRSET   >EventFlags,Z,#$40,L07C2E                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
+        BRSET   >IdleFlareFlags,Z,#$40,L07C2E            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         BRCLR   >FuelModeFlags2,Z,#$40,L07D54            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRCLR   >FuelModeFlags2,Z,#$80,L07D10            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L07C2E:
@@ -9901,7 +11142,7 @@ L07C60:
         BSET    >MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         BRA     L07CA0
 L07C70:
-        BRCLR   >EventFlags,Z,#$40,L07C80                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
+        BRCLR   >IdleFlareFlags,Z,#$40,L07C80            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         LDX     #EventCorrSequenceA
         JSR     LookupWordStep
         BRA     L07CCA
@@ -9910,7 +11151,7 @@ L07C80:
         LDAB    >Map,Z
         CMPB    >EventFuelMapMin
         BCS     L07C9C
-        BRSET   >IoCfg1FL,Z,#$01,L07C9C
+        BRSET   >ControlFlags943,Z,#$01,L07C9C           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDX     #$115B
         BRA     L07CA0
 L07C9C:
@@ -10050,7 +11291,7 @@ L07DCA:
         LDX     #PartThrottleFuel
         BRA     L07E06
 L07DFA:
-        LDX     #DecelMapScale
+        LDX     #WotMapScale
         JSR     Lookup2D
         LDX     #WotFuel
 L07E06:
@@ -10058,7 +11299,7 @@ L07E06:
         JSR     Lookup3D
         BRCLR   >AccelFuelOptions,#$80,L07E1C            ; bit 7: WOT fuel branch in TipInFuelControl
         LDAB    >Temp4F0,Z
-        STAB    $0576,Z
+        STAB    >TipIn802,Z
 L07E1C:
         CLRB
         TSTA
@@ -10234,14 +11475,14 @@ L07FE4:
         LDAA    >EngineRpm,Z
         LDX     #DecelLeanRpmScale
         JSR     Lookup2D
-        STAA    >IacBase,Z
+        STAA    >Scratch0,Z
         LDAA    >ThrottleAboveClosed,Z
         LDX     #DecelLeanThrottleScale
         JSR     Lookup2D
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         LDX     #DecelLeanAirflow
         JSR     Lookup3DNorm
-        STAA    $01F2,Z
+        STAA    >Scratch2,Z
         LDAA    >ThrottleLast,Z
         SUBA    <ThrottleClosed,Z
         BCC     L0801A
@@ -10249,10 +11490,10 @@ L07FE4:
 L0801A:
         LDX     #DecelLeanThrottleScale
         JSR     Lookup2D
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         LDX     #DecelLeanAirflow
         JSR     Lookup3DNorm
-        SUBA    $01F2,Z
+        SUBA    >Scratch2,Z
         BCC     L08036
         CLRA
 L08036:
@@ -10288,7 +11529,7 @@ L0807C:
         LDAA    >EngineRpm,Z
         CMPA    >DecelLeanRpmMin
         BCS     L0809A
-        BRSET   >Options0339,#$20,L0809E                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0809E                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRSET   >DriveFlags,Z,#$20,L0809E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L0809A:
         CLRB
@@ -10323,7 +11564,7 @@ L080C2:
         ASLA
         LDX     #DecelLeanTimeScale
         JSR     Lookup2D
-        STAA    $01F4,Z
+        STAA    >Scratch4,Z
         LDAB    >StartCoolantTemp2,Z
         LDX     #DecelLeanTimeCoolant
         JSR     Lookup3D
@@ -10345,7 +11586,7 @@ L0811E:
 L0812C:
         TSTA
         BEQ     L08166
-        STAA    $01F2,Z
+        STAA    >Scratch2,Z
         LDX     #DecelLeanRpmFactor
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
@@ -10357,7 +11598,7 @@ L0812C:
         CLRA
         ADE
         CLRB
-        LDAA    $01F2,Z
+        LDAA    >Scratch2,Z
         EMUL
         TED
         TSTA
@@ -10372,11 +11613,11 @@ L08166:
 L0816E:
         TSTA
         BEQ     L0818C
-        STAA    >IacBase,Z
+        STAA    >Scratch0,Z
         LDX     #DecelLeanBaroFactor
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         JSR     Lookup2D
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         CMPB    #$FF
         BEQ     L0818A
         MUL
@@ -10428,7 +11669,7 @@ CrankFuel:
         LDAB    >CoolantTemp,Z
         CMPB    >CrankFuelCoolantMax
         BHI     L08212
-        LDAA    $03B7,Z
+        LDAA    >CrankEvents,Z
         BEQ     L08212
         LDX     #CrankCoolantAdder
         JSR     Lookup2D
@@ -10480,7 +11721,7 @@ L0826E:
 L08272:
         PSHM    E
         LDE     #$0045
-        LDAA    >FuelEventOffsetInAlt
+        LDAA    >FuelEventOffsetIn
         BRSET   >CylinderCount,#$06,L08294
         CMPA    #$06
         BLS     L082A6
@@ -10557,60 +11798,60 @@ L0833A:
         LDX     #CrankBasePulse
         JSR     Lookup3D
         MUL
-        STD     >IacBase,Z
+        STD     >Scratch0,Z
         LDX     #CrankRpmDecayClosed
         BRSET   >ThrottleState,Z,#$80,L0835A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDX     #CrankRpmDecay
 L0835A:
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
         LDX     #Tab2D_0580
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
-        LDAA    $01FE,Z
+        LDAA    >ScratchE,Z
         MUL
         NEGD
-        STD     $01F2,Z
+        STD     >Scratch2,Z
         LDX     #Tab2D_0554
         LDAA    $0562,Z
         JSR     Lookup2D
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
         LDX     #Tab2D_0560
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
-        LDAA    $01FE,Z
+        LDAA    >ScratchE,Z
         MUL
         NEGD
-        STD     $01F4,Z
+        STD     >Scratch4,Z
         LDX     #CrankRpmDecayWeight
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         JSR     Lookup2D
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
         LDX     #CrankV0769Decay
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
-        LDAA    $01FE,Z
+        LDAA    >ScratchE,Z
         MUL
         NEGD
-        STD     $01F6,Z
+        STD     >Scratch6,Z
         LDX     #CrankVacuumFactor
         LDAA    >ManifoldVacuum,Z
         JSR     Lookup2D
         CLRB
         STD     >Scratch8,Z
-        LDE     >IacBase,Z
-        LDD     $01F2,Z
+        LDE     >Scratch0,Z
+        LDD     >Scratch2,Z
         BEQ     L083EE
         EMUL
         ADCE    #$0000
 L083EE:
-        LDD     $01F4,Z
+        LDD     >Scratch4,Z
         BEQ     L083FA
         EMUL
         ADCE    #$0000
 L083FA:
-        LDD     $01F6,Z
+        LDD     >Scratch6,Z
         BEQ     L08406
         EMUL
         ADCE    #$0000
@@ -10741,7 +11982,7 @@ L08544:
         CLR     >FuelEventCount76A,Z
         LBRA    L08672
 L0855C:
-        LDAA    >FuelEventOffsetInAlt
+        LDAA    >FuelEventOffsetIn
         BRSET   >CylinderCount,#$06,L0857E
         LDAB    #$01
         CMPA    #$42
@@ -10786,7 +12027,7 @@ L085C6:
         LDAB    >CylinderIndex,Z
         MUL
         TDE
-        LDAA    >FuelEventOffsetInAlt
+        LDAA    >FuelEventOffsetIn
         LDX     #FuelEventOffset
         JSR     Lookup2D
         CLRA
@@ -10804,7 +12045,7 @@ L085C6:
         LDAB    >CylinderCount
         CMPB    #$06
         BNE     L08626
-        LDAB    >FuelEventOffsetInAlt
+        LDAB    >FuelEventOffsetIn
         CMPB    #$42
         BNE     L08620
         LDAA    #$03
@@ -10850,31 +12091,31 @@ L08672:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; AdcStartF0 ($08674)
+; EventCellSelect ($08674)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-AdcStartF0:
+EventCellSelect:
         CLRB
         TBXK
         LDX     #$148E
-        LDD     $149A
-        LDE     $148A
-        LDY     $1488
+        LDD     >EventCellRpmHyst
+        LDE     >EventCellRpmHigh
+        LDY     >EventCellRpmLow
         PSHM    D,E,Y
         CLRA
-        LDAB    $1499
+        LDAB    >EventCellMapHyst
         PSHM    D
-        LDAB    $148D
+        LDAB    >EventCellMapHigh
         PSHM    D
-        LDAB    $148C
+        LDAB    >EventCellMapLow
         PSHM    D
-        LDAB    $0580,Z
+        LDAB    >EventCellIndex,Z
         JSR     SelectCell3x3
         AIS     #$0C
-        STAB    $0580,Z
+        STAB    >EventCellIndex,Z
         ABX
         LDAB    $00,X
-        LDAA    $0165,Z
+        LDAA    >FaultSet02,Z
         BITA    #$C0
         BNE     L086E4
         LDAA    >CoolantTemp,Z
@@ -11023,33 +12264,33 @@ L087B6:
         dc.b    $12,$0A,$24,$A1,$24,$9D,$24,$9F,$12,$0A
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_088F2 ($088F2)
+; ClosedLoopMain ($088F2)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_088F2:
+ClosedLoopMain:
         BRCLR   >Options0337,#$20,L08996                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
         BCLR    >O2ActiveFlags,Z,#$F0                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 4: downstream O2 sensor 2 active (as bit 5)
         CLR     >ShortTermTrim1,Z
-        CLR     $0511,Z
-        CLR     $0512,Z
-        CLRW    $0513,Z
-        CLR     $0515,Z
-        CLR     $0516,Z
-        CLRW    $051B,Z
-        CLR     $051D,Z
+        CLR     >ClosedLoop702,Z
+        CLR     >ClosedLoop703,Z
+        CLRW    >ClosedLoop704,Z
+        CLR     >ClosedLoop706,Z
+        CLR     >ClosedLoop707,Z
+        CLRW    >ClosedLoop70C,Z
+        CLR     >ClosedLoop70E,Z
         CLR     >ClosedLoop711,Z
         CLR     >ShortTermTrim2,Z
-        CLR     $0532,Z
-        CLR     $0533,Z
-        CLRW    $0534,Z
-        CLR     $0536,Z
-        CLR     $0537,Z
-        CLRW    $053C,Z
-        CLR     $053E,Z
+        CLR     >O2DelayWork2,Z
+        CLR     >ClosedLoop74D,Z
+        CLRW    >ClosedLoop72C,Z
+        CLR     >ClosedLoop72E,Z
+        CLR     >ClosedLoop72F,Z
+        CLRW    >ClosedLoop734,Z
+        CLR     >ClosedLoop736,Z
         CLR     >ClosedLoop739,Z
         BSET    >O2TestFlags,Z,#$30                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
-        BSET    $0062,Z,#$40
-        CLR     $05D9,Z
+        BSET    >PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
+        CLR     >O2CellWork,Z
         CLR     >O2AdaptValue1,Z
         CLR     $004E,Z
         CLR     $004F,Z
@@ -11061,7 +12302,7 @@ L08966:
         AIX     #$01
         CPX     #$804E
         BNE     L08966
-        CLR     $05DA,Z
+        CLR     >O2LearnTimer2,Z
         CLR     >O2AdaptValue2,Z
         CLR     $005F,Z
         CLR     $0060,Z
@@ -11076,55 +12317,55 @@ L0898A:
         BRA     L089C4
 L08996:
         BRCLR   >EngineStateFlags,Z,#$80,L089C0          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        JSR     Sub_08A72
-        JSR     Sub_09514
+        JSR     O2CellSelect3x3
+        JSR     ClosedLoopTiming
         BRCLR   >MainLoopPhaseMask,Z,#$10,L089B6         ; bit 4: one pass in 32 (about 383 ms)
         CLRA
-        JSR     Sub_08D06
+        JSR     O2CrossCheck
         LDAA    #$FF
-        JSR     Sub_08D06
+        JSR     O2CrossCheck
 L089B6:
-        JSR     Sub_08EDC
-        JSR     Sub_09BD0
+        JSR     ClosedLoopManager
+        JSR     O2CellSelect
         BRA     L089C4
 L089C0:
-        JSR     Sub_08E3E
+        JSR     O2StartDelays
 L089C4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; SurgeFilters ($089C6)
+; O2UpdateUpstream ($089C6)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-SurgeFilters:
+O2UpdateUpstream:
         BRSET   >Options0337,#$20,L08A28                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
         BRCLR   >EngineStateFlags,Z,#$80,L08A28          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAB    #$0F
         TBXK
         LDX     #$850F
         BCLR    >O2SwitchFlags,Z,#$02                    ; bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
-        INC     $0557,Z
+        INC     >O2StepCount,Z
         BNE     L089E8
-        DEC     $0557,Z
+        DEC     >O2StepCount,Z
 L089E8:
-        LDAA    $120B
-        CMPA    $0557,Z
+        LDAA    >O2StepPeriod
+        CMPA    >O2StepCount,Z
         BCC     L089FA
-        CLR     $0557,Z
+        CLR     >O2StepCount,Z
         BSET    >O2SwitchFlags,Z,#$02                    ; bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
 L089FA:
         BRSET   >Options0331,#$20,L08A08                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
         LDAA    $120A
-        STAA    $0523,Z
+        STAA    >O2UpBank1,Z
 L08A08:
-        JSR     Sub_099AC
+        JSR     O2UpTrim
         BRCLR   >Options0331,#$40,L08A28                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         LDX     #$8530
         BRSET   >Options0331,#$10,L08A24                 ; bit 4: fuel level from the bus instead of the sender, probably
-        LDAA    $0523,Z
-        STAA    $0544,Z
+        LDAA    >O2UpBank1,Z
+        STAA    >O2UpBank2,Z
 L08A24:
-        JSR     Sub_099AC
+        JSR     O2UpTrim
 L08A28:
         RTS
 
@@ -11156,19 +12397,19 @@ L08A70:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_08A72 ($08A72)
-; Called from: Sub_088F2
+; O2CellSelect3x3 ($08A72)
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
-Sub_08A72:
+O2CellSelect3x3:
         LDAA    >O2SwitchFlags,Z
-        STAA    >IacBase,Z
-        BCLR    >IacBase,Z,#$04
+        STAA    >Scratch0,Z
+        BCLR    >Scratch0,Z,#$04
         LDAA    >ThrottleState,Z
         BITA    #$81
         BNE     L08AAE
-        BRCLR   >Options0339,#$80,L08AA0                 ; bit 7: O2 cell selection variant (O2CellSelect3x3, O2CellSelect)
+        BRCLR   >Options032E,#$80,L08AA0                 ; bit 7: bus message variant (CcdTransmit, PciBuildMessage)
         LDAA    >IdleTarget,Z
-        ADDA    $11C9
+        ADDA    >O2IdleRpmMargin
         BCC     L08A98
         LDAA    #$FF
 L08A98:
@@ -11177,12 +12418,12 @@ L08A98:
         BRA     L08AAE
 L08AA0:
         LDAA    >VehicleSpeed,Z
-        CMPA    $11CA
+        CMPA    >O2IdleSpeedMax
         BCC     L08AAE
 L08AAA:
-        BSET    >IacBase,Z,#$04
+        BSET    >Scratch0,Z,#$04
 L08AAE:
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         STAA    >O2SwitchFlags,Z
         BRCLR   >O2SwitchFlags,Z,#$04,L08AC8             ; bit 2: read by O2CellSelect3x3
         LDAB    #$0A
@@ -11190,16 +12431,16 @@ L08AAE:
         LDAB    #$09
         BRA     L08AF4
 L08AC8:
-        LDD     $12F3
-        LDE     $12F1
-        LDY     $12EF
+        LDD     >O2CellRpmHyst
+        LDE     >O2CellRpmHigh
+        LDY     >O2CellRpmLow
         PSHM    D,E,Y
         CLRA
-        LDAB    $12F7
+        LDAB    >O2CellMapHyst
         PSHM    D
-        LDAB    $12F6
+        LDAB    >O2CellMapHigh
         PSHM    D
-        LDAB    $12F5
+        LDAB    >O2CellMapLow
         PSHM    D
         LDAB    >O2CellIndex,Z
         JSR     SelectCell3x3
@@ -11421,10 +12662,10 @@ L08CF0:
         dc.b    $40,$10,$40,$10
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_08D06 ($08D06)
-; Called from: Sub_088F2 (2 calls)
+; O2CrossCheck ($08D06)
+; Called from: ClosedLoopMain (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_08D06:
+O2CrossCheck:
         BRCLR   >Options033A,#$20,L08DC2
         BRCLR   >EngineStateFlags,Z,#$80,L08DC2          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAB    $00B7,Z
@@ -11447,23 +12688,23 @@ L08D26:
         BNE     L08D94
         LDE     $0000,Y
         LDAB    E,Z
-        CMPB    $1350
+        CMPB    >O2CrossCheckMax
         BHI     L08D8A
         LDE     $0002,Y
         LDAB    E,Z
-        CMPB    $1351
+        CMPB    >O2CrossCheckMin
         BCS     L08D8A
         LDAB    >FuelModeFlags2,Z
         BITB    #$D0
         BNE     L08DC2
-        BRSET   >EventFlags,Z,#$40,L08DC2                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
-        LDAB    $056D,Z
+        BRSET   >IdleFlareFlags,Z,#$40,L08DC2            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
+        LDAB    >RevLimitFlags,Z
         BITB    #$F0
         BNE     L08DC2
         LDE     $0004,Y
         LDAA    E,Z
         INCA
-        CMPA    $1353
+        CMPA    >O2CrossCheckCount
         BCS     L08D90
         LDAB    >O2CrossFlags,Z
         ORAB    $08,Y
@@ -11478,12 +12719,12 @@ L08D90:
 L08D94:
         LDE     $0000,Y
         LDAB    E,Z
-        CMPB    $1352
+        CMPB    >O2CrossClearMin
         BCS     L08DBA
         LDE     $0004,Y
         LDAA    E,Z
         INCA
-        CMPA    $1354
+        CMPA    >O2CrossClearCount
         BCS     L08DC0
         LDAB    $08,Y
         COMB
@@ -11520,7 +12761,7 @@ L08DC6:
         ADDE    #$04
         BRA     L08DC6
 L08DEE:
-        BRCLR   $0324,#$01,L08DF8
+        BRCLR   >Options032C,#$01,L08DF8
         JSR     FlexCellCheck
 L08DF8:
         LDAA    $0130,Z
@@ -11556,62 +12797,62 @@ L08E38:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_08E3E ($08E3E)
-; Called from: Sub_088F2
+; O2StartDelays ($08E3E)
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
-Sub_08E3E:
+O2StartDelays:
         BSET    >O2TestFlags,Z,#$30                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
-        LDAB    $11BF
+        LDAB    >O2DelayWarm
         LDAA    >CoolantTemp,Z
-        CMPA    $11C0
+        CMPA    >O2DelayCoolantMax
         BCC     L08E54
-        LDAB    $11BE
+        LDAB    >O2DelayCold
 L08E54:
-        STAB    $056F,Z
+        STAB    >O2WarmDelay,Z
         BCLR    >O2ActiveFlags,Z,#$F0                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 4: downstream O2 sensor 2 active (as bit 5)
         BCLR    >O2ActiveFlags,Z,#$0F                    ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags); bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags); bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         PSHM    X,K
-        LDX     #Tab2D_11E9
+        LDX     #O2StartDelayCoolant
         JSR     Lookup2D
         PULM    K,X
-        BRSET   >Options0339,#$40,L08E80                 ; bit 6: O2 cross check on (O2CrossCheck)
+        BRSET   >Options032E,#$40,L08E80                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BRCLR   $00B7,Z,#$20,L08E80
-        ADDA    $25A0
+        ADDA    >O2ColdTrimHeaterAdder
         BCC     L08E80
         LDAA    #$FF
 L08E80:
         LDAB    >StartCoolantTemp2,Z
-        CMPB    $11FA
+        CMPB    >O2ColdStartCoolant
         BCC     L08E92
-        ADDA    $11FB
+        ADDA    >O2ColdStartAdder
         BCC     L08E92
         LDAA    #$FF
 L08E92:
-        STAA    $05AA,Z
-        STAA    $05AB,Z
+        STAA    >O2ColdTrim1,Z
+        STAA    >O2ColdTrim2,Z
         CLR     >ShortTermTrim1,Z
-        CLR     $0511,Z
-        CLR     $0512,Z
-        CLRW    $0513,Z
-        CLR     $0515,Z
-        CLR     $0516,Z
-        CLRW    $051B,Z
-        CLR     $051D,Z
+        CLR     >ClosedLoop702,Z
+        CLR     >ClosedLoop703,Z
+        CLRW    >ClosedLoop704,Z
+        CLR     >ClosedLoop706,Z
+        CLR     >ClosedLoop707,Z
+        CLRW    >ClosedLoop70C,Z
+        CLR     >ClosedLoop70E,Z
         CLR     >ShortTermTrim2,Z
-        CLR     $0532,Z
-        CLR     $0533,Z
-        CLRW    $0534,Z
-        CLR     $0536,Z
-        CLR     $0537,Z
-        CLRW    $053C,Z
-        CLR     $053E,Z
+        CLR     >O2DelayWork2,Z
+        CLR     >ClosedLoop74D,Z
+        CLRW    >ClosedLoop72C,Z
+        CLR     >ClosedLoop72E,Z
+        CLR     >ClosedLoop72F,Z
+        CLRW    >ClosedLoop734,Z
+        CLR     >ClosedLoop736,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_08EDC ($08EDC)
-; Called from: Sub_088F2
+; ClosedLoopManager ($08EDC)
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
-Sub_08EDC:
+ClosedLoopManager:
         ORP     #$00E0
         LDAB    #$0F
         TBXK
@@ -11621,34 +12862,34 @@ Sub_08EDC:
         LDAA    >O2Bank1Flags,Z
         LDAB    >O2Bank2Flags,Z
         ANDD    #$CFCF
-        STD     >IacBase,Z
+        STD     >Scratch0,Z
         BRSET   >IoCtl12,Z,#$40,L08F94
-        TST     $0193,Z
+        TST     >O2InactiveTimer,Z
         LBNE    L08F94
         BRCLR   >Options0331,#$80,L08F32                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
-        TST     $05AA,Z
+        TST     >O2ColdTrim1,Z
         BEQ     L08F1E
-        BSET    >IacBase,Z,#$F0
+        BSET    >Scratch0,Z,#$F0
         BRA     L08F32
 L08F1E:
         LDAA    >O2UpBank1Raw,Z
-        CMPA    $1206
+        CMPA    >O2ActiveHigh
         BCC     L08F2E
-        CMPA    $1207
+        CMPA    >O2ActiveLow
         BCC     L08F32
 L08F2E:
         BSET    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L08F32:
         BRCLR   >Options0331,#$40,L08F58                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
-        TST     $05AB,Z
+        TST     >O2ColdTrim2,Z
         BEQ     L08F44
-        BSET    $01F1,Z,#$F0
+        BSET    >Scratch1,Z,#$F0
         BRA     L08F58
 L08F44:
         LDAA    >O2UpBank2Raw,Z
-        CMPA    $1206
+        CMPA    >O2ActiveHigh
         BCC     L08F54
-        CMPA    $1207
+        CMPA    >O2ActiveLow
         BCC     L08F58
 L08F54:
         BSET    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
@@ -11657,26 +12898,26 @@ L08F58:
         LBNE    L08F94
         BRCLR   >Options0331,#$20,L08F7A                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
         LDAA    >O2DownBank1Raw,Z
-        CMPA    $12DB
+        CMPA    >O2DownActiveHigh
         BCC     L08F76
-        CMPA    $12DC
+        CMPA    >O2DownActiveLow
         BCC     L08F7A
 L08F76:
         BSET    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L08F7A:
         BRCLR   >Options0331,#$10,L08F94                 ; bit 4: fuel level from the bus instead of the sender, probably
-        LDAA    $053B,Z
-        CMPA    $12DB
+        LDAA    >O2DownBank2Raw,Z
+        CMPA    >O2DownActiveHigh
         BCC     L08F90
-        CMPA    $12DC
+        CMPA    >O2DownActiveLow
         BCC     L08F94
 L08F90:
         BSET    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L08F94:
         BRCLR   >Options0331,#$80,L08FB2                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
-        BRSET   $0168,Z,#$01,L08FAC
+        BRSET   >FaultSet12,Z,#$01,L08FAC
         BRSET   >FaultSet06,Z,#$40,L08FAC
-        BRCLR   $0175,Z,#$08,L08FB2
+        BRCLR   >SensorFaultFlags2,Z,#$08,L08FB2         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
 L08FAC:
         BCLR    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BRA     L08FD4
@@ -11685,16 +12926,16 @@ L08FB2:
         BRSET   $016F,Z,#$01,L08FD0
         BRSET   $0171,Z,#$40,L08FD0
         BRSET   $0174,Z,#$02,L08FD0
-        BRCLR   $0175,Z,#$10,L08FD6
+        BRCLR   >SensorFaultFlags2,Z,#$10,L08FD6
 L08FD0:
         BCLR    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L08FD4:
         CLR     $11,X
 L08FD6:
         BRCLR   >Options0331,#$40,L08FF4                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
-        BRSET   $016C,Z,#$02,L08FEE
-        BRSET   $016C,Z,#$04,L08FEE
-        BRCLR   $017A,Z,#$20,L08FF4
+        BRSET   >FaultSet09,Z,#$02,L08FEE
+        BRSET   >FaultSet09,Z,#$04,L08FEE
+        BRCLR   >FaultSet17,Z,#$20,L08FF4
 L08FEE:
         BCLR    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BRA     L09012
@@ -11704,7 +12945,7 @@ L08FF4:
         BITA    #$88
         BNE     L0900E
         BRSET   $0174,Z,#$04,L0900E
-        BRCLR   $017A,Z,#$40,L09014
+        BRCLR   >FaultSet17,Z,#$40,L09014
 L0900E:
         BCLR    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L09012:
@@ -11732,7 +12973,7 @@ L09018:
         BCS     L0905E
         LDE     $0000,Y
         LDAA    E,Z
-        CMPA    $3D52
+        CMPA    >O2RawHigh
         BCC     L09066
         LDX     $06,Y
         CMPA    $00,X
@@ -11755,27 +12996,27 @@ L09066:
         ANDB    >O2ActiveFlags,Z
         STAB    >O2ActiveFlags,Z
         LDAB    $0B,Y
-        ORAB    $055A,Z
-        STAB    $055A,Z
+        ORAB    >O2InactiveFlags,Z
+        STAB    >O2InactiveFlags,Z
         BRA     L0909C
 L0908E:
         STAA    E,Z
         LDAB    $0B,Y
         COMB
-        ANDB    $055A,Z
-        STAB    $055A,Z
+        ANDB    >O2InactiveFlags,Z
+        STAB    >O2InactiveFlags,Z
 L0909C:
         PULM    E
         ADDE    #$01
         LBRA    L09018
 L090A4:
         PULM    K,Y,X
-        BRCLR   $0175,Z,#$08,L090CC
-        BSET    >IacBase,Z,#$F0
+        BRCLR   >SensorFaultFlags2,Z,#$08,L090CC         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
+        BSET    >Scratch0,Z,#$F0
         BCLR    >O2ActiveFlags,Z,#$08                    ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         TZX
         LDX     #$8040
-        LDAA    $3D5A
+        LDAA    >O2MemResetValue
 L090BE:
         STAA    $00,X
         AIX     #$01
@@ -11783,12 +13024,12 @@ L090BE:
         BCS     L090BE
         BSET    >O2TestFlags,Z,#$20
 L090CC:
-        BRCLR   $017A,Z,#$20,L090F2
-        BSET    $01F1,Z,#$F0
+        BRCLR   >FaultSet17,Z,#$20,L090F2
+        BSET    >Scratch1,Z,#$F0
         BCLR    >O2ActiveFlags,Z,#$04                    ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         TZX
         LDX     #$8051
-        LDAA    $3D5A
+        LDAA    >O2MemResetValue
 L090E4:
         STAA    $00,X
         AIX     #$01
@@ -11796,26 +13037,26 @@ L090E4:
         BCS     L090E4
         BSET    >O2TestFlags,Z,#$10                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
 L090F2:
-        BRCLR   $0175,Z,#$10,L09100
-        BSET    >IacBase,Z,#$50
+        BRCLR   >SensorFaultFlags2,Z,#$10,L09100
+        BSET    >Scratch0,Z,#$50
         BCLR    >O2ActiveFlags,Z,#$02                    ; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L09100:
-        BRCLR   $017A,Z,#$40,L0910E
-        BSET    $01F1,Z,#$50
+        BRCLR   >FaultSet17,Z,#$40,L0910E
+        BSET    >Scratch1,Z,#$50
         BCLR    >O2ActiveFlags,Z,#$01                    ; bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L0910E:
         LDAA    >O2ActiveFlags,Z
         BITA    #$0C
         BNE     L09122
-        BSET    >IacBase,Z,#$F0
-        BSET    $01F1,Z,#$F0
+        BSET    >Scratch0,Z,#$F0
+        BSET    >Scratch1,Z,#$F0
         LBRA    L093E2
 L09122:
         BRCLR   >Options0331,#$80,L0912E                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         BRSET   >O2ActiveFlags,Z,#$08,L0914E             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L0912E:
         BSET    >O2TestFlags,Z,#$20
-        BSET    >IacBase,Z,#$70
+        BSET    >Scratch0,Z,#$70
         LDAA    $00,Y
         STAA    $00,X
         LDAA    $02,Y
@@ -11833,7 +13074,7 @@ L0914E:
         BRSET   >O2ActiveFlags,Z,#$04,L0917A             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L0915A:
         BSET    >O2TestFlags,Z,#$10                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
-        BSET    $01F1,Z,#$70
+        BSET    >Scratch1,Z,#$70
         LDAA    $00,X
         STAA    $00,Y
         LDAA    $02,X
@@ -11850,81 +13091,81 @@ L0917A:
         BRCLR   >Options0331,#$20,L09186                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
         BRSET   >O2ActiveFlags,Z,#$02,L0918A             ; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L09186:
-        BSET    >IacBase,Z,#$50
+        BSET    >Scratch0,Z,#$50
 L0918A:
         BRCLR   >Options0331,#$10,L09196                 ; bit 4: fuel level from the bus instead of the sender, probably
         BRSET   >O2ActiveFlags,Z,#$01,L0919A             ; bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L09196:
-        BSET    $01F1,Z,#$50
+        BSET    >Scratch1,Z,#$50
 L0919A:
         LDAA    >SystemTestMode,Z
         CMPA    #$05
         BCS     L091AE
         CMPA    #$0B
         BCC     L091AE
-        BSET    >IacBase,Z,#$30
-        BSET    $01F1,Z,#$30
+        BSET    >Scratch0,Z,#$30
+        BSET    >Scratch1,Z,#$30
 L091AE:
         LDAB    >FuelPulseOptFlags,Z
         BITB    #$04
         BEQ     L091BE
-        BSET    >IacBase,Z,#$C0
-        BSET    $01F1,Z,#$C0
+        BSET    >Scratch0,Z,#$C0
+        BSET    >Scratch1,Z,#$C0
 L091BE:
-        BRCLR   $2664,#$80,L091DA
+        BRCLR   >MisfireOptions,#$80,L091DA              ; bit 7: MisfireFlags2 bit 4 handling in ClosedLoopManager and FuelSystemStatus
         BRCLR   >MisfireFlags2,Z,#$10,L091DA             ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
-        BSET    >IacBase,Z,#$F0
-        BSET    $01F1,Z,#$F0
+        BSET    >Scratch0,Z,#$F0
+        BSET    >Scratch1,Z,#$F0
         JSR     O2MemClearLeanBank1
         JSR     O2MemClearLeanBank2
 L091DA:
         TST     >DecelFuelFactor,Z
         BEQ     L09200
         BSET    >O2TestFlags,Z,#$30                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
-        BSET    $055A,Z,#$C0
-        BSET    >IacBase,Z,#$70
-        BSET    $01F1,Z,#$70
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
+        BSET    >Scratch0,Z,#$70
+        BSET    >Scratch1,Z,#$70
         TST     $00,X
         BPL     L091F8
-        BSET    >IacBase,Z,#$80
+        BSET    >Scratch0,Z,#$80
 L091F8:
         TST     $00,Y
         BPL     L09200
-        BSET    $01F1,Z,#$80
+        BSET    >Scratch1,Z,#$80
 L09200:
         BRCLR   >O2SwitchFlags,Z,#$20,L09220             ; bit 5: read by ClosedLoopManager
         BSET    >O2TestFlags,Z,#$30                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
-        BSET    >IacBase,Z,#$20
-        BSET    $01F1,Z,#$20
+        BSET    >Scratch0,Z,#$20
+        BSET    >Scratch1,Z,#$20
         BRSET   >O2SwitchFlags,Z,#$40,L09220             ; bit 6: read by ClosedLoopManager
-        BSET    >IacBase,Z,#$80
-        BSET    $01F1,Z,#$80
+        BSET    >Scratch0,Z,#$80
+        BSET    >Scratch1,Z,#$80
 L09220:
-        BRCLR   $055A,Z,#$01,L09232
-        BSET    $055A,Z,#$C0
-        BSET    >IacBase,Z,#$50
-        BSET    $01F1,Z,#$50
+        BRCLR   >O2InactiveFlags,Z,#$01,L09232           ; bit 0: read by ClosedLoopManager
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
+        BSET    >Scratch0,Z,#$50
+        BSET    >Scratch1,Z,#$50
 L09232:
         TST     >ColdEnrich,Z
         BEQ     L09244
         BSET    >O2TestFlags,Z,#$30                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
-        BSET    >IacBase,Z,#$70
-        BSET    $01F1,Z,#$70
+        BSET    >Scratch0,Z,#$70
+        BSET    >Scratch1,Z,#$70
 L09244:
         BRCLR   >ThrottleState,Z,#$40,L0925A             ; bit 6: wide-open throttle (DetectWot)
         BSET    >O2TestFlags,Z,#$30                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
-        BSET    $055A,Z,#$C0
-        BSET    >IacBase,Z,#$F0
-        BSET    $01F1,Z,#$F0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
+        BSET    >Scratch0,Z,#$F0
+        BSET    >Scratch1,Z,#$F0
 L0925A:
         TST     >SpeedCtlRpmJumpTimer,Z
         BEQ     L09268
-        BSET    >IacBase,Z,#$20
-        BSET    $01F1,Z,#$20
+        BSET    >Scratch0,Z,#$20
+        BSET    >Scratch1,Z,#$20
 L09268:
-        BRCLR   >EventFlags,Z,#$40,L0927A                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
-        BSET    >IacBase,Z,#$A0
-        BSET    $01F1,Z,#$A0
+        BRCLR   >IdleFlareFlags,Z,#$40,L0927A            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
+        BSET    >Scratch0,Z,#$A0
+        BSET    >Scratch1,Z,#$A0
         BSET    >O2TestFlags,Z,#$30                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
 L0927A:
         LDAA    >PurgeRamp,Z
@@ -11933,49 +13174,49 @@ L0927A:
         CMPA    $12AB
         BLS     L09292
 L0928A:
-        BSET    >IacBase,Z,#$50
-        BSET    $01F1,Z,#$50
+        BSET    >Scratch0,Z,#$50
+        BSET    >Scratch1,Z,#$50
 L09292:
         LDD     >SegmentRpm,Z
         CPD     #$9C40
         BCS     L092A8
-        BSET    >IacBase,Z,#$50
-        BSET    $01F1,Z,#$50
-        BSET    $055A,Z,#$C0
+        BSET    >Scratch0,Z,#$50
+        BSET    >Scratch1,Z,#$50
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
 L092A8:
         BRCLR   $001E,X,#$01,L092B6
         BSET    >O2TestFlags,Z,#$20
-        BSET    $055A,Z,#$80
+        BSET    >O2InactiveFlags,Z,#$80                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)
 L092B6:
         BRCLR   $001E,Y,#$01,L092C4
         BSET    >O2TestFlags,Z,#$10                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
-        BSET    $055A,Z,#$40
+        BSET    >O2InactiveFlags,Z,#$40                  ; bit 6: bank 2 closed loop held open (as bit 7)
 L092C4:
         LDAB    >O2CrossFlags,Z
         BITB    #$80
         BEQ     L092D0
-        BSET    >IacBase,Z,#$F0
+        BSET    >Scratch0,Z,#$F0
 L092D0:
         BITB    #$40
         BEQ     L092D8
-        BSET    $01F1,Z,#$F0
+        BSET    >Scratch1,Z,#$F0
 L092D8:
         BRCLR   >SparkFlags2,Z,#$80,L092EE               ; bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
-        BSET    >IacBase,Z,#$F0
-        BSET    $01F1,Z,#$F0
-        BSET    $055A,Z,#$C0
+        BSET    >Scratch0,Z,#$F0
+        BSET    >Scratch1,Z,#$F0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    >O2TestFlags,Z,#$30                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
 L092EE:
-        BRCLR   $056D,Z,#$C0,L092F8
+        BRCLR   >RevLimitFlags,Z,#$C0,L092F8
         BSET    >O2TestFlags,Z,#$30                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
 L092F8:
-        LDAA    $055B,Z
+        LDAA    >O2ResetFlags2,Z
         BITA    #$0C
         BEQ     L0933A
-        LDAA    $13B2
+        LDAA    >O2TrimResetValue
         CLRB
         TDE
-        LDAA    $055B,Z
+        LDAA    >O2ResetFlags2,Z
         BITA    #$08
         BEQ     L09320
         CLR     $02,X
@@ -11997,13 +13238,13 @@ L09320:
         STAA    $00,Y
         LBRA    L093C6
 L0933A:
-        LDAA    $055C,Z
+        LDAA    >O2ResetFlags,Z
         BITA    #$C0
         BEQ     L0937E
-        LDAA    $2572
+        LDAA    >O2TrimResetValue2
         CLRB
         TDE
-        LDAA    $055C,Z
+        LDAA    >O2ResetFlags,Z
         BITA    #$80
         BEQ     L09362
         CLR     $02,X
@@ -12014,7 +13255,7 @@ L0933A:
         TED
         STAA    $00,X
 L09362:
-        LDAA    $055C,Z
+        LDAA    >O2ResetFlags,Z
         BITA    #$40
         LBEQ    L093C6
         CLR     $02,Y
@@ -12026,10 +13267,10 @@ L09362:
         STAA    $00,Y
         BRA     L093C6
 L0937E:
-        LDAA    $055C,Z
+        LDAA    >O2ResetFlags,Z
         BITA    #$30
         BEQ     L093C6
-        LDAA    $055C,Z
+        LDAA    >O2ResetFlags,Z
         BITA    #$20
         BEQ     L093A6
         LDAA    $0296,Z
@@ -12043,7 +13284,7 @@ L0937E:
         TED
         STAA    $00,X
 L093A6:
-        LDAA    $055C,Z
+        LDAA    >O2ResetFlags,Z
         BITA    #$10
         BEQ     L093C6
         LDAA    $029E,Z
@@ -12057,18 +13298,18 @@ L093A6:
         TED
         STAA    $00,Y
 L093C6:
-        LDAA    $055B,Z
+        LDAA    >O2ResetFlags2,Z
         BITA    #$20
         BEQ     L093D6
-        BSET    >IacBase,Z,#$A0
+        BSET    >Scratch0,Z,#$A0
         BSET    >O2TestFlags,Z,#$20
 L093D6:
         BITA    #$10
         BEQ     L093E2
-        BSET    $01F1,Z,#$A0
+        BSET    >Scratch1,Z,#$A0
         BSET    >O2TestFlags,Z,#$10                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
 L093E2:
-        LDD     >IacBase,Z
+        LDD     >Scratch0,Z
         STAA    >O2Bank1Flags,Z
         STAB    >O2Bank2Flags,Z
         ANDP    #$FF1F
@@ -12082,7 +13323,7 @@ L093E2:
         CLR     $07,X
         BCLR    $1D,X,#$04
         BSET    >O2TestFlags,Z,#$20
-        BSET    $0062,Z,#$40
+        BSET    >PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
 L09416:
         BRCLR   >O2Bank2Flags,Z,#$80,L0943A
         BCLR    $1E,Y,#$14
@@ -12094,7 +13335,7 @@ L09416:
         CLR     $07,Y
         BCLR    $1D,Y,#$04
         BSET    >O2TestFlags,Z,#$10                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
-        BSET    $0062,Z,#$40
+        BSET    >PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
 L0943A:
         BRCLR   >O2Bank1Flags,Z,#$40,L0949C              ; bit 6: set with bit 7; read by O2DownEnable
         BCLR    $1E,X,#$14
@@ -12106,7 +13347,7 @@ L0943A:
         BCLR    $1E,X,#$02
         BRSET   $001E,X,#$20,L0949C
         LDAB    $120A
-        LDAA    $055A,Z
+        LDAA    >O2InactiveFlags,Z
         BITA    #$A0
         BNE     L0949A
         CLRA
@@ -12144,7 +13385,7 @@ L0949C:
         BCLR    $1E,Y,#$02
         BRSET   $001E,Y,#$20,L094FE
         LDAB    $120A
-        LDAA    $055A,Z
+        LDAA    >O2InactiveFlags,Z
         BITA    #$50
         BNE     L094FC
         CLRA
@@ -12174,67 +13415,67 @@ L094FC:
 L094FE:
         BCLR    >O2Bank1Flags,Z,#$C0                     ; bit 7: bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens; bit 6: set with bit 7; read by O2DownEnable
         BCLR    >O2Bank2Flags,Z,#$C0
-        BCLR    $055A,Z,#$C0
-        BCLR    $055B,Z,#$3C
-        BCLR    $055C,Z,#$F0
+        BCLR    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
+        BCLR    >O2ResetFlags2,Z,#$3C                    ; bit 5: bank 1 short-term trim reset, memory change hold started (O2CellSelect, FuelCutControl); bit 4: bank 2 short-term trim reset (O2CellSelect, FuelCutControl); bit 3: bank 1 trim at or below PurgeLearnTrimMin during vapour learning (PurgeVaporLearn); bit 2: bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)
+        BCLR    >O2ResetFlags,Z,#$F0                     ; bit 5: post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck); bit 4: post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_09514 ($09514)
-; Called from: Sub_088F2
+; ClosedLoopTiming ($09514)
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
-Sub_09514:
+ClosedLoopTiming:
         LDAA    >O2SwitchFlags,Z
-        STAA    >IacBase,Z
-        LDAA    $055A,Z
-        STAA    $01F2,Z
-        BSET    >IacBase,Z,#$20
-        BSET    $01F2,Z,#$01
+        STAA    >Scratch0,Z
+        LDAA    >O2InactiveFlags,Z
+        STAA    >Scratch2,Z
+        BSET    >Scratch0,Z,#$20
+        BSET    >Scratch2,Z,#$01
         LDAA    >FuelModeFlags2,Z
         ANDA    #$40
         BEQ     L0953A
-        BCLR    >IacBase,Z,#$40
+        BCLR    >Scratch0,Z,#$40
         BRA     L09548
 L0953A:
         LDAA    >Map,Z
-        CMPA    $11E2
+        CMPA    >O2MapMin
         BHI     L0955A
-        BSET    >IacBase,Z,#$40
+        BSET    >Scratch0,Z,#$40
 L09548:
         LDAA    $120C
-        STAA    $0552,Z
+        STAA    >O2DecelHoldTimer,Z
         LDAA    $120D
-        STAA    $0553,Z
+        STAA    >O2EntryTimer,Z
         BRA     L0957E
 L0955A:
-        TST     $0552,Z
+        TST     >O2DecelHoldTimer,Z
         BEQ     L09566
-        DEC     $0552,Z
+        DEC     >O2DecelHoldTimer,Z
         BRA     L0957E
 L09566:
-        BCLR    >IacBase,Z,#$20
-        TST     $0553,Z
+        BCLR    >Scratch0,Z,#$20
+        TST     >O2EntryTimer,Z
         BEQ     L09576
-        DEC     $0553,Z
+        DEC     >O2EntryTimer,Z
         BRA     L0957E
 L09576:
-        BCLR    >IacBase,Z,#$40
-        BCLR    $01F2,Z,#$01
+        BCLR    >Scratch0,Z,#$40
+        BCLR    >Scratch2,Z,#$01
 L0957E:
         LDAB    >StartCoolantTemp2,Z
-        CMPB    $11FA
+        CMPB    >O2ColdStartCoolant
         BCC     L095B4
-        LDAB    $05AC,Z
+        LDAB    >O2ColdStartTimer,Z
         BRCLR   >MainLoopPhaseMask,Z,#$80,L0959E         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         TBA
         INCA
         BEQ     L0959E
-        STAA    $05AC,Z
+        STAA    >O2ColdStartTimer,Z
         TAB
 L0959E:
-        CMPB    $11FF
+        CMPB    >O2ColdStartTime
         BRCLR   >DriveFlags,Z,#$20,L095AC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        CMPB    $1201
+        CMPB    >O2ColdStartTimeDrive
 L095AC:
         BCC     L095B4
         BSET    >O2CrossFlags,Z,#$02
@@ -12243,12 +13484,12 @@ L095B4:
         BCLR    >O2CrossFlags,Z,#$02
 L095B8:
         LDAB    >StartCoolantTemp2,Z
-        CMPB    $11FA
+        CMPB    >O2ColdStartCoolant
         LBCC    L096DC
-        BRSET   $055B,Z,#$03,L096D0
+        BRSET   >O2ResetFlags2,Z,#$03,L096D0             ; bit 1: bank 1 cold trim reset (ClosedLoopTiming); bit 0: bank 2 cold trim reset (ClosedLoopTiming)
         BRCLR   >ThrottleState,Z,#$80,L095FE             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >PurgeRamp,Z
-        LDAB    $11FC
+        LDAB    >O2ColdPurgeRampMin
         BRCLR   >O2CrossFlags,Z,#$01,L095E4
         SUBB    #$02
         BCC     L095E4
@@ -12258,133 +13499,133 @@ L095E4:
         BCS     L095FE
         BSET    >O2CrossFlags,Z,#$01
         BRCLR   >MainLoopPhaseMask,Z,#$04,L09606         ; bit 2: one pass in 8 (about 96 ms)
-        INC     $05AD,Z
+        INC     >O2ColdPurgeCounter,Z
         BNE     L09606
-        DEC     $05AD,Z
+        DEC     >O2ColdPurgeCounter,Z
         BRA     L09606
 L095FE:
-        CLR     $05AD,Z
+        CLR     >O2ColdPurgeCounter,Z
         BCLR    >O2CrossFlags,Z,#$01
 L09606:
         TST     >Count3s,Z
         BEQ     L0963A
         BRCLR   >MainLoopPhaseMask,Z,#$02,L0963A         ; bit 1: one pass in 4 (about 48 ms)
         LDAA    >O2UpBank1Raw,Z
-        CMPA    $1208
+        CMPA    >O2ColdLeanRaw
         BHI     L09626
-        INC     $05AE,Z
+        INC     >O2ColdLeanCount1,Z
         BNE     L09626
-        DEC     $05AE,Z
+        DEC     >O2ColdLeanCount1,Z
 L09626:
         LDAA    >O2UpBank2Raw,Z
-        CMPA    $1209
+        CMPA    >O2ColdLeanRaw2
         BHI     L0963A
-        INC     $05AF,Z
+        INC     >O2ColdLeanCount2,Z
         BNE     L0963A
-        DEC     $05AF,Z
+        DEC     >O2ColdLeanCount2,Z
 L0963A:
         BRSET   >ClosedLoopMonFlags,Z,#$80,L09650        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         BRCLR   >ThrottleState,Z,#$80,L09686             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $05AD,Z
-        CMPA    $11FD
+        LDAA    >O2ColdPurgeCounter,Z
+        CMPA    >O2ColdPurgeCount
         BCS     L09686
 L09650:
-        LDAB    $11FB
-        BRSET   $055B,Z,#$02,L0966C
-        LDAA    $05AA,Z
+        LDAB    >O2ColdStartAdder
+        BRSET   >O2ResetFlags2,Z,#$02,L0966C             ; bit 1: bank 1 cold trim reset (ClosedLoopTiming)
+        LDAA    >O2ColdTrim1,Z
         SBA
         BCC     L09664
         CLRA
 L09664:
-        STAA    $05AA,Z
-        BSET    $055B,Z,#$02
+        STAA    >O2ColdTrim1,Z
+        BSET    >O2ResetFlags2,Z,#$02                    ; bit 1: bank 1 cold trim reset (ClosedLoopTiming)
 L0966C:
-        BRSET   $055B,Z,#$01,L096DC
-        LDAA    $05AB,Z
+        BRSET   >O2ResetFlags2,Z,#$01,L096DC             ; bit 0: bank 2 cold trim reset (ClosedLoopTiming)
+        LDAA    >O2ColdTrim2,Z
         SBA
         BCC     L0967C
         CLRA
 L0967C:
-        STAA    $05AB,Z
-        BSET    $055B,Z,#$01
+        STAA    >O2ColdTrim2,Z
+        BSET    >O2ResetFlags2,Z,#$01                    ; bit 0: bank 2 cold trim reset (ClosedLoopTiming)
         BRA     L096DC
 L09686:
-        BRSET   $055B,Z,#$02,L096AA
-        LDAA    $05AE,Z
-        CMPA    $1205
+        BRSET   >O2ResetFlags2,Z,#$02,L096AA             ; bit 1: bank 1 cold trim reset (ClosedLoopTiming)
+        LDAA    >O2ColdLeanCount1,Z
+        CMPA    >O2ColdLeanCount
         BCS     L096AA
-        LDAA    $05AA,Z
-        SUBA    $11FB
+        LDAA    >O2ColdTrim1,Z
+        SUBA    >O2ColdStartAdder
         BCC     L096A2
         CLRA
 L096A2:
-        STAA    $05AA,Z
-        BSET    $055B,Z,#$02
+        STAA    >O2ColdTrim1,Z
+        BSET    >O2ResetFlags2,Z,#$02                    ; bit 1: bank 1 cold trim reset (ClosedLoopTiming)
 L096AA:
-        BRSET   $055B,Z,#$01,L096DC
-        LDAA    $05AF,Z
-        CMPA    $1205
+        BRSET   >O2ResetFlags2,Z,#$01,L096DC             ; bit 0: bank 2 cold trim reset (ClosedLoopTiming)
+        LDAA    >O2ColdLeanCount2,Z
+        CMPA    >O2ColdLeanCount
         BCS     L096DC
-        LDAA    $05AB,Z
-        SUBA    $11FB
+        LDAA    >O2ColdTrim2,Z
+        SUBA    >O2ColdStartAdder
         BCC     L096C6
         CLRA
 L096C6:
-        STAA    $05AB,Z
-        BSET    $055B,Z,#$01
+        STAA    >O2ColdTrim2,Z
+        BSET    >O2ResetFlags2,Z,#$01                    ; bit 0: bank 2 cold trim reset (ClosedLoopTiming)
         BRA     L096DC
 L096D0:
-        CLR     $05AE,Z
-        CLR     $05AF,Z
-        CLR     $05AD,Z
+        CLR     >O2ColdLeanCount1,Z
+        CLR     >O2ColdLeanCount2,Z
+        CLR     >O2ColdPurgeCounter,Z
 L096DC:
         ORP     #$00E0
-        BCLR    >IacBase,Z,#$18
+        BCLR    >Scratch0,Z,#$18
         TST     $0554,Z
         BEQ     L096EE
-        BSET    >IacBase,Z,#$10
+        BSET    >Scratch0,Z,#$10
 L096EE:
         TST     >ClosedLoop751,Z
         BEQ     L096F8
-        BSET    >IacBase,Z,#$08
+        BSET    >Scratch0,Z,#$08
 L096F8:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L097F2         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         LDAA    >CoolantTemp,Z
-        CMPA    $11F9
+        CMPA    >ThermostatCoolant
         BCS     L09728
-        TST     $05AA,Z
+        TST     >O2ColdTrim1,Z
         BNE     L09714
-        BSET    $05B0,Z,#$80
+        BSET    >ClosedLoop7B4,Z,#$80
         BRA     L09718
 L09714:
-        DEC     $05AA,Z
+        DEC     >O2ColdTrim1,Z
 L09718:
-        TST     $05AB,Z
+        TST     >O2ColdTrim2,Z
         BNE     L09724
-        BSET    $05B0,Z,#$80
+        BSET    >ClosedLoop7B4,Z,#$80
         BRA     L09728
 L09724:
-        DEC     $05AB,Z
+        DEC     >O2ColdTrim2,Z
 L09728:
-        CMPA    $11BD
-        LDAB    $056F,Z
+        CMPA    >O2WarmDelayCoolant
+        LDAB    >O2WarmDelay,Z
         BCC     L0973A
         BNE     L09742
-        LDAB    $11BF
+        LDAB    >O2DelayWarm
         BRA     L0973E
 L0973A:
         BEQ     L09742
         DECB
 L0973E:
-        STAB    $056F,Z
+        STAB    >O2WarmDelay,Z
 L09742:
-        CMPA    $1297
+        CMPA    >O2DownEnableCoolant
         BCS     L09752
         TST     >O2DownDelay,Z
         BEQ     L09752
         DEC     >O2DownDelay,Z
 L09752:
-        CMPA    $1298
+        CMPA    >O2SlowEnableCoolant
         BCS     L09762
         TST     >O2SlowDelay,Z
         BEQ     L09762
@@ -12393,7 +13634,7 @@ L09762:
         LDAA    >O2ActiveFlags,Z
         BITA    #$C0
         BEQ     L0977E
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         BITA    #$10
         BEQ     L09776
         DEC     $0554,Z
@@ -12405,52 +13646,52 @@ L0977E:
         TST     >O2SlowDelay,Z
         BNE     L09794
         LDAA    >PurgeRamp,Z
-        CMPA    $12A9
+        CMPA    >O2SlowPurgeRampMin
         BCS     L09794
-        TST     $0552,Z
+        TST     >O2DecelHoldTimer,Z
         BEQ     L097A2
 L09794:
         LDAB    >O2SlowStepPeriod
-        STAB    $0521,Z
-        STAB    $0542,Z
+        STAB    >ClosedLoop712,Z
+        STAB    >O2SlowPeriod2,Z
         BRA     L097F2
 L097A2:
         BRSET   >O2ActiveFlags,Z,#$80,L097B2             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAB    >O2SlowStepPeriod
-        STAB    $0521,Z
+        STAB    >ClosedLoop712,Z
         BRA     L097CA
 L097B2:
         LDAA    >O2Bank1Flags,Z
         BITA    #$03
         BEQ     L097CA
-        BRCLR   $052D,Z,#$02,L097CA
-        TST     $0521,Z
+        BRCLR   >O2Post71E,Z,#$02,L097CA
+        TST     >ClosedLoop712,Z
         BEQ     L097CA
-        DEC     $0521,Z
+        DEC     >ClosedLoop712,Z
 L097CA:
         BRSET   >O2ActiveFlags,Z,#$40,L097DA             ; bit 6: upstream O2 sensor 2 active (as bit 7)
         LDAB    >O2SlowStepPeriod
-        STAB    $0542,Z
+        STAB    >O2SlowPeriod2,Z
         BRA     L097F2
 L097DA:
         LDAA    >O2Bank2Flags,Z
         BITA    #$03
         BEQ     L097F2
-        BRCLR   $054E,Z,#$02,L097F2
-        TST     $0542,Z
+        BRCLR   >O2Post746,Z,#$02,L097F2
+        TST     >O2SlowPeriod2,Z
         BEQ     L097F2
-        DEC     $0542,Z
+        DEC     >O2SlowPeriod2,Z
 L097F2:
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         STAA    >O2SwitchFlags,Z
-        LDAA    $01F2,Z
-        STAA    $055A,Z
+        LDAA    >Scratch2,Z
+        STAA    >O2InactiveFlags,Z
         ANDP    #$FF1F
         RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; O2SwitchState ($09808)
-; Called from: O2DownTrim, Sub_099AC
+; Called from: O2DownTrim, O2UpTrim
 ;---------------------------------------------------------------------------------------------------
 O2SwitchState:
         TPD
@@ -12638,10 +13879,10 @@ L09994:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_099AC ($099AC)
-; Called from: SurgeFilters (2 calls)
+; O2UpTrim ($099AC)
+; Called from: O2UpdateUpstream (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_099AC:
+O2UpTrim:
         LDAA    $01,X
         SUBA    $0A,X
         BCC     L099B4
@@ -12649,7 +13890,7 @@ Sub_099AC:
 L099B4:
         STAA    $09,X
         PSHM    X
-        LDX     #Tab2D_1283
+        LDX     #O2VoltageScale
         JSR     Lookup2D
         PULM    X
         STAA    $08,X
@@ -12694,9 +13935,9 @@ L09A1E:
 L09A22:
         STAB    $02,X
         BRCLR   $001E,X,#$01,L09A4A
-        LDAA    $11FE
+        LDAA    >O2ColdTrimMin
         BRCLR   >DriveFlags,Z,#$20,L09A38                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        LDAA    $1200
+        LDAA    >O2ColdTrimMinDrive
 L09A38:
         CLRB
         LDE     $0004,X
@@ -12788,14 +14029,14 @@ L09AD6:
 L09AEA:
         LDE     #$8000
 L09AEE:
-        CPE     $127F
+        CPE     >O2AdaptIntegralMax
         BLT     L09AFA
-        LDE     $127F
+        LDE     >O2AdaptIntegralMax
         BRA     L09B04
 L09AFA:
-        CPE     $1281
+        CPE     >O2AdaptIntegralMin
         BGE     L09B04
-        LDE     $1281
+        LDE     >O2AdaptIntegralMin
 L09B04:
         STE     $0004,X
 L09B08:
@@ -12860,51 +14101,51 @@ L09B8A:
 L09B94:
         BCLR    $1E,X,#$01
         BRCLR   >O2CrossFlags,Z,#$02,L09BB6
-        LDAA    $11FE
+        LDAA    >O2ColdTrimMin
         BRCLR   >DriveFlags,Z,#$20,L09BAC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        LDAA    $1200
+        LDAA    >O2ColdTrimMinDrive
 L09BAC:
         CBA
         BLT     L09BB6
         TAB
         BSET    $1E,X,#$01
 L09BB6:
-        CMPB    $1202
+        CMPB    >O2AdaptCellMax
         BLT     L09BC2
-        LDAB    $1202
+        LDAB    >O2AdaptCellMax
         BRA     L09BCC
 L09BC2:
-        CMPB    $1203
+        CMPB    >O2AdaptCellMin
         BGE     L09BCC
-        LDAB    $1203
+        LDAB    >O2AdaptCellMin
 L09BCC:
         STAB    $00,X
 L09BCE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_09BD0 ($09BD0)
-; Called from: Sub_088F2
+; O2CellSelect ($09BD0)
+; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
-Sub_09BD0:
-        LDAA    $0289,Z
+O2CellSelect:
+        LDAA    >EgrMonFlags,Z
         BITA    #$14
         LBNE    L09D3C
         CLRA
-        STAA    $01F7,Z
+        STAA    >Scratch7,Z
         CLRB
         TBXK
         LDX     #$11C1
         BRSET   >ThrottleState,Z,#$80,L09C60             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAB    #$0C
-        BRSET   >Options0339,#$20,L09C08                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L09C08                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$80,L09C00                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         JMP     L09D3C
 L09C00:
         BRCLR   >DriveFlags,Z,#$20,L09C08                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         INCB
 L09C08:
-        BRSET   >Options0339,#$80,L09C32                 ; bit 7: O2 cell selection variant (O2CellSelect3x3, O2CellSelect)
+        BRSET   >Options032E,#$80,L09C32                 ; bit 7: bus message variant (CcdTransmit, PciBuildMessage)
         LDAA    >VehicleSpeed,Z
         CMPB    >O2MemCell,Z
         BNE     L09C28
@@ -12917,41 +14158,41 @@ L09C24:
         BPL     L09C28
         CLRA
 L09C28:
-        CMPA    $11CA
+        CMPA    >O2IdleSpeedMax
         LBCS    L09C8C
         BRA     L09C60
 L09C32:
         LDAA    >IdleTarget,Z
-        ADDA    $11C9
+        ADDA    >O2IdleRpmMargin
         CMPB    >O2MemCell,Z
         BNE     L09C44
-        ADDA    $11CB
+        ADDA    >SparkRpmFlagHyst
 L09C44:
         CMPA    >EngineRpm,Z
         BCS     L09C60
         BRA     L09C8C
 L09C4C:
         LDAA    $00,X
-        CMPB    $01F7,Z
+        CMPB    >Scratch7,Z
         BCC     L09C58
-        ADDA    $11C6
+        ADDA    >O2MemMapHyst
 L09C58:
         CMPA    >Map,Z
         BCC     L09C72
         AIX     #$01
 L09C60:
         LDAB    >O2MemCell,Z
-        INC     $01F7,Z
-        INC     $01F7,Z
+        INC     >Scratch7,Z
+        INC     >Scratch7,Z
         CPX     #$11C6
         BNE     L09C4C
 L09C72:
-        LDAA    $11C7
+        LDAA    >O2MemRpmSplit
         LSRB
         BCS     L09C7E
-        ADDA    $11C8
+        ADDA    >O2MemRpmHyst
 L09C7E:
-        LDAB    $01F7,Z
+        LDAB    >Scratch7,Z
         CMPA    >EngineRpm,Z
         BCS     L09C8A
         DECB
@@ -12964,39 +14205,39 @@ L09C8C:
         CMPA    $11CC
         LBCS    L09D00
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    $11D0
+        CMPA    >O2CellResetThrottleMin
         BCS     L09D00
-        LDAA    $11CF
+        LDAA    >O2CellResetVacuumMax
         CMPA    >ManifoldVacuum,Z
         BCS     L09D00
-        LDAA    $11CE
+        LDAA    >O2CellResetSpeedMax
         CMPA    >VehicleSpeed,Z
         BCS     L09D00
         LDAA    >FaultSet0B,Z
         BITA    #$30
         BNE     L09D00
-        BRSET   $0170,Z,#$10,L09D00
+        BRSET   >BusModuleFlags,Z,#$10,L09D00
         LDAA    >ShortTermTrim1,Z
-        CMPA    $11CD
+        CMPA    >O2CellResetTrimMax
         BGT     L09CE6
         CLR     >ShortTermTrim1,Z
-        LDAA    $25F9
-        STAA    $01BB,Z
-        BSET    $055B,Z,#$20
+        LDAA    >O2MemChangeHold
+        STAA    >FuelSys5A5,Z
+        BSET    >O2ResetFlags2,Z,#$20                    ; bit 5: bank 1 short-term trim reset, memory change hold started (O2CellSelect, FuelCutControl)
 L09CE6:
         LDAA    >ShortTermTrim2,Z
-        CMPA    $11CD
+        CMPA    >O2CellResetTrimMax
         BGT     L09D00
         CLR     >ShortTermTrim2,Z
-        LDAA    $25F9
-        STAA    $01C0,Z
-        BSET    $055B,Z,#$10
+        LDAA    >O2MemChangeHold
+        STAA    >O2MemChangeHold2,Z
+        BSET    >O2ResetFlags2,Z,#$10                    ; bit 4: bank 2 short-term trim reset (O2CellSelect, FuelCutControl)
 L09D00:
-        CLR     $05D9,Z
-        CLR     $05DA,Z
+        CLR     >O2CellWork,Z
+        CLR     >O2LearnTimer2,Z
         CLR     >PurgeCellCount,Z
-        BRCLR   $0324,#$01,L09D18
-        BRSET   $0036,Z,#$08,L09D38
+        BRCLR   >Options032C,#$01,L09D18
+        BRSET   >FlexStartFlags,Z,#$08,L09D38            ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
 L09D18:
         LDAA    #$20
         CMPB    >PurgeCell1
@@ -13017,56 +14258,56 @@ L09D3C:
         LDY     #$85B1
         LDAA    >ShortTermTrim1,Z
         LDAB    >O2UpBank1Raw,Z
-        STD     $05B1,Z
+        STD     >O2Cell78A,Z
         LDAA    >O2Bank1Flags,Z
         ANDA    #$08
-        STAA    $01F6,Z
-        JSR     Sub_09D84
+        STAA    >Scratch6,Z
+        JSR     O2LearnEnable
         BRCLR   >O2ActiveFlags,Z,#$04,L09D82             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         TZY
         LDY     #$85B8
         LDAA    >ShortTermTrim2,Z
         LDAB    >O2UpBank2Raw,Z
-        STD     $05B8,Z
+        STD     >O2Cell794,Z
         LDAA    >O2Bank2Flags,Z
         ANDA    #$08
-        STAA    $01F6,Z
-        JSR     Sub_09D84
+        STAA    >Scratch6,Z
+        JSR     O2LearnEnable
 L09D82:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_09D84 ($09D84)
-; Called from: Sub_09BD0 (2 calls)
+; O2LearnEnable ($09D84)
+; Called from: O2CellSelect (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_09D84:
+O2LearnEnable:
         CLRB
-        TST     $01F6,Z
+        TST     >Scratch6,Z
         BEQ     L09D8E
         LDAB    #$FF
 L09D8E:
-        STAB    $01F4,Z
+        STAB    >Scratch4,Z
         BRSET   >O2TestFlags,Z,#$30,L09E9E               ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         LDAB    >Map,Z
-        CMPB    $11E1
+        CMPB    >O2LearnMapMax
         LBHI    L09E9E
-        CMPB    $11E2
+        CMPB    >O2MapMin
         LBLS    L09E9E
-        LDAB    $11E3
+        LDAB    >O2LearnRpmMax
         SUBB    >EngineRpm,Z
         BCS     L09DCA
-        BRCLR   $055A,Z,#$02,L09DD2
-        SUBB    $11E4
+        BRCLR   >O2InactiveFlags,Z,#$02,L09DD2           ; bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
+        SUBB    >O2LearnRpmHyst
         LBCS    L09E9E
-        BCLR    $055A,Z,#$02
+        BCLR    >O2InactiveFlags,Z,#$02                  ; bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
         BRA     L09DD2
 L09DCA:
-        BSET    $055A,Z,#$02
+        BSET    >O2InactiveFlags,Z,#$02                  ; bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
         LBRA    L09E9E
 L09DD2:
         LDAB    >ColdEnrich,Z
         BRSET   >ClosedLoopMonFlags,Z,#$80,L09DE0        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
-        ORAB    $056F,Z
+        ORAB    >O2WarmDelay,Z
 L09DE0:
         LBNE    L09E9E
         LDAA    >SystemTestMode,Z
@@ -13075,30 +14316,30 @@ L09DE0:
         CMPA    #$0B
         LBCS    L09E9E
 L09DF2:
-        LDAA    $0289,Z
+        LDAA    >EgrMonFlags,Z
         BITA    #$14
         LBNE    L09E9E
-        BRSET   $03E1,Z,#$08,L09E9E
+        BRSET   >PurgeLearnFlags,Z,#$08,L09E9E           ; bit 3: purge vapour learning step state (PurgeVaporLearn)
         LDE     >FuelPulseBank1,Z
-        CPE     $11E5
+        CPE     >O2PulseWidthMin
         BCC     L09E12
-        BSET    >EventFlags,Z,#$20
+        BSET    >IdleFlareFlags,Z,#$20                   ; bit 5: bank 1 fuel pulse below O2PulseWidthMin: adaptive cell update held (O2LearnEnable)
         BRA     L09E16
 L09E12:
-        BCLR    >EventFlags,Z,#$20
+        BCLR    >IdleFlareFlags,Z,#$20                   ; bit 5: bank 1 fuel pulse below O2PulseWidthMin: adaptive cell update held (O2LearnEnable)
 L09E16:
         LDE     >FuelPulseBank2,Z
-        CPE     $11E5
+        CPE     >O2PulseWidthMin
         BCC     L09E26
-        BSET    >EventFlags,Z,#$10                       ; bit 4: read by EventCorrections and LimitReasonCode
+        BSET    >IdleFlareFlags,Z,#$10                   ; bit 4: bank 2 fuel pulse below O2PulseWidthMin (O2LearnEnable)
         BRA     L09E2A
 L09E26:
-        BCLR    >EventFlags,Z,#$10                       ; bit 4: read by EventCorrections and LimitReasonCode
+        BCLR    >IdleFlareFlags,Z,#$10                   ; bit 4: bank 2 fuel pulse below O2PulseWidthMin (O2LearnEnable)
 L09E2A:
         LDAA    >SystemTestMode,Z
         CMPA    #$01
         LBEQ    L09E9E
-        TST     $01DC,Z
+        TST     >O2Activity545,Z
         LBNE    L09E9E
         CLRB
         TBXK
@@ -13109,7 +14350,7 @@ L09E2A:
         LDX     #$11D4
 L09E50:
         LDAB    $00,X
-        LDAA    $01F4,Z
+        LDAA    >Scratch4,Z
         BMI     L09E5A
         NEGB
 L09E5A:
@@ -13121,14 +14362,14 @@ L09E5A:
 L09E64:
         CMPA    $00,X
         BCS     L09E70
-        EORB    $01F4,Z
+        EORB    >Scratch4,Z
         BMI     L09EA2
         LDAA    #$FF
 L09E70:
-        BCLR    $0062,Z,#$40
+        BCLR    >PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         LDAB    >PurgeCellCount,Z
         LBEQ    L09E82
-        CMPB    $13AF
+        CMPB    >O2LearnPurgeCountMax
         BLS     L09EA2
 L09E82:
         TSTA
@@ -13137,41 +14378,41 @@ L09E82:
         BNE     L09EA2
         CPY     #$85B1
         BEQ     L09E98
-        BCLR    $055B,Z,#$40
+        BCLR    >O2ResetFlags2,Z,#$40                    ; bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
         BRA     L09EB2
 L09E98:
-        BCLR    $055B,Z,#$80
+        BCLR    >O2ResetFlags2,Z,#$80                    ; bit 7: adaptive cell selection: not the last cell (O2LearnEnable)
         BRA     L09EB2
 L09E9E:
-        BSET    $0062,Z,#$40
+        BSET    >PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
 L09EA2:
         CPY     #$85B8
         BEQ     L09EAE
-        BSET    $055B,Z,#$80
+        BSET    >O2ResetFlags2,Z,#$80                    ; bit 7: adaptive cell selection: not the last cell (O2LearnEnable)
         BRA     L09EB2
 L09EAE:
-        BSET    $055B,Z,#$40
+        BSET    >O2ResetFlags2,Z,#$40                    ; bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
 L09EB2:
         LDAA    >FaultSet0B,Z
         BITA    #$30
         LBNE    L09D00
-        BRSET   $0170,Z,#$10,L09D00
+        BRSET   >BusModuleFlags,Z,#$10,L09D00
         BRSET   >Options0337,#$20,L09FC0                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
         BRSET   >O2ActiveFlags,Z,#$08,L09ED8             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BRSET   >O2ActiveFlags,Z,#$04,L09F52             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
-        BSET    $055B,Z,#$C0
+        BSET    >O2ResetFlags2,Z,#$C0                    ; bit 7: adaptive cell selection: not the last cell (O2LearnEnable); bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
 L09ED8:
         TZX
         LDX     #$8040
-        STX     $01F6,Z
+        STX     >Scratch6,Z
         TZY
         LDY     #$804E
-        STY     $01F4,Z
+        STY     >Scratch4,Z
         LDAA    >ShortTermTrim1,Z
-        STAA    $01F2,Z
-        LDAA    $0513,Z
+        STAA    >Scratch2,Z
+        LDAA    >ClosedLoop704,Z
         STAA    >Scratch3,Z
-        JSR     Sub_0A014
+        JSR     O2CellUpdate
         BRCLR   $0327,#$02,L09F2E
         BRCLR   >FuelModeFlags2,Z,#$80,L09F2E            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         LDAB    $004E,Z
@@ -13198,15 +14439,15 @@ L09F46:
 L09F52:
         TZX
         LDX     #$8051
-        STX     $01F6,Z
+        STX     >Scratch6,Z
         TZY
         LDY     #$805F
-        STY     $01F4,Z
+        STY     >Scratch4,Z
         LDAA    >ShortTermTrim2,Z
-        STAA    $01F2,Z
-        LDAA    $0534,Z
+        STAA    >Scratch2,Z
+        LDAA    >ClosedLoop72C,Z
         STAA    >Scratch3,Z
-        JSR     Sub_0A014
+        JSR     O2CellUpdate
         BRCLR   $0327,#$02,L09FA8
         BRCLR   >FuelModeFlags2,Z,#$80,L09FA8            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         LDAB    $005F,Z
@@ -13229,8 +14470,8 @@ L09FA8:
         LBRA    L0A00E
 L09FC0:
         CLRA
-        STAA    $05D9,Z
-        STAA    $05DA,Z
+        STAA    >O2CellWork,Z
+        STAA    >O2LearnTimer2,Z
         STAA    >O2AdaptValue1,Z
         STAA    >O2AdaptValue2,Z
         STAA    $004E,Z
@@ -13239,7 +14480,7 @@ L09FC0:
         STAA    $005F,Z
         STAA    $0060,Z
         STAA    $0061,Z
-        BSET    $055B,Z,#$C0
+        BSET    >O2ResetFlags2,Z,#$C0                    ; bit 7: adaptive cell selection: not the last cell (O2LearnEnable); bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
         TZX
         LDX     #$8040
 L09FF4:
@@ -13259,19 +14500,19 @@ L0A00E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0A014 ($0A014)
-; Called from: Sub_09D84 (2 calls)
+; O2CellUpdate ($0A014)
+; Called from: O2LearnEnable (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0A014:
+O2CellUpdate:
         LDAB    >O2MemCell,Z
         ABX
-        LDAA    $03D0,Z
+        LDAA    >PurgeDuty,Z
         BNE     L0A04C
         LDAA    >PurgeCellCount,Z
         BEQ     L0A04C
         LDAA    >PurgeDelay,Z
         BNE     L0A04C
-        BRSET   $0062,Z,#$80,L0A04C
+        BRSET   >PurgeCellRichFlags,Z,#$80,L0A04C        ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
         CMPB    >PurgeCell1
         BEQ     L0A048
         AIY     #$01
@@ -13284,43 +14525,43 @@ L0A048:
         XGDY
         XGDX
 L0A04C:
-        LDAB    $11D1
-        BRCLR   $0324,#$01,L0A060
-        BRCLR   $0036,Z,#$10,L0A060
-        LDAB    $0725
+        LDAB    >O2LearnRate
+        BRCLR   >Options032C,#$01,L0A060
+        BRCLR   >FlexStartFlags,Z,#$10,L0A060            ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
+        LDAB    >O2LearnRateFlex
 L0A060:
         BRSET   >ThrottleState,Z,#$80,L0A07A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAB    $11D2
-        BRCLR   $0324,#$01,L0A07A
-        BRCLR   $0036,Z,#$10,L0A07A
-        LDAB    $0726
+        LDAB    >O2LearnRateWot
+        BRCLR   >Options032C,#$01,L0A07A
+        BRCLR   >FlexStartFlags,Z,#$10,L0A07A            ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
+        LDAB    >O2LearnRateWotFlex
 L0A07A:
         CLRA
         BRSET   >ThrottleState,Z,#$40,L0A140             ; bit 6: wide-open throttle (DetectWot)
-        LDY     $01F4,Z
+        LDY     >Scratch4,Z
         CPY     #$804E
         BEQ     L0A09A
-        BRSET   $055B,Z,#$40,L0A13E
-        BRSET   >EventFlags,Z,#$10,L0A13E                ; bit 4: read by EventCorrections and LimitReasonCode
+        BRSET   >O2ResetFlags2,Z,#$40,L0A13E             ; bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
+        BRSET   >IdleFlareFlags,Z,#$10,L0A13E            ; bit 4: bank 2 fuel pulse below O2PulseWidthMin (O2LearnEnable)
         BRA     L0A0A6
 L0A09A:
-        BRSET   $055B,Z,#$80,L0A13E
-        BRSET   >EventFlags,Z,#$20,L0A13E
+        BRSET   >O2ResetFlags2,Z,#$80,L0A13E             ; bit 7: adaptive cell selection: not the last cell (O2LearnEnable)
+        BRSET   >IdleFlareFlags,Z,#$20,L0A13E            ; bit 5: bank 1 fuel pulse below O2PulseWidthMin: adaptive cell update held (O2LearnEnable)
 L0A0A6:
         ORP     #$00E0
-        LDY     $01F4,Z
+        LDY     >Scratch4,Z
         CPY     #$804E
         BEQ     L0A0C4
-        LDAA    $05DA,Z
+        LDAA    >O2LearnTimer2,Z
         SBA
         LBCS    L0A122
-        STAA    $05DA,Z
+        STAA    >O2LearnTimer2,Z
         BRA     L0A0D2
 L0A0C4:
-        LDAA    $05D9,Z
+        LDAA    >O2CellWork,Z
         SBA
         LBCS    L0A122
-        STAA    $05D9,Z
+        STAA    >O2CellWork,Z
 L0A0D2:
         ANDP    #$FF1F
         LDAA    >Scratch3,Z
@@ -13328,30 +14569,30 @@ L0A0D2:
         NEGA
 L0A0DE:
         PSHM    X
-        LDX     #$11D5
+        LDX     #O2StepScale
         JSR     Lookup2D
         PULM    X
         LDAB    >PurgeCellCount,Z
         BEQ     L0A0F8
-        LDAB    $03D0,Z
+        LDAB    >PurgeDuty,Z
         BNE     L0A0F8
         ASLA
 L0A0F8:
-        LDAB    $01F2,Z
+        LDAB    >Scratch2,Z
         BPL     L0A100
         NEGA
 L0A100:
-        LDAB    $11E7
+        LDAB    >O2AdaptMax
         ADDA    $00,X
         BVC     L0A112
         LDAA    $00,X
         BPL     L0A11E
-        LDAB    $11E8
+        LDAB    >O2AdaptMin
         TBA
 L0A112:
         CBA
         BGE     L0A11E
-        LDAB    $11E8
+        LDAB    >O2AdaptMin
         CBA
         BGE     L0A120
 L0A11E:
@@ -13361,7 +14602,7 @@ L0A120:
 L0A122:
         ANDP    #$FF1F
         LDAA    $00,X
-        LDX     $01F6,Z
+        LDX     >Scratch6,Z
         CPX     #$8040
         BEQ     L0A138
         STAA    >O2AdaptValue2,Z
@@ -13379,7 +14620,7 @@ L0A14C:
         BPL     L0A150
         CLRA
 L0A150:
-        LDX     $01F6,Z
+        LDX     >Scratch6,Z
         CPX     #$8051
         BEQ     L0A160
         STAA    >O2AdaptValue1,Z
@@ -13388,19 +14629,19 @@ L0A160:
         STAA    >O2AdaptValue2,Z
 L0A164:
         ORP     #$00E0
-        LDY     $01F4,Z
+        LDY     >Scratch4,Z
         CPY     #$804E
         BEQ     L0A180
-        LDAA    $05DA,Z
+        LDAA    >O2LearnTimer2,Z
         CBA
         BCS     L0A18C
-        STAB    $05DA,Z
+        STAB    >O2LearnTimer2,Z
         BRA     L0A18C
 L0A180:
-        LDAA    $05D9,Z
+        LDAA    >O2CellWork,Z
         CBA
         BCS     L0A18C
-        STAB    $05D9,Z
+        STAB    >O2CellWork,Z
 L0A18C:
         ANDP    #$FF1F
         RTS
@@ -13411,9 +14652,9 @@ L0A18C:
 ;---------------------------------------------------------------------------------------------------
 O2FlexOffset:
         PSHM    D
-        BRCLR   $0324,#$01,L0A240
+        BRCLR   >Options032C,#$01,L0A240
         LDAA    >FlexEthanol,Z
-        BRSET   $031F,#$04,L0A1A8
+        BRSET   >Options0330,#$04,L0A1A8                 ; bit 2: alternative battery temperature curve (BattTempCurveAlt)
         LDAA    $071A
 L0A1A8:
         CMPA    >O2FlexEthanolMin
@@ -13503,7 +14744,7 @@ L0A252:
         CMPA    $00,X
         BLE     L0A25C
         STAB    $00,X
-        BSET    $0036,Z,#$10
+        BSET    >FlexStartFlags,Z,#$10                   ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
 L0A25C:
         AIX     #$01
         CPX     #$804E
@@ -13513,7 +14754,7 @@ L0A268:
         CMPA    $00,X
         BLE     L0A272
         STAB    $00,X
-        BSET    $0036,Z,#$10
+        BSET    >FlexStartFlags,Z,#$10                   ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
 L0A272:
         AIX     #$01
         CPX     #$805F
@@ -13522,7 +14763,7 @@ L0A272:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearLeanBank1 ($0A27C)
-; Called from: Sub_08EDC, ClosedLoopMemClear, Sub_1D5DA, Sub_1D806
+; Called from: ClosedLoopManager, ClosedLoopMemClear, Sub_1D5DA, Sub_1D806
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank1:
         PSHM    X,K
@@ -13543,7 +14784,7 @@ L0A28E:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearLeanBank2 ($0A29E)
-; Called from: Sub_08EDC, ClosedLoopMemClear, Sub_1D5DA, Sub_1D806
+; Called from: ClosedLoopManager, ClosedLoopMemClear, Sub_1D5DA, Sub_1D806
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank2:
         PSHM    X,K
@@ -13604,14 +14845,14 @@ L0A2F0:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0A300 ($0A300)
+; IdleControl ($0A300)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_0A300:
-        JSR     Sub_0BEE0
+IdleControl:
+        JSR     IdleStateFlags
         JSR     IacBaseCalc
-        JSR     Sub_0BE60
-        JSR     Sub_0C1D4
+        JSR     IacCrankControl
+        JSR     IdleRpmTarget
         LDAA    >SystemTestMode,Z
         CMPA    #$05
         BCS     L0A31C
@@ -13619,17 +14860,17 @@ Sub_0A300:
         BCS     L0A360
 L0A31C:
         BRCLR   >EngineStateFlags,Z,#$80,L0A342          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        JSR     Sub_0A726
-        JSR     Sub_0BB20
+        JSR     IacLearn
+        JSR     IacRollingControl
         JSR     IdleTargetControl
-        JSR     Sub_0A362
-        JSR     Sub_0B9D2
-        JSR     Sub_0BCA6
-        JSR     Sub_0B76A
-        JSR     Sub_0BAE2
+        JSR     IdleRpmLoop
+        JSR     IdleStopRpmCheck
+        JSR     IdleMapTargetCalc
+        JSR     IdleMapLoop
+        JSR     IacFixedTarget
 L0A342:
         BRSET   >Scratch8,Z,#$01,L0A34E
-        BRCLR   $0168,Z,#$08,L0A360
+        BRCLR   >FaultSet12,Z,#$08,L0A360
 L0A34E:
         LDAA    $2197
         CMPA    >IacTargetMax
@@ -13641,14 +14882,14 @@ L0A360:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0A362 ($0A362)
-; Called from: Sub_0A300
+; IdleRpmLoop ($0A362)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0A362:
-        BRCLR   $031A,Z,#$01,L0A382
+IdleRpmLoop:
+        BRCLR   >SwitchInputs,Z,#$01,L0A382              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >IdleFlags,Z,#$01,L0A37C                 ; bit 0: idle rpm loop hold timer started (IdleRpmLoop)
-        LDAA    $1E2B
-        STAA    $06B9,Z
+        LDAA    >IdleLoopHoldTime
+        STAA    >IdleLoopHold,Z
         BSET    >IdleFlags,Z,#$01                        ; bit 0: idle rpm loop hold timer started (IdleRpmLoop)
         BRA     L0A396
 L0A37C:
@@ -13658,14 +14899,14 @@ L0A382:
         BCLR    >IdleFlags,Z,#$01                        ; bit 0: idle rpm loop hold timer started (IdleRpmLoop)
 L0A386:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L0A396         ; bit 2: one pass in 8 (about 96 ms)
-        TST     $06B9,Z
+        TST     >IdleLoopHold,Z
         BEQ     L0A396
-        DEC     $06B9,Z
+        DEC     >IdleLoopHold,Z
 L0A396:
-        BRCLR   >SparkFlags3,Z,#$20,L0A3A2
+        BRCLR   >IdleFlags7,Z,#$20,L0A3A2                ; bit 5: idle conditions met without a recent shift (IdleStateFlags)
         BRCLR   >IacStepFlags,Z,#$01,L0A3A6              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
 L0A3A2:
-        CLR     $06B9,Z
+        CLR     >IdleLoopHold,Z
 L0A3A6:
         BRCLR   >IdleFlags3,Z,#$40,L0A724                ; bit 6: reference event since the last idle loop pass (set in Isr_GPT_IC1, cleared by IdleRpmLoop)
         BCLR    >IdleFlags3,Z,#$40                       ; bit 6: reference event since the last idle loop pass (set in Isr_GPT_IC1, cleared by IdleRpmLoop)
@@ -13673,24 +14914,24 @@ L0A3A6:
         LDD     >SegmentRpm,Z
         CPD     #$7D00
         BLS     L0A3C6
-        BSET    >SparkFlags3,Z,#$01                      ; bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
+        BSET    >IdleFlags7,Z,#$01                       ; bit 0: SegmentRpm above $7D00 (overrun of the idle loop range; hysteresis to $7C60) (IdleRpmLoop)
         LBRA    L0A724
 L0A3C6:
-        BRCLR   >SparkFlags3,Z,#$01,L0A3DC               ; bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
+        BRCLR   >IdleFlags7,Z,#$01,L0A3DC                ; bit 0: SegmentRpm above $7D00 (overrun of the idle loop range; hysteresis to $7C60) (IdleRpmLoop)
         CPD     #$7C60
         LBCC    L0A724
-        BCLR    >SparkFlags3,Z,#$01                      ; bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
+        BCLR    >IdleFlags7,Z,#$01                       ; bit 0: SegmentRpm above $7D00 (overrun of the idle loop range; hysteresis to $7C60) (IdleRpmLoop)
         BSET    >IdleFlags8,Z,#$04                       ; bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
 L0A3DC:
         CLRE
         LDD     >SegmentRpm,Z
         BRCLR   >IacStepFlags,Z,#$01,L0A3EE              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
-        SUBD    $0662,Z
+        SUBD    >IacDecelRefRpm,Z
         BRA     L0A3F2
 L0A3EE:
         SUBD    >IdleTarget,Z
 L0A3F2:
-        STD     $0668,Z
+        STD     >IdleRpmError,Z
         BCC     L0A3FC
         LDE     #$FFFF
 L0A3FC:
@@ -13704,30 +14945,30 @@ L0A3FC:
         LDY     #$0080
         JSR     DivSignedSat
         STAB    $01FD,Z
-        LDE     $0668,Z
+        LDE     >IdleRpmError,Z
         BPL     L0A42E
         NEGE
         BVC     L0A42E
         LDE     #$7FFF
 L0A42E:
-        CPE     $1E31
+        CPE     >IdleErrorCoarseMin
         BCS     L0A44E
         LDAA    $01FC,Z
-        LDX     #Tab2D_1E3B
-        BRSET   >Options0339,#$20,L0A466                 ; bit 5: selects a branch in SparkEventCalc
+        LDX     #IdleErrorTermCoarse
+        BRSET   >Options032E,#$20,L0A466                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A466                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        LDX     #Tab2D_1E5F
+        LDX     #IdleErrorTermCoarsePN
         BRA     L0A466
 L0A44E:
         LDAA    $01FD,Z
-        LDX     #Tab2D_1E4D
-        BRSET   >Options0339,#$20,L0A466                 ; bit 5: selects a branch in SparkEventCalc
+        LDX     #IdleErrorTermFine
+        BRSET   >Options032E,#$20,L0A466                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A466                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        LDX     #Tab2D_1E71
+        LDX     #IdleErrorTermFinePN
 L0A466:
         JSR     Lookup2D
         SUBB    #$80
-        STAB    $0698,Z
+        STAB    >IdleErrorTerm,Z
         TST     >DashpotTimerMoving,Z
         BEQ     L0A47C
         BSET    >IdleFlags8,Z,#$80                       ; bit 7: dashpot timer running while moving (IdleRpmLoop)
@@ -13757,7 +14998,7 @@ L0A4B0:
 L0A4BA:
         BCLR    >IdleFlags8,Z,#$20                       ; bit 5: idle air start hold active (IacStepFlags bit 5, IdleRpmLoop)
 L0A4BE:
-        BRCLR   >EventFlags,Z,#$80,L0A4CA                ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+        BRCLR   >IdleFlareFlags,Z,#$80,L0A4CA            ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         BSET    >IdleFlags8,Z,#$10                       ; bit 4: idle flare seen (IdleFlareFlags bit 7, IdleRpmLoop)
         BRA     L0A4D8
 L0A4CA:
@@ -13776,28 +15017,28 @@ L0A4EE:
         BCLR    >IdleFlags8,Z,#$08                       ; bit 3: MAP target step allowed (IdleFlags5 bit 6, IdleRpmLoop)
 L0A4F2:
         BRCLR   >IdleFlags8,Z,#$04,L0A4FE                ; bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
-        LDAB    $0698,Z
+        LDAB    >IdleErrorTerm,Z
         BRA     L0A55C
 L0A4FE:
         LDD     >SegmentRpm,Z
         SUBD    >MisfireRpmRef,Z
-        STD     $0666,Z
+        STD     >SegmentRpmDelta,Z
         LDE     >SegmentRpm,Z
         EMULS
-        LDX     $5214
+        LDX     >RpmRateDivisor
         EDIVS
-        STX     $066C,Z
+        STX     >IdleRpmRate,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_1E33
+        LDX     #IdleRateFilterCoolant
         JSR     Lookup2D
         STAA    $01FF,Z
-        LDD     $066A,Z
-        LDE     $066C,Z
+        LDD     >IdleRpmRateFiltered,Z
+        LDE     >IdleRpmRate,Z
         PSHM    D,E
         LDAA    $01FF,Z
         JSR     Blend16Signed
         AIS     #$04
-        STD     $066A,Z
+        STD     >IdleRpmRateFiltered,Z
         ASRD
         ASRD
         ASRD
@@ -13811,9 +15052,9 @@ L0A4FE:
 L0A55A:
         LDAB    #$7F
 L0A55C:
-        STAB    $069E,Z
-        LDAA    $069E,Z
-        SUBA    $0698,Z
+        STAB    >IdleRateTerm,Z
+        LDAA    >IdleRateTerm,Z
+        SUBA    >IdleErrorTerm,Z
         BVC     L0A572
         BPL     L0A570
         LDAA    #$7F
@@ -13821,50 +15062,50 @@ L0A55C:
 L0A570:
         LDAA    #$80
 L0A572:
-        STAA    $069B,Z
+        STAA    >IdleErrorNet,Z
         LDAA    >Map,Z
-        LDX     #Tab2D_1E8D
+        LDX     #IdleDeadbandMap
         JSR     Lookup2D
-        STAA    $069F,Z
+        STAA    >IdleRpm33D,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_1E83
+        LDX     #IdleDeadbandCoolant
         JSR     Lookup2D
-        STAA    $069D,Z
-        ADDA    $069F,Z
+        STAA    >IdleRpm33B,Z
+        ADDA    >IdleRpm33D,Z
         BVC     L0A59E
         LDAA    #$7F
 L0A59E:
-        STAA    $0699,Z
+        STAA    >IdleDeadband,Z
         BRSET   >IacStepFlags,Z,#$20,L0A5AE              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
-        BRSET   >SparkFlags3,Z,#$40,L0A5B2               ; bit 6: idle spark correction active (IdleSparkControl); SurgeControl reads it
+        BRSET   >IdleFlags7,Z,#$40,L0A5B2                ; bit 6: reference period long (RefPeriod at $20 or more, low rpm): idle air crank target (CalcEngineRpm, IacCrankControl)
 L0A5AE:
         CLRA
         BRA     L0A5E8
 L0A5B2:
-        LDAA    $069B,Z
+        LDAA    >IdleErrorNet,Z
         ADDA    #$80
         BMI     L0A5D0
         LDX     #Tab2D_1D95
-        BRSET   >Options0339,#$20,L0A5E4                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0A5E4                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A5E4                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDX     #Tab2D_1D7D
         BRA     L0A5E4
 L0A5D0:
         LDX     #Tab2D_1DA1
-        BRSET   >Options0339,#$20,L0A5E4                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0A5E4                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A5E4                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDX     #Tab2D_1D89
 L0A5E4:
         JSR     Lookup2D
 L0A5E8:
         STAA    $06A4,Z
-        BRSET   >SparkFlags3,Z,#$20,L0A5FE
-        CLR     $06A0,Z
-        CLR     $069A,Z
+        BRSET   >IdleFlags7,Z,#$20,L0A5FE                ; bit 5: idle conditions met without a recent shift (IdleStateFlags)
+        CLR     >IacStepSum,Z
+        CLR     >IdleErrorSum,Z
         LBRA    L0A724
 L0A5FE:
-        LDAA    $069A,Z
-        ADDA    $069B,Z
+        LDAA    >IdleErrorSum,Z
+        ADDA    >IdleErrorNet,Z
         BVC     L0A610
         BPL     L0A60E
         LDAA    #$7F
@@ -13872,41 +15113,41 @@ L0A5FE:
 L0A60E:
         LDAA    #$80
 L0A610:
-        STAA    $069A,Z
-        LDAA    $069A,Z
+        STAA    >IdleErrorSum,Z
+        LDAA    >IdleErrorSum,Z
         BPL     L0A620
         NEGA
         BVC     L0A620
         LDAA    #$7F
 L0A620:
-        CMPA    $0699,Z
+        CMPA    >IdleDeadband,Z
         LBCS    L0A724
-        CLR     $069A,Z
-        LDAA    $069B,Z
+        CLR     >IdleErrorSum,Z
+        LDAA    >IdleErrorNet,Z
         LBEQ    L0A724
         ADDA    #$80
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
         LBPL    L0A6AC
-        TST     $06B9,Z
+        TST     >IdleLoopHold,Z
         LBNE    L0A724
-        LDX     #Tab2D_1EAB
+        LDX     #IdleStepCloseScale
         JSR     Lookup2D
         CLRA
         NEGD
         TDE
         LDAA    $01FC,Z
-        LDX     #Tab2D_1EB5
+        LDX     #IdleStepCloseFactor
         JSR     Lookup2D
-        STAB    $069C,Z
+        STAB    >IdleStepCloseValue,Z
         CLRA
         EMULS
         TSTA
         LBNE    L0A71C
-        LDAA    $01FE,Z
-        LDX     #Tab2D_1DAF
+        LDAA    >ScratchE,Z
+        LDX     #IdleStepClose
         JSR     Lookup2D
-        STAA    $06A5,Z
-        ADDA    $06A0,Z
+        STAA    >IacStep,Z
+        ADDA    >IacStepSum,Z
         BVC     L0A68C
         BPL     L0A68A
         LDAA    #$7F
@@ -13914,28 +15155,28 @@ L0A620:
 L0A68A:
         LDAA    #$80
 L0A68C:
-        STAA    $06A0,Z
+        STAA    >IacStepSum,Z
         BPL     L0A698
         NEGA
         BVC     L0A698
         LDAA    #$7F
 L0A698:
-        CMPA    $1DAD
+        CMPA    >IacStepSumMax
         LBLS    L0A724
-        LDAA    $1DAE
-        STAA    $06A0,Z
+        LDAA    >IacStepSumReset
+        STAA    >IacStepSum,Z
         LDAA    #$FF
         BRA     L0A71C
 L0A6AC:
-        LDAA    $01FE,Z
-        LDX     #Tab2D_1E97
+        LDAA    >ScratchE,Z
+        LDX     #IdleStepOpenScale
         JSR     Lookup2D
         CLRA
         TDE
         LDAA    $01FC,Z
-        LDX     #Tab2D_1EA1
+        LDX     #IdleStepOpenFactor
         JSR     Lookup2D
-        STAB    $06A1,Z
+        STAB    >IdleStepOpenValue,Z
         BNE     L0A6D2
         LDAA    #$01
         BRA     L0A6D4
@@ -13945,11 +15186,11 @@ L0A6D4:
         EMULS
         TSTA
         LBNE    L0A71C
-        LDAA    $01FE,Z
-        LDX     #Tab2D_1DB7
+        LDAA    >ScratchE,Z
+        LDX     #IdleStepOpen
         JSR     Lookup2D
-        STAA    $06A5,Z
-        ADDA    $06A0,Z
+        STAA    >IacStep,Z
+        ADDA    >IacStepSum,Z
         BVC     L0A6FA
         BPL     L0A6F8
         LDAA    #$7F
@@ -13957,33 +15198,33 @@ L0A6D4:
 L0A6F8:
         LDAA    #$80
 L0A6FA:
-        STAA    $06A0,Z
+        STAA    >IacStepSum,Z
         BPL     L0A706
         NEGA
         BVC     L0A706
         LDAA    #$7F
 L0A706:
-        CMPA    $1DAD
+        CMPA    >IacStepSumMax
         BLS     L0A724
-        LDAA    $1DAE
+        LDAA    >IacStepSumReset
         NEGA
         BVC     L0A716
         LDAA    #$7F
 L0A716:
-        STAA    $06A0,Z
+        STAA    >IacStepSum,Z
         LDAA    #$01
 L0A71C:
-        STAA    $06A6,Z
+        STAA    >IdleRpm344,Z
         JSR     IacSetTarget
 L0A724:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0A726 ($0A726)
-; Called from: Sub_0A300
+; IacLearn ($0A726)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0A726:
-        BRCLR   >IoCfg1FL,Z,#$01,L0A736
+IacLearn:
+        BRCLR   >ControlFlags943,Z,#$01,L0A736           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAA    $1F11
         STAA    $06A8,Z
         BRA     L0A770
@@ -13995,7 +15236,7 @@ L0A736:
         BRA     L0A770
 L0A748:
         BRCLR   >Scratch8,Z,#$04,L0A770
-        BRCLR   >SparkFlags3,Z,#$20,L0A770
+        BRCLR   >IdleFlags7,Z,#$20,L0A770                ; bit 5: idle conditions met without a recent shift (IdleStateFlags)
         LDAA    >IdleRollSpeed
         BRCLR   >IdleFlags6,Z,#$40,L0A764                ; bit 6: idle air learning allowed: no flex cold start (IacLearn)
         ADDA    #$03
@@ -14011,11 +15252,11 @@ L0A770:
 L0A774:
         CLRA
         LDAB    $0694,Z
-        BRSET   >Options0339,#$20,L0A78A                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0A78A                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A78A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDAB    $0693,Z
 L0A78A:
-        STD     $01FE,Z
+        STD     >ScratchE,Z
         CLRE
         CLRB
         TBXK
@@ -14030,8 +15271,8 @@ L0A798:
         LDE     #$0007
         BRA     L0A7C8
 L0A7AE:
-        DECW    $01FE,Z
-        CPE     $01FE,Z
+        DECW    >ScratchE,Z
+        CPE     >ScratchE,Z
         BNE     L0A7C8
         LDAB    E,X
         SUBB    $1F30
@@ -14044,7 +15285,7 @@ L0A7C2:
 L0A7C8:
         TED
         LDAA    #$FF
-        BRSET   >Options0339,#$20,L0A7DA                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0A7DA                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A7DA                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         XGAB
 L0A7DA:
@@ -14062,16 +15303,16 @@ L0A7FA:
         CLRA
         SUBB    >Scratch3,Z
         SBCA    #$00
-        BRSET   >Options0339,#$20,L0A816                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0A816                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A81E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L0A816:
-        SUBB    >IacBase,Z
+        SUBB    >Scratch0,Z
         SBCA    #$00
         BRA     L0A830
 L0A81E:
         TDE
-        LDAA    <ScratchC,Z
-        LDX     #Tab2D_21A6
+        LDAA    <Baro,Z
+        LDX     #IacDriveOffsetBaro
         JSR     Lookup2D
         CLRA
         SDE
@@ -14084,22 +15325,22 @@ L0A836:
         BRCLR   >Options0331,#$04,L0A842
         BRCLR   >Scratch8,Z,#$02,L0A86C
 L0A842:
-        BRSET   >Options0339,#$20,L0A85E                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0A85E                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A85E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        LDAA    $0695,Z
-        JSR     Sub_0C64A
-        STAA    $0695,Z
+        LDAA    >IacStartHold2,Z
+        JSR     StepToward
+        STAA    >IacStartHold2,Z
         LBRA    L0A8EC
 L0A85E:
-        LDAA    $0696,Z
-        JSR     Sub_0C64A
-        STAA    $0696,Z
+        LDAA    >IacStartHold,Z
+        JSR     StepToward
+        STAA    >IacStartHold,Z
         BRA     L0A8EC
 L0A86C:
         TZY
         PSHM    D
         CLRA
-        BRSET   >Options0339,#$20,L0A888                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0A888                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A888                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDY     #$8023
         LDAB    $0693,Z
@@ -14111,25 +15352,25 @@ L0A888:
 L0A892:
         PULM    D
         LDAA    E,Y
-        JSR     Sub_0C64A
+        JSR     StepToward
         STAA    E,Y
         BRA     L0A8EC
 L0A89E:
         BRCLR   >Options0331,#$04,L0A8AA
         BRCLR   >Scratch8,Z,#$02,L0A8C2
 L0A8AA:
-        BRSET   >Options0339,#$20,L0A8BC                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0A8BC                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A8BC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        LDAA    $0695,Z
+        LDAA    >IacStartHold2,Z
         BRA     L0A8EC
 L0A8BC:
-        LDAA    $0696,Z
+        LDAA    >IacStartHold,Z
         BRA     L0A8EC
 L0A8C2:
         TZY
         PSHM    D
         CLRA
-        BRSET   >Options0339,#$20,L0A8DE                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0A8DE                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A8DE                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDY     #$8023
         LDAB    $0693,Z
@@ -14164,7 +15405,7 @@ L0A90C:
         TBXK
         LDAA    >IacLearned,Z
         LDX     $02,Y
-        BRSET   >Options0339,#$20,L0A92C                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0A92C                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0A92C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDX     $00,Y
 L0A92C:
@@ -14175,7 +15416,7 @@ L0A92C:
         PSHM    D
         TSTA
         BNE     L0A968
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #IacShiftBaroFactor
         JSR     Lookup2D
         LDAA    #$01
@@ -14236,16 +15477,16 @@ L0A9B8:
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleTargetControl ($0A9BA)
-; Called from: Sub_0A300
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
 IdleTargetControl:
         BRCLR   >MainLoopPhaseMask,Z,#$02,L0A9D0         ; bit 1: one pass in 4 (about 48 ms)
-        LDAA    >IacGearTime2,Z
+        LDAA    >IacGearDelay,Z
         CMPA    #$FF
         BEQ     L0A9D0
         TSTA
         BEQ     L0A9D0
-        DEC     >IacGearTime2,Z
+        DEC     >IacGearDelay,Z
 L0A9D0:
         LDAA    >IacGearDuration,Z
         CMPA    #$FF
@@ -14263,7 +15504,7 @@ L0A9EA:
         DEC     >DashpotTimerMoving,Z
 L0A9F4:
         BCLR    >IdleFlags2,Z,#$80                       ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
-        BRCLR   >EventFlags,Z,#$80,L0AA10                ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+        BRCLR   >IdleFlareFlags,Z,#$80,L0AA10            ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         CLR     >DashpotTimer2,Z
         CLR     >DashpotTimerMoving,Z
         LDAA    >IacShiftHold
@@ -14303,12 +15544,12 @@ L0AA5E:
         BRSET   >AcFlags,Z,#$80,L0AA76                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BRCLR   >AcFlags,Z,#$10,L0AA90                   ; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
         BCLR    >AcFlags,Z,#$10                          ; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
-        BRCLR   >IoCfg1FL,Z,#$01,L0AA8C
+        BRCLR   >ControlFlags943,Z,#$01,L0AA8C           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         BRA     L0AA86
 L0AA76:
         BRSET   >AcFlags,Z,#$10,L0AA90                   ; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
         BSET    >AcFlags,Z,#$10                          ; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
-        BRSET   >IoCfg1FL,Z,#$01,L0AA8C
+        BRSET   >ControlFlags943,Z,#$01,L0AA8C           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L0AA86:
         BSET    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
         BRA     L0AA90
@@ -14385,16 +15626,16 @@ L0AB30:
 L0AB66:
         BRSET   >IdleAcFlags,Z,#$40,L0AC24               ; bit 6: set with bit 7 when the A/C idle step starts
         BRCLR   >IdleAcFlags,Z,#$04,L0AC20               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
-        BCLR    >SparkFlags3,Z,#$02                      ; bit 1: low-rpm event state (Isr_GPT_IC1)
+        BCLR    >IdleFlags7,Z,#$02                       ; bit 1: A/C idle bump not handled yet (IdleTargetControl)
         BRCLR   >IdleAcFlags,Z,#$01,L0ABE2               ; bit 0: A/C idle state bit (IdleTargetControl, AcCutLogic)
         BSET    >IdleAcFlags,Z,#$80                      ; bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it
         BRSET   >IdleFlags,Z,#$80,L0ABAC                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRSET   >ThrottleState,Z,#$01,L0ABAC             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
-        LDAB    $01F1,Z
+        LDAB    >Scratch1,Z
         LDAA    #$01
         TDE
         CLRA
-        LDAB    $01F2,Z
+        LDAB    >Scratch2,Z
         EMUL
         LDAB    >IacTargetMax
         CBA
@@ -14460,22 +15701,22 @@ L0AC24:
         BRSET   >IdleFlags,Z,#$80,L0AC90                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRSET   >ThrottleState,Z,#$01,L0AC90             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDAA    #$FF
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
         STAA    >IacGearDuration,Z
-        BCLR    >SparkFlags3,Z,#$8C                      ; bit 7: spark period at or below $7D00: idle spark range (IdleSparkControl)
+        BCLR    >IdleFlags7,Z,#$8C                       ; bit 7: gear idle step started (IdleTargetControl); bit 3: cleared with bits 7 and 2 when the gear step ends; not set by bit instructions; bit 2: cleared with bits 7 and 3 when the gear step ends; not set by bit instructions
         BCLR    >IdleFlags,Z,#$20                        ; bit 5: gear-engagement idle step started (IdleTargetControl)
         BCLR    >IdleFlags,Z,#$10                        ; bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
         BRSET   >IdleAcFlags,Z,#$04,L0B302               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
-        BSET    >SparkFlags3,Z,#$02                      ; bit 1: low-rpm event state (Isr_GPT_IC1)
+        BSET    >IdleFlags7,Z,#$02                       ; bit 1: A/C idle bump not handled yet (IdleTargetControl)
         LBRA    L0B302
 L0AC90:
         BRCLR   >IdleAcFlags,Z,#$04,L0AC9E               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
-        BCLR    >SparkFlags3,Z,#$02                      ; bit 1: low-rpm event state (Isr_GPT_IC1)
+        BCLR    >IdleFlags7,Z,#$02                       ; bit 1: A/C idle bump not handled yet (IdleTargetControl)
         LBRA    L0AD86
 L0AC9E:
-        BRCLR   >SparkFlags3,Z,#$02,L0AD86               ; bit 1: low-rpm event state (Isr_GPT_IC1)
-        BCLR    >SparkFlags3,Z,#$02                      ; bit 1: low-rpm event state (Isr_GPT_IC1)
-        BRSET   >IoCfg1FL,Z,#$01,L0AD86
+        BRCLR   >IdleFlags7,Z,#$02,L0AD86                ; bit 1: A/C idle bump not handled yet (IdleTargetControl)
+        BCLR    >IdleFlags7,Z,#$02                       ; bit 1: A/C idle bump not handled yet (IdleTargetControl)
+        BRSET   >ControlFlags943,Z,#$01,L0AD86           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         BRSET   >AcFlags,Z,#$80,L0AD86                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BRSET   >Options032A,#$40,L0AD86                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRSET   >Options032A,#$20,L0AD86                 ; bit 5: hardware set-up variant at reset (Reset, HardwareCheck)
@@ -14507,7 +15748,7 @@ L0AD0A:
         TED
         XGAB
         TDE
-        LDAA    $032C,Z
+        LDAA    >BatteryTemp,Z
         LDX     #IacRollFactorBattTemp
         BRCLR   >Options0331,#$04,L0AD2C
         BRSET   >Scratch8,Z,#$02,L0AD2C
@@ -14538,13 +15779,13 @@ L0AD56:
         EMUL
         TED
 L0AD5E:
-        ADDB    $01F2,Z
+        ADDB    >Scratch2,Z
         BCC     L0AD66
         LDAB    #$FF
 L0AD66:
         CLRA
         TDE
-        LDAB    $01F1,Z
+        LDAB    >Scratch1,Z
         LDAA    #$01
         EMUL
         TSTE
@@ -14626,7 +15867,7 @@ L0AE80:
         BSET    >IdleFlags,Z,#$08
         CLRD
         JSR     IacShiftKick
-        BSET    $03DF,Z,#$20
+        BSET    >PurgeFlags2,Z,#$20                      ; bit 5: purge reset since the last start (PurgeReset; cleared at stall)
         LBRA    L0B57E
 L0AE98:
         BRSET   >IdleAcFlags,Z,#$04,L0B072               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
@@ -14654,7 +15895,7 @@ L0AED2:
 L0AEF0:
         BRSET   >IdleFlags2,Z,#$80,L0B072                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
         LDAA    >AcSensor,Z
-        CMPA    $041F
+        CMPA    >AcPressureHighCut
         BCC     L0AF18
         LDD     >SegmentRpm,Z
         CPD     >IacLowRpm
@@ -14666,7 +15907,7 @@ L0AEF0:
 L0AF18:
         BRSET   >IdleFlags,Z,#$04,L0AF36
         BSET    >IdleFlags,Z,#$04
-        BSET    $03DF,Z,#$20
+        BSET    >PurgeFlags2,Z,#$20                      ; bit 5: purge reset since the last start (PurgeReset; cleared at stall)
         BSET    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
         LDD     #$FF00
         JSR     IacShiftKick
@@ -14699,7 +15940,7 @@ L0AF90:
         BRSET   >IdleFlags2,Z,#$80,L0B072                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
         BRSET   >IdleFlags5,Z,#$10,L0AFB4                ; bit 4: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
         BSET    >IdleFlags5,Z,#$10                       ; bit 4: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
-        BSET    $03DF,Z,#$20
+        BSET    >PurgeFlags2,Z,#$20                      ; bit 5: purge reset since the last start (PurgeReset; cleared at stall)
         BSET    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
         LDD     #$FF00
         JSR     IacShiftKick
@@ -14740,7 +15981,7 @@ L0B01E:
         JSR     IacShiftKick
         CLR     >IdleTargetB02,Z
         BCLR    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
-        BSET    $03DF,Z,#$20
+        BSET    >PurgeFlags2,Z,#$20                      ; bit 5: purge reset since the last start (PurgeReset; cleared at stall)
         BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         BRCLR   >AcFlags,Z,#$80,L0B57E                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
@@ -14755,7 +15996,7 @@ L0B054:
         BSET    >MisfireFlags4,Z,#$20
         CLR     >IdleCount0322,Z
 L0B072:
-        BRSET   >Options0339,#$20,L0B22C                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0B22C                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >IdleFlags3,Z,#$08,L0B0C4                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BRCLR   >DriveFlags,Z,#$80,L0B22C                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         BRSET   >DriveFlags,Z,#$20,L0B22C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
@@ -14769,7 +16010,7 @@ L0B094:
         JSR     Lookup2D
         SXT
         TDE
-        LDAB    $01F1,Z
+        LDAB    >Scratch1,Z
         LDAA    #$01
         EMUL
         CPD     #$7F00
@@ -14783,8 +16024,8 @@ L0B0C4:
         BRSET   >IdleFlags,Z,#$20,L0B204                 ; bit 5: gear-engagement idle step started (IdleTargetControl)
         LBRA    L0B22C
 L0B0D4:
-        BRSET   >SparkFlags3,Z,#$80,L0B0F4               ; bit 7: spark period at or below $7D00: idle spark range (IdleSparkControl)
-        BSET    >SparkFlags3,Z,#$80                      ; bit 7: spark period at or below $7D00: idle spark range (IdleSparkControl)
+        BRSET   >IdleFlags7,Z,#$80,L0B0F4                ; bit 7: gear idle step started (IdleTargetControl)
+        BSET    >IdleFlags7,Z,#$80                       ; bit 7: gear idle step started (IdleTargetControl)
         LDAA    >CoolantTemp,Z
         LDX     #IacGearDelayCoolant
         JSR     Lookup2D
@@ -14792,16 +16033,16 @@ L0B0D4:
         BNE     L0B0F0
         DECA
 L0B0F0:
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
 L0B0F4:
         TST     >ShiftIdleDelay,Z
         BEQ     L0B100
         BRCLR   >GearStateFlags,Z,#$20,L0B166            ; bit 5: bus gear message: not in drive (CcdReceive)
 L0B100:
-        LDAB    >SparkFlags3,Z
+        LDAB    >IdleFlags7,Z
         BITB    #$0C
         BNE     L0B166
-        LDAB    >SparkFlags3,Z
+        LDAB    >IdleFlags7,Z
         ORAB    #$08
         ANDB    #$FB
         LDX     #IacGearTimeCoolantPN
@@ -14810,20 +16051,20 @@ L0B100:
         ORAB    #$04
         ANDB    #$F7
 L0B122:
-        STAB    >SparkFlags3,Z
+        STAB    >IdleFlags7,Z
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
         LDAA    >CoolantTemp,Z
         CMPA    >IacGearCoolantMax
         BCC     L0B162
-        STAB    $01FE,Z
+        STAB    >ScratchE,Z
         LDAA    >IacGearTime,Z
         LDX     #IacGearTimeFactorPNAC
         BRSET   >DriveFlags,Z,#$20,L0B14E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDX     #IacGearTimeFactor
 L0B14E:
         JSR     Lookup2D
-        LDAB    $01FE,Z
+        LDAB    >ScratchE,Z
         MUL
         CLRE
         LDX     #$0040
@@ -14850,7 +16091,7 @@ L0B198:
         JSR     Lookup2D
         SXT
         TDE
-        LDAB    $01F1,Z
+        LDAB    >Scratch1,Z
         LDAA    #$01
         EMULS
         LDX     #$0100
@@ -14859,17 +16100,17 @@ L0B198:
         BRCLR   >DriveFlags,Z,#$20,L0B1E4                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BRCLR   >IdleFlags,Z,#$40,L0B1E4                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         PSHM    D
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #Tab2D_222D
         JSR     Lookup2D
         LDAA    #$01
         TDE
         CLRA
-        LDAB    $01F4,Z
+        LDAB    >Scratch4,Z
         EMUL
         TAB
         CLRA
-        SUBB    >IacBase,Z
+        SUBB    >Scratch0,Z
         SBCA    #$00
         PULM    E
         ADE
@@ -14901,9 +16142,9 @@ L0B212:
         DEC     >IacGearTime,Z
 L0B22C:
         LDAA    #$FF
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
         STAA    >IacGearDuration,Z
-        BCLR    >SparkFlags3,Z,#$8C                      ; bit 7: spark period at or below $7D00: idle spark range (IdleSparkControl)
+        BCLR    >IdleFlags7,Z,#$8C                       ; bit 7: gear idle step started (IdleTargetControl); bit 3: cleared with bits 7 and 2 when the gear step ends; not set by bit instructions; bit 2: cleared with bits 7 and 3 when the gear step ends; not set by bit instructions
         BCLR    >IdleFlags,Z,#$20                        ; bit 5: gear-engagement idle step started (IdleTargetControl)
 L0B23E:
         BRCLR   >EquipmentFlags,Z,#$04,L0B27C            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
@@ -14940,7 +16181,7 @@ L0B2A8:
         JSR     Lookup2D
         SXT
         TDE
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #IacKickBaroFactor
         JSR     Lookup2D
         LDAA    #$01
@@ -14970,10 +16211,10 @@ L0B2F6:
         LBRA    L0B57E
 L0B302:
         BRSET   >IdleFlags2,Z,#$80,L0B57E                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
-        LDAB    $01F1,Z
+        LDAB    >Scratch1,Z
         LDAA    #$01
         TDE
-        LDAB    $01F2,Z
+        LDAB    >Scratch2,Z
         CLRA
         EMUL
         STAA    $01FA,Z
@@ -15003,7 +16244,7 @@ L0B362:
         LDD     #$0100
         EMULS
         TDE
-        LDAA    $032C,Z
+        LDAA    >BatteryTemp,Z
         LDX     #IacRollFactorBattTemp
         BRCLR   >Options0331,#$04,L0B386
         BRSET   >Scratch8,Z,#$02,L0B386
@@ -15025,7 +16266,7 @@ L0B39C:
         TAB
         CLRA
         TDE
-        LDAB    $01F1,Z
+        LDAB    >Scratch1,Z
         LDAA    #$01
         EMUL
         STAA    $01FB,Z
@@ -15034,7 +16275,7 @@ L0B39C:
         JSR     Lookup2D
         CLRA
         TDE
-        LDAB    $01F1,Z
+        LDAB    >Scratch1,Z
         LDAA    #$01
         EMUL
         STAA    $01FC,Z
@@ -15067,7 +16308,7 @@ L0B432:
         LDAA    >IacAcKickFactor
         MUL
         ADCA    #$00
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
         LDAB    #$A4
         MUL
         ADCA    #$00
@@ -15076,7 +16317,7 @@ L0B432:
         LDAA    #$FF
 L0B44C:
         STAA    >IacShiftTimer,Z
-        LDAA    $01FE,Z
+        LDAA    >ScratchE,Z
         ADDA    $01FA,Z
         BCC     L0B4BA
         LDAA    #$FF
@@ -15187,7 +16428,7 @@ L0B57E:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacSetTarget ($0B580)
-; Called from: Sub_0A362, IacShiftKick, IdleTargetControl, Sub_0B5F4, IacShiftStepApply, Sub_0BCA6 (8 calls)
+; Called from: IdleRpmLoop, IacShiftKick, IdleTargetControl, IacChargeStepCalc, IacShiftStepApply, IdleMapTargetCalc (8 calls)
 ;---------------------------------------------------------------------------------------------------
 IacSetTarget:
         ORP     #$00E0
@@ -15242,16 +16483,16 @@ L0B5EA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0B5F4 ($0B5F4)
-; Called from: Sub_0558A
+; IacChargeStepCalc ($0B5F4)
+; Called from: ChargeControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0B5F4:
+IacChargeStepCalc:
         PSHM    E,X,K
-        LDAB    $0168,Z
+        LDAB    >FaultSet12,Z
         ANDB    #$F0
         LBNE    L0B6B0
         BRSET   >FaultSet06,Z,#$10,L0B6B0
-        BRSET   $0168,Z,#$08,L0B6B0
+        BRSET   >FaultSet12,Z,#$08,L0B6B0
         LDAB    >ChargeTargetVolts,Z
         SUBB    >BatteryVolts2,Z
         BCC     L0B618
@@ -15263,7 +16504,7 @@ L0B618:
         BCC     L0B628
         CLRA
 L0B628:
-        STAA    $0438,Z
+        STAA    >ChargeDeficit,Z
         BRSET   >FieldFlags,Z,#$04,L0B6B0                ; bit 2: generator field test running (FieldTestStart, SystemTestCheck)
         BRCLR   >IdleFlags,Z,#$80,L0B6B0                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRSET   >IacStepFlags,Z,#$01,L0B6B0              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
@@ -15272,13 +16513,13 @@ L0B628:
         BNE     L0B682
         BITB    #$02
         BNE     L0B6A0
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #IacStepBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         TDE
-        LDAA    $0438,Z
-        LDX     #Tab2D_1FE1
+        LDAA    >ChargeDeficit,Z
+        LDX     #IacChargeStep
         JSR     Lookup2D
         CLRA
         EMUL
@@ -15291,25 +16532,25 @@ L0B628:
         BCLR    >FieldFlags,Z,#$02                       ; bit 1: idle air charge step: voltage recovered, timer running (IacChargeStepCalc)
         BRA     L0B6B8
 L0B682:
-        LDAA    $0434,Z
-        CMPA    $1FDE
+        LDAA    >IacChargeTimer,Z
+        CMPA    >IacChargeStepWait
         BCC     L0B692
-        INC     $0434,Z
+        INC     >IacChargeTimer,Z
         BRA     L0B6B8
 L0B692:
-        CLRW    $0434,Z
+        CLRW    >IacChargeTimer,Z
         BSET    >FieldFlags,Z,#$02                       ; bit 1: idle air charge step: voltage recovered, timer running (IacChargeStepCalc)
         BCLR    >FieldFlags,Z,#$01                       ; bit 0: idle air charge step applied (IacChargeStepCalc)
         BRA     L0B6B8
 L0B6A0:
-        LDD     $0434,Z
-        CPD     $1FDF
+        LDD     >IacChargeTimer,Z
+        CPD     >IacChargeStepRest
         BCC     L0B6B0
-        INCW    $0434,Z
+        INCW    >IacChargeTimer,Z
         BRA     L0B6B8
 L0B6B0:
         BCLR    >FieldFlags,Z,#$03                       ; bit 1: idle air charge step: voltage recovered, timer running (IacChargeStepCalc); bit 0: idle air charge step applied (IacChargeStepCalc)
-        CLRW    $0434,Z
+        CLRW    >IacChargeTimer,Z
 L0B6B8:
         PULM    K,X,E
         RTS
@@ -15320,25 +16561,25 @@ L0B6B8:
 ;---------------------------------------------------------------------------------------------------
 IacResetBaro:
         LDAA    #$80
-        STAA    $000C,Z
+        STAA    >IacBaroRef,Z
         LDAA    #$40
         STAA    <IacStepFlags,Z
         LDAA    #$FF
         STAA    <IacPosition,Z
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #IacStartBaro
         JSR     Lookup2D
         STAA    $0033,Z
         BRCLR   >Options0331,#$04,L0B720
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #IacShiftBaroFactor
         JSR     Lookup2D
-        STAA    >IacBase,Z
+        STAA    >Scratch0,Z
         CLRB
         TBXK
-        CLR     $01F2,Z
+        CLR     >Scratch2,Z
 L0B6F4:
-        LDAB    $01F2,Z
+        LDAB    >Scratch2,Z
         CMPB    #$08
         BCC     L0B720
         CLRA
@@ -15353,33 +16594,33 @@ L0B6F4:
         LDY     #$802B
         AEY
         STAA    $00,Y
-        INC     $01F2,Z
+        INC     >Scratch2,Z
         BRA     L0B6F4
 L0B720:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0B722 ($0B722)
+; IacResetHold ($0B722)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_0B722:
-        LDAA    <ScratchC,Z
+IacResetHold:
+        LDAA    <Baro,Z
         LDX     #IacStepBaroFactor
         JSR     Lookup2D
         LDAA    #$01
         TDE
-        LDAA    $032C,Z
-        LDX     #Tab2D_1F19
+        LDAA    >BatteryTemp,Z
+        LDX     #IacStartBattTemp
         JSR     Lookup2D
         CLRA
         EMUL
-        STAA    $0696,Z
-        STAA    $0695,Z
+        STAA    >IacStartHold,Z
+        STAA    >IacStartHold2,Z
         BSET    >GearStateFlags,Z,#$40                   ; bit 6: start: no gear message from the bus yet (set at start by IacResetHold, cleared by GearStateUpdate or a bus timeout)
         BSET    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BCLR    <IacStepFlags,Z,#$10                     ; bit 4: idle air at the fixed target (IacFixedTarget)
         LDAA    #$FF
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
         STAA    >IacGearDuration,Z
         LDAA    $0033,Z
         CLRB
@@ -15387,20 +16628,20 @@ Sub_0B722:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0B76A ($0B76A)
-; Called from: Sub_0A300
+; IdleMapLoop ($0B76A)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0B76A:
+IdleMapLoop:
         CLRW    $01FC,Z
-        CLRW    $01FE,Z
+        CLRW    >ScratchE,Z
         BRCLR   >Scratch8,Z,#$04,L0B7DA
-        BRCLR   >SparkFlags3,Z,#$20,L0B7DA
-        LDAB    $0165,Z
+        BRCLR   >IdleFlags7,Z,#$20,L0B7DA                ; bit 5: idle conditions met without a recent shift (IdleStateFlags)
+        LDAB    >FaultSet02,Z
         ANDB    #$CC
         LBNE    L0B7DA
         BRSET   $0174,Z,#$10,L0B7DA
         BRSET   >Scratch8,Z,#$01,L0B7DA
-        BRSET   >Options0339,#$20,L0B7A0                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0B7A0                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0B7DA                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L0B7A0:
         BRSET   >ThrottleState,Z,#$01,L0B7DA             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
@@ -15409,7 +16650,7 @@ L0B7A0:
         LDAA    >IacTarget,Z
         CMPA    <IacPosition,Z
         BNE     L0B7DA
-        BRSET   $00B8,Z,#$04,L0B7DA
+        BRSET   >MonStatusPurge,Z,#$04,L0B7DA            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         LDAA    >IdleRollSpeed
         BRCLR   >IdleFlags6,Z,#$80,L0B7CE                ; bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
         ADDA    #$03
@@ -15423,14 +16664,14 @@ L0B7CE:
 L0B7DA:
         BCLR    >IdleFlags6,Z,#$80                       ; bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
 L0B7DE:
-        LDAA    $068F,Z
+        LDAA    >IdleMap32D,Z
         CMPA    #$13
         BCC     L0B7EC
-        INC     $068F,Z
+        INC     >IdleMap32D,Z
         BRA     L0B83A
 L0B7EC:
-        CLR     $068F,Z
-        LDAB    $0691,Z
+        CLR     >IdleMap32D,Z
+        LDAB    >IdleMap32F,Z
         CLRA
         LDE     #$0396
         EMUL
@@ -15441,30 +16682,30 @@ L0B802:
         TAB
         CLRA
         TDE
-        LDAB    $0692,Z
+        LDAB    >FieldDutyRaw,Z
         PSHM    D,E
         LDAA    #$40
         JSR     Blend16
         AIS     #$04
-        STAB    $0692,Z
-        CLR     $0691,Z
+        STAB    >FieldDutyRaw,Z
+        CLR     >IdleMap32F,Z
         CLRA
-        LDAB    $0692,Z
+        LDAB    >FieldDutyRaw,Z
         TDE
         LDAB    >FieldDuty,Z
         PSHM    D,E
-        LDAA    $1DD1
+        LDAA    >FieldDutyFilter
         JSR     Blend16
         AIS     #$04
         STAB    >FieldDuty,Z
 L0B83A:
         LDAA    $0033,Z
-        CMPA    $1DD4
+        CMPA    >IdleMapLearnedMin
         BCS     L0B84A
-        CMPA    $1DD5
+        CMPA    >IdleMapLearnedMax
         BLS     L0B85E
 L0B84A:
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #IacStartBaro
         JSR     Lookup2D
         CLRB
@@ -15479,7 +16720,7 @@ L0B85E:
         LBRA    L0B94E
 L0B876:
         BRCLR   $01FC,Z,#$02,L0B94E
-        BRCLR   >IoCfg1FL,Z,#$01,L0B94E
+        BRCLR   >ControlFlags943,Z,#$01,L0B94E           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         BRCLR   >EquipmentFlags,Z,#$04,L0B894            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L0B894
         BRSET   >SwitchInputs2,Z,#$40,L0B94E             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
@@ -15501,22 +16742,22 @@ L0B8A6:
         LBEQ    L0B94E
         BHI     L0B8DA
         INCA
-        CMPA    $1DD5
+        CMPA    >IdleMapLearnedMax
         BLS     L0B8E6
-        LDAA    $1DD5
+        LDAA    >IdleMapLearnedMax
         BRA     L0B8E6
 L0B8DA:
         DECA
-        CMPA    $1DD4
+        CMPA    >IdleMapLearnedMin
         BHI     L0B8E6
-        LDAA    $1DD4
+        LDAA    >IdleMapLearnedMin
 L0B8E6:
         STAA    $0033,Z
         BRA     L0B94E
 L0B8EC:
         BRCLR   >MainLoopPhaseMask,Z,#$20,L0B94E         ; bit 5: one pass in 64 (about 766 ms)
         LDAA    >Map,Z
-        SUBA    $01F7,Z
+        SUBA    >Scratch7,Z
         BCC     L0B8FE
         CLRA
 L0B8FE:
@@ -15528,7 +16769,7 @@ L0B906:
         BCC     L0B94E
         CLRB
         LDAA    >Map,Z
-        SUBA    $01F7,Z
+        SUBA    >Scratch7,Z
         BCC     L0B91A
         CLRA
 L0B91A:
@@ -15538,21 +16779,21 @@ L0B91A:
         LDAA    $21DB
         JSR     Blend16
         AIS     #$04
-        CMPA    $1DD4
+        CMPA    >IdleMapLearnedMin
         BCC     L0B93A
-        LDAA    $1DD4
+        LDAA    >IdleMapLearnedMin
         CLRB
         BRA     L0B946
 L0B93A:
-        CMPA    $1DD5
+        CMPA    >IdleMapLearnedMax
         BLS     L0B946
-        LDAA    $1DD5
+        LDAA    >IdleMapLearnedMax
         CLRB
 L0B946:
         STAA    $0033,Z
         STD     $06DB,Z
 L0B94E:
-        LDAB    $01F4,Z
+        LDAB    >Scratch4,Z
         BRCLR   >IdleFlags6,Z,#$80,L0B98C                ; bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
         LDAB    >Map,Z
         SUBB    $0033,Z
@@ -15561,27 +16802,27 @@ L0B94E:
 L0B964:
         CLRA
         TDE
-        LDAA    <ScratchC,Z
-        LDX     #Tab2D_1DD9
+        LDAA    <Baro,Z
+        LDX     #IacCoastMapGain
         JSR     Lookup2D
         CLRA
         EMUL
         LDX     #$008A
         IDIV
         XGDX
-        ADDB    >IacBase,Z
+        ADDB    >Scratch0,Z
         ADCA    #$00
         CPD     #$00FF
         BLS     L0B98C
         LDAB    #$FF
 L0B98C:
-        STAB    $0684,Z
+        STAB    >IdleMap325,Z
         BRCLR   >IdleFlags6,Z,#$80,L0B9CC                ; bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
         LDAB    >MainLoopCounter,Z
-        BITB    $20EB
+        BITB    >IacCoastLoopMask
         BNE     L0B9CC
         LDAA    >IacTarget,Z
-        CMPA    $0684,Z
+        CMPA    >IdleMap325,Z
         BEQ     L0B9CC
         BCS     L0B9B4
         TSTA
@@ -15605,23 +16846,23 @@ L0B9D0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0B9D2 ($0B9D2)
-; Called from: Sub_0A300
+; IdleStopRpmCheck ($0B9D2)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0B9D2:
+IdleStopRpmCheck:
         BRCLR   >Scratch8,Z,#$40,L0BA76
-        BRSET   $0168,Z,#$08,L0BA76
+        BRSET   >FaultSet12,Z,#$08,L0BA76
         TST     >VehicleSpeed,Z
         LBNE    L0BA76
         BRCLR   >EquipmentFlags,Z,#$04,L0B9F8            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L0B9F8
         BRSET   >SwitchInputs2,Z,#$40,L0BA76             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
 L0B9F8:
-        BRCLR   >IoCfg1FL,Z,#$01,L0BA76
+        BRCLR   >ControlFlags943,Z,#$01,L0BA76           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAA    >IdleFlags5,Z
         BITA    #$1C
         LBNE    L0BA76
-        LDAB    $000C,Z
+        LDAB    >IacBaroRef,Z
         LSRB
         LSRB
         CLRA
@@ -15634,7 +16875,7 @@ L0B9F8:
         LDE     #$00FF
 L0BA26:
         CLRA
-        LDAB    >SparkPeriod,Z
+        LDAB    >RefPeriodLow,Z
         ASLB
         BCC     L0BA32
         LDAB    #$FF
@@ -15647,7 +16888,7 @@ L0BA3A:
         CLRB
         XGAB
         TDE
-        LDAB    $01F7,Z
+        LDAB    >Scratch7,Z
         ADE
         TED
         TSTA
@@ -15655,9 +16896,9 @@ L0BA3A:
         LDD     #$00FF
 L0BA50:
         LDAA    >MainLoopCounter,Z
-        BITA    $20EB
+        BITA    >IacCoastLoopMask
         BNE     L0BA76
-        LDAA    $000C,Z
+        LDAA    >IacBaroRef,Z
         CMPB    >Map,Z
         BEQ     L0BA76
         BHI     L0BA6C
@@ -15669,7 +16910,7 @@ L0BA6C:
         BEQ     L0BA76
         DECA
 L0BA72:
-        STAA    $000C,Z
+        STAA    >IacBaroRef,Z
 L0BA76:
         RTS
 
@@ -15692,11 +16933,11 @@ L0BA98:
         LDAA    >IacShiftStep2
         LDAB    >IacShiftTime2
 L0BAA0:
-        STD     $01FE,Z
+        STD     >ScratchE,Z
         TAB
         CLRA
         TDE
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #IacShiftBaroFactor
         JSR     Lookup2D
         LDAA    #$01
@@ -15708,9 +16949,9 @@ L0BAA0:
 L0BAC0:
         LDAA    #$7F
 L0BAC2:
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
         JSR     IacSetTarget
-        LDAA    $01FE,Z
+        LDAA    >ScratchE,Z
         LDAB    #$A4
         MUL
         ADCA    #$00
@@ -15722,10 +16963,10 @@ L0BADC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0BAE2 ($0BAE2)
-; Called from: Sub_0A300
+; IacFixedTarget ($0BAE2)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0BAE2:
+IacFixedTarget:
         BRCLR   >MainLoopPhaseMask,Z,#$40,L0BB1E         ; bit 6: one pass in 128 (about 1.5 s)
         LDAA    >IacTarget,Z
         CMPA    #$04
@@ -15749,30 +16990,30 @@ L0BB1E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0BB20 ($0BB20)
-; Called from: Sub_0A300
+; IacRollingControl ($0BB20)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0BB20:
+IacRollingControl:
         BRSET   >IacStepFlags,Z,#$01,L0BB8E              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRCLR   >IdleFlags3,Z,#$04,L0BB4C                ; bit 2: closed-throttle coast seen (IdleStateUpdate; cleared by IacRollingControl)
         LDAA    >VehicleSpeed,Z
         LDAB    >IdleRollSpeed
-        ADDB    $2184
+        ADDB    >IacRollSpeedHyst
         BCC     L0BB3C
         LDAB    #$FF
 L0BB3C:
         CBA
         LBLS    L0BBBE
         BCLR    >IdleFlags3,Z,#$04                       ; bit 2: closed-throttle coast seen (IdleStateUpdate; cleared by IacRollingControl)
-        CMPA    $2183
+        CMPA    >IacRollSpeedMax
         BCC     L0BBBE
 L0BB4C:
         BRCLR   >ThrottleState,Z,#$01,L0BB6C             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDAA    >VehicleSpeed,Z
         CMPA    >IdleRollSpeed
         BLS     L0BBBE
-        LDAB    $2183
-        SUBB    $2184
+        LDAB    >IacRollSpeedMax
+        SUBB    >IacRollSpeedHyst
         BCC     L0BB68
         CLRB
 L0BB68:
@@ -15780,7 +17021,7 @@ L0BB68:
         BCC     L0BBBE
 L0BB6C:
         LDD     >IdleTarget,Z
-        ADDD    $218A
+        ADDD    >IacRollTargetAdder
         BCC     L0BB7A
         LDD     #$FFFF
 L0BB7A:
@@ -15793,14 +17034,14 @@ L0BB7A:
 L0BB8E:
         BRSET   >ThrottleState,Z,#$80,L0BBBE             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
-        CMPA    $2183
+        CMPA    >IacRollSpeedMax
         BHI     L0BBBE
         CMPA    >IdleRollSpeed
         BCS     L0BBBE
         LDD     >IdleTarget,Z
-        ADDD    $218A
+        ADDD    >IacRollTargetAdder
         BCS     L0BBB4
-        ADDD    $218E
+        ADDD    >IacRollTargetAdder2
         BCC     L0BBB8
 L0BBB4:
         LDD     #$FFFF
@@ -15814,21 +17055,21 @@ L0BBC6:
         BRSET   >IacStepFlags,Z,#$01,L0BBD8              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BSET    <IacStepFlags,Z,#$01                     ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         LDD     >SegmentRpm,Z
-        STD     $0662,Z
+        STD     >IacDecelRefRpm,Z
 L0BBD8:
-        LDAA    $06B3,Z
-        CMPA    $2185
+        LDAA    >IacRolling351,Z
+        CMPA    >IacDecelHoldCount
         BCC     L0BBE8
-        INC     $06B3,Z
+        INC     >IacRolling351,Z
         BRA     L0BC14
 L0BBE8:
-        CLR     $06B3,Z
-        LDD     $0662,Z
-        SUBD    $2186
+        CLR     >IacRolling351,Z
+        LDD     >IacDecelRefRpm,Z
+        SUBD    >IacDecelRefOffset
         BCC     L0BBF8
         CLRD
 L0BBF8:
-        LDE     $2188
+        LDE     >IacDecelTargetMax
         CPE     >IdleTarget,Z
         BCC     L0BC06
         LDE     >IdleTarget,Z
@@ -15839,12 +17080,12 @@ L0BC06:
         BCS     L0BC10
         TED
 L0BC10:
-        STD     $0662,Z
+        STD     >IacDecelRefRpm,Z
 L0BC14:
-        LDAB    $01F4,Z
+        LDAB    >Scratch4,Z
         CLRA
         TDE
-        LDAB    $01F6,Z
+        LDAB    >Scratch6,Z
         CLRA
         ADE
         LDAB    >Scratch3,Z
@@ -15853,7 +17094,7 @@ L0BC14:
         BRSET   >AcFlags,Z,#$80,L0BC52                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         LDAA    >IacLearned,Z
         LDX     #Tab2D_1F33
-        BRSET   >Options0339,#$20,L0BC4A                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0BC4A                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0BC4A                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDX     #Tab2D_1F3D
 L0BC4A:
@@ -15872,7 +17113,7 @@ L0BC6C:
         BLS     L0BC76
         LDE     #$00FF
 L0BC76:
-        LDAB    $01F1,Z
+        LDAB    >Scratch1,Z
         LDAA    #$01
         EMUL
         STAA    >IacCoastPosition,Z
@@ -15881,7 +17122,7 @@ L0BC82:
 
 ;---------------------------------------------------------------------------------------------------
 ; DivSignedSat ($0BC84)
-; Called from: Sub_0A362 (2 calls)
+; Called from: IdleRpmLoop (2 calls)
 ;---------------------------------------------------------------------------------------------------
 DivSignedSat:
         EDIVS
@@ -15907,11 +17148,11 @@ L0BCA4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0BCA6 ($0BCA6)
-; Called from: Sub_0A300
+; IdleMapTargetCalc ($0BCA6)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0BCA6:
-        LDAB    $000C,Z
+IdleMapTargetCalc:
+        LDAB    >IacBaroRef,Z
         CLRA
         ASRD
         ASRD
@@ -15920,24 +17161,24 @@ Sub_0BCA6:
         LDAB    $01F5,Z
         ADE
         LDAA    >Count3s,Z
-        LDX     #Tab2D_20F7
+        LDX     #IdleMapAfterStart
         JSR     Lookup2D
         CLRA
         ADE
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_2101
+        LDX     #IdleMapWarmup
         JSR     Lookup2D
         CLRA
         ADE
-        BRSET   >IoCfg1FL,Z,#$01,L0BD02
+        BRSET   >ControlFlags943,Z,#$01,L0BD02           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDAA    >IacLearned,Z
-        LDX     #Tab2D_216E
+        LDX     #IdleMapAdderIac
         LDAB    >FuelModeFlags2,Z
         ANDB    #$C0
         BEQ     L0BCFA
         LDAB    >IdleMapIacFlag,Z
         BNE     L0BCFA
-        LDX     #Tab2D_2178
+        LDX     #IdleMapAdderIac2
 L0BCFA:
         JSR     Lookup2D
         CLRA
@@ -15946,7 +17187,7 @@ L0BD02:
         BRCLR   >EquipmentFlags,Z,#$04,L0BD1C            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L0BD1C
         BRCLR   >SwitchInputs2,Z,#$40,L0BD1C             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
-        LDAB    $20EA
+        LDAB    >IdleMapAcAdder
         CLRA
         ADE
 L0BD1C:
@@ -15954,7 +17195,7 @@ L0BD1C:
         BLS     L0BD26
         LDE     #$00FF
 L0BD26:
-        LDAB    >SparkPeriod,Z
+        LDAB    >RefPeriodLow,Z
         ASLB
         BCC     L0BD30
         LDAB    #$FF
@@ -15969,24 +17210,24 @@ L0BD3A:
         CLRA
         TDE
         LDAA    >SegmentRpm,Z
-        LDX     #Tab2D_2111
+        LDX     #IdleMapRpm
         JSR     Lookup2D
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_211B
+        LDX     #IdleMapRpmCoolantWeight
         JSR     Lookup2D
-        LDAA    $01FE,Z
+        LDAA    >ScratchE,Z
         MUL
         ADCA    #$00
         TAB
         CLRA
         ADE
-        LDX     #Tab2D_2125
-        LDAA    <ScratchC,Z
+        LDX     #IdleMapBaro
+        LDAA    <Baro,Z
         JSR     Lookup2D
         CLRA
         ADE
-        LDAB    $01F7,Z
+        LDAB    >Scratch7,Z
         CLRA
         ADE
         CPE     #$00FF
@@ -15994,11 +17235,11 @@ L0BD3A:
         LDE     #$00FF
 L0BD8A:
         TED
-        CMPB    $20EC
+        CMPB    >IdleMapTargetMin
         BCC     L0BD96
-        LDAB    $20EC
+        LDAB    >IdleMapTargetMin
 L0BD96:
-        STAB    $067D,Z
+        STAB    >IdleMapTarget,Z
         LDAA    >ThrottleState,Z
         BITA    #$80
         BEQ     L0BDAC
@@ -16022,15 +17263,15 @@ L0BDC0:
         BRSET   >IacStepFlags,Z,#$01,L0BE5E              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         TST     >DashpotTimerMoving,Z
         BEQ     L0BDEC
-        LDAA    $20E7
-        STAA    $068C,Z
+        LDAA    >IdleMapHoldTime
+        STAA    >IdleMapHold,Z
         LBRA    L0BE5E
 L0BDEC:
-        TST     $068C,Z
+        TST     >IdleMapHold,Z
         BEQ     L0BE00
-        DEC     $068C,Z
-        LDAA    $0632,Z
-        CMPA    $20E9
+        DEC     >IdleMapHold,Z
+        LDAA    >IdleMapRpmAccel,Z
+        CMPA    >IdleMapRpmAccelMax
         BLE     L0BE04
 L0BE00:
         BCLR    >IdleFlags5,Z,#$01                       ; bit 0: MAP target in acceleration phase (IdleMapTargetCalc, IdleMapRpmAccelMax)
@@ -16040,14 +17281,14 @@ L0BE04:
         BNE     L0BE5E
         BSET    >IdleFlags5,Z,#$80                       ; bit 7: gear idle step state (IdleTargetControl)
         LDAA    >IdleCount0322,Z
-        CMPA    $20E6
+        CMPA    >IdleMapStepTimeClosed
         BRSET   >IdleFlags5,Z,#$01,L0BE22                ; bit 0: MAP target in acceleration phase (IdleMapTargetCalc, IdleMapRpmAccelMax)
-        CMPA    $20E8
+        CMPA    >IdleMapStepTime
 L0BE22:
         BCS     L0BE5E
         CLR     >IdleCount0322,Z
         CLRA
-        LDAB    $067D,Z
+        LDAB    >IdleMapTarget,Z
         TDE
         LDAB    >Map,Z
         SDE
@@ -16055,14 +17296,14 @@ L0BE22:
         TED
         BMI     L0BE44
         TBA
-        LDX     #Tab2D_2164
+        LDX     #IacMapLowStep
         BRA     L0BE56
 L0BE44:
         NEGD
         TBA
-        LDX     #Tab2D_2150
+        LDX     #IacMapHighStepClosed
         BRSET   >IdleFlags5,Z,#$01,L0BE56                ; bit 0: MAP target in acceleration phase (IdleMapTargetCalc, IdleMapRpmAccelMax)
-        LDX     #Tab2D_215A
+        LDX     #IacMapHighStep
 L0BE56:
         JSR     Lookup2D
         JSR     IacSetTarget
@@ -16070,36 +17311,36 @@ L0BE5E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0BE60 ($0BE60)
-; Called from: Sub_0A300
+; IacCrankControl ($0BE60)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0BE60:
+IacCrankControl:
         BRSET   >EngineStateFlags,Z,#$80,L0BE6E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BSET    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
-        CLR     $06B6,Z
+        CLR     >IacCrank354,Z
 L0BE6E:
         BRCLR   >IacStepFlags,Z,#$20,L0BEDE              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
-        LDAB    $1DC0
+        LDAB    >IacCrankRpm
         BEQ     L0BE82
         LDAA    >EngineRpm,Z
         CBA
         BCS     L0BE90
 L0BE82:
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_1DC1
+        LDX     #IacCrankCoolant
         JSR     Lookup2D
         BRA     L0BE94
 L0BE90:
         LDAA    $1DBF
 L0BE94:
-        ADDA    $01F4,Z
+        ADDA    >Scratch4,Z
         BCC     L0BE9C
         LDAA    #$FF
 L0BE9C:
         CLRB
         XGAB
         TDE
-        LDAB    $01F1,Z
+        LDAB    >Scratch1,Z
         LDAA    #$01
         EMUL
         LDAB    >IacTargetMax
@@ -16109,13 +17350,13 @@ L0BE9C:
 L0BEB4:
         STAA    >IacTarget,Z
         BRCLR   >EngineStateFlags,Z,#$80,L0BECA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        LDAA    $06B6,Z
+        LDAA    >IacCrank354,Z
         ADDA    #$01
         SBCA    #$00
-        STAA    $06B6,Z
+        STAA    >IacCrank354,Z
 L0BECA:
-        LDAA    $06B6,Z
-        CMPA    $1E30
+        LDAA    >IacCrank354,Z
+        CMPA    >IacStartLoops
         BLS     L0BEDA
         BCLR    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BRA     L0BEDE
@@ -16125,12 +17366,12 @@ L0BEDE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0BEE0 ($0BEE0)
-; Called from: Sub_0A300
+; IdleStateFlags ($0BEE0)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0BEE0:
+IdleStateFlags:
         CLRW    >Scratch8,Z
-        LDAB    $0168,Z
+        LDAB    >FaultSet12,Z
         ANDB    #$F0
         BNE     L0BEF2
         BRCLR   >FaultSet06,Z,#$10,L0BEF6
@@ -16138,7 +17379,7 @@ L0BEF2:
         BSET    >Scratch8,Z,#$01
 L0BEF6:
         BRSET   $0174,Z,#$40,L0BF04
-        LDAA    $016D,Z
+        LDAA    >FaultSet0A,Z
         ANDA    #$0C
         BEQ     L0BF08
 L0BF04:
@@ -16148,7 +17389,7 @@ L0BF08:
         BITB    #$80
         BNE     L0BF3E
         LDAA    >CoolantTemp,Z
-        CMPA    $2191
+        CMPA    >IdleStableCoolantMin
         BLS     L0BF3E
         LDAA    >SegmentRpm,Z
         SUBA    >IdleTarget,Z
@@ -16157,10 +17398,10 @@ L0BF08:
         BVC     L0BF2A
         LDAA    #$7F
 L0BF2A:
-        CMPA    $2192
+        CMPA    >IdleStableRpmBand
         BCC     L0BF3E
         LDAA    >Count3s,Z
-        CMPA    $2190
+        CMPA    >IdleStableTimeMin
         BLS     L0BF3E
         BSET    >Scratch8,Z,#$04
 L0BF3E:
@@ -16172,14 +17413,14 @@ L0BF54:
         BRCLR   >IdleFlags,Z,#$80,L0BF70                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         TST     >DashpotTimer2,Z
         BNE     L0BF70
-        BRSET   >EventFlags,Z,#$80,L0BF70                ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+        BRSET   >IdleFlareFlags,Z,#$80,L0BF70            ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         BRSET   >ThrottleState,Z,#$01,L0BF70             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BSET    >Scratch8,Z,#$20
 L0BF70:
         BRCLR   >Scratch8,Z,#$04,L0BFA8
         BRCLR   >Scratch8,Z,#$10,L0BFA8
         BRSET   >ThrottleState,Z,#$01,L0BFA8             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
-        BRSET   >Options0339,#$20,L0BF8E                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0BF8E                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0BFA8                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L0BF8E:
         TST     >DashpotTimerMoving,Z
@@ -16187,11 +17428,11 @@ L0BF8E:
         TST     >DashpotTimer2,Z
         BNE     L0BFA8
         LDAA    >Map,Z
-        CMPA    $2193
+        CMPA    >IacCoastMapMax
         BCC     L0BFA8
         BSET    >Scratch8,Z,#$40
 L0BFA8:
-        BCLR    >SparkFlags3,Z,#$60                      ; bit 6: idle spark correction active (IdleSparkControl); SurgeControl reads it
+        BCLR    >IdleFlags7,Z,#$60                       ; bit 6: reference period long (RefPeriod at $20 or more, low rpm): idle air crank target (CalcEngineRpm, IacCrankControl); bit 5: idle conditions met without a recent shift (IdleStateFlags)
         BCLR    >IdleFlags6,Z,#$10                       ; bit 4: idle conditions for learning met (IdleStateFlags)
         BRSET   >IdleFlags3,Z,#$02,L0BFD8
         BRSET   >EngineStateFlags,Z,#$80,L0BFC2          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -16207,7 +17448,7 @@ L0BFC2:
         BSET    >IdleFlags3,Z,#$02
 L0BFD8:
         BRSET   >SparkFaultFlags,Z,#$20,L0C00C           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
-        LDAB    $0165,Z
+        LDAB    >FaultSet02,Z
         ANDB    #$C0
         BNE     L0C00C
         BRSET   >ThrottleState,Z,#$80,L0C00C             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -16220,12 +17461,12 @@ L0BFFC:
         CPE     >RefPeriod,Z
         BLS     L0C00C
         BRCLR   >Scratch8,Z,#$20,L0C00C
-        BSET    >SparkFlags3,Z,#$40                      ; bit 6: idle spark correction active (IdleSparkControl); SurgeControl reads it
+        BSET    >IdleFlags7,Z,#$40                       ; bit 6: reference period long (RefPeriod at $20 or more, low rpm): idle air crank target (CalcEngineRpm, IacCrankControl)
 L0C00C:
         BRCLR   >Scratch8,Z,#$20,L0C046
         BRSET   >IacStepFlags,Z,#$20,L0C046              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BRSET   >Scratch8,Z,#$01,L0C046
-        BRSET   $0168,Z,#$08,L0C046
+        BRSET   >FaultSet12,Z,#$08,L0C046
         BSET    >IdleFlags6,Z,#$10                       ; bit 4: idle conditions for learning met (IdleStateFlags)
         TST     >DashpotTimerMoving,Z
         BNE     L0C046
@@ -16235,47 +17476,47 @@ L0C00C:
         BRSET   >DriveFlags,Z,#$80,L0C046                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         TST     >ShiftIdleDelay,Z
         BNE     L0C046
-        BSET    >SparkFlags3,Z,#$20
+        BSET    >IdleFlags7,Z,#$20                       ; bit 5: idle conditions met without a recent shift (IdleStateFlags)
 L0C046:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; IacBaseCalc ($0C048)
-; Called from: Sub_0A300
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
 IacBaseCalc:
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #IacBaroScale
         JSR     Lookup2D
         LDAB    >IdleTarget,Z
         LDX     #IacBaseBaroTarget
         JSR     Lookup3D
-        STAA    >IacBase,Z
-        LDAA    <ScratchC,Z
+        STAA    >Scratch0,Z
+        LDAA    <Baro,Z
         LDX     #IacStepBaroFactor
         JSR     Lookup2D
-        STAA    $01F1,Z
+        STAA    >Scratch1,Z
         LDAA    >CoolantTemp,Z
         LDX     #IacCoastCoolant
         JSR     Lookup2D
-        STAA    $01FE,Z
-        STAA    $01F6,Z
+        STAA    >ScratchE,Z
+        STAA    >Scratch6,Z
         LDAA    >VehicleSpeed,Z
         LDX     #IacCoastSpeedScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
         LDX     #IacCoastSpeedRpm
         JSR     Lookup3D
-        CMPA    $01FE,Z
+        CMPA    >ScratchE,Z
         BLS     L0C0A6
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
 L0C0A6:
         LDAA    >ThrottleAboveClosed,Z
         LDX     #IacCoastThrottleLimit
         JSR     Lookup2D
-        CMPB    $01FE,Z
+        CMPB    >ScratchE,Z
         BHI     L0C0BC
-        LDAB    $01FE,Z
+        LDAB    >ScratchE,Z
 L0C0BC:
         CLRA
         TDE
@@ -16297,9 +17538,9 @@ L0C0BC:
         LDX     #Tab2D_219A
         JSR     Lookup2D
         CLRA
-        STAB    $01F4,Z
+        STAB    >Scratch4,Z
         ADE
-        BRSET   >Options0339,#$20,L0C118                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0C118                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRSET   >DriveFlags,Z,#$20,L0C118                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDAB    >IacDriveAdder
         CLRA
@@ -16317,14 +17558,14 @@ L0C132:
         LDE     #$00FF
 L0C13C:
         TED
-        STAB    $01F2,Z
+        STAB    >Scratch2,Z
         LDAA    >FieldDuty,Z
         LDX     #IacFieldDutyScale
         JSR     Lookup2D
         LDAB    >SegmentRpm,Z
         LDX     #IacFieldDutyRpm2
         JSR     Lookup3D
-        STAB    $01F7,Z
+        STAB    >Scratch7,Z
         CLRA
         LDAB    >AcSensor,Z
         TDE
@@ -16345,7 +17586,7 @@ L0C13C:
         AIS     #$04
         STD     >BatteryVoltsFiltered,Z
 L0C19C:
-        LDAA    <ScratchC,Z
+        LDAA    <Baro,Z
         LDX     #IacBaroScale
         JSR     Lookup2D
         LDAB    >IdleTarget,Z
@@ -16364,13 +17605,13 @@ L0C19C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0C1D4 ($0C1D4)
-; Called from: Sub_0A300
+; IdleRpmTarget ($0C1D4)
+; Called from: IdleControl
 ;---------------------------------------------------------------------------------------------------
-Sub_0C1D4:
+IdleRpmTarget:
         BRCLR   >EngineStateFlags,Z,#$80,L0C1F8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >MainLoopPhaseMask,Z,#$08,L0C1FC         ; bit 3: one pass in 16 (about 191 ms)
-        LDD     $066E,Z
+        LDD     >IdleRunTimer,Z
         INCB
         CMPB    #$4B
         BCS     L0C1F2
@@ -16379,62 +17620,62 @@ Sub_0C1D4:
         BNE     L0C1F2
         DECA
 L0C1F2:
-        STD     $066E,Z
+        STD     >IdleRunTimer,Z
         BRA     L0C1FC
 L0C1F8:
-        CLRW    $066E,Z
+        CLRW    >IdleRunTimer,Z
 L0C1FC:
         BRSET   >ThrottleState,Z,#$01,L0C20E             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BRSET   >IacStepFlags,Z,#$01,L0C20E              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRCLR   >IdleFlags2,Z,#$20,L0C218                ; bit 5: idle target ramp requested (IdleRpmTarget)
 L0C20E:
-        LDAA    $1DF5
-        STAA    $06AE,Z
+        LDAA    >IdleRampHoldInit
+        STAA    >IdleRampHold,Z
         BRA     L0C228
 L0C218:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L0C228         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
-        TST     $06AE,Z
+        TST     >IdleRampHold,Z
         BEQ     L0C228
-        DEC     $06AE,Z
+        DEC     >IdleRampHold,Z
 L0C228:
         BRSET   >EngineStateFlags,Z,#$80,L0C23C          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        LDAA    $1DF8
-        CMPA    $06AD,Z
+        LDAA    >IdleRampBlockStart
+        CMPA    >IdleRampBlockTimer,Z
         BLS     L0C23C
-        STAA    $06AD,Z
+        STAA    >IdleRampBlockTimer,Z
 L0C23C:
         BRSET   >Options033A,#$40,L0C256                 ; bit 6: selects a branch in IdleRpmTarget
-        BRSET   >IoCfg1FL,Z,#$01,L0C256
-        LDAA    $1DF6
-        CMPA    $06AD,Z
+        BRSET   >ControlFlags943,Z,#$01,L0C256           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
+        LDAA    >IdleRampBlockAcOff
+        CMPA    >IdleRampBlockTimer,Z
         BLS     L0C256
-        STAA    $06AD,Z
+        STAA    >IdleRampBlockTimer,Z
 L0C256:
         BRCLR   >EquipmentFlags,Z,#$04,L0C276            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L0C276
         BRCLR   >SwitchInputs2,Z,#$40,L0C276             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
-        LDAA    $1DF7
-        CMPA    $06AD,Z
+        LDAA    >IdleRampBlockEvent
+        CMPA    >IdleRampBlockTimer,Z
         BLS     L0C276
-        STAA    $06AD,Z
+        STAA    >IdleRampBlockTimer,Z
 L0C276:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L0C286         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
-        TST     $06AD,Z
+        TST     >IdleRampBlockTimer,Z
         BEQ     L0C286
-        DEC     $06AD,Z
+        DEC     >IdleRampBlockTimer,Z
 L0C286:
         LDAA    >BatteryVolts2,Z
-        CMPA    $1E01
+        CMPA    >IdleLowVoltsMin
         BCC     L0C2A2
         BRCLR   >MainLoopPhaseMask,Z,#$80,L0C2A6         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
-        INC     $06BA,Z
+        INC     >IdleLowVoltsTimer,Z
         BNE     L0C2A6
-        DEC     $06BA,Z
+        DEC     >IdleLowVoltsTimer,Z
         BRA     L0C2A6
 L0C2A2:
-        CLR     $06BA,Z
+        CLR     >IdleLowVoltsTimer,Z
 L0C2A6:
-        BCLR    >SparkFlags3,Z,#$10
+        BCLR    >IdleFlags7,Z,#$10                       ; bit 4: idle target raise for low battery voltage or a diagnostic hold (IdleRpmTarget)
         BRCLR   >ThrottleState,Z,#$02,L0C2D2             ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
         BRSET   >DriveFlags,Z,#$20,L0C2BC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         BRCLR   >ThrottleState,Z,#$80,L0C2C2             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -16442,9 +17683,9 @@ L0C2BC:
         BCLR    >ThrottleState,Z,#$02                    ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
         BRA     L0C2D2
 L0C2C2:
-        BSET    >SparkFlags3,Z,#$10
+        BSET    >IdleFlags7,Z,#$10                       ; bit 4: idle target raise for low battery voltage or a diagnostic hold (IdleRpmTarget)
         LDD     #$0C00
-        STD     $01FE,Z
+        STD     >ScratchE,Z
         LBRA    L0C640
 L0C2D2:
         BRSET   >DriveFlags,Z,#$20,L0C314                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
@@ -16465,87 +17706,87 @@ L0C2FA:
         DECB
         BEQ     L0C314
 L0C308:
-        STD     $01FE,Z
-        BSET    >SparkFlags3,Z,#$10
+        STD     >ScratchE,Z
+        BSET    >IdleFlags7,Z,#$10                       ; bit 4: idle target raise for low battery voltage or a diagnostic hold (IdleRpmTarget)
         LBRA    L0C640
 L0C314:
         BCLR    <IacStepFlags,Z,#$04                     ; bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
         BRSET   >SparkFaultFlags,Z,#$20,L0C326           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
-        LDAB    $0165,Z
+        LDAB    >FaultSet02,Z
         ANDB    #$C0
         BEQ     L0C33A
 L0C326:
-        BSET    >SparkFlags3,Z,#$10
-        LDAA    $2196
+        BSET    >IdleFlags7,Z,#$10                       ; bit 4: idle target raise for low battery voltage or a diagnostic hold (IdleRpmTarget)
+        LDAA    >IdleTargetFault
         LDAB    #$40
         MUL
-        STD     $01FE,Z
+        STD     >ScratchE,Z
         LBRA    L0C640
 L0C33A:
-        LDAA    $0671,Z
+        LDAA    >BusIdleByte,Z
         BPL     L0C364
         ANDA    #$7F
         BEQ     L0C364
-        BRCLR   $031A,Z,#$01,L0C364
-        BSET    >SparkFlags3,Z,#$10
+        BRCLR   >SwitchInputs,Z,#$01,L0C364              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
+        BSET    >IdleFlags7,Z,#$10                       ; bit 4: idle target raise for low battery voltage or a diagnostic hold (IdleRpmTarget)
         CLRB
         LSRD
         CPD     #$2580
         BLS     L0C35C
         LDD     #$2580
 L0C35C:
-        STD     $01FE,Z
+        STD     >ScratchE,Z
         LBRA    L0C640
 L0C364:
-        BRCLR   >LdpPurgeTestFlags,Z,#$20,L0C37C         ; bit 5: idle phase of the purge test reached (LdpPurgeTest)
+        BRCLR   >LdpFlags3,Z,#$20,L0C37C                 ; bit 5: MonTaskD first phase started
         CLRB
         LDAA    >IdleRpm5F7,Z
-        BSET    >SparkFlags3,Z,#$10
-        STD     $01FE,Z
+        BSET    >IdleFlags7,Z,#$10                       ; bit 4: idle target raise for low battery voltage or a diagnostic hold (IdleRpmTarget)
+        STD     >ScratchE,Z
         LBRA    L0C640
 L0C37C:
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_1E0F
-        BRSET   >Options0339,#$20,L0C394                 ; bit 5: selects a branch in SparkEventCalc
+        LDX     #IdleTargetRpm
+        BRSET   >Options032E,#$20,L0C394                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0C394                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        LDX     #Tab2D_1E03
+        LDX     #IdleTargetRpmPN
 L0C394:
         JSR     Lookup2D
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
         BRCLR   >EngineStateFlags,Z,#$80,L0C3BA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >Count3s,Z
         LDX     #Tab2D_1E1B
         JSR     Lookup2D
-        ADDA    $01FE,Z
+        ADDA    >ScratchE,Z
         BCC     L0C3B6
         LDAA    #$FF
 L0C3B6:
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
 L0C3BA:
         LDAB    >AirTemp,Z
-        CMPB    $1DE7
+        CMPB    >IdleHotAirOn
         BLS     L0C3CA
         BSET    >IdleFlags8,Z,#$01                       ; bit 0: hot air: AirTemp above IdleHotAirOn, off below IdleHotAirOff (IdleRpmTarget)
         BRA     L0C3DC
 L0C3CA:
         BRCLR   >IdleFlags8,Z,#$01,L0C3F2                ; bit 0: hot air: AirTemp above IdleHotAirOn, off below IdleHotAirOff (IdleRpmTarget)
-        CMPB    $1DE6
+        CMPB    >IdleHotAirOff
         BCC     L0C3DC
         BCLR    >IdleFlags8,Z,#$01                       ; bit 0: hot air: AirTemp above IdleHotAirOn, off below IdleHotAirOff (IdleRpmTarget)
         BRA     L0C3F2
 L0C3DC:
         TBA
-        LDX     #Tab2D_1E23
+        LDX     #IdleTargetHotAirAdder
         JSR     Lookup2D
-        ADDA    $01FE,Z
+        ADDA    >ScratchE,Z
         BCC     L0C3EE
         LDAA    #$FF
 L0C3EE:
-        STAA    $01FE,Z
+        STAA    >ScratchE,Z
 L0C3F2:
         LDAB    #$40
         MUL
-        STD     $01FE,Z
+        STD     >ScratchE,Z
         BRSET   >ThrottleState,Z,#$01,L0C410             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BRCLR   >IdleFlags2,Z,#$10,L0C40A                ; bit 4: idle at the previous pass (ThrottleState bit 0, IdleRpmTarget)
         BCLR    >IdleFlags2,Z,#$20                       ; bit 5: idle target ramp requested (IdleRpmTarget)
@@ -16571,24 +17812,24 @@ L0C43A:
         BRCLR   >IdleFlags6,Z,#$10,L0C58E                ; bit 4: idle conditions for learning met (IdleStateFlags)
         LDAA    >AirTemp,Z
         BRSET   >IdleFlags2,Z,#$01,L0C46A                ; bit 0: idle target raise, cause 1 (IdleRpmTarget)
-        CMPA    $1DE5
+        CMPA    >IdleRampAirMin
         BCS     L0C45C
-        CMPA    $1DE7
+        CMPA    >IdleHotAirOn
         BLS     L0C47A
 L0C45C:
         BRCLR   >IdleFlags,Z,#$40,L0C58E                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BSET    >IdleFlags2,Z,#$01                       ; bit 0: idle target raise, cause 1 (IdleRpmTarget)
         LBRA    L0C58E
 L0C46A:
-        CMPA    $1DE8
+        CMPA    >IdleRampAirMinOff
         LBCS    L0C58E
-        CMPA    $1DE6
+        CMPA    >IdleHotAirOff
         LBHI    L0C58E
 L0C47A:
         LDAA    >ChargeTargetVolts,Z
-        LDAB    $1DF2
+        LDAB    >IdleRampVoltsMargin
         BRCLR   >IdleFlags2,Z,#$04,L0C48C                ; bit 2: idle target raise for low battery voltage (BatteryVoltsFiltered, IdleRpmTarget)
-        LDAB    $1DF3
+        LDAB    >IdleRampVoltsMarginOn
 L0C48C:
         SBA
         BCC     L0C492
@@ -16602,37 +17843,37 @@ L0C492:
 L0C4A6:
         LDAA    >CoolantTemp,Z
         BRSET   >IdleFlags2,Z,#$02,L0C4CA                ; bit 1: idle target raise, cause 2 (IdleRpmTarget)
-        CMPA    $1DEF
+        CMPA    >IdleRampCoolantMin
         BCS     L0C4BC
-        CMPA    $1DF1
+        CMPA    >IdleRampCoolantMax
         BLS     L0C4DA
 L0C4BC:
         BRCLR   >IdleFlags,Z,#$40,L0C58E                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BSET    >IdleFlags2,Z,#$02                       ; bit 1: idle target raise, cause 2 (IdleRpmTarget)
         LBRA    L0C58E
 L0C4CA:
-        CMPA    $1DEE
+        CMPA    >IdleRampCoolantMinOff
         LBCS    L0C58E
-        CMPA    $1DF0
+        CMPA    >IdleRampCoolantMaxOff
         LBHI    L0C58E
 L0C4DA:
-        LDAA    $032C,Z
+        LDAA    >BatteryTemp,Z
         BRSET   >IdleFlags2,Z,#$08,L0C4FE                ; bit 3: idle target raise, cause 4 (IdleRpmTarget, with IdleFlags bit 6)
-        CMPA    $1DEC
+        CMPA    >IdleRampBattTempMin
         BCS     L0C4F0
-        CMPA    $1DEA
+        CMPA    >IdleRampBattTempMax
         BLS     L0C50E
 L0C4F0:
         BRCLR   >IdleFlags,Z,#$40,L0C58E                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BSET    >IdleFlags2,Z,#$08                       ; bit 3: idle target raise, cause 4 (IdleRpmTarget, with IdleFlags bit 6)
         LBRA    L0C58E
 L0C4FE:
-        CMPA    $1DEB
+        CMPA    >IdleRampBattTempMinOff
         LBCS    L0C58E
-        CMPA    $1DE9
+        CMPA    >IdleRampBattTempMaxOff
         LBHI    L0C58E
 L0C50E:
-        TST     $06AE,Z
+        TST     >IdleRampHold,Z
         BNE     L0C522
         BRSET   >IdleFlags2,Z,#$40,L0C522                ; bit 6: idle target ramp not allowed: flex cold start or ramp delay (IdleRpmTarget)
         BSET    >IdleFlags2,Z,#$20                       ; bit 5: idle target ramp requested (IdleRpmTarget)
@@ -16643,31 +17884,31 @@ L0C522:
         BSET    >IdleFlags3,Z,#$20                       ; bit 5: idle step after shift requested (IdleRpmTarget; cleared when SegmentRpm passes IacGearRpmEnd)
         LBRA    L0C58E
 L0C536:
-        TST     $06AD,Z
+        TST     >IdleRampBlockTimer,Z
         LBNE    L0C58E
-        LDAA    $06BA,Z
-        CMPA    $1E02
+        LDAA    >IdleLowVoltsTimer,Z
+        CMPA    >IdleLowVoltsTime
         LBHI    L0C58E
-        BRSET   $0671,Z,#$80,L0C58E
-        BRSET   >Options0339,#$20,L0C55C                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >BusIdleByte,Z,#$80,L0C58E
+        BRSET   >Options032E,#$20,L0C55C                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0C58E                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L0C55C:
-        LDD     $1DFD
+        LDD     >IdleRampCountMin
         CPD     >SriMileage,Z
         LBHI    L0C58E
-        LDAA    <ScratchC,Z
-        CMPA    $1DED
+        LDAA    <Baro,Z
+        CMPA    >IdleRampBaroMin
         LBCS    L0C58E
         BRSET   >IacStepFlags,Z,#$01,L0C58E              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRSET   >ThrottleState,Z,#$01,L0C58E             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BSET    >IdleFlags2,Z,#$40                       ; bit 6: idle target ramp not allowed: flex cold start or ramp delay (IdleRpmTarget)
-        TST     $0683,Z
+        TST     >IdleRampDelay,Z
         BEQ     L0C5AA
-        DEC     $0683,Z
+        DEC     >IdleRampDelay,Z
         BRA     L0C5C2
 L0C58E:
-        LDAA    $1DF4
-        STAA    $0683,Z
+        LDAA    >IdleRampDelayInit
+        STAA    >IdleRampDelay,Z
         BCLR    >IdleFlags2,Z,#$40                       ; bit 6: idle target ramp not allowed: flex cold start or ramp delay (IdleRpmTarget)
         BRCLR   >IdleFlags,Z,#$40,L0C5A8                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BCLR    >IdleFlags,Z,#$40                        ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
@@ -16675,60 +17916,60 @@ L0C58E:
 L0C5A8:
         BRA     L0C5C2
 L0C5AA:
-        LDD     $01FE,Z
+        LDD     >ScratchE,Z
         SUBD    $1DF9
         BCC     L0C5B6
         CLRD
 L0C5B6:
-        STD     $01FE,Z
+        STD     >ScratchE,Z
         BCLR    >IdleFlags2,Z,#$0F                       ; bit 3: idle target raise, cause 4 (IdleRpmTarget, with IdleFlags bit 6); bit 2: idle target raise for low battery voltage (BatteryVoltsFiltered, IdleRpmTarget); bit 1: idle target raise, cause 2 (IdleRpmTarget); bit 0: idle target raise, cause 1 (IdleRpmTarget)
         BSET    >IdleFlags,Z,#$40                        ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
 L0C5C2:
-        BRSET   >Options0339,#$20,L0C5E2                 ; bit 5: selects a branch in SparkEventCalc
-        BRSET   $0321,#$20,L0C5E2
-        BRCLR   $0483,Z,#$02,L0C5E2
+        BRSET   >Options032E,#$20,L0C5E2                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
+        BRSET   >Options0334,#$20,L0C5E2                 ; bit 5: fan relay variant (FanControl, output tests)
+        BRCLR   >BusFlags9CE,Z,#$02,L0C5E2
         LDD     $1DFB
-        CPD     $01FE,Z
+        CPD     >ScratchE,Z
         BLS     L0C5E2
-        STD     $01FE,Z
+        STD     >ScratchE,Z
 L0C5E2:
-        LDAA    $032C,Z
-        LDX     #Tab2D_0525
+        LDAA    >BatteryTemp,Z
+        LDX     #IdleBattTempScale
         JSR     Lookup2D
-        LDX     #Tab3D_1EE8
-        BRSET   >Options0339,#$20,L0C602                 ; bit 5: selects a branch in SparkEventCalc
+        LDX     #IdleBattTempTarget
+        BRSET   >Options032E,#$20,L0C602                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         BRCLR   >DriveFlags,Z,#$20,L0C602                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        LDX     #Tab3D_1EC7
+        LDX     #IdleBattTempTargetPN
 L0C602:
-        LDAB    $066E,Z
+        LDAB    >IdleRunTimer,Z
         JSR     Lookup3D
         LDAB    #$40
         MUL
-        CPD     $01FE,Z
+        CPD     >ScratchE,Z
         BLS     L0C618
-        STD     $01FE,Z
+        STD     >ScratchE,Z
 L0C618:
         BRCLR   >OutputTestFlags,Z,#$40,L0C640           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRSET   >AcFlags,Z,#$80,L0C640                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         LDD     >Count3s,Z
         CPD     #$063A
         BLS     L0C640
-        BSET    >SparkFlags3,Z,#$10
+        BSET    >IdleFlags7,Z,#$10                       ; bit 4: idle target raise for low battery voltage or a diagnostic hold (IdleRpmTarget)
         LDD     #$1DC0
-        CPD     $01FE,Z
+        CPD     >ScratchE,Z
         BCC     L0C640
-        STD     $01FE,Z
+        STD     >ScratchE,Z
 L0C640:
-        LDD     $01FE,Z
+        LDD     >ScratchE,Z
         STD     >IdleTarget,Z
 L0C648:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0C64A ($0C64A)
-; Called from: Sub_0A726 (3 calls)
+; StepToward ($0C64A)
+; Called from: IacLearn (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0C64A:
+StepToward:
         BRSET   $0327,#$04,L0C65C
         CBA
         BEQ     L0C65C
@@ -16932,15 +18173,15 @@ L0C7F0:
         STD     >RAMBAL,Z
         LDAA    #$08
         STAA    >RAMMCR,Z
-        STE     >IacBase,Z
+        STE     >Scratch0,Z
         ORE     >UnexpectedIrqFlags,Z
         STE     >UnexpectedIrqFlags,Z
         TSX
         LDD     $02,X
-        STD     $01F2,Z
+        STD     >Scratch2,Z
         STD     <UnexpectedIrqStack6,Z
         LDD     $00,X
-        STD     $01F4,Z
+        STD     >Scratch4,Z
         STD     <UnexpectedIrqStack4,Z
         LDAB    #$0F
         TBSK
@@ -16977,11 +18218,11 @@ Reset:
         STD     >RAMBAL,Z
         LDAA    #$08
         STAA    >RAMMCR,Z
-        CLRW    >IacBase,Z
-        CLRW    $01F2,Z
-        CLRW    $01F4,Z
+        CLRW    >Scratch0,Z
+        CLRW    >Scratch2,Z
+        CLRW    >Scratch4,Z
         JSR     KickWatchdogsLong
-        JSR     Sub_0E7BC
+        JSR     NvChecksum
         LDY     #$4AB5
         BSET    <SystemFlags00A,Z,#$02                   ; bit 1: NV checksum checked at reset (Reset)
         CPD     <ResetCheckWord,Z
@@ -17085,7 +18326,7 @@ L0C9EC:
         LDAA    #$30
         STAA    >PWMC,Z
         LDD     #$0803
-        STD     $080C,Z
+        STD     >IoIrqEnable,Z
         LDE     #$C01B
         STE     >IoInjector0,Z
         STE     >IoInjector1,Z
@@ -17102,7 +18343,7 @@ L0CA26:
         STD     >IoDriver62,Z
         LDD     #$0000
         STD     $0864,Z
-        STD     $0866,Z
+        STD     >IoDriver68,Z
         LDD     #$4089
         STD     >QSMCR,Z
         LDAA    #$03
@@ -17124,8 +18365,8 @@ L0CA26:
         LDAA    #$00
         STAA    >SPCR3,Z
         JSR     KickWatchdogsLong
-        JSR     Sub_17064
-        JSR     Sub_170D8
+        JSR     QspiCommandInit
+        JSR     QspiDevice2Xfer
         LDD     #$0040
         STD     >SCCR0,Z
         LDD     #$100C
@@ -17135,7 +18376,7 @@ L0CA26:
         LDAA    #$07
         STAA    >ADCTL0_L,Z
         LDD     #$F881
-        STD     $0814,Z
+        STD     >IoCfg14,Z
         LDD     #$1800
         STD     >IoCtl12,Z
         LDD     #$202C
@@ -17143,7 +18384,7 @@ L0CA26:
         LDD     >IoBusStatus,Z
         LDD     >IoBusData,Z
         LDD     #$0005
-        STD     $081C,Z
+        STD     >IoCfg1C,Z
         LDD     #$FFFF
         STD     $0820,Z
         CLRW    $081E,Z
@@ -17151,31 +18392,31 @@ L0CA26:
         STD     $0868,Z
         LDD     #$C209
         STD     $086A,Z
-        CLR     $03D0,Z
+        CLR     >PurgeDuty,Z
         LDD     #$961B
         STD     $086C,Z
         LDD     #$2000
         STD     $086E,Z
         LDE     #$0000
-        STE     $0824,Z
-        STE     $0828,Z
-        STE     $082C,Z
-        STE     $0830,Z
+        STE     >IoOcChan0,Z
+        STE     >IoOcChan1,Z
+        STE     >IoOcChan2,Z
+        STE     >IoOcChan3,Z
         LDAA    >CylinderCount
         CMPA    #$04
         BEQ     L0CB34
-        STE     $0834,Z
+        STE     >IoOcChan4,Z
         LDAA    >CylinderCount
         CMPA    #$05
         BEQ     L0CB34
-        STE     $0838,Z
+        STE     >IoOcChan5,Z
 L0CB34:
-        BRCLR   $031F,#$C0,L0CB42
+        BRCLR   >Options0330,#$C0,L0CB42
         LDD     #$00FA
-        STD     $084C,Z
+        STD     >IoTimer4C,Z
 L0CB42:
         LDD     #$61A8
-        STD     $084E,Z
+        STD     >IoDriver6C,Z
         LDD     #$61A8
         STD     $0850,Z
         TZX
@@ -17184,30 +18425,30 @@ L0CB42:
         LDY     <ResetCheckWord,Z
         CPY     #$4AB5
         LBEQ    L0CC34
-        LDD     >IacBase,Z
+        LDD     >Scratch0,Z
         STD     <UnexpectedIrqFlags,Z
-        LDD     $01F2,Z
+        LDD     >Scratch2,Z
         STD     <UnexpectedIrqStack6,Z
-        LDD     $01F4,Z
+        LDD     >Scratch4,Z
         STD     <UnexpectedIrqStack4,Z
         LDAA    #$E3
         STAA    $0F,Z
         LDAA    #$CC
         STAA    >FuelSenderScaled,Z
         LDD     #$000C
-        JSR     Sub_1716E
+        JSR     EepromReadByte
         CMPA    #$AB
         BCS     L0CB8E
         CLRA
 L0CB8E:
         STAA    <FlexEthanol,Z
         JSR     Sub_173A6
-        LDD     >RRC,Z
+        LDD     >RpmForBus,Z
         STD     <SriMileage,Z
-        LDAA    $0317
+        LDAA    >ThrottleClosedDefault
         STAA    <ThrottleClosed,Z
         LDAA    #$F0
-        STAA    <ScratchC,Z
+        STAA    <Baro,Z
         LDAA    #$01
         STAA    >CrankSyncFlags2,Z
         LDAA    #$32
@@ -17219,21 +18460,21 @@ L0CB8E:
         BRCLR   $032C,#$80,L0CBC6
         BSET    <EquipmentFlags,Z,#$08                   ; bit 3: copy of calibration bit $033E.1 at reset; not read
 L0CBC6:
-        BRCLR   $0321,#$01,L0CBD0
+        BRCLR   >Options0334,#$01,L0CBD0                 ; bit 0: fan relay variant (FanRelayControl, QspiOutputStatus)
         BSET    <EquipmentFlags,Z,#$02                   ; bit 1: copy of calibration bit $0335.3 at reset; not read
 L0CBD0:
         LDAA    #$02
-        BRSET   >Options0339,#$20,L0CBEE                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0CBEE                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         LDAA    #$04
         BSET    <EquipmentFlags,Z,#$20                   ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-        BRCLR   $0321,#$20,L0CBEE
+        BRCLR   >Options0334,#$20,L0CBEE                 ; bit 5: fan relay variant (FanControl, output tests)
         LDAA    #$03
         BSET    <EquipmentFlags,Z,#$10                   ; bit 4: A/C requested (AcRequestUpdate)
         BCLR    <EquipmentFlags,Z,#$20                   ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
 L0CBEE:
         STAA    $12,Z
-        LDAA    $1D11
-        STAA    $13,Z
+        LDAA    >EgrZeroPositionInit
+        STAA    <EgrZeroPos,Z
         LDAA    $1D12
         STAA    $14,Z
         LDAA    $1D13
@@ -17242,14 +18483,14 @@ L0CBEE:
         STAA    $16,Z
         LDAA    $1D15
         STAA    $17,Z
-        LDED    $2665
-        STE     $0018,Z
-        STD     $1A,Z
-        LDED    $2669
-        STE     $001C,Z
-        STD     $1E,Z
+        LDED    >SegmentRpmConst2
+        STE     >SegmentTimePair2,Z
+        STD     <MisfirePeriod11,Z
+        LDED    >SegmentRpmConst3
+        STE     >SegmentTimePair3,Z
+        STD     <MisfirePeriod15,Z
         BCLR    <MisfireFlags,Z,#$80                     ; bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
-        JSR     Sub_1FD26
+        JSR     MonitorFlagsClear
         TZX
         LDX     #$8034
         BSET    <SystemFlags00A,Z,#$10                   ; bit 4: codes cleared at reset after a failed RAM check (Reset)
@@ -17264,24 +18505,24 @@ L0CC40:
         CPX     #$8726
         BCS     L0CC40
         LDAA    >RJURR7_L,Z
-        STAA    $033E,Z
+        STAA    >ReadAnalogA4B,Z
         LDAA    >RJURR6_L,Z
-        STAA    $0331,Z
+        STAA    >ThrottleRaw,Z
         LDAA    >RJURR5_L,Z
         STAA    >O2UpBank2Raw,Z
         LDAA    >RJURR4_L,Z
         STAA    >O2UpBank1Raw,Z
         LDAA    >RJURR3_L,Z
-        STAA    $0351,Z
+        STAA    >BatteryVolts,Z
         STAA    >BatteryVolts2,Z
         STAA    >BatteryVoltsFiltered,Z
         LDAA    >RJURR2_L,Z
-        STAA    $0330,Z
+        STAA    >AcSensorRaw,Z
         LDAA    >RJURR1_L,Z
         STAA    >O2DownBank1Raw,Z
         JSR     KickWatchdogsLong
         LDE     #$0BB8
-        JSR     Sub_0E85E
+        JSR     DelayLoop
         LDAA    >PORTC,Z
         ORAA    #$07
         ANDA    #$FE
@@ -17297,7 +18538,7 @@ L0CCAA:
         STAA    >ReadMapA81,Z
         STAA    >MapLast,Z
         BRSET   >SystemFlags00A,Z,#$20,L0CCD0            ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
-        STAA    <ScratchC,Z
+        STAA    <Baro,Z
 L0CCD0:
         BRCLR   <SystemFlags00A,Z,#$02,L0CD16            ; bit 1: NV checksum checked at reset (Reset)
         BRCLR   <SystemFlags00A,Z,#$04,L0CD16
@@ -17330,7 +18571,7 @@ L0CD16:
         BCLRW   >IoCtl12,Z,#$0800
         JSR     KickWatchdogsLong
         LDE     #$1388
-        JSR     Sub_0E85E
+        JSR     DelayLoop
         LDAA    >PORTC,Z
         ORAA    #$07
         ANDA    #$FE
@@ -17358,7 +18599,7 @@ L0CD70:
         BCLRW   >IoCtl12,Z,#$1000
         JSR     KickWatchdogsLong
         LDE     #$1388
-        JSR     Sub_0E85E
+        JSR     DelayLoop
         LDAA    >PORTC,Z
         ORAA    #$07
         ANDA    #$FC
@@ -17369,7 +18610,7 @@ L0CDA2:
         BRCLR   >ADCSTAT,Z,#$80,L0CDA2                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
 L0CDAC:
-        STAA    $0329,Z
+        STAA    >AirTempRaw,Z
         LDAA    >RJURR1_L,Z
         STAA    $032D,Z
         LDAA    >PORTC,Z
@@ -17385,45 +18626,45 @@ L0CDAC:
         BNE     L0CDE2
         LDAB    #$0A
         STAB    >DiagCommand,Z
-        BSET    $0140,Z,#$80
+        BSET    >ControlFlagsC39,Z,#$80                  ; bit 7: PCI link variant: set at reset from the bus configuration, cleared when the link check fails
 L0CDDE:
         LDAA    #$FF
         BRA     L0CDE4
 L0CDE2:
         LDAA    #$E7
 L0CDE4:
-        STAA    >IoCfg1FL,Z
+        STAA    >ControlFlags943,Z
         LDAB    #$FF
         STAB    >ControlFlags944,Z
-        STD     $049C,Z
+        STD     >OutputStatusPrev,Z
         CLRW    >SPCR2,Z
         STD     >TR0,Z
         JSR     KickWatchdogsLong
         JSR     QspiWaitIdle
         LDE     #$001E
-        JSR     Sub_0E85E
+        JSR     DelayLoop
         JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     >OutputStatusWord,Z
         CLRB
         TBXK
         LDX     #$4020
-        LDAB    $38,Z
+        LDAB    <IacStepper054,Z
         ABX
         LDAA    $00,X
         CLRB
         STD     >IoInputs0,Z
         LDD     #$F000
-        STD     $0804,Z
+        STD     >IoCtl04,Z
         LDE     #$0050
-        JSR     Sub_0E85E
-        CLRW    $0804,Z
+        JSR     DelayLoop
+        CLRW    >IoCtl04,Z
         LDAA    <SystemFlags00A,Z
         ADDA    #$40
         STAA    <SystemFlags00A,Z
-        BSET    $0357,Z,#$03
+        BSET    >ThrottleFilterState,Z,#$03
         LDAA    #$7F
-        STAA    $05BF,Z
+        STAA    >SparkStartRamp,Z
         BSET    >SciLogFlags,Z,#$02                      ; bit 1: SCI log mode bit (SciLogReceive)
         BSET    $0325,Z,#$10
         BSET    >ThrottleState,Z,#$10                    ; bit 4: closed position stepped to a new minimum, probably (ThrottleClosedLearn only)
@@ -17431,25 +18672,25 @@ L0CDE4:
         BSET    >SpeedCtlState,Z,#$A0                    ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel); bit 5: set at reset, on cancel and on engage; meaning not settled
         BSET    >SwitchInputs2,Z,#$04                    ; bit 2: speed control switch (set at reset)
         LDD     #$8013
-        STAA    $014B,Z
-        STAA    $0386,Z
-        STAB    $05EA,Z
+        STAA    >SpeedCtlNibble,Z
+        STAA    >BattTempModelAcc,Z
+        STAB    >IdleEnrichment813,Z
         LDD     #$FFFF
-        STD     >SparkPeriod,Z
-        STD     $037C,Z
-        STD     $0370,Z
-        STD     $0372,Z
-        STD     $0376,Z
-        STD     $0378,Z
+        STD     >RefPeriodLow,Z
+        STD     >RunModeCounter,Z
+        STD     >VssCountAC,Z
+        STD     >VssTimeAE,Z
+        STD     >VssPulseIndex,Z
+        STD     >VssAB4,Z
         STAA    $0385,Z
         STAA    >TipInTimer,Z
         STAA    $03A9,Z
         STAA    $06DD,Z
-        STAA    $05E2,Z
-        STAA    $0492,Z
-        STAA    $0493,Z
+        STAA    >IdleFuelRamp,Z
+        STAA    >InjectorKillCyl1,Z
+        STAA    >InjectorKillCyl2,Z
         LDAB    #$0F
-        STAB    $0384,Z
+        STAB    >VssBusValue2,Z
         LDAA    <CamCrankSyncCount,Z
         CMPA    #$32
         BCS     L0CEBE
@@ -17490,7 +18731,7 @@ L0CEF4:
 L0CEF8:
         BSET    $0200,Z,#$80
         LDD     #$0097
-        JSR     Sub_1716E
+        JSR     EepromReadByte
         CMPA    #$4A
         BNE     L0CF12
         COMA
@@ -17498,19 +18739,19 @@ L0CEF8:
         BNE     L0CF12
         BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
 L0CF12:
-        BRCLR   $36,Z,#$04,L0CF20
-        LDAA    $36,Z
+        BRCLR   <FlexStartFlags,Z,#$04,L0CF20            ; bit 2: power-down tasks running (CheckPowerDown)
+        LDAA    <FlexStartFlags,Z
         ANDA    #$03
         CMPA    #$02
         BEQ     L0CF20
-        INC     $36,Z
+        INC     <FlexStartFlags,Z
 L0CF20:
         BSET    >MonEnableFlags2,Z,#$40                  ; bit 6: monitor data to be reset (set at reset and by MonEnableCheck)
-        LDAB    $3DB6
+        LDAB    >CoolantFaultValue
         LDAA    >CoolantRaw,Z
-        CMPA    $3DB5
+        CMPA    >CoolantRawHigh
         BCC     L0CF4A
-        CMPA    $3DB4
+        CMPA    >CoolantRawLow
         BCS     L0CF4A
         LDX     #ThermistorHot
         BRCLR   >IoCtl12,Z,#$08,L0CF46
@@ -17519,11 +18760,11 @@ L0CF46:
         JSR     Lookup2D
 L0CF4A:
         STAB    >CoolantTemp,Z
-        LDAB    $3D5D
-        LDAA    $0329,Z
-        CMPA    $3D5C
+        LDAB    >AirTempFaultValue
+        LDAA    >AirTempRaw,Z
+        CMPA    >AirTempRawHigh
         BCC     L0CF74
-        CMPA    $3D5B
+        CMPA    >AirTempRawLow
         BCS     L0CF74
         LDX     #ThermistorHot
         BRCLR   >IoCtl12,Z,#$10,L0CF70
@@ -17532,20 +18773,20 @@ L0CF70:
         JSR     Lookup2D
 L0CF74:
         STAB    >AirTemp,Z
-        STAB    $0584,Z
+        STAB    >StartAirTemp,Z
         LDAA    >AirTemp,Z
-        CMPA    $066C
+        CMPA    >HotStartAirMin
         BCS     L0CF94
         LDAA    >CoolantTemp,Z
-        CMPA    $066B
+        CMPA    >HotStartCoolantMin
         BCS     L0CF94
-        BSET    $0189,Z,#$08
+        BSET    >StartFlags,Z,#$08                       ; bit 3: hot start: coolant at reset at or above HotStartCoolantMin
 L0CF94:
-        LDAB    $3DB1
-        LDAA    $0330,Z
-        CMPA    $3DAD
+        LDAB    >AcSensorFaultValue
+        LDAA    >AcSensorRaw,Z
+        CMPA    >AcSensorRawHigh
         BCC     L0CFB0
-        CMPA    $3DAE
+        CMPA    >AcSensorRawLow
         BCS     L0CFB0
         LDX     #FlexLearnEthanolCurve
         JSR     Lookup2D
@@ -17559,7 +18800,7 @@ L0CFB0:
         BCS     L0CFE0
         LDX     #$403E
         LDD     #$0099
-        JSR     Sub_1716E
+        JSR     EepromReadByte
         BCS     L0CFD8
         TSTA
         BNE     L0CFD8
@@ -17568,10 +18809,10 @@ L0CFD8:
         LDAA    $032D,Z
         JSR     Lookup2D
 L0CFE0:
-        STAB    $032C,Z
+        STAB    >BatteryTemp,Z
         CMPB    #$79
         BCC     L0CFEC
-        BSET    $01A4,Z,#$04
+        BSET    >FuelLevelFlags2,Z,#$04                  ; bit 2: fuel level outside the monitor window (MonitorEnable)
 L0CFEC:
         LDE     >ResetCheckWord,Z
         CPE     #$4AB6
@@ -17579,7 +18820,7 @@ L0CFEC:
         STAB    $3B,Z
         JSR     IacResetBaro
 L0CFFC:
-        LDAA    $032C,Z
+        LDAA    >BatteryTemp,Z
         LDX     #ResetCoolantInit
         JSR     Lookup2D
         SUBA    $0666
@@ -17595,19 +18836,19 @@ L0D014:
         LDD     #$FFFF
         STD     >MtvSwitchTime,Z
         BSET    >MtvFlags,Z,#$10                         ; bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
-        LDAA    $13D8
+        LDAA    >PurgeDelayInit
         STAA    >PurgeStartRamp,Z
         LDAA    #$64
-        STAA    $03D9,Z
-        LDAA    $0331,Z
+        STAA    >Reset434,Z
+        LDAA    >ThrottleRaw,Z
         STAA    >Throttle,Z
         STAA    >ThrottleLast,Z
         LDAB    <ThrottleClosed,Z
-        ADDB    $0314
-        CMPB    $0317
+        ADDB    >ThrottleClosedResetMargin
+        CMPB    >ThrottleClosedDefault
         BCS     L0D05E
         ADDA    #$06
-        LDAB    $0317
+        LDAB    >ThrottleClosedDefault
         CBA
         BCC     L0D05E
         TAB
@@ -17628,26 +18869,26 @@ L0D074:
         CMPA    $3DF0
         BCS     L0D088
 L0D084:
-        BSET    $0189,Z,#$04
+        BSET    >StartFlags,Z,#$04                       ; bit 2: thermostat fault reported this drive cycle (ThermostatMonitor)
 L0D088:
-        BRCLR   $0324,#$01,L0D0BC
+        BRCLR   >Options032C,#$01,L0D0BC
         LDAA    <FlexEthanol,Z
         LDX     #AcSensorCurve
         JSR     Lookup2D
         STAA    >FlexEthanolScaled,Z
         LDD     <SriMileage,Z
-        STD     $0606,Z
+        STD     >ResetF09,Z
         LDAA    >CoolantTemp,Z
         CMPA    $0722
         BCC     L0D0BC
         LDAA    <FlexEthanol,Z
-        CMPA    $0721
+        CMPA    >FlexColdStartEthanolMin
         BCS     L0D0BC
-        BSET    $36,Z,#$08
-        BCLR    $36,Z,#$20
+        BSET    <FlexStartFlags,Z,#$08                   ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+        BCLR    <FlexStartFlags,Z,#$20                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
 L0D0BC:
         LDAA    >CoolantTemp,Z
-        CMPA    $0553
+        CMPA    >HotRestartCoolantMin
         BCS     L0D0CA
         BSET    >EngineStateFlags,Z,#$10                 ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
 L0D0CA:
@@ -17657,17 +18898,17 @@ L0D0CA:
         STAA    >ResetCoolantFuel,Z
         JSR     CalcDeadTime
         JSR     CrankFuel
-        BRCLR   $0324,#$01,L0D0F8
-        BRCLR   $36,Z,#$28,L0D0F8
-        BRSET   $0036,Z,#$08,L0D0FC
-        BCLR    $36,Z,#$10
+        BRCLR   >Options032C,#$01,L0D0F8
+        BRCLR   <FlexStartFlags,Z,#$28,L0D0F8            ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+        BRSET   >FlexStartFlags,Z,#$08,L0D0FC            ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+        BCLR    <FlexStartFlags,Z,#$10                   ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
         BRA     L0D0FC
 L0D0F8:
         JSR     Sub_0EEA4
 L0D0FC:
-        BCLR    $36,Z,#$20
+        BCLR    <FlexStartFlags,Z,#$20                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
         LDAA    #$36
-        STAA    $040E,Z
+        STAA    >DiagModeFlags,Z
         LDAA    >CoolantTemp,Z
         STAA    >StartCoolantTemp2,Z
         STAA    >StartCoolantTemp,Z
@@ -17689,23 +18930,23 @@ L0D140:
         BNE     L0D140
 L0D14C:
         LDD     #$FFFF
-        STD     $0806,Z
+        STD     >IoTimer06,Z
         LDD     #$03FF
-        STD     $0808,Z
+        STD     >IoTimer08,Z
         BCLR    >TFLG1,Z,#$FF                            ; bit 7: I4/O5F: input capture 4 / output compare 5 flag; bit 6: OC4F: output compare 4 flag; bit 5: OC3F: output compare 3 flag; bit 4: OC2F: output compare 2 flag; bit 3: OC1F: output compare 1 flag; bit 2: IC3F: input capture 3 flag; bit 1: IC2F: input capture 2 flag; bit 0: IC1F: input capture 1 flag
         BCLR    >TFLG2,Z,#$B0                            ; bit 7: TOF: timer overflow flag; bit 5: PAIF: pulse accumulator input flag; bit 4: PAOVF: pulse accumulator overflow flag
         LDD     #$02FF
         STD     >IoIrqStatus,Z
         LDD     #$0000
-        STD     $0810,Z
+        STD     >IoTimer10,Z
         ANDP    #$FF1F
         JSR     KickWatchdogsLong
-        LDAA    $0140,Z
+        LDAA    >ControlFlagsC39,Z
         ORAA    #$10
         ANDA    #$F7
-        STAA    $0140,Z
+        STAA    >ControlFlagsC39,Z
         JSR     Sub_1E638
-        JSR     Sub_17380
+        JSR     EepromReadInit
         BRCLR   >Options0337,#$20,L0D1CC                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
         LDAA    >FuelTrim976,Z
         CMPA    #$19
@@ -17722,60 +18963,60 @@ L0D14C:
         BRA     L0D1C8
 L0D1BA:
         BSET    >ControlFlagsC33,Z,#$10                  ; bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
-        LDAA    $0691
-        STAA    $05ED,Z
+        LDAA    >FlexStartValue
+        STAA    >FlexStartFuel,Z
         LDAA    #$80
 L0D1C8:
         STAA    >FuelTrimAdjustValue,Z
 L0D1CC:
-        JSR     Sub_1FC68
+        JSR     ObdResetInit
         JSR     O2ResetStart
-        JSR     Sub_0B722
+        JSR     IacResetHold
 L0D1D8:
         LDD     >TCNT,Z
         BEQ     L0D1D8
-        STD     $04DC,Z
+        STD     >DiagRam9B7,Z
 L0D1E2:
-        BRSET   >SYNCR_L,Z,#$08,L0D1EE                   ; bit 3: SLOCK: synthesizer locked
+        BRSET   >SYNCR_L,Z,#$08,MainLoop                 ; bit 3: SLOCK: synthesizer locked
         JSR     KickWatchdogsLong
         BRA     L0D1E2
-L0D1EE:
+MainLoop:
         JSR     Sub_10E28
         JSR     KickWatchdogs
         JSR     Sub_0D684
-        JSR     Sub_0E76C
+        JSR     MainLoopCounters
         JSR     UpdateDriveFlags
         JSR     Sub_118E8
-        JSR     Sub_116EE
-        JSR     Sub_088F2
-        JSR     Sub_11358
+        JSR     BaroUpdate
+        JSR     ClosedLoopMain
+        JSR     SpeedCtlSwitchRead
         JSR     Sub_132CC
-        JSR     Sub_10980
+        JSR     SpeedCtlCancelMonitor
         JSR     SpeedCtlRpmJumpCheck
-        JSR     Sub_10000
+        JSR     SpeedCtlControl
         JSR     CalcDeadTime
-        JSR     Sub_11C72
-        JSR     Sub_122EE
-        JSR     Sub_1174E
-        JSR     Sub_0A300
-        JSR     Sub_1332A
-        JSR     Sub_1120C
+        JSR     CalcEngineRpm
+        JSR     RawScale69
+        JSR     GearStateUpdate
+        JSR     IdleControl
+        JSR     FanMain
+        JSR     IdleStateUpdate
         JSR     Sub_127D4
         JSR     Sub_11BD4
         JSR     ChargeLowMonitor
         JSR     CrankFuel
-        JSR     Sub_124E0
-        JSR     Sub_07370
+        JSR     RunModeSwitch
+        JSR     IdleEnrichment
         JSR     SurgeControl
-        JSR     Sub_1C95E
-        JSR     Sub_1F16E
+        JSR     MisfireEnableMain
+        JSR     ObdMonitorMain
         JSR     CalcLoadValue
         JSR     Sub_13A5C
         JSR     Sub_1EE9A
-        JSR     Sub_06A7A
-        JSR     Sub_1DEE4
-        JSR     Sub_1CDF6
-        JSR     Sub_1DFCE
+        JSR     KnockEnrichment
+        JSR     O2NoActivityCold
+        JSR     VacuumLeakMonitor
+        JSR     CamCrankSyncMonitor
         LDAA    >MainLoopCounter,Z
         LSRA
         LBCS    L0D354
@@ -17814,98 +19055,98 @@ L0D2E0:
         JSR     ChargeHighMonitor
         JSR     MilLampUpdate
         JSR     Sub_13304
-        JSR     Sub_1D18A
+        JSR     VssMonitor
         BRA     L0D378
 L0D2F6:
         JSR     SystemTestRejectCount
         JSR     Sub_1B536
-        JSR     Sub_1D360
-        JSR     Sub_1D8EA
+        JSR     BatteryLowFlag
+        JSR     WotLeanMonitor
         JSR     Sub_1DDEA
         BRA     L0D378
 L0D30C:
         JSR     Sub_1D2B4
-        JSR     Sub_10FB6
-        JSR     Sub_112AC
+        JSR     ProcessCoolantTemp
+        JSR     AcPressureSensor
         JSR     Sub_11EFC
         JSR     Sub_11112
         JSR     Sub_1D41A
         JSR     SystemTestCheck
         JSR     MonSteadyRateCalc
-        JSR     Sub_07502
+        JSR     HotEngineEnrichCalc
         JSR     Sub_1D990
         JSR     Sub_1DC56
         JSR     Sub_1DD50
-        JSR     Sub_1E098
-        JSR     Sub_1DB1E
+        JSR     FuelSystemStatus
+        JSR     CamCrankRelation
         JSR     SparkStartTimer
         BRA     L0D378
 L0D34A:
-        JSR     Sub_120A8
-        JSR     Sub_1D3C8
+        JSR     BatteryVoltsUpdate
+        JSR     AsdRelayCheck
         BRA     L0D378
 L0D354:
-        JSR     Sub_12190
+        JSR     SwitchInputsRead
         JSR     OutputTestEeprom
-        JSR     Sub_128AA
+        JSR     AcCutLogic
         JSR     InputFilters
-        JSR     Sub_123A6
-        JSR     Sub_13BA8
+        JSR     EquipmentDetect
+        JSR     TccMonitor
         JSR     Sub_1DE4A
         JSR     WotEnrichControl
         JSR     Sub_068D0
 L0D378:
         JSR     Sub_12B88
         JSR     Sub_1D8A8
-        JSR     Sub_1AD86
+        JSR     ChargeLampRequest
         BRCLR   >Options0337,#$80,L0D392                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
-        JSR     Sub_14D34
+        JSR     CamSignalCheck
         JSR     EventSparkControl
 L0D392:
         BRCLR   >Options0337,#$10,L0D39C                 ; bit 4: surge spark control on (SurgeSparkOn)
         JSR     Sub_14BC6
 L0D39C:
-        BRCLR   $031F,#$C0,L0D3B6
-        JSR     Sub_1558C
-        JSR     Sub_154EE
+        BRCLR   >Options0330,#$C0,L0D3B6
+        JSR     KnockNoiseCalc
+        JSR     KnockLearnDecayFlag
         JSR     KnockRetardMaxCalc
         JSR     KnockThresholdCalc
         JSR     KnockRpmBand
 L0D3B6:
-        JSR     Sub_14000
-        JSR     Sub_06C56
-        JSR     Sub_06B66
-        JSR     Sub_06E9A
+        JSR     CalcSpark
+        JSR     TipInFuelControl
+        JSR     AccelEnrichFactors
+        JSR     IacFuelControl
         JSR     DecelFuelRampControl
-        JSR     Sub_06A64
-        JSR     Sub_0FB2C
-        JSR     Sub_0F116
+        JSR     CalcBaroFuelAdder
+        JSR     PurgeEnable
+        JSR     PurgeVaporLearn
         JSR     Sub_0FA02
-        JSR     Sub_0F068
+        JSR     PurgeCellUpdateGate
         JSR     Sub_06436
         JSR     IdleFlareCheck
         JSR     Sub_06F14
-        JSR     Sub_1D0E6
+        JSR     CamSensorMonitor
         JSR     MonEnableTasks
         JSR     Sub_1E570
-        JSR     Sub_1E2E0
+        JSR     OutputFaultReport
         JSR     Sub_1D53C
         JSR     Sub_1D5DA
-        JSR     Sub_1D054
-        JSR     Sub_16E5E
+        JSR     OutputDriverCheck
+        JSR     DiagCommandMain
         JSR     Sub_18F48
-        JSR     Sub_19314
-        JSR     Sub_16B68
-        JSR     Sub_16BE2
+        JSR     BusEepromWrite
+        JSR     DiagRamSession1
+        JSR     DiagRamSession2
         JSR     SciRequestReceive
-        JSR     Sub_15EFC
+        JSR     BusDataRequest
         JSR     Sub_166B4
         JSR     FuelTrimAdjustStore
-        JSR     Sub_16F1C
-        JSR     Sub_1741E
-        JSR     Sub_172E6
+        JSR     QspiOutputStatus
+        JSR     EepromWriteService
+        JSR     EepromWriteQueue
         JSR     HighRpmTimerUpdate
-        JSR     Sub_1E1D8
+        JSR     BrakeSwitchMonitor
         JSR     Sub_1D806
         JSR     Sub_0757A
         JSR     Sub_1B360
@@ -17913,21 +19154,21 @@ L0D3B6:
         TAB
         COMB
         STD     <ResetCheckWord,Z
-        JSR     Sub_0D46C
+        JSR     CheckPowerDown
 L0D456:
         ANDP    #$FF1F
         LDAA    $03B5,Z
         CMPA    #$0E
         BCS     L0D456
         CLR     $03B5,Z
-        JMP     L0D1EE
+        JMP     MainLoop
         dc.b    $27,$4C
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0D46C ($0D46C)
+; CheckPowerDown ($0D46C)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_0D46C:
+CheckPowerDown:
         BRSET   >IoInputs0,Z,#$08,L0D47E                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
 L0D472:
         ANDP    #$FF1F
@@ -17951,16 +19192,16 @@ L0D49C:
         LDAB    >CoolantTemp,Z
         CMPB    $3D59
         BLS     L0D4B0
-        BSET    $00AD,Z,#$10
+        BSET    >O2HeaterWork,Z,#$10
         BRA     L0D4B4
 L0D4B0:
-        BCLR    $00AD,Z,#$10
+        BCLR    >O2HeaterWork,Z,#$10
 L0D4B4:
-        BCLR    $36,Z,#$04
+        BCLR    <FlexStartFlags,Z,#$04                   ; bit 2: power-down tasks running (CheckPowerDown)
         CLR     >FaultPending1,Z
         CLR     >FaultPendingCount1,Z
         JSR     KickWatchdogsLong
-        JSR     Sub_1CDB8
+        JSR     ChecksumCheck
         LDAA    #$20
 L0D4CA:
         BRCLR   >IoInputs0,Z,#$08,L0D472                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
@@ -17982,7 +19223,7 @@ L0D4E6:
         BCLRW   $086E,Z,#$2000
         LDD     #$FFFF
         STD     >TR0,Z
-        STD     >IoCfg1FL,Z
+        STD     >ControlFlags943,Z
         CLR     >SPCR2,Z
         JSR     QspiWaitIdle
         BSET    <SystemFlags00A,Z,#$20                   ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
@@ -18022,24 +19263,24 @@ L0D57C:
 L0D580:
         BCLR    <SystemFlags00A,Z,#$20                   ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
 L0D584:
-        BRCLR   $0324,#$01,L0D5DE
-        BCLR    $36,Z,#$10
-        BRCLR   $0036,Z,#$08,L0D5B4
+        BRCLR   >Options032C,#$01,L0D5DE
+        BCLR    <FlexStartFlags,Z,#$10                   ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
+        BRCLR   >FlexStartFlags,Z,#$08,L0D5B4            ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
         LDD     <SriMileage,Z
-        SUBD    $0606,Z
+        SUBD    >ResetF09,Z
         BCS     L0D5B0
         TSTA
         BNE     L0D5A6
-        CMPB    $0723
+        CMPB    >FlexColdStartMiles
         BCS     L0D5B4
 L0D5A6:
-        BCLR    $36,Z,#$08
-        BSET    $36,Z,#$20
+        BCLR    <FlexStartFlags,Z,#$08                   ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+        BSET    <FlexStartFlags,Z,#$20                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
         BRA     L0D5B4
 L0D5B0:
-        BCLR    $36,Z,#$28
+        BCLR    <FlexStartFlags,Z,#$28                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
 L0D5B4:
-        BRSET   $016A,Z,#$02,L0D5DE
+        BRSET   >FaultSet07,Z,#$02,L0D5DE
         LDAA    <FlexEthanol,Z
         STAA    >EepromData,Z
         SUBA    >PowerDownCount,Z
@@ -18050,18 +19291,18 @@ L0D5C8:
         BCS     L0D5DE
         LDD     #$000C
         STD     >EepromAddr,Z
-        JSR     Sub_170F6
+        JSR     EepromPowerDownWrite
         BCS     L0D5DE
         STAA    >PowerDownCount,Z
 L0D5DE:
         BRCLR   >IoInputs0,Z,#$08,L0D5F2                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         JSR     EquipmentProbe
         BRCLR   >IoInputs0,Z,#$08,L0D5F2                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
-        JSR     Sub_1A17E
+        JSR     O2HeaterMonitor
 L0D5F2:
-        BSET    $36,Z,#$04
-        LDAA    $05E9,Z
-        CMPA    $0682
+        BSET    <FlexStartFlags,Z,#$04                   ; bit 2: power-down tasks running (CheckPowerDown)
+        LDAA    >EngineOffTimeStart,Z
+        CMPA    >EngineOffTimeMin
         BCS     L0D602
         CLR     $73,Z
 L0D602:
@@ -18087,12 +19328,12 @@ L0D61A:
         STAA    $A5,Z
 L0D638:
         LDAA    >Count3s,Z
-        CMPA    $3D5F
+        CMPA    >FuelSenderReadTime
         BCS     L0D648
-        LDAA    $0266,Z
+        LDAA    >FuelSenderFiltered,Z
         STAA    $3E,Z
 L0D648:
-        JSR     Sub_0E7BC
+        JSR     NvChecksum
         STD     <ResetCheckWord,Z
         JSR     KickWatchdogsLong
         BSET    >PORTC,Z,#$10                            ; bit 4: port C pin 4 output level (chip-select pin used as output)
@@ -18106,8 +19347,8 @@ L0D666:
         DECA
         BNE     L0D666
         JSR     KickWatchdogsLong
-        BCLR    $36,Z,#$04
-        JSR     Sub_0E7BC
+        BCLR    <FlexStartFlags,Z,#$04                   ; bit 2: power-down tasks running (CheckPowerDown)
+        JSR     NvChecksum
         STD     <ResetCheckWord,Z
         JMP     Reset
 L0D682:
@@ -18480,17 +19721,17 @@ L0DAAE:
         STE     $01B2,Z
 L0DAC2:
         ORP     #$00E0
-        LDD     $0804,Z
+        LDD     >IoCtl04,Z
         BEQ     L0DAD8
-        CLRW    $0804,Z
+        CLRW    >IoCtl04,Z
         LDE     #$003F
         STE     $01B2,Z
 L0DAD8:
         ANDP    #$FF1F
         LDD     #$F881
-        CPD     $0814,Z
+        CPD     >IoCfg14,Z
         BEQ     L0DAF2
-        STD     $0814,Z
+        STD     >IoCfg14,Z
         LDE     #$0041
         STE     $01B2,Z
 L0DAF2:
@@ -18519,12 +19760,12 @@ L0DB3A:
         STD     >IoCfg18,Z
         ANDP    #$FF1F
         BRCLR   $081D,Z,#$BA,L0DB56
-        BCLRW   $081C,Z,#$00BA
+        BCLRW   >IoCfg1C,Z,#$00BA
         LDE     #$0046
         STE     $01B2,Z
 L0DB56:
         BRSET   $081D,Z,#$05,L0DB6A
-        BSETW   $081C,Z,#$0005
+        BSETW   >IoCfg1C,Z,#$0005
         LDE     #$0047
         STE     $01B2,Z
 L0DB6A:
@@ -18721,9 +19962,9 @@ L0DDA2:
         STE     $01B2,Z
 L0DDBA:
         LDD     #$0803
-        CPD     $080C,Z
+        CPD     >IoIrqEnable,Z
         BEQ     L0DDD0
-        STD     $080C,Z
+        STD     >IoIrqEnable,Z
         LDE     #$0040
         STE     $01B2,Z
 L0DDD0:
@@ -18779,9 +20020,9 @@ L0DE5E:
         LDE     #$0050
         STE     $01B2,Z
 L0DE74:
-        CPD     $0866,Z
+        CPD     >IoDriver68,Z
         BEQ     L0DE86
-        STD     $0866,Z
+        STD     >IoDriver68,Z
         LDE     #$0051
         STE     $01B2,Z
 L0DE86:
@@ -18890,9 +20131,9 @@ L0DF90:
         STE     $01B2,Z
 L0DFA8:
         LDD     #$0803
-        CPD     $080C,Z
+        CPD     >IoIrqEnable,Z
         BEQ     L0DFBE
-        STD     $080C,Z
+        STD     >IoIrqEnable,Z
         LDE     #$0040
         STE     $01B2,Z
 L0DFBE:
@@ -18957,9 +20198,9 @@ L0E072:
         STE     $01B2,Z
 L0E07A:
         LDD     #$0000
-        CPD     $0866,Z
+        CPD     >IoDriver68,Z
         BEQ     L0E090
-        STD     $0866,Z
+        STD     >IoDriver68,Z
         LDE     #$0051
         STE     $01B2,Z
 L0E090:
@@ -19059,9 +20300,9 @@ L0E18A:
         STE     $01B2,Z
 L0E1A2:
         LDD     #$0803
-        CPD     $080C,Z
+        CPD     >IoIrqEnable,Z
         BEQ     L0E1B8
-        STD     $080C,Z
+        STD     >IoIrqEnable,Z
         LDE     #$0040
         STE     $01B2,Z
 L0E1B8:
@@ -19127,9 +20368,9 @@ L0E270:
         STE     $01B2,Z
 L0E278:
         LDD     #$0000
-        CPD     $0866,Z
+        CPD     >IoDriver68,Z
         BEQ     L0E28E
-        STD     $0866,Z
+        STD     >IoDriver68,Z
         LDE     #$0051
         STE     $01B2,Z
 L0E28E:
@@ -19176,7 +20417,7 @@ L0E28E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Lookup2D ($0E500)
-; Called from: Isr_GPT_IC1, CalcDeadTime, Sub_06436, WotEnrichControl, DecelFuelRampControl, Sub_06A64, Sub_06B66, Sub_06C56 and 94 more routines (297 calls)
+; Called from: Isr_GPT_IC1, CalcDeadTime, Sub_06436, WotEnrichControl, DecelFuelRampControl, CalcBaroFuelAdder, AccelEnrichFactors, TipInFuelControl and 94 more routines (297 calls)
 ;---------------------------------------------------------------------------------------------------
 Lookup2D:
         PSHM    E,Y,K
@@ -19332,7 +20573,7 @@ L0E60C:
 
 ;---------------------------------------------------------------------------------------------------
 ; PeriodChangeTrack ($0E616)
-; Called from: Isr_GPT_IC1, Isr_GPT_IC3, Isr_GPT_IC4OC5, Sub_0ECDC, Sub_11BD4, Sub_11C72, Sub_14D34 (9 calls)
+; Called from: Isr_GPT_IC1, Isr_GPT_IC3, Isr_GPT_IC4OC5, Sub_0ECDC, Sub_11BD4, CalcEngineRpm, CamSignalCheck (9 calls)
 ;---------------------------------------------------------------------------------------------------
 PeriodChangeTrack:
         PSHM    X,Y
@@ -19367,7 +20608,7 @@ L0E64C:
 
 ;---------------------------------------------------------------------------------------------------
 ; Lookup3D ($0E64E)
-; Called from: DecelFuelRampControl, Sub_06E9A, Sub_06F14, Sub_07370, CalcFuelPulse, DecelLeanControl, CrankFuel, IdleTargetControl and 14 more routines (39 calls)
+; Called from: DecelFuelRampControl, IacFuelControl, Sub_06F14, IdleEnrichment, CalcFuelPulse, DecelLeanControl, CrankFuel, IdleTargetControl and 14 more routines (39 calls)
 ;---------------------------------------------------------------------------------------------------
 Lookup3D:
         PSHM    E,Y,K
@@ -19461,12 +20702,12 @@ L0E6C8:
         TED
         PULB
         PSHB
-        BSR     Sub_0E718
+        BSR     Interpolate8
         TBA
         LDAB    $01,X
         ABY
         PULB
-        BSR     Sub_0E718
+        BSR     Interpolate8
         XGDY
         PULA
         PSHM    Y
@@ -19474,7 +20715,7 @@ L0E6C8:
         LDAB    $00,X
         DECB
         MUL
-        BSR     Sub_0E718
+        BSR     Interpolate8
         PULM    Y
         XGEX
         PULM    K,Y,E
@@ -19483,10 +20724,10 @@ L0E6C8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0E718 ($0E718)
+; Interpolate8 ($0E718)
 ; Called from: Lookup3DNorm (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0E718:
+Interpolate8:
         PSHA
         LDAA    $01,Y
         SUBA    $00,Y
@@ -19537,10 +20778,10 @@ L0E764:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0E76C ($0E76C)
+; MainLoopCounters ($0E76C)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_0E76C:
+MainLoopCounters:
         BRCLR   >FieldFlags,Z,#$08,L0E780                ; bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
         LDD     $06D5,Z
         ADDD    #$01
@@ -19573,10 +20814,10 @@ L0E7BA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0E7BC ($0E7BC)
-; Called from: Reset, Sub_0D46C (3 calls)
+; NvChecksum ($0E7BC)
+; Called from: Reset, CheckPowerDown (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0E7BC:
+NvChecksum:
         CLRE
         CLRD
         TZX
@@ -19604,7 +20845,7 @@ KickWatchdogs:
 
 ;---------------------------------------------------------------------------------------------------
 ; ServiceWatchdog ($0E7EC)
-; Called from: Sub_0D46C
+; Called from: CheckPowerDown
 ;---------------------------------------------------------------------------------------------------
 ServiceWatchdog:
         LDD     #$55AA
@@ -19614,7 +20855,7 @@ ServiceWatchdog:
 
 ;---------------------------------------------------------------------------------------------------
 ; KickWatchdogsLong ($0E7FA)
-; Called from: Reset, Sub_0D46C, PowerInputHold, Sub_170F6, Sub_1A17E, Sub_1CDB8 (19 calls)
+; Called from: Reset, CheckPowerDown, PowerInputHold, EepromPowerDownWrite, O2HeaterMonitor, ChecksumCheck (19 calls)
 ;---------------------------------------------------------------------------------------------------
 KickWatchdogsLong:
         PSHM    D
@@ -19634,7 +20875,7 @@ L0E80A:
 
 ;---------------------------------------------------------------------------------------------------
 ; PowerInputHold ($0E822)
-; Called from: Sub_0D46C, EquipmentProbe, Sub_1A17E, O2HeaterAdcSample (9 calls)
+; Called from: CheckPowerDown, EquipmentProbe, O2HeaterMonitor, O2HeaterAdcSample (9 calls)
 ;---------------------------------------------------------------------------------------------------
 PowerInputHold:
         JSR     KickWatchdogsLong
@@ -19652,10 +20893,10 @@ L0E83A:
         dc.b    $27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0E85E ($0E85E)
-; Called from: Isr_GPT_IC3, Sub_054C6, Reset, Sub_170F6, Sub_1D054, Sub_1D2B4 (10 calls)
+; DelayLoop ($0E85E)
+; Called from: Isr_GPT_IC3, IacStepperDrive, Reset, EepromPowerDownWrite, OutputDriverCheck, Sub_1D2B4 (10 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0E85E:
+DelayLoop:
         PSHM    D
         LDD     #$0004
         SDE
@@ -19680,7 +20921,7 @@ L0E882:
 
 ;---------------------------------------------------------------------------------------------------
 ; CollectBits ($0E888)
-; Called from: Sub_06436, Sub_1610A, Sub_16EDC, Sub_196A2, Sub_1E1CA (11 calls)
+; Called from: Sub_06436, SciSendByte, Sub_16EDC, Sub_196A2, Sub_1E1CA (11 calls)
 ;---------------------------------------------------------------------------------------------------
 CollectBits:
         PSHM    E,Y
@@ -19761,7 +21002,7 @@ L0E922:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16 ($0E924)
-; Called from: Sub_0B76A, IacBaseCalc, SpeedCtlRpmJumpCheck, Sub_10EE8, Sub_13BA8, Sub_14580, Sub_15006, Sub_18F48 and 3 more routines (19 calls)
+; Called from: IdleMapLoop, IacBaseCalc, SpeedCtlRpmJumpCheck, Sub_10EE8, TccMonitor, TipInSparkControl, SurgeFilters, Sub_18F48 and 3 more routines (19 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16:
         PSHM    E,X,Y,K,CCR
@@ -19821,7 +21062,7 @@ L0E9A0:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16Signed ($0E9A6)
-; Called from: Sub_0A362, Sub_0F116, Sub_15006, Sub_1CCF2 (7 calls)
+; Called from: IdleRpmLoop, PurgeVaporLearn, SurgeFilters, MisfireDevCalc (7 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16Signed:
         PSHM    E,X,Y,K,CCR
@@ -19872,7 +21113,7 @@ L0EA00:
 
 ;---------------------------------------------------------------------------------------------------
 ; SelectCell3x3 ($0EA1A)
-; Called from: AdcStartF0, Sub_08A72
+; Called from: EventCellSelect, O2CellSelect3x3
 ;---------------------------------------------------------------------------------------------------
 SelectCell3x3:
         PSHM    E,X,Y,K
@@ -20002,15 +21243,24 @@ L0EAEC:
         AIS     #$04
         PULM    K,Y,X,E
         RTS
-        dc.b    $05,$D9,$00,$FF,$05,$DA,$00,$FF,$05,$62,$00,$FF,$01,$D1,$00,$FF
-        dc.b    $05,$C1,$00,$FF,$05,$C0,$00,$FF,$05,$9E,$00,$FF,$06,$03,$00,$FF
-        dc.b    $01,$CB,$01,$CC,$01,$CD,$01,$CE
 
 ;---------------------------------------------------------------------------------------------------
-; KnockCylinderRetard ($0EB22)
+; IncSaturateList ($EAFA): 1 rows of 48 bytes
+; Pairs of RAM counter address and limit used by EventCounters
+;---------------------------------------------------------------------------------------------------
+IncSaturateList:
+        dc.b    $05,$D9,$00,$FF,$05,$DA,$00,$FF          ; O2CellWork, $00FF, O2LearnTimer2, $00FF
+        dc.b    $05,$62,$00,$FF,$01,$D1,$00,$FF          ; $0562, $00FF, $01D1, $00FF
+        dc.b    $05,$C1,$00,$FF,$05,$C0,$00,$FF          ; $05C1, $00FF, SparkStartRampValue, $00FF
+        dc.b    $05,$9E,$00,$FF,$06,$03,$00,$FF          ; DecelRampTimer, $00FF, PurgeLearnCount, $00FF
+        dc.b    $01,$CB,$01,$CC,$01,$CD,$01,$CE          ; $01CB, $01CC, $01CD, $01CE
+
+
+;---------------------------------------------------------------------------------------------------
+; EventCounters ($0EB22)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-KnockCylinderRetard:
+EventCounters:
         TPD
         TBXK
         LDX     #$EB1A
@@ -20024,7 +21274,7 @@ L0EB34:
         AIX     #$02
         CPX     #$EB22
         BCS     L0EB2A
-        LDX     #$EAFA
+        LDX     #IncSaturateList
 L0EB42:
         LDE     $0000,X
         LDAB    E,Z
@@ -20037,10 +21287,10 @@ L0EB50:
         CPX     #$EB1A
         BCS     L0EB42
         BRCLR   >SparkFlags,Z,#$02,L0EB6A                ; bit 1: tip-in spark retard armed (TipInSparkControl)
-        LDAA    $0622,Z
+        LDAA    >TipInSteps,Z
         INCA
         BEQ     L0EB6A
-        STAA    $0622,Z
+        STAA    >TipInSteps,Z
 L0EB6A:
         BRCLR   >EngineStateFlags,Z,#$80,L0EB7C          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >AfterStartSparkFlags,Z,#$3C,L0EB78
@@ -20054,10 +21304,10 @@ L0EB86:
         BRSET   >FuelModeFlags2,Z,#$80,L0EB90            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         CLR     $05C1,Z
 L0EB90:
-        BRCLR   $0167,Z,#$40,L0EBA4
+        BRCLR   >FaultSet04,Z,#$40,L0EBA4
         CLR     $0290,Z
         CLR     $0291,Z
-        BCLR    $0289,Z,#$01
+        BCLR    >EgrMonFlags,Z,#$01                      ; bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
         BRA     L0EBF8
 L0EBA4:
         BRCLR   >ControlFlags944,Z,#$04,L0EBD6           ; bit 2: EGR solenoid on (EgrEnable)
@@ -20066,44 +21316,44 @@ L0EBA4:
         LDAA    $045E
         STAA    $0290,Z
         CLR     $0291,Z
-        BCLR    $0289,Z,#$01
+        BCLR    >EgrMonFlags,Z,#$01                      ; bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
 L0EBC0:
         LDAA    $045E
         CMPA    $0290,Z
         BNE     L0EBD0
-        BSET    $0289,Z,#$01
+        BSET    >EgrMonFlags,Z,#$01                      ; bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
         BRA     L0EBF8
 L0EBD0:
         INC     $0290,Z
         BRA     L0EBF8
 L0EBD6:
         CLR     $0290,Z
-        BRCLR   $0289,Z,#$01,L0EBF4
+        BRCLR   >EgrMonFlags,Z,#$01,L0EBF4               ; bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
         LDAA    $045F
         CMPA    $0291,Z
         BEQ     L0EBF0
         INC     $0291,Z
         BRA     L0EBF8
 L0EBF0:
-        BCLR    $0289,Z,#$01
+        BCLR    >EgrMonFlags,Z,#$01                      ; bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
 L0EBF4:
         CLR     $0291,Z
 L0EBF8:
-        BRCLR   $0189,Z,#$08,L0EC2C
+        BRCLR   >StartFlags,Z,#$08,L0EC2C                ; bit 3: hot start: coolant at reset at or above HotStartCoolantMin
         BRCLR   >FuelModeFlags2,Z,#$08,L0EC1C            ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
         BRSET   >ThrottleState,Z,#$40,L0EC1C             ; bit 6: wide-open throttle (DetectWot)
-        LDAA    $05E3,Z
+        LDAA    >IdleFuelUpCount,Z
         INCA
-        CMPA    $0670
+        CMPA    >IdleFuelStepsUp
         BHI     L0EC2C
-        STAA    $05E3,Z
+        STAA    >IdleFuelUpCount,Z
         BRA     L0EC2C
 L0EC1C:
-        LDAA    $05E4,Z
+        LDAA    >IdleFuelDownCount,Z
         INCA
-        CMPA    $066F
+        CMPA    >IdleFuelStepsDown
         BHI     L0EC2C
-        STAA    $05E4,Z
+        STAA    >IdleFuelDownCount,Z
 L0EC2C:
         BRCLR   >FuelModeFlags,Z,#$01,L0EC40             ; bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
         LDAA    >WotEnrich,Z
@@ -20115,9 +21365,9 @@ L0EC40:
         CLR     >WotEnrich,Z
 L0EC44:
         BRCLR   >FuelModeFlags2,Z,#$40,L0EC4E            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
-        CLR     $05C0,Z
+        CLR     >SparkStartRampValue,Z
 L0EC4E:
-        BRSET   $0170,Z,#$10,L0EC5A
+        BRSET   >BusModuleFlags,Z,#$10,L0EC5A
         BRCLR   >FaultSet0B,Z,#$30,L0ECDA
 L0EC5A:
         BRCLR   >O2ActiveFlags,Z,#$80,L0ECDA             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
@@ -20126,41 +21376,41 @@ L0EC5A:
         LDAA    >ShortTermTrim2,Z
 L0EC6E:
         BPL     L0ECA6
-        CLR     $05E5,Z
+        CLR     >FlexTrimUpCounter,Z
         NEGA
-        CMPA    $3DA0
+        CMPA    >FlexTrimBand
         BCC     L0EC82
-        CLR     $05E6,Z
+        CLR     >FlexTrimDownCounter,Z
         BRA     L0ECDA
 L0EC82:
-        LDAA    $05E6,Z
+        LDAA    >FlexTrimDownCounter,Z
         INCA
-        CMPA    $3DA2
+        CMPA    >FlexTrimDownCount
         BEQ     L0EC94
-        STAA    $05E6,Z
+        STAA    >FlexTrimDownCounter,Z
         BRA     L0ECDA
 L0EC94:
-        CLR     $05E6,Z
+        CLR     >FlexTrimDownCounter,Z
         LDAA    >FlexEthanol,Z
         BEQ     L0ECDA
         DECA
         STAA    >FlexEthanol,Z
         BRA     L0ECDA
 L0ECA6:
-        CLR     $05E6,Z
-        CMPA    $3DA0
+        CLR     >FlexTrimDownCounter,Z
+        CMPA    >FlexTrimBand
         BCC     L0ECB6
-        CLR     $05E5,Z
+        CLR     >FlexTrimUpCounter,Z
         BRA     L0ECDA
 L0ECB6:
-        LDAA    $05E5,Z
+        LDAA    >FlexTrimUpCounter,Z
         INCA
-        CMPA    $3DA1
+        CMPA    >FlexTrimUpCount
         BEQ     L0ECC8
-        STAA    $05E5,Z
+        STAA    >FlexTrimUpCounter,Z
         BRA     L0ECDA
 L0ECC8:
-        CLR     $05E5,Z
+        CLR     >FlexTrimUpCounter,Z
         LDAA    >FlexEthanol,Z
         CMPA    #$AA
         BCC     L0ECDA
@@ -20182,14 +21432,14 @@ Sub_0ECDC:
         LDX     #$837C
         LDY     #$80F0
         JSR     PeriodChangeTrack
-        LDAA    $037C,Z
+        LDAA    >RunModeCounter,Z
         LSRA
         STAA    >RefPeriod,Z
         LDD     >CrankPeriodSum,Z
         TDE
         SUBD    >CrankAC0,Z
-        STD     >SparkPeriod,Z
-        CLR     $037C,Z
+        STD     >RefPeriodLow,Z
+        CLR     >RunModeCounter,Z
 L0ED14:
         STE     >CrankAC0,Z
         BSET    >SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
@@ -20201,19 +21451,19 @@ L0ED14:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_0ED20:
-        BRCLR   $0321,#$80,L0EEA2
+        BRCLR   >Options0334,#$80,L0EEA2                 ; bit 7: fan control variant (FanMain)
         LDAA    >SystemTestMode,Z
         CMPA    #$03
         BNE     L0ED4A
         LDAA    >SystemTestValue,Z
         CMPA    #$02
         BNE     L0ED3E
-        BSET    >IoCfg1FL,Z,#$20                         ; bit 5: manifold tuning valve driver status (MtvCheck)
+        BSET    >ControlFlags943,Z,#$20
         LBRA    L0EEA2
 L0ED3E:
         CMPA    #$01
         BNE     L0ED4A
-        BCLR    >IoCfg1FL,Z,#$20                         ; bit 5: manifold tuning valve driver status (MtvCheck)
+        BCLR    >ControlFlags943,Z,#$20
         LBRA    L0EEA2
 L0ED4A:
         LDAA    >ActuatorTest,Z
@@ -20321,19 +21571,19 @@ L0EE86:
         BEQ     L0EE96
         DEC     $0400,Z
 L0EE90:
-        BCLR    >IoCfg1FL,Z,#$20                         ; bit 5: manifold tuning valve driver status (MtvCheck)
+        BCLR    >ControlFlags943,Z,#$20
         BRA     L0EEA2
 L0EE96:
         LDAA    $048C
         STAA    $0400,Z
 L0EE9E:
-        BSET    >IoCfg1FL,Z,#$20                         ; bit 5: manifold tuning valve driver status (MtvCheck)
+        BSET    >ControlFlags943,Z,#$20
 L0EEA2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_0EEA4 ($0EEA4)
-; Called from: Reset, Sub_11C72
+; Called from: Reset, CalcEngineRpm
 ;---------------------------------------------------------------------------------------------------
 Sub_0EEA4:
         LDAA    >FaultSet01,Z
@@ -20342,81 +21592,81 @@ Sub_0EEA4:
         LDAA    >FaultSet00,Z
         BITA    #$03
         LBNE    L0EF8A
-        BRSET   $0168,Z,#$01,L0EF8A
+        BRSET   >FaultSet12,Z,#$01,L0EF8A
         BRSET   >FaultSet06,Z,#$40,L0EF8A
-        LDAA    $016C,Z
+        LDAA    >FaultSet09,Z
         BITA    #$06
         LBNE    L0EF8A
         LDAA    >CoolantTemp,Z
         CMPA    $13B6
         LBCC    L0EF8A
-        LDAA    $62,Z
+        LDAA    <PurgeCellRichFlags,Z
         BITA    #$38
         LBNE    L0EF8A
-        BCLR    $03DF,Z,#$0F
+        BCLR    >PurgeFlags2,Z,#$0F                      ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate); bit 2: purge cell 1 reference reached, bank 2; bit 1: purge cell 2 reference reached, bank 1; bit 0: purge cell 2 reference reached, bank 2
         TZX
         LDX     #$8040
         LDAB    >PurgeCell1
         ABX
         LDAA    $4E,Z
-        LBSR    Sub_0EF78
-        STAA    $03DB,Z
+        LBSR    PurgeCellRichCheck
+        STAA    >PurgeCell43F,Z
         BNE     L0EF02
-        BSET    $03DF,Z,#$08
+        BSET    >PurgeFlags2,Z,#$08                      ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
 L0EF02:
         LDX     #$8051
         LDAB    >PurgeCell1
         ABX
         LDAA    $5F,Z
-        BSR     Sub_0EF78
-        STAA    $03DC,Z
+        BSR     PurgeCellRichCheck
+        STAA    >PurgeCell440,Z
         BNE     L0EF1A
-        BSET    $03DF,Z,#$04
+        BSET    >PurgeFlags2,Z,#$04                      ; bit 2: purge cell 1 reference reached, bank 2
 L0EF1A:
         LDX     #$8040
         LDAB    >PurgeCell2
         ABX
         LDAA    $4F,Z
-        BSR     Sub_0EF78
+        BSR     PurgeCellRichCheck
         LDX     #$8040
         LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    $50,Z
-        BSR     Sub_0EF78
+        BSR     PurgeCellRichCheck
         CBA
         BCC     L0EF3E
         TBA
 L0EF3E:
-        STAA    $03DD,Z
+        STAA    >PurgeCell441,Z
         BNE     L0EF48
-        BSET    $03DF,Z,#$02
+        BSET    >PurgeFlags2,Z,#$02                      ; bit 1: purge cell 2 reference reached, bank 1
 L0EF48:
         LDX     #$8051
         LDAB    >PurgeCell2
         ABX
         LDAA    $60,Z
-        BSR     Sub_0EF78
+        BSR     PurgeCellRichCheck
         LDX     #$8051
         LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    $61,Z
-        BSR     Sub_0EF78
+        BSR     PurgeCellRichCheck
         CBA
         BCC     L0EF6C
         TBA
 L0EF6C:
-        STAA    $03DE,Z
+        STAA    >PurgeCell442,Z
         BNE     L0EF8A
-        BSET    $03DF,Z,#$01
+        BSET    >PurgeFlags2,Z,#$01                      ; bit 0: purge cell 2 reference reached, bank 2
         BRA     L0EF8A
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0EF78 ($0EF78)
+; PurgeCellRichCheck ($0EF78)
 ; Called from: Sub_0EEA4 (6 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0EF78:
+PurgeCellRichCheck:
         SUBA    $00,X
         BLE     L0EF86
         BVC     L0EF80
@@ -20429,20 +21679,20 @@ L0EF86:
 L0EF88:
         RTS
 L0EF8A:
-        BSET    $62,Z,#$C0
+        BSET    <PurgeCellRichFlags,Z,#$C0               ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn); bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         BSET    >PurgeCellFlags,Z,#$80
         LDAB    $13A2
         LDAA    >CoolantTemp,Z
-        CMPA    $13A0
+        CMPA    >PurgeCoolantMin
         BCS     L0EFAE
-        BCLR    $62,Z,#$80
+        BCLR    <PurgeCellRichFlags,Z,#$80               ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
         CMPA    $13A1
         BCS     L0EFAE
         LDAB    $13A3
 L0EFAE:
         STAB    >PurgeDelay,Z
         TZX
-        LDAB    $62,Z
+        LDAB    <PurgeCellRichFlags,Z
         ANDB    #$38
         BEQ     L0EFD4
         CMPA    $13B3
@@ -20451,13 +21701,13 @@ L0EFAE:
         JSR     PurgeCellMax
         LDX     #$8051
         JSR     PurgeCellMax
-        BCLR    $62,Z,#$38
+        BCLR    <PurgeCellRichFlags,Z,#$38               ; bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck); bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck); bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
 L0EFD4:
-        BRSET   >Options0339,#$20,L0F006                 ; bit 5: selects a branch in SparkEventCalc
+        BRSET   >Options032E,#$20,L0F006                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
         LDX     #$804C
         LDAB    $01,X
         LDAA    $00,X
-        ADDA    $13B5
+        ADDA    >PurgeCellRefMargin
         BVC     L0EFEA
         LDAA    #$7F
 L0EFEA:
@@ -20468,7 +21718,7 @@ L0EFF0:
         LDX     #$805D
         LDAB    $01,X
         LDAA    $00,X
-        ADDA    $13B5
+        ADDA    >PurgeCellRefMargin
         BVC     L0F000
         LDAA    #$7F
 L0F000:
@@ -20485,7 +21735,7 @@ L0F014:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeCellMax ($0F016)
-; Called from: Sub_0EF78 (2 calls)
+; Called from: PurgeCellRichCheck (2 calls)
 ;---------------------------------------------------------------------------------------------------
 PurgeCellMax:
         LDAA    $0F,X
@@ -20523,22 +21773,22 @@ L0F036:
 ; Called from: PurgeCellMax (4 calls)
 ;---------------------------------------------------------------------------------------------------
 MaxStore:
-        STX     >IacBase,Z
+        STX     >Scratch0,Z
         ABX
         CMPA    $00,X
         BLE     L0F062
         STAA    $00,X
 L0F062:
-        LDX     >IacBase,Z
+        LDX     >Scratch0,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0F068 ($0F068)
+; PurgeCellUpdateGate ($0F068)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_0F068:
-        BRSET   $03DF,Z,#$0F,L0F114
-        LDAB    $0165,Z
+PurgeCellUpdateGate:
+        BRSET   >PurgeFlags2,Z,#$0F,L0F114               ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate); bit 2: purge cell 1 reference reached, bank 2; bit 1: purge cell 2 reference reached, bank 1; bit 0: purge cell 2 reference reached, bank 2
+        LDAB    >FaultSet02,Z
         BITB    #$C0
         BNE     L0F0A0
         LDAA    >FaultSet01,Z
@@ -20547,62 +21797,62 @@ Sub_0F068:
         LDAA    >FaultSet00,Z
         BITA    #$03
         BNE     L0F0A0
-        BRSET   $0168,Z,#$01,L0F0A0
+        BRSET   >FaultSet12,Z,#$01,L0F0A0
         BRSET   >FaultSet06,Z,#$40,L0F0A0
-        LDAA    $016C,Z
+        LDAA    >FaultSet09,Z
         BITA    #$06
         BNE     L0F0A0
         BRCLR   >O2ActiveFlags,Z,#$C0,L0F114             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7)
 L0F0A0:
-        LDAA    $03E0,Z
+        LDAA    >PurgeCellUpdateCounter,Z
         INCA
-        STAA    $03E0,Z
-        CMPA    $13B8
+        STAA    >PurgeCellUpdateCounter,Z
+        CMPA    >PurgeCellUpdateCount
         BCS     L0F114
-        CLR     $03E0,Z
-        BRSET   $03DF,Z,#$08,L0F0CC
-        LDAA    $03DB,Z
+        CLR     >PurgeCellUpdateCounter,Z
+        BRSET   >PurgeFlags2,Z,#$08,L0F0CC               ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
+        LDAA    >PurgeCell43F,Z
         BEQ     L0F0C8
         DECA
-        STAA    $03DB,Z
+        STAA    >PurgeCell43F,Z
         BNE     L0F0CC
 L0F0C8:
-        BSET    $03DF,Z,#$08
+        BSET    >PurgeFlags2,Z,#$08                      ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
 L0F0CC:
-        BRSET   $03DF,Z,#$04,L0F0E4
-        LDAA    $03DC,Z
+        BRSET   >PurgeFlags2,Z,#$04,L0F0E4               ; bit 2: purge cell 1 reference reached, bank 2
+        LDAA    >PurgeCell440,Z
         BEQ     L0F0E0
         DECA
-        STAA    $03DC,Z
+        STAA    >PurgeCell440,Z
         BNE     L0F0E4
 L0F0E0:
-        BSET    $03DF,Z,#$04
+        BSET    >PurgeFlags2,Z,#$04                      ; bit 2: purge cell 1 reference reached, bank 2
 L0F0E4:
-        BRSET   $03DF,Z,#$02,L0F0FC
-        LDAA    $03DD,Z
+        BRSET   >PurgeFlags2,Z,#$02,L0F0FC               ; bit 1: purge cell 2 reference reached, bank 1
+        LDAA    >PurgeCell441,Z
         BEQ     L0F0F8
         DECA
-        STAA    $03DD,Z
+        STAA    >PurgeCell441,Z
         BNE     L0F0FC
 L0F0F8:
-        BSET    $03DF,Z,#$02
+        BSET    >PurgeFlags2,Z,#$02                      ; bit 1: purge cell 2 reference reached, bank 1
 L0F0FC:
-        BRSET   $03DF,Z,#$01,L0F114
-        LDAA    $03DE,Z
+        BRSET   >PurgeFlags2,Z,#$01,L0F114               ; bit 0: purge cell 2 reference reached, bank 2
+        LDAA    >PurgeCell442,Z
         BEQ     L0F110
         DECA
-        STAA    $03DE,Z
+        STAA    >PurgeCell442,Z
         BNE     L0F114
 L0F110:
-        BSET    $03DF,Z,#$01
+        BSET    >PurgeFlags2,Z,#$01                      ; bit 0: purge cell 2 reference reached, bank 2
 L0F114:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0F116 ($0F116)
+; PurgeVaporLearn ($0F116)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_0F116:
+PurgeVaporLearn:
         LDD     >CalcFuel432,Z
         LSRD
         LSRD
@@ -20644,11 +21894,11 @@ L0F146:
         BEQ     L0F178
         LDAB    #$64
 L0F178:
-        STAB    $03D0,Z
+        STAB    >PurgeDuty,Z
         LBRA    L0F714
 L0F180:
         BRSET   >ClosedLoopMonFlags,Z,#$80,L0F6DA        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
-        BRSET   >LdpPurgeTestFlags,Z,#$02,L0F6DA         ; bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
+        BRSET   >LdpFlags3,Z,#$02,L0F6DA                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRCLR   $0327,#$02,L0F198
         BRSET   >FuelModeFlags2,Z,#$80,L0F6DA            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L0F198:
@@ -20656,11 +21906,11 @@ L0F198:
         LDAA    >PurgeFlags,Z
         BITA    #$50
         LBNE    L0F6DA
-        BRCLR   $62,Z,#$80,L0F1BC
+        BRCLR   <PurgeCellRichFlags,Z,#$80,L0F1BC        ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
         LDAA    >CoolantTemp,Z
-        CMPA    $13A0
+        CMPA    >PurgeCoolantMin
         LBCS    L0F1E6
-        BCLR    $62,Z,#$80
+        BCLR    <PurgeCellRichFlags,Z,#$80               ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
 L0F1BC:
         LDAB    >PurgeDelay,Z
         BEQ     L0F1D8
@@ -20670,56 +21920,56 @@ L0F1BC:
         STAB    >PurgeDelay,Z
         LBRA    L0F1E6
 L0F1D8:
-        BRCLR   $0324,#$01,L0F1E4
-        BRSET   $0036,Z,#$08,L0F6F4
+        BRCLR   >Options032C,#$01,L0F1E4
+        BRSET   >FlexStartFlags,Z,#$08,L0F6F4            ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
 L0F1E4:
         BRA     L0F214
 L0F1E6:
-        BRCLR   $0324,#$80,L0F6DA
-        BRSET   $03E1,Z,#$80,L0F5FC
+        BRCLR   >Options032C,#$80,L0F6DA                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
+        BRSET   >PurgeLearnFlags,Z,#$80,L0F5FC           ; bit 7: purge vapour learning running (PurgeVaporLearn)
         LDAB    >ShortTermTrim1,Z
         SXT
         TDE
-        LDAB    $03E2,Z
+        LDAB    >PurgeTrimAvgOff,Z
         SXT
         PSHM    D,E
-        LDAA    $13DB
+        LDAA    >PurgeTrimFilterOff
         JSR     Blend16Signed
         AIS     #$04
-        STAB    $03E2,Z
+        STAB    >PurgeTrimAvgOff,Z
         LBRA    L0F6DA
 L0F214:
-        BRCLR   $0324,#$80,L0F5FC
-        BRSET   $03E1,Z,#$80,L0F5FC
+        BRCLR   >Options032C,#$80,L0F5FC                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
+        BRSET   >PurgeLearnFlags,Z,#$80,L0F5FC           ; bit 7: purge vapour learning running (PurgeVaporLearn)
         BRCLR   >EngineStateFlags,Z,#$80,L0F5E0          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >ThrottleState,Z,#$40,L0F236             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BEQ     L0F23E
         LBRA    L0F714
 L0F236:
-        CLR     $03D0,Z
+        CLR     >PurgeDuty,Z
         LBRA    L0F714
 L0F23E:
-        BRSET   $03E1,Z,#$08,L0F3DC
-        BRSET   $03E1,Z,#$01,L0F2C8
+        BRSET   >PurgeLearnFlags,Z,#$08,L0F3DC           ; bit 3: purge vapour learning step state (PurgeVaporLearn)
+        BRSET   >PurgeLearnFlags,Z,#$01,L0F2C8           ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
         LDAA    >PurgeRamp,Z
         CMPA    $13DA
         BLS     L0F2C4
         LDAA    >StartCoolantTemp2,Z
         CMPA    $13D9
         BCC     L0F2C4
-        BRSET   $0166,Z,#$04,L0F2C4
-        LDAB    $0165,Z
+        BRSET   >FaultSet03,Z,#$04,L0F2C4
+        LDAB    >FaultSet02,Z
         BITB    #$CC
         BNE     L0F2C4
-        LDAB    $0168,Z
+        LDAB    >FaultSet12,Z
         BITB    #$F0
         BNE     L0F2C4
         BRSET   $0174,Z,#$10,L0F2C4
-        LDAA    $016C,Z
+        LDAA    >FaultSet09,Z
         BITA    #$06
         BNE     L0F2C4
-        BRSET   $0168,Z,#$01,L0F2C4
+        BRSET   >FaultSet12,Z,#$01,L0F2C4
         LDAA    >FaultSet06,Z
         BITA    #$50
         BNE     L0F2C4
@@ -20729,68 +21979,68 @@ L0F23E:
         LDAA    $0174,Z
         BITA    #$06
         BNE     L0F2C4
-        LDAA    $0175,Z
+        LDAA    >SensorFaultFlags2,Z
         BITA    #$18
         BNE     L0F2C4
-        LDAA    $017A,Z
+        LDAA    >FaultSet17,Z
         BITA    #$60
         BNE     L0F2C4
-        BSET    $03E1,Z,#$03
+        BSET    >PurgeLearnFlags,Z,#$03                  ; bit 1: purge vapour learning ended (PurgeVaporLearn); bit 0: bank 1 learning rate step (PurgeVaporLearn)
         LDAA    $13DF
-        STAA    $03D0,Z
+        STAA    >PurgeDuty,Z
         STAA    $03EC,Z
         JMP     L0F2C8
 L0F2C4:
         JMP     L0F5DC
 L0F2C8:
-        LDD     $03E5,Z
-        CPD     $13DD
+        LDD     >PurgeVapor448,Z
+        CPD     >PurgeLearnTimeMax
         LBCC    L0F5DC
-        INCW    $03E5,Z
+        INCW    >PurgeVapor448,Z
         LDAA    $03EC,Z
-        CMPA    $13E2
+        CMPA    >PurgeLearnRateMax
         BCC     L0F308
-        LDAB    $03EB,Z
+        LDAB    >PurgeVapor446,Z
         INCB
-        STAB    $03EB,Z
-        CMPB    $13E1
+        STAB    >PurgeVapor446,Z
+        CMPB    >PurgeLearnRateTime
         BNE     L0F308
-        CLR     $03EB,Z
-        ADDA    $13E0
+        CLR     >PurgeVapor446,Z
+        ADDA    >PurgeLearnRateStep
         BCC     L0F2FE
         LDAA    #$64
 L0F2FE:
-        CMPA    $13E2
+        CMPA    >PurgeLearnRateMax
         BCS     L0F308
-        LDAA    $13E2
+        LDAA    >PurgeLearnRateMax
 L0F308:
-        STAA    $03D0,Z
+        STAA    >PurgeDuty,Z
         STAA    $03EC,Z
         ORP     #$00E0
         BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
-        LDAA    $03E4,Z
-        CMPA    $13F6
+        LDAA    >PurgeVaporSettle,Z
+        CMPA    >PurgeVaporSettleTime
         BCS     L0F32C
-        BSET    $03E1,Z,#$04
+        BSET    >PurgeLearnFlags,Z,#$04                  ; bit 2: trim at or below the learning limit (PurgeVaporLearn)
         BRA     L0F330
 L0F32C:
-        INC     $03E4,Z
+        INC     >PurgeVaporSettle,Z
 L0F330:
         LDAB    >ShortTermTrim1,Z
         SXT
         TDE
-        LDAB    $03E3,Z
+        LDAB    >PurgeTrimAvgOn,Z
         SXT
         PSHM    D,E
-        LDAA    $13DC
+        LDAA    >PurgeTrimFilterOn
         JSR     Blend16Signed
         AIS     #$04
-        STAB    $03E3,Z
-        BRCLR   $03E1,Z,#$04,L0F5D8
+        STAB    >PurgeTrimAvgOn,Z
+        BRCLR   >PurgeLearnFlags,Z,#$04,L0F5D8           ; bit 2: trim at or below the learning limit (PurgeVaporLearn)
         TBA
-        LDAB    $03E2,Z
-        ADDB    $13E3
+        LDAB    >PurgeTrimAvgOff,Z
+        ADDB    >PurgeVaporTrimDrop
         BVC     L0F368
         BPL     L0F366
         LDAB    #$7F
@@ -20800,32 +22050,32 @@ L0F366:
 L0F368:
         CBA
         BGT     L0F380
-        LDAA    $03E7,Z
+        LDAA    >PurgeVaporCount,Z
         INCA
-        CMPA    $13E4
+        CMPA    >PurgeVaporDetectCount
         BCC     L0F388
-        STAA    $03E7,Z
+        STAA    >PurgeVaporCount,Z
         JMP     L0F5D8
 L0F380:
-        CLR     $03E7,Z
+        CLR     >PurgeVaporCount,Z
         JMP     L0F5D8
 L0F388:
-        BSET    $03E1,Z,#$0A
-        BCLR    $03E1,Z,#$01
+        BSET    >PurgeLearnFlags,Z,#$0A                  ; bit 3: purge vapour learning step state (PurgeVaporLearn); bit 1: purge vapour learning ended (PurgeVaporLearn)
+        BCLR    >PurgeLearnFlags,Z,#$01                  ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
         LDAA    $13EA
-        STAA    $0600,Z
+        STAA    >PurgeVaporEstimate,Z
         LDAA    $13EB
-        STAA    $0601,Z
-        CLR     $0602,Z
+        STAA    >PurgeVaporEstimate2,Z
+        CLR     >PurgeVaporClosed,Z
         JSR     PurgeFuelCalc
         BEQ     L0F3DC
-        LDAA    $0600,Z
+        LDAA    >PurgeVaporEstimate,Z
         CBA
         BLS     L0F3DC
         CLRA
         XGDX
         CLRA
-        LDAB    $0600,Z
+        LDAB    >PurgeVaporEstimate,Z
         BNE     L0F3C0
         INCA
 L0F3C0:
@@ -20841,50 +22091,50 @@ L0F3C0:
         BEQ     L0F3D8
         LDAB    #$FF
 L0F3D8:
-        STAB    $0602,Z
+        STAB    >PurgeVaporClosed,Z
 L0F3DC:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L0F3F2         ; bit 0: one pass in 2 (about 24 ms)
-        LDD     $13E5
-        INCW    $03E8,Z
-        CPD     $03E8,Z
+        LDD     >PurgeLearnTimeClosed
+        INCW    >PurgeVapor44A,Z
+        CPD     >PurgeVapor44A,Z
         LBLS    L0F5E0
 L0F3F2:
         BRSET   >ThrottleState,Z,#$80,L0F40E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $13E9
+        LDAA    >PurgeLearnRateInit2
         ORP     #$00E0
-        STAA    $03D0,Z
+        STAA    >PurgeDuty,Z
         BCLR    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
         BRA     L0F44E
 L0F40E:
         LDAA    $03EC,Z
         BRCLR   >O2Bank1Flags,Z,#$08,L0F41E              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
-        BSET    $03E1,Z,#$10
+        BSET    >PurgeLearnFlags,Z,#$10                  ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         BRA     L0F43A
 L0F41E:
-        BRCLR   $03E1,Z,#$10,L0F44E
-        BCLR    $03E1,Z,#$10
-        ADDA    $13E7
+        BRCLR   >PurgeLearnFlags,Z,#$10,L0F44E           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
+        BCLR    >PurgeLearnFlags,Z,#$10                  ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
+        ADDA    >PurgeLearnRateTipStep
         BCC     L0F430
         LDAA    #$64
 L0F430:
-        CMPA    $13E8
+        CMPA    >PurgeLearnRateTipMax
         BLS     L0F43A
-        LDAA    $13E8
+        LDAA    >PurgeLearnRateTipMax
 L0F43A:
         ORP     #$00E0
-        STAA    $03D0,Z
+        STAA    >PurgeDuty,Z
         STAA    $03EC,Z
         BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         ANDP    #$FF1F
 L0F44E:
         LDAA    >PurgeRamp,Z
-        CMPA    $13EE
+        CMPA    >PurgeLearnRampMin
         LBCS    L0F5E0
         LDAA    >O2UpBank1Raw,Z
-        LDX     #Tab2D_1283
+        LDX     #O2VoltageScale
         JSR     Lookup2D
-        LDAA    $0523,Z
+        LDAA    >O2UpBank1,Z
         LSRA
         LSRB
         SBA
@@ -20896,7 +22146,7 @@ L0F44E:
         LDAA    >ShortTermTrim1,Z
         BPL     L0F4AA
         LDE     #$0002
-        LDAB    $13F5
+        LDAB    >PurgeLearnTrimBandDown
         COMB
         CBA
         BGE     L0F4AA
@@ -20906,95 +22156,95 @@ L0F494:
         LDAA    >ShortTermTrim1,Z
         BMI     L0F4AA
         LDE     #$0004
-        CMPA    $13F4
+        CMPA    >PurgeLearnTrimBandUp
         BLE     L0F4AA
         BRA     L0F4B8
 L0F4AA:
-        BSET    $03E1,Z,#$20
+        BSET    >PurgeLearnFlags,Z,#$20                  ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
         BRCLR   >ThrottleState,Z,#$80,L0F714             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         JMP     L0F59E
 L0F4B8:
-        BCLR    $03E1,Z,#$20
+        BCLR    >PurgeLearnFlags,Z,#$20                  ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
 L0F4BC:
         BRSET   >ThrottleState,Z,#$80,L0F542             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >ShortTermTrim1,Z
         BMI     L0F4F4
-        LDAB    $13F4
+        LDAB    >PurgeLearnTrimBandUp
         CBA
         LBLS    L0F5D8
-        LDAB    $0603,Z
-        CMPB    $13EC
+        LDAB    >PurgeLearnCount,Z
+        CMPB    >PurgeLearnTrimCount
         LBCS    L0F5D8
-        CLR     $0603,Z
-        LDX     #Tab2D_13F7
+        CLR     >PurgeLearnCount,Z
+        LDX     #PurgeLearnUpPart
         JSR     Lookup2D
-        ADDA    $0601,Z
+        ADDA    >PurgeVaporEstimate2,Z
         BCC     L0F4F2
         LDAA    #$FF
 L0F4F2:
         BRA     L0F522
 L0F4F4:
-        LDAB    $13F5
+        LDAB    >PurgeLearnTrimBandDown
         NEGB
         CBA
         LBCC    L0F5D8
-        LDAB    $0603,Z
-        CMPB    $13EC
+        LDAB    >PurgeLearnCount,Z
+        CMPB    >PurgeLearnTrimCount
         LBCS    L0F5D8
-        CLR     $0603,Z
-        LDX     #Tab2D_1403
+        CLR     >PurgeLearnCount,Z
+        LDX     #PurgeLearnDownPart
         JSR     Lookup2D
-        LDAA    $0601,Z
+        LDAA    >PurgeVaporEstimate2,Z
         SBA
         BCC     L0F522
         LDAA    #$01
 L0F522:
         LDAB    >PurgeRamp,Z
-        CMPB    $13EF
+        CMPB    >PurgeLearnRampFull
         BCC     L0F53A
         TSTA
         LBEQ    L0F5E0
-        CMPA    $13F1
+        CMPA    >PurgeVaporPartMax
         LBHI    L0F5E0
 L0F53A:
-        STAA    $0601,Z
+        STAA    >PurgeVaporEstimate2,Z
         JMP     L0F5D8
 L0F542:
         LDAA    >ShortTermTrim1,Z
         BMI     L0F570
-        CMPA    $13F4
+        CMPA    >PurgeLearnTrimBandUp
         LBLS    L0F59E
-        LDAB    $0603,Z
-        CMPB    $13ED
+        LDAB    >PurgeLearnCount,Z
+        CMPB    >PurgeLearnTrimCount2
         BCS     L0F59E
-        CLR     $0603,Z
-        LDX     #Tab2D_140F
+        CLR     >PurgeLearnCount,Z
+        LDX     #PurgeLearnUpClosed
         JSR     Lookup2D
-        ADDA    $0602,Z
+        ADDA    >PurgeVaporClosed,Z
         BCC     L0F59A
         LDAA    #$FF
         BRA     L0F59A
 L0F570:
-        LDAB    $13F5
+        LDAB    >PurgeLearnTrimBandDown
         NEGB
         CBA
         BCC     L0F59E
-        LDAB    $0603,Z
-        CMPB    $13ED
+        LDAB    >PurgeLearnCount,Z
+        CMPB    >PurgeLearnTrimCount2
         BCS     L0F59E
-        CLR     $0603,Z
-        LDX     #Tab2D_141B
+        CLR     >PurgeLearnCount,Z
+        LDX     #PurgeLearnDownClosed
         JSR     Lookup2D
-        LDAA    $0602,Z
+        LDAA    >PurgeVaporClosed,Z
         SBA
         BCC     L0F59A
         CLRA
 L0F59A:
-        STAA    $0602,Z
+        STAA    >PurgeVaporClosed,Z
 L0F59E:
         JSR     PurgeFuelCalc
-        STAA    >IacBase,Z
-        LDAA    $0602,Z
+        STAA    >Scratch0,Z
+        LDAA    >PurgeVaporClosed,Z
         MUL
         LSRD
         LSRD
@@ -21003,30 +22253,30 @@ L0F59E:
         LSRD
         TSTA
         BNE     L0F5C0
-        ADDB    >IacBase,Z
+        ADDB    >Scratch0,Z
         BCC     L0F5C2
 L0F5C0:
         LDAB    #$FF
 L0F5C2:
         LDAA    >PurgeRamp,Z
-        CMPA    $13EF
+        CMPA    >PurgeLearnRampFull
         BCC     L0F5D4
-        CMPB    $13F0
+        CMPB    >PurgeVaporMax
         LBHI    L0F5E0
 L0F5D4:
-        STAB    $0600,Z
+        STAB    >PurgeVaporEstimate,Z
 L0F5D8:
         LBRA    L0F714
 L0F5DC:
-        BSET    $03E1,Z,#$40
+        BSET    >PurgeLearnFlags,Z,#$40                  ; bit 6: purge vapour learning step state; O2LearnEnable reads it
 L0F5E0:
-        BSET    $03E1,Z,#$80
-        BCLR    $03E1,Z,#$3F
+        BSET    >PurgeLearnFlags,Z,#$80                  ; bit 7: purge vapour learning running (PurgeVaporLearn)
+        BCLR    >PurgeLearnFlags,Z,#$3F                  ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost; bit 4: purge vapour settle time reached (PurgeVaporSettleTime); bit 3: purge vapour learning step state (PurgeVaporLearn); bit 2: trim at or below the learning limit (PurgeVaporLearn); bit 1: purge vapour learning ended (PurgeVaporLearn); bit 0: bank 1 learning rate step (PurgeVaporLearn)
         LDD     #$FFFF
-        STD     $03E5,Z
-        CLR     $0600,Z
-        CLR     $0601,Z
-        CLR     $0602,Z
+        STD     >PurgeVapor448,Z
+        CLR     >PurgeVaporEstimate,Z
+        CLR     >PurgeVaporEstimate2,Z
+        CLR     >PurgeVaporClosed,Z
 L0F5FC:
         CLRB
         TBXK
@@ -21039,7 +22289,7 @@ L0F5FC:
         LDAB    #$02
         CMPA    >PurgeCell2
         BNE     L0F62C
-        BRCLR   $03E1,Z,#$01,L0F64C
+        BRCLR   >PurgeLearnFlags,Z,#$01,L0F64C           ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
         LDAA    >VehicleSpeed,Z
         CMPA    $13F2
         BCC     L0F64C
@@ -21048,17 +22298,17 @@ L0F62C:
         LDAA    >O2MemCell,Z
         CMPA    >PurgeCell3
         LBNE    L0F6F4
-        BRCLR   $03E1,Z,#$01,L0F64C
+        BRCLR   >PurgeLearnFlags,Z,#$01,L0F64C           ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
         LDAA    >VehicleSpeed,Z
         CMPA    $13F3
         LBCS    L0F6F4
 L0F64C:
-        BRSET   $00B9,Z,#$04,L0F6F4
+        BRSET   >MonStatusEgrFlow,Z,#$04,L0F6F4
         BRSET   >O2Bank1Flags,Z,#$20,L0F6F4              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRCLR   >Options0331,#$40,L0F664                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRSET   >O2Bank2Flags,Z,#$20,L0F6F4
 L0F664:
-        BRSET   $0062,Z,#$40,L0F6F4
+        BRSET   >PurgeCellRichFlags,Z,#$40,L0F6F4        ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         BITB    >PurgeCellFlags,Z
         LBNE    L0F6F4
         ASLB
@@ -21083,23 +22333,23 @@ L0F6A2:
 L0F6A6:
         CMPA    #$03
         BCS     L0F6F8
-        LDAA    $03D0,Z
+        LDAA    >PurgeDuty,Z
         BEQ     L0F6DA
         LDAA    >FaultSet0B,Z
         BITA    #$30
         BNE     L0F6DA
-        BRSET   $0170,Z,#$10,L0F6DA
+        BRSET   >BusModuleFlags,Z,#$10,L0F6DA
         LDAA    >ShortTermTrim1,Z
-        CMPA    $13B1
+        CMPA    >PurgeLearnTrimMin
         BGT     L0F6CC
-        BSET    $055B,Z,#$08
+        BSET    >O2ResetFlags2,Z,#$08                    ; bit 3: bank 1 trim at or below PurgeLearnTrimMin during vapour learning (PurgeVaporLearn)
 L0F6CC:
         LDAA    >ShortTermTrim2,Z
-        CMPA    $13B1
+        CMPA    >PurgeLearnTrimMin
         BGT     L0F6DA
-        BSET    $055B,Z,#$04
+        BSET    >O2ResetFlags2,Z,#$04                    ; bit 2: bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)
 L0F6DA:
-        CLR     $03D0,Z
+        CLR     >PurgeDuty,Z
         BRA     L0F714
 L0F6E0:
         LSRB
@@ -21108,8 +22358,8 @@ L0F6E0:
         TBA
         ORAB    >PurgeCellFlags,Z
         STAB    >PurgeCellFlags,Z
-        ORAA    $62,Z
-        STAA    $62,Z
+        ORAA    <PurgeCellRichFlags,Z
+        STAA    <PurgeCellRichFlags,Z
 L0F6F4:
         CLR     >PurgeCellCount,Z
 L0F6F8:
@@ -21118,17 +22368,17 @@ L0F6F8:
 L0F704:
         BRSET   >ThrottleState,Z,#$40,L0F6DA             ; bit 6: wide-open throttle (DetectWot)
         BRCLR   >EngineStateFlags,Z,#$80,L0F6DA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        JSR     Sub_0F716
+        JSR     PurgeRampControl
 L0F714:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0F716 ($0F716)
-; Called from: Sub_0F116
+; PurgeRampControl ($0F716)
+; Called from: PurgeVaporLearn
 ;---------------------------------------------------------------------------------------------------
-Sub_0F716:
-        BRCLR   $0324,#$80,L0F722
-        BRCLR   $03E1,Z,#$80,L0F88E
+PurgeRampControl:
+        BRCLR   >Options032C,#$80,L0F722                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
+        BRCLR   >PurgeLearnFlags,Z,#$80,L0F88E           ; bit 7: purge vapour learning running (PurgeVaporLearn)
 L0F722:
         BRCLR   >O2ActiveFlags,Z,#$08,L0F760             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         LDAA    >ShortTermTrim1,Z
@@ -21136,12 +22386,12 @@ L0F722:
         LDAB    >O2AdaptValue1,Z
         ASRB
         ABA
-        STAA    $060B,Z
+        STAA    >PurgeTrimLatched,Z
         LDAA    >ShortTermTrim1,Z
         BRSET   >O2TestFlags,Z,#$08,L0F754               ; bit 3: O2 activity test step bit (O2ActivityWarm)
         BRCLR   >O2Bank1Flags,Z,#$08,L0F796              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
         BSET    >O2TestFlags,Z,#$08                      ; bit 3: O2 activity test step bit (O2ActivityWarm)
-        INC     $060A,Z
+        INC     >PurgeTrimCount,Z
         BRA     L0F796
 L0F754:
         BRSET   >O2Bank1Flags,Z,#$08,L0F796              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
@@ -21153,109 +22403,109 @@ L0F760:
         LDAB    >O2AdaptValue2,Z
         ASRB
         ABA
-        STAA    $060B,Z
+        STAA    >PurgeTrimLatched,Z
         LDAA    >ShortTermTrim2,Z
         BRSET   >O2TestFlags,Z,#$08,L0F78C               ; bit 3: O2 activity test step bit (O2ActivityWarm)
         BRCLR   >O2Bank2Flags,Z,#$08,L0F796
         BSET    >O2TestFlags,Z,#$08                      ; bit 3: O2 activity test step bit (O2ActivityWarm)
-        INC     $060A,Z
+        INC     >PurgeTrimCount,Z
         BRA     L0F796
 L0F78C:
         BRSET   >O2Bank2Flags,Z,#$08,L0F796
         BCLR    >O2TestFlags,Z,#$08                      ; bit 3: O2 activity test step bit (O2ActivityWarm)
 L0F796:
-        STAA    >IacBase,Z
+        STAA    >Scratch0,Z
         LDAA    >PurgeRamp,Z
-        CMPA    $13C9
+        CMPA    >PurgeRampFull
         LBCC    L0F844
-        CMPA    $13CA
+        CMPA    >PurgeRampMin
         LBCS    L0F844
         LDAA    >ManifoldVacuum,Z
         LBEQ    L0F844
-        CMPA    $13D1
+        CMPA    >PurgeVacuumMin
         LBCS    L0F844
         LDAA    >MainLoopCounter,Z
         BNE     L0F7D0
         LDAA    #$FF
-        CMPA    $03ED,Z
+        CMPA    >PurgeLearnTimer,Z
         BEQ     L0F7D0
-        INC     $03ED,Z
+        INC     >PurgeLearnTimer,Z
 L0F7D0:
-        LDAA    $03ED,Z
-        CMPA    $13CE
+        LDAA    >PurgeLearnTimer,Z
+        CMPA    >PurgeLearnTime
         BCC     L0F838
-        LDAA    $060A,Z
+        LDAA    >PurgeTrimCount,Z
         CMPA    $13CF
         BCS     L0F848
 L0F7E4:
-        CLR     $060A,Z
-        LDAB    $03EE,Z
+        CLR     >PurgeTrimCount,Z
+        LDAB    >PurgeRampStep,Z
         CMPB    #$FF
         BEQ     L0F848
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         BPL     L0F7FC
-        CMPA    $13D2
+        CMPA    >PurgeTrimRichLimit
         BCS     L0F848
 L0F7FC:
-        LDAA    $060B,Z
+        LDAA    >PurgeTrimLatched,Z
         BPL     L0F808
-        CMPA    $13D3
+        CMPA    >PurgeTrimLatchedLimit
         BCS     L0F848
 L0F808:
         LDAA    >PurgeStartRamp,Z
         BNE     L0F848
         BRSET   >ThrottleState,Z,#$80,L0F81A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $13CD
+        LDAA    >PurgeRampOffIdle
         BEQ     L0F848
 L0F81A:
-        LDAA    $03ED,Z
-        CMPA    $13CE
+        LDAA    >PurgeLearnTimer,Z
+        CMPA    >PurgeLearnTime
         BCC     L0F82A
-        ADDB    $13CB
+        ADDB    >PurgeRampStepUp
         BRA     L0F82E
 L0F82A:
-        ADDB    $13CC
+        ADDB    >PurgeRampStepUp2
 L0F82E:
         BCC     L0F832
         LDAB    #$FF
 L0F832:
-        STAB    $03EE,Z
+        STAB    >PurgeRampStep,Z
         BRA     L0F848
 L0F838:
-        LDAA    $060A,Z
+        LDAA    >PurgeTrimCount,Z
         CMPA    $13D0
         BCS     L0F848
         BRA     L0F7E4
 L0F844:
-        CLR     $060A,Z
+        CLR     >PurgeTrimCount,Z
 L0F848:
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         BPL     L0F854
-        CMPA    $13D2
+        CMPA    >PurgeTrimRichLimit
         BCS     L0F860
 L0F854:
-        LDAA    $060B,Z
+        LDAA    >PurgeTrimLatched,Z
         BPL     L0F88E
-        CMPA    $13D4
+        CMPA    >PurgeTrimLatchedLimit2
         BCC     L0F88E
 L0F860:
         LDAA    >MainLoopCounter,Z
-        ANDA    $13D5
-        CMPA    $13D5
+        ANDA    >PurgeLearnMask
+        CMPA    >PurgeLearnMask
         BNE     L0F88E
-        CLR     $060A,Z
-        TST     $03EE,Z
+        CLR     >PurgeTrimCount,Z
+        TST     >PurgeRampStep,Z
         BEQ     L0F88E
         LDAB    >PurgeStartRamp,Z
         BNE     L0F88E
         BRSET   >ThrottleState,Z,#$80,L0F88A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAB    $13CD
+        LDAB    >PurgeRampOffIdle
         BEQ     L0F88E
 L0F88A:
-        DEC     $03EE,Z
+        DEC     >PurgeRampStep,Z
 L0F88E:
         LDAA    >PurgeRamp,Z
-        LDX     #Tab2D_138F
+        LDX     #PurgeCommandBase
         JSR     Lookup2D
         STAB    $03D2,Z
         LDAB    >PurgeStartRamp,Z
@@ -21280,38 +22530,38 @@ L0F8BC:
         STAB    >PurgeStartRamp,Z
 L0F8DA:
         STAA    $03D4,Z
-        BRCLR   $0324,#$80,L0F8EA
-        BRCLR   $03E1,Z,#$80,L0F916
+        BRCLR   >Options032C,#$80,L0F8EA                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
+        BRCLR   >PurgeLearnFlags,Z,#$80,L0F916           ; bit 7: purge vapour learning running (PurgeVaporLearn)
 L0F8EA:
         LDAA    $03D4,Z
         LDAB    >PurgeStartRamp,Z
         BNE     L0F916
         BRSET   >Options0337,#$20,L0F916                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
         BRSET   >ThrottleState,Z,#$80,L0F906             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAB    $13CD
+        LDAB    >PurgeRampOffIdle
         BEQ     L0F916
 L0F906:
-        LDAB    $03EE,Z
+        LDAB    >PurgeRampStep,Z
         MUL
         ADCA    #$00
         ADDA    $03D4,Z
         BCC     L0F916
         LDAA    #$FF
 L0F916:
-        STAA    >IacBase,Z
+        STAA    >Scratch0,Z
         LDAA    >ManifoldVacuum,Z
-        LDX     #Tab2D_13B9
+        LDX     #PurgeCommandVacuum
         JSR     Lookup2D
-        LDAA    >IacBase,Z
+        LDAA    >Scratch0,Z
         MUL
         ADCA    #$00
-        LDAB    >IacBase,Z
+        LDAB    >Scratch0,Z
         ABA
         BCC     L0F938
         LDAA    #$FF
 L0F938:
         LDAB    $01DD,Z
-        ADDB    $01DC,Z
+        ADDB    >O2Activity545,Z
         BCC     L0F946
         LDAA    #$FF
         BRA     L0F94C
@@ -21321,17 +22571,17 @@ L0F946:
         TBA
 L0F94C:
         ORP     #$00E0
-        STAA    >IacBase,Z
+        STAA    >Scratch0,Z
         BRCLR   >ThrottleState,Z,#$80,L0F964             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
         LDX     #Tab2D_1367
         BRA     L0F98A
 L0F964:
         BRSET   >ThrottleState,Z,#$01,L0F972             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
-        BRCLR   >Options0339,#$04,L0F982                 ; bit 2: alternative purge duty at closed throttle (PurgeDutyAltClosed)
+        BRCLR   >Options032E,#$04,L0F982                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRA     L0F978
 L0F972:
-        BRCLR   >Options0339,#$08,L0F982                 ; bit 3: alternative purge duty off closed throttle (PurgeDutyAltOther)
+        BRCLR   >Options032E,#$08,L0F982                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
 L0F978:
         LDX     #Tab2D_137D
         BSET    >SciLogFlags,Z,#$40                      ; bit 6: alternative purge duty table in use (PurgeDutySelect)
@@ -21342,11 +22592,11 @@ L0F982:
 L0F98A:
         JSR     Lookup2D
         BRCLR   >FaultSet0B,Z,#$30,L0F99C
-        BRCLR   $0170,Z,#$10,L0F99C
+        BRCLR   >BusModuleFlags,Z,#$10,L0F99C
         CLRA
 L0F99C:
-        BRSET   $0289,Z,#$10,L0F9A6
-        STAA    $03D0,Z
+        BRSET   >EgrMonFlags,Z,#$10,L0F9A6               ; bit 4: EGR flow result above the pass window this test
+        STAA    >PurgeDuty,Z
 L0F9A6:
         ANDP    #$FF1F
         RTS
@@ -21357,7 +22607,7 @@ L0F9A6:
 ;---------------------------------------------------------------------------------------------------
 Sub_0F9AC:
         LDE     #$61A8
-        LDAA    $03D0,Z
+        LDAA    >PurgeDuty,Z
         BNE     L0F9C0
         BCLRW   $086C,Z,#$2000
         LDAA    #$02
@@ -21388,7 +22638,7 @@ L0F9E8:
         ASLE
         ASLD
 L0F9F8:
-        STE     $084E,Z
+        STE     >IoDriver6C,Z
         STD     $0850,Z
         RTS
 
@@ -21399,14 +22649,14 @@ L0F9F8:
 Sub_0FA02:
         BRSET   >PurgeCellFlags,Z,#$40,L0FB00
         TZX
-        BRCLR   $62,Z,#$04,L0FA58
+        BRCLR   <PurgeCellRichFlags,Z,#$04,L0FA58        ; bit 2: read by PurgeCellCheck
         LDX     #$8040
         LDAB    >PurgeCell1
         ABX
         LDAA    $4E,Z
         SUBA    $00,X
         BLT     L0FA36
-        BRCLR   $62,Z,#$20,L0FA2A
+        BRCLR   <PurgeCellRichFlags,Z,#$20,L0FA2A        ; bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
         ADDA    $13AA
         BCC     L0FA2A
         LDAA    #$FF
@@ -21414,7 +22664,7 @@ L0FA2A:
         CMPA    $13A7
         BCS     L0FA36
 L0FA30:
-        BSET    $62,Z,#$20
+        BSET    <PurgeCellRichFlags,Z,#$20               ; bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
         BRA     L0FA5C
 L0FA36:
         LDX     #$8051
@@ -21423,7 +22673,7 @@ L0FA36:
         LDAA    $5F,Z
         SUBA    $00,X
         BLT     L0FA58
-        BRCLR   $62,Z,#$20,L0FA52
+        BRCLR   <PurgeCellRichFlags,Z,#$20,L0FA52        ; bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
         ADDA    $13AA
         BCC     L0FA52
         LDAA    #$FF
@@ -21431,16 +22681,16 @@ L0FA52:
         CMPA    $13A7
         BCC     L0FA30
 L0FA58:
-        BCLR    $62,Z,#$20
+        BCLR    <PurgeCellRichFlags,Z,#$20               ; bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
 L0FA5C:
-        BRCLR   $62,Z,#$02,L0FAAA
+        BRCLR   <PurgeCellRichFlags,Z,#$02,L0FAAA        ; bit 1: read by PurgeCellCheck
         LDX     #$8040
         LDAB    >PurgeCell2
         ABX
         LDAA    $4F,Z
         SUBA    $00,X
         BLT     L0FA88
-        BRCLR   $62,Z,#$10,L0FA7C
+        BRCLR   <PurgeCellRichFlags,Z,#$10,L0FA7C        ; bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
         ADDA    $13AB
         BCC     L0FA7C
         LDAA    #$FF
@@ -21448,7 +22698,7 @@ L0FA7C:
         CMPA    $13A8
         BCS     L0FA88
 L0FA82:
-        BSET    $62,Z,#$10
+        BSET    <PurgeCellRichFlags,Z,#$10               ; bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
         BRA     L0FAAE
 L0FA88:
         LDX     #$8051
@@ -21457,7 +22707,7 @@ L0FA88:
         LDAA    $60,Z
         SUBA    $00,X
         BLT     L0FAAA
-        BRCLR   $62,Z,#$10,L0FAA4
+        BRCLR   <PurgeCellRichFlags,Z,#$10,L0FAA4        ; bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
         ADDA    $13AB
         BCC     L0FAA4
         LDAA    #$FF
@@ -21465,16 +22715,16 @@ L0FAA4:
         CMPA    $13A8
         BCC     L0FA82
 L0FAAA:
-        BCLR    $62,Z,#$10
+        BCLR    <PurgeCellRichFlags,Z,#$10               ; bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
 L0FAAE:
-        BRCLR   $62,Z,#$01,L0FAFC
+        BRCLR   <PurgeCellRichFlags,Z,#$01,L0FAFC        ; bit 0: read by PurgeCellCheck
         LDX     #$8040
         LDAB    >PurgeCell3
         ABX
         LDAA    $50,Z
         SUBA    $00,X
         BLT     L0FADA
-        BRCLR   $62,Z,#$08,L0FACE
+        BRCLR   <PurgeCellRichFlags,Z,#$08,L0FACE        ; bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
         ADDA    $13AC
         BCC     L0FACE
         LDAA    #$FF
@@ -21482,7 +22732,7 @@ L0FACE:
         CMPA    $13A9
         BCS     L0FADA
 L0FAD4:
-        BSET    $62,Z,#$08
+        BSET    <PurgeCellRichFlags,Z,#$08               ; bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
         BRA     L0FB00
 L0FADA:
         LDX     #$8051
@@ -21491,7 +22741,7 @@ L0FADA:
         LDAA    $61,Z
         SUBA    $00,X
         BLT     L0FAFC
-        BRCLR   $62,Z,#$08,L0FAF6
+        BRCLR   <PurgeCellRichFlags,Z,#$08,L0FAF6        ; bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
         ADDA    $13AC
         BCC     L0FAF6
         LDAA    #$FF
@@ -21499,52 +22749,52 @@ L0FAF6:
         CMPA    $13A9
         BCC     L0FAD4
 L0FAFC:
-        BCLR    $62,Z,#$08
+        BCLR    <PurgeCellRichFlags,Z,#$08               ; bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
 L0FB00:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeFuelCalc ($0FB02)
-; Called from: Sub_0F116 (2 calls)
+; Called from: PurgeVaporLearn (2 calls)
 ;---------------------------------------------------------------------------------------------------
 PurgeFuelCalc:
         LDAA    >EngineRpm,Z
         LDX     #PurgeFuelRpm
         JSR     Lookup2D
-        STAA    >IacBase,Z
+        STAA    >Scratch0,Z
         LDAA    >Map,Z
         LDX     #PurgeFuelMapScale
         JSR     Lookup2D
-        LDAB    >IacBase,Z
+        LDAB    >Scratch0,Z
         LDX     #PurgeFuelBase
         JSR     Lookup3DNorm
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0FB2C ($0FB2C)
+; PurgeEnable ($0FB2C)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_0FB2C:
+PurgeEnable:
         BRSET   >EngineStateFlags,Z,#$80,L0FB76          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        LDAA    $032C,Z
-        CMPA    $139C
+        LDAA    >BatteryTemp,Z
+        CMPA    >PurgeBattTempMin
         BCS     L0FB56
-        CMPA    $139D
+        CMPA    >PurgeBattTempMax
         BCC     L0FB66
         BCLR    >PurgeFlags,Z,#$02                       ; bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
         BSET    >PurgeFlags,Z,#$01                       ; bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
-        LDD     $139E
-        STD     $03CA,Z
+        LDD     >PurgeBattTimerInit
+        STD     >PurgeBattTimer,Z
         LBRA    L0FC02
 L0FB56:
         BCLR    >PurgeFlags,Z,#$02                       ; bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
         BCLR    >PurgeFlags,Z,#$01                       ; bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
-        CLRW    $03CA,Z
+        CLRW    >PurgeBattTimer,Z
         LBRA    L0FC02
 L0FB66:
         BSET    >PurgeFlags,Z,#$02                       ; bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
         BCLR    >PurgeFlags,Z,#$01                       ; bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
-        CLRW    $03CA,Z
+        CLRW    >PurgeBattTimer,Z
         LBRA    L0FC02
 L0FB76:
         BRSET   >ThrottleState,Z,#$80,L0FBD8             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -21566,18 +22816,18 @@ L0FB9A:
         BEQ     L0FBD2
         CMPA    #$02
         BEQ     L0FBD8
-        LDD     $03CA,Z
+        LDD     >PurgeBattTimer,Z
         BEQ     L0FBD8
         BRCLR   >MainLoopPhaseMask,Z,#$80,L0FBD2         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         SUBD    #$0001
         BNE     L0FBCE
-        LDAA    $13D8
+        LDAA    >PurgeDelayInit
         STAA    >PurgeStartRamp,Z
         CLRD
         STAA    $03D5,Z
         STAB    $03D6,Z
 L0FBCE:
-        STD     $03CA,Z
+        STD     >PurgeBattTimer,Z
 L0FBD2:
         BSET    >PurgeFlags,Z,#$40                       ; bit 6: purge battery-temperature timer running (PurgeEnable)
         BRA     L0FBDC
@@ -21585,11 +22835,11 @@ L0FBD8:
         BCLR    >PurgeFlags,Z,#$40                       ; bit 6: purge battery-temperature timer running (PurgeEnable)
 L0FBDC:
         LDAA    >Map,Z
-        CMPA    $139B
+        CMPA    >PurgeMapMax
         BCC     L0FBFE
         BRCLR   >PurgeFlags,Z,#$20,L0FBFE                ; bit 5: per-event correction asked for purge to stop (EventCorrections)
         BRSET   >FuelModeFlags2,Z,#$40,L0FBF8            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
-        BRCLR   >EventFlags,Z,#$40,L0FBFE                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
+        BRCLR   >IdleFlareFlags,Z,#$40,L0FBFE            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
 L0FBF8:
         BSET    >PurgeFlags,Z,#$10                       ; bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
         BRA     L0FC02

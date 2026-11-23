@@ -2,12 +2,13 @@
  "sha256": "37101ef3beed81f736004091597991b0876fd4085f91479fbaec2b69561d66fd",
  "routines_matched": 654,
  "routines_ref": 657,
- "instructions_mapped": 42461,
+ "instructions_mapped": 42460,
  "instructions_ref": 43370,
+ "via": null,
  "labels": "651 of 680",
  "ram": "1800 of 1871",
  "tables": "402 of 410",
  "scalars": "1404 of 1451",
  "ram_identity": 1869,
- "ram_moved": 56
+ "ram_moved": 53
 }

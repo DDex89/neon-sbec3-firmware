@@ -25,7 +25,8 @@ IacStepFlags     equ $000A        ; $F800A
 ;                 bit 1: idle air target from the MAP loop instead of the fixed command (IdleControl)
 ;                 bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
 IacPosition      equ $000B        ; $F800B
-ScratchC         equ $000D        ; $F800D
+IacBaroRef       equ $000C        ; $F800C
+Baro             equ $000D        ; $F800D
 FlexEthanol      equ $000E        ; $F800E
 CamCrankSyncCount equ $0010        ; $F8010
 EquipmentFlags   equ $0011        ; $F8011
@@ -37,9 +38,46 @@ EquipmentFlags   equ $0011        ; $F8011
 ;                 bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
 ;                 bit 1: copy of calibration bit $0335.3 at reset; not read
 ;                 bit 0: copy of calibration bit $0330.4 at reset; not read
+EgrZeroPos       equ $0013        ; $F8013
+SegmentTimePair2 equ $0018        ; $F8018
+MisfirePeriod11  equ $001A        ; $F801A
+SegmentTimePair3 equ $001C        ; $F801C
+MisfirePeriod15  equ $001E        ; $F801E
 SriMileage       equ $0020        ; $F8020
+ReadinessIncomplete equ $0022        ; $F8022
+FlexStartFlags   equ $0036        ; $F8036
+;                 bit 7: reference event handled since the last rpm update (CalcEngineRpm)
+;                 bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
+;                 bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
+;                 bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+;                 bit 2: power-down tasks running (CheckPowerDown)
+;                 bit 1: cleared when the flex sensor start value is averaged (FlexSensorCheck)
+;                 bit 0: cleared when the flex sensor start value is averaged (FlexSensorCheck)
+VacLeakFlags     equ $0037        ; $F8037
+;                 bit 4: vacuum leak confirmed (set with LimpFlags bit 7)
+;                 bit 3: VSS pulse calculation hit a zero step (VssPulseCalc)
+;                 bit 1: cam/crank offset to be stored, second kind (CamCrankRelation)
+;                 bit 0: cam/crank offset to be stored, first kind (CamCrankRelation)
+IacStepper054    equ $0038        ; $F8038
+PurgeCellRichFlags equ $0062        ; $F8062
+;                 bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
+;                 bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
+;                 bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
+;                 bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
+;                 bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
+;                 bit 2: read by PurgeCellCheck
+;                 bit 1: read by PurgeCellCheck
+;                 bit 0: read by PurgeCellCheck
+SparkOcTime2     equ $0065        ; $F8065
+SparkOcTime3     equ $0066        ; $F8066
 FaultMem05       equ $007D        ; $F807D
 FaultMem07       equ $007F        ; $F807F
+MonStatusO2Sensor4 equ $00AC        ; $F80AC
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 10) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0161 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+O2HeaterWork     equ $00AD        ; $F80AD
+O2HeaterTimer    equ $00AE        ; $F80AE
+O2Heater10C      equ $00B0        ; $F80B0
 MonStatusCatBank1 equ $00B3        ; $F80B3
 ;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 0) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 ;                 bit 4: P0420 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
@@ -52,7 +90,18 @@ MonStatusO2Resp1 equ $00B5        ; $F80B5
 MonStatusO2Resp2 equ $00B6        ; $F80B6
 ;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 3) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 ;                 bit 4: P0153 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
-MisfireRecordE4  equ $00BA        ; $F80BA
+MonStatusPurge   equ $00B8        ; $F80B8
+;                 bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest); monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 4) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 6: purge flow monitor complete this drive cycle
+;                 bit 4: read by ObdReadiness; P0441 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+;                 bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
+;                 bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
+;                 bit 1: read by ObdReadiness and PurgeFlowTest
+MonStatusEgrFlow equ $00B9        ; $F80B9
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 5) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0401 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+MonStatusMisfire equ $00BA        ; $F80BA
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 15) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 MonStatusFuelSysTooLean1 equ $00BB        ; $F80BB
 ;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 11) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 ;                 bit 4: P0171 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
@@ -65,9 +114,32 @@ MonStatusFuelSysTooRich1 equ $00BD        ; $F80BD
 MonStatusFuelSysTooRich2 equ $00BE        ; $F80BE
 ;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 14) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 ;                 bit 4: P0175 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+MonStatusLdp     equ $00BF        ; $F80BF
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 6) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0442 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+MonStatusO2Heater equ $00C0        ; $F80C0
+FreezeFrameCount equ $00C1        ; $F80C1
 FreezeFrameFault equ $00C2        ; $F80C2
 MonRecordB4      equ $00C3        ; $F80C3
+MonRecordB5      equ $00C4        ; $F80C4
+MonRecordB6      equ $00C5        ; $F80C5
 MonRecordB7      equ $00C6        ; $F80C6
+MonRecordB8      equ $00C7        ; $F80C7
+MonRecordB9      equ $00C8        ; $F80C8
+MonRecordBA      equ $00C9        ; $F80C9
+MonRecordBB      equ $00CA        ; $F80CA
+MonRecordBC      equ $00CB        ; $F80CB
+MonRecordBD      equ $00CC        ; $F80CC
+MonRecordBE      equ $00CD        ; $F80CD
+MonRecordBF      equ $00CE        ; $F80CE
+MonRecordC0      equ $00CF        ; $F80CF
+MonRecordC1      equ $00D0        ; $F80D0
+MonRecordC2      equ $00D1        ; $F80D1
+MonRecordC3      equ $00D2        ; $F80D2
+MonRecordC4      equ $00D3        ; $F80D3
+MonRecordC5      equ $00D4        ; $F80D4
+MonRecordC6      equ $00D5        ; $F80D5
+MonRecordC7      equ $00D6        ; $F80D6
 FreezeFrame00    equ $00D7        ; $F80D7
 FreezeFrame01    equ $00D8        ; $F80D8
 FreezeFrame02    equ $00D9        ; $F80D9
@@ -90,6 +162,10 @@ DiagStatusFlags  equ $00E7        ; $F80E7
 ;                 bit 2: freeze frame to be updated (ObdFaultProcess)
 ;                 bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 ;                 bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+MisfireRecordD9  equ $00E8        ; $F80E8
+MisfireRpmDev    equ $00E9        ; $F80E9
+MisfireDeviation0E2 equ $00EB        ; $F80EB
+MisfireEventCount equ $00ED        ; $F80ED
 MisfireFlags     equ $00EF        ; $F80EF
 ;                 bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
 ;                 bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
@@ -109,10 +185,31 @@ FinishFuel4F7    equ $00F7        ; $F80F7
 MisfireWork      equ $00F8        ; $F80F8
 SegmentWork4F9   equ $00F9        ; $F80F9
 Temp4FC          equ $00FC        ; $F80FC
+MisfireNoise4FD  equ $00FD        ; $F80FD
 Temp4FE          equ $00FE        ; $F80FE
 MilFaultCount    equ $0103        ; $F8103
+EgrFlow16E       equ $0108        ; $F8108
+ObdRec154        equ $010A        ; $F810A
+ObdRec156        equ $010C        ; $F810C
+ObdRec158        equ $010E        ; $F810E
+ObdRec15A        equ $0110        ; $F8110
+ObdRec15C        equ $0112        ; $F8112
+ObdRec15E        equ $0114        ; $F8114
+ObdRec160        equ $0116        ; $F8116
+ObdTid21Status   equ $0118        ; $F8118
+ObdTid21Result   equ $0119        ; $F8119
+Obd168           equ $011A        ; $F811A
+ObdTid22Result   equ $011B        ; $F811B
+ObdRec16A        equ $011C        ; $F811C
+ObdRec16C        equ $011E        ; $F811E
+PurgeFlow174     equ $0122        ; $F8122
+PurgeResultFlags equ $0124        ; $F8124
+PurgeFlow173     equ $0125        ; $F8125
+PurgeFlow177     equ $0127        ; $F8127
 LdpResultFlags   equ $0129        ; $F8129
 LdpStrokeResult  equ $012A        ; $F812A
+ObdRec162        equ $012B        ; $F812B
+ObdRec164        equ $012D        ; $F812D
 Misfire62C       equ $012F        ; $F812F
 O2CrossFlags     equ $0134        ; $F8134
 O2Reset17E       equ $0135        ; $F8135
@@ -142,6 +239,13 @@ ControlFlagsC33  equ $013F        ; $F813F
 ;                 bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
 ;                 bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
 ;                 bit 0: MIL lamp check done since the engine started (MilLampUpdate)
+ControlFlagsC39  equ $0140        ; $F8140
+;                 bit 7: PCI link variant: set at reset from the bus configuration, cleared when the link check fails
+;                 bit 6: diagnostic mode request (DiagModeUpdate)
+;                 bit 5: diagnostic mode set (DiagModeInit)
+;                 bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
+;                 bit 3: diagnostic mode bit mirrored into ControlFlags944 bit 7 (DiagModeInit)
+;                 bit 2: set and cleared with bit 7
 SpeedCtlRpmAvg   equ $0142        ; $F8142
 SpeedCtlThrottleAvg equ $0144        ; $F8144
 SpeedCtlRpmJumpTimer equ $0146        ; $F8146
@@ -150,27 +254,113 @@ SpeedCtlState    equ $0149        ; $F8149
 ;                 bit 5: set at reset, on cancel and on engage; meaning not settled
 ;                 bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
 ;                 bit 0: set or resume engaged, probably
+SpeedCtlState2   equ $014A        ; $F814A
+;                 bit 3: speed control accelerate hold reached (SpeedCtlAccelHoldTime)
+;                 bit 2: speed control servo step state (SpeedCtlControl)
+;                 bit 1: speed control servo step state (SpeedCtlControl)
+;                 bit 0: vacuum at or above SpeedCtlVacuumMin (SpeedCtlControl)
+SpeedCtlNibble   equ $014B        ; $F814B
+SpeedCtlFlags    equ $014C        ; $F814C
+;                 bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift)
+;                 bit 6: switch command from bit 4 of the switch byte (SpeedCtlShift)
+;                 bit 5: switch command from bit 3 of the switch byte (SpeedCtlShift)
+;                 bit 4: switch command accepted (SpeedCtlShift)
+;                 bit 3: driver override: throttle past SpeedCtlOverrideMargin (SpeedCtlControl)
+;                 bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
+;                 bit 1: switch count at 8 or more (SpeedCtlSwitchCheck)
+;                 bit 0: switch event handled (SpeedCtlSwitchRead)
+SpeedCtl404      equ $014D        ; $F814D
+SpeedCtlFlags2   equ $014E        ; $F814E
+;                 bit 6: speed control cancel output driven (SpeedCtlCancelMonitor, IoCtl12 bit 7)
+;                 bit 5: speed control engage requested (SpeedCtlControl)
+;                 bit 4: speed control switch held (switch code)
+;                 bit 3: speed control switch held, first kind (switch code)
+;                 bit 2: speed control switch held, second kind (switch code)
+;                 bit 1: speed control state bit cleared on cancel (SpeedCtlControl)
+;                 bit 0: speed control just cancelled (set on cancel, cleared on the next engage) (SpeedCtlControl)
+SpeedCtlSetSpeed equ $014F        ; $F814F
+SpeedCtlTimer2   equ $0150        ; $F8150
+SpeedCtlResumeSpeed equ $0151        ; $F8151
+SpeedCtlTimer    equ $0152        ; $F8152
+SpeedCtlCancelTimer equ $0153        ; $F8153
+SpeedCtlTapHold  equ $0154        ; $F8154
+SpeedCtl410      equ $0155        ; $F8155
+SpeedCtlServoCmd equ $0156        ; $F8156
+SpeedCtl40E      equ $0157        ; $F8157
+SpeedCtlErrorPeak equ $0158        ; $F8158
+SpeedCtlHoldCount equ $0159        ; $F8159
+SpeedCtlOverrideTimer equ $015D        ; $F815D
+SpeedCtlShiftThrottle equ $015E        ; $F815E
+SpeedCtlOverrideCmd equ $015F        ; $F815F
 FaultSet00       equ $0163        ; $F8163
 FaultSet01       equ $0164        ; $F8164
+FaultSet02       equ $0165        ; $F8165
+FaultSet03       equ $0166        ; $F8166
+FaultSet04       equ $0167        ; $F8167
+FaultSet12       equ $0168        ; $F8168
 FaultSet06       equ $0169        ; $F8169
+FaultSet07       equ $016A        ; $F816A
+FaultSet09       equ $016C        ; $F816C
+FaultSet0A       equ $016D        ; $F816D
 FaultSet0B       equ $016E        ; $F816E
+BusModuleFlags   equ $0170        ; $F8170
+;                 bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
+;                 bit 6: new transmission status received (TransBusStatus), not handled yet by TransMilRequest
+;                 bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
+;                 bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
 FaultSet0F       equ $0172        ; $F8172
+FaultSet10       equ $0173        ; $F8173
+SensorFaultFlags2 equ $0175        ; $F8175
+;                 bit 7: fuel level sender fault (FuelSenderMonitor)
+;                 bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
+;                 bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
+;                 bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
+;                 bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
+FaultSet13       equ $0176        ; $F8176
+FaultSet17       equ $017A        ; $F817A
+FaultSet19       equ $017C        ; $F817C
 FaultPending1    equ $0183        ; $F8183
 FaultPending2    equ $0184        ; $F8184
 FaultPendingCount1 equ $0185        ; $F8185
 FaultPendingCount2 equ $0186        ; $F8186
 FaultPendingWork1 equ $0187        ; $F8187
 FaultPendingWork2 equ $0188        ; $F8188
+StartFlags       equ $0189        ; $F8189
+;                 bit 5: coolant sensor reading out of range at start (ProcessCoolantTemp)
+;                 bit 4: coolant sensor reading out of range at start, second kind (ProcessCoolantTemp)
+;                 bit 3: hot start: coolant at reset at or above HotStartCoolantMin
+;                 bit 2: thermostat fault reported this drive cycle (ThermostatMonitor)
+;                 bit 1: air temperature sensor reading out of range at start (ProcessAirTemp)
+;                 bit 0: air temperature sensor reading out of range at start, second kind (ProcessAirTemp)
+PspSwitch668     equ $0190        ; $F8190
+O2InactiveTimer  equ $0193        ; $F8193
 KnockSample6CE   equ $0197        ; $F8197
 KnockSample6CF   equ $0198        ; $F8198
 KnockSample6D0   equ $0199        ; $F8199
-Crank6B7         equ $019B        ; $F819B
+HwErrorFlags     equ $019B        ; $F819B
 CamCrankCount689 equ $019D        ; $F819D
+CalcSpark6D3     equ $019E        ; $F819E
 FinishFuel6D4    equ $019F        ; $F819F
+AcPresentCounter equ $01A1        ; $F81A1
+SpeedCtlPresentCounter equ $01A2        ; $F81A2
+PspPresentCounter equ $01A3        ; $F81A3
+FuelLevelFlags2  equ $01A4        ; $F81A4
+;                 bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
+;                 bit 4: fuel level change at shutdown under FuelSenderShutdownDiff (FuelSenderMonitor)
+;                 bit 3: filtered fuel sender value available (FuelLevelProcess)
+;                 bit 2: fuel level outside the monitor window (MonitorEnable)
+;                 bit 1: bus fuel level counted (FuelLevelProcess)
+;                 bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
 Cam693           equ $01A5        ; $F81A5
+CamWindowCount   equ $01A7        ; $F81A7
 Cam691           equ $01A8        ; $F81A8
 CamCrankOffset   equ $01AB        ; $F81AB
 CamCrankStable   equ $01AC        ; $F81AC
+CamCrankHoldCount equ $01AD        ; $F81AD
+CamCrank68B      equ $01AE        ; $F81AE
+CamCrankFaultCounter equ $01AF        ; $F81AF
+CamCrank68C      equ $01B0        ; $F81B0
+CamCrank690      equ $01B1        ; $F81B1
 CamCrankFlags    equ $01B4        ; $F81B4
 ;                 bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
 ;                 bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
@@ -185,9 +375,30 @@ SensorFaultFlags equ $01B5        ; $F81B5
 ;                 bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
 ;                 bit 3: air temperature sensor fault (P0112 or P0113)
 ;                 bit 0: battery temperature sensor fault (P1492 or P1493)
-IacBase          equ $01F0        ; $F81F0
+OutputDriverFaults equ $01B6        ; $F81B6
+FuelSysCount1    equ $01B7        ; $F81B7
+FuelSysCount2    equ $01B8        ; $F81B8
+FuelSys5A5       equ $01BB        ; $F81BB
+CalcEngine576    equ $01BC        ; $F81BC
+CalcEngine577    equ $01BD        ; $F81BD
+FuelSysCount3    equ $01BE        ; $F81BE
+FuelSysTooLeanCount2 equ $01BF        ; $F81BF
+O2MemChangeHold2 equ $01C0        ; $F81C0
+O2Activity545    equ $01DC        ; $F81DC
+Count191ms       equ $01DF        ; $F81DF
+Scratch0         equ $01F0        ; $F81F0
+Scratch1         equ $01F1        ; $F81F1
+Scratch2         equ $01F2        ; $F81F2
 Scratch3         equ $01F3        ; $F81F3
+Scratch4         equ $01F4        ; $F81F4
+Scratch6         equ $01F6        ; $F81F6
+Scratch7         equ $01F7        ; $F81F7
 Scratch8         equ $01F8        ; $F81F8
+ScratchE         equ $01FE        ; $F81FE
+CalcEngine574    equ $0202        ; $F8202
+CalcEngine575    equ $0203        ; $F8203
+CalcEngine570    equ $0210        ; $F8210
+CalcEngine572    equ $0212        ; $F8212
 SegmentRpm       equ $0218        ; $F8218
 MisfireRpmRef    equ $021A        ; $F821A
 MisfireRpmCol    equ $021C        ; $F821C
@@ -195,12 +406,19 @@ MisfireWork5C8   equ $021E        ; $F821E
 MisfireWork5CA   equ $0220        ; $F8220
 MisfireWork5CC   equ $0222        ; $F8222
 MisfireSegment5CE equ $0224        ; $F8224
+MisfireWork5D2   equ $0226        ; $F8226
 MisfireChangeFiltered equ $0228        ; $F8228
 MisfireNoiseLevel equ $022A        ; $F822A
+MisfireNoisePeak equ $022C        ; $F822C
+MisfireDevInput  equ $022E        ; $F822E
+MisfireRef       equ $0230        ; $F8230
+MisfireReset5DE  equ $0232        ; $F8232
 IdleMapIacFlag   equ $0234        ; $F8234
 MisfireThreshValue equ $0236        ; $F8236
 MisfireThreshold5E4 equ $0238        ; $F8238
+MisfireRecFlags  equ $023A        ; $F823A
 MisfireEvents    equ $0240        ; $F8240
+MisfireCount2    equ $0241        ; $F8241
 MisfireEvents2   equ $0242        ; $F8242
 Misfire614       equ $0246        ; $F8246
 Misfire615       equ $0247        ; $F8247
@@ -212,8 +430,11 @@ MisfireCount61C  equ $024E        ; $F824E
 MisfireCount61D  equ $024F        ; $F824F
 MisfireRecFlags2 equ $0251        ; $F8251
 Misfire613       equ $0255        ; $F8255
+MisfireTransient61F equ $0256        ; $F8256
 MisfireLoad      equ $0257        ; $F8257
+MisfireEnable    equ $0258        ; $F8258
 MisfireTransientHold equ $0259        ; $F8259
+MisfireFilter    equ $025A        ; $F825A
 MisfireFlags2    equ $025B        ; $F825B
 ;                 bit 6: throttle open state seen by the misfire transient filter (MisfireTransient)
 ;                 bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
@@ -221,16 +442,40 @@ MisfireFlags2    equ $025B        ; $F825B
 ;                 bit 2: misfire transient hold running (MisfireSegmentTime)
 ;                 bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
 ;                 bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
+MisfireFlags5    equ $025C        ; $F825C
+;                 bit 7: engine just started or stalled: misfire transient hold (MisfireTransient, MisfireSegmentTime)
+;                 bit 6: throttle opened: misfire transient hold (MisfireTransient)
+;                 bit 5: MAP or throttle changed past MisfireMapChangeMax / MisfireThrottleChangeMax: hold
+;                 bit 4: SegmentRpm above the rev-limit hold rpm (MisfireTransient)
+;                 bit 3: per-event spark or fuel event active: hold (MisfireTransient)
+;                 bit 2: event spark at or above MisfireSparkMin: hold (MisfireTransient)
+;                 bit 1: MAP below the misfire enable value: hold (MisfireTransient)
+;                 bit 0: SegmentRpm above the misfire rpm limit: hold (MisfireTransient)
 MisfireFlags4    equ $025D        ; $F825D
 ;                 bit 6: set by IdleTargetControl at the end of a gear idle step; read by MisfireDeviation
 MisfireWork628   equ $025E        ; $F825E
 MisfireHold      equ $025F        ; $F825F
+FuelSenderFiltered equ $0266        ; $F8266
+Vss65D           equ $0267        ; $F8267
+SciTimer         equ $0268        ; $F8268
 DiagBusFlags     equ $0269        ; $F8269
 ;                 bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
 ;                 bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
 ;                 bit 5: freeze frame holds more than two entries (JumpTable_32600)
 ;                 bit 4: output-compare test pulse running (diagnostic test, JumpTable_35BB0)
 ;                 bit 3: OBD reply in progress (SciPitService)
+SciPointer       equ $026A        ; $F826A
+SciReplyState    equ $026C        ; $F826C
+ObdRequestId     equ $026D        ; $F826D
+ObdPciA38        equ $0271        ; $F8271
+ObdA3A           equ $0273        ; $F8273
+ObdRequestIndex  equ $0275        ; $F8275
+SciObdByte       equ $0276        ; $F8276
+SciObdState      equ $027A        ; $F827A
+ObdResponse      equ $027C        ; $F827C
+ObdRespByte2     equ $027D        ; $F827D
+ObdA2B           equ $027E        ; $F827E
+ObdA2C           equ $027F        ; $F827F
 LoadValueObd     equ $0282        ; $F8282
 MapRaw           equ $0283        ; $F8283
 LimpFlags        equ $0285        ; $F8285
@@ -238,6 +483,29 @@ LimpFlags        equ $0285        ; $F8285
 ;                 bit 6: limp rpm limit taken from LimpRpmMapFault (VacuumLeakMonitor)
 ;                 bit 5: engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)
 ;                 bit 4: set with bit 5 when the limp rpm limit is reached
+LimpRpmLimit     equ $0286        ; $F8286
+VacLeakRecoverCounter equ $0287        ; $F8287
+VacLeakCounter   equ $0288        ; $F8288
+EgrMonFlags      equ $0289        ; $F8289
+;                 bit 7: EGR flow monitor passed (result at or below EgrMonResultMax)
+;                 bit 6: EGR flow monitor failed (fail count reached EgrMonFailCount)
+;                 bit 5: EGR flow result below the pass window this test
+;                 bit 4: EGR flow result above the pass window this test
+;                 bit 3: EGR flow monitor result available (set with bit 7 or bit 6)
+;                 bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
+;                 bit 1: EGR flow test conditions met, test started (EgrFlowMonitor)
+;                 bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
+EgrMonPhaseTimer equ $028C        ; $F828C
+CalcEngine533    equ $028E        ; $F828E
+EgrFlow589       equ $028F        ; $F828F
+AcCutFlags       equ $02A6        ; $F82A6
+BrakeOnTime      equ $02A9        ; $F82A9
+RpmSpeedRatioFiltered equ $02AA        ; $F82AA
+TccMonTimer      equ $02AC        ; $F82AC
+Tcc674           equ $02B0        ; $F82B0
+TccTestTimer     equ $02B2        ; $F82B2
+TccFailCount     equ $02B3        ; $F82B3
+TccStableTimer   equ $02B4        ; $F82B4
 LdpState         equ $02B7        ; $F82B7
 LdpStateTime     equ $02B9        ; $F82B9
 LdpPumpOnCount   equ $02BA        ; $F82BA
@@ -258,13 +526,28 @@ O2TestFlags      equ $02C6        ; $F82C6
 ;                 bit 2: O2 activity test step bit (O2ActivityWarm)
 ;                 bit 1: O2 activity test step bit (O2ActivityWarm)
 ;                 bit 0: O2 activity test step bit (O2ActivityWarm)
+O2NoActivityFlags2 equ $02C7        ; $F82C7
+CalcEngine53C    equ $02C8        ; $F82C8
+IdleMonTimer     equ $02C9        ; $F82C9
 O2MonIdleTimer   equ $02CA        ; $F82CA
+WotLeanTimer     equ $02D1        ; $F82D1
+WotLeanCounter   equ $02D2        ; $F82D2
 O2MonData2       equ $02D7        ; $F82D7
 O2MonRestartTimer equ $02D8        ; $F82D8
 O2MonStableCount equ $02D9        ; $F82D9
 O2MonPurgeOffTimer equ $02E0        ; $F82E0
+O2Activity56C    equ $02E1        ; $F82E1
+O2Activity565    equ $02E2        ; $F82E2
+CalcEngine534    equ $02E4        ; $F82E4
+CalcEngine535    equ $02E6        ; $F82E6
+CalcEngine536    equ $02E8        ; $F82E8
+CalcEngine53B    equ $02EA        ; $F82EA
+ObdWork          equ $02F0        ; $F82F0
+SciCounter       equ $02FD        ; $F82FD
 LookupResult     equ $02FE        ; $F82FE
+IacReset54E      equ $0300        ; $F8300
 O2HeaterSample   equ $0302        ; $F8302
+O2Heater558      equ $030A        ; $F830A
 O2Heater559      equ $030B        ; $F830B
 O2Heater55A      equ $030C        ; $F830C
 O2Heater55B      equ $030D        ; $F830D
@@ -273,6 +556,9 @@ O2Heater55D      equ $030F        ; $F830F
 O2Heater55E      equ $0310        ; $F8310
 O2Heater55F      equ $0311        ; $F8311
 O2Heater560      equ $0312        ; $F8312
+O2Activity56B    equ $0317        ; $F8317
+SwitchInputs     equ $031A        ; $F831A
+;                 bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
 SwitchInputs2    equ $031B        ; $F831B
 ;                 bit 7: A/C request switch (AcClutchControl, EquipmentDetect)
 ;                 bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
@@ -292,16 +578,22 @@ DriveFlags       equ $031C        ; $F831C
 ;                 bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
 EngineRpm        equ $031D        ; $F831D
 RpmPrev          equ $031F        ; $F831F
+VehicleSpeedRaw  equ $0321        ; $F8321
 VehicleSpeed     equ $0323        ; $F8323
 VehicleSpeedCoarse equ $0324        ; $F8324
 O2IdleA4E        equ $0326        ; $F8326
 O2SensorReady2   equ $0327        ; $F8327
 AirTemp          equ $0328        ; $F8328
+AirTempRaw       equ $0329        ; $F8329
 StartCoolantTemp2 equ $032A        ; $F832A
 CoolantRaw       equ $032B        ; $F832B
+BatteryTemp      equ $032C        ; $F832C
 BatteryVolts2    equ $032E        ; $F832E
 AcSensor         equ $032F        ; $F832F
+AcSensorRaw      equ $0330        ; $F8330
+ThrottleRaw      equ $0331        ; $F8331
 ThrottleAboveClosed equ $0332        ; $F8332
+ThrottleDelta    equ $0334        ; $F8334
 ThrottleState    equ $0336        ; $F8336
 ;                 bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
 ;                 bit 6: wide-open throttle (DetectWot)
@@ -314,6 +606,7 @@ KnockSampleA8A   equ $0338        ; $F8338
 KnockSignal      equ $0339        ; $F8339
 KnockThresholdNow equ $033A        ; $F833A
 ManifoldVacuum   equ $033B        ; $F833B
+ReadAnalogA4B    equ $033E        ; $F833E
 MapLast          equ $0343        ; $F8343
 Map              equ $0345        ; $F8345
 MapFilterCoef    equ $0346        ; $F8346
@@ -323,9 +616,14 @@ TpsFilterCoef    equ $034A        ; $F834A
 StartCoolantTemp equ $034B        ; $F834B
 CoolantTemp      equ $034D        ; $F834D
 BatteryVoltsFiltered equ $034F        ; $F834F
+BatteryVolts     equ $0351        ; $F8351
+ChargeA54        equ $0352        ; $F8352
+BatteryVoltsA55  equ $0353        ; $F8353
 RpmSpeedRatio    equ $0355        ; $F8355
+ThrottleFilterState equ $0357        ; $F8357
 MapRawStart      equ $0358        ; $F8358
 ReadMapA81       equ $0359        ; $F8359
+SwitchPolarity   equ $035B        ; $F835B
 FlexEthanolScaled equ $035D        ; $F835D
 PowerDownCount   equ $035E        ; $F835E
 FuelTrimAdjustValue equ $0361        ; $F8361
@@ -342,13 +640,26 @@ CrankFlags2      equ $0368        ; $F8368
 ;                 bit 0: first crank period delta taken (CrankPeriodDelta2)
 HighRpmTimer     equ $036A        ; $F836A
 HighRpmTimer2    equ $036C        ; $F836C
+VssCountAC       equ $0370        ; $F8370
+VssTimeAE        equ $0372        ; $F8372
+VssPulseIndex    equ $0376        ; $F8376
+VssBusValue      equ $0377        ; $F8377
+VssAB4           equ $0378        ; $F8378
+VssAB5           equ $0379        ; $F8379
+RunModeCounter   equ $037C        ; $F837C
 RefPeriod        equ $037D        ; $F837D
-SparkPeriod      equ $037E        ; $F837E
+RefPeriodLow     equ $037E        ; $F837E
 CrankAC0         equ $0380        ; $F8380
 CrankPeriodPrev  equ $0382        ; $F8382
+VssBusValue2     equ $0384        ; $F8384
+BattTempModelAcc equ $0386        ; $F8386
 KnockMapThreshold equ $0388        ; $F8388
+KnockWindowFactor equ $0389        ; $F8389
+KnockNoiseDA6    equ $038A        ; $F838A
+KnockNoiseDA7    equ $038B        ; $F838B
 KnockEventCount  equ $038C        ; $F838C
 KnockRetardMax   equ $038E        ; $F838E
+KnockSignalLearn equ $038F        ; $F838F
 KnockSampleDAC   equ $0390        ; $F8390
 KnockSampleDAD   equ $0391        ; $F8391
 KnockSampleDAE   equ $0392        ; $F8392
@@ -373,6 +684,12 @@ AcFlags          equ $03A1        ; $F83A1
 ;                 bit 3: A/C request from the bus (message bit 0 in CcdReceive)
 ;                 bit 2: bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test
 ;                 bit 1: A/C clutch output changed since the last pass (AcCutLogic)
+AcPressureFlags  equ $03A2        ; $F83A2
+;                 bit 7: A/C cut state (AcCutLogic): WOT or coolant cut
+;                 bit 6: A/C cut state (AcCutLogic), cleared with bit 7
+;                 bit 4: A/C pressure low: clutch off until AcPressureLowRestore (AcClutchControl)
+;                 bit 3: A/C cut for coolant temperature (off below AcCutCoolantOff) (AcCutLogic)
+;                 bit 1: A/C clutch cycle time running (AcCycleTimeMin, AcClutchControl)
 OutputTestFlags  equ $03A3        ; $F83A3
 ;                 bit 7: EEPROM self-test started this drive (OutputTestEeprom)
 ;                 bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
@@ -385,6 +702,7 @@ OutputTestC25    equ $03A5        ; $F83A5
 OutputTestC27    equ $03A7        ; $F83A7
 MonStartDelay    equ $03AE        ; $F83AE
 FuelPulseOptFlags equ $03AF        ; $F83AF
+CalcSparkC51     equ $03B0        ; $F83B0
 FinishFuelC52    equ $03B1        ; $F83B1
 FinishFuelC53    equ $03B2        ; $F83B2
 SciUnlockState   equ $03B3        ; $F83B3
@@ -394,6 +712,10 @@ SciUnlockState   equ $03B3        ; $F83B3
 ;                 bit 1: unlock sequence step counter bit (SciRequestReceive)
 ;                 bit 0: unlock sequence step counter bit (SciRequestReceive)
 SciSecurityState equ $03B4        ; $F83B4
+PitTickCounter   equ $03B6        ; $F83B6
+CrankEvents      equ $03B7        ; $F83B7
+RpmCurveValue    equ $03B8        ; $F83B8
+O2Activity566    equ $03B9        ; $F83B9
 RunTime          equ $03BA        ; $F83BA
 CrankSyncFlags   equ $03BB        ; $F83BB
 ;                 bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)
@@ -406,11 +728,22 @@ CrankSyncFlags2  equ $03BC        ; $F83BC
 ;                 bit 4: knock sample taken on this event (Isr_GPT_IC1)
 ;                 bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
 CylinderIndex    equ $03BE        ; $F83BE
+BusTempFlags     equ $03BF        ; $F83BF
+;                 bit 7: fan stage from the bus temperature, bit 7 (FanRelayControl)
+;                 bit 6: fan stage from the bus temperature: stage 2 (FanRelayControl)
+;                 bit 5: fan stage from the bus temperature: stage 1 (FanRelayControl)
+;                 bit 4: fan stage from coolant: stage 2 (FanRelayControl)
+;                 bit 3: fan stage from coolant: stage 1 (FanRelayControl)
+;                 bit 2: gear idle steps pending with the fan (FanRelayControl)
+;                 bit 1: fan PWM running (FanPwmMain)
+;                 bit 0: bus temperature high: above BusTempLatchOn, off below BusTempLatchOff (BusTempFlag)
+CalcEngineC4B    equ $03C2        ; $F83C2
 Lookup2DC56      equ $03C4        ; $F83C4
 SciSecurityC59   equ $03C6        ; $F83C6
 SciSecurityC5A   equ $03C7        ; $F83C7
 SciSecurityPtr   equ $03C8        ; $F83C8
 SciSecurityC5C   equ $03C9        ; $F83C9
+PurgeBattTimer   equ $03CA        ; $F83CA
 PurgeFlags       equ $03CC        ; $F83CC
 ;                 bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
 ;                 bit 6: purge battery-temperature timer running (PurgeEnable)
@@ -423,9 +756,41 @@ PurgeFlags       equ $03CC        ; $F83CC
 PurgeCellCount   equ $03CD        ; $F83CD
 PurgeCellFlags   equ $03CE        ; $F83CE
 PurgeDelay       equ $03CF        ; $F83CF
+PurgeDuty        equ $03D0        ; $F83D0
 PurgeRamp        equ $03D1        ; $F83D1
 PurgeStartRamp   equ $03D3        ; $F83D3
 CalcFuel432      equ $03D7        ; $F83D7
+Reset434         equ $03D9        ; $F83D9
+PurgeCell43F     equ $03DB        ; $F83DB
+PurgeCell440     equ $03DC        ; $F83DC
+PurgeCell441     equ $03DD        ; $F83DD
+PurgeCell442     equ $03DE        ; $F83DE
+PurgeFlags2      equ $03DF        ; $F83DF
+;                 bit 7: read by the adaptive fuel code, byte writes only
+;                 bit 5: purge reset since the last start (PurgeReset; cleared at stall)
+;                 bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
+;                 bit 2: purge cell 1 reference reached, bank 2
+;                 bit 1: purge cell 2 reference reached, bank 1
+;                 bit 0: purge cell 2 reference reached, bank 2
+PurgeCellUpdateCounter equ $03E0        ; $F83E0
+PurgeLearnFlags  equ $03E1        ; $F83E1
+;                 bit 7: purge vapour learning running (PurgeVaporLearn)
+;                 bit 6: purge vapour learning step state; O2LearnEnable reads it
+;                 bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
+;                 bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
+;                 bit 3: purge vapour learning step state (PurgeVaporLearn)
+;                 bit 2: trim at or below the learning limit (PurgeVaporLearn)
+;                 bit 1: purge vapour learning ended (PurgeVaporLearn)
+;                 bit 0: bank 1 learning rate step (PurgeVaporLearn)
+PurgeTrimAvgOff  equ $03E2        ; $F83E2
+PurgeTrimAvgOn   equ $03E3        ; $F83E3
+PurgeVaporSettle equ $03E4        ; $F83E4
+PurgeVapor448    equ $03E5        ; $F83E5
+PurgeVaporCount  equ $03E7        ; $F83E7
+PurgeVapor44A    equ $03E8        ; $F83E8
+PurgeVapor446    equ $03EB        ; $F83EB
+PurgeLearnTimer  equ $03ED        ; $F83ED
+PurgeRampStep    equ $03EE        ; $F83EE
 FanFlags         equ $0402        ; $F8402
 ;                 bit 7: A/C fan stage bit (FanAcStage)
 ;                 bit 6: A/C fan stage bit (FanAcStage)
@@ -433,7 +798,11 @@ FanFlags         equ $0402        ; $F8402
 ;                 bit 2: vehicle speed below FanWarmupSpeedMax (FanWarmupState)
 ;                 bit 1: fan PWM output read back low (FanPwmOutputCheck)
 ;                 bit 0: fan PWM output read back high (FanPwmOutputCheck)
+FanStageTimer    equ $0403        ; $F8403
 IdleTargetB02    equ $0404        ; $F8404
+FanB03           equ $0405        ; $F8405
+FanState         equ $0406        ; $F8406
+DiagModeFlags    equ $040E        ; $F840E
 FuelSystemStatusPid equ $0410        ; $F8410
 FuelSystem529    equ $0411        ; $F8411
 MonStatusBits1   equ $0412        ; $F8412
@@ -449,6 +818,15 @@ EventSparkFlags  equ $041A        ; $F841A
 ;                 bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
 ;                 bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
 ;                 bit 0: input capture 4 edge was the first kind (TCTL2 bit 7 clear) (Isr_GPT_IC4OC5)
+EventSparkFlags2 equ $041B        ; $F841B
+;                 bit 7: reference event since the last rpm update (CalcEngineRpm); SpeedDampControl reads it
+;                 bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
+;                 bit 5: cleared by CamSignalCheck
+;                 bit 4: per-event spark state from the park/neutral switch (Isr_GPT_IC4OC5); EventSparkControl reads it
+;                 bit 3: speed damping correction started (SpeedDampControl)
+;                 bit 2: speed damping pass done (SpeedDampControl); MisfireTransient reads it
+;                 bit 1: speed damping correction negative (SpeedDampControl)
+;                 bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
 EventSpark       equ $041C        ; $F841C
 EventSparkTimer  equ $041D        ; $F841D
 EventCorrections85B equ $041E        ; $F841E
@@ -457,6 +835,7 @@ EventSparkPeriodB equ $0420        ; $F8420
 EventSparkCount2 equ $0421        ; $F8421
 EventSparkPeriodA equ $0423        ; $F8423
 EventSparkCount  equ $0424        ; $F8424
+CamSignalCount   equ $0425        ; $F8425
 Ic4866           equ $0428        ; $F8428
 Ic4867           equ $0429        ; $F8429
 Ic4868           equ $042A        ; $F842A
@@ -472,8 +851,11 @@ ChargeMonFlags   equ $042E        ; $F842E
 ;                 bit 0: a fault with the charge-lamp flag was reported (ReportFault); charge lamp request
 ChargeTargetVolts equ $042F        ; $F842F
 ChargeMonTimer   equ $0431        ; $F8431
+BattLowCounter   equ $0432        ; $F8432
+IacChargeTimer   equ $0434        ; $F8434
 ChargeIacStep    equ $0436        ; $F8436
 ChargeDeficitAvg equ $0437        ; $F8437
+ChargeDeficit    equ $0438        ; $F8438
 FieldFlags       equ $0439        ; $F8439
 ;                 bit 6: field ramp minimum time after start passed (FieldRampTimeMin)
 ;                 bit 5: field ramp reached its end step (FieldRampControl)
@@ -483,12 +865,17 @@ FieldFlags       equ $0439        ; $F8439
 ;                 bit 1: idle air charge step: voltage recovered, timer running (IacChargeStepCalc)
 ;                 bit 0: idle air charge step applied (IacChargeStepCalc)
 FieldTestVolts   equ $043A        ; $F843A
-PciRxFlags       equ $043C        ; $F843C
-;                 bit 4: PCI service: three seconds since key-on passed (PciService); SkimState reads it
-;                 bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
-;                 bit 2: spark status message pending, second copy
-;                 bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
+CcdBusFlags      equ $043C        ; $F843C
+;                 bit 7: bus ready for the next message (CcdReceive, Irq4BusHandler, Irq2BusHandler)
+;                 bit 6: byte transmission in progress (BusTxStart, Irq4BusHandler)
+;                 bit 5: echo of the sent byte matched (Irq4BusHandler)
+;                 bit 4: echo mismatch or receive error: arbitration lost (Irq4BusHandler)
+;                 bit 3: message sent with a receive copy (BusTxStart, CcdRxFlags bit 7)
+;                 bit 2: last byte of the message sent (Irq4BusHandler)
+;                 bit 1: message transmission running (Irq4BusHandler)
+;                 bit 0: received message goes to the second buffer (Irq4BusHandler, Irq2BusHandler)
 BusTx97A         equ $043D        ; $F843D
+CcdTxId          equ $043F        ; $F843F
 CcdRxFlags       equ $0440        ; $F8440
 ;                 bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
 ;                 bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler)
@@ -498,6 +885,8 @@ CcdRxFlags       equ $0440        ; $F8440
 ;                 bit 2: CCD transmit buffer 3 in use (CcdTransmit)
 ;                 bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
 ;                 bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
+BusTx97E         equ $0442        ; $F8442
+BusTx990         equ $0454        ; $F8454
 CcdByteIndex     equ $0472        ; $F8472
 SecurityFlags    equ $0473        ; $F8473
 ;                 bit 7: security message of the first kind received (CcdReceive); SkimState reads it
@@ -507,8 +896,24 @@ SecurityFlags    equ $0473        ; $F8473
 ;                 bit 3: security exchange step 2 (CcdReceive)
 ;                 bit 2: security exchange step 1 (CcdReceive)
 ;                 bit 0: security status to be sent (CcdReceive, SecurityStatusCalc)
+BusMsgFlags      equ $0475        ; $F8475
+;                 bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
+;                 bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
+;                 bit 5: bus message $12 request taken (CcdReceive, PciReceive)
+;                 bit 2: bus receive acknowledged (BusRxAck)
+;                 bit 1: bus message $B2 sent: answer awaited (BusTxStart, Irq4BusHandler)
+;                 bit 0: engine-off time received from the bus (BusEngineOffTime); BatteryTempModel reads it
+BusMsg91Byte1    equ $0476        ; $F8476
+BusMsg91Byte2    equ $0477        ; $F8477
+CcdTxIndex       equ $047C        ; $F847C
+FuelUsedAccum    equ $047D        ; $F847D
+FuelUsedWord     equ $047E        ; $F847E
+DistancePulses   equ $0480        ; $F8480
+BusFlags9CE      equ $0483        ; $F8483
+VinIndex         equ $0484        ; $F8484
 FuelLevelScaled  equ $0485        ; $F8485
 FuelSenderScaled equ $0486        ; $F8486
+BusTemp          equ $0487        ; $F8487
 DiagCommand      equ $048C        ; $F848C
 DiagParam1       equ $048D        ; $F848D
 DiagParam2       equ $048E        ; $F848E
@@ -519,15 +924,18 @@ DiagFlags        equ $0490        ; $F8490
 ;                 bit 5: SCI request state bit (SciRequestReceive)
 ;                 bit 4: SCI request state bit (SciRequestReceive); IdleRpmTarget reads it
 ActuatorTest     equ $0491        ; $F8491
+InjectorKillCyl1 equ $0492        ; $F8492
+InjectorKillCyl2 equ $0493        ; $F8493
 SystemTestRejects equ $0494        ; $F8494
 SystemTestMode   equ $0495        ; $F8495
 SystemTestValue  equ $0496        ; $F8496
-IoCfg1FL         equ $0498        ; $F8498
-;                 bit 5: manifold tuning valve driver status (MtvCheck)
-;                 bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
-;                 bit 3: tested by Isr_GPT_OC4 (ignition driver status, probably)
-;                 bit 2: tested by Isr_GPT_OC3 (ignition driver status, probably)
-;                 bit 1: tested by Isr_GPT_OC2 (ignition driver status, probably)
+ControlFlags943  equ $0498        ; $F8498
+;                 bit 7: A/C cut active (AcCutControl timer running)
+;                 bit 6: set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)
+;                 bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
+;                 bit 3: fuel pump relay on, probably (set and cleared with bit 4)
+;                 bit 2: output toggled by EgrOutputTest, not read
+;                 bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 ControlFlags944  equ $0499        ; $F8499
 ;                 bit 7: set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7)
 ;                 bit 5: output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read
@@ -537,8 +945,12 @@ ControlFlags944  equ $0499        ; $F8499
 ;                 bit 1: toggled by ActuatorTestMain, not read
 ;                 bit 0: starter cut active (StarterCut)
 OutputStatusWord equ $049A        ; $F849A
+OutputStatusPrev equ $049C        ; $F849C
+AsdRelay940      equ $049E        ; $F849E
 EepromAddr       equ $04A2        ; $F84A2
+EepromWrite947   equ $04A3        ; $F84A3
 EepromData       equ $04A4        ; $F84A4
+EepromWrite949   equ $04A5        ; $F84A5
 EepromFlags      equ $04A6        ; $F84A6
 ;                 bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
 ;                 bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
@@ -548,12 +960,16 @@ EepromFlags      equ $04A6        ; $F84A6
 ;                 bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
 ;                 bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 ;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
+EepromWrite94B   equ $04A7        ; $F84A7
 OutputTest94D    equ $04A9        ; $F84A9
 CamCrank950      equ $04AC        ; $F84AC
 FuelTrim976      equ $04D1        ; $F84D1
 FuelTrim977      equ $04D2        ; $F84D2
 FuelTrim978      equ $04D3        ; $F84D3
 FuelTrim972      equ $04D4        ; $F84D4
+SciLogLast       equ $04D5        ; $F84D5
+SciRxIndex       equ $04D6        ; $F84D6
+SciLogByte       equ $04D7        ; $F84D7
 SciErrors        equ $04D8        ; $F84D8
 DiagRamFlags     equ $04D9        ; $F84D9
 ;                 bit 7: RAM session of type 1 open (DiagRamSession1, parameter 1)
@@ -564,6 +980,11 @@ DiagRamFlags     equ $04D9        ; $F84D9
 ;                 bit 2: reply byte 2 pending (DiagRamSession1)
 ;                 bit 1: reply word pending (DiagRamSession1)
 ;                 bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
+DiagRam9B5       equ $04DA        ; $F84DA
+DiagRam9B6       equ $04DB        ; $F84DB
+DiagRam9B7       equ $04DC        ; $F84DC
+DiagRam9B9       equ $04DE        ; $F84DE
+DiagRam9BA       equ $04DF        ; $F84DF
 Ldp59C           equ $04E0        ; $F84E0
 MisfireThreshold634 equ $04E1        ; $F84E1
 MisfireThreshold635 equ $04E2        ; $F84E2
@@ -588,15 +1009,14 @@ MonData645       equ $0503        ; $F8503
 MonData646       equ $0504        ; $F8504
 MonData647       equ $0505        ; $F8505
 MonData648       equ $0506        ; $F8506
-LdpPurgeTestFlags equ $0507        ; $F8507
-;                 bit 7: purge test step started (LdpPurgeTest)
-;                 bit 6: sign of the last change in LdpPurgeTest
-;                 bit 5: idle phase of the purge test reached (LdpPurgeTest)
-;                 bit 4: purge test finished: purge duty back to zero; monitors wait until then
-;                 bit 3: purge hold time reached (LdpPurgeHoldTime)
-;                 bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
-;                 bit 1: second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)
-;                 bit 0: third kind of purge test request (LdpPurgeTestRun)
+LdpFlags3        equ $0507        ; $F8507
+;                 bit 7: MonData643Update first pass done (counter MonData643 cleared)
+;                 bit 6: MonTaskB first pass done
+;                 bit 5: MonTaskD first phase started
+;                 bit 4: MonTaskD second phase started
+;                 bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
+;                 bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
+;                 bit 1: leak detection monitor restart requested (MonTaskLdp)
 ClosedLoopMonFlags equ $0508        ; $F8508
 ;                 bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
 ;                 bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
@@ -614,21 +1034,45 @@ MonData64F       equ $050D        ; $F850D
 MonData650       equ $050E        ; $F850E
 ShortTermTrim1   equ $050F        ; $F850F
 O2UpBank1Raw     equ $0510        ; $F8510
+ClosedLoop702    equ $0511        ; $F8511
+ClosedLoop703    equ $0512        ; $F8512
+ClosedLoop704    equ $0513        ; $F8513
+ClosedLoop706    equ $0515        ; $F8515
+ClosedLoop707    equ $0516        ; $F8516
 O2DownBank1Raw   equ $051A        ; $F851A
+ClosedLoop70C    equ $051B        ; $F851B
+ClosedLoop70E    equ $051D        ; $F851D
 ClosedLoop711    equ $0520        ; $F8520
+ClosedLoop712    equ $0521        ; $F8521
+O2UpBank1        equ $0523        ; $F8523
 O2Bank1Flags     equ $052C        ; $F852C
 ;                 bit 7: bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens
 ;                 bit 6: set with bit 7; read by O2DownEnable
 ;                 bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
 ;                 bit 4: bank 1 state read by ClosedLoopManager and O2DownEnable, byte writes only
 ;                 bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
+O2Post71E        equ $052D        ; $F852D
 ShortTermTrim2   equ $0530        ; $F8530
 O2UpBank2Raw     equ $0531        ; $F8531
+O2DelayWork2     equ $0532        ; $F8532
+ClosedLoop74D    equ $0533        ; $F8533
+ClosedLoop72C    equ $0534        ; $F8534
+ClosedLoop72E    equ $0536        ; $F8536
+ClosedLoop72F    equ $0537        ; $F8537
+O2DownBank2Raw   equ $053B        ; $F853B
+ClosedLoop734    equ $053C        ; $F853C
+ClosedLoop736    equ $053E        ; $F853E
 ClosedLoop739    equ $0541        ; $F8541
+O2SlowPeriod2    equ $0542        ; $F8542
+O2UpBank2        equ $0544        ; $F8544
 O2Bank2Flags     equ $054D        ; $F854D
+O2Post746        equ $054E        ; $F854E
 ClosedLoop751    equ $0551        ; $F8551
+O2DecelHoldTimer equ $0552        ; $F8552
+O2EntryTimer     equ $0553        ; $F8553
 O2DownDelay      equ $0555        ; $F8555
 O2SlowDelay      equ $0556        ; $F8556
+O2StepCount      equ $0557        ; $F8557
 O2ActiveFlags    equ $0558        ; $F8558
 ;                 bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
 ;                 bit 6: upstream O2 sensor 2 active (as bit 7)
@@ -645,6 +1089,27 @@ O2SwitchFlags    equ $0559        ; $F8559
 ;                 bit 2: read by O2CellSelect3x3
 ;                 bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
 ;                 bit 0: O2 switched (rich/lean change) since the last pass (O2SwitchState)
+O2InactiveFlags  equ $055A        ; $F855A
+;                 bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)
+;                 bit 6: bank 2 closed loop held open (as bit 7)
+;                 bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
+;                 bit 0: read by ClosedLoopManager
+O2ResetFlags2    equ $055B        ; $F855B
+;                 bit 7: adaptive cell selection: not the last cell (O2LearnEnable)
+;                 bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
+;                 bit 5: bank 1 short-term trim reset, memory change hold started (O2CellSelect, FuelCutControl)
+;                 bit 4: bank 2 short-term trim reset (O2CellSelect, FuelCutControl)
+;                 bit 3: bank 1 trim at or below PurgeLearnTrimMin during vapour learning (PurgeVaporLearn)
+;                 bit 2: bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)
+;                 bit 1: bank 1 cold trim reset (ClosedLoopTiming)
+;                 bit 0: bank 2 cold trim reset (ClosedLoopTiming)
+O2ResetFlags     equ $055C        ; $F855C
+;                 bit 5: post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)
+;                 bit 4: post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)
+;                 bit 3: cold enrichment active when closed loop started (ClosedLoopManager)
+;                 bit 2: O2 hold count still rising (ClosedLoopTiming)
+;                 bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
+;                 bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 FuelPulseFlags   equ $055D        ; $F855D
 ;                 bit 7: injector timers loaded for the current event (FuelEventCalc), probably
 ;                 bit 6: set in FuelEventCalc for event code $42, cleared for the others
@@ -680,30 +1145,37 @@ FuelModeFlags    equ $056A        ; $F856A
 ;                 bit 2: vehicle speed above the warm-up fuel speed limit (WarmupFuel)
 ;                 bit 1: deceleration fuel cut active (FuelCutControl)
 ;                 bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
-EventFlags       equ $056B        ; $F856B
-;                 bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
-;                 bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
-;                 bit 4: read by EventCorrections and LimitReasonCode
-;                 bit 3: read by LimitReasonCode
+IdleFlareFlags   equ $056B        ; $F856B
+;                 bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
+;                 bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
+;                 bit 5: bank 1 fuel pulse below O2PulseWidthMin: adaptive cell update held (O2LearnEnable)
+;                 bit 4: bank 2 fuel pulse below O2PulseWidthMin (O2LearnEnable)
+;                 bit 3: throttle opened since the last flare check (IdleFlareCheck)
 FuelEventFlags   equ $056C        ; $F856C
 ;                 bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)
 ;                 bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
 ;                 bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule)
 ;                 bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
 ;                 bit 0: start pulse of the third kind done (FuelEventStart, FuelEventSchedule)
+RevLimitFlags    equ $056D        ; $F856D
 DecelLeanFlags   equ $056E        ; $F856E
 ;                 bit 7: WOT lean condition counted (WotLeanMonitor); closed loop and O2 activity read it
 ;                 bit 2: MAP drop past DecelLeanMapDrop: deceleration lean-out by MAP (DecelLeanControl)
 ;                 bit 1: deceleration lean-out timer running (DecelLeanControl)
 ;                 bit 0: throttle drop past DecelLeanThrottleDrop: deceleration lean-out by throttle (DecelLeanControl)
+O2WarmDelay      equ $056F        ; $F856F
 O2AdaptValue1    equ $0570        ; $F8570
 O2AdaptValue2    equ $0571        ; $F8571
 O2CellIndex      equ $0572        ; $F8572
+TipIn802         equ $0576        ; $F8576
 O2MemCell        equ $0577        ; $F8577
 FlexFactorCoolant3 equ $057B        ; $F857B
 KnockFuel        equ $057D        ; $F857D
 FuelEventHoldCount equ $057E        ; $F857E
 InjectorIndex    equ $057F        ; $F857F
+EventCellIndex   equ $0580        ; $F8580
+IdleEnrichRun    equ $0583        ; $F8583
+StartAirTemp     equ $0584        ; $F8584
 DecelLeanAir     equ $0585        ; $F8585
 MapTps805        equ $0586        ; $F8586
 FlexFuelFactor   equ $0588        ; $F8588
@@ -734,8 +1206,19 @@ TipInTimer       equ $05A5        ; $F85A5
 BaroFuelAdder    equ $05A6        ; $F85A6
 DecelLeanMapFactor equ $05A8        ; $F85A8
 DecelLeanThrottleFactor equ $05A9        ; $F85A9
+O2ColdTrim1      equ $05AA        ; $F85AA
+O2ColdTrim2      equ $05AB        ; $F85AB
+O2ColdStartTimer equ $05AC        ; $F85AC
+O2ColdPurgeCounter equ $05AD        ; $F85AD
+O2ColdLeanCount1 equ $05AE        ; $F85AE
+O2ColdLeanCount2 equ $05AF        ; $F85AF
+ClosedLoop7B4    equ $05B0        ; $F85B0
+O2Cell78A        equ $05B1        ; $F85B1
 FinishFuel78C    equ $05B3        ; $F85B3
+O2Cell794        equ $05B8        ; $F85B8
 FinishFuel796    equ $05BA        ; $F85BA
+SparkStartRamp   equ $05BF        ; $F85BF
+SparkStartRampValue equ $05C0        ; $F85C0
 WotTimeEnrich    equ $05C3        ; $F85C3
 WotTimer         equ $05C4        ; $F85C4
 WotEnrichTimer2  equ $05C6        ; $F85C6
@@ -745,14 +1228,35 @@ AccelTpsFuel     equ $05CE        ; $F85CE
 MapAccelFuel     equ $05D0        ; $F85D0
 FinishFuel7CE    equ $05D2        ; $F85D2
 AccelFactor      equ $05D4        ; $F85D4
+TipIn7D2         equ $05D6        ; $F85D6
+TipIn7D3         equ $05D7        ; $F85D7
 AccelMapGain     equ $05D8        ; $F85D8
+O2CellWork       equ $05D9        ; $F85D9
+O2LearnTimer2    equ $05DA        ; $F85DA
 ColdEnrich       equ $05DC        ; $F85DC
 AccelMapCoolantFactor equ $05DD        ; $F85DD
 EventCorrWork1   equ $05DF        ; $F85DF
 EventCorrWork2   equ $05E0        ; $F85E0
+IdleEnrichFactor equ $05E1        ; $F85E1
+IdleFuelRamp     equ $05E2        ; $F85E2
+IdleFuelUpCount  equ $05E3        ; $F85E3
+IdleFuelDownCount equ $05E4        ; $F85E4
+FlexTrimUpCounter equ $05E5        ; $F85E5
+FlexTrimDownCounter equ $05E6        ; $F85E6
 HotEnrich        equ $05E8        ; $F85E8
+EngineOffTimeStart equ $05E9        ; $F85E9
+IdleEnrichment813 equ $05EA        ; $F85EA
+IdleEnrichSoak   equ $05EC        ; $F85EC
+FlexStartFuel    equ $05ED        ; $F85ED
 AccelMapBaroFactor equ $05EE        ; $F85EE
 AccelTpsBaroFactor equ $05EF        ; $F85EF
+PurgeVaporEstimate equ $0600        ; $F8600
+PurgeVaporEstimate2 equ $0601        ; $F8601
+PurgeVaporClosed equ $0602        ; $F8602
+PurgeLearnCount  equ $0603        ; $F8603
+ResetF09         equ $0606        ; $F8606
+PurgeTrimCount   equ $060A        ; $F860A
+PurgeTrimLatched equ $060B        ; $F860B
 WotEnrich        equ $060C        ; $F860C
 SparkFlags       equ $060E        ; $F860E
 ;                 bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
@@ -776,15 +1280,33 @@ SparkFlags2      equ $0610        ; $F8610
 ;                 bit 1: low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)
 ;                 bit 0: EGR spark correction applied (EgrSparkCalc, cleared by EgrEnable)
 FlexSparkValue   equ $0611        ; $F8611
+KnockRetard      equ $0612        ; $F8612
+CalcSparkD05     equ $0613        ; $F8613
+CalcSparkD06     equ $0615        ; $F8615
+CalcSparkD07     equ $0616        ; $F8616
+CalcSparkD08     equ $0617        ; $F8617
+CalcSparkD09     equ $0618        ; $F8618
 CalcSparkD0A     equ $0619        ; $F8619
+CalcSparkD0C     equ $061B        ; $F861B
+CalcSparkD0E     equ $061C        ; $F861C
+SparkValueD0F    equ $061E        ; $F861E
+CalcSparkD0B     equ $061F        ; $F861F
 SparkAdvanceD11  equ $0620        ; $F8620
+TipInSteps       equ $0622        ; $F8622
+ThrottleRise     equ $0623        ; $F8623
 AfterStartSparkPass equ $0624        ; $F8624
 AfterStartSparkFlags equ $0625        ; $F8625
 AfterStartSparkStart equ $0626        ; $F8626
 AfterStartSparkCount equ $0627        ; $F8627
 AfterStartSparkStep equ $0628        ; $F8628
 SegmentRpmFast   equ $0629        ; $F8629
+SurgeRpmFast     equ $062B        ; $F862B
+SurgeRpmSlow     equ $062D        ; $F862D
+SurgeFilterWord  equ $062F        ; $F862F
 RpmAccel         equ $0631        ; $F8631
+IdleMapRpmAccel  equ $0632        ; $F8632
+SurgeAccelFast   equ $0633        ; $F8633
+SurgeAccelSlow   equ $0635        ; $F8635
 RpmAccelChange   equ $0637        ; $F8637
 RpmJerk          equ $063B        ; $F863B
 SurgeRetardRaw   equ $063D        ; $F863D
@@ -795,12 +1317,15 @@ SurgeJerkRetard  equ $0641        ; $F8641
 SurgeStageTime   equ $0642        ; $F8642
 SurgeOpenTime    equ $0643        ; $F8643
 SurgeMapPos      equ $0646        ; $F8646
+SurgeMapRef      equ $0647        ; $F8647
 MapRise          equ $0648        ; $F8648
 RpmRate          equ $064A        ; $F864A
 AcSparkD4C       equ $064C        ; $F864C
 AcSparkRateChange equ $064E        ; $F864E
 AcSparkWork      equ $0650        ; $F8650
+AcSparkHold      equ $0651        ; $F8651
 AcSparkWindow    equ $0652        ; $F8652
+AcClutchSparkTime equ $0653        ; $F8653
 AcClutchSparkHoldTime equ $0654        ; $F8654
 AcSpark          equ $0655        ; $F8655
 AcSparkHoldCounter equ $0656        ; $F8656
@@ -814,8 +1339,15 @@ IacAcFlags       equ $0657        ; $F8657
 ;                 bit 1: rpm filter from the bus value (RpmIdleFilter, BusFlags9CE bit 6)
 ;                 bit 0: A/C clutch spark rate step (AcClutchSpark, read by AcSparkRate)
 ShiftIdleDelay   equ $0658        ; $F8658
+TipInThrottleRef equ $065C        ; $F865C
 SparkStartTime   equ $065E        ; $F865E
 IdleTarget       equ $0660        ; $F8660
+IacDecelRefRpm   equ $0662        ; $F8662
+SegmentRpmDelta  equ $0666        ; $F8666
+IdleRpmError     equ $0668        ; $F8668
+IdleRpmRateFiltered equ $066A        ; $F866A
+IdleRpmRate      equ $066C        ; $F866C
+IdleRunTimer     equ $066E        ; $F866E
 GearStateFlags   equ $0670        ; $F8670
 ;                 bit 7: gear engaged and shift idle delay done (GearStateUpdate)
 ;                 bit 6: start: no gear message from the bus yet (set at start by IacResetHold, cleared by GearStateUpdate or a bus timeout)
@@ -824,6 +1356,7 @@ GearStateFlags   equ $0670        ; $F8670
 ;                 bit 3: gear message received from the bus (CcdReceive, PciReceive)
 ;                 bit 2: set with bit 7 when the shift idle delay ends (GearStateUpdate)
 ;                 bit 1: gear idle step duration finished (GearStateUpdate)
+BusIdleByte      equ $0671        ; $F8671
 IdleFlags        equ $0672        ; $F8672
 ;                 bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
 ;                 bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
@@ -848,11 +1381,15 @@ IdleFlags6       equ $0674        ; $F8674
 ;                 bit 2: idle step state, cleared with IdleFlags5 bits 3-4 (IdleTargetControl)
 ;                 bit 1: gear-step idle air step applied (IdleTargetControl)
 ;                 bit 0: A/C sensor value latched before the clutch engaged (IacBaseCalc)
-SparkFlags3      equ $0675        ; $F8675
-;                 bit 7: spark period at or below $7D00: idle spark range (IdleSparkControl)
-;                 bit 6: idle spark correction active (IdleSparkControl); SurgeControl reads it
-;                 bit 1: low-rpm event state (Isr_GPT_IC1)
-;                 bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
+IdleFlags7       equ $0675        ; $F8675
+;                 bit 7: gear idle step started (IdleTargetControl)
+;                 bit 6: reference period long (RefPeriod at $20 or more, low rpm): idle air crank target (CalcEngineRpm, IacCrankControl)
+;                 bit 5: idle conditions met without a recent shift (IdleStateFlags)
+;                 bit 4: idle target raise for low battery voltage or a diagnostic hold (IdleRpmTarget)
+;                 bit 3: cleared with bits 7 and 2 when the gear step ends; not set by bit instructions
+;                 bit 2: cleared with bits 7 and 3 when the gear step ends; not set by bit instructions
+;                 bit 1: A/C idle bump not handled yet (IdleTargetControl)
+;                 bit 0: SegmentRpm above $7D00 (overrun of the idle loop range; hysteresis to $7C60) (IdleRpmLoop)
 IdleFlags2       equ $0676        ; $F8676
 ;                 bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
 ;                 bit 6: idle target ramp not allowed: flex cold start or ramp delay (IdleRpmTarget)
@@ -886,23 +1423,53 @@ IdleAcFlags      equ $0679        ; $F8679
 ;                 bit 1: A/C idle state bit (IdleTargetControl, AcCutLogic)
 ;                 bit 0: A/C idle state bit (IdleTargetControl, AcCutLogic)
 IacTarget        equ $067A        ; $F867A
+IacStepper31C    equ $067B        ; $F867B
+OcTestCount      equ $067C        ; $F867C
+IdleMapTarget    equ $067D        ; $F867D
 IdleCount0322    equ $0681        ; $F8681
+DashpotTimer     equ $0682        ; $F8682
+IdleRampDelay    equ $0683        ; $F8683
+IdleMap325       equ $0684        ; $F8684
 IacShift329      equ $068B        ; $F868B
+IdleMapHold      equ $068C        ; $F868C
 IacCoastPosition equ $068E        ; $F868E
+IdleMap32D       equ $068F        ; $F868F
 FieldDuty        equ $0690        ; $F8690
+IdleMap32F       equ $0691        ; $F8691
+FieldDutyRaw     equ $0692        ; $F8692
+IacStartHold2    equ $0695        ; $F8695
+IacStartHold     equ $0696        ; $F8696
 IacLearned       equ $0697        ; $F8697
+IdleErrorTerm    equ $0698        ; $F8698
+IdleDeadband     equ $0699        ; $F8699
+IdleErrorSum     equ $069A        ; $F869A
+IdleErrorNet     equ $069B        ; $F869B
+IdleStepCloseValue equ $069C        ; $F869C
+IdleRpm33B       equ $069D        ; $F869D
+IdleRateTerm     equ $069E        ; $F869E
+IdleRpm33D       equ $069F        ; $F869F
+IacStepSum       equ $06A0        ; $F86A0
+IdleStepOpenValue equ $06A1        ; $F86A1
 IacKick          equ $06A2        ; $F86A2
 IacAcKickMapLatch equ $06A3        ; $F86A3
+IacStep          equ $06A5        ; $F86A5
+IdleRpm344       equ $06A6        ; $F86A6
 AcSensorFiltered equ $06A7        ; $F86A7
 DashpotTimer2    equ $06A9        ; $F86A9
 IacGearTime      equ $06AA        ; $F86AA
-IacGearTime2     equ $06AB        ; $F86AB
+IacGearDelay     equ $06AB        ; $F86AB
 IacGearDuration  equ $06AC        ; $F86AC
+IdleRampBlockTimer equ $06AD        ; $F86AD
+IdleRampHold     equ $06AE        ; $F86AE
 DashpotTimerMoving equ $06AF        ; $F86AF
 IacAccelTimer    equ $06B0        ; $F86B0
 IacShiftTimer    equ $06B1        ; $F86B1
+IacRolling351    equ $06B3        ; $F86B3
 IacGearSteps     equ $06B4        ; $F86B4
 IacShiftMode     equ $06B5        ; $F86B5
+IacCrank354      equ $06B6        ; $F86B6
+IdleLoopHold     equ $06B9        ; $F86B9
+IdleLowVoltsTimer equ $06BA        ; $F86BA
 IacKickTimer     equ $06D7        ; $F86D7
 EventHistory874  equ $0706        ; $F8706
 EventHistory875  equ $0707        ; $F8707
@@ -944,6 +1511,7 @@ Misfire63E       equ $071D        ; $F871D
 MisfireThreshold63F equ $071E        ; $F871E
 O2MonData        equ $0722        ; $F8722
 MonTask657       equ $0723        ; $F8723
+O2Heater109      equ $0724        ; $F8724
 IoInputs0        equ $0800        ; $F8800
 ;                 bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
 ;                 bit 2: ASD relay output present, probably (AsdRelayCheck, the reference-event code)
@@ -954,12 +1522,39 @@ IoStatus2        equ $0802        ; $F8802
 IoStatus3        equ $0803        ; $F8803
 ;                 bit 7: PWM C18 driver status (PwmC18CircuitCheck)
 ;                 bit 6: leak detection pump solenoid status (LdpSolenoidCheck)
+IoCtl04          equ $0804        ; $F8804
+IoTimer06        equ $0806        ; $F8806
+IoTimer08        equ $0808        ; $F8808
+IoStatus0B       equ $080B        ; $F880B
+;                 bit 5: SCI line status, probably (SciPitService)
+;                 bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
+IoIrqEnable      equ $080C        ; $F880C
+;                 bit 3: bus timer interrupt enable (word bit 11; PciTimeoutRestart sets it)
 IoIrqStatus      equ $080E        ; $F880E
 ;                 bit 1: timer event: Isr_IRQ2 counts it in Irq2Counter for the misfire segment times
+IoIrqStatusL     equ $080F        ; $F880F
+;                 bit 3: bus event: Isr_IRQ2 calls Irq2Dispatch
+;                 bit 1: tested by OutputDriverCheck
+IoTimer10        equ $0810        ; $F8810
 IoCtl12          equ $0812        ; $F8812
+IoCtl13          equ $0813        ; $F8813
+IoCfg14          equ $0814        ; $F8814
 IoBusData        equ $0816        ; $F8816
 IoCfg18          equ $0818        ; $F8818
 IoBusStatus      equ $081A        ; $F881A
+IoBusStatusL     equ $081B        ; $F881B
+;                 bit 7: tested by BusTxStart before a byte is sent
+IoCfg1C          equ $081C        ; $F881C
+IoOcChan0        equ $0824        ; $F8824
+IoOcChan1        equ $0828        ; $F8828
+IoOcChan2        equ $082C        ; $F882C
+IoOcChan3        equ $0830        ; $F8830
+IoOcChan4        equ $0834        ; $F8834
+IoOcChan5        equ $0838        ; $F8838
+IoFanPwmB        equ $0848        ; $F8848
+IoTimer4A        equ $084A        ; $F884A
+IoTimer4C        equ $084C        ; $F884C
+IoDriver6C       equ $084E        ; $F884E
 IoInjector0      equ $0856        ; $F8856
 IoInjector1      equ $0858        ; $F8858
 IoInjector2      equ $085A        ; $F885A
@@ -970,6 +1565,8 @@ IoDriver62       equ $0862        ; $F8862
 ;                 bit 7: driver status, checked by HardwareCheck
 ;                 bit 6: driver status, checked by HardwareCheck
 ;                 bit 5: leak detection pump solenoid on (word bit 13)
+IoDriver68       equ $0866        ; $F8866
+;                 bit 5: fan output on (word bit 13; output test)
 IoEvent70        equ $0870        ; $F8870
 IoEvent72        equ $0872        ; $F8872
 IoEvent74        equ $0874        ; $F8874
@@ -1189,7 +1786,7 @@ SPSR             equ $7C1F        ; $FFC1F
 RR0              equ $7D00        ; $FFD00
 RR1              equ $7D02        ; $FFD02
 RR9              equ $7D12        ; $FFD12
-RRC              equ $7D18        ; $FFD18
+RpmForBus        equ $7D18        ; $FFD18
 TR0              equ $7D20        ; $FFD20
 TR1              equ $7D22        ; $FFD22
 TR2              equ $7D24        ; $FFD24

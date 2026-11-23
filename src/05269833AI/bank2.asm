@@ -14444,7 +14444,7 @@ L2D19C:
         CBA
         BCS     L2D1B0
 L2D1AA:
-        LDAA    >IacGearTime2,Z
+        LDAA    >IacGearDelay,Z
         BNE     L2D1EC
 L2D1B0:
         BRCLR   >SwitchInputs2,Z,#$20,L2D1C0             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)

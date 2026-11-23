@@ -348,10 +348,10 @@ L103F8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; FuelCorrections ($103FA)
+; IdleFlareCheck ($103FA)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-FuelCorrections:
+IdleFlareCheck:
         BRCLR   >ThrottleState,Z,#$80,L10404             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BSET    >IdleFlareFlags,Z,#$08                   ; bit 3: throttle opened since the last flare check (IdleFlareCheck)
 L10404:
@@ -532,10 +532,10 @@ L105EA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; PurgeMain ($105EC)
+; CalcBaroFuelAdder ($105EC)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-PurgeMain:
+CalcBaroFuelAdder:
         LDAA    <Baro,Z
         LDX     #BaroFuel
         JSR     Lookup2D
@@ -647,40 +647,40 @@ L106EA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_106EC ($106EC)
+; AccelEnrichFactors ($106EC)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_106EC:
+AccelEnrichFactors:
         CLRW    >Scratch6,Z
         BRCLR   >EngineStateFlags,Z,#$80,L1078E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >MainLoopPhaseMask,Z,#$04,L1072A         ; bit 2: one pass in 8 (about 96 ms)
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_1405
+        LDX     #AccelMapGainCoolant
         JSR     Lookup2D
         STAA    >AccelMapGain,Z
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_13F9
+        LDX     #AccelMapCoolant2
         JSR     Lookup2D
         STAA    >AccelMapCoolantFactor,Z
         LDAA    <Baro,Z
-        LDX     #Tab2D_141D
+        LDX     #AccelMapBaro
         JSR     Lookup2D
         STAA    >AccelMapBaroFactor,Z
 L1072A:
         LDAA    >CoolantTemp,Z
-        LDX     #Tab2D_142A
+        LDX     #AccelTpsRateLimit
         JSR     Lookup2D
         LDAA    >Throttle,Z
         SUBA    >ThrottleLast,Z
         BCS     L10760
-        SUBA    $1429
+        SUBA    >AccelThrottleDeadband
         BCS     L10760
         CBA
         BCS     L1074C
         TBA
 L1074C:
         STAA    <Scratch6,Z
-        LDX     #Tab2D_1436
+        LDX     #AccelTpsCoolantFactor
         LDAA    >CoolantTemp,Z
         JSR     Lookup2D
         LDAA    <Scratch6,Z
@@ -693,12 +693,12 @@ L10760:
         BCS     L10778
         ASLD
         BCS     L10778
-        CMPA    $1472
+        CMPA    >TipInFuelTimeMin
         BLS     L1078E
 L10778:
         BRCLR   >MainLoopPhaseMask,Z,#$10,L1078E         ; bit 4: one pass in 32 (about 383 ms)
         LDAA    >TipInTimer,Z
-        SUBA    $1473
+        SUBA    >TipInFuelDecay
         BCC     L1078A
         CLRA
 L1078A:
@@ -708,16 +708,16 @@ L1078E:
         STD     >AccelTpsFuel,Z
         BEQ     L107A4
         LDAA    <Baro,Z
-        LDX     #Tab2D_144E
+        LDX     #AccelTpsBaro
         JSR     Lookup2D
         STAA    >AccelTpsBaroFactor,Z
 L107A4:
-        LDX     #Tab2D_1466
+        LDX     #AccelRpmFactor
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         CLRA
         XGDE
-        LDX     #Tab2D_145A
+        LDX     #AccelMapAdder
         LDAA    >Map,Z
         JSR     Lookup2D
         CLRA
@@ -1058,11 +1058,11 @@ L10AD4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10AD6 ($10AD6)
+; FuelCorrections ($10AD6)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_10AD6:
-        JSR     Sub_10BDC
+FuelCorrections:
+        JSR     FlexFuelFactors
         JSR     ThrottleRelearn
         JSR     WarmupFuel
         JSR     PartThrottleFuelCalc
@@ -1074,19 +1074,19 @@ Sub_10AD6:
         EMUL
 L10AF8:
         LDAA    >AirTemp,Z
-        LDX     #Tab2D_0DE0
+        LDX     #FuelAirTempCorr
         JSR     Lookup2D
         BEQ     L10B32
         STAA    <ScratchA,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_0DF6
+        LDX     #FuelAirTempRpmWeight
         JSR     Lookup2D
         LDAB    <ScratchA,Z
         MUL
         ADCA    #$00
         STAA    <ScratchA,Z
         LDAA    >Map,Z
-        LDX     #Tab2D_0DEE
+        LDX     #FuelAirTempMapWeight
         JSR     Lookup2D
         LDAB    <ScratchA,Z
         MUL
@@ -1111,11 +1111,11 @@ L10B58:
         BRSET   >ControlFlagsC33,Z,#$10,L10B6C           ; bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
         LDAA    >FuelTrimAdjustValue,Z
 L10B6C:
-        LDX     #Tab2D_1898
+        LDX     #FuelTrimAdjust
         JSR     Lookup2D
         ADDA    #$80
         STAA    <Scratch0,Z
-        LDX     #Tab2D_18A2
+        LDX     #FuelTrimAdjustMapWeight
         LDAA    >Map,Z
         JSR     Lookup2D
         LDAA    <Scratch0,Z
@@ -1152,25 +1152,25 @@ L10BA4:
 L10BC6:
         LDE     #$FFFF
 L10BCA:
-        STE     $07E0,Z
-        JSR     Sub_10EDA
-        LDE     $07E0,Z
-        JSR     Sub_10F52
+        STE     >FuelCorrections7E0,Z
+        JSR     AdaptiveFuelBank1
+        LDE     >FuelCorrections7E0,Z
+        JSR     AdaptiveFuelBank2
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10BDC ($10BDC)
-; Called from: Sub_10AD6
+; FlexFuelFactors ($10BDC)
+; Called from: FuelCorrections
 ;---------------------------------------------------------------------------------------------------
-Sub_10BDC:
+FlexFuelFactors:
         BRSET   >Options032C,#$40,L10C08                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         LDD     #$0040
-        STAA    $0F04,Z
+        STAA    >FlexFactorCoolant1,Z
         STAA    >FlexFactorCoolant2,Z
-        STAA    $0F02,Z
+        STAA    >FlexFactorEthanol,Z
         STAB    >FlexFactorCoolant3,Z
         LDAA    #$80
-        STAA    $0F06,Z
+        STAA    >FlexRpmValue,Z
         LDD     #$0100
         STD     >FlexFuelFactor,Z
         JMP     L10C8E
@@ -1182,35 +1182,35 @@ L10C08:
         LDAB    >CoolantTemp,Z
         LDX     #Tab3D_1309
         JSR     Lookup3D
-        STAA    $0F04,Z
+        STAA    >FlexFactorCoolant1,Z
         LDAA    >FlexEthanolScaled,Z
         LDAB    >CoolantTemp,Z
-        LDX     #Tab3D_12AC
+        LDX     #FlexEthanolCoolantFactor2
         JSR     Lookup3D
         STAA    >FlexFactorCoolant2,Z
-        LDX     #Tab2D_1204
+        LDX     #FlexEthanolFactor
         LDAA    >FlexEthanol,Z
         JSR     Lookup2D
-        STAA    $0F02,Z
-        LDX     #Tab3D_1366
+        STAA    >FlexFactorEthanol,Z
+        LDX     #FlexEthanolCoolantFactor3
         LDAA    >FlexEthanolScaled,Z
         LDAB    >CoolantTemp,Z
         JSR     Lookup3D
         STAA    >FlexFactorCoolant3,Z
 L10C5C:
-        LDX     #Tab3DN_1210
+        LDX     #FlexEthanolRpm
         LDAA    >FlexEthanolScaled,Z
         LDAB    >RpmCurveValue,Z
         JSR     Lookup3DNorm
-        STAB    $0F06,Z
+        STAB    >FlexRpmValue,Z
         CLRA
         ASLD
         TDE
-        LDAA    $0F04,Z
+        LDAA    >FlexFactorCoolant1,Z
         BEQ     L10C80
         JSR     ScaleByFraction
 L10C80:
-        LDAA    $0F02,Z
+        LDAA    >FlexFactorEthanol,Z
         BEQ     L10C8A
         JSR     ScaleByFraction
 L10C8A:
@@ -1220,7 +1220,7 @@ L10C8E:
 
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleRelearn ($10C90)
-; Called from: Sub_10AD6
+; Called from: FuelCorrections
 ;---------------------------------------------------------------------------------------------------
 ThrottleRelearn:
         LDAA    >MainLoopCounter,Z
@@ -1246,7 +1246,7 @@ L10CC8:
 
 ;---------------------------------------------------------------------------------------------------
 ; WarmupFuel ($10CCA)
-; Called from: Sub_10AD6
+; Called from: FuelCorrections
 ;---------------------------------------------------------------------------------------------------
 WarmupFuel:
         CLRW    >Scratch4,Z
@@ -1401,7 +1401,7 @@ L10E7E:
 
 ;---------------------------------------------------------------------------------------------------
 ; PartThrottleFuelCalc ($10E88)
-; Called from: Sub_10AD6
+; Called from: FuelCorrections
 ;---------------------------------------------------------------------------------------------------
 PartThrottleFuelCalc:
         BRSET   >Options0335,#$04,L10ECE                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
@@ -1432,18 +1432,18 @@ L10ED8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10EDA ($10EDA)
-; Called from: Sub_10AD6
+; AdaptiveFuelBank1 ($10EDA)
+; Called from: FuelCorrections
 ;---------------------------------------------------------------------------------------------------
-Sub_10EDA:
+AdaptiveFuelBank1:
         BRSET   >Options032C,#$80,L10F4C                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         BRCLR   >PurgeLearnFlags,Z,#$80,L10F06           ; bit 7: purge vapour learning running (PurgeVaporLearn)
         BRSET   >ThrottleState,Z,#$40,L10F06             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BNE     L10F06
-        LDAA    $07E8,Z
+        LDAA    >PurgeVaporEstimate,Z
         BRSET   >ThrottleState,Z,#$80,L10F00             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $07EA,Z
+        LDAA    >PurgeVaporPart,Z
 L10F00:
         BEQ     L10F06
         CLRB
@@ -1476,18 +1476,18 @@ L10F4C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10F52 ($10F52)
-; Called from: Sub_10AD6
+; AdaptiveFuelBank2 ($10F52)
+; Called from: FuelCorrections
 ;---------------------------------------------------------------------------------------------------
-Sub_10F52:
+AdaptiveFuelBank2:
         BRSET   >Options032C,#$80,L10FC4                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         BRCLR   >PurgeLearnFlags,Z,#$80,L10F7E           ; bit 7: purge vapour learning running (PurgeVaporLearn)
         BRSET   >ThrottleState,Z,#$40,L10F7E             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BNE     L10F7E
-        LDAA    $07E9,Z
+        LDAA    >PurgeVaporEstimate2,Z
         BRSET   >ThrottleState,Z,#$80,L10F78             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDAA    $07EA,Z
+        LDAA    >PurgeVaporPart,Z
 L10F78:
         BEQ     L10F7E
         CLRB
@@ -1521,7 +1521,7 @@ L10FC4:
 
 ;---------------------------------------------------------------------------------------------------
 ; ScaleByFraction ($10FCA)
-; Called from: Sub_10AD6, Sub_10BDC, WarmupFuel, PartThrottleFuelCalc, Sub_10EDA, Sub_10F52, FinishFuelPulse, CalcFuelPulse and 2 more routines (18 calls)
+; Called from: FuelCorrections, FlexFuelFactors, WarmupFuel, PartThrottleFuelCalc, AdaptiveFuelBank1, AdaptiveFuelBank2, FinishFuelPulse, CalcFuelPulse and 2 more routines (18 calls)
 ;---------------------------------------------------------------------------------------------------
 ScaleByFraction:
         CLRB
@@ -7941,8 +7941,8 @@ L17032:
         LBRA    L1749A
 L17092:
         BRCLR   >MainLoopPhaseMask,Z,#$20,L1749A         ; bit 5: one pass in 64 (about 766 ms)
-        LDAA    >FlexF48,Z
-        CMPA    >FlexF49,Z
+        LDAA    $0F42,Z
+        CMPA    >FlexLearnCounter3,Z
         BEQ     L170BE
         BRSET   >FaultSet07,Z,#$02,L170BE
         BRSET   >EepromFlags,Z,#$80,L170BE               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -8157,10 +8157,10 @@ L1734C:
         CMPA    >FlexEthanolLimit,Z
         BCS     L17382
         JSR     PurgeCellTrimClear
-        LDAA    >FlexF49,Z
+        LDAA    >FlexLearnCounter3,Z
         INCA
         BEQ     L17376
-        STAA    >FlexF48,Z
+        STAA    $0F42,Z
 L17376:
         LDAA    >FlexLearnSettleCount
         STAA    >FlexLearnSettle,Z
@@ -8839,7 +8839,7 @@ L17EF2:
         JSR     FlexLearnReset
         LBRA    L18032
 L17EFA:
-        LDAA    >FlexF49,Z
+        LDAA    >FlexLearnCounter3,Z
         CMPA    >FlexLearnCountMin
         BCS     L17F4A
         LDAA    >FuelLevelScaled,Z
@@ -8861,8 +8861,8 @@ L17EFA:
         JSR     FlexLearnRestart2
         BSET    >FlexLearnFlags3,Z,#$40                  ; bit 6: flex learning restarted (FlexLearnMain, FlexLearnInitRun)
 L17F4A:
-        LDAA    >FlexF49,Z
-        STAA    >FlexF48,Z
+        LDAA    >FlexLearnCounter3,Z
+        STAA    $0F42,Z
         LDAA    <PurgeCellTrim2,Z
         CLRA
         LDX     #FlexLearnLimitPurgeTrim2
@@ -9418,7 +9418,7 @@ FlexMisfireCheck:
         BRSET   >FlexLearnFlags4,Z,#$40,L18754
         BRSET   >FlexLearnFlags4,Z,#$20,L18754
         BRSET   >FlexLearnFlags5,Z,#$10,L18654
-        LDAA    >FlexF49,Z
+        LDAA    >FlexLearnCounter3,Z
         CMPA    >FlexLearnCountMin
         LBCS    L18754
         BRSET   >FlexLearnOptions,#$01,L18654            ; bit 0: selects a branch in FlexLearnMain
@@ -10667,12 +10667,12 @@ L197EE:
 ;---------------------------------------------------------------------------------------------------
 IdleTargetControl:
         BRCLR   >MainLoopPhaseMask,Z,#$02,L19806         ; bit 1: one pass in 4 (about 48 ms)
-        LDAA    >IacGearTime2,Z
+        LDAA    >IacGearDelay,Z
         CMPA    #$FF
         BEQ     L19806
         TSTA
         BEQ     L19806
-        DEC     >IacGearTime2,Z
+        DEC     >IacGearDelay,Z
 L19806:
         LDAA    >IacGearDuration,Z
         CMPA    #$FF
@@ -10917,7 +10917,7 @@ L19AE6:
         BRSET   >IdleFlags,Z,#$80,L19B16                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRSET   >ThrottleState,Z,#$01,L19B16             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDAA    #$FF
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
         STAA    >IacGearDuration,Z
         BCLR    >IdleFlags7,Z,#$8C                       ; bit 7: gear idle step started (IdleTargetControl); bit 3: cleared with bits 7 and 2 when the gear step ends; not set by bit instructions; bit 2: cleared with bits 7 and 3 when the gear step ends; not set by bit instructions
         BCLR    >IdleFlags,Z,#$20                        ; bit 5: gear-engagement idle step started (IdleTargetControl)
@@ -11260,7 +11260,7 @@ L19F78:
         BNE     L19F82
         DECA
 L19F82:
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
 L19F86:
         TST     >ShiftIdleDelay,Z
         BEQ     L19F92
@@ -11375,7 +11375,7 @@ L1A0BE:
         DEC     >IacGearTime,Z
 L1A0D8:
         LDAA    #$FF
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
         STAA    >IacGearDuration,Z
         BCLR    >IdleFlags7,Z,#$8C                       ; bit 7: gear idle step started (IdleTargetControl); bit 3: cleared with bits 7 and 2 when the gear step ends; not set by bit instructions; bit 2: cleared with bits 7 and 3 when the gear step ends; not set by bit instructions
         BCLR    >IdleFlags,Z,#$20                        ; bit 5: gear-engagement idle step started (IdleTargetControl)
@@ -11886,7 +11886,7 @@ IacResetHold:
         BSET    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BCLR    <IacStepFlags,Z,#$10                     ; bit 4: idle air at the fixed target (IacFixedTarget)
         LDAA    #$FF
-        STAA    >IacGearTime2,Z
+        STAA    >IacGearDelay,Z
         STAA    >IacGearDuration,Z
         RTS
 
@@ -13818,10 +13818,10 @@ L1B68E:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D000 ($1D000)
+; CalcSpark ($1D000)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1D000:
+CalcSpark:
         BRCLR   >Options032B,#$20,L1D00C                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         JSR     DwellCalc
         STAA    <CalcSpark087,Z
@@ -13832,13 +13832,13 @@ L1D016:
         JSR     CalcBaseSpark
         STAA    >FlexSparkValue,Z
         JSR     SparkCoolantCorr
-        STAA    $0D0E,Z
+        STAA    >CalcSparkD0E,Z
         JSR     FlexSparkCalc
-        STAA    $0D05,Z
+        STAA    >CalcSparkD05,Z
         JSR     SparkBaroCorr
-        STAA    $0D06,Z
-        JSR     Sub_1DA06
-        STAA    $0D08,Z
+        STAA    >CalcSparkD06,Z
+        JSR     EgrSparkCalc
+        STAA    >CalcSparkD08,Z
         JSR     CoolantSparkCalc
         STAA    >CalcSparkD07,Z
         JSR     AfterStartSpark
@@ -13850,25 +13850,25 @@ L1D016:
         JSR     AcClutchSpark
         JSR     KnockLearn
         JSR     DecelSparkCalc
-        STAA    $0D0D,Z
+        STAA    >CalcSparkD0D,Z
         JSR     TipInSparkControl
         STAA    >CalcSparkD10,Z
         JSR     HighSpeedSparkFlag
-        STAA    $0D0B,Z
-        JSR     Sub_1E662
+        STAA    >CalcSparkD0B,Z
+        JSR     IdleSparkControl
         BRCLR   >SparkFlags3,Z,#$01,L1D08C               ; bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
         JSR     IdleSparkCalc
 L1D08C:
         LDAB    >FlexSparkValue,Z
         SXT
         TDE
-        LDAB    $0D05,Z
+        LDAB    >CalcSparkD05,Z
         SXT
         ADE
-        LDAB    $0D06,Z
+        LDAB    >CalcSparkD06,Z
         SXT
         ADE
-        LDAB    $0D08,Z
+        LDAB    >CalcSparkD08,Z
         SXT
         ADE
         LDAB    >CalcSparkD07,Z
@@ -13889,16 +13889,16 @@ L1D08C:
         LDAB    >AcSparkWork,Z
         SXT
         SDE
-        LDAB    $0D0D,Z
+        LDAB    >CalcSparkD0D,Z
         SXT
         ADE
-        LDAB    $0D0E,Z
+        LDAB    >CalcSparkD0E,Z
         SXT
         ADE
         LDAB    >CalcSparkD10,Z
         SXT
         ADE
-        LDAB    $0D0B,Z
+        LDAB    >CalcSparkD0B,Z
         SXT
         ADE
         LDAB    >IacStepSum,Z
@@ -13915,9 +13915,9 @@ L1D110:
         LDAB    #$80
 L1D118:
         TBA
-        STAA    $06D3,Z
+        STAA    >CalcSpark6D3,Z
         BRCLR   >FuelPulseOptFlags,Z,#$02,L1D12A
-        LDAA    $0C51,Z
+        LDAA    >CalcSparkC51,Z
         BRA     L1D14A
 L1D12A:
         LDAB    >ThrottleState,Z
@@ -13931,14 +13931,14 @@ L1D12A:
 L1D140:
         BRCLR   >SparkFaultFlags,Z,#$20,L1D14A           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
 L1D146:
-        LDAA    $1B62
+        LDAA    >SparkFaultValue
 L1D14A:
         STAA    >SparkValueD0F,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; SparkHook ($1D150)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 SparkHook:
         AIS     #$FC
@@ -14045,7 +14045,7 @@ L1D244:
 
 ;---------------------------------------------------------------------------------------------------
 ; CalcBaseSpark ($1D246)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 CalcBaseSpark:
         JSR     SparkSpeedFlags
@@ -14106,7 +14106,7 @@ L1D2F4:
 
 ;---------------------------------------------------------------------------------------------------
 ; SparkCoolantCorr ($1D2F6)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 SparkCoolantCorr:
         CLRA
@@ -14123,7 +14123,7 @@ L1D31A:
 
 ;---------------------------------------------------------------------------------------------------
 ; SparkBaroCorr ($1D31C)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 SparkBaroCorr:
         CLRA
@@ -14225,7 +14225,7 @@ L1D422:
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSpark ($1D428)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 AfterStartSpark:
         BRCLR   >SparkFlags,Z,#$20,L1D570                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
@@ -14369,7 +14369,7 @@ AfterStartSparkLookup:
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelSparkCalc ($1D5BC)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 DecelSparkCalc:
         LDAA    >DecelFuelFactor,Z
@@ -14381,7 +14381,7 @@ L1D5CA:
 
 ;---------------------------------------------------------------------------------------------------
 ; TipInSparkControl ($1D5CC)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 TipInSparkControl:
         LDAA    >ThrottleAboveClosed,Z
@@ -14566,7 +14566,7 @@ L1D7DC:
 
 ;---------------------------------------------------------------------------------------------------
 ; CoolantSparkCalc ($1D7DE)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 CoolantSparkCalc:
         BRSET   >ThrottleState,Z,#$80,L1D7E8             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -14668,7 +14668,7 @@ L1D8CA:
 
 ;---------------------------------------------------------------------------------------------------
 ; AcClutchSpark ($1D8D0)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 AcClutchSpark:
         BRCLR   >Options033A,#$10,L1D90E                 ; bit 4: A/C spark on (AcSparkOn, AcClutchSpark)
@@ -14773,10 +14773,10 @@ L1DA04:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DA06 ($1DA06)
-; Called from: Sub_1D000
+; EgrSparkCalc ($1DA06)
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
-Sub_1DA06:
+EgrSparkCalc:
         BRSET   >Options0335,#$04,L1DA82                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
         CLRA
         BRCLR   >EgrFlags,Z,#$02,L1DAAA                  ; bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
@@ -14793,19 +14793,19 @@ L1DA32:
         LDX     #PartThrottleMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #Tab3D_1CA3
+        LDX     #EgrSpark
         JSR     Lookup3D
         BMI     L1DA7E
         STAA    <Scratch6,Z
         BRSET   >SparkFlags2,Z,#$01,L1DAAA               ; bit 0: EGR spark correction applied (EgrSparkCalc, cleared by EgrEnable)
-        TST     $1B6C
+        TST     >SparkTrimStep2
         BEQ     L1DA76
-        LDAA    $0D08,Z
+        LDAA    >CalcSparkD08,Z
         LDAB    >SparkTrim2,Z
-        SUBB    $1B6C
+        SUBB    >SparkTrimStep2
         BCS     L1DAAA
         STAB    >SparkTrim2,Z
-        ADDA    $1B6D
+        ADDA    >SparkTrimBias2
         CMPA    #$7F
         BCS     L1DA72
         LDAA    #$7F
@@ -14824,11 +14824,11 @@ L1DA82:
         LDX     #PartThrottleMapScale
         JSR     Lookup2D
         LDAB    >EngineRpm,Z
-        LDX     #Tab3D_1CA3
+        LDX     #EgrSpark
         JSR     Lookup3D
         SXT
         TDE
-        LDAB    $0B31,Z
+        LDAB    >EgrFlowFactor,Z
         CLRA
         EMULS
         ASLB
@@ -14838,7 +14838,7 @@ L1DAAA:
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexSparkCalc ($1DAAC)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 FlexSparkCalc:
         AIS     #$FC
@@ -14905,7 +14905,7 @@ L1DB40:
 
 ;---------------------------------------------------------------------------------------------------
 ; DwellCalc ($1DB42)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 DwellCalc:
         BRSET   >Options032B,#$20,L1DB4C                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
@@ -15211,7 +15211,7 @@ L1DE30:
 
 ;---------------------------------------------------------------------------------------------------
 ; HighSpeedSparkFlag ($1DE32)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 HighSpeedSparkFlag:
         LDAA    >VehicleSpeedCoarse,Z
@@ -15234,10 +15234,10 @@ L1DE62:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DE64 ($1DE64)
+; CamSignalCheck ($1DE64)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_1DE64:
+CamSignalCheck:
         BRCLR   >Options0337,#$80,L1DEA2                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         ORP     #$00E0
         LDD     >TCNT,Z
@@ -15247,7 +15247,7 @@ Sub_1DE64:
         JSR     PeriodChangeTrack
         BRA     L1DEA2
 L1DE86:
-        LDAA    $0864,Z
+        LDAA    >CamSignalCount,Z
         INCA
         CMPA    $1FD0
         BCS     L1DE9E
@@ -15256,14 +15256,14 @@ L1DE86:
         CMPA    #$FF
         BEQ     L1DEA2
 L1DE9E:
-        STAA    $0864,Z
+        STAA    >CamSignalCount,Z
 L1DEA2:
         ANDP    #$FF1F
         RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; SurgeControl ($1DEA8)
-; Called from: EquipmentInit, Sub_1D000
+; Called from: EquipmentInit, CalcSpark
 ;---------------------------------------------------------------------------------------------------
 SurgeControl:
         CLRB
@@ -15878,7 +15878,7 @@ L1E546:
 
 ;---------------------------------------------------------------------------------------------------
 ; DwellLookup ($1E548)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 DwellLookup:
         LDX     #DwellBattery
@@ -15979,10 +15979,10 @@ GetSparkAdvance:
         dc.b    $0C,$00,$B4,$00,$17,$65,$0D,$11,$35,$12,$27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E662 ($1E662)
-; Called from: Sub_1D000
+; IdleSparkControl ($1E662)
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
-Sub_1E662:
+IdleSparkControl:
         BRCLR   >SparkFlags,Z,#$20,L1E66E                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >EngineStateFlags,Z,#$80,L1E67A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
 L1E66E:
@@ -15990,7 +15990,7 @@ L1E66E:
         STD     >SparkPeriod,Z
         LBRA    L1E700
 L1E67A:
-        TST     $2547
+        TST     >IdleSparkRpmRateMax
         BEQ     L1E700
         LDD     >SparkPeriod,Z
         CPD     #$7D00
@@ -16005,7 +16005,7 @@ L1E698:
         ADDA    #$01
         SBCA    #$00
         STAA    $0DA0,Z
-        CMPA    $2547
+        CMPA    >IdleSparkRpmRateMax
         BCS     L1E6B4
         BSET    >SparkFlags3,Z,#$20
 L1E6B4:
@@ -16013,11 +16013,11 @@ L1E6B4:
         BRSET   >SparkFaultFlags,Z,#$20,L1E704           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
         BRSET   >SensorFaultFlags,Z,#$80,L1E704          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   >ThrottleState,Z,#$80,L1E704             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        LDE     $254A
+        LDE     >IdleSparkPeriodMin4Cyl
         LDAA    >CylinderCount
         CMPA    #$04
         BEQ     L1E6DC
-        LDE     $2548
+        LDE     >IdleSparkPeriodMin
 L1E6DC:
         CPE     >RefPeriod,Z
         BLS     L1E704
@@ -16046,7 +16046,7 @@ L1E72A:
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleSparkCalc ($1E72C)
-; Called from: Sub_1D000, SparkEventCalc
+; Called from: CalcSpark, SparkEventCalc
 ;---------------------------------------------------------------------------------------------------
 IdleSparkCalc:
         BRCLR   >SparkFlags3,Z,#$80,L1E7E0               ; bit 7: spark period at or below $7D00: idle spark range (IdleSparkControl)
@@ -16262,7 +16262,7 @@ L1F024:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockLearn ($1F02A)
-; Called from: Sub_1D000
+; Called from: CalcSpark
 ;---------------------------------------------------------------------------------------------------
 KnockLearn:
         BRCLR   >Options032F,#$06,L1F138                 ; bit 2: knock sensor variant (knock sample, retard, learn and spark code); bit 1: knock sensor variant (as bit 2)
