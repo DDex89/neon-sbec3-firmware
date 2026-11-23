@@ -1882,10 +1882,10 @@ L2190A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2190C ($2190C)
+; ChecksumCheck ($2190C)
 ; Called from: CheckPowerDown
 ;---------------------------------------------------------------------------------------------------
-Sub_2190C:
+ChecksumCheck:
         PSHM    D,E,X,Y
         CLRD
         TBXK
@@ -1893,14 +1893,14 @@ Sub_2190C:
         TBYK
         LDX     #$0000
         LDY     #$0000
-        JSR     Sub_2194C
+        JSR     SumBanks
         LDAB    #$02
         TBXK
         LDAB    #$03
         TBYK
         LDX     #$0000
         LDY     #$0000
-        JSR     Sub_2194C
+        JSR     SumBanks
         JSR     KickWatchdogsLong
         CMPA    >ChecksumTarget
         BEQ     L21948
@@ -1911,10 +1911,10 @@ L21948:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2194C ($2194C)
-; Called from: Sub_2190C (2 calls)
+; SumBanks ($2194C)
+; Called from: ChecksumCheck (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_2194C:
+SumBanks:
         LDE     #$3FFF
         JSR     KickWatchdogsLong
 L21954:
@@ -1924,7 +1924,7 @@ L21954:
         BPL     L21954
         AIX     #$4000
         AIY     #$4000
-        BNE     Sub_2194C
+        BNE     SumBanks
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -5945,7 +5945,7 @@ Sub_24582:
 
 ;---------------------------------------------------------------------------------------------------
 ; ReportFault ($245D4)
-; Called from: Sub_0EE32, Sub_202C0, Sub_2190C, VacuumLeakMonitor, Sub_21BCC, Sub_21C66, Sub_21D58, Sub_21D82 and 39 more routines (57 calls)
+; Called from: Sub_0EE32, Sub_202C0, ChecksumCheck, VacuumLeakMonitor, Sub_21BCC, Sub_21C66, Sub_21D58, Sub_21D82 and 39 more routines (57 calls)
 ;---------------------------------------------------------------------------------------------------
 ReportFault:
         PSHM    D,E,X,Y,K

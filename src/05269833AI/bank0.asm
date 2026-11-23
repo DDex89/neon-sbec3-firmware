@@ -277,7 +277,7 @@
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $55,$00,$05,$26,$98
 ChecksumTarget:
-        dc.b    $33                                      ; Checksum check (Sub_2191E, P0601): value the calculated checksum must equal
+        dc.b    $33                                      ; Checksum check (ChecksumCheck, P0601): the 8-bit sum of the whole image must equal this byte, the last byte of the part number in the header; the correction byte is $030F (tools/fixsum.py)
         dc.b    $41,$49,$B0,$20,$20,$20,$20,$20,$20,$D1,$04,$0D,$01,$18,$15
 ObdStandardIndex:
         dc.b    $07                                      ; Index into the OBD-requirements value list at $32178 sent for mode $01 PID $1C (7 selects $01, OBD II as defined by CARB)
@@ -13918,7 +13918,7 @@ Sub_0C432:
 
 ;---------------------------------------------------------------------------------------------------
 ; KickWatchdogsLong ($0C440)
-; Called from: Sub_0C468, Reset, CheckPowerDown, Sub_1B68C, Sub_2190C, Sub_2194C, Sub_28D78, Sub_38360 (22 calls)
+; Called from: Sub_0C468, Reset, CheckPowerDown, Sub_1B68C, ChecksumCheck, SumBanks, Sub_28D78, Sub_38360 (22 calls)
 ;---------------------------------------------------------------------------------------------------
 KickWatchdogsLong:
         PSHM    D
@@ -16175,7 +16175,7 @@ L0DEF2:
         DECA
         BNE     L0DEF2
         JSR     KickWatchdogsLong
-        JSR     Sub_2190C
+        JSR     ChecksumCheck
         BRA     L0DF10
 L0DF06:
         CLR     >MonStartDelay,Z

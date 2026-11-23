@@ -15333,7 +15333,7 @@
  </XDFTABLE>
  <XDFCONSTANT uniqueid="0x296" flags="0x0">
   <title>ChecksumTarget</title>
-  <description>Checksum check (Sub_2191E, P0601): value the calculated checksum must equal $0305</description>
+  <description>Checksum check (ChecksumCheck, P0601): the 8-bit sum of the whole image must equal this byte, the last byte of the part number in the header; the correction byte is $030F (tools/fixsum.py) $0305</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x305" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

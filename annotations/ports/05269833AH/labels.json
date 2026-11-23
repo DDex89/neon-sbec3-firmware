@@ -40,6 +40,8 @@
  "1E548": "DwellLookup",
  "1F000": "CalcSpark",
  "21800": "MonitorEnable",
+ "2190C": "ChecksumCheck",
+ "2194C": "SumBanks",
  "2196A": "VacuumLeakMonitor",
  "21E26": "MapKeyOnCheck",
  "21E94": "MapIdleChangeCheck",

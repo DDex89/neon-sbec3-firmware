@@ -270,7 +270,7 @@ fault bit, `ReportPass` ($24160) counts a passed one and clears it; both take in
 |---|---|---|
 | `Reset` | P1602 | PCM not programmed |
 | `Sub_0EE54` | P1687, P1695 | no cluster / body bus messages |
-| `Sub_2191E` | P0601 | checksum |
+| `ChecksumCheck` | P0601 | checksum |
 | `VacuumLeakMonitor` | P1299 | vacuum leak (expected MAP against throttle and rpm) |
 | `MapKeyOnCheck, Sub_21EFE` | P0106, P0107, P0108 | MAP rationality, low, high |
 | `Sub_22688` | P0132, P0152 | upstream O2 high, banks 1 and 2 |

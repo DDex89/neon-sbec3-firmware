@@ -39,6 +39,8 @@
  "1E55E": "DwellModeSelect",
  "1E5FE": "DwellLookup",
  "1F000": "CalcSpark",
+ "21906": "ChecksumCheck",
+ "21946": "SumBanks",
  "21964": "VacuumLeakMonitor",
  "21E3A": "MapKeyOnCheck",
  "21EAA": "MapIdleChangeCheck",

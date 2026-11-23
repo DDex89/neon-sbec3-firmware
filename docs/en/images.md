@@ -74,6 +74,12 @@ header + 13 is the correction byte that is adjusted to make it so. This is the s
 `checksum.py` in SBECBootLoader, and it holds for all eleven images. It is the same idea as in the
 1995 FCC firmware, where the sum must equal the last byte of the part number at $B805. [code]
 
+In the code the check is `ChecksumCheck` ($2191E), called from `CheckPowerDown` (the power-down path)
+once input bit $1000.3 has read set 32 times in a row, not at start-up. `SumBanks` ($2195E) adds the bytes of two banks at a time
+(0 and 1, then 2 and 3) in 16 KB steps; the result is compared with `ChecksumTarget` ($0305 in
+05293190AC) and a mismatch reports P0601. It is a plain 8-bit sum, not a CRC. TunerPro does not
+correct it; run `tools/fixsum.py --fix` on an edited image. [code]
+
 In family A, header + 13 is $FF; the byte after the repeated part number ($D3 / $06) is probably the
 correction byte there. [inferred]
 

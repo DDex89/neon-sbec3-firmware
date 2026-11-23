@@ -2955,7 +2955,7 @@
  "scalars": {
   "0305": {
    "name": "ChecksumTarget",
-   "desc": "Checksum check (Sub_2191E, P0601): value the calculated checksum must equal",
+   "desc": "Checksum check (ChecksumCheck, P0601): the 8-bit sum of the whole image must equal this byte, the last byte of the part number in the header; the correction byte is $030F (tools/fixsum.py)",
    "category": "Diagnostics",
    "size": 1
   },
