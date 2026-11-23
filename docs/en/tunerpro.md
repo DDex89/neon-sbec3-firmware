@@ -52,6 +52,12 @@ errors. The only remaining warnings are three unnamed 2D tables in the ported im
 values are not in order (`Tab2D_04FB` in family A, `Tab2D_050D`, `Tab2D_2C31`), which may not be
 real tables.
 
+`tools/edittest.py` (run in CI, no image needed) edits a copy of the source: a cell of
+`PartThrottleFuelMain`, the constant `RevLimit` and bit 5 of `Options0337`. It rebuilds, checks that
+exactly those three bytes changed and that they are the cells the XDF points at, then runs
+`tools/fixsum.py --fix` and checks that only the correction byte at $0030F was added and the sum
+is right.
+
 The condition lists of the OBD monitors (see calibration.md) are in the XDF as small tables under
 Diagnostics, with the RAM variable and test named on each row.
 

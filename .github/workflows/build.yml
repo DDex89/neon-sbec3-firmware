@@ -16,3 +16,5 @@ jobs:
         run: python3 tools/build.py
       - name: Check that the TunerPro definitions are well-formed XML
         run: python3 -c "import glob, xml.etree.ElementTree as ET; [ET.parse(f) for f in glob.glob('xdf/*.xdf')]; print(len(glob.glob('xdf/*.xdf')), 'XDF files OK')"
+      - name: Edit test (source edit, XDF addresses, checksum repair)
+        run: python3 tools/edittest.py
