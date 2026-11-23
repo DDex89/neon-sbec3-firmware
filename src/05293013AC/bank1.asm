@@ -2813,7 +2813,7 @@ L11D78:
         LDAA    >RefPeriod,Z
         CMPA    #$20
         BCS     L11DC6
-        BCLR    >CamCrankFlags,Z,#$20
+        BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         CLR     >CrankSyncFlags,Z
         BCLR    >CrankSyncFlags2,Z,#$70
         BSET    >TMSK2,Z,#$10
@@ -6206,7 +6206,7 @@ L14330:
         JMP     L143D0
 L1433E:
         BRCLR   >O2ActiveFlags,Z,#$80,L14330             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
-        BRSET   >O2Bank1Flags,Z,#$20,L14330
+        BRSET   >O2Bank1Flags,Z,#$20,L14330              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRCLR   >Options0331,#$40,L1435C                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRSET   >O2Bank2Flags,Z,#$20,L14330
         BRCLR   >O2ActiveFlags,Z,#$40,L14330             ; bit 6: upstream O2 sensor 2 active (as bit 7)
@@ -17119,7 +17119,7 @@ CatMonitorSetup:
         BRSET   $0217,Z,#$04,L1B956
         BRSET   $0217,Z,#$08,L1B94A
         BRSET   >DiagStatusFlags,Z,#$01,L1B94A           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
-        BRSET   >O2Bank1Flags,Z,#$20,L1B94A
+        BRSET   >O2Bank1Flags,Z,#$20,L1B94A              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRSET   >O2ActiveFlags,Z,#$88,L1B7C0             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         LBRA    L1B94A
 L1B7C0:
@@ -17647,7 +17647,7 @@ L1BD38:
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
 CamCrankMeasure:
-        BRCLR   >CamCrankFlags,Z,#$02,L1BD58
+        BRCLR   >CamCrankFlags,Z,#$02,L1BD58             ; bit 1: engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)
         LDAA    $04AC,Z
         BEQ     L1BD4A
         COMA
@@ -20477,10 +20477,10 @@ L1DB82:
         BRSET   $0167,Z,#$01,L1DBBA
         BRSET   $0175,Z,#$20,L1DBBA
         BRSET   $0174,Z,#$20,L1DBBA
-        BSET    >CamCrankFlags,Z,#$02
+        BSET    >CamCrankFlags,Z,#$02                    ; bit 1: engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)
         BRA     L1DBC0
 L1DBBA:
-        BCLR    >CamCrankFlags,Z,#$02
+        BCLR    >CamCrankFlags,Z,#$02                    ; bit 1: engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)
         BRA     L1DC08
 L1DBC0:
         LDAA    $04AC,Z
@@ -20515,8 +20515,8 @@ L1DC08:
         LDE     >EngineRpm,Z
         CPE     #$0320
         BCC     L1DC50
-        BRSET   >CamCrankFlags,Z,#$04,L1DC54
-        BSET    >CamCrankFlags,Z,#$04
+        BRSET   >CamCrankFlags,Z,#$04,L1DC54             ; bit 2: cam/crank relation measured: offset under $0320 (CamCrankRelation)
+        BSET    >CamCrankFlags,Z,#$04                    ; bit 2: cam/crank relation measured: offset under $0320 (CamCrankRelation)
         BRSET   $0037,Z,#$02,L1DC3A
         BRSET   $0037,Z,#$01,L1DC34
         BSET    $37,Z,#$01
@@ -20542,11 +20542,11 @@ L1DC54:
 Sub_1DC56:
         BRCLR   $032D,#$40,L1DCBE
         BRSET   >Options0339,#$20,L1DCCC                 ; bit 5: selects a branch in SparkEventCalc
-        BRSET   >CamCrankFlags,Z,#$08,L1DCCC
+        BRSET   >CamCrankFlags,Z,#$08,L1DCCC             ; bit 3: power steering switch fault reported (PspSwitchMonitor)
         BRSET   >IoCfg1FL,Z,#$10,L1DCC8                  ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
         BRCLR   $0562,Z,#$FF,L1DCCC
         BRSET   >EngineStateFlags,Z,#$80,L1DCBE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >CamCrankFlags,Z,#$80,L1DCCC
+        BRSET   >CamCrankFlags,Z,#$80,L1DCCC             ; bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
         BRCLR   >SwitchInputs2,Z,#$20,L1DCCC             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BRSET   $0037,Z,#$08,L1DCC8
         BRSET   $01A4,Z,#$02,L1DCC8
@@ -20557,16 +20557,16 @@ Sub_1DC56:
         BHI     L1DCCC
         ORP     #$00E0
         BRCLR   >CrankSyncFlags,Z,#$80,L1DCCC            ; bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)
-        BRCLR   >CamCrankFlags,Z,#$20,L1DCBE
+        BRCLR   >CamCrankFlags,Z,#$20,L1DCBE             ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         LDY     #$39A4
         JSR     ReportFault
         BRA     L1DCC8
 L1DCBE:
-        BSET    >CamCrankFlags,Z,#$80
-        BSET    >CamCrankFlags,Z,#$08
+        BSET    >CamCrankFlags,Z,#$80                    ; bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
+        BSET    >CamCrankFlags,Z,#$08                    ; bit 3: power steering switch fault reported (PspSwitchMonitor)
         BRA     L1DCCC
 L1DCC8:
-        BCLR    >CamCrankFlags,Z,#$80
+        BCLR    >CamCrankFlags,Z,#$80                    ; bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
 L1DCCC:
         ANDP    #$FF1F
         RTS
@@ -20620,7 +20620,7 @@ L1DD4E:
 ;---------------------------------------------------------------------------------------------------
 Sub_1DD50:
         BRCLR   $032D,#$10,L1DDA4
-        BRSET   >CamCrankFlags,Z,#$40,L1DDA4
+        BRSET   >CamCrankFlags,Z,#$40,L1DDA4             ; bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
         BRCLR   >EngineStateFlags,Z,#$80,L1DDA8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    $0165,Z
         BITA    #$C0
@@ -20645,7 +20645,7 @@ L1DD92:
         STAA    $018E,Z
         BRA     L1DDA8
 L1DDA4:
-        BSET    >CamCrankFlags,Z,#$40
+        BSET    >CamCrankFlags,Z,#$40                    ; bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
 L1DDA8:
         RTS
 
@@ -20897,7 +20897,7 @@ L1E030:
         TST     $01AE,Z
         LBNE    L1E096
         BRCLR   >EngineStateFlags,Z,#$80,L1E070          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >CamCrankFlags,Z,#$10,L1E070
+        BRSET   >CamCrankFlags,Z,#$10,L1E070             ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
         LDAA    $0102,Z
         INCA
         CMPA    #$32
@@ -20916,7 +20916,7 @@ L1E054:
 L1E068:
         BSET    >CrankSyncFlags2,Z,#$01
 L1E06C:
-        BSET    >CamCrankFlags,Z,#$10
+        BSET    >CamCrankFlags,Z,#$10                    ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
 L1E070:
         BRCLR   $032D,#$04,L1E096
         BRSET   $0175,Z,#$20,L1E096

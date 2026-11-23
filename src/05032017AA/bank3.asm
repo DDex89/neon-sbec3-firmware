@@ -10390,7 +10390,7 @@ L39886:
         LDAA    >BatteryTemp,Z
         CMPA    >EgrBattTempMin
         LBCS    L399A2
-        BRCLR   >EgrFlags2,Z,#$08,L398AA
+        BRCLR   >EgrFlags2,Z,#$08,L398AA                 ; bit 3: deceleration fuel ramp limited (DecelFuelRampControl); EGR code reads it
         CMPA    >EgrBattTempMax
         LBCC    L399A2
 L398AA:
@@ -10438,12 +10438,12 @@ L3992C:
         BCC     L399A2
 L3993A:
         BCLR    >EgrFlags,Z,#$21                         ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1); bit 0: EGR conditions not met (EgrEnable, EgrControl)
-        BRSET   >EgrMonFlags,Z,#$04,L399C4
-        BRSET   >EgrMonFlags,Z,#$02,L39974
+        BRSET   >EgrMonFlags,Z,#$04,L399C4               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
+        BRSET   >EgrMonFlags,Z,#$02,L39974               ; bit 1: EGR flow test conditions met, test started (EgrFlowMonitor)
         BRSET   >FaultSet04,Z,#$40,L3996E
         BRSET   >FaultSet03,Z,#$02,L3996E
         BRCLR   >ControlFlagsC39,Z,#$10,L39974           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
-        BRSET   >EgrMonFlags,Z,#$80,L39974
+        BRSET   >EgrMonFlags,Z,#$80,L39974               ; bit 7: EGR flow monitor passed (result at or below EgrMonResultMax)
         BRSET   >FaultMem04,Z,#$40,L3996E
         BRCLR   >FaultMem03,Z,#$02,L39974
 L3996E:
@@ -10555,7 +10555,7 @@ L39A88:
         LDAA    >BatteryTemp,Z
         CMPA    >EgrBattTempMin
         LBCS    L39B8C
-        BRCLR   >EgrFlags2,Z,#$08,L39AAC
+        BRCLR   >EgrFlags2,Z,#$08,L39AAC                 ; bit 3: deceleration fuel ramp limited (DecelFuelRampControl); EGR code reads it
         CMPA    >EgrBattTempMax
         LBCC    L39B8C
 L39AAC:
@@ -10603,8 +10603,8 @@ L39B2E:
         BCC     L39B8C
 L39B3C:
         BCLR    >EgrFlags,Z,#$21                         ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1); bit 0: EGR conditions not met (EgrEnable, EgrControl)
-        BRSET   >EgrMonFlags,Z,#$04,L39B90
-        BRSET   >EgrMonFlags,Z,#$02,L39B90
+        BRSET   >EgrMonFlags,Z,#$04,L39B90               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
+        BRSET   >EgrMonFlags,Z,#$02,L39B90               ; bit 1: EGR flow test conditions met, test started (EgrFlowMonitor)
         BRSET   >FaultSet04,Z,#$40,L39B86
         BRSET   >FaultSet03,Z,#$02,L39B86
         BRSET   >SensorFaultFlags,Z,#$20,L39B86          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
@@ -10612,7 +10612,7 @@ L39B3C:
         BITA    #$B0
         BNE     L39B86
         BRCLR   >ControlFlagsC39,Z,#$10,L39B90           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
-        BRSET   >EgrMonFlags,Z,#$80,L39B90
+        BRSET   >EgrMonFlags,Z,#$80,L39B90               ; bit 7: EGR flow monitor passed (result at or below EgrMonResultMax)
         BRSET   >FaultMem04,Z,#$40,L39B86
         BRSET   >FaultMem03,Z,#$02,L39B86
         LDAA    >FaultMem1B,Z
@@ -10668,14 +10668,14 @@ L39BFE:
         STAA    >EgrPressureFactor,Z
         LDAA    >Map,Z
         LDAB    >EgrMapFiltered,Z
-        BRSET   >EgrFlags2,Z,#$02,L39C22
+        BRSET   >EgrFlags2,Z,#$02,L39C22                 ; bit 1: EGR duty above the position-based limit (EgrControl)
         ADDB    >EgrMapRiseHyst
         BCC     L39C18
         LDAB    #$FF
 L39C18:
         CBA
         BLS     L39C32
-        BSET    >EgrFlags2,Z,#$02
+        BSET    >EgrFlags2,Z,#$02                        ; bit 1: EGR duty above the position-based limit (EgrControl)
         BRA     L39C32
 L39C22:
         SUBB    >EgrMapRiseHyst
@@ -10684,11 +10684,11 @@ L39C22:
 L39C2A:
         CBA
         BCC     L39C32
-        BCLR    >EgrFlags2,Z,#$02
+        BCLR    >EgrFlags2,Z,#$02                        ; bit 1: EGR duty above the position-based limit (EgrControl)
 L39C32:
         STAA    >EgrMapFiltered,Z
         LDX     >EgrFlowFilter
-        BRCLR   >EgrFlags2,Z,#$02,L39C44
+        BRCLR   >EgrFlags2,Z,#$02,L39C44                 ; bit 1: EGR duty above the position-based limit (EgrControl)
         LDX     >EgrFlowFilterRise
 L39C44:
         INC     $0B49,Z
@@ -10756,8 +10756,8 @@ L39CE0:
         STAA    >EgrFlowFactor,Z
         BRSET   >EgrFlags,Z,#$01,L39E6C                  ; bit 0: EGR conditions not met (EgrEnable, EgrControl)
         BRSET   >EgrFlags,Z,#$20,L39E6C                  ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)
-        BRSET   >EgrMonFlags,Z,#$04,L39E6C
-        BRCLR   >EgrMonFlags,Z,#$02,L39D08
+        BRSET   >EgrMonFlags,Z,#$04,L39E6C               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
+        BRCLR   >EgrMonFlags,Z,#$02,L39D08               ; bit 1: EGR flow test conditions met, test started (EgrFlowMonitor)
         LDAB    >EgrTargetFixed
         BEQ     L39D08
         STAB    >EgrTargetPos,Z
@@ -14555,7 +14555,7 @@ EmptyHook:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 PurgeMain:
-        BRSET   >PurgeFlags2,Z,#$20,L3D80A
+        BRSET   >PurgeFlags2,Z,#$20,L3D80A               ; bit 5: purge reset since the last start (PurgeReset; cleared at stall)
         JSR     PurgeReset
 L3D80A:
         JSR     PurgeEnable
@@ -14573,7 +14573,7 @@ L3D80A:
         JSR     PurgeRampControl
 L3D83C:
         BRSET   >Options033B,#$20,L3D848                 ; bit 5: selects a branch in PurgeMain
-        BRSET   >EgrMonFlags,Z,#$04,L3D85C
+        BRSET   >EgrMonFlags,Z,#$04,L3D85C               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
 L3D848:
         BRCLR   >Options0333,#$80,L3D854                 ; bit 7: EVAP purge solenoid fitted
         JSR     PurgeFlowControl
@@ -14649,7 +14649,7 @@ L3D8F8:
         STAB    >PurgeTrimLatched,Z
         STAB    $02,Y
 L3D900:
-        BRSET   >O2Bank1Flags,Z,#$20,L3DA34
+        BRSET   >O2Bank1Flags,Z,#$20,L3DA34              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRCLR   >Options032F,#$40,L3D912                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$20,L3DA34
 L3D912:
@@ -14772,7 +14772,7 @@ L3DA36:
         BRSET   >PurgeFlowTestFlags,Z,#$10,L3DA9A
         CMPB    >PurgeFlowStepTime
         BCS     L3DAB6
-        BRSET   >O2Bank1Flags,Z,#$08,L3DA78
+        BRSET   >O2Bank1Flags,Z,#$08,L3DA78              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
         BRCLR   >Options032F,#$40,L3DAB6                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRCLR   >O2Bank2Flags,Z,#$08,L3DAB6
 L3DA78:
@@ -14815,7 +14815,7 @@ L3DAC8:
 L3DADC:
         TST     >PurgeStartRamp,Z
         BEQ     L3DB60
-        BRSET   >O2Bank1Flags,Z,#$20,L3DB1A
+        BRSET   >O2Bank1Flags,Z,#$20,L3DB1A              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRCLR   >Options032F,#$40,L3DAF4                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$20,L3DB1A
 L3DAF4:
@@ -15184,7 +15184,7 @@ L3DE9A:
 ; Called from: Reset, PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeReset:
-        BSET    >PurgeFlags2,Z,#$20
+        BSET    >PurgeFlags2,Z,#$20                      ; bit 5: purge reset since the last start (PurgeReset; cleared at stall)
         CLR     >PurgeLoad,Z
         CLR     >PurgeLoadUpCounter,Z
         CLR     >PurgeLoadDownCounter,Z
@@ -15228,7 +15228,7 @@ PurgeCellRefCheck:
         LDAA    >FaultSet09,Z
         BITA    #$06
         LBNE    L3DFB6
-        BCLR    >PurgeFlags2,Z,#$0F
+        BCLR    >PurgeFlags2,Z,#$0F                      ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate); bit 2: purge cell 1 reference reached, bank 2; bit 1: purge cell 2 reference reached, bank 1; bit 0: purge cell 2 reference reached, bank 2
         TZX
         LDX     #$805B
         LDAB    >PurgeCell1
@@ -15237,7 +15237,7 @@ PurgeCellRefCheck:
         LBSR    PurgeCellDiff
         STAA    $0445,Z
         BNE     L3DF42
-        BSET    >PurgeFlags2,Z,#$08
+        BSET    >PurgeFlags2,Z,#$08                      ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
 L3DF42:
         LDX     #$805B
         LDAB    >PurgeCell2
@@ -15256,7 +15256,7 @@ L3DF42:
 L3DF66:
         STAA    $0447,Z
         BNE     L3DF70
-        BSET    >PurgeFlags2,Z,#$02
+        BSET    >PurgeFlags2,Z,#$02                      ; bit 1: purge cell 2 reference reached, bank 1
 L3DF70:
         LDX     #$806E
         LDAB    >PurgeCell1
@@ -15265,7 +15265,7 @@ L3DF70:
         BSR     PurgeCellDiff
         STAA    $0446,Z
         BNE     L3DF88
-        BSET    >PurgeFlags2,Z,#$04
+        BSET    >PurgeFlags2,Z,#$04                      ; bit 2: purge cell 1 reference reached, bank 2
 L3DF88:
         LDX     #$806E
         LDAB    >PurgeCell2
@@ -15284,7 +15284,7 @@ L3DF88:
 L3DFAC:
         STAA    $0448,Z
         BNE     L3DFB6
-        BSET    >PurgeFlags2,Z,#$01
+        BSET    >PurgeFlags2,Z,#$01                      ; bit 0: purge cell 2 reference reached, bank 2
 L3DFB6:
         RTS
 
@@ -15660,7 +15660,7 @@ L3E340:
 ; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeCellUpdateGate:
-        BRSET   >PurgeFlags2,Z,#$0F,L3E3DE
+        BRSET   >PurgeFlags2,Z,#$0F,L3E3DE               ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate); bit 2: purge cell 1 reference reached, bank 2; bit 1: purge cell 2 reference reached, bank 1; bit 0: purge cell 2 reference reached, bank 2
         BRSET   >SensorFaultFlags,Z,#$80,L3E36A          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   >FaultSet05,Z,#$01,L3E36A
         BRSET   >FaultSet06,Z,#$40,L3E36A
@@ -15675,41 +15675,41 @@ L3E36A:
         CMPA    >PurgeCellUpdateCount
         BCS     L3E3DE
         CLR     >PurgeCellUpdateCounter,Z
-        BRSET   >PurgeFlags2,Z,#$08,L3E396
+        BRSET   >PurgeFlags2,Z,#$08,L3E396               ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
         LDAA    $0445,Z
         BEQ     L3E392
         DECA
         STAA    $0445,Z
         BNE     L3E396
 L3E392:
-        BSET    >PurgeFlags2,Z,#$08
+        BSET    >PurgeFlags2,Z,#$08                      ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
 L3E396:
-        BRSET   >PurgeFlags2,Z,#$04,L3E3AE
+        BRSET   >PurgeFlags2,Z,#$04,L3E3AE               ; bit 2: purge cell 1 reference reached, bank 2
         LDAA    $0446,Z
         BEQ     L3E3AA
         DECA
         STAA    $0446,Z
         BNE     L3E3AE
 L3E3AA:
-        BSET    >PurgeFlags2,Z,#$04
+        BSET    >PurgeFlags2,Z,#$04                      ; bit 2: purge cell 1 reference reached, bank 2
 L3E3AE:
-        BRSET   >PurgeFlags2,Z,#$02,L3E3C6
+        BRSET   >PurgeFlags2,Z,#$02,L3E3C6               ; bit 1: purge cell 2 reference reached, bank 1
         LDAA    $0447,Z
         BEQ     L3E3C2
         DECA
         STAA    $0447,Z
         BNE     L3E3C6
 L3E3C2:
-        BSET    >PurgeFlags2,Z,#$02
+        BSET    >PurgeFlags2,Z,#$02                      ; bit 1: purge cell 2 reference reached, bank 1
 L3E3C6:
-        BRSET   >PurgeFlags2,Z,#$01,L3E3DE
+        BRSET   >PurgeFlags2,Z,#$01,L3E3DE               ; bit 0: purge cell 2 reference reached, bank 2
         LDAA    $0448,Z
         BEQ     L3E3DA
         DECA
         STAA    $0448,Z
         BNE     L3E3DE
 L3E3DA:
-        BSET    >PurgeFlags2,Z,#$01
+        BSET    >PurgeFlags2,Z,#$01                      ; bit 0: purge cell 2 reference reached, bank 2
 L3E3DE:
         RTS
 
@@ -16054,7 +16054,7 @@ L3E774:
         BRA     L3E7CC
 L3E790:
         LDAA    >PurgeLearnRate,Z
-        BRCLR   >O2Bank1Flags,Z,#$08,L3E7A0
+        BRCLR   >O2Bank1Flags,Z,#$08,L3E7A0              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
         BSET    >PurgeLearnFlags,Z,#$01
         BRA     L3E7BC
 L3E7A0:
@@ -16271,7 +16271,7 @@ L3E9DC:
         CMPA    >PurgeLearnSpeedMin
         LBCS    L3EAAC
 L3E9FE:
-        BRSET   >O2Bank1Flags,Z,#$20,L3EAAC
+        BRSET   >O2Bank1Flags,Z,#$20,L3EAAC              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRCLR   >Options032F,#$40,L3EA10                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$20,L3EAAC
 L3EA10:
@@ -16309,12 +16309,12 @@ L3EA52:
         LDAA    >ShortTermTrim1,Z
         CMPA    >PurgeLearnTrimMin
         BGT     L3EA78
-        BSET    >O2ResetFlags2,Z,#$08
+        BSET    >O2ResetFlags2,Z,#$08                    ; bit 3: bank 1 trim at or below PurgeLearnTrimMin during vapour learning (PurgeVaporLearn)
 L3EA78:
         LDAA    >ShortTermTrim2,Z
         CMPA    >PurgeLearnTrimMin
         BGT     L3EA86
-        BSET    >O2ResetFlags2,Z,#$04
+        BSET    >O2ResetFlags2,Z,#$04                    ; bit 2: bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)
 L3EA86:
         CLR     >PurgeCommand,Z
         BSET    >PurgeFlags,Z,#$80                       ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
@@ -16399,7 +16399,7 @@ L3EB34:
 PurgeFlowAdaptation:
         TST     >PurgeStartRamp,Z
         LBNE    L3ECB4
-        BRSET   >O2Bank1Flags,Z,#$20,L3EB9E
+        BRSET   >O2Bank1Flags,Z,#$20,L3EB9E              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRCLR   >Options032F,#$40,L3EB56                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$20,L3EB9E
 L3EB56:

@@ -11317,7 +11317,7 @@ L0A210:
         XGDX
         JMP     $0A01E,X
 L0A222:
-        BCLR    >CamCrankFlags,Z,#$20
+        BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         CLR     >PACNT,Z
         LDD     >TMSK1,Z
         ORAB    #$10
@@ -11997,7 +11997,7 @@ L0A9F6:
 L0AA2A:
         BRSET   >EngineStateFlags,Z,#$80,L0AA64          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BSET    >EngineStateFlags,Z,#$80                 ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BSET    >FuelEventFlags,Z,#$86
+        BSET    >FuelEventFlags,Z,#$86                   ; bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule); bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule); bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
         LDD     >FuelPulseBank1,Z
         STD     >CrankPulse,Z
         BSET    >EngineStateFlags,Z,#$01                 ; bit 0: first reference pulse seen, start pulse still due (cleared by StartInjectorPulse)
@@ -12064,9 +12064,9 @@ Isr_GPT_PAI:
         BSET    >DriveFlags,Z,#$04                       ; bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
         CLRW    >Count3s,Z
         BCLR    >CrankSyncFlags2,Z,#$40
-        BCLR    >CamCrankFlags,Z,#$20
+        BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         BRCLR   >SwitchInputs2,Z,#$20,L0AB14             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
-        BSET    >CamCrankFlags,Z,#$20
+        BSET    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
 L0AB14:
         BCLR    >ControlFlags943,Z,#$18                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it; bit 3: fuel pump relay on, probably (set and cleared with bit 4)
         JSR     SwitchBitsCollect

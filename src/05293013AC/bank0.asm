@@ -5632,7 +5632,7 @@ L048FA:
         XGDX
         JMP     $0481A,X
 L04916:
-        BCLR    >CamCrankFlags,Z,#$20
+        BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         CLRW    $0810,Z
         CLR     >PACNT,Z
         LDD     >TMSK1,Z
@@ -6284,7 +6284,7 @@ L05038:
 L05070:
         BRSET   >EngineStateFlags,Z,#$80,L050A6          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BSET    >EngineStateFlags,Z,#$80                 ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BSET    >FuelEventFlags,Z,#$86
+        BSET    >FuelEventFlags,Z,#$86                   ; bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule); bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule); bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
         LDD     >FuelPulseBank1,Z
         STD     >CrankPulse,Z
         BSET    >EngineStateFlags,Z,#$01                 ; bit 0: first reference pulse seen, start pulse still due (cleared by StartInjectorPulse)
@@ -6350,9 +6350,9 @@ Isr_GPT_PAI:
         STAA    >CrankSyncFlags,Z
         CLRW    >Count3s,Z
         BCLR    >CrankSyncFlags2,Z,#$40
-        BCLR    >CamCrankFlags,Z,#$20
+        BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         BRCLR   >SwitchInputs2,Z,#$20,L05152             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
-        BSET    >CamCrankFlags,Z,#$20
+        BSET    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
 L05152:
         LDD     >IoCfg1FL,Z
         ANDA    #$E7
@@ -9257,18 +9257,18 @@ FuelEventStart:
         LDAA    >FuelEventHoldCount,Z
         BITA    #$20
         BEQ     L07604
-        BRSET   >FuelEventFlags,Z,#$01,L07630
-        BSET    >FuelEventFlags,Z,#$01
+        BRSET   >FuelEventFlags,Z,#$01,L07630            ; bit 0: start pulse of the third kind done (FuelEventStart, FuelEventSchedule)
+        BSET    >FuelEventFlags,Z,#$01                   ; bit 0: start pulse of the third kind done (FuelEventStart, FuelEventSchedule)
         BRA     L0761E
 L07604:
         BITA    #$10
         BEQ     L07614
-        BRSET   >FuelEventFlags,Z,#$02,L07630
-        BSET    >FuelEventFlags,Z,#$02
+        BRSET   >FuelEventFlags,Z,#$02,L07630            ; bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
+        BSET    >FuelEventFlags,Z,#$02                   ; bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
         BRA     L0761E
 L07614:
-        BRSET   >FuelEventFlags,Z,#$04,L07630
-        BSET    >FuelEventFlags,Z,#$04
+        BRSET   >FuelEventFlags,Z,#$04,L07630            ; bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule)
+        BSET    >FuelEventFlags,Z,#$04                   ; bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule)
 L0761E:
         LDE     >FuelPulseBank1,Z
         BRCLR   >InjectorIndex,Z,#$01,L0762C
@@ -9285,8 +9285,8 @@ L07630:
 FuelEventSchedule:
         TST     >Count3s,Z
         BEQ     L07680
-        BRSET   >FuelEventFlags,Z,#$08,L0766C
-        BRSET   >FuelEventFlags,Z,#$80,L0764C
+        BRSET   >FuelEventFlags,Z,#$08,L0766C            ; bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
+        BRSET   >FuelEventFlags,Z,#$80,L0764C            ; bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)
         BRSET   >ThrottleState,Z,#$80,L0764C             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRA     L0766C
 L0764C:
@@ -9302,12 +9302,12 @@ L0764C:
 L0766C:
         LDAA    >FuelEventHold
         STAA    >FuelEventHoldCount,Z
-        BRCLR   >FuelEventFlags,Z,#$80,L0767E
-        BSET    >FuelEventFlags,Z,#$08
+        BRCLR   >FuelEventFlags,Z,#$80,L0767E            ; bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)
+        BSET    >FuelEventFlags,Z,#$08                   ; bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
 L0767E:
         BRA     L07688
 L07680:
-        BSET    >FuelEventFlags,Z,#$80
+        BSET    >FuelEventFlags,Z,#$80                   ; bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)
         BCLR    >EngineStateFlags,Z,#$20
 L07688:
         LDAB    >FuelEventFlags,Z
@@ -9320,7 +9320,7 @@ L07688:
         LDAA    >FuelEventHoldCount,Z
         BITA    #$20
         LBEQ    L0772E
-        BRSET   >FuelEventFlags,Z,#$02,L076C8
+        BRSET   >FuelEventFlags,Z,#$02,L076C8            ; bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
         LDAA    >CylinderIndex,Z
         INCA
         CMPA    >CylinderCount
@@ -9328,14 +9328,14 @@ L07688:
         CLRA
 L076B8:
         STAA    >InjectorIndex,Z
-        BSET    >FuelEventFlags,Z,#$02
+        BSET    >FuelEventFlags,Z,#$02                   ; bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
         JSR     FinishFuelPulse
         JSR     StartPulseCurrent
 L076C8:
         LDAA    >CylinderIndex,Z
         STAA    >InjectorIndex,Z
         JSR     FinishFuelPulse
-        BRSET   >FuelEventFlags,Z,#$04,L076DE
+        BRSET   >FuelEventFlags,Z,#$04,L076DE            ; bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule)
         JSR     StartPulseCurrent
 L076DE:
         LDAA    #$28
@@ -9355,7 +9355,7 @@ L076FE:
         STAA    >InjectorIndex,Z
         LBRA    L07800
 L07706:
-        BSET    >FuelEventFlags,Z,#$01
+        BSET    >FuelEventFlags,Z,#$01                   ; bit 0: start pulse of the third kind done (FuelEventStart, FuelEventSchedule)
         LDAB    >CylinderIndex,Z
         INCB
         CMPB    >CylinderCount
@@ -9373,7 +9373,7 @@ L07722:
 L0772E:
         BITA    #$10
         BEQ     L0777A
-        BRSET   >FuelEventFlags,Z,#$04,L07748
+        BRSET   >FuelEventFlags,Z,#$04,L07748            ; bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule)
         LDAA    >CylinderIndex,Z
         STAA    >InjectorIndex,Z
         JSR     FinishFuelPulse
@@ -9390,19 +9390,19 @@ L07756:
         LDAA    >FuelEventHoldCount,Z
         CMPA    #$18
         LBNE    L07800
-        BRSET   >FuelEventFlags,Z,#$02,L07800
-        BSET    >FuelEventFlags,Z,#$02
+        BRSET   >FuelEventFlags,Z,#$02,L07800            ; bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
+        BSET    >FuelEventFlags,Z,#$02                   ; bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
         JSR     StartPulseCurrent
         JMP     L07800
 L0777A:
         LDAA    >CylinderIndex,Z
         STAA    >InjectorIndex,Z
         JSR     FinishFuelPulse
-        BRSET   >FuelEventFlags,Z,#$04,L0780A
+        BRSET   >FuelEventFlags,Z,#$04,L0780A            ; bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule)
         LDAA    >FuelEventHoldCount,Z
         CMPA    #$08
         LBEQ    L077F8
-        BRCLR   >FuelEventFlags,Z,#$08,L0780A
+        BRCLR   >FuelEventFlags,Z,#$08,L0780A            ; bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
         LDAA    >FuelEventFlags,Z
         ANDA    #$70
         CMPA    #$30
@@ -9414,7 +9414,7 @@ L0777A:
         STAA    >FuelEventFlags,Z
         BRA     L077BA
 L077B6:
-        BCLR    >FuelEventFlags,Z,#$F8
+        BCLR    >FuelEventFlags,Z,#$F8                   ; bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule); bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
 L077BA:
         LDAA    >EngineRpm,Z
         LDX     #InjectionModeRpmFactor
@@ -9440,11 +9440,11 @@ L077EC:
         STAA    >FuelEventHoldCount,Z
         JMP     L0780A
 L077F8:
-        BSET    >FuelEventFlags,Z,#$04
+        BSET    >FuelEventFlags,Z,#$04                   ; bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule)
         JSR     StartPulseCurrent
 L07800:
-        BRCLR   >FuelEventFlags,Z,#$08,L0780A
-        BCLR    >FuelEventFlags,Z,#$F8
+        BRCLR   >FuelEventFlags,Z,#$08,L0780A            ; bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
+        BCLR    >FuelEventFlags,Z,#$F8                   ; bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule); bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
 L0780A:
         RTS
 
@@ -12040,7 +12040,7 @@ L093E2:
         STAA    >O2Bank1Flags,Z
         STAB    >O2Bank2Flags,Z
         ANDP    #$FF1F
-        BRCLR   >O2Bank1Flags,Z,#$80,L09416
+        BRCLR   >O2Bank1Flags,Z,#$80,L09416              ; bit 7: bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens
         BCLR    $1E,X,#$14
         CLR     $02,X
         CLR     $03,X
@@ -12064,7 +12064,7 @@ L09416:
         BSET    >O2TestFlags,Z,#$10
         BSET    $0062,Z,#$40
 L0943A:
-        BRCLR   >O2Bank1Flags,Z,#$40,L0949C
+        BRCLR   >O2Bank1Flags,Z,#$40,L0949C              ; bit 6: set with bit 7; read by O2DownEnable
         BCLR    $1E,X,#$14
         CLRW    $000C,X
         CLR     $0E,X
@@ -12140,7 +12140,7 @@ L094F2:
 L094FC:
         STAB    $14,Y
 L094FE:
-        BCLR    >O2Bank1Flags,Z,#$C0
+        BCLR    >O2Bank1Flags,Z,#$C0                     ; bit 7: bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens; bit 6: set with bit 7; read by O2DownEnable
         BCLR    >O2Bank2Flags,Z,#$C0
         BCLR    $055A,Z,#$C0
         BCLR    $055B,Z,#$3C
@@ -13494,7 +13494,7 @@ L0A272:
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank1:
         PSHM    X,K
-        BSET    >O2Bank1Flags,Z,#$C0
+        BSET    >O2Bank1Flags,Z,#$C0                     ; bit 7: bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens; bit 6: set with bit 7; read by O2DownEnable
         TZX
         LDX     #$8040
 L0A288:
@@ -20826,7 +20826,7 @@ L0F3F2:
         BRA     L0F44E
 L0F40E:
         LDAA    $03EC,Z
-        BRCLR   >O2Bank1Flags,Z,#$08,L0F41E
+        BRCLR   >O2Bank1Flags,Z,#$08,L0F41E              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
         BSET    $03E1,Z,#$10
         BRA     L0F43A
 L0F41E:
@@ -21022,7 +21022,7 @@ L0F62C:
         LBCS    L0F6F4
 L0F64C:
         BRSET   $00B9,Z,#$04,L0F6F4
-        BRSET   >O2Bank1Flags,Z,#$20,L0F6F4
+        BRSET   >O2Bank1Flags,Z,#$20,L0F6F4              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRCLR   >Options0331,#$40,L0F664                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRSET   >O2Bank2Flags,Z,#$20,L0F6F4
 L0F664:
@@ -21107,12 +21107,12 @@ L0F722:
         STAA    $060B,Z
         LDAA    >ShortTermTrim1,Z
         BRSET   >O2TestFlags,Z,#$08,L0F754
-        BRCLR   >O2Bank1Flags,Z,#$08,L0F796
+        BRCLR   >O2Bank1Flags,Z,#$08,L0F796              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
         BSET    >O2TestFlags,Z,#$08
         INC     $060A,Z
         BRA     L0F796
 L0F754:
-        BRSET   >O2Bank1Flags,Z,#$08,L0F796
+        BRSET   >O2Bank1Flags,Z,#$08,L0F796              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
         BCLR    >O2TestFlags,Z,#$08
         BRA     L0F796
 L0F760:

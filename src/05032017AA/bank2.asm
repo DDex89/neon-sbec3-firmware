@@ -2388,7 +2388,7 @@ L21E38:
 ; Called from: MapSensorChecks
 ;---------------------------------------------------------------------------------------------------
 MapKeyOnCheck:
-        BRSET   >BrakeSwFlags,Z,#$02,L21EA8
+        BRSET   >BrakeSwFlags,Z,#$02,L21EA8              ; bit 1: MAP key-on check time exceeded (MapKeyOnTimeMax); this byte also holds MapKeyOnCheck bits
         LDE     >EngineRpm,Z
         CPE     #$07D0
         BCC     L21E76
@@ -2396,7 +2396,7 @@ MapKeyOnCheck:
         BRSET   >SystemFlags00A,Z,#$20,L21E66
         BRSET   >DriveFlags,Z,#$02,L21E66                ; bit 1: reference pulses seen since key-on (Isr_GPT_IC1); MapKeyOnCheck needs it clear
         BRSET   >DriveFlags,Z,#$04,L21E66                ; bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
-        BRCLR   >BrakeSwFlags,Z,#$01,L21E6C
+        BRCLR   >BrakeSwFlags,Z,#$01,L21E6C              ; bit 0: used by MapKeyOnCheck
 L21E66:
         CPD     #$0006
         BLS     L21E76
@@ -2406,7 +2406,7 @@ L21E6C:
         CMPB    >MapKeyOnTimeMax
         BCS     L21E7C
 L21E76:
-        BSET    >BrakeSwFlags,Z,#$02
+        BSET    >BrakeSwFlags,Z,#$02                     ; bit 1: MAP key-on check time exceeded (MapKeyOnTimeMax); this byte also holds MapKeyOnCheck bits
         BRA     L21EA8
 L21E7C:
         LDAB    >MapRaw,Z
@@ -2861,7 +2861,7 @@ L2234C:
         ANDA    #$FC
         BRCLR   >Options032F,#$20,L22382                 ; bit 5: downstream O2 sensor 1 fitted
         BRSET   >FaultSet12,Z,#$10,L22382
-        BRCLR   >O2Bank1Flags,Z,#$70,L22380
+        BRCLR   >O2Bank1Flags,Z,#$70,L22380              ; bit 6: set with bit 7; read by O2DownEnable; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only; bit 4: bank 1 state read by ClosedLoopManager and O2DownEnable, byte writes only
         BRA     L22382
 L22380:
         ORAA    #$02
@@ -3390,7 +3390,7 @@ L228E0:
         BRSET   >MonStatusA2,Z,#$80,L22906
         BRSET   >MonStatusA3,Z,#$80,L22906
         BRSET   >MonStatusA4,Z,#$80,L22906
-        BSET    >EgrFlags2,Z,#$04
+        BSET    >EgrFlags2,Z,#$04                        ; bit 2: EGR position monitor allowed: no other monitor of group A running (EgrPositionMonitor)
 L22906:
         BRCLR   >EgrZeroFlags,Z,#$01,L22B20
         BRCLR   >MonitorDisableFlags,Z,#$0F,L22916       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow); bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude); bit 0: battery (ambient) temperature below MonEnableBattTempMin
@@ -3399,9 +3399,9 @@ L22916:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L22B20         ; bit 2: one pass in 8 (about 96 ms)
         BRSET   $0E04,Z,#$02,L229C6
         BRSET   >ThrottleState,Z,#$80,L229C2             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRSET   >EgrFlags2,Z,#$40,L229C6
+        BRSET   >EgrFlags2,Z,#$40,L229C6                 ; bit 6: EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)
         BRCLR   >EgrZeroFlags,Z,#$04,L229C2
-        BSET    >EgrFlags2,Z,#$40
+        BSET    >EgrFlags2,Z,#$40                        ; bit 6: EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)
         BRSET   >EgrZeroFlags,Z,#$80,L22972
         BRSET   >EgrMonFlags3,Z,#$02,L229C6
         LDAA    >EgrResultFails,Z
@@ -3416,7 +3416,7 @@ L22950:
         STAA    >EgrResultFails,Z
 L2295E:
         STAB    >EgrResultPasses,Z
-        BRCLR   >EgrFlags2,Z,#$04,L229C6
+        BRCLR   >EgrFlags2,Z,#$04,L229C6                 ; bit 2: EGR position monitor allowed: no other monitor of group A running (EgrPositionMonitor)
         BSET    >EgrMonFlags3,Z,#$02
         BSET    >EgrPosMonFlags,Z,#$02
         BRA     L229C6
@@ -3448,11 +3448,11 @@ L229B8:
         STAB    >EgrResultPasses,Z
         BRA     L229C6
 L229C2:
-        BCLR    >EgrFlags2,Z,#$40
+        BCLR    >EgrFlags2,Z,#$40                        ; bit 6: EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)
 L229C6:
         BRSET   >MonFlags65A,Z,#$08,L22B20
         BRCLR   >ThrottleState,Z,#$80,L22AFE             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRSET   >EgrFlags2,Z,#$80,L22B20
+        BRSET   >EgrFlags2,Z,#$80,L22B20                 ; bit 7: EGR position tracking result being counted (EgrPositionMonitor)
         LDAA    >EgrTargetPos,Z
         CMPA    >EgrTrackTargetMin
         LBCS    L22B20
@@ -3474,7 +3474,7 @@ L22A0E:
         LDAB    >EgrTrackErrorMax
         SDE
         LBCC    L22A80
-        BRCLR   >EgrFlags2,Z,#$10,L22A34
+        BRCLR   >EgrFlags2,Z,#$10,L22A34                 ; bit 4: EGR position tracking error (EgrPositionMonitor)
         LDAA    >EgrTrackErrorTimer,Z
         CMPA    >EgrTrackErrorTime
         BCC     L22A44
@@ -3482,12 +3482,12 @@ L22A0E:
         STAA    >EgrTrackErrorTimer,Z
         LBRA    L22B20
 L22A34:
-        BSET    >EgrFlags2,Z,#$10
-        BCLR    >EgrFlags2,Z,#$20
+        BSET    >EgrFlags2,Z,#$10                        ; bit 4: EGR position tracking error (EgrPositionMonitor)
+        BCLR    >EgrFlags2,Z,#$20                        ; bit 5: EGR position tracking good (EgrPositionMonitor)
         CLR     >EgrTrackErrorTimer,Z
         LBRA    L22B20
 L22A44:
-        BSET    >EgrFlags2,Z,#$80
+        BSET    >EgrFlags2,Z,#$80                        ; bit 7: EGR position tracking result being counted (EgrPositionMonitor)
         LDAA    >EgrTrackFails,Z
         LDAB    >EgrTrackPasses,Z
         BEQ     L22A54
@@ -3501,14 +3501,14 @@ L22A54:
 L22A64:
         STAB    >EgrTrackPasses,Z
         BRSET   >EgrMonFlags3,Z,#$01,L22B20
-        BRCLR   >EgrFlags2,Z,#$04,L229C6
+        BRCLR   >EgrFlags2,Z,#$04,L229C6                 ; bit 2: EGR position monitor allowed: no other monitor of group A running (EgrPositionMonitor)
         BSET    >EgrMonFlags3,Z,#$01
         BSET    >EgrPosMonFlags,Z,#$01
         LBRA    L22B20
 L22A80:
-        BRSET   >EgrFlags2,Z,#$20,L22A96
-        BSET    >EgrFlags2,Z,#$20
-        BCLR    >EgrFlags2,Z,#$10
+        BRSET   >EgrFlags2,Z,#$20,L22A96                 ; bit 5: EGR position tracking good (EgrPositionMonitor)
+        BSET    >EgrFlags2,Z,#$20                        ; bit 5: EGR position tracking good (EgrPositionMonitor)
+        BCLR    >EgrFlags2,Z,#$10                        ; bit 4: EGR position tracking error (EgrPositionMonitor)
         CLR     >EgrTrackGoodTimer,Z
         LBRA    L22B20
 L22A96:
@@ -3519,7 +3519,7 @@ L22A96:
         STAA    >EgrTrackGoodTimer,Z
         LBRA    L22B20
 L22AAA:
-        BSET    >EgrFlags2,Z,#$80
+        BSET    >EgrFlags2,Z,#$80                        ; bit 7: EGR position tracking result being counted (EgrPositionMonitor)
         LDAB    >EgrTrackPasses,Z
         LDAA    >EgrTrackFails,Z
         BEQ     L22ABA
@@ -3547,9 +3547,9 @@ L22AF4:
         STAB    >EgrTrackPasses,Z
         BRA     L22B20
 L22AFE:
-        BCLR    >EgrFlags2,Z,#$80
-        BCLR    >EgrFlags2,Z,#$20
-        BCLR    >EgrFlags2,Z,#$10
+        BCLR    >EgrFlags2,Z,#$80                        ; bit 7: EGR position tracking result being counted (EgrPositionMonitor)
+        BCLR    >EgrFlags2,Z,#$20                        ; bit 5: EGR position tracking good (EgrPositionMonitor)
+        BCLR    >EgrFlags2,Z,#$10                        ; bit 4: EGR position tracking error (EgrPositionMonitor)
         CLR     >EgrTrackGoodTimer,Z
         CLR     >EgrTrackErrorTimer,Z
         CLR     >EgrTrackDelayTimer,Z
@@ -3594,10 +3594,10 @@ L22B60:
 L22B76:
         STAA    $0B4B,Z
 L22B7A:
-        BCLR    >EgrFlags2,Z,#$01
+        BCLR    >EgrFlags2,Z,#$01                        ; bit 0: EGR solenoid check step running (EgrSolenoidCheck)
         LBRA    L22C16
 L22B82:
-        BSET    >EgrFlags2,Z,#$01
+        BSET    >EgrFlags2,Z,#$01                        ; bit 0: EGR solenoid check step running (EgrSolenoidCheck)
         ORP     #$00E0
         LDD     >PWMCNT,Z
         BRCLR   >CFORC,Z,#$02,L22B9C
@@ -3656,7 +3656,7 @@ L22C16:
         PULM    CCR,K,Y,E,D
         BRA     L22C26
 L22C1A:
-        BCLR    >EgrFlags2,Z,#$01
+        BCLR    >EgrFlags2,Z,#$01                        ; bit 0: EGR solenoid check step running (EgrSolenoidCheck)
         CLR     $058A,Z
         CLR     >EgrCircuitCount2,Z
 L22C26:
@@ -4193,7 +4193,7 @@ ThermostatMonitor:
         LDAA    >CoolantTemp,Z
         CMPA    >ThermostatCoolantDone
         BCS     L23246
-        BCLR    >SwitchMonFlags,Z,#$02
+        BCLR    >SwitchMonFlags,Z,#$02                   ; bit 1: thermostat monitor running (ThermostatMonitor)
         LDAA    $4743
         JSR     ObdFaultReport
         BRA     L23280
@@ -4213,8 +4213,8 @@ L23246:
         BRA     L23284
 L2326A:
         BRSET   <MonitorDisableFlags,Z,#$08,L23284       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
-        BRSET   >SwitchMonFlags,Z,#$02,L23284
-        BSET    >SwitchMonFlags,Z,#$02
+        BRSET   >SwitchMonFlags,Z,#$02,L23284            ; bit 1: thermostat monitor running (ThermostatMonitor)
+        BSET    >SwitchMonFlags,Z,#$02                   ; bit 1: thermostat monitor running (ThermostatMonitor)
         LDAA    $4743
         JSR     ObdFaultReport
 L23280:
@@ -4227,7 +4227,7 @@ L23284:
 ; Called from: SwitchMonitors
 ;---------------------------------------------------------------------------------------------------
 BrakeSwitchMonitor:
-        BRSET   >BrakeSwFlags,Z,#$0C,L233F6
+        BRSET   >BrakeSwFlags,Z,#$0C,L233F6              ; bit 3: brake switch seen long enough, second test (BrakeSwSeenTime); bit 2: brake switch seen long enough (BrakeSwSeenTimer past BrakeSwSeenTime)
         BRCLR   >Options0340,#$20,L232B8                 ; bit 5: brake switch, VSS and purge flow monitors variant
         BRSET   >FaultSet12,Z,#$01,L232B8
         TST     >MonStartDelay,Z
@@ -4238,37 +4238,37 @@ BrakeSwitchMonitor:
 L232B2:
         BRCLR   >MonitorDisableFlags,Z,#$0E,L232C4       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow); bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude)
 L232B8:
-        BCLR    >BrakeSwFlags,Z,#$80
-        BCLR    >BrakeSwFlags,Z,#$40
+        BCLR    >BrakeSwFlags,Z,#$80                     ; bit 7: brake switch monitor: stop phase seen (BrakeSwitchMonitor)
+        BCLR    >BrakeSwFlags,Z,#$40                     ; bit 6: vehicle stopped during the brake switch test
         LBRA    L23402
 L232C4:
-        BRSET   >BrakeSwFlags,Z,#$08,L23306
+        BRSET   >BrakeSwFlags,Z,#$08,L23306              ; bit 3: brake switch seen long enough, second test (BrakeSwSeenTime)
         BRSET   >SwitchInputs,Z,#$01,L232F8              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    >VehicleSpeed,Z
         CMPA    >BrakeSwStopSpeed
         BCC     L23302
-        BRCLR   >BrakeSwFlags,Z,#$80,L23306
+        BRCLR   >BrakeSwFlags,Z,#$80,L23306              ; bit 7: brake switch monitor: stop phase seen (BrakeSwitchMonitor)
         LDAA    >VehicleSpeed,Z
         BNE     L23306
         INC     >BrakeSwStopCounter,Z
         LDAA    >BrakeSwStopCounter,Z
         CMPA    >BrakeSwStopCount
         BCS     L232FC
-        BSET    >BrakeSwFlags,Z,#$20
+        BSET    >BrakeSwFlags,Z,#$20                     ; bit 5: stop count reached (BrakeSwStopCount)
 L232F8:
         CLR     >BrakeSwStopCounter,Z
 L232FC:
-        BCLR    >BrakeSwFlags,Z,#$80
+        BCLR    >BrakeSwFlags,Z,#$80                     ; bit 7: brake switch monitor: stop phase seen (BrakeSwitchMonitor)
         BRA     L23306
 L23302:
-        BSET    >BrakeSwFlags,Z,#$80
+        BSET    >BrakeSwFlags,Z,#$80                     ; bit 7: brake switch monitor: stop phase seen (BrakeSwitchMonitor)
 L23306:
-        BRSET   >BrakeSwFlags,Z,#$04,L23370
+        BRSET   >BrakeSwFlags,Z,#$04,L23370              ; bit 2: brake switch seen long enough (BrakeSwSeenTimer past BrakeSwSeenTime)
         BRCLR   >SwitchInputs,Z,#$01,L23358              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         LDAA    >VehicleSpeed,Z
         CMPA    >BrakeSwDriveSpeed
         BCS     L23366
-        BRCLR   >BrakeSwFlags,Z,#$40,L23370
+        BRCLR   >BrakeSwFlags,Z,#$40,L23370              ; bit 6: vehicle stopped during the brake switch test
         BRCLR   >ThrottleState,Z,#$80,L23360             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >ThrottleAboveClosed,Z
         CMPA    >BrakeSwThrottleMin
@@ -4282,20 +4282,20 @@ L23306:
         LDAA    >BrakeSwDriveCounter,Z
         CMPA    >BrakeSwDriveCount
         BCS     L2335C
-        BSET    >BrakeSwFlags,Z,#$10
+        BSET    >BrakeSwFlags,Z,#$10                     ; bit 4: drive count reached (BrakeSwDriveCount)
 L23358:
         CLR     >BrakeSwDriveCounter,Z
 L2335C:
-        BCLR    >BrakeSwFlags,Z,#$40
+        BCLR    >BrakeSwFlags,Z,#$40                     ; bit 6: vehicle stopped during the brake switch test
 L23360:
         CLR     >BrakeSwDriveTimer,Z
         BRA     L23370
 L23366:
         TST     >VehicleSpeed,Z
         BNE     L23370
-        BSET    >BrakeSwFlags,Z,#$40
+        BSET    >BrakeSwFlags,Z,#$40                     ; bit 6: vehicle stopped during the brake switch test
 L23370:
-        BRSET   >BrakeSwFlags,Z,#$08,L233AA
+        BRSET   >BrakeSwFlags,Z,#$08,L233AA              ; bit 3: brake switch seen long enough, second test (BrakeSwSeenTime)
         BRCLR   >SwitchInputs,Z,#$01,L233A6              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >ThrottleState,Z,#$80,L233A6             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
@@ -4306,12 +4306,12 @@ L23370:
         LDAA    $066B,Z
         CMPA    >BrakeSwSeenTime
         BCS     L233AA
-        BSET    >BrakeSwFlags,Z,#$08
+        BSET    >BrakeSwFlags,Z,#$08                     ; bit 3: brake switch seen long enough, second test (BrakeSwSeenTime)
         BRA     L233AA
 L233A6:
         CLR     $066B,Z
 L233AA:
-        BRSET   >BrakeSwFlags,Z,#$04,L233E4
+        BRSET   >BrakeSwFlags,Z,#$04,L233E4              ; bit 2: brake switch seen long enough (BrakeSwSeenTimer past BrakeSwSeenTime)
         BRSET   >SwitchInputs,Z,#$01,L233E0              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRCLR   >ThrottleState,Z,#$80,L233E0             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
@@ -4322,17 +4322,17 @@ L233AA:
         LDAA    >BrakeSwSeenTimer,Z
         CMPA    >BrakeSwSeenTime
         BCS     L233E4
-        BSET    >BrakeSwFlags,Z,#$04
+        BSET    >BrakeSwFlags,Z,#$04                     ; bit 2: brake switch seen long enough (BrakeSwSeenTimer past BrakeSwSeenTime)
         BRA     L233E4
 L233E0:
         CLR     >BrakeSwSeenTimer,Z
 L233E4:
-        BRCLR   >BrakeSwFlags,Z,#$30,L23402
-        BRSET   >SwitchMonFlags,Z,#$20,L23402
-        BSET    >SwitchMonFlags,Z,#$20
+        BRCLR   >BrakeSwFlags,Z,#$30,L23402              ; bit 5: stop count reached (BrakeSwStopCount); bit 4: drive count reached (BrakeSwDriveCount)
+        BRSET   >SwitchMonFlags,Z,#$20,L23402            ; bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
+        BSET    >SwitchMonFlags,Z,#$20                   ; bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
         BRA     L233FA
 L233F6:
-        BCLR    >SwitchMonFlags,Z,#$20
+        BCLR    >SwitchMonFlags,Z,#$20                   ; bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
 L233FA:
         LDAA    $4BE9
         JSR     ObdFaultReport
@@ -4345,7 +4345,7 @@ L23402:
 ;---------------------------------------------------------------------------------------------------
 PnSwitchMonitor:
         BRSET   $0664,Z,#$C0,L23522
-        BRSET   >CamCrankFlags,Z,#$80,L23468
+        BRSET   >CamCrankFlags,Z,#$80,L23468             ; bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
         BRSET   >Options0333,#$04,L23460                 ; bit 2: starter cut / park-neutral variant (StarterCut, PnSwitchMonitor)
         BRCLR   >Options0340,#$40,L23464                 ; bit 6: park/neutral switch monitor on (PnSwitchMonitor)
         BRSET   >Options032E,#$40,L23464                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
@@ -4359,13 +4359,13 @@ PnSwitchMonitor:
         BRSET   >MonitorDisableFlags,Z,#$04,L23464       ; bit 2: battery voltage at or below MonEnableVoltsMin
         ORP     #$00E0
         BRCLR   >CrankSyncFlags,Z,#$80,L23468            ; bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)
-        BRCLR   >CamCrankFlags,Z,#$20,L23460
+        BRCLR   >CamCrankFlags,Z,#$20,L23460             ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         BSET    $0664,Z,#$20
         BRA     L23464
 L23460:
         BSET    $0664,Z,#$80
 L23464:
-        BSET    >CamCrankFlags,Z,#$80
+        BSET    >CamCrankFlags,Z,#$80                    ; bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
 L23468:
         ANDP    #$FF1F
         BRSET   $0664,Z,#$40,L23510
@@ -4416,11 +4416,11 @@ L23508:
         CLR     >PnSwitchCounter,Z
 L23510:
         BRCLR   $0664,Z,#$30,L2352E
-        BRSET   >SwitchMonFlags,Z,#$40,L2352E
-        BSET    >SwitchMonFlags,Z,#$40
+        BRSET   >SwitchMonFlags,Z,#$40,L2352E            ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+        BSET    >SwitchMonFlags,Z,#$40                   ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
         BRA     L23526
 L23522:
-        BCLR    >SwitchMonFlags,Z,#$40
+        BCLR    >SwitchMonFlags,Z,#$40                   ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
 L23526:
         LDAA    $4A6D
         JSR     ObdFaultReport
@@ -4516,14 +4516,14 @@ L23634:
         STAA    >TccFailCount,Z
         CMPA    $5026
         BCS     L2367E
-        BRSET   >SwitchMonFlags,Z,#$80,L2367E
-        BSET    >SwitchMonFlags,Z,#$80
+        BRSET   >SwitchMonFlags,Z,#$80,L2367E            ; bit 7: torque converter clutch monitor: fault reported (TccMonitor)
+        BSET    >SwitchMonFlags,Z,#$80                   ; bit 7: torque converter clutch monitor: fault reported (TccMonitor)
         LDAA    $4BC1
         JSR     ObdFaultReport
         BRA     L2367E
 L2366A:
         BSET    $065C,Z,#$80
-        BCLR    >SwitchMonFlags,Z,#$80
+        BCLR    >SwitchMonFlags,Z,#$80                   ; bit 7: torque converter clutch monitor: fault reported (TccMonitor)
         LDAA    $4BC1
         JSR     ObdFaultReport
         CLR     >TccFailCount,Z
@@ -4666,8 +4666,8 @@ L237C8:
         CMPA    >IdleMonCount
         BCS     L23812
         BCLR    $065F,Z,#$80
-        BRSET   >SwitchMonFlags,Z,#$08,L2381A
-        BSET    >SwitchMonFlags,Z,#$08
+        BRSET   >SwitchMonFlags,Z,#$08,L2381A            ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
+        BSET    >SwitchMonFlags,Z,#$08                   ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
         LDAA    $4B5D
         JSR     ObdFaultReport
         BRA     L2381A
@@ -4676,7 +4676,7 @@ L237FA:
         BRA     L23812
 L23800:
         BRCLR   $065F,Z,#$80,L2381A
-        BCLR    >SwitchMonFlags,Z,#$08
+        BCLR    >SwitchMonFlags,Z,#$08                   ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
         LDAA    $4B5D
         JSR     ObdFaultReport
 L23812:
@@ -4690,7 +4690,7 @@ L2381A:
 ; Called from: IdleRpmMonitor
 ;---------------------------------------------------------------------------------------------------
 IdleMonitorEnable:
-        BRSET   >SwitchMonFlags,Z,#$08,L238D0
+        BRSET   >SwitchMonFlags,Z,#$08,L238D0            ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
         BRCLR   >EngineStateFlags,Z,#$80,L238D0          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >SparkFlags,Z,#$20,L238D0                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >ThrottleState,Z,#$80,L238D0             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -4751,7 +4751,7 @@ L238D4:
 PspSwitchMonitor:
         BRCLR   >Options0340,#$08,L23974                 ; bit 3: power steering switch monitor on (PspSwitchMonitor)
         BRCLR   >EquipmentFlags,Z,#$04,L23974            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
-        BRSET   >CamCrankFlags,Z,#$08,L23974
+        BRSET   >CamCrankFlags,Z,#$08,L23974             ; bit 3: power steering switch fault reported (PspSwitchMonitor)
         CLRB
         BRCLR   >EngineStateFlags,Z,#$80,L23970          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   <MonitorDisableFlags,Z,#$01,L23970       ; bit 0: battery (ambient) temperature below MonEnableBattTempMin
@@ -4767,10 +4767,10 @@ PspSwitchMonitor:
         INCB
         CMPB    >PspSwitchCount
         BCS     L23934
-        BCLR    >SwitchMonFlags,Z,#$01
+        BCLR    >SwitchMonFlags,Z,#$01                   ; bit 0: power steering switch monitor: switch state for the report (PspSwitchMonitor)
         LDAA    $4A77
         JSR     ObdFaultReport
-        BSET    >CamCrankFlags,Z,#$08
+        BSET    >CamCrankFlags,Z,#$08                    ; bit 3: power steering switch fault reported (PspSwitchMonitor)
         BRA     L23974
 L23934:
         STAB    $0668,Z
@@ -4787,10 +4787,10 @@ L2393A:
         INCB
         CMPB    >PspSwitchCount
         BCS     L23970
-        BSET    >SwitchMonFlags,Z,#$01
+        BSET    >SwitchMonFlags,Z,#$01                   ; bit 0: power steering switch monitor: switch state for the report (PspSwitchMonitor)
         LDAA    $4A77
         JSR     ObdFaultReport
-        BSET    >CamCrankFlags,Z,#$08
+        BSET    >CamCrankFlags,Z,#$08                    ; bit 3: power steering switch fault reported (PspSwitchMonitor)
         BRA     L23974
 L23970:
         STAB    $0667,Z
@@ -4840,8 +4840,8 @@ L239FA:
         STAA    $065D,Z
         CMPA    >VssCheckCount
         BLS     L23A4E
-        BRSET   >SwitchMonFlags,Z,#$10,L23A4E
-        BSET    >SwitchMonFlags,Z,#$10
+        BRSET   >SwitchMonFlags,Z,#$10,L23A4E            ; bit 4: vehicle speed monitor: fault reported (VssMonitor)
+        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: vehicle speed monitor: fault reported (VssMonitor)
         LDAA    $4757
         JSR     ObdFaultReport
         BRA     L23A46
@@ -4855,7 +4855,7 @@ L23A26:
         STAA    >VssCheckCounter,Z
         CMPA    >VssCheckCount
         BLS     L23A4E
-        BCLR    >SwitchMonFlags,Z,#$10
+        BCLR    >SwitchMonFlags,Z,#$10                   ; bit 4: vehicle speed monitor: fault reported (VssMonitor)
         LDAA    $4757
         JSR     ObdFaultReport
         LDY     #$4757
@@ -4872,7 +4872,7 @@ L23A4E:
 ; Called from: SwitchMonitors
 ;---------------------------------------------------------------------------------------------------
 ThermostatWarmCheck:
-        BRSET   >CamCrankFlags,Z,#$40,L23AA8
+        BRSET   >CamCrankFlags,Z,#$40,L23AA8             ; bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
         BRCLR   >Options0340,#$10,L23AA4                 ; bit 4: thermostat monitor on (ThermostatWarmCheck)
         BRCLR   >EngineStateFlags,Z,#$80,L23AA8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >MonitorDisableFlags,Z,#$08,L23AA8       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
@@ -4887,16 +4887,16 @@ L23A70:
         JSR     Lookup2D
         CMPA    >Count3s,Z
         BCC     L23AA8
-        BRSET   >SwitchMonFlags,Z,#$04,L23AA8
-        BSET    >SwitchMonFlags,Z,#$04
+        BRSET   >SwitchMonFlags,Z,#$04,L23AA8            ; bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
+        BSET    >SwitchMonFlags,Z,#$04                   ; bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
         BRA     L23A9C
 L23A98:
-        BCLR    >SwitchMonFlags,Z,#$04
+        BCLR    >SwitchMonFlags,Z,#$04                   ; bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
 L23A9C:
         LDAA    $4AF9
         JSR     ObdFaultReport
 L23AA4:
-        BSET    >CamCrankFlags,Z,#$40
+        BSET    >CamCrankFlags,Z,#$40                    ; bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
 L23AA8:
         RTS
 
@@ -5043,7 +5043,7 @@ L23BF8:
         TST     $068B,Z
         LBNE    L23C4E
         BRCLR   >EngineStateFlags,Z,#$80,L23C32          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >CamCrankFlags,Z,#$10,L23C32
+        BRSET   >CamCrankFlags,Z,#$10,L23C32             ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
         LDAA    $85,Z
         INCA
         CMPA    #$32
@@ -5062,7 +5062,7 @@ L23C18:
 L23C2A:
         BSET    >CrankSyncFlags2,Z,#$01
 L23C2E:
-        BSET    >CamCrankFlags,Z,#$10
+        BSET    >CamCrankFlags,Z,#$10                    ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
 L23C32:
         BRCLR   >Options0340,#$04,L23C4E                 ; bit 2: cam/crank sync monitor on (CamCrankSyncMonitor)
         BRSET   <MonitorDisableFlags,Z,#$08,L23C4E       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
@@ -5125,10 +5125,10 @@ L23CD2:
         LDAA    >Count3s,Z
         CMPA    >MonSteadyTimeMin
         BCS     L23CF2
-        BSET    >CamCrankFlags,Z,#$02
+        BSET    >CamCrankFlags,Z,#$02                    ; bit 1: engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)
         BRA     L23CF8
 L23CF2:
-        BCLR    >CamCrankFlags,Z,#$02
+        BCLR    >CamCrankFlags,Z,#$02                    ; bit 1: engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)
         BRA     L23D3A
 L23CF8:
         LDAA    $0952,Z
@@ -5162,8 +5162,8 @@ L23D3A:
         LDE     >EngineRpm,Z
         CPE     #$0320
         BCC     L23D82
-        BRSET   >CamCrankFlags,Z,#$04,L23D86
-        BSET    >CamCrankFlags,Z,#$04
+        BRSET   >CamCrankFlags,Z,#$04,L23D86             ; bit 2: cam/crank relation measured: offset under $0320 (CamCrankRelation)
+        BSET    >CamCrankFlags,Z,#$04                    ; bit 2: cam/crank relation measured: offset under $0320 (CamCrankRelation)
         BRSET   >VacLeakFlags,Z,#$02,L23D6C
         BRSET   >VacLeakFlags,Z,#$01,L23D66
         BSET    <VacLeakFlags,Z,#$01
@@ -5187,7 +5187,7 @@ L23D86:
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
 CamCrankMeasure:
-        BRCLR   >CamCrankFlags,Z,#$02,L23DA6
+        BRCLR   >CamCrankFlags,Z,#$02,L23DA6             ; bit 1: engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)
         LDAA    $0952,Z
         BEQ     L23D98
         COMA
@@ -6335,7 +6335,7 @@ EgrFlowMonitor:
         BRSET   >MonStatusEgrFlow,Z,#$02,L252A6
         BRCLR   >MonStatusEgrFlow,Z,#$80,L25296
         BRSET   >DiagStatusFlags,Z,#$01,L25296           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
-        BSET    >EgrMonFlags,Z,#$01
+        BSET    >EgrMonFlags,Z,#$01                      ; bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
         BRCLR   >EngineStateFlags,Z,#$80,L25296          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >CoolantTemp,Z
         CMPA    >EgrMonCoolantMin
@@ -6361,7 +6361,7 @@ L2507A:
         TST     >SystemTestMode,Z
         LBNE    L25296
         BRCLR   >O2ActiveFlags,Z,#$80,L25296             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
-        BRSET   >O2Bank1Flags,Z,#$20,L25296
+        BRSET   >O2Bank1Flags,Z,#$20,L25296              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRCLR   >Options032F,#$40,L250A0                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRCLR   >O2ActiveFlags,Z,#$40,L25296             ; bit 6: upstream O2 sensor 2 active (as bit 7)
         BRSET   >O2Bank2Flags,Z,#$20,L25296
@@ -6398,7 +6398,7 @@ L250F8:
         LDX     #$5584
         LDY     #$5594
 L25114:
-        BRSET   >EgrMonFlags,Z,#$04,L2511C
+        BRSET   >EgrMonFlags,Z,#$04,L2511C               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
         TXY
 L2511C:
         LDAA    <Baro,Z
@@ -6422,8 +6422,8 @@ L2512E:
         LBCS    L2529A
         CMPA    $05,Y
         LBHI    L2529A
-        BRSET   >EgrMonFlags,Z,#$04,L251E0
-        BSET    >EgrMonFlags,Z,#$02
+        BRSET   >EgrMonFlags,Z,#$04,L251E0               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
+        BSET    >EgrMonFlags,Z,#$02                      ; bit 1: EGR flow test conditions met, test started (EgrFlowMonitor)
         BSET    <MonStatusEgrFlow,Z,#$04
         LDAA    >ShortTermTrim1,Z
         CMPA    >EgrMonTrimMin
@@ -6461,7 +6461,7 @@ L251D0:
         CLR     $0588,Z
         CLRW    >EgrMonPhaseTimer,Z
 L251E0:
-        BSET    >EgrMonFlags,Z,#$04
+        BSET    >EgrMonFlags,Z,#$04                      ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
         LDE     >EgrMonPhaseTimer,Z
         CPE     >EgrMonPhaseTime2
         LBCC    L2522A
@@ -6491,22 +6491,22 @@ L2522A:
         BCS     L2524C
         CMPA    >EgrMonResultMax
         BHI     L25252
-        BSET    >EgrMonFlags,Z,#$88
-        BCLR    >EgrMonFlags,Z,#$30
+        BSET    >EgrMonFlags,Z,#$88                      ; bit 7: EGR flow monitor passed (result at or below EgrMonResultMax); bit 3: EGR flow monitor result available (set with bit 7 or bit 6)
+        BCLR    >EgrMonFlags,Z,#$30                      ; bit 5: EGR flow result below the pass window this test; bit 4: EGR flow result above the pass window this test
         BSET    <MonStatusEgrFlow,Z,#$40
         CLR     $0589,Z
         BRA     L2526C
 L2524C:
-        BSET    >EgrMonFlags,Z,#$20
+        BSET    >EgrMonFlags,Z,#$20                      ; bit 5: EGR flow result below the pass window this test
         BRA     L25256
 L25252:
-        BSET    >EgrMonFlags,Z,#$10
+        BSET    >EgrMonFlags,Z,#$10                      ; bit 4: EGR flow result above the pass window this test
 L25256:
         INC     $0589,Z
         LDAB    $0589,Z
         CMPB    >EgrMonFailCount
         BCS     L25296
-        BSET    >EgrMonFlags,Z,#$48
+        BSET    >EgrMonFlags,Z,#$48                      ; bit 6: EGR flow monitor failed (fail count reached EgrMonFailCount); bit 3: EGR flow monitor result available (set with bit 7 or bit 6)
         BSET    <MonStatusEgrFlow,Z,#$48
 L2526C:
         STAA    $016F,Z
@@ -6514,7 +6514,7 @@ L2526C:
         ANDA    #$20
         LSRA
         ORAA    #$80
-        BRSET   >EgrMonFlags,Z,#$80,L25282
+        BRSET   >EgrMonFlags,Z,#$80,L25282               ; bit 7: EGR flow monitor passed (result at or below EgrMonResultMax)
         ORAA    #$20
 L25282:
         STAA    $016E,Z
@@ -6523,9 +6523,9 @@ L25282:
 L25292:
         BCLR    <MonStatusEgrFlow,Z,#$80
 L25296:
-        BCLR    >EgrMonFlags,Z,#$01
+        BCLR    >EgrMonFlags,Z,#$01                      ; bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
 L2529A:
-        BCLR    >EgrMonFlags,Z,#$06
+        BCLR    >EgrMonFlags,Z,#$06                      ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor); bit 1: EGR flow test conditions met, test started (EgrFlowMonitor)
         BCLR    <MonStatusEgrFlow,Z,#$04
         CLRW    >EgrMonPhaseTimer,Z
 L252A6:
@@ -13828,7 +13828,7 @@ L2CB2A:
         LBRA    L2CB4E
 L2CB44:
         BSET    >FuelModeFlags2,Z,#$10                   ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
-        BSET    >O2ResetFlags2,Z,#$30
+        BSET    >O2ResetFlags2,Z,#$30                    ; bit 5: bank 1 short-term trim reset, memory change hold started (O2CellSelect, FuelCutControl); bit 4: bank 2 short-term trim reset (O2CellSelect, FuelCutControl)
         BRA     L2CB56
 L2CB4E:
         LDAA    >FlexLearnBase,Z
@@ -15115,7 +15115,7 @@ L2D854:
         CMPA    #$20
         BCS     L2D8C4
         BSET    >IdleFlags7,Z,#$40                       ; bit 6: reference period long (RefPeriod at $20 or more, low rpm): idle air crank target (CalcEngineRpm, IacCrankControl)
-        BCLR    >CamCrankFlags,Z,#$20
+        BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         CLR     >CrankSyncFlags,Z
         BCLR    >CrankSyncFlags2,Z,#$70
         BSET    >TMSK2,Z,#$10
@@ -15199,7 +15199,7 @@ L2D91E:
         BRCLR   <FlexStartFlags,Z,#$28,L2D9A2
         BRA     L2D9A6
 L2D9A2:
-        BCLR    >PurgeFlags2,Z,#$20
+        BCLR    >PurgeFlags2,Z,#$20                      ; bit 5: purge reset since the last start (PurgeReset; cleared at stall)
 L2D9A6:
         JSR     OcOutputsReset
 L2D9AA:

@@ -229,6 +229,11 @@ MisfireFlags     equ $00EF        ; $F80EF
 ;                 bit 1: cleared with the misfire records; read by MisfireCount
 ;                 bit 0: misfire start delay elapsed (MisfireEnableMain)
 FanSoakFlags     equ $00F0        ; $F80F0
+;                 bit 7: fan soak time over (FanSoakTimeMax, FanControl)
+;                 bit 6: fan soak condition met (FanControl)
+;                 bit 5: fan after-run: temperature at or above the on threshold (FanControl)
+;                 bit 4: fan after-run: temperature below the off threshold (FanControl)
+;                 bit 3: fan after-run active (FanAfterRunTimer counting)
 Scratch1         equ $00F1        ; $F80F1
 Scratch2         equ $00F2        ; $F80F2
 Scratch3         equ $00F3        ; $F80F3
@@ -410,6 +415,13 @@ FaultPendingCount2 equ $023B        ; $F823B
 O2TestFlags      equ $0241        ; $F8241
 CamCrankStable   equ $0250        ; $F8250
 CamCrankFlags    equ $0255        ; $F8255
+;                 bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
+;                 bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
+;                 bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
+;                 bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
+;                 bit 3: power steering switch fault reported (PspSwitchMonitor)
+;                 bit 2: cam/crank relation measured: offset under $0320 (CamCrankRelation)
+;                 bit 1: engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)
 PurgeFlowTestFlags equ $0256        ; $F8256
 PurgeFlowTestResult equ $0257        ; $F8257
 PurgeFlowTestFlags2 equ $0258        ; $F8258
@@ -465,6 +477,14 @@ MisfireWork628   equ $02C8        ; $F82C8
 MisfireHold      equ $02C9        ; $F82C9
 MisfireNoiseTimer equ $02CB        ; $F82CB
 SwitchMonFlags   equ $02CE        ; $F82CE
+;                 bit 7: torque converter clutch monitor: fault reported (TccMonitor)
+;                 bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+;                 bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
+;                 bit 4: vehicle speed monitor: fault reported (VssMonitor)
+;                 bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
+;                 bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
+;                 bit 1: thermostat monitor running (ThermostatMonitor)
+;                 bit 0: power steering switch monitor: switch state for the report (PspSwitchMonitor)
 O2MonFlags       equ $02CF        ; $F82CF
 MonEnableFlags2  equ $02D6        ; $F82D6
 ;                 bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
@@ -531,6 +551,14 @@ O2ActivityFlags  equ $0373        ; $F8373
 O2ActivityThrottleTimer equ $0374        ; $F8374
 O2ActivityPurgeAvg equ $0375        ; $F8375
 EgrMonFlags      equ $0376        ; $F8376
+;                 bit 7: EGR flow monitor passed (result at or below EgrMonResultMax)
+;                 bit 6: EGR flow monitor failed (fail count reached EgrMonFailCount)
+;                 bit 5: EGR flow result below the pass window this test
+;                 bit 4: EGR flow result above the pass window this test
+;                 bit 3: EGR flow monitor result available (set with bit 7 or bit 6)
+;                 bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
+;                 bit 1: EGR flow test conditions met, test started (EgrFlowMonitor)
+;                 bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
 EgrMonPhaseTimer equ $0377        ; $F8377
 MonStatusBits1   equ $0385        ; $F8385
 MonStatusBits2   equ $0387        ; $F8387
@@ -543,6 +571,11 @@ ShortTermTrim1   equ $039E        ; $F839E
 O2UpBank1Raw     equ $039F        ; $F839F
 O2UpBank1        equ $03B2        ; $F83B2
 O2Bank1Flags     equ $03BB        ; $F83BB
+;                 bit 7: bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens
+;                 bit 6: set with bit 7; read by O2DownEnable
+;                 bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
+;                 bit 4: bank 1 state read by ClosedLoopManager and O2DownEnable, byte writes only
+;                 bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
 ShortTermTrim2   equ $03BF        ; $F83BF
 O2UpBank2Raw     equ $03C0        ; $F83C0
 O2SlowPeriod2    equ $03D1        ; $F83D1
@@ -562,6 +595,14 @@ O2LearnFlags     equ $040C        ; $F840C
 O2SwitchFlags    equ $040D        ; $F840D
 O2InactiveFlags  equ $040E        ; $F840E
 O2ResetFlags2    equ $040F        ; $F840F
+;                 bit 7: adaptive cell selection: not the last cell (O2LearnEnable)
+;                 bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
+;                 bit 5: bank 1 short-term trim reset, memory change hold started (O2CellSelect, FuelCutControl)
+;                 bit 4: bank 2 short-term trim reset (O2CellSelect, FuelCutControl)
+;                 bit 3: bank 1 trim at or below PurgeLearnTrimMin during vapour learning (PurgeVaporLearn)
+;                 bit 2: bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)
+;                 bit 1: bank 1 cold trim reset (ClosedLoopTiming)
+;                 bit 0: bank 2 cold trim reset (ClosedLoopTiming)
 O2ResetFlags     equ $0410        ; $F8410
 ;                 bit 5: post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)
 ;                 bit 4: post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)
@@ -596,6 +637,11 @@ FuelModeFlags    equ $0427        ; $F8427
 IdleFlareFlags   equ $0428        ; $F8428
 RevLimitFlags    equ $0429        ; $F8429
 FuelEventFlags   equ $042A        ; $F842A
+;                 bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)
+;                 bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
+;                 bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule)
+;                 bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
+;                 bit 0: start pulse of the third kind done (FuelEventStart, FuelEventSchedule)
 DecelFlags       equ $042B        ; $F842B
 DecelRampTimer   equ $042C        ; $F842C
 DecelFuelRamp    equ $042D        ; $F842D
@@ -821,6 +867,12 @@ PurgeDuty        equ $062F        ; $F862F
 PurgeRamp        equ $0630        ; $F8630
 PurgeStartRamp   equ $0632        ; $F8632
 PurgeFlags2      equ $063E        ; $F863E
+;                 bit 7: read by the adaptive fuel code, byte writes only
+;                 bit 5: purge reset since the last start (PurgeReset; cleared at stall)
+;                 bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
+;                 bit 2: purge cell 1 reference reached, bank 2
+;                 bit 1: purge cell 2 reference reached, bank 1
+;                 bit 0: purge cell 2 reference reached, bank 2
 PurgeLearnFlags  equ $0645        ; $F8645
 PurgeCellNum1    equ $064F        ; $F864F
 PurgeCellNum2    equ $0650        ; $F8650

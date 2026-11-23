@@ -430,6 +430,12 @@ PurgeCellNum1    equ $043A        ; $F843A
 PurgeCellNum2    equ $043B        ; $F843B
 PurgeCellNum3    equ $043C        ; $F843C
 PurgeFlags2      equ $043D        ; $F843D
+;                 bit 7: read by the adaptive fuel code, byte writes only
+;                 bit 5: purge reset since the last start (PurgeReset; cleared at stall)
+;                 bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
+;                 bit 2: purge cell 1 reference reached, bank 2
+;                 bit 1: purge cell 2 reference reached, bank 1
+;                 bit 0: purge cell 2 reference reached, bank 2
 PurgeCellUpdateCounter equ $043E        ; $F843E
 PurgeLearnFlags  equ $0443        ; $F8443
 PurgePwmPeriodCount equ $0452        ; $F8452
@@ -496,6 +502,14 @@ O2ActivityThrottleTimer equ $057B        ; $F857B
 O2ActivityPurgeAvg equ $057C        ; $F857C
 EgrMonPhaseTimer equ $057E        ; $F857E
 EgrMonFlags      equ $0580        ; $F8580
+;                 bit 7: EGR flow monitor passed (result at or below EgrMonResultMax)
+;                 bit 6: EGR flow monitor failed (fail count reached EgrMonFailCount)
+;                 bit 5: EGR flow result below the pass window this test
+;                 bit 4: EGR flow result above the pass window this test
+;                 bit 3: EGR flow monitor result available (set with bit 7 or bit 6)
+;                 bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
+;                 bit 1: EGR flow test conditions met, test started (EgrFlowMonitor)
+;                 bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
 EgrMonSteadyTimer equ $0581        ; $F8581
 EgrCircuitCount2 equ $058B        ; $F858B
 LdpFlags         equ $058E        ; $F858E
@@ -625,6 +639,14 @@ MonFlags64E      equ $064E        ; $F864E
 MonData64F       equ $064F        ; $F864F
 FuelSysWork      equ $0656        ; $F8656
 SwitchMonFlags   equ $0658        ; $F8658
+;                 bit 7: torque converter clutch monitor: fault reported (TccMonitor)
+;                 bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+;                 bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
+;                 bit 4: vehicle speed monitor: fault reported (VssMonitor)
+;                 bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
+;                 bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
+;                 bit 1: thermostat monitor running (ThermostatMonitor)
+;                 bit 0: power steering switch monitor: switch state for the report (PspSwitchMonitor)
 O2MonFlags       equ $0659        ; $F8659
 MonFlags65A      equ $065A        ; $F865A
 EgrMonFlags2     equ $065C        ; $F865C
@@ -634,6 +656,14 @@ IdleDropCount    equ $0661        ; $F8661
 IdleDropRpmRef   equ $0662        ; $F8662
 PnSwitchCounter  equ $0666        ; $F8666
 BrakeSwFlags     equ $0669        ; $F8669
+;                 bit 7: brake switch monitor: stop phase seen (BrakeSwitchMonitor)
+;                 bit 6: vehicle stopped during the brake switch test
+;                 bit 5: stop count reached (BrakeSwStopCount)
+;                 bit 4: drive count reached (BrakeSwDriveCount)
+;                 bit 3: brake switch seen long enough, second test (BrakeSwSeenTime)
+;                 bit 2: brake switch seen long enough (BrakeSwSeenTimer past BrakeSwSeenTime)
+;                 bit 1: MAP key-on check time exceeded (MapKeyOnTimeMax); this byte also holds MapKeyOnCheck bits
+;                 bit 0: used by MapKeyOnCheck
 BrakeSwDriveTimer equ $066A        ; $F866A
 BrakeSwSeenTimer equ $066C        ; $F866C
 RpmSpeedRatioFiltered equ $066E        ; $F866E
@@ -670,6 +700,13 @@ Options033ECopy  equ $06B8        ; $F86B8
 Options033FCopy  equ $06B9        ; $F86B9
 ResetCheckCode   equ $06BA        ; $F86BA
 CamCrankFlags    equ $06BC        ; $F86BC
+;                 bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
+;                 bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
+;                 bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
+;                 bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
+;                 bit 3: power steering switch fault reported (PspSwitchMonitor)
+;                 bit 2: cam/crank relation measured: offset under $0320 (CamCrankRelation)
+;                 bit 1: engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)
 BusModuleFlags   equ $06BE        ; $F86BE
 ;                 bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
 ;                 bit 6: new transmission status received (TransBusStatus), not handled yet by TransMilRequest
@@ -691,6 +728,11 @@ O2UpBank1Raw     equ $0701        ; $F8701
 O2DownBank1Raw   equ $070B        ; $F870B
 O2UpBank1        equ $0714        ; $F8714
 O2Bank1Flags     equ $071D        ; $F871D
+;                 bit 7: bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens
+;                 bit 6: set with bit 7; read by O2DownEnable
+;                 bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
+;                 bit 4: bank 1 state read by ClosedLoopManager and O2DownEnable, byte writes only
+;                 bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
 O2TrimAvgCount   equ $0727        ; $F8727
 ShortTermTrim2   equ $0728        ; $F8728
 O2UpBank2Raw     equ $0729        ; $F8729
@@ -721,6 +763,14 @@ O2ActiveFlags    equ $075D        ; $F875D
 O2SwitchFlags    equ $075E        ; $F875E
 O2InactiveFlags  equ $075F        ; $F875F
 O2ResetFlags2    equ $0760        ; $F8760
+;                 bit 7: adaptive cell selection: not the last cell (O2LearnEnable)
+;                 bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
+;                 bit 5: bank 1 short-term trim reset, memory change hold started (O2CellSelect, FuelCutControl)
+;                 bit 4: bank 2 short-term trim reset (O2CellSelect, FuelCutControl)
+;                 bit 3: bank 1 trim at or below PurgeLearnTrimMin during vapour learning (PurgeVaporLearn)
+;                 bit 2: bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)
+;                 bit 1: bank 1 cold trim reset (ClosedLoopTiming)
+;                 bit 0: bank 2 cold trim reset (ClosedLoopTiming)
 O2ResetFlags     equ $0761        ; $F8761
 ;                 bit 5: post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)
 ;                 bit 4: post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)
@@ -771,6 +821,11 @@ EngineStateFlags equ $0774        ; $F8774
 ;                 bit 1: cleared at stall only, never set in 05293190AC
 ;                 bit 0: first reference pulse seen, start pulse still due (cleared by StartInjectorPulse)
 FuelEventFlags   equ $0775        ; $F8775
+;                 bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)
+;                 bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
+;                 bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule)
+;                 bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
+;                 bit 0: start pulse of the third kind done (FuelEventStart, FuelEventSchedule)
 DecelFlags       equ $0776        ; $F8776
 DecelRampTimer   equ $0777        ; $F8777
 DecelFuelRamp    equ $0778        ; $F8778
@@ -1126,6 +1181,14 @@ EgrFlags         equ $0B2C        ; $F8B2C
 ;                 bit 1: EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply
 ;                 bit 0: EGR conditions not met (EgrEnable, EgrControl)
 EgrFlags2        equ $0B2D        ; $F8B2D
+;                 bit 7: EGR position tracking result being counted (EgrPositionMonitor)
+;                 bit 6: EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)
+;                 bit 5: EGR position tracking good (EgrPositionMonitor)
+;                 bit 4: EGR position tracking error (EgrPositionMonitor)
+;                 bit 3: deceleration fuel ramp limited (DecelFuelRampControl); EGR code reads it
+;                 bit 2: EGR position monitor allowed: no other monitor of group A running (EgrPositionMonitor)
+;                 bit 1: EGR duty above the position-based limit (EgrControl)
+;                 bit 0: EGR solenoid check step running (EgrSolenoidCheck)
 EgrOnTimer       equ $0B2E        ; $F8B2E
 EgrStartDelay    equ $0B2F        ; $F8B2F
 EgrDuty          equ $0B48        ; $F8B48

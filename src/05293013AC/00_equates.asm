@@ -124,6 +124,13 @@ FaultPendingCount2 equ $0186        ; $F8186
 CamCrankOffset   equ $01AB        ; $F81AB
 CamCrankStable   equ $01AC        ; $F81AC
 CamCrankFlags    equ $01B4        ; $F81B4
+;                 bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
+;                 bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
+;                 bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
+;                 bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
+;                 bit 3: power steering switch fault reported (PspSwitchMonitor)
+;                 bit 2: cam/crank relation measured: offset under $0320 (CamCrankRelation)
+;                 bit 1: engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)
 SensorFaultFlags equ $01B5        ; $F81B5
 ;                 bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
 ;                 bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
@@ -412,6 +419,11 @@ ShortTermTrim1   equ $050F        ; $F850F
 O2UpBank1Raw     equ $0510        ; $F8510
 O2DownBank1Raw   equ $051A        ; $F851A
 O2Bank1Flags     equ $052C        ; $F852C
+;                 bit 7: bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens
+;                 bit 6: set with bit 7; read by O2DownEnable
+;                 bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
+;                 bit 4: bank 1 state read by ClosedLoopManager and O2DownEnable, byte writes only
+;                 bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
 ShortTermTrim2   equ $0530        ; $F8530
 O2UpBank2Raw     equ $0531        ; $F8531
 O2Bank2Flags     equ $054D        ; $F854D
@@ -461,6 +473,11 @@ FuelModeFlags    equ $056A        ; $F856A
 ;                 bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
 EventFlags       equ $056B        ; $F856B
 FuelEventFlags   equ $056C        ; $F856C
+;                 bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)
+;                 bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
+;                 bit 2: start pulse of the first kind done (FuelEventStart, FuelEventSchedule)
+;                 bit 1: start pulse of the second kind done (FuelEventStart, FuelEventSchedule)
+;                 bit 0: start pulse of the third kind done (FuelEventStart, FuelEventSchedule)
 DecelLeanFlags   equ $056E        ; $F856E
 O2AdaptValue1    equ $0570        ; $F8570
 O2AdaptValue2    equ $0571        ; $F8571

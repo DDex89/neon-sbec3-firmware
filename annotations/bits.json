@@ -13,6 +13,16 @@
   "7": "WOT fuel branch in TipInFuelControl",
   "6": "index shift in CalcFuelPulse"
  },
+ "BrakeSwFlags": {
+  "7": "brake switch monitor: stop phase seen (BrakeSwitchMonitor)",
+  "6": "vehicle stopped during the brake switch test",
+  "5": "stop count reached (BrakeSwStopCount)",
+  "4": "drive count reached (BrakeSwDriveCount)",
+  "3": "brake switch seen long enough, second test (BrakeSwSeenTime)",
+  "2": "brake switch seen long enough (BrakeSwSeenTimer past BrakeSwSeenTime)",
+  "1": "MAP key-on check time exceeded (MapKeyOnTimeMax); this byte also holds MapKeyOnCheck bits",
+  "0": "used by MapKeyOnCheck"
+ },
  "BusModuleFlags": {
   "7": "transmission module message seen on the bus (CcdReceive, PciReceive)",
   "6": "new transmission status received (TransBusStatus), not handled yet by TransMilRequest",
@@ -35,6 +45,15 @@
   "2": "switch inputs changed: send them (SwitchInputsRead)",
   "1": "speed control switch state changed: send it (speed control switch code)",
   "0": "PCI link data changed: send it (PciLinkCheck)"
+ },
+ "CamCrankFlags": {
+  "7": "park/neutral switch monitor done this drive cycle (PnSwitchMonitor)",
+  "6": "thermostat warm-up fault reported (ThermostatWarmCheck)",
+  "5": "park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)",
+  "4": "cam/crank sync monitor done (CamCrankSyncMonitor)",
+  "3": "power steering switch fault reported (PspSwitchMonitor)",
+  "2": "cam/crank relation measured: offset under $0320 (CamCrankRelation)",
+  "1": "engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)"
  },
  "CcdBusFlags": {
   "7": "bus ready for the next message (CcdReceive, Irq4BusHandler, Irq2BusHandler)",
@@ -146,6 +165,26 @@
   "1": "EGR on long enough (EgrOnTimer past EgrOnDelay): the fuel and spark corrections for EGR apply",
   "0": "EGR conditions not met (EgrEnable, EgrControl)"
  },
+ "EgrFlags2": {
+  "7": "EGR position tracking result being counted (EgrPositionMonitor)",
+  "6": "EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)",
+  "5": "EGR position tracking good (EgrPositionMonitor)",
+  "4": "EGR position tracking error (EgrPositionMonitor)",
+  "3": "deceleration fuel ramp limited (DecelFuelRampControl); EGR code reads it",
+  "2": "EGR position monitor allowed: no other monitor of group A running (EgrPositionMonitor)",
+  "1": "EGR duty above the position-based limit (EgrControl)",
+  "0": "EGR solenoid check step running (EgrSolenoidCheck)"
+ },
+ "EgrMonFlags": {
+  "7": "EGR flow monitor passed (result at or below EgrMonResultMax)",
+  "6": "EGR flow monitor failed (fail count reached EgrMonFailCount)",
+  "5": "EGR flow result below the pass window this test",
+  "4": "EGR flow result above the pass window this test",
+  "3": "EGR flow monitor result available (set with bit 7 or bit 6)",
+  "2": "EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)",
+  "1": "EGR flow test conditions met, test started (EgrFlowMonitor)",
+  "0": "EGR flow test step done (cleared by EgrFlowMonitor)"
+ },
  "EngineStateFlags": {
   "7": "engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)",
   "4": "start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel",
@@ -180,6 +219,13 @@
   "2": "vehicle speed below FanWarmupSpeedMax (FanWarmupState)",
   "1": "fan PWM output read back low (FanPwmOutputCheck)",
   "0": "fan PWM output read back high (FanPwmOutputCheck)"
+ },
+ "FanSoakFlags": {
+  "7": "fan soak time over (FanSoakTimeMax, FanControl)",
+  "6": "fan soak condition met (FanControl)",
+  "5": "fan after-run: temperature at or above the on threshold (FanControl)",
+  "4": "fan after-run: temperature below the off threshold (FanControl)",
+  "3": "fan after-run active (FanAfterRunTimer counting)"
  },
  "FieldFlags": {
   "6": "field ramp minimum time after start passed (FieldRampTimeMin)",
@@ -223,6 +269,13 @@
   "3": "reset the cycle counts (FlexLearnMain)",
   "2": "load FlexEthanolStartInit (FlexLearnMain, FlexMisfireCheck)",
   "0": "selects a branch in FlexLearnMain"
+ },
+ "FuelEventFlags": {
+  "7": "first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)",
+  "3": "start pulse hold running (FuelEventHold, FuelEventSchedule)",
+  "2": "start pulse of the first kind done (FuelEventStart, FuelEventSchedule)",
+  "1": "start pulse of the second kind done (FuelEventStart, FuelEventSchedule)",
+  "0": "start pulse of the third kind done (FuelEventStart, FuelEventSchedule)"
  },
  "FuelModeFlags": {
   "7": "idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1",
@@ -535,6 +588,13 @@
   "1": "as bit 5, cleared by SensorFaultFlags2 bit 1",
   "0": "as bit 4, cleared by SensorFaultFlags2 bit 0"
  },
+ "O2Bank1Flags": {
+  "7": "bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens",
+  "6": "set with bit 7; read by O2DownEnable",
+  "5": "bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only",
+  "4": "bank 1 state read by ClosedLoopManager and O2DownEnable, byte writes only",
+  "3": "bank 1 state read by the purge ramp and vapour learning, byte writes only"
+ },
  "O2ResetFlags": {
   "5": "post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)",
   "4": "post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)",
@@ -542,6 +602,16 @@
   "2": "O2 hold count still rising (ClosedLoopTiming)",
   "1": "restart closed-loop learning, bank 1 (O2LearnEnable)",
   "0": "restart closed-loop learning, bank 2 (O2LearnEnable)"
+ },
+ "O2ResetFlags2": {
+  "7": "adaptive cell selection: not the last cell (O2LearnEnable)",
+  "6": "adaptive cell selection: the last cell reached (O2LearnEnable)",
+  "5": "bank 1 short-term trim reset, memory change hold started (O2CellSelect, FuelCutControl)",
+  "4": "bank 2 short-term trim reset (O2CellSelect, FuelCutControl)",
+  "3": "bank 1 trim at or below PurgeLearnTrimMin during vapour learning (PurgeVaporLearn)",
+  "2": "bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)",
+  "1": "bank 1 cold trim reset (ClosedLoopTiming)",
+  "0": "bank 2 cold trim reset (ClosedLoopTiming)"
  },
  "Options0328": {
   "1": "security variant: selects a branch in SecurityState",
@@ -729,6 +799,14 @@
   "1": "battery temperature at or above PurgeBattTempMax (PurgeEnable)",
   "0": "battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)"
  },
+ "PurgeFlags2": {
+  "7": "read by the adaptive fuel code, byte writes only",
+  "5": "purge reset since the last start (PurgeReset; cleared at stall)",
+  "3": "purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)",
+  "2": "purge cell 1 reference reached, bank 2",
+  "1": "purge cell 2 reference reached, bank 1",
+  "0": "purge cell 2 reference reached, bank 2"
+ },
  "PurgeFlowTestFlags2": {
   "7": "O2 switch state reached the last cell row (O2SwitchState)",
   "6": "purge test restore delay running: closed loop waits (PurgeFlowTest, ClosedLoopManager)",
@@ -828,6 +906,16 @@
   "2": "speed control switch (set at reset)",
   "1": "speed control switch",
   "0": "speed control switch"
+ },
+ "SwitchMonFlags": {
+  "7": "torque converter clutch monitor: fault reported (TccMonitor)",
+  "6": "park/neutral switch monitor: fault reported (PnSwitchMonitor)",
+  "5": "brake switch monitor: fault reported (BrakeSwitchMonitor)",
+  "4": "vehicle speed monitor: fault reported (VssMonitor)",
+  "3": "idle rpm monitor: fault reported (IdleRpmMonitor)",
+  "2": "thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)",
+  "1": "thermostat monitor running (ThermostatMonitor)",
+  "0": "power steering switch monitor: switch state for the report (PspSwitchMonitor)"
  },
  "SystemFlags945": {
   "7": "QSPI transfer running (set by QspiSendFrame, cleared by QspiService)",
