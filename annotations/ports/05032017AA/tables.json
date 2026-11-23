@@ -3294,92 +3294,70 @@
    ]
   },
   "0342": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte tested; read by Sub_32318.",
-   "name": "ThermistorFlag1"
+   "name": "ObdPidSupport1",
+   "desc": "OBD-II mode $01: first byte of the supported-PID bit map for PIDs $01-$20 (sent for PID $00)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "0343": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte tested; read by Sub_32318.",
-   "name": "ThermistorFlag2"
+   "name": "ObdPidSupport2",
+   "desc": "Second byte of the supported-PID bit map $01-$20",
+   "category": "Diagnostics",
+   "size": 1
   },
   "0344": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte tested; read by Sub_32318.",
-   "name": "ThermistorFlag3"
+   "name": "ObdPidSupport3",
+   "desc": "Third byte of the supported-PID bit map $01-$20",
+   "category": "Diagnostics",
+   "size": 1
   },
   "0345": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte tested; read by Sub_32318.",
-   "name": "ThermistorFlag4"
+   "name": "ObdPidSupport4",
+   "desc": "Fourth byte of the supported-PID bit map $01-$20 (bit 0: PIDs $21-$40 follow)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "0346": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte tested; read by Sub_32318.",
-   "name": "ThermistorFlag5"
+   "name": "ObdPidSupport5",
+   "desc": "First byte of the supported-PID bit map for PIDs $21-$40",
+   "category": "Diagnostics",
+   "size": 1
   },
   "0347": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte tested; read by Sub_32318.",
-   "name": "ThermistorFlag6"
+   "name": "ObdPidSupport6",
+   "desc": "Second byte of the supported-PID bit map $21-$40",
+   "category": "Diagnostics",
+   "size": 1
   },
   "0348": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_32318.",
-   "name": "ThermistorValue2"
+   "name": "ObdPidSupport7",
+   "desc": "Third byte of the supported-PID bit map $21-$40",
+   "category": "Diagnostics",
+   "size": 1
   },
   "0349": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_32318.",
-   "name": "ThermistorValue3"
+   "name": "ObdPidSupport8",
+   "desc": "Fourth byte of the supported-PID bit map $21-$40",
+   "category": "Diagnostics",
+   "size": 1
   },
   "034A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte stored into V0A2A; read by Sub_32318.",
-   "name": "ThermistorV0A2AInit"
+   "name": "ObdMonitorByte",
+   "desc": "OBD-II monitor status: value sent in the second byte ($0A2A,Z)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "034B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte mask for V003F; read by Sub_32318.",
-   "name": "ThermistorV003FMask"
+   "name": "ObdMonitorMask",
+   "desc": "OBD-II monitor status: mask applied to the monitor flags $3F,Z (and sent as the supported monitors)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "034C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_32318.",
-   "name": "ThermistorValue4"
+   "name": "ObdStandard",
+   "desc": "Value sent for the OBD-requirements PID",
+   "category": "Diagnostics",
+   "size": 1
   },
   "035D": {
    "name": "ThrottleCloseConfirm",
@@ -3552,12 +3530,11 @@
    "name": "FanV0B12Thresh"
   },
   "041F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "CoolantSlowInit",
+   "desc": "Start value of CoolantTempSlow (calibration bit $033D.5)",
+   "unit": "tempc",
    "category": "Sensors",
-   "desc": "Byte stored into CoolantTempSlow; read by ProcessCoolantTemp.",
-   "name": "ThermistorCoolantTempSlowInit"
+   "size": 1
   },
   "0420": {
    "size": 1,
@@ -5286,76 +5263,62 @@
    "category": "Fuel"
   },
   "0B83": {
-   "size": 1,
+   "name": "FieldRampCoolantMax",
+   "desc": "Field soft start: applies below this coolant temperature",
    "unit": "tempc",
-   "auto": true,
    "category": "Sensors",
-   "desc": "Byte compared with CoolantTemp; read by Sub_0EB62.",
-   "name": "SensorCoolantThresh1"
+   "size": 1
   },
   "0B84": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "ChargeVoltsOffset",
+   "desc": "Charging target: offset subtracted from ChargeVoltsBattTemp (at most ChargeVoltsOffsetMax)",
+   "unit": "volt16",
    "category": "Sensors",
-   "desc": "Byte used with; read by Sub_2C6DE.",
-   "name": "SensorValue1"
+   "size": 1
   },
   "0B85": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FieldRampStep1",
+   "desc": "Field soft start: first step time of the counter $0DBE,Z (word)",
    "category": "Sensors",
-   "desc": "Word compared with V0DBE; read by Sub_0EB62.",
-   "name": "SensorV0DBEThresh"
+   "size": 2
   },
   "0B87": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FieldRampStep2",
+   "desc": "Field soft start: time added for the second step",
    "category": "Sensors",
-   "desc": "Word added to; read by Sub_0EB62.",
-   "name": "SensorAdder1"
+   "size": 2
   },
   "0B89": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FieldRampStep3",
+   "desc": "Field soft start: time added for the third step",
    "category": "Sensors",
-   "desc": "Word added to; read by Sub_0EB62.",
-   "name": "SensorAdder2"
+   "size": 2
   },
   "0B8B": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FieldRampStep4",
+   "desc": "Field soft start: time added for the fourth step",
    "category": "Sensors",
-   "desc": "Word added to; read by Sub_0EB62.",
-   "name": "SensorAdder3"
+   "size": 2
   },
   "0B8D": {
-   "size": 1,
+   "name": "FieldRampVoltsMax",
+   "desc": "Field soft start: applies while the battery voltage is at or below this value",
    "unit": "volt16",
-   "auto": true,
    "category": "Sensors",
-   "desc": "Byte compared with BatteryVolts2; read by Sub_0EB62.",
-   "name": "SensorVoltsThresh1"
+   "size": 1
   },
   "0B8E": {
-   "size": 1,
+   "name": "FieldRampRpmMin",
+   "desc": "Field soft start: engine rpm above which the ramp runs",
    "unit": "rpm32",
-   "auto": true,
    "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_0EB62.",
-   "name": "SensorRpmThresh2"
+   "size": 1
   },
   "0B8F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FieldRampTimeMin",
+   "desc": "Field soft start: time since start after which $0DC7,Z bit 6 sets",
    "category": "Sensors",
-   "desc": "Byte compared with Count3s; read by Sub_0EB62.",
-   "name": "SensorTimeThresh1"
+   "size": 1
   },
   "0B90": {
    "name": "PartThrottleFuelK",
@@ -6174,76 +6137,61 @@
    "category": "Fuel"
   },
   "1BCF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte multiplied; read by Sub_10604.",
-   "name": "SensorFactor1"
+   "name": "KnockFuelGain",
+   "desc": "Knock enrichment (Sub_10604): gain on the per-cylinder knock retard",
+   "category": "Fuel",
+   "size": 1
   },
   "1BD0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V07D8; read by Sub_10604.",
-   "name": "SensorV07D8Thresh"
+   "name": "KnockFuelMax",
+   "desc": "Knock enrichment: upper limit of the enrichment $07D8,Z",
+   "category": "Fuel",
+   "size": 1
   },
   "1BD1": {
-   "size": 1,
+   "name": "KnockFuelVacuumMax",
+   "desc": "Knock enrichment: runs below this manifold vacuum",
    "unit": "kpa",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with ManifoldVacuum; read by Sub_10604.",
-   "name": "SensorVacuumThresh"
+   "category": "Fuel",
+   "size": 1
   },
   "1BD2": {
-   "size": 1,
+   "name": "KnockFuelCoolantMin",
+   "desc": "Knock enrichment: runs at or above this coolant temperature",
    "unit": "tempc",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with CoolantTemp; read by Sub_10604.",
-   "name": "SensorCoolantThresh2"
+   "category": "Fuel",
+   "size": 1
   },
   "1BD3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte multiplied; read by Sub_10604.",
-   "name": "SensorFactor2"
+   "name": "KnockFuelGain2",
+   "desc": "Knock enrichment: gain on the second term",
+   "category": "Fuel",
+   "size": 1
   },
   "1BD4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte multiplied; read by Sub_10604.",
-   "name": "SensorFactor3"
+   "name": "KnockFuelGain3",
+   "desc": "Knock enrichment: gain on the third term",
+   "category": "Fuel",
+   "size": 1
   },
   "1BD5": {
-   "size": 1,
+   "name": "KnockFuelRpmMin",
+   "desc": "Knock enrichment: the knock retard term applies above this engine rpm",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_10604.",
-   "name": "SensorRpmThresh3"
+   "category": "Fuel",
+   "size": 1
   },
   "1BD6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ActiveHigh",
+   "desc": "O2 sensor (upstream, both banks): raw value at or above this counts as switching high",
    "category": "Closed loop",
-   "desc": "Byte compared with O2UpBank1Raw; read by Sub_14802.",
-   "name": "O2UpBank1RawThresh1"
+   "size": 1
   },
   "1BD7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ActiveLow",
+   "desc": "O2 sensor (upstream): raw value below this marks the sensor as active ($075D,Z)",
    "category": "Closed loop",
-   "desc": "Byte compared with O2UpBank1Raw; read by Sub_14802.",
-   "name": "O2UpBank1RawThresh2"
+   "size": 1
   },
   "1BDA": {
    "size": 1,
@@ -6254,20 +6202,16 @@
    "name": "O2Thresh1"
   },
   "1BDB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2DownActiveHigh",
+   "desc": "Downstream O2 sensor: raw value at or above this counts as switching high",
    "category": "Closed loop",
-   "desc": "Byte compared with O2DownBank1Raw; read by Sub_14802.",
-   "name": "O2DownBank1RawThresh1"
+   "size": 1
   },
   "1BDC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2DownActiveLow",
+   "desc": "Downstream O2 sensor: raw value below this marks it as active",
    "category": "Closed loop",
-   "desc": "Byte compared with O2DownBank1Raw; read by Sub_14802.",
-   "name": "O2DownBank1RawThresh2"
+   "size": 1
   },
   "1BDD": {
    "size": 1,
@@ -6333,20 +6277,17 @@
    "name": "O2Value6"
   },
   "1BE5": {
-   "size": 1,
+   "name": "O2ColdStartCoolant",
+   "desc": "Closed loop: start coolant below which the cold-start delay additions apply",
    "unit": "tempc",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte compared with StartCoolantTemp2; read by Sub_14740, Sub_14FD8.",
-   "name": "O2StartCoolantThresh"
+   "size": 1
   },
   "1BE6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ColdStartAdder",
+   "desc": "Closed loop: addition to the entry delay after a cold start",
    "category": "Closed loop",
-   "desc": "Byte subtracted from V07B5; read by Sub_14740, Sub_14FD8.",
-   "name": "O2V07B5Offset"
+   "size": 1
   },
   "1BE7": {
    "size": 1,
@@ -6397,20 +6338,16 @@
    "name": "O2Thresh7"
   },
   "1BFD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2PurgeRampMin",
+   "desc": "Closed loop: purge ramp at or above which the purge correction of the trim applies",
    "category": "Closed loop",
-   "desc": "Byte compared with PurgeRamp; read by Sub_143C2, Sub_14802.",
-   "name": "O2PurgeRampThresh1"
+   "size": 1
   },
   "1BFE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2EntryDelay",
+   "desc": "Closed loop: delay $0754,Z",
    "category": "Closed loop",
-   "desc": "Byte stored into V0754; read by Sub_14FD8.",
-   "name": "O2V0754Init"
+   "size": 1
   },
   "1BFF": {
    "size": 1,
@@ -6517,20 +6454,16 @@
    "name": "O2Value19"
   },
   "1D12": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2AdaptIntegralMax",
+   "desc": "Adaptive cell integrator upper limit (signed word)",
    "category": "Closed loop",
-   "desc": "Word compared with; read by Sub_155C8.",
-   "name": "O2Thresh8"
+   "size": 2
   },
   "1D14": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2AdaptIntegralMin",
+   "desc": "Adaptive cell integrator lower limit (signed word)",
    "category": "Closed loop",
-   "desc": "Word compared with; read by Sub_155C8.",
-   "name": "O2Thresh9"
+   "size": 2
   },
   "1D16": {
    "size": 1,
@@ -6541,20 +6474,16 @@
    "name": "O2Value20"
   },
   "1D17": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2AdaptCellMax",
+   "desc": "Adaptive cell value upper limit (signed)",
    "category": "Closed loop",
-   "desc": "Byte compared with ShortTermTrim2; read by Sub_155C8, Sub_2A496, Sub_2A664.",
-   "name": "O2ShortTermTrim2Thresh1"
+   "size": 1
   },
   "1D18": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2AdaptCellMin",
+   "desc": "Adaptive cell value lower limit (signed)",
    "category": "Closed loop",
-   "desc": "Byte compared with ShortTermTrim2; read by Sub_155C8, Sub_2A07E, Sub_2A290.",
-   "name": "O2ShortTermTrim2Thresh2"
+   "size": 1
   },
   "1D19": {
    "size": 1,
@@ -6613,44 +6542,36 @@
    "name": "O2Thresh11"
   },
   "1D26": {
-   "size": 1,
+   "name": "O2CellResetCoolantMin",
+   "desc": "Cell reset (Sub_1594A): coolant at or above this value",
    "unit": "tempc",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte compared with CoolantTemp; read by Sub_1594A.",
-   "name": "O2CoolantThresh3"
+   "size": 1
   },
   "1D27": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellResetTrimMax",
+   "desc": "Cell reset: the short-term trim is cleared while it is not above this value",
    "category": "Closed loop",
-   "desc": "Byte compared with ShortTermTrim1; read by Sub_1594A.",
-   "name": "O2ShortTermTrim1Thresh"
+   "size": 1
   },
   "1D28": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellResetSpeedMax",
+   "desc": "Cell reset: vehicle speed at or below this value",
    "category": "Closed loop",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_1594A.",
-   "name": "O2SpeedThresh1"
+   "size": 1
   },
   "1D29": {
-   "size": 1,
+   "name": "O2CellResetVacuumMax",
+   "desc": "Cell reset: manifold vacuum at or below this value",
    "unit": "kpa",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte compared with ManifoldVacuum; read by Sub_1594A.",
-   "name": "O2VacuumThresh"
+   "size": 1
   },
   "1D2A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CellResetThrottleMin",
+   "desc": "Cell reset: throttle at or above this value",
    "category": "Closed loop",
-   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_1594A.",
-   "name": "O2ThrottleThresh"
+   "size": 1
   },
   "1D41": {
    "size": 1,
@@ -6669,36 +6590,28 @@
    "name": "O2Factor2"
   },
   "1D59": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2TrimMax",
+   "desc": "Short-term trim upper limit (128 = no correction)",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_143C2, Sub_14802.",
-   "name": "O2Thresh12"
+   "size": 1
   },
   "1D5A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2TrimMin",
+   "desc": "Short-term trim lower limit",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_143C2, Sub_14802.",
-   "name": "O2Thresh13"
+   "size": 1
   },
   "1D5B": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2IntegralMax",
+   "desc": "O2 integrator upper limit (signed word)",
    "category": "Closed loop",
-   "desc": "Word compared with; read by Sub_143C2.",
-   "name": "O2Thresh14"
+   "size": 2
   },
   "1D5D": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2IntegralMin",
+   "desc": "O2 integrator lower limit (signed word)",
    "category": "Closed loop",
-   "desc": "Word compared with; read by Sub_143C2.",
-   "name": "O2Thresh15"
+   "size": 2
   },
   "1D5F": {
    "size": 2,
@@ -6813,28 +6726,23 @@
    "name": "O2CoolantThresh4"
   },
   "1D7E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2DelayCold",
+   "desc": "Closed-loop entry delay ($07AF,Z) below O2DelayCoolantMax",
    "category": "Closed loop",
-   "desc": "Byte stored into V07AF; read by Sub_14740.",
-   "name": "O2V07AFInit"
+   "size": 1
   },
   "1D7F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2DelayWarm",
+   "desc": "Closed-loop entry delay when warm",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_14740, Sub_14FD8.",
-   "name": "O2Value30"
+   "size": 1
   },
   "1D80": {
-   "size": 1,
+   "name": "O2DelayCoolantMax",
+   "desc": "Closed loop: below this coolant the entry delay O2DelayCold is used",
    "unit": "tempc",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte compared with CoolantTemp; read by Sub_14740.",
-   "name": "O2CoolantThresh5"
+   "size": 1
   },
   "1D86": {
    "size": 1,
@@ -6869,20 +6777,17 @@
    "name": "O2Adder4"
   },
   "1D8A": {
-   "size": 1,
+   "name": "O2IdleRpmMargin",
+   "desc": "Closed loop: rpm within idle target plus this margin counts as idle (bit $0339.7)",
    "unit": "rpm32",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte added to IdleTarget; read by Sub_1430C, Sub_1594A.",
-   "name": "O2IdleTargetAdder1"
+   "size": 1
   },
   "1D8B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2IdleSpeedMax",
+   "desc": "Closed loop: vehicle speed below which the idle cell is used",
    "category": "Closed loop",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_1430C, Sub_1594A.",
-   "name": "O2SpeedThresh2"
+   "size": 1
   },
   "1D8C": {
    "size": 1,
@@ -6901,12 +6806,11 @@
    "name": "O2MapThresh1"
   },
   "1D8E": {
-   "size": 1,
+   "name": "O2MapMin",
+   "desc": "Closed loop and the fuel system monitor: MAP at or above this value",
    "unit": "kpa",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte compared with Map; read by Sub_14FD8, Sub_15B20, Sub_22E06.",
-   "name": "O2MapThresh2"
+   "size": 1
   },
   "1D8F": {
    "size": 1,
@@ -8574,20 +8478,20 @@
    "desc": "O2 spark trim runs above this coolant temperature",
    "unit": "tempc",
    "size": 1,
-   "category": "Spark"
+   "category": "Closed loop"
   },
   "2EA2": {
    "name": "O2SparkTrimTimeMin",
    "desc": "O2 spark trim runs after this time since start",
    "size": 2,
-   "category": "Spark"
+   "category": "Closed loop"
   },
   "2EA4": {
    "name": "O2SparkTrimRpmMin",
    "desc": "O2 spark trim runs above this engine rpm",
    "unit": "rpmw",
    "size": 2,
-   "category": "Spark"
+   "category": "Closed loop"
   },
   "2EE3": {
    "size": 1,
@@ -9122,7 +9026,7 @@
    "name": "FieldDutyFilter",
    "desc": "Filter weight of the generator field duty $032E,Z",
    "size": 1,
-   "category": "Idle"
+   "category": "Sensors"
   },
   "3307": {
    "name": "BatteryVoltsFilter",
@@ -9134,7 +9038,7 @@
    "name": "ChargeDeficitFilter",
    "desc": "Filter weight of the charging deficit average $0DCA,Z",
    "size": 1,
-   "category": "Idle"
+   "category": "Sensors"
   },
   "3309": {
    "name": "IacChargeStepWait",
@@ -11446,36 +11350,28 @@
    "name": "AnalogTimeThresh"
   },
   "56C5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with AnalogV0A92Filtered; read by Sub_22EA6.",
-   "name": "SensorAnalogV0A92FilteredThresh1"
+   "name": "AnalogV0A92Low",
+   "desc": "Analog input $0A92 (probably fuel level) circuit check: filtered value at or below this counts as low",
+   "category": "Diagnostics",
+   "size": 1
   },
   "56C6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with AnalogV0A92Filtered; read by Sub_22EA6.",
-   "name": "SensorAnalogV0A92FilteredThresh2"
+   "name": "AnalogV0A92High",
+   "desc": "Analog input $0A92 circuit check: filtered value above this counts as high",
+   "category": "Diagnostics",
+   "size": 1
   },
   "56C7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V06C5; read by Sub_22EA6.",
-   "name": "SensorV06C5Thresh"
+   "name": "AnalogV0A92HighCount",
+   "desc": "Analog input $0A92 check: counts before the high fault",
+   "category": "Diagnostics",
+   "size": 1
   },
   "56C8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V06C2; read by Sub_22EA6.",
-   "name": "SensorV06C2Thresh"
+   "name": "AnalogV0A92LowCount",
+   "desc": "Analog input $0A92 check: counts before the low fault",
+   "category": "Diagnostics",
+   "size": 1
   },
   "56C9": {
    "size": 1,
@@ -12511,28 +12407,23 @@
    "name": "StartAcSensorValue"
   },
   "5809": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with CoolantRaw; read by Reset, ProcessCoolantTemp.",
-   "name": "StartCoolantRawThresh1"
+   "name": "CoolantRawLow",
+   "desc": "Coolant sensor raw value below which it counts as shorted (fault)",
+   "category": "Sensors",
+   "size": 1
   },
   "580A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with CoolantRaw; read by Reset, ProcessCoolantTemp.",
-   "name": "StartCoolantRawThresh2"
+   "name": "CoolantRawHigh",
+   "desc": "Coolant sensor raw value at or above which it counts as open (fault)",
+   "category": "Sensors",
+   "size": 1
   },
   "580B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte used with CoolantTempSlow; read by Reset, ProcessCoolantTemp.",
-   "name": "StartCoolantTempSlowValue"
+   "name": "CoolantFaultValue",
+   "desc": "Coolant value used with a coolant sensor fault",
+   "unit": "tempc",
+   "category": "Sensors",
+   "size": 1
   },
   "580C": {
    "size": 1,
@@ -12655,12 +12546,10 @@
    "name": "CalSpeedThresh3"
   },
   "5823": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2RawHigh",
+   "desc": "O2 sensor raw value at or above which the high-voltage check counts",
    "category": "Closed loop",
-   "desc": "Byte compared with O2UpBank1Raw; read by Sub_14802, Sub_22688.",
-   "name": "O2UpBank1RawThresh4"
+   "size": 1
   },
   "5824": {
    "size": 1,
@@ -12823,20 +12712,18 @@
    "name": "PurgeV045EThresh"
   },
   "70B1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "ChargeVoltsMin",
+   "desc": "Lower limit of the charging voltage target",
+   "unit": "volt16",
    "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_2C6DE.",
-   "name": "SensorThresh25"
+   "size": 1
   },
   "70B2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "ChargeVoltsOffsetMax",
+   "desc": "Upper limit of ChargeVoltsOffset",
+   "unit": "volt16",
    "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_2C6DE.",
-   "name": "SensorThresh26"
+   "size": 1
   },
   "750F": {
    "size": 1,
@@ -12871,20 +12758,18 @@
    "name": "PurgeV0471Thresh"
   },
   "755D": {
-   "size": 1,
+   "name": "FieldRpmMin",
+   "desc": "Generator field control (Sub_0EB62): engine rpm at which the field is enabled",
    "unit": "rpm32",
-   "auto": true,
    "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_0EB62.",
-   "name": "SensorRpmThresh11"
+   "size": 1
   },
   "755E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FieldRpmOff",
+   "desc": "Generator field control: engine rpm below which it is disabled again",
+   "unit": "rpm32",
    "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_0EB62.",
-   "name": "SensorThresh27"
+   "size": 1
   },
   "755F": {
    "size": 1,

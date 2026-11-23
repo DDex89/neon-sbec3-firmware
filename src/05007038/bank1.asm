@@ -4804,14 +4804,14 @@ L13212:
 L13216:
         BCLR    $0200,Z,#$30
         LDY     #$3995
-        CMPA    >StartCoolantRawThresh2
+        CMPA    >CoolantRawHigh
         BHI     L13260
         BRCLR   $021E,Z,#$80,L13230
         JSR     Sub_19BD8
         BRA     L1327C
 L13230:
         LDY     #$398B
-        CMPA    >StartCoolantRawThresh1
+        CMPA    >CoolantRawLow
         BCS     L13260
         BRCLR   $021E,Z,#$40,L13246
         JSR     Sub_19BD8
@@ -4833,7 +4833,7 @@ L13256:
 L13260:
         JSR     Sub_19EE4
         BCC     L1327C
-        LDAA    >StartCoolantTempSlowValue
+        LDAA    >CoolantFaultValue
         STAA    $0C,Z
         BCLR    $040C,Z,#$CC
         CLR     $045D,Z
@@ -4972,17 +4972,17 @@ Sub_133C6:
         PSHM    X
         LDX     #ChargeVoltsBattTemp
         JSR     Lookup2D
-        LDAB    >SensorValue1
-        CMPB    >SensorThresh26
+        LDAB    >ChargeVoltsOffset
+        CMPB    >ChargeVoltsOffsetMax
         BLS     L133DE
-        LDAB    >SensorThresh26
+        LDAB    >ChargeVoltsOffsetMax
 L133DE:
         SBA
         BCS     L133E8
-        CMPA    >SensorThresh25
+        CMPA    >ChargeVoltsMin
         BCC     L133EC
 L133E8:
-        LDAA    >SensorThresh25
+        LDAA    >ChargeVoltsMin
 L133EC:
         PULM    X
         RTS
@@ -7750,14 +7750,14 @@ L15080:
         BRSET   $0153,Z,#$40,L150C8
         LDY     #$3ACB
         LDAA    >O2UpBank1Raw,Z
-        CMPA    >O2UpBank1RawThresh4
+        CMPA    >O2RawHigh
         BCC     L150E2
 L150C8:
         BRCLR   >Options032F,#$40,L150E6
         BRSET   $0156,Z,#$04,L150E6
         LDY     #$3AF3
         LDAA    >O2UpBank2Raw,Z
-        CMPA    >O2UpBank1RawThresh4
+        CMPA    >O2RawHigh
         BCS     L150E6
 L150E2:
         JSR     Sub_19EE4
@@ -8868,7 +8868,7 @@ L15CC4:
         LDAB    >DecelFuelFactor,Z
         BNE     L15CE2
         LDAB    >Map,Z
-        CMPB    >O2MapThresh2
+        CMPB    >O2MapMin
         BCS     L15CE2
         LDAB    $046B,Z
         BEQ     L15CF6
@@ -12404,7 +12404,7 @@ Sub_183D0:
         CMPA    >O2V07B1Thresh2
         BNE     L1842C
         LDAA    >ShortTermTrim1,Z
-        CMPA    >O2ShortTermTrim2Thresh2
+        CMPA    >O2AdaptCellMin
         BNE     L1842C
         BRSET   $02DE,Z,#$80,L183FA
         LDAA    >FuelV007DThresh
@@ -12578,7 +12578,7 @@ Sub_1859A:
         CMPA    >O2V07B1Thresh2
         BNE     L185F6
         LDAA    >ShortTermTrim2,Z
-        CMPA    >O2ShortTermTrim2Thresh2
+        CMPA    >O2AdaptCellMin
         BNE     L185F6
         BRSET   $02DE,Z,#$80,L185C4
         LDAA    >FuelV007DThresh
@@ -12747,7 +12747,7 @@ Sub_18758:
         CMPA    >O2V07B1Thresh1
         BNE     L1879E
         LDAA    >ShortTermTrim1,Z
-        CMPA    >O2ShortTermTrim2Thresh1
+        CMPA    >O2AdaptCellMax
         BNE     L1879E
         BRSET   $0026,Z,#$04,L1877A
         BSET    $26,Z,#$04
@@ -12898,7 +12898,7 @@ Sub_188EA:
         CMPA    >O2V07B1Thresh1
         BNE     L18930
         LDAA    >ShortTermTrim2,Z
-        CMPA    >O2ShortTermTrim2Thresh1
+        CMPA    >O2AdaptCellMax
         BNE     L18930
         BRSET   $0027,Z,#$04,L1890C
         BSET    $27,Z,#$04

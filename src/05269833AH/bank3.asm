@@ -3414,11 +3414,11 @@ L32360:
         XGDX
         JMP     $322DC,X
 L3238A:
-        LDAA    >ThermistorFlag1
-        LDAB    >ThermistorFlag2
+        LDAA    >ObdPidSupport1
+        LDAB    >ObdPidSupport2
         STD     $0A29,Z
-        LDAA    >ThermistorFlag3
-        LDAB    >ThermistorFlag4
+        LDAA    >ObdPidSupport3
+        LDAB    >ObdPidSupport4
         LBRA    L3256C
 L323A2:
         LDAA    $014D,Z
@@ -3431,16 +3431,16 @@ L323AE:
         ORAA    #$80
 L323BC:
         STAA    $0A29,Z
-        LDAA    >ThermistorV0A2AInit
+        LDAA    >ObdMonitorByte
         STAA    $0A2A,Z
         LDAB    $3F,Z
-        ANDB    >ThermistorV003FMask
-        LDAA    >ThermistorV003FMask
+        ANDB    >ObdMonitorMask
+        LDAA    >ObdMonitorMask
         LBRA    L3256C
 L323D6:
         LDAA    $0528,Z
         CLRB
-        BRCLR   >ThermistorFlag1,#$01,L323E6
+        BRCLR   >ObdPidSupport1,#$01,L323E6
         LDAB    $0529,Z
 L323E6:
         LBRA    L32562
@@ -3459,19 +3459,19 @@ L32404:
         CLRA
         LBRA    L32558
 L32414:
-        BRCLR   >ThermistorFlag1,#$04,L322D2
+        BRCLR   >ObdPidSupport1,#$04,L322D2
         LDAB    >ShortTermTrim1,Z
         BRA     L32442
 L32420:
-        BRCLR   >ThermistorFlag1,#$02,L322D2
+        BRCLR   >ObdPidSupport1,#$02,L322D2
         LDAB    $07B0,Z
         BRA     L32442
 L3242C:
-        BRCLR   >ThermistorFlag1,#$01,L322D2
+        BRCLR   >ObdPidSupport1,#$01,L322D2
         LDAB    >ShortTermTrim2,Z
         BRA     L32442
 L32438:
-        BRCLR   >ThermistorFlag2,#$80,L322D2
+        BRCLR   >ObdPidSupport2,#$80,L322D2
         LDAB    $07B1,Z
 L32442:
         LDAA    #$01
@@ -3502,7 +3502,7 @@ L32478:
         ADDA    #$80
         LBRA    L32558
 L32482:
-        BRCLR   >ThermistorFlag2,#$02,L322D2
+        BRCLR   >ObdPidSupport2,#$02,L322D2
         LDAA    >AirTempRaw,Z
         LDX     #ThermistorHot
         BRCLR   $1012,Z,#$10,L3249A
@@ -3517,20 +3517,20 @@ L324AA:
         LDAA    >ThrottleRaw,Z
         LBRA    L32558
 L324B2:
-        LDAA    >ThermistorValue4
+        LDAA    >ObdStandard
         LBRA    L32558
 L324BA:
-        BRCLR   >ThermistorFlag3,#$10,L322D2
+        BRCLR   >ObdPidSupport3,#$10,L322D2
         LDAA    >O2UpBank1Raw,Z
         LDAB    >ShortTermTrim1,Z
         BRA     L324E6
 L324CA:
-        BRCLR   >ThermistorFlag3,#$08,L322D2
+        BRCLR   >ObdPidSupport3,#$08,L322D2
         LDAB    >O2DownBank1Raw,Z
         LDAA    #$FF
         BRA     L3250A
 L324D8:
-        BRCLR   >ThermistorFlag3,#$01,L322D2
+        BRCLR   >ObdPidSupport3,#$01,L322D2
         LDAA    >O2UpBank2Raw,Z
         LDAB    >ShortTermTrim2,Z
 L324E6:
@@ -3546,7 +3546,7 @@ L324F2:
         LDAB    $03F0,Z
         BRA     L3250A
 L324FE:
-        BRCLR   >ThermistorFlag4,#$80,L322D2
+        BRCLR   >ObdPidSupport4,#$80,L322D2
         LDAB    >O2DownBank2Raw,Z
         LDAA    #$FF
 L3250A:
@@ -3578,7 +3578,7 @@ L32544:
         LDAA    $00,X
         BRA     L32558
 L32548:
-        BRCLR   >ThermistorFlag4,#$01,L322D2
+        BRCLR   >ObdPidSupport4,#$01,L322D2
         CLRD
         STD     $0A29,Z
         LBRA    L3256C
@@ -3652,14 +3652,14 @@ L325D4:
         XGDX
         JMP     $32576,X
 L325FA:
-        LDAA    >ThermistorFlag5
-        LDAB    >ThermistorFlag6
+        LDAA    >ObdPidSupport5
+        LDAB    >ObdPidSupport6
         STD     $0A2A,Z
-        LDAA    >ThermistorValue2
-        LDAB    >ThermistorValue3
+        LDAA    >ObdPidSupport7
+        LDAB    >ObdPidSupport8
         LBRA    L326F8
 L32612:
-        BRCLR   >ThermistorFlag5,#$40,L322D2
+        BRCLR   >ObdPidSupport5,#$40,L322D2
         LDAA    $C9,Z
         CMPA    $44E2
         BNE     L32626
@@ -3678,11 +3678,11 @@ L32626:
         LBEQ    L3270E
         LBRA    L32710
 L32642:
-        BRCLR   >ThermistorFlag5,#$20,L322D2
+        BRCLR   >ObdPidSupport5,#$20,L322D2
         BRCLR   $0A30,Z,#$20,L3270E
         LDAA    $CA,Z
         CLRB
-        BRCLR   >ThermistorFlag5,#$01,L3265A
+        BRCLR   >ObdPidSupport5,#$01,L3265A
         LDAB    $CB,Z
 L3265A:
         LBRA    L32710
@@ -3697,22 +3697,22 @@ L3266A:
         LBCC    L32704
         LBRA    L32702
 L3267C:
-        BRCLR   >ThermistorFlag5,#$04,L322D2
+        BRCLR   >ObdPidSupport5,#$04,L322D2
         BRCLR   $0A30,Z,#$20,L32702
         LDAB    $CE,Z
         BRA     L326BA
 L3268C:
-        BRCLR   >ThermistorFlag5,#$02,L322D2
+        BRCLR   >ObdPidSupport5,#$02,L322D2
         BRCLR   $0A30,Z,#$20,L32702
         LDAB    $CF,Z
         BRA     L326BA
 L3269C:
-        BRCLR   >ThermistorFlag5,#$01,L322D2
+        BRCLR   >ObdPidSupport5,#$01,L322D2
         BRCLR   $0A30,Z,#$20,L32702
         LDAB    $D0,Z
         BRA     L326BA
 L326AC:
-        BRCLR   >ThermistorFlag6,#$80,L322D2
+        BRCLR   >ObdPidSupport6,#$80,L322D2
         BRCLR   $0A30,Z,#$20,L32702
         LDAB    $D1,Z
 L326BA:

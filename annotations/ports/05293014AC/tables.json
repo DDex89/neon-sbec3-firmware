@@ -1692,12 +1692,10 @@
    "category": "Fuel"
   },
   "12AA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2PurgeRampMin",
+   "desc": "Closed loop: purge ramp at or above which the purge correction of the trim applies",
    "category": "Closed loop",
-   "desc": "Byte compared with PurgeRamp; read by Sub_143C2, Sub_14802.",
-   "name": "O2PurgeRampThresh1"
+   "size": 1
   },
   "1247": {
    "size": 1,
@@ -1716,36 +1714,28 @@
    "name": "O2Factor2"
   },
   "12C3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2TrimMax",
+   "desc": "Short-term trim upper limit (128 = no correction)",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_143C2, Sub_14802.",
-   "name": "O2Thresh12"
+   "size": 1
   },
   "12C4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2TrimMin",
+   "desc": "Short-term trim lower limit",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_143C2, Sub_14802.",
-   "name": "O2Thresh13"
+   "size": 1
   },
   "1293": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2IntegralMax",
+   "desc": "O2 integrator upper limit (signed word)",
    "category": "Closed loop",
-   "desc": "Word compared with; read by Sub_143C2.",
-   "name": "O2Thresh14"
+   "size": 2
   },
   "1295": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2IntegralMin",
+   "desc": "O2 integrator lower limit (signed word)",
    "category": "Closed loop",
-   "desc": "Word compared with; read by Sub_143C2.",
-   "name": "O2Thresh15"
+   "size": 2
   },
   "12AF": {
    "size": 2,
@@ -2410,7 +2400,7 @@
    "name": "ChargeDeficitFilter",
    "desc": "Filter weight of the charging deficit average $0DCA,Z",
    "size": 1,
-   "category": "Idle"
+   "category": "Sensors"
   },
   "218C": {
    "size": 1,

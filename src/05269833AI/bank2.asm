@@ -3186,14 +3186,14 @@ Sub_22676:
         BRCLR   >MainLoopPhaseMask,Z,#$08,L226AC
         BRCLR   $0684,Z,#$20,L22694
         LDAA    >O2UpBank1Raw,Z
-        CMPA    >O2UpBank1RawThresh4
+        CMPA    >O2RawHigh
         BCS     L22694
         LDY     #$41F4
         JSR     Sub_245D4
 L22694:
         BRCLR   $0684,Z,#$10,L226AC
         LDAA    >O2UpBank2Raw,Z
-        CMPA    >O2UpBank1RawThresh4
+        CMPA    >O2RawHigh
         BCS     L226AC
         LDY     #$421C
         JSR     Sub_245D4
@@ -3833,7 +3833,7 @@ L22E0A:
         LDAB    >DecelFuelFactor,Z
         BNE     L22E28
         LDAB    >Map,Z
-        CMPB    >O2MapThresh2
+        CMPB    >O2MapMin
         BCS     L22E28
         LDAB    $07C3,Z
         BEQ     L22E3C
@@ -3903,12 +3903,12 @@ L22EEE:
         BRSET   $0513,Z,#$80,L2308C
         BRSET   $065A,Z,#$80,L22F4E
         LDAA    >AnalogV0A92Filtered,Z
-        CMPA    >SensorAnalogV0A92FilteredThresh2
+        CMPA    >AnalogV0A92High
         BLS     L22F30
         CLR     $06C4,Z
         LDAA    $06C5,Z
         INCA
-        CMPA    >SensorV06C5Thresh
+        CMPA    >AnalogV0A92HighCount
         BHI     L22F1A
         STAA    $06C5,Z
         BRA     L22F4E
@@ -3923,7 +3923,7 @@ L22F30:
         CLR     $06C5,Z
         LDAA    $06C4,Z
         INCA
-        CMPA    >SensorV06C2Thresh
+        CMPA    >AnalogV0A92LowCount
         BHI     L22F46
         STAA    $06C4,Z
         BRA     L22F4E
@@ -3933,12 +3933,12 @@ L22F46:
 L22F4E:
         BRSET   $065A,Z,#$40,L22FA8
         LDAA    >AnalogV0A92Filtered,Z
-        CMPA    >SensorAnalogV0A92FilteredThresh1
+        CMPA    >AnalogV0A92Low
         BHI     L22F8A
         CLR     $06C2,Z
         LDAA    $06C3,Z
         INCA
-        CMPA    >SensorV06C5Thresh
+        CMPA    >AnalogV0A92HighCount
         BHI     L22F74
         STAA    $06C3,Z
         BRA     L22FA8
@@ -3953,7 +3953,7 @@ L22F8A:
         CLR     $06C3,Z
         LDAA    $06C2,Z
         INCA
-        CMPA    >SensorV06C2Thresh
+        CMPA    >AnalogV0A92LowCount
         BHI     L22FA0
         STAA    $06C2,Z
         BRA     L22FA8
@@ -10316,7 +10316,7 @@ Sub_2A07E:
         CMPA    >O2V07B1Thresh2
         BNE     L2A0E0
         LDAA    >ShortTermTrim1,Z
-        CMPA    >O2ShortTermTrim2Thresh2
+        CMPA    >O2AdaptCellMin
         BNE     L2A0E0
         BRSET   $064A,Z,#$80,L2A0AE
         LDAA    >FuelV007DThresh
@@ -10507,7 +10507,7 @@ Sub_2A290:
         CMPA    >O2V07B1Thresh2
         BNE     L2A2F2
         LDAA    >ShortTermTrim2,Z
-        CMPA    >O2ShortTermTrim2Thresh2
+        CMPA    >O2AdaptCellMin
         BNE     L2A2F2
         BRSET   $064A,Z,#$80,L2A2C0
         LDAA    >FuelV007DThresh
@@ -10693,7 +10693,7 @@ Sub_2A496:
         CMPA    >O2V07B1Thresh1
         BNE     L2A4E2
         LDAA    >ShortTermTrim1,Z
-        CMPA    >O2ShortTermTrim2Thresh1
+        CMPA    >O2AdaptCellMax
         BNE     L2A4E2
         BRSET   $059D,Z,#$04,L2A4BE
         BSET    $059D,Z,#$04
@@ -10858,7 +10858,7 @@ Sub_2A664:
         CMPA    >O2V07B1Thresh1
         BNE     L2A6B0
         LDAA    >ShortTermTrim2,Z
-        CMPA    >O2ShortTermTrim2Thresh1
+        CMPA    >O2AdaptCellMax
         BNE     L2A6B0
         BRSET   $059E,Z,#$04,L2A68C
         BSET    $059E,Z,#$04
@@ -12964,7 +12964,7 @@ Sub_2C1BC:
 ProcessCoolantTemp:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C2E4
         BRCLR   >Options033D,#$20,L2C1E2
-        LDAA    >ThermistorCoolantTempSlowInit
+        LDAA    >CoolantSlowInit
         STAA    >CoolantTempSlow,Z
         LBRA    L2C2B4
 L2C1E2:
@@ -12992,14 +12992,14 @@ L2C220:
 L2C224:
         BCLR    $06C7,Z,#$30
         LDY     #$40BE
-        CMPA    >StartCoolantRawThresh2
+        CMPA    >CoolantRawHigh
         BHI     L2C274
         BRCLR   $0502,Z,#$80,L2C23E
         JSR     Sub_24160
         BRA     L2C298
 L2C23E:
         LDY     #$40B4
-        CMPA    >StartCoolantRawThresh1
+        CMPA    >CoolantRawLow
         BCS     L2C274
         BRCLR   $0502,Z,#$40,L2C254
         JSR     Sub_24160
@@ -13021,7 +13021,7 @@ L2C268:
 L2C274:
         JSR     Sub_245D4
         BCC     L2C298
-        LDAA    >StartCoolantTempSlowValue
+        LDAA    >CoolantFaultValue
         STAA    >CoolantTempSlow,Z
         BRSET   $06B4,Z,#$80,L2C298
         BCLR    $075D,Z,#$CC
@@ -13429,17 +13429,17 @@ Sub_2C6DE:
         PSHM    X
         LDX     #ChargeVoltsBattTemp
         JSR     Lookup2D
-        LDAB    >SensorValue1
-        CMPB    >SensorThresh26
+        LDAB    >ChargeVoltsOffset
+        CMPB    >ChargeVoltsOffsetMax
         BLS     L2C6F6
-        LDAB    >SensorThresh26
+        LDAB    >ChargeVoltsOffsetMax
 L2C6F6:
         SBA
         BCS     L2C700
-        CMPA    >SensorThresh25
+        CMPA    >ChargeVoltsMin
         BCC     L2C704
 L2C700:
-        LDAA    >SensorThresh25
+        LDAA    >ChargeVoltsMin
 L2C704:
         PULM    X
         RTS

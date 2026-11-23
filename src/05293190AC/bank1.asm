@@ -558,13 +558,13 @@ Sub_10604:
         BRCLR   >Options032F,#$06,L10684
         CLRD
         LDAA    >CoolantTemp,Z
-        CMPA    >SensorCoolantThresh2
+        CMPA    >KnockFuelCoolantMin
         LBCS    L106EA
         LDAA    >ManifoldVacuum,Z
-        CMPA    >SensorVacuumThresh
+        CMPA    >KnockFuelVacuumMax
         LBCC    L106EA
         LDAA    >EngineRpm,Z
-        CMPA    >SensorRpmThresh3
+        CMPA    >KnockFuelRpmMin
         BCS     L10684
         LDAA    >KnockRetard,Z
         STAA    $F0,Z
@@ -594,7 +594,7 @@ L10672:
         BCS     L1067C
         LDAA    >KnockCylRetardMax,Z
 L1067C:
-        LDAB    >SensorFactor1
+        LDAB    >KnockFuelGain
         MUL
         STD     $F0,Z
 L10684:
@@ -609,7 +609,7 @@ L1069A:
         BVC     L106A0
         LDAA    #$7F
 L106A0:
-        LDAB    >SensorFactor2
+        LDAB    >KnockFuelGain2
         MUL
         STD     $F2,Z
 L106A8:
@@ -622,7 +622,7 @@ L106B2:
         BVC     L106B8
         LDAA    #$7F
 L106B8:
-        LDAB    >SensorFactor3
+        LDAB    >KnockFuelGain3
         MUL
         ADDD    $F0,Z
         BCC     L106C8
@@ -638,9 +638,9 @@ L106D0:
         LDD     #$01FF
 L106DA:
         ASRD
-        CMPB    >SensorV07D8Thresh
+        CMPB    >KnockFuelMax
         BCS     L106E6
-        LDAB    >SensorV07D8Thresh
+        LDAB    >KnockFuelMax
 L106E6:
         STAB    $07D8,Z
 L106EA:
@@ -4892,7 +4892,7 @@ Sub_1430C:
         BNE     L14346
         BRCLR   >Options0339,#$80,L14338
         LDAA    >IdleTarget,Z
-        ADDA    >O2IdleTargetAdder1
+        ADDA    >O2IdleRpmMargin
         BCC     L14330
         LDAA    #$FF
 L14330:
@@ -4901,7 +4901,7 @@ L14330:
         BRA     L14346
 L14338:
         LDAA    >VehicleSpeed,Z
-        CMPA    >O2SpeedThresh2
+        CMPA    >O2IdleSpeedMax
         BCC     L14346
 L14342:
         BSET    $F0,Z,#$04
@@ -5039,14 +5039,14 @@ L14480:
         BGE     L1448A
         BSET    $1D,X,#$01
 L1448A:
-        CPD     >O2Thresh14
+        CPD     >O2IntegralMax
         BLT     L14496
-        LDD     >O2Thresh14
+        LDD     >O2IntegralMax
         BRA     L144A0
 L14496:
-        CPD     >O2Thresh15
+        CPD     >O2IntegralMin
         BGE     L144A0
-        LDD     >O2Thresh15
+        LDD     >O2IntegralMin
 L144A0:
         STD     $0C,X
         LDAA    $1D,X
@@ -5060,7 +5060,7 @@ L144B6:
         TST     $0758,Z
         BNE     L14524
         LDAA    >PurgeRamp,Z
-        CMPA    >O2PurgeRampThresh1
+        CMPA    >O2PurgeRampMin
         BCS     L14524
         TST     $075B,Z
         BEQ     L144D2
@@ -5163,14 +5163,14 @@ L1458E:
 L145C2:
         LDAB    #$FF
 L145C4:
-        CMPB    >O2Thresh12
+        CMPB    >O2TrimMax
         BCS     L145D0
-        LDAB    >O2Thresh12
+        LDAB    >O2TrimMax
         BRA     L145DA
 L145D0:
-        CMPB    >O2Thresh13
+        CMPB    >O2TrimMin
         BCC     L145DA
-        LDAB    >O2Thresh13
+        LDAB    >O2TrimMin
 L145DA:
         STAB    $14,X
         JSR     Sub_16218
@@ -5329,11 +5329,11 @@ L1473A:
 ;---------------------------------------------------------------------------------------------------
 Sub_14740:
         BSET    $0761,Z,#$03
-        LDAB    >O2Value30
+        LDAB    >O2DelayWarm
         LDAA    >CoolantTemp,Z
-        CMPA    >O2CoolantThresh5
+        CMPA    >O2DelayCoolantMax
         BCC     L14756
-        LDAB    >O2V07AFInit
+        LDAB    >O2DelayCold
 L14756:
         STAB    $07AF,Z
         BCLR    $075D,Z,#$F0
@@ -5352,9 +5352,9 @@ L1477E:
         LDAA    #$FF
 L14786:
         LDAB    >StartCoolantTemp2,Z
-        CMPB    >O2StartCoolantThresh
+        CMPB    >O2ColdStartCoolant
         BCC     L14798
-        ADDA    >O2V07B5Offset
+        ADDA    >O2ColdStartAdder
         BCC     L14798
         LDAA    #$FF
 L14798:
@@ -5434,9 +5434,9 @@ L14884:
         BRA     L1489E
 L1488A:
         LDAA    >O2UpBank1Raw,Z
-        CMPA    >O2UpBank1RawThresh1
+        CMPA    >O2ActiveHigh
         BCC     L1489A
-        CMPA    >O2UpBank1RawThresh2
+        CMPA    >O2ActiveLow
         BCC     L1489E
 L1489A:
         BSET    $075D,Z,#$88
@@ -5448,9 +5448,9 @@ L1489E:
         BRA     L148C4
 L148B0:
         LDAA    >O2UpBank2Raw,Z
-        CMPA    >O2UpBank1RawThresh1
+        CMPA    >O2ActiveHigh
         BCC     L148C0
-        CMPA    >O2UpBank1RawThresh2
+        CMPA    >O2ActiveLow
         BCC     L148C4
 L148C0:
         BSET    $075D,Z,#$44
@@ -5459,18 +5459,18 @@ L148C4:
         LBNE    L14900
         BRCLR   >Options032F,#$20,L148E6
         LDAA    >O2DownBank1Raw,Z
-        CMPA    >O2DownBank1RawThresh1
+        CMPA    >O2DownActiveHigh
         BCC     L148E2
-        CMPA    >O2DownBank1RawThresh2
+        CMPA    >O2DownActiveLow
         BCC     L148E6
 L148E2:
         BSET    $075D,Z,#$22
 L148E6:
         BRCLR   >Options032F,#$10,L14900
         LDAA    >O2DownBank2Raw,Z
-        CMPA    >O2DownBank1RawThresh1
+        CMPA    >O2DownActiveHigh
         BCC     L148FC
-        CMPA    >O2DownBank1RawThresh2
+        CMPA    >O2DownActiveLow
         BCC     L14900
 L148FC:
         BSET    $075D,Z,#$11
@@ -5497,7 +5497,7 @@ L14904:
         BCS     L1494A
         LDE     $0000,Y
         LDAA    E,Z
-        CMPA    >O2UpBank1RawThresh4
+        CMPA    >O2RawHigh
         BCC     L14952
         LDX     $06,Y
         CMPA    $00,X
@@ -5769,7 +5769,7 @@ L14C32:
 L14C44:
         BRSET   $0312,Z,#$80,L14C54
         LDAA    >PurgeRamp,Z
-        CMPA    >O2PurgeRampThresh1
+        CMPA    >O2PurgeRampMin
         BCC     L14C66
 L14C54:
         TST     $075C,Z
@@ -6021,14 +6021,14 @@ L14EBC:
 L14F04:
         LDAB    #$FF
 L14F06:
-        CMPB    >O2Thresh12
+        CMPB    >O2TrimMax
         BCS     L14F12
-        LDAB    >O2Thresh12
+        LDAB    >O2TrimMax
         BRA     L14F1C
 L14F12:
-        CMPB    >O2Thresh13
+        CMPB    >O2TrimMin
         BCC     L14F1C
-        LDAB    >O2Thresh13
+        LDAB    >O2TrimMin
 L14F1C:
         STAB    $14,X
         JSR     Sub_16218
@@ -6060,14 +6060,14 @@ L14F22:
 L14F6A:
         LDAB    #$FF
 L14F6C:
-        CMPB    >O2Thresh12
+        CMPB    >O2TrimMax
         BCS     L14F78
-        LDAB    >O2Thresh12
+        LDAB    >O2TrimMax
         BRA     L14F82
 L14F78:
-        CMPB    >O2Thresh13
+        CMPB    >O2TrimMin
         BCC     L14F82
-        LDAB    >O2Thresh13
+        LDAB    >O2TrimMin
 L14F82:
         STAB    $14,Y
         JSR     Sub_16218
@@ -6131,7 +6131,7 @@ L15028:
 L15034:
         BCLR    $F0,Z,#$20
         LDAA    >Map,Z
-        CMPA    >O2MapThresh2
+        CMPA    >O2MapMin
         BCS     L15068
         LDE     $0780,Z
         CPE     >O2V0780Thresh
@@ -6145,14 +6145,14 @@ L15034:
         DEC     $0754,Z
         BRA     L15076
 L15068:
-        LDAA    >O2V0754Init
+        LDAA    >O2EntryDelay
         STAA    $0754,Z
         BRA     L15076
 L15072:
         BCLR    $F2,Z,#$01
 L15076:
         LDAB    >StartCoolantTemp2,Z
-        CMPB    >O2StartCoolantThresh
+        CMPB    >O2ColdStartCoolant
         BCC     L150AC
         LDAB    $07B7,Z
         BRCLR   >MainLoopPhaseMask,Z,#$80,L15096
@@ -6173,7 +6173,7 @@ L150AC:
         BCLR    $017D,Z,#$02
 L150B0:
         LDAB    >StartCoolantTemp2,Z
-        CMPB    >O2StartCoolantThresh
+        CMPB    >O2ColdStartCoolant
         LBCC    L151D4
         BRSET   $0760,Z,#$03,L151C8
         BRCLR   >ThrottleState,Z,#$80,L150F6
@@ -6219,7 +6219,7 @@ L15132:
         CMPA    >O2V07B8Thresh
         BCS     L1517E
 L15148:
-        LDAB    >O2V07B5Offset
+        LDAB    >O2ColdStartAdder
         BRSET   $0760,Z,#$02,L15164
         LDAA    $07B5,Z
         SBA
@@ -6244,7 +6244,7 @@ L1517E:
         CMPA    >O2V07B9Thresh
         BCS     L151A2
         LDAA    $07B5,Z
-        SUBA    >O2V07B5Offset
+        SUBA    >O2ColdStartAdder
         BCC     L1519A
         CLRA
 L1519A:
@@ -6256,7 +6256,7 @@ L151A2:
         CMPA    >O2V07B9Thresh
         BCS     L151D4
         LDAA    $07B6,Z
-        SUBA    >O2V07B5Offset
+        SUBA    >O2ColdStartAdder
         BCC     L151BE
         CLRA
 L151BE:
@@ -6315,7 +6315,7 @@ L1524C:
         LDAB    $07AF,Z
         BCC     L1525E
         BNE     L15266
-        LDAB    >O2Value30
+        LDAB    >O2DelayWarm
         BRA     L15262
 L1525E:
         BEQ     L15266
@@ -6882,14 +6882,14 @@ L15788:
         BGE     L15798
         TDE
 L15798:
-        CPE     >O2Thresh8
+        CPE     >O2AdaptIntegralMax
         BLT     L157A4
-        LDE     >O2Thresh8
+        LDE     >O2AdaptIntegralMax
         BRA     L157AE
 L157A4:
-        CPE     >O2Thresh9
+        CPE     >O2AdaptIntegralMin
         BGE     L157AE
-        LDE     >O2Thresh9
+        LDE     >O2AdaptIntegralMin
 L157AE:
         STE     $0004,X
 L157B2:
@@ -6983,14 +6983,14 @@ L15892:
         BLT     L1589C
         TAB
 L1589C:
-        CMPB    >O2ShortTermTrim2Thresh1
+        CMPB    >O2AdaptCellMax
         BLT     L158A8
-        LDAB    >O2ShortTermTrim2Thresh1
+        LDAB    >O2AdaptCellMax
         BRA     L158B2
 L158A8:
-        CMPB    >O2ShortTermTrim2Thresh2
+        CMPB    >O2AdaptCellMin
         BGE     L158B2
-        LDAB    >O2ShortTermTrim2Thresh2
+        LDAB    >O2AdaptCellMin
 L158B2:
         STAB    $00,X
 L158B4:
@@ -7084,12 +7084,12 @@ L1599C:
         BPL     L159A0
         CLRA
 L159A0:
-        CMPA    >O2SpeedThresh2
+        CMPA    >O2IdleSpeedMax
         BCS     L15A14
         BRA     L159C2
 L159A8:
         LDAA    >IdleTarget,Z
-        ADDA    >O2IdleTargetAdder1
+        ADDA    >O2IdleRpmMargin
         CMPB    $0801,Z
         BNE     L159BA
         ADDA    >O2IdleTargetAdder2
@@ -7144,16 +7144,16 @@ L15A14:
         BEQ     L15A38
 L15A2E:
         LDAA    >CoolantTemp,Z
-        CMPA    >O2CoolantThresh3
+        CMPA    >O2CellResetCoolantMin
         BCS     L15A98
 L15A38:
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    >O2ThrottleThresh
+        CMPA    >O2CellResetThrottleMin
         BCS     L15A98
-        LDAA    >O2VacuumThresh
+        LDAA    >O2CellResetVacuumMax
         CMPA    >ManifoldVacuum,Z
         BCS     L15A98
-        LDAA    >O2SpeedThresh1
+        LDAA    >O2CellResetSpeedMax
         CMPA    >VehicleSpeed,Z
         BCS     L15A98
         LDAA    $050B,Z
@@ -7161,7 +7161,7 @@ L15A38:
         BNE     L15A98
         BRSET   $050D,Z,#$10,L15A98
         LDAA    >ShortTermTrim1,Z
-        CMPA    >O2ShortTermTrim1Thresh
+        CMPA    >O2CellResetTrimMax
         BGT     L15A7E
         CLR     >ShortTermTrim1,Z
         LDAA    >O2V05A5Init
@@ -7169,7 +7169,7 @@ L15A38:
         BSET    $0760,Z,#$20
 L15A7E:
         LDAA    >ShortTermTrim2,Z
-        CMPA    >O2ShortTermTrim1Thresh
+        CMPA    >O2CellResetTrimMax
         BGT     L15A98
         CLR     >ShortTermTrim2,Z
         LDAA    >O2V05A5Init
@@ -7245,7 +7245,7 @@ L15B3E:
         LDAB    >Map,Z
         CMPB    >O2MapThresh1
         LBHI    L15C48
-        CMPB    >O2MapThresh2
+        CMPB    >O2MapMin
         LBLS    L15C48
         LDAB    >O2RpmValue
         SUBB    >EngineRpm,Z

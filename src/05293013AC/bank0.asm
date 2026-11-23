@@ -1875,14 +1875,14 @@ Tab2D_1283:
         dc.b    2,64, 5,119, 38,136, 46,178              ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
-O2Thresh14:
-        dc.b    $0E,$00                                  ; Word compared with; read by Sub_143C2.
-O2Thresh15:
-        dc.b    $F2,$00                                  ; Word compared with; read by Sub_143C2.
+O2IntegralMax:
+        dc.b    $0E,$00                                  ; O2 integrator upper limit (signed word)
+O2IntegralMin:
+        dc.b    $F2,$00                                  ; O2 integrator lower limit (signed word)
         dc.b    $B3,$CD,$03,$80,$58,$1F,$79,$18,$95,$0A,$03,$80,$58,$4B,$95,$30
         dc.b    $CF,$40,$1B
-O2PurgeRampThresh1:
-        dc.b    $1B                                      ; Byte compared with PurgeRamp; read by Sub_143C2, Sub_14802.
+O2PurgeRampMin:
+        dc.b    $1B                                      ; Closed loop: purge ramp at or above which the purge correction of the trim applies
         dc.b    $CC
 O2Value28:
         dc.b    $00                                      ; Byte used with; read by Sub_143C2.
@@ -1901,10 +1901,10 @@ O2Value27:
         dc.b    $00,$00,$01,$01,$01,$01,$01,$01,$01,$01,$01,$00,$00
 O2Factor2:
         dc.b    $02                                      ; Byte multiplied; read by Sub_143C2.
-O2Thresh12:
-        dc.b    $A0                                      ; Byte compared with; read by Sub_143C2, Sub_14802.
-O2Thresh13:
-        dc.b    $60                                      ; Byte compared with; read by Sub_143C2, Sub_14802.
+O2TrimMax:
+        dc.b    $A0                                      ; Short-term trim upper limit (128 = no correction)
+O2TrimMin:
+        dc.b    $60                                      ; Short-term trim lower limit
         dc.b    $87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87
         dc.b    $87,$87,$87,$87,$87,$87,$25,$0F,$18,$15
 
@@ -11264,14 +11264,14 @@ L08BB8:
         BGE     L08BC2
         BSET    $1D,X,#$01
 L08BC2:
-        CPD     >O2Thresh14
+        CPD     >O2IntegralMax
         BLT     L08BCE
-        LDD     >O2Thresh14
+        LDD     >O2IntegralMax
         BRA     L08BD8
 L08BCE:
-        CPD     >O2Thresh15
+        CPD     >O2IntegralMin
         BGE     L08BD8
-        LDD     >O2Thresh15
+        LDD     >O2IntegralMin
 L08BD8:
         STD     $0C,X
         BCLR    $1E,X,#$02
@@ -11286,7 +11286,7 @@ L08BF2:
         TST     $0556,Z
         BNE     L08C6E
         LDAA    >PurgeRamp,Z
-        CMPA    >O2PurgeRampThresh1
+        CMPA    >O2PurgeRampMin
         BCS     L08C6E
         BRCLR   $001E,X,#$04,L08C6E
         BRCLR   $001D,X,#$02,L08C22
@@ -11373,14 +11373,14 @@ L08CA2:
 L08CD6:
         LDAB    #$FF
 L08CD8:
-        CMPB    >O2Thresh12
+        CMPB    >O2TrimMax
         BCS     L08CE4
-        LDAB    >O2Thresh12
+        LDAB    >O2TrimMax
         BRA     L08CEE
 L08CE4:
-        CMPB    >O2Thresh13
+        CMPB    >O2TrimMin
         BCC     L08CEE
-        LDAB    >O2Thresh13
+        LDAB    >O2TrimMin
 L08CEE:
         STAB    $14,X
 L08CF0:
@@ -11896,7 +11896,7 @@ L09268:
         BSET    $02C6,Z,#$30
 L0927A:
         LDAA    >PurgeRamp,Z
-        CMPA    >O2PurgeRampThresh1
+        CMPA    >O2PurgeRampMin
         BCS     L0928A
         CMPA    $12AB
         BLS     L09292
@@ -12091,14 +12091,14 @@ L0943A:
 L09482:
         LDAB    #$FF
 L09484:
-        CMPB    >O2Thresh12
+        CMPB    >O2TrimMax
         BCS     L09490
-        LDAB    >O2Thresh12
+        LDAB    >O2TrimMax
         BRA     L0949A
 L09490:
-        CMPB    >O2Thresh13
+        CMPB    >O2TrimMin
         BCC     L0949A
-        LDAB    >O2Thresh13
+        LDAB    >O2TrimMin
 L0949A:
         STAB    $14,X
 L0949C:
@@ -12129,14 +12129,14 @@ L0949C:
 L094E4:
         LDAB    #$FF
 L094E6:
-        CMPB    >O2Thresh12
+        CMPB    >O2TrimMax
         BCS     L094F2
-        LDAB    >O2Thresh12
+        LDAB    >O2TrimMax
         BRA     L094FC
 L094F2:
-        CMPB    >O2Thresh13
+        CMPB    >O2TrimMin
         BCC     L094FC
-        LDAB    >O2Thresh13
+        LDAB    >O2TrimMin
 L094FC:
         STAB    $14,Y
 L094FE:

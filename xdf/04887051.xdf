@@ -13194,8 +13194,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A4" flags="0x0">
-  <title>O2Thresh14</title>
-  <description>Word compared with; read by Sub_143C2. $1280</description>
+  <title>O2IntegralMax</title>
+  <description>O2 integrator upper limit (signed word) $1280</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x1280" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -13206,8 +13206,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A5" flags="0x0">
-  <title>O2Thresh15</title>
-  <description>Word compared with; read by Sub_143C2. $1282</description>
+  <title>O2IntegralMin</title>
+  <description>O2 integrator lower limit (signed word) $1282</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x1282" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -13218,8 +13218,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A6" flags="0x0">
-  <title>O2PurgeRampThresh1</title>
-  <description>Byte compared with PurgeRamp; read by Sub_143C2, Sub_14802. $1297</description>
+  <title>O2PurgeRampMin</title>
+  <description>Closed loop: purge ramp at or above which the purge correction of the trim applies $1297</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x1297" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13302,8 +13302,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2AD" flags="0x0">
-  <title>O2Thresh12</title>
-  <description>Byte compared with; read by Sub_143C2, Sub_14802. $12AC</description>
+  <title>O2TrimMax</title>
+  <description>Short-term trim upper limit (128 = no correction) $12AC</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x12AC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13314,8 +13314,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2AE" flags="0x0">
-  <title>O2Thresh13</title>
-  <description>Byte compared with; read by Sub_143C2, Sub_14802. $12AD</description>
+  <title>O2TrimMin</title>
+  <description>Short-term trim lower limit $12AD</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x12AD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14132,7 +14132,7 @@
  <XDFCONSTANT uniqueid="0x2F2" flags="0x0">
   <title>ChargeDeficitFilter</title>
   <description>Filter weight of the charging deficit average $0DCA,Z $1FB7</description>
-  <CATEGORYMEM index="0" category="6" />
+  <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1FB7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
