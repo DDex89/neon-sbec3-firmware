@@ -997,12 +997,12 @@ Tab2D_06FB:
         dc.b    $00,$00,$00
 O2FlexEthanolMin:
         dc.b    $28                                      ; Closed loop: ethanol content below which $0770,Z bit 2 is set (flex fuel)
-O2Adder1:
-        dc.b    $02                                      ; Byte added to; read by Sub_15F5C.
-O2Adder2:
-        dc.b    $01                                      ; Byte added to; read by Sub_15F5C.
-O2Value4:
-        dc.b    $00                                      ; Byte used with; read by Sub_15F5C.
+O2FlexOffsetStep:
+        dc.b    $02                                      ; Flex trim offset: step of $19,X while it is positive or zero
+O2FlexOffsetStepNeg:
+        dc.b    $01                                      ; Flex trim offset: step of $19,X while it is negative (limited to zero)
+O2FlexCellMask:
+        dc.b    $00                                      ; Flex trim offset (O2FlexOffset): bit map of the O2 cells (bit n = cell n) whose offset $19,X is stepped with high ethanol
         dc.b    $AA,$58,$00
 SensorValue4:
         dc.b    $00                                      ; Byte used with; read by Sub_15FF4.
@@ -1809,8 +1809,8 @@ SensorThresh7:
 SensorThresh8:
         dc.b    $19                                      ; Byte compared with; read by Sub_103FA.
         dc.b    $01,$0A,$00,$01,$1F,$02,$03,$1B,$01,$01,$16,$03,$02,$11,$02,$01
-O2CoolantThresh4:
-        dc.b    $BD                                      ; Byte compared with CoolantTemp; read by Sub_14FD8, Sub_20BB4, Sub_20C24.
+O2WarmDelayCoolant:
+        dc.b    $BD                                      ; Coolant at or above which the warm delay $07AF,Z counts down (below it the delay is reloaded with O2DelayWarm)
         dc.b    $08,$0F,$BD,$57,$77,$A6,$CE,$DA,$05,$3E,$03,$03,$05,$02,$6E,$DC
         dc.b    $18,$A2,$02,$09,$08,$09,$09
 
@@ -1840,8 +1840,8 @@ Tab2D_11D6:
         dc.b    $34,$05,$03,$80,$00,$00,$1C,$02,$34,$05,$03,$80,$00,$00,$1C,$02
         dc.b    $34,$05,$02,$80,$A3,$13,$AB,$00,$FF,$FF,$01,$80,$FF,$00,$FF,$FF
         dc.b    $FF,$FF
-O2Value20:
-        dc.b    $01                                      ; Byte used with; read by Sub_15364.
+O2DerivGainDefault:
+        dc.b    $01                                      ; O2 feedback: derivative gain $15,X loaded when the gains come from the cell tables
         dc.b    $28,$28,$28,$28,$28,$28,$28,$28,$28,$10,$10,$28,$28,$28,$28,$28
         dc.b    $28,$28,$28,$28,$10,$10,$28,$28,$28,$28,$28,$28,$28,$28,$28,$10
         dc.b    $10,$28,$28,$28,$28,$28,$28,$28,$28,$28,$10,$10,$1F,$1F,$1F,$1F
@@ -1866,19 +1866,19 @@ O2IntegralMin:
 O2PurgeRampMin:
         dc.b    $1B                                      ; Closed loop: purge ramp at or above which the purge correction of the trim applies
         dc.b    $DC
-O2Value28:
-        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
-O2Value29:
-        dc.b    $FF                                      ; Byte used with; read by Sub_143C2.
-O2V0712Value:
-        dc.b    $FF                                      ; Byte used with V0712; read by Sub_143C2, Sub_14802, Sub_14FD8 +1.
-O2Thresh16:
-        dc.b    $7F,$F6                                  ; Word compared with; read by Sub_143C2.
-O2Value25:
-        dc.b    $80,$09                                  ; Word used with; read by Sub_143C2.
+O2SlowMin:
+        dc.b    $00                                      ; O2 feedback: lower (signed) limit of the slow term
+O2SlowMax:
+        dc.b    $FF                                      ; O2 feedback: upper limit of the slow term
+O2SlowStepPeriod:
+        dc.b    $FF                                      ; O2 feedback: period ($12,X) between steps of the slow term $11,X while the integral is saturated (also used by ClosedLoopManager, ClosedLoopTiming, O2SwitchState)
+O2IntegralHighFlag:
+        dc.b    $7F,$F6                                  ; O2 feedback: integral term $0C,X (word) above this value counts as saturated high
+O2IntegralLowFlag:
+        dc.b    $80,$09                                  ; O2 feedback: integral term below this (signed) value counts as saturated low
         dc.b    $01,$01,$01,$01,$01,$01,$01,$01,$01,$00,$00
-O2Factor2:
-        dc.b    $02                                      ; Byte multiplied; read by Sub_143C2.
+O2PropGain:
+        dc.b    $02                                      ; O2 feedback (O2DownTrim): gain of the proportional term $0E,X (error × gain × 4 / 51, limited to ±127)
 O2TrimMax:
         dc.b    $A0                                      ; Short-term trim upper limit (128 = no correction)
 O2TrimMin:
@@ -4099,13 +4099,13 @@ SpeedCtlRpmJumpThrottle:
 SensorValue13:
         dc.b    $10                                      ; Byte used with; read by Sub_3C3C6.
         dc.b    $69,$02,$37,$02,$D6,$0A,$7F,$00,$00,$00,$00,$00,$00,$00
-O2Value26:
-        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
-O2Value27:
-        dc.b    $FF                                      ; Byte used with; read by Sub_143C2.
+O2SlowMinNew:
+        dc.b    $00                                      ; O2 feedback: lower (signed) limit of the slow term for a new vehicle
+O2SlowMaxNew:
+        dc.b    $FF                                      ; O2 feedback: upper limit of the slow term for a new vehicle
         dc.b    $00,$00
-O2Adder5:
-        dc.b    $00                                      ; Byte added to; read by Sub_15364.
+O2SwitchMargin:
+        dc.b    $00                                      ; O2 feedback (O2SwitchState): margin added to the target before the scaled O2 value counts as rich
         dc.b    $00,$00,$9B,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $01,$80,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$01,$80,$FF,$00
@@ -10912,13 +10912,13 @@ Sub_0893C:
         LDAB    #$0F
         TBXK
         LDX     #$8500
-        JSR     Sub_08A0C
+        JSR     O2DownTrim
 L08960:
         BRCLR   >Options0331,#$10,L08972
         LDAB    #$0F
         TBXK
         LDX     #$8521
-        JSR     Sub_08A0C
+        JSR     O2DownTrim
 L08972:
         LDAA    $0511,Z
         STAA    $0100,Z
@@ -10981,10 +10981,10 @@ L08A06:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_08A0C ($08A0C)
+; O2DownTrim ($08A0C)
 ; Called from: Sub_0893C (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_08A0C:
+O2DownTrim:
         PSHM    X
         LDAA    $0B,X
         LDX     #O2VoltageScale2
@@ -10996,7 +10996,7 @@ Sub_08A0C:
         BEQ     L08A2A
         LDY     #$878C
 L08A2A:
-        JSR     Sub_0970C
+        JSR     O2SwitchState
         BRSET   $001D,X,#$10,L08C02
         CLRA
         LDAB    $1C,X
@@ -11010,7 +11010,7 @@ L08A46:
         TED
         STAB    $10,X
         CLRA
-        LDAB    >O2Factor2
+        LDAB    >O2PropGain
         EMULS
         ASLD
         ASLD
@@ -11059,12 +11059,12 @@ L08AB4:
 L08AB8:
         TED
         BCLR    $1D,X,#$03
-        CPD     >O2Thresh16
+        CPD     >O2IntegralHighFlag
         BLE     L08ACA
         BSET    $1D,X,#$02
         BRA     L08AD4
 L08ACA:
-        CPD     >O2Value25
+        CPD     >O2IntegralLowFlag
         BGE     L08AD4
         BSET    $1D,X,#$01
 L08AD4:
@@ -11082,7 +11082,7 @@ L08AEA:
         LDAA    $1D,X
         BITA    #$03
         BNE     L08B04
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,X
         CLRW    $001F,X
         LBRA    L08B80
@@ -11095,7 +11095,7 @@ L08B04:
         BRCLR   $001E,X,#$04,L08B80
         BRCLR   $001D,X,#$02,L08B34
         LDE     $000C,X
-        SUBE    >O2Thresh16
+        SUBE    >O2IntegralHighFlag
         LDD     $1F,X
         STE     $001F,X
         SDE
@@ -11103,7 +11103,7 @@ L08B04:
         BRA     L08B80
 L08B34:
         BRCLR   $001D,X,#$01,L08B4E
-        LDE     >O2Value25
+        LDE     >O2IntegralLowFlag
         SUBE    $000C,X
         LDD     $1F,X
         STE     $001F,X
@@ -11115,7 +11115,7 @@ L08B4E:
         TST     $12,X
         BNE     L08B80
         BRCLR   $001D,X,#$02,L08B6C
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,X
         INC     $11,X
         BVC     L08B80
@@ -11124,7 +11124,7 @@ L08B4E:
         BRA     L08B80
 L08B6C:
         BRCLR   $001D,X,#$01,L08B80
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,X
         DEC     $11,X
         BVC     L08B80
@@ -11134,22 +11134,22 @@ L08B80:
         LDD     $001E,Z
         CPD     $2318
         BCC     L08BA0
-        LDAA    >O2Value27
+        LDAA    >O2SlowMaxNew
         LDAB    $11,X
         CBA
         BGT     L08B9C
-        LDAA    >O2Value26
+        LDAA    >O2SlowMinNew
         CBA
         BGE     L08BB4
 L08B9C:
         STAA    $11,X
         BRA     L08BB4
 L08BA0:
-        LDAA    >O2Value29
+        LDAA    >O2SlowMax
         LDAB    $11,X
         CBA
         BGT     L08BB2
-        LDAA    >O2Value28
+        LDAA    >O2SlowMin
         CBA
         BGE     L08BB4
 L08BB2:
@@ -11873,7 +11873,7 @@ L0934C:
         CLRW    $000C,X
         CLR     $0E,X
         BRCLR   >Options0331,#$20,L093AE
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,X
         BCLR    $1E,X,#$02
         BRSET   $001E,X,#$20,L093AE
@@ -11911,7 +11911,7 @@ L093AE:
         CLRW    $000C,Y
         CLR     $0E,Y
         BRCLR   >Options0331,#$10,L09410
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,Y
         BCLR    $1E,Y,#$02
         BRSET   $001E,Y,#$20,L09410
@@ -12131,7 +12131,7 @@ L09622:
         BEQ     L0962C
         DEC     $059B,Z
 L0962C:
-        CMPA    >O2CoolantThresh4
+        CMPA    >O2WarmDelayCoolant
         LDAB    $0560,Z
         BCC     L0963E
         BNE     L09646
@@ -12175,13 +12175,13 @@ L09682:
         TST     $0543,Z
         BEQ     L096A6
 L09698:
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $0512,Z
         STAB    $0533,Z
         BRA     L096F6
 L096A6:
         BRSET   $0549,Z,#$80,L096B6
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $0512,Z
         BRA     L096CE
 L096B6:
@@ -12194,7 +12194,7 @@ L096B6:
         DEC     $0512,Z
 L096CE:
         BRSET   $0549,Z,#$40,L096DE
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $0533,Z
         BRA     L096F6
 L096DE:
@@ -12214,10 +12214,10 @@ L096F6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0970C ($0970C)
-; Called from: Sub_08A0C, Sub_098B0
+; O2SwitchState ($0970C)
+; Called from: O2DownTrim, Sub_098B0
 ;---------------------------------------------------------------------------------------------------
-Sub_0970C:
+O2SwitchState:
         TPD
         TBYK
         LDAA    $1D,X
@@ -12231,7 +12231,7 @@ Sub_0970C:
         BHI     L0972E
         BSET    $1D,X,#$08
 L0972E:
-        ADDA    >O2Adder5
+        ADDA    >O2SwitchMargin
         BCC     L09736
         LDAA    #$FF
 L09736:
@@ -12262,7 +12262,7 @@ L09762:
         BRSET   $001E,X,#$10,L09786
         BSET    $1E,X,#$10
         BSET    $1E,X,#$04
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,X
 L09786:
         BCLR    $1E,X,#$20
@@ -12373,9 +12373,9 @@ L09862:
         BRA     L0983A
 L09872:
         PULM    K,X
-        LDAA    >O2Value20
+        LDAA    >O2DerivGainDefault
         STAA    $15,X
-        JSR     Sub_0A090
+        JSR     O2FlexOffset
 L0987E:
         CLRB
         LDAA    $0542,Z
@@ -12423,7 +12423,7 @@ L098B8:
         BEQ     L098D6
         LDY     #$878C
 L098D6:
-        JSR     Sub_0970C
+        JSR     O2SwitchState
         BRSET   $001D,X,#$20,L09AD2
         CLRA
         LDAB    $14,X
@@ -13169,10 +13169,10 @@ L0A08A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0A090 ($0A090)
-; Called from: Sub_0970C
+; O2FlexOffset ($0A090)
+; Called from: O2SwitchState
 ;---------------------------------------------------------------------------------------------------
-Sub_0A090:
+O2FlexOffset:
         PSHM    D
         BRCLR   $0324,#$01,L0A13E
         LDAA    >FlexEthanol,Z
@@ -13190,7 +13190,7 @@ L0A0A6:
 L0A0C2:
         BSET    $055A,Z,#$04
         LDAA    >O2CellIndex,Z
-        LDAB    >O2Value4
+        LDAB    >O2FlexCellMask
         CMPA    #$00
         BNE     L0A0DC
         BITB    #$01
@@ -13240,11 +13240,11 @@ L0A11E:
 L0A126:
         LDAA    $19,X
         BMI     L0A134
-        ADDA    >O2Adder1
+        ADDA    >O2FlexOffsetStep
         STAA    $05D7,Z
         BRA     L0A13E
 L0A134:
-        ADDA    >O2Adder2
+        ADDA    >O2FlexOffsetStepNeg
         BMI     L0A13C
         CLRA
 L0A13C:

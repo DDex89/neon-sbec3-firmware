@@ -1553,20 +1553,16 @@
    "size": 1
   },
   "071E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2FlexOffsetStep",
+   "desc": "Flex trim offset: step of $19,X while it is positive or zero",
    "category": "Closed loop",
-   "desc": "Byte added to; read by Sub_15F5C.",
-   "name": "O2Adder1"
+   "size": 1
   },
   "071F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2FlexOffsetStepNeg",
+   "desc": "Flex trim offset: step of $19,X while it is negative (limited to zero)",
    "category": "Closed loop",
-   "desc": "Byte added to; read by Sub_15F5C.",
-   "name": "O2Adder2"
+   "size": 1
   },
   "0724": {
    "size": 1,
@@ -1585,12 +1581,10 @@
    "name": "SensorValue5"
   },
   "0720": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2FlexCellMask",
+   "desc": "Flex trim offset (O2FlexOffset): bit map of the O2 cells (bit n = cell n) whose offset $19,X is stepped with high ethanol",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_15F5C.",
-   "name": "O2Value4"
+   "size": 1
   },
   "0ED0": {
    "name": "AccelMapRiseOffset",
@@ -1681,20 +1675,16 @@
    "size": 1
   },
   "1247": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2DerivGainDefault",
+   "desc": "O2 feedback: derivative gain $15,X loaded when the gains come from the cell tables",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_15364.",
-   "name": "O2Value20"
+   "size": 1
   },
   "12C2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2PropGain",
+   "desc": "O2 feedback (O2DownTrim): gain of the proportional term $0E,X (error × gain × 4 / 51, limited to ±127)",
    "category": "Closed loop",
-   "desc": "Byte multiplied; read by Sub_143C2.",
-   "name": "O2Factor2"
+   "size": 1
   },
   "12C3": {
    "name": "O2TrimMax",
@@ -1721,68 +1711,53 @@
    "size": 2
   },
   "12AF": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2IntegralHighFlag",
+   "desc": "O2 feedback: integral term $0C,X (word) above this value counts as saturated high",
    "category": "Closed loop",
-   "desc": "Word compared with; read by Sub_143C2.",
-   "name": "O2Thresh16"
+   "size": 2
   },
   "12B1": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2IntegralLowFlag",
+   "desc": "O2 feedback: integral term below this (signed) value counts as saturated low",
    "category": "Closed loop",
-   "desc": "Word used with; read by Sub_143C2.",
-   "name": "O2Value25"
+   "size": 2
   },
   "12AE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowStepPeriod",
+   "desc": "O2 feedback: period ($12,X) between steps of the slow term $11,X while the integral is saturated (also used by ClosedLoopManager, ClosedLoopTiming, O2SwitchState)",
    "category": "Closed loop",
-   "desc": "Byte used with V0712; read by Sub_143C2, Sub_14802, Sub_14FD8 +1.",
-   "name": "O2V0712Value"
+   "size": 1
   },
   "12B3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowMinNew",
+   "desc": "O2 feedback: lower (signed) limit of the slow term for a new vehicle",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_143C2.",
-   "name": "O2Value26"
+   "size": 1
   },
   "12B4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowMaxNew",
+   "desc": "O2 feedback: upper limit of the slow term for a new vehicle",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_143C2.",
-   "name": "O2Value27"
+   "size": 1
   },
   "12AC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowMin",
+   "desc": "O2 feedback: lower (signed) limit of the slow term",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_143C2.",
-   "name": "O2Value28"
+   "size": 1
   },
   "12AD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowMax",
+   "desc": "O2 feedback: upper limit of the slow term",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_143C2.",
-   "name": "O2Value29"
+   "size": 1
   },
   "11BD": {
-   "size": 1,
+   "name": "O2WarmDelayCoolant",
+   "desc": "Coolant at or above which the warm delay $07AF,Z counts down (below it the delay is reloaded with O2DelayWarm)",
    "unit": "tempc",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte compared with CoolantTemp; read by Sub_14FD8, Sub_20BB4, Sub_20C24.",
-   "name": "O2CoolantThresh4"
+   "size": 1
   },
   "06A6": {
    "size": 1,
@@ -2622,55 +2597,53 @@
    "size": 1
   },
   "2499": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchMargin",
+   "desc": "O2 feedback (O2SwitchState): margin added to the target before the scaled O2 value counts as rich",
    "category": "Closed loop",
-   "desc": "Byte added to; read by Sub_15364.",
-   "name": "O2Adder5"
+   "size": 1
   },
   "2547": {
    "name": "O2MonTimeMin",
    "desc": "O2 sensor monitor at idle (Sub_2877A): time since start at or above this value",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "254B": {
    "name": "O2MonCoolantMin",
    "desc": "O2 sensor monitor at idle: coolant at or above this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "254A": {
    "name": "O2MonSpeedMax",
    "desc": "O2 sensor monitor at idle: vehicle speed at or below this value",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "2548": {
    "name": "O2MonIdleTime",
    "desc": "O2 sensor monitor at idle: idle time ($053F,Z) at or above this value",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "254E": {
    "name": "O2MonRpmBand",
    "desc": "O2 sensor monitor at idle: engine rpm within the idle target plus or minus this value",
    "unit": "rpmw",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 2
   },
   "254D": {
    "name": "O2MonTrimMax",
    "desc": "O2 sensor monitor at idle: short-term trim at or below this value",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "254C": {
    "name": "O2MonTrimMin",
    "desc": "O2 sensor monitor at idle: short-term trim at or above this value",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "2550": {

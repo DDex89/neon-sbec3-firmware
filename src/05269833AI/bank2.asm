@@ -1152,7 +1152,7 @@ L20BB8:
         CMPA    #$0C
         BHI     L20BEA
         LDAA    >CoolantTemp,Z
-        CMPA    >O2CoolantThresh4
+        CMPA    >O2WarmDelayCoolant
         BCS     L20BD2
         LDE     $0006,Y
         LDAB    E,Z
@@ -1202,7 +1202,7 @@ Sub_20BFA:
         LDAA    E,Z
         ANDA    #$FE
         LDAB    >CoolantTemp,Z
-        CMPB    >O2CoolantThresh4
+        CMPB    >O2WarmDelayCoolant
         BCS     L20C30
         ORAA    #$01
 L20C30:
@@ -6885,7 +6885,7 @@ L25750:
         BCLR    $05AE,Z,#$10
         BSET    $05AE,Z,#$20
         BRCLR   >Options033E,#$02,L2577A
-        TSTW    >O2V0E06Switch
+        TSTW    >O2PurgeTestRestoreDelay
         BEQ     L2577A
         BSET    $05B0,Z,#$40
         CLRW    $0E06,Z
@@ -10359,7 +10359,7 @@ Sub_2A0F0:
         BRCLR   >Options032C,#$40,L2A10E
         BRSET   >Options032F,#$08,L2A10E
         LDAB    >FlexLearnBase,Z
-        CMPB    >FuelFlexLearnBaseThresh
+        CMPB    >FlexLearnBaseReadyMin
         BCS     L2A10E
         LDAA    $01B8,Z
 L2A10E:
@@ -10550,7 +10550,7 @@ Sub_2A302:
         BRCLR   >Options032C,#$40,L2A320
         BRSET   >Options032F,#$08,L2A320
         LDAB    >FlexLearnBase,Z
-        CMPB    >FuelFlexLearnBaseThresh
+        CMPB    >FlexLearnBaseReadyMin
         BCS     L2A320
         LDAA    $01B8,Z
 L2A320:
@@ -10727,7 +10727,7 @@ Sub_2A4F2:
         BRCLR   >Options032C,#$40,L2A510
         BRSET   >Options032F,#$08,L2A510
         LDAB    >FlexLearnBase,Z
-        CMPB    >FuelFlexLearnBaseThresh
+        CMPB    >FlexLearnBaseReadyMin
         BCS     L2A510
         LDAA    $01B8,Z
 L2A510:
@@ -10892,7 +10892,7 @@ Sub_2A6C0:
         BRCLR   >Options032C,#$40,L2A6DE
         BRSET   >Options032F,#$08,L2A6DE
         LDAB    >FlexLearnBase,Z
-        CMPB    >FuelFlexLearnBaseThresh
+        CMPB    >FlexLearnBaseReadyMin
         BCS     L2A6DE
         LDAA    $01B8,Z
 L2A6DE:

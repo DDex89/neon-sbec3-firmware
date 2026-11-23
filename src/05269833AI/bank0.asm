@@ -1188,10 +1188,10 @@ FlexLearnV01C2Init:
 FlexLearnFlexEthanolStartOffset:
         dc.b    $FF                                      ; Byte subtracted from FlexEthanolStart; read by Sub_17000.
         dc.b    $00,$00,$58,$00,$00,$7F,$80,$7F,$80,$7F,$80,$00
-FuelFlexLearnBaseThresh:
-        dc.b    $AA                                      ; Byte compared with FlexLearnBase; read by Sub_14802, Sub_2A0F0, Sub_2A302 +2.
-O2RunTimeThresh:
-        dc.b    $FF                                      ; Byte compared with RunTime; read by Sub_14802.
+FlexLearnBaseReadyMin:
+        dc.b    $AA                                      ; FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines Sub_2A0F0-Sub_2A6C0)
+O2FlexRunTimeMin:
+        dc.b    $FF                                      ; Closed-loop manager (ClosedLoopManager): run time at or above which closed loop returns during flex learning
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 FlexLearnV0F3CThresh:
         dc.b    $FF                                      ; Byte compared with V0F3C; read by Sub_17B7E, Sub_18BAA.
@@ -1426,10 +1426,10 @@ FlexLearnV01B7Thresh:
         dc.b    $00                                      ; Byte compared with V01B7; read by Sub_18836.
 FlexLearnBaseMin:
         dc.b    $AA                                      ; Flex-fuel learning: FlexLearnBase at or above this value
-O2Factor1:
-        dc.b    $28                                      ; Byte multiplied; read by Sub_155C8.
-O2Value1:
-        dc.b    $08                                      ; Byte used with; read by Sub_155C8.
+O2PurgeIntGain:
+        dc.b    $28                                      ; Upstream O2 trim: integral gain while purging ($0474,Z not zero, not WOT)
+O2PurgeIntGainAlt:
+        dc.b    $08                                      ; As O2PurgeIntGain with $1D,X bit 3 set
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankEthanolScale ($0860): 2D table, 2 points, unsigned
@@ -2665,10 +2665,10 @@ FlexSensorTrackStepDown:
         dc.b    $00                                      ; Flex sensor: step of FlexEthanolLearned towards a lower sensor value
 O2FlexEthanolMin:
         dc.b    $28                                      ; Closed loop: ethanol content below which $0770,Z bit 2 is set (flex fuel)
-O2Adder1:
-        dc.b    $02                                      ; Byte added to; read by Sub_15F5C.
-O2Adder2:
-        dc.b    $01                                      ; Byte added to; read by Sub_15F5C.
+O2FlexOffsetStep:
+        dc.b    $02                                      ; Flex trim offset: step of $19,X while it is positive or zero
+O2FlexOffsetStepNeg:
+        dc.b    $01                                      ; Flex trim offset: step of $19,X while it is negative (limited to zero)
 StartFlexEthanolThresh:
         dc.b    $AA                                      ; Byte compared with FlexEthanol; read by Reset. Fault: P1602.
 StartCoolantThresh3:
@@ -2677,14 +2677,14 @@ SensorSriMileageThresh:
         dc.b    $00                                      ; Byte compared with SriMileage; read by CheckPowerDown.
 SensorValue4:
         dc.b    $80                                      ; Byte used with; read by Sub_15FF4.
-O2Value2:
-        dc.b    $00                                      ; Byte used with; read by Sub_15D56.
-O2Value3:
-        dc.b    $00                                      ; Byte used with; read by Sub_15D56.
+O2LearnRateFlex:
+        dc.b    $00                                      ; As O2LearnRate with the flex fuel flag $0050,Z bit 4
+O2LearnRateWotFlex:
+        dc.b    $00                                      ; As O2LearnRateWot with the flex fuel flag
 SensorValue5:
         dc.b    $00                                      ; Byte used with; read by Sub_15FF4.
-O2Value4:
-        dc.b    $00                                      ; Byte used with; read by Sub_15F5C.
+O2FlexCellMask:
+        dc.b    $00                                      ; Flex trim offset (O2FlexOffset): bit map of the O2 cells (bit n = cell n) whose offset $19,X is stepped with high ethanol
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexEthanolFactor ($1204): 2D table, 5 points, unsigned
@@ -3063,8 +3063,8 @@ FuelPulseMode:
         dc.b    $0B                                      ; Fuel pulse output mode; 11 selects the second branch of Sub_1202A
 DecelLeanFuelMin:
         dc.b    $00                                      ; Decel enleanment: lower limit of the result
-O2CoolantThresh1:
-        dc.b    $FE                                      ; Byte compared with CoolantTemp; read by Sub_14802.
+O2ColdCoolantMax:
+        dc.b    $FE                                      ; Closed-loop manager: coolant below this value with cold enrichment ($07C3,Z) keeps open loop
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanThrottleCoolantFactor ($1500): 2D table, 3 points, unsigned
@@ -3276,40 +3276,40 @@ O2ActiveHigh:
 O2ActiveLow:
         dc.b    $0F                                      ; O2 sensor (upstream): raw value below this marks the sensor as active ($075D,Z)
         dc.b    $18,$15
-O2Thresh1:
-        dc.b    $20                                      ; Byte compared with; read by Sub_14802.
+O2InactiveCountMax:
+        dc.b    $20                                      ; Closed-loop manager: counts of an out-of-range O2 reading before the sensor is marked inactive ($075F,Z)
 O2DownActiveHigh:
         dc.b    $25                                      ; Downstream O2 sensor: raw value at or above this counts as switching high
 O2DownActiveLow:
         dc.b    $0F                                      ; Downstream O2 sensor: raw value below this marks it as active
-O2Thresh2:
-        dc.b    $00                                      ; Byte compared with; read by Sub_145F6.
-O2Thresh3:
-        dc.b    $FF                                      ; Byte compared with; read by Sub_145F6.
-O2Thresh4:
-        dc.b    $00                                      ; Byte compared with; read by Sub_145F6.
-O2Thresh5:
-        dc.b    $FF                                      ; Byte compared with; read by Sub_145F6.
-O2Thresh6:
-        dc.b    $00                                      ; Byte compared with; read by Sub_145F6.
+O2CrossCheckMax:
+        dc.b    $00                                      ; O2 cross-check (O2CrossCheck, Options0339 bit 6): first sensor reading at or below this value
+O2CrossCheckMin:
+        dc.b    $FF                                      ; O2 cross-check: second sensor reading at or above this value
+O2CrossClearCount:
+        dc.b    $00                                      ; O2 cross-check: counts of the clear condition before the flag clears
+O2CrossCheckCount:
+        dc.b    $FF                                      ; O2 cross-check: counts of the condition before the bank flag in $017D,Z is set
+O2CrossClearMin:
+        dc.b    $00                                      ; O2 cross-check: first sensor reading at or above which the flag clears
 ThermostatCoolant:
         dc.b    $7D                                      ; Coolant the warm-up monitor waits for (also the closed-loop coolant limit)
-O2Value5:
-        dc.b    $28                                      ; Byte used with; read by Sub_14FD8.
-O2Value6:
-        dc.b    $28                                      ; Byte used with; read by Sub_14FD8.
+O2DecelHoldAlt:
+        dc.b    $28                                      ; Closed-loop timing (ClosedLoopTiming): hold time ($0753,Z) after decel fuel cut or the fuel mode flag, with $0770,Z bit 6
+O2DecelHold:
+        dc.b    $28                                      ; Closed-loop timing: hold time ($0753,Z) after decel fuel cut or FuelModeFlags bit 5
 O2ColdStartCoolant:
         dc.b    $C7                                      ; Closed loop: start coolant below which the cold-start delay additions apply
 O2ColdStartAdder:
         dc.b    $13                                      ; Closed loop: addition to the entry delay after a cold start
-O2V07B8Thresh:
-        dc.b    $05                                      ; Byte compared with V07B8; read by Sub_14FD8.
-O2Value7:
-        dc.b    $3D                                      ; Byte used with; read by Sub_14FD8.
-O2UpBank1RawThresh3:
-        dc.b    $0F                                      ; Byte compared with O2UpBank1Raw; read by Sub_14FD8, Sub_18D42.
-O2UpBank2RawThresh:
-        dc.b    $00                                      ; Byte compared with O2UpBank2Raw; read by Sub_14FD8.
+O2ColdPurgeCount:
+        dc.b    $05                                      ; Cold-start O2 logic: purging counts ($07B8,Z) before the cold trims are reduced
+O2ColdPurgeRampMin:
+        dc.b    $3D                                      ; Cold-start O2 logic: purge ramp at or above this value (2 less once set) counts as purging
+O2ColdLeanRaw:
+        dc.b    $0F                                      ; Cold-start O2 logic: bank 1 upstream O2 at or below this value counts as lean ($07B9,Z; also Sub_18D42)
+O2ColdLeanRaw2:
+        dc.b    $00                                      ; Cold-start O2 logic: bank 2 upstream O2 at or below this value counts as lean ($07BA,Z)
 
 ;---------------------------------------------------------------------------------------------------
 ; O2StartDelayCoolant ($16C0): 2D table, 5 points, unsigned
@@ -3323,16 +3323,16 @@ O2StartDelayCoolant:
         dc.b    130,13, 138,11, 147,6, 155,6, 203,4      ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
-O2V000EThresh1:
-        dc.b    $00                                      ; Byte compared with V000E; read by Sub_14802.
-O2Thresh7:
-        dc.b    $B3                                      ; Byte compared with; read by Sub_14FD8.
+O2NewMileageOpenMax:
+        dc.b    $00                                      ; Closed-loop manager: SRI mileage below this value (with $000D,Z zero) holds the integrators
+O2DownEnableCoolant:
+        dc.b    $B3                                      ; Coolant at or above which the downstream O2 delay $0757,Z counts down
 O2PurgeRampMin:
         dc.b    $1B                                      ; Closed loop: purge ramp at or above which the purge correction of the trim applies
 O2EntryDelay:
         dc.b    $10                                      ; Closed loop: delay $0754,Z
-O2V075CInit:
-        dc.b    $00                                      ; Byte stored into V075C; read by Sub_14802.
+O2PurgeHoldTime:
+        dc.b    $00                                      ; Closed-loop manager: hold time ($075C,Z) after the purge ramp drops below O2PurgeRampMin
         dc.b    $03,$80,$58,$1F,$79,$18,$95,$0A,$FF,$FF,$FF,$FF,$FF,$FF,$03,$80
         dc.b    $00,$00,$04,$05,$14,$08,$03,$80,$00,$00,$04,$05,$14,$08,$01,$80
         dc.b    $FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF
@@ -3413,29 +3413,29 @@ O2AdaptIntegralMax:
         dc.b    $7F,$FF                                  ; Adaptive cell integrator upper limit (signed word)
 O2AdaptIntegralMin:
         dc.b    $80,$00                                  ; Adaptive cell integrator lower limit (signed word)
-O2Value20:
-        dc.b    $01                                      ; Byte used with; read by Sub_15364.
+O2DerivGainDefault:
+        dc.b    $01                                      ; O2 feedback: derivative gain $15,X loaded when the gains come from the cell tables
 O2AdaptCellMax:
         dc.b    $7F                                      ; Adaptive cell value upper limit (signed)
 O2AdaptCellMin:
         dc.b    $80                                      ; Adaptive cell value lower limit (signed)
-O2V07B9Thresh:
-        dc.b    $14                                      ; Byte compared with V07B9; read by Sub_14FD8, Sub_18D42.
-O2Value21:
-        dc.b    $80                                      ; Byte used with; read by Sub_155C8.
-O2Thresh10:
-        dc.b    $00                                      ; Byte compared with; read by Sub_14FD8.
-O2Value22:
-        dc.b    $00                                      ; Byte used with; read by Sub_14FD8.
-O2Value23:
-        dc.b    $80                                      ; Byte used with; read by Sub_155C8.
-O2Value24:
-        dc.b    $80                                      ; Byte used with; read by Sub_155C8.
-O2Thresh11:
-        dc.b    $00                                      ; Byte compared with; read by Sub_14FD8.
+O2ColdLeanCount:
+        dc.b    $14                                      ; Cold-start O2 logic: lean counts before the cold trim of the bank is reduced (also Sub_18D42)
+O2ColdTrimMin:
+        dc.b    $80                                      ; Upstream O2 trim (O2UpTrim): signed lower limit of the trim with the cold-start flag ($017D,Z bit 1)
+O2ColdStartTime:
+        dc.b    $00                                      ; Cold-start O2 logic (start coolant below O2ColdStartCoolant): time ($07B7,Z) up to which the cold-start flag ($017D,Z bit 1) is set
+O2HoldCountMax:
+        dc.b    $00                                      ; Counts ($0756,Z) of the $0080,Z bits 3-5 condition during which the trims are held ($0761,Z bit 2)
+O2HoldTrimMin:
+        dc.b    $80                                      ; Upstream O2 trim: signed lower limit while the trims are held ($0761,Z bit 2)
+O2ColdTrimMinDrive:
+        dc.b    $80                                      ; As O2ColdTrimMin in gear ($0C31,Z bit 5)
+O2ColdStartTimeDrive:
+        dc.b    $00                                      ; As O2ColdStartTime in gear ($0C31,Z bit 5)
         dc.b    $50,$1F,$01,$1F,$0F,$05
 O2CellResetCoolantMin:
-        dc.b    $6E                                      ; Cell reset (Sub_1594A): coolant at or above this value
+        dc.b    $6E                                      ; Cell reset (O2CellSelect): coolant at or above this value
 O2CellResetTrimMax:
         dc.b    $DC                                      ; Cell reset: the short-term trim is cleared while it is not above this value
 O2CellResetSpeedMax:
@@ -3449,8 +3449,8 @@ O2CellResetThrottleMin:
 O2V0759Thresh:
         dc.b    $08                                      ; Byte compared with V0759; read by Sub_1424C.
         dc.b    $87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87
-O2Factor2:
-        dc.b    $02                                      ; Byte multiplied; read by Sub_143C2.
+O2PropGain:
+        dc.b    $02                                      ; O2 feedback (O2DownTrim): gain of the proportional term $0E,X (error × gain × 4 / 51, limited to ±127)
         dc.b    $01,$01,$01,$01,$01,$01,$01,$01,$01,$00,$00
 O2TrimMax:
         dc.b    $A0                                      ; Short-term trim upper limit (128 = no correction)
@@ -3460,35 +3460,35 @@ O2IntegralMax:
         dc.b    $0E,$00                                  ; O2 integrator upper limit (signed word)
 O2IntegralMin:
         dc.b    $F2,$00                                  ; O2 integrator lower limit (signed word)
-O2Thresh16:
-        dc.b    $7F,$F6                                  ; Word compared with; read by Sub_143C2.
-O2Value25:
-        dc.b    $80,$09                                  ; Word used with; read by Sub_143C2.
-O2V0712Value:
-        dc.b    $FE                                      ; Byte used with V0712; read by Sub_143C2, Sub_14802, Sub_14FD8 +1.
-O2V075BInit:
-        dc.b    $00                                      ; Byte stored into V075B; read by Sub_14802.
-O2Thresh17:
-        dc.b    $00,$00                                  ; Word compared with; read by Sub_143C2.
-O2V000EThresh2:
-        dc.b    $00                                      ; Byte compared with V000E; read by Sub_143C2.
-O2Value26:
-        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
-O2Value27:
-        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
-O2Value28:
-        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
-O2Value29:
-        dc.b    $00                                      ; Byte used with; read by Sub_143C2.
-O2Thresh18:
-        dc.b    $CD                                      ; Byte compared with; read by Sub_14FD8.
-O2PurgeRampThresh2:
-        dc.b    $1B                                      ; Byte compared with PurgeRamp; read by Sub_14FD8.
-O2Thresh19:
-        dc.b    $CC                                      ; Byte compared with; read by Sub_14802.
+O2IntegralHighFlag:
+        dc.b    $7F,$F6                                  ; O2 feedback: integral term $0C,X (word) above this value counts as saturated high
+O2IntegralLowFlag:
+        dc.b    $80,$09                                  ; O2 feedback: integral term below this (signed) value counts as saturated low
+O2SlowStepPeriod:
+        dc.b    $FE                                      ; O2 feedback: period ($12,X) between steps of the slow term $11,X while the integral is saturated (also used by ClosedLoopManager, ClosedLoopTiming, O2SwitchState)
+O2ReopenHoldTime:
+        dc.b    $00                                      ; Closed-loop manager: hold time ($075B,Z) after a bank leaves closed loop
+O2SaturationDelta:
+        dc.b    $00,$00                                  ; O2 feedback: integral change (word) at or below which a saturated integral steps the slow term
+O2NewMileageMax:
+        dc.b    $00                                      ; O2 feedback: SRI mileage ($000E,Z with $000D,Z zero) below this value selects the new-vehicle limits of the slow term
+O2SlowMinNew:
+        dc.b    $00                                      ; O2 feedback: lower (signed) limit of the slow term for a new vehicle
+O2SlowMaxNew:
+        dc.b    $00                                      ; O2 feedback: upper limit of the slow term for a new vehicle
+O2SlowMin:
+        dc.b    $00                                      ; O2 feedback: lower (signed) limit of the slow term
+O2SlowMax:
+        dc.b    $00                                      ; O2 feedback: upper limit of the slow term
+O2SlowEnableCoolant:
+        dc.b    $CD                                      ; Coolant at or above which the slow-term delay $0758,Z counts down
+O2SlowPurgeRampMin:
+        dc.b    $1B                                      ; Purge ramp below this value reloads the slow-term periods ($0712/$073A,Z)
+O2PurgeRampMax:
+        dc.b    $CC                                      ; Closed-loop manager: purge ramp above this value holds the integrators
         dc.b    $03,$80,$58,$4B,$95,$30,$CF,$40,$FF,$FF,$FF,$FF,$FF,$FF
-O2CoolantThresh4:
-        dc.b    $BD                                      ; Byte compared with CoolantTemp; read by Sub_14FD8, Sub_20BB4, Sub_20C24.
+O2WarmDelayCoolant:
+        dc.b    $BD                                      ; Coolant at or above which the warm delay $07AF,Z counts down (below it the delay is reloaded with O2DelayWarm)
 O2DelayCold:
         dc.b    $08                                      ; Closed-loop entry delay ($07AF,Z) below O2DelayCoolantMax
 O2DelayWarm:
@@ -3496,35 +3496,35 @@ O2DelayWarm:
 O2DelayCoolantMax:
         dc.b    $BD                                      ; Closed loop: below this coolant the entry delay O2DelayCold is used
         dc.b    $57,$7E,$A6,$CE,$DA
-O2Adder3:
-        dc.b    $05                                      ; Byte added to; read by Sub_1594A.
-O2Value31:
-        dc.b    $01                                      ; Byte used with; read by Sub_1594A.
-O2Value32:
-        dc.b    $3D                                      ; Byte used with; read by Sub_1594A.
-O2Adder4:
-        dc.b    $03                                      ; Byte added to; read by Sub_1594A.
+O2MemMapHyst:
+        dc.b    $05                                      ; Long-term memory cell selection (O2CellSelect): MAP hysteresis added to the breakpoints at $18E2 when moving down
+O2MemCoastRpmSplit:
+        dc.b    $01                                      ; Long-term memory cell selection: rpm that splits the closed-throttle off-idle cells $0E/$0F
+O2MemRpmSplit:
+        dc.b    $3D                                      ; Long-term memory cell selection: rpm that splits each MAP band into a low and a high cell
+O2MemRpmHyst:
+        dc.b    $03                                      ; Long-term memory cell selection: rpm hysteresis of the cell splits
 O2IdleRpmMargin:
         dc.b    $03                                      ; Closed loop: rpm within idle target plus this margin counts as idle (bit $0339.7)
 O2IdleSpeedMax:
         dc.b    $05                                      ; Closed loop: vehicle speed below which the idle cell is used
-O2IdleTargetAdder2:
-        dc.b    $02                                      ; Byte added to IdleTarget; read by Sub_1594A.
-O2MapThresh1:
-        dc.b    $FF                                      ; Byte compared with Map; read by Sub_15B20.
+O2MemIdleRpmHyst:
+        dc.b    $02                                      ; Long-term memory cell selection: rpm hysteresis of the idle cell when Options0339 bit 7 selects the rpm test
+O2LearnMapMax:
+        dc.b    $FF                                      ; Long-term learning (O2LearnEnable): MAP at or below this value (and above O2MapMin)
 O2MapMin:
         dc.b    $1A                                      ; Closed loop and the fuel system monitor: MAP at or above this value
-O2RpmValue:
-        dc.b    $5E                                      ; Byte used with EngineRpm; read by Sub_15B20.
-O2Offset:
-        dc.b    $03                                      ; Byte subtracted from; read by Sub_15B20.
-O2V0780Thresh:
-        dc.b    $00,$AF                                  ; Word compared with V0780; read by Sub_14FD8, Sub_15B20.
+O2LearnRpmMax:
+        dc.b    $5E                                      ; Long-term learning: rpm below this value
+O2LearnRpmHyst:
+        dc.b    $03                                      ; Long-term learning: rpm hysteresis of O2LearnRpmMax ($075F,Z bit 1)
+O2PulseWidthMin:
+        dc.b    $00,$AF                                  ; Closed-loop timing: fuel pulse widths ($0780/$0782,Z, word) at or above this value for closed-loop entry
         dc.b    $09,$09
-O2Value33:
-        dc.b    $09                                      ; Byte used with; read by Sub_15D56.
-O2Value34:
-        dc.b    $08                                      ; Byte used with; read by Sub_15D56.
+O2LearnRate:
+        dc.b    $09                                      ; Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer ($07B2/$07B3,Z) per pass
+O2LearnRateWot:
+        dc.b    $08                                      ; As O2LearnRate at WOT
 O2AdaptMax:
         dc.b    $7F                                      ; Long-term adaptive value ($07B0,Z, $07B1,Z) upper limit (signed); at the limit the fuel system monitor counts
 O2AdaptMin:
@@ -3798,8 +3798,8 @@ PurgeV0428Init:
         dc.b    $00,$00                                  ; Word stored into V0428; read by Sub_3DC64.
 PurgeMapMax:
         dc.b    $FE                                      ; Purge runs below this MAP
-O2Thresh20:
-        dc.b    $00                                      ; Byte compared with; read by Sub_15D56.
+O2MemFlexDiffMax:
+        dc.b    $00                                      ; Long-term cell update: with $0770,Z bit 7 a cell more than this below the flex reference cell is replaced by it
 PurgeFactor1:
         dc.b    $01,$84                                  ; Word multiplied; read by Sub_3E4CA.
 PurgeMask:
@@ -4115,8 +4115,8 @@ PurgeCell2:
         dc.b    $03                                      ; Second adaptive cell number for purge learning ($043B,Z)
 PurgeCell3:
         dc.b    $05                                      ; Third adaptive cell number for purge learning ($043C,Z)
-O2V0439Thresh:
-        dc.b    $05                                      ; Byte compared with V0439; read by Sub_15B20.
+O2LearnPurgeCountMax:
+        dc.b    $05                                      ; Long-term learning: purge cell count $0439,Z above which learning is allowed (zero also allows it)
         dc.b    $12,$0D
 FlexLearnCoolantThresh6:
         dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_17FC4, Sub_3DFCA.
@@ -4134,8 +4134,8 @@ PurgeAdder7:
         dc.b    $05                                      ; Byte added to; read by Sub_3DD3C.
 PurgeLearnTrimMin:
         dc.b    $D7                                      ; Purge vapor learning: short-term trim at or below this value (signed) marks the rich limit
-O2Value35:
-        dc.b    $00                                      ; Byte used with; read by Sub_14802.
+O2TrimResetValue:
+        dc.b    $00                                      ; Closed-loop manager: value loaded into the bank trim when $0760,Z bits 2-3 request a reset
 SensorAdder5:
         dc.b    $33                                      ; Byte added to; read by Sub_3DFCA.
 SensorCoolantThresh5:
@@ -7712,8 +7712,8 @@ PurgeMonMapDrift:
 PurgeMonFilter:
         dc.b    $10                                      ; Purge flow monitor: filter weight of the trim responses
         dc.b    $06,$FA,$06,$FA,$10,$10,$02
-O2Adder5:
-        dc.b    $00                                      ; Byte added to; read by Sub_15364.
+O2SwitchMargin:
+        dc.b    $00                                      ; O2 feedback (O2SwitchState): margin added to the target before the scaled O2 value counts as rich
 PurgeAdder8:
         dc.b    $0F                                      ; Byte added to; read by Sub_3D85E.
 PurgeThresh8:
@@ -7733,7 +7733,7 @@ PurgeFlowIacDrop:
 PurgeFlowIacDropAlt:
         dc.b    $7F                                      ; As PurgeFlowIacDrop with $0312,Z bit 6 set
 PurgeFlowTrimDrop:
-        dc.b    $1E                                      ; EVAP purge flow test: short-term trim drop that counts as purge flow (also used by Sub_155C8)
+        dc.b    $1E                                      ; EVAP purge flow test: short-term trim drop that counts as purge flow (also used by O2UpTrim)
 PurgeFlowTrimDropAlt:
         dc.b    $1E                                      ; As PurgeFlowTrimDrop with $0312,Z bit 6 set
 PurgeV006AThresh:
@@ -7787,8 +7787,8 @@ FuelV05ABThresh:
         dc.b    $32                                      ; Byte compared with V05AB; read by Sub_2A4F2, Sub_2A6C0.
 FuelV05ADThresh:
         dc.b    $32                                      ; Byte compared with V05AD; read by Sub_2A0F0, Sub_2A302.
-O2V05A5Init:
-        dc.b    $0F                                      ; Byte stored into V05A5; read by Sub_1594A.
+O2MemChangeHold:
+        dc.b    $0F                                      ; Long-term memory cell selection: hold time ($05A5/$05A6,Z) after the trim is cleared on a cell change
 DiagV05A8Init:
         dc.b    $0A                                      ; Byte stored into V05A8; read by Sub_2A000, Sub_2A212, Sub_2A424 +1.
 FuelV007DThresh:
@@ -7879,8 +7879,8 @@ DiagThresh6:
         dc.b    $05,$2D,$00,$00
 DiagThresh7:
         dc.b    $7F                                      ; Byte compared with; read by Sub_2877A.
-O2Value36:
-        dc.b    $00                                      ; Byte used with; read by Sub_14802.
+O2TrimResetValue2:
+        dc.b    $00                                      ; Closed-loop manager: value loaded into the bank trim when $0761,Z bits 6-7 request a reset
         dc.b    $05,$FB,$00,$00,$0F,$F1,$00,$00,$15,$15,$00,$00,$15,$84,$8A,$00
         dc.b    $00
 DiagThresh8:
@@ -8185,10 +8185,10 @@ FuelV0F08Thresh:
 CamCrankOffsetBase:
         dc.b    $40                                      ; Cam/crank relation: base subtracted from the measured offset $068F,Z
         dc.b    $00,$00,$00,$00
-O2Adder7:
-        dc.b    $0F                                      ; Byte added to; read by Sub_155C8.
-O2V0E06Switch:
-        dc.b    $01,$B6                                  ; Word tested (zero = off) V0E06; read by Sub_14802, PurgeFlowTest.
+O2PurgeTestTrimMargin:
+        dc.b    $0F                                      ; Upstream O2 trim: added to PurgeFlowTrimDrop for the trim lower limit during the purge flow test
+O2PurgeTestRestoreDelay:
+        dc.b    $01,$B6                                  ; Closed-loop manager: count ($0E06,Z, word) after the purge flow test before the trims are set back to the test start values
 MonSteadyTimeMin:
         dc.b    $13                                      ; Steady-state condition (Sub_23C3E): time since start at or above this value
 MonSteadyCoolantMin:
@@ -8851,8 +8851,8 @@ CalThresh8:
         dc.b    $1C                                      ; Byte compared with; read by Sub_223CC.
 CalThresh9:
         dc.b    $0A                                      ; Byte compared with; read by Sub_223CC.
-O2Value37:
-        dc.b    $33                                      ; Byte used with; read by Sub_14802.
+O2MemResetValue:
+        dc.b    $33                                      ; Closed-loop manager: value written into the 16 adaptive cells of a bank when its memory is reset after a fault
 KnockValue3:
         dc.b    $FF                                      ; Byte used with; read by Sub_1F408.
 KnockSignalMax:

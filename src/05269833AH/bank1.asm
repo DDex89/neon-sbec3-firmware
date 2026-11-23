@@ -4498,16 +4498,16 @@ L1420C:
 L14218:
         BRCLR   $0774,Z,#$80,L14246
         JSR     Sub_1430C
-        JSR     Sub_14F16
+        JSR     ClosedLoopTiming
         BRCLR   >MainLoopPhaseMask,Z,#$10,L14238
         CLRA
-        JSR     Sub_145F6
+        JSR     O2CrossCheck
         LDAA    #$FF
-        JSR     Sub_145F6
+        JSR     O2CrossCheck
 L14238:
-        JSR     Sub_14802
+        JSR     ClosedLoopManager
         JSR     Sub_15742
-        JSR     Sub_157D6
+        JSR     O2CellSelect
         BRA     L1424A
 L14246:
         JSR     Sub_14740
@@ -4545,7 +4545,7 @@ L14290:
         STAA    >O2UpBank1,Z
         JSR     Sub_16092
 L142A2:
-        JSR     Sub_15506
+        JSR     O2UpTrim
         BRCLR   >Options032F,#$40,L142C6
         LDX     #$8728
         BRSET   >Options032F,#$10,L142C2
@@ -4553,7 +4553,7 @@ L142A2:
         STAA    >O2UpBank2,Z
         JSR     Sub_16092
 L142C2:
-        JSR     Sub_15506
+        JSR     O2UpTrim
 L142C6:
         RTS
 
@@ -4569,13 +4569,13 @@ Sub_142C8:
         LDAB    #$0F
         TBXK
         LDX     #$8700
-        JSR     Sub_143C2
+        JSR     O2DownTrim
 L142EC:
         BRCLR   >Options032F,#$10,L142FE
         LDAB    #$0F
         TBXK
         LDX     #$8728
-        JSR     Sub_143C2
+        JSR     O2DownTrim
 L142FE:
         LDAA    $0711,Z
         STAA    $81,Z
@@ -4657,10 +4657,10 @@ L143C0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_143C2 ($143C2)
+; O2DownTrim ($143C2)
 ; Called from: Sub_142C8 (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_143C2:
+O2DownTrim:
         PSHM    X
         LDAA    $0B,X
         LDX     #O2VoltageScale2
@@ -4672,7 +4672,7 @@ Sub_143C2:
         BEQ     L143E0
         LDY     #$40D4
 L143E0:
-        JSR     Sub_152A2
+        JSR     O2SwitchState
         BRSET   $001D,X,#$10,L145E0
         CLRA
         LDAB    $1C,X
@@ -4686,7 +4686,7 @@ L143FC:
         TED
         STAB    $10,X
         CLRA
-        LDAB    >O2Factor2
+        LDAB    >O2PropGain
         EMULS
         ASLD
         ASLD
@@ -4735,12 +4735,12 @@ L1446A:
 L1446E:
         TED
         BCLR    $1D,X,#$03
-        CPD     >O2Thresh16
+        CPD     >O2IntegralHighFlag
         BLE     L14480
         BSET    $1D,X,#$02
         BRA     L1448A
 L14480:
-        CPD     >O2Value25
+        CPD     >O2IntegralLowFlag
         BGE     L1448A
         BSET    $1D,X,#$01
 L1448A:
@@ -4757,7 +4757,7 @@ L144A0:
         LDAA    $1D,X
         BITA    #$03
         BNE     L144B6
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,X
         CLRW    $001F,X
         LBRA    L14524
@@ -4773,7 +4773,7 @@ L144B6:
 L144D2:
         BRCLR   $001D,X,#$02,L144F2
         LDE     $000C,X
-        SUBE    >O2Thresh16
+        SUBE    >O2IntegralHighFlag
         LDD     $1F,X
         STE     $001F,X
         SDE
@@ -4782,7 +4782,7 @@ L144D2:
         BRCLR   $001E,X,#$02,L14524
 L144F2:
         BRCLR   $001D,X,#$01,L1451E
-        LDE     >O2Value25
+        LDE     >O2IntegralLowFlag
         SUBE    $000C,X
         LDD     $1F,X
         STE     $001F,X
@@ -4792,7 +4792,7 @@ L144F2:
         BRCLR   $001E,X,#$02,L14524
 L14512:
         BRSET   $001E,X,#$02,L1452A
-        CPE     >O2Thresh17
+        CPE     >O2SaturationDelta
         BLS     L1452A
 L1451E:
         BSET    $1E,X,#$02
@@ -4804,7 +4804,7 @@ L1452A:
         TST     $12,X
         BNE     L14558
         BRCLR   $001D,X,#$02,L14544
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,X
         INC     $11,X
         BVC     L14558
@@ -4813,7 +4813,7 @@ L1452A:
         BRA     L14558
 L14544:
         BRCLR   $001D,X,#$01,L14558
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,X
         DEC     $11,X
         BVC     L14558
@@ -4823,24 +4823,24 @@ L14558:
         TST     <SriMileage,Z
         BNE     L1457A
         LDAB    $0E,Z
-        CMPB    >O2V000EThresh2
+        CMPB    >O2NewMileageMax
         BCC     L1457A
-        LDAA    >O2Value27
+        LDAA    >O2SlowMaxNew
         LDAB    $11,X
         CBA
         BGT     L14576
-        LDAA    >O2Value26
+        LDAA    >O2SlowMinNew
         CBA
         BGE     L1458E
 L14576:
         STAA    $11,X
         BRA     L1458E
 L1457A:
-        LDAA    >O2Value29
+        LDAA    >O2SlowMax
         LDAB    $11,X
         CBA
         BGT     L1458C
-        LDAA    >O2Value28
+        LDAA    >O2SlowMin
         CBA
         BGE     L1458E
 L1458C:
@@ -4885,10 +4885,10 @@ L145E0:
         dc.b    $40,$10,$40,$10
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_145F6 ($145F6)
+; O2CrossCheck ($145F6)
 ; Called from: Sub_14160 (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_145F6:
+O2CrossCheck:
         BRCLR   >Options0339,#$40,L146C8
         BRCLR   $0774,Z,#$80,L146C8
         LDAB    $A5,Z
@@ -4920,11 +4920,11 @@ L1462C:
         BNE     L1469A
         LDE     $0000,Y
         LDAB    E,Z
-        CMPB    >O2Thresh2
+        CMPB    >O2CrossCheckMax
         BHI     L14690
         LDE     $0002,Y
         LDAB    E,Z
-        CMPB    >O2Thresh3
+        CMPB    >O2CrossCheckMin
         BCS     L14690
         LDAB    $0770,Z
         BITB    #$D0
@@ -4936,7 +4936,7 @@ L1462C:
         LDE     $0004,Y
         LDAA    E,Z
         INCA
-        CMPA    >O2Thresh5
+        CMPA    >O2CrossCheckCount
         BCS     L14696
         LDAB    $017D,Z
         ORAB    $08,Y
@@ -4951,12 +4951,12 @@ L14696:
 L1469A:
         LDE     $0000,Y
         LDAB    E,Z
-        CMPB    >O2Thresh6
+        CMPB    >O2CrossClearMin
         BCS     L146C0
         LDE     $0004,Y
         LDAA    E,Z
         INCA
-        CMPA    >O2Thresh4
+        CMPA    >O2CrossClearCount
         BCS     L146C6
         LDAB    $08,Y
         COMB
@@ -5092,10 +5092,10 @@ L14798:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14802 ($14802)
+; ClosedLoopManager ($14802)
 ; Called from: Sub_14160
 ;---------------------------------------------------------------------------------------------------
-Sub_14802:
+ClosedLoopManager:
         ORP     #$00E0
         LDAB    #$0F
         TBXK
@@ -5120,10 +5120,10 @@ Sub_14802:
 L14854:
         BRCLR   $01AD,Z,#$10,L14878
         LDAA    >FlexLearnBase,Z
-        CMPA    >FuelFlexLearnBaseThresh
+        CMPA    >FlexLearnBaseReadyMin
         BCS     L14878
         LDAA    >RunTime,Z
-        CMPA    >O2RunTimeThresh
+        CMPA    >O2FlexRunTimeMin
         BCS     L14878
         BSET    $01AD,Z,#$02
         CLR     $07B5,Z
@@ -5218,7 +5218,7 @@ L14952:
         BRCLR   >MainLoopPhaseMask,Z,#$08,L1498E
         LDE     $0002,Y
         LDAA    E,Z
-        CMPA    >O2Thresh1
+        CMPA    >O2InactiveCountMax
         BCC     L14968
         INCA
         BRA     L14980
@@ -5252,7 +5252,7 @@ L14996:
         PSHM    X,K
         TZX
         LDX     #$805A
-        LDAA    >O2Value37
+        LDAA    >O2MemResetValue
 L149BE:
         STAA    $00,X
         AIX     #$01
@@ -5273,7 +5273,7 @@ L149D4:
         PSHM    X,K
         TZX
         LDX     #$806D
-        LDAA    >O2Value37
+        LDAA    >O2MemResetValue
 L149FA:
         STAA    $00,X
         AIX     #$01
@@ -5381,7 +5381,7 @@ L14B18:
         TST     <SriMileage,Z
         BNE     L14B30
         LDAB    $0E,Z
-        CMPB    >O2V000EThresh1
+        CMPB    >O2NewMileageOpenMax
         BCC     L14B30
         BSET    $075F,Z,#$C0
         BSET    $F0,Z,#$50
@@ -5402,7 +5402,7 @@ L14B50:
 L14B62:
         BRSET   $0580,Z,#$04,L14B8A
         LDAB    >CoolantTemp,Z
-        CMPB    >O2CoolantThresh1
+        CMPB    >O2ColdCoolantMax
         BCC     L14B8A
         TST     $07C3,Z
         BEQ     L14B8A
@@ -5451,9 +5451,9 @@ L14BFE:
         DEC     $075C,Z
         BRA     L14C26
 L14C10:
-        LDAB    >O2V075CInit
+        LDAB    >O2PurgeHoldTime
         STAB    $075C,Z
-        CMPA    >O2Thresh19
+        CMPA    >O2PurgeRampMax
         BLS     L14C26
 L14C1E:
         BSET    $F0,Z,#$50
@@ -5529,7 +5529,7 @@ L14CE6:
         LDAA    $0760,Z
         BITA    #$0C
         BEQ     L14D28
-        LDAA    >O2Value35
+        LDAA    >O2TrimResetValue
         CLRB
         TDE
         LDAA    $0760,Z
@@ -5557,7 +5557,7 @@ L14D28:
         LDAA    $0761,Z
         BITA    #$C0
         BEQ     L14D68
-        LDAA    >O2Value36
+        LDAA    >O2TrimResetValue2
         CLRB
         TDE
         LDAA    $0761,Z
@@ -5634,7 +5634,7 @@ L14DFA:
         CLRW    $000C,X
         CLR     $0E,X
         BRCLR   >Options032F,#$20,L14E60
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,X
         BCLR    $1E,X,#$02
         BRSET   $001E,X,#$20,L14E60
@@ -5673,7 +5673,7 @@ L14E60:
         CLRW    $000C,Y
         CLR     $0E,Y
         BRCLR   >Options032F,#$10,L14EC6
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,Y
         BCLR    $1E,Y,#$02
         BRSET   $001E,Y,#$20,L14EC6
@@ -5718,7 +5718,7 @@ L14EDE:
         BRSET   $075F,Z,#$40,L14EF8
         BRA     L14F00
 L14EF8:
-        LDAA    >O2V075BInit
+        LDAA    >O2ReopenHoldTime
         STAA    $075B,Z
 L14F00:
         BCLR    $071D,Z,#$C0
@@ -5729,10 +5729,10 @@ L14F00:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14F16 ($14F16)
+; ClosedLoopTiming ($14F16)
 ; Called from: Sub_14160
 ;---------------------------------------------------------------------------------------------------
-Sub_14F16:
+ClosedLoopTiming:
         BRCLR   >Options032C,#$40,L14F26
         BRSET   >Options032F,#$08,L14F26
         JSR     Sub_18A56
@@ -5743,7 +5743,7 @@ L14F26:
         STAA    $F2,Z
         BSET    $F0,Z,#$20
         BSET    $F2,Z,#$01
-        LDAB    >O2Value5
+        LDAB    >O2DecelHoldAlt
         LDAA    $0770,Z
         ANDA    #$40
         BEQ     L14F4C
@@ -5751,7 +5751,7 @@ L14F26:
         BRA     L14F60
 L14F4C:
         BCLR    $F0,Z,#$40
-        LDAB    >O2Value6
+        LDAB    >O2DecelHold
         BRSET   >FuelModeFlags,Z,#$20,L14F60
         TST     >DecelFuelFactor,Z
         BEQ     L14F66
@@ -5769,10 +5769,10 @@ L14F72:
         CMPA    >O2MapMin
         BCS     L14FA6
         LDE     $0780,Z
-        CPE     >O2V0780Thresh
+        CPE     >O2PulseWidthMin
         BCS     L14FA6
         LDE     $0782,Z
-        CPE     >O2V0780Thresh
+        CPE     >O2PulseWidthMin
         BCS     L14FA6
         TST     $0754,Z
         BEQ     L14FB0
@@ -5797,9 +5797,9 @@ L14FB4:
         STAA    $07B7,Z
         TAB
 L14FD4:
-        CMPB    >O2Thresh10
+        CMPB    >O2ColdStartTime
         BRCLR   $0C31,Z,#$20,L14FE2
-        CMPB    >O2Thresh11
+        CMPB    >O2ColdStartTimeDrive
 L14FE2:
         BCC     L14FEA
         BSET    $017D,Z,#$02
@@ -5813,7 +5813,7 @@ L14FEE:
         BRSET   $0760,Z,#$03,L15106
         BRCLR   >ThrottleState,Z,#$80,L15034
         LDAA    >PurgeRamp,Z
-        LDAB    >O2Value7
+        LDAB    >O2ColdPurgeRampMin
         BRCLR   $017D,Z,#$01,L1501A
         SUBB    #$02
         BCC     L1501A
@@ -5835,14 +5835,14 @@ L1503C:
         BEQ     L15070
         BRCLR   >MainLoopPhaseMask,Z,#$02,L15070
         LDAA    >O2UpBank1Raw,Z
-        CMPA    >O2UpBank1RawThresh3
+        CMPA    >O2ColdLeanRaw
         BHI     L1505C
         INC     $07B9,Z
         BNE     L1505C
         DEC     $07B9,Z
 L1505C:
         LDAA    >O2UpBank2Raw,Z
-        CMPA    >O2UpBank2RawThresh
+        CMPA    >O2ColdLeanRaw2
         BHI     L15070
         INC     $07BA,Z
         BNE     L15070
@@ -5851,7 +5851,7 @@ L15070:
         BRSET   $064A,Z,#$80,L15086
         BRCLR   >ThrottleState,Z,#$80,L150BC
         LDAA    $07B8,Z
-        CMPA    >O2V07B8Thresh
+        CMPA    >O2ColdPurgeCount
         BCS     L150BC
 L15086:
         LDAB    >O2ColdStartAdder
@@ -5876,7 +5876,7 @@ L150B2:
 L150BC:
         BRSET   $0760,Z,#$02,L150E0
         LDAA    $07B9,Z
-        CMPA    >O2V07B9Thresh
+        CMPA    >O2ColdLeanCount
         BCS     L150E0
         LDAA    $07B5,Z
         SUBA    >O2ColdStartAdder
@@ -5888,7 +5888,7 @@ L150D8:
 L150E0:
         BRSET   $0760,Z,#$01,L15112
         LDAA    $07BA,Z
-        CMPA    >O2V07B9Thresh
+        CMPA    >O2ColdLeanCount
         BCS     L15112
         LDAA    $07B6,Z
         SUBA    >O2ColdStartAdder
@@ -5946,7 +5946,7 @@ L1517A:
 L15186:
         DEC     $07B6,Z
 L1518A:
-        CMPA    >O2CoolantThresh4
+        CMPA    >O2WarmDelayCoolant
         LDAB    $07AF,Z
         BCC     L1519C
         BNE     L151A4
@@ -5958,14 +5958,14 @@ L1519C:
 L151A0:
         STAB    $07AF,Z
 L151A4:
-        CMPA    >O2Thresh7
+        CMPA    >O2DownEnableCoolant
         BCS     L151BA
         TST     $0757,Z
         BRCLR   >MainLoopPhaseMask,Z,#$08,L151BA
         BEQ     L151BA
         DEC     $0757,Z
 L151BA:
-        CMPA    >O2Thresh18
+        CMPA    >O2SlowEnableCoolant
         BCS     L151CA
         TST     $0758,Z
         BEQ     L151CA
@@ -5980,19 +5980,19 @@ L151DC:
         TST     $0758,Z
         BNE     L151F2
         LDAA    >PurgeRamp,Z
-        CMPA    >O2PurgeRampThresh2
+        CMPA    >O2SlowPurgeRampMin
         BCS     L151F2
         TST     $0753,Z
         BEQ     L15200
 L151F2:
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $0712,Z
         STAB    $073A,Z
         BRA     L15256
 L15200:
         BRCLR   >MainLoopPhaseMask,Z,#$08,L15256
         BRSET   $075D,Z,#$80,L15216
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $0712,Z
         BRA     L1522E
 L15216:
@@ -6005,7 +6005,7 @@ L15216:
         DEC     $0712,Z
 L1522E:
         BRSET   $075D,Z,#$40,L1523E
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $073A,Z
         BRA     L15256
 L1523E:
@@ -6028,7 +6028,7 @@ L15256:
 L15272:
         CLRB
         BRSET   $0312,Z,#$80,L15294
-        LDAB    >O2Value22
+        LDAB    >O2HoldCountMax
         LDAA    $80,Z
         ANDA    #$38
         BEQ     L15294
@@ -6045,10 +6045,10 @@ L1529C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_152A2 ($152A2)
-; Called from: Sub_143C2, Sub_15506
+; O2SwitchState ($152A2)
+; Called from: O2DownTrim, O2UpTrim
 ;---------------------------------------------------------------------------------------------------
-Sub_152A2:
+O2SwitchState:
         TPD
         TBYK
         LDAA    $1D,X
@@ -6060,7 +6060,7 @@ Sub_152A2:
         CMPA    $08,X
         BCC     L152D8
         BSET    $1D,X,#$08
-        ADDA    >O2Adder5
+        ADDA    >O2SwitchMargin
         BCC     L152C8
         LDAA    #$FF
 L152C8:
@@ -6097,7 +6097,7 @@ L15304:
         BRSET   $001E,X,#$10,L15328
         BSET    $1E,X,#$10
         BSET    $1E,X,#$04
-        LDAB    >O2V0712Value
+        LDAB    >O2SlowStepPeriod
         STAB    $12,X
 L15328:
         BCLR    $1E,X,#$20
@@ -6284,9 +6284,9 @@ L154A8:
         BRA     L15480
 L154B8:
         PULM    K,X
-        LDAA    >O2Value20
+        LDAA    >O2DerivGainDefault
         STAA    $15,X
-        JSR     Sub_15DD6
+        JSR     O2FlexOffset
 L154C4:
         CLRB
         LDAA    $0751,Z
@@ -6319,10 +6319,10 @@ L154DE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_15506 ($15506)
+; O2UpTrim ($15506)
 ; Called from: Sub_1424C (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_15506:
+O2UpTrim:
         LDAA    $01,X
         SUBA    $0A,X
         BCC     L1550E
@@ -6339,7 +6339,7 @@ L1550E:
         BEQ     L1552C
         LDY     #$40D4
 L1552C:
-        JSR     Sub_152A2
+        JSR     O2SwitchState
         BRSET   $001D,X,#$20,L15740
         CLRA
         LDAB    $14,X
@@ -6375,13 +6375,13 @@ L15578:
 L1557C:
         STAB    $02,X
         BRCLR   $001E,X,#$01,L15594
-        LDAA    >O2Value21
+        LDAA    >O2ColdTrimMin
         BRCLR   $0C31,Z,#$20,L1559E
-        LDAA    >O2Value24
+        LDAA    >O2ColdTrimMinDrive
         BRA     L1559E
 L15594:
         BRCLR   $0761,Z,#$04,L155B0
-        LDAA    >O2Value23
+        LDAA    >O2HoldTrimMin
 L1559E:
         CLRB
         LDE     $0004,X
@@ -6540,9 +6540,9 @@ L156EA:
 L156F4:
         BCLR    $1E,X,#$01
         BRCLR   $017D,Z,#$02,L15718
-        LDAA    >O2Value21
+        LDAA    >O2ColdTrimMin
         BRCLR   $0C31,Z,#$20,L1570C
-        LDAA    >O2Value24
+        LDAA    >O2ColdTrimMinDrive
 L1570C:
         CBA
         BLT     L15728
@@ -6551,7 +6551,7 @@ L1570C:
         BRA     L15728
 L15718:
         BRCLR   $0761,Z,#$04,L15728
-        LDAA    >O2Value23
+        LDAA    >O2HoldTrimMin
         CBA
         BLT     L15728
         TAB
@@ -6623,10 +6623,10 @@ L157D4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_157D6 ($157D6)
+; O2CellSelect ($157D6)
 ; Called from: Sub_14160
 ;---------------------------------------------------------------------------------------------------
-Sub_157D6:
+O2CellSelect:
         LDAA    $0580,Z
         BITA    #$06
         LBNE    L15956
@@ -6665,17 +6665,17 @@ L15834:
         ADDA    >O2IdleRpmMargin
         CMPB    $0801,Z
         BNE     L15846
-        ADDA    >O2IdleTargetAdder2
+        ADDA    >O2MemIdleRpmHyst
 L15846:
         CMPA    >EngineRpm,Z
         BCS     L1584E
         BRA     L158A0
 L1584E:
-        LDAA    >O2Value31
+        LDAA    >O2MemCoastRpmSplit
         LDAB    #$0E
         CMPB    $0801,Z
         BCS     L1585E
-        ADDA    >O2Adder4
+        ADDA    >O2MemRpmHyst
 L1585E:
         CMPA    >EngineRpm,Z
         BCC     L158A0
@@ -6685,7 +6685,7 @@ L15868:
         LDAA    $00,X
         CMPB    $F7,Z
         BCC     L15872
-        ADDA    >O2Adder3
+        ADDA    >O2MemMapHyst
 L15872:
         CMPA    >Map,Z
         BCC     L15888
@@ -6697,10 +6697,10 @@ L1587A:
         CPX     #$185B
         BNE     L15868
 L15888:
-        LDAA    >O2Value32
+        LDAA    >O2MemRpmSplit
         LSRB
         BCS     L15894
-        ADDA    >O2Adder4
+        ADDA    >O2MemRpmHyst
 L15894:
         LDAB    $F7,Z
         CMPA    >EngineRpm,Z
@@ -6731,7 +6731,7 @@ L158A0:
         CMPA    >O2CellResetTrimMax
         BGT     L158F8
         CLR     >ShortTermTrim1,Z
-        LDAA    >O2V05A5Init
+        LDAA    >O2MemChangeHold
         STAA    $05A5,Z
         BSET    $0760,Z,#$20
 L158F8:
@@ -6739,7 +6739,7 @@ L158F8:
         CMPA    >O2CellResetTrimMax
         BGT     L15912
         CLR     >ShortTermTrim2,Z
-        LDAA    >O2V05A5Init
+        LDAA    >O2MemChangeHold
         STAA    $05A6,Z
         BSET    $0760,Z,#$10
 L15912:
@@ -6777,7 +6777,7 @@ L15956:
         LDAA    $071D,Z
         ANDA    #$08
         STAA    $F6,Z
-        JSR     Sub_1599A
+        JSR     O2LearnEnable
         BRCLR   $075D,Z,#$04,L15998
         TZY
         LDY     #$8794
@@ -6787,15 +6787,15 @@ L15956:
         LDAA    $0745,Z
         ANDA    #$08
         STAA    $F6,Z
-        JSR     Sub_1599A
+        JSR     O2LearnEnable
 L15998:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1599A ($1599A)
-; Called from: Sub_157D6 (2 calls)
+; O2LearnEnable ($1599A)
+; Called from: O2CellSelect (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1599A:
+O2LearnEnable:
         CLRB
         TST     $F6,Z
         BEQ     L159A2
@@ -6810,15 +6810,15 @@ L159B2:
         BRSET   $0761,Z,#$02,L15AC2
 L159B8:
         LDAB    >Map,Z
-        CMPB    >O2MapThresh1
+        CMPB    >O2LearnMapMax
         LBHI    L15AC2
         CMPB    >O2MapMin
         LBLS    L15AC2
-        LDAB    >O2RpmValue
+        LDAB    >O2LearnRpmMax
         SUBB    >EngineRpm,Z
         BCS     L159EA
         BRCLR   $075F,Z,#$02,L159F2
-        SUBB    >O2Offset
+        SUBB    >O2LearnRpmHyst
         LBCS    L15AC2
         BCLR    $075F,Z,#$02
         BRA     L159F2
@@ -6846,7 +6846,7 @@ L15A24:
         BRSET   $05AE,Z,#$20,L15AC2
         BRSET   $0443,Z,#$40,L15AC2
         LDE     $0780,Z
-        CPE     >O2V0780Thresh
+        CPE     >O2PulseWidthMin
         BCC     L15A4C
         BSET    $0772,Z,#$20
         BRA     L15A50
@@ -6854,7 +6854,7 @@ L15A4C:
         BCLR    $0772,Z,#$20
 L15A50:
         LDE     $0782,Z
-        CPE     >O2V0780Thresh
+        CPE     >O2PulseWidthMin
         BCC     L15A60
         BSET    $0772,Z,#$10
         BRA     L15A64
@@ -6889,7 +6889,7 @@ L15A94:
         BCLR    $80,Z,#$40
         LDAB    $0439,Z
         LBEQ    L15AA6
-        CMPB    >O2V0439Thresh
+        CMPB    >O2LearnPurgeCountMax
         BLS     L15AC6
 L15AA6:
         TSTA
@@ -6932,7 +6932,7 @@ L15AFC:
         STAA    $F2,Z
         LDAA    $0704,Z
         STAA    $F3,Z
-        JSR     Sub_15BD0
+        JSR     O2CellUpdate
         BRCLR   $075D,Z,#$08,L15B3A
         BRSET   $075D,Z,#$04,L15B46
         BRSET   $0854,Z,#$10,L15B36
@@ -6954,7 +6954,7 @@ L15B46:
         STAA    $F2,Z
         LDAA    $072C,Z
         STAA    $F3,Z
-        JSR     Sub_15BD0
+        JSR     O2CellUpdate
         BRCLR   $075D,Z,#$04,L15BCA
         BRSET   $075D,Z,#$08,L15BCA
         BRSET   $0854,Z,#$10,L15B80
@@ -6996,10 +6996,10 @@ L15BCA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_15BD0 ($15BD0)
-; Called from: Sub_1599A (2 calls)
+; O2CellUpdate ($15BD0)
+; Called from: O2LearnEnable (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_15BD0:
+O2CellUpdate:
         CLR     $F0,Z
         LDAB    $0801,Z
         ABX
@@ -7027,16 +7027,16 @@ L15C10:
         XGDY
         XGDX
 L15C14:
-        LDAB    >O2Value33
+        LDAB    >O2LearnRate
         BRCLR   >Options032C,#$40,L15C28
         BRCLR   $0050,Z,#$10,L15C28
-        LDAB    >O2Value2
+        LDAB    >O2LearnRateFlex
 L15C28:
         BRSET   >ThrottleState,Z,#$80,L15C42
-        LDAB    >O2Value34
+        LDAB    >O2LearnRateWot
         BRCLR   >Options032C,#$40,L15C42
         BRCLR   $0050,Z,#$10,L15C42
-        LDAB    >O2Value3
+        LDAB    >O2LearnRateWotFlex
 L15C42:
         CLRA
         BRSET   >FuelModeFlags,Z,#$20,L15D56
@@ -7129,7 +7129,7 @@ L15D26:
         SBA
         BGE     L15D36
         NEGA
-        CMPA    >O2Thresh20
+        CMPA    >O2MemFlexDiffMax
         BLS     L15D36
         TBA
         BRA     L15D38
@@ -7168,7 +7168,7 @@ L15D7C:
         SBA
         BGE     L15D8C
         NEGA
-        CMPA    >O2Thresh20
+        CMPA    >O2MemFlexDiffMax
         BLS     L15D8C
         TBA
         BRA     L15D8E
@@ -7204,10 +7204,10 @@ L15DD0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_15DD6 ($15DD6)
-; Called from: Sub_152A2
+; O2FlexOffset ($15DD6)
+; Called from: O2SwitchState
 ;---------------------------------------------------------------------------------------------------
-Sub_15DD6:
+O2FlexOffset:
         PSHM    D
         BRCLR   >Options032C,#$40,L15E6A
         LDAA    >FlexEthanol,Z
@@ -7222,7 +7222,7 @@ Sub_15DD6:
 L15DFC:
         BSET    $0770,Z,#$04
         LDAA    >O2CellIndex,Z
-        LDAB    >O2Value4
+        LDAB    >O2FlexCellMask
         CMPA    #$00
         BNE     L15E12
         BITB    #$01
@@ -7272,10 +7272,10 @@ L15E4E:
 L15E56:
         LDAA    $19,X
         BMI     L15E60
-        ADDA    >O2Adder1
+        ADDA    >O2FlexOffsetStep
         BRA     L15E68
 L15E60:
-        ADDA    >O2Adder2
+        ADDA    >O2FlexOffsetStepNeg
         BMI     L15E68
         CLRA
 L15E68:
@@ -7316,7 +7316,7 @@ L15E9C:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_15EA6 ($15EA6)
-; Called from: Sub_14802, Sub_33AF0
+; Called from: ClosedLoopManager, Sub_33AF0
 ;---------------------------------------------------------------------------------------------------
 Sub_15EA6:
         PSHM    X,K
@@ -7337,7 +7337,7 @@ L15EB8:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_15EC8 ($15EC8)
-; Called from: Sub_14802, Sub_33AF0
+; Called from: ClosedLoopManager, Sub_33AF0
 ;---------------------------------------------------------------------------------------------------
 Sub_15EC8:
         PSHM    X,K
@@ -7358,7 +7358,7 @@ L15EDE:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_15EEA ($15EEA)
-; Called from: Sub_14802
+; Called from: ClosedLoopManager
 ;---------------------------------------------------------------------------------------------------
 Sub_15EEA:
         PSHM    X,K
@@ -7387,7 +7387,7 @@ L15F18:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_15F1C ($15F1C)
-; Called from: Sub_14802, Sub_33AF0
+; Called from: ClosedLoopManager, Sub_33AF0
 ;---------------------------------------------------------------------------------------------------
 Sub_15F1C:
         PSHM    X,K
@@ -7407,7 +7407,7 @@ L15F2A:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_15F3A ($15F3A)
-; Called from: Sub_14802, Sub_33AF0
+; Called from: ClosedLoopManager, Sub_33AF0
 ;---------------------------------------------------------------------------------------------------
 Sub_15F3A:
         PSHM    X,K
@@ -7559,7 +7559,7 @@ L16090:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_16092 ($16092)
-; Called from: Sub_1424C, Sub_143C2, Sub_14802, Sub_152A2 (6 calls)
+; Called from: Sub_1424C, O2DownTrim, ClosedLoopManager, O2SwitchState (6 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_16092:
         PSHM    D,X,K
@@ -7578,7 +7578,7 @@ L160BA:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_160BE ($160BE)
-; Called from: Sub_15BD0 (2 calls)
+; Called from: O2CellUpdate (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_160BE:
         CPX     #$805A
@@ -9772,18 +9772,18 @@ L18A54:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_18A56 ($18A56)
-; Called from: Sub_14F16
+; Called from: ClosedLoopTiming
 ;---------------------------------------------------------------------------------------------------
 Sub_18A56:
         LDAA    >O2UpBank1Raw,Z
-        CMPA    >O2UpBank1RawThresh3
+        CMPA    >O2ColdLeanRaw
         BHI     L18A6A
         INC     $0F3D,Z
         BNE     L18A6A
         DEC     $0F3D,Z
 L18A6A:
         LDAA    $0F3D,Z
-        CMPA    >O2V07B9Thresh
+        CMPA    >O2ColdLeanCount
         BCS     L18A78
         CLR     $0F24,Z
 L18A78:

@@ -23647,7 +23647,7 @@ L1FA16:
         CMPA    #$0C
         BHI     L1FA46
         LDAA    $0C,Z
-        CMPA    >O2CoolantThresh4
+        CMPA    >O2WarmDelayCoolant
         BCS     L1FA2E
         LDE     $0006,Y
         LDAB    E,Z
@@ -23697,7 +23697,7 @@ Sub_1FA56:
         LDAA    E,Z
         ANDA    #$FE
         LDAB    $0C,Z
-        CMPB    >O2CoolantThresh4
+        CMPB    >O2WarmDelayCoolant
         BCS     L1FA88
         ORAA    #$01
 L1FA88:

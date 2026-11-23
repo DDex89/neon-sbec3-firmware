@@ -4532,20 +4532,16 @@
    "name": "FlexLearnFlexEthanolStartOffset"
   },
   "0786": {
+   "name": "FlexLearnBaseReadyMin",
+   "desc": "FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines Sub_2A0F0-Sub_2A6C0)",
    "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Diagnostics",
-   "desc": "Byte compared with FlexLearnBase; read by Sub_14802, Sub_2A0F0, Sub_2A302 +2.",
-   "name": "FuelFlexLearnBaseThresh"
+   "category": "Diagnostics"
   },
   "0787": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2FlexRunTimeMin",
+   "desc": "Closed-loop manager (ClosedLoopManager): run time at or above which closed loop returns during flex learning",
    "category": "Closed loop",
-   "desc": "Byte compared with RunTime; read by Sub_14802.",
-   "name": "O2RunTimeThresh"
+   "size": 1
   },
   "0794": {
    "size": 1,
@@ -5545,20 +5541,16 @@
    "size": 1
   },
   "11FA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2FlexOffsetStep",
+   "desc": "Flex trim offset: step of $19,X while it is positive or zero",
    "category": "Closed loop",
-   "desc": "Byte added to; read by Sub_15F5C.",
-   "name": "O2Adder1"
+   "size": 1
   },
   "11FB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2FlexOffsetStepNeg",
+   "desc": "Flex trim offset: step of $19,X while it is negative (limited to zero)",
    "category": "Closed loop",
-   "desc": "Byte added to; read by Sub_15F5C.",
-   "name": "O2Adder2"
+   "size": 1
   },
   "11FC": {
    "size": 1,
@@ -5593,20 +5585,16 @@
    "name": "SensorValue4"
   },
   "1200": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2LearnRateFlex",
+   "desc": "As O2LearnRate with the flex fuel flag $0050,Z bit 4",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_15D56.",
-   "name": "O2Value2"
+   "size": 1
   },
   "1201": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2LearnRateWotFlex",
+   "desc": "As O2LearnRateWot with the flex fuel flag",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_15D56.",
-   "name": "O2Value3"
+   "size": 1
   },
   "1202": {
    "size": 1,
@@ -5617,12 +5605,10 @@
    "name": "SensorValue5"
   },
   "1203": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2FlexCellMask",
+   "desc": "Flex trim offset (O2FlexOffset): bit map of the O2 cells (bit n = cell n) whose offset $19,X is stepped with high ethanol",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_15F5C.",
-   "name": "O2Value4"
+   "size": 1
   },
   "13C3": {
    "name": "RefuelStopTimeMin",
@@ -5779,12 +5765,11 @@
    "category": "Fuel"
   },
   "14FF": {
-   "size": 1,
+   "name": "O2ColdCoolantMax",
+   "desc": "Closed-loop manager: coolant below this value with cold enrichment ($07C3,Z) keeps open loop",
    "unit": "tempc",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte compared with CoolantTemp; read by Sub_14802.",
-   "name": "O2CoolantThresh1"
+   "size": 1
   },
   "160E": {
    "name": "DecelLeanTimerInit",
@@ -5863,12 +5848,10 @@
    "size": 1
   },
   "16AF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2InactiveCountMax",
+   "desc": "Closed-loop manager: counts of an out-of-range O2 reading before the sensor is marked inactive ($075F,Z)",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_14802.",
-   "name": "O2Thresh1"
+   "size": 1
   },
   "16B0": {
    "name": "O2DownActiveHigh",
@@ -5883,44 +5866,34 @@
    "size": 1
   },
   "16B2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CrossCheckMax",
+   "desc": "O2 cross-check (O2CrossCheck, Options0339 bit 6): first sensor reading at or below this value",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_145F6.",
-   "name": "O2Thresh2"
+   "size": 1
   },
   "16B3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CrossCheckMin",
+   "desc": "O2 cross-check: second sensor reading at or above this value",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_145F6.",
-   "name": "O2Thresh3"
+   "size": 1
   },
   "16B4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CrossClearCount",
+   "desc": "O2 cross-check: counts of the clear condition before the flag clears",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_145F6.",
-   "name": "O2Thresh4"
+   "size": 1
   },
   "16B5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CrossCheckCount",
+   "desc": "O2 cross-check: counts of the condition before the bank flag in $017D,Z is set",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_145F6.",
-   "name": "O2Thresh5"
+   "size": 1
   },
   "16B6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2CrossClearMin",
+   "desc": "O2 cross-check: first sensor reading at or above which the flag clears",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_145F6.",
-   "name": "O2Thresh6"
+   "size": 1
   },
   "16B7": {
    "name": "ThermostatCoolant",
@@ -5930,20 +5903,16 @@
    "category": "Diagnostics"
   },
   "16B8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2DecelHoldAlt",
+   "desc": "Closed-loop timing (ClosedLoopTiming): hold time ($0753,Z) after decel fuel cut or the fuel mode flag, with $0770,Z bit 6",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_14FD8.",
-   "name": "O2Value5"
+   "size": 1
   },
   "16B9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2DecelHold",
+   "desc": "Closed-loop timing: hold time ($0753,Z) after decel fuel cut or FuelModeFlags bit 5",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_14FD8.",
-   "name": "O2Value6"
+   "size": 1
   },
   "16BA": {
    "name": "O2ColdStartCoolant",
@@ -5959,52 +5928,41 @@
    "size": 1
   },
   "16BC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ColdPurgeCount",
+   "desc": "Cold-start O2 logic: purging counts ($07B8,Z) before the cold trims are reduced",
    "category": "Closed loop",
-   "desc": "Byte compared with V07B8; read by Sub_14FD8.",
-   "name": "O2V07B8Thresh"
+   "size": 1
   },
   "16BD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ColdPurgeRampMin",
+   "desc": "Cold-start O2 logic: purge ramp at or above this value (2 less once set) counts as purging",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_14FD8.",
-   "name": "O2Value7"
+   "size": 1
   },
   "16BE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ColdLeanRaw",
+   "desc": "Cold-start O2 logic: bank 1 upstream O2 at or below this value counts as lean ($07B9,Z; also Sub_18D42)",
    "category": "Closed loop",
-   "desc": "Byte compared with O2UpBank1Raw; read by Sub_14FD8, Sub_18D42.",
-   "name": "O2UpBank1RawThresh3"
+   "size": 1
   },
   "16BF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ColdLeanRaw2",
+   "desc": "Cold-start O2 logic: bank 2 upstream O2 at or below this value counts as lean ($07BA,Z)",
    "category": "Closed loop",
-   "desc": "Byte compared with O2UpBank2Raw; read by Sub_14FD8.",
-   "name": "O2UpBank2RawThresh"
+   "size": 1
   },
   "16D0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2NewMileageOpenMax",
+   "desc": "Closed-loop manager: SRI mileage below this value (with $000D,Z zero) holds the integrators",
    "category": "Closed loop",
-   "desc": "Byte compared with V000E; read by Sub_14802.",
-   "name": "O2V000EThresh1"
+   "size": 1
   },
   "16D1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2DownEnableCoolant",
+   "desc": "Coolant at or above which the downstream O2 delay $0757,Z counts down",
+   "unit": "tempc",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_14FD8.",
-   "name": "O2Thresh7"
+   "size": 1
   },
   "16D2": {
    "name": "O2PurgeRampMin",
@@ -6019,12 +5977,10 @@
    "size": 1
   },
   "16D4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2PurgeHoldTime",
+   "desc": "Closed-loop manager: hold time ($075C,Z) after the purge ramp drops below O2PurgeRampMin",
    "category": "Closed loop",
-   "desc": "Byte stored into V075C; read by Sub_14802.",
-   "name": "O2V075CInit"
+   "size": 1
   },
   "1746": {
    "name": "O2CellRpmLow",
@@ -6123,12 +6079,10 @@
    "size": 2
   },
   "17EB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2DerivGainDefault",
+   "desc": "O2 feedback: derivative gain $15,X loaded when the gains come from the cell tables",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_15364.",
-   "name": "O2Value20"
+   "size": 1
   },
   "17EC": {
    "name": "O2AdaptCellMax",
@@ -6143,64 +6097,50 @@
    "size": 1
   },
   "17EE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ColdLeanCount",
+   "desc": "Cold-start O2 logic: lean counts before the cold trim of the bank is reduced (also Sub_18D42)",
    "category": "Closed loop",
-   "desc": "Byte compared with V07B9; read by Sub_14FD8, Sub_18D42.",
-   "name": "O2V07B9Thresh"
+   "size": 1
   },
   "17EF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ColdTrimMin",
+   "desc": "Upstream O2 trim (O2UpTrim): signed lower limit of the trim with the cold-start flag ($017D,Z bit 1)",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_155C8.",
-   "name": "O2Value21"
+   "size": 1
   },
   "17F0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ColdStartTime",
+   "desc": "Cold-start O2 logic (start coolant below O2ColdStartCoolant): time ($07B7,Z) up to which the cold-start flag ($017D,Z bit 1) is set",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_14FD8.",
-   "name": "O2Thresh10"
+   "size": 1
   },
   "17F1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2HoldCountMax",
+   "desc": "Counts ($0756,Z) of the $0080,Z bits 3-5 condition during which the trims are held ($0761,Z bit 2)",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_14FD8.",
-   "name": "O2Value22"
+   "size": 1
   },
   "17F2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2HoldTrimMin",
+   "desc": "Upstream O2 trim: signed lower limit while the trims are held ($0761,Z bit 2)",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_155C8.",
-   "name": "O2Value23"
+   "size": 1
   },
   "17F3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ColdTrimMinDrive",
+   "desc": "As O2ColdTrimMin in gear ($0C31,Z bit 5)",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_155C8.",
-   "name": "O2Value24"
+   "size": 1
   },
   "17F4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ColdStartTimeDrive",
+   "desc": "As O2ColdStartTime in gear ($0C31,Z bit 5)",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_14FD8.",
-   "name": "O2Thresh11"
+   "size": 1
   },
   "17FB": {
    "name": "O2CellResetCoolantMin",
-   "desc": "Cell reset (Sub_1594A): coolant at or above this value",
+   "desc": "Cell reset (O2CellSelect): coolant at or above this value",
    "unit": "tempc",
    "category": "Closed loop",
    "size": 1
@@ -6239,12 +6179,10 @@
    "name": "O2V0759Thresh"
   },
   "1822": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2PropGain",
+   "desc": "O2 feedback (O2DownTrim): gain of the proportional term $0E,X (error × gain × 4 / 51, limited to ±127)",
    "category": "Closed loop",
-   "desc": "Byte multiplied; read by Sub_143C2.",
-   "name": "O2Factor2"
+   "size": 1
   },
   "182E": {
    "name": "O2TrimMax",
@@ -6271,116 +6209,90 @@
    "size": 2
   },
   "1834": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2IntegralHighFlag",
+   "desc": "O2 feedback: integral term $0C,X (word) above this value counts as saturated high",
    "category": "Closed loop",
-   "desc": "Word compared with; read by Sub_143C2.",
-   "name": "O2Thresh16"
+   "size": 2
   },
   "1836": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2IntegralLowFlag",
+   "desc": "O2 feedback: integral term below this (signed) value counts as saturated low",
    "category": "Closed loop",
-   "desc": "Word used with; read by Sub_143C2.",
-   "name": "O2Value25"
+   "size": 2
   },
   "1838": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowStepPeriod",
+   "desc": "O2 feedback: period ($12,X) between steps of the slow term $11,X while the integral is saturated (also used by ClosedLoopManager, ClosedLoopTiming, O2SwitchState)",
    "category": "Closed loop",
-   "desc": "Byte used with V0712; read by Sub_143C2, Sub_14802, Sub_14FD8 +1.",
-   "name": "O2V0712Value"
+   "size": 1
   },
   "1839": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2ReopenHoldTime",
+   "desc": "Closed-loop manager: hold time ($075B,Z) after a bank leaves closed loop",
    "category": "Closed loop",
-   "desc": "Byte stored into V075B; read by Sub_14802.",
-   "name": "O2V075BInit"
+   "size": 1
   },
   "183A": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SaturationDelta",
+   "desc": "O2 feedback: integral change (word) at or below which a saturated integral steps the slow term",
    "category": "Closed loop",
-   "desc": "Word compared with; read by Sub_143C2.",
-   "name": "O2Thresh17"
+   "size": 2
   },
   "183C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2NewMileageMax",
+   "desc": "O2 feedback: SRI mileage ($000E,Z with $000D,Z zero) below this value selects the new-vehicle limits of the slow term",
    "category": "Closed loop",
-   "desc": "Byte compared with V000E; read by Sub_143C2.",
-   "name": "O2V000EThresh2"
+   "size": 1
   },
   "183D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowMinNew",
+   "desc": "O2 feedback: lower (signed) limit of the slow term for a new vehicle",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_143C2.",
-   "name": "O2Value26"
+   "size": 1
   },
   "183E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowMaxNew",
+   "desc": "O2 feedback: upper limit of the slow term for a new vehicle",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_143C2.",
-   "name": "O2Value27"
+   "size": 1
   },
   "183F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowMin",
+   "desc": "O2 feedback: lower (signed) limit of the slow term",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_143C2.",
-   "name": "O2Value28"
+   "size": 1
   },
   "1840": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowMax",
+   "desc": "O2 feedback: upper limit of the slow term",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_143C2.",
-   "name": "O2Value29"
+   "size": 1
   },
   "1841": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowEnableCoolant",
+   "desc": "Coolant at or above which the slow-term delay $0758,Z counts down",
+   "unit": "tempc",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_14FD8.",
-   "name": "O2Thresh18"
+   "size": 1
   },
   "1842": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SlowPurgeRampMin",
+   "desc": "Purge ramp below this value reloads the slow-term periods ($0712/$073A,Z)",
    "category": "Closed loop",
-   "desc": "Byte compared with PurgeRamp; read by Sub_14FD8.",
-   "name": "O2PurgeRampThresh2"
+   "size": 1
   },
   "1843": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2PurgeRampMax",
+   "desc": "Closed-loop manager: purge ramp above this value holds the integrators",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_14802.",
-   "name": "O2Thresh19"
+   "size": 1
   },
   "1852": {
-   "size": 1,
+   "name": "O2WarmDelayCoolant",
+   "desc": "Coolant at or above which the warm delay $07AF,Z counts down (below it the delay is reloaded with O2DelayWarm)",
    "unit": "tempc",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte compared with CoolantTemp; read by Sub_14FD8, Sub_20BB4, Sub_20C24.",
-   "name": "O2CoolantThresh4"
+   "size": 1
   },
   "1853": {
    "name": "O2DelayCold",
@@ -6402,36 +6314,32 @@
    "size": 1
   },
   "185B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MemMapHyst",
+   "desc": "Long-term memory cell selection (O2CellSelect): MAP hysteresis added to the breakpoints at $18E2 when moving down",
+   "unit": "kpa",
    "category": "Closed loop",
-   "desc": "Byte added to; read by Sub_1594A.",
-   "name": "O2Adder3"
+   "size": 1
   },
   "185C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MemCoastRpmSplit",
+   "desc": "Long-term memory cell selection: rpm that splits the closed-throttle off-idle cells $0E/$0F",
+   "unit": "rpm32",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_1594A.",
-   "name": "O2Value31"
+   "size": 1
   },
   "185D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MemRpmSplit",
+   "desc": "Long-term memory cell selection: rpm that splits each MAP band into a low and a high cell",
+   "unit": "rpm32",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_1594A.",
-   "name": "O2Value32"
+   "size": 1
   },
   "185E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MemRpmHyst",
+   "desc": "Long-term memory cell selection: rpm hysteresis of the cell splits",
+   "unit": "rpm32",
    "category": "Closed loop",
-   "desc": "Byte added to; read by Sub_1594A.",
-   "name": "O2Adder4"
+   "size": 1
   },
   "185F": {
    "name": "O2IdleRpmMargin",
@@ -6447,20 +6355,18 @@
    "size": 1
   },
   "1861": {
-   "size": 1,
+   "name": "O2MemIdleRpmHyst",
+   "desc": "Long-term memory cell selection: rpm hysteresis of the idle cell when Options0339 bit 7 selects the rpm test",
    "unit": "rpm32",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte added to IdleTarget; read by Sub_1594A.",
-   "name": "O2IdleTargetAdder2"
+   "size": 1
   },
   "1862": {
-   "size": 1,
+   "name": "O2LearnMapMax",
+   "desc": "Long-term learning (O2LearnEnable): MAP at or below this value (and above O2MapMin)",
    "unit": "kpa",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte compared with Map; read by Sub_15B20.",
-   "name": "O2MapThresh1"
+   "size": 1
   },
   "1863": {
    "name": "O2MapMin",
@@ -6470,44 +6376,36 @@
    "size": 1
   },
   "1864": {
-   "size": 1,
+   "name": "O2LearnRpmMax",
+   "desc": "Long-term learning: rpm below this value",
    "unit": "rpm32",
-   "auto": true,
    "category": "Closed loop",
-   "desc": "Byte used with EngineRpm; read by Sub_15B20.",
-   "name": "O2RpmValue"
+   "size": 1
   },
   "1865": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2LearnRpmHyst",
+   "desc": "Long-term learning: rpm hysteresis of O2LearnRpmMax ($075F,Z bit 1)",
+   "unit": "rpm32",
    "category": "Closed loop",
-   "desc": "Byte subtracted from; read by Sub_15B20.",
-   "name": "O2Offset"
+   "size": 1
   },
   "1866": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2PulseWidthMin",
+   "desc": "Closed-loop timing: fuel pulse widths ($0780/$0782,Z, word) at or above this value for closed-loop entry",
    "category": "Closed loop",
-   "desc": "Word compared with V0780; read by Sub_14FD8, Sub_15B20.",
-   "name": "O2V0780Thresh"
+   "size": 2
   },
   "186A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2LearnRate",
+   "desc": "Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer ($07B2/$07B3,Z) per pass",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_15D56.",
-   "name": "O2Value33"
+   "size": 1
   },
   "186B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2LearnRateWot",
+   "desc": "As O2LearnRate at WOT",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_15D56.",
-   "name": "O2Value34"
+   "size": 1
   },
   "186C": {
    "name": "O2AdaptMax",
@@ -6900,12 +6798,10 @@
    "size": 1
   },
   "1999": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MemFlexDiffMax",
+   "desc": "Long-term cell update: with $0770,Z bit 7 a cell more than this below the flex reference cell is replaced by it",
    "category": "Closed loop",
-   "desc": "Byte compared with; read by Sub_15D56.",
-   "name": "O2Thresh20"
+   "size": 1
   },
   "199A": {
    "size": 2,
@@ -6949,12 +6845,10 @@
    "size": 1
   },
   "1B2F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2LearnPurgeCountMax",
+   "desc": "Long-term learning: purge cell count $0439,Z above which learning is allowed (zero also allows it)",
    "category": "Closed loop",
-   "desc": "Byte compared with V0439; read by Sub_15B20.",
-   "name": "O2V0439Thresh"
+   "size": 1
   },
   "1B32": {
    "size": 1,
@@ -7013,12 +6907,10 @@
    "name": "PurgeAdder7"
   },
   "1B3A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2TrimResetValue",
+   "desc": "Closed-loop manager: value loaded into the bank trim when $0760,Z bits 2-3 request a reset",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_14802.",
-   "name": "O2Value35"
+   "size": 1
   },
   "1B3B": {
    "size": 1,
@@ -9678,12 +9570,10 @@
    "size": 1
   },
   "307C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchMargin",
+   "desc": "O2 feedback (O2SwitchState): margin added to the target before the scaled O2 value counts as rich",
    "category": "Closed loop",
-   "desc": "Byte added to; read by Sub_15364.",
-   "name": "O2Adder5"
+   "size": 1
   },
   "3081": {
    "name": "PurgeFlowDutyRise",
@@ -9719,7 +9609,7 @@
   },
   "3088": {
    "name": "PurgeFlowTrimDrop",
-   "desc": "EVAP purge flow test: short-term trim drop that counts as purge flow (also used by Sub_155C8)",
+   "desc": "EVAP purge flow test: short-term trim drop that counts as purge flow (also used by O2UpTrim)",
    "category": "EVAP purge",
    "size": 1
   },
@@ -9891,12 +9781,10 @@
    "name": "FuelV05ADThresh"
   },
   "30C6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MemChangeHold",
+   "desc": "Long-term memory cell selection: hold time ($05A5/$05A6,Z) after the trim is cleared on a cell change",
    "category": "Closed loop",
-   "desc": "Byte stored into V05A5; read by Sub_1594A.",
-   "name": "O2V05A5Init"
+   "size": 1
   },
   "30C7": {
    "size": 1,
@@ -9917,45 +9805,45 @@
   "3123": {
    "name": "O2MonTimeMin",
    "desc": "O2 sensor monitor at idle (Sub_2877A): time since start at or above this value",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "3124": {
    "name": "O2MonCoolantMin",
    "desc": "O2 sensor monitor at idle: coolant at or above this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "3125": {
    "name": "O2MonSpeedMax",
    "desc": "O2 sensor monitor at idle: vehicle speed at or below this value",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "3126": {
    "name": "O2MonIdleTime",
    "desc": "O2 sensor monitor at idle: idle time ($053F,Z) at or above this value",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "3127": {
    "name": "O2MonRpmBand",
    "desc": "O2 sensor monitor at idle: engine rpm within the idle target plus or minus this value",
    "unit": "rpmw",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 2
   },
   "3129": {
    "name": "O2MonTrimMax",
    "desc": "O2 sensor monitor at idle: short-term trim at or below this value",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "312A": {
    "name": "O2MonTrimMin",
    "desc": "O2 sensor monitor at idle: short-term trim at or above this value",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "312B": {
@@ -10007,12 +9895,10 @@
    "name": "DiagThresh7"
   },
   "313D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2TrimResetValue2",
+   "desc": "Closed-loop manager: value loaded into the bank trim when $0761,Z bits 6-7 request a reset",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_14802.",
-   "name": "O2Value36"
+   "size": 1
   },
   "314F": {
    "size": 1,
@@ -10160,13 +10046,13 @@
   "31A8": {
    "name": "O2SwitchLean",
    "desc": "Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction)",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "31A9": {
    "name": "O2SwitchRich",
    "desc": "Catalyst/O2 switch analysis: raw O2 above this value counts as rich",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "31AA": {
@@ -10196,13 +10082,13 @@
   "31AD": {
    "name": "O2SwitchFilterLean",
    "desc": "Catalyst/O2 switch analysis: filter weight of the lean peak",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "31AE": {
    "name": "O2SwitchFilterRich",
    "desc": "Catalyst/O2 switch analysis: filter weight of the rich peak",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "31AF": {
@@ -10240,13 +10126,13 @@
   "31B4": {
    "name": "O2SwitchLean2",
    "desc": "As O2SwitchLean for the other direction",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "31B5": {
    "name": "O2SwitchRich2",
    "desc": "As O2SwitchRich for the other direction",
-   "category": "Diagnostics",
+   "category": "Closed loop",
    "size": 1
   },
   "31D4": {
@@ -11174,12 +11060,10 @@
    "name": "CalThresh9"
   },
   "49C7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MemResetValue",
+   "desc": "Closed-loop manager: value written into the 16 adaptive cells of a bank when its memory is reset after a fault",
    "category": "Closed loop",
-   "desc": "Byte used with; read by Sub_14802.",
-   "name": "O2Value37"
+   "size": 1
   },
   "49C8": {
    "size": 1,

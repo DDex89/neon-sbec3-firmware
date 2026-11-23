@@ -23366,7 +23366,7 @@ Sub_1F99E:
         LDAA    E,Z
         ANDA    #$FE
         LDAB    >CoolantTemp,Z
-        CMPB    >O2CoolantThresh4
+        CMPB    >O2WarmDelayCoolant
         BCS     L1F9D4
         ORAA    #$01
 L1F9D4:
@@ -23996,7 +23996,7 @@ L1FF7A:
         CMPA    #$0C
         BHI     L1FFB0
         LDAA    >CoolantTemp,Z
-        CMPA    >O2CoolantThresh4
+        CMPA    >O2WarmDelayCoolant
         BCS     L1FF94
         LDE     $0006,Y
         LDAB    E,Z
