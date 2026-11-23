@@ -5570,11 +5570,11 @@ L048C6:
         CPE     #$00EA
         BCC     L048FA
         BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
-        CLR     $10,Z
-        LDAB    $0167,Z
+        CLR     <CamCrankSyncCount,Z
+        LDAB    >CamCrankCount689,Z
         INCB
         BEQ     L048FA
-        STAB    $0167,Z
+        STAB    >CamCrankCount689,Z
         BRA     L048FA
 L048F6:
         ANDA    #$F8
@@ -5794,9 +5794,9 @@ L04B1E:
         STAA    >RefPeriod,Z
         LDD     >CrankPeriodSum,Z
         TDE
-        SUBD    $0368,Z
+        SUBD    >CrankPeriodPrev,Z
         STD     >SparkPeriod,Z
-        STE     $0368,Z
+        STE     >CrankPeriodPrev,Z
         CLR     $0362,Z
         BSET    >SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
         TZX
@@ -5808,7 +5808,7 @@ L04B1E:
 L04B82:
         BRCLR   >SparkFlags,Z,#$20,L04BCE                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDE     >CrankPeriodSum,Z
-        STE     $0368,Z
+        STE     >CrankPeriodPrev,Z
         LDD     >SparkPeriod,Z
         CPD     #$2710
         LBCS    L04D00
@@ -5986,7 +5986,7 @@ L04D72:
         CPD     #$2710
         LBCS    L04EE2
         LDE     >CrankPeriodSum,Z
-        SUBE    $0368,Z
+        SUBE    >CrankPeriodPrev,Z
         STE     >Temp4F6,Z
         ASLE
         ASLE
@@ -6216,8 +6216,8 @@ L05010:
         LDX     #$4EF4
         ABX
         LDAB    $00,X
-        ORAB    $0165,Z
-        STAB    $0165,Z
+        ORAB    >HwErrorFlags,Z
+        STAB    >HwErrorFlags,Z
 L05028:
         LDD     >IoIrqStatus,Z
         ANDD    #$1000
@@ -6316,7 +6316,7 @@ L05146:
         CLR     >SPCR2,Z
         JSR     QspiWaitIdle
         LDD     >RR0,Z
-        STD     $0480,Z
+        STD     >OutputStatusWord,Z
         BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0516C:
         CLRA
@@ -6686,7 +6686,7 @@ L05516:
         CMPA    #$A0
         BCS     L05540
         BRCLR   >EngineStateFlags,Z,#$80,L05540          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BSET    $0165,Z,#$80
+        BSET    >HwErrorFlags,Z,#$80
 L05540:
         PULM    D
         LDX     #$4020
@@ -6818,7 +6818,7 @@ L0569E:
 L056B8:
         CLR     $0416,Z
         BRCLR   >FieldFlags,Z,#$05,L056C8                ; bit 2: generator field test running (FieldTestStart, SystemTestCheck); bit 0: idle air charge step applied (IacChargeStepCalc)
-        LDAA    $0420,Z
+        LDAA    >FieldTestVolts,Z
         BRA     L056CA
 L056C8:
         XGDX
@@ -7963,12 +7963,12 @@ L06986:
         CLRA
 L069A4:
         STAA    >DecelFuelRamp,Z
-        LDAA    $0590,Z
+        LDAA    >DecelRampValue,Z
         SUBA    >DecelRampStepDown
         BCC     L069B4
         CLRA
 L069B4:
-        STAA    $0590,Z
+        STAA    >DecelRampValue,Z
         TSTB
         BNE     L06986
 L069BC:
@@ -8003,7 +8003,7 @@ L06A0A:
         STAA    >DecelFuelRamp,Z
         CMPA    >DecelRampMin
         BCS     L06A30
-        LDAA    $0590,Z
+        LDAA    >DecelRampValue,Z
         ADDA    >DecelRampStep
         BCS     L06A24
         CMPA    >DecelRampMax
@@ -8011,12 +8011,12 @@ L06A0A:
 L06A24:
         LDAA    >DecelRampMax
 L06A28:
-        STAA    $0590,Z
+        STAA    >DecelRampValue,Z
         TSTB
         BNE     L069E8
 L06A30:
         ANDP    #$FF1F
-        LDAA    $0590,Z
+        LDAA    >DecelRampValue,Z
         BRCLR   >ThrottleState,Z,#$40,L06A42             ; bit 6: wide-open throttle (DetectWot)
         CLRA
         BRA     L06A4C
@@ -9550,7 +9550,7 @@ L079B4:
         LDD     >AccelFactor,Z
         EMUL
         STE     $00F7,Z
-        STAA    $00F9,Z
+        STAA    >SegmentWork4F9,Z
         LDE     >MisfireWork,Z
         STE     $05C2,Z
         STE     >Temp4F6,Z
@@ -9637,10 +9637,10 @@ L07AA4:
         JSR     ScaleByFraction
 L07AB2:
         STE     $0169,Z
-        BRCLR   $0395,Z,#$04,L07AD4
+        BRCLR   >FuelPulseOptFlags,Z,#$04,L07AD4
         LDAA    $0397,Z
         CLRB
-        BRSET   $0395,Z,#$08,L07ACC
+        BRSET   >FuelPulseOptFlags,Z,#$08,L07ACC
         LDAB    $0398,Z
 L07ACC:
         LSRD
@@ -9755,9 +9755,9 @@ L07BE2:
         BRCLR   >FuelModeFlags2,Z,#$40,L07D34            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRCLR   >FuelModeFlags2,Z,#$80,L07CF0            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L07C0E:
-        LDAB    $05D0,Z
+        LDAB    >EventCorrWork2,Z
         LBNE    L07CD8
-        LDAA    $05CF,Z
+        LDAA    >EventCorrWork1,Z
         LBNE    L07CD8
         LDAA    >EngineRpm,Z
         SUBA    >IdleTarget,Z
@@ -9805,32 +9805,32 @@ L07C9E:
         BCLR    >PurgeFlags,Z,#$20                       ; bit 5: per-event correction asked for purge to stop (EventCorrections)
 L07CAA:
         STD     >IdleMapIacFlag,Z
-        STAA    $05CF,Z
-        STAB    $05D0,Z
+        STAA    >EventCorrWork1,Z
+        STAB    >EventCorrWork2,Z
         BCLR    >MisfireFlags4,Z,#$08
         BRSET   >MisfireFlags2,Z,#$01,L07CD0             ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
         BRCLR   >MisfireFlags4,Z,#$04,L07CD0
-        TST     $05CF,Z
+        TST     >EventCorrWork1,Z
         BNE     L07CD0
         BSET    >MisfireFlags4,Z,#$08
 L07CD0:
         TSTW    >IdleMapIacFlag,Z
         LBEQ    L07D34
 L07CD8:
-        LDAB    $05D0,Z
+        LDAB    >EventCorrWork2,Z
         BNE     L07CE8
         DECA
-        STAA    $05CF,Z
+        STAA    >EventCorrWork1,Z
         LBRA    L07D44
 L07CE8:
         DECB
-        STAB    $05D0,Z
+        STAB    >EventCorrWork2,Z
         BRA     L07D26
 L07CF0:
         BCLR    >MisfireFlags4,Z,#$08
         BCLR    >MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
-        CLR     $05CF,Z
-        CLR     $05D0,Z
+        CLR     >EventCorrWork1,Z
+        CLR     >EventCorrWork2,Z
         LDAA    >IoStatus3,Z
         BITA    #$3F
         BNE     L07D0E
@@ -9851,8 +9851,8 @@ L07D26:
 L07D34:
         BCLR    >MisfireFlags4,Z,#$08
         BCLR    >MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
-        CLR     $05CF,Z
-        CLR     $05D0,Z
+        CLR     >EventCorrWork1,Z
+        CLR     >EventCorrWork2,Z
 L07D44:
         BCLR    >PurgeFlags,Z,#$20                       ; bit 5: per-event correction asked for purge to stop (EventCorrections)
         ANDP    #$FEFF
@@ -10612,7 +10612,7 @@ L08524:
         BRSET   >FuelPulseFlags,Z,#$20,L08652            ; bit 5: first pass of the fuel event code done (FuelEventCalc)
         BSET    >FuelPulseFlags,Z,#$20                   ; bit 5: first pass of the fuel event code done (FuelEventCalc)
         BRSET   >EngineStateFlags,Z,#$10,L0853C          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
-        CLR     $0554,Z
+        CLR     >FuelEventCount76A,Z
         LBRA    L08652
 L0853C:
         LDAA    >FuelEventOffsetInAlt
@@ -10635,12 +10635,12 @@ L0855E:
         BEQ     L0856C
         BSET    >FuelPulseFlags,Z,#$40                   ; bit 6: set in FuelEventCalc for event code $42, cleared for the others
 L0856C:
-        STAB    $0554,Z
+        STAB    >FuelEventCount76A,Z
         LBRA    L08652
 L08574:
-        TST     $0554,Z
+        TST     >FuelEventCount76A,Z
         BEQ     L08582
-        DEC     $0554,Z
+        DEC     >FuelEventCount76A,Z
         LBRA    L08652
 L08582:
         LDE     #$C01B
@@ -11637,7 +11637,7 @@ L090AC:
         BSET    >IacBase,Z,#$30
         BSET    $01F1,Z,#$30
 L090C0:
-        LDAB    $0395,Z
+        LDAB    >FuelPulseOptFlags,Z
         BITB    #$04
         BEQ     L090D0
         BSET    >IacBase,Z,#$C0
@@ -14986,8 +14986,8 @@ Sub_0B4FA:
         BCC     L0B51E
         CLRB
 L0B51E:
-        STAB    $041C,Z
-        LDAA    $041C,Z
+        STAB    >ChargeIacStep,Z
+        LDAA    >ChargeIacStep,Z
         SUBA    >ChargeDeficitAvg,Z
         BCC     L0B52E
         CLRA
@@ -15015,7 +15015,7 @@ L0B52E:
         BEQ     L0B5B6
         JSR     IacSetTarget
         LDAB    >BatteryVolts2,Z
-        STAB    $0420,Z
+        STAB    >FieldTestVolts,Z
         BSET    >FieldFlags,Z,#$01                       ; bit 0: idle air charge step applied (IacChargeStepCalc)
         BCLR    >FieldFlags,Z,#$02                       ; bit 1: idle air charge step: voltage recovered, timer running (IacChargeStepCalc)
         BRA     L0B5BE
@@ -16108,7 +16108,7 @@ L0C0DE:
         JSR     Lookup3D
         STAA    $01F5,Z
         CLRA
-        LDAB    $041C,Z
+        LDAB    >ChargeIacStep,Z
         TDE
         LDAB    >ChargeDeficitAvg,Z
         PSHM    D,E
@@ -16956,7 +16956,7 @@ L0CA8E:
         LDAA    #$01
         STAA    >CrankSyncFlags2,Z
         LDAA    #$32
-        STAA    $10,Z
+        STAA    <CamCrankSyncCount,Z
         CLR     $003A,Z
         CLR     $003B,Z
         CLR     $003C,Z
@@ -17132,7 +17132,7 @@ L0CCAE:
         JSR     Sub_0E75E
         JSR     QspiWaitIdle
         LDD     >RR0,Z
-        STD     $0480,Z
+        STD     >OutputStatusWord,Z
         CLRB
         TBXK
         LDX     #$4020
@@ -17178,7 +17178,7 @@ L0CCAE:
         STAA    $0479,Z
         LDAB    #$0F
         STAB    $036A,Z
-        LDAA    $10,Z
+        LDAA    <CamCrankSyncCount,Z
         CMPA    #$32
         BCS     L0CD88
         BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
@@ -19766,7 +19766,7 @@ L0EA68:
         INC     >CrankEventCount,Z
 L0EA6C:
         BRCLR   >AfterStartSparkFlags,Z,#$14,L0EA76
-        INC     $0616,Z
+        INC     >AfterStartSparkPass,Z
 L0EA76:
         BRSET   >FuelModeFlags2,Z,#$80,L0EA80            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         CLR     $05B1,Z

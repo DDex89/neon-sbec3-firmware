@@ -97,7 +97,7 @@ L10102:
         ANDB    #$C0
         BEQ     L10170
         STAB    $01,Y
-        EORB    $0480,Z
+        EORB    >OutputStatusWord,Z
         ANDB    $01,Y
         STAB    $01,Y
         BEQ     L1014A
@@ -2819,7 +2819,7 @@ L11EC2:
         BCC     L11EDC
         STAA    $00E8,Z
 L11EDC:
-        CLR     $0167,Z
+        CLR     >CamCrankCount689,Z
         CLR     $01AA,Z
         CLR     $01AB,Z
         CLR     $02EA,Z
@@ -4096,13 +4096,13 @@ FieldTestStart:
         BEQ     L12D0A
         LDAB    #$FF
 L12D0A:
-        STAB    $0420,Z
+        STAB    >FieldTestVolts,Z
         BSET    >FieldFlags,Z,#$04                       ; bit 2: generator field test running (FieldTestStart, SystemTestCheck)
         BRA     L12D26
 L12D14:
         LDAA    #$FF
 L12D16:
-        CLR     $0420,Z
+        CLR     >FieldTestVolts,Z
         CLR     >SystemTestMode,Z
         CLR     >SystemTestValue,Z
 L12D22:
@@ -4658,7 +4658,7 @@ L13260:
         LDAA    #$01
         STAA    >CrankSyncFlags2,Z
         LDAA    #$32
-        STAA    $10,Z
+        STAA    <CamCrankSyncCount,Z
         BRA     L13252
 L1326C:
         CLR     $0108,Z
@@ -5673,7 +5673,7 @@ Sub_13CC8:
         PULM    CCR
         TSTA
         LBEQ    L13E2C
-        STE     $0480,Z
+        STE     >OutputStatusWord,Z
         BRSET   >CrankFlags2,Z,#$02,L13E30               ; bit 1: engine rpm below $1900: HighRpmTimer counting (HighRpmTimerPit); AsdRelayCheck and others read it
         EORE    $0482,Z
         STE     $0484,Z
@@ -6278,11 +6278,11 @@ L1436E:
         LDAA    #$10
         JMP     L14492
 L1438E:
-        STAB    $03AE,Z
+        STAB    >SciSecurityPtr,Z
         LDAA    #$20
         JMP     L14492
 L14398:
-        LDY     $03AE,Z
+        LDY     >SciSecurityPtr,Z
         LDAB    $00,Y
         LDAA    #$40
         JMP     L14492
@@ -6319,7 +6319,7 @@ L143E4:
         LDAB    #$01
         TBYK
 L143F2:
-        LDD     $03AE,Z
+        LDD     >SciSecurityPtr,Z
         BITB    #$01
         XGDY
         BEQ     L1440A
@@ -6346,11 +6346,11 @@ L14422:
         LDAB    #$01
         TBXK
 L1442E:
-        LDX     $03AE,Z
+        LDX     >SciSecurityPtr,Z
         LDAB    >SCDR_L,Z
         LDAA    $00,X
         STAA    >SCDR_L,Z
-        INCW    $03AE,Z
+        INCW    >SciSecurityPtr,Z
         DECW    $03AC,Z
         BNE     L14450
         CLR     >SciSecurityState,Z
@@ -6382,7 +6382,7 @@ L1447A:
         LDAA    #$20
         BRA     L14492
 L14482:
-        STAB    $03AE,Z
+        STAB    >SciSecurityPtr,Z
         LDAA    #$C0
         BRA     L14492
 L1448A:
@@ -7453,7 +7453,7 @@ L14F8C:
         LDAA    #$04
         STAA    $0423,Z
 L14F96:
-        CLR     $0458,Z
+        CLR     >CcdByteIndex,Z
 L14F9A:
         RTS
         dc.b    $AA,$85,$16,$85,$7E,$83,$91,$84,$A1,$84,$02,$83,$DC,$83,$A9,$83
@@ -7470,7 +7470,7 @@ Irq4BusHandler:
         TBA
         ANDE    #$000E
         LBNE    L150C2
-        LDAB    $0458,Z
+        LDAB    >CcdByteIndex,Z
         CMPB    #$06
         LBCC    L150C2
         TZY
@@ -7521,7 +7521,7 @@ L1504C:
 L1505A:
         BCLR    >PciRxFlags,Z,#$80
         CLRB
-        STAB    $0458,Z
+        STAB    >CcdByteIndex,Z
         TDE
         TPD
         TBXK
@@ -7551,10 +7551,10 @@ L150A6:
         ABY
         STAA    $00,Y
 L150AA:
-        INC     $0458,Z
+        INC     >CcdByteIndex,Z
         BRA     L150D0
 L150B0:
-        CLR     $0458,Z
+        CLR     >CcdByteIndex,Z
         BSET    >PciRxFlags,Z,#$80
         BCLR    >PciRxFlags,Z,#$40
         BRA     L150D0
@@ -7598,7 +7598,7 @@ L15102:
         LDAB    $01,X
         BPL     L15140
         ANDB    #$07
-        CMPB    $0458,Z
+        CMPB    >CcdByteIndex,Z
         BNE     L15140
         SUBB    #$02
         BLS     L15140
@@ -7630,7 +7630,7 @@ L1515C:
         CLRW    $0002,Y
         CLRW    $0004,Y
 L15168:
-        CLR     $0458,Z
+        CLR     >CcdByteIndex,Z
         BRCLR   >CcdRxFlags,Z,#$FC,L15178                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler); bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler); bit 4: CCD transmit buffer 1 in use (CcdTransmit); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 2: CCD transmit buffer 3 in use (CcdTransmit)
         JSR     Sub_14F34
         BRA     L15180
@@ -13023,8 +13023,8 @@ MisfireMonitorEvent:
         CLRW    >MisfireRpmRef,Z
         CLRW    >MisfireRpmCol,Z
         CLRW    >MisfireWork5C8,Z
-        CLRW    $0208,Z
-        CLRW    $020A,Z
+        CLRW    >MisfireWork5CA,Z
+        CLRW    >MisfireWork5CC,Z
         CLRW    $020C,Z
 L18E48:
         BCLR    >MisfireFlags2,Z,#$04                    ; bit 2: misfire transient hold running (MisfireSegmentTime)
@@ -13043,23 +13043,23 @@ L18E50:
         LBSR    Sub_19762
         LBSR    Sub_19A80
         BRCLR   <Temp4F0,Z,#$01,L18EA2
-        LDAA    $0228,Z
+        LDAA    >MisfireEvents,Z
         CMPA    #$FF
         BEQ     L18E8A
         CMPA    #$64
         BCC     L18E90
 L18E8A:
         INCA
-        STAA    $0228,Z
+        STAA    >MisfireEvents,Z
 L18E90:
         BRCLR   <MonRecordB7,Z,#$04,L18EA2
-        LDAA    $022A,Z
+        LDAA    >MisfireEvents2,Z
         CMPA    #$64
         BCC     L18EA2
         INCA
-        STAA    $022A,Z
+        STAA    >MisfireEvents2,Z
 L18EA2:
-        LDAA    $0228,Z
+        LDAA    >MisfireEvents,Z
         CMPA    #$FF
         BEQ     L18EB2
         LBSR    MisfireThreshold
@@ -13371,7 +13371,7 @@ L19194:
         EMUL
         STE     >MisfireWork,Z
         STD     $FA,Z
-        LDE     $00F9,Z
+        LDE     >SegmentWork4F9,Z
         STE     >MisfireThreshValue,Z
         CPE     >Temp4FC,Z
         LBHI    L192BA
@@ -13450,12 +13450,12 @@ L19274:
 L19288:
         STAA    $022B,Z
         LDAB    $FF,Z
-        LDAA    $0237,Z
+        LDAA    >MisfireCount61D,Z
         ABA
         BCC     L19298
         LDAA    #$FF
 L19298:
-        STAA    $0237,Z
+        STAA    >MisfireCount61D,Z
 L1929C:
         LDAB    >MisfireWork628,Z
         ORAB    $F1,Z
@@ -13483,7 +13483,7 @@ L192D2:
 ; Called from: MisfireMonitorEvent
 ;---------------------------------------------------------------------------------------------------
 MisfireCount:
-        LDAA    $0228,Z
+        LDAA    >MisfireEvents,Z
         CMPA    #$64
         LBCS    L19432
         BCLR    >MisfireFlags2,Z,#$10                    ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
@@ -13501,10 +13501,10 @@ L192EE:
         BSET    <MonRecordB7,Z,#$08
         LDAA    #$80
         STAA    $BB,Z
-        CLR     $022A,Z
+        CLR     >MisfireEvents2,Z
         CLR     $0236,Z
         CLR     $022B,Z
-        CLR     $0237,Z
+        CLR     >MisfireCount61D,Z
         CLR     $022C,Z
         CLR     $0238,Z
         TZX
@@ -13525,7 +13525,7 @@ L1934A:
 L19354:
         CLR     >MisfireWork628,Z
         CLR     $023A,Z
-        CLR     $0228,Z
+        CLR     >MisfireEvents,Z
         CLR     $0229,Z
         CLR     $023C,Z
         CLR     $0222,Z
@@ -13551,10 +13551,10 @@ L193AC:
         BLS     L1940E
         BSET    $0239,Z,#$80
         BSET    <MonRecordB7,Z,#$08
-        CLR     $022A,Z
+        CLR     >MisfireEvents2,Z
         CLR     $0236,Z
         CLR     $022B,Z
-        CLR     $0237,Z
+        CLR     >MisfireCount61D,Z
         CLR     $022C,Z
         CLR     $0238,Z
         LDAA    #$80
@@ -13596,7 +13596,7 @@ L19432:
         LDAB    $BB,Z
         BITB    #$80
         BNE     L194AE
-        LDAA    $022A,Z
+        LDAA    >MisfireEvents2,Z
         CMPA    #$64
         BCS     L194AE
         LDAA    $022B,Z
@@ -13609,14 +13609,14 @@ L19456:
         LDAA    #$80
         STAA    $BB,Z
 L19460:
-        CLR     $022A,Z
+        CLR     >MisfireEvents2,Z
         CLR     $022B,Z
         CLR     $022C,Z
         INC     $0236,Z
         LDAA    $0236,Z
         CMPA    #$05
         BCS     L194AE
-        LDAA    $0237,Z
+        LDAA    >MisfireCount61D,Z
         SUBA    $0238,Z
         BCC     L19484
         CLRA
@@ -13639,7 +13639,7 @@ L1949C:
         BSET    $B2,Z,#$40
 L194A2:
         CLR     $0236,Z
-        CLR     $0237,Z
+        CLR     >MisfireCount61D,Z
         CLR     $0238,Z
 L194AE:
         RTS
@@ -13711,12 +13711,12 @@ L19556:
         CLRA
 L1956A:
         STAA    $022B,Z
-        LDAA    $0237,Z
+        LDAA    >MisfireCount61D,Z
         SUBA    $0238,Z
         BCC     L1957A
         CLRA
 L1957A:
-        STAA    $0237,Z
+        STAA    >MisfireCount61D,Z
         CLR     $022C,Z
         CLR     $0238,Z
 L19586:
@@ -13839,7 +13839,7 @@ L196BE:
         BRA     L196FA
 L196D8:
         BRSET   >MisfireFlags,Z,#$20,L196EA              ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
-        TST     $0228,Z
+        TST     >MisfireEvents,Z
         BNE     L196FA
         TST     $0235,Z
         BNE     L196FA
@@ -14131,8 +14131,8 @@ Sub_199A6:
         CLRW    >MisfireRpmRef,Z
         CLRW    >MisfireRpmCol,Z
         CLRW    >MisfireWork5C8,Z
-        CLRW    $0208,Z
-        CLRW    $020A,Z
+        CLRW    >MisfireWork5CA,Z
+        CLRW    >MisfireWork5CC,Z
         CLRW    $020C,Z
         CLRW    $020E,Z
         CLRW    $0216,Z
@@ -14147,9 +14147,9 @@ Sub_199A6:
         CLR     $0225,Z
         CLR     $0226,Z
         CLR     $0227,Z
-        CLR     $0228,Z
+        CLR     >MisfireEvents,Z
         CLR     $0229,Z
-        CLR     $022A,Z
+        CLR     >MisfireEvents2,Z
         CLR     $022B,Z
         CLR     $022C,Z
         CLR     $022D,Z
@@ -14162,7 +14162,7 @@ Sub_199A6:
         CLR     >MisfireCount2,Z
         CLR     $0235,Z
         CLR     $0236,Z
-        CLR     $0237,Z
+        CLR     >MisfireCount61D,Z
         CLR     $0238,Z
         CLR     $0239,Z
         CLR     $023A,Z
@@ -14250,7 +14250,7 @@ MisfireSegmentTime:
         LDAA    >CylinderCount
         CMPA    #$06
         BEQ     L19B36
-        LDE     $0368,Z
+        LDE     >CrankPeriodPrev,Z
         LDX     #$42B6
         BRSET   >Options032A,#$04,L19B36
         LDX     #$42AA
@@ -14264,12 +14264,12 @@ L19B3A:
 L19B42:
         LDD     $01,X
         STD     <Temp4F0,Z
-        LDD     $020A,Z
+        LDD     >MisfireWork5CC,Z
         STD     $020C,Z
-        LDD     $0208,Z
-        STD     $020A,Z
+        LDD     >MisfireWork5CA,Z
+        STD     >MisfireWork5CC,Z
         LDD     >MisfireWork5C8,Z
-        STD     $0208,Z
+        STD     >MisfireWork5CA,Z
         LDD     >MisfireRpmCol,Z
         STD     >MisfireWork5C8,Z
         LDD     >MisfireRpmRef,Z
@@ -14316,13 +14316,13 @@ L19BD6:
         ANDA    #$09
         BEQ     L19C02
         STX     $020C,Z
-        STX     $020A,Z
-        STX     $0208,Z
+        STX     >MisfireWork5CC,Z
+        STX     >MisfireWork5CA,Z
         STX     >MisfireWork5C8,Z
         STX     >MisfireRpmCol,Z
         STX     >MisfireRpmRef,Z
         LDAA    #$FF
-        STAA    $0228,Z
+        STAA    >MisfireEvents,Z
         BCLR    <MonRecordB7,Z,#$10
         BSET    >MisfireFlags2,Z,#$04                    ; bit 2: misfire transient hold running (MisfireSegmentTime)
 L19C02:
@@ -16753,7 +16753,7 @@ Sub_1B700:
         LDAA    $06D6,Z
         ANDA    #$03
         BNE     L1B734
-        TST     $0167,Z
+        TST     >CamCrankCount689,Z
         BEQ     L1B734
         LDAA    $06D7,Z
         ADDA    #$01
@@ -16763,7 +16763,7 @@ Sub_1B700:
         STAA    $0177,Z
         LDAA    #$FF
         STAA    $06D8,Z
-        CLR     $0167,Z
+        CLR     >CamCrankCount689,Z
 L1B734:
         TST     $06D8,Z
         BNE     L1B746
@@ -16794,12 +16794,12 @@ L1B762:
         CLRA
 L1B786:
         STAA    $0109,Z
-        LDAA    $10,Z
+        LDAA    <CamCrankSyncCount,Z
         CMPA    #$32
         BCC     L1B79A
         BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
         INCA
-        STAA    $10,Z
+        STAA    <CamCrankSyncCount,Z
         BRA     L1B79E
 L1B79A:
         BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
@@ -16989,7 +16989,7 @@ L1B992:
 Sub_1B9C4:
         TPD
         TBXK
-        LDAA    $0165,Z
+        LDAA    >HwErrorFlags,Z
         BEQ     L1BA14
         CLRD
         LDX     #$B98E
@@ -16998,13 +16998,13 @@ L1B9D8:
         ROLA
         BCS     L1BA14
         AIX     #$06
-        BITA    $0165,Z
+        BITA    >HwErrorFlags,Z
         BEQ     L1B9D8
         STAA    $01F6,Z
         COMA
         ORP     #$00E0
-        ANDA    $0165,Z
-        STAA    $0165,Z
+        ANDA    >HwErrorFlags,Z
+        STAA    >HwErrorFlags,Z
         ANDP    #$FF1F
         LDAA    $05,X
         LDE     $0002,X
@@ -17038,16 +17038,16 @@ L1BA2C:
         BNE     L1BA3A
         CLR     >FaultPending2,Z
 L1BA3A:
-        LDAB    $0152,Z
+        LDAB    >FaultPendingWork2,Z
         BEQ     L1BA6A
         INCB
         BEQ     L1BA48
-        STAB    $0152,Z
+        STAB    >FaultPendingWork2,Z
 L1BA48:
         TDE
         CLRB
         TBXK
-        LDAB    $0151,Z
+        LDAB    >FaultPendingWork1,Z
         LDAA    #$0A
         MUL
         ADDD    #FaultTable
@@ -17055,8 +17055,8 @@ L1BA48:
         TED
         CMPB    $01,X
         BLS     L1BA6A
-        CLR     $0151,Z
-        CLR     $0152,Z
+        CLR     >FaultPendingWork1,Z
+        CLR     >FaultPendingWork2,Z
 L1BA6A:
         RTS
 
@@ -17108,18 +17108,18 @@ ReportPass:
         JSR     FaultBitTest
         LBEQ    L1BAF6
         LDAA    $00,Y
-        LDAB    $0151,Z
+        LDAB    >FaultPendingWork1,Z
         BNE     L1BAD2
-        STAA    $0151,Z
+        STAA    >FaultPendingWork1,Z
         LDAA    $01,Y
-        STAA    $0152,Z
+        STAA    >FaultPendingWork2,Z
         BRA     L1BAF6
 L1BAD2:
         CBA
         BNE     L1BAF6
-        DEC     $0152,Z
+        DEC     >FaultPendingWork2,Z
         BNE     L1BAF6
-        CLR     $0151,Z
+        CLR     >FaultPendingWork1,Z
         PSHM    E
         LDAB    $05,Y
         CLRA
@@ -17609,7 +17609,7 @@ L1BE90:
         LDAB    $0645,Z
         SXT
         SDE
-        LDAB    $0642,Z
+        LDAB    >AcSparkWork,Z
         SXT
         SDE
         LDAB    $0604,Z
@@ -17645,7 +17645,7 @@ L1BFA0:
 L1BFA8:
         TBA
         STAA    $0168,Z
-        BRCLR   $0395,Z,#$02,L1BFBA
+        BRCLR   >FuelPulseOptFlags,Z,#$02,L1BFBA
         LDAA    $0396,Z
         BRA     L1BFE8
 L1BFBA:
@@ -17949,7 +17949,7 @@ AfterStartSpark:
 L1C29A:
         CPD     >AfterStartSparkRpmBand
         BCS     L1C2BA
-        LDAB    $061A,Z
+        LDAB    >AfterStartSparkStep,Z
         CMPB    >AfterStartSparkStart,Z
         BCC     L1C2B2
         LDAA    $060B,Z
@@ -17980,10 +17980,10 @@ L1C2FA:
         ASL     >AfterStartSparkFlags,Z
         LBRA    L1C3BE
 L1C30E:
-        LDAA    $0616,Z
+        LDAA    >AfterStartSparkPass,Z
         CMPA    >AfterStartSparkStepEvents
         BCS     L1C328
-        CLR     $0616,Z
+        CLR     >AfterStartSparkPass,Z
         LDAA    >AfterStartSparkCount,Z
         INCA
         BEQ     L1C328
@@ -17994,7 +17994,7 @@ L1C328:
         LDAA    >AfterStartSparkCount,Z
         CMPA    >IacBase,Z
         BCC     L1C36A
-        LDAB    $061A,Z
+        LDAB    >AfterStartSparkStep,Z
         CMPB    >AfterStartSparkStart,Z
         BCC     L1C34A
         BRSET   >IoCfg1FL,Z,#$01,L1C372
@@ -18005,7 +18005,7 @@ L1C34A:
         LDAA    >IacBase,Z
         SBCA    >AfterStartSparkCount,Z
         STAA    >AfterStartSparkCount,Z
-        CLR     $0616,Z
+        CLR     >AfterStartSparkPass,Z
         TBA
         BRA     L1C3C0
 L1C36A:
@@ -18016,17 +18016,17 @@ L1C372:
 L1C374:
         JSR     AfterStartSparkLookup
         BRCLR   >IoCfg1FL,Z,#$01,L1C388
-        LDAB    $061A,Z
+        LDAB    >AfterStartSparkStep,Z
         CMPB    >AfterStartSparkStart,Z
         BCS     L1C3C0
 L1C388:
         ASL     >AfterStartSparkFlags,Z
         BRA     L1C3C0
 L1C38E:
-        LDAA    $0616,Z
+        LDAA    >AfterStartSparkPass,Z
         CMPA    >AfterStartSparkStepEvents2
         BCS     L1C3A8
-        CLR     $0616,Z
+        CLR     >AfterStartSparkPass,Z
         LDAA    >AfterStartSparkCount,Z
         INCA
         BEQ     L1C3A8
@@ -18047,10 +18047,10 @@ L1C3C0:
 L1C3C2:
         BRCLR   >AfterStartSparkFlags,Z,#$0C,L1C3DA
         BRCLR   >MainLoopPhaseMask,Z,#$80,L1C3DA         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
-        LDAB    $061A,Z
+        LDAB    >AfterStartSparkStep,Z
         INCB
         BEQ     L1C3DA
-        STAB    $061A,Z
+        STAB    >AfterStartSparkStep,Z
 L1C3DA:
         RTS
 
@@ -18312,7 +18312,7 @@ L1C67A:
 L1C67E:
         STE     >AcSparkRateChange,Z
         CLRB
-        LDAA    $0642,Z
+        LDAA    >AcSparkWork,Z
         BNE     L1C702
         LDAA    >AcSparkWindow,Z
         BNE     L1C696
@@ -18386,7 +18386,7 @@ L1C73A:
         BRCLR   >IoCfg1FL,Z,#$20,L1C75C                  ; bit 5: manifold tuning valve driver status (MtvCheck)
 L1C740:
         CLR     >AcSparkWindow,Z
-        CLR     $0642,Z
+        CLR     >AcSparkWork,Z
         CLR     $0643,Z
         CLR     >AcClutchSparkHoldTime,Z
         CLR     $0645,Z
@@ -18443,9 +18443,9 @@ L1C7F4:
         LDAA    $0643,Z
         CMPA    >IacShiftTimer,Z
         BCS     L1C836
-        LDAB    $0642,Z
+        LDAB    >AcSparkWork,Z
         INCB
-        STAB    $0642,Z
+        STAB    >AcSparkWork,Z
         CBA
         BHI     L1C836
         BSET    >IacAcFlags,Z,#$40                       ; bit 6: A/C clutch spark hold time reached (AcClutchSpark)
@@ -18460,7 +18460,7 @@ L1C812:
         CPD     $1C0B
         BLT     L1C836
 L1C82A:
-        CLR     $0642,Z
+        CLR     >AcSparkWork,Z
         CLR     $0643,Z
         BCLR    >IacAcFlags,Z,#$C0                       ; bit 7: A/C clutch spark hold during a shift step (AcClutchSpark); bit 6: A/C clutch spark hold time reached (AcClutchSpark)
 L1C836:
@@ -19249,7 +19249,7 @@ Sub_1D006:
         LDAB    $0610,Z
         SXT
         STD     <MisfireWork,Z
-        BRSET   $0395,Z,#$02,L1D09A
+        BRSET   >FuelPulseOptFlags,Z,#$02,L1D09A
         BRSET   >SparkFaultFlags,Z,#$20,L1D09A           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
         JSR     AcSparkRate
         LDAB    >AcSpark,Z
@@ -19767,7 +19767,7 @@ L1D4D2:
         BCC     L1D4F6
 L1D4EC:
         BRSET   >FaultSet06,Z,#$08,L1D4F6
-        BSET    $0165,Z,#$40
+        BSET    >HwErrorFlags,Z,#$40
 L1D4F6:
         BRCLR   $031F,#$40,L1D520
         LDAB    $0321,Z
@@ -19780,7 +19780,7 @@ L1D4F6:
         BCC     L1D520
 L1D516:
         BRSET   >FaultSet0B,Z,#$08,L1D544
-        BSET    $0165,Z,#$20
+        BSET    >HwErrorFlags,Z,#$20
 L1D520:
         LDAB    >CoolantTemp,Z
         CMPB    >KnockCoolantMin
@@ -19869,7 +19869,7 @@ O2UpdateUpstream:
         CPE     #$3C00
         LBCC    L1D68E
         LDD     >CrankPeriodSum,Z
-        SUBD    $0368,Z
+        SUBD    >CrankPeriodPrev,Z
         STD     >Temp4F0,Z
         LDAB    >SparkAdvanceD11,Z
         LSRB

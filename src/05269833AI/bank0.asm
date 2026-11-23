@@ -10178,11 +10178,11 @@ L08104:
         BRSET   >VssFlags,Z,#$02,L08132                  ; bit 1: second VSS pulse seen (Isr_GPT_IC3)
         BRSET   >VssFlags,Z,#$01,L0812C                  ; bit 0: first VSS pulse seen (Isr_GPT_IC3)
         BSET    >VssFlags,Z,#$01                         ; bit 0: first VSS pulse seen (Isr_GPT_IC3)
-        CLR     $0AB2,Z
+        CLR     >VssPulseIndex,Z
         LDD     >TIC3,Z
         STD     $0AB6,Z
         LDD     >VehicleSpeedRaw,Z
-        STD     $0AA2,Z
+        STD     >VssPeriodLast,Z
         LBRA    L08326
 L0812C:
         BSET    >VssFlags,Z,#$02                         ; bit 1: second VSS pulse seen (Isr_GPT_IC3)
@@ -10196,13 +10196,13 @@ L08136:
         LDX     #$8AB2
         LDY     #$84F0
         JSR     PeriodChangeTrack
-        LDAA    $0AB2,Z
+        LDAA    >VssPulseIndex,Z
         LSRA
         STAA    >VssBusValue,Z
         LDE     >TIC3,Z
         SUBE    $0AB6,Z
         STE     $0AB4,Z
-        CLR     $0AB2,Z
+        CLR     >VssPulseIndex,Z
         LDE     >TIC3,Z
         STE     $0AB6,Z
         LDE     >VssBusValue2,Z
@@ -10254,16 +10254,16 @@ L081DA:
 L081F8:
         ANDA    #$1F
         STAA    >VssFlags,Z
-        CLR     $0AAC,Z
-        LDD     $0AA2,Z
+        CLR     >VssCountAC,Z
+        LDD     >VssPeriodLast,Z
         STD     $0AA0,Z
         ORP     #$0100
         JSR     VssPulseCalc
-        STD     $0AA2,Z
+        STD     >VssPeriodLast,Z
         LDX     #$0014
         IDIV
         STX     >Temp4F0,Z
-        LDD     $0AA2,Z
+        LDD     >VssPeriodLast,Z
         SUBD    $0AA0,Z
         BMI     L08230
         SUBD    >Temp4F0,Z
@@ -10274,8 +10274,8 @@ L08234:
         BCC     L08238
         CLRD
 L08238:
-        STD     $0AA4,Z
-        LDD     $0AA2,Z
+        STD     >VssPeriodSum,Z
+        LDD     >VssPeriodLast,Z
         SUBD    >VehicleSpeedRaw,Z
         BMI     L0824C
         SUBD    >Temp4F0,Z
@@ -10288,17 +10288,17 @@ L08250:
         DECB
 L08256:
         LDX     >VehicleSpeedRaw,Z
-        LDE     $0AA2,Z
+        LDE     >VssPeriodLast,Z
         JSR     MulShift
         STD     >VehicleSpeedRaw,Z
-        LDD     $0AA4,Z
+        LDD     >VssPeriodSum,Z
         LDE     #$00C4
         EMULS
         LDX     >VssBusValue,Z
         BEQ     L08278
         EDIVS
 L08278:
-        STX     $0AA4,Z
+        STX     >VssPeriodSum,Z
         LDAA    >VssBusValue,Z
         STAA    $06F0,Z
         LBRA    L08326
@@ -10316,8 +10316,8 @@ L082A0:
         LDE     #$BF20
 L082A6:
         STAB    $0AAD,Z
-        STAB    $06F1,Z
-        STE     $0AAE,Z
+        STAB    >VssWork6F1,Z
+        STE     >VssTimeAE,Z
         LBRA    L08326
 L082B6:
         ADDA    #$20
@@ -10333,7 +10333,7 @@ L082C4:
         LDX     #$8AAC
         LDY     #$84F0
         JSR     PeriodChangeTrack
-        LDAA    $0AAC,Z
+        LDAA    >VssCountAC,Z
         LSRA
         STAA    $0AAD,Z
         LDE     >TIC3,Z
@@ -10342,25 +10342,25 @@ L082C4:
         CMPA    #$02
         BCS     L08302
 L082F8:
-        STE     $0AAE,Z
-        STAA    $06F1,Z
+        STE     >VssTimeAE,Z
+        STAA    >VssWork6F1,Z
         BRA     L08326
 L08302:
-        SUBE    $0AAE,Z
-        SBCA    $06F1,Z
+        SUBE    >VssTimeAE,Z
+        SBCA    >VssWork6F1,Z
         ASRA
         RORE
         ASRA
         RORE
-        ADDE    $0AAE,Z
-        ADCA    $06F1,Z
+        ADDE    >VssTimeAE,Z
+        ADCA    >VssWork6F1,Z
         STAA    $0AAD,Z
-        STE     $0AAE,Z
-        STAA    $06F1,Z
+        STE     >VssTimeAE,Z
+        STAA    >VssWork6F1,Z
 L08326:
         LDD     >TIC3,Z
         STD     $0AB0,Z
-        CLR     $0AAC,Z
+        CLR     >VssCountAC,Z
 L08332:
         LDAA    >TFLG1,Z
         EORA    #$04
@@ -10424,14 +10424,14 @@ L083C0:
         BCS     L083F0
         SUBA    #$64
         STAA    $0DCD,Z
-        INC     $0DC0,Z
+        INC     >FieldPwmCounter,Z
         BEQ     L083F0
         BSETW   >IoDriver6E,Z,#$2000                     ; IoDriver6E.5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
         BSET    >ChargeMonFlags,Z,#$20                   ; bit 5: generator field output on (mirrors IoDriver6E bit 13; Isr_PIT, ChargeControl)
         BRA     L08402
 L083F0:
         STAA    $0DCD,Z
-        CLR     $0DC0,Z
+        CLR     >FieldPwmCounter,Z
         BCLRW   >IoDriver6E,Z,#$2000                     ; IoDriver6E.5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
         BCLR    >ChargeMonFlags,Z,#$20                   ; bit 5: generator field output on (mirrors IoDriver6E bit 13; Isr_PIT, ChargeControl)
 L08402:
@@ -10439,10 +10439,10 @@ L08402:
         JSR     FanPwmOutputCheck
 L0840C:
         ORP     #$00E0
-        DEC     $097B,Z
+        DEC     >PciTimer97B,Z
         BNE     L08432
         LDAA    #$18
-        STAA    $097B,Z
+        STAA    >PciTimer97B,Z
         BRSET   >Options032E,#$04,L08428                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     CcdTransmit
         BRA     L08432
@@ -10518,7 +10518,7 @@ L084B8:
         CMPA    #$A0
         BCS     L084E2
         BRCLR   >EngineStateFlags,Z,#$80,L084E2          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BSET    $06B6,Z,#$80
+        BSET    >HwErrorFlags,Z,#$80
 L084E2:
         PULM    D
         LDX     #$7043
@@ -10562,7 +10562,7 @@ L0853A:
 L08554:
         BRSET   >IoDriver6E,Z,#$20,L08570                ; bit 5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
 L0855A:
-        BSET    $06B6,Z,#$08
+        BSET    >HwErrorFlags,Z,#$08
         LDAA    >FieldFaultDuty
         BRSET   >EngineStateFlags,Z,#$80,L0856C          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >FieldFaultDutyCrank
@@ -10583,7 +10583,7 @@ L08586:
         BRSET   >FieldFlags,Z,#$08,L085B6                ; bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
         BRCLR   >FieldFlags,Z,#$10,L08650                ; bit 4: field ramp held at a fixed duty (FieldRampControl)
         LDAB    #$0C
-        LDAA    $0DBD,Z
+        LDAA    >FieldRampDuty,Z
         LBEQ    L08650
         CMPA    #$19
         LBLS    L08630
@@ -10622,7 +10622,7 @@ L085E6:
 L085FC:
         CLR     >ChargeStepCount,Z
         BRCLR   >FieldFlags,Z,#$05,L0860A                ; bit 2: generator field test running (FieldTestStart, SystemTestCheck); bit 0: idle air charge step applied (IacChargeStepCalc)
-        LDAA    $0DC8,Z
+        LDAA    >FieldTestVolts,Z
 L0860A:
         SUBA    >ChargeTargetVolts,Z
         BEQ     L08638
@@ -10650,13 +10650,13 @@ L08630:
 L08638:
         BRSET   >IoDriver6E,Z,#$20,L08650                ; bit 5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
 L0863E:
-        INC     $0DC0,Z
+        INC     >FieldPwmCounter,Z
         BEQ     L08650
         BSETW   >IoDriver6E,Z,#$2000                     ; IoDriver6E.5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
         BSET    >ChargeMonFlags,Z,#$20                   ; bit 5: generator field output on (mirrors IoDriver6E bit 13; Isr_PIT, ChargeControl)
         BRA     L0865E
 L08650:
-        CLR     $0DC0,Z
+        CLR     >FieldPwmCounter,Z
         BCLRW   >IoDriver6E,Z,#$2000                     ; IoDriver6E.5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
         BCLR    >ChargeMonFlags,Z,#$20                   ; bit 5: generator field output on (mirrors IoDriver6E bit 13; Isr_PIT, ChargeControl)
 L0865E:
@@ -10819,7 +10819,7 @@ L087E8:
         TZX
         LDX     #$F916
         BRSET   >Options032B,#$40,L08800                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
-        LDAB    $85,Z
+        LDAB    <SparkOcTime2,Z
         BRA     L0887E
 L08800:
         BRCLR   >IoCfg1FL,Z,#$02,L0880C                  ; bit 1: tested by Isr_GPT_OC2 (ignition driver status, probably)
@@ -10843,7 +10843,7 @@ Isr_GPT_OC3:
         TZX
         LDX     #$F918
         BRSET   >Options032B,#$40,L08830                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
-        LDAB    $86,Z
+        LDAB    <SparkOcTime3,Z
         BRA     L0887E
 L08830:
         BRCLR   >IoCfg1FL,Z,#$04,L0883C                  ; bit 2: tested by Isr_GPT_OC3 (ignition driver status, probably)
@@ -10976,14 +10976,14 @@ L08964:
         ANDA    #$07
         CBA
         BCS     L0898E
-        LDD     $85,Z
+        LDD     <SparkOcTime2,Z
         ADDD    >TOC2,Z
         STD     >TOC2,Z
         BRA     L08998
 L0897A:
         BCLR    >SparkFlags,Z,#$10                       ; bit 4: cleared by SparkOutputOc2 only
         LDD     >RefPeriodLow,Z
-        SUBD    $85,Z
+        SUBD    <SparkOcTime2,Z
         ADDD    >TOC2,Z
         STD     >TOC2,Z
         BRA     L08998
@@ -11158,7 +11158,7 @@ L08B28:
         LDX     #$1FDD
         BRA     L08B58
 L08B44:
-        BSET    $0855,Z,#$10
+        BSET    >Ic4Flags,Z,#$10
         BCLR    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BSET    >BusTxRequest,Z,#$20                     ; bit 5: send the per-event spark message (set in Isr_GPT_IC4OC5)
         INC     $0F50,Z
@@ -11282,7 +11282,7 @@ L08C88:
         BRA     L08CD2
 L08C9A:
         BRSET   >Options032E,#$04,L08CB2                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
-        BRSET   $0855,Z,#$10,L08CAC
+        BRSET   >Ic4Flags,Z,#$10,L08CAC
         JSR     BusTxSparkEvent
         BRA     L08CBA
 L08CAC:
@@ -11295,7 +11295,7 @@ L08CBA:
         BSET    >BusTxRequest,Z,#$10                     ; bit 4: send the spark status message (set in Isr_GPT_IC4OC5)
 L08CBE:
         CLR     >CamSignalCount,Z
-        BCLR    $0855,Z,#$10
+        BCLR    >Ic4Flags,Z,#$10
         BCLR    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         BSET    >TCTL2,Z,#$80
         BCLR    >TCTL2,Z,#$40
@@ -11375,7 +11375,7 @@ L08D86:
         STD     >Temp4F0,Z
 L08D96:
         BRSET   >FaultSet00,Z,#$40,L08DA0
-        BSET    $06B6,Z,#$10
+        BSET    >HwErrorFlags,Z,#$10
 L08DA0:
         LDD     >Temp4F0,Z
         STD     >IoDriver68,Z
@@ -11402,7 +11402,7 @@ L08DC4:
 L08DDE:
         BRSET   >IoDriver6E,Z,#$20,L08DFA                ; bit 5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
 L08DE4:
-        BSET    $06B6,Z,#$08
+        BSET    >HwErrorFlags,Z,#$08
         LDAA    >FieldFaultDuty
         BRSET   >EngineStateFlags,Z,#$80,L08DF6          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >FieldFaultDutyCrank
@@ -11422,7 +11422,7 @@ L08E10:
         BRSET   >FieldFlags,Z,#$08,L08E3E                ; bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
         BRCLR   >FieldFlags,Z,#$10,L08FA2                ; bit 4: field ramp held at a fixed duty (FieldRampControl)
         LDAB    #$0C
-        LDAA    $0DBD,Z
+        LDAA    >FieldRampDuty,Z
         LBEQ    L08FA2
         CMPA    #$19
         LBLS    L08F82
@@ -11445,9 +11445,9 @@ L08E48:
         BEQ     L08E5C
         LDAA    #$FF
 L08E5C:
-        STAA    $0DD1,Z
+        STAA    >ChargeDeficitPrev,Z
         CLRB
-        LDAA    $0DD1,Z
+        LDAA    >ChargeDeficitPrev,Z
         TDE
         LDD     >FieldDutyAvg,Z
         PSHM    D,E
@@ -11456,7 +11456,7 @@ L08E5C:
         AIS     #$04
         STD     >FieldDutyAvg,Z
         BRCLR   >ChargeMonFlags,Z,#$40,L08EAC            ; bit 6: charging low long enough to fail (ChargeMonFailTime reached, ChargeLowMonitor)
-        LDAB    $0DD1,Z
+        LDAB    >ChargeDeficitPrev,Z
         TST     >ChargeStepCount,Z
         LBNE    L08E92
         STAB    >ChargeStepCount,Z
@@ -11475,16 +11475,16 @@ L08EAC:
         CMPA    >ChargeTargetVolts,Z
         LBCC    L08F50
         BRSET   $0DD4,Z,#$01,L08EFC
-        LDAA    $0DCE,Z
+        LDAA    >FieldCounter2,Z
         BEQ     L08ED2
-        DEC     $0DCE,Z
+        DEC     >FieldCounter2,Z
         BRA     L08EE6
 L08ED2:
         LDAA    >ChargeDeficit,Z
         CMPA    >ChargeDeficitMin
         LBLS    L08F50
         LDAA    >ChargeDeficitDelay
-        STAA    $0DCE,Z
+        STAA    >FieldCounter2,Z
 L08EE6:
         BNE     L08F58
         BSET    $0DD4,Z,#$01
@@ -11497,13 +11497,13 @@ L08EFC:
         LDAA    >FieldRampSteps,Z
         CMPA    #$64
         BCC     L08F50
-        LDAA    $0DCE,Z
+        LDAA    >FieldCounter2,Z
         CMPA    >FieldRampValue,Z
         BCC     L08F16
-        INC     $0DCE,Z
+        INC     >FieldCounter2,Z
         LBNE    L08FB0
 L08F16:
-        CLR     $0DCE,Z
+        CLR     >FieldCounter2,Z
         INC     >FieldRampSteps,Z
         LDAA    >FieldRampSteps,Z
         LDAB    #$FF
@@ -11525,9 +11525,9 @@ L08F4A:
         BRA     L08FB0
 L08F50:
         BCLR    $0DD4,Z,#$01
-        CLR     $0DCE,Z
+        CLR     >FieldCounter2,Z
 L08F58:
-        LDAA    $0DD1,Z
+        LDAA    >ChargeDeficitPrev,Z
         SUBA    >ChargeTargetVolts,Z
         BEQ     L08F8A
         LDAB    #$0C
@@ -11554,13 +11554,13 @@ L08F82:
 L08F8A:
         BRSET   >IoDriver6E,Z,#$20,L08FA2                ; bit 5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
 L08F90:
-        INC     $0DC0,Z
+        INC     >FieldPwmCounter,Z
         BEQ     L08FA2
         BSETW   >IoDriver6E,Z,#$2000                     ; IoDriver6E.5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
         BSET    >ChargeMonFlags,Z,#$20                   ; bit 5: generator field output on (mirrors IoDriver6E bit 13; Isr_PIT, ChargeControl)
         BRA     L08FB0
 L08FA2:
-        CLR     $0DC0,Z
+        CLR     >FieldPwmCounter,Z
         BCLRW   >IoDriver6E,Z,#$2000                     ; IoDriver6E.5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
         BCLR    >ChargeMonFlags,Z,#$20                   ; bit 5: generator field output on (mirrors IoDriver6E bit 13; Isr_PIT, ChargeControl)
 L08FB0:
@@ -11873,11 +11873,11 @@ L0A078:
         BCLR    >TMSK2,Z,#$80
         TST     >MonStartDelay,Z
         LBNE    L0A19E
-        LDAA    $0694,Z
+        LDAA    >CamWindowCount,Z
         CMPA    #$FF
         BEQ     L0A09A
         INCA
-        STAA    $0694,Z
+        STAA    >CamWindowCount,Z
 L0A09A:
         CMPA    #$08
         LBLS    L0A196
@@ -11919,17 +11919,17 @@ L0A0FA:
         BRCLR   >ControlFlags943,Z,#$10,L0A13E           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
         BCLR    >ControlFlags943,Z,#$18                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it; bit 3: fuel pump relay on, probably (set and cleared with bit 4)
         JSR     SwitchBitsCollect
-        LDD     $093A,Z
+        LDD     >SwitchBits0,Z
         STD     >TR0,Z
-        STD     $093E,Z
+        STD     >OutputStatusPrev,Z
         CLRW    >SPCR2,Z
         JSR     QspiWaitIdle
         LDD     >RR0,Z
-        STD     $093C,Z
+        STD     >OutputStatusWord,Z
         BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0A13E:
         BSET    >CrankSyncFlags2,Z,#$20                  ; bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
-        LDAA    $0694,Z
+        LDAA    >CamWindowCount,Z
         CMPA    #$08
         BLS     L0A14E
         BCLR    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
@@ -11996,11 +11996,11 @@ L0A1D2:
         CPE     #$00EA
         BCC     L0A206
         BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
-        CLR     $3E,Z
-        LDAB    $0689,Z
+        CLR     <CamCrankSyncCount,Z
+        LDAB    >CamCrankCount689,Z
         INCB
         BEQ     L0A206
-        STAB    $0689,Z
+        STAB    >CamCrankCount689,Z
         BRA     L0A206
 L0A202:
         ANDA    #$F8
@@ -12109,7 +12109,7 @@ L0A322:
         LDAB    #$00
         TBYK
         LDY     #$A017
-        LDAB    $86,Z
+        LDAB    <SparkOcTime3,Z
         BRSET   >CrankSyncFlags,Z,#$20,L0A342            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         BRSET   >Options032A,#$40,L0A34E                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRA     L0A348
@@ -12117,7 +12117,7 @@ L0A342:
         BRCLR   >Options032A,#$40,L0A34E                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
 L0A348:
         LDY     #$A010
-        LDAB    $85,Z
+        LDAB    <SparkOcTime2,Z
 L0A34E:
         CLRA
         ASLD
@@ -12193,7 +12193,7 @@ L0A42A:
         LDAB    #$00
         TBYK
         LDY     #$A010
-        LDAB    $85,Z
+        LDAB    <SparkOcTime2,Z
         BRSET   >CrankSyncFlags,Z,#$20,L0A442            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         BRSET   >Options032A,#$40,L0A44E                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRA     L0A448
@@ -12201,7 +12201,7 @@ L0A442:
         BRCLR   >Options032A,#$40,L0A44E                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
 L0A448:
         LDY     #$A017
-        LDAB    $86,Z
+        LDAB    <SparkOcTime3,Z
 L0A44E:
         LDE     $0005,Y
         CLRA
@@ -12317,7 +12317,7 @@ L0A598:
         LDAB    #$00
         TBYK
         LDY     #$A017
-        LDAB    $86,Z
+        LDAB    <SparkOcTime3,Z
         BRSET   >CrankSyncFlags,Z,#$20,L0A5B0            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         BRSET   >Options032A,#$40,L0A5BC                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRA     L0A5B6
@@ -12325,7 +12325,7 @@ L0A5B0:
         BRCLR   >Options032A,#$40,L0A5BC                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
 L0A5B6:
         LDY     #$A010
-        LDAB    $85,Z
+        LDAB    <SparkOcTime2,Z
 L0A5BC:
         BRSET   >SparkFlags,Z,#$20,L0A5E0                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    >TCTL1,Z
@@ -12453,7 +12453,7 @@ L0A71A:
         CPD     #$5DC0
         LBHI    L0A88A
         LDE     >CrankPeriodSum,Z
-        SUBE    $0AC2,Z
+        SUBE    >CrankPeriodPrev,Z
         STE     >Temp4F6,Z
         ASLE
         ASLE
@@ -12473,7 +12473,7 @@ L0A71A:
         LDAB    #$00
         TBYK
         LDY     #$A017
-        LDAB    $86,Z
+        LDAB    <SparkOcTime3,Z
         BRSET   >CrankSyncFlags,Z,#$20,L0A79A            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         BRSET   >Options032A,#$40,L0A7A6                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         BRA     L0A7A0
@@ -12481,7 +12481,7 @@ L0A79A:
         BRCLR   >Options032A,#$40,L0A7A6                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
 L0A7A0:
         LDY     #$A010
-        LDAB    $85,Z
+        LDAB    <SparkOcTime2,Z
 L0A7A6:
         LDE     >Temp4F6,Z
         CPE     #$1C55
@@ -12776,13 +12776,13 @@ Isr_GPT_PAI:
 L0AB28:
         BCLR    >ControlFlags943,Z,#$18                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it; bit 3: fuel pump relay on, probably (set and cleared with bit 4)
         JSR     SwitchBitsCollect
-        LDD     $093A,Z
+        LDD     >SwitchBits0,Z
         STD     >TR0,Z
-        STD     $093E,Z
+        STD     >OutputStatusPrev,Z
         CLRW    >SPCR2,Z
         JSR     QspiWaitIdle
         LDD     >RR0,Z
-        STD     $093C,Z
+        STD     >OutputStatusWord,Z
         BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0AB50:
         CLRA
@@ -12799,7 +12799,7 @@ L0AB6E:
         TST     >MonStartDelay,Z
         BNE     L0AB88
         BSET    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
-        CLR     $0694,Z
+        CLR     >CamWindowCount,Z
         LDAA    $0693,Z
         INCA
         BEQ     L0AB88
@@ -12900,11 +12900,11 @@ CrankPeriodDelta2:
         LDE     >CrankPeriodSum,Z
         BRSET   >CrankFlags2,Z,#$01,L0AC30               ; bit 0: first crank period delta taken (CrankPeriodDelta2)
         BSET    >CrankFlags2,Z,#$01                      ; bit 0: first crank period delta taken (CrankPeriodDelta2)
-        STE     $0AC2,Z
+        STE     >CrankPeriodPrev,Z
         BRA     L0AC54
 L0AC30:
-        LDD     $0AC2,Z
-        STE     $0AC2,Z
+        LDD     >CrankPeriodPrev,Z
+        STE     >CrankPeriodPrev,Z
         SDE
         TED
         STAA    $0DA3,Z
@@ -13578,7 +13578,7 @@ L0C1DA:
 PeriodChangeTrack2:
         CPX     #$8ABC
         BNE     L0C212
-        SUBE    $0AC2,Z
+        SUBE    >CrankPeriodPrev,Z
         TED
         STAA    $00,Y
         LDAA    >CrankPeriodWork,Z
@@ -14123,7 +14123,7 @@ L0C60C:
         INC     >CrankEventCount,Z
 L0C610:
         BRCLR   >AfterStartSparkFlags,Z,#$14,L0C61A
-        INC     $0D19,Z
+        INC     >AfterStartSparkPass,Z
 L0C61A:
         BRSET   >FuelModeFlags2,Z,#$80,L0C624            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         CLRW    $079E,Z
@@ -15329,7 +15329,7 @@ L0D422:
         LDAA    #$F0
         STAA    <Baro,Z
         LDAA    #$32
-        STAA    $3E,Z
+        STAA    <CamCrankSyncCount,Z
         LDAA    >EgrZeroPositionInit
         STAA    <EgrZeroPos,Z
         TZY
@@ -15346,10 +15346,10 @@ L0D48E:
         BLS     L0D48E
         LDED    >SegmentRpmConst2
         STE     >SegmentTimePair2,Z
-        STD     $11,Z
+        STD     <MisfirePeriod11,Z
         LDED    >SegmentRpmConst3
         STE     >SegmentTimePair3,Z
-        STD     $15,Z
+        STD     <MisfirePeriod15,Z
         JSR     ObdClearCodes
         TZX
         LDX     #$8050
@@ -15378,7 +15378,7 @@ L0D4D2:
         CLRA
 L0D4FE:
         STAA    >FlexEthanol,Z
-        STAA    $0A90,Z
+        STAA    >PowerDownCount,Z
         STAA    >FlexEthanolLearned,Z
         STAA    >FlexLearnBase,Z
         BNE     L0D516
@@ -15401,7 +15401,7 @@ L0D538:
         JSR     PciFlagsInit
 L0D542:
         LDAA    #$02
-        STAA    $097B,Z
+        STAA    >PciTimer97B,Z
         BSET    >BodyMsgTimeout2,Z,#$FF
         BSET    >EventSparkFlags,Z,#$01                  ; bit 0: input capture 4 edge was the first kind (TCTL2 bit 7 clear) (Isr_GPT_IC4OC5)
         LDAA    >RJURR7_L,Z
@@ -15540,8 +15540,8 @@ L0D6F2:
         STAA    >ControlFlags944,Z
         STAA    >FanBusFlags,Z
         JSR     SwitchBitsCollect
-        LDD     $093A,Z
-        STD     $093E,Z
+        LDD     >SwitchBits0,Z
+        STD     >OutputStatusPrev,Z
         CLRW    >SPCR2,Z
         STD     >TR0,Z
         JSR     KickWatchdogsLong
@@ -15550,7 +15550,7 @@ L0D6F2:
         JSR     DelayLoop
         JSR     QspiWaitIdle
         LDD     >RR0,Z
-        STD     $093C,Z
+        STD     >OutputStatusWord,Z
         LDAB    #$00
         TBXK
         LDX     #$7043
@@ -15577,16 +15577,16 @@ L0D6F2:
         BSET    >SwitchInputs2,Z,#$04                    ; bit 2: speed control switch (set at reset)
         BSET    >SpeedCtlSwitchFlags,Z,#$04
         LDD     #$8013
-        STAA    $0402,Z
+        STAA    >SpeedCtlNibble,Z
         STAA    >BattTempModelAcc,Z
         STAB    $0813,Z
         LDD     #$FFFF
         STD     >RefPeriodLow,Z
         STD     >RunModeCounter,Z
         STD     >CrankPeriodWork,Z
-        STD     $0AAC,Z
-        STD     $0AAE,Z
-        STD     $0AB2,Z
+        STD     >VssCountAC,Z
+        STD     >VssTimeAE,Z
+        STD     >VssPulseIndex,Z
         STD     $0AB4,Z
         STAA    >TipInTimer,Z
         STAA    >IdleFuelRamp,Z
@@ -15594,7 +15594,7 @@ L0D6F2:
         STAA    >InjectorKillCyl2,Z
         LDAA    #$0F
         STD     >VssBusValue2,Z
-        LDAA    $3E,Z
+        LDAA    <CamCrankSyncCount,Z
         CMPA    #$32
         BCS     L0D7D0
         BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
@@ -16253,7 +16253,7 @@ L0DFE8:
         BRSET   >FaultSet07,Z,#$02,L0E014
         LDAA    >FlexEthanol,Z
         STAA    >EepromData,Z
-        SUBA    $0A90,Z
+        SUBA    >PowerDownCount,Z
         BCC     L0DFFE
         NEGA
 L0DFFE:
@@ -16263,7 +16263,7 @@ L0DFFE:
         STD     >EepromAddr,Z
         JSR     EepromPowerDownWrite
         BCS     L0E014
-        STAA    $0A90,Z
+        STAA    >PowerDownCount,Z
 L0E014:
         BRCLR   >IoInputs0,Z,#$08,L0E032                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         JSR     EquipmentProbe
@@ -17298,10 +17298,10 @@ L0EBE2:
         BSET    >FieldFlags,Z,#$08                       ; bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
         BCLR    >FieldFlags,Z,#$10                       ; bit 4: field ramp held at a fixed duty (FieldRampControl)
         LDAA    #$64
-        STAA    $0DBD,Z
+        STAA    >FieldRampDuty,Z
         BRA     L0EC16
 L0EBF8:
-        STAA    $0DBD,Z
+        STAA    >FieldRampDuty,Z
         BSET    >FieldFlags,Z,#$10                       ; bit 4: field ramp held at a fixed duty (FieldRampControl)
         BCLR    >FieldFlags,Z,#$08                       ; bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
         BRA     L0EC16
@@ -17309,7 +17309,7 @@ L0EC06:
         BCLR    >ChargeMonFlags,Z,#$10                   ; bit 4: engine rpm above FieldRpmMin: field ramp started (FieldRampControl)
 L0EC0A:
         BCLR    >FieldFlags,Z,#$38                       ; bit 5: field ramp reached its end step (FieldRampControl); bit 4: field ramp held at a fixed duty (FieldRampControl); bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
-        CLR     $0DBD,Z
+        CLR     >FieldRampDuty,Z
         CLRW    >FieldRampCounter,Z
 L0EC16:
         RTS
@@ -17364,7 +17364,7 @@ L0EC8A:
         ORP     #$00E0
         BRSET   >PciFlags2,Z,#$04,L0ED5A                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         BRSET   >SystemFlags945,Z,#$80,L0ED5A            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
-        LDAB    $097B,Z
+        LDAB    >PciTimer97B,Z
         CMPB    #$06
         LBCS    L0ED5A
         BRSET   $0A08,Z,#$01,L0ECE0
@@ -17464,7 +17464,7 @@ L0EDC4:
         BRSET   >ControlFlagsC39,Z,#$04,L0EDEA           ; bit 2: set and cleared with bit 7
         BRA     L0EDE6
 L0EDD6:
-        BRSET   $051D,Z,#$02,L0EDEA
+        BRSET   >BusTimeoutFlags,Z,#$02,L0EDEA
         LDAA    >PciFlags6,Z
         CMPA    >PciMsg10Data,Z
         BEQ     L0EDEA
@@ -17547,7 +17547,7 @@ L0EE7E:
         CMPB    #$C8
         BCS     L0EE96
 L0EE82:
-        BRSET   $051D,Z,#$02,L0EE96
+        BRSET   >BusTimeoutFlags,Z,#$02,L0EE96
         LDY     #$4852
         JSR     ReportFault
         BCC     L0EE96
@@ -17568,7 +17568,7 @@ L0EEBC:
         CMPB    #$C8
         BCS     L0EED4
 L0EEC0:
-        BRSET   $051D,Z,#$04,L0EED4
+        BRSET   >BusTimeoutFlags,Z,#$04,L0EED4
         LDY     #$485C
         JSR     ReportFault
         BCC     L0EED4
