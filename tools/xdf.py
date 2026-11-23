@@ -32,6 +32,8 @@ UNITS = {
     "kpa": ("X/2.428", "kPa", 1),
     "spark": ("X/2", "deg BTDC", 1),
     "tempc": ("X-128", "deg C", 0),
+    "tempdiff": ("X", "deg C difference", 0),
+    "sparks": ("X/2", "deg BTDC (signed)", 1),
     "volt16": ("X/16.19", "V", 2),
     "volt51": ("X/51", "V", 2),
     "pwus32": ("X*32", "us", 0),
@@ -42,6 +44,7 @@ UNITS = {
 }
 INPUT_UNITS = {"EngineRpm": "rpm32", "CoolantTemp": "tempc", "AirTemp": "tempc", "Map": "kpa", "Baro": "kpa",
                "ManifoldVacuum": "kpa", "MapLast": "kpa", "BatteryVolts": "volt16", "BatteryVolts2": "volt16"}
+SIGNED_UNITS = {"sparks"}
 CATEGORY_WORDS = [("Fuel", "Fuel"), ("Injector", "Fuel"), ("Spark", "Spark"), ("Knock", "Spark"),
                   ("Idle", "Idle"), ("Thermistor", "Sensors"), ("Throttle", "Sensors"),
                   ("RevLimit", "Limits"), ("SpeedLimit", "Limits"), ("Fault", "Faults")]
@@ -236,6 +239,19 @@ def main():
             X.label_axis(e, "x", [str(i + 1) for i in range(t["cols"])])
             X.label_axis(e, "y", [str(i + 1) for i in range(t["rows"])])
             X.zdata(e, a, t["rows"], t["cols"], "raw", False)
+        elif kind == "cond" and d[a]:
+            n = d[a]
+            labels = []
+            for r in range(n):
+                q = a + 1 + 4 * r
+                off = (d[q] << 8) | d[q + 1]
+                labels.append("%s %s" % (names.ram.get(off, "$%04X" % off), {0: "clear", 2: "all set", 4: "above"}.get(d[q + 2], "test %d" % d[q + 2])))
+            e = X.item("XDFTABLE", t["name"], "Condition list for ConditionTable: per row RAM offset (2 bytes), test "
+                       "(0 = mask bits must be clear, 2 = all set, 4 = value above), mask. Clearing a mask bit drops "
+                       "that condition. $%04X" % a, ["Diagnostics"])
+            X.label_axis(e, "x", ["addr hi", "addr lo", "test", "mask"])
+            X.label_axis(e, "y", labels)
+            X.zdata(e, a + 1, n, 4, "raw", False, output="3")
         elif kind == "fault":
             rows = t["rows"]
             e = X.item("XDFTABLE", t["name"], (c.get("desc") or "") + " $%04X" % a, ["Faults"])
@@ -266,7 +282,7 @@ def main():
         eq, text, dec = UNITS.get(u, UNITS["raw"])
         e = X.item("XDFCONSTANT", v["name"], v.get("desc", "") + " $%04X" % a, cat)
         SubElement(e, "EMBEDDEDDATA", mmedaddress="0x%X" % a, mmedelementsizebits=str(8 * v.get("size", 1)),
-                   mmedtypeflags="0x00")
+                   mmedtypeflags="0x01" if u in SIGNED_UNITS else "0x00")
         SubElement(e, "units").text = text
         SubElement(e, "decimalpl").text = str(dec)
         SubElement(e, "outputtype").text = "1"

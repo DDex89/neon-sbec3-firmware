@@ -29,7 +29,8 @@ def size_text(d, a, t):
 PHYS = {"rpm32": lambda v: "%d rpm" % (v * 32), "rpm8": lambda v: "%d rpm" % (v * 8), "rpmw": lambda v: "%d rpm" % (v / 8),
         "kpa": lambda v: "%.1f kPa" % (v / 2.428), "tempc": lambda v: "%d deg C" % (v - 128),
         "volt16": lambda v: "%.2f V" % (v / 16.19), "volt51": lambda v: "%.2f V" % (v / 51),
-        "spark": lambda v: "%.1f deg" % (v / 2), "pwus32": lambda v: "%d us" % (v * 32),
+        "spark": lambda v: "%.1f deg" % (v / 2), "sparks": lambda v: "%.1f deg" % ((v - 256 if v > 127 else v) / 2),
+        "tempdiff": lambda v: "%d deg C" % v, "pwus32": lambda v: "%d us" % (v * 32),
         "mult256": lambda v: "%.3f" % (v / 256)}
 
 

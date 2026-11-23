@@ -11670,7 +11670,7 @@ Sub_17CA0:
         BRCLR   >MonStatusO2Sensor4,Z,#$80,L17D20
         CLRB
         TBYK
-        LDY     #O2MonData2StepConds2
+        LDY     #CondList30FF
         JSR     ConditionTable
         BEQ     L17CC0
         BSET    $C5,Z,#$02
@@ -11678,7 +11678,7 @@ Sub_17CA0:
 L17CC0:
         BCLR    $C5,Z,#$02
 L17CC4:
-        LDY     #O2MonData2StepConds
+        LDY     #CondList30C2
         JSR     ConditionTable
         BEQ     L17CD4
         BSET    $C5,Z,#$01
@@ -13361,12 +13361,12 @@ L18D84:
         BRA     L18DB6
 L18D90:
         BCLR    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
-        LDY     #MisfireEnableCheckConds2
+        LDY     #CondList33B0
         JSR     ConditionTable
         BEQ     L18DA2
         BSET    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
 L18DA2:
-        LDY     #MisfireEnableCheckConds
+        LDY     #CondList3373
         JSR     ConditionTable
         BEQ     L18DB2
         BSET    >MisfireFlags2,Z,#$01                    ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)

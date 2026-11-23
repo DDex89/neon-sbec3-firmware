@@ -12,7 +12,9 @@
   "mult256": "factor = x / 256",
   "pos256": "position 0-255 along the rows (or columns) of a 3D table",
   "fuelcorr": "fuel factor = 1 + x / 256, x signed (-128 = 0.5, +127 = 1.496)",
-  "raw": "no conversion known yet"
+  "raw": "no conversion known yet",
+  "tempdiff": "deg C = x (a difference of two temperatures)",
+  "sparks": "degrees BTDC = x / 2, two's complement"
  },
  "tables": {
   "03FC": {
@@ -26,8 +28,8 @@
   "0581": {
    "name": "ResetCoolantInit",
    "category": "Startup",
-   "desc": "At reset: IdleRpmRefStart against start coolant temperature",
-   "x": "tempc",
+   "desc": "At reset: IdleRpmRefStart against start coolant temperature; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -186,8 +188,8 @@
   "0758": {
    "name": "CrankPulseCoolantFactor",
    "category": "Fuel",
-   "desc": "Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant",
-   "x": "tempc",
+   "desc": "Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "mult256",
    "auto": false
   },
@@ -211,8 +213,8 @@
   "07D5": {
    "name": "CrankRpmDecayWeight",
    "category": "Fuel",
-   "desc": "Weight of the rpm reduction against the cranking coolant",
-   "x": "tempc",
+   "desc": "Weight of the rpm reduction against the cranking coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -227,32 +229,32 @@
   "07ED": {
    "name": "CrankV0769DecayWeight",
    "category": "Fuel",
-   "desc": "Weight of CrankV0769Decay against the cranking coolant",
-   "x": "tempc",
+   "desc": "Weight of CrankV0769Decay against the cranking coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "07F9": {
    "name": "CrankCoolantAdder2",
    "category": "Fuel",
-   "desc": "Cranking pulse addition against the cranking coolant, used while BatteryTemp is not above the raw MAP",
-   "x": "tempc",
+   "desc": "Cranking pulse addition against the cranking coolant, used while BatteryTemp is not above the raw MAP; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "0803": {
    "name": "CrankBaroDecay",
    "category": "Fuel",
-   "desc": "Cranking pulse reduction against barometric pressure; weighted by CrankBaroDecayWeight",
-   "x": "kpa",
+   "desc": "Cranking pulse reduction against barometric pressure; weighted by CrankBaroDecayWeight; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "080B": {
    "name": "CrankBaroDecayWeight",
    "category": "Fuel",
-   "desc": "Weight of CrankBaroDecay against the cranking coolant",
-   "x": "tempc",
+   "desc": "Weight of CrankBaroDecay against the cranking coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -267,8 +269,8 @@
   "081F": {
    "name": "CrankEthanolCoolant",
    "category": "Fuel",
-   "desc": "Cranking: value against ethanol content and coolant into CrankEthanolFactor",
-   "x": "tempc",
+   "desc": "Cranking: value against ethanol content and coolant into CrankEthanolFactor; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "pos256",
    "z": "raw",
    "auto": false
@@ -352,8 +354,8 @@
   },
   "0849": {
    "name": "BaroFuel",
-   "desc": "Pulse width added to the fuel pulse against barometric pressure (result x 8)",
-   "x": "kpa",
+   "desc": "Pulse width added to the fuel pulse against barometric pressure (result x 8); read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "x_in": "Baro",
    "category": "Fuel"
@@ -361,40 +363,40 @@
   "113D": {
    "name": "TpsFilterRiseCoolant",
    "category": "Fuel",
-   "desc": "Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle opens, against coolant at start",
-   "x": "tempc",
+   "desc": "Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle opens, against coolant at start; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "11FB": {
    "name": "DecelLeanThrottleCoolantFactor",
    "category": "Fuel",
-   "desc": "Deceleration enleanment: factor on the throttle-closing term against coolant at start, into DecelLeanThrottleFactor",
-   "x": "tempc",
+   "desc": "Deceleration enleanment: factor on the throttle-closing term against coolant at start, into DecelLeanThrottleFactor; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "120D": {
    "name": "DecelLeanMapCoolantFactor",
    "category": "Fuel",
-   "desc": "Deceleration enleanment: factor on the MAP-drop term against coolant at start, into DecelLeanMapFactor",
-   "x": "tempc",
+   "desc": "Deceleration enleanment: factor on the MAP-drop term against coolant at start, into DecelLeanMapFactor; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "1227": {
    "name": "TpsFilterFallCoolant",
    "category": "Fuel",
-   "desc": "Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle closes, against coolant at start",
-   "x": "tempc",
+   "desc": "Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle closes, against coolant at start; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "1239": {
    "name": "DecelLeanBaroFactor",
    "category": "Fuel",
-   "desc": "Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel",
-   "x": "kpa",
+   "desc": "Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "mult256",
    "auto": false
   },
@@ -426,8 +428,8 @@
   "130D": {
    "name": "DecelLeanTimeCoolant",
    "category": "Fuel",
-   "desc": "Deceleration enleanment shortly after start: time x coolant at start, into DecelLeanTimeFactor",
-   "x": "tempc",
+   "desc": "Deceleration enleanment shortly after start: time x coolant at start, into DecelLeanTimeFactor; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "pos256",
    "z": "raw",
    "auto": false
@@ -435,16 +437,16 @@
   "1374": {
    "name": "EventFuelCoolantSub",
    "category": "Fuel",
-   "desc": "Per-event fuel: amount subtracted from FuelPulseAdder against coolant while FuelModeFlags bit 7 is set",
-   "x": "tempc",
+   "desc": "Per-event fuel: amount subtracted from FuelPulseAdder against coolant while FuelModeFlags bit 7 is set; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "pwus32",
    "auto": false
   },
   "13B9": {
    "name": "O2StartDelayCoolant",
    "category": "Closed loop",
-   "desc": "Closed-loop entry (O2StartDelays): delay against coolant (plus $323D with an O2 fault flag)",
-   "x": "tempc",
+   "desc": "Closed-loop entry (O2StartDelays): delay against coolant (plus $323D with an O2 fault flag); read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -518,8 +520,8 @@
   "19DC": {
    "name": "CoolantSparkMap",
    "category": "Spark",
-   "desc": "Spark change against MAP (rows) and coolant (columns), signed",
-   "x": "tempc",
+   "desc": "Spark change against MAP (rows) and coolant (columns), signed; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "pos256",
    "z": "spark",
    "auto": false
@@ -544,16 +546,16 @@
   "1A82": {
    "name": "AfterStartSparkCoolant",
    "category": "Spark",
-   "desc": "Spark change after start against the coolant temperature at start, into AfterStartSparkStart",
-   "x": "tempc",
+   "desc": "Spark change after start against the coolant temperature at start, into AfterStartSparkStart; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "spark",
    "auto": false
   },
   "1A98": {
    "name": "AfterStartSparkCoolantWeight",
    "category": "Spark",
-   "desc": "Weight of AfterStartSparkMapRpm against coolant",
-   "x": "tempc",
+   "desc": "Weight of AfterStartSparkMapRpm against coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "mult256",
    "auto": false
   },
@@ -669,8 +671,8 @@
   "1D6A": {
    "name": "SurgeRetardCoolantFactor",
    "category": "Spark",
-   "desc": "Driveline surge spark control: factor on the retard against coolant",
-   "x": "tempc",
+   "desc": "Driveline surge spark control: factor on the retard against coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "mult256",
    "auto": false
   },
@@ -758,9 +760,9 @@
   "1FB3": {
    "name": "KnockRetardStep",
    "category": "Knock",
-   "desc": "Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow)",
+   "desc": "Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow); the value is multiplied by KnockFirstStepFactor or KnockStepFactor",
    "x": "raw",
-   "y": "spark",
+   "y": "raw",
    "auto": false
   },
   "1FBF": {
@@ -839,32 +841,32 @@
   "2234": {
    "name": "IacGearDelayCoolant",
    "category": "Idle",
-   "desc": "Delay timer (IacGearDelay) started when DriveFlags bit 7 sets, against coolant",
-   "x": "tempc",
+   "desc": "Delay timer (IacGearDelay) started when DriveFlags bit 7 sets, against coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "223E": {
    "name": "IacGearDelayCoolantAC",
    "category": "Idle",
-   "desc": "As IacGearDelayCoolant with A/C requested",
-   "x": "tempc",
+   "desc": "As IacGearDelayCoolant with A/C requested; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "2248": {
    "name": "IacGearTimeCoolant",
    "category": "Idle",
-   "desc": "Duration of the gear-change idle air (IacGearDuration) against coolant, below $279A; scaled by IacGearTimeFactor",
-   "x": "tempc",
+   "desc": "Duration of the gear-change idle air (IacGearDuration) against coolant, below $279A; scaled by IacGearTimeFactor; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "2252": {
    "name": "IacGearTimeCoolantAC",
    "category": "Idle",
-   "desc": "As IacGearTimeCoolant with A/C requested",
-   "x": "tempc",
+   "desc": "As IacGearTimeCoolant with A/C requested; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -887,32 +889,32 @@
   "2270": {
    "name": "IacDroopStepCoolant",
    "category": "Idle",
-   "desc": "IAC opening when the rpm drops below the target in gear (IdleFlags3 bit 3, DriveFlags bit 7), against coolant",
-   "x": "tempc",
+   "desc": "IAC opening when the rpm drops below the target in gear (IdleFlags3 bit 3, DriveFlags bit 7), against coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "227A": {
    "name": "IacDroopStepCoolantAC",
    "category": "Idle",
-   "desc": "As IacDroopStepCoolant with A/C requested",
-   "x": "tempc",
+   "desc": "As IacDroopStepCoolant with A/C requested; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "2294": {
    "name": "IacGearTimeCoolantPN",
    "category": "Idle",
-   "desc": "As IacGearTimeCoolant in P/N",
-   "x": "tempc",
+   "desc": "As IacGearTimeCoolant in P/N; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "229E": {
    "name": "IacGearTimeCoolantPNAC",
    "category": "Idle",
-   "desc": "As IacGearTimeCoolant in P/N with A/C requested",
-   "x": "tempc",
+   "desc": "As IacGearTimeCoolant in P/N with A/C requested; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -935,40 +937,40 @@
   "22BC": {
    "name": "IacGearStepCoolantPN",
    "category": "Idle",
-   "desc": "IAC step when the gear-change timer runs out, against coolant (P/N)",
-   "x": "tempc",
+   "desc": "IAC step when the gear-change timer runs out, against coolant (P/N); read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "22C6": {
    "name": "IacGearStepCoolantPNAC",
    "category": "Idle",
-   "desc": "As IacGearStepCoolantPN with A/C requested",
-   "x": "tempc",
+   "desc": "As IacGearStepCoolantPN with A/C requested; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "22E1": {
    "name": "IacAcKickMap",
    "category": "Idle",
-   "desc": "IAC step when the A/C clutch engages, against MAP (MAP latched into IacAcKickMapLatch); into IacKick",
-   "x": "kpa",
+   "desc": "IAC step when the A/C clutch engages, against MAP (MAP latched into IacAcKickMapLatch); into IacKick; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "22E9": {
    "name": "IacAcKickMapLatched",
    "category": "Idle",
-   "desc": "IAC step when the A/C clutch releases, against the MAP latched at engagement (IacAcKickMapLatch)",
-   "x": "kpa",
+   "desc": "IAC step when the A/C clutch releases, against the MAP latched at engagement (IacAcKickMapLatch); read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "2316": {
    "name": "IacStartBattTemp",
    "category": "Idle",
-   "desc": "IAC hold at start (IacStartHold/IacStartHold2) against battery temperature, scaled by IacStepBaroFactor",
-   "x": "tempc",
+   "desc": "IAC hold at start (IacStartHold/IacStartHold2) against battery temperature, scaled by IacStepBaroFactor; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -983,8 +985,8 @@
   "2351": {
    "name": "IacCoastCoolant",
    "category": "Idle",
-   "desc": "Minimum idle air while coasting against coolant; the higher of this and IacCoastSpeedRpm applies",
-   "x": "tempc",
+   "desc": "Minimum idle air while coasting against coolant; the higher of this and IacCoastSpeedRpm applies; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -1015,24 +1017,24 @@
   "2385": {
    "name": "IacRollFactorBattTemp",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against battery temperature (centred on 128)",
-   "x": "tempc",
+   "desc": "Factor on the rolling IAC target against battery temperature (centred on 128); read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "238F": {
    "name": "IacRollRpmFactor2",
    "category": "Idle",
-   "desc": "Second rolling IAC factor against segment rpm",
-   "x": "rpm32",
+   "desc": "Second rolling IAC factor against segment rpm; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "2399": {
    "name": "IacRollRpmFactor",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against segment rpm",
-   "x": "rpm32",
+   "desc": "Factor on the rolling IAC target against segment rpm; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -1057,16 +1059,16 @@
   "2421": {
    "name": "IacStepBaroFactor",
    "category": "Idle",
-   "desc": "Multiplier on IAC steps and start positions against barometric pressure",
-   "x": "kpa",
+   "desc": "Multiplier on IAC steps and start positions against barometric pressure; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "242B": {
    "name": "IacShiftBaroFactor",
    "category": "Idle",
-   "desc": "Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure",
-   "x": "kpa",
+   "desc": "Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -1218,8 +1220,8 @@
   "28B4": {
    "name": "MisfireThreshCoolant",
    "category": "Diagnostics",
-   "desc": "Factor on the misfire threshold against load (rows) and coolant (columns), result into MisfireThreshValue",
-   "x": "tempc",
+   "desc": "Factor on the misfire threshold against load (rows) and coolant (columns), result into MisfireThreshValue; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "pos256",
    "z": "raw",
    "auto": false
@@ -1353,8 +1355,8 @@
   "42D3": {
    "name": "DwellVoltsScale",
    "category": "Spark",
-   "desc": "Battery voltage to row position of DwellTime",
-   "x": "volt16",
+   "desc": "Battery voltage to row position of DwellTime; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "pos256",
    "auto": false
   },
@@ -3710,8 +3712,8 @@
   },
   "26AC": {
    "name": "MisfireSparkMin",
-   "desc": "Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6)",
-   "unit": "spark",
+   "desc": "Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6); compared signed (BLT)",
+   "unit": "sparks",
    "category": "Diagnostics",
    "size": 1
   },

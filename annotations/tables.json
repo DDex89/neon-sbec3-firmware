@@ -12,7 +12,9 @@
   "mult256": "factor = x / 256",
   "pos256": "position 0-255 along the rows (or columns) of a 3D table",
   "fuelcorr": "fuel factor = 1 + x / 256, x signed (-128 = 0.5, +127 = 1.496)",
-  "raw": "no conversion known yet"
+  "raw": "no conversion known yet",
+  "tempdiff": "deg C = x (a difference of two temperatures)",
+  "sparks": "degrees BTDC = x / 2, two's complement"
  },
  "tables": {
   "0398": {
@@ -1966,9 +1968,9 @@
   "24BF": {
    "name": "KnockRetardStep",
    "category": "Knock",
-   "desc": "Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow)",
+   "desc": "Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow); the value is multiplied by KnockFirstStepFactor or KnockStepFactor",
    "x": "raw",
-   "y": "spark",
+   "y": "raw",
    "auto": false
   },
   "24CB": {
@@ -3983,7 +3985,7 @@
   "0377": {
    "name": "FanSoakAirHyst",
    "desc": "Hot-soak fan: air temperature hysteresis",
-   "unit": "tempc",
+   "unit": "tempdiff",
    "size": 1,
    "category": "Cooling fan"
   },
@@ -6042,7 +6044,7 @@
   "11DE": {
    "name": "WarmupSoakDiffMin",
    "desc": "Warm-up fuel: difference of start battery temperature and start coolant that selects the soak branch",
-   "unit": "tempc",
+   "unit": "tempdiff",
    "size": 1,
    "category": "Fuel"
   },
@@ -10034,8 +10036,8 @@
   },
   "2CCA": {
    "name": "MisfireSparkMin",
-   "desc": "Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6)",
-   "unit": "spark",
+   "desc": "Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6); compared signed (BLT)",
+   "unit": "sparks",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10380,7 +10382,7 @@
   "30F9": {
    "name": "LdpSoakDiffMax",
    "desc": "EVAP leak test: coolant minus battery temperature below this value (cold soak)",
-   "unit": "tempc",
+   "unit": "tempdiff",
    "category": "EVAP purge",
    "size": 1
   },

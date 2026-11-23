@@ -4883,8 +4883,8 @@ KnockThreshold:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardStep ($2433): 2D table, 2 points, unsigned
-; Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow)
-; x: raw, y: spark (units: docs/en/calibration.md)
+; Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow); the value is multiplied by KnockFirstStepFactor or KnockStepFactor
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: KnockSignal
 ; Read at $1F4FE
 ;---------------------------------------------------------------------------------------------------
@@ -6859,7 +6859,7 @@ MisfireHoldDefault:
 MisfireHoldRpm:
         dc.b    $04                                      ; Hold-off when segment rpm is above MisfireHoldRpmValue
 MisfireSparkMin:
-        dc.b    $C4                                      ; Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6)
+        dc.b    $C4                                      ; Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6); compared signed (BLT)
 MisfireHoldSpark:
         dc.b    $04                                      ; Hold-off for the spark interventions
 MisfireHoldEnable:
@@ -7995,10 +7995,10 @@ BrakeSwSeenTime:
         dc.b    $08,$01,$36,$00,$C0,$01,$3C,$00,$01
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds ($36B9): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; CondList36B9 ($36B9): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DD4
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds:
+CondList36B9:
         dc.b    $01                                      ; entries
         dc.b    $0A,$9A,$06,$03                          ; VehicleSpeed test 6: bit 1; bit 0
 
@@ -8008,10 +8008,10 @@ O2HeaterMonitorConds:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds2 ($36F6): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; CondList36F6 ($36F6): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DA2
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds2:
+CondList36F6:
         dc.b    $01                                      ; entries
         dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 
@@ -8024,10 +8024,10 @@ O2HeaterMonitorConds2:
         dc.b    $01
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds3 ($375C): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; CondList375C ($375C): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DDE
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds3:
+CondList375C:
         dc.b    $01                                      ; entries
         dc.b    $0A,$9A,$06,$03                          ; VehicleSpeed test 6: bit 1; bit 0
 
@@ -8037,10 +8037,10 @@ O2HeaterMonitorConds3:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds4 ($3799): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3799 ($3799): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DAC
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds4:
+CondList3799:
         dc.b    $01                                      ; entries
         dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 
@@ -8053,10 +8053,10 @@ O2HeaterMonitorConds4:
         dc.b    $01
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds5 ($37FF): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; CondList37FF ($37FF): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DE8
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds5:
+CondList37FF:
         dc.b    $01                                      ; entries
         dc.b    $0A,$9A,$06,$03                          ; VehicleSpeed test 6: bit 1; bit 0
 
@@ -8066,10 +8066,10 @@ O2HeaterMonitorConds5:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds6 ($383C): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; CondList383C ($383C): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DB6
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds6:
+CondList383C:
         dc.b    $01                                      ; entries
         dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 
@@ -8082,10 +8082,10 @@ O2HeaterMonitorConds6:
         dc.b    $01
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds7 ($38A2): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; CondList38A2 ($38A2): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DF2
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds7:
+CondList38A2:
         dc.b    $01                                      ; entries
         dc.b    $0A,$9A,$06,$03                          ; VehicleSpeed test 6: bit 1; bit 0
 
@@ -8095,10 +8095,10 @@ O2HeaterMonitorConds7:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds8 ($38DF): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
+; CondList38DF ($38DF): condition list, 1 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DC0
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds8:
+CondList38DF:
         dc.b    $01                                      ; entries
         dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 
@@ -8145,10 +8145,10 @@ O2HeaterMonitorConds8:
         dc.b    $00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireEnableCheckConds ($3B67): condition list, 2 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3B67 ($3B67): condition list, 2 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $2AB84
 ;---------------------------------------------------------------------------------------------------
-MisfireEnableCheckConds:
+CondList3B67:
         dc.b    $02                                      ; entries
         dc.b    $00,$A9,$00,$04                          ; MonStatusPurge needs clear: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         dc.b    $00,$AA,$00,$04                          ; MonStatusEgrFlow needs clear: bit 2
@@ -8159,10 +8159,10 @@ MisfireEnableCheckConds:
         dc.b    $00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireEnableCheckConds2 ($3BA4): condition list, 7 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3BA4 ($3BA4): condition list, 7 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $2AB76
 ;---------------------------------------------------------------------------------------------------
-MisfireEnableCheckConds2:
+CondList3BA4:
         dc.b    $07                                      ; entries
         dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
         dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4

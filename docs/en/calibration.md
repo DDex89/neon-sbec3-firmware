@@ -59,6 +59,8 @@ The unit names in `annotations/tables.json` and in the source comments:
 | kpa | kPa = x / 2.428 (2GNT: torr = x / 0.3237) |
 | spark | degrees BTDC = x / 2 |
 | tempc | deg C = x - 128 (deg F = (x - 128) * 1.8 + 32) |
+| tempdiff | deg C = x, a difference of two temperatures |
+| sparks | degrees BTDC = x / 2, x signed (compared with signed branches) |
 | volt16 | volts = x / 16.19 |
 | volt51 | volts = x / 51 |
 | pwus32 | microseconds = x * 32 |

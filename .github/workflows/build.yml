@@ -16,3 +16,5 @@ jobs:
         run: python3 tools/build.py
       - name: Check that the TunerPro definitions are well-formed XML
         run: python3 -c "import glob, xml.etree.ElementTree as ET; [ET.parse(f) for f in glob.glob('xdf/*.xdf')]; print(len(glob.glob('xdf/*.xdf')), 'XDF files OK')"
+      - name: Check every XDF against its image (addresses, sizes, masks, overlaps, unit ranges)
+        run: for r in roms/*.bin; do p=$(basename $r .bin); python3 tools/xdfcheck.py $r xdf/$p.xdf | tail -1 || exit 1; done

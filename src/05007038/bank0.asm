@@ -535,8 +535,8 @@ Tab2D_0574:
 
 ;---------------------------------------------------------------------------------------------------
 ; ResetCoolantInit ($0581): 2D table, 1 points, unsigned
-; At reset: IdleRpmRefStart against start coolant temperature
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; At reset: IdleRpmRefStart against start coolant temperature; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $07140
 ;---------------------------------------------------------------------------------------------------
@@ -959,8 +959,8 @@ CrankFuelBattTempMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankPulseCoolantFactor ($0758): 2D table, 1 points, unsigned
-; Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant
-; x: tempc, y: mult256 (units: docs/en/calibration.md)
+; Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $09CA4
 ;---------------------------------------------------------------------------------------------------
@@ -1017,8 +1017,8 @@ CrankRpmDecayClosed:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankRpmDecayWeight ($07D5): 2D table, 1 points, unsigned
-; Weight of the rpm reduction against the cranking coolant
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Weight of the rpm reduction against the cranking coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $09BAE
 ;---------------------------------------------------------------------------------------------------
@@ -1043,8 +1043,8 @@ CrankV0769Decay:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankV0769DecayWeight ($07ED): 2D table, 2 points, unsigned
-; Weight of CrankV0769Decay against the cranking coolant
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Weight of CrankV0769Decay against the cranking coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $09BCE
 ;---------------------------------------------------------------------------------------------------
@@ -1056,8 +1056,8 @@ CrankV0769DecayWeight:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankCoolantAdder2 ($07F9): 2D table, 1 points, unsigned
-; Cranking pulse addition against the cranking coolant, used while BatteryTemp is not above the raw MAP
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Cranking pulse addition against the cranking coolant, used while BatteryTemp is not above the raw MAP; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $09C16
 ;---------------------------------------------------------------------------------------------------
@@ -1069,8 +1069,8 @@ CrankCoolantAdder2:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankBaroDecay ($0803): 2D table, 2 points, unsigned
-; Cranking pulse reduction against barometric pressure; weighted by CrankBaroDecayWeight
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; Cranking pulse reduction against barometric pressure; weighted by CrankBaroDecayWeight; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $09BE0
 ;---------------------------------------------------------------------------------------------------
@@ -1082,8 +1082,8 @@ CrankBaroDecay:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankBaroDecayWeight ($080B): 2D table, 1 points, unsigned
-; Weight of CrankBaroDecay against the cranking coolant
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Weight of CrankBaroDecay against the cranking coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $09BEC
 ;---------------------------------------------------------------------------------------------------
@@ -1108,8 +1108,8 @@ CrankVacuumFactor:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankEthanolCoolant ($081F): 3D table, 5 rows x 5 columns, unsigned
-; Cranking: value against ethanol content and coolant into CrankEthanolFactor
-; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Cranking: value against ethanol content and coolant into CrankEthanolFactor; read here with another input than in 05293190AC, so the x unit is not carried
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $0C,Z
 ; Read at $09A74
 ;---------------------------------------------------------------------------------------------------
@@ -1139,8 +1139,8 @@ CrankFuelCoolantMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; BaroFuel ($0849): 2D table, 5 points, unsigned
-; Pulse width added to the fuel pulse against barometric pressure (result x 8)
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; Pulse width added to the fuel pulse against barometric pressure (result x 8); read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $17,Z
 ; Read at $07F10
 ;---------------------------------------------------------------------------------------------------
@@ -1744,8 +1744,8 @@ Tab2D_1131:
 
 ;---------------------------------------------------------------------------------------------------
 ; TpsFilterRiseCoolant ($113D): 2D table, 3 points, unsigned, y = 0 counts as 256
-; Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle opens, against coolant at start
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle opens, against coolant at start; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A,Z
 ; Read at $09756
 ;---------------------------------------------------------------------------------------------------
@@ -1860,8 +1860,8 @@ O2ColdCoolantMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanThrottleCoolantFactor ($11FB): 2D table, 4 points, unsigned
-; Deceleration enleanment: factor on the throttle-closing term against coolant at start, into DecelLeanThrottleFactor
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Deceleration enleanment: factor on the throttle-closing term against coolant at start, into DecelLeanThrottleFactor; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A,Z
 ; Read at $0990A
 ;---------------------------------------------------------------------------------------------------
@@ -1873,8 +1873,8 @@ DecelLeanThrottleCoolantFactor:
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanMapCoolantFactor ($120D): 2D table, 3 points, unsigned
-; Deceleration enleanment: factor on the MAP-drop term against coolant at start, into DecelLeanMapFactor
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Deceleration enleanment: factor on the MAP-drop term against coolant at start, into DecelLeanMapFactor; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A,Z
 ; Read at $098AC
 ;---------------------------------------------------------------------------------------------------
@@ -1896,8 +1896,8 @@ Tab2D_121F:
 
 ;---------------------------------------------------------------------------------------------------
 ; TpsFilterFallCoolant ($1227): 2D table, 3 points, unsigned, y = 0 counts as 256
-; Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle closes, against coolant at start
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle closes, against coolant at start; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A,Z
 ; Read at $09766
 ;---------------------------------------------------------------------------------------------------
@@ -1919,8 +1919,8 @@ Tab2D_122F:
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanBaroFactor ($1239): 2D table, 3 points, unsigned
-; Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel
-; x: kpa, y: mult256 (units: docs/en/calibration.md)
+; Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $099C4
 ;---------------------------------------------------------------------------------------------------
@@ -1983,8 +1983,8 @@ DecelLeanDropMin:
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanTimeCoolant ($130D): 3D table, 9 rows x 9 columns, unsigned
-; Deceleration enleanment shortly after start: time x coolant at start, into DecelLeanTimeFactor
-; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Deceleration enleanment shortly after start: time x coolant at start, into DecelLeanTimeFactor; read here with another input than in 05293190AC, so the x unit is not carried
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $0F,Z
 ; Read at $0994C
 ;---------------------------------------------------------------------------------------------------
@@ -2015,8 +2015,8 @@ Tab2D_136A:
 
 ;---------------------------------------------------------------------------------------------------
 ; EventFuelCoolantSub ($1374): 2D table, 2 points, unsigned
-; Per-event fuel: amount subtracted from FuelPulseAdder against coolant while FuelModeFlags bit 7 is set
-; x: tempc, y: pwus32 (units: docs/en/calibration.md)
+; Per-event fuel: amount subtracted from FuelPulseAdder against coolant while FuelModeFlags bit 7 is set; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: pwus32 (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0FC48
 ;---------------------------------------------------------------------------------------------------
@@ -2081,8 +2081,8 @@ O2ColdLeanRaw2:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2StartDelayCoolant ($13B9): 2D table, 6 points, unsigned
-; Closed-loop entry (O2StartDelays): delay against coolant (plus $323D with an O2 fault flag)
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Closed-loop entry (O2StartDelays): delay against coolant (plus $323D with an O2 fault flag); read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0B580
 ;---------------------------------------------------------------------------------------------------
@@ -2662,8 +2662,8 @@ Tab3D_18A7:
 
 ;---------------------------------------------------------------------------------------------------
 ; CoolantSparkMap ($19DC): 3D table, 9 rows x 9 columns, signed
-; Spark change against MAP (rows) and coolant (columns), signed
-; columns: tempc, rows: pos256, values: spark (units: docs/en/calibration.md)
+; Spark change against MAP (rows) and coolant (columns), signed; read here with another input than in 05293190AC, so the x unit is not carried
+; columns: raw, rows: pos256, values: spark (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $0C,Z
 ; Read at $1DC96
 ;---------------------------------------------------------------------------------------------------
@@ -2723,8 +2723,8 @@ AfterStartSparkRpmBand:
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSparkCoolant ($1A82): 2D table, 10 points, unsigned
-; Spark change after start against the coolant temperature at start, into AfterStartSparkStart
-; x: tempc, y: spark (units: docs/en/calibration.md)
+; Spark change after start against the coolant temperature at start, into AfterStartSparkStart; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: spark (units: docs/en/calibration.md)
 ; Inputs: $0F,Z
 ; Read at $1D962
 ;---------------------------------------------------------------------------------------------------
@@ -2736,8 +2736,8 @@ AfterStartSparkCoolant:
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSparkCoolantWeight ($1A98): 2D table, 5 points, unsigned
-; Weight of AfterStartSparkMapRpm against coolant
-; x: tempc, y: mult256 (units: docs/en/calibration.md)
+; Weight of AfterStartSparkMapRpm against coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $1DA6C
 ;---------------------------------------------------------------------------------------------------
@@ -3142,8 +3142,8 @@ SurgeJerkThreshold:
 
 ;---------------------------------------------------------------------------------------------------
 ; SurgeRetardCoolantFactor ($1D6A): 2D table, 3 points, unsigned
-; Driveline surge spark control: factor on the retard against coolant
-; x: tempc, y: mult256 (units: docs/en/calibration.md)
+; Driveline surge spark control: factor on the retard against coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $1E2CA, $1E350
 ;---------------------------------------------------------------------------------------------------
@@ -3422,8 +3422,8 @@ KnockThreshold:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardStep ($1FB3): 2D table, 1 points, unsigned
-; Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow)
-; x: raw, y: spark (units: docs/en/calibration.md)
+; Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow); the value is multiplied by KnockFirstStepFactor or KnockStepFactor
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: KnockSignal
 ; Read at $0AC92
 ;---------------------------------------------------------------------------------------------------
@@ -3908,8 +3908,8 @@ Tab2D_222A:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacGearDelayCoolant ($2234): 2D table, 1 points, unsigned
-; Delay timer (IacGearDelay) started when DriveFlags bit 7 sets, against coolant
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Delay timer (IacGearDelay) started when DriveFlags bit 7 sets, against coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054A6
 ;---------------------------------------------------------------------------------------------------
@@ -3921,8 +3921,8 @@ IacGearDelayCoolant:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacGearDelayCoolantAC ($223E): 2D table, 1 points, unsigned
-; As IacGearDelayCoolant with A/C requested
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; As IacGearDelayCoolant with A/C requested; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054A6
 ;---------------------------------------------------------------------------------------------------
@@ -3934,8 +3934,8 @@ IacGearDelayCoolantAC:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacGearTimeCoolant ($2248): 2D table, 1 points, unsigned
-; Duration of the gear-change idle air (IacGearDuration) against coolant, below $279A; scaled by IacGearTimeFactor
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Duration of the gear-change idle air (IacGearDuration) against coolant, below $279A; scaled by IacGearTimeFactor; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
@@ -3947,8 +3947,8 @@ IacGearTimeCoolant:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacGearTimeCoolantAC ($2252): 2D table, 1 points, unsigned
-; As IacGearTimeCoolant with A/C requested
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; As IacGearTimeCoolant with A/C requested; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
@@ -3986,8 +3986,8 @@ IacGearTimeFactorAC:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacDroopStepCoolant ($2270): 2D table, 1 points, unsigned
-; IAC opening when the rpm drops below the target in gear (IdleFlags3 bit 3, DriveFlags bit 7), against coolant
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; IAC opening when the rpm drops below the target in gear (IdleFlags3 bit 3, DriveFlags bit 7), against coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0545C, $0558C
 ;---------------------------------------------------------------------------------------------------
@@ -3999,8 +3999,8 @@ IacDroopStepCoolant:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacDroopStepCoolantAC ($227A): 2D table, 1 points, unsigned
-; As IacDroopStepCoolant with A/C requested
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; As IacDroopStepCoolant with A/C requested; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0545C, $0558C
 ;---------------------------------------------------------------------------------------------------
@@ -4034,8 +4034,8 @@ Tab2D_228C:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacGearTimeCoolantPN ($2294): 2D table, 1 points, unsigned
-; As IacGearTimeCoolant in P/N
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; As IacGearTimeCoolant in P/N; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
@@ -4047,8 +4047,8 @@ IacGearTimeCoolantPN:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacGearTimeCoolantPNAC ($229E): 2D table, 1 points, unsigned
-; As IacGearTimeCoolant in P/N with A/C requested
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; As IacGearTimeCoolant in P/N with A/C requested; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $054FE
 ;---------------------------------------------------------------------------------------------------
@@ -4086,8 +4086,8 @@ IacGearTimeFactorPNAC:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacGearStepCoolantPN ($22BC): 2D table, 1 points, unsigned
-; IAC step when the gear-change timer runs out, against coolant (P/N)
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; IAC step when the gear-change timer runs out, against coolant (P/N); read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0558C
 ;---------------------------------------------------------------------------------------------------
@@ -4099,8 +4099,8 @@ IacGearStepCoolantPN:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacGearStepCoolantPNAC ($22C6): 2D table, 1 points, unsigned
-; As IacGearStepCoolantPN with A/C requested
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; As IacGearStepCoolantPN with A/C requested; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $0558C
 ;---------------------------------------------------------------------------------------------------
@@ -4136,8 +4136,8 @@ IacKickRpmMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacAcKickMap ($22E1): 2D table, 2 points, unsigned
-; IAC step when the A/C clutch engages, against MAP (MAP latched into IacAcKickMapLatch); into IacKick
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; IAC step when the A/C clutch engages, against MAP (MAP latched into IacAcKickMapLatch); into IacKick; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $05670
 ;---------------------------------------------------------------------------------------------------
@@ -4149,8 +4149,8 @@ IacAcKickMap:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacAcKickMapLatched ($22E9): 2D table, 2 points, signed
-; IAC step when the A/C clutch releases, against the MAP latched at engagement (IacAcKickMapLatch)
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; IAC step when the A/C clutch releases, against the MAP latched at engagement (IacAcKickMapLatch); read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: IacAcKickMapLatch
 ; Read at $05670
 ;---------------------------------------------------------------------------------------------------
@@ -4192,8 +4192,8 @@ IacAccelHold:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacStartBattTemp ($2316): 2D table, 3 points, unsigned
-; IAC hold at start (IacStartHold/IacStartHold2) against battery temperature, scaled by IacStepBaroFactor
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; IAC hold at start (IacStartHold/IacStartHold2) against battery temperature, scaled by IacStepBaroFactor; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $16,Z
 ; Read at $05B00
 ;---------------------------------------------------------------------------------------------------
@@ -4246,8 +4246,8 @@ IacRunTimeAdder:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacCoastCoolant ($2351): 2D table, 6 points, unsigned
-; Minimum idle air while coasting against coolant; the higher of this and IacCoastSpeedRpm applies
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Minimum idle air while coasting against coolant; the higher of this and IacCoastSpeedRpm applies; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0C,Z
 ; Read at $06366
 ;---------------------------------------------------------------------------------------------------
@@ -4304,8 +4304,8 @@ IacRollFactorAcSensor:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollFactorBattTemp ($2385): 2D table, 2 points, unsigned
-; Factor on the rolling IAC target against battery temperature (centred on 128)
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Factor on the rolling IAC target against battery temperature (centred on 128); read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $16,Z
 ; Read at $050EC, $0576E
 ;---------------------------------------------------------------------------------------------------
@@ -4317,8 +4317,8 @@ IacRollFactorBattTemp:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollRpmFactor2 ($238F): 2D table, 3 points, unsigned
-; Second rolling IAC factor against segment rpm
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; Second rolling IAC factor against segment rpm; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $057A0
 ;---------------------------------------------------------------------------------------------------
@@ -4330,8 +4330,8 @@ IacRollRpmFactor2:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollRpmFactor ($2399): 2D table, 3 points, unsigned
-; Factor on the rolling IAC target against segment rpm
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; Factor on the rolling IAC target against segment rpm; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $05108
 ;---------------------------------------------------------------------------------------------------
@@ -4381,8 +4381,8 @@ IacCoastSpeedRpm:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacStepBaroFactor ($2421): 2D table, 4 points, unsigned
-; Multiplier on IAC steps and start positions against barometric pressure
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; Multiplier on IAC steps and start positions against barometric pressure; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $05A28, $05AF2, $0635A
 ;---------------------------------------------------------------------------------------------------
@@ -4393,8 +4393,8 @@ IacStepBaroFactor:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacShiftBaroFactor ($242B): 2D table, 4 points, unsigned
-; Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $04CE8, $05AB6, $05DD0
 ;---------------------------------------------------------------------------------------------------
@@ -4855,7 +4855,7 @@ MisfireHoldDefault:
 MisfireHoldRpm:
         dc.b    $04                                      ; Hold-off when segment rpm is above MisfireHoldRpmValue
 MisfireSparkMin:
-        dc.b    $C4                                      ; Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6)
+        dc.b    $C4                                      ; Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6); compared signed (BLT)
 MisfireHoldSpark:
         dc.b    $00                                      ; Hold-off for the spark interventions
 MisfireHoldEnable:
@@ -5017,8 +5017,8 @@ MisfireWeight2:
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireThreshCoolant ($28B4): 3D table, 5 rows x 5 columns, unsigned
-; Factor on the misfire threshold against load (rows) and coolant (columns), result into MisfireThreshValue
-; columns: tempc, rows: pos256, values: raw (units: docs/en/calibration.md)
+; Factor on the misfire threshold against load (rows) and coolant (columns), result into MisfireThreshValue; read here with another input than in 05293190AC, so the x unit is not carried
+; columns: raw, rows: pos256, values: raw (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x $0C,Z
 ; Read at $18E6E
 ;---------------------------------------------------------------------------------------------------
@@ -5688,10 +5688,10 @@ MapCheckBaroMin:
         dc.b    $01,$61,$00,$C0,$01,$66,$00,$03
 
 ;---------------------------------------------------------------------------------------------------
-; O2MonData2StepConds ($30C2): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList30C2 ($30C2): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $17CC8
 ;---------------------------------------------------------------------------------------------------
-O2MonData2StepConds:
+CondList30C2:
         dc.b    $00                                      ; entries
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -5700,10 +5700,10 @@ O2MonData2StepConds:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; O2MonData2StepConds2 ($30FF): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList30FF ($30FF): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $17CB4
 ;---------------------------------------------------------------------------------------------------
-O2MonData2StepConds2:
+CondList30FF:
         dc.b    $00                                      ; entries
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -5748,10 +5748,10 @@ O2MonData2StepConds2:
         dc.b    $58,$00,$C7
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireEnableCheckConds ($3373): condition list, 3 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3373 ($3373): condition list, 3 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $18DA6
 ;---------------------------------------------------------------------------------------------------
-MisfireEnableCheckConds:
+CondList3373:
         dc.b    $03                                      ; entries
         dc.b    $00,$12,$04,$13                          ; EngineRpm needs above $13
         dc.b    $00,$BD,$00,$04                          ; MonStatusPurge needs clear: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
@@ -5762,10 +5762,10 @@ MisfireEnableCheckConds:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireEnableCheckConds2 ($33B0): condition list, 2 entries (ConditionTable: the check passes only if every entry holds)
+; CondList33B0 ($33B0): condition list, 2 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $18D98
 ;---------------------------------------------------------------------------------------------------
-MisfireEnableCheckConds2:
+CondList33B0:
         dc.b    $02                                      ; entries
         dc.b    $00,$C0,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
         dc.b    $00,$C2,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
@@ -6317,8 +6317,8 @@ DwellRpmScale:
 
 ;---------------------------------------------------------------------------------------------------
 ; DwellVoltsScale ($42D3): 2D table, 9 points, unsigned
-; Battery voltage to row position of DwellTime
-; x: volt16, y: pos256 (units: docs/en/calibration.md)
+; Battery voltage to row position of DwellTime; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: $17,Z
 ; Read at $1DF10
 ;---------------------------------------------------------------------------------------------------

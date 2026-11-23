@@ -5369,8 +5369,8 @@ KnockThreshold:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardStep ($24BF): 2D table, 2 points, unsigned
-; Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow)
-; x: raw, y: spark (units: docs/en/calibration.md)
+; Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow); the value is multiplied by KnockFirstStepFactor or KnockStepFactor
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: KnockSignal
 ; Read at $1F4FE
 ;---------------------------------------------------------------------------------------------------
@@ -7413,7 +7413,7 @@ MisfireHoldDefault:
 MisfireHoldRpm:
         dc.b    $04                                      ; Hold-off when segment rpm is above MisfireHoldRpmValue
 MisfireSparkMin:
-        dc.b    $C4                                      ; Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6)
+        dc.b    $C4                                      ; Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6); compared signed (BLT)
 MisfireHoldSpark:
         dc.b    $04                                      ; Hold-off for the spark interventions
 MisfireHoldEnable:

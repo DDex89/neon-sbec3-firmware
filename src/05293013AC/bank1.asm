@@ -15061,7 +15061,7 @@ Sub_1A17E:
         BRCLR   $00B7,Z,#$80,L1A20E
         CLRB
         TBYK
-        LDY     #FuelSysTooLean2MonitorConds2
+        LDY     #CondList2DA8
         JSR     ConditionTable
         BEQ     L1A19E
         BSET    $C0,Z,#$02
@@ -15069,7 +15069,7 @@ Sub_1A17E:
 L1A19E:
         BCLR    $C0,Z,#$02
 L1A1A2:
-        LDY     #FuelSysTooLean2MonitorConds
+        LDY     #CondList2D6B
         JSR     ConditionTable
         BEQ     L1A1B2
         BSET    $C0,Z,#$01
@@ -18029,12 +18029,12 @@ L1C0F8:
         BRA     L1C12A
 L1C104:
         BCLR    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
-        LDY     #CountBitsConds2
+        LDY     #CondList3059
         JSR     ConditionTable
         BEQ     L1C116
         BSET    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
 L1C116:
-        LDY     #CountBitsConds
+        LDY     #CondList301C
         JSR     ConditionTable
         BEQ     L1C126
         BSET    >MisfireFlags2,Z,#$01                    ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)

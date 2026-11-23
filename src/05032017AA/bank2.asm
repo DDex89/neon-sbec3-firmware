@@ -9397,16 +9397,16 @@ O2HeaterMonitor:
 L28D9A:
         CLRB
         TBYK
-        LDY     #O2HeaterMonitorConds2
+        LDY     #CondList3D67
         JSR     ConditionTable
         BNE     L28DC6
-        LDY     #O2HeaterMonitorConds4
+        LDY     #CondList3E0A
         JSR     ConditionTable
         BNE     L28DC6
-        LDY     #O2HeaterMonitorConds6
+        LDY     #CondList3EAD
         JSR     ConditionTable
         BNE     L28DC6
-        LDY     #O2HeaterMonitorConds8
+        LDY     #CondList3F50
         JSR     ConditionTable
         BEQ     L28DCC
 L28DC6:
@@ -9415,16 +9415,16 @@ L28DC6:
 L28DCC:
         BCLR    <MonStatusO2Heater,Z,#$02
 L28DD0:
-        LDY     #O2HeaterMonitorConds
+        LDY     #CondList3D2A
         JSR     ConditionTable
         BNE     L28DF8
-        LDY     #O2HeaterMonitorConds3
+        LDY     #CondList3DCD
         JSR     ConditionTable
         BNE     L28DF8
-        LDY     #O2HeaterMonitorConds5
+        LDY     #CondList3E70
         JSR     ConditionTable
         BNE     L28DF8
-        LDY     #O2HeaterMonitorConds7
+        LDY     #CondList3F13
         JSR     ConditionTable
         BEQ     L28DFE
 L28DF8:
@@ -11352,12 +11352,12 @@ L2AB62:
         BRA     L2AB94
 L2AB6E:
         BCLR    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
-        LDY     #MisfireEnableCheckConds2
+        LDY     #CondList4215
         JSR     ConditionTable
         BEQ     L2AB80
         BSET    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
 L2AB80:
-        LDY     #MisfireEnableCheckConds
+        LDY     #CondList41D8
         JSR     ConditionTable
         BEQ     L2AB90
         BSET    >MisfireFlags2,Z,#$01                    ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)

@@ -278,7 +278,10 @@ class Calibration:
             size = 1 + 4 * d[y]
             if any(x in an.insn for x in range(y, y + size)):
                 continue
-            name = base if base.endswith(("1", "2", "3")) and "Conds" in base else base + "Conds"
+            if not self.names.routines:
+                name = "CondList%04X" % y  # other images: the caller labels are only partly carried over
+            else:
+                name = base if base.endswith(("1", "2", "3")) and "Conds" in base else base + "Conds"
             used[name] = used.get(name, 0) + 1
             if used[name] > 1:
                 name += "%d" % used[name]

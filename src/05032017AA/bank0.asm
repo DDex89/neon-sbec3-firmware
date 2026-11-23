@@ -489,8 +489,8 @@ FlexCoolantWeight:
 
 ;---------------------------------------------------------------------------------------------------
 ; RpmFilterAboveIdle ($03CC): 2D table, 2 points, unsigned
-; Filter weight of RpmFilteredIdle (filtered rpm) against rpm above the idle target
-; x: rpm32, y: mult256 (units: docs/en/calibration.md)
+; Filter weight of RpmFilteredIdle (filtered rpm) against rpm above the idle target; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: #$00; LDD
 ; Read at $3AE06
 ;---------------------------------------------------------------------------------------------------
@@ -736,8 +736,8 @@ BattTempOffTimeMin:
 
 ;---------------------------------------------------------------------------------------------------
 ; BattTempHeatFactor ($04CC): 2D table, 4 points, unsigned
-; Battery temperature model: factor on the excess above 110 against coolant (engine heat), into BattTempStored
-; x: tempc, y: mult256 (units: docs/en/calibration.md)
+; Battery temperature model: factor on the excess above 110 against coolant (engine heat), into BattTempStored; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0D97A, $2C4EE
 ;---------------------------------------------------------------------------------------------------
@@ -1516,8 +1516,8 @@ Tab2D_08CE:
 
 ;---------------------------------------------------------------------------------------------------
 ; WarmupRpmScaleIdle ($08DA): 2D table, 3 points, unsigned
-; Rpm to row position of WarmupRpmCoolantIdle
-; x: rpm32, y: pos256 (units: docs/en/calibration.md)
+; Rpm to row position of WarmupRpmCoolantIdle; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $10E40
 ;---------------------------------------------------------------------------------------------------
@@ -1918,8 +1918,8 @@ CrankFuelBattTempMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankPulseCoolantFactor ($0A83): 2D table, 2 points, unsigned
-; Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant
-; x: tempc, y: mult256 (units: docs/en/calibration.md)
+; Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: ScratchC
 ; Read at $1248C
 ;---------------------------------------------------------------------------------------------------
@@ -1976,8 +1976,8 @@ CrankRpmDecayClosed:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankRpmDecayWeight ($0B00): 2D table, 4 points, unsigned
-; Weight of the rpm reduction against the cranking coolant
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Weight of the rpm reduction against the cranking coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: ScratchC
 ; Read at $12396
 ;---------------------------------------------------------------------------------------------------
@@ -2028,8 +2028,8 @@ CrankCoolantAdder2:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankBaroDecay ($0B2E): 2D table, 3 points, unsigned
-; Cranking pulse reduction against barometric pressure; weighted by CrankBaroDecayWeight
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; Cranking pulse reduction against barometric pressure; weighted by CrankBaroDecayWeight; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $123C8
 ;---------------------------------------------------------------------------------------------------
@@ -3037,8 +3037,8 @@ AccelMapRiseOffset:
 
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleCloseMapOffset ($191A): 2D table, 2 points, unsigned
-; On throttle closing: offset subtracted from MAP into MapLast against coolant
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; On throttle closing: offset subtracted from MAP into MapLast against coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $2D3D6
 ;---------------------------------------------------------------------------------------------------
@@ -3087,8 +3087,8 @@ MapFilterRiseCoolant:
 
 ;---------------------------------------------------------------------------------------------------
 ; AccelMapBaro ($1948): 2D table, 3 points, unsigned
-; MAP-rate acceleration enrichment term against barometric pressure into AccelMapBaroFactor
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; MAP-rate acceleration enrichment term against barometric pressure into AccelMapBaroFactor; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $10762
 ;---------------------------------------------------------------------------------------------------
@@ -3138,8 +3138,8 @@ TpsFilterRiseCoolant:
 
 ;---------------------------------------------------------------------------------------------------
 ; AccelTpsBaro ($1979): 2D table, 3 points, unsigned
-; Throttle-rate acceleration enrichment term against barometric pressure into AccelTpsBaroFactor
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; Throttle-rate acceleration enrichment term against barometric pressure into AccelTpsBaroFactor; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $107DC
 ;---------------------------------------------------------------------------------------------------
@@ -3151,8 +3151,8 @@ AccelTpsBaro:
 
 ;---------------------------------------------------------------------------------------------------
 ; AccelMapAdder ($1985): 2D table, 5 points, unsigned
-; Added to AccelRpmFactor against MAP
-; x: kpa, y: mult256 (units: docs/en/calibration.md)
+; Added to AccelRpmFactor against MAP; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $107FC
 ;---------------------------------------------------------------------------------------------------
@@ -3163,8 +3163,8 @@ AccelMapAdder:
 
 ;---------------------------------------------------------------------------------------------------
 ; AccelRpmFactor ($1991): 2D table, 3 points, unsigned
-; Acceleration enrichment factor against rpm; plus AccelMapAdder, limited to 1.0, into AccelFactor
-; x: rpm32, y: mult256 (units: docs/en/calibration.md)
+; Acceleration enrichment factor against rpm; plus AccelMapAdder, limited to 1.0, into AccelFactor; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $107EC
 ;---------------------------------------------------------------------------------------------------
@@ -3223,8 +3223,8 @@ TipInAirTempFactor:
 
 ;---------------------------------------------------------------------------------------------------
 ; TipInBaroFactor ($19C0): 2D table, 4 points, unsigned
-; Tip-in enrichment factor against barometric pressure; result (with ReturnlessFuelScale) into TipInFuel and spread over the next injectors
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; Tip-in enrichment factor against barometric pressure; result (with ReturnlessFuelScale) into TipInFuel and spread over the next injectors; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $1091A
 ;---------------------------------------------------------------------------------------------------
@@ -3326,8 +3326,8 @@ ResetCoolantInit2:
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanBaroFactor ($1A69): 2D table, 4 points, unsigned
-; Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel
-; x: kpa, y: mult256 (units: docs/en/calibration.md)
+; Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $12170
 ;---------------------------------------------------------------------------------------------------
@@ -3824,8 +3824,8 @@ Tab2D_1DF1:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelAirTempCorr ($1DFB): 2D table, 1 points, unsigned
-; Fuel multiplier against intake air temperature (scaled by the rpm and MAP weights)
-; x: tempc, y: mult256 (units: docs/en/calibration.md)
+; Fuel multiplier against intake air temperature (scaled by the rpm and MAP weights); read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $10144
 ;---------------------------------------------------------------------------------------------------
@@ -3851,8 +3851,8 @@ FuelTrimAdjust:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelAirTempRpmWeight ($1E24): 2D table, 1 points, unsigned
-; Weight of the air-temperature fuel correction against rpm
-; x: rpm32, y: mult256 (units: docs/en/calibration.md)
+; Weight of the air-temperature fuel correction against rpm; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1027E
 ;---------------------------------------------------------------------------------------------------
@@ -3864,8 +3864,8 @@ FuelAirTempRpmWeight:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelTrimAdjustMapWeight ($1E30): 2D table, 1 points, unsigned
-; Weight of FuelTrimAdjust against MAP; the product goes to FlexStartFuel and multiplies the fuel
-; x: kpa, y: mult256 (units: docs/en/calibration.md)
+; Weight of FuelTrimAdjust against MAP; the product goes to FlexStartFuel and multiplies the fuel; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: FieldDuty
 ; Read at $102BE
 ;---------------------------------------------------------------------------------------------------
@@ -3877,8 +3877,8 @@ FuelTrimAdjustMapWeight:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelAirTempMapWeight ($1E3C): 2D table, 1 points, unsigned
-; Weight of the air-temperature fuel correction against MAP
-; x: kpa, y: mult256 (units: docs/en/calibration.md)
+; Weight of the air-temperature fuel correction against MAP; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: FieldDuty
 ; Read at $1028C
 ;---------------------------------------------------------------------------------------------------
@@ -4568,8 +4568,8 @@ AfterStartSparkCoolant:
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSparkCoolantWeight ($25BB): 2D table, 3 points, unsigned
-; Weight of AfterStartSparkMapRpm against coolant
-; x: tempc, y: mult256 (units: docs/en/calibration.md)
+; Weight of AfterStartSparkMapRpm against coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1D62E
 ;---------------------------------------------------------------------------------------------------
@@ -4882,8 +4882,8 @@ TipInRetardEnd:
 
 ;---------------------------------------------------------------------------------------------------
 ; TipInRetardDuration ($28AA): 2D table, 2 points, unsigned
-; Tip-in spark retard near idle (TipInSparkControl): number of steps (TipInSteps) against air temperature
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Tip-in spark retard near idle (TipInSparkControl): number of steps (TipInSteps) against air temperature; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: AirTemp
 ; Read at $1D78E
 ;---------------------------------------------------------------------------------------------------
@@ -4954,8 +4954,8 @@ TipInRetardKnock:
 
 ;---------------------------------------------------------------------------------------------------
 ; TipInRetardDurationKnock ($2905): 2D table, 2 points, unsigned
-; As TipInRetardDuration while a knock retard is applied (KnockRetard non-zero)
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; As TipInRetardDuration while a knock retard is applied (KnockRetard non-zero); read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: AirTemp
 ; Read at $1D78E
 ;---------------------------------------------------------------------------------------------------
@@ -5388,8 +5388,8 @@ KnockRpmSteps:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockMapThresholdRpm ($2CE3): 2D table, 6 points, unsigned
-; MAP above which knock control runs (KnockMapThreshold), against engine rpm; multiplied by KnockMapThresholdBaro
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; MAP above which knock control runs (KnockMapThreshold), against engine rpm; multiplied by KnockMapThresholdBaro; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1F464
 ;---------------------------------------------------------------------------------------------------
@@ -5449,8 +5449,8 @@ KnockNoiseMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockWindowRpm ($2D1F): 2D table, 2 points, unsigned
-; Knock sampling window length factor (KnockWindowFactor) against engine rpm
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; Knock sampling window length factor (KnockWindowFactor) against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1F498
 ;---------------------------------------------------------------------------------------------------
@@ -5492,8 +5492,8 @@ KnockThreshold:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardStep ($2D49): 2D table, 2 points, unsigned
-; Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow)
-; x: raw, y: spark (units: docs/en/calibration.md)
+; Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow); the value is multiplied by KnockFirstStepFactor or KnockStepFactor
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0A8F,Z
 ; Read at $1F5CC
 ;---------------------------------------------------------------------------------------------------
@@ -5991,8 +5991,8 @@ IdleTargetRpmPN:
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleTargetHotAirAdder ($2FAD): 2D table, 3 points, unsigned
-; Idle target addition against air temperature above $265A (hysteresis down to $2659)
-; x: tempc, y: rpm8 (units: docs/en/calibration.md)
+; Idle target addition against air temperature above $265A (hysteresis down to $2659); read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: rpm8 (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $1B356
 ;---------------------------------------------------------------------------------------------------
@@ -6064,8 +6064,8 @@ IdleRampStepTime:
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleBattTempRampDelay ($3009): 2D table, 2 points, unsigned
-; Delay before the idle target ramp starts, against battery temperature
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Delay before the idle target ramp starts, against battery temperature; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: BatteryTemp
 ; Read at $1B5D4
 ;---------------------------------------------------------------------------------------------------
@@ -6077,8 +6077,8 @@ IdleBattTempRampDelay:
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleBattTempRampHold ($3013): 2D table, 2 points, unsigned
-; Time the ramped idle target is held after it ends, against battery temperature
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Time the ramped idle target is held after it ends, against battery temperature; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: BatteryTemp
 ; Read at $1B688
 ;---------------------------------------------------------------------------------------------------
@@ -6502,8 +6502,8 @@ IdleRpmRefStep:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacAcKickMap ($318F): 2D table, 3 points, unsigned
-; IAC step when the A/C clutch engages, against MAP (MAP latched into IacAcKickMapLatch); into IacKick
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; IAC step when the A/C clutch engages, against MAP (MAP latched into IacAcKickMapLatch); into IacKick; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Map
 ; Read at $1A176
 ;---------------------------------------------------------------------------------------------------
@@ -6514,8 +6514,8 @@ IacAcKickMap:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacAcKickMapLatched ($3197): 2D table, 4 points, signed
-; IAC step when the A/C clutch releases, against the MAP latched at engagement (IacAcKickMapLatch)
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; IAC step when the A/C clutch releases, against the MAP latched at engagement (IacAcKickMapLatch); read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: IacAcKickMapLatch
 ; Read at $1A176
 ;---------------------------------------------------------------------------------------------------
@@ -6695,8 +6695,8 @@ IacRollFactorBattTemp:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollRpmFactor2 ($3256): 2D table, 4 points, unsigned
-; Second rolling IAC factor against segment rpm
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; Second rolling IAC factor against segment rpm; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $1A364
 ;---------------------------------------------------------------------------------------------------
@@ -6758,8 +6758,8 @@ IacCoastSpeedRpm:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacStepBaroFactor ($32E8): 2D table, 3 points, unsigned
-; Multiplier on IAC steps and start positions against barometric pressure
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; Multiplier on IAC steps and start positions against barometric pressure; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $1A62E, $1AF86, $1BA80, $1BB1E
 ;---------------------------------------------------------------------------------------------------
@@ -6771,8 +6771,8 @@ IacStepBaroFactor:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacShiftBaroFactor ($32F2): 2D table, 3 points, unsigned
-; Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure
-; x: kpa, y: raw (units: docs/en/calibration.md)
+; Multiplier on the gear-change IAC step and the initial IAC value against barometric pressure; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $197A0, $1A5F2, $1A9B8
 ;---------------------------------------------------------------------------------------------------
@@ -6888,8 +6888,8 @@ IdleMapWarmup:
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleMapRpm ($3363): 2D table, 4 points, unsigned
-; Idle MAP target addition against segment rpm, weighted by IdleMapRpmCoolantWeight
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; Idle MAP target addition against segment rpm, weighted by IdleMapRpmCoolantWeight; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: SegmentRpm
 ; Read at $1AC8C
 ;---------------------------------------------------------------------------------------------------
@@ -6900,8 +6900,8 @@ IdleMapRpm:
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleMapRpmCoolantWeight ($336D): 2D table, 2 points, unsigned
-; Weight of IdleMapRpm against coolant
-; x: tempc, y: mult256 (units: docs/en/calibration.md)
+; Weight of IdleMapRpm against coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $1AC9A
 ;---------------------------------------------------------------------------------------------------
@@ -7188,8 +7188,8 @@ SpeedCtlEngagePosAC:
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlEngageBaro ($3487): 2D table, 4 points, unsigned
-; Factor on the engagement position against barometric pressure
-; x: kpa, y: mult256 (units: docs/en/calibration.md)
+; Factor on the engagement position against barometric pressure; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $3C256
 ;---------------------------------------------------------------------------------------------------
@@ -7857,10 +7857,10 @@ ExpectedMapThrottleScale:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds ($3D2A): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3D2A ($3D2A): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DD4
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds:
+CondList3D2A:
         dc.b    $00                                      ; entries
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7869,10 +7869,10 @@ O2HeaterMonitorConds:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds2 ($3D67): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3D67 ($3D67): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DA2
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds2:
+CondList3D67:
         dc.b    $00                                      ; entries
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7884,10 +7884,10 @@ O2HeaterMonitorConds2:
         dc.b    $FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds3 ($3DCD): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3DCD ($3DCD): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DDE
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds3:
+CondList3DCD:
         dc.b    $00                                      ; entries
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7896,10 +7896,10 @@ O2HeaterMonitorConds3:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds4 ($3E0A): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3E0A ($3E0A): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DAC
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds4:
+CondList3E0A:
         dc.b    $00                                      ; entries
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7911,10 +7911,10 @@ O2HeaterMonitorConds4:
         dc.b    $FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds5 ($3E70): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3E70 ($3E70): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DE8
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds5:
+CondList3E70:
         dc.b    $00                                      ; entries
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7923,10 +7923,10 @@ O2HeaterMonitorConds5:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds6 ($3EAD): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3EAD ($3EAD): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DB6
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds6:
+CondList3EAD:
         dc.b    $00                                      ; entries
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7938,10 +7938,10 @@ O2HeaterMonitorConds6:
         dc.b    $FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds7 ($3F13): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3F13 ($3F13): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DF2
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds7:
+CondList3F13:
         dc.b    $00                                      ; entries
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7950,10 +7950,10 @@ O2HeaterMonitorConds7:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; O2HeaterMonitorConds8 ($3F50): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3F50 ($3F50): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $28DC0
 ;---------------------------------------------------------------------------------------------------
-O2HeaterMonitorConds8:
+CondList3F50:
         dc.b    $00                                      ; entries
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -7999,10 +7999,10 @@ O2HeaterMonitorConds8:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireEnableCheckConds ($41D8): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList41D8 ($41D8): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $2AB84
 ;---------------------------------------------------------------------------------------------------
-MisfireEnableCheckConds:
+CondList41D8:
         dc.b    $00                                      ; entries
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -8011,10 +8011,10 @@ MisfireEnableCheckConds:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; MisfireEnableCheckConds2 ($4215): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList4215 ($4215): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $2AB76
 ;---------------------------------------------------------------------------------------------------
-MisfireEnableCheckConds2:
+CondList4215:
         dc.b    $00                                      ; entries
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -8441,7 +8441,7 @@ MisfireHoldDefault:
 MisfireHoldRpm:
         dc.b    $04                                      ; Hold-off when segment rpm is above MisfireHoldRpmValue
 MisfireSparkMin:
-        dc.b    $F3                                      ; Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6)
+        dc.b    $F3                                      ; Misfire monitor: event or damping spark below this value starts the hold-off (bit $2CC1.6); compared signed (BLT)
 MisfireHoldSpark:
         dc.b    $02                                      ; Hold-off for the spark interventions
 MisfireHoldEnable:
@@ -8510,8 +8510,8 @@ MisfireEnableRpm:
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireStartDelay ($506F): 2D table, 2 points, unsigned
-; Misfire monitor delay after start (MisfireStartTimer) against start coolant temperature
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Misfire monitor delay after start (MisfireStartTimer) against start coolant temperature; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: StartCoolantTemp2
 ; Read at $2B512
 ;---------------------------------------------------------------------------------------------------
@@ -9563,8 +9563,8 @@ KnockSignalMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockSensorCheckRpm ($57E9): 2D table, 3 points, unsigned
-; Minimum filtered knock signal for the sensor check (KnockSensorCheck) against engine rpm
-; x: rpm32, y: raw (units: docs/en/calibration.md)
+; Minimum filtered knock signal for the sensor check (KnockSensorCheck) against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1F488
 ;---------------------------------------------------------------------------------------------------

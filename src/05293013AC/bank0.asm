@@ -437,8 +437,8 @@ Tab2D_043B:
 
 ;---------------------------------------------------------------------------------------------------
 ; ResetCoolantFuelInit ($0452): 2D table, 1 points, unsigned
-; At reset: ResetCoolantFuel (cranking fuel set-up) against coolant
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; At reset: ResetCoolantFuel (cranking fuel set-up) against coolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: StartCoolantTemp2
 ; Read at $0D126, $11EB8
 ;---------------------------------------------------------------------------------------------------
@@ -738,8 +738,8 @@ CrankV0769Decay:
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankPulseCoolantFactor ($059C): 2D table, 1 points, unsigned
-; Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant
-; x: tempc, y: mult256 (units: docs/en/calibration.md)
+; Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0845C
 ;---------------------------------------------------------------------------------------------------
@@ -1413,8 +1413,8 @@ Tab2D_0EE9:
 
 ;---------------------------------------------------------------------------------------------------
 ; BattTempHeatFactor ($0EF5): 2D table, 2 points, unsigned
-; Battery temperature model: factor on the excess above 110 against coolant (engine heat), into BattTempStored
-; x: tempc, y: mult256 (units: docs/en/calibration.md)
+; Battery temperature model: factor on the excess above 110 against coolant (engine heat), into BattTempStored; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: CoolantTemp
 ; Read at $0D0D2
 ;---------------------------------------------------------------------------------------------------
@@ -1572,8 +1572,8 @@ MapFilterFallCoolant:
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelLeanBaroFactor ($0F8E): 2D table, 3 points, unsigned
-; Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel
-; x: kpa, y: mult256 (units: docs/en/calibration.md)
+; Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: ScratchC
 ; Read at $0817C
 ;---------------------------------------------------------------------------------------------------
@@ -2871,8 +2871,8 @@ KnockRetardMaxMap:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardStep ($1CD4): 2D table, 2 points, unsigned
-; Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow)
-; x: raw, y: spark (units: docs/en/calibration.md)
+; Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow); the value is multiplied by KnockFirstStepFactor or KnockStepFactor
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: KnockSignal
 ; Read at $156D2
 ;---------------------------------------------------------------------------------------------------
@@ -3641,8 +3641,8 @@ IacRollFactorAcSensor:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollFactorBattTemp ($20A7): 2D table, 1 points, unsigned
-; Factor on the rolling IAC target against battery temperature (centred on 128)
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; Factor on the rolling IAC target against battery temperature (centred on 128); read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $032C,Z
 ; Read at $0AD2C, $0B386
 ;---------------------------------------------------------------------------------------------------
@@ -4700,10 +4700,10 @@ LdpPumpTimeByLevel:
         dc.b    $00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysTooLean2MonitorConds ($2D6B): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList2D6B ($2D6B): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $1A1A6
 ;---------------------------------------------------------------------------------------------------
-FuelSysTooLean2MonitorConds:
+CondList2D6B:
         dc.b    $00                                      ; entries
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -4712,10 +4712,10 @@ FuelSysTooLean2MonitorConds:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; FuelSysTooLean2MonitorConds2 ($2DA8): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList2DA8 ($2DA8): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $1A192
 ;---------------------------------------------------------------------------------------------------
-FuelSysTooLean2MonitorConds2:
+CondList2DA8:
         dc.b    $00                                      ; entries
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -4760,10 +4760,10 @@ FuelSysTooLean2MonitorConds2:
         dc.b    $00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; CountBitsConds ($301C): condition list, 8 entries (ConditionTable: the check passes only if every entry holds)
+; CondList301C ($301C): condition list, 8 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $1C11A
 ;---------------------------------------------------------------------------------------------------
-CountBitsConds:
+CondList301C:
         dc.b    $08                                      ; entries
         dc.b    $00,$BD,$00,$04                          ; MonStatusFuelSysTooRich1 needs clear: bit 2
         dc.b    $00,$B8,$00,$04                          ; $00B8,Z needs clear: bit 2
@@ -4778,10 +4778,10 @@ CountBitsConds:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; CountBitsConds2 ($3059): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
+; CondList3059 ($3059): condition list, 0 entries (ConditionTable: the check passes only if every entry holds)
 ; Read at $1C10C
 ;---------------------------------------------------------------------------------------------------
-CountBitsConds2:
+CondList3059:
         dc.b    $00                                      ; entries
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -5246,8 +5246,8 @@ ThermistorHot:
 
 ;---------------------------------------------------------------------------------------------------
 ; ResetCoolantInit2 ($4054): 2D table, 7 points, unsigned
-; At reset: ResetCoolant2 against coolant temperature
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; At reset: ResetCoolant2 against coolant temperature; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $032D,Z
 ; Read at $0CFDC, $11F42
 ;---------------------------------------------------------------------------------------------------
@@ -5258,8 +5258,8 @@ ResetCoolantInit2:
 
 ;---------------------------------------------------------------------------------------------------
 ; ResetCoolantInit ($4064): 2D table, 5 points, unsigned
-; At reset: IdleRpmRefStart against start coolant temperature
-; x: tempc, y: raw (units: docs/en/calibration.md)
+; At reset: IdleRpmRefStart against start coolant temperature; read here with another input than in 05293190AC, so the x unit is not carried
+; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $032C,Z; $3B,Z; #$98
 ; Read at $0D004, $12092
 ;---------------------------------------------------------------------------------------------------

@@ -12,22 +12,24 @@
   "mult256": "factor = x / 256",
   "pos256": "position 0-255 along the rows (or columns) of a 3D table",
   "fuelcorr": "fuel factor = 1 + x / 256, x signed (-128 = 0.5, +127 = 1.496)",
-  "raw": "no conversion known yet"
+  "raw": "no conversion known yet",
+  "tempdiff": "deg C = x (a difference of two temperatures)",
+  "sparks": "degrees BTDC = x / 2, two's complement"
  },
  "tables": {
   "0EE2": {
    "name": "BattTempHeatFactor",
    "category": "Sensors",
-   "desc": "Battery temperature model: factor on the excess above 110 against coolant (engine heat), into BattTempStored",
-   "x": "tempc",
+   "desc": "Battery temperature model: factor on the excess above 110 against coolant (engine heat), into BattTempStored; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "mult256",
    "auto": false
   },
   "4064": {
    "name": "ResetCoolantInit",
    "category": "Startup",
-   "desc": "At reset: IdleRpmRefStart against start coolant temperature",
-   "x": "tempc",
+   "desc": "At reset: IdleRpmRefStart against start coolant temperature; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -186,8 +188,8 @@
   "058A": {
    "name": "CrankPulseCoolantFactor",
    "category": "Fuel",
-   "desc": "Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant",
-   "x": "tempc",
+   "desc": "Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "mult256",
    "auto": false
   },
@@ -328,8 +330,8 @@
   "0440": {
    "name": "ResetCoolantFuelInit",
    "category": "Startup",
-   "desc": "At reset: ResetCoolantFuel (cranking fuel set-up) against coolant",
-   "x": "tempc",
+   "desc": "At reset: ResetCoolantFuel (cranking fuel set-up) against coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
@@ -368,16 +370,16 @@
   "4054": {
    "name": "ResetCoolantInit2",
    "category": "Startup",
-   "desc": "At reset: ResetCoolant2 against coolant temperature",
-   "x": "tempc",
+   "desc": "At reset: ResetCoolant2 against coolant temperature; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },
   "0F7B": {
    "name": "DecelLeanBaroFactor",
    "category": "Fuel",
-   "desc": "Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel",
-   "x": "kpa",
+   "desc": "Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "mult256",
    "auto": false
   },
@@ -495,8 +497,8 @@
   "1A1F": {
    "name": "AfterStartSparkCoolantWeight",
    "category": "Spark",
-   "desc": "Weight of AfterStartSparkMapRpm against coolant",
-   "x": "tempc",
+   "desc": "Weight of AfterStartSparkMapRpm against coolant; read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "mult256",
    "auto": false
   },
@@ -701,9 +703,9 @@
   "1CBC": {
    "name": "KnockRetardStep",
    "category": "Knock",
-   "desc": "Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow)",
+   "desc": "Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow); the value is multiplied by KnockFirstStepFactor or KnockStepFactor",
    "x": "raw",
-   "y": "spark",
+   "y": "raw",
    "auto": false
   },
   "1CB3": {
@@ -845,8 +847,8 @@
   "2081": {
    "name": "IacRollFactorBattTemp",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against battery temperature (centred on 128)",
-   "x": "tempc",
+   "desc": "Factor on the rolling IAC target against battery temperature (centred on 128); read here with another input than in 05293190AC, so the x unit is not carried",
+   "x": "raw",
    "y": "raw",
    "auto": false
   },

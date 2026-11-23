@@ -18,7 +18,7 @@ The aligned instructions give an address map for code labels, and their operands
 for RAM offsets (`$xxxx,Z`) and calibration addresses (`LDX #table`, `$xxxx`). A RAM or
 calibration address is carried over only when the aligned instructions agree on it.
 """
-import bisect, collections, difflib, hashlib, json, os, sys
+import re, bisect, collections, difflib, hashlib, json, os, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
@@ -246,6 +246,19 @@ def main():
         a = int(k, 16)
         b = imm.get(a)
         if b is not None and b in newt and newt[b]["kind"] == reft.get(a, {}).get("kind", newt[b]["kind"]):
+            # the unit of the input axis only holds if the table is read with the same input
+            def offs(t):
+                out = set()
+                for key in t.get("inputs", {}):
+                    for x in key:
+                        mo = re.match(r"^\$([0-9A-F]{2,4}),Z$", x or "")
+                        if mo:
+                            out.add(int(mo.group(1), 16))
+                return out
+            ri, ni = {ram.get(o, -1) for o in offs(reft.get(a, {}))}, offs(newt[b])
+            dummy = reft.get(a, {}).get("kind") in ("2D", "2Dr") and ref.data[a] == 1 and new.data[b] > 1
+            if ((ri and ni and not (ri & ni)) or dummy) and v.get("x", "raw") != "raw":
+                v = dict(v, x="raw", desc=(v.get("desc", "") + "; read here with another input than in 05293190AC, so the x unit is not carried").lstrip("; "))
             tables_out["tables"]["%04X" % b] = v
     for k, v in tab.get("scalars", {}).items():
         a = int(k, 16)

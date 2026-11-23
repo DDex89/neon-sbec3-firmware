@@ -43,6 +43,17 @@ times, gains) as XDFCONSTANT, with the unit where it is known, and each used bit
 as an XDFFLAG (see [calibration.md](calibration.md#constants-and-option-bits)); the other images get
 the constants the port carries over (239 in family A to 1,404 in family E).
 
+`tools/xdfcheck.py` checks a generated XDF against its image: every element must lie inside the
+table or constant of the same name, table sizes must match the table headers, flag masks must be
+bits the code tests, no two elements may share bytes, and the unit formulas must give plausible
+values (rpm, deg C, kPa, volts, degrees) for the values stored in the image. CI runs it on all
+eleven XDFs. The only remaining warnings are three unnamed 2D tables in the ported images whose x
+values are not in order (`Tab2D_04FB` in family A, `Tab2D_050D`, `Tab2D_2C31`), which may not be
+real tables.
+
+The condition lists of the OBD monitors (see calibration.md) are in the XDF as small tables under
+Diagnostics, with the RAM variable and test named on each row.
+
 ## Axes
 
 - 3D tables with a stored column axis: the axis is read from the image and editable (usually rpm).
