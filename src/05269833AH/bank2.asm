@@ -1403,31 +1403,31 @@ L20DBC:
 ;---------------------------------------------------------------------------------------------------
 Sub_20DF4:
         BRSET   $00D8,Z,#$20,L20F0A
-        BRCLR   >StartV06B8Flag,#$10,L20E1E
+        BRCLR   >Options033E,#$10,L20E1E
         BRCLR   $00A1,Z,#$02,L20E22
         BRSET   $00A1,Z,#$10,L20E22
-        BRCLR   >StartV06B8Flag,#$08,L20E1E
+        BRCLR   >Options033E,#$08,L20E1E
         BRCLR   $00A2,Z,#$02,L20E22
         BRSET   $00A2,Z,#$10,L20E22
 L20E1E:
         BCLR    $3F,Z,#$01
 L20E22:
-        BRCLR   >StartV06B8Flag,#$80,L20E46
+        BRCLR   >Options033E,#$80,L20E46
         BRCLR   $00A3,Z,#$02,L20E4A
         BRSET   $00A3,Z,#$10,L20E4A
-        BRCLR   >StartV06B8Flag,#$40,L20E46
+        BRCLR   >Options033E,#$40,L20E46
         BRCLR   $00A4,Z,#$02,L20E4A
         BRSET   $00A4,Z,#$10,L20E4A
 L20E46:
         BCLR    $3F,Z,#$20
 L20E4A:
-        BRCLR   >StartV06B8Flag,#$01,L20E5C
+        BRCLR   >Options033E,#$01,L20E5C
         BRCLR   $00AA,Z,#$02,L20E60
         BRSET   $00AA,Z,#$10,L20E60
 L20E5C:
         BCLR    $3F,Z,#$80
 L20E60:
-        BRCLR   >StartV06B8Flag,#$02,L20EA8
+        BRCLR   >Options033E,#$02,L20EA8
         BRSET   $0137,Z,#$02,L20EA8
         BRSET   $0137,Z,#$01,L20EA8
         BRSET   $0139,Z,#$80,L20EA8
@@ -2524,7 +2524,7 @@ L21FAE:
         CMPA    >CalThresh5
         LBCC    L22042
 L21FB6:
-        LDAB    >EventFlag2
+        LDAB    >Options032F
         BITB    $06,X
         BEQ     L21FE6
         LDE     $0000,X
@@ -2550,7 +2550,7 @@ L21FE6:
         BCS     L21FB6
         JMP     L22042
 L21FF2:
-        LDAB    >EventFlag2
+        LDAB    >Options032F
         BITB    $06,X
         BEQ     L22010
         LDAA    $067F,Z
@@ -2826,16 +2826,16 @@ Sub_222E8:
         BRSET   $0679,Z,#$10,L22380
         LDAA    $0684,Z
         ANDA    #$C3
-        BRCLR   >EventFlag2,#$80,L22316
+        BRCLR   >Options032F,#$80,L22316
         ORAA    #$20
 L22316:
-        BRCLR   >EventFlag2,#$40,L2231E
+        BRCLR   >Options032F,#$40,L2231E
         ORAA    #$10
 L2231E:
-        BRCLR   >EventFlag2,#$20,L22326
+        BRCLR   >Options032F,#$20,L22326
         ORAA    #$08
 L22326:
-        BRCLR   >EventFlag2,#$10,L2232E
+        BRCLR   >Options032F,#$10,L2232E
         ORAA    #$04
 L2232E:
         STAA    $0684,Z
@@ -2846,14 +2846,14 @@ L2232E:
         BRCLR   >ThrottleState,Z,#$80,L22384
         LDAA    $0684,Z
         ANDA    #$FC
-        BRCLR   >EventFlag2,#$20,L22364
+        BRCLR   >Options032F,#$20,L22364
         BRSET   $0512,Z,#$10,L22364
         BRCLR   $071D,Z,#$70,L22362
         BRA     L22364
 L22362:
         ORAA    #$02
 L22364:
-        BRCLR   >EventFlag2,#$10,L2237A
+        BRCLR   >Options032F,#$10,L2237A
         BRSET   $0517,Z,#$40,L2237A
         BRCLR   $0745,Z,#$70,L22378
         BRA     L2237A
@@ -3200,7 +3200,7 @@ L226AA:
 ; Called from: Sub_21F32
 ;---------------------------------------------------------------------------------------------------
 Sub_226AC:
-        BRCLR   >EventFlag2,#$80,L226CA
+        BRCLR   >Options032F,#$80,L226CA
         BRSET   $0505,Z,#$01,L226C4
         BRSET   $0506,Z,#$40,L226C4
         BRCLR   $0512,Z,#$08,L226CA
@@ -3210,7 +3210,7 @@ L226C4:
 L226CA:
         BCLR    $06B5,Z,#$08
 L226CE:
-        BRCLR   >EventFlag2,#$20,L226F8
+        BRCLR   >Options032F,#$20,L226F8
         BRSET   $0512,Z,#$10,L226F2
         BRSET   $0659,Z,#$08,L226F2
         BRSET   $009E,Z,#$20,L226F2
@@ -3222,7 +3222,7 @@ L226F2:
 L226F8:
         BCLR    $06B5,Z,#$02
 L226FC:
-        BRCLR   >EventFlag2,#$40,L2271A
+        BRCLR   >Options032F,#$40,L2271A
         BRSET   $0509,Z,#$02,L22714
         BRSET   $0509,Z,#$04,L22714
         BRCLR   $0517,Z,#$20,L2271A
@@ -3232,7 +3232,7 @@ L22714:
 L2271A:
         BCLR    $06B5,Z,#$04
 L2271E:
-        BRCLR   >EventFlag2,#$10,L22748
+        BRCLR   >Options032F,#$10,L22748
         BRSET   $0517,Z,#$40,L22742
         BRSET   $0659,Z,#$04,L22742
         BRSET   $009E,Z,#$10,L22742
@@ -3555,7 +3555,7 @@ L22A96:
         LDAA    >O2UpBank1Raw,Z
         CMPA    >SensorO2UpBank1RawThresh
         BCC     L22AE2
-        BRCLR   >EventFlag2,#$40,L22AD4
+        BRCLR   >Options032F,#$40,L22AD4
         BRSET   $06B5,Z,#$04,L22AE2
         BRSET   $050E,Z,#$04,L22AE2
         LDAA    >O2UpBank2Raw,Z
@@ -3712,7 +3712,7 @@ L22C5C:
         BEQ     L22C8E
 L22C7A:
         STAA    $0528,Z
-        BRSET   >EventFlag2,#$40,L22C86
+        BRSET   >Options032F,#$40,L22C86
         CLRA
 L22C86:
         STAA    $0529,Z
@@ -3724,14 +3724,14 @@ L22C8E:
         BRA     L22CB4
 L22C9E:
         LDAA    #$08
-        BRCLR   >EventFlag2,#$40,L22CB4
+        BRCLR   >Options032F,#$40,L22CB4
         BRSET   $06B5,Z,#$04,L22CB4
         BRCLR   $075D,Z,#$04,L22CB4
         LDAA    #$10
 L22CB4:
         STAA    $0528,Z
         CLRA
-        BRCLR   >EventFlag2,#$40,L22CE0
+        BRCLR   >Options032F,#$40,L22CE0
         LDAA    #$02
         BRSET   $06B5,Z,#$04,L22CD0
         BRCLR   $075D,Z,#$04,L22CD0
@@ -6036,7 +6036,7 @@ Sub_24784:
         TPD
         TBXK
         LDX     #$47F0
-        LDAA    >EventV0C46Value
+        LDAA    >CylinderCount
         CMPA    #$06
         BEQ     L24798
         LDX     #$47FC
@@ -6068,7 +6068,7 @@ L247D0:
         PULM    E
         BRCLR   $0632,Z,#$01,L247F0
 L247D8:
-        LDAA    >EventV0C46Value
+        LDAA    >CylinderCount
         DECA
         CMPA    $0C46,Z
         BNE     L247F0
@@ -6212,7 +6212,7 @@ L247F0:
 ; Called from: Sub_20272
 ;---------------------------------------------------------------------------------------------------
 Sub_25000:
-        BRCLR   >StartV06B8Flag,#$01,L252A6
+        BRCLR   >Options033E,#$01,L252A6
         BRSET   $00AA,Z,#$02,L252A6
         BRCLR   $00AA,Z,#$80,L25296
         BRSET   $00D8,Z,#$01,L25296
@@ -6243,7 +6243,7 @@ L2507A:
         LBNE    L25296
         BRCLR   $075D,Z,#$80,L25296
         BRSET   $071D,Z,#$20,L25296
-        BRCLR   >EventFlag2,#$40,L250A0
+        BRCLR   >Options032F,#$40,L250A0
         BRCLR   $075D,Z,#$40,L25296
         BRSET   $0745,Z,#$20,L25296
 L250A0:
@@ -6311,7 +6311,7 @@ L2512E:
         LBLT    L2529A
         CMPA    >MapShortTermTrim1Thresh2
         LBGT    L2529A
-        BRCLR   >EventFlag2,#$40,L25196
+        BRCLR   >Options032F,#$40,L25196
         LDAA    >ShortTermTrim2,Z
         CMPA    >MapShortTermTrim1Thresh1
         LBLT    L2529A
@@ -6324,7 +6324,7 @@ L25196:
         INCW    $057E,Z
         LDAB    $0723,Z
         STAB    $0582,Z
-        BRCLR   >EventFlag2,#$40,L251C8
+        BRCLR   >Options032F,#$40,L251C8
         SXT
         TDE
         LDAB    $074B,Z
@@ -6349,7 +6349,7 @@ L251E0:
         INCW    $057E,Z
         LDAB    $0723,Z
         STAB    $0585,Z
-        BRCLR   >EventFlag2,#$40,L25216
+        BRCLR   >Options032F,#$40,L25216
         SXT
         TDE
         LDAB    $074B,Z
@@ -6417,11 +6417,11 @@ L252A6:
 ; Called from: Sub_20272
 ;---------------------------------------------------------------------------------------------------
 Sub_252A8:
-        BRCLR   >StartV06B8Flag,#$20,L25768
+        BRCLR   >Options033E,#$20,L25768
         BRSET   $00A9,Z,#$02,L25768
         BRCLR   $00A9,Z,#$80,L2574A
         BRSET   $00D8,Z,#$01,L2574A
-        BRCLR   >StartV06B8Flag,#$02,L252DE
+        BRCLR   >Options033E,#$02,L252DE
         BRSET   $00B0,Z,#$80,L25768
         BRSET   $058E,Z,#$80,L252DE
         BSET    $05AE,Z,#$80
@@ -6448,7 +6448,7 @@ L252FE:
         JSR     Blend16Signed
         AIS     #$04
         STAB    $05BB,Z
-        BRCLR   >EventFlag2,#$40,L25346
+        BRCLR   >Options032F,#$40,L25346
         LDAB    >ShortTermTrim2,Z
         SXT
         TDE
@@ -6570,7 +6570,7 @@ L254D2:
         BRSET   $0C21,Z,#$04,L254DC
         BSET    $05B0,Z,#$08
 L254DC:
-        BRSET   >StartFlag,#$10,L254FA
+        BRSET   >Options0334,#$10,L254FA
         BCLR    $05B0,Z,#$30
         BRCLR   $0944,Z,#$10,L254F0
         BSET    $05B0,Z,#$10
@@ -6611,7 +6611,7 @@ L25556:
 L25564:
         BRSET   $05B0,Z,#$04,L2572A
 L2556A:
-        BRSET   >StartFlag,#$10,L255A4
+        BRSET   >Options0334,#$10,L255A4
         BRSET   $0C33,Z,#$04,L2572A
         BRSET   $0C33,Z,#$40,L2572A
         BRCLR   $0944,Z,#$10,L2558A
@@ -6627,7 +6627,7 @@ L2559E:
         BRSET   $05B0,Z,#$20,L2572A
 L255A4:
         CLRW    $00F2,Z
-        BRSET   >StartV06B8Flag,#$02,L255D2
+        BRSET   >Options033E,#$02,L255D2
         LDAA    $05B4,Z
         SUBA    <IacPosition,Z
         BCS     L255D2
@@ -6657,7 +6657,7 @@ L255F2:
         BSET    $05AF,Z,#$08
         LBRA    L25680
 L255FC:
-        BRCLR   >EventFlag2,#$40,L25628
+        BRCLR   >Options032F,#$40,L25628
         LDAA    $05BA,Z
         SUBA    >ShortTermTrim2,Z
         BLT     L25628
@@ -6679,7 +6679,7 @@ L25628:
         JMP     L25768
 L2563A:
         CLRW    $00F6,Z
-        BRSET   >StartV06B8Flag,#$02,L25668
+        BRSET   >Options033E,#$02,L25668
         LDD     >EngineRpm,Z
         SUBD    $05B5,Z
         BCS     L25668
@@ -6723,7 +6723,7 @@ L256A6:
         LSRA
         ORAA    #$C0
         BRSET   $05AF,Z,#$08,L256DA
-        BRCLR   >EventFlag2,#$40,L256CE
+        BRCLR   >Options032F,#$40,L256CE
         LDAB    $F5,Z
         BRSET   $05AF,Z,#$10,L256DA
 L256CE:
@@ -6781,7 +6781,7 @@ L25768:
 ; Called from: Sub_20272
 ;---------------------------------------------------------------------------------------------------
 Sub_2576A:
-        BRCLR   >StartV06B8Flag,#$02,L25D26
+        BRCLR   >Options033E,#$02,L25D26
         BRSET   $00B0,Z,#$02,L25D26
         BRSET   $00D8,Z,#$01,L25D26
         BRCLR   $0774,Z,#$80,L25D26
@@ -7413,7 +7413,7 @@ L25E40:
 ; Called from: Sub_0DC40
 ;---------------------------------------------------------------------------------------------------
 Sub_25E42:
-        BRCLR   >StartV06B8Flag,#$02,L25EE2
+        BRCLR   >Options033E,#$02,L25EE2
         BRCLR   $1000,Z,#$02,L25E54
         BSET    $058E,Z,#$02
         BRA     L25E58
@@ -8207,7 +8207,7 @@ L281F4:
         TBXK
         TPD
         TBYK
-        LDAA    >StartV06B8Flag
+        LDAA    >Options033E
         BITA    $32,Y
         LBEQ    L285C8
         LDE     $0020,Y
@@ -8752,10 +8752,10 @@ L287B6:
         BEQ     L287D2
         STAA    $053F,Z
 L287D2:
-        LDAA    >StartV06B8Flag
+        LDAA    >Options033E
         ANDA    $37,Y
         LBEQ    L2891C
-        LDAA    >EventFlag2
+        LDAA    >Options032F
         ANDA    $36,Y
         LBEQ    L2891C
         BRCLR   $0774,Z,#$80,L2891C
@@ -9368,25 +9368,25 @@ L28E50:
         BCLRW   $100C,Z,#$0800
         ANDP    #$FF1F
         BSET    $0108,Z,#$80
-        BRCLR   >EventFlag2,#$80,L28ED0
+        BRCLR   >Options032F,#$80,L28ED0
         BRSET   $06B5,Z,#$08,L28ED0
         BRSET   $050D,Z,#$40,L28ED0
         BSET    $0107,Z,#$80
         BSET    $A5,Z,#$04
 L28ED0:
-        BRCLR   >EventFlag2,#$40,L28EEA
+        BRCLR   >Options032F,#$40,L28EEA
         BRSET   $06B5,Z,#$04,L28EEA
         BRSET   $050E,Z,#$04,L28EEA
         BSET    $0107,Z,#$40
         BSET    $A6,Z,#$04
 L28EEA:
-        BRCLR   >EventFlag2,#$20,L28F04
+        BRCLR   >Options032F,#$20,L28F04
         BRSET   $06B5,Z,#$02,L28F04
         BRSET   $050C,Z,#$01,L28F04
         BSET    $0107,Z,#$20
         BSET    $A7,Z,#$04
 L28F04:
-        BRCLR   >EventFlag2,#$10,L28F1E
+        BRCLR   >Options032F,#$10,L28F1E
         BRSET   $06B5,Z,#$01,L28F1E
         BRSET   $050E,Z,#$08,L28F1E
         BSET    $0107,Z,#$10
@@ -9719,7 +9719,7 @@ L2925C:
 L29282:
         LDY     #$8CD0
 L29286:
-        LDAA    >EventFlag2
+        LDAA    >Options032F
         BITA    $23,Y
         BEQ     L292AE
         LDE     $000E,Y
@@ -10175,7 +10175,7 @@ L2A028:
         BNE     L2A060
         BRCLR   $0774,Z,#$80,L2A060
         BRCLR   $075D,Z,#$80,L2A060
-        BRCLR   >EventFlag2,#$80,L2A060
+        BRCLR   >Options032F,#$80,L2A060
         TST     $0937,Z
         BNE     L2A060
         BRSET   $00AE,Z,#$08,L2A07C
@@ -10246,7 +10246,7 @@ L2A0EE:
 Sub_2A0F0:
         LDAA    $07B0,Z
         BRCLR   >Options032C,#$40,L2A10E
-        BRSET   >EventFlag2,#$08,L2A10E
+        BRSET   >Options032F,#$08,L2A10E
         LDAB    >FlexLearnBase,Z
         CMPB    >FuelFlexLearnBaseThresh
         BCS     L2A10E
@@ -10257,7 +10257,7 @@ L2A10E:
         STAB    $059F,Z
         BRSET   $064A,Z,#$80,L2A13C
         BRCLR   >Options032C,#$40,L2A12C
-        BRCLR   >EventFlag2,#$08,L2A13C
+        BRCLR   >Options032F,#$08,L2A13C
 L2A12C:
         LDAA    >FuelV007DThresh
         CMPA    $6A,Z
@@ -10366,7 +10366,7 @@ L2A23A:
         BNE     L2A272
         BRCLR   $0774,Z,#$80,L2A272
         BRCLR   $075D,Z,#$40,L2A272
-        BRCLR   >EventFlag2,#$40,L2A272
+        BRCLR   >Options032F,#$40,L2A272
         TST     $0937,Z
         BNE     L2A272
         BRSET   $00AF,Z,#$08,L2A28E
@@ -10437,7 +10437,7 @@ L2A300:
 Sub_2A302:
         LDAA    $07B1,Z
         BRCLR   >Options032C,#$40,L2A320
-        BRSET   >EventFlag2,#$08,L2A320
+        BRSET   >Options032F,#$08,L2A320
         LDAB    >FlexLearnBase,Z
         CMPB    >FuelFlexLearnBaseThresh
         BCS     L2A320
@@ -10448,7 +10448,7 @@ L2A320:
         STAB    $05A0,Z
         BRSET   $064A,Z,#$80,L2A34E
         BRCLR   >Options032C,#$40,L2A33E
-        BRCLR   >EventFlag2,#$08,L2A34E
+        BRCLR   >Options032F,#$08,L2A34E
 L2A33E:
         LDAA    >FuelV007DThresh
         CMPA    $7D,Z
@@ -10552,7 +10552,7 @@ L2A440:
         BNE     L2A478
         BRCLR   $0774,Z,#$80,L2A478
         BRCLR   $075D,Z,#$80,L2A478
-        BRCLR   >EventFlag2,#$80,L2A478
+        BRCLR   >Options032F,#$80,L2A478
         TST     $0937,Z
         BNE     L2A478
         BRSET   $00AC,Z,#$08,L2A494
@@ -10614,7 +10614,7 @@ L2A4F0:
 Sub_2A4F2:
         LDAA    $07B0,Z
         BRCLR   >Options032C,#$40,L2A510
-        BRSET   >EventFlag2,#$08,L2A510
+        BRSET   >Options032F,#$08,L2A510
         LDAB    >FlexLearnBase,Z
         CMPB    >FuelFlexLearnBaseThresh
         BCS     L2A510
@@ -10717,7 +10717,7 @@ L2A60E:
         BNE     L2A646
         BRCLR   $0774,Z,#$80,L2A646
         BRCLR   $075D,Z,#$40,L2A646
-        BRCLR   >EventFlag2,#$40,L2A646
+        BRCLR   >Options032F,#$40,L2A646
         TST     $0937,Z
         BNE     L2A646
         BRSET   $00AD,Z,#$08,L2A662
@@ -10779,7 +10779,7 @@ L2A6BE:
 Sub_2A6C0:
         LDAA    $07B1,Z
         BRCLR   >Options032C,#$40,L2A6DE
-        BRSET   >EventFlag2,#$08,L2A6DE
+        BRSET   >Options032F,#$08,L2A6DE
         LDAB    >FlexLearnBase,Z
         CMPB    >FuelFlexLearnBaseThresh
         BCS     L2A6DE
@@ -10948,7 +10948,7 @@ L2A84E:
 L2A856:
         LBSR    Sub_2B726
         BRCLR   >Options032C,#$40,L2A872
-        BRSET   >EventFlag2,#$08,L2A872
+        BRSET   >Options032F,#$08,L2A872
         LBSR    Sub_2B304
         LBSR    Sub_2B688
         JSR     Sub_185DC
@@ -10964,7 +10964,7 @@ L2A872:
 L2A890:
         TST     >MisfireTransientHold,Z
         BNE     L2A8F6
-        BRSET   >EventFlag2,#$08,L2A8A2
+        BRSET   >Options032F,#$08,L2A8A2
         BRSET   >Options032C,#$40,L2A8AA
 L2A8A2:
         LBSR    Sub_2B304
@@ -11060,7 +11060,7 @@ L2A9A2:
         LDAA    $04F0,Z
         ANDA    #$09
         LBEQ    L2AA7C
-        LDAA    >EventV0C46Value
+        LDAA    >CylinderCount
         CMPA    #$06
         BNE     L2AA1C
         CLRE
@@ -11207,7 +11207,7 @@ L2AB0C:
 ; Called from: Sub_2A81A
 ;---------------------------------------------------------------------------------------------------
 Sub_2AB16:
-        BRCLR   >StartV06B8Flag,#$04,L2AB98
+        BRCLR   >Options033E,#$04,L2AB98
         BRCLR   $00AB,Z,#$80,L2AB98
         BRCLR   $0624,Z,#$04,L2AB98
         TST     $0937,Z
@@ -11218,15 +11218,15 @@ Sub_2AB16:
 L2AB40:
         LDAA    >CoolantTemp,Z
         LDAB    >StartCoolantTemp2,Z
-        CMPB    >FuelStartCoolantThresh1
+        CMPB    >MisfireColdStartMax
         BHI     L2AB62
-        CMPB    >FuelStartCoolantThresh2
+        CMPB    >MisfireColdStartMin
         BLS     L2AB5C
-        CMPA    >FuelThresh4
+        CMPA    >MisfireCoolantLimit
         BHI     L2AB62
         BRA     L2AB98
 L2AB5C:
-        CMPA    >FuelThresh5
+        CMPA    >MisfireCoolantLimit2
         BLS     L2AB98
 L2AB62:
         BRCLR   $0642,Z,#$80,L2AB6E
@@ -11262,7 +11262,7 @@ L2AB9A:
 Sub_2ABA2:
         PSHM    D
         CLRA
-        LDAB    >EventV0C46Value
+        LDAB    >CylinderCount
         DECB
         TDE
         PULM    D
@@ -11290,7 +11290,7 @@ L2ABC8:
 Sub_2ABD0:
         PSHM    D
         CLRA
-        LDAB    >EventV0C46Value
+        LDAB    >CylinderCount
         DECB
         ASLB
         TDE
@@ -11538,7 +11538,7 @@ L2AE72:
         TST     >MisfireStartTimer,Z
         LBNE    L2AF32
         LDD     $060D,Z
-        CPD     >FuelV0610Thresh
+        CPD     >MisfireCountLimit
         LBCS    L2AF28
         BSET    $0624,Z,#$10
         BSET    $0612,Z,#$80
@@ -11612,13 +11612,13 @@ L2AF32:
         BRSET   $064A,Z,#$40,L2B05E
         LDAA    $0619,Z
         BRSET   $0627,Z,#$80,L2AF8A
-        CMPA    >FuelV0619Thresh
+        CMPA    >MisfireCountLimit2
         LBCS    L2B05E
         BRA     L2AFB2
 L2AF8A:
         CMPA    >FuelThresh6
         BRSET   $00DC,Z,#$20,L2AF98
-        CMPA    >FuelV061DThresh
+        CMPA    >MisfireCountLimitCat
 L2AF98:
         LBCS    L2B05E
         BRSET   $0627,Z,#$20,L2B05E
@@ -11707,7 +11707,7 @@ L2B08A:
         CMPA    #$64
         BCS     L2B0EE
         LDD     $0610,Z
-        CPD     >FuelV0610Thresh
+        CPD     >MisfireCountLimit
         BCS     L2B0B0
         LDAA    #$80
         STAA    $B4,Z
@@ -11719,7 +11719,7 @@ L2B0B0:
         CMPA    #$05
         BCS     L2B0EE
         LDAA    $061D,Z
-        CMPA    >FuelV061DThresh
+        CMPA    >MisfireCountLimitCat
         BCS     L2B0D2
         LDAB    #$80
         BRA     L2B0E0
@@ -11755,7 +11755,7 @@ Sub_2B0F0:
 L2B108:
         BRSET   $0774,Z,#$80,L2B122
         BSET    $0625,Z,#$80
-        LDAB    >FuelMisfireTransientHoldThresh8
+        LDAB    >MisfireHoldStart
         CMPB    >MisfireTransientHold,Z
         BLS     L2B126
         STAB    >MisfireTransientHold,Z
@@ -11770,19 +11770,19 @@ L2B126:
         SBA
         BCC     L2B156
         NEGA
-        CMPA    >FuelMapThresh4
+        CMPA    >MisfireMapChangeMax
         BLS     L2B170
         BSET    $0625,Z,#$20
-        LDAB    >FuelMisfireTransientHoldThresh1
+        LDAB    >MisfireHoldMap
         CMPB    >MisfireTransientHold,Z
         BLS     L2B174
         STAB    >MisfireTransientHold,Z
         BRA     L2B174
 L2B156:
-        CMPA    >FuelThresh3
+        CMPA    >MisfireThrottleChangeMax
         BLS     L2B170
         BSET    $0625,Z,#$20
-        LDAB    >FuelMisfireTransientHoldThresh2
+        LDAB    >MisfireHoldThrottle
         CMPB    >MisfireTransientHold,Z
         BLS     L2B174
         STAB    >MisfireTransientHold,Z
@@ -11797,7 +11797,7 @@ L2B182:
         CMPA    >SegmentRpm,Z
         BCC     L2B19C
         BSET    $0625,Z,#$10
-        LDAB    >FuelMisfireTransientHoldThresh7
+        LDAB    >MisfireHoldRevLimit
         CMPB    >MisfireTransientHold,Z
         BLS     L2B1A0
         STAB    >MisfireTransientHold,Z
@@ -11813,7 +11813,7 @@ L2B1B4:
         CMPA    >SegmentRpm,Z
         BCC     L2B1CE
         BSET    $0625,Z,#$01
-        LDAB    >FuelMisfireTransientHoldThresh4
+        LDAB    >MisfireHoldRpm
         CMPB    >MisfireTransientHold,Z
         BLS     L2B1D2
         STAB    >MisfireTransientHold,Z
@@ -11823,7 +11823,7 @@ L2B1CE:
 L2B1D2:
         LDAA    >DecelLeanFuel,Z
         BEQ     L2B1DE
-        CMPA    >FuelDecelLeanFuelThresh
+        CMPA    >MisfireDecelLeanMin
         BCS     L2B206
 L2B1DE:
         TST     $07C1,Z
@@ -11841,31 +11841,31 @@ L2B1DE:
         BRA     L2B218
 L2B206:
         BSET    $0625,Z,#$08
-        LDAB    >FuelMisfireTransientHoldThresh3
+        LDAB    >MisfireHoldDecel
         CMPB    >MisfireTransientHold,Z
         BLS     L2B218
         STAB    >MisfireTransientHold,Z
 L2B218:
         BCLR    $0625,Z,#$02
         LDAB    >Map,Z
-        CMPB    >FuelMapThresh5
+        CMPB    >MisfireIdleMapMax
         BCC     L2B24A
         LDAA    >SegmentRpm,Z
-        CMPA    >FuelSegRpmThresh2
+        CMPA    >MisfireIdleRpmMin
         BLS     L2B24A
-        CMPA    >FuelSegRpmThresh1
+        CMPA    >MisfireIdleRpmMax
         BCC     L2B24A
         LDAA    >VehicleSpeed,Z
-        CMPA    >FuelSpeedThresh
+        CMPA    >MisfireIdleSpeedMax
         BHI     L2B24A
         LDAA    >CoolantTemp,Z
-        CMPA    >FuelCoolantThresh4
+        CMPA    >MisfireIdleCoolantMax
         BHI     L2B264
 L2B24A:
         CMPB    >MisfireEnable,Z
         BCC     L2B28C
         BSET    $0625,Z,#$02
-        LDAB    >FuelMisfireTransientHoldThresh6
+        LDAB    >MisfireHoldEnable
         CMPB    >MisfireTransientHold,Z
         BLS     L2B28C
         STAB    >MisfireTransientHold,Z
@@ -11895,7 +11895,7 @@ L2B2A2:
         BSET    $0624,Z,#$40
 L2B2AC:
         BSET    $0625,Z,#$40
-        LDAB    >FuelMisfireTransientHoldThresh9
+        LDAB    >MisfireHoldEvent
         CMPB    >MisfireTransientHold,Z
         BLS     L2B2C4
         STAB    >MisfireTransientHold,Z
@@ -11908,13 +11908,13 @@ L2B2C4:
         BRCLR   $0857,Z,#$04,L2B2FE
 L2B2D6:
         LDAA    >SpeedDampSpark,Z
-        CMPA    >FuelSpeedDampSparkThresh
+        CMPA    >MisfireSparkMin
         BLT     L2B2FE
         LDAA    >EventSpark,Z
-        CMPA    >FuelSpeedDampSparkThresh
+        CMPA    >MisfireSparkMin
         BLT     L2B2FE
         BSET    $0625,Z,#$04
-        LDAB    >FuelMisfireTransientHoldThresh5
+        LDAB    >MisfireHoldSpark
         CMPB    >MisfireTransientHold,Z
         BLS     L2B302
         STAB    >MisfireTransientHold,Z
@@ -11936,7 +11936,7 @@ Sub_2B304:
         STAB    $04FE,Z
 L2B312:
         LDAB    $04FE,Z
-        CMPB    >EventV0C46Value
+        CMPB    >CylinderCount
         BCC     L2B344
         ASLB
         LDY     #$85C2
@@ -11970,7 +11970,7 @@ L2B344:
         STAB    $04FA,Z
 L2B366:
         LDAB    $04FA,Z
-        CMPB    >EventV0C46Value
+        CMPB    >CylinderCount
         LBCC    L2B400
         TXY
         ASLB
@@ -12029,7 +12029,7 @@ L2B3DA:
 L2B400:
         TXY
         CLRA
-        LDAB    >EventV0C46Value
+        LDAB    >CylinderCount
         ASLD
         STD     $04F4,Z
         ADY
@@ -12082,7 +12082,7 @@ Sub_2B44C:
         LDAA    >EngineRpm,Z
         JSR     Lookup2D
         STAA    $F5,Z
-        LDD     >MisfireValue1
+        LDD     >MisfireEnableBase
         XGAB
         TSTA
         BPL     L2B494
@@ -12097,12 +12097,12 @@ L2B494:
         JSR     Lookup2D
         CLRA
         STAB    $062A,Z
-        SUBB    >MisfireOffset
+        SUBB    >MisfireEnableBaroOffset
         SBCA    #$00
         STD     $F6,Z
         CLRA
         LDAB    $19,Z
-        SUBB    >MisfireV0019Offset
+        SUBB    >MisfireEnableIacOffset
         SBCA    #$00
         ASRD
         ASRD
@@ -12112,7 +12112,7 @@ L2B494:
         EDIVS
         XGEX
         CLRA
-        LDAB    >MisfireFactor1
+        LDAB    >MisfireEnableGain
         EMULS
         LDX     #$1000
         EDIVS
@@ -12167,7 +12167,7 @@ L2B554:
         DEC     $062B,Z
         BRA     L2B586
 L2B560:
-        LDAB    >MisfireValue5
+        LDAB    >MisfireNoiseDecay
         BEQ     L2B586
         CLRA
         LDE     >MisfireNoisePeak,Z
@@ -12177,7 +12177,7 @@ L2B560:
         LDE     $00F1,Z
         STE     >MisfireNoisePeak,Z
         BEQ     L2B586
-        LDAA    >MisfireV062BInit
+        LDAA    >MisfireNoiseHold
         STAA    $062B,Z
 L2B586:
         ORP     #$00E0
@@ -12271,7 +12271,7 @@ L2B696:
         STE     $05DA,Z
         LDD     >MisfireChangeFiltered,Z
         PSHM    D,E
-        LDAA    >MisfireValue4
+        LDAA    >MisfireChangeFilter
         JSR     Blend16
         AIS     #$04
         STD     >MisfireChangeFiltered,Z
@@ -12279,7 +12279,7 @@ L2B696:
         LDD     $05D2,Z
         BPL     L2B6CA
         NEGD
-        CPD     >MisfireV05D2Thresh2
+        CPD     >MisfireRefChangeMin
         BLS     L2B6CA
         BRSET   $0628,Z,#$80,L2B6CA
         STD     $05DC,Z
@@ -12295,7 +12295,7 @@ L2B6DA:
 L2B6E2:
         STE     $05DE,Z
         LDAA    #$01
-        LDAB    >MisfireFactor2
+        LDAB    >MisfireNoiseGain
         EMUL
         STE     $04FC,Z
         STD     $04FE,Z
@@ -12324,12 +12324,12 @@ Sub_2B726:
         TBXK
         LDE     $0AC0,Z
         LDX     #$74E9
-        LDAA    >EventV0C46Value
+        LDAA    >CylinderCount
         CMPA    #$06
         BEQ     L2B74C
         LDE     $0AC2,Z
         LDX     #$74FB
-        BRSET   >EventFlag1,#$40,L2B74C
+        BRSET   >Options032A,#$40,L2B74C
         LDX     #$7507
 L2B74C:
         LDAA    $0C46,Z
@@ -12359,10 +12359,10 @@ L2B758:
         NEGE
         XGEX
         STX     $04F4,Z
-        LDED    >FuelValue14
+        LDED    >SegmentRpmConst
         EDIV
         STX     >SegmentRpmFast,Z
-        LDAA    >EventV0C46Value
+        LDAA    >CylinderCount
         CMPA    #$06
         BNE     L2B7CA
         LDAA    $04F0,Z
@@ -12404,7 +12404,7 @@ L2B818:
         STX     $04F4,Z
         LDAA    $0C43,Z
         BEQ     L2B848
-        LDED    >FuelValue14
+        LDED    >SegmentRpmConst
         PSHM    D,E,X
         TSY
         LDAA    $0C43,Z
@@ -12418,11 +12418,11 @@ L2B832:
         PULM    X,E,D
         BRA     L2B84C
 L2B848:
-        LDED    >FuelValue14
+        LDED    >SegmentRpmConst
 L2B84C:
         EDIV
         STX     >SegmentRpmFast,Z
-        LDAA    >EventV0C46Value
+        LDAA    >CylinderCount
         CMPA    #$06
         BNE     L2B89A
         LDAA    $04F0,Z
@@ -12498,7 +12498,7 @@ L2B8F8:
         STX     $05C4,Z
         BCLR    $B7,Z,#$10
         BSET    $0625,Z,#$80
-        LDAB    >FuelMisfireTransientHoldThresh8
+        LDAB    >MisfireHoldStart
         CMPB    >MisfireTransientHold,Z
         BLS     L2B92E
         STAB    >MisfireTransientHold,Z
@@ -12516,7 +12516,7 @@ Sub_2B934:
         LDD     $00,Y
         LDE     $04F6,Z
         PSHM    D,E
-        LDAA    >MisfireValue3
+        LDAA    >MisfireDevFilter
         JSR     Blend16Signed
         AIS     #$04
         STD     $00,Y
@@ -12561,8 +12561,8 @@ L2B99E:
         STE     $04F2,Z
         STD     $04F4,Z
         PULM    E,D
-        ADDD    >MisfireAdder2
-        ADCE    >MisfireAdder1
+        ADDD    >MisfirePeriodOffsetLo
+        ADCE    >MisfirePeriodOffsetHi
         PSHM    D,E
         SUBD    $04F4,Z
         SBCE    $04F2,Z
@@ -12583,8 +12583,8 @@ L2B9EC:
         STE     $04F2,Z
         STD     $04F4,Z
         PULM    E,D
-        SUBD    >MisfireAdder2
-        SBCE    >MisfireAdder1
+        SUBD    >MisfirePeriodOffsetLo
+        SBCE    >MisfirePeriodOffsetHi
         PSHM    D,E
         SUBD    $04F4,Z
         SBCE    $04F2,Z
@@ -13386,7 +13386,7 @@ L2C79E:
         JSR     Sub_17E4E
         BRA     L2C7B4
 L2C7AA:
-        BRSET   >EventFlag2,#$08,L2C7B4
+        BRSET   >Options032F,#$08,L2C7B4
         JSR     Sub_17000
 L2C7B4:
         RTS
@@ -13472,7 +13472,7 @@ L2C888:
 L2C88A:
         STAA    >FlexEthanolLearned,Z
 L2C88E:
-        BRCLR   >EventFlag2,#$08,L2CA6E
+        BRCLR   >Options032F,#$08,L2CA6E
         BRSET   $01AC,Z,#$20,L2C9DA
         BRSET   $01AC,Z,#$04,L2C9A2
         BRSET   $01AC,Z,#$08,L2C9A2
@@ -14404,7 +14404,7 @@ Sub_2D222:
         BNE     L2D25E
         LDAB    <ThrottleClosed,Z
         BNE     L2D252
-        LDAB    >StartThrottleClosedInit
+        LDAB    >ThrottleClosedDefault
 L2D252:
         DECB
         STAB    <ThrottleClosed,Z
@@ -14413,9 +14413,9 @@ L2D25A:
         LDAA    >ThrottleV0A78Init
 L2D25E:
         STAA    $0A78,Z
-        LDAA    >ThrottleValue
+        LDAA    >ThrottleClosedMarginHyst
         BRSET   >ThrottleState,Z,#$80,L2D270
-        LDAA    >ThrottleClosedValue
+        LDAA    >ThrottleClosedMargin
 L2D270:
         ADDA    <ThrottleClosed,Z
         SUBA    >Throttle,Z
@@ -14425,7 +14425,7 @@ L2D270:
         CMPA    #$08
         BHI     L2D294
         LDAA    $0E01,Z
-        CMPA    >ThrottleV0E01Thresh
+        CMPA    >ThrottleCloseConfirm
         BCC     L2D294
         INC     $0E01,Z
         BRA     L2D2FA
@@ -14459,7 +14459,7 @@ L2D2CE:
 L2D2E2:
         CLR     $0E01,Z
         BCLR    $0D01,Z,#$20
-        LDAA    >ThrottleV041CInit
+        LDAA    >ThrottleCloseHold
         STAA    $041C,Z
         LBRA    L2D394
 L2D2F6:
@@ -14476,7 +14476,7 @@ L2D2FA:
         STAA    $041C,Z
         BRA     L2D394
 L2D320:
-        LDAA    >ThrottleV041CInit
+        LDAA    >ThrottleCloseHold
         STAA    $041C,Z
 L2D328:
         BRCLR   >ThrottleState,Z,#$80,L2D394
@@ -14514,16 +14514,16 @@ L2D394:
         BRSET   >ThrottleState,Z,#$08,L2D3C8
         BRCLR   $0A46,Z,#$01,L2D3C8
         LDAA    >EngineRpm,Z
-        CMPA    >ThrottleRpmThresh
+        CMPA    >ThrottleRelearnRpmMin
         BCS     L2D3C8
         LDAA    >Map,Z
-        CMPA    >ThrottleMapThresh
+        CMPA    >ThrottleRelearnMapMax
         BCC     L2D3C8
         LDAA    <ThrottleClosed,Z
         INCA
-        CMPA    >StartThrottleClosedInit
+        CMPA    >ThrottleClosedDefault
         BLS     L2D3C2
-        LDAA    >StartThrottleClosedInit
+        LDAA    >ThrottleClosedDefault
 L2D3C2:
         STAA    <ThrottleClosed,Z
         BSET    >ThrottleState,Z,#$08
@@ -14929,7 +14929,7 @@ L2D78A:
         BCLR    $0764,Z,#$02
         BCLR    $0764,Z,#$01
 L2D7C0:
-        BRCLR   >EventFlag1,#$C0,L2D7D4
+        BRCLR   >Options032A,#$C0,L2D7D4
         LDAA    #$65
         BRSET   >PACTL,Z,#$80,L2D7D0
         LDAA    #$75
@@ -14962,7 +14962,7 @@ L2D812:
         CLR     $0689,Z
         CLR     $0DBC,Z
         BRCLR   >Options032C,#$40,L2D836
-        BRSET   >EventFlag2,#$08,L2D836
+        BRSET   >Options032F,#$08,L2D836
         JSR     Sub_18756
 L2D836:
         CLR     $056B,Z

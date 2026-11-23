@@ -646,7 +646,7 @@ L30778:
         CLRB
         BRCLR   >Options032C,#$40,L30798
         LDAB    >FlexEthanol,Z
-        BRSET   >EventFlag2,#$08,L30798
+        BRSET   >Options032F,#$08,L30798
         LDAB    >FlexLearnBase,Z
 L30798:
         RTS
@@ -917,7 +917,7 @@ L309B6:
 ; Called from: Sub_30808, Sub_317B4
 ;---------------------------------------------------------------------------------------------------
 Sub_309D4:
-        LDAA    >StartFlag
+        LDAA    >Options0334
         BITA    #$10
         BNE     L30A12
         LDAB    $0944,Z
@@ -5256,7 +5256,7 @@ L33B5E:
 Sub_33B60:
         BRCLR   $0642,Z,#$80,L33BA8
         BRCLR   $064E,Z,#$01,L33BA8
-        BRSET   >StartV06B8Flag,#$02,L33B78
+        BRSET   >Options033E,#$02,L33B78
         BCLR    $0646,Z,#$03
         BRA     L33BC8
 L33B78:
@@ -6804,7 +6804,7 @@ L35C2C:
         ANDP    #$FF1F
         BRA     L35C44
 L35C3E:
-        LDAA    >StartThrottleClosedInit
+        LDAA    >ThrottleClosedDefault
         STAA    <ThrottleClosed,Z
 L35C44:
         LDAA    #$F0
@@ -6912,13 +6912,13 @@ L35D42:
         LBEQ    L35DE2
         TPD
         TBXK
-        LDAA    >EventV0C46Value
+        LDAA    >CylinderCount
         CMPA    #$04
         BEQ     L35D6E
         LDX     #$5329
         BRA     L35D7E
 L35D6E:
-        BRSET   >EventFlag1,#$80,L35D7A
+        BRSET   >Options032A,#$80,L35D7A
         LDX     #$5323
         BRA     L35D7E
 L35D7A:
@@ -7178,10 +7178,10 @@ L35FDE:
 L35FEC:
         RTS
 L35FEE:
-        BRCLR   >StartFlag,#$10,L35FF8
+        BRCLR   >Options0334,#$10,L35FF8
         JMP     L35776
 L35FF8:
-        LDAB    >StartFlag
+        LDAB    >Options0334
         BITB    #$08
         BNE     L3600A
         BITB    #$04
@@ -7209,10 +7209,10 @@ L36028:
 L36038:
         RTS
 L3603A:
-        BRCLR   >StartFlag,#$10,L36044
+        BRCLR   >Options0334,#$10,L36044
         JMP     L35776
 L36044:
-        LDAB    >StartFlag
+        LDAB    >Options0334
         BITB    #$08
         BNE     L36056
         BITB    #$04
@@ -7236,7 +7236,7 @@ L36074:
         LDAB    >MainLoopCounter,Z
         CMPB    #$BA
         BCS     L360BC
-        LDAB    >StartFlag
+        LDAB    >Options0334
         BITB    #$08
         BNE     L36092
         BITB    #$04
@@ -7255,7 +7255,7 @@ L360A6:
         BRCLR   $0055,Z,#$80,L360B8
 L360AC:
         BCLR    $0944,Z,#$08
-        BRSET   >StartFlag,#$20,L360B8
+        BRSET   >Options0334,#$20,L360B8
         BRA     L360BC
 L360B8:
         BCLR    $0944,Z,#$10
@@ -7267,12 +7267,12 @@ L360BC:
 ; Called from: Sub_361F2
 ;---------------------------------------------------------------------------------------------------
 Sub_360BE:
-        BRSET   >StartFlag,#$10,L361AC
+        BRSET   >Options0334,#$10,L361AC
         LDAA    $0933,Z
         CMPA    #$14
         BNE     L36122
         LDE     $0943,Z
-        LDAB    >StartFlag
+        LDAB    >Options0334
         BITB    #$08
         BNE     L360E2
         BITB    #$04
@@ -7289,7 +7289,7 @@ L360EA:
 L360EE:
         ORE     #$0010
         BRSET   >MainLoopCounter,Z,#$80,L3611A
-        LDAB    >StartFlag
+        LDAB    >Options0334
         BITB    #$08
         BNE     L3610A
         BITB    #$04
@@ -7309,7 +7309,7 @@ L3611A:
         STE     $0943,Z
         LBRA    L361CC
 L36122:
-        LDAB    >StartFlag
+        LDAB    >Options0334
         BITB    #$08
         BNE     L36134
         BITB    #$04
@@ -7338,7 +7338,7 @@ L36152:
         LBEQ    L361CC
         CPD     #$0001
         BEQ     L361A6
-        LDAB    >StartFlag
+        LDAB    >Options0334
         BITB    #$08
         BNE     L36180
         BITB    #$04
@@ -7357,13 +7357,13 @@ L36194:
         BRCLR   $0055,Z,#$80,L361A6
 L3619A:
         BCLR    $0944,Z,#$08
-        BRSET   >StartFlag,#$20,L361A6
+        BRSET   >Options0334,#$20,L361A6
         BRA     L361CC
 L361A6:
         BCLR    $0944,Z,#$10
         BRA     L361CC
 L361AC:
-        BRCLR   >StartFlag,#$10,L361CC
+        BRCLR   >Options0334,#$10,L361CC
         BRCLR   >MainLoopCounter,Z,#$80,L361C0
         BCLRW   $1068,Z,#$E000
         BRA     L361CC
@@ -7739,7 +7739,7 @@ L36552:
 ; Called from: Sub_361F2
 ;---------------------------------------------------------------------------------------------------
 Sub_36554:
-        BRCLR   >StartV06B8Flag,#$02,L3656C
+        BRCLR   >Options033E,#$02,L3656C
         BRCLR   >MainLoopPhaseMask,Z,#$40,L3656C
         LDE     $1062,Z
         EORE    #$2000
@@ -8524,7 +8524,7 @@ L380F4:
         LBEQ    L3815A
         CPY     #$473A
         BNE     L38120
-        BRCLR   >StartFlag,#$08,L3815A
+        BRCLR   >Options0334,#$08,L3815A
         BRA     L38156
 L38120:
         CPY     #$4884
@@ -8572,13 +8572,13 @@ L3817C:
         LBEQ    L38214
         CPY     #$44F6
         BNE     L381A8
-        BRCLR   >StartFlag,#$0C,L38214
+        BRCLR   >Options0334,#$0C,L38214
         BRA     L381FE
 L381A8:
         CPY     #$432A
         BNE     L381DA
-        BRSET   >StartFlag,#$10,L38214
-        BRSET   >StartFlag,#$01,L38214
+        BRSET   >Options0334,#$10,L38214
+        BRSET   >Options0334,#$01,L38214
         BRSET   >Options032D,#$10,L381FE
         BRSET   >Options032D,#$04,L381FE
         BRSET   >Options032D,#$02,L381FE
@@ -9758,10 +9758,10 @@ L39430:
         LBRA    L395C6
 L39452:
         LDAA    >CoolantTemp,Z
-        CMPA    >SparkCoolantThresh1
+        CMPA    >AcCutCoolantOn
         BCC     L3946E
         BRCLR   $0C22,Z,#$08,L39472
-        CMPA    >SparkCoolantThresh2
+        CMPA    >AcCutCoolantOff
         BHI     L39472
         BCLR    $0C22,Z,#$08
         BRA     L39472
@@ -9775,7 +9775,7 @@ L3947A:
         BRSET   $0505,Z,#$08,L39496
         BRSET   $031A,Z,#$04,L394A6
         LDAA    >CoolantTemp,Z
-        CMPA    >SparkCoolantThresh3
+        CMPA    >AcCoolantMin
         BCC     L394A6
 L39496:
         BCLR    $0C22,Z,#$C0
@@ -9786,26 +9786,26 @@ L394A6:
         LDAA    $0C2E,Z
         BNE     L394D0
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    >SparkThrottleThresh2
+        CMPA    >AcWotCutThrottle
         BCS     L39500
         LDAA    >VehicleSpeed,Z
-        CMPA    >SparkSpeedThresh3
+        CMPA    >AcWotCutSpeedMax
         BCC     L39500
-        TST     >SparkV0C2ESwitch
+        TST     >AcWotCutTime
         BEQ     L39500
         INC     $0C2E,Z
         BSET    $0C22,Z,#$80
         BRA     L39500
 L394D0:
         LDAA    >ThrottleAboveClosed,Z
-        ADDA    >SparkThrottleAdder2
+        ADDA    >AcWotCutThrottleHyst
         BCC     L394DC
         LDAA    #$FF
 L394DC:
-        CMPA    >SparkThrottleThresh2
+        CMPA    >AcWotCutThrottle
         BCS     L394F8
         LDAA    $0C2E,Z
-        CMPA    >SparkV0C2ESwitch
+        CMPA    >AcWotCutTime
         BCC     L394FC
         BRCLR   >MainLoopPhaseMask,Z,#$20,L39500
         INC     $0C2E,Z
@@ -9818,32 +9818,32 @@ L39500:
         LDAA    $0C2F,Z
         BNE     L39534
         LDAA    >EngineRpm,Z
-        CMPA    >SparkRpmThresh3
+        CMPA    >AcLaunchCutRpmMax
         BCC     L3956E
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    >SparkThrottleThresh1
+        CMPA    >AcLaunchCutThrottle
         BCS     L3956E
         LDAA    >VehicleSpeed,Z
-        CMPA    >SparkSpeedThresh1
+        CMPA    >AcLaunchCutSpeedMax
         BCC     L3956E
-        TST     >SparkV0C2FSwitch
+        TST     >AcLaunchCutTime
         BEQ     L3956E
         INC     $0C2F,Z
         BSET    $0C22,Z,#$40
         BRA     L3956E
 L39534:
         LDAA    >VehicleSpeed,Z
-        CMPA    >SparkSpeedThresh2
+        CMPA    >AcLaunchCutSpeedEnd
         BCC     L39566
         LDAA    >ThrottleAboveClosed,Z
-        ADDA    >SparkThrottleAdder1
+        ADDA    >AcLaunchCutThrottleHyst
         BCC     L3954A
         LDAA    #$FF
 L3954A:
-        CMPA    >SparkThrottleThresh1
+        CMPA    >AcLaunchCutThrottle
         BCS     L39566
         LDAA    $0C2F,Z
-        CMPA    >SparkV0C2FSwitch
+        CMPA    >AcLaunchCutTime
         BCC     L3956A
         BRCLR   >MainLoopPhaseMask,Z,#$20,L3956E
         INC     $0C2F,Z
@@ -9918,16 +9918,16 @@ L39636:
         LBCC    L395CC
 L3963E:
         LDD     >EngineRpm,Z
-        CPD     >SparkRpmThresh2
+        CPD     >AcCutRpmHigh
         BCC     L395CC
-        CPD     >SparkRpmThresh1
+        CPD     >AcCutRpmLow
         BCC     L39670
         BRSET   $0C21,Z,#$80,L39670
         BRCLR   $0943,Z,#$01,L39670
         BCLR    $0943,Z,#$01
         BCLR    $0D57,Z,#$10
         BRCLR   $0D57,Z,#$20,L39670
-        LDAA    >SparkV0D52Init
+        LDAA    >AcSparkWindowInit
         STAA    $0D52,Z
 L39670:
         BCLR    $0C21,Z,#$02
@@ -10067,7 +10067,7 @@ L3980A:
 L39814:
         BRSET   $0B2C,Z,#$02,L39830
         LDAA    $0B2E,Z
-        CMPA    >EgrV0B32Thresh1
+        CMPA    >EgrOnDelay
         BCS     L39830
         BSET    $0B2C,Z,#$02
         BCLR    $0D02,Z,#$01
@@ -10083,7 +10083,7 @@ L3983C:
 L39846:
         BRCLR   $0B2C,Z,#$02,L3985A
         LDAA    $0B2E,Z
-        CMPA    >EgrV0B32Thresh2
+        CMPA    >EgrOffDelay
         BCS     L3985A
         BCLR    $0B2C,Z,#$02
 L3985A:
@@ -10610,11 +10610,11 @@ L39DCC:
 ;---------------------------------------------------------------------------------------------------
 Sub_39DCE:
         JSR     Sub_3A4F8
-        BRCLR   >StartFlag,#$10,L39DDE
+        BRCLR   >Options0334,#$10,L39DDE
         JSR     Sub_3A55A
         BRA     L39DEE
 L39DDE:
-        BRCLR   >StartFlag,#$80,L39DEA
+        BRCLR   >Options0334,#$80,L39DEA
         JSR     Sub_3A0EC
         BRA     L39DEE
 L39DEA:
@@ -10648,7 +10648,7 @@ L39E34:
         BITA    #$10
         BNE     L39E44
         BRCLR   $06B4,Z,#$80,L39E58
-        BRSET   >StartFlag,#$20,L39E50
+        BRSET   >Options0334,#$20,L39E50
 L39E44:
         BSET    $0944,Z,#$10
         BCLR    $0944,Z,#$08
@@ -10675,19 +10675,19 @@ L39E7E:
         BITA    #$0C
         BNE     L39EDA
         LDAA    >AcSensor,Z
-        CMPA    >FanAcSensorThresh2
+        CMPA    >FanAcSensorStage3
         BCS     L39E9E
         ORAB    #$08
 L39E9E:
-        CMPA    >FanThresh2
+        CMPA    >FanAcSensorStage2
         BLS     L39EA6
         ORAB    #$04
 L39EA6:
-        CMPA    >FanThresh1
+        CMPA    >FanAcSensorStage1
         BCS     L39EAE
         ORAB    #$02
 L39EAE:
-        CMPA    >FanAcSensorThresh1
+        CMPA    >FanAcSensorLow
         BHI     L39ED4
         LDAA    >VehicleSpeed,Z
         LDX     #FanAcDelaySpeed
@@ -10709,19 +10709,19 @@ L39EDA:
         BRSET   >Options032E,#$40,L39F0E
         BRSET   $06BE,Z,#$02,L39F0E
         LDAA    >BusTemp,Z
-        CMPA    >FanBusTempThresh1
+        CMPA    >FanBusTempStage3
         BLT     L39EF6
         ORAB    #$08
 L39EF6:
-        CMPA    >FanThresh5
+        CMPA    >FanBusTempStage2
         BLE     L39EFE
         ORAB    #$04
 L39EFE:
-        CMPA    >FanThresh3
+        CMPA    >FanBusTempStage1
         BLT     L39F06
         ORAB    #$02
 L39F06:
-        CMPA    >FanThresh4
+        CMPA    >FanBusTempStage0
         BLE     L39F0E
         ORAB    #$01
 L39F0E:
@@ -10785,10 +10785,10 @@ L39FB2:
         STAB    >FanStageTimer,Z
 L39FC4:
         LDAB    >FanStageTimer,Z
-        CMPB    >FanStageTimerThresh1
+        CMPB    >FanStageDelay
         BCC     L3A000
         BCLR    $0944,Z,#$10
-        CMPB    >FanStageTimerThresh2
+        CMPB    >FanStageDelay2
         BCS     L39FFA
         LDAA    #$02
         CMPA    $0B04,Z
@@ -10806,7 +10806,7 @@ L39FFA:
         BRA     L3A06A
 L3A000:
         BCLR    $0944,Z,#$08
-        BRSET   >StartFlag,#$20,L3A06A
+        BRSET   >Options0334,#$20,L3A06A
         BSET    $0944,Z,#$10
         BRA     L3A06A
 L3A010:
@@ -11030,14 +11030,14 @@ L3A2AE:
 L3A2D2:
         CMPB    #$02
         BNE     L3A32C
-        BRSET   >StartFlag,#$01,L3A2F6
+        BRSET   >Options0334,#$01,L3A2F6
         BRCLR   >MainLoopPhaseMask,Z,#$10,L3A2EC
         INC     >FanStageTimer,Z
         BNE     L3A2EC
         DEC     >FanStageTimer,Z
 L3A2EC:
         LDAA    >FanStageTimer,Z
-        CMPA    >FanStageTimerThresh2
+        CMPA    >FanStageDelay2
         BCS     L3A30E
 L3A2F6:
         BSET    $0C33,Z,#$40
@@ -11058,7 +11058,7 @@ L3A326:
         LDE     #$0004
         BRA     L3A34E
 L3A32C:
-        BRSET   >StartFlag,#$01,L3A2F6
+        BRSET   >Options0334,#$01,L3A2F6
         BRCLR   >Options032D,#$40,L3A33C
         BRCLR   $55,Z,#$80,L3A2F6
 L3A33C:
@@ -11068,7 +11068,7 @@ L3A33C:
         STAB    $0B04,Z
         BRA     L3A3A4
 L3A34E:
-        LDAA    >StartFlag
+        LDAA    >Options0334
         LDX     #$A084
         BITA    #$08
         BNE     L3A36E
@@ -11127,12 +11127,12 @@ Sub_3A3CA:
         BCLR    $F2,Z,#$C0
         LDAB    #$FF
         LDAA    >AcSensor,Z
-        CMPA    >FanAcSensorThresh1
+        CMPA    >FanAcSensorLow
         BHI     L3A3FC
         BRA     L3A438
 L3A3FC:
         INCB
-        CMPA    >FanThresh1
+        CMPA    >FanAcSensorStage1
         BCC     L3A410
         BRCLR   $0B00,Z,#$40,L3A438
         BSET    $F2,Z,#$40
@@ -11140,12 +11140,12 @@ L3A3FC:
 L3A410:
         BSET    $F2,Z,#$40
         INCB
-        CMPA    >FanThresh2
+        CMPA    >FanAcSensorStage2
         BHI     L3A41E
         BRA     L3A438
 L3A41E:
         INCB
-        CMPA    >FanAcSensorThresh2
+        CMPA    >FanAcSensorStage3
         BCC     L3A432
         BRCLR   $0B00,Z,#$80,L3A438
         BSET    $F2,Z,#$80
@@ -11190,10 +11190,10 @@ L3A478:
 ;---------------------------------------------------------------------------------------------------
 Sub_3A47E:
         LDAA    >CoolantTemp,Z
-        CMPA    >IacCoolantThresh1
+        CMPA    >IacHotCoolantMin
         BCC     L3A4EE
         LDAA    >EngineRpm,Z
-        CMPA    >FanRpmThresh
+        CMPA    >FanIdleRpmMax
         BCC     L3A4EE
         LDAA    >FanValue1
         BRCLR   $0B00,Z,#$08,L3A4A4
@@ -11212,7 +11212,7 @@ L3A4B8:
         BRCLR   $0055,Z,#$20,L3A4D4
         BRSET   $06BE,Z,#$02,L3A4D4
         LDAA    >BusTemp,Z
-        CMPA    >FanBusTempThresh2
+        CMPA    >FanIdleBusTempMax
         BGE     L3A4EE
 L3A4D4:
         LDAA    $0B0A,Z
@@ -11387,7 +11387,7 @@ Sub_3A688:
         LBCC    L3A7F4
         DECW    $0B12,Z
         LBNE    L3A7F8
-        LDD     >FanV0B16Init
+        LDD     >FanPwmPeriod
         STD     $0B12,Z
         LDAB    $0B1D,Z
         INCB
@@ -11545,13 +11545,13 @@ Sub_3A7FA:
         BRSET   $050A,Z,#$04,L3A9AE
         LDE     #$6400
         LDAA    >AcSensorFiltered,Z
-        CMPA    >FanAcSensorFilteredThresh1
+        CMPA    >FanPwmAcMax
         LBCC    L3A9AE
         BRCLR   >Options0331,#$80,L3A93E
         LDE     $0B16,Z
         DECW    $0B18,Z
         LBNE    L3A9B2
-        LDD     >FanV0B1CInit
+        LDD     >FanPwmPeriodAc
         STD     $0B18,Z
         LDAB    $0B1E,Z
         INCB
@@ -11594,7 +11594,7 @@ L3A88A:
         STE     $0B21,Z
         CLRA
         STAA    $0B1E,Z
-        LDAB    >FanFactor3
+        LDAB    >FanPwmAcP
         EMULS
         TSTE
         BPL     L3A8AA
@@ -11611,7 +11611,7 @@ L3A8B4:
         CLRA
         LDAB    >AcSensorFiltered,Z
         TDE
-        LDAB    >FanValue6
+        LDAB    >FanPwmAcTarget
         SDE
         TSTE
         BPL     L3A8D6
@@ -11624,7 +11624,7 @@ L3A8D6:
         BLS     L3A8E0
         LDE     #$007F
 L3A8E0:
-        LDAB    >FanFactor4
+        LDAB    >FanPwmAcD
         CLRA
         EMULS
         BPL     L3A8F6
@@ -11723,12 +11723,12 @@ Sub_3A9B4:
         BRSET   $06BE,Z,#$02,L3AB1E
         LDE     #$6400
         LDAA    >BusTemp,Z
-        CMPA    >FanBusTempThresh3
+        CMPA    >FanPwmBusMax
         LBGE    L3AB1E
         LDE     $0B23,Z
         DECW    $0B25,Z
         LBNE    L3AB22
-        LDD     >FanV0B29Init
+        LDD     >FanPwmPeriodBus
         STD     $0B25,Z
         LDAB    $0B29,Z
         INCB
@@ -11772,7 +11772,7 @@ L3AA3A:
         STE     $0B2A,Z
         CLRA
         STAA    $0B29,Z
-        LDAB    >FanFactor5
+        LDAB    >FanPwmBusP
         EMULS
         TSTE
         BPL     L3AA5A
@@ -11789,7 +11789,7 @@ L3AA64:
         LDAB    >BusTemp,Z
         SXT
         TDE
-        LDAB    >FanValue9
+        LDAB    >FanPwmBusTarget
         SXT
         SDE
         TSTE
@@ -11803,7 +11803,7 @@ L3AA88:
         BLS     L3AA92
         LDE     #$007F
 L3AA92:
-        LDAB    >FanFactor6
+        LDAB    >FanPwmBusD
         CLRA
         EMULS
         BPL     L3AAA8
@@ -12396,11 +12396,11 @@ Sub_3B800:
         BRCLR   $0A47,Z,#$10,L3B8AC
         LDAB    #$01
         LDAA    >VehicleSpeed,Z
-        CMPA    >SpeedCtlSpeedThresh
+        CMPA    >SpeedCtlEngageSpeedMin
         LBCS    L3B8AC
         LDAB    #$02
         LDAA    >EngineRpm,Z
-        CMPA    >SpeedCtlRpmThresh
+        CMPA    >SpeedCtlRpmMax
         BCC     L3B8AC
         LDAB    #$03
         BRSET   $0A46,Z,#$01,L3B8AC
@@ -12417,9 +12417,9 @@ L3B854:
         LDAA    $0ABD,Z
         BNE     L3B86C
         LDAA    >RpmSpeedRatio,Z
-        CMPA    >SpeedCtlRpmSpeedRatioThresh1
+        CMPA    >SpeedCtlRatioMax
         BCC     L3B8AC
-        CMPA    >SpeedCtlRpmSpeedRatioThresh2
+        CMPA    >SpeedCtlRatioMin
         BCS     L3B8AC
 L3B86C:
         LDAB    #$06
@@ -12492,7 +12492,7 @@ L3B93C:
         CLR     >SpeedCtlTimer2,Z
         LDAB    $0418,Z
         LDAA    >SpeedCtlSetSpeed,Z
-        CMPA    >SpeedCtlSetSpeedThresh2
+        CMPA    >SpeedCtlSetSpeedMin
         BLS     L3B97C
         LDAB    >SpeedCtlValue2
         LDAA    $0418,Z
@@ -12515,12 +12515,12 @@ L3B984:
         CMPA    #$50
         LBHI    L3BAE0
         LDAA    >SpeedCtlSetSpeed,Z
-        SUBA    >SpeedCtlSetSpeedOffset
+        SUBA    >SpeedCtlCoastStep
         BCS     L3B9A8
-        CMPA    >SpeedCtlSetSpeedThresh2
+        CMPA    >SpeedCtlSetSpeedMin
         BCC     L3B9AC
 L3B9A8:
-        LDAA    >SpeedCtlSetSpeedThresh2
+        LDAA    >SpeedCtlSetSpeedMin
 L3B9AC:
         STAA    >SpeedCtlSetSpeed,Z
         LDAB    $0418,Z
@@ -12565,7 +12565,7 @@ L3BA38:
         CMPB    #$90
         LBCS    L3BD68
         LDAB    >SpeedCtlResumeSpeed,Z
-        SUBB    >SpeedCtlResumeSpeedOffset2
+        SUBB    >SpeedCtlResumeOffset2
         BCC     L3BA4E
         CLRB
 L3BA4E:
@@ -12597,15 +12597,15 @@ L3BA82:
         NEGB
         LDAA    #$7F
 L3BAA6:
-        CMPB    >SpeedCtlThresh10
+        CMPB    >SpeedCtlSpeedErrorMax
         BCC     L3BB1A
         LDAA    >SpeedCtlSetSpeed,Z
-        SUBA    >SpeedCtlSetSpeedOffset
+        SUBA    >SpeedCtlCoastStep
         BCS     L3BABC
-        CMPA    >SpeedCtlSetSpeedThresh2
+        CMPA    >SpeedCtlSetSpeedMin
         BCC     L3BAC0
 L3BABC:
-        LDAA    >SpeedCtlSetSpeedThresh2
+        LDAA    >SpeedCtlSetSpeedMin
 L3BAC0:
         STAA    >SpeedCtlSetSpeed,Z
         LDAA    >SpeedCtlTimer2Thresh1
@@ -12637,9 +12637,9 @@ L3BAFE:
         BRA     L3BB1A
 L3BB02:
         LDAB    >ManifoldVacuum,Z
-        CMPB    >SpeedCtlVacuumThresh1
+        CMPB    >SpeedCtlVacuumMax
         BHI     L3BB1A
-        CMPB    >SpeedCtlVacuumThresh2
+        CMPB    >SpeedCtlVacuumMin
         BCS     L3BB1A
         BSET    $0401,Z,#$01
         CLR     $040F,Z
@@ -12726,7 +12726,7 @@ L3BBFE:
         ADDA    >SpeedCtlSetSpeed,Z
         STAA    >SpeedCtlSetSpeed,Z
         SUBA    #$03
-        CMPA    >SpeedCtlSetSpeedThresh1
+        CMPA    >SpeedCtlSetSpeedMax
         BHI     L3BC24
         LDAB    >SpeedCtlValue1
         LDAA    $0418,Z
@@ -12742,9 +12742,9 @@ L3BC22:
 L3BC24:
         LDAA    >SpeedCtlSetSpeed,Z
         LBEQ    L3BD68
-        CMPA    >SpeedCtlSetSpeedThresh1
+        CMPA    >SpeedCtlSetSpeedMax
         BHI     L3BC46
-        CMPA    >SpeedCtlSetSpeedThresh2
+        CMPA    >SpeedCtlSetSpeedMin
         BCC     L3BC52
         CLR     >SpeedCtlSetSpeed,Z
         LDAB    #$11
@@ -12752,7 +12752,7 @@ L3BC24:
         LBRA    L3B8F0
 L3BC46:
         BCLR    $0401,Z,#$03
-        LDAA    >SpeedCtlSetSpeedThresh1
+        LDAA    >SpeedCtlSetSpeedMax
         STAA    >SpeedCtlSetSpeed,Z
 L3BC52:
         STAB    $0418,Z
@@ -12766,14 +12766,14 @@ L3BC5A:
         BSET    $0400,Z,#$08
         BSET    $0401,Z,#$08
         LDAA    >VehicleSpeed,Z
-        ADDA    >SpeedCtlSpeedAdder
+        ADDA    >SpeedCtlAccelLead
         BCC     L3BC86
         LDAA    #$FF
 L3BC86:
         STAA    >SpeedCtlResumeSpeed,Z
 L3BC8A:
         LDAA    >VehicleSpeed,Z
-        CMPA    >SpeedCtlSetSpeedThresh1
+        CMPA    >SpeedCtlSetSpeedMax
         BCS     L3BCA0
         BSET    $0400,Z,#$20
         LDAB    $0418,Z
@@ -12783,21 +12783,21 @@ L3BCA0:
         CMPB    #$90
         LBCS    L3BD68
         LDAB    >SpeedCtlResumeSpeed,Z
-        SUBB    >SpeedCtlResumeSpeedOffset1
+        SUBB    >SpeedCtlResumeOffset
         BCC     L3BCB6
         CLRB
 L3BCB6:
-        CMPB    >SpeedCtlSetSpeedThresh1
+        CMPB    >SpeedCtlSetSpeedMax
         BCC     L3BCD2
         ADDA    >SpeedCtlAdder2
         BCS     L3BCCE
         CBA
         BLS     L3BCD2
         TAB
-        CMPB    >SpeedCtlSetSpeedThresh1
+        CMPB    >SpeedCtlSetSpeedMax
         BLS     L3BCD2
 L3BCCE:
-        LDAB    >SpeedCtlSetSpeedThresh1
+        LDAB    >SpeedCtlSetSpeedMax
 L3BCD2:
         STAB    >SpeedCtlResumeSpeed,Z
         LBRA    L3BD68
@@ -12927,7 +12927,7 @@ L3BE1C:
         BRCLR   $0401,Z,#$02,L3BF1A
         LDAA    >SpeedCtlTimer,Z
         BRCLR   $0401,Z,#$01,L3BE68
-        CMPA    >SpeedCtlTimerThresh1
+        CMPA    >SpeedCtlTimerMax
         BCC     L3BE5E
         INCA
         STAA    >SpeedCtlTimer,Z
@@ -12949,7 +12949,7 @@ L3BE78:
         TZX
         LDX     #$8190
         LDAB    >SpeedCtlSetSpeed,Z
-        CMPB    >SpeedCtlSetSpeedThresh3
+        CMPB    >SpeedCtlServoSplitSpeed
         BLS     L3BE92
         LDX     #$8191
 L3BE92:
@@ -13354,7 +13354,7 @@ L3C266:
         TZX
         LDX     #$8190
         LDAB    >SpeedCtlSetSpeed,Z
-        CMPB    >SpeedCtlSetSpeedThresh3
+        CMPB    >SpeedCtlServoSplitSpeed
         BLS     L3C27A
         LDX     #$8191
 L3C27A:
@@ -14345,7 +14345,7 @@ L3D9EE:
         CMPB    $3080
         BCS     L3DA6E
         BRSET   $071D,Z,#$08,L3DA30
-        BRCLR   >EventFlag2,#$40,L3DA6E
+        BRCLR   >Options032F,#$40,L3DA6E
         BRCLR   $0745,Z,#$08,L3DA6E
 L3DA30:
         SUBA    $307F
@@ -14492,9 +14492,9 @@ Sub_3DB8C:
         BRSET   $0774,Z,#$80,L3DBE6
 L3DB98:
         LDAA    >BatteryTemp,Z
-        CMPA    >PurgeBatteryTempThresh1
+        CMPA    >PurgeBattTempMin
         BCS     L3DBC0
-        CMPA    >PurgeBatteryTempThresh2
+        CMPA    >PurgeBattTempMax
         BCC     L3DBD4
         BCLR    $042A,Z,#$02
         BSET    $042A,Z,#$01
@@ -14542,7 +14542,7 @@ L3DC2C:
         BCLR    $042A,Z,#$40
 L3DC30:
         LDAA    >Map,Z
-        CMPA    >PurgeMapThresh
+        CMPA    >PurgeMapMax
         BCC     L3DC5E
         BRSET   $0770,Z,#$80,L3DC58
         BRCLR   $0770,Z,#$40,L3DC5E
@@ -14583,7 +14583,7 @@ L3DC9A:
         CMPA    >PurgeThresh5
         BCC     L3DCD4
 L3DCA0:
-        BRCLR   >EventFlag2,#$40,L3DCDA
+        BRCLR   >Options032F,#$40,L3DCDA
         LDX     #$806D
         LDAB    >StartV0801Thresh
         ABX
@@ -14626,7 +14626,7 @@ L3DD0C:
         CMPA    >PurgeThresh6
         BCC     L3DD46
 L3DD12:
-        BRCLR   >EventFlag2,#$40,L3DD4C
+        BRCLR   >Options032F,#$40,L3DD4C
         LDX     #$806D
         LDAB    >StartV043BValue
         ABX
@@ -14669,7 +14669,7 @@ L3DD7E:
         CMPA    >PurgeThresh7
         BCC     L3DDB8
 L3DD84:
-        BRCLR   >EventFlag2,#$40,L3DDBE
+        BRCLR   >Options032F,#$40,L3DDBE
         LDX     #$806D
         LDAB    >StartV043CThresh
         ABX
@@ -14705,7 +14705,7 @@ Sub_3DDC4:
         BSET    $80,Z,#$80
         LDAB    >SensorValue9
         LDAA    >CoolantTemp,Z
-        CMPA    >PurgeCoolantThresh1
+        CMPA    >PurgeCoolantMin
         BCS     L3DDEC
         BCLR    $80,Z,#$80
         CMPA    >SensorCoolantThresh4
@@ -15308,7 +15308,7 @@ Sub_3E340:
         BRSET   $0F0C,Z,#$10,L3E8C4
         BRCLR   $80,Z,#$80,L3E378
         LDAA    >CoolantTemp,Z
-        CMPA    >PurgeCoolantThresh1
+        CMPA    >PurgeCoolantMin
         LBCS    L3E3A8
         BCLR    $80,Z,#$80
 L3E378:
@@ -15719,7 +15719,7 @@ L3E81A:
         LBCS    L3E8E2
 L3E83C:
         BRSET   $071D,Z,#$20,L3E8E2
-        BRCLR   >EventFlag2,#$40,L3E84E
+        BRCLR   >Options032F,#$40,L3E84E
         BRSET   $0745,Z,#$20,L3E8E2
 L3E84E:
         BRSET   $0080,Z,#$40,L3E8E2

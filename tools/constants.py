@@ -344,7 +344,11 @@ def main():
     cal = Calibration(d, an, names, lambda n: tab if n == "tables.json" else own(n))
     ents = build(d, an, x, names, cal, top_function(x, an),
                  {t["name"]: t.get("category") for t in tab["tables"].values()})
-    used = {v["name"] for v in hand.values()} | {t["name"] for t in tab["tables"].values()}
+    tnames = {t["name"] for t in tab["tables"].values()} | set(names.ram.values())
+    bad = sorted(v["name"] for v in hand.values() if v["name"] in tnames)
+    if bad:
+        raise SystemExit("constant names already used by a table or RAM variable: " + ", ".join(bad))
+    used = {v["name"] for v in hand.values()} | tnames
     used |= set(names.ram.values())
     out = dict(hand)
     for k, e in ents.items():
