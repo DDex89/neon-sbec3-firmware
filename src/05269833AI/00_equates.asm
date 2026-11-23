@@ -563,6 +563,17 @@ CamSignalCount   equ $0864        ; $F8864
 SpeedDampTimer   equ $0865        ; $F8865
 BusReqFlags      equ $086C        ; $F886C
 BusReqTimer      equ $086D        ; $F886D
+DiagCommand      equ $092E        ; $F892E
+DiagParam1       equ $092F        ; $F892F
+DiagParam2       equ $0930        ; $F8930
+DiagParam3       equ $0931        ; $F8931
+DiagFlags        equ $0932        ; $F8932
+ActuatorTest     equ $0933        ; $F8933
+InjectorKillCyl1 equ $0934        ; $F8934
+InjectorKillCyl2 equ $0935        ; $F8935
+SystemTestRejects equ $0936        ; $F8936
+SystemTestMode   equ $0937        ; $F8937
+SystemTestValue  equ $0938        ; $F8938
 FanBusFlags      equ $0942        ; $F8942
 ControlFlags943  equ $0943        ; $F8943
 ControlFlags944  equ $0944        ; $F8944

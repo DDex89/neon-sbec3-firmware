@@ -2709,7 +2709,7 @@ L221A4:
         CLR     $067D,Z
         CLR     $067E,Z
 L221BC:
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$40
         BEQ     L221DA
         CMPA    #$42
@@ -3355,7 +3355,7 @@ L22842:
         JSR     ReportFault
         LBRA    L22B14
 L22850:
-        LDAA    $0937,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$04
         LBEQ    L22B14
         JSR     EgrSolenoidCheck
@@ -4714,7 +4714,7 @@ Sub_23816:
 L23876:
         TSTW    >VehicleSpeedRaw,Z
         BNE     L238CA
-        LDAA    $092E,Z
+        LDAA    >DiagCommand,Z
         BEQ     L2388E
         CMPA    #$25
         BEQ     L238CA
@@ -5689,7 +5689,7 @@ Sub_24338:
         BRSET   $064B,Z,#$01,L24390
         BRSET   $064B,Z,#$02,L24386
         BRSET   >EngineStateFlags,Z,#$80,L2435E
-        LDAA    $092E,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$18
         LBEQ    Sub_243F8
         BRA     L2437C
@@ -6361,7 +6361,7 @@ L25046:
         BRCLR   >MonitorDisableFlags,Z,#$2F,L2507A
         LBRA    L25296
 L2507A:
-        TST     $0937,Z
+        TST     >SystemTestMode,Z
         LBNE    L25296
         BRCLR   >O2ActiveFlags,Z,#$80,L25296
         BRSET   >O2Bank1Flags,Z,#$20,L25296
@@ -6635,7 +6635,7 @@ L25404:
 L25410:
         CPD     >PurgeMonRpmBand
         LBHI    L25730
-        LDAA    $092E,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$25
         LBEQ    L25730
         CMPA    #$19
@@ -6919,7 +6919,7 @@ LdpMonitor:
         ANDA    #$0F
         CMPA    #$09
         BEQ     L257EE
-        LDAA    $0937,Z
+        LDAA    >SystemTestMode,Z
         BEQ     L257B6
         CMPA    #$1D
         BNE     L257E4
@@ -7615,15 +7615,15 @@ L25F3E:
 ; Called from: Sub_25E9E
 ;---------------------------------------------------------------------------------------------------
 Sub_25F40:
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$3D
         BEQ     L25F84
         CMPA    #$14
         BEQ     L25F84
-        LDAA    $0937,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$13
         BNE     L25F5E
-        LDAA    $0938,Z
+        LDAA    >SystemTestValue,Z
         CMPA    #$01
         BEQ     L25F64
         BRA     L25F74
@@ -8922,7 +8922,7 @@ L2861E:
         BRCLR   >MonitorDisableFlags,Z,#$2F,L28638
         LBRA    L286DC
 L28638:
-        TST     $0937,Z
+        TST     >SystemTestMode,Z
         LBNE    L286DC
         BRCLR   >ThrottleState,Z,#$80,L286DC
         TST     >O2DownDelay,Z
@@ -9052,7 +9052,7 @@ L287D2:
         ANDA    $36,Y
         LBEQ    L2891C
         BRCLR   >EngineStateFlags,Z,#$80,L2891C
-        TST     $0937,Z
+        TST     >SystemTestMode,Z
         LBNE    L2891C
         BRCLR   >MonitorDisableFlags,Z,#$2F,L287FE
         LBRA    L2891C
@@ -10469,7 +10469,7 @@ L2A028:
         BRCLR   >EngineStateFlags,Z,#$80,L2A060
         BRCLR   >O2ActiveFlags,Z,#$80,L2A060
         BRCLR   >Options032F,#$80,L2A060
-        TST     $0937,Z
+        TST     >SystemTestMode,Z
         BNE     L2A060
         BRSET   >MonStatusFuelSysLean1,Z,#$08,L2A07C
         JSR     Sub_2A07E
@@ -10660,7 +10660,7 @@ L2A23A:
         BRCLR   >EngineStateFlags,Z,#$80,L2A272
         BRCLR   >O2ActiveFlags,Z,#$40,L2A272
         BRCLR   >Options032F,#$40,L2A272
-        TST     $0937,Z
+        TST     >SystemTestMode,Z
         BNE     L2A272
         BRSET   >MonStatusFuelSysLean2,Z,#$08,L2A28E
         JSR     Sub_2A290
@@ -10846,7 +10846,7 @@ L2A440:
         BRCLR   >EngineStateFlags,Z,#$80,L2A478
         BRCLR   >O2ActiveFlags,Z,#$80,L2A478
         BRCLR   >Options032F,#$80,L2A478
-        TST     $0937,Z
+        TST     >SystemTestMode,Z
         BNE     L2A478
         BRSET   >MonStatusFuelSysRich1,Z,#$08,L2A494
         JSR     Sub_2A496
@@ -11011,7 +11011,7 @@ L2A60E:
         BRCLR   >EngineStateFlags,Z,#$80,L2A646
         BRCLR   >O2ActiveFlags,Z,#$40,L2A646
         BRCLR   >Options032F,#$40,L2A646
-        TST     $0937,Z
+        TST     >SystemTestMode,Z
         BNE     L2A646
         BRSET   >MonStatusFuelSysRich2,Z,#$08,L2A662
         JSR     Sub_2A664
@@ -11503,7 +11503,7 @@ Sub_2AB16:
         BRCLR   >Options033E,#$04,L2AB98
         BRCLR   >MonStatusMisfire,Z,#$80,L2AB98
         BRCLR   >MisfireFlags2,Z,#$04,L2AB98
-        TST     $0937,Z
+        TST     >SystemTestMode,Z
         LBNE    L2AB98
         BRSET   $064A,Z,#$40,L2AB40
         BRCLR   >MonitorDisableFlags,Z,#$2F,L2AB40
@@ -16143,7 +16143,7 @@ L2F068:
 ; Called from: Sub_2F000
 ;---------------------------------------------------------------------------------------------------
 AcCutControl:
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0F
         BEQ     L2F076
         CMPA    #$14
@@ -16356,7 +16356,7 @@ L2F1B4:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 MtvTiming:
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$2D
         LBEQ    L2FA0E
         CMPA    #$14

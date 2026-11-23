@@ -6249,7 +6249,7 @@ L05070:
         BSET    >EngineStateFlags,Z,#$01
         CLRW    >Count3s,Z
         CLR     >RunTime,Z
-        CLR     $0477,Z
+        CLR     >ActuatorTest,Z
         LDAA    >Throttle,Z
         STAA    >ThrottleLast,Z
         LDAA    >MapRaw,Z
@@ -6344,11 +6344,11 @@ L0519C:
         LDD     >TMSK1,Z
         ORD     #$0100
         STD     >TMSK1,Z
-        LDAA    $0472,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$0A
         BNE     L051C8
-        CLR     $0472,Z
-        BCLR    $0476,Z,#$30
+        CLR     >DiagCommand,Z
+        BCLR    >DiagFlags,Z,#$30
 L051C8:
         PULM    E,D
         RTI
@@ -6735,7 +6735,7 @@ L0559A:
         LDAA    #$FF
 L055A8:
         XGDX
-        LDAA    $0477,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0D
         LBEQ    L05714
         CMPA    #$14
@@ -6864,7 +6864,7 @@ L05714:
 ; Called from: Isr_PIT (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_05716:
-        BRCLR   $0476,Z,#$80,L05850
+        BRCLR   >DiagFlags,Z,#$80,L05850
         LDD     >SCSR,Z
         BITB    #$0E
         BEQ     L0573C
@@ -6917,7 +6917,7 @@ L057AE:
         BNE     L057C2
 L057B2:
         CLR     >SciErrors,Z
-        BCLR    $0476,Z,#$B0
+        BCLR    >DiagFlags,Z,#$B0
         BCLR    $010E,Z,#$0D
         LBRA    L0584C
 L057C2:
@@ -11629,7 +11629,7 @@ L0909C:
 L090A8:
         BSET    $01F1,Z,#$50
 L090AC:
-        LDAA    $047B,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$05
         BCS     L090C0
         CMPA    #$0B
@@ -12832,7 +12832,7 @@ L09CD6:
         LDAB    >ColdEnrich,Z
         ORAB    $0560,Z
         LBNE    L09D9C
-        LDAA    $047B,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$04
         BCS     L09CF0
         CMPA    #$0B
@@ -12858,7 +12858,7 @@ L09D14:
 L09D24:
         BCLR    >IdleFlareFlags,Z,#$10
 L09D28:
-        LDAA    $047B,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$01
         LBEQ    L09D9C
         TST     $01A2,Z
@@ -13339,7 +13339,7 @@ Sub_0A200:
         JSR     Sub_0BF8A
         JSR     Sub_0BD6C
         JSR     Sub_0C116
-        LDAA    $047B,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$05
         BCS     L0A21C
         CMPA    #$0B
@@ -16203,13 +16203,13 @@ L0C204:
         LBRA    L0C56A
 L0C214:
         BRSET   >DriveFlags,Z,#$20,L0C256
-        LDAA    $0472,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$19
         BNE     L0C23C
-        BRSET   $0476,Z,#$10,L0C572
-        CLR     $0472,Z
+        BRSET   >DiagFlags,Z,#$10,L0C572
+        CLR     >DiagCommand,Z
         BSET    $0A,Z,#$04
-        LDAA    $0473,Z
+        LDAA    >DiagParam1,Z
         LSRA
         LSRA
         LDAB    #$38
@@ -17112,7 +17112,7 @@ L0CC76:
         CMPA    #$80
         BNE     L0CCAC
         LDAB    #$0A
-        STAB    $0472,Z
+        STAB    >DiagCommand,Z
         BSET    $0110,Z,#$80
 L0CCA8:
         LDAA    #$FF
@@ -18267,7 +18267,7 @@ L0DA40:
         LDE     #$0053
         STE     $0179,Z
 L0DA56:
-        LDAA    $0477,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0B
         BEQ     L0DA80
         CMPA    #$14
@@ -18281,7 +18281,7 @@ L0DA56:
         LDE     #$0054
         STE     $0179,Z
 L0DA80:
-        LDAA    $0477,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0D
         BEQ     L0DAA8
         CMPA    #$14
@@ -20185,18 +20185,18 @@ L0EE80:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_0EE82:
-        LDAB    $0477,Z
+        LDAB    >ActuatorTest,Z
         CMPB    #$0B
         LBEQ    L0F472
         CMPB    #$14
         LBEQ    L0F472
-        LDAA    $047B,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$01
         BNE     L0EEB8
         LDAA    >VehicleSpeed,Z
         CMPA    >IdleRollSpeed
         BHI     L0EEB8
-        LDAA    $047C,Z
+        LDAA    >SystemTestValue,Z
         CLRB
         SUBA    #$02
         BEQ     L0EEB0

@@ -1934,7 +1934,7 @@ Sub_113F6:
 ; Called from: Sub_11214, Sub_12332, Sub_12594 (14 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_113FA:
-        CMPB    $0934,Z
+        CMPB    >InjectorKillCyl1,Z
         LBEQ    L11600
         JSR     Sub_1297E
         BRSET   >Options0338,#$04,L11412
@@ -1942,7 +1942,7 @@ Sub_113FA:
 L11412:
         BRSET   $0764,Z,#$10,L11600
 L11418:
-        CMPB    $0935,Z
+        CMPB    >InjectorKillCyl2,Z
         LBEQ    L11600
         BRSET   $0C50,Z,#$04,L11430
         BRCLR   >Options033D,#$02,L11430
@@ -5350,7 +5350,7 @@ L14AB4:
 L14AC0:
         BSET    <Scratch1,Z,#$50
 L14AC4:
-        LDAA    $0937,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$05
         BCS     L14AD8
         CMPA    #$0B
@@ -6833,7 +6833,7 @@ L15A00:
         LBNE    L15AC2
         BRSET   $0F0C,Z,#$20,L15AC2
         BRSET   >RefuelFlags,Z,#$80,L15AC2
-        LDAA    $0937,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$01
         LBEQ    L15AC2
         CMPA    #$04
@@ -9887,7 +9887,7 @@ Sub_19000:
         JSR     Sub_1AEB6
         JSR     Sub_1AD3C
         JSR     Sub_1B054
-        LDAA    $0937,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$05
         BCS     L1901C
         CMPA    #$0B
@@ -12960,13 +12960,13 @@ L1B142:
         LBRA    L1B5AA
 L1B150:
         BRSET   >DriveFlags,Z,#$20,L1B190
-        LDAA    $092E,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$19
         BNE     L1B178
-        BRSET   $0932,Z,#$10,L1B5B0
-        CLR     $092E,Z
+        BRSET   >DiagFlags,Z,#$10,L1B5B0
+        CLR     >DiagCommand,Z
         BSET    $17,Z,#$04
-        LDAA    $092F,Z
+        LDAA    >DiagParam1,Z
         LSRA
         LSRA
         LDAB    #$38

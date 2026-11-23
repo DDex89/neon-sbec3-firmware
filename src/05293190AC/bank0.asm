@@ -10752,7 +10752,7 @@ L0855A:
 L0856C:
         STAA    >FieldDutyLimit,Z
 L08570:
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0D
         BEQ     L0857C
         CMPA    #$14
@@ -10862,7 +10862,7 @@ L08682:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 Sub_08684:
-        BRCLR   $0932,Z,#$80,L087E6
+        BRCLR   >DiagFlags,Z,#$80,L087E6
         LDD     >SCSR,Z
         BITB    #$0E
         BEQ     L086C6
@@ -10880,7 +10880,7 @@ L0869E:
         LBRA    L087E6
 L086B6:
         CLR     >SciErrors,Z
-        BCLR    $0932,Z,#$B0
+        BCLR    >DiagFlags,Z,#$B0
         BCLR    $0C34,Z,#$0F
         LBRA    L087E6
 L086C6:
@@ -10932,7 +10932,7 @@ L08744:
         BNE     L08758
 L08748:
         CLR     >SciErrors,Z
-        BCLR    $0932,Z,#$B0
+        BCLR    >DiagFlags,Z,#$B0
         BCLR    $0C34,Z,#$0F
         LBRA    L087E2
 L08758:
@@ -11606,7 +11606,7 @@ L08E0E:
 L08E20:
         STAA    >FieldDutyLimit,Z
 L08E24:
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0D
         BEQ     L08E30
         CMPA    #$14
@@ -12918,7 +12918,7 @@ L0AA42:
         CLRW    >Count3s,Z
         CLR     >RunTime,Z
         CLR     >CrankEvents,Z
-        CLR     $0933,Z
+        CLR     >ActuatorTest,Z
         LDAA    >Throttle,Z
         STAA    >ThrottleLast,Z
         LDAA    >Map,Z
@@ -13577,7 +13577,7 @@ Sub_0C064:
         ANDA    #$91
         CMPA    #$01
         BNE     L0C08C
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$47
         BEQ     L0C08C
         CMPA    #$14
@@ -15826,8 +15826,8 @@ L0D6F2:
         STD     $0AB4,Z
         STAA    >TipInTimer,Z
         STAA    >IdleFuelRamp,Z
-        STAA    $0934,Z
-        STAA    $0935,Z
+        STAA    >InjectorKillCyl1,Z
+        STAA    >InjectorKillCyl2,Z
         LDAA    #$0F
         STD     $0A9E,Z
         LDAA    $3E,Z
@@ -17267,7 +17267,7 @@ L0E8E4:
         LDE     #$0053
         STE     $06BA,Z
 L0E8F6:
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0B
         BEQ     L0E920
         CMPA    #$14

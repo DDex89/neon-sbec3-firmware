@@ -158,6 +158,15 @@ ChargeMonTimer   equ $0417        ; $F8417
 ChargeDeficitAvg equ $041D        ; $F841D
 FieldFlags       equ $041F        ; $F841F
 FuelLevelScaled  equ $046B        ; $F846B
+DiagCommand      equ $0472        ; $F8472
+DiagParam1       equ $0473        ; $F8473
+DiagParam2       equ $0474        ; $F8474
+DiagParam3       equ $0475        ; $F8475
+DiagFlags        equ $0476        ; $F8476
+ActuatorTest     equ $0477        ; $F8477
+SystemTestRejects equ $047A        ; $F847A
+SystemTestMode   equ $047B        ; $F847B
+SystemTestValue  equ $047C        ; $F847C
 ControlFlags943  equ $047E        ; $F847E
 ControlFlags944  equ $047F        ; $F847F
 SciErrors        equ $04BC        ; $F84BC

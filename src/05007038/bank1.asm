@@ -9,7 +9,7 @@
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_10000:
-        LDAA    $04E7,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$01
         LBEQ    L10156
         CMPA    #$02
@@ -43,12 +43,12 @@ Sub_10000:
         BRSET   >LdpFlags3,Z,#$40,L10144
         BRSET   >LdpFlags3,Z,#$08,L10156
         BRSET   >LdpFlags3,Z,#$80,L10156
-        LDAA    $04E2,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$0A
         LBEQ    L1013E
         CMPA    #$18
         LBNE    L10102
-        LDAA    $04E6,Z
+        LDAA    >DiagFlags,Z
         BITA    #$30
         LBNE    L10102
         LDAA    #$F1
@@ -56,7 +56,7 @@ Sub_10000:
         LDAA    >RefPeriod,Z
         CMPA    #$50
         BLS     L100F0
-        LDAA    $04E3,Z
+        LDAA    >DiagParam1,Z
         TAB
         ANDA    #$0F
         LSRB
@@ -80,11 +80,11 @@ L100D2:
         BNE     L100E8
         DECA
         BEQ     L100F0
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         ANDB    #$F0
         ADDB    #$10
         ABA
-        STAA    $04E3,Z
+        STAA    >DiagParam1,Z
 L100E8:
         LDAA    #$E1
         JSR     Sub_1AF54
@@ -93,8 +93,8 @@ L100F0:
         CLRA
 L100F2:
         BCLR    $05B3,Z,#$04
-        CLR     $04E2,Z
-        CLR     $04E7,Z
+        CLR     >DiagCommand,Z
+        CLR     >ActuatorTest,Z
         JSR     Sub_1AF54
 L10102:
         LDE     $FD4C
@@ -410,7 +410,7 @@ L10440:
 ;---------------------------------------------------------------------------------------------------
 Sub_10442:
         CLRA
-        LDAB    $04E7,Z
+        LDAB    >ActuatorTest,Z
         CMPB    #$09
         LBEQ    L106DC
         CMPB    #$14
@@ -644,10 +644,10 @@ L10708:
         STAA    $039D,Z
         LBRA    L1086E
 L10724:
-        LDAA    $04EB,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$04
         BNE     L1073C
-        LDAA    $04EC,Z
+        LDAA    >SystemTestValue,Z
         BEQ     L1073C
         CMPA    #$02
         LBEQ    L10866
@@ -994,7 +994,7 @@ L10AEE:
         JSR     Sub_10F2A
         BCS     L10AC6
         CLR     $04BB,Z
-        LDAB    $04E7,Z
+        LDAB    >ActuatorTest,Z
         CMPB    #$2E
         BEQ     L10B20
         CMPB    #$2F
@@ -1028,7 +1028,7 @@ Sub_10BA2:
         LDAB    <EngineStateFlags,Z
         BITB    #$80
         BNE     L10BD2
-        LDAB    $04E7,Z
+        LDAB    >ActuatorTest,Z
         CMPB    #$2E
         LBEQ    L10E50
         CMPB    #$2F
@@ -1478,7 +1478,7 @@ L11022:
 ;---------------------------------------------------------------------------------------------------
 Sub_11024:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L1167C
-        LDAA    $04E7,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$08
         LBEQ    L1167C
         CMPA    #$14
@@ -2934,7 +2934,7 @@ L11F96:
         STAA    $06BE,Z
         TST     <Count3s,Z
         BEQ     Sub_11FAA
-        LDAB    $04E2,Z
+        LDAB    >DiagCommand,Z
         CMPB    #$0A
         LBEQ    L11D90
 
@@ -4295,7 +4295,7 @@ L12CFE:
 Sub_12D00:
         LDAA    $0602,Z
         LBNE    L12DDC
-        LDAA    $04E7,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0C
         LBEQ    L12DE2
         CMPA    #$1A
@@ -7588,7 +7588,7 @@ L14ECC:
         CLR     $0244,Z
         CLR     $0245,Z
 L14EE4:
-        LDAA    $04E7,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$40
         BEQ     L14F02
         CMPA    #$42
@@ -8274,7 +8274,7 @@ Sub_1563C:
 L1569C:
         TSTW    >VehicleSpeedRaw,Z
         BNE     L156EE
-        LDAA    $04E2,Z
+        LDAA    >DiagCommand,Z
         BEQ     L156B4
         CMPA    #$25
         BEQ     L156EE
@@ -9186,7 +9186,7 @@ L1609A:
         BRSET   >MonitorDisableFlags,Z,#$04,L162F6
         BRSET   >MonitorDisableFlags,Z,#$02,L162F6
         BRSET   >MonitorDisableFlags,Z,#$01,L162F6
-        TST     $04EB,Z
+        TST     >SystemTestMode,Z
         LBNE    L162F6
         BRCLR   >O2ActiveFlags,Z,#$80,L162F6
         BRSET   >O2Bank1Flags,Z,#$20,L162F6
@@ -9462,7 +9462,7 @@ L16460:
 L16468:
         CPD     >PurgeMonRpmBand
         LBHI    L16784
-        LDAA    $04E2,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$25
         LBEQ    L16784
         CMPA    #$19
@@ -9739,7 +9739,7 @@ LdpMonitor:
         ANDA    #$0F
         CMPA    #$09
         BEQ     L1681C
-        TST     $04EB,Z
+        TST     >SystemTestMode,Z
         BNE     L16812
         BRSET   >LdpFlags3,Z,#$02,L1681C
         BRSET   >MonitorDisableFlags,Z,#$04,L16812
@@ -10418,15 +10418,15 @@ L16F06:
 ; Called from: Sub_16E66
 ;---------------------------------------------------------------------------------------------------
 Sub_16F08:
-        LDAA    $04E7,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$3D
         BEQ     L16F4C
         CMPA    #$14
         BEQ     L16F4C
-        LDAA    $04EB,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$13
         BNE     L16F26
-        LDAA    $04EC,Z
+        LDAA    >SystemTestValue,Z
         CMPA    #$01
         BEQ     L16F2C
         BRA     L16F3C
@@ -11045,7 +11045,7 @@ L17580:
         BRSET   >MonitorDisableFlags,Z,#$04,L17644
         BRSET   >MonitorDisableFlags,Z,#$02,L17644
         BRSET   >MonitorDisableFlags,Z,#$01,L17644
-        TST     $04EB,Z
+        TST     >SystemTestMode,Z
         LBNE    L17644
         BRCLR   >ThrottleState,Z,#$80,L17644
         TST     >O2DownDelay,Z
@@ -11175,7 +11175,7 @@ L1772C:
         ANDA    $32,Y
         LBEQ    L1788A
         BRCLR   >EngineStateFlags,Z,#$80,L1788A
-        TST     $04EB,Z
+        TST     >SystemTestMode,Z
         LBNE    L1788A
         BRSET   >MonitorDisableFlags,Z,#$04,L1788A
         BRSET   >MonitorDisableFlags,Z,#$02,L1788A
@@ -12377,7 +12377,7 @@ L18380:
         BRCLR   >EngineStateFlags,Z,#$80,L183B2
         BRCLR   >O2ActiveFlags,Z,#$80,L183B2
         BRCLR   >Options032F,#$80,L183B2
-        TST     $04EB,Z
+        TST     >SystemTestMode,Z
         BNE     L183B2
         JSR     Sub_183D0
         JSR     Sub_1843C
@@ -12551,7 +12551,7 @@ L1854A:
         BRCLR   >EngineStateFlags,Z,#$80,L1857C
         BRCLR   >O2ActiveFlags,Z,#$40,L1857C
         BRCLR   >Options032F,#$40,L1857C
-        TST     $04EB,Z
+        TST     >SystemTestMode,Z
         BNE     L1857C
         JSR     Sub_1859A
         JSR     Sub_18606
@@ -12720,7 +12720,7 @@ L18708:
         BRCLR   >EngineStateFlags,Z,#$80,L1873A
         BRCLR   >O2ActiveFlags,Z,#$80,L1873A
         BRCLR   >Options032F,#$80,L1873A
-        TST     $04EB,Z
+        TST     >SystemTestMode,Z
         BNE     L1873A
         JSR     Sub_18758
         JSR     Sub_187AE
@@ -12871,7 +12871,7 @@ L1889A:
         BRCLR   >EngineStateFlags,Z,#$80,L188CC
         BRCLR   >O2ActiveFlags,Z,#$40,L188CC
         BRCLR   >Options032F,#$40,L188CC
-        TST     $04EB,Z
+        TST     >SystemTestMode,Z
         BNE     L188CC
         JSR     Sub_188EA
         JSR     Sub_18940
@@ -13336,7 +13336,7 @@ Sub_18D34:
         BRCLR   >Options033E,#$04,L18DBA
         BRCLR   >MisfireRecordE4,Z,#$80,L18DBA
         BRCLR   >MisfireFlags2,Z,#$04,L18DBA
-        TST     $04EB,Z
+        TST     >SystemTestMode,Z
         LBNE    L18DBA
         BRSET   $02DE,Z,#$40,L18D66
         BRSET   >MonitorDisableFlags,Z,#$04,L18DBA
@@ -14867,10 +14867,10 @@ Sub_19CB6:
         ORAA    #$20
         BRA     L19D38
 L19CF8:
-        BRSET   $04E3,Z,#$40,L19DA0
-        BRSET   $04E3,Z,#$80,L19D98
+        BRSET   >DiagParam1,Z,#$40,L19DA0
+        BRSET   >DiagParam1,Z,#$80,L19D98
         BRSET   $020F,Z,#$10,L19D3E
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         DECB
         BEQ     L19D20
         NEGB
@@ -14895,7 +14895,7 @@ L19D38:
         STAA    $020F,Z
         BRA     L19DA4
 L19D3E:
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         BNE     L19D56
         LDAA    $0173,Z
         CMPA    #$32
@@ -14903,12 +14903,12 @@ L19D3E:
         TST     <FreezeFrameFault,Z
         BEQ     L19D90
 L19D50:
-        INC     $04E3,Z
+        INC     >DiagParam1,Z
         BRA     L19D6E
 L19D56:
         CMPB    #$09
         BCC     L19D90
-        INC     $04E3,Z
+        INC     >DiagParam1,Z
         NEGB
         ADDB    #$08
         TZX
@@ -14934,15 +14934,15 @@ L19D8A:
         STAA    $020F,Z
         BRA     L19DA4
 L19D90:
-        BSET    $04E3,Z,#$80
+        BSET    >DiagParam1,Z,#$80
         LDAA    #$EA
         BRA     L19D8A
 L19D98:
-        BSET    $04E3,Z,#$40
+        BSET    >DiagParam1,Z,#$40
         LDAA    #$8A
         BRA     L19D8A
 L19DA0:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
 L19DA4:
         RTS
 
@@ -14959,7 +14959,7 @@ Sub_19DA6:
         BCS     L19E02
 L19DC0:
         BRSET   >EngineStateFlags,Z,#$80,L19DDA
-        LDAA    $04E2,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$0A
         BNE     L19DD4
         JSR     Sub_19CB6
@@ -15385,7 +15385,7 @@ L1A20E:
 ;---------------------------------------------------------------------------------------------------
 Sub_1A210:
         BRCLR   >EquipmentFlags,Z,#$10,L1A350
-        LDAA    $04E7,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0F
         BEQ     L1A222
         CMPA    #$14
@@ -15650,7 +15650,7 @@ L1A528:
 ; Called from: Sub_1A9F2
 ;---------------------------------------------------------------------------------------------------
 Sub_1A52A:
-        LDAA    $04E6,Z
+        LDAA    >DiagFlags,Z
         BITA    #$30
         LBNE    L1A714
         CLRB
@@ -15746,10 +15746,10 @@ L1A608:
         BEQ     L1A622
 L1A60C:
         CLR     $0622,Z
-        BCLR    $04E6,Z,#$40
+        BCLR    >DiagFlags,Z,#$40
         CMPB    #$1B
         LBNE    L1A6FE
-        BSET    $04E6,Z,#$40
+        BSET    >DiagFlags,Z,#$40
         JMP     L1A6FE
 L1A622:
         LDAA    $0622,Z
@@ -15760,7 +15760,7 @@ L1A622:
         BCS     L1A642
 L1A634:
         CLR     $0622,Z
-        BCLR    $04E6,Z,#$40
+        BCLR    >DiagFlags,Z,#$40
         LDAB    #$17
         JMP     L1A6FE
 L1A642:
@@ -15790,7 +15790,7 @@ L1A66E:
         LDAB    $00,Y
 L1A676:
         CLR     $0622,Z
-        BCLR    $04E6,Z,#$40
+        BCLR    >DiagFlags,Z,#$40
         ANDP    #$FF1F
         JMP     L1A6FE
 L1A686:
@@ -15809,7 +15809,7 @@ L1A692:
         DECW    $0623,Z
         BNE     L1A6B4
         CLR     $0622,Z
-        BCLR    $04E6,Z,#$40
+        BCLR    >DiagFlags,Z,#$40
         BRA     L1A70A
 L1A6B4:
         CBA
@@ -16114,8 +16114,8 @@ L1A8DE:
 Sub_1A9F2:
         BRSET   $0316,Z,#$40,L1AAFE
         LDE     >SCCR0,Z
-        BRSET   $04E6,Z,#$80,L1AA36
-        BRCLR   $04E6,Z,#$40,L1AA36
+        BRSET   >DiagFlags,Z,#$80,L1AA36
+        BRCLR   >DiagFlags,Z,#$40,L1AA36
         JSR     Sub_1A52A
         LBCS    L1AAFE
         LDE     >SCCR0,Z
@@ -16131,7 +16131,7 @@ L1AA32:
         JMP     L1AB00
 L1AA36:
         CLR     $061E,Z
-        LDAB    $04E6,Z
+        LDAB    >DiagFlags,Z
         BITB    #$C0
         LBNE    L1AAFE
         LDE     >SCCR0,Z
@@ -16155,34 +16155,34 @@ L1AA5A:
 L1AA7A:
         BITA    #$40
         BNE     L1AA98
-        BRSET   $04E6,Z,#$0F,L1AA88
+        BRSET   >DiagFlags,Z,#$0F,L1AA88
         INCB
         BRA     L1AAFA
 L1AA88:
-        BRCLR   $04E6,Z,#$30,L1AAFE
-        BCLR    $04E6,Z,#$30
-        CLR     $04E2,Z
+        BRCLR   >DiagFlags,Z,#$30,L1AAFE
+        BCLR    >DiagFlags,Z,#$30
+        CLR     >DiagCommand,Z
         BRA     L1AAFE
 L1AA98:
         LDAA    >SCDR_L,Z
         STAA    >SCDR_L,Z
         ANDB    #$F0
-        STAB    $04E6,Z
+        STAB    >DiagFlags,Z
         BITB    #$30
         BNE     L1AAEC
 L1AAAA:
         CLR     >SciErrors,Z
-        STAA    $04E2,Z
+        STAA    >DiagCommand,Z
         CMPA    #$14
         BEQ     L1AAC2
         BCLR    <ThrottleState,Z,#$02
         CMPA    #$25
         BNE     L1AAC2
-        CLR     $04EA,Z
+        CLR     >SystemTestRejects,Z
 L1AAC2:
-        CLR     $04E3,Z
-        CLR     $04E4,Z
-        CLR     $04E5,Z
+        CLR     >DiagParam1,Z
+        CLR     >DiagParam2,Z
+        CLR     >DiagParam3,Z
         TAB
         SUBB    #$10
         CMPB    #$1E
@@ -16194,15 +16194,15 @@ L1AAC2:
         TED
         ABX
         LDAB    $00,X
-        ORAB    $04E6,Z
+        ORAB    >DiagFlags,Z
         BRA     L1AAFA
 L1AAEC:
-        LDE     $04E3,Z
-        STE     $04E4,Z
-        STAA    $04E3,Z
+        LDE     >DiagParam1,Z
+        STE     >DiagParam2,Z
+        STAA    >DiagParam1,Z
         SUBB    #$10
 L1AAFA:
-        STAB    $04E6,Z
+        STAB    >DiagFlags,Z
 L1AAFE:
         RTS
 L1AB00:
@@ -16230,7 +16230,7 @@ L1AB2E:
         LDAA    #$E0
         STAA    $061E,Z
         LDAA    #$52
-        STAA    $04E2,Z
+        STAA    >DiagCommand,Z
         LDD     >SCSR,Z
         LDD     >SCDR,Z
         LDAA    #$F8
@@ -16239,14 +16239,14 @@ L1AB2E:
         JMP     L1ABF8
 L1AB68:
         LDAA    #$28
-        STAA    $04E2,Z
+        STAA    >DiagCommand,Z
         BRSET   $061E,Z,#$08,L1ABC2
         BRSET   $061E,Z,#$10,L1AB84
         BSET    $061E,Z,#$10
-        STAB    $04E3,Z
+        STAB    >DiagParam1,Z
         BRA     L1ABF8
 L1AB84:
-        CMPB    $04E3,Z
+        CMPB    >DiagParam1,Z
         BNE     L1ABB4
         BCLR    $061E,Z,#$10
         TBA
@@ -16286,16 +16286,16 @@ L1ABD8:
         BRSET   $061E,Z,#$E0,L1ABE0
         BRA     L1ABF8
 L1ABE0:
-        LDAA    $04E2,Z
+        LDAA    >DiagCommand,Z
         DECA
         CMPA    #$20
         BNE     L1ABF4
 L1ABEA:
         CLRA
-        STAA    $04E3,Z
-        STAA    $04E6,Z
+        STAA    >DiagParam1,Z
+        STAA    >DiagFlags,Z
 L1ABF4:
-        STAA    $04E2,Z
+        STAA    >DiagCommand,Z
 L1ABF8:
         LDD     >SCSR,Z
         LDD     >SCDR,Z
@@ -16310,7 +16310,7 @@ L1AC02:
         LDAB    $061E,Z
         ADDB    #$20
         STAB    $061E,Z
-        BSET    $04E6,Z,#$30
+        BSET    >DiagFlags,Z,#$30
         LDD     >SCSR,Z
         LDD     >SCDR,Z
         LDAB    #$14
@@ -16323,7 +16323,7 @@ L1AC32:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1AC36:
-        LDAA    $04EB,Z
+        LDAA    >SystemTestMode,Z
         CMPA    #$10
         BNE     L1AC82
         LDAB    $051C,Z
@@ -16358,8 +16358,8 @@ L1AC82:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1AC84:
-        LDAA    $04EA,Z
-        LDAB    $04EB,Z
+        LDAA    >SystemTestRejects,Z
+        LDAB    >SystemTestMode,Z
         CMPB    #$01
         BNE     L1AC94
         CMPA    #$95
@@ -16369,8 +16369,8 @@ L1AC94:
 L1AC96:
         BHI     L1ACE8
         BEQ     L1ACC6
-        INC     $04EA,Z
-        LDAB    $04EB,Z
+        INC     >SystemTestRejects,Z
+        LDAB    >SystemTestMode,Z
         CMPB    #$05
         BCS     L1ACE8
         CMPB    #$0B
@@ -16393,15 +16393,15 @@ Sub_1ACAA:
         CLR     $0193,Z
         BRA     L1ACE8
 L1ACC6:
-        INC     $04EA,Z
+        INC     >SystemTestRejects,Z
 L1ACCA:
-        CLR     $04EB,Z
-        CLR     $04EC,Z
+        CLR     >SystemTestMode,Z
+        CLR     >SystemTestValue,Z
         CLRW    $0439,Z
         CLRW    $043B,Z
         LDAA    #$FF
-        STAA    $04E8,Z
-        STAA    $04E9,Z
+        STAA    >InjectorKillCyl1,Z
+        STAA    >InjectorKillCyl2,Z
         BCLR    <EgrFlags,Z,#$80
 L1ACE8:
         RTS
@@ -16412,10 +16412,10 @@ L1ACE8:
 ;---------------------------------------------------------------------------------------------------
 Sub_1ACEA:
         BRCLR   >FieldFlags,Z,#$04,L1AD52
-        LDAB    $04EB,Z
+        LDAB    >SystemTestMode,Z
         CMPB    #$11
         BNE     L1AD4E
-        LDAB    $04EA,Z
+        LDAB    >SystemTestRejects,Z
         CMPB    #$0F
         BCC     L1AD42
         LDAB    $17,Z
@@ -16453,8 +16453,8 @@ L1AD40:
         LDAA    #$FF
 L1AD42:
         CLR     $06B9,Z
-        CLR     $04EB,Z
-        CLR     $04EC,Z
+        CLR     >SystemTestMode,Z
+        CLR     >SystemTestValue,Z
 L1AD4E:
         BCLR    <FieldFlags,Z,#$04
 L1AD52:
@@ -16465,7 +16465,7 @@ L1AD52:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1AD54:
-        LDAA    $04E6,Z
+        LDAA    >DiagFlags,Z
         BITA    #$30
         BNE     L1AD8A
         LDE     $04E1,Z
@@ -16482,44 +16482,44 @@ Sub_1AD54:
         XGEX
         JMP     $1A71A,X
 L1AD82:
-        BCLR    $04E6,Z,#$30
-        CLR     $04E2,Z
+        BCLR    >DiagFlags,Z,#$30
+        CLR     >DiagCommand,Z
 L1AD8A:
         RTS
 L1AD8C:
         TZX
         LDX     #$8169
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         CMPB    #$07
         BHI     L1ADB6
         NEGB
         ADDB    #$07
         ABX
-        INC     $04E3,Z
+        INC     >DiagParam1,Z
         LDAA    $00,X
         BEQ     L1ADB6
         TAB
-        ADDB    $04E4,Z
-        STAB    $04E4,Z
+        ADDB    >DiagParam2,Z
+        STAB    >DiagParam2,Z
         LBRA    Sub_1AF54
 L1ADB6:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         LDAA    #$FE
         JSR     Sub_1AF54
-        ADDA    $04E4,Z
+        ADDA    >DiagParam2,Z
         ADDA    #$10
         JMP     Sub_1AF54
 L1ADCA:
         LDAA    >FaultPending1,Z
-        BRCLR   $04E3,Z,#$FF,L1ADDC
+        BRCLR   >DiagParam1,Z,#$FF,L1ADDC
         LDAA    >FaultPending2,Z
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
 L1ADDC:
-        INC     $04E3,Z
+        INC     >DiagParam1,Z
         JMP     Sub_1AF54
 L1ADE4:
-        BSET    $04E6,Z,#$80
-        CLR     $04E2,Z
+        BSET    >DiagFlags,Z,#$80
+        CLR     >DiagCommand,Z
 L1ADEC:
         BRCLR   >SCSR_L,Z,#$80,L1ADEC
         LDD     #$0008
@@ -16529,7 +16529,7 @@ L1ADFC:
         LDAB    >RefPeriod,Z
         CMPB    #$30
         BLS     L1AE40
-        LDAA    $04E3,Z
+        LDAA    >DiagParam1,Z
         BEQ     L1AE40
         TAB
         DECB
@@ -16543,7 +16543,7 @@ L1ADFC:
         BCC     L1AE40
         TPD
         TBXK
-        LDAA    $04E3,Z
+        LDAA    >DiagParam1,Z
         LDX     #$A7DA
         AEX
         LDX     $02,X
@@ -16551,25 +16551,25 @@ L1ADFC:
         BNE     L1AE4A
 L1AE36:
         CLRA
-        STAA    $04E7,Z
+        STAA    >ActuatorTest,Z
         JMP     Sub_1AF54
 L1AE40:
         CLRA
-        STAA    $04E2,Z
-        STAA    $04E3,Z
+        STAA    >DiagCommand,Z
+        STAA    >DiagParam1,Z
 L1AE4A:
-        CMPA    $04E7,Z
+        CMPA    >ActuatorTest,Z
         LBEQ    Sub_1AF54
-        LDAA    $04E3,Z
-        STAA    $04E7,Z
+        LDAA    >DiagParam1,Z
+        STAA    >ActuatorTest,Z
         LDAB    #$02
         STAB    <Count3s,Z
         LDAB    #$00
         STAB    <MainLoopCounter,Z
         JMP     Sub_1AF54
 L1AE66:
-        CLR     $04E2,Z
-        LDAB    $04E3,Z
+        CLR     >DiagCommand,Z
+        LDAB    >DiagParam1,Z
         BEQ     L1AEC4
         CMPB    #$10
         BEQ     L1AE86
@@ -16699,12 +16699,12 @@ Sub_1AF54:
         dc.b    $00,$00,$03,$08,$00,$00,$03,$09,$00,$00,$03,$0A,$00,$00,$03,$0B
         dc.b    $00,$00,$03,$0C,$00,$00,$03,$0D,$00,$00,$03,$0E
 L1AFDC:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         TPD
         TBYK
         CLRB
         TBXK
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         BEQ     L1B016
         CMPB    #$20
         BCC     L1B016
@@ -16730,7 +16730,7 @@ L1B018:
         LDAB    >RefPeriod,Z
         CMPB    #$30
         LBLS    Sub_1AF54
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         JSR     Sub_19C5A
         JSR     Sub_1F760
         JSR     Sub_19C92
@@ -16739,8 +16739,8 @@ L1B018:
 L1B03A:
         RTS
 L1B03C:
-        CLR     $04E2,Z
-        LDAB    $04E3,Z
+        CLR     >DiagCommand,Z
+        LDAB    >DiagParam1,Z
         LBEQ    L1AEC4
         DECB
         ASLB
@@ -16780,17 +16780,17 @@ L1B0AC:
         JSR     Sub_0A3F2
         JMP     Sub_1AF54
 L1B0B8:
-        BSET    $04E6,Z,#$40
-        CLR     $04E2,Z
+        BSET    >DiagFlags,Z,#$40
+        CLR     >DiagCommand,Z
         RTS
 L1B0C2:
         LDAA    #$F1
         BRCLR   $0529,Z,#$01,L1B0EC
         TZX
         LDX     #$8700
-        LDAA    $04E4,Z
+        LDAA    >DiagParam2,Z
         BNE     L1B0F4
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         ABX
         CPX     #$87FF
         BCS     L1B0F4
@@ -16800,13 +16800,13 @@ L1B0C2:
         STAA    $00,X
         CLRA
 L1B0EC:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         JMP     Sub_1AF54
 L1B0F4:
         LDX     #$8700
-        CLR     $04E2,Z
-        LDAB    $04E4,Z
-        LDAA    $04E3,Z
+        CLR     >DiagCommand,Z
+        LDAB    >DiagParam2,Z
+        LDAA    >DiagParam1,Z
         ABX
         STAA    $00,X
         LDAA    #$E5
@@ -16814,14 +16814,14 @@ L1B0F4:
 L1B10E:
         TZX
         LDX     #$8700
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         CMPB    $01,X
         BEQ     L1B122
         COMB
         CMPB    $01,X
         BNE     L1B16A
 L1B122:
-        LDAB    $04E4,Z
+        LDAB    >DiagParam2,Z
         CMPB    $00,X
         BNE     L1B16E
         ABX
@@ -16835,16 +16835,16 @@ L1B13C:
         ADDA    $01,X
         DECB
         BNE     L1B13C
-        CMPA    $04E3,Z
+        CMPA    >DiagParam1,Z
         BEQ     L1B15C
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         COMB
         CBA
         BNE     L1B16A
         LDX     #$8702
         JMP     $F8700
 L1B15C:
-        COM     $04E3,Z
+        COM     >DiagParam1,Z
         LDAA    #$E4
         JMP     Sub_1AF54
 L1B166:
@@ -16856,22 +16856,22 @@ L1B16A:
 L1B16E:
         LDAA    #$02
 L1B170:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         JMP     Sub_1AF54
 L1B178:
-        LDAA    $04E3,Z
+        LDAA    >DiagParam1,Z
         BNE     L1B184
         BCLR    >SparkFaultFlags,Z,#$20
         BRA     L1B1A8
 L1B184:
-        LDAA    $04E4,Z
+        LDAA    >DiagParam2,Z
         BNE     L1B1BA
         BRSET   <ThrottleState,Z,#$80,L1B1AC
         BRSET   >Options032E,#$08,L1B198
         BRSET   <DriveFlags,Z,#$20,L1B1B0
 L1B198:
         COMA
-        STAA    $04E4,Z
+        STAA    >DiagParam2,Z
         LDAA    #$01
         BSET    >SparkFaultFlags,Z,#$20
         JMP     Sub_1AF54
@@ -16884,26 +16884,26 @@ L1B1AC:
 L1B1B0:
         LDAA    #$03
 L1B1B2:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         JMP     Sub_1AF54
 L1B1BA:
         BRSET   <ThrottleState,Z,#$80,L1B1C8
         BRSET   >Options032E,#$08,L1B1CC
         BRCLR   <DriveFlags,Z,#$20,L1B1CC
 L1B1C8:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
 L1B1CC:
         RTS
         dc.b    $00,$12,$04,$35,$00,$14,$04,$37
 L1B1D6:
-        LDAA    $04E4,Z
+        LDAA    >DiagParam2,Z
         BEQ     L1B216
         BPL     L1B208
         ANDA    #$40
-        STAA    $04E4,Z
+        STAA    >DiagParam2,Z
         TPD
         TBXK
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         BEQ     L1B210
         CMPB    #$04
         BCC     L1B210
@@ -16912,17 +16912,17 @@ L1B1D6:
         ABX
         LDE     $0000,X
         LDD     E,Z
-        STAB    $04E5,Z
+        STAB    >DiagParam3,Z
         JMP     Sub_1AF54
 L1B208:
-        LDAA    $04E5,Z
+        LDAA    >DiagParam3,Z
         JSR     Sub_1AF54
 L1B210:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         RTS
 L1B216:
         ORAA    #$C0
-        STAA    $04E4,Z
+        STAA    >DiagParam2,Z
         RTS
 L1B21E:
         JMP     L1B27C
@@ -16947,14 +16947,14 @@ L1B242:
 L1B246:
         JMP     L1B308
 L1B24A:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         LDAB    >RefPeriod,Z
         CMPB    #$30
         BHI     L1B25C
         CLRA
         JMP     Sub_1AF54
 L1B25C:
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         BNE     L1B268
 L1B262:
         LDAA    #$01
@@ -17040,16 +17040,16 @@ L1B312:
         STAB    $05FC,Z
         LBRA    L1B2D0
 L1B328:
-        CLR     $04E2,Z
-        LDAB    $04E4,Z
+        CLR     >DiagCommand,Z
+        LDAB    >DiagParam2,Z
         CMPB    #$14
         LBCC    L1B420
-        LDAA    $04E3,Z
+        LDAA    >DiagParam1,Z
         LBEQ    L1B422
         CMPA    #$03
         LBCC    L1B420
-        STAB    $04EB,Z
-        STAA    $04EC,Z
+        STAB    >SystemTestMode,Z
+        STAA    >SystemTestValue,Z
         CMPB    #$04
         BNE     L1B36C
         LDAB    <EgrFlags,Z
@@ -17087,7 +17087,7 @@ L1B398:
         LBCC    L1B432
         TDE
         JSR     Sub_1ACAA
-        TST     $04EB,Z
+        TST     >SystemTestMode,Z
         LBEQ    L1B43C
         TPD
         TBXK
@@ -17110,42 +17110,42 @@ L1B3D4:
         BEQ     L1B420
         CMPA    #$01
         BEQ     L1B408
-        CMPB    $04E8,Z
+        CMPB    >InjectorKillCyl1,Z
         BEQ     L1B43C
-        CMPB    $04E9,Z
+        CMPB    >InjectorKillCyl2,Z
         BEQ     L1B43C
-        BRSET   $04E8,Z,#$FF,L1B3FC
-        BRSET   $04E9,Z,#$FF,L1B402
+        BRSET   >InjectorKillCyl1,Z,#$FF,L1B3FC
+        BRSET   >InjectorKillCyl2,Z,#$FF,L1B402
         BRA     L1B44C
 L1B3FC:
-        STAB    $04E8,Z
+        STAB    >InjectorKillCyl1,Z
         BRA     L1B43C
 L1B402:
-        STAB    $04E9,Z
+        STAB    >InjectorKillCyl2,Z
         BRA     L1B43C
 L1B408:
-        CMPB    $04E8,Z
+        CMPB    >InjectorKillCyl1,Z
         BNE     L1B414
-        BSET    $04E8,Z,#$FF
+        BSET    >InjectorKillCyl1,Z,#$FF
         BRA     L1B448
 L1B414:
-        CMPB    $04E9,Z
+        CMPB    >InjectorKillCyl2,Z
         BNE     L1B44C
-        BSET    $04E9,Z,#$FF
+        BSET    >InjectorKillCyl2,Z,#$FF
         BRA     L1B448
 L1B420:
         LDAA    #$FF
 L1B422:
-        CLR     $04EB,Z
-        CLR     $04EC,Z
+        CLR     >SystemTestMode,Z
+        CLR     >SystemTestValue,Z
         BCLR    $0316,Z,#$10
         BCLR    <EgrFlags,Z,#$80
 L1B432:
         LDAB    #$FF
-        STAB    $04E8,Z
-        STAB    $04E9,Z
+        STAB    >InjectorKillCyl1,Z
+        STAB    >InjectorKillCyl2,Z
 L1B43C:
-        LDAB    $04EB,Z
+        LDAB    >SystemTestMode,Z
         CMPB    #$04
         BEQ     L1B448
         BCLR    <EgrFlags,Z,#$80
@@ -17155,15 +17155,15 @@ L1B44C:
         LDAA    #$FF
         JMP     Sub_1AF54
 L1B452:
-        CLR     $04E2,Z
-        LDAB    $04E5,Z
+        CLR     >DiagCommand,Z
+        LDAB    >DiagParam3,Z
         CMPB    #$0F
         BEQ     L1B462
         BITB    #$FE
         BNE     L1B472
 L1B462:
         TBXK
-        LDD     $04E3,Z
+        LDD     >DiagParam1,Z
         XGAB
         XGDX
         LDAA    $00,X
@@ -17172,11 +17172,11 @@ L1B472:
         RTS
 L1B474:
         CLRA
-        STAA    $04E2,Z
+        STAA    >DiagCommand,Z
         BRSET   $05FE,Z,#$80,Sub_1AF54
         BSET    $05FE,Z,#$80
-        LDAA    $04E5,Z
-        LDAB    $04E4,Z
+        LDAA    >DiagParam3,Z
+        LDAB    >DiagParam2,Z
         TDE
         CMPA    #$02
         LDAA    #$F0
@@ -17185,7 +17185,7 @@ L1B474:
         JSR     Sub_1BB70
         BNE     L1B4AE
         STE     $05FA,Z
-        LDAA    $04E3,Z
+        LDAA    >DiagParam1,Z
         STAA    $05FC,Z
         LDAA    #$E2
         JMP     Sub_1AF54
@@ -17194,11 +17194,11 @@ L1B4AE:
         JMP     Sub_1AF54
 L1B4B6:
         BRSET   $05FE,Z,#$80,L1B4DC
-        CLR     $04E2,Z
-        LDAA    $04E4,Z
+        CLR     >DiagCommand,Z
+        LDAA    >DiagParam2,Z
         BITA    #$FE
         BNE     L1B4DC
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         ORP     #$00E0
         JSR     Sub_1EA48
         ANDP    #$FF1F
@@ -17206,19 +17206,19 @@ L1B4B6:
 L1B4DC:
         RTS
 L1B4DE:
-        LDAA    $04E5,Z
+        LDAA    >DiagParam3,Z
         CMPA    #$08
-        LDAB    $04E4,Z
+        LDAB    >DiagParam2,Z
         TDE
         LDAA    #$F1
         BRCLR   $0529,Z,#$01,L1B4FE
         LDAA    #$F0
         BCC     L1B4FE
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         STAB    E,Z
         LDAA    #$E5
 L1B4FE:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         JMP     Sub_1AF54
 
 ;---------------------------------------------------------------------------------------------------
@@ -17229,7 +17229,7 @@ Sub_1B506:
         LDAA    >RefPeriod,Z
         CMPA    #$50
         BLS     L1B542
-        LDAB    $04E7,Z
+        LDAB    >ActuatorTest,Z
         BEQ     L1B546
         LDAA    <Count3s,Z
         CMPA    #$81
@@ -17245,13 +17245,13 @@ Sub_1B506:
         XGEX
         JMP     $1A7D6,X
 L1B532:
-        LDAA    $04E2,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$13
         BNE     L1B542
-        CLR     $04E2,Z
-        CLR     $04E3,Z
+        CLR     >DiagCommand,Z
+        CLR     >DiagParam1,Z
 L1B542:
-        CLR     $04E7,Z
+        CLR     >ActuatorTest,Z
 L1B546:
         BRSET   >LdpFlags3,Z,#$08,L1B55E
         BRSET   >LdpFlags3,Z,#$04,L1B55E
@@ -17396,7 +17396,7 @@ L1B6A4:
 ;---------------------------------------------------------------------------------------------------
 Sub_1B6A6:
         BRSET   >Options0334,#$10,L1B790
-        LDAA    $04E7,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$14
         BNE     L1B70A
         LDE     >ControlFlags943,Z
@@ -17768,10 +17768,10 @@ Sub_1BA10:
         LDAB    $0529,Z
         ANDB    #$0E
         BNE     L1BA54
-        LDAA    $04E2,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$2B
         BNE     L1BA88
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         BRCLR   $0529,Z,#$01,L1BA32
         CLRD
         CLRW    $052C,Z
@@ -17825,10 +17825,10 @@ Sub_1BA8A:
         BEQ     L1BA9E
         STAA    $052B,Z
 L1BA9E:
-        LDAA    $04E2,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$2C
         BNE     L1BB0E
-        LDAA    $04E6,Z
+        LDAA    >DiagFlags,Z
         BITA    #$30
         BNE     L1BB0E
         BRCLR   $0529,Z,#$01,L1BAB8
@@ -17837,10 +17837,10 @@ L1BA9E:
 L1BAB8:
         TST     $052B,Z
         BNE     L1BACE
-        LDAA    $04E4,Z
-        ADDA    $04E5,Z
+        LDAA    >DiagParam2,Z
+        ADDA    >DiagParam3,Z
         ADDA    #$2C
-        CMPA    $04E3,Z
+        CMPA    >DiagParam1,Z
         BEQ     L1BAD2
 L1BACE:
         LDAA    #$02
@@ -17852,8 +17852,8 @@ L1BAD2:
         LDAA    #$03
         BRA     L1BB06
 L1BADE:
-        LDAA    $04E5,Z
-        LDAB    $04E4,Z
+        LDAA    >DiagParam3,Z
+        LDAB    >DiagParam2,Z
         CPD     $052C,Z
         BNE     L1BAF4
         BSET    $0529,Z,#$01
@@ -17868,7 +17868,7 @@ L1BAFE:
         STAB    $052B,Z
         LDAA    #$01
 L1BB06:
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         JSR     Sub_1AF54
 L1BB0E:
         RTS
@@ -17938,15 +17938,15 @@ L1BBEA:
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
 Sub_1BBEC:
-        CLR     $04E7,Z
-        LDAA    $04E2,Z
+        CLR     >ActuatorTest,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$0A
         BEQ     L1BBFC
         CMPA    #$17
         BNE     L1BC04
 L1BBFC:
-        CLR     $04E2,Z
-        BCLR    $04E6,Z,#$30
+        CLR     >DiagCommand,Z
+        BCLR    >DiagFlags,Z,#$30
 L1BC04:
         RTS
         dc.b    $BC,$18,$BC,$88,$BC,$9C,$BC,$C8,$BC,$D2,$BC,$D8,$BC,$F0,$BD,$0C
@@ -17977,16 +17977,16 @@ L1BC04:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1BD60:
-        LDAA    $04E2,Z
+        LDAA    >DiagCommand,Z
         CMPA    #$2D
         LBNE    L1BDFA
-        LDAA    $04E6,Z
+        LDAA    >DiagFlags,Z
         BITA    #$30
         LBNE    L1BDFA
-        TST     $04E5,Z
+        TST     >DiagParam3,Z
         BNE     L1BDE2
-        DEC     $04E5,Z
-        LDAB    $04E4,Z
+        DEC     >DiagParam3,Z
+        LDAB    >DiagParam2,Z
         BEQ     L1BDEA
         CMPB    #$09
         BHI     L1BDEA
@@ -17995,7 +17995,7 @@ Sub_1BD60:
         ABX
         LDAB    #$01
         TBXK
-        LDAB    $04E3,Z
+        LDAB    >DiagParam1,Z
         BEQ     L1BDEA
         CMPB    #$32
         BCC     L1BDEA
@@ -18026,19 +18026,19 @@ L1BDCC:
         LDAA    $01,X
         BEQ     L1BDDA
         LDAB    $00,Y
-        STAB    $04E4,Z
+        STAB    >DiagParam2,Z
         JMP     Sub_1AF54
 L1BDDA:
-        STAA    $04E4,Z
+        STAA    >DiagParam2,Z
         JMP     Sub_1AF54
 L1BDE2:
-        LDAA    $04E4,Z
+        LDAA    >DiagParam2,Z
         JSR     Sub_1AF54
 L1BDEA:
-        CLR     $04E2,Z
-        CLR     $04E3,Z
-        CLR     $04E4,Z
-        CLR     $04E5,Z
+        CLR     >DiagCommand,Z
+        CLR     >DiagParam1,Z
+        CLR     >DiagParam2,Z
+        CLR     >DiagParam3,Z
 L1BDFA:
         RTS
 L1BDFC:
@@ -19572,10 +19572,10 @@ L1CE98:
         BRA     L1CE98
 L1CEB8:
         CLR     $02F8,Z
-        CLR     $04E2,Z
+        CLR     >DiagCommand,Z
         LDAA    #$FE
         JSR     Sub_1AF54
-        ADDA    $04E4,Z
+        ADDA    >DiagParam2,Z
         ADDA    #$10
         JSR     Sub_1AF54
         RTS
@@ -19585,8 +19585,8 @@ L1CED2:
         LDX     $04,Y
         LDAA    $00,X
         TAB
-        ADDB    $04E4,Z
-        STAB    $04E4,Z
+        ADDB    >DiagParam2,Z
+        STAB    >DiagParam2,Z
         JSR     Sub_1AF54
         RTS
 

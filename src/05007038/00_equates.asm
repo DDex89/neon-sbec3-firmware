@@ -314,6 +314,17 @@ HotEnrich        equ $04AD        ; $F84AD
 WotEnrich        equ $04B6        ; $F84B6
 FanFlags         equ $04B8        ; $F84B8
 FanStageTimer    equ $04B9        ; $F84B9
+DiagCommand      equ $04E2        ; $F84E2
+DiagParam1       equ $04E3        ; $F84E3
+DiagParam2       equ $04E4        ; $F84E4
+DiagParam3       equ $04E5        ; $F84E5
+DiagFlags        equ $04E6        ; $F84E6
+ActuatorTest     equ $04E7        ; $F84E7
+InjectorKillCyl1 equ $04E8        ; $F84E8
+InjectorKillCyl2 equ $04E9        ; $F84E9
+SystemTestRejects equ $04EA        ; $F84EA
+SystemTestMode   equ $04EB        ; $F84EB
+SystemTestValue  equ $04EC        ; $F84EC
 ControlFlags943  equ $0527        ; $F8527
 ControlFlags944  equ $0528        ; $F8528
 SwitchInputs     equ $0531        ; $F8531

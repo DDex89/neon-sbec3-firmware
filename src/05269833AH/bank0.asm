@@ -10001,7 +10001,7 @@ L08442:
 L08454:
         STAA    >FieldDutyLimit,Z
 L08458:
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0D
         BEQ     L08464
         CMPA    #$14
@@ -10099,7 +10099,7 @@ L08546:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 Sub_08548:
-        BRCLR   $0932,Z,#$80,L086AA
+        BRCLR   >DiagFlags,Z,#$80,L086AA
         LDD     >SCSR,Z
         BITB    #$0E
         BEQ     L0858A
@@ -10117,7 +10117,7 @@ L08562:
         LBRA    L086AA
 L0857A:
         CLR     >SciErrors,Z
-        BCLR    $0932,Z,#$B0
+        BCLR    >DiagFlags,Z,#$B0
         BCLR    $0C34,Z,#$0F
         LBRA    L086AA
 L0858A:
@@ -10169,7 +10169,7 @@ L08608:
         BNE     L0861C
 L0860C:
         CLR     >SciErrors,Z
-        BCLR    $0932,Z,#$B0
+        BCLR    >DiagFlags,Z,#$B0
         BCLR    $0C34,Z,#$0F
         LBRA    L086A6
 L0861C:
@@ -12004,7 +12004,7 @@ L0AA2A:
         CLRW    >Count3s,Z
         CLR     >RunTime,Z
         CLR     >CrankEvents,Z
-        CLR     $0933,Z
+        CLR     >ActuatorTest,Z
         LDAA    >Throttle,Z
         STAA    >ThrottleLast,Z
         LDAA    >Map,Z
@@ -12911,7 +12911,7 @@ Sub_0C064:
         ANDA    #$91
         CMPA    #$01
         BNE     L0C08C
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$47
         BEQ     L0C08C
         CMPA    #$14
@@ -15141,8 +15141,8 @@ L0D78E:
         STD     $0AB4,Z
         STAA    >TipInTimer,Z
         STAA    >IdleFuelRamp,Z
-        STAA    $0934,Z
-        STAA    $0935,Z
+        STAA    >InjectorKillCyl1,Z
+        STAA    >InjectorKillCyl2,Z
         LDAA    #$0F
         STD     $0A9E,Z
         LDAA    $3E,Z
@@ -16290,7 +16290,7 @@ L0E636:
         LDE     #$0053
         STE     $06BA,Z
 L0E64C:
-        LDAA    $0933,Z
+        LDAA    >ActuatorTest,Z
         CMPA    #$0B
         BEQ     L0E676
         CMPA    #$14
