@@ -48,7 +48,7 @@
  },
  "DriveFlags": {
   "7": "drive engagement handling in progress (GearStateUpdate), probably",
-  "6": "switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch",
+  "6": "power steering pressure switch active: bit 6 of the switch bits collected from IoInputs0 (map chosen by $032D), unless P0551 is set (SwitchInputsRead)",
   "5": "transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)",
   "3": "follows SwitchInputs2 bit 6 (IdleTargetControl)",
   "2": "crank and cam synchronised since key-on (Isr_GPT_PAI)",
@@ -119,6 +119,71 @@
   "4": "idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn",
   "1": "shift idle step applied (IacShiftStepApply)",
   "0": "idle rpm loop hold timer started (IdleRpmLoop)"
+ },
+ "IoBusStatusL": {
+  "7": "tested by BusTxStart before a byte is sent"
+ },
+ "IoCfg1FL": {
+  "5": "manifold tuning valve driver status (MtvCheck)",
+  "4": "manifold tuning valve driver status (MtvCheck, MtvTiming)",
+  "3": "tested by Isr_GPT_OC4 (ignition driver status, probably)",
+  "2": "tested by Isr_GPT_OC3 (ignition driver status, probably)",
+  "1": "tested by Isr_GPT_OC2 (ignition driver status, probably)"
+ },
+ "IoDriver62": {
+  "7": "driver status, checked by HardwareCheck",
+  "6": "driver status, checked by HardwareCheck",
+  "5": "leak detection pump solenoid on (word bit 13)"
+ },
+ "IoDriver64": {
+  "7": "driver status, checked by HardwareCheck",
+  "6": "driver status, checked by HardwareCheck",
+  "5": "speed control lamp / PWM C18 output on (word bit 13)"
+ },
+ "IoDriver66": {
+  "7": "driver status, checked by HardwareCheck",
+  "6": "driver status, checked by HardwareCheck",
+  "5": "second tuning valve / speed control output on (word bit 13)"
+ },
+ "IoDriver68": {
+  "5": "fan output on (word bit 13; output test)"
+ },
+ "IoDriver6E": {
+  "7": "driver status, checked by HardwareCheck",
+  "6": "driver status, checked by HardwareCheck",
+  "5": "generator field output on (word bit 13; ChargeControl, Isr_PIT)"
+ },
+ "IoInputs0": {
+  "3": "key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path",
+  "2": "ASD relay output present, probably (AsdRelayCheck, the reference-event code)",
+  "1": "leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)",
+  "0": "speed control switch input (SpeedCtlSwitchCheck, SpeedCtlCancelMonitor)"
+ },
+ "IoInputs1": {
+  "3": "second tuning valve driver feedback (TuneValve2CircuitCheck)",
+  "2": "PWM C18 driver feedback (PwmC18CircuitCheck)",
+  "1": "leak detection pump solenoid driver feedback (LdpSolenoidCheck)"
+ },
+ "IoIrqEnable": {
+  "3": "bus timer interrupt enable (word bit 11; PciTimeoutRestart sets it)"
+ },
+ "IoIrqStatus": {
+  "1": "timer event: Isr_IRQ2 counts it in Irq2Counter for the misfire segment times"
+ },
+ "IoIrqStatusL": {
+  "3": "bus event: Isr_IRQ2 calls Irq2Dispatch",
+  "1": "tested by OutputDriverCheck"
+ },
+ "IoStatus0B": {
+  "5": "SCI line status, probably (SciPitService)",
+  "3": "bus transmitter busy, probably (CCD/PCI transmit code waits on it)"
+ },
+ "IoStatus2": {
+  "2": "tested by KnockChipConfig"
+ },
+ "IoStatus3": {
+  "7": "PWM C18 driver status (PwmC18CircuitCheck)",
+  "6": "leak detection pump solenoid status (LdpSolenoidCheck)"
  },
  "MisfireOptions": {
   "7": "MisfireFlags2 bit 4 handling in ClosedLoopManager and FuelSystemStatus",
@@ -339,7 +404,7 @@
   "0": "SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)"
  },
  "SparkFlags": {
-  "7": "knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)",
+  "7": "set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)",
   "6": "reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)",
   "5": "reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell",
   "4": "cleared by SparkOutputOc2 only",

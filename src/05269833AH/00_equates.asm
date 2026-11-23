@@ -908,7 +908,7 @@ ThrottleState    equ $0C30        ; $F8C30
 ;                 bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
 DriveFlags       equ $0C31        ; $F8C31
 ;                 bit 7: drive engagement handling in progress (GearStateUpdate), probably
-;                 bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
+;                 bit 6: power steering pressure switch active: bit 6 of the switch bits collected from IoInputs0 (map chosen by $032D), unless P0551 is set (SwitchInputsRead)
 ;                 bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 ;                 bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
 ;                 bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
@@ -940,7 +940,7 @@ SciUnlockState   equ $0C54        ; $F8C54
 SciSecurityState equ $0C58        ; $F8C58
 LookupResult     equ $0C5D        ; $F8C5D
 SparkFlags       equ $0D00        ; $F8D00
-;                 bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
+;                 bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
 ;                 bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
 ;                 bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
 ;                 bit 4: cleared by SparkOutputOc2 only
@@ -1057,6 +1057,96 @@ FlexLearnCounter3 equ $0F3E        ; $F8F3E
 FlexLearnSettle  equ $0F3F        ; $F8F3F
 FlexEthanolLimit equ $0F40        ; $F8F40
 FlexEthanolLimit2 equ $0F41        ; $F8F41
+IoInputs0        equ $1000        ; $F9000
+;                 bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
+;                 bit 2: ASD relay output present, probably (AsdRelayCheck, the reference-event code)
+;                 bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
+;                 bit 0: speed control switch input (SpeedCtlSwitchCheck, SpeedCtlCancelMonitor)
+IoInputs1        equ $1001        ; $F9001
+;                 bit 3: second tuning valve driver feedback (TuneValve2CircuitCheck)
+;                 bit 2: PWM C18 driver feedback (PwmC18CircuitCheck)
+;                 bit 1: leak detection pump solenoid driver feedback (LdpSolenoidCheck)
+IoStatus2        equ $1002        ; $F9002
+;                 bit 2: tested by KnockChipConfig
+IoStatus3        equ $1003        ; $F9003
+;                 bit 7: PWM C18 driver status (PwmC18CircuitCheck)
+;                 bit 6: leak detection pump solenoid status (LdpSolenoidCheck)
+IoCtl04          equ $1004        ; $F9004
+IoTimer06        equ $1006        ; $F9006
+IoTimer08        equ $1008        ; $F9008
+IoStatus0A       equ $100A        ; $F900A
+IoStatus0B       equ $100B        ; $F900B
+;                 bit 5: SCI line status, probably (SciPitService)
+;                 bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+IoIrqStatus      equ $100E        ; $F900E
+;                 bit 1: timer event: Isr_IRQ2 counts it in Irq2Counter for the misfire segment times
+IoTimer10        equ $1010        ; $F9010
+IoCtl12          equ $1012        ; $F9012
+IoCtl13          equ $1013        ; $F9013
+IoCfg14          equ $1014        ; $F9014
+IoBusData        equ $1016        ; $F9016
+IoCfg18          equ $1018        ; $F9018
+IoBusStatus      equ $101A        ; $F901A
+IoBusStatusL     equ $101B        ; $F901B
+;                 bit 7: tested by BusTxStart before a byte is sent
+IoCfg1C          equ $101C        ; $F901C
+IoCfg1DL         equ $101D        ; $F901D
+IoCfg1E          equ $101E        ; $F901E
+IoCfg1FL         equ $101F        ; $F901F
+;                 bit 5: manifold tuning valve driver status (MtvCheck)
+;                 bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
+;                 bit 3: tested by Isr_GPT_OC4 (ignition driver status, probably)
+;                 bit 2: tested by Isr_GPT_OC3 (ignition driver status, probably)
+;                 bit 1: tested by Isr_GPT_OC2 (ignition driver status, probably)
+IoCfg20          equ $1020        ; $F9020
+IoOcChan0        equ $1024        ; $F9024
+IoOcChan1        equ $1028        ; $F9028
+IoOcChan2        equ $102C        ; $F902C
+IoOcChan3        equ $1030        ; $F9030
+IoOcChan4        equ $1034        ; $F9034
+IoOcChan5        equ $1038        ; $F9038
+IoPwmC18A        equ $103E        ; $F903E
+IoPwmC18B        equ $1040        ; $F9040
+IoFanPwmA        equ $1046        ; $F9046
+IoFanPwmB        equ $1048        ; $F9048
+IoTimer4A        equ $104A        ; $F904A
+IoPurgePwmA      equ $104E        ; $F904E
+IoPurgePwmB      equ $1050        ; $F9050
+IoInjector0      equ $1056        ; $F9056
+IoInjector1      equ $1058        ; $F9058
+IoInjector2      equ $105A        ; $F905A
+IoInjector3      equ $105C        ; $F905C
+IoInjector4      equ $105E        ; $F905E
+IoInjector5      equ $1060        ; $F9060
+IoDriver62       equ $1062        ; $F9062
+;                 bit 7: driver status, checked by HardwareCheck
+;                 bit 6: driver status, checked by HardwareCheck
+;                 bit 5: leak detection pump solenoid on (word bit 13)
+IoDriver64       equ $1064        ; $F9064
+;                 bit 7: driver status, checked by HardwareCheck
+;                 bit 6: driver status, checked by HardwareCheck
+;                 bit 5: speed control lamp / PWM C18 output on (word bit 13)
+IoDriver66       equ $1066        ; $F9066
+;                 bit 7: driver status, checked by HardwareCheck
+;                 bit 6: driver status, checked by HardwareCheck
+;                 bit 5: second tuning valve / speed control output on (word bit 13)
+IoDriver68       equ $1068        ; $F9068
+;                 bit 5: fan output on (word bit 13; output test)
+IoDriver6A       equ $106A        ; $F906A
+IoDriver6C       equ $106C        ; $F906C
+IoDriver6E       equ $106E        ; $F906E
+;                 bit 7: driver status, checked by HardwareCheck
+;                 bit 6: driver status, checked by HardwareCheck
+;                 bit 5: generator field output on (word bit 13; ChargeControl, Isr_PIT)
+IoEvent70        equ $1070        ; $F9070
+IoEvent72        equ $1072        ; $F9072
+IoEvent74        equ $1074        ; $F9074
+IoEvent76        equ $1076        ; $F9076
+IoEvent78        equ $1078        ; $F9078
+IoEvent7A        equ $107A        ; $F907A
+IoPwmC18Read     equ $107E        ; $F907E
+IoFanPwmRead     equ $1082        ; $F9082
+IoKnockRead      equ $1084        ; $F9084
 ADCMCR           equ $7700        ; $FF700
 ADCTL0_L         equ $770B        ; $FF70B
 ADCTL1_L         equ $770D        ; $FF70D

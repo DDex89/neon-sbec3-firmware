@@ -1014,7 +1014,7 @@ L20AA0:
         STAA    <FreezeFrame0B,Z
         LDAA    >CoolantRaw,Z
         LDX     #ThermistorHot
-        BRCLR   $1012,Z,#$08,L20AE8
+        BRCLR   >IoCtl12,Z,#$08,L20AE8
         LDX     #ThermistorCold
 L20AE8:
         JSR     Lookup2D
@@ -2140,15 +2140,15 @@ OutputDriverCheck:
         LDAA    >BatteryVolts2,Z
         CMPA    #$C2
         BCS     L21C5C
-        BRCLR   $1000,Z,#$04,L21C5C
-        BRSET   $1000,Z,#$08,L21C5C
+        BRCLR   >IoInputs0,Z,#$04,L21C5C                 ; bit 2: ASD relay output present, probably (AsdRelayCheck, the reference-event code)
+        BRSET   >IoInputs0,Z,#$08,L21C5C                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         TPD
         TBXK
         ORP     #$00E0
         LDAA    $06BD,Z
         BEQ     L21C5C
         LDAB    #$3F
-        ANDB    $1003,Z
+        ANDB    >IoStatus3,Z
         BNE     L21C5C
         LDX     #$1B9C
 L21C04:
@@ -2161,7 +2161,7 @@ L21C04:
 L21C12:
         EORA    $01,X
         BNE     L21C4C
-        BRSET   $100F,Z,#$02,L21C4C
+        BRSET   >IoIrqStatusL,Z,#$02,L21C4C              ; bit 1: tested by OutputDriverCheck
         TZY
         LDY     #$900F
         LDAA    #$06
@@ -2180,10 +2180,10 @@ L21C24:
         JSR     ReportFault
         BCC     L21C4C
 L21C4C:
-        LDD     $100E,Z
+        LDD     >IoIrqStatus,Z
         ANDD    #$0100
         ORD     #$0002
-        STD     $100E,Z
+        STD     >IoIrqStatus,Z
 L21C5C:
         CLR     $06BD,Z
         ANDP    #$FF1F
@@ -2317,11 +2317,11 @@ AsdRelayCheck:
         ORP     #$00E0
         JSR     AsdRelayReport
         BRCLR   >EngineStateFlags,Z,#$80,L21DAC          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   $1000,Z,#$04,L21DD8
+        BRSET   >IoInputs0,Z,#$04,L21DD8                 ; bit 2: ASD relay output present, probably (AsdRelayCheck, the reference-event code)
         BRA     L21DC6
 L21DAC:
         BRSET   >CrankFlags2,Z,#$02,L21DD8
-        LDAB    $1000,Z
+        LDAB    >IoInputs0,Z
         ANDB    #$04
         LDAA    >ControlFlags943,Z
         ANDA    #$10
@@ -2344,11 +2344,11 @@ L21DD8:
 ; Called from: AsdRelayCheck
 ;---------------------------------------------------------------------------------------------------
 AsdRelayReport:
-        LDD     $100E,Z
+        LDD     >IoIrqStatus,Z
         BITB    #$80
         BEQ     L21DF4
         ORAB    #$80
-        STD     $100E,Z
+        STD     >IoIrqStatus,Z
         LDY     #$4140
         JSR     ReportFault
 L21DF4:
@@ -2597,7 +2597,7 @@ L22042:
 ; Called from: O2SensorChecks
 ;---------------------------------------------------------------------------------------------------
 O2ActivityWarm:
-        BRSET   $1000,Z,#$08,L222E6
+        BRSET   >IoInputs0,Z,#$08,L222E6                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         BRCLR   >EngineStateFlags,Z,#$80,L22192          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >DecelLeanFlags,Z,#$80,L22192
         LDAA    >Count3s,Z
@@ -2703,7 +2703,7 @@ L221AA:
         BEQ     L221C8
         BRSET   >LdpFlags3,Z,#$04,L221C8
         BRSET   >LdpFlags3,Z,#$08,L221C8
-        BCLRW   $1012,Z,#$6000
+        BCLRW   >IoCtl12,Z,#$6000
 L221C8:
         LDAA    >O2InactiveTimer,Z
         LBEQ    L222E6
@@ -2717,7 +2717,7 @@ L221D8:
         LDE     $0004,X
         CLRA
         STAA    E,Z
-        BSETW   $1012,Z,#$4000
+        BSETW   >IoCtl12,Z,#$4000
         CLR     >O2InactiveTimer,Z
         LBRA    L222E6
 L221FC:
@@ -2806,7 +2806,7 @@ L222BC:
         CLRA
         STAA    E,Z
         BCLR    >O2TestFlags,Z,#$10
-        BCLRW   $1012,Z,#$6000
+        BCLRW   >IoCtl12,Z,#$6000
         LDAA    >O2InactiveTimer,Z
         BEQ     L222E6
         DECA
@@ -3262,7 +3262,7 @@ PurgeSolenoidCheck:
         LDAB    >BatteryVolts2,Z
         CMPB    #$A1
         LBCS    L227F4
-        LDD     $100A,Z
+        LDD     >IoStatus0A,Z
         BITB    #$04
         BEQ     L22778
         BSET    $05BE,Z,#$80
@@ -3560,7 +3560,7 @@ EgrSolenoidCheck:
         BRSET   >ControlFlags943,Z,#$10,L22BFC           ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L22B16:
         PSHM    D,E,Y,K,CCR
-        BRSET   $1000,Z,#$08,L22B5C
+        BRSET   >IoInputs0,Z,#$08,L22B5C                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         LDAA    >BatteryVolts2,Z
         CMPA    #$A2
         BCS     L22B5C
@@ -3622,12 +3622,12 @@ L22BB0:
 L22BBA:
         TZY
         LDY     #$858B
-        BRSET   $1013,Z,#$04,L22BF6
+        BRSET   >IoCtl13,Z,#$04,L22BF6
         BRA     L22BD4
 L22BC8:
         TZY
         LDY     #$858A
-        BRCLR   $1013,Z,#$04,L22BF6
+        BRCLR   >IoCtl13,Z,#$04,L22BF6
 L22BD4:
         BRCLR   >MainLoopPhaseMask,Z,#$20,L22BF8
         LDAA    $00,Y
@@ -4061,7 +4061,7 @@ PwmC18CircuitCheck:
         LDAB    >BatteryVolts2,Z
         CMPB    #$A1
         BCS     L23136
-        LDAB    $1064,Z
+        LDAB    >IoDriver64,Z
         ANDB    #$A0
         CMPB    $06C0,Z
         BNE     L23136
@@ -4069,33 +4069,33 @@ PwmC18CircuitCheck:
         BNE     L230E4
         BITB    #$20
         BNE     L230DC
-        BRCLR   $1001,Z,#$04,L2312E
+        BRCLR   >IoInputs1,Z,#$04,L2312E                 ; bit 2: PWM C18 driver feedback (PwmC18CircuitCheck)
         BRA     L23136
 L230DC:
-        BRSET   $1001,Z,#$04,L2312E
+        BRSET   >IoInputs1,Z,#$04,L2312E                 ; bit 2: PWM C18 driver feedback (PwmC18CircuitCheck)
         BRA     L23136
 L230E4:
-        BRCLR   $1003,Z,#$80,L2310C
-        LDE     $103E,Z
+        BRCLR   >IoStatus3,Z,#$80,L2310C                 ; bit 7: PWM C18 driver status (PwmC18CircuitCheck)
+        LDE     >IoPwmC18A,Z
         SUBE    #$0005
         BCS     L23136
-        CPE     $107E,Z
+        CPE     >IoPwmC18Read,Z
         BLS     L23136
         LDE     #$000A
-        CPE     $107E,Z
+        CPE     >IoPwmC18Read,Z
         BCC     L23136
-        BRSET   $1001,Z,#$04,L2312E
+        BRSET   >IoInputs1,Z,#$04,L2312E                 ; bit 2: PWM C18 driver feedback (PwmC18CircuitCheck)
         BRA     L23136
 L2310C:
-        LDE     $1040,Z
+        LDE     >IoPwmC18B,Z
         SUBE    #$000A
         BCS     L23136
-        CPE     $107E,Z
+        CPE     >IoPwmC18Read,Z
         BLS     L23136
         LDE     #$000A
-        CPE     $107E,Z
+        CPE     >IoPwmC18Read,Z
         BCC     L23136
-        BRCLR   $1001,Z,#$04,L2312E
+        BRCLR   >IoInputs1,Z,#$04,L2312E                 ; bit 2: PWM C18 driver feedback (PwmC18CircuitCheck)
         BRA     L23136
 L2312E:
         LDY     #$480C
@@ -4120,16 +4120,16 @@ L2315A:
         LDAB    >BatteryVolts2,Z
         CMPB    #$A1
         BCS     L23190
-        LDAB    $1066,Z
+        LDAB    >IoDriver66,Z
         ANDB    #$20
         CMPB    $0C15,Z
         BNE     L23190
         BITB    #$20
         BNE     L23180
-        BRCLR   $1001,Z,#$08,L23188
+        BRCLR   >IoInputs1,Z,#$08,L23188                 ; bit 3: second tuning valve driver feedback (TuneValve2CircuitCheck)
         BRA     L23190
 L23180:
-        BRSET   $1001,Z,#$08,L23188
+        BRSET   >IoInputs1,Z,#$08,L23188                 ; bit 3: second tuning valve driver feedback (TuneValve2CircuitCheck)
         BRA     L23190
 L23188:
         LDY     #$4802
@@ -5819,20 +5819,20 @@ SpeedCtlLampOutput:
         BNE     L244DC
         BRA     L244C8
 L244B4:
-        BCLRW   $1064,Z,#$2000
+        BCLRW   >IoDriver64,Z,#$2000                     ; IoDriver64.5: speed control lamp / PWM C18 output on (word bit 13)
         BRCLR   >EquipmentFlags,Z,#$40,L244E2            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
         BRCLR   >SpeedCtlState,Z,#$80,L244D4             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         BRA     L244DC
 L244C8:
-        BSETW   $1064,Z,#$2000
+        BSETW   >IoDriver64,Z,#$2000                     ; IoDriver64.5: speed control lamp / PWM C18 output on (word bit 13)
         BRCLR   >EquipmentFlags,Z,#$40,L244E2            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
 L244D4:
-        BSETW   $1066,Z,#$2000
+        BSETW   >IoDriver66,Z,#$2000                     ; IoDriver66.5: second tuning valve / speed control output on (word bit 13)
         BRA     L244E8
 L244DC:
-        BCLRW   $1064,Z,#$2000
+        BCLRW   >IoDriver64,Z,#$2000                     ; IoDriver64.5: speed control lamp / PWM C18 output on (word bit 13)
 L244E2:
-        BCLRW   $1066,Z,#$2000
+        BCLRW   >IoDriver66,Z,#$2000                     ; IoDriver66.5: second tuning valve / speed control output on (word bit 13)
 L244E8:
         RTS
 
@@ -6708,7 +6708,7 @@ L25528:
         CMPA    >PurgeMonMapDrift
         LBHI    L25730
         BRCLR   >EquipmentFlags,Z,#$04,L2553C            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
-        BRSET   >DriveFlags,Z,#$40,L25730                ; bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
+        BRSET   >DriveFlags,Z,#$40,L25730                ; bit 6: power steering pressure switch active: bit 6 of the switch bits collected from IoInputs0 (map chosen by $032D), unless P0551 is set (SwitchInputsRead)
 L2553C:
         BRSET   >DriveFlags,Z,#$80,L25730                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         BRSET   >FieldFlags,Z,#$01,L25730
@@ -6974,7 +6974,7 @@ L25854:
         BRCLR   >LdpFlags3,Z,#$02,L25860
         BRSET   >LdpFlags2,Z,#$20,L25882
 L25860:
-        BRSET   $1000,Z,#$02,L25882
+        BRSET   >IoInputs0,Z,#$02,L25882                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
         BRSET   >LdpFlags2,Z,#$80,L25876
         BRCLR   >LdpFlags2,Z,#$10,L25876
         BSET    >LdpFlags,Z,#$04
@@ -7033,7 +7033,7 @@ L258FC:
         INC     >LdpPumpOffCount,Z
         BRA     L25944
 L25910:
-        BRCLR   $1000,Z,#$02,L2591C
+        BRCLR   >IoInputs0,Z,#$02,L2591C                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
         BSET    >LdpFlags,Z,#$04
         BRA     L258A8
 L2591C:
@@ -7465,7 +7465,7 @@ L25D9E:
         STAA    >LdpPumpOffCount,Z
         LBRA    L25E4C
 L25DB6:
-        BRSET   $1000,Z,#$02,L25DF0
+        BRSET   >IoInputs0,Z,#$02,L25DF0                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
         CLR     >LdpWindowStrokeCount,Z
         LDAA    >LdpState,Z
         ANDA    #$0F
@@ -7526,7 +7526,7 @@ L25E4C:
 ;---------------------------------------------------------------------------------------------------
 LdpPurgedCheck:
         BRCLR   >Options033E,#$02,L25EEE                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
-        BRCLR   $1000,Z,#$02,L25E60
+        BRCLR   >IoInputs0,Z,#$02,L25E60                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
         BSET    >LdpFlags,Z,#$02
         BRA     L25E64
 L25E60:
@@ -7542,7 +7542,7 @@ L25E64:
         BRSET   <MonStatusPurge,Z,#$04,L25EDE
 L25E84:
         BCLR    >LdpFlags,Z,#$01
-        BRCLR   $1000,Z,#$02,L25E9C
+        BRCLR   >IoInputs0,Z,#$02,L25E9C                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
         BSET    >LdpFlags2,Z,#$80
         BCLR    >LdpFlags2,Z,#$10
         CLR     >LdpPurgedTimer,Z
@@ -7600,26 +7600,26 @@ LdpSolenoidCheck:
 L25F0E:
         BRCLR   >LdpFlags,Z,#$01,L25F24
 L25F14:
-        BRSET   $1062,Z,#$20,L25F34
-        BSETW   $1062,Z,#$2000
+        BRSET   >IoDriver62,Z,#$20,L25F34                ; bit 5: leak detection pump solenoid on (word bit 13)
+        BSETW   >IoDriver62,Z,#$2000                     ; IoDriver62.5: leak detection pump solenoid on (word bit 13)
         JMP     L25F6A
 L25F24:
-        BRCLR   $1062,Z,#$20,L25F34
-        BCLRW   $1062,Z,#$2000
+        BRCLR   >IoDriver62,Z,#$20,L25F34                ; bit 5: leak detection pump solenoid on (word bit 13)
+        BCLRW   >IoDriver62,Z,#$2000                     ; IoDriver62.5: leak detection pump solenoid on (word bit 13)
         JMP     L25F6A
 L25F34:
         BRSET   >FaultSet17,Z,#$80,L25F6A
-        BRSET   $1000,Z,#$08,L25F6A
+        BRSET   >IoInputs0,Z,#$08,L25F6A                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         TST     >MonStartDelay,Z
         BNE     L25F6A
         LDAA    >BatteryVolts2,Z
         CMPA    #$A2
         BCS     L25F6A
-        BRSET   $1003,Z,#$40,L25F5C
-        BRSET   $1001,Z,#$02,L25F6A
+        BRSET   >IoStatus3,Z,#$40,L25F5C                 ; bit 6: leak detection pump solenoid status (LdpSolenoidCheck)
+        BRSET   >IoInputs1,Z,#$02,L25F6A                 ; bit 1: leak detection pump solenoid driver feedback (LdpSolenoidCheck)
         BRA     L25F62
 L25F5C:
-        BRCLR   $1001,Z,#$02,L25F6A
+        BRCLR   >IoInputs1,Z,#$02,L25F6A                 ; bit 1: leak detection pump solenoid driver feedback (LdpSolenoidCheck)
 L25F62:
         LDY     #$46AE
         JSR     ReportFault
@@ -9475,8 +9475,8 @@ L28E50:
         TBYK
         ORP     #$00E0
         CLRW    >TMSK1,Z
-        BCLRW   $1018,Z,#$0020
-        BCLRW   $100C,Z,#$0800
+        BCLRW   >IoCfg18,Z,#$0020
+        BCLRW   >IoIrqEnable,Z,#$0800                    ; IoIrqEnable.3: bus timer interrupt enable (word bit 11; PciTimeoutRestart sets it)
         ANDP    #$FF1F
         BSET    $0108,Z,#$80
         BRCLR   >Options032F,#$80,L28ED0                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
@@ -9503,8 +9503,8 @@ L28F04:
         BSET    >O2HeaterFlags,Z,#$10
         BSET    <MonStatusO2Sensor4,Z,#$04
 L28F1E:
-        BSETW   $1012,Z,#$4000
-        BCLRW   $1012,Z,#$2000
+        BSETW   >IoCtl12,Z,#$4000
+        BCLRW   >IoCtl12,Z,#$2000
         LDX     #$BF53
         JSR     PowerInputHold
         BCC     L28F38
@@ -9541,7 +9541,7 @@ L28F8A:
         LDAB    >O2HeaterSample,Z
         CMPB    #$04
         BCS     L28FBA
-        LDAA    $1000,Z
+        LDAA    >IoInputs0,Z
         BITA    #$04
         BNE     L28FBA
         LDAA    >O2HeaterFlags,Z
@@ -9575,7 +9575,7 @@ L28FDA:
         SUBD    $054E,Z
         CPD     #$C350
         LBCC    L28F3E
-        LDAB    $1000,Z
+        LDAB    >IoInputs0,Z
         BITB    #$08
         BNE     L28FDA
         JSR     KickWatchdogsLong
@@ -9705,7 +9705,7 @@ L29128:
         STAB    $055F,Z
         LDAB    >RJURR2_L,Z
         STAB    $0560,Z
-        BSETW   $1012,Z,#$2000
+        BSETW   >IoCtl12,Z,#$2000
         LDX     #$0476
         JSR     PowerInputHold
         LDAA    >PORTF0,Z
@@ -9723,7 +9723,7 @@ L2916C:
         STAB    $055B,Z
         LDAB    >RJURR2_L,Z
         STAB    $055C,Z
-        BCLRW   $1012,Z,#$2000
+        BCLRW   >IoCtl12,Z,#$2000
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -11112,7 +11112,7 @@ L2A8D4:
 L2A8F6:
         BCLR    >MisfireFlags4,Z,#$01
 L2A8FA:
-        CLRW    $1010,Z
+        CLRW    >IoTimer10,Z
         CLR     >Irq2Counter,Z
         PULM    K,Y
         RTS
@@ -12503,19 +12503,19 @@ L2B7E8:
         STD     >RpmRate,Z
         LBRA    L2B8F2
 L2B7FC:
-        BRCLR   $100E,Z,#$02,L2B80E
+        BRCLR   >IoIrqStatus,Z,#$02,L2B80E               ; bit 1: timer event: Isr_IRQ2 counts it in Irq2Counter for the misfire segment times
         INC     >Irq2Counter,Z
         LDD     #$0300
-        STD     $100E,Z
+        STD     >IoIrqStatus,Z
 L2B80E:
         LDAA    >Irq2Counter,Z
         BNE     L2B822
-        LDE     $1010,Z
+        LDE     >IoTimer10,Z
         BNE     L2B822
         LDX     >SegmentRpm,Z
         LBRA    L2B8E2
 L2B822:
-        LDX     $1010,Z
+        LDX     >IoTimer10,Z
         STX     >Temp4F4,Z
         LDAA    >Irq2Counter,Z
         BEQ     L2B852
@@ -12970,7 +12970,7 @@ ProcessCoolantTemp:
 L2C1E2:
         LDAA    >CoolantRaw,Z
         LDX     #ThermistorHot
-        BRCLR   $1012,Z,#$08,L2C220
+        BRCLR   >IoCtl12,Z,#$08,L2C220
         LDX     #ThermistorCold
         CMPA    #$40
         BCC     L2C224
@@ -12982,9 +12982,9 @@ L2C1F8:
         JMP     L2C298
 L2C20C:
         BCLR    >StartFlags,Z,#$30
-        LDD     $1012,Z
+        LDD     >IoCtl12,Z
         EORD    #$0800
-        STD     $1012,Z
+        STD     >IoCtl12,Z
         JMP     L2C298
 L2C220:
         CMPA    #$DC
@@ -13070,7 +13070,7 @@ ProcessAirTemp:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C3AA
         LDAA    >AirTempRaw,Z
         LDX     #ThermistorHot
-        BRCLR   $1012,Z,#$10,L2C32A
+        BRCLR   >IoCtl12,Z,#$10,L2C32A
         LDX     #ThermistorCold
         CMPA    #$40
         BCC     L2C32E
@@ -13082,9 +13082,9 @@ L2C302:
         LBRA    L2C3A6
 L2C316:
         BCLR    >StartFlags,Z,#$03
-        LDD     $1012,Z
+        LDD     >IoCtl12,Z
         EORD    #$1000
-        STD     $1012,Z
+        STD     >IoCtl12,Z
         LBRA    L2C3A6
 L2C32A:
         CMPA    #$DC
@@ -14604,7 +14604,7 @@ L2D32A:
 L2D33E:
         CLR     >ThrottleCloseCount,Z
 L2D342:
-        BRCLR   $1013,Z,#$80,L2D368
+        BRCLR   >IoCtl13,Z,#$80,L2D368
         BRSET   >SpeedCtlState,Z,#$80,L2D368             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         TST     >SpeedCtlSetSpeed,Z
         BEQ     L2D368
@@ -15182,8 +15182,8 @@ BatteryDwellFilter:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 SwitchInputsRead:
-        BCLR    >DriveFlags,Z,#$40                       ; bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
-        LDE     $1000,Z
+        BCLR    >DriveFlags,Z,#$40                       ; bit 6: power steering pressure switch active: bit 6 of the switch bits collected from IoInputs0 (map chosen by $032D), unless P0551 is set (SwitchInputsRead)
+        LDE     >IoInputs0,Z
         STE     $0A48,Z
         LDX     #$729B
         LDE     #$72BB
@@ -15209,7 +15209,7 @@ L2D986:
         BITB    #$40
         BEQ     L2D998
         BRSET   >FaultSet0F,Z,#$08,L2D998
-        BSET    >DriveFlags,Z,#$40                       ; bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
+        BSET    >DriveFlags,Z,#$40                       ; bit 6: power steering pressure switch active: bit 6 of the switch bits collected from IoInputs0 (map chosen by $032D), unless P0551 is set (SwitchInputsRead)
 L2D998:
         BRCLR   >Options032D,#$20,L2D9A2                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         EORE    #$0040
@@ -15475,7 +15475,7 @@ L2DBF6:
 L2DBFA:
         BRSET   >EquipmentFlags,Z,#$04,L2DC34            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRCLR   >EngineStateFlags,Z,#$80,L2DC30          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   $1000,Z,#$08,L2DC30
+        BRSET   >IoInputs0,Z,#$08,L2DC30                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         LDAA    >BatteryVolts2,Z
         CMPA    #$C2
         BCS     L2DC30
@@ -15508,14 +15508,14 @@ EquipmentProbe:
         LDX     #$FF0C
         JSR     PowerInputHold
         BCS     L2DC78
-        BSETW   $1012,Z,#$0080
+        BSETW   >IoCtl12,Z,#$0080
         LDX     #$7F86
         JSR     PowerInputHold
         BCS     L2DC72
-        BRCLR   $1012,Z,#$01,L2DC72
+        BRCLR   >IoCtl12,Z,#$01,L2DC72
         BSET    <EquipmentFlags,Z,#$40                   ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
 L2DC72:
-        BCLRW   $1012,Z,#$0080
+        BCLRW   >IoCtl12,Z,#$0080
 L2DC78:
         RTS
 
@@ -16210,7 +16210,7 @@ L2F866:
         CPD     >MtvRpmRateMin
         LBCS    L2F9E2
         BRCLR   >MtvFlags,Z,#$20,L2F9E2
-        BRSET   $101F,Z,#$10,L2F8C8
+        BRSET   >IoCfg1FL,Z,#$10,L2F8C8                  ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
         LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
         JSR     MtvRateLookup
@@ -16259,7 +16259,7 @@ L2F916:
         SUBD    >MtvRpmLow
         JSR     MtvRateLookup
 L2F922:
-        BRCLR   $101F,Z,#$10,L2F93C
+        BRCLR   >IoCfg1FL,Z,#$10,L2F93C                  ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
         SUBD    >MtvDelay2
         LBCS    L2F9E2
         STD     >MtvSwitchTime,Z
@@ -16279,7 +16279,7 @@ L2F95C:
         CPD     >MtvRpmRateMin
         LBCS    L2F9E2
         BRSET   >MtvFlags,Z,#$20,L2F9E2
-        BRSET   $101F,Z,#$10,L2F9BE
+        BRSET   >IoCfg1FL,Z,#$10,L2F9BE                  ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
         LDD     >EngineRpm,Z
         SUBD    >MtvRpmLow
         JSR     MtvRateLookup
@@ -16369,7 +16369,7 @@ L2FA42:
 MtvCheck:
         BRCLR   >Options0335,#$20,L2FAB6                 ; bit 5: manifold tuning valve fitted (MtvTiming in the PIT code)
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2FAB6
-        LDD     $1000,Z
+        LDD     >IoInputs0,Z
         ANDD    #$0800
         BNE     L2FAB6
         LDAA    >BatteryVolts2,Z
@@ -16384,11 +16384,11 @@ L2FA88:
         ORP     #$00E0
         LDE     #$001E
         JSR     DelayLoop
-        BRSET   $101F,Z,#$20,L2FAA2
-        BRSET   $101F,Z,#$10,L2FAB6
+        BRSET   >IoCfg1FL,Z,#$20,L2FAA2                  ; bit 5: manifold tuning valve driver status (MtvCheck)
+        BRSET   >IoCfg1FL,Z,#$10,L2FAB6                  ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
         BRA     L2FAA8
 L2FAA2:
-        BRCLR   $101F,Z,#$10,L2FAB6
+        BRCLR   >IoCfg1FL,Z,#$10,L2FAB6                  ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
 L2FAA8:
         BRSET   >FaultSet0A,Z,#$01,L2FAB6
         LDY     #$42F8
@@ -16413,9 +16413,9 @@ L2FAD2:
 L2FAE2:
         LDD     #$FFFF
         STD     >MtvSwitchTime,Z
-        BRCLR   $101F,Z,#$10,L2FB06
+        BRCLR   >IoCfg1FL,Z,#$10,L2FB06                  ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
         BRSET   >MtvFlags,Z,#$10,L2FB1C
-        BSETW   $101E,Z,#$0020
+        BSETW   >IoCfg1E,Z,#$0020                        ; IoCfg1FL.5: manifold tuning valve driver status (MtvCheck)
         LDAB    >MtvOnHold
         STAB    >MtvHoldCount,Z
         BRA     L2FB1C
@@ -16423,7 +16423,7 @@ L2FB06:
         LDAB    >MtvFlags,Z
         BITB    #$10
         BEQ     L2FB1C
-        BCLRW   $101E,Z,#$0020
+        BCLRW   >IoCfg1E,Z,#$0020                        ; IoCfg1FL.5: manifold tuning valve driver status (MtvCheck)
         LDAB    >MtvOffHold
         STAB    >MtvHoldCount,Z
 L2FB1C:
@@ -16571,7 +16571,7 @@ L2FCE8:
 L2FCF6:
         INCA
         STAA    >TuneValve2Hold,Z
-        BCLRW   $1066,Z,#$2000
+        BCLRW   >IoDriver66,Z,#$2000                     ; IoDriver66.5: second tuning valve / speed control output on (word bit 13)
         BCLR    >TuneValve2Flags,Z,#$20
         LBRA    L2FD28
 L2FD0A:
@@ -16579,7 +16579,7 @@ L2FD0A:
         LDAA    >TuneValve2Hold,Z
         CMPA    >TuneValve2HoldCount
         BCS     L2FCF6
-        BSETW   $1066,Z,#$2000
+        BSETW   >IoDriver66,Z,#$2000                     ; IoDriver66.5: second tuning valve / speed control output on (word bit 13)
         BSET    >TuneValve2Flags,Z,#$20
         CLR     >TuneValve2Hold,Z
 L2FD28:

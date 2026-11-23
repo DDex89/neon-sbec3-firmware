@@ -919,7 +919,7 @@ L109A2:
         ADDE    >TipInFuel,Z
         LDAA    $00,Y
         ORP     #$00E0
-        BITA    $1003,Z
+        BITA    >IoStatus3,Z
         BEQ     L109D8
         LDD     $00,X
         CPD     #$0005
@@ -2617,18 +2617,18 @@ L11B64:
         BCLR    <MisfireFlags,Z,#$04
         CLR     $07A3,Z
         CLR     $07A4,Z
-        LDAA    $1003,Z
+        LDAA    >IoStatus3,Z
         BITA    #$3F
         BNE     L11B82
         ORP     #$0100
         BRA     L11BD2
 L11B82:
-        CLRW    $1070,Z
-        CLRW    $1072,Z
-        CLRW    $1074,Z
-        CLRW    $1076,Z
-        CLRW    $1078,Z
-        CLRW    $107A,Z
+        CLRW    >IoEvent70,Z
+        CLRW    >IoEvent72,Z
+        CLRW    >IoEvent74,Z
+        CLRW    >IoEvent76,Z
+        CLRW    >IoEvent78,Z
+        CLRW    >IoEvent7A,Z
 L11B9A:
         CLRW    >FuelPulseBank1,Z
         CLRW    >FuelPulseBank2,Z
@@ -3399,15 +3399,15 @@ L12344:
         LDAA    >CoolantTemp,Z
         STAA    $017A,Z
         LDE     #$C01B
-        STE     $1056,Z
-        STE     $1058,Z
-        STE     $105A,Z
-        STE     $105C,Z
+        STE     >IoInjector0,Z
+        STE     >IoInjector1,Z
+        STE     >IoInjector2,Z
+        STE     >IoInjector3,Z
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L12370
-        STE     $105E,Z
-        STE     $1060,Z
+        STE     >IoInjector4,Z
+        STE     >IoInjector5,Z
 L12370:
         BCLR    >FuelPulseFlags,Z,#$80
         LBRA    L12592
@@ -3427,15 +3427,15 @@ L123A0:
 L123AC:
         BSET    >FuelModeFlags,Z,#$40                    ; bit 6: first fuel event calculation done (FuelEventCalc)
         LDE     #$C02D
-        STE     $1056,Z
-        STE     $1058,Z
-        STE     $105A,Z
-        STE     $105C,Z
+        STE     >IoInjector0,Z
+        STE     >IoInjector1,Z
+        STE     >IoInjector2,Z
+        STE     >IoInjector3,Z
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L123D4
-        STE     $105E,Z
-        STE     $1060,Z
+        STE     >IoInjector4,Z
+        STE     >IoInjector5,Z
 L123D4:
         BSET    >FuelPulseFlags,Z,#$80
         BRCLR   >EngineStateFlags,Z,#$10,L1241A          ; bit 4: start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel
@@ -3520,15 +3520,15 @@ L1249A:
         LBRA    L12592
 L124A8:
         LDE     #$C01B
-        STE     $1056,Z
-        STE     $1058,Z
-        STE     $105A,Z
-        STE     $105C,Z
+        STE     >IoInjector0,Z
+        STE     >IoInjector1,Z
+        STE     >IoInjector2,Z
+        STE     >IoInjector3,Z
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L124CC
-        STE     $105E,Z
-        STE     $1060,Z
+        STE     >IoInjector4,Z
+        STE     >IoInjector5,Z
 L124CC:
         BCLR    >FuelPulseFlags,Z,#$80
         BSET    >FuelPulseFlags,Z,#$04
@@ -3628,15 +3628,15 @@ L125B6:
         RTS
 L125BA:
         LDE     #$C02D
-        STE     $1056,Z
-        STE     $1058,Z
-        STE     $105A,Z
-        STE     $105C,Z
+        STE     >IoInjector0,Z
+        STE     >IoInjector1,Z
+        STE     >IoInjector2,Z
+        STE     >IoInjector3,Z
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L125DE
-        STE     $105E,Z
-        STE     $1060,Z
+        STE     >IoInjector4,Z
+        STE     >IoInjector5,Z
 L125DE:
         BSET    >FuelPulseFlags,Z,#$80
         BRCLR   >FuelPulseFlags,Z,#$02,L12646
@@ -3680,15 +3680,15 @@ L12646:
 L1264A:
         BRCLR   >CrankSyncFlags,Z,#$20,L126F6
         LDE     #$C01B
-        STE     $1056,Z
-        STE     $1058,Z
-        STE     $105A,Z
-        STE     $105C,Z
+        STE     >IoInjector0,Z
+        STE     >IoInjector1,Z
+        STE     >IoInjector2,Z
+        STE     >IoInjector3,Z
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L12674
-        STE     $105E,Z
-        STE     $1060,Z
+        STE     >IoInjector4,Z
+        STE     >IoInjector5,Z
 L12674:
         BCLR    >FuelPulseFlags,Z,#$80
         LDAB    #$00
@@ -3744,15 +3744,15 @@ L126F6:
 L126FA:
         BRCLR   >CrankSyncFlags,Z,#$20,L127A2
         LDE     #$C01B
-        STE     $1056,Z
-        STE     $1058,Z
-        STE     $105A,Z
-        STE     $105C,Z
+        STE     >IoInjector0,Z
+        STE     >IoInjector1,Z
+        STE     >IoInjector2,Z
+        STE     >IoInjector3,Z
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L12724
-        STE     $105E,Z
-        STE     $1060,Z
+        STE     >IoInjector4,Z
+        STE     >IoInjector5,Z
 L12724:
         BCLR    >FuelPulseFlags,Z,#$80
         LDAB    #$00
@@ -5106,7 +5106,7 @@ ClosedLoopManager:
         LDAB    >O2Bank2Flags,Z
         ANDD    #$CFCF
         STD     <Scratch0,Z
-        BRSET   $1012,Z,#$40,L14900
+        BRSET   >IoCtl12,Z,#$40,L14900
         TST     >O2InactiveTimer,Z
         LBNE    L14900
         BRCLR   >Options032F,#$80,L1489E                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
@@ -13386,7 +13386,7 @@ L1B642:
 IacResetLoop:
         ORP     #$00E0
         CLRW    >TMSK1,Z
-        BCLRW   $1018,Z,#$0020
+        BCLRW   >IoCfg18,Z,#$0020
         BCLRW   $100C,Z,#$0800
         ANDP    #$FF1F
 L1B65C:
@@ -13402,7 +13402,7 @@ L1B676:
         SUBD    $054E,Z
         CPD     #$C350
         LBCC    L1B65C
-        LDAB    $1000,Z
+        LDAB    >IoInputs0,Z
         BITB    #$08
         BNE     L1B676
 L1B68E:
@@ -14882,7 +14882,7 @@ L1DB08:
 ;---------------------------------------------------------------------------------------------------
 KnockLearnDecayStep:
         BRSET   >Options032B,#$20,L1DB40                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
-        BRCLR   >SparkFlags,Z,#$80,L1DB40                ; bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
+        BRCLR   >SparkFlags,Z,#$80,L1DB40                ; bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
         TZX
         LDX     #$8085
         BRCLR   >Options032B,#$40,L1DB2E                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
@@ -16856,7 +16856,7 @@ L1F5C2:
 L1F5EE:
         LDE     #$000A
 L1F5F2:
-        STE     $104A,Z
+        STE     >IoTimer4A,Z
         LDAB    >Temp4F2,Z
         SXT
         TDE

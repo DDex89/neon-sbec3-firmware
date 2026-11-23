@@ -9909,21 +9909,21 @@ L06BE0:
         STD     $080C,Z
         LDE     #$C01B
         STE     $0856,Z
-        STE     $0858,Z
-        STE     $085A,Z
-        STE     $085C,Z
+        STE     >IoInjector1,Z
+        STE     >IoInjector2,Z
+        STE     >IoInjector3,Z
         LDAB    >CylinderCount
         CMPB    #$06
         BEQ     L06C1A
         CLRE
 L06C1A:
-        STE     $085E,Z
+        STE     >IoInjector4,Z
         STE     $0860,Z
         LDD     #$0000
-        STD     $0862,Z
+        STD     >IoDriver62,Z
         LDD     #$0000
         STD     $0864,Z
-        STD     $0866,Z
+        STD     >IoDriver68,Z
         LDD     #$4089
         STD     >QSMCR,Z
         LDAA    #$03
@@ -9956,35 +9956,35 @@ L06C1A:
         LDAA    #$07
         STAA    >ADCTL0_L,Z
         LDD     #$F891
-        STD     $0814,Z
+        STD     >IoCfg14,Z
         LDD     #$1800
-        STD     $0812,Z
+        STD     >IoCtl12,Z
         LDD     #$202C
-        STD     $0818,Z
-        LDD     $081A,Z
-        LDD     $0816,Z
+        STD     >IoCfg18,Z
+        LDD     >IoBusStatus,Z
+        LDD     >IoBusData,Z
         LDD     #$0005
-        STD     $081C,Z
+        STD     >IoCfg1C,Z
         LDD     #$003F
         STD     $0820,Z
         CLRW    $081E,Z
         BRCLR   >Options0334,#$10,L06CF6                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         BRCLR   >Options0335,#$02,L06CF6                 ; bit 1: EGR position/solenoid monitor variant
         LDD     #$061B
-        STD     $0866,Z
+        STD     >IoDriver68,Z
 L06CEC:
         LDD     #$E01B
-        STD     $0868,Z
+        STD     >IoCfg1E,Z
         BRA     L06D14
 L06CF6:
-        CLRW    $0866,Z
+        CLRW    >IoDriver68,Z
         BRSET   >Options0335,#$02,L06CEC                 ; bit 1: EGR position/solenoid monitor variant
         BRSET   >Options0334,#$10,L06D0C                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
-        CLRW    $0868,Z
+        CLRW    >IoCfg1E,Z
         BRA     L06D14
 L06D0C:
         LDD     #$061B
-        STD     $0868,Z
+        STD     >IoCfg1E,Z
 L06D14:
         LDD     #$C209
         STD     $086A,Z
@@ -9992,7 +9992,7 @@ L06D14:
         LDD     #$961B
         STD     $086C,Z
         LDD     #$2000
-        STD     $086E,Z
+        STD     >IoOcChan0,Z
         LDE     #$0000
         STE     $0824,Z
         STE     $0828,Z
@@ -10009,10 +10009,10 @@ L06D14:
 L06D5C:
         BRCLR   $032A,#$C0,L06D6A
         LDD     #$00FA
-        STD     $084C,Z
+        STD     >IoTimer4C,Z
 L06D6A:
         LDD     #$61A8
-        STD     $084E,Z
+        STD     >IoDriver6C,Z
         LDD     #$61A8
         STD     $0850,Z
         TZX
@@ -10129,7 +10129,7 @@ L06EC4:
         LDAA    >RJURR1_L,Z
         CMPA    #$40
         BCC     L06F00
-        BCLRW   $0812,Z,#$0800
+        BCLRW   >IoCtl12,Z,#$0800
         JSR     KickWatchdogsLong
         LDE     #$1388
         JSR     DelayLoop
@@ -10159,7 +10159,7 @@ L06F22:
         CMPA    #$40
         BCC     L06F5E
 L06F30:
-        BCLRW   $0812,Z,#$1000
+        BCLRW   >IoCtl12,Z,#$1000
         JSR     KickWatchdogsLong
         LDE     #$1388
         JSR     DelayLoop
@@ -10221,12 +10221,12 @@ L06FA4:
         ABX
         LDAA    $00,X
         CLRB
-        STD     $0800,Z
+        STD     >IoInputs0,Z
         LDD     #$F000
-        STD     $0804,Z
+        STD     >IoCtl04,Z
         LDE     #$0050
         JSR     DelayLoop
-        CLRW    $0804,Z
+        CLRW    >IoCtl04,Z
         LDAA    <SystemFlags00A,Z
         ADDA    #$40
         STAA    <SystemFlags00A,Z
@@ -10321,7 +10321,7 @@ L07110:
         CMPA    >CoolantRawLow
         BCS     L07138
         LDX     #ThermistorHot
-        BRCLR   $0812,Z,#$08,L07134
+        BRCLR   >IoCtl12,Z,#$08,L07134
         LDX     #ThermistorCold
 L07134:
         JSR     Lookup2D
@@ -10338,7 +10338,7 @@ L07138:
         CMPA    >AirTempRawLow
         BCS     L0716E
         LDX     #ThermistorHot
-        BRCLR   $0812,Z,#$10,L0716A
+        BRCLR   >IoCtl12,Z,#$10,L0716A
         LDX     #ThermistorCold
 L0716A:
         JSR     Lookup2D
@@ -10468,20 +10468,20 @@ L07274:
         STAA    $0D,Z
         LDX     #$1388
 L072DE:
-        BRSET   $0800,Z,#$04,L072EA
+        BRSET   >IoInputs0,Z,#$04,L072EA                 ; bit 2: ASD relay output present, probably (AsdRelayCheck, the reference-event code)
         AIX     #$FFFF
         BNE     L072DE
 L072EA:
         LDD     #$FFFF
-        STD     $0806,Z
+        STD     >IoTimer06,Z
         LDD     #$03FF
-        STD     $0808,Z
+        STD     >IoTimer08,Z
         BCLR    >TFLG1,Z,#$FF
         BCLR    >TFLG2,Z,#$B0
         LDD     #$03FF
-        STD     $080E,Z
+        STD     >IoIrqStatus,Z
         LDD     #$0000
-        STD     $0810,Z
+        STD     >IoTimer10,Z
         ANDP    #$FF1F
         JSR     KickWatchdogsLong
         BRSET   >ControlFlagsC39,Z,#$80,L0732C
@@ -10707,7 +10707,7 @@ L075E8:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_075FC:
-        BRSET   $0800,Z,#$08,L0760E
+        BRSET   >IoInputs0,Z,#$08,L0760E                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
 L07602:
         ANDP    #$FF1F
         CLR     >MonStartDelay,Z
@@ -10734,7 +10734,7 @@ L0762C:
         JSR     Sub_1465C
         LDAA    #$20
 L07646:
-        BRCLR   $0800,Z,#$08,L07602
+        BRCLR   >IoInputs0,Z,#$08,L07602                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         DECA
         BNE     L07646
         JSR     KickWatchdogsLong
@@ -10747,19 +10747,19 @@ L07662:
         BRCLR   >Options0334,#$10,L07688                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         BRSET   >Options0335,#$02,L07680                 ; bit 1: EGR position/solenoid monitor variant
         LDD     #$061B
-        STD     $0868,Z
+        STD     >IoCfg1E,Z
         BRA     L07688
 L07680:
         LDD     #$061B
-        STD     $0866,Z
+        STD     >IoDriver68,Z
 L07688:
         CLRW    $0856,Z
-        CLRW    $0858,Z
-        CLRW    $085A,Z
-        CLRW    $085C,Z
-        CLRW    $085E,Z
+        CLRW    >IoInjector1,Z
+        CLRW    >IoInjector2,Z
+        CLRW    >IoInjector3,Z
+        CLRW    >IoInjector4,Z
         CLRW    $0860,Z
-        BCLRW   $086E,Z,#$2000
+        BCLRW   >IoOcChan0,Z,#$2000
         LDD     #$FFFF
         STD     >TR0,Z
         STD     >ControlFlags943,Z
@@ -10786,9 +10786,9 @@ L076DC:
         BNE     L076DC
         BCLR    <SystemFlags00A,Z,#$20
 L076F6:
-        BRCLR   $0800,Z,#$08,L0770A
+        BRCLR   >IoInputs0,Z,#$08,L0770A                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         JSR     EquipmentProbe
-        BRCLR   $0800,Z,#$08,L0770A
+        BRCLR   >IoInputs0,Z,#$08,L0770A                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         JSR     Sub_17CA0
 L0770A:
         BSET    <FlexStartFlags,Z,#$04
@@ -10809,11 +10809,11 @@ L07728:
         BSET    >PORTC,Z,#$10
 L07736:
         JSR     ServiceWatchdog
-        BRSET   $0800,Z,#$08,L07736
+        BRSET   >IoInputs0,Z,#$08,L07736                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         JSR     KickWatchdogsLong
         LDAA    #$40
 L07746:
-        BRSET   $0800,Z,#$08,L07736
+        BRSET   >IoInputs0,Z,#$08,L07736                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         DECA
         BNE     L07746
         JSR     KickWatchdogsLong
@@ -11181,28 +11181,28 @@ L07B70:
         STE     $0253,Z
 L07B84:
         ORP     #$00E0
-        LDD     $0804,Z
+        LDD     >IoCtl04,Z
         BEQ     L07B9A
-        CLRW    $0804,Z
+        CLRW    >IoCtl04,Z
         LDE     #$003F
         STE     $0253,Z
 L07B9A:
         ANDP    #$FF1F
         LDD     #$F891
-        CPD     $0814,Z
+        CPD     >IoCfg14,Z
         BEQ     L07BB4
-        STD     $0814,Z
+        STD     >IoCfg14,Z
         LDE     #$0041
         STE     $0253,Z
 L07BB4:
         ORP     #$00E0
-        LDD     $0818,Z
-        BRCLR   $0818,Z,#$18,L07BCC
+        LDD     >IoCfg18,Z
+        BRCLR   >IoCfg18,Z,#$18,L07BCC
         ANDA    #$E7
         LDE     #$0042
         STE     $0253,Z
 L07BCC:
-        BRSET   $0818,Z,#$20,L07BDC
+        BRSET   >IoCfg18,Z,#$20,L07BDC
         ORAA    #$20
         LDE     #$0043
         STE     $0253,Z
@@ -11217,15 +11217,15 @@ L07BEC:
         LDE     #$0045
         STE     $0253,Z
 L07BFC:
-        STD     $0818,Z
+        STD     >IoCfg18,Z
         ANDP    #$FF1F
         BRCLR   $081D,Z,#$BA,L07C18
-        BCLRW   $081C,Z,#$00BA
+        BCLRW   >IoCfg1C,Z,#$00BA
         LDE     #$0046
         STE     $0253,Z
 L07C18:
         BRSET   $081D,Z,#$05,L07C2C
-        BSETW   $081C,Z,#$0005
+        BSETW   >IoCfg1C,Z,#$0005
         LDE     #$0047
         STE     $0253,Z
 L07C2C:
@@ -11238,9 +11238,9 @@ L07C2C:
 L07C42:
         BRCLR   >Options0335,#$02,L07C5E                 ; bit 1: EGR position/solenoid monitor variant
         LDD     #$E01B
-        CPD     $0868,Z
+        CPD     >IoCfg1E,Z
         BEQ     L07C5E
-        STD     $0868,Z
+        STD     >IoCfg1E,Z
         LDE     #$0052
         STE     $0253,Z
 L07C5E:
@@ -11270,12 +11270,12 @@ L07C9E:
         BEQ     L07CC6
         CMPA    #$14
         BEQ     L07CC6
-        BRCLR   $086E,Z,#$DE,L07CB2
+        BRCLR   >IoOcChan0,Z,#$DE,L07CB2
         BRA     L07CB8
 L07CB2:
         BRCLR   $086F,Z,#$3F,L07CC6
 L07CB8:
-        BCLRW   $086E,Z,#$DE3F
+        BCLRW   >IoOcChan0,Z,#$DE3F
         LDE     #$0055
         STE     $0253,Z
 L07CC6:
@@ -11299,8 +11299,8 @@ L07CFC:
         LDE     #$0059
         STE     $0253,Z
 L07D0E:
-        BRSET   $080E,Z,#$01,L07D22
-        BSETW   $080E,Z,#$0100
+        BRSET   >IoIrqStatus,Z,#$01,L07D22
+        BSETW   >IoIrqStatus,Z,#$0100
         LDE     #$005A
         STE     $0253,Z
 L07D22:
@@ -12413,7 +12413,7 @@ L087F6:
         ADDE    >TipInFuel,Z
         LDAA    $00,Y
         ORP     #$00E0
-        BITA    $0803,Z
+        BITA    >IoStatus3,Z
         BEQ     L0883E
         LDD     $00,X
         CPD     #$0005
@@ -13771,18 +13771,18 @@ L09594:
         BCLR    <MisfireFlags,Z,#$04
         CLR     $0450,Z
         CLR     $0451,Z
-        LDAA    $0803,Z
+        LDAA    >IoStatus3,Z
         BITA    #$3F
         BNE     L095B2
         ORP     #$0100
         BRA     L095F0
 L095B2:
-        CLRW    $0870,Z
-        CLRW    $0872,Z
-        CLRW    $0874,Z
-        CLRW    $0876,Z
-        CLRW    $0878,Z
-        CLRW    $087A,Z
+        CLRW    >IoEvent70,Z
+        CLRW    >IoEvent72,Z
+        CLRW    >IoEvent74,Z
+        CLRW    >IoEvent76,Z
+        CLRW    >IoEvent78,Z
+        CLRW    >IoEvent7A,Z
 L095CA:
         CLRW    >FuelPulseBank1,Z
         CLRW    >FuelPulseBank2,Z
@@ -14498,13 +14498,13 @@ FuelEventCalc:
         STAA    $E5,Z
         LDE     #$C01B
         STE     $0856,Z
-        STE     $0858,Z
-        STE     $085A,Z
-        STE     $085C,Z
+        STE     >IoInjector1,Z
+        STE     >IoInjector2,Z
+        STE     >IoInjector3,Z
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L09CE0
-        STE     $085E,Z
+        STE     >IoInjector4,Z
         STE     $0860,Z
 L09CE0:
         BCLR    >FuelPulseFlags,Z,#$80
@@ -14513,13 +14513,13 @@ L09CE8:
         BRSET   >CrankSyncFlags,Z,#$40,L09DD0
         LDE     #$C02D
         STE     $0856,Z
-        STE     $0858,Z
-        STE     $085A,Z
-        STE     $085C,Z
+        STE     >IoInjector1,Z
+        STE     >IoInjector2,Z
+        STE     >IoInjector3,Z
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L09D12
-        STE     $085E,Z
+        STE     >IoInjector4,Z
         STE     $0860,Z
 L09D12:
         BSET    >FuelPulseFlags,Z,#$80
@@ -14606,13 +14606,13 @@ L09DD0:
 L09DDE:
         LDE     #$C01B
         STE     $0856,Z
-        STE     $0858,Z
-        STE     $085A,Z
-        STE     $085C,Z
+        STE     >IoInjector1,Z
+        STE     >IoInjector2,Z
+        STE     >IoInjector3,Z
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L09E02
-        STE     $085E,Z
+        STE     >IoInjector4,Z
         STE     $0860,Z
 L09E02:
         BCLR    >FuelPulseFlags,Z,#$80
@@ -15364,7 +15364,7 @@ L0A374:
 ;---------------------------------------------------------------------------------------------------
 PowerInputHold:
         JSR     KickWatchdogsLong
-        BRCLR   $0800,Z,#$08,L0A3A0
+        BRCLR   >IoInputs0,Z,#$08,L0A3A0                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         AIX     #$FF
         BNE     PowerInputHold
         ANDP    #$FEFF
@@ -15468,7 +15468,7 @@ L0A466:
         BRCLR   <MainLoopPhaseMask,Z,#$08,L0A470
         BSR     IncSaturate
 L0A470:
-        BRCLR   <DriveFlags,Z,#$40,L0A476                ; bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
+        BRCLR   <DriveFlags,Z,#$40,L0A476                ; bit 6: power steering pressure switch active: bit 6 of the switch bits collected from IoInputs0 (map chosen by $032D), unless P0551 is set (SwitchInputsRead)
         CLR     $00,X
 L0A476:
         RTS
@@ -16513,7 +16513,7 @@ L0AD4E:
 L0AD7A:
         LDE     #$000A
 L0AD7E:
-        STE     $084A,Z
+        STE     >IoTimer4A,Z
         CLRA
         LDAB    >Temp4F2,Z
         SUBB    $1F55
@@ -16529,7 +16529,7 @@ L0AD7E:
         BCC     L0ADAC
         LDE     #$000A
 L0ADAC:
-        STE     $084C,Z
+        STE     >IoTimer4C,Z
 L0ADB0:
         LDAA    $0C,Z
         CMPA    >KnockLearnCoolantMin
@@ -17283,7 +17283,7 @@ ClosedLoopManager:
         LDAB    >O2Bank2Flags,Z
         ANDD    #$CFCF
         STD     <FanSoakFlags,Z
-        BRSET   $0812,Z,#$40,L0B6C2
+        BRSET   >IoCtl12,Z,#$40,L0B6C2
         TST     >O2InactiveTimer,Z
         LBNE    L0B6C2
         BRCLR   >Options032F,#$80,L0B660                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
@@ -20779,7 +20779,7 @@ L0D990:
         ASLE
         ASLD
 L0D9A0:
-        STE     $084E,Z
+        STE     >IoDriver6C,Z
         STD     $0850,Z
         RTS
 
@@ -21900,7 +21900,7 @@ L0E7FE:
         LDAA    #$04
         STAA    $019B,Z
         JSR     Sub_0DC90
-        BRCLR   $086E,Z,#$20,L0E838
+        BRCLR   >IoOcChan0,Z,#$20,L0E838
         INC     $01A2,Z
         BNE     L0E838
         DEC     $01A2,Z
@@ -21987,11 +21987,11 @@ L0E900:
         CLRB
 L0E902:
         PSHM    D
-        CLRW    $0804,Z
+        CLRW    >IoCtl04,Z
         LDAB    $59,Z
         CLRA
         XGDX
-        LDAA    $0800,Z
+        LDAA    >IoInputs0,Z
         ANDA    #$F0
         CMPA    $4243,X
         BEQ     L0E928
@@ -22007,12 +22007,12 @@ L0E928:
         ANDB    #$03
         STAB    $59,Z
         ABX
-        LDD     $0800,Z
+        LDD     >IoInputs0,Z
         ANDD    #$0FFF
         ORAA    $00,X
-        STD     $0800,Z
+        STD     >IoInputs0,Z
         LDE     #$F000
-        STE     $0804,Z
+        STE     >IoCtl04,Z
         LSRA
         LSRA
         LSRA
@@ -22020,7 +22020,7 @@ L0E928:
         STAA    $018D,Z
         LDE     #$0020
         JSR     DelayLoop
-        CLRW    $0804,Z
+        CLRW    >IoCtl04,Z
 L0E964:
         RTS
 
@@ -22037,12 +22037,12 @@ Sub_0E966:
         BRA     L0E9B6
 L0E980:
         BRSET   $021C,Z,#$08,L0E9B6
-        BRCLR   $0800,Z,#$04,L0E9B6
+        BRCLR   >IoInputs0,Z,#$04,L0E9B6                 ; bit 2: ASD relay output present, probably (AsdRelayCheck, the reference-event code)
         BRCLR   $0813,Z,#$20,L0E99A
-        BRCLR   $086E,Z,#$20,L0E9B6
+        BRCLR   >IoOcChan0,Z,#$20,L0E9B6
         BRA     L0E9A0
 L0E99A:
-        BRSET   $086E,Z,#$20,L0E9B6
+        BRSET   >IoOcChan0,Z,#$20,L0E9B6
 L0E9A0:
         BSET    $020E,Z,#$08
         LDAA    $46B2
@@ -22130,16 +22130,16 @@ L0EA76:
         BNE     L0EA96
         BRA     L0EA84
 L0EA7E:
-        BRSET   $086E,Z,#$20,L0EA96
+        BRSET   >IoOcChan0,Z,#$20,L0EA96
 L0EA84:
         INC     $06B3,Z
         BEQ     L0EA96
-        BSETW   $086E,Z,#$2000
+        BSETW   >IoOcChan0,Z,#$2000
         BSET    <ChargeMonFlags,Z,#$20
         BRA     L0EAA4
 L0EA96:
         CLR     $06B3,Z
-        BCLRW   $086E,Z,#$2000
+        BCLRW   >IoOcChan0,Z,#$2000
         BCLR    <ChargeMonFlags,Z,#$20
 L0EAA4:
         RTS
@@ -22436,37 +22436,37 @@ L0ED64:
 Isr_IRQ2:
         ORP     #$00E0
         PSHM    D,E,X,Y,K
-        LDD     $0808,Z
+        LDD     >IoTimer08,Z
         BITB    #$80
         BNE     L0EDBC
-        LDD     $080E,Z
+        LDD     >IoIrqStatus,Z
         BITB    #$08
         BNE     L0EDA8
-        LDD     $080E,Z
+        LDD     >IoIrqStatus,Z
         BITA    #$02
         BNE     L0ED9A
         LDD     #$FFFF
-        STD     $080E,Z
-        STD     $0808,Z
-        STD     $0806,Z
+        STD     >IoIrqStatus,Z
+        STD     >IoTimer08,Z
+        STD     >IoTimer06,Z
         STD     >LookupResult,Z
         BRA     L0EDD2
 L0ED9A:
         INC     >Irq2Counter,Z
         LDD     #$0300
-        STD     $080E,Z
+        STD     >IoIrqStatus,Z
         BRA     L0EDD2
 L0EDA8:
         JSR     Sub_12334
         LDD     #$0108
-        STD     $080E,Z
-        BRSET   $080E,Z,#$02,L0ED9A
+        STD     >IoIrqStatus,Z
+        BRSET   >IoIrqStatus,Z,#$02,L0ED9A               ; bit 1: timer event: Isr_IRQ2 counts it in Irq2Counter for the misfire segment times
         BRA     L0EDD2
 L0EDBC:
         JSR     Sub_0D954
-        BSETW   $0808,Z,#$00C0
-        BRSET   $080F,Z,#$08,L0EDA8
-        BRSET   $080E,Z,#$02,L0ED9A
+        BSETW   >IoTimer08,Z,#$00C0
+        BRSET   >IoIrqStatusL,Z,#$08,L0EDA8              ; bit 3: bus event: Isr_IRQ2 calls Irq2Dispatch
+        BRSET   >IoIrqStatus,Z,#$02,L0ED9A               ; bit 1: timer event: Isr_IRQ2 counts it in Irq2Counter for the misfire segment times
 L0EDD2:
         PULM    K,Y,X,E,D
         RTI
@@ -22801,11 +22801,11 @@ Sub_0F10E:
         AIY     #$01
         LDD     $0882,Z
         STD     >Temp4F2,Z
-        LDD     $0848,Z
+        LDD     >IoFanPwmB,Z
         STD     >Temp4F4,Z
         LDD     $0846,Z
         STD     >Temp4F6,Z
-        LDD     $0868,Z
+        LDD     >IoCfg1E,Z
         STD     >Temp4F0,Z
         BRA     L0F176
 L0F156:
@@ -22815,7 +22815,7 @@ L0F156:
         STD     >Temp4F4,Z
         LDD     $0842,Z
         STD     >Temp4F6,Z
-        LDD     $0866,Z
+        LDD     >IoDriver68,Z
         STD     >Temp4F0,Z
 L0F176:
         BITA    #$C0
@@ -22853,12 +22853,12 @@ L0F1C4:
         BITA    $00,Y
         BNE     L0F1E0
 L0F1D6:
-        LDAA    $0801,Z
+        LDAA    >IoInputs1,Z
         BITA    $02,Y
         BNE     L0F20E
         BRA     L0F1F0
 L0F1E0:
-        LDAA    $0801,Z
+        LDAA    >IoInputs1,Z
         BITA    $02,Y
         BEQ     L0F20E
         LDD     #$061B
@@ -22869,10 +22869,10 @@ L0F1F0:
 L0F1FA:
         LDD     >Temp4F0,Z
         BRSET   >Options032D,#$40,L0F20A                 ; bit 6: fan output variant (FanStatusByte, FanRelayControl, output tests)
-        STD     $0868,Z
+        STD     >IoCfg1E,Z
         BRA     L0F20E
 L0F20A:
-        STD     $0866,Z
+        STD     >IoDriver68,Z
 L0F20E:
         RTS
         dc.b    $08,$02,$01,$04,$20,$08,$04,$10,$88,$30,$88,$28,$88,$24,$88,$2C
@@ -23079,7 +23079,7 @@ L0F43C:
         PULM    K,Y,X,E,D
         RTI
 L0F440:
-        BSETW   $0812,Z,#$0010
+        BSETW   >IoCtl12,Z,#$0010
         JSR     EmptyHook
         JSR     AdcStartF0
         JSR     Sub_0A554
@@ -23258,7 +23258,7 @@ L0F658:
         JSR     Sub_0E014
         BRCLR   >Options0335,#$02,L0F66A                 ; bit 1: EGR position/solenoid monitor variant
         LDE     #$0177
-        STE     $0848,Z
+        STE     >IoFanPwmB,Z
 L0F66A:
         LDAA    >PORTC,Z
         ORAA    #$07
@@ -23447,7 +23447,7 @@ L0F89E:
         JMP     L0F43C
         dc.b    $30,$00,$50,$00,$70,$00,$90,$00,$B0,$00
 L0F8B0:
-        BCLRW   $0812,Z,#$0010
+        BCLRW   >IoCtl12,Z,#$0010
         JSR     Sub_0DF60
         BRCLR   >CrankSyncFlags,Z,#$40,L0FA3E
         LDAA    #$75
@@ -23615,7 +23615,7 @@ L0FAAA:
         BRCLR   $032A,#$C0,L0FAB8
         BCLRW   $0802,Z,#$0400
 L0FAB8:
-        BCLR    <SparkFlags,Z,#$80                       ; bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
+        BCLR    <SparkFlags,Z,#$80                       ; bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
         BRCLR   >CrankSyncFlags,Z,#$40,L0FBA2
         LDAA    #$8A
         BRCLR   <SparkFlags,Z,#$20,L0FACA                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
@@ -23646,9 +23646,9 @@ L0FAFC:
         LDAA    >PORTGP,Z
         BITA    #$70
         LBNE    L0FB92
-        BRCLR   $0800,Z,#$04,L0FB92
-        BSET    <SparkFlags,Z,#$80                       ; bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
-        LDD     $080E,Z
+        BRCLR   >IoInputs0,Z,#$04,L0FB92                 ; bit 2: ASD relay output present, probably (AsdRelayCheck, the reference-event code)
+        BSET    <SparkFlags,Z,#$80                       ; bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
+        LDD     >IoIrqStatus,Z
         ANDD    #$0010
         LBNE    L0FB92
         LDAB    #$02
@@ -23696,10 +23696,10 @@ L0FB7A:
         ORAB    $020E,Z
         STAB    $020E,Z
 L0FB92:
-        LDD     $080E,Z
+        LDD     >IoIrqStatus,Z
         ANDD    #$0100
         ORD     #$0010
-        STD     $080E,Z
+        STD     >IoIrqStatus,Z
 L0FBA2:
         LDAA    >SparkAdvanceD11,Z
         STAA    $0665,Z
@@ -23985,28 +23985,28 @@ L0FECA:
         LDE     #$0049
         STE     $0253,Z
 L0FEDC:
-        CPD     $0858,Z
+        CPD     >IoInjector1,Z
         BEQ     L0FEEE
-        STD     $0858,Z
+        STD     >IoInjector1,Z
         LDE     #$004A
         STE     $0253,Z
 L0FEEE:
-        CPD     $085A,Z
+        CPD     >IoInjector2,Z
         BEQ     L0FF00
-        STD     $085A,Z
+        STD     >IoInjector2,Z
         LDE     #$004B
         STE     $0253,Z
 L0FF00:
-        CPD     $085C,Z
+        CPD     >IoInjector3,Z
         BEQ     L0FF12
-        STD     $085C,Z
+        STD     >IoInjector3,Z
         LDE     #$004C
         STE     $0253,Z
 L0FF12:
         LDD     #$0000
-        CPD     $085E,Z
+        CPD     >IoInjector4,Z
         BEQ     L0FF28
-        STD     $085E,Z
+        STD     >IoInjector4,Z
         LDE     #$004D
         STE     $0253,Z
 L0FF28:
@@ -24016,8 +24016,8 @@ L0FF28:
         LDE     #$004E
         STE     $0253,Z
 L0FF3A:
-        BRCLR   $0862,Z,#$C0,L0FF4E
-        BCLRW   $0862,Z,#$C000
+        BRCLR   >IoDriver62,Z,#$C0,L0FF4E                ; bit 7: driver status, checked by HardwareCheck; bit 6: driver status, checked by HardwareCheck
+        BCLRW   >IoDriver62,Z,#$C000                     ; IoDriver62.7: driver status, checked by HardwareCheck; IoDriver62.6: driver status, checked by HardwareCheck
         LDE     #$004F
         STE     $0253,Z
 L0FF4E:
@@ -24040,26 +24040,26 @@ L0FF7C:
         BRSET   >Options0335,#$02,L0FF9C                 ; bit 1: EGR position/solenoid monitor variant
 L0FF88:
         CLRD
-        CPD     $0866,Z
+        CPD     >IoDriver68,Z
         BEQ     L0FF9C
-        STD     $0866,Z
+        STD     >IoDriver68,Z
         LDE     #$0051
         STE     $0253,Z
 L0FF9C:
         BRSET   >Options0335,#$02,L0FFBE                 ; bit 1: EGR position/solenoid monitor variant
         BRSET   >Options0334,#$10,L0FFD4                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         CLRD
-        CPD     $0868,Z
+        CPD     >IoCfg1E,Z
         BEQ     L0FFD4
-        STD     $0868,Z
+        STD     >IoCfg1E,Z
         LDE     #$0052
         STE     $0253,Z
         BRA     L0FFD4
 L0FFBE:
         LDD     #$E01B
-        CPD     $0868,Z
+        CPD     >IoCfg1E,Z
         BEQ     L0FFD4
-        STD     $0868,Z
+        STD     >IoCfg1E,Z
         LDE     #$0052
         STE     $0253,Z
 L0FFD4:

@@ -134,7 +134,7 @@ SwitchInputs2    equ $0304        ; $F8304
 ;                 bit 0: speed control switch
 DriveFlags       equ $0305        ; $F8305
 ;                 bit 7: drive engagement handling in progress (GearStateUpdate), probably
-;                 bit 6: switch input $1000 bit 6, unless P0551 is set (SwitchInputsRead); the P0551 input is the power steering switch
+;                 bit 6: power steering pressure switch active: bit 6 of the switch bits collected from IoInputs0 (map chosen by $032D), unless P0551 is set (SwitchInputsRead)
 ;                 bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 ;                 bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
 ;                 bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
@@ -243,13 +243,12 @@ ActuatorTest     equ $0477        ; $F8477
 SystemTestRejects equ $047A        ; $F847A
 SystemTestMode   equ $047B        ; $F847B
 SystemTestValue  equ $047C        ; $F847C
-ControlFlags943  equ $047E        ; $F847E
-;                 bit 7: A/C cut active (AcCutControl timer running)
-;                 bit 6: set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)
-;                 bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
-;                 bit 3: fuel pump relay on, probably (set and cleared with bit 4)
-;                 bit 2: output toggled by EgrOutputTest, not read
-;                 bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
+IoCfg1FL         equ $047E        ; $F847E
+;                 bit 5: manifold tuning valve driver status (MtvCheck)
+;                 bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
+;                 bit 3: tested by Isr_GPT_OC4 (ignition driver status, probably)
+;                 bit 2: tested by Isr_GPT_OC3 (ignition driver status, probably)
+;                 bit 1: tested by Isr_GPT_OC2 (ignition driver status, probably)
 ControlFlags944  equ $047F        ; $F847F
 ;                 bit 7: set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7)
 ;                 bit 5: output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read
@@ -354,7 +353,7 @@ HotEnrich        equ $05D8        ; $F85D8
 AccelMapBaroFactor equ $05DE        ; $F85DE
 AccelTpsBaroFactor equ $05DF        ; $F85DF
 SparkFlags       equ $0600        ; $F8600
-;                 bit 7: knock window input seen on this event (Isr_GPT_IC1, input $1000 bit 2)
+;                 bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
 ;                 bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
 ;                 bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
 ;                 bit 4: cleared by SparkOutputOc2 only
@@ -420,7 +419,38 @@ IacShiftTimer    equ $06A3        ; $F86A3
 IacGearSteps     equ $06A6        ; $F86A6
 IacShiftMode     equ $06A7        ; $F86A7
 IacKickTimer     equ $06C9        ; $F86C9
-LdpFlags3        equ $0800        ; $F8800
+IoInputs0        equ $0800        ; $F8800
+;                 bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
+;                 bit 2: ASD relay output present, probably (AsdRelayCheck, the reference-event code)
+;                 bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
+;                 bit 0: speed control switch input (SpeedCtlSwitchCheck, SpeedCtlCancelMonitor)
+IoStatus2        equ $0802        ; $F8802
+;                 bit 2: tested by KnockChipConfig
+IoStatus3        equ $0803        ; $F8803
+;                 bit 7: PWM C18 driver status (PwmC18CircuitCheck)
+;                 bit 6: leak detection pump solenoid status (LdpSolenoidCheck)
+IoIrqStatus      equ $080E        ; $F880E
+;                 bit 1: timer event: Isr_IRQ2 counts it in Irq2Counter for the misfire segment times
+IoCtl12          equ $0812        ; $F8812
+IoBusData        equ $0816        ; $F8816
+IoCfg18          equ $0818        ; $F8818
+IoBusStatus      equ $081A        ; $F881A
+IoInjector0      equ $0856        ; $F8856
+IoInjector1      equ $0858        ; $F8858
+IoInjector2      equ $085A        ; $F885A
+IoInjector3      equ $085C        ; $F885C
+IoInjector4      equ $085E        ; $F885E
+IoInjector5      equ $0860        ; $F8860
+IoDriver62       equ $0862        ; $F8862
+;                 bit 7: driver status, checked by HardwareCheck
+;                 bit 6: driver status, checked by HardwareCheck
+;                 bit 5: leak detection pump solenoid on (word bit 13)
+IoEvent70        equ $0870        ; $F8870
+IoEvent72        equ $0872        ; $F8872
+IoEvent74        equ $0874        ; $F8874
+IoEvent76        equ $0876        ; $F8876
+IoEvent78        equ $0878        ; $F8878
+IoEvent7A        equ $087A        ; $F887A
 ADCMCR           equ $7700        ; $FF700
 ADCTL0_L         equ $770B        ; $FF70B
 ADCTL1_L         equ $770D        ; $FF70D

@@ -23,8 +23,7 @@ The other families have the same structure at other addresses (stage 5).
 | SCI / QSPI | QILR = $1B, QIVR = $FE | SCI vector $FE, QSPI vector $FF |
 
 The external device on CS2 is reached as `$1000,Z`-`$17FF,Z`; the code uses 61 different
-addresses there, most often `$1000,Z` and `$1012,Z` (`$100E,Z` is written in `Isr_IRQ2`). It is probably one of the Chrysler interface chips of the SBEC3 board; identifying it
-is open.
+addresses there. It is a timer, output driver and bus interface chip, described below.
 
 Reset also counts the reset causes: the bits of the SIM reset status register RSR are added as
 4-bit counters into `ResetCountsExtSw` ($08,Z: external reset, software watchdog) and
@@ -51,17 +50,47 @@ Configuration bits of the calibration live around $0328-$0338 and are tested wit
 on extended addresses, for example `BRSET $032E,#$04,...` (see below). The meaning of each used bit
 is in `annotations/bits.json` as well; the source and the XDF flags show it.
 
+## The CS2 device ($F9000)
+
+The SIM chip selects are set in the reset code: CSBOOT and CS0 cover the 256 KB program flash (CSBOOT
+reads, CS0 only writes, for programming), CS1 and CS3-CS10 are off, and CS2 opens a 2 KB window at
+$F9000 with 16-bit data, read and write, one wait state. The program reaches it as `$1xxx,Z`. It is
+a peripheral chip, not memory: only offsets $000-$084 are used, and what the code does with them
+makes it a combined timer, output driver and bus interface. The register names in `ram.json` start
+with `Io`; their bits are in `bits.json`.
+
+| Offset | Name | Use |
+|---|---|---|
+| $000-$001 | `IoInputs0`, `IoInputs1` | discrete inputs: key off (bit 3, probably), ASD output present (bit 2, probably), leak detection pump switch, speed control switch; the switch map is collected from this word; feedback bits of some drivers |
+| $002-$003 | `IoStatus2`, `IoStatus3` | driver and knock status bits |
+| $006-$010 | `IoTimer06` ... `IoIrqStatus` | timers and the interrupt registers: `IoIrqEnable` ($00C) and `IoIrqStatus` ($00E, cleared by writing ones) |
+| $016, $01A | `IoBusData`, `IoBusStatus` | received bus byte and its error bits ($000E), read by the IRQ4 and IRQ2 bus handlers |
+| $012-$020 | `IoCtl12`, `IoCfg14` ... `IoCfg20` | control and set-up words written at reset and checked by `HardwareCheck` |
+| $024-$038 | `IoOcChan0-5` | six output channels, set by `OcOutputsReset` and fired by the output test |
+| $03E-$050 | `IoPwmC18A/B`, `IoFanPwmA/B`, `IoPurgePwmA/B` | PWM period and duty pairs (output C18, radiator fan, purge) |
+| $056-$060 | `IoInjector0-5` | six injector timers written by `FuelEventCalc` and `InjectorSequence` |
+| $062-$06E | `IoDriver62` ... `IoDriver6E` | one word per low-side output: bit 13 output on, bits 15-14 driver status (LDP solenoid, lamp/C18, tuning valve, fan, purge, generator field) |
+| $070-$07A | `IoEvent70` ... `IoEvent7A` | six words cleared by `EventCorrections` |
+| $07E-$084 | `IoPwmC18Read`, `IoFanPwmRead`, `IoKnockRead` | read-back of the PWM outputs and of the knock set-up |
+
+IRQ2 comes from this chip. `Isr_IRQ2` reads `IoIrqStatus`: a bus event (bit 3 of the low byte)
+goes to `Irq2Dispatch` and the CCD/PCI handler, a timer event (bit 1 of the high byte) is counted in
+`Irq2Counter` for the misfire segment times, anything else clears all flags. IRQ4 runs
+`Irq4BusHandler`, which reads the received byte and its status from `IoBusData`/`IoBusStatus` and
+compares it with the byte just sent (bus arbitration). So the CCD (or PCI) interface is part of this
+chip too.
+
 ## Interrupts
 
 | Vector | Handler | Function |
 |---|---|---|
 | $38 | `Isr_PIT` ($08344) | 0.854 ms time base, fast scheduler (below) |
-| $40 | `Isr_GPT_PAI` ($0AAEA) | pulse accumulator: event counting, restarts timing state |
-| $41 | `Isr_GPT_IC1` ($0A02E) | input capture 1, the largest handler (crank signal, to be confirmed) |
-| $42 | `Isr_GPT_IC2` ($0ACD2) | input capture 2: starts a period measurement, clears `Ic2OverflowCount` |
-| $43 | `Isr_GPT_IC3` ($080CA) | input capture 3: counts edges ($09CC,Z, $52,Z) |
-| $45, $46, $47 | `Isr_GPT_OC2/3/4` | three identical output-compare channels (coil or injector timing, to be confirmed) |
-| $48 | `Isr_GPT_IC4OC5` ($08A90) | input capture 4, enabled by calibration bit $0337.7; uses the table at $08A6C |
+| $40 | `Isr_GPT_PAI` ($0AAEA) | pulse accumulator input: camshaft signal; the first edge sets `CrankSyncFlags` = $84 (synchronised) and `DriveFlags` bit 2 |
+| $41 | `Isr_GPT_IC1` ($0A02E) | input capture 1: crankshaft reference signal (`RefPeriod`, `EngineRpm`, fuel and spark events) |
+| $42 | `Isr_GPT_IC2` ($0ACD2) | input capture 2: starts a period measurement and enables IC1; IC1 rejects a pulse shorter than $10 counts after TIC2, so IC2 probably sees the other edge of the crank signal |
+| $43 | `Isr_GPT_IC3` ($080CA) | input capture 3: vehicle speed sensor pulses (`DistancePulses`) |
+| $45, $46, $47 | `Isr_GPT_OC2/3/4` | three ignition coil channels (`SparkOutputOc2`; driver status bits 1-3 of `IoCfg1FL`); the injectors run on the timers of the CS2 chip |
+| $48 | `Isr_GPT_IC4OC5` ($08A90) | input capture 4: second timing input for per-event spark, only with calibration bit $0337.7; uses the table at $08A6C |
 | $49 | `Isr_GPT_Overflow` ($0ACF0) | counts timer overflows in `Ic2OverflowCount` (saturating) |
 | $12 | `Isr_IRQ2` ($089BE) | external interrupt from the CS2 device |
 | $14 | `Isr_IRQ4` ($08A18) | external interrupt, calls `Irq4BusHandler` |
@@ -159,8 +188,6 @@ $F3-$F5). `SciRequestReceive` takes the ordinary requests (`DiagCommand`,
 
 ## Open questions
 
-- What the CS2 device at $F9000 is, and what IRQ2 and IRQ4 signal.
-- Which input captures carry crank, cam and vehicle speed; which output compares drive coils and
-  injectors.
+- The exact part used as the CS2 device; the bits marked "probably" in `bits.json`.
+- Whether IC2 is the second edge of the crank signal (see the interrupt table).
 - Whether the second bus variant is J1850 PCI (see above).
-- Names of the scheduled routines: stage 4 (tables they read) and stage 5 (detailed annotation).

@@ -65,7 +65,7 @@ L30144:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 CcdReceive:
-        BRSET   $100B,Z,#$08,L30186
+        BRSET   >IoStatus0B,Z,#$08,L30186                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
         BSET    >CcdBusFlags,Z,#$80
 L30186:
         TZY
@@ -547,7 +547,7 @@ L30686:
         ADDA    $02,Y
         STAA    $03,Y
 L30692:
-        BRSET   $100B,Z,#$08,L3069C
+        BRSET   >IoStatus0B,Z,#$08,L3069C                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
         JSR     BusTxStart
 L3069C:
         RTS
@@ -1182,9 +1182,9 @@ L30BDA:
         LDAA    >CcdBusFlags,Z
         BITA    #$80
         BEQ     L30C26
-        BRCLR   $101B,Z,#$80,L30C26
-        BRSET   $100B,Z,#$08,L30C26
-        STE     $1016,Z
+        BRCLR   >IoBusStatusL,Z,#$80,L30C26              ; bit 7: tested by BusTxStart before a byte is sent
+        BRSET   >IoStatus0B,Z,#$08,L30C26                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+        STE     >IoBusData,Z
         CPE     #$00B2
         BNE     L30C00
         BSET    >BusMsgFlags,Z,#$02
@@ -1213,8 +1213,8 @@ L30C26:
 ;---------------------------------------------------------------------------------------------------
 Irq4BusHandler:
         PSHM    D,E,X,Y,K
-        LDE     $101A,Z
-        LDD     $1016,Z
+        LDE     >IoBusStatus,Z
+        LDD     >IoBusData,Z
         TBA
         ANDE    #$000E
         LBNE    L30D46
@@ -1245,10 +1245,10 @@ L30C8C:
         CMPB    #$03
         BCC     L30CB4
 L30C90:
-        BRCLR   $100B,Z,#$08,L30D34
+        BRCLR   >IoStatus0B,Z,#$08,L30D34                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
         LDAB    $01,Y
         CLRA
-        STD     $1016,Z
+        STD     >IoBusData,Z
         LBRA    L30D2E
 L30CA2:
         BSET    >CcdBusFlags,Z,#$02
@@ -1318,7 +1318,7 @@ L30D46:
         BSET    >CcdBusFlags,Z,#$10
         BCLR    >CcdBusFlags,Z,#$20
 L30D4E:
-        BSETW   $1018,Z,#$0002
+        BSETW   >IoCfg18,Z,#$0002
 L30D54:
         PULM    K,Y,X,E,D
         RTS
@@ -1387,8 +1387,8 @@ L30DEA:
         JSR     BusTxStart
         BRA     L30E02
 L30DFA:
-        LDD     $101A,Z
-        LDD     $1016,Z
+        LDD     >IoBusStatus,Z
+        LDD     >IoBusData,Z
 L30E02:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -1595,7 +1595,7 @@ L31274:
         BCLR    >PciFlags3,Z,#$20
         BRA     L3123E
 L3129E:
-        BRCLR   $1013,Z,#$08,L312C4
+        BRCLR   >IoCtl13,Z,#$08,L312C4
         BRSET   >SystemFlags945,Z,#$80,L312C4            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         BRSET   >PciFlags2,Z,#$04,L312C4
         LDAB    $097B,Z
@@ -2084,7 +2084,7 @@ PciTxStep:
         LDX     #$0058
 L31708:
         BRSET   >PciFlags2,Z,#$04,L317B4
-        BRSET   $100B,Z,#$08,L317B4
+        BRSET   >IoStatus0B,Z,#$08,L317B4                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
         LDAB    #$03
         TBXK
         BRCLR   >PciFlags3,Z,#$01,L31722
@@ -2205,7 +2205,7 @@ L31842:
         JSR     $311DE,X
         TST     $01,Y
         BNE     L31852
-        BRSET   $1013,Z,#$08,PciBuildMessage
+        BRSET   >IoCtl13,Z,#$08,PciBuildMessage
         BRA     L31898
 L31852:
         BSET    >PciFlags3,Z,#$80
@@ -2847,7 +2847,7 @@ L31DF6:
 ; Called from: Irq2Dispatch
 ;---------------------------------------------------------------------------------------------------
 PciIrq2Start:
-        BCLRW   $100C,Z,#$0800
+        BCLRW   >IoIrqEnable,Z,#$0800                    ; IoIrqEnable.3: bus timer interrupt enable (word bit 11; PciTimeoutRestart sets it)
         BCLR    >PciFlags,Z,#$40
         BCLR    >SystemFlags945,Z,#$01                   ; bit 0: PCI frame timer running, probably (PciTimeoutRestart)
         BRSET   >SystemFlags945,Z,#$80,L31E16            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
@@ -2891,11 +2891,11 @@ L31E24:
 PciTimeoutRestart:
         BCLR    >SystemFlags945,Z,#$01                   ; bit 0: PCI frame timer running, probably (PciTimeoutRestart)
         BCLR    >PciFlags,Z,#$40
-        BRCLR   $100B,Z,#$08,L31E8A
+        BRCLR   >IoStatus0B,Z,#$08,L31E8A                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
         LDD     #$0008
-        STD     $100E,Z
-        BSETW   $100C,Z,#$0800
-        BRCLR   $1013,Z,#$08,L31E82
+        STD     >IoIrqStatus,Z
+        BSETW   >IoIrqEnable,Z,#$0800                    ; IoIrqEnable.3: bus timer interrupt enable (word bit 11; PciTimeoutRestart sets it)
+        BRCLR   >IoCtl13,Z,#$08,L31E82
         LDAB    #$03
         TBYK
         LDY     #$10D2
@@ -3026,7 +3026,7 @@ L31F9C:
 ;---------------------------------------------------------------------------------------------------
 QspiCheck:
         ORP     #$00E0
-        LDE     $1000,Z
+        LDE     >IoInputs0,Z
         STE     $0F4E,Z
         BRCLR   >PciFlags2,Z,#$03,L31FDE
         INC     $0A04,Z
@@ -3077,12 +3077,12 @@ QspiStop:
 PciFlagsInit:
         PSHM    D,CCR
         ORP     #$00E0
-        BCLRW   $1012,Z,#$0200
+        BCLRW   >IoCtl12,Z,#$0200
         LDAA    #$10
 L32024:
         DECA
         BNE     L32024
-        BSETW   $1012,Z,#$0200
+        BSETW   >IoCtl12,Z,#$0200
         BSET    >PciFlags2,Z,#$06
         BSET    $0A08,Z,#$01
         CLR     $0A04,Z
@@ -3551,7 +3551,7 @@ L32474:
 L3247C:
         LDAA    >CoolantRaw,Z
         LDX     #ThermistorHot
-        BRCLR   $1012,Z,#$08,L3248E
+        BRCLR   >IoCtl12,Z,#$08,L3248E
         LDX     #ThermistorCold
 L3248E:
         JSR     Lookup2D
@@ -3606,7 +3606,7 @@ L3250C:
         BRCLR   >ObdPidSupport2,#$02,L32BC2
         LDAA    >AirTempRaw,Z
         LDX     #ThermistorHot
-        BRCLR   $1012,Z,#$10,L32524
+        BRCLR   >IoCtl12,Z,#$10,L32524
         LDX     #ThermistorCold
 L32524:
         JSR     Lookup2D
@@ -4334,8 +4334,8 @@ L33082:
 L33092:
         BCLR    >SCCR1_L,Z,#$A0
         BCLR    >DiagBusFlags,Z,#$08
-        BRSET   $1000,Z,#$08,L330EC
-        BRSET   $100B,Z,#$20,L330BC
+        BRSET   >IoInputs0,Z,#$08,L330EC                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
+        BRSET   >IoStatus0B,Z,#$20,L330BC                ; bit 5: SCI line status, probably (SciPitService)
         LDAA    #$05
         STAA    $0A25,Z
         LDAA    #$01
@@ -4363,7 +4363,7 @@ L330EC:
 L330EE:
         DEC     >SciByteTimer,Z
         BNE     L3312C
-        BRSET   $100B,Z,#$20,L33106
+        BRSET   >IoStatus0B,Z,#$20,L33106                ; bit 5: SCI line status, probably (SciPitService)
         TST     $0A25,Z
         BEQ     L33126
         DEC     $0A25,Z
@@ -4388,7 +4388,7 @@ L3312C:
 L3312E:
         DEC     >SciByteTimer,Z
         BNE     L33168
-        BRCLR   $100B,Z,#$20,L3313E
+        BRCLR   >IoStatus0B,Z,#$20,L3313E                ; bit 5: SCI line status, probably (SciPitService)
         INC     $0A26,Z
 L3313E:
         DEC     $0A25,Z
@@ -4413,7 +4413,7 @@ L33168:
 L3316A:
         DEC     >SciByteTimer,Z
         LBNE    L331FC
-        BRCLR   $100B,Z,#$20,L3317C
+        BRCLR   >IoStatus0B,Z,#$20,L3317C                ; bit 5: SCI line status, probably (SciPitService)
         INC     $0A26,Z
 L3317C:
         INC     $0A27,Z
@@ -4914,7 +4914,7 @@ L33672:
 ;---------------------------------------------------------------------------------------------------
 MonData643Update:
         BRCLR   >MonEnableFlags2,Z,#$80,L336CE
-        BRSET   $1000,Z,#$08,L336CE
+        BRSET   >IoInputs0,Z,#$08,L336CE                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         BRCLR   >MonFlags64D,Z,#$08,L336CE
         BRSET   >MonFlags64D,Z,#$04,L336CE
         LDAB    >RefPeriod,Z
@@ -4952,7 +4952,7 @@ L336D2:
 ;---------------------------------------------------------------------------------------------------
 MonTaskB:
         BRCLR   >MonEnableFlags2,Z,#$80,L3376C
-        BRSET   $1000,Z,#$08,L3376C
+        BRSET   >IoInputs0,Z,#$08,L3376C                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         BRCLR   >EngineStateFlags,Z,#$80,L336EA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BCLR    >MonData647,Z,#$20
 L336EA:
@@ -5008,7 +5008,7 @@ L33774:
 ; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
 MonTaskC:
-        BRSET   $1000,Z,#$08,L338EC
+        BRSET   >IoInputs0,Z,#$08,L338EC                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         BRCLR   >MonEnableFlags2,Z,#$80,L338EC
         BRCLR   >MonFlags64D,Z,#$04,L338EC
         LDAB    >RefPeriod,Z
@@ -5039,7 +5039,7 @@ L337FC:
 L33804:
         CLR     >MonData643,Z
         BCLR    $0645,Z,#$03
-        BSETW   $1012,Z,#$4000
+        BSETW   >IoCtl12,Z,#$4000
         BSET    >LdpFlags3,Z,#$04
 L33816:
         LDAA    $05F0,Z
@@ -5133,7 +5133,7 @@ L338F6:
         CLR     $0654,Z
         CLR     $0655,Z
         BRSET   >O2TestFlags,Z,#$10,L3391A
-        BCLRW   $1012,Z,#$4000
+        BCLRW   >IoCtl12,Z,#$4000
 L3391A:
         RTS
 
@@ -5235,7 +5235,7 @@ MonTaskE:
         BCLR    <DiagStatusFlags,Z,#$10                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
         LBRA    L33AEE
 L33A26:
-        BRSET   $1000,Z,#$08,L33AEE
+        BRSET   >IoInputs0,Z,#$08,L33AEE                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         LDAA    >LdpFlags3,Z
         BRSET   >EngineStateFlags,Z,#$80,L33A38          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         ANDA    #$FD
@@ -7221,7 +7221,7 @@ L35F4A:
         BRSET   >LdpFlags3,Z,#$08,L35F62
         BRSET   >LdpFlags3,Z,#$04,L35F62
         BRSET   >O2TestFlags,Z,#$10,L35F62
-        BCLRW   $1012,Z,#$4000
+        BCLRW   >IoCtl12,Z,#$4000
 L35F62:
         RTS
 L35F64:
@@ -7229,7 +7229,7 @@ L35F64:
 L35F66:
         BSET    >ControlFlags943,Z,#$40                  ; bit 6: set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)
         BSET    >ControlFlags944,Z,#$02                  ; bit 1: toggled by ActuatorTestMain, not read
-        BSETW   $1012,Z,#$0080
+        BSETW   >IoCtl12,Z,#$0080
         LDAB    >MainLoopCounter,Z
         CMPB    #$3B
         BCS     L35F62
@@ -7284,9 +7284,9 @@ OutputTest3:
         BRSET   >FaultSet00,Z,#$04,L35FFA                ; bit 2: fault row $0A, no P-code
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L35FE8:
-        BSETW   $101E,Z,#$0020
+        BSETW   >IoCfg1E,Z,#$0020                        ; IoCfg1FL.5: manifold tuning valve driver status (MtvCheck)
         BRSET   >MainLoopCounter,Z,#$80,L35FFA
-        BCLRW   $101E,Z,#$0020
+        BCLRW   >IoCfg1E,Z,#$0020                        ; IoCfg1FL.5: manifold tuning valve driver status (MtvCheck)
 L35FFA:
         RTS
 
@@ -7512,17 +7512,17 @@ L36210:
 L36216:
         BRCLR   >Options0334,#$10,L36236                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         BRCLR   >MainLoopCounter,Z,#$80,L3622A
-        BCLRW   $1068,Z,#$E000
+        BCLRW   >IoDriver68,Z,#$E000                     ; IoDriver68.5: fan output on (word bit 13; output test)
         BRA     L36236
 L3622A:
-        BCLRW   $1068,Z,#$C000
-        BSETW   $1068,Z,#$2000
+        BCLRW   >IoDriver68,Z,#$C000
+        BSETW   >IoDriver68,Z,#$2000                     ; IoDriver68.5: fan output on (word bit 13; output test)
 L36236:
         RTS
 L36238:
-        BCLRW   $1012,Z,#$0080
+        BCLRW   >IoCtl12,Z,#$0080
         BRSET   >MainLoopCounter,Z,#$80,L3624A
-        BSETW   $1012,Z,#$0080
+        BSETW   >IoCtl12,Z,#$0080
 L3624A:
         RTS
 
@@ -7543,7 +7543,7 @@ L36256:
 ; Called from: MonData643Update
 ;---------------------------------------------------------------------------------------------------
 OutputTestDispatch:
-        BSETW   $1012,Z,#$0080
+        BSETW   >IoCtl12,Z,#$0080
         LDAA    >TCTL1,Z
         ANDA    #$AB
         ORAA    #$A8
@@ -7581,7 +7581,7 @@ L3629E:
 ;---------------------------------------------------------------------------------------------------
 OutputTestOff:
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
-        BCLRW   $106E,Z,#$C000
+        BCLRW   >IoDriver6E,Z,#$C000                     ; IoDriver6E.7: driver status, checked by HardwareCheck; IoDriver6E.6: driver status, checked by HardwareCheck
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -7612,12 +7612,12 @@ L362FA:
 ;---------------------------------------------------------------------------------------------------
 OutputTestB:
         BRCLR   >Options0333,#$40,L36318                 ; bit 6: PWM output C18 fitted (PwmC18Main, PwmC18CircuitCheck)
-        LDD     $1064,Z
+        LDD     >IoDriver64,Z
         ANDD    #$1FFF
         BRSET   >MainLoopCounter,Z,#$80,L36314
         ORD     #$2000
 L36314:
-        STD     $1064,Z
+        STD     >IoDriver64,Z
 L36318:
         RTS
 
@@ -7631,15 +7631,15 @@ OutputTestOc:
         BRSET   >FaultSet00,Z,#$04,L36342                ; bit 2: fault row $0A, no P-code
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
 L36330:
-        BCLRW   $1066,Z,#$2000
+        BCLRW   >IoDriver66,Z,#$2000                     ; IoDriver66.5: second tuning valve / speed control output on (word bit 13)
         BRSET   >MainLoopCounter,Z,#$80,L36342
-        BSETW   $1066,Z,#$2000
+        BSETW   >IoDriver66,Z,#$2000                     ; IoDriver66.5: second tuning valve / speed control output on (word bit 13)
 L36342:
         RTS
 L36344:
         TZX
         LDX     #$F916
-        LDE     $101E,Z
+        LDE     >IoCfg1E,Z
         ANDE    #$FFF0
         BRSET   >Options032B,#$20,L36364                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         BRSET   >Options032B,#$40,L36364                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
@@ -7647,7 +7647,7 @@ L36344:
         BRA     L3636C
 L36364:
         ORE     #$000F
-        STE     $101E,Z
+        STE     >IoCfg1E,Z
 L3636C:
         LDAA    #$02
         BRSET   >Options032B,#$20,L36376                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
@@ -7660,14 +7660,14 @@ L3637E:
         BRSET   >Options032B,#$20,L363AE                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         TZX
         LDX     #$F918
-        LDE     $101E,Z
+        LDE     >IoCfg1E,Z
         ANDE    #$FFF0
         BRSET   >Options032B,#$40,L3639E                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         ORE     #$000E
         BRA     L363A6
 L3639E:
         ORE     #$000D
-        STE     $101E,Z
+        STE     >IoCfg1E,Z
 L363A6:
         LDAA    #$0C
         LDAB    #$20
@@ -7678,14 +7678,14 @@ L363B0:
         BRSET   >Options032B,#$20,L363E0                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         TZX
         LDX     #$F91A
-        LDE     $101E,Z
+        LDE     >IoCfg1E,Z
         ANDE    #$FFF0
         BRSET   >Options032B,#$40,L363D0                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         ORE     #$000E
         BRA     L363D8
 L363D0:
         ORE     #$0009
-        STE     $101E,Z
+        STE     >IoCfg1E,Z
 L363D8:
         LDAA    #$30
         LDAB    #$40
@@ -7697,10 +7697,10 @@ L363E2:
         BRCLR   >Options032B,#$40,L3640C                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         TZX
         LDX     #$F916
-        LDE     $101E,Z
+        LDE     >IoCfg1E,Z
         ANDE    #$FFF0
         ORE     #$0001
-        STE     $101E,Z
+        STE     >IoCfg1E,Z
         LDAA    #$03
         LDAB    #$10
         JSR     OutputTestOcFire
@@ -7711,10 +7711,10 @@ L3640E:
         BRCLR   >Options032B,#$40,L36438                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         TZX
         LDX     #$F918
-        LDE     $101E,Z
+        LDE     >IoCfg1E,Z
         ANDE    #$FFF0
         ORE     #$0003
-        STE     $101E,Z
+        STE     >IoCfg1E,Z
         LDAA    #$0C
         LDAB    #$20
         JSR     OutputTestOcFire
@@ -7725,10 +7725,10 @@ L3643A:
         BRCLR   >Options032B,#$40,L36464                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
         TZX
         LDX     #$F91A
-        LDE     $101E,Z
+        LDE     >IoCfg1E,Z
         ANDE    #$FFF0
         ORE     #$0007
-        STE     $101E,Z
+        STE     >IoCfg1E,Z
         LDAA    #$30
         LDAB    #$40
         JSR     OutputTestOcFire
@@ -7804,11 +7804,11 @@ L364F8:
 L364FA:
         BRCLR   >Options0333,#$02,L36508                 ; bit 1: ignition output variant (Isr_GPT_IC1, OutputTestOcFire)
         LDE     #$0177
-        STE     $1048,Z
+        STE     >IoFanPwmB,Z
 L36508:
         RTS
 L3650A:
-        BSETW   $1012,Z,#$0080
+        BSETW   >IoCtl12,Z,#$0080
         BSET    >ControlFlags943,Z,#$40                  ; bit 6: set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)
         BSET    >ControlFlags944,Z,#$02                  ; bit 1: toggled by ActuatorTestMain, not read
         BRSET   >MainLoopCounter,Z,#$80,L36522
@@ -7816,7 +7816,7 @@ L3650A:
 L36522:
         RTS
 L36524:
-        BSETW   $1012,Z,#$0080
+        BSETW   >IoCtl12,Z,#$0080
         BSET    >ControlFlags943,Z,#$40                  ; bit 6: set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)
         BSET    >ControlFlags944,Z,#$02                  ; bit 1: toggled by ActuatorTestMain, not read
         BRSET   >MainLoopCounter,Z,#$80,L3653C
@@ -7828,7 +7828,7 @@ L3653E:
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
         RTS
 L36548:
-        BSETW   $1012,Z,#$4000
+        BSETW   >IoCtl12,Z,#$4000
         RTS
 L36550:
         JSR     OcOutputsReset
@@ -7885,9 +7885,9 @@ L365B6:
 OutputTestLdp:
         BRCLR   >Options033E,#$02,L365D0                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRCLR   >MainLoopPhaseMask,Z,#$40,L365D0
-        LDE     $1062,Z
+        LDE     >IoDriver62,Z
         EORE    #$2000
-        STE     $1062,Z
+        STE     >IoDriver62,Z
 L365D0:
         RTS
 L365D2:
@@ -8138,12 +8138,12 @@ OcOutputsReset:
         BRSET   >EngineStateFlags,Z,#$80,L3688C          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         PSHM    D
         CLRD
-        STD     $1024,Z
-        STD     $1028,Z
-        STD     $102C,Z
-        STD     $1030,Z
-        STD     $1034,Z
-        STD     $1038,Z
+        STD     >IoOcChan0,Z
+        STD     >IoOcChan1,Z
+        STD     >IoOcChan2,Z
+        STD     >IoOcChan3,Z
+        STD     >IoOcChan4,Z
+        STD     >IoOcChan5,Z
         LDAA    #$2B
         BRSET   >Options032B,#$20,L36870                 ; bit 5: spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement
         LDAA    #$2A
@@ -8630,7 +8630,7 @@ QspiOutputStatus:
         TSTE
         LBEQ    L3821A
         BRSET   >CrankFlags2,Z,#$02,L3821A
-        LDD     $1000,Z
+        LDD     >IoInputs0,Z
         ANDD    #$0800
         LBNE    L3821A
         LDAA    >BatteryVolts2,Z
@@ -9380,10 +9380,10 @@ KnockChipConfig:
         PSHM    CCR
         ORP     #$00E0
         BRSET   >SystemFlags945,Z,#$80,L38B0E            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
-        LDE     $1084,Z
+        LDE     >IoKnockRead,Z
         CPE     #$0050
         LBCS    L38B0E
-        BRSET   $1002,Z,#$04,L38B0E
+        BRSET   >IoStatus2,Z,#$04,L38B0E                 ; bit 2: tested by KnockChipConfig
         LDE     #$0005
         STE     >SPCR1,Z
         LDAA    #$27
@@ -11667,7 +11667,7 @@ L3A856:
         STAB    >FanPwmDuty,Z
         BNE     L3A86A
         LDD     #$061B
-        STD     $1068,Z
+        STD     >IoDriver68,Z
         BRA     L3A888
 L3A86A:
         LDE     #$0032
@@ -11675,10 +11675,10 @@ L3A86A:
         EMUL
         LDE     #$1388
         SDE
-        STE     $1046,Z
-        STD     $1048,Z
+        STE     >IoFanPwmA,Z
+        STD     >IoFanPwmB,Z
         LDE     #$C61B
-        STE     $1068,Z
+        STE     >IoDriver68,Z
 L3A888:
         RTS
 
@@ -12516,7 +12516,7 @@ L3B03A:
 ;---------------------------------------------------------------------------------------------------
 PwmC18PeriodCalc:
         LDD     #$E61B
-        STD     $1064,Z
+        STD     >IoDriver64,Z
         LDAB    >PwmC18Duty,Z
         LDE     >PwmC18Period,Z
         CLRA
@@ -12526,11 +12526,11 @@ PwmC18PeriodCalc:
         XGDX
         ADCD    #$0000
         STD     $0C1A,Z
-        STD     $103E,Z
+        STD     >IoPwmC18A,Z
         SUBD    >PwmC18Period,Z
         NEGD
         STD     $0C1E,Z
-        STD     $1040,Z
+        STD     >IoPwmC18B,Z
         BSET    $06C0,Z,#$01
         RTS
 
@@ -12540,11 +12540,11 @@ PwmC18PeriodCalc:
 ;---------------------------------------------------------------------------------------------------
 PwmC18Off:
         LDD     #$261B
-        STD     $1064,Z
+        STD     >IoDriver64,Z
         LDAA    #$64
         STAA    >PwmC18Duty,Z
-        CLRW    $103E,Z
-        CLRW    $1040,Z
+        CLRW    >IoPwmC18A,Z
+        CLRW    >IoPwmC18B,Z
         CLRW    $0C1E,Z
         CLRW    $0C1A,Z
         BSET    >PwmC18Flags,Z,#$10
@@ -12556,10 +12556,10 @@ PwmC18Off:
 ;---------------------------------------------------------------------------------------------------
 PwmC18DutySet:
         LDD     #$061B
-        STD     $1064,Z
+        STD     >IoDriver64,Z
         CLR     >PwmC18Duty,Z
-        CLRW    $103E,Z
-        CLRW    $1040,Z
+        CLRW    >IoPwmC18A,Z
+        CLRW    >IoPwmC18B,Z
         CLRW    $0C1E,Z
         CLRW    $0C1A,Z
         RTS
@@ -13707,9 +13707,9 @@ SpeedCtlCancelMonitor:
         LBEQ    L3C36E
         BRCLR   >EquipmentFlags,Z,#$40,L3C368            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
         BRSET   >FaultSet00,Z,#$80,L3C368                ; bit 7: fault row $0F, no P-code
-        BRSET   $1000,Z,#$01,L3C2E6
+        BRSET   >IoInputs0,Z,#$01,L3C2E6                 ; bit 0: speed control switch input (SpeedCtlSwitchCheck, SpeedCtlCancelMonitor)
         BRSET   >SwitchInputs,Z,#$01,L3C2E6              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
-        BRSET   $1012,Z,#$01,L3C2E6
+        BRSET   >IoCtl12,Z,#$01,L3C2E6
         BRCLR   >MainLoopPhaseMask,Z,#$04,L3C36E
         LDY     #$4386
         JSR     ReportFault
@@ -13758,14 +13758,14 @@ L3C354:
         CBA
         BLS     L3C360
 L3C358:
-        BSETW   $1012,Z,#$0080
+        BSETW   >IoCtl12,Z,#$0080
         BRA     L3C36E
 L3C360:
         BSET    >SpeedCtlFlags2,Z,#$40
 L3C364:
         CLR     >SpeedCtlCancelTimer,Z
 L3C368:
-        BCLRW   $1012,Z,#$0080
+        BCLRW   >IoCtl12,Z,#$0080
 L3C36E:
         RTS
 
@@ -14030,13 +14030,13 @@ Nibble402Add:
 SpeedCtlSwitchCheck:
         BRCLR   >EquipmentFlags,Z,#$40,L3C65A            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
         BRCLR   >SwitchInputs2,Z,#$10,L3C65A             ; bit 4: speed control switch (on/off, probably)
-        BRSET   $1000,Z,#$01,L3C65A
+        BRSET   >IoInputs0,Z,#$01,L3C65A                 ; bit 0: speed control switch input (SpeedCtlSwitchCheck, SpeedCtlCancelMonitor)
         BRSET   >SwitchInputs,Z,#$01,L3C65A              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >FaultSet00,Z,#$80,L3C65A                ; bit 7: fault row $0F, no P-code
         BRSET   >Options032D,#$20,L3C5F4                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
         BRSET   >FaultSet0B,Z,#$04,L3C65A                ; bit 2: fault row $52, no P-code
-        BRCLR   $1013,Z,#$80,L3C65A
-        BRCLR   $1012,Z,#$01,L3C65A
+        BRCLR   >IoCtl13,Z,#$80,L3C65A
+        BRCLR   >IoCtl12,Z,#$01,L3C65A
 L3C5F4:
         LDD     $0940,Z
         ANDA    #$40
@@ -15639,7 +15639,7 @@ PurgePwmOutput:
         CMPA    #$64
         BEQ     L3E45E
         LDE     #$C61B
-        STE     $106C,Z
+        STE     >IoDriver6C,Z
         LDE     #$61A8
         LDAB    #$FA
         MUL
@@ -15648,8 +15648,8 @@ PurgePwmOutput:
         ASLD
         ASLE
 L3E40E:
-        STE     $104E,Z
-        STD     $1050,Z
+        STE     >IoPurgePwmA,Z
+        STD     >IoPurgePwmB,Z
         BRA     L3E466
 L3E418:
         LDAA    >PurgePwmDuty,Z
@@ -15657,7 +15657,7 @@ L3E418:
         CMPA    #$FF
         BEQ     L3E45E
         LDE     #$C61B
-        STE     $106C,Z
+        STE     >IoDriver6C,Z
         LDAB    >PurgePwmDuty,Z
         LDE     >PurgePwmPeriodCount,Z
         CLRA
@@ -15669,16 +15669,16 @@ L3E418:
         TDE
         SUBD    >PurgePwmPeriodCount,Z
         NEGD
-        STD     $104E,Z
-        STE     $1050,Z
+        STD     >IoPurgePwmA,Z
+        STE     >IoPurgePwmB,Z
         BRA     L3E466
 L3E454:
         LDD     #$061B
-        STD     $106C,Z
+        STD     >IoDriver6C,Z
         BRA     L3E466
 L3E45E:
         LDD     #$261B
-        STD     $106C,Z
+        STD     >IoDriver6C,Z
 L3E466:
         PULM    X,E,D
         RTS
