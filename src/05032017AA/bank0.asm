@@ -552,8 +552,8 @@ ThermistorValue5:
         dc.b    $00                                      ; Byte used with; read by ProcessCoolantTemp.
         dc.b    $00,$00,$00,$80,$00,$00,$00,$00,$04,$80,$27,$00,$4E,$03,$8D,$02
         dc.b    $AC,$01,$FF,$FF,$4D,$1C,$03,$42,$96,$42,$1C,$09
-StartThrottleClosedAdder:
-        dc.b    $03                                      ; Byte added to ThrottleClosed; read by Reset.
+ThrottleClosedResetMargin:
+        dc.b    $03                                      ; At reset: closed-throttle value plus this margin is compared with ThrottleClosedDefault
 ThrottleRelearnMapMax:
         dc.b    $5E                                      ; Closed-throttle relearn runs below this MAP
 ThrottleRelearnRpmMin:
@@ -1896,8 +1896,8 @@ CrankCoolantFloor:
         dc.b    $63                                      ; Cranking fuel: CrankCoolant is raised to at least this value while the throttle is not closed
 CrankClearFloodThrottle:
         dc.b    $80                                      ; Cranking: throttle above this value clears the cranking pulse (clear flood)
-StartCoolantThresh1:
-        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Reset, CalcEngineRpm.
+HotRestartCoolantMin:
+        dc.b    $58                                      ; Coolant at or above which $0774,Z bit 4 (warm engine for the per-event fuel) sets
         dc.b    $01
 FuelEventCoolantMax:
         dc.b    $58                                      ; Per-event fuel: the coolant correction of Sub_12680 applies below this coolant
@@ -8545,10 +8545,10 @@ FuelEventValue11:
         dc.b    $00,$00                                  ; Word used with; read by Sub_247A8.
 SegmentRpmConst:
         dc.b    $19,$6E,$6A,$AA                          ; Constant divided by the segment period to give SegmentRpmFast (long word)
-StartV000FInit:
-        dc.b    $19,$6E,$6A,$AA                          ; Long stored into V000F; read by Reset, Sub_2A906.
-StartV0013Init:
-        dc.b    $19,$6E,$6A,$AA                          ; Long stored into V0013; read by Reset, Sub_2A906.
+SegmentRpmConst2:
+        dc.b    $19,$6E,$6A,$AA                          ; Start value of the segment time pair $000F,Z (long word)
+SegmentRpmConst3:
+        dc.b    $19,$6E,$6A,$AA                          ; Start value of the segment time pair $0013,Z (long word)
 MisfirePeriodOffsetHi:
         dc.b    $00,$BA                                  ; Misfire monitor: high word of the period offset added to and subtracted from the segment times
 MisfirePeriodOffsetLo:
@@ -9299,18 +9299,18 @@ O2Adder7:
         dc.b    $0A                                      ; Byte added to; read by Sub_155C8.
 O2V0E06Switch:
         dc.b    $01,$3F                                  ; Word tested (zero = off) V0E06; read by Sub_14802, Sub_252A8.
-CalTimeThresh:
-        dc.b    $13                                      ; Byte compared with Count3s; read by Sub_23C3E.
-CalCoolantThresh3:
-        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_23C3E.
-CalMapLastThresh:
-        dc.b    $02                                      ; Byte compared with MapLast; read by Sub_23C3E.
-CalV0ABAThresh:
-        dc.b    $02,$80                                  ; Word compared with V0ABA; read by Sub_23C3E.
-CalThrottleDeltaThresh:
-        dc.b    $02                                      ; Byte compared with ThrottleDelta; read by Sub_23C3E.
-CalRpmThresh1:
-        dc.b    $12                                      ; Byte compared with EngineRpm; read by Sub_23C3E.
+MonSteadyTimeMin:
+        dc.b    $13                                      ; Steady-state condition (Sub_23C3E): time since start at or above this value
+MonSteadyCoolantMin:
+        dc.b    $CD                                      ; Steady-state condition: coolant above this value
+MonSteadyMapDelta:
+        dc.b    $02                                      ; Steady-state condition: MAP change below this value
+MonSteadyRateMax:
+        dc.b    $02,$80                                  ; Steady-state condition: size of $0ABA,Z below this value
+MonSteadyThrottleDelta:
+        dc.b    $02                                      ; Steady-state condition: throttle change below this value
+MonSteadyRpmMin:
+        dc.b    $12                                      ; Steady-state condition: engine rpm above this value
 CalRpmThresh2:
         dc.b    $21                                      ; Byte compared with EngineRpm; read by Sub_23C3E.
 CalRpmThresh3:
@@ -9471,12 +9471,12 @@ CalMapRawThresh:
         dc.b    $36                                      ; Byte compared with MapRaw; read by Sub_21E38.
 SensorThrottleThresh4:
         dc.b    $3D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap.
-StartAcSensorRawThresh1:
-        dc.b    $FB                                      ; Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56.
-StartAcSensorRawThresh2:
-        dc.b    $03                                      ; Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56.
-StartAcSensorValue:
-        dc.b    $E0                                      ; Byte used with AcSensor; read by Reset, Sub_2CCA8.
+AcSensorRawHigh:
+        dc.b    $FB                                      ; A/C sensor circuit check: raw value above this counts as open/high
+AcSensorRawLow:
+        dc.b    $03                                      ; A/C sensor circuit check: raw value below this counts as shorted/low
+AcSensorFaultValue:
+        dc.b    $E0                                      ; A/C sensor value used with a sensor fault
 CoolantRawLow:
         dc.b    $1A                                      ; Coolant sensor raw value below which it counts as shorted (fault)
 CoolantRawHigh:
@@ -9493,16 +9493,16 @@ DiagCoolantThresh6:
         dc.b    $C7                                      ; Byte compared with CoolantTemp; read by Sub_231EC.
 DiagV06C9Thresh:
         dc.b    $FF                                      ; Byte compared with V06C9; read by Sub_231EC.
-StartAirTempRawThresh1:
-        dc.b    $1A                                      ; Byte compared with AirTempRaw; read by Reset, ProcessAirTemp.
-StartAirTempRawThresh2:
-        dc.b    $FD                                      ; Byte compared with AirTempRaw; read by Reset, ProcessAirTemp.
-StartValue2:
-        dc.b    $AE                                      ; Byte used with; read by Reset, ProcessAirTemp.
-StartBatteryTempRawThresh1:
-        dc.b    $05                                      ; Byte compared with BatteryTempRaw; read by Reset, Sub_2C636.
-StartBatteryTempRawThresh2:
-        dc.b    $FA                                      ; Byte compared with BatteryTempRaw; read by Reset, Sub_2C636.
+AirTempRawLow:
+        dc.b    $1A                                      ; Air temperature sensor raw value below which it counts as shorted
+AirTempRawHigh:
+        dc.b    $FD                                      ; Air temperature sensor raw value at or above which it counts as open
+AirTempFaultValue:
+        dc.b    $AE                                      ; Air temperature used with a sensor fault (otherwise coolant is used)
+BatteryTempRawLow:
+        dc.b    $05                                      ; Battery temperature sensor raw value below which it counts as shorted
+BatteryTempRawHigh:
+        dc.b    $FA                                      ; Battery temperature sensor raw value above which it counts as open
 SensorThresh19:
         dc.b    $FF                                      ; Byte compared with; read by Sub_2C7FE.
 SensorThresh20:
@@ -15695,10 +15695,10 @@ L0D4A2:
         AIY     #$01
         CPX     #$2CB7
         BLS     L0D4A2
-        LDED    >StartV000FInit
+        LDED    >SegmentRpmConst2
         STE     $000F,Z
         STD     $11,Z
-        LDED    >StartV0013Init
+        LDED    >SegmentRpmConst3
         STE     $0013,Z
         STD     $15,Z
         JSR     Sub_208D6
@@ -16024,11 +16024,11 @@ L0D8A0:
         LDX     #ResetCoolantInit
         JSR     Lookup2D
         STAA    $0C00,Z
-        LDAB    >StartValue2
+        LDAB    >AirTempFaultValue
         LDAA    >AirTempRaw,Z
-        CMPA    >StartAirTempRawThresh2
+        CMPA    >AirTempRawHigh
         BCC     L0D8F4
-        CMPA    >StartAirTempRawThresh1
+        CMPA    >AirTempRawLow
         BCS     L0D8F4
         LDX     #ThermistorHot
         BRCLR   $1012,Z,#$10,L0D8F0
@@ -16046,11 +16046,11 @@ L0D8F4:
         BCS     L0D914
         BSET    $06C7,Z,#$08
 L0D914:
-        LDAB    >StartAcSensorValue
+        LDAB    >AcSensorFaultValue
         LDAA    >AcSensorRaw,Z
-        CMPA    >StartAcSensorRawThresh1
+        CMPA    >AcSensorRawHigh
         BCC     L0D930
-        CMPA    >StartAcSensorRawThresh2
+        CMPA    >AcSensorRawLow
         BCS     L0D930
         LDX     #AcSensorCurve
         JSR     Lookup2D
@@ -16064,9 +16064,9 @@ L0D930:
 L0D946:
         LDAB    #$BE
         LDAA    >BatteryTempRaw,Z
-        CMPA    >StartBatteryTempRawThresh2
+        CMPA    >BatteryTempRawHigh
         BHI     L0D986
-        CMPA    >StartBatteryTempRawThresh1
+        CMPA    >BatteryTempRawLow
         BCS     L0D986
         LDX     #Thermistor3Curve
         BRCLR   >Options0330,#$04,L0D966
@@ -16119,7 +16119,7 @@ L0D9C2:
         STAA    >Throttle,Z
         STAA    >ThrottleLast,Z
         LDAB    <ThrottleClosed,Z
-        ADDB    >StartThrottleClosedAdder
+        ADDB    >ThrottleClosedResetMargin
         CMPB    >ThrottleClosedDefault
         BCS     L0DA14
         ADDA    #$06
@@ -16173,7 +16173,7 @@ L0DA66:
         BCLR    $50,Z,#$20
 L0DAA2:
         LDAA    >CoolantTemp,Z
-        CMPA    >StartCoolantThresh1
+        CMPA    >HotRestartCoolantMin
         BCS     L0DAB0
         BSET    $0774,Z,#$10
 L0DAB0:

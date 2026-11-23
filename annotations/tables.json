@@ -4150,12 +4150,10 @@
    "category": "Sensors"
   },
   "04C3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "ThrottleClosedResetMargin",
+   "desc": "At reset: closed-throttle value plus this margin is compared with ThrottleClosedDefault",
    "category": "Startup",
-   "desc": "Byte added to ThrottleClosed; read by Reset.",
-   "name": "StartThrottleClosedAdder"
+   "size": 1
   },
   "04C4": {
    "name": "ThrottleRelearnMapMax",
@@ -5929,12 +5927,11 @@
    "category": "Fuel"
   },
   "0A7E": {
-   "size": 1,
+   "name": "HotRestartCoolantMin",
+   "desc": "Coolant at or above which $0774,Z bit 4 (warm engine for the per-event fuel) sets",
    "unit": "tempc",
-   "auto": true,
    "category": "Startup",
-   "desc": "Byte compared with CoolantTemp; read by Reset, CalcEngineRpm.",
-   "name": "StartCoolantThresh1"
+   "size": 1
   },
   "0A80": {
    "name": "FuelEventCoolantMax",
@@ -11121,20 +11118,16 @@
    "size": 4
   },
   "2F70": {
-   "size": 4,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Long stored into V000F; read by Reset, Sub_2A906.",
-   "name": "StartV000FInit"
+   "name": "SegmentRpmConst2",
+   "desc": "Start value of the segment time pair $000F,Z (long word)",
+   "category": "Sensors",
+   "size": 4
   },
   "2F74": {
-   "size": 4,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Long stored into V0013; read by Reset, Sub_2A906.",
-   "name": "StartV0013Init"
+   "name": "SegmentRpmConst3",
+   "desc": "Start value of the segment time pair $0013,Z (long word)",
+   "category": "Sensors",
+   "size": 4
   },
   "2F78": {
    "name": "MisfirePeriodOffsetHi",
@@ -12542,28 +12535,25 @@
    "name": "SensorValue15"
   },
   "32A7": {
-   "size": 1,
+   "name": "MonEnableBattTempMin",
+   "desc": "OBD monitor enable flags ($9C,Z, Sub_21800): battery temperature at or above this value",
    "unit": "tempc",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with BatteryTemp; read by Sub_21800.",
-   "name": "CalBatteryTempThresh2"
+   "category": "Diagnostics",
+   "size": 1
   },
   "32A8": {
-   "size": 1,
+   "name": "MonEnableBaroMin",
+   "desc": "OBD monitor enable flags: barometric pressure at or above this value",
    "unit": "kpa",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with Baro; read by Sub_21800.",
-   "name": "CalBaroThresh"
+   "category": "Diagnostics",
+   "size": 1
   },
   "32A9": {
-   "size": 1,
+   "name": "MonEnableVoltsMin",
+   "desc": "OBD monitor enable flags: battery voltage above this value",
    "unit": "volt16",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with BatteryVolts2; read by Sub_21800.",
-   "name": "CalVoltsThresh2"
+   "category": "Diagnostics",
+   "size": 1
   },
   "32AA": {
    "size": 1,
@@ -12922,52 +12912,43 @@
    "name": "O2V0E06Switch"
   },
   "3381": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with Count3s; read by Sub_23C3E.",
-   "name": "CalTimeThresh"
+   "name": "MonSteadyTimeMin",
+   "desc": "Steady-state condition (Sub_23C3E): time since start at or above this value",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3382": {
-   "size": 1,
+   "name": "MonSteadyCoolantMin",
+   "desc": "Steady-state condition: coolant above this value",
    "unit": "tempc",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with CoolantTemp; read by Sub_23C3E.",
-   "name": "CalCoolantThresh3"
+   "category": "Diagnostics",
+   "size": 1
   },
   "3383": {
-   "size": 1,
+   "name": "MonSteadyMapDelta",
+   "desc": "Steady-state condition: MAP change below this value",
    "unit": "kpa",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with MapLast; read by Sub_23C3E.",
-   "name": "CalMapLastThresh"
+   "category": "Diagnostics",
+   "size": 1
   },
   "3384": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Word compared with V0ABA; read by Sub_23C3E.",
-   "name": "CalV0ABAThresh"
+   "name": "MonSteadyRateMax",
+   "desc": "Steady-state condition: size of $0ABA,Z below this value",
+   "category": "Diagnostics",
+   "size": 2
   },
   "3386": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with ThrottleDelta; read by Sub_23C3E.",
-   "name": "CalThrottleDeltaThresh"
+   "name": "MonSteadyThrottleDelta",
+   "desc": "Steady-state condition: throttle change below this value",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3387": {
-   "size": 1,
+   "name": "MonSteadyRpmMin",
+   "desc": "Steady-state condition: engine rpm above this value",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with EngineRpm; read by Sub_23C3E.",
-   "name": "CalRpmThresh1"
+   "category": "Diagnostics",
+   "size": 1
   },
   "3388": {
    "size": 1,
@@ -13671,28 +13652,22 @@
    "name": "SensorThrottleThresh4"
   },
   "4AB1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56.",
-   "name": "StartAcSensorRawThresh1"
+   "name": "AcSensorRawHigh",
+   "desc": "A/C sensor circuit check: raw value above this counts as open/high",
+   "category": "Sensors",
+   "size": 1
   },
   "4AB2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56.",
-   "name": "StartAcSensorRawThresh2"
+   "name": "AcSensorRawLow",
+   "desc": "A/C sensor circuit check: raw value below this counts as shorted/low",
+   "category": "Sensors",
+   "size": 1
   },
   "4AB3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte used with AcSensor; read by Reset, Sub_2CCA8.",
-   "name": "StartAcSensorValue"
+   "name": "AcSensorFaultValue",
+   "desc": "A/C sensor value used with a sensor fault",
+   "category": "Sensors",
+   "size": 1
   },
   "4AB4": {
    "name": "CoolantRawLow",
@@ -13754,44 +13729,35 @@
    "name": "DiagV06C9Thresh"
   },
   "4ABC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with AirTempRaw; read by Reset, ProcessAirTemp.",
-   "name": "StartAirTempRawThresh1"
+   "name": "AirTempRawLow",
+   "desc": "Air temperature sensor raw value below which it counts as shorted",
+   "category": "Sensors",
+   "size": 1
   },
   "4ABD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with AirTempRaw; read by Reset, ProcessAirTemp.",
-   "name": "StartAirTempRawThresh2"
+   "name": "AirTempRawHigh",
+   "desc": "Air temperature sensor raw value at or above which it counts as open",
+   "category": "Sensors",
+   "size": 1
   },
   "4ABE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte used with; read by Reset, ProcessAirTemp.",
-   "name": "StartValue2"
+   "name": "AirTempFaultValue",
+   "desc": "Air temperature used with a sensor fault (otherwise coolant is used)",
+   "unit": "tempc",
+   "category": "Sensors",
+   "size": 1
   },
   "4ABF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with BatteryTempRaw; read by Reset, Sub_2C636.",
-   "name": "StartBatteryTempRawThresh1"
+   "name": "BatteryTempRawLow",
+   "desc": "Battery temperature sensor raw value below which it counts as shorted",
+   "category": "Sensors",
+   "size": 1
   },
   "4AC0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with BatteryTempRaw; read by Reset, Sub_2C636.",
-   "name": "StartBatteryTempRawThresh2"
+   "name": "BatteryTempRawHigh",
+   "desc": "Battery temperature sensor raw value above which it counts as open",
+   "category": "Sensors",
+   "size": 1
   },
   "4AC1": {
    "size": 1,

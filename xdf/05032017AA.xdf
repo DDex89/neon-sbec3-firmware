@@ -18882,8 +18882,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x36A" flags="0x0">
-  <title>StartThrottleClosedAdder</title>
-  <description>Byte added to ThrottleClosed; read by Reset. $043D</description>
+  <title>ThrottleClosedResetMargin</title>
+  <description>At reset: closed-throttle value plus this margin is compared with ThrottleClosedDefault $043D</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x43D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21607,8 +21607,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x450" flags="0x0">
-  <title>StartCoolantThresh1</title>
-  <description>Byte compared with CoolantTemp; read by Reset, CalcEngineRpm. $0A7C</description>
+  <title>HotRestartCoolantMin</title>
+  <description>Coolant at or above which $0774,Z bit 4 (warm engine for the per-event fuel) sets $0A7C</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0xA7C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -29950,9 +29950,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x70B" flags="0x0">
-  <title>StartV000FInit</title>
-  <description>Long stored into V000F; read by Reset, Sub_2A906. $52DE</description>
-  <CATEGORYMEM index="0" category="9" />
+  <title>SegmentRpmConst2</title>
+  <description>Start value of the segment time pair $000F,Z (long word) $52DE</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x52DE" mmedelementsizebits="32" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29962,9 +29962,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x70C" flags="0x0">
-  <title>StartV0013Init</title>
-  <description>Long stored into V0013; read by Reset, Sub_2A906. $52E2</description>
-  <CATEGORYMEM index="0" category="9" />
+  <title>SegmentRpmConst3</title>
+  <description>Start value of the segment time pair $0013,Z (long word) $52E2</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x52E2" mmedelementsizebits="32" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32542,9 +32542,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7E3" flags="0x0">
-  <title>CalTimeThresh</title>
-  <description>Byte compared with Count3s; read by Sub_23C3E. $5794</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MonSteadyTimeMin</title>
+  <description>Steady-state condition (Sub_23C3E): time since start at or above this value $5794</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5794" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32554,9 +32554,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7E4" flags="0x0">
-  <title>CalCoolantThresh3</title>
-  <description>Byte compared with CoolantTemp; read by Sub_23C3E. $5795</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MonSteadyCoolantMin</title>
+  <description>Steady-state condition: coolant above this value $5795</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5795" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -32566,9 +32566,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7E5" flags="0x0">
-  <title>CalMapLastThresh</title>
-  <description>Byte compared with MapLast; read by Sub_23C3E. $5796</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MonSteadyMapDelta</title>
+  <description>Steady-state condition: MAP change below this value $5796</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5796" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -32578,9 +32578,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7E6" flags="0x0">
-  <title>CalV0ABAThresh</title>
-  <description>Word compared with V0ABA; read by Sub_23C3E. $5797</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MonSteadyRateMax</title>
+  <description>Steady-state condition: size of $0ABA,Z below this value $5797</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5797" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32590,9 +32590,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7E7" flags="0x0">
-  <title>CalThrottleDeltaThresh</title>
-  <description>Byte compared with ThrottleDelta; read by Sub_23C3E. $5799</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MonSteadyThrottleDelta</title>
+  <description>Steady-state condition: throttle change below this value $5799</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5799" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32602,9 +32602,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7E8" flags="0x0">
-  <title>CalRpmThresh1</title>
-  <description>Byte compared with EngineRpm; read by Sub_23C3E. $579A</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MonSteadyRpmMin</title>
+  <description>Steady-state condition: engine rpm above this value $579A</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x579A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -33262,9 +33262,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x81F" flags="0x0">
-  <title>StartAcSensorRawThresh1</title>
-  <description>Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56. $5806</description>
-  <CATEGORYMEM index="0" category="9" />
+  <title>AcSensorRawHigh</title>
+  <description>A/C sensor circuit check: raw value above this counts as open/high $5806</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x5806" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33274,9 +33274,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x820" flags="0x0">
-  <title>StartAcSensorRawThresh2</title>
-  <description>Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56. $5807</description>
-  <CATEGORYMEM index="0" category="9" />
+  <title>AcSensorRawLow</title>
+  <description>A/C sensor circuit check: raw value below this counts as shorted/low $5807</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x5807" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33286,9 +33286,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x821" flags="0x0">
-  <title>StartAcSensorValue</title>
-  <description>Byte used with AcSensor; read by Reset, Sub_2CCA8. $5808</description>
-  <CATEGORYMEM index="0" category="9" />
+  <title>AcSensorFaultValue</title>
+  <description>A/C sensor value used with a sensor fault $5808</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x5808" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33394,9 +33394,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x82A" flags="0x0">
-  <title>StartAirTempRawThresh1</title>
-  <description>Byte compared with AirTempRaw; read by Reset, ProcessAirTemp. $5811</description>
-  <CATEGORYMEM index="0" category="9" />
+  <title>AirTempRawLow</title>
+  <description>Air temperature sensor raw value below which it counts as shorted $5811</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x5811" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33406,9 +33406,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x82B" flags="0x0">
-  <title>StartAirTempRawThresh2</title>
-  <description>Byte compared with AirTempRaw; read by Reset, ProcessAirTemp. $5812</description>
-  <CATEGORYMEM index="0" category="9" />
+  <title>AirTempRawHigh</title>
+  <description>Air temperature sensor raw value at or above which it counts as open $5812</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x5812" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33418,21 +33418,21 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x82C" flags="0x0">
-  <title>StartValue2</title>
-  <description>Byte used with; read by Reset, ProcessAirTemp. $5813</description>
-  <CATEGORYMEM index="0" category="9" />
+  <title>AirTempFaultValue</title>
+  <description>Air temperature used with a sensor fault (otherwise coolant is used) $5813</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x5813" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
+  <units>deg C</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X-128">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x82D" flags="0x0">
-  <title>StartBatteryTempRawThresh1</title>
-  <description>Byte compared with BatteryTempRaw; read by Reset, Sub_2C636. $5814</description>
-  <CATEGORYMEM index="0" category="9" />
+  <title>BatteryTempRawLow</title>
+  <description>Battery temperature sensor raw value below which it counts as shorted $5814</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x5814" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33442,9 +33442,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x82E" flags="0x0">
-  <title>StartBatteryTempRawThresh2</title>
-  <description>Byte compared with BatteryTempRaw; read by Reset, Sub_2C636. $5815</description>
-  <CATEGORYMEM index="0" category="9" />
+  <title>BatteryTempRawHigh</title>
+  <description>Battery temperature sensor raw value above which it counts as open $5815</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x5815" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>

@@ -1627,12 +1627,10 @@
    "category": "Sensors"
   },
   "040A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "ThrottleClosedResetMargin",
+   "desc": "At reset: closed-throttle value plus this margin is compared with ThrottleClosedDefault",
    "category": "Startup",
-   "desc": "Byte added to ThrottleClosed; read by Reset.",
-   "name": "StartThrottleClosedAdder"
+   "size": 1
   },
   "040D": {
    "name": "ThrottleClosedDefault",
@@ -4100,20 +4098,16 @@
    "size": 4
   },
   "28E9": {
-   "size": 4,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Long stored into V000F; read by Reset, Sub_2A906.",
-   "name": "StartV000FInit"
+   "name": "SegmentRpmConst2",
+   "desc": "Start value of the segment time pair $000F,Z (long word)",
+   "category": "Sensors",
+   "size": 4
   },
   "28ED": {
-   "size": 4,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Long stored into V0013; read by Reset, Sub_2A906.",
-   "name": "StartV0013Init"
+   "name": "SegmentRpmConst3",
+   "desc": "Start value of the segment time pair $0013,Z (long word)",
+   "category": "Sensors",
+   "size": 4
   },
   "28F1": {
    "name": "MisfirePeriodOffsetHi",
@@ -5398,28 +5392,22 @@
    "name": "SensorThrottleThresh4"
   },
   "414A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56.",
-   "name": "StartAcSensorRawThresh1"
+   "name": "AcSensorRawHigh",
+   "desc": "A/C sensor circuit check: raw value above this counts as open/high",
+   "category": "Sensors",
+   "size": 1
   },
   "414B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56.",
-   "name": "StartAcSensorRawThresh2"
+   "name": "AcSensorRawLow",
+   "desc": "A/C sensor circuit check: raw value below this counts as shorted/low",
+   "category": "Sensors",
+   "size": 1
   },
   "414C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte used with AcSensor; read by Reset, Sub_2CCA8.",
-   "name": "StartAcSensorValue"
+   "name": "AcSensorFaultValue",
+   "desc": "A/C sensor value used with a sensor fault",
+   "category": "Sensors",
+   "size": 1
   },
   "414D": {
    "name": "CoolantRawLow",
@@ -5441,44 +5429,35 @@
    "size": 1
   },
   "4154": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with AirTempRaw; read by Reset, ProcessAirTemp.",
-   "name": "StartAirTempRawThresh1"
+   "name": "AirTempRawLow",
+   "desc": "Air temperature sensor raw value below which it counts as shorted",
+   "category": "Sensors",
+   "size": 1
   },
   "4155": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with AirTempRaw; read by Reset, ProcessAirTemp.",
-   "name": "StartAirTempRawThresh2"
+   "name": "AirTempRawHigh",
+   "desc": "Air temperature sensor raw value at or above which it counts as open",
+   "category": "Sensors",
+   "size": 1
   },
   "4156": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte used with; read by Reset, ProcessAirTemp.",
-   "name": "StartValue2"
+   "name": "AirTempFaultValue",
+   "desc": "Air temperature used with a sensor fault (otherwise coolant is used)",
+   "unit": "tempc",
+   "category": "Sensors",
+   "size": 1
   },
   "4157": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with BatteryTempRaw; read by Reset, Sub_2C636.",
-   "name": "StartBatteryTempRawThresh1"
+   "name": "BatteryTempRawLow",
+   "desc": "Battery temperature sensor raw value below which it counts as shorted",
+   "category": "Sensors",
+   "size": 1
   },
   "4158": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte compared with BatteryTempRaw; read by Reset, Sub_2C636.",
-   "name": "StartBatteryTempRawThresh2"
+   "name": "BatteryTempRawHigh",
+   "desc": "Battery temperature sensor raw value above which it counts as open",
+   "category": "Sensors",
+   "size": 1
   },
   "416F": {
    "name": "O2RawHigh",

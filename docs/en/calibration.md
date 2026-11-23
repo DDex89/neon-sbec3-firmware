@@ -176,7 +176,7 @@ add or subtract (`LDAA >CoolantTemp,Z` then `CMPA $2853`), or what a loaded valu
 or stored into. That gives the unit (temperature, rpm, kPa, volts) and a structural name: the
 prefix of the tables of the same routine or the subsystem, the variable, and the role (`Thresh` for
 a compare, `Adder`, `Offset`, `Factor`, `Init` for a value stored into RAM, `Value` otherwise),
-numbered when repeated. 555 constants have hand names from the code read so far (idle, spark,
+numbered when repeated. 576 constants have hand names from the code read so far (idle, spark,
 knock, EGR, fan, A/C, diagnostics, the fuel constants and limits); the rest keep the structural
 name with * in the catalogue. Word rpm values use the unit `rpmw` (rpm = x / 8).
 
@@ -295,7 +295,7 @@ applies only to the reference image.
   duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
   subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
   them on a running car would settle them.
-- 893 constants have structural names only, and about 270 RAM variables are still known by
+- 872 constants have structural names only, and about 270 RAM variables are still known by
   address.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.

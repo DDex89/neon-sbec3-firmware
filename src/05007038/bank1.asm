@@ -4873,14 +4873,14 @@ L132DA:
 L132DE:
         BCLR    $0200,Z,#$03
         LDY     #$3AA3
-        CMPA    >StartAirTempRawThresh2
+        CMPA    >AirTempRawHigh
         BHI     L1332E
         BRCLR   $0222,Z,#$04,L132F8
         JSR     Sub_19BD8
         BRA     L13356
 L132F8:
         LDY     #$3A99
-        CMPA    >StartAirTempRawThresh1
+        CMPA    >AirTempRawLow
         BCS     L1332E
         BRCLR   $0222,Z,#$02,L1330E
         JSR     Sub_19BD8
@@ -4902,7 +4902,7 @@ L13322:
 L1332E:
         JSR     Sub_19EE4
         BCC     L13356
-        LDAA    >StartValue2
+        LDAA    >AirTempFaultValue
         BRSET   $0023,Z,#$80,L13340
         LDAA    $0C,Z
 L13340:
@@ -4924,14 +4924,14 @@ L1335A:
 Sub_1335C:
         LDAA    >BatteryTempRaw,Z
         LDY     #$3E63
-        CMPA    >StartBatteryTempRawThresh2
+        CMPA    >BatteryTempRawHigh
         BHI     L1338C
         BRCLR   $022E,Z,#$04,L13376
         JSR     Sub_19BD8
         BRA     L133BA
 L13376:
         LDY     #$3E59
-        CMPA    >StartBatteryTempRawThresh1
+        CMPA    >BatteryTempRawLow
         BCS     L1338C
         BRCLR   $022E,Z,#$02,L13396
         JSR     Sub_19BD8
@@ -5211,14 +5211,14 @@ L135FA:
 L135FE:
         LDAA    >AcSensorRaw,Z
         LDY     #$3BE3
-        CMPA    >StartAcSensorRawThresh1
+        CMPA    >AcSensorRawHigh
         BHI     L1363C
         BRCLR   $0226,Z,#$04,L13618
         JSR     Sub_19BD8
         BRA     L13650
 L13618:
         LDY     #$3BED
-        CMPA    >StartAcSensorRawThresh2
+        CMPA    >AcSensorRawLow
         BCS     L1363C
         BRCLR   $0226,Z,#$08,L1362E
         JSR     Sub_19BD8
@@ -5232,7 +5232,7 @@ L1363C:
         BRCLR   $0056,Z,#$80,L13650
         JSR     Sub_19EE4
         BCC     L13650
-        LDAA    >StartAcSensorValue
+        LDAA    >AcSensorFaultValue
         STAA    >AcSensor,Z
 L13650:
         RTS
@@ -6521,9 +6521,9 @@ Sub_14378:
         BRSET   $0056,Z,#$80,L143D2
         BRCLR   >Options0331,#$80,L14394
         LDAA    >AcSensorRaw,Z
-        CMPA    >StartAcSensorRawThresh1
+        CMPA    >AcSensorRawHigh
         BHI     L14394
-        CMPA    >StartAcSensorRawThresh2
+        CMPA    >AcSensorRawLow
         BHI     L143B8
 L14394:
         BRCLR   >Options0331,#$40,L143B0
@@ -13139,10 +13139,10 @@ L18B22:
 ;---------------------------------------------------------------------------------------------------
 Sub_18B2E:
         BRCLR   >MisfireOptions,#$10,L18B54
-        LDED    >StartV000FInit
+        LDED    >SegmentRpmConst2
         STE     $0037,Z
         STD     $39,Z
-        LDED    >StartV0013Init
+        LDED    >SegmentRpmConst3
         STE     $003B,Z
         STD     $3D,Z
         CLRW    $00E9,Z
@@ -13215,7 +13215,7 @@ L18C16:
         LDX     #$803B
         TZY
         LDY     #$80ED
-        LDED    >StartV0013Init
+        LDED    >SegmentRpmConst3
         JSR     Sub_199B8
         LDD     $01F8,Z
         ADDD    $028C,Z
@@ -13242,7 +13242,7 @@ L18C68:
         LDX     #$8037
         TZY
         LDY     #$80EB
-        LDED    >StartV000FInit
+        LDED    >SegmentRpmConst2
         JSR     Sub_199B8
         BRCLR   $02C7,Z,#$20,L18C8A
         LDD     $E9,Z

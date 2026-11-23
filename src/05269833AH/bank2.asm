@@ -1797,7 +1797,7 @@ Sub_21800:
 L2180C:
         BRSET   $06B4,Z,#$01,L21822
         LDAA    >BatteryTemp,Z
-        CMPA    >CalBatteryTempThresh2
+        CMPA    >MonEnableBattTempMin
         BCS     L21822
         BCLR    $9C,Z,#$01
         BRA     L21826
@@ -1806,7 +1806,7 @@ L21822:
 L21826:
         BRSET   $06B4,Z,#$20,L2183A
         LDAA    <Baro,Z
-        CMPA    >CalBaroThresh
+        CMPA    >MonEnableBaroMin
         BCS     L2183A
         BCLR    $9C,Z,#$02
         BRA     L2183E
@@ -1869,7 +1869,7 @@ L218EA:
         BRSET   $0501,Z,#$20,L21906
         BRSET   $0500,Z,#$08,L21906
         LDAA    >BatteryVolts2,Z
-        CMPA    >CalVoltsThresh2
+        CMPA    >MonEnableVoltsMin
         BLS     L21906
         BCLR    $9C,Z,#$04
         BRA     L2190A
@@ -4948,7 +4948,7 @@ Sub_23A6A:
         LDAA    $0ABD,Z
         LBNE    L23B0C
         LDAA    >EngineRpm,Z
-        CMPA    >CalRpmThresh1
+        CMPA    >MonSteadyRpmMin
         BLS     L23AB2
         CMPA    >CalRpmThresh3
         BCS     L23AC8
@@ -4965,23 +4965,23 @@ L23AC8:
         BPL     L23AD0
         NEGD
 L23AD0:
-        CPD     >CalV0ABAThresh
+        CPD     >MonSteadyRateMax
         BCC     L23B0C
         LDAA    >ThrottleDelta,Z
-        CMPA    >CalThrottleDeltaThresh
+        CMPA    >MonSteadyThrottleDelta
         BCC     L23B0C
         LDAA    >MapLast,Z
         SUBA    >Map,Z
         BPL     L23AEC
         NEGA
 L23AEC:
-        CMPA    >CalMapLastThresh
+        CMPA    >MonSteadyMapDelta
         BCC     L23B0C
         LDAA    >CoolantTemp,Z
-        CMPA    >CalCoolantThresh3
+        CMPA    >MonSteadyCoolantMin
         BLS     L23B0C
         LDAA    >Count3s,Z
-        CMPA    >CalTimeThresh
+        CMPA    >MonSteadyTimeMin
         BCS     L23B0C
         BSET    $06BC,Z,#$02
         BRA     L23B12
@@ -11012,10 +11012,10 @@ L2A8FA:
 ;---------------------------------------------------------------------------------------------------
 Sub_2A906:
         BRCLR   >MisfireOptions,#$10,L2A92C
-        LDED    >StartV000FInit
+        LDED    >SegmentRpmConst2
         STE     $000F,Z
         STD     $11,Z
-        LDED    >StartV0013Init
+        LDED    >SegmentRpmConst3
         STE     $0013,Z
         STD     $15,Z
         CLRW    $00DE,Z
@@ -11088,7 +11088,7 @@ L2A9F2:
         LDX     #$8013
         TZY
         LDY     #$80E2
-        LDED    >StartV0013Init
+        LDED    >SegmentRpmConst3
         JSR     Sub_2B934
         LDD     $04F8,Z
         ADDD    $05C8,Z
@@ -11115,7 +11115,7 @@ L2AA44:
         LDX     #$800F
         TZY
         LDY     #$80E0
-        LDED    >StartV000FInit
+        LDED    >SegmentRpmConst2
         JSR     Sub_2B934
         BRCLR   $0626,Z,#$20,L2AA66
         LDD     $DE,Z
@@ -12977,14 +12977,14 @@ L2C324:
 L2C328:
         BCLR    $06C7,Z,#$03
         LDY     #$41CC
-        CMPA    >StartAirTempRawThresh2
+        CMPA    >AirTempRawHigh
         BHI     L2C37C
         BRCLR   $0506,Z,#$04,L2C344
         JSR     Sub_24160
         LBRA    L2C3A0
 L2C344:
         LDY     #$41C2
-        CMPA    >StartAirTempRawThresh1
+        CMPA    >AirTempRawLow
         BCS     L2C37C
         BRCLR   $0506,Z,#$02,L2C35C
         JSR     Sub_24160
@@ -13006,7 +13006,7 @@ L2C370:
 L2C37C:
         JSR     Sub_245A8
         BCC     L2C3A0
-        LDAA    >StartValue2
+        LDAA    >AirTempFaultValue
         BRSET   $06B4,Z,#$80,L2C390
         LDAA    >CoolantTemp,Z
 L2C390:
@@ -13237,9 +13237,9 @@ Sub_2C5F4:
         BRCLR   >Options0330,#$08,L2C624
         LDAA    >BatteryTempRaw,Z
         LDY     #$424E
-        CMPA    >StartBatteryTempRawThresh2
+        CMPA    >BatteryTempRawHigh
         BHI     L2C620
-        CMPA    >StartBatteryTempRawThresh1
+        CMPA    >BatteryTempRawLow
         BCS     L2C620
         BRCLR   $0509,Z,#$80,L2C624
         JSR     Sub_24160
@@ -13253,13 +13253,13 @@ L2C624:
         LDAA    $0A1B,Z
 L2C638:
         LDY     #$458C
-        CMPA    >StartBatteryTempRawThresh2
+        CMPA    >BatteryTempRawHigh
         BHI     L2C662
         BRCLR   $0512,Z,#$04,L2C64C
         JSR     Sub_24160
 L2C64C:
         LDY     #$4582
-        CMPA    >StartBatteryTempRawThresh1
+        CMPA    >BatteryTempRawLow
         BCS     L2C662
         BRCLR   $0512,Z,#$02,L2C666
         JSR     Sub_24160
@@ -13860,14 +13860,14 @@ L2CC7A:
 L2CC7E:
         LDAA    >AcSensorRaw,Z
         LDY     #$430C
-        CMPA    >StartAcSensorRawThresh1
+        CMPA    >AcSensorRawHigh
         BHI     L2CCBC
         BRCLR   $050A,Z,#$04,L2CC98
         JSR     Sub_24160
         BRA     L2CCD0
 L2CC98:
         LDY     #$4316
-        CMPA    >StartAcSensorRawThresh2
+        CMPA    >AcSensorRawLow
         BCS     L2CCBC
         BRCLR   $050A,Z,#$08,L2CCAE
         JSR     Sub_24160
@@ -13881,7 +13881,7 @@ L2CCBC:
         BRCLR   $0055,Z,#$80,L2CCD0
         JSR     Sub_245A8
         BCC     L2CCD0
-        LDAA    >StartAcSensorValue
+        LDAA    >AcSensorFaultValue
         STAA    >AcSensor,Z
 L2CCD0:
         RTS
@@ -14942,7 +14942,7 @@ L2D7D4:
         CLR     >EngineOffTime,Z
 L2D7E2:
         LDAA    >CoolantTemp,Z
-        CMPA    >StartCoolantThresh1
+        CMPA    >HotRestartCoolantMin
         BCC     L2D7F0
         BCLR    $0774,Z,#$10
 L2D7F0:
@@ -15298,9 +15298,9 @@ Sub_2DB36:
         BRSET   $0055,Z,#$80,L2DB90
         BRCLR   >Options0331,#$80,L2DB52
         LDAA    >AcSensorRaw,Z
-        CMPA    >StartAcSensorRawThresh1
+        CMPA    >AcSensorRawHigh
         BHI     L2DB52
-        CMPA    >StartAcSensorRawThresh2
+        CMPA    >AcSensorRawLow
         BHI     L2DB76
 L2DB52:
         BRSET   >Options0331,#$40,L2DB6E

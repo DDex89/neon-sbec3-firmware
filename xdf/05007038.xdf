@@ -13439,8 +13439,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A2" flags="0x0">
-  <title>StartThrottleClosedAdder</title>
-  <description>Byte added to ThrottleClosed; read by Reset. $040A</description>
+  <title>ThrottleClosedResetMargin</title>
+  <description>At reset: closed-throttle value plus this margin is compared with ThrottleClosedDefault $040A</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x40A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -17556,9 +17556,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3FC" flags="0x0">
-  <title>StartV000FInit</title>
-  <description>Long stored into V000F; read by Reset, Sub_2A906. $28E9</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>SegmentRpmConst2</title>
+  <description>Start value of the segment time pair $000F,Z (long word) $28E9</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x28E9" mmedelementsizebits="32" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17568,9 +17568,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3FD" flags="0x0">
-  <title>StartV0013Init</title>
-  <description>Long stored into V0013; read by Reset, Sub_2A906. $28ED</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>SegmentRpmConst3</title>
+  <description>Start value of the segment time pair $0013,Z (long word) $28ED</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x28ED" mmedelementsizebits="32" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19416,9 +19416,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x497" flags="0x0">
-  <title>StartAcSensorRawThresh1</title>
-  <description>Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56. $414A</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AcSensorRawHigh</title>
+  <description>A/C sensor circuit check: raw value above this counts as open/high $414A</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x414A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19428,9 +19428,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x498" flags="0x0">
-  <title>StartAcSensorRawThresh2</title>
-  <description>Byte compared with AcSensorRaw; read by Reset, Sub_2CCA8, Sub_2DB56. $414B</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AcSensorRawLow</title>
+  <description>A/C sensor circuit check: raw value below this counts as shorted/low $414B</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x414B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19440,9 +19440,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x499" flags="0x0">
-  <title>StartAcSensorValue</title>
-  <description>Byte used with AcSensor; read by Reset, Sub_2CCA8. $414C</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AcSensorFaultValue</title>
+  <description>A/C sensor value used with a sensor fault $414C</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x414C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19488,9 +19488,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x49D" flags="0x0">
-  <title>StartAirTempRawThresh1</title>
-  <description>Byte compared with AirTempRaw; read by Reset, ProcessAirTemp. $4154</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AirTempRawLow</title>
+  <description>Air temperature sensor raw value below which it counts as shorted $4154</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x4154" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19500,9 +19500,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x49E" flags="0x0">
-  <title>StartAirTempRawThresh2</title>
-  <description>Byte compared with AirTempRaw; read by Reset, ProcessAirTemp. $4155</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AirTempRawHigh</title>
+  <description>Air temperature sensor raw value at or above which it counts as open $4155</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x4155" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19512,21 +19512,21 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x49F" flags="0x0">
-  <title>StartValue2</title>
-  <description>Byte used with; read by Reset, ProcessAirTemp. $4156</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>AirTempFaultValue</title>
+  <description>Air temperature used with a sensor fault (otherwise coolant is used) $4156</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x4156" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
+  <units>deg C</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X-128">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4A0" flags="0x0">
-  <title>StartBatteryTempRawThresh1</title>
-  <description>Byte compared with BatteryTempRaw; read by Reset, Sub_2C636. $4157</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>BatteryTempRawLow</title>
+  <description>Battery temperature sensor raw value below which it counts as shorted $4157</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x4157" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19536,9 +19536,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4A1" flags="0x0">
-  <title>StartBatteryTempRawThresh2</title>
-  <description>Byte compared with BatteryTempRaw; read by Reset, Sub_2C636. $4158</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>BatteryTempRawHigh</title>
+  <description>Battery temperature sensor raw value above which it counts as open $4158</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x4158" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
