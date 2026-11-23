@@ -12135,11 +12135,11 @@ L0A0FA:
         STD     $093C,Z
         BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0A13E:
-        BSET    >CrankSyncFlags2,Z,#$20
+        BSET    >CrankSyncFlags2,Z,#$20                  ; bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
         LDAA    $0694,Z
         CMPA    #$08
         BLS     L0A14E
-        BCLR    >CrankSyncFlags2,Z,#$40
+        BCLR    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
 L0A14E:
         BRCLR   >Temp4F4,Z,#$FF,L0A174
         LDAA    >CylinderIndex,Z
@@ -12151,7 +12151,7 @@ L0A160:
         ANDA    #$D8
         ORAA    #$C2
         STAA    >CrankSyncFlags,Z
-        BSET    >CrankSyncFlags2,Z,#$10
+        BSET    >CrankSyncFlags2,Z,#$10                  ; bit 4: knock sample taken on this event (Isr_GPT_IC1)
         LBRA    L0A210
 L0A174:
         LDAA    >CrankSyncFlags,Z
@@ -12171,7 +12171,7 @@ L0A18C:
         STAA    >CrankSyncFlags,Z
         LBRA    L0A210
 L0A196:
-        BSET    >CrankSyncFlags2,Z,#$20
+        BSET    >CrankSyncFlags2,Z,#$20                  ; bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
         CLR     $0693,Z
 L0A19E:
         BSET    >CrankFlags2,Z,#$80                      ; bit 7: reference event seen since the last PIT check (Isr_GPT_IC1, HighRpmTimerPit)
@@ -12195,14 +12195,14 @@ L0A1C0:
         EORA    #$20
         BRA     L0A206
 L0A1D2:
-        BCLR    >CrankSyncFlags2,Z,#$70
+        BCLR    >CrankSyncFlags2,Z,#$70                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI); bit 5: reference event after the QSPI status read (Isr_GPT_IC1); bit 4: knock sample taken on this event (Isr_GPT_IC1)
         CLRA
         BRCLR   >EngineStateFlags,Z,#$80,L0A206          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >SparkFlags,Z,#$20,L0A206                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDE     >RefPeriod,Z
         CPE     #$00EA
         BCC     L0A206
-        BCLR    >CrankSyncFlags2,Z,#$01
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
         CLR     $3E,Z
         LDAB    $0689,Z
         INCB
@@ -12313,7 +12313,7 @@ L0A2FC:
         JMP     L0A4DE
 L0A326:
         JSR     KnockSample
-        BSET    >CrankSyncFlags2,Z,#$10
+        BSET    >CrankSyncFlags2,Z,#$10                  ; bit 4: knock sample taken on this event (Isr_GPT_IC1)
         LDAB    #$00
         TBYK
         LDY     #$A017
@@ -12977,7 +12977,7 @@ Isr_GPT_PAI:
         STAA    >CrankSyncFlags,Z
         BSET    >DriveFlags,Z,#$04                       ; bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
         CLRW    >Count3s,Z
-        BCLR    >CrankSyncFlags2,Z,#$40
+        BCLR    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
         BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         BRCLR   >SwitchInputs2,Z,#$20,L0AB2C             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BSET    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
@@ -13006,7 +13006,7 @@ L0AB6E:
 L0AB72:
         TST     >MonStartDelay,Z
         BNE     L0AB8C
-        BSET    >CrankSyncFlags2,Z,#$40
+        BSET    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
         CLR     $0694,Z
         LDAA    $0693,Z
         INCA
@@ -14383,12 +14383,12 @@ L0C66C:
         CLR     >WotEnrich,Z
 L0C670:
         BRSET   >FuelModeFlags2,Z,#$40,L0C682            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
-        BRCLR   >EventFlags,Z,#$80,L0C690
-        BCLR    >EventFlags,Z,#$80
+        BRCLR   >EventFlags,Z,#$80,L0C690                ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+        BCLR    >EventFlags,Z,#$80                       ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
         BRA     L0C68C
 L0C682:
-        BRSET   >EventFlags,Z,#$80,L0C690
-        BSET    >EventFlags,Z,#$80
+        BRSET   >EventFlags,Z,#$80,L0C690                ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+        BSET    >EventFlags,Z,#$80                       ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
 L0C68C:
         CLR     >SparkStartRampValue,Z
 L0C690:
@@ -15833,7 +15833,7 @@ L0D6F2:
         LDAA    $3E,Z
         CMPA    #$32
         BCS     L0D7D0
-        BSET    >CrankSyncFlags2,Z,#$01
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 L0D7D0:
         LDAA    >EventSparkCountMax
         STAA    >EventSparkCount,Z
@@ -17682,10 +17682,10 @@ L0ED78:
 L0ED7C:
         BRSET   >PciRxFlags,Z,#$10,L0EDAE                ; bit 4: PCI service: three seconds since key-on passed (PciService); SkimState reads it
         BRCLR   >EngineStateFlags,Z,#$80,L0EDAE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >BusConfigFlags,Z,#$40,L0EDA4
+        BRSET   >BusConfigFlags,Z,#$40,L0EDA4            ; bit 6: SKIM / security exchange configured on the bus; read by the bus and SKIM code
         BRSET   >Options032E,#$04,L0EDA4                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >SkimFlags,Z,#$10,L0EDA4                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
-        BRSET   >BusMsgFlags,Z,#$04,L0EDA4
+        BRSET   >BusMsgFlags,Z,#$04,L0EDA4               ; bit 2: bus receive acknowledged (BusRxAck)
         JSR     BusRxAck
 L0EDA4:
         TST     >Count3s,Z
@@ -17809,7 +17809,7 @@ L0EEA4:
         NOP
         NOP
 L0EEB8:
-        BRSET   >BusConfigFlags,Z,#$40,L0EEF6
+        BRSET   >BusConfigFlags,Z,#$40,L0EEF6            ; bit 6: SKIM / security exchange configured on the bus; read by the bus and SKIM code
         LDAB    >SkimTimeout,Z
         INCB
         BEQ     L0EEE2
@@ -17968,7 +17968,7 @@ SkimState:
         ORP     #$00E0
         BRSET   >Options0328,#$01,L0F058                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
         BRSET   >SkimFlags,Z,#$02,L0F058                 ; bit 1: SKIM state to be written to the EEPROM (SkimState)
-        BRSET   >BusConfigFlags,Z,#$C0,L0F194
+        BRSET   >BusConfigFlags,Z,#$C0,L0F194            ; bit 7: bus configuration bit read by SkimState and SecurityStatusCalc; not set by bit instructions; bit 6: SKIM / security exchange configured on the bus; read by the bus and SKIM code
 L0F058:
         TST     >MonStartDelay,Z
         LBNE    L0F198
@@ -18105,7 +18105,7 @@ L0F1E6:
 L0F1EC:
         BRCLR   >Options0328,#$02,L0F21A                 ; bit 1: security variant: selects a branch in SecurityState
         BRCLR   >EngineStateFlags,Z,#$80,L0F242          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >BusConfigFlags,Z,#$1F,L0F212
+        BRSET   >BusConfigFlags,Z,#$1F,L0F212            ; bit 4: bus configuration bit read by SecurityState; bit 3: bus configuration bit read by SecurityState; bit 2: bus configuration bit read by SecurityState; bit 1: bus configuration bit read by SecurityState; bit 0: bus configuration bit read by SecurityState
         BSET    >SkimFlags,Z,#$02                        ; bit 1: SKIM state to be written to the EEPROM (SkimState)
         TAB
         ANDB    #$E0

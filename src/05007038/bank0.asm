@@ -10265,7 +10265,7 @@ L07032:
         LDAA    $3F,Z
         CMPA    #$32
         BCS     L0708E
-        BSET    >CrankSyncFlags2,Z,#$01
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 L0708E:
         LDAA    >EventSparkCountMax
         STAA    >EventSparkCount,Z
@@ -16665,7 +16665,7 @@ ClosedLoopMain:
         CLR     $03CD,Z
         CLR     $03D0,Z
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    <PurgeCellRichFlags,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         CLR     >O2CellWork,Z
         CLR     >O2AdaptValue1,Z
         CLR     <PurgeCellTrim1,Z
@@ -17783,7 +17783,7 @@ L0BB98:
         CLR     $0414,Z
         CLR     $0416,Z
         BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
-        BSET    <PurgeCellRichFlags,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
 L0BBDA:
         BRCLR   >O2Bank2Flags,Z,#$80,L0BC0E
         BCLR    $1E,Y,#$14
@@ -17799,7 +17799,7 @@ L0BBDA:
         CLR     $0418,Z
         CLR     $041A,Z
         BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    <PurgeCellRichFlags,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
 L0BC0E:
         BRCLR   >O2Bank1Flags,Z,#$40,L0BC74              ; bit 6: set with bit 7; read by O2DownEnable
         BCLR    $1E,X,#$14
@@ -18972,8 +18972,8 @@ L0C77C:
         LBCS    L0C832
 L0C794:
         BRSET   >EgrMonFlags,Z,#$04,L0C832               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
-        BRSET   >PurgeFlowTestFlags,Z,#$10,L0C832
-        BRSET   >PurgeFlowTestFlags,Z,#$20,L0C832
+        BRSET   >PurgeFlowTestFlags,Z,#$10,L0C832        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BRSET   >PurgeFlowTestFlags,Z,#$20,L0C832        ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
         BRSET   >PurgeLearnFlags,Z,#$80,L0C832           ; bit 7: purge vapour learning running (PurgeVaporLearn)
         LDE     >FuelPulseBank1,Z
         CPE     >O2PulseWidthMin
@@ -19016,7 +19016,7 @@ L0C7FA:
         BMI     L0C836
         LDAA    #$FF
 L0C804:
-        BCLR    <PurgeCellRichFlags,Z,#$40
+        BCLR    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         LDAB    >PurgeCellCount,Z
         LBEQ    L0C816
         CMPB    >O2LearnPurgeCountMax
@@ -19034,7 +19034,7 @@ L0C82C:
         BCLR    >O2ResetFlags2,Z,#$80                    ; bit 7: adaptive cell selection: not the last cell (O2LearnEnable)
         BRA     L0C846
 L0C832:
-        BSET    <PurgeCellRichFlags,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
 L0C836:
         CPY     #$8444
         BEQ     L0C842
@@ -19129,7 +19129,7 @@ O2CellUpdate:
         BEQ     L0C962
         LDAA    >PurgeDelay,Z
         BNE     L0C962
-        BRSET   >PurgeCellRichFlags,Z,#$80,L0C962
+        BRSET   >PurgeCellRichFlags,Z,#$80,L0C962        ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
         CMPB    >PurgeCell1
         BEQ     L0C95E
         AIY     #$01
@@ -19537,14 +19537,14 @@ L0CC86:
 ; Called from: Reset, Sub_13F2A
 ;---------------------------------------------------------------------------------------------------
 PurgeReset:
-        BSET    <PurgeCellRichFlags,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         BSET    >PurgeCellFlags,Z,#$80
-        BSET    <PurgeCellRichFlags,Z,#$80
+        BSET    <PurgeCellRichFlags,Z,#$80               ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
         LDAB    >PurgeColdDelay
         LDAA    $0C,Z
         CMPA    >PurgeCoolantMin
         BCS     L0CCB0
-        BCLR    <PurgeCellRichFlags,Z,#$80
+        BCLR    <PurgeCellRichFlags,Z,#$80               ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
         CMPA    >PurgeWarmCoolant
         BCS     L0CCB0
         LDAB    >PurgeWarmDelay
@@ -19673,7 +19673,7 @@ PurgeCellRichCheck:
         JSR     PurgeCellMax
         LDX     #$8074
         JSR     PurgeCellMax
-        BCLR    <PurgeCellRichFlags,Z,#$38
+        BCLR    <PurgeCellRichFlags,Z,#$38               ; bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck); bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck); bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
 L0CDD0:
         BRSET   >Options032E,#$08,L0CE04                 ; bit 3: PCI link variant (PciLinkCheck, PciBuildMessage)
         TZX
@@ -19757,7 +19757,7 @@ L0CE50:
 PurgeCellCheck:
         BRSET   >PurgeCellFlags,Z,#$40,L0CFB2
         TZX
-        BRCLR   >PurgeCellRichFlags,Z,#$04,L0CECA
+        BRCLR   >PurgeCellRichFlags,Z,#$04,L0CECA        ; bit 2: read by PurgeCellCheck
         LDX     #$8061
         LDAB    >PurgeCell1
         ABX
@@ -19768,7 +19768,7 @@ PurgeCellCheck:
         BCS     L0CE7C
         BSET    >PurgeFlowTestFlags2,Z,#$01              ; bit 0: purge cell rose past PurgeCellFaultRise (PurgeCellCheck)
 L0CE7C:
-        BRCLR   >PurgeCellRichFlags,Z,#$20,L0CE8A
+        BRCLR   >PurgeCellRichFlags,Z,#$20,L0CE8A        ; bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
         ADDA    >PurgeCellRichHyst1
         BCC     L0CE8A
         LDAA    #$FF
@@ -19787,7 +19787,7 @@ L0CE90:
         BCS     L0CEB0
         BSET    >PurgeFlowTestFlags2,Z,#$01              ; bit 0: purge cell rose past PurgeCellFaultRise (PurgeCellCheck)
 L0CEB0:
-        BRCLR   >PurgeCellRichFlags,Z,#$20,L0CEBE
+        BRCLR   >PurgeCellRichFlags,Z,#$20,L0CEBE        ; bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
         ADDA    >PurgeCellRichHyst1
         BCC     L0CEBE
         LDAA    #$FF
@@ -19795,12 +19795,12 @@ L0CEBE:
         CMPA    >PurgeCellRichMax1
         BCS     L0CECA
 L0CEC4:
-        BSET    <PurgeCellRichFlags,Z,#$20
+        BSET    <PurgeCellRichFlags,Z,#$20               ; bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
         BRA     L0CECE
 L0CECA:
-        BCLR    <PurgeCellRichFlags,Z,#$20
+        BCLR    <PurgeCellRichFlags,Z,#$20               ; bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
 L0CECE:
-        BRCLR   >PurgeCellRichFlags,Z,#$02,L0CF3C
+        BRCLR   >PurgeCellRichFlags,Z,#$02,L0CF3C        ; bit 1: read by PurgeCellCheck
         LDX     #$8061
         LDAB    >PurgeCell2
         ABX
@@ -19811,7 +19811,7 @@ L0CECE:
         BCS     L0CEEE
         BSET    >PurgeFlowTestFlags2,Z,#$01              ; bit 0: purge cell rose past PurgeCellFaultRise (PurgeCellCheck)
 L0CEEE:
-        BRCLR   >PurgeCellRichFlags,Z,#$10,L0CEFC
+        BRCLR   >PurgeCellRichFlags,Z,#$10,L0CEFC        ; bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
         ADDA    >PurgeCellRichHyst2
         BCC     L0CEFC
         LDAA    #$FF
@@ -19830,7 +19830,7 @@ L0CF02:
         BCS     L0CF22
         BSET    >PurgeFlowTestFlags2,Z,#$01              ; bit 0: purge cell rose past PurgeCellFaultRise (PurgeCellCheck)
 L0CF22:
-        BRCLR   >PurgeCellRichFlags,Z,#$10,L0CF30
+        BRCLR   >PurgeCellRichFlags,Z,#$10,L0CF30        ; bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
         ADDA    >PurgeCellRichHyst2
         BCC     L0CF30
         LDAA    #$FF
@@ -19838,12 +19838,12 @@ L0CF30:
         CMPA    >PurgeCellRichMax2
         BCS     L0CF3C
 L0CF36:
-        BSET    <PurgeCellRichFlags,Z,#$10
+        BSET    <PurgeCellRichFlags,Z,#$10               ; bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
         BRA     L0CF40
 L0CF3C:
-        BCLR    <PurgeCellRichFlags,Z,#$10
+        BCLR    <PurgeCellRichFlags,Z,#$10               ; bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
 L0CF40:
-        BRCLR   >PurgeCellRichFlags,Z,#$01,L0CFAE
+        BRCLR   >PurgeCellRichFlags,Z,#$01,L0CFAE        ; bit 0: read by PurgeCellCheck
         LDX     #$8061
         LDAB    >PurgeCell3
         ABX
@@ -19854,7 +19854,7 @@ L0CF40:
         BCS     L0CF60
         BSET    >PurgeFlowTestFlags2,Z,#$01              ; bit 0: purge cell rose past PurgeCellFaultRise (PurgeCellCheck)
 L0CF60:
-        BRCLR   >PurgeCellRichFlags,Z,#$08,L0CF6E
+        BRCLR   >PurgeCellRichFlags,Z,#$08,L0CF6E        ; bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
         ADDA    >PurgeCellRichHyst3
         BCC     L0CF6E
         LDAA    #$FF
@@ -19873,7 +19873,7 @@ L0CF74:
         BCS     L0CF94
         BSET    >PurgeFlowTestFlags2,Z,#$01              ; bit 0: purge cell rose past PurgeCellFaultRise (PurgeCellCheck)
 L0CF94:
-        BRCLR   >PurgeCellRichFlags,Z,#$08,L0CFA2
+        BRCLR   >PurgeCellRichFlags,Z,#$08,L0CFA2        ; bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
         ADDA    >PurgeCellRichHyst3
         BCC     L0CFA2
         LDAA    #$FF
@@ -19881,10 +19881,10 @@ L0CFA2:
         CMPA    >PurgeCellRichMax3
         BCS     L0CFAE
 L0CFA8:
-        BSET    <PurgeCellRichFlags,Z,#$08
+        BSET    <PurgeCellRichFlags,Z,#$08               ; bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
         BRA     L0CFB2
 L0CFAE:
-        BCLR    <PurgeCellRichFlags,Z,#$08
+        BCLR    <PurgeCellRichFlags,Z,#$08               ; bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
 L0CFB2:
         RTS
 
@@ -20005,11 +20005,11 @@ L0D0C4:
         BRSET   >LdpFlags3,Z,#$02,L0D628                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >MisfireFlags4,Z,#$10,L0D628
         BRSET   >PurgeFlags,Z,#$10,L0D628                ; bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
-        BRCLR   <PurgeCellRichFlags,Z,#$80,L0D0F2
+        BRCLR   <PurgeCellRichFlags,Z,#$80,L0D0F2        ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
         LDAA    $0C,Z
         CMPA    >PurgeCoolantMin
         LBCS    L0D122
-        BCLR    <PurgeCellRichFlags,Z,#$80
+        BCLR    <PurgeCellRichFlags,Z,#$80               ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
 L0D0F2:
         LDAB    >PurgeDelay,Z
         BEQ     L0D10E
@@ -20412,7 +20412,7 @@ L0D5A2:
         BRCLR   >Options032F,#$40,L0D5B4                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$20,L0D642
 L0D5B4:
-        BRSET   >PurgeCellRichFlags,Z,#$40,L0D642
+        BRSET   >PurgeCellRichFlags,Z,#$40,L0D642        ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         BITB    >PurgeCellFlags,Z
         LBNE    L0D642
         ASLB
@@ -20472,8 +20472,8 @@ L0D646:
 L0D652:
         BRCLR   <EngineStateFlags,Z,#$80,L0D628          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   <ThrottleState,Z,#$40,L0D628             ; bit 6: wide-open throttle (DetectWot)
-        BRSET   >PurgeFlowTestFlags,Z,#$10,L0D66C
-        BRSET   >PurgeFlowTestFlags,Z,#$20,L0D66C
+        BRSET   >PurgeFlowTestFlags,Z,#$10,L0D66C        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BRSET   >PurgeFlowTestFlags,Z,#$20,L0D66C        ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
         BRSET   >PurgeFlags,Z,#$40,L0D628                ; bit 6: purge battery-temperature timer running (PurgeEnable)
 L0D66C:
         JSR     Sub_0D672
@@ -20622,10 +20622,10 @@ L0D7EA:
         LDX     #Tab2D_1658
         JSR     Lookup2D
         STAA    <FanSoakFlags,Z
-        BRCLR   >PurgeFlowTestFlags,Z,#$30,L0D85E
+        BRCLR   >PurgeFlowTestFlags,Z,#$30,L0D85E        ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
         LDAA    $0631,Z
         LDAB    >PurgeFlowStep,Z
-        BRSET   >PurgeFlowTestFlags,Z,#$10,L0D846
+        BRSET   >PurgeFlowTestFlags,Z,#$10,L0D846        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
         CMPB    $2ACB
         BCS     L0D862
         BRSET   >O2Bank1Flags,Z,#$08,L0D824              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
@@ -20638,12 +20638,12 @@ L0D824:
 L0D82C:
         CMPA    <FanSoakFlags,Z
         BHI     L0D85A
-        BCLR    >PurgeFlowTestFlags,Z,#$20
+        BCLR    >PurgeFlowTestFlags,Z,#$20               ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
         LDAA    <FanSoakFlags,Z
         TST     >PurgeFlowTestResult,Z
         BEQ     L0D85A
-        BCLR    >PurgeFlowTestFlags,Z,#$02
-        BSET    >PurgeFlowTestFlags,Z,#$40
+        BCLR    >PurgeFlowTestFlags,Z,#$02               ; bit 1: purge flow settle time set (PurgeFlowTest)
+        BSET    >PurgeFlowTestFlags,Z,#$40               ; bit 6: purge flow test result stored (PurgeFlowTest, PurgeRampControl)
         BRA     L0D85A
 L0D846:
         CMPB    $2AC9
@@ -22979,11 +22979,11 @@ L0F312:
         STD     $0520,Z
         BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0F356:
-        BSET    >CrankSyncFlags2,Z,#$20
+        BSET    >CrankSyncFlags2,Z,#$20                  ; bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
         LDAA    $0216,Z
         CMPA    #$08
         BLS     L0F366
-        BCLR    >CrankSyncFlags2,Z,#$40
+        BCLR    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
 L0F366:
         BRCLR   >Temp4F4,Z,#$FF,L0F384
         LDAA    <CylinderIndex,Z
@@ -22995,7 +22995,7 @@ L0F374:
         ANDA    #$D8
         ORAA    #$C2
         STAA    <CrankSyncFlags,Z
-        BSET    >CrankSyncFlags2,Z,#$10
+        BSET    >CrankSyncFlags2,Z,#$10                  ; bit 4: knock sample taken on this event (Isr_GPT_IC1)
         LBRA    L0F418
 L0F384:
         LDAA    <CrankSyncFlags,Z
@@ -23015,7 +23015,7 @@ L0F39A:
         STAA    <CrankSyncFlags,Z
         LBRA    L0F418
 L0F3A2:
-        BSET    >CrankSyncFlags2,Z,#$20
+        BSET    >CrankSyncFlags2,Z,#$20                  ; bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
         BSET    <DriveFlags,Z,#$02                       ; bit 1: reference pulses seen since key-on (Isr_GPT_IC1); MapKeyOnCheck needs it clear
         CLR     $0214,Z
 L0F3AE:
@@ -23040,14 +23040,14 @@ L0F3CE:
         EORA    #$20
         BRA     L0F410
 L0F3E0:
-        BCLR    >CrankSyncFlags2,Z,#$70
+        BCLR    >CrankSyncFlags2,Z,#$70                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI); bit 5: reference event after the QSPI status read (Isr_GPT_IC1); bit 4: knock sample taken on this event (Isr_GPT_IC1)
         CLRA
         BRCLR   <EngineStateFlags,Z,#$80,L0F410          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   <SparkFlags,Z,#$20,L0F410                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDE     >RefPeriod,Z
         CPE     #$00EA
         BCC     L0F410
-        BCLR    >CrankSyncFlags2,Z,#$01
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
         CLR     $3F,Z
         LDAB    $0213,Z
         INCB
@@ -23098,7 +23098,7 @@ L0F45A:
         JMP     L0F64A
 L0F484:
         JSR     KnockSample
-        BSET    >CrankSyncFlags2,Z,#$10
+        BSET    >CrankSyncFlags2,Z,#$10                  ; bit 4: knock sample taken on this event (Isr_GPT_IC1)
         TPD
         TBYK
         LDY     #$F220
@@ -23785,7 +23785,7 @@ Isr_GPT_PAI:
         STAA    <CrankSyncFlags,Z
         BSET    <DriveFlags,Z,#$04                       ; bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
         CLRW    >Count3s,Z
-        BCLR    >CrankSyncFlags2,Z,#$40
+        BCLR    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
         BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         BRCLR   >SwitchInputs2,Z,#$20,L0FCB6             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BSET    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
@@ -23815,7 +23815,7 @@ L0FCFA:
         TST     >MonStartDelay,Z
         BNE     L0FD14
         CLR     $0216,Z
-        BSET    >CrankSyncFlags2,Z,#$40
+        BSET    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
         LDAA    $0214,Z
         INCA
         BEQ     L0FD14

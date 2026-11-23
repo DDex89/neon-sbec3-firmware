@@ -321,6 +321,10 @@ CrankSyncFlags   equ $03BB        ; $F83BB
 ;                 bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
 ;                 bit 2: set with bit 7 by Isr_GPT_PAI ($84 = synchronised)
 CrankSyncFlags2  equ $03BC        ; $F83BC
+;                 bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
+;                 bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
+;                 bit 4: knock sample taken on this event (Isr_GPT_IC1)
+;                 bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 CylinderIndex    equ $03BE        ; $F83BE
 PurgeFlags       equ $03CC        ; $F83CC
 ;                 bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
@@ -388,6 +392,14 @@ PciRxFlags       equ $043C        ; $F843C
 ;                 bit 2: spark status message pending, second copy
 ;                 bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
 CcdRxFlags       equ $0440        ; $F8440
+;                 bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
+;                 bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler)
+;                 bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler)
+;                 bit 4: CCD transmit buffer 1 in use (CcdTransmit)
+;                 bit 3: CCD transmit buffer 2 in use (CcdTransmit)
+;                 bit 2: CCD transmit buffer 3 in use (CcdTransmit)
+;                 bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
+;                 bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
 SecurityFlags    equ $0473        ; $F8473
 ;                 bit 7: security message of the first kind received (CcdReceive); SkimState reads it
 ;                 bit 6: security/SKIM message received recently (CcdReceive, PciReceive; cleared by SkimState)
@@ -471,6 +483,12 @@ ClosedLoopMonFlags equ $0508        ; $F8508
 ;                 bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
 MilRequestFlags  equ $0509        ; $F8509
 MonFlags64D      equ $050B        ; $F850B
+;                 bit 7: monitor data state bit read by MonTaskE
+;                 bit 6: monitor data state bit read by MisfireCount and MonTaskE
+;                 bit 5: monitor data state bit read by MonTaskB
+;                 bit 4: monitor data state bit read by MonTaskE
+;                 bit 3: monitor data state bit read by MonData643Update, MonTaskB, MonTaskE
+;                 bit 2: monitor data state bit read by MonData643Update, MonTaskC, MonTaskE
 MonFlags64E      equ $050C        ; $F850C
 MonData64F       equ $050D        ; $F850D
 ShortTermTrim1   equ $050F        ; $F850F
@@ -536,6 +554,10 @@ FuelModeFlags    equ $056A        ; $F856A
 ;                 bit 1: deceleration fuel cut active (FuelCutControl)
 ;                 bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
 EventFlags       equ $056B        ; $F856B
+;                 bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+;                 bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
+;                 bit 4: read by EventCorrections and LimitReasonCode
+;                 bit 3: read by LimitReasonCode
 FuelEventFlags   equ $056C        ; $F856C
 ;                 bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)
 ;                 bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)

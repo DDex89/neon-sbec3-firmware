@@ -3367,7 +3367,7 @@ L2285C:
         CLR     >EgrResultPasses,Z
         BRSET   >EgrMonFlags2,Z,#$01,L228A8
         LDAA    $4E5F
-        BCLR    >MonFlags65A,Z,#$08
+        BCLR    >MonFlags65A,Z,#$08                      ; bit 3: EGR position monitor result reported (EgrPositionMonitor)
         JSR     ObdFaultReport
 L228A8:
         BRSET   $0E04,Z,#$01,L228E0
@@ -3380,7 +3380,7 @@ L228A8:
         CLR     >EgrTrackFails,Z
         CLR     >EgrTrackPasses,Z
         LDAA    $4E5F
-        BCLR    >MonFlags65A,Z,#$08
+        BCLR    >MonFlags65A,Z,#$08                      ; bit 3: EGR position monitor result reported (EgrPositionMonitor)
         JSR     ObdFaultReport
 L228E0:
         LDAA    >Count3s,Z
@@ -3392,7 +3392,7 @@ L228E0:
         BRSET   >MonStatusA4,Z,#$80,L22906
         BSET    >EgrFlags2,Z,#$04                        ; bit 2: EGR position monitor allowed: no other monitor of group A running (EgrPositionMonitor)
 L22906:
-        BRCLR   >EgrZeroFlags,Z,#$01,L22B20
+        BRCLR   >EgrZeroFlags,Z,#$01,L22B20              ; bit 0: EGR zero position learnt (EgrZeroPos, EgrZeroCheck)
         BRCLR   >MonitorDisableFlags,Z,#$0F,L22916       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow); bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude); bit 0: battery (ambient) temperature below MonEnableBattTempMin
         LBRA    L22B20
 L22916:
@@ -3400,9 +3400,9 @@ L22916:
         BRSET   $0E04,Z,#$02,L229C6
         BRSET   >ThrottleState,Z,#$80,L229C2             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >EgrFlags2,Z,#$40,L229C6                 ; bit 6: EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)
-        BRCLR   >EgrZeroFlags,Z,#$04,L229C2
+        BRCLR   >EgrZeroFlags,Z,#$04,L229C2              ; bit 2: EGR zero check running (EgrZeroCheck); EgrPositionMonitor waits for it
         BSET    >EgrFlags2,Z,#$40                        ; bit 6: EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)
-        BRSET   >EgrZeroFlags,Z,#$80,L22972
+        BRSET   >EgrZeroFlags,Z,#$80,L22972              ; bit 7: EGR zero position below EgrZeroPosMin (EgrZeroCheck)
         BRSET   >EgrMonFlags3,Z,#$02,L229C6
         LDAA    >EgrResultFails,Z
         LDAB    >EgrResultPasses,Z
@@ -3437,7 +3437,7 @@ L2297E:
         BRSET   >EgrMonFlags2,Z,#$02,L229A6
         BRSET   >EgrMonFlags2,Z,#$01,L229B2
 L229A6:
-        BSET    >MonFlags65A,Z,#$08
+        BSET    >MonFlags65A,Z,#$08                      ; bit 3: EGR position monitor result reported (EgrPositionMonitor)
         LDAA    $4E5F
         JSR     ObdFaultReport
 L229B2:
@@ -3450,7 +3450,7 @@ L229B8:
 L229C2:
         BCLR    >EgrFlags2,Z,#$40                        ; bit 6: EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)
 L229C6:
-        BRSET   >MonFlags65A,Z,#$08,L22B20
+        BRSET   >MonFlags65A,Z,#$08,L22B20               ; bit 3: EGR position monitor result reported (EgrPositionMonitor)
         BRCLR   >ThrottleState,Z,#$80,L22AFE             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >EgrFlags2,Z,#$80,L22B20                 ; bit 7: EGR position tracking result being counted (EgrPositionMonitor)
         LDAA    >EgrTargetPos,Z
@@ -3536,7 +3536,7 @@ L22ABA:
         BRSET   >EgrMonFlags2,Z,#$01,L22AE2
         BRSET   >EgrMonFlags2,Z,#$02,L22AEE
 L22AE2:
-        BSET    >MonFlags65A,Z,#$08
+        BSET    >MonFlags65A,Z,#$08                      ; bit 3: EGR position monitor result reported (EgrPositionMonitor)
         LDAA    $4E5F
         JSR     ObdFaultReport
 L22AEE:
@@ -3755,7 +3755,7 @@ TransMilRequest:
         BCLR    >BusModuleFlags,Z,#$01                   ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         BRCLR   $00A0,Z,#$10,L22D9A
         LDAA    $4B53
-        BCLR    >MonFlags65A,Z,#$10
+        BCLR    >MonFlags65A,Z,#$10                      ; bit 4: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22D9A
 L22D3C:
@@ -3764,13 +3764,13 @@ L22D3C:
 L22D46:
         BRCLR   $00A0,Z,#$10,L22D9A
         LDAA    $4B53
-        BCLR    >MonFlags65A,Z,#$10
+        BCLR    >MonFlags65A,Z,#$10                      ; bit 4: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22D9A
 L22D5A:
         BRSET   $00A0,Z,#$10,L22D9A
         LDAA    $4B53
-        BSET    >MonFlags65A,Z,#$10
+        BSET    >MonFlags65A,Z,#$10                      ; bit 4: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22D9A
 L22D6E:
@@ -3795,20 +3795,20 @@ L22D9A:
 BodyBusTimeout:
         BRCLR   $00A0,Z,#$04,L22DBE
         BRSET   >O2DownFlags,Z,#$80,L22DBE               ; bit 7: body bus message seen after start (BodyBusTimeout)
-        BRCLR   >MonFlags101,Z,#$80,L22DBE
-        BCLR    >MonFlags101,Z,#$80
-        BCLR    >MonFlags65A,Z,#$04
+        BRCLR   >MonFlags101,Z,#$80,L22DBE               ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
+        BCLR    >MonFlags101,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
+        BCLR    >MonFlags65A,Z,#$04                      ; bit 2: body bus timeout fault reported (BodyBusTimeout)
         LDAA    $49B9
         JSR     ObdFaultReport
 L22DBE:
-        BRSET   >MonFlags65A,Z,#$04,L22E10
+        BRSET   >MonFlags65A,Z,#$04,L22E10               ; bit 2: body bus timeout fault reported (BodyBusTimeout)
         LDAA    >BodyMsgTimeout,Z
         CMPA    #$C8
         BCS     L22DF8
         BCLR    >O2DownFlags,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout)
-        BCLR    >MonFlags101,Z,#$80
+        BCLR    >MonFlags101,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
         BSET    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
-        BSET    >MonFlags65A,Z,#$04
+        BSET    >MonFlags65A,Z,#$04                      ; bit 2: body bus timeout fault reported (BodyBusTimeout)
         LDAA    $49B9
         JSR     ObdFaultReport
         BSET    >BusReqFlags,Z,#$03                      ; bit 1: bus message bit 6 (CcdReceive); set on a body bus timeout; bit 0: bus message status bits = $80 (CcdReceive); set on a body bus timeout
@@ -3823,7 +3823,7 @@ L22DF8:
         CMPA    #$2C
         LBCS    L22E10
         BSET    >O2DownFlags,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout)
-        BSET    >MonFlags101,Z,#$80
+        BSET    >MonFlags101,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
 L22E10:
         RTS
 
@@ -3894,22 +3894,22 @@ FuelSenderMonitor:
         LDAA    >BatteryVolts2,Z
         CMPA    #$F2
         LBCC    L230A4
-        BRCLR   >MonFlags101,Z,#$20,L22EEA
+        BRCLR   >MonFlags101,Z,#$20,L22EEA               ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BRSET   >O2DownFlags,Z,#$20,L22EEA               ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
-        BCLR    >MonFlags65A,Z,#$80
+        BCLR    >MonFlags65A,Z,#$80                      ; bit 7: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    $4BD5
         JSR     ObdFaultReport
-        BCLR    >MonFlags101,Z,#$20
+        BCLR    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
 L22EEA:
-        BRCLR   >MonFlags101,Z,#$10,L22F06
+        BRCLR   >MonFlags101,Z,#$10,L22F06               ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
         BRSET   >O2DownFlags,Z,#$10,L22F06               ; bit 4: fuel sender check result, second kind (FuelSenderMonitor; mirrored in MonFlags101 bit 4)
-        BCLR    >MonFlags65A,Z,#$40
+        BCLR    >MonFlags65A,Z,#$40                      ; bit 6: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    $4BCB
         JSR     ObdFaultReport
-        BCLR    >MonFlags101,Z,#$10
+        BCLR    >MonFlags101,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
 L22F06:
         BRSET   >FaultSet13,Z,#$80,L230A4
-        BRSET   >MonFlags65A,Z,#$80,L22F66
+        BRSET   >MonFlags65A,Z,#$80,L22F66               ; bit 7: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    >FuelSenderFiltered,Z
         CMPA    >FuelSenderHigh
         BLS     L22F48
@@ -3921,9 +3921,9 @@ L22F06:
         STAA    $06C5,Z
         BRA     L22F66
 L22F32:
-        BCLR    >MonFlags101,Z,#$20
+        BCLR    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BCLR    >O2DownFlags,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
-        BSET    >MonFlags65A,Z,#$80
+        BSET    >MonFlags65A,Z,#$80                      ; bit 7: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    $4BD5
         JSR     ObdFaultReport
         BRA     L22F66
@@ -3936,10 +3936,10 @@ L22F48:
         STAA    $06C4,Z
         BRA     L22F66
 L22F5E:
-        BSET    >MonFlags101,Z,#$20
+        BSET    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BSET    >O2DownFlags,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
 L22F66:
-        BRSET   >MonFlags65A,Z,#$40,L22FC0
+        BRSET   >MonFlags65A,Z,#$40,L22FC0               ; bit 6: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    >FuelSenderFiltered,Z
         CMPA    >FuelSenderLow
         BHI     L22FA2
@@ -3951,9 +3951,9 @@ L22F66:
         STAA    $06C3,Z
         BRA     L22FC0
 L22F8C:
-        BCLR    >MonFlags101,Z,#$10
+        BCLR    >MonFlags101,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
         BCLR    >O2DownFlags,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor; mirrored in MonFlags101 bit 4)
-        BSET    >MonFlags65A,Z,#$40
+        BSET    >MonFlags65A,Z,#$40                      ; bit 6: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    $4BCB
         JSR     ObdFaultReport
         BRA     L22FC0
@@ -3966,7 +3966,7 @@ L22FA2:
         STAA    $06C2,Z
         BRA     L22FC0
 L22FB8:
-        BSET    >MonFlags101,Z,#$10
+        BSET    >MonFlags101,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
         BSET    >O2DownFlags,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor; mirrored in MonFlags101 bit 4)
 L22FC0:
         BRCLR   >Options0340,#$02,L230A4                 ; bit 1: fuel sender monitor on (FuelSenderMonitor)
@@ -4026,13 +4026,13 @@ L23060:
         BCS     L230A4
         BRA     L23086
 L23074:
-        BCLR    >MonFlags65A,Z,#$20
+        BCLR    >MonFlags65A,Z,#$20                      ; bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
         LDAA    $4BDF
         JSR     ObdFaultReport
         BCLR    >FaultSet13,Z,#$80
         BRA     L23092
 L23086:
-        BSET    >MonFlags65A,Z,#$20
+        BSET    >MonFlags65A,Z,#$20                      ; bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
         LDAA    $4BDF
         JSR     ObdFaultReport
 L23092:
@@ -5055,12 +5055,12 @@ L23C18:
         LDAA    $3F,Z
         CMPA    #$32
         BCC     L23C2A
-        BCLR    >CrankSyncFlags2,Z,#$01
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
         INCA
         STAA    $3F,Z
         BRA     L23C2E
 L23C2A:
-        BSET    >CrankSyncFlags2,Z,#$01
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 L23C2E:
         BSET    >CamCrankFlags,Z,#$10                    ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
 L23C32:
@@ -6543,11 +6543,11 @@ PurgeFlowTest:
         BRCLR   >Options033E,#$02,L252DE                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRSET   >MonStatusLdp,Z,#$80,L25782
         BRSET   >LdpFlags,Z,#$80,L252DE                  ; bit 7: leak test finished (LDP state machine)
-        BSET    >PurgeFlowTestFlags,Z,#$80
+        BSET    >PurgeFlowTestFlags,Z,#$80               ; bit 7: purge flow test started (PurgeFlowTest, only with the LDP fitted)
         BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
         JMP     L25750
 L252DE:
-        BSET    >PurgeFlowTestFlags,Z,#$01
+        BSET    >PurgeFlowTestFlags,Z,#$01               ; bit 0: purge flow test not possible: no LDP (PurgeFlowTest)
         BRCLR   >PurgeFlowTestFlags2,Z,#$01,L252F0       ; bit 0: purge cell rose past PurgeCellFaultRise (PurgeCellCheck)
         BSET    >PurgeFlowTestResult,Z,#$01
         JMP     L25730
@@ -6579,7 +6579,7 @@ L252FE:
         AIS     #$04
         STAB    $05BC,Z
 L25346:
-        BRSET   >PurgeFlowTestFlags,Z,#$02,L25368
+        BRSET   >PurgeFlowTestFlags,Z,#$02,L25368        ; bit 1: purge flow settle time set (PurgeFlowTest)
         BRCLR   >PurgeCellFlags,Z,#$04,L25730
         LDAA    >PurgeFlowSettleCount
         LDAB    >PurgeFlowSettleStart
@@ -6588,10 +6588,10 @@ L25346:
         MUL
 L25360:
         STAA    >PurgeFlowSettle,Z
-        BSET    >PurgeFlowTestFlags,Z,#$02
+        BSET    >PurgeFlowTestFlags,Z,#$02               ; bit 1: purge flow settle time set (PurgeFlowTest)
 L25368:
         BRSET   >PurgeFlowTestFlags2,Z,#$40,L25730       ; bit 6: purge test restore delay running: closed loop waits (PurgeFlowTest, ClosedLoopManager)
-        BRSET   >PurgeFlowTestFlags,Z,#$20,L25730
+        BRSET   >PurgeFlowTestFlags,Z,#$20,L25730        ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
         BRSET   >FaultSet02,Z,#$02,L25730
         BRSET   >FaultSet10,Z,#$04,L25730
         BRSET   >FaultSet05,Z,#$08,L25730
@@ -6638,8 +6638,8 @@ L25410:
         CMPA    #$19
         LBEQ    L25730
         BRSET   >ThrottleState,Z,#$02,L25730             ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
-        BRSET   >PurgeFlowTestFlags,Z,#$10,L25500
-        BSET    >PurgeFlowTestFlags,Z,#$04
+        BRSET   >PurgeFlowTestFlags,Z,#$10,L25500        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BSET    >PurgeFlowTestFlags,Z,#$04               ; bit 2: purge flow test step 2 (PurgeFlowTest)
         LDAA    >IacTargetCmd,Z
         SUBA    <IacPosition,Z
         BCC     L25442
@@ -6663,7 +6663,7 @@ L25462:
         TSTA
         LBNE    L25730
 L2547E:
-        BSET    >PurgeFlowTestFlags,Z,#$08
+        BSET    >PurgeFlowTestFlags,Z,#$08               ; bit 3: purge flow test step 3 (PurgeFlowTest)
         BSET    <MonStatusPurge,Z,#$04                   ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         LDAA    <IacPosition,Z
         STAA    $05B4,Z
@@ -6698,7 +6698,7 @@ L254F6:
         BRCLR   >ControlFlags944,Z,#$08,L25500           ; bit 3: second fan relay, probably; driven only with A/C fitted
         BSET    >PurgeFlowTestFlags2,Z,#$20              ; bit 5: fan relay 2 on during the purge test (ControlFlags944 bit 3)
 L25500:
-        BSET    >PurgeFlowTestFlags,Z,#$10
+        BSET    >PurgeFlowTestFlags,Z,#$10               ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
         LDAA    >PurgeDutyTarget,Z
         STAA    $05B3,Z
         LDAA    <IacPosition,Z
@@ -6880,17 +6880,17 @@ L25730:
         BEQ     L25750
         BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
 L2573A:
-        BCLR    >PurgeFlowTestFlags,Z,#$01
+        BCLR    >PurgeFlowTestFlags,Z,#$01               ; bit 0: purge flow test not possible: no LDP (PurgeFlowTest)
         BSET    <MonStatusPurge,Z,#$40                   ; bit 6: purge flow monitor complete this drive cycle
-        BRSET   >PurgeFlowTestFlags,Z,#$10,L25750
-        BCLR    >PurgeFlowTestFlags,Z,#$02
-        BSET    >PurgeFlowTestFlags,Z,#$40
+        BRSET   >PurgeFlowTestFlags,Z,#$10,L25750        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BCLR    >PurgeFlowTestFlags,Z,#$02               ; bit 1: purge flow settle time set (PurgeFlowTest)
+        BSET    >PurgeFlowTestFlags,Z,#$40               ; bit 6: purge flow test result stored (PurgeFlowTest, PurgeRampControl)
 L25750:
-        BCLR    >PurgeFlowTestFlags,Z,#$0C
+        BCLR    >PurgeFlowTestFlags,Z,#$0C               ; bit 3: purge flow test step 3 (PurgeFlowTest); bit 2: purge flow test step 2 (PurgeFlowTest)
         CLR     >PurgeFlowSettle,Z
-        BRCLR   >PurgeFlowTestFlags,Z,#$10,L25782
-        BCLR    >PurgeFlowTestFlags,Z,#$10
-        BSET    >PurgeFlowTestFlags,Z,#$20
+        BRCLR   >PurgeFlowTestFlags,Z,#$10,L25782        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BCLR    >PurgeFlowTestFlags,Z,#$10               ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BSET    >PurgeFlowTestFlags,Z,#$20               ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
         BRCLR   >Options033E,#$02,L2577A                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         TSTW    >O2PurgeTestRestoreDelay
         BEQ     L2577A
@@ -8895,8 +8895,8 @@ L287FE:
         LBEQ    L2891C
         BITA    #$02
         LBNE    L2891C
-        BRSET   >PurgeFlowTestFlags,Z,#$10,L2891C
-        BRSET   >PurgeFlowTestFlags,Z,#$20,L2891C
+        BRSET   >PurgeFlowTestFlags,Z,#$10,L2891C        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BRSET   >PurgeFlowTestFlags,Z,#$20,L2891C        ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
         LDAA    >O2MonData2,Z
         ANDA    $35,Y
         LBNE    L2891C
@@ -11630,7 +11630,7 @@ MisfireCount:
         LBCS    L2B094
         BCLR    >MisfireFlags2,Z,#$10                    ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
         BRCLR   >ClosedLoopMonFlags,Z,#$40,L2AE72        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
-        BRCLR   >MonFlags64D,Z,#$40,L2AF32
+        BRCLR   >MonFlags64D,Z,#$40,L2AF32               ; bit 6: monitor data state bit read by MisfireCount and MonTaskE
         TZX
         LDX     #$8600
         TZY
@@ -13191,7 +13191,7 @@ L2C424:
         LDAB    >Count191ms,Z
         CMPB    >BattTempStartTime
         BHI     L2C45C
-        BRCLR   >BusMsgFlags,Z,#$01,L2C4B2
+        BRCLR   >BusMsgFlags,Z,#$01,L2C4B2               ; bit 0: engine-off time received from the bus (BusEngineOffTime); BatteryTempModel reads it
         LDAA    >EngineOffTimeBus,Z
         CMPA    >BattTempOffTimeMin
         BHI     L2C476
@@ -13265,7 +13265,7 @@ L2C512:
         LDAA    #$98
         BRSET   >SensorFaultFlags,Z,#$01,L2C66C          ; bit 0: battery temperature sensor fault (P1492 or P1493)
         BRSET   >ChargeMonFlags,Z,#$02,L2C630            ; bit 1: battery temperature model started (BatteryTempModel)
-        BRCLR   >BusMsgFlags,Z,#$01,L2C554
+        BRCLR   >BusMsgFlags,Z,#$01,L2C554               ; bit 0: engine-off time received from the bus (BusEngineOffTime); BatteryTempModel reads it
         BRCLR   >Options0330,#$01,L2C56A                 ; bit 0: battery temperature model on (BattTempModelOn); PciReceive also reads it
         BRCLR   $0A21,Z,#$02,L2C554
         LDAA    >BattTempBusCount,Z
@@ -15117,7 +15117,7 @@ L2D854:
         BSET    >IdleFlags7,Z,#$40                       ; bit 6: reference period long (RefPeriod at $20 or more, low rpm): idle air crank target (CalcEngineRpm, IacCrankControl)
         BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         CLR     >CrankSyncFlags,Z
-        BCLR    >CrankSyncFlags2,Z,#$70
+        BCLR    >CrankSyncFlags2,Z,#$70                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI); bit 5: reference event after the QSPI status read (Isr_GPT_IC1); bit 4: knock sample taken on this event (Isr_GPT_IC1)
         BSET    >TMSK2,Z,#$10
         CLRW    >HighRpmTimer,Z
         CLR     $0C48,Z

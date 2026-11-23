@@ -2209,17 +2209,17 @@ L11842:
         LBSR    Sub_11B28
 L11852:
         TZY
-        BRCLR   >CcdRxFlags,Z,#$01,L11866
+        BRCLR   >CcdRxFlags,Z,#$01,L11866                ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         LDY     #$872C
         LDAA    $00,Y
-        BCLR    >CcdRxFlags,Z,#$01
+        BCLR    >CcdRxFlags,Z,#$01                       ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         BRA     L11876
 L11866:
-        BRCLR   >CcdRxFlags,Z,#$02,L11AAA
+        BRCLR   >CcdRxFlags,Z,#$02,L11AAA                ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
 L1186C:
         LDY     #$8726
         LDAA    $00,Y
-        BCLR    >CcdRxFlags,Z,#$02
+        BCLR    >CcdRxFlags,Z,#$02                       ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
 L11876:
         CMPA    #$AA
         BNE     L1188A
@@ -2240,7 +2240,7 @@ L118A0:
 L118A6:
         CLR     $06C1,Z
 L118AA:
-        BCLR    >BusMsgFlags,Z,#$02
+        BCLR    >BusMsgFlags,Z,#$02                      ; bit 1: bus message $B2 sent: answer awaited (BusTxStart, Irq4BusHandler)
 L118AE:
         CLR     $0530,Z
         BSET    >SecurityFlags,Z,#$41                    ; bit 6: security/SKIM message received recently (CcdReceive, PciReceive; cleared by SkimState); bit 0: security status to be sent (CcdReceive, SecurityStatusCalc)
@@ -2251,8 +2251,8 @@ L118BA:
         LDAB    $06D7,Z
         CMPB    #$12
         LBNE    L11A98
-        BRSET   >BusMsgFlags,Z,#$20,L11A98
-        BSET    >BusMsgFlags,Z,#$20
+        BRSET   >BusMsgFlags,Z,#$20,L11A98               ; bit 5: bus message $12 request taken (CcdReceive, PciReceive)
+        BSET    >BusMsgFlags,Z,#$20                      ; bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         LDAB    $01,Y
         STAB    >BusMsg91Byte1,Z
         LDAB    $02,Y
@@ -2374,7 +2374,7 @@ L11A14:
         CLR     $0530,Z
         LDD     $01,Y
         STD     $06C4,Z
-        BSET    >BusMsgFlags,Z,#$01
+        BSET    >BusMsgFlags,Z,#$01                      ; bit 0: engine-off time received from the bus (BusEngineOffTime); BatteryTempModel reads it
         BRA     L11A98
 L11A28:
         CMPA    #$7C
@@ -2425,7 +2425,7 @@ L11A98:
         CLRW    $0000,Y
         CLRW    $0002,Y
         CLRW    $0004,Y
-        BRSET   >CcdRxFlags,Z,#$02,L1186C
+        BRSET   >CcdRxFlags,Z,#$02,L1186C                ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
 L11AAA:
         BRCLR   >PciRxFlags,Z,#$08,L11AB4                ; bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
         BCLR    >PciRxFlags,Z,#$08                       ; bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
@@ -2538,7 +2538,7 @@ L11BAE:
         BCS     L11BE2
         BCLR    >SecurityFlags,Z,#$40                    ; bit 6: security/SKIM message received recently (CcdReceive, PciReceive; cleared by SkimState)
 L11BD6:
-        BSET    >BusMsgFlags,Z,#$02
+        BSET    >BusMsgFlags,Z,#$02                      ; bit 1: bus message $B2 sent: answer awaited (BusTxStart, Irq4BusHandler)
 L11BDA:
         BITA    #$02
         BNE     L11C50
@@ -2564,7 +2564,7 @@ L11C0A:
 L11C0E:
         BITA    #$02
         BNE     L11C50
-        BRSET   >BusMsgFlags,Z,#$02,L11BDE
+        BRSET   >BusMsgFlags,Z,#$02,L11BDE               ; bit 1: bus message $B2 sent: answer awaited (BusTxStart, Irq4BusHandler)
 L11C18:
         CMPB    #$14
         BCS     L11C54
@@ -2581,7 +2581,7 @@ L11C22:
         BRA     L11BE8
 L11C3C:
         BRSET   >SecurityFlags,Z,#$10,L11C50             ; bit 4: security timer expired (SecurityState)
-        BCLR    >BusMsgFlags,Z,#$02
+        BCLR    >BusMsgFlags,Z,#$02                      ; bit 1: bus message $B2 sent: answer awaited (BusTxStart, Irq4BusHandler)
         INC     $06C1,Z
         BPL     L11C50
         BSET    >SecurityFlags,Z,#$10                    ; bit 4: security timer expired (SecurityState)
@@ -2595,7 +2595,7 @@ L11C54:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 BusEepromWrite:
-        BRCLR   >BusMsgFlags,Z,#$20,L11CFE
+        BRCLR   >BusMsgFlags,Z,#$20,L11CFE               ; bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         BRSET   >BusMsg91Byte1,Z,#$40,L11CFA
         BRSET   >BusMsg91Byte1,Z,#$80,L11CF4
         BRSET   >EepromFlags,Z,#$80,L11CFE               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -2651,10 +2651,10 @@ L11CE4:
         STY     >EepromAddr,Z
         BRA     L11CFE
 L11CF4:
-        BSET    >BusMsgFlags,Z,#$40
+        BSET    >BusMsgFlags,Z,#$40                      ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
         BRA     L11CFE
 L11CFA:
-        BSET    >BusMsgFlags,Z,#$80
+        BSET    >BusMsgFlags,Z,#$80                      ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
 L11CFE:
         RTS
 
@@ -2692,18 +2692,18 @@ L11D38:
         CMPA    #$A4
         BEQ     L11D8E
         TZY
-        BRSET   >CcdRxFlags,Z,#$10,L11D5A
-        BSET    >CcdRxFlags,Z,#$10
+        BRSET   >CcdRxFlags,Z,#$10,L11D5A                ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
+        BSET    >CcdRxFlags,Z,#$10                       ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
         LDY     #$8714
         BRA     L11D78
 L11D5A:
-        BRSET   >CcdRxFlags,Z,#$08,L11D6A
-        BSET    >CcdRxFlags,Z,#$08
+        BRSET   >CcdRxFlags,Z,#$08,L11D6A                ; bit 3: CCD transmit buffer 2 in use (CcdTransmit)
+        BSET    >CcdRxFlags,Z,#$08                       ; bit 3: CCD transmit buffer 2 in use (CcdTransmit)
         LDY     #$871A
         BRA     L11D78
 L11D6A:
-        BRSET   >CcdRxFlags,Z,#$04,L11D84
-        BSET    >CcdRxFlags,Z,#$04
+        BRSET   >CcdRxFlags,Z,#$04,L11D84                ; bit 2: CCD transmit buffer 3 in use (CcdTransmit)
+        BSET    >CcdRxFlags,Z,#$04                       ; bit 2: CCD transmit buffer 3 in use (CcdTransmit)
         LDY     #$8720
 L11D78:
         STE     $0001,Y
@@ -2907,9 +2907,9 @@ L11F30:
         SUBB    #$09
         BRA     L11F74
 L11F5A:
-        BRSET   >BusMsgFlags,Z,#$80,L11F7A
-        BRCLR   >BusMsgFlags,Z,#$40,L11EDA
-        BCLR    >BusMsgFlags,Z,#$60
+        BRSET   >BusMsgFlags,Z,#$80,L11F7A               ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+        BRCLR   >BusMsgFlags,Z,#$40,L11EDA               ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
+        BCLR    >BusMsgFlags,Z,#$60                      ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         LDAB    >BusMsg91Byte1,Z
         ANDB    #$0F
         LSRB
@@ -2919,7 +2919,7 @@ L11F74:
         ABX
         BRA     L11F84
 L11F7A:
-        BCLR    >BusMsgFlags,Z,#$A0
+        BCLR    >BusMsgFlags,Z,#$A0                      ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         LDX     #$8517
         AIY     #$08
 L11F84:
@@ -3119,7 +3119,7 @@ Sub_12106:
 BusTxByte:
         PSHM    D,CCR
         ORP     #$00E0
-        BRSET   >CcdRxFlags,Z,#$DA,L121AC
+        BRSET   >CcdRxFlags,Z,#$DA,L121AC                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler); bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 4: CCD transmit buffer 1 in use (CcdTransmit); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
         LDAA    >CcdRxFlags,Z
         BITA    #$6D
         BEQ     L121AC
@@ -3190,15 +3190,15 @@ L121AC:
 ; Called from: Sub_11D00, Sub_11FAA, Sub_12334
 ;---------------------------------------------------------------------------------------------------
 Sub_121B0:
-        BRCLR   >CcdRxFlags,Z,#$80,L121BC
+        BRCLR   >CcdRxFlags,Z,#$80,L121BC                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
         LDAB    $0702,Z
         BRA     L121D4
 L121BC:
-        BRCLR   >CcdRxFlags,Z,#$10,L121C8
+        BRCLR   >CcdRxFlags,Z,#$10,L121C8                ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
         LDAB    $0714,Z
         BRA     L121D4
 L121C8:
-        BRCLR   >CcdRxFlags,Z,#$6C,L12216
+        BRCLR   >CcdRxFlags,Z,#$6C,L12216                ; bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 2: CCD transmit buffer 3 in use (CcdTransmit)
         JSR     BusTxByte
         BRA     Sub_121B0
 L121D4:
@@ -3213,7 +3213,7 @@ L121D4:
         ANDA    #$7F
         ORAA    #$40
         STAA    >PciRxFlags,Z
-        BRCLR   >CcdRxFlags,Z,#$80,L12204
+        BRCLR   >CcdRxFlags,Z,#$80,L12204                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
         BSET    >BusMsgFlags,Z,#$10
         BRA     L12208
 L12204:
@@ -3275,10 +3275,10 @@ L12290:
         BCLR    >PciRxFlags,Z,#$02                       ; bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
         BRCLR   >BusMsgFlags,Z,#$10,L122A4
         BCLR    >BusMsgFlags,Z,#$10
-        BCLR    >CcdRxFlags,Z,#$80
+        BCLR    >CcdRxFlags,Z,#$80                       ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
         BRA     L122A8
 L122A4:
-        BCLR    >CcdRxFlags,Z,#$10
+        BCLR    >CcdRxFlags,Z,#$10                       ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
 L122A8:
         JSR     BusTxByte
 L122AC:
@@ -3301,8 +3301,8 @@ L122D0:
         CMPA    $00,X
         BNE     L122D0
         BSET    >PciRxFlags,Z,#$20
-        BRCLR   >CcdRxFlags,Z,#$02,L122FE
-        BRSET   >CcdRxFlags,Z,#$01,L1231E
+        BRCLR   >CcdRxFlags,Z,#$02,L122FE                ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
+        BRSET   >CcdRxFlags,Z,#$01,L1231E                ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         BSET    >PciRxFlags,Z,#$01
         BRA     L122F8
 L122F2:
@@ -3376,19 +3376,19 @@ L1237C:
         BNE     L1239E
         BRCLR   >PciRxFlags,Z,#$01,L12398
         BCLR    >PciRxFlags,Z,#$01
-        BSET    >CcdRxFlags,Z,#$01
+        BSET    >CcdRxFlags,Z,#$01                       ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         BRA     L123C6
 L12398:
-        BSET    >CcdRxFlags,Z,#$02
+        BSET    >CcdRxFlags,Z,#$02                       ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
         BRA     L123C6
 L1239E:
         BRCLR   >PciRxFlags,Z,#$01,L123B2
         BCLR    >PciRxFlags,Z,#$01
-        BCLR    >CcdRxFlags,Z,#$01
+        BCLR    >CcdRxFlags,Z,#$01                       ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         LDY     #$872C
         BRA     L123BA
 L123B2:
-        BCLR    >CcdRxFlags,Z,#$02
+        BCLR    >CcdRxFlags,Z,#$02                       ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
         LDY     #$8726
 L123BA:
         CLRW    $0000,Y
@@ -3396,7 +3396,7 @@ L123BA:
         CLRW    $0004,Y
 L123C6:
         CLR     $0701,Z
-        BRCLR   >CcdRxFlags,Z,#$FC,L123D6
+        BRCLR   >CcdRxFlags,Z,#$FC,L123D6                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler); bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler); bit 4: CCD transmit buffer 1 in use (CcdTransmit); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 2: CCD transmit buffer 3 in use (CcdTransmit)
         JSR     Sub_121B0
         BRA     L123DE
 L123D6:
@@ -6185,7 +6185,7 @@ L1401A:
         BCS     L14066
         BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         CLR     <CrankSyncFlags,Z
-        BCLR    >CrankSyncFlags2,Z,#$70
+        BCLR    >CrankSyncFlags2,Z,#$70                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI); bit 5: reference event after the QSPI status read (Isr_GPT_IC1); bit 4: knock sample taken on this event (Isr_GPT_IC1)
         BSET    >TMSK2,Z,#$10
         CLR     >CrankFlags2,Z
         CLRW    >HighRpmTimer,Z
@@ -8831,12 +8831,12 @@ L15C6E:
         LDAA    $3F,Z
         CMPA    #$32
         BCC     L15C80
-        BCLR    >CrankSyncFlags2,Z,#$01
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
         INCA
         STAA    $3F,Z
         BRA     L15C84
 L15C80:
-        BSET    >CrankSyncFlags2,Z,#$01
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 L15C84:
         BSET    >CamCrankFlags,Z,#$10                    ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
 L15C88:
@@ -9374,11 +9374,11 @@ PurgeFlowTest:
         BRCLR   >Options033E,#$02,L1633E                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRSET   >MonStatusLdp,Z,#$80,L167C2
         BRSET   >LdpFlags,Z,#$80,L1633E                  ; bit 7: leak test finished (LDP state machine)
-        BSET    >PurgeFlowTestFlags,Z,#$80
+        BSET    >PurgeFlowTestFlags,Z,#$80               ; bit 7: purge flow test started (PurgeFlowTest, only with the LDP fitted)
         BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
         JMP     L167A4
 L1633E:
-        BSET    >PurgeFlowTestFlags,Z,#$01
+        BSET    >PurgeFlowTestFlags,Z,#$01               ; bit 0: purge flow test not possible: no LDP (PurgeFlowTest)
         BRCLR   >PurgeFlowTestFlags2,Z,#$01,L16350       ; bit 0: purge cell rose past PurgeCellFaultRise (PurgeCellCheck)
         BSET    >PurgeFlowTestResult,Z,#$01
         JMP     L16784
@@ -9410,7 +9410,7 @@ L1635E:
         AIS     #$04
         STAB    $0264,Z
 L163A6:
-        BRSET   >PurgeFlowTestFlags,Z,#$02,L163C8
+        BRSET   >PurgeFlowTestFlags,Z,#$02,L163C8        ; bit 1: purge flow settle time set (PurgeFlowTest)
         BRCLR   >PurgeCellFlags,Z,#$04,L16784
         LDAA    >PurgeFlowSettleCount
         LDAB    >PurgeFlowSettleStart
@@ -9419,9 +9419,9 @@ L163A6:
         MUL
 L163C0:
         STAA    >PurgeFlowSettle,Z
-        BSET    >PurgeFlowTestFlags,Z,#$02
+        BSET    >PurgeFlowTestFlags,Z,#$02               ; bit 1: purge flow settle time set (PurgeFlowTest)
 L163C8:
-        BRSET   >PurgeFlowTestFlags,Z,#$20,L16784
+        BRSET   >PurgeFlowTestFlags,Z,#$20,L16784        ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
         BRSET   $021E,Z,#$02,L16784
         BRSET   $022C,Z,#$04,L16784
         BRSET   >FaultSet05,Z,#$08,L16784
@@ -9468,8 +9468,8 @@ L16468:
         CMPA    #$19
         LBEQ    L16784
         BRSET   >ThrottleState,Z,#$02,L16784             ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
-        BRSET   >PurgeFlowTestFlags,Z,#$10,L16556
-        BSET    >PurgeFlowTestFlags,Z,#$04
+        BRSET   >PurgeFlowTestFlags,Z,#$10,L16556        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BSET    >PurgeFlowTestFlags,Z,#$04               ; bit 2: purge flow test step 2 (PurgeFlowTest)
         LDAA    >IacTargetCmd,Z
         SUBA    <IacPosition,Z
         BCC     L1649A
@@ -9493,7 +9493,7 @@ L164BA:
         TSTA
         LBNE    L16784
 L164D6:
-        BSET    >PurgeFlowTestFlags,Z,#$08
+        BSET    >PurgeFlowTestFlags,Z,#$08               ; bit 3: purge flow test step 3 (PurgeFlowTest)
         BSET    <MonStatusPurge,Z,#$04                   ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         LDAA    <IacPosition,Z
         STAA    $025C,Z
@@ -9528,7 +9528,7 @@ L1654C:
         BRCLR   >ControlFlags944,Z,#$08,L16556           ; bit 3: second fan relay, probably; driven only with A/C fitted
         BSET    >PurgeFlowTestFlags2,Z,#$20              ; bit 5: fan relay 2 on during the purge test (ControlFlags944 bit 3)
 L16556:
-        BSET    >PurgeFlowTestFlags,Z,#$10
+        BSET    >PurgeFlowTestFlags,Z,#$10               ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
         LDAA    >PurgeDuty,Z
         STAA    $025B,Z
         LDAA    <IacPosition,Z
@@ -9710,17 +9710,17 @@ L16784:
         BEQ     L167A4
         BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
 L1678E:
-        BCLR    >PurgeFlowTestFlags,Z,#$01
+        BCLR    >PurgeFlowTestFlags,Z,#$01               ; bit 0: purge flow test not possible: no LDP (PurgeFlowTest)
         BSET    <MonStatusPurge,Z,#$40                   ; bit 6: purge flow monitor complete this drive cycle
-        BRSET   >PurgeFlowTestFlags,Z,#$10,L167A4
-        BCLR    >PurgeFlowTestFlags,Z,#$02
-        BSET    >PurgeFlowTestFlags,Z,#$40
+        BRSET   >PurgeFlowTestFlags,Z,#$10,L167A4        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BCLR    >PurgeFlowTestFlags,Z,#$02               ; bit 1: purge flow settle time set (PurgeFlowTest)
+        BSET    >PurgeFlowTestFlags,Z,#$40               ; bit 6: purge flow test result stored (PurgeFlowTest, PurgeRampControl)
 L167A4:
-        BCLR    >PurgeFlowTestFlags,Z,#$0C
+        BCLR    >PurgeFlowTestFlags,Z,#$0C               ; bit 3: purge flow test step 3 (PurgeFlowTest); bit 2: purge flow test step 2 (PurgeFlowTest)
         CLR     >PurgeFlowSettle,Z
-        BRCLR   >PurgeFlowTestFlags,Z,#$10,L167C2
-        BCLR    >PurgeFlowTestFlags,Z,#$10
-        BSET    >PurgeFlowTestFlags,Z,#$20
+        BRCLR   >PurgeFlowTestFlags,Z,#$10,L167C2        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BCLR    >PurgeFlowTestFlags,Z,#$10               ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BSET    >PurgeFlowTestFlags,Z,#$20               ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
         BCLR    <MonStatusPurge,Z,#$04                   ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         CLR     >PurgeFlowStep,Z
 L167C2:
@@ -11193,8 +11193,8 @@ L1772C:
         LBEQ    L1788A
         BITA    #$02
         LBNE    L1788A
-        BRSET   >PurgeFlowTestFlags,Z,#$10,L1788A
-        BRSET   >PurgeFlowTestFlags,Z,#$20,L1788A
+        BRSET   >PurgeFlowTestFlags,Z,#$10,L1788A        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BRSET   >PurgeFlowTestFlags,Z,#$20,L1788A        ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
         LDAA    >O2MonData2,Z
         ANDA    $31,Y
         LBNE    L1788A
@@ -13602,7 +13602,7 @@ MisfireCount:
         LBCS    L19178
         BCLR    >MisfireFlags2,Z,#$10                    ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
         BRCLR   >ClosedLoopMonFlags,Z,#$40,L19032        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
-        BRCLR   >MonFlags64D,Z,#$40,L1909A
+        BRCLR   >MonFlags64D,Z,#$40,L1909A               ; bit 6: monitor data state bit read by MisfireCount and MonTaskE
         TZX
         LDX     #$82AA
         TZY
@@ -16987,7 +16987,7 @@ L1B290:
         CLR     >PurgeCellFlags,Z
         BCLR    <FlexStartFlags,Z,#$38                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    <PurgeCellRichFlags,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         BRA     L1B2D0
 L1B2B8:
         ORP     #$00E0
@@ -19730,8 +19730,8 @@ L1D04E:
 MonData643Update:
         BRCLR   >MonEnableFlags2,Z,#$80,L1D0A8           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >IoInputs0,Z,#$08,L1D0A8                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
-        BRCLR   >MonFlags64D,Z,#$08,L1D0A8
-        BRSET   >MonFlags64D,Z,#$04,L1D0A8
+        BRCLR   >MonFlags64D,Z,#$08,L1D0A8               ; bit 3: monitor data state bit read by MonData643Update, MonTaskB, MonTaskE
+        BRSET   >MonFlags64D,Z,#$04,L1D0A8               ; bit 2: monitor data state bit read by MonData643Update, MonTaskC, MonTaskE
         LDAB    >RefPeriod,Z
         CMPB    #$30
         BLS     L1D0A8
@@ -19768,8 +19768,8 @@ L1D0AC:
 MonTaskB:
         BRCLR   >MonEnableFlags2,Z,#$80,L1D11E           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >IoInputs0,Z,#$08,L1D11E                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
-        BRSET   >MonFlags64D,Z,#$08,L1D11E
-        BRCLR   >MonFlags64D,Z,#$20,L1D11E
+        BRSET   >MonFlags64D,Z,#$08,L1D11E               ; bit 3: monitor data state bit read by MonData643Update, MonTaskB, MonTaskE
+        BRCLR   >MonFlags64D,Z,#$20,L1D11E               ; bit 5: monitor data state bit read by MonTaskB
         BRSET   >EngineStateFlags,Z,#$80,L1D11A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAB    >RefPeriod,Z
         CMPB    #$30
@@ -19814,7 +19814,7 @@ L1D126:
 MonTaskC:
         BRSET   >IoInputs0,Z,#$08,L1D29E                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         BRCLR   >MonEnableFlags2,Z,#$80,L1D29E           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
-        BRCLR   >MonFlags64D,Z,#$04,L1D29E
+        BRCLR   >MonFlags64D,Z,#$04,L1D29E               ; bit 2: monitor data state bit read by MonData643Update, MonTaskC, MonTaskE
         LDAB    >RefPeriod,Z
         CMPB    #$30
         LBLS    L1D29E
@@ -20043,15 +20043,15 @@ L1D3C4:
         BRA     L1D450
 L1D3D0:
         BCLR    >MilRequestFlags,Z,#$01
-        BRSET   >MonFlags64D,Z,#$04,L1D3E8
+        BRSET   >MonFlags64D,Z,#$04,L1D3E8               ; bit 2: monitor data state bit read by MonData643Update, MonTaskC, MonTaskE
         TST     $02E0,Z
         BNE     L1D44C
         LDAA    >MonFlags64D,Z
         ANDA    #$03
         BNE     L1D44C
 L1D3E8:
-        BRSET   >MonFlags64D,Z,#$08,L1D3F4
-        BRSET   >MonFlags64D,Z,#$10,L1D44C
+        BRSET   >MonFlags64D,Z,#$08,L1D3F4               ; bit 3: monitor data state bit read by MonData643Update, MonTaskB, MonTaskE
+        BRSET   >MonFlags64D,Z,#$10,L1D44C               ; bit 4: monitor data state bit read by MonTaskE
 L1D3F4:
         BRSET   >MonFlags64E,Z,#$20,L1D40E
         BRSET   >MonFlags64E,Z,#$04,L1D44C
@@ -20060,8 +20060,8 @@ L1D3F4:
         BNE     L1D44C
         BRSET   >MonData64F,Z,#$01,L1D44C
 L1D40E:
-        BRSET   >MonFlags64D,Z,#$40,L1D44C
-        BRSET   >MonFlags64D,Z,#$80,L1D44C
+        BRSET   >MonFlags64D,Z,#$40,L1D44C               ; bit 6: monitor data state bit read by MisfireCount and MonTaskE
+        BRSET   >MonFlags64D,Z,#$80,L1D44C               ; bit 7: monitor data state bit read by MonTaskE
         BRSET   >MonFlags64E,Z,#$01,L1D428
         BRSET   >MonFlags64E,Z,#$02,L1D44C
         BRA     L1D438

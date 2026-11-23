@@ -2786,7 +2786,7 @@ L11E5A:
         BCS     L11EA8
         BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         CLR     >CrankSyncFlags,Z
-        BCLR    >CrankSyncFlags2,Z,#$70
+        BCLR    >CrankSyncFlags2,Z,#$70                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI); bit 5: reference event after the QSPI status read (Isr_GPT_IC1); bit 4: knock sample taken on this event (Isr_GPT_IC1)
         BSET    >TMSK2,Z,#$10
         CLR     >CrankFlags2,Z
         CLRW    >HighRpmTimer,Z
@@ -6474,17 +6474,17 @@ L1461C:
         LBSR    Sub_14988
 L1462C:
         TZY
-        BRCLR   >CcdRxFlags,Z,#$01,L14640
+        BRCLR   >CcdRxFlags,Z,#$01,L14640                ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         LDY     #$8452
         LDAA    $00,Y
-        BCLR    >CcdRxFlags,Z,#$01
+        BCLR    >CcdRxFlags,Z,#$01                       ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         BRA     L14650
 L14640:
-        BRCLR   >CcdRxFlags,Z,#$02,L14862
+        BRCLR   >CcdRxFlags,Z,#$02,L14862                ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
 L14646:
         LDY     #$844C
         LDAA    $00,Y
-        BCLR    >CcdRxFlags,Z,#$02
+        BCLR    >CcdRxFlags,Z,#$02                       ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
 L14650:
         CMPA    #$AA
         BNE     L14664
@@ -6678,7 +6678,7 @@ L14850:
         CLRW    $0000,Y
         CLRW    $0002,Y
         CLRW    $0004,Y
-        BRSET   >CcdRxFlags,Z,#$02,L14646
+        BRSET   >CcdRxFlags,Z,#$02,L14646                ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
 L14862:
         BRCLR   >PciRxFlags,Z,#$08,L1486C                ; bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
         BCLR    >PciRxFlags,Z,#$08                       ; bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
@@ -6909,18 +6909,18 @@ L14AAA:
         CMPA    #$A4
         BEQ     L14B00
         TZY
-        BRSET   >CcdRxFlags,Z,#$10,L14ACC
-        BSET    >CcdRxFlags,Z,#$10
+        BRSET   >CcdRxFlags,Z,#$10,L14ACC                ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
+        BSET    >CcdRxFlags,Z,#$10                       ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
         LDY     #$843A
         BRA     L14AEA
 L14ACC:
-        BRSET   >CcdRxFlags,Z,#$08,L14ADC
-        BSET    >CcdRxFlags,Z,#$08
+        BRSET   >CcdRxFlags,Z,#$08,L14ADC                ; bit 3: CCD transmit buffer 2 in use (CcdTransmit)
+        BSET    >CcdRxFlags,Z,#$08                       ; bit 3: CCD transmit buffer 2 in use (CcdTransmit)
         LDY     #$8440
         BRA     L14AEA
 L14ADC:
-        BRSET   >CcdRxFlags,Z,#$04,L14AF6
-        BSET    >CcdRxFlags,Z,#$04
+        BRSET   >CcdRxFlags,Z,#$04,L14AF6                ; bit 2: CCD transmit buffer 3 in use (CcdTransmit)
+        BSET    >CcdRxFlags,Z,#$04                       ; bit 2: CCD transmit buffer 3 in use (CcdTransmit)
         LDY     #$8446
 L14AEA:
         STE     $0001,Y
@@ -7348,7 +7348,7 @@ Sub_14E8A:
 BusTxByte:
         PSHM    D,CCR
         ORP     #$00E0
-        BRSET   >CcdRxFlags,Z,#$DA,L14F30
+        BRSET   >CcdRxFlags,Z,#$DA,L14F30                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler); bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 4: CCD transmit buffer 1 in use (CcdTransmit); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
         LDAA    >CcdRxFlags,Z
         BITA    #$6D
         BEQ     L14F30
@@ -7419,15 +7419,15 @@ L14F30:
 ; Called from: Sub_14A72, Sub_14D38, Sub_150D4
 ;---------------------------------------------------------------------------------------------------
 Sub_14F34:
-        BRCLR   >CcdRxFlags,Z,#$80,L14F40
+        BRCLR   >CcdRxFlags,Z,#$80,L14F40                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
         LDAB    $0428,Z
         BRA     L14F58
 L14F40:
-        BRCLR   >CcdRxFlags,Z,#$10,L14F4C
+        BRCLR   >CcdRxFlags,Z,#$10,L14F4C                ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
         LDAB    $043A,Z
         BRA     L14F58
 L14F4C:
-        BRCLR   >CcdRxFlags,Z,#$6C,L14F9A
+        BRCLR   >CcdRxFlags,Z,#$6C,L14F9A                ; bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 2: CCD transmit buffer 3 in use (CcdTransmit)
         JSR     BusTxByte
         BRA     Sub_14F34
 L14F58:
@@ -7442,7 +7442,7 @@ L14F58:
         ANDA    #$7F
         ORAA    #$40
         STAA    >PciRxFlags,Z
-        BRCLR   >CcdRxFlags,Z,#$80,L14F88
+        BRCLR   >CcdRxFlags,Z,#$80,L14F88                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
         BSET    $045B,Z,#$10
         BRA     L14F8C
 L14F88:
@@ -7508,10 +7508,10 @@ L15030:
         BCLR    >PciRxFlags,Z,#$02                       ; bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
         BRCLR   $045B,Z,#$10,L15044
         BCLR    $045B,Z,#$10
-        BCLR    >CcdRxFlags,Z,#$80
+        BCLR    >CcdRxFlags,Z,#$80                       ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
         BRA     L15048
 L15044:
-        BCLR    >CcdRxFlags,Z,#$10
+        BCLR    >CcdRxFlags,Z,#$10                       ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
 L15048:
         JSR     BusTxByte
 L1504C:
@@ -7534,8 +7534,8 @@ L15070:
         CMPA    $00,X
         BNE     L15070
         BSET    >PciRxFlags,Z,#$20
-        BRCLR   >CcdRxFlags,Z,#$02,L1509E
-        BRSET   >CcdRxFlags,Z,#$01,L150BE
+        BRCLR   >CcdRxFlags,Z,#$02,L1509E                ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
+        BRSET   >CcdRxFlags,Z,#$01,L150BE                ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         BSET    >PciRxFlags,Z,#$01
         BRA     L15098
 L15092:
@@ -7611,19 +7611,19 @@ L1511E:
         BNE     L15140
         BRCLR   >PciRxFlags,Z,#$01,L1513A
         BCLR    >PciRxFlags,Z,#$01
-        BSET    >CcdRxFlags,Z,#$01
+        BSET    >CcdRxFlags,Z,#$01                       ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         BRA     L15168
 L1513A:
-        BSET    >CcdRxFlags,Z,#$02
+        BSET    >CcdRxFlags,Z,#$02                       ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
         BRA     L15168
 L15140:
         BRCLR   >PciRxFlags,Z,#$01,L15154
         BCLR    >PciRxFlags,Z,#$01
-        BCLR    >CcdRxFlags,Z,#$01
+        BCLR    >CcdRxFlags,Z,#$01                       ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         LDY     #$8452
         BRA     L1515C
 L15154:
-        BCLR    >CcdRxFlags,Z,#$02
+        BCLR    >CcdRxFlags,Z,#$02                       ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
         LDY     #$844C
 L1515C:
         CLRW    $0000,Y
@@ -7631,7 +7631,7 @@ L1515C:
         CLRW    $0004,Y
 L15168:
         CLR     $0458,Z
-        BRCLR   >CcdRxFlags,Z,#$FC,L15178
+        BRCLR   >CcdRxFlags,Z,#$FC,L15178                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler); bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler); bit 4: CCD transmit buffer 1 in use (CcdTransmit); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 2: CCD transmit buffer 3 in use (CcdTransmit)
         JSR     Sub_14F34
         BRA     L15180
 L15178:
@@ -16797,12 +16797,12 @@ L1B786:
         LDAA    $10,Z
         CMPA    #$32
         BCC     L1B79A
-        BCLR    >CrankSyncFlags2,Z,#$01
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
         INCA
         STAA    $10,Z
         BRA     L1B79E
 L1B79A:
-        BSET    >CrankSyncFlags2,Z,#$01
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 L1B79E:
         BSET    >CamCrankFlags,Z,#$10                    ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
 L1B7A2:

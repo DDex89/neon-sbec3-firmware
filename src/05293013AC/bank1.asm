@@ -2815,7 +2815,7 @@ L11D78:
         BCS     L11DC6
         BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         CLR     >CrankSyncFlags,Z
-        BCLR    >CrankSyncFlags2,Z,#$70
+        BCLR    >CrankSyncFlags2,Z,#$70                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI); bit 5: reference event after the QSPI status read (Isr_GPT_IC1); bit 4: knock sample taken on this event (Isr_GPT_IC1)
         BSET    >TMSK2,Z,#$10
         CLR     >CrankFlags2,Z
         CLRW    >HighRpmTimer,Z
@@ -12822,8 +12822,8 @@ L188EE:
 MonData643Update:
         BRCLR   >MonEnableFlags2,Z,#$80,L18948           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >IoInputs0,Z,#$08,L18948                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
-        BRCLR   >MonFlags64D,Z,#$08,L18948
-        BRSET   >MonFlags64D,Z,#$04,L18948
+        BRCLR   >MonFlags64D,Z,#$08,L18948               ; bit 3: monitor data state bit read by MonData643Update, MonTaskB, MonTaskE
+        BRSET   >MonFlags64D,Z,#$04,L18948               ; bit 2: monitor data state bit read by MonData643Update, MonTaskC, MonTaskE
         LDAB    >RefPeriod,Z
         CMPB    #$30
         BLS     L18948
@@ -12860,8 +12860,8 @@ L1894C:
 MonTaskB:
         BRCLR   >MonEnableFlags2,Z,#$80,L189CA           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >IoInputs0,Z,#$08,L189CA                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
-        BRSET   >MonFlags64D,Z,#$08,L189CA
-        BRCLR   >MonFlags64D,Z,#$20,L189CA
+        BRSET   >MonFlags64D,Z,#$08,L189CA               ; bit 3: monitor data state bit read by MonData643Update, MonTaskB, MonTaskE
+        BRCLR   >MonFlags64D,Z,#$20,L189CA               ; bit 5: monitor data state bit read by MonTaskB
         BRSET   >EngineStateFlags,Z,#$80,L189C6          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAB    >RefPeriod,Z
         CMPB    #$30
@@ -12910,7 +12910,7 @@ L189D2:
 MonTaskC:
         BRCLR   >MonEnableFlags2,Z,#$80,L18B4A           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >IoInputs0,Z,#$08,L18B4A                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
-        BRCLR   >MonFlags64D,Z,#$04,L18B4A
+        BRCLR   >MonFlags64D,Z,#$04,L18B4A               ; bit 2: monitor data state bit read by MonData643Update, MonTaskC, MonTaskE
         LDAB    >RefPeriod,Z
         CMPB    #$30
         LBLS    L18B4A
@@ -13137,15 +13137,15 @@ L18C74:
         BRA     L18D0E
 L18C8C:
         BCLR    >MilRequestFlags,Z,#$01
-        BRSET   >MonFlags64D,Z,#$04,L18CA4
+        BRSET   >MonFlags64D,Z,#$04,L18CA4               ; bit 2: monitor data state bit read by MonData643Update, MonTaskC, MonTaskE
         TST     $050A,Z
         BNE     L18D04
         LDAA    >MonFlags64D,Z
         ANDA    #$03
         BNE     L18D04
 L18CA4:
-        BRSET   >MonFlags64D,Z,#$08,L18CB0
-        BRSET   >MonFlags64D,Z,#$10,L18D04
+        BRSET   >MonFlags64D,Z,#$08,L18CB0               ; bit 3: monitor data state bit read by MonData643Update, MonTaskB, MonTaskE
+        BRSET   >MonFlags64D,Z,#$10,L18D04               ; bit 4: monitor data state bit read by MonTaskE
 L18CB0:
         BRSET   >MonFlags64E,Z,#$20,L18CCA
         BRSET   >MonFlags64E,Z,#$04,L18D04
@@ -13154,8 +13154,8 @@ L18CB0:
         BNE     L18D04
         BRSET   >MonData64F,Z,#$01,L18D04
 L18CCA:
-        BRSET   >MonFlags64D,Z,#$40,L18D04
-        BRSET   >MonFlags64D,Z,#$80,L18D04
+        BRSET   >MonFlags64D,Z,#$40,L18D04               ; bit 6: monitor data state bit read by MisfireCount and MonTaskE
+        BRSET   >MonFlags64D,Z,#$80,L18D04               ; bit 7: monitor data state bit read by MonTaskE
         BRSET   >MonFlags64E,Z,#$01,L18CE4
         BRSET   >MonFlags64E,Z,#$02,L18D04
         BRA     L18CF4
@@ -13334,17 +13334,17 @@ L18F52:
         LBSR    Sub_192D2
 L18F62:
         TZY
-        BRCLR   >CcdRxFlags,Z,#$01,L18F76
+        BRCLR   >CcdRxFlags,Z,#$01,L18F76                ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         LDY     #$846C
         LDAA    $00,Y
-        BCLR    >CcdRxFlags,Z,#$01
+        BCLR    >CcdRxFlags,Z,#$01                       ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         BRA     L18F86
 L18F76:
-        BRCLR   >CcdRxFlags,Z,#$02,L1919C
+        BRCLR   >CcdRxFlags,Z,#$02,L1919C                ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
 L18F7C:
         LDY     #$8466
         LDAA    $00,Y
-        BCLR    >CcdRxFlags,Z,#$02
+        BCLR    >CcdRxFlags,Z,#$02                       ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
 L18F86:
         CMPA    #$AA
         BNE     L18F9A
@@ -13539,7 +13539,7 @@ L1918A:
         CLRW    $0000,Y
         CLRW    $0002,Y
         CLRW    $0004,Y
-        BRSET   >CcdRxFlags,Z,#$02,L18F7C
+        BRSET   >CcdRxFlags,Z,#$02,L18F7C                ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
 L1919C:
         BRCLR   >PciRxFlags,Z,#$08,L191A6                ; bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
         BCLR    >PciRxFlags,Z,#$08                       ; bit 3: spark status message pending, first copy (Isr_GPT_IC4OC5, CamSignalCheck)
@@ -13776,18 +13776,18 @@ L193F4:
         CMPA    #$A4
         BEQ     L1944A
         TZY
-        BRSET   >CcdRxFlags,Z,#$10,L19416
-        BSET    >CcdRxFlags,Z,#$10
+        BRSET   >CcdRxFlags,Z,#$10,L19416                ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
+        BSET    >CcdRxFlags,Z,#$10                       ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
         LDY     #$8454
         BRA     L19434
 L19416:
-        BRSET   >CcdRxFlags,Z,#$08,L19426
-        BSET    >CcdRxFlags,Z,#$08
+        BRSET   >CcdRxFlags,Z,#$08,L19426                ; bit 3: CCD transmit buffer 2 in use (CcdTransmit)
+        BSET    >CcdRxFlags,Z,#$08                       ; bit 3: CCD transmit buffer 2 in use (CcdTransmit)
         LDY     #$845A
         BRA     L19434
 L19426:
-        BRSET   >CcdRxFlags,Z,#$04,L19440
-        BSET    >CcdRxFlags,Z,#$04
+        BRSET   >CcdRxFlags,Z,#$04,L19440                ; bit 2: CCD transmit buffer 3 in use (CcdTransmit)
+        BSET    >CcdRxFlags,Z,#$04                       ; bit 2: CCD transmit buffer 3 in use (CcdTransmit)
         LDY     #$8460
 L19434:
         STE     $0001,Y
@@ -14213,7 +14213,7 @@ Sub_197D2:
 BusTxByte:
         PSHM    D,CCR
         ORP     #$00E0
-        BRSET   >CcdRxFlags,Z,#$DA,L19878
+        BRSET   >CcdRxFlags,Z,#$DA,L19878                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler); bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 4: CCD transmit buffer 1 in use (CcdTransmit); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
         LDAA    >CcdRxFlags,Z
         BITA    #$6D
         BEQ     L19878
@@ -14284,15 +14284,15 @@ L19878:
 ; Called from: Sub_193BC, Sub_19682, Sub_19A1C
 ;---------------------------------------------------------------------------------------------------
 Sub_1987C:
-        BRCLR   >CcdRxFlags,Z,#$80,L19888
+        BRCLR   >CcdRxFlags,Z,#$80,L19888                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
         LDAB    $0442,Z
         BRA     L198A0
 L19888:
-        BRCLR   >CcdRxFlags,Z,#$10,L19894
+        BRCLR   >CcdRxFlags,Z,#$10,L19894                ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
         LDAB    $0454,Z
         BRA     L198A0
 L19894:
-        BRCLR   >CcdRxFlags,Z,#$6C,L198E2
+        BRCLR   >CcdRxFlags,Z,#$6C,L198E2                ; bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 2: CCD transmit buffer 3 in use (CcdTransmit)
         JSR     BusTxByte
         BRA     Sub_1987C
 L198A0:
@@ -14307,7 +14307,7 @@ L198A0:
         ANDA    #$7F
         ORAA    #$40
         STAA    >PciRxFlags,Z
-        BRCLR   >CcdRxFlags,Z,#$80,L198D0
+        BRCLR   >CcdRxFlags,Z,#$80,L198D0                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
         BSET    $0475,Z,#$10
         BRA     L198D4
 L198D0:
@@ -14373,10 +14373,10 @@ L19978:
         BCLR    >PciRxFlags,Z,#$02                       ; bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
         BRCLR   $0475,Z,#$10,L1998C
         BCLR    $0475,Z,#$10
-        BCLR    >CcdRxFlags,Z,#$80
+        BCLR    >CcdRxFlags,Z,#$80                       ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
         BRA     L19990
 L1998C:
-        BCLR    >CcdRxFlags,Z,#$10
+        BCLR    >CcdRxFlags,Z,#$10                       ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
 L19990:
         JSR     BusTxByte
 L19994:
@@ -14399,8 +14399,8 @@ L199B8:
         CMPA    $00,X
         BNE     L199B8
         BSET    >PciRxFlags,Z,#$20
-        BRCLR   >CcdRxFlags,Z,#$02,L199E6
-        BRSET   >CcdRxFlags,Z,#$01,L19A06
+        BRCLR   >CcdRxFlags,Z,#$02,L199E6                ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
+        BRSET   >CcdRxFlags,Z,#$01,L19A06                ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         BSET    >PciRxFlags,Z,#$01
         BRA     L199E0
 L199DA:
@@ -14476,19 +14476,19 @@ L19A66:
         BNE     L19A88
         BRCLR   >PciRxFlags,Z,#$01,L19A82
         BCLR    >PciRxFlags,Z,#$01
-        BSET    >CcdRxFlags,Z,#$01
+        BSET    >CcdRxFlags,Z,#$01                       ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         BRA     L19AB0
 L19A82:
-        BSET    >CcdRxFlags,Z,#$02
+        BSET    >CcdRxFlags,Z,#$02                       ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
         BRA     L19AB0
 L19A88:
         BRCLR   >PciRxFlags,Z,#$01,L19A9C
         BCLR    >PciRxFlags,Z,#$01
-        BCLR    >CcdRxFlags,Z,#$01
+        BCLR    >CcdRxFlags,Z,#$01                       ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
         LDY     #$846C
         BRA     L19AA4
 L19A9C:
-        BCLR    >CcdRxFlags,Z,#$02
+        BCLR    >CcdRxFlags,Z,#$02                       ; bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
         LDY     #$8466
 L19AA4:
         CLRW    $0000,Y
@@ -14496,7 +14496,7 @@ L19AA4:
         CLRW    $0004,Y
 L19AB0:
         CLR     $0472,Z
-        BRCLR   >CcdRxFlags,Z,#$FC,L19AC0
+        BRCLR   >CcdRxFlags,Z,#$FC,L19AC0                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler); bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler); bit 4: CCD transmit buffer 1 in use (CcdTransmit); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 2: CCD transmit buffer 3 in use (CcdTransmit)
         JSR     Sub_1987C
         BRA     L19AC8
 L19AC0:
@@ -18274,7 +18274,7 @@ MisfireCount:
         LBCS    L1C510
         BCLR    >MisfireFlags2,Z,#$10                    ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
         BRCLR   >ClosedLoopMonFlags,Z,#$40,L1C3AA        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
-        BRCLR   >MonFlags64D,Z,#$40,L1C424
+        BRCLR   >MonFlags64D,Z,#$40,L1C424               ; bit 6: monitor data state bit read by MisfireCount and MonTaskE
         TZX
         LDX     #$823A
         TZY
@@ -20909,12 +20909,12 @@ L1E054:
         LDAA    $10,Z
         CMPA    #$32
         BCC     L1E068
-        BCLR    >CrankSyncFlags2,Z,#$01
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
         INCA
         STAA    $10,Z
         BRA     L1E06C
 L1E068:
-        BSET    >CrankSyncFlags2,Z,#$01
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 L1E06C:
         BSET    >CamCrankFlags,Z,#$10                    ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
 L1E070:

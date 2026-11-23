@@ -2843,7 +2843,7 @@ L11D34:
         BRSET   >LimpFlags,Z,#$20,L11E8E                 ; bit 5: engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)
         BRSET   >SecurityFlags,Z,#$20,L11E8E             ; bit 5: SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)
         BRSET   >FuelModeFlags2,Z,#$10,L11E8E            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
-        BRSET   >EventFlags,Z,#$10,L11E8E
+        BRSET   >EventFlags,Z,#$10,L11E8E                ; bit 4: read by EventCorrections and LimitReasonCode
         BRSET   >IdleFlareFlags,Z,#$40,L11D66            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         BRCLR   >FuelModeFlags2,Z,#$40,L11ED2            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRCLR   >FuelModeFlags2,Z,#$80,L11E8E            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
@@ -4371,8 +4371,8 @@ LimitReasonCode:
         BRSET   >SecurityFlags,Z,#$20,L12D74             ; bit 5: SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)
         BRSET   >FuelModeFlags2,Z,#$10,L12D78            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
         BRSET   >MisfireFlags,Z,#$04,L12D7C              ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
-        BRSET   >EventFlags,Z,#$10,L12D80
-        BRSET   >EventFlags,Z,#$08,L12D84
+        BRSET   >EventFlags,Z,#$10,L12D80                ; bit 4: read by EventCorrections and LimitReasonCode
+        BRSET   >EventFlags,Z,#$08,L12D84                ; bit 3: read by LimitReasonCode
         BRA     L12D9A
 L12D60:
         LDAB    #$01
@@ -4764,7 +4764,7 @@ ClosedLoopMain:
         CLR     $0736,Z
         CLR     $0739,Z
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    <PurgeCellRichFlags,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         CLR     >O2CellWork,Z
         CLR     >O2AdaptValue1,Z
         CLR     <PurgeCellTrim1,Z
@@ -5976,7 +5976,7 @@ L14E46:
         CLR     $0724,Z
         CLR     $0726,Z
         BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
-        BSET    <PurgeCellRichFlags,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
 L14E88:
         BRCLR   >O2Bank2Flags,Z,#$80,L14EBC
         BCLR    $1E,Y,#$14
@@ -5992,7 +5992,7 @@ L14E88:
         CLR     $074C,Z
         CLR     $074E,Z
         BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    <PurgeCellRichFlags,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
 L14EBC:
         BRCLR   >O2Bank1Flags,Z,#$40,L14F22              ; bit 6: set with bit 7; read by O2DownEnable
         BCLR    $1E,X,#$14
@@ -7275,8 +7275,8 @@ L15B86:
         LBCS    L15C48
 L15BAA:
         BRSET   >EgrMonFlags,Z,#$04,L15C48               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
-        BRSET   >PurgeFlowTestFlags,Z,#$10,L15C48
-        BRSET   >PurgeFlowTestFlags,Z,#$20,L15C48
+        BRSET   >PurgeFlowTestFlags,Z,#$10,L15C48        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+        BRSET   >PurgeFlowTestFlags,Z,#$20,L15C48        ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
         BRSET   >PurgeLearnFlags,Z,#$40,L15C48           ; bit 6: purge vapour learning step state; O2LearnEnable reads it
         LDE     >FuelPulseBank1,Z
         CPE     >O2PulseWidthMin
@@ -7319,7 +7319,7 @@ L15C10:
         BMI     L15C4C
         LDAA    #$FF
 L15C1A:
-        BCLR    <PurgeCellRichFlags,Z,#$40
+        BCLR    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         LDAB    >PurgeCellCount,Z
         LBEQ    L15C2C
         CMPB    >O2LearnPurgeCountMax
@@ -7337,7 +7337,7 @@ L15C42:
         BCLR    >O2ResetFlags2,Z,#$80                    ; bit 7: adaptive cell selection: not the last cell (O2LearnEnable)
         BRA     L15C5C
 L15C48:
-        BSET    <PurgeCellRichFlags,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
 L15C4C:
         CPY     #$8794
         BEQ     L15C58
@@ -7442,7 +7442,7 @@ O2CellUpdate:
         BEQ     L15D9A
         LDAA    >PurgeDelay,Z
         BNE     L15D9A
-        BRSET   >PurgeCellRichFlags,Z,#$80,L15D9A
+        BRSET   >PurgeCellRichFlags,Z,#$80,L15D9A        ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
         CMPB    >PurgeCell1
         BEQ     L15D96
         AIY     #$01
@@ -16591,7 +16591,7 @@ L1E3AA:
         BRCLR   >Options0339,#$20,L1E3BC                 ; bit 5: selects a branch in SparkEventCalc
         BRSET   >ThrottleState,Z,#$01,L1E3DC             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
 L1E3BC:
-        BCLR    >EventFlags,Z,#$40
+        BCLR    >EventFlags,Z,#$40                       ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
         LDAB    >SparkStartRampValue,Z
         SUBB    >SparkStartRampStep2
         BCS     L1E416
@@ -16602,8 +16602,8 @@ L1E3BC:
         LDAB    #$7F
         BRA     L1E412
 L1E3DC:
-        BRSET   >EventFlags,Z,#$40,L1E3EE
-        BSET    >EventFlags,Z,#$40
+        BRSET   >EventFlags,Z,#$40,L1E3EE                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
+        BSET    >EventFlags,Z,#$40                       ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
         LDAB    >SparkAdvanceD11,Z
         BPL     L1E400
         BRA     L1E406

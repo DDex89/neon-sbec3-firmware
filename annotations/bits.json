@@ -30,11 +30,28 @@
   "1": "MAP key-on check time exceeded (MapKeyOnTimeMax); this byte also holds MapKeyOnCheck bits",
   "0": "used by MapKeyOnCheck"
  },
+ "BusConfigFlags": {
+  "7": "bus configuration bit read by SkimState and SecurityStatusCalc; not set by bit instructions",
+  "6": "SKIM / security exchange configured on the bus; read by the bus and SKIM code",
+  "4": "bus configuration bit read by SecurityState",
+  "3": "bus configuration bit read by SecurityState",
+  "2": "bus configuration bit read by SecurityState",
+  "1": "bus configuration bit read by SecurityState",
+  "0": "bus configuration bit read by SecurityState"
+ },
  "BusModuleFlags": {
   "7": "transmission module message seen on the bus (CcdReceive, PciReceive)",
   "6": "new transmission status received (TransBusStatus), not handled yet by TransMilRequest",
   "1": "body/transmission bus message timed out (BodyBusTimeout); cleared by each received message",
   "0": "transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)"
+ },
+ "BusMsgFlags": {
+  "7": "bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)",
+  "6": "bus EEPROM write: first kind stored (BusEepromWrite)",
+  "5": "bus message $12 request taken (CcdReceive, PciReceive)",
+  "2": "bus receive acknowledged (BusRxAck)",
+  "1": "bus message $B2 sent: answer awaited (BusTxStart, Irq4BusHandler)",
+  "0": "engine-off time received from the bus (BusEngineOffTime); BatteryTempModel reads it"
  },
  "BusReqFlags": {
   "4": "bus A/C or fan request held: throttle below BusReqThrottleMax when it came (CcdReceive, timed by BusReqTimerTick)",
@@ -90,6 +107,16 @@
   "2": "last byte of the message sent (Irq4BusHandler)",
   "1": "message transmission running (Irq4BusHandler)",
   "0": "received message goes to the second buffer (Irq4BusHandler, Irq2BusHandler)"
+ },
+ "CcdRxFlags": {
+  "7": "CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)",
+  "6": "CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler)",
+  "5": "CCD transmit state bit (BusTxStart, Irq2BusHandler)",
+  "4": "CCD transmit buffer 1 in use (CcdTransmit)",
+  "3": "CCD transmit buffer 2 in use (CcdTransmit)",
+  "2": "CCD transmit buffer 3 in use (CcdTransmit)",
+  "1": "CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)",
+  "0": "CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)"
  },
  "ChargeMonFlags": {
   "7": "charging voltage short of the target by more than FieldVoltsStep (ChargeControl)",
@@ -163,6 +190,12 @@
   "6": "at least one reference event since the engine started turning (Isr_GPT_IC1)",
   "5": "pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP",
   "2": "set with bit 7 by Isr_GPT_PAI ($84 = synchronised)"
+ },
+ "CrankSyncFlags2": {
+  "6": "cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)",
+  "5": "reference event after the QSPI status read (Isr_GPT_IC1)",
+  "4": "knock sample taken on this event (Isr_GPT_IC1)",
+  "0": "cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)"
  },
  "DecelLeanFlags": {
   "7": "WOT lean condition counted (WotLeanMonitor); closed loop and O2 activity read it",
@@ -250,6 +283,12 @@
   "1": "EGR flow test conditions met, test started (EgrFlowMonitor)",
   "0": "EGR flow test step done (cleared by EgrFlowMonitor)"
  },
+ "EgrZeroFlags": {
+  "7": "EGR zero position below EgrZeroPosMin (EgrZeroCheck)",
+  "2": "EGR zero check running (EgrZeroCheck); EgrPositionMonitor waits for it",
+  "1": "EGR zero check step started (EgrZeroCheck)",
+  "0": "EGR zero position learnt (EgrZeroPos, EgrZeroCheck)"
+ },
  "EngineStateFlags": {
   "7": "engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)",
   "4": "start fuel prime done, or hot restart (coolant at reset at or above HotRestartCoolantMin); read by CrankFuel",
@@ -267,6 +306,12 @@
   "2": "power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)",
   "1": "copy of calibration bit $0335.3 at reset; not read",
   "0": "copy of calibration bit $0330.4 at reset; not read"
+ },
+ "EventFlags": {
+  "7": "event counter state follows FuelModeFlags2 bit 6 (EventCounters)",
+  "6": "idle per-event spark state (SparkEventCalc, calibration bit $0339.5)",
+  "4": "read by EventCorrections and LimitReasonCode",
+  "3": "read by LimitReasonCode"
  },
  "EventSparkFlags": {
   "7": "per-event spark state A, set with bit 3 by Isr_GPT_IC4OC5 when SwitchInputs2 bit 5 is set; reported on the bus",
@@ -717,6 +762,27 @@
   "4": "monitor data reset done (MonDataReset)",
   "0": "misfire threshold in the closed-loop range (MisfireThreshold)"
  },
+ "MonFlags101": {
+  "7": "body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)",
+  "5": "fuel sender check result, first kind (FuelSenderMonitor)",
+  "4": "fuel sender check result, second kind (FuelSenderMonitor)"
+ },
+ "MonFlags64D": {
+  "7": "monitor data state bit read by MonTaskE",
+  "6": "monitor data state bit read by MisfireCount and MonTaskE",
+  "5": "monitor data state bit read by MonTaskB",
+  "4": "monitor data state bit read by MonTaskE",
+  "3": "monitor data state bit read by MonData643Update, MonTaskB, MonTaskE",
+  "2": "monitor data state bit read by MonData643Update, MonTaskC, MonTaskE"
+ },
+ "MonFlags65A": {
+  "7": "fuel sender fault reported, first kind (FuelSenderMonitor)",
+  "6": "fuel sender fault reported, second kind (FuelSenderMonitor)",
+  "5": "fuel sender fault (P0460) reported (FuelSenderMonitor)",
+  "4": "transmission fault reported to the OBD records (TransMilRequest)",
+  "3": "EGR position monitor result reported (EgrPositionMonitor)",
+  "2": "body bus timeout fault reported (BodyBusTimeout)"
+ },
  "MonStatusPurge": {
   "7": "purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)",
   "6": "purge flow monitor complete this drive cycle",
@@ -806,6 +872,11 @@
   "2": "O2 activity test step bit (O2ActivityWarm)",
   "1": "O2 activity test step bit (O2ActivityWarm)",
   "0": "O2 activity test step bit (O2ActivityWarm)"
+ },
+ "ObdFlags": {
+  "2": "OBD mode $47 reply in progress (OBD request code)",
+  "1": "OBD reply uses the EGR minimum instead of the maximum (OBD request code)",
+  "0": "OBD mode $43 reply in progress (OBD request code)"
  },
  "Options0328": {
   "1": "security variant: selects a branch in SecurityState",
@@ -1026,6 +1097,16 @@
   "2": "spark status message pending, second copy",
   "1": "per-event spark change to report (Isr_GPT_IC4OC5)"
  },
+ "PurgeCellRichFlags": {
+  "7": "coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)",
+  "6": "closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)",
+  "5": "purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)",
+  "4": "purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)",
+  "3": "purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)",
+  "2": "read by PurgeCellCheck",
+  "1": "read by PurgeCellCheck",
+  "0": "read by PurgeCellCheck"
+ },
  "PurgeCtlFlags": {
   "6": "purge adaptation: trim counted for this cell (PurgeFlowAdaptation)",
   "5": "purge adaptation state counted (PurgeFlowAdaptation)",
@@ -1052,6 +1133,16 @@
   "2": "purge cell 1 reference reached, bank 2",
   "1": "purge cell 2 reference reached, bank 1",
   "0": "purge cell 2 reference reached, bank 2"
+ },
+ "PurgeFlowTestFlags": {
+  "7": "purge flow test started (PurgeFlowTest, only with the LDP fitted)",
+  "6": "purge flow test result stored (PurgeFlowTest, PurgeRampControl)",
+  "5": "purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait",
+  "4": "purge flow test measuring phase; O2 learning and idle O2 monitor wait",
+  "3": "purge flow test step 3 (PurgeFlowTest)",
+  "2": "purge flow test step 2 (PurgeFlowTest)",
+  "1": "purge flow settle time set (PurgeFlowTest)",
+  "0": "purge flow test not possible: no LDP (PurgeFlowTest)"
  },
  "PurgeFlowTestFlags2": {
   "7": "O2 switch state reached the last cell row (O2SwitchState)",
@@ -1188,6 +1279,12 @@
   "5": "set at reset, on cancel and on engage; meaning not settled",
   "4": "coast hold, probably (after SpeedCtlCoastHoldTime)",
   "0": "set or resume engaged, probably"
+ },
+ "SpeedCtlState2": {
+  "3": "speed control accelerate hold reached (SpeedCtlAccelHoldTime)",
+  "2": "speed control servo step state (SpeedCtlControl)",
+  "1": "speed control servo step state (SpeedCtlControl)",
+  "0": "vacuum at or above SpeedCtlVacuumMin (SpeedCtlControl)"
  },
  "StartFlags": {
   "5": "coolant sensor reading out of range at start (ProcessCoolantTemp)",

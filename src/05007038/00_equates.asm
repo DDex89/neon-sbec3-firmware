@@ -187,6 +187,14 @@ PurgeCellTrim1B2 equ $0084        ; $F8084
 PurgeCellTrim2B2 equ $0085        ; $F8085
 PurgeCellTrim3B2 equ $0086        ; $F8086
 PurgeCellRichFlags equ $0087        ; $F8087
+;                 bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
+;                 bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
+;                 bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
+;                 bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
+;                 bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
+;                 bit 2: read by PurgeCellCheck
+;                 bit 1: read by PurgeCellCheck
+;                 bit 0: read by PurgeCellCheck
 O2HeaterTimer    equ $00B0        ; $F80B0
 MonFlags09E      equ $00B6        ; $F80B6
 LdpFlags2        equ $00B7        ; $F80B7
@@ -477,6 +485,14 @@ CamCrankFlags    equ $0255        ; $F8255
 ;                 bit 2: cam/crank relation measured: offset under $0320 (CamCrankRelation)
 ;                 bit 1: engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)
 PurgeFlowTestFlags equ $0256        ; $F8256
+;                 bit 7: purge flow test started (PurgeFlowTest, only with the LDP fitted)
+;                 bit 6: purge flow test result stored (PurgeFlowTest, PurgeRampControl)
+;                 bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
+;                 bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+;                 bit 3: purge flow test step 3 (PurgeFlowTest)
+;                 bit 2: purge flow test step 2 (PurgeFlowTest)
+;                 bit 1: purge flow settle time set (PurgeFlowTest)
+;                 bit 0: purge flow test not possible: no LDP (PurgeFlowTest)
 PurgeFlowTestResult equ $0257        ; $F8257
 PurgeFlowTestFlags2 equ $0258        ; $F8258
 ;                 bit 7: O2 switch state reached the last cell row (O2SwitchState)
@@ -579,6 +595,12 @@ ClosedLoopMonFlags equ $02DE        ; $F82DE
 ;                 bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
 MilRequestFlags  equ $02DF        ; $F82DF
 MonFlags64D      equ $02E1        ; $F82E1
+;                 bit 7: monitor data state bit read by MonTaskE
+;                 bit 6: monitor data state bit read by MisfireCount and MonTaskE
+;                 bit 5: monitor data state bit read by MonTaskB
+;                 bit 4: monitor data state bit read by MonTaskE
+;                 bit 3: monitor data state bit read by MonData643Update, MonTaskB, MonTaskE
+;                 bit 2: monitor data state bit read by MonData643Update, MonTaskC, MonTaskE
 MonFlags64E      equ $02E2        ; $F82E2
 MonData64F       equ $02E3        ; $F82E3
 EventOption      equ $0301        ; $F8301
@@ -967,6 +989,10 @@ ControlFlagsC39  equ $0610        ; $F8610
 ;                 bit 3: diagnostic mode bit mirrored into ControlFlags944 bit 7 (DiagModeInit)
 ;                 bit 2: set and cleared with bit 7
 CrankSyncFlags2  equ $0611        ; $F8611
+;                 bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
+;                 bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
+;                 bit 4: knock sample taken on this event (Isr_GPT_IC1)
+;                 bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 BusTempFlags     equ $0617        ; $F8617
 ;                 bit 7: fan stage from the bus temperature, bit 7 (FanRelayControl)
 ;                 bit 6: fan stage from the bus temperature: stage 2 (FanRelayControl)
@@ -1106,10 +1132,24 @@ DistancePulses   equ $06CE        ; $F86CE
 BusFlags9CE      equ $06D0        ; $F86D0
 BusMsgBEFlags    equ $06D2        ; $F86D2
 BusMsgFlags      equ $06D4        ; $F86D4
+;                 bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+;                 bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
+;                 bit 5: bus message $12 request taken (CcdReceive, PciReceive)
+;                 bit 2: bus receive acknowledged (BusRxAck)
+;                 bit 1: bus message $B2 sent: answer awaited (BusTxStart, Irq4BusHandler)
+;                 bit 0: engine-off time received from the bus (BusEngineOffTime); BatteryTempModel reads it
 BusMsg91Byte1    equ $06D5        ; $F86D5
 BusMsg91Byte2    equ $06D6        ; $F86D6
 IacAcBusTimer    equ $06DB        ; $F86DB
 CcdRxFlags       equ $0700        ; $F8700
+;                 bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
+;                 bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler)
+;                 bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler)
+;                 bit 4: CCD transmit buffer 1 in use (CcdTransmit)
+;                 bit 3: CCD transmit buffer 2 in use (CcdTransmit)
+;                 bit 2: CCD transmit buffer 3 in use (CcdTransmit)
+;                 bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
+;                 bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
 IacTarget        equ $075F        ; $F875F
 FuelSysWork      equ $0772        ; $F8772
 Options033ECopy  equ $0773        ; $F8773

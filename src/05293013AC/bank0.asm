@@ -5577,7 +5577,7 @@ L04872:
         STAA    >TFLG1,Z
         TST     >MonStartDelay,Z
         BNE     L04892
-        BSET    >CrankSyncFlags2,Z,#$20
+        BSET    >CrankSyncFlags2,Z,#$20                  ; bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
         BCLR    >SciLogFlags,Z,#$02                      ; bit 1: SCI log mode bit (SciLogReceive)
         INC     $01A7,Z
         CLR     $01A5,Z
@@ -5603,14 +5603,14 @@ L048B4:
         EORA    #$20
         BRA     L048FA
 L048C6:
-        BCLR    >CrankSyncFlags2,Z,#$70
+        BCLR    >CrankSyncFlags2,Z,#$70                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI); bit 5: reference event after the QSPI status read (Isr_GPT_IC1); bit 4: knock sample taken on this event (Isr_GPT_IC1)
         CLRA
         BRCLR   >EngineStateFlags,Z,#$80,L048FA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >SparkFlags,Z,#$20,L048FA                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDE     >RefPeriod,Z
         CPE     #$00EA
         BCC     L048FA
-        BCLR    >CrankSyncFlags2,Z,#$01
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
         CLR     $10,Z
         LDAB    $019D,Z
         INCB
@@ -5660,7 +5660,7 @@ L04940:
         JMP     L04B10
 L0496E:
         JSR     KnockSample
-        BSET    >CrankSyncFlags2,Z,#$10
+        BSET    >CrankSyncFlags2,Z,#$10                  ; bit 4: knock sample taken on this event (Isr_GPT_IC1)
         CLRB
         BRSET   >CrankSyncFlags,Z,#$20,L04980            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         INCB
@@ -6349,7 +6349,7 @@ Isr_GPT_PAI:
         LDAA    #$84
         STAA    >CrankSyncFlags,Z
         CLRW    >Count3s,Z
-        BCLR    >CrankSyncFlags2,Z,#$40
+        BCLR    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
         BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         BRCLR   >SwitchInputs2,Z,#$20,L05152             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BSET    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
@@ -6379,7 +6379,7 @@ L05196:
         TST     >MonStartDelay,Z
         BNE     L051A8
         CLR     $01A7,Z
-        BSET    >CrankSyncFlags2,Z,#$40
+        BSET    >CrankSyncFlags2,Z,#$40                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
         INC     $01A5,Z
 L051A8:
         LDAA    #$75
@@ -7909,13 +7909,13 @@ L0681A:
 ;---------------------------------------------------------------------------------------------------
 IdleFlareCheck:
         BRCLR   >ThrottleState,Z,#$80,L06826             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BSET    >EventFlags,Z,#$08
+        BSET    >EventFlags,Z,#$08                       ; bit 3: read by LimitReasonCode
 L06826:
         BRSET   >Options0339,#$20,L06832                 ; bit 5: selects a branch in SparkEventCalc
         BRSET   >DriveFlags,Z,#$20,L068C6                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L06832:
         BRSET   >ThrottleState,Z,#$80,L068C6             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRCLR   >EventFlags,Z,#$08,L068C6
+        BRCLR   >EventFlags,Z,#$08,L068C6                ; bit 3: read by LimitReasonCode
         LDAA    >VehicleSpeed,Z
         CMPA    >IdleRollSpeed
         BCC     L068C6
@@ -7931,38 +7931,38 @@ L06832:
         BCC     L0686E
         CLRB
 L0686E:
-        BRCLR   >EventFlags,Z,#$80,L06880
+        BRCLR   >EventFlags,Z,#$80,L06880                ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
         CMPB    >IdleFlareRpmOff
         BCC     L0688A
-        BCLR    >EventFlags,Z,#$80
+        BCLR    >EventFlags,Z,#$80                       ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
         BRA     L0688A
 L06880:
         CMPB    >IdleFlareRpmOn
         BCS     L0688A
-        BSET    >EventFlags,Z,#$80
+        BSET    >EventFlags,Z,#$80                       ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
 L0688A:
         LDAA    >EventFlags,Z
         BITA    #$C0
         BNE     L06896
-        BCLR    >EventFlags,Z,#$08
+        BCLR    >EventFlags,Z,#$08                       ; bit 3: read by LimitReasonCode
 L06896:
         CMPB    >IdleFlareAcRpmOn
         BCS     L068AE
         BRSET   >Options033A,#$80,L068A8                 ; bit 7: idle flare check off (IdleFlareCheck skips when set)
         BRCLR   >IoCfg1FL,Z,#$01,L068CA
 L068A8:
-        BSET    >EventFlags,Z,#$40
+        BSET    >EventFlags,Z,#$40                       ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
         BRA     L068CE
 L068AE:
-        BRCLR   >EventFlags,Z,#$40,L068CE
+        BRCLR   >EventFlags,Z,#$40,L068CE                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
         CMPB    >IdleFlareAcRpmOff
         BCS     L068CA
         BRSET   >Options033A,#$80,L068CE                 ; bit 7: idle flare check off (IdleFlareCheck skips when set)
         BRSET   >IoCfg1FL,Z,#$01,L068CE
 L068C6:
-        BCLR    >EventFlags,Z,#$80
+        BCLR    >EventFlags,Z,#$80                       ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
 L068CA:
-        BCLR    >EventFlags,Z,#$40
+        BCLR    >EventFlags,Z,#$40                       ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
 L068CE:
         RTS
 
@@ -9845,7 +9845,7 @@ L07C02:
         BRSET   >LimpFlags,Z,#$20,L07D10                 ; bit 5: engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)
         BRSET   >SecurityFlags,Z,#$20,L07D10             ; bit 5: SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)
         BRSET   >FuelModeFlags2,Z,#$10,L07D10            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
-        BRSET   >EventFlags,Z,#$40,L07C2E
+        BRSET   >EventFlags,Z,#$40,L07C2E                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
         BRCLR   >FuelModeFlags2,Z,#$40,L07D54            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRCLR   >FuelModeFlags2,Z,#$80,L07D10            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L07C2E:
@@ -9869,7 +9869,7 @@ L07C60:
         BSET    >MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         BRA     L07CA0
 L07C70:
-        BRCLR   >EventFlags,Z,#$40,L07C80
+        BRCLR   >EventFlags,Z,#$40,L07C80                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
         LDX     #$11AD
         JSR     LookupWordStep
         BRA     L07CCA
@@ -11424,7 +11424,7 @@ L08D26:
         LDAB    >FuelModeFlags2,Z
         BITB    #$D0
         BNE     L08DC2
-        BRSET   >EventFlags,Z,#$40,L08DC2
+        BRSET   >EventFlags,Z,#$40,L08DC2                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
         LDAB    $056D,Z
         BITB    #$F0
         BNE     L08DC2
@@ -11890,7 +11890,7 @@ L0925A:
         BSET    >IacBase,Z,#$20
         BSET    $01F1,Z,#$20
 L09268:
-        BRCLR   >EventFlags,Z,#$40,L0927A
+        BRCLR   >EventFlags,Z,#$40,L0927A                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
         BSET    >IacBase,Z,#$A0
         BSET    $01F1,Z,#$A0
         BSET    >O2TestFlags,Z,#$30                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
@@ -13058,10 +13058,10 @@ L09E16:
         LDE     >FuelPulseBank2,Z
         CPE     $11E5
         BCC     L09E26
-        BSET    >EventFlags,Z,#$10
+        BSET    >EventFlags,Z,#$10                       ; bit 4: read by EventCorrections and LimitReasonCode
         BRA     L09E2A
 L09E26:
-        BCLR    >EventFlags,Z,#$10
+        BCLR    >EventFlags,Z,#$10                       ; bit 4: read by EventCorrections and LimitReasonCode
 L09E2A:
         LDAA    >SystemTestMode,Z
         CMPA    #$01
@@ -13269,7 +13269,7 @@ L0A07A:
         CPY     #$804E
         BEQ     L0A09A
         BRSET   $055B,Z,#$40,L0A13E
-        BRSET   >EventFlags,Z,#$10,L0A13E
+        BRSET   >EventFlags,Z,#$10,L0A13E                ; bit 4: read by EventCorrections and LimitReasonCode
         BRA     L0A0A6
 L0A09A:
         BRSET   $055B,Z,#$80,L0A13E
@@ -13725,7 +13725,7 @@ L0A4B0:
 L0A4BA:
         BCLR    >IdleFlags8,Z,#$20                       ; bit 5: idle air start hold active (IacStepFlags bit 5, IdleRpmLoop)
 L0A4BE:
-        BRCLR   >EventFlags,Z,#$80,L0A4CA
+        BRCLR   >EventFlags,Z,#$80,L0A4CA                ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
         BSET    >IdleFlags8,Z,#$10                       ; bit 4: idle flare seen (IdleFlareFlags bit 7, IdleRpmLoop)
         BRA     L0A4D8
 L0A4CA:
@@ -14231,7 +14231,7 @@ L0A9EA:
         DEC     >DashpotTimerMoving,Z
 L0A9F4:
         BCLR    >IdleFlags2,Z,#$80                       ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
-        BRCLR   >EventFlags,Z,#$80,L0AA10
+        BRCLR   >EventFlags,Z,#$80,L0AA10                ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
         CLR     >DashpotTimer2,Z
         CLR     >DashpotTimerMoving,Z
         LDAA    >IacShiftHold
@@ -16140,7 +16140,7 @@ L0BF54:
         BRCLR   >IdleFlags,Z,#$80,L0BF70                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         TST     >DashpotTimer2,Z
         BNE     L0BF70
-        BRSET   >EventFlags,Z,#$80,L0BF70
+        BRSET   >EventFlags,Z,#$80,L0BF70                ; bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
         BRSET   >ThrottleState,Z,#$01,L0BF70             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BSET    >Scratch8,Z,#$20
 L0BF70:
@@ -17421,7 +17421,7 @@ L0CDE4:
         LDAA    $10,Z
         CMPA    #$32
         BCS     L0CEBE
-        BSET    >CrankSyncFlags2,Z,#$01
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 L0CEBE:
         LDAA    $A4,Z
         BITA    #$80
@@ -21557,7 +21557,7 @@ L0FBDC:
         BCC     L0FBFE
         BRCLR   >PurgeFlags,Z,#$20,L0FBFE                ; bit 5: per-event correction asked for purge to stop (EventCorrections)
         BRSET   >FuelModeFlags2,Z,#$40,L0FBF8            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
-        BRCLR   >EventFlags,Z,#$40,L0FBFE
+        BRCLR   >EventFlags,Z,#$40,L0FBFE                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
 L0FBF8:
         BSET    >PurgeFlags,Z,#$10                       ; bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
         BRA     L0FC02

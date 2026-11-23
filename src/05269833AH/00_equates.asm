@@ -66,6 +66,14 @@ PurgeCellTrim1B2 equ $007D        ; $F807D
 PurgeCellTrim2B2 equ $007E        ; $F807E
 PurgeCellTrim3B2 equ $007F        ; $F807F
 PurgeCellRichFlags equ $0080        ; $F8080
+;                 bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
+;                 bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
+;                 bit 5: purge cell 1 rich past PurgeCellRichMax1 (PurgeCellCheck)
+;                 bit 4: purge cell 2 rich past PurgeCellRichMax2 (PurgeCellCheck)
+;                 bit 3: purge cell 3 rich past PurgeCellRichMax3 (PurgeCellCheck)
+;                 bit 2: read by PurgeCellCheck
+;                 bit 1: read by PurgeCellCheck
+;                 bit 0: read by PurgeCellCheck
 LimitCauseFlags  equ $0083        ; $F8083
 MonitorDisableFlags equ $009C        ; $F809C
 ;                 bit 5: flex-fuel learning hold active (FlexLearnHold not zero): misfire, catalyst, O2, EGR, purge and leak monitors wait
@@ -178,6 +186,9 @@ ScratchE         equ $00FE        ; $F80FE
 ScratchF         equ $00FF        ; $F80FF
 O2NoActivityFlags equ $0100        ; $F8100
 MonFlags101      equ $0101        ; $F8101
+;                 bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
+;                 bit 5: fuel sender check result, first kind (FuelSenderMonitor)
+;                 bit 4: fuel sender check result, second kind (FuelSenderMonitor)
 O2HeaterFlags2   equ $0106        ; $F8106
 O2HeaterFlags    equ $0107        ; $F8107
 O2HeaterWork     equ $0108        ; $F8108
@@ -419,6 +430,10 @@ SpeedCtlState    equ $0400        ; $F8400
 ;                 bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
 ;                 bit 0: set or resume engaged, probably
 SpeedCtlState2   equ $0401        ; $F8401
+;                 bit 3: speed control accelerate hold reached (SpeedCtlAccelHoldTime)
+;                 bit 2: speed control servo step state (SpeedCtlControl)
+;                 bit 1: speed control servo step state (SpeedCtlControl)
+;                 bit 0: vacuum at or above SpeedCtlVacuumMin (SpeedCtlControl)
 SpeedCtlFlags    equ $0403        ; $F8403
 ;                 bit 7: switch command from bit 5 of the switch byte (SpeedCtlShift)
 ;                 bit 6: switch command from bit 4 of the switch byte (SpeedCtlShift)
@@ -628,6 +643,14 @@ FuelSysDelay2    equ $05A8        ; $F85A8
 FuelSysRichFaults equ $05AA        ; $F85AA
 FuelSysLeanFaults equ $05AC        ; $F85AC
 PurgeFlowTestFlags equ $05AE        ; $F85AE
+;                 bit 7: purge flow test started (PurgeFlowTest, only with the LDP fitted)
+;                 bit 6: purge flow test result stored (PurgeFlowTest, PurgeRampControl)
+;                 bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
+;                 bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
+;                 bit 3: purge flow test step 3 (PurgeFlowTest)
+;                 bit 2: purge flow test step 2 (PurgeFlowTest)
+;                 bit 1: purge flow settle time set (PurgeFlowTest)
+;                 bit 0: purge flow test not possible: no LDP (PurgeFlowTest)
 PurgeFlowTestResult equ $05AF        ; $F85AF
 PurgeFlowTestFlags2 equ $05B0        ; $F85B0
 ;                 bit 7: O2 switch state reached the last cell row (O2SwitchState)
@@ -710,6 +733,12 @@ ClosedLoopMonFlags equ $064A        ; $F864A
 ;                 bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
 MilRequestFlags  equ $064B        ; $F864B
 MonFlags64D      equ $064D        ; $F864D
+;                 bit 7: monitor data state bit read by MonTaskE
+;                 bit 6: monitor data state bit read by MisfireCount and MonTaskE
+;                 bit 5: monitor data state bit read by MonTaskB
+;                 bit 4: monitor data state bit read by MonTaskE
+;                 bit 3: monitor data state bit read by MonData643Update, MonTaskB, MonTaskE
+;                 bit 2: monitor data state bit read by MonData643Update, MonTaskC, MonTaskE
 MonFlags64E      equ $064E        ; $F864E
 MonData64F       equ $064F        ; $F864F
 FuelSysWork      equ $0656        ; $F8656
@@ -724,6 +753,12 @@ SwitchMonFlags   equ $0658        ; $F8658
 ;                 bit 0: power steering switch monitor: switch state for the report (PspSwitchMonitor)
 O2MonFlags       equ $0659        ; $F8659
 MonFlags65A      equ $065A        ; $F865A
+;                 bit 7: fuel sender fault reported, first kind (FuelSenderMonitor)
+;                 bit 6: fuel sender fault reported, second kind (FuelSenderMonitor)
+;                 bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
+;                 bit 4: transmission fault reported to the OBD records (TransMilRequest)
+;                 bit 3: EGR position monitor result reported (EgrPositionMonitor)
+;                 bit 2: body bus timeout fault reported (BodyBusTimeout)
 EgrMonFlags2     equ $065C        ; $F865C
 VssCheckCounter  equ $065E        ; $F865E
 IdleMonTimer     equ $0660        ; $F8660
@@ -1011,6 +1046,10 @@ O2MemCell        equ $0801        ; $F8801
 StartAirTemp     equ $0803        ; $F8803
 DecelLeanAir     equ $0804        ; $F8804
 EventFlags       equ $0806        ; $F8806
+;                 bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+;                 bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
+;                 bit 4: read by EventCorrections and LimitReasonCode
+;                 bit 3: read by LimitReasonCode
 FuelPulseAdder   equ $080C        ; $F880C
 BaroFuelAdder    equ $080E        ; $F880E
 HotEnrich        equ $0811        ; $F8811
@@ -1119,6 +1158,13 @@ EepromFlags      equ $094A        ; $F894A
 ;                 bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
 ;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
 BusConfigFlags   equ $094C        ; $F894C
+;                 bit 7: bus configuration bit read by SkimState and SecurityStatusCalc; not set by bit instructions
+;                 bit 6: SKIM / security exchange configured on the bus; read by the bus and SKIM code
+;                 bit 4: bus configuration bit read by SecurityState
+;                 bit 3: bus configuration bit read by SecurityState
+;                 bit 2: bus configuration bit read by SecurityState
+;                 bit 1: bus configuration bit read by SecurityState
+;                 bit 0: bus configuration bit read by SecurityState
 Vin09            equ $0959        ; $F8959
 Vin14            equ $095E        ; $F895E
 Vin16            equ $0960        ; $F8960
@@ -1134,6 +1180,14 @@ CcdBusFlags      equ $0979        ; $F8979
 ;                 bit 0: received message goes to the second buffer (Irq4BusHandler, Irq2BusHandler)
 CcdTxId          equ $097C        ; $F897C
 CcdRxFlags       equ $097D        ; $F897D
+;                 bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
+;                 bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler)
+;                 bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler)
+;                 bit 4: CCD transmit buffer 1 in use (CcdTransmit)
+;                 bit 3: CCD transmit buffer 2 in use (CcdTransmit)
+;                 bit 2: CCD transmit buffer 3 in use (CcdTransmit)
+;                 bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
+;                 bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
 SciLogLast       equ $09B0        ; $F89B0
 SciRxIndex       equ $09B1        ; $F89B1
 SciLogByte       equ $09B2        ; $F89B2
@@ -1170,6 +1224,12 @@ BusFlags9CE      equ $09CE        ; $F89CE
 VinIndex         equ $09CF        ; $F89CF
 BusMsgBEFlags    equ $09D0        ; $F89D0
 BusMsgFlags      equ $09D5        ; $F89D5
+;                 bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+;                 bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
+;                 bit 5: bus message $12 request taken (CcdReceive, PciReceive)
+;                 bit 2: bus receive acknowledged (BusRxAck)
+;                 bit 1: bus message $B2 sent: answer awaited (BusTxStart, Irq4BusHandler)
+;                 bit 0: engine-off time received from the bus (BusEngineOffTime); BatteryTempModel reads it
 BusMsg91Byte1    equ $09D6        ; $F89D6
 BusMsg91Byte2    equ $09D7        ; $F89D7
 BusMsg91Gate     equ $09D8        ; $F89D8
@@ -1220,6 +1280,9 @@ SkimFlags        equ $0A1E        ; $F8A1E
 ;                 bit 0: SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)
 PciFlags5        equ $0A1F        ; $F8A1F
 ObdFlags         equ $0A20        ; $F8A20
+;                 bit 2: OBD mode $47 reply in progress (OBD request code)
+;                 bit 1: OBD reply uses the EGR minimum instead of the maximum (OBD request code)
+;                 bit 0: OBD mode $43 reply in progress (OBD request code)
 BusTxRequest     equ $0A21        ; $F8A21
 ;                 bit 7: send the reply to bus message $C8 (set by CcdReceive, cleared when PciService sends it)
 ;                 bit 6: send the security message (BusTxSecurity); set at reset
@@ -1459,6 +1522,10 @@ CrankSyncFlags   equ $0C35        ; $F8C35
 ;                 bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
 ;                 bit 2: set with bit 7 by Isr_GPT_PAI ($84 = synchronised)
 CrankSyncFlags2  equ $0C36        ; $F8C36
+;                 bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
+;                 bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
+;                 bit 4: knock sample taken on this event (Isr_GPT_IC1)
+;                 bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 ControlFlagsC39  equ $0C39        ; $F8C39
 ;                 bit 7: PCI link variant: set at reset from the bus configuration, cleared when the link check fails
 ;                 bit 6: diagnostic mode request (DiagModeUpdate)

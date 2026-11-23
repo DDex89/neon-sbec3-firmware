@@ -313,6 +313,10 @@ CrankSyncFlags   equ $03A1        ; $F83A1
 ;                 bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
 ;                 bit 2: set with bit 7 by Isr_GPT_PAI ($84 = synchronised)
 CrankSyncFlags2  equ $03A2        ; $F83A2
+;                 bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
+;                 bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
+;                 bit 4: knock sample taken on this event (Isr_GPT_IC1)
+;                 bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
 CylinderIndex    equ $03A4        ; $F83A4
 LookupResult     equ $03B0        ; $F83B0
 PurgeFlags       equ $03B4        ; $F83B4
@@ -390,6 +394,14 @@ PciRxFlags       equ $0422        ; $F8422
 ;                 bit 2: spark status message pending, second copy
 ;                 bit 1: per-event spark change to report (Isr_GPT_IC4OC5)
 CcdRxFlags       equ $0426        ; $F8426
+;                 bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
+;                 bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler)
+;                 bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler)
+;                 bit 4: CCD transmit buffer 1 in use (CcdTransmit)
+;                 bit 3: CCD transmit buffer 2 in use (CcdTransmit)
+;                 bit 2: CCD transmit buffer 3 in use (CcdTransmit)
+;                 bit 1: CCD message received in buffer $89A2 (Irq2BusHandler, cleared by CcdReceive)
+;                 bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
 SecurityFlags    equ $0459        ; $F8459
 ;                 bit 7: security message of the first kind received (CcdReceive); SkimState reads it
 ;                 bit 6: security/SKIM message received recently (CcdReceive, PciReceive; cleared by SkimState)
@@ -501,6 +513,10 @@ FuelModeFlags2   equ $055A        ; $F855A
 ;                 bit 1: hot engine enrichment active (HotEngineEnrichCalc)
 ;                 bit 0: engine-off time received from the bus (CcdReceive, PciReceive)
 EventFlags       equ $055C        ; $F855C
+;                 bit 7: event counter state follows FuelModeFlags2 bit 6 (EventCounters)
+;                 bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
+;                 bit 4: read by EventCorrections and LimitReasonCode
+;                 bit 3: read by LimitReasonCode
 FuelEventFlags   equ $055D        ; $F855D
 ;                 bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)
 ;                 bit 3: start pulse hold running (FuelEventHold, FuelEventSchedule)
