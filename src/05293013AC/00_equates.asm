@@ -139,6 +139,7 @@ MisfireLoad      equ $0257        ; $F8257
 MisfireTransientHold equ $0259        ; $F8259
 MisfireFlags2    equ $025B        ; $F825B
 MisfireFlags4    equ $025D        ; $F825D
+;                 bit 6: set by IdleTargetControl at the end of a gear idle step; read by MisfireDeviation
 MisfireWork628   equ $025E        ; $F825E
 MisfireHold      equ $025F        ; $F825F
 DiagBusFlags     equ $0269        ; $F8269
@@ -246,6 +247,10 @@ SciUnlockState   equ $03B3        ; $F83B3
 SciSecurityState equ $03B4        ; $F83B4
 RunTime          equ $03BA        ; $F83BA
 CrankSyncFlags   equ $03BB        ; $F83BB
+;                 bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)
+;                 bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
+;                 bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
+;                 bit 2: set with bit 7 by Isr_GPT_PAI ($84 = synchronised)
 CrankSyncFlags2  equ $03BC        ; $F83BC
 CylinderIndex    equ $03BE        ; $F83BE
 PurgeFlags       equ $03CC        ; $F83CC
@@ -269,6 +274,13 @@ MonStatusBits2   equ $0414        ; $F8414
 MonStatusBits3   equ $0416        ; $F8416
 LoadValue        equ $0418        ; $F8418
 EventSparkFlags  equ $041A        ; $F841A
+;                 bit 7: per-event spark state A, set with bit 3 by Isr_GPT_IC4OC5 when SwitchInputs2 bit 5 is set; reported on the bus
+;                 bit 6: per-event spark state B, set with bit 2 (the opposite of bit 7); reported on the bus
+;                 bit 5: per-event history to be refilled (Isr_GPT_IC4OC5, cleared by EventTableCheck)
+;                 bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it
+;                 bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
+;                 bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
+;                 bit 0: input capture 4 edge was the first kind (TCTL2 bit 7 clear) (Isr_GPT_IC4OC5)
 EventSpark       equ $041C        ; $F841C
 EventSparkTimer  equ $041D        ; $F841D
 EventSparkPeriodB equ $0420        ; $F8420
@@ -276,13 +288,35 @@ EventSparkCount2 equ $0421        ; $F8421
 EventSparkPeriodA equ $0423        ; $F8423
 EventSparkCount  equ $0424        ; $F8424
 ChargeMonFlags   equ $042E        ; $F842E
+;                 bit 7: charging voltage short of the target by more than FieldVoltsStep (ChargeControl)
+;                 bit 6: charging low long enough to fail (ChargeMonFailTime reached, ChargeLowMonitor)
+;                 bit 5: generator field output on (mirrors IoDriver6E bit 13; Isr_PIT, ChargeControl)
+;                 bit 4: engine rpm above FieldRpmMin: field ramp started (FieldRampControl)
+;                 bit 3: charging low for ChargeMonTime: monitor armed (ChargeLowMonitor)
+;                 bit 2: battery voltage low (BattLowVolts for BattLowSetCount passes, BatteryLowFlag); charge lamp
+;                 bit 1: battery temperature model started (BatteryTempModel)
+;                 bit 0: a fault with the charge-lamp flag was reported (ReportFault); charge lamp request
 ChargeTargetVolts equ $042F        ; $F842F
 ChargeMonTimer   equ $0431        ; $F8431
 ChargeDeficitAvg equ $0437        ; $F8437
 FieldFlags       equ $0439        ; $F8439
+;                 bit 6: field ramp minimum time after start passed (FieldRampTimeMin)
+;                 bit 5: field ramp reached its end step (FieldRampControl)
+;                 bit 4: field ramp held at a fixed duty (FieldRampControl)
+;                 bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
+;                 bit 2: generator field test running (FieldTestStart, SystemTestCheck)
+;                 bit 1: idle air charge step: voltage recovered, timer running (IacChargeStepCalc)
+;                 bit 0: idle air charge step applied (IacChargeStepCalc)
 PciRxFlags       equ $043C        ; $F843C
 CcdRxFlags       equ $0440        ; $F8440
 SecurityFlags    equ $0473        ; $F8473
+;                 bit 7: security message of the first kind received (CcdReceive); SkimState reads it
+;                 bit 6: security/SKIM message received recently (CcdReceive, PciReceive; cleared by SkimState)
+;                 bit 5: SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)
+;                 bit 4: security timer expired (SecurityState)
+;                 bit 3: security exchange step 2 (CcdReceive)
+;                 bit 2: security exchange step 1 (CcdReceive)
+;                 bit 0: security status to be sent (CcdReceive, SecurityStatusCalc)
 FuelLevelScaled  equ $0485        ; $F8485
 FuelSenderScaled equ $0486        ; $F8486
 DiagCommand      equ $048C        ; $F848C
@@ -322,6 +356,11 @@ EepromFlags      equ $04A6        ; $F84A6
 SciErrors        equ $04D8        ; $F84D8
 DiagRamFlags     equ $04D9        ; $F84D9
 MonEnableFlags2  equ $0500        ; $F8500
+;                 bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
+;                 bit 6: monitor data to be reset (set at reset and by MonEnableCheck)
+;                 bit 5: monitor data changed: to be written to the EEPROM (MonDataStore)
+;                 bit 4: monitor data reset done (MonDataReset)
+;                 bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 MonData643       equ $0501        ; $F8501
 MonData644       equ $0502        ; $F8502
 MonData645       equ $0503        ; $F8503
@@ -474,6 +513,14 @@ AcClutchSparkHoldTime equ $0654        ; $F8654
 AcSpark          equ $0655        ; $F8655
 AcSparkHoldCounter equ $0656        ; $F8656
 IacAcFlags       equ $0657        ; $F8657
+;                 bit 7: A/C clutch spark hold during a shift step (AcClutchSpark)
+;                 bit 6: A/C clutch spark hold time reached (AcClutchSpark)
+;                 bit 5: A/C clutch spark correction active (AcClutchSpark)
+;                 bit 4: idle air A/C step applied (IdleTargetControl, AcCutLogic)
+;                 bit 3: A/C request from the transmission module on the bus (IdleTargetControl)
+;                 bit 2: bus message bit 5 (CcdReceive, PciReceive), read by IdleTargetControl
+;                 bit 1: rpm filter from the bus value (RpmIdleFilter, BusFlags9CE bit 6)
+;                 bit 0: A/C clutch spark rate step (AcClutchSpark, read by AcSparkRate)
 ShiftIdleDelay   equ $0658        ; $F8658
 SparkStartTime   equ $065E        ; $F865E
 IdleTarget       equ $0660        ; $F8660
@@ -486,12 +533,55 @@ IdleFlags        equ $0672        ; $F8672
 ;                 bit 1: shift idle step applied (IacShiftStepApply)
 ;                 bit 0: idle rpm loop hold timer started (IdleRpmLoop)
 IdleFlags5       equ $0673        ; $F8673
+;                 bit 7: gear idle step state (IdleTargetControl)
+;                 bit 6: idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it
+;                 bit 5: gear idle step state (IdleTargetControl)
+;                 bit 4: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
+;                 bit 3: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
+;                 bit 2: shift idle step applied (IacShiftStepApply in IdleTargetControl)
+;                 bit 1: idle air position set by the MAP loop (IdleMapLoop)
+;                 bit 0: MAP target in acceleration phase (IdleMapTargetCalc, IdleMapRpmAccelMax)
 IdleFlags6       equ $0674        ; $F8674
+;                 bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
+;                 bit 6: idle air learning allowed: no flex cold start (IacLearn)
+;                 bit 5: rolling idle control was active at the last pass (IacStepFlags bit 0, IdleRpmTarget)
+;                 bit 4: idle conditions for learning met (IdleStateFlags)
+;                 bit 2: idle step state, cleared with IdleFlags5 bits 3-4 (IdleTargetControl)
+;                 bit 1: gear-step idle air step applied (IdleTargetControl)
+;                 bit 0: A/C sensor value latched before the clutch engaged (IacBaseCalc)
 SparkFlags3      equ $0675        ; $F8675
 IdleFlags2       equ $0676        ; $F8676
+;                 bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
+;                 bit 6: idle target ramp not allowed: flex cold start or ramp delay (IdleRpmTarget)
+;                 bit 5: idle target ramp requested (IdleRpmTarget)
+;                 bit 4: idle at the previous pass (ThrottleState bit 0, IdleRpmTarget)
+;                 bit 3: idle target raise, cause 4 (IdleRpmTarget, with IdleFlags bit 6)
+;                 bit 2: idle target raise for low battery voltage (BatteryVoltsFiltered, IdleRpmTarget)
+;                 bit 1: idle target raise, cause 2 (IdleRpmTarget)
+;                 bit 0: idle target raise, cause 1 (IdleRpmTarget)
 IdleFlags3       equ $0677        ; $F8677
+;                 bit 6: reference event since the last idle loop pass (set in Isr_GPT_IC1, cleared by IdleRpmLoop)
+;                 bit 5: idle step after shift requested (IdleRpmTarget; cleared when SegmentRpm passes IacGearRpmEnd)
+;                 bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
+;                 bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
+;                 bit 2: closed-throttle coast seen (IdleStateUpdate; cleared by IacRollingControl)
+;                 bit 0: throttle closed since the last opening: dashpot started (ThrottleClosedLearn)
 IdleFlags8       equ $0678        ; $F8678
+;                 bit 7: dashpot timer running while moving (IdleRpmLoop)
+;                 bit 6: second dashpot timer running (IdleRpmLoop)
+;                 bit 5: idle air start hold active (IacStepFlags bit 5, IdleRpmLoop)
+;                 bit 4: idle flare seen (IdleFlareFlags bit 7, IdleRpmLoop)
+;                 bit 3: MAP target step allowed (IdleFlags5 bit 6, IdleRpmLoop)
+;                 bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
+;                 bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
+;                 bit 0: hot air: AirTemp above IdleHotAirOn, off below IdleHotAirOff (IdleRpmTarget)
 IdleAcFlags      equ $0679        ; $F8679
+;                 bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it
+;                 bit 6: set with bit 7 when the A/C idle step starts
+;                 bit 3: A/C state bit cleared by IdleTargetControl and AcCutLogic
+;                 bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
+;                 bit 1: A/C idle state bit (IdleTargetControl, AcCutLogic)
+;                 bit 0: A/C idle state bit (IdleTargetControl, AcCutLogic)
 IacTarget        equ $067A        ; $F867A
 IdleCount0322    equ $0681        ; $F8681
 IacCoastPosition equ $068E        ; $F868E
@@ -511,7 +601,23 @@ IacGearSteps     equ $06B4        ; $F86B4
 IacShiftMode     equ $06B5        ; $F86B5
 IacKickTimer     equ $06D7        ; $F86D7
 FuelSysFlags1    equ $070C        ; $F870C
+;                 bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1
+;                 bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
+;                 bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 1
+;                 bit 4: lean condition counted in the current window, bank 1
+;                 bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1
+;                 bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
+;                 bit 1: rich fault count reached (FuelSysRichFaultCount), bank 1
+;                 bit 0: rich condition counted in the current window, bank 1
 FuelSysFlags2    equ $070D        ; $F870D
+;                 bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2
+;                 bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
+;                 bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 2
+;                 bit 4: lean condition counted in the current window, bank 2
+;                 bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2
+;                 bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
+;                 bit 1: rich fault count reached (FuelSysRichFaultCount), bank 2
+;                 bit 0: rich condition counted in the current window, bank 2
 O2MonData        equ $0722        ; $F8722
 IoInputs0        equ $0800        ; $F8800
 ;                 bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path

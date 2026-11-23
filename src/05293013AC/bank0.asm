@@ -5584,7 +5584,7 @@ L04872:
 L04892:
         BSET    >CrankFlags2,Z,#$80
         CLRA
-        BRCLR   >CrankSyncFlags,Z,#$80,L048FA
+        BRCLR   >CrankSyncFlags,Z,#$80,L048FA            ; bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)
         LDAA    >CrankSyncFlags,Z
         BITA    #$20
         BEQ     L048AE
@@ -5622,7 +5622,7 @@ L048F6:
         EORA    #$01
 L048FA:
         STAA    >CrankSyncFlags,Z
-        BRCLR   >CrankSyncFlags,Z,#$80,L04916
+        BRCLR   >CrankSyncFlags,Z,#$80,L04916            ; bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)
         TAB
         ANDB    #$07
         DECB
@@ -5650,7 +5650,7 @@ L04940:
         BRCLR   >ADCSTAT_L,Z,#$01,L04940
         LDAA    >RJURR0_L,Z
         STAA    >MapRawStart,Z
-        BRSET   >CrankSyncFlags,Z,#$40,L0496E
+        BRSET   >CrankSyncFlags,Z,#$40,L0496E            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         CLRW    $0810,Z
         LDAA    #$75
         STAA    >PACTL,Z
@@ -5662,7 +5662,7 @@ L0496E:
         JSR     KnockSample
         BSET    >CrankSyncFlags2,Z,#$10
         CLRB
-        BRSET   >CrankSyncFlags,Z,#$20,L04980
+        BRSET   >CrankSyncFlags,Z,#$20,L04980            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         INCB
 L04980:
         BRCLR   >Options032A,#$04,L04988
@@ -5841,7 +5841,7 @@ L04B1E:
         CLR     $037C,Z
         BSET    >SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
         TZX
-        BRCLR   >CrankSyncFlags,Z,#$40,L04D60
+        BRCLR   >CrankSyncFlags,Z,#$40,L04D60            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         LDD     >RefPeriod,Z
         CPD     #$00FF
         BCS     L04B82
@@ -5873,7 +5873,7 @@ L04B82:
         STE     >Temp4F4,Z
 L04BCE:
         CLRB
-        BRSET   >CrankSyncFlags,Z,#$20,L04BD8
+        BRSET   >CrankSyncFlags,Z,#$20,L04BD8            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         INCB
 L04BD8:
         BRCLR   >Options032A,#$04,L04BE0
@@ -6015,7 +6015,7 @@ L04D60:
         JMP     L0492C
         dc.b    $30,$00,$50,$00,$70,$00,$90,$00,$B0,$00
 L04D72:
-        BRCLR   >CrankSyncFlags,Z,#$40,L04EF0
+        BRCLR   >CrankSyncFlags,Z,#$40,L04EF0            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         CLRW    $0810,Z
         LDAA    #$75
         STAA    >PACTL,Z
@@ -6045,7 +6045,7 @@ L04D72:
         SUBE    #$003C
         STE     >Temp4F4,Z
         CLRB
-        BRSET   >CrankSyncFlags,Z,#$20,L04DDE
+        BRSET   >CrankSyncFlags,Z,#$20,L04DDE            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         INCB
 L04DDE:
         BRCLR   >Options032A,#$04,L04DE6
@@ -6157,11 +6157,11 @@ L04EFE:
         JSR     EmptyHook
         JSR     AdcStartF0
         BRSET   >SparkFlags,Z,#$20,L04F3E                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
-        BRCLR   >CrankSyncFlags,Z,#$40,L04F3E
+        BRCLR   >CrankSyncFlags,Z,#$40,L04F3E            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         TPD
         TBXK
         CLRB
-        BRCLR   >CrankSyncFlags,Z,#$20,L04F20
+        BRCLR   >CrankSyncFlags,Z,#$20,L04F20            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         INCB
 L04F20:
         BRCLR   >Options032A,#$04,L04F28
@@ -6186,7 +6186,7 @@ L04F4C:
         BCLRW   >IoStatus2,Z,#$0400                      ; IoStatus2.2: tested by KnockChipConfig
 L04F5C:
         BCLR    >SparkFlags,Z,#$80                       ; bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
-        BRCLR   >CrankSyncFlags,Z,#$40,L05038
+        BRCLR   >CrankSyncFlags,Z,#$40,L05038            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         LDAA    #$8A
         BRCLR   >SparkFlags,Z,#$20,L04F70                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    #$CA
@@ -6221,7 +6221,7 @@ L04FAE:
         ANDD    #$0010
         BNE     L05028
         CLRB
-        BRCLR   >CrankSyncFlags,Z,#$20,L04FD2
+        BRCLR   >CrankSyncFlags,Z,#$20,L04FD2            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         INCB
 L04FD2:
         BRCLR   >Options032A,#$04,L04FDA
@@ -6271,7 +6271,7 @@ L05038:
         LDAA    #$55
         JSR     MapTpsFilters
         JSR     MisfireMonitorEvent
-        BSET    >IdleFlags3,Z,#$40
+        BSET    >IdleFlags3,Z,#$40                       ; bit 6: reference event since the last idle loop pass (set in Isr_GPT_IC1, cleared by IdleRpmLoop)
         JSR     SurgeFilters
         JSR     Sub_15006
         LDX     >RefPeriod,Z
@@ -6296,7 +6296,7 @@ L05070:
         LDAA    >Map,Z
         STAA    >MapLast,Z
 L050A6:
-        BSET    >CrankSyncFlags,Z,#$40
+        BSET    >CrankSyncFlags,Z,#$40                   ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         BRCLR   >EngineStateFlags,Z,#$80,L05102          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BSET    >FuelPulseFlags,Z,#$10                   ; bit 4: start prime pulse pending (Isr_GPT_IC1, StartInjectorPulse)
         TST     $0567,Z
@@ -6345,7 +6345,7 @@ Isr_GPT_PAI:
         CLR     >PACNT,Z
         LDD     >TCNT,Z
         STD     $01A8,Z
-        BRSET   >CrankSyncFlags,Z,#$84,L05178
+        BRSET   >CrankSyncFlags,Z,#$84,L05178            ; bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI); bit 2: set with bit 7 by Isr_GPT_PAI ($84 = synchronised)
         LDAA    #$84
         STAA    >CrankSyncFlags,Z
         CLRW    >Count3s,Z
@@ -6367,14 +6367,14 @@ L05152:
 L05178:
         CLRA
         BRCLR   >PACTL,Z,#$80,L05192
-        BCLR    >CrankSyncFlags,Z,#$20
+        BCLR    >CrankSyncFlags,Z,#$20                   ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         BRCLR   >PORTGP,Z,#$01,L0518C
         LDAA    #$02
 L0518C:
         STAA    >CylinderIndex,Z
         BRA     L05196
 L05192:
-        BSET    >CrankSyncFlags,Z,#$20
+        BSET    >CrankSyncFlags,Z,#$20                   ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
 L05196:
         TST     >MonStartDelay,Z
         BNE     L051A8
@@ -6788,11 +6788,11 @@ L055B4:
         LBEQ    L05720
         JSR     Sub_0B5F4
         BRCLR   >EngineStateFlags,Z,#$80,L05688          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >FieldFlags,Z,#$20,L0566E
+        BRSET   >FieldFlags,Z,#$20,L0566E                ; bit 5: field ramp reached its end step (FieldRampControl)
         LDAA    >Count3s,Z
         CMPA    $0367
         BCS     L055E8
-        BSET    >FieldFlags,Z,#$20
+        BSET    >FieldFlags,Z,#$20                       ; bit 5: field ramp reached its end step (FieldRampControl)
         LBRA    L0566E
 L055E8:
         LDAA    >CoolantTemp,Z
@@ -6804,13 +6804,13 @@ L055E8:
         LDAA    >EngineRpm,Z
         CMPA    $0366
         BCC     L05618
-        BCLR    >FieldFlags,Z,#$18
+        BCLR    >FieldFlags,Z,#$18                       ; bit 4: field ramp held at a fixed duty (FieldRampControl); bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
         CLR     $0433,Z
         CLRW    $06D5,Z
         BRA     L05688
 L05618:
-        BRSET   >FieldFlags,Z,#$10,L0566E
-        BSET    >FieldFlags,Z,#$08
+        BRSET   >FieldFlags,Z,#$10,L0566E                ; bit 4: field ramp held at a fixed duty (FieldRampControl)
+        BSET    >FieldFlags,Z,#$08                       ; bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
         LDAB    #$0E
         CLR     $0433,Z
         LDE     $035C
@@ -6834,21 +6834,21 @@ L05618:
         LDAA    #$64
         STAA    $0433,Z
 L0566E:
-        BSET    >FieldFlags,Z,#$10
-        BCLR    >FieldFlags,Z,#$08
+        BSET    >FieldFlags,Z,#$10                       ; bit 4: field ramp held at a fixed duty (FieldRampControl)
+        BCLR    >FieldFlags,Z,#$08                       ; bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
         LDAA    >EngineRpm,Z
         CMPA    #$0C
         BCS     L05688
         CMPA    #$10
         BCC     L05694
-        BRSET   >ChargeMonFlags,Z,#$10,L05694
+        BRSET   >ChargeMonFlags,Z,#$10,L05694            ; bit 4: engine rpm above FieldRpmMin: field ramp started (FieldRampControl)
 L05688:
-        BCLR    >FieldFlags,Z,#$10
-        BCLR    >ChargeMonFlags,Z,#$10
+        BCLR    >FieldFlags,Z,#$10                       ; bit 4: field ramp held at a fixed duty (FieldRampControl)
+        BCLR    >ChargeMonFlags,Z,#$10                   ; bit 4: engine rpm above FieldRpmMin: field ramp started (FieldRampControl)
         LBRA    L05716
 L05694:
-        BSET    >ChargeMonFlags,Z,#$10
-        BRCLR   >ChargeMonFlags,Z,#$40,L056C4
+        BSET    >ChargeMonFlags,Z,#$10                   ; bit 4: engine rpm above FieldRpmMin: field ramp started (FieldRampControl)
+        BRCLR   >ChargeMonFlags,Z,#$40,L056C4            ; bit 6: charging low long enough to fail (ChargeMonFailTime reached, ChargeLowMonitor)
         XGDX
         TST     $0430,Z
         BNE     L056AA
@@ -6859,11 +6859,11 @@ L056AA:
         NEGA
         CMPA    $3DE4
         LBLS    L05716
-        BSET    >ChargeMonFlags,Z,#$80
-        BCLR    >ChargeMonFlags,Z,#$40
+        BSET    >ChargeMonFlags,Z,#$80                   ; bit 7: charging voltage short of the target by more than FieldVoltsStep (ChargeControl)
+        BCLR    >ChargeMonFlags,Z,#$40                   ; bit 6: charging low long enough to fail (ChargeMonFailTime reached, ChargeLowMonitor)
 L056C4:
         CLR     $0430,Z
-        BRCLR   >FieldFlags,Z,#$05,L056D4
+        BRCLR   >FieldFlags,Z,#$05,L056D4                ; bit 2: generator field test running (FieldTestStart, SystemTestCheck); bit 0: idle air charge step applied (IacChargeStepCalc)
         LDAA    $043A,Z
         BRA     L056D6
 L056D4:
@@ -6897,11 +6897,11 @@ L05704:
         BNE     L05716
 L0570A:
         BSETW   $086E,Z,#$2000
-        BSET    >ChargeMonFlags,Z,#$20
+        BSET    >ChargeMonFlags,Z,#$20                   ; bit 5: generator field output on (mirrors IoDriver6E bit 13; Isr_PIT, ChargeControl)
         BRA     L05720
 L05716:
         BCLRW   $086E,Z,#$2000
-        BCLR    >ChargeMonFlags,Z,#$20
+        BCLR    >ChargeMonFlags,Z,#$20                   ; bit 5: generator field output on (mirrors IoDriver6E bit 13; Isr_PIT, ChargeControl)
 L05720:
         RTS
 
@@ -7143,7 +7143,7 @@ L05CC0:
         LDAA    >TFLG1,Z
         EORA    $00,Y
         STAA    >TFLG1,Z
-        BRCLR   >CrankSyncFlags,Z,#$40,L05D2C
+        BRCLR   >CrankSyncFlags,Z,#$40,L05D2C            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         LDAB    >RefPeriod,Z
         BNE     L05D2C
         BRCLR   >SparkFlags,Z,#$20,L05D2C                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
@@ -7198,7 +7198,7 @@ Sub_05D3A:
         LDAA    >TFLG1,Z
         EORA    #$10
         STAA    >TFLG1,Z
-        BRCLR   >CrankSyncFlags,Z,#$40,L05DB4
+        BRCLR   >CrankSyncFlags,Z,#$40,L05DB4            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         LDAB    >RefPeriod,Z
         BNE     L05DB4
         BRCLR   >SparkFlags,Z,#$20,L05DB4                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
@@ -7370,8 +7370,8 @@ L05EE0:
 L05EF2:
         BRCLR   >SwitchInputs2,Z,#$20,L05F5A             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BCLR    $0419,Z,#$10
-        BSET    >EventSparkFlags,Z,#$08
-        BCLR    >EventSparkFlags,Z,#$04
+        BSET    >EventSparkFlags,Z,#$08                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
+        BCLR    >EventSparkFlags,Z,#$04                  ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         BCLR    $041B,Z,#$50
         LDAB    #$00
         TBXK
@@ -7386,13 +7386,13 @@ L05F12:
         LBRA    L0603C
 L05F2A:
         BCLR    $0419,Z,#$10
-        BCLR    >EventSparkFlags,Z,#$0C
+        BCLR    >EventSparkFlags,Z,#$0C                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         LBRA    L0603C
 L05F36:
         BRCLR   >SwitchInputs2,Z,#$20,L05F5A             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BCLR    $0419,Z,#$10
-        BSET    >EventSparkFlags,Z,#$04
-        BCLR    >EventSparkFlags,Z,#$08
+        BSET    >EventSparkFlags,Z,#$04                  ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
+        BCLR    >EventSparkFlags,Z,#$08                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
         BSET    $041B,Z,#$10
         BCLR    $041B,Z,#$40
         LDAB    #$00
@@ -7407,8 +7407,8 @@ L05F5A:
         LBRA    L0603C
 L05F6E:
         BSET    $041B,Z,#$01
-        BSET    >EventSparkFlags,Z,#$10
-        BSET    >EventSparkFlags,Z,#$20
+        BSET    >EventSparkFlags,Z,#$10                  ; bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it
+        BSET    >EventSparkFlags,Z,#$20                  ; bit 5: per-event history to be refilled (Isr_GPT_IC4OC5, cleared by EventTableCheck)
         LDAA    #$FF
         STAA    $0706,Z
         STAA    $0707,Z
@@ -7434,7 +7434,7 @@ L05FAA:
         LBRA    L0603C
 L05FBC:
         BRCLR   $041B,Z,#$01,L0602A
-        BCLR    >EventSparkFlags,Z,#$0C
+        BCLR    >EventSparkFlags,Z,#$0C                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         PSHM    E
         BSET    >FuelModeFlags,Z,#$08                    ; bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
         CLR     >Temp4FE,Z
@@ -9760,7 +9760,7 @@ L07B0C:
 ;---------------------------------------------------------------------------------------------------
 EventCorrections:
         BRCLR   >Options0337,#$80,L07B9C                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
-        BRCLR   >EventSparkFlags,Z,#$0C,L07B9C
+        BRCLR   >EventSparkFlags,Z,#$0C,L07B9C           ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         LDAA    $1D47
         STAA    $0597,Z
         LDAB    >EventSparkPeriodA,Z
@@ -9838,12 +9838,12 @@ L07BDC:
         STAA    >EventSpark,Z
         BNE     L07C02
 L07BFE:
-        BCLR    >EventSparkFlags,Z,#$0C
+        BCLR    >EventSparkFlags,Z,#$0C                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
 L07C02:
         TST     >SpeedCtlRpmJumpTimer,Z
         LBNE    L07D10
         BRSET   >LimpFlags,Z,#$20,L07D10
-        BRSET   >SecurityFlags,Z,#$20,L07D10
+        BRSET   >SecurityFlags,Z,#$20,L07D10             ; bit 5: SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)
         BRSET   >FuelModeFlags2,Z,#$10,L07D10            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
         BRSET   >EventFlags,Z,#$40,L07C2E
         BRCLR   >FuelModeFlags2,Z,#$40,L07D54            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
@@ -10643,7 +10643,7 @@ L0849C:
         BCLR    >FuelPulseFlags,Z,#$80                   ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
         LBRA    L08672
 L084A4:
-        BRSET   >CrankSyncFlags,Z,#$40,L08594
+        BRSET   >CrankSyncFlags,Z,#$40,L08594            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         LDE     #$C02D
         STE     >IoInjector0,Z
         STE     >IoInjector1,Z
@@ -10902,7 +10902,7 @@ L08718:
 ; Called from: Isr_GPT_IC1, StartInjectorPulse
 ;---------------------------------------------------------------------------------------------------
 EventHistoryShift:
-        BRCLR   >EventSparkFlags,Z,#$20,L0875C
+        BRCLR   >EventSparkFlags,Z,#$20,L0875C           ; bit 5: per-event history to be refilled (Isr_GPT_IC4OC5, cleared by EventTableCheck)
         BRSET   >FuelModeFlags,Z,#$08,L0875C             ; bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
         LDAB    >CylinderCount
         CMPB    #$06
@@ -10964,7 +10964,7 @@ L0879C:
         AIY     #$01
         CMPA    >CylinderCount
         BCS     L0879C
-        BCLR    >EventSparkFlags,Z,#$20
+        BCLR    >EventSparkFlags,Z,#$20                  ; bit 5: per-event history to be refilled (Isr_GPT_IC4OC5, cleared by EventTableCheck)
         BCLR    >FuelModeFlags,Z,#$08                    ; bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
         CLR     $0597,Z
 L087B6:
@@ -13635,9 +13635,9 @@ L0A396:
 L0A3A2:
         CLR     $06B9,Z
 L0A3A6:
-        BRCLR   >IdleFlags3,Z,#$40,L0A724
-        BCLR    >IdleFlags3,Z,#$40
-        BCLR    >IdleFlags8,Z,#$04
+        BRCLR   >IdleFlags3,Z,#$40,L0A724                ; bit 6: reference event since the last idle loop pass (set in Isr_GPT_IC1, cleared by IdleRpmLoop)
+        BCLR    >IdleFlags3,Z,#$40                       ; bit 6: reference event since the last idle loop pass (set in Isr_GPT_IC1, cleared by IdleRpmLoop)
+        BCLR    >IdleFlags8,Z,#$04                       ; bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
         LDD     >SegmentRpm,Z
         CPD     #$7D00
         BLS     L0A3C6
@@ -13648,7 +13648,7 @@ L0A3C6:
         CPD     #$7C60
         LBCC    L0A724
         BCLR    >SparkFlags3,Z,#$01
-        BSET    >IdleFlags8,Z,#$04
+        BSET    >IdleFlags8,Z,#$04                       ; bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
 L0A3DC:
         CLRE
         LDD     >SegmentRpm,Z
@@ -13698,52 +13698,52 @@ L0A466:
         STAB    $0698,Z
         TST     >DashpotTimerMoving,Z
         BEQ     L0A47C
-        BSET    >IdleFlags8,Z,#$80
+        BSET    >IdleFlags8,Z,#$80                       ; bit 7: dashpot timer running while moving (IdleRpmLoop)
         BRA     L0A48A
 L0A47C:
-        BRCLR   >IdleFlags8,Z,#$80,L0A486
-        BSET    >IdleFlags8,Z,#$04
+        BRCLR   >IdleFlags8,Z,#$80,L0A486                ; bit 7: dashpot timer running while moving (IdleRpmLoop)
+        BSET    >IdleFlags8,Z,#$04                       ; bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
 L0A486:
-        BCLR    >IdleFlags8,Z,#$80
+        BCLR    >IdleFlags8,Z,#$80                       ; bit 7: dashpot timer running while moving (IdleRpmLoop)
 L0A48A:
         TST     >DashpotTimer2,Z
         BEQ     L0A496
-        BSET    >IdleFlags8,Z,#$40
+        BSET    >IdleFlags8,Z,#$40                       ; bit 6: second dashpot timer running (IdleRpmLoop)
         BRA     L0A4A4
 L0A496:
-        BRCLR   >IdleFlags8,Z,#$40,L0A4A0
-        BSET    >IdleFlags8,Z,#$04
+        BRCLR   >IdleFlags8,Z,#$40,L0A4A0                ; bit 6: second dashpot timer running (IdleRpmLoop)
+        BSET    >IdleFlags8,Z,#$04                       ; bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
 L0A4A0:
-        BCLR    >IdleFlags8,Z,#$40
+        BCLR    >IdleFlags8,Z,#$40                       ; bit 6: second dashpot timer running (IdleRpmLoop)
 L0A4A4:
         BRCLR   >IacStepFlags,Z,#$20,L0A4B0              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
-        BSET    >IdleFlags8,Z,#$20
+        BSET    >IdleFlags8,Z,#$20                       ; bit 5: idle air start hold active (IacStepFlags bit 5, IdleRpmLoop)
         BRA     L0A4BE
 L0A4B0:
-        BRCLR   >IdleFlags8,Z,#$20,L0A4BA
-        BSET    >IdleFlags8,Z,#$04
+        BRCLR   >IdleFlags8,Z,#$20,L0A4BA                ; bit 5: idle air start hold active (IacStepFlags bit 5, IdleRpmLoop)
+        BSET    >IdleFlags8,Z,#$04                       ; bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
 L0A4BA:
-        BCLR    >IdleFlags8,Z,#$20
+        BCLR    >IdleFlags8,Z,#$20                       ; bit 5: idle air start hold active (IacStepFlags bit 5, IdleRpmLoop)
 L0A4BE:
         BRCLR   >EventFlags,Z,#$80,L0A4CA
-        BSET    >IdleFlags8,Z,#$10
+        BSET    >IdleFlags8,Z,#$10                       ; bit 4: idle flare seen (IdleFlareFlags bit 7, IdleRpmLoop)
         BRA     L0A4D8
 L0A4CA:
-        BRCLR   >IdleFlags8,Z,#$10,L0A4D4
-        BSET    >IdleFlags8,Z,#$04
+        BRCLR   >IdleFlags8,Z,#$10,L0A4D4                ; bit 4: idle flare seen (IdleFlareFlags bit 7, IdleRpmLoop)
+        BSET    >IdleFlags8,Z,#$04                       ; bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
 L0A4D4:
-        BCLR    >IdleFlags8,Z,#$10
+        BCLR    >IdleFlags8,Z,#$10                       ; bit 4: idle flare seen (IdleFlareFlags bit 7, IdleRpmLoop)
 L0A4D8:
-        BRCLR   >IdleFlags5,Z,#$80,L0A4E4
-        BSET    >IdleFlags8,Z,#$08
+        BRCLR   >IdleFlags5,Z,#$80,L0A4E4                ; bit 7: gear idle step state (IdleTargetControl)
+        BSET    >IdleFlags8,Z,#$08                       ; bit 3: MAP target step allowed (IdleFlags5 bit 6, IdleRpmLoop)
         BRA     L0A4F2
 L0A4E4:
-        BRCLR   >IdleFlags8,Z,#$08,L0A4EE
-        BSET    >IdleFlags8,Z,#$04
+        BRCLR   >IdleFlags8,Z,#$08,L0A4EE                ; bit 3: MAP target step allowed (IdleFlags5 bit 6, IdleRpmLoop)
+        BSET    >IdleFlags8,Z,#$04                       ; bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
 L0A4EE:
-        BCLR    >IdleFlags8,Z,#$08
+        BCLR    >IdleFlags8,Z,#$08                       ; bit 3: MAP target step allowed (IdleFlags5 bit 6, IdleRpmLoop)
 L0A4F2:
-        BRCLR   >IdleFlags8,Z,#$04,L0A4FE
+        BRCLR   >IdleFlags8,Z,#$04,L0A4FE                ; bit 2: one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)
         LDAB    $0698,Z
         BRA     L0A55C
 L0A4FE:
@@ -13965,17 +13965,17 @@ L0A748:
         BRCLR   >Scratch8,Z,#$04,L0A770
         BRCLR   >SparkFlags3,Z,#$20,L0A770
         LDAA    >IdleRollSpeed
-        BRCLR   >IdleFlags6,Z,#$40,L0A764
+        BRCLR   >IdleFlags6,Z,#$40,L0A764                ; bit 6: idle air learning allowed: no flex cold start (IacLearn)
         ADDA    #$03
         BCC     L0A764
         LDAA    #$FF
 L0A764:
         CMPA    >VehicleSpeed,Z
         BLS     L0A770
-        BSET    >IdleFlags6,Z,#$40
+        BSET    >IdleFlags6,Z,#$40                       ; bit 6: idle air learning allowed: no flex cold start (IacLearn)
         BRA     L0A774
 L0A770:
-        BCLR    >IdleFlags6,Z,#$40
+        BCLR    >IdleFlags6,Z,#$40                       ; bit 6: idle air learning allowed: no flex cold start (IacLearn)
 L0A774:
         CLRA
         LDAB    $0694,Z
@@ -14018,7 +14018,7 @@ L0A7C8:
 L0A7DA:
         STAA    $0693,Z
         STAB    $0694,Z
-        BRCLR   >IdleFlags6,Z,#$40,L0A89E
+        BRCLR   >IdleFlags6,Z,#$40,L0A89E                ; bit 6: idle air learning allowed: no flex cold start (IacLearn)
         LDAA    $06B2,Z
         CMPA    $1F0C
         BCC     L0A7FA
@@ -14230,7 +14230,7 @@ L0A9EA:
         BEQ     L0A9F4
         DEC     >DashpotTimerMoving,Z
 L0A9F4:
-        BCLR    >IdleFlags2,Z,#$80
+        BCLR    >IdleFlags2,Z,#$80                       ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
         BRCLR   >EventFlags,Z,#$80,L0AA10
         CLR     >DashpotTimer2,Z
         CLR     >DashpotTimerMoving,Z
@@ -14242,7 +14242,7 @@ L0AA10:
         BEQ     L0AA1E
         DEC     >IacShiftTimer,Z
 L0AA1A:
-        BSET    >IdleFlags2,Z,#$80
+        BSET    >IdleFlags2,Z,#$80                       ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
 L0AA1E:
         TST     >IacKickTimer,Z
         BEQ     L0AA28
@@ -14278,10 +14278,10 @@ L0AA76:
         BSET    >AcFlags,Z,#$10                          ; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
         BRSET   >IoCfg1FL,Z,#$01,L0AA8C
 L0AA86:
-        BSET    >IdleFlags3,Z,#$10
+        BSET    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
         BRA     L0AA90
 L0AA8C:
-        BCLR    >IdleFlags3,Z,#$10
+        BCLR    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
 L0AA90:
         LDD     >IdleTarget,Z
         SUBD    >IacDroopMargin
@@ -14290,17 +14290,17 @@ L0AA90:
 L0AA9C:
         CPD     >SegmentRpm,Z
         BLS     L0AAA8
-        BSET    >IdleFlags3,Z,#$08
+        BSET    >IdleFlags3,Z,#$08                       ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BRA     L0AAAE
 L0AAA8:
-        BRCLR   >IdleFlags3,Z,#$08,L0AAF0
+        BRCLR   >IdleFlags3,Z,#$08,L0AAF0                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
 L0AAAE:
         CLR     >IacGearSteps,Z
         CLR     >IacShiftTimer,Z
         CLR     >DashpotTimer2,Z
-        BCLR    >IdleFlags5,Z,#$40
-        BCLR    >IdleFlags5,Z,#$0C
-        BCLR    >IdleFlags6,Z,#$02
+        BCLR    >IdleFlags5,Z,#$40                       ; bit 6: idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it
+        BCLR    >IdleFlags5,Z,#$0C                       ; bit 3: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl); bit 2: shift idle step applied (IacShiftStepApply in IdleTargetControl)
+        BCLR    >IdleFlags6,Z,#$02                       ; bit 1: gear-step idle air step applied (IdleTargetControl)
         BCLR    >IdleFlags,Z,#$0A                        ; bit 1: shift idle step applied (IacShiftStepApply)
         LDAA    >CoolantTemp,Z
         CMPA    >IacHotCoolantMin
@@ -14314,9 +14314,9 @@ L0AAD8:
 L0AAE4:
         CPD     >SegmentRpm,Z
         LBCC    L0AAF0
-        BCLR    >IdleFlags3,Z,#$08
+        BCLR    >IdleFlags3,Z,#$08                       ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
 L0AAF0:
-        BRCLR   >IdleAcFlags,Z,#$40,L0AB30
+        BRCLR   >IdleAcFlags,Z,#$40,L0AB30               ; bit 6: set with bit 7 when the A/C idle step starts
         LDD     >IdleTarget,Z
         SUBD    >IacDroopMargin2
         BCC     L0AB02
@@ -14333,29 +14333,29 @@ L0AB1E:
         LDAA    $06DD,Z
         CMPA    #$50
         LBCS    L0AC24
-        BCLR    >IdleAcFlags,Z,#$C0
+        BCLR    >IdleAcFlags,Z,#$C0                      ; bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it; bit 6: set with bit 7 when the A/C idle step starts
         LBRA    L0AC24
 L0AB30:
         LDD     >SegmentRpm,Z
         CPD     >IacLowRpm
         BCC     L0AB66
         BCLR    >IdleFlags,Z,#$0C
-        BCLR    >IdleFlags5,Z,#$18
-        BCLR    >IdleFlags6,Z,#$06
-        BCLR    >IdleFlags5,Z,#$60
-        BSET    >IdleAcFlags,Z,#$C0
+        BCLR    >IdleFlags5,Z,#$18                       ; bit 4: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl); bit 3: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
+        BCLR    >IdleFlags6,Z,#$06                       ; bit 2: idle step state, cleared with IdleFlags5 bits 3-4 (IdleTargetControl); bit 1: gear-step idle air step applied (IdleTargetControl)
+        BCLR    >IdleFlags5,Z,#$60                       ; bit 6: idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it; bit 5: gear idle step state (IdleTargetControl)
+        BSET    >IdleAcFlags,Z,#$C0                      ; bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it; bit 6: set with bit 7 when the A/C idle step starts
         BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
-        BCLR    >IdleFlags3,Z,#$10
+        BCLR    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
         CLR     >IacShiftTimer,Z
         LDAA    >IacEventTimerInit
         STAA    >IacEventTimer,Z
         LBRA    L0AC24
 L0AB66:
-        BRSET   >IdleAcFlags,Z,#$40,L0AC24
-        BRCLR   >IdleAcFlags,Z,#$04,L0AC20
+        BRSET   >IdleAcFlags,Z,#$40,L0AC24               ; bit 6: set with bit 7 when the A/C idle step starts
+        BRCLR   >IdleAcFlags,Z,#$04,L0AC20               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
         BCLR    >SparkFlags3,Z,#$02
-        BRCLR   >IdleAcFlags,Z,#$01,L0ABE2
-        BSET    >IdleAcFlags,Z,#$80
+        BRCLR   >IdleAcFlags,Z,#$01,L0ABE2               ; bit 0: A/C idle state bit (IdleTargetControl, AcCutLogic)
+        BSET    >IdleAcFlags,Z,#$80                      ; bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it
         BRSET   >IdleFlags,Z,#$80,L0ABAC                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRSET   >ThrottleState,Z,#$01,L0ABAC             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         LDAB    $01F1,Z
@@ -14379,32 +14379,32 @@ L0ABAC:
         JSR     IacShiftKick
 L0ABC0:
         BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
-        BCLR    >IdleFlags3,Z,#$10
-        BCLR    >IdleAcFlags,Z,#$01
+        BCLR    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
+        BCLR    >IdleAcFlags,Z,#$01                      ; bit 0: A/C idle state bit (IdleTargetControl, AcCutLogic)
         CLR     >IacShiftTimer,Z
         BCLR    >IdleFlags,Z,#$0C
-        BCLR    >IdleFlags5,Z,#$18
-        BCLR    >IdleFlags6,Z,#$06
-        BCLR    >IdleFlags5,Z,#$60
+        BCLR    >IdleFlags5,Z,#$18                       ; bit 4: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl); bit 3: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
+        BCLR    >IdleFlags6,Z,#$06                       ; bit 2: idle step state, cleared with IdleFlags5 bits 3-4 (IdleTargetControl); bit 1: gear-step idle air step applied (IdleTargetControl)
+        BCLR    >IdleFlags5,Z,#$60                       ; bit 6: idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it; bit 5: gear idle step state (IdleTargetControl)
         BRA     L0AC24
 L0ABE2:
-        BRCLR   >IdleAcFlags,Z,#$02,L0AC24
+        BRCLR   >IdleAcFlags,Z,#$02,L0AC24               ; bit 1: A/C idle state bit (IdleTargetControl, AcCutLogic)
         BRSET   >AcFlags,Z,#$80,L0AC1C                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BRSET   >IdleAcFlags,Z,#$20,L0ABFE
         BSET    >IdleAcFlags,Z,#$20
-        BCLR    >IdleAcFlags,Z,#$80
+        BCLR    >IdleAcFlags,Z,#$80                      ; bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it
         BRA     L0AC24
 L0ABFE:
         BRSET   >IdleFlags,Z,#$08,L0AC16
-        BRSET   >IdleFlags5,Z,#$08,L0AC16
-        BRSET   >IdleFlags6,Z,#$02,L0AC16
+        BRSET   >IdleFlags5,Z,#$08,L0AC16                ; bit 3: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
+        BRSET   >IdleFlags6,Z,#$02,L0AC16                ; bit 1: gear-step idle air step applied (IdleTargetControl)
         BRSET   >IdleAcFlags,Z,#$20,L0AC24
 L0AC16:
-        BRSET   >IdleFlags2,Z,#$80,L0AC24
+        BRSET   >IdleFlags2,Z,#$80,L0AC24                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
 L0AC1C:
-        BCLR    >IdleAcFlags,Z,#$02
+        BCLR    >IdleAcFlags,Z,#$02                      ; bit 1: A/C idle state bit (IdleTargetControl, AcCutLogic)
 L0AC20:
-        BCLR    >IdleAcFlags,Z,#$A0
+        BCLR    >IdleAcFlags,Z,#$A0                      ; bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it
 L0AC24:
         LDAA    >IdleFlags,Z
         BITA    #$08
@@ -14433,11 +14433,11 @@ L0AC24:
         BCLR    >SparkFlags3,Z,#$8C
         BCLR    >IdleFlags,Z,#$20                        ; bit 5: gear-engagement idle step started (IdleTargetControl)
         BCLR    >IdleFlags,Z,#$10                        ; bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
-        BRSET   >IdleAcFlags,Z,#$04,L0B302
+        BRSET   >IdleAcFlags,Z,#$04,L0B302               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
         BSET    >SparkFlags3,Z,#$02
         LBRA    L0B302
 L0AC90:
-        BRCLR   >IdleAcFlags,Z,#$04,L0AC9E
+        BRCLR   >IdleAcFlags,Z,#$04,L0AC9E               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
         BCLR    >SparkFlags3,Z,#$02
         LBRA    L0AD86
 L0AC9E:
@@ -14526,18 +14526,18 @@ L0AD82:
         STAA    >IacTarget,Z
 L0AD86:
         BRCLR   >ControlFlagsC33,Z,#$44,L0ADFC
-        BRSET   >IdleFlags3,Z,#$08,L0ADFC
+        BRSET   >IdleFlags3,Z,#$08,L0ADFC                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BRCLR   >ThrottleState,Z,#$01,L0ADC6             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         TST     >DashpotTimerMoving,Z
         BNE     L0ADC6
 L0AD9E:
-        BRSET   >IdleFlags2,Z,#$80,L0B072
-        BRSET   >IdleFlags5,Z,#$04,L0ADB6
-        BSET    >IdleFlags5,Z,#$04
+        BRSET   >IdleFlags2,Z,#$80,L0B072                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
+        BRSET   >IdleFlags5,Z,#$04,L0ADB6                ; bit 2: shift idle step applied (IacShiftStepApply in IdleTargetControl)
+        BSET    >IdleFlags5,Z,#$04                       ; bit 2: shift idle step applied (IacShiftStepApply in IdleTargetControl)
         JSR     IacShiftStepApply
         LBRA    L0B57E
 L0ADB6:
-        BCLR    >IdleFlags5,Z,#$04
+        BCLR    >IdleFlags5,Z,#$04                       ; bit 2: shift idle step applied (IacShiftStepApply in IdleTargetControl)
         CLR     >IdleCount0322,Z
         BCLR    >ControlFlagsC33,Z,#$44
         LBRA    L0B072
@@ -14547,7 +14547,7 @@ L0ADC6:
         TST     >ShiftIdleDelay,Z
         BNE     L0ADFC
 L0ADD8:
-        BRSET   >IdleFlags2,Z,#$80,L0B072
+        BRSET   >IdleFlags2,Z,#$80,L0B072                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
         BRSET   >IdleFlags,Z,#$02,L0ADF0                 ; bit 1: shift idle step applied (IacShiftStepApply)
         BSET    >IdleFlags,Z,#$02                        ; bit 1: shift idle step applied (IacShiftStepApply)
         JSR     IacShiftStepApply
@@ -14560,8 +14560,8 @@ L0ADFC:
         LDAA    >Count3s,Z
         CMPA    >IacStartTimeMin
         LBCS    L0B072
-        BRSET   >IdleAcFlags,Z,#$80,L0B072
-        BRCLR   >IdleFlags3,Z,#$10,L0B072
+        BRSET   >IdleAcFlags,Z,#$80,L0B072               ; bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it
+        BRCLR   >IdleFlags3,Z,#$10,L0B072                ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
         BRSET   >AcFlags,Z,#$80,L0AE2A                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         LDAA    #$05
         CMPA    $0404,Z
@@ -14577,18 +14577,18 @@ L0AE2A:
 L0AE40:
         TST     >IacKickTimer,Z
         LBNE    L0B072
-        BRSET   >IdleFlags3,Z,#$08,L0B072
-        BRSET   >IdleFlags2,Z,#$80,L0B072
+        BRSET   >IdleFlags3,Z,#$08,L0B072                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
+        BRSET   >IdleFlags2,Z,#$80,L0B072                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
         TST     >ShiftIdleDelay,Z
         LBNE    L0B072
         BRSET   >DriveFlags,Z,#$80,L0B072                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         TST     >IacAccelTimer,Z
         LBNE    L0B072
-        BRCLR   >IdleFlags3,Z,#$20,L0AE80
+        BRCLR   >IdleFlags3,Z,#$20,L0AE80                ; bit 5: idle step after shift requested (IdleRpmTarget; cleared when SegmentRpm passes IacGearRpmEnd)
         LDD     >SegmentRpm,Z
         CPD     >IacGearRpmEnd
         LBLS    L0B072
-        BCLR    >IdleFlags3,Z,#$20
+        BCLR    >IdleFlags3,Z,#$20                       ; bit 5: idle step after shift requested (IdleRpmTarget; cleared when SegmentRpm passes IacGearRpmEnd)
 L0AE80:
         BRSET   >IdleFlags,Z,#$08,L0AE98
         BSET    >IdleFlags,Z,#$08
@@ -14597,15 +14597,15 @@ L0AE80:
         BSET    $03DF,Z,#$20
         LBRA    L0B57E
 L0AE98:
-        BRSET   >IdleAcFlags,Z,#$04,L0B072
-        BRSET   >IdleFlags5,Z,#$40,L0AED2
-        BSET    >IdleFlags5,Z,#$40
+        BRSET   >IdleAcFlags,Z,#$04,L0B072               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
+        BRSET   >IdleFlags5,Z,#$40,L0AED2                ; bit 6: idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it
+        BSET    >IdleFlags5,Z,#$40                       ; bit 6: idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it
         LDD     #$00FF
         JSR     IacShiftKick
         CLR     $0404,Z
         LDAA    >IacGearStepCount
         STAA    >IacGearSteps,Z
-        BCLR    >IdleFlags3,Z,#$10
+        BCLR    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
         BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         BRCLR   >AcFlags,Z,#$80,L0B57E                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
@@ -14615,12 +14615,12 @@ L0AED2:
         CMPA    >IacTarget,Z
         LBNE    L0B57E
         BCLR    >IdleFlags,Z,#$08
-        BCLR    >IdleFlags8,Z,#$02
-        BCLR    >IdleFlags5,Z,#$40
+        BCLR    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
+        BCLR    >IdleFlags5,Z,#$40                       ; bit 6: idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it
         BSET    >MisfireFlags4,Z,#$20
         LBRA    L0B57E
 L0AEF0:
-        BRSET   >IdleFlags2,Z,#$80,L0B072
+        BRSET   >IdleFlags2,Z,#$80,L0B072                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
         LDAA    >AcSensor,Z
         CMPA    $041F
         BCC     L0AF18
@@ -14629,22 +14629,22 @@ L0AEF0:
         BCS     L0AF18
         TST     >IacGearSteps,Z
         BEQ     L0AF18
-        BSET    >IdleFlags8,Z,#$02
+        BSET    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
         LBRA    L0B072
 L0AF18:
         BRSET   >IdleFlags,Z,#$04,L0AF36
         BSET    >IdleFlags,Z,#$04
         BSET    $03DF,Z,#$20
-        BSET    >IdleFlags8,Z,#$02
+        BSET    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
         LDD     #$FF00
         JSR     IacShiftKick
         LBRA    L0B57E
 L0AF36:
-        BRSET   >IdleFlags5,Z,#$20,L0AF5E
-        BSET    >IdleFlags5,Z,#$20
+        BRSET   >IdleFlags5,Z,#$20,L0AF5E                ; bit 5: gear idle step state (IdleTargetControl)
+        BSET    >IdleFlags5,Z,#$20                       ; bit 5: gear idle step state (IdleTargetControl)
         LDD     #$FFFF
         JSR     IacShiftKick
-        BCLR    >IdleFlags3,Z,#$10
+        BCLR    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
         BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         BRSET   >AcFlags,Z,#$80,L0B57E                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
@@ -14654,8 +14654,8 @@ L0AF5E:
         CMPA    >IacTarget,Z
         LBNE    L0B57E
         BCLR    >IdleFlags,Z,#$04
-        BCLR    >IdleFlags8,Z,#$02
-        BCLR    >IdleFlags5,Z,#$20
+        BCLR    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
+        BCLR    >IdleFlags5,Z,#$20                       ; bit 5: gear idle step state (IdleTargetControl)
         BSET    >MisfireFlags4,Z,#$20
         LBRA    L0B57E
 L0AF7C:
@@ -14664,20 +14664,20 @@ L0AF7C:
         LBNE    L0B072
         BRCLR   >AcFlags,Z,#$80,L0AFFE                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
 L0AF90:
-        BRSET   >IdleFlags2,Z,#$80,L0B072
-        BRSET   >IdleFlags5,Z,#$10,L0AFB4
-        BSET    >IdleFlags5,Z,#$10
+        BRSET   >IdleFlags2,Z,#$80,L0B072                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
+        BRSET   >IdleFlags5,Z,#$10,L0AFB4                ; bit 4: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
+        BSET    >IdleFlags5,Z,#$10                       ; bit 4: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
         BSET    $03DF,Z,#$20
-        BSET    >IdleFlags8,Z,#$02
+        BSET    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
         LDD     #$FF00
         JSR     IacShiftKick
         LBRA    L0B57E
 L0AFB4:
-        BRSET   >IdleFlags5,Z,#$20,L0AFDC
-        BSET    >IdleFlags5,Z,#$20
+        BRSET   >IdleFlags5,Z,#$20,L0AFDC                ; bit 5: gear idle step state (IdleTargetControl)
+        BSET    >IdleFlags5,Z,#$20                       ; bit 5: gear idle step state (IdleTargetControl)
         LDD     #$FFFF
         JSR     IacShiftKick
-        BCLR    >IdleFlags3,Z,#$10
+        BCLR    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
         BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         BRSET   >AcFlags,Z,#$80,L0B57E                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
@@ -14686,28 +14686,28 @@ L0AFDC:
         LDAA    <IacPosition,Z
         CMPA    >IacTarget,Z
         LBNE    L0B57E
-        BCLR    >IdleFlags5,Z,#$20
-        BCLR    >IdleFlags5,Z,#$10
-        BCLR    >IdleFlags8,Z,#$02
+        BCLR    >IdleFlags5,Z,#$20                       ; bit 5: gear idle step state (IdleTargetControl)
+        BCLR    >IdleFlags5,Z,#$10                       ; bit 4: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
+        BCLR    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
         BSET    >MisfireFlags4,Z,#$20
         CLR     >IdleCount0322,Z
         LBRA    L0B57E
 L0AFFE:
-        BRSET   >IdleFlags3,Z,#$08,L0B072
-        BRSET   >IdleFlags2,Z,#$80,L0B072
-        BRSET   >IdleFlags5,Z,#$08,L0B01E
-        BSET    >IdleFlags5,Z,#$08
+        BRSET   >IdleFlags3,Z,#$08,L0B072                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
+        BRSET   >IdleFlags2,Z,#$80,L0B072                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
+        BRSET   >IdleFlags5,Z,#$08,L0B01E                ; bit 3: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
+        BSET    >IdleFlags5,Z,#$08                       ; bit 3: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
         CLRD
         JSR     IacShiftKick
         LBRA    L0B57E
 L0B01E:
-        BRSET   >IdleAcFlags,Z,#$04,L0B072
-        BRSET   >IdleFlags5,Z,#$40,L0B054
-        BSET    >IdleFlags5,Z,#$40
+        BRSET   >IdleAcFlags,Z,#$04,L0B072               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
+        BRSET   >IdleFlags5,Z,#$40,L0B054                ; bit 6: idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it
+        BSET    >IdleFlags5,Z,#$40                       ; bit 6: idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it
         LDD     #$00FF
         JSR     IacShiftKick
         CLR     $0404,Z
-        BCLR    >IdleFlags3,Z,#$10
+        BCLR    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
         BSET    $03DF,Z,#$20
         BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         BRCLR   >AcFlags,Z,#$80,L0B57E                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
@@ -14717,14 +14717,14 @@ L0B054:
         LDAA    <IacPosition,Z
         CMPA    >IacTarget,Z
         LBNE    L0B57E
-        BCLR    >IdleFlags5,Z,#$40
-        BCLR    >IdleFlags8,Z,#$02
-        BCLR    >IdleFlags5,Z,#$08
+        BCLR    >IdleFlags5,Z,#$40                       ; bit 6: idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it
+        BCLR    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
+        BCLR    >IdleFlags5,Z,#$08                       ; bit 3: idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)
         BSET    >MisfireFlags4,Z,#$20
         CLR     >IdleCount0322,Z
 L0B072:
         BRSET   >Options0339,#$20,L0B22C                 ; bit 5: selects a branch in SparkEventCalc
-        BRCLR   >IdleFlags3,Z,#$08,L0B0C4
+        BRCLR   >IdleFlags3,Z,#$08,L0B0C4                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BRCLR   >DriveFlags,Z,#$80,L0B22C                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         BRSET   >DriveFlags,Z,#$20,L0B22C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         INC     >IacGearTime,Z
@@ -14937,7 +14937,7 @@ L0B2F6:
         JSR     IacSetTarget
         LBRA    L0B57E
 L0B302:
-        BRSET   >IdleFlags2,Z,#$80,L0B57E
+        BRSET   >IdleFlags2,Z,#$80,L0B57E                ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
         LDAB    $01F1,Z
         LDAA    #$01
         TDE
@@ -15009,10 +15009,10 @@ L0B39C:
         LDAA    >Count3s,Z
         CMPA    >IacStartTimeMin
         LBCS    L0B53E
-        BRSET   >IdleAcFlags,Z,#$80,L0B53E
-        BRSET   >IdleFlags6,Z,#$02,L0B3FC
-        BRSET   >IdleFlags6,Z,#$04,L0B4CC
-        BRCLR   >IdleFlags3,Z,#$10,L0B53E
+        BRSET   >IdleAcFlags,Z,#$80,L0B53E               ; bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it
+        BRSET   >IdleFlags6,Z,#$02,L0B3FC                ; bit 1: gear-step idle air step applied (IdleTargetControl)
+        BRSET   >IdleFlags6,Z,#$04,L0B4CC                ; bit 2: idle step state, cleared with IdleFlags5 bits 3-4 (IdleTargetControl)
+        BRCLR   >IdleFlags3,Z,#$10,L0B53E                ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
         TST     >IacAccelTimer,Z
         LBNE    L0B53E
         BRSET   >AcFlags,Z,#$80,L0B4CC                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
@@ -15020,10 +15020,10 @@ L0B3FC:
         LDD     >SegmentRpm,Z
         CPD     >AcCutRpmLow
         LBCC    L0B57E
-        BRSET   >IdleFlags3,Z,#$08,L0B57E
-        BRSET   >IdleFlags6,Z,#$02,L0B45E
-        BSET    >IdleFlags6,Z,#$02
-        BSET    >IacAcFlags,Z,#$10
+        BRSET   >IdleFlags3,Z,#$08,L0B57E                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
+        BRSET   >IdleFlags6,Z,#$02,L0B45E                ; bit 1: gear-step idle air step applied (IdleTargetControl)
+        BSET    >IdleFlags6,Z,#$02                       ; bit 1: gear-step idle air step applied (IdleTargetControl)
+        BSET    >IacAcFlags,Z,#$10                       ; bit 4: idle air A/C step applied (IdleTargetControl, AcCutLogic)
         LDAB    $01FB,Z
         LDAA    >CoolantTemp,Z
         CMPA    >IacRollCoolantMin
@@ -15050,17 +15050,17 @@ L0B44C:
         LDAA    #$FF
         BRA     L0B4BA
 L0B45E:
-        BRSET   >IdleAcFlags,Z,#$04,L0B57E
-        BRCLR   >IacAcFlags,Z,#$80,L0B470
-        BRCLR   >IacAcFlags,Z,#$40,L0B57E
+        BRSET   >IdleAcFlags,Z,#$04,L0B57E               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
+        BRCLR   >IacAcFlags,Z,#$80,L0B470                ; bit 7: A/C clutch spark hold during a shift step (AcClutchSpark)
+        BRCLR   >IacAcFlags,Z,#$40,L0B57E                ; bit 6: A/C clutch spark hold time reached (AcClutchSpark)
 L0B470:
         BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         BRCLR   >AcFlags,Z,#$80,L0B47E                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
 L0B47E:
-        BCLR    >IdleFlags3,Z,#$10
-        BCLR    >IdleFlags8,Z,#$02
-        BCLR    >IdleFlags6,Z,#$02
+        BCLR    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
+        BCLR    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
+        BCLR    >IdleFlags6,Z,#$02                       ; bit 1: gear-step idle air step applied (IdleTargetControl)
         CLRA
         LDAB    $01FA,Z
         ADCA    #$00
@@ -15088,9 +15088,9 @@ L0B4C4:
         STAA    >IacTarget,Z
         LBRA    L0B57E
 L0B4CC:
-        BRSET   >IdleFlags6,Z,#$04,L0B520
-        BSET    >IdleFlags6,Z,#$04
-        BSET    >IdleFlags8,Z,#$02
+        BRSET   >IdleFlags6,Z,#$04,L0B520                ; bit 2: idle step state, cleared with IdleFlags5 bits 3-4 (IdleTargetControl)
+        BSET    >IdleFlags6,Z,#$04                       ; bit 2: idle step state, cleared with IdleFlags5 bits 3-4 (IdleTargetControl)
+        BSET    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
         LDAA    $01FB,Z
         LDAB    >IacAcOffFactor
         MUL
@@ -15119,16 +15119,16 @@ L0B518:
         STAA    >IacTarget,Z
         LBRA    L0B57E
 L0B520:
-        BCLR    >IdleFlags6,Z,#$04
-        BCLR    >IdleFlags8,Z,#$02
-        BCLR    >IdleFlags3,Z,#$10
+        BCLR    >IdleFlags6,Z,#$04                       ; bit 2: idle step state, cleared with IdleFlags5 bits 3-4 (IdleTargetControl)
+        BCLR    >IdleFlags8,Z,#$02                       ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
+        BCLR    >IdleFlags3,Z,#$10                       ; bit 4: A/C idle bump waiting for the clutch (IdleTargetControl)
         BSET    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         BRSET   >AcFlags,Z,#$80,L0B57E                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BCLR    >AcFlags,Z,#$20                          ; bit 5: A/C idle step active (IdleTargetControl); set at reset
         LBRA    L0B57E
 L0B53E:
         LDAA    $01FA,Z
-        BRSET   >IdleAcFlags,Z,#$80,L0B556
+        BRSET   >IdleAcFlags,Z,#$80,L0B556               ; bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it
         BRSET   >AcFlags,Z,#$80,L0B556                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         ADDA    $01FB,Z
         BCC     L0B556
@@ -15232,7 +15232,7 @@ L0B618:
         CLRA
 L0B628:
         STAA    $0438,Z
-        BRSET   >FieldFlags,Z,#$04,L0B6B0
+        BRSET   >FieldFlags,Z,#$04,L0B6B0                ; bit 2: generator field test running (FieldTestStart, SystemTestCheck)
         BRCLR   >IdleFlags,Z,#$80,L0B6B0                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRSET   >IacStepFlags,Z,#$01,L0B6B0              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         LDAB    >FieldFlags,Z
@@ -15255,8 +15255,8 @@ L0B628:
         JSR     IacSetTarget
         LDAB    >BatteryVolts2,Z
         STAB    $043A,Z
-        BSET    >FieldFlags,Z,#$01
-        BCLR    >FieldFlags,Z,#$02
+        BSET    >FieldFlags,Z,#$01                       ; bit 0: idle air charge step applied (IacChargeStepCalc)
+        BCLR    >FieldFlags,Z,#$02                       ; bit 1: idle air charge step: voltage recovered, timer running (IacChargeStepCalc)
         BRA     L0B6B8
 L0B682:
         LDAA    $0434,Z
@@ -15266,8 +15266,8 @@ L0B682:
         BRA     L0B6B8
 L0B692:
         CLRW    $0434,Z
-        BSET    >FieldFlags,Z,#$02
-        BCLR    >FieldFlags,Z,#$01
+        BSET    >FieldFlags,Z,#$02                       ; bit 1: idle air charge step: voltage recovered, timer running (IacChargeStepCalc)
+        BCLR    >FieldFlags,Z,#$01                       ; bit 0: idle air charge step applied (IacChargeStepCalc)
         BRA     L0B6B8
 L0B6A0:
         LDD     $0434,Z
@@ -15276,7 +15276,7 @@ L0B6A0:
         INCW    $0434,Z
         BRA     L0B6B8
 L0B6B0:
-        BCLR    >FieldFlags,Z,#$03
+        BCLR    >FieldFlags,Z,#$03                       ; bit 1: idle air charge step: voltage recovered, timer running (IacChargeStepCalc); bit 0: idle air charge step applied (IacChargeStepCalc)
         CLRW    $0434,Z
 L0B6B8:
         PULM    K,X,E
@@ -15379,17 +15379,17 @@ L0B7A0:
         BNE     L0B7DA
         BRSET   $00B8,Z,#$04,L0B7DA
         LDAA    >IdleRollSpeed
-        BRCLR   >IdleFlags6,Z,#$80,L0B7CE
+        BRCLR   >IdleFlags6,Z,#$80,L0B7CE                ; bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
         ADDA    #$03
         BCC     L0B7CE
         LDAA    #$FF
 L0B7CE:
         CMPA    >VehicleSpeed,Z
         BLS     L0B7DA
-        BSET    >IdleFlags6,Z,#$80
+        BSET    >IdleFlags6,Z,#$80                       ; bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
         BRA     L0B7DE
 L0B7DA:
-        BCLR    >IdleFlags6,Z,#$80
+        BCLR    >IdleFlags6,Z,#$80                       ; bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
 L0B7DE:
         LDAA    $068F,Z
         CMPA    #$13
@@ -15521,7 +15521,7 @@ L0B946:
         STD     $06DB,Z
 L0B94E:
         LDAB    $01F4,Z
-        BRCLR   >IdleFlags6,Z,#$80,L0B98C
+        BRCLR   >IdleFlags6,Z,#$80,L0B98C                ; bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
         LDAB    >Map,Z
         SUBB    $0033,Z
         BCC     L0B964
@@ -15544,7 +15544,7 @@ L0B964:
         LDAB    #$FF
 L0B98C:
         STAB    $0684,Z
-        BRCLR   >IdleFlags6,Z,#$80,L0B9CC
+        BRCLR   >IdleFlags6,Z,#$80,L0B9CC                ; bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
         LDAB    >MainLoopCounter,Z
         BITB    $20EB
         BNE     L0B9CC
@@ -15565,10 +15565,10 @@ L0B9B4:
 L0B9C0:
         STAA    >IacTarget,Z
         STAA    <IacPosition,Z
-        BSET    >IdleFlags5,Z,#$02
+        BSET    >IdleFlags5,Z,#$02                       ; bit 1: idle air position set by the MAP loop (IdleMapLoop)
         BRA     L0B9D0
 L0B9CC:
-        BCLR    >IdleFlags5,Z,#$02
+        BCLR    >IdleFlags5,Z,#$02                       ; bit 1: idle air position set by the MAP loop (IdleMapLoop)
 L0B9D0:
         RTS
 
@@ -15722,7 +15722,7 @@ L0BB1E:
 ;---------------------------------------------------------------------------------------------------
 Sub_0BB20:
         BRSET   >IacStepFlags,Z,#$01,L0BB8E              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
-        BRCLR   >IdleFlags3,Z,#$04,L0BB4C
+        BRCLR   >IdleFlags3,Z,#$04,L0BB4C                ; bit 2: closed-throttle coast seen (IdleStateUpdate; cleared by IacRollingControl)
         LDAA    >VehicleSpeed,Z
         LDAB    >IdleRollSpeed
         ADDB    $2184
@@ -15731,7 +15731,7 @@ Sub_0BB20:
 L0BB3C:
         CBA
         LBLS    L0BBBE
-        BCLR    >IdleFlags3,Z,#$04
+        BCLR    >IdleFlags3,Z,#$04                       ; bit 2: closed-throttle coast seen (IdleStateUpdate; cleared by IacRollingControl)
         CMPA    $2183
         BCC     L0BBBE
 L0BB4C:
@@ -15971,7 +15971,7 @@ L0BD96:
         BITA    #$80
         BEQ     L0BDAC
         CLR     >IdleCount0322,Z
-        BSET    >IdleFlags5,Z,#$01
+        BSET    >IdleFlags5,Z,#$01                       ; bit 0: MAP target in acceleration phase (IdleMapTargetCalc, IdleMapRpmAccelMax)
         BRA     L0BDC0
 L0BDAC:
         BITA    #$01
@@ -15982,7 +15982,7 @@ L0BDAC:
         BNE     L0BDC0
         DEC     >IdleCount0322,Z
 L0BDC0:
-        BCLR    >IdleFlags5,Z,#$80
+        BCLR    >IdleFlags5,Z,#$80                       ; bit 7: gear idle step state (IdleTargetControl)
         BRCLR   >Scratch8,Z,#$10,L0BE5E
         LDAA    >ThrottleState,Z
         BITA    #$01
@@ -16001,15 +16001,15 @@ L0BDEC:
         CMPA    $20E9
         BLE     L0BE04
 L0BE00:
-        BCLR    >IdleFlags5,Z,#$01
+        BCLR    >IdleFlags5,Z,#$01                       ; bit 0: MAP target in acceleration phase (IdleMapTargetCalc, IdleMapRpmAccelMax)
 L0BE04:
         LDAA    >IdleFlags5,Z
         ANDA    #$1C
         BNE     L0BE5E
-        BSET    >IdleFlags5,Z,#$80
+        BSET    >IdleFlags5,Z,#$80                       ; bit 7: gear idle step state (IdleTargetControl)
         LDAA    >IdleCount0322,Z
         CMPA    $20E6
-        BRSET   >IdleFlags5,Z,#$01,L0BE22
+        BRSET   >IdleFlags5,Z,#$01,L0BE22                ; bit 0: MAP target in acceleration phase (IdleMapTargetCalc, IdleMapRpmAccelMax)
         CMPA    $20E8
 L0BE22:
         BCS     L0BE5E
@@ -16029,7 +16029,7 @@ L0BE44:
         NEGD
         TBA
         LDX     #Tab2D_2150
-        BRSET   >IdleFlags5,Z,#$01,L0BE56
+        BRSET   >IdleFlags5,Z,#$01,L0BE56                ; bit 0: MAP target in acceleration phase (IdleMapTargetCalc, IdleMapRpmAccelMax)
         LDX     #Tab2D_215A
 L0BE56:
         JSR     Lookup2D
@@ -16160,7 +16160,7 @@ L0BF8E:
         BSET    >Scratch8,Z,#$40
 L0BFA8:
         BCLR    >SparkFlags3,Z,#$60
-        BCLR    >IdleFlags6,Z,#$10
+        BCLR    >IdleFlags6,Z,#$10                       ; bit 4: idle conditions for learning met (IdleStateFlags)
         BRSET   >IdleFlags3,Z,#$02,L0BFD8
         BRSET   >EngineStateFlags,Z,#$80,L0BFC2          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         TST     $06B7,Z
@@ -16194,7 +16194,7 @@ L0C00C:
         BRSET   >IacStepFlags,Z,#$20,L0C046              ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BRSET   >Scratch8,Z,#$01,L0C046
         BRSET   $0168,Z,#$08,L0C046
-        BSET    >IdleFlags6,Z,#$10
+        BSET    >IdleFlags6,Z,#$10                       ; bit 4: idle conditions for learning met (IdleStateFlags)
         TST     >DashpotTimerMoving,Z
         BNE     L0C046
         LDAB    >IdleFlags,Z
@@ -16354,7 +16354,7 @@ L0C1F8:
 L0C1FC:
         BRSET   >ThrottleState,Z,#$01,L0C20E             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BRSET   >IacStepFlags,Z,#$01,L0C20E              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
-        BRCLR   >IdleFlags2,Z,#$20,L0C218
+        BRCLR   >IdleFlags2,Z,#$20,L0C218                ; bit 5: idle target ramp requested (IdleRpmTarget)
 L0C20E:
         LDAA    $1DF5
         STAA    $06AE,Z
@@ -16493,13 +16493,13 @@ L0C3BA:
         LDAB    >AirTemp,Z
         CMPB    $1DE7
         BLS     L0C3CA
-        BSET    >IdleFlags8,Z,#$01
+        BSET    >IdleFlags8,Z,#$01                       ; bit 0: hot air: AirTemp above IdleHotAirOn, off below IdleHotAirOff (IdleRpmTarget)
         BRA     L0C3DC
 L0C3CA:
-        BRCLR   >IdleFlags8,Z,#$01,L0C3F2
+        BRCLR   >IdleFlags8,Z,#$01,L0C3F2                ; bit 0: hot air: AirTemp above IdleHotAirOn, off below IdleHotAirOff (IdleRpmTarget)
         CMPB    $1DE6
         BCC     L0C3DC
-        BCLR    >IdleFlags8,Z,#$01
+        BCLR    >IdleFlags8,Z,#$01                       ; bit 0: hot air: AirTemp above IdleHotAirOn, off below IdleHotAirOff (IdleRpmTarget)
         BRA     L0C3F2
 L0C3DC:
         TBA
@@ -16515,37 +16515,37 @@ L0C3F2:
         MUL
         STD     $01FE,Z
         BRSET   >ThrottleState,Z,#$01,L0C410             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
-        BRCLR   >IdleFlags2,Z,#$10,L0C40A
-        BCLR    >IdleFlags2,Z,#$20
+        BRCLR   >IdleFlags2,Z,#$10,L0C40A                ; bit 4: idle at the previous pass (ThrottleState bit 0, IdleRpmTarget)
+        BCLR    >IdleFlags2,Z,#$20                       ; bit 5: idle target ramp requested (IdleRpmTarget)
 L0C40A:
-        BCLR    >IdleFlags2,Z,#$10
+        BCLR    >IdleFlags2,Z,#$10                       ; bit 4: idle at the previous pass (ThrottleState bit 0, IdleRpmTarget)
         BRA     L0C414
 L0C410:
-        BSET    >IdleFlags2,Z,#$10
+        BSET    >IdleFlags2,Z,#$10                       ; bit 4: idle at the previous pass (ThrottleState bit 0, IdleRpmTarget)
 L0C414:
         BRSET   >IacStepFlags,Z,#$01,L0C42A              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
-        BRCLR   >IdleFlags6,Z,#$20,L0C424
-        BCLR    >IdleFlags2,Z,#$20
+        BRCLR   >IdleFlags6,Z,#$20,L0C424                ; bit 5: rolling idle control was active at the last pass (IacStepFlags bit 0, IdleRpmTarget)
+        BCLR    >IdleFlags2,Z,#$20                       ; bit 5: idle target ramp requested (IdleRpmTarget)
 L0C424:
-        BCLR    >IdleFlags6,Z,#$20
+        BCLR    >IdleFlags6,Z,#$20                       ; bit 5: rolling idle control was active at the last pass (IacStepFlags bit 0, IdleRpmTarget)
         BRA     L0C42E
 L0C42A:
-        BSET    >IdleFlags6,Z,#$20
+        BSET    >IdleFlags6,Z,#$20                       ; bit 5: rolling idle control was active at the last pass (IacStepFlags bit 0, IdleRpmTarget)
 L0C42E:
         BRCLR   >IdleFlags,Z,#$40,L0C43A                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BRSET   >DriveFlags,Z,#$80,L0C5AA                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
 L0C43A:
-        BRSET   >IdleFlags2,Z,#$20,L0C58E
-        BRCLR   >IdleFlags6,Z,#$10,L0C58E
+        BRSET   >IdleFlags2,Z,#$20,L0C58E                ; bit 5: idle target ramp requested (IdleRpmTarget)
+        BRCLR   >IdleFlags6,Z,#$10,L0C58E                ; bit 4: idle conditions for learning met (IdleStateFlags)
         LDAA    >AirTemp,Z
-        BRSET   >IdleFlags2,Z,#$01,L0C46A
+        BRSET   >IdleFlags2,Z,#$01,L0C46A                ; bit 0: idle target raise, cause 1 (IdleRpmTarget)
         CMPA    $1DE5
         BCS     L0C45C
         CMPA    $1DE7
         BLS     L0C47A
 L0C45C:
         BRCLR   >IdleFlags,Z,#$40,L0C58E                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BSET    >IdleFlags2,Z,#$01
+        BSET    >IdleFlags2,Z,#$01                       ; bit 0: idle target raise, cause 1 (IdleRpmTarget)
         LBRA    L0C58E
 L0C46A:
         CMPA    $1DE8
@@ -16555,7 +16555,7 @@ L0C46A:
 L0C47A:
         LDAA    >ChargeTargetVolts,Z
         LDAB    $1DF2
-        BRCLR   >IdleFlags2,Z,#$04,L0C48C
+        BRCLR   >IdleFlags2,Z,#$04,L0C48C                ; bit 2: idle target raise for low battery voltage (BatteryVoltsFiltered, IdleRpmTarget)
         LDAB    $1DF3
 L0C48C:
         SBA
@@ -16565,18 +16565,18 @@ L0C492:
         CMPA    >BatteryVoltsFiltered,Z
         BLS     L0C4A6
         BRCLR   >IdleFlags,Z,#$40,L0C58E                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BSET    >IdleFlags2,Z,#$04
+        BSET    >IdleFlags2,Z,#$04                       ; bit 2: idle target raise for low battery voltage (BatteryVoltsFiltered, IdleRpmTarget)
         LBRA    L0C58E
 L0C4A6:
         LDAA    >CoolantTemp,Z
-        BRSET   >IdleFlags2,Z,#$02,L0C4CA
+        BRSET   >IdleFlags2,Z,#$02,L0C4CA                ; bit 1: idle target raise, cause 2 (IdleRpmTarget)
         CMPA    $1DEF
         BCS     L0C4BC
         CMPA    $1DF1
         BLS     L0C4DA
 L0C4BC:
         BRCLR   >IdleFlags,Z,#$40,L0C58E                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BSET    >IdleFlags2,Z,#$02
+        BSET    >IdleFlags2,Z,#$02                       ; bit 1: idle target raise, cause 2 (IdleRpmTarget)
         LBRA    L0C58E
 L0C4CA:
         CMPA    $1DEE
@@ -16585,14 +16585,14 @@ L0C4CA:
         LBHI    L0C58E
 L0C4DA:
         LDAA    $032C,Z
-        BRSET   >IdleFlags2,Z,#$08,L0C4FE
+        BRSET   >IdleFlags2,Z,#$08,L0C4FE                ; bit 3: idle target raise, cause 4 (IdleRpmTarget, with IdleFlags bit 6)
         CMPA    $1DEC
         BCS     L0C4F0
         CMPA    $1DEA
         BLS     L0C50E
 L0C4F0:
         BRCLR   >IdleFlags,Z,#$40,L0C58E                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BSET    >IdleFlags2,Z,#$08
+        BSET    >IdleFlags2,Z,#$08                       ; bit 3: idle target raise, cause 4 (IdleRpmTarget, with IdleFlags bit 6)
         LBRA    L0C58E
 L0C4FE:
         CMPA    $1DEB
@@ -16602,13 +16602,13 @@ L0C4FE:
 L0C50E:
         TST     $06AE,Z
         BNE     L0C522
-        BRSET   >IdleFlags2,Z,#$40,L0C522
-        BSET    >IdleFlags2,Z,#$20
+        BRSET   >IdleFlags2,Z,#$40,L0C522                ; bit 6: idle target ramp not allowed: flex cold start or ramp delay (IdleRpmTarget)
+        BSET    >IdleFlags2,Z,#$20                       ; bit 5: idle target ramp requested (IdleRpmTarget)
         LBRA    L0C58E
 L0C522:
         BRSET   >Options033A,#$40,L0C536                 ; bit 6: selects a branch in IdleRpmTarget
         BRSET   >AcFlags,Z,#$80,L0C536                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
-        BSET    >IdleFlags3,Z,#$20
+        BSET    >IdleFlags3,Z,#$20                       ; bit 5: idle step after shift requested (IdleRpmTarget; cleared when SegmentRpm passes IacGearRpmEnd)
         LBRA    L0C58E
 L0C536:
         TST     $06AD,Z
@@ -16628,7 +16628,7 @@ L0C55C:
         LBCS    L0C58E
         BRSET   >IacStepFlags,Z,#$01,L0C58E              ; bit 0: rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle
         BRSET   >ThrottleState,Z,#$01,L0C58E             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
-        BSET    >IdleFlags2,Z,#$40
+        BSET    >IdleFlags2,Z,#$40                       ; bit 6: idle target ramp not allowed: flex cold start or ramp delay (IdleRpmTarget)
         TST     $0683,Z
         BEQ     L0C5AA
         DEC     $0683,Z
@@ -16636,10 +16636,10 @@ L0C55C:
 L0C58E:
         LDAA    $1DF4
         STAA    $0683,Z
-        BCLR    >IdleFlags2,Z,#$40
+        BCLR    >IdleFlags2,Z,#$40                       ; bit 6: idle target ramp not allowed: flex cold start or ramp delay (IdleRpmTarget)
         BRCLR   >IdleFlags,Z,#$40,L0C5A8                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         BCLR    >IdleFlags,Z,#$40                        ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BSET    >IdleFlags2,Z,#$20
+        BSET    >IdleFlags2,Z,#$20                       ; bit 5: idle target ramp requested (IdleRpmTarget)
 L0C5A8:
         BRA     L0C5C2
 L0C5AA:
@@ -16649,7 +16649,7 @@ L0C5AA:
         CLRD
 L0C5B6:
         STD     $01FE,Z
-        BCLR    >IdleFlags2,Z,#$0F
+        BCLR    >IdleFlags2,Z,#$0F                       ; bit 3: idle target raise, cause 4 (IdleRpmTarget, with IdleFlags bit 6); bit 2: idle target raise for low battery voltage (BatteryVoltsFiltered, IdleRpmTarget); bit 1: idle target raise, cause 2 (IdleRpmTarget); bit 0: idle target raise, cause 1 (IdleRpmTarget)
         BSET    >IdleFlags,Z,#$40                        ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
 L0C5C2:
         BRSET   >Options0339,#$20,L0C5E2                 ; bit 5: selects a branch in SparkEventCalc
@@ -17473,7 +17473,7 @@ L0CF12:
         BEQ     L0CF20
         INC     $36,Z
 L0CF20:
-        BSET    >MonEnableFlags2,Z,#$40
+        BSET    >MonEnableFlags2,Z,#$40                  ; bit 6: monitor data to be reset (set at reset and by MonEnableCheck)
         LDAB    $3DB6
         LDAA    >CoolantRaw,Z
         CMPA    $3DB5
@@ -19509,7 +19509,7 @@ L0E764:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_0E76C:
-        BRCLR   >FieldFlags,Z,#$08,L0E780
+        BRCLR   >FieldFlags,Z,#$08,L0E780                ; bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
         LDD     $06D5,Z
         ADDD    #$01
         BNE     L0E77C

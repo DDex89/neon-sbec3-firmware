@@ -741,7 +741,7 @@
  "0A23": "SkimFlags",
  "0A24": "PciFlags5",
  "0A25": "ObdFlags",
- "0A26": "SkimFlags2",
+ "0A26": "BusTxRequest",
  "0A27": "PciRxFlags",
  "0A28": "ObdRequestId",
  "0A29": "SciObdCount",

@@ -19,6 +19,36 @@
   "1": "body/transmission bus message timed out (BodyBusTimeout); cleared by each received message",
   "0": "transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)"
  },
+ "BusTxRequest": {
+  "7": "send the reply to bus message $C8 (set by CcdReceive, cleared when PciService sends it)",
+  "6": "send the security message (BusTxSecurity); set at reset",
+  "5": "send the per-event spark message (set in Isr_GPT_IC4OC5)",
+  "4": "send the spark status message (set in Isr_GPT_IC4OC5)",
+  "3": "send message $91 (BusTxMsg91); set when the MAP-high bus flag changes (MapHighBusFlag)",
+  "2": "switch inputs changed: send them (SwitchInputsRead)",
+  "1": "speed control switch state changed: send it (speed control switch code)",
+  "0": "PCI link data changed: send it (PciLinkCheck)"
+ },
+ "CcdBusFlags": {
+  "7": "bus ready for the next message (CcdReceive, Irq4BusHandler, Irq2BusHandler)",
+  "6": "byte transmission in progress (BusTxStart, Irq4BusHandler)",
+  "5": "echo of the sent byte matched (Irq4BusHandler)",
+  "4": "echo mismatch or receive error: arbitration lost (Irq4BusHandler)",
+  "3": "message sent with a receive copy (BusTxStart, CcdRxFlags bit 7)",
+  "2": "last byte of the message sent (Irq4BusHandler)",
+  "1": "message transmission running (Irq4BusHandler)",
+  "0": "received message goes to the second buffer (Irq4BusHandler, Irq2BusHandler)"
+ },
+ "ChargeMonFlags": {
+  "7": "charging voltage short of the target by more than FieldVoltsStep (ChargeControl)",
+  "6": "charging low long enough to fail (ChargeMonFailTime reached, ChargeLowMonitor)",
+  "5": "generator field output on (mirrors IoDriver6E bit 13; Isr_PIT, ChargeControl)",
+  "4": "engine rpm above FieldRpmMin: field ramp started (FieldRampControl)",
+  "3": "charging low for ChargeMonTime: monitor armed (ChargeLowMonitor)",
+  "2": "battery voltage low (BattLowVolts for BattLowSetCount passes, BatteryLowFlag); charge lamp",
+  "1": "battery temperature model started (BatteryTempModel)",
+  "0": "a fault with the charge-lamp flag was reported (ReportFault); charge lamp request"
+ },
  "ControlFlags943": {
   "7": "A/C cut active (AcCutControl timer running)",
   "6": "set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)",
@@ -35,6 +65,20 @@
   "2": "EGR solenoid on (EgrEnable)",
   "1": "toggled by ActuatorTestMain, not read",
   "0": "starter cut active (StarterCut)"
+ },
+ "ControlFlagsC39": {
+  "7": "PCI link variant: set at reset from the bus configuration, cleared when the link check fails",
+  "6": "diagnostic mode request (DiagModeUpdate)",
+  "5": "diagnostic mode set (DiagModeInit)",
+  "4": "transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it",
+  "3": "diagnostic mode bit mirrored into ControlFlags944 bit 7 (DiagModeInit)",
+  "2": "set and cleared with bit 7"
+ },
+ "CrankSyncFlags": {
+  "7": "crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)",
+  "6": "at least one reference event since the engine started turning (Isr_GPT_IC1)",
+  "5": "pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP",
+  "2": "set with bit 7 by Isr_GPT_PAI ($84 = synchronised)"
  },
  "DiagStatusFlags": {
   "7": "fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)",
@@ -90,6 +134,24 @@
   "2": "power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)",
   "1": "copy of calibration bit $0335.3 at reset; not read",
   "0": "copy of calibration bit $0330.4 at reset; not read"
+ },
+ "EventSparkFlags": {
+  "7": "per-event spark state A, set with bit 3 by Isr_GPT_IC4OC5 when SwitchInputs2 bit 5 is set; reported on the bus",
+  "6": "per-event spark state B, set with bit 2 (the opposite of bit 7); reported on the bus",
+  "5": "per-event history to be refilled (Isr_GPT_IC4OC5, cleared by EventTableCheck)",
+  "4": "per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it",
+  "3": "pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)",
+  "2": "pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)",
+  "0": "input capture 4 edge was the first kind (TCTL2 bit 7 clear) (Isr_GPT_IC4OC5)"
+ },
+ "FieldFlags": {
+  "6": "field ramp minimum time after start passed (FieldRampTimeMin)",
+  "5": "field ramp reached its end step (FieldRampControl)",
+  "4": "field ramp held at a fixed duty (FieldRampControl)",
+  "3": "field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it",
+  "2": "generator field test running (FieldTestStart, SystemTestCheck)",
+  "1": "idle air charge step: voltage recovered, timer running (IacChargeStepCalc)",
+  "0": "idle air charge step applied (IacChargeStepCalc)"
  },
  "FlexLearnFlags": {
   "7": "cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)",
@@ -155,6 +217,36 @@
   "1": "cleared at stall; read by InjectorSequence",
   "0": "injector sequence step taken (InjectorSequence)"
  },
+ "FuelSysFlags1": {
+  "7": "lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1",
+  "6": "adaptive at its lower limit (O2AdaptMin) this pass, bank 1",
+  "5": "lean fault count reached (FuelSysLeanFaultCount), bank 1",
+  "4": "lean condition counted in the current window, bank 1",
+  "3": "rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1",
+  "2": "adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1",
+  "1": "rich fault count reached (FuelSysRichFaultCount), bank 1",
+  "0": "rich condition counted in the current window, bank 1"
+ },
+ "FuelSysFlags2": {
+  "7": "lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2",
+  "6": "adaptive at its lower limit (O2AdaptMin) this pass, bank 2",
+  "5": "lean fault count reached (FuelSysLeanFaultCount), bank 2",
+  "4": "lean condition counted in the current window, bank 2",
+  "3": "rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2",
+  "2": "adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2",
+  "1": "rich fault count reached (FuelSysRichFaultCount), bank 2",
+  "0": "rich condition counted in the current window, bank 2"
+ },
+ "IacAcFlags": {
+  "7": "A/C clutch spark hold during a shift step (AcClutchSpark)",
+  "6": "A/C clutch spark hold time reached (AcClutchSpark)",
+  "5": "A/C clutch spark correction active (AcClutchSpark)",
+  "4": "idle air A/C step applied (IdleTargetControl, AcCutLogic)",
+  "3": "A/C request from the transmission module on the bus (IdleTargetControl)",
+  "2": "bus message bit 5 (CcdReceive, PciReceive), read by IdleTargetControl",
+  "1": "rpm filter from the bus value (RpmIdleFilter, BusFlags9CE bit 6)",
+  "0": "A/C clutch spark rate step (AcClutchSpark, read by AcSparkRate)"
+ },
  "IacStepFlags": {
   "7": "stepper phase toggle (IacStepperDrive)",
   "6": "stepper hold requested by a diagnostic routine (JumpTable_35BB0), cleared by IacStepperDrive",
@@ -165,6 +257,14 @@
   "1": "idle air target from the MAP loop instead of the fixed command (IdleControl)",
   "0": "rolling idle control active, probably (IacRollingControl); IdleStateUpdate treats it as off-idle"
  },
+ "IdleAcFlags": {
+  "7": "A/C idle step active (IdleTargetControl); AcClutchControl reads it",
+  "6": "set with bit 7 when the A/C idle step starts",
+  "3": "A/C state bit cleared by IdleTargetControl and AcCutLogic",
+  "2": "A/C idle state bit (IdleTargetControl, AcCutLogic)",
+  "1": "A/C idle state bit (IdleTargetControl, AcCutLogic)",
+  "0": "A/C idle state bit (IdleTargetControl, AcCutLogic)"
+ },
  "IdleFlags": {
   "7": "closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)",
   "6": "set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled",
@@ -172,6 +272,63 @@
   "4": "idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn",
   "1": "shift idle step applied (IacShiftStepApply)",
   "0": "idle rpm loop hold timer started (IdleRpmLoop)"
+ },
+ "IdleFlags2": {
+  "7": "shift idle timer running (IacShiftTimer not zero, IdleTargetControl)",
+  "6": "idle target ramp not allowed: flex cold start or ramp delay (IdleRpmTarget)",
+  "5": "idle target ramp requested (IdleRpmTarget)",
+  "4": "idle at the previous pass (ThrottleState bit 0, IdleRpmTarget)",
+  "3": "idle target raise, cause 4 (IdleRpmTarget, with IdleFlags bit 6)",
+  "2": "idle target raise for low battery voltage (BatteryVoltsFiltered, IdleRpmTarget)",
+  "1": "idle target raise, cause 2 (IdleRpmTarget)",
+  "0": "idle target raise, cause 1 (IdleRpmTarget)"
+ },
+ "IdleFlags3": {
+  "6": "reference event since the last idle loop pass (set in Isr_GPT_IC1, cleared by IdleRpmLoop)",
+  "5": "idle step after shift requested (IdleRpmTarget; cleared when SegmentRpm passes IacGearRpmEnd)",
+  "4": "A/C idle bump waiting for the clutch (IdleTargetControl)",
+  "3": "SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)",
+  "2": "closed-throttle coast seen (IdleStateUpdate; cleared by IacRollingControl)",
+  "0": "throttle closed since the last opening: dashpot started (ThrottleClosedLearn)"
+ },
+ "IdleFlags5": {
+  "7": "gear idle step state (IdleTargetControl)",
+  "6": "idle MAP target step allowed (IdleMapTargetCalc); IdleRpmLoop watches it",
+  "5": "gear idle step state (IdleTargetControl)",
+  "4": "idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)",
+  "3": "idle step state, cleared with IdleFlags bits 2-3 (IdleTargetControl)",
+  "2": "shift idle step applied (IacShiftStepApply in IdleTargetControl)",
+  "1": "idle air position set by the MAP loop (IdleMapLoop)",
+  "0": "MAP target in acceleration phase (IdleMapTargetCalc, IdleMapRpmAccelMax)"
+ },
+ "IdleFlags6": {
+  "7": "vehicle speed below the MAP-loop speed limit (IdleMapLoop)",
+  "6": "idle air learning allowed: no flex cold start (IacLearn)",
+  "5": "rolling idle control was active at the last pass (IacStepFlags bit 0, IdleRpmTarget)",
+  "4": "idle conditions for learning met (IdleStateFlags)",
+  "2": "idle step state, cleared with IdleFlags5 bits 3-4 (IdleTargetControl)",
+  "1": "gear-step idle air step applied (IdleTargetControl)",
+  "0": "A/C sensor value latched before the clutch engaged (IacBaseCalc)"
+ },
+ "IdleFlags7": {
+  "7": "gear idle step started (IdleTargetControl)",
+  "6": "reference period long (RefPeriod at $20 or more, low rpm): idle air crank target (CalcEngineRpm, IacCrankControl)",
+  "5": "idle conditions met without a recent shift (IdleStateFlags)",
+  "4": "idle target raise for low battery voltage or a diagnostic hold (IdleRpmTarget)",
+  "3": "cleared with bits 7 and 2 when the gear step ends; not set by bit instructions",
+  "2": "cleared with bits 7 and 3 when the gear step ends; not set by bit instructions",
+  "1": "A/C idle bump not handled yet (IdleTargetControl)",
+  "0": "SegmentRpm above $7D00 (overrun of the idle loop range; hysteresis to $7C60) (IdleRpmLoop)"
+ },
+ "IdleFlags8": {
+  "7": "dashpot timer running while moving (IdleRpmLoop)",
+  "6": "second dashpot timer running (IdleRpmLoop)",
+  "5": "idle air start hold active (IacStepFlags bit 5, IdleRpmLoop)",
+  "4": "idle flare seen (IdleFlareFlags bit 7, IdleRpmLoop)",
+  "3": "MAP target step allowed (IdleFlags5 bit 6, IdleRpmLoop)",
+  "2": "one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)",
+  "1": "gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it",
+  "0": "hot air: AirTemp above IdleHotAirOn, off below IdleHotAirOff (IdleRpmTarget)"
  },
  "IoBusStatusL": {
   "7": "tested by BusTxStart before a byte is sent"
@@ -287,6 +444,9 @@
   "1": "cleared with the misfire records; read by MisfireCount",
   "0": "misfire start delay elapsed (MisfireEnableMain)"
  },
+ "MisfireFlags4": {
+  "6": "set by IdleTargetControl at the end of a gear idle step; read by MisfireDeviation"
+ },
  "MisfireOptions": {
   "7": "MisfireFlags2 bit 4 handling in ClosedLoopManager and FuelSystemStatus",
   "6": "selects a branch in MisfireTransient",
@@ -295,6 +455,13 @@
   "3": "deviation curve (MisfireDevCalc)",
   "2": "selects a branch in MisfireSegmentTime and MisfireDevCalc",
   "1": "selects a branch in MisfireCount"
+ },
+ "MonEnableFlags2": {
+  "7": "monitor data valid for this drive cycle (MonEnableCheck); read by many monitors",
+  "6": "monitor data to be reset (set at reset and by MonEnableCheck)",
+  "5": "monitor data changed: to be written to the EEPROM (MonDataStore)",
+  "4": "monitor data reset done (MonDataReset)",
+  "0": "misfire threshold in the closed-loop range (MisfireThreshold)"
  },
  "MonitorDisableFlags": {
   "5": "flex-fuel learning hold active (FlexLearnHold not zero): misfire, catalyst, O2, EGR, purge and leak monitors wait",
@@ -507,6 +674,31 @@
   "2": "battery temperature checked (PurgeEnable)",
   "1": "battery temperature at or above PurgeBattTempMax (PurgeEnable)",
   "0": "battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)"
+ },
+ "PurgeFlowTestFlags2": {
+  "7": "O2 switch state reached the last cell row (O2SwitchState)",
+  "6": "purge test restore delay running: closed loop waits (PurgeFlowTest, ClosedLoopManager)",
+  "5": "fan relay 2 on during the purge test (ControlFlags944 bit 3)",
+  "4": "fan relay on during the purge test (ControlFlags944 bit 4)",
+  "3": "bus A/C message bit 4 clear during the purge test (AcFlags bit 2)",
+  "2": "A/C engaged during the purge test (AcFlags bit 6)",
+  "1": "idle target raise active during the purge test (IdleFlags bit 6)",
+  "0": "purge cell rose past PurgeCellFaultRise (PurgeCellCheck)"
+ },
+ "PurgeMonFlags": {
+  "7": "purge flow monitor armed (PurgeMonitorArm)",
+  "6": "set with bit 7 when the monitor arms",
+  "5": "purge monitor step state (PurgeMonStep)",
+  "4": "purge monitor step state (PurgeMonStep, PurgeMonitorArm)"
+ },
+ "SecurityFlags": {
+  "7": "security message of the first kind received (CcdReceive); SkimState reads it",
+  "6": "security/SKIM message received recently (CcdReceive, PciReceive; cleared by SkimState)",
+  "5": "SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)",
+  "4": "security timer expired (SecurityState)",
+  "3": "security exchange step 2 (CcdReceive)",
+  "2": "security exchange step 1 (CcdReceive)",
+  "0": "security status to be sent (CcdReceive, SecurityStatusCalc)"
  },
  "SensorFaultFlags": {
   "7": "coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use",

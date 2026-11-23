@@ -51,7 +51,7 @@ L2019C:
         ANDB    #$3F
         ANDB    >MainLoopCounter,Z
         LBNE    L20252
-        BRCLR   >MonEnableFlags2,Z,#$80,L201E4
+        BRCLR   >MonEnableFlags2,Z,#$80,L201E4           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BCLR    <DiagStatusFlags,Z,#$03                  ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         CPX     #$0078
         BEQ     L20240
@@ -178,8 +178,8 @@ ObdFaultProcess:
         STAB    <Scratch4,Z
         PULM    K,Y
         BRCLR   $0000,Y,#$08,L203EE
-        BRSET   >MonEnableFlags2,Z,#$80,L20342
-        BRSET   >ControlFlagsC39,Z,#$10,L202E2
+        BRSET   >MonEnableFlags2,Z,#$80,L20342           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
+        BRSET   >ControlFlagsC39,Z,#$10,L202E2           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
         BRCLR   <DiagStatusFlags,Z,#$80,L202EE           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
 L202E2:
         BRCLR   $0000,Y,#$20,L202EE
@@ -1791,7 +1791,7 @@ L21096:
 ; Called from: ObdMonitorMain
 ;---------------------------------------------------------------------------------------------------
 MonitorEnable:
-        BRCLR   >MonEnableFlags2,Z,#$80,L2180C
+        BRCLR   >MonEnableFlags2,Z,#$80,L2180C           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         CLR     <MonitorDisableFlags,Z
         JMP     L2190A
 L2180C:
@@ -2191,7 +2191,7 @@ L21C5C:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 ChargeLowMonitor:
-        BRSET   >ChargeMonFlags,Z,#$80,L21CE6
+        BRSET   >ChargeMonFlags,Z,#$80,L21CE6            ; bit 7: charging voltage short of the target by more than FieldVoltsStep (ChargeControl)
         BRSET   >FaultSet01,Z,#$20,L21CE6
         BRSET   >FaultSet00,Z,#$08,L21CE6
         LDAA    >BatteryVolts2,Z
@@ -2203,7 +2203,7 @@ ChargeLowMonitor:
         CMPA    >ChargeMonRpmMin
         BCS     L21CE6
         LDAA    #$0F
-        BRCLR   >ChargeMonFlags,Z,#$08,L21C9C
+        BRCLR   >ChargeMonFlags,Z,#$08,L21C9C            ; bit 3: charging low for ChargeMonTime: monitor armed (ChargeLowMonitor)
         CLRA
 L21C9C:
         ANDA    >MainLoopCounter,Z
@@ -2213,26 +2213,26 @@ L21C9C:
         BEQ     L21CAE
         STAA    >ChargeMonTimer,Z
 L21CAE:
-        BRSET   >ChargeMonFlags,Z,#$08,L21CC0
+        BRSET   >ChargeMonFlags,Z,#$08,L21CC0            ; bit 3: charging low for ChargeMonTime: monitor armed (ChargeLowMonitor)
         CMPA    >ChargeMonTime
         BCS     L21CEE
-        BSET    >ChargeMonFlags,Z,#$08
+        BSET    >ChargeMonFlags,Z,#$08                   ; bit 3: charging low for ChargeMonTime: monitor armed (ChargeLowMonitor)
         BRA     L21CEA
 L21CC0:
-        BRSET   >ChargeMonFlags,Z,#$40,L21CD2
+        BRSET   >ChargeMonFlags,Z,#$40,L21CD2            ; bit 6: charging low long enough to fail (ChargeMonFailTime reached, ChargeLowMonitor)
         CMPA    >ChargeMonFailTime
         BCS     L21CEE
-        BSET    >ChargeMonFlags,Z,#$40
+        BSET    >ChargeMonFlags,Z,#$40                   ; bit 6: charging low long enough to fail (ChargeMonFailTime reached, ChargeLowMonitor)
         BRA     L21CEA
 L21CD2:
         CMPA    >ChargeMonClearTime
         BCS     L21CEE
-        BCLR    >ChargeMonFlags,Z,#$40
+        BCLR    >ChargeMonFlags,Z,#$40                   ; bit 6: charging low long enough to fail (ChargeMonFailTime reached, ChargeLowMonitor)
         LDY     #$3FBA
         JSR     ReportFault
         BRA     L21CEA
 L21CE6:
-        BCLR    >ChargeMonFlags,Z,#$C8
+        BCLR    >ChargeMonFlags,Z,#$C8                   ; bit 7: charging voltage short of the target by more than FieldVoltsStep (ChargeControl); bit 6: charging low long enough to fail (ChargeMonFailTime reached, ChargeLowMonitor); bit 3: charging low for ChargeMonTime: monitor armed (ChargeLowMonitor)
 L21CEA:
         CLR     >ChargeMonTimer,Z
 L21CEE:
@@ -2243,12 +2243,12 @@ L21CEE:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 BatteryLowFlag:
-        BRSET   >ChargeMonFlags,Z,#$04,L21D30
+        BRSET   >ChargeMonFlags,Z,#$04,L21D30            ; bit 2: battery voltage low (BattLowVolts for BattLowSetCount passes, BatteryLowFlag); charge lamp
         BRCLR   >EngineStateFlags,Z,#$80,L21D56          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >Count3s,Z
         CMPA    >BattLowStartTime
         BCS     L21D52
-        BRCLR   >FieldFlags,Z,#$08,L21D52
+        BRCLR   >FieldFlags,Z,#$08,L21D52                ; bit 3: field ramp active (FieldRampControl); ChargeControl and BatteryLowFlag read it
         LDAA    >BatteryVolts2,Z
         CMPA    >BattLowVolts
         BCC     L21D52
@@ -2260,7 +2260,7 @@ L21D20:
         STAB    $0DBC,Z
         CMPB    >BattLowSetCount
         BCS     L21D56
-        BSET    >ChargeMonFlags,Z,#$04
+        BSET    >ChargeMonFlags,Z,#$04                   ; bit 2: battery voltage low (BattLowVolts for BattLowSetCount passes, BatteryLowFlag); charge lamp
         BRA     L21D52
 L21D30:
         LDAA    >BatteryVolts2,Z
@@ -2274,7 +2274,7 @@ L21D44:
         STAB    $0DBC,Z
         CMPB    >BattLowClearCount
         BCS     L21D56
-        BCLR    >ChargeMonFlags,Z,#$04
+        BCLR    >ChargeMonFlags,Z,#$04                   ; bit 2: battery voltage low (BattLowVolts for BattLowSetCount passes, BatteryLowFlag); charge lamp
 L21D52:
         CLR     $0DBC,Z
 L21D56:
@@ -4222,7 +4222,7 @@ PnSwitchMonitor:
         BRSET   >MonitorDisableFlags,Z,#$02,L23298       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
         BRSET   >MonitorDisableFlags,Z,#$04,L23298       ; bit 2: battery voltage at or below MonEnableVoltsMin
         ORP     #$00E0
-        BRCLR   >CrankSyncFlags,Z,#$80,L2329C
+        BRCLR   >CrankSyncFlags,Z,#$80,L2329C            ; bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)
         BRCLR   >CamCrankFlags,Z,#$20,L23294
         BSET    $0664,Z,#$20
         BRA     L23298
@@ -5429,7 +5429,7 @@ MilRequest:
         BCLR    >MilRequestFlags,Z,#$03
         BCLR    <DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
         BCLR    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
-        BCLR    >ControlFlagsC39,Z,#$10
+        BCLR    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -5590,15 +5590,15 @@ L2435E:
         BRCLR   >EquipmentFlags,Z,#$20,L24388            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >BusModuleFlags,Z,#$01,L24392            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
 L24388:
-        BCLR    >ControlFlagsC39,Z,#$10
-        BCLR    >ControlFlagsC39,Z,#$40
+        BCLR    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
+        BCLR    >ControlFlagsC39,Z,#$40                  ; bit 6: diagnostic mode request (DiagModeUpdate)
         BRA     L243AA
 L24392:
-        BSET    >ControlFlagsC39,Z,#$10
-        BCLR    >ControlFlagsC39,Z,#$40
+        BSET    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
+        BCLR    >ControlFlagsC39,Z,#$40                  ; bit 6: diagnostic mode request (DiagModeUpdate)
         BRA     L243AA
 L2439C:
-        BSET    >ControlFlagsC39,Z,#$40
+        BSET    >ControlFlagsC39,Z,#$40                  ; bit 6: diagnostic mode request (DiagModeUpdate)
         BRSET   >Options032E,#$04,L243AA                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     DiagModeTimer
 L243AA:
@@ -5610,31 +5610,31 @@ L243AA:
 ; Called from: Reset, DiagModeUpdate
 ;---------------------------------------------------------------------------------------------------
 DiagModeInit:
-        BRCLR   >ControlFlagsC39,Z,#$40,L243C6
-        BRSET   >ControlFlagsC39,Z,#$20,L243D8
-        BSET    >ControlFlagsC39,Z,#$20
+        BRCLR   >ControlFlagsC39,Z,#$40,L243C6           ; bit 6: diagnostic mode request (DiagModeUpdate)
+        BRSET   >ControlFlagsC39,Z,#$20,L243D8           ; bit 5: diagnostic mode set (DiagModeInit)
+        BSET    >ControlFlagsC39,Z,#$20                  ; bit 5: diagnostic mode set (DiagModeInit)
         BSET    >PciFlags6,Z,#$20
         BRA     L243D4
 L243C6:
-        BRCLR   >ControlFlagsC39,Z,#$20,L243D8
-        BCLR    >ControlFlagsC39,Z,#$20
+        BRCLR   >ControlFlagsC39,Z,#$20,L243D8           ; bit 5: diagnostic mode set (DiagModeInit)
+        BCLR    >ControlFlagsC39,Z,#$20                  ; bit 5: diagnostic mode set (DiagModeInit)
         BCLR    >PciFlags6,Z,#$20
 L243D4:
-        BSET    >SkimFlags2,Z,#$01
+        BSET    >BusTxRequest,Z,#$01                     ; bit 0: PCI link data changed: send it (PciLinkCheck)
 L243D8:
-        BRSET   >ControlFlagsC39,Z,#$10,L243F2
-        BRCLR   >ControlFlagsC39,Z,#$08,L24408
-        BCLR    >ControlFlagsC39,Z,#$08
+        BRSET   >ControlFlagsC39,Z,#$10,L243F2           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
+        BRCLR   >ControlFlagsC39,Z,#$08,L24408           ; bit 3: diagnostic mode bit mirrored into ControlFlags944 bit 7 (DiagModeInit)
+        BCLR    >ControlFlagsC39,Z,#$08                  ; bit 3: diagnostic mode bit mirrored into ControlFlags944 bit 7 (DiagModeInit)
         BSET    >ControlFlags944,Z,#$80                  ; bit 7: set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7)
         BCLR    >PciFlags6,Z,#$80
         BRA     L24404
 L243F2:
-        BRSET   >ControlFlagsC39,Z,#$08,L24408
-        BSET    >ControlFlagsC39,Z,#$08
+        BRSET   >ControlFlagsC39,Z,#$08,L24408           ; bit 3: diagnostic mode bit mirrored into ControlFlags944 bit 7 (DiagModeInit)
+        BSET    >ControlFlagsC39,Z,#$08                  ; bit 3: diagnostic mode bit mirrored into ControlFlags944 bit 7 (DiagModeInit)
         BSET    >PciFlags6,Z,#$80
         BCLR    >ControlFlags944,Z,#$80                  ; bit 7: set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7)
 L24404:
-        BSET    >SkimFlags2,Z,#$01
+        BSET    >BusTxRequest,Z,#$01                     ; bit 0: PCI link data changed: send it (PciLinkCheck)
 L24408:
         RTS
 
@@ -5678,10 +5678,10 @@ L2445C:
         ORAB    >DiagModeFlags,Z
         STAB    >DiagModeFlags,Z
         BRCLR   >DiagModeFlags,Z,#$80,L24474
-        BCLR    >ControlFlagsC39,Z,#$10
+        BCLR    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
         BRA     L24478
 L24474:
-        BSET    >ControlFlagsC39,Z,#$10
+        BSET    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
 L24478:
         RTS
 
@@ -5695,8 +5695,8 @@ ChargeLampRequest:
         BEQ     L24494
         BRA     L2449A
 L24488:
-        BRSET   >ChargeMonFlags,Z,#$04,L24494
-        BRCLR   >ChargeMonFlags,Z,#$01,L2449A
+        BRSET   >ChargeMonFlags,Z,#$04,L24494            ; bit 2: battery voltage low (BattLowVolts for BattLowSetCount passes, BatteryLowFlag); charge lamp
+        BRCLR   >ChargeMonFlags,Z,#$01,L2449A            ; bit 0: a fault with the charge-lamp flag was reported (ReportFault); charge lamp request
 L24494:
         BCLR    >FanBusFlags,Z,#$02
         BRA     L2449E
@@ -5885,7 +5885,7 @@ L24630:
         ORAB    $04,Y
         STAB    E,Z
         BRCLR   $03,Y,#$20,L24646
-        BSET    >ChargeMonFlags,Z,#$01
+        BSET    >ChargeMonFlags,Z,#$01                   ; bit 0: a fault with the charge-lamp flag was reported (ReportFault); charge lamp request
 L24646:
         BRSET   $03,Y,#$08,L2466E
         BRCLR   $03,Y,#$40,L2466E
@@ -6429,7 +6429,7 @@ PurgeFlowTest:
         JMP     L2574A
 L252DE:
         BSET    >PurgeFlowTestFlags,Z,#$01
-        BRCLR   >PurgeFlowTestFlags2,Z,#$01,L252F0
+        BRCLR   >PurgeFlowTestFlags2,Z,#$01,L252F0       ; bit 0: purge cell rose past PurgeCellFaultRise (PurgeCellCheck)
         BSET    >PurgeFlowTestResult,Z,#$01
         JMP     L2572A
 L252F0:
@@ -6559,24 +6559,24 @@ L25478:
         STAA    $05B8,Z
         CLR     >PurgeFlowStep,Z
         CLR     >PurgeStartRamp,Z
-        BCLR    >PurgeFlowTestFlags2,Z,#$02
+        BCLR    >PurgeFlowTestFlags2,Z,#$02              ; bit 1: idle target raise active during the purge test (IdleFlags bit 6)
         BRCLR   >IdleFlags,Z,#$40,L254C4                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BSET    >PurgeFlowTestFlags2,Z,#$02
+        BSET    >PurgeFlowTestFlags2,Z,#$02              ; bit 1: idle target raise active during the purge test (IdleFlags bit 6)
 L254C4:
-        BCLR    >PurgeFlowTestFlags2,Z,#$0C
+        BCLR    >PurgeFlowTestFlags2,Z,#$0C              ; bit 3: bus A/C message bit 4 clear during the purge test (AcFlags bit 2); bit 2: A/C engaged during the purge test (AcFlags bit 6)
         BRCLR   >AcFlags,Z,#$40,L254D2                   ; bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7
-        BSET    >PurgeFlowTestFlags2,Z,#$04
+        BSET    >PurgeFlowTestFlags2,Z,#$04              ; bit 2: A/C engaged during the purge test (AcFlags bit 6)
 L254D2:
         BRSET   >AcFlags,Z,#$04,L254DC                   ; bit 2: bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test
-        BSET    >PurgeFlowTestFlags2,Z,#$08
+        BSET    >PurgeFlowTestFlags2,Z,#$08              ; bit 3: bus A/C message bit 4 clear during the purge test (AcFlags bit 2)
 L254DC:
         BRSET   >Options0334,#$10,L254FA                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
-        BCLR    >PurgeFlowTestFlags2,Z,#$30
+        BCLR    >PurgeFlowTestFlags2,Z,#$30              ; bit 5: fan relay 2 on during the purge test (ControlFlags944 bit 3); bit 4: fan relay on during the purge test (ControlFlags944 bit 4)
         BRCLR   >ControlFlags944,Z,#$10,L254F0           ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
-        BSET    >PurgeFlowTestFlags2,Z,#$10
+        BSET    >PurgeFlowTestFlags2,Z,#$10              ; bit 4: fan relay on during the purge test (ControlFlags944 bit 4)
 L254F0:
         BRCLR   >ControlFlags944,Z,#$08,L254FA           ; bit 3: second fan relay, probably; driven only with A/C fitted
-        BSET    >PurgeFlowTestFlags2,Z,#$20
+        BSET    >PurgeFlowTestFlags2,Z,#$20              ; bit 5: fan relay 2 on during the purge test (ControlFlags944 bit 3)
 L254FA:
         BSET    >PurgeFlowTestFlags,Z,#$10
         LDAA    >PurgeDutyTarget,Z
@@ -6598,33 +6598,33 @@ L25522:
         BRSET   >DriveFlags,Z,#$40,L2572A                ; bit 6: power steering pressure switch active: bit 6 of the switch bits collected from IoInputs0 (map chosen by $032D), unless P0551 is set (SwitchInputsRead)
 L25536:
         BRSET   >DriveFlags,Z,#$80,L2572A                ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
-        BRSET   >FieldFlags,Z,#$01,L2572A
+        BRSET   >FieldFlags,Z,#$01,L2572A                ; bit 0: idle air charge step applied (IacChargeStepCalc)
         BRCLR   >IdleFlags,Z,#$40,L25550                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BRCLR   >PurgeFlowTestFlags2,Z,#$02,L2572A
+        BRCLR   >PurgeFlowTestFlags2,Z,#$02,L2572A       ; bit 1: idle target raise active during the purge test (IdleFlags bit 6)
         BRA     L25556
 L25550:
-        BRSET   >PurgeFlowTestFlags2,Z,#$02,L2572A
+        BRSET   >PurgeFlowTestFlags2,Z,#$02,L2572A       ; bit 1: idle target raise active during the purge test (IdleFlags bit 6)
 L25556:
         BRCLR   >AcFlags,Z,#$40,L25564                   ; bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7
-        BRCLR   >PurgeFlowTestFlags2,Z,#$04,L2572A
+        BRCLR   >PurgeFlowTestFlags2,Z,#$04,L2572A       ; bit 2: A/C engaged during the purge test (AcFlags bit 6)
         BRA     L2556A
 L25564:
-        BRSET   >PurgeFlowTestFlags2,Z,#$04,L2572A
+        BRSET   >PurgeFlowTestFlags2,Z,#$04,L2572A       ; bit 2: A/C engaged during the purge test (AcFlags bit 6)
 L2556A:
         BRSET   >Options0334,#$10,L255A4                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
         BRSET   >ControlFlagsC33,Z,#$04,L2572A
         BRSET   >ControlFlagsC33,Z,#$40,L2572A
         BRCLR   >ControlFlags944,Z,#$10,L2558A           ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
-        BRCLR   >PurgeFlowTestFlags2,Z,#$10,L2572A
+        BRCLR   >PurgeFlowTestFlags2,Z,#$10,L2572A       ; bit 4: fan relay on during the purge test (ControlFlags944 bit 4)
         BRA     L25590
 L2558A:
-        BRSET   >PurgeFlowTestFlags2,Z,#$10,L2572A
+        BRSET   >PurgeFlowTestFlags2,Z,#$10,L2572A       ; bit 4: fan relay on during the purge test (ControlFlags944 bit 4)
 L25590:
         BRCLR   >ControlFlags944,Z,#$08,L2559E           ; bit 3: second fan relay, probably; driven only with A/C fitted
-        BRCLR   >PurgeFlowTestFlags2,Z,#$20,L2572A
+        BRCLR   >PurgeFlowTestFlags2,Z,#$20,L2572A       ; bit 5: fan relay 2 on during the purge test (ControlFlags944 bit 3)
         BRA     L255A4
 L2559E:
-        BRSET   >PurgeFlowTestFlags2,Z,#$20,L2572A
+        BRSET   >PurgeFlowTestFlags2,Z,#$20,L2572A       ; bit 5: fan relay 2 on during the purge test (ControlFlags944 bit 3)
 L255A4:
         CLRW    >Scratch2,Z
         BRSET   >Options033E,#$02,L255D2                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
@@ -6712,7 +6712,7 @@ L25680:
         ORAA    #$20
         LDAB    <Scratch2,Z
 L2569E:
-        BRCLR   >PurgeFlowTestFlags2,Z,#$02,L256A6
+        BRCLR   >PurgeFlowTestFlags2,Z,#$02,L256A6       ; bit 1: idle target raise active during the purge test (IdleFlags bit 6)
         ORAA    #$01
 L256A6:
         STAA    $0172,Z
@@ -6732,7 +6732,7 @@ L256CE:
         ORAA    #$20
         LDAB    <Scratch4,Z
 L256DA:
-        BRCLR   >PurgeFlowTestFlags2,Z,#$02,L256E2
+        BRCLR   >PurgeFlowTestFlags2,Z,#$02,L256E2       ; bit 1: idle target raise active during the purge test (IdleFlags bit 6)
         ORAA    #$01
 L256E2:
         STAA    $0174,Z
@@ -6748,7 +6748,7 @@ L256E2:
         ORAA    #$20
         LDE     >Scratch6,Z
 L2570E:
-        BRCLR   >PurgeFlowTestFlags2,Z,#$02,L25716
+        BRCLR   >PurgeFlowTestFlags2,Z,#$02,L25716       ; bit 1: idle target raise active during the purge test (IdleFlags bit 6)
         ORAA    #$01
 L25716:
         STAA    $0176,Z
@@ -10181,16 +10181,16 @@ L2A028:
         BRSET   >MonStatusFuelSysLean1,Z,#$08,L2A07C
         JSR     FuelSysLean1Adapt
         JSR     FuelSysLean1Check
-        BRCLR   >FuelSysFlags1,Z,#$A0,L2A07C
+        BRCLR   >FuelSysFlags1,Z,#$A0,L2A07C             ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 1
         JSR     FuelSysLean1Done
         BRA     L2A07C
 L2A060:
-        BRCLR   >FuelSysFlags1,Z,#$10,L2A06E
-        BCLR    >FuelSysFlags1,Z,#$10
+        BRCLR   >FuelSysFlags1,Z,#$10,L2A06E             ; bit 4: lean condition counted in the current window, bank 1
+        BCLR    >FuelSysFlags1,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L2A06E:
-        BRCLR   >FuelSysFlags1,Z,#$40,L2A07C
-        BCLR    >FuelSysFlags1,Z,#$40
+        BRCLR   >FuelSysFlags1,Z,#$40,L2A07C             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
+        BCLR    >FuelSysFlags1,Z,#$40                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
         CLR     >FuelSysCount3,Z
 L2A07C:
         RTS
@@ -10216,8 +10216,8 @@ FuelSysLean1Adapt:
         CMPA    <PurgeCellTrim3,Z
         BLT     L2A0E0
 L2A0AE:
-        BRSET   >FuelSysFlags1,Z,#$40,L2A0BC
-        BSET    >FuelSysFlags1,Z,#$40
+        BRSET   >FuelSysFlags1,Z,#$40,L2A0BC             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
+        BSET    >FuelSysFlags1,Z,#$40                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
         CLR     >FuelSysCount3,Z
 L2A0BC:
         CLR     >FuelSysLeanFaults,Z
@@ -10230,11 +10230,11 @@ L2A0D4:
         CMPA    >FuelSysLeanCount
 L2A0D8:
         BCS     L2A0EE
-        BSET    >FuelSysFlags1,Z,#$80
+        BSET    >FuelSysFlags1,Z,#$80                    ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 1
         BRA     L2A0EE
 L2A0E0:
-        BRCLR   >FuelSysFlags1,Z,#$40,L2A0EE
-        BCLR    >FuelSysFlags1,Z,#$40
+        BRCLR   >FuelSysFlags1,Z,#$40,L2A0EE             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
+        BCLR    >FuelSysFlags1,Z,#$40                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1
         CLR     >FuelSysCount3,Z
 L2A0EE:
         RTS
@@ -10273,14 +10273,14 @@ L2A13C:
         LDAB    >FlexEthanol,Z
         LDX     #FuelSysLimit
         JSR     Lookup3D
-        BRCLR   >FuelSysFlags1,Z,#$10,L2A15E
+        BRCLR   >FuelSysFlags1,Z,#$10,L2A15E             ; bit 4: lean condition counted in the current window, bank 1
         ADDB    >FuelSysLeanHyst
 L2A15E:
         STAB    <Scratch2,Z
         CMPB    $059F,Z
         BCS     L2A198
-        BRSET   >FuelSysFlags1,Z,#$10,L2A174
-        BSET    >FuelSysFlags1,Z,#$10
+        BRSET   >FuelSysFlags1,Z,#$10,L2A174             ; bit 4: lean condition counted in the current window, bank 1
+        BSET    >FuelSysFlags1,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L2A174:
         CLR     >FuelSysLeanFaults,Z
@@ -10293,7 +10293,7 @@ L2A18C:
         CMPA    >FuelSysLeanFaultCount
 L2A190:
         BCS     L2A1D6
-        BSET    >FuelSysFlags1,Z,#$20
+        BSET    >FuelSysFlags1,Z,#$20                    ; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 1
         BRA     L2A1D6
 L2A198:
         BRSET   >MonRecordC0,Z,#$80,L2A1C8
@@ -10314,8 +10314,8 @@ L2A1C4:
         ORAA    #$80
         STAA    <MonRecordC0,Z
 L2A1C8:
-        BRCLR   >FuelSysFlags1,Z,#$10,L2A1D6
-        BCLR    >FuelSysFlags1,Z,#$10
+        BRCLR   >FuelSysFlags1,Z,#$10,L2A1D6             ; bit 4: lean condition counted in the current window, bank 1
+        BCLR    >FuelSysFlags1,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L2A1D6:
         RTS
@@ -10325,7 +10325,7 @@ L2A1D6:
 ; Called from: FuelSysLean1Monitor
 ;---------------------------------------------------------------------------------------------------
 FuelSysLean1Done:
-        BCLR    >FuelSysFlags1,Z,#$50
+        BCLR    >FuelSysFlags1,Z,#$50                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 1; bit 4: lean condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
         CLR     >FuelSysCount3,Z
         LDAA    #$80
@@ -10372,16 +10372,16 @@ L2A23A:
         BRSET   >MonStatusFuelSysLean2,Z,#$08,L2A28E
         JSR     FuelSysLean2Adapt
         JSR     FuelSysLean2Check
-        BRCLR   >FuelSysFlags2,Z,#$A0,L2A28E
+        BRCLR   >FuelSysFlags2,Z,#$A0,L2A28E             ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 2
         JSR     FuelSysLean2Done
         BRA     L2A28E
 L2A272:
-        BRCLR   >FuelSysFlags2,Z,#$10,L2A280
-        BCLR    >FuelSysFlags2,Z,#$10
+        BRCLR   >FuelSysFlags2,Z,#$10,L2A280             ; bit 4: lean condition counted in the current window, bank 2
+        BCLR    >FuelSysFlags2,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L2A280:
-        BRCLR   >FuelSysFlags2,Z,#$40,L2A28E
-        BCLR    >FuelSysFlags2,Z,#$40
+        BRCLR   >FuelSysFlags2,Z,#$40,L2A28E             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
+        BCLR    >FuelSysFlags2,Z,#$40                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
         CLR     >FuelSysRichCount2,Z
 L2A28E:
         RTS
@@ -10407,8 +10407,8 @@ FuelSysLean2Adapt:
         CMPA    <PurgeCellTrim3B2,Z
         BLT     L2A2F2
 L2A2C0:
-        BRSET   >FuelSysFlags2,Z,#$40,L2A2CE
-        BSET    >FuelSysFlags2,Z,#$40
+        BRSET   >FuelSysFlags2,Z,#$40,L2A2CE             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
+        BSET    >FuelSysFlags2,Z,#$40                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
         CLR     >FuelSysRichCount2,Z
 L2A2CE:
         CLR     $05AD,Z
@@ -10421,11 +10421,11 @@ L2A2E6:
         CMPA    >FuelSysLeanCount
 L2A2EA:
         BCS     L2A300
-        BSET    >FuelSysFlags2,Z,#$80
+        BSET    >FuelSysFlags2,Z,#$80                    ; bit 7: lean (adaptive at its lower limit) for FuelSysLeanCount passes: lean monitor armed, bank 2
         BRA     L2A300
 L2A2F2:
-        BRCLR   >FuelSysFlags2,Z,#$40,L2A300
-        BCLR    >FuelSysFlags2,Z,#$40
+        BRCLR   >FuelSysFlags2,Z,#$40,L2A300             ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
+        BCLR    >FuelSysFlags2,Z,#$40                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2
         CLR     >FuelSysRichCount2,Z
 L2A300:
         RTS
@@ -10464,14 +10464,14 @@ L2A34E:
         LDAB    >FlexEthanol,Z
         LDX     #FuelSysLimit
         JSR     Lookup3D
-        BRCLR   >FuelSysFlags2,Z,#$10,L2A370
+        BRCLR   >FuelSysFlags2,Z,#$10,L2A370             ; bit 4: lean condition counted in the current window, bank 2
         ADDB    >FuelSysLeanHyst
 L2A370:
         STAB    <Scratch2,Z
         CMPB    $05A0,Z
         BCS     L2A3AA
-        BRSET   >FuelSysFlags2,Z,#$10,L2A386
-        BSET    >FuelSysFlags2,Z,#$10
+        BRSET   >FuelSysFlags2,Z,#$10,L2A386             ; bit 4: lean condition counted in the current window, bank 2
+        BSET    >FuelSysFlags2,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L2A386:
         CLR     $05AD,Z
@@ -10484,7 +10484,7 @@ L2A39E:
         CMPA    >FuelSysLeanFaultCount
 L2A3A2:
         BCS     L2A3E8
-        BSET    >FuelSysFlags2,Z,#$20
+        BSET    >FuelSysFlags2,Z,#$20                    ; bit 5: lean fault count reached (FuelSysLeanFaultCount), bank 2
         BRA     L2A3E8
 L2A3AA:
         BRSET   >MonRecordC4,Z,#$80,L2A3DA
@@ -10505,8 +10505,8 @@ L2A3D6:
         ORAA    #$80
         STAA    <MonRecordC4,Z
 L2A3DA:
-        BRCLR   >FuelSysFlags2,Z,#$10,L2A3E8
-        BCLR    >FuelSysFlags2,Z,#$10
+        BRCLR   >FuelSysFlags2,Z,#$10,L2A3E8             ; bit 4: lean condition counted in the current window, bank 2
+        BCLR    >FuelSysFlags2,Z,#$10                    ; bit 4: lean condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L2A3E8:
         RTS
@@ -10516,7 +10516,7 @@ L2A3E8:
 ; Called from: FuelSysLean2Monitor
 ;---------------------------------------------------------------------------------------------------
 FuelSysLean2Done:
-        BCLR    >FuelSysFlags2,Z,#$50
+        BCLR    >FuelSysFlags2,Z,#$50                    ; bit 6: adaptive at its lower limit (O2AdaptMin) this pass, bank 2; bit 4: lean condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
         CLR     >FuelSysRichCount2,Z
         LDAA    #$80
@@ -10558,16 +10558,16 @@ L2A440:
         BRSET   >MonStatusFuelSysRich1,Z,#$08,L2A494
         JSR     FuelSysRich1Adapt
         JSR     FuelSysRich1Check
-        BRCLR   >FuelSysFlags1,Z,#$0A,L2A494
+        BRCLR   >FuelSysFlags1,Z,#$0A,L2A494             ; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 1
         JSR     FuelSysRich1Done
         BRA     L2A494
 L2A478:
-        BRCLR   >FuelSysFlags1,Z,#$01,L2A486
-        BCLR    >FuelSysFlags1,Z,#$01
+        BRCLR   >FuelSysFlags1,Z,#$01,L2A486             ; bit 0: rich condition counted in the current window, bank 1
+        BCLR    >FuelSysFlags1,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L2A486:
-        BRCLR   >FuelSysFlags1,Z,#$04,L2A494
-        BCLR    >FuelSysFlags1,Z,#$04
+        BRCLR   >FuelSysFlags1,Z,#$04,L2A494             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
+        BCLR    >FuelSysFlags1,Z,#$04                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
         CLR     >FuelSysCount3,Z
 L2A494:
         RTS
@@ -10584,8 +10584,8 @@ FuelSysRich1Adapt:
         LDAA    >ShortTermTrim1,Z
         CMPA    >O2AdaptCellMax
         BNE     L2A4E2
-        BRSET   >FuelSysFlags1,Z,#$04,L2A4BE
-        BSET    >FuelSysFlags1,Z,#$04
+        BRSET   >FuelSysFlags1,Z,#$04,L2A4BE             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
+        BSET    >FuelSysFlags1,Z,#$04                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
         CLR     >FuelSysCount3,Z
 L2A4BE:
         CLR     >FuelSysRichFaults,Z
@@ -10598,11 +10598,11 @@ L2A4D6:
         CMPA    >FuelSysRichCount
 L2A4DA:
         BCS     L2A4F0
-        BSET    >FuelSysFlags1,Z,#$08
+        BSET    >FuelSysFlags1,Z,#$08                    ; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 1
         BRA     L2A4F0
 L2A4E2:
-        BRCLR   >FuelSysFlags1,Z,#$04,L2A4F0
-        BCLR    >FuelSysFlags1,Z,#$04
+        BRCLR   >FuelSysFlags1,Z,#$04,L2A4F0             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
+        BCLR    >FuelSysFlags1,Z,#$04                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1
         CLR     >FuelSysCount3,Z
 L2A4F0:
         RTS
@@ -10629,14 +10629,14 @@ L2A510:
         LDAB    >FlexEthanol,Z
         LDX     #FuelSysLimit2
         JSR     Lookup3D
-        BRCLR   >FuelSysFlags1,Z,#$01,L2A53E
+        BRCLR   >FuelSysFlags1,Z,#$01,L2A53E             ; bit 0: rich condition counted in the current window, bank 1
         SUBB    >FuelSysRichHyst
 L2A53E:
         STAB    <Scratch2,Z
         CMPB    $059F,Z
         BHI     L2A578
-        BRSET   >FuelSysFlags1,Z,#$01,L2A554
-        BSET    >FuelSysFlags1,Z,#$01
+        BRSET   >FuelSysFlags1,Z,#$01,L2A554             ; bit 0: rich condition counted in the current window, bank 1
+        BSET    >FuelSysFlags1,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L2A554:
         CLR     >FuelSysRichFaults,Z
@@ -10649,7 +10649,7 @@ L2A56C:
         CMPA    >FuelSysRichFaultCount
 L2A570:
         BCS     L2A5B6
-        BSET    >FuelSysFlags1,Z,#$02
+        BSET    >FuelSysFlags1,Z,#$02                    ; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 1
         BRA     L2A5B6
 L2A578:
         BRSET   >MonRecordB8,Z,#$80,L2A5A8
@@ -10670,8 +10670,8 @@ L2A5A4:
         ORAA    #$80
         STAA    <MonRecordB8,Z
 L2A5A8:
-        BRCLR   >FuelSysFlags1,Z,#$01,L2A5B6
-        BCLR    >FuelSysFlags1,Z,#$01
+        BRCLR   >FuelSysFlags1,Z,#$01,L2A5B6             ; bit 0: rich condition counted in the current window, bank 1
+        BCLR    >FuelSysFlags1,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
 L2A5B6:
         RTS
@@ -10681,7 +10681,7 @@ L2A5B6:
 ; Called from: FuelSysRich1Monitor
 ;---------------------------------------------------------------------------------------------------
 FuelSysRich1Done:
-        BCLR    >FuelSysFlags1,Z,#$05
+        BCLR    >FuelSysFlags1,Z,#$05                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 1; bit 0: rich condition counted in the current window, bank 1
         CLR     >FuelSysCount1,Z
         CLR     >FuelSysCount3,Z
         LDAA    #$80
@@ -10723,16 +10723,16 @@ L2A60E:
         BRSET   >MonStatusFuelSysRich2,Z,#$08,L2A662
         JSR     FuelSysRich2Adapt
         JSR     FuelSysRich2Check
-        BRCLR   >FuelSysFlags2,Z,#$0A,L2A662
+        BRCLR   >FuelSysFlags2,Z,#$0A,L2A662             ; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 2
         JSR     FuelSysRich2Done
         BRA     L2A662
 L2A646:
-        BRCLR   >FuelSysFlags2,Z,#$01,L2A654
-        BCLR    >FuelSysFlags2,Z,#$01
+        BRCLR   >FuelSysFlags2,Z,#$01,L2A654             ; bit 0: rich condition counted in the current window, bank 2
+        BCLR    >FuelSysFlags2,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L2A654:
-        BRCLR   >FuelSysFlags2,Z,#$04,L2A662
-        BCLR    >FuelSysFlags2,Z,#$04
+        BRCLR   >FuelSysFlags2,Z,#$04,L2A662             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
+        BCLR    >FuelSysFlags2,Z,#$04                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
         CLR     >FuelSysRichCount2,Z
 L2A662:
         RTS
@@ -10749,8 +10749,8 @@ FuelSysRich2Adapt:
         LDAA    >ShortTermTrim2,Z
         CMPA    >O2AdaptCellMax
         BNE     L2A6B0
-        BRSET   >FuelSysFlags2,Z,#$04,L2A68C
-        BSET    >FuelSysFlags2,Z,#$04
+        BRSET   >FuelSysFlags2,Z,#$04,L2A68C             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
+        BSET    >FuelSysFlags2,Z,#$04                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
         CLR     >FuelSysRichCount2,Z
 L2A68C:
         CLR     $05AB,Z
@@ -10763,11 +10763,11 @@ L2A6A4:
         CMPA    >FuelSysRichCount
 L2A6A8:
         BCS     L2A6BE
-        BSET    >FuelSysFlags2,Z,#$08
+        BSET    >FuelSysFlags2,Z,#$08                    ; bit 3: rich (adaptive at its upper limit) for FuelSysRichCount passes: rich monitor armed, bank 2
         BRA     L2A6BE
 L2A6B0:
-        BRCLR   >FuelSysFlags2,Z,#$04,L2A6BE
-        BCLR    >FuelSysFlags2,Z,#$04
+        BRCLR   >FuelSysFlags2,Z,#$04,L2A6BE             ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
+        BCLR    >FuelSysFlags2,Z,#$04                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2
         CLR     >FuelSysRichCount2,Z
 L2A6BE:
         RTS
@@ -10794,14 +10794,14 @@ L2A6DE:
         LDAB    >FlexEthanol,Z
         LDX     #FuelSysLimit2
         JSR     Lookup3D
-        BRCLR   >FuelSysFlags2,Z,#$01,L2A70C
+        BRCLR   >FuelSysFlags2,Z,#$01,L2A70C             ; bit 0: rich condition counted in the current window, bank 2
         SUBB    >FuelSysRichHyst
 L2A70C:
         STAB    <Scratch2,Z
         CMPB    $05A0,Z
         BHI     L2A746
-        BRSET   >FuelSysFlags2,Z,#$01,L2A722
-        BSET    >FuelSysFlags2,Z,#$01
+        BRSET   >FuelSysFlags2,Z,#$01,L2A722             ; bit 0: rich condition counted in the current window, bank 2
+        BSET    >FuelSysFlags2,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L2A722:
         CLR     $05AB,Z
@@ -10814,7 +10814,7 @@ L2A73A:
         CMPA    >FuelSysRichFaultCount
 L2A73E:
         BCS     L2A784
-        BSET    >FuelSysFlags2,Z,#$02
+        BSET    >FuelSysFlags2,Z,#$02                    ; bit 1: rich fault count reached (FuelSysRichFaultCount), bank 2
         BRA     L2A784
 L2A746:
         BRSET   >MonRecordBC,Z,#$80,L2A776
@@ -10835,8 +10835,8 @@ L2A772:
         ORAA    #$80
         STAA    <MonRecordBC,Z
 L2A776:
-        BRCLR   >FuelSysFlags2,Z,#$01,L2A662
-        BCLR    >FuelSysFlags2,Z,#$01
+        BRCLR   >FuelSysFlags2,Z,#$01,L2A662             ; bit 0: rich condition counted in the current window, bank 2
+        BCLR    >FuelSysFlags2,Z,#$01                    ; bit 0: rich condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
 L2A784:
         RTS
@@ -10846,7 +10846,7 @@ L2A784:
 ; Called from: FuelSysRich2Monitor
 ;---------------------------------------------------------------------------------------------------
 FuelSysRich2Done:
-        BCLR    >FuelSysFlags2,Z,#$05
+        BCLR    >FuelSysFlags2,Z,#$05                    ; bit 2: adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2; bit 0: rich condition counted in the current window, bank 2
         CLR     >FuelSysCount2,Z
         CLR     >FuelSysRichCount2,Z
         LDAA    #$80
@@ -11036,8 +11036,8 @@ L2A93A:
 L2A94E:
         CMPA    >SegmentRpm,Z
         LBCS    L2AA7C
-        BRCLR   >MisfireFlags4,Z,#$40,L2A974
-        BCLR    >MisfireFlags4,Z,#$40
+        BRCLR   >MisfireFlags4,Z,#$40,L2A974             ; bit 6: set by IdleTargetControl at the end of a gear idle step; read by MisfireDeviation
+        BCLR    >MisfireFlags4,Z,#$40                    ; bit 6: set by IdleTargetControl at the end of a gear idle step; read by MisfireDeviation
         LDAB    >MisfireFilterFast
         CMPB    >MisfireFilter,Z
         LBLS    L2AA7C
@@ -11229,7 +11229,7 @@ L2AB5C:
         CMPA    >MisfireCoolantLimit2
         BLS     L2AB98
 L2AB62:
-        BRCLR   >MonEnableFlags2,Z,#$80,L2AB6E
+        BRCLR   >MonEnableFlags2,Z,#$80,L2AB6E           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BCLR    >MisfireFlags2,Z,#$03
         BRA     L2AB94
 L2AB6E:
@@ -11375,7 +11375,7 @@ L2ACB2:
         STE     $05E4,Z
         BSET    >MisfireWork628,Z,#$80
         BRCLR   >ClosedLoopMonFlags,Z,#$40,L2ACC8
-        BSET    >MonEnableFlags2,Z,#$01
+        BSET    >MonEnableFlags2,Z,#$01                  ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 L2ACC8:
         LDE     >MisfireChangeFiltered,Z
         CPE     >MisfireNoiseLevel,Z
@@ -11469,12 +11469,12 @@ L2ADAC:
         JSR     FuelSysConditions2
         BRA     L2ADD0
 L2ADCC:
-        BCLR    >MonEnableFlags2,Z,#$01
+        BCLR    >MonEnableFlags2,Z,#$01                  ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 L2ADD0:
         BRCLR   >ClosedLoopMonFlags,Z,#$40,L2AE1C
         CLRA
         LDAB    #$00
-        BRCLR   >MonEnableFlags2,Z,#$01,L2ADE2
+        BRCLR   >MonEnableFlags2,Z,#$01,L2ADE2           ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
         LDAB    #$01
 L2ADE2:
         LDE     $063F,Z
@@ -11836,7 +11836,7 @@ L2B1DE:
         LDAA    >EventSparkFlags,Z
         ANDA    #$0C
         BNE     L2B206
-        BRSET   >EventSparkFlags,Z,#$10,L2B206
+        BRSET   >EventSparkFlags,Z,#$10,L2B206           ; bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it
         BCLR    >MisfireFlags5,Z,#$08
         BRA     L2B218
 L2B206:
@@ -11904,7 +11904,7 @@ L2B2C0:
         BCLR    >MisfireFlags5,Z,#$40
 L2B2C4:
         BRCLR   >MisfireOptions,#$40,L2B2FE              ; bit 6: selects a branch in MisfireTransient
-        BRSET   >EventSparkFlags,Z,#$10,L2B2D6
+        BRSET   >EventSparkFlags,Z,#$10,L2B2D6           ; bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it
         BRCLR   >EventSparkFlags2,Z,#$04,L2B2FE
 L2B2D6:
         LDAA    >SpeedDampSpark,Z
@@ -13121,16 +13121,16 @@ L2C4C8:
         BRCLR   >Options0330,#$02,L2C5EA                 ; bit 1: battery temperature model variant (BatteryTempModel)
         LDAA    #$98
         BRSET   >SensorFaultFlags,Z,#$01,L2C5E6          ; bit 0: battery temperature sensor fault (P1492 or P1493)
-        BRSET   >ChargeMonFlags,Z,#$02,L2C5AA
+        BRSET   >ChargeMonFlags,Z,#$02,L2C5AA            ; bit 1: battery temperature model started (BatteryTempModel)
         BRSET   >BusMsgFlags,Z,#$01,L2C500
         LDAA    >BattTempModelValue,Z
         LDAB    >Count3s,Z
         CMPB    #$38
         LBCS    L2C5EA
-        BSET    >ChargeMonFlags,Z,#$02
+        BSET    >ChargeMonFlags,Z,#$02                   ; bit 1: battery temperature model started (BatteryTempModel)
         LBRA    L2C5A4
 L2C500:
-        BSET    >ChargeMonFlags,Z,#$02
+        BSET    >ChargeMonFlags,Z,#$02                   ; bit 1: battery temperature model started (BatteryTempModel)
         LDAA    >BusEngineOffTime,Z
         LDX     #BattTempSoakLimit
         JSR     Lookup2D
@@ -13737,7 +13737,7 @@ L2CB56:
         BHI     L2CB60
         BSET    >BusReqFlags,Z,#$04
 L2CB5C:
-        BSET    >SkimFlags2,Z,#$08
+        BSET    >BusTxRequest,Z,#$08                     ; bit 3: send message $91 (BusTxMsg91); set when the MAP-high bus flag changes (MapHighBusFlag)
 L2CB60:
         BRSET   >BusReqFlags,Z,#$01,L2CB6E
         BRCLR   >BusReqFlags,Z,#$02,L2CB7A
@@ -13792,7 +13792,7 @@ L2CBD0:
         BSET    >ThrottleState,Z,#$01                    ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         JMP     L2CBF8
 L2CBE0:
-        BSET    >IdleFlags3,Z,#$04
+        BSET    >IdleFlags3,Z,#$04                       ; bit 2: closed-throttle coast seen (IdleStateUpdate; cleared by IacRollingControl)
 L2CBE4:
         BSET    >IdleFlags,Z,#$80                        ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BCLR    >ThrottleState,Z,#$01                    ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
@@ -14138,7 +14138,7 @@ L2CF5C:
         LDAA    >SpeedCtlSwitchFlags,Z
         EORA    #$10
         STAA    >SpeedCtlSwitchFlags,Z
-        BSET    >SkimFlags2,Z,#$02
+        BSET    >BusTxRequest,Z,#$02                     ; bit 1: speed control switch state changed: send it (speed control switch code)
         BRA     L2CFC0
 L2CF82:
         BSET    >SpeedCtlFlags2,Z,#$10
@@ -14172,7 +14172,7 @@ L2CFC8:
         BCLR    >SpeedCtlSwitchFlags,Z,#$08
         BRA     L2CFF4
 L2CFCE:
-        BSET    >SkimFlags2,Z,#$02
+        BSET    >BusTxRequest,Z,#$02                     ; bit 1: speed control switch state changed: send it (speed control switch code)
         BRA     L2CFF4
 L2CFD4:
         BRCLR   >EquipmentFlags,Z,#$40,L2D03C            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
@@ -14255,7 +14255,7 @@ L2D0B0:
         BRCLR   >GearStateFlags,Z,#$08,L2D0C2
         BRSET   >GearStateFlags,Z,#$40,L2D1A4
 L2D0C2:
-        BRSET   >IdleFlags3,Z,#$08,L2D168
+        BRSET   >IdleFlags3,Z,#$08,L2D168                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BSET    >DriveFlags,Z,#$80                       ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         BRCLR   >SwitchInputs2,Z,#$20,L2D114             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BRSET   >GearStateFlags,Z,#$04,L2D114
@@ -14454,7 +14454,7 @@ L2D2CE:
         STAA    >MapLast,Z
         LDAA    >Throttle,Z
         STAA    >ThrottleLast,Z
-        BCLR    >IdleFlags3,Z,#$01
+        BCLR    >IdleFlags3,Z,#$01                       ; bit 0: throttle closed since the last opening: dashpot started (ThrottleClosedLearn)
         BSET    >ThrottleState,Z,#$80                    ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
 L2D2E2:
         CLR     >ThrottleCloseCount,Z
@@ -14494,8 +14494,8 @@ L2D346:
 L2D352:
         STAA    >DashpotTimer,Z
         BCLR    >ThrottleState,Z,#$80                    ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRSET   >IdleFlags3,Z,#$01,L2D394
-        BSET    >IdleFlags3,Z,#$01
+        BRSET   >IdleFlags3,Z,#$01,L2D394                ; bit 0: throttle closed since the last opening: dashpot started (ThrottleClosedLearn)
+        BSET    >IdleFlags3,Z,#$01                       ; bit 0: throttle closed since the last opening: dashpot started (ThrottleClosedLearn)
         LDAA    >SegmentRpm,Z
         LDAB    >VehicleSpeed,Z
         CMPB    >IdleRollSpeed
@@ -14899,7 +14899,7 @@ L2D73C:
         BCLR    >SparkFlags,Z,#$20                       ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRCLR   >FaultSet04,Z,#$01,L2D76C
         BRCLR   >Options032B,#$40,L2D7D4                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
-        BRCLR   >CrankSyncFlags,Z,#$20,L2D7D4
+        BRCLR   >CrankSyncFlags,Z,#$20,L2D7D4            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
         LDAA    $0C5F,Z
         ANDA    #$0F
         CMPA    #$07
@@ -14913,7 +14913,7 @@ L2D76C:
         BCS     L2D7D4
         BRCLR   >FaultSet01,Z,#$02,L2D78A
         BRCLR   >Options032B,#$40,L2D78A                 ; bit 6: dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code
-        BRCLR   >CrankSyncFlags,Z,#$20,L2D7D4
+        BRCLR   >CrankSyncFlags,Z,#$20,L2D7D4            ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
 L2D78A:
         BCLR    >CamCrankFlags,Z,#$20
         CLR     >CrankSyncFlags,Z
@@ -15107,7 +15107,7 @@ L2D9AC:
         STE     $0A4C,Z
         BITA    #$01
         BEQ     L2D9C0
-        BSET    >SkimFlags2,Z,#$04
+        BSET    >BusTxRequest,Z,#$04                     ; bit 2: switch inputs changed: send them (SwitchInputsRead)
 L2D9C0:
         BRCLR   >SwitchInputs,Z,#$01,L2D9DA              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRCLR   >MainLoopPhaseMask,Z,#$40,L2D9DE         ; bit 6: one pass in 128 (about 1.5 s)
