@@ -1710,52 +1710,45 @@
    "category": "Fuel"
   },
   "1194": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with Count3s; read by Sub_103FA.",
-   "name": "SensorTimeThresh2"
+   "name": "IdleFlareTimeMin",
+   "desc": "Idle flare flags (IdleFlareCheck): time since start (Count3s) at or above this value",
+   "category": "Idle",
+   "size": 1
   },
   "1195": {
-   "size": 1,
+   "name": "IdleFlareCoolantMin",
+   "desc": "Idle flare flags: coolant at or above this value",
    "unit": "tempc",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with CoolantTemp; read by Sub_103FA.",
-   "name": "SensorCoolantThresh3"
+   "category": "Idle",
+   "size": 1
   },
   "1196": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_103FA.",
-   "name": "SensorThresh6"
+   "name": "IdleFlareRpmOn",
+   "desc": "Idle flare flags: rpm above the idle target at or above this value sets $0772,Z bit 7",
+   "unit": "rpm32",
+   "category": "Idle",
+   "size": 1
   },
   "1197": {
-   "size": 1,
+   "name": "IdleFlareRpmOff",
+   "desc": "Idle flare flags: rpm above the target below this value clears bit 7",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_103FA.",
-   "name": "SensorRpmThresh4"
+   "category": "Idle",
+   "size": 1
   },
   "1198": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_103FA.",
-   "name": "SensorThresh7"
+   "name": "IdleFlareAcRpmOn",
+   "desc": "Idle flare flags: rpm above the target at or above this value sets $0772,Z bit 6 (A/C or Options033A bit 7)",
+   "unit": "rpm32",
+   "category": "Idle",
+   "size": 1
   },
   "1199": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_103FA.",
-   "name": "SensorThresh8"
+   "name": "IdleFlareAcRpmOff",
+   "desc": "Idle flare flags: rpm above the target below this value clears bit 6",
+   "unit": "rpm32",
+   "category": "Idle",
+   "size": 1
   },
   "138D": {
    "name": "PurgeCell1",
@@ -1877,12 +1870,10 @@
    "category": "Spark"
   },
   "1D2D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte stored into V0862; read by Sub_11C44.",
-   "name": "FuelV0862Init"
+   "name": "EventSparkPeriodInit",
+   "desc": "Event spark: start value of the period counters $0862/$085D,Z",
+   "category": "Spark",
+   "size": 1
   },
   "1D2E": {
    "name": "EventSparkCountMax",
@@ -2098,12 +2089,10 @@
    "size": 1
   },
   "1EF0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcOffTimeAdder",
+   "desc": "A/C IAC: added to the hold time $034F,Z when the clutch disengages",
    "category": "Idle",
-   "desc": "Byte added to; read by Sub_19808.",
-   "name": "IacAdder2"
+   "size": 1
   },
   "1EF4": {
    "name": "IacKickHold",
@@ -2184,20 +2173,16 @@
    "category": "Idle"
   },
   "2066": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcKickFactor",
+   "desc": "A/C IAC kick (Sub_19808): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3)",
    "category": "Idle",
-   "desc": "Byte multiplied; read by Sub_19808.",
-   "name": "IacFactor1"
+   "size": 1
   },
   "2067": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcOffFactor",
+   "desc": "A/C IAC: factor on the A/C load term when the clutch disengages (target step down and hold time)",
    "category": "Idle",
-   "desc": "Byte multiplied; read by Sub_19808.",
-   "name": "IacFactor2"
+   "size": 1
   },
   "2068": {
    "name": "IacRollCoolantMin",

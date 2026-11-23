@@ -216,10 +216,10 @@ L10252:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10254 ($10254)
+; FanIdleState ($10254)
 ; Called from: FanControl, Sub_10BA2, Sub_11024
 ;---------------------------------------------------------------------------------------------------
-Sub_10254:
+FanIdleState:
         LDAA    $0C,Z
         CMPA    $04B1
         BCC     L102CC
@@ -235,7 +235,7 @@ Sub_10254:
         CMPA    >ThrottleAboveClosed,Z
         BCC     L102CC
 L10282:
-        LDAA    >FanValue2
+        LDAA    >FanIdleSpeedMax
         CMPA    $18,Z
         BCC     L10298
         BRCLR   $04B8,Z,#$08,L102CC
@@ -778,7 +778,7 @@ Sub_10898:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1089A:
-        JSR     Sub_10F82
+        JSR     FanWarmupState
         BRCLR   >Options0334,#$10,L108AA
         JSR     Sub_11024
         BRA     L108BA
@@ -826,7 +826,7 @@ L1091A:
         BCLR    $0528,Z,#$18
         LBRA    L10B20
 L10922:
-        JSR     Sub_10254
+        JSR     FanIdleState
         BRSET   $04B8,Z,#$08,L10AEE
         BRCLR   >ThrottleState,Z,#$80,L10938
         BCLR    $22,Z,#$44
@@ -1063,7 +1063,7 @@ L10C1A:
         LDE     #$0008
         LBRA    L10DFA
 L10C26:
-        JSR     Sub_10254
+        JSR     FanIdleState
         LDE     #$0000
         BRSET   $04B8,Z,#$08,L10DFA
         BRCLR   >ThrottleState,Z,#$80,L10C3E
@@ -1397,10 +1397,10 @@ L10F7E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10F82 ($10F82)
+; FanWarmupState ($10F82)
 ; Called from: Sub_1089A
 ;---------------------------------------------------------------------------------------------------
-Sub_10F82:
+FanWarmupState:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L10FB2
         PSHM    D
         LDAB    $0F,Z
@@ -1509,7 +1509,7 @@ L11046:
 L11088:
         BRSET   $00BD,Z,#$04,L1167C
         JSR     Sub_10F2A
-        JSR     Sub_10254
+        JSR     FanIdleState
         BRCLR   $0023,Z,#$80,L110A4
         LDE     #$6400
         JMP     L111F4

@@ -14660,7 +14660,7 @@ L2D1F4:
 Sub_2D1F6:
         JSR     ProcessThrottle
         JSR     Sub_2D272
-        JSR     Sub_2D428
+        JSR     DetectWot
         JSR     CalcThrottleAboveClosed
         RTS
 
@@ -14860,12 +14860,12 @@ L2D426:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2D428 ($2D428)
+; DetectWot ($2D428)
 ; Called from: Sub_2D1F6
 ;---------------------------------------------------------------------------------------------------
-Sub_2D428:
+DetectWot:
         LDAA    <ThrottleClosed,Z
-        ADDA    >SensorThrottleClosedAdder
+        ADDA    >WotThrottleMargin
         BCS     L2D434
         CMPA    #$D0
         BCS     L2D436
@@ -14873,7 +14873,7 @@ L2D434:
         LDAA    #$D0
 L2D436:
         BRCLR   >ThrottleState,Z,#$40,L2D440
-        SUBA    >SensorOffset1
+        SUBA    >WotThrottleHyst
 L2D440:
         CMPA    >Throttle,Z
         BCC     L2D44C
@@ -14894,20 +14894,20 @@ L2D46E:
         BRA     L2D4A8
 L2D474:
         LDAA    >VehicleSpeed,Z
-        CMPA    >SensorSpeedThresh1
+        CMPA    >WotFlagSpeedMin
         BCS     L2D49C
         LDAA    $081B,Z
-        CMPA    >SensorV081BThresh2
+        CMPA    >WotFlagCountMax
         BCC     L2D4A4
         BRCLR   >MainLoopPhaseMask,Z,#$10,L2D494
         INCA
         STAA    $081B,Z
 L2D494:
-        CMPA    >SensorV081BThresh1
+        CMPA    >WotFlagDelay
         BCS     L2D4A8
         BRA     L2D4A4
 L2D49C:
-        LDAA    >SensorV081BThresh1
+        LDAA    >WotFlagDelay
         STAA    $081B,Z
 L2D4A4:
         BSET    >FuelModeFlags,Z,#$20
@@ -15600,10 +15600,10 @@ L2DB50:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2DB56 ($2DB56)
+; EquipmentDetect ($2DB56)
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
-Sub_2DB56:
+EquipmentDetect:
         BRSET   $0055,Z,#$80,L2DBB0
         BRCLR   >Options0331,#$80,L2DB72
         LDAA    >AcSensorRaw,Z
@@ -15624,7 +15624,7 @@ L2DB8E:
         BRA     L2DBA8
 L2DB96:
         LDAA    $06E2,Z
-        CMPA    >SensorV06E2Thresh
+        CMPA    >AcPresentCount
         BCC     L2DBA8
         INCA
         STAA    $06E2,Z
@@ -15638,7 +15638,7 @@ L2DBB0:
         BRCLR   >Options032D,#$20,L2DBD4
         BRCLR   $0A47,Z,#$10,L2DBD4
         LDAA    $06E3,Z
-        CMPA    >SensorV06E3Thresh
+        CMPA    >SpeedCtlPresentCount
         BCC     L2DBFE
         INCA
         STAA    $06E3,Z
@@ -15666,7 +15666,7 @@ L2DC02:
         BCS     L2DC3E
         BRSET   $0A47,Z,#$40,L2DC3E
         LDAA    $06E4,Z
-        CMPA    >SensorV06E4Thresh
+        CMPA    >PspPresentCount
         BCC     L2DC3A
         INCA
         STAA    $06E4,Z
@@ -16097,7 +16097,7 @@ L2DD72:
 Sub_2F000:
         JSR     Sub_2F010
         BRCLR   $0055,Z,#$10,L2F00E
-        JSR     Sub_2F06A
+        JSR     AcCutControl
 L2F00E:
         RTS
 
@@ -16139,10 +16139,10 @@ L2F068:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2F06A ($2F06A)
+; AcCutControl ($2F06A)
 ; Called from: Sub_2F000
 ;---------------------------------------------------------------------------------------------------
-Sub_2F06A:
+AcCutControl:
         LDAA    $0933,Z
         CMPA    #$0F
         BEQ     L2F076
@@ -16155,11 +16155,11 @@ L2F080:
         BRCLR   >ThrottleState,Z,#$80,L2F196
         BRCLR   $0C31,Z,#$20,L2F196
         LDAA    >CoolantTemp,Z
-        CMPA    >AcCoolantThresh
+        CMPA    >AcCutCoolantMin
         LBCS    L2F196
         BRCLR   $0A46,Z,#$01,L2F0AA
         LDAA    $0B55,Z
-        CMPA    >AcV0B55Thresh
+        CMPA    >AcCutBrakeTimeMin
         LBLS    L2F196
 L2F0AA:
         BRSET   $06B4,Z,#$10,L2F196
@@ -16243,7 +16243,7 @@ L2F196:
         CLR     >AcCutTimer,Z
 L2F1A2:
         LDAA    >MainLoopCounter,Z
-        ANDA    >AcLoopMask1
+        ANDA    >AcCutMapRefMask
         BNE     L2F1B4
         LDAA    >Map,Z
         STAA    >AcCutMapRef,Z

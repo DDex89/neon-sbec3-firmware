@@ -432,7 +432,7 @@ FanStageDelay2:
         dc.b    $E8,$E3,$E3,$DE,$E3,$DE,$E8,$E3,$E3,$DE,$E3,$DE,$58,$48,$00,$00
         dc.b    $FE,$FC,$FA,$F8
 FanIdleRpmMax:
-        dc.b    $4D                                      ; Fan at idle (Sub_3A6C8): engine rpm below this value
+        dc.b    $4D                                      ; Fan at idle (FanIdleState): engine rpm below this value
         dc.b    $F1
 FanIdleBusTempMax:
         dc.b    $7F                                      ; Fan at idle: bus temperature below this value with A/C requested
@@ -440,8 +440,8 @@ FanIdleBusTempMax:
 IacHotCoolantMin:
         dc.b    $6D                                      ; Coolant above which the hot-engine IAC handling of Sub_19808 applies
         dc.b    $05
-FanValue2:
-        dc.b    $18                                      ; Byte used with; read by Sub_3A6C8.
+FanIdleSpeedMax:
+        dc.b    $18                                      ; Fan idle state: vehicle speed at or below this value to enter the state
         dc.b    $28,$38,$A5,$A0,$CD,$07,$FF,$FE,$00,$FF,$08,$1C,$1E,$E3,$E3,$E8
         dc.b    $00,$01,$01,$00
 
@@ -2422,14 +2422,14 @@ RevLimit:
 RevLimitAlt:
         dc.b    $EC                                      ; Rev limit, used while $0C31,Z bit 5 is clear
         dc.b    $EB,$94,$93,$BB,$BA,$02,$FF
-SensorThresh6:
-        dc.b    $30                                      ; Byte compared with; read by Sub_103FA.
-SensorRpmThresh4:
-        dc.b    $25                                      ; Byte compared with EngineRpm; read by Sub_103FA.
-SensorThresh7:
-        dc.b    $30                                      ; Byte compared with; read by Sub_103FA.
-SensorThresh8:
-        dc.b    $23                                      ; Byte compared with; read by Sub_103FA.
+IdleFlareRpmOn:
+        dc.b    $30                                      ; Idle flare flags: rpm above the idle target at or above this value sets $0772,Z bit 7
+IdleFlareRpmOff:
+        dc.b    $25                                      ; Idle flare flags: rpm above the target below this value clears bit 7
+IdleFlareAcRpmOn:
+        dc.b    $30                                      ; Idle flare flags: rpm above the target at or above this value sets $0772,Z bit 6 (A/C or Options033A bit 7)
+IdleFlareAcRpmOff:
+        dc.b    $23                                      ; Idle flare flags: rpm above the target below this value clears bit 6
         dc.b    $01,$23,$00,$01,$1F,$02,$03,$1B,$01,$01,$16,$03,$02,$11,$02,$01
 PurgeCoolantMin:
         dc.b    $90                                      ; Purge runs at or above this coolant temperature
@@ -2862,8 +2862,8 @@ EventSparkStepUp:
         dc.b    $00                                      ; Event spark: increase of $085E,Z and $0863,Z per step
 EventSparkInit:
         dc.b    $00                                      ; Event spark value at the start of an event
-FuelV0862Init:
-        dc.b    $00                                      ; Byte stored into V0862; read by Sub_11C44.
+EventSparkPeriodInit:
+        dc.b    $00                                      ; Event spark: start value of the period counters $0862/$085D,Z
 EventSparkCountMax:
         dc.b    $06                                      ; Event spark: upper limit of $085E,Z and $0863,Z
         dc.b    $06
@@ -3209,8 +3209,8 @@ AcSparkHoldCount:
 AcSparkHoldCountAcOn:
         dc.b    $00                                      ; As AcSparkHoldCount with the A/C clutch on
         dc.b    $1E,$50
-IacV0D5AInit:
-        dc.b    $0A                                      ; Byte stored into V0D5A; read by Sub_19808.
+IacAcBusDelay:
+        dc.b    $0A                                      ; A/C IAC: delay ($0D5A,Z) after an A/C request on the bus ($09CE,Z bits 6-7)
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1DC3 ($1DC3): 2D table, 1 points, unsigned
@@ -4190,8 +4190,8 @@ IacGearStepCount:
         dc.b    $20,$EF,$20
 IacAcLoadAdder:
         dc.b    $0C                                      ; A/C IAC: addition to the A/C sensor term (without $0D57,Z bit 3)
-IacAdder2:
-        dc.b    $02                                      ; Byte added to; read by Sub_19808.
+IacAcOffTimeAdder:
+        dc.b    $02                                      ; A/C IAC: added to the hold time $034F,Z when the clutch disengages
 IacKickHold:
         dc.b    $50                                      ; A/C and rpm-dip kicks: hold time $035A,Z
 IacAcSensorFilter:
@@ -4294,10 +4294,10 @@ IacCoastThrottleLimit:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
-IacFactor1:
-        dc.b    $9A                                      ; Byte multiplied; read by Sub_19808.
-IacFactor2:
-        dc.b    $1A                                      ; Byte multiplied; read by Sub_19808.
+IacAcKickFactor:
+        dc.b    $9A                                      ; A/C IAC kick (Sub_19808): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3)
+IacAcOffFactor:
+        dc.b    $1A                                      ; A/C IAC: factor on the A/C load term when the clutch disengages (target step down and hold time)
 IacRollCoolantMin:
         dc.b    $A6                                      ; Rolling IAC target: below this coolant the $0335,Z value is used instead
         dc.b    $00
@@ -7121,7 +7121,7 @@ L04E0E:
         BRSET   $0229,Z,#$01,L04E50
         BRCLR   $06D0,Z,#$C0,L04E50
         BSET    $05CC,Z,#$08
-        LDAA    >IacV0D5AInit
+        LDAA    >IacAcBusDelay
         STAA    $06DB,Z
 L04E44:
         TST     $06DB,Z
@@ -7929,7 +7929,7 @@ L057E0:
         BCC     L05810
         LDAB    #$FF
 L05810:
-        LDAA    >IacFactor1
+        LDAA    >IacAcKickFactor
         MUL
         ADCA    #$00
         BRCLR   $05CC,Z,#$08,L05824
@@ -7996,19 +7996,19 @@ L058B2:
         BSET    $0186,Z,#$04
         BSET    $018A,Z,#$02
         LDAA    $FB,Z
-        LDAB    >IacFactor2
+        LDAB    >IacAcOffFactor
         MUL
         ADCA    #$00
         LDAB    #$92
         MUL
         ADCA    #$00
-        ADDA    >IacAdder2
+        ADDA    >IacAcOffTimeAdder
         BCC     L058D8
         LDAA    #$FF
 L058D8:
         STAA    $01C2,Z
         LDAA    $FB,Z
-        LDAB    >IacFactor2
+        LDAB    >IacAcOffFactor
         NEGB
         MUL
         ADCA    #$00
@@ -10658,7 +10658,7 @@ L07510:
         JSR     Sub_0CFB4
         JSR     Sub_133F0
         JSR     Sub_07F22
-        JSR     Sub_08270
+        JSR     IdleFlareCheck
         JSR     Sub_088DC
         JSR     Sub_1494A
         JSR     Sub_1CEEA
@@ -11824,10 +11824,10 @@ L0826E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_08270 ($08270)
+; IdleFlareCheck ($08270)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_08270:
+IdleFlareCheck:
         BRCLR   >ThrottleState,Z,#$80,L0827A
         BSET    $0428,Z,#$08
 L0827A:
@@ -11852,12 +11852,12 @@ L08286:
         CLRB
 L082B8:
         BRCLR   $0428,Z,#$80,L082CA
-        CMPB    >SensorRpmThresh4
+        CMPB    >IdleFlareRpmOff
         BCC     L082D4
         BCLR    $0428,Z,#$80
         BRA     L082D4
 L082CA:
-        CMPB    >SensorThresh6
+        CMPB    >IdleFlareRpmOn
         BCS     L082D4
         BSET    $0428,Z,#$80
 L082D4:
@@ -11866,7 +11866,7 @@ L082D4:
         BNE     L082E0
         BCLR    $0428,Z,#$08
 L082E0:
-        CMPB    >SensorThresh7
+        CMPB    >IdleFlareAcRpmOn
         BCS     L082F8
         BRSET   >Options033A,#$80,L082F2
         BRCLR   $0527,Z,#$01,L08314
@@ -11875,7 +11875,7 @@ L082F2:
         BRA     L08318
 L082F8:
         BRCLR   $0428,Z,#$40,L08318
-        CMPB    >SensorThresh8
+        CMPB    >IdleFlareAcRpmOff
         BCS     L08314
         BRSET   >Options033A,#$80,L08318
         BRSET   $0527,Z,#$01,L08318
@@ -13676,7 +13676,7 @@ L09442:
         STAB    $06A2,Z
         LBNE    L093F2
 L09472:
-        LDAB    >FuelV0862Init
+        LDAB    >EventSparkPeriodInit
         STAB    $06A2,Z
         STAB    $069D,Z
         LDAA    >EventSparkCountMax
@@ -15489,10 +15489,10 @@ L0A480:
         dc.b    $03,$9C,$00,$FF,$04,$4C,$00,$FF,$06,$56,$00,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0A4AE ($0A4AE)
+; EventCounters ($0A4AE)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_0A4AE:
+EventCounters:
         TPD
         TBXK
         LDX     #$A482
@@ -23573,7 +23573,7 @@ L0FA14:
 L0FA2C:
         JSR     Sub_0B0AE
         JSR     Sub_0AD1C
-        JSR     Sub_0A4AE
+        JSR     EventCounters
         LDAB    #$01
         JSR     Sub_08DBE
 L0FA3E:

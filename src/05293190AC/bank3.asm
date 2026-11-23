@@ -6360,10 +6360,10 @@ L356AC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_356AE ($356AE)
+; BusDataRequest ($356AE)
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
-Sub_356AE:
+BusDataRequest:
         LDAA    $0932,Z
         BITA    #$30
         BNE     L356DE
@@ -6555,9 +6555,9 @@ L35894:
         LDAB    >O2DownBank2Raw,Z
 L35898:
         LDAA    #$FF
-        CMPB    >SensorThresh21
+        CMPB    >BusDataO2High
         BHI     L358A8
-        CMPB    >SensorThresh22
+        CMPB    >BusDataO2Mid
         BHI     L358AA
         ANDA    #$A0
 L358A8:
@@ -6577,7 +6577,7 @@ L358B6:
         BCC     L358C0
         CLRA
 L358C0:
-        LDAB    >SensorFactor4
+        LDAB    >BusDataThrottleScale
         STAA    $F0,Z
         MUL
         ADCA    $F0,Z
@@ -6594,7 +6594,7 @@ L358D6:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_358DC ($358DC)
-; Called from: Sub_334B0, Sub_356AE, DiagRunRamCode, Sub_365E4, Sub_3669E, Sub_36760, Sub_369E0, RunModeSwitch (13 calls)
+; Called from: Sub_334B0, BusDataRequest, DiagRunRamCode, Sub_365E4, Sub_3669E, Sub_36760, Sub_369E0, RunModeSwitch (13 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_358DC:
         BRCLR   >SCSR,Z,#$01,Sub_358DC
@@ -10770,7 +10770,7 @@ L39E18:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 Sub_39E1A:
-        JSR     Sub_3A742
+        JSR     FanWarmupState
         BRCLR   >Options0334,#$10,L39E2A
         JSR     Sub_3A7A4
         BRA     L39E3A
@@ -10864,7 +10864,7 @@ L39F16:
         LBRA    L3A2B4
 L39F1E:
         BRSET   $086C,Z,#$10,L3A2B4
-        JSR     Sub_3A6C8
+        JSR     FanIdleState
         BRSET   $0B00,Z,#$08,L3A282
         BRCLR   >ThrottleState,Z,#$80,L39F3A
         BCLR    $0C33,Z,#$44
@@ -11229,7 +11229,7 @@ L3A3B0:
         LBRA    L3A598
 L3A3BE:
         BRSET   $086C,Z,#$10,L3A5EE
-        JSR     Sub_3A6C8
+        JSR     FanIdleState
         LDE     #$0000
         BRSET   $0B00,Z,#$08,L3A598
         BRCLR   >ThrottleState,Z,#$80,L3A3DC
@@ -11517,27 +11517,27 @@ L3A6C2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3A6C8 ($3A6C8)
+; FanIdleState ($3A6C8)
 ; Called from: FanControl, Sub_3A336, Sub_3A7A4
 ;---------------------------------------------------------------------------------------------------
-Sub_3A6C8:
+FanIdleState:
         LDAA    >CoolantTemp,Z
         CMPA    >IacHotCoolantMin
         BCC     L3A738
         LDAA    >EngineRpm,Z
         CMPA    >FanIdleRpmMax
         BCC     L3A738
-        LDAA    >FanValue1
+        LDAA    >FanIdleThrottleMax
         BRCLR   $0B00,Z,#$08,L3A6EE
-        SUBA    >FanOffset2
+        SUBA    >FanIdleThrottleHyst
         BCC     L3A6EE
         CLRA
 L3A6EE:
         CMPA    >ThrottleAboveClosed,Z
         BCC     L3A738
-        LDAA    >FanValue2
+        LDAA    >FanIdleSpeedMax
         BRCLR   $0B00,Z,#$08,L3A702
-        LDAA    >FanSpeedThresh3
+        LDAA    >FanIdleSpeedMaxSet
 L3A702:
         CMPA    >VehicleSpeed,Z
         BCS     L3A738
@@ -11548,7 +11548,7 @@ L3A702:
         BGE     L3A738
 L3A71E:
         LDAA    $0B0A,Z
-        CMPA    >FanV0B0AThresh
+        CMPA    >FanIdleTimeMax
         BCC     L3A73C
         BRCLR   >MainLoopPhaseMask,Z,#$20,L3A732
         INC     $0B0A,Z
@@ -11563,19 +11563,19 @@ L3A740:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3A742 ($3A742)
+; FanWarmupState ($3A742)
 ; Called from: Sub_39E1A
 ;---------------------------------------------------------------------------------------------------
-Sub_3A742:
+FanWarmupState:
         LDAA    $0B0B,Z
-        CMPA    >FanV0B0BThresh
+        CMPA    >FanWarmupTimeMax
         BCC     L3A79E
         LDAA    >StartCoolantTemp2,Z
-        CMPA    >FanStartCoolantThresh
+        CMPA    >FanWarmupStartCoolantMax
         BCC     L3A766
         BRSET   $0509,Z,#$80,L3A766
         LDAA    >BatteryTempStart,Z
-        CMPA    >FanBatteryTempStartThresh
+        CMPA    >FanWarmupBattTempMax
         BCS     L3A76E
 L3A766:
         LDAA    #$FF
@@ -11583,7 +11583,7 @@ L3A766:
         BRA     L3A79E
 L3A76E:
         LDAA    >CoolantTemp,Z
-        CMPA    >FanCoolantThresh2
+        CMPA    >FanWarmupCoolantMin
         BCS     L3A79E
         BRCLR   >MainLoopPhaseMask,Z,#$80,L3A782
         INC     $0B0B,Z
@@ -11594,7 +11594,7 @@ L3A782:
         BCC     L3A792
         CLRA
 L3A792:
-        CMPA    >FanSpeedThresh4
+        CMPA    >FanWarmupSpeedMax
         BCC     L3A79E
         BSET    $0B00,Z,#$04
         BRA     L3A7A2
@@ -11622,11 +11622,11 @@ L3A7C6:
         BRA     L3A7EE
 L3A7CC:
         JSR     Sub_3A8D2
-        JSR     Sub_3AA44
+        JSR     FanPwmControl
         JSR     Sub_3ABFE
         JSR     Sub_3AD6E
         JSR     Sub_3ADA8
-        JSR     Sub_3A6C8
+        JSR     FanIdleState
         BRCLR   $0B00,Z,#$08,L3A7EE
         CLR     $0B20,Z
 L3A7EE:
@@ -11867,10 +11867,10 @@ L3AA42:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3AA44 ($3AA44)
+; FanPwmControl ($3AA44)
 ; Called from: Sub_3A7A4
 ;---------------------------------------------------------------------------------------------------
-Sub_3AA44:
+FanPwmControl:
         CLRE
         BRCLR   $0055,Z,#$80,L3ABF8
         BRSET   $050A,Z,#$08,L3ABF8
@@ -11999,7 +11999,7 @@ L3AB6E:
 L3AB88:
         CLRE
         BRSET   $0943,Z,#$01,L3ABC4
-        LDAA    >FanValue8
+        LDAA    >FanPwmStepNoAc
 L3AB94:
         CLRB
         ASRD
@@ -12024,17 +12024,17 @@ L3ABBA:
         LDE     #$6400
 L3ABC4:
         LDAA    >AcOnTime,Z
-        CMPA    >FanAcOnTimeThresh
+        CMPA    >FanPwmAcOnTimeMax
         BHI     L3ABF8
         LDAA    >AcSensorFiltered,Z
-        CMPA    >FanAcSensorFilteredThresh2
+        CMPA    >FanPwmAcSensorMin
         BCS     L3ABF8
         LDAA    $0B12,Z
         BEQ     L3ABF8
         LDAA    >VehicleSpeed,Z
-        CMPA    >FanSpeedThresh5
+        CMPA    >FanPwmAcSpeedMax
         BCC     L3ABF8
-        LDAA    >FanValue7
+        LDAA    >FanPwmAcLimit
         CLRB
         STD     $F2,Z
         CPE     $00F2,Z
@@ -12279,23 +12279,23 @@ L3ADF4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3ADFA ($3ADFA)
+; BusTempFlag ($3ADFA)
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
-Sub_3ADFA:
+BusTempFlag:
         BRCLR   $0056,Z,#$10,L3AE36
         BRSET   $06BE,Z,#$02,L3AE30
         LDAA    >BusTemp,Z
-        CMPA    >SensorBusTempThresh1
+        CMPA    >BusTempLatchOn
         BLT     L3AE14
         BSET    $0C3A,Z,#$01
 L3AE14:
-        CMPA    >SensorBusTempThresh2
+        CMPA    >BusTempLatchOff
         BGT     L3AE1E
         BCLR    $0C3A,Z,#$01
 L3AE1E:
         BRSET   $0C3A,Z,#$01,L3AE30
-        CMPA    >SensorThresh1
+        CMPA    >BusTempFlagMin
         BLT     L3AE36
         BRSET   $0944,Z,#$18,L3AE36
 L3AE30:

@@ -606,22 +606,22 @@ TuneValve2RpmLow:
         dc.b    $FF,$FF                                  ; Second tune valve (TuneValve2Control, TPU output $1066 bit 13): lower switch rpm (word)
 TuneValve2HoldCount:
         dc.b    $00                                      ; Second tune valve: passes ($0C13,Z) the output must hold before it may change again
-SensorV06E3Thresh:
-        dc.b    $80                                      ; Byte compared with V06E3; read by Sub_2DB56.
-SensorV06E2Thresh:
-        dc.b    $80                                      ; Byte compared with V06E2; read by Sub_2DB56.
-SensorV06E4Thresh:
-        dc.b    $80                                      ; Byte compared with V06E4; read by Sub_2DB56.
-AcCoolantThresh:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_2F06A.
+SpeedCtlPresentCount:
+        dc.b    $80                                      ; Equipment detection: counts ($06E3,Z) of the speed control on switch before speed control is marked fitted ($0055,Z bit 6)
+AcPresentCount:
+        dc.b    $80                                      ; Equipment detection (EquipmentDetect): counts ($06E2,Z) of a valid A/C sensor or request before A/C is marked fitted ($0055,Z bit 7)
+PspPresentCount:
+        dc.b    $80                                      ; Equipment detection: counts ($06E4,Z) of the power steering switch input low with the engine running before it is marked fitted ($0055,Z bit 2)
+AcCutCoolantMin:
+        dc.b    $FF                                      ; A/C cut (AcCutControl): coolant at or above this value for the acceleration A/C cut
 AcCutDelay:
         dc.b    $00                                      ; A/C throttle logic: delay $0B53,Z at speed
 AcCutDelayLow:
         dc.b    $00                                      ; A/C throttle logic: delay $0B53,Z below AcCutSpeed
 AcCutMapRise:
         dc.b    $00                                      ; A/C throttle logic: MAP rise (from $0B54,Z) that sets bit 7 below speed AcCutSpeed
-AcLoopMask1:
-        dc.b    $00                                      ; Byte mask for MainLoopCounter; read by Sub_2F06A.
+AcCutMapRefMask:
+        dc.b    $00                                      ; A/C cut: main loop mask that sets how often the reference MAP (AcCutMapRef) is updated
 AcCutSpeed:
         dc.b    $00                                      ; A/C throttle logic: vehicle speed threshold
 AcCutThrottle:
@@ -630,12 +630,12 @@ AcCutMapDrop:
         dc.b    $00                                      ; A/C throttle logic: MAP drop limit above throttle AcCutThrottle
 AcCutMapDropLow:
         dc.b    $00                                      ; A/C throttle logic: MAP drop limit below throttle AcCutThrottle
-AcV0B55Thresh:
-        dc.b    $00                                      ; Byte compared with V0B55; read by Sub_2F06A.
+AcCutBrakeTimeMin:
+        dc.b    $00                                      ; A/C cut: with the brake switch on, time ($0B55,Z) above which the cut is allowed
 
 ;---------------------------------------------------------------------------------------------------
 ; AcThrottleUpper ($0471): 2D table, 1 points, unsigned
-; A/C throttle logic (Sub_2F06A), $0943,Z bit 7 clear: throttle at or above this value against vehicle speed sets bit 7
+; A/C throttle logic (AcCutControl), $0943,Z bit 7 clear: throttle at or above this value against vehicle speed sets bit 7
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: VehicleSpeed
 ; Read at $2F126
@@ -762,32 +762,32 @@ FanStageDelay2:
         dc.b    $0F                                      ; Fan stage change: shorter delay
         dc.b    $EB,$E6,$E6,$E0,$E6,$E0,$EB,$E6,$E6,$E0,$E6,$E0,$64,$5C,$38,$30
         dc.b    $64,$5C,$18,$10
-FanValue1:
-        dc.b    $FE                                      ; Byte used with; read by Sub_3A6C8.
+FanIdleThrottleMax:
+        dc.b    $FE                                      ; Fan idle state (FanIdleState): throttle opening at or below this value (less FanIdleThrottleHyst once set)
 IacHotCoolantMin:
         dc.b    $F1                                      ; Coolant above which the hot-engine IAC handling of Sub_19808 applies
 FanIdleBusTempMax:
         dc.b    $41                                      ; Fan at idle: bus temperature below this value with A/C requested
-FanOffset2:
-        dc.b    $4D                                      ; Byte subtracted from; read by Sub_3A6C8.
+FanIdleThrottleHyst:
+        dc.b    $4D                                      ; Fan idle state: throttle hysteresis while the idle state ($0B00,Z bit 3) is set
 FanIdleRpmMax:
-        dc.b    $6D                                      ; Fan at idle (Sub_3A6C8): engine rpm below this value
-FanV0B0AThresh:
-        dc.b    $05                                      ; Byte compared with V0B0A; read by Sub_3A6C8.
-FanValue2:
-        dc.b    $18                                      ; Byte used with; read by Sub_3A6C8.
-FanSpeedThresh3:
-        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_3A6C8.
-FanV0B0BThresh:
-        dc.b    $FF                                      ; Byte compared with V0B0B; read by Sub_3A742.
-FanStartCoolantThresh:
-        dc.b    $58                                      ; Byte compared with StartCoolantTemp2; read by Sub_3A742.
-FanBatteryTempStartThresh:
-        dc.b    $58                                      ; Byte compared with BatteryTempStart; read by Sub_3A742.
-FanCoolantThresh2:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_3A742.
-FanSpeedThresh4:
-        dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_3A742.
+        dc.b    $6D                                      ; Fan at idle (FanIdleState): engine rpm below this value
+FanIdleTimeMax:
+        dc.b    $05                                      ; Fan idle state: time ($0B0A,Z) the state may last
+FanIdleSpeedMax:
+        dc.b    $18                                      ; Fan idle state: vehicle speed at or below this value to enter the state
+FanIdleSpeedMaxSet:
+        dc.b    $28                                      ; Fan idle state: vehicle speed limit while the state is set
+FanWarmupTimeMax:
+        dc.b    $FF                                      ; Fan warm-up state (FanWarmupState): time ($0B0B,Z) the state may last
+FanWarmupStartCoolantMax:
+        dc.b    $58                                      ; Fan warm-up state: start coolant below this value
+FanWarmupBattTempMax:
+        dc.b    $58                                      ; Fan warm-up state: battery temperature at start below this value
+FanWarmupCoolantMin:
+        dc.b    $FF                                      ; Fan warm-up state: coolant at or above this value for the time count
+FanWarmupSpeedMax:
+        dc.b    $FF                                      ; Fan warm-up state: vehicle speed below this value (5 less once set) sets $0B00,Z bit 2
 
 ;---------------------------------------------------------------------------------------------------
 ; FanAcDelaySpeed ($050D): 2D table, 5 points, unsigned
@@ -842,20 +842,20 @@ FanPwmAcP:
         dc.b    $00                                      ; PWM fan A/C loop: proportional gain
 FanPwmAcD:
         dc.b    $00                                      ; PWM fan A/C loop: rate gain
-FanValue7:
-        dc.b    $00                                      ; Byte used with; read by Sub_3AA44.
-FanAcSensorFilteredThresh2:
-        dc.b    $00                                      ; Byte compared with AcSensorFiltered; read by Sub_3AA44.
-FanAcOnTimeThresh:
-        dc.b    $00                                      ; Byte compared with AcOnTime; read by Sub_3AA44.
-FanSpeedThresh5:
-        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_3AA44.
-FanValue8:
-        dc.b    $00                                      ; Byte used with; read by Sub_3AA44.
+FanPwmAcLimit:
+        dc.b    $00                                      ; Fan PWM with A/C (FanPwmControl): duty limit (high byte) under the conditions below
+FanPwmAcSensorMin:
+        dc.b    $00                                      ; Fan PWM with A/C: filtered A/C sensor at or above this value for the duty limit
+FanPwmAcOnTimeMax:
+        dc.b    $00                                      ; Fan PWM with A/C: A/C on-time at or below this value for the duty limit
+FanPwmAcSpeedMax:
+        dc.b    $00                                      ; Fan PWM with A/C: vehicle speed below this value for the duty limit
+FanPwmStepNoAc:
+        dc.b    $00                                      ; Fan PWM: duty step (/8) used without the A/C pressure control (Options0331 bit 7 clear, A/C on)
 
 ;---------------------------------------------------------------------------------------------------
 ; FanPwmStepAc ($053D): 2D table, 1 points, signed
-; PWM fan (Sub_3AA44): duty change against the A/C sensor PD term ($0B1F,Z) with A/C requested
+; PWM fan (FanPwmControl): duty change against the A/C sensor PD term ($0B1F,Z) with A/C requested
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3AAE8
@@ -888,12 +888,12 @@ FanPwmStepBusTemp:
         dc.b    255,-1                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-SensorBusTempThresh1:
-        dc.b    $7F                                      ; Byte compared with BusTemp; read by Sub_3ADFA.
-SensorBusTempThresh2:
-        dc.b    $7F                                      ; Byte compared with BusTemp; read by Sub_3ADFA.
-SensorThresh1:
-        dc.b    $7F                                      ; Byte compared with; read by Sub_3ADFA.
+BusTempLatchOn:
+        dc.b    $7F                                      ; Bus temperature flag (BusTempFlag): BusTemp at or above this value sets $0C3A,Z bit 0
+BusTempLatchOff:
+        dc.b    $7F                                      ; Bus temperature flag: BusTemp at or below this value clears $0C3A,Z bit 0
+BusTempFlagMin:
+        dc.b    $7F                                      ; Bus temperature flag: without the latch, BusTemp at or above this value (fan off) clears $0942,Z bit 0
 IacLowRpm:
         dc.b    $0F,$A0                                  ; Segment rpm below which the low-rpm branch of Sub_19808 applies
 AcCutRpmLow:
@@ -2455,16 +2455,16 @@ FuelEventRpmAdder:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
-SensorThrottleClosedAdder:
-        dc.b    $7C                                      ; Byte added to ThrottleClosed; read by Sub_2D428.
-SensorOffset1:
-        dc.b    $04                                      ; Byte subtracted from; read by Sub_2D428.
-SensorSpeedThresh1:
-        dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_2D428.
-SensorV081BThresh1:
-        dc.b    $00                                      ; Byte compared with V081B; read by Sub_2D428.
-SensorV081BThresh2:
-        dc.b    $00                                      ; Byte compared with V081B; read by Sub_2D428.
+WotThrottleMargin:
+        dc.b    $7C                                      ; WOT detection (DetectWot): throttle above the closed value plus this margin (at most $D0) sets ThrottleState bit 6
+WotThrottleHyst:
+        dc.b    $04                                      ; WOT detection: throttle hysteresis once WOT is set
+WotFlagSpeedMin:
+        dc.b    $FF                                      ; WOT fuel flag: below this vehicle speed the flag (FuelModeFlags bit 5) is set at once at WOT
+WotFlagDelay:
+        dc.b    $00                                      ; WOT fuel flag: WOT time ($081B,Z) before the flag is set at speed
+WotFlagCountMax:
+        dc.b    $00                                      ; WOT fuel flag: upper limit of the WOT time count
 WotEnrichCoolantMin:
         dc.b    $58                                      ; WOT time enrichment runs at or above this coolant
 WotEnrichRpmMin:
@@ -3799,10 +3799,10 @@ EventFuelDelay:
         dc.b    $08                                      ; Event fuel: delay $04F0,Z for the first set ($1966)
 EventFuelDelay2:
         dc.b    $08                                      ; Event fuel: delay $04F0,Z for the second set ($19A9)
-FuelV04F0Init3:
-        dc.b    $08                                      ; Byte stored into V04F0; read by Sub_11C44.
-FuelV04F0Init4:
-        dc.b    $08                                      ; Byte stored into V04F0; read by Sub_11C44.
+EventFuelDelay3:
+        dc.b    $08                                      ; Event fuel (Sub_11C44): delay $04F0,Z for the third set (misfire event, table $2F87)
+EventFuelDelay4:
+        dc.b    $08                                      ; Event fuel: delay $04F0,Z for the fourth set (idle flare $0772,Z bit 6, table $19EA)
         dc.b    $36,$14
 
 ;---------------------------------------------------------------------------------------------------
@@ -3902,18 +3902,18 @@ RevLimit:
 RevLimitAlt:
         dc.b    $81                                      ; Rev limit, used while $0C31,Z bit 5 is clear
         dc.b    $85,$81,$7E,$20,$1E,$05
-SensorTimeThresh2:
-        dc.b    $02                                      ; Byte compared with Count3s; read by Sub_103FA.
-SensorCoolantThresh3:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_103FA.
-SensorThresh6:
-        dc.b    $3E                                      ; Byte compared with; read by Sub_103FA.
-SensorRpmThresh4:
-        dc.b    $0F                                      ; Byte compared with EngineRpm; read by Sub_103FA.
-SensorThresh7:
-        dc.b    $1E                                      ; Byte compared with; read by Sub_103FA.
-SensorThresh8:
-        dc.b    $11                                      ; Byte compared with; read by Sub_103FA.
+IdleFlareTimeMin:
+        dc.b    $02                                      ; Idle flare flags (IdleFlareCheck): time since start (Count3s) at or above this value
+IdleFlareCoolantMin:
+        dc.b    $FF                                      ; Idle flare flags: coolant at or above this value
+IdleFlareRpmOn:
+        dc.b    $3E                                      ; Idle flare flags: rpm above the idle target at or above this value sets $0772,Z bit 7
+IdleFlareRpmOff:
+        dc.b    $0F                                      ; Idle flare flags: rpm above the target below this value clears bit 7
+IdleFlareAcRpmOn:
+        dc.b    $1E                                      ; Idle flare flags: rpm above the target at or above this value sets $0772,Z bit 6 (A/C or Options033A bit 7)
+IdleFlareAcRpmOff:
+        dc.b    $11                                      ; Idle flare flags: rpm above the target below this value clears bit 6
         dc.b    $05,$23,$00,$01,$1F,$02,$03,$1B,$01,$01,$16,$03,$02,$11,$02,$01
         dc.b    $00,$05,$05,$00,$21,$42,$63,$85,$A6,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -4360,14 +4360,14 @@ SparkCapPeriodOnAlt:
 AfterStartSparkCoolantMin:
         dc.b    $90                                      ; AfterStartSparkCap applies above this coolant temperature
         dc.b    $14,$14
-SensorCoolantThresh6:
-        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_1E4E2.
-SensorRpmThresh5:
-        dc.b    $00                                      ; Byte compared with EngineRpm; read by Sub_1E4E2.
-SensorTimeThresh3:
-        dc.b    $00,$00                                  ; Word compared with Count3s; read by Sub_1E4E2.
-SensorV0D60Thresh:
-        dc.b    $00,$00                                  ; Word compared with V0D60; read by Sub_1E4E2.
+DwellAltCoolantMax:
+        dc.b    $58                                      ; Alternate dwell select (DwellModeSelect, Options033C bits 2-5): coolant at or below this value with no listed faults selects DwellBatteryAlt ($0D5F,Z bit 6)
+DwellAltRpmMax:
+        dc.b    $00                                      ; Alternate dwell select: past those limits, engine rpm at or below this value keeps the alternate dwell
+DwellAltTimeMax:
+        dc.b    $00,$00                                  ; Alternate dwell select: time since start (Count3s, word) at or below which the count test applies
+DwellAltCountMax:
+        dc.b    $00,$00                                  ; Alternate dwell select: count $0D60,Z (word) at or below which the alternate dwell stays
         dc.b    $06,$01
 SparkTrimStep2:
         dc.b    $03                                      ; Step of the spark trim term $0D41,Z per update
@@ -4695,8 +4695,8 @@ EventSparkStepUp:
         dc.b    $04                                      ; Event spark: increase of $085E,Z and $0863,Z per step
 EventSparkInit:
         dc.b    $00                                      ; Event spark value at the start of an event
-FuelV0862Init:
-        dc.b    $00                                      ; Byte stored into V0862; read by Sub_11C44.
+EventSparkPeriodInit:
+        dc.b    $00                                      ; Event spark: start value of the period counters $0862/$085D,Z
 EventSparkCountMax:
         dc.b    $04                                      ; Event spark: upper limit of $085E,Z and $0863,Z
         dc.b    $02,$4D,$01,$03,$00,$00,$04,$00,$00,$00,$00,$00,$00,$01,$4D,$00
@@ -5123,8 +5123,8 @@ Tab3D_2A03:
 AcClutchSparkHold:
         dc.b    $28                                      ; A/C clutch engage: hold time $0D54,Z
         dc.b    $00,$12,$00,$14,$00,$0A,$02,$54,$0A,$64,$96,$40,$70,$DC
-IacV0D5AInit:
-        dc.b    $FF                                      ; Byte stored into V0D5A; read by Sub_19808.
+IacAcBusDelay:
+        dc.b    $FF                                      ; A/C IAC: delay ($0D5A,Z) after an A/C request on the bus ($09CE,Z bits 6-7)
         dc.b    $02,$80,$47,$15,$66,$20,$FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF
         dc.b    $01,$80,$FF,$00,$FF,$FF,$FF,$FF,$01,$80,$FF,$7E,$FF,$FF,$FF,$FF
         dc.b    $02,$80,$59,$FF,$72,$80,$FF,$FF
@@ -6481,8 +6481,8 @@ IacCoastTargetBand:
         dc.b    $0B
 IacAcLoadAdder:
         dc.b    $16                                      ; A/C IAC: addition to the A/C sensor term (without $0D57,Z bit 3)
-IacAdder2:
-        dc.b    $1C                                      ; Byte added to; read by Sub_19808.
+IacAcOffTimeAdder:
+        dc.b    $1C                                      ; A/C IAC: added to the hold time $034F,Z when the clutch disengages
 IacKickHold:
         dc.b    $00                                      ; A/C and rpm-dip kicks: hold time $035A,Z
 IacAcSensorFilter:
@@ -6593,14 +6593,14 @@ IacCoastThrottleLimit:
         dc.b    4,$80                                    ; points, flags
         dc.b    0,0, 4,10, 5,10, 30,24                   ; x, y
 
-IacFactor1:
-        dc.b    $FF                                      ; Byte multiplied; read by Sub_19808.
-IacFactor2:
-        dc.b    $D0                                      ; Byte multiplied; read by Sub_19808.
+IacAcKickFactor:
+        dc.b    $FF                                      ; A/C IAC kick (Sub_19808): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3)
+IacAcOffFactor:
+        dc.b    $D0                                      ; A/C IAC: factor on the A/C load term when the clutch disengages (target step down and hold time)
 IacRollCoolantMin:
         dc.b    $84                                      ; Rolling IAC target: below this coolant the $0335,Z value is used instead
-IacSpeedThresh1:
-        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_19808.
+IacRollSpeedMin:
+        dc.b    $00                                      ; Rolling IAC (Sub_19808): vehicle speed at or above which the rolling IAC position is used
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollSpeedBase ($3234): 2D table, 4 points, unsigned
@@ -9286,12 +9286,12 @@ FlexFaultRpmHigh:
         dc.b    $FF                                      ; Flex sensor fault: rpm at or above which the fault fallback flags ($0770,Z bit 4, $0760,Z) are set
 FlexFaultRpmLow:
         dc.b    $FF                                      ; Flex sensor fault: rpm below which the fallback flag $0770,Z bit 4 is cleared
-FuelThresh7:
-        dc.b    $40                                      ; Byte compared with; read by Sub_0C5B4.
-FuelV0F07Thresh:
-        dc.b    $20                                      ; Byte compared with V0F07; read by Sub_0C5B4.
-FuelV0F08Thresh:
-        dc.b    $30                                      ; Byte compared with V0F08; read by Sub_0C5B4.
+FlexTrimBand:
+        dc.b    $40                                      ; Trim-based ethanol estimate with a flex sensor fault (EventCounters): short-term trim (bank 1 with $075D,Z bit 3, else bank 2) beyond plus or minus this value counts
+FlexTrimUpCount:
+        dc.b    $20                                      ; Trim-based ethanol estimate (flex sensor fault): positive-trim counts ($0F07,Z) per FlexEthanol step up (to at most 170)
+FlexTrimDownCount:
+        dc.b    $30                                      ; Trim-based ethanol estimate (flex sensor fault): negative-trim counts ($0F08,Z) per FlexEthanol step down
 CamCrankOffsetBase:
         dc.b    $40                                      ; Cam/crank relation: base subtracted from the measured offset $068F,Z
         dc.b    $00,$00,$00,$00
@@ -12925,7 +12925,7 @@ L0A87E:
 L0A896:
         JSR     Sub_1424C
         JSR     Sub_1F658
-        JSR     Sub_0C59A
+        JSR     EventCounters
         LDAB    #$01
         JSR     Sub_112B8
 L0A8A8:
@@ -14427,10 +14427,10 @@ L0C568:
         dc.b    $07,$A0,$00,$FF,$0D,$3F,$00,$FF,$0D,$41,$00,$FF,$07,$9E,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0C59A ($0C59A)
+; EventCounters ($0C59A)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_0C59A:
+EventCounters:
         TPD
         TBXK
         LDX     #$C56A
@@ -14521,14 +14521,14 @@ L0C696:
         BPL     L0C6CE
         CLR     $0F07,Z
         NEGA
-        CMPA    >FuelThresh7
+        CMPA    >FlexTrimBand
         BCC     L0C6AA
         CLR     $0F08,Z
         BRA     L0C702
 L0C6AA:
         LDAA    $0F08,Z
         INCA
-        CMPA    >FuelV0F08Thresh
+        CMPA    >FlexTrimDownCount
         BEQ     L0C6BC
         STAA    $0F08,Z
         BRA     L0C702
@@ -14541,14 +14541,14 @@ L0C6BC:
         BRA     L0C702
 L0C6CE:
         CLR     $0F08,Z
-        CMPA    >FuelThresh7
+        CMPA    >FlexTrimBand
         BCC     L0C6DE
         CLR     $0F07,Z
         BRA     L0C702
 L0C6DE:
         LDAA    $0F07,Z
         INCA
-        CMPA    >FuelV0F07Thresh
+        CMPA    >FlexTrimUpCount
         BEQ     L0C6F0
         STAA    $0F07,Z
         BRA     L0C702
@@ -16378,7 +16378,7 @@ L0DD34:
         JSR     Sub_21D6C
         JSR     Sub_2410A
         JSR     Sub_2A804
-        JSR     Sub_3AD60
+        JSR     BusTempFlag
         LBRA    L0DDCE
 L0DD4C:
         JSR     Sub_0EE08
@@ -16414,7 +16414,7 @@ L0DDA6:
         JSR     Sub_39174
         JSR     Sub_39412
         JSR     Sub_11E50
-        JSR     Sub_2DC4A
+        JSR     EquipmentDetect
         JSR     Sub_10314
         JSR     Sub_230BE
         JSR     Sub_12CA0
@@ -16436,7 +16436,7 @@ L0DDCE:
         JSR     CalcSpark
         JSR     Sub_396FC
         JSR     Sub_1D000
-        JSR     Sub_1E55E
+        JSR     DwellModeSelect
         JSR     Sub_10814
         JSR     Sub_10716
         JSR     Sub_10A98
@@ -16445,7 +16445,7 @@ L0DDCE:
         JSR     Sub_3D800
         JSR     Sub_2C790
         JSR     Sub_10036
-        JSR     Sub_10410
+        JSR     IdleFlareCheck
         JSR     Sub_10B16
         JSR     Sub_334B0
         JSR     Sub_21E0A
@@ -16458,7 +16458,7 @@ L0DDCE:
         JSR     Sub_36A34
         JSR     Sub_367B4
         JSR     Sub_36638
-        JSR     Sub_366F2
+        JSR     BusDataRequest
         JSR     Sub_35334
         JSR     LdpPurgeTest
         JSR     Sub_35EDA

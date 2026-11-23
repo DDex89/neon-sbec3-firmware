@@ -151,7 +151,7 @@ Spark corrections besides the base tables:
 | `Sub_1D822`, `Sub_1D8F0` | spark compensation around A/C clutch engagement | `AcEngageSpark*`, `AcClutchSpark*`, `AcSpark*` |
 | `Sub_1D36A` | spark change against the short-term fuel trim deviation | `O2SparkTrim*` |
 | `Sub_1DA26` | addition with EGR active (17x17) | `EgrSpark` |
-| `Sub_1E582` | coil dwell against battery voltage | `DwellBattery*` |
+| `DwellLookup` | coil dwell against battery voltage | `DwellBattery*` |
 
 Knock control learns a noise level per rpm band (`KnockNoise*`), runs above a MAP threshold
 (`KnockMapThreshold*`) and limits the retard by rpm and MAP (`KnockRetardMax*`, `KnockRetardLimit`).
@@ -176,7 +176,7 @@ add or subtract (`LDAA >CoolantTemp,Z` then `CMPA $2853`), or what a loaded valu
 or stored into. That gives the unit (temperature, rpm, kPa, volts) and a structural name: the
 prefix of the tables of the same routine or the subsystem, the variable, and the role (`Thresh` for
 a compare, `Adder`, `Offset`, `Factor`, `Init` for a value stored into RAM, `Value` otherwise),
-numbered when repeated. 1228 constants have hand names from the code read so far (idle, spark,
+numbered when repeated. 1281 constants have hand names from the code read so far (idle, spark,
 knock, EGR, fan, A/C, diagnostics, the fuel constants and limits); the rest keep the structural
 name with * in the catalogue. Word rpm values use the unit `rpmw` (rpm = x / 8).
 
@@ -343,7 +343,7 @@ applies only to the reference image.
   duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
   subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
   them on a running car would settle them.
-- 220 constants have structural names only, and about 270 RAM variables are still known by
+- 167 constants have structural names only, and about 270 RAM variables are still known by
   address.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.

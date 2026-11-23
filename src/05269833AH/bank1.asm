@@ -348,10 +348,10 @@ L103F8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_103FA ($103FA)
+; IdleFlareCheck ($103FA)
 ; Called from: Sub_0DC40
 ;---------------------------------------------------------------------------------------------------
-Sub_103FA:
+IdleFlareCheck:
         BRCLR   >ThrottleState,Z,#$80,L10404
         BSET    $0772,Z,#$08
 L10404:
@@ -365,10 +365,10 @@ L10410:
         BCC     L104A4
         BRCLR   $0774,Z,#$80,L104A4
         LDAA    >Count3s,Z
-        CMPA    >SensorTimeThresh2
+        CMPA    >IdleFlareTimeMin
         BCS     L104A4
         LDAA    >CoolantTemp,Z
-        CMPA    >SensorCoolantThresh3
+        CMPA    >IdleFlareCoolantMin
         BCS     L104A4
         LDAB    >EngineRpm,Z
         SUBB    >IdleTarget,Z
@@ -376,12 +376,12 @@ L10410:
         CLRB
 L1044C:
         BRCLR   $0772,Z,#$80,L1045E
-        CMPB    >SensorRpmThresh4
+        CMPB    >IdleFlareRpmOff
         BCC     L10468
         BCLR    $0772,Z,#$80
         BRA     L10468
 L1045E:
-        CMPB    >SensorThresh6
+        CMPB    >IdleFlareRpmOn
         BCS     L10468
         BSET    $0772,Z,#$80
 L10468:
@@ -390,7 +390,7 @@ L10468:
         BNE     L10474
         BCLR    $0772,Z,#$08
 L10474:
-        CMPB    >SensorThresh7
+        CMPB    >IdleFlareAcRpmOn
         BCS     L1048C
         BRSET   >Options033A,#$80,L10486
         BRCLR   $0943,Z,#$01,L104A8
@@ -399,7 +399,7 @@ L10486:
         BRA     L104AC
 L1048C:
         BRCLR   $0772,Z,#$40,L104AC
-        CMPB    >SensorThresh8
+        CMPB    >IdleFlareAcRpmOff
         BCS     L104A8
         BRSET   >Options033A,#$80,L104AC
         BRSET   $0943,Z,#$01,L104AC
@@ -2498,7 +2498,7 @@ L119B4:
         STAB    $0862,Z
         LBNE    L11964
 L119E4:
-        LDAB    >FuelV0862Init
+        LDAB    >EventSparkPeriodInit
         STAB    $0862,Z
         STAB    $085D,Z
         LDAA    >EventSparkCountMax
@@ -2543,7 +2543,7 @@ L11A70:
         LDY     #$87A7
         LDAB    #$03
         STAB    $07A9,Z
-        LDAB    >FuelV04F0Init3
+        LDAB    >EventFuelDelay3
         STAB    $04F0,Z
         BRA     L11AF6
 L11A96:
@@ -2552,7 +2552,7 @@ L11A96:
         LDY     #$87A8
         LDAB    #$04
         STAB    $07A9,Z
-        LDAB    >FuelV04F0Init4
+        LDAB    >EventFuelDelay4
         STAB    $04F0,Z
         JSR     Sub_11BD4
         BRA     L11B14
@@ -10739,7 +10739,7 @@ L1989E:
         BRSET   $06BE,Z,#$02,L198E0
         BRCLR   $09CE,Z,#$C0,L198E0
         BSET    $0D57,Z,#$08
-        LDAA    >IacV0D5AInit
+        LDAA    >IacAcBusDelay
         STAA    $0D5A,Z
 L198D4:
         TST     $0D5A,Z
@@ -10935,7 +10935,7 @@ L19B24:
         BRSET   $0943,Z,#$01,L19C20
         BRSET   $0C21,Z,#$80,L19C20
         LDAA    >VehicleSpeed,Z
-        CMPA    >IacSpeedThresh1
+        CMPA    >IacRollSpeedMin
         LBCS    L19C20
         LDAA    >CoolantTemp,Z
         CMPA    >IacRollCoolantMin
@@ -11562,7 +11562,7 @@ L1A2CC:
         BCC     L1A2FE
         LDAB    #$FF
 L1A2FE:
-        LDAA    >IacFactor1
+        LDAA    >IacAcKickFactor
         MUL
         ADCA    #$00
         BRCLR   $0D57,Z,#$08,L1A312
@@ -11629,19 +11629,19 @@ L1A3A2:
         BSET    $0314,Z,#$04
         BSET    $0318,Z,#$02
         LDAA    $FB,Z
-        LDAB    >IacFactor2
+        LDAB    >IacAcOffFactor
         MUL
         ADCA    #$00
         LDAB    #$92
         MUL
         ADCA    #$00
-        ADDA    >IacAdder2
+        ADDA    >IacAcOffTimeAdder
         BCC     L1A3C8
         LDAA    #$FF
 L1A3C8:
         STAA    $034F,Z
         LDAA    $FB,Z
-        LDAB    >IacFactor2
+        LDAB    >IacAcOffFactor
         NEGB
         MUL
         ADCA    #$00
@@ -13827,7 +13827,7 @@ Sub_1D000:
         STAA    $87,Z
 L1D00C:
         BRCLR   >Options032B,#$40,L1D016
-        JSR     Sub_1E548
+        JSR     DwellLookup
 L1D016:
         JSR     CalcBaseSpark
         STAA    $0D03,Z
@@ -15813,10 +15813,10 @@ L1E4A2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E4A8 ($1E4A8)
+; DwellModeSelect ($1E4A8)
 ; Called from: Sub_0DC40
 ;---------------------------------------------------------------------------------------------------
-Sub_1E4A8:
+DwellModeSelect:
         BRSET   $0501,Z,#$02,L1E4B4
         BRSET   >Options033C,#$40,L1E4BA
 L1E4B4:
@@ -15850,21 +15850,21 @@ L1E4CC:
         ABA
         BNE     L1E53C
         LDAA    >CoolantTemp,Z
-        CMPA    >SensorCoolantThresh6
+        CMPA    >DwellAltCoolantMax
         BHI     L1E53C
         BRSET   $0D00,Z,#$20,L1E518
         BRSET   >Options033C,#$08,L1E542
         BRA     L1E53C
 L1E518:
         LDD     >Count3s,Z
-        CPD     >SensorTimeThresh3
+        CPD     >DwellAltTimeMax
         BHI     L1E52C
         LDD     $0D60,Z
-        CPD     >SensorV0D60Thresh
+        CPD     >DwellAltCountMax
         BLS     L1E536
 L1E52C:
         LDAA    >EngineRpm,Z
-        CMPA    >SensorRpmThresh5
+        CMPA    >DwellAltRpmMax
         BHI     L1E53C
 L1E536:
         BRSET   >Options033C,#$04,L1E542
@@ -15877,10 +15877,10 @@ L1E546:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E548 ($1E548)
+; DwellLookup ($1E548)
 ; Called from: Sub_1D000
 ;---------------------------------------------------------------------------------------------------
-Sub_1E548:
+DwellLookup:
         LDX     #DwellBattery
         BRCLR   $0D5F,Z,#$40,L1E556
         LDX     #DwellBatteryAlt

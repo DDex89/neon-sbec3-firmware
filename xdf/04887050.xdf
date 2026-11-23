@@ -13101,9 +13101,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x29C" flags="0x0">
-  <title>SensorTimeThresh2</title>
-  <description>Byte compared with Count3s; read by Sub_103FA. $1194</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>IdleFlareTimeMin</title>
+  <description>Idle flare flags (IdleFlareCheck): time since start (Count3s) at or above this value $1194</description>
+  <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1194" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13113,9 +13113,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x29D" flags="0x0">
-  <title>SensorCoolantThresh3</title>
-  <description>Byte compared with CoolantTemp; read by Sub_103FA. $1195</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>IdleFlareCoolantMin</title>
+  <description>Idle flare flags: coolant at or above this value $1195</description>
+  <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1195" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -13125,21 +13125,21 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x29E" flags="0x0">
-  <title>SensorThresh6</title>
-  <description>Byte compared with; read by Sub_103FA. $1196</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>IdleFlareRpmOn</title>
+  <description>Idle flare flags: rpm above the idle target at or above this value sets $0772,Z bit 7 $1196</description>
+  <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1196" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X*32">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x29F" flags="0x0">
-  <title>SensorRpmThresh4</title>
-  <description>Byte compared with EngineRpm; read by Sub_103FA. $1197</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>IdleFlareRpmOff</title>
+  <description>Idle flare flags: rpm above the target below this value clears bit 7 $1197</description>
+  <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1197" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -13149,26 +13149,26 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A0" flags="0x0">
-  <title>SensorThresh7</title>
-  <description>Byte compared with; read by Sub_103FA. $1198</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>IdleFlareAcRpmOn</title>
+  <description>Idle flare flags: rpm above the target at or above this value sets $0772,Z bit 6 (A/C or Options033A bit 7) $1198</description>
+  <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1198" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X*32">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A1" flags="0x0">
-  <title>SensorThresh8</title>
-  <description>Byte compared with; read by Sub_103FA. $1199</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>IdleFlareAcRpmOff</title>
+  <description>Idle flare flags: rpm above the target below this value clears bit 6 $1199</description>
+  <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1199" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X*32">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
@@ -13893,9 +13893,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2DE" flags="0x0">
-  <title>FuelV0862Init</title>
-  <description>Byte stored into V0862; read by Sub_11C44. $1D2D</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>EventSparkPeriodInit</title>
+  <description>Event spark: start value of the period counters $0862/$085D,Z $1D2D</description>
+  <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x1D2D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -13977,8 +13977,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2E5" flags="0x0">
-  <title>IacAdder2</title>
-  <description>Byte added to; read by Sub_19808. $1EF0</description>
+  <title>IacAcOffTimeAdder</title>
+  <description>A/C IAC: added to the hold time $034F,Z when the clutch disengages $1EF0</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1EF0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14181,8 +14181,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F6" flags="0x0">
-  <title>IacFactor1</title>
-  <description>Byte multiplied; read by Sub_19808. $2066</description>
+  <title>IacAcKickFactor</title>
+  <description>A/C IAC kick (Sub_19808): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3) $2066</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x2066" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14193,8 +14193,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F7" flags="0x0">
-  <title>IacFactor2</title>
-  <description>Byte multiplied; read by Sub_19808. $2067</description>
+  <title>IacAcOffFactor</title>
+  <description>A/C IAC: factor on the A/C load term when the clutch disengages (target step down and hold time) $2067</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x2067" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

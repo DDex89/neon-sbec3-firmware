@@ -2,6 +2,7 @@
  "_comment": "Carried over from 05293190AC by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
  "05426": "Isr_PIT",
  "0641C": "CalcDeadTime",
+ "0681C": "IdleFlareCheck",
  "0735A": "ScaleByFraction",
  "078E8": "FinishFuelPulse",
  "07D82": "CalcFuelPulse",

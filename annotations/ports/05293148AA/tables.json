@@ -1715,18 +1715,16 @@
   },
   "04B0": {
    "name": "FanIdleRpmMax",
-   "desc": "Fan at idle (Sub_3A6C8): engine rpm below this value",
+   "desc": "Fan at idle (FanIdleState): engine rpm below this value",
    "unit": "rpm32",
    "category": "Cooling fan",
    "size": 1
   },
   "04B6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanIdleSpeedMax",
+   "desc": "Fan idle state: vehicle speed at or below this value to enter the state",
    "category": "Cooling fan",
-   "desc": "Byte used with; read by Sub_3A6C8.",
-   "name": "FanValue2"
+   "size": 1
   },
   "0506": {
    "name": "IacLowRpm",
@@ -2781,36 +2779,32 @@
    "category": "Fuel"
   },
   "1628": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_103FA.",
-   "name": "SensorThresh6"
+   "name": "IdleFlareRpmOn",
+   "desc": "Idle flare flags: rpm above the idle target at or above this value sets $0772,Z bit 7",
+   "unit": "rpm32",
+   "category": "Idle",
+   "size": 1
   },
   "1629": {
-   "size": 1,
+   "name": "IdleFlareRpmOff",
+   "desc": "Idle flare flags: rpm above the target below this value clears bit 7",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_103FA.",
-   "name": "SensorRpmThresh4"
+   "category": "Idle",
+   "size": 1
   },
   "162A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_103FA.",
-   "name": "SensorThresh7"
+   "name": "IdleFlareAcRpmOn",
+   "desc": "Idle flare flags: rpm above the target at or above this value sets $0772,Z bit 6 (A/C or Options033A bit 7)",
+   "unit": "rpm32",
+   "category": "Idle",
+   "size": 1
   },
   "162B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_103FA.",
-   "name": "SensorThresh8"
+   "name": "IdleFlareAcRpmOff",
+   "desc": "Idle flare flags: rpm above the target below this value clears bit 6",
+   "unit": "rpm32",
+   "category": "Idle",
+   "size": 1
   },
   "163C": {
    "name": "PurgeCoolantMin",
@@ -3039,12 +3033,10 @@
    "category": "Spark"
   },
   "1BDE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte stored into V0862; read by Sub_11C44.",
-   "name": "FuelV0862Init"
+   "name": "EventSparkPeriodInit",
+   "desc": "Event spark: start value of the period counters $0862/$085D,Z",
+   "category": "Spark",
+   "size": 1
   },
   "1BDF": {
    "name": "EventSparkCountMax",
@@ -3189,12 +3181,10 @@
    "category": "A/C"
   },
   "1DC2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcBusDelay",
+   "desc": "A/C IAC: delay ($0D5A,Z) after an A/C request on the bus ($09CE,Z bits 6-7)",
    "category": "Idle",
-   "desc": "Byte stored into V0D5A; read by Sub_19808.",
-   "name": "IacV0D5AInit"
+   "size": 1
   },
   "1F54": {
    "name": "KnockCylRetardMaxSteps",
@@ -3443,12 +3433,10 @@
    "size": 1
   },
   "22F8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcOffTimeAdder",
+   "desc": "A/C IAC: added to the hold time $034F,Z when the clutch disengages",
    "category": "Idle",
-   "desc": "Byte added to; read by Sub_19808.",
-   "name": "IacAdder2"
+   "size": 1
   },
   "22F9": {
    "name": "IacKickHold",
@@ -3529,20 +3517,16 @@
    "category": "Idle"
   },
   "2369": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcKickFactor",
+   "desc": "A/C IAC kick (Sub_19808): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3)",
    "category": "Idle",
-   "desc": "Byte multiplied; read by Sub_19808.",
-   "name": "IacFactor1"
+   "size": 1
   },
   "236A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcOffFactor",
+   "desc": "A/C IAC: factor on the A/C load term when the clutch disengages (target step down and hold time)",
    "category": "Idle",
-   "desc": "Byte multiplied; read by Sub_19808.",
-   "name": "IacFactor2"
+   "size": 1
   },
   "236B": {
    "name": "IacRollCoolantMin",

@@ -90,7 +90,7 @@
   "0471": {
    "name": "AcThrottleUpper",
    "category": "A/C",
-   "desc": "A/C throttle logic (Sub_2F06A), $0943,Z bit 7 clear: throttle at or above this value against vehicle speed sets bit 7",
+   "desc": "A/C throttle logic (AcCutControl), $0943,Z bit 7 clear: throttle at or above this value against vehicle speed sets bit 7",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -162,7 +162,7 @@
   "053D": {
    "name": "FanPwmStepAc",
    "category": "Cooling fan",
-   "desc": "PWM fan (Sub_3AA44): duty change against the A/C sensor PD term ($0B1F,Z) with A/C requested",
+   "desc": "PWM fan (FanPwmControl): duty change against the A/C sensor PD term ($0B1F,Z) with A/C requested",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -3687,36 +3687,29 @@
    "size": 1
   },
   "0464": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V06E3; read by Sub_2DB56.",
-   "name": "SensorV06E3Thresh"
+   "name": "SpeedCtlPresentCount",
+   "desc": "Equipment detection: counts ($06E3,Z) of the speed control on switch before speed control is marked fitted ($0055,Z bit 6)",
+   "category": "Speed control",
+   "size": 1
   },
   "0465": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V06E2; read by Sub_2DB56.",
-   "name": "SensorV06E2Thresh"
+   "name": "AcPresentCount",
+   "desc": "Equipment detection (EquipmentDetect): counts ($06E2,Z) of a valid A/C sensor or request before A/C is marked fitted ($0055,Z bit 7)",
+   "category": "A/C",
+   "size": 1
   },
   "0466": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PspPresentCount",
+   "desc": "Equipment detection: counts ($06E4,Z) of the power steering switch input low with the engine running before it is marked fitted ($0055,Z bit 2)",
    "category": "Sensors",
-   "desc": "Byte compared with V06E4; read by Sub_2DB56.",
-   "name": "SensorV06E4Thresh"
+   "size": 1
   },
   "0467": {
-   "size": 1,
+   "name": "AcCutCoolantMin",
+   "desc": "A/C cut (AcCutControl): coolant at or above this value for the acceleration A/C cut",
    "unit": "tempc",
-   "auto": true,
    "category": "A/C",
-   "desc": "Byte compared with CoolantTemp; read by Sub_2F06A.",
-   "name": "AcCoolantThresh"
+   "size": 1
   },
   "0468": {
    "name": "AcCutDelay",
@@ -3738,12 +3731,10 @@
    "category": "A/C"
   },
   "046B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "AcCutMapRefMask",
+   "desc": "A/C cut: main loop mask that sets how often the reference MAP (AcCutMapRef) is updated",
    "category": "A/C",
-   "desc": "Byte mask for MainLoopCounter; read by Sub_2F06A.",
-   "name": "AcLoopMask1"
+   "size": 1
   },
   "046C": {
    "name": "AcCutSpeed",
@@ -3770,12 +3761,10 @@
    "category": "A/C"
   },
   "0470": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "AcCutBrakeTimeMin",
+   "desc": "A/C cut: with the brake switch on, time ($0B55,Z) above which the cut is allowed",
    "category": "A/C",
-   "desc": "Byte compared with V0B55; read by Sub_2F06A.",
-   "name": "AcV0B55Thresh"
+   "size": 1
   },
   "04A1": {
    "name": "BattTempSoakStep",
@@ -3892,12 +3881,10 @@
    "size": 1
   },
   "0500": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanIdleThrottleMax",
+   "desc": "Fan idle state (FanIdleState): throttle opening at or below this value (less FanIdleThrottleHyst once set)",
    "category": "Cooling fan",
-   "desc": "Byte used with; read by Sub_3A6C8.",
-   "name": "FanValue1"
+   "size": 1
   },
   "0501": {
    "name": "IacHotCoolantMin",
@@ -3913,83 +3900,68 @@
    "size": 1
   },
   "0503": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanIdleThrottleHyst",
+   "desc": "Fan idle state: throttle hysteresis while the idle state ($0B00,Z bit 3) is set",
    "category": "Cooling fan",
-   "desc": "Byte subtracted from; read by Sub_3A6C8.",
-   "name": "FanOffset2"
+   "size": 1
   },
   "0504": {
    "name": "FanIdleRpmMax",
-   "desc": "Fan at idle (Sub_3A6C8): engine rpm below this value",
+   "desc": "Fan at idle (FanIdleState): engine rpm below this value",
    "unit": "rpm32",
    "category": "Cooling fan",
    "size": 1
   },
   "0505": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanIdleTimeMax",
+   "desc": "Fan idle state: time ($0B0A,Z) the state may last",
    "category": "Cooling fan",
-   "desc": "Byte compared with V0B0A; read by Sub_3A6C8.",
-   "name": "FanV0B0AThresh"
+   "size": 1
   },
   "0506": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanIdleSpeedMax",
+   "desc": "Fan idle state: vehicle speed at or below this value to enter the state",
    "category": "Cooling fan",
-   "desc": "Byte used with; read by Sub_3A6C8.",
-   "name": "FanValue2"
+   "size": 1
   },
   "0507": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanIdleSpeedMaxSet",
+   "desc": "Fan idle state: vehicle speed limit while the state is set",
    "category": "Cooling fan",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_3A6C8.",
-   "name": "FanSpeedThresh3"
+   "size": 1
   },
   "0508": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanWarmupTimeMax",
+   "desc": "Fan warm-up state (FanWarmupState): time ($0B0B,Z) the state may last",
    "category": "Cooling fan",
-   "desc": "Byte compared with V0B0B; read by Sub_3A742.",
-   "name": "FanV0B0BThresh"
+   "size": 1
   },
   "0509": {
-   "size": 1,
+   "name": "FanWarmupStartCoolantMax",
+   "desc": "Fan warm-up state: start coolant below this value",
    "unit": "tempc",
-   "auto": true,
    "category": "Cooling fan",
-   "desc": "Byte compared with StartCoolantTemp2; read by Sub_3A742.",
-   "name": "FanStartCoolantThresh"
+   "size": 1
   },
   "050A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanWarmupBattTempMax",
+   "desc": "Fan warm-up state: battery temperature at start below this value",
+   "unit": "tempc",
    "category": "Cooling fan",
-   "desc": "Byte compared with BatteryTempStart; read by Sub_3A742.",
-   "name": "FanBatteryTempStartThresh"
+   "size": 1
   },
   "050B": {
-   "size": 1,
+   "name": "FanWarmupCoolantMin",
+   "desc": "Fan warm-up state: coolant at or above this value for the time count",
    "unit": "tempc",
-   "auto": true,
    "category": "Cooling fan",
-   "desc": "Byte compared with CoolantTemp; read by Sub_3A742.",
-   "name": "FanCoolantThresh2"
+   "size": 1
   },
   "050C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanWarmupSpeedMax",
+   "desc": "Fan warm-up state: vehicle speed below this value (5 less once set) sets $0B00,Z bit 2",
    "category": "Cooling fan",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_3A742.",
-   "name": "FanSpeedThresh4"
+   "size": 1
   },
   "051A": {
    "size": 1,
@@ -4083,44 +4055,34 @@
    "size": 1
   },
   "0538": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanPwmAcLimit",
+   "desc": "Fan PWM with A/C (FanPwmControl): duty limit (high byte) under the conditions below",
    "category": "Cooling fan",
-   "desc": "Byte used with; read by Sub_3AA44.",
-   "name": "FanValue7"
+   "size": 1
   },
   "0539": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanPwmAcSensorMin",
+   "desc": "Fan PWM with A/C: filtered A/C sensor at or above this value for the duty limit",
    "category": "Cooling fan",
-   "desc": "Byte compared with AcSensorFiltered; read by Sub_3AA44.",
-   "name": "FanAcSensorFilteredThresh2"
+   "size": 1
   },
   "053A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanPwmAcOnTimeMax",
+   "desc": "Fan PWM with A/C: A/C on-time at or below this value for the duty limit",
    "category": "Cooling fan",
-   "desc": "Byte compared with AcOnTime; read by Sub_3AA44.",
-   "name": "FanAcOnTimeThresh"
+   "size": 1
   },
   "053B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanPwmAcSpeedMax",
+   "desc": "Fan PWM with A/C: vehicle speed below this value for the duty limit",
    "category": "Cooling fan",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_3AA44.",
-   "name": "FanSpeedThresh5"
+   "size": 1
   },
   "053C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FanPwmStepNoAc",
+   "desc": "Fan PWM: duty step (/8) used without the A/C pressure control (Options0331 bit 7 clear, A/C on)",
    "category": "Cooling fan",
-   "desc": "Byte used with; read by Sub_3AA44.",
-   "name": "FanValue8"
+   "size": 1
   },
   "054B": {
    "name": "FanPwmBusTarget",
@@ -4153,28 +4115,22 @@
    "size": 1
   },
   "055F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BusTempLatchOn",
+   "desc": "Bus temperature flag (BusTempFlag): BusTemp at or above this value sets $0C3A,Z bit 0",
    "category": "Sensors",
-   "desc": "Byte compared with BusTemp; read by Sub_3ADFA.",
-   "name": "SensorBusTempThresh1"
+   "size": 1
   },
   "0560": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BusTempLatchOff",
+   "desc": "Bus temperature flag: BusTemp at or below this value clears $0C3A,Z bit 0",
    "category": "Sensors",
-   "desc": "Byte compared with BusTemp; read by Sub_3ADFA.",
-   "name": "SensorBusTempThresh2"
+   "size": 1
   },
   "0561": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BusTempFlagMin",
+   "desc": "Bus temperature flag: without the latch, BusTemp at or above this value (fan off) clears $0942,Z bit 0",
    "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_3ADFA.",
-   "name": "SensorThresh1"
+   "size": 1
   },
   "0562": {
    "name": "IacLowRpm",
@@ -5436,44 +5392,34 @@
    "name": "SensorValue3"
   },
   "1268": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte added to ThrottleClosed; read by Sub_2D428.",
-   "name": "SensorThrottleClosedAdder"
+   "name": "WotThrottleMargin",
+   "desc": "WOT detection (DetectWot): throttle above the closed value plus this margin (at most $D0) sets ThrottleState bit 6",
+   "category": "Fuel",
+   "size": 1
   },
   "1269": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte subtracted from; read by Sub_2D428.",
-   "name": "SensorOffset1"
+   "name": "WotThrottleHyst",
+   "desc": "WOT detection: throttle hysteresis once WOT is set",
+   "category": "Fuel",
+   "size": 1
   },
   "126A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_2D428.",
-   "name": "SensorSpeedThresh1"
+   "name": "WotFlagSpeedMin",
+   "desc": "WOT fuel flag: below this vehicle speed the flag (FuelModeFlags bit 5) is set at once at WOT",
+   "category": "Fuel",
+   "size": 1
   },
   "126B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V081B; read by Sub_2D428.",
-   "name": "SensorV081BThresh1"
+   "name": "WotFlagDelay",
+   "desc": "WOT fuel flag: WOT time ($081B,Z) before the flag is set at speed",
+   "category": "Fuel",
+   "size": 1
   },
   "126C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V081B; read by Sub_2D428.",
-   "name": "SensorV081BThresh2"
+   "name": "WotFlagCountMax",
+   "desc": "WOT fuel flag: upper limit of the WOT time count",
+   "category": "Fuel",
+   "size": 1
   },
   "126D": {
    "name": "WotEnrichCoolantMin",
@@ -6605,20 +6551,16 @@
    "category": "Fuel"
   },
   "1DED": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventFuelDelay3",
+   "desc": "Event fuel (Sub_11C44): delay $04F0,Z for the third set (misfire event, table $2F87)",
    "category": "Fuel",
-   "desc": "Byte stored into V04F0; read by Sub_11C44.",
-   "name": "FuelV04F0Init3"
+   "size": 1
   },
   "1DEE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EventFuelDelay4",
+   "desc": "Event fuel: delay $04F0,Z for the fourth set (idle flare $0772,Z bit 6, table $19EA)",
    "category": "Fuel",
-   "desc": "Byte stored into V04F0; read by Sub_11C44.",
-   "name": "FuelV04F0Init4"
+   "size": 1
   },
   "1E7B": {
    "name": "RevLimit",
@@ -6635,52 +6577,45 @@
    "category": "Fuel"
   },
   "1E84": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with Count3s; read by Sub_103FA.",
-   "name": "SensorTimeThresh2"
+   "name": "IdleFlareTimeMin",
+   "desc": "Idle flare flags (IdleFlareCheck): time since start (Count3s) at or above this value",
+   "category": "Idle",
+   "size": 1
   },
   "1E85": {
-   "size": 1,
+   "name": "IdleFlareCoolantMin",
+   "desc": "Idle flare flags: coolant at or above this value",
    "unit": "tempc",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with CoolantTemp; read by Sub_103FA.",
-   "name": "SensorCoolantThresh3"
+   "category": "Idle",
+   "size": 1
   },
   "1E86": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_103FA.",
-   "name": "SensorThresh6"
+   "name": "IdleFlareRpmOn",
+   "desc": "Idle flare flags: rpm above the idle target at or above this value sets $0772,Z bit 7",
+   "unit": "rpm32",
+   "category": "Idle",
+   "size": 1
   },
   "1E87": {
-   "size": 1,
+   "name": "IdleFlareRpmOff",
+   "desc": "Idle flare flags: rpm above the target below this value clears bit 7",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_103FA.",
-   "name": "SensorRpmThresh4"
+   "category": "Idle",
+   "size": 1
   },
   "1E88": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_103FA.",
-   "name": "SensorThresh7"
+   "name": "IdleFlareAcRpmOn",
+   "desc": "Idle flare flags: rpm above the target at or above this value sets $0772,Z bit 6 (A/C or Options033A bit 7)",
+   "unit": "rpm32",
+   "category": "Idle",
+   "size": 1
   },
   "1E89": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_103FA.",
-   "name": "SensorThresh8"
+   "name": "IdleFlareAcRpmOff",
+   "desc": "Idle flare flags: rpm above the target below this value clears bit 6",
+   "unit": "rpm32",
+   "category": "Idle",
+   "size": 1
   },
   "1EEC": {
    "name": "PurgeCoolantMin",
@@ -7322,36 +7257,30 @@
    "category": "Spark"
   },
   "20C0": {
-   "size": 1,
+   "name": "DwellAltCoolantMax",
+   "desc": "Alternate dwell select (DwellModeSelect, Options033C bits 2-5): coolant at or below this value with no listed faults selects DwellBatteryAlt ($0D5F,Z bit 6)",
    "unit": "tempc",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with CoolantTemp; read by Sub_1E4E2.",
-   "name": "SensorCoolantThresh6"
+   "category": "Spark",
+   "size": 1
   },
   "20C1": {
-   "size": 1,
+   "name": "DwellAltRpmMax",
+   "desc": "Alternate dwell select: past those limits, engine rpm at or below this value keeps the alternate dwell",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_1E4E2.",
-   "name": "SensorRpmThresh5"
+   "category": "Spark",
+   "size": 1
   },
   "20C2": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with Count3s; read by Sub_1E4E2.",
-   "name": "SensorTimeThresh3"
+   "name": "DwellAltTimeMax",
+   "desc": "Alternate dwell select: time since start (Count3s, word) at or below which the count test applies",
+   "category": "Spark",
+   "size": 2
   },
   "20C4": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with V0D60; read by Sub_1E4E2.",
-   "name": "SensorV0D60Thresh"
+   "name": "DwellAltCountMax",
+   "desc": "Alternate dwell select: count $0D60,Z (word) at or below which the alternate dwell stays",
+   "category": "Spark",
+   "size": 2
   },
   "20C8": {
    "name": "SparkTrimStep2",
@@ -7473,12 +7402,10 @@
    "category": "Spark"
   },
   "280B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte stored into V0862; read by Sub_11C44.",
-   "name": "FuelV0862Init"
+   "name": "EventSparkPeriodInit",
+   "desc": "Event spark: start value of the period counters $0862/$085D,Z",
+   "category": "Spark",
+   "size": 1
   },
   "280C": {
    "name": "EventSparkCountMax",
@@ -7747,12 +7674,10 @@
    "category": "A/C"
   },
   "2A35": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcBusDelay",
+   "desc": "A/C IAC: delay ($0D5A,Z) after an A/C request on the bus ($09CE,Z bits 6-7)",
    "category": "Idle",
-   "desc": "Byte stored into V0D5A; read by Sub_19808.",
-   "name": "IacV0D5AInit"
+   "size": 1
   },
   "2CA3": {
    "name": "KnockCylRetardMaxSteps",
@@ -8364,12 +8289,10 @@
    "size": 1
   },
   "31A7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcOffTimeAdder",
+   "desc": "A/C IAC: added to the hold time $034F,Z when the clutch disengages",
    "category": "Idle",
-   "desc": "Byte added to; read by Sub_19808.",
-   "name": "IacAdder2"
+   "size": 1
   },
   "31A8": {
    "name": "IacKickHold",
@@ -8462,20 +8385,16 @@
    "category": "Idle"
   },
   "3230": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcKickFactor",
+   "desc": "A/C IAC kick (Sub_19808): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3)",
    "category": "Idle",
-   "desc": "Byte multiplied; read by Sub_19808.",
-   "name": "IacFactor1"
+   "size": 1
   },
   "3231": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacAcOffFactor",
+   "desc": "A/C IAC: factor on the A/C load term when the clutch disengages (target step down and hold time)",
    "category": "Idle",
-   "desc": "Byte multiplied; read by Sub_19808.",
-   "name": "IacFactor2"
+   "size": 1
   },
   "3232": {
    "name": "IacRollCoolantMin",
@@ -8485,12 +8404,10 @@
    "category": "Idle"
   },
   "3233": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "IacRollSpeedMin",
+   "desc": "Rolling IAC (Sub_19808): vehicle speed at or above which the rolling IAC position is used",
    "category": "Idle",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_19808.",
-   "name": "IacSpeedThresh1"
+   "size": 1
   },
   "3306": {
    "name": "FieldDutyFilter",
@@ -10664,28 +10581,22 @@
    "size": 1
   },
   "5789": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexTrimBand",
+   "desc": "Trim-based ethanol estimate with a flex sensor fault (EventCounters): short-term trim (bank 1 with $075D,Z bit 3, else bank 2) beyond plus or minus this value counts",
    "category": "Fuel",
-   "desc": "Byte compared with; read by Sub_0C5B4.",
-   "name": "FuelThresh7"
+   "size": 1
   },
   "578A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexTrimUpCount",
+   "desc": "Trim-based ethanol estimate (flex sensor fault): positive-trim counts ($0F07,Z) per FlexEthanol step up (to at most 170)",
    "category": "Fuel",
-   "desc": "Byte compared with V0F07; read by Sub_0C5B4.",
-   "name": "FuelV0F07Thresh"
+   "size": 1
   },
   "578B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexTrimDownCount",
+   "desc": "Trim-based ethanol estimate (flex sensor fault): negative-trim counts ($0F08,Z) per FlexEthanol step down",
    "category": "Fuel",
-   "desc": "Byte compared with V0F08; read by Sub_0C5B4.",
-   "name": "FuelV0F08Thresh"
+   "size": 1
   },
   "578C": {
    "name": "CamCrankOffsetBase",
