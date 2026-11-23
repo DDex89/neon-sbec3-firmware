@@ -15044,7 +15044,7 @@ L3DFC8:
 ;---------------------------------------------------------------------------------------------------
 Sub_3DFCA:
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh6
+        CMPA    >FlexSoakCoolantMax
         BCC     L3E024
         LDAB    $80,Z
         BITB    #$38

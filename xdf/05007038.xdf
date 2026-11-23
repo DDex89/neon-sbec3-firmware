@@ -15518,7 +15518,7 @@
  <XDFCONSTANT uniqueid="0x34F" flags="0x0">
   <title>FlexStartValue</title>
   <description>Start value of $07EE,Z (flex start fuel) $1572</description>
-  <CATEGORYMEM index="0" category="3" />
+  <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1572" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -15744,8 +15744,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x362" flags="0x0">
-  <title>FlexLearnCoolantThresh6</title>
-  <description>Byte compared with CoolantTemp; read by Sub_17FC4, Sub_3DFCA. $1755</description>
+  <title>FlexSoakCoolantMax</title>
+  <description>Sub_17FC4: start coolant below this value (and at or above SoakStartCoolantMin) clears $01B8,Z $1755</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1755" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>

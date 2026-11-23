@@ -2059,7 +2059,7 @@ L11542:
         LBEQ    L1172A
         BRSET   $0C50,Z,#$04,L1155A
         BRCLR   >Options033D,#$02,L1155A
-        LDE     >FuelEventValue2
+        LDE     >FuelPulseFixed
 L1155A:
         PSHM    D
         BRCLR   $0774,Z,#$01,L1158C
@@ -8911,7 +8911,7 @@ L17032:
         LDAA    >FlexEthanolStart,Z
         CMPA    $0F44,Z
         BCS     L17042
-        LDAA    >FlexLearnFlexEthanolStartValue
+        LDAA    >FlexEthanolFaultValue
         BRA     L17044
 L17042:
         CLRA
@@ -9081,7 +9081,7 @@ L1723A:
 L17280:
         BRCLR   $01AD,Z,#$20,L172D8
         LDD     >FlexLearnFuelSum,Z
-        CPD     >FlexLearnFuelSumThresh1
+        CPD     >FlexRefuelFuelMin
         BCS     L172B0
         BCLR    $0F3F,Z,#$08
         BSET    $01AD,Z,#$10
@@ -9095,7 +9095,7 @@ L172B0:
         BCLR    $01AD,Z,#$10
 L172B4:
         LDD     >FlexLearnFuelSum,Z
-        CPD     >FlexLearnFuelSumThresh2
+        CPD     >FlexRefuelFuelMin2
         BCS     L172C4
         BSET    $01AD,Z,#$08
         BRA     L172C8
@@ -9499,7 +9499,7 @@ L17ABE:
         STAA    $01BA,Z
         LDAA    $01BC,Z
         SUBA    $01BB,Z
-        CMPA    >FlexLearnV01BCThresh
+        CMPA    >FlexLevelDiffMin
         BCS     L17B00
         LDAA    $01BB,Z
         CMPA    >FlexLearnLevelMax
@@ -9552,10 +9552,10 @@ Sub_17B84:
         BRSET   $01AD,Z,#$40,L17BDA
         BSET    $01AD,Z,#$40
         LDAA    $0F40,Z
-        CMPA    >FlexLearnV0F3CThresh
+        CMPA    >FlexColdCountMin
         BCS     L17BD6
         LDAA    >FlexEthanolStart,Z
-        CMPA    >FlexLearnFlexEthanolStartThresh
+        CMPA    >FlexColdEthanolMin
         BCS     L17BD6
         BRSET   $0509,Z,#$80,L17BB2
         LDAA    >BatteryTemp,Z
@@ -9586,13 +9586,13 @@ L17BDA:
         CMPA    >FlexLearnCoolantMin2
         BCS     L17C50
         LDAA    >PurgeRamp,Z
-        CMPA    >FlexLearnPurgeRampThresh
+        CMPA    >FlexLearnPurgeRampMin
         BCC     L17C50
         LDAA    $0F31,Z
         INCA
         BEQ     L17C50
         STAA    $0F31,Z
-        CMPA    >FlexLearnV0F2DThresh
+        CMPA    >FlexLearnPurgeCount
         BCS     L17C50
         LDAA    >FlexLearnTimerStart
         STAA    >FlexLearnTimer,Z
@@ -9615,7 +9615,7 @@ L17C50:
         STAA    >FlexLearnTimer,Z
         INCW    $0F18,Z
         LDD     $0F18,Z
-        CPD     >FlexLearnV0F14Thresh
+        CPD     >FlexLearnTimeMax
         BCC     L17C7A
         BCLR    $0F11,Z,#$80
         BRA     L17CBC
@@ -9631,7 +9631,7 @@ L17C7E:
         BSET    $0F11,Z,#$04
         BRCLR   $0F0F,Z,#$01,L17CB8
         BSET    $0F11,Z,#$08
-        LDAA    >FlexLearnV0F2AInit
+        LDAA    >FlexLearnTimer2Init
         STAA    $0F2E,Z
         BCLR    $0F10,Z,#$10
         BRA     L17CBC
@@ -9678,12 +9678,12 @@ Sub_17CFC:
         BRSET   $071D,Z,#$20,L17D40
         BRCLR   $075D,Z,#$80,L17D40
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh5
+        CMPA    >FlexLearnCoolantMin3
         BCS     L17D40
         BSET    $0F11,Z,#$04
         BRCLR   $0F0F,Z,#$01,L17D40
         BSET    $0F11,Z,#$08
-        LDAA    >FlexLearnV0F2AInit
+        LDAA    >FlexLearnTimer2Init
         STAA    $0F2E,Z
         BCLR    $0F10,Z,#$10
         BRA     L17D48
@@ -9699,7 +9699,7 @@ L17D48:
 ;---------------------------------------------------------------------------------------------------
 Sub_17D4A:
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh5
+        CMPA    >FlexLearnCoolantMin3
         BCC     L17D68
         BSET    $0F11,Z,#$60
         BSET    $0944,Z,#$04
@@ -9708,7 +9708,7 @@ Sub_17D4A:
         LBRA    L17E00
 L17D68:
         LDAA    >PurgeRamp,Z
-        CMPA    >FlexLearnPurgeRampThresh
+        CMPA    >FlexLearnPurgeRampMin
         BCS     L17D88
         CLR     $0F1C,Z
         BSET    $0F12,Z,#$02
@@ -9724,12 +9724,12 @@ L17D88:
         BCLR    $0F11,Z,#$20
 L17DA2:
         BRCLR   $0F11,Z,#$20,L17E4C
-        LDAA    >FlexLearnV0F2AInit
+        LDAA    >FlexLearnTimer2Init
         STAA    $0F2E,Z
 L17DB0:
         BRCLR   $0F11,Z,#$40,L17DD4
         BRCLR   $0312,Z,#$80,L17DC4
-        LDAA    >FlexLearnValue1
+        LDAA    >FlexLearnIacStep
         JSR     Sub_1A538
 L17DC4:
         BCLR    $0F11,Z,#$04
@@ -9739,14 +9739,14 @@ L17DC4:
 L17DD4:
         BSET    $0F10,Z,#$10
         LDAA    $0F1C,Z
-        CMPA    >FlexLearnV0F18Thresh
+        CMPA    >FlexIdleTimer1Max
         BCC     L17DE8
         INC     $0F1C,Z
         BRA     L17E44
 L17DE8:
         BCLR    $0F11,Z,#$04
         LDAA    $0F1D,Z
-        CMPA    >FlexLearnV0F19Thresh
+        CMPA    >FlexIdleTimer3Max
         BCS     L17E00
         BCLR    $0F11,Z,#$30
         CLR     $0F1D,Z
@@ -9764,10 +9764,10 @@ L17E22:
 L17E26:
         INC     $0F1D,Z
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh5
+        CMPA    >FlexLearnCoolantMin3
         BCS     L17E40
         LDAA    >PurgeRamp,Z
-        CMPA    >FlexLearnPurgeRampThresh
+        CMPA    >FlexLearnPurgeRampMin
         LBCS    L17EC2
 L17E40:
         CLR     $0F1D,Z
@@ -9778,7 +9778,7 @@ L17E48:
 L17E4C:
         BRSET   $0F11,Z,#$40,L17E6E
         BRCLR   $0312,Z,#$80,L17E62
-        LDAA    >FlexLearnValue1
+        LDAA    >FlexLearnIacStep
         NEGA
         JSR     Sub_1A538
 L17E62:
@@ -9789,7 +9789,7 @@ L17E6E:
         BSET    $0F11,Z,#$04
         BCLR    $0F10,Z,#$10
         LDAA    $0F1E,Z
-        CMPA    >FlexLearnV0F1AThresh
+        CMPA    >FlexIdleTimer2Max
         BCS     L17E90
         BCLR    $0F11,Z,#$08
         BSET    $0F11,Z,#$20
@@ -9889,10 +9889,10 @@ L17FD6:
         LBRA    L1811E
 L17FDE:
         LDAA    $0F42,Z
-        CMPA    >FlexLearnV0F3EThresh
+        CMPA    >FlexLearnCountMin
         BCS     L1802E
         LDAA    >FuelLevelScaled,Z
-        CMPA    >FlexLearnFuelLevelScaledThresh
+        CMPA    >FlexRefuelLevelMax
         BCC     L1802E
         BSET    $01AD,Z,#$20
         LDAA    >FlexEthanolStart,Z
@@ -9931,7 +9931,7 @@ L1802E:
 L18076:
         BRSET   >Options0333,#$10,L180A0
         BRSET   $01AF,Z,#$08,L180A0
-        LDAA    >FlexLearnFlexEthanolStartValue
+        LDAA    >FlexEthanolFaultValue
         CMPA    >FlexEthanolStart,Z
         BCS     L180A0
         STAA    >FlexEthanolStart,Z
@@ -9953,7 +9953,7 @@ L180AC:
 L180BE:
         BRSET   >Options0333,#$10,L180E8
         BRSET   $01AF,Z,#$08,L180E8
-        LDAA    >FlexLearnFlexEthanolStartValue
+        LDAA    >FlexEthanolFaultValue
         CMPA    >FlexEthanolStart,Z
         BCS     L180E8
         STAA    >FlexEthanolStart,Z
@@ -9975,7 +9975,7 @@ L180FC:
         LDAA    >StartCoolantTemp2,Z
         CMPA    >SoakStartCoolantMin
         BCS     L1811E
-        CMPA    >FlexLearnCoolantThresh6
+        CMPA    >FlexSoakCoolantMax
         BCC     L1811E
         CLR     $01B8,Z
         BCLR    $01AF,Z,#$80
@@ -10135,7 +10135,7 @@ L18250:
 ;---------------------------------------------------------------------------------------------------
 Sub_183C8:
         LDD     >FlexLearnFuelSum,Z
-        CPD     >FlexLearnFuelSumThresh2
+        CPD     >FlexRefuelFuelMin2
         BNE     L183E2
         LDAA    $01BA,Z
         STAA    $01C4,Z
@@ -10147,14 +10147,14 @@ L183E2:
         BCC     L183EE
         CLRD
 L183EE:
-        CPD     >FlexLearnFuelSumThresh4
+        CPD     >FlexLearnFuelWindow
         LBCS    L1879E
         LDD     >FlexLearnFuelSum,Z
         STD     $01A9,Z
         BRSET   $0F12,Z,#$20,L1879E
         BSET    $0F12,Z,#$20
         LDD     >FlexLearnFuelSum,Z
-        SUBD    >FlexLearnFuelSumThresh1
+        SUBD    >FlexRefuelFuelMin
         BCC     L18416
         CLRD
         BRA     L18420
@@ -10174,7 +10174,7 @@ L18420:
         JSR     Lookup2D
         STAA    $0F25,Z
         LDD     >FlexLearnFuelSum,Z
-        CPD     >FlexLearnFuelSumThresh2
+        CPD     >FlexRefuelFuelMin2
         BCC     L18486
         LDAB    $01B9,Z
         CLRA
@@ -10212,13 +10212,13 @@ L184B8:
         BRCLR   $0F11,Z,#$40,L184F0
 L184CA:
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh5
+        CMPA    >FlexLearnCoolantMin3
         LBCS    L1878E
         LDAA    >PurgeRamp,Z
-        CMPA    >FlexLearnPurgeRampThresh
+        CMPA    >FlexLearnPurgeRampMin
         LBCS    L1878E
         LDD     $0F39,Z
-        CPD     >FlexLearnV0F35Thresh
+        CPD     >FlexLearnSumMin
         BCC     L1854C
         LBRA    L1878E
 L184F0:
@@ -10236,28 +10236,28 @@ L18504:
         CPD     $0F35,Z
         BCC     L18540
         LDD     $0F35,Z
-        LDE     >FlexLearnFactor2
+        LDE     >FlexRatioFactorLow
         EMUL
         CPE     $0F37,Z
         LBCC    L18690
         LDD     $0F35,Z
-        LDE     >FlexLearnFactor1
+        LDE     >FlexRatioFactorHigh
         EMUL
         CPE     $0F37,Z
         LBCC    L1878E
 L18540:
         LDD     $0F37,Z
-        CPD     >FlexLearnV0F33Thresh
+        CPD     >FlexSumMin2
         LBCS    L1878E
 L1854C:
         BRSET   $0F12,Z,#$01,L1878E
         BSET    $0F3F,Z,#$80
         BRCLR   $01AD,Z,#$80,L18576
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh5
+        CMPA    >FlexLearnCoolantMin3
         BCS     L18576
         LDAA    >PurgeRamp,Z
-        CMPA    >FlexLearnPurgeRampThresh
+        CMPA    >FlexLearnPurgeRampMin
         BCS     L18576
         LDAA    $0F3E,Z
         BRA     L1857A
@@ -10269,10 +10269,10 @@ L1857A:
         LDAA    #$DC
         BRCLR   $01AD,Z,#$80,L185A0
         LDAB    >CoolantTemp,Z
-        CMPB    >FlexLearnCoolantThresh5
+        CMPB    >FlexLearnCoolantMin3
         BCS     L185A0
         LDAB    >PurgeRamp,Z
-        CMPB    >FlexLearnPurgeRampThresh
+        CMPB    >FlexLearnPurgeRampMin
         BCS     L185A0
         STAA    $0F3E,Z
         BRA     L185A4
@@ -10283,21 +10283,21 @@ L185A4:
         LBRA    L1878E
 L185AC:
         LDD     >FlexLearnFuelSum,Z
-        CPD     >FlexLearnFuelSumThresh2
+        CPD     >FlexRefuelFuelMin2
         BCC     L1862E
         BRCLR   $01AD,Z,#$80,L185D6
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh5
+        CMPA    >FlexLearnCoolantMin3
         BCS     L185D6
         LDAA    >PurgeRamp,Z
-        CMPA    >FlexLearnPurgeRampThresh
+        CMPA    >FlexLearnPurgeRampMin
         BCS     L185D6
         LDAA    $0F3E,Z
         BRA     L185DA
 L185D6:
         LDAA    >FlexEthanolPrev,Z
 L185DA:
-        ADDA    >FlexLearnFlexEthanolPrevAdder1
+        ADDA    >FlexEthanolPrevStepUp
         BCS     L185E4
         CMPA    #$DC
         BCS     L185E6
@@ -10305,7 +10305,7 @@ L185E4:
         LDAA    #$DC
 L185E6:
         LDAB    $01C4,Z
-        ADDB    >FlexLearnV01C4Adder
+        ADDB    >FlexEstimateStep
         BCS     L185F4
         CMPB    #$DC
         BCS     L185F6
@@ -10318,10 +10318,10 @@ L185F6:
 L185FC:
         BRCLR   $01AD,Z,#$80,L18622
         LDAB    >CoolantTemp,Z
-        CMPB    >FlexLearnCoolantThresh5
+        CMPB    >FlexLearnCoolantMin3
         BCS     L18622
         LDAB    >PurgeRamp,Z
-        CMPB    >FlexLearnPurgeRampThresh
+        CMPB    >FlexLearnPurgeRampMin
         BCS     L18622
         STAA    $0F3E,Z
         STAA    $0F29,Z
@@ -10333,17 +10333,17 @@ L18622:
 L1862E:
         BRCLR   $01AD,Z,#$80,L1864E
         LDAB    >CoolantTemp,Z
-        CMPB    >FlexLearnCoolantThresh5
+        CMPB    >FlexLearnCoolantMin3
         BCS     L1864E
         LDAB    >PurgeRamp,Z
-        CMPB    >FlexLearnPurgeRampThresh
+        CMPB    >FlexLearnPurgeRampMin
         BCS     L1864E
         LDAA    $0F3E,Z
         BRA     L18652
 L1864E:
         LDAA    >FlexEthanolPrev,Z
 L18652:
-        ADDA    >FlexLearnFlexEthanolPrevAdder2
+        ADDA    >FlexEthanolPrevStepUp2
         BCS     L1865C
         CMPA    #$DC
         BCS     L1865E
@@ -10352,10 +10352,10 @@ L1865C:
 L1865E:
         BRCLR   $01AD,Z,#$80,L18684
         LDAB    >CoolantTemp,Z
-        CMPB    >FlexLearnCoolantThresh5
+        CMPB    >FlexLearnCoolantMin3
         BCS     L18684
         LDAB    >PurgeRamp,Z
-        CMPB    >FlexLearnPurgeRampThresh
+        CMPB    >FlexLearnPurgeRampMin
         BCS     L18684
         STAA    $0F3E,Z
         STAA    $0F29,Z
@@ -10366,21 +10366,21 @@ L18684:
         LBRA    L18772
 L18690:
         LDD     $0F35,Z
-        CPD     >FlexLearnV0F31Thresh
+        CPD     >FlexSumMin1
         LBCS    L1878E
         BRSET   $0F12,Z,#$40,L1878E
         LDAA    $0F27,Z
         INCA
-        CMPA    >FlexLearnV0F23Thresh
+        CMPA    >FlexLearnRetryCount
         BCC     L186B6
         STAA    $0F27,Z
         LBRA    L1878E
 L186B6:
         LDAA    $01BE,Z
-        CMPA    >FlexLearnFlexEthanolPrevThresh
+        CMPA    >FlexEthanolPrevMin
         BCC     L186D8
         LDAA    >FlexEthanolPrev,Z
-        SUBA    >FlexLearnFlexEthanolPrevOffset
+        SUBA    >FlexEthanolPrevStepDown
         BCC     L186CC
         CLRA
 L186CC:
@@ -10390,7 +10390,7 @@ L186CC:
         BRA     L1871C
 L186D8:
         LDAA    $01C5,Z
-        ADDA    >FlexLearnV01C5Adder
+        ADDA    >FlexEstimateStep2
         BCS     L186E6
         CMPA    #$DC
         BCS     L186E8
@@ -10400,16 +10400,16 @@ L186E8:
         CMPA    $01BE,Z
         LBCC    L18772
         LDAA    >FlexEthanolPrev,Z
-        SUBA    >FlexLearnFlexEthanolPrevOffset
+        SUBA    >FlexEthanolPrevStepDown
         BCC     L186FC
         CLRA
 L186FC:
-        CMPA    >FlexLearnFlexEthanolPrevThresh
+        CMPA    >FlexEthanolPrevMin
         BCC     L18706
-        LDAA    >FlexLearnFlexEthanolPrevThresh
+        LDAA    >FlexEthanolPrevMin
 L18706:
         LDAB    $01C5,Z
-        ADDB    >FlexLearnV01C5Adder
+        ADDB    >FlexEstimateStep2
         BCS     L18714
         CMPB    #$DC
         BCS     L18716
@@ -10425,7 +10425,7 @@ L1871C:
         BRA     L18772
 L18726:
         LDAA    $01C4,Z
-        ADDA    >FlexLearnV01C4Adder
+        ADDA    >FlexEstimateStep
         CMPA    >FlexEthanolStart,Z
         BCC     L18738
         LDAA    >FlexEthanolStart,Z
@@ -10438,10 +10438,10 @@ L1873E:
         BRA     L18772
 L18744:
         LDAA    >FlexEthanolPrev,Z
-        CMPA    >FlexLearnFlexEthanolPrevThresh
+        CMPA    >FlexEthanolPrevMin
         BCS     L18772
         LDAA    $01C5,Z
-        ADDA    >FlexLearnV01C5Adder
+        ADDA    >FlexEstimateStep2
         BCS     L1875C
         CMPA    #$DC
         BCS     L1875E
@@ -10450,9 +10450,9 @@ L1875C:
 L1875E:
         CMPA    >FlexEthanolPrev,Z
         BCC     L18772
-        CMPA    >FlexLearnFlexEthanolPrevThresh
+        CMPA    >FlexEthanolPrevMin
         BCC     L1876E
-        LDAA    >FlexLearnFlexEthanolPrevThresh
+        LDAA    >FlexEthanolPrevMin
 L1876E:
         STAA    >FlexEthanolPrev,Z
 L18772:
@@ -10482,7 +10482,7 @@ Sub_187A0:
         LDAA    $01BE,Z
         SUBA    >FlexEthanolStart,Z
         BCS     L187C6
-        CMPA    >FuelV01BEThresh
+        CMPA    >FlexChangeDownMin
         BCS     L187E4
         BSET    $01B0,Z,#$40
         BCLR    $01B0,Z,#$80
@@ -10491,7 +10491,7 @@ L187C6:
         BRCLR   $0F3F,Z,#$80,L187E4
         LDAA    >FlexEthanolStart,Z
         SUBA    $01BE,Z
-        CMPA    >FuelFlexEthanolStartThresh
+        CMPA    >FlexChangeUpMin
         BCS     L187E4
         BSET    $01B0,Z,#$80
         BCLR    $01B0,Z,#$40
@@ -10522,9 +10522,9 @@ Sub_187EE:
         XGDE
         STAB    $0F2C,Z
         LDD     $0F2C,Z
-        CPD     >FlexLearnV0F28Thresh
+        CPD     >FlexTimerProductMax
         BCS     L1882C
-        LDD     >FlexLearnV0F28Thresh
+        LDD     >FlexTimerProductMax
 L1882C:
         CPD     #$0080
         BCC     L18836
@@ -10568,10 +10568,10 @@ Sub_1883C:
 L188BE:
         BRSET   $0F3F,Z,#$10,L18A24
         LDAA    $01B7,Z
-        CMPA    >FlexLearnV01B7Thresh
+        CMPA    >FlexLearnCycleMax
         LBHI    L18A64
         LDAA    $0F42,Z
-        CMPA    >FlexLearnV0F3EThresh
+        CMPA    >FlexLearnCountMin
         LBCS    L18A64
         BRSET   >FlexLearnOptions,#$01,L188F2
         LDAA    $01BE,Z
@@ -10605,10 +10605,10 @@ L18910:
         BRSET   $0134,Z,#$20,L18A64
 L18958:
         LDD     >FlexLearnFuelSum,Z
-        CPD     >FlexLearnFuelSumThresh3
+        CPD     >FlexLearnFuelMax
         LBCC    L18A64
         LDAA    >StartCoolantTemp2,Z
-        CMPA    >FlexLearnStartCoolantThresh1
+        CMPA    >FlexLearnStartCoolantMin
         LBCS    L18A64
         LDAA    $0F32,Z
         INCA
@@ -10616,12 +10616,12 @@ L18958:
         LDAA    #$FF
 L1897A:
         STAA    $0F32,Z
-        CMPA    >FlexLearnThresh3
+        CMPA    >FlexDevCount
         LBCS    L18A06
         BRSET   $0F3F,Z,#$20,L189AA
         CLR     $0F32,Z
         LDD     $0F33,Z
-        CPD     >FlexLearnV0F2FThresh
+        CPD     >FlexDevMin
         LBCS    L18A20
         BSET    $0F3F,Z,#$20
         LDD     $0F33,Z
@@ -10632,16 +10632,16 @@ L189AA:
         LDD     $0F47,Z
         SUBD    $0F33,Z
         BCS     L189E8
-        CPD     >FlexLearnV0F43Thresh
+        CPD     >FlexDevChangeMin
         BCS     L189E8
         LDD     $0F33,Z
         TDE
         STD     $0F47,Z
-        CPE     >FlexLearnV0F2FThresh
+        CPE     >FlexDevMin
         BCS     L18A20
 L189CE:
         LDAA    $01C3,Z
-        ADDA    >FlexLearnV01C3Adder
+        ADDA    >FlexEstimateStep3
         BCS     L189DC
         CMPA    #$DC
         BCS     L189E2
@@ -10655,7 +10655,7 @@ L189E8:
         LDD     $0F33,Z
         STD     $0F47,Z
         LDAA    $01C3,Z
-        SUBA    >FlexLearnV01C3Adder
+        SUBA    >FlexEstimateStep3
         BCC     L189FC
         CLRA
 L189FC:
@@ -10666,7 +10666,7 @@ L18A06:
         LDE     $05DA,Z
         LDD     $0F33,Z
         PSHM    D,E
-        LDAA    >FlexLearnValue2
+        LDAA    >FlexLearnFilter
         JSR     Blend16
         AIS     #$04
         STD     $0F33,Z
@@ -10675,17 +10675,17 @@ L18A20:
         BCLR    $0F3F,Z,#$20
 L18A24:
         LDAA    $01C4,Z
-        ADDA    >FlexLearnV01C4Adder
+        ADDA    >FlexEstimateStep
         BCS     L18A32
         CMPA    #$DC
         BCS     L18A34
 L18A32:
         LDAA    #$DC
 L18A34:
-        LDAB    >FlexLearnFlexEthanolStartValue
+        LDAB    >FlexEthanolFaultValue
         CBA
         BCS     L18A40
-        LDAA    >FlexLearnFlexEthanolStartValue
+        LDAA    >FlexEthanolFaultValue
 L18A40:
         LDAB    $01C3,Z
         CBA
@@ -10724,13 +10724,13 @@ Sub_18A66:
 ; Called from: Sub_17CBE
 ;---------------------------------------------------------------------------------------------------
 Sub_18A94:
-        LDAA    >FlexLearnV0F2AInit
+        LDAA    >FlexLearnTimer2Init
         STAA    $0F2E,Z
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh5
+        CMPA    >FlexLearnCoolantMin3
         BCS     L18AF2
         LDAA    >PurgeRamp,Z
-        CMPA    >FlexLearnPurgeRampThresh
+        CMPA    >FlexLearnPurgeRampMin
         BCS     L18AB6
         BSET    $0F12,Z,#$02
         BRA     L18AF2
@@ -10776,7 +10776,7 @@ L18B26:
 ; Called from: Sub_17CBE
 ;---------------------------------------------------------------------------------------------------
 Sub_18B28:
-        LDAA    >FlexLearnV0F2AInit
+        LDAA    >FlexLearnTimer2Init
         STAA    $0F2E,Z
         BCLR    $0F11,Z,#$31
         BCLR    $0F2B,Z,#$03
@@ -10784,10 +10784,10 @@ Sub_18B28:
         BRSET   $071D,Z,#$20,L18BA6
         BRCLR   $075D,Z,#$80,L18BA6
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh5
+        CMPA    >FlexLearnCoolantMin3
         BCS     L18BA6
         LDAA    >PurgeRamp,Z
-        CMPA    >FlexLearnPurgeRampThresh
+        CMPA    >FlexLearnPurgeRampMin
         BCC     L18B86
         BSET    $0F11,Z,#$04
         BRCLR   $0F0F,Z,#$01,L18BA6
@@ -10823,10 +10823,10 @@ L18BAE:
 Sub_18BB0:
         BRCLR   $075D,Z,#$80,L18C02
         LDAA    $0F40,Z
-        CMPA    >FlexLearnV0F3CThresh
+        CMPA    >FlexColdCountMin
         BCS     L18C02
         LDAA    >FlexEthanolStart,Z
-        CMPA    >FlexLearnFlexEthanolStartThresh
+        CMPA    >FlexColdEthanolMin
         BCS     L18C02
         BRSET   $0509,Z,#$80,L18BDA
         LDAA    >BatteryTempStart,Z
@@ -10846,7 +10846,7 @@ L18BF0:
 L18C02:
         BRCLR   $01AD,Z,#$80,L18D46
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh5
+        CMPA    >FlexLearnCoolantMin3
         BCS     L18C26
         BRSET   $0F3F,Z,#$40,L18C3E
         LDAA    >FlexEthanolStart,Z
@@ -10872,12 +10872,12 @@ L18C3E:
         CPX     #$FFFF
         BEQ     L18C78
         LDAA    >PurgeRamp,Z
-        CMPA    >FlexLearnPurgeRampThresh
+        CMPA    >FlexLearnPurgeRampMin
         BCS     L18C78
         BRCLR   $0F0F,Z,#$01,L18C78
         INCW    $0F3C,Z
 L18C78:
-        CPX     >FlexLearnThresh4
+        CPX     >FlexPurgeTimeMin
         LBCS    L18D10
         BRCLR   $0F11,Z,#$08,L18D10
         BRSET   $071D,Z,#$20,L18D10
@@ -10887,7 +10887,7 @@ L18C78:
         INCA
         BEQ     L18D10
         STAA    $0F31,Z
-        CMPA    >FlexLearnV0F2DThresh
+        CMPA    >FlexLearnPurgeCount
         BCS     L18D10
         LDAA    >FlexLearnTimerStart
         STAA    >FlexLearnTimer,Z
@@ -10926,7 +10926,7 @@ L18D10:
         STAA    >FlexLearnTimer,Z
         INCW    $0F18,Z
         LDD     $0F18,Z
-        CPD     >FlexLearnV0F14Thresh
+        CPD     >FlexLearnTimeMax
         BCC     L18D3A
         BCLR    $0F11,Z,#$80
         BRA     L18D46

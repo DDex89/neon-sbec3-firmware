@@ -2745,7 +2745,7 @@
    "name": "FlexStartValue",
    "desc": "Start value of $07EE,Z (flex start fuel)",
    "size": 1,
-   "category": "Startup"
+   "category": "Fuel"
   },
   "1591": {
    "name": "EventFuelMapMin",
@@ -2866,12 +2866,11 @@
    "size": 1
   },
   "1755": {
-   "size": 1,
+   "name": "FlexSoakCoolantMax",
+   "desc": "Sub_17FC4: start coolant below this value (and at or above SoakStartCoolantMin) clears $01B8,Z",
    "unit": "tempc",
-   "auto": true,
    "category": "Fuel",
-   "desc": "Byte compared with CoolantTemp; read by Sub_17FC4, Sub_3DFCA.",
-   "name": "FlexLearnCoolantThresh6"
+   "size": 1
   },
   "1756": {
    "name": "PurgeCellRichMax1",

@@ -18822,8 +18822,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x365" flags="0x0">
-  <title>FuelEventValue2</title>
-  <description>Word used with; read by Sub_1148E. $03FC</description>
+  <title>FuelPulseFixed</title>
+  <description>Fixed injector pulse (word) used with Options033D bit 1 (Sub_1148E) $03FC</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x3FC" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -20839,56 +20839,56 @@
  </XDFCONSTANT>
  <XDFFLAG uniqueid="0x40D" flags="0x0">
   <title>FlexLearnOptions bit $01</title>
-  <description>Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836. $0772 mask $01</description>
-  <CATEGORYMEM index="0" category="4" />
+  <description>Flex learning option byte (Sub_17000): bit 7 clear the start estimate, bit 6 clear $01B8, bit 5 reload FlexLearnTimer, bit 4 clear $01B6, bit 3 reset the cycle counts, bit 2 load FlexEthanolStartInit (also Sub_18836) $0772 mask $01</description>
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x772" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x40E" flags="0x0">
   <title>FlexLearnOptions bit $04</title>
-  <description>Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836. $0772 mask $04</description>
-  <CATEGORYMEM index="0" category="4" />
+  <description>Flex learning option byte (Sub_17000): bit 7 clear the start estimate, bit 6 clear $01B8, bit 5 reload FlexLearnTimer, bit 4 clear $01B6, bit 3 reset the cycle counts, bit 2 load FlexEthanolStartInit (also Sub_18836) $0772 mask $04</description>
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x772" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x40F" flags="0x0">
   <title>FlexLearnOptions bit $08</title>
-  <description>Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836. $0772 mask $08</description>
-  <CATEGORYMEM index="0" category="4" />
+  <description>Flex learning option byte (Sub_17000): bit 7 clear the start estimate, bit 6 clear $01B8, bit 5 reload FlexLearnTimer, bit 4 clear $01B6, bit 3 reset the cycle counts, bit 2 load FlexEthanolStartInit (also Sub_18836) $0772 mask $08</description>
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x772" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x410" flags="0x0">
   <title>FlexLearnOptions bit $10</title>
-  <description>Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836. $0772 mask $10</description>
-  <CATEGORYMEM index="0" category="4" />
+  <description>Flex learning option byte (Sub_17000): bit 7 clear the start estimate, bit 6 clear $01B8, bit 5 reload FlexLearnTimer, bit 4 clear $01B6, bit 3 reset the cycle counts, bit 2 load FlexEthanolStartInit (also Sub_18836) $0772 mask $10</description>
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x772" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x411" flags="0x0">
   <title>FlexLearnOptions bit $20</title>
-  <description>Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836. $0772 mask $20</description>
-  <CATEGORYMEM index="0" category="4" />
+  <description>Flex learning option byte (Sub_17000): bit 7 clear the start estimate, bit 6 clear $01B8, bit 5 reload FlexLearnTimer, bit 4 clear $01B6, bit 3 reset the cycle counts, bit 2 load FlexEthanolStartInit (also Sub_18836) $0772 mask $20</description>
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x772" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x412" flags="0x0">
   <title>FlexLearnOptions bit $40</title>
-  <description>Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836. $0772 mask $40</description>
-  <CATEGORYMEM index="0" category="4" />
+  <description>Flex learning option byte (Sub_17000): bit 7 clear the start estimate, bit 6 clear $01B8, bit 5 reload FlexLearnTimer, bit 4 clear $01B6, bit 3 reset the cycle counts, bit 2 load FlexEthanolStartInit (also Sub_18836) $0772 mask $40</description>
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x772" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x413" flags="0x0">
   <title>FlexLearnOptions bit $80</title>
-  <description>Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836. $0772 mask $80</description>
-  <CATEGORYMEM index="0" category="4" />
+  <description>Flex learning option byte (Sub_17000): bit 7 clear the start estimate, bit 6 clear $01B8, bit 5 reload FlexLearnTimer, bit 4 clear $01B6, bit 3 reset the cycle counts, bit 2 load FlexEthanolStartInit (also Sub_18836) $0772 mask $80</description>
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x772" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFCONSTANT uniqueid="0x414" flags="0x0">
-  <title>FlexLearnFuelSumThresh1</title>
-  <description>Word compared with FlexLearnFuelSum; read by Sub_17000, Sub_183C2. $0773</description>
+  <title>FlexRefuelFuelMin</title>
+  <description>Flex learning after a refuel: fuel used (FlexLearnFuelSum, word) at or above which the learning phase starts ($01AD,Z bit 4; also Sub_183C2) $0773</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x773" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -20899,8 +20899,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x415" flags="0x0">
-  <title>FlexLearnFuelSumThresh2</title>
-  <description>Word compared with FlexLearnFuelSum; read by Sub_17000, Sub_183C2. $0775</description>
+  <title>FlexRefuelFuelMin2</title>
+  <description>Flex learning after a refuel: fuel used at or above which $01AD,Z bit 3 is set (also Sub_183C2) $0775</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x775" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -20913,7 +20913,7 @@
  <XDFCONSTANT uniqueid="0x416" flags="0x0">
   <title>FlexLearnBaseReadyMin</title>
   <description>FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines Sub_2A0F0-Sub_2A6C0) $078C</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x78C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -20935,8 +20935,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x418" flags="0x0">
-  <title>FlexLearnV0F3CThresh</title>
-  <description>Byte compared with V0F3C; read by Sub_17B7E, Sub_18BAA. $079A</description>
+  <title>FlexColdCountMin</title>
+  <description>Flex cold start (Sub_17B7E, Sub_18BAA): count $0F3C,Z at or above this value $079A</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x79A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -20947,8 +20947,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x419" flags="0x0">
-  <title>FlexLearnFlexEthanolStartThresh</title>
-  <description>Byte compared with FlexEthanolStart; read by Sub_17B7E, Sub_18BAA. $079B</description>
+  <title>FlexColdEthanolMin</title>
+  <description>Flex cold start: start estimate at or above this value $079B</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x79B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -20983,8 +20983,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x41C" flags="0x0">
-  <title>FlexLearnValue1</title>
-  <description>Byte used with; read by Sub_17D44. $079E</description>
+  <title>FlexLearnIacStep</title>
+  <description>Flex learning at idle (Sub_17D44): IAC step passed to Sub_1A54A (negated on the way back) $079E</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x79E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -20995,8 +20995,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x41D" flags="0x0">
-  <title>FlexLearnV0F14Thresh</title>
-  <description>Word compared with V0F14; read by Sub_17B7E, Sub_18BAA. $079F</description>
+  <title>FlexLearnTimeMax</title>
+  <description>Flex learning: count $0F14,Z (word) limit $079F</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x79F" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21007,8 +21007,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x41E" flags="0x0">
-  <title>FlexLearnV0F18Thresh</title>
-  <description>Byte compared with V0F18; read by Sub_17D44. $07A3</description>
+  <title>FlexIdleTimer1Max</title>
+  <description>Flex learning at idle: limit of the timer $0F18,Z $07A3</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7A3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21019,8 +21019,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x41F" flags="0x0">
-  <title>FlexLearnV0F1AThresh</title>
-  <description>Byte compared with V0F1A; read by Sub_17D44. $07A4</description>
+  <title>FlexIdleTimer2Max</title>
+  <description>Flex learning at idle: limit of the timer $0F1A,Z $07A4</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7A4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21031,8 +21031,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x420" flags="0x0">
-  <title>FlexLearnV0F19Thresh</title>
-  <description>Byte compared with V0F19; read by Sub_17D44. $07A5</description>
+  <title>FlexIdleTimer3Max</title>
+  <description>Flex learning at idle: limit of the timer $0F19,Z $07A5</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7A5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21043,8 +21043,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x421" flags="0x0">
-  <title>FlexLearnV0F28Thresh</title>
-  <description>Word compared with V0F28; read by Sub_187E8. $07A8</description>
+  <title>FlexTimerProductMax</title>
+  <description>Sub_18836: upper limit (word) of the timer product $0F28,Z $07A8</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7A8" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21079,8 +21079,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x424" flags="0x0">
-  <title>FlexLearnPurgeRampThresh</title>
-  <description>Byte compared with PurgeRamp; read by Sub_17B7E, Sub_17D44, Sub_183C2 +3. $07AE</description>
+  <title>FlexLearnPurgeRampMin</title>
+  <description>Flex learning: purge ramp at or above this value (several routines) $07AE</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7AE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21091,8 +21091,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x425" flags="0x0">
-  <title>FuelFlexEthanolStartThresh</title>
-  <description>Byte compared with FlexEthanolStart; read by Sub_1879A. $07AF</description>
+  <title>FlexChangeUpMin</title>
+  <description>Flex change detect (Sub_1879A): rise of the start estimate over $01BE,Z at or above which $01B0,Z bit 7 is set $07AF</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7AF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21115,8 +21115,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x427" flags="0x0">
-  <title>FuelV01BEThresh</title>
-  <description>Byte compared with V01BE; read by Sub_1879A. $07B1</description>
+  <title>FlexChangeDownMin</title>
+  <description>Flex change detect: fall of the start estimate below $01BE,Z at or above which $01B0,Z bit 6 is set $07B1</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7B1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21127,8 +21127,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x428" flags="0x0">
-  <title>FlexLearnFactor1</title>
-  <description>Word multiplied; read by Sub_183C2. $07B2</description>
+  <title>FlexRatioFactorHigh</title>
+  <description>Flex estimate (Sub_183C2): factor (word) on $0F31,Z compared with $0F33,Z $07B2</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7B2" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21139,8 +21139,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x429" flags="0x0">
-  <title>FlexLearnFactor2</title>
-  <description>Word multiplied; read by Sub_183C2. $07B4</description>
+  <title>FlexRatioFactorLow</title>
+  <description>Flex estimate: second factor (word) on $0F31,Z $07B4</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7B4" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21151,8 +21151,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x42A" flags="0x0">
-  <title>FlexLearnV0F35Thresh</title>
-  <description>Word compared with V0F35; read by Sub_183C2. $07B6</description>
+  <title>FlexLearnSumMin</title>
+  <description>Flex estimate: sum $0F35,Z (word) at or above this value $07B6</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7B6" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21163,8 +21163,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x42B" flags="0x0">
-  <title>FlexLearnV01C4Adder</title>
-  <description>Byte added to V01C4; read by Sub_183C2, Sub_18836. $07B8</description>
+  <title>FlexEstimateStep</title>
+  <description>Flex estimate: step added to $01C4,Z (at most $DC; also Sub_18836) $07B8</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7B8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21175,8 +21175,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x42C" flags="0x0">
-  <title>FlexLearnV01C5Adder</title>
-  <description>Byte added to V01C5; read by Sub_183C2. $07B9</description>
+  <title>FlexEstimateStep2</title>
+  <description>Flex estimate: step added to $01C5,Z (at most $DC) $07B9</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7B9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21187,8 +21187,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x42D" flags="0x0">
-  <title>FlexLearnV01BCThresh</title>
-  <description>Byte compared with V01BC; read by Sub_17A48. $07BA</description>
+  <title>FlexLevelDiffMin</title>
+  <description>Sub_17A48: difference $01BC − $01BB,Z at or above this value $07BA</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7BA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21199,8 +21199,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x42E" flags="0x0">
-  <title>FlexLearnV0F23Thresh</title>
-  <description>Byte compared with V0F23; read by Sub_183C2. $07BB</description>
+  <title>FlexLearnRetryCount</title>
+  <description>Flex estimate: count limit of $0F23,Z $07BB</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7BB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21211,8 +21211,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x42F" flags="0x0">
-  <title>FlexLearnV0F31Thresh</title>
-  <description>Word compared with V0F31; read by Sub_183C2. $07BC</description>
+  <title>FlexSumMin1</title>
+  <description>Flex estimate: sum $0F31,Z (word) at or above this value $07BC</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7BC" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21223,8 +21223,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x430" flags="0x0">
-  <title>FlexLearnV0F33Thresh</title>
-  <description>Word compared with V0F33; read by Sub_183C2. $07BE</description>
+  <title>FlexSumMin2</title>
+  <description>Flex estimate: sum $0F33,Z (word) at or above this value $07BE</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7BE" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21235,8 +21235,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x431" flags="0x0">
-  <title>FlexLearnFlexEthanolPrevThresh</title>
-  <description>Byte compared with FlexEthanolPrev; read by Sub_183C2. $07C0</description>
+  <title>FlexEthanolPrevMin</title>
+  <description>Flex estimate: lower bound of the previous estimate $07C0</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7C0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21247,8 +21247,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x432" flags="0x0">
-  <title>FlexLearnFlexEthanolPrevAdder1</title>
-  <description>Byte added to FlexEthanolPrev; read by Sub_183C2. $07C1</description>
+  <title>FlexEthanolPrevStepUp</title>
+  <description>Flex estimate: rise of FlexEthanolPrev per step (first branch) $07C1</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7C1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21259,8 +21259,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x433" flags="0x0">
-  <title>FlexLearnFlexEthanolPrevAdder2</title>
-  <description>Byte added to FlexEthanolPrev; read by Sub_183C2. $07C2</description>
+  <title>FlexEthanolPrevStepUp2</title>
+  <description>Flex estimate: rise of FlexEthanolPrev per step (second branch) $07C2</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7C2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21271,8 +21271,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x434" flags="0x0">
-  <title>FlexLearnFlexEthanolPrevOffset</title>
-  <description>Byte subtracted from FlexEthanolPrev; read by Sub_183C2. $07C3</description>
+  <title>FlexEthanolPrevStepDown</title>
+  <description>Flex estimate: fall of FlexEthanolPrev per step $07C3</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7C3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21283,8 +21283,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x435" flags="0x0">
-  <title>FlexLearnStartCoolantThresh1</title>
-  <description>Byte compared with StartCoolantTemp2; read by Sub_18836. $07C6</description>
+  <title>FlexLearnStartCoolantMin</title>
+  <description>Sub_18836: start coolant at or above this value $07C6</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7C6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -21295,8 +21295,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x436" flags="0x0">
-  <title>FlexLearnFuelSumThresh3</title>
-  <description>Word compared with FlexLearnFuelSum; read by Sub_18836. $07C7</description>
+  <title>FlexLearnFuelMax</title>
+  <description>Sub_18836: fuel used (word) below this value $07C7</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7C7" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21319,8 +21319,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x438" flags="0x0">
-  <title>FlexLearnV0F2AInit</title>
-  <description>Byte stored into V0F2A; read by Sub_17B7E, Sub_17CF6, Sub_17D44 +2. $07CB</description>
+  <title>FlexLearnTimer2Init</title>
+  <description>Flex learning: start value of the timer $0F2A,Z (several routines) $07CB</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7CB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21331,8 +21331,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x439" flags="0x0">
-  <title>FlexLearnV0F2DThresh</title>
-  <description>Byte compared with V0F2D; read by Sub_17B7E, Sub_18BAA. $07CD</description>
+  <title>FlexLearnPurgeCount</title>
+  <description>Flex cold start: count $0F2D,Z at or above which FlexLearnTimer is reloaded $07CD</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7CD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21355,8 +21355,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x43B" flags="0x0">
-  <title>FlexLearnFlexEthanolStartValue</title>
-  <description>Byte used with FlexEthanolStart; read by Sub_17000, Sub_17FC4, Sub_18836. $07D1</description>
+  <title>FlexEthanolFaultValue</title>
+  <description>Flex learning: start estimate used after a fault when the estimate is at or above the limit $0F40,Z (also Sub_17FC4, Sub_18836) $07D1</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7D1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21367,8 +21367,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x43C" flags="0x0">
-  <title>FlexLearnValue2</title>
-  <description>Byte used with; read by Sub_18836. $07D2</description>
+  <title>FlexLearnFilter</title>
+  <description>Sub_18836: filter weight of $0F2F,Z (input $05DA,Z) $07D2</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7D2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21391,8 +21391,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x43E" flags="0x0">
-  <title>FlexLearnFuelSumThresh4</title>
-  <description>Word compared with FlexLearnFuelSum; read by Sub_183C2. $07D4</description>
+  <title>FlexLearnFuelWindow</title>
+  <description>Flex estimate: fuel used since $01A9,Z (word) below which the estimate waits $07D4</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7D4" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21403,8 +21403,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x43F" flags="0x0">
-  <title>FlexLearnV0F2FThresh</title>
-  <description>Word compared with V0F2F; read by Sub_18836. $07D6</description>
+  <title>FlexDevMin</title>
+  <description>Sub_18836: filtered value $0F2F,Z (word) at or above this value sets $0F3B,Z bit 5 $07D6</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7D6" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21415,8 +21415,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x440" flags="0x0">
-  <title>FlexLearnThresh3</title>
-  <description>Byte compared with; read by Sub_18836. $07D9</description>
+  <title>FlexDevCount</title>
+  <description>Sub_18836: count $0F2E,Z at or above this value $07D9</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7D9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21427,8 +21427,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x441" flags="0x0">
-  <title>FlexLearnV0F43Thresh</title>
-  <description>Word compared with V0F43; read by Sub_18836. $07DA</description>
+  <title>FlexDevChangeMin</title>
+  <description>Sub_18836: change $0F43 − $0F2F,Z (word) at or above this value $07DA</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7DA" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21451,8 +21451,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x443" flags="0x0">
-  <title>FlexLearnV01C3Adder</title>
-  <description>Byte added to V01C3; read by Sub_18836. $085A</description>
+  <title>FlexEstimateStep3</title>
+  <description>Sub_18836: step of $01C3,Z (at most $DC) $085A</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x85A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21463,8 +21463,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x444" flags="0x0">
-  <title>FlexLearnThresh4</title>
-  <description>Word compared with; read by Sub_18BAA. $085B</description>
+  <title>FlexPurgeTimeMin</title>
+  <description>Sub_18BAA: purge time $0F38,Z (word) at or above this value $085B</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x85B" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21475,8 +21475,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x445" flags="0x0">
-  <title>FlexLearnCoolantThresh5</title>
-  <description>Byte compared with CoolantTemp; read by Sub_17CF6, Sub_17D44, Sub_183C2 +3. $085D</description>
+  <title>FlexLearnCoolantMin3</title>
+  <description>Flex learning: coolant at or above this value (several routines) $085D</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x85D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -21487,8 +21487,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x446" flags="0x0">
-  <title>FlexLearnFuelLevelScaledThresh</title>
-  <description>Byte compared with FuelLevelScaled; read by Sub_17FC4. $085F</description>
+  <title>FlexRefuelLevelMax</title>
+  <description>Sub_17FC4: fuel level below this value with $0F3E,Z at or above FlexLearnCountMin sets the refuel flag $01AD,Z bit 5 $085F</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x85F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21499,8 +21499,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x447" flags="0x0">
-  <title>FlexLearnV0F3EThresh</title>
-  <description>Byte compared with V0F3E; read by Sub_17FC4, Sub_18836. $0861</description>
+  <title>FlexLearnCountMin</title>
+  <description>Flex learning: count $0F3E,Z at or above this value (Sub_17FC4, Sub_18836) $0861</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x861" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21511,8 +21511,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x448" flags="0x0">
-  <title>FlexLearnV01B7Thresh</title>
-  <description>Byte compared with V01B7; read by Sub_18836. $0862</description>
+  <title>FlexLearnCycleMax</title>
+  <description>Sub_18836: cycle count $01B7,Z at or below this value $0862</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x862" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -24381,7 +24381,7 @@
  <XDFCONSTANT uniqueid="0x537" flags="0x0">
   <title>FlexStartValue</title>
   <description>Start value of $07EE,Z (flex start fuel) $1DC2</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1DC2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -25557,8 +25557,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x59A" flags="0x0">
-  <title>FlexLearnCoolantThresh6</title>
-  <description>Byte compared with CoolantTemp; read by Sub_17FC4, Sub_3DFCA. $208E</description>
+  <title>FlexSoakCoolantMax</title>
+  <description>Sub_17FC4: start coolant below this value (and at or above SoakStartCoolantMin) clears $01B8,Z $208E</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x208E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>

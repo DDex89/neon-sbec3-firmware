@@ -2576,8 +2576,8 @@ PurgeCell3:
 O2LearnPurgeCountMax:
         dc.b    $06                                      ; Long-term learning: purge cell count $0439,Z above which learning is allowed (zero also allows it)
         dc.b    $12,$0F
-FlexLearnCoolantThresh6:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_17FC4, Sub_3DFCA.
+FlexSoakCoolantMax:
+        dc.b    $FF                                      ; Sub_17FC4: start coolant below this value (and at or above SoakStartCoolantMin) clears $01B8,Z
 PurgeCellRichMax1:
         dc.b    $2C                                      ; Purge cell check (PurgeCellCheck): learned-cell rise ($6A,Z minus the memory cell at PurgeCell1) at or above this value sets $0080,Z bit 5
 PurgeCellRichMax2:
@@ -19663,7 +19663,7 @@ L0CDAA:
 ;---------------------------------------------------------------------------------------------------
 Sub_0CDAC:
         LDAA    $0C,Z
-        CMPA    >FlexLearnCoolantThresh6
+        CMPA    >FlexSoakCoolantMax
         BCC     L0CE04
         LDAB    $87,Z
         BITB    #$38

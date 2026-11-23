@@ -14820,7 +14820,7 @@ L3DED4:
 ;---------------------------------------------------------------------------------------------------
 Sub_3DED6:
         LDAA    >CoolantTemp,Z
-        CMPA    >FlexLearnCoolantThresh6
+        CMPA    >FlexSoakCoolantMax
         BCC     L3DF30
         LDAB    $80,Z
         BITB    #$38

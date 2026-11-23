@@ -3418,12 +3418,10 @@
    "category": "Spark"
   },
   "03FC": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FuelPulseFixed",
+   "desc": "Fixed injector pulse (word) used with Options033D bit 1 (Sub_1148E)",
    "category": "Fuel",
-   "desc": "Word used with; read by Sub_1148E.",
-   "name": "FuelEventValue2"
+   "size": 2
   },
   "041D": {
    "name": "IacTargetCmdFixed",
@@ -4329,10 +4327,10 @@
    "size": 1
   },
   "076C": {
+   "name": "FlexLearnOptions",
+   "desc": "Flex learning option byte (Sub_17000): bit 7 clear the start estimate, bit 6 clear $01B8, bit 5 reload FlexLearnTimer, bit 4 clear $01B6, bit 3 reset the cycle counts, bit 2 load FlexEthanolStartInit (also Sub_18836)",
+   "category": "Options",
    "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
    "bits": [
     "01",
     "04",
@@ -4341,57 +4339,43 @@
     "20",
     "40",
     "80"
-   ],
-   "desc": "Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836.",
-   "name": "FlexLearnOptions"
+   ]
   },
   "076D": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexRefuelFuelMin",
+   "desc": "Flex learning after a refuel: fuel used (FlexLearnFuelSum, word) at or above which the learning phase starts ($01AD,Z bit 4; also Sub_183C2)",
    "category": "Fuel",
-   "desc": "Word compared with FlexLearnFuelSum; read by Sub_17000, Sub_183C2.",
-   "name": "FlexLearnFuelSumThresh1"
+   "size": 2
   },
   "076F": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexRefuelFuelMin2",
+   "desc": "Flex learning after a refuel: fuel used at or above which $01AD,Z bit 3 is set (also Sub_183C2)",
    "category": "Fuel",
-   "desc": "Word compared with FlexLearnFuelSum; read by Sub_17000, Sub_183C2.",
-   "name": "FlexLearnFuelSumThresh2"
+   "size": 2
   },
   "0771": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexRefuelFuelMin3",
+   "desc": "Flex learning after a refuel: fuel used at or above which $01AE,Z bit 0 is set",
    "category": "Fuel",
-   "desc": "Word compared with; read by Sub_17000.",
-   "name": "FlexLearnThresh1"
+   "size": 2
   },
   "0773": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnWarmCount",
+   "desc": "Flex learning: warm counts ($01B1,Z) with coolant at or above FlexLearnCoolantMin",
    "category": "Fuel",
-   "desc": "Byte compared with; read by Sub_17000.",
-   "name": "FlexLearnThresh2"
+   "size": 1
   },
   "0774": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnCountMax",
+   "desc": "Flex learning: count limit of $01B2,Z",
    "category": "Fuel",
-   "desc": "Byte compared with V01B2; read by Sub_17000.",
-   "name": "FlexLearnV01B2Thresh"
+   "size": 1
   },
   "0775": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnCountMax2",
+   "desc": "Flex learning: count limit of $01B3,Z",
    "category": "Fuel",
-   "desc": "Byte compared with V01B3; read by Sub_17000.",
-   "name": "FlexLearnV01B3Thresh"
+   "size": 1
   },
   "0776": {
    "name": "FlexLearnCoolantMin",
@@ -4401,26 +4385,22 @@
    "size": 1
   },
   "0778": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnHoldInit",
+   "desc": "Flex learning: start value of the hold $01C2,Z",
    "category": "Fuel",
-   "desc": "Byte stored into V01C2; read by Sub_17000.",
-   "name": "FlexLearnV01C2Init"
+   "size": 1
   },
   "0779": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexEthanolStartStepDown",
+   "desc": "Flex learning: decrease of the start estimate when the learned base stays below its limit",
    "category": "Fuel",
-   "desc": "Byte subtracted from FlexEthanolStart; read by Sub_17000.",
-   "name": "FlexLearnFlexEthanolStartOffset"
+   "size": 1
   },
   "0786": {
    "name": "FlexLearnBaseReadyMin",
    "desc": "FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines Sub_2A0F0-Sub_2A6C0)",
    "size": 1,
-   "category": "Diagnostics"
+   "category": "Fuel"
   },
   "0787": {
    "name": "O2FlexRunTimeMin",
@@ -4429,20 +4409,16 @@
    "size": 1
   },
   "0794": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexColdCountMin",
+   "desc": "Flex cold start (Sub_17B7E, Sub_18BAA): count $0F3C,Z at or above this value",
    "category": "Fuel",
-   "desc": "Byte compared with V0F3C; read by Sub_17B7E, Sub_18BAA.",
-   "name": "FlexLearnV0F3CThresh"
+   "size": 1
   },
   "0795": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexColdEthanolMin",
+   "desc": "Flex cold start: start estimate at or above this value",
    "category": "Fuel",
-   "desc": "Byte compared with FlexEthanolStart; read by Sub_17B7E, Sub_18BAA.",
-   "name": "FlexLearnFlexEthanolStartThresh"
+   "size": 1
   },
   "0796": {
    "name": "FlexLearnBattTempMax",
@@ -4459,52 +4435,40 @@
    "size": 1
   },
   "0798": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnIacStep",
+   "desc": "Flex learning at idle (Sub_17D44): IAC step passed to Sub_1A54A (negated on the way back)",
    "category": "Fuel",
-   "desc": "Byte used with; read by Sub_17D44.",
-   "name": "FlexLearnValue1"
+   "size": 1
   },
   "0799": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnTimeMax",
+   "desc": "Flex learning: count $0F14,Z (word) limit",
    "category": "Fuel",
-   "desc": "Word compared with V0F14; read by Sub_17B7E, Sub_18BAA.",
-   "name": "FlexLearnV0F14Thresh"
+   "size": 2
   },
   "079D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexIdleTimer1Max",
+   "desc": "Flex learning at idle: limit of the timer $0F18,Z",
    "category": "Fuel",
-   "desc": "Byte compared with V0F18; read by Sub_17D44.",
-   "name": "FlexLearnV0F18Thresh"
+   "size": 1
   },
   "079E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexIdleTimer2Max",
+   "desc": "Flex learning at idle: limit of the timer $0F1A,Z",
    "category": "Fuel",
-   "desc": "Byte compared with V0F1A; read by Sub_17D44.",
-   "name": "FlexLearnV0F1AThresh"
+   "size": 1
   },
   "079F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexIdleTimer3Max",
+   "desc": "Flex learning at idle: limit of the timer $0F19,Z",
    "category": "Fuel",
-   "desc": "Byte compared with V0F19; read by Sub_17D44.",
-   "name": "FlexLearnV0F19Thresh"
+   "size": 1
   },
   "07A2": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexTimerProductMax",
+   "desc": "Sub_18836: upper limit (word) of the timer product $0F28,Z",
    "category": "Fuel",
-   "desc": "Word compared with V0F28; read by Sub_187E8.",
-   "name": "FlexLearnV0F28Thresh"
+   "size": 2
   },
   "07A4": {
    "name": "FlexLearnCoolantMin2",
@@ -4520,20 +4484,16 @@
    "size": 1
   },
   "07A8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnPurgeRampMin",
+   "desc": "Flex learning: purge ramp at or above this value (several routines)",
    "category": "Fuel",
-   "desc": "Byte compared with PurgeRamp; read by Sub_17B7E, Sub_17D44, Sub_183C2 +3.",
-   "name": "FlexLearnPurgeRampThresh"
+   "size": 1
   },
   "07A9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexChangeUpMin",
+   "desc": "Flex change detect (Sub_1879A): rise of the start estimate over $01BE,Z at or above which $01B0,Z bit 7 is set",
    "category": "Fuel",
-   "desc": "Byte compared with FlexEthanolStart; read by Sub_1879A.",
-   "name": "FuelFlexEthanolStartThresh"
+   "size": 1
   },
   "07AA": {
    "name": "FlexLearnLevelMax",
@@ -4542,116 +4502,88 @@
    "size": 1
   },
   "07AB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexChangeDownMin",
+   "desc": "Flex change detect: fall of the start estimate below $01BE,Z at or above which $01B0,Z bit 6 is set",
    "category": "Fuel",
-   "desc": "Byte compared with V01BE; read by Sub_1879A.",
-   "name": "FuelV01BEThresh"
+   "size": 1
   },
   "07AC": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexRatioFactorHigh",
+   "desc": "Flex estimate (Sub_183C2): factor (word) on $0F31,Z compared with $0F33,Z",
    "category": "Fuel",
-   "desc": "Word multiplied; read by Sub_183C2.",
-   "name": "FlexLearnFactor1"
+   "size": 2
   },
   "07AE": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexRatioFactorLow",
+   "desc": "Flex estimate: second factor (word) on $0F31,Z",
    "category": "Fuel",
-   "desc": "Word multiplied; read by Sub_183C2.",
-   "name": "FlexLearnFactor2"
+   "size": 2
   },
   "07B0": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnSumMin",
+   "desc": "Flex estimate: sum $0F35,Z (word) at or above this value",
    "category": "Fuel",
-   "desc": "Word compared with V0F35; read by Sub_183C2.",
-   "name": "FlexLearnV0F35Thresh"
+   "size": 2
   },
   "07B2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexEstimateStep",
+   "desc": "Flex estimate: step added to $01C4,Z (at most $DC; also Sub_18836)",
    "category": "Fuel",
-   "desc": "Byte added to V01C4; read by Sub_183C2, Sub_18836.",
-   "name": "FlexLearnV01C4Adder"
+   "size": 1
   },
   "07B3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexEstimateStep2",
+   "desc": "Flex estimate: step added to $01C5,Z (at most $DC)",
    "category": "Fuel",
-   "desc": "Byte added to V01C5; read by Sub_183C2.",
-   "name": "FlexLearnV01C5Adder"
+   "size": 1
   },
   "07B4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLevelDiffMin",
+   "desc": "Sub_17A48: difference $01BC − $01BB,Z at or above this value",
    "category": "Fuel",
-   "desc": "Byte compared with V01BC; read by Sub_17A48.",
-   "name": "FlexLearnV01BCThresh"
+   "size": 1
   },
   "07B5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnRetryCount",
+   "desc": "Flex estimate: count limit of $0F23,Z",
    "category": "Fuel",
-   "desc": "Byte compared with V0F23; read by Sub_183C2.",
-   "name": "FlexLearnV0F23Thresh"
+   "size": 1
   },
   "07B6": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexSumMin1",
+   "desc": "Flex estimate: sum $0F31,Z (word) at or above this value",
    "category": "Fuel",
-   "desc": "Word compared with V0F31; read by Sub_183C2.",
-   "name": "FlexLearnV0F31Thresh"
+   "size": 2
   },
   "07B8": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexSumMin2",
+   "desc": "Flex estimate: sum $0F33,Z (word) at or above this value",
    "category": "Fuel",
-   "desc": "Word compared with V0F33; read by Sub_183C2.",
-   "name": "FlexLearnV0F33Thresh"
+   "size": 2
   },
   "07BA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexEthanolPrevMin",
+   "desc": "Flex estimate: lower bound of the previous estimate",
    "category": "Fuel",
-   "desc": "Byte compared with FlexEthanolPrev; read by Sub_183C2.",
-   "name": "FlexLearnFlexEthanolPrevThresh"
+   "size": 1
   },
   "07BB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexEthanolPrevStepUp",
+   "desc": "Flex estimate: rise of FlexEthanolPrev per step (first branch)",
    "category": "Fuel",
-   "desc": "Byte added to FlexEthanolPrev; read by Sub_183C2.",
-   "name": "FlexLearnFlexEthanolPrevAdder1"
+   "size": 1
   },
   "07BC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexEthanolPrevStepUp2",
+   "desc": "Flex estimate: rise of FlexEthanolPrev per step (second branch)",
    "category": "Fuel",
-   "desc": "Byte added to FlexEthanolPrev; read by Sub_183C2.",
-   "name": "FlexLearnFlexEthanolPrevAdder2"
+   "size": 1
   },
   "07BD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexEthanolPrevStepDown",
+   "desc": "Flex estimate: fall of FlexEthanolPrev per step",
    "category": "Fuel",
-   "desc": "Byte subtracted from FlexEthanolPrev; read by Sub_183C2.",
-   "name": "FlexLearnFlexEthanolPrevOffset"
+   "size": 1
   },
   "07C3": {
    "name": "FlexLearnTrimMin",
@@ -4666,28 +4598,22 @@
    "size": 1
   },
   "07C5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnTimer2Init",
+   "desc": "Flex learning: start value of the timer $0F2A,Z (several routines)",
    "category": "Fuel",
-   "desc": "Byte stored into V0F2A; read by Sub_17B7E, Sub_17CF6, Sub_17D44 +2.",
-   "name": "FlexLearnV0F2AInit"
+   "size": 1
   },
   "07C7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnPurgeCount",
+   "desc": "Flex cold start: count $0F2D,Z at or above which FlexLearnTimer is reloaded",
    "category": "Fuel",
-   "desc": "Byte compared with V0F2D; read by Sub_17B7E, Sub_18BAA.",
-   "name": "FlexLearnV0F2DThresh"
+   "size": 1
   },
   "07C8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnRunTimeMin",
+   "desc": "Flex learning: run time at or above which learning may start with a coolant sensor fault",
    "category": "Fuel",
-   "desc": "Byte compared with RunTime; read by Sub_17000.",
-   "name": "FlexLearnRunTimeThresh"
+   "size": 1
   },
   "07C9": {
    "name": "FlexFuelFactorMin",
@@ -4696,28 +4622,22 @@
    "size": 1
   },
   "07CA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnMilesMin",
+   "desc": "Flex learning (Sub_17000): SRI mileage ($000E,Z with $000D,Z zero) below this value keeps learning off",
    "category": "Fuel",
-   "desc": "Byte compared with V000E; read by Sub_17000.",
-   "name": "FlexLearnV000EThresh"
+   "size": 1
   },
   "07CB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexEthanolFaultValue",
+   "desc": "Flex learning: start estimate used after a fault when the estimate is at or above the limit $0F40,Z (also Sub_17FC4, Sub_18836)",
    "category": "Fuel",
-   "desc": "Byte used with FlexEthanolStart; read by Sub_17000, Sub_17FC4, Sub_18836.",
-   "name": "FlexLearnFlexEthanolStartValue"
+   "size": 1
   },
   "07CC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnFilter",
+   "desc": "Sub_18836: filter weight of $0F2F,Z (input $05DA,Z)",
    "category": "Fuel",
-   "desc": "Byte used with; read by Sub_18836.",
-   "name": "FlexLearnValue2"
+   "size": 1
   },
   "07CD": {
    "name": "FlexLearnCoolantMax",
@@ -4727,92 +4647,71 @@
    "size": 1
   },
   "07CE": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnFuelWindow",
+   "desc": "Flex estimate: fuel used since $01A9,Z (word) below which the estimate waits",
    "category": "Fuel",
-   "desc": "Word compared with FlexLearnFuelSum; read by Sub_183C2.",
-   "name": "FlexLearnFuelSumThresh4"
+   "size": 2
   },
   "07D0": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexDevMin",
+   "desc": "Sub_18836: filtered value $0F2F,Z (word) at or above this value sets $0F3B,Z bit 5",
    "category": "Fuel",
-   "desc": "Word compared with V0F2F; read by Sub_18836.",
-   "name": "FlexLearnV0F2FThresh"
+   "size": 2
   },
   "07D3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexDevCount",
+   "desc": "Sub_18836: count $0F2E,Z at or above this value",
    "category": "Fuel",
-   "desc": "Byte compared with; read by Sub_18836.",
-   "name": "FlexLearnThresh3"
+   "size": 1
   },
   "07D4": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexDevChangeMin",
+   "desc": "Sub_18836: change $0F43 − $0F2F,Z (word) at or above this value",
    "category": "Fuel",
-   "desc": "Word compared with V0F43; read by Sub_18836.",
-   "name": "FlexLearnV0F43Thresh"
+   "size": 2
   },
   "0854": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexEstimateStep3",
+   "desc": "Sub_18836: step of $01C3,Z (at most $DC)",
    "category": "Fuel",
-   "desc": "Byte added to V01C3; read by Sub_18836.",
-   "name": "FlexLearnV01C3Adder"
+   "size": 1
   },
   "0855": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexPurgeTimeMin",
+   "desc": "Sub_18BAA: purge time $0F38,Z (word) at or above this value",
    "category": "Fuel",
-   "desc": "Word compared with; read by Sub_18BAA.",
-   "name": "FlexLearnThresh4"
+   "size": 2
   },
   "0857": {
-   "size": 1,
+   "name": "FlexLearnCoolantMin3",
+   "desc": "Flex learning: coolant at or above this value (several routines)",
    "unit": "tempc",
-   "auto": true,
    "category": "Fuel",
-   "desc": "Byte compared with CoolantTemp; read by Sub_17CF6, Sub_17D44, Sub_183C2 +3.",
-   "name": "FlexLearnCoolantThresh5"
+   "size": 1
   },
   "0858": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexEthanolStartInit",
+   "desc": "Flex learning: start estimate loaded with FlexLearnOptions bit 2",
    "category": "Fuel",
-   "desc": "Byte stored into FlexEthanolStart; read by Sub_17000.",
-   "name": "FlexLearnFlexEthanolStartInit"
+   "size": 1
   },
   "0859": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexRefuelLevelMax",
+   "desc": "Sub_17FC4: fuel level below this value with $0F3E,Z at or above FlexLearnCountMin sets the refuel flag $01AD,Z bit 5",
    "category": "Fuel",
-   "desc": "Byte compared with FuelLevelScaled; read by Sub_17FC4.",
-   "name": "FlexLearnFuelLevelScaledThresh"
+   "size": 1
   },
   "085A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnSettleCount",
+   "desc": "Flex learning: settle count ($0F3F,Z) before Sub_17B18 runs",
    "category": "Fuel",
-   "desc": "Byte compared with V0F3F; read by Sub_17000.",
-   "name": "FlexLearnV0F3FThresh"
+   "size": 1
   },
   "085B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexLearnCountMin",
+   "desc": "Flex learning: count $0F3E,Z at or above this value (Sub_17FC4, Sub_18836)",
    "category": "Fuel",
-   "desc": "Byte compared with V0F3E; read by Sub_17FC4, Sub_18836.",
-   "name": "FlexLearnV0F3EThresh"
+   "size": 1
   },
   "09EC": {
    "name": "RunPeriodOn",
@@ -6288,7 +6187,7 @@
    "name": "FlexStartValue",
    "desc": "Start value of $07EE,Z (flex start fuel)",
    "size": 1,
-   "category": "Startup"
+   "category": "Fuel"
   },
   "18AC": {
    "name": "AccelFuelOptions",
@@ -6660,12 +6559,11 @@
    "size": 1
   },
   "1B32": {
-   "size": 1,
+   "name": "FlexSoakCoolantMax",
+   "desc": "Sub_17FC4: start coolant below this value (and at or above SoakStartCoolantMin) clears $01B8,Z",
    "unit": "tempc",
-   "auto": true,
    "category": "Fuel",
-   "desc": "Byte compared with CoolantTemp; read by Sub_17FC4, Sub_3DFCA.",
-   "name": "FlexLearnCoolantThresh6"
+   "size": 1
   },
   "1B33": {
    "name": "PurgeCellRichMax1",

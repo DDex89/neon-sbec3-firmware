@@ -605,8 +605,8 @@ FanSoakTime:
         dc.b    $FF,$FF,$FF,$FF,$00,$80,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $00,$80,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$80,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-FuelEventValue2:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_1148E.
+FuelPulseFixed:
+        dc.b    $00,$00                                  ; Fixed injector pulse (word) used with Options033D bit 1 (Sub_1148E)
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$80,$00,$80,$00
         dc.b    $80,$00,$80,$00,$80,$00,$80,$00,$00,$00,$00,$00,$00,$00,$00
 IacTargetCmdFixed:
@@ -1237,128 +1237,128 @@ EgrTarget:
         dc.b    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0        ; row 16
 
 FlexLearnOptions:
-        dc.b    $00                                      ; Option byte; bits tested: $01, $04, $08, $10, $20, $40, $80. Read by Sub_17000, Sub_18836.
-FlexLearnFuelSumThresh1:
-        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_17000, Sub_183C2.
-FlexLearnFuelSumThresh2:
-        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_17000, Sub_183C2.
-FlexLearnThresh1:
-        dc.b    $00,$00                                  ; Word compared with; read by Sub_17000.
-FlexLearnThresh2:
-        dc.b    $00                                      ; Byte compared with; read by Sub_17000.
-FlexLearnV01B2Thresh:
-        dc.b    $00                                      ; Byte compared with V01B2; read by Sub_17000.
-FlexLearnV01B3Thresh:
-        dc.b    $00                                      ; Byte compared with V01B3; read by Sub_17000.
+        dc.b    $00                                      ; Flex learning option byte (Sub_17000): bit 7 clear the start estimate, bit 6 clear $01B8, bit 5 reload FlexLearnTimer, bit 4 clear $01B6, bit 3 reset the cycle counts, bit 2 load FlexEthanolStartInit (also Sub_18836)
+FlexRefuelFuelMin:
+        dc.b    $00,$00                                  ; Flex learning after a refuel: fuel used (FlexLearnFuelSum, word) at or above which the learning phase starts ($01AD,Z bit 4; also Sub_183C2)
+FlexRefuelFuelMin2:
+        dc.b    $00,$00                                  ; Flex learning after a refuel: fuel used at or above which $01AD,Z bit 3 is set (also Sub_183C2)
+FlexRefuelFuelMin3:
+        dc.b    $00,$00                                  ; Flex learning after a refuel: fuel used at or above which $01AE,Z bit 0 is set
+FlexLearnWarmCount:
+        dc.b    $00                                      ; Flex learning: warm counts ($01B1,Z) with coolant at or above FlexLearnCoolantMin
+FlexLearnCountMax:
+        dc.b    $00                                      ; Flex learning: count limit of $01B2,Z
+FlexLearnCountMax2:
+        dc.b    $00                                      ; Flex learning: count limit of $01B3,Z
 FlexLearnCoolantMin:
         dc.b    $58                                      ; Flex-fuel learning: coolant at or above this value
         dc.b    $00
-FlexLearnV01C2Init:
-        dc.b    $00                                      ; Byte stored into V01C2; read by Sub_17000.
-FlexLearnFlexEthanolStartOffset:
-        dc.b    $FF                                      ; Byte subtracted from FlexEthanolStart; read by Sub_17000.
+FlexLearnHoldInit:
+        dc.b    $00                                      ; Flex learning: start value of the hold $01C2,Z
+FlexEthanolStartStepDown:
+        dc.b    $FF                                      ; Flex learning: decrease of the start estimate when the learned base stays below its limit
         dc.b    $00,$00,$58,$00,$00,$7F,$80,$7F,$80,$7F,$80,$00
 FlexLearnBaseReadyMin:
         dc.b    $AA                                      ; FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines Sub_2A0F0-Sub_2A6C0)
 O2FlexRunTimeMin:
         dc.b    $FF                                      ; Closed-loop manager (ClosedLoopManager): run time at or above which closed loop returns during flex learning
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-FlexLearnV0F3CThresh:
-        dc.b    $FF                                      ; Byte compared with V0F3C; read by Sub_17B7E, Sub_18BAA.
-FlexLearnFlexEthanolStartThresh:
-        dc.b    $FF                                      ; Byte compared with FlexEthanolStart; read by Sub_17B7E, Sub_18BAA.
+FlexColdCountMin:
+        dc.b    $FF                                      ; Flex cold start (Sub_17B7E, Sub_18BAA): count $0F3C,Z at or above this value
+FlexColdEthanolMin:
+        dc.b    $FF                                      ; Flex cold start: start estimate at or above this value
 FlexLearnBattTempMax:
         dc.b    $58                                      ; Flex-fuel learning: battery temperature below this value for the cold start branch
 FlexLearnColdCoolantMax:
         dc.b    $58                                      ; Flex-fuel learning: coolant below this value for the cold start branch
-FlexLearnValue1:
-        dc.b    $00                                      ; Byte used with; read by Sub_17D44.
-FlexLearnV0F14Thresh:
-        dc.b    $FF,$FF                                  ; Word compared with V0F14; read by Sub_17B7E, Sub_18BAA.
+FlexLearnIacStep:
+        dc.b    $00                                      ; Flex learning at idle (Sub_17D44): IAC step passed to Sub_1A54A (negated on the way back)
+FlexLearnTimeMax:
+        dc.b    $FF,$FF                                  ; Flex learning: count $0F14,Z (word) limit
         dc.b    $00,$00
-FlexLearnV0F18Thresh:
-        dc.b    $FF                                      ; Byte compared with V0F18; read by Sub_17D44.
-FlexLearnV0F1AThresh:
-        dc.b    $FF                                      ; Byte compared with V0F1A; read by Sub_17D44.
-FlexLearnV0F19Thresh:
-        dc.b    $00                                      ; Byte compared with V0F19; read by Sub_17D44.
+FlexIdleTimer1Max:
+        dc.b    $FF                                      ; Flex learning at idle: limit of the timer $0F18,Z
+FlexIdleTimer2Max:
+        dc.b    $FF                                      ; Flex learning at idle: limit of the timer $0F1A,Z
+FlexIdleTimer3Max:
+        dc.b    $00                                      ; Flex learning at idle: limit of the timer $0F19,Z
         dc.b    $00,$00
-FlexLearnV0F28Thresh:
-        dc.b    $00,$FF                                  ; Word compared with V0F28; read by Sub_187E8.
+FlexTimerProductMax:
+        dc.b    $00,$FF                                  ; Sub_18836: upper limit (word) of the timer product $0F28,Z
 FlexLearnCoolantMin2:
         dc.b    $58                                      ; Flex-fuel learning: coolant at or above this value for the trim branch
         dc.b    $FE,$FE
 FlexLearnTimerStart:
         dc.b    $FE                                      ; Flex-fuel learning: start value of FlexLearnTimer
-FlexLearnPurgeRampThresh:
-        dc.b    $00                                      ; Byte compared with PurgeRamp; read by Sub_17B7E, Sub_17D44, Sub_183C2 +3.
-FuelFlexEthanolStartThresh:
-        dc.b    $FF                                      ; Byte compared with FlexEthanolStart; read by Sub_1879A.
+FlexLearnPurgeRampMin:
+        dc.b    $00                                      ; Flex learning: purge ramp at or above this value (several routines)
+FlexChangeUpMin:
+        dc.b    $FF                                      ; Flex change detect (Sub_1879A): rise of the start estimate over $01BE,Z at or above which $01B0,Z bit 7 is set
 FlexLearnLevelMax:
         dc.b    $AA                                      ; Flex-fuel learning: limit of $01BB,Z/$01BC,Z
-FuelV01BEThresh:
-        dc.b    $00                                      ; Byte compared with V01BE; read by Sub_1879A.
-FlexLearnFactor1:
-        dc.b    $FF,$FF                                  ; Word multiplied; read by Sub_183C2.
-FlexLearnFactor2:
-        dc.b    $00,$00                                  ; Word multiplied; read by Sub_183C2.
-FlexLearnV0F35Thresh:
-        dc.b    $FF,$FF                                  ; Word compared with V0F35; read by Sub_183C2.
-FlexLearnV01C4Adder:
-        dc.b    $00                                      ; Byte added to V01C4; read by Sub_183C2, Sub_18836.
-FlexLearnV01C5Adder:
-        dc.b    $00                                      ; Byte added to V01C5; read by Sub_183C2.
-FlexLearnV01BCThresh:
-        dc.b    $FF                                      ; Byte compared with V01BC; read by Sub_17A48.
-FlexLearnV0F23Thresh:
-        dc.b    $FF                                      ; Byte compared with V0F23; read by Sub_183C2.
-FlexLearnV0F31Thresh:
-        dc.b    $FF,$FF                                  ; Word compared with V0F31; read by Sub_183C2.
-FlexLearnV0F33Thresh:
-        dc.b    $FF,$FF                                  ; Word compared with V0F33; read by Sub_183C2.
-FlexLearnFlexEthanolPrevThresh:
-        dc.b    $00                                      ; Byte compared with FlexEthanolPrev; read by Sub_183C2.
-FlexLearnFlexEthanolPrevAdder1:
-        dc.b    $00                                      ; Byte added to FlexEthanolPrev; read by Sub_183C2.
-FlexLearnFlexEthanolPrevAdder2:
-        dc.b    $00                                      ; Byte added to FlexEthanolPrev; read by Sub_183C2.
-FlexLearnFlexEthanolPrevOffset:
-        dc.b    $00                                      ; Byte subtracted from FlexEthanolPrev; read by Sub_183C2.
+FlexChangeDownMin:
+        dc.b    $00                                      ; Flex change detect: fall of the start estimate below $01BE,Z at or above which $01B0,Z bit 6 is set
+FlexRatioFactorHigh:
+        dc.b    $FF,$FF                                  ; Flex estimate (Sub_183C2): factor (word) on $0F31,Z compared with $0F33,Z
+FlexRatioFactorLow:
+        dc.b    $00,$00                                  ; Flex estimate: second factor (word) on $0F31,Z
+FlexLearnSumMin:
+        dc.b    $FF,$FF                                  ; Flex estimate: sum $0F35,Z (word) at or above this value
+FlexEstimateStep:
+        dc.b    $00                                      ; Flex estimate: step added to $01C4,Z (at most $DC; also Sub_18836)
+FlexEstimateStep2:
+        dc.b    $00                                      ; Flex estimate: step added to $01C5,Z (at most $DC)
+FlexLevelDiffMin:
+        dc.b    $FF                                      ; Sub_17A48: difference $01BC − $01BB,Z at or above this value
+FlexLearnRetryCount:
+        dc.b    $FF                                      ; Flex estimate: count limit of $0F23,Z
+FlexSumMin1:
+        dc.b    $FF,$FF                                  ; Flex estimate: sum $0F31,Z (word) at or above this value
+FlexSumMin2:
+        dc.b    $FF,$FF                                  ; Flex estimate: sum $0F33,Z (word) at or above this value
+FlexEthanolPrevMin:
+        dc.b    $00                                      ; Flex estimate: lower bound of the previous estimate
+FlexEthanolPrevStepUp:
+        dc.b    $00                                      ; Flex estimate: rise of FlexEthanolPrev per step (first branch)
+FlexEthanolPrevStepUp2:
+        dc.b    $00                                      ; Flex estimate: rise of FlexEthanolPrev per step (second branch)
+FlexEthanolPrevStepDown:
+        dc.b    $00                                      ; Flex estimate: fall of FlexEthanolPrev per step
         dc.b    $33,$00
-FlexLearnStartCoolantThresh1:
-        dc.b    $FF                                      ; Byte compared with StartCoolantTemp2; read by Sub_18836.
-FlexLearnFuelSumThresh3:
-        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_18836.
+FlexLearnStartCoolantMin:
+        dc.b    $FF                                      ; Sub_18836: start coolant at or above this value
+FlexLearnFuelMax:
+        dc.b    $00,$00                                  ; Sub_18836: fuel used (word) below this value
 FlexLearnTrimMin:
         dc.b    $7F                                      ; Flex-fuel learning: $01B8,Z at or above this value sets $01AF,Z bit 1
 FlexLearnTimeMin:
         dc.b    $FE                                      ; Flex-fuel learning: FlexLearnTimer at or above this value
-FlexLearnV0F2AInit:
-        dc.b    $FF                                      ; Byte stored into V0F2A; read by Sub_17B7E, Sub_17CF6, Sub_17D44 +2.
+FlexLearnTimer2Init:
+        dc.b    $FF                                      ; Flex learning: start value of the timer $0F2A,Z (several routines)
         dc.b    $00
-FlexLearnV0F2DThresh:
-        dc.b    $00                                      ; Byte compared with V0F2D; read by Sub_17B7E, Sub_18BAA.
-FlexLearnRunTimeThresh:
-        dc.b    $00                                      ; Byte compared with RunTime; read by Sub_17000.
+FlexLearnPurgeCount:
+        dc.b    $00                                      ; Flex cold start: count $0F2D,Z at or above which FlexLearnTimer is reloaded
+FlexLearnRunTimeMin:
+        dc.b    $00                                      ; Flex learning: run time at or above which learning may start with a coolant sensor fault
 FlexFuelFactorMin:
         dc.b    $00                                      ; Flex fuel factor (Sub_10A3A): lower limit as a fraction of the input value
-FlexLearnV000EThresh:
-        dc.b    $00                                      ; Byte compared with V000E; read by Sub_17000.
-FlexLearnFlexEthanolStartValue:
-        dc.b    $00                                      ; Byte used with FlexEthanolStart; read by Sub_17000, Sub_17FC4, Sub_18836.
-FlexLearnValue2:
-        dc.b    $00                                      ; Byte used with; read by Sub_18836.
+FlexLearnMilesMin:
+        dc.b    $00                                      ; Flex learning (Sub_17000): SRI mileage ($000E,Z with $000D,Z zero) below this value keeps learning off
+FlexEthanolFaultValue:
+        dc.b    $00                                      ; Flex learning: start estimate used after a fault when the estimate is at or above the limit $0F40,Z (also Sub_17FC4, Sub_18836)
+FlexLearnFilter:
+        dc.b    $00                                      ; Sub_18836: filter weight of $0F2F,Z (input $05DA,Z)
 FlexLearnCoolantMax:
         dc.b    $58                                      ; Flex-fuel learning: coolant below this value (end branch)
-FlexLearnFuelSumThresh4:
-        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_183C2.
-FlexLearnV0F2FThresh:
-        dc.b    $00,$00                                  ; Word compared with V0F2F; read by Sub_18836.
+FlexLearnFuelWindow:
+        dc.b    $00,$00                                  ; Flex estimate: fuel used since $01A9,Z (word) below which the estimate waits
+FlexDevMin:
+        dc.b    $00,$00                                  ; Sub_18836: filtered value $0F2F,Z (word) at or above this value sets $0F3B,Z bit 5
         dc.b    $00
-FlexLearnThresh3:
-        dc.b    $00                                      ; Byte compared with; read by Sub_18836.
-FlexLearnV0F43Thresh:
-        dc.b    $00,$00                                  ; Word compared with V0F43; read by Sub_18836.
+FlexDevCount:
+        dc.b    $00                                      ; Sub_18836: count $0F2E,Z at or above this value
+FlexDevChangeMin:
+        dc.b    $00,$00                                  ; Sub_18836: change $0F43 − $0F2F,Z (word) at or above this value
 FlexAfterStartTime:
         dc.b    $00,$00                                  ; Flex after-start fuel (Sub_10C00): time after start (Count3s, word) after which FlexCoolantWeight applies
 
@@ -1478,22 +1478,22 @@ FlexLearnLimitV006B2:
         dc.b    255,170                                  ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-FlexLearnV01C3Adder:
-        dc.b    $00                                      ; Byte added to V01C3; read by Sub_18836.
-FlexLearnThresh4:
-        dc.b    $00,$00                                  ; Word compared with; read by Sub_18BAA.
-FlexLearnCoolantThresh5:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_17CF6, Sub_17D44, Sub_183C2 +3.
-FlexLearnFlexEthanolStartInit:
-        dc.b    $00                                      ; Byte stored into FlexEthanolStart; read by Sub_17000.
-FlexLearnFuelLevelScaledThresh:
-        dc.b    $00                                      ; Byte compared with FuelLevelScaled; read by Sub_17FC4.
-FlexLearnV0F3FThresh:
-        dc.b    $00                                      ; Byte compared with V0F3F; read by Sub_17000.
-FlexLearnV0F3EThresh:
-        dc.b    $00                                      ; Byte compared with V0F3E; read by Sub_17FC4, Sub_18836.
-FlexLearnV01B7Thresh:
-        dc.b    $00                                      ; Byte compared with V01B7; read by Sub_18836.
+FlexEstimateStep3:
+        dc.b    $00                                      ; Sub_18836: step of $01C3,Z (at most $DC)
+FlexPurgeTimeMin:
+        dc.b    $00,$00                                  ; Sub_18BAA: purge time $0F38,Z (word) at or above this value
+FlexLearnCoolantMin3:
+        dc.b    $FF                                      ; Flex learning: coolant at or above this value (several routines)
+FlexEthanolStartInit:
+        dc.b    $00                                      ; Flex learning: start estimate loaded with FlexLearnOptions bit 2
+FlexRefuelLevelMax:
+        dc.b    $00                                      ; Sub_17FC4: fuel level below this value with $0F3E,Z at or above FlexLearnCountMin sets the refuel flag $01AD,Z bit 5
+FlexLearnSettleCount:
+        dc.b    $00                                      ; Flex learning: settle count ($0F3F,Z) before Sub_17B18 runs
+FlexLearnCountMin:
+        dc.b    $00                                      ; Flex learning: count $0F3E,Z at or above this value (Sub_17FC4, Sub_18836)
+FlexLearnCycleMax:
+        dc.b    $00                                      ; Sub_18836: cycle count $01B7,Z at or below this value
 FlexLearnBaseMin:
         dc.b    $AA                                      ; Flex-fuel learning: FlexLearnBase at or above this value
 O2PurgeIntGain:
@@ -4199,8 +4199,8 @@ PurgeCell3:
 O2LearnPurgeCountMax:
         dc.b    $05                                      ; Long-term learning: purge cell count $0439,Z above which learning is allowed (zero also allows it)
         dc.b    $12,$0D
-FlexLearnCoolantThresh6:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_17FC4, Sub_3DFCA.
+FlexSoakCoolantMax:
+        dc.b    $FF                                      ; Sub_17FC4: start coolant below this value (and at or above SoakStartCoolantMin) clears $01B8,Z
 PurgeCellRichMax1:
         dc.b    $2C                                      ; Purge cell check (PurgeCellCheck): learned-cell rise ($6A,Z minus the memory cell at PurgeCell1) at or above this value sets $0080,Z bit 5
 PurgeCellRichMax2:
