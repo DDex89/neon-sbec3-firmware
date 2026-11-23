@@ -242,6 +242,10 @@ FlexStartFlags   equ $00DC        ; $F80DC
 ;                 bit 1: cleared when the flex sensor start value is averaged (FlexSensorCheck)
 ;                 bit 0: cleared when the flex sensor start value is averaged (FlexSensorCheck)
 VacLeakFlags     equ $00DD        ; $F80DD
+;                 bit 4: vacuum leak confirmed (set with LimpFlags bit 7)
+;                 bit 3: VSS pulse calculation hit a zero step (VssPulseCalc)
+;                 bit 1: cam/crank offset to be stored, second kind (CamCrankRelation)
+;                 bit 0: cam/crank offset to be stored, first kind (CamCrankRelation)
 O2CrossFlags     equ $00E6        ; $F80E6
 MisfireRecordDD  equ $00E8        ; $F80E8
 MisfireEventCount equ $00E9        ; $F80E9
@@ -327,6 +331,10 @@ IdleFlags6       equ $0186        ; $F8186
 ;                 bit 1: gear-step idle air step applied (IdleTargetControl)
 ;                 bit 0: A/C sensor value latched before the clutch engaged (IacBaseCalc)
 SparkFlags3      equ $0187        ; $F8187
+;                 bit 7: spark period at or below $7D00: idle spark range (IdleSparkControl)
+;                 bit 6: idle spark correction active (IdleSparkControl); SurgeControl reads it
+;                 bit 1: low-rpm event state (Isr_GPT_IC1)
+;                 bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
 IdleFlags2       equ $0188        ; $F8188
 ;                 bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
 ;                 bit 6: idle target ramp not allowed: flex cold start or ramp delay (IdleRpmTarget)
@@ -408,6 +416,12 @@ Temp4FC          equ $01FC        ; $F81FC
 Temp4FE          equ $01FE        ; $F81FE
 Temp4FF          equ $01FF        ; $F81FF
 StartFlags       equ $0200        ; $F8200
+;                 bit 5: coolant sensor reading out of range at start (ProcessCoolantTemp)
+;                 bit 4: coolant sensor reading out of range at start, second kind (ProcessCoolantTemp)
+;                 bit 3: hot start: coolant at reset at or above HotStartCoolantMin
+;                 bit 2: thermostat fault reported this drive cycle (ThermostatMonitor)
+;                 bit 1: air temperature sensor reading out of range at start (ProcessAirTemp)
+;                 bit 0: air temperature sensor reading out of range at start, second kind (ProcessAirTemp)
 O2InactiveTimer  equ $0207        ; $F8207
 FuelLevelFlags2  equ $0211        ; $F8211
 ;                 bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
@@ -446,6 +460,13 @@ FaultPending2    equ $0239        ; $F8239
 FaultPendingCount1 equ $023A        ; $F823A
 FaultPendingCount2 equ $023B        ; $F823B
 O2TestFlags      equ $0241        ; $F8241
+;                 bit 7: O2 idle monitor pass done this main loop pass (O2IdleMonitor, cleared by ObdMonitorMain)
+;                 bit 6: O2 idle monitor with the idle target raised (O2IdleMonitor)
+;                 bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
+;                 bit 3: O2 activity test step bit (O2ActivityWarm)
+;                 bit 2: O2 activity test step bit (O2ActivityWarm)
+;                 bit 1: O2 activity test step bit (O2ActivityWarm)
+;                 bit 0: O2 activity test step bit (O2ActivityWarm)
 CamCrankStable   equ $0250        ; $F8250
 CamCrankFlags    equ $0255        ; $F8255
 ;                 bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
@@ -478,6 +499,13 @@ FuelSysDelay2    equ $026F        ; $F826F
 FuelSysRichFaults equ $0270        ; $F8270
 FuelSysLeanFaults equ $0272        ; $F8272
 CatMonFlags      equ $0276        ; $F8276
+;                 bit 7: catalyst monitor conditions to be rechecked (CatMonitorSetup, CatMonSwitchRatio)
+;                 bit 5: catalyst monitor condition bit (CatMonConditions)
+;                 bit 4: catalyst monitor condition bit (CatMonConditions)
+;                 bit 3: catalyst monitor window met (CatMonConditions)
+;                 bit 2: O2 switching suitable for the catalyst test (CatMonConditions)
+;                 bit 1: steady cruise long enough (CatMonCruiseTime, CatMonConditions)
+;                 bit 0: coolant at or above CatMonCoolantMin (CatMonConditions)
 CatMonSteadyTimer equ $027A        ; $F827A
 SegmentRpm       equ $0286        ; $F8286
 MisfireRpmRef    equ $0288        ; $F8288
@@ -557,6 +585,10 @@ EventOption      equ $0301        ; $F8301
 EventOptionTimer equ $0302        ; $F8302
 MisfireHoldRpmValue equ $030C        ; $F830C
 LimpFlags        equ $0310        ; $F8310
+;                 bit 7: vacuum leak / throttle-MAP disagreement confirmed: limp mode (VacuumLeakMonitor)
+;                 bit 6: limp rpm limit taken from LimpRpmMapFault (VacuumLeakMonitor)
+;                 bit 5: engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)
+;                 bit 4: set with bit 5 when the limp rpm limit is reached
 DiagBusFlags     equ $0316        ; $F8316
 ;                 bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
 ;                 bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
@@ -638,7 +670,16 @@ O2StepCount      equ $0408        ; $F8408
 O2ReopenTimer    equ $040A        ; $F840A
 O2PurgeHoldTimer equ $040B        ; $F840B
 O2LearnFlags     equ $040C        ; $F840C
+;                 bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
+;                 bit 1: adaptive cell update: lean step (O2CellUpdate)
+;                 bit 0: adaptive cell update: rich step (O2CellUpdate)
 O2SwitchFlags    equ $040D        ; $F840D
+;                 bit 6: read by ClosedLoopManager
+;                 bit 5: read by ClosedLoopManager
+;                 bit 4: read by O2SwitchState
+;                 bit 2: read by O2CellSelect3x3
+;                 bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
+;                 bit 0: O2 switched (rich/lean change) since the last pass (O2SwitchState)
 O2InactiveFlags  equ $040E        ; $F840E
 ;                 bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)
 ;                 bit 6: bank 2 closed loop held open (as bit 7)
@@ -722,6 +763,10 @@ O2ColdPurgeCounter equ $0460        ; $F8460
 O2ColdLeanCount1 equ $0461        ; $F8461
 O2ColdLeanCount2 equ $0462        ; $F8462
 DecelLeanFlags   equ $0463        ; $F8463
+;                 bit 7: WOT lean condition counted (WotLeanMonitor); closed loop and O2 activity read it
+;                 bit 2: MAP drop past DecelLeanMapDrop: deceleration lean-out by MAP (DecelLeanControl)
+;                 bit 1: deceleration lean-out timer running (DecelLeanControl)
+;                 bit 0: throttle drop past DecelLeanThrottleDrop: deceleration lean-out by throttle (DecelLeanControl)
 DecelLeanTimer   equ $0464        ; $F8464
 DecelLeanMapFactor equ $0467        ; $F8467
 DecelLeanThrottleFactor equ $0468        ; $F8468
@@ -889,6 +934,8 @@ IacAcFlags       equ $05CC        ; $F85CC
 ;                 bit 0: A/C clutch spark rate step (AcClutchSpark, read by AcSparkRate)
 IdleRpmRefStart  equ $05CD        ; $F85CD
 MtvFlags         equ $05CF        ; $F85CF
+;                 bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+;                 bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
 MtvPeriodCount   equ $05D0        ; $F85D0
 MtvSwitchTime    equ $05D1        ; $F85D1
 EepromAddr       equ $05FA        ; $F85FA

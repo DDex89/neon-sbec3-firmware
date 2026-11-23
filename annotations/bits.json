@@ -72,6 +72,15 @@
   "2": "cam/crank relation measured: offset under $0320 (CamCrankRelation)",
   "1": "engine steady long enough to measure the cam/crank relation (MonSteadyTimeMin)"
  },
+ "CatMonFlags": {
+  "7": "catalyst monitor conditions to be rechecked (CatMonitorSetup, CatMonSwitchRatio)",
+  "5": "catalyst monitor condition bit (CatMonConditions)",
+  "4": "catalyst monitor condition bit (CatMonConditions)",
+  "3": "catalyst monitor window met (CatMonConditions)",
+  "2": "O2 switching suitable for the catalyst test (CatMonConditions)",
+  "1": "steady cruise long enough (CatMonCruiseTime, CatMonConditions)",
+  "0": "coolant at or above CatMonCoolantMin (CatMonConditions)"
+ },
  "CcdBusFlags": {
   "7": "bus ready for the next message (CcdReceive, Irq4BusHandler, Irq2BusHandler)",
   "6": "byte transmission in progress (BusTxStart, Irq4BusHandler)",
@@ -154,6 +163,12 @@
   "6": "at least one reference event since the engine started turning (Isr_GPT_IC1)",
   "5": "pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP",
   "2": "set with bit 7 by Isr_GPT_PAI ($84 = synchronised)"
+ },
+ "DecelLeanFlags": {
+  "7": "WOT lean condition counted (WotLeanMonitor); closed loop and O2 activity read it",
+  "2": "MAP drop past DecelLeanMapDrop: deceleration lean-out by MAP (DecelLeanControl)",
+  "1": "deceleration lean-out timer running (DecelLeanControl)",
+  "0": "throttle drop past DecelLeanThrottleDrop: deceleration lean-out by throttle (DecelLeanControl)"
  },
  "DiagBusFlags": {
   "7": "SCI transmit pending (SciPitService, cleared by SciInterrupt)",
@@ -271,6 +286,11 @@
   "2": "speed damping pass done (SpeedDampControl); MisfireTransient reads it",
   "1": "speed damping correction negative (SpeedDampControl)",
   "0": "input capture 4 edge pending (Isr_GPT_IC4OC5)"
+ },
+ "FanBusFlags": {
+  "2": "flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart)",
+  "1": "charge lamp off: no charge fault and battery not low (ChargeLampRequest)",
+  "0": "fan request on the bus (BusTempFlag, output test)"
  },
  "FanFlags": {
   "7": "A/C fan stage bit (FanAcStage)",
@@ -634,6 +654,12 @@
   "1": "second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)",
   "0": "third kind of purge test request (LdpPurgeTestRun)"
  },
+ "LimpFlags": {
+  "7": "vacuum leak / throttle-MAP disagreement confirmed: limp mode (VacuumLeakMonitor)",
+  "6": "limp rpm limit taken from LimpRpmMapFault (VacuumLeakMonitor)",
+  "5": "engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)",
+  "4": "set with bit 5 when the limp rpm limit is reached"
+ },
  "MainLoopPhaseMask": {
   "7": "one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter",
   "6": "one pass in 128 (about 1.5 s)",
@@ -707,6 +733,10 @@
   "1": "barometric pressure below MonEnableBaroMin (altitude)",
   "0": "battery (ambient) temperature below MonEnableBattTempMin"
  },
+ "MtvFlags": {
+  "5": "engine rpm at or above the switch point at $0C06,Z (MtvTiming)",
+  "4": "manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)"
+ },
  "O2ActiveFlags": {
   "7": "upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)",
   "6": "upstream O2 sensor 2 active (as bit 7)",
@@ -724,11 +754,23 @@
   "4": "bank 1 state read by ClosedLoopManager and O2DownEnable, byte writes only",
   "3": "bank 1 state read by the purge ramp and vapour learning, byte writes only"
  },
+ "O2DownFlags": {
+  "7": "body bus message seen after start (BodyBusTimeout)",
+  "5": "fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)",
+  "4": "fuel sender check result, second kind (FuelSenderMonitor; mirrored in MonFlags101 bit 4)",
+  "3": "downstream O2 sensor 1 check state, read by O2CheckEnable",
+  "2": "downstream O2 sensor 2 check state, read by O2CheckEnable"
+ },
  "O2InactiveFlags": {
   "7": "bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)",
   "6": "bank 2 closed loop held open (as bit 7)",
   "1": "rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)",
   "0": "read by ClosedLoopManager"
+ },
+ "O2LearnFlags": {
+  "4": "adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)",
+  "1": "adaptive cell update: lean step (O2CellUpdate)",
+  "0": "adaptive cell update: rich step (O2CellUpdate)"
  },
  "O2ResetFlags": {
   "5": "post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)",
@@ -747,6 +789,23 @@
   "2": "bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)",
   "1": "bank 1 cold trim reset (ClosedLoopTiming)",
   "0": "bank 2 cold trim reset (ClosedLoopTiming)"
+ },
+ "O2SwitchFlags": {
+  "6": "read by ClosedLoopManager",
+  "5": "read by ClosedLoopManager",
+  "4": "read by O2SwitchState",
+  "2": "read by O2CellSelect3x3",
+  "1": "upstream O2 step count reached: trim step due (O2UpdateUpstream)",
+  "0": "O2 switched (rich/lean change) since the last pass (O2SwitchState)"
+ },
+ "O2TestFlags": {
+  "7": "O2 idle monitor pass done this main loop pass (O2IdleMonitor, cleared by ObdMonitorMain)",
+  "6": "O2 idle monitor with the idle target raised (O2IdleMonitor)",
+  "4": "O2 activity test running: heater/output switched (O2ActivityWarm)",
+  "3": "O2 activity test step bit (O2ActivityWarm)",
+  "2": "O2 activity test step bit (O2ActivityWarm)",
+  "1": "O2 activity test step bit (O2ActivityWarm)",
+  "0": "O2 activity test step bit (O2ActivityWarm)"
  },
  "Options0328": {
   "1": "security variant: selects a branch in SecurityState",
@@ -1099,6 +1158,12 @@
   "1": "low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)",
   "0": "EGR spark correction applied (EgrSparkCalc, cleared by EgrEnable)"
  },
+ "SparkFlags3": {
+  "7": "spark period at or below $7D00: idle spark range (IdleSparkControl)",
+  "6": "idle spark correction active (IdleSparkControl); SurgeControl reads it",
+  "1": "low-rpm event state (Isr_GPT_IC1)",
+  "0": "spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)"
+ },
  "SpeedCtlFlags": {
   "7": "switch command from bit 5 of the switch byte (SpeedCtlShift)",
   "6": "switch command from bit 4 of the switch byte (SpeedCtlShift)",
@@ -1123,6 +1188,14 @@
   "5": "set at reset, on cancel and on engage; meaning not settled",
   "4": "coast hold, probably (after SpeedCtlCoastHoldTime)",
   "0": "set or resume engaged, probably"
+ },
+ "StartFlags": {
+  "5": "coolant sensor reading out of range at start (ProcessCoolantTemp)",
+  "4": "coolant sensor reading out of range at start, second kind (ProcessCoolantTemp)",
+  "3": "hot start: coolant at reset at or above HotStartCoolantMin",
+  "2": "thermostat fault reported this drive cycle (ThermostatMonitor)",
+  "1": "air temperature sensor reading out of range at start (ProcessAirTemp)",
+  "0": "air temperature sensor reading out of range at start, second kind (ProcessAirTemp)"
  },
  "SwitchInputs": {
   "0": "brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)"
@@ -1177,6 +1250,12 @@
   "7": "engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)",
   "6": "second tuning valve switch timer running (TuneValve2Period)",
   "5": "second tuning valve on (mirrors IoDriver66 bit 13)"
+ },
+ "VacLeakFlags": {
+  "4": "vacuum leak confirmed (set with LimpFlags bit 7)",
+  "3": "VSS pulse calculation hit a zero step (VssPulseCalc)",
+  "1": "cam/crank offset to be stored, second kind (CamCrankRelation)",
+  "0": "cam/crank offset to be stored, first kind (CamCrankRelation)"
  },
  "VssFlags": {
   "4": "vehicle speed reading valid (set at reset and by CalcVehicleSpeed)",

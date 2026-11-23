@@ -12420,15 +12420,15 @@ L0A296:
         BEQ     L0A2AA
         TSTB
         BNE     L0A2AA
-        BRCLR   >SparkFlags3,Z,#$01,L0A2B0
+        BRCLR   >SparkFlags3,Z,#$01,L0A2B0               ; bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
 L0A2AA:
-        BCLR    >SparkFlags3,Z,#$02
+        BCLR    >SparkFlags3,Z,#$02                      ; bit 1: low-rpm event state (Isr_GPT_IC1)
         BRA     L0A2B4
 L0A2B0:
-        BSET    >SparkFlags3,Z,#$02
+        BSET    >SparkFlags3,Z,#$02                      ; bit 1: low-rpm event state (Isr_GPT_IC1)
 L0A2B4:
         PULM    D
-        BRCLR   >SparkFlags3,Z,#$02,L0A2D2
+        BRCLR   >SparkFlags3,Z,#$02,L0A2D2               ; bit 1: low-rpm event state (Isr_GPT_IC1)
         JSR     RpmEventFilterRead
         BCC     L0A2C4
         LDAA    #$01
@@ -12445,7 +12445,7 @@ L0A2D6:
         STE     $0D8E,Z
         CPD     #$5DC0
         BLS     L0A2EC
-        BSET    >SparkFlags3,Z,#$01
+        BSET    >SparkFlags3,Z,#$01                      ; bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
 L0A2EC:
         BSET    >SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
         JSR     FuelEventCalc
@@ -12622,7 +12622,7 @@ L0A4EE:
         LDE     #$0177
         STE     >IoFanPwmB,Z
 L0A500:
-        BRCLR   >O2SwitchFlags,Z,#$02,L0A514
+        BRCLR   >O2SwitchFlags,Z,#$02,L0A514             ; bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
         LDAA    >PORTF0,Z
         ANDA    #$1F
         STAA    >PORTF0,Z
@@ -12635,7 +12635,7 @@ L0A516:
         JSR     CrankPeriodDelta2
         STAA    $0ADD,Z
         CLR     >CrankPeriodWork,Z
-        BRSET   >SparkFlags3,Z,#$02,L0A534
+        BRSET   >SparkFlags3,Z,#$02,L0A534               ; bit 1: low-rpm event state (Isr_GPT_IC1)
         STAA    >RefPeriod,Z
         STE     >RefPeriodLow,Z
 L0A534:
@@ -12778,7 +12778,7 @@ L0A6B0:
         STAA    >TFLG1,Z
 L0A6C8:
         BRCLR   >ADCSTAT,Z,#$80,L0A6C8
-        BRSET   >O2SwitchFlags,Z,#$02,L0A6E6
+        BRSET   >O2SwitchFlags,Z,#$02,L0A6E6             ; bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
         LDAB    >RJURR0_L,Z
         STAB    >O2UpBank1Raw,Z
         LDAB    >RJURR1_L,Z
@@ -14475,7 +14475,7 @@ L0C600:
         BRSET   >FuelModeFlags2,Z,#$80,L0C60A            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
         CLRW    $079E,Z
 L0C60A:
-        BRCLR   >StartFlags,Z,#$08,L0C63E
+        BRCLR   >StartFlags,Z,#$08,L0C63E                ; bit 3: hot start: coolant at reset at or above HotStartCoolantMin
         BRCLR   >FuelModeFlags2,Z,#$08,L0C62E            ; bit 3: idle enrichment active: MAP below IdleFuelMapMax (IdleEnrichment)
         BRSET   >ThrottleState,Z,#$40,L0C62E             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >IdleFuelUpCount,Z
@@ -16044,7 +16044,7 @@ L0D8F4:
         LDAA    >CoolantTemp,Z
         CMPA    >HotStartCoolantMin
         BCS     L0D914
-        BSET    >StartFlags,Z,#$08
+        BSET    >StartFlags,Z,#$08                       ; bit 3: hot start: coolant at reset at or above HotStartCoolantMin
 L0D914:
         LDAB    >AcSensorFaultValue
         LDAA    >AcSensorRaw,Z
@@ -16110,7 +16110,7 @@ L0D9C2:
         STAA    >MtvPeriodCount,Z
         LDD     #$FFFF
         STD     >MtvSwitchTime,Z
-        BSET    >MtvFlags,Z,#$10
+        BSET    >MtvFlags,Z,#$10                         ; bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
         LDAA    >PurgeDelayInit
         STAA    >PurgeStartRamp,Z
         LDAA    #$64

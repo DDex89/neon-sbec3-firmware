@@ -1614,7 +1614,7 @@ L1108E:
         BEQ     L110A8
         STAA    >EngineOffTimeStart,Z
 L110A8:
-        BRCLR   >StartFlags,Z,#$08,L111CC
+        BRCLR   >StartFlags,Z,#$08,L111CC                ; bit 3: hot start: coolant at reset at or above HotStartCoolantMin
         BRCLR   >SensorFaultFlags,Z,#$B0,L110B8          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         LBRA    L111CC
 L110B8:
@@ -2560,7 +2560,7 @@ L11A8C:
 L11A90:
         TST     >SpeedCtlRpmJumpTimer,Z
         LBNE    L11BEA
-        BRSET   >LimpFlags,Z,#$20,L11BEA
+        BRSET   >LimpFlags,Z,#$20,L11BEA                 ; bit 5: engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)
         BRSET   >SecurityFlags,Z,#$20,L11BEA             ; bit 5: SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)
         BRSET   >FuelModeFlags2,Z,#$10,L11BEA            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
         BRSET   >EventFlags,Z,#$10,L11BEA
@@ -2966,7 +2966,7 @@ L11EAE:
         CLR     $07BD,Z
         CLR     $07BE,Z
         CLR     >DecelLeanAir,Z
-        BCLR    >DecelLeanFlags,Z,#$07
+        BCLR    >DecelLeanFlags,Z,#$07                   ; bit 2: MAP drop past DecelLeanMapDrop: deceleration lean-out by MAP (DecelLeanControl); bit 1: deceleration lean-out timer running (DecelLeanControl); bit 0: throttle drop past DecelLeanThrottleDrop: deceleration lean-out by throttle (DecelLeanControl)
         LBRA    L120C4
 L11ED6:
         LDAA    >ThrottleLast,Z
@@ -2975,23 +2975,23 @@ L11ED6:
         CMPA    >DecelLeanThrottleDrop
         BCC     L11EFA
 L11EE6:
-        BCLR    >DecelLeanFlags,Z,#$01
+        BCLR    >DecelLeanFlags,Z,#$01                   ; bit 0: throttle drop past DecelLeanThrottleDrop: deceleration lean-out by throttle (DecelLeanControl)
         CLR     $07BE,Z
         CLR     >DecelLeanAir,Z
         CLR     >DecelLeanThrottleFactor,Z
         LBRA    L11F92
 L11EFA:
-        BSET    >DecelLeanFlags,Z,#$01
+        BSET    >DecelLeanFlags,Z,#$01                   ; bit 0: throttle drop past DecelLeanThrottleDrop: deceleration lean-out by throttle (DecelLeanControl)
         STAA    $07BE,Z
         CMPA    >DecelLeanDropMin
         BCS     L11F22
         LDAA    >Count3s,Z
         CMPA    #$40
         BCC     L11F22
-        BRSET   >DecelLeanFlags,Z,#$02,L11F22
+        BRSET   >DecelLeanFlags,Z,#$02,L11F22            ; bit 1: deceleration lean-out timer running (DecelLeanControl)
         LDAA    >DecelLeanTimerInit
         STAA    >DecelLeanTimer,Z
-        BSET    >DecelLeanFlags,Z,#$02
+        BSET    >DecelLeanFlags,Z,#$02                   ; bit 1: deceleration lean-out timer running (DecelLeanControl)
 L11F22:
         LDAA    >EngineRpm,Z
         LDX     #DecelLeanRpmScale
@@ -3040,12 +3040,12 @@ L11F92:
         CMPB    >DecelLeanMapDrop
         BCC     L11FB0
 L11FA2:
-        BCLR    >DecelLeanFlags,Z,#$04
+        BCLR    >DecelLeanFlags,Z,#$04                   ; bit 2: MAP drop past DecelLeanMapDrop: deceleration lean-out by MAP (DecelLeanControl)
         CLR     $07BD,Z
         CLR     >DecelLeanMapFactor,Z
         BRA     L11FF6
 L11FB0:
-        BSET    >DecelLeanFlags,Z,#$04
+        BSET    >DecelLeanFlags,Z,#$04                   ; bit 2: MAP drop past DecelLeanMapDrop: deceleration lean-out by MAP (DecelLeanControl)
         STAB    $07BD,Z
         LDAA    >EngineRpm,Z
         CMPA    >DecelLeanRpmMin
@@ -3073,7 +3073,7 @@ L11FF2:
 L11FF6:
         TST     >DecelLeanTimer,Z
         BEQ     L12042
-        BRCLR   >DecelLeanFlags,Z,#$05,L12042
+        BRCLR   >DecelLeanFlags,Z,#$05,L12042            ; bit 2: MAP drop past DecelLeanMapDrop: deceleration lean-out by MAP (DecelLeanControl); bit 0: throttle drop past DecelLeanThrottleDrop: deceleration lean-out by throttle (DecelLeanControl)
         LDD     >IdleTarget,Z
         ADDD    >DecelLeanRpmMargin
         CPD     >EngineRpm,Z
@@ -3092,12 +3092,12 @@ L11FF6:
         BEQ     L12042
         DEC     >DecelLeanTimer,Z
         BNE     L1204E
-        BCLR    >DecelLeanFlags,Z,#$02
+        BCLR    >DecelLeanFlags,Z,#$02                   ; bit 1: deceleration lean-out timer running (DecelLeanControl)
         BRA     L1204E
 L12042:
         CLR     >DecelLeanTimeFactor,Z
         CLR     >DecelLeanTimer,Z
-        BCLR    >DecelLeanFlags,Z,#$02
+        BCLR    >DecelLeanFlags,Z,#$02                   ; bit 1: deceleration lean-out timer running (DecelLeanControl)
 L1204E:
         LDAA    >DecelLeanMapFactor,Z
         CMPA    >DecelLeanThrottleFactor,Z
@@ -4077,7 +4077,7 @@ LimitReasonCode:
         BRSET   >LimitCauseFlags,Z,#$80,L12AB0
         BRSET   >LimitCauseFlags,Z,#$40,L12AB4
         BRSET   >LimitCauseFlags,Z,#$20,L12AB8
-        BRSET   >LimpFlags,Z,#$20,L12ABC
+        BRSET   >LimpFlags,Z,#$20,L12ABC                 ; bit 5: engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)
         BRSET   >IdleFlareFlags,Z,#$40,L12AC0            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         BRSET   >SecurityFlags,Z,#$20,L12AC4             ; bit 5: SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)
         BRSET   >FuelModeFlags2,Z,#$10,L12AC8            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
@@ -4578,7 +4578,7 @@ L14268:
         LDAB    #$0F
         TBXK
         LDX     #$8700
-        BCLR    >O2SwitchFlags,Z,#$02
+        BCLR    >O2SwitchFlags,Z,#$02                    ; bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
         INC     >O2StepCount,Z
         BNE     L1427E
         DEC     >O2StepCount,Z
@@ -4587,7 +4587,7 @@ L1427E:
         CMPA    >O2StepCount,Z
         BCC     L14290
         CLR     >O2StepCount,Z
-        BSET    >O2SwitchFlags,Z,#$02
+        BSET    >O2SwitchFlags,Z,#$02                    ; bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
 L14290:
         BRSET   >Options032F,#$20,L142A2                 ; bit 5: downstream O2 sensor 1 fitted
         LDAA    $075A,Z
@@ -4613,7 +4613,7 @@ L142C6:
 O2UpdateDownstream:
         BRSET   >Options032C,#$80,L1430A                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         BRCLR   >EngineStateFlags,Z,#$80,L1430A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >O2SwitchFlags,Z,#$02,L142FE
+        BRCLR   >O2SwitchFlags,Z,#$02,L142FE             ; bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
         BRCLR   >Options032F,#$20,L142EC                 ; bit 5: downstream O2 sensor 1 fitted
         LDAB    #$0F
         TBXK
@@ -4662,7 +4662,7 @@ L14342:
 L14346:
         LDAA    <Scratch0,Z
         STAA    >O2SwitchFlags,Z
-        BRCLR   >O2SwitchFlags,Z,#$04,L1435E
+        BRCLR   >O2SwitchFlags,Z,#$04,L1435E             ; bit 2: read by O2CellSelect3x3
         LDAB    #$0A
         BRSET   >DriveFlags,Z,#$20,L143BC                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDAB    #$09
@@ -5436,11 +5436,11 @@ L14B18:
         BSET    <Scratch0,Z,#$50
         BSET    <Scratch1,Z,#$50
 L14B30:
-        BRCLR   >O2SwitchFlags,Z,#$20,L14B50
+        BRCLR   >O2SwitchFlags,Z,#$20,L14B50             ; bit 5: read by ClosedLoopManager
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    <Scratch0,Z,#$20
         BSET    <Scratch1,Z,#$20
-        BRCLR   >O2SwitchFlags,Z,#$40,L14B50
+        BRCLR   >O2SwitchFlags,Z,#$40,L14B50             ; bit 6: read by ClosedLoopManager
         BSET    <Scratch0,Z,#$80
         BSET    <Scratch1,Z,#$80
 L14B50:
@@ -6142,7 +6142,7 @@ O2SwitchState:
         ANDA    #$08
         STAA    >Temp4F0,Z
         BCLR    $1D,X,#$08
-        BCLR    >O2SwitchFlags,Z,#$01
+        BCLR    >O2SwitchFlags,Z,#$01                    ; bit 0: O2 switched (rich/lean change) since the last pass (O2SwitchState)
         LDAA    $14,X
         CMPA    $08,X
         BCC     L15344
@@ -6164,7 +6164,7 @@ L15348:
         ANDA    #$08
         EORA    >Temp4F0,Z
         BEQ     L1535A
-        BSET    >O2SwitchFlags,Z,#$01
+        BSET    >O2SwitchFlags,Z,#$01                    ; bit 0: O2 switched (rich/lean change) since the last pass (O2SwitchState)
         BSET    $1E,X,#$C0
 L1535A:
         LDAA    $1E,X
@@ -6348,7 +6348,7 @@ L154EC:
         PSHM    D,E,Y,K
         ABY
         AEY
-        BRCLR   >O2SwitchFlags,Z,#$10,L15506
+        BRCLR   >O2SwitchFlags,Z,#$10,L15506             ; bit 4: read by O2SwitchState
         TPD
         TBYK
         LDY     $00,Y
@@ -6509,7 +6509,7 @@ L15668:
         LDE     #$8000
 L1566C:
         PSHM    E
-        BRCLR   >O2SwitchFlags,Z,#$01,L1567A
+        BRCLR   >O2SwitchFlags,Z,#$01,L1567A             ; bit 0: O2 switched (rich/lean change) since the last pass (O2SwitchState)
         CLR     $1B,X
         LDAA    $19,X
         STAA    $1A,X
@@ -7090,7 +7090,7 @@ L15C2C:
         JSR     O2CellUpdate
         BRCLR   >O2ActiveFlags,Z,#$08,L15C6A             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
         BRSET   >O2ActiveFlags,Z,#$04,L15C76             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
-        BRSET   >O2LearnFlags,Z,#$10,L15C66
+        BRSET   >O2LearnFlags,Z,#$10,L15C66              ; bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
         LDAA    >O2AdaptValue1,Z
         STAA    >O2AdaptValue2,Z
 L15C66:
@@ -7112,7 +7112,7 @@ L15C76:
         JSR     O2CellUpdate
         BRCLR   >O2ActiveFlags,Z,#$04,L15CFA             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
         BRSET   >O2ActiveFlags,Z,#$08,L15CFA             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
-        BRSET   >O2LearnFlags,Z,#$10,L15CB0
+        BRSET   >O2LearnFlags,Z,#$10,L15CB0              ; bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
         LDAA    >O2AdaptValue2,Z
         STAA    >O2AdaptValue1,Z
 L15CB0:
@@ -7121,7 +7121,7 @@ L15CB2:
         CLRA
         STAA    >O2CellWork,Z
         STAA    >O2LearnTimer2,Z
-        BRSET   >O2LearnFlags,Z,#$10,L15CCA
+        BRSET   >O2LearnFlags,Z,#$10,L15CCA              ; bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
         STAA    >O2AdaptValue1,Z
         STAA    >O2AdaptValue2,Z
 L15CCA:
@@ -7238,14 +7238,14 @@ L15DE8:
         LDAB    <Scratch2,Z
         BPL     L15DFE
         NEGA
-        BRCLR   >O2LearnFlags,Z,#$10,L15DFE
-        BSET    >O2LearnFlags,Z,#$02
-        BCLR    >O2LearnFlags,Z,#$01
+        BRCLR   >O2LearnFlags,Z,#$10,L15DFE              ; bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
+        BSET    >O2LearnFlags,Z,#$02                     ; bit 1: adaptive cell update: lean step (O2CellUpdate)
+        BCLR    >O2LearnFlags,Z,#$01                     ; bit 0: adaptive cell update: rich step (O2CellUpdate)
         BRA     L15E0C
 L15DFE:
-        BRCLR   >O2LearnFlags,Z,#$10,L15E0C
-        BSET    >O2LearnFlags,Z,#$01
-        BCLR    >O2LearnFlags,Z,#$02
+        BRCLR   >O2LearnFlags,Z,#$10,L15E0C              ; bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
+        BSET    >O2LearnFlags,Z,#$01                     ; bit 0: adaptive cell update: rich step (O2CellUpdate)
+        BCLR    >O2LearnFlags,Z,#$02                     ; bit 1: adaptive cell update: lean step (O2CellUpdate)
 L15E0C:
         LDAB    >O2AdaptMax
         ADDA    $00,X
@@ -7263,7 +7263,7 @@ L15E1E:
 L15E2A:
         TBA
 L15E2C:
-        BRSET   >O2LearnFlags,Z,#$10,L15E3A
+        BRSET   >O2LearnFlags,Z,#$10,L15E3A              ; bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
         STAA    $00,X
         TST     <Scratch0,Z
         BEQ     L15E3A
@@ -7291,7 +7291,7 @@ L15E56:
 L15E66:
         TED
 L15E68:
-        BRSET   >O2LearnFlags,Z,#$10,L15E82
+        BRSET   >O2LearnFlags,Z,#$10,L15E82              ; bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
         JSR     TrimLimits
         CPX     #$805A
         BEQ     L15E7E
@@ -7304,7 +7304,7 @@ L15E82:
 L15E84:
         LDAA    $00,X
 L15E86:
-        BRSET   >DecelLeanFlags,Z,#$80,L15E92
+        BRSET   >DecelLeanFlags,Z,#$80,L15E92            ; bit 7: WOT lean condition counted (WotLeanMonitor); closed loop and O2 activity read it
         BRCLR   >DecelFuelFactor,Z,#$FF,L15E96
 L15E92:
         BPL     L15E96
@@ -7330,7 +7330,7 @@ L15EAC:
 L15EBC:
         TED
 L15EBE:
-        BRSET   >O2LearnFlags,Z,#$10,L15ED8
+        BRSET   >O2LearnFlags,Z,#$10,L15ED8              ; bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
         JSR     TrimLimits
         CPX     #$806D
         BEQ     L15ED4
@@ -8766,7 +8766,7 @@ L17C74:
 L17C78:
         BRSET   >FlexLearnFlags,Z,#$20,L17CB6            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         BSET    >FlexLearnFlags6,Z,#$40                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
-        BSET    >FanBusFlags,Z,#$04
+        BSET    >FanBusFlags,Z,#$04                      ; bit 2: flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart)
         BCLR    >FlexLearnFlags6,Z,#$30                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 4: cleared with bit 5 by the idle learning steps
         BRSET   >O2Bank1Flags,Z,#$20,L17CB2              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRCLR   >O2ActiveFlags,Z,#$80,L17CB2             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
@@ -8814,7 +8814,7 @@ L17CF4:
 ;---------------------------------------------------------------------------------------------------
 FlexIdleEnable:
         BSET    >FlexLearnFlags6,Z,#$40                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
-        BSET    >FanBusFlags,Z,#$04
+        BSET    >FanBusFlags,Z,#$04                      ; bit 2: flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart)
         BCLR    >FlexLearnFlags6,Z,#$31                  ; bit 5: flex idle learning step active (FlexIdleLearn); bit 4: cleared with bit 5 by the idle learning steps; bit 0: idle learning first step done (FlexIdleLearn)
         BRCLR   >FlexLearnFlags6,Z,#$80,L17D42           ; bit 7: flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)
         BRSET   >O2Bank1Flags,Z,#$20,L17D3A              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
@@ -8844,7 +8844,7 @@ FlexIdleStep:
         CMPA    >FlexLearnCoolantMin3
         BCC     L17D62
         BSET    >FlexLearnFlags6,Z,#$60                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart); bit 5: flex idle learning step active (FlexIdleLearn)
-        BSET    >FanBusFlags,Z,#$04
+        BSET    >FanBusFlags,Z,#$04                      ; bit 2: flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart)
         CLR     >FlexIdleTimer1,Z
         CLR     >FlexIdleTimer2,Z
         LBRA    L17DFA
@@ -8856,7 +8856,7 @@ L17D62:
         BSET    >FlexLearnFlags9,Z,#$02
         CLR     >FlexIdleTimer2,Z
         BSET    >FlexLearnFlags6,Z,#$60                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart); bit 5: flex idle learning step active (FlexIdleLearn)
-        BSET    >FanBusFlags,Z,#$04
+        BSET    >FanBusFlags,Z,#$04                      ; bit 2: flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart)
         BRA     L17DFA
 L17D82:
         BRCLR   >FlexLearnFlags,Z,#$20,L17E42            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
@@ -8876,7 +8876,7 @@ L17DAA:
 L17DBE:
         BCLR    >FlexLearnFlags6,Z,#$04                  ; bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
         BCLR    >FlexLearnFlags6,Z,#$40                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
-        BCLR    >FanBusFlags,Z,#$04
+        BCLR    >FanBusFlags,Z,#$04                      ; bit 2: flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart)
         CLR     >FlexIdleTimer1,Z
 L17DCE:
         BSET    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
@@ -8925,7 +8925,7 @@ L17E46:
         JSR     IacSetTarget
 L17E5C:
         BSET    >FlexLearnFlags6,Z,#$40                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
-        BSET    >FanBusFlags,Z,#$04
+        BSET    >FanBusFlags,Z,#$04                      ; bit 2: flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart)
         CLR     >FlexIdleTimer1,Z
 L17E68:
         BSET    >FlexLearnFlags6,Z,#$04                  ; bit 2: upstream O2 active for flex learning (FlexColdStart, FlexIdleEnable); read by FlexPulseTrim
@@ -9135,7 +9135,7 @@ L18132:
 L18136:
         BRCLR   >Options0333,#$10,L18144                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
         BSET    >FlexLearnFlags6,Z,#$40                  ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
-        BSET    >FanBusFlags,Z,#$04
+        BSET    >FanBusFlags,Z,#$04                      ; bit 2: flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart)
 L18144:
         LDAA    >FlexEthanolStart,Z
         STAA    >FlexLearnState,Z
@@ -14221,7 +14221,7 @@ L1D016:
         JSR     HighSpeedSparkFlag
         STAA    $0D0B,Z
         JSR     IdleSparkControl
-        BRCLR   >SparkFlags3,Z,#$01,L1D08C
+        BRCLR   >SparkFlags3,Z,#$01,L1D08C               ; bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
         JSR     IdleSparkCalc
 L1D08C:
         LDAB    >FlexSparkValue,Z
@@ -15675,7 +15675,7 @@ L1DF26:
         BRCLR   >MainLoopPhaseMask,Z,#$02,L1DF5A         ; bit 1: one pass in 4 (about 48 ms)
         INC     >SurgeOpenTime,Z
 L1DF5A:
-        BRSET   >SparkFlags3,Z,#$40,L1E12E
+        BRSET   >SparkFlags3,Z,#$40,L1E12E               ; bit 6: idle spark correction active (IdleSparkControl); SurgeControl reads it
         LDAA    >RpmJerk,Z
         BMI     L1DF7C
         CMPA    >SurgeJerkPosMin
@@ -16005,7 +16005,7 @@ SparkEventCalc:
         LDD     >SparkPeriod,Z
         CPD     #$5DC0
         BLS     L1E2CA
-        BSET    >SparkFlags3,Z,#$01
+        BSET    >SparkFlags3,Z,#$01                      ; bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
         BRA     L1E2CE
 L1E2CA:
         JSR     IdleSparkCalc
@@ -16375,10 +16375,10 @@ L1E6AE:
         LDD     >SparkPeriod,Z
         CPD     #$7D00
         BHI     L1E726
-        BSET    >SparkFlags3,Z,#$80
+        BSET    >SparkFlags3,Z,#$80                      ; bit 7: spark period at or below $7D00: idle spark range (IdleSparkControl)
         CPD     #$5780
         BHI     L1E6CC
-        BCLR    >SparkFlags3,Z,#$01
+        BCLR    >SparkFlags3,Z,#$01                      ; bit 0: spark period above $5DC0: low rpm (Isr_GPT_IC1, SparkEventCalc)
 L1E6CC:
         LDAA    >IdleSparkSteps,Z
         CMPA    >IdleSparkRpmRateMax
@@ -16404,12 +16404,12 @@ L1E702:
         BNE     L1E72A
         BRSET   >IdleFlareFlags,Z,#$80,L1E72A            ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         BRSET   >ThrottleState,Z,#$01,L1E72A             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
-        BSET    >SparkFlags3,Z,#$40
+        BSET    >SparkFlags3,Z,#$40                      ; bit 6: idle spark correction active (IdleSparkControl); SurgeControl reads it
         BRA     L1E750
 L1E726:
-        BCLR    >SparkFlags3,Z,#$80
+        BCLR    >SparkFlags3,Z,#$80                      ; bit 7: spark period at or below $7D00: idle spark range (IdleSparkControl)
 L1E72A:
-        BCLR    >SparkFlags3,Z,#$40
+        BCLR    >SparkFlags3,Z,#$40                      ; bit 6: idle spark correction active (IdleSparkControl); SurgeControl reads it
         LDD     >SparkPeriod,Z
         STD     $0D96,Z
         CLRD
@@ -16427,8 +16427,8 @@ L1E750:
 ; Called from: CalcSpark, SparkEventCalc
 ;---------------------------------------------------------------------------------------------------
 IdleSparkCalc:
-        BRCLR   >SparkFlags3,Z,#$80,L1E806
-        BRCLR   >SparkFlags3,Z,#$40,L1E806
+        BRCLR   >SparkFlags3,Z,#$80,L1E806               ; bit 7: spark period at or below $7D00: idle spark range (IdleSparkControl)
+        BRCLR   >SparkFlags3,Z,#$40,L1E806               ; bit 6: idle spark correction active (IdleSparkControl); SurgeControl reads it
         PSHM    D,E,X
         LDD     >SparkPeriod,Z
         SUBD    $0D96,Z

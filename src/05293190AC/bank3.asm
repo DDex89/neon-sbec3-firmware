@@ -5132,7 +5132,7 @@ L338F6:
         CLR     $0653,Z
         CLR     $0654,Z
         CLR     $0655,Z
-        BRSET   >O2TestFlags,Z,#$10,L3391A
+        BRSET   >O2TestFlags,Z,#$10,L3391A               ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         BCLRW   >IoCtl12,Z,#$4000
 L3391A:
         RTS
@@ -7220,7 +7220,7 @@ L35F46:
 L35F4A:
         BRSET   >LdpFlags3,Z,#$08,L35F62                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
         BRSET   >LdpFlags3,Z,#$04,L35F62                 ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
-        BRSET   >O2TestFlags,Z,#$10,L35F62
+        BRSET   >O2TestFlags,Z,#$10,L35F62               ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         BCLRW   >IoCtl12,Z,#$4000
 L35F62:
         RTS
@@ -7256,9 +7256,9 @@ L35FAA:
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
 FanTestToggle:
-        BSET    >FanBusFlags,Z,#$01
+        BSET    >FanBusFlags,Z,#$01                      ; bit 0: fan request on the bus (BusTempFlag, output test)
         BRSET   >MainLoopCounter,Z,#$80,L35FBA
-        BCLR    >FanBusFlags,Z,#$01
+        BCLR    >FanBusFlags,Z,#$01                      ; bit 0: fan request on the bus (BusTempFlag, output test)
 L35FBA:
         RTS
 
@@ -7268,9 +7268,9 @@ L35FBA:
 ;---------------------------------------------------------------------------------------------------
 FanTestToggle2:
         BRCLR   >Options0333,#$20,L35FD0                 ; bit 5: A/C request variant (AcRequestUpdate)
-        BSET    >FanBusFlags,Z,#$04
+        BSET    >FanBusFlags,Z,#$04                      ; bit 2: flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart)
         BRSET   >MainLoopCounter,Z,#$80,L35FD0
-        BCLR    >FanBusFlags,Z,#$04
+        BCLR    >FanBusFlags,Z,#$04                      ; bit 2: flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart)
 L35FD0:
         RTS
 
@@ -12299,10 +12299,10 @@ L3AE1E:
         BLT     L3AE36
         BRSET   >ControlFlags944,Z,#$18,L3AE36           ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test); bit 3: second fan relay, probably; driven only with A/C fitted
 L3AE30:
-        BCLR    >FanBusFlags,Z,#$01
+        BCLR    >FanBusFlags,Z,#$01                      ; bit 0: fan request on the bus (BusTempFlag, output test)
         BRA     L3AE3A
 L3AE36:
-        BSET    >FanBusFlags,Z,#$01
+        BSET    >FanBusFlags,Z,#$01                      ; bit 0: fan request on the bus (BusTempFlag, output test)
 L3AE3A:
         RTS
 

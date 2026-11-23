@@ -4787,13 +4787,13 @@ Sub_131D6:
         CMPA    #$40
         BCC     L13216
 L131EA:
-        BRSET   >StartFlags,Z,#$30,L131FE
+        BRSET   >StartFlags,Z,#$30,L131FE                ; bit 5: coolant sensor reading out of range at start (ProcessCoolantTemp); bit 4: coolant sensor reading out of range at start, second kind (ProcessCoolantTemp)
         LDAB    >StartFlags,Z
         ADDB    #$10
         STAB    >StartFlags,Z
         JMP     L1327C
 L131FE:
-        BCLR    >StartFlags,Z,#$30
+        BCLR    >StartFlags,Z,#$30                       ; bit 5: coolant sensor reading out of range at start (ProcessCoolantTemp); bit 4: coolant sensor reading out of range at start, second kind (ProcessCoolantTemp)
         LDD     >IoCtl12,Z
         EORD    #$0800
         STD     >IoCtl12,Z
@@ -4802,7 +4802,7 @@ L13212:
         CMPA    #$DC
         BCC     L131EA
 L13216:
-        BCLR    >StartFlags,Z,#$30
+        BCLR    >StartFlags,Z,#$30                       ; bit 5: coolant sensor reading out of range at start (ProcessCoolantTemp); bit 4: coolant sensor reading out of range at start, second kind (ProcessCoolantTemp)
         LDY     #$3995
         CMPA    >CoolantRawHigh
         BHI     L13260
@@ -4856,13 +4856,13 @@ L13298:
         CMPA    #$40
         BCC     L132DE
 L132B4:
-        BRSET   >StartFlags,Z,#$03,L132C8
+        BRSET   >StartFlags,Z,#$03,L132C8                ; bit 1: air temperature sensor reading out of range at start (ProcessAirTemp); bit 0: air temperature sensor reading out of range at start, second kind (ProcessAirTemp)
         LDAB    >StartFlags,Z
         ADDB    #$01
         STAB    >StartFlags,Z
         LBRA    L13356
 L132C8:
-        BCLR    >StartFlags,Z,#$03
+        BCLR    >StartFlags,Z,#$03                       ; bit 1: air temperature sensor reading out of range at start (ProcessAirTemp); bit 0: air temperature sensor reading out of range at start, second kind (ProcessAirTemp)
         LDD     >IoCtl12,Z
         EORD    #$1000
         STD     >IoCtl12,Z
@@ -4871,7 +4871,7 @@ L132DA:
         CMPA    #$DC
         BCC     L132B4
 L132DE:
-        BCLR    >StartFlags,Z,#$03
+        BCLR    >StartFlags,Z,#$03                       ; bit 1: air temperature sensor reading out of range at start (ProcessAirTemp); bit 0: air temperature sensor reading out of range at start, second kind (ProcessAirTemp)
         LDY     #$3AA3
         CMPA    >AirTempRawHigh
         BHI     L1332E
@@ -6060,7 +6060,7 @@ L13F02:
 L13F0A:
         BNE     L13F12
         AIX     #$01
-        BSET    <VacLeakFlags,Z,#$08
+        BSET    <VacLeakFlags,Z,#$08                     ; bit 3: VSS pulse calculation hit a zero step (VssPulseCalc)
 L13F12:
         PULM    CCR
         NOP
@@ -6822,12 +6822,12 @@ Sub_1469A:
         MUL
         ADCA    #$00
         STAA    <FanSoakFlags,Z
-        BRSET   >VacLeakFlags,Z,#$10,L146BA
+        BRSET   >VacLeakFlags,Z,#$10,L146BA              ; bit 4: vacuum leak confirmed (set with LimpFlags bit 7)
         LDAA    #$FF
         STAA    <Scratch4,Z
 L146BA:
         BRSET   >SensorFaultFlags,Z,#$10,L1481C          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
-        BCLR    >LimpFlags,Z,#$40
+        BCLR    >LimpFlags,Z,#$40                        ; bit 6: limp rpm limit taken from LimpRpmMapFault (VacuumLeakMonitor)
         BRCLR   >SensorFaultFlags,Z,#$20,L146DC          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
         LDAA    >ThrottleAboveClosed,Z
         LDX     #Tab2D_2C31
@@ -6909,8 +6909,8 @@ L14798:
         INC     $0313,Z
         BRA     L147D4
 L147AE:
-        BSET    >LimpFlags,Z,#$80
-        BSET    <VacLeakFlags,Z,#$10
+        BSET    >LimpFlags,Z,#$80                        ; bit 7: vacuum leak / throttle-MAP disagreement confirmed: limp mode (VacuumLeakMonitor)
+        BSET    <VacLeakFlags,Z,#$10                     ; bit 4: vacuum leak confirmed (set with LimpFlags bit 7)
         LDAA    >ThrottleAboveClosed,Z
         LDX     #Tab2D_2C31
         JSR     Lookup2D
@@ -6921,7 +6921,7 @@ L147AE:
 L147D0:
         CLR     $0313,Z
 L147D4:
-        BRSET   >VacLeakFlags,Z,#$10,L147DE
+        BRSET   >VacLeakFlags,Z,#$10,L147DE              ; bit 4: vacuum leak confirmed (set with LimpFlags bit 7)
         LBRA    L1485A
 L147DE:
         LDAA    >ThrottleAboveClosed,Z
@@ -6938,8 +6938,8 @@ L147DE:
         INC     $0312,Z
         BRA     L1485A
 L1480A:
-        BCLR    >LimpFlags,Z,#$80
-        BCLR    <VacLeakFlags,Z,#$10
+        BCLR    >LimpFlags,Z,#$80                        ; bit 7: vacuum leak / throttle-MAP disagreement confirmed: limp mode (VacuumLeakMonitor)
+        BCLR    <VacLeakFlags,Z,#$10                     ; bit 4: vacuum leak confirmed (set with LimpFlags bit 7)
         LDAA    #$FF
         STAA    <Scratch4,Z
         CLR     $0312,Z
@@ -6956,7 +6956,7 @@ L14832:
         LDAA    #$FF
         STAA    <Scratch4,Z
         BRCLR   >SwitchInputs,Z,#$01,L1485A              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
-        BRCLR   >LimpFlags,Z,#$40,L1485A
+        BRCLR   >LimpFlags,Z,#$40,L1485A                 ; bit 6: limp rpm limit taken from LimpRpmMapFault (VacuumLeakMonitor)
         LDAA    $18,Z
         LDX     #Tab2D_2C27
         JSR     Lookup2D
@@ -6965,21 +6965,21 @@ L14832:
 L14850:
         LDAA    $2C26
         STAA    <Scratch4,Z
-        BSET    >LimpFlags,Z,#$40
+        BSET    >LimpFlags,Z,#$40                        ; bit 6: limp rpm limit taken from LimpRpmMapFault (VacuumLeakMonitor)
 L1485A:
         LDAA    <Scratch4,Z
         STAA    $0311,Z
         LDAA    <EngineRpm,Z
         CMPA    $0311,Z
         BCS     L1486E
-        BSET    >LimpFlags,Z,#$20
+        BSET    >LimpFlags,Z,#$20                        ; bit 5: engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)
         BRA     L14882
 L1486E:
-        BCLR    >LimpFlags,Z,#$20
+        BCLR    >LimpFlags,Z,#$20                        ; bit 5: engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)
         BRA     L14882
 L14874:
-        BCLR    >LimpFlags,Z,#$E0
-        BCLR    <VacLeakFlags,Z,#$10
+        BCLR    >LimpFlags,Z,#$E0                        ; bit 7: vacuum leak / throttle-MAP disagreement confirmed: limp mode (VacuumLeakMonitor); bit 6: limp rpm limit taken from LimpRpmMapFault (VacuumLeakMonitor); bit 5: engine rpm at or above the limp rpm limit: fuel cut (VacuumLeakMonitor; EventCorrections, LimitReasonCode)
+        BCLR    <VacLeakFlags,Z,#$10                     ; bit 4: vacuum leak confirmed (set with LimpFlags bit 7)
 L1487C:
         LDAA    #$FF
         STAA    $0311,Z
@@ -7464,13 +7464,13 @@ L14D68:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_14D6A:
-        BRSET   >StartFlags,Z,#$04,L14DB8
+        BRSET   >StartFlags,Z,#$04,L14DB8                ; bit 2: thermostat fault reported this drive cycle (ThermostatMonitor)
         BRCLR   <EngineStateFlags,Z,#$80,L14DB8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   <SensorFaultFlags,Z,#$80,L14DB8          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         LDAA    $0C,Z
         CMPA    $4152
         BCS     L14D86
-        BSET    >StartFlags,Z,#$04
+        BSET    >StartFlags,Z,#$04                       ; bit 2: thermostat fault reported this drive cycle (ThermostatMonitor)
         BRA     L14DB8
 L14D86:
         LDD     <Count3s,Z
@@ -7486,7 +7486,7 @@ L14D86:
         LDY     #$39A9
         JSR     ReportFault
         BCC     L14DB8
-        BSET    >StartFlags,Z,#$04
+        BSET    >StartFlags,Z,#$04                       ; bit 2: thermostat fault reported this drive cycle (ThermostatMonitor)
         BRA     L14DB8
 L14DB0:
         TSTB
@@ -7506,14 +7506,14 @@ L14DB8:
 Sub_14DFA:
         BRSET   >IoInputs0,Z,#$08,L14FF0                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         BRCLR   >EngineStateFlags,Z,#$80,L14ECC          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >DecelLeanFlags,Z,#$80,L14ECC
+        BRSET   >DecelLeanFlags,Z,#$80,L14ECC            ; bit 7: WOT lean condition counted (WotLeanMonitor); closed loop and O2 activity read it
         LDAA    <Count3s,Z
         CMPA    #$2C
         LBCS    L14ECC
         LDAA    $0C,Z
         CMPA    #$CD
         LBCS    L14ECC
-        BRSET   >O2TestFlags,Z,#$10,L14F20
+        BRSET   >O2TestFlags,Z,#$10,L14F20               ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         TPD
         TBXK
         LDX     #$4DBA
@@ -7553,7 +7553,7 @@ L14E72:
 L14E88:
         CMPA    #$15
         BCS     L14EA2
-        BSET    >O2TestFlags,Z,#$10
+        BSET    >O2TestFlags,Z,#$10                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         LDAB    >O2TestFlags,Z
         ORAB    $0D,X
         STAB    >O2TestFlags,Z
@@ -7581,8 +7581,8 @@ L14EC0:
         LBCS    L14E2A
         BRA     L14EE4
 L14ECC:
-        BCLR    >O2TestFlags,Z,#$0F
-        BCLR    >O2TestFlags,Z,#$10
+        BCLR    >O2TestFlags,Z,#$0F                      ; bit 3: O2 activity test step bit (O2ActivityWarm); bit 2: O2 activity test step bit (O2ActivityWarm); bit 1: O2 activity test step bit (O2ActivityWarm); bit 0: O2 activity test step bit (O2ActivityWarm)
+        BCLR    >O2TestFlags,Z,#$10                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         CLR     $0242,Z
         CLR     $0243,Z
         CLR     $0244,Z
@@ -7663,7 +7663,7 @@ L14FA8:
         LDY     $0E,X
         JSR     ReportFault
         BCC     L14FF0
-        BCLR    >O2TestFlags,Z,#$10
+        BCLR    >O2TestFlags,Z,#$10                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         LDAA    $0B,X
         COMA
         ANDA    >O2LearnFlags,Z
@@ -7742,7 +7742,7 @@ L15080:
         LDAA    $0C,Z
         CMPA    #$CD
         LBCS    L15242
-        BRSET   >O2TestFlags,Z,#$10,L15242
+        BRSET   >O2TestFlags,Z,#$10,L15242               ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         LDAA    <MainLoopCounter,Z
         ANDA    #$0F
         LBNE    L15242
@@ -8010,7 +8010,7 @@ L153A4:
         TBXK
         LDX     #$526C
         BRCLR   >EngineStateFlags,Z,#$80,L15502          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >O2TestFlags,Z,#$10,L15502
+        BRSET   >O2TestFlags,Z,#$10,L15502               ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         LDAA    $18,Z
         CMPA    $0366
         LBCS    L15502
@@ -8399,12 +8399,12 @@ L157D6:
         BCC     L1581E
         BRSET   >CamCrankFlags,Z,#$04,L15822             ; bit 2: cam/crank relation measured: offset under $0320 (CamCrankRelation)
         BSET    >CamCrankFlags,Z,#$04                    ; bit 2: cam/crank relation measured: offset under $0320 (CamCrankRelation)
-        BRSET   >VacLeakFlags,Z,#$02,L15808
-        BRSET   >VacLeakFlags,Z,#$01,L15802
-        BSET    <VacLeakFlags,Z,#$01
+        BRSET   >VacLeakFlags,Z,#$02,L15808              ; bit 1: cam/crank offset to be stored, second kind (CamCrankRelation)
+        BRSET   >VacLeakFlags,Z,#$01,L15802              ; bit 0: cam/crank offset to be stored, first kind (CamCrankRelation)
+        BSET    <VacLeakFlags,Z,#$01                     ; bit 0: cam/crank offset to be stored, first kind (CamCrankRelation)
         BRA     L15822
 L15802:
-        BSET    <VacLeakFlags,Z,#$02
+        BSET    <VacLeakFlags,Z,#$02                     ; bit 1: cam/crank offset to be stored, second kind (CamCrankRelation)
         BRA     L15822
 L15808:
         BRSET   >EepromFlags,Z,#$80,L15822               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -8413,7 +8413,7 @@ L15808:
         STY     >EepromAddr,Z
         CLR     >EepromData,Z
 L1581E:
-        BCLR    <VacLeakFlags,Z,#$03
+        BCLR    <VacLeakFlags,Z,#$03                     ; bit 1: cam/crank offset to be stored, second kind (CamCrankRelation); bit 0: cam/crank offset to be stored, first kind (CamCrankRelation)
 L15822:
         RTS
 
@@ -10607,7 +10607,7 @@ L170D8:
 ;---------------------------------------------------------------------------------------------------
 CatMonitorSetup:
         JSR     CatMonConditions
-        BSET    >CatMonFlags,Z,#$80
+        BSET    >CatMonFlags,Z,#$80                      ; bit 7: catalyst monitor conditions to be rechecked (CatMonitorSetup, CatMonSwitchRatio)
         LDY     #$70DE
         JMP     L17174
         dc.b    $02,$85,$00,$A3,$00,$A4,$00,$A5,$00,$A6,$00,$A7,$02,$81,$02,$83
@@ -10620,10 +10620,10 @@ CatMonitorSetup:
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 CatMonSwitchRatio:
-        BRSET   >CatMonFlags,Z,#$80,L1716C
+        BRSET   >CatMonFlags,Z,#$80,L1716C               ; bit 7: catalyst monitor conditions to be rechecked (CatMonitorSetup, CatMonSwitchRatio)
         JSR     CatMonConditions
 L1716C:
-        BCLR    >CatMonFlags,Z,#$80
+        BCLR    >CatMonFlags,Z,#$80                      ; bit 7: catalyst monitor conditions to be rechecked (CatMonitorSetup, CatMonSwitchRatio)
         LDY     #$7128
 L17174:
         CLRB
@@ -10640,7 +10640,7 @@ L17174:
         BITA    #$80
         LBEQ    L1750A
         BRSET   >DiagStatusFlags,Z,#$01,L1750A           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
-        BRCLR   >CatMonFlags,Z,#$08,L1750A
+        BRCLR   >CatMonFlags,Z,#$08,L1750A               ; bit 3: catalyst monitor window met (CatMonConditions)
         LDAA    >O2LearnFlags,Z
         BITA    $34,Y
         LBEQ    L1750A
@@ -11005,7 +11005,7 @@ L1750A:
         COMB
         ANDB    >CatMonFlags,Z
         STAB    >CatMonFlags,Z
-        BRCLR   >CatMonFlags,Z,#$02,L1752E
+        BRCLR   >CatMonFlags,Z,#$02,L1752E               ; bit 1: steady cruise long enough (CatMonCruiseTime, CatMonConditions)
         CLRA
         LDE     $0012,Y
         STAA    E,Z
@@ -11018,13 +11018,13 @@ L1752E:
 ;---------------------------------------------------------------------------------------------------
 CatMonConditions:
         BRCLR   >EngineStateFlags,Z,#$80,L17640          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >CatMonFlags,Z,#$01,L1754A
+        BRSET   >CatMonFlags,Z,#$01,L1754A               ; bit 0: coolant at or above CatMonCoolantMin (CatMonConditions)
         LDAA    $0C,Z
         CMPA    >CatMonCoolantMin
         LBCS    L17640
-        BSET    >CatMonFlags,Z,#$01
+        BSET    >CatMonFlags,Z,#$01                      ; bit 0: coolant at or above CatMonCoolantMin (CatMonConditions)
 L1754A:
-        BRSET   >CatMonFlags,Z,#$02,L17580
+        BRSET   >CatMonFlags,Z,#$02,L17580               ; bit 1: steady cruise long enough (CatMonCruiseTime, CatMonConditions)
         BRCLR   >MainLoopPhaseMask,Z,#$10,L17640         ; bit 4: one pass in 32 (about 383 ms)
         BRCLR   >ThrottleState,Z,#$80,L17640             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    $18,Z
@@ -11036,12 +11036,12 @@ L1754A:
         INC     >CatMonSteadyTimer,Z
         LBRA    L17640
 L17578:
-        BSET    >CatMonFlags,Z,#$02
+        BSET    >CatMonFlags,Z,#$02                      ; bit 1: steady cruise long enough (CatMonCruiseTime, CatMonConditions)
         CLR     >CatMonSteadyTimer,Z
 L17580:
         BRCLR   >O2ActivityFlags,Z,#$01,L17640
         BRSET   >O2ActivityFlags,Z,#$08,L17640
-        BSET    >CatMonFlags,Z,#$04
+        BSET    >CatMonFlags,Z,#$04                      ; bit 2: O2 switching suitable for the catalyst test (CatMonConditions)
         BRSET   >MonitorDisableFlags,Z,#$04,L17644       ; bit 2: battery voltage at or below MonEnableVoltsMin
         BRSET   >MonitorDisableFlags,Z,#$02,L17644       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
         BRSET   >MonitorDisableFlags,Z,#$01,L17644       ; bit 0: battery (ambient) temperature below MonEnableBattTempMin
@@ -11078,7 +11078,7 @@ L175FE:
         LDY     #$2B99
         LDX     #$2BA3
 L1761A:
-        BRCLR   >CatMonFlags,Z,#$30,L17622
+        BRCLR   >CatMonFlags,Z,#$30,L17622               ; bit 5: catalyst monitor condition bit (CatMonConditions); bit 4: catalyst monitor condition bit (CatMonConditions)
         TXY
 L17622:
         LDAA    >Map,Z
@@ -11091,12 +11091,12 @@ L17622:
         BCS     L17644
         CMPA    $03,Y
         BHI     L17644
-        BSET    >CatMonFlags,Z,#$08
+        BSET    >CatMonFlags,Z,#$08                      ; bit 3: catalyst monitor window met (CatMonConditions)
         JMP     L17648
 L17640:
-        BCLR    >CatMonFlags,Z,#$04
+        BCLR    >CatMonFlags,Z,#$04                      ; bit 2: O2 switching suitable for the catalyst test (CatMonConditions)
 L17644:
-        BCLR    >CatMonFlags,Z,#$08
+        BCLR    >CatMonFlags,Z,#$08                      ; bit 3: catalyst monitor window met (CatMonConditions)
 L17648:
         RTS
 
@@ -11143,8 +11143,8 @@ O2IdleMonitor:
 L176DC:
         LDAB    #$01
         TBYK
-        BRSET   >O2TestFlags,Z,#$80,L1772C
-        BSET    >O2TestFlags,Z,#$80
+        BRSET   >O2TestFlags,Z,#$80,L1772C               ; bit 7: O2 idle monitor pass done this main loop pass (O2IdleMonitor, cleared by ObdMonitorMain)
+        BSET    >O2TestFlags,Z,#$80                      ; bit 7: O2 idle monitor pass done this main loop pass (O2IdleMonitor, cleared by ObdMonitorMain)
         BRCLR   >MainLoopPhaseMask,Z,#$08,L17712         ; bit 3: one pass in 16 (about 191 ms)
         TST     >O2MonRestartTimer,Z
         BEQ     L176FA
@@ -11255,12 +11255,12 @@ L17852:
         LBNE    L1788A
 L1785A:
         BRSET   >IdleFlags,Z,#$40,L1786C                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BRCLR   >O2TestFlags,Z,#$40,L17882
-        BCLR    >O2TestFlags,Z,#$40
+        BRCLR   >O2TestFlags,Z,#$40,L17882               ; bit 6: O2 idle monitor with the idle target raised (O2IdleMonitor)
+        BCLR    >O2TestFlags,Z,#$40                      ; bit 6: O2 idle monitor with the idle target raised (O2IdleMonitor)
         BRA     L17876
 L1786C:
-        BRSET   >O2TestFlags,Z,#$40,L17882
-        BSET    >O2TestFlags,Z,#$40
+        BRSET   >O2TestFlags,Z,#$40,L17882               ; bit 6: O2 idle monitor with the idle target raised (O2IdleMonitor)
+        BSET    >O2TestFlags,Z,#$40                      ; bit 6: O2 idle monitor with the idle target raised (O2IdleMonitor)
 L17876:
         LDAA    >O2MonRestartDelay
         STAA    >O2MonRestartTimer,Z
@@ -17255,7 +17255,7 @@ L1B542:
 L1B546:
         BRSET   >LdpFlags3,Z,#$08,L1B55E                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
         BRSET   >LdpFlags3,Z,#$04,L1B55E                 ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
-        BRSET   >O2TestFlags,Z,#$10,L1B55E
+        BRSET   >O2TestFlags,Z,#$10,L1B55E               ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         BCLRW   >IoCtl12,Z,#$4000
 L1B55E:
         RTS
@@ -19936,7 +19936,7 @@ L1D2A8:
         CLR     $02E6,Z
         CLR     $02E7,Z
         CLR     $02E8,Z
-        BRSET   >O2TestFlags,Z,#$10,L1D2CC
+        BRSET   >O2TestFlags,Z,#$10,L1D2CC               ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         BCLRW   >IoCtl12,Z,#$4000
 L1D2CC:
         RTS
@@ -21499,7 +21499,7 @@ L1E202:
         BRCLR   >MainLoopPhaseMask,Z,#$02,L1E236         ; bit 1: one pass in 4 (about 48 ms)
         INC     >SurgeOpenTime,Z
 L1E236:
-        BRSET   >SparkFlags3,Z,#$40,L1E406
+        BRSET   >SparkFlags3,Z,#$40,L1E406               ; bit 6: idle spark correction active (IdleSparkControl); SurgeControl reads it
         LDAA    >RpmJerk,Z
         BMI     L1E258
         CMPA    >SurgeJerkPosMin
@@ -22606,7 +22606,7 @@ L1F084:
         AIX     #$14
         LBRA    L1EFCA
 L1F08A:
-        BCLR    >O2TestFlags,Z,#$80
+        BCLR    >O2TestFlags,Z,#$80                      ; bit 7: O2 idle monitor pass done this main loop pass (O2IdleMonitor, cleared by ObdMonitorMain)
         LBSR    Sub_1F282
         LBSR    Sub_1F2DC
         LBSR    Sub_1F36E
