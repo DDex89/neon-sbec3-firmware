@@ -13,6 +13,7 @@ Baro             equ $000C        ; $F800C
 SriMileage       equ $000D        ; $F800D
 IacPosition      equ $0018        ; $F8018
 IdleMapLearned   equ $002A        ; $F802A
+EgrZeroPos       equ $0040        ; $F8040
 EngineOffTime    equ $017C        ; $F817C
 Temp3            equ $0195        ; $F8195
 FlexSensorStart  equ $0196        ; $F8196

@@ -6476,7 +6476,7 @@ L35898:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3589E ($3589E)
-; Called from: Sub_334B0, Sub_3569A, Sub_3589E, Sub_36580, Sub_3663A, Sub_366FC, Sub_3697C, Sub_39000 (13 calls)
+; Called from: Sub_334B0, Sub_3569A, Sub_3589E, Sub_36580, Sub_3663A, Sub_366FC, Sub_3697C, RunModeSwitch (13 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_3589E:
         BRCLR   >SCSR,Z,#$01,Sub_3589E
@@ -9378,10 +9378,10 @@ L38AF8:
         dc.b    $FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_39000 ($39000)
+; RunModeSwitch ($39000)
 ; Called from: Sub_0DC40
 ;---------------------------------------------------------------------------------------------------
-Sub_39000:
+RunModeSwitch:
         LDAA    $0933,Z
         CMPA    #$01
         LBEQ    L39172
@@ -9476,24 +9476,24 @@ L3910A:
         LDE     $7748
         BRA     L39126
 L39116:
-        LDE     >SensorValue17
+        LDE     >RunModeTimeWarm
         LDAA    >CoolantTemp,Z
         CMPA    #$8F
         BCC     L39126
-        LDE     >SensorValue18
+        LDE     >RunModeTimeCold
 L39126:
-        LDAB    >SensorValue19
+        LDAB    >RunModeCount
         LDAA    >BatteryVolts2,Z
         CMPA    #$B2
         BRSET   $0C33,Z,#$20,L39144
         BCC     L3914A
-        CPE     >SensorValue17
+        CPE     >RunModeTimeWarm
         BEQ     L3914A
-        LDAB    >SensorValue20
+        LDAB    >RunModeCountColdLowVolts
         BRA     L3914A
 L39144:
         BCS     L3914A
-        LDAB    >SensorV0ABCThresh
+        LDAB    >RunModeCountRunning
 L3914A:
         CMPB    $0ABC,Z
         BHI     L3915C
@@ -9594,14 +9594,14 @@ L39270:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_39272 ($39272)
+; AcClutchControl ($39272)
 ; Called from: Sub_0DC40
 ;---------------------------------------------------------------------------------------------------
-Sub_39272:
+AcClutchControl:
         BRCLR   >Options032D,#$20,L39288
         BRCLR   $0503,Z,#$01,L39288
         LDAA    >BatteryTemp,Z
-        CMPA    >SensorBatteryTempThresh1
+        CMPA    >AcBattTempMinFault
         BLS     L392E8
 L39288:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L39410
@@ -9617,15 +9617,15 @@ L392A0:
         BITB    #$0C
         BNE     L392D8
         BRSET   $0C22,Z,#$10,L392C6
-        CMPA    >IacAcSensorThresh
+        CMPA    >AcPressureHighCut
         BCC     L392DE
-        CMPA    >SensorThresh3
+        CMPA    >AcPressureLowCut
         BCS     L392D8
         BRA     L392D2
 L392C6:
-        CMPA    >SensorThresh5
+        CMPA    >AcPressureHighRestore
         BCC     L392DE
-        CMPA    >SensorThresh4
+        CMPA    >AcPressureLowRestore
         BCS     L392D8
 L392D2:
         BCLR    $0C22,Z,#$10
@@ -9683,11 +9683,11 @@ L3937C:
         BSET    $0C22,Z,#$02
 L39386:
         LDAA    >BatteryTemp,Z
-        CMPA    >SensorBatteryTempThresh2
+        CMPA    >AcCycleBattTempMin
         BLS     L393A2
-        CMPA    >SensorBatteryTempThresh3
+        CMPA    >AcCycleBattTempMax
         BCC     L393A2
-        CMPB    >SensorThresh2
+        CMPB    >AcCycleTimeMin
         BCS     L39404
         BCLR    $0C22,Z,#$02
         BRA     L393D8
@@ -10381,7 +10381,7 @@ L39B9C:
         BSET    $0B2C,Z,#$01
         LBRA    L39CEA
 L39BAE:
-        LDAA    $40,Z
+        LDAA    <EgrZeroPos,Z
         SUBA    $0A8D,Z
         BCC     L39BB8
         CLRA
@@ -10569,7 +10569,7 @@ L39D62:
         STAA    $0B4D,Z
         BRA     L39DCC
 L39D86:
-        LDAA    $40,Z
+        LDAA    <EgrZeroPos,Z
         LDAB    $0A8D,Z
         CBA
         BEQ     L39DAA
@@ -10587,7 +10587,7 @@ L39D9E:
 L39DA8:
         TBA
 L39DAA:
-        STAA    $40,Z
+        STAA    <EgrZeroPos,Z
         BSET    $0B4C,Z,#$01
         CMPA    $0603
         BHI     L39DBC
@@ -10618,17 +10618,17 @@ L39DDE:
         JSR     Sub_3A0EC
         BRA     L39DEE
 L39DEA:
-        JSR     Sub_39E08
+        JSR     FanControl
 L39DEE:
         RTS
         dc.b    $04,$D6,$04,$D7,$04,$D4,$04,$D5,$04,$DA,$04,$DB,$04,$D8,$04,$D9
         dc.b    $04,$DE,$04,$DF,$04,$DC,$04,$DD
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_39E08 ($39E08)
+; FanControl ($39E08)
 ; Called from: Sub_39DCE
 ;---------------------------------------------------------------------------------------------------
-Sub_39E08:
+FanControl:
         BRCLR   $0774,Z,#$80,L3A038
         LDAA    $050A,Z
         ANDA    #$30
@@ -11186,7 +11186,7 @@ L3A478:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3A47E ($3A47E)
-; Called from: Sub_39E08, Sub_3A0EC, Sub_3A55A
+; Called from: FanControl, Sub_3A0EC, Sub_3A55A
 ;---------------------------------------------------------------------------------------------------
 Sub_3A47E:
         LDAA    >CoolantTemp,Z
@@ -14529,7 +14529,7 @@ L3DBE6:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L3DC26
         SUBD    #$0001
         BNE     L3DC22
-        LDAA    >StartV042FInit
+        LDAA    >PurgeDelayInit
         STAA    $042F,Z
         CLRD
         STD     $0436,Z

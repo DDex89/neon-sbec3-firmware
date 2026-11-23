@@ -303,24 +303,24 @@ Tab2D_033B:
 
         dc.b    $FF,$FF,$7D,$01,$C8,$00,$EF,$00,$EF,$00,$00,$00,$00,$6E,$E2,$10
         dc.b    $38
-CalRpmOffset1:
-        dc.b    $FF,$00                                  ; Word subtracted from EngineRpm; read by Sub_2F800.
-CalRpmOffset2:
-        dc.b    $FF,$00                                  ; Word subtracted from EngineRpm; read by Sub_2F800.
-CalV0C08Thresh1:
-        dc.b    $FF,$00                                  ; Word compared with V0C08; read by Sub_2F800.
-CalOffset1:
-        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
-CalOffset2:
-        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
-CalOffset3:
-        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
-StartV0C03Init:
-        dc.b    $00                                      ; Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10. Fault: P1602.
-CalV0C08Thresh2:
-        dc.b    $00,$00                                  ; Word compared with V0C08; read by Sub_2F800.
-CalCoolantThresh1:
-        dc.b    $6E                                      ; Byte compared with CoolantTemp; read by Sub_2F800.
+MtvRpmLow:
+        dc.b    $FF,$00                                  ; Manifold tune valve (MtvTiming): lower switch rpm (word; $FF00 = off)
+MtvRpmHigh:
+        dc.b    $FF,$00                                  ; Manifold tune valve: upper switch rpm (word)
+MtvRpmRateMin:
+        dc.b    $FF,$00                                  ; Manifold tune valve: rpm change per period ($0C08,Z) at or above which the switch time is predicted
+MtvDelay1:
+        dc.b    $00,$00                                  ; Manifold tune valve: first actuator delay taken off the predicted switch time (word)
+MtvDelay2:
+        dc.b    $00,$00                                  ; Manifold tune valve: second actuator delay (word)
+MtvDelay3:
+        dc.b    $00,$00                                  ; Manifold tune valve: third actuator delay (word)
+MtvPeriod:
+        dc.b    $00                                      ; Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10)
+MtvRpmRateMax:
+        dc.b    $00,$00                                  ; Manifold tune valve: upper limit of the rpm change per period (word)
+MtvCoolantMin:
+        dc.b    $6E                                      ; Manifold tune valve: coolant at or above this value (at WOT) for the rpm switching
         dc.b    $00,$00,$80,$80,$80,$B9,$25,$25,$E5,$07,$5B,$34,$E5,$A4,$1F
 
 ;---------------------------------------------------------------------------------------------------
@@ -6616,7 +6616,7 @@ L05470:
 L05488:
         BRSET   $039C,Z,#$01,L054A2
         BRCLR   $0321,#$10,L05498
-        JSR     Sub_16BC4
+        JSR     MtvTiming
 L05498:
         JSR     Sub_12338
         JSR     Sub_1D904
@@ -17314,7 +17314,7 @@ L0CEC2:
         LDAA    #$D8
 L0CED4:
         STAA    >ChargeTargetVolts,Z
-        LDAA    >StartV0C03Init
+        LDAA    >MtvPeriod
         STAA    $037F,Z
         LDD     #$FFFF
         STD     $0380,Z

@@ -11119,7 +11119,7 @@ L19D5E:
 L19D7C:
         BRSET   $0316,Z,#$80,L19EF2
         LDAA    >AcSensor,Z
-        CMPA    >IacAcSensorThresh
+        CMPA    >AcPressureHighCut
         BHI     L19DA4
         LDD     >SegmentRpm,Z
         CPD     >IacLowRpm

@@ -12343,8 +12343,8 @@
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFCONSTANT uniqueid="0x25C" flags="0x0">
-  <title>CalRpmOffset1</title>
-  <description>Word subtracted from EngineRpm; read by Sub_2F800. $0356</description>
+  <title>MtvRpmLow</title>
+  <description>Manifold tune valve (MtvTiming): lower switch rpm (word; $FF00 = off) $0356</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x356" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -12355,8 +12355,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x25D" flags="0x0">
-  <title>CalRpmOffset2</title>
-  <description>Word subtracted from EngineRpm; read by Sub_2F800. $0358</description>
+  <title>MtvRpmHigh</title>
+  <description>Manifold tune valve: upper switch rpm (word) $0358</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x358" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -12367,8 +12367,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x25E" flags="0x0">
-  <title>CalV0C08Thresh1</title>
-  <description>Word compared with V0C08; read by Sub_2F800. $035A</description>
+  <title>MtvRpmRateMin</title>
+  <description>Manifold tune valve: rpm change per period ($0C08,Z) at or above which the switch time is predicted $035A</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x35A" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -12379,8 +12379,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x25F" flags="0x0">
-  <title>CalOffset1</title>
-  <description>Word subtracted from; read by Sub_2F800. $035C</description>
+  <title>MtvDelay1</title>
+  <description>Manifold tune valve: first actuator delay taken off the predicted switch time (word) $035C</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x35C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -12391,8 +12391,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x260" flags="0x0">
-  <title>CalOffset2</title>
-  <description>Word subtracted from; read by Sub_2F800. $035E</description>
+  <title>MtvDelay2</title>
+  <description>Manifold tune valve: second actuator delay (word) $035E</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x35E" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -12403,8 +12403,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x261" flags="0x0">
-  <title>CalOffset3</title>
-  <description>Word subtracted from; read by Sub_2F800. $0360</description>
+  <title>MtvDelay3</title>
+  <description>Manifold tune valve: third actuator delay (word) $0360</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x360" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -12415,9 +12415,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x262" flags="0x0">
-  <title>StartV0C03Init</title>
-  <description>Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10. Fault: P1602. $0362</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>MtvPeriod</title>
+  <description>Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10) $0362</description>
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x362" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -12427,8 +12427,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x263" flags="0x0">
-  <title>CalV0C08Thresh2</title>
-  <description>Word compared with V0C08; read by Sub_2F800. $0363</description>
+  <title>MtvRpmRateMax</title>
+  <description>Manifold tune valve: upper limit of the rpm change per period (word) $0363</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x363" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -12439,8 +12439,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x264" flags="0x0">
-  <title>CalCoolantThresh1</title>
-  <description>Byte compared with CoolantTemp; read by Sub_2F800. $0365</description>
+  <title>MtvCoolantMin</title>
+  <description>Manifold tune valve: coolant at or above this value (at WOT) for the rpm switching $0365</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x365" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -12911,7 +12911,7 @@
  <XDFCONSTANT uniqueid="0x28C" flags="0x0">
   <title>AccelMapRiseOffset</title>
   <description>MAP acceleration fuel: MAP rise (MAP minus MapLast) above this offset counts $0EBD</description>
-  <CATEGORYMEM index="0" category="3" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0xEBD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>

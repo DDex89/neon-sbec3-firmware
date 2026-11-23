@@ -277,8 +277,8 @@
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $43,$00,$05,$00,$70,$38,$98,$41,$A0,$20,$20,$20,$20,$20,$20,$EC
         dc.b    $07
-StartValue1:
-        dc.b    $07                                      ; Byte used with; read by Reset. Fault: P1602.
+CalTypeCode:
+        dc.b    $07                                      ; Header byte (7): copied to $0059,Z at reset, plus 4 when it is 5 or more and Options032E bit 7 is set (no reader of $0059 found)
         dc.b    $01,$04,$01,$08,$10,$04,$01,$08,$05,$04,$1A,$42,$89,$04,$00,$00
         dc.b    $00
 Options032A:
@@ -310,8 +310,8 @@ Options033A:
         dc.b    $20,$00,$00
 Options033E:
         dc.b    $B7                                      ; Option byte copied to $06B8,Z at reset; bit 1 selects branches in the start and closed-loop code
-StartV06B9Flag:
-        dc.b    $A8                                      ; Byte tested V06B9; read by Reset, Sub_20E1E, Sub_28D78. Fault: P1602.
+Options033F:
+        dc.b    $A8                                      ; Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in Sub_20E1E and Sub_28D78
         dc.b    $9F
 Options0340:
         dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
@@ -360,8 +360,8 @@ ThrottleClosedResetMargin:
 ThrottleClosedDefault:
         dc.b    $3D                                      ; Closed-throttle value at reset and its upper bound
         dc.b    $08,$02,$01,$FF,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00
-StartV0C03Init:
-        dc.b    $00                                      ; Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10. Fault: P1602.
+MtvPeriod:
+        dc.b    $00                                      ; Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10)
         dc.b    $00,$00,$6E,$00,$00,$80,$80,$80,$B9,$25,$25,$E5,$07,$C8,$34,$E5
         dc.b    $A4,$1F
 
@@ -945,8 +945,8 @@ CrankCoolantFloor:
         dc.b    $69                                      ; Cranking fuel: CrankCoolant is raised to at least this value while the throttle is not closed
 CrankClearFloodThrottle:
         dc.b    $85                                      ; Cranking: throttle above this value clears the cranking pulse (clear flood)
-StartFlexEthanolThresh:
-        dc.b    $58                                      ; Byte compared with FlexEthanol; read by Reset. Fault: P1602.
+FlexColdStartEthanolMin:
+        dc.b    $58                                      ; Reset: FlexEthanol at or above this value with a cold engine sets the flex cold-start flag ($0050,Z bit 3)
         dc.b    $02,$84
 FuelEventColdOffset:
         dc.b    $70                                      ; Per-event fuel (Sub_12680): value minus 110 gives the cold correction step
@@ -1587,10 +1587,10 @@ Tab2D_0E8F:
         dc.b    4,$80                                    ; points, flags
         dc.b    146,47, 178,31, 202,16, 227,0            ; x, y
 
-StartCoolantThresh2:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Reset. Fault: P1602.
-StartAirTempThresh:
-        dc.b    $FF                                      ; Byte compared with AirTemp; read by Reset. Fault: P1602.
+HotStartCoolantMin:
+        dc.b    $FF                                      ; Reset: coolant at or above this value (with air at or above HotStartAirMin) sets $06C7,Z bit 3
+HotStartAirMin:
+        dc.b    $FF                                      ; Reset: air temperature at or above this value for $06C7,Z bit 3
         dc.b    $FF,$FD,$02,$02,$12,$01,$09,$32
 
 ;---------------------------------------------------------------------------------------------------
@@ -2443,8 +2443,8 @@ SensorV042BInit:
 O2MemFlexDiffMax:
         dc.b    $14                                      ; Long-term cell update: with $0770,Z bit 7 a cell more than this below the flex reference cell is replaced by it
         dc.b    $01,$84,$0F,$0A
-StartV042FInit:
-        dc.b    $B3                                      ; Byte stored into V042F; read by Reset, Sub_3DC64, Sub_3DE9C. Fault: P1602.
+PurgeDelayInit:
+        dc.b    $B3                                      ; Start value of the purge delay $042F,Z (reset, Sub_3DC64, Sub_3DE9C)
         dc.b    $96,$02,$14,$14,$00,$01,$08,$08,$20,$AA,$AC,$A3,$01
 
 ;---------------------------------------------------------------------------------------------------
@@ -3353,8 +3353,8 @@ KnockCylRetardMaxSteps:
         dc.b    $BA
 KnockCylRetardOffset:
         dc.b    $01                                      ; Per-cylinder knock retard: offset subtracted from the half-value
-StartV0040Init:
-        dc.b    $22                                      ; Byte stored into V0040; read by Reset. Fault: P1602.
+EgrZeroPositionInit:
+        dc.b    $22                                      ; Start value of the learned EGR closed position $0040,Z
         dc.b    $22,$22,$22,$22
 KnockLearnCoolantMin:
         dc.b    $A6                                      ; Knock noise learning and the knock retard limit run above this coolant temperature
@@ -10050,8 +10050,8 @@ L06D6A:
         STAA    $0611,Z
         LDAA    #$32
         STAA    $3F,Z
-        LDAA    >StartV0040Init
-        STAA    $32,Z
+        LDAA    >EgrZeroPositionInit
+        STAA    <EgrZeroPos,Z
         LDAA    $1F58
         STAA    $33,Z
         LDAA    $1F59
@@ -10278,7 +10278,7 @@ L070AA:
         BRCLR   >Options032E,#$02,L070B4
         BSET    $56,Z,#$20
 L070B4:
-        LDAA    >StartValue1
+        LDAA    >CalTypeCode
         CMPA    #$05
         BCS     L070C4
         BRCLR   >Options032E,#$10,L070C4
@@ -10346,10 +10346,10 @@ L0716E:
         STAB    >AirTemp,Z
         STAB    >StartAirTemp,Z
         LDAA    >AirTemp,Z
-        CMPA    >StartAirTempThresh
+        CMPA    >HotStartAirMin
         BCS     L0718C
         LDAA    $0C,Z
-        CMPA    >StartCoolantThresh2
+        CMPA    >HotStartCoolantMin
         BCS     L0718C
         BSET    $0200,Z,#$08
 L0718C:
@@ -10385,12 +10385,12 @@ L071E2:
         LDAA    $16,Z
         JSR     Sub_133C6
         STAA    >ChargeTargetVolts,Z
-        LDAA    >StartV0C03Init
+        LDAA    >MtvPeriod
         STAA    $05D0,Z
         LDD     #$FFFF
         STD     $05D1,Z
         BSET    $05CF,Z,#$10
-        LDAA    >StartV042FInit
+        LDAA    >PurgeDelayInit
         STAA    $0632,Z
         LDAA    #$64
         STAA    $0638,Z
@@ -10433,7 +10433,7 @@ L07260:
 L07264:
         JSR     Sub_0DA94
         LDAA    $0C,Z
-        CMPA    >StartFlexEthanolThresh
+        CMPA    >FlexColdStartEthanolMin
         BCS     L07274
         BSET    $20,Z,#$10
 L07274:
@@ -10452,7 +10452,7 @@ L07274:
         STAA    $0651,Z
         LDAA    >Options033E
         STAA    $0773,Z
-        LDAA    >StartV06B9Flag
+        LDAA    >Options033F
         STAA    $0774,Z
         BCLR    $DC,Z,#$20
         LDAA    #$36
@@ -20841,7 +20841,7 @@ L0DA14:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L0DA56
         SUBD    #$0001
         BNE     L0DA52
-        LDAA    >StartV042FInit
+        LDAA    >PurgeDelayInit
         STAA    $0632,Z
         CLRD
         STAA    $0634,Z

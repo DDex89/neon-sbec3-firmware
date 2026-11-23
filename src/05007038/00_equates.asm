@@ -17,6 +17,7 @@ ThrottleState    equ $0025        ; $F8025
 ThrottleClosed   equ $002B        ; $F802B
 Baro             equ $002C        ; $F802C
 SriMileage       equ $002D        ; $F802D
+EgrZeroPos       equ $0032        ; $F8032
 IacPosition      equ $0042        ; $F8042
 IdleMapLearned   equ $0054        ; $F8054
 IacTargetCmd     equ $018C        ; $F818C

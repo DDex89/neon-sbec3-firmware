@@ -5654,10 +5654,10 @@ L13D38:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_13D3A ($13D3A)
+; MtvTiming ($13D3A)
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
-Sub_13D3A:
+MtvTiming:
         LDAA    $0491,Z
         CMPA    #$2D
         LBEQ    L13F48
@@ -5666,7 +5666,7 @@ Sub_13D3A:
         DEC     $0399,Z
         LBNE    L13F8C
         LDAA    >CoolantTemp,Z
-        CMPA    >CalCoolantThresh1
+        CMPA    >MtvCoolantMin
         BCS     L13D62
         BRSET   >ThrottleState,Z,#$40,L13D6A
 L13D62:
@@ -5681,35 +5681,35 @@ L13D6A:
         BCLR    $0398,Z,#$20
         NEGD
 L13D80:
-        CPD     >CalV0C08Thresh2
+        CPD     >MtvRpmRateMax
         BCS     L13D8A
-        LDD     >CalV0C08Thresh2
+        LDD     >MtvRpmRateMax
 L13D8A:
         STD     $039E,Z
-        CPE     >CalRpmOffset1
+        CPE     >MtvRpmLow
         BCS     L13DA0
-        CPE     >CalRpmOffset2
+        CPE     >MtvRpmHigh
         LBCS    L13E2A
         JMP     L13E96
 L13DA0:
         LDD     $039E,Z
-        CPD     >CalV0C08Thresh1
+        CPD     >MtvRpmRateMin
         LBCS    L13F1C
         BRCLR   $0398,Z,#$20,L13F1C
         BRSET   $0498,Z,#$02,L13E02
-        LDD     >CalRpmOffset2
+        LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
         JSR     Sub_13F4A
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L13F28
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L13F28
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L13F28
-        LDD     >CalRpmOffset1
+        LDD     >MtvRpmLow
         SUBD    >EngineRpm,Z
         JSR     Sub_13F4A
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         BCC     L13DF6
         BSET    $0398,Z,#$10
         JMP     L13F20
@@ -5718,67 +5718,67 @@ L13DF6:
         BSET    $0398,Z,#$10
         JMP     L13F28
 L13E02:
-        LDD     >CalRpmOffset1
+        LDD     >MtvRpmLow
         SUBD    >EngineRpm,Z
         JSR     Sub_13F4A
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L13F28
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L13F28
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L13F28
         JMP     L13F1C
 L13E2A:
         LDD     $039E,Z
-        CPD     >CalV0C08Thresh1
+        CPD     >MtvRpmRateMin
         BCC     L13E3C
         BSET    $0398,Z,#$10
         JMP     L13F20
 L13E3C:
         BRCLR   $0398,Z,#$20,L13E50
-        LDD     >CalRpmOffset2
+        LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
         JSR     Sub_13F4A
         BRA     L13E5C
 L13E50:
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset1
+        SUBD    >MtvRpmLow
         JSR     Sub_13F4A
 L13E5C:
         BRCLR   $0498,Z,#$02,L13E76
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L13F1C
         STD     $039A,Z
         BCLR    $0398,Z,#$10
         JMP     L13F28
 L13E76:
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L13F28
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L13F28
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L13F28
         BSET    $0398,Z,#$10
         JMP     L13F20
 L13E96:
         LDD     $039E,Z
-        CPD     >CalV0C08Thresh1
+        CPD     >MtvRpmRateMin
         LBCS    L13F1C
         BRSET   $0398,Z,#$20,L13F1C
         BRSET   $0498,Z,#$02,L13EF8
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset1
+        SUBD    >MtvRpmLow
         JSR     Sub_13F4A
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L13F28
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L13F28
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L13F28
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset2
+        SUBD    >MtvRpmHigh
         JSR     Sub_13F4A
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         BCC     L13EEC
         BSET    $0398,Z,#$10
         JMP     L13F20
@@ -5788,13 +5788,13 @@ L13EEC:
         JMP     L13F28
 L13EF8:
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset2
+        SUBD    >MtvRpmHigh
         JSR     Sub_13F4A
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L13F28
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L13F28
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L13F28
 L13F1C:
         BCLR    $0398,Z,#$10
@@ -5802,7 +5802,7 @@ L13F20:
         LDE     #$0001
         STE     $039A,Z
 L13F28:
-        LDAA    >StartV0C03Init
+        LDAA    >MtvPeriod
         STAA    $0399,Z
         LDD     >EngineRpm,Z
         STD     $039C,Z
@@ -5815,7 +5815,7 @@ L13F48:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_13F4A ($13F4A)
-; Called from: Sub_13D3A (8 calls)
+; Called from: MtvTiming (8 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_13F4A:
         CLRE
@@ -5842,7 +5842,7 @@ L13F6E:
         ADE
 L13F7C:
         CLRB
-        LDAA    >StartV0C03Init
+        LDAA    >MtvPeriod
         EMUL
         TED
         STE     >LookupResult,Z

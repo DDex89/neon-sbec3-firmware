@@ -1181,76 +1181,61 @@
    ]
   },
   "0356": {
-   "size": 2,
+   "name": "MtvRpmLow",
+   "desc": "Manifold tune valve (MtvTiming): lower switch rpm (word; $FF00 = off)",
    "unit": "rpmw",
-   "auto": true,
    "category": "Other",
-   "desc": "Word subtracted from EngineRpm; read by Sub_2F800.",
-   "name": "CalRpmOffset1"
+   "size": 2
   },
   "0358": {
-   "size": 2,
+   "name": "MtvRpmHigh",
+   "desc": "Manifold tune valve: upper switch rpm (word)",
    "unit": "rpmw",
-   "auto": true,
    "category": "Other",
-   "desc": "Word subtracted from EngineRpm; read by Sub_2F800.",
-   "name": "CalRpmOffset2"
+   "size": 2
   },
   "035A": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "MtvRpmRateMin",
+   "desc": "Manifold tune valve: rpm change per period ($0C08,Z) at or above which the switch time is predicted",
    "category": "Other",
-   "desc": "Word compared with V0C08; read by Sub_2F800.",
-   "name": "CalV0C08Thresh1"
+   "size": 2
   },
   "035C": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "MtvDelay1",
+   "desc": "Manifold tune valve: first actuator delay taken off the predicted switch time (word)",
    "category": "Other",
-   "desc": "Word subtracted from; read by Sub_2F800.",
-   "name": "CalOffset1"
+   "size": 2
   },
   "035E": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "MtvDelay2",
+   "desc": "Manifold tune valve: second actuator delay (word)",
    "category": "Other",
-   "desc": "Word subtracted from; read by Sub_2F800.",
-   "name": "CalOffset2"
+   "size": 2
   },
   "0360": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "MtvDelay3",
+   "desc": "Manifold tune valve: third actuator delay (word)",
    "category": "Other",
-   "desc": "Word subtracted from; read by Sub_2F800.",
-   "name": "CalOffset3"
+   "size": 2
   },
   "0362": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10. Fault: P1602.",
-   "name": "StartV0C03Init"
+   "name": "MtvPeriod",
+   "desc": "Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10)",
+   "category": "Other",
+   "size": 1
   },
   "0363": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "MtvRpmRateMax",
+   "desc": "Manifold tune valve: upper limit of the rpm change per period (word)",
    "category": "Other",
-   "desc": "Word compared with V0C08; read by Sub_2F800.",
-   "name": "CalV0C08Thresh2"
+   "size": 2
   },
   "0365": {
-   "size": 1,
+   "name": "MtvCoolantMin",
+   "desc": "Manifold tune valve: coolant at or above this value (at WOT) for the rpm switching",
    "unit": "tempc",
-   "auto": true,
    "category": "Other",
-   "desc": "Byte compared with CoolantTemp; read by Sub_2F800.",
-   "name": "CalCoolantThresh1"
+   "size": 1
   },
   "03A5": {
    "name": "FanAcSensorStage1",
@@ -1523,7 +1508,7 @@
    "desc": "MAP acceleration fuel: MAP rise (MAP minus MapLast) above this offset counts",
    "unit": "kpa",
    "size": 1,
-   "category": "Fuel"
+   "category": "A/C"
   },
   "0F5E": {
    "name": "DecelLeanMapDrop",

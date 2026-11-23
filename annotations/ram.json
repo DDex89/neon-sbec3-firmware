@@ -220,5 +220,6 @@
  "0DAA": "KnockRetardMax",
  "0DB9": "ChargeTargetVolts",
  "0DC6": "ChargeDeficit",
- "0F00": "FlexFuelFactor"
+ "0F00": "FlexFuelFactor",
+ "0040": "EgrZeroPos"
 }

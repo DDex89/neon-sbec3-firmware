@@ -15,6 +15,7 @@
  "002B": "ThrottleClosed",
  "002C": "Baro",
  "002D": "SriMileage",
+ "0032": "EgrZeroPos",
  "0042": "IacPosition",
  "0054": "IdleMapLearned",
  "018C": "IacTargetCmd",

@@ -34,6 +34,7 @@
  "15DD6": "O2FlexOffset",
  "1D246": "CalcBaseSpark",
  "1F000": "CalcSpark",
+ "22F8E": "MtvCheck",
  "23364": "TccMonitor",
  "24160": "ReportPass",
  "245A8": "ReportFault",
@@ -51,10 +52,15 @@
  "2D480": "CalcVehicleSpeed",
  "2D648": "CalcEngineRpm",
  "2DABE": "ReadMap",
+ "2F800": "MtvTiming",
+ "2FB18": "TuneValve2Control",
  "32288": "ObdRequest",
  "3343C": "SciInterrupt",
  "35A0E": "DiagWriteRamByte",
  "35A5A": "DiagRunRamCode",
+ "39000": "RunModeSwitch",
+ "39272": "AcClutchControl",
+ "39E08": "FanControl",
  "3B800": "SpeedCtlControl",
  "3D000": "EmptyHook"
 }

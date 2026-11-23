@@ -1386,12 +1386,10 @@
  },
  "scalars": {
   "0311": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "CalTypeCode",
+   "desc": "Header byte (7): copied to $0059,Z at reset, plus 4 when it is 5 or more and Options032E bit 7 is set (no reader of $0059 found)",
    "category": "Startup",
-   "desc": "Byte used with; read by Reset. Fault: P1602.",
-   "name": "StartValue1"
+   "size": 1
   },
   "0323": {
    "name": "Options032A",
@@ -1590,12 +1588,10 @@
    "size": 1
   },
   "0336": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte tested V06B9; read by Reset, Sub_20E1E, Sub_28D78. Fault: P1602.",
-   "name": "StartV06B9Flag"
+   "name": "Options033F",
+   "desc": "Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in Sub_20E1E and Sub_28D78",
+   "category": "Options",
+   "size": 1
   },
   "0338": {
    "name": "Options0340",
@@ -1639,12 +1635,10 @@
    "category": "Sensors"
   },
   "041D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10. Fault: P1602.",
-   "name": "StartV0C03Init"
+   "name": "MtvPeriod",
+   "desc": "Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10)",
+   "category": "Other",
+   "size": 1
   },
   "0486": {
    "name": "FanAcSensorStage1",
@@ -1761,12 +1755,10 @@
    "size": 1
   },
   "1F57": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte stored into V0040; read by Reset. Fault: P1602.",
-   "name": "StartV0040Init"
+   "name": "EgrZeroPositionInit",
+   "desc": "Start value of the learned EGR closed position $0040,Z",
+   "category": "EGR",
+   "size": 1
   },
   "074B": {
    "size": 2,
@@ -2084,28 +2076,24 @@
    "category": "Fuel"
   },
   "0E99": {
-   "size": 1,
+   "name": "HotStartCoolantMin",
+   "desc": "Reset: coolant at or above this value (with air at or above HotStartAirMin) sets $06C7,Z bit 3",
    "unit": "tempc",
-   "auto": true,
    "category": "Startup",
-   "desc": "Byte compared with CoolantTemp; read by Reset. Fault: P1602.",
-   "name": "StartCoolantThresh2"
+   "size": 1
   },
   "0E9A": {
-   "size": 1,
+   "name": "HotStartAirMin",
+   "desc": "Reset: air temperature at or above this value for $06C7,Z bit 3",
    "unit": "tempc",
-   "auto": true,
    "category": "Startup",
-   "desc": "Byte compared with AirTemp; read by Reset. Fault: P1602.",
-   "name": "StartAirTempThresh"
+   "size": 1
   },
   "0751": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FlexColdStartEthanolMin",
+   "desc": "Reset: FlexEthanol at or above this value with a cold engine sets the flex cold-start flag ($0050,Z bit 3)",
    "category": "Startup",
-   "desc": "Byte compared with FlexEthanol; read by Reset. Fault: P1602.",
-   "name": "StartFlexEthanolThresh"
+   "size": 1
   },
   "1560": {
    "name": "O2LearnRateWotFlex",
@@ -2118,7 +2106,7 @@
    "desc": "MAP acceleration fuel: MAP rise (MAP minus MapLast) above this offset counts",
    "unit": "kpa",
    "size": 1,
-   "category": "Fuel"
+   "category": "A/C"
   },
   "11F0": {
    "name": "DecelLeanMapDrop",
@@ -2862,12 +2850,10 @@
    "size": 1
   },
   "164A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Startup",
-   "desc": "Byte stored into V042F; read by Reset, Sub_3DC64, Sub_3DE9C. Fault: P1602.",
-   "name": "StartV042FInit"
+   "name": "PurgeDelayInit",
+   "desc": "Start value of the purge delay $042F,Z (reset, Sub_3DC64, Sub_3DE9C)",
+   "category": "EVAP purge",
+   "size": 1
   },
   "174C": {
    "name": "SoakStartCoolantMin",
@@ -5015,19 +5001,19 @@
   "414A": {
    "name": "AcSensorRawHigh",
    "desc": "A/C sensor circuit check: raw value above this counts as open/high",
-   "category": "Sensors",
+   "category": "A/C",
    "size": 1
   },
   "414B": {
    "name": "AcSensorRawLow",
    "desc": "A/C sensor circuit check: raw value below this counts as shorted/low",
-   "category": "Sensors",
+   "category": "A/C",
    "size": 1
   },
   "414C": {
    "name": "AcSensorFaultValue",
    "desc": "A/C sensor value used with a sensor fault",
-   "category": "Sensors",
+   "category": "A/C",
    "size": 1
   },
   "414D": {

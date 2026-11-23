@@ -1445,18 +1445,18 @@ L20E62:
 L20EAA:
         BCLR    $40,Z,#$04
 L20EAE:
-        BRCLR   >StartV06B9Flag,#$80,L20EF6
+        BRCLR   >Options033F,#$80,L20EF6
         BRCLR   $00A6,Z,#$02,L20EFA
         BRSET   $00A6,Z,#$10,L20EFA
-        BRCLR   >StartV06B9Flag,#$40,L20ED2
+        BRCLR   >Options033F,#$40,L20ED2
         BRCLR   $00A7,Z,#$02,L20EFA
         BRSET   $00A7,Z,#$10,L20EFA
 L20ED2:
-        BRCLR   >StartV06B9Flag,#$20,L20EE4
+        BRCLR   >Options033F,#$20,L20EE4
         BRCLR   $00A8,Z,#$02,L20EFA
         BRSET   $00A8,Z,#$10,L20EFA
 L20EE4:
-        BRCLR   >StartV06B9Flag,#$10,L20EF6
+        BRCLR   >Options033F,#$10,L20EF6
         BRCLR   $00A9,Z,#$02,L20EFA
         BRSET   $00A9,Z,#$10,L20EFA
 L20EF6:
@@ -3329,7 +3329,7 @@ L22812:
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrPositionMonitor ($22814)
-; Called from: Sub_399CA
+; Called from: EgrControl
 ;---------------------------------------------------------------------------------------------------
 EgrPositionMonitor:
         BRCLR   >Options0335,#$02,L22820
@@ -9388,7 +9388,7 @@ Sub_28CB6:
 ; Called from: CheckPowerDown
 ;---------------------------------------------------------------------------------------------------
 Sub_28D78:
-        BRCLR   >StartV06B9Flag,#$F0,L28E48
+        BRCLR   >Options033F,#$F0,L28E48
         BRSET   $00A6,Z,#$80,L28D9A
         BRSET   $00A7,Z,#$80,L28D9A
         BRSET   $00A8,Z,#$80,L28D9A
@@ -16248,10 +16248,10 @@ L2F1B4:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2F800 ($2F800)
+; MtvTiming ($2F800)
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
-Sub_2F800:
+MtvTiming:
         LDAA    $0933,Z
         CMPA    #$2D
         LBEQ    L2FA0E
@@ -16260,7 +16260,7 @@ Sub_2F800:
         DEC     $0C03,Z
         LBNE    L2FABC
         LDAA    >CoolantTemp,Z
-        CMPA    >CalCoolantThresh1
+        CMPA    >MtvCoolantMin
         BCS     L2F828
         BRSET   >ThrottleState,Z,#$40,L2F830
 L2F828:
@@ -16275,35 +16275,35 @@ L2F830:
         BCLR    $0C02,Z,#$20
         NEGD
 L2F846:
-        CPD     >CalV0C08Thresh2
+        CPD     >MtvRpmRateMax
         BCS     L2F850
-        LDD     >CalV0C08Thresh2
+        LDD     >MtvRpmRateMax
 L2F850:
         STD     $0C08,Z
-        CPE     >CalRpmOffset1
+        CPE     >MtvRpmLow
         BCS     L2F866
-        CPE     >CalRpmOffset2
+        CPE     >MtvRpmHigh
         LBCS    L2F8F0
         JMP     L2F95C
 L2F866:
         LDD     $0C08,Z
-        CPD     >CalV0C08Thresh1
+        CPD     >MtvRpmRateMin
         LBCS    L2F9E2
         BRCLR   $0C02,Z,#$20,L2F9E2
         BRSET   $101F,Z,#$10,L2F8C8
-        LDD     >CalRpmOffset2
+        LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
         JSR     Sub_2FA10
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L2F9EE
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L2F9EE
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L2F9EE
-        LDD     >CalRpmOffset1
+        LDD     >MtvRpmLow
         SUBD    >EngineRpm,Z
         JSR     Sub_2FA10
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         BCC     L2F8BC
         BSET    $0C02,Z,#$10
         JMP     L2F9E6
@@ -16312,67 +16312,67 @@ L2F8BC:
         BSET    $0C02,Z,#$10
         JMP     L2F9EE
 L2F8C8:
-        LDD     >CalRpmOffset1
+        LDD     >MtvRpmLow
         SUBD    >EngineRpm,Z
         JSR     Sub_2FA10
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L2F9EE
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L2F9EE
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L2F9EE
         JMP     L2F9E2
 L2F8F0:
         LDD     $0C08,Z
-        CPD     >CalV0C08Thresh1
+        CPD     >MtvRpmRateMin
         BCC     L2F902
         BSET    $0C02,Z,#$10
         JMP     L2F9E6
 L2F902:
         BRCLR   $0C02,Z,#$20,L2F916
-        LDD     >CalRpmOffset2
+        LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
         JSR     Sub_2FA10
         BRA     L2F922
 L2F916:
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset1
+        SUBD    >MtvRpmLow
         JSR     Sub_2FA10
 L2F922:
         BRCLR   $101F,Z,#$10,L2F93C
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L2F9E2
         STD     $0C04,Z
         BCLR    $0C02,Z,#$10
         JMP     L2F9EE
 L2F93C:
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L2F9EE
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L2F9EE
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L2F9EE
         BSET    $0C02,Z,#$10
         JMP     L2F9E6
 L2F95C:
         LDD     $0C08,Z
-        CPD     >CalV0C08Thresh1
+        CPD     >MtvRpmRateMin
         LBCS    L2F9E2
         BRSET   $0C02,Z,#$20,L2F9E2
         BRSET   $101F,Z,#$10,L2F9BE
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset1
+        SUBD    >MtvRpmLow
         JSR     Sub_2FA10
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L2F9EE
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L2F9EE
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L2F9EE
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset2
+        SUBD    >MtvRpmHigh
         JSR     Sub_2FA10
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         BCC     L2F9B2
         BSET    $0C02,Z,#$10
         JMP     L2F9E6
@@ -16382,13 +16382,13 @@ L2F9B2:
         JMP     L2F9EE
 L2F9BE:
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset2
+        SUBD    >MtvRpmHigh
         JSR     Sub_2FA10
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L2F9EE
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L2F9EE
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L2F9EE
 L2F9E2:
         BCLR    $0C02,Z,#$10
@@ -16396,7 +16396,7 @@ L2F9E6:
         LDE     #$0001
         STE     $0C04,Z
 L2F9EE:
-        LDAA    >StartV0C03Init
+        LDAA    >MtvPeriod
         STAA    $0C03,Z
         LDD     >EngineRpm,Z
         STD     $0C06,Z
@@ -16409,7 +16409,7 @@ L2FA0E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2FA10 ($2FA10)
-; Called from: Sub_2F800 (8 calls)
+; Called from: MtvTiming (8 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_2FA10:
         CLRE
@@ -16436,17 +16436,17 @@ L2FA34:
         ADE
 L2FA42:
         CLRB
-        LDAA    >StartV0C03Init
+        LDAA    >MtvPeriod
         EMUL
         TED
         STE     >LookupResult,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2FA52 ($2FA52)
+; MtvCheck ($2FA52)
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
-Sub_2FA52:
+MtvCheck:
         BRCLR   >Options0335,#$20,L2FAB6
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2FAB6
         LDD     $1000,Z
@@ -16510,17 +16510,17 @@ L2FB1C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2FB1E ($2FB1E)
+; TuneValve2Control ($2FB1E)
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
-Sub_2FB1E:
+TuneValve2Control:
         DEC     $0C0D,Z
         LBNE    L2FCCE
         LDAA    >CoolantTemp,Z
-        CMPA    >CalCoolantThresh2
+        CMPA    >TuneValve2CoolantMin
         LBCS    L2FCAA
         LDAA    >BatteryTemp,Z
-        CMPA    >CalBatteryTempThresh1
+        CMPA    >TuneValve2BattTempMin
         LBCS    L2FCAA
         BRCLR   >ThrottleState,Z,#$40,L2FCAA
         LDD     >EngineRpm,Z
@@ -16531,34 +16531,34 @@ Sub_2FB1E:
         BCLR    $0C0C,Z,#$80
         NEGD
 L2FB5A:
-        CPD     >CalV0C0EThresh
+        CPD     >TuneValve2RateMax
         BCS     L2FB64
-        LDD     >CalV0C0EThresh
+        LDD     >TuneValve2RateMax
 L2FB64:
         STD     $0C0E,Z
-        CPE     >CalRpmValue
+        CPE     >TuneValve2RpmLow
         LBHI    L2FC50
-        CPE     >CalRpmOffset3
+        CPE     >TuneValve2RpmHigh
         LBCC    L2FBD2
         TST     $0C0E,Z
         LBEQ    L2FCAA
         BRCLR   $0C0C,Z,#$80,L2FCAA
         BRCLR   $0C0C,Z,#$20,L2FBA4
-        LDD     >CalRpmOffset3
+        LDD     >TuneValve2RpmHigh
         SUBD    >EngineRpm,Z
         JSR     Sub_2FD2A
-        SUBD    >CalOffset4
+        SUBD    >TuneValve2DelayHigh
         LBCS    L2FCB0
         LBRA    L2FCAA
 L2FBA4:
-        LDD     >CalRpmValue
+        LDD     >TuneValve2RpmLow
         SUBD    >EngineRpm,Z
         JSR     Sub_2FD2A
-        SUBD    >CalOffset5
+        SUBD    >TuneValve2DelayLow
         LBCS    L2FCB0
         TSTA
         LBNE    L2FCAA
-        CMPB    >CalV0C0DThresh
+        CMPB    >TuneValve2Period
         LBCC    L2FCAA
         STAB    $0C12,Z
         BSET    $0C0C,Z,#$40
@@ -16568,14 +16568,14 @@ L2FBD2:
         TST     $0C0E,Z
         LBEQ    L2FCAA
         BRCLR   $0C0C,Z,#$80,L2FCAA
-        LDD     >CalRpmValue
+        LDD     >TuneValve2RpmLow
         SUBD    >EngineRpm,Z
         JSR     Sub_2FD2A
-        SUBD    >CalOffset5
+        SUBD    >TuneValve2DelayLow
         LBCS    L2FCB0
         TSTA
         LBNE    L2FCAA
-        CMPB    >CalV0C0DThresh
+        CMPB    >TuneValve2Period
         LBCC    L2FCAA
         STAB    $0C12,Z
         BSET    $0C0C,Z,#$40
@@ -16585,13 +16585,13 @@ L2FC14:
         LBEQ    L2FCB0
         BRSET   $0C0C,Z,#$80,L2FCB0
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset3
+        SUBD    >TuneValve2RpmHigh
         JSR     Sub_2FD2A
-        SUBD    >CalOffset4
+        SUBD    >TuneValve2DelayHigh
         LBCS    L2FCAA
         TSTA
         LBNE    L2FCB0
-        CMPB    >CalV0C0DThresh
+        CMPB    >TuneValve2Period
         LBCC    L2FCB0
         STAB    $0C12,Z
         BCLR    $0C0C,Z,#$40
@@ -16602,20 +16602,20 @@ L2FC50:
         BRSET   $0C0C,Z,#$80,L2FCB0
         BRSET   $0C0C,Z,#$20,L2FC7C
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmValue
+        SUBD    >TuneValve2RpmLow
         JSR     Sub_2FD2A
-        SUBD    >CalOffset5
+        SUBD    >TuneValve2DelayLow
         LBCS    L2FCAA
         LBRA    L2FCB0
 L2FC7C:
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset3
+        SUBD    >TuneValve2RpmHigh
         JSR     Sub_2FD2A
-        SUBD    >CalOffset4
+        SUBD    >TuneValve2DelayHigh
         LBCS    L2FCAA
         TSTA
         LBNE    L2FCB0
-        CMPB    >CalV0C0DThresh
+        CMPB    >TuneValve2Period
         LBCC    L2FCB0
         STAB    $0C12,Z
         BCLR    $0C0C,Z,#$40
@@ -16628,7 +16628,7 @@ L2FCB0:
 L2FCB4:
         CLR     $0C12,Z
 L2FCB8:
-        LDAA    >CalV0C0DThresh
+        LDAA    >TuneValve2Period
         STAA    $0C0D,Z
         LDD     >EngineRpm,Z
         STD     $0C10,Z
@@ -16646,7 +16646,7 @@ L2FCE2:
 L2FCE8:
         LDAA    $0C13,Z
         BEQ     L2FCF6
-        CMPA    >CalV0C13Thresh
+        CMPA    >TuneValve2HoldCount
         LBCC    L2FD28
 L2FCF6:
         INCA
@@ -16657,7 +16657,7 @@ L2FCF6:
 L2FD0A:
         BRSET   $0C0C,Z,#$20,L2FD28
         LDAA    $0C13,Z
-        CMPA    >CalV0C13Thresh
+        CMPA    >TuneValve2HoldCount
         BCS     L2FCF6
         BSETW   $1066,Z,#$2000
         BSET    $0C0C,Z,#$20
@@ -16667,7 +16667,7 @@ L2FD28:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2FD2A ($2FD2A)
-; Called from: Sub_2FB1E (6 calls)
+; Called from: TuneValve2Control (6 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_2FD2A:
         CLRE
@@ -16693,7 +16693,7 @@ L2FD4E:
         XGAB
         ADE
 L2FD5C:
-        LDAA    >CalV0C0DThresh
+        LDAA    >TuneValve2Period
         CLRB
         EMUL
         ADCE    #$0000

@@ -9892,10 +9892,10 @@ L16BC2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_16BC4 ($16BC4)
+; MtvTiming ($16BC4)
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
-Sub_16BC4:
+MtvTiming:
         LDAA    $0477,Z
         CMPA    #$2D
         LBEQ    L16DD2
@@ -9904,7 +9904,7 @@ Sub_16BC4:
         DEC     $037F,Z
         LBNE    L16E16
         LDAA    >CoolantTemp,Z
-        CMPA    >CalCoolantThresh1
+        CMPA    >MtvCoolantMin
         BCS     L16BEC
         BRSET   >ThrottleState,Z,#$40,L16BF4
 L16BEC:
@@ -9919,35 +9919,35 @@ L16BF4:
         BCLR    $037E,Z,#$20
         NEGD
 L16C0A:
-        CPD     >CalV0C08Thresh2
+        CPD     >MtvRpmRateMax
         BCS     L16C14
-        LDD     >CalV0C08Thresh2
+        LDD     >MtvRpmRateMax
 L16C14:
         STD     $0384,Z
-        CPE     >CalRpmOffset1
+        CPE     >MtvRpmLow
         BCS     L16C2A
-        CPE     >CalRpmOffset2
+        CPE     >MtvRpmHigh
         LBCS    L16CB4
         JMP     L16D20
 L16C2A:
         LDD     $0384,Z
-        CPD     >CalV0C08Thresh1
+        CPD     >MtvRpmRateMin
         LBCS    L16DA6
         BRCLR   $037E,Z,#$20,L16DA6
         BRSET   $047E,Z,#$02,L16C8C
-        LDD     >CalRpmOffset2
+        LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
         JSR     Sub_16DD4
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L16DB2
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L16DB2
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L16DB2
-        LDD     >CalRpmOffset1
+        LDD     >MtvRpmLow
         SUBD    >EngineRpm,Z
         JSR     Sub_16DD4
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         BCC     L16C80
         BSET    $037E,Z,#$10
         JMP     L16DAA
@@ -9956,67 +9956,67 @@ L16C80:
         BSET    $037E,Z,#$10
         JMP     L16DB2
 L16C8C:
-        LDD     >CalRpmOffset1
+        LDD     >MtvRpmLow
         SUBD    >EngineRpm,Z
         JSR     Sub_16DD4
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L16DB2
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L16DB2
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L16DB2
         JMP     L16DA6
 L16CB4:
         LDD     $0384,Z
-        CPD     >CalV0C08Thresh1
+        CPD     >MtvRpmRateMin
         BCC     L16CC6
         BSET    $037E,Z,#$10
         JMP     L16DAA
 L16CC6:
         BRCLR   $037E,Z,#$20,L16CDA
-        LDD     >CalRpmOffset2
+        LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
         JSR     Sub_16DD4
         BRA     L16CE6
 L16CDA:
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset1
+        SUBD    >MtvRpmLow
         JSR     Sub_16DD4
 L16CE6:
         BRCLR   $047E,Z,#$02,L16D00
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L16DA6
         STD     $0380,Z
         BCLR    $037E,Z,#$10
         JMP     L16DB2
 L16D00:
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L16DB2
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L16DB2
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L16DB2
         BSET    $037E,Z,#$10
         JMP     L16DAA
 L16D20:
         LDD     $0384,Z
-        CPD     >CalV0C08Thresh1
+        CPD     >MtvRpmRateMin
         LBCS    L16DA6
         BRSET   $037E,Z,#$20,L16DA6
         BRSET   $047E,Z,#$02,L16D82
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset1
+        SUBD    >MtvRpmLow
         JSR     Sub_16DD4
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L16DB2
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L16DB2
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L16DB2
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset2
+        SUBD    >MtvRpmHigh
         JSR     Sub_16DD4
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         BCC     L16D76
         BSET    $037E,Z,#$10
         JMP     L16DAA
@@ -10026,13 +10026,13 @@ L16D76:
         JMP     L16DB2
 L16D82:
         LDD     >EngineRpm,Z
-        SUBD    >CalRpmOffset2
+        SUBD    >MtvRpmHigh
         JSR     Sub_16DD4
-        SUBD    >CalOffset2
+        SUBD    >MtvDelay2
         LBCS    L16DB2
-        SUBD    >CalOffset3
+        SUBD    >MtvDelay3
         LBCS    L16DB2
-        SUBD    >CalOffset1
+        SUBD    >MtvDelay1
         LBCS    L16DB2
 L16DA6:
         BCLR    $037E,Z,#$10
@@ -10040,7 +10040,7 @@ L16DAA:
         LDE     #$0001
         STE     $0380,Z
 L16DB2:
-        LDAA    >StartV0C03Init
+        LDAA    >MtvPeriod
         STAA    $037F,Z
         LDD     >EngineRpm,Z
         STD     $0382,Z
@@ -10053,7 +10053,7 @@ L16DD2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_16DD4 ($16DD4)
-; Called from: Sub_16BC4 (8 calls)
+; Called from: MtvTiming (8 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_16DD4:
         CLRE
@@ -10080,7 +10080,7 @@ L16DF8:
         ADE
 L16E06:
         CLRB
-        LDAA    >StartV0C03Init
+        LDAA    >MtvPeriod
         EMUL
         TED
         STE     >LookupResult,Z

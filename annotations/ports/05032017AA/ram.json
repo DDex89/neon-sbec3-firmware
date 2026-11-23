@@ -11,6 +11,7 @@
  "000D": "SriMileage",
  "0018": "IacPosition",
  "002A": "IdleMapLearned",
+ "0041": "EgrZeroPos",
  "017C": "EngineOffTime",
  "0195": "Temp3",
  "0196": "FlexSensorStart",

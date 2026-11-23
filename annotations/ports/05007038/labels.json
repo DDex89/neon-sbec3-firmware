@@ -27,6 +27,7 @@
  "0C91E": "O2CellUpdate",
  "0E0C8": "EmptyHook",
  "0E7E6": "Isr_PIT",
+ "108D4": "FanControl",
  "1430C": "ReadMap",
  "16308": "PurgeFlowTest",
  "167C4": "LdpMonitor",

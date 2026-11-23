@@ -281,8 +281,8 @@ CalThresh1:
         dc.b    $41,$41,$A0,$20,$20,$20,$20,$20,$20,$03,$04,$0E,$00,$08,$09
 ObdStandardIndex:
         dc.b    $02                                      ; Index into the OBD-requirements value list at $32178 sent for mode $01 PID $1C (7 selects $01, OBD II as defined by CARB)
-StartValue1:
-        dc.b    $08                                      ; Byte used with; read by Reset. Fault: P1602.
+CalTypeCode:
+        dc.b    $08                                      ; Header byte (7): copied to $0059,Z at reset, plus 4 when it is 5 or more and Options032E bit 7 is set (no reader of $0059 found)
         dc.b    $03,$04,$01,$0B,$0D,$06,$01,$12,$18
 CalValue1:
         dc.b    $0D,$B0                                  ; Word used with; read by Sub_3060E.
@@ -342,8 +342,8 @@ Options033D:
         dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
 Options033E:
         dc.b    $00                                      ; Option byte copied to $06B8,Z at reset; bit 1 selects branches in the start and closed-loop code
-StartV06B9Flag:
-        dc.b    $00                                      ; Byte tested V06B9; read by Reset, Sub_20E1E, Sub_28D78. Fault: P1602.
+Options033F:
+        dc.b    $00                                      ; Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in Sub_20E1E and Sub_28D78
 Options0340:
         dc.b    $20                                      ; Option byte (global configuration); bits used are listed with their names where known
         dc.b    $00
@@ -374,8 +374,8 @@ ThrottleCloseConfirm:
         dc.b    $01                                      ; Throttle-closed detection: loops the throttle must stay near the closed value ($0E01,Z) before it counts as closed
 EgrTargetMin:
         dc.b    $00                                      ; EGR stays off while the EgrTarget position is at or below this value
-SensorBatteryTempThresh1:
-        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_39272.
+AcBattTempMinFault:
+        dc.b    $58                                      ; A/C clutch (Options032D bit 5, $0503,Z bit 0): battery temperature at or below this value keeps the clutch off
 BattTempBusCountMax:
         dc.b    $02                                      ; Battery temperature model: count limit of $0E02,Z while the bus temperature is valid
 EgrResultFailCount:
@@ -566,46 +566,46 @@ ThrottleClosedMargin:
         dc.b    $02                                      ; Throttle within the closed value plus this margin counts as closed
 ThrottleClosedMarginHyst:
         dc.b    $01                                      ; As ThrottleClosedMargin once the throttle is closed (hysteresis)
-CalRpmOffset1:
-        dc.b    $FF,$00                                  ; Word subtracted from EngineRpm; read by Sub_2F800.
-CalRpmOffset2:
-        dc.b    $FF,$00                                  ; Word subtracted from EngineRpm; read by Sub_2F800.
-CalV0C08Thresh1:
-        dc.b    $FF,$00                                  ; Word compared with V0C08; read by Sub_2F800.
-CalOffset1:
-        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
-CalOffset2:
-        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
-CalOffset3:
-        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
-StartV0C03Init:
-        dc.b    $00                                      ; Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10. Fault: P1602.
-CalV0C08Thresh2:
-        dc.b    $FF,$00                                  ; Word compared with V0C08; read by Sub_2F800.
-CalCoolantThresh1:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_2F800.
+MtvRpmLow:
+        dc.b    $FF,$00                                  ; Manifold tune valve (MtvTiming): lower switch rpm (word; $FF00 = off)
+MtvRpmHigh:
+        dc.b    $FF,$00                                  ; Manifold tune valve: upper switch rpm (word)
+MtvRpmRateMin:
+        dc.b    $FF,$00                                  ; Manifold tune valve: rpm change per period ($0C08,Z) at or above which the switch time is predicted
+MtvDelay1:
+        dc.b    $00,$00                                  ; Manifold tune valve: first actuator delay taken off the predicted switch time (word)
+MtvDelay2:
+        dc.b    $00,$00                                  ; Manifold tune valve: second actuator delay (word)
+MtvDelay3:
+        dc.b    $00,$00                                  ; Manifold tune valve: third actuator delay (word)
+MtvPeriod:
+        dc.b    $00                                      ; Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10)
+MtvRpmRateMax:
+        dc.b    $FF,$00                                  ; Manifold tune valve: upper limit of the rpm change per period (word)
+MtvCoolantMin:
+        dc.b    $FF                                      ; Manifold tune valve: coolant at or above this value (at WOT) for the rpm switching
 SensorV0C0AInit1:
-        dc.b    $00                                      ; Byte stored into V0C0A; read by Sub_2FA52. Fault: P1289.
+        dc.b    $00                                      ; Byte stored into V0C0A; read by MtvCheck. Fault: P1289.
 SensorV0C0AInit2:
-        dc.b    $00                                      ; Byte stored into V0C0A; read by Sub_2FA52. Fault: P1289.
-CalV0C0DThresh:
-        dc.b    $00                                      ; Byte compared with V0C0D; read by Sub_2FB1E, Sub_2FD2A.
-CalCoolantThresh2:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Sub_2FB1E.
-CalBatteryTempThresh1:
-        dc.b    $58                                      ; Byte compared with BatteryTemp; read by Sub_2FB1E.
-CalV0C0EThresh:
-        dc.b    $FF,$FF                                  ; Word compared with V0C0E; read by Sub_2FB1E.
-CalOffset4:
-        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2FB1E.
-CalOffset5:
-        dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2FB1E.
-CalRpmOffset3:
-        dc.b    $FF,$FF                                  ; Word subtracted from EngineRpm; read by Sub_2FB1E.
-CalRpmValue:
-        dc.b    $FF,$FF                                  ; Word used with EngineRpm; read by Sub_2FB1E.
-CalV0C13Thresh:
-        dc.b    $00                                      ; Byte compared with V0C13; read by Sub_2FB1E.
+        dc.b    $00                                      ; Byte stored into V0C0A; read by MtvCheck. Fault: P1289.
+TuneValve2Period:
+        dc.b    $00                                      ; Second tune valve: passes per prediction step ($0C0D,Z); also the largest predicted switch time
+TuneValve2CoolantMin:
+        dc.b    $FF                                      ; Second tune valve: coolant at or above this value
+TuneValve2BattTempMin:
+        dc.b    $58                                      ; Second tune valve: battery temperature at or above this value
+TuneValve2RateMax:
+        dc.b    $FF,$FF                                  ; Second tune valve: upper limit of the rpm change per period ($0C0E,Z, word)
+TuneValve2DelayHigh:
+        dc.b    $00,$00                                  ; Second tune valve: actuator delay used at the upper switch point (word)
+TuneValve2DelayLow:
+        dc.b    $00,$00                                  ; Second tune valve: actuator delay used at the lower switch point (word)
+TuneValve2RpmHigh:
+        dc.b    $FF,$FF                                  ; Second tune valve: upper switch rpm (word)
+TuneValve2RpmLow:
+        dc.b    $FF,$FF                                  ; Second tune valve (TuneValve2Control, TPU output $1066 bit 13): lower switch rpm (word)
+TuneValve2HoldCount:
+        dc.b    $00                                      ; Second tune valve: passes ($0C13,Z) the output must hold before it may change again
 SensorV06E3Thresh:
         dc.b    $80                                      ; Byte compared with V06E3; read by Sub_2DB56.
 SensorV06E2Thresh:
@@ -912,20 +912,20 @@ AcCutCoolantOff:
         dc.b    $F8                                      ; A/C cut-out: coolant below which it is allowed again
 AcCutRpmHigh:
         dc.b    $BB,$80                                  ; A/C logic: engine rpm above which the A/C is cut (FF00 = off)
-SensorBatteryTempThresh2:
-        dc.b    $8A                                      ; Byte compared with BatteryTemp; read by Sub_39272.
-SensorBatteryTempThresh3:
-        dc.b    $9B                                      ; Byte compared with BatteryTemp; read by Sub_39272.
-SensorThresh2:
-        dc.b    $32                                      ; Byte compared with; read by Sub_39272.
-SensorThresh3:
-        dc.b    $0F                                      ; Byte compared with; read by Sub_39272.
-SensorThresh4:
-        dc.b    $12                                      ; Byte compared with; read by Sub_39272.
-IacAcSensorThresh:
-        dc.b    $DC                                      ; Byte compared with AcSensor; read by Sub_19808, Sub_39272.
-SensorThresh5:
-        dc.b    $AE                                      ; Byte compared with; read by Sub_39272.
+AcCycleBattTempMin:
+        dc.b    $8A                                      ; A/C clutch: battery temperature above this value for the short cycle-time check
+AcCycleBattTempMax:
+        dc.b    $9B                                      ; A/C clutch: battery temperature below this value for the short cycle-time check
+AcCycleTimeMin:
+        dc.b    $32                                      ; A/C clutch: clutch state time ($0C29,Z) needed before the clutch may change in the cycle-time check
+AcPressureLowCut:
+        dc.b    $0F                                      ; A/C clutch: A/C sensor below this value cuts the clutch (low pressure)
+AcPressureLowRestore:
+        dc.b    $12                                      ; A/C clutch: after a cut, the sensor must rise to this value before the clutch returns
+AcPressureHighCut:
+        dc.b    $DC                                      ; A/C clutch (AcClutchControl): A/C sensor at or above this value cuts the clutch (high pressure); also used by the IAC A/C logic
+AcPressureHighRestore:
+        dc.b    $AE                                      ; A/C clutch: after a cut, the sensor must fall below this value before the clutch returns
 AcCoolantMin:
         dc.b    $6E                                      ; A/C logic: coolant below which the throttle cut-outs are reset
 AcLaunchCutThrottle:
@@ -1046,16 +1046,16 @@ EgrDutyOverride:
         dc.b    $00                                      ; EGR: when not zero the PID is bypassed (output $067D)
 EgrDutyFixed:
         dc.b    $00                                      ; EGR: fixed PWM duty used while EgrDutyOverride is zero and this is not
-EgrValue3:
-        dc.b    $00                                      ; Byte used with; read by Sub_39866.
-EgrValue4:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_39866.
-EgrValue5:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_39866.
-EgrV0B34Adder:
-        dc.b    $00                                      ; Byte added to V0B34; read by Sub_39866.
-EgrMapValue:
-        dc.b    $00                                      ; Byte used with Map; read by Sub_39866.
+EgrFlowUpdatePeriod:
+        dc.b    $00                                      ; EGR flow estimate: passes between updates (0 = every pass)
+EgrFlowFilterRise:
+        dc.b    $00,$00                                  ; EGR flow estimate: filter divisor (word) while MAP rises
+EgrFlowFilter:
+        dc.b    $00,$00                                  ; EGR flow estimate: filter divisor (word) used normally
+EgrMapRiseHyst:
+        dc.b    $00                                      ; EGR: MAP hysteresis of the rising-MAP state ($0B31,Z bit 1) against the filtered MAP $0B34,Z
+EgrExhaustPressRef:
+        dc.b    $00                                      ; EGR (EgrControl): reference pressure for the ratio (ref − MAP)/(baro − MAP) looked up in EgrPressureRatio (0 = factor $FF)
 EgrPidP:
         dc.b    $00                                      ; EGR PID: proportional gain
 EgrPidI:
@@ -1068,26 +1068,26 @@ EgrTrackTargetMax:
         dc.b    $00                                      ; EGR position tracking test: target position at or below this value
 EgrResultPassCount:
         dc.b    $00                                      ; EGR flow test result: passed tests ($0B57,Z) before the test counts as passed
-EgrDutyThresh:
-        dc.b    $00                                      ; Byte compared with EgrDuty; read by Sub_39D3E.
-EgrV0B51Thresh:
-        dc.b    $00                                      ; Byte compared with V0B51; read by Sub_39D3E.
-StartV0040Init:
-        dc.b    $00                                      ; Byte stored into V0040; read by Reset. Fault: P1602.
-EgrThresh6:
-        dc.b    $00                                      ; Byte compared with; read by Sub_39D3E.
-EgrThresh7:
-        dc.b    $00                                      ; Byte compared with; read by Sub_39D3E.
-EgrCoolantThresh3:
-        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Sub_39D3E.
-EgrMonTimerThresh2:
-        dc.b    $00                                      ; Byte compared with EgrMonTimer; read by Sub_39D3E.
-EgrTargetPosThresh2:
-        dc.b    $00                                      ; Byte compared with EgrTargetPos; read by Sub_39D3E.
-EgrAdder2:
-        dc.b    $00                                      ; Byte added to; read by Sub_39D3E.
-EgrOffset:
-        dc.b    $00                                      ; Byte subtracted from; read by Sub_39D3E.
+EgrZeroDutyMax:
+        dc.b    $00                                      ; EGR closed-position check: EGR duty at or below this value (valve commanded closed, not WOT)
+EgrZeroDelay:
+        dc.b    $00                                      ; EGR closed-position check: delay ($0B51,Z) after the valve closes before the position is followed
+EgrZeroPositionInit:
+        dc.b    $00                                      ; Start value of the learned EGR closed position $0040,Z
+EgrZeroPosMin:
+        dc.b    $00                                      ; EGR closed-position check: followed position below this value fails
+EgrZeroPosMax:
+        dc.b    $00                                      ; EGR closed-position check: followed position above this value fails ($0B50,Z bit 7)
+EgrZeroArmCoolant:
+        dc.b    $58                                      ; EGR closed-position check: coolant above this value to arm the check
+EgrZeroArmTime:
+        dc.b    $00                                      ; EGR closed-position check: time (EgrMonTimer) the arm conditions must hold
+EgrZeroArmTarget:
+        dc.b    $00                                      ; EGR closed-position check (EgrZeroCheck): target position above this value arms the check ($0B50,Z bit 1)
+EgrZeroSlewUp:
+        dc.b    $00                                      ; EGR closed-position check: largest rise per pass of the followed position
+EgrZeroSlewDown:
+        dc.b    $00                                      ; EGR closed-position check: largest fall per pass of the followed position $0040,Z
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrFlowFilterVacuum ($060F): 2D table, 1 points, unsigned
@@ -2788,10 +2788,10 @@ Tab3D_167E:
         dc.b    255,255,255,255,255                      ; row 3
         dc.b    255,255,255,255,255                      ; row 4
 
-StartCoolantThresh2:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Reset. Fault: P1602.
-StartAirTempThresh:
-        dc.b    $FF                                      ; Byte compared with AirTemp; read by Reset. Fault: P1602.
+HotStartCoolantMin:
+        dc.b    $FF                                      ; Reset: coolant at or above this value (with air at or above HotStartAirMin) sets $06C7,Z bit 3
+HotStartAirMin:
+        dc.b    $FF                                      ; Reset: air temperature at or above this value for $06C7,Z bit 3
 IdleFuelRpmMax:
         dc.b    $38                                      ; Idle enrichment (Sub_11074): below this engine rpm
 IdleFuelMapMax:
@@ -2865,10 +2865,10 @@ O2FlexOffsetStep:
         dc.b    $02                                      ; Flex trim offset: step of $19,X while it is positive or zero
 O2FlexOffsetStepNeg:
         dc.b    $01                                      ; Flex trim offset: step of $19,X while it is negative (limited to zero)
-StartFlexEthanolThresh:
-        dc.b    $AA                                      ; Byte compared with FlexEthanol; read by Reset. Fault: P1602.
-StartCoolantThresh3:
-        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Reset. Fault: P1602.
+FlexColdStartEthanolMin:
+        dc.b    $AA                                      ; Reset: FlexEthanol at or above this value with a cold engine sets the flex cold-start flag ($0050,Z bit 3)
+FlexColdStartCoolantMax:
+        dc.b    $58                                      ; Reset: coolant below this value for the flex cold-start flag
 SensorSriMileageThresh:
         dc.b    $03                                      ; Byte compared with SriMileage; read by CheckPowerDown.
 SensorValue4:
@@ -3983,8 +3983,8 @@ PurgeMask:
         dc.b    $07                                      ; Byte mask for; read by Sub_3D85E.
 PurgeV0436Thresh:
         dc.b    $04                                      ; Byte compared with V0436; read by Sub_3D85E.
-StartV042FInit:
-        dc.b    $80                                      ; Byte stored into V042F; read by Reset, Sub_3DC64, Sub_3DE9C. Fault: P1602.
+PurgeDelayInit:
+        dc.b    $80                                      ; Start value of the purge delay $042F,Z (reset, Sub_3DC64, Sub_3DE9C)
 PurgeRampFull:
         dc.b    $70                                      ; Purge ramp value at or above which the ramp-up stops
 PurgeRampMin:
@@ -5679,8 +5679,8 @@ O2SparkTrimNegPN:
         dc.b    0,0, 13,4                                ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$80,$00,$AD,$01,$04
-EventFactor:
-        dc.b    $1A                                      ; Byte multiplied; read by Isr_GPT_IC1, Reset, Sub_0E0B6. Fault: P1602.
+RpmEventFilter:
+        dc.b    $1A                                      ; Per-event rpm filter weight (× 128 into $0D90,Z, its complement in $0D92,Z); $FF turns the per-event rpm path off
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleSparkFilterCoolant ($2EE4): 2D table, 1 points, unsigned
@@ -10174,10 +10174,10 @@ DwellTime:
         dc.b    $00,$0D,$BB,$A0,$00,$00,$1A,$CB,$C0,$00
 SensorV0AB2Thresh:
         dc.b    $1E                                      ; Byte compared with V0AB2; read by CalcVehicleSpeed.
-StartFactor1:
-        dc.b    $3F                                      ; Byte multiplied; read by Reset. Fault: P1602.
-StartFactor2:
-        dc.b    $05                                      ; Byte multiplied; read by Reset. Fault: P1602.
+PwmPeriodC18:
+        dc.b    $3F                                      ; PWM period of the TPU output set up by Sub_3B03C (duty $0C20,Z in %): value × 250 into $0C18,Z (Options0333 bit 6)
+PurgePwmPeriod:
+        dc.b    $05                                      ; Proportional purge PWM period (Options0333 bit 7): value × 250 into $0452,Z; the duty comes from $0460,Z
 PurgeV0471Thresh:
         dc.b    $18                                      ; Byte compared with V0471; read by Sub_22762. Fault: P0443.
         dc.b    $00,$10,$04,$01,$20,$08,$02,$01,$10,$03,$02,$20,$04,$04,$01,$05
@@ -10759,10 +10759,10 @@ L0839E:
         BRA     L083C4
 L083A4:
         BRCLR   >Options0335,#$20,L083AE
-        JSR     Sub_2F800
+        JSR     MtvTiming
 L083AE:
         BRCLR   >Options0335,#$80,L083B8
-        JSR     Sub_2FB1E
+        JSR     TuneValve2Control
 L083B8:
         JSR     Sub_2DAE4
         JSR     Sub_166E2
@@ -12415,7 +12415,7 @@ L0A292:
         STE     $0D7C,Z
 L0A296:
         PSHM    D
-        LDAA    >EventFactor
+        LDAA    >RpmEventFilter
         CMPA    #$FF
         BEQ     L0A2AA
         TSTB
@@ -13183,16 +13183,16 @@ SensorValue16:
         dc.b    $00
 CylinderCount:
         dc.b    $04                                      ; Number of cylinders (4): the cylinder index $0C46,Z counts up to it and the per-event code uses it
-SensorValue17:
-        dc.b    $00,$3A                                  ; Word used with; read by Sub_39000.
-SensorValue18:
-        dc.b    $00,$76                                  ; Word used with; read by Sub_39000.
-SensorV0ABCThresh:
-        dc.b    $10                                      ; Byte compared with V0ABC; read by Sub_39000.
-SensorValue19:
-        dc.b    $18                                      ; Byte used with; read by Sub_39000.
-SensorValue20:
-        dc.b    $45                                      ; Byte used with; read by Sub_39000.
+RunModeTimeWarm:
+        dc.b    $00,$3A                                  ; Run-mode switch (RunModeSwitch): time after start (Count3s, word) with coolant at or above 15 °C before $0943,Z bits 3-4 are set
+RunModeTimeCold:
+        dc.b    $00,$76                                  ; As RunModeTimeWarm with colder coolant
+RunModeCountRunning:
+        dc.b    $10                                      ; Run-mode switch: count needed once the engine has run ($0C33,Z bit 5) and the battery is at or above 11.0 V
+RunModeCount:
+        dc.b    $18                                      ; Run-mode switch: count $0ABC,Z needed (battery at or above 11.0 V, or warm)
+RunModeCountColdLowVolts:
+        dc.b    $45                                      ; Run-mode switch: count needed cold with the battery below 11.0 V
 
 ;---------------------------------------------------------------------------------------------------
 ; EventTimingLimit ($ABC5): 2D table, 2 points, unsigned
@@ -14318,7 +14318,7 @@ L0C480:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_0C4A4 ($0C4A4)
-; Called from: Isr_GPT_IC3, Sub_08456, Reset, Sub_21BE0, Sub_2FA52, Sub_38368 (10 calls)
+; Called from: Isr_GPT_IC3, Sub_08456, Reset, Sub_21BE0, MtvCheck, Sub_38368 (10 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_0C4A4:
         BRCLR   >Options032E,#$02,L0C4BE
@@ -14710,7 +14710,7 @@ L0C87A:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_0C894 ($0C894)
-; Called from: Sub_399CA (3 calls)
+; Called from: EgrControl (3 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_0C894:
         EMULS
@@ -15681,8 +15681,8 @@ L0D42C:
         STAA    $002B,Z
         LDAA    #$32
         STAA    $3F,Z
-        LDAA    >StartV0040Init
-        STAA    $41,Z
+        LDAA    >EgrZeroPositionInit
+        STAA    <EgrZeroPos,Z
         TZY
         LDY     #$802C
         LDAB    #$00
@@ -15964,7 +15964,7 @@ L0D80E:
         LDAA    >EventSparkCountMax
         STAA    $0863,Z
         JSR     Sub_0DBEA
-        LDAA    >StartValue1
+        LDAA    >CalTypeCode
         CMPA    #$05
         BCS     L0D82A
         BRCLR   >Options032E,#$80,L0D82A
@@ -16039,10 +16039,10 @@ L0D8F4:
         STAB    >AirTemp,Z
         STAB    >StartAirTemp,Z
         LDAA    >AirTemp,Z
-        CMPA    >StartAirTempThresh
+        CMPA    >HotStartAirMin
         BCS     L0D914
         LDAA    >CoolantTemp,Z
-        CMPA    >StartCoolantThresh2
+        CMPA    >HotStartCoolantMin
         BCS     L0D914
         BSET    $06C7,Z,#$08
 L0D914:
@@ -16057,7 +16057,7 @@ L0D914:
 L0D930:
         STAB    >AcSensor,Z
         BRCLR   >Options0333,#$40,L0D946
-        LDAA    >StartFactor1
+        LDAA    >PwmPeriodC18
         LDAB    #$FA
         MUL
         STD     $0C18,Z
@@ -16098,7 +16098,7 @@ L0D9AC:
         JSR     Sub_1A5CE
 L0D9B0:
         BRCLR   >Options0333,#$80,L0D9C2
-        LDAA    >StartFactor2
+        LDAA    >PurgePwmPeriod
         LDAB    #$FA
         MUL
         STD     $0458,Z
@@ -16106,12 +16106,12 @@ L0D9C2:
         LDAA    >BatteryTemp,Z
         JSR     Sub_2C766
         STAA    >ChargeTargetVolts,Z
-        LDAA    >StartV0C03Init
+        LDAA    >MtvPeriod
         STAA    $0C03,Z
         LDD     #$FFFF
         STD     $0C04,Z
         BSET    $0C02,Z,#$10
-        LDAA    >StartV042FInit
+        LDAA    >PurgeDelayInit
         STAA    $0435,Z
         LDAA    #$64
         STAA    $043A,Z
@@ -16140,7 +16140,7 @@ L0DA20:
 L0DA2A:
         BRSET   >Options032B,#$80,L0DA66
         LDAA    #$80
-        LDAB    >EventFactor
+        LDAB    >RpmEventFilter
         MUL
         STD     $0D88,Z
         LDE     #$8000
@@ -16164,10 +16164,10 @@ L0DA66:
         LDD     <SriMileage,Z
         STD     $0F09,Z
         LDAA    >CoolantTemp,Z
-        CMPA    >StartCoolantThresh3
+        CMPA    >FlexColdStartCoolantMax
         BCC     L0DAA2
         LDAA    >FlexEthanol,Z
-        CMPA    >StartFlexEthanolThresh
+        CMPA    >FlexColdStartEthanolMin
         BCS     L0DAA2
         BSET    $50,Z,#$08
         BCLR    $50,Z,#$20
@@ -16199,7 +16199,7 @@ L0DAE4:
         STAA    $0442,Z
         LDAA    >Options033E
         STAA    $06B8,Z
-        LDAA    >StartV06B9Flag
+        LDAA    >Options033F
         STAA    $06B9,Z
         BCLR    $50,Z,#$20
         LDAA    #$36
@@ -16326,11 +16326,11 @@ L0DC50:
         JSR     Sub_19000
         JSR     Sub_39F7E
         JSR     Sub_2CC96
-        JSR     Sub_39272
+        JSR     AcClutchControl
         JSR     CalcVehicleSpeed
         JSR     Sub_21C7A
         JSR     Sub_121E6
-        JSR     Sub_39000
+        JSR     RunModeSwitch
         JSR     Sub_1DF54
         JSR     Sub_2B456
         JSR     Sub_20190
@@ -16454,7 +16454,7 @@ L0DDCE:
         JSR     Sub_24064
         JSR     Sub_21BE0
         JSR     Sub_23154
-        JSR     Sub_2FA52
+        JSR     MtvCheck
         JSR     Sub_36A34
         JSR     Sub_367B4
         JSR     Sub_36638
@@ -17436,7 +17436,7 @@ L0E9D0:
         STE     $06BA,Z
 L0E9E8:
         LDAA    #$80
-        LDAB    >EventFactor
+        LDAB    >RpmEventFilter
         MUL
         CPD     $0D88,Z
         BEQ     L0E9FA
