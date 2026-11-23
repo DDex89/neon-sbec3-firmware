@@ -476,7 +476,7 @@
   "09D0": {
    "name": "IacBaroScale",
    "category": "Idle",
-   "desc": "Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2",
+   "desc": "Barometric pressure to row position of IacBaseBaroTarget and IdleMapBase",
    "x": "kpa",
    "y": "pos256",
    "auto": false
@@ -1123,7 +1123,7 @@
   "1A19": {
    "name": "PurgeDutyAlt",
    "category": "EVAP purge",
-   "desc": "As PurgeDutyPart with calibration bits $0339.2/$0339.3 (by ThrottleState bit 0)",
+   "desc": "As PurgeDutyPart with calibration bits Options0339 bit 2/Options0339 bit 3 (by ThrottleState bit 0)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1175,7 +1175,7 @@
   "1E35": {
    "name": "AirTempSparkFactor",
    "category": "Spark",
-   "desc": "Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit $0330.5 clear)",
+   "desc": "Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit Options0330 bit 5 clear)",
    "x": "tempc",
    "y": "mult256",
    "auto": false
@@ -1473,7 +1473,7 @@
   "2206": {
    "name": "AcEngageSparkHoldIac",
    "category": "Spark",
-   "desc": "As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit $0331.7 clear)",
+   "desc": "As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit Options0331 bit 7 clear)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1714,7 +1714,7 @@
   "2561": {
    "name": "IdleSparkRpmErrorAlt",
    "category": "Spark",
-   "desc": "As IdleSparkRpmError, second variant (calibration bit $032E.6)",
+   "desc": "As IdleSparkRpmError, second variant (calibration bit Options032E bit 6)",
    "x": "raw",
    "y": "spark",
    "auto": false
@@ -1786,7 +1786,7 @@
   "25FC": {
    "name": "IdleTargetRpmPN",
    "category": "Idle",
-   "desc": "Target idle speed against coolant in P/N (with calibration bit $032E.6 clear)",
+   "desc": "Target idle speed against coolant in P/N (with calibration bit Options032E bit 6 clear)",
    "x": "tempc",
    "y": "rpm8",
    "auto": false
@@ -2156,7 +2156,7 @@
   "2871": {
    "name": "IacRollFactorAcSensor",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit $0331.7",
+   "desc": "Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options0331 bit 7",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -2327,7 +2327,7 @@
   "29D6": {
    "name": "IdleMapAdderIac2",
    "category": "Idle",
-   "desc": "As IdleMapAdderIac2 when fuel mode bits $0770.7-6 are set and IdleMapIacFlag is zero",
+   "desc": "As IdleMapAdderIac when FuelModeFlags2 bits 7-6 are not both clear and IdleMapIacFlag is zero",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -2859,7 +2859,7 @@
   "7077": {
    "name": "Thermistor3CurveAlt",
    "category": "Sensors",
-   "desc": "Alternative curve for the third thermistor input, chosen by calibration bit $0330.2",
+   "desc": "Alternative curve for the third thermistor input, chosen by calibration bit Options0330 bit 2",
    "x": "raw",
    "y": "tempc",
    "auto": false
@@ -2948,7 +2948,7 @@
   "ACC7": {
    "name": "FuelEventOffset",
    "category": "Fuel",
-   "desc": "Per-event fuel offset against the calibration value $0A83 (or $7563 with bit $0338.2), added before the per-cylinder table $ABC3",
+   "desc": "Per-event fuel offset against the calibration value $0A83 (or $7563 with bit Options0338 bit 2), added before the per-cylinder table $ABC3",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -2975,7 +2975,7 @@
   },
   "0320": {
    "name": "BusMsgAcData",
-   "desc": "Data word sent in the bus message $AC (CcdTransmit; bit 3 set with Options032E bit 7)",
+   "desc": "Data word sent in the bus message $AC (CcdTxACAcData; bit 3 set with Options032E bit 7)",
    "category": "Other",
    "size": 2
   },
@@ -3439,7 +3439,7 @@
   },
   "041F": {
    "name": "CoolantSlowInit",
-   "desc": "Start value of CoolantTempSlow (calibration bit $033D.5)",
+   "desc": "Start value of CoolantTempSlow (calibration bit Options033D bit 5)",
    "unit": "tempc",
    "category": "Sensors",
    "size": 1
@@ -3610,7 +3610,7 @@
   },
   "045B": {
    "name": "TuneValve2RpmLow",
-   "desc": "Second tune valve (TuneValve2Control, TPU output $1066 bit 13): lower switch rpm (word)",
+   "desc": "Second tune valve (TuneValve2Control, CS2 register IoDriver66 bit 13): lower switch rpm (word)",
    "unit": "rpmw",
    "category": "Other",
    "size": 2
@@ -4767,7 +4767,7 @@
   },
   "09F7": {
    "name": "FuelEventOffsetIn",
-   "desc": "Input value of FuelEventOffset (and of the cranking event timing); bit $0338.2 selects FuelEventOffsetInAlt",
+   "desc": "Input value of FuelEventOffset (and of the cranking event timing); bit Options0338 bit 2 selects FuelEventOffsetInAlt",
    "size": 1,
    "category": "Fuel"
   },
@@ -6085,7 +6085,7 @@
   },
   "185F": {
    "name": "O2IdleRpmMargin",
-   "desc": "Closed loop: rpm within idle target plus this margin counts as idle (bit $0339.7)",
+   "desc": "Closed loop: rpm within idle target plus this margin counts as idle (bit Options0339 bit 7)",
    "unit": "rpm32",
    "category": "Closed loop",
    "size": 1
@@ -6392,13 +6392,13 @@
   },
   "1954": {
    "name": "SpeedLimitActive",
-   "desc": "With the cut active: coarse vehicle speed at or above this keeps the speed-limit cut (bit $0337.5)",
+   "desc": "With the cut active: coarse vehicle speed at or above this keeps the speed-limit cut (bit Options0337 bit 5)",
    "size": 1,
    "category": "Fuel"
   },
   "1955": {
    "name": "SpeedLimit",
-   "desc": "Vehicle speed limit (compared with VehicleSpeedCoarse), active with calibration bit $0337.5",
+   "desc": "Vehicle speed limit (compared with VehicleSpeedCoarse), active with calibration bit Options0337 bit 5",
    "size": 1,
    "unit": "raw",
    "category": "Fuel"
@@ -6642,25 +6642,25 @@
   },
   "1B59": {
    "name": "SparkCapPeriodOff",
-   "desc": "AfterStartSparkCap: RefPeriodLow above this value turns the cap off (EventFlag1 bits 7-6 set)",
+   "desc": "AfterStartSparkCap: RefPeriodLow above this value turns the cap off (used when Options032A bit 7 or 6 is set)",
    "size": 2,
    "category": "Spark"
   },
   "1B5B": {
    "name": "SparkCapPeriodOffAlt",
-   "desc": "As SparkCapPeriodOff with EventFlag1 bits 7-6 clear",
+   "desc": "As SparkCapPeriodOff when Options032A bits 7 and 6 are both clear",
    "size": 2,
    "category": "Spark"
   },
   "1B5D": {
    "name": "SparkCapPeriodOn",
-   "desc": "AfterStartSparkCap: RefPeriodLow below this value turns the cap on (with EventFlag1 bits 7-6 set)",
+   "desc": "AfterStartSparkCap: RefPeriodLow below this value turns the cap on (used when Options032A bit 7 or 6 is set)",
    "size": 2,
    "category": "Spark"
   },
   "1B5F": {
    "name": "SparkCapPeriodOnAlt",
-   "desc": "As SparkCapPeriodOn with EventFlag1 bits 7-6 clear",
+   "desc": "As SparkCapPeriodOn when Options032A bits 7 and 6 are both clear",
    "size": 2,
    "category": "Spark"
   },
@@ -6902,7 +6902,7 @@
   },
   "206E": {
    "name": "TipInAirTempMin",
-   "desc": "Tip-in retard runs above this air temperature (with calibration bit $0330.5)",
+   "desc": "Tip-in retard runs above this air temperature (with calibration bit Options0330 bit 5)",
    "unit": "tempc",
    "size": 1,
    "category": "Spark"
@@ -7294,7 +7294,7 @@
   },
   "2447": {
    "name": "KnockLearnResetValue",
-   "desc": "Knock learning (KnockLearn): value written into the learned values from $8092 on a reset",
+   "desc": "Knock learning (KnockLearn): value written into all ten KnockLearnCells on a reset",
    "category": "Knock",
    "size": 1
   },
@@ -7317,8 +7317,8 @@
    "size": 1
   },
   "244B": {
-   "name": "KnockCylRetardStep",
-   "desc": "Knock learning: per-cylinder retard step",
+   "name": "KnockLearnCellStep",
+   "desc": "Knock learning (KnockLearn): step added to the learned value of the current rpm/MAP cell (KnockLearnCells[KnockLearnCellIndex]) on knock, held at $FF",
    "size": 1,
    "category": "Knock"
   },
@@ -7341,14 +7341,14 @@
    "size": 1
   },
   "244F": {
-   "name": "KnockCylRetardDecay",
-   "desc": "Decrease of the per-cylinder retard values per step",
+   "name": "KnockLearnCellDecay",
+   "desc": "Knock learning (KnockLearnCellDecayStep): decrease of all KnockLearnCells per decay step",
    "size": 1,
    "category": "Knock"
   },
   "2450": {
-   "name": "KnockCylRetardMin",
-   "desc": "Lower limit of the per-cylinder retard values ($8092,Z)",
+   "name": "KnockLearnCellMin",
+   "desc": "Knock learning (KnockLearnCellDecayStep): lower limit of the KnockLearnCells when they decay; the decay runs only while some cell is above it",
    "size": 1,
    "category": "Knock"
   },
@@ -7451,7 +7451,7 @@
   },
   "2597": {
    "name": "SparkHookCoolantMin",
-   "desc": "Spark hook (SparkHook, bit $0338.5): coolant at or above this value",
+   "desc": "Spark hook (SparkHook, bit Options0338 bit 5): coolant at or above this value",
    "unit": "tempc",
    "category": "Spark",
    "size": 1
@@ -7470,7 +7470,7 @@
   },
   "25B0": {
    "name": "SparkStartRampStep2",
-   "desc": "Decrease of SparkStartRampValue per step (bit $0339.5)",
+   "desc": "Decrease of SparkStartRampValue per step (bit Options0339 bit 5)",
    "category": "Spark",
    "size": 1
   },
@@ -7657,7 +7657,7 @@
   },
   "25DD": {
    "name": "IdleRampBlockAcOff",
-   "desc": "Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit $033A.6 clear)",
+   "desc": "Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit Options033A bit 6 clear)",
    "size": 1,
    "category": "Idle"
   },
@@ -7689,7 +7689,7 @@
   },
   "25E4": {
    "name": "IdleRampCountMin",
-   "desc": "Idle ramp: runs only while the SRI mileage SriMileage is at most this value",
+   "desc": "Idle ramp: runs only once the SRI mileage SriMileage (word) is at or above this value",
    "size": 2,
    "category": "Idle"
   },
@@ -8057,7 +8057,7 @@
   },
   "2A31": {
    "name": "IdleStableTimeMin",
-   "desc": "Idle state flags: time since start above this value (also used by VssMonitor)",
+   "desc": "Idle state flags (IdleStateFlags): time since start above this value (also used by IdleMonitorEnable)",
    "category": "Idle",
    "size": 1
   },
@@ -8494,7 +8494,7 @@
   },
   "2B8C": {
    "name": "SpeedCtlRpmJump",
-   "desc": "Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only)",
+   "desc": "Speed control (SpeedCtlRpmJumpCheck): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only)",
    "unit": "rpmw",
    "category": "Speed control",
    "size": 2
@@ -10842,7 +10842,7 @@
   },
   "74E6": {
    "name": "PwmPeriodC18",
-   "desc": "PWM period of the TPU output set up by PwmC18PeriodCalc (duty PwmC18Duty in %): value × 250 into PwmC18Period (Options0333 bit 6)",
+   "desc": "PWM period of output C18 (Options0333 bit 6): Reset stores value x 250 into PwmC18Period, which PwmC18PeriodCalc uses with the duty PwmC18Duty (in %)",
    "category": "Other",
    "size": 1
   },
@@ -10904,7 +10904,7 @@
   },
   "7563": {
    "name": "FuelEventOffsetInAlt",
-   "desc": "As FuelEventOffsetIn with calibration bit $0338.2 set",
+   "desc": "As FuelEventOffsetIn with calibration bit Options0338 bit 2 set",
    "size": 1,
    "category": "Fuel"
   },

@@ -1313,10 +1313,10 @@ O2ActiveFlags    equ $075D        ; $F875D
 ;                 bit 6: upstream O2 sensor 2 active (as bit 7)
 ;                 bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow
 ;                 bit 4: downstream O2 sensor 2 active (as bit 5)
-;                 bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
-;                 bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
-;                 bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
-;                 bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+;                 bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+;                 bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+;                 bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+;                 bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 O2SwitchFlags    equ $075E        ; $F875E
 ;                 bit 6: read by ClosedLoopManager
 ;                 bit 5: read by ClosedLoopManager
@@ -1732,7 +1732,7 @@ BusStatus9D2     equ $09D2        ; $F89D2
 BusStatus9D3     equ $09D3        ; $F89D3
 BusStatus9D4     equ $09D4        ; $F89D4
 BusMsgFlags      equ $09D5        ; $F89D5
-;                 bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+;                 bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
 ;                 bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
 ;                 bit 5: bus message $12 request taken (CcdReceive, PciReceive)
 ;                 bit 2: bus receive acknowledged (BusRxAck)
@@ -2355,7 +2355,7 @@ KnockSampleDAE   equ $0DAE        ; $F8DAE
 KnockSampleDAF   equ $0DAF        ; $F8DAF
 KnockSampleDB0   equ $0DB0        ; $F8DB0
 KnockSampleDB1   equ $0DB1        ; $F8DB1
-KnockRpmDB2      equ $0DB2        ; $F8DB2
+KnockLearnCellIndex equ $0DB2        ; $F8DB2
 KnockSensorCheck equ $0DB3        ; $F8DB3
 KnockWindow      equ $0DB4        ; $F8DB4
 KnockWindowFactor equ $0DB5        ; $F8DB5

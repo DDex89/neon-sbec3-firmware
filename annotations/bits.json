@@ -46,7 +46,7 @@
   "0": "transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)"
  },
  "BusMsgFlags": {
-  "7": "bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)",
+  "7": "bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)",
   "6": "bus EEPROM write: first kind stored (BusEepromWrite)",
   "5": "bus message $12 request taken (CcdReceive, PciReceive)",
   "2": "bus receive acknowledged (BusRxAck)",
@@ -836,10 +836,10 @@
   "6": "upstream O2 sensor 2 active (as bit 7)",
   "5": "downstream O2 sensor 1 active: output passed O2DownActiveLow",
   "4": "downstream O2 sensor 2 active (as bit 5)",
-  "3": "as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)",
-  "2": "as bit 6, cleared by SensorFaultFlags2 bit 2",
-  "1": "as bit 5, cleared by SensorFaultFlags2 bit 1",
-  "0": "as bit 4, cleared by SensorFaultFlags2 bit 0"
+  "3": "sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)",
+  "2": "sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)",
+  "1": "sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)",
+  "0": "sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)"
  },
  "O2Bank1Flags": {
   "7": "bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens",

@@ -3720,13 +3720,13 @@ L22C86:
 L22C8E:
         LDAA    #$02
         BRSET   >SensorFaultFlags2,Z,#$08,L22C9E         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
-        BRCLR   >O2ActiveFlags,Z,#$08,L22C9E             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRCLR   >O2ActiveFlags,Z,#$08,L22C9E             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BRA     L22CB4
 L22C9E:
         LDAA    #$08
         BRCLR   >Options032F,#$40,L22CB4                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >SensorFaultFlags2,Z,#$04,L22CB4         ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
-        BRCLR   >O2ActiveFlags,Z,#$04,L22CB4             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRCLR   >O2ActiveFlags,Z,#$04,L22CB4             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         LDAA    #$10
 L22CB4:
         STAA    >FuelSystemStatusPid,Z
@@ -3734,12 +3734,12 @@ L22CB4:
         BRCLR   >Options032F,#$40,L22CE0                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         LDAA    #$02
         BRSET   >SensorFaultFlags2,Z,#$04,L22CD0         ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
-        BRCLR   >O2ActiveFlags,Z,#$04,L22CD0             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRCLR   >O2ActiveFlags,Z,#$04,L22CD0             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BRA     L22CE0
 L22CD0:
         LDAA    #$08
         BRSET   >SensorFaultFlags2,Z,#$08,L22CE0         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
-        BRCLR   >O2ActiveFlags,Z,#$08,L22CE0             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRCLR   >O2ActiveFlags,Z,#$08,L22CE0             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         LDAA    #$10
 L22CE0:
         STAA    >FuelSystem529,Z
@@ -12909,7 +12909,7 @@ L2C274:
         BCC     L2C292
         LDAA    >CoolantFaultValue
         STAA    >CoolantTempSlow,Z
-        BCLR    >O2ActiveFlags,Z,#$CC                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BCLR    >O2ActiveFlags,Z,#$CC                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         CLR     >O2ColdTrim1,Z
         CLR     >O2ColdTrim2,Z
         CLR     >MonSpeedCounter,Z

@@ -5260,7 +5260,7 @@ O2StartDelays:
 L14756:
         STAB    >O2WarmDelay,Z
         BCLR    >O2ActiveFlags,Z,#$F0                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 4: downstream O2 sensor 2 active (as bit 5)
-        BCLR    >O2ActiveFlags,Z,#$0F                    ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1; bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+        BCLR    >O2ActiveFlags,Z,#$0F                    ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags); bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags); bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         PSHM    X,K
         LDX     #O2StartDelayCoolant
         JSR     Lookup2D
@@ -5362,7 +5362,7 @@ L1488A:
         CMPA    >O2ActiveLow
         BCC     L1489E
 L1489A:
-        BSET    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BSET    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L1489E:
         BRCLR   >Options032F,#$40,L148C4                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         TST     >O2ColdTrim2,Z
@@ -5376,7 +5376,7 @@ L148B0:
         CMPA    >O2ActiveLow
         BCC     L148C4
 L148C0:
-        BSET    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BSET    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L148C4:
         TST     >O2DownDelay,Z
         LBNE    L14900
@@ -5387,7 +5387,7 @@ L148C4:
         CMPA    >O2DownActiveLow
         BCC     L148E6
 L148E2:
-        BSET    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
+        BSET    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L148E6:
         BRCLR   >Options032F,#$10,L14900                 ; bit 4: downstream O2 sensor 2 fitted
         LDAA    >O2DownBank2Raw,Z
@@ -5396,7 +5396,7 @@ L148E6:
         CMPA    >O2DownActiveLow
         BCC     L14900
 L148FC:
-        BSET    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+        BSET    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L14900:
         PSHM    X,Y,K
         CLRE
@@ -5462,7 +5462,7 @@ L1498E:
 L14996:
         PULM    K,Y,X
         BRCLR   >SensorFaultFlags2,Z,#$08,L149D4         ; bit 3: upstream O2 sensor 1 circuit fault (P0131 or P0132): sensor not used
-        BCLR    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BCLR    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BSET    <Scratch0,Z,#$C0
         CLR     $11,X
         BRCLR   >FaultSet12,Z,#$08,L149D0
@@ -5483,7 +5483,7 @@ L149D0:
         JSR     O2MemClearRichBank1
 L149D4:
         BRCLR   >SensorFaultFlags2,Z,#$04,L14A10         ; bit 2: upstream O2 sensor 2 circuit fault (P0151 or P0152)
-        BCLR    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BCLR    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BSET    <Scratch0,Z,#$C0
         CLR     $11,Y
         BRCLR   >FaultSet17,Z,#$20,L14A0C
@@ -5504,13 +5504,13 @@ L14A0C:
         JSR     O2MemClearRichBank2
 L14A10:
         BRCLR   >SensorFaultFlags2,Z,#$02,L14A24         ; bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
-        BCLR    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
+        BCLR    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         CLR     $11,X
         BSET    <Scratch0,Z,#$50
         BSET    >O2InactiveFlags,Z,#$80                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)
 L14A24:
         BRCLR   >SensorFaultFlags2,Z,#$01,L14A38         ; bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
-        BCLR    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+        BCLR    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         CLR     $11,Y
         BSET    <Scratch1,Z,#$50
         BSET    >O2InactiveFlags,Z,#$40                  ; bit 6: bank 2 closed loop held open (as bit 7)
@@ -5523,7 +5523,7 @@ L14A38:
         LBRA    L14DF0
 L14A4C:
         BRCLR   >Options032F,#$80,L14A58                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
-        BRSET   >O2ActiveFlags,Z,#$08,L14A78             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRSET   >O2ActiveFlags,Z,#$08,L14A78             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L14A58:
         BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
         BSET    <Scratch0,Z,#$70
@@ -5541,7 +5541,7 @@ L14A58:
         STAA    $07,X
 L14A78:
         BRCLR   >Options032F,#$40,L14A84                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
-        BRSET   >O2ActiveFlags,Z,#$04,L14AA4             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRSET   >O2ActiveFlags,Z,#$04,L14AA4             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L14A84:
         BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    <Scratch1,Z,#$70
@@ -5559,12 +5559,12 @@ L14A84:
         STAA    $07,Y
 L14AA4:
         BRCLR   >Options032F,#$20,L14AB0                 ; bit 5: downstream O2 sensor 1 fitted
-        BRSET   >O2ActiveFlags,Z,#$02,L14AB4             ; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
+        BRSET   >O2ActiveFlags,Z,#$02,L14AB4             ; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L14AB0:
         BSET    <Scratch0,Z,#$50
 L14AB4:
         BRCLR   >Options032F,#$10,L14AC0                 ; bit 4: downstream O2 sensor 2 fitted
-        BRSET   >O2ActiveFlags,Z,#$01,L14AC4             ; bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+        BRSET   >O2ActiveFlags,Z,#$01,L14AC4             ; bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L14AC0:
         BSET    <Scratch1,Z,#$50
 L14AC4:
@@ -7102,7 +7102,7 @@ L15A86:
         ANDA    #$08
         STAA    <Scratch6,Z
         JSR     O2LearnEnable
-        BRCLR   >O2ActiveFlags,Z,#$04,L15AC8             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRCLR   >O2ActiveFlags,Z,#$04,L15AC8             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         TZY
         LDY     #$8794
         LDAA    >ShortTermTrim2,Z
@@ -7242,8 +7242,8 @@ L15C06:
         LBNE    L15CB2
         BRSET   >FaultSet0D,Z,#$10,L15CB2
         BRSET   >Options032C,#$80,L15CB2                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
-        BRSET   >O2ActiveFlags,Z,#$08,L15C2C             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
-        BRSET   >O2ActiveFlags,Z,#$04,L15C76             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRSET   >O2ActiveFlags,Z,#$08,L15C2C             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+        BRSET   >O2ActiveFlags,Z,#$04,L15C76             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BSET    >O2ResetFlags2,Z,#$C0                    ; bit 7: adaptive cell selection: not the last cell (O2LearnEnable); bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
 L15C2C:
         TZX
@@ -7257,16 +7257,16 @@ L15C2C:
         LDAA    >ClosedLoop704,Z
         STAA    <Scratch3,Z
         JSR     O2CellUpdate
-        BRCLR   >O2ActiveFlags,Z,#$08,L15C6A             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
-        BRSET   >O2ActiveFlags,Z,#$04,L15C76             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRCLR   >O2ActiveFlags,Z,#$08,L15C6A             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+        BRSET   >O2ActiveFlags,Z,#$04,L15C76             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BRSET   >O2LearnFlags,Z,#$10,L15C66              ; bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
         LDAA    >O2AdaptValue1,Z
         STAA    >O2AdaptValue2,Z
 L15C66:
         LBRA    L15CFA
 L15C6A:
-        BRSET   >O2ActiveFlags,Z,#$04,L15C76             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
-        BRSET   >O2ActiveFlags,Z,#$08,L15CFA             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRSET   >O2ActiveFlags,Z,#$04,L15C76             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+        BRSET   >O2ActiveFlags,Z,#$08,L15CFA             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L15C76:
         TZX
         LDX     #$806E
@@ -7279,8 +7279,8 @@ L15C76:
         LDAA    >ClosedLoop72C,Z
         STAA    <Scratch3,Z
         JSR     O2CellUpdate
-        BRCLR   >O2ActiveFlags,Z,#$04,L15CFA             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
-        BRSET   >O2ActiveFlags,Z,#$08,L15CFA             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRCLR   >O2ActiveFlags,Z,#$04,L15CFA             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+        BRSET   >O2ActiveFlags,Z,#$08,L15CFA             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BRSET   >O2LearnFlags,Z,#$10,L15CB0              ; bit 4: adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)
         LDAA    >O2AdaptValue2,Z
         STAA    >O2AdaptValue1,Z
@@ -8117,7 +8117,7 @@ Sub_163B2:
         PSHB
         TZX
         LDX     #$8093
-        LDAB    >KnockRpmDB2,Z
+        LDAB    >KnockLearnCellIndex,Z
         ABX
         LDAA    $00,X
         PULB
@@ -17766,7 +17766,7 @@ KnockControl:
         JSR     KnockRpmBand
         TST     >MainLoopCounter,Z
         BNE     L1F024
-        JSR     KnockCylRetardDecayStep
+        JSR     KnockLearnCellDecayStep
 L1F024:
         JSR     KnockRetardCalc
         RTS
@@ -17858,7 +17858,7 @@ L1F0F2:
         BCS     L1F13C
         TZY
         LDY     #$8093
-        LDAB    >KnockRpmDB2,Z
+        LDAB    >KnockLearnCellIndex,Z
         ABY
         LDAA    $00,Y
         LDAB    >KnockEventCount,Z
@@ -17868,7 +17868,7 @@ L1F0F2:
         CMPB    >KnockSignalMin
         BCS     L1F13C
         CLR     >KnockEventCount,Z
-        ADDA    >KnockCylRetardStep
+        ADDA    >KnockLearnCellStep
         BCC     L1F136
         LDAA    #$FF
 L1F136:
@@ -17893,7 +17893,7 @@ Sub_1F13E:
 L1F156:
         PSHA
         LDY     #$8093
-        LDAB    >KnockRpmDB2,Z
+        LDAB    >KnockLearnCellIndex,Z
         ABY
         LDAA    $0D9D,Z
         LDAB    >MainLoopCounter,Z
@@ -17947,7 +17947,7 @@ L1F1D6:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardCalc ($1F1D8)
-; Called from: KnockControl, KnockLearn, KnockCylRetardDecayStep
+; Called from: KnockControl, KnockLearn, KnockLearnCellDecayStep
 ;---------------------------------------------------------------------------------------------------
 KnockRetardCalc:
         CLRA
@@ -17960,7 +17960,7 @@ KnockRetardCalc:
         BCS     L1F23C
         TZY
         LDY     #$8093
-        LDAB    >KnockRpmDB2,Z
+        LDAB    >KnockLearnCellIndex,Z
         ABY
         LDAA    $00,Y
         TSTA
@@ -18021,10 +18021,10 @@ L1F286:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; KnockCylRetardDecayStep ($1F28A)
+; KnockLearnCellDecayStep ($1F28A)
 ; Called from: KnockControl
 ;---------------------------------------------------------------------------------------------------
-KnockCylRetardDecayStep:
+KnockLearnCellDecayStep:
         LDAA    >CoolantTemp,Z
         CMPA    >KnockLearnCoolantMin
         BCS     L1F29A
@@ -18050,7 +18050,7 @@ L1F2BE:
         LDX     #$8093
 L1F2CA:
         LDAB    $00,X
-        CMPB    >KnockCylRetardMin
+        CMPB    >KnockLearnCellMin
         BCC     L1F2DC
         AIX     #$01
         CPX     #$809C
@@ -18060,13 +18060,13 @@ L1F2DC:
         LDX     #$8093
 L1F2E0:
         LDAB    $00,X
-        SUBB    >KnockCylRetardDecay
+        SUBB    >KnockLearnCellDecay
         BCC     L1F2EA
         CLRB
 L1F2EA:
-        CMPB    >KnockCylRetardMin
+        CMPB    >KnockLearnCellMin
         BHI     L1F2F4
-        LDAB    >KnockCylRetardMin
+        LDAB    >KnockLearnCellMin
 L1F2F4:
         STAB    $00,X
         AIX     #$01
@@ -18120,7 +18120,7 @@ KnockRpmBand:
         TBXK
         LDX     #$2D89
 L1F358:
-        LDAB    >KnockRpmDB2,Z
+        LDAB    >KnockLearnCellIndex,Z
         INC     <Scratch6,Z
         INC     <Scratch6,Z
         CPX     #$2D8D
@@ -18146,7 +18146,7 @@ L1F386:
 L1F38E:
         DEC     <Scratch6,Z
         LDAB    <Scratch6,Z
-        STAB    >KnockRpmDB2,Z
+        STAB    >KnockLearnCellIndex,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------

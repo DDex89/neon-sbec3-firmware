@@ -866,7 +866,7 @@ IacFieldDutyScale:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacBaroScale ($06FF): 2D table, 3 points, unsigned
-; Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2
+; Barometric pressure to row position of IacBaseBaroTarget and IdleMapBase
 ; x: kpa, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $0633A, $0645A
@@ -953,7 +953,7 @@ FuelEventColdOffset:
 FuelEventColdOffset2:
         dc.b    $76                                      ; Per-event fuel: second value minus 110 used below FuelEventCoolantMax
 FuelEventOffsetInAlt:
-        dc.b    $06                                      ; As FuelEventOffsetIn with calibration bit $0338.2 set
+        dc.b    $06                                      ; As FuelEventOffsetIn with calibration bit Options0338 bit 2 set
 CrankFuelBattTempMax:
         dc.b    $58                                      ; Cranking fuel: battery temperature at or below which the extra term (ScratchC) applies
 
@@ -2266,7 +2266,7 @@ O2MemRpmSplit:
 O2MemRpmHyst:
         dc.b    $03                                      ; Long-term memory cell selection: rpm hysteresis of the cell splits
 O2IdleRpmMargin:
-        dc.b    $03                                      ; Closed loop: rpm within idle target plus this margin counts as idle (bit $0339.7)
+        dc.b    $03                                      ; Closed loop: rpm within idle target plus this margin counts as idle (bit Options0339 bit 7)
 O2IdleSpeedMax:
         dc.b    $06                                      ; Closed loop: vehicle speed below which the idle cell is used
 O2MemIdleRpmHyst:
@@ -2683,7 +2683,7 @@ CoolantSparkMap:
 
 ;---------------------------------------------------------------------------------------------------
 ; AirTempSparkFactor ($1A39): 2D table, 2 points, unsigned
-; Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit $0330.5 clear)
+; Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit Options0330 bit 5 clear)
 ; x: tempc, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: AirTemp
 ; Read at $1D6DE
@@ -3454,10 +3454,10 @@ KnockDecayMask:
         dc.b    $00                                      ; Knock events (KnockEventDecayStep): mask tested before the event count is reduced
 KnockEventDecay:
         dc.b    $FF                                      ; Knock events: reduction of KnockEventCount
-KnockCylRetardDecay:
-        dc.b    $03                                      ; Decrease of the per-cylinder retard values per step
-KnockCylRetardMin:
-        dc.b    $00                                      ; Lower limit of the per-cylinder retard values ($8092,Z)
+KnockLearnCellDecay:
+        dc.b    $03                                      ; Knock learning (KnockLearnCellDecayStep): decrease of all KnockLearnCells per decay step
+KnockLearnCellMin:
+        dc.b    $00                                      ; Knock learning (KnockLearnCellDecayStep): lower limit of the KnockLearnCells when they decay; the decay runs only while some cell is above it
 KnockMapCountMin:
         dc.b    $01                                      ; Knock control: counts above the knock MAP threshold (KnockMapCount) before it acts
 KnockBandMapBase:
@@ -3634,7 +3634,7 @@ Tab2D_20CA:
         dc.b    125,2, 126,2, 127,0                      ; x, y
 
 SparkHookCoolantMin:
-        dc.b    $58                                      ; Spark hook (SparkHook, bit $0338.5): coolant at or above this value
+        dc.b    $58                                      ; Spark hook (SparkHook, bit Options0338 bit 5): coolant at or above this value
 
 ;---------------------------------------------------------------------------------------------------
 ; AirTempSparkFactor2 ($20D3): 2D table, 1 points, unsigned
@@ -3664,7 +3664,7 @@ AirTempSparkMap:
 SparkStartRampStep:
         dc.b    $01                                      ; Increase of SparkStartRamp per step
 SparkStartRampStep2:
-        dc.b    $01                                      ; Decrease of SparkStartRampValue per step (bit $0339.5)
+        dc.b    $01                                      ; Decrease of SparkStartRampValue per step (bit Options0339 bit 5)
         dc.b    $96,$00
 IacTargetMax:
         dc.b    $96                                      ; Upper limit of the IAC target position
@@ -4291,7 +4291,7 @@ IacRollSpeedBase:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollFactorAcSensor ($2379): 2D table, 1 points, unsigned
-; Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit $0331.7
+; Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options0331 bit 7
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: AcSensorFiltered
 ; Read at $050EC, $0576E
@@ -4615,7 +4615,7 @@ IacCoastOffsetDown:
 IdleRollSpeed:
         dc.b    $06                                      ; Vehicle speed that separates standing from rolling for idle air, dashpot and coast logic
 IdleStableTimeMin:
-        dc.b    $13                                      ; Idle state flags: time since start above this value (also used by VssMonitor)
+        dc.b    $13                                      ; Idle state flags (IdleStateFlags): time since start above this value (also used by IdleMonitorEnable)
         dc.b    $CD,$02,$92,$0F
 IdleUnderTargetMargin:
         dc.b    $00,$98                                  ; IdleStateUpdate: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target
@@ -4827,7 +4827,7 @@ SpeedCtlRpmFilterLow:
         dc.b    $0D                                      ; As SpeedCtlRpmFilter with rpm at or below RpmPrev
         dc.b    $0D
 SpeedCtlRpmJump:
-        dc.b    $06,$40                                  ; Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only)
+        dc.b    $06,$40                                  ; Speed control (SpeedCtlRpmJumpCheck): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only)
 SpeedCtlRpmJumpMinRpm:
         dc.b    $26,$00                                  ; Speed control rpm-jump check: engine rpm at or above this value
 SpeedCtlThrottleFilter:
@@ -6250,7 +6250,7 @@ Thermistor3Curve:
 
 ;---------------------------------------------------------------------------------------------------
 ; Thermistor3CurveAlt ($4277): 2D table, 7 points, unsigned
-; Alternative curve for the third thermistor input, chosen by calibration bit $0330.2
+; Alternative curve for the third thermistor input, chosen by calibration bit Options0330 bit 2
 ; x: raw, y: tempc (units: docs/en/calibration.md)
 ; Inputs: BatteryTempRaw
 ; Read at $071CC, $133A4
@@ -15950,7 +15950,7 @@ KnockControl:
         JSR     KnockRpmBand
         TST     <MainLoopCounter,Z
         BNE     L0A834
-        JSR     KnockCylRetardDecayStep
+        JSR     KnockLearnCellDecayStep
 L0A834:
         JSR     KnockRetardCalc
         RTS
@@ -16036,7 +16036,7 @@ L0A8E8:
         BCS     L0A930
         TZY
         LDY     #$808B
-        LDAB    >KnockRpmDB2,Z
+        LDAB    >KnockLearnCellIndex,Z
         ABY
         LDAA    $00,Y
         LDAB    >KnockEventCount,Z
@@ -16058,7 +16058,7 @@ L0A930:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardCalc ($0A932)
-; Called from: KnockControl, Sub_0A83A, KnockCylRetardDecayStep
+; Called from: KnockControl, Sub_0A83A, KnockLearnCellDecayStep
 ;---------------------------------------------------------------------------------------------------
 KnockRetardCalc:
         CLRA
@@ -16071,7 +16071,7 @@ KnockRetardCalc:
         BCS     L0A97E
         TZY
         LDY     #$808B
-        LDAB    >KnockRpmDB2,Z
+        LDAB    >KnockLearnCellIndex,Z
         ABY
         LDAA    $00,Y
         TSTA
@@ -16124,10 +16124,10 @@ L0A9C4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; KnockCylRetardDecayStep ($0A9C8)
+; KnockLearnCellDecayStep ($0A9C8)
 ; Called from: KnockControl
 ;---------------------------------------------------------------------------------------------------
-KnockCylRetardDecayStep:
+KnockLearnCellDecayStep:
         LDAA    $0C,Z
         CMPA    >KnockLearnCoolantMin
         BCS     L0A9D6
@@ -16153,7 +16153,7 @@ L0A9FA:
         LDX     #$808B
 L0AA06:
         LDAB    $00,X
-        CMPB    >KnockCylRetardMin
+        CMPB    >KnockLearnCellMin
         BCC     L0AA18
         AIX     #$01
         CPX     #$8094
@@ -16163,13 +16163,13 @@ L0AA18:
         LDX     #$808B
 L0AA1C:
         LDAB    $00,X
-        SUBB    >KnockCylRetardDecay
+        SUBB    >KnockLearnCellDecay
         BCC     L0AA26
         CLRB
 L0AA26:
-        CMPB    >KnockCylRetardMin
+        CMPB    >KnockLearnCellMin
         BHI     L0AA30
-        LDAB    >KnockCylRetardMin
+        LDAB    >KnockLearnCellMin
 L0AA30:
         STAB    $00,X
         AIX     #$01
@@ -16219,7 +16219,7 @@ KnockRpmBand:
         TBXK
         LDX     #$1FD3
 L0AA86:
-        LDAB    >KnockRpmDB2,Z
+        LDAB    >KnockLearnCellIndex,Z
         INC     <Scratch6,Z
         INC     <Scratch6,Z
         CPX     #$1FD7
@@ -16245,7 +16245,7 @@ L0AAB2:
 L0AABA:
         DEC     <Scratch6,Z
         LDAB    <Scratch6,Z
-        STAB    >KnockRpmDB2,Z
+        STAB    >KnockLearnCellIndex,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -23868,7 +23868,7 @@ EventTimingLimit:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelEventOffset ($FD65): 2D table, 3 points, unsigned
-; Per-event fuel offset against the calibration value $0A83 (or $7563 with bit $0338.2), added before the per-cylinder table $ABC3
+; Per-event fuel offset against the calibration value $0A83 (or $7563 with bit Options0338 bit 2), added before the per-cylinder table $ABC3
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0756
 ; Read at $09E1E

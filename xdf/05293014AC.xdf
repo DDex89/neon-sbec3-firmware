@@ -5493,7 +5493,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x191" flags="0x0">
   <title>AirTempSparkFactor</title>
-  <description>Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit $0330.5 clear) $1B09, 2D; inputs: AirTemp</description>
+  <description>Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit Options0330 bit 5 clear) $1B09, 2D; inputs: AirTemp</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8498,7 +8498,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E3" flags="0x0">
   <title>IacRollFactorAcSensor</title>
-  <description>Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit $0331.7 $209B, 2D; inputs: AcSensorFiltered</description>
+  <description>Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options0331 bit 7 $209B, 2D; inputs: AcSensorFiltered</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12090,7 +12090,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23E" flags="0x0">
   <title>IacBaroScale</title>
-  <description>Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2 $435F, 2D; inputs: ScratchC</description>
+  <description>Barometric pressure to row position of IacBaseBaroTarget and IdleMapBase $435F, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12162,7 +12162,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x240" flags="0x0">
   <title>FuelEventOffset</title>
-  <description>Per-event fuel offset against the calibration value $0A83 (or $7563 with bit $0338.2), added before the per-cylinder table $ABC3 $51FF, 2D; inputs: $05AC</description>
+  <description>Per-event fuel offset against the calibration value $0A83 (or $7563 with bit Options0338 bit 2), added before the per-cylinder table $ABC3 $51FF, 2D; inputs: $05AC</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12692,7 +12692,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x275" flags="0x0">
   <title>FuelEventOffsetInAlt</title>
-  <description>As FuelEventOffsetIn with calibration bit $0338.2 set $05AC</description>
+  <description>As FuelEventOffsetIn with calibration bit Options0338 bit 2 set $05AC</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x5AC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13654,7 +13654,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2C6" flags="0x0">
   <title>SparkHookCoolantMin</title>
-  <description>Spark hook (SparkHook, bit $0338.5): coolant at or above this value $1AF2</description>
+  <description>Spark hook (SparkHook, bit Options0338 bit 5): coolant at or above this value $1AF2</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x1AF2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -14470,7 +14470,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30A" flags="0x0">
   <title>SpeedCtlRpmJump</title>
-  <description>Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only) $2328</description>
+  <description>Speed control (SpeedCtlRpmJumpCheck): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only) $2328</description>
   <CATEGORYMEM index="0" category="22" />
   <EMBEDDEDDATA mmedaddress="0x2328" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>

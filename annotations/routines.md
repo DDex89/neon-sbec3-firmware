@@ -95,11 +95,28 @@ Never runs: the BRA just before it ($1E416) always jumps over it, here and in fa
 Writes CylSparkOverride[CylinderIndex] (RAM $0D7A, one byte per cylinder) = CylSparkOverrideBase
 ($04A2, only with Options033D bit 0 set and FuelPulseOptFlags bit 1 clear; otherwise A as left by
 the code before) + CylSparkOverrideValues[CylinderIndex] ($04A3), signed, held at -128/+127.
+The block ends at $1E450; from L1E452 on the code belongs to SparkEventCalc again.
 
 ## 1E65C UnusedCylSparkOverride
 Never called. Takes the cylinder number in A; if it is below the high nibble of BusInfoByte3, it
 returns CylSparkOverride[cylinder] instead of SparkAdvanceD11, but only if the value lies between
 $D6 and $62 (signed) and RefPeriodLow passes a limit ($4400 or $0C00 depending on the value);
 otherwise SparkAdvanceD11. So the value replaces the spark advance of one cylinder on a request
-from the bus, which looks like a test function; the live GetSparkAdvance only returns
-SparkAdvanceD11.
+from the bus, which looks like a test function. It has the same interface as GetSparkAdvance (cylinder
+in A, spark advance back in A), and all three callers of GetSparkAdvance load CylinderIndex into A
+first, which GetSparkAdvance ignores: GetSparkAdvance looks like the stand-in for this routine.
+
+## 1E656 GetSparkAdvance
+Returns SparkAdvanceD11 in A. Its callers (Isr_GPT_OC4, SparkOutputOc2, KnockCylinderRetard) load
+CylinderIndex into A before the call, which this routine does not use; see UnusedCylSparkOverride.
+
+## 30802 CcdTxA5FanStatus
+CCD transmit slot: sets CcdTxId = $A5 and falls through into BusMsg91Build, which supplies the data
+(fan status byte and the MAP-high bit).
+
+## 30900 CcdTxA4SparkStatus
+CCD transmit slot: sets CcdTxId = $A4 and falls through into BusTxSparkStatus, which supplies the data.
+
+## 3096C CcdTxECSecurity
+CCD transmit slot: sets CcdTxId = $EC and falls through into SecurityStatusCalc, which supplies the
+data.

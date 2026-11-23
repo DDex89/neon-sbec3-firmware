@@ -180,7 +180,7 @@
   "435F": {
    "name": "IacBaroScale",
    "category": "Idle",
-   "desc": "Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2",
+   "desc": "Barometric pressure to row position of IacBaseBaroTarget and IdleMapBase",
    "x": "kpa",
    "y": "pos256",
    "auto": false
@@ -480,7 +480,7 @@
   "1B09": {
    "name": "AirTempSparkFactor",
    "category": "Spark",
-   "desc": "Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit $0330.5 clear)",
+   "desc": "Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit Options0330 bit 5 clear)",
    "x": "tempc",
    "y": "mult256",
    "auto": false
@@ -847,7 +847,7 @@
   "209B": {
    "name": "IacRollFactorAcSensor",
    "category": "Idle",
-   "desc": "Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit $0331.7",
+   "desc": "Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options0331 bit 7",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1113,7 +1113,7 @@
   "51FF": {
    "name": "FuelEventOffset",
    "category": "Fuel",
-   "desc": "Per-event fuel offset against the calibration value $0A83 (or $7563 with bit $0338.2), added before the per-cylinder table $ABC3",
+   "desc": "Per-event fuel offset against the calibration value $0A83 (or $7563 with bit Options0338 bit 2), added before the per-cylinder table $ABC3",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -1365,7 +1365,7 @@
   },
   "05AC": {
    "name": "FuelEventOffsetInAlt",
-   "desc": "As FuelEventOffsetIn with calibration bit $0338.2 set",
+   "desc": "As FuelEventOffsetIn with calibration bit Options0338 bit 2 set",
    "size": 1,
    "category": "Fuel"
   },
@@ -2100,7 +2100,7 @@
   },
   "1AF2": {
    "name": "SparkHookCoolantMin",
-   "desc": "Spark hook (SparkHook, bit $0338.5): coolant at or above this value",
+   "desc": "Spark hook (SparkHook, bit Options0338 bit 5): coolant at or above this value",
    "unit": "tempc",
    "category": "Spark",
    "size": 1
@@ -2305,7 +2305,7 @@
   },
   "2328": {
    "name": "SpeedCtlRpmJump",
-   "desc": "Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only)",
+   "desc": "Speed control (SpeedCtlRpmJumpCheck): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only)",
    "unit": "rpmw",
    "category": "Speed control",
    "size": 2

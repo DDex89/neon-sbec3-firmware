@@ -190,7 +190,7 @@
  "0379": "KnockSampleDAF",
  "037A": "KnockSampleDB0",
  "037B": "KnockSampleDB1",
- "037C": "KnockRpmDB2",
+ "037C": "KnockLearnCellIndex",
  "037D": "KnockSensorCheck",
  "037E": "MtvFlags",
  "037F": "MtvPeriodCount",

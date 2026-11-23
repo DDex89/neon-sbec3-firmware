@@ -45,13 +45,18 @@ texts themselves.
   (`CcdTxE4Map`, `CcdTx75AcSensor`, ...).
 - The O2 heater constants belong to `O2HeaterMonitor`, which runs at key-off from `CheckPowerDown`.
 - `KnockRpmSteps` are rpm break points compared with `EngineRpm`; PCI is SAE J1850 VPW.
-- Four more unreached routines ($0C482, $0C9F8, $0CA5C and a skipped block at $1E418 inside the spark
-  start ramp) and the bit-mask word tables at $0C9D8 and $367F4. The skipped block and
+- Four more unreached routines ($0C482, $0C9F8, $0CA5C and a skipped block at $1E418 inside
+  `SparkEventCalc`) and the bit-mask word tables at $0C9D8 and $367F4. The skipped block and
   `UnusedCylSparkOverride` ($1E65C) are a disabled per-cylinder spark override driven by the bus (see
   architecture.md, unreached code).
 - The 31 bytes at $048A are three things: `StartPulseOffset` (6 signed words) and `StartPulseFactor`
   (6 factor words) of the live per-injector start pulse in `StartInjectorPulse`, then the unused
   `CylSparkOverrideBase` and `CylSparkOverrideValues`.
+- The knock array at RAM $0092 holds ten learned values per rpm/MAP cell (`KnockLearnCells`,
+  index `KnockLearnCellIndex`), not per-cylinder retards; the constants and the decay routine that
+  work on it are renamed `KnockLearnCell*`.
+- `GetSparkAdvance` is the stand-in for `UnusedCylSparkOverride`: same interface, and its callers
+  still pass the cylinder number in A.
 - Bit texts for the GPT, SCI, QSPI, SIM and ADC register bits the code uses, and bit 7 (and, where
   the fault map uses it, bit 4) of all 16 monitor status bytes.
 
@@ -120,8 +125,8 @@ a decoded data block, with the routines that read them (by an address loaded int
 
 | Address | Bytes | Read by |
 |---|---|---|
-| $14000 | 352 | none found |
 | $3688E | 338 | none found |
+| $14048 | 280 | none found |
 | $310D2 | 268 | `PciPitTick`, `PciReceive`, `PciTimeoutRestart` |
 | $3896C | 242 | `CcdTransmit`, `PciPitTick` |
 | $328A0 | 202 | `ObdRequest` |

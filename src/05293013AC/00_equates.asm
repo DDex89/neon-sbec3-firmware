@@ -355,7 +355,7 @@ KnockSampleDAE   equ $0392        ; $F8392
 KnockSampleDAF   equ $0393        ; $F8393
 KnockSampleDB0   equ $0394        ; $F8394
 KnockSampleDB1   equ $0395        ; $F8395
-KnockRpmDB2      equ $0396        ; $F8396
+KnockLearnCellIndex equ $0396        ; $F8396
 KnockSensorCheck equ $0397        ; $F8397
 MtvFlags         equ $0398        ; $F8398
 ;                 bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
@@ -634,10 +634,10 @@ O2ActiveFlags    equ $0558        ; $F8558
 ;                 bit 6: upstream O2 sensor 2 active (as bit 7)
 ;                 bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow
 ;                 bit 4: downstream O2 sensor 2 active (as bit 5)
-;                 bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
-;                 bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
-;                 bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
-;                 bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+;                 bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+;                 bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+;                 bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+;                 bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 O2SwitchFlags    equ $0559        ; $F8559
 ;                 bit 6: read by ClosedLoopManager
 ;                 bit 5: read by ClosedLoopManager

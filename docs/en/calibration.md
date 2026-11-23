@@ -15,9 +15,9 @@ in the code writes there: the area is read-only.
 The code refers to it in two ways:
 
 - **Tables**, passed in X to one of four lookup routines (`LDX #table`, `JSR Lookup2D`). The lookup
-  routines force XK = 0, so every table is in bank 0. 411 tables are found this way, between $0398
+  routines force XK = 0, so every table is in bank 0. 410 tables are found this way, between $0398
   and $ABD7 (two small ones lie among the bank 0 code).
-- **Constants**, read directly: 1,448 different addresses, mostly with `CMPA`/`CMPB` (thresholds),
+- **Constants**, read directly: 1,449 different addresses, mostly with `CMPA`/`CMPB` (thresholds),
   `LDAA`/`LDAB` and `LDD`/`CPD` (16-bit values). Configuration bits at $0328-$0340 are tested
   with `BRSET`/`BRCLR`. See [constants and option bits](#constants-and-option-bits).
 
@@ -166,7 +166,8 @@ pressure) are inferred this way.
 ## Constants and option bits
 
 `tools/constants.py` finds every byte or word the code reads directly with extended addressing and
-that is not part of a table: 1,448 of them in 05293190AC (1,263 bytes, 181 words, 4 longs), among
+that is not part of a table: 1,449 of them in 05293190AC (1,264 bytes, 181 words, 4 longs; two more,
+the row counts after `FaultStatusMap`, are named by hand because the code reaches them through X), among
 them 21 option bytes tested with `BRSET`/`BRCLR` (120 bits used). They are kept with the tables in
 the `scalars` of `annotations/tables.json`, so the sources show `CMPA >IdleCoolantMin` instead of
 `CMPA $2853`, the catalogue lists them with value and physical value, the XDF has them as constants
@@ -186,7 +187,7 @@ add or subtract (`LDAA >CoolantTemp,Z` then `CMPA $2853`), or what a loaded valu
 or stored into. That gives the unit (temperature, rpm, kPa, volts) and a structural name: the
 prefix of the tables of the same routine or the subsystem, the variable, and the role (`Thresh` for
 a compare, `Adder`, `Offset`, `Factor`, `Init` for a value stored into RAM, `Value` otherwise),
-numbered when repeated. All 1,448 constants now have hand names from the code that reads them;
+numbered when repeated. All 1,451 constants now have hand names from the code that reads them;
 where the purpose is not certain the description says "probably". The structural name and the *
 in the catalogue remain only for constants found in a new image and not yet named. Word rpm values use the unit `rpmw` (rpm = x / 8).
 
@@ -387,16 +388,15 @@ applies only to the reference image.
 
 - Some table names rest only on how the code uses a value (battery temperature, generator field
   duty, the A/C sensor, `FuelLevelScaled` ($019C,Z) as probably the fuel level; purge, EGR and speed control as
-  subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
-  them on a running car would settle them.
-- Every RAM offset the code reaches through Z has a name, and so do the 63 used registers of the CS2
-  chip. 1,173 names were given by reading the code, including the fault bit arrays FaultSet00-1B
-  and FaultMem00-1B, the stored fault list and the monitor status and freeze-frame bytes; flag
-  bytes whose bits serve several subsystems have neutral names, and the bits of 174 bytes are
-  described in `annotations/bits.json`. The other 626 offsets, each used at most four times, carry
-  a name made of the routine group that uses them and the offset, for example `PurgeFlow5B4` or
-  `ClosedLoop724`: a work variable of that code whose exact purpose is not pinned down. The
-  `ObdRec` names mark bytes of the OBD record area that only the code-clearing routine touches.
-  Constant descriptions still give some addresses as $xxxx,Z.
+  subsystems). Checking them on a running car would settle them.
+- Every RAM offset the code reaches through Z has a name (1,809 offsets), and so do the 62 used
+  registers of the CS2 chip. About 1,140 of the RAM names were given by reading the code, including
+  the fault bit arrays FaultSet00-1B and FaultMem00-1B, the stored fault list and the monitor status
+  and freeze-frame bytes; flag bytes whose bits serve several subsystems have neutral names, and
+  1,192 bits of 214 bytes are described in `annotations/bits.json`. The other offsets (about 670),
+  each used only a few times, carry a name made of the routine group that uses them and the offset,
+  for example `PurgeFlow5B4` or `ClosedLoop724`: a work variable of that code whose exact purpose is
+  not pinned down. The `ObdRec` names mark bytes of the OBD record area that only the code-clearing
+  routine touches.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.

@@ -2609,7 +2609,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x148" flags="0x0">
   <title>IacBaroScale</title>
-  <description>Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2 $09D0, 2D; inputs: Baro</description>
+  <description>Barometric pressure to row position of IacBaseBaroTarget and IdleMapBase $09D0, 2D; inputs: Baro</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4739,7 +4739,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x17F" flags="0x0">
   <title>MapFilterRiseCoolant</title>
-  <description>Filter coefficient for MapLast (MapFilterCoef) while MAP rises, against coolant at start, minus MapFilterRiseV0474 $1411, 2D; inputs: StartCoolantTemp</description>
+  <description>Filter coefficient for MapLast (MapFilterCoef) while MAP rises, against coolant at start; with PurgeLoad not zero, MapFilterRisePurgeLoad is subtracted (result at least 1) $1411, 2D; inputs: StartCoolantTemp</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5925,7 +5925,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19F" flags="0x0">
   <title>FuelTrimAdjust</title>
-  <description>Signed fuel adjustment (centred on 128) from calibration $1923 or, with ControlFlagsC33 bit 4 clear, from FuelTrimAdjustValue (set over the SCI line); enabled by calibration bit $032C.7 $1898, 2D; inputs: $1897; FuelTrimAdjustValue</description>
+  <description>Signed fuel adjustment (centred on 128) from calibration $1923 or, with ControlFlagsC33 bit 4 clear, from FuelTrimAdjustValue (set over the SCI line); enabled by calibration bit Options032C bit 7 $1898, 2D; inputs: $1897; FuelTrimAdjustValue</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6546,7 +6546,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AF" flags="0x0">
   <title>PurgeDutyAlt</title>
-  <description>As PurgeDutyPart with calibration bits $0339.2/$0339.3 (by ThrottleState bit 0) $1A19, 2D; inputs: PurgeCommand</description>
+  <description>As PurgeDutyPart with calibration bits Options0339 bit 2/Options0339 bit 3 (by ThrottleState bit 0) $1A19, 2D; inputs: PurgeCommand</description>
   <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6944,7 +6944,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1B9" flags="0x0">
   <title>EgrSpark</title>
-  <description>Spark addition with EGR active (EgrFlags bit 1): part-throttle MAP position (rows) and engine rpm (columns); scaled by EgrFlowFactor with calibration bit $0335.2 $1CA3, 3D; inputs: result of Lookup2D x EngineRpm</description>
+  <description>Spark addition with EGR active (EgrFlags bit 1): part-throttle MAP position (rows) and engine rpm (columns); scaled by EgrFlowFactor with calibration bit Options0335 bit 2 $1CA3, 3D; inputs: result of Lookup2D x EngineRpm</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1CA6" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -7040,7 +7040,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1BB" flags="0x0">
   <title>AirTempSparkFactor</title>
-  <description>Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit $0330.5 clear) $1E35, 2D; inputs: AirTemp; BatteryTemp</description>
+  <description>Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit Options0330 bit 5 clear) $1E35, 2D; inputs: AirTemp; BatteryTemp</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8417,7 +8417,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E0" flags="0x0">
   <title>AcEngageSparkHoldIac</title>
-  <description>As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit $0331.7 clear) $2206, 2D; inputs: IacLearned</description>
+  <description>As AcEngageSparkHoldSensor against the learned IAC position IacLearned (bit Options0331 bit 7 clear) $2206, 2D; inputs: IacLearned</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9620,7 +9620,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x200" flags="0x0">
   <title>IdleSparkRpmErrorAlt</title>
-  <description>As IdleSparkRpmError, second variant (calibration bit $032E.6) $2561, 2D; inputs: TBA; #$7F; #$80</description>
+  <description>As IdleSparkRpmError, second variant (calibration bit Options032E bit 6) $2561, 2D; inputs: TBA; #$7F; #$80</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9981,7 +9981,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x20A" flags="0x0">
   <title>IdleTargetRpmPN</title>
-  <description>Target idle speed against coolant in P/N (with calibration bit $032E.6 clear) $25FC, 2D; inputs: CoolantTemp</description>
+  <description>Target idle speed against coolant in P/N (with calibration bit Options032E bit 6 clear) $25FC, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11645,7 +11645,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x238" flags="0x0">
   <title>IacRollFactorAcSensor</title>
-  <description>Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit $0331.7 $2871, 2D; inputs: AcSensorFiltered</description>
+  <description>Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options0331 bit 7 $2871, 2D; inputs: AcSensorFiltered</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12417,7 +12417,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x24D" flags="0x0">
   <title>IdleMapAdderIac2</title>
-  <description>As IdleMapAdderIac2 when fuel mode bits $0770.7-6 are set and IdleMapIacFlag is zero $29D6, 2D; inputs: IacLearned</description>
+  <description>As IdleMapAdderIac when FuelModeFlags2 bits 7-6 are not both clear and IdleMapIacFlag is zero $29D6, 2D; inputs: IacLearned</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -15564,7 +15564,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x29A" flags="0x0">
   <title>Thermistor3CurveAlt</title>
-  <description>Alternative curve for the third thermistor input, chosen by calibration bit $0330.2 $7077, 2D; inputs: BatteryTempRaw; BusTempRaw3</description>
+  <description>Alternative curve for the third thermistor input, chosen by calibration bit Options0330 bit 2 $7077, 2D; inputs: BatteryTempRaw; BusTempRaw3</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -15974,7 +15974,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x2A5" flags="0x0">
   <title>FuelEventOffset</title>
-  <description>Per-event fuel offset against the calibration value $0A83 (or $7563 with bit $0338.2), added before the per-cylinder table $ABC3 $ABCB, 2D; inputs: $09F7; $7563</description>
+  <description>Per-event fuel offset against the calibration value $0A83 (or $7563 with bit Options0338 bit 2), added before the per-cylinder table $ABC3 $ABCB, 2D; inputs: $09F7; $7563</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -16046,7 +16046,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A9" flags="0x0">
   <title>BusMsgAcData</title>
-  <description>Data word sent in the bus message $AC (CcdTransmit; bit 3 set with Options032E bit 7) $0320</description>
+  <description>Data word sent in the bus message $AC (CcdTxACAcData; bit 3 set with Options032E bit 7) $0320</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x320" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -16118,7 +16118,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2AF" flags="0x0">
   <title>BusInfoByte5</title>
-  <description>Fifth data byte of the bus information message (bit 6 added with calibration bit $032E.7) $0327</description>
+  <description>Fifth data byte of the bus information message (bit 6 added with calibration bit Options032E bit 7) $0327</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x327" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -17314,7 +17314,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33E" flags="0x0">
   <title>CoolantSlowInit</title>
-  <description>Start value of CoolantTempSlow (calibration bit $033D.5) $041F</description>
+  <description>Start value of CoolantTempSlow (calibration bit Options033D bit 5) $041F</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x41F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -17662,7 +17662,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x35B" flags="0x0">
   <title>TuneValve2RpmLow</title>
-  <description>Second tune valve (TuneValve2Control, TPU output $1066 bit 13): lower switch rpm (word) $045B</description>
+  <description>Second tune valve (TuneValve2Control, CS2 register IoDriver66 bit 13): lower switch rpm (word) $045B</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x45B" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -20279,7 +20279,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x438" flags="0x0">
   <title>FuelEventOffsetIn</title>
-  <description>Input value of FuelEventOffset (and of the cranking event timing); bit $0338.2 selects FuelEventOffsetInAlt $09F7</description>
+  <description>Input value of FuelEventOffset (and of the cranking event timing); bit Options0338 bit 2 selects FuelEventOffsetInAlt $09F7</description>
   <CATEGORYMEM index="0" category="2" />
   <EMBEDDEDDATA mmedaddress="0x9F7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -22811,7 +22811,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x50B" flags="0x0">
   <title>O2IdleRpmMargin</title>
-  <description>Closed loop: rpm within idle target plus this margin counts as idle (bit $0339.7) $185F</description>
+  <description>Closed loop: rpm within idle target plus this margin counts as idle (bit Options0339 bit 7) $185F</description>
   <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x185F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -23377,7 +23377,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x53B" flags="0x0">
   <title>SpeedLimitActive</title>
-  <description>With the cut active: coarse vehicle speed at or above this keeps the speed-limit cut (bit $0337.5) $1954</description>
+  <description>With the cut active: coarse vehicle speed at or above this keeps the speed-limit cut (bit Options0337 bit 5) $1954</description>
   <CATEGORYMEM index="0" category="2" />
   <EMBEDDEDDATA mmedaddress="0x1954" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23389,7 +23389,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x53C" flags="0x0">
   <title>SpeedLimit</title>
-  <description>Vehicle speed limit (compared with VehicleSpeedCoarse), active with calibration bit $0337.5 $1955</description>
+  <description>Vehicle speed limit (compared with VehicleSpeedCoarse), active with calibration bit Options0337 bit 5 $1955</description>
   <CATEGORYMEM index="0" category="2" />
   <EMBEDDEDDATA mmedaddress="0x1955" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -24661,7 +24661,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5A6" flags="0x0">
   <title>SparkCapPeriodOff</title>
-  <description>AfterStartSparkCap: RefPeriodLow above this value turns the cap off (EventFlag1 bits 7-6 set) $1B59</description>
+  <description>AfterStartSparkCap: RefPeriodLow above this value turns the cap off (used when Options032A bit 7 or 6 is set) $1B59</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x1B59" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -24673,7 +24673,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5A7" flags="0x0">
   <title>SparkCapPeriodOffAlt</title>
-  <description>As SparkCapPeriodOff with EventFlag1 bits 7-6 clear $1B5B</description>
+  <description>As SparkCapPeriodOff when Options032A bits 7 and 6 are both clear $1B5B</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x1B5B" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -24685,7 +24685,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5A8" flags="0x0">
   <title>SparkCapPeriodOn</title>
-  <description>AfterStartSparkCap: RefPeriodLow below this value turns the cap on (with EventFlag1 bits 7-6 set) $1B5D</description>
+  <description>AfterStartSparkCap: RefPeriodLow below this value turns the cap on (used when Options032A bit 7 or 6 is set) $1B5D</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x1B5D" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -24697,7 +24697,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5A9" flags="0x0">
   <title>SparkCapPeriodOnAlt</title>
-  <description>As SparkCapPeriodOn with EventFlag1 bits 7-6 clear $1B5F</description>
+  <description>As SparkCapPeriodOn when Options032A bits 7 and 6 are both clear $1B5F</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x1B5F" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -25225,7 +25225,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5D5" flags="0x0">
   <title>TipInAirTempMin</title>
-  <description>Tip-in retard runs above this air temperature (with calibration bit $0330.5) $206E</description>
+  <description>Tip-in retard runs above this air temperature (with calibration bit Options0330 bit 5) $206E</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x206E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -25969,7 +25969,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x613" flags="0x0">
   <title>KnockLearnResetValue</title>
-  <description>Knock learning (KnockLearn): value written into the learned values from $8092 on a reset $2447</description>
+  <description>Knock learning (KnockLearn): value written into all ten KnockLearnCells on a reset $2447</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2447" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -26016,8 +26016,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x617" flags="0x0">
-  <title>KnockCylRetardStep</title>
-  <description>Knock learning: per-cylinder retard step $244B</description>
+  <title>KnockLearnCellStep</title>
+  <description>Knock learning (KnockLearn): step added to the learned value of the current rpm/MAP cell (KnockLearnCells[KnockLearnCellIndex]) on knock, held at $FF $244B</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x244B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -26064,8 +26064,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x61B" flags="0x0">
-  <title>KnockCylRetardDecay</title>
-  <description>Decrease of the per-cylinder retard values per step $244F</description>
+  <title>KnockLearnCellDecay</title>
+  <description>Knock learning (KnockLearnCellDecayStep): decrease of all KnockLearnCells per decay step $244F</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x244F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -26076,8 +26076,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x61C" flags="0x0">
-  <title>KnockCylRetardMin</title>
-  <description>Lower limit of the per-cylinder retard values ($8092,Z) $2450</description>
+  <title>KnockLearnCellMin</title>
+  <description>Knock learning (KnockLearnCellDecayStep): lower limit of the KnockLearnCells when they decay; the decay runs only while some cell is above it $2450</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2450" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -26305,7 +26305,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x62F" flags="0x0">
   <title>SparkHookCoolantMin</title>
-  <description>Spark hook (SparkHook, bit $0338.5): coolant at or above this value $2597</description>
+  <description>Spark hook (SparkHook, bit Options0338 bit 5): coolant at or above this value $2597</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2597" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -26341,7 +26341,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x632" flags="0x0">
   <title>SparkStartRampStep2</title>
-  <description>Decrease of SparkStartRampValue per step (bit $0339.5) $25B0</description>
+  <description>Decrease of SparkStartRampValue per step (bit Options0339 bit 5) $25B0</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x25B0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -26677,7 +26677,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x64E" flags="0x0">
   <title>IdleRampBlockAcOff</title>
-  <description>Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit $033A.6 clear) $25DD</description>
+  <description>Idle ramp block time (IdleRampBlockTimer) with the A/C clutch off (bit Options033A bit 6 clear) $25DD</description>
   <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x25DD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -26737,7 +26737,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x653" flags="0x0">
   <title>IdleRampCountMin</title>
-  <description>Idle ramp: runs only while the SRI mileage SriMileage is at most this value $25E4</description>
+  <description>Idle ramp: runs only once the SRI mileage SriMileage (word) is at or above this value $25E4</description>
   <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x25E4" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -27445,7 +27445,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x68E" flags="0x0">
   <title>IdleStableTimeMin</title>
-  <description>Idle state flags: time since start above this value (also used by VssMonitor) $2A31</description>
+  <description>Idle state flags (IdleStateFlags): time since start above this value (also used by IdleMonitorEnable) $2A31</description>
   <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x2A31" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -28297,7 +28297,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6D5" flags="0x0">
   <title>SpeedCtlRpmJump</title>
-  <description>Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only) $2B8C</description>
+  <description>Speed control (SpeedCtlRpmJumpCheck): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only) $2B8C</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x2B8C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -33146,7 +33146,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x86C" flags="0x0">
   <title>PwmPeriodC18</title>
-  <description>PWM period of the TPU output set up by PwmC18PeriodCalc (duty PwmC18Duty in %): value × 250 into PwmC18Period (Options0333 bit 6) $74E6</description>
+  <description>PWM period of output C18 (Options0333 bit 6): Reset stores value x 250 into PwmC18Period, which PwmC18PeriodCalc uses with the duty PwmC18Duty (in %) $74E6</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x74E6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33266,7 +33266,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x876" flags="0x0">
   <title>FuelEventOffsetInAlt</title>
-  <description>As FuelEventOffsetIn with calibration bit $0338.2 set $7563</description>
+  <description>As FuelEventOffsetIn with calibration bit Options0338 bit 2 set $7563</description>
   <CATEGORYMEM index="0" category="2" />
   <EMBEDDEDDATA mmedaddress="0x7563" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

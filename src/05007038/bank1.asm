@@ -2654,7 +2654,7 @@ L11CF4:
         BSET    >BusMsgFlags,Z,#$40                      ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
         BRA     L11CFE
 L11CFA:
-        BSET    >BusMsgFlags,Z,#$80                      ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+        BSET    >BusMsgFlags,Z,#$80                      ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
 L11CFE:
         RTS
 
@@ -2907,7 +2907,7 @@ L11F30:
         SUBB    #$09
         BRA     L11F74
 L11F5A:
-        BRSET   >BusMsgFlags,Z,#$80,L11F7A               ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+        BRSET   >BusMsgFlags,Z,#$80,L11F7A               ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
         BRCLR   >BusMsgFlags,Z,#$40,L11EDA               ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
         BCLR    >BusMsgFlags,Z,#$60                      ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         LDAB    >BusMsg91Byte1,Z
@@ -2919,7 +2919,7 @@ L11F74:
         ABX
         BRA     L11F84
 L11F7A:
-        BCLR    >BusMsgFlags,Z,#$A0                      ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
+        BCLR    >BusMsgFlags,Z,#$A0                      ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         LDX     #$8517
         AIY     #$08
 L11F84:

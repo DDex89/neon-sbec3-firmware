@@ -1613,7 +1613,7 @@
  "0DA8": "KnockSampleDAF",
  "0DA9": "KnockSampleDB0",
  "0DAA": "KnockSampleDB1",
- "0DAB": "KnockRpmDB2",
+ "0DAB": "KnockLearnCellIndex",
  "0DAC": "KnockSensorCheck",
  "0DAD": "KnockWindow",
  "0DAE": "KnockWindowFactor",

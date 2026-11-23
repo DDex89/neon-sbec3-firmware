@@ -754,7 +754,7 @@ FuelEventColdOffset:
 FuelEventColdOffset2:
         dc.b    $77                                      ; Per-event fuel: second value minus 110 used below FuelEventCoolantMax
 FuelEventOffsetInAlt:
-        dc.b    $42                                      ; As FuelEventOffsetIn with calibration bit $0338.2 set
+        dc.b    $42                                      ; As FuelEventOffsetIn with calibration bit Options0338 bit 2 set
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankEthanolCoolant ($059B): 3D table, 5 rows x 5 columns, unsigned
@@ -2427,7 +2427,7 @@ AirTempSparkMapRpm:
 
         dc.b    $07,$7D,$64,$04,$08
 SparkHookCoolantMin:
-        dc.b    $58                                      ; Spark hook (SparkHook, bit $0338.5): coolant at or above this value
+        dc.b    $58                                      ; Spark hook (SparkHook, bit Options0338 bit 5): coolant at or above this value
 
 ;---------------------------------------------------------------------------------------------------
 ; AirTempSparkFactor2 ($1ADB): 2D table, 2 points, unsigned
@@ -2457,7 +2457,7 @@ AirTempSparkMap:
 
 ;---------------------------------------------------------------------------------------------------
 ; AirTempSparkFactor ($1AF1): 2D table, 2 points, unsigned
-; Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit $0330.5 clear)
+; Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit Options0330 bit 5 clear)
 ; x: tempc, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: AirTemp
 ; Read at $1C070
@@ -3605,7 +3605,7 @@ IacRollSpeedBase:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacRollFactorAcSensor ($2075): 2D table, 1 points, unsigned
-; Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit $0331.7
+; Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit Options0331 bit 7
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: AcSensorFiltered
 ; Read at $0AC2C, $0B28C
@@ -4081,7 +4081,7 @@ SpeedCtlRpmFilterLow:
 SpeedCtlRpmFilter:
         dc.b    $09                                      ; Speed control rpm-jump check (SpeedCtlRpmJump): filter weight of the rpm average SpeedCtlRpmAvg
 SpeedCtlRpmJump:
-        dc.b    $0A,$20                                  ; Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only)
+        dc.b    $0A,$20                                  ; Speed control (SpeedCtlRpmJumpCheck): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only)
 SpeedCtlRpmJumpMinRpm:
         dc.b    $25,$80                                  ; Speed control rpm-jump check: engine rpm at or above this value
 SpeedCtlThrottleFilter:
@@ -5435,7 +5435,7 @@ IacFieldDutyScale:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacBaroScale ($433F): 2D table, 5 points, unsigned
-; Barometric pressure to row position of IacBaseBaroTarget and IacBaseBaroTarget2
+; Barometric pressure to row position of IacBaseBaroTarget and IdleMapBase
 ; x: kpa, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: ScratchC
 ; Read at $0BF90, $0C0E4
@@ -6403,7 +6403,7 @@ EventTimingLimit:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelEventOffset ($51F3): 2D table, 3 points, unsigned
-; Per-event fuel offset against the calibration value $0A83 (or $7563 with bit $0338.2), added before the per-cylinder table $ABC3
+; Per-event fuel offset against the calibration value $0A83 (or $7563 with bit Options0338 bit 2), added before the per-cylinder table $ABC3
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $059A
 ; Read at $085C4
@@ -11372,7 +11372,7 @@ Sub_08D50:
 L08D66:
         STAB    $0560,Z
         BCLR    >O2ActiveFlags,Z,#$F0                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 6: upstream O2 sensor 2 active (as bit 7); bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 4: downstream O2 sensor 2 active (as bit 5)
-        BCLR    >O2ActiveFlags,Z,#$0F                    ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1; bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+        BCLR    >O2ActiveFlags,Z,#$0F                    ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags); bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags); bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         PSHM    X,K
         LDX     #Tab2D_11D6
         JSR     Lookup2D
@@ -11440,7 +11440,7 @@ L08E30:
         CMPA    $11F4
         BCC     L08E44
 L08E40:
-        BSET    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BSET    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L08E44:
         BRCLR   >Options0331,#$40,L08E6A                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         TST     $059B,Z
@@ -11454,7 +11454,7 @@ L08E56:
         CMPA    $11F4
         BCC     L08E6A
 L08E66:
-        BSET    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BSET    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L08E6A:
         TST     >O2DownDelay,Z
         LBNE    L08EA6
@@ -11465,7 +11465,7 @@ L08E6A:
         CMPA    $12C5
         BCC     L08E8C
 L08E88:
-        BSET    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
+        BSET    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L08E8C:
         BRCLR   >Options0331,#$10,L08EA6                 ; bit 4: fuel level from the bus instead of the sender, probably
         LDAA    $052C,Z
@@ -11474,14 +11474,14 @@ L08E8C:
         CMPA    $12C5
         BCC     L08EA6
 L08EA2:
-        BSET    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+        BSET    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L08EA6:
         BRCLR   >Options0331,#$80,L08EC4                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         BRSET   $0138,Z,#$01,L08EBE
         BRSET   >FaultSet06,Z,#$40,L08EBE
         BRCLR   $0145,Z,#$08,L08EC4
 L08EBE:
-        BCLR    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BCLR    >O2ActiveFlags,Z,#$88                    ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BRA     L08EE6
 L08EC4:
         BRCLR   >Options0331,#$20,L08EE6                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
@@ -11490,7 +11490,7 @@ L08EC4:
         BRSET   $0144,Z,#$02,L08EE2
         BRCLR   $0145,Z,#$10,L08EE8
 L08EE2:
-        BCLR    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
+        BCLR    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L08EE6:
         CLR     $11,X
 L08EE8:
@@ -11499,7 +11499,7 @@ L08EE8:
         BRSET   $013C,Z,#$04,L08F00
         BRCLR   $014A,Z,#$20,L08F06
 L08F00:
-        BCLR    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BCLR    >O2ActiveFlags,Z,#$44                    ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BRA     L08F24
 L08F06:
         BRCLR   >Options0331,#$10,L08F24                 ; bit 4: fuel level from the bus instead of the sender, probably
@@ -11509,7 +11509,7 @@ L08F06:
         BRSET   $0144,Z,#$04,L08F20
         BRCLR   $014A,Z,#$40,L08F26
 L08F20:
-        BCLR    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+        BCLR    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L08F24:
         CLR     $11,Y
 L08F26:
@@ -11575,7 +11575,7 @@ L08FB6:
         PULM    K,Y,X
         BRCLR   $0145,Z,#$08,L08FDE
         BSET    >IacBase,Z,#$F0
-        BCLR    >O2ActiveFlags,Z,#$08                    ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BCLR    >O2ActiveFlags,Z,#$08                    ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         TZX
         LDX     #$803F
         LDAA    $3D2F
@@ -11588,7 +11588,7 @@ L08FD0:
 L08FDE:
         BRCLR   $014A,Z,#$20,L09004
         BSET    $01F1,Z,#$F0
-        BCLR    >O2ActiveFlags,Z,#$04                    ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BCLR    >O2ActiveFlags,Z,#$04                    ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         TZX
         LDX     #$8050
         LDAA    $3D2F
@@ -11601,11 +11601,11 @@ L08FF6:
 L09004:
         BRCLR   $0145,Z,#$10,L09012
         BSET    >IacBase,Z,#$50
-        BCLR    >O2ActiveFlags,Z,#$02                    ; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
+        BCLR    >O2ActiveFlags,Z,#$02                    ; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L09012:
         BRCLR   $014A,Z,#$40,L09020
         BSET    $01F1,Z,#$50
-        BCLR    >O2ActiveFlags,Z,#$01                    ; bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+        BCLR    >O2ActiveFlags,Z,#$01                    ; bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L09020:
         LDAA    >O2ActiveFlags,Z
         BITA    #$0C
@@ -11615,7 +11615,7 @@ L09020:
         LBRA    L092F4
 L09034:
         BRCLR   >Options0331,#$80,L09040                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
-        BRSET   >O2ActiveFlags,Z,#$08,L09060             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRSET   >O2ActiveFlags,Z,#$08,L09060             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L09040:
         BSET    >O2TestFlags,Z,#$20
         BSET    >IacBase,Z,#$70
@@ -11633,7 +11633,7 @@ L09040:
         STAA    $07,X
 L09060:
         BRCLR   >Options0331,#$40,L0906C                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
-        BRSET   >O2ActiveFlags,Z,#$04,L0908C             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRSET   >O2ActiveFlags,Z,#$04,L0908C             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L0906C:
         BSET    >O2TestFlags,Z,#$10                      ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         BSET    $01F1,Z,#$70
@@ -11651,12 +11651,12 @@ L0906C:
         STAA    $07,Y
 L0908C:
         BRCLR   >Options0331,#$20,L09098                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
-        BRSET   >O2ActiveFlags,Z,#$02,L0909C             ; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
+        BRSET   >O2ActiveFlags,Z,#$02,L0909C             ; bit 1: sensor of bit 5 active now: set with bit 5, cleared with it on a circuit fault (SensorFaultFlags2 bit 1), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L09098:
         BSET    >IacBase,Z,#$50
 L0909C:
         BRCLR   >Options0331,#$10,L090A8                 ; bit 4: fuel level from the bus instead of the sender, probably
-        BRSET   >O2ActiveFlags,Z,#$01,L090AC             ; bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
+        BRSET   >O2ActiveFlags,Z,#$01,L090AC             ; bit 0: sensor of bit 4 active now: set with bit 4, cleared with it on a circuit fault (SensorFaultFlags2 bit 0), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L090A8:
         BSET    $01F1,Z,#$50
 L090AC:
@@ -12818,7 +12818,7 @@ L09C40:
         ANDA    #$08
         STAA    $01F6,Z
         JSR     Sub_09C88
-        BRCLR   >O2ActiveFlags,Z,#$04,L09C86             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRCLR   >O2ActiveFlags,Z,#$04,L09C86             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         TZY
         LDY     #$85A8
         LDAA    >ShortTermTrim2,Z
@@ -12951,8 +12951,8 @@ L09DB0:
         LBNE    L09C04
         BRSET   $0140,Z,#$10,L09C04
         BRSET   >Options0337,#$20,L09EBE                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
-        BRSET   >O2ActiveFlags,Z,#$08,L09DD6             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
-        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRSET   >O2ActiveFlags,Z,#$08,L09DD6             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         BSET    $054C,Z,#$C0
 L09DD6:
         TZX
@@ -12981,14 +12981,14 @@ L09DD6:
         LDAB    $004D,Z
         STAB    >O2AdaptValue1,Z
 L09E2C:
-        BRCLR   >O2ActiveFlags,Z,#$08,L09E44             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
-        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRCLR   >O2ActiveFlags,Z,#$08,L09E44             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         LDAA    >O2AdaptValue1,Z
         STAA    >O2AdaptValue2,Z
         LBRA    L09F0C
 L09E44:
-        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
-        BRSET   >O2ActiveFlags,Z,#$08,L09F0C             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRSET   >O2ActiveFlags,Z,#$04,L09E50             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+        BRSET   >O2ActiveFlags,Z,#$08,L09F0C             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L09E50:
         TZX
         LDX     #$8050
@@ -13016,8 +13016,8 @@ L09E50:
         LDAB    $005E,Z
         STAB    >O2AdaptValue2,Z
 L09EA6:
-        BRCLR   >O2ActiveFlags,Z,#$04,L09F0C             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
-        BRSET   >O2ActiveFlags,Z,#$08,L09F0C             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRCLR   >O2ActiveFlags,Z,#$04,L09F0C             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+        BRSET   >O2ActiveFlags,Z,#$08,L09F0C             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         LDAA    >O2AdaptValue2,Z
         STAA    >O2AdaptValue1,Z
         LBRA    L09F0C
@@ -19870,7 +19870,7 @@ L0EB3E:
 L0EB4A:
         BRCLR   >O2ActiveFlags,Z,#$80,L0EBCA             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         LDAA    >ShortTermTrim1,Z
-        BRSET   >O2ActiveFlags,Z,#$08,L0EB5E             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRSET   >O2ActiveFlags,Z,#$08,L0EB5E             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         LDAA    >ShortTermTrim2,Z
 L0EB5E:
         BPL     L0EB96
@@ -20739,7 +20739,7 @@ Sub_0F474:
         BRCLR   $0324,#$80,L0F480
         BRCLR   $03C9,Z,#$80,L0F5EC
 L0F480:
-        BRCLR   >O2ActiveFlags,Z,#$08,L0F4BE             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
+        BRCLR   >O2ActiveFlags,Z,#$08,L0F4BE             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         LDAA    >ShortTermTrim1,Z
         ASRA
         LDAB    >O2AdaptValue1,Z

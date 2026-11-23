@@ -63,7 +63,7 @@
  "0A812": "KnockControl",
  "0A932": "KnockRetardCalc",
  "0A984": "KnockEventDecayStep",
- "0A9C8": "KnockCylRetardDecayStep",
+ "0A9C8": "KnockLearnCellDecayStep",
  "0AA40": "KnockRetardMaxCalc",
  "0AA7C": "KnockRpmBand",
  "0AAC4": "KnockLearnDecayFlag",

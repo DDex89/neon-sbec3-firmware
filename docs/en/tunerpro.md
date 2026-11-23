@@ -38,7 +38,7 @@ carry over (from 131 tables in family A to 403 in family E); the rest keep their
 name. Units come from the annotations or from the inputs where those are known (rpm, deg C, kPa,
 volts).
 
-The XDF also holds the 1,448 directly read constants of the reference image (thresholds, limits,
+The XDF also holds the 1,451 constants of the reference image (thresholds, limits,
 times, gains) as XDFCONSTANT, with the unit where it is known, and each used bit of the option bytes
 as an XDFFLAG (see [calibration.md](calibration.md#constants-and-option-bits)); the other images get
 the constants the port carries over (239 in family A to 1,404 in family E).

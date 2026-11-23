@@ -66,10 +66,10 @@ encoding:
 |---|---|---|
 | Immediate | `LDAA #$12`, `LDD #$1234` | 2 hex digits = 8 bit, 4 = 16 bit |
 | Indexed | `LDAA $12,Z`, `STD $7A04,Z`, `JMP $2CE5E,X` | 2 digits = IND8, 4 = IND16 (written unsigned), 5 = IND20 |
-| Extended | `CMPA $19DC`, `JSR L0C440` | 4 digits = EXT (bank from EK), 5 digits or a label = EXT20 |
+| Extended | `CMPA $19DC`, `JSR MainLoopCounters` | 4 digits = EXT (bank from EK), 5 digits or a label = EXT20 |
 | Accumulator offset | `LDAA E,X` | |
-| Branch | `BRA L080B4`, `LBNE L08B52` | Bcc = 8-bit offset, LBcc = 16-bit |
-| Bit operations | `BSET $0A,Z,#$02`, `BRSET $0332,#$08,L2CE6C` | address, mask, target |
+| Branch | `BRA L08100`, `LBNE L08432` | Bcc = 8-bit offset, LBcc = 16-bit |
+| Bit operations | `BSET $0A,Z,#$02`, `BRSET $0332,#$08,L1B57A` | address, mask, target |
 | Move | `MOVB $05,X+,$1234`, `MOVW $1234,$5678` | |
 | Register list | `PSHM D,E,X,Y,K`, `PULM K,X,D` | the order of the list does not matter |
 | Symbol | `INC >PitTickCounter,Z`, `STD >SYNCR,Z` | `>` forces 16-bit, `<` 8-bit encoding, as in the original |

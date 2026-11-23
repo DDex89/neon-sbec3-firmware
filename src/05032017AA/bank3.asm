@@ -32,7 +32,7 @@ L30110:
 L30114:
         JMP     CcdTx24Speed
 L30118:
-        JMP     CcdTxA4
+        JMP     CcdTxA4SparkStatus
 L3011C:
         JMP     CcdTx42SpeedCtl
 L30120:
@@ -54,7 +54,7 @@ L3013C:
 L30140:
         JMP     CcdTx6CTrans
 L30144:
-        JMP     CcdTxA5
+        JMP     CcdTxA5FanStatus
         dc.b    $36,$B6,$76,$F6,$0D,$8D,$4D,$CD,$11,$36,$B6,$76,$F6,$0D,$8D,$4D
         dc.b    $CD,$11,$00,$FF,$AA,$85,$16,$85,$7E,$83,$91,$84,$A1,$84,$02,$83
         dc.b    $DC,$83,$A9,$83,$95,$84,$29,$84,$7C,$84,$52,$84,$56,$86,$BE,$83
@@ -498,7 +498,7 @@ L3061A:
         BSET    >BusMsgFlags,Z,#$40                      ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
         BRA     L30624
 L30620:
-        BSET    >BusMsgFlags,Z,#$80                      ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+        BSET    >BusMsgFlags,Z,#$80                      ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
 L30624:
         RTS
 
@@ -706,7 +706,7 @@ BusTxMsg91:
         JSR     BusTxStart
         PULM    CCR
         RTS
-CcdTxA5:
+CcdTxA5FanStatus:
         LDAA    #$A5
         STAA    >CcdTxId,Z
 
@@ -794,7 +794,7 @@ CcdTxEepromMsg:
         SUBB    #$09
         BRA     L308F6
 L308DC:
-        BRSET   >BusMsgFlags,Z,#$80,L308FC               ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+        BRSET   >BusMsgFlags,Z,#$80,L308FC               ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
         BRCLR   >BusMsgFlags,Z,#$40,L3085C               ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
         BCLR    >BusMsgFlags,Z,#$60                      ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         LDAB    >BusMsg91Byte1,Z
@@ -806,7 +806,7 @@ L308F6:
         ABX
         BRA     L30906
 L308FC:
-        BCLR    >BusMsgFlags,Z,#$A0                      ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
+        BCLR    >BusMsgFlags,Z,#$A0                      ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         LDX     #$8975
         AIY     #$08
 L30906:
@@ -816,7 +816,7 @@ L30906:
         CLR     >BusMsg91Byte2,Z
         LDD     $00,X
         RTS
-CcdTxA4:
+CcdTxA4SparkStatus:
         LDAA    #$A4
         STAA    >CcdTxId,Z
 
@@ -2598,7 +2598,7 @@ L31BC0:
         LSRA
         STAA    $06,Y
 L31BE4:
-        BCLR    >BusMsgFlags,Z,#$E0                      ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build); bit 6: bus EEPROM write: first kind stored (BusEepromWrite); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
+        BCLR    >BusMsgFlags,Z,#$E0                      ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage); bit 6: bus EEPROM write: first kind stored (BusEepromWrite); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         CLR     >BusMsg91Byte1,Z
         CLR     >BusMsg91Byte2,Z
 L31BF0:
@@ -14613,13 +14613,13 @@ L3D888:
         CLRB
 L3D89C:
         STAB    $01,Y
-        BRCLR   >O2ActiveFlags,Z,#$08,L3D8B0             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
-        BRCLR   >O2ActiveFlags,Z,#$04,L3D8C8             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRCLR   >O2ActiveFlags,Z,#$08,L3D8B0             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+        BRCLR   >O2ActiveFlags,Z,#$04,L3D8C8             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         CMPB    $00,Y
         BCS     L3D8B6
         BRA     L3D8C8
 L3D8B0:
-        BRCLR   >O2ActiveFlags,Z,#$04,L3D8F8             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRCLR   >O2ActiveFlags,Z,#$04,L3D8F8             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L3D8B6:
         STAB    >PurgeTrimLatched,Z
         LDAB    >O2Bank2Flags,Z

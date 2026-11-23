@@ -1640,7 +1640,7 @@
  "0DAF": "KnockSampleDAF",
  "0DB0": "KnockSampleDB0",
  "0DB1": "KnockSampleDB1",
- "0DB2": "KnockRpmDB2",
+ "0DB2": "KnockLearnCellIndex",
  "0DB3": "KnockSensorCheck",
  "0DB4": "KnockWindow",
  "0DB5": "KnockWindowFactor",

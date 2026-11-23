@@ -1242,7 +1242,7 @@ KnockSampleDAE   equ $05A7        ; $F85A7
 KnockSampleDAF   equ $05A8        ; $F85A8
 KnockSampleDB0   equ $05A9        ; $F85A9
 KnockSampleDB1   equ $05AA        ; $F85AA
-KnockRpmDB2      equ $05AB        ; $F85AB
+KnockLearnCellIndex equ $05AB        ; $F85AB
 KnockCylRetardMax equ $05AC        ; $F85AC
 AcB56            equ $05B1        ; $F85B1
 OutputTestFlags  equ $05B3        ; $F85B3
@@ -1492,7 +1492,7 @@ DistancePulses   equ $06CE        ; $F86CE
 BusFlags9CE      equ $06D0        ; $F86D0
 BusMsgBEFlags    equ $06D2        ; $F86D2
 BusMsgFlags      equ $06D4        ; $F86D4
-;                 bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+;                 bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
 ;                 bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
 ;                 bit 5: bus message $12 request taken (CcdReceive, PciReceive)
 ;                 bit 2: bus receive acknowledged (BusRxAck)

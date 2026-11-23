@@ -11,35 +11,35 @@
 CcdTransmitList:
         dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
         dc.b    $06,$A6,$07,$9A,$07,$02,$06,$9E          ; CcdTxE4Map, CcdTxD4Charge, CcdTx6CTrans, CcdTxNone
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4SparkStatus, CcdTxB4Speed
         dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxNone, CcdTxNone
         dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
         dc.b    $06,$A6,$07,$D4,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx54BaroAir, CcdTxNone, CcdTxNone
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4SparkStatus, CcdTxB4Speed
         dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxNone, CcdTxNone
         dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
         dc.b    $06,$A6,$07,$68,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx8CTemps, CcdTxNone, CcdTxNone
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
-        dc.b    $06,$A6,$06,$B6,$08,$02,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxA5, CcdTxNone
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4SparkStatus, CcdTxB4Speed
+        dc.b    $06,$A6,$06,$B6,$08,$02,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxA5FanStatus, CcdTxNone
         dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
         dc.b    $06,$A6,$07,$AA,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTxCCRpmIdle, CcdTxNone, CcdTxNone
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4SparkStatus, CcdTxB4Speed
         dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxNone, CcdTxNone
         dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
         dc.b    $06,$A6,$07,$9A,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTxD4Charge, CcdTxNone, CcdTxNone
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4SparkStatus, CcdTxB4Speed
         dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxNone, CcdTxNone
         dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
         dc.b    $06,$A6,$09,$6C,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTxECSecurity, CcdTxNone, CcdTxNone
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4SparkStatus, CcdTxB4Speed
         dc.b    $06,$A6,$06,$B6,$07,$78,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTx75AcSensor, CcdTxNone
         dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
         dc.b    $06,$A6,$07,$68,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx8CTemps, CcdTxNone, CcdTxNone
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4SparkStatus, CcdTxB4Speed
         dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxNone, CcdTxNone
         dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
         dc.b    $06,$A6,$07,$52,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTxACAcData, CcdTxNone, CcdTxNone
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4SparkStatus, CcdTxB4Speed
         dc.b    $06,$A6,$06,$B6,$06,$D2,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTx6DVin, CcdTxNone
 
 CcdTxJumpTable:
@@ -55,7 +55,7 @@ L30110:
 L30114:
         JMP     CcdTx24Speed
 L30118:
-        JMP     CcdTxA4
+        JMP     CcdTxA4SparkStatus
 L3011C:
         JMP     CcdTx42SpeedCtl
 L30120:
@@ -77,7 +77,7 @@ L3013C:
 L30140:
         JMP     CcdTx6CTrans
 L30144:
-        JMP     CcdTxA5
+        JMP     CcdTxA5FanStatus
         dc.b    $36,$B6,$76,$F6,$0D,$8D,$4D,$CD,$11,$36,$B6,$76,$F6,$0D,$8D,$4D
         dc.b    $CD,$11,$00,$FF,$AA,$85,$16,$85,$7E,$83,$91,$84,$A1,$84,$02,$83
         dc.b    $DC,$83,$A9,$83,$95,$84,$29,$84,$7C,$84,$52,$84,$56,$86,$BE,$83
@@ -512,7 +512,7 @@ L30602:
         BSET    >BusMsgFlags,Z,#$40                      ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
         BRA     L3060C
 L30608:
-        BSET    >BusMsgFlags,Z,#$80                      ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+        BSET    >BusMsgFlags,Z,#$80                      ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
 L3060C:
         RTS
 
@@ -720,7 +720,14 @@ BusTxMsg91:
         JSR     BusTxStart
         PULM    CCR
         RTS
-CcdTxA5:
+
+;---------------------------------------------------------------------------------------------------
+; CcdTxA5FanStatus ($30802)
+;
+; CCD transmit slot: sets CcdTxId = $A5 and falls through into BusMsg91Build, which supplies the data
+; (fan status byte and the MAP-high bit).
+;---------------------------------------------------------------------------------------------------
+CcdTxA5FanStatus:
         LDAA    #$A5
         STAA    >CcdTxId,Z
 
@@ -808,7 +815,7 @@ CcdTxEepromMsg:
         SUBB    #$09
         BRA     L308DE
 L308C4:
-        BRSET   >BusMsgFlags,Z,#$80,L308E4               ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build)
+        BRSET   >BusMsgFlags,Z,#$80,L308E4               ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
         BRCLR   >BusMsgFlags,Z,#$40,L30844               ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
         BCLR    >BusMsgFlags,Z,#$60                      ; bit 6: bus EEPROM write: first kind stored (BusEepromWrite); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         LDAB    >BusMsg91Byte1,Z
@@ -820,7 +827,7 @@ L308DE:
         ABX
         BRA     L308EE
 L308E4:
-        BCLR    >BusMsgFlags,Z,#$A0                      ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
+        BCLR    >BusMsgFlags,Z,#$A0                      ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         LDX     #$8973
         AIY     #$08
 L308EE:
@@ -830,7 +837,13 @@ L308EE:
         CLR     >BusMsg91Byte2,Z
         LDD     $00,X
         RTS
-CcdTxA4:
+
+;---------------------------------------------------------------------------------------------------
+; CcdTxA4SparkStatus ($30900)
+;
+; CCD transmit slot: sets CcdTxId = $A4 and falls through into BusTxSparkStatus, which supplies the data.
+;---------------------------------------------------------------------------------------------------
+CcdTxA4SparkStatus:
         LDAA    #$A4
         STAA    >CcdTxId,Z
 
@@ -885,6 +898,13 @@ BusTxSecurity:
         JSR     BusTxStart
         PULM    CCR
         RTS
+
+;---------------------------------------------------------------------------------------------------
+; CcdTxECSecurity ($3096C)
+;
+; CCD transmit slot: sets CcdTxId = $EC and falls through into SecurityStatusCalc, which supplies the
+; data.
+;---------------------------------------------------------------------------------------------------
 CcdTxECSecurity:
         LDAA    #$EC
         STAA    >CcdTxId,Z
@@ -2578,7 +2598,7 @@ L31B44:
         LSRA
         STAA    $06,Y
 L31B68:
-        BCLR    >BusMsgFlags,Z,#$E0                      ; bit 7: bus EEPROM write: second kind stored (BusEepromWrite, BusMsg91Build); bit 6: bus EEPROM write: first kind stored (BusEepromWrite); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
+        BCLR    >BusMsgFlags,Z,#$E0                      ; bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage); bit 6: bus EEPROM write: first kind stored (BusEepromWrite); bit 5: bus message $12 request taken (CcdReceive, PciReceive)
         CLR     >BusMsg91Byte1,Z
         CLR     >BusMsg91Byte2,Z
 L31B74:
@@ -14784,13 +14804,13 @@ L3D888:
         CLRB
 L3D89C:
         STAB    $01,Y
-        BRCLR   >O2ActiveFlags,Z,#$08,L3D8B0             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
-        BRCLR   >O2ActiveFlags,Z,#$04,L3D8C8             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRCLR   >O2ActiveFlags,Z,#$08,L3D8B0             ; bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
+        BRCLR   >O2ActiveFlags,Z,#$04,L3D8C8             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         CMPB    $00,Y
         BCS     L3D8B6
         BRA     L3D8C8
 L3D8B0:
-        BRCLR   >O2ActiveFlags,Z,#$04,L3D8F8             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
+        BRCLR   >O2ActiveFlags,Z,#$04,L3D8F8             ; bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
 L3D8B6:
         STAB    >PurgeTrimLatched,Z
         LDAB    >O2Bank2Flags,Z
