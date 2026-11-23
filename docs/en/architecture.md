@@ -166,6 +166,13 @@ vehicle-bus interfaces:
   the same values as the CCD ones. Together with the header byte this points to J1850 PCI, but
   the bus type is still an inference.
 
+The two variants also use different hardware. The CCD bytes go through the CS2 chip (`IoBusData`,
+`IoBusStatus`, IRQ2 and IRQ4, see above). The PCI frames go over the QSPI: `QspiSendFrame` copies a
+frame into the QSPI transmit RAM, `PciRxFrame` reads the received frame from the receive RAM and
+checks a one-byte sum, and `PciTimeoutRestart` arms the frame timer. So in the PCI variant a
+separate bus controller sits on the QSPI and does the bus framing itself; a J1850 controller with an
+SPI port fits that, but the part cannot be told from the code.
+
 Both receive routines handle the SKIM (immobiliser) exchange: messages $0B and $C2 carry the
 status and the key data (`SkimStatus`, `SkimData0`-`SkimData4`). `SkimKeyCheck` ($320D6) works out
 the expected key from the VIN bytes, and a wrong key reports P1685.
