@@ -22,6 +22,14 @@ AcFlags          equ $001A        ; $F801A
 ;                 bit 2: bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test
 ;                 bit 1: A/C clutch output changed since the last pass (AcCutLogic)
 MainLoopPhaseMask equ $001B        ; $F801B
+;                 bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
+;                 bit 6: one pass in 128 (about 1.5 s)
+;                 bit 5: one pass in 64 (about 766 ms)
+;                 bit 4: one pass in 32 (about 383 ms)
+;                 bit 3: one pass in 16 (about 191 ms)
+;                 bit 2: one pass in 8 (about 96 ms)
+;                 bit 1: one pass in 4 (about 48 ms)
+;                 bit 0: one pass in 2 (about 24 ms)
 ChargeMonFlags   equ $001C        ; $F801C
 DriveFlags       equ $001D        ; $F801D
 ;                 bit 7: drive engagement handling in progress (GearStateUpdate), probably

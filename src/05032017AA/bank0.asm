@@ -14383,18 +14383,18 @@ L0C508:
         CLR     $00,X
 L0C50E:
         LDX     #$8A53
-        BRCLR   >MainLoopPhaseMask,Z,#$08,L0C51A
+        BRCLR   >MainLoopPhaseMask,Z,#$08,L0C51A         ; bit 3: one pass in 16 (about 191 ms)
         BSR     IncSaturate
 L0C51A:
         BRCLR   >AcFlags,Z,#$02,L0C522                   ; bit 1: A/C clutch output changed since the last pass (AcCutLogic)
         CLR     $00,X
 L0C522:
-        BRCLR   >MainLoopPhaseMask,Z,#$04,L0C534
+        BRCLR   >MainLoopPhaseMask,Z,#$04,L0C534         ; bit 2: one pass in 8 (about 96 ms)
         BRCLR   >PurgeCellFlags,Z,#$04,L0C534
         LDX     #$8543
         BSR     IncSaturate
 L0C534:
-        BRCLR   >MainLoopPhaseMask,Z,#$80,L0C54A
+        BRCLR   >MainLoopPhaseMask,Z,#$80,L0C54A         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         LDX     #$86C8
         BRCLR   >O2ActiveFlags,Z,#$80,L0C548             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
         BSR     IncSaturate
@@ -14403,7 +14403,7 @@ L0C548:
         CLR     $00,X
 L0C54A:
         LDX     #$8A54
-        BRCLR   >MainLoopPhaseMask,Z,#$08,L0C556
+        BRCLR   >MainLoopPhaseMask,Z,#$08,L0C556         ; bit 3: one pass in 16 (about 191 ms)
         BSR     IncSaturate
 L0C556:
         BRCLR   >DriveFlags,Z,#$40,L0C55E                ; bit 6: power steering pressure switch active: bit 6 of the switch bits collected from IoInputs0 (map chosen by $032D), unless P0551 is set (SwitchInputsRead)

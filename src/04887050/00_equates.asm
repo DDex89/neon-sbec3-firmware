@@ -72,6 +72,14 @@ O2CrossFlags     equ $0104        ; $F8104
 Count3s          equ $010B        ; $F810B
 MainLoopCounter  equ $010C        ; $F810C
 MainLoopPhaseMask equ $010D        ; $F810D
+;                 bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
+;                 bit 6: one pass in 128 (about 1.5 s)
+;                 bit 5: one pass in 64 (about 766 ms)
+;                 bit 4: one pass in 32 (about 383 ms)
+;                 bit 3: one pass in 16 (about 191 ms)
+;                 bit 2: one pass in 8 (about 96 ms)
+;                 bit 1: one pass in 4 (about 48 ms)
+;                 bit 0: one pass in 2 (about 24 ms)
 SciLogFlags      equ $010E        ; $F810E
 ControlFlagsC33  equ $010F        ; $F810F
 SpeedCtlRpmAvg   equ $0112        ; $F8112

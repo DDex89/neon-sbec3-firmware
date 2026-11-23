@@ -1102,6 +1102,14 @@ CrankSyncFlags2  equ $0C36        ; $F8C36
 ControlFlagsC39  equ $0C39        ; $F8C39
 BusTempFlags     equ $0C3A        ; $F8C3A
 MainLoopPhaseMask equ $0C3B        ; $F8C3B
+;                 bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
+;                 bit 6: one pass in 128 (about 1.5 s)
+;                 bit 5: one pass in 64 (about 766 ms)
+;                 bit 4: one pass in 32 (about 383 ms)
+;                 bit 3: one pass in 16 (about 191 ms)
+;                 bit 2: one pass in 8 (about 96 ms)
+;                 bit 1: one pass in 4 (about 48 ms)
+;                 bit 0: one pass in 2 (about 24 ms)
 Count3s          equ $0C3C        ; $F8C3C
 MainLoopCounter  equ $0C3D        ; $F8C3D
 Count191ms       equ $0C3E        ; $F8C3E

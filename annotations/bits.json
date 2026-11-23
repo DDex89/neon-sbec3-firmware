@@ -267,6 +267,16 @@
   "1": "second kind of purge test request, or result stored (LdpPurgeTestRun, LdpPurgeTest)",
   "0": "third kind of purge test request (LdpPurgeTestRun)"
  },
+ "MainLoopPhaseMask": {
+  "7": "one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter",
+  "6": "one pass in 128 (about 1.5 s)",
+  "5": "one pass in 64 (about 766 ms)",
+  "4": "one pass in 32 (about 383 ms)",
+  "3": "one pass in 16 (about 191 ms)",
+  "2": "one pass in 8 (about 96 ms)",
+  "1": "one pass in 4 (about 48 ms)",
+  "0": "one pass in 2 (about 24 ms)"
+ },
  "MisfireFlags": {
   "7": "misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)",
   "6": "misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)",

@@ -251,7 +251,7 @@ L10298:
 L102AE:
         LDAA    $04C2,Z
         BEQ     L102C6
-        BRCLR   >MainLoopPhaseMask,Z,#$20,L102C0
+        BRCLR   >MainLoopPhaseMask,Z,#$20,L102C0         ; bit 5: one pass in 64 (about 766 ms)
         DECA
         STAA    $04C2,Z
 L102C0:
@@ -279,7 +279,7 @@ Sub_102DA:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_102DC:
-        BRCLR   >MainLoopPhaseMask,Z,#$01,L10440
+        BRCLR   >MainLoopPhaseMask,Z,#$01,L10440         ; bit 0: one pass in 2 (about 24 ms)
         BRCLR   >IdleAcFlags,Z,#$80,L102F4
         BSET    <AcFlags,Z,#$C0                          ; bit 7: A/C clutch engaged (AcClutchControl); set at reset; bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7
 L102EC:
@@ -397,7 +397,7 @@ L10428:
 L10432:
         INC     $05BA,Z
 L10436:
-        BRCLR   <MainLoopPhaseMask,Z,#$08,L1043C
+        BRCLR   <MainLoopPhaseMask,Z,#$08,L1043C         ; bit 3: one pass in 16 (about 191 ms)
         INCB
 L1043C:
         STAB    $05B9,Z
@@ -478,7 +478,7 @@ L10514:
         BCLR    >IdleAcFlags,Z,#$10
         LBRA    L105BA
 L10522:
-        BRCLR   >MainLoopPhaseMask,Z,#$20,L1052E
+        BRCLR   >MainLoopPhaseMask,Z,#$20,L1052E         ; bit 5: one pass in 64 (about 766 ms)
         DECA
         STAA    $05BD,Z
 L1052E:
@@ -524,7 +524,7 @@ L1059C:
         BCLR    >IdleAcFlags,Z,#$10
         BRA     L105BA
 L105A8:
-        BRCLR   >MainLoopPhaseMask,Z,#$20,L105B4
+        BRCLR   >MainLoopPhaseMask,Z,#$20,L105B4         ; bit 5: one pass in 64 (about 766 ms)
         DECA
         STAA    $05BE,Z
 L105B4:
@@ -944,7 +944,7 @@ L10A5A:
         LBRA    L10B20
 L10A64:
         BCLR    >FanFlags,Z,#$04
-        BRCLR   >MainLoopPhaseMask,Z,#$10,L10A7A
+        BRCLR   >MainLoopPhaseMask,Z,#$10,L10A7A         ; bit 4: one pass in 32 (about 383 ms)
         LDAB    >FanStageTimer,Z
         INCB
         BEQ     L10A7A
@@ -1024,7 +1024,7 @@ L10B20:
 ; Called from: FanMain
 ;---------------------------------------------------------------------------------------------------
 FanRelayControl:
-        BRCLR   >MainLoopPhaseMask,Z,#$01,L10E50
+        BRCLR   >MainLoopPhaseMask,Z,#$01,L10E50         ; bit 0: one pass in 2 (about 24 ms)
         LDAB    <EngineStateFlags,Z
         BITB    #$80
         BNE     L10BD2
@@ -1201,7 +1201,7 @@ L10D7E:
         CMPB    #$02
         BNE     L10DD8
         BRSET   >Options0334,#$01,L10DA2                 ; bit 0: fan relay variant (FanRelayControl, QspiOutputStatus)
-        BRCLR   >MainLoopPhaseMask,Z,#$10,L10D98
+        BRCLR   >MainLoopPhaseMask,Z,#$10,L10D98         ; bit 4: one pass in 32 (about 383 ms)
         INC     >FanStageTimer,Z
         BNE     L10D98
         DEC     >FanStageTimer,Z
@@ -1401,7 +1401,7 @@ L10F7E:
 ; Called from: FanMain
 ;---------------------------------------------------------------------------------------------------
 FanWarmupState:
-        BRCLR   >MainLoopPhaseMask,Z,#$80,L10FB2
+        BRCLR   >MainLoopPhaseMask,Z,#$80,L10FB2         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         PSHM    D
         LDAB    $0F,Z
         CMPB    $04B9
@@ -1477,7 +1477,7 @@ L11022:
 ; Called from: FanMain
 ;---------------------------------------------------------------------------------------------------
 FanPwmMain:
-        BRCLR   >MainLoopPhaseMask,Z,#$01,L1167C
+        BRCLR   >MainLoopPhaseMask,Z,#$01,L1167C         ; bit 0: one pass in 2 (about 24 ms)
         LDAA    >ActuatorTest,Z
         CMPA    #$08
         LBEQ    L1167C
@@ -2430,7 +2430,7 @@ L11AAA:
         BRCLR   >PciRxFlags,Z,#$08,L11AB4
         BCLR    >PciRxFlags,Z,#$08
 L11AB4:
-        BRCLR   >MainLoopPhaseMask,Z,#$04,L11B26
+        BRCLR   >MainLoopPhaseMask,Z,#$04,L11B26         ; bit 2: one pass in 8 (about 96 ms)
         JSR     Sub_11B90
         LDAB    $0530,Z
         INCB
@@ -4311,7 +4311,7 @@ Sub_12D00:
         BRSET   >IoInputs0,Z,#$01,L12D5E                 ; bit 0: speed control switch input (SpeedCtlSwitchCheck, SpeedCtlCancelMonitor)
         BRSET   >SwitchInputs,Z,#$01,L12D5E              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >IoCtl12,Z,#$01,L12D5E
-        BRCLR   >MainLoopPhaseMask,Z,#$04,L12DE2
+        BRCLR   >MainLoopPhaseMask,Z,#$04,L12DE2         ; bit 2: one pass in 8 (about 96 ms)
         LDY     #$3B93
         JSR     ReportFault
         LBCC    L12DE2
@@ -4331,7 +4331,7 @@ L12D5E:
 L12D88:
         TST     $01E0,Z
         BEQ     L12D98
-        BRSET   <MainLoopPhaseMask,Z,#$08,L12DDC
+        BRSET   <MainLoopPhaseMask,Z,#$08,L12DDC         ; bit 3: one pass in 16 (about 191 ms)
         DEC     $01E0,Z
         BNE     L12DDC
 L12D98:
@@ -5033,7 +5033,7 @@ L13450:
         CLRA
 L1345A:
         STAA    $0565,Z
-        BRCLR   >MainLoopPhaseMask,Z,#$20,L13480
+        BRCLR   >MainLoopPhaseMask,Z,#$20,L13480         ; bit 5: one pass in 64 (about 766 ms)
         CLRA
         LDAB    >FuelSenderScaled,Z
         TDE
@@ -5055,7 +5055,7 @@ L13480:
 L134A6:
         CMPA    $2BED
         BCC     L134B8
-        BRCLR   >MainLoopPhaseMask,Z,#$80,L134BC
+        BRCLR   >MainLoopPhaseMask,Z,#$80,L134BC         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         INC     $0777,Z
         BRA     L134BC
 L134B8:
@@ -5554,7 +5554,7 @@ L13986:
         BEQ     L139D6
         BRA     L139C6
 L139BE:
-        BRCLR   >MainLoopPhaseMask,Z,#$02,L13A5E
+        BRCLR   >MainLoopPhaseMask,Z,#$02,L13A5E         ; bit 1: one pass in 4 (about 48 ms)
         DECB
 L139C6:
         STAB    >ShiftIdleDelay,Z
@@ -5632,7 +5632,7 @@ L13A7A:
         JSR     ReportPass
 L13A90:
         BRSET   >SensorFaultFlags,Z,#$10,L13B16          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
-        BRCLR   >MainLoopPhaseMask,Z,#$04,L13AFA
+        BRCLR   >MainLoopPhaseMask,Z,#$04,L13AFA         ; bit 2: one pass in 8 (about 96 ms)
         BRSET   >SensorFaultFlags,Z,#$20,L13AFA          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
         BRCLR   >EngineStateFlags,Z,#$80,L13AFA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDY     #$3D87
@@ -5788,7 +5788,7 @@ L13C24:
         BEQ     L13C4C
         LDAA    $01E9,Z
         BEQ     L13C54
-        BRCLR   >MainLoopPhaseMask,Z,#$04,L13CBE
+        BRCLR   >MainLoopPhaseMask,Z,#$04,L13CBE         ; bit 2: one pass in 8 (about 96 ms)
         DECA
         STAA    $01E9,Z
         LBRA    L13CBE
@@ -6352,7 +6352,7 @@ L14206:
         JSR     Sub_11FAA
 L1421A:
         BRCLR   >SwitchInputs,Z,#$01,L14234              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
-        BRCLR   >MainLoopPhaseMask,Z,#$40,L14238
+        BRCLR   >MainLoopPhaseMask,Z,#$40,L14238         ; bit 6: one pass in 128 (about 1.5 s)
         LDAA    $05B0,Z
         INCA
         BCS     L14238
@@ -8053,7 +8053,7 @@ L15442:
         LDAA    E,Z
         CMPA    $0362
         BHI     L1545E
-        BRCLR   >MainLoopPhaseMask,Z,#$80,L1545A
+        BRCLR   >MainLoopPhaseMask,Z,#$80,L1545A         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         INCA
         BEQ     L1545A
         STAA    E,Z
@@ -8087,7 +8087,7 @@ L1549E:
         LDAA    E,Z
         CMPA    $417A
         BCC     L154B6
-        BRCLR   >MainLoopPhaseMask,Z,#$80,L154F8
+        BRCLR   >MainLoopPhaseMask,Z,#$80,L154F8         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         INCA
         STAA    E,Z
         BRA     L154F8
@@ -8579,7 +8579,7 @@ L15980:
         TAB
         CMPB    >Map,Z
         BCC     L15A22
-        BRCLR   >MainLoopPhaseMask,Z,#$20,L15A2A
+        BRCLR   >MainLoopPhaseMask,Z,#$20,L15A2A         ; bit 5: one pass in 64 (about 766 ms)
         BRSET   >SwitchInputs2,Z,#$20,L15A0C             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         CLR     $0204,Z
         INC     $0203,Z
@@ -9084,7 +9084,7 @@ L15F56:
         LDAA    >ThrottleAboveClosed,Z
         CMPA    $2D06
         BCS     L15FA8
-        BRCLR   >MainLoopPhaseMask,Z,#$04,L15FB6
+        BRCLR   >MainLoopPhaseMask,Z,#$04,L15FB6         ; bit 2: one pass in 8 (about 96 ms)
         INC     $02EB,Z
         LDAA    $02EB,Z
         CMPA    $2D07
@@ -9112,7 +9112,7 @@ L15FB6:
         LDAA    $18,Z
         CMPA    $2D04
         BCC     L15FEA
-        BRCLR   >MainLoopPhaseMask,Z,#$04,L15FEE
+        BRCLR   >MainLoopPhaseMask,Z,#$04,L15FEE         ; bit 2: one pass in 8 (about 96 ms)
         INC     $02EE,Z
         LDAA    $02EE,Z
         CMPA    $2D08
@@ -9128,7 +9128,7 @@ L15FEE:
         LDAA    $18,Z
         CMPA    $2D05
         BCS     L16022
-        BRCLR   >MainLoopPhaseMask,Z,#$04,L16026
+        BRCLR   >MainLoopPhaseMask,Z,#$04,L16026         ; bit 2: one pass in 8 (about 96 ms)
         INC     $02EF,Z
         LDAA    $02EF,Z
         CMPA    $2D08
@@ -9480,7 +9480,7 @@ L1649A:
         LDAA    >PurgeFlowSettle,Z
         CMPA    >PurgeFlowSettleCount
         BCC     L164BA
-        BRCLR   >MainLoopPhaseMask,Z,#$02,L167C2
+        BRCLR   >MainLoopPhaseMask,Z,#$02,L167C2         ; bit 1: one pass in 4 (about 48 ms)
         INC     >PurgeFlowSettle,Z
         JMP     L167C2
 L164BA:
@@ -9843,13 +9843,13 @@ L168F4:
         BRCLR   >LdpFlags3,Z,#$02,L16910                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         CMPA    $04F6,Z
         BCC     L16928
-        BRCLR   >MainLoopPhaseMask,Z,#$80,L16922
+        BRCLR   >MainLoopPhaseMask,Z,#$80,L16922         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         INC     >LdpPumpOnCount,Z
         BRA     L16922
 L16910:
         CMPA    >LdpPumpOnTimeStart
         BCC     L16928
-        BRCLR   <MainLoopPhaseMask,Z,#$02,L16922
+        BRCLR   <MainLoopPhaseMask,Z,#$02,L16922         ; bit 1: one pass in 4 (about 48 ms)
         INCA
         BEQ     L16922
         STAA    >LdpPumpOnCount,Z
@@ -10172,7 +10172,7 @@ L16CA6:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L16CDE
-        BRCLR   <MainLoopPhaseMask,Z,#$40,L16CD8
+        BRCLR   <MainLoopPhaseMask,Z,#$40,L16CD8         ; bit 6: one pass in 128 (about 1.5 s)
         LDAA    >LdpVacLowCount,Z
         INCA
         BEQ     L16CC0
@@ -10246,7 +10246,7 @@ L16D5A:
 ;---------------------------------------------------------------------------------------------------
 LdpStateTimer:
         LDAA    >LdpStateTime,Z
-        BRCLR   <MainLoopPhaseMask,Z,#$40,L16D74
+        BRCLR   <MainLoopPhaseMask,Z,#$40,L16D74         ; bit 6: one pass in 128 (about 1.5 s)
         CMPA    #$FF
         BEQ     L16D6E
         INCA
@@ -10285,7 +10285,7 @@ L16D94:
         STAA    >LdpStrokeCount,Z
         BRA     L16DC2
 L16DB0:
-        BRSET   <MainLoopPhaseMask,Z,#$04,L16DB6
+        BRSET   <MainLoopPhaseMask,Z,#$04,L16DB6         ; bit 2: one pass in 8 (about 96 ms)
         BRA     L16DC2
 L16DB6:
         LDAA    >LdpStrokeCount,Z
@@ -10383,7 +10383,7 @@ L16E9C:
 L16EB4:
         BCLR    <LdpFlags2,Z,#$80
         BRSET   >LdpFlags2,Z,#$08,L16F02
-        BRCLR   >MainLoopPhaseMask,Z,#$08,L16F02
+        BRCLR   >MainLoopPhaseMask,Z,#$08,L16F02         ; bit 3: one pass in 16 (about 191 ms)
         LDAA    >PurgeDuty,Z
         CMPA    >LdpPurgedDutyMin
         BCC     L16EDA
@@ -10680,7 +10680,7 @@ L171FC:
         LDAB    >CatMonFlags,Z
         BITB    $33,Y
         BNE     L17230
-        BRCLR   >MainLoopPhaseMask,Z,#$01,L1752E
+        BRCLR   >MainLoopPhaseMask,Z,#$01,L1752E         ; bit 0: one pass in 2 (about 24 ms)
         LDE     $0012,Y
         LDAA    E,Z
         CMPA    >CatMonStartDelay
@@ -11025,7 +11025,7 @@ CatMonConditions:
         BSET    >CatMonFlags,Z,#$01
 L1754A:
         BRSET   >CatMonFlags,Z,#$02,L17580
-        BRCLR   >MainLoopPhaseMask,Z,#$10,L17640
+        BRCLR   >MainLoopPhaseMask,Z,#$10,L17640         ; bit 4: one pass in 32 (about 383 ms)
         BRCLR   >ThrottleState,Z,#$80,L17640             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    $18,Z
         CMPA    >CatMonSpeedMin
@@ -11145,7 +11145,7 @@ L176DC:
         TBYK
         BRSET   >O2TestFlags,Z,#$80,L1772C
         BSET    >O2TestFlags,Z,#$80
-        BRCLR   >MainLoopPhaseMask,Z,#$08,L17712
+        BRCLR   >MainLoopPhaseMask,Z,#$08,L17712         ; bit 3: one pass in 16 (about 191 ms)
         TST     >O2MonRestartTimer,Z
         BEQ     L176FA
         DEC     >O2MonRestartTimer,Z
@@ -11159,7 +11159,7 @@ L176FA:
 L1770E:
         CLR     >O2MonStableCount,Z
 L17712:
-        BRCLR   >MainLoopPhaseMask,Z,#$80,L1772C
+        BRCLR   >MainLoopPhaseMask,Z,#$80,L1772C         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         LDAB    $18,Z
         CMPB    >O2MonSpeedMax
         BLS     L1772C
@@ -11312,7 +11312,7 @@ L178E4:
         LDAA    E,Z
         CMPA    >O2MonSettleCount
         BCC     L1791E
-        BRCLR   >MainLoopPhaseMask,Z,#$20,L17A28
+        BRCLR   >MainLoopPhaseMask,Z,#$20,L17A28         ; bit 5: one pass in 64 (about 766 ms)
         INCA
         LBEQ    L17A28
         STAA    E,Z
@@ -11352,7 +11352,7 @@ L1795C:
         STAA    E,Z
         LDE     $0018,Y
         STAA    E,Z
-        BRCLR   >MainLoopPhaseMask,Z,#$20,L1797E
+        BRCLR   >MainLoopPhaseMask,Z,#$20,L1797E         ; bit 5: one pass in 64 (about 766 ms)
         LDE     $000C,Y
         LDAA    E,Z
         INCA
@@ -17745,7 +17745,7 @@ L1B9E4:
 ;---------------------------------------------------------------------------------------------------
 OutputTestLdp:
         BRCLR   >Options033E,#$02,L1B9FE                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
-        BRCLR   >MainLoopPhaseMask,Z,#$40,L1B9FE
+        BRCLR   >MainLoopPhaseMask,Z,#$40,L1B9FE         ; bit 6: one pass in 128 (about 1.5 s)
         LDE     >IoDriver62,Z
         EORE    #$2000
         STE     >IoDriver62,Z
@@ -17818,7 +17818,7 @@ L1BA88:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1BA8A:
-        BRCLR   >MainLoopPhaseMask,Z,#$04,L1BA9E
+        BRCLR   >MainLoopPhaseMask,Z,#$04,L1BA9E         ; bit 2: one pass in 8 (about 96 ms)
         LDAA    $052B,Z
         DECA
         CMPA    #$FF
@@ -19818,7 +19818,7 @@ MonTaskC:
         LDAB    >RefPeriod,Z
         CMPB    #$30
         LBLS    L1D29E
-        BRCLR   >MainLoopPhaseMask,Z,#$40,L1D2CC
+        BRCLR   >MainLoopPhaseMask,Z,#$40,L1D2CC         ; bit 6: one pass in 128 (about 1.5 s)
         BRSET   >LdpFlags3,Z,#$08,L1D220                 ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
         BRSET   >LdpFlags3,Z,#$04,L1D1C8                 ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
         TPD
@@ -20677,7 +20677,7 @@ L1DA32:
         NEGA
 L1DA34:
         BRCLR   >AfterStartSparkFlags,Z,#$0C,L1DA4A
-        BRCLR   <MainLoopPhaseMask,Z,#$80,L1DA4A
+        BRCLR   <MainLoopPhaseMask,Z,#$80,L1DA4A         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         LDAB    $066C,Z
         INCB
         BEQ     L1DA4A
@@ -21482,7 +21482,7 @@ SurgeControl:
         LDAA    >SurgeEnableTime,Z
         CMPA    >SurgeEnableDelay
         BCC     L1E202
-        BRCLR   >MainLoopPhaseMask,Z,#$02,L1E406
+        BRCLR   >MainLoopPhaseMask,Z,#$02,L1E406         ; bit 1: one pass in 4 (about 48 ms)
         INC     >SurgeEnableTime,Z
         LBRA    L1E406
 L1E202:
@@ -21496,7 +21496,7 @@ L1E202:
         LDAA    >SurgeOpenTime,Z
         CMPA    >SurgeOpenThrottleTime
         LBCC    L1E406
-        BRCLR   >MainLoopPhaseMask,Z,#$02,L1E236
+        BRCLR   >MainLoopPhaseMask,Z,#$02,L1E236         ; bit 1: one pass in 4 (about 48 ms)
         INC     >SurgeOpenTime,Z
 L1E236:
         BRSET   >SparkFlags3,Z,#$40,L1E406
