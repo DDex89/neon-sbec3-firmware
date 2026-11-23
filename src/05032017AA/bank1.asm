@@ -1019,7 +1019,7 @@ Sub_10A64:
 L10A80:
         LDE     #$FFFF
 L10A84:
-        LDAA    >FuelFactor
+        LDAA    >FlexFuelFactorMin
         CLRB
         EMUL
         CPE     $00F0,Z
@@ -1206,7 +1206,7 @@ L10C4C:
         JSR     Lookup3D
         STAA    $0F04,Z
         LDD     >Count3s,Z
-        CPD     >AfterStartFuelTimeThresh
+        CPD     >FlexAfterStartTime
         BCS     L10CCA
         LDAA    >CoolantTemp,Z
         LDX     #FlexCoolantWeight
@@ -1293,7 +1293,7 @@ L10D4A:
 ;---------------------------------------------------------------------------------------------------
 Sub_10D4C:
         LDAA    >MainLoopCounter,Z
-        BITA    >FuelLoopMask
+        BITA    >ThrottleSampleMask
         BNE     L10D5E
         LDAA    >ThrottleAboveClosed,Z
         STAA    $0A7A,Z
@@ -4752,7 +4752,7 @@ L14268:
         BNE     L1427E
         DEC     $0759,Z
 L1427E:
-        LDAA    >O2V0759Thresh
+        LDAA    >O2StepPeriod
         CMPA    $0759,Z
         BCC     L14290
         CLR     $0759,Z
@@ -5270,7 +5270,7 @@ L14756:
         BRSET   $A8,Z,#$20,L1477E
         BRCLR   $A9,Z,#$20,L14786
 L1477E:
-        ADDA    >O2Adder6
+        ADDA    >O2ColdTrimHeaterAdder
         BCC     L14786
         LDAA    #$FF
 L14786:
@@ -6892,7 +6892,7 @@ L1585E:
 ; Called from: Sub_14160
 ;---------------------------------------------------------------------------------------------------
 Sub_15860:
-        TST     >O2V0750Switch
+        TST     >O2PostFuelHold
         BEQ     L158DE
         TST     $043F,Z
         BNE     L158C4
@@ -6901,10 +6901,10 @@ Sub_15860:
         TSTW    >FuelPulseAdder,Z
         BNE     L158CA
         LDD     $07C8,Z
-        CPD     >O2V07C8Thresh
+        CPD     >O2AccelFuelMax
         BCC     L158CA
         LDD     >TipInFuel,Z
-        CPD     >O2V07C8Thresh
+        CPD     >O2AccelFuelMax
         BCC     L158CA
         BRCLR   $0761,Z,#$30,L158DE
         TSTW    $07C8,Z
@@ -6929,7 +6929,7 @@ L158CA:
         BSET    $0761,Z,#$30
         BCLR    $071E,Z,#$80
         BCLR    $0746,Z,#$80
-        LDAA    >O2V0750Switch
+        LDAA    >O2PostFuelHold
         STAA    $0750,Z
 L158DE:
         BRCLR   $0761,Z,#$20,L158E8
@@ -7613,8 +7613,8 @@ L15F9A:
 ; Called from: Sub_146CA
 ;---------------------------------------------------------------------------------------------------
 Sub_15F9E:
-        LDAA    >SensorValue4
-        LDAB    >SensorValue5
+        LDAA    >O2FlexCellRef
+        LDAB    >O2FlexCellRef2
         TZX
         LDX     #$805B
 L15FAC:
@@ -7861,7 +7861,7 @@ Sub_1616C:
         LDAB    $0727,Z
         SXT
         PSHM    D,E
-        LDAA    >SensorValue3
+        LDAA    >O2TrimAvgFilter
         JSR     Blend16Signed
         AIS     #$04
         STAB    $0727,Z
@@ -7874,7 +7874,7 @@ L16196:
         LDAB    $074F,Z
         SXT
         PSHM    D,E
-        LDAA    >SensorValue3
+        LDAA    >O2TrimAvgFilter
         JSR     Blend16Signed
         AIS     #$04
         STAB    $074F,Z
@@ -7920,7 +7920,7 @@ L16208:
         STAA    $0722,Z
         BEQ     L16254
         BMI     L16234
-        CMPA    >TrimThresh1
+        CMPA    >TrimUpperCheck
         BLE     L16254
         LDAA    >EngineRpm,Z
         LDX     #TrimUpperLimitRpm
@@ -7933,7 +7933,7 @@ L1622A:
         BGT     L16254
         LBRA    L162BC
 L16234:
-        CMPA    >TrimThresh2
+        CMPA    >TrimLowerCheck
         BGE     L16254
         LDAA    >EngineRpm,Z
         LDX     #TrimLowerLimitRpm
@@ -7960,7 +7960,7 @@ L1626C:
         STAA    $074A,Z
         BEQ     L162B8
         BMI     L16298
-        CMPA    >TrimThresh1
+        CMPA    >TrimUpperCheck
         BLE     L162B8
         LDAA    >EngineRpm,Z
         LDX     #TrimUpperLimitRpm
@@ -7973,7 +7973,7 @@ L1628E:
         BGT     L162B8
         LBRA    L162BC
 L16298:
-        CMPA    >TrimThresh2
+        CMPA    >TrimLowerCheck
         BGE     L162B8
         LDAA    >EngineRpm,Z
         LDX     #TrimLowerLimitRpm
@@ -11031,7 +11031,7 @@ L1903A:
 L19054:
         JSR     Sub_1906C
         BRCLR   >Options033D,#$08,L19066
-        LDAA    >IdleIacTargetCmdInit
+        LDAA    >IacTargetCmdFixed
         STAA    >IacTargetCmd,Z
 L19066:
         BCLR    $17,Z,#$02
@@ -14711,7 +14711,7 @@ Sub_1B8F6:
         BEQ     L1B986
         BITB    #$10
         BEQ     L1B92C
-        LDAA    >IdleIacTargetThresh
+        LDAA    >PwmC18IacTargetMin
         CMPA    >IacTarget,Z
         BHI     L1B922
         STAA    $0C17,Z
@@ -14732,12 +14732,12 @@ L1B936:
         CLR     $0C17,Z
         BRA     L1B968
 L1B946:
-        LDX     >IdleValue4
+        LDX     >PwmC18Divisor
         IDIV
         CPD     #$0000
         BNE     L1B968
         LDAA    $0C17,Z
-        SUBA    >IdleV0C17Offset
+        SUBA    >PwmC18DutyStep
         STAA    $0C17,Z
         BCC     L1B968
         CLR     $0C17,Z
@@ -14774,7 +14774,7 @@ L1B9A4:
         STD     $054E,Z
         INC     $0364,Z
         LDAA    $0364,Z
-        CMPA    >CalV0364Thresh
+        CMPA    >IacResetLoopCount
         BCC     L1B9D6
 L1B9BE:
         LDD     >TCNT,Z
@@ -16757,7 +16757,7 @@ L1DEFE:
         BRA     L1DF4E
 L1DF16:
         LDAA    $0864,Z
-        CMPA    >SensorV0864Thresh
+        CMPA    >CamSignalCountMax
         BCC     L1DF26
         INC     $0864,Z
         BRA     L1DF4E
@@ -17784,7 +17784,7 @@ Sub_1F02A:
 L1F048:
         CLR     >KnockEventCount,Z
         BCLR    $0C34,Z,#$80
-        LDAA    >SparkValue8
+        LDAA    >KnockLearnResetValue
         TZX
         LDX     #$8093
 L1F05A:
@@ -18006,10 +18006,10 @@ Sub_1F242:
         DEC     >KnockEventCount,Z
         BRA     L1F286
 L1F26A:
-        BITB    >SparkMask
+        BITB    >KnockDecayMask
         BNE     L1F286
         LDAA    >KnockEventCount,Z
-        SUBA    >SparkKnockEventCountOffset
+        SUBA    >KnockEventDecay
         BCC     L1F27C
         CLRA
 L1F27C:
@@ -18161,7 +18161,7 @@ Sub_1F398:
         LDX     #$8093
 L1F3AE:
         LDAA    $00,X
-        SUBA    >KnockOffset1
+        SUBA    >KnockLearnDecay
         BCC     L1F3B8
         CLRA
 L1F3B8:
@@ -18302,7 +18302,7 @@ L1F4F8:
 L1F50A:
         STAB    $0404,Z
         STAA    $0406,Z
-        LDAA    >KnockValue3
+        LDAA    >KnockHighLoadValue
         LDAB    >Map,Z
         CMPB    >KnockMapThreshold,Z
         BCC     L1F528
@@ -18584,7 +18584,7 @@ L1F7EA:
         CMPB    $0DAD,Z
         BEQ     L1F814
         BHI     L1F802
-        ADDE    >SensorAdder6
+        ADDE    >KnockWindowMargin
         CPE     $0000,X
         BHI     L1F814
 L1F802:

@@ -1319,20 +1319,16 @@
    "size": 1
   },
   "0541": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Word compared with V0ABD; read by Isr_GPT_IC1.",
-   "name": "EventV0ABDThresh1"
+   "name": "RunPeriodOn",
+   "desc": "Crank ISR (Isr_GPT_IC1): reference period ($0ABD,Z, word) below which the engine counts as running",
+   "category": "Startup",
+   "size": 2
   },
   "0543": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Word compared with V0ABD; read by Isr_GPT_IC1.",
-   "name": "EventV0ABDThresh2"
+   "name": "RunPeriodOff",
+   "desc": "Crank ISR: reference period at or above which the engine counts as stopped",
+   "category": "Startup",
+   "size": 2
   },
   "0551": {
    "name": "CrankCoolantFloor",
@@ -1550,20 +1546,16 @@
    "size": 1
   },
   "0724": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_15FF4.",
-   "name": "SensorValue4"
+   "name": "O2FlexCellRef",
+   "desc": "Sub_15FF4: value compared with the bank 1 memory cells from $805A (loaded with O2FlexCellRef2)",
+   "category": "Closed loop",
+   "size": 1
   },
   "0727": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with; read by Sub_15FF4.",
-   "name": "SensorValue5"
+   "name": "O2FlexCellRef2",
+   "desc": "Sub_15FF4: second value used with O2FlexCellRef",
+   "category": "Closed loop",
+   "size": 1
   },
   "0720": {
    "name": "O2FlexCellMask",
@@ -1745,23 +1737,21 @@
    "size": 1
   },
   "06A6": {
+   "name": "AccelFuelOptions",
+   "desc": "Accel fuel option byte (bit 7: WOT fuel branch in Sub_11FB0; bit 6: index shift in CalcFuelPulse)",
+   "category": "Options",
    "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
    "bits": [
     "40",
     "80"
-   ],
-   "desc": "Option byte; bits tested: $40, $80. Read by Sub_107EA, CalcFuelPulse.",
-   "name": "AccelFuelOptions"
+   ]
   },
   "1116": {
    "name": "EventFuelMapMin",
    "desc": "Event fuel (Sub_11DE6): MAP at or above this value",
    "unit": "kpa",
    "size": 1,
-   "category": "Fuel"
+   "category": "Other"
   },
   "110B": {
    "name": "RevLimit",
@@ -1837,12 +1827,10 @@
    "size": 1
   },
   "19B7": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Word compared with V0ABD; read by Isr_GPT_IC1.",
-   "name": "EventV0ABDThresh3"
+   "name": "TimedSparkPeriodMax",
+   "desc": "Crank ISR: reference period below which timed spark ($0D00,Z bit 5) is used",
+   "category": "Spark",
+   "size": 2
   },
   "1A1B": {
    "name": "AfterStartSparkEvents",
@@ -1892,42 +1880,42 @@
    "name": "EventSparkStep",
    "desc": "Event spark: increase per loop while $0856,Z bits 4 and 2 are set",
    "size": 1,
-   "category": "Spark"
+   "category": "Other"
   },
   "1D3D": {
    "name": "EventSparkStep2",
    "desc": "Event spark: increase per loop while $0856,Z bit 3 is set",
    "size": 1,
-   "category": "Spark"
+   "category": "Other"
   },
   "1D3E": {
    "name": "EventSparkDecay",
    "desc": "Event spark: decrease per loop with $0857,Z bit 4 set",
    "size": 1,
-   "category": "Spark"
+   "category": "Other"
   },
   "1D3F": {
    "name": "EventSparkDecay2",
    "desc": "Event spark: decrease per loop otherwise",
    "size": 1,
-   "category": "Spark"
+   "category": "Other"
   },
   "1D40": {
    "name": "EventSparkPeriod",
    "desc": "Event spark: period of EventSparkTimer between steps",
-   "category": "Spark",
+   "category": "Other",
    "size": 1
   },
   "1D41": {
    "name": "EventSparkStepDown",
    "desc": "Event spark: decrease of $0863,Z per period",
-   "category": "Spark",
+   "category": "Other",
    "size": 1
   },
   "1D43": {
    "name": "EventSparkStepUp",
    "desc": "Event spark: increase of $085E,Z and $0863,Z per step",
-   "category": "Spark",
+   "category": "Other",
    "size": 1
   },
   "1D44": {
@@ -1935,33 +1923,31 @@
    "desc": "Event spark value at the start of an event",
    "unit": "spark",
    "size": 1,
-   "category": "Spark"
+   "category": "Other"
   },
   "1D45": {
    "name": "EventSparkPeriodInit",
    "desc": "Event spark: start value of the period counters $0862/$085D,Z",
-   "category": "Spark",
+   "category": "Other",
    "size": 1
   },
   "1D46": {
    "name": "EventSparkCountMax",
    "desc": "Event spark: upper limit of $085E,Z and $0863,Z",
-   "category": "Spark",
+   "category": "Other",
    "size": 1
   },
   "1D48": {
    "name": "EventFuelScale",
    "desc": "Event fuel: factor (ScaleByFraction) while the event counter runs",
    "size": 1,
-   "category": "Fuel"
+   "category": "Other"
   },
   "1D49": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte used with; read by Isr_GPT_IC4OC5.",
-   "name": "CalValue7"
+   "name": "CoilOutputValue",
+   "desc": "Isr_GPT_IC4OC5: value written into the output table at $886E for odd steps",
+   "category": "Spark",
+   "size": 1
   },
   "1BB9": {
    "name": "SurgeJerkNegMin",
@@ -2277,13 +2263,13 @@
    "name": "BatteryVoltsFilter",
    "desc": "Filter weight of the filtered battery voltage $0A52,Z",
    "size": 1,
-   "category": "Idle"
+   "category": "Sensors"
   },
   "1FDD": {
    "name": "ChargeDeficitFilter",
    "desc": "Filter weight of the charging deficit average $0DCA,Z",
    "size": 1,
-   "category": "Sensors"
+   "category": "Other"
   },
   "218C": {
    "name": "IacCoastOffsetUp",
@@ -2656,12 +2642,10 @@
    "size": 1
   },
   "2582": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Word compared with V010A; read by Sub_2919A.",
-   "name": "CalV010AThresh1"
+   "name": "O2HeaterSampleTime",
+   "desc": "Probably the O2 heater monitor (Sub_2919A): timer $010A,Z (word) above which the heater input is sampled",
+   "category": "Diagnostics",
+   "size": 2
   },
   "246D": {
    "name": "CamCrankOffsetMin",
@@ -2688,28 +2672,23 @@
    "size": 1
   },
   "3E04": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "MapLimpOffset",
+   "desc": "Limp-home MAP from throttle (Sub_241AA): offset added to MapLimpFromThrottle",
+   "unit": "kpa",
    "category": "Sensors",
-   "desc": "Byte added to result of MapLimpFromThrottle; read by Sub_241AA.",
-   "name": "MapAdder2"
+   "size": 1
   },
   "3E05": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "MapLimpThrottleOffset",
+   "desc": "Limp-home MAP from throttle: offset added to the throttle reading",
    "category": "Sensors",
-   "desc": "Byte added to Throttle; read by Sub_241AA.",
-   "name": "MapThrottleAdder"
+   "size": 1
   },
   "3DD6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Spark",
-   "desc": "Byte used with; read by Sub_1F408.",
-   "name": "KnockValue3"
+   "name": "KnockHighLoadValue",
+   "desc": "Knock (Sub_1F408, Options032F bit 1): value used above the knock MAP threshold",
+   "category": "Knock",
+   "size": 1
   },
   "3DD7": {
    "name": "KnockSignalMax",
@@ -2724,20 +2703,16 @@
    "size": 1
   },
   "3DD3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "MapRawHighLimit",
+   "desc": "Raw MAP at or above this value is a high input (P0108; ReadMap, Sub_21EFE)",
    "category": "Sensors",
-   "desc": "Byte compared with MapRaw; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.",
-   "name": "SensorMapRawThresh2"
+   "size": 1
   },
   "3DD5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.",
-   "name": "SensorThrottleThresh4"
+   "name": "MapRationalThrottleMax",
+   "desc": "MAP rationality (Sub_21EFE, ReadMap): throttle opening below this value for the rpm/MAP check",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3DE5": {
    "name": "ChargeMonVoltsMargin",

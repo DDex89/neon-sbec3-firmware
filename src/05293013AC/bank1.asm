@@ -3388,9 +3388,9 @@ ReadMap:
         CMPB    #$0D
         BCS     L12360
         LDAB    >ThrottleAboveClosed,Z
-        CMPB    >SensorThrottleThresh4
+        CMPB    >MapRationalThrottleMax
         BCC     L12360
-        CMPA    >SensorMapRawThresh2
+        CMPA    >MapRawHighLimit
         BCC     L1236E
         CMPA    >MapRawLowLimit
         BCS     L1236E
@@ -8056,7 +8056,7 @@ L155F2:
         TBA
 L15614:
         STAA    $0339,Z
-        LDAA    >KnockValue3
+        LDAA    >KnockHighLoadValue
         LDAB    >Map,Z
         CMPB    >KnockMapThreshold,Z
         BCC     L1562E
@@ -15397,7 +15397,7 @@ L1A524:
 ;---------------------------------------------------------------------------------------------------
 Sub_1A53A:
         LDD     $AE,Z
-        CPD     >CalV010AThresh1
+        CPD     >O2HeaterSampleTime
         BLS     L1A586
         LBSR    Sub_1A484
         LBSR    Sub_1A460
@@ -19854,7 +19854,7 @@ L1D490:
         ANDP    #$FF1F
         CMPA    $3DD4
         BCS     L1D510
-        CMPA    >SensorMapRawThresh2
+        CMPA    >MapRawHighLimit
         BCS     L1D4F8
         BRA     L1D510
 L1D4AC:
@@ -19864,7 +19864,7 @@ L1D4AC:
         CPE     #$6D60
         BCC     L1D510
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    >SensorThrottleThresh4
+        CMPA    >MapRationalThrottleMax
         BCC     L1D510
         LDAA    #$20
         ORP     #$00E0
@@ -19874,7 +19874,7 @@ L1D4D0:
         LDAA    >RJURR0_L,Z
         ANDP    #$FF1F
         LDY     #$36A2
-        CMPA    >SensorMapRawThresh2
+        CMPA    >MapRawHighLimit
         BCC     L1D4F2
         LDY     #$3698
         CMPA    >MapRawLowLimit
@@ -21277,14 +21277,14 @@ L1E428:
         TAB
 L1E430:
         LDAA    >Throttle,Z
-        ADDA    >MapThrottleAdder
+        ADDA    >MapLimpThrottleOffset
         SBA
         BCC     L1E43E
         CLRA
 L1E43E:
         LDX     #MapLimpFromThrottle
         JSR     Lookup2D
-        ADDA    >MapAdder2
+        ADDA    >MapLimpOffset
         BCC     L1E44E
         LDAA    #$FF
 L1E44E:

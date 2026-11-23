@@ -48,6 +48,7 @@
  "17162": "CatMonSwitchRatio",
  "1764A": "AddSignedClamp",
  "176D6": "O2IdleMonitor",
+ "18B2E": "MisfireDeviation",
  "19BD8": "ReportPass",
  "19EE4": "ReportFault",
  "1D6F0": "CalcBaseSpark"

@@ -276,18 +276,18 @@
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $55,$00,$05,$26,$98
-CalThresh1:
-        dc.b    $33                                      ; Byte compared with; read by Sub_2191E. Fault: P0601.
+ChecksumTarget:
+        dc.b    $33                                      ; Checksum check (Sub_2191E, P0601): value the calculated checksum must equal
         dc.b    $41,$48,$A0,$20,$20,$20,$20,$20,$20,$73,$04,$09,$B3,$96,$04
 ObdStandardIndex:
         dc.b    $07                                      ; Index into the OBD-requirements value list at $32178 sent for mode $01 PID $1C (7 selects $01, OBD II as defined by CARB)
 CalTypeCode:
         dc.b    $07                                      ; Header byte (7): copied to $0059,Z at reset, plus 4 when it is 5 or more and Options032E bit 7 is set (no reader of $0059 found)
         dc.b    $01,$04,$01,$08,$10,$07,$01,$07,$04
-CalValue1:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_3060E.
-CalValue2:
-        dc.b    $00                                      ; Byte used with; read by Sub_30972.
+BusMsgAcData:
+        dc.b    $00,$00                                  ; Data word sent in the bus message $AC (Sub_3060E; bit 3 set with Options032E bit 7)
+BusMsgEcData:
+        dc.b    $00                                      ; Data byte sent in the bus message $EC (Sub_30972; low two bits replaced)
         dc.b    $01,$14
 BusInfoByte3:
         dc.b    $44                                      ; Third data byte of the bus information message (also read by the per-event code)
@@ -406,14 +406,14 @@ FuelEventValue2:
         dc.b    $00,$00                                  ; Word used with; read by Sub_1148E.
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$80,$00,$80,$00
         dc.b    $80,$00,$80,$00,$80,$00,$80,$00,$00,$00,$00,$00,$00,$00,$00
-IdleIacTargetCmdInit:
-        dc.b    $00                                      ; Byte stored into IacTargetCmd; read by Sub_19000.
-FanV0B12Thresh:
-        dc.b    $00                                      ; Byte compared with V0B12; read by Sub_3ADDE.
+IacTargetCmdFixed:
+        dc.b    $00                                      ; IAC target command loaded every pass with Options033D bit 3 (Sub_19000)
+FanPwmFixedDuty:
+        dc.b    $00                                      ; Fan PWM (Sub_3ADDE, Options033D bit 2): duty the fan request steps towards
 CoolantSlowInit:
         dc.b    $6E                                      ; Start value of CoolantTempSlow (calibration bit $033D.5)
-ThermistorValue5:
-        dc.b    $00                                      ; Byte used with; read by ProcessCoolantTemp. Fault: P0117, P0118.
+CoolantSlowOffset:
+        dc.b    $00                                      ; Signed offset added to CoolantTempSlow with Options033D bit 4 (ProcessCoolantTemp)
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
@@ -677,8 +677,8 @@ FanAcDelaySpeed:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00
-FanThresh6:
-        dc.b    $00                                      ; Byte compared with; read by Sub_3ADA8.
+FanPwmRampDownDuty:
+        dc.b    $00                                      ; Fan PWM ramp (Sub_3ADA8): requested duty below this value ramps the duty down
 FanPwmMinDuty:
         dc.b    $00                                      ; PWM fan: minimum duty when running
 FanPwmCoolantTarget:
@@ -693,8 +693,8 @@ FanPwmP:
         dc.b    $00                                      ; PWM fan coolant loop: proportional gain
 FanPwmD:
         dc.b    $00                                      ; PWM fan coolant loop: rate gain
-FanValue5:
-        dc.b    $00                                      ; Byte used with; read by Sub_3AD6E.
+FanWarmupDuty:
+        dc.b    $00                                      ; Fan PWM duty in the warm-up state with Options0331 bit 7 (otherwise 100 %)
 
 ;---------------------------------------------------------------------------------------------------
 ; FanPwmStepCoolant ($051E): 2D table, 6 points, signed
@@ -775,10 +775,10 @@ IacStartTimeMin:
         dc.b    $02                                      ; Time since start before the event logic of Sub_19808 runs
 IacEventTimerInit:
         dc.b    $0D                                      ; Value of the IAC event timer $0C24,Z when the gear-change IAC starts
-SensorV086DInit:
-        dc.b    $00                                      ; Byte stored into V086D; read by Sub_3017C, Sub_3123A. Fault: P1685.
-SensorThrottleThresh2:
-        dc.b    $00                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3017C, Sub_3123A. Fault: P1685.
+BusReqHoldTime:
+        dc.b    $00                                      ; Bus request from the body (Sub_3017C, Sub_3123A): hold time ($086D,Z) of the request flag $086C,Z bit 4
+BusReqThrottleMax:
+        dc.b    $00                                      ; Bus request: throttle opening below this value for the request flag to be set
 AcCutCoolantOn:
         dc.b    $F4                                      ; A/C cut-out (Sub_39412): coolant at or above which the A/C is cut
 AcCutCoolantOff:
@@ -821,10 +821,10 @@ AcWotCutThrottleHyst:
         dc.b    $00                                      ; A/C cut-out 1: throttle hysteresis while active
 AcWotCutTime:
         dc.b    $06                                      ; A/C cut-out 1: duration ($0C2E,Z); 0 = off
-SensorV0C01Init:
-        dc.b    $00                                      ; Byte stored into V0C01; read by Sub_3AECC.
-SensorRpmThresh1:
-        dc.b    $00,$00                                  ; Word compared with EngineRpm; read by Sub_3AECC.
+StarterCutHold:
+        dc.b    $00                                      ; Starter control (Sub_3AECC, Options0333 bit 2, probably the starter relay): hold count ($0C01,Z) after rpm drops
+StarterCutRpm:
+        dc.b    $00,$00                                  ; Starter control: engine rpm below this value (word) clears the cut flag $0944,Z bit 0
 
 ;---------------------------------------------------------------------------------------------------
 ; ResetCoolantInit ($057D): 2D table, 8 points, unsigned
@@ -1074,8 +1074,8 @@ FlexLearnV0F2DThresh:
         dc.b    $00                                      ; Byte compared with V0F2D; read by Sub_17B7E, Sub_18BAA.
 FlexLearnRunTimeThresh:
         dc.b    $00                                      ; Byte compared with RunTime; read by Sub_17000.
-FuelFactor:
-        dc.b    $00                                      ; Byte multiplied; read by Sub_10A3A.
+FlexFuelFactorMin:
+        dc.b    $00                                      ; Flex fuel factor (Sub_10A3A): lower limit as a fraction of the input value
 FlexLearnV000EThresh:
         dc.b    $00                                      ; Byte compared with V000E; read by Sub_17000.
 FlexLearnFlexEthanolStartValue:
@@ -1616,10 +1616,10 @@ ColdSoakMapScale:
         dc.b    0,0, 0,0, 0,0, 0,0, 0,0                  ; x, y
 
         dc.b    $00,$80,$00,$CD
-EventV0ABDThresh1:
-        dc.b    $00,$C0                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
-EventV0ABDThresh2:
-        dc.b    $01,$34                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
+RunPeriodOn:
+        dc.b    $00,$C0                                  ; Crank ISR (Isr_GPT_IC1): reference period ($0ABD,Z, word) below which the engine counts as running
+RunPeriodOff:
+        dc.b    $01,$34                                  ; Crank ISR: reference period at or above which the engine counts as stopped
 CrankCoolantFloor:
         dc.b    $63                                      ; Cranking fuel: CrankCoolant is raised to at least this value while the throttle is not closed
 CrankClearFloodThrottle:
@@ -1858,18 +1858,18 @@ WotFuelK:
         dc.b    $7F                                      ; K factor of the WOT base pulse width
 WotFuelMapOffset:
         dc.b    $0D                                      ; MAP offset of the WOT base pulse width
-IdleIacTargetThresh:
-        dc.b    $00                                      ; Byte compared with IacTarget; read by Sub_1B970.
-IdleV0C17Offset:
-        dc.b    $00                                      ; Byte subtracted from V0C17; read by Sub_1B970, Sub_3B0BA.
-SensorStartCoolantThresh:
-        dc.b    $6E                                      ; Byte compared with StartCoolantTemp2; read by Sub_3AF4C.
-SensorV0C20Offset:
-        dc.b    $00                                      ; Byte subtracted from V0C20; read by Sub_3AF4C, Sub_3B0BA.
-IdleValue4:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_1B970, Sub_3B0BA.
-SensorValue2:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_3AF4C, Sub_3B0BA.
+PwmC18IacTargetMin:
+        dc.b    $00                                      ; PWM output of PwmPeriodC18 (Sub_1B970): IAC target above this value for the step-down branch
+PwmC18DutyStep:
+        dc.b    $00                                      ; PWM output of PwmPeriodC18: step of $0C17,Z (also compared in Sub_3B0BA)
+PwmC18CoolantMax:
+        dc.b    $6E                                      ; PWM output of PwmPeriodC18 (Sub_3AF4C): start coolant and coolant at or below this value for the cold branch
+PwmC18DutyStep2:
+        dc.b    $00                                      ; PWM output of PwmPeriodC18: step taken off the duty $0C20,Z (Sub_3AF4C, Sub_3B0BA)
+PwmC18Divisor:
+        dc.b    $00,$00                                  ; PWM output of PwmPeriodC18: divisor (word) of the step timer $0C1C,Z (Sub_1B970)
+PwmC18Divisor2:
+        dc.b    $00,$00                                  ; PWM output of PwmPeriodC18: divisor (word) of the step timer in Sub_3AF4C
 
 ;---------------------------------------------------------------------------------------------------
 ; ReturnlessFuelScale ($0B12): 2D table, 4 points, unsigned
@@ -2069,8 +2069,8 @@ DecelRampStepTimeDown:
         dc.b    $3D                                      ; Decel fuel reduction: time between steps down
 DecelRampStepDown:
         dc.b    $01                                      ; Decel fuel reduction: step down of DecelFuelRamp
-SensorValue3:
-        dc.b    $FF                                      ; Byte used with; read by Sub_161C2.
+O2TrimAvgFilter:
+        dc.b    $FF                                      ; Filter weight of the short-term trim averages $0727/$074F,Z (Sub_161C2)
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelBaroMapOffset ($0E08): 2D table, 3 points, unsigned
@@ -2299,8 +2299,8 @@ ThrottleRelearnCount:
         dc.b    $FE                                      ; Closed-throttle relearn: counts ($0C47,Z) before the closed value is moved
 ThrottleRelearnStep:
         dc.b    $FE                                      ; Closed-throttle relearn: throttle change at or above which a count is taken
-FuelLoopMask:
-        dc.b    $FD                                      ; Byte mask for MainLoopCounter; read by Sub_10D24.
+ThrottleSampleMask:
+        dc.b    $FD                                      ; Main loop mask for the throttle sample $0A76,Z (Sub_10D24)
 
 ;---------------------------------------------------------------------------------------------------
 ; WarmupIdleTimeFactor ($10D7): 2D table, 1 points, unsigned
@@ -2461,16 +2461,16 @@ FlexColdStartEthanolMin:
         dc.b    $AA                                      ; Reset: FlexEthanol at or above this value with a cold engine sets the flex cold-start flag ($0050,Z bit 3)
 FlexColdStartCoolantMax:
         dc.b    $58                                      ; Reset: coolant below this value for the flex cold-start flag
-SensorSriMileageThresh:
-        dc.b    $00                                      ; Byte compared with SriMileage; read by CheckPowerDown.
-SensorValue4:
-        dc.b    $80                                      ; Byte used with; read by Sub_15FF4.
+FlexColdStartMiles:
+        dc.b    $00                                      ; SRI mileage since the flex cold-start flag was set after which it changes to $0050,Z bit 5 (CheckPowerDown)
+O2FlexCellRef:
+        dc.b    $80                                      ; Sub_15FF4: value compared with the bank 1 memory cells from $805A (loaded with O2FlexCellRef2)
 O2LearnRateFlex:
         dc.b    $00                                      ; As O2LearnRate with the flex fuel flag $0050,Z bit 4
 O2LearnRateWotFlex:
         dc.b    $00                                      ; As O2LearnRateWot with the flex fuel flag
-SensorValue5:
-        dc.b    $00                                      ; Byte used with; read by Sub_15FF4.
+O2FlexCellRef2:
+        dc.b    $00                                      ; Sub_15FF4: second value used with O2FlexCellRef
 O2FlexCellMask:
         dc.b    $00                                      ; Flex trim offset (O2FlexOffset): bit map of the O2 cells (bit n = cell n) whose offset $19,X is stepped with high ethanol
 
@@ -3200,8 +3200,8 @@ O2CellResetThrottleMin:
         dc.b    $02                                      ; Cell reset: throttle at or above this value
         dc.b    $87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87
         dc.b    $87,$87,$87,$87,$87,$87
-O2V0759Thresh:
-        dc.b    $08                                      ; Byte compared with V0759; read by Sub_1424C.
+O2StepPeriod:
+        dc.b    $08                                      ; Sub_1424C: count $0759,Z that wraps at this value (O2 step timing)
         dc.b    $87,$87,$87,$87,$87,$87,$87,$87,$87,$87,$87
 O2PropGain:
         dc.b    $02                                      ; O2 feedback (O2DownTrim): gain of the proportional term $0E,X (error × gain × 4 / 51, limited to ±127)
@@ -3283,14 +3283,14 @@ O2AdaptMax:
         dc.b    $7F                                      ; Long-term adaptive value ($07B0,Z, $07B1,Z) upper limit (signed); at the limit the fuel system monitor counts
 O2AdaptMin:
         dc.b    $80                                      ; Long-term adaptive value lower limit (signed)
-TrimThresh1:
-        dc.b    $1A                                      ; Byte compared with; read by Sub_16244.
-TrimThresh2:
-        dc.b    $E6                                      ; Byte compared with; read by Sub_16244.
-O2V0750Switch:
-        dc.b    $00                                      ; Byte tested (zero = off) V0750; read by Sub_158B6.
-O2V07C8Thresh:
-        dc.b    $FF,$FE                                  ; Word compared with V07C8; read by Sub_158B6.
+TrimUpperCheck:
+        dc.b    $1A                                      ; Trim limits (Sub_16244): trim above this value is limited by TrimUpperLimitRpm
+TrimLowerCheck:
+        dc.b    $E6                                      ; Trim limits: trim below this (signed) value is limited by TrimLowerLimitRpm
+O2PostFuelHold:
+        dc.b    $00                                      ; Sub_158B6: value loaded into $0750,Z (0 = off)
+O2AccelFuelMax:
+        dc.b    $FF,$FE                                  ; Sub_158B6: accel fuel ($07C8,Z) and tip-in fuel below this value (word)
 
 ;---------------------------------------------------------------------------------------------------
 ; O2StepScale ($1873): 2D table, 4 points, unsigned
@@ -3355,7 +3355,7 @@ Tab2D_18A2:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 AccelFuelOptions:
-        dc.b    $80                                      ; Option byte; bits tested: $40, $80. Read by Sub_107EA, CalcFuelPulse.
+        dc.b    $80                                      ; Accel fuel option byte (bit 7: WOT fuel branch in Sub_11FB0; bit 6: index shift in CalcFuelPulse)
 DecelCutRpmMin:
         dc.b    $3F                                      ; Deceleration fuel cut: engine rpm at or above this value
 DecelCutSpeedMin:
@@ -3544,14 +3544,14 @@ PurgeBattTempMin:
         dc.b    $58                                      ; Purge start: battery temperature lower limit
 PurgeBattTempMax:
         dc.b    $5B                                      ; Purge start: battery temperature upper limit of the start window
-PurgeV0428Init:
-        dc.b    $00,$00                                  ; Word stored into V0428; read by Sub_3DC64.
+PurgeBattTimerInit:
+        dc.b    $00,$00                                  ; Purge (Sub_3DC64): start value of the timer $0428,Z (word) inside the battery temperature window
 PurgeMapMax:
         dc.b    $FE                                      ; Purge runs below this MAP
 O2MemFlexDiffMax:
         dc.b    $00                                      ; Long-term cell update: with $0770,Z bit 7 a cell more than this below the flex reference cell is replaced by it
-PurgeFactor1:
-        dc.b    $01,$84                                  ; Word multiplied; read by Sub_3E4CA.
+PurgeRpmFactor:
+        dc.b    $01,$84                                  ; Purge (Sub_3E4CA): factor (word) on engine rpm for the purge value
         dc.b    $07,$02
 PurgeDelayInit:
         dc.b    $80                                      ; Start value of the purge delay $042F,Z (reset, Sub_3DC64, PurgeReset)
@@ -3742,17 +3742,17 @@ PurgeCellRichHyst3:
         dc.b    $D7
 O2TrimResetValue:
         dc.b    $00                                      ; Closed-loop manager: value loaded into the bank trim when $0760,Z bits 2-3 request a reset
-SensorAdder5:
-        dc.b    $33                                      ; Byte added to; read by Sub_3DFCA.
-SensorCoolantThresh5:
-        dc.b    $BC                                      ; Byte compared with CoolantTemp; read by Sub_3DEF8.
-PurgeV043EThresh:
-        dc.b    $00                                      ; Byte compared with V043E; read by Sub_3E344.
-CalOffset6:
-        dc.b    $0F                                      ; Byte subtracted from; read by Sub_3DFB8.
+PurgeCellRefMargin:
+        dc.b    $33                                      ; Purge cell reference (Sub_3DFCA): margin added to the stored cells $8066/$8079 before compare
+PurgeCellRefCoolantMax:
+        dc.b    $BC                                      ; Purge cell reference (Sub_3DEF8): coolant below this value
+PurgeCellUpdateCount:
+        dc.b    $00                                      ; Purge (Sub_3E344): counts ($043E,Z) between updates
+PurgeCellDiffOffset:
+        dc.b    $0F                                      ; Purge (Sub_3DFB8): offset taken off the cell difference
         dc.b    $82,$35
-EventV0ABDThresh3:
-        dc.b    $00,$C3                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
+TimedSparkPeriodMax:
+        dc.b    $00,$C3                                  ; Crank ISR: reference period below which timed spark ($0D00,Z bit 5) is used
 
 ;---------------------------------------------------------------------------------------------------
 ; AfterStartSparkMin ($1B43): 2D table, 3 points, signed
@@ -4071,8 +4071,8 @@ EventFuelScale:
         dc.b    $45                                      ; Event fuel: factor (ScaleByFraction) while the event counter runs
         dc.b    $03,$75,$02,$02,$4D,$02,$02,$00,$00,$04,$00,$00,$00,$01,$4D,$00
         dc.b    $0C,$00,$00,$00,$00,$00,$00,$00,$00,$00
-CalValue7:
-        dc.b    $00                                      ; Byte used with; read by Isr_GPT_IC4OC5.
+CoilOutputValue:
+        dc.b    $00                                      ; Isr_GPT_IC4OC5: value written into the output table at $886E for odd steps
 
 ;---------------------------------------------------------------------------------------------------
 ; EventSparkThrottle ($1FF8): 2D table, 1 points, unsigned
@@ -4531,8 +4531,8 @@ AcSparkSpeedMin:
         dc.b    $FF                                      ; A/C spark compensation runs above this vehicle speed (closed throttle)
 AcSparkRateEnd:
         dc.b    $00,$08                                  ; A/C spark: the window ends when the rpm rate is above this value
-AcLoopMask2:
-        dc.b    $00                                      ; Byte mask for MainLoopCounter; read by Sub_1D8F0.
+AcSparkLoopMask:
+        dc.b    $00                                      ; A/C clutch spark (Sub_1D8F0): main loop mask between steps
 AcSparkRateChangeMin:
         dc.b    $FF,$83                                  ; A/C spark: rpm-rate change ($0D4E,Z) at or above which the compensation starts, A/C clutch off
 AcSparkRateChangeMinAcOn:
@@ -4863,8 +4863,8 @@ KnockRetardMaxMap:
         dc.b    162,6, 178,8                             ; x, y
 
         dc.b    $FF,$FF
-SparkValue8:
-        dc.b    $00                                      ; Byte used with; read by Sub_1F02A.
+KnockLearnResetValue:
+        dc.b    $00                                      ; Knock learning (Sub_1F02A): value written into the learned values from $8092 on a reset
 KnockLearnMask:
         dc.b    $3F                                      ; Knock learning: main-loop mask for counting knock events
 KnockEventsMin:
@@ -4873,12 +4873,12 @@ KnockSignalMin:
         dc.b    $08                                      ; Knock learning: knock signal ($0DAB,Z) at or above this value with KnockEventsMin events
 KnockCylRetardStep:
         dc.b    $40                                      ; Knock learning: per-cylinder retard step
-KnockOffset1:
-        dc.b    $FF                                      ; Byte subtracted from; read by Sub_1F2E0.
-SparkMask:
-        dc.b    $00                                      ; Byte mask for; read by Sub_1F194.
-SparkKnockEventCountOffset:
-        dc.b    $FF                                      ; Byte subtracted from KnockEventCount; read by Sub_1F194.
+KnockLearnDecay:
+        dc.b    $FF                                      ; Knock learning (Sub_1F2E0): decrease of the learned value at the first timed-spark pass
+KnockDecayMask:
+        dc.b    $00                                      ; Knock events (Sub_1F194): mask tested before the event count is reduced
+KnockEventDecay:
+        dc.b    $FF                                      ; Knock events: reduction of KnockEventCount
 KnockCylRetardDecay:
         dc.b    $01                                      ; Decrease of the per-cylinder retard values per step
 KnockCylRetardMin:
@@ -4929,8 +4929,8 @@ KnockRetardMaxRpm:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00
-SensorAdder6:
-        dc.b    $00,$00                                  ; Word added to; read by Sub_1F6FA.
+KnockWindowMargin:
+        dc.b    $00,$00                                  ; Sub_1F6FA: margin (word) added before the window compare ($0DB4,Z)
         dc.b    $00
 SparkSpeedFlagMin:
         dc.b    $07                                      ; $0D02,Z bit 6 sets below this vehicle speed (hysteresis SparkSpeedFlagHyst)
@@ -5179,10 +5179,10 @@ IdleTargetFault:
         dc.b    $64                                      ; Idle target used with a fault ($0D01,Z bit 5 or $0502,Z bits 7-6), ×64
 IacFaultPosition:
         dc.b    $1A                                      ; IAC position used with a fault ($0505,Z bit 3), at most IacTargetMax
-CalVoltsThresh1:
-        dc.b    $71                                      ; Byte compared with BatteryVolts2; read by Sub_0843A.
-CalV0364Thresh:
-        dc.b    $28                                      ; Byte compared with V0364; read by Sub_1BA02.
+IacStepVoltsMin:
+        dc.b    $71                                      ; IAC stepping (Sub_0843A): battery voltage at or above this value
+IacResetLoopCount:
+        dc.b    $28                                      ; Sub_1BA02: loop count ($0364,Z) of the timed IAC reset loop
 IdleRampAirMin:
         dc.b    $8A                                      ; Battery-temperature idle ramp: air temperature window lower limit (IdleHotAirOn is the upper)
 IdleHotAirOff:
@@ -6335,8 +6335,8 @@ IacCoastMapMax:
         dc.b    $A1                                      ; Coast IAC mode runs below this MAP
 IacCoastLoopMask:
         dc.b    $3F                                      ; Coast IAC: main-loop mask for the update rate of the IAC target
-SensorRpmAdder:
-        dc.b    $00,$00                                  ; Word added to EngineRpm; read by Sub_2CBC8.
+IdleUnderTargetMargin:
+        dc.b    $00,$00                                  ; Sub_2CBC8: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target
 
 ;---------------------------------------------------------------------------------------------------
 ; IacDriveOffsetBaro ($2A38): 2D table, 2 points, unsigned
@@ -6605,10 +6605,10 @@ SpeedCtlRatioMin:
         dc.b    $20                                      ; Speed control engagement: rpm/speed ratio at or above this value
 SpeedCtlEngageSpeedMin:
         dc.b    $28                                      ; Speed control engagement: vehicle speed at or above this value
-SensorValue10:
-        dc.b    $F0                                      ; Byte used with; read by Sub_3C288.
-SensorV0416Init:
-        dc.b    $0A                                      ; Byte stored into V0416; read by Sub_3C288.
+SpeedCtlSpeedErrorTrip:
+        dc.b    $F0                                      ; Speed control (Sub_3C288): speed drop that trips the cancel (2 less with $0405,Z bit 6; 0 = off)
+SpeedCtlCancelHold:
+        dc.b    $0A                                      ; Speed control: hold count ($0416,Z) set on the cancel condition
 SpeedCtlRpmMax:
         dc.b    $BC                                      ; Speed control engagement: engine rpm below this value
 ThrottleCloseHold:
@@ -6644,10 +6644,10 @@ SpeedCtlGearRatioMax:
         dc.b    $40                                      ; Speed control shift handling (SpeedCtlShift, manual): rpm/speed ratio at or below this value counts as in gear
 SpeedCtlOverrideCoolantMin:
         dc.b    $69                                      ; Speed control: coolant at or above this value for the driver-override throttle check
-SpeedCtlFactor1:
-        dc.b    $02,$37                                  ; Word multiplied; read by Sub_3C65C.
-SpeedCtlFactor2:
-        dc.b    $02,$D6                                  ; Word multiplied; read by Sub_3C65C.
+SpeedCtlVentTimeFactor:
+        dc.b    $02,$37                                  ; Speed control (Sub_3C65C): factor (word) on the vent count $0425,Z
+SpeedCtlApplyTimeFactor:
+        dc.b    $02,$D6                                  ; Speed control: factor (word) on the vacuum count $0426,Z
 SpeedCtlOverrideMargin:
         dc.b    $0A                                      ; Speed control: throttle opened this much beyond the servo opening counts as driver override
 SpeedCtlOverrideLoopMask:
@@ -6680,8 +6680,8 @@ SpeedCtlRpmJumpThrottle:
         dc.b    $0D                                      ; Speed control: the rpm-jump cancel needs the throttle within this value of the reference
 SpeedCtlRpmJumpHold:
         dc.b    $10                                      ; Speed control rpm-jump check: hold count ($0417,Z) set by an rpm jump (clutch pressed)
-SpeedCtlV0423Thresh:
-        dc.b    $00                                      ; Byte compared with V0423; read by Sub_3C690.
+SpeedCtlBusCount:
+        dc.b    $00                                      ; Speed control (Sub_3C690): count limit of $0423,Z with the bus flag $086C,Z bit 3
         dc.b    $00
 SpeedCtlVentDelayCount:
         dc.b    $00                                      ; Speed control: vent requests ($0424,Z) with $0406,Z bit 6 set before the vent acts
@@ -6710,8 +6710,8 @@ MapHighThresholdBaro:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00
-SensorOffset3:
-        dc.b    $00                                      ; Byte subtracted from; read by Sub_2CB60.
+BusMapHyst:
+        dc.b    $00                                      ; Sub_2CB60: MAP hysteresis of the bus flag $086C,Z bit 2
 
 ;---------------------------------------------------------------------------------------------------
 ; MisfireLoadScale ($2BB7): 2D table, 3 points, unsigned
@@ -7042,10 +7042,10 @@ MisfireHoldSegRpm:
         dc.b    5,$80                                    ; points, flags
         dc.b    19,39, 29,24, 47,10, 63,8, 78,0          ; x, y
 
-FuelEventV0631Value:
-        dc.b    $00,$FF                                  ; Word used with V0631; read by Sub_246FC, Sub_247A8.
-FuelEventValue11:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_247A8.
+EventOptionWord:
+        dc.b    $00,$FF                                  ; Sub_246FC: option word; its top two bits select the mode ($00, $40, $80) and it is stored in $0630,Z
+EventDefaultWord:
+        dc.b    $00,$00                                  ; Sub_247A8: word value used in the default branch
 SegmentRpmConst:
         dc.b    $03,$2D,$CD,$55                          ; Constant divided by the segment period to give SegmentRpmFast (long word)
 SegmentRpmConst2:
@@ -7056,16 +7056,16 @@ MisfirePeriodOffsetHi:
         dc.b    $00,$17                                  ; Misfire monitor: high word of the period offset added to and subtracted from the segment times
 MisfirePeriodOffsetLo:
         dc.b    $54,$38                                  ; Low word of the period offset
-MisfireValue2:
-        dc.b    $00,$0C                                  ; Word used with; read by Sub_2A906.
+MisfireRpmDevLimit:
+        dc.b    $00,$0C                                  ; Misfire (MisfireDeviation): word compared with the rpm deviation $00E0,Z after the event count limit
 MisfireIdleMargin:
-        dc.b    $00,$08                                  ; Misfire monitor (Sub_2A906): idle target plus this margin
-MisfireV00DEThresh:
-        dc.b    $00,$FF                                  ; Word compared with V00DE; read by Sub_2A906, Sub_2B448.
-MisfireV0623Thresh1:
-        dc.b    $03                                      ; Byte compared with V0623; read by Sub_2A906.
-MisfireV0623Thresh2:
-        dc.b    $02                                      ; Byte compared with V0623; read by Sub_2A906.
+        dc.b    $00,$08                                  ; Misfire monitor (MisfireDeviation): idle target plus this margin
+MisfireEventCountMax:
+        dc.b    $00,$FF                                  ; Misfire: event count $00DE,Z (word) above which the deviation check runs (also Sub_2B448)
+MisfireFilterSlow:
+        dc.b    $03                                      ; Misfire: value of $0623,Z set in the first branch
+MisfireFilterFast:
+        dc.b    $02                                      ; Misfire: value of $0623,Z set in the second branch
 MisfireHoldSpeedMin:
         dc.b    $06                                      ; Misfire hold-off (MisfireHoldSegRpm) applies above this vehicle speed
 MisfireIdleMargin2:
@@ -7252,10 +7252,10 @@ LdpPurgeStrokeTimeMin:
         dc.b    $12                                      ; Leak detection pump, purge check state: stroke time below this value ends the state
 LdpVacuumMin2:
         dc.b    $0D                                      ; EVAP leak test: manifold vacuum limit of the last state
-SensorPurgeDutyThresh1:
-        dc.b    $0F                                      ; Byte compared with PurgeDuty; read by Sub_25E9E.
-SensorV059BThresh:
-        dc.b    $96                                      ; Byte compared with V059B; read by Sub_25E9E.
+LdpPurgedDutyMin:
+        dc.b    $0F                                      ; Leak detection (Sub_25E9E): purge duty at or above which the purged time counts
+LdpPurgedTime:
+        dc.b    $96                                      ; Leak detection: purged time ($059B,Z) that sets $011B,Z bit 4
 
 ;---------------------------------------------------------------------------------------------------
 ; LdpPumpTimeByLevel ($3055): 2D table, 1 points, unsigned
@@ -7361,24 +7361,24 @@ EgrMonResultMax:
         dc.b    $5A                                      ; EGR flow monitor: trim response above this value passes it
 EgrMonFailCount:
         dc.b    $03                                      ; EGR flow monitor: failed tests before the fault
-FuelOffset4:
-        dc.b    $03                                      ; Byte subtracted from result of FuelSysLimit2; read by Sub_2A4F2, Sub_2A6C0.
-FuelAdder:
-        dc.b    $04                                      ; Byte added to result of FuelSysLimit; read by Sub_2A0F0, Sub_2A302.
-DiagThresh2:
-        dc.b    $32                                      ; Byte compared with; read by Sub_2A496, Sub_2A664.
-DiagThresh3:
-        dc.b    $32                                      ; Byte compared with; read by Sub_2A07E, Sub_2A290.
-FuelV05ABThresh:
-        dc.b    $32                                      ; Byte compared with V05AB; read by Sub_2A4F2, Sub_2A6C0.
-FuelV05ADThresh:
-        dc.b    $32                                      ; Byte compared with V05AD; read by Sub_2A0F0, Sub_2A302.
+FuelSysRichHyst:
+        dc.b    $03                                      ; Fuel system monitor (Sub_2A4F2, Sub_2A6C0): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set
+FuelSysLeanHyst:
+        dc.b    $04                                      ; Fuel system monitor (Sub_2A0F0, Sub_2A302): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set
+FuelSysRichCount:
+        dc.b    $32                                      ; Fuel system monitor: rich-condition counts ($05A3/$05A4,Z) before the rich flag (Sub_2A496, Sub_2A664)
+FuelSysLeanCount:
+        dc.b    $32                                      ; Fuel system monitor: lean-condition counts before the lean flag (Sub_2A07E, Sub_2A290)
+FuelSysRichFaultCount:
+        dc.b    $32                                      ; Fuel system monitor: rich counts ($05A1/$05AA,Z) before the rich result
+FuelSysLeanFaultCount:
+        dc.b    $32                                      ; Fuel system monitor: lean counts ($05A1/$05AC,Z) before the lean result
 O2MemChangeHold:
         dc.b    $0F                                      ; Long-term memory cell selection: hold time ($05A5/$05A6,Z) after the trim is cleared on a cell change
-DiagV05A8Init:
-        dc.b    $0A                                      ; Byte stored into V05A8; read by Sub_2A000, Sub_2A212, Sub_2A424 +1.
-FuelV007DThresh:
-        dc.b    $81                                      ; Byte compared with V007D; read by Sub_2A07E, Sub_2A0F0, Sub_2A290 +1.
+FuelSysDelay:
+        dc.b    $0A                                      ; Fuel system monitor: delay ($05A7/$05A8,Z) after the enable conditions return
+FuelSysCellMin:
+        dc.b    $81                                      ; Fuel system monitor: learned purge cells ($6A/$6B,Z) at or below this (signed) value count as saturated
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysLimit ($30C9): 3D table, 5 rows x 5 columns, unsigned
@@ -7474,21 +7474,21 @@ O2MonWindowMax:
 O2MonWindowMin:
         dc.b    $0C                                      ; O2 sensor monitor at idle: window count at or above which the switch counts are judged
         dc.b    $12,$80,$80
-CalRunTimeThresh:
-        dc.b    $60                                      ; Byte compared with RunTime; read by Sub_28D78.
+O2HeaterRunTimeMin:
+        dc.b    $60                                      ; Probably the O2 heater monitor (Sub_28D78, Options033F bits 4-7): run time at or above this value
         dc.b    $26,$80,$80
-CalV010AThresh1:
-        dc.b    $00,$64                                  ; Word compared with V010A; read by Sub_2919A.
-CalV010AThresh2:
-        dc.b    $15,$90                                  ; Word compared with V010A; read by Sub_28D78.
-CalV010AThresh3:
-        dc.b    $11,$30                                  ; Word compared with V010A; read by Sub_291F0.
-CalV010EThresh:
-        dc.b    $1E                                      ; Byte compared with V010E; read by Sub_29384.
+O2HeaterSampleTime:
+        dc.b    $00,$64                                  ; Probably the O2 heater monitor (Sub_2919A): timer $010A,Z (word) above which the heater input is sampled
+O2HeaterTestTime:
+        dc.b    $15,$90                                  ; Probably the O2 heater monitor: timer $010A,Z (word) limit of the test
+O2HeaterSettleTime:
+        dc.b    $11,$30                                  ; Probably the O2 heater monitor (Sub_291F0): timer $010A,Z (word) below which the records are updated
+O2HeaterCountMin:
+        dc.b    $1E                                      ; Probably the O2 heater monitor (Sub_29384): count $010E,Z above which the results are judged
         dc.b    $4D,$00,$4D,$00,$1A,$00,$1A,$00,$01,$00,$01,$00,$08,$00,$08,$00
         dc.b    $0A,$00,$0A,$00
-O2Adder6:
-        dc.b    $25                                      ; Byte added to; read by Sub_14740.
+O2ColdTrimHeaterAdder:
+        dc.b    $25                                      ; Cold-start O2 trim (Sub_14740): added to the start trim when a heater monitor status has bit 5 set
 CatMonCoolantMin:
         dc.b    $CD                                      ; Catalyst monitor (Sub_285CA): coolant at or above this value
 CatMonSpeedMin:
@@ -7582,8 +7582,8 @@ FuelLevelRef:
         dc.b    $80                                      ; Reference value of the fuel level terms ($32AF minus $019C,Z, $01B6,Z)
 FuelSenderReadTime:
         dc.b    $1C                                      ; Time since start after which the fuel level sender ($0A92) is read for FuelLevelScaled
-FuelValue18:
-        dc.b    $20                                      ; Byte used with; read by Sub_2C708.
+FuelSenderFilter:
+        dc.b    $20                                      ; Filter weight of FuelSenderFiltered (Sub_2C708)
 FuelSenderLow:
         dc.b    $05                                      ; Fuel level sender ($0A92) circuit check (FuelSenderMonitor): filtered value at or below this counts as low (P0462)
 FuelSenderHigh:
@@ -7784,8 +7784,8 @@ MonSteadyRpmMax:
         dc.b    $21                                      ; Steady-state condition (P1390): engine rpm at or below this value
 MonSteadyRpmBand:
         dc.b    $1E                                      ; Steady-state condition: rpm band start
-CalThresh4:
-        dc.b    $7D                                      ; Byte compared with; read by Sub_23C3E. Fault: P1390.
+MonSteadyRpmCeiling:
+        dc.b    $7D                                      ; Cam/crank relation monitor (Sub_23C3E): engine rpm below this value
 MonSteadySpeedMax:
         dc.b    $C8                                      ; Steady-state condition: vehicle speed at or below this value
 CamCrankOffsetMin:
@@ -7797,12 +7797,12 @@ CamCrankOffsetJitter:
 CamCrankStableCount:
         dc.b    $6A                                      ; Cam/crank relation: stable readings needed ($068E,Z)
         dc.b    $3C
-CalOffset7:
-        dc.b    $1A                                      ; Byte subtracted from; read by Sub_23C3E. Fault: P1390.
-CalV068AThresh:
-        dc.b    $C8                                      ; Byte compared with V068A; read by Sub_23B84. Fault: P1391.
-CalV068DInit:
-        dc.b    $01                                      ; Byte stored into V068D; read by Sub_23B84. Fault: P1391.
+CamCrankWindow:
+        dc.b    $1A                                      ; Cam/crank relation monitor: window around the stored relation ($068F,Z)
+CamCrankFaultCount:
+        dc.b    $C8                                      ; Cam/crank monitor (Sub_23B84): count ($068A,Z) at or above which the fault is reported
+CamCrankHold:
+        dc.b    $01                                      ; Cam/crank monitor: hold count ($068D,Z) set on a change
 PnSwitchSpeedMin:
         dc.b    $FF                                      ; P/N switch monitor (PnSwitchMonitor, P1899): vehicle speed at or above this value
 PnSwitchRpmMin:
@@ -7829,16 +7829,16 @@ ThermostatTimeLimit:
         dc.b    6,$80                                    ; points, flags
         dc.b    88,255, 99,189, 110,151, 116,94, 121,57, 132,38 ; x, y
 
-DiagBaroThresh1:
-        dc.b    $C2                                      ; Byte compared with Baro; read by Sub_23816.
+MapCheckBaroMin:
+        dc.b    $C2                                      ; MAP check (Sub_23816): barometric pressure at or above this value
 IdleMonDelay:
         dc.b    $C8                                      ; Idle speed monitor (Sub_2375A): delay before the test ($0660,Z)
 IdleMonRpmHigh:
         dc.b    $06,$40                                  ; Idle speed monitor: engine rpm above the idle target by more than this value counts as high
 IdleMonRpmLow:
         dc.b    $03,$20                                  ; Idle speed monitor: engine rpm below the idle target by more than this value counts as low
-DiagV0662Thresh:
-        dc.b    $01,$E0                                  ; Word compared with V0662; read by Sub_2375A.
+IdleDropRpm:
+        dc.b    $01,$E0                                  ; Sub_2375A: rpm drop below the stored rpm ($0662,Z, word) at or above which $0661,Z counts
 IdleMonCount:
         dc.b    $02                                      ; Idle speed monitor: failed tests before the result
 PspSwitchCount:
@@ -8370,18 +8370,18 @@ ThrottleLimpFromVacuum:
         dc.b    4,$80                                    ; points, flags
         dc.b    8,167, 45,84, 78,63, 110,0               ; x, y
 
-CalRpmThresh4:
-        dc.b    $02,$00                                  ; Word compared with EngineRpm; read by Sub_21EA6.
+MapIdleRpmBand:
+        dc.b    $02,$00                                  ; MAP check at idle (MapIdleChangeCheck): engine rpm within this value of the idle target
 MapCheckBaroMax:
         dc.b    $E3                                      ; MAP checks: barometric pressure above which the high-altitude vacuum limit is not used
 MapCheckVacuumMin:
         dc.b    $07                                      ; MAP checks: manifold vacuum limit (low altitude)
 MapCheckVacuumMinAlt:
         dc.b    $03                                      ; MAP checks: manifold vacuum limit (high altitude)
-MapAdder2:
-        dc.b    $22                                      ; Byte added to result of MapLimpFromThrottle; read by Sub_241AA.
-MapThrottleAdder:
-        dc.b    $09                                      ; Byte added to Throttle; read by Sub_241AA.
+MapLimpOffset:
+        dc.b    $22                                      ; Limp-home MAP from throttle (Sub_241AA): offset added to MapLimpFromThrottle
+MapLimpThrottleOffset:
+        dc.b    $09                                      ; Limp-home MAP from throttle: offset added to the throttle reading
 
 ;---------------------------------------------------------------------------------------------------
 ; MapLimpFromThrottle ($49A0): 2D table, 5 points, unsigned
@@ -8394,8 +8394,8 @@ MapLimpFromThrottle:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 8,73, 20,112, 57,186, 120,193       ; x, y
 
-VssThresh:
-        dc.b    $32                                      ; Byte compared with; read by Sub_23970. Fault: P0500.
+VssCheckCount:
+        dc.b    $32                                      ; Vehicle speed sensor monitor (Sub_23970): counts ($065D/$065E,Z) before the result changes
 VssCheckCoolantMin:
         dc.b    $B6                                      ; Vehicle speed sensor check (Sub_23970, P0500) runs above this coolant temperature
 
@@ -8421,8 +8421,8 @@ O2NoActivityTime:
         dc.b    $19                                      ; O2 no-activity check at a cold start (O2NoActivityCold, P0134/P0154/P0140/P0160): time after start (Count191ms) at which the result is reported
 O2NoActivityLowRaw:
         dc.b    $08                                      ; O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0)
-CalSpeedThresh2:
-        dc.b    $50                                      ; Byte compared with VehicleSpeed; read by Sub_222FA.
+O2DownCheckSpeedMin:
+        dc.b    $50                                      ; Downstream O2 checks (Sub_222FA): vehicle speed at or above this value
 O2DownLowRaw:
         dc.b    $04                                      ; Downstream O2 circuit check (O2DownCircuitCheck): raw reading below this value counts as low (P0137/P0157)
 O2DownLowFaultCount:
@@ -8431,8 +8431,8 @@ O2DownLowPassCount:
         dc.b    $0A                                      ; Downstream O2 circuit check: low-check counts that pass the test
 O2MemResetValue:
         dc.b    $33                                      ; Closed-loop manager: value written into the 16 adaptive cells of a bank when its memory is reset after a fault
-KnockValue3:
-        dc.b    $FF                                      ; Byte used with; read by Sub_1F408.
+KnockHighLoadValue:
+        dc.b    $FF                                      ; Knock (Sub_1F408, Options032F bit 1): value used above the knock MAP threshold
 KnockSignalMax:
         dc.b    $F0                                      ; Knock sensor check: filtered knock signal above this value counts as a fault
 
@@ -8465,16 +8465,16 @@ ThrottleRawHigh:
         dc.b    $E4                                      ; Throttle sensor raw value at or above which it counts as open (P0123)
 MapRawLowLimit:
         dc.b    $01                                      ; Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)
-SensorMapRawThresh2:
-        dc.b    $EE                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
+MapRawHighLimit:
+        dc.b    $EE                                      ; Raw MAP at or above this value is a high input (P0108; ReadMap, Sub_21EFE)
 MapKeyOnCount:
         dc.b    $18                                      ; MAP rationality at key-on: counts ($06D1,Z) before the fault (the barometric value is then set to $F0)
 MapKeyOnTimeMax:
         dc.b    $1C                                      ; MAP rationality at key-on (MapKeyOnCheck, P0106): run only within this time (Count3s) below 250 rpm
 MapKeyOnRawMax:
         dc.b    $70                                      ; MAP rationality at key-on: raw MAP below this value (too low for barometric pressure) counts
-SensorThrottleThresh4:
-        dc.b    $3D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
+MapRationalThrottleMax:
+        dc.b    $3D                                      ; MAP rationality (Sub_21EFE, ReadMap): throttle opening below this value for the rpm/MAP check
 AcSensorRawHigh:
         dc.b    $FB                                      ; A/C sensor circuit check: raw value above this counts as open/high
 AcSensorRawLow:
@@ -8495,8 +8495,8 @@ ThermostatBattTempMin:
         dc.b    $68                                      ; Warm-up monitor: start battery temperature at or above this value
 ThermostatCoolantDone:
         dc.b    $C7                                      ; Warm-up monitor: coolant at or above this value passes the test
-DiagV06C9Thresh:
-        dc.b    $FF                                      ; Byte compared with V06C9; read by Sub_231EC.
+MonSpeedCount:
+        dc.b    $FF                                      ; Sub_231EC: count $06C9,Z compared at speeds of $38 and above
 AirTempRawLow:
         dc.b    $1A                                      ; Air temperature sensor raw value below which it counts as shorted
 AirTempRawHigh:
@@ -8527,8 +8527,8 @@ O2DownHighFaultCount:
         dc.b    $96                                      ; Downstream O2 circuit check: high counts that set the fault
 O2DownHighPassCount:
         dc.b    $4B                                      ; Downstream O2 circuit check: high-check counts that pass the test
-FieldThresh:
-        dc.b    $04                                      ; Byte compared with; read by Sub_08520, Sub_08DD4.
+FieldVoltsStep:
+        dc.b    $04                                      ; Generator field control: voltage change beyond this value sets $0DB8,Z bit 7
 ChargeMonVoltsMargin:
         dc.b    $10                                      ; Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging
 ChargeMonRpmMin:
@@ -9377,8 +9377,8 @@ DwellTime:
         dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
         dc.b    $09,$43,$01,$08,$0A,$46,$01,$04,$00,$00,$00,$02,$04,$07,$02,$01
         dc.b    $00,$0D,$BB,$A0,$00,$00,$1A,$CB,$C0,$00
-SensorV0AB2Thresh:
-        dc.b    $1E                                      ; Byte compared with V0AB2; read by CalcVehicleSpeed.
+VssPeriodMin:
+        dc.b    $1E                                      ; Vehicle speed (CalcVehicleSpeed): speed period / 2 below this value takes the high-speed branch
 PwmPeriodC18:
         dc.b    $3F                                      ; PWM period of the TPU output set up by Sub_3B03C (duty $0C20,Z in %): value × 250 into $0C18,Z (Options0333 bit 6)
 PurgePwmPeriod:
@@ -9394,17 +9394,17 @@ FieldRpmMin:
         dc.b    $10                                      ; Generator field control (Sub_0EB62): engine rpm at which the field is enabled
 FieldRpmOff:
         dc.b    $0C                                      ; Generator field control: engine rpm below which it is disabled again
-FieldValue3:
-        dc.b    $FF                                      ; Byte used with; read by Sub_08520, Sub_08DD4.
-FieldV0DC1Init:
-        dc.b    $3F                                      ; Byte stored into V0DC1; read by Sub_08520, Sub_08DD4.
+FieldFaultDuty:
+        dc.b    $FF                                      ; Generator field: value of $0DC1,Z with a field circuit fault while running
+FieldFaultDutyCrank:
+        dc.b    $3F                                      ; Generator field: value of $0DC1,Z with a field circuit fault while not running
         dc.b    $00,$00,$00
-CalV09B3Thresh:
-        dc.b    $0A                                      ; Byte compared with V09B3; read by Sub_08684.
-CalV09B1Thresh:
-        dc.b    $0F                                      ; Byte compared with V09B1; read by Sub_08684.
-CalSwitch:
-        dc.b    $00                                      ; Byte tested (zero = off); read by Sub_23B66.
+SciErrorCount:
+        dc.b    $0A                                      ; Serial receive (Sub_08684): error count ($09B3,Z) at or above which reception restarts
+SciRxIndexMax:
+        dc.b    $0F                                      ; Serial receive: largest receive index ($09B1,Z)
+CamFaultClearSwitch:
+        dc.b    $00                                      ; Sub_23B66: when not zero the counts $018D/$018E,Z are cleared every 0.19 s pass
         dc.b    $FF,$FF,$01,$04,$02,$05,$04,$00,$08,$01,$10,$02,$20,$03,$04,$03
         dc.b    $08,$04,$10,$05,$20,$06,$01,$01,$02,$02,$03,$05,$01,$04,$03,$05
         dc.b    $02,$06,$01,$04,$02,$06
@@ -9435,8 +9435,8 @@ DwellBatteryAlt:
         dc.b    8,$80                                    ; points, flags
         dc.b    146,255, 162,233, 178,175, 194,131, 210,123, 227,107, 243,94, 255,88 ; x, y
 
-CalValue8:
-        dc.b    $C0                                      ; Byte used with; read by Sub_2D91C.
+BatteryVoltsDwellFilter:
+        dc.b    $C0                                      ; Filter weight of BatteryVoltsDwell (Sub_2D91C)
         dc.b    $FA,$45,$C8,$00,$B0,$00,$10,$00,$00,$00,$00,$43,$F2,$00,$A9,$00
         dc.b    $10,$00,$00,$00,$00,$43,$8E,$00,$A5,$00,$10,$00,$00,$00,$00,$44
         dc.b    $60,$00,$A6,$00,$10,$00,$00,$00,$00,$43,$A2,$00,$A7,$00,$10,$00
@@ -9895,7 +9895,7 @@ Sub_08322:
         TBXK
         BRSET   $0017,Z,#$02,L0837C
         LDAA    >BatteryVolts2,Z
-        CMPA    >CalVoltsThresh1
+        CMPA    >IacStepVoltsMin
         BCS     L0837C
         LDAB    <IacPosition,Z
         BRCLR   $0017,Z,#$40,L08348
@@ -9995,9 +9995,9 @@ L0843C:
         BRSET   $106E,Z,#$20,L08458
 L08442:
         BSET    $06B6,Z,#$08
-        LDAA    >FieldValue3
+        LDAA    >FieldFaultDuty
         BRSET   $0774,Z,#$80,L08454
-        LDAA    >FieldV0DC1Init
+        LDAA    >FieldFaultDutyCrank
 L08454:
         STAA    $0DC1,Z
 L08458:
@@ -10047,7 +10047,7 @@ L084CE:
         SUBB    $0DBA,Z
         BHI     L08538
         NEGB
-        CMPB    >FieldThresh
+        CMPB    >FieldVoltsStep
         BLS     L08538
         BSET    $0DB8,Z,#$80
         BCLR    $0DB8,Z,#$40
@@ -10112,7 +10112,7 @@ L08562:
         LDAA    $09B3,Z
         INCA
         STAA    $09B3,Z
-        CMPA    >CalV09B3Thresh
+        CMPA    >SciErrorCount
         BCC     L0857A
         LBRA    L086AA
 L0857A:
@@ -10177,14 +10177,14 @@ L0861C:
         BRA     L0866C
 L08624:
         LDAA    $09B1,Z
-        CMPA    >CalV09B1Thresh
+        CMPA    >SciRxIndexMax
         BHI     L08660
         TDE
         LDD     E,Z
         STAB    $09B2,Z
         BRA     L086A6
 L08638:
-        CMPA    >CalV09B1Thresh
+        CMPA    >SciRxIndexMax
         BHI     L0860C
         STAA    $09B1,Z
         BCLR    $0C34,Z,#$01
@@ -10712,7 +10712,7 @@ L08B6C:
 L08B8C:
         LSRB
         BCC     L08B96
-        LDAA    >CalValue7
+        LDAA    >CoilOutputValue
         BRA     L08B98
 L08B96:
         CLRA
@@ -11443,7 +11443,7 @@ L0A34E:
         SUBE    $04F6,Z
         STE     $04F6,Z
         LDD     $0ABD,Z
-        CPD     >EventV0ABDThresh3
+        CPD     >TimedSparkPeriodMax
         BCS     L0A3C4
         CPD     #$00FF
         BCS     L0A3BE
@@ -11988,9 +11988,9 @@ L0A9F6:
         BSET    $0317,Z,#$40
         JSR     Sub_1E11A
         LDX     $0ABD,Z
-        CPX     >EventV0ABDThresh1
+        CPX     >RunPeriodOn
         BCS     L0AA2A
-        CPX     >EventV0ABDThresh2
+        CPX     >RunPeriodOff
         BCS     L0AA64
         BCLR    $0774,Z,#$80
         BRA     L0AA64
@@ -12250,8 +12250,8 @@ UnexpectedInterrupt:
         STD     <UnexpectedIrqStack4,Z
         PULM    K,X,D
         RTI
-SensorValue16:
-        dc.b    $00,$0E,$4E,$1C                          ; Long used with; read by Sub_0C77E, CalcEngineRpm.
+RpmPeriodConstant:
+        dc.b    $00,$0E,$4E,$1C                          ; Dividend (long, also read from $ABB1) for engine rpm from the reference period (CalcEngineRpm, Sub_0C77E)
         dc.b    $00
 CylinderCount:
         dc.b    $04                                      ; Number of cylinders (4): the cylinder index $0C46,Z counts up to it and the per-event code uses it
@@ -13783,7 +13783,7 @@ Sub_0C77E:
         LDED    $ACA9
         BRCLR   $0ABD,Z,#$FF,L0C7A4
         LDX     $0ABD,Z
-        LDED    >SensorValue16
+        LDED    >RpmPeriodConstant
 L0C7A4:
         CPX     #$0000
         BEQ     L0C7AE
@@ -15782,7 +15782,7 @@ L0E034:
         BCS     L0E060
         TSTA
         BNE     L0E056
-        CMPB    >SensorSriMileageThresh
+        CMPB    >FlexColdStartMiles
         BCS     L0E064
 L0E056:
         BCLR    $50,Z,#$08

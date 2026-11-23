@@ -627,10 +627,10 @@ IacRollThrottleScale:
         dc.b    3,0, 4,64, 5,128, 26,192, 51,255         ; x, y
 
         dc.b    $00,$80,$00,$CD
-EventV0ABDThresh1:
-        dc.b    $00,$C0                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
-EventV0ABDThresh2:
-        dc.b    $01,$34                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
+RunPeriodOn:
+        dc.b    $00,$C0                                  ; Crank ISR (Isr_GPT_IC1): reference period ($0ABD,Z, word) below which the engine counts as running
+RunPeriodOff:
+        dc.b    $01,$34                                  ; Crank ISR: reference period at or above which the engine counts as stopped
 
 ;---------------------------------------------------------------------------------------------------
 ; CrankVacuumFactor ($0533): 2D table, 4 points, unsigned, y = 0 counts as 256
@@ -907,7 +907,7 @@ Tab2D_0689:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 AccelFuelOptions:
-        dc.b    $80                                      ; Option byte; bits tested: $40, $80. Read by Sub_107EA, CalcFuelPulse.
+        dc.b    $80                                      ; Accel fuel option byte (bit 7: WOT fuel branch in Sub_11FB0; bit 6: index shift in CalcFuelPulse)
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0694 ($0694): 2D table, 3 points, unsigned
@@ -1004,11 +1004,11 @@ O2FlexOffsetStepNeg:
 O2FlexCellMask:
         dc.b    $00                                      ; Flex trim offset (O2FlexOffset): bit map of the O2 cells (bit n = cell n) whose offset $19,X is stepped with high ethanol
         dc.b    $AA,$58,$00
-SensorValue4:
-        dc.b    $00                                      ; Byte used with; read by Sub_15FF4.
+O2FlexCellRef:
+        dc.b    $00                                      ; Sub_15FF4: value compared with the bank 1 memory cells from $805A (loaded with O2FlexCellRef2)
         dc.b    $00,$00
-SensorValue5:
-        dc.b    $00                                      ; Byte used with; read by Sub_15FF4.
+O2FlexCellRef2:
+        dc.b    $00                                      ; Sub_15FF4: second value used with O2FlexCellRef
 
 ;---------------------------------------------------------------------------------------------------
 ; WotFuel ($0715): 3D table, 9 rows x 17 columns, signed
@@ -2215,8 +2215,8 @@ AfterStartSparkMapRpm:
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 8
 
         dc.b    $82,$35
-EventV0ABDThresh3:
-        dc.b    $00,$C3                                  ; Word compared with V0ABD; read by Isr_GPT_IC1.
+TimedSparkPeriodMax:
+        dc.b    $00,$C3                                  ; Crank ISR: reference period below which timed spark ($0D00,Z bit 5) is used
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_19A1 ($19A1): 2D table, 3 points, signed
@@ -4239,8 +4239,8 @@ O2MonWindowMax:
 O2MonWindowMin:
         dc.b    $13                                      ; O2 sensor monitor at idle: window count at or above which the switch counts are judged
         dc.b    $08,$80,$04,$A2,$60
-CalV010AThresh1:
-        dc.b    $00,$64                                  ; Word compared with V010A; read by Sub_2919A.
+O2HeaterSampleTime:
+        dc.b    $00,$64                                  ; Probably the O2 heater monitor (Sub_2919A): timer $010A,Z (word) above which the heater input is sampled
         dc.b    $15,$90,$11,$30,$1E,$4D,$4D,$4D,$4D,$1A,$1A,$1A,$1A,$01,$01,$01
         dc.b    $01,$08,$08,$08,$08,$0A,$0A,$0A,$0A,$05,$04,$80,$25,$0C,$80,$3E
         dc.b    $00,$8C,$00,$19,$A8,$64,$10,$10,$28,$28,$01,$02,$80
@@ -5060,13 +5060,13 @@ Tab2D_3D8E:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$05,$FA,$08,$E4,$1A,$28,$2F,$20,$66
 MapRawLowLimit:
         dc.b    $01                                      ; Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)
-SensorMapRawThresh2:
-        dc.b    $EE                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
+MapRawHighLimit:
+        dc.b    $EE                                      ; Raw MAP at or above this value is a high input (P0108; ReadMap, Sub_21EFE)
         dc.b    $3D
-SensorThrottleThresh4:
-        dc.b    $1A                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
-KnockValue3:
-        dc.b    $FF                                      ; Byte used with; read by Sub_1F408.
+MapRationalThrottleMax:
+        dc.b    $1A                                      ; MAP rationality (Sub_21EFE, ReadMap): throttle opening below this value for the rpm/MAP check
+KnockHighLoadValue:
+        dc.b    $FF                                      ; Knock (Sub_1F408, Options032F bit 1): value used above the knock MAP threshold
 KnockSignalMax:
         dc.b    $F0                                      ; Knock sensor check: filtered knock signal above this value counts as a fault
 
@@ -5103,10 +5103,10 @@ MapLimpFromThrottle:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 8,73, 20,112, 57,186, 120,193       ; x, y
 
-MapAdder2:
-        dc.b    $22                                      ; Byte added to result of MapLimpFromThrottle; read by Sub_241AA.
-MapThrottleAdder:
-        dc.b    $09                                      ; Byte added to Throttle; read by Sub_241AA.
+MapLimpOffset:
+        dc.b    $22                                      ; Limp-home MAP from throttle (Sub_241AA): offset added to MapLimpFromThrottle
+MapLimpThrottleOffset:
+        dc.b    $09                                      ; Limp-home MAP from throttle: offset added to the throttle reading
         dc.b    $43,$00,$04,$88,$70,$50,$0A,$04,$88,$70,$50,$0A,$D3,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -5651,7 +5651,7 @@ L04988:
         SUBE    $00F6,Z
         STE     $00F6,Z
         LDD     $0363,Z
-        CPD     >EventV0ABDThresh3
+        CPD     >TimedSparkPeriodMax
         BCS     L049E8
         CPD     #$00FF
         BCS     L049E2
@@ -6234,9 +6234,9 @@ L05038:
         JSR     Sub_088D8
         JSR     Sub_1CEA4
         LDX     $0363,Z
-        CPX     >EventV0ABDThresh1
+        CPX     >RunPeriodOn
         BCS     L05070
-        CPX     >EventV0ABDThresh2
+        CPX     >RunPeriodOff
         BCS     L050A6
         BCLR    $0588,Z,#$80
         BRA     L050A6
@@ -13258,8 +13258,8 @@ L0A13E:
 ; Called from: Sub_08CD6
 ;---------------------------------------------------------------------------------------------------
 Sub_0A142:
-        LDAA    >SensorValue4
-        LDAB    >SensorValue5
+        LDAA    >O2FlexCellRef
+        LDAB    >O2FlexCellRef2
         TZX
         LDX     #$803F
 L0A150:
@@ -15804,7 +15804,7 @@ L0BD6A:
 ; Called from: Sub_0A200
 ;---------------------------------------------------------------------------------------------------
 Sub_0BD6C:
-        LDX     >EventV0ABDThresh2
+        LDX     >RunPeriodOff
         LDAA    >CylinderCount
         CMPA    #$04
         BEQ     L0BD7C
@@ -15845,7 +15845,7 @@ L0BDB8:
         TBA
 L0BDD0:
         STAA    >IacTarget,Z
-        LDX     >EventV0ABDThresh1
+        LDX     >RunPeriodOn
         LDAA    >CylinderCount
         CMPA    #$04
         BEQ     L0BDE4
@@ -15946,7 +15946,7 @@ L0BEDC:
         BNE     L0BF4E
         BRSET   >ThrottleState,Z,#$80,L0BF4E
         BRSET   $0669,Z,#$02,L0BF2E
-        LDX     >EventV0ABDThresh1
+        LDX     >RunPeriodOn
         LDAA    >CylinderCount
         CMPA    #$04
         BEQ     L0BF0E

@@ -3355,9 +3355,9 @@ ReadMap:
         CMPB    #$0D
         BCS     L12438
         LDAB    >ThrottleAboveClosed,Z
-        CMPB    >SensorThrottleThresh4
+        CMPB    >MapRationalThrottleMax
         BCC     L12438
-        CMPA    >SensorMapRawThresh2
+        CMPA    >MapRawHighLimit
         BCC     L12446
         CMPA    >MapRawLowLimit
         BCS     L12446
@@ -10943,7 +10943,7 @@ L17850:
 ;---------------------------------------------------------------------------------------------------
 Sub_17866:
         LDD     $A6,Z
-        CPD     >CalV010AThresh1
+        CPD     >O2HeaterSampleTime
         BLS     L178B2
         LBSR    Sub_177B0
         LBSR    Sub_1778C
@@ -15750,7 +15750,7 @@ L1ABD8:
         ANDP    #$FF1F
         CMPA    $3DA9
         BCS     L1AC58
-        CMPA    >SensorMapRawThresh2
+        CMPA    >MapRawHighLimit
         BCS     L1AC40
         BRA     L1AC58
 L1ABF4:
@@ -15760,7 +15760,7 @@ L1ABF4:
         CPE     #$2EE0
         BCC     L1AC58
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    >SensorThrottleThresh4
+        CMPA    >MapRationalThrottleMax
         BCC     L1AC58
         LDAA    #$20
         ORP     #$00E0
@@ -15770,7 +15770,7 @@ L1AC18:
         LDAA    >RJURR0_L,Z
         ANDP    #$FF1F
         LDY     #$3677
-        CMPA    >SensorMapRawThresh2
+        CMPA    >MapRawHighLimit
         BCC     L1AC3A
         LDY     #$366D
         CMPA    >MapRawLowLimit
@@ -17154,14 +17154,14 @@ L1BB0C:
         TAB
 L1BB14:
         LDAA    >Throttle,Z
-        ADDA    >MapThrottleAdder
+        ADDA    >MapLimpThrottleOffset
         SBA
         BCC     L1BB22
         CLRA
 L1BB22:
         LDX     #MapLimpFromThrottle
         JSR     Lookup2D
-        ADDA    >MapAdder2
+        ADDA    >MapLimpOffset
         BCC     L1BB32
         LDAA    #$FF
 L1BB32:
@@ -19746,7 +19746,7 @@ L1D490:
         TBA
 L1D4B2:
         STAA    $0322,Z
-        LDAA    >KnockValue3
+        LDAA    >KnockHighLoadValue
         LDAB    >MapRaw,Z
         CMPB    >KnockMapThreshold,Z
         BCC     L1D4CC

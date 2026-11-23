@@ -17554,9 +17554,9 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFCONSTANT uniqueid="0x2D0" flags="0x0">
-  <title>CalThresh1</title>
-  <description>Byte compared with; read by Sub_2191E. Fault: P0601. $0305</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>ChecksumTarget</title>
+  <description>Checksum check (Sub_2191E, P0601): value the calculated checksum must equal $0305</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x305" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -17590,8 +17590,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D3" flags="0x0">
-  <title>CalValue1</title>
-  <description>Word used with; read by Sub_3060E. $0320</description>
+  <title>BusMsgAcData</title>
+  <description>Data word sent in the bus message $AC (Sub_3060E; bit 3 set with Options032E bit 7) $0320</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x320" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -17602,8 +17602,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D4" flags="0x0">
-  <title>CalValue2</title>
-  <description>Byte used with; read by Sub_30972. $0322</description>
+  <title>BusMsgEcData</title>
+  <description>Data byte sent in the bus message $EC (Sub_30972; low two bits replaced) $0322</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x322" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18702,8 +18702,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x35B" flags="0x0">
-  <title>FieldV0DCEInit</title>
-  <description>Byte stored into V0DCE; read by Sub_08DD4. $0366</description>
+  <title>ChargeDeficitDelay</title>
+  <description>Generator field control (Sub_08DD4): delay ($0DCE,Z) set while the charge deficit is above ChargeDeficitMin $0366</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x366" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18714,8 +18714,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x35C" flags="0x0">
-  <title>FieldChargeDeficitThresh</title>
-  <description>Byte compared with ChargeDeficit; read by Sub_08DD4. $0367</description>
+  <title>ChargeDeficitMin</title>
+  <description>Generator field control: charge deficit above this value starts the deficit delay $0367</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x367" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18726,8 +18726,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x35D" flags="0x0">
-  <title>FieldValue1</title>
-  <description>Byte used with; read by Sub_08DD4. $0368</description>
+  <title>FieldDutyAvgFilter</title>
+  <description>Generator field control: filter weight of the field duty average $0DD2,Z $0368</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x368" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18834,8 +18834,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x366" flags="0x0">
-  <title>IdleIacTargetCmdInit</title>
-  <description>Byte stored into IacTargetCmd; read by Sub_19000. $041D</description>
+  <title>IacTargetCmdFixed</title>
+  <description>IAC target command loaded every pass with Options033D bit 3 (Sub_19000) $041D</description>
   <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x41D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18846,8 +18846,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x367" flags="0x0">
-  <title>FanV0B12Thresh</title>
-  <description>Byte compared with V0B12; read by Sub_3ADDE. $041E</description>
+  <title>FanPwmFixedDuty</title>
+  <description>Fan PWM (Sub_3ADDE, Options033D bit 2): duty the fan request steps towards $041E</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x41E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18870,8 +18870,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x369" flags="0x0">
-  <title>ThermistorValue5</title>
-  <description>Byte used with; read by ProcessCoolantTemp. Fault: P0117, P0118. $0420</description>
+  <title>CoolantSlowOffset</title>
+  <description>Signed offset added to CoolantTempSlow with Options033D bit 4 (ProcessCoolantTemp) $0420</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x420" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -19074,9 +19074,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x37A" flags="0x0">
-  <title>SensorV0C0AInit1</title>
-  <description>Byte stored into V0C0A; read by MtvCheck. Fault: P1289. $0454</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>MtvOnHold</title>
+  <description>Manifold tune valve: hold count ($0C0A,Z) when the valve output turns on $0454</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x454" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19086,9 +19086,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x37B" flags="0x0">
-  <title>SensorV0C0AInit2</title>
-  <description>Byte stored into V0C0A; read by MtvCheck. Fault: P1289. $0455</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>MtvOffHold</title>
+  <description>Manifold tune valve: hold count when the valve output turns off $0455</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x455" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19746,8 +19746,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3B2" flags="0x0">
-  <title>FanThresh6</title>
-  <description>Byte compared with; read by Sub_3ADA8. $051A</description>
+  <title>FanPwmRampDownDuty</title>
+  <description>Fan PWM ramp (Sub_3ADA8): requested duty below this value ramps the duty down $051A</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x51A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -19842,8 +19842,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3BA" flags="0x0">
-  <title>FanValue5</title>
-  <description>Byte used with; read by Sub_3AD6E. $0523</description>
+  <title>FanWarmupDuty</title>
+  <description>Fan PWM duty in the warm-up state with Options0331 bit 7 (otherwise 100 %) $0523</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x523" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -20118,9 +20118,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3D1" flags="0x0">
-  <title>SensorV086DInit</title>
-  <description>Byte stored into V086D; read by Sub_3017C, Sub_3123A. Fault: P1685. $0568</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>BusReqHoldTime</title>
+  <description>Bus request from the body (Sub_3017C, Sub_3123A): hold time ($086D,Z) of the request flag $086C,Z bit 4 $0568</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x568" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -20130,9 +20130,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3D2" flags="0x0">
-  <title>SensorThrottleThresh2</title>
-  <description>Byte compared with ThrottleAboveClosed; read by Sub_3017C, Sub_3123A. Fault: P1685. $0569</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>BusReqThrottleMax</title>
+  <description>Bus request: throttle opening below this value for the request flag to be set $0569</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x569" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -20394,9 +20394,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3E8" flags="0x0">
-  <title>SensorV0C01Init</title>
-  <description>Byte stored into V0C01; read by Sub_3AECC. $0580</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>StarterCutHold</title>
+  <description>Starter control (Sub_3AECC, Options0333 bit 2, probably the starter relay): hold count ($0C01,Z) after rpm drops $0580</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x580" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -20406,9 +20406,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3E9" flags="0x0">
-  <title>SensorRpmThresh1</title>
-  <description>Word compared with EngineRpm; read by Sub_3AECC. $0581</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>StarterCutRpm</title>
+  <description>Starter control: engine rpm below this value (word) clears the cut flag $0944,Z bit 0 $0581</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x581" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -21343,8 +21343,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x43A" flags="0x0">
-  <title>FuelFactor</title>
-  <description>Byte multiplied; read by Sub_10A3A. $07CF</description>
+  <title>FlexFuelFactorMin</title>
+  <description>Flex fuel factor (Sub_10A3A): lower limit as a fraction of the input value $07CF</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7CF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -21439,8 +21439,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x442" flags="0x0">
-  <title>AfterStartFuelTimeThresh</title>
-  <description>Word compared with Count3s; read by Sub_10C00. $07DC</description>
+  <title>FlexAfterStartTime</title>
+  <description>Flex after-start fuel (Sub_10C00): time after start (Count3s, word) after which FlexCoolantWeight applies $07DC</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x7DC" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -21559,9 +21559,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44C" flags="0x0">
-  <title>EventV0ABDThresh1</title>
-  <description>Word compared with V0ABD; read by Isr_GPT_IC1. $0A76</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>RunPeriodOn</title>
+  <description>Crank ISR (Isr_GPT_IC1): reference period ($0ABD,Z, word) below which the engine counts as running $0A76</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0xA76" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21571,9 +21571,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44D" flags="0x0">
-  <title>EventV0ABDThresh2</title>
-  <description>Word compared with V0ABD; read by Isr_GPT_IC1. $0A78</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>RunPeriodOff</title>
+  <description>Crank ISR: reference period at or above which the engine counts as stopped $0A78</description>
+  <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0xA78" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21693,7 +21693,7 @@
  <XDFCONSTANT uniqueid="0x457" flags="0x0">
   <title>FieldRampCoolantMax</title>
   <description>Field soft start: applies below this coolant temperature $0B83</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB83" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -21717,7 +21717,7 @@
  <XDFCONSTANT uniqueid="0x459" flags="0x0">
   <title>FieldRampStep1</title>
   <description>Field soft start: first step time of the counter $0DBE,Z (word) $0B85</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB85" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21729,7 +21729,7 @@
  <XDFCONSTANT uniqueid="0x45A" flags="0x0">
   <title>FieldRampStep2</title>
   <description>Field soft start: time added for the second step $0B87</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB87" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21741,7 +21741,7 @@
  <XDFCONSTANT uniqueid="0x45B" flags="0x0">
   <title>FieldRampStep3</title>
   <description>Field soft start: time added for the third step $0B89</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB89" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21753,7 +21753,7 @@
  <XDFCONSTANT uniqueid="0x45C" flags="0x0">
   <title>FieldRampStep4</title>
   <description>Field soft start: time added for the fourth step $0B8B</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB8B" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21765,7 +21765,7 @@
  <XDFCONSTANT uniqueid="0x45D" flags="0x0">
   <title>FieldRampVoltsMax</title>
   <description>Field soft start: applies while the battery voltage is at or below this value $0B8D</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB8D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
   <decimalpl>2</decimalpl>
@@ -21777,7 +21777,7 @@
  <XDFCONSTANT uniqueid="0x45E" flags="0x0">
   <title>FieldRampRpmMin</title>
   <description>Field soft start: engine rpm above which the ramp runs $0B8E</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB8E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -21789,7 +21789,7 @@
  <XDFCONSTANT uniqueid="0x45F" flags="0x0">
   <title>FieldRampTimeMin</title>
   <description>Field soft start: time since start after which $0DC7,Z bit 6 sets $0B8F</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB8F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21847,9 +21847,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x464" flags="0x0">
-  <title>IdleIacTargetThresh</title>
-  <description>Byte compared with IacTarget; read by Sub_1B970. $0B94</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>PwmC18IacTargetMin</title>
+  <description>PWM output of PwmPeriodC18 (Sub_1B970): IAC target above this value for the step-down branch $0B94</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB94" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21859,9 +21859,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x465" flags="0x0">
-  <title>IdleV0C17Offset</title>
-  <description>Byte subtracted from V0C17; read by Sub_1B970, Sub_3B0BA. $0B95</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>PwmC18DutyStep</title>
+  <description>PWM output of PwmPeriodC18: step of $0C17,Z (also compared in Sub_3B0BA) $0B95</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB95" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21871,9 +21871,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x466" flags="0x0">
-  <title>SensorStartCoolantThresh</title>
-  <description>Byte compared with StartCoolantTemp2; read by Sub_3AF4C. $0B96</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>PwmC18CoolantMax</title>
+  <description>PWM output of PwmPeriodC18 (Sub_3AF4C): start coolant and coolant at or below this value for the cold branch $0B96</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB96" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -21883,9 +21883,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x467" flags="0x0">
-  <title>SensorV0C20Offset</title>
-  <description>Byte subtracted from V0C20; read by Sub_3AF4C, Sub_3B0BA. $0B97</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>PwmC18DutyStep2</title>
+  <description>PWM output of PwmPeriodC18: step taken off the duty $0C20,Z (Sub_3AF4C, Sub_3B0BA) $0B97</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB97" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21895,9 +21895,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x468" flags="0x0">
-  <title>IdleValue4</title>
-  <description>Word used with; read by Sub_1B970, Sub_3B0BA. $0B98</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>PwmC18Divisor</title>
+  <description>PWM output of PwmPeriodC18: divisor (word) of the step timer $0C1C,Z (Sub_1B970) $0B98</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB98" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21907,9 +21907,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x469" flags="0x0">
-  <title>SensorValue2</title>
-  <description>Word used with; read by Sub_3AF4C, Sub_3B0BA. $0B9A</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>PwmC18Divisor2</title>
+  <description>PWM output of PwmPeriodC18: divisor (word) of the step timer in Sub_3AF4C $0B9A</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB9A" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -21921,7 +21921,7 @@
  <XDFCONSTANT uniqueid="0x46A" flags="0x0">
   <title>EventCellRpmLowCold</title>
   <description>Per-event hold cells (SelectCell3x3 from Sub_12B6C), cold (coolant below EventCellCoolantMin): rpm between low and middle cells; the 3x3 hold values are at $0BAE $0BA6</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBA6" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -21933,7 +21933,7 @@
  <XDFCONSTANT uniqueid="0x46B" flags="0x0">
   <title>EventCellRpmHighCold</title>
   <description>Per-event hold cells, cold: rpm between middle and high cells $0BA8</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBA8" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -21945,7 +21945,7 @@
  <XDFCONSTANT uniqueid="0x46C" flags="0x0">
   <title>EventCellMapLowCold</title>
   <description>Per-event hold cells, cold: MAP between low and middle cells $0BAA</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBAA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -21957,7 +21957,7 @@
  <XDFCONSTANT uniqueid="0x46D" flags="0x0">
   <title>EventCellMapHighCold</title>
   <description>Per-event hold cells, cold: MAP between middle and high cells $0BAB</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBAB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -22005,7 +22005,7 @@
  <XDFCONSTANT uniqueid="0x471" flags="0x0">
   <title>EventCellRpmLow</title>
   <description>Per-event hold cells, warm: rpm between low and middle cells; the 3x3 hold values ($077B,Z) are at $0BC0 $0BB8</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBB8" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -22017,7 +22017,7 @@
  <XDFCONSTANT uniqueid="0x472" flags="0x0">
   <title>EventCellRpmHigh</title>
   <description>Per-event hold cells, warm: rpm between middle and high cells $0BBA</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBBA" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -22029,7 +22029,7 @@
  <XDFCONSTANT uniqueid="0x473" flags="0x0">
   <title>EventCellMapLow</title>
   <description>Per-event hold cells, warm: MAP between low and middle cells $0BBC</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBBC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -22041,7 +22041,7 @@
  <XDFCONSTANT uniqueid="0x474" flags="0x0">
   <title>EventCellMapHigh</title>
   <description>Per-event hold cells, warm: MAP between middle and high cells $0BBD</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBBD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -22053,7 +22053,7 @@
  <XDFCONSTANT uniqueid="0x475" flags="0x0">
   <title>EventCellCoolantMin</title>
   <description>Per-event hold cells: the cold set ($0BAE) is used below this coolant $0BC7</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBC7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -22065,7 +22065,7 @@
  <XDFCONSTANT uniqueid="0x476" flags="0x0">
   <title>EventCellMapHyst</title>
   <description>Per-event hold cells: MAP hysteresis $0BC8</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBC8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -22077,7 +22077,7 @@
  <XDFCONSTANT uniqueid="0x477" flags="0x0">
   <title>EventCellRpmHyst</title>
   <description>Per-event hold cells: rpm hysteresis $0BC9</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xBC9" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -22255,9 +22255,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x486" flags="0x0">
-  <title>SensorValue3</title>
-  <description>Byte used with; read by Sub_161C2. $10FB</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>O2TrimAvgFilter</title>
+  <description>Filter weight of the short-term trim averages $0727/$074F,Z (Sub_161C2) $10FB</description>
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x10FB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -22459,9 +22459,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x497" flags="0x0">
-  <title>FuelLoopMask</title>
-  <description>Byte mask for MainLoopCounter; read by Sub_10D24. $15E0</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>ThrottleSampleMask</title>
+  <description>Main loop mask for the throttle sample $0A76,Z (Sub_10D24) $15E0</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x15E0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -22687,9 +22687,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4AA" flags="0x0">
-  <title>SensorSriMileageThresh</title>
-  <description>Byte compared with SriMileage; read by CheckPowerDown. $1729</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>FlexColdStartMiles</title>
+  <description>SRI mileage since the flex cold-start flag was set after which it changes to $0050,Z bit 5 (CheckPowerDown) $1729</description>
+  <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1729" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -22699,9 +22699,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4AB" flags="0x0">
-  <title>SensorValue4</title>
-  <description>Byte used with; read by Sub_15FF4. $172A</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>O2FlexCellRef</title>
+  <description>Sub_15FF4: value compared with the bank 1 memory cells from $805A (loaded with O2FlexCellRef2) $172A</description>
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x172A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -22735,9 +22735,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4AE" flags="0x0">
-  <title>SensorValue5</title>
-  <description>Byte used with; read by Sub_15FF4. $172D</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>O2FlexCellRef2</title>
+  <description>Sub_15FF4: second value used with O2FlexCellRef $172D</description>
+  <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x172D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -23863,8 +23863,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x50C" flags="0x0">
-  <title>O2V0759Thresh</title>
-  <description>Byte compared with V0759; read by Sub_1424C. $1D41</description>
+  <title>O2StepPeriod</title>
+  <description>Sub_1424C: count $0759,Z that wraps at this value (O2 step timing) $1D41</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x1D41" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -24331,8 +24331,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x533" flags="0x0">
-  <title>TrimThresh1</title>
-  <description>Byte compared with; read by Sub_16244. $1D99</description>
+  <title>TrimUpperCheck</title>
+  <description>Trim limits (Sub_16244): trim above this value is limited by TrimUpperLimitRpm $1D99</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x1D99" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -24343,8 +24343,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x534" flags="0x0">
-  <title>TrimThresh2</title>
-  <description>Byte compared with; read by Sub_16244. $1D9A</description>
+  <title>TrimLowerCheck</title>
+  <description>Trim limits: trim below this (signed) value is limited by TrimLowerLimitRpm $1D9A</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x1D9A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -24355,8 +24355,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x535" flags="0x0">
-  <title>O2V0750Switch</title>
-  <description>Byte tested (zero = off) V0750; read by Sub_158B6. $1D9B</description>
+  <title>O2PostFuelHold</title>
+  <description>Sub_158B6: value loaded into $0750,Z (0 = off) $1D9B</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x1D9B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -24367,8 +24367,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x536" flags="0x0">
-  <title>O2V07C8Thresh</title>
-  <description>Word compared with V07C8; read by Sub_158B6. $1D9C</description>
+  <title>O2AccelFuelMax</title>
+  <description>Sub_158B6: accel fuel ($07C8,Z) and tip-in fuel below this value (word) $1D9C</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x1D9C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -24392,22 +24392,22 @@
  </XDFCONSTANT>
  <XDFFLAG uniqueid="0x538" flags="0x0">
   <title>AccelFuelOptions bit $40</title>
-  <description>Option byte; bits tested: $40, $80. Read by Sub_107EA, CalcFuelPulse. $1DD7 mask $40</description>
-  <CATEGORYMEM index="0" category="4" />
+  <description>Accel fuel option byte (bit 7: WOT fuel branch in Sub_11FB0; bit 6: index shift in CalcFuelPulse) $1DD7 mask $40</description>
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1DD7" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x539" flags="0x0">
   <title>AccelFuelOptions bit $80</title>
-  <description>Option byte; bits tested: $40, $80. Read by Sub_107EA, CalcFuelPulse. $1DD7 mask $80</description>
-  <CATEGORYMEM index="0" category="4" />
+  <description>Accel fuel option byte (bit 7: WOT fuel branch in Sub_11FB0; bit 6: index shift in CalcFuelPulse) $1DD7 mask $80</description>
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1DD7" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
  <XDFCONSTANT uniqueid="0x53A" flags="0x0">
   <title>EventFuelMapMin</title>
   <description>Event fuel (Sub_11DE6): MAP at or above this value $1DE1</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x1DE1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -24419,7 +24419,7 @@
  <XDFCONSTANT uniqueid="0x53B" flags="0x0">
   <title>EventFuelDelay</title>
   <description>Event fuel: delay $04F0,Z for the first set ($1966) $1DEB</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x1DEB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -24431,7 +24431,7 @@
  <XDFCONSTANT uniqueid="0x53C" flags="0x0">
   <title>EventFuelDelay2</title>
   <description>Event fuel: delay $04F0,Z for the second set ($19A9) $1DEC</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x1DEC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -24443,7 +24443,7 @@
  <XDFCONSTANT uniqueid="0x53D" flags="0x0">
   <title>EventFuelDelay3</title>
   <description>Event fuel (Sub_11C44): delay $04F0,Z for the third set (misfire event, table $2F87) $1DED</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x1DED" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -24455,7 +24455,7 @@
  <XDFCONSTANT uniqueid="0x53E" flags="0x0">
   <title>EventFuelDelay4</title>
   <description>Event fuel: delay $04F0,Z for the fourth set (idle flare $0772,Z bit 6, table $19EA) $1DEE</description>
-  <CATEGORYMEM index="0" category="4" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x1DEE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -24633,8 +24633,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x54D" flags="0x0">
-  <title>PurgeV0428Init</title>
-  <description>Word stored into V0428; read by Sub_3DC64. $1EF2</description>
+  <title>PurgeBattTimerInit</title>
+  <description>Purge (Sub_3DC64): start value of the timer $0428,Z (word) inside the battery temperature window $1EF2</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x1EF2" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -24669,8 +24669,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x550" flags="0x0">
-  <title>PurgeFactor1</title>
-  <description>Word multiplied; read by Sub_3E4CA. $1EF6</description>
+  <title>PurgeRpmFactor</title>
+  <description>Purge (Sub_3E4CA): factor (word) on engine rpm for the purge value $1EF6</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x1EF6" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -25665,9 +25665,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5A3" flags="0x0">
-  <title>SensorAdder5</title>
-  <description>Byte added to; read by Sub_3DFCA. $2097</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>PurgeCellRefMargin</title>
+  <description>Purge cell reference (Sub_3DFCA): margin added to the stored cells $8066/$8079 before compare $2097</description>
+  <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x2097" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -25677,9 +25677,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5A4" flags="0x0">
-  <title>SensorCoolantThresh5</title>
-  <description>Byte compared with CoolantTemp; read by Sub_3DEF8. $2098</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>PurgeCellRefCoolantMax</title>
+  <description>Purge cell reference (Sub_3DEF8): coolant below this value $2098</description>
+  <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x2098" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -25689,8 +25689,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5A5" flags="0x0">
-  <title>PurgeV043EThresh</title>
-  <description>Byte compared with V043E; read by Sub_3E344. $2099</description>
+  <title>PurgeCellUpdateCount</title>
+  <description>Purge (Sub_3E344): counts ($043E,Z) between updates $2099</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x2099" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -25701,9 +25701,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5A6" flags="0x0">
-  <title>CalOffset6</title>
-  <description>Byte subtracted from; read by Sub_3DFB8. $209A</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>PurgeCellDiffOffset</title>
+  <description>Purge (Sub_3DFB8): offset taken off the cell difference $209A</description>
+  <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x209A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -25713,9 +25713,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5A7" flags="0x0">
-  <title>EventV0ABDThresh3</title>
-  <description>Word compared with V0ABD; read by Isr_GPT_IC1. $209D</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>TimedSparkPeriodMax</title>
+  <description>Crank ISR: reference period below which timed spark ($0D00,Z bit 5) is used $209D</description>
+  <CATEGORYMEM index="0" category="12" />
   <EMBEDDEDDATA mmedaddress="0x209D" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -25941,8 +25941,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5BA" flags="0x0">
-  <title>SensorV0864Thresh</title>
-  <description>Byte compared with V0864; read by Sub_1DE6C. $2801</description>
+  <title>CamSignalCountMax</title>
+  <description>Sub_1DE6C: count $0864,Z limit while PORTGP bit 7 is clear $2801</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2801" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -25955,7 +25955,7 @@
  <XDFCONSTANT uniqueid="0x5BB" flags="0x0">
   <title>EventSparkStep</title>
   <description>Event spark: increase per loop while $0856,Z bits 4 and 2 are set $2802</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2802" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -25967,7 +25967,7 @@
  <XDFCONSTANT uniqueid="0x5BC" flags="0x0">
   <title>EventSparkStep2</title>
   <description>Event spark: increase per loop while $0856,Z bit 3 is set $2803</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2803" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -25979,7 +25979,7 @@
  <XDFCONSTANT uniqueid="0x5BD" flags="0x0">
   <title>EventSparkDecay</title>
   <description>Event spark: decrease per loop with $0857,Z bit 4 set $2804</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2804" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -25991,7 +25991,7 @@
  <XDFCONSTANT uniqueid="0x5BE" flags="0x0">
   <title>EventSparkDecay2</title>
   <description>Event spark: decrease per loop otherwise $2805</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2805" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26003,7 +26003,7 @@
  <XDFCONSTANT uniqueid="0x5BF" flags="0x0">
   <title>EventSparkPeriod</title>
   <description>Event spark: period of EventSparkTimer between steps $2806</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2806" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26015,7 +26015,7 @@
  <XDFCONSTANT uniqueid="0x5C0" flags="0x0">
   <title>EventSparkStepDown</title>
   <description>Event spark: decrease of $0863,Z per period $2807</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2807" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26027,7 +26027,7 @@
  <XDFCONSTANT uniqueid="0x5C1" flags="0x0">
   <title>EventSparkPeriod2</title>
   <description>Event spark: period in the second branch $2808</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2808" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26039,7 +26039,7 @@
  <XDFCONSTANT uniqueid="0x5C2" flags="0x0">
   <title>EventSparkStepUp</title>
   <description>Event spark: increase of $085E,Z and $0863,Z per step $2809</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2809" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26051,7 +26051,7 @@
  <XDFCONSTANT uniqueid="0x5C3" flags="0x0">
   <title>EventSparkInit</title>
   <description>Event spark value at the start of an event $280A</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x280A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg BTDC</units>
   <decimalpl>1</decimalpl>
@@ -26063,7 +26063,7 @@
  <XDFCONSTANT uniqueid="0x5C4" flags="0x0">
   <title>EventSparkPeriodInit</title>
   <description>Event spark: start value of the period counters $0862/$085D,Z $280B</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x280B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26075,7 +26075,7 @@
  <XDFCONSTANT uniqueid="0x5C5" flags="0x0">
   <title>EventSparkCountMax</title>
   <description>Event spark: upper limit of $085E,Z and $0863,Z $280C</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x280C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26757,9 +26757,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x5FE" flags="0x0">
-  <title>SparkValue8</title>
-  <description>Byte used with; read by Sub_1F02A. $2D7D</description>
-  <CATEGORYMEM index="0" category="12" />
+  <title>KnockLearnResetValue</title>
+  <description>Knock learning (Sub_1F02A): value written into the learned values from $8092 on a reset $2D7D</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2D7D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26817,9 +26817,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x603" flags="0x0">
-  <title>KnockOffset1</title>
-  <description>Byte subtracted from; read by Sub_1F2E0. $2D82</description>
-  <CATEGORYMEM index="0" category="12" />
+  <title>KnockLearnDecay</title>
+  <description>Knock learning (Sub_1F2E0): decrease of the learned value at the first timed-spark pass $2D82</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2D82" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26829,9 +26829,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x604" flags="0x0">
-  <title>SparkMask</title>
-  <description>Byte mask for; read by Sub_1F194. $2D83</description>
-  <CATEGORYMEM index="0" category="12" />
+  <title>KnockDecayMask</title>
+  <description>Knock events (Sub_1F194): mask tested before the event count is reduced $2D83</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2D83" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26841,9 +26841,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x605" flags="0x0">
-  <title>SparkKnockEventCountOffset</title>
-  <description>Byte subtracted from KnockEventCount; read by Sub_1F194. $2D84</description>
-  <CATEGORYMEM index="0" category="12" />
+  <title>KnockEventDecay</title>
+  <description>Knock events: reduction of KnockEventCount $2D84</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2D84" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -26925,9 +26925,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x60C" flags="0x0">
-  <title>SensorAdder6</title>
-  <description>Word added to; read by Sub_1F6FA. $2E86</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>KnockWindowMargin</title>
+  <description>Sub_1F6FA: margin (word) added before the window compare ($0DB4,Z) $2E86</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x2E86" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -27189,9 +27189,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x622" flags="0x0">
-  <title>CalVoltsThresh1</title>
-  <description>Byte compared with BatteryVolts2; read by Sub_0843A. $2F6D</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>IacStepVoltsMin</title>
+  <description>IAC stepping (Sub_0843A): battery voltage at or above this value $2F6D</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x2F6D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
   <decimalpl>2</decimalpl>
@@ -27201,9 +27201,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x623" flags="0x0">
-  <title>CalV0364Thresh</title>
-  <description>Byte compared with V0364; read by Sub_1BA02. $2F6E</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>IacResetLoopCount</title>
+  <description>Sub_1BA02: loop count ($0364,Z) of the timed IAC reset loop $2F6E</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x2F6E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -28031,7 +28031,7 @@
  <XDFCONSTANT uniqueid="0x668" flags="0x0">
   <title>FieldDutyFilter</title>
   <description>Filter weight of the generator field duty $032E,Z $3306</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x3306" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -28043,7 +28043,7 @@
  <XDFCONSTANT uniqueid="0x669" flags="0x0">
   <title>BatteryVoltsFilter</title>
   <description>Filter weight of the filtered battery voltage $0A52,Z $3307</description>
-  <CATEGORYMEM index="0" category="1" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x3307" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -28055,7 +28055,7 @@
  <XDFCONSTANT uniqueid="0x66A" flags="0x0">
   <title>ChargeDeficitFilter</title>
   <description>Filter weight of the charging deficit average $0DCA,Z $3308</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x3308" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -28329,9 +28329,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x681" flags="0x0">
-  <title>SensorRpmAdder</title>
-  <description>Word added to EngineRpm; read by Sub_2CBC8. $3421</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>IdleUnderTargetMargin</title>
+  <description>Sub_2CBC8: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target $3421</description>
+  <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x3421" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -28881,9 +28881,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6AF" flags="0x0">
-  <title>SensorValue10</title>
-  <description>Byte used with; read by Sub_3C288. $3536</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>SpeedCtlSpeedErrorTrip</title>
+  <description>Speed control (Sub_3C288): speed drop that trips the cancel (2 less with $0405,Z bit 6; 0 = off) $3536</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3536" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -28893,9 +28893,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6B0" flags="0x0">
-  <title>SensorV0416Init</title>
-  <description>Byte stored into V0416; read by Sub_3C288. $3537</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>SpeedCtlCancelHold</title>
+  <description>Speed control: hold count ($0416,Z) set on the cancel condition $3537</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3537" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29037,8 +29037,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6BC" flags="0x0">
-  <title>SpeedCtlFactor1</title>
-  <description>Word multiplied; read by Sub_3C65C. $3550</description>
+  <title>SpeedCtlVentTimeFactor</title>
+  <description>Speed control (Sub_3C65C): factor (word) on the vent count $0425,Z $3550</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3550" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -29049,8 +29049,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6BD" flags="0x0">
-  <title>SpeedCtlFactor2</title>
-  <description>Word multiplied; read by Sub_3C65C. $3552</description>
+  <title>SpeedCtlApplyTimeFactor</title>
+  <description>Speed control: factor (word) on the vacuum count $0426,Z $3552</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3552" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -29169,8 +29169,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6C7" flags="0x0">
-  <title>SpeedCtlV0423Thresh</title>
-  <description>Byte compared with V0423; read by Sub_3C690. $357F</description>
+  <title>SpeedCtlBusCount</title>
+  <description>Speed control (Sub_3C690): count limit of $0423,Z with the bus flag $086C,Z bit 3 $357F</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x357F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29277,8 +29277,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6D0" flags="0x0">
-  <title>DiagBaroThresh1</title>
-  <description>Byte compared with Baro; read by Sub_23816. $5010</description>
+  <title>MapCheckBaroMin</title>
+  <description>MAP check (Sub_23816): barometric pressure at or above this value $5010</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5010" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
@@ -29325,14 +29325,14 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6D4" flags="0x0">
-  <title>DiagV0662Thresh</title>
-  <description>Word compared with V0662; read by Sub_2375A. $5016</description>
+  <title>IdleDropRpm</title>
+  <description>Sub_2375A: rpm drop below the stored rpm ($0662,Z, word) at or above which $0661,Z counts $5016</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5016" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
@@ -29591,49 +29591,49 @@
  <XDFFLAG uniqueid="0x6EA" flags="0x0">
   <title>MisfireOptions bit $02</title>
   <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $502F mask $02</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502F" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x6EB" flags="0x0">
   <title>MisfireOptions bit $04</title>
   <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $502F mask $04</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502F" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x6EC" flags="0x0">
   <title>MisfireOptions bit $08</title>
   <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $502F mask $08</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502F" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x6ED" flags="0x0">
   <title>MisfireOptions bit $10</title>
   <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $502F mask $10</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502F" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x6EE" flags="0x0">
   <title>MisfireOptions bit $20</title>
   <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $502F mask $20</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502F" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x6EF" flags="0x0">
   <title>MisfireOptions bit $40</title>
   <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $502F mask $40</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502F" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x6F0" flags="0x0">
   <title>MisfireOptions bit $80</title>
   <description>Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve) $502F mask $80</description>
-  <CATEGORYMEM index="0" category="18" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502F" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
@@ -29914,9 +29914,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x708" flags="0x0">
-  <title>FuelEventV0631Value</title>
-  <description>Word used with V0631; read by Sub_246FC, Sub_247A8. $52D6</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EventOptionWord</title>
+  <description>Sub_246FC: option word; its top two bits select the mode ($00, $40, $80) and it is stored in $0630,Z $52D6</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x52D6" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29926,9 +29926,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x709" flags="0x0">
-  <title>FuelEventValue11</title>
-  <description>Word used with; read by Sub_247A8. $52D8</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EventDefaultWord</title>
+  <description>Sub_247A8: word value used in the default branch $52D8</description>
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x52D8" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29998,8 +29998,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x70F" flags="0x0">
-  <title>MisfireValue2</title>
-  <description>Word used with; read by Sub_2A906. $52EA</description>
+  <title>MisfireRpmDevLimit</title>
+  <description>Misfire (MisfireDeviation): word compared with the rpm deviation $00E0,Z after the event count limit $52EA</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x52EA" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -30011,7 +30011,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x710" flags="0x0">
   <title>MisfireIdleMargin</title>
-  <description>Misfire monitor (Sub_2A906): idle target plus this margin $52EC</description>
+  <description>Misfire monitor (MisfireDeviation): idle target plus this margin $52EC</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x52EC" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -30022,8 +30022,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x711" flags="0x0">
-  <title>MisfireV00DEThresh</title>
-  <description>Word compared with V00DE; read by Sub_2A906, Sub_2B448. $52EE</description>
+  <title>MisfireEventCountMax</title>
+  <description>Misfire: event count $00DE,Z (word) above which the deviation check runs (also Sub_2B448) $52EE</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x52EE" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -30034,8 +30034,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x712" flags="0x0">
-  <title>MisfireV0623Thresh1</title>
-  <description>Byte compared with V0623; read by Sub_2A906. $52F0</description>
+  <title>MisfireFilterSlow</title>
+  <description>Misfire: value of $0623,Z set in the first branch $52F0</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x52F0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -30046,8 +30046,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x713" flags="0x0">
-  <title>MisfireV0623Thresh2</title>
-  <description>Byte compared with V0623; read by Sub_2A906. $52F1</description>
+  <title>MisfireFilterFast</title>
+  <description>Misfire: value of $0623,Z set in the second branch $52F1</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x52F1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -30730,9 +30730,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x74C" flags="0x0">
-  <title>SensorPurgeDutyThresh1</title>
-  <description>Byte compared with PurgeDuty; read by Sub_25E9E. $5530</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPurgedDutyMin</title>
+  <description>Leak detection (Sub_25E9E): purge duty at or above which the purged time counts $5530</description>
+  <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x5530" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -30742,9 +30742,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x74D" flags="0x0">
-  <title>SensorV059BThresh</title>
-  <description>Byte compared with V059B; read by Sub_25E9E. $5531</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>LdpPurgedTime</title>
+  <description>Leak detection: purged time ($059B,Z) that sets $011B,Z bit 4 $5531</description>
+  <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x5531" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31246,8 +31246,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x777" flags="0x0">
-  <title>FuelOffset4</title>
-  <description>Byte subtracted from result of FuelSysLimit2; read by Sub_2A4F2, Sub_2A6C0. $559D</description>
+  <title>FuelSysRichHyst</title>
+  <description>Fuel system monitor (Sub_2A4F2, Sub_2A6C0): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set $559D</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x559D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31258,8 +31258,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x778" flags="0x0">
-  <title>FuelAdder</title>
-  <description>Byte added to result of FuelSysLimit; read by Sub_2A0F0, Sub_2A302. $559E</description>
+  <title>FuelSysLeanHyst</title>
+  <description>Fuel system monitor (Sub_2A0F0, Sub_2A302): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set $559E</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x559E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31270,8 +31270,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x779" flags="0x0">
-  <title>DiagThresh2</title>
-  <description>Byte compared with; read by Sub_2A496, Sub_2A664. $559F</description>
+  <title>FuelSysRichCount</title>
+  <description>Fuel system monitor: rich-condition counts ($05A3/$05A4,Z) before the rich flag (Sub_2A496, Sub_2A664) $559F</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x559F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31282,8 +31282,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x77A" flags="0x0">
-  <title>DiagThresh3</title>
-  <description>Byte compared with; read by Sub_2A07E, Sub_2A290. $55A0</description>
+  <title>FuelSysLeanCount</title>
+  <description>Fuel system monitor: lean-condition counts before the lean flag (Sub_2A07E, Sub_2A290) $55A0</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x55A0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31294,8 +31294,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x77B" flags="0x0">
-  <title>FuelV05ABThresh</title>
-  <description>Byte compared with V05AB; read by Sub_2A4F2, Sub_2A6C0. $55A1</description>
+  <title>FuelSysRichFaultCount</title>
+  <description>Fuel system monitor: rich counts ($05A1/$05AA,Z) before the rich result $55A1</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x55A1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31306,8 +31306,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x77C" flags="0x0">
-  <title>FuelV05ADThresh</title>
-  <description>Byte compared with V05AD; read by Sub_2A0F0, Sub_2A302. $55A2</description>
+  <title>FuelSysLeanFaultCount</title>
+  <description>Fuel system monitor: lean counts ($05A1/$05AC,Z) before the lean result $55A2</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x55A2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31330,8 +31330,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x77E" flags="0x0">
-  <title>DiagV05A8Init</title>
-  <description>Byte stored into V05A8; read by Sub_2A000, Sub_2A212, Sub_2A424 +1. $55A4</description>
+  <title>FuelSysDelay</title>
+  <description>Fuel system monitor: delay ($05A7/$05A8,Z) after the enable conditions return $55A4</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x55A4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31342,8 +31342,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x77F" flags="0x0">
-  <title>FuelV007DThresh</title>
-  <description>Byte compared with V007D; read by Sub_2A07E, Sub_2A0F0, Sub_2A290 +1. $55A5</description>
+  <title>FuelSysCellMin</title>
+  <description>Fuel system monitor: learned purge cells ($6A/$6B,Z) at or below this (signed) value count as saturated $55A5</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x55A5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31546,9 +31546,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x790" flags="0x0">
-  <title>CalRunTimeThresh</title>
-  <description>Byte compared with RunTime; read by Sub_28D78. $5631</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2HeaterRunTimeMin</title>
+  <description>Probably the O2 heater monitor (Sub_28D78, Options033F bits 4-7): run time at or above this value $5631</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5631" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31558,9 +31558,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x791" flags="0x0">
-  <title>CalV010AThresh1</title>
-  <description>Word compared with V010A; read by Sub_2919A. $5635</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2HeaterSampleTime</title>
+  <description>Probably the O2 heater monitor (Sub_2919A): timer $010A,Z (word) above which the heater input is sampled $5635</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5635" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31570,9 +31570,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x792" flags="0x0">
-  <title>CalV010AThresh2</title>
-  <description>Word compared with V010A; read by Sub_28D78. $5637</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2HeaterTestTime</title>
+  <description>Probably the O2 heater monitor: timer $010A,Z (word) limit of the test $5637</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5637" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31582,9 +31582,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x793" flags="0x0">
-  <title>CalV010AThresh3</title>
-  <description>Word compared with V010A; read by Sub_291F0. $5639</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2HeaterSettleTime</title>
+  <description>Probably the O2 heater monitor (Sub_291F0): timer $010A,Z (word) below which the records are updated $5639</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5639" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31594,9 +31594,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x794" flags="0x0">
-  <title>CalV010EThresh</title>
-  <description>Byte compared with V010E; read by Sub_29384. $563B</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2HeaterCountMin</title>
+  <description>Probably the O2 heater monitor (Sub_29384): count $010E,Z above which the results are judged $563B</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x563B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31606,8 +31606,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x795" flags="0x0">
-  <title>O2Adder6</title>
-  <description>Byte added to; read by Sub_14740. $5650</description>
+  <title>O2ColdTrimHeaterAdder</title>
+  <description>Cold-start O2 trim (Sub_14740): added to the start trim when a heater monitor status has bit 5 set $5650</description>
   <CATEGORYMEM index="0" category="13" />
   <EMBEDDEDDATA mmedaddress="0x5650" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32638,14 +32638,14 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7EB" flags="0x0">
-  <title>CalThresh4</title>
-  <description>Byte compared with; read by Sub_23C3E. Fault: P1390. $579D</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MonSteadyRpmCeiling</title>
+  <description>Cam/crank relation monitor (Sub_23C3E): engine rpm below this value $579D</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x579D" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X*32">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
@@ -32710,9 +32710,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7F1" flags="0x0">
-  <title>CalOffset7</title>
-  <description>Byte subtracted from; read by Sub_23C3E. Fault: P1390. $57A4</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>CamCrankWindow</title>
+  <description>Cam/crank relation monitor: window around the stored relation ($068F,Z) $57A4</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x57A4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32722,9 +32722,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7F2" flags="0x0">
-  <title>CalV068AThresh</title>
-  <description>Byte compared with V068A; read by Sub_23B84. Fault: P1391. $57A5</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>CamCrankFaultCount</title>
+  <description>Cam/crank monitor (Sub_23B84): count ($068A,Z) at or above which the fault is reported $57A5</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x57A5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32734,9 +32734,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7F3" flags="0x0">
-  <title>CalV068DInit</title>
-  <description>Byte stored into V068D; read by Sub_23B84. Fault: P1391. $57A6</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>CamCrankHold</title>
+  <description>Cam/crank monitor: hold count ($068D,Z) set on a change $57A6</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x57A6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32818,9 +32818,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7FA" flags="0x0">
-  <title>CalRpmThresh4</title>
-  <description>Word compared with EngineRpm; read by Sub_21EA6. $57B8</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>MapIdleRpmBand</title>
+  <description>MAP check at idle (MapIdleChangeCheck): engine rpm within this value of the idle target $57B8</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x57B8" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -32866,20 +32866,20 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7FE" flags="0x0">
-  <title>MapAdder2</title>
-  <description>Byte added to result of MapLimpFromThrottle; read by Sub_241AA. $57BD</description>
+  <title>MapLimpOffset</title>
+  <description>Limp-home MAP from throttle (Sub_241AA): offset added to MapLimpFromThrottle $57BD</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x57BD" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
+  <units>kPa</units>
+  <decimalpl>1</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/2.428">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7FF" flags="0x0">
-  <title>MapThrottleAdder</title>
-  <description>Byte added to Throttle; read by Sub_241AA. $57BE</description>
+  <title>MapLimpThrottleOffset</title>
+  <description>Limp-home MAP from throttle: offset added to the throttle reading $57BE</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x57BE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32890,9 +32890,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x800" flags="0x0">
-  <title>VssThresh</title>
-  <description>Byte compared with; read by Sub_23970. Fault: P0500. $57CB</description>
-  <CATEGORYMEM index="0" category="16" />
+  <title>VssCheckCount</title>
+  <description>Vehicle speed sensor monitor (Sub_23970): counts ($065D/$065E,Z) before the result changes $57CB</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x57CB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32904,7 +32904,7 @@
  <XDFCONSTANT uniqueid="0x801" flags="0x0">
   <title>VssCheckCoolantMin</title>
   <description>Vehicle speed sensor check (Sub_23970, P0500) runs above this coolant temperature $57CC</description>
-  <CATEGORYMEM index="0" category="16" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x57CC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -32974,9 +32974,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x807" flags="0x0">
-  <title>CalSpeedThresh2</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_222FA. $57E2</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2DownCheckSpeedMin</title>
+  <description>Downstream O2 checks (Sub_222FA): vehicle speed at or above this value $57E2</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x57E2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33034,9 +33034,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x80C" flags="0x0">
-  <title>KnockValue3</title>
-  <description>Byte used with; read by Sub_1F408. $57E7</description>
-  <CATEGORYMEM index="0" category="12" />
+  <title>KnockHighLoadValue</title>
+  <description>Knock (Sub_1F408, Options032F bit 1): value used above the knock MAP threshold $57E7</description>
+  <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x57E7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33202,8 +33202,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x81A" flags="0x0">
-  <title>SensorMapRawThresh2</title>
-  <description>Byte compared with MapRaw; read by Sub_21EFE, ReadMap. Fault: P0107, P0108. $5801</description>
+  <title>MapRawHighLimit</title>
+  <description>Raw MAP at or above this value is a high input (P0108; ReadMap, Sub_21EFE) $5801</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x5801" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33250,9 +33250,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x81E" flags="0x0">
-  <title>SensorThrottleThresh4</title>
-  <description>Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap. Fault: P0107, P0108. $5805</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>MapRationalThrottleMax</title>
+  <description>MAP rationality (Sub_21EFE, ReadMap): throttle opening below this value for the rpm/MAP check $5805</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5805" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33382,8 +33382,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x829" flags="0x0">
-  <title>DiagV06C9Thresh</title>
-  <description>Byte compared with V06C9; read by Sub_231EC. $5810</description>
+  <title>MonSpeedCount</title>
+  <description>Sub_231EC: count $06C9,Z compared at speeds of $38 and above $5810</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5810" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33562,8 +33562,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x838" flags="0x0">
-  <title>FieldThresh</title>
-  <description>Byte compared with; read by Sub_08520, Sub_08DD4. $5827</description>
+  <title>FieldVoltsStep</title>
+  <description>Generator field control: voltage change beyond this value sets $0DB8,Z bit 7 $5827</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x5827" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33790,8 +33790,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x84B" flags="0x0">
-  <title>SensorV0AB2Thresh</title>
-  <description>Byte compared with V0AB2; read by CalcVehicleSpeed. $750F</description>
+  <title>VssPeriodMin</title>
+  <description>Vehicle speed (CalcVehicleSpeed): speed period / 2 below this value takes the high-speed branch $750F</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x750F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33840,7 +33840,7 @@
  <XDFCONSTANT uniqueid="0x84F" flags="0x0">
   <title>FieldRpmMin</title>
   <description>Generator field control (Sub_0EB62): engine rpm at which the field is enabled $755D</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x755D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -33852,7 +33852,7 @@
  <XDFCONSTANT uniqueid="0x850" flags="0x0">
   <title>FieldRpmOff</title>
   <description>Generator field control: engine rpm below which it is disabled again $755E</description>
-  <CATEGORYMEM index="0" category="7" />
+  <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x755E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -33862,8 +33862,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x851" flags="0x0">
-  <title>FieldValue3</title>
-  <description>Byte used with; read by Sub_08520, Sub_08DD4. $755F</description>
+  <title>FieldFaultDuty</title>
+  <description>Generator field: value of $0DC1,Z with a field circuit fault while running $755F</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x755F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33874,8 +33874,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x852" flags="0x0">
-  <title>FieldV0DC1Init</title>
-  <description>Byte stored into V0DC1; read by Sub_08520, Sub_08DD4. $7560</description>
+  <title>FieldFaultDutyCrank</title>
+  <description>Generator field: value of $0DC1,Z with a field circuit fault while not running $7560</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x7560" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33886,8 +33886,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x853" flags="0x0">
-  <title>CalV09B3Thresh</title>
-  <description>Byte compared with V09B3; read by Sub_08684. $7564</description>
+  <title>SciErrorCount</title>
+  <description>Serial receive (Sub_08684): error count ($09B3,Z) at or above which reception restarts $7564</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x7564" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33898,8 +33898,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x854" flags="0x0">
-  <title>CalV09B1Thresh</title>
-  <description>Byte compared with V09B1; read by Sub_08684. $7565</description>
+  <title>SciRxIndexMax</title>
+  <description>Serial receive: largest receive index ($09B1,Z) $7565</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x7565" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33910,9 +33910,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x855" flags="0x0">
-  <title>CalSwitch</title>
-  <description>Byte tested (zero = off); read by Sub_23B66. $7566</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>CamFaultClearSwitch</title>
+  <description>Sub_23B66: when not zero the counts $018D/$018E,Z are cleared every 0.19 s pass $7566</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x7566" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33934,9 +33934,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x857" flags="0x0">
-  <title>CalValue8</title>
-  <description>Byte used with; read by Sub_2D91C. $75B4</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>BatteryVoltsDwellFilter</title>
+  <description>Filter weight of BatteryVoltsDwell (Sub_2D91C) $75B4</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x75B4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33982,8 +33982,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x85B" flags="0x0">
-  <title>SensorValue16</title>
-  <description>Long used with; read by Sub_0C77E, CalcEngineRpm. $ABB8</description>
+  <title>RpmPeriodConstant</title>
+  <description>Dividend (long, also read from $ABB1) for engine rpm from the reference period (CalcEngineRpm, Sub_0C77E) $ABB8</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0xABB8" mmedelementsizebits="32" mmedtypeflags="0x00" />
   <units />
