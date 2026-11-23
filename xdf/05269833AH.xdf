@@ -279,7 +279,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x108" flags="0x0">
   <title>BattTempSoakLimit</title>
-  <description>Battery temperature model at start: coolant-minus-battery temperature limit against the engine-off time ($09C1,Z) $04A1, 2D; inputs: $09C1,Z</description>
+  <description>Battery temperature model at start: coolant-minus-battery temperature limit against the engine-off time ($09C1,Z) $04A1, 2D; inputs: BusEngineOffTime</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -315,7 +315,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x109" flags="0x0">
   <title>BattTempSoakAdder</title>
-  <description>Battery temperature model at start: addition to $0194,Z against the engine-off time $04AD, 2D; inputs: $09C1,Z</description>
+  <description>Battery temperature model at start: addition to $0194,Z against the engine-off time $04AD, 2D; inputs: BusEngineOffTime</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1051,7 +1051,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x11D" flags="0x0">
   <title>FlexLearnEthanolCurve</title>
-  <description>Flex-fuel learning: curve from $01BB,Z/$01BC,Z to $01B9,Z/$01BA,Z $081C, 2D; inputs: ?; $01BB,Z; $01BC,Z</description>
+  <description>Flex-fuel learning: curve from $01BB,Z/$01BC,Z to $01B9,Z/$01BA,Z $081C, 2D; inputs: ?; FlexLearnLevel1; FlexLearnLevel2</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1267,7 +1267,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x123" flags="0x0">
   <title>WotMapScale</title>
-  <description>MAP to row position of the WOT spark and fuel tables $0878, 2D; inputs: $04F0,Z; Map</description>
+  <description>MAP to row position of the WOT spark and fuel tables $0878, 2D; inputs: Temp4F0; Map</description>
   <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2499,7 +2499,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x145" flags="0x0">
   <title>CrankV0769Decay</title>
-  <description>Cranking pulse reduction against $0769,Z; weighted by CrankV0769DecayWeight $0A82, 2D; inputs: $0769,Z</description>
+  <description>Cranking pulse reduction against $0769,Z; weighted by CrankV0769DecayWeight $0A82, 2D; inputs: CrankDecayIndex</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3495,7 +3495,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15F" flags="0x0">
   <title>WarmupRunTimeFactor</title>
-  <description>Factor on the warm-up enrichment against engine run time ($0E,Z) while it is short $1007, 2D; inputs: $0E,Z</description>
+  <description>Factor on the warm-up enrichment against engine run time ($0E,Z) while it is short $1007, 2D; inputs: SriMileageLow</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3655,7 +3655,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x163" flags="0x0">
   <title>WarmupIdleTimeFactor</title>
-  <description>Factor on WarmupRpmCoolantIdle against $0C47,Z (a timer cleared by the throttle code) $10D7, 2D; inputs: $0C47,Z</description>
+  <description>Factor on WarmupRpmCoolantIdle against $0C47,Z (a timer cleared by the throttle code) $10D7, 2D; inputs: ThrottleRelearnCounter</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3883,7 +3883,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x169" flags="0x0">
   <title>IdleEnrichRunTime</title>
-  <description>Idle enrichment against run time ($07D9,Z); with the others into $07DA,Z, which multiplies the fuel while $0770,Z bit 3 is set (low rpm and MAP) $118C, 2D; inputs: $07D9,Z</description>
+  <description>Idle enrichment against run time ($07D9,Z); with the others into $07DA,Z, which multiplies the fuel while $0770,Z bit 3 is set (low rpm and MAP) $118C, 2D; inputs: IdleEnrichRun</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5555,7 +5555,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x195" flags="0x0">
   <title>Tab2D_1898</title>
-  <description>$1898, 2D; inputs: $1897; $0ACA,Z</description>
+  <description>$1898, 2D; inputs: $1897; FuelTrimAdjustValue</description>
   <CATEGORYMEM index="0" category="8" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8593,7 +8593,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E6" flags="0x0">
   <title>KnockRetardStep</title>
-  <description>Knock retard step against the knock signal above the threshold ($0A8B,Z minus KnockThresholdNow) $2433, 2D; inputs: $0A8B,Z</description>
+  <description>Knock retard step against the knock signal above the threshold ($0A8B,Z minus KnockThresholdNow) $2433, 2D; inputs: KnockSignal</description>
   <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9465,7 +9465,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FE" flags="0x0">
   <title>IdleBattTempTarget</title>
-  <description>Ramped idle target ($035E,Z) against battery temperature (rows) and run time $030E,Z (columns) $2610, 3D; inputs: result of Lookup2D x $030E,Z</description>
+  <description>Ramped idle target ($035E,Z) against battery temperature (rows) and run time $030E,Z (columns) $2610, 3D; inputs: result of Lookup2D x IdleRunTimer</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2613" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -9505,7 +9505,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FF" flags="0x0">
   <title>IdleBattTempTargetPN</title>
-  <description>As IdleBattTempTarget in P/N $2631, 3D; inputs: result of Lookup2D x $030E,Z</description>
+  <description>As IdleBattTempTarget in P/N $2631, 3D; inputs: result of Lookup2D x IdleRunTimer</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2634" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -10949,7 +10949,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x227" flags="0x0">
   <title>IacAcEngageAdder</title>
-  <description>IAC addition just after A/C engagement against the A/C sensor value latched before engagement ($035C,Z), into $035B,Z $2832, 2D; inputs: $035C,Z</description>
+  <description>IAC addition just after A/C engagement against the A/C sensor value latched before engagement ($035C,Z), into $035B,Z $2832, 2D; inputs: IacAcSensorLatched</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12993,7 +12993,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x25F" flags="0x0">
   <title>MisfireThresh</title>
-  <description>Misfire threshold of the segment-time change against load (rows) and segment rpm $05C6,Z (columns), P/N $2C4B, 3D; inputs: result of Lookup2D x $05C6,Z</description>
+  <description>Misfire threshold of the segment-time change against load (rows) and segment rpm $05C6,Z (columns), P/N $2C4B, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="15" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2C4E" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -13037,7 +13037,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x260" flags="0x0">
   <title>MisfireNoiseRef</title>
-  <description>Reference for the filtered segment-time change ($05D6,Z) against load and segment rpm; selects MisfireThreshNoisy $2CA8, 3D; inputs: result of Lookup2D x $05C6,Z</description>
+  <description>Reference for the filtered segment-time change ($05D6,Z) against load and segment rpm; selects MisfireThreshNoisy $2CA8, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="15" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2CAB" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -13081,7 +13081,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x261" flags="0x0">
   <title>MisfireThreshNoisy</title>
-  <description>As MisfireThresh when the filtered change $05D4,Z is at or above MisfireNoiseRef $2D05, 3D; inputs: result of Lookup2D x $05C6,Z</description>
+  <description>As MisfireThresh when the filtered change $05D4,Z is at or above MisfireNoiseRef $2D05, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="15" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2D08" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -13125,7 +13125,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x262" flags="0x0">
   <title>MisfireThreshDrive</title>
-  <description>As MisfireThresh in gear (or with $00DC,Z bit 5) $2D62, 3D; inputs: result of Lookup2D x $05C6,Z</description>
+  <description>As MisfireThresh in gear (or with $00DC,Z bit 5) $2D62, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="15" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2D65" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -13169,7 +13169,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x263" flags="0x0">
   <title>MisfireWeight</title>
-  <description>Counter weight of a detected misfire ($04FE,Z) against load (rows) and segment rpm (columns) $2DBF, 3D; inputs: $04FE,Z x $05C6,Z</description>
+  <description>Counter weight of a detected misfire ($04FE,Z) against load (rows) and segment rpm (columns) $2DBF, 3D; inputs: Temp4FE x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="15" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2DC2" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -13477,7 +13477,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x26B" flags="0x0">
   <title>MisfireNoiseLimit</title>
-  <description>Rough-signal limit against load and segment rpm; the peak $05D8,Z above it sets $00DC,Z bit 4 $2F27, 3D; inputs: result of Lookup2D x $05C6,Z</description>
+  <description>Rough-signal limit against load and segment rpm; the peak $05D8,Z above it sets $00DC,Z bit 4 $2F27, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="15" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2F2A" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -15001,7 +15001,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x28D" flags="0x0">
   <title>EventTimingLimit</title>
-  <description>Output-compare set-up in the GPT IC1 interrupt: limit against $0D11,Z compared with $0ABE,Z $ACB5, 2D; inputs: $0D11,Z</description>
+  <description>Output-compare set-up in the GPT IC1 interrupt: limit against $0D11,Z compared with $0ABE,Z $ACB5, 2D; inputs: SparkAdvanceD11</description>
   <CATEGORYMEM index="0" category="9" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />

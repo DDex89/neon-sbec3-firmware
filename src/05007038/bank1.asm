@@ -40,9 +40,9 @@ Sub_10000:
         LBEQ    L10156
         CMPA    #$40
         LBEQ    L10156
-        BRSET   $02DD,Z,#$40,L10144
-        BRSET   $02DD,Z,#$08,L10156
-        BRSET   $02DD,Z,#$80,L10156
+        BRSET   >LdpFlags3,Z,#$40,L10144
+        BRSET   >LdpFlags3,Z,#$08,L10156
+        BRSET   >LdpFlags3,Z,#$80,L10156
         LDAA    $04E2,Z
         CMPA    #$0A
         LBEQ    L1013E
@@ -106,7 +106,7 @@ L10110:
         LDAB    $FD51
         LDAA    $17,Z
         CMPA    #$B2
-        BRSET   $0022,Z,#$20,L1012C
+        BRSET   >ControlFlagsC33,Z,#$20,L1012C
         BCC     L10132
         CPE     $FD4C
         BEQ     L10132
@@ -116,21 +116,21 @@ L1012C:
         BCS     L10132
         LDAB    $FD50
 L10132:
-        CMPB    $0584,Z
+        CMPB    >RunModeCounter,Z
         BHI     L10144
         CPE     >Count3s,Z
         BHI     L10144
 L1013E:
-        BSET    $0527,Z,#$18
+        BSET    >ControlFlags943,Z,#$18
         BRA     L10148
 L10144:
-        BCLR    $0527,Z,#$18
+        BCLR    >ControlFlags943,Z,#$18
 L10148:
         BRCLR   <EngineStateFlags,Z,#$80,L10156
         LDAB    <Count3s,Z
         CMPB    #$04
         BCS     L10156
-        BSET    $22,Z,#$20
+        BSET    <ControlFlagsC33,Z,#$20
 L10156:
         RTS
 
@@ -140,7 +140,7 @@ L10156:
 ;---------------------------------------------------------------------------------------------------
 Sub_10158:
         BRCLR   $05B3,Z,#$40,L101BA
-        BRSET   $0527,Z,#$01,L1017C
+        BRSET   >ControlFlags943,Z,#$01,L1017C
         LDD     $05B5,Z
         ADDD    #$01
         BEQ     L10178
@@ -368,7 +368,7 @@ L103D8:
 L103E2:
         LDAA    #$05
         BRSET   >SensorFaultFlags,Z,#$10,L10408
-        BRSET   $0221,Z,#$08,L10408
+        BRSET   >FaultFlags505,Z,#$08,L10408
         BRSET   >ThrottleState,Z,#$80,L10408
         LDE     >VehicleSpeedRaw,Z
         CPE     #$0280
@@ -444,7 +444,7 @@ L104A8:
         LBRA    L105BA
 L104B2:
         BRSET   >SensorFaultFlags,Z,#$10,L105BA
-        BRSET   $0221,Z,#$08,L105BA
+        BRSET   >FaultFlags505,Z,#$08,L105BA
         BRSET   $018B,Z,#$04,L104CE
         LDAA    $0517
         CMPA    $0C,Z
@@ -552,7 +552,7 @@ L105F4:
         BCLR    $018B,Z,#$08
         BRA     L10634
 L10602:
-        BCLR    $05CC,Z,#$10
+        BCLR    >IacAcFlags,Z,#$10
         BRSET   $018B,Z,#$04,L1061E
         BRSET   $001A,Z,#$80,L10634
         BSET    $018B,Z,#$04
@@ -567,9 +567,9 @@ L1061E:
 L10634:
         BRCLR   $001A,Z,#$20,L1068A
 L1063A:
-        BRSET   $0527,Z,#$01,L10686
-        BSET    $0527,Z,#$01
-        BRCLR   $05CC,Z,#$20,L10686
+        BRSET   >ControlFlags943,Z,#$01,L10686
+        BSET    >ControlFlags943,Z,#$01
+        BRCLR   >IacAcFlags,Z,#$20,L10686
         BRSET   >Options0331,#$80,L1065A
         LDAA    >IacLearned,Z
         LDX     #Tab2D_1DE3
@@ -594,7 +594,7 @@ L10686:
 L1068A:
         LDE     >EngineRpm,Z
         BRCLR   $05B3,Z,#$40,L106AC
-        BRCLR   $0527,Z,#$01,L106A4
+        BRCLR   >ControlFlags943,Z,#$01,L106A4
         CPE     #$1F40
         LBCC    L1063A
         BRA     L106AC
@@ -608,15 +608,15 @@ L106AC:
         CPD     >AcCutRpmLow
         BCC     L106DC
         BRSET   $001A,Z,#$80,L106DC
-        BRCLR   $0527,Z,#$01,L106DC
-        BCLR    $0527,Z,#$01
-        BCLR    $05CC,Z,#$10
-        BRCLR   $05CC,Z,#$20,L106DC
+        BRCLR   >ControlFlags943,Z,#$01,L106DC
+        BCLR    >ControlFlags943,Z,#$01
+        BCLR    >IacAcFlags,Z,#$10
+        BRCLR   >IacAcFlags,Z,#$20,L106DC
         LDAA    $1DC0
-        STAA    $05C7,Z
+        STAA    >AcSparkWindow,Z
 L106DC:
         BCLR    $1A,Z,#$02
-        LDAA    $0527,Z
+        LDAA    >ControlFlags943,Z
         EORA    $0522,Z
         BITA    #$01
         BEQ     L106F0
@@ -654,7 +654,7 @@ L10724:
         LBRA    L10890
 L1073C:
         BRCLR   >EgrFlags,Z,#$04,L1074E
-        TST     $0457,Z
+        TST     >O2WarmDelay,Z
         LBNE    L1086E
         BCLR    <EgrFlags,Z,#$04
 L1074E:
@@ -717,20 +717,20 @@ L107FC:
         BCC     L1086E
 L1080A:
         BCLR    <EgrFlags,Z,#$01
-        BRSET   $0376,Z,#$04,L10890
-        BRSET   $0376,Z,#$02,L10848
+        BRSET   >EgrMonFlags,Z,#$04,L10890
+        BRSET   >EgrMonFlags,Z,#$02,L10848
         BCLR    <EgrFlags,Z,#$20
         BRSET   $0220,Z,#$40,L10842
-        BRSET   $021F,Z,#$02,L10842
+        BRSET   >FaultFlags503,Z,#$02,L10842
         BRCLR   $0610,Z,#$10,L10848
-        BRSET   $0376,Z,#$80,L10848
+        BRSET   >EgrMonFlags,Z,#$80,L10848
         BRSET   $0151,Z,#$40,L10842
         BRCLR   $0150,Z,#$02,L10848
 L10842:
         BSET    <EgrFlags,Z,#$20
         BRA     L10872
 L10848:
-        BRSET   $0528,Z,#$04,L10852
+        BRSET   >ControlFlags944,Z,#$04,L10852
         CLR     $039C,Z
 L10852:
         BRSET   >EgrFlags,Z,#$02,L10862
@@ -740,12 +740,12 @@ L10852:
 L10862:
         BSET    <EgrFlags,Z,#$02
 L10866:
-        BSET    $0528,Z,#$04
+        BSET    >ControlFlags944,Z,#$04
         JMP     L10894
 L1086E:
         BSET    <EgrFlags,Z,#$01
 L10872:
-        BRCLR   $0528,Z,#$04,L1087C
+        BRCLR   >ControlFlags944,Z,#$04,L1087C
         CLR     $039C,Z
 L1087C:
         BRCLR   >EgrFlags,Z,#$02,L1088C
@@ -755,7 +755,7 @@ L1087C:
 L1088C:
         BCLR    <EgrFlags,Z,#$02
 L10890:
-        BCLR    $0528,Z,#$04
+        BCLR    >ControlFlags944,Z,#$04
 L10894:
         RTS
 
@@ -805,13 +805,13 @@ FanControl:
         TAB
         EORB    #$30
         BNE     L108F0
-        BCLR    $0528,Z,#$18
+        BCLR    >ControlFlags944,Z,#$18
         LBRA    L10B20
 L108F0:
         BITA    #$20
         BEQ     L10900
-        BCLR    $0528,Z,#$10
-        BSET    $0528,Z,#$08
+        BCLR    >ControlFlags944,Z,#$10
+        BSET    >ControlFlags944,Z,#$08
         LBRA    L10B20
 L10900:
         BITA    #$10
@@ -819,20 +819,20 @@ L10900:
         BRCLR   <SensorFaultFlags,Z,#$80,L10922
         BRSET   >Options0334,#$20,L1091A
 L1090E:
-        BSET    $0528,Z,#$10
-        BCLR    $0528,Z,#$08
+        BSET    >ControlFlags944,Z,#$10
+        BCLR    >ControlFlags944,Z,#$08
         LBRA    L10B20
 L1091A:
-        BCLR    $0528,Z,#$18
+        BCLR    >ControlFlags944,Z,#$18
         LBRA    L10B20
 L10922:
         JSR     FanIdleState
         BRSET   >FanFlags,Z,#$08,L10AEE
         BRCLR   >ThrottleState,Z,#$80,L10938
-        BCLR    $22,Z,#$44
+        BCLR    <ControlFlagsC33,Z,#$44
         BRA     L10940
 L10938:
-        LDAA    $22,Z
+        LDAA    <ControlFlagsC33,Z
         BITA    #$44
         LBNE    L10B20
 L10940:
@@ -909,7 +909,7 @@ L109DA:
         BCC     L10A64
         BRSET   >Scratch2,Z,#$08,L10A64
         BRSET   >FanSoakFlags,Z,#$08,L10A64
-        BRSET   $0528,Z,#$08,L10A1C
+        BRSET   >ControlFlags944,Z,#$08,L10A1C
         LDY     $02,X
         CMPA    $00,Y
         LBHI    L10B20
@@ -930,7 +930,7 @@ L10A30:
         BCLR    >FanFlags,Z,#$04
         LBRA    L10AC6
 L10A38:
-        BRSET   $0528,Z,#$10,L10A5A
+        BRSET   >ControlFlags944,Z,#$10,L10A5A
         BCLR    >FanFlags,Z,#$04
         LDY     $06,X
         CMPA    $00,Y
@@ -953,39 +953,39 @@ L10A7A:
         LDAB    >FanStageTimer,Z
         CMPB    >FanStageDelay
         BCC     L10AB6
-        BCLR    $0528,Z,#$10
+        BCLR    >ControlFlags944,Z,#$10
         CMPB    >FanStageDelay2
         BCS     L10AB0
         LDAA    #$02
         CMPA    $04BC,Z
         BEQ     L10AAA
-        BSET    $22,Z,#$40
+        BSET    <ControlFlagsC33,Z,#$40
         LDAB    $04BC,Z
-        STAB    $01C6,Z
+        STAB    >IacShiftMode,Z
         STAA    $04BC,Z
         LBRA    L10B20
 L10AAA:
-        BCLR    $0528,Z,#$08
+        BCLR    >ControlFlags944,Z,#$08
         BRA     L10B20
 L10AB0:
-        BSET    $0528,Z,#$08
+        BSET    >ControlFlags944,Z,#$08
         BRA     L10B20
 L10AB6:
-        BCLR    $0528,Z,#$08
+        BCLR    >ControlFlags944,Z,#$08
         BRSET   >Options0334,#$20,L10B20
-        BSET    $0528,Z,#$10
+        BSET    >ControlFlags944,Z,#$10
         BRA     L10B20
 L10AC6:
         LDAB    #$01
         CMPB    $04BC,Z
         BHI     L10AD8
-        BCLR    $0528,Z,#$10
-        BSET    $0528,Z,#$08
+        BCLR    >ControlFlags944,Z,#$10
+        BSET    >ControlFlags944,Z,#$08
         BRA     L10AE4
 L10AD8:
-        BSET    $22,Z,#$04
+        BSET    <ControlFlagsC33,Z,#$04
         LDAA    $04BC,Z
-        STAA    $01C6,Z
+        STAA    >IacShiftMode,Z
 L10AE4:
         STAB    $04BC,Z
         CLR     >FanStageTimer,Z
@@ -1004,9 +1004,9 @@ L10AEE:
         CMPB    #$14
         BEQ     L10B20
         CLR     >FanStageTimer,Z
-        BSET    $0528,Z,#$18
+        BSET    >ControlFlags944,Z,#$18
         LDAA    $04BC,Z
-        STAA    $01C6,Z
+        STAA    >IacShiftMode,Z
         CLR     $04BC,Z
 L10B20:
         RTS
@@ -1067,9 +1067,9 @@ L10C26:
         LDE     #$0000
         BRSET   >FanFlags,Z,#$08,L10DFA
         BRCLR   >ThrottleState,Z,#$80,L10C3E
-        BCLR    $22,Z,#$44
+        BCLR    <ControlFlagsC33,Z,#$44
 L10C3E:
-        LDAA    $22,Z
+        LDAA    <ControlFlagsC33,Z
         BITA    #$44
         LBNE    L10E50
         BRCLR   <EquipmentFlags,Z,#$80,L10C5C
@@ -1077,14 +1077,14 @@ L10C3E:
         BRCLR   >Options0331,#$40,L10C5C
         BRSET   $018A,Z,#$02,L10C62
 L10C5C:
-        BCLR    $0617,Z,#$04
+        BCLR    >BusTempFlags,Z,#$04
         BRA     L10C66
 L10C62:
-        BSET    $0617,Z,#$04
+        BSET    >BusTempFlags,Z,#$04
 L10C66:
         LDY     #$0B7A
         LDD     #$0B22
-        BRCLR   $0617,Z,#$04,L10C7A
+        BRCLR   >BusTempFlags,Z,#$04,L10C7A
         LDD     #$0B2E
         AIY     #$14
 L10C7A:
@@ -1097,7 +1097,7 @@ L10C7A:
         LDX     $00,Y
         CMPA    $00,X
         BHI     L10CC0
-        BRCLR   $0617,Z,#$10,L10C98
+        BRCLR   >BusTempFlags,Z,#$10,L10C98
         LDX     $02,Y
         CMPA    $00,X
         BCC     L10CC0
@@ -1105,23 +1105,23 @@ L10C98:
         LDX     $04,Y
         CMPA    $00,X
         BHI     L10CB2
-        BRCLR   $0617,Z,#$08,L10CAA
+        BRCLR   >BusTempFlags,Z,#$08,L10CAA
         LDX     $06,Y
         CMPA    $00,X
         BCC     L10CB2
 L10CAA:
         CLRE
-        BCLR    $0617,Z,#$18
+        BCLR    >BusTempFlags,Z,#$18
         BRA     L10CCC
 L10CB2:
         LDE     #$0004
-        BSET    $0617,Z,#$08
-        BCLR    $0617,Z,#$10
+        BSET    >BusTempFlags,Z,#$08
+        BCLR    >BusTempFlags,Z,#$10
         BRA     L10CCC
 L10CC0:
         LDE     #$0008
-        BSET    $0617,Z,#$10
-        BCLR    $0617,Z,#$08
+        BSET    >BusTempFlags,Z,#$10
+        BCLR    >BusTempFlags,Z,#$08
 L10CCC:
         AIY     #$08
         TPD
@@ -1130,7 +1130,7 @@ L10CCC:
         LDX     $00,Y
         CMPA    $00,X
         BHI     L10D28
-        BRCLR   $0617,Z,#$80,L10CE6
+        BRCLR   >BusTempFlags,Z,#$80,L10CE6
         LDX     $02,Y
         CMPA    $00,X
         BCC     L10D28
@@ -1138,7 +1138,7 @@ L10CE6:
         LDX     $04,Y
         CMPA    $00,X
         BHI     L10D1C
-        BRCLR   $0617,Z,#$40,L10CF8
+        BRCLR   >BusTempFlags,Z,#$40,L10CF8
         LDX     $06,Y
         CMPA    $00,X
         BCC     L10D1C
@@ -1146,27 +1146,27 @@ L10CF8:
         LDX     $08,Y
         CMPA    $00,X
         BHI     L10D10
-        BRCLR   $0617,Z,#$20,L10D0A
+        BRCLR   >BusTempFlags,Z,#$20,L10D0A
         LDX     $0A,Y
         CMPA    $00,X
         BCC     L10D10
 L10D0A:
-        BCLR    $0617,Z,#$E0
+        BCLR    >BusTempFlags,Z,#$E0
         BRA     L10D32
 L10D10:
         ADDE    #$01
-        BSET    $0617,Z,#$20
-        BCLR    $0617,Z,#$C0
+        BSET    >BusTempFlags,Z,#$20
+        BCLR    >BusTempFlags,Z,#$C0
         BRA     L10D32
 L10D1C:
         ADDE    #$02
-        BSET    $0617,Z,#$40
-        BCLR    $0617,Z,#$A0
+        BSET    >BusTempFlags,Z,#$40
+        BCLR    >BusTempFlags,Z,#$A0
         BRA     L10D32
 L10D28:
         ADDE    #$03
-        BSET    $0617,Z,#$80
-        BCLR    $0617,Z,#$60
+        BSET    >BusTempFlags,Z,#$80
+        BCLR    >BusTempFlags,Z,#$60
 L10D32:
         TPD
         TBXK
@@ -1187,9 +1187,9 @@ L10D52:
 L10D5A:
         CBA
         BCS     L10D7E
-        BCLR    $22,Z,#$44
+        BCLR    <ControlFlagsC33,Z,#$44
         LDAA    $04BC,Z
-        STAA    $01C6,Z
+        STAA    >IacShiftMode,Z
         STAB    $04BC,Z
         LDE     #$0000
         CLRA
@@ -1210,18 +1210,18 @@ L10D98:
         CMPA    >FanStageDelay2
         BCS     L10DBA
 L10DA2:
-        BSET    $22,Z,#$40
+        BSET    <ControlFlagsC33,Z,#$40
         LDAA    $04BC,Z
-        STAA    $01C6,Z
+        STAA    >IacShiftMode,Z
         STAB    $04BC,Z
         CLR     >FanStageTimer,Z
         LBRA    L10E50
 L10DBA:
         TST     $04BC,Z
         BNE     L10DD2
-        BSET    $22,Z,#$04
+        BSET    <ControlFlagsC33,Z,#$04
         LDAA    $04BC,Z
-        STAA    $01C6,Z
+        STAA    >IacShiftMode,Z
         INC     $04BC,Z
         BRA     L10E50
 L10DD2:
@@ -1232,9 +1232,9 @@ L10DD8:
         BRCLR   >Options032D,#$40,L10DE8
         BRCLR   <EquipmentFlags,Z,#$80,L10DA2
 L10DE8:
-        BSET    $22,Z,#$04
+        BSET    <ControlFlagsC33,Z,#$04
         LDAA    $04BC,Z
-        STAA    $01C6,Z
+        STAA    >IacShiftMode,Z
         STAB    $04BC,Z
         BRA     L10E50
 L10DFA:
@@ -1257,8 +1257,8 @@ L10E1A:
         ANDB    #$F7
 L10E26:
         ORP     #$00E0
-        ORD     $0527,Z
-        STD     $0527,Z
+        ORD     >ControlFlags943,Z
+        STD     >ControlFlags943,Z
         ANDP    #$FF1F
         ADDE    #$02
         LDD     E,X
@@ -1266,8 +1266,8 @@ L10E26:
         ORAB    #$08
 L10E40:
         ORP     #$00E0
-        ANDD    $0527,Z
-        STD     $0527,Z
+        ANDD    >ControlFlags943,Z
+        STD     >ControlFlags943,Z
         ANDP    #$FF1F
 L10E50:
         RTS
@@ -1433,7 +1433,7 @@ Sub_10FB4:
 L10FC0:
         BRSET   $0526,Z,#$40,L10FF4
         LDAA    <EngineRpm,Z
-        CMPA    $05CD,Z
+        CMPA    >IdleRpmRefStart,Z
         BLS     L10FFC
         LDAA    #$50
         ANDA    $06D2,Z
@@ -1664,7 +1664,7 @@ L111F8:
         CLRE
         BRCLR   >EquipmentFlags,Z,#$80,L11370
         BRCLR   $0226,Z,#$0C,L11214
-        BRCLR   $021F,Z,#$01,L11210
+        BRCLR   >FaultFlags503,Z,#$01,L11210
         LDE     #$6400
 L11210:
         JMP     L11370
@@ -1788,7 +1788,7 @@ L1131A:
         BRA     L11340
 L11334:
         CLRE
-        BRSET   $0527,Z,#$01,L11370
+        BRSET   >ControlFlags943,Z,#$01,L11370
         LDAA    $04E3
 L11340:
         CLRB
@@ -2033,18 +2033,18 @@ L11580:
         BEQ     L11596
         TST     $04D2,Z
         BNE     L115A8
-        BSET    $22,Z,#$04
+        BSET    <ControlFlagsC33,Z,#$04
         INC     $04D2,Z
         JMP     L1167C
 L11596:
-        BCLR    $22,Z,#$04
+        BCLR    <ControlFlagsC33,Z,#$04
         CLR     $04D2,Z
         TSTW    $0848,Z
         BNE     L115D6
         JMP     L1167C
 L115A8:
         BRSET   >ThrottleState,Z,#$80,L115D6
-        BRCLR   $0022,Z,#$04,L115D6
+        BRCLR   >ControlFlagsC33,Z,#$04,L115D6
         JMP     L1167C
         dc.b    $37,$05,$17,$68,$01,$8F,$B3,$E4,$17,$68,$05,$52,$B3,$DE,$17,$29
         dc.b    $04,$22,$B0,$02,$17,$29,$04,$22,$B0,$FC,$37,$80,$00,$A4
@@ -2117,20 +2117,20 @@ L1167C:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1167E:
-        BRSET   $05CC,Z,#$02,L1168A
-        TST     $06DB,Z
+        BRSET   >IacAcFlags,Z,#$02,L1168A
+        TST     >IacAcBusTimer,Z
         BEQ     L11696
 L1168A:
-        BRCLR   $06D0,Z,#$40,L11696
-        BSET    $05CC,Z,#$02
+        BRCLR   >BusFlags9CE,Z,#$40,L11696
+        BSET    >IacAcFlags,Z,#$02
         BRA     L1169A
 L11696:
-        BCLR    $05CC,Z,#$02
+        BCLR    >IacAcFlags,Z,#$02
 L1169A:
         LDAA    #$AA
-        BRSET   $05CC,Z,#$02,L116B2
+        BRSET   >IacAcFlags,Z,#$02,L116B2
         CLRA
-        BRCLR   $06D0,Z,#$C0,L116B2
+        BRCLR   >BusFlags9CE,Z,#$C0,L116B2
         LDAA    $06D9,Z
         BEQ     L116B2
         DECA
@@ -2291,18 +2291,18 @@ L11916:
         LDAB    $02,Y
         BITB    #$20
         BEQ     L11938
-        BSET    $05CC,Z,#$04
+        BSET    >IacAcFlags,Z,#$04
         BRA     L1193C
 L11938:
-        BCLR    $05CC,Z,#$04
+        BCLR    >IacAcFlags,Z,#$04
 L1193C:
         BITB    #$18
         LBEQ    L11A98
         BITB    #$08
         BEQ     L11964
         BCLR    $0182,Z,#$D0
-        BRCLR   $001D,Z,#$20,L11958
-        BCLR    $1D,Z,#$80
+        BRCLR   >DriveFlags,Z,#$20,L11958
+        BCLR    <DriveFlags,Z,#$80
         LBRA    L11A98
 L11958:
         BSET    $0182,Z,#$28
@@ -2310,8 +2310,8 @@ L11958:
         LBRA    L11A98
 L11964:
         BCLR    $0182,Z,#$20
-        BRSET   $001D,Z,#$20,L11976
-        BCLR    $1D,Z,#$80
+        BRSET   >DriveFlags,Z,#$20,L11976
+        BCLR    <DriveFlags,Z,#$80
         LBRA    L11A98
 L11976:
         BSET    $0182,Z,#$10
@@ -2337,7 +2337,7 @@ L119A4:
         BSET    $030F,Z,#$80
         CLR     $06C9,Z
         LDAA    $01,Y
-        STAA    $06D0,Z
+        STAA    >BusFlags9CE,Z
         LBRA    L11A98
 L119BA:
         CMPA    #$A9
@@ -2348,13 +2348,13 @@ L119BA:
         LDAA    $04AE,Z
         CMPA    $0EA2
         LBCC    L11A98
-        BRSET   $0021,Z,#$01,L11A98
+        BRSET   >FuelModeFlags2,Z,#$01,L11A98
         ADDA    $96,Z
         BCC     L119DE
         LDAA    #$FF
 L119DE:
         STAA    $96,Z
-        BSET    $21,Z,#$01
+        BSET    <FuelModeFlags2,Z,#$01
         LBRA    L11A98
 L119E8:
         CMPA    #$95
@@ -2447,7 +2447,7 @@ L11ACE:
         BCLR    $1A,Z,#$08
 L11AE4:
         BRCLR   <EngineStateFlags,Z,#$80,L11B22
-        BRCLR   $1D,Z,#$20,L11B22
+        BRCLR   <DriveFlags,Z,#$20,L11B22
         LDAB    $06C9,Z
         INCB
         BEQ     L11AFC
@@ -2840,7 +2840,7 @@ L11EAE:
         LDD     >VehicleSpeedRaw,Z
         ASLD
         ASLD
-        STAA    $01F2,Z
+        STAA    >Temp4F2,Z
         ASLD
         BCC     L11EC6
         LDAA    #$FF
@@ -2852,7 +2852,7 @@ L11EC6:
         ASLB
         ADCA    #$00
         TAB
-        LDAA    $01F2,Z
+        LDAA    >Temp4F2,Z
         RTS
 L11EDA:
         JMP     L11D90
@@ -2989,7 +2989,7 @@ L1200E:
         LDX     #$463B
         JSR     Sub_0A3F2
         BRCLR   >Options032D,#$08,L12026
-        BRSET   $0528,Z,#$10,L12026
+        BRSET   >ControlFlags944,Z,#$10,L12026
         ORAB    #$10
 L12026:
         BRCLR   >EquipmentFlags,Z,#$40,L1204A
@@ -3452,7 +3452,7 @@ L12442:
 L1245A:
         LDAB    #$06
         BRSET   >SpeedCtlState,Z,#$80,L1246A
-        BRCLR   $01D4,Z,#$FF,L1246A
+        BRCLR   >SpeedCtlRpmJumpTimer,Z,#$FF,L1246A
         BRA     L1248A
 L1246A:
         LDAB    #$07
@@ -3630,7 +3630,7 @@ L12672:
         BCLR    >SpeedCtlState,Z,#$80
         BSET    <SpeedCtlFlags,Z,#$04
         LDAA    $0357
-        STAA    $01ED,Z
+        STAA    >SpeedCtlResumeTimer,Z
         JSR     Sub_12CA4
         STAA    $02,Y
         LDAA    >SpeedCtlSetSpeed,Z
@@ -3965,7 +3965,7 @@ L129DE:
         CLRA
         BRA     L12A06
 L12A00:
-        LDAA    $01EC,Z
+        LDAA    >SpeedCtlOverrideCmd,Z
         ORAA    #$80
 L12A06:
         STAA    >SpeedCtlServoCmd,Z
@@ -4172,7 +4172,7 @@ L12BCC:
 L12BEE:
         BRSET   >SpeedCtlState,Z,#$04,L12C28
         STAA    $04,Y
-        LDAA    $06D0,Z
+        LDAA    >BusFlags9CE,Z
         BITA    #$1C
         BEQ     L12C12
         LDAA    $18,Z
@@ -4206,11 +4206,11 @@ L12C30:
         BEQ     L12C50
         STAB    $01E6,Z
 L12C50:
-        BSET    $0527,Z,#$C0
+        BSET    >ControlFlags943,Z,#$C0
         BRA     L12C7A
 L12C56:
-        BSET    $0527,Z,#$80
-        BCLR    $0527,Z,#$40
+        BSET    >ControlFlags943,Z,#$80
+        BCLR    >ControlFlags943,Z,#$40
         BRA     L12C7A
 L12C60:
         LDX     #Tab2D_2660
@@ -4221,7 +4221,7 @@ L12C60:
         CLR     >SpeedCtlServoCmd,Z
         BRA     L12C56
 L12C76:
-        BCLR    $0527,Z,#$C0
+        BCLR    >ControlFlags943,Z,#$C0
 L12C7A:
         LDAB    >SpeedCtlServoCmd,Z
         BEQ     L12C96
@@ -4323,7 +4323,7 @@ L12D5E:
         BNE     L12DDC
         BRCLR   $0532,Z,#$10,L12DD8
         BRCLR   >Options032E,#$08,L12D98
-        TST     $01D4,Z
+        TST     >SpeedCtlRpmJumpTimer,Z
         BEQ     L12D88
         LDAA    $265C
         STAA    $01E0,Z
@@ -4430,47 +4430,47 @@ SpeedCtlRpmJumpCheck:
         BRCLR   >Options032E,#$08,L12ED4
         LDAB    $269B
         LDAA    <EngineRpm,Z
-        CMPA    $060D,Z
+        CMPA    >RpmPrev,Z
         BHI     L12E50
         LDAB    >SpeedCtlRpmFilterLow
 L12E50:
         STAB    <FanSoakFlags,Z
         LDE     >EngineRpm,Z
-        LDD     $01D0,Z
+        LDD     >SpeedCtlRpmAvg,Z
         PSHM    D,E
         LDAA    <FanSoakFlags,Z
         JSR     Blend16
         AIS     #$04
-        STD     $01D0,Z
+        STD     >SpeedCtlRpmAvg,Z
         LDAA    >ThrottleAboveClosed,Z
         CLRB
         TDE
-        LDD     $01D2,Z
+        LDD     >SpeedCtlThrottleAvg,Z
         PSHM    D,E
         LDAA    >SpeedCtlThrottleFilter
         JSR     Blend16
         AIS     #$04
-        STD     $01D2,Z
+        STD     >SpeedCtlThrottleAvg,Z
         BRCLR   $0532,Z,#$10,L12ED4
         BRSET   >SensorFaultFlags,Z,#$10,L12ED4
         LDD     <EngineRpm,Z
         CPD     >SpeedCtlRpmJumpMinRpm
         BCS     L12ED4
         LDAA    >ThrottleAboveClosed,Z
-        SUBA    $01D2,Z
+        SUBA    >SpeedCtlThrottleAvg,Z
         BCS     L12EA8
         CMPA    >SpeedCtlRpmJumpThrottle
         BCC     L12ED4
 L12EA8:
         BRCLR   >SpeedCtlState,Z,#$80,L12EB6
-        LDAB    $01D4,Z
+        LDAB    >SpeedCtlRpmJumpTimer,Z
         BNE     L12ED0
         BRA     L12ED4
 L12EB6:
-        LDAB    $01D4,Z
+        LDAB    >SpeedCtlRpmJumpTimer,Z
         BNE     L12ED0
         LDD     <EngineRpm,Z
-        SUBD    $01D0,Z
+        SUBD    >SpeedCtlRpmAvg,Z
         BCS     L12ED4
         CPD     >SpeedCtlRpmJump
         BCS     L12ED4
@@ -4482,7 +4482,7 @@ L12ED0:
 L12ED4:
         CLRB
 L12ED6:
-        STAB    $01D4,Z
+        STAB    >SpeedCtlRpmJumpTimer,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -4490,9 +4490,9 @@ L12ED6:
 ; Called from: Sub_123E0
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlShift:
-        TST     $01ED,Z
+        TST     >SpeedCtlResumeTimer,Z
         BEQ     L12EE8
-        DEC     $01ED,Z
+        DEC     >SpeedCtlResumeTimer,Z
         BRA     L12EEC
 L12EE8:
         BCLR    <SpeedCtlFlags,Z,#$04
@@ -4506,7 +4506,7 @@ L12EEC:
         BHI     L12F26
 L12F08:
         BRSET   $0229,Z,#$01,L12FBA
-        LDAA    $06D0,Z
+        LDAA    >BusFlags9CE,Z
         BITA    #$20
         BEQ     L12F22
 L12F16:
@@ -4542,7 +4542,7 @@ L12F54:
         LDAB    >SpeedCtlShiftThrottleSlope2
 L12F82:
         JSR     SpeedCtlThrottleRef
-        STAA    $01EB,Z
+        STAA    >SpeedCtlShiftThrottle,Z
 L12F8A:
         BRCLR   >SpeedCtlFlags,Z,#$10,L12FC6
         LDAA    >SpeedCtlOverrideTimer,Z
@@ -4553,11 +4553,11 @@ L12F8A:
         BRA     L12FD2
 L12FA2:
         LDAA    >ThrottleAboveClosed,Z
-        SUBA    $01EB,Z
+        SUBA    >SpeedCtlShiftThrottle,Z
         BLS     L12FC2
         LDX     #SpeedCtlOverrideThrottle
         JSR     Lookup2D
-        STAA    $01EC,Z
+        STAA    >SpeedCtlOverrideCmd,Z
         BRA     L12FD2
 L12FBA:
         BCLR    <SpeedCtlFlags,Z,#$E0
@@ -4565,9 +4565,9 @@ L12FBA:
 L12FC2:
         BCLR    <SpeedCtlFlags,Z,#$10
 L12FC6:
-        CLR     $01EB,Z
+        CLR     >SpeedCtlShiftThrottle,Z
         CLR     >SpeedCtlOverrideTimer,Z
-        CLR     $01EC,Z
+        CLR     >SpeedCtlOverrideCmd,Z
 L12FD2:
         RTS
 
@@ -4787,13 +4787,13 @@ Sub_131D6:
         CMPA    #$40
         BCC     L13216
 L131EA:
-        BRSET   $0200,Z,#$30,L131FE
-        LDAB    $0200,Z
+        BRSET   >StartFlags,Z,#$30,L131FE
+        LDAB    >StartFlags,Z
         ADDB    #$10
-        STAB    $0200,Z
+        STAB    >StartFlags,Z
         JMP     L1327C
 L131FE:
-        BCLR    $0200,Z,#$30
+        BCLR    >StartFlags,Z,#$30
         LDD     $0812,Z
         EORD    #$0800
         STD     $0812,Z
@@ -4802,7 +4802,7 @@ L13212:
         CMPA    #$DC
         BCC     L131EA
 L13216:
-        BCLR    $0200,Z,#$30
+        BCLR    >StartFlags,Z,#$30
         LDY     #$3995
         CMPA    >CoolantRawHigh
         BHI     L13260
@@ -4856,13 +4856,13 @@ L13298:
         CMPA    #$40
         BCC     L132DE
 L132B4:
-        BRSET   $0200,Z,#$03,L132C8
-        LDAB    $0200,Z
+        BRSET   >StartFlags,Z,#$03,L132C8
+        LDAB    >StartFlags,Z
         ADDB    #$01
-        STAB    $0200,Z
+        STAB    >StartFlags,Z
         LBRA    L13356
 L132C8:
-        BCLR    $0200,Z,#$03
+        BCLR    >StartFlags,Z,#$03
         LDD     $0812,Z
         EORD    #$1000
         STD     $0812,Z
@@ -4871,7 +4871,7 @@ L132DA:
         CMPA    #$DC
         BCC     L132B4
 L132DE:
-        BCLR    $0200,Z,#$03
+        BCLR    >StartFlags,Z,#$03
         LDY     #$3AA3
         CMPA    >AirTempRawHigh
         BHI     L1332E
@@ -5122,11 +5122,11 @@ L13528:
         CMPB    >IdleMapTarget,Z
         BLS     L1353A
 L13532:
-        LDAA    $0194,Z
+        LDAA    >DashpotTimer,Z
         BEQ     L1353E
         DECA
 L1353A:
-        STAA    $0194,Z
+        STAA    >DashpotTimer,Z
 L1353E:
         BRSET   $41,Z,#$01,L1356A
         BRSET   <ThrottleState,Z,#$80,L13576
@@ -5139,17 +5139,17 @@ L1353E:
 L13556:
         CBA
         BCC     L13566
-        BCLR    $0184,Z,#$80
+        BCLR    >IdleFlags,Z,#$80
         BSET    <ThrottleState,Z,#$01
         JMP     L1357E
 L13566:
-        BSET    $0189,Z,#$04
+        BSET    >IdleFlags3,Z,#$04
 L1356A:
-        BSET    $0184,Z,#$80
+        BSET    >IdleFlags,Z,#$80
         BCLR    <ThrottleState,Z,#$01
         JMP     L1357E
 L13576:
-        BCLR    $0184,Z,#$80
+        BCLR    >IdleFlags,Z,#$80
         BCLR    <ThrottleState,Z,#$01
 L1357E:
         RTS
@@ -5196,7 +5196,7 @@ L135E0:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_135E2:
-        BRCLR   $0527,Z,#$01,L135F8
+        BRCLR   >ControlFlags943,Z,#$01,L135F8
         LDAA    <MainLoopCounter,Z
         CMPA    #$F8
         BCS     L135FE
@@ -5501,10 +5501,10 @@ L13908:
 ;---------------------------------------------------------------------------------------------------
 Sub_1390A:
         BRCLR   $0532,Z,#$20,L13914
-        BCLR    $0652,Z,#$20
+        BCLR    >SparkFaultFlags,Z,#$20
 L13914:
         BRCLR   >Options032E,#$08,L13922
-        BCLR    $1D,Z,#$20
+        BCLR    <DriveFlags,Z,#$20
         JMP     L13A5E
 L13922:
         BRCLR   >EquipmentFlags,Z,#$20,L13936
@@ -5514,7 +5514,7 @@ L13922:
 L13936:
         BSET    $0182,Z,#$80
 L1393A:
-        LDAB    $1D,Z
+        LDAB    <DriveFlags,Z
         ANDB    #$20
         STAB    <FanSoakFlags,Z
         LDAB    $0532,Z
@@ -5525,7 +5525,7 @@ L1393A:
         LBRA    L13A4E
 L13954:
         BRSET   >ThrottleState,Z,#$80,L13A24
-        BRSET   $001D,Z,#$80,L13974
+        BRSET   >DriveFlags,Z,#$80,L13974
         LDD     <IdleTarget,Z
         ADDD    $2226
         BCC     L1396C
@@ -5538,8 +5538,8 @@ L13974:
         BRCLR   $0182,Z,#$08,L13986
         BRSET   $0182,Z,#$40,L13A5E
 L13986:
-        BRSET   $0189,Z,#$08,L13A24
-        BSET    $1D,Z,#$80
+        BRSET   >IdleFlags3,Z,#$08,L13A24
+        BSET    <DriveFlags,Z,#$80
         BRCLR   $0532,Z,#$20,L139D6
         BRSET   $0182,Z,#$04,L139D6
         BRSET   $0182,Z,#$20,L139D6
@@ -5570,7 +5570,7 @@ L139D6:
         BRCLR   >EquipmentFlags,Z,#$20,L139F0
         LDX     #Tab2D_22D8
 L139F0:
-        BRSET   $1D,Z,#$20,L13A02
+        BRSET   <DriveFlags,Z,#$20,L13A02
         LDX     #Tab2D_2284
         BRCLR   >EquipmentFlags,Z,#$20,L13A02
         LDX     #Tab2D_228C
@@ -5592,14 +5592,14 @@ L13A1E:
         BNE     L13A5E
 L13A24:
         BRCLR   $0532,Z,#$20,L13A34
-        BSET    $1D,Z,#$20
+        BSET    <DriveFlags,Z,#$20
         BCLR    $0182,Z,#$40
         BRA     L13A42
 L13A34:
         BRSET   $0229,Z,#$01,L13A3E
         BSET    $0182,Z,#$40
 L13A3E:
-        BCLR    $1D,Z,#$20
+        BCLR    <DriveFlags,Z,#$20
 L13A42:
         LDAA    $18,Z
         CMPA    >IdleRollSpeed
@@ -5607,7 +5607,7 @@ L13A42:
         BCLR    <ThrottleState,Z,#$01
 L13A4E:
         BCLR    $0182,Z,#$34
-        BCLR    $1D,Z,#$80
+        BCLR    <DriveFlags,Z,#$80
         CLR     >ShiftIdleDelay,Z
         BCLR    $0182,Z,#$02
 L13A5E:
@@ -5708,7 +5708,7 @@ L13B56:
         BCLR    <ThrottleState,Z,#$40
 L13B5A:
         BRSET   <ThrottleState,Z,#$80,L13B8C
-        LDAB    $0194,Z
+        LDAB    >DashpotTimer,Z
         BNE     L13B8C
         BRCLR   <EngineStateFlags,Z,#$80,L13B8C
         LDAB    <Count3s,Z
@@ -5716,7 +5716,7 @@ L13B5A:
         LDAA    >Throttle,Z
         CMPA    <ThrottleClosed,Z
         BCC     L13B8C
-        LDAA    $054C,Z
+        LDAA    >ThrottleFilterState,Z
         DECA
         BNE     L13B90
         LDAB    <ThrottleClosed,Z
@@ -5729,7 +5729,7 @@ L13B84:
 L13B8C:
         LDAA    $040E
 L13B90:
-        STAA    $054C,Z
+        STAA    >ThrottleFilterState,Z
         LDAA    $0410
         BRSET   <ThrottleState,Z,#$80,L13BA0
         LDAA    $040F
@@ -5771,11 +5771,11 @@ L13BF8:
         STAA    >MapLast,Z
         LDAA    >Throttle,Z
         STAA    >ThrottleLast,Z
-        BCLR    $0189,Z,#$01
+        BCLR    >IdleFlags3,Z,#$01
         BSET    <ThrottleState,Z,#$80
 L13C0C:
         CLR     $0775,Z
-        BCLR    $0652,Z,#$20
+        BCLR    >SparkFaultFlags,Z,#$20
         LDAA    $265E
         STAA    $01E9,Z
         LBRA    L13CBE
@@ -5812,24 +5812,24 @@ L13C74:
         LDX     #Tab2D_221E
         JSR     Lookup2D
 L13C7E:
-        STAA    $0194,Z
+        STAA    >DashpotTimer,Z
         BCLR    <ThrottleState,Z,#$80
-        BRSET   $0189,Z,#$01,L13CBE
-        BSET    $0189,Z,#$01
+        BRSET   >IdleFlags3,Z,#$01,L13CBE
+        BSET    >IdleFlags3,Z,#$01
         LDAA    >SegmentRpm,Z
         LDAB    $18,Z
         CMPB    >IdleRollSpeed
         BLS     L13CAE
-        CLR     $01BA,Z
+        CLR     >DashpotTimer2,Z
         LDX     #Tab2D_2476
         JSR     Lookup2D
-        STAA    $01C0,Z
+        STAA    >DashpotTimerMoving,Z
         BRA     L13CBE
 L13CAE:
-        CLR     $01C0,Z
+        CLR     >DashpotTimerMoving,Z
         LDX     #Tab2D_221E
         JSR     Lookup2D
-        STAA    $01BA,Z
+        STAA    >DashpotTimer2,Z
 L13CBE:
         BRSET   <ThrottleState,Z,#$08,L13CEE
         BRCLR   >SwitchInputs,Z,#$01,L13CEE
@@ -6096,8 +6096,8 @@ Sub_13F2A:
         CPE     $FD4A
         BLS     L13F80
         LDD     <EngineRpm,Z
-        STD     $060D,Z
-        LDX     $0586,Z
+        STD     >RpmPrev,Z
+        LDX     >RefPeriodLow,Z
         LDED    $FD45
         BRCLR   >RefPeriod,Z,#$FF,L13F70
         LDX     >RefPeriod,Z
@@ -6131,7 +6131,7 @@ L13FA6:
         STAA    $060C,Z
         BRCLR   <SparkFlags,Z,#$40,L13FBA
         BSET    $0696,Z,#$80
-        BSET    $DC,Z,#$80
+        BSET    <FlexStartFlags,Z,#$80
         BCLR    <SparkFlags,Z,#$40
 L13FBA:
         CLRW    >FanSoakFlags,Z
@@ -6177,7 +6177,7 @@ L14004:
         JSR     Lookup2D
 L1401A:
         STAB    $060B,Z
-        BRCLR   $0527,Z,#$10,L14140
+        BRCLR   >ControlFlags943,Z,#$10,L14140
         BCLR    <EngineStateFlags,Z,#$8E
         BCLR    <SparkFlags,Z,#$20
         LDAA    >RefPeriod,Z
@@ -6212,7 +6212,7 @@ L14072:
 L1407E:
         LDAA    $0601,Z
         STAA    $0606,Z
-        BRCLR   $001D,Z,#$02,L14096
+        BRCLR   >DriveFlags,Z,#$02,L14096
         LDAB    >RefPeriod,Z
         CMPB    #$7F
         BCC     L14096
@@ -6228,7 +6228,7 @@ L14096:
         CLR     $036B,Z
         JSR     Sub_19646
         JSR     Sub_1F9C8
-        CLRW    $0377,Z
+        CLRW    >EgrMonPhaseTimer,Z
         CLR     $0380,Z
         CLR     $0359,Z
         CLR     $035A,Z
@@ -6246,7 +6246,7 @@ L14096:
         CLR     $0282,Z
         CLR     $0283,Z
         CLR     $026A,Z
-        CLR     $026B,Z
+        CLR     >FuelSysRichCount2,Z
         CLR     $0268,Z
         CLR     $0269,Z
         JSR     PurgeReset
@@ -6299,7 +6299,7 @@ L14170:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_14174:
-        BCLR    $1D,Z,#$40
+        BCLR    <DriveFlags,Z,#$40
         LDE     $0800,Z
         STE     $0533,Z
         LDX     #$449B
@@ -6326,7 +6326,7 @@ L141C8:
         BITB    #$40
         BEQ     L141DA
         BRSET   $022B,Z,#$08,L141DA
-        BSET    $1D,Z,#$40
+        BSET    <DriveFlags,Z,#$40
 L141DA:
         BRCLR   >Options032D,#$20,L141E4
         EORE    #$0040
@@ -6448,7 +6448,7 @@ Sub_142D8:
         ASRD
         ASRD
         ADE
-        STE     $0582,Z
+        STE     >MonSteadyRate,Z
         LDE     >EngineRpm,Z
         STE     $0580,Z
         RTS
@@ -6668,10 +6668,10 @@ CatTempMonitor:
         CMPA    >CatTempSensorLow
         BHI     L14544
 L14522:
-        LDAA    $0391,Z
+        LDAA    >CatTempFaultCounter,Z
         ADDA    #$01
         SBCA    #$00
-        STAA    $0391,Z
+        STAA    >CatTempFaultCounter,Z
         CMPA    >CatTempFaultCount
         BCS     L14588
         JSR     ReportFault
@@ -6690,10 +6690,10 @@ L14544:
         BSET    $0390,Z,#$01
 L1455E:
         BRSET   $0235,Z,#$08,L14588
-        LDAA    $0391,Z
+        LDAA    >CatTempFaultCounter,Z
         ADDA    #$01
         SBCA    #$00
-        STAA    $0391,Z
+        STAA    >CatTempFaultCounter,Z
         CMPA    >CatTempFaultCount
         BCS     L14588
         LDY     #$3FFD
@@ -6702,7 +6702,7 @@ L1455E:
 L14580:
         BCLR    $0390,Z,#$01
 L14584:
-        CLR     $0391,Z
+        CLR     >CatTempFaultCounter,Z
 L14588:
         RTS
 
@@ -6748,7 +6748,7 @@ L145FC:
         JMP     L1465A
 L14604:
         LDAA    $0564,Z
-        BRSET   $0221,Z,#$08,L14644
+        BRSET   >FaultFlags505,Z,#$08,L14644
         BRSET   $0223,Z,#$02,L14644
         BRSET   $0223,Z,#$01,L14644
         BRCLR   >MonitorDisableFlags,Z,#$04,L14634
@@ -6827,7 +6827,7 @@ Sub_1469A:
         STAA    <Scratch4,Z
 L146BA:
         BRSET   >SensorFaultFlags,Z,#$10,L1481C
-        BCLR    $0310,Z,#$40
+        BCLR    >LimpFlags,Z,#$40
         BRCLR   >SensorFaultFlags,Z,#$20,L146DC
         LDAA    >ThrottleAboveClosed,Z
         LDX     #Tab2D_2C31
@@ -6875,7 +6875,7 @@ L14730:
         LDAA    #$FF
 L14746:
         STAA    <Scratch2,Z
-        BRSET   $0527,Z,#$01,L14756
+        BRSET   >ControlFlags943,Z,#$01,L14756
         ADDA    $2C1D
         BCC     L14756
         LDAA    #$FF
@@ -6909,7 +6909,7 @@ L14798:
         INC     $0313,Z
         BRA     L147D4
 L147AE:
-        BSET    $0310,Z,#$80
+        BSET    >LimpFlags,Z,#$80
         BSET    $DD,Z,#$10
         LDAA    >ThrottleAboveClosed,Z
         LDX     #Tab2D_2C31
@@ -6938,7 +6938,7 @@ L147DE:
         INC     $0312,Z
         BRA     L1485A
 L1480A:
-        BCLR    $0310,Z,#$80
+        BCLR    >LimpFlags,Z,#$80
         BCLR    $DD,Z,#$10
         LDAA    #$FF
         STAA    <Scratch4,Z
@@ -6956,7 +6956,7 @@ L14832:
         LDAA    #$FF
         STAA    <Scratch4,Z
         BRCLR   >SwitchInputs,Z,#$01,L1485A
-        BRCLR   $0310,Z,#$40,L1485A
+        BRCLR   >LimpFlags,Z,#$40,L1485A
         LDAA    $18,Z
         LDX     #Tab2D_2C27
         JSR     Lookup2D
@@ -6965,20 +6965,20 @@ L14832:
 L14850:
         LDAA    $2C26
         STAA    <Scratch4,Z
-        BSET    $0310,Z,#$40
+        BSET    >LimpFlags,Z,#$40
 L1485A:
         LDAA    <Scratch4,Z
         STAA    $0311,Z
         LDAA    <EngineRpm,Z
         CMPA    $0311,Z
         BCS     L1486E
-        BSET    $0310,Z,#$20
+        BSET    >LimpFlags,Z,#$20
         BRA     L14882
 L1486E:
-        BCLR    $0310,Z,#$20
+        BCLR    >LimpFlags,Z,#$20
         BRA     L14882
 L14874:
-        BCLR    $0310,Z,#$E0
+        BCLR    >LimpFlags,Z,#$E0
         BCLR    $DD,Z,#$10
 L1487C:
         LDAA    #$FF
@@ -7054,7 +7054,7 @@ L14940:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1494A:
-        BRSET   $1D,Z,#$02,L149A6
+        BRSET   <DriveFlags,Z,#$02,L149A6
         LDAA    #$20
         ORP     #$00E0
         STAA    >ADCTL1_L,Z
@@ -7133,7 +7133,7 @@ L14A0C:
         CMPA    $415A
         LBCS    L14ACE
         BRSET   >Options032E,#$08,L14A2A
-        BRCLR   $001D,Z,#$20,L14ACE
+        BRCLR   >DriveFlags,Z,#$20,L14ACE
 L14A2A:
         BRCLR   >Options0340,#$02,L14A36
         BRSET   >SwitchInputs,Z,#$01,L14ACE
@@ -7198,7 +7198,7 @@ L14AD6:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_14AD8:
-        BRSET   $1C,Z,#$80,L14B4A
+        BRSET   <ChargeMonFlags,Z,#$80,L14B4A
         BRSET   $021D,Z,#$20,L14B4A
         BRSET   $021C,Z,#$08,L14B4A
         LDAA    $17,Z
@@ -7210,38 +7210,38 @@ Sub_14AD8:
         CMPA    >ChargeMonRpmMin
         BCS     L14B4A
         LDAA    #$0F
-        BRCLR   $1C,Z,#$08,L14B06
+        BRCLR   <ChargeMonFlags,Z,#$08,L14B06
         CLRA
 L14B06:
         ANDA    <MainLoopCounter,Z
         BNE     L14B52
-        LDAA    $06AE,Z
+        LDAA    >ChargeMonTimer,Z
         INCA
         BEQ     L14B16
-        STAA    $06AE,Z
+        STAA    >ChargeMonTimer,Z
 L14B16:
-        BRSET   $1C,Z,#$08,L14B26
+        BRSET   <ChargeMonFlags,Z,#$08,L14B26
         CMPA    $418D
         BCS     L14B52
-        BSET    $1C,Z,#$08
+        BSET    <ChargeMonFlags,Z,#$08
         BRA     L14B4E
 L14B26:
-        BRSET   $1C,Z,#$40,L14B36
+        BRSET   <ChargeMonFlags,Z,#$40,L14B36
         CMPA    $418F
         BCS     L14B52
-        BSET    $1C,Z,#$40
+        BSET    <ChargeMonFlags,Z,#$40
         BRA     L14B4E
 L14B36:
         CMPA    >ChargeMonClearTime
         BCS     L14B52
-        BCLR    $1C,Z,#$40
+        BCLR    <ChargeMonFlags,Z,#$40
         LDY     #$3891
         JSR     ReportFault
         BRA     L14B4E
 L14B4A:
-        BCLR    $1C,Z,#$C8
+        BCLR    <ChargeMonFlags,Z,#$C8
 L14B4E:
-        CLR     $06AE,Z
+        CLR     >ChargeMonTimer,Z
 L14B52:
         RTS
 
@@ -7250,12 +7250,12 @@ L14B52:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_14B54:
-        BRSET   $1C,Z,#$04,L14B8E
+        BRSET   <ChargeMonFlags,Z,#$04,L14B8E
         BRCLR   >EngineStateFlags,Z,#$80,L14BB2
         LDAA    <Count3s,Z
         CMPA    >BattLowStartTime
         BCS     L14BAE
-        BRCLR   $0028,Z,#$08,L14BAE
+        BRCLR   >FieldFlags,Z,#$08,L14BAE
         LDAA    $17,Z
         CMPA    >BattLowVolts
         BCC     L14BAE
@@ -7267,7 +7267,7 @@ L14B7E:
         STAB    $06AF,Z
         CMPB    >BattLowSetCount
         BCS     L14BB2
-        BSET    $1C,Z,#$04
+        BSET    <ChargeMonFlags,Z,#$04
         BRA     L14BAE
 L14B8E:
         LDAA    $17,Z
@@ -7281,7 +7281,7 @@ L14BA0:
         STAB    $06AF,Z
         CMPB    >BattLowClearCount
         BCS     L14BB2
-        BCLR    $1C,Z,#$04
+        BCLR    <ChargeMonFlags,Z,#$04
 L14BAE:
         CLR     $06AF,Z
 L14BB2:
@@ -7299,14 +7299,14 @@ Sub_14BB4:
         BCS     L14C00
         ORP     #$00E0
         BRCLR   <EngineStateFlags,Z,#$80,L14BD4
-        BRCLR   $1C,Z,#$20,L14C00
+        BRCLR   <ChargeMonFlags,Z,#$20,L14C00
         BRSET   $0800,Z,#$04,L14C00
         BRA     L14BEE
 L14BD4:
         BRSET   $0593,Z,#$02,L14C00
         LDAB    $0800,Z
         ANDB    #$04
-        LDAA    $0527,Z
+        LDAA    >ControlFlags943,Z
         ANDA    #$10
         BEQ     L14BEA
         EORB    #$04
@@ -7342,8 +7342,8 @@ L14C18:
         CPE     #$07D0
         BCC     L14C5C
         LDD     <Count3s,Z
-        BRSET   $001D,Z,#$02,L14C4C
-        BRSET   $001D,Z,#$04,L14C4C
+        BRSET   >DriveFlags,Z,#$02,L14C4C
+        BRSET   >DriveFlags,Z,#$04,L14C4C
         BRCLR   $02EC,Z,#$01,L14C52
 L14C4C:
         CPD     #$0006
@@ -7374,7 +7374,7 @@ L14C8A:
         LDAB    <MainLoopCounter,Z
         BITB    #$07
         LBNE    L14D20
-        BRSET   $0221,Z,#$80,L14CE0
+        BRSET   >FaultFlags505,Z,#$80,L14CE0
         TST     $18,Z
         BNE     L14CE0
         BRSET   <ThrottleState,Z,#$80,L14CE0
@@ -7428,9 +7428,9 @@ L14D1C:
         JSR     ReportFault
 L14D20:
         BRSET   $0222,Z,#$10,L14D38
-        BRSET   $0221,Z,#$80,L14D38
-        BRSET   $0221,Z,#$40,L14D38
-        BRCLR   $0221,Z,#$30,L14D3E
+        BRSET   >FaultFlags505,Z,#$80,L14D38
+        BRSET   >FaultFlags505,Z,#$40,L14D38
+        BRCLR   >FaultFlags505,Z,#$30,L14D3E
 L14D38:
         BSET    <SensorFaultFlags,Z,#$20
         BRA     L14D42
@@ -7464,13 +7464,13 @@ L14D68:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_14D6A:
-        BRSET   $0200,Z,#$04,L14DB8
+        BRSET   >StartFlags,Z,#$04,L14DB8
         BRCLR   <EngineStateFlags,Z,#$80,L14DB8
         BRSET   <SensorFaultFlags,Z,#$80,L14DB8
         LDAA    $0C,Z
         CMPA    $4152
         BCS     L14D86
-        BSET    $0200,Z,#$04
+        BSET    >StartFlags,Z,#$04
         BRA     L14DB8
 L14D86:
         LDD     <Count3s,Z
@@ -7486,7 +7486,7 @@ L14D86:
         LDY     #$39A9
         JSR     ReportFault
         BCC     L14DB8
-        BSET    $0200,Z,#$04
+        BSET    >StartFlags,Z,#$04
         BRA     L14DB8
 L14DB0:
         TSTB
@@ -7506,7 +7506,7 @@ L14DB8:
 Sub_14DFA:
         BRSET   $0800,Z,#$08,L14FF0
         BRCLR   >EngineStateFlags,Z,#$80,L14ECC
-        BRSET   $0463,Z,#$80,L14ECC
+        BRSET   >DecelLeanFlags,Z,#$80,L14ECC
         LDAA    <Count3s,Z
         CMPA    #$2C
         LBCS    L14ECC
@@ -7593,23 +7593,23 @@ L14EE4:
         BEQ     L14F02
         CMPA    #$42
         BEQ     L14F02
-        BRSET   $02DD,Z,#$04,L14F02
-        BRSET   $02DD,Z,#$08,L14F02
+        BRSET   >LdpFlags3,Z,#$04,L14F02
+        BRSET   >LdpFlags3,Z,#$08,L14F02
         BCLRW   $0812,Z,#$6000
 L14F02:
-        LDAA    $0207,Z
+        LDAA    >O2InactiveTimer,Z
         LBEQ    L14FF0
-        DEC     $0207,Z
+        DEC     >O2InactiveTimer,Z
         LBRA    L14FF0
 L14F12:
         BSETW   $0812,Z,#$4000
-        CLR     $0207,Z
+        CLR     >O2InactiveTimer,Z
         LBRA    L14FF0
 L14F20:
-        LDAA    $0207,Z
+        LDAA    >O2InactiveTimer,Z
         CMPA    $416D
         BCC     L14F32
-        INC     $0207,Z
+        INC     >O2InactiveTimer,Z
         LBRA    L14FF0
 L14F32:
         TPD
@@ -7669,7 +7669,7 @@ L14FA8:
         ANDA    >O2ActiveFlags,Z
         STAA    >O2ActiveFlags,Z
 L14FC0:
-        BRCLR   $0221,Z,#$01,L14FD4
+        BRCLR   >FaultFlags505,Z,#$01,L14FD4
         JSR     Sub_0CACA
         BRCLR   $0225,Z,#$02,L14FD4
         BCLR    >O2ActiveFlags,Z,#$CC
@@ -7678,10 +7678,10 @@ L14FD4:
         JSR     Sub_0CAEC
 L14FDE:
         BCLRW   $0812,Z,#$6000
-        LDAA    $0207,Z
+        LDAA    >O2InactiveTimer,Z
         BEQ     L14FF0
         DECA
-        STAA    $0207,Z
+        STAA    >O2InactiveTimer,Z
 L14FF0:
         RTS
         dc.b    $00,$20,$03,$A9,$00,$08,$00,$04,$02,$4B,$00,$40,$3D,$4B,$00,$02
@@ -8015,9 +8015,9 @@ L153A4:
         CMPA    $0366
         LBCS    L15502
         BRCLR   >ThrottleState,Z,#$80,L15502
-        BRSET   $03BB,Z,#$10,L154F8
-        BRSET   $03BB,Z,#$40,L154F8
-        BRSET   $03BB,Z,#$20,L154F8
+        BRSET   >O2Bank1Flags,Z,#$10,L154F8
+        BRSET   >O2Bank1Flags,Z,#$40,L154F8
+        BRSET   >O2Bank1Flags,Z,#$20,L154F8
         BRA     L153FE
 L153E6:
         BRCLR   >Options032F,#$40,L15502
@@ -8155,7 +8155,7 @@ L1553E:
         BRCLR   $0813,Z,#$40,L1555E
 L15544:
         BRCLR   $063E,Z,#$10,L15558
-        BRSET   $021F,Z,#$04,L15558
+        BRSET   >FaultFlags503,Z,#$04,L15558
         LDY     #$3913
         JSR     ReportFault
 L15558:
@@ -8264,7 +8264,7 @@ Sub_1563C:
         BRSET   $021E,Z,#$02,L156EE
         BRSET   >SensorFaultFlags,Z,#$20,L156EE
         BRSET   >SensorFaultFlags,Z,#$10,L156EE
-        BRSET   $0221,Z,#$08,L156EE
+        BRSET   >FaultFlags505,Z,#$08,L156EE
         BRSET   >MonitorDisableFlags,Z,#$04,L156EE
         BRSET   >MonitorDisableFlags,Z,#$01,L156EE
         BRSET   >MonitorDisableFlags,Z,#$02,L156EE
@@ -8333,7 +8333,7 @@ L1571C:
         CMPA    $2CC7
         BHI     L15788
 L15730:
-        LDD     $0582,Z
+        LDD     >MonSteadyRate,Z
         BPL     L15738
         NEGD
 L15738:
@@ -8374,22 +8374,22 @@ L1578E:
         BCC     L157A2
         CLRB
 L157A2:
-        TST     $021A,Z
+        TST     >CamCrankOffset,Z
         BEQ     L157D6
-        CMPB    $021A,Z
+        CMPB    >CamCrankOffset,Z
         BHI     L157BC
         ADDA    $2CCD
         BCC     L157B6
         LDAA    #$FF
 L157B6:
-        CMPA    $021A,Z
+        CMPA    >CamCrankOffset,Z
         BCC     L157C4
 L157BC:
         LDY     #$3D91
         JSR     ReportFault
 L157C4:
         BRCLR   >Options033A,#$20,L157D6
-        LDAA    $021A,Z
+        LDAA    >CamCrankOffset,Z
         SUBA    $2CB5
         STAA    $0252,Z
 L157D6:
@@ -8436,7 +8436,7 @@ L1583E:
         CLRB
         LBRA    L158E2
 L15844:
-        LDAA    $19,Z
+        LDAA    <CylinderIndex,Z
         BRCLR   >Options032E,#$80,L1585C
         BRCLR   >Options032A,#$0E,L15854
         BRA     L15864
@@ -8481,32 +8481,32 @@ L158A4:
         COMA
         BNE     L158E6
 L158B2:
-        STAB    $01F0,Z
+        STAB    >Temp4F0,Z
         TBA
-        LDAB    $021A,Z
+        LDAB    >CamCrankOffset,Z
         SBA
         BPL     L158C2
         NEGA
 L158C2:
         CMPA    >CamCrankOffsetJitter
         BCS     L158CE
-        LDAB    $01F0,Z
+        LDAB    >Temp4F0,Z
         BRA     L158E2
 L158CE:
-        LDAA    $0250,Z
+        LDAA    >CamCrankStable,Z
         INCA
         BEQ     L158EC
-        STAA    $0250,Z
+        STAA    >CamCrankStable,Z
         CMPA    >CamCrankStableCount
         BCC     L158EC
         BRA     L158E6
 L158E2:
-        CLR     $0250,Z
+        CLR     >CamCrankStable,Z
 L158E6:
-        STAB    $021A,Z
+        STAB    >CamCrankOffset,Z
         BRA     L1591C
 L158EC:
-        STAB    $021A,Z
+        STAB    >CamCrankOffset,Z
         CMPB    >CamCrankOffsetMax
         BCC     L158FC
         CMPB    >CamCrankOffsetMin
@@ -8719,7 +8719,7 @@ Sub_15B2C:
         JSR     ReportFault
         BRA     L15B84
 L15B78:
-        BCLR    $1D,Z,#$48
+        BCLR    <DriveFlags,Z,#$48
         CLR     $01C9,Z
 L15B80:
         STAB    $0202,Z
@@ -8861,7 +8861,7 @@ Sub_15CAE:
         BRCLR   $045C,Z,#$80,L15CE2
         LDAA    #$08
         BRCLR   >MisfireOptions,#$80,L15CC4
-        BRSET   $02C5,Z,#$10,L15CE2
+        BRSET   >MisfireFlags2,Z,#$10,L15CE2
 L15CC4:
         LDAA    #$04
         BRSET   >ThrottleState,Z,#$40,L15CE2
@@ -8870,7 +8870,7 @@ L15CC4:
         LDAB    >Map,Z
         CMPB    >O2MapMin
         BCS     L15CE2
-        LDAB    $046B,Z
+        LDAB    >ColdEnrich,Z
         BEQ     L15CF6
 L15CE2:
         STAA    $0383,Z
@@ -8883,7 +8883,7 @@ L15CF6:
         LDAA    #$02
         BRSET   $021D,Z,#$08,L15D1E
         BRSET   $021D,Z,#$10,L15D1E
-        BRSET   $0221,Z,#$01,L15D1E
+        BRSET   >FaultFlags505,Z,#$01,L15D1E
         BRSET   $0222,Z,#$40,L15D1E
         BRSET   $022E,Z,#$08,L15D1E
         BRCLR   >O2ActiveFlags,Z,#$08,L15D1E
@@ -8914,7 +8914,7 @@ L15D80:
         LDAA    #$08
         BRSET   $021D,Z,#$08,L15DA8
         BRSET   $021D,Z,#$10,L15DA8
-        BRSET   $0221,Z,#$01,L15DA8
+        BRSET   >FaultFlags505,Z,#$01,L15DA8
         BRSET   $0222,Z,#$40,L15DA8
         BRSET   $022E,Z,#$08,L15DA8
         BRCLR   >O2ActiveFlags,Z,#$08,L15DA8
@@ -8957,7 +8957,7 @@ L15E00:
 L15E08:
         BRCLR   $0337,#$02,L15ED6
         BRSET   $0211,Z,#$80,L15ED6
-        BRSET   $0221,Z,#$08,L15ECE
+        BRSET   >FaultFlags505,Z,#$08,L15ECE
         BRCLR   >SparkFlags,Z,#$20,L15ED6
         BRSET   $022F,Z,#$40,L15ED6
         BRSET   $022F,Z,#$20,L15ED6
@@ -9043,7 +9043,7 @@ Sub_15ED8:
         LBNE    L15F12
         BRCLR   >EngineStateFlags,Z,#$80,L15F12
         BRSET   >Options032E,#$08,L15F04
-        BRCLR   $001D,Z,#$20,L15F12
+        BRCLR   >DriveFlags,Z,#$20,L15F12
 L15F04:
         BRSET   >MonitorDisableFlags,Z,#$04,L15F12
         BRSET   >MonitorDisableFlags,Z,#$02,L15F12
@@ -9176,7 +9176,7 @@ Sub_16072:
         BCLR    $BE,Z,#$80
         JMP     L162F6
 L1609A:
-        BSET    $0376,Z,#$01
+        BSET    >EgrMonFlags,Z,#$01
         BRSET   >SensorFaultFlags,Z,#$20,L162F6
         BRSET   >SensorFaultFlags,Z,#$10,L162F6
         BRSET   >SensorFaultFlags,Z,#$80,L162F6
@@ -9189,13 +9189,13 @@ L1609A:
         TST     $04EB,Z
         LBNE    L162F6
         BRCLR   >O2ActiveFlags,Z,#$80,L162F6
-        BRSET   $03BB,Z,#$20,L162F6
+        BRSET   >O2Bank1Flags,Z,#$20,L162F6
         BRCLR   >Options032F,#$40,L160FA
         BRCLR   >O2ActiveFlags,Z,#$40,L162F6
         BRSET   $03DC,Z,#$20,L162F6
 L160FA:
         BRSET   >EgrFlags,Z,#$01,L162F6
-        TST     $062C,Z
+        TST     >PurgeCellCount,Z
         LBNE    L162F6
         LDAA    <Count3s,Z
         CMPA    $2AD7
@@ -9229,7 +9229,7 @@ L1615A:
         LDX     #$2AF1
         LDY     #$2B01
 L16176:
-        BRSET   $0376,Z,#$04,L1617E
+        BRSET   >EgrMonFlags,Z,#$04,L1617E
         TXY
 L1617E:
         LDAA    <Baro,Z
@@ -9253,8 +9253,8 @@ L16190:
         LBCS    L162FA
         CMPA    $05,Y
         LBHI    L162FA
-        BRSET   $0376,Z,#$04,L16240
-        BSET    $0376,Z,#$02
+        BRSET   >EgrMonFlags,Z,#$04,L16240
+        BSET    >EgrMonFlags,Z,#$02
         BSET    $BE,Z,#$04
         LDAA    >ShortTermTrim1,Z
         CMPA    >EgrMonTrimMin
@@ -9268,10 +9268,10 @@ L16190:
         CMPA    >EgrMonTrimMax
         LBGT    L162FA
 L161F6:
-        LDE     $0377,Z
+        LDE     >EgrMonPhaseTimer,Z
         CPE     >EgrMonPhaseTime
         LBCC    L16230
-        INCW    $0377,Z
+        INCW    >EgrMonPhaseTimer,Z
         LDAB    $0413,Z
         STAB    $0379,Z
         BRCLR   >Options032F,#$40,L16228
@@ -9290,13 +9290,13 @@ L16230:
         LDAA    $037B,Z
         STAA    $037E,Z
         CLR     $037F,Z
-        CLRW    $0377,Z
+        CLRW    >EgrMonPhaseTimer,Z
 L16240:
-        BSET    $0376,Z,#$04
-        LDE     $0377,Z
+        BSET    >EgrMonFlags,Z,#$04
+        LDE     >EgrMonPhaseTimer,Z
         CPE     >EgrMonPhaseTime2
         LBCC    L1628A
-        INCW    $0377,Z
+        INCW    >EgrMonPhaseTimer,Z
         LDAB    $0413,Z
         STAB    $037C,Z
         BRCLR   >Options032F,#$40,L16276
@@ -9322,22 +9322,22 @@ L1628A:
         BCS     L162AC
         CMPA    >EgrMonResultMax
         BHI     L162B2
-        BSET    $0376,Z,#$88
-        BCLR    $0376,Z,#$30
+        BSET    >EgrMonFlags,Z,#$88
+        BCLR    >EgrMonFlags,Z,#$30
         BSET    $BE,Z,#$40
         CLR     $0380,Z
         BRA     L162CC
 L162AC:
-        BSET    $0376,Z,#$20
+        BSET    >EgrMonFlags,Z,#$20
         BRA     L162B6
 L162B2:
-        BSET    $0376,Z,#$10
+        BSET    >EgrMonFlags,Z,#$10
 L162B6:
         INC     $0380,Z
         LDAB    $0380,Z
         CMPB    >EgrMonFailCount
         BCS     L162F6
-        BSET    $0376,Z,#$48
+        BSET    >EgrMonFlags,Z,#$48
         BSET    $BE,Z,#$48
 L162CC:
         STAA    $013E,Z
@@ -9345,7 +9345,7 @@ L162CC:
         ANDA    #$20
         LSRA
         ORAA    #$80
-        BRSET   $0376,Z,#$80,L162E2
+        BRSET   >EgrMonFlags,Z,#$80,L162E2
         ORAA    #$20
 L162E2:
         STAA    $013D,Z
@@ -9354,11 +9354,11 @@ L162E2:
 L162F2:
         BCLR    $BE,Z,#$80
 L162F6:
-        BCLR    $0376,Z,#$01
+        BCLR    >EgrMonFlags,Z,#$01
 L162FA:
-        BCLR    $0376,Z,#$06
+        BCLR    >EgrMonFlags,Z,#$06
         BCLR    $BE,Z,#$04
-        CLRW    $0377,Z
+        CLRW    >EgrMonPhaseTimer,Z
 L16306:
         RTS
 
@@ -9387,7 +9387,7 @@ L16350:
         BSET    >PurgeFlowTestResult,Z,#$02
         JMP     L16784
 L1635E:
-        BRCLR   $001D,Z,#$01,L16784
+        BRCLR   >DriveFlags,Z,#$01,L16784
         LDAB    >ShortTermTrim1,Z
         SXT
         TDE
@@ -9418,14 +9418,14 @@ L163A6:
         NEGB
         MUL
 L163C0:
-        STAA    $0259,Z
+        STAA    >PurgeFlowSettle,Z
         BSET    >PurgeFlowTestFlags,Z,#$02
 L163C8:
         BRSET   >PurgeFlowTestFlags,Z,#$20,L16784
         BRSET   $021E,Z,#$02,L16784
         BRSET   $022C,Z,#$04,L16784
-        BRSET   $0221,Z,#$08,L16784
-        BRSET   $021F,Z,#$04,L16784
+        BRSET   >FaultFlags505,Z,#$08,L16784
+        BRSET   >FaultFlags503,Z,#$04,L16784
         BRCLR   >EngineStateFlags,Z,#$80,L16784
         BRSET   >MonitorDisableFlags,Z,#$04,L16784
         BRSET   >MonitorDisableFlags,Z,#$02,L16784
@@ -9449,9 +9449,9 @@ L1640C:
         BRSET   >ThrottleState,Z,#$80,L16784
         BRSET   >ThrottleState,Z,#$01,L16784
         BRSET   >Options032E,#$08,L1644E
-        BRCLR   $001D,Z,#$20,L16784
+        BRCLR   >DriveFlags,Z,#$20,L16784
 L1644E:
-        BRCLR   $001D,Z,#$01,L16784
+        BRCLR   >DriveFlags,Z,#$01,L16784
         BRCLR   >Options0340,#$02,L16460
         BRCLR   >SwitchInputs,Z,#$01,L16784
 L16460:
@@ -9477,15 +9477,15 @@ L16468:
 L1649A:
         CMPA    >PurgeMonIacBand
         LBHI    L16784
-        LDAA    $0259,Z
+        LDAA    >PurgeFlowSettle,Z
         CMPA    >PurgeFlowSettleCount
         BCC     L164BA
         BRCLR   >MainLoopPhaseMask,Z,#$02,L167C2
-        INC     $0259,Z
+        INC     >PurgeFlowSettle,Z
         JMP     L167C2
 L164BA:
         BRSET   $0041,Z,#$20,L16784
-        TST     $0194,Z
+        TST     >DashpotTimer,Z
         LBNE    L16784
         LDAA    >IacGearDuration,Z
         CMPA    #$FF
@@ -9507,10 +9507,10 @@ L164D6:
         STAA    $025F,Z
         LDAA    >MapLast,Z
         STAA    $0260,Z
-        CLR     $025A,Z
+        CLR     >PurgeFlowStep,Z
         CLR     >PurgeStartRamp,Z
         BCLR    >PurgeFlowTestFlags2,Z,#$02
-        BRCLR   $0184,Z,#$40,L16520
+        BRCLR   >IdleFlags,Z,#$40,L16520
         BSET    >PurgeFlowTestFlags2,Z,#$02
 L16520:
         BCLR    >PurgeFlowTestFlags2,Z,#$0C
@@ -9522,10 +9522,10 @@ L1652E:
 L16538:
         BRSET   >Options0334,#$10,L16556
         BCLR    >PurgeFlowTestFlags2,Z,#$30
-        BRCLR   $0528,Z,#$10,L1654C
+        BRCLR   >ControlFlags944,Z,#$10,L1654C
         BSET    >PurgeFlowTestFlags2,Z,#$10
 L1654C:
-        BRCLR   $0528,Z,#$08,L16556
+        BRCLR   >ControlFlags944,Z,#$08,L16556
         BSET    >PurgeFlowTestFlags2,Z,#$20
 L16556:
         BSET    >PurgeFlowTestFlags,Z,#$10
@@ -9545,11 +9545,11 @@ L1657E:
         CMPA    >PurgeMonMapDrift
         LBHI    L16784
         BRCLR   >EquipmentFlags,Z,#$04,L16592
-        BRSET   $001D,Z,#$40,L16784
+        BRSET   >DriveFlags,Z,#$40,L16784
 L16592:
-        BRSET   $001D,Z,#$80,L16784
-        BRSET   $0028,Z,#$01,L16784
-        BRCLR   $0184,Z,#$40,L165AC
+        BRSET   >DriveFlags,Z,#$80,L16784
+        BRSET   >FieldFlags,Z,#$01,L16784
+        BRCLR   >IdleFlags,Z,#$40,L165AC
         BRCLR   >PurgeFlowTestFlags2,Z,#$02,L16784
         BRA     L165B2
 L165AC:
@@ -9562,15 +9562,15 @@ L165C0:
         BRSET   >PurgeFlowTestFlags2,Z,#$04,L16784
 L165C6:
         BRSET   >Options0334,#$10,L16600
-        BRSET   $0022,Z,#$04,L16784
-        BRSET   $0022,Z,#$40,L16784
-        BRCLR   $0528,Z,#$10,L165E6
+        BRSET   >ControlFlagsC33,Z,#$04,L16784
+        BRSET   >ControlFlagsC33,Z,#$40,L16784
+        BRCLR   >ControlFlags944,Z,#$10,L165E6
         BRCLR   >PurgeFlowTestFlags2,Z,#$10,L16784
         BRA     L165EC
 L165E6:
         BRSET   >PurgeFlowTestFlags2,Z,#$10,L16784
 L165EC:
-        BRCLR   $0528,Z,#$08,L165FA
+        BRCLR   >ControlFlags944,Z,#$08,L165FA
         BRCLR   >PurgeFlowTestFlags2,Z,#$20,L16784
         BRA     L16600
 L165FA:
@@ -9582,7 +9582,7 @@ L16600:
         SUBA    <IacPosition,Z
         BCS     L1662E
         STAA    <Scratch2,Z
-        BRSET   $0184,Z,#$40,L16620
+        BRSET   >IdleFlags,Z,#$40,L16620
         CMPA    >PurgeFlowIacDrop
         BRA     L16624
 L16620:
@@ -9597,7 +9597,7 @@ L1662E:
         SUBA    >ShortTermTrim1,Z
         BLT     L16658
         STAA    <Scratch4,Z
-        BRSET   $0184,Z,#$40,L1664A
+        BRSET   >IdleFlags,Z,#$40,L1664A
         CMPA    >PurgeFlowTrimDrop
         BRA     L1664E
 L1664A:
@@ -9612,7 +9612,7 @@ L16658:
         SUBA    >ShortTermTrim2,Z
         BLT     L16684
         STAA    <Scratch5,Z
-        BRSET   $0184,Z,#$40,L16676
+        BRSET   >IdleFlags,Z,#$40,L16676
         CMPA    >PurgeFlowTrimDrop
         BRA     L1667A
 L16676:
@@ -9634,7 +9634,7 @@ L16696:
         SUBD    $025D,Z
         BCS     L166C2
         STD     <Scratch6,Z
-        BRSET   $0184,Z,#$40,L166B6
+        BRSET   >IdleFlags,Z,#$40,L166B6
         CPD     >PurgeFlowRpmRise
         BRA     L166BA
 L166B6:
@@ -9644,8 +9644,8 @@ L166BA:
         BSET    >PurgeFlowTestResult,Z,#$20
         BRA     L166DA
 L166C2:
-        INC     $0265,Z
-        LDAA    $0265,Z
+        INC     >PurgeFlowFails,Z
+        LDAA    >PurgeFlowFails,Z
         CMPA    >PurgeFlowFailCount
         LBCS    L16784
         BSET    $BD,Z,#$08
@@ -9717,12 +9717,12 @@ L1678E:
         BSET    >PurgeFlowTestFlags,Z,#$40
 L167A4:
         BCLR    >PurgeFlowTestFlags,Z,#$0C
-        CLR     $0259,Z
+        CLR     >PurgeFlowSettle,Z
         BRCLR   >PurgeFlowTestFlags,Z,#$10,L167C2
         BCLR    >PurgeFlowTestFlags,Z,#$10
         BSET    >PurgeFlowTestFlags,Z,#$20
         BCLR    $BD,Z,#$04
-        CLR     $025A,Z
+        CLR     >PurgeFlowStep,Z
 L167C2:
         RTS
 
@@ -9741,7 +9741,7 @@ LdpMonitor:
         BEQ     L1681C
         TST     $04EB,Z
         BNE     L16812
-        BRSET   $02DD,Z,#$02,L1681C
+        BRSET   >LdpFlags3,Z,#$02,L1681C
         BRSET   >MonitorDisableFlags,Z,#$04,L16812
         BRSET   >MonitorDisableFlags,Z,#$08,L16812
         BRSET   >MonitorDisableFlags,Z,#$02,L16812
@@ -9787,7 +9787,7 @@ L1685A:
         JMP     L16D2E
 L1685E:
         BCLR    <LdpFlags2,Z,#$07
-        BRSET   $02DD,Z,#$02,L16882
+        BRSET   >LdpFlags3,Z,#$02,L16882
         LDAA    $16,Z
         CMPA    >LdpBattTempMax
         BHI     L168A4
@@ -9802,7 +9802,7 @@ L1687C:
 L16882:
         BSET    <LdpFlags2,Z,#$01
 L16886:
-        BRCLR   $02DD,Z,#$02,L16892
+        BRCLR   >LdpFlags3,Z,#$02,L16892
         BRSET   >LdpFlags2,Z,#$10,L168B0
 L16892:
         BRSET   $0800,Z,#$02,L168B0
@@ -9818,13 +9818,13 @@ L168B0:
         LDAA    #$01
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
-        CLR     $0333,Z
-        CLR     $033D,Z
+        CLR     >LdpPumpOnCount,Z
+        CLR     >LdpPumpOffCount,Z
         BSET    >LdpFlags,Z,#$01
 L168C6:
         LBRA    L16D5A
 L168CA:
-        BRSET   $02DD,Z,#$02,L168E4
+        BRSET   >LdpFlags3,Z,#$02,L168E4
         TST     >PurgeDelay,Z
         BNE     L168E4
 L168D6:
@@ -9836,15 +9836,15 @@ L168E4:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L168F4
-        CLR     $0333,Z
+        CLR     >LdpPumpOnCount,Z
         BRA     L16922
 L168F4:
-        LDAA    $0333,Z
-        BRCLR   $02DD,Z,#$02,L16910
+        LDAA    >LdpPumpOnCount,Z
+        BRCLR   >LdpFlags3,Z,#$02,L16910
         CMPA    $04F6,Z
         BCC     L16928
         BRCLR   >MainLoopPhaseMask,Z,#$80,L16922
-        INC     $0333,Z
+        INC     >LdpPumpOnCount,Z
         BRA     L16922
 L16910:
         CMPA    >LdpPumpOnTimeStart
@@ -9852,18 +9852,18 @@ L16910:
         BRCLR   <MainLoopPhaseMask,Z,#$02,L16922
         INCA
         BEQ     L16922
-        STAA    $0333,Z
+        STAA    >LdpPumpOnCount,Z
 L16922:
         BSET    >LdpFlags,Z,#$01
         BRA     L16972
 L16928:
         BCLR    >LdpFlags,Z,#$01
-        LDAA    $033D,Z
+        LDAA    >LdpPumpOffCount,Z
         CMPA    >LdpPumpOffTime
         BCC     L16940
         INCA
         BEQ     L1693E
-        STAA    $033D,Z
+        STAA    >LdpPumpOffCount,Z
 L1693E:
         BRA     L16972
 L16940:
@@ -9876,7 +9876,7 @@ L1694C:
         LDAA    #$12
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
-        CLR     $0338,Z
+        CLR     >LdpVacLowTotal,Z
         CLR     >LdpStrokes,Z
         CLR     >LdpStrokeCount,Z
         CLR     >LdpStrokeTime,Z
@@ -9885,7 +9885,7 @@ L16972:
         LBRA    L16D5A
 L16976:
         BSET    $C4,Z,#$04
-        BRSET   $02DD,Z,#$02,L16992
+        BRSET   >LdpFlags3,Z,#$02,L16992
         TST     >PurgeDelay,Z
         BNE     L16992
         BSET    >LdpFlags,Z,#$08
@@ -9908,7 +9908,7 @@ L169AC:
         LDAA    #$25
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
-        BRCLR   $02DD,Z,#$02,L169DA
+        BRCLR   >LdpFlags3,Z,#$02,L169DA
         BRSET   >LdpFlags2,Z,#$10,L16A02
         BSET    $BD,Z,#$48
         BCLR    $BD,Z,#$80
@@ -9922,15 +9922,15 @@ L169E4:
         LDAA    #$23
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
-        CLR     $0337,Z
-        CLR     $033B,Z
+        CLR     >LdpPumpUpTimer,Z
+        CLR     >LdpWindowStrokeCount,Z
         BCLR    >LdpFlags,Z,#$10
         BSET    <LdpFlags2,Z,#$10
         BCLR    <LdpFlags2,Z,#$02
 L16A02:
         LBRA    L16D5A
 L16A06:
-        BRSET   $02DD,Z,#$02,L16A20
+        BRSET   >LdpFlags3,Z,#$02,L16A20
         TST     >PurgeDelay,Z
         BNE     L16A20
 L16A12:
@@ -9942,15 +9942,15 @@ L16A20:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L16A32
-        BRSET   $02DD,Z,#$02,L16A12
+        BRSET   >LdpFlags3,Z,#$02,L16A12
         BRA     L16A56
 L16A32:
         JSR     LdpStateTimer
         BCC     L16A56
-        LDAA    $0337,Z
+        LDAA    >LdpPumpUpTimer,Z
         INCA
         BEQ     L16A4C
-        STAA    $0337,Z
+        STAA    >LdpPumpUpTimer,Z
         CMPA    >LdpPumpUpTimeMax
         BCC     L16A4C
         BRA     L16A56
@@ -9963,27 +9963,27 @@ L16A56:
         LDAA    >LdpStrokeCount,Z
         CMPA    >LdpStrokeTimeMax
         BCS     L16A7A
-        CLR     $033B,Z
+        CLR     >LdpWindowStrokeCount,Z
         CLR     >LdpStrokeCount,Z
-        CLR     $0333,Z
-        CLR     $033D,Z
+        CLR     >LdpPumpOnCount,Z
+        CLR     >LdpPumpOffCount,Z
         BSET    >LdpFlags,Z,#$01
         BRA     L16A98
 L16A7A:
-        LDAA    $033B,Z
+        LDAA    >LdpWindowStrokeCount,Z
         CMPA    >LdpWindowStrokes
         BCS     L16A98
-        LDAA    $0337,Z
+        LDAA    >LdpPumpUpTimer,Z
         SUBA    >LdpPumpTimeMin
         BCC     L16A90
         LDAA    #$00
 L16A90:
-        STAA    $0337,Z
-        CLR     $033B,Z
+        STAA    >LdpPumpUpTimer,Z
+        CLR     >LdpWindowStrokeCount,Z
 L16A98:
         BRSET   <LdpFlags2,Z,#$02,L16AC4
         LDAA    $31,Z
-        BRCLR   $02DD,Z,#$02,L16AB4
+        BRCLR   >LdpFlags3,Z,#$02,L16AB4
         LDX     #LdpPumpTimeByLevel2
         JSR     Lookup2D
         CMPA    >LdpStateTime,Z
@@ -10008,8 +10008,8 @@ L16AD6:
         CLR     >LdpStateTime,Z
         CLR     >LdpStrokes,Z
         CLR     >LdpStrokeCount,Z
-        CLR     $0333,Z
-        CLR     $033D,Z
+        CLR     >LdpPumpOnCount,Z
+        CLR     >LdpPumpOffCount,Z
         BSET    >LdpFlags,Z,#$01
 L16AF2:
         LBRA    L16D5A
@@ -10026,8 +10026,8 @@ L16B08:
         BCC     L16B22
         LDAA    #$48
         STAA    >LdpState,Z
-        CLR     $033C,Z
-        CLR     $033B,Z
+        CLR     >LdpVacLowCount,Z
+        CLR     >LdpWindowStrokeCount,Z
         BRA     L16B64
 L16B22:
         JSR     LdpStateTimer
@@ -10045,7 +10045,7 @@ L16B3C:
         LDAA    #$43
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
-        CLR     $033B,Z
+        CLR     >LdpWindowStrokeCount,Z
         BRA     L16B64
 L16B56:
         LDAA    #$45
@@ -10055,7 +10055,7 @@ L16B56:
 L16B64:
         LBRA    L16D5A
 L16B68:
-        BRSET   $02DD,Z,#$02,L16B82
+        BRSET   >LdpFlags3,Z,#$02,L16B82
         TST     >PurgeDelay,Z
         BNE     L16B82
 L16B74:
@@ -10067,7 +10067,7 @@ L16B82:
         LDAA    >ManifoldVacuum,Z
         CMPA    >LdpVacuumMin
         BCC     L16BB2
-        BRSET   $02DD,Z,#$02,L16B74
+        BRSET   >LdpFlags3,Z,#$02,L16B74
         LDAA    #$58
         STAA    >LdpState,Z
         LDAA    >LdpStrokeTime,Z
@@ -10080,7 +10080,7 @@ L16BAA:
         LBRA    L16C40
 L16BB2:
         JSR     LdpStateTimer
-        BRCLR   $02DD,Z,#$02,L16BC2
+        BRCLR   >LdpFlags3,Z,#$02,L16BC2
         CMPA    >LdpTestTimeAlt
         BRA     L16BC6
 L16BC2:
@@ -10090,7 +10090,7 @@ L16BC6:
         JSR     LdpPumpStroke
         BRA     L16C40
 L16BCE:
-        BRCLR   $02DD,Z,#$02,L16BF6
+        BRCLR   >LdpFlags3,Z,#$02,L16BF6
         BCLR    $02DA,Z,#$01
         BCLR    <LdpFlags2,Z,#$10
         LDAA    >LdpStrokeTimeAvg,Z
@@ -10108,7 +10108,7 @@ L16BF6:
         ORAB    #$C0
         STAB    $0146,Z
         LDAA    >LdpStrokeTimeAvg,Z
-        STAA    $0147,Z
+        STAA    >LdpStrokeResult,Z
         CMPA    >LdpSmallLeakStrokeTime
         BCC     L16C32
         ORAB    #$20
@@ -10173,20 +10173,20 @@ L16CA6:
         CMPA    >LdpVacuumMin
         BCC     L16CDE
         BRCLR   <MainLoopPhaseMask,Z,#$40,L16CD8
-        LDAA    $033C,Z
+        LDAA    >LdpVacLowCount,Z
         INCA
         BEQ     L16CC0
-        STAA    $033C,Z
+        STAA    >LdpVacLowCount,Z
 L16CC0:
-        LDAA    $0338,Z
+        LDAA    >LdpVacLowTotal,Z
         CMPA    #$FF
         BEQ     L16CCE
         INCA
-        STAA    $0338,Z
+        STAA    >LdpVacLowTotal,Z
 L16CCE:
         CMPA    >LdpVacLowTotalMax
         BCC     L16C98
-        STAA    $0338,Z
+        STAA    >LdpVacLowTotal,Z
 L16CD8:
         JSR     LdpPumpStroke
         BRA     L16D2C
@@ -10199,10 +10199,10 @@ L16CDE:
         BEQ     L16D04
         BRA     L16C98
 L16CEE:
-        LDAA    $033C,Z
+        LDAA    >LdpVacLowCount,Z
         CMPA    >LdpVacLowCountMax
         BCC     L16D12
-        LDAA    $033B,Z
+        LDAA    >LdpWindowStrokeCount,Z
         CMPA    >LdpWindowStrokes2
         BCS     L16D12
         BRA     L16D16
@@ -10212,7 +10212,7 @@ L16D04:
         CMPA    >LdpSealedStrokeTime2
         BCC     L16D26
 L16D12:
-        CLR     $0337,Z
+        CLR     >LdpPumpUpTimer,Z
 L16D16:
         LDAA    #$84
         STAA    >LdpState,Z
@@ -10264,12 +10264,12 @@ L16D78:
 ; Called from: LdpMonitor (6 calls)
 ;---------------------------------------------------------------------------------------------------
 LdpPumpStroke:
-        LDAA    $0333,Z
+        LDAA    >LdpPumpOnCount,Z
         CMPA    >LdpPumpOnTime
         BCC     L16D94
         INCA
         BEQ     L16D8C
-        STAA    $0333,Z
+        STAA    >LdpPumpOnCount,Z
 L16D8C:
         BSET    >LdpFlags,Z,#$01
         LBRA    L16E64
@@ -10293,16 +10293,16 @@ L16DB6:
         BEQ     L16DC2
         STAA    >LdpStrokeCount,Z
 L16DC2:
-        LDAA    $033D,Z
+        LDAA    >LdpPumpOffCount,Z
         CMPA    >LdpPumpOffTime
         BCC     L16DDA
         INCA
         LBEQ    L16E64
-        STAA    $033D,Z
+        STAA    >LdpPumpOffCount,Z
         LBRA    L16E64
 L16DDA:
         BRSET   $0800,Z,#$02,L16E0E
-        CLR     $033B,Z
+        CLR     >LdpWindowStrokeCount,Z
         LDAA    >LdpState,Z
         ANDA    #$0F
         CMPA    #$03
@@ -10341,14 +10341,14 @@ L16E3C:
         BEQ     L16E48
         STAA    >LdpStrokes,Z
 L16E48:
-        LDAA    $033B,Z
+        LDAA    >LdpWindowStrokeCount,Z
         INCA
         BEQ     L16E54
-        STAA    $033B,Z
+        STAA    >LdpWindowStrokeCount,Z
 L16E54:
         CLR     >LdpStrokeCount,Z
-        CLR     $0333,Z
-        CLR     $033D,Z
+        CLR     >LdpPumpOnCount,Z
+        CLR     >LdpPumpOffCount,Z
         BSET    >LdpFlags,Z,#$01
 L16E64:
         RTS
@@ -10378,7 +10378,7 @@ L16E9C:
         BRCLR   $0800,Z,#$02,L16EB4
         BSET    <LdpFlags2,Z,#$80
         BCLR    <LdpFlags2,Z,#$08
-        CLR     $0339,Z
+        CLR     >LdpPurgedTimer,Z
         BRA     L16F02
 L16EB4:
         BCLR    <LdpFlags2,Z,#$80
@@ -10387,16 +10387,16 @@ L16EB4:
         LDAA    >PurgeDuty,Z
         CMPA    >LdpPurgedDutyMin
         BCC     L16EDA
-        TST     $0339,Z
+        TST     >LdpPurgedTimer,Z
         BEQ     L16F02
-        DEC     $0339,Z
+        DEC     >LdpPurgedTimer,Z
         BRA     L16F02
 L16EDA:
-        LDAA    $0339,Z
+        LDAA    >LdpPurgedTimer,Z
         CMPA    #$FF
         BEQ     L16EE8
         INCA
-        STAA    $0339,Z
+        STAA    >LdpPurgedTimer,Z
 L16EE8:
         CMPA    >LdpPurgedTime
         BCC     L16EF0
@@ -10406,7 +10406,7 @@ L16EF0:
         BRA     L16F02
 L16EF6:
         BSET    >LdpFlags,Z,#$01
-        CLR     $0339,Z
+        CLR     >LdpPurgedTimer,Z
         BCLR    <LdpFlags2,Z,#$08
 L16F02:
         JSR     Sub_16F08
@@ -10474,18 +10474,18 @@ O2ActivityCount:
         CLRA
         LDAB    >PurgeRamp,Z
         TDE
-        LDAB    $0375,Z
+        LDAB    >O2ActivityPurgeAvg,Z
         PSHM    D,E
         LDAA    >O2ActivityPurgeFilter
         JSR     Blend16
         AIS     #$04
-        STAB    $0375,Z
+        STAB    >O2ActivityPurgeAvg,Z
         CMPB    >O2ActivityPurgeMax
         BCS     L16FE4
-        BSET    $0373,Z,#$08
+        BSET    >O2ActivityFlags,Z,#$08
         BRA     L16FE8
 L16FE4:
-        BCLR    $0373,Z,#$08
+        BCLR    >O2ActivityFlags,Z,#$08
 L16FE8:
         CLRB
         TBYK
@@ -10493,7 +10493,7 @@ L16FE8:
         TBXK
         LDX     #$6F82
         BRCLR   >ThrottleState,Z,#$80,L17032
-        CLR     $0374,Z
+        CLR     >O2ActivityThrottleTimer,Z
         LDAA    $18,Z
         CMPA    >O2ActivitySpeedMin
         LBCS    L170A0
@@ -10515,10 +10515,10 @@ L17032:
         LDAA    $18,Z
         CMPA    >O2ActivitySpeedMin
         BCS     L1704C
-        LDAA    $0374,Z
+        LDAA    >O2ActivityThrottleTimer,Z
         CMPA    >O2ActivityThrottleDelay
         BCC     L1704C
-        INC     $0374,Z
+        INC     >O2ActivityThrottleTimer,Z
         JMP     L170A0
 L1704C:
         LDE     $0004,X
@@ -10543,8 +10543,8 @@ L17074:
         CLR     $036A,Z
         CLR     $036B,Z
         CLR     $036C,Z
-        CLR     $0374,Z
-        CLR     $0373,Z
+        CLR     >O2ActivityThrottleTimer,Z
+        CLR     >O2ActivityFlags,Z
 L170A0:
         RTS
 
@@ -10589,12 +10589,12 @@ L170C4:
         LDAB    $0D,X
         BCC     L170D4
         COMB
-        ANDB    $0373,Z
+        ANDB    >O2ActivityFlags,Z
         BRA     L170D8
 L170D4:
-        ORAB    $0373,Z
+        ORAB    >O2ActivityFlags,Z
 L170D8:
-        STAB    $0373,Z
+        STAB    >O2ActivityFlags,Z
         RTS
         dc.b    $02,$84,$00,$9D,$00,$9E,$00,$9F,$00,$A0,$00,$A1,$02,$80,$02,$82
         dc.b    $00,$A2,$02,$7A,$02,$7C,$03,$A6,$03,$AD,$03,$AF,$01,$36,$01,$3A
@@ -11030,17 +11030,17 @@ L1754A:
         LDAA    $18,Z
         CMPA    >CatMonSpeedMin
         LBCS    L17640
-        LDAA    $027A,Z
+        LDAA    >CatMonSteadyTimer,Z
         CMPA    >CatMonCruiseTime
         BCC     L17578
-        INC     $027A,Z
+        INC     >CatMonSteadyTimer,Z
         LBRA    L17640
 L17578:
         BSET    $0276,Z,#$02
-        CLR     $027A,Z
+        CLR     >CatMonSteadyTimer,Z
 L17580:
-        BRCLR   $0373,Z,#$01,L17640
-        BRSET   $0373,Z,#$08,L17640
+        BRCLR   >O2ActivityFlags,Z,#$01,L17640
+        BRSET   >O2ActivityFlags,Z,#$08,L17640
         BSET    $0276,Z,#$04
         BRSET   >MonitorDisableFlags,Z,#$04,L17644
         BRSET   >MonitorDisableFlags,Z,#$02,L17644
@@ -11048,9 +11048,9 @@ L17580:
         TST     $04EB,Z
         LBNE    L17644
         BRCLR   >ThrottleState,Z,#$80,L17644
-        TST     $0406,Z
+        TST     >O2DownDelay,Z
         LBNE    L17644
-        TST     $0407,Z
+        TST     >O2SlowDelay,Z
         LBNE    L17644
         LDAA    >RpmSpeedRatio,Z
         CMPA    >CatMonRatioMax
@@ -11146,27 +11146,27 @@ L176DC:
         BRSET   $0241,Z,#$80,L1772C
         BSET    $0241,Z,#$80
         BRCLR   >MainLoopPhaseMask,Z,#$08,L17712
-        TST     $0367,Z
+        TST     >O2MonRestartTimer,Z
         BEQ     L176FA
-        DEC     $0367,Z
+        DEC     >O2MonRestartTimer,Z
 L176FA:
-        BRCLR   $001D,Z,#$01,L1770E
-        LDAA    $0368,Z
+        BRCLR   >DriveFlags,Z,#$01,L1770E
+        LDAA    >O2MonStableCount,Z
         INCA
         BEQ     L17712
-        STAA    $0368,Z
+        STAA    >O2MonStableCount,Z
         BRA     L17712
 L1770E:
-        CLR     $0368,Z
+        CLR     >O2MonStableCount,Z
 L17712:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L1772C
         LDAB    $18,Z
         CMPB    >O2MonSpeedMax
         BLS     L1772C
-        LDAA    $0365,Z
+        LDAA    >O2MonIdleTimer,Z
         INCA
         BEQ     L1772C
-        STAA    $0365,Z
+        STAA    >O2MonIdleTimer,Z
 L1772C:
         LDAA    >Options033E
         ANDA    $33,Y
@@ -11207,16 +11207,16 @@ L1772C:
         LDAA    <Count3s,Z
         CMPA    >O2MonTimeMin
         LBCS    L1788A
-        BRCLR   $001D,Z,#$01,L1788A
+        BRCLR   >DriveFlags,Z,#$01,L1788A
         LDAB    $18,Z
         CMPB    >O2MonSpeedMax
         LBHI    L1788A
-        LDAA    $0365,Z
+        LDAA    >O2MonIdleTimer,Z
         CMPA    >O2MonIdleTime
         LBCS    L1788A
-        TST     $0406,Z
+        TST     >O2DownDelay,Z
         LBNE    L1788A
-        TST     $0407,Z
+        TST     >O2SlowDelay,Z
         LBNE    L1788A
         LDAA    $0C,Z
         CMPA    >O2MonCoolantMin
@@ -11225,7 +11225,7 @@ L1772C:
         CMPA    >O2MonSensorReadyMin
         LBCS    L1788A
         BRCLR   >EquipmentFlags,Z,#$04,L17812
-        LDAA    $059B,Z
+        LDAA    >O2SensorReady2,Z
         CMPA    >O2MonSensorReadyMin
         LBCS    L1788A
 L17812:
@@ -11246,15 +11246,15 @@ L17830:
         TST     >PurgeDelay,Z
         BNE     L1785A
         BRCLR   >PurgeCellFlags,Z,#$04,L17852
-        LDAA    $0369,Z
+        LDAA    >O2MonPurgeOffTimer,Z
         CMPA    >O2MonPurgeOffTime
         LBCS    L1788A
         BRA     L1785A
 L17852:
-        TST     $062C,Z
+        TST     >PurgeCellCount,Z
         LBNE    L1788A
 L1785A:
-        BRSET   $0184,Z,#$40,L1786C
+        BRSET   >IdleFlags,Z,#$40,L1786C
         BRCLR   $0241,Z,#$40,L17882
         BCLR    $0241,Z,#$40
         BRA     L17876
@@ -11263,10 +11263,10 @@ L1786C:
         BSET    $0241,Z,#$40
 L17876:
         LDAA    >O2MonRestartDelay
-        STAA    $0367,Z
+        STAA    >O2MonRestartTimer,Z
         LBRA    L1788A
 L17882:
-        TST     $0367,Z
+        TST     >O2MonRestartTimer,Z
         LBEQ    L178A0
 L1788A:
         CLRA
@@ -11279,14 +11279,14 @@ L1788A:
         BRA     L178C6
 L178A0:
         BRSET   $0110,Z,#$01,L178C6
-        LDAA    $0368,Z
+        LDAA    >O2MonStableCount,Z
         CMPA    >O2MonStableTime
         LBCS    L178C6
         LDAA    $0358,Z
         ANDA    $30,Y
         BNE     L178E4
-        BRCLR   $0373,Z,#$02,L178C6
-        BRCLR   $0373,Z,#$08,L178E4
+        BRCLR   >O2ActivityFlags,Z,#$02,L178C6
+        BRCLR   >O2ActivityFlags,Z,#$08,L178E4
 L178C6:
         LDE     $0000,Y
         LDAA    E,Z
@@ -11685,7 +11685,7 @@ L17CC4:
         BRA     L17D20
 L17CD4:
         BCLR    $C5,Z,#$01
-        LDAA    $021F,Z
+        LDAA    >FaultFlags503,Z
         BITA    #$38
         BNE     L17D20
         LDAA    $0222,Z
@@ -11709,7 +11709,7 @@ L17CD4:
         LDAB    $0601,Z
         CMPB    $2B66
         BCS     L17D20
-        BRSET   $0373,Z,#$04,L17D28
+        BRSET   >O2ActivityFlags,Z,#$04,L17D28
 L17D20:
         CLR     $0340,Z
         LBRA    L17F64
@@ -11730,7 +11730,7 @@ L17D28:
         CLR     $B4,Z
         CLRW    $00B2,Z
         LDD     #$FFFF
-        STD     $B0,Z
+        STD     <O2HeaterTimer,Z
         CLRB
         TBXK
         TPD
@@ -11744,7 +11744,7 @@ L17D28:
         BSET    $AF,Z,#$80
         BSET    $BC,Z,#$04
         BRCLR   >Options032F,#$80,L17DA8
-        BRSET   $0221,Z,#$01,L17DA8
+        BRSET   >FaultFlags505,Z,#$01,L17DA8
         BRSET   $0222,Z,#$40,L17DA8
         BRSET   $0229,Z,#$40,L17DA8
         BRSET   $022E,Z,#$08,L17DA8
@@ -11787,17 +11787,17 @@ L17E26:
         BCLR    $AF,Z,#$40
         LDD     >TCNT,Z
         STD     $033E,Z
-        INCW    $00B0,Z
+        INCW    >O2HeaterTimer,Z
         LDAB    $0340,Z
         CMPB    #$02
         BNE     L17E48
         LBSR    Sub_1804C
         BRA     L17EB2
 L17E48:
-        LDD     $B0,Z
+        LDD     <O2HeaterTimer,Z
         CPD     $2B6C
         LBHI    L17ED4
-        LDD     $B0,Z
+        LDD     <O2HeaterTimer,Z
         BITB    #$1F
         BNE     L17EB2
         LBSR    Sub_17F96
@@ -11850,7 +11850,7 @@ L17EB8:
         JSR     KickWatchdogsLong
 L17ED4:
         BRSET   $00AF,Z,#$20,L17F32
-        LDD     $B0,Z
+        LDD     <O2HeaterTimer,Z
         CPD     $2B6C
         LBLS    L17F32
         LDY     #$7BF8
@@ -11890,7 +11890,7 @@ L17F2A:
 L17F32:
         LDD     #$FFFF
         STD     >TR0,Z
-        STD     $0527,Z
+        STD     >ControlFlags943,Z
         STAA    $0526,Z
         CLRW    >SPCR2,Z
         JSR     Sub_1E960
@@ -11999,7 +11999,7 @@ L18036:
 ; Called from: Sub_17CA0
 ;---------------------------------------------------------------------------------------------------
 Sub_1804C:
-        LDD     $B0,Z
+        LDD     <O2HeaterTimer,Z
         CPD     >O2HeaterSampleTime
         BLS     L18098
         LBSR    Sub_17F96
@@ -12083,7 +12083,7 @@ L180F4:
         BLS     L180EC
         BRA     L18122
 L180FE:
-        LDD     $B0,Z
+        LDD     <O2HeaterTimer,Z
         CPD     >O2HeaterSettleTime
         BCC     L18122
         LDAB    <Scratch2,Z
@@ -12141,14 +12141,14 @@ L18174:
         BSET    $AF,Z,#$40
         BRA     L181B0
 L18188:
-        LDE     $00B0,Z
+        LDE     >O2HeaterTimer,Z
         STE     $00B2,Z
         LDAB    #$04
         STAB    $0340,Z
         LDD     #$FFFF
         EORA    #$10
         STD     >TR0,Z
-        STD     $0527,Z
+        STD     >ControlFlags943,Z
         STAA    $0526,Z
         CLRW    >SPCR2,Z
         JSR     Sub_1E960
@@ -12364,7 +12364,7 @@ Sub_18358:
         BRA     L183CE
 L18364:
         BRCLR   >MonitorDisableFlags,Z,#$07,L18370
-        CLR     $0272,Z
+        CLR     >FuelSysLeanFaults,Z
         BRA     L183B2
 L18370:
         BRCLR   $0110,Z,#$01,L18380
@@ -12400,7 +12400,7 @@ L183CE:
 ; Called from: Sub_18358
 ;---------------------------------------------------------------------------------------------------
 Sub_183D0:
-        LDAA    $0458,Z
+        LDAA    >O2AdaptValue1,Z
         CMPA    >O2AdaptMin
         BNE     L1842C
         LDAA    >ShortTermTrim1,Z
@@ -12419,7 +12419,7 @@ L183FA:
         BSET    $26,Z,#$40
         CLR     $026A,Z
 L18408:
-        CLR     $0272,Z
+        CLR     >FuelSysLeanFaults,Z
         INC     $026A,Z
         LDAA    $026A,Z
         BRCLR   $02DE,Z,#$80,L18420
@@ -12443,7 +12443,7 @@ L1843A:
 ; Called from: Sub_18358
 ;---------------------------------------------------------------------------------------------------
 Sub_1843C:
-        LDAA    $0458,Z
+        LDAA    >O2AdaptValue1,Z
         LDAB    >ShortTermTrim1,Z
         JSR     Sub_18A32
         STAB    $0266,Z
@@ -12469,7 +12469,7 @@ L18478:
         BSET    $26,Z,#$10
         CLR     $0268,Z
 L1848E:
-        CLR     $0272,Z
+        CLR     >FuelSysLeanFaults,Z
         INC     $0268,Z
         LDAA    $0268,Z
         BRCLR   $02DE,Z,#$80,L184A6
@@ -12486,9 +12486,9 @@ L184B2:
         LDX     #$EF28
         JSR     Sub_1F9EA
         BNE     L184E2
-        LDAA    $0272,Z
+        LDAA    >FuelSysLeanFaults,Z
         INCA
-        STAA    $0272,Z
+        STAA    >FuelSysLeanFaults,Z
         CMPA    >FuelSysLeanFaultCount
         BCS     L184E2
         BSET    $C2,Z,#$40
@@ -12532,21 +12532,21 @@ L18520:
 ; Called from: Sub_1F0A4
 ;---------------------------------------------------------------------------------------------------
 Sub_18522:
-        TST     $026D,Z
+        TST     >O2MemChangeHold2,Z
         BEQ     L1852E
-        DEC     $026D,Z
+        DEC     >O2MemChangeHold2,Z
         BRA     L18598
 L1852E:
         BRCLR   >MonitorDisableFlags,Z,#$07,L1853A
-        CLR     $0272,Z
+        CLR     >FuelSysLeanFaults,Z
         BRA     L1857C
 L1853A:
         BRCLR   $0110,Z,#$01,L1854A
         LDAA    >FuelSysDelay
-        STAA    $026F,Z
+        STAA    >FuelSysDelay2,Z
         BRA     L1857C
 L1854A:
-        TST     $026F,Z
+        TST     >FuelSysDelay2,Z
         BNE     L1857C
         BRCLR   >EngineStateFlags,Z,#$80,L1857C
         BRCLR   >O2ActiveFlags,Z,#$40,L1857C
@@ -12565,7 +12565,7 @@ L1857C:
 L1858A:
         BRCLR   $0027,Z,#$40,L18598
         BCLR    $27,Z,#$40
-        CLR     $026B,Z
+        CLR     >FuelSysRichCount2,Z
 L18598:
         RTS
 
@@ -12574,7 +12574,7 @@ L18598:
 ; Called from: Sub_18522
 ;---------------------------------------------------------------------------------------------------
 Sub_1859A:
-        LDAA    $0459,Z
+        LDAA    >O2AdaptValue2,Z
         CMPA    >O2AdaptMin
         BNE     L185F6
         LDAA    >ShortTermTrim2,Z
@@ -12591,11 +12591,11 @@ Sub_1859A:
 L185C4:
         BRSET   $0027,Z,#$40,L185D2
         BSET    $27,Z,#$40
-        CLR     $026B,Z
+        CLR     >FuelSysRichCount2,Z
 L185D2:
         CLR     $0273,Z
-        INC     $026B,Z
-        LDAA    $026B,Z
+        INC     >FuelSysRichCount2,Z
+        LDAA    >FuelSysRichCount2,Z
         BRCLR   $02DE,Z,#$80,L185EA
         CMPA    $0772,Z
         BRA     L185EE
@@ -12608,7 +12608,7 @@ L185EE:
 L185F6:
         BRCLR   $0027,Z,#$40,L18604
         BCLR    $27,Z,#$40
-        CLR     $026B,Z
+        CLR     >FuelSysRichCount2,Z
 L18604:
         RTS
 
@@ -12617,7 +12617,7 @@ L18604:
 ; Called from: Sub_18522
 ;---------------------------------------------------------------------------------------------------
 Sub_18606:
-        LDAA    $0459,Z
+        LDAA    >O2AdaptValue2,Z
         LDAB    >ShortTermTrim2,Z
         JSR     Sub_18A32
         STAB    $0267,Z
@@ -12687,7 +12687,7 @@ L186BA:
 Sub_186BC:
         BCLR    $27,Z,#$50
         CLR     $0269,Z
-        CLR     $026B,Z
+        CLR     >FuelSysRichCount2,Z
         LDAA    #$80
         CMPA    $D8,Z
         BEQ     L186EA
@@ -12707,7 +12707,7 @@ L186EA:
 ;---------------------------------------------------------------------------------------------------
 Sub_186EC:
         BRCLR   >MonitorDisableFlags,Z,#$07,L186F8
-        CLR     $0270,Z
+        CLR     >FuelSysRichFaults,Z
         BRA     L1873A
 L186F8:
         BRCLR   $0110,Z,#$01,L18708
@@ -12743,7 +12743,7 @@ L18756:
 ; Called from: Sub_186EC
 ;---------------------------------------------------------------------------------------------------
 Sub_18758:
-        LDAA    $0458,Z
+        LDAA    >O2AdaptValue1,Z
         CMPA    >O2AdaptMax
         BNE     L1879E
         LDAA    >ShortTermTrim1,Z
@@ -12753,7 +12753,7 @@ Sub_18758:
         BSET    $26,Z,#$04
         CLR     $026A,Z
 L1877A:
-        CLR     $0270,Z
+        CLR     >FuelSysRichFaults,Z
         INC     $026A,Z
         LDAA    $026A,Z
         BRCLR   $02DE,Z,#$80,L18792
@@ -12777,7 +12777,7 @@ L187AC:
 ; Called from: Sub_186EC
 ;---------------------------------------------------------------------------------------------------
 Sub_187AE:
-        LDAA    $0458,Z
+        LDAA    >O2AdaptValue1,Z
         LDAB    >ShortTermTrim1,Z
         JSR     Sub_18A32
         STAB    $0266,Z
@@ -12794,7 +12794,7 @@ L187D4:
         BSET    $26,Z,#$01
         CLR     $0268,Z
 L187EA:
-        CLR     $0270,Z
+        CLR     >FuelSysRichFaults,Z
         INC     $0268,Z
         LDAA    $0268,Z
         BRCLR   $02DE,Z,#$80,L18802
@@ -12811,9 +12811,9 @@ L1880E:
         LDX     #$EF00
         JSR     Sub_1F9EA
         BNE     L1883E
-        LDAA    $0270,Z
+        LDAA    >FuelSysRichFaults,Z
         INCA
-        STAA    $0270,Z
+        STAA    >FuelSysRichFaults,Z
         CMPA    >FuelSysRichFaultCount
         BCS     L1883E
         BSET    $C0,Z,#$40
@@ -12863,10 +12863,10 @@ Sub_1887E:
 L1888A:
         BRCLR   $0110,Z,#$01,L1889A
         LDAA    >FuelSysDelay
-        STAA    $026F,Z
+        STAA    >FuelSysDelay2,Z
         BRA     L188CC
 L1889A:
-        TST     $026F,Z
+        TST     >FuelSysDelay2,Z
         BNE     L188CC
         BRCLR   >EngineStateFlags,Z,#$80,L188CC
         BRCLR   >O2ActiveFlags,Z,#$40,L188CC
@@ -12885,7 +12885,7 @@ L188CC:
 L188DA:
         BRCLR   $0027,Z,#$04,L188E8
         BCLR    $27,Z,#$04
-        CLR     $026B,Z
+        CLR     >FuelSysRichCount2,Z
 L188E8:
         RTS
 
@@ -12894,7 +12894,7 @@ L188E8:
 ; Called from: Sub_1887E
 ;---------------------------------------------------------------------------------------------------
 Sub_188EA:
-        LDAA    $0459,Z
+        LDAA    >O2AdaptValue2,Z
         CMPA    >O2AdaptMax
         BNE     L18930
         LDAA    >ShortTermTrim2,Z
@@ -12902,11 +12902,11 @@ Sub_188EA:
         BNE     L18930
         BRSET   $0027,Z,#$04,L1890C
         BSET    $27,Z,#$04
-        CLR     $026B,Z
+        CLR     >FuelSysRichCount2,Z
 L1890C:
         CLR     $0271,Z
-        INC     $026B,Z
-        LDAA    $026B,Z
+        INC     >FuelSysRichCount2,Z
+        LDAA    >FuelSysRichCount2,Z
         BRCLR   $02DE,Z,#$80,L18924
         CMPA    $0772,Z
         BRA     L18928
@@ -12919,7 +12919,7 @@ L18928:
 L18930:
         BRCLR   $0027,Z,#$04,L1893E
         BCLR    $27,Z,#$04
-        CLR     $026B,Z
+        CLR     >FuelSysRichCount2,Z
 L1893E:
         RTS
 
@@ -12928,7 +12928,7 @@ L1893E:
 ; Called from: Sub_1887E
 ;---------------------------------------------------------------------------------------------------
 Sub_18940:
-        LDAA    $0459,Z
+        LDAA    >O2AdaptValue2,Z
         LDAB    >ShortTermTrim2,Z
         JSR     Sub_18A32
         STAB    $0267,Z
@@ -12989,7 +12989,7 @@ L189DE:
 Sub_189E0:
         BCLR    $27,Z,#$05
         CLR     $0269,Z
-        CLR     $026B,Z
+        CLR     >FuelSysRichCount2,Z
         LDAA    #$80
         CMPA    $D0,Z
         BEQ     L18A0E
@@ -13054,9 +13054,9 @@ Sub_18A54:
         BEQ     L18A5E
         DEC     $026E,Z
 L18A5E:
-        TST     $026F,Z
+        TST     >FuelSysDelay2,Z
         BEQ     L18A68
-        DEC     $026F,Z
+        DEC     >FuelSysDelay2,Z
 L18A68:
         RTS
 
@@ -13074,21 +13074,21 @@ Sub_18A6A:
         LBEQ    L18AA2
         CLRW    >SegmentRpm,Z
         CLRW    $0288,Z
-        CLRW    $028A,Z
+        CLRW    >MisfireRpmCol,Z
         CLRW    $028C,Z
         CLRW    $028E,Z
         CLRW    $0290,Z
         CLRW    $0292,Z
 L18A9A:
-        BCLR    $02C5,Z,#$04
+        BCLR    >MisfireFlags2,Z,#$04
         LBRA    L18B1E
 L18AA2:
         LBSR    Sub_197AA
         LBSR    Sub_191DE
-        BCLR    $EF,Z,#$08
+        BCLR    <MisfireFlags,Z,#$08
         LBSR    Sub_18D34
         BEQ     L18B1E
-        BSET    $EF,Z,#$08
+        BSET    <MisfireFlags,Z,#$08
         LBSR    MisfireDeviation
         BRSET   $02DE,Z,#$40,L18AC4
         BEQ     L18B1E
@@ -13097,7 +13097,7 @@ L18AC4:
         BNE     L18B1E
         LBSR    Sub_193E8
         LBSR    Sub_1970C
-        BRCLR   $01F0,Z,#$01,L18AFC
+        BRCLR   >Temp4F0,Z,#$01,L18AFC
         LDAA    $02B0,Z
         CMPA    #$FF
         BEQ     L18AE4
@@ -13119,7 +13119,7 @@ L18AFC:
         BEQ     L18B1E
         LBSR    Sub_18DF2
         LBSR    Sub_18FE6
-        TST     $02CB,Z
+        TST     >MisfireNoiseTimer,Z
         BNE     L18B1E
         TST     >MisfireHold,Z
         BNE     L18B1E
@@ -13140,12 +13140,12 @@ L18B22:
 MisfireDeviation:
         BRCLR   >MisfireOptions,#$10,L18B54
         LDED    >SegmentRpmConst2
-        STE     $0037,Z
+        STE     >SegmentTimePair2,Z
         STD     $39,Z
         LDED    >SegmentRpmConst3
-        STE     $003B,Z
+        STE     >SegmentTimePair3,Z
         STD     $3D,Z
-        CLRW    $00E9,Z
+        CLRW    >MisfireEventCount,Z
         BCLR    $02C7,Z,#$02
         LBRA    L18CA0
 L18B54:
@@ -13166,25 +13166,25 @@ L18B72:
         BRCLR   $02C7,Z,#$40,L18B98
         BCLR    $02C7,Z,#$40
         LDAB    >MisfireFilterFast
-        CMPB    $02C4,Z
+        CMPB    >MisfireFilter,Z
         LBLS    L18CA0
-        STAB    $02C4,Z
+        STAB    >MisfireFilter,Z
         LBRA    L18CA0
 L18B98:
         BRSET   $02C7,Z,#$10,L18BB2
         LDAB    >MisfireFilterSlow
-        CMPB    $02C4,Z
+        CMPB    >MisfireFilter,Z
         LBLS    L18C8A
-        STAB    $02C4,Z
+        STAB    >MisfireFilter,Z
         LBRA    L18C8A
 L18BB2:
-        TST     $02C4,Z
+        TST     >MisfireFilter,Z
         BEQ     L18BC6
-        BRCLR   $01F0,Z,#$01,L18CA0
-        DEC     $02C4,Z
+        BRCLR   >Temp4F0,Z,#$01,L18CA0
+        DEC     >MisfireFilter,Z
         LBRA    L18CA0
 L18BC6:
-        LDAA    $01F0,Z
+        LDAA    >Temp4F0,Z
         ANDA    #$09
         LBEQ    L18CA0
         LDAA    >CylinderCount
@@ -13206,10 +13206,10 @@ L18BE8:
         ADCE    #$0000
         SUBD    $0288,Z
         SBCE    #$0000
-        BCLR    $02C5,Z,#$08
-        STD     $01F6,Z
+        BCLR    >MisfireFlags2,Z,#$08
+        STD     >Temp4F6,Z
         BPL     L18C16
-        BSET    $02C5,Z,#$08
+        BSET    >MisfireFlags2,Z,#$08
 L18C16:
         TZX
         LDX     #$803B
@@ -13220,23 +13220,23 @@ L18C16:
         LDD     $01F8,Z
         ADDD    $028C,Z
         ADCE    #$0000
-        SUBD    $028A,Z
+        SUBD    >MisfireRpmCol,Z
         SBCE    #$0000
         BRA     L18C5A
 L18C40:
         CLRE
         LDD     >SegmentRpm,Z
-        ADDD    $028A,Z
+        ADDD    >MisfireRpmCol,Z
         ADCE    #$0000
         ASRE
         RORD
         SUBD    $0288,Z
         SBCE    #$0000
 L18C5A:
-        BCLR    $02C5,Z,#$08
-        STD     $01F6,Z
+        BCLR    >MisfireFlags2,Z,#$08
+        STD     >Temp4F6,Z
         BPL     L18C68
-        BSET    $02C5,Z,#$08
+        BSET    >MisfireFlags2,Z,#$08
 L18C68:
         TZX
         LDX     #$8037
@@ -13245,20 +13245,20 @@ L18C68:
         LDED    >SegmentRpmConst2
         JSR     Sub_199B8
         BRCLR   $02C7,Z,#$20,L18C8A
-        LDD     $E9,Z
+        LDD     <MisfireEventCount,Z
         ADDD    #$01
         BEQ     L18C8A
-        STD     $E9,Z
+        STD     <MisfireEventCount,Z
 L18C8A:
         BSET    $02C7,Z,#$08
-        LDD     $E9,Z
+        LDD     <MisfireEventCount,Z
         CPD     >MisfireEventCountMax
         BLS     L18CA0
-        BRSET   $0021,Z,#$80,L18CA0
+        BRSET   >FuelModeFlags2,Z,#$80,L18CA0
         BSET    $02C7,Z,#$02
 L18CA0:
         LDD     >MisfireRpmDevLimit
-        LDE     $00EB,Z
+        LDE     >MisfireRpmDev,Z
         BPL     L18CAC
         NEGE
 L18CAC:
@@ -13274,7 +13274,7 @@ L18CBC:
         BRCLR   $02C7,Z,#$02,L18D20
         BRCLR   $02C7,Z,#$04,L18D20
         BCLR    $02C7,Z,#$08
-        BSET    $EF,Z,#$40
+        BSET    <MisfireFlags,Z,#$40
         BSET    $BF,Z,#$49
         LDAB    #$80
         STAB    $C8,Z
@@ -13283,12 +13283,12 @@ L18CDA:
         BRCLR   $02C7,Z,#$02,L18CE4
         BCLR    $02C7,Z,#$08
 L18CE4:
-        BRCLR   $00EF,Z,#$40,L18D10
+        BRCLR   >MisfireFlags,Z,#$40,L18D10
         LDAB    $C8,Z
         ANDB    #$7F
         CMPB    #$04
         BCS     L18CFA
-        BCLR    $EF,Z,#$40
+        BCLR    <MisfireFlags,Z,#$40
         CLR     $C8,Z
         BRA     L18D20
 L18CFA:
@@ -13304,9 +13304,9 @@ L18D06:
         BSET    $BF,Z,#$40
         BRA     L18D20
 L18D10:
-        BRSET   $00EF,Z,#$80,L18D24
+        BRSET   >MisfireFlags,Z,#$80,L18D24
         BRCLR   $02C7,Z,#$02,L18D20
-        BSET    $EF,Z,#$80
+        BSET    <MisfireFlags,Z,#$80
 L18D20:
         CLRA
         BRA     L18D26
@@ -13335,7 +13335,7 @@ L18D2A:
 Sub_18D34:
         BRCLR   >Options033E,#$04,L18DBA
         BRCLR   $00BF,Z,#$80,L18DBA
-        BRCLR   $02C5,Z,#$04,L18DBA
+        BRCLR   >MisfireFlags2,Z,#$04,L18DBA
         TST     $04EB,Z
         LBNE    L18DBA
         BRSET   $02DE,Z,#$40,L18D66
@@ -13357,22 +13357,22 @@ L18D7E:
         BLS     L18DBA
 L18D84:
         BRCLR   $02D6,Z,#$80,L18D90
-        BCLR    $02C5,Z,#$03
+        BCLR    >MisfireFlags2,Z,#$03
         BRA     L18DB6
 L18D90:
-        BCLR    $02C5,Z,#$02
+        BCLR    >MisfireFlags2,Z,#$02
         LDY     #$33B0
         JSR     Sub_1F952
         BEQ     L18DA2
-        BSET    $02C5,Z,#$02
+        BSET    >MisfireFlags2,Z,#$02
 L18DA2:
         LDY     #$3373
         JSR     Sub_1F952
         BEQ     L18DB2
-        BSET    $02C5,Z,#$01
+        BSET    >MisfireFlags2,Z,#$01
         BRA     L18DBA
 L18DB2:
-        BCLR    $02C5,Z,#$01
+        BCLR    >MisfireFlags2,Z,#$01
 L18DB6:
         LDAA    #$FF
         BRA     L18DBC
@@ -13415,21 +13415,21 @@ L18DEA:
 ; Called from: Sub_18A6A
 ;---------------------------------------------------------------------------------------------------
 Sub_18DF2:
-        BRSET   $00EF,Z,#$10,L18FE4
+        BRSET   >MisfireFlags,Z,#$10,L18FE4
         TST     >MisfireHold,Z
         LBNE    L18FE4
         LDD     $0294,Z
         LBLE    L18F94
         LDE     $0296,Z
-        STE     $01FC,Z
+        STE     >Temp4FC,Z
         LBMI    L18F94
         CPE     >MisfireChangeMax
         LBHI    L18E8A
         LDAA    >MisfireLoad,Z
         LDX     #MisfireLoadScale
         JSR     Lookup2D
-        LDAB    $028A,Z
-        BRCLR   $00EF,Z,#$20,L18E3E
+        LDAB    >MisfireRpmCol,Z
+        BRCLR   >MisfireFlags,Z,#$20,L18E3E
         TBA
         LDX     #MisfireLoadScaleDrive
         JSR     Lookup2D
@@ -13460,7 +13460,7 @@ L18E56:
         BCC     L18E7E
         LDE     #$FFFF
 L18E7E:
-        STE     $02A6,Z
+        STE     >MisfireThreshValue,Z
         CPE     $0296,Z
         LBHI    L18F94
 L18E8A:
@@ -13484,17 +13484,17 @@ L18EC2:
         LDAA    >MisfireLoad,Z
         LDX     #MisfireWeightLoadScale
         JSR     Lookup2D
-        STAA    $01FE,Z
-        LDAB    $028A,Z
-        LDAA    $01FE,Z
+        STAA    >Temp4FE,Z
+        LDAB    >MisfireRpmCol,Z
+        LDAA    >Temp4FE,Z
         TDE
         LDX     #MisfireWeight
         JSR     Lookup3D
-        STAA    $01FE,Z
+        STAA    >Temp4FE,Z
         TED
         LDX     #MisfireWeight2
         JSR     Lookup3D
-        STAA    $01FF,Z
+        STAA    >Temp4FF,Z
         TZX
         LDX     #$82AA
         TZY
@@ -13506,7 +13506,7 @@ L18F0E:
         ADDE    #$01
         LSRA
         BCC     L18F0E
-        LDAB    $01FE,Z
+        LDAB    >Temp4FE,Z
         LDAA    E,X
         ABA
         BCC     L18F20
@@ -13519,28 +13519,28 @@ L18F20:
         LDAA    #$FF
 L18F2C:
         STAA    $02B1,Z
-        LDAB    $01FF,Z
+        LDAB    >Temp4FF,Z
         LDAA    E,Y
         ABA
         BCC     L18F3C
         LDAA    #$FF
 L18F3C:
         STAA    E,Y
-        LDAA    $02BB,Z
+        LDAA    >MisfireCount2,Z
         ABA
         BCC     L18F48
         LDAA    #$FF
 L18F48:
-        STAA    $02BB,Z
+        STAA    >MisfireCount2,Z
         BRCLR   $CB,Z,#$04,L18F74
-        LDAB    $01FE,Z
+        LDAB    >Temp4FE,Z
         LDAA    $02B3,Z
         ABA
         BCC     L18F5E
         LDAA    #$FF
 L18F5E:
         STAA    $02B3,Z
-        LDAB    $01FF,Z
+        LDAB    >Temp4FF,Z
         LDAA    $02BE,Z
         ABA
         BCC     L18F70
@@ -13600,7 +13600,7 @@ Sub_18FE6:
         LDAA    $02B0,Z
         CMPA    #$64
         LBCS    L19178
-        BCLR    $02C5,Z,#$10
+        BCLR    >MisfireFlags2,Z,#$10
         BRCLR   $02DE,Z,#$40,L19032
         BRCLR   $02E1,Z,#$40,L1909A
         TZX
@@ -13625,7 +13625,7 @@ L19032:
         CMPA    $293D
         BCS     L19090
         BSET    $02B4,Z,#$80
-        BSET    $02C5,Z,#$10
+        BSET    >MisfireFlags2,Z,#$10
         BSET    $BF,Z,#$49
         BSET    $0110,Z,#$18
         BSET    $CB,Z,#$08
@@ -13671,9 +13671,9 @@ L1909A:
         CMPB    #$05
         LBCS    L19178
         BRSET   $02DE,Z,#$40,L19150
-        LDAA    $02BB,Z
+        LDAA    >MisfireCount2,Z
         CMPA    >MisfireCountLimitAlt
-        BRSET   $00EF,Z,#$20,L190F0
+        BRSET   >MisfireFlags,Z,#$20,L190F0
         CMPA    >MisfireCountLimitCat
 L190F0:
         BCS     L19150
@@ -13685,8 +13685,8 @@ L190F0:
         CLR     $02BE,Z
         LDAA    #$80
         STAA    $C8,Z
-        BRSET   $02C5,Z,#$20,L19150
-        BSET    $02C5,Z,#$20
+        BRSET   >MisfireFlags2,Z,#$20,L19150
+        BSET    >MisfireFlags2,Z,#$20
         BSET    $BF,Z,#$48
         BRCLR   $BF,Z,#$10,L19124
         BSET    $BF,Z,#$01
@@ -13707,10 +13707,10 @@ L1914A:
         LDAA    $02BF,Z
         STAA    $E8,Z
 L19150:
-        LDAA    $02BB,Z
+        LDAA    >MisfireCount2,Z
         STAA    $02CC,Z
         CLR     $02BC,Z
-        CLR     $02BB,Z
+        CLR     >MisfireCount2,Z
         CLR     $02B5,Z
         CLR     $02B6,Z
         CLR     $02B7,Z
@@ -13769,7 +13769,7 @@ L191DC:
 ; Called from: Sub_18A6A
 ;---------------------------------------------------------------------------------------------------
 Sub_191DE:
-        BRCLR   $01F0,Z,#$01,L191F6
+        BRCLR   >Temp4F0,Z,#$01,L191F6
         LDX     #$EF50
         JSR     Sub_1F9EA
         TST     >MisfireTransientHold,Z
@@ -13814,7 +13814,7 @@ L1925C:
         BCLR    $02C6,Z,#$20
 L19260:
         LDAA    >RevLimit
-        BRSET   $1D,Z,#$20,L1926C
+        BRSET   <DriveFlags,Z,#$20,L1926C
         LDAA    >RevLimitAlt
 L1926C:
         CMPA    >SegmentRpm,Z
@@ -13831,7 +13831,7 @@ L1928A:
         LDAA    >MisfireHoldDefault
         BRCLR   $02DE,Z,#$40,L1929E
         BRSET   $02C7,Z,#$02,L1929E
-        LDAA    $030C,Z
+        LDAA    >MisfireHoldRpmValue,Z
 L1929E:
         CMPA    >SegmentRpm,Z
         BCC     L192B8
@@ -13849,17 +13849,17 @@ L192BC:
         CMPA    >MisfireDecelLeanMin
         BCS     L192EE
 L192C8:
-        TST     $0469,Z
+        TST     >DecelLeanTimeFactor,Z
         BNE     L192EE
-        TST     $04AD,Z
+        TST     >HotEnrich,Z
         BNE     L192EE
-        LDAA    $21,Z
+        LDAA    <FuelModeFlags2,Z
         ANDA    #$C0
         BNE     L192EE
-        LDAA    $0695,Z
+        LDAA    >EventSparkFlags,Z
         ANDA    #$0C
         BNE     L192EE
-        BRSET   $0695,Z,#$10,L192EE
+        BRSET   >EventSparkFlags,Z,#$10,L192EE
         BCLR    $02C6,Z,#$08
         BRA     L19300
 L192EE:
@@ -13894,7 +13894,7 @@ L1932E:
         STAB    >MisfireTransientHold,Z
         BRA     L19370
 L19348:
-        BRSET   $00EF,Z,#$20,L1935A
+        BRSET   >MisfireFlags,Z,#$20,L1935A
         TST     $02B0,Z
         BNE     L19370
         TST     $02BC,Z
@@ -13904,18 +13904,18 @@ L1935A:
         CPE     >MisfireNoiseLevel,Z
         BCC     L19370
         BRSET   $02DE,Z,#$40,L19370
-        BSET    $EF,Z,#$20
+        BSET    <MisfireFlags,Z,#$20
         BRA     L19374
 L19370:
-        BCLR    $EF,Z,#$20
+        BCLR    <MisfireFlags,Z,#$20
 L19374:
         BRSET   >ThrottleState,Z,#$80,L19386
-        BRCLR   $02C5,Z,#$40,L193A4
-        BCLR    $02C5,Z,#$40
+        BRCLR   >MisfireFlags2,Z,#$40,L193A4
+        BCLR    >MisfireFlags2,Z,#$40
         BRA     L19390
 L19386:
-        BRSET   $02C5,Z,#$40,L193A4
-        BSET    $02C5,Z,#$40
+        BRSET   >MisfireFlags2,Z,#$40,L193A4
+        BSET    >MisfireFlags2,Z,#$40
 L19390:
         BSET    $02C6,Z,#$40
         LDAB    >MisfireHoldEvent
@@ -13927,7 +13927,7 @@ L193A4:
         BCLR    $02C6,Z,#$40
 L193A8:
         BRCLR   >MisfireOptions,#$40,L193E2
-        BRSET   $0695,Z,#$10,L193BA
+        BRSET   >EventSparkFlags,Z,#$10,L193BA
         BRCLR   $0696,Z,#$04,L193E2
 L193BA:
         LDAA    >SpeedDampSpark,Z
@@ -13956,9 +13956,9 @@ Sub_193E8:
         TSX
         TZY
         LDAB    #$00
-        STAB    $01FE,Z
+        STAB    >Temp4FE,Z
 L193F6:
-        LDAB    $01FE,Z
+        LDAB    >Temp4FE,Z
         CMPB    >CylinderCount
         BCC     L19428
         ASLB
@@ -13976,7 +13976,7 @@ L1941A:
         STD     $02,X
         STE     $0000,X
         PULM    K,X
-        INC     $01FE,Z
+        INC     >Temp4FE,Z
         BRA     L193F6
 L19428:
         LDAB    #$08
@@ -13986,7 +13986,7 @@ L19428:
         PULM    K
         LDE     $0000,Y
         LDD     $02,Y
-        STE     $01F6,Z
+        STE     >Temp4F6,Z
         STD     $01F8,Z
         STD     $0294,Z
         LDAB    #$01
@@ -14001,8 +14001,8 @@ L1944A:
         ABY
         LDD     $02,Y
         LDE     $0000,Y
-        STE     $01FC,Z
-        STD     $01FE,Z
+        STE     >Temp4FC,Z
+        STD     >Temp4FE,Z
         LDAB    $01FA,Z
         DECB
         STAB    $01FB,Z
@@ -14013,13 +14013,13 @@ L19476:
         SXT
         ASLD
         ASLD
-        STD     $01F4,Z
+        STD     >Temp4F4,Z
         TXY
         ADY
         LDD     $02,Y
         LDE     $0000,Y
-        SUBD    $01FE,Z
-        SBCE    $01FC,Z
+        SUBD    >Temp4FE,Z
+        SBCE    >Temp4FC,Z
         BNE     L194A2
         XGDX
         AIX     #$00
@@ -14027,7 +14027,7 @@ L19476:
 L194A2:
         BLE     L194BE
         TXY
-        LDD     $01F4,Z
+        LDD     >Temp4F4,Z
         ADY
         LDE     $0000,Y
         LDD     $02,Y
@@ -14043,8 +14043,8 @@ L194BE:
         ASLD
         ASLD
         ADY
-        LDE     $01FC,Z
-        LDD     $01FE,Z
+        LDE     >Temp4FC,Z
+        LDD     >Temp4FE,Z
         STE     $0000,Y
         STD     $02,Y
         INC     $01FA,Z
@@ -14054,7 +14054,7 @@ L194E4:
         CLRA
         LDAB    >CylinderCount
         ASLD
-        STD     $01F4,Z
+        STD     >Temp4F4,Z
         ADY
         LDE     $0000,Y
         LDD     $02,Y
@@ -14062,12 +14062,12 @@ L194E4:
         ADCE    $FFFC,Y
         ASRE
         RORD
-        STE     $01FC,Z
-        STD     $01FE,Z
-        LDE     $01F6,Z
+        STE     >Temp4FC,Z
+        STD     >Temp4FE,Z
+        LDE     >Temp4F6,Z
         LDD     $01F8,Z
-        SUBD    $01FE,Z
-        SBCE    $01FC,Z
+        SUBD    >Temp4FE,Z
+        SBCE    >Temp4FC,Z
         AIS     #$18
         RTS
 
@@ -14076,10 +14076,10 @@ L194E4:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_19522:
-        LDD     $E9,Z
+        LDD     <MisfireEventCount,Z
         CPD     >MisfireEventCountMax
         BCS     L1952E
-        CLRW    $00E9,Z
+        CLRW    >MisfireEventCount,Z
 L1952E:
         RTS
 
@@ -14157,9 +14157,9 @@ L195CA:
         BEQ     L195D8
         DEC     >MisfireHold,Z
 L195D8:
-        TST     $02CB,Z
+        TST     >MisfireNoiseTimer,Z
         BEQ     L195E4
-        DEC     $02CB,Z
+        DEC     >MisfireNoiseTimer,Z
         BRA     L1960A
 L195E4:
         LDAB    $296C
@@ -14173,13 +14173,13 @@ L195E4:
         STE     >MisfireNoisePeak,Z
         BEQ     L1960A
         LDAA    $296D
-        STAA    $02CB,Z
+        STAA    >MisfireNoiseTimer,Z
 L1960A:
         ORP     #$00E0
         LDAA    >MisfireLoad,Z
         LDX     #Tab2D_0723
         JSR     Lookup2D
-        LDAB    $028A,Z
+        LDAB    >MisfireRpmCol,Z
         ANDP    #$FF1F
         BRCLR   >MisfireOptions,#$20,L1963A
         LDX     #Tab3D_2970
@@ -14189,10 +14189,10 @@ L1960A:
         CPD     >MisfireNoisePeak,Z
         BLS     L19640
 L1963A:
-        BCLR    $EF,Z,#$10
+        BCLR    <MisfireFlags,Z,#$10
         BRA     L19644
 L19640:
-        BSET    $EF,Z,#$10
+        BSET    <MisfireFlags,Z,#$10
 L19644:
         RTS
 
@@ -14203,15 +14203,15 @@ L19644:
 Sub_19646:
         CLRW    >SegmentRpm,Z
         CLRW    $0288,Z
-        CLRW    $028A,Z
+        CLRW    >MisfireRpmCol,Z
         CLRW    $028C,Z
         CLRW    $028E,Z
         CLRW    $0290,Z
         CLRW    $0292,Z
         CLRW    $0296,Z
-        CLRW    $029E,Z
+        CLRW    >MisfireDevInput,Z
         CLRW    >MisfireChangeFiltered,Z
-        CLRW    $02A0,Z
+        CLRW    >MisfireRef,Z
         CLRW    $02A2,Z
         CLRW    >MisfireNoisePeak,Z
         CLRW    >MisfireNoiseLevel,Z
@@ -14232,7 +14232,7 @@ Sub_19646:
         CLR     $02B8,Z
         CLR     $02B9,Z
         CLR     $02BA,Z
-        CLR     $02BB,Z
+        CLR     >MisfireCount2,Z
         CLR     $02BC,Z
         CLR     $02BD,Z
         CLR     $02BE,Z
@@ -14241,15 +14241,15 @@ Sub_19646:
         CLR     >MisfireLoad,Z
         CLR     >MisfireEnable,Z
         CLR     >MisfireTransientHold,Z
-        CLR     $02C4,Z
+        CLR     >MisfireFilter,Z
         CLR     $0309,Z
-        CLR     $02C5,Z
+        CLR     >MisfireFlags2,Z
         CLR     $02C6,Z
         CLR     $02C7,Z
         CLR     $02C8,Z
         CLR     $02CA,Z
         CLR     >MisfireHold,Z
-        CLR     $02CB,Z
+        CLR     >MisfireNoiseTimer,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -14263,28 +14263,28 @@ Sub_1970C:
         BPL     L1971A
         NEGE
 L1971A:
-        STE     $029E,Z
+        STE     >MisfireDevInput,Z
         LDD     >MisfireChangeFiltered,Z
         PSHM    D,E
         LDAA    >MisfireChangeFilter
         JSR     Blend16
         AIS     #$04
         STD     >MisfireChangeFiltered,Z
-        LDE     $02A0,Z
+        LDE     >MisfireRef,Z
         LDD     $0296,Z
         BPL     L1974E
         NEGD
         CPD     >MisfireRefChangeMin
         BLS     L1974E
         BRSET   $02C8,Z,#$80,L1974E
-        STD     $02A0,Z
+        STD     >MisfireRef,Z
 L1974E:
         BRCLR   $02C8,Z,#$80,L1975E
         LDD     $0296,Z
         BPL     L1975E
         BCLR    $02C8,Z,#$80
 L1975E:
-        SUBE    $02A0,Z
+        SUBE    >MisfireRef,Z
         BPL     L19766
         NEGE
 L19766:
@@ -14292,8 +14292,8 @@ L19766:
         LDAA    #$01
         LDAB    >MisfireNoiseGain
         EMUL
-        STE     $01FC,Z
-        STD     $01FE,Z
+        STE     >Temp4FC,Z
+        STD     >Temp4FE,Z
         LDE     $01FD,Z
         CPE     >MisfireNoisePeak,Z
         BLS     L19788
@@ -14302,7 +14302,7 @@ L19788:
         LDAA    >MisfireLoad,Z
         LDX     #MisfireLoadScale
         JSR     Lookup2D
-        LDAB    $028A,Z
+        LDAB    >MisfireRpmCol,Z
         LDX     #MisfireNoiseRef
         JSR     Lookup3D
         LDAB    #$08
@@ -14327,7 +14327,7 @@ Sub_197AA:
         BRSET   >Options032A,#$40,L197D0
         LDX     #$4684
 L197D0:
-        LDAA    $19,Z
+        LDAA    <CylinderIndex,Z
 L197D2:
         CMPA    $00,X
         BEQ     L197DA
@@ -14335,17 +14335,17 @@ L197D2:
         BRA     L197D2
 L197DA:
         LDD     $01,X
-        STD     $01F0,Z
+        STD     >Temp4F0,Z
         LDD     $0290,Z
         STD     $0292,Z
         LDD     $028E,Z
         STD     $0290,Z
         LDD     $028C,Z
         STD     $028E,Z
-        LDD     $028A,Z
+        LDD     >MisfireRpmCol,Z
         STD     $028C,Z
         LDD     $0288,Z
-        STD     $028A,Z
+        STD     >MisfireRpmCol,Z
         LDD     >SegmentRpm,Z
         STD     $0288,Z
         BRSET   >MisfireOptions,#$04,L19874
@@ -14353,28 +14353,28 @@ L197DA:
         SDE
         NEGE
         XGEX
-        STX     $01F4,Z
+        STX     >Temp4F4,Z
         LDED    >SegmentRpmConst
         EDIV
         STX     >SegmentRpmFast,Z
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L1984C
-        LDAA    $01F0,Z
+        LDAA    >Temp4F0,Z
         ANDA    #$24
         BEQ     L1984C
-        LDE     $003B,Z
+        LDE     >SegmentTimePair3,Z
         LDD     $3D,Z
-        LDX     $01F4,Z
+        LDX     >Temp4F4,Z
         EDIV
         BRA     L19860
 L1984C:
-        LDAA    $01F0,Z
+        LDAA    >Temp4F0,Z
         ANDA    #$09
         BNE     L19860
-        LDE     $0037,Z
+        LDE     >SegmentTimePair2,Z
         LDD     $39,Z
-        LDX     $01F4,Z
+        LDX     >Temp4F4,Z
         EDIV
 L19860:
         STX     >SegmentRpm,Z
@@ -14397,7 +14397,7 @@ L19886:
 L1989A:
         LDE     $0810,Z
         XGEX
-        STX     $01F4,Z
+        STX     >Temp4F4,Z
         LDAA    $0605,Z
         BEQ     L198CC
         LDED    >SegmentRpmConst
@@ -14421,13 +14421,13 @@ L198D0:
         LDAA    >CylinderCount
         CMPA    #$06
         BNE     L1991E
-        LDAA    $01F0,Z
+        LDAA    >Temp4F0,Z
         ANDA    #$24
         BEQ     L1991E
-        LDX     $01F4,Z
+        LDX     >Temp4F4,Z
         LDAA    $0605,Z
         BEQ     L19914
-        LDE     $003B,Z
+        LDE     >SegmentTimePair3,Z
         LDD     $3D,Z
         PSHM    D,E,X
         TSY
@@ -14442,19 +14442,19 @@ L198FE:
         PULM    X,E,D
         BRA     L1991A
 L19914:
-        LDE     $003B,Z
+        LDE     >SegmentTimePair3,Z
         LDD     $3D,Z
 L1991A:
         EDIV
         BRA     L1995C
 L1991E:
-        LDAA    $01F0,Z
+        LDAA    >Temp4F0,Z
         ANDA    #$09
         BNE     L1995C
-        LDX     $01F4,Z
+        LDX     >Temp4F4,Z
         LDAA    $0605,Z
         BEQ     L19954
-        LDE     $0037,Z
+        LDE     >SegmentTimePair2,Z
         LDD     $39,Z
         PSHM    D,E,X
         TSY
@@ -14469,7 +14469,7 @@ L1993E:
         PULM    X,E,D
         BRA     L1995A
 L19954:
-        LDE     $0037,Z
+        LDE     >SegmentTimePair2,Z
         LDD     $39,Z
 L1995A:
         EDIV
@@ -14479,18 +14479,18 @@ L1995C:
         SUBD    >SegmentRpm,Z
         STD     >RpmRate,Z
 L1996C:
-        BRSET   $02C5,Z,#$04,L199B6
-        BRCLR   $00EF,Z,#$80,L1997C
-        CLRW    $00E9,Z
+        BRSET   >MisfireFlags2,Z,#$04,L199B6
+        BRCLR   >MisfireFlags,Z,#$80,L1997C
+        CLRW    >MisfireEventCount,Z
 L1997C:
-        LDAA    $01F0,Z
+        LDAA    >Temp4F0,Z
         ANDA    #$09
         BEQ     L199B6
         STX     $0292,Z
         STX     $0290,Z
         STX     $028E,Z
         STX     $028C,Z
-        STX     $028A,Z
+        STX     >MisfireRpmCol,Z
         STX     $0288,Z
         BCLR    $CB,Z,#$10
         BSET    $02C6,Z,#$80
@@ -14499,7 +14499,7 @@ L1997C:
         BLS     L199B2
         STAB    >MisfireTransientHold,Z
 L199B2:
-        BSET    $02C5,Z,#$04
+        BSET    >MisfireFlags2,Z,#$04
 L199B6:
         RTS
 
@@ -14510,7 +14510,7 @@ L199B6:
 Sub_199B8:
         PSHM    D,E
         LDD     $00,Y
-        LDE     $01F6,Z
+        LDE     >Temp4F6,Z
         PSHM    D,E
         LDAA    >MisfireDevFilter
         JSR     Blend16Signed
@@ -14520,7 +14520,7 @@ Sub_199B8:
         BRCLR   >MisfireOptions,#$08,L19AB0
         BSET    $02C7,Z,#$20
         PSHM    X,K
-        LDD     $01F6,Z
+        LDD     >Temp4F6,Z
         BPL     L199E6
         NEGD
 L199E6:
@@ -14547,21 +14547,21 @@ L199F0:
         BEQ     L19A22
         LDD     #$FFFF
 L19A22:
-        STD     $01F6,Z
+        STD     >Temp4F6,Z
         PULM    K,X
         LDE     $0000,X
         LDD     $02,X
-        BRSET   $02C5,Z,#$08,L19A70
-        ADDD    $01F6,Z
+        BRSET   >MisfireFlags2,Z,#$08,L19A70
+        ADDD    >Temp4F6,Z
         ADCE    #$0000
-        STE     $01F2,Z
-        STD     $01F4,Z
+        STE     >Temp4F2,Z
+        STD     >Temp4F4,Z
         PULM    E,D
         ADDD    >MisfirePeriodOffsetLo
         ADCE    >MisfirePeriodOffsetHi
         PSHM    D,E
-        SUBD    $01F4,Z
-        SBCE    $01F2,Z
+        SUBD    >Temp4F4,Z
+        SBCE    >Temp4F2,Z
         BNE     L19A5C
         TSTD
 L19A5C:
@@ -14570,20 +14570,20 @@ L19A5C:
         BSET    $02C7,Z,#$04
         BRA     L19AAA
 L19A66:
-        LDE     $01F2,Z
-        LDD     $01F4,Z
+        LDE     >Temp4F2,Z
+        LDD     >Temp4F4,Z
         BRA     L19AAA
 L19A70:
-        SUBD    $01F6,Z
+        SUBD    >Temp4F6,Z
         SBCE    #$0000
-        STE     $01F2,Z
-        STD     $01F4,Z
+        STE     >Temp4F2,Z
+        STD     >Temp4F4,Z
         PULM    E,D
         SUBD    >MisfirePeriodOffsetLo
         SBCE    >MisfirePeriodOffsetHi
         PSHM    D,E
-        SUBD    $01F4,Z
-        SBCE    $01F2,Z
+        SUBD    >Temp4F4,Z
+        SBCE    >Temp4F2,Z
         BNE     L19A98
         TSTD
 L19A98:
@@ -14592,8 +14592,8 @@ L19A98:
         BSET    $02C7,Z,#$04
         BRA     L19AAA
 L19AA2:
-        LDE     $01F2,Z
-        LDD     $01F4,Z
+        LDE     >Temp4F2,Z
+        LDD     >Temp4F4,Z
 L19AAA:
         STE     $0000,X
         STD     $02,X
@@ -14687,8 +14687,8 @@ L19B84:
 ;---------------------------------------------------------------------------------------------------
 Sub_19B86:
         BRCLR   <EngineStateFlags,Z,#$80,L19BD6
-        BRSET   $22,Z,#$01,L19BD6
-        BSET    $22,Z,#$01
+        BRSET   <ControlFlagsC33,Z,#$01,L19BD6
+        BSET    <ControlFlagsC33,Z,#$01
         BRCLR   $0170,Z,#$FF,L19BCA
         LDAA    $0173,Z
         CMPA    #$32
@@ -15053,12 +15053,12 @@ Sub_19E9C:
         BRSET   $0610,Z,#$10,L19EB2
         BRCLR   $0610,Z,#$08,L19EC4
         BCLR    $0610,Z,#$08
-        BSET    $0528,Z,#$01
+        BSET    >ControlFlags944,Z,#$01
         BRA     L19EC0
 L19EB2:
         BRSET   $0610,Z,#$08,L19EC4
         BSET    $0610,Z,#$08
-        BCLR    $0528,Z,#$01
+        BCLR    >ControlFlags944,Z,#$01
 L19EC0:
         JSR     Sub_11FAA
 L19EC4:
@@ -15074,13 +15074,13 @@ Sub_19EC6:
         BEQ     L19ED8
         BRA     L19EDE
 L19ED0:
-        BRSET   $1C,Z,#$04,L19ED8
-        BRCLR   $1C,Z,#$01,L19EDE
+        BRSET   <ChargeMonFlags,Z,#$04,L19ED8
+        BRCLR   <ChargeMonFlags,Z,#$01,L19EDE
 L19ED8:
-        BCLR    $0528,Z,#$02
+        BCLR    >ControlFlags944,Z,#$02
         BRA     L19EE2
 L19EDE:
-        BSET    $0528,Z,#$02
+        BSET    >ControlFlags944,Z,#$02
 L19EE2:
         RTS
 
@@ -15140,7 +15140,7 @@ L19F6E:
         ORAB    $04,Y
         STAB    E,Z
         BRCLR   $03,Y,#$20,L19F84
-        BSET    $1C,Z,#$01
+        BSET    <ChargeMonFlags,Z,#$01
 L19F84:
         BRSET   $03,Y,#$08,L19FAC
         BRCLR   $03,Y,#$40,L19FAC
@@ -15235,12 +15235,12 @@ L1A028:
         JMP     L1A10A
 L1A02C:
         LDD     >EventOptionWord
-        CMPA    $0301,Z
+        CMPA    >EventOption,Z
         BEQ     L1A03A
-        STD     $0301,Z
+        STD     >EventOption,Z
 L1A03A:
         CLRA
-        CMPA    $19,Z
+        CMPA    <CylinderIndex,Z
         BNE     L1A054
         BRCLR   $0302,Z,#$FF,L1A054
         DEC     $0302,Z
@@ -15248,7 +15248,7 @@ L1A03A:
         BNE     L1A054
         BSET    $0303,Z,#$01
 L1A054:
-        LDAA    $0301,Z
+        LDAA    >EventOption,Z
         ANDA    #$3F
         ANDA    $0300,Z
         LBEQ    L1A06A
@@ -15261,13 +15261,13 @@ L1A06E:
         JSR     Sub_1A0BE
 L1A078:
         LDD     >EventOptionWord
-        CMPA    $0301,Z
+        CMPA    >EventOption,Z
         BEQ     L1A08A
-        STD     $0301,Z
+        STD     >EventOption,Z
         JSR     Sub_1A0BE
 L1A08A:
         CLRA
-        CMPA    $19,Z
+        CMPA    <CylinderIndex,Z
         BNE     L1A0A4
         BRCLR   $0302,Z,#$FF,L1A0A4
         DEC     $0302,Z
@@ -15296,15 +15296,15 @@ Sub_1A0BE:
         BEQ     L1A0D2
         LDX     #$A134
 L1A0D2:
-        LDAB    $0301,Z
+        LDAB    >EventOption,Z
         ANDB    #$07
         ASLB
         ABX
         LDX     $00,X
         LDD     $00,X
-        STD     $01F0,Z
+        STD     >Temp4F0,Z
 L1A0E4:
-        LDD     $01F0,Z
+        LDD     >Temp4F0,Z
         ANDB    >TCNT_L,Z
         CBA
         BLT     L1A0E4
@@ -15325,7 +15325,7 @@ L1A10A:
 L1A112:
         LDAA    >CylinderCount
         DECA
-        CMPA    $19,Z
+        CMPA    <CylinderIndex,Z
         BNE     L1A128
         LDAA    $28E2
         STAA    $0302,Z
@@ -15395,7 +15395,7 @@ L1A222:
         LBRA    L1A334
 L1A22C:
         BRCLR   >ThrottleState,Z,#$80,L1A334
-        BRCLR   $001D,Z,#$20,L1A334
+        BRCLR   >DriveFlags,Z,#$20,L1A334
         LDAA    $0C,Z
         CMPA    $0426
         LBCS    L1A334
@@ -15406,7 +15406,7 @@ L1A22C:
 L1A254:
         BRSET   >SensorFaultFlags,Z,#$10,L1A334
         BRSET   >SensorFaultFlags,Z,#$20,L1A334
-        BRSET   $0221,Z,#$08,L1A334
+        BRSET   >FaultFlags505,Z,#$08,L1A334
         BRSET   $022B,Z,#$04,L1A334
         BRSET   $021C,Z,#$10,L1A334
         LDAA    >Map,Z
@@ -15522,7 +15522,7 @@ Sub_1A352:
         BRSET   $021D,Z,#$02,L1A51C
         BRSET   >SensorFaultFlags,Z,#$10,L1A51C
         BRSET   $0220,Z,#$01,L1A51C
-        BRSET   $0221,Z,#$08,L1A51C
+        BRSET   >FaultFlags505,Z,#$08,L1A51C
         BRSET   $022E,Z,#$20,L1A51C
         LDAA    $17,Z
         CMPA    $2CF5
@@ -16146,11 +16146,11 @@ L1AA5A:
         BEQ     L1AA7A
         LDAA    >SCDR_L,Z
         LDAA    #$12
-        LDAB    $03FE,Z
+        LDAB    >SciErrors,Z
         INCB
         CMPB    #$06
         BCC     L1AAAA
-        STAB    $03FE,Z
+        STAB    >SciErrors,Z
         LBRA    L1AAFE
 L1AA7A:
         BITA    #$40
@@ -16171,7 +16171,7 @@ L1AA98:
         BITB    #$30
         BNE     L1AAEC
 L1AAAA:
-        CLR     $03FE,Z
+        CLR     >SciErrors,Z
         STAA    $04E2,Z
         CMPA    #$14
         BEQ     L1AAC2
@@ -16337,8 +16337,8 @@ Sub_1AC36:
         LDAA    #$87
         CMPA    $051B,Z
         BNE     L1AC6C
-        STAB    $0592,Z
-        BCLR    $22,Z,#$10
+        STAB    >FuelTrimAdjustValue,Z
+        BCLR    <ControlFlagsC33,Z,#$10
         BRA     L1AC82
 L1AC66:
         LDE     #$0090
@@ -16411,7 +16411,7 @@ L1ACE8:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 Sub_1ACEA:
-        BRCLR   $0028,Z,#$04,L1AD52
+        BRCLR   >FieldFlags,Z,#$04,L1AD52
         LDAB    $04EB,Z
         CMPB    #$11
         BNE     L1AD4E
@@ -16447,7 +16447,7 @@ Sub_1AD18:
         LDAB    #$FF
 L1AD36:
         STAB    $06B9,Z
-        BSET    $28,Z,#$04
+        BSET    <FieldFlags,Z,#$04
         BRA     L1AD52
 L1AD40:
         LDAA    #$FF
@@ -16456,7 +16456,7 @@ L1AD42:
         CLR     $04EB,Z
         CLR     $04EC,Z
 L1AD4E:
-        BCLR    $28,Z,#$04
+        BCLR    <FieldFlags,Z,#$04
 L1AD52:
         RTS
 
@@ -16585,8 +16585,8 @@ L1AE80:
 L1AE86:
         BRSET   <ThrottleState,Z,#$80,L1AE98
         BRSET   >Options032E,#$08,L1AE9E
-        BRCLR   $1D,Z,#$20,L1AE9E
-        BCLR    $1D,Z,#$80
+        BRCLR   <DriveFlags,Z,#$20,L1AE9E
+        BCLR    <DriveFlags,Z,#$80
 L1AE98:
         BCLR    <ThrottleState,Z,#$02
         BRA     L1AEC4
@@ -16676,7 +16676,7 @@ L1AF38:
 L1AF46:
         BRA     Sub_1AF54
 L1AF48:
-        LDAA    $0664,Z
+        LDAA    >SparkAdvanceD11,Z
         BRA     Sub_1AF54
 L1AF4E:
         LDAA    $03CA,Z
@@ -16861,19 +16861,19 @@ L1B170:
 L1B178:
         LDAA    $04E3,Z
         BNE     L1B184
-        BCLR    $0652,Z,#$20
+        BCLR    >SparkFaultFlags,Z,#$20
         BRA     L1B1A8
 L1B184:
         LDAA    $04E4,Z
         BNE     L1B1BA
         BRSET   <ThrottleState,Z,#$80,L1B1AC
         BRSET   >Options032E,#$08,L1B198
-        BRSET   $1D,Z,#$20,L1B1B0
+        BRSET   <DriveFlags,Z,#$20,L1B1B0
 L1B198:
         COMA
         STAA    $04E4,Z
         LDAA    #$01
-        BSET    $0652,Z,#$20
+        BSET    >SparkFaultFlags,Z,#$20
         JMP     Sub_1AF54
 L1B1A8:
         CLRA
@@ -16889,7 +16889,7 @@ L1B1B2:
 L1B1BA:
         BRSET   <ThrottleState,Z,#$80,L1B1C8
         BRSET   >Options032E,#$08,L1B1CC
-        BRCLR   $1D,Z,#$20,L1B1CC
+        BRCLR   <DriveFlags,Z,#$20,L1B1CC
 L1B1C8:
         CLR     $04E2,Z
 L1B1CC:
@@ -16981,13 +16981,13 @@ L1B290:
         AIX     #$01
         CPX     #$8088
         BCS     L1B290
-        CLR     $0458,Z
-        CLR     $0459,Z
-        CLR     $062C,Z
+        CLR     >O2AdaptValue1,Z
+        CLR     >O2AdaptValue2,Z
+        CLR     >PurgeCellCount,Z
         CLR     >PurgeCellFlags,Z
-        BCLR    $DC,Z,#$38
+        BCLR    <FlexStartFlags,Z,#$38
         BSET    >O2ResetFlags,Z,#$03
-        BSET    $87,Z,#$40
+        BSET    <PurgeCellRichFlags,Z,#$40
         BRA     L1B2D0
 L1B2B8:
         ORP     #$00E0
@@ -17056,7 +17056,7 @@ L1B328:
         BITB    #$80
         LBNE    L1B448
         ORAB    #$80
-        BRSET   $0528,Z,#$04,L1B364
+        BRSET   >ControlFlags944,Z,#$04,L1B364
         ANDB    #$BF
         BRA     L1B366
 L1B364:
@@ -17253,8 +17253,8 @@ L1B532:
 L1B542:
         CLR     $04E7,Z
 L1B546:
-        BRSET   $02DD,Z,#$08,L1B55E
-        BRSET   $02DD,Z,#$04,L1B55E
+        BRSET   >LdpFlags3,Z,#$08,L1B55E
+        BRSET   >LdpFlags3,Z,#$04,L1B55E
         BRSET   $0241,Z,#$10,L1B55E
         BCLRW   $0812,Z,#$4000
 L1B55E:
@@ -17262,47 +17262,47 @@ L1B55E:
 L1B560:
         RTS
 L1B562:
-        BSET    $0527,Z,#$C0
+        BSET    >ControlFlags943,Z,#$C0
         BSETW   $0812,Z,#$0080
         LDAB    <MainLoopCounter,Z
         CMPB    #$3B
         BCS     L1B55E
-        BCLR    $0527,Z,#$C0
+        BCLR    >ControlFlags943,Z,#$C0
         CMPB    #$76
         BCS     L1B55E
-        BSET    $0527,Z,#$80
+        BSET    >ControlFlags943,Z,#$80
         BRA     L1B55E
 L1B580:
         JSR     Sub_1BBA0
-        BCLR    $0527,Z,#$08
+        BCLR    >ControlFlags943,Z,#$08
         RTS
 L1B58A:
         JSR     Sub_1BBA0
-        BSET    $0527,Z,#$10
+        BSET    >ControlFlags943,Z,#$10
         BRSET   >MainLoopCounter,Z,#$80,L1B59C
-        BCLR    $0527,Z,#$10
+        BCLR    >ControlFlags943,Z,#$10
 L1B59C:
         RTS
 L1B59E:
-        BSET    $0527,Z,#$02
+        BSET    >ControlFlags943,Z,#$02
         BRSET   >MainLoopCounter,Z,#$80,L1B5AC
-        BCLR    $0527,Z,#$02
+        BCLR    >ControlFlags943,Z,#$02
 L1B5AC:
         RTS
 L1B5AE:
-        LDE     $0527,Z
+        LDE     >ControlFlags943,Z
         BRCLR   >Options0335,#$08,L1B5BC
         ANDE    #$EFFB
 L1B5BC:
         BRSET   <MainLoopCounter,Z,#$80,L1B5C4
         ORE     #$0004
 L1B5C4:
-        STE     $0527,Z
+        STE     >ControlFlags943,Z
         RTS
 L1B5CA:
-        BSET    $0527,Z,#$01
+        BSET    >ControlFlags943,Z,#$01
         BRSET   >MainLoopCounter,Z,#$80,L1B5D8
-        BCLR    $0527,Z,#$01
+        BCLR    >ControlFlags943,Z,#$01
 L1B5D8:
         RTS
 L1B5DA:
@@ -17318,22 +17318,22 @@ L1B5E4:
         BNE     L1B5FE
         BRA     L1B614
 L1B5F6:
-        BSET    $0527,Z,#$04
+        BSET    >ControlFlags943,Z,#$04
 L1B5FA:
-        BSET    $0528,Z,#$20
+        BSET    >ControlFlags944,Z,#$20
 L1B5FE:
         BRSET   >Options032D,#$40,L1B60A
         BRCLR   >Options032D,#$20,L1B610
 L1B60A:
         BRCLR   >EquipmentFlags,Z,#$80,L1B614
 L1B610:
-        BSET    $0528,Z,#$08
+        BSET    >ControlFlags944,Z,#$08
 L1B614:
-        BSET    $0528,Z,#$10
+        BSET    >ControlFlags944,Z,#$10
         LDAB    <MainLoopCounter,Z
         CMPB    #$BA
         BCS     L1B622
-        BCLR    $0528,Z,#$10
+        BCLR    >ControlFlags944,Z,#$10
 L1B622:
         RTS
 L1B624:
@@ -17349,18 +17349,18 @@ L1B62E:
         BNE     L1B648
         BRA     L1B65E
 L1B640:
-        BSET    $0527,Z,#$04
+        BSET    >ControlFlags943,Z,#$04
 L1B644:
-        BSET    $0528,Z,#$20
+        BSET    >ControlFlags944,Z,#$20
 L1B648:
         BRSET   >Options032D,#$40,L1B654
         BRCLR   >Options032D,#$20,L1B65A
 L1B654:
         BRCLR   >EquipmentFlags,Z,#$80,L1B65E
 L1B65A:
-        BSET    $0528,Z,#$08
+        BSET    >ControlFlags944,Z,#$08
 L1B65E:
-        BSET    $0528,Z,#$10
+        BSET    >ControlFlags944,Z,#$10
         LDAB    <MainLoopCounter,Z
         CMPB    #$BA
         BCS     L1B6A4
@@ -17373,20 +17373,20 @@ L1B65E:
         BNE     L1B682
         BRA     L1B6A0
 L1B67A:
-        BCLR    $0527,Z,#$04
+        BCLR    >ControlFlags943,Z,#$04
 L1B67E:
-        BCLR    $0528,Z,#$20
+        BCLR    >ControlFlags944,Z,#$20
 L1B682:
         BRSET   >Options032D,#$40,L1B68E
         BRCLR   >Options032D,#$20,L1B694
 L1B68E:
         BRCLR   >EquipmentFlags,Z,#$80,L1B6A0
 L1B694:
-        BCLR    $0528,Z,#$08
+        BCLR    >ControlFlags944,Z,#$08
         BRSET   >Options0334,#$20,L1B6A0
         BRA     L1B6A4
 L1B6A0:
-        BCLR    $0528,Z,#$10
+        BCLR    >ControlFlags944,Z,#$10
 L1B6A4:
         RTS
 
@@ -17399,7 +17399,7 @@ Sub_1B6A6:
         LDAA    $04E7,Z
         CMPA    #$14
         BNE     L1B70A
-        LDE     $0527,Z
+        LDE     >ControlFlags943,Z
         LDAB    >Options0334
         BITB    #$08
         BNE     L1B6CA
@@ -17434,7 +17434,7 @@ L1B6FA:
 L1B6FE:
         ANDE    #$FFEF
 L1B702:
-        STE     $0527,Z
+        STE     >ControlFlags943,Z
         LBRA    L1B7C8
 L1B70A:
         LDAB    >Options0334
@@ -17446,18 +17446,18 @@ L1B70A:
         BNE     L1B724
         BRA     L1B73A
 L1B71C:
-        BSET    $0527,Z,#$04
+        BSET    >ControlFlags943,Z,#$04
 L1B720:
-        BSET    $0528,Z,#$20
+        BSET    >ControlFlags944,Z,#$20
 L1B724:
         BRSET   >Options032D,#$40,L1B730
         BRCLR   >Options032D,#$20,L1B736
 L1B730:
         BRCLR   >EquipmentFlags,Z,#$80,L1B73A
 L1B736:
-        BSET    $0528,Z,#$08
+        BSET    >ControlFlags944,Z,#$08
 L1B73A:
-        BSET    $0528,Z,#$10
+        BSET    >ControlFlags944,Z,#$10
         LDAA    <Count3s,Z
         CLRB
         LDX     #$0003
@@ -17475,20 +17475,20 @@ L1B73A:
         BNE     L1B76C
         BRA     L1B78A
 L1B764:
-        BCLR    $0527,Z,#$04
+        BCLR    >ControlFlags943,Z,#$04
 L1B768:
-        BCLR    $0528,Z,#$20
+        BCLR    >ControlFlags944,Z,#$20
 L1B76C:
         BRSET   >Options032D,#$40,L1B778
         BRCLR   >Options032D,#$20,L1B77E
 L1B778:
         BRCLR   >EquipmentFlags,Z,#$80,L1B78A
 L1B77E:
-        BCLR    $0528,Z,#$08
+        BCLR    >ControlFlags944,Z,#$08
         BRSET   >Options0334,#$20,L1B78A
         BRA     L1B7C8
 L1B78A:
-        BCLR    $0528,Z,#$10
+        BCLR    >ControlFlags944,Z,#$10
         BRA     L1B7C8
 L1B790:
         BRSET   >Options0335,#$02,L1B7B0
@@ -17541,7 +17541,7 @@ Sub_1B7F0:
         STAA    >TCTL1,Z
         LDAA    #$A7
         STAA    >CFORC,Z
-        LDE     $0527,Z
+        LDE     >ControlFlags943,Z
         ORE     #$CB84
         BRSET   $05B3,Z,#$04,L1B81A
         ORE     #$1800
@@ -17551,7 +17551,7 @@ L1B81A:
         BRSET   $05B3,Z,#$04,L1B82E
         ANDE    #$E7FF
 L1B82E:
-        STE     $0527,Z
+        STE     >ControlFlags943,Z
         BSR     Sub_1B84E
         BSR     Sub_1B7E0
         LBSR    Sub_1B9E6
@@ -17564,7 +17564,7 @@ L1B82E:
 ; Called from: Sub_1B7F0
 ;---------------------------------------------------------------------------------------------------
 Sub_1B842:
-        BCLR    $0527,Z,#$10
+        BCLR    >ControlFlags943,Z,#$10
         BCLRW   $086E,Z,#$C000
         RTS
 
@@ -17605,7 +17605,7 @@ L1B89E:
         LDX     #$F918
         LDE     #$2E20
 L1B8A8:
-        BCLR    $0527,Z,#$10
+        BCLR    >ControlFlags943,Z,#$10
         BRCLR   >MainLoopCounter,Z,#$7F,L1B8B4
         BRA     L1B8D6
 L1B8B4:
@@ -17652,7 +17652,7 @@ L1B90A:
         LDX     #$8838
         LDAA    #$80
 L1B912:
-        BCLR    $0527,Z,#$18
+        BCLR    >ControlFlags943,Z,#$18
         BRCLR   >MainLoopCounter,Z,#$7F,L1B91E
         BRA     L1B92E
 L1B91E:
@@ -17670,21 +17670,21 @@ L1B93E:
         RTS
 L1B940:
         BSETW   $0812,Z,#$0080
-        BSET    $0527,Z,#$C0
+        BSET    >ControlFlags943,Z,#$C0
         BRSET   >MainLoopCounter,Z,#$80,L1B954
-        BCLR    $0527,Z,#$40
+        BCLR    >ControlFlags943,Z,#$40
 L1B954:
         RTS
 L1B956:
         BSETW   $0812,Z,#$0080
-        BSET    $0527,Z,#$C0
+        BSET    >ControlFlags943,Z,#$C0
         BRSET   >MainLoopCounter,Z,#$80,L1B96A
-        BCLR    $0527,Z,#$80
+        BCLR    >ControlFlags943,Z,#$80
 L1B96A:
         RTS
 L1B96C:
         JSR     Sub_1BBA0
-        BCLR    $0527,Z,#$10
+        BCLR    >ControlFlags943,Z,#$10
         RTS
 L1B976:
         BSETW   $0812,Z,#$4000
@@ -17695,7 +17695,7 @@ L1B97E:
         BRCLR   <MainLoopCounter,Z,#$80,L1B98C
         EORA    #$08
 L1B98C:
-        STD     $0527,Z
+        STD     >ControlFlags943,Z
         STAB    $0526,Z
         RTS
 L1B996:
@@ -17752,11 +17752,11 @@ Sub_1B9E6:
 L1B9FE:
         RTS
 L1BA00:
-        BSET    $0528,Z,#$38
+        BSET    >ControlFlags944,Z,#$38
         LDAB    <MainLoopCounter,Z
         CMPB    #$BA
         BCS     L1BA0E
-        BCLR    $0528,Z,#$20
+        BCLR    >ControlFlags944,Z,#$20
 L1BA0E:
         RTS
 
@@ -18558,7 +18558,7 @@ L1C324:
         BRA     L1C352
 L1C330:
         BRCLR   $0339,#$02,L1CDA4
-        LDAB    $0458,Z
+        LDAB    >O2AdaptValue1,Z
         BRA     L1C352
 L1C33C:
         BRCLR   $0339,#$01,L1CDA4
@@ -18566,7 +18566,7 @@ L1C33C:
         BRA     L1C352
 L1C348:
         BRCLR   $033A,#$80,L1CDA4
-        LDAB    $0459,Z
+        LDAB    >O2AdaptValue2,Z
 L1C352:
         LDAA    #$01
         TSTB
@@ -18595,7 +18595,7 @@ L1C37E:
         ADCA    #$00
         LBRA    L1C47A
 L1C38A:
-        LDAA    $0664,Z
+        LDAA    >SparkAdvanceD11,Z
         ADDA    #$80
         LBRA    L1C47A
 L1C394:
@@ -19129,17 +19129,17 @@ L1C936:
         LDAB    $034B
         LBRA    L1CB9A
 L1C952:
-        BRCLR   $0135,Z,#$80,L1CDA4
+        BRCLR   >ObdTid21Status,Z,#$80,L1CDA4
         LDAA    #$00
         STAA    $03F5,Z
         CLRA
-        LDAB    $0136,Z
+        LDAB    >ObdTid21Result,Z
         TDE
         CMPB    $2BC1
         BLS     L1C978
         CMPB    $2BC2
         BLS     L1C982
-        BRCLR   $0135,Z,#$10,L1C982
+        BRCLR   >ObdTid21Status,Z,#$10,L1C982
 L1C978:
         CLRA
         LDAB    $2BC1
@@ -19153,7 +19153,7 @@ L1C98C:
         LDAA    #$00
         STAA    $03F5,Z
         CLRA
-        LDAB    $0138,Z
+        LDAB    >ObdTid22Result,Z
         TDE
         CMPB    $2BC3
         BLS     L1C9B2
@@ -19308,7 +19308,7 @@ L1CB6E:
         LDAA    #$80
         STAA    $03F5,Z
         CLRA
-        LDAB    $0147,Z
+        LDAB    >LdpStrokeResult,Z
         TDE
         LDAB    >LdpSmallLeakStrokeTime
         BRCLR   $0146,Z,#$80,L1CB96
@@ -19625,7 +19625,7 @@ Sub_1CF1A:
         BCS     L1CF66
 L1CF3E:
         BCLR    $02D6,Z,#$80
-        TST     $02DD,Z
+        TST     >LdpFlags3,Z
         BNE     L1CF78
         TST     $02DE,Z
         BNE     L1CF78
@@ -19735,9 +19735,9 @@ Sub_1D050:
         LDAB    >RefPeriod,Z
         CMPB    #$30
         BLS     L1D0A8
-        BRSET   $02DD,Z,#$80,L1D07E
+        BRSET   >LdpFlags3,Z,#$80,L1D07E
         CLR     $02D7,Z
-        BSET    $02DD,Z,#$80
+        BSET    >LdpFlags3,Z,#$80
 L1D07E:
         LDAA    <MainLoopCounter,Z
         ANDA    #$0F
@@ -19757,7 +19757,7 @@ L1D09A:
 L1D0A4:
         BCLR    $02D9,Z,#$08
 L1D0A8:
-        BCLR    $02DD,Z,#$80
+        BCLR    >LdpFlags3,Z,#$80
 L1D0AC:
         RTS
 
@@ -19781,9 +19781,9 @@ L1D0E6:
         LDAA    >FuelSenderScaled,Z
         CMPA    $0779,Z
         BHI     L1D11E
-        BRSET   $02DD,Z,#$40,L1D0FE
+        BRSET   >LdpFlags3,Z,#$40,L1D0FE
         CLR     $02D7,Z
-        BSET    $02DD,Z,#$40
+        BSET    >LdpFlags3,Z,#$40
 L1D0FE:
         LDAA    <MainLoopCounter,Z
         ANDA    #$1F
@@ -19800,7 +19800,7 @@ L1D11A:
         BCLR    $02D9,Z,#$20
 L1D11E:
         BCLR    $05B3,Z,#$04
-        BCLR    $02DD,Z,#$40
+        BCLR    >LdpFlags3,Z,#$40
 L1D126:
         RTS
         dc.b    $03,$9F,$00,$FE,$00,$EF,$03,$29,$00,$80,$02,$E5,$03,$C0,$00,$FB
@@ -19819,8 +19819,8 @@ Sub_1D158:
         CMPB    #$30
         LBLS    L1D29E
         BRCLR   >MainLoopPhaseMask,Z,#$40,L1D2CC
-        BRSET   $02DD,Z,#$08,L1D220
-        BRSET   $02DD,Z,#$04,L1D1C8
+        BRSET   >LdpFlags3,Z,#$08,L1D220
+        BRSET   >LdpFlags3,Z,#$04,L1D1C8
         TPD
         TBXK
         CLRB
@@ -19844,7 +19844,7 @@ L1D1B6:
         CLR     $02D7,Z
         BCLR    $02D9,Z,#$03
         BSETW   $0812,Z,#$4000
-        BSET    $02DD,Z,#$04
+        BSET    >LdpFlags3,Z,#$04
 L1D1C8:
         LDAA    $04F0,Z
         CMPA    $02D7,Z
@@ -19879,11 +19879,11 @@ L1D214:
         BCS     L1D1E2
         LBRA    L1D2CC
 L1D220:
-        BRSET   $02DD,Z,#$08,L1D236
+        BRSET   >LdpFlags3,Z,#$08,L1D236
         CLR     $02D7,Z
-        BCLR    $0527,Z,#$10
-        BSET    $02DD,Z,#$08
-        BCLR    $02DD,Z,#$04
+        BCLR    >ControlFlags943,Z,#$10
+        BSET    >LdpFlags3,Z,#$08
+        BCLR    >LdpFlags3,Z,#$04
 L1D236:
         LDAA    $04F1,Z
         CMPA    $02D7,Z
@@ -19927,11 +19927,11 @@ L1D290:
 L1D29A:
         BCLR    $02D9,Z,#$04
 L1D29E:
-        BRCLR   $02DD,Z,#$08,L1D2A8
-        BSET    $0527,Z,#$10
+        BRCLR   >LdpFlags3,Z,#$08,L1D2A8
+        BSET    >ControlFlags943,Z,#$10
 L1D2A8:
-        BCLR    $02DD,Z,#$04
-        BCLR    $02DD,Z,#$08
+        BCLR    >LdpFlags3,Z,#$04
+        BCLR    >LdpFlags3,Z,#$08
         CLR     $02E5,Z
         CLR     $02E6,Z
         CLR     $02E7,Z
@@ -19949,17 +19949,17 @@ Sub_1D2CE:
         BRCLR   $02D6,Z,#$80,L1D396
         BRCLR   $02E2,Z,#$20,L1D396
         BRCLR   >EngineStateFlags,Z,#$80,L1D396
-        BRSET   $001D,Z,#$20,L1D396
+        BRSET   >DriveFlags,Z,#$20,L1D396
         BRSET   >ThrottleState,Z,#$80,L1D396
         TST     $18,Z
         LBNE    L1D396
         LDAA    $04F6,Z
         CMPA    <Count3s,Z
         LBCC    L1D396
-        BRSET   $02DD,Z,#$10,L1D35A
-        BRSET   $02DD,Z,#$20,L1D310
+        BRSET   >LdpFlags3,Z,#$10,L1D35A
+        BRSET   >LdpFlags3,Z,#$20,L1D310
         CLR     $02D7,Z
-        BSET    $02DD,Z,#$20
+        BSET    >LdpFlags3,Z,#$20
 L1D310:
         LDAA    <EngineRpm,Z
         SUBA    $04F7,Z
@@ -19987,8 +19987,8 @@ L1D33A:
         BRA     L1D39A
 L1D34E:
         CLR     $02D7,Z
-        BCLR    $02DD,Z,#$20
-        BSET    $02DD,Z,#$10
+        BCLR    >LdpFlags3,Z,#$20
+        BSET    >LdpFlags3,Z,#$10
 L1D35A:
         LDAA    <IdleTarget,Z
         SUBA    <EngineRpm,Z
@@ -20017,7 +20017,7 @@ L1D380:
 L1D392:
         BCLR    $02DA,Z,#$20
 L1D396:
-        BCLR    $02DD,Z,#$30
+        BCLR    >LdpFlags3,Z,#$30
 L1D39A:
         RTS
 
@@ -20033,7 +20033,7 @@ Sub_1D39C:
         LBRA    L1D450
 L1D3B2:
         BRSET   $0800,Z,#$08,L1D450
-        LDAA    $02DD,Z
+        LDAA    >LdpFlags3,Z
         BRSET   >EngineStateFlags,Z,#$80,L1D3C4
         ANDA    #$FD
 L1D3C4:
@@ -20144,21 +20144,21 @@ Sub_1D4BC:
         BCLR    $02DA,Z,#$03
         BRA     L1D524
 L1D4D4:
-        BRSET   $02DD,Z,#$02,L1D4F8
+        BRSET   >LdpFlags3,Z,#$02,L1D4F8
         BRSET   $00C4,Z,#$04,L1D524
         BRSET   $00C4,Z,#$80,L1D4EE
         BRCLR   >EngineStateFlags,Z,#$80,L1D524
         BRA     L1D504
 L1D4EE:
-        BSET    $02DD,Z,#$02
+        BSET    >LdpFlags3,Z,#$02
         CLR     >LdpState,Z
         BRA     L1D524
 L1D4F8:
         BRCLR   >EngineStateFlags,Z,#$80,L1D524
         BRSET   $00C4,Z,#$80,L1D524
 L1D504:
-        BRCLR   $02DD,Z,#$02,L1D524
-        BCLR    $02DD,Z,#$02
+        BRCLR   >LdpFlags3,Z,#$02,L1D524
+        BCLR    >LdpFlags3,Z,#$02
         LDAA    >LdpState,Z
         ASLA
         ASLA
@@ -20270,18 +20270,18 @@ L1D626:
 L1D638:
         LDAB    <ThrottleState,Z
         ANDB    #$01
-        ORAB    $0194,Z
+        ORAB    >DashpotTimer,Z
         BNE     L1D64C
         LDAB    $021E,Z
         BITB    #$C0
         BNE     L1D652
         BRA     L1D656
 L1D64C:
-        BRCLR   $0652,Z,#$20,L1D656
+        BRCLR   >SparkFaultFlags,Z,#$20,L1D656
 L1D652:
         LDAA    $1770
 L1D656:
-        STAA    $0662,Z
+        STAA    >SparkValueD0F,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -20354,7 +20354,7 @@ L1D6EC:
 ;---------------------------------------------------------------------------------------------------
 CalcBaseSpark:
         BRSET   >FuelModeFlags,Z,#$20,L1D71A
-        BCLR    $0653,Z,#$10
+        BCLR    >SparkFlags2,Z,#$10
         CLR     >SparkTrim1,Z
         LDX     #PartThrottleMapScale
         LDAA    >Map,Z
@@ -20372,7 +20372,7 @@ L1D71A:
         LDX     #WotSpark
         JSR     Lookup3D
         STAA    $0655,Z
-        BRSET   $0653,Z,#$10,L1D778
+        BRSET   >SparkFlags2,Z,#$10,L1D778
         CLRA
         ORP     #$00E0
 L1D740:
@@ -20397,7 +20397,7 @@ L1D75E:
 L1D76A:
         CMPA    $0655,Z
         BCS     L1D778
-        BSET    $0653,Z,#$10
+        BSET    >SparkFlags2,Z,#$10
         LDAA    $0655,Z
 L1D778:
         RTS
@@ -20408,41 +20408,41 @@ L1D778:
 ;---------------------------------------------------------------------------------------------------
 Sub_1D77A:
         BRCLR   <ThrottleState,Z,#$80,L1D784
-        BCLR    $0653,Z,#$60
+        BCLR    >SparkFlags2,Z,#$60
         BRA     L1D7EC
 L1D784:
         LDAA    $18,Z
-        BRCLR   $0653,Z,#$40,L1D792
+        BRCLR   >SparkFlags2,Z,#$40,L1D792
         SUBA    #$03
         BCC     L1D792
         CLRA
 L1D792:
         CMPA    $2036
         BCC     L1D79E
-        BSET    $0653,Z,#$40
+        BSET    >SparkFlags2,Z,#$40
         BRA     L1D7A2
 L1D79E:
-        BCLR    $0653,Z,#$40
+        BCLR    >SparkFlags2,Z,#$40
 L1D7A2:
         LDAA    <EngineRpm,Z
-        BRCLR   $0653,Z,#$20,L1D7B2
+        BRCLR   >SparkFlags2,Z,#$20,L1D7B2
         SUBA    $2039
         BCC     L1D7B2
         CLRA
 L1D7B2:
         CMPA    $2037
         BCC     L1D7BE
-        BSET    $0653,Z,#$20
+        BSET    >SparkFlags2,Z,#$20
         BRA     L1D7C2
 L1D7BE:
-        BCLR    $0653,Z,#$20
+        BCLR    >SparkFlags2,Z,#$20
 L1D7C2:
-        BRSET   $0653,Z,#$60,L1D7CA
+        BRSET   >SparkFlags2,Z,#$60,L1D7CA
         BRA     L1D7EC
 L1D7CA:
         LDAA    $0C,Z
         BRSET   >Options032E,#$08,L1D7D8
-        BRSET   $001D,Z,#$20,L1D7E2
+        BRSET   >DriveFlags,Z,#$20,L1D7E2
 L1D7D8:
         LDX     #Tab2D_203A
         JSR     Lookup2D
@@ -20490,15 +20490,15 @@ Sub_1D820:
         BRSET   <ThrottleState,Z,#$80,L1D88A
         BRSET   <ThrottleState,Z,#$01,L1D88A
         BRCLR   <EngineStateFlags,Z,#$80,L1D88A
-        BRCLR   $22,Z,#$44,L1D832
+        BRCLR   <ControlFlagsC33,Z,#$44,L1D832
         BRA     L1D88A
 L1D832:
-        LDAB    $0194,Z
+        LDAB    >DashpotTimer,Z
         BNE     L1D88A
         LDX     <EngineRpm,Z
         CPX     >O2SparkTrimRpmMin
         BCS     L1D88A
-        LDAB    $0221,Z
+        LDAB    >FaultFlags505,Z
         BITB    #$F0
         BNE     L1D88A
         LDAB    $021E,Z
@@ -20512,12 +20512,12 @@ L1D832:
         CPX     >O2SparkTrimTimeMin
         BCS     L1D88A
         BRCLR   >O2ActiveFlags,Z,#$80,L1D88A
-        BRSET   $03BB,Z,#$20,L1D88A
+        BRSET   >O2Bank1Flags,Z,#$20,L1D88A
         BRCLR   >Options032F,#$50,L1D884
         BRCLR   >O2ActiveFlags,Z,#$40,L1D88A
         BRSET   $03DC,Z,#$20,L1D88A
 L1D884:
-        TST     $0457,Z
+        TST     >O2WarmDelay,Z
         BEQ     L1D890
 L1D88A:
         CLRA
@@ -20525,7 +20525,7 @@ L1D88A:
 L1D890:
         BRCLR   >Options032E,#$80,L1D8AC
         BRCLR   >Options032F,#$50,L1D8AC
-        BRCLR   $0019,Z,#$01,L1D8AC
+        BRCLR   >CylinderIndex,Z,#$01,L1D8AC
         LDAA    >ShortTermTrim2,Z
         SUBA    $0417,Z
         BRA     L1D8B4
@@ -20543,14 +20543,14 @@ L1D8BE:
         TSTA
         BPL     L1D8D6
         NEGA
-        BRSET   $001D,Z,#$20,L1D8D0
+        BRSET   >DriveFlags,Z,#$20,L1D8D0
         LDX     #O2SparkTrimNeg
         BRA     L1D8E6
 L1D8D0:
         LDX     #O2SparkTrimNegPN
         BRA     L1D8E6
 L1D8D6:
-        BRSET   $001D,Z,#$20,L1D8E2
+        BRSET   >DriveFlags,Z,#$20,L1D8E2
         LDX     #O2SparkTrimPos
         BRA     L1D8E6
 L1D8E2:
@@ -20568,9 +20568,9 @@ L1D8EA:
 Sub_1D8F0:
         BRCLR   >SparkFlags,Z,#$20,L1DA30
         BRSET   $0669,Z,#$20,L1DA30
-        LDAA    $066A,Z
+        LDAA    >AfterStartSparkStart,Z
         BEQ     L1D95C
-        BRSET   $1D,Z,#$20,L1D934
+        BRSET   <DriveFlags,Z,#$20,L1D934
         LDD     <EngineRpm,Z
         SUBD    <IdleTarget,Z
         BCC     L1D934
@@ -20581,7 +20581,7 @@ L1D914:
         CPD     >AfterStartSparkRpmBand
         BCS     L1D934
         LDAB    $066C,Z
-        CMPB    $066A,Z
+        CMPB    >AfterStartSparkStart,Z
         BCC     L1D92C
         LDAA    $065D,Z
         LBRA    L1DA34
@@ -20601,11 +20601,11 @@ L1D95C:
         LDX     #AfterStartSparkCoolant
         LDAA    $0F,Z
         JSR     Lookup2D
-        STAA    $066A,Z
+        STAA    >AfterStartSparkStart,Z
         BSET    $0669,Z,#$02
         LBRA    L1DA30
 L1D972:
-        LDAA    $0424,Z
+        LDAA    >CrankEventCount,Z
         CMPA    >AfterStartSparkEvents
         LBCS    L1DA30
         ASL     $0669,Z
@@ -20626,9 +20626,9 @@ L1D9A0:
         CMPA    <FanSoakFlags,Z
         BCC     L1D9DC
         LDAB    $066C,Z
-        CMPB    $066A,Z
+        CMPB    >AfterStartSparkStart,Z
         BCC     L1D9BE
-        BRSET   $0527,Z,#$01,L1D9E4
+        BRSET   >ControlFlags943,Z,#$01,L1D9E4
 L1D9BE:
         ASL     $0669,Z
         ASL     $0669,Z
@@ -20646,9 +20646,9 @@ L1D9E4:
         BRA     L1DA32
 L1D9E6:
         JSR     Sub_1DA4C
-        BRCLR   $0527,Z,#$01,L1D9FA
+        BRCLR   >ControlFlags943,Z,#$01,L1D9FA
         LDAB    $066C,Z
-        CMPB    $066A,Z
+        CMPB    >AfterStartSparkStart,Z
         BCS     L1DA32
 L1D9FA:
         ASL     $0669,Z
@@ -20821,7 +20821,7 @@ L1DB9A:
         CPD     <EngineRpm,Z
         LBCS    L1DC4A
 L1DBA0:
-        BRSET   $0652,Z,#$10,L1DBEE
+        BRSET   >SparkFaultFlags,Z,#$10,L1DBEE
         BSET    <SparkFlags,Z,#$02
         LDAA    >AirTemp,Z
         LDX     #Tab2D_1C86
@@ -20842,11 +20842,11 @@ L1DBDA:
         JSR     Lookup2D
         BRCLR   >Options0339,#$01,L1DC68
         LBNE    L1DC68
-        BSET    $0652,Z,#$10
+        BSET    >SparkFaultFlags,Z,#$10
         BRA     L1DC46
 L1DBEE:
         BRCLR   >Options0339,#$01,L1DBF8
-        BSET    $0652,Z,#$10
+        BSET    >SparkFaultFlags,Z,#$10
 L1DBF8:
         ORP     #$00E0
         BRSET   >SparkFlags,Z,#$04,L1DC0A
@@ -20878,7 +20878,7 @@ L1DC3C:
         ANDP    #$FF1F
         BRA     L1DC68
 L1DC46:
-        BSET    $0652,Z,#$10
+        BSET    >SparkFaultFlags,Z,#$10
 L1DC4A:
         BCLR    <SparkFlags,Z,#$06
         CLR     $0666,Z
@@ -20886,7 +20886,7 @@ L1DC4A:
         CLRA
         BRCLR   >Options0339,#$01,L1DC68
         BRSET   >ThrottleState,Z,#$80,L1DC68
-        BCLR    $0652,Z,#$10
+        BCLR    >SparkFaultFlags,Z,#$10
 L1DC68:
         NEGA
         BVC     L1DC6E
@@ -20922,18 +20922,18 @@ L1DC9A:
 ; Called from: Sub_1E582
 ;---------------------------------------------------------------------------------------------------
 Sub_1DC9C:
-        BRSET   $05CC,Z,#$20,L1DCB8
-        CLR     $05CB,Z
-        CLRW    $05C3,Z
+        BRSET   >IacAcFlags,Z,#$20,L1DCB8
+        CLR     >AcSparkHoldCounter,Z
+        CLRW    >AcSparkRateChange,Z
         LDD     >RpmRate,Z
         STD     $05C1,Z
         CLRB
         LBRA    L1DD64
 L1DCB8:
-        LDAA    $05CB,Z
+        LDAA    >AcSparkHoldCounter,Z
         BEQ     L1DCC4
         DECA
-        STAA    $05CB,Z
+        STAA    >AcSparkHoldCounter,Z
 L1DCC4:
         LDD     $05C1,Z
         LDE     >RpmRate,Z
@@ -20946,26 +20946,26 @@ L1DCC4:
 L1DCDC:
         LDE     #$7FFF
 L1DCE0:
-        STE     $05C3,Z
+        STE     >AcSparkRateChange,Z
         CLRB
         LDAA    $05C5,Z
         BNE     L1DD64
-        LDAA    $05C7,Z
+        LDAA    >AcSparkWindow,Z
         BNE     L1DCF8
         LDAA    >AcClutchSparkHoldTime,Z
         BEQ     L1DD64
 L1DCF8:
-        TST     $05CB,Z
+        TST     >AcSparkHoldCounter,Z
         BNE     L1DD1E
         LDE     >AcSparkRateChangeMin
         LDAA    >AcSparkHoldCount
-        BRCLR   $0527,Z,#$01,L1DD14
+        BRCLR   >ControlFlags943,Z,#$01,L1DD14
         LDE     >AcSparkRateChangeMinAcOn
         LDAA    >AcSparkHoldCountAcOn
 L1DD14:
-        CPE     $05C3,Z
+        CPE     >AcSparkRateChange,Z
         BLT     L1DD64
-        STAA    $05CB,Z
+        STAA    >AcSparkHoldCounter,Z
 L1DD1E:
         LDD     >RpmRate,Z
         BPL     L1DD3E
@@ -20976,7 +20976,7 @@ L1DD1E:
 L1DD2C:
         TBA
         LDX     #AcSparkRateDown
-        BRCLR   $0527,Z,#$01,L1DD3C
+        BRCLR   >ControlFlags943,Z,#$01,L1DD3C
         LDX     #AcSparkRateDownAcOn
 L1DD3C:
         BRA     L1DD4A
@@ -21009,30 +21009,30 @@ Sub_1DD6A:
         BRCLR   >Options0331,#$08,L1DDA0
         BRCLR   >ThrottleState,Z,#$80,L1DDA0
         LDAA    $18,Z
-        BRCLR   $05CC,Z,#$20,L1DD80
+        BRCLR   >IacAcFlags,Z,#$20,L1DD80
         ADDA    #$04
 L1DD80:
         CMPA    $1DB6
         BCS     L1DDA0
         BRSET   >Options032E,#$08,L1DDBC
         BRCLR   >EquipmentFlags,Z,#$20,L1DD9A
-        BRSET   $06D0,Z,#$80,L1DDBC
+        BRSET   >BusFlags9CE,Z,#$80,L1DDBC
         BRA     L1DDA0
 L1DD9A:
         BRCLR   $0526,Z,#$80,L1DDBC
 L1DDA0:
-        CLR     $05C7,Z
+        CLR     >AcSparkWindow,Z
         CLR     $05C5,Z
         CLR     $05C6,Z
         CLR     >AcClutchSparkHoldTime,Z
         CLR     $05C8,Z
-        BCLR    $05CC,Z,#$E0
+        BCLR    >IacAcFlags,Z,#$E0
         LBRA    L1DE90
 L1DDBC:
-        BSET    $05CC,Z,#$20
-        BRCLR   $0527,Z,#$01,L1DE6C
-        BRSET   $05CC,Z,#$10,L1DDFC
-        CLR     $05C7,Z
+        BSET    >IacAcFlags,Z,#$20
+        BRCLR   >ControlFlags943,Z,#$01,L1DE6C
+        BRSET   >IacAcFlags,Z,#$10,L1DDFC
+        CLR     >AcSparkWindow,Z
         LDAA    >AcClutchSparkHoldTime,Z
         BNE     L1DDDA
         CLRA
@@ -21052,12 +21052,12 @@ L1DDF4:
 L1DDFC:
         CLR     >AcClutchSparkHoldTime,Z
         CLR     $05C8,Z
-        BRSET   $05CC,Z,#$40,L1DE90
+        BRSET   >IacAcFlags,Z,#$40,L1DE90
         LDAA    $05C6,Z
         BNE     L1DE4E
-        LDAA    $01C2,Z
+        LDAA    >IacShiftTimer,Z
         BEQ     L1DE84
-        BSET    $05CC,Z,#$80
+        BSET    >IacAcFlags,Z,#$80
         BRSET   >Options0331,#$80,L1DE2A
         LDAA    >IacLearned,Z
         LDX     #Tab2D_1DCB
@@ -21077,20 +21077,20 @@ L1DE32:
         STAA    $05C6,Z
 L1DE4E:
         LDAA    $05C6,Z
-        CMPA    $01C2,Z
+        CMPA    >IacShiftTimer,Z
         BCS     L1DE90
         LDAB    $05C5,Z
         INCB
         STAB    $05C5,Z
         CBA
         BHI     L1DE90
-        BSET    $05CC,Z,#$40
+        BSET    >IacAcFlags,Z,#$40
         BRA     L1DE90
 L1DE6C:
-        LDAA    $05C7,Z
+        LDAA    >AcSparkWindow,Z
         BEQ     L1DE84
         DECA
-        STAA    $05C7,Z
+        STAA    >AcSparkWindow,Z
         LDD     >RpmRate,Z
         BMI     L1DE90
         CPD     $1DB7
@@ -21098,7 +21098,7 @@ L1DE6C:
 L1DE84:
         CLR     $05C5,Z
         CLR     $05C6,Z
-        BCLR    $05CC,Z,#$C0
+        BCLR    >IacAcFlags,Z,#$C0
 L1DE90:
         RTS
 
@@ -21196,15 +21196,15 @@ Sub_1DF30:
 ;---------------------------------------------------------------------------------------------------
 Sub_1DF32:
         BRCLR   >Options0337,#$40,L1E13A
-        BRSET   $0695,Z,#$08,L1DFD2
-        BRSET   $0695,Z,#$04,L1DFD2
+        BRSET   >EventSparkFlags,Z,#$08,L1DFD2
+        BRSET   >EventSparkFlags,Z,#$04,L1DFD2
         BRSET   $00B5,Z,#$10,L1DFAE
         BRCLR   >EquipmentFlags,Z,#$20,L1DF5E
         BRSET   $0229,Z,#$01,L1DF5E
-        BRSET   $06D0,Z,#$01,L1DFAE
+        BRSET   >BusFlags9CE,Z,#$01,L1DFAE
         BRA     L1DF64
 L1DF5E:
-        BRCLR   $001D,Z,#$20,L1DFAE
+        BRCLR   >DriveFlags,Z,#$20,L1DFAE
 L1DF64:
         LDAA    >ThrottleAboveClosed,Z
         CMPA    $1C16
@@ -21415,18 +21415,18 @@ Sub_1E13C:
         LDAA    >VehicleSpeedCoarse,Z
         CMPA    >HighSpeedSparkOn
         BCC     L1E152
-        BRCLR   $0653,Z,#$80,L1E164
+        BRCLR   >SparkFlags2,Z,#$80,L1E164
         CMPA    >HighSpeedSparkOff
         BCS     L1E164
 L1E152:
-        BSET    $0653,Z,#$80
+        BSET    >SparkFlags2,Z,#$80
         LDAA    <EngineRpm,Z
         LDX     #HighSpeedSparkRpm
         JSR     Lookup2D
         NEGA
         BRA     L1E16A
 L1E164:
-        BCLR    $0653,Z,#$80
+        BCLR    >SparkFlags2,Z,#$80
         CLRA
 L1E16A:
         RTS
@@ -21450,7 +21450,7 @@ L1E18E:
         CMPA    $1BD4
         BCS     L1E1A6
         BCLR    $0696,Z,#$20
-        BCLR    $0695,Z,#$1C
+        BCLR    >EventSparkFlags,Z,#$1C
         CMPA    #$FF
         BEQ     L1E1AA
 L1E1A6:
@@ -21492,7 +21492,7 @@ L1E202:
         CLR     $0684,Z
         CLR     >SurgeJerkRetard,Z
         CLR     >SurgeStageTime,Z
-        BCLR    $0652,Z,#$03
+        BCLR    >SparkFaultFlags,Z,#$03
         LDAA    >SurgeOpenTime,Z
         CMPA    >SurgeOpenThrottleTime
         LBCC    L1E406
@@ -21571,7 +21571,7 @@ L1E2F6:
         LDAA    >SurgeRetard,Z
         STAA    <Scratch4,Z
         CLR     >SurgeOpenTime,Z
-        LDAA    $0652,Z
+        LDAA    >SparkFaultFlags,Z
         ANDA    #$03
         BNE     L1E328
         LDAA    >RpmAccel,Z
@@ -21582,9 +21582,9 @@ L1E2F6:
         CMPA    >RpmAccel,Z
         BCC     L1E328
         CLR     >SurgeStageTime,Z
-        INC     $0652,Z
+        INC     >SparkFaultFlags,Z
 L1E328:
-        LDAA    $0652,Z
+        LDAA    >SparkFaultFlags,Z
         ANDA    #$03
         CMPA    #$01
         LBNE    L1E3B4
@@ -21633,9 +21633,9 @@ L1E39C:
         BGT     L1E3B4
 L1E3AC:
         CLR     >SurgeStageTime,Z
-        INC     $0652,Z
+        INC     >SparkFaultFlags,Z
 L1E3B4:
-        LDAA    $0652,Z
+        LDAA    >SparkFaultFlags,Z
         ANDA    #$03
         CMPA    #$02
         BNE     L1E3F6
@@ -21669,8 +21669,8 @@ L1E406:
         CLRB
 L1E408:
         CLR     >SurgeRetard,Z
-        BRCLR   $0652,Z,#$03,L1E416
-        BSET    $0652,Z,#$03
+        BRCLR   >SparkFaultFlags,Z,#$03,L1E416
+        BSET    >SparkFaultFlags,Z,#$03
 L1E416:
         TBA
         RTS
@@ -21683,57 +21683,57 @@ Sub_1E41A:
         CLRB
         LDAA    >Map,Z
         TDE
-        LDAA    $068B,Z
+        LDAA    >SurgeMapRef,Z
         PSHM    D,E
         LDAA    >SurgeMapFilter
         JSR     Blend16
         AIS     #$04
-        STAA    $068B,Z
+        STAA    >SurgeMapRef,Z
         LDAA    >Map,Z
-        LDAB    $068B,Z
+        LDAB    >SurgeMapRef,Z
         SBA
         STAA    >MapRise,Z
         LDE     >SegmentRpmFast,Z
-        LDD     $066F,Z
+        LDD     >SurgeRpmFast,Z
         PSHM    D,E
         LDAA    >SurgeRpmFilter
         JSR     Blend16
         AIS     #$04
-        STD     $066F,Z
-        LDE     $066F,Z
-        LDD     $0671,Z
+        STD     >SurgeRpmFast,Z
+        LDE     >SurgeRpmFast,Z
+        LDD     >SurgeRpmSlow,Z
         PSHM    D,E
         LDAA    >SurgeRpmFilter2
         JSR     Blend16
         AIS     #$04
-        STD     $0671,Z
-        LDE     $066F,Z
+        STD     >SurgeRpmSlow,Z
+        LDE     >SurgeRpmFast,Z
         SDE
         STE     $0673,Z
         LDD     $0673,Z
         BPL     L1E486
         CLRA
 L1E486:
-        STAA    $0676,Z
+        STAA    >IdleMapRpmAccel,Z
         LDE     $0673,Z
-        LDD     $0677,Z
+        LDD     >SurgeAccelFast,Z
         PSHM    D,E
         LDAA    >SurgeAccelFilter
         JSR     Blend16Signed
         AIS     #$04
-        STD     $0677,Z
+        STD     >SurgeAccelFast,Z
         LDD     $0673,Z
-        SUBD    $0677,Z
+        SUBD    >SurgeAccelFast,Z
         STD     >RpmAccelChange,Z
         LDE     $0673,Z
-        LDD     $0679,Z
+        LDD     >SurgeAccelSlow,Z
         PSHM    D,E
         LDAA    >SurgeAccelFilter2
         JSR     Blend16Signed
         AIS     #$04
-        STD     $0679,Z
+        STD     >SurgeAccelSlow,Z
         LDE     $0673,Z
-        SUBE    $0679,Z
+        SUBE    >SurgeAccelSlow,Z
         LDD     $067D,Z
         STE     $067D,Z
         PSHM    D,E
@@ -21826,11 +21826,11 @@ Sub_1E582:
         BRCLR   >SparkFlags,Z,#$20,L1E6E4
         JSR     Sub_1DC9C
         JSR     Sub_1D820
-        LDAB    $0662,Z
+        LDAB    >SparkValueD0F,Z
         SXT
         TDE
         BRSET   $061A,Z,#$02,L1E602
-        BRSET   $0652,Z,#$20,L1E602
+        BRSET   >SparkFaultFlags,Z,#$20,L1E602
         LDAB    >AcSpark,Z
         SXT
         ADE
@@ -21856,7 +21856,7 @@ L1E5DC:
 L1E5E8:
         LDX     #$E578
 L1E5EC:
-        LDAB    $19,Z
+        LDAB    <CylinderIndex,Z
         ABX
         LDAB    $00,X
         TZX
@@ -21872,9 +21872,9 @@ L1E602:
         LDAA    >SparkStartTime,Z
         JSR     Lookup2D
         SXT
-        STD     $01FC,Z
+        STD     >Temp4FC,Z
         XGDY
-        CPD     $01FC,Z
+        CPD     >Temp4FC,Z
         BGE     L1E624
         LDAA    $01FD,Z
         BRA     L1E630
@@ -21887,14 +21887,14 @@ L1E62E:
         TBA
 L1E630:
         LDAB    $20E9
-        BRSET   $21,Z,#$80,L1E65C
+        BRSET   <FuelModeFlags2,Z,#$80,L1E65C
         BRCLR   >Options0339,#$20,L1E642
         BRSET   <ThrottleState,Z,#$01,L1E65C
 L1E642:
-        LDAB    $044C,Z
+        LDAB    >SparkStartRampValue,Z
         SUBB    >SparkStartRampStep2
         BCS     L1E660
-        STAB    $044C,Z
+        STAB    >SparkStartRampValue,Z
         LDAB    >SparkStartRamp,Z
         ADDB    >SparkStartRampStep
         BPL     L1E65C
@@ -21910,7 +21910,7 @@ L1E660:
         LDY     #$0000
         BRCLR   $0739,Z,#$01,L1E69C
         LDX     #$2502
-        LDAB    $19,Z
+        LDAB    <CylinderIndex,Z
         ASLB
         ABX
 L1E682:
@@ -21933,7 +21933,7 @@ L1E6A6:
         BRCLR   >Options033A,#$10,L1E6D6
         BRCLR   $0739,Z,#$02,L1E6D6
         LDX     #$2516
-        LDAB    $19,Z
+        LDAB    <CylinderIndex,Z
         ASLB
         ABX
 L1E6C0:
@@ -21947,12 +21947,12 @@ L1E6C0:
 L1E6D6:
         TZX
         LDX     #$873B
-        LDAB    $19,Z
+        LDAB    <CylinderIndex,Z
         ABX
         STAA    $00,X
         PULM    K
 L1E6E4:
-        STAA    $0664,Z
+        STAA    >SparkAdvanceD11,Z
         RTS
         dc.b    $00,$00,$00,$00,$00,$00,$38,$C3,$3C,$51,$00,$00,$00,$00,$38,$FF
         dc.b    $00,$00,$3A,$5D,$00,$00,$3B,$F7,$3C,$01,$39,$09,$38,$D7,$00,$00
@@ -22075,9 +22075,9 @@ L1E8AE:
         CPY     #$3909
         BNE     L1E8C8
         BRCLR   >Options0335,#$08,L1E8C0
-        BRSET   $0527,Z,#$10,L1E8DE
+        BRSET   >ControlFlags943,Z,#$10,L1E8DE
 L1E8C0:
-        BRSET   $021F,Z,#$02,L1E8DE
+        BRSET   >FaultFlags503,Z,#$02,L1E8DE
         BRA     L1E8D4
 L1E8C8:
         CPY     #$38D7
@@ -23182,7 +23182,7 @@ L1F5F2:
         BSET    <Scratch7,Z,#$06
         LDAA    $0309,Z
         BRSET   $02DE,Z,#$40,L1F626
-        BRCLR   $00EF,Z,#$40,L1F61A
+        BRCLR   >MisfireFlags,Z,#$40,L1F61A
         LDY     #$EFAC
         LDAB    #$01
         TBYK
@@ -23408,15 +23408,15 @@ Sub_1F760:
         CLR     $0134,Z
         CLR     $0149,Z
         CLR     $014B,Z
-        CLR     $0136,Z
-        CLR     $0138,Z
+        CLR     >ObdTid21Result,Z
+        CLR     >ObdTid22Result,Z
         CLR     $013A,Z
         CLR     $013C,Z
         CLR     $013E,Z
         CLR     $0140,Z
         CLR     $0142,Z
         CLRW    $0144,Z
-        CLR     $0147,Z
+        CLR     >LdpStrokeResult,Z
         CLR     $0121,Z
         CLR     $0123,Z
         CLR     $0125,Z
@@ -23429,7 +23429,7 @@ Sub_1F760:
         CLR     $0133,Z
         CLR     $0148,Z
         CLR     $014A,Z
-        CLR     $0135,Z
+        CLR     >ObdTid21Status,Z
         CLR     $0137,Z
         CLR     $0139,Z
         CLR     $013B,Z
@@ -23497,9 +23497,9 @@ L1F8F0:
         STAA    $0103,Z
         LDAA    $18,Z
         STAA    $010D,Z
-        LDAA    $0458,Z
+        LDAA    >O2AdaptValue1,Z
         STAA    $0107,Z
-        LDAA    $0459,Z
+        LDAA    >O2AdaptValue2,Z
         STAA    $0109,Z
         LDAA    >ShortTermTrim1,Z
         STAA    $0106,Z
@@ -23733,7 +23733,7 @@ Sub_1FAB0:
         PSHM    D,E,X
         LDAA    <Baro,Z
         LDAB    >RevLimit
-        BRSET   $1D,Z,#$20,L1FAC0
+        BRSET   <DriveFlags,Z,#$20,L1FAC0
         LDAB    >RevLimitAlt
 L1FAC0:
         MUL

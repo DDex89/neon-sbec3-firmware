@@ -423,7 +423,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10C" flags="0x0">
   <title>DecelMapScale</title>
-  <description>Corrected MAP to row position of DecelMapRpmLimit $0483, 2D; inputs: result of Lookup2D; #$FF; $00F0,Z</description>
+  <description>Corrected MAP to row position of DecelMapRpmLimit $0483, 2D; inputs: result of Lookup2D; #$FF; Temp4F0</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1587,7 +1587,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x12C" flags="0x0">
   <title>Tab2D_067F</title>
-  <description>$067F, 2D; inputs: $067E; $0347,Z</description>
+  <description>$067F, 2D; inputs: $067E; FuelTrimAdjustValue</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6533,7 +6533,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AE" flags="0x0">
   <title>KnockRetardStep</title>
-  <description>Knock retard step against the knock signal above the threshold ($0A8B,Z minus KnockThresholdNow) $1CBC, 2D; inputs: $0322,Z</description>
+  <description>Knock retard step against the knock signal above the threshold ($0A8B,Z minus KnockThresholdNow) $1CBC, 2D; inputs: KnockSignal</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10537,7 +10537,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21C" flags="0x0">
   <title>MisfireWeight</title>
-  <description>Counter weight of a detected misfire ($04FE,Z) against load (rows) and segment rpm (columns) $26FA, 3D; inputs: $FE,Z x $0204,Z</description>
+  <description>Counter weight of a detected misfire ($04FE,Z) against load (rows) and segment rpm (columns) $26FA, 3D; inputs: Temp4FE x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x26FD" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -10665,7 +10665,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21F" flags="0x0">
   <title>MisfireThresh</title>
-  <description>Misfire threshold of the segment-time change against load (rows) and segment rpm $05C6,Z (columns), P/N $27D5, 3D; inputs: result of Lookup2D x $0204,Z</description>
+  <description>Misfire threshold of the segment-time change against load (rows) and segment rpm $05C6,Z (columns), P/N $27D5, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x27D8" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -10709,7 +10709,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x220" flags="0x0">
   <title>Tab3D_2832</title>
-  <description>$2832, 3D; inputs: result of Lookup2D x $0204,Z</description>
+  <description>$2832, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2835" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -10753,7 +10753,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x221" flags="0x0">
   <title>MisfireThreshNoisy</title>
-  <description>As MisfireThresh when the filtered change $05D4,Z is at or above MisfireNoiseRef $288F, 3D; inputs: result of Lookup2D x $0204,Z</description>
+  <description>As MisfireThresh when the filtered change $05D4,Z is at or above MisfireNoiseRef $288F, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2892" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -10797,7 +10797,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x222" flags="0x0">
   <title>Tab3D_28EC</title>
-  <description>$28EC, 3D; inputs: result of Lookup2D x $0204,Z</description>
+  <description>$28EC, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x28EF" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -12078,7 +12078,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x23F" flags="0x0">
   <title>EventTimingLimit</title>
-  <description>Output-compare set-up in the GPT IC1 interrupt: limit against $0D11,Z compared with $0ABE,Z $51E1, 2D; inputs: $0612,Z</description>
+  <description>Output-compare set-up in the GPT IC1 interrupt: limit against $0D11,Z compared with $0ABE,Z $51E1, 2D; inputs: SparkAdvanceD11</description>
   <CATEGORYMEM index="0" category="13" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
