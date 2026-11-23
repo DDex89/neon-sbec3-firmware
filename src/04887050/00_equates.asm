@@ -167,6 +167,7 @@ PurgeDelay       equ $03B7        ; $F83B7
 PurgeRamp        equ $03B9        ; $F83B9
 PurgeStartRamp   equ $03BB        ; $F83BB
 FanFlags         equ $03D9        ; $F83D9
+FuelSystemStatusPid equ $03E7        ; $F83E7
 MonStatusBits1   equ $03E9        ; $F83E9
 MonStatusBits2   equ $03EB        ; $F83EB
 MonStatusBits3   equ $03ED        ; $F83ED

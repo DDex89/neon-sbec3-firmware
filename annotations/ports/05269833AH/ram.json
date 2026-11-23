@@ -333,6 +333,7 @@
  "0522": "FaultPendingCount1",
  "0523": "FaultPendingCount2",
  "0527": "DiagTimer527",
+ "0528": "FuelSystemStatusPid",
  "052A": "MonStatusBits1",
  "052C": "MonStatusBits2",
  "052E": "MonStatusBits3",

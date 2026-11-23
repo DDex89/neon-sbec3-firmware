@@ -311,7 +311,7 @@ Options033A:
 Options033E:
         dc.b    $B7                                      ; Option byte copied to $06B8,Z at reset; bit 1 selects branches in the start and closed-loop code
 Options033F:
-        dc.b    $A8                                      ; Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in ObdReadiness and Sub_28D78
+        dc.b    $A8                                      ; Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in ObdReadiness and O2HeaterMonitor
         dc.b    $9F
 Options0340:
         dc.b    $00                                      ; Option byte (global configuration); bits used are listed with their names where known
@@ -361,7 +361,7 @@ ThrottleClosedDefault:
         dc.b    $3D                                      ; Closed-throttle value at reset and its upper bound
         dc.b    $08,$02,$01,$FF,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00
 MtvPeriod:
-        dc.b    $00                                      ; Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10)
+        dc.b    $00                                      ; Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in MtvRateLookup)
         dc.b    $00,$00,$6E,$00,$00,$80,$80,$80,$B9,$25,$25,$E5,$07,$C8,$34,$E5
         dc.b    $A4,$1F
 
@@ -480,7 +480,7 @@ Tab2D_04F8:
 IacLowRpm:
         dc.b    $0F,$A0                                  ; Segment rpm below which the low-rpm branch of IdleTargetControl applies
 AcCutRpmLow:
-        dc.b    $CC,$E8                                  ; A/C logic: engine rpm limit used in IdleTargetControl and Sub_39412 (FF00 = off)
+        dc.b    $CC,$E8                                  ; A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)
 IacStartTimeMin:
         dc.b    $02                                      ; Time since start before the event logic of IdleTargetControl runs
 IacEventTimerInit:
@@ -1282,7 +1282,7 @@ Tab3D_09E9:
 
 ;---------------------------------------------------------------------------------------------------
 ; MapBaroOffset ($0B1E): 2D table, 2 points, unsigned
-; Added to MAP against barometric pressure before the part-throttle MAP scale (main-loop fuel, Sys39686, diagnostics)
+; Added to MAP against barometric pressure before the part-throttle MAP scale (main-loop fuel, EgrControl, diagnostics)
 ; x: kpa, y: kpa (units: docs/en/calibration.md)
 ; Inputs: Baro
 ; Read at $08B78, $16184, $1DEAA
@@ -2332,7 +2332,7 @@ Tab2D_157D:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$80,$29,$14,$90,$D2,$0A,$0A,$A1,$0C,$24
 EventFuelMapMin:
-        dc.b    $24                                      ; Event fuel (Sub_11DE6): MAP at or above this value
+        dc.b    $24                                      ; Event fuel (EventCorrections): MAP at or above this value
         dc.b    $38,$00,$82,$A8,$32,$F6,$10
 
 ;---------------------------------------------------------------------------------------------------
@@ -2444,7 +2444,7 @@ O2MemFlexDiffMax:
         dc.b    $14                                      ; Long-term cell update: with $0770,Z bit 7 a cell more than this below the flex reference cell is replaced by it
         dc.b    $01,$84,$0F,$0A
 PurgeDelayInit:
-        dc.b    $B3                                      ; Start value of the purge delay $042F,Z (reset, Sub_3DC64, PurgeReset)
+        dc.b    $B3                                      ; Start value of the purge delay $042F,Z (reset, PurgeEnable, PurgeReset)
         dc.b    $96,$02,$14,$14,$00,$01,$08,$08,$20,$AA,$AC,$A3,$01
 
 ;---------------------------------------------------------------------------------------------------
@@ -2594,12 +2594,12 @@ PurgeCellRichHyst3:
 O2TrimResetValue:
         dc.b    $00                                      ; Closed-loop manager: value loaded into the bank trim when $0760,Z bits 2-3 request a reset
 PurgeCellRefMargin:
-        dc.b    $33                                      ; Purge cell reference (Sub_3DFCA): margin added to the stored cells $8066/$8079 before compare
+        dc.b    $33                                      ; Purge cell reference (PurgeCellRichCheck): margin added to the stored cells $8066/$8079 before compare
 PurgeCellRefCoolantMax:
-        dc.b    $FF                                      ; Purge cell reference (Sub_3DEF8): coolant below this value
+        dc.b    $FF                                      ; Purge cell reference (PurgeCellRefCheck): coolant below this value
         dc.b    $9F
 PurgeCellDiffOffset:
-        dc.b    $00                                      ; Purge (Sub_3DFB8): offset taken off the cell difference
+        dc.b    $00                                      ; Purge (PurgeCellDiff): offset taken off the cell difference
         dc.b    $82,$35
 TimedSparkPeriodMax:
         dc.b    $00,$C3                                  ; Crank ISR: reference period below which timed spark ($0D00,Z bit 5) is used
@@ -4641,10 +4641,10 @@ IacCoastOffsetDown:
 IdleRollSpeed:
         dc.b    $06                                      ; Vehicle speed that separates standing from rolling for idle air, dashpot and coast logic
 IdleStableTimeMin:
-        dc.b    $13                                      ; Idle state flags: time since start above this value (also used by Sub_23970)
+        dc.b    $13                                      ; Idle state flags: time since start above this value (also used by VssMonitor)
         dc.b    $CD,$02,$92,$0F
 IdleUnderTargetMargin:
-        dc.b    $00,$98                                  ; Sub_2CBC8: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target
+        dc.b    $00,$98                                  ; IdleStateUpdate: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_2540 ($2540): 2D table, 1 points, unsigned
@@ -5070,9 +5070,9 @@ MisfireHoldSegRpm:
         dc.b    19,39, 29,24, 47,10, 63,8, 78,0          ; x, y
 
 EventOptionWord:
-        dc.b    $00,$FF                                  ; Sub_246FC: option word; its top two bits select the mode ($00, $40, $80) and it is stored in $0630,Z
+        dc.b    $00,$FF                                  ; EventOptionUpdate: option word; its top two bits select the mode ($00, $40, $80) and it is stored in $0630,Z
 EventDefaultWord:
-        dc.b    $00,$00                                  ; Sub_247A8: word value used in the default branch
+        dc.b    $00,$00                                  ; EventOptionStep: word value used in the default branch
 SegmentRpmConst:
         dc.b    $03,$2D,$CD,$55                          ; Constant divided by the segment period to give SegmentRpmFast (long word)
 SegmentRpmConst2:
@@ -5088,7 +5088,7 @@ MisfireRpmDevLimit:
 MisfireIdleMargin:
         dc.b    $00,$08                                  ; Misfire monitor (MisfireDeviation): idle target plus this margin
 MisfireEventCountMax:
-        dc.b    $00,$FF                                  ; Misfire: event count $00DE,Z (word) above which the deviation check runs (also Sub_2B448)
+        dc.b    $00,$FF                                  ; Misfire: event count $00DE,Z (word) above which the deviation check runs (also MisfireEventCountReset)
 MisfireFilterSlow:
         dc.b    $03                                      ; Misfire: value of $0623,Z set in the first branch
 MisfireFilterFast:
@@ -5274,7 +5274,7 @@ LdpPurgeStrokeTimeMin:
 LdpVacuumMin2:
         dc.b    $0D                                      ; EVAP leak test: manifold vacuum limit of the last state
 LdpPurgedDutyMin:
-        dc.b    $0F                                      ; Leak detection (Sub_25E9E): purge duty at or above which the purged time counts
+        dc.b    $0F                                      ; Leak detection (LdpPurgedCheck): purge duty at or above which the purged time counts
 LdpPurgedTime:
         dc.b    $96                                      ; Leak detection: purged time ($059B,Z) that sets $011B,Z bit 4
 
@@ -5377,13 +5377,13 @@ EgrMonFailCount:
         dc.b    $03                                      ; EGR flow monitor: failed tests before the fault
         dc.b    $03
 FuelSysRichHyst:
-        dc.b    $03                                      ; Fuel system monitor (Sub_2A4F2, Sub_2A6C0): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set
+        dc.b    $03                                      ; Fuel system monitor (FuelSysRich1Check, FuelSysRich2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set
 FuelSysLeanHyst:
-        dc.b    $04                                      ; Fuel system monitor (Sub_2A0F0, Sub_2A302): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set
+        dc.b    $04                                      ; Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set
 FuelSysRichCount:
-        dc.b    $32                                      ; Fuel system monitor: rich-condition counts ($05A3/$05A4,Z) before the rich flag (Sub_2A496, Sub_2A664)
+        dc.b    $32                                      ; Fuel system monitor: rich-condition counts ($05A3/$05A4,Z) before the rich flag (FuelSysRich1Adapt, FuelSysRich2Adapt)
 FuelSysLeanCount:
-        dc.b    $32                                      ; Fuel system monitor: lean-condition counts before the lean flag (Sub_2A07E, Sub_2A290)
+        dc.b    $32                                      ; Fuel system monitor: lean-condition counts before the lean flag (FuelSysLean1Adapt, FuelSysLean2Adapt)
 FuelSysRichFaultCount:
         dc.b    $32                                      ; Fuel system monitor: rich counts ($05A1/$05AA,Z) before the rich result
 FuelSysLeanFaultCount:
@@ -5408,7 +5408,7 @@ Tab2D_2B14:
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysLimitScale ($2B24): 2D table, 1 points, unsigned
-; Fuel system monitor (Sub_2A0F0, Sub_2A302): purge ramp $042C,Z to row position of FuelSysLimit
+; Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): purge ramp $042C,Z to row position of FuelSysLimit
 ; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: PurgeRamp
 ; Read at $1846A, $18634
@@ -5452,21 +5452,21 @@ O2TrimResetValue2:
         dc.b    $05,$FB,$00,$00,$05,$FB,$00,$00,$1B,$1B,$00,$00,$13,$73,$8C,$00
         dc.b    $00
 O2MonWindowMax:
-        dc.b    $95                                      ; O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6)
+        dc.b    $95                                      ; O2 sensor monitor at idle: window count above which the test restarts (O2MonData2Step)
 O2MonWindowMin:
         dc.b    $13                                      ; O2 sensor monitor at idle: window count at or above which the switch counts are judged
         dc.b    $0B,$40,$40,$AA,$45,$50,$81,$81
 O2HeaterSampleTime:
-        dc.b    $00,$64                                  ; Probably the O2 heater monitor (Sub_2919A): timer $010A,Z (word) above which the heater input is sampled
+        dc.b    $00,$64                                  ; Probably the O2 heater monitor (O2HeaterSampleStep): timer $010A,Z (word) above which the heater input is sampled
         dc.b    $20,$30
 O2HeaterSettleTime:
-        dc.b    $1B,$F8                                  ; Probably the O2 heater monitor (Sub_291F0): timer $010A,Z (word) below which the records are updated
+        dc.b    $1B,$F8                                  ; Probably the O2 heater monitor (O2HeaterTest): timer $010A,Z (word) below which the records are updated
         dc.b    $20,$33,$33,$33,$33,$1A,$1A,$1A,$1A,$01,$01,$01,$01,$0D,$0D,$0D
         dc.b    $0D,$0B,$0B,$0B,$0B
 O2ColdTrimHeaterAdder:
         dc.b    $25                                      ; Cold-start O2 trim (O2StartDelays): added to the start trim when a heater monitor status has bit 5 set
 CatMonCoolantMin:
-        dc.b    $CD                                      ; Catalyst monitor (Sub_285CA): coolant at or above this value
+        dc.b    $CD                                      ; Catalyst monitor (CatMonConditions): coolant at or above this value
 CatMonSpeedMin:
         dc.b    $24                                      ; Catalyst monitor: vehicle speed at or above this value (closed throttle not allowed)
 CatMonCruiseTime:
@@ -5630,7 +5630,7 @@ Tab3D_2C47:
         dc.b    $00,$40,$3F,$C0,$3F,$C0,$FF,$00,$00,$13,$CD,$02,$02,$80,$02,$12
         dc.b    $21,$1E,$7D,$C8
 CamCrankOffsetMin:
-        dc.b    $10                                      ; Cam/crank relation (Sub_23D76, P1390): offset below this value counts as skipped
+        dc.b    $10                                      ; Cam/crank relation (CamCrankMeasure, P1390): offset below this value counts as skipped
 CamCrankOffsetMax:
         dc.b    $70                                      ; Cam/crank relation: offset at or above this value counts as skipped
 CamCrankOffsetJitter:
@@ -5649,7 +5649,7 @@ Tab2D_2CDB:
         dc.b    88,255, 99,189, 110,151, 116,94, 121,57, 132,38 ; x, y
 
 MapCheckBaroMin:
-        dc.b    $B6                                      ; MAP check (Sub_23816): barometric pressure at or above this value
+        dc.b    $B6                                      ; MAP check (IdleMonitorEnable): barometric pressure at or above this value
         dc.b    $C8,$06,$40,$03,$20,$01,$90,$02,$C7,$0C,$80,$FF,$FF,$FF,$FF,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$32,$10
         dc.b    $01,$4E,$00,$06,$01,$50,$00,$3E,$01,$4F,$00,$CE,$01,$52,$00,$B9
@@ -6084,14 +6084,14 @@ MapCheckVacuumMin:
 MapCheckVacuumMinAlt:
         dc.b    $03                                      ; MAP checks: manifold vacuum limit (high altitude)
 MapRawLowLimit:
-        dc.b    $02                                      ; Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)
+        dc.b    $02                                      ; Raw MAP below this value is a low input (P0107; ReadMap, MapCircuitCheck, MapKeyOnCheck)
 MapRawHighLimit:
-        dc.b    $FD                                      ; Raw MAP at or above this value is a high input (P0108; ReadMap, Sub_21EFE)
+        dc.b    $FD                                      ; Raw MAP at or above this value is a high input (P0108; ReadMap, MapCircuitCheck)
         dc.b    $18,$1C,$70
 MapRationalThrottleMax:
-        dc.b    $3D                                      ; MAP rationality (Sub_21EFE, ReadMap): throttle opening below this value for the rpm/MAP check
+        dc.b    $3D                                      ; MAP rationality (MapCircuitCheck, ReadMap): throttle opening below this value for the rpm/MAP check
 MapLimpOffset:
-        dc.b    $20                                      ; Limp-home MAP from throttle (Sub_241AA): offset added to MapLimpFromThrottle
+        dc.b    $20                                      ; Limp-home MAP from throttle (LimpMapCalc): offset added to MapLimpFromThrottle
 MapLimpThrottleOffset:
         dc.b    $09                                      ; Limp-home MAP from throttle: offset added to the throttle reading
 
@@ -6145,7 +6145,7 @@ O2RawHigh:
         dc.b    $3E                                      ; O2 sensor raw value at or above which the high-voltage check counts
         dc.b    $42,$96,$1B,$12,$CD,$A6,$07,$32
 O2NoActivityLowRaw:
-        dc.b    $08                                      ; O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0)
+        dc.b    $08                                      ; O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also O2HeaterTest)
         dc.b    $04,$50
 O2MemResetValue:
         dc.b    $33                                      ; Closed-loop manager: value written into the 16 adaptive cells of a bank when its memory is reset after a fault
@@ -6167,7 +6167,7 @@ KnockRetardMaxRpm:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04
 ChargeMonVoltsMargin:
-        dc.b    $10                                      ; Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging
+        dc.b    $10                                      ; Charging monitor (ChargeLowMonitor): battery voltage plus this margin below the charging target counts as undercharging
 ChargeMonRpmMin:
         dc.b    $24                                      ; Charging monitor: engine rpm at or above this value
         dc.b    $3C
@@ -6175,7 +6175,7 @@ ChargeMonClearTime:
         dc.b    $05                                      ; Charging monitor: time before $0DB8,Z bit 6 clears
         dc.b    $6D
 BattLowVolts:
-        dc.b    $BA                                      ; Low-voltage monitor (Sub_21D02): battery voltage below this value counts as low
+        dc.b    $BA                                      ; Low-voltage monitor (BatteryLowFlag): battery voltage below this value counts as low
 BattLowVoltsClear:
         dc.b    $B7                                      ; Low-voltage monitor: battery voltage at or above this value counts as normal
 BattLowSetCount:
@@ -8059,7 +8059,7 @@ L05958:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacSetTarget ($0595A)
-; Called from: Sub_04728, IacShiftKick, IdleTargetControl, Sub_059DA, IacShiftStepApply, Sub_05FC8 (8 calls)
+; Called from: Sub_04728, IacShiftKick, IdleTargetControl, IacChargeStepCalc, IacShiftStepApply, Sub_05FC8 (8 calls)
 ;---------------------------------------------------------------------------------------------------
 IacSetTarget:
         ORP     #$00E0
@@ -8119,10 +8119,10 @@ L059D0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_059DA ($059DA)
+; IacChargeStepCalc ($059DA)
 ; Called from: Sub_0E966
 ;---------------------------------------------------------------------------------------------------
-Sub_059DA:
+IacChargeStepCalc:
         PSHM    E,X,K
         BRSET   >SensorFaultFlags,Z,#$20,L05A86
         BRSET   >FaultSet05,Z,#$08,L05A86
@@ -9946,7 +9946,7 @@ L06C1A:
         STAA    >SPCR3,Z
         JSR     KickWatchdogsLong
         JSR     Sub_1E93E
-        JSR     Sub_1E9B2
+        JSR     QspiDeviceInit
         LDD     #$0040
         STD     >SCCR0,Z
         LDD     #$100C
@@ -10036,7 +10036,7 @@ L06D6A:
         STAA    $31,Z
         CLRA
         STAA    $2F,Z
-        JSR     Sub_1EC9C
+        JSR     EepromReadStartup
         TZX
         LDX     #$FD18
         LDAB    #$04
@@ -10117,7 +10117,7 @@ L06E9E:
         BRCLR   >ADCSTAT,Z,#$80,L06E9E
         LDAA    >RJURR0_L,Z
         STAA    >MapRawStart,Z
-        JSR     Sub_1423A
+        JSR     RawScaleF4
         STAA    >Map,Z
         STAA    $0555,Z
         STAA    >MapLast,Z
@@ -10208,10 +10208,10 @@ L06FA4:
         CLRW    >SPCR2,Z
         STD     >TR0,Z
         JSR     KickWatchdogsLong
-        JSR     Sub_1E960
+        JSR     QspiWaitIdle
         LDE     #$001E
         JSR     DelayLoop
-        JSR     Sub_1E960
+        JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $0520,Z
         CLRB
@@ -10298,7 +10298,7 @@ L070E0:
         BSET    <EquipmentFlags,Z,#$08
 L070EC:
         LDD     #$0097
-        JSR     Sub_1EA48
+        JSR     EepromReadByte
         CMPA    #$4A
         BNE     L07102
         COMA
@@ -10383,7 +10383,7 @@ L071D0:
         JSR     IacResetBaro
 L071E2:
         LDAA    $16,Z
-        JSR     Sub_133C6
+        JSR     ChargeTargetCalc
         STAA    >ChargeTargetVolts,Z
         LDAA    >MtvPeriod
         STAA    >MtvPeriodCount,Z
@@ -10517,7 +10517,7 @@ L07370:
         JSR     ObdResetInit
         JSR     O2ResetStart
         JSR     IacResetHold
-        JSR     Sub_19522
+        JSR     MisfireEventCountReset
         JSR     NvInit
 L07384:
         LDD     >TCNT,Z
@@ -10534,7 +10534,7 @@ MainLoop:
         JSR     Sub_0A004
         JSR     UpdateDriveFlags
         JSR     Sub_13A60
-        JSR     Sub_134C0
+        JSR     BaroUpdate
         JSR     ClosedLoopMain
         JSR     Sub_13652
         JSR     Sub_10896
@@ -10545,11 +10545,11 @@ MainLoop:
         JSR     Sub_13F2A
         JSR     Sub_1390A
         JSR     Sub_046B6
-        JSR     Sub_1089A
-        JSR     Sub_1350E
+        JSR     FanMain
+        JSR     IdleStateUpdate
         JSR     Sub_102DC
         JSR     Sub_13D6E
-        JSR     Sub_14AD8
+        JSR     ChargeLowMonitor
         JSR     CrankFuel
         JSR     Sub_10000
         JSR     Sub_10FB4
@@ -10558,9 +10558,9 @@ MainLoop:
         JSR     Sub_19530
         JSR     Sub_1EFBE
         JSR     CalcLoadValue
-        JSR     Sub_1A1B8
+        JSR     AcRequestUpdate
         JSR     Sub_1A210
-        JSR     Sub_16E66
+        JSR     LdpPurgedCheck
         JSR     Sub_084B0
         JSR     Sub_15294
         JSR     Sub_1469A
@@ -10583,9 +10583,9 @@ MainLoop:
         BCS     L0746E
         LSRA
         LBCC    L07510
-        JSR     Sub_13580
+        JSR     SriMileageStore
         JSR     O2ActivityCount
-        JSR     Sub_19B34
+        JSR     FaultPendingAge
         JSR     NvUpdate
         LBRA    L07510
 L0746E:
@@ -10598,24 +10598,24 @@ L0747A:
         LBRA    L07510
 L07486:
         JSR     Sub_1DECC
-        JSR     Sub_14D44
-        JSR     Sub_19B86
-        JSR     Sub_18A54
+        JSR     ChargeHighMonitor
+        JSR     MilLampUpdate
+        JSR     FuelSysDelayCount
         JSR     Sub_10898
         JSR     Sub_149EA
         LBRA    L07510
 L074A2:
-        JSR     Sub_1AC84
-        JSR     Sub_14B54
+        JSR     SystemTestRejectCount
+        JSR     BatteryLowFlag
         JSR     Sub_15564
         JSR     Sub_15B2C
         BRA     L07510
 L074B4:
         JSR     Sub_131D6
-        JSR     Sub_135E2
+        JSR     AcPressureSensor
         JSR     Sub_1335C
-        JSR     Sub_1ACEA
-        JSR     Sub_142D8
+        JSR     SystemTestCheck
+        JSR     MonSteadyRateCalc
         JSR     Sub_08DBC
         JSR     Sub_15566
         JSR     Sub_15CAE
@@ -10629,7 +10629,7 @@ L074DE:
 L074E8:
         JSR     Sub_0DDF8
         JSR     Sub_14174
-        JSR     Sub_10158
+        JSR     OutputTestEeprom
         JSR     Sub_10442
         JSR     InputFilters
         JSR     Sub_14378
@@ -10661,27 +10661,27 @@ L07510:
         JSR     IdleFlareCheck
         JSR     Sub_088DC
         JSR     Sub_1494A
-        JSR     Sub_1CEEA
+        JSR     MonEnableTasks
         JSR     Sub_19DA6
-        JSR     Sub_19EC6
+        JSR     ChargeLampRequest
         JSR     Sub_19AE2
         JSR     Sub_14D6A
         JSR     Sub_14DFA
-        JSR     Sub_148B4
+        JSR     OutputDriverCheck
         JSR     Sub_1BD60
         JSR     Sub_11838
-        JSR     Sub_11C56
+        JSR     BusEepromWrite
         JSR     Sub_1BA10
         JSR     Sub_1BA8A
         JSR     SciRequestReceive
         JSR     Sub_1AD54
         JSR     Sub_1B506
-        JSR     Sub_1AC36
-        JSR     Sub_1E8E0
+        JSR     FuelTrimAdjustStore
+        JSR     SwitchBitsCollect
         JSR     Sub_1E752
         JSR     Sub_1ED14
         JSR     Sub_1EBE0
-        JSR     Sub_1428A
+        JSR     HighRpmTimerUpdate
         JSR     Sub_14C06
         JSR     Sub_15ED8
         JSR     Sub_1591E
@@ -10765,7 +10765,7 @@ L07688:
         STD     >ControlFlags943,Z
         STAA    $0526,Z
         CLRW    >SPCR2,Z
-        JSR     Sub_1E960
+        JSR     QspiWaitIdle
         BSET    <SystemFlags00A,Z,#$20
         LDX     #$BF40
         JSR     PowerInputHold
@@ -10787,7 +10787,7 @@ L076DC:
         BCLR    <SystemFlags00A,Z,#$20
 L076F6:
         BRCLR   $0800,Z,#$08,L0770A
-        JSR     Sub_1445E
+        JSR     EquipmentProbe
         BRCLR   $0800,Z,#$08,L0770A
         JSR     Sub_17CA0
 L0770A:
@@ -12857,7 +12857,7 @@ L08C5E:
 
 ;---------------------------------------------------------------------------------------------------
 ; ScaleByFraction ($08C64)
-; Called from: IdleTargetControl, Sub_088DC, Sub_08B62, Sub_08BA0, Sub_08C02, FinishFuelPulse, CalcFuelPulse, Sub_09FAE (14 calls)
+; Called from: IdleTargetControl, Sub_088DC, Sub_08B62, Sub_08BA0, Sub_08C02, FinishFuelPulse, CalcFuelPulse, EventFuelScaleApply (14 calls)
 ;---------------------------------------------------------------------------------------------------
 ScaleByFraction:
         CLRB
@@ -13232,7 +13232,7 @@ StartPulseCurrent:
 StartInjectorPulse:
         CMPB    >InjectorKillCyl1,Z
         LBEQ    L09132
-        JSR     Sub_09FAE
+        JSR     EventFuelScaleApply
         BRSET   >FuelPulseFlags,Z,#$10,L09132
         CMPB    >InjectorKillCyl2,Z
         LBEQ    L09132
@@ -13352,7 +13352,7 @@ L090F0:
         LDAA    $00,X
         STAA    $0300,Z
         PSHM    Y,K
-        JSR     Sub_1A016
+        JSR     EventOptionUpdate
         PULM    K,Y
         STE     $0000,Y
         LDAA    >InjectorIndex,Z
@@ -14739,7 +14739,7 @@ L09F34:
 
 ;---------------------------------------------------------------------------------------------------
 ; CylinderBit ($09F3A)
-; Called from: Sub_09FAE, Isr_GPT_IC4OC5
+; Called from: EventFuelScaleApply, Isr_GPT_IC4OC5
 ;---------------------------------------------------------------------------------------------------
 CylinderBit:
         PSHM    X,K
@@ -14792,10 +14792,10 @@ L09FAC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_09FAE ($09FAE)
+; EventFuelScaleApply ($09FAE)
 ; Called from: StartInjectorPulse
 ;---------------------------------------------------------------------------------------------------
-Sub_09FAE:
+EventFuelScaleApply:
         PSHM    D
         BRCLR   >FuelModeFlags,Z,#$08,L09FDA
         LDAA    >InjectorIndex,Z
@@ -14876,7 +14876,7 @@ L0A040:
 
 ;---------------------------------------------------------------------------------------------------
 ; Lookup2D ($0A048)
-; Called from: Sub_04728, Sub_04ACE, IacShiftKick, IdleTargetControl, Sub_059DA, IacResetBaro, IacResetHold, Sub_05B28 and 96 more routines (298 calls)
+; Called from: Sub_04728, Sub_04ACE, IacShiftKick, IdleTargetControl, IacChargeStepCalc, IacResetBaro, IacResetHold, Sub_05B28 and 96 more routines (298 calls)
 ;---------------------------------------------------------------------------------------------------
 Lookup2D:
         PSHM    E,Y,K
@@ -15125,7 +15125,7 @@ L0A1E0:
 
 ;---------------------------------------------------------------------------------------------------
 ; Lookup3DNorm ($0A1F6)
-; Called from: DecelLeanControl, Sub_0D9AA, DwellCalc (4 calls)
+; Called from: DecelLeanControl, PurgeFuelCalc, DwellCalc (4 calls)
 ;---------------------------------------------------------------------------------------------------
 Lookup3DNorm:
         PSHM    E,Y,K
@@ -15360,7 +15360,7 @@ L0A374:
 
 ;---------------------------------------------------------------------------------------------------
 ; PowerInputHold ($0A38C)
-; Called from: Sub_075FC, Sub_1445E, Sub_17CA0, Sub_17F96 (9 calls)
+; Called from: Sub_075FC, EquipmentProbe, Sub_17CA0, O2HeaterAdcSample (9 calls)
 ;---------------------------------------------------------------------------------------------------
 PowerInputHold:
         JSR     KickWatchdogsLong
@@ -15379,7 +15379,7 @@ L0A3A4:
 
 ;---------------------------------------------------------------------------------------------------
 ; DelayLoop ($0A3C8)
-; Called from: Reset, Isr_GPT_IC3, Sub_0E892, Sub_148B4 (8 calls)
+; Called from: Reset, Isr_GPT_IC3, Sub_0E892, OutputDriverCheck (8 calls)
 ;---------------------------------------------------------------------------------------------------
 DelayLoop:
         PSHM    D
@@ -15406,7 +15406,7 @@ L0A3EC:
 
 ;---------------------------------------------------------------------------------------------------
 ; CollectBits ($0A3F2)
-; Called from: Sub_07F22, Sub_11FCA, Sub_14174, Sub_1AF54, Sub_1E8E0 (13 calls)
+; Called from: Sub_07F22, Sub_11FCA, Sub_14174, Sub_1AF54, SwitchBitsCollect (13 calls)
 ;---------------------------------------------------------------------------------------------------
 CollectBits:
         PSHM    E,Y,K
@@ -15583,7 +15583,7 @@ L0A58C:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16 ($0A596)
-; Called from: Sub_05B28, IacBaseCalc, SpeedCtlRpmJumpCheck, Sub_133F0, LdpPumpStroke, O2ActivityCount, CatMonSwitchRatio, Sub_18DF2 and 4 more routines (21 calls)
+; Called from: Sub_05B28, IacBaseCalc, SpeedCtlRpmJumpCheck, Sub_133F0, LdpPumpStroke, O2ActivityCount, CatMonSwitchRatio, MisfireThreshold and 4 more routines (21 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16:
         PSHM    E,X,Y,K,CCR
@@ -15643,7 +15643,7 @@ L0A612:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16Signed ($0A618)
-; Called from: Sub_04728, Sub_0D060, PurgeFlowTest, Sub_199B8, SurgeFilters (9 calls)
+; Called from: Sub_04728, Sub_0D060, PurgeFlowTest, MisfireDevCalc, SurgeFilters (9 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16Signed:
         PSHM    E,X,Y,K,CCR
@@ -15827,7 +15827,7 @@ L0A756:
 
 ;---------------------------------------------------------------------------------------------------
 ; RingFindLatest ($0A764)
-; Called from: Reset, NvInit, NvUpdate, Sub_13580
+; Called from: Reset, NvInit, NvUpdate, SriMileageStore
 ;---------------------------------------------------------------------------------------------------
 RingFindLatest:
         TXY
@@ -19305,7 +19305,7 @@ L0CAC4:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearLeanBank1 ($0CACA)
-; Called from: ClosedLoopManager, Sub_14DFA, Sub_1501E, Sub_1D452
+; Called from: ClosedLoopManager, Sub_14DFA, Sub_1501E, ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank1:
         PSHM    X,K
@@ -19326,7 +19326,7 @@ L0CADC:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearLeanBank2 ($0CAEC)
-; Called from: ClosedLoopManager, Sub_14DFA, Sub_1501E, Sub_1D452
+; Called from: ClosedLoopManager, Sub_14DFA, Sub_1501E, ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank2:
         PSHM    X,K
@@ -19376,7 +19376,7 @@ L0CB3C:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearRichBank1 ($0CB40)
-; Called from: Sub_1D452
+; Called from: ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearRichBank1:
         PSHM    X,K
@@ -19396,7 +19396,7 @@ L0CB4E:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearRichBank2 ($0CB5E)
-; Called from: Sub_1D452
+; Called from: ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearRichBank2:
         PSHM    X,K
@@ -19554,15 +19554,15 @@ L0CCB0:
         BCC     L0CCBE
         BSET    >PurgeCellFlags,Z,#$40
 L0CCBE:
-        JSR     Sub_0CCC8
-        JSR     Sub_0CDAC
+        JSR     PurgeCellRefCheck
+        JSR     PurgeCellRichCheck
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0CCC8 ($0CCC8)
+; PurgeCellRefCheck ($0CCC8)
 ; Called from: PurgeReset
 ;---------------------------------------------------------------------------------------------------
-Sub_0CCC8:
+PurgeCellRefCheck:
         LDAA    $0C,Z
         CMPA    >PurgeCellRefCoolantMax
         LBCC    L0CD98
@@ -19586,7 +19586,7 @@ Sub_0CCC8:
         LDAB    >PurgeCell1
         ABX
         LDAA    <PurgeCellTrim1,Z
-        LBSR    Sub_0CD9A
+        LBSR    PurgeCellDiff
         STAA    $063A,Z
         BNE     L0CD24
         BSET    >PurgeFlags2,Z,#$08
@@ -19595,13 +19595,13 @@ L0CD24:
         LDAB    >PurgeCell2
         ABX
         LDAA    <PurgeCellTrim2,Z
-        BSR     Sub_0CD9A
+        BSR     PurgeCellDiff
         LDX     #$8061
         LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    <PurgeCellTrim3,Z
-        BSR     Sub_0CD9A
+        BSR     PurgeCellDiff
         CBA
         BCC     L0CD48
         TBA
@@ -19614,7 +19614,7 @@ L0CD52:
         LDAB    >PurgeCell1
         ABX
         LDAA    <PurgeCellTrim1B2,Z
-        BSR     Sub_0CD9A
+        BSR     PurgeCellDiff
         STAA    $063B,Z
         BNE     L0CD6A
         BSET    >PurgeFlags2,Z,#$04
@@ -19623,13 +19623,13 @@ L0CD6A:
         LDAB    >PurgeCell2
         ABX
         LDAA    <PurgeCellTrim2B2,Z
-        BSR     Sub_0CD9A
+        BSR     PurgeCellDiff
         LDX     #$8074
         LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    <PurgeCellTrim3B2,Z
-        BSR     Sub_0CD9A
+        BSR     PurgeCellDiff
         CBA
         BCC     L0CD8E
         TBA
@@ -19641,10 +19641,10 @@ L0CD98:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0CD9A ($0CD9A)
-; Called from: Sub_0CCC8 (6 calls)
+; PurgeCellDiff ($0CD9A)
+; Called from: PurgeCellRefCheck (6 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0CD9A:
+PurgeCellDiff:
         SUBA    $00,X
         BLE     L0CDA8
         BVC     L0CDA2
@@ -19658,10 +19658,10 @@ L0CDAA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0CDAC ($0CDAC)
+; PurgeCellRichCheck ($0CDAC)
 ; Called from: PurgeReset
 ;---------------------------------------------------------------------------------------------------
-Sub_0CDAC:
+PurgeCellRichCheck:
         LDAA    $0C,Z
         CMPA    >FlexSoakCoolantMax
         BCC     L0CE04
@@ -19670,9 +19670,9 @@ Sub_0CDAC:
         BEQ     L0CDD0
         TZX
         LDX     #$8061
-        JSR     Sub_0CE06
+        JSR     PurgeCellMax
         LDX     #$8074
-        JSR     Sub_0CE06
+        JSR     PurgeCellMax
         BCLR    <PurgeCellRichFlags,Z,#$38
 L0CDD0:
         BRSET   >Options032E,#$08,L0CE04
@@ -19702,10 +19702,10 @@ L0CE04:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0CE06 ($0CE06)
-; Called from: Sub_0CDAC (2 calls)
+; PurgeCellMax ($0CE06)
+; Called from: PurgeCellRichCheck (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0CE06:
+PurgeCellMax:
         LDAA    $11,X
         LDAB    $12,X
         CBA
@@ -19720,27 +19720,27 @@ L0CE12:
         BEQ     L0CE26
         CMPB    >PurgeCell3
         BEQ     L0CE26
-        BSR     Sub_0CE46
+        BSR     MaxStore
 L0CE26:
         INCB
         CMPB    #$0F
         BLS     L0CE12
         LDAA    $10,X
         LDAB    >PurgeCell1
-        BSR     Sub_0CE46
+        BSR     MaxStore
         LDAA    $11,X
         LDAB    >PurgeCell2
-        BSR     Sub_0CE46
+        BSR     MaxStore
         LDAA    $12,X
         LDAB    >PurgeCell3
-        BSR     Sub_0CE46
+        BSR     MaxStore
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0CE46 ($0CE46)
-; Called from: Sub_0CE06 (4 calls)
+; MaxStore ($0CE46)
+; Called from: PurgeCellMax (4 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0CE46:
+MaxStore:
         STX     <FanSoakFlags,Z
         ABX
         CMPA    $00,X
@@ -20169,7 +20169,7 @@ L0D2D6:
         LDAA    $16BE
         STAA    $049A,Z
         CLR     $049B,Z
-        JSR     Sub_0D9AA
+        JSR     PurgeFuelCalc
         BEQ     L0D32A
         LDAA    $0499,Z
         CBA
@@ -20341,7 +20341,7 @@ L0D4B2:
 L0D4DC:
         STAA    $049B,Z
 L0D4E0:
-        JSR     Sub_0D9AA
+        JSR     PurgeFuelCalc
         STAA    <FanSoakFlags,Z
         LDAA    $049B,Z
         MUL
@@ -20493,7 +20493,7 @@ L0D684:
         BRCLR   >O2LearnFlags,Z,#$08,L0D6C6
         LDAB    >ShortTermTrim1,Z
         LDAA    >O2AdaptValue1,Z
-        JSR     Sub_18A10
+        JSR     FuelSysScaleMul
         TSTA
         BEQ     L0D69C
         CLRB
@@ -20512,7 +20512,7 @@ L0D6BA:
 L0D6C6:
         LDAB    >ShortTermTrim2,Z
         LDAA    >O2AdaptValue2,Z
-        JSR     Sub_18A10
+        JSR     FuelSysScaleMul
         TSTA
         BEQ     L0D6D8
         CLRB
@@ -20784,10 +20784,10 @@ L0D9A0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0D9AA ($0D9AA)
+; PurgeFuelCalc ($0D9AA)
 ; Called from: Sub_0D060 (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0D9AA:
+PurgeFuelCalc:
         LDAA    <EngineRpm,Z
         LDX     #PurgeFuelRpm
         JSR     Lookup2D
@@ -21766,7 +21766,7 @@ L0E6A4:
         LDD     $056E,Z
         STD     $056C,Z
         ORP     #$0100
-        JSR     Sub_13ECC
+        JSR     VssPulseCalc
         STD     $056E,Z
         LDX     #$0014
         IDIV
@@ -21923,7 +21923,7 @@ L0E860:
         BRCLR   >Options0335,#$10,L0E870
         JSR     Sub_0AE60
 L0E870:
-        JSR     Sub_14248
+        JSR     HighRpmTimerPit
         JSR     Sub_1BE4A
         BRA     L0E884
 L0E87A:
@@ -22060,7 +22060,7 @@ L0E9C2:
         BRSET   >MainLoopCounter,Z,#$80,L0EA96
         LBRA    L0EA7E
 L0E9CC:
-        JSR     Sub_059DA
+        JSR     IacChargeStepCalc
         BRCLR   >ChargeMonFlags,Z,#$10,L0EA96
         BRSET   >FieldFlags,Z,#$08,L0E9FC
         BRCLR   >FieldFlags,Z,#$10,L0EA96
@@ -22477,7 +22477,7 @@ L0EDD2:
 ;---------------------------------------------------------------------------------------------------
 Isr_IRQ4:
         ORP     #$00E0
-        JSR     Sub_12218
+        JSR     Irq4BusHandler
         RTI
 
 ;---------------------------------------------------------------------------------------------------
@@ -22969,12 +22969,12 @@ L0F312:
         BRCLR   >FaultSet01,Z,#$02,L0F3A2
         BRCLR   >ControlFlags943,Z,#$10,L0F356
         BCLR    >ControlFlags943,Z,#$18
-        JSR     Sub_1E8E0
+        JSR     SwitchBitsCollect
         LDD     $051E,Z
         STD     >TR0,Z
         STD     $0522,Z
         CLRW    >SPCR2,Z
-        JSR     Sub_1E960
+        JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $0520,Z
         BCLR    <SystemFlags00A,Z,#$C0
@@ -23081,10 +23081,10 @@ L0F43C:
 L0F440:
         BSETW   $0812,Z,#$0010
         JSR     EmptyHook
-        JSR     Sub_142F8
+        JSR     AdcStartF0
         JSR     Sub_0A554
         JSR     FuelEventCalc
-        JSR     Sub_15824
+        JSR     CamCrankMeasure
 L0F45A:
         BRCLR   >ADCSTAT_L,Z,#$01,L0F45A
         LDAA    >RJURR0_L,Z
@@ -23581,7 +23581,7 @@ L0FA3E:
         dc.b    $04,$01,$04,$00,$02,$03,$01,$02,$03,$01,$00,$FF
 L0FA4E:
         JSR     Sub_0DEAC
-        JSR     Sub_142F8
+        JSR     AdcStartF0
         JSR     EventCellSelect
         BRSET   <SparkFlags,Z,#$20,L0FA9E
         BRCLR   >CrankSyncFlags,Z,#$40,L0FA9E
@@ -23706,7 +23706,7 @@ L0FBA2:
         JSR     ReadMap
         LDAA    #$55
         JSR     MapTpsFilters
-        JSR     Sub_18A6A
+        JSR     MisfireMonitorEvent
         BSET    >IdleFlags3,Z,#$40
         JSR     SurgeFilters
         LDX     >RefPeriod,Z
@@ -23791,12 +23791,12 @@ Isr_GPT_PAI:
         BSET    >CamCrankFlags,Z,#$20
 L0FCB6:
         BCLR    >ControlFlags943,Z,#$18
-        JSR     Sub_1E8E0
+        JSR     SwitchBitsCollect
         LDD     $051E,Z
         STD     >TR0,Z
         STD     $0522,Z
         CLRW    >SPCR2,Z
-        JSR     Sub_1E960
+        JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $0520,Z
         BCLR    <SystemFlags00A,Z,#$C0

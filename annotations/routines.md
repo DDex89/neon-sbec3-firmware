@@ -26,7 +26,7 @@ MainLoopPhaseMask a mask of the trailing one bits of the counter: bit n is set o
 ## 08344 Isr_PIT
 Periodic interrupt, every 0.854 ms. Increments PitTickCounter and LoopTickCounter (the main-loop
 pacing) and runs work selected by the low bits of PitTickCounter: odd ticks every 1.71 ms; ticks
-2 mod 4 start the next ADC conversion sequence (ADCTL1 = $24); ticks 4 mod 8 call Sub_0843A.
+2 mod 4 start the next ADC conversion sequence (ADCTL1 = $24); ticks 4 mod 8 call IacStepperDrive.
 Every 24 ticks (20.5 ms) one of two routines chosen by calibration bit $032E.2 runs.
 
 ## 080B4 UnexpectedInterrupt

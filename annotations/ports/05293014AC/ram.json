@@ -172,6 +172,7 @@
  "03D1": "PurgeRamp",
  "03D3": "PurgeStartRamp",
  "0402": "FanFlags",
+ "0410": "FuelSystemStatusPid",
  "0412": "MonStatusBits1",
  "0414": "MonStatusBits2",
  "0416": "MonStatusBits3",

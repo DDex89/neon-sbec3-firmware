@@ -1244,7 +1244,7 @@
   },
   "0374": {
    "name": "MtvPeriod",
-   "desc": "Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10)",
+   "desc": "Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in MtvRateLookup)",
    "category": "Other",
    "size": 1
   },
@@ -1301,7 +1301,7 @@
   },
   "0416": {
    "name": "AcCutRpmLow",
-   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and Sub_39412 (FF00 = off)",
+   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)",
    "unit": "rpmw",
    "size": 2,
    "category": "A/C"
@@ -1424,7 +1424,7 @@
   },
   "14A0": {
    "name": "HotEngineOn",
-   "desc": "Hot-engine enrichment switch (0 = off); also a bit mask in Sub_11BE4",
+   "desc": "Hot-engine enrichment switch (0 = off); also a bit mask in FinishFuelPulse",
    "size": 1,
    "category": "Fuel"
   },
@@ -1738,7 +1738,7 @@
   },
   "06A6": {
    "name": "AccelFuelOptions",
-   "desc": "Accel fuel option byte (bit 7: WOT fuel branch in Sub_11FB0; bit 6: index shift in CalcFuelPulse)",
+   "desc": "Accel fuel option byte (bit 7: WOT fuel branch in TipInFuelControl; bit 6: index shift in CalcFuelPulse)",
    "category": "Options",
    "size": 1,
    "bits": [
@@ -1748,7 +1748,7 @@
   },
   "1116": {
    "name": "EventFuelMapMin",
-   "desc": "Event fuel (Sub_11DE6): MAP at or above this value",
+   "desc": "Event fuel (EventCorrections): MAP at or above this value",
    "unit": "kpa",
    "size": 1,
    "category": "Other"
@@ -2631,7 +2631,7 @@
   },
   "257B": {
    "name": "O2MonWindowMax",
-   "desc": "O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6)",
+   "desc": "O2 sensor monitor at idle: window count above which the test restarts (O2MonData2Step)",
    "category": "Diagnostics",
    "size": 1
   },
@@ -2643,13 +2643,13 @@
   },
   "2582": {
    "name": "O2HeaterSampleTime",
-   "desc": "Probably the O2 heater monitor (Sub_2919A): timer $010A,Z (word) above which the heater input is sampled",
+   "desc": "Probably the O2 heater monitor (O2HeaterSampleStep): timer $010A,Z (word) above which the heater input is sampled",
    "category": "Diagnostics",
    "size": 2
   },
   "246D": {
    "name": "CamCrankOffsetMin",
-   "desc": "Cam/crank relation (Sub_23D76, P1390): offset below this value counts as skipped",
+   "desc": "Cam/crank relation (CamCrankMeasure, P1390): offset below this value counts as skipped",
    "category": "Diagnostics",
    "size": 1
   },
@@ -2673,7 +2673,7 @@
   },
   "3E04": {
    "name": "MapLimpOffset",
-   "desc": "Limp-home MAP from throttle (Sub_241AA): offset added to MapLimpFromThrottle",
+   "desc": "Limp-home MAP from throttle (LimpMapCalc): offset added to MapLimpFromThrottle",
    "unit": "kpa",
    "category": "Sensors",
    "size": 1
@@ -2698,25 +2698,25 @@
   },
   "3DD2": {
    "name": "MapRawLowLimit",
-   "desc": "Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)",
+   "desc": "Raw MAP below this value is a low input (P0107; ReadMap, MapCircuitCheck, MapKeyOnCheck)",
    "category": "Sensors",
    "size": 1
   },
   "3DD3": {
    "name": "MapRawHighLimit",
-   "desc": "Raw MAP at or above this value is a high input (P0108; ReadMap, Sub_21EFE)",
+   "desc": "Raw MAP at or above this value is a high input (P0108; ReadMap, MapCircuitCheck)",
    "category": "Sensors",
    "size": 1
   },
   "3DD5": {
    "name": "MapRationalThrottleMax",
-   "desc": "MAP rationality (Sub_21EFE, ReadMap): throttle opening below this value for the rpm/MAP check",
+   "desc": "MAP rationality (MapCircuitCheck, ReadMap): throttle opening below this value for the rpm/MAP check",
    "category": "Diagnostics",
    "size": 1
   },
   "3DE5": {
    "name": "ChargeMonVoltsMargin",
-   "desc": "Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging",
+   "desc": "Charging monitor (ChargeLowMonitor): battery voltage plus this margin below the charging target counts as undercharging",
    "unit": "volt16",
    "category": "Diagnostics",
    "size": 1

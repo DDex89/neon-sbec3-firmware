@@ -713,7 +713,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x114" flags="0x0">
   <title>FanPwmStepCoolant</title>
-  <description>PWM fan (Sub_3A8D2): duty change against the coolant PD term ($0B19,Z, error to $05A2/$05A3 and rate) $051E, 2D; inputs: TBA</description>
+  <description>PWM fan (FanPwmCoolantPid): duty change against the coolant PD term ($0B19,Z, error to $05A2/$05A3 and rate) $051E, 2D; inputs: TBA</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -785,7 +785,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x116" flags="0x0">
   <title>FanPwmStepBusTemp</title>
-  <description>PWM fan (Sub_3ABFE): duty change against the PD term of the bus temperature $09BF,Z (received on the serial bus) ($0B2C,Z) $054B, 2D; inputs: TBA</description>
+  <description>PWM fan (FanPwmBusPid): duty change against the PD term of the bus temperature $09BF,Z (received on the serial bus) ($0B2C,Z) $054B, 2D; inputs: TBA</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3277,7 +3277,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15A" flags="0x0">
   <title>PartThrottleFuelMain</title>
-  <description>17 x 17 fuel correction, MAP x rpm, used by the main-loop fuel calculation (Sub_10F1C) and by Sys39686; PartThrottleFuel is the per-event one $0C9F, 3D; inputs: result of Lookup2D x EngineRpm</description>
+  <description>17 x 17 fuel correction, MAP x rpm, used by the main-loop fuel calculation (PartThrottleFuelCalc) and by EgrControl; PartThrottleFuel is the per-event one $0C9F, 3D; inputs: result of Lookup2D x EngineRpm</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xCA2" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -3329,7 +3329,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15B" flags="0x0">
   <title>MapBaroOffset</title>
-  <description>Added to MAP against barometric pressure before the part-throttle MAP scale (main-loop fuel, Sys39686, diagnostics) $0DD4, 2D; inputs: Baro</description>
+  <description>Added to MAP against barometric pressure before the part-throttle MAP scale (main-loop fuel, EgrControl, diagnostics) $0DD4, 2D; inputs: Baro</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8292,7 +8292,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DE" flags="0x0">
   <title>AcClutchSparkTimeSensor</title>
-  <description>A/C clutch engage (Sub_39412): spark window $0D53,Z against the A/C sensor $2216, 2D; inputs: AcSensor</description>
+  <description>A/C clutch engage (AcCutLogic): spark window $0D53,Z against the A/C sensor $2216, 2D; inputs: AcSensor</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -13661,7 +13661,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x270" flags="0x0">
   <title>DiagTimerRpm</title>
-  <description>Timer $0527,Z of Sub_243F8 loaded against engine rpm $2F13, 2D; inputs: EngineRpm</description>
+  <description>Timer $0527,Z of DiagModeTimer loaded against engine rpm $2F13, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="17" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -13897,7 +13897,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x276" flags="0x0">
   <title>FuelSysLimit2</title>
-  <description>As FuelSysLimit for the second pair of routines (Sub_2A4F2, Sub_2A6C0) $30EA, 3D; inputs: result of Lookup2D x FlexEthanol</description>
+  <description>As FuelSysLimit for the second pair of routines (FuelSysRich1Check, FuelSysRich2Check) $30EA, 3D; inputs: result of Lookup2D x FlexEthanol</description>
   <CATEGORYMEM index="0" category="17" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x30ED" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -13937,7 +13937,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x277" flags="0x0">
   <title>FuelSysLimitScale</title>
-  <description>Fuel system monitor (Sub_2A0F0, Sub_2A302): purge ramp $042C,Z to row position of FuelSysLimit $310B, 2D; inputs: PurgeRamp</description>
+  <description>Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): purge ramp $042C,Z to row position of FuelSysLimit $310B, 2D; inputs: PurgeRamp</description>
   <CATEGORYMEM index="0" category="17" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -13973,7 +13973,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x278" flags="0x0">
   <title>FuelSysLimitScale2</title>
-  <description>As FuelSysLimitScale for Sub_2A4F2, Sub_2A6C0 $3117, 2D; inputs: PurgeRamp</description>
+  <description>As FuelSysLimitScale for FuelSysRich1Check, FuelSysRich2Check $3117, 2D; inputs: PurgeRamp</description>
   <CATEGORYMEM index="0" category="17" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -14711,7 +14711,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x285" flags="0x0">
   <title>VssCheckVacuumRpm</title>
-  <description>Vehicle speed sensor check (Sub_23970, P0500): manifold vacuum limit against engine rpm (closed throttle, P/N, warm) $49AE, 2D; inputs: EngineRpm</description>
+  <description>Vehicle speed sensor check (VssMonitor, P0500): manifold vacuum limit against engine rpm (closed throttle, P/N, warm) $49AE, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="17" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -15385,7 +15385,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x29A" flags="0x0">
   <title>BusMsgEcData</title>
-  <description>Data byte sent in the bus message $EC (Sub_30972; low two bits replaced) $0322</description>
+  <description>Data byte sent in the bus message $EC (SecurityStatusCalc; low two bits replaced) $0322</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x322" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15397,7 +15397,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x29B" flags="0x0">
   <title>BusInfoByte1</title>
-  <description>First data byte of the bus information message built by Sub_31860 (after $06 $ED) $0323</description>
+  <description>First data byte of the bus information message built by PciBuildMessage (after $06 $ED) $0323</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -16177,7 +16177,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x304" flags="0x0">
   <title>Options033F</title>
-  <description>Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in ObdReadiness and Sub_28D78 $033F</description>
+  <description>Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in ObdReadiness and O2HeaterMonitor $033F</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x33F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -16629,7 +16629,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x32D" flags="0x0">
   <title>FanPwmFixedDuty</title>
-  <description>Fan PWM (Sub_3ADDE, Options033D bit 2): duty the fan request steps towards $041E</description>
+  <description>Fan PWM (FanPwmFixed, Options033D bit 2): duty the fan request steps towards $041E</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x41E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -16845,7 +16845,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33F" flags="0x0">
   <title>MtvPeriod</title>
-  <description>Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10) $044A</description>
+  <description>Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in MtvRateLookup) $044A</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x44A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -17553,7 +17553,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x37A" flags="0x0">
   <title>FanPwmRampDownDuty</title>
-  <description>Fan PWM ramp (Sub_3ADA8): requested duty below this value ramps the duty down $0514</description>
+  <description>Fan PWM ramp (FanPwmRampDown): requested duty below this value ramps the duty down $0514</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x514" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -17889,7 +17889,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x396" flags="0x0">
   <title>AcCutRpmLow</title>
-  <description>A/C logic: engine rpm limit used in IdleTargetControl and Sub_39412 (FF00 = off) $055E</description>
+  <description>A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off) $055E</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x55E" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -17949,7 +17949,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x39B" flags="0x0">
   <title>AcCutCoolantOn</title>
-  <description>A/C cut-out (Sub_39412): coolant at or above which the A/C is cut $0564</description>
+  <description>A/C cut-out (AcCutLogic): coolant at or above which the A/C is cut $0564</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x564" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -18201,7 +18201,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3B0" flags="0x0">
   <title>StarterCutHold</title>
-  <description>Starter control (Sub_3AECC, Options0333 bit 2, probably the starter relay): hold count ($0C01,Z) after rpm drops $057A</description>
+  <description>Starter control (StarterCut, Options0333 bit 2, probably the starter relay): hold count ($0C01,Z) after rpm drops $057A</description>
   <CATEGORYMEM index="0" category="8" />
   <EMBEDDEDDATA mmedaddress="0x57A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18802,7 +18802,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3E5" flags="0x0">
   <title>FlexLearnBaseReadyMin</title>
-  <description>FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines Sub_2A0F0-Sub_2A6C0) $0786</description>
+  <description>FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines FuelSysLean1Check-FuelSysRich2Check) $0786</description>
   <CATEGORYMEM index="0" category="2" />
   <EMBEDDEDDATA mmedaddress="0x786" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -19810,7 +19810,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x439" flags="0x0">
   <title>PwmC18DutyStep</title>
-  <description>PWM output of PwmPeriodC18: step of $0C17,Z (also compared in Sub_3B0BA) $0B0B</description>
+  <description>PWM output of PwmPeriodC18: step of $0C17,Z (also compared in PwmC18StepSelect) $0B0B</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB0B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -19822,7 +19822,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x43A" flags="0x0">
   <title>PwmC18CoolantMax</title>
-  <description>PWM output of PwmPeriodC18 (Sub_3AF4C): start coolant and coolant at or below this value for the cold branch $0B0C</description>
+  <description>PWM output of PwmPeriodC18 (PwmC18Main): start coolant and coolant at or below this value for the cold branch $0B0C</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB0C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -19834,7 +19834,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x43B" flags="0x0">
   <title>PwmC18DutyStep2</title>
-  <description>PWM output of PwmPeriodC18: step taken off the duty $0C20,Z (Sub_3AF4C, Sub_3B0BA) $0B0D</description>
+  <description>PWM output of PwmPeriodC18: step taken off the duty $0C20,Z (PwmC18Main, PwmC18StepSelect) $0B0D</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB0D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -19858,7 +19858,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x43D" flags="0x0">
   <title>PwmC18Divisor2</title>
-  <description>PWM output of PwmPeriodC18: divisor (word) of the step timer in Sub_3AF4C $0B10</description>
+  <description>PWM output of PwmPeriodC18: divisor (word) of the step timer in PwmC18Main $0B10</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xB10" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -20086,7 +20086,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x450" flags="0x0">
   <title>HotEngineOn</title>
-  <description>Hot-engine enrichment switch (0 = off); also a bit mask in Sub_11BE4 $0B51</description>
+  <description>Hot-engine enrichment switch (0 = off); also a bit mask in FinishFuelPulse $0B51</description>
   <CATEGORYMEM index="0" category="2" />
   <EMBEDDEDDATA mmedaddress="0xB51" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -22342,14 +22342,14 @@
  </XDFCONSTANT>
  <XDFFLAG uniqueid="0x50C" flags="0x0">
   <title>AccelFuelOptions bit $40</title>
-  <description>Accel fuel option byte (bit 7: WOT fuel branch in Sub_11FB0; bit 6: index shift in CalcFuelPulse) $18AC mask $40</description>
+  <description>Accel fuel option byte (bit 7: WOT fuel branch in TipInFuelControl; bit 6: index shift in CalcFuelPulse) $18AC mask $40</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x18AC" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x50D" flags="0x0">
   <title>AccelFuelOptions bit $80</title>
-  <description>Accel fuel option byte (bit 7: WOT fuel branch in Sub_11FB0; bit 6: index shift in CalcFuelPulse) $18AC mask $80</description>
+  <description>Accel fuel option byte (bit 7: WOT fuel branch in TipInFuelControl; bit 6: index shift in CalcFuelPulse) $18AC mask $80</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x18AC" mmedelementsizebits="8" />
   <mask>0x80</mask>
@@ -22464,7 +22464,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x517" flags="0x0">
   <title>EventFuelMapMin</title>
-  <description>Event fuel (Sub_11DE6): MAP at or above this value $18B6</description>
+  <description>Event fuel (EventCorrections): MAP at or above this value $18B6</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x18B6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
@@ -22896,7 +22896,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x53B" flags="0x0">
   <title>PurgeBattTimerInit</title>
-  <description>Purge (Sub_3DC64): start value of the timer $0428,Z (word) inside the battery temperature window $1996</description>
+  <description>Purge (PurgeEnable): start value of the timer $0428,Z (word) inside the battery temperature window $1996</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1996" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -22932,7 +22932,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x53E" flags="0x0">
   <title>PurgeRpmFactor</title>
-  <description>Purge (Sub_3E4CA): factor (word) on engine rpm for the purge value $199A</description>
+  <description>Purge (PurgeRampCalc): factor (word) on engine rpm for the purge value $199A</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x199A" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -22968,7 +22968,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x541" flags="0x0">
   <title>PurgeDelayInit</title>
-  <description>Start value of the purge delay $042F,Z (reset, Sub_3DC64, PurgeReset) $199E</description>
+  <description>Start value of the purge delay $042F,Z (reset, PurgeEnable, PurgeReset) $199E</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x199E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23928,7 +23928,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x591" flags="0x0">
   <title>PurgeCellRefMargin</title>
-  <description>Purge cell reference (Sub_3DFCA): margin added to the stored cells $8066/$8079 before compare $1B3B</description>
+  <description>Purge cell reference (PurgeCellRichCheck): margin added to the stored cells $8066/$8079 before compare $1B3B</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1B3B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23940,7 +23940,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x592" flags="0x0">
   <title>PurgeCellRefCoolantMax</title>
-  <description>Purge cell reference (Sub_3DEF8): coolant below this value $1B3C</description>
+  <description>Purge cell reference (PurgeCellRefCheck): coolant below this value $1B3C</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1B3C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -23952,7 +23952,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x593" flags="0x0">
   <title>PurgeCellUpdateCount</title>
-  <description>Purge (Sub_3E344): counts ($043E,Z) between updates $1B3D</description>
+  <description>Purge (PurgeCellUpdateGate): counts ($043E,Z) between updates $1B3D</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1B3D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23964,7 +23964,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x594" flags="0x0">
   <title>PurgeCellDiffOffset</title>
-  <description>Purge (Sub_3DFB8): offset taken off the cell difference $1B3E</description>
+  <description>Purge (PurgeCellDiff): offset taken off the cell difference $1B3E</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1B3E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -26772,7 +26772,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x67E" flags="0x0">
   <title>IdleStableTimeMin</title>
-  <description>Idle state flags: time since start above this value (also used by Sub_23970) $2A31</description>
+  <description>Idle state flags: time since start above this value (also used by VssMonitor) $2A31</description>
   <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x2A31" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -26832,7 +26832,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x683" flags="0x0">
   <title>IdleUnderTargetMargin</title>
-  <description>Sub_2CBC8: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target $2A36</description>
+  <description>IdleStateUpdate: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target $2A36</description>
   <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x2A36" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -27396,7 +27396,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6B2" flags="0x0">
   <title>SpeedCtlSpeedErrorTrip</title>
-  <description>Speed control (Sub_3C288): speed drop that trips the cancel (2 less with $0405,Z bit 6; 0 = off) $2B4B</description>
+  <description>Speed control (SpeedCtlCancelMonitor): speed drop that trips the cancel (2 less with $0405,Z bit 6; 0 = off) $2B4B</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x2B4B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -27552,7 +27552,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6BF" flags="0x0">
   <title>SpeedCtlVentTimeFactor</title>
-  <description>Speed control (Sub_3C65C): factor (word) on the vent count $0425,Z $2B64</description>
+  <description>Speed control (SpeedCtlServoTime): factor (word) on the vent count $0425,Z $2B64</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x2B64" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -27684,7 +27684,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6CA" flags="0x0">
   <title>SpeedCtlBusCount</title>
-  <description>Speed control (Sub_3C690): count limit of $0423,Z with the bus flag $086C,Z bit 3 $2B93</description>
+  <description>Speed control (SpeedCtlBusCheck): count limit of $0423,Z with the bus flag $086C,Z bit 3 $2B93</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x2B93" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -27708,7 +27708,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6CC" flags="0x0">
   <title>BusMapHyst</title>
-  <description>Sub_2CB60: MAP hysteresis of the bus flag $086C,Z bit 2 $2BB6</description>
+  <description>MapHighBusFlag: MAP hysteresis of the bus flag $086C,Z bit 2 $2BB6</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2BB6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
@@ -28045,7 +28045,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6EB" flags="0x0">
   <title>EventOptionWord</title>
-  <description>Sub_246FC: option word; its top two bits select the mode ($00, $40, $80) and it is stored in $0630,Z $2EA6</description>
+  <description>EventOptionUpdate: option word; its top two bits select the mode ($00, $40, $80) and it is stored in $0630,Z $2EA6</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2EA6" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -28057,7 +28057,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6EC" flags="0x0">
   <title>EventDefaultWord</title>
-  <description>Sub_247A8: word value used in the default branch $2EA8</description>
+  <description>EventOptionStep: word value used in the default branch $2EA8</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x2EA8" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -28153,7 +28153,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6F4" flags="0x0">
   <title>MisfireEventCountMax</title>
-  <description>Misfire: event count $00DE,Z (word) above which the deviation check runs (also Sub_2B448) $2EBE</description>
+  <description>Misfire: event count $00DE,Z (word) above which the deviation check runs (also MisfireEventCountReset) $2EBE</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x2EBE" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -28237,7 +28237,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6FB" flags="0x0">
   <title>MisfireWindow</title>
-  <description>Misfire monitor: window length for the emission counter (word, Sub_2ABD0) $2F05</description>
+  <description>Misfire monitor: window length for the emission counter (word, MisfireCylMarkWord) $2F05</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x2F05" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -28861,7 +28861,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x72F" flags="0x0">
   <title>LdpPurgedDutyMin</title>
-  <description>Leak detection (Sub_25E9E): purge duty at or above which the purged time counts $3053</description>
+  <description>Leak detection (LdpPurgedCheck): purge duty at or above which the purged time counts $3053</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x3053" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29197,7 +29197,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x74B" flags="0x0">
   <title>EgrMonCoolantMin</title>
-  <description>EGR flow monitor (Sub_25000, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value $308D</description>
+  <description>EGR flow monitor (EgrFlowMonitor, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value $308D</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x308D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -29377,7 +29377,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x75A" flags="0x0">
   <title>FuelSysRichHyst</title>
-  <description>Fuel system monitor (Sub_2A4F2, Sub_2A6C0): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set $30C0</description>
+  <description>Fuel system monitor (FuelSysRich1Check, FuelSysRich2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set $30C0</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x30C0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29389,7 +29389,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x75B" flags="0x0">
   <title>FuelSysLeanHyst</title>
-  <description>Fuel system monitor (Sub_2A0F0, Sub_2A302): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set $30C1</description>
+  <description>Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set $30C1</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x30C1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29401,7 +29401,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x75C" flags="0x0">
   <title>FuelSysRichCount</title>
-  <description>Fuel system monitor: rich-condition counts ($05A3/$05A4,Z) before the rich flag (Sub_2A496, Sub_2A664) $30C2</description>
+  <description>Fuel system monitor: rich-condition counts ($05A3/$05A4,Z) before the rich flag (FuelSysRich1Adapt, FuelSysRich2Adapt) $30C2</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x30C2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29413,7 +29413,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x75D" flags="0x0">
   <title>FuelSysLeanCount</title>
-  <description>Fuel system monitor: lean-condition counts before the lean flag (Sub_2A07E, Sub_2A290) $30C3</description>
+  <description>Fuel system monitor: lean-condition counts before the lean flag (FuelSysLean1Adapt, FuelSysLean2Adapt) $30C3</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x30C3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29653,7 +29653,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x771" flags="0x0">
   <title>O2MonWindowMax</title>
-  <description>O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6) $314F</description>
+  <description>O2 sensor monitor at idle: window count above which the test restarts (O2MonData2Step) $314F</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x314F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29677,7 +29677,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x773" flags="0x0">
   <title>O2HeaterRunTimeMin</title>
-  <description>Probably the O2 heater monitor (Sub_28D78, Options033F bits 4-7): run time at or above this value $3154</description>
+  <description>Probably the O2 heater monitor (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value $3154</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x3154" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29689,7 +29689,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x774" flags="0x0">
   <title>O2HeaterSampleTime</title>
-  <description>Probably the O2 heater monitor (Sub_2919A): timer $010A,Z (word) above which the heater input is sampled $3158</description>
+  <description>Probably the O2 heater monitor (O2HeaterSampleStep): timer $010A,Z (word) above which the heater input is sampled $3158</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x3158" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -29713,7 +29713,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x776" flags="0x0">
   <title>O2HeaterSettleTime</title>
-  <description>Probably the O2 heater monitor (Sub_291F0): timer $010A,Z (word) below which the records are updated $315C</description>
+  <description>Probably the O2 heater monitor (O2HeaterTest): timer $010A,Z (word) below which the records are updated $315C</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x315C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -29725,7 +29725,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x777" flags="0x0">
   <title>O2HeaterCountMin</title>
-  <description>Probably the O2 heater monitor (Sub_29384): count $010E,Z above which the results are judged $315E</description>
+  <description>Probably the O2 heater monitor (O2HeaterResult): count $010E,Z above which the results are judged $315E</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x315E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29749,7 +29749,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x779" flags="0x0">
   <title>CatMonCoolantMin</title>
-  <description>Catalyst monitor (Sub_285CA): coolant at or above this value $3174</description>
+  <description>Catalyst monitor (CatMonConditions): coolant at or above this value $3174</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x3174" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -30289,7 +30289,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7A6" flags="0x0">
   <title>FuelSenderFilter</title>
-  <description>Filter weight of FuelSenderFiltered (Sub_2C708) $31E7</description>
+  <description>Filter weight of FuelSenderFiltered (FuelLevelProcess) $31E7</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x31E7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -30757,7 +30757,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7CD" flags="0x0">
   <title>MonSteadyTimeMin</title>
-  <description>Steady-state condition (Sub_23C3E): time since start at or above this value $32B7</description>
+  <description>Steady-state condition (CamCrankRelation): time since start at or above this value $32B7</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32B7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -30853,7 +30853,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7D5" flags="0x0">
   <title>MonSteadyRpmCeiling</title>
-  <description>Cam/crank relation monitor (Sub_23C3E): engine rpm below this value $32C0</description>
+  <description>Cam/crank relation monitor (CamCrankRelation): engine rpm below this value $32C0</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -30877,7 +30877,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7D7" flags="0x0">
   <title>CamCrankOffsetMin</title>
-  <description>Cam/crank relation (Sub_23D76, P1390): offset below this value counts as skipped $32C2</description>
+  <description>Cam/crank relation (CamCrankMeasure, P1390): offset below this value counts as skipped $32C2</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -30937,7 +30937,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7DC" flags="0x0">
   <title>CamCrankFaultCount</title>
-  <description>Cam/crank monitor (Sub_23B84): count ($068A,Z) at or above which the fault is reported $32C8</description>
+  <description>Cam/crank monitor (CamCrankSyncMonitor): count ($068A,Z) at or above which the fault is reported $32C8</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32C8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31045,7 +31045,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7E5" flags="0x0">
   <title>MapCheckBaroMin</title>
-  <description>MAP check (Sub_23816): barometric pressure at or above this value $32E1</description>
+  <description>MAP check (IdleMonitorEnable): barometric pressure at or above this value $32E1</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
@@ -31057,7 +31057,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7E6" flags="0x0">
   <title>IdleMonDelay</title>
-  <description>Idle speed monitor (Sub_2375A): delay before the test ($0660,Z) $32E2</description>
+  <description>Idle speed monitor (IdleRpmMonitor): delay before the test ($0660,Z) $32E2</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31093,7 +31093,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7E9" flags="0x0">
   <title>IdleDropRpm</title>
-  <description>Sub_2375A: rpm drop below the stored rpm ($0662,Z, word) at or above which $0661,Z counts $32E7</description>
+  <description>IdleRpmMonitor: rpm drop below the stored rpm ($0662,Z, word) at or above which $0661,Z counts $32E7</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x32E7" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -31357,7 +31357,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7FF" flags="0x0">
   <title>TpsCheckThrottleMax</title>
-  <description>Throttle rationality (Sub_236D4, P0121): raw throttle below this value with high load $4988</description>
+  <description>Throttle rationality (TpsMapRationality, P0121): raw throttle below this value with high load $4988</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x4988" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31489,7 +31489,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x80A" flags="0x0">
   <title>MapLimpOffset</title>
-  <description>Limp-home MAP from throttle (Sub_241AA): offset added to MapLimpFromThrottle $499E</description>
+  <description>Limp-home MAP from throttle (LimpMapCalc): offset added to MapLimpFromThrottle $499E</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x499E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
@@ -31513,7 +31513,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x80C" flags="0x0">
   <title>VssCheckCount</title>
-  <description>Vehicle speed sensor monitor (Sub_23970): counts ($065D/$065E,Z) before the result changes $49AC</description>
+  <description>Vehicle speed sensor monitor (VssMonitor): counts ($065D/$065E,Z) before the result changes $49AC</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x49AC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31525,7 +31525,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x80D" flags="0x0">
   <title>VssCheckCoolantMin</title>
-  <description>Vehicle speed sensor check (Sub_23970, P0500) runs above this coolant temperature $49AD</description>
+  <description>Vehicle speed sensor check (VssMonitor, P0500) runs above this coolant temperature $49AD</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x49AD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -31585,7 +31585,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x812" flags="0x0">
   <title>O2NoActivityLowRaw</title>
-  <description>O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0) $49C2</description>
+  <description>O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also O2HeaterTest) $49C2</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x49C2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31597,7 +31597,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x813" flags="0x0">
   <title>O2DownCheckSpeedMin</title>
-  <description>Downstream O2 checks (Sub_222FA): vehicle speed at or above this value $49C3</description>
+  <description>Downstream O2 checks (O2DownEnable): vehicle speed at or above this value $49C3</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x49C3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31681,7 +31681,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x81A" flags="0x0">
   <title>BattLowVolts</title>
-  <description>Low-voltage monitor (Sub_21D02): battery voltage below this value counts as low $49D6</description>
+  <description>Low-voltage monitor (BatteryLowFlag): battery voltage below this value counts as low $49D6</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x49D6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
@@ -31813,7 +31813,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x825" flags="0x0">
   <title>MapRawLowLimit</title>
-  <description>Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck) $49E1</description>
+  <description>Raw MAP below this value is a low input (P0107; ReadMap, MapCircuitCheck, MapKeyOnCheck) $49E1</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x49E1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31825,7 +31825,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x826" flags="0x0">
   <title>MapRawHighLimit</title>
-  <description>Raw MAP at or above this value is a high input (P0108; ReadMap, Sub_21EFE) $49E2</description>
+  <description>Raw MAP at or above this value is a high input (P0108; ReadMap, MapCircuitCheck) $49E2</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x49E2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31873,7 +31873,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x82A" flags="0x0">
   <title>MapRationalThrottleMax</title>
-  <description>MAP rationality (Sub_21EFE, ReadMap): throttle opening below this value for the rpm/MAP check $49E6</description>
+  <description>MAP rationality (MapCircuitCheck, ReadMap): throttle opening below this value for the rpm/MAP check $49E6</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x49E6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32005,7 +32005,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x835" flags="0x0">
   <title>MonSpeedCount</title>
-  <description>Sub_231EC: count $06C9,Z compared at speeds of $38 and above $49F1</description>
+  <description>ThermostatMonitor: count $06C9,Z compared at speeds of $38 and above $49F1</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x49F1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32101,7 +32101,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x83D" flags="0x0">
   <title>CamCheckMapMin</title>
-  <description>Cam sensor check (Sub_23AB2): MAP differs from baro by at least this value $49F9</description>
+  <description>Cam sensor check (CamSensorMonitor): MAP differs from baro by at least this value $49F9</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x49F9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
@@ -32245,7 +32245,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x849" flags="0x0">
   <title>ChargeMonVoltsMargin</title>
-  <description>Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging $4A09</description>
+  <description>Charging monitor (ChargeLowMonitor): battery voltage plus this margin below the charging target counts as undercharging $4A09</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x4A09" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>V</units>
@@ -32473,7 +32473,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x85C" flags="0x0">
   <title>PwmPeriodC18</title>
-  <description>PWM period of the TPU output set up by Sub_3B03C (duty $0C20,Z in %): value × 250 into $0C18,Z (Options0333 bit 6) $74E6</description>
+  <description>PWM period of the TPU output set up by PwmC18PeriodCalc (duty $0C20,Z in %): value × 250 into $0C18,Z (Options0333 bit 6) $74E6</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x74E6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32581,7 +32581,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x865" flags="0x0">
   <title>CamFaultClearSwitch</title>
-  <description>Sub_23B66: when not zero the counts $018D/$018E,Z are cleared every 0.19 s pass $753C</description>
+  <description>CamFaultClear: when not zero the counts $018D/$018E,Z are cleared every 0.19 s pass $753C</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x753C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32605,7 +32605,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x867" flags="0x0">
   <title>BatteryVoltsDwellFilter</title>
-  <description>Filter weight of BatteryVoltsDwell (Sub_2D91C) $758A</description>
+  <description>Filter weight of BatteryVoltsDwell (BatteryDwellFilter) $758A</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x758A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32617,7 +32617,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x868" flags="0x0">
   <title>CamFaultDelay</title>
-  <description>Cam sensor monitor (Sub_23AB2, P0340): delay ($06E7,Z, word) set after a fault report $774C</description>
+  <description>Cam sensor monitor (CamSensorMonitor, P0340): delay ($06E7,Z, word) set after a fault report $774C</description>
   <CATEGORYMEM index="0" category="17" />
   <EMBEDDEDDATA mmedaddress="0x774C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />

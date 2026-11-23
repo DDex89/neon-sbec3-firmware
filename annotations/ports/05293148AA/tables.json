@@ -301,7 +301,7 @@
   },
   "0B1E": {
    "name": "MapBaroOffset",
-   "desc": "Added to MAP against barometric pressure before the part-throttle MAP scale (main-loop fuel, Sys39686, diagnostics)",
+   "desc": "Added to MAP against barometric pressure before the part-throttle MAP scale (main-loop fuel, EgrControl, diagnostics)",
    "category": "Fuel",
    "auto": false,
    "x": "kpa",
@@ -1267,7 +1267,7 @@
   "2B24": {
    "name": "FuelSysLimitScale",
    "category": "Diagnostics",
-   "desc": "Fuel system monitor (Sub_2A0F0, Sub_2A302): purge ramp $042C,Z to row position of FuelSysLimit",
+   "desc": "Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): purge ramp $042C,Z to row position of FuelSysLimit",
    "x": "raw",
    "y": "pos256",
    "auto": false
@@ -1589,7 +1589,7 @@
   },
   "0336": {
    "name": "Options033F",
-   "desc": "Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in ObdReadiness and Sub_28D78",
+   "desc": "Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in ObdReadiness and O2HeaterMonitor",
    "category": "Options",
    "size": 1
   },
@@ -1636,7 +1636,7 @@
   },
   "041D": {
    "name": "MtvPeriod",
-   "desc": "Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10)",
+   "desc": "Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in MtvRateLookup)",
    "category": "Other",
    "size": 1
   },
@@ -1735,7 +1735,7 @@
   },
   "0508": {
    "name": "AcCutRpmLow",
-   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and Sub_39412 (FF00 = off)",
+   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)",
    "unit": "rpmw",
    "size": 2,
    "category": "A/C"
@@ -2749,7 +2749,7 @@
   },
   "1591": {
    "name": "EventFuelMapMin",
-   "desc": "Event fuel (Sub_11DE6): MAP at or above this value",
+   "desc": "Event fuel (EventCorrections): MAP at or above this value",
    "unit": "kpa",
    "size": 1,
    "category": "Other"
@@ -2830,7 +2830,7 @@
   },
   "164A": {
    "name": "PurgeDelayInit",
-   "desc": "Start value of the purge delay $042F,Z (reset, Sub_3DC64, PurgeReset)",
+   "desc": "Start value of the purge delay $042F,Z (reset, PurgeEnable, PurgeReset)",
    "category": "EVAP purge",
    "size": 1
   },
@@ -2916,20 +2916,20 @@
   },
   "175E": {
    "name": "PurgeCellRefMargin",
-   "desc": "Purge cell reference (Sub_3DFCA): margin added to the stored cells $8066/$8079 before compare",
+   "desc": "Purge cell reference (PurgeCellRichCheck): margin added to the stored cells $8066/$8079 before compare",
    "category": "EVAP purge",
    "size": 1
   },
   "175F": {
    "name": "PurgeCellRefCoolantMax",
-   "desc": "Purge cell reference (Sub_3DEF8): coolant below this value",
+   "desc": "Purge cell reference (PurgeCellRefCheck): coolant below this value",
    "unit": "tempc",
    "category": "EVAP purge",
    "size": 1
   },
   "1761": {
    "name": "PurgeCellDiffOffset",
-   "desc": "Purge (Sub_3DFB8): offset taken off the cell difference",
+   "desc": "Purge (PurgeCellDiff): offset taken off the cell difference",
    "category": "EVAP purge",
    "size": 1
   },
@@ -3553,13 +3553,13 @@
   },
   "2539": {
    "name": "IdleStableTimeMin",
-   "desc": "Idle state flags: time since start above this value (also used by Sub_23970)",
+   "desc": "Idle state flags: time since start above this value (also used by VssMonitor)",
    "category": "Idle",
    "size": 1
   },
   "253E": {
    "name": "IdleUnderTargetMargin",
-   "desc": "Sub_2CBC8: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target",
+   "desc": "IdleStateUpdate: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target",
    "unit": "rpmw",
    "category": "Idle",
    "size": 2
@@ -3781,13 +3781,13 @@
   },
   "28E1": {
    "name": "EventOptionWord",
-   "desc": "Sub_246FC: option word; its top two bits select the mode ($00, $40, $80) and it is stored in $0630,Z",
+   "desc": "EventOptionUpdate: option word; its top two bits select the mode ($00, $40, $80) and it is stored in $0630,Z",
    "category": "Other",
    "size": 2
   },
   "28E3": {
    "name": "EventDefaultWord",
-   "desc": "Sub_247A8: word value used in the default branch",
+   "desc": "EventOptionStep: word value used in the default branch",
    "category": "Other",
    "size": 2
   },
@@ -3836,7 +3836,7 @@
   },
   "28F9": {
    "name": "MisfireEventCountMax",
-   "desc": "Misfire: event count $00DE,Z (word) above which the deviation check runs (also Sub_2B448)",
+   "desc": "Misfire: event count $00DE,Z (word) above which the deviation check runs (also MisfireEventCountReset)",
    "category": "Diagnostics",
    "size": 2
   },
@@ -4117,7 +4117,7 @@
   },
   "2A9E": {
    "name": "LdpPurgedDutyMin",
-   "desc": "Leak detection (Sub_25E9E): purge duty at or above which the purged time counts",
+   "desc": "Leak detection (LdpPurgedCheck): purge duty at or above which the purged time counts",
    "category": "EVAP purge",
    "size": 1
   },
@@ -4333,25 +4333,25 @@
   },
   "2B0B": {
    "name": "FuelSysRichHyst",
-   "desc": "Fuel system monitor (Sub_2A4F2, Sub_2A6C0): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set",
+   "desc": "Fuel system monitor (FuelSysRich1Check, FuelSysRich2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set",
    "category": "Diagnostics",
    "size": 1
   },
   "2B0C": {
    "name": "FuelSysLeanHyst",
-   "desc": "Fuel system monitor (Sub_2A0F0, Sub_2A302): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set",
+   "desc": "Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set",
    "category": "Diagnostics",
    "size": 1
   },
   "2B0D": {
    "name": "FuelSysRichCount",
-   "desc": "Fuel system monitor: rich-condition counts ($05A3/$05A4,Z) before the rich flag (Sub_2A496, Sub_2A664)",
+   "desc": "Fuel system monitor: rich-condition counts ($05A3/$05A4,Z) before the rich flag (FuelSysRich1Adapt, FuelSysRich2Adapt)",
    "category": "Diagnostics",
    "size": 1
   },
   "2B0E": {
    "name": "FuelSysLeanCount",
-   "desc": "Fuel system monitor: lean-condition counts before the lean flag (Sub_2A07E, Sub_2A290)",
+   "desc": "Fuel system monitor: lean-condition counts before the lean flag (FuelSysLean1Adapt, FuelSysLean2Adapt)",
    "category": "Diagnostics",
    "size": 1
   },
@@ -4473,7 +4473,7 @@
   },
   "2B60": {
    "name": "O2MonWindowMax",
-   "desc": "O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6)",
+   "desc": "O2 sensor monitor at idle: window count above which the test restarts (O2MonData2Step)",
    "category": "Diagnostics",
    "size": 1
   },
@@ -4485,13 +4485,13 @@
   },
   "2B6A": {
    "name": "O2HeaterSampleTime",
-   "desc": "Probably the O2 heater monitor (Sub_2919A): timer $010A,Z (word) above which the heater input is sampled",
+   "desc": "Probably the O2 heater monitor (O2HeaterSampleStep): timer $010A,Z (word) above which the heater input is sampled",
    "category": "Diagnostics",
    "size": 2
   },
   "2B6E": {
    "name": "O2HeaterSettleTime",
-   "desc": "Probably the O2 heater monitor (Sub_291F0): timer $010A,Z (word) below which the records are updated",
+   "desc": "Probably the O2 heater monitor (O2HeaterTest): timer $010A,Z (word) below which the records are updated",
    "category": "Diagnostics",
    "size": 2
   },
@@ -4503,7 +4503,7 @@
   },
   "2B86": {
    "name": "CatMonCoolantMin",
-   "desc": "Catalyst monitor (Sub_285CA): coolant at or above this value",
+   "desc": "Catalyst monitor (CatMonConditions): coolant at or above this value",
    "unit": "tempc",
    "category": "Diagnostics",
    "size": 1
@@ -4679,7 +4679,7 @@
   },
   "2CC8": {
    "name": "CamCrankOffsetMin",
-   "desc": "Cam/crank relation (Sub_23D76, P1390): offset below this value counts as skipped",
+   "desc": "Cam/crank relation (CamCrankMeasure, P1390): offset below this value counts as skipped",
    "category": "Diagnostics",
    "size": 1
   },
@@ -4703,7 +4703,7 @@
   },
   "2CE9": {
    "name": "MapCheckBaroMin",
-   "desc": "MAP check (Sub_23816): barometric pressure at or above this value",
+   "desc": "MAP check (IdleMonitorEnable): barometric pressure at or above this value",
    "unit": "kpa",
    "category": "Diagnostics",
    "size": 1
@@ -4731,7 +4731,7 @@
   },
   "413C": {
    "name": "MapLimpOffset",
-   "desc": "Limp-home MAP from throttle (Sub_241AA): offset added to MapLimpFromThrottle",
+   "desc": "Limp-home MAP from throttle (LimpMapCalc): offset added to MapLimpFromThrottle",
    "unit": "kpa",
    "category": "Sensors",
    "size": 1
@@ -4744,7 +4744,7 @@
   },
   "4178": {
    "name": "O2NoActivityLowRaw",
-   "desc": "O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0)",
+   "desc": "O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also O2HeaterTest)",
    "category": "Diagnostics",
    "size": 1
   },
@@ -4768,7 +4768,7 @@
   },
   "4190": {
    "name": "BattLowVolts",
-   "desc": "Low-voltage monitor (Sub_21D02): battery voltage below this value counts as low",
+   "desc": "Low-voltage monitor (BatteryLowFlag): battery voltage below this value counts as low",
    "unit": "volt16",
    "category": "Diagnostics",
    "size": 1
@@ -4800,19 +4800,19 @@
   },
   "4136": {
    "name": "MapRawLowLimit",
-   "desc": "Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)",
+   "desc": "Raw MAP below this value is a low input (P0107; ReadMap, MapCircuitCheck, MapKeyOnCheck)",
    "category": "Sensors",
    "size": 1
   },
   "4137": {
    "name": "MapRawHighLimit",
-   "desc": "Raw MAP at or above this value is a high input (P0108; ReadMap, Sub_21EFE)",
+   "desc": "Raw MAP at or above this value is a high input (P0108; ReadMap, MapCircuitCheck)",
    "category": "Sensors",
    "size": 1
   },
   "413B": {
    "name": "MapRationalThrottleMax",
-   "desc": "MAP rationality (Sub_21EFE, ReadMap): throttle opening below this value for the rpm/MAP check",
+   "desc": "MAP rationality (MapCircuitCheck, ReadMap): throttle opening below this value for the rpm/MAP check",
    "category": "Diagnostics",
    "size": 1
   },
@@ -4892,7 +4892,7 @@
   },
   "418B": {
    "name": "ChargeMonVoltsMargin",
-   "desc": "Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging",
+   "desc": "Charging monitor (ChargeLowMonitor): battery voltage plus this margin below the charging target counts as undercharging",
    "unit": "volt16",
    "category": "Diagnostics",
    "size": 1

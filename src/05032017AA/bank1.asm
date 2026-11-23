@@ -547,10 +547,10 @@ L10614:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; CalcBaroFuelAdder ($10616)
+; FuelLevelProcess ($10616)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-CalcBaroFuelAdder:
+FuelLevelProcess:
         LDAA    <Baro,Z
         LDX     #BaroFuel
         JSR     Lookup2D
@@ -937,7 +937,7 @@ L109B6:
         BRA     L109E2
 L109DA:
         LDE     >TipInFuel,Z
-        JSR     Sub_2CB68
+        JSR     FlexFuelAccount
 L109E2:
         LDE     $080A,Z
         ADDE    >TipInFuel,Z
@@ -2203,7 +2203,7 @@ L116B2:
         JSR     FlexLearnFuelCount
         BRA     L116C8
 L116C4:
-        JSR     Sub_2CB68
+        JSR     FlexFuelAccount
 L116C8:
         ADE
         BCC     L116D0
@@ -2235,7 +2235,7 @@ L116E4:
         LDAA    $00,X
         STAA    $062F,Z
         PSHM    Y,K
-        JSR     Sub_24706
+        JSR     EventOptionUpdate
         PULM    K,Y
         STE     $0000,Y
         STE     $0788,Z
@@ -4654,10 +4654,10 @@ L12CE0:
         dc.b    $56,$97,$56,$93,$56,$95,$56,$82
 
 ;---------------------------------------------------------------------------------------------------
-; ClosedLoopMain ($14160)
+; MapHighBusFlag ($14160)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-ClosedLoopMain:
+MapHighBusFlag:
         BRCLR   >Options032C,#$80,L14218
         BCLR    >O2ActiveFlags,Z,#$F0
         CLR     >ShortTermTrim1,Z
@@ -4804,7 +4804,7 @@ L1430A:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2CellSelect3x3 ($1430C)
-; Called from: ClosedLoopMain
+; Called from: MapHighBusFlag
 ;---------------------------------------------------------------------------------------------------
 O2CellSelect3x3:
         LDAA    >O2SwitchFlags,Z
@@ -5104,7 +5104,7 @@ L145E0:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2CrossCheck ($145F6)
-; Called from: ClosedLoopMain (2 calls)
+; Called from: MapHighBusFlag (2 calls)
 ;---------------------------------------------------------------------------------------------------
 O2CrossCheck:
         BRCLR   >Options0339,#$40,L146C8
@@ -5248,7 +5248,7 @@ L1473A:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2StartDelays ($14740)
-; Called from: ClosedLoopMain
+; Called from: MapHighBusFlag
 ;---------------------------------------------------------------------------------------------------
 O2StartDelays:
         BSET    >O2ResetFlags,Z,#$03
@@ -5311,7 +5311,7 @@ L14798:
 
 ;---------------------------------------------------------------------------------------------------
 ; ClosedLoopManager ($14802)
-; Called from: ClosedLoopMain
+; Called from: MapHighBusFlag
 ;---------------------------------------------------------------------------------------------------
 ClosedLoopManager:
         ORP     #$00E0
@@ -5986,7 +5986,7 @@ L14F6C:
 
 ;---------------------------------------------------------------------------------------------------
 ; ClosedLoopTiming ($14F82)
-; Called from: ClosedLoopMain
+; Called from: MapHighBusFlag
 ;---------------------------------------------------------------------------------------------------
 ClosedLoopTiming:
         BRCLR   >Options032C,#$40,L14F92
@@ -6889,7 +6889,7 @@ L1585E:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2PostFuelCheck ($15860)
-; Called from: ClosedLoopMain
+; Called from: MapHighBusFlag
 ;---------------------------------------------------------------------------------------------------
 O2PostFuelCheck:
         TST     >O2PostFuelHold
@@ -6942,7 +6942,7 @@ L158F2:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2CellSelect ($158F4)
-; Called from: ClosedLoopMain
+; Called from: MapHighBusFlag
 ;---------------------------------------------------------------------------------------------------
 O2CellSelect:
         LDAA    >EgrMonFlags,Z
@@ -7640,7 +7640,7 @@ L15FCC:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearLeanBank1 ($15FD6)
-; Called from: ClosedLoopManager, Sub_33A9A
+; Called from: ClosedLoopManager, ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank1:
         PSHM    X,K
@@ -7661,7 +7661,7 @@ L15FE8:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearLeanBank2 ($15FF8)
-; Called from: ClosedLoopManager, Sub_33A9A
+; Called from: ClosedLoopManager, ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank2:
         PSHM    X,K
@@ -7711,7 +7711,7 @@ L16048:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearRichBank1 ($1604C)
-; Called from: ClosedLoopManager, Sub_33A9A
+; Called from: ClosedLoopManager, ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearRichBank1:
         PSHM    X,K
@@ -7731,7 +7731,7 @@ L1605A:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearRichBank2 ($1606A)
-; Called from: ClosedLoopManager, Sub_33A9A
+; Called from: ClosedLoopManager, ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearRichBank2:
         PSHM    X,K
@@ -8678,10 +8678,10 @@ L168F0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_168F2 ($168F2)
+; TempInputs ($168F2)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_168F2:
+TempInputs:
         PSHM    D,E
         BRSET   $0934,Z,#$01,L169AC
         LDAA    >ThrottleAboveClosed,Z
@@ -8751,7 +8751,7 @@ L169AC:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_169B0 ($169B0)
-; Called from: Sub_168F2
+; Called from: TempInputs
 ;---------------------------------------------------------------------------------------------------
 Sub_169B0:
         PSHM    D
@@ -8773,7 +8773,7 @@ L169CC:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_169D4 ($169D4)
-; Called from: Sub_168F2
+; Called from: TempInputs
 ;---------------------------------------------------------------------------------------------------
 Sub_169D4:
         PSHM    D
@@ -10536,7 +10536,7 @@ L1883A:
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexMisfireCheck ($1883C)
-; Called from: Sub_2A81A
+; Called from: MisfireMonitorEvent
 ;---------------------------------------------------------------------------------------------------
 FlexMisfireCheck:
         BRSET   >MonEnableFlags2,Z,#$80,L18A64
@@ -11874,7 +11874,7 @@ L198CE:
         BRSET   >BusModuleFlags,Z,#$02,L1991C
         BRCLR   >BusFlags9CE,Z,#$C0,L1991C
         BSET    >IacAcFlags,Z,#$08
-        JSR     Sub_31E28
+        JSR     PciSparkStatus
         BSET    >PciRxFlags,Z,#$08
         BSET    >SkimFlags2,Z,#$10
         LDAA    >IacAcBusDelay
@@ -11890,7 +11890,7 @@ L1991C:
 L19928:
         BRCLR   >IacAcFlags,Z,#$08,L1993E
         BCLR    >IacAcFlags,Z,#$08
-        JSR     Sub_31E28
+        JSR     PciSparkStatus
         BSET    >PciRxFlags,Z,#$08
         BSET    >SkimFlags2,Z,#$10
 L1993E:
@@ -12773,7 +12773,7 @@ L1A402:
         STAA    >IacShiftTimer,Z
         BRCLR   >IacAcFlags,Z,#$08,L1A41C
         BCLR    >IacAcFlags,Z,#$08
-        JSR     Sub_31E28
+        JSR     PciSparkStatus
         BSET    >PciRxFlags,Z,#$08
         BSET    >SkimFlags2,Z,#$10
 L1A41C:
@@ -12888,7 +12888,7 @@ L1A536:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacSetTarget ($1A538)
-; Called from: FlexIdleStep, IdleRpmLoop, IacShiftKick, IdleTargetControl, IacShiftStepApply, IdleMapTargetCalc, Sub_1BA2E, IacChargeStep2 (12 calls)
+; Called from: FlexIdleStep, IdleRpmLoop, IacShiftKick, IdleTargetControl, IacShiftStepApply, IdleMapTargetCalc, IacChargeStepCalc, IacChargeStep2 (12 calls)
 ;---------------------------------------------------------------------------------------------------
 IacSetTarget:
         ORP     #$00E0
@@ -14822,10 +14822,10 @@ L1B9FC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1BA2E ($1BA2E)
+; IacChargeStepCalc ($1BA2E)
 ; Called from: ChargeControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1BA2E:
+IacChargeStepCalc:
         PSHM    E,X,K
         BRSET   >SensorFaultFlags,Z,#$20,L1BAE0
         BRSET   >FaultSet05,Z,#$08,L1BAE0
@@ -16768,7 +16768,7 @@ L1DF26:
         BCLR    >EventSparkFlags,Z,#$C0
         INC     $0F55,Z
         BRCLR   >Options032E,#$04,L1DF4E
-        JSR     Sub_31E28
+        JSR     PciSparkStatus
         BSET    >PciRxFlags,Z,#$0E
         BSET    >SkimFlags2,Z,#$10
 L1DF4E:
@@ -18557,7 +18557,7 @@ KnockWindowInit:
         TBXK
         CLR     >KnockWindow,Z
         LDX     #$2E59
-        JSR     Sub_38A5E
+        JSR     KnockChipConfig
 L1F7C6:
         RTS
 
@@ -18592,7 +18592,7 @@ L1F802:
         LDX     #$2E59
         ABX
         BCLR    >SystemFlags945,Z,#$10
-        JSR     Sub_38A5E
+        JSR     KnockChipConfig
 L1F814:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF

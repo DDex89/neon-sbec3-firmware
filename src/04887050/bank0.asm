@@ -316,7 +316,7 @@ MtvDelay2:
 MtvDelay3:
         dc.b    $00,$00                                  ; Manifold tune valve: third actuator delay (word)
 MtvPeriod:
-        dc.b    $00                                      ; Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10)
+        dc.b    $00                                      ; Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in MtvRateLookup)
 MtvRpmRateMax:
         dc.b    $00,$00                                  ; Manifold tune valve: upper limit of the rpm change per period (word)
 MtvCoolantMin:
@@ -403,7 +403,7 @@ Tab2D_03EE:
 IacLowRpm:
         dc.b    $0F,$A0                                  ; Segment rpm below which the low-rpm branch of IdleTargetControl applies
 AcCutRpmLow:
-        dc.b    $FF,$00                                  ; A/C logic: engine rpm limit used in IdleTargetControl and Sub_39412 (FF00 = off)
+        dc.b    $FF,$00                                  ; A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)
         dc.b    $86
 IacStartTimeMin:
         dc.b    $02                                      ; Time since start before the event logic of IdleTargetControl runs
@@ -907,7 +907,7 @@ Tab2D_0689:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 AccelFuelOptions:
-        dc.b    $80                                      ; Accel fuel option byte (bit 7: WOT fuel branch in Sub_11FB0; bit 6: index shift in CalcFuelPulse)
+        dc.b    $80                                      ; Accel fuel option byte (bit 7: WOT fuel branch in TipInFuelControl; bit 6: index shift in CalcFuelPulse)
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_0694 ($0694): 2D table, 3 points, unsigned
@@ -1712,7 +1712,7 @@ RevLimitAlt:
         dc.b    $BD                                      ; Rev limit, used while $0C31,Z bit 5 is clear; also scales the calculated load with baro (CalcLoadValue)
         dc.b    $CA,$25,$14,$82,$06,$65,$00,$2A
 EventFuelMapMin:
-        dc.b    $20                                      ; Event fuel (Sub_11DE6): MAP at or above this value
+        dc.b    $20                                      ; Event fuel (EventCorrections): MAP at or above this value
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1104 ($1104): 2D table, 3 points, unsigned
@@ -2054,7 +2054,7 @@ InjectionModeRpmFactor:
         dc.b    $FF,$FF,$FF,$FF,$2F,$00,$43,$00,$61,$E3,$14,$14,$14,$14,$14,$14
         dc.b    $14,$14,$14,$A0,$00,$08,$03,$00,$FF,$FF,$FF,$00
 HotEngineOn:
-        dc.b    $00                                      ; Hot-engine enrichment switch (0 = off); also a bit mask in Sub_11BE4
+        dc.b    $00                                      ; Hot-engine enrichment switch (0 = off); also a bit mask in FinishFuelPulse
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1489 ($1489): 2D table, 1 points, unsigned, y = 0 counts as 256
@@ -4127,7 +4127,7 @@ O2SwitchMargin:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$13,$CD
         dc.b    $02,$02,$80,$02,$12,$21,$1E,$7D,$C8
 CamCrankOffsetMin:
-        dc.b    $10                                      ; Cam/crank relation (Sub_23D76, P1390): offset below this value counts as skipped
+        dc.b    $10                                      ; Cam/crank relation (CamCrankMeasure, P1390): offset below this value counts as skipped
 CamCrankOffsetMax:
         dc.b    $70                                      ; Cam/crank relation: offset at or above this value counts as skipped
 CamCrankOffsetJitter:
@@ -4235,12 +4235,12 @@ O2MonTrimResetMin:
         dc.b    $7F                                      ; O2 sensor monitor at idle: trim size at or above which a bank trim reset is requested ($0761,Z)
         dc.b    $00,$01,$33,$FE,$FE,$FF,$FF,$33,$01
 O2MonWindowMax:
-        dc.b    $89                                      ; O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6)
+        dc.b    $89                                      ; O2 sensor monitor at idle: window count above which the test restarts (O2MonData2Step)
 O2MonWindowMin:
         dc.b    $13                                      ; O2 sensor monitor at idle: window count at or above which the switch counts are judged
         dc.b    $08,$80,$04,$A2,$60
 O2HeaterSampleTime:
-        dc.b    $00,$64                                  ; Probably the O2 heater monitor (Sub_2919A): timer $010A,Z (word) above which the heater input is sampled
+        dc.b    $00,$64                                  ; Probably the O2 heater monitor (O2HeaterSampleStep): timer $010A,Z (word) above which the heater input is sampled
         dc.b    $15,$90,$11,$30,$1E,$4D,$4D,$4D,$4D,$1A,$1A,$1A,$1A,$01,$01,$01
         dc.b    $01,$08,$08,$08,$08,$0A,$0A,$0A,$0A,$05,$04,$80,$25,$0C,$80,$3E
         dc.b    $00,$8C,$00,$19,$A8,$64,$10,$10,$28,$28,$01,$02,$80
@@ -5059,12 +5059,12 @@ Tab2D_3D8E:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$05,$FA,$08,$E4,$1A,$28,$2F,$20,$66
 MapRawLowLimit:
-        dc.b    $01                                      ; Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)
+        dc.b    $01                                      ; Raw MAP below this value is a low input (P0107; ReadMap, MapCircuitCheck, MapKeyOnCheck)
 MapRawHighLimit:
-        dc.b    $EE                                      ; Raw MAP at or above this value is a high input (P0108; ReadMap, Sub_21EFE)
+        dc.b    $EE                                      ; Raw MAP at or above this value is a high input (P0108; ReadMap, MapCircuitCheck)
         dc.b    $3D
 MapRationalThrottleMax:
-        dc.b    $1A                                      ; MAP rationality (Sub_21EFE, ReadMap): throttle opening below this value for the rpm/MAP check
+        dc.b    $1A                                      ; MAP rationality (MapCircuitCheck, ReadMap): throttle opening below this value for the rpm/MAP check
 KnockHighLoadValue:
         dc.b    $FF                                      ; Knock (KnockSample, Options032F bit 1): value used above the knock MAP threshold
 KnockSignalMax:
@@ -5081,7 +5081,7 @@ Tab2D_3DAD:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$04
 ChargeMonVoltsMargin:
-        dc.b    $10                                      ; Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging
+        dc.b    $10                                      ; Charging monitor (ChargeLowMonitor): battery voltage plus this margin below the charging target counts as undercharging
 ChargeMonRpmMin:
         dc.b    $24                                      ; Charging monitor: engine rpm at or above this value
 ChargeMonTime:
@@ -5104,7 +5104,7 @@ MapLimpFromThrottle:
         dc.b    0,0, 8,73, 20,112, 57,186, 120,193       ; x, y
 
 MapLimpOffset:
-        dc.b    $22                                      ; Limp-home MAP from throttle (Sub_241AA): offset added to MapLimpFromThrottle
+        dc.b    $22                                      ; Limp-home MAP from throttle (LimpMapCalc): offset added to MapLimpFromThrottle
 MapLimpThrottleOffset:
         dc.b    $09                                      ; Limp-home MAP from throttle: offset added to the throttle reading
         dc.b    $43,$00,$04,$88,$70,$50,$0A,$04,$88,$70,$50,$0A,$D3,$FF,$FF,$FF
@@ -5604,7 +5604,7 @@ L04930:
         JSR     EmptyHook
         JSR     Sub_0EBCC
         JSR     FuelEventCalc
-        JSR     Sub_18D1E
+        JSR     CamCrankMeasure
 L04940:
         BRCLR   >ADCSTAT_L,Z,#$01,L04940
         LDAA    >RJURR0_L,Z
@@ -6114,7 +6114,7 @@ L04EF0:
         dc.b    $01,$04,$00,$02,$03,$01,$02,$03,$01,$00
 L04EFE:
         JSR     EmptyHook
-        JSR     Sub_08654
+        JSR     AdcStartF0
         BRSET   >SparkFlags,Z,#$20,L04F3E
         BRCLR   >CrankSyncFlags,Z,#$40,L04F3E
         TPD
@@ -6229,7 +6229,7 @@ L05038:
         JSR     ReadMap
         LDAA    #$55
         JSR     MapTpsFilters
-        JSR     Sub_18E18
+        JSR     MisfireMonitorEvent
         BSET    >IdleFlags3,Z,#$40
         JSR     SurgeFilters
         JSR     Sub_1CEA4
@@ -6314,7 +6314,7 @@ L05146:
         STD     $0482,Z
         STD     >ControlFlags943,Z
         CLR     >SPCR2,Z
-        JSR     Sub_13E64
+        JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $0480,Z
         BCLR    <SystemFlags00A,Z,#$C0
@@ -6618,7 +6618,7 @@ L05488:
         BRCLR   $0321,#$10,L05498
         JSR     MtvTiming
 L05498:
-        JSR     Sub_12338
+        JSR     HighRpmTimerPit
         JSR     Sub_1D904
         BRA     L054AC
 L054A2:
@@ -7238,7 +7238,7 @@ L05DFC:
 ;---------------------------------------------------------------------------------------------------
 Isr_IRQ4:
         ORP     #$00E0
-        JSR     Sub_14FB6
+        JSR     Irq4BusHandler
         RTI
 
 ;---------------------------------------------------------------------------------------------------
@@ -10724,10 +10724,10 @@ L08652:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_08654 ($08654)
+; AdcStartF0 ($08654)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_08654:
+AdcStartF0:
         CLRB
         TBXK
         LDX     #$1476
@@ -17020,7 +17020,7 @@ L0CB74:
         BRCLR   >ADCSTAT,Z,#$80,L0CB74
         LDAA    >RJURR0_L,Z
         STAA    >MapRawStart,Z
-        JSR     Sub_1232A
+        JSR     RawScaleF4
         STAA    >MapRaw,Z
         STAA    $033F,Z
         STAA    >MapLast,Z
@@ -17127,10 +17127,10 @@ L0CCAE:
         CLRW    >SPCR2,Z
         STD     >TR0,Z
         JSR     KickWatchdogsLong
-        JSR     Sub_13E64
+        JSR     QspiWaitIdle
         LDE     #$001E
         JSR     Sub_0E75E
-        JSR     Sub_13E64
+        JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $0480,Z
         CLRB
@@ -17486,7 +17486,7 @@ L0D0AE:
         JSR     Sub_1130C
         JSR     Sub_154E2
         JSR     Sub_11CB6
-        JSR     Sub_1A972
+        JSR     ChargeLowMonitor
         JSR     CrankFuel
         JSR     Sub_15200
         JSR     Sub_07358
@@ -17519,7 +17519,7 @@ L0D0AE:
         LBCC    L0D238
         JSR     Sub_1866A
         JSR     Sub_121B8
-        JSR     Sub_1BA1A
+        JSR     FaultPendingAge
         JSR     Sub_1D27E
         JSR     Sub_13C88
         LBRA    L0D238
@@ -17535,13 +17535,13 @@ L0D188:
         LBRA    L0D238
 L0D1A0:
         JSR     Sub_1C948
-        JSR     Sub_1AC5A
-        JSR     Sub_1BA6C
+        JSR     ChargeHighMonitor
+        JSR     MilLampUpdate
         JSR     Sub_16012
         JSR     Sub_1A8D2
         BRA     L0D238
 L0D1B6:
-        JSR     Sub_12C4C
+        JSR     SystemTestRejectCount
         JSR     Sub_1860A
         JSR     Sub_1AAA8
         JSR     Sub_1B024
@@ -17554,8 +17554,8 @@ L0D1CC:
         JSR     Sub_11FDE
         JSR     Sub_11212
         JSR     Sub_1AB62
-        JSR     Sub_12CBA
-        JSR     Sub_123D8
+        JSR     SystemTestCheck
+        JSR     MonSteadyRateCalc
         JSR     Sub_074E0
         JSR     Sub_1B0CA
         JSR     Sub_1B388
@@ -17570,7 +17570,7 @@ L0D20A:
         BRA     L0D238
 L0D214:
         JSR     Sub_1226C
-        JSR     Sub_15350
+        JSR     OutputTestEeprom
         JSR     Sub_155B8
         JSR     InputFilters
         JSR     Sub_1247E
@@ -17623,11 +17623,11 @@ L0D276:
         JSR     SciRequestReceive
         JSR     Sub_12D28
         JSR     Sub_13494
-        JSR     Sub_12BFE
+        JSR     FuelTrimAdjustStore
         JSR     Sub_13CC8
         JSR     Sub_14188
         JSR     Sub_14050
-        JSR     Sub_1237C
+        JSR     HighRpmTimerUpdate
         JSR     Sub_1B8BC
         JSR     Sub_1AF40
         JSR     Sub_07550
@@ -17707,7 +17707,7 @@ L0D3A2:
         STD     >TR0,Z
         STD     >ControlFlags943,Z
         CLR     >SPCR2,Z
-        JSR     Sub_13E64
+        JSR     QspiWaitIdle
         BSET    <SystemFlags00A,Z,#$20
         LDX     #$7F80
         JSR     PowerInputHold
@@ -19149,7 +19149,7 @@ L0E598:
 
 ;---------------------------------------------------------------------------------------------------
 ; Lookup3DNorm ($0E5AE)
-; Called from: Sub_06EFC, DecelLeanControl, Sub_0F848, DwellCalc (5 calls)
+; Called from: Sub_06EFC, DecelLeanControl, PurgeFuelCalc, DwellCalc (5 calls)
 ;---------------------------------------------------------------------------------------------------
 Lookup3DNorm:
         PSHM    E,Y,K
@@ -19358,7 +19358,7 @@ L0E70A:
 
 ;---------------------------------------------------------------------------------------------------
 ; PowerInputHold ($0E722)
-; Called from: Sub_0D328, Sub_1255C, Sub_174DA, Sub_177B0 (8 calls)
+; Called from: Sub_0D328, Sub_1255C, Sub_174DA, O2HeaterAdcSample (8 calls)
 ;---------------------------------------------------------------------------------------------------
 PowerInputHold:
         JSR     KickWatchdogsLong
@@ -19596,7 +19596,7 @@ L0E900:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_0E91A ($0E91A)
-; Called from: Sub_08654, Sub_08984
+; Called from: AdcStartF0, Sub_08984
 ;---------------------------------------------------------------------------------------------------
 Sub_0E91A:
         AIS     #$FC
@@ -20030,9 +20030,9 @@ L0ED1A:
         CMPA    $139B
         BCC     L0ED40
         LDX     #$803F
-        JSR     Sub_0ED82
+        JSR     PurgeCellMax
         LDX     #$8050
-        JSR     Sub_0ED82
+        JSR     PurgeCellMax
         BCLR    $61,Z,#$38
 L0ED40:
         BRSET   >Options0339,#$20,L0ED72
@@ -20066,10 +20066,10 @@ L0ED80:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0ED82 ($0ED82)
+; PurgeCellMax ($0ED82)
 ; Called from: Sub_0ECE4 (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0ED82:
+PurgeCellMax:
         LDAA    $0F,X
         LDAB    $10,X
         CBA
@@ -20084,27 +20084,27 @@ L0ED8E:
         BEQ     L0EDA2
         CMPB    >PurgeCell3
         BEQ     L0EDA2
-        BSR     Sub_0EDC2
+        BSR     MaxStore
 L0EDA2:
         INCB
         CMPB    #$0D
         BCS     L0ED8E
         LDAA    $0E,X
         LDAB    >PurgeCell1
-        BSR     Sub_0EDC2
+        BSR     MaxStore
         LDAA    $0F,X
         LDAB    >PurgeCell2
-        BSR     Sub_0EDC2
+        BSR     MaxStore
         LDAA    $10,X
         LDAB    >PurgeCell3
-        BSR     Sub_0EDC2
+        BSR     MaxStore
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0EDC2 ($0EDC2)
-; Called from: Sub_0ED82 (4 calls)
+; MaxStore ($0EDC2)
+; Called from: PurgeCellMax (4 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0EDC2:
+MaxStore:
         STX     >IacBase,Z
         ABX
         CMPA    $00,X
@@ -20395,7 +20395,7 @@ L0F0E6:
         LDAA    $13D3
         STAA    $05E1,Z
         CLR     $05E2,Z
-        JSR     Sub_0F848
+        JSR     PurgeFuelCalc
         BEQ     L0F13A
         LDAA    $05E0,Z
         CBA
@@ -20570,7 +20570,7 @@ L0F2CE:
 L0F2F8:
         STAA    $05E2,Z
 L0F2FC:
-        JSR     Sub_0F848
+        JSR     PurgeFuelCalc
         STAA    >IacBase,Z
         LDAA    $05E2,Z
         MUL
@@ -21070,10 +21070,10 @@ L0F846:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0F848 ($0F848)
+; PurgeFuelCalc ($0F848)
 ; Called from: Sub_0EE82 (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_0F848:
+PurgeFuelCalc:
         LDAA    >EngineRpm,Z
         LDX     #PurgeFuelRpm
         JSR     Lookup2D

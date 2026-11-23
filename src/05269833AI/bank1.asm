@@ -922,7 +922,7 @@ L1098C:
         BRA     L109B8
 L109B0:
         LDE     >TipInFuel,Z
-        JSR     Sub_2CAD0
+        JSR     FlexFuelAccount
 L109B8:
         LDE     $080A,Z
         ADDE    >TipInFuel,Z
@@ -1984,7 +1984,7 @@ StartPulseCurrent:
 StartInjectorPulse:
         CMPB    >InjectorKillCyl1,Z
         LBEQ    L11686
-        JSR     Sub_12A1C
+        JSR     EventFuelScaleApply
         BRSET   >Options0338,#$04,L11498
         BRCLR   >FuelPulseFlags,Z,#$04,L1149E
 L11498:
@@ -2138,7 +2138,7 @@ L1160E:
         JSR     FlexLearnFuelCount
         BRA     L11624
 L11620:
-        JSR     Sub_2CAD0
+        JSR     FlexFuelAccount
 L11624:
         ADE
         BCC     L1162C
@@ -2170,7 +2170,7 @@ L11640:
         LDAA    $00,X
         STAA    $062F,Z
         PSHM    Y,K
-        JSR     Sub_24704
+        JSR     EventOptionUpdate
         PULM    K,Y
         STE     $0000,Y
         STE     $0788,Z
@@ -3970,7 +3970,7 @@ L12944:
 
 ;---------------------------------------------------------------------------------------------------
 ; CylinderBit ($129A8)
-; Called from: Isr_GPT_IC4OC5, Sub_12A1C
+; Called from: Isr_GPT_IC4OC5, EventFuelScaleApply
 ;---------------------------------------------------------------------------------------------------
 CylinderBit:
         PSHM    X,K
@@ -4023,10 +4023,10 @@ L12A1A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_12A1C ($12A1C)
+; EventFuelScaleApply ($12A1C)
 ; Called from: StartInjectorPulse
 ;---------------------------------------------------------------------------------------------------
-Sub_12A1C:
+EventFuelScaleApply:
         PSHM    D
         BRCLR   >FuelModeFlags,Z,#$08,L12A48
         LDAA    >InjectorIndex,Z
@@ -7471,7 +7471,7 @@ L15FCC:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearLeanBank1 ($15FD6)
-; Called from: ClosedLoopManager, Sub_33AF0
+; Called from: ClosedLoopManager, ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank1:
         PSHM    X,K
@@ -7492,7 +7492,7 @@ L15FE8:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearLeanBank2 ($15FF8)
-; Called from: ClosedLoopManager, Sub_33AF0
+; Called from: ClosedLoopManager, ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank2:
         PSHM    X,K
@@ -7542,7 +7542,7 @@ L16048:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearRichBank1 ($1604C)
-; Called from: ClosedLoopManager, Sub_33AF0
+; Called from: ClosedLoopManager, ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearRichBank1:
         PSHM    X,K
@@ -7562,7 +7562,7 @@ L1605A:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearRichBank2 ($1606A)
-; Called from: ClosedLoopManager, Sub_33AF0
+; Called from: ClosedLoopManager, ClosedLoopMemClear
 ;---------------------------------------------------------------------------------------------------
 O2MemClearRichBank2:
         PSHM    X,K
@@ -8035,7 +8035,7 @@ L162BC:
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnMain ($17000)
-; Called from: Sub_2C708
+; Called from: FuelLevelProcess
 ;---------------------------------------------------------------------------------------------------
 FlexLearnMain:
         LDAA    <SriMileage,Z
@@ -8966,7 +8966,7 @@ L17EBC:
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnReset ($17F2C)
-; Called from: FlexLearnInitRun, Sub_2C708
+; Called from: FlexLearnInitRun, FuelLevelProcess
 ;---------------------------------------------------------------------------------------------------
 FlexLearnReset:
         CLR     >FlexLearnFlags,Z
@@ -9678,7 +9678,7 @@ L18834:
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexMisfireCheck ($18836)
-; Called from: Sub_2A81A
+; Called from: MisfireMonitorEvent
 ;---------------------------------------------------------------------------------------------------
 FlexMisfireCheck:
         BRSET   >MonEnableFlags2,Z,#$80,L18A5E
@@ -11964,7 +11964,7 @@ L1A462:
 
 ;---------------------------------------------------------------------------------------------------
 ; IacSetTarget ($1A464)
-; Called from: FlexIdleStep, IdleRpmLoop, IacShiftKick, IdleTargetControl, Sub_1A4E4, IacShiftStepApply, IdleMapTargetCalc, IacChargeStep2 (11 calls)
+; Called from: FlexIdleStep, IdleRpmLoop, IacShiftKick, IdleTargetControl, IacChargeStepCalc, IacShiftStepApply, IdleMapTargetCalc, IacChargeStep2 (11 calls)
 ;---------------------------------------------------------------------------------------------------
 IacSetTarget:
         ORP     #$00E0
@@ -12024,10 +12024,10 @@ L1A4DA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1A4E4 ($1A4E4)
+; IacChargeStepCalc ($1A4E4)
 ; Called from: ChargeControl
 ;---------------------------------------------------------------------------------------------------
-Sub_1A4E4:
+IacChargeStepCalc:
         PSHM    E,X,K
         BRSET   >SensorFaultFlags,Z,#$20,L1A596
         BRSET   >FaultSet05,Z,#$08,L1A596
@@ -15628,7 +15628,7 @@ L1DEA2:
         BCLR    >EventSparkFlags,Z,#$C0
         INC     $0F51,Z
         BRCLR   >Options032E,#$04,L1DECA
-        JSR     Sub_31D9E
+        JSR     PciSparkStatus
         BSET    >PciRxFlags,Z,#$0E
         BSET    >SkimFlags2,Z,#$10
 L1DECA:
@@ -17335,7 +17335,7 @@ KnockWindowInit:
         TBXK
         CLR     >KnockWindow,Z
         LDX     #$24C2
-        JSR     Sub_38A52
+        JSR     KnockChipConfig
 L1F6F8:
         RTS
 
@@ -17370,7 +17370,7 @@ L1F734:
         LDX     #$24C2
         ABX
         BCLR    >SystemFlags945,Z,#$10
-        JSR     Sub_38A52
+        JSR     KnockChipConfig
 L1F746:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF

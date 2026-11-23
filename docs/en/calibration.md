@@ -136,8 +136,8 @@ The idle air valve is driven by several routines that all end in the step routin
 | `IdleRpmLoop` | closed loop on rpm: error term (coarse/fine, P/N), rate filter, deadband from MAP and coolant, integrator that takes opening or closing IAC steps | `IdleErrorTerm*`, `IdleRateFilterCoolant`, `IdleDeadband*`, `IdleStep*` |
 | `IdleMapTargetCalc` | closed loop on MAP: idle MAP target ($031E,Z) from base, time, coolant, rpm and baro, then IAC steps against the MAP error | `IdleMap*`, `IacMap*Step*` |
 | `IacBaseCalc` | base IAC position against baro and idle target, coasting target, generator field duty, A/C engagement | `IacBase*`, `IacCoast*`, `IacFieldDuty*`, `IacAcEngageAdder` |
-| `IdleTargetControl`, `Sub_2D086` | events: gear change (delay, duration, step; A/C and P/N variants), rpm droop and dip kicks, A/C clutch kick, rolling target | `IacGear*`, `IacDroop*`, `IacDipKick*`, `IacAcKick*`, `IacRoll*`, `ShiftIdle*` |
-| `Sub_1A5CA` | extra air when the battery voltage stays below the charging target | `IacChargeStep` |
+| `IdleTargetControl`, `GearStateUpdate` | events: gear change (delay, duration, step; A/C and P/N variants), rpm droop and dip kicks, A/C clutch kick, rolling target | `IacGear*`, `IacDroop*`, `IacDipKick*`, `IacAcKick*`, `IacRoll*`, `ShiftIdle*` |
+| `IacChargeStepCalc` | extra air when the battery voltage stays below the charging target | `IacChargeStep` |
 | `IacCrankControl` | IAC position while cranking and in start mode | `IacCrankCoolant`, `IacRunUpCoolant` |
 
 Spark corrections besides the base tables:
@@ -272,13 +272,13 @@ fault bit, `ReportPass` ($24160) counts a passed one and clears it; both take in
 | `BusTimeoutCheck` | P1687, P1695 | no cluster / body bus messages |
 | `ChecksumCheck` | P0601 | checksum |
 | `VacuumLeakMonitor` | P1299 | vacuum leak (expected MAP against throttle and rpm) |
-| `MapKeyOnCheck, Sub_21EFE` | P0106, P0107, P0108 | MAP rationality, low, high |
-| `Sub_22688` | P0132, P0152 | upstream O2 high, banks 1 and 2 |
+| `MapKeyOnCheck, MapCircuitCheck` | P0106, P0107, P0108 | MAP rationality, low, high |
+| `O2ShortHighCheck` | P0132, P0152 | upstream O2 high, banks 1 and 2 |
 | `PurgeSolenoidCheck` | P0443 | purge solenoid circuit |
 | `EgrPositionMonitor, EgrSolenoidCheck` | P0405, P0406, P0403 | EGR position sensor low and high, EGR solenoid circuit |
 | `WotLeanMonitor` | P1298 | lean at WOT |
-| `Sub_22CD8` | P1496 | 5 V supply low |
-| `Sub_22CF0` | P0700 | transmission control |
+| `FlexFaultReport` | P1496 | 5 V supply low |
+| `TransMilRequest` | P0700 | transmission control |
 | `TccMonitor` | P0740 | torque converter clutch (rpm/speed ratio does not drop at lock-up) |
 | `O2DownCircuitCheck` | P0137, P0138, P0157, P0158 | downstream O2 low/high, banks 1 and 2 |
 | `FuelSenderMonitor` | P0460, P0462, P0463 | fuel level sender stuck, low, high (analog $0A92) |
@@ -287,15 +287,15 @@ fault bit, `ReportPass` ($24160) counts a passed one and clears it; both take in
 | `O2NoActivityCold, O2ActivityWarm` | P0134, P0154, P0140, P0160 | O2 sensors inactive (cold-start soak check and heater-switched check when warm) |
 | `PspSwitchMonitor` | P0551 | power steering pressure switch |
 | `MapIdleChangeCheck` | P1297 | no MAP change between start and idle |
-| `Sub_236D4, ProcessThrottle` | P0121, P0122, P0123 | throttle sensor rationality, low, high |
-| `Sub_23970` | P0500 | vehicle speed sensor (load without speed) |
-| `Sub_23AB2, Sub_23B84` | P0340, P1391 | cam sensor, intermittent cam/crank |
-| `Sub_23C3E, Sub_23D76` | P1390 | cam/crank relation (timing belt skipped) |
-| `Sub_25F40` | P1495 | leak detection pump solenoid |
+| `TpsMapRationality, ProcessThrottle` | P0121, P0122, P0123 | throttle sensor rationality, low, high |
+| `VssMonitor` | P0500 | vehicle speed sensor (load without speed) |
+| `CamSensorMonitor, CamCrankSyncMonitor` | P0340, P1391 | cam sensor, intermittent cam/crank |
+| `CamCrankRelation, CamCrankMeasure` | P1390 | cam/crank relation (timing belt skipped) |
+| `LdpSolenoidCheck` | P1495 | leak detection pump solenoid |
 | `ProcessCoolantTemp, ProcessAirTemp` | P0117, P0118, P0112, P0113 | coolant and air temperature sensors low/high |
-| `Sub_2C636` | P1492, P1493 | battery temperature sensor high/low |
+| `BatteryTempSensorCheck` | P1492, P1493 | battery temperature sensor high/low |
 | `FlexSensorCheck` | P0176, P0178, P0179 | fuel composition sensor |
-| `Sub_2CC42, Sub_387FE` | P1697, P1696 | SRI mileage not stored, EEPROM write denied |
+| `SriMileageStore, EepromWriteService` | P1697, P1696 | SRI mileage not stored, EEPROM write denied |
 | `CatTempMonitor` | P1482, P1483, P1484 | catalyst temperature sensor low/high, catalyst overheat (input $0A8E, shared with the flex sensor) |
 | `MtvCheck` | P1289 | manifold tune valve |
 | `CcdReceive, PciReceive` | P1685 | SKIM invalid key |
@@ -344,9 +344,9 @@ applies only to the reference image.
   duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
   subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
   them on a running car would settle them.
-- 1,033 RAM variables have names, including the fault bit arrays FaultSet00-1B and
+- 1,036 RAM variables have names, including the fault bit arrays FaultSet00-1B and
   FaultMem00-1B and the monitor status and freeze-frame bytes. Flag bytes whose bits serve several
-  subsystems have neutral names. 769 other Z offsets are still known by address; only 5 of them
+  subsystems have neutral names. 768 other Z offsets are still known by address; only 5 of them
   are used ten times or more, and 404 are used once or twice. Constant descriptions give such
   addresses as $xxxx,Z.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at

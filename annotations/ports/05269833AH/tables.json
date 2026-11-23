@@ -106,7 +106,7 @@
   "051E": {
    "name": "FanPwmStepCoolant",
    "category": "Cooling fan",
-   "desc": "PWM fan (Sub_3A8D2): duty change against the coolant PD term ($0B19,Z, error to $05A2/$05A3 and rate)",
+   "desc": "PWM fan (FanPwmCoolantPid): duty change against the coolant PD term ($0B19,Z, error to $05A2/$05A3 and rate)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -122,7 +122,7 @@
   "054B": {
    "name": "FanPwmStepBusTemp",
    "category": "Cooling fan",
-   "desc": "PWM fan (Sub_3ABFE): duty change against the PD term of the bus temperature $09BF,Z (received on the serial bus) ($0B2C,Z)",
+   "desc": "PWM fan (FanPwmBusPid): duty change against the PD term of the bus temperature $09BF,Z (received on the serial bus) ($0B2C,Z)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -635,7 +635,7 @@
   },
   "0C9F": {
    "name": "PartThrottleFuelMain",
-   "desc": "17 x 17 fuel correction, MAP x rpm, used by the main-loop fuel calculation (Sub_10F1C) and by Sys39686; PartThrottleFuel is the per-event one",
+   "desc": "17 x 17 fuel correction, MAP x rpm, used by the main-loop fuel calculation (PartThrottleFuelCalc) and by EgrControl; PartThrottleFuel is the per-event one",
    "category": "Fuel",
    "auto": false,
    "x": "rpm32",
@@ -644,7 +644,7 @@
   },
   "0DD4": {
    "name": "MapBaroOffset",
-   "desc": "Added to MAP against barometric pressure before the part-throttle MAP scale (main-loop fuel, Sys39686, diagnostics)",
+   "desc": "Added to MAP against barometric pressure before the part-throttle MAP scale (main-loop fuel, EgrControl, diagnostics)",
    "category": "Fuel",
    "auto": false,
    "x": "kpa",
@@ -1487,7 +1487,7 @@
   "2216": {
    "name": "AcClutchSparkTimeSensor",
    "category": "Spark",
-   "desc": "A/C clutch engage (Sub_39412): spark window $0D53,Z against the A/C sensor",
+   "desc": "A/C clutch engage (AcCutLogic): spark window $0D53,Z against the A/C sensor",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -2663,7 +2663,7 @@
   "2F13": {
    "name": "DiagTimerRpm",
    "category": "Diagnostics",
-   "desc": "Timer $0527,Z of Sub_243F8 loaded against engine rpm",
+   "desc": "Timer $0527,Z of DiagModeTimer loaded against engine rpm",
    "x": "rpm8",
    "y": "raw",
    "auto": false
@@ -2705,7 +2705,7 @@
   "30EA": {
    "name": "FuelSysLimit2",
    "category": "Diagnostics",
-   "desc": "As FuelSysLimit for the second pair of routines (Sub_2A4F2, Sub_2A6C0)",
+   "desc": "As FuelSysLimit for the second pair of routines (FuelSysRich1Check, FuelSysRich2Check)",
    "x": "raw",
    "y": "pos256",
    "z": "raw",
@@ -2714,7 +2714,7 @@
   "310B": {
    "name": "FuelSysLimitScale",
    "category": "Diagnostics",
-   "desc": "Fuel system monitor (Sub_2A0F0, Sub_2A302): purge ramp $042C,Z to row position of FuelSysLimit",
+   "desc": "Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): purge ramp $042C,Z to row position of FuelSysLimit",
    "x": "raw",
    "y": "pos256",
    "auto": false
@@ -2722,7 +2722,7 @@
   "3117": {
    "name": "FuelSysLimitScale2",
    "category": "Diagnostics",
-   "desc": "As FuelSysLimitScale for Sub_2A4F2, Sub_2A6C0",
+   "desc": "As FuelSysLimitScale for FuelSysRich1Check, FuelSysRich2Check",
    "x": "raw",
    "y": "pos256",
    "auto": false
@@ -2819,7 +2819,7 @@
   "49AE": {
    "name": "VssCheckVacuumRpm",
    "category": "Diagnostics",
-   "desc": "Vehicle speed sensor check (Sub_23970, P0500): manifold vacuum limit against engine rpm (closed throttle, P/N, warm)",
+   "desc": "Vehicle speed sensor check (VssMonitor, P0500): manifold vacuum limit against engine rpm (closed throttle, P/N, warm)",
    "x": "rpm8",
    "y": "raw",
    "auto": false
@@ -2979,7 +2979,7 @@
   },
   "0322": {
    "name": "BusMsgEcData",
-   "desc": "Data byte sent in the bus message $EC (Sub_30972; low two bits replaced)",
+   "desc": "Data byte sent in the bus message $EC (SecurityStatusCalc; low two bits replaced)",
    "category": "Other",
    "size": 1
   },
@@ -3310,7 +3310,7 @@
   },
   "033F": {
    "name": "Options033F",
-   "desc": "Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in ObdReadiness and Sub_28D78",
+   "desc": "Option byte copied to $06B9,Z at reset; bits 7-4 enable monitor branches in ObdReadiness and O2HeaterMonitor",
    "category": "Options",
    "size": 1
   },
@@ -3431,7 +3431,7 @@
   },
   "041E": {
    "name": "FanPwmFixedDuty",
-   "desc": "Fan PWM (Sub_3ADDE, Options033D bit 2): duty the fan request steps towards",
+   "desc": "Fan PWM (FanPwmFixed, Options033D bit 2): duty the fan request steps towards",
    "category": "Cooling fan",
    "size": 1
   },
@@ -3544,7 +3544,7 @@
   },
   "044A": {
    "name": "MtvPeriod",
-   "desc": "Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in Sub_2FA10)",
+   "desc": "Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in MtvRateLookup)",
    "category": "Other",
    "size": 1
   },
@@ -3898,7 +3898,7 @@
   },
   "0514": {
    "name": "FanPwmRampDownDuty",
-   "desc": "Fan PWM ramp (Sub_3ADA8): requested duty below this value ramps the duty down",
+   "desc": "Fan PWM ramp (FanPwmRampDown): requested duty below this value ramps the duty down",
    "category": "Cooling fan",
    "size": 1
   },
@@ -4070,7 +4070,7 @@
   },
   "055E": {
    "name": "AcCutRpmLow",
-   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and Sub_39412 (FF00 = off)",
+   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)",
    "unit": "rpmw",
    "size": 2,
    "category": "A/C"
@@ -4101,7 +4101,7 @@
   },
   "0564": {
    "name": "AcCutCoolantOn",
-   "desc": "A/C cut-out (Sub_39412): coolant at or above which the A/C is cut",
+   "desc": "A/C cut-out (AcCutLogic): coolant at or above which the A/C is cut",
    "unit": "tempc",
    "size": 1,
    "category": "A/C"
@@ -4234,7 +4234,7 @@
   },
   "057A": {
    "name": "StarterCutHold",
-   "desc": "Starter control (Sub_3AECC, Options0333 bit 2, probably the starter relay): hold count ($0C01,Z) after rpm drops",
+   "desc": "Starter control (StarterCut, Options0333 bit 2, probably the starter relay): hold count ($0C01,Z) after rpm drops",
    "category": "Startup",
    "size": 1
   },
@@ -4398,7 +4398,7 @@
   },
   "0786": {
    "name": "FlexLearnBaseReadyMin",
-   "desc": "FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines Sub_2A0F0-Sub_2A6C0)",
+   "desc": "FlexLearnBase at or above which the flex learning counts as settled (closed loop in ClosedLoopManager, misfire routines FuelSysLean1Check-FuelSysRich2Check)",
    "size": 1,
    "category": "Fuel"
   },
@@ -4877,20 +4877,20 @@
   },
   "0B0B": {
    "name": "PwmC18DutyStep",
-   "desc": "PWM output of PwmPeriodC18: step of $0C17,Z (also compared in Sub_3B0BA)",
+   "desc": "PWM output of PwmPeriodC18: step of $0C17,Z (also compared in PwmC18StepSelect)",
    "category": "Other",
    "size": 1
   },
   "0B0C": {
    "name": "PwmC18CoolantMax",
-   "desc": "PWM output of PwmPeriodC18 (Sub_3AF4C): start coolant and coolant at or below this value for the cold branch",
+   "desc": "PWM output of PwmPeriodC18 (PwmC18Main): start coolant and coolant at or below this value for the cold branch",
    "unit": "tempc",
    "category": "Other",
    "size": 1
   },
   "0B0D": {
    "name": "PwmC18DutyStep2",
-   "desc": "PWM output of PwmPeriodC18: step taken off the duty $0C20,Z (Sub_3AF4C, Sub_3B0BA)",
+   "desc": "PWM output of PwmPeriodC18: step taken off the duty $0C20,Z (PwmC18Main, PwmC18StepSelect)",
    "category": "Other",
    "size": 1
   },
@@ -4902,7 +4902,7 @@
   },
   "0B10": {
    "name": "PwmC18Divisor2",
-   "desc": "PWM output of PwmPeriodC18: divisor (word) of the step timer in Sub_3AF4C",
+   "desc": "PWM output of PwmPeriodC18: divisor (word) of the step timer in PwmC18Main",
    "category": "Other",
    "size": 2
   },
@@ -5032,7 +5032,7 @@
   },
   "0B51": {
    "name": "HotEngineOn",
-   "desc": "Hot-engine enrichment switch (0 = off); also a bit mask in Sub_11BE4",
+   "desc": "Hot-engine enrichment switch (0 = off); also a bit mask in FinishFuelPulse",
    "size": 1,
    "category": "Fuel"
   },
@@ -6191,7 +6191,7 @@
   },
   "18AC": {
    "name": "AccelFuelOptions",
-   "desc": "Accel fuel option byte (bit 7: WOT fuel branch in Sub_11FB0; bit 6: index shift in CalcFuelPulse)",
+   "desc": "Accel fuel option byte (bit 7: WOT fuel branch in TipInFuelControl; bit 6: index shift in CalcFuelPulse)",
    "category": "Options",
    "size": 1,
    "bits": [
@@ -6260,7 +6260,7 @@
   },
   "18B6": {
    "name": "EventFuelMapMin",
-   "desc": "Event fuel (Sub_11DE6): MAP at or above this value",
+   "desc": "Event fuel (EventCorrections): MAP at or above this value",
    "unit": "kpa",
    "size": 1,
    "category": "Other"
@@ -6498,7 +6498,7 @@
   },
   "1996": {
    "name": "PurgeBattTimerInit",
-   "desc": "Purge (Sub_3DC64): start value of the timer $0428,Z (word) inside the battery temperature window",
+   "desc": "Purge (PurgeEnable): start value of the timer $0428,Z (word) inside the battery temperature window",
    "category": "EVAP purge",
    "size": 2
   },
@@ -6517,13 +6517,13 @@
   },
   "199A": {
    "name": "PurgeRpmFactor",
-   "desc": "Purge (Sub_3E4CA): factor (word) on engine rpm for the purge value",
+   "desc": "Purge (PurgeRampCalc): factor (word) on engine rpm for the purge value",
    "category": "EVAP purge",
    "size": 2
   },
   "199E": {
    "name": "PurgeDelayInit",
-   "desc": "Start value of the purge delay $042F,Z (reset, Sub_3DC64, PurgeReset)",
+   "desc": "Start value of the purge delay $042F,Z (reset, PurgeEnable, PurgeReset)",
    "category": "EVAP purge",
    "size": 1
   },
@@ -6609,26 +6609,26 @@
   },
   "1B3B": {
    "name": "PurgeCellRefMargin",
-   "desc": "Purge cell reference (Sub_3DFCA): margin added to the stored cells $8066/$8079 before compare",
+   "desc": "Purge cell reference (PurgeCellRichCheck): margin added to the stored cells $8066/$8079 before compare",
    "category": "EVAP purge",
    "size": 1
   },
   "1B3C": {
    "name": "PurgeCellRefCoolantMax",
-   "desc": "Purge cell reference (Sub_3DEF8): coolant below this value",
+   "desc": "Purge cell reference (PurgeCellRefCheck): coolant below this value",
    "unit": "tempc",
    "category": "EVAP purge",
    "size": 1
   },
   "1B3D": {
    "name": "PurgeCellUpdateCount",
-   "desc": "Purge (Sub_3E344): counts ($043E,Z) between updates",
+   "desc": "Purge (PurgeCellUpdateGate): counts ($043E,Z) between updates",
    "category": "EVAP purge",
    "size": 1
   },
   "1B3E": {
    "name": "PurgeCellDiffOffset",
-   "desc": "Purge (Sub_3DFB8): offset taken off the cell difference",
+   "desc": "Purge (PurgeCellDiff): offset taken off the cell difference",
    "category": "EVAP purge",
    "size": 1
   },
@@ -8055,7 +8055,7 @@
   },
   "2A31": {
    "name": "IdleStableTimeMin",
-   "desc": "Idle state flags: time since start above this value (also used by Sub_23970)",
+   "desc": "Idle state flags: time since start above this value (also used by VssMonitor)",
    "category": "Idle",
    "size": 1
   },
@@ -8088,7 +8088,7 @@
   },
   "2A36": {
    "name": "IdleUnderTargetMargin",
-   "desc": "Sub_2CBC8: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target",
+   "desc": "IdleStateUpdate: below IdleRollSpeed, rpm plus this margin at or below the idle target counts as under target",
    "unit": "rpmw",
    "category": "Idle",
    "size": 2
@@ -8376,7 +8376,7 @@
   },
   "2B4B": {
    "name": "SpeedCtlSpeedErrorTrip",
-   "desc": "Speed control (Sub_3C288): speed drop that trips the cancel (2 less with $0405,Z bit 6; 0 = off)",
+   "desc": "Speed control (SpeedCtlCancelMonitor): speed drop that trips the cancel (2 less with $0405,Z bit 6; 0 = off)",
    "category": "Speed control",
    "size": 1
   },
@@ -8456,7 +8456,7 @@
   },
   "2B64": {
    "name": "SpeedCtlVentTimeFactor",
-   "desc": "Speed control (Sub_3C65C): factor (word) on the vent count $0425,Z",
+   "desc": "Speed control (SpeedCtlServoTime): factor (word) on the vent count $0425,Z",
    "category": "Speed control",
    "size": 2
   },
@@ -8524,7 +8524,7 @@
   },
   "2B93": {
    "name": "SpeedCtlBusCount",
-   "desc": "Speed control (Sub_3C690): count limit of $0423,Z with the bus flag $086C,Z bit 3",
+   "desc": "Speed control (SpeedCtlBusCheck): count limit of $0423,Z with the bus flag $086C,Z bit 3",
    "category": "Speed control",
    "size": 1
   },
@@ -8536,7 +8536,7 @@
   },
   "2BB6": {
    "name": "BusMapHyst",
-   "desc": "Sub_2CB60: MAP hysteresis of the bus flag $086C,Z bit 2",
+   "desc": "MapHighBusFlag: MAP hysteresis of the bus flag $086C,Z bit 2",
    "unit": "kpa",
    "category": "Other",
    "size": 1
@@ -8702,13 +8702,13 @@
   },
   "2EA6": {
    "name": "EventOptionWord",
-   "desc": "Sub_246FC: option word; its top two bits select the mode ($00, $40, $80) and it is stored in $0630,Z",
+   "desc": "EventOptionUpdate: option word; its top two bits select the mode ($00, $40, $80) and it is stored in $0630,Z",
    "category": "Other",
    "size": 2
   },
   "2EA8": {
    "name": "EventDefaultWord",
-   "desc": "Sub_247A8: word value used in the default branch",
+   "desc": "EventOptionStep: word value used in the default branch",
    "category": "Other",
    "size": 2
   },
@@ -8757,7 +8757,7 @@
   },
   "2EBE": {
    "name": "MisfireEventCountMax",
-   "desc": "Misfire: event count $00DE,Z (word) above which the deviation check runs (also Sub_2B448)",
+   "desc": "Misfire: event count $00DE,Z (word) above which the deviation check runs (also MisfireEventCountReset)",
    "category": "Diagnostics",
    "size": 2
   },
@@ -8800,7 +8800,7 @@
   },
   "2F05": {
    "name": "MisfireWindow",
-   "desc": "Misfire monitor: window length for the emission counter (word, Sub_2ABD0)",
+   "desc": "Misfire monitor: window length for the emission counter (word, MisfireCylMarkWord)",
    "category": "Diagnostics",
    "size": 2
   },
@@ -9087,7 +9087,7 @@
   },
   "3053": {
    "name": "LdpPurgedDutyMin",
-   "desc": "Leak detection (Sub_25E9E): purge duty at or above which the purged time counts",
+   "desc": "Leak detection (LdpPurgedCheck): purge duty at or above which the purged time counts",
    "category": "EVAP purge",
    "size": 1
   },
@@ -9237,7 +9237,7 @@
   },
   "308D": {
    "name": "EgrMonCoolantMin",
-   "desc": "EGR flow monitor (Sub_25000, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value",
+   "desc": "EGR flow monitor (EgrFlowMonitor, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value",
    "unit": "tempc",
    "category": "EGR",
    "size": 1
@@ -9330,25 +9330,25 @@
   },
   "30C0": {
    "name": "FuelSysRichHyst",
-   "desc": "Fuel system monitor (Sub_2A4F2, Sub_2A6C0): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set",
+   "desc": "Fuel system monitor (FuelSysRich1Check, FuelSysRich2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set",
    "category": "Diagnostics",
    "size": 1
   },
   "30C1": {
    "name": "FuelSysLeanHyst",
-   "desc": "Fuel system monitor (Sub_2A0F0, Sub_2A302): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set",
+   "desc": "Fuel system monitor (FuelSysLean1Check, FuelSysLean2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set",
    "category": "Diagnostics",
    "size": 1
   },
   "30C2": {
    "name": "FuelSysRichCount",
-   "desc": "Fuel system monitor: rich-condition counts ($05A3/$05A4,Z) before the rich flag (Sub_2A496, Sub_2A664)",
+   "desc": "Fuel system monitor: rich-condition counts ($05A3/$05A4,Z) before the rich flag (FuelSysRich1Adapt, FuelSysRich2Adapt)",
    "category": "Diagnostics",
    "size": 1
   },
   "30C3": {
    "name": "FuelSysLeanCount",
-   "desc": "Fuel system monitor: lean-condition counts before the lean flag (Sub_2A07E, Sub_2A290)",
+   "desc": "Fuel system monitor: lean-condition counts before the lean flag (FuelSysLean1Adapt, FuelSysLean2Adapt)",
    "category": "Diagnostics",
    "size": 1
   },
@@ -9470,7 +9470,7 @@
   },
   "314F": {
    "name": "O2MonWindowMax",
-   "desc": "O2 sensor monitor at idle: window count above which the test restarts (Sub_28CB6)",
+   "desc": "O2 sensor monitor at idle: window count above which the test restarts (O2MonData2Step)",
    "category": "Diagnostics",
    "size": 1
   },
@@ -9482,13 +9482,13 @@
   },
   "3154": {
    "name": "O2HeaterRunTimeMin",
-   "desc": "Probably the O2 heater monitor (Sub_28D78, Options033F bits 4-7): run time at or above this value",
+   "desc": "Probably the O2 heater monitor (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value",
    "category": "Diagnostics",
    "size": 1
   },
   "3158": {
    "name": "O2HeaterSampleTime",
-   "desc": "Probably the O2 heater monitor (Sub_2919A): timer $010A,Z (word) above which the heater input is sampled",
+   "desc": "Probably the O2 heater monitor (O2HeaterSampleStep): timer $010A,Z (word) above which the heater input is sampled",
    "category": "Diagnostics",
    "size": 2
   },
@@ -9500,13 +9500,13 @@
   },
   "315C": {
    "name": "O2HeaterSettleTime",
-   "desc": "Probably the O2 heater monitor (Sub_291F0): timer $010A,Z (word) below which the records are updated",
+   "desc": "Probably the O2 heater monitor (O2HeaterTest): timer $010A,Z (word) below which the records are updated",
    "category": "Diagnostics",
    "size": 2
   },
   "315E": {
    "name": "O2HeaterCountMin",
-   "desc": "Probably the O2 heater monitor (Sub_29384): count $010E,Z above which the results are judged",
+   "desc": "Probably the O2 heater monitor (O2HeaterResult): count $010E,Z above which the results are judged",
    "category": "Diagnostics",
    "size": 1
   },
@@ -9518,7 +9518,7 @@
   },
   "3174": {
    "name": "CatMonCoolantMin",
-   "desc": "Catalyst monitor (Sub_285CA): coolant at or above this value",
+   "desc": "Catalyst monitor (CatMonConditions): coolant at or above this value",
    "unit": "tempc",
    "category": "Diagnostics",
    "size": 1
@@ -9781,7 +9781,7 @@
   },
   "31E7": {
    "name": "FuelSenderFilter",
-   "desc": "Filter weight of FuelSenderFiltered (Sub_2C708)",
+   "desc": "Filter weight of FuelSenderFiltered (FuelLevelProcess)",
    "category": "Sensors",
    "size": 1
   },
@@ -10012,7 +10012,7 @@
   },
   "32B7": {
    "name": "MonSteadyTimeMin",
-   "desc": "Steady-state condition (Sub_23C3E): time since start at or above this value",
+   "desc": "Steady-state condition (CamCrankRelation): time since start at or above this value",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10065,7 +10065,7 @@
   },
   "32C0": {
    "name": "MonSteadyRpmCeiling",
-   "desc": "Cam/crank relation monitor (Sub_23C3E): engine rpm below this value",
+   "desc": "Cam/crank relation monitor (CamCrankRelation): engine rpm below this value",
    "unit": "rpm32",
    "category": "Diagnostics",
    "size": 1
@@ -10078,7 +10078,7 @@
   },
   "32C2": {
    "name": "CamCrankOffsetMin",
-   "desc": "Cam/crank relation (Sub_23D76, P1390): offset below this value counts as skipped",
+   "desc": "Cam/crank relation (CamCrankMeasure, P1390): offset below this value counts as skipped",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10108,7 +10108,7 @@
   },
   "32C8": {
    "name": "CamCrankFaultCount",
-   "desc": "Cam/crank monitor (Sub_23B84): count ($068A,Z) at or above which the fault is reported",
+   "desc": "Cam/crank monitor (CamCrankSyncMonitor): count ($068A,Z) at or above which the fault is reported",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10164,14 +10164,14 @@
   },
   "32E1": {
    "name": "MapCheckBaroMin",
-   "desc": "MAP check (Sub_23816): barometric pressure at or above this value",
+   "desc": "MAP check (IdleMonitorEnable): barometric pressure at or above this value",
    "unit": "kpa",
    "category": "Diagnostics",
    "size": 1
   },
   "32E2": {
    "name": "IdleMonDelay",
-   "desc": "Idle speed monitor (Sub_2375A): delay before the test ($0660,Z)",
+   "desc": "Idle speed monitor (IdleRpmMonitor): delay before the test ($0660,Z)",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10191,7 +10191,7 @@
   },
   "32E7": {
    "name": "IdleDropRpm",
-   "desc": "Sub_2375A: rpm drop below the stored rpm ($0662,Z, word) at or above which $0661,Z counts",
+   "desc": "IdleRpmMonitor: rpm drop below the stored rpm ($0662,Z, word) at or above which $0661,Z counts",
    "unit": "rpmw",
    "category": "Diagnostics",
    "size": 2
@@ -10325,7 +10325,7 @@
   },
   "4988": {
    "name": "TpsCheckThrottleMax",
-   "desc": "Throttle rationality (Sub_236D4, P0121): raw throttle below this value with high load",
+   "desc": "Throttle rationality (TpsMapRationality, P0121): raw throttle below this value with high load",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10392,7 +10392,7 @@
   },
   "499E": {
    "name": "MapLimpOffset",
-   "desc": "Limp-home MAP from throttle (Sub_241AA): offset added to MapLimpFromThrottle",
+   "desc": "Limp-home MAP from throttle (LimpMapCalc): offset added to MapLimpFromThrottle",
    "unit": "kpa",
    "category": "Sensors",
    "size": 1
@@ -10405,13 +10405,13 @@
   },
   "49AC": {
    "name": "VssCheckCount",
-   "desc": "Vehicle speed sensor monitor (Sub_23970): counts ($065D/$065E,Z) before the result changes",
+   "desc": "Vehicle speed sensor monitor (VssMonitor): counts ($065D/$065E,Z) before the result changes",
    "category": "Sensors",
    "size": 1
   },
   "49AD": {
    "name": "VssCheckCoolantMin",
-   "desc": "Vehicle speed sensor check (Sub_23970, P0500) runs above this coolant temperature",
+   "desc": "Vehicle speed sensor check (VssMonitor, P0500) runs above this coolant temperature",
    "unit": "tempc",
    "size": 1,
    "category": "Sensors"
@@ -10444,13 +10444,13 @@
   },
   "49C2": {
    "name": "O2NoActivityLowRaw",
-   "desc": "O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also Sub_291F0)",
+   "desc": "O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also O2HeaterTest)",
    "category": "Diagnostics",
    "size": 1
   },
   "49C3": {
    "name": "O2DownCheckSpeedMin",
-   "desc": "Downstream O2 checks (Sub_222FA): vehicle speed at or above this value",
+   "desc": "Downstream O2 checks (O2DownEnable): vehicle speed at or above this value",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10492,7 +10492,7 @@
   },
   "49D6": {
    "name": "BattLowVolts",
-   "desc": "Low-voltage monitor (Sub_21D02): battery voltage below this value counts as low",
+   "desc": "Low-voltage monitor (BatteryLowFlag): battery voltage below this value counts as low",
    "unit": "volt16",
    "category": "Diagnostics",
    "size": 1
@@ -10536,13 +10536,13 @@
   },
   "49E1": {
    "name": "MapRawLowLimit",
-   "desc": "Raw MAP below this value is a low input (P0107; ReadMap, Sub_21EFE, MapKeyOnCheck)",
+   "desc": "Raw MAP below this value is a low input (P0107; ReadMap, MapCircuitCheck, MapKeyOnCheck)",
    "category": "Sensors",
    "size": 1
   },
   "49E2": {
    "name": "MapRawHighLimit",
-   "desc": "Raw MAP at or above this value is a high input (P0108; ReadMap, Sub_21EFE)",
+   "desc": "Raw MAP at or above this value is a high input (P0108; ReadMap, MapCircuitCheck)",
    "category": "Sensors",
    "size": 1
   },
@@ -10566,7 +10566,7 @@
   },
   "49E6": {
    "name": "MapRationalThrottleMax",
-   "desc": "MAP rationality (Sub_21EFE, ReadMap): throttle opening below this value for the rpm/MAP check",
+   "desc": "MAP rationality (MapCircuitCheck, ReadMap): throttle opening below this value for the rpm/MAP check",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10637,7 +10637,7 @@
   },
   "49F1": {
    "name": "MonSpeedCount",
-   "desc": "Sub_231EC: count $06C9,Z compared at speeds of $38 and above",
+   "desc": "ThermostatMonitor: count $06C9,Z compared at speeds of $38 and above",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10734,7 +10734,7 @@
   },
   "4A09": {
    "name": "ChargeMonVoltsMargin",
-   "desc": "Charging monitor (Sub_21C78): battery voltage plus this margin below the charging target counts as undercharging",
+   "desc": "Charging monitor (ChargeLowMonitor): battery voltage plus this margin below the charging target counts as undercharging",
    "unit": "volt16",
    "category": "Diagnostics",
    "size": 1
@@ -10840,7 +10840,7 @@
   },
   "74E6": {
    "name": "PwmPeriodC18",
-   "desc": "PWM period of the TPU output set up by Sub_3B03C (duty $0C20,Z in %): value × 250 into $0C18,Z (Options0333 bit 6)",
+   "desc": "PWM period of the TPU output set up by PwmC18PeriodCalc (duty $0C20,Z in %): value × 250 into $0C18,Z (Options0333 bit 6)",
    "category": "Other",
    "size": 1
   },
@@ -10896,7 +10896,7 @@
   },
   "753C": {
    "name": "CamFaultClearSwitch",
-   "desc": "Sub_23B66: when not zero the counts $018D/$018E,Z are cleared every 0.19 s pass",
+   "desc": "CamFaultClear: when not zero the counts $018D/$018E,Z are cleared every 0.19 s pass",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10908,7 +10908,7 @@
   },
   "758A": {
    "name": "BatteryVoltsDwellFilter",
-   "desc": "Filter weight of BatteryVoltsDwell (Sub_2D91C)",
+   "desc": "Filter weight of BatteryVoltsDwell (BatteryDwellFilter)",
    "category": "Sensors",
    "size": 1
   },

@@ -397,10 +397,10 @@ L3052C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3052E ($3052E)
+; SkimTimerService ($3052E)
 ; Called from: SkimTimerTick
 ;---------------------------------------------------------------------------------------------------
-Sub_3052E:
+SkimTimerService:
         LDAB    >SkimTimer,Z
         ANDB    #$0F
         BEQ     L3055E
@@ -416,9 +416,9 @@ Sub_3052E:
         STD     $01,X
         LDAA    #$07
         STAA    $00,X
-        JSR     Sub_30A2A
+        JSR     BusTxQueue
         AIS     #$04
-        JSR     Sub_30B52
+        JSR     BusTxStart
         BRA     L30562
 L3055E:
         CLR     >SkimTimer,Z
@@ -426,10 +426,10 @@ L30562:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30564 ($30564)
+; BusEepromWrite ($30564)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_30564:
+BusEepromWrite:
         BRCLR   >BusMsgFlags,Z,#$20,L3060C
         BRSET   >BusMsg91Byte1,Z,#$40,L30608
         BRSET   >BusMsg91Byte1,Z,#$80,L30602
@@ -548,7 +548,7 @@ L30686:
         STAA    $03,Y
 L30692:
         BRSET   $100B,Z,#$08,L3069C
-        JSR     Sub_30B52
+        JSR     BusTxStart
 L3069C:
         RTS
 L3069E:
@@ -680,21 +680,21 @@ L307D4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_307E2 ($307E2)
+; BusTxMsg91 ($307E2)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_307E2:
+BusTxMsg91:
         PSHM    CCR
         ORP     #$00E0
-        BSR     Sub_30808
+        BSR     BusMsg91Build
         AIS     #$FC
         TSX
         STD     $01,X
         LDAA    #$A5
         STAA    $00,X
-        JSR     Sub_30A2A
+        JSR     BusTxQueue
         AIS     #$04
-        JSR     Sub_30B52
+        JSR     BusTxStart
         PULM    CCR
         RTS
 L30802:
@@ -702,11 +702,11 @@ L30802:
         STAA    >CcdTxId,Z
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30808 ($30808)
-; Called from: Sub_307E2
+; BusMsg91Build ($30808)
+; Called from: BusTxMsg91
 ;---------------------------------------------------------------------------------------------------
-Sub_30808:
-        JSR     Sub_309D4
+BusMsg91Build:
+        JSR     FanStatusByte
         CLRB
         BRCLR   >BusReqFlags,Z,#$04,L30816
         ORAB    #$01
@@ -812,10 +812,10 @@ L30900:
         STAA    >CcdTxId,Z
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30906 ($30906)
+; BusTxSparkStatus ($30906)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_30906:
+BusTxSparkStatus:
         PSHM    CCR
         ORP     #$00E0
         LDAA    $09D3,Z
@@ -834,28 +834,28 @@ L3092A:
         STD     $01,X
         LDAA    #$A4
         STAA    $00,X
-        JSR     Sub_30A2A
+        JSR     BusTxQueue
         AIS     #$04
-        JSR     Sub_30B52
+        JSR     BusTxStart
         PULM    CCR
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30942 ($30942)
+; BusTxSecurity ($30942)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_30942:
+BusTxSecurity:
         PSHM    CCR
         ORP     #$00E0
-        BSR     Sub_30968
+        BSR     SecurityStatusCalc
         AIS     #$FC
         TSX
         STD     $01,X
         LDAA    #$EC
         STAA    $00,X
-        JSR     Sub_30A2A
+        JSR     BusTxQueue
         AIS     #$04
-        JSR     Sub_30B52
+        JSR     BusTxStart
         PULM    CCR
         RTS
 L30962:
@@ -863,10 +863,10 @@ L30962:
         STAA    >CcdTxId,Z
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30968 ($30968)
-; Called from: Sub_30942
+; SecurityStatusCalc ($30968)
+; Called from: BusTxSecurity
 ;---------------------------------------------------------------------------------------------------
-Sub_30968:
+SecurityStatusCalc:
         LDAA    $09D2,Z
         LDAB    >BusMsgEcData
         ANDB    #$FC
@@ -888,10 +888,10 @@ L309A0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_309A2 ($309A2)
+; BusTxTimer ($309A2)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_309A2:
+BusTxTimer:
         PSHM    CCR
         ORP     #$00E0
         AIS     #$FC
@@ -906,17 +906,17 @@ L309B6:
         STD     $09F4,Z
         LDAA    #$A6
         STAA    $00,X
-        JSR     Sub_30A2A
+        JSR     BusTxQueue
         AIS     #$04
-        JSR     Sub_30B52
+        JSR     BusTxStart
         PULM    CCR
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_309D4 ($309D4)
-; Called from: Sub_30808, Sub_317B4
+; FanStatusByte ($309D4)
+; Called from: BusMsg91Build, PciPitTick
 ;---------------------------------------------------------------------------------------------------
-Sub_309D4:
+FanStatusByte:
         LDAA    >Options0334
         BITA    #$10
         BNE     L30A12
@@ -961,10 +961,10 @@ L30A22:
         dc.b    $37,$B5,$10,$12,$B0,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30A2A ($30A2A)
-; Called from: Sub_3052E, Sub_307E2, Sub_30906, Sub_30942, Sub_309A2, Sub_30A70, Sub_30AA2 (11 calls)
+; BusTxQueue ($30A2A)
+; Called from: SkimTimerService, BusTxMsg91, BusTxSparkStatus, BusTxSecurity, BusTxTimer, Sub_30A70, BusTxEvent (11 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_30A2A:
+BusTxQueue:
         LDD     #$8000
         PSHM    E
 L30A30:
@@ -1019,17 +1019,17 @@ L30A8E:
         STD     $01,X
         LDAA    #$A4
         STAA    $00,X
-        BSR     Sub_30A2A
-        BSR     Sub_30A2A
-        BSR     Sub_30A2A
+        BSR     BusTxQueue
+        BSR     BusTxQueue
+        BSR     BusTxQueue
         AIS     #$04
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30AA2 ($30AA2)
+; BusTxEvent ($30AA2)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_30AA2:
+BusTxEvent:
         LDAA    $0855,Z
         CLRB
         ORAB    #$00
@@ -1038,17 +1038,17 @@ Sub_30AA2:
         STD     $01,X
         LDAA    #$6C
         STAA    $00,X
-        JSR     Sub_30A2A
-        JSR     Sub_30A2A
-        JSR     Sub_30A2A
+        JSR     BusTxQueue
+        JSR     BusTxQueue
+        JSR     BusTxQueue
         AIS     #$04
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30AC4 ($30AC4)
-; Called from: Sub_30B52, Sub_30BBA
+; BusTxByte ($30AC4)
+; Called from: BusTxStart, Irq4BusHandler
 ;---------------------------------------------------------------------------------------------------
-Sub_30AC4:
+BusTxByte:
         PSHM    D,CCR
         ORP     #$00E0
         BRSET   >CcdRxFlags,Z,#$DA,L30B4E
@@ -1118,10 +1118,10 @@ L30B4E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30B52 ($30B52)
-; Called from: Sub_3052E, CcdTransmit, Sub_307E2, Sub_30906, Sub_30942, Sub_309A2, Sub_30CD6
+; BusTxStart ($30B52)
+; Called from: SkimTimerService, CcdTransmit, BusTxMsg91, BusTxSparkStatus, BusTxSecurity, BusTxTimer, Irq2BusHandler
 ;---------------------------------------------------------------------------------------------------
-Sub_30B52:
+BusTxStart:
         BRCLR   >CcdRxFlags,Z,#$80,L30B5E
         LDAB    $097E,Z
         BRA     L30B76
@@ -1131,8 +1131,8 @@ L30B5E:
         BRA     L30B76
 L30B6A:
         BRCLR   >CcdRxFlags,Z,#$6C,L30BB8
-        JSR     Sub_30AC4
-        BRA     Sub_30B52
+        JSR     BusTxByte
+        BRA     BusTxStart
 L30B76:
         CLRA
         TDE
@@ -1161,10 +1161,10 @@ L30BB8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30BBA ($30BBA)
+; Irq4BusHandler ($30BBA)
 ; Called from: Isr_IRQ4
 ;---------------------------------------------------------------------------------------------------
-Sub_30BBA:
+Irq4BusHandler:
         PSHM    D,E,X,Y,K
         LDE     $101A,Z
         LDD     $1016,Z
@@ -1212,7 +1212,7 @@ L30C32:
 L30C46:
         BCLR    >CcdRxFlags,Z,#$10
 L30C4A:
-        JSR     Sub_30AC4
+        JSR     BusTxByte
 L30C4E:
         BCLR    >CcdBusFlags,Z,#$40
         BRCLR   >CcdBusFlags,Z,#$04,L30CCC
@@ -1269,10 +1269,10 @@ L30CD2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_30CD6 ($30CD6)
+; Irq2BusHandler ($30CD6)
 ; Called from: Sub_0890C
 ;---------------------------------------------------------------------------------------------------
-Sub_30CD6:
+Irq2BusHandler:
         BSET    >CcdBusFlags,Z,#$80
         BCLR    >CcdBusFlags,Z,#$14
         BRCLR   >CcdBusFlags,Z,#$20,L30D68
@@ -1329,7 +1329,7 @@ L30D5C:
 L30D68:
         CLR     $09AE,Z
         BRCLR   >CcdRxFlags,Z,#$FC,L30D78
-        JSR     Sub_30B52
+        JSR     BusTxStart
         BRA     L30D80
 L30D78:
         LDD     $101A,Z
@@ -1544,7 +1544,7 @@ L31274:
         CLRW    $0008,Y
         CLR     $0A,Y
         BRCLR   >PciFlags3,Z,#$20,L3129E
-        JSR     Sub_31EBA
+        JSR     PciRxProcess
         BCLR    >PciFlags3,Z,#$20
         BRA     L3123E
 L3129E:
@@ -1554,13 +1554,13 @@ L3129E:
         LDAB    #$03
         TBYK
         LDY     #$10D2
-        JSR     Sub_31DDE
+        JSR     QspiSendFrame
 L312BC:
         ANDP    #$FF1F
         RTS
 L312C2:
         BRSET   >PciFlags5,Z,#$40,L312CC
-        JSR     Sub_3221E
+        JSR     PciObdReceive
 L312CC:
         RTS
 L312CE:
@@ -1962,65 +1962,65 @@ L316A8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_316AE ($316AE)
+; PciStateSet1 ($316AE)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_316AE:
+PciStateSet1:
         BRCLR   >Options032E,#$08,L317B2
         BSET    >PciFlags4,Z,#$20
         LDX     #$0030
         BRA     L316FE
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_316BE ($316BE)
+; PciStateSet2 ($316BE)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_316BE:
+PciStateSet2:
         BSET    >PciFlags4,Z,#$80
         LDX     #$0038
         BSET    >PciFlags3,Z,#$02
         BRA     L316FE
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_316CC ($316CC)
+; PciStateSet3 ($316CC)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_316CC:
+PciStateSet3:
         LDX     #$000C
         BRA     L316FE
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_316D2 ($316D2)
+; PciStateSet4 ($316D2)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_316D2:
+PciStateSet4:
         BSET    >PciFlags4,Z,#$01
         LDX     #$0014
         BRA     L316FE
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_316DC ($316DC)
+; PciStateSet5 ($316DC)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_316DC:
+PciStateSet5:
         BSET    >PciFlags4,Z,#$04
         LDX     #$0044
         BRA     L316FE
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_316E6 ($316E6)
+; PciStateSet6 ($316E6)
 ; Called from: SkimTimerTick
 ;---------------------------------------------------------------------------------------------------
-Sub_316E6:
+PciStateSet6:
         BSET    >PciFlags4,Z,#$02
         LDX     #$0048
         BRA     L316FE
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_316F0 ($316F0)
+; BusRxAck ($316F0)
 ; Called from: PciService
 ;---------------------------------------------------------------------------------------------------
-Sub_316F0:
+BusRxAck:
         LDX     #$0054
         BRA     L316FE
 
@@ -2059,7 +2059,7 @@ L3172A:
         BRSET   >PciFlags3,Z,#$02,L31756
         BSET    >PciFlags3,Z,#$01
 L31756:
-        JSR     Sub_31DDE
+        JSR     QspiSendFrame
         LDAA    $01,Y
         CMPA    #$B0
         BNE     L3176A
@@ -2105,10 +2105,10 @@ L317B2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_317B4 ($317B4)
+; PciPitTick ($317B4)
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
-Sub_317B4:
+PciPitTick:
         BRCLR   >Options032E,#$04,L31872
         BRSET   >PciFlags3,Z,#$08,L31872
         LDAB    #$03
@@ -2152,7 +2152,7 @@ L3182A:
         TST     $01,Y
         BEQ     L31872
         BSET    >PciFlags3,Z,#$80
-        JSR     Sub_31DDE
+        JSR     QspiSendFrame
         LDAA    $01,Y
         CMPA    #$35
         BNE     L3184A
@@ -2351,7 +2351,7 @@ L319FA:
         LDAB    #$D2
         STD     $00,Y
         LDAA    <Baro,Z
-        JSR     Sub_2D9E2
+        JSR     RawScale69
         LDAB    >AirTemp,Z
         SUBB    #$58
         BCC     L31A10
@@ -2665,7 +2665,7 @@ L31CCC:
         CLRA
         LDAB    $0A0F,Z
         STD     $03,Y
-        JSR     Sub_309D4
+        JSR     FanStatusByte
         CLRB
         STD     $05,Y
         RTS
@@ -2779,10 +2779,10 @@ Sub_31DB4:
         BCS     L31E18
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_31DDE ($31DDE)
-; Called from: PciReceive, Sub_316F6, Sub_317B4, Sub_31E2C, Sub_31E5C, Sub_31EBA, Sub_31F96
+; QspiSendFrame ($31DDE)
+; Called from: PciReceive, Sub_316F6, PciPitTick, Sub_31E2C, QspiService, PciRxProcess, QspiStop
 ;---------------------------------------------------------------------------------------------------
-Sub_31DDE:
+QspiSendFrame:
         TZX
         LDX     #$FD29
         LDE     #$000A
@@ -2808,7 +2808,7 @@ L31E18:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_31E1A ($31E1A)
-; Called from: Sub_317B4
+; Called from: PciPitTick
 ;---------------------------------------------------------------------------------------------------
 Sub_31E1A:
         BRSET   >SystemFlags945,Z,#$80,L31E52
@@ -2817,7 +2817,7 @@ Sub_31E1A:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_31E2C ($31E2C)
-; Called from: Sub_316F6, Sub_31DB4, Sub_31E5C
+; Called from: Sub_316F6, Sub_31DB4, QspiService
 ;---------------------------------------------------------------------------------------------------
 Sub_31E2C:
         ANDP    #$FEFF
@@ -2828,7 +2828,7 @@ Sub_31E2C:
         LDAB    #$03
         TBYK
         LDY     #$10D2
-        JSR     Sub_31DDE
+        JSR     QspiSendFrame
 L31E52:
         BSET    >SystemFlags945,Z,#$01
         ORP     #$0100
@@ -2836,10 +2836,10 @@ L31E5A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_31E5C ($31E5C)
+; QspiService ($31E5C)
 ; Called from: Isr_QSPI
 ;---------------------------------------------------------------------------------------------------
-Sub_31E5C:
+QspiService:
         BCLR    >SPSR,Z,#$80
         CLRW    >SPCR2,Z
         BCLR    >SystemFlags945,Z,#$80
@@ -2850,14 +2850,14 @@ Sub_31E5C:
         TST     >RR4_L,Z
         BEQ     L31E98
         BPL     L31E88
-        JSR     Sub_31FD8
+        JSR     PciRxFrame
         BRA     L31E98
 L31E88:
         BRCLR   >PciFlags3,Z,#$40,L31E94
         BSET    >PciFlags3,Z,#$20
         BRA     L31E98
 L31E94:
-        JSR     Sub_31EBA
+        JSR     PciRxProcess
 L31E98:
         BRCLR   >SystemFlags945,Z,#$01,L31EB6
         BCLR    >SystemFlags945,Z,#$01
@@ -2867,17 +2867,17 @@ L31E98:
         LDY     #$8996
         TST     $01,Y
         BEQ     L31EB6
-        JSR     Sub_31DDE
+        JSR     QspiSendFrame
 L31EB6:
         PULM    K,Y,X,E,D
 L31EB8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_31EBA ($31EBA)
-; Called from: PciReceive, Sub_31E5C
+; PciRxProcess ($31EBA)
+; Called from: PciReceive, QspiService
 ;---------------------------------------------------------------------------------------------------
-Sub_31EBA:
+PciRxProcess:
         TZY
         LDY     #$89A2
         TZX
@@ -2915,7 +2915,7 @@ L31F08:
         PSHM    D,E,X,Y,K
         TST     >RR4_L,Z
         BPL     L31F14
-        JSR     Sub_31FD8
+        JSR     PciRxFrame
 L31F14:
         LDAA    $0A15,Z
         INCA
@@ -2928,7 +2928,7 @@ L31F14:
         LDAB    #$0B
         MUL
         ABY
-        JSR     Sub_31DDE
+        JSR     QspiSendFrame
         BRA     L31F46
 L31F36:
         BCLR    >PciFlags2,Z,#$04
@@ -2940,10 +2940,10 @@ L31F46:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_31F4A ($31F4A)
+; QspiCheck ($31F4A)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_31F4A:
+QspiCheck:
         ORP     #$00E0
         BRCLR   >PciFlags2,Z,#$03,L31F80
         INC     $0A04,Z
@@ -2960,7 +2960,7 @@ L31F6C:
         LDAA    #$12
         STAA    $097B,Z
         CLR     $0A04,Z
-        JSR     Sub_31F96
+        JSR     QspiStop
         BRA     L31F90
 L31F80:
         BRSET   >SystemFlags945,Z,#$80,L31F90
@@ -2971,25 +2971,25 @@ L31F90:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_31F96 ($31F96)
-; Called from: Sub_31F4A
+; QspiStop ($31F96)
+; Called from: QspiCheck
 ;---------------------------------------------------------------------------------------------------
-Sub_31F96:
+QspiStop:
         PSHM    D,E,X,Y,K,CCR
         ORP     #$00E0
         CLR     $0A15,Z
         LDAB    #$03
         TBYK
         LDY     #$1002
-        JSR     Sub_31DDE
+        JSR     QspiSendFrame
         PULM    CCR,K,Y,X,E,D
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_31FB0 ($31FB0)
+; PciFlagsInit ($31FB0)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_31FB0:
+PciFlagsInit:
         PSHM    D,CCR
         ORP     #$00E0
         BCLRW   $1012,Z,#$0200
@@ -3005,10 +3005,10 @@ L31FBE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_31FD8 ($31FD8)
-; Called from: Sub_31E5C, Sub_31EBA
+; PciRxFrame ($31FD8)
+; Called from: QspiService, PciRxProcess
 ;---------------------------------------------------------------------------------------------------
-Sub_31FD8:
+PciRxFrame:
         TZX
         LDX     #$FD09
         LDE     #$0014
@@ -3074,24 +3074,24 @@ SkimKeyCheck:
         STE     $09F8,Z
         LDAA    >Vin17,Z
         STAA    $09F6,Z
-        BSR     Sub_32092
+        BSR     SkimKeyMix
         LDAA    >Vin16,Z
         STAA    $09F6,Z
-        BSR     Sub_32092
+        BSR     SkimKeyMix
         LDAA    >Vin14,Z
         STAA    $09F6,Z
-        BSR     Sub_32092
+        BSR     SkimKeyMix
         LDAA    >Vin09,Z
         STAA    $09F6,Z
-        BSR     Sub_32092
+        BSR     SkimKeyMix
         LDE     $09F8,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_32092 ($32092)
+; SkimKeyMix ($32092)
 ; Called from: SkimKeyCheck (4 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_32092:
+SkimKeyMix:
         LDD     $09F8,Z
         ADDB    $09F6,Z
         EORB    $09F6,Z
@@ -3104,10 +3104,10 @@ Sub_32092:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_320B4 ($320B4)
-; Called from: Sub_366D8
+; SkimSeedCalc ($320B4)
+; Called from: DiagSeedSend
 ;---------------------------------------------------------------------------------------------------
-Sub_320B4:
+SkimSeedCalc:
         LDD     $09F0,Z
         STAB    $09F8,Z
         STAB    $09F9,Z
@@ -3133,10 +3133,10 @@ Sub_320B4:
         dc.b    $01,$01
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_32106 ($32106)
-; Called from: Sub_33048
+; ObdSciRequest ($32106)
+; Called from: SciPitService
 ;---------------------------------------------------------------------------------------------------
-Sub_32106:
+ObdSciRequest:
         TST     >ObdFlags,Z
         BNE     L32152
         LDAA    $0A33,Z
@@ -3193,15 +3193,15 @@ L32190:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_32192 ($32192)
-; Called from: Sub_366FC
+; ObdPciRequest ($32192)
+; Called from: DiagPciCommand
 ;---------------------------------------------------------------------------------------------------
-Sub_32192:
+ObdPciRequest:
         CMPA    #$36
         BEQ     L321A4
         STAB    $0A38,Z
         STE     $0A39,Z
-        BSR     Sub_3220A
+        BSR     ObdRequestIdSet
 L321A0:
         CLR     $0A41,Z
 L321A4:
@@ -3243,10 +3243,10 @@ L321FE:
         dc.b    $00,$06,$07,$05,$05,$07,$06,$05,$0B,$06
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3220A ($3220A)
-; Called from: Sub_32192, Sub_3221E
+; ObdRequestIdSet ($3220A)
+; Called from: ObdPciRequest, PciObdReceive
 ;---------------------------------------------------------------------------------------------------
-Sub_3220A:
+ObdRequestIdSet:
         CLRA
         TDE
         LDAB    #$03
@@ -3257,12 +3257,12 @@ Sub_3220A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3221E ($3221E)
+; PciObdReceive ($3221E)
 ; Called from: PciReceive
 ;---------------------------------------------------------------------------------------------------
-Sub_3221E:
+PciObdReceive:
         LDAB    $04,Y
-        BSR     Sub_3220A
+        BSR     ObdRequestIdSet
         TZX
         LDX     #$8A34
         CLRA
@@ -3305,7 +3305,7 @@ L32286:
 
 ;---------------------------------------------------------------------------------------------------
 ; ObdRequest ($32288)
-; Called from: PciService, Sub_32106, Sub_32192
+; Called from: PciService, ObdSciRequest, ObdPciRequest
 ;---------------------------------------------------------------------------------------------------
 ObdRequest:
         CLRW    $0A27,Z
@@ -3438,7 +3438,7 @@ L323BC:
         LDAA    >ObdMonitorMask
         LBRA    L3256C
 L323D6:
-        LDAA    $0528,Z
+        LDAA    >FuelSystemStatusPid,Z
         CLRB
         BRCLR   >ObdPidSupport1,#$01,L323E6
         LDAB    $0529,Z
@@ -3485,7 +3485,7 @@ L3244A:
         LBRA    L32558
 L32454:
         LDAA    >MapRaw,Z
-        JSR     Sub_2D9E0
+        JSR     RawScaleChain
         LBRA    L32558
 L32460:
         LDD     >EngineRpm,Z
@@ -3854,9 +3854,9 @@ L327EA:
         LBNE    L322D2
         LDAA    #$44
         STAA    $0A27,Z
-        JSR     Sub_241E4
+        JSR     MilFaultIncrement
         JSR     ObdClearCodes
-        JSR     Sub_24582
+        JSR     MonitorFlagsClear
         LDAA    #$04
         JMP     L32B3E
         dc.b    $3C,$00,$01,$64,$01,$65,$31,$6E,$00,$00,$1A,$00,$01,$5E,$01,$5F
@@ -4206,10 +4206,10 @@ L33044:
         JMP     L333E6
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_33048 ($33048)
+; SciPitService ($33048)
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
-Sub_33048:
+SciPitService:
         BRSET   >DiagBusFlags,Z,#$10,L330EC
         BRSET   >PciFlags5,Z,#$40,L330EC
         BRSET   >Options032E,#$04,L330EC
@@ -4381,7 +4381,7 @@ L3321C:
         DEC     >SciByteTimer,Z
         BNE     L33232
         LDAA    #$55
-        JSR     Sub_3340C
+        JSR     SciTxByteTimed
         LDAA    #$07
         STAA    >SciByteTimer,Z
         INC     >SciTimer,Z
@@ -4392,7 +4392,7 @@ L33234:
         DEC     >SciByteTimer,Z
         BNE     L33250
         LDAA    #$08
-        JSR     Sub_3340C
+        JSR     SciTxByteTimed
         LDAA    #$05
         STAA    >SciByteTimer,Z
         INC     >SciTimer,Z
@@ -4403,7 +4403,7 @@ L33252:
         DEC     >SciByteTimer,Z
         BNE     L3326E
         LDAA    #$08
-        JSR     Sub_3340C
+        JSR     SciTxByteTimed
         LDAA    #$1C
         STAA    >SciByteTimer,Z
         INC     >SciTimer,Z
@@ -4431,7 +4431,7 @@ L33298:
         BNE     L332AC
         LDAA    #$33
         COMA
-        JSR     Sub_3340C
+        JSR     SciTxByteTimed
         LDAA    #$0D
         STAA    >SciTimer,Z
 L332AC:
@@ -4505,7 +4505,7 @@ L33344:
 L33366:
         DECW    $0A31,Z
         BEQ     L33372
-        JSR     Sub_32106
+        JSR     ObdSciRequest
         BRA     L33376
 L33372:
         CLR     >SciTimer,Z
@@ -4566,10 +4566,10 @@ L33404:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3340C ($3340C)
-; Called from: Sub_33048 (4 calls)
+; SciTxByteTimed ($3340C)
+; Called from: SciPitService (4 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3340C:
+SciTxByteTimed:
         PSHM    CCR
         ORP     #$00E0
         BCLR    >OC1D,Z,#$08
@@ -4634,10 +4634,10 @@ L334AC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_334B0 ($334B0)
-; Called from: Sub_3697C
+; SciDiagCommand ($334B0)
+; Called from: DiagCommandMain
 ;---------------------------------------------------------------------------------------------------
-Sub_334B0:
+SciDiagCommand:
         LDAB    #$00
         TBXK
         TBYK
@@ -4678,29 +4678,29 @@ L33508:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3350E ($3350E)
+; MonEnableTasks ($3350E)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3350E:
-        JSR     Sub_3353E
+MonEnableTasks:
+        JSR     MonEnableCheck
         BRSET   >MonEnableFlags2,Z,#$40,L3353C
-        JSR     Sub_33674
-        JSR     Sub_336D4
-        JSR     Sub_337A6
-        JSR     Sub_3391C
-        JSR     Sub_33AF0
-        JSR     Sub_33B2C
-        JSR     Sub_33B60
-        JSR     Sub_335EC
-        JSR     Sub_33A10
+        JSR     MonData643Update
+        JSR     MonTaskB
+        JSR     MonTaskC
+        JSR     MonTaskD
+        JSR     ClosedLoopMemClear
+        JSR     ClosedLoopMonTimer
+        JSR     MonTaskLdp
+        JSR     MonDataStore
+        JSR     MonTaskE
 L3353C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3353E ($3353E)
-; Called from: Sub_3350E
+; MonEnableCheck ($3353E)
+; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
-Sub_3353E:
+MonEnableCheck:
         BRSET   >FaultMem07,Z,#$02,L33562
         BRSET   >FaultMem07,Z,#$01,L33562
         BRSET   >FaultMem05,Z,#$08,L33562
@@ -4726,15 +4726,15 @@ L3358A:
         BRSET   >MonEnableFlags2,Z,#$80,L3359C
         BSET    >MonEnableFlags2,Z,#$80
         BCLR    >MonEnableFlags2,Z,#$40
-        JSR     Sub_3359E
+        JSR     MonDataReset
 L3359C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3359E ($3359E)
-; Called from: Sub_3353E
+; MonDataReset ($3359E)
+; Called from: MonEnableCheck
 ;---------------------------------------------------------------------------------------------------
-Sub_3359E:
+MonDataReset:
         LDAA    $064C,Z
         STAA    >MonData644,Z
         LDAA    >MonFlags64D,Z
@@ -4758,10 +4758,10 @@ Sub_3359E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_335EC ($335EC)
-; Called from: Sub_3350E
+; MonDataStore ($335EC)
+; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
-Sub_335EC:
+MonDataStore:
         BRCLR   >MonEnableFlags2,Z,#$10,L3366E
         LDE     #$00CC
         LDAA    >MonData644,Z
@@ -4811,10 +4811,10 @@ L33672:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_33674 ($33674)
-; Called from: Sub_3350E
+; MonData643Update ($33674)
+; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
-Sub_33674:
+MonData643Update:
         BRCLR   >MonEnableFlags2,Z,#$80,L336CE
         BRSET   $1000,Z,#$08,L336CE
         BRCLR   >MonFlags64D,Z,#$08,L336CE
@@ -4835,7 +4835,7 @@ L336A2:
         BCS     L336C0
         INC     >MonData643,Z
 L336BA:
-        JSR     Sub_361F2
+        JSR     OutputTestDispatch
         BRA     L336D2
 L336C0:
         TST     $0149,Z
@@ -4849,10 +4849,10 @@ L336D2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_336D4 ($336D4)
-; Called from: Sub_3350E
+; MonTaskB ($336D4)
+; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
-Sub_336D4:
+MonTaskB:
         BRCLR   >MonEnableFlags2,Z,#$80,L3376C
         BRSET   $1000,Z,#$08,L3376C
         BRCLR   >EngineStateFlags,Z,#$80,L336EA
@@ -4906,10 +4906,10 @@ L33774:
         dc.b    $00,$20,$06,$53,$07,$33,$00,$F7,$00,$7F,$03,$2F,$00,$10,$06,$55
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_337A6 ($337A6)
-; Called from: Sub_3350E
+; MonTaskC ($337A6)
+; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
-Sub_337A6:
+MonTaskC:
         BRSET   $1000,Z,#$08,L338EC
         BRCLR   >MonEnableFlags2,Z,#$80,L338EC
         BRCLR   >MonFlags64D,Z,#$04,L338EC
@@ -5040,10 +5040,10 @@ L3391A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3391C ($3391C)
-; Called from: Sub_3350E
+; MonTaskD ($3391C)
+; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
-Sub_3391C:
+MonTaskD:
         BRCLR   >MonEnableFlags2,Z,#$80,L33A0A
         BRCLR   >MonFlags64E,Z,#$20,L33A0A
         BRCLR   >EngineStateFlags,Z,#$80,L33A0A
@@ -5127,10 +5127,10 @@ L33A0E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_33A10 ($33A10)
-; Called from: Sub_3350E
+; MonTaskE ($33A10)
+; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
-Sub_33A10:
+MonTaskE:
         BRSET   >MonEnableFlags2,Z,#$80,L33A26
         BCLR    $064B,Z,#$02
         BCLR    $064B,Z,#$01
@@ -5204,10 +5204,10 @@ L33AEE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_33AF0 ($33AF0)
-; Called from: Sub_3350E
+; ClosedLoopMemClear ($33AF0)
+; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
-Sub_33AF0:
+ClosedLoopMemClear:
         BRCLR   >MonEnableFlags2,Z,#$80,L33B16
         BRCLR   >EngineStateFlags,Z,#$80,L33B16
         BSET    >ClosedLoopMonFlags,Z,#$80
@@ -5228,10 +5228,10 @@ L33B2A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_33B2C ($33B2C)
-; Called from: Sub_3350E
+; ClosedLoopMonTimer ($33B2C)
+; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
-Sub_33B2C:
+ClosedLoopMonTimer:
         BRCLR   >MonEnableFlags2,Z,#$80,L33B5A
         BRCLR   >EngineStateFlags,Z,#$80,L33B5A
         LDAA    $0641,Z
@@ -5250,10 +5250,10 @@ L33B5E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_33B60 ($33B60)
-; Called from: Sub_3350E
+; MonTaskLdp ($33B60)
+; Called from: MonEnableTasks
 ;---------------------------------------------------------------------------------------------------
-Sub_33B60:
+MonTaskLdp:
         BRCLR   >MonEnableFlags2,Z,#$80,L33BA8
         BRCLR   >MonFlags64E,Z,#$01,L33BA8
         BRSET   >Options033E,#$02,L33B78
@@ -5735,25 +5735,25 @@ L350F0:
 L350F4:
         JMP     L36452
 L350F8:
-        JMP     Sub_361E2
+        JMP     IacTestToggle
 L350FC:
-        JMP     Sub_360BE
+        JMP     OutputTestRelay
 L35100:
         JMP     L35FDE
 L35104:
         JMP     L35F40
 L35108:
-        JMP     Sub_36268
+        JMP     PurgeOutputTest
 L3510C:
         JMP     L35F0E
 L35110:
-        JMP     Sub_3625C
+        JMP     OutputTestOff
 L35114:
         JMP     L36496
 L35118:
         JMP     L35F0C
 L3511C:
-        JMP     Sub_35F9E
+        JMP     EgrOutputTest
 L35120:
         JMP     L35776
 L35124:
@@ -5761,7 +5761,7 @@ L35124:
 L35128:
         JMP     L35776
 L3512C:
-        JMP     Sub_361F2
+        JMP     OutputTestDispatch
 L35130:
         JMP     L35776
 L35134:
@@ -5811,7 +5811,7 @@ L35188:
 L3518C:
         JMP     L361CE
 L35190:
-        JMP     Sub_35F7A
+        JMP     OutputTest3
 L35194:
         JMP     L35FEE
 L35198:
@@ -5843,7 +5843,7 @@ L351C8:
 L351CC:
         JMP     L36526
 L351D0:
-        JMP     Sub_36554
+        JMP     OutputTestLdp
 L351D4:
         JMP     L3656E
 L351D8:
@@ -5861,9 +5861,9 @@ L351EC:
 L351F0:
         JMP     L363D6
 L351F4:
-        JMP     Sub_362B0
+        JMP     OutputTestOc
 L351F8:
-        JMP     Sub_36292
+        JMP     OutputTestB
 L351FC:
         JMP     L35776
 L35200:
@@ -5881,9 +5881,9 @@ L35214:
 L35218:
         JMP     L35776
 L3521C:
-        JMP     Sub_35F54
+        JMP     FanTestToggle
 L35220:
-        JMP     Sub_35F64
+        JMP     FanTestToggle2
         dc.b    $0A,$59,$07,$01,$FF,$FF,$FF,$FF,$0A,$6A,$0A,$6C,$0A,$74,$00,$0B
         dc.b    $0A,$89,$0A,$51,$0A,$7E,$00,$18,$FF,$FF,$07,$B0,$00,$0C,$0C,$4C
         dc.b    $0C,$4C,$0C,$36,$01,$4C,$FF,$FF,$0D,$11,$0D,$AC,$0D,$AD,$0D,$AE
@@ -5911,7 +5911,7 @@ BusDataRequest:
         LDE     >SCCR0,Z
         BRSET   >DiagFlags,Z,#$80,L35374
         BRCLR   >DiagFlags,Z,#$40,L35374
-        JSR     Sub_3F800
+        JSR     SciSecurityReceive
         LBCS    L3543C
         LDE     >SCCR0,Z
         CPE     #$0200
@@ -6114,10 +6114,10 @@ L35570:
         JMP     L3543C
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_35574 ($35574)
+; FuelTrimAdjustStore ($35574)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_35574:
+FuelTrimAdjustStore:
         LDAA    >SystemTestMode,Z
         CMPA    #$10
         BNE     L355C0
@@ -6149,10 +6149,10 @@ L355C0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_355C2 ($355C2)
+; SystemTestRejectCount ($355C2)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_355C2:
+SystemTestRejectCount:
         LDAA    >SystemTestRejects,Z
         LDAB    >SystemTestMode,Z
         CMPB    #$01
@@ -6172,10 +6172,10 @@ L355D4:
         BCC     L3562A
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_355E8 ($355E8)
+; SystemTestStart ($355E8)
 ; Called from: SciSendByte
 ;---------------------------------------------------------------------------------------------------
-Sub_355E8:
+SystemTestStart:
         LDAA    >CoolantTemp,Z
         CMPA    #$D2
         BCS     L35610
@@ -6201,10 +6201,10 @@ L3562A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3562C ($3562C)
+; SystemTestCheck ($3562C)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3562C:
+SystemTestCheck:
         BRCLR   >FieldFlags,Z,#$04,L35698
         LDAB    >SystemTestMode,Z
         CMPB    #$11
@@ -6223,10 +6223,10 @@ Sub_3562C:
         BRA     L35698
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3565C ($3565C)
+; FieldTestStart ($3565C)
 ; Called from: SciSendByte
 ;---------------------------------------------------------------------------------------------------
-Sub_3565C:
+FieldTestStart:
         LDAB    >BatteryVolts2,Z
         CMPB    #$F3
         BHI     L35686
@@ -6476,7 +6476,7 @@ L35898:
 
 ;---------------------------------------------------------------------------------------------------
 ; SciSendByte ($3589E)
-; Called from: Sub_334B0, Sub_3569A, SciSendByte, Sub_36580, Sub_3663A, Sub_366FC, Sub_3697C, RunModeSwitch (13 calls)
+; Called from: SciDiagCommand, Sub_3569A, SciSendByte, DiagRamSession1, DiagRamSession2, DiagPciCommand, DiagCommandMain, RunModeSwitch (13 calls)
 ;---------------------------------------------------------------------------------------------------
 SciSendByte:
         BRCLR   >SCSR,Z,#$01,SciSendByte
@@ -6523,9 +6523,9 @@ L35962:
         LDAB    >RefPeriod,Z
         CMPB    #$30
         LBLS    SciSendByte
-        JSR     Sub_241E4
+        JSR     MilFaultIncrement
         JSR     ObdClearCodes
-        JSR     Sub_24582
+        JSR     MonitorFlagsClear
         LDAA    #$E0
         JMP     SciSendByte
 L35984:
@@ -6776,9 +6776,9 @@ L35BDC:
         LDAA    #$02
         JMP     $35B6E,X
 L35BF0:
-        JSR     Sub_241E4
+        JSR     MilFaultIncrement
         JSR     ObdClearCodes
-        JSR     Sub_24582
+        JSR     MonitorFlagsClear
         BRA     L35C44
 L35BFE:
         TZX
@@ -6888,7 +6888,7 @@ L35D0E:
         STAA    >SystemTestValue,Z
         CMPB    #$11
         BNE     L35D22
-        JSR     Sub_3565C
+        JSR     FieldTestStart
         LBRA    L35DE2
 L35D22:
         CMPB    #$12
@@ -6907,7 +6907,7 @@ L35D42:
         CMPB    #$06
         LBCC    L35DD8
         TDE
-        JSR     Sub_355E8
+        JSR     SystemTestStart
         TST     >SystemTestMode,Z
         LBEQ    L35DE2
         TPD
@@ -6998,7 +6998,7 @@ L35E0E:
         LDAA    #$F0
         BCC     L35E5A
         LDAA    #$F1
-        JSR     Sub_367B0
+        JSR     DiagRamAddrAllowed
         BNE     L35E5A
         STE     >EepromAddr,Z
         LDAA    >DiagParam1,Z
@@ -7022,7 +7022,7 @@ L35E66:
         BITA    #$FE
         BNE     L35E86
         LDAB    >DiagParam1,Z
-        JSR     Sub_383F0
+        JSR     EepromReadByte
         BRCLR   >SystemFlags945,Z,#$20,SciSendByte
 L35E86:
         RTS
@@ -7043,10 +7043,10 @@ L35EA8:
         JMP     SciSendByte
 
 ;---------------------------------------------------------------------------------------------------
-; LdpPurgeTest ($35EB0)
+; ActuatorTestMain ($35EB0)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-LdpPurgeTest:
+ActuatorTestMain:
         LDAA    >RefPeriod,Z
         CMPA    #$50
         BLS     L35EEE
@@ -7096,11 +7096,11 @@ L35F0E:
         BSET    >ControlFlags944,Z,#$02
         BRA     L35F0A
 L35F36:
-        JSR     Sub_367E0
+        JSR     OcOutputsReset
         BCLR    >ControlFlags943,Z,#$08
         RTS
 L35F40:
-        JSR     Sub_367E0
+        JSR     OcOutputsReset
         BSET    >ControlFlags943,Z,#$10
         BRSET   >MainLoopCounter,Z,#$80,L35F52
         BCLR    >ControlFlags943,Z,#$10
@@ -7108,10 +7108,10 @@ L35F52:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_35F54 ($35F54)
-; Called from: Sub_361F2
+; FanTestToggle ($35F54)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_35F54:
+FanTestToggle:
         BSET    >FanBusFlags,Z,#$01
         BRSET   >MainLoopCounter,Z,#$80,L35F62
         BCLR    >FanBusFlags,Z,#$01
@@ -7119,10 +7119,10 @@ L35F62:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_35F64 ($35F64)
-; Called from: Sub_361F2
+; FanTestToggle2 ($35F64)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_35F64:
+FanTestToggle2:
         BRCLR   >Options0333,#$20,L35F78
         BSET    >FanBusFlags,Z,#$04
         BRSET   >MainLoopCounter,Z,#$80,L35F78
@@ -7131,10 +7131,10 @@ L35F78:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_35F7A ($35F7A)
-; Called from: Sub_361F2
+; OutputTest3 ($35F7A)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_35F7A:
+OutputTest3:
         BRCLR   >Options0335,#$20,L35F9C
         BRCLR   >Options0335,#$10,L35F8A
         BCLR    >ControlFlags943,Z,#$10
@@ -7146,10 +7146,10 @@ L35F9C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_35F9E ($35F9E)
-; Called from: Sub_361F2
+; EgrOutputTest ($35F9E)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_35F9E:
+EgrOutputTest:
         BRSET   >Options0335,#$04,L35FBE
         BRCLR   >Options0335,#$02,L35FAE
         BCLR    >ControlFlags943,Z,#$10
@@ -7263,10 +7263,10 @@ L360BC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_360BE ($360BE)
-; Called from: Sub_361F2
+; OutputTestRelay ($360BE)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_360BE:
+OutputTestRelay:
         BRSET   >Options0334,#$10,L361AC
         LDAA    >ActuatorTest,Z
         CMPA    #$14
@@ -7380,10 +7380,10 @@ L361E0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_361E2 ($361E2)
-; Called from: Sub_361F2
+; IacTestToggle ($361E2)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_361E2:
+IacTestToggle:
         LDAA    #$10
         BRSET   >MainLoopCounter,Z,#$80,L361EC
         LDAA    #$70
@@ -7392,10 +7392,10 @@ L361EC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_361F2 ($361F2)
-; Called from: Sub_33674
+; OutputTestDispatch ($361F2)
+; Called from: MonData643Update
 ;---------------------------------------------------------------------------------------------------
-Sub_361F2:
+OutputTestDispatch:
         BSETW   $1012,Z,#$0080
         LDAA    >TCTL1,Z
         ANDA    #$AB
@@ -7415,33 +7415,33 @@ L36220:
         ANDE    #$F7FF
 L36234:
         STE     >ControlFlags943,Z
-        BSR     Sub_36268
-        BSR     Sub_361E2
-        JSR     Sub_35F7A
-        BSR     Sub_36292
-        BSR     Sub_362B0
-        LBSR    Sub_36554
-        LBSR    Sub_360BE
-        BSR     Sub_3625C
-        LBSR    Sub_35F9E
-        JSR     Sub_35F54
-        JSR     Sub_35F64
+        BSR     PurgeOutputTest
+        BSR     IacTestToggle
+        JSR     OutputTest3
+        BSR     OutputTestB
+        BSR     OutputTestOc
+        LBSR    OutputTestLdp
+        LBSR    OutputTestRelay
+        BSR     OutputTestOff
+        LBSR    EgrOutputTest
+        JSR     FanTestToggle
+        JSR     FanTestToggle2
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3625C ($3625C)
-; Called from: Sub_361F2
+; OutputTestOff ($3625C)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_3625C:
+OutputTestOff:
         BCLR    >ControlFlags943,Z,#$10
         BCLRW   $106E,Z,#$C000
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_36268 ($36268)
-; Called from: Sub_361F2
+; PurgeOutputTest ($36268)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_36268:
+PurgeOutputTest:
         BRCLR   >Options0333,#$80,L3627E
         CLRB
         BRSET   >MainLoopCounter,Z,#$80,L36278
@@ -7460,10 +7460,10 @@ L36290:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_36292 ($36292)
-; Called from: Sub_361F2
+; OutputTestB ($36292)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_36292:
+OutputTestB:
         BRCLR   >Options0333,#$40,L362AE
         LDD     $1064,Z
         ANDD    #$1FFF
@@ -7475,10 +7475,10 @@ L362AE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_362B0 ($362B0)
-; Called from: Sub_361F2
+; OutputTestOc ($362B0)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_362B0:
+OutputTestOc:
         BRCLR   >Options0335,#$80,L362D2
         BRCLR   >Options0335,#$40,L362C0
         BCLR    >ControlFlags943,Z,#$10
@@ -7510,7 +7510,7 @@ L36306:
         LDAB    #$40
         LDAA    #$20
 L36314:
-        JSR     Sub_36402
+        JSR     OutputTestOcFire
         RTS
 L3631A:
         BRSET   >Options032B,#$20,L3634A
@@ -7527,7 +7527,7 @@ L3633A:
 L36342:
         LDAB    #$20
         LDAA    #$0C
-        JSR     Sub_36402
+        JSR     OutputTestOcFire
 L3634A:
         RTS
 L3634C:
@@ -7545,7 +7545,7 @@ L3636C:
 L36374:
         LDAB    #$40
         LDAA    #$30
-        JSR     Sub_36402
+        JSR     OutputTestOcFire
 L3637C:
         RTS
 L3637E:
@@ -7559,7 +7559,7 @@ L3637E:
         STE     $101E,Z
         LDAB    #$10
         LDAA    #$03
-        JSR     Sub_36402
+        JSR     OutputTestOcFire
 L363A8:
         RTS
 L363AA:
@@ -7573,7 +7573,7 @@ L363AA:
         STE     $101E,Z
         LDAB    #$20
         LDAA    #$0C
-        JSR     Sub_36402
+        JSR     OutputTestOcFire
 L363D4:
         RTS
 L363D6:
@@ -7587,15 +7587,15 @@ L363D6:
         STE     $101E,Z
         LDAB    #$40
         LDAA    #$30
-        JSR     Sub_36402
+        JSR     OutputTestOcFire
 L36400:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_36402 ($36402)
-; Called from: Sub_362B0 (6 calls)
+; OutputTestOcFire ($36402)
+; Called from: OutputTestOc (6 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_36402:
+OutputTestOcFire:
         BCLR    >ControlFlags943,Z,#$10
         BRCLR   >MainLoopCounter,Z,#$7F,L3640E
         BRA     L3643C
@@ -7680,14 +7680,14 @@ L364C0:
 L364D8:
         RTS
 L364DA:
-        JSR     Sub_367E0
+        JSR     OcOutputsReset
         BCLR    >ControlFlags943,Z,#$10
         RTS
 L364E4:
         BSETW   $1012,Z,#$4000
         RTS
 L364EC:
-        JSR     Sub_367E0
+        JSR     OcOutputsReset
         BSET    >ControlFlags943,Z,#$08
         BRSET   >MainLoopCounter,Z,#$80,L364FE
         BCLR    >ControlFlags943,Z,#$08
@@ -7735,10 +7735,10 @@ L36552:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_36554 ($36554)
-; Called from: Sub_361F2
+; OutputTestLdp ($36554)
+; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
-Sub_36554:
+OutputTestLdp:
         BRCLR   >Options033E,#$02,L3656C
         BRCLR   >MainLoopPhaseMask,Z,#$40,L3656C
         LDE     $1062,Z
@@ -7756,10 +7756,10 @@ L3657E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_36580 ($36580)
+; DiagRamSession1 ($36580)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_36580:
+DiagRamSession1:
         LDAB    >DiagRamFlags,Z
         ANDB    #$0E
         BNE     L365F2
@@ -7777,7 +7777,7 @@ L365A2:
         LBNE    L36638
         BSET    >DiagRamFlags,Z,#$40
         BCLR    >DiagRamFlags,Z,#$80
-        JSR     Sub_366D8
+        JSR     DiagSeedSend
         BRA     L365E4
 L365B6:
         CMPA    #$2B
@@ -7835,10 +7835,10 @@ L36638:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3663A ($3663A)
+; DiagRamSession2 ($3663A)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3663A:
+DiagRamSession2:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L3664E
         LDAA    $09B6,Z
         DECA
@@ -7903,10 +7903,10 @@ L366D6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_366D8 ($366D8)
-; Called from: Sub_36580
+; DiagSeedSend ($366D8)
+; Called from: DiagRamSession1
 ;---------------------------------------------------------------------------------------------------
-Sub_366D8:
+DiagSeedSend:
         CLR     >DiagCommand,Z
         BRCLR   >DiagRamFlags,Z,#$10,L366E8
         CLRD
@@ -7918,15 +7918,15 @@ L366E8:
         LDD     #$A55A
 L366F2:
         STD     $09F0,Z
-        JSR     Sub_320B4
+        JSR     SkimSeedCalc
 L366FA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_366FC ($366FC)
+; DiagPciCommand ($366FC)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_366FC:
+DiagPciCommand:
         LDAA    >DiagCommand,Z
         CMPA    #$36
         BNE     L3674E
@@ -7946,7 +7946,7 @@ Sub_366FC:
         LDAB    >DiagParam3,Z
         CLRA
 L3673C:
-        JSR     Sub_32192
+        JSR     ObdPciRequest
         JSR     SciSendByte
         BRSET   >PciFlags5,Z,#$40,L3674E
 L3674A:
@@ -7961,10 +7961,10 @@ L3674E:
         dc.b    $01,$00,$02,$00,$04,$00,$08,$00,$10,$00,$20,$00,$40,$00,$80,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_367B0 ($367B0)
+; DiagRamAddrAllowed ($367B0)
 ; Called from: SciSendByte
 ;---------------------------------------------------------------------------------------------------
-Sub_367B0:
+DiagRamAddrAllowed:
         PSHM    D,E,X,Y,K
         TPD
         TBXK
@@ -7987,10 +7987,10 @@ L367DC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_367E0 ($367E0)
-; Called from: CalcEngineRpm, LdpPurgeTest, Sub_36402 (5 calls)
+; OcOutputsReset ($367E0)
+; Called from: CalcEngineRpm, ActuatorTestMain, OutputTestOcFire (5 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_367E0:
+OcOutputsReset:
         BRSET   >EngineStateFlags,Z,#$80,L36828
         PSHM    D
         CLRD
@@ -8038,10 +8038,10 @@ L36828:
         dc.b    $00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3697C ($3697C)
+; DiagCommandMain ($3697C)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3697C:
+DiagCommandMain:
         LDAA    >DiagCommand,Z
         CMPA    #$2D
         LBNE    L36A16
@@ -8107,7 +8107,7 @@ L36A06:
 L36A16:
         RTS
 L36A18:
-        JSR     Sub_334B0
+        JSR     SciDiagCommand
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -8468,17 +8468,17 @@ L36A18:
         dc.b    $43,$20,$43,$2A,$40,$32,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_38068 ($38068)
+; QspiOutputStatus ($38068)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_38068:
+QspiOutputStatus:
         PSHM    CCR
         ORP     #$00E0
         BRSET   >SystemFlags945,Z,#$80,L3820E
         CLRW    >SPCR2,Z
         LDD     $093A,Z
         STD     >TR0,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         LDE     >RR0,Z
         BCLR    >SystemFlags945,Z,#$40
         PULM    CCR
@@ -8519,7 +8519,7 @@ L380F4:
         TED
         BITA    $00,X
         LBEQ    L3815A
-        JSR     Sub_3826A
+        JSR     QspiCommandInit
         LDY     $00,Y
         LBEQ    L3815A
         CPY     #$473A
@@ -8567,7 +8567,7 @@ L3817C:
         TED
         BITB    $00,X
         LBEQ    L38214
-        JSR     Sub_3826A
+        JSR     QspiCommandInit
         LDY     $00,Y
         LBEQ    L38214
         CPY     #$44F6
@@ -8598,7 +8598,7 @@ L381FE:
         JSR     ReportFault
         BRA     L38214
 L38204:
-        JSR     Sub_3826A
+        JSR     QspiCommandInit
         BSET    >SystemFlags945,Z,#$40
         BRA     L38214
 L3820E:
@@ -8608,10 +8608,10 @@ L38214:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_38216 ($38216)
+; SwitchBitsCollect ($38216)
 ; Called from: Isr_GPT_IC1, Isr_GPT_PAI, EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_38216:
+SwitchBitsCollect:
         PSHM    E,X,CCR
         ORP     #$00E0
         BRSET   >Options032D,#$08,L38232
@@ -8637,10 +8637,10 @@ L38244:
         dc.b    $4D,$4B,$4B,$4B,$BE,$AE,$AE,$AE,$AE,$AE,$AE,$AE,$AE,$AE,$AE,$AE
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3826A ($3826A)
-; Called from: Reset, Sub_38068, Sub_382AE, Sub_38356, Sub_383F0, Sub_3867E, Sub_386F8, Sub_3879C and 1 more routines (11 calls)
+; QspiCommandInit ($3826A)
+; Called from: Reset, QspiOutputStatus, QspiRecover, EepromPowerDownWrite, EepromReadByte, EepromReadStartup, EepromSkimRead, EepromStatusRead and 1 more routines (11 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3826A:
+QspiCommandInit:
         PSHM    D,E,X,Y,K
         LDAB    #$03
         TBXK
@@ -8657,10 +8657,10 @@ L3827E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3828C ($3828C)
-; Called from: Isr_GPT_IC1, Isr_GPT_PAI, Reset, CheckPowerDown, Sub_28D78, Sub_291F0, Sub_38068, Sub_382FE and 8 more routines (21 calls)
+; QspiWaitIdle ($3828C)
+; Called from: Isr_GPT_IC1, Isr_GPT_PAI, Reset, CheckPowerDown, O2HeaterMonitor, O2HeaterTest, QspiOutputStatus, QspiDevice1Xfer and 8 more routines (21 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3828C:
+QspiWaitIdle:
         BCLR    >SPSR,Z,#$80
         BSET    >SPCR1,Z,#$80
         CLRA
@@ -8677,10 +8677,10 @@ L382AA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_382AE ($382AE)
+; QspiRecover ($382AE)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_382AE:
+QspiRecover:
         PSHM    CCR
         ORP     #$00E0
         BRCLR   >SystemFlags945,Z,#$40,L382E0
@@ -8694,7 +8694,7 @@ Sub_382AE:
         CMPA    #$06
         BCS     L382E4
         BCLR    >SystemFlags945,Z,#$C2
-        JSR     Sub_3826A
+        JSR     QspiCommandInit
 L382E0:
         CLR     $0A14,Z
 L382E4:
@@ -8702,27 +8702,27 @@ L382E4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_382E8 ($382E8)
+; QspiDeviceInit ($382E8)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_382E8:
+QspiDeviceInit:
         PSHM    CCR
         ORP     #$00E0
-        BSR     Sub_382FE
+        BSR     QspiDevice1Xfer
         BITB    #$01
         BNE     L382FA
         BITB    #$0C
         BEQ     L382FA
-        BSR     Sub_3832C
+        BSR     QspiDevice2Xfer
 L382FA:
         PULM    CCR
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_382FE ($382FE)
-; Called from: Sub_382E8, Sub_3867E, Sub_386F8, Sub_38788, Sub_387E4
+; QspiDevice1Xfer ($382FE)
+; Called from: QspiDeviceInit, EepromReadStartup, EepromSkimRead, EepromWriteStart, EepromWriteService
 ;---------------------------------------------------------------------------------------------------
-Sub_382FE:
+QspiDevice1Xfer:
         PSHM    CCR
         ORP     #$00E0
         BRSET   >SystemFlags945,Z,#$80,L38328
@@ -8732,17 +8732,17 @@ Sub_382FE:
         STD     >TR1,Z
         LDD     #$0101
         STD     >SPCR2,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         LDD     >RR1,Z
 L38328:
         PULM    CCR
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3832C ($3832C)
-; Called from: Sub_382E8
+; QspiDevice2Xfer ($3832C)
+; Called from: QspiDeviceInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3832C:
+QspiDevice2Xfer:
         PSHM    CCR
         ORP     #$00E0
         BRSET   >SystemFlags945,Z,#$80,L38352
@@ -8752,16 +8752,16 @@ Sub_3832C:
         STD     >TR2,Z
         LDD     #$0202
         STD     >SPCR2,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
 L38352:
         PULM    CCR
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_38356 ($38356)
+; EepromPowerDownWrite ($38356)
 ; Called from: CheckPowerDown
 ;---------------------------------------------------------------------------------------------------
-Sub_38356:
+EepromPowerDownWrite:
         PSHM    CCR
         ORP     #$00E0
         BCLR    >SystemFlags945,Z,#$20
@@ -8773,7 +8773,7 @@ Sub_38356:
         STD     >TR1,Z
         LDD     #$0101
         STD     >SPCR2,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         BEQ     L383DC
         LDD     >EepromAddr,Z
         CPD     #$0200
@@ -8791,18 +8791,18 @@ Sub_38356:
         STD     >CR1,Z
         LDD     #$0201
         STD     >SPCR2,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         BEQ     L383DC
         JSR     KickWatchdogsLong
         LDE     #$2710
         JSR     DelayLoop
         LDD     >EepromAddr,Z
-        JSR     Sub_383F0
+        JSR     EepromReadByte
         BRSET   >SystemFlags945,Z,#$20,L383EC
         CMPA    >EepromData,Z
         BEQ     L383E6
 L383DC:
-        JSR     Sub_3826A
+        JSR     QspiCommandInit
 L383E0:
         BSET    >SystemFlags945,Z,#$20
         BRA     L383EC
@@ -8813,10 +8813,10 @@ L383EC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_383F0 ($383F0)
-; Called from: Reset, SciSendByte, Sub_38356, Sub_3865A (5 calls)
+; EepromReadByte ($383F0)
+; Called from: Reset, SciSendByte, EepromPowerDownWrite, EepromReadInit (5 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_383F0:
+EepromReadByte:
         PSHM    CCR
         ORP     #$00E0
         BCLR    >SystemFlags945,Z,#$20
@@ -8834,12 +8834,12 @@ Sub_383F0:
         STD     >CR1,Z
         LDD     #$0201
         STD     >SPCR2,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         BEQ     L38432
         LDD     >RR2,Z
         BRA     L3843A
 L38432:
-        JSR     Sub_3826A
+        JSR     QspiCommandInit
 L38436:
         BSET    >SystemFlags945,Z,#$20
 L3843A:
@@ -8873,10 +8873,10 @@ L3843A:
         dc.b    $00,$EF,$0F,$3E
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_385D2 ($385D2)
+; EepromWriteQueue ($385D2)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_385D2:
+EepromWriteQueue:
         PSHM    CCR
         ORP     #$00E0
         BRSET   >SystemFlags945,Z,#$80,L38656
@@ -8918,7 +8918,7 @@ L3863A:
         ASLD
         ADX
         LDE     $0000,X
-        JSR     Sub_38788
+        JSR     EepromWriteStart
         BCS     L38656
         LDE     $0002,X
         STAA    E,Z
@@ -8927,10 +8927,10 @@ L38656:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3865A ($3865A)
+; EepromReadInit ($3865A)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_3865A:
+EepromReadInit:
         LDAB    #$FF
         STAB    $094B,Z
         LDAB    #$03
@@ -8938,7 +8938,7 @@ Sub_3865A:
         LDX     #$843E
 L38668:
         LDD     $00,X
-        JSR     Sub_383F0
+        JSR     EepromReadByte
         LDE     $0002,X
         STAA    E,Z
         AIX     #$04
@@ -8947,15 +8947,15 @@ L38668:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3867E ($3867E)
+; EepromReadStartup ($3867E)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_3867E:
+EepromReadStartup:
         PSHM    CCR
         ORP     #$00E0
         BRSET   >SystemFlags945,Z,#$80,L386F4
         BRSET   >EepromFlags,Z,#$80,L386F4
-        JSR     Sub_382FE
+        JSR     QspiDevice1Xfer
         BITB    #$03
         BNE     L386F0
         LDAA    #$CB
@@ -8968,7 +8968,7 @@ Sub_3867E:
         LDAA    #$03
         LDAB    #$00
         STD     >TR1,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         TSTA
         BEQ     L386F0
         LDD     >RR2,Z
@@ -8978,7 +8978,7 @@ Sub_3867E:
         LDAA    #$03
         LDAB    #$04
         STD     >TR1,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         TSTA
         BEQ     L386F0
         LDD     >RR2,Z
@@ -8987,21 +8987,21 @@ Sub_3867E:
         STE     $0AD6,Z
         BRA     L386F4
 L386F0:
-        JSR     Sub_3826A
+        JSR     QspiCommandInit
 L386F4:
         PULM    CCR
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_386F8 ($386F8)
+; EepromSkimRead ($386F8)
 ; Called from: SkimTimerTick
 ;---------------------------------------------------------------------------------------------------
-Sub_386F8:
+EepromSkimRead:
         PSHM    CCR
         ORP     #$00E0
         BRSET   >SystemFlags945,Z,#$80,L38784
         BRSET   >EepromFlags,Z,#$80,L38784
-        JSR     Sub_382FE
+        JSR     QspiDevice1Xfer
         BITB    #$03
         BNE     L38780
         LDAA    #$CB
@@ -9014,7 +9014,7 @@ Sub_386F8:
         LDD     #$01D8
         ORAA    #$0B
         STD     >TR1,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         TSTA
         BEQ     L38780
         LDD     >RR2,Z
@@ -9030,7 +9030,7 @@ Sub_386F8:
         LDD     #$01DC
         ORAA    #$0B
         STD     >TR1,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         TSTA
         BEQ     L38780
         LDD     >RR2,Z
@@ -9038,27 +9038,27 @@ Sub_386F8:
         BSET    >SkimTimer,Z,#$80
         BRA     L38784
 L38780:
-        JSR     Sub_3826A
+        JSR     QspiCommandInit
 L38784:
         PULM    CCR
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_38788 ($38788)
-; Called from: Sub_385D2
+; EepromWriteStart ($38788)
+; Called from: EepromWriteQueue
 ;---------------------------------------------------------------------------------------------------
-Sub_38788:
+EepromWriteStart:
         BRSET   >SystemFlags945,Z,#$80,L387DE
         BRSET   >EepromFlags,Z,#$80,L387DE
-        JSR     Sub_382FE
+        JSR     QspiDevice1Xfer
         BITB    #$03
         BNE     L387DA
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3879C ($3879C)
-; Called from: Sub_387E4
+; EepromStatusRead ($3879C)
+; Called from: EepromWriteService
 ;---------------------------------------------------------------------------------------------------
-Sub_3879C:
+EepromStatusRead:
         TED
         CPD     #$0200
         BCC     L387DA
@@ -9074,7 +9074,7 @@ Sub_3879C:
         STD     >CR1,Z
         LDD     #$0201
         STD     >SPCR2,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         PULM    CCR
         TSTA
         BEQ     L387DA
@@ -9082,17 +9082,17 @@ Sub_3879C:
         ANDP    #$FEFF
         BRA     L387E2
 L387DA:
-        JSR     Sub_3826A
+        JSR     QspiCommandInit
 L387DE:
         ORP     #$0100
 L387E2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_387E4 ($387E4)
+; EepromWriteService ($387E4)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_387E4:
+EepromWriteService:
         BCLR    >SystemFlags945,Z,#$20
         BRCLR   >EepromFlags,Z,#$80,L38950
         BRSET   >SystemFlags945,Z,#$80,L3894C
@@ -9111,7 +9111,7 @@ L38810:
         STD     >TR1,Z
         LDD     #$0101
         STD     >SPCR2,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         PULM    CCR
         TSTA
         LBEQ    L38902
@@ -9148,7 +9148,7 @@ L3888E:
         ORP     #$00E0
         STD     >CR1,Z
         STE     >SPCR2,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         PULM    CCR
         TSTA
         BEQ     L38902
@@ -9163,11 +9163,11 @@ L3888E:
         STAA    >MonStartDelay,Z
         LBRA    L38950
 L388CA:
-        JSR     Sub_382FE
+        JSR     QspiDevice1Xfer
         BITB    #$0F
         BNE     L388F6
         LDE     >EepromAddr,Z
-        JSR     Sub_3879C
+        JSR     EepromStatusRead
         CMPA    >EepromData,Z
         BNE     L38902
         BRSET   >EepromFlags,Z,#$10,L38918
@@ -9180,7 +9180,7 @@ L388F6:
         BSET    >EepromFlags,Z,#$01
         BRA     L38950
 L38902:
-        JSR     Sub_3826A
+        JSR     QspiCommandInit
         BRSET   >FaultSet07,Z,#$02,L38914
         LDY     #$4172
         JSR     ReportFault
@@ -9230,10 +9230,10 @@ L38950:
         dc.b    $27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_38A44 ($38A44)
+; KnockChipConfig ($38A44)
 ; Called from: KnockWindowInit, KnockWindowUpdate
 ;---------------------------------------------------------------------------------------------------
-Sub_38A44:
+KnockChipConfig:
         PSHM    CCR
         ORP     #$00E0
         BRSET   >SystemFlags945,Z,#$80,L38AF4
@@ -9263,7 +9263,7 @@ Sub_38A44:
         STAA    >TR9_L,Z
         LDD     #$0905
         STD     >SPCR2,Z
-        JSR     Sub_3828C
+        JSR     QspiWaitIdle
         TZY
         TZX
         LDX     #$FD0A
@@ -9513,10 +9513,10 @@ L39172:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_39174 ($39174)
+; OutputTestEeprom ($39174)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_39174:
+OutputTestEeprom:
         BRCLR   >OutputTestFlags,Z,#$40,L391D8
         BRSET   >ControlFlags943,Z,#$01,L39198
         LDD     $0C25,Z
@@ -9735,10 +9735,10 @@ L39410:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_39412 ($39412)
+; AcCutLogic ($39412)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_39412:
+AcCutLogic:
         BRCLR   >Options032D,#$20,L39430
         BRCLR   >FaultSet03,Z,#$01,L39430
         BRCLR   >AcFlags,Z,#$80,L39430
@@ -9940,23 +9940,23 @@ L39684:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Irq2Dispatch ($39686)
+; EgrMain ($39686)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Irq2Dispatch:
+EgrMain:
         BRSET   >Options0335,#$04,L39692
-        JSR     Sub_39698
+        JSR     EgrEnable
         BRA     L39696
 L39692:
-        JSR     Sub_39860
+        JSR     PciIrq2Start
 L39696:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_39698 ($39698)
-; Called from: Irq2Dispatch
+; EgrEnable ($39698)
+; Called from: EgrMain
 ;---------------------------------------------------------------------------------------------------
-Sub_39698:
+EgrEnable:
         BRSET   >EngineStateFlags,Z,#$80,L396D6
         LDAA    >ActuatorTest,Z
         CMPA    #$10
@@ -10092,10 +10092,10 @@ L3985E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_39860 ($39860)
-; Called from: Irq2Dispatch
+; PciIrq2Start ($39860)
+; Called from: EgrMain
 ;---------------------------------------------------------------------------------------------------
-Sub_39860:
+PciIrq2Start:
         BRSET   >EngineStateFlags,Z,#$80,L3989E
         LDAA    >ActuatorTest,Z
         CMPA    #$10
@@ -10533,7 +10533,7 @@ L39D1A:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_39D20 ($39D20)
-; Called from: Sub_39860
+; Called from: PciIrq2Start
 ;---------------------------------------------------------------------------------------------------
 Sub_39D20:
         BRSET   $0B4C,Z,#$02,L39D62
@@ -10605,17 +10605,17 @@ L39DCC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_39DCE ($39DCE)
+; FanMain ($39DCE)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_39DCE:
+FanMain:
         JSR     FanWarmupState
         BRCLR   >Options0334,#$10,L39DDE
-        JSR     Sub_3A55A
+        JSR     FanPwmMain
         BRA     L39DEE
 L39DDE:
         BRCLR   >Options0334,#$80,L39DEA
-        JSR     Sub_3A0EC
+        JSR     FanRelayControl
         BRA     L39DEE
 L39DEA:
         JSR     FanControl
@@ -10626,7 +10626,7 @@ L39DEE:
 
 ;---------------------------------------------------------------------------------------------------
 ; FanControl ($39E08)
-; Called from: Sub_39DCE
+; Called from: FanMain
 ;---------------------------------------------------------------------------------------------------
 FanControl:
         BRCLR   >EngineStateFlags,Z,#$80,L3A038
@@ -10853,10 +10853,10 @@ L3A06A:
         dc.b    $04,$F8,$04,$F9,$04,$EC,$04,$ED,$04,$EE,$04,$EF,$04,$F0,$04,$F1
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3A0EC ($3A0EC)
-; Called from: Sub_39DCE
+; FanRelayControl ($3A0EC)
+; Called from: FanMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3A0EC:
+FanRelayControl:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L3A3A4
         LDAB    >EngineStateFlags,Z
         BITB    #$80
@@ -11008,7 +11008,7 @@ L3A28C:
         LDAA    >FanState,Z
         LDAB    E,X
         BRCLR   >Options0331,#$80,L3A2A2
-        JSR     Sub_3A3CA
+        JSR     FanAcStage
 L3A2A2:
         TSTB
         BNE     L3A2AE
@@ -11106,10 +11106,10 @@ L3A3A4:
         dc.b    $02,$02,$02,$02
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3A3CA ($3A3CA)
-; Called from: Sub_3A0EC
+; FanAcStage ($3A3CA)
+; Called from: FanRelayControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3A3CA:
+FanAcStage:
         STD     <Scratch0,Z
         LDAB    #$03
         TBXK
@@ -11186,7 +11186,7 @@ L3A478:
 
 ;---------------------------------------------------------------------------------------------------
 ; FanIdleState ($3A47E)
-; Called from: FanControl, Sub_3A0EC, Sub_3A55A
+; Called from: FanControl, FanRelayControl, FanPwmMain
 ;---------------------------------------------------------------------------------------------------
 FanIdleState:
         LDAA    >CoolantTemp,Z
@@ -11232,7 +11232,7 @@ L3A4F6:
 
 ;---------------------------------------------------------------------------------------------------
 ; FanWarmupState ($3A4F8)
-; Called from: Sub_39DCE
+; Called from: FanMain
 ;---------------------------------------------------------------------------------------------------
 FanWarmupState:
         LDAA    >FanWarmupTimer,Z
@@ -11272,10 +11272,10 @@ L3A558:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3A55A ($3A55A)
-; Called from: Sub_39DCE
+; FanPwmMain ($3A55A)
+; Called from: FanMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3A55A:
+FanPwmMain:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L3A63E
         LDAA    >ActuatorTest,Z
         CMPA    #$08
@@ -11286,20 +11286,20 @@ Sub_3A55A:
         TST     >Count3s,Z
         BNE     L3A582
 L3A57C:
-        JSR     Sub_3A640
+        JSR     FanPwmPeriodSelect
         BRA     L3A5A4
 L3A582:
-        JSR     Sub_3A688
+        JSR     FanPwmCoolantPid
         JSR     FanPwmControl
-        JSR     Sub_3A9B4
-        JSR     Sub_3AB24
-        JSR     Sub_3AB5E
+        JSR     FanPwmBusPid
+        JSR     FanWarmupDutyCalc
+        JSR     FanPwmRampDown
         JSR     FanIdleState
         BRCLR   >FanFlags,Z,#$08,L3A5A4
         CLR     $0B1C,Z
 L3A5A4:
         BRCLR   >Options033D,#$04,L3A5AE
-        JSR     Sub_3AB94
+        JSR     FanPwmFixed
 L3A5AE:
         CLRA
         BRCLR   >BusTempFlags,Z,#$02,L3A5C8
@@ -11351,10 +11351,10 @@ L3A63E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3A640 ($3A640)
-; Called from: Sub_3A55A
+; FanPwmPeriodSelect ($3A640)
+; Called from: FanPwmMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3A640:
+FanPwmPeriodSelect:
         LDD     #$0001
         STD     >FanPwmPeriodCount,Z
         STD     $0B18,Z
@@ -11376,10 +11376,10 @@ Sub_3A640:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3A688 ($3A688)
-; Called from: Sub_3A55A
+; FanPwmCoolantPid ($3A688)
+; Called from: FanPwmMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3A688:
+FanPwmCoolantPid:
         LDE     #$6400
         BRSET   >SensorFaultFlags,Z,#$80,L3A7F4
         LDAA    >CoolantTemp,Z
@@ -11536,7 +11536,7 @@ L3A7F8:
 
 ;---------------------------------------------------------------------------------------------------
 ; FanPwmControl ($3A7FA)
-; Called from: Sub_3A55A
+; Called from: FanPwmMain
 ;---------------------------------------------------------------------------------------------------
 FanPwmControl:
         CLRE
@@ -11714,10 +11714,10 @@ L3A9B2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3A9B4 ($3A9B4)
-; Called from: Sub_3A55A
+; FanPwmBusPid ($3A9B4)
+; Called from: FanPwmMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3A9B4:
+FanPwmBusPid:
         CLRE
         BRCLR   >EquipmentFlags,Z,#$20,L3AB1E
         BRSET   >BusModuleFlags,Z,#$02,L3AB1E
@@ -11869,10 +11869,10 @@ L3AB22:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3AB24 ($3AB24)
-; Called from: Sub_3A55A
+; FanWarmupDutyCalc ($3AB24)
+; Called from: FanPwmMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3AB24:
+FanWarmupDutyCalc:
         LDE     $0B23,Z
         CPE     $0B10,Z
         BHI     L3AB32
@@ -11896,10 +11896,10 @@ L3AB5C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3AB5E ($3AB5E)
-; Called from: Sub_3A55A
+; FanPwmRampDown ($3AB5E)
+; Called from: FanPwmMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3AB5E:
+FanPwmRampDown:
         TED
         LDAB    >FanPwmDuty,Z
         CMPA    >FanPwmRampDownDuty
@@ -11928,10 +11928,10 @@ L3AB8E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3AB94 ($3AB94)
-; Called from: Sub_3A55A
+; FanPwmFixed ($3AB94)
+; Called from: FanPwmMain
 ;---------------------------------------------------------------------------------------------------
-Sub_3AB94:
+FanPwmFixed:
         LDAB    >FanPwmDuty,Z
         CMPB    >FanPwmFixedDuty
         BEQ     L3ABAA
@@ -11975,10 +11975,10 @@ L3ABF0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3ABF2 ($3ABF2)
+; RpmIdleFilter ($3ABF2)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3ABF2:
+RpmIdleFilter:
         BRSET   >IacAcFlags,Z,#$02,L3ABFE
         TST     >IacAcBusTimer,Z
         BEQ     L3AC0A
@@ -12006,10 +12006,10 @@ L3AC38:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3AC3A ($3AC3A)
+; StarterCut ($3AC3A)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3AC3A:
+StarterCut:
         BRCLR   >Options0333,#$04,L3ACB8
         BRSET   >SecurityFlags,Z,#$20,L3ACA0
         BRSET   >Options032E,#$40,L3AC52
@@ -12057,10 +12057,10 @@ L3ACB8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3ACBA ($3ACBA)
+; PwmC18Main ($3ACBA)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3ACBA:
+PwmC18Main:
         BRCLR   >Options0333,#$40,L3ADA8
         PSHM    D,E,X
         LDAA    >ActuatorTest,Z
@@ -12089,7 +12089,7 @@ L3AD06:
         LBNE    L3AD90
         BITB    #$08
         BNE     L3AD18
-        JSR     Sub_3AE28
+        JSR     PwmC18StepSelect
 L3AD18:
         BITB    #$04
         LBNE    L3ADA6
@@ -12102,7 +12102,7 @@ L3AD18:
         BITB    #$02
         BNE     L3AD40
         BSET    >PwmC18Flags,Z,#$01
-        JSR     Sub_3ADE6
+        JSR     PwmC18Off
         BRA     L3ADA6
 L3AD40:
         BITB    #$01
@@ -12131,11 +12131,11 @@ L3AD5A:
         BCC     L3AD86
 L3AD7C:
         BSET    >PwmC18Flags,Z,#$40
-        JSR     Sub_3AE0A
+        JSR     PwmC18DutySet
         BRA     L3ADA6
 L3AD86:
         STAA    >PwmC18Duty,Z
-        JSR     Sub_3ADAA
+        JSR     PwmC18PeriodCalc
         BRA     L3ADA6
 L3AD90:
         LDAA    #$8C
@@ -12144,17 +12144,17 @@ L3AD92:
         STAA    >PwmC18Flags,Z
         CLRW    >PwmC18StepTimer,Z
         CLR     >PwmC18Step,Z
-        JSR     Sub_3AE0A
+        JSR     PwmC18DutySet
 L3ADA6:
         PULM    X,E,D
 L3ADA8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3ADAA ($3ADAA)
-; Called from: Sub_3ACBA
+; PwmC18PeriodCalc ($3ADAA)
+; Called from: PwmC18Main
 ;---------------------------------------------------------------------------------------------------
-Sub_3ADAA:
+PwmC18PeriodCalc:
         LDD     #$E61B
         STD     $1064,Z
         LDAB    >PwmC18Duty,Z
@@ -12175,10 +12175,10 @@ Sub_3ADAA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3ADE6 ($3ADE6)
-; Called from: Sub_3ACBA
+; PwmC18Off ($3ADE6)
+; Called from: PwmC18Main
 ;---------------------------------------------------------------------------------------------------
-Sub_3ADE6:
+PwmC18Off:
         LDD     #$261B
         STD     $1064,Z
         LDAA    #$64
@@ -12191,10 +12191,10 @@ Sub_3ADE6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3AE0A ($3AE0A)
-; Called from: Sub_3ACBA (2 calls)
+; PwmC18DutySet ($3AE0A)
+; Called from: PwmC18Main (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3AE0A:
+PwmC18DutySet:
         LDD     #$061B
         STD     $1064,Z
         CLR     >PwmC18Duty,Z
@@ -12205,10 +12205,10 @@ Sub_3AE0A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3AE28 ($3AE28)
-; Called from: Sub_3ACBA
+; PwmC18StepSelect ($3AE28)
+; Called from: PwmC18Main
 ;---------------------------------------------------------------------------------------------------
-Sub_3AE28:
+PwmC18StepSelect:
         LDD     #$0000
         CPD     >PwmC18Divisor
         BEQ     L3AE44
@@ -12390,8 +12390,8 @@ L3AE4E:
 SpeedCtlControl:
         AIS     #$FA
         TSY
-        JSR     Sub_3C5BE
-        JSR     Sub_3C690
+        JSR     SpeedCtlSwitchCheck
+        JSR     SpeedCtlBusCheck
         LDAB    #$00
         BRCLR   >SwitchInputs2,Z,#$10,L3B8AC
         LDAB    #$01
@@ -12407,7 +12407,7 @@ SpeedCtlControl:
         LDAB    #$0D
         BRSET   >SwitchInputs2,Z,#$01,L3B8AC
         BRSET   >Options032E,#$40,L3B854
-        JSR     Sub_3C566
+        JSR     SpeedCtlBusState
         BCS     L3B8AC
         LDAB    #$04
         BRCLR   >SwitchInputs2,Z,#$20,L3B8AC
@@ -12439,10 +12439,10 @@ L3B894:
         LDAB    #$0F
         BRSET   >FaultSet0B,Z,#$04,L3B8AC
         LDAB    #$08
-        JSR     Sub_3C5B0
+        JSR     Nibble402Add
         BRA     L3B92A
 L3B8AC:
-        JSR     Sub_3C5B0
+        JSR     Nibble402Add
         CLRA
         BRCLR   >SwitchInputs2,Z,#$10,L3B8D8
         BRCLR   >SpeedCtlState,Z,#$18,L3B8DC
@@ -12653,7 +12653,7 @@ L3BB1A:
 L3BB30:
         STAB    >SpeedCtlSetSpeed,Z
 L3BB34:
-        JSR     Sub_3C222
+        JSR     SpeedCtlEngageCalc
         LDAB    $02,Y
         CBA
         BHI     L3BB40
@@ -12691,7 +12691,7 @@ L3BB8A:
         BSET    >SpeedCtlFlags,Z,#$04
         LDAA    >SpeedCtlResumeHoldInit
         STAA    >SpeedCtlResumeTimer,Z
-        JSR     Sub_3C222
+        JSR     SpeedCtlEngageCalc
         STAA    $02,Y
         LDAA    >SpeedCtlSetSpeed,Z
         SUBA    >VehicleSpeed,Z
@@ -12876,7 +12876,7 @@ L3BD8E:
         LDAA    >CoolantTemp,Z
         CMPA    >SpeedCtlOverrideCoolantMin
         BCS     L3BDF0
-        JSR     Sub_3C65C
+        JSR     SpeedCtlServoTime
         LDAA    >ThrottleAboveClosed,Z
         SUBA    $0421,Z
         BCC     L3BDC0
@@ -12907,7 +12907,7 @@ L3BDF8:
         LDAA    >ThrottleAboveClosed,Z
         STAA    $0421,Z
 L3BE08:
-        LBSR    Sub_3C6C8
+        LBSR    SpeedCtlLampState
         LBSR    SpeedCtlShift
         LDAA    >SpeedCtlState2,Z
         ADDA    #$10
@@ -12922,7 +12922,7 @@ L3BE1C:
         LDD     >VehicleSpeedRaw,Z
         STD     $00,Y
         ANDP    #$FEFF
-        JSR     Sub_2D5EA
+        JSR     VssPulseCalc
         STD     >VehicleSpeedRaw,Z
         BRCLR   >SpeedCtlState2,Z,#$02,L3BF1A
         LDAA    >SpeedCtlTimer,Z
@@ -13025,7 +13025,7 @@ L3BF26:
 L3BF32:
         ADDD    $00,Y
         ASRD
-        JSR     Sub_3C3AC
+        JSR     ClampSigned8
         STAB    $040E,Z
         BRSET   >SpeedCtlState,Z,#$80,L3C170
         BRCLR   >SpeedCtlFlags,Z,#$10,L3BF62
@@ -13218,7 +13218,7 @@ L3C0F6:
         LDX     #$2AF3
         STX     $02,Y
         LDX     #$2AFB
-        JSR     Sub_3C370
+        JSR     SpeedCtlSpeedError
         ORAA    #$80
         LDAB    $04,Y
         CBA
@@ -13246,7 +13246,7 @@ L3C156:
         LDX     #$2AE3
         STX     $02,Y
         LDX     #$2AEB
-        JSR     Sub_3C370
+        JSR     SpeedCtlSpeedError
         LDAB    $04,Y
         CBA
         BCC     L3C16C
@@ -13320,10 +13320,10 @@ L3C21E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C222 ($3C222)
+; SpeedCtlEngageCalc ($3C222)
 ; Called from: SpeedCtlControl (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3C222:
+SpeedCtlEngageCalc:
         BRSET   >SpeedCtlFlags3,Z,#$80,L3C22C
         BSET    >SpeedCtlFlags3,Z,#$40
 L3C22C:
@@ -13369,10 +13369,10 @@ L3C286:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C288 ($3C288)
+; SpeedCtlCancelMonitor ($3C288)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3C288:
+SpeedCtlCancelMonitor:
         LDAA    >MonStartDelay,Z
         LBNE    L3C368
         LDAA    >ActuatorTest,Z
@@ -13451,10 +13451,10 @@ L3C36E:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C370 ($3C370)
+; SpeedCtlSpeedError ($3C370)
 ; Called from: SpeedCtlControl (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3C370:
+SpeedCtlSpeedError:
         CLRB
         LDAA    >SpeedCtlSetSpeed,Z
         LSRD
@@ -13464,14 +13464,14 @@ Sub_3C370:
         ASRD
         ASRD
         ASRD
-        JSR     Sub_3C3AC
+        JSR     ClampSigned8
         TBA
         ADDA    #$80
         JSR     Lookup2D
         LDX     $02,Y
         STAA    $02,Y
         LDD     $00,Y
-        JSR     Sub_3C3AC
+        JSR     ClampSigned8
         TBA
         ADDA    #$80
         JSR     Lookup2D
@@ -13481,10 +13481,10 @@ Sub_3C370:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C3AC ($3C3AC)
-; Called from: SpeedCtlControl, Sub_3C370 (3 calls)
+; ClampSigned8 ($3C3AC)
+; Called from: SpeedCtlControl, SpeedCtlSpeedError (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3C3AC:
+ClampSigned8:
         ASLD
         BCS     L3C3B8
         TSTA
@@ -13652,10 +13652,10 @@ L3C564:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C566 ($3C566)
+; SpeedCtlBusState ($3C566)
 ; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3C566:
+SpeedCtlBusState:
         LDAA    >BusMsg52Value,Z
         ANDA    #$70
         BEQ     L3C58A
@@ -13694,10 +13694,10 @@ SpeedCtlThrottleRef:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C5B0 ($3C5B0)
+; Nibble402Add ($3C5B0)
 ; Called from: SpeedCtlControl (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3C5B0:
+Nibble402Add:
         LDAA    #$F0
         ANDA    $0402,Z
         ABA
@@ -13705,10 +13705,10 @@ Sub_3C5B0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C5BE ($3C5BE)
+; SpeedCtlSwitchCheck ($3C5BE)
 ; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3C5BE:
+SpeedCtlSwitchCheck:
         BRCLR   >EquipmentFlags,Z,#$40,L3C65A
         BRCLR   >SwitchInputs2,Z,#$10,L3C65A
         BRSET   $1000,Z,#$01,L3C65A
@@ -13764,10 +13764,10 @@ L3C65A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C65C ($3C65C)
+; SpeedCtlServoTime ($3C65C)
 ; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3C65C:
+SpeedCtlServoTime:
         CLRA
         LDAB    >SpeedCtlVentTime,Z
         LDE     >SpeedCtlVentTimeFactor
@@ -13794,10 +13794,10 @@ L3C68A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C690 ($3C690)
+; SpeedCtlBusCheck ($3C690)
 ; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3C690:
+SpeedCtlBusCheck:
         BRCLR   >EquipmentFlags,Z,#$20,L3C6B4
         BRSET   >BusModuleFlags,Z,#$02,L3C6B4
         BRCLR   >BusReqFlags,Z,#$08,L3C6BE
@@ -13819,10 +13819,10 @@ L3C6C6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3C6C8 ($3C6C8)
+; SpeedCtlLampState ($3C6C8)
 ; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
-Sub_3C6C8:
+SpeedCtlLampState:
         BRCLR   >EquipmentFlags,Z,#$40,L3C74E
         BRSET   >SkimFlags2,Z,#$02,L3C74E
         PSHM    D
@@ -14148,12 +14148,12 @@ EmptyHook:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 Sub_3D800:
-        JSR     Sub_3DB8C
+        JSR     PurgeEnable
         JSR     PurgeCellCheck
-        JSR     Sub_3E18E
+        JSR     PurgeCellUpdateGate
         JSR     PurgeSolenoidCheck
         JSR     PurgeFlowMeasure
-        JSR     Sub_3E30A
+        JSR     PurgeRampCalc
         JSR     Sub_3E2B4
         TSTA
         BNE     L3D848
@@ -14167,9 +14167,9 @@ L3D832:
         JSR     Sub_3DF80
         BRA     L3D848
 L3D844:
-        JSR     Sub_3DB40
+        JSR     PurgeDutySelect
 L3D848:
-        JSR     Sub_3E22A
+        JSR     PurgePwmOutput
 L3D84C:
         RTS
 
@@ -14187,7 +14187,7 @@ L3D860:
         TSY
         LDAB    >ShortTermTrim1,Z
         LDAA    >O2AdaptValue1,Z
-        JSR     Sub_2A7C0
+        JSR     FuelSysScaleMul
         TSTA
         BEQ     L3D878
         CLRB
@@ -14195,7 +14195,7 @@ L3D878:
         STAB    $00,Y
         LDAB    >ShortTermTrim2,Z
         LDAA    >O2AdaptValue2,Z
-        JSR     Sub_2A7C0
+        JSR     FuelSysScaleMul
         TSTA
         BEQ     L3D88C
         CLRB
@@ -14453,10 +14453,10 @@ L3DB38:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DB40 ($3DB40)
+; PurgeDutySelect ($3DB40)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3DB40:
+PurgeDutySelect:
         LDAA    >PurgeCommand,Z
         BRCLR   >ThrottleState,Z,#$80,L3DB54
         BSET    >SciLogFlags,Z,#$40
@@ -14484,10 +14484,10 @@ L3DB86:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DB8C ($3DB8C)
+; PurgeEnable ($3DB8C)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3DB8C:
+PurgeEnable:
         BRCLR   >PurgeFlags,Z,#$04,L3DB98
         BRSET   >EngineStateFlags,Z,#$80,L3DBE6
 L3DB98:
@@ -14717,15 +14717,15 @@ L3DDEC:
         BCC     L3DDFA
         BSET    >PurgeCellFlags,Z,#$40
 L3DDFA:
-        JSR     Sub_3DE04
-        JSR     Sub_3DED6
+        JSR     PurgeCellRefCheck
+        JSR     PurgeCellRichCheck
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DE04 ($3DE04)
+; PurgeCellRefCheck ($3DE04)
 ; Called from: PurgeReset
 ;---------------------------------------------------------------------------------------------------
-Sub_3DE04:
+PurgeCellRefCheck:
         LDAA    >CoolantTemp,Z
         CMPA    >PurgeCellRefCoolantMax
         LBCC    L3DEC2
@@ -14743,7 +14743,7 @@ Sub_3DE04:
         LDAB    >PurgeCell1
         ABX
         LDAA    <PurgeCellTrim1,Z
-        LBSR    Sub_3DEC4
+        LBSR    PurgeCellDiff
         STAA    $043F,Z
         BNE     L3DE4E
         BSET    >PurgeFlags2,Z,#$08
@@ -14752,13 +14752,13 @@ L3DE4E:
         LDAB    >PurgeCell2
         ABX
         LDAA    <PurgeCellTrim2,Z
-        BSR     Sub_3DEC4
+        BSR     PurgeCellDiff
         LDX     #$805A
         LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    <PurgeCellTrim3,Z
-        BSR     Sub_3DEC4
+        BSR     PurgeCellDiff
         CBA
         BCC     L3DE72
         TBA
@@ -14771,7 +14771,7 @@ L3DE7C:
         LDAB    >PurgeCell1
         ABX
         LDAA    <PurgeCellTrim1B2,Z
-        BSR     Sub_3DEC4
+        BSR     PurgeCellDiff
         STAA    $0440,Z
         BNE     L3DE94
         BSET    >PurgeFlags2,Z,#$04
@@ -14780,13 +14780,13 @@ L3DE94:
         LDAB    >PurgeCell2
         ABX
         LDAA    <PurgeCellTrim2B2,Z
-        BSR     Sub_3DEC4
+        BSR     PurgeCellDiff
         LDX     #$806D
         LDAB    >PurgeCell3
         ABX
         TAB
         LDAA    <PurgeCellTrim3B2,Z
-        BSR     Sub_3DEC4
+        BSR     PurgeCellDiff
         CBA
         BCC     L3DEB8
         TBA
@@ -14798,10 +14798,10 @@ L3DEC2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DEC4 ($3DEC4)
-; Called from: Sub_3DE04 (6 calls)
+; PurgeCellDiff ($3DEC4)
+; Called from: PurgeCellRefCheck (6 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3DEC4:
+PurgeCellDiff:
         SUBA    $00,X
         BLE     L3DED2
         BVC     L3DECC
@@ -14815,10 +14815,10 @@ L3DED4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DED6 ($3DED6)
+; PurgeCellRichCheck ($3DED6)
 ; Called from: PurgeReset
 ;---------------------------------------------------------------------------------------------------
-Sub_3DED6:
+PurgeCellRichCheck:
         LDAA    >CoolantTemp,Z
         CMPA    >FlexSoakCoolantMax
         BCC     L3DF30
@@ -14827,9 +14827,9 @@ Sub_3DED6:
         BEQ     L3DEFC
         TZX
         LDX     #$805A
-        JSR     Sub_3DF32
+        JSR     PurgeCellMax
         LDX     #$806D
-        JSR     Sub_3DF32
+        JSR     PurgeCellMax
         BCLR    <PurgeCellRichFlags,Z,#$38
 L3DEFC:
         BRSET   >Options032E,#$40,L3DF30
@@ -14859,10 +14859,10 @@ L3DF30:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DF32 ($3DF32)
-; Called from: Sub_3DED6 (2 calls)
+; PurgeCellMax ($3DF32)
+; Called from: PurgeCellRichCheck (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3DF32:
+PurgeCellMax:
         LDAA    $11,X
         LDAB    $12,X
         CBA
@@ -14877,27 +14877,27 @@ L3DF3E:
         BEQ     L3DF52
         CMPB    >PurgeCell3
         BEQ     L3DF52
-        BSR     Sub_3DF72
+        BSR     MaxStore
 L3DF52:
         INCB
         CMPB    #$10
         BCS     L3DF3E
         LDAA    $10,X
         LDAB    >PurgeCell1
-        BSR     Sub_3DF72
+        BSR     MaxStore
         LDAA    $11,X
         LDAB    >PurgeCell2
-        BSR     Sub_3DF72
+        BSR     MaxStore
         LDAA    $12,X
         LDAB    >PurgeCell3
-        BSR     Sub_3DF72
+        BSR     MaxStore
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3DF72 ($3DF72)
-; Called from: Sub_3DF32 (4 calls)
+; MaxStore ($3DF72)
+; Called from: PurgeCellMax (4 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3DF72:
+MaxStore:
         STX     <Scratch0,Z
         ABX
         CMPA    $00,X
@@ -15109,10 +15109,10 @@ L3E18A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3E18E ($3E18E)
+; PurgeCellUpdateGate ($3E18E)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3E18E:
+PurgeCellUpdateGate:
         BRSET   >PurgeFlags2,Z,#$0F,L3E228
         BRSET   >SensorFaultFlags,Z,#$80,L3E1B4
         BRSET   >FaultSet05,Z,#$01,L3E1B4
@@ -15167,10 +15167,10 @@ L3E228:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3E22A ($3E22A)
+; PurgePwmOutput ($3E22A)
 ; Called from: CheckPowerDown, Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3E22A:
+PurgePwmOutput:
         PSHM    D,E,X
         BRSET   >Options0333,#$80,L3E262
         LDAA    >PurgeDuty,Z
@@ -15265,10 +15265,10 @@ L3E306:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3E30A ($3E30A)
+; PurgeRampCalc ($3E30A)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3E30A:
+PurgeRampCalc:
         LDD     $0432,Z
         LSRD
         LSRD
@@ -15462,7 +15462,7 @@ L3E55C:
         TED
         STAB    $07E9,Z
         CLR     $07EB,Z
-        JSR     Sub_3E912
+        JSR     PurgeFuelCalc
         BEQ     L3E59E
         LDAA    $07E8,Z
         CBA
@@ -15633,7 +15633,7 @@ L3E722:
 L3E74C:
         STAA    $07EB,Z
 L3E750:
-        JSR     Sub_3E912
+        JSR     PurgeFuelCalc
         STAA    <Scratch0,Z
         LDAA    $07EB,Z
         MUL
@@ -15790,10 +15790,10 @@ L3E910:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3E912 ($3E912)
+; PurgeFuelCalc ($3E912)
 ; Called from: Sub_3E340 (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_3E912:
+PurgeFuelCalc:
         LDAA    >EngineRpm,Z
         LDX     #PurgeFuelRpm
         JSR     Lookup2D
@@ -16041,10 +16041,10 @@ L3EACC:
         dc.b    $FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3F000 ($3F000)
+; SpareHook3F000 ($3F000)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Sub_3F000:
+SpareHook3F000:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -16176,10 +16176,10 @@ Sub_3F000:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3F800 ($3F800)
+; SciSecurityReceive ($3F800)
 ; Called from: BusDataRequest
 ;---------------------------------------------------------------------------------------------------
-Sub_3F800:
+SciSecurityReceive:
         LDAA    >DiagFlags,Z
         BITA    #$30
         LBNE    L3F9EE

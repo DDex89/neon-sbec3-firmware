@@ -335,6 +335,7 @@ FaultPending2    equ $0521        ; $F8521
 FaultPendingCount1 equ $0522        ; $F8522
 FaultPendingCount2 equ $0523        ; $F8523
 DiagTimer527     equ $0527        ; $F8527
+FuelSystemStatusPid equ $0528        ; $F8528
 MonStatusBits1   equ $052A        ; $F852A
 MonStatusBits2   equ $052C        ; $F852C
 MonStatusBits3   equ $052E        ; $F852E

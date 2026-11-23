@@ -2,7 +2,9 @@
 
 This page describes the program skeleton of the reference image **05293190AC**: start-up, memory,
 interrupts and the two schedulers. Names refer to the generated source in `src/05293190AC/` and to
-`annotations/`. Routine numbers like `Sub_2CC42` are placeholders until the routine is identified.
+`annotations/`. Every routine of this image has a name (`annotations/labels.json`, 630 names). Where the purpose is
+not certain the name is neutral (`OutputTestB`, `MonTaskC`, `PciStateSet3`). In the other families,
+numbers like `Sub_2CC42` are left where a routine has not been matched to the reference yet.
 The other families have the same structure at other addresses (stage 5).
 
 ## Hardware set-up (reset code)
@@ -57,9 +59,9 @@ topic.
 | $48 | `Isr_GPT_IC4OC5` ($08A90) | input capture 4, enabled by calibration bit $0337.7; uses the table at $08A6C |
 | $49 | `Isr_GPT_Overflow` ($0ACF0) | counts timer overflows in `Ic2OverflowCount` (saturating) |
 | $12 | `Isr_IRQ2` ($089BE) | external interrupt from the CS2 device |
-| $14 | `Isr_IRQ4` ($08A18) | external interrupt, calls `Sub_30C28` |
+| $14 | `Isr_IRQ4` ($08A18) | external interrupt, calls `Irq4BusHandler` |
 | $FE | `Isr_SCI` ($08A22) | serial line: diagnostics and reflash (`SciInterrupt`) |
-| $FF | `Isr_QSPI` ($08A3E) | serial peripheral interface, calls `Sub_31E8C` |
+| $FF | `Isr_QSPI` ($08A3E) | serial peripheral interface, calls `QspiService` |
 | $11, $13, $15-$17, $44, $4A | `UnexpectedInterrupt` | should never occur (below) |
 | all others | `Reset` | |
 
@@ -75,13 +77,13 @@ $02,Z and $04,Z. That is a record for diagnosis, not a recovery.
 
 | Ticks | Period | Work |
 |---|---|---|
-| odd | 1.71 ms | `Sub_2DA18`, `Sub_33048`; `Sub_2F800` and `Sub_2FB1E` if calibration bits $0335.5 / $0335.7 are set |
-| 2 mod 4 | 3.42 ms | starts an ADC conversion sequence (ADCTL1 = $24), then `Sub_08DD4` or `Sub_08520` (calibration bit $0338.1) |
-| 4 mod 8 | 6.84 ms | `Sub_0843A` |
+| odd | 1.71 ms | `HighRpmTimerPit`, `SciPitService`; `MtvTiming` and `TuneValve2Control` if calibration bits $0335.5 / $0335.7 are set |
+| 2 mod 4 | 3.42 ms | starts an ADC conversion sequence (ADCTL1 = $24), then `ChargeControl2` or `ChargeControl` (calibration bit $0338.1) |
+| 4 mod 8 | 6.84 ms | `IacStepperDrive` |
 | 0 mod 8 | 6.84 ms | nothing |
 
-After that, on every tick: `Sub_08D0C` if calibration bit $0334.4 is set, a counter for $0DC0,Z, and
-every 24 ticks (20.5 ms) `Sub_3060E` or `Sub_317B6`, chosen by calibration bit $032E.2.
+After that, on every tick: `FanPwmOutputCheck` if calibration bit $0334.4 is set, a counter for $0DC0,Z, and
+every 24 ticks (20.5 ms) `CcdTransmit` or `PciPitTick`, chosen by calibration bit $032E.2.
 
 ## Background scheduler: the main loop
 
@@ -93,17 +95,17 @@ every 24 ticks (20.5 ms) `Sub_3060E` or `Sub_317B6`, chosen by calibration bit $
 
    | Lowest set bit | Period | Routines |
    |---|---|---|
-   | 0 | 2 passes, 24 ms | 9 (`Sub_0EF76` ... `Sub_230B8`) |
-   | 1 | 4 passes, 48 ms | 3 (`Sub_1BA5E`, `Sub_2D8E4`, `Sub_21D94`) |
-   | 2 | 8 passes, 96 ms | 13 (`Sub_0F19E` ... `Sub_12D22`) |
-   | 3 | 16 passes, 191 ms | 5 (`Sub_0EDB4` ... `Sub_22C1C`) |
-   | 4 | 32 passes, 383 ms | 5 (`Sub_1DB14` ... `Sub_3ADFA`) |
-   | 5 | 64 passes, 766 ms | 2 (`Sub_22CD8`, `Sub_22EA6`) |
+   | 0 | 2 passes, 24 ms | 9 (`SkimEepromSave` ... `PwmC18CircuitCheck`) |
+   | 1 | 4 passes, 48 ms | 3 (`ChargeDeficitCalc`, `BatteryVoltsUpdate`, `AsdRelayCheck`) |
+   | 2 | 8 passes, 96 ms | 13 (`SecurityState` ... `LimitReasonCode`) |
+   | 3 | 16 passes, 191 ms | 5 (`PciLinkCheck` ... `WotLeanMonitor`) |
+   | 4 | 32 passes, 383 ms | 5 (`KnockLearnDecayStep` ... `BusTempFlag`) |
+   | 5 | 64 passes, 766 ms | 2 (`FlexFaultReport`, `FuelSenderMonitor`) |
    | 6 | 128 passes, 1.5 s | none |
-   | 7 | 256 passes, 3.1 s | 6 (`Sub_2CC42` ... `Sub_0CC8A`) |
+   | 7 | 256 passes, 3.1 s | 6 (`SriMileageStore` ... `BusStatusByte`) |
 
 3. About 60 more routines on every pass; one of them is chosen by calibration bit $032E.2
-   (`Sub_3017C`, or `Sub_3123A` and `Sub_31FA0`).
+   (`CcdReceive`, or `PciReceive` and `QspiCheck`).
 4. `CheckPowerDown`, then wait until `LoopTickCounter` reaches 14, calling `MeasureLoopTime`
    meanwhile; clear the counter and start again.
 
@@ -115,8 +117,8 @@ every 24 ticks (20.5 ms) `Sub_3060E` or `Sub_317B6`, chosen by calibration bit $
 ## Two communication variants
 
 Calibration bit $032E.2 is tested in 30 places. In several of them it selects between two sets of
-routines: in the main loop (see above), in the PIT interrupt (`CcdTransmit` / `Sub_317B6`), in
-`Isr_IRQ2` (`Sub_30D58` / `Sub_31DF8`) and in the reset code. Reading the receive side confirms two
+routines: in the main loop (see above), in the PIT interrupt (`CcdTransmit` / `PciPitTick`), in
+`Isr_IRQ2` (`Irq2BusHandler` / `PciIrq2Start`) and in the reset code. Reading the receive side confirms two
 vehicle-bus interfaces:
 
 - `CcdReceive` takes one-byte message IDs with up to two data bytes from two receive buffers
