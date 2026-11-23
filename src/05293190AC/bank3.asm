@@ -10677,7 +10677,7 @@ L39D08:
 L39D34:
         JSR     Sub_39D3E
 L39D38:
-        JSR     Sub_22808
+        JSR     EgrPositionMonitor
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -12703,10 +12703,10 @@ L3B0E0:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3B800 ($3B800)
+; SpeedCtlControl ($3B800)
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
-Sub_3B800:
+SpeedCtlControl:
         AIS     #$FA
         TSY
         JSR     Sub_3C5BE
@@ -13640,7 +13640,7 @@ L3C21E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3C222 ($3C222)
-; Called from: Sub_3B800 (2 calls)
+; Called from: SpeedCtlControl (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_3C222:
         BRSET   $0406,Z,#$80,L3C22C
@@ -13771,7 +13771,7 @@ L3C36E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3C370 ($3C370)
-; Called from: Sub_3B800 (2 calls)
+; Called from: SpeedCtlControl (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_3C370:
         CLRB
@@ -13801,7 +13801,7 @@ Sub_3C370:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3C3AC ($3C3AC)
-; Called from: Sub_3B800, Sub_3C370 (3 calls)
+; Called from: SpeedCtlControl, Sub_3C370 (3 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_3C3AC:
         ASLD
@@ -13886,7 +13886,7 @@ L3C468:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3C46E ($3C46E)
-; Called from: Sub_3B800
+; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
 Sub_3C46E:
         TST     $041F,Z
@@ -13972,7 +13972,7 @@ L3C564:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3C566 ($3C566)
-; Called from: Sub_3B800
+; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
 Sub_3C566:
         LDAA    $09C0,Z
@@ -14014,7 +14014,7 @@ Sub_3C590:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3C5B0 ($3C5B0)
-; Called from: Sub_3B800 (2 calls)
+; Called from: SpeedCtlControl (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_3C5B0:
         LDAA    #$F0
@@ -14025,7 +14025,7 @@ Sub_3C5B0:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3C5BE ($3C5BE)
-; Called from: Sub_3B800
+; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
 Sub_3C5BE:
         BRCLR   $0055,Z,#$40,L3C65A
@@ -14084,7 +14084,7 @@ L3C65A:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3C65C ($3C65C)
-; Called from: Sub_3B800
+; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
 Sub_3C65C:
         CLRA
@@ -14114,7 +14114,7 @@ L3C68A:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3C690 ($3C690)
-; Called from: Sub_3B800
+; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
 Sub_3C690:
         BRCLR   $0055,Z,#$20,L3C6B4
@@ -14139,7 +14139,7 @@ L3C6C6:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3C6C8 ($3C6C8)
-; Called from: Sub_3B800
+; Called from: SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
 Sub_3C6C8:
         BRCLR   $0055,Z,#$40,L3C74E
@@ -14482,7 +14482,7 @@ L3D80A:
         TSTA
         BNE     L3D858
         BCLR    $042A,Z,#$80
-        JSR     Sub_3E500
+        JSR     PurgeVaporLearn
         BRSET   $042A,Z,#$80,L3D83C
         JSR     Sub_3D85E
 L3D83C:
@@ -14490,7 +14490,7 @@ L3D83C:
         BRSET   $0580,Z,#$04,L3D85C
 L3D848:
         BRCLR   >Options0333,#$80,L3D854
-        JSR     Sub_3E074
+        JSR     PurgeFlowControl
         BRA     L3D858
 L3D854:
         JSR     Sub_3DC18
@@ -15313,10 +15313,10 @@ L3E070:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3E074 ($3E074)
+; PurgeFlowControl ($3E074)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3E074:
+PurgeFlowControl:
         PSHM    D,E,X,Y,K
         JSR     Sub_3EB4C
         BRSET   >Options033B,#$10,L3E08A
@@ -15333,7 +15333,7 @@ L3E098:
         CLR     $047C,Z
 L3E0A4:
         CLRB
-        LDAA    >PurgeValue10
+        LDAA    >PurgeMonCommand
         LDX     #PurgeFlowScale
         JSR     Lookup2D
         LDAB    >ManifoldVacuum,Z
@@ -15389,9 +15389,9 @@ L3E13A:
         LDAA    >PurgeCommand,Z
         LDX     #PurgeMonitorLimit
         JSR     Lookup2D
-        CMPA    >PurgeMonitorValueThresh
+        CMPA    >PurgeMonitorValueMin
         BCC     L3E15C
-        LDAA    >PurgeMonitorValueThresh
+        LDAA    >PurgeMonitorValueMin
 L3E15C:
         STAA    >PurgeMonitorValue,Z
         LDAA    >PurgeMonitorValueInit
@@ -15404,7 +15404,7 @@ L3E16C:
 L3E172:
         PSHM    E
         CLRA
-        LDAB    >PurgeValue5
+        LDAB    >PurgeTargetStepMin
         ADE
         BLT     L3E194
         PULM    E
@@ -15438,11 +15438,11 @@ L3E1AA:
         NEGE
 L3E1C2:
         TED
-        CMPB    >PurgeThresh2
+        CMPB    >PurgeTargetSettleBand
         BHI     L3E1F2
         BRCLR   $0469,Z,#$01,L3E1E4
         LDAA    $0464,Z
-        CMPA    >PurgeV0464Thresh
+        CMPA    >PurgeTargetChangeMax
         BCC     L3E1F2
         BSET    $0469,Z,#$04
         BCLR    $0469,Z,#$01
@@ -15457,7 +15457,7 @@ L3E1F2:
         BRCLR   $0469,Z,#$04,L3E22A
         TST     $0465,Z
         BNE     L3E210
-        LDAA    >PurgeV0465Init
+        LDAA    >PurgeSoftStepLoops
         STAA    $0465,Z
         BRA     L3E21C
 L3E210:
@@ -15467,7 +15467,7 @@ L3E210:
         BRA     L3E22A
 L3E21C:
         BRSET   $047A,Z,#$80,L3E22A
-        SUBB    >PurgeOffset1
+        SUBB    >PurgeSoftStepOffset
         BCC     L3E22A
         LDAB    #$00
 L3E22A:
@@ -15486,7 +15486,7 @@ L3E258:
         BRSET   $047A,Z,#$40,L3E340
         BRCLR   $047A,Z,#$10,L3E27C
         LDAA    $047D,Z
-        CMPA    >PurgeV047DThresh
+        CMPA    >PurgeMonHoldTime
         BLS     L3E27C
         BCLR    $047A,Z,#$10
         BRSET   $047A,Z,#$80,L3E27C
@@ -15527,11 +15527,11 @@ L3E2AC:
         TSY
         AIY     #$06
         CLRA
-        LDAB    >PurgeValue2
+        LDAB    >PurgeCtlGainP
         STD     $00,Y
-        LDAB    >PurgeValue4
+        LDAB    >PurgeCtlGainI
         STD     $02,Y
-        LDAB    >PurgeValue3
+        LDAB    >PurgeCtlGainD
         STD     $04,Y
         ORP     #$00E0
         PSHM    Z
@@ -15759,10 +15759,10 @@ L3E4FA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3E500 ($3E500)
+; PurgeVaporLearn ($3E500)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3E500:
+PurgeVaporLearn:
         BRSET   $064A,Z,#$80,L3EA96
         BRSET   $0649,Z,#$02,L3EA96
         BRSET   $0E10,Z,#$01,L3EA96
@@ -15798,7 +15798,7 @@ L3E56E:
         LDAB    $044C,Z
         SXT
         PSHM    D,E
-        LDAA    >PurgeValue6
+        LDAA    >PurgeTrimFilterOff
         JSR     Blend16Signed
         AIS     #$04
         STAB    $044C,Z
@@ -15862,7 +15862,7 @@ L3E66A:
         BSET    $0C34,Z,#$40
         ANDP    #$FF1F
         LDAA    $044E,Z
-        CMPA    >PurgeV044EThresh
+        CMPA    >PurgeVaporSettleTime
         BCS     L3E68A
         BSET    $0443,Z,#$10
         BRA     L3E694
@@ -15876,14 +15876,14 @@ L3E694:
         LDAB    $044D,Z
         SXT
         PSHM    D,E
-        LDAA    >PurgeValue7
+        LDAA    >PurgeTrimFilterOn
         JSR     Blend16Signed
         AIS     #$04
         STAB    $044D,Z
         BRCLR   $0443,Z,#$10,L3E9AA
         TBA
         LDAB    $044C,Z
-        ADDB    >PurgeV044CAdder
+        ADDB    >PurgeVaporTrimDrop
         BVC     L3E6CC
         BPL     L3E6CA
         LDAB    #$7F
@@ -15895,7 +15895,7 @@ L3E6CC:
         BGE     L3E6E4
         LDAA    $0447,Z
         INCA
-        CMPA    >PurgeV0447Thresh
+        CMPA    >PurgeVaporDetectCount
         BCC     L3E6EC
         STAA    $0447,Z
         JMP     L3E97E
@@ -15911,7 +15911,7 @@ L3E6EC:
         LDAA    >PurgeVaporInit2
         STAA    $07E8,Z
         BEQ     L3E72E
-        LDAB    >PurgeValue8
+        LDAB    >PurgeVaporBias
         SXT
         TDE
         CLRA
@@ -15977,13 +15977,13 @@ L3E7A0:
 L3E7B0:
         BRCLR   $0443,Z,#$01,L3E7DC
         BCLR    $0443,Z,#$01
-        ADDA    >PurgeAdder4
+        ADDA    >PurgeLearnRateTipStep
         BCC     L3E7C2
         LDAA    #$FF
 L3E7C2:
-        CMPA    >PurgeV0444Thresh2
+        CMPA    >PurgeLearnRateTipMax
         BLS     L3E7CC
-        LDAA    >PurgeV0444Thresh2
+        LDAA    >PurgeLearnRateTipMax
 L3E7CC:
         ORP     #$00E0
         STAA    $0444,Z
@@ -16006,7 +16006,7 @@ L3E7DC:
         LBEQ    L3E83A
         LDAA    >ShortTermTrim1,Z
         BPL     L3E828
-        LDAB    >PurgeValue9
+        LDAB    >PurgeLearnTrimBandDown
         COMB
         CBA
         BGE     L3E828
@@ -16014,7 +16014,7 @@ L3E7DC:
 L3E81A:
         LDAA    >ShortTermTrim1,Z
         BMI     L3E828
-        CMPA    >PurgeShortTermTrim1Thresh1
+        CMPA    >PurgeLearnTrimBandUp
         BLE     L3E828
         BRA     L3E836
 L3E828:
@@ -16027,7 +16027,7 @@ L3E83A:
         BRSET   >ThrottleState,Z,#$80,L3E8C4
         LDAA    >ShortTermTrim1,Z
         BMI     L3E876
-        LDAB    >PurgeShortTermTrim1Thresh1
+        LDAB    >PurgeLearnTrimBandUp
         CBA
         LBLS    L3E97E
         LDAB    $07EC,Z
@@ -16043,7 +16043,7 @@ L3E83A:
         LDAA    #$FF
         BRA     L3E8A4
 L3E876:
-        LDAB    >PurgeValue9
+        LDAB    >PurgeLearnTrimBandDown
         NEGB
         CBA
         LBCC    L3E97E
@@ -16071,7 +16071,7 @@ L3E8BC:
 L3E8C4:
         LDAA    >ShortTermTrim1,Z
         BMI     L3E8F2
-        CMPA    >PurgeShortTermTrim1Thresh1
+        CMPA    >PurgeLearnTrimBandUp
         LBLS    L3E920
         LDAB    $07EC,Z
         CMPB    >PurgeLearnTrimCount2
@@ -16084,7 +16084,7 @@ L3E8C4:
         LDAA    #$FF
         BRA     L3E91C
 L3E8F2:
-        LDAB    >PurgeValue9
+        LDAB    >PurgeLearnTrimBandDown
         NEGB
         CBA
         BCC     L3E920
@@ -16125,7 +16125,7 @@ L3E940:
 L3E952:
         STAB    $07E8,Z
         BEQ     L3E97A
-        LDAB    >PurgeValue8
+        LDAB    >PurgeVaporBias
         SXT
         TDE
         CLRA
@@ -16263,7 +16263,7 @@ L3EAEA:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3EAEC ($3EAEC)
-; Called from: Sub_3E500 (2 calls)
+; Called from: PurgeVaporLearn (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_3EAEC:
         LDAA    >EngineRpm,Z
@@ -16311,7 +16311,7 @@ L3EB44:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3EB4C ($3EB4C)
-; Called from: Sub_3E074
+; Called from: PurgeFlowControl
 ;---------------------------------------------------------------------------------------------------
 Sub_3EB4C:
         TST     $042F,Z
@@ -16471,7 +16471,7 @@ L3ED0A:
         BEQ     L3ED64
 L3ED1E:
         LDAA    >PurgeMonitorValue,Z
-        CMPA    >PurgeMonitorValueThresh
+        CMPA    >PurgeMonitorValueMin
         BLS     L3ED5C
         BRCLR   $042A,Z,#$08,L3ED64
         CLR     $0472,Z
@@ -16500,7 +16500,7 @@ L3ED64:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3ED66 ($3ED66)
-; Called from: Sub_3E074
+; Called from: PurgeFlowControl
 ;---------------------------------------------------------------------------------------------------
 Sub_3ED66:
         BRSET   $047A,Z,#$40,L3ED72
@@ -16527,7 +16527,7 @@ L3ED90:
         LDAA    >PurgeCommand,Z
         BEQ     L3EDCE
         BRSET   $047A,Z,#$80,L3EDB6
-        LDAB    >PurgeValue10
+        LDAB    >PurgeMonCommand
         BRA     L3EDBA
 L3EDB6:
         LDAB    >PurgeValue11
@@ -16551,7 +16551,7 @@ L3EDE8:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_3EDEA ($3EDEA)
-; Called from: Sub_3E074
+; Called from: PurgeFlowControl
 ;---------------------------------------------------------------------------------------------------
 Sub_3EDEA:
         BRCLR   >Options033B,#$10,L3EE7E

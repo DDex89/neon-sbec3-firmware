@@ -1337,7 +1337,7 @@
   "42AD": {
    "name": "FlexSensorCurve",
    "category": "Sensors",
-   "desc": "Analog input $0A8E (probably the fuel composition sensor: Sub_2C7FE reports P0176/P0178/P0179 for it) to $0A64,Z",
+   "desc": "Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to $0A64,Z",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -4132,7 +4132,7 @@
   },
   "2A7E": {
    "name": "LdpBattTempMax",
-   "desc": "EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value",
+   "desc": "EVAP leak test (LdpMonitor, leak detection pump): battery temperature at or below this value",
    "unit": "tempc",
    "category": "EVAP purge",
    "size": 1
@@ -4167,7 +4167,7 @@
   },
   "2A84": {
    "name": "LdpPumpOnTime",
-   "desc": "Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke",
+   "desc": "Leak detection pump (LdpPumpStroke): pump-on count ($0591,Z) per stroke",
    "category": "EVAP purge",
    "size": 1
   },
@@ -4328,33 +4328,33 @@
   },
   "2AB4": {
    "name": "PurgeMonTimeMin",
-   "desc": "Purge flow monitor (Sub_252A8): time since start at or above this value",
-   "category": "Diagnostics",
+   "desc": "Purge flow monitor (PurgeFlowTest): time since start at or above this value",
+   "category": "EVAP purge",
    "size": 1
   },
   "2AB6": {
    "name": "PurgeMonSpeedMax",
    "desc": "Purge flow monitor: vehicle speed at or below this value",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2AB7": {
    "name": "PurgeMonMapMax",
    "desc": "Purge flow monitor: MAP at or below this value",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2AB8": {
    "name": "PurgeMonRpmBand",
    "desc": "Purge flow monitor: engine rpm within the idle target plus or minus this value",
    "unit": "rpmw",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 2
   },
   "2ABA": {
    "name": "PurgeFlowSettleCount",
-   "desc": "EVAP purge flow test (Sub_252A8): settle count ($05B1,Z) before the test starts",
+   "desc": "EVAP purge flow test (PurgeFlowTest): settle count ($05B1,Z) before the test starts",
    "category": "EVAP purge",
    "size": 1
   },
@@ -4367,26 +4367,26 @@
   "2ABC": {
    "name": "PurgeMonIacBand",
    "desc": "Purge flow monitor: IAC command within this many steps of the IAC position",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2ABD": {
    "name": "PurgeMonIacDrift",
    "desc": "Purge flow monitor: IAC position drift limit during the test",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2ABE": {
    "name": "PurgeMonMapDrift",
    "desc": "Purge flow monitor: MAP drift limit during the test",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2ABF": {
    "name": "PurgeMonFilter",
    "desc": "Purge flow monitor: filter weight of the trim responses",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "2AC7": {
@@ -4459,79 +4459,79 @@
    "name": "EgrMonVacuumMin",
    "desc": "EGR flow monitor: manifold vacuum at or above this value",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "2ADA": {
    "name": "EgrMonSpeedMin",
    "desc": "EGR flow monitor: vehicle speed at or above this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "2ADB": {
    "name": "EgrMonMapAccelMax",
    "desc": "EGR flow monitor: MAP acceleration fuel at or below this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "2ADD": {
    "name": "EgrMonTpsAccelMax",
    "desc": "EGR flow monitor: throttle acceleration fuel at or below this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "2ADF": {
    "name": "EgrMonTipInMax",
    "desc": "EGR flow monitor: tip-in fuel at or below this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "2AE1": {
    "name": "EgrMonDecelLeanMin",
    "desc": "EGR flow monitor: decel enleanment, when present, at or above this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "2AE9": {
    "name": "EgrMonPhaseTime",
    "desc": "EGR flow monitor: length of the first test phase ($057E,Z)",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "2AF7": {
    "name": "EgrMonTrimMin",
    "desc": "EGR flow monitor: short-term trim at or above this value (signed)",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "2AF8": {
    "name": "EgrMonTrimMax",
    "desc": "EGR flow monitor: short-term trim at or below this value (signed)",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "2AF9": {
    "name": "EgrMonPhaseTime2",
    "desc": "EGR flow monitor: length of the second test phase",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "2B07": {
    "name": "EgrMonResultMin",
    "desc": "EGR flow monitor: trim response below this value fails the test",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "2B08": {
    "name": "EgrMonResultMax",
    "desc": "EGR flow monitor: trim response above this value passes it",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "2B09": {
    "name": "EgrMonFailCount",
    "desc": "EGR flow monitor: failed tests before the fault",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "2B0B": {

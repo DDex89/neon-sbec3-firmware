@@ -2443,7 +2443,7 @@
   },
   "2972": {
    "name": "LdpBattTempMax",
-   "desc": "EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value",
+   "desc": "EVAP leak test (LdpMonitor, leak detection pump): battery temperature at or below this value",
    "unit": "tempc",
    "category": "EVAP purge",
    "size": 1
@@ -2478,7 +2478,7 @@
   },
   "2979": {
    "name": "LdpPumpOnTime",
-   "desc": "Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke",
+   "desc": "Leak detection pump (LdpPumpStroke): pump-on count ($0591,Z) per stroke",
    "category": "EVAP purge",
    "size": 1
   },

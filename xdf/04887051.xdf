@@ -14662,7 +14662,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x31E" flags="0x0">
   <title>LdpBattTempMax</title>
-  <description>EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value $294F</description>
+  <description>EVAP leak test (LdpMonitor, leak detection pump): battery temperature at or below this value $294F</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x294F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -14722,7 +14722,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x323" flags="0x0">
   <title>LdpPumpOnTime</title>
-  <description>Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke $2956</description>
+  <description>Leak detection pump (LdpPumpStroke): pump-on count ($0591,Z) per stroke $2956</description>
   <CATEGORYMEM index="0" category="9" />
   <EMBEDDEDDATA mmedaddress="0x2956" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

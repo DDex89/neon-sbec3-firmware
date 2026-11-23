@@ -4019,7 +4019,7 @@ Sub_22FE2:
         JSR     Sub_230BA
         JSR     Sub_23238
         BRCLR   >MainLoopPhaseMask,Z,#$01,L22FF8
-        JSR     Sub_23364
+        JSR     TccMonitor
 L22FF8:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L23006
         JSR     Sub_2350A
@@ -4292,17 +4292,17 @@ L23362:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_23364 ($23364)
+; TccMonitor ($23364)
 ; Called from: Sub_22FE2
 ;---------------------------------------------------------------------------------------------------
-Sub_23364:
+TccMonitor:
         BRSET   $065C,Z,#$80,L23508
         LDAA    >ThrottleAboveClosed,Z
         CLRB
         TDE
         LDD     $0672,Z
         PSHM    D,E
-        LDAA    >DiagValue8
+        LDAA    >TccThrottleFilter
         JSR     Blend16
         AIS     #$04
         STD     $0672,Z
@@ -4311,7 +4311,7 @@ Sub_23364:
         TDE
         LDD     >RpmSpeedRatioFiltered,Z
         PSHM    D,E
-        LDAA    >DiagValue9
+        LDAA    >TccRatioFilter
         JSR     Blend16
         AIS     #$04
         STD     >RpmSpeedRatioFiltered,Z
@@ -4326,7 +4326,7 @@ Sub_23364:
         LBRA    L234FC
 L233D6:
         LDAA    >VehicleSpeed,Z
-        CMPA    >DiagSpeedThresh9
+        CMPA    >TccMonSpeedMax
         LBHI    L23500
         BRSET   $0943,Z,#$80,L234C2
         BRCLR   $0B4E,Z,#$20,L23412
@@ -4343,20 +4343,20 @@ L233FE:
         BCLR    $0B4E,Z,#$20
 L23412:
         LDAA    >RpmSpeedRatioFiltered,Z
-        CMPA    >DiagRpmSpeedRatioFilteredThresh2
+        CMPA    >TccRatioMax
         LBCC    L23500
         LDAB    $0676,Z
-        CMPB    >DiagV0676Thresh
+        CMPB    >TccStableTimeMin
         LBCS    L23500
         LDAB    $0672,Z
-        CMPB    >DiagV0672Thresh1
+        CMPB    >TccThrottleMin
         LBLS    L23500
         LDD     $0672,Z
         SUBD    $0674,Z
         BCC     L23442
         NEGD
 L23442:
-        CMPA    >DiagV0672Thresh2
+        CMPA    >TccThrottleChangeMax
         LBCC    L23500
         LDE     >RpmSpeedRatioFiltered,Z
         CPE     $0670,Z
@@ -4368,10 +4368,10 @@ L23458:
         BVC     L23462
         BRA     L23498
 L23462:
-        CPE     >DiagV0678Thresh
+        CPE     >TccRatioDropMin
         BCC     L23498
         LDAB    $0677,Z
-        CMPB    >DiagV0677Thresh
+        CMPB    >TccTestDelay
         BCS     L234B4
         LDAA    $0678,Z
         ADDA    #$01
@@ -4415,7 +4415,7 @@ L234DC:
         BCC     L234E8
         NEGE
 L234E8:
-        CPE     >DiagRpmSpeedRatioFilteredThresh1
+        CPE     >TccRatioStableBand
         BCS     L234F2
         CLR     $0676,Z
 L234F2:
@@ -12838,7 +12838,7 @@ L2C1A8:
 ; Called from: Sub_0DC40
 ;---------------------------------------------------------------------------------------------------
 Sub_2C1BC:
-        JSR     Sub_2C3A6
+        JSR     BatteryTempModel
         JSR     ProcessCoolantTemp
         JSR     ProcessAirTemp
         RTS
@@ -13020,23 +13020,23 @@ L2C3A4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2C3A6 ($2C3A6)
+; BatteryTempModel ($2C3A6)
 ; Called from: Sub_2C1BC
 ;---------------------------------------------------------------------------------------------------
-Sub_2C3A6:
+BatteryTempModel:
         JSR     Sub_2C5F4
         BRCLR   >Options0330,#$01,L2C3DA
         BRCLR   >MainLoopPhaseMask,Z,#$40,L2C3DA
         LDAB    $0A5D,Z
         LDAA    >VehicleSpeed,Z
-        CMPA    >BattSpeedThresh
+        CMPA    >BattTempDriveSpeedMin
         BCC     L2C3CC
         TSTB
         BEQ     L2C3D6
         DECB
         BRA     L2C3D6
 L2C3CC:
-        CMPB    >BattThresh3
+        CMPB    >BattTempDriveCountMax
         BCC     L2C3D6
         INCB
         BEQ     L2C3DA
@@ -13046,11 +13046,11 @@ L2C3DA:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C5F2
         BRCLR   >Options0330,#$01,L2C468
         LDAB    >Count191ms,Z
-        CMPB    >BattCount191msThresh
+        CMPB    >BattTempStartTime
         BHI     L2C412
         BRCLR   $09D5,Z,#$01,L2C468
         LDAA    $017B,Z
-        CMPA    >BattV017BThresh
+        CMPA    >BattTempOffTimeMin
         BHI     L2C42C
         LDAA    >Temp3,Z
         BEQ     L2C42C
@@ -13060,7 +13060,7 @@ L2C3DA:
 L2C412:
         LDAA    $0A5B,Z
         LDAB    $0A5D,Z
-        CMPB    >BattV0A5DThresh
+        CMPB    >BattTempDriveCountMin
         BCC     L2C42C
         BSET    $0A5C,Z,#$02
         BCLR    $0A5C,Z,#$0D
@@ -13164,16 +13164,16 @@ L2C534:
         LBRA    L2C5E6
 L2C55A:
         LDAB    $09C1,Z
-        CMPB    >BattV09C1Thresh
+        CMPB    >BattTempOffTimeMax
         BCC     L2C5A4
-        LDAA    >BattFactor
+        LDAA    >BattTempSoakStep
         MUL
         TSTA
         BNE     L2C5A4
         LDAA    $09C2,Z
         CMPA    #$1E
         BCS     L2C580
-        LDAA    >BattFactor
+        LDAA    >BattTempSoakStep
         ASRA
         ABA
         TAB
@@ -13208,13 +13208,13 @@ L2C5AA:
         ADDE    #$02
 L2C5C4:
         ADDE    #$FFFF
-        CPE     >BattThresh1
+        CPE     >BattTempModelUpCount
         BCS     L2C5D6
         INCA
         LDE     #$8000
         BRA     L2C5E2
 L2C5D6:
-        CPE     >BattThresh2
+        CPE     >BattTempModelDownCount
         BCC     L2C5E2
         DECA
         LDE     #$8000
@@ -13230,7 +13230,7 @@ L2C5F2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2C5F4 ($2C5F4)
-; Called from: Sub_2C3A6
+; Called from: BatteryTempModel
 ;---------------------------------------------------------------------------------------------------
 Sub_2C5F4:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L2C694
@@ -13284,7 +13284,7 @@ L2C694:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2C696 ($2C696)
-; Called from: Reset, Sub_2C3A6
+; Called from: Reset, BatteryTempModel
 ;---------------------------------------------------------------------------------------------------
 Sub_2C696:
         PSHM    X
@@ -13392,10 +13392,10 @@ L2C7B4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2C7B6 ($2C7B6)
+; FlexSensorCheck ($2C7B6)
 ; Called from: Sub_0DC40
 ;---------------------------------------------------------------------------------------------------
-Sub_2C7B6:
+FlexSensorCheck:
         BRSET   >Options032C,#$40,L2C7C2
         CLRA
         JMP     L2CA72
@@ -13438,10 +13438,10 @@ L2C81A:
         IDIV
         XGDX
         LDY     #$42D0
-        CMPB    >SensorThresh19
+        CMPB    >FlexSensorRatioHigh
         LBCC    L2CA46
         LDY     #$42DA
-        CMPB    >SensorThresh20
+        CMPB    >FlexSensorRatioLow
         LBCS    L2CA46
         LDAA    $050B,Z
         BITA    #$30
@@ -13456,14 +13456,14 @@ L2C81A:
         NEGB
         CMPB    #$04
         BCS     L2C88E
-        SUBA    >SensorOffset2
+        SUBA    >FlexSensorTrackStepDown
         BCC     L2C88A
         CLRA
         BRA     L2C88A
 L2C87A:
         CMPB    #$04
         BCS     L2C88E
-        ADDA    >SensorAdder4
+        ADDA    >FlexSensorTrackStepUp
         BCS     L2C888
         CMPA    #$AA
         BCS     L2C88A
@@ -13481,13 +13481,13 @@ L2C88E:
         BNE     L2C8EE
         BRCLR   $01AC,Z,#$01,L2C8DC
         LDAA    $019F,Z
-        CMPA    >SensorV019FThresh
+        CMPA    >RefuelStopTimeMin
         BCS     L2C8CA
         LDAA    >FuelLevelScaled,Z
         STAA    $019E,Z
 L2C8CA:
         LDD     $01A4,Z
-        CPD     >SensorV01A4Thresh
+        CPD     >RefuelSensorTimeMin
         BCS     L2C8DC
         LDAA    >FlexSensorRaw,Z
         STAA    $019B,Z
@@ -13512,7 +13512,7 @@ L2C8FE:
         CLRB
 L2C912:
         STAB    $019D,Z
-        CMPB    >SensorFuelLevelScaledThresh
+        CMPB    >RefuelLevelRise
         BCS     L2C964
         BSET    $01AC,Z,#$02
         LDAB    >FlexSensorRaw,Z
@@ -13521,17 +13521,17 @@ L2C912:
         CLRW    $01A2,Z
 L2C930:
         LDD     >FlexLearnFuelSum,Z
-        CPD     >SensorFlexLearnFuelSumThresh1
+        CPD     >RefuelWindowFuel
         LBCC    L2CA28
         LDAA    $019A,Z
         SUBA    >FlexSensorRaw,Z
         BCS     L2C950
-        CMPA    >SensorV019AThresh
+        CMPA    >RefuelSensorChange
         LBCS    L2CA40
         BRA     L2C95E
 L2C950:
         NEGA
-        CMPA    >SensorV019AThresh
+        CMPA    >RefuelSensorChange
         LBCS    L2CA40
         BSET    $01AC,Z,#$10
 L2C95E:
@@ -13542,12 +13542,12 @@ L2C964:
         LBEQ    L2CA40
         SUBA    >FlexSensorRaw,Z
         BCS     L2C97C
-        CMPA    >SensorV019BThresh
+        CMPA    >RefuelSensorChange2
         LBCS    L2CA40
         BRA     L2C98A
 L2C97C:
         NEGA
-        CMPA    >SensorV019BThresh
+        CMPA    >RefuelSensorChange2
         LBCS    L2CA40
         BSET    $01AC,Z,#$10
 L2C98A:
@@ -13560,14 +13560,14 @@ L2C98E:
         STAA    $0199,Z
 L2C9A2:
         BRCLR   $01AC,Z,#$08,L2C9B8
-        LDD     >SensorValue7
+        LDD     >RefuelBlendDelayStop
         BRSET   $01AC,Z,#$10,L2C9C6
-        LDD     >SensorValue8
+        LDD     >RefuelBlendDelayStop2
         BRA     L2C9C6
 L2C9B8:
-        LDD     >SensorValue6
+        LDD     >RefuelBlendDelay
         BRSET   $01AC,Z,#$10,L2C9C6
-        LDD     >SensorFlexLearnFuelSumThresh2
+        LDD     >RefuelBlendDelay2
 L2C9C6:
         CPD     >FlexLearnFuelSum,Z
         LBCC    L2CA76
@@ -13576,7 +13576,7 @@ L2C9C6:
         CLRW    $01A2,Z
 L2C9DA:
         LDD     >FlexLearnFuelSum,Z
-        CPD     >SensorFlexLearnFuelSumThresh3
+        CPD     >RefuelBlendFuel
         BCC     L2CA24
         LSRD
         LSRD
@@ -13616,9 +13616,9 @@ L2CA46:
         JSR     ReportFault
 L2CA4A:
         LDAA    >EngineRpm,Z
-        CMPA    >SensorRpmThresh8
+        CMPA    >FlexFaultRpmHigh
         BCC     L2CA64
-        CMPA    >SensorRpmThresh9
+        CMPA    >FlexFaultRpmLow
         LBCC    L2CA6E
         BCLR    $0770,Z,#$10
         LBRA    L2CA6E
@@ -14745,7 +14745,7 @@ Sub_2D592:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2D5EA ($2D5EA)
-; Called from: Isr_GPT_IC3, CalcVehicleSpeed, Sub_3B800
+; Called from: Isr_GPT_IC3, CalcVehicleSpeed, SpeedCtlControl
 ;---------------------------------------------------------------------------------------------------
 Sub_2D5EA:
         PSHM    Y,K,CCR

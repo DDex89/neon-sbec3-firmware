@@ -559,14 +559,14 @@ AcThrottleLowerSet:
         dc.b    255,6                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-BattFactor:
-        dc.b    $06                                      ; Byte multiplied; read by Sub_2C3AC.
-BattV09C1Thresh:
-        dc.b    $0A                                      ; Byte compared with V09C1; read by Sub_2C3AC.
-BattThresh1:
-        dc.b    $80,$CA                                  ; Word compared with; read by Sub_2C3AC.
-BattThresh2:
-        dc.b    $7F,$36                                  ; Word compared with; read by Sub_2C3AC.
+BattTempSoakStep:
+        dc.b    $06                                      ; Battery temperature model: step per bus engine-off time unit ($09C1,Z) towards the measured value
+BattTempOffTimeMax:
+        dc.b    $0A                                      ; Battery temperature model: bus engine-off time ($09C1,Z) below which the soak step applies
+BattTempModelUpCount:
+        dc.b    $80,$CA                                  ; Battery temperature model (BatteryTempModel): accumulator $0A5F,Z (word, centre $8000) at or above which the model value rises one step
+BattTempModelDownCount:
+        dc.b    $7F,$36                                  ; Battery temperature model: accumulator below which the model value falls one step
 
 ;---------------------------------------------------------------------------------------------------
 ; BattTempSoakLimit ($04A1): 2D table, 5 points, unsigned
@@ -592,16 +592,16 @@ BattTempSoakAdder:
         dc.b    0,0, 1,21, 2,35, 2,45, 3,47, 5,49        ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
-BattSpeedThresh:
-        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2C3AC.
-BattV0A5DThresh:
-        dc.b    $00                                      ; Byte compared with V0A5D; read by Sub_2C3AC.
-BattThresh3:
-        dc.b    $00                                      ; Byte compared with; read by Sub_2C3AC.
-BattCount191msThresh:
-        dc.b    $00                                      ; Byte compared with Count191ms; read by Sub_2C3AC.
-BattV017BThresh:
-        dc.b    $00                                      ; Byte compared with V017B; read by Sub_2C3AC.
+BattTempDriveSpeedMin:
+        dc.b    $00                                      ; Battery temperature (Options0330 bit 0): speed at or above which the driving count $0A5D,Z rises
+BattTempDriveCountMin:
+        dc.b    $00                                      ; Battery temperature: driving count below which the stored value $0A5B,Z is kept
+BattTempDriveCountMax:
+        dc.b    $00                                      ; Battery temperature: upper limit of the driving count $0A5D,Z
+BattTempStartTime:
+        dc.b    $00                                      ; Battery temperature: time after start (Count191ms) up to which the start logic applies
+BattTempOffTimeMin:
+        dc.b    $00                                      ; Battery temperature: engine-off time ($017B,Z) above which the bus temperature is used at start
 
 ;---------------------------------------------------------------------------------------------------
 ; BattTempHeatFactor ($04C6): 2D table, 1 points, unsigned
@@ -2447,10 +2447,10 @@ IdleEnrichEthanolAirTemp:
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 7
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 8
 
-SensorAdder4:
-        dc.b    $00                                      ; Byte added to; read by Sub_2C7FE. Fault: P0176.
-SensorOffset2:
-        dc.b    $00                                      ; Byte subtracted from; read by Sub_2C7FE. Fault: P0176.
+FlexSensorTrackStepUp:
+        dc.b    $00                                      ; Flex sensor: step of FlexEthanolLearned towards a higher sensor value (difference of 4 or more)
+FlexSensorTrackStepDown:
+        dc.b    $00                                      ; Flex sensor: step of FlexEthanolLearned towards a lower sensor value
 O2FlexEthanolMin:
         dc.b    $28                                      ; Closed loop: ethanol content below which $0770,Z bit 2 is set (flex fuel)
 O2Adder1:
@@ -2558,29 +2558,29 @@ Tab3D_1366:
         dc.b    64,64,64,64,64,64,64,64,64               ; row 7
         dc.b    64,64,64,64,64,64,64,64,64               ; row 8
 
-SensorV019FThresh:
-        dc.b    $00                                      ; Byte compared with V019F; read by Sub_2C7FE. Fault: P0176.
-SensorFuelLevelScaledThresh:
-        dc.b    $FF                                      ; Byte compared with FuelLevelScaled; read by Sub_2C7FE. Fault: P0176.
-SensorFlexLearnFuelSumThresh1:
-        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.
-SensorV019AThresh:
-        dc.b    $FF                                      ; Byte compared with V019A; read by Sub_2C7FE. Fault: P0176.
-SensorV01A4Thresh:
-        dc.b    $00,$00                                  ; Word compared with V01A4; read by Sub_2C7FE. Fault: P0176.
-SensorV019BThresh:
-        dc.b    $FF                                      ; Byte compared with V019B; read by Sub_2C7FE. Fault: P0176.
-SensorValue6:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE. Fault: P0176.
-SensorFlexLearnFuelSumThresh2:
-        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.
-SensorValue7:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE. Fault: P0176.
-SensorValue8:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE. Fault: P0176.
+RefuelStopTimeMin:
+        dc.b    $00                                      ; Refuel check (Options032F bit 3): time stopped ($019F,Z) at or above which the fuel level is stored
+RefuelLevelRise:
+        dc.b    $FF                                      ; Refuel check: fuel level rise since the stop at or above which a refuel is detected
+RefuelWindowFuel:
+        dc.b    $00,$00                                  ; Refuel check: fuel used (FlexLearnFuelSum, word) within which the sensor change must appear
+RefuelSensorChange:
+        dc.b    $FF                                      ; Refuel check: flex sensor change since the refuel at or above which the new fuel is seen
+RefuelSensorTimeMin:
+        dc.b    $00,$00                                  ; Refuel check: count $01A4,Z (word) at or above which the flex sensor reading is stored at the stop
+RefuelSensorChange2:
+        dc.b    $FF                                      ; Refuel check: flex sensor change since the stop at or above which the new fuel is seen
+RefuelBlendDelay:
+        dc.b    $00,$00                                  ; Refuel check: fuel used before blending starts (sensor lower, change after refuel; word)
+RefuelBlendDelay2:
+        dc.b    $00,$00                                  ; As RefuelBlendDelay with the sensor reading lower
+RefuelBlendDelayStop:
+        dc.b    $00,$00                                  ; As RefuelBlendDelay for a change since the stop, sensor higher
+RefuelBlendDelayStop2:
+        dc.b    $00,$00                                  ; As RefuelBlendDelayStop with the sensor reading lower
         dc.b    $00
-SensorFlexLearnFuelSumThresh3:
-        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.
+RefuelBlendFuel:
+        dc.b    $00,$00                                  ; Refuel check: fuel used (word) over which the learned ethanol value is blended to the new reading
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnBlend ($13D6): 2D table, 1 points, unsigned
@@ -6543,7 +6543,7 @@ SpeedCtlVentPulseAccel:
 
 ;---------------------------------------------------------------------------------------------------
 ; SpeedCtlErrorGain ($2B20): 2D table, 3 points, unsigned
-; Servo step against the speed error (one of the error curves of Sub_3B800, by $0400,Z bits 2-3)
+; Servo step against the speed error (one of the error curves of SpeedCtlControl, by $0400,Z bits 2-3)
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: TBA
 ; Read at $3C00E
@@ -7193,7 +7193,7 @@ MisfireNoiseLimit:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00
 LdpBattTempMax:
-        dc.b    $9F                                      ; EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value
+        dc.b    $9F                                      ; EVAP leak test (LdpMonitor, leak detection pump): battery temperature at or below this value
 LdpBattTempMin:
         dc.b    $84                                      ; EVAP leak test: battery temperature at or above this value
 LdpSoakDiffMax:
@@ -7205,7 +7205,7 @@ LdpVoltsMin:
 LdpVacuumMin:
         dc.b    $20                                      ; EVAP leak test: manifold vacuum at or above this value for the test states
 LdpPumpOnTime:
-        dc.b    $14                                      ; Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke
+        dc.b    $14                                      ; Leak detection pump (LdpPumpStroke): pump-on count ($0591,Z) per stroke
 LdpStrokeTimeMax:
         dc.b    $1C                                      ; Leak detection pump, pump-up state: stroke time ($0593,Z) at or above which the stroke counts restart
 LdpPumpOffTime:
@@ -7283,7 +7283,7 @@ LdpPumpTimeByLevel2:
 
         dc.b    $FF,$FF,$FF,$FF
 PurgeMonTimeMin:
-        dc.b    $13                                      ; Purge flow monitor (Sub_252A8): time since start at or above this value
+        dc.b    $13                                      ; Purge flow monitor (PurgeFlowTest): time since start at or above this value
 PurgeMonCoolantMin:
         dc.b    $CD                                      ; Purge flow monitor: coolant at or above this value
 PurgeMonSpeedMax:
@@ -7293,7 +7293,7 @@ PurgeMonMapMax:
 PurgeMonRpmBand:
         dc.b    $09,$10                                  ; Purge flow monitor: engine rpm within the idle target plus or minus this value
 PurgeFlowSettleCount:
-        dc.b    $3C                                      ; EVAP purge flow test (Sub_252A8): settle count ($05B1,Z) before the test starts
+        dc.b    $3C                                      ; EVAP purge flow test (PurgeFlowTest): settle count ($05B1,Z) before the test starts
 PurgeFlowSettleStart:
         dc.b    $EF                                      ; EVAP purge flow test: start value of the settle count = PurgeFlowSettleCount × (256 − this)/256 (0 = start at zero)
 PurgeMonIacBand:
@@ -7755,10 +7755,10 @@ SensorO2UpBank1RawThresh:
         dc.b    $00                                      ; Byte compared with O2UpBank1Raw; read by Sub_22C1C. Fault: P1298.
 SensorO2UpBank2RawThresh:
         dc.b    $00                                      ; Byte compared with O2UpBank2Raw; read by Sub_22C1C. Fault: P1298.
-SensorRpmThresh8:
-        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2C7FE. Fault: P0176.
-SensorRpmThresh9:
-        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2C7FE. Fault: P0176.
+FlexFaultRpmHigh:
+        dc.b    $FF                                      ; Flex sensor fault: rpm at or above which the fault fallback flags ($0770,Z bit 4, $0760,Z) are set
+FlexFaultRpmLow:
+        dc.b    $FF                                      ; Flex sensor fault: rpm below which the fallback flag $0770,Z bit 4 is cleared
 FuelThresh7:
         dc.b    $00                                      ; Byte compared with; read by Sub_0C5B4.
 FuelV0F07Thresh:
@@ -7847,26 +7847,26 @@ DiagSpeedThresh8:
         dc.b    $64                                      ; Byte compared with VehicleSpeed; read by Sub_238D0.
 DiagRpmThresh8:
         dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_238D0.
-DiagValue8:
-        dc.b    $FF                                      ; Byte used with; read by Sub_2352A.
-DiagValue9:
-        dc.b    $FF                                      ; Byte used with; read by Sub_2352A.
-DiagSpeedThresh9:
-        dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_2352A.
-DiagRpmSpeedRatioFilteredThresh1:
-        dc.b    $FF,$FF                                  ; Word compared with RpmSpeedRatioFiltered; read by Sub_2352A.
-DiagRpmSpeedRatioFilteredThresh2:
-        dc.b    $00                                      ; Byte compared with RpmSpeedRatioFiltered; read by Sub_2352A.
-DiagV0676Thresh:
-        dc.b    $00                                      ; Byte compared with V0676; read by Sub_2352A.
-DiagV0672Thresh1:
-        dc.b    $FF                                      ; Byte compared with V0672; read by Sub_2352A.
-DiagV0672Thresh2:
-        dc.b    $00                                      ; Byte compared with V0672; read by Sub_2352A.
-DiagV0678Thresh:
-        dc.b    $FF,$06                                  ; Word compared with V0678; read by Sub_2352A.
-DiagV0677Thresh:
-        dc.b    $FF                                      ; Byte compared with V0677; read by Sub_2352A.
+TccThrottleFilter:
+        dc.b    $FF                                      ; Torque converter clutch monitor (TccMonitor, P0740): filter weight of the throttle average $0672,Z
+TccRatioFilter:
+        dc.b    $FF                                      ; Torque converter clutch monitor: filter weight of RpmSpeedRatioFiltered
+TccMonSpeedMax:
+        dc.b    $FF                                      ; Torque converter clutch monitor: runs at or below this vehicle speed
+TccRatioStableBand:
+        dc.b    $FF,$FF                                  ; Torque converter clutch monitor: ratio change (word) at or above which the stable time restarts before lock-up
+TccRatioMax:
+        dc.b    $00                                      ; Torque converter clutch monitor: filtered rpm/speed ratio below this value
+TccStableTimeMin:
+        dc.b    $00                                      ; Torque converter clutch monitor: stable time ($0676,Z) before the lock-up is judged
+TccThrottleMin:
+        dc.b    $FF                                      ; Torque converter clutch monitor: throttle average above this value
+TccThrottleChangeMax:
+        dc.b    $00                                      ; Torque converter clutch monitor: throttle change since lock-up below this value
+TccRatioDropMin:
+        dc.b    $FF,$06                                  ; Torque converter clutch monitor: signed ratio drop (word) that counts as lock-up; its low byte ($33C1) is also read directly as the fail count limit of $0678,Z
+TccTestDelay:
+        dc.b    $FF                                      ; Torque converter clutch monitor: delay ($0677,Z) after lock-up before the ratio drop is checked
 DiagV011CThresh:
         dc.b    $10                                      ; Byte compared with V011C; read by Sub_23280.
 DiagV011DThresh:
@@ -8507,10 +8507,10 @@ BatteryTempRawLow:
         dc.b    $05                                      ; Battery temperature sensor raw value below which it counts as shorted
 BatteryTempRawHigh:
         dc.b    $FA                                      ; Battery temperature sensor raw value above which it counts as open
-SensorThresh19:
-        dc.b    $FF                                      ; Byte compared with; read by Sub_2C7FE. Fault: P0176.
-SensorThresh20:
-        dc.b    $00                                      ; Byte compared with; read by Sub_2C7FE. Fault: P0176.
+FlexSensorRatioHigh:
+        dc.b    $FF                                      ; Flex sensor check (FlexSensorCheck): ratio of the reading to the start reading (×227) at or above this value is a fault (P0179)
+FlexSensorRatioLow:
+        dc.b    $00                                      ; Flex sensor check: ratio below this value is a fault (P0178)
         dc.b    $0A,$B7
 CalV06CBThresh:
         dc.b    $6E                                      ; Byte compared with V06CB; read by Sub_220AE.
@@ -9263,7 +9263,7 @@ FlexEthanolCurve:
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexSensorCurve ($70AD): 2D table, 8 points, unsigned
-; Analog input $0A8E (probably the fuel composition sensor: Sub_2C7FE reports P0176/P0178/P0179 for it) to $0A64,Z
+; Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to $0A64,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: FlexSensorRaw
 ; Read at $2DC72
@@ -13799,7 +13799,7 @@ L0C7B4:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16 ($0C7B8)
-; Called from: Sub_1824A, Sub_185DC, Sub_1A622, Sub_1AEB6, Sub_1D5CC, Sub_1E11A, Sub_23364, LdpPumpStroke and 8 more routines (26 calls)
+; Called from: Sub_1824A, Sub_185DC, Sub_1A622, Sub_1AEB6, Sub_1D5CC, Sub_1E11A, TccMonitor, LdpPumpStroke and 8 more routines (26 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16:
         PSHM    E,X,Y,K,CCR
@@ -15585,7 +15585,7 @@ L0DDB0:
         JSR     Sub_0EBEE
         JSR     Sub_0EBA8
         JSR     Sub_2CC60
-        JSR     Sub_2C7B6
+        JSR     FlexSensorCheck
         JSR     Sub_3562C
         JSR     Sub_2DA8A
         JSR     Sub_1114C
@@ -15613,7 +15613,7 @@ L0DE14:
         JSR     Sub_2432A
         JSR     Sub_3C288
         JSR     Sub_3C3C6
-        JSR     Sub_3B800
+        JSR     SpeedCtlControl
         JSR     Sub_3AC3A
         JSR     Sub_10FE0
         JSR     Sub_2F000

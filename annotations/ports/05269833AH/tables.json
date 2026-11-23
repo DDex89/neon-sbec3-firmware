@@ -2432,7 +2432,7 @@
   "2B20": {
    "name": "SpeedCtlErrorGain",
    "category": "Speed control",
-   "desc": "Servo step against the speed error (one of the error curves of Sub_3B800, by $0400,Z bits 2-3)",
+   "desc": "Servo step against the speed error (one of the error curves of SpeedCtlControl, by $0400,Z bits 2-3)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -2889,7 +2889,7 @@
   "70AD": {
    "name": "FlexSensorCurve",
    "category": "Sensors",
-   "desc": "Analog input $0A8E (probably the fuel composition sensor: Sub_2C7FE reports P0176/P0178/P0179 for it) to $0A64,Z",
+   "desc": "Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to $0A64,Z",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -3759,76 +3759,58 @@
    "name": "AcV0B55Thresh"
   },
   "049B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempSoakStep",
+   "desc": "Battery temperature model: step per bus engine-off time unit ($09C1,Z) towards the measured value",
    "category": "Sensors",
-   "desc": "Byte multiplied; read by Sub_2C3AC.",
-   "name": "BattFactor"
+   "size": 1
   },
   "049C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempOffTimeMax",
+   "desc": "Battery temperature model: bus engine-off time ($09C1,Z) below which the soak step applies",
    "category": "Sensors",
-   "desc": "Byte compared with V09C1; read by Sub_2C3AC.",
-   "name": "BattV09C1Thresh"
+   "size": 1
   },
   "049D": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempModelUpCount",
+   "desc": "Battery temperature model (BatteryTempModel): accumulator $0A5F,Z (word, centre $8000) at or above which the model value rises one step",
    "category": "Sensors",
-   "desc": "Word compared with; read by Sub_2C3AC.",
-   "name": "BattThresh1"
+   "size": 2
   },
   "049F": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempModelDownCount",
+   "desc": "Battery temperature model: accumulator below which the model value falls one step",
    "category": "Sensors",
-   "desc": "Word compared with; read by Sub_2C3AC.",
-   "name": "BattThresh2"
+   "size": 2
   },
   "04C1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempDriveSpeedMin",
+   "desc": "Battery temperature (Options0330 bit 0): speed at or above which the driving count $0A5D,Z rises",
    "category": "Sensors",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_2C3AC.",
-   "name": "BattSpeedThresh"
+   "size": 1
   },
   "04C2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempDriveCountMin",
+   "desc": "Battery temperature: driving count below which the stored value $0A5B,Z is kept",
    "category": "Sensors",
-   "desc": "Byte compared with V0A5D; read by Sub_2C3AC.",
-   "name": "BattV0A5DThresh"
+   "size": 1
   },
   "04C3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempDriveCountMax",
+   "desc": "Battery temperature: upper limit of the driving count $0A5D,Z",
    "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_2C3AC.",
-   "name": "BattThresh3"
+   "size": 1
   },
   "04C4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempStartTime",
+   "desc": "Battery temperature: time after start (Count191ms) up to which the start logic applies",
    "category": "Sensors",
-   "desc": "Byte compared with Count191ms; read by Sub_2C3AC.",
-   "name": "BattCount191msThresh"
+   "size": 1
   },
   "04C5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempOffTimeMin",
+   "desc": "Battery temperature: engine-off time ($017B,Z) above which the bus temperature is used at start",
    "category": "Sensors",
-   "desc": "Byte compared with V017B; read by Sub_2C3AC.",
-   "name": "BattV017BThresh"
+   "size": 1
   },
   "04D0": {
    "name": "FanAcSensorStage1",
@@ -5545,20 +5527,16 @@
    "category": "Fuel"
   },
   "11F7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte added to; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorAdder4"
+   "name": "FlexSensorTrackStepUp",
+   "desc": "Flex sensor: step of FlexEthanolLearned towards a higher sensor value (difference of 4 or more)",
+   "category": "Fuel",
+   "size": 1
   },
   "11F8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte subtracted from; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorOffset2"
+   "name": "FlexSensorTrackStepDown",
+   "desc": "Flex sensor: step of FlexEthanolLearned towards a lower sensor value",
+   "category": "Fuel",
+   "size": 1
   },
   "11F9": {
    "name": "O2FlexEthanolMin",
@@ -5647,92 +5625,70 @@
    "name": "O2Value4"
   },
   "13C3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V019F; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorV019FThresh"
+   "name": "RefuelStopTimeMin",
+   "desc": "Refuel check (Options032F bit 3): time stopped ($019F,Z) at or above which the fuel level is stored",
+   "category": "Fuel",
+   "size": 1
   },
   "13C4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with FuelLevelScaled; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorFuelLevelScaledThresh"
+   "name": "RefuelLevelRise",
+   "desc": "Refuel check: fuel level rise since the stop at or above which a refuel is detected",
+   "category": "Fuel",
+   "size": 1
   },
   "13C5": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorFlexLearnFuelSumThresh1"
+   "name": "RefuelWindowFuel",
+   "desc": "Refuel check: fuel used (FlexLearnFuelSum, word) within which the sensor change must appear",
+   "category": "Fuel",
+   "size": 2
   },
   "13C7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V019A; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorV019AThresh"
+   "name": "RefuelSensorChange",
+   "desc": "Refuel check: flex sensor change since the refuel at or above which the new fuel is seen",
+   "category": "Fuel",
+   "size": 1
   },
   "13C8": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with V01A4; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorV01A4Thresh"
+   "name": "RefuelSensorTimeMin",
+   "desc": "Refuel check: count $01A4,Z (word) at or above which the flex sensor reading is stored at the stop",
+   "category": "Fuel",
+   "size": 2
   },
   "13CA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V019B; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorV019BThresh"
+   "name": "RefuelSensorChange2",
+   "desc": "Refuel check: flex sensor change since the stop at or above which the new fuel is seen",
+   "category": "Fuel",
+   "size": 1
   },
   "13CB": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word used with; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorValue6"
+   "name": "RefuelBlendDelay",
+   "desc": "Refuel check: fuel used before blending starts (sensor lower, change after refuel; word)",
+   "category": "Fuel",
+   "size": 2
   },
   "13CD": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorFlexLearnFuelSumThresh2"
+   "name": "RefuelBlendDelay2",
+   "desc": "As RefuelBlendDelay with the sensor reading lower",
+   "category": "Fuel",
+   "size": 2
   },
   "13CF": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word used with; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorValue7"
+   "name": "RefuelBlendDelayStop",
+   "desc": "As RefuelBlendDelay for a change since the stop, sensor higher",
+   "category": "Fuel",
+   "size": 2
   },
   "13D1": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word used with; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorValue8"
+   "name": "RefuelBlendDelayStop2",
+   "desc": "As RefuelBlendDelayStop with the sensor reading lower",
+   "category": "Fuel",
+   "size": 2
   },
   "13D4": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorFlexLearnFuelSumThresh3"
+   "name": "RefuelBlendFuel",
+   "desc": "Refuel check: fuel used (word) over which the learned ethanol value is blended to the new reading",
+   "category": "Fuel",
+   "size": 2
   },
   "13EE": {
    "name": "AccelMapRiseOffset",
@@ -9450,7 +9406,7 @@
   },
   "3035": {
    "name": "LdpBattTempMax",
-   "desc": "EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value",
+   "desc": "EVAP leak test (LdpMonitor, leak detection pump): battery temperature at or below this value",
    "unit": "tempc",
    "category": "EVAP purge",
    "size": 1
@@ -9492,7 +9448,7 @@
   },
   "303B": {
    "name": "LdpPumpOnTime",
-   "desc": "Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke",
+   "desc": "Leak detection pump (LdpPumpStroke): pump-on count ($0591,Z) per stroke",
    "category": "EVAP purge",
    "size": 1
   },
@@ -9653,40 +9609,40 @@
   },
   "3069": {
    "name": "PurgeMonTimeMin",
-   "desc": "Purge flow monitor (Sub_252A8): time since start at or above this value",
-   "category": "Diagnostics",
+   "desc": "Purge flow monitor (PurgeFlowTest): time since start at or above this value",
+   "category": "EVAP purge",
    "size": 1
   },
   "306A": {
    "name": "PurgeMonCoolantMin",
    "desc": "Purge flow monitor: coolant at or above this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "306B": {
    "name": "PurgeMonSpeedMax",
    "desc": "Purge flow monitor: vehicle speed at or below this value",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "306C": {
    "name": "PurgeMonMapMax",
    "desc": "Purge flow monitor: MAP at or below this value",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "306D": {
    "name": "PurgeMonRpmBand",
    "desc": "Purge flow monitor: engine rpm within the idle target plus or minus this value",
    "unit": "rpmw",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 2
   },
   "306F": {
    "name": "PurgeFlowSettleCount",
-   "desc": "EVAP purge flow test (Sub_252A8): settle count ($05B1,Z) before the test starts",
+   "desc": "EVAP purge flow test (PurgeFlowTest): settle count ($05B1,Z) before the test starts",
    "category": "EVAP purge",
    "size": 1
   },
@@ -9699,26 +9655,26 @@
   "3071": {
    "name": "PurgeMonIacBand",
    "desc": "Purge flow monitor: IAC command within this many steps of the IAC position",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "3072": {
    "name": "PurgeMonIacDrift",
    "desc": "Purge flow monitor: IAC position drift limit during the test",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "3073": {
    "name": "PurgeMonMapDrift",
    "desc": "Purge flow monitor: MAP drift limit during the test",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "3074": {
    "name": "PurgeMonFilter",
    "desc": "Purge flow monitor: filter weight of the trim responses",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "307C": {
@@ -9790,100 +9746,100 @@
   "308C": {
    "name": "EgrMonSteadyTime",
    "desc": "EGR flow monitor: steady time ($0581,Z) before the test",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "308D": {
    "name": "EgrMonCoolantMin",
    "desc": "EGR flow monitor (Sub_25000, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "308E": {
    "name": "EgrMonBattTempMin",
    "desc": "EGR flow monitor: battery temperature at or above this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "308F": {
    "name": "EgrMonVacuumMin",
    "desc": "EGR flow monitor: manifold vacuum at or above this value",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "3090": {
    "name": "EgrMonSpeedMin",
    "desc": "EGR flow monitor: vehicle speed at or above this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "3091": {
    "name": "EgrMonMapAccelMax",
    "desc": "EGR flow monitor: MAP acceleration fuel at or below this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "3093": {
    "name": "EgrMonTpsAccelMax",
    "desc": "EGR flow monitor: throttle acceleration fuel at or below this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "3095": {
    "name": "EgrMonTipInMax",
    "desc": "EGR flow monitor: tip-in fuel at or below this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "3097": {
    "name": "EgrMonDecelLeanMin",
    "desc": "EGR flow monitor: decel enleanment, when present, at or above this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "309F": {
    "name": "EgrMonPhaseTime",
    "desc": "EGR flow monitor: length of the first test phase ($057E,Z)",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "30AD": {
    "name": "EgrMonTrimMin",
    "desc": "EGR flow monitor: short-term trim at or above this value (signed)",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "30AE": {
    "name": "EgrMonTrimMax",
    "desc": "EGR flow monitor: short-term trim at or below this value (signed)",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "30AF": {
    "name": "EgrMonPhaseTime2",
    "desc": "EGR flow monitor: length of the second test phase",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "30BD": {
    "name": "EgrMonResultMin",
    "desc": "EGR flow monitor: trim response below this value fails the test",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "30BE": {
    "name": "EgrMonResultMax",
    "desc": "EGR flow monitor: trim response above this value passes it",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "30BF": {
    "name": "EgrMonFailCount",
    "desc": "EGR flow monitor: failed tests before the fault",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "30C0": {
@@ -10650,20 +10606,18 @@
    "name": "SensorO2UpBank2RawThresh"
   },
   "32AA": {
-   "size": 1,
+   "name": "FlexFaultRpmHigh",
+   "desc": "Flex sensor fault: rpm at or above which the fault fallback flags ($0770,Z bit 4, $0760,Z) are set",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorRpmThresh8"
+   "category": "Fuel",
+   "size": 1
   },
   "32AB": {
-   "size": 1,
+   "name": "FlexFaultRpmLow",
+   "desc": "Flex sensor fault: rpm below which the fallback flag $0770,Z bit 4 is cleared",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorRpmThresh9"
+   "category": "Fuel",
+   "size": 1
   },
   "32AC": {
    "size": 1,
@@ -10933,84 +10887,64 @@
    "name": "DiagRpmThresh8"
   },
   "32ED": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccThrottleFilter",
+   "desc": "Torque converter clutch monitor (TccMonitor, P0740): filter weight of the throttle average $0672,Z",
    "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_2352A.",
-   "name": "DiagValue8"
+   "size": 1
   },
   "32EE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccRatioFilter",
+   "desc": "Torque converter clutch monitor: filter weight of RpmSpeedRatioFiltered",
    "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_2352A.",
-   "name": "DiagValue9"
+   "size": 1
   },
   "32EF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccMonSpeedMax",
+   "desc": "Torque converter clutch monitor: runs at or below this vehicle speed",
    "category": "Diagnostics",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_2352A.",
-   "name": "DiagSpeedThresh9"
+   "size": 1
   },
   "32F0": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccRatioStableBand",
+   "desc": "Torque converter clutch monitor: ratio change (word) at or above which the stable time restarts before lock-up",
    "category": "Diagnostics",
-   "desc": "Word compared with RpmSpeedRatioFiltered; read by Sub_2352A.",
-   "name": "DiagRpmSpeedRatioFilteredThresh1"
+   "size": 2
   },
   "32F2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccRatioMax",
+   "desc": "Torque converter clutch monitor: filtered rpm/speed ratio below this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with RpmSpeedRatioFiltered; read by Sub_2352A.",
-   "name": "DiagRpmSpeedRatioFilteredThresh2"
+   "size": 1
   },
   "32F3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccStableTimeMin",
+   "desc": "Torque converter clutch monitor: stable time ($0676,Z) before the lock-up is judged",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0676; read by Sub_2352A.",
-   "name": "DiagV0676Thresh"
+   "size": 1
   },
   "32F4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccThrottleMin",
+   "desc": "Torque converter clutch monitor: throttle average above this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0672; read by Sub_2352A.",
-   "name": "DiagV0672Thresh1"
+   "size": 1
   },
   "32F5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccThrottleChangeMax",
+   "desc": "Torque converter clutch monitor: throttle change since lock-up below this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0672; read by Sub_2352A.",
-   "name": "DiagV0672Thresh2"
+   "size": 1
   },
   "32F6": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccRatioDropMin",
+   "desc": "Torque converter clutch monitor: signed ratio drop (word) that counts as lock-up; its low byte ($33C1) is also read directly as the fail count limit of $0678,Z",
    "category": "Diagnostics",
-   "desc": "Word compared with V0678; read by Sub_2352A.",
-   "name": "DiagV0678Thresh"
+   "size": 2
   },
   "32F8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccTestDelay",
+   "desc": "Torque converter clutch monitor: delay ($0677,Z) after lock-up before the ratio drop is checked",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0677; read by Sub_2352A.",
-   "name": "DiagV0677Thresh"
+   "size": 1
   },
   "32F9": {
    "size": 1,
@@ -11458,20 +11392,16 @@
    "size": 1
   },
   "49F7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorThresh19"
+   "name": "FlexSensorRatioHigh",
+   "desc": "Flex sensor check (FlexSensorCheck): ratio of the reading to the start reading (×227) at or above this value is a fault (P0179)",
+   "category": "Fuel",
+   "size": 1
   },
   "49F8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorThresh20"
+   "name": "FlexSensorRatioLow",
+   "desc": "Flex sensor check: ratio below this value is a fault (P0178)",
+   "category": "Fuel",
+   "size": 1
   },
   "49FB": {
    "size": 1,

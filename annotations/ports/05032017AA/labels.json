@@ -24,6 +24,8 @@
  "1172C": "FinishFuelPulse",
  "11D40": "CalcFuelPulse",
  "1F000": "CalcSpark",
+ "22814": "EgrPositionMonitor",
+ "23530": "TccMonitor",
  "24160": "ReportPass",
  "245D6": "ReportFault",
  "252A8": "PurgeFlowTest",
@@ -32,6 +34,8 @@
  "25D58": "LdpPumpStroke",
  "2C20E": "ProcessCoolantTemp",
  "2C32A": "ProcessAirTemp",
+ "2C3F0": "BatteryTempModel",
+ "2C896": "FlexSensorCheck",
  "2D2CE": "ProcessThrottle",
  "2D572": "CalcThrottleAboveClosed",
  "2D598": "CalcVehicleSpeed",
@@ -41,5 +45,8 @@
  "3343C": "SciInterrupt",
  "35A2E": "DiagWriteRamByte",
  "35A7A": "DiagRunRamCode",
- "3D000": "EmptyHook"
+ "3B800": "SpeedCtlControl",
+ "3D000": "EmptyHook",
+ "3E074": "PurgeFlowControl",
+ "3E4F6": "PurgeVaporLearn"
 }

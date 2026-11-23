@@ -24,6 +24,7 @@
   <CATEGORY index="0xE" name="Options" />
   <CATEGORY index="0xF" name="Cooling fan" />
   <CATEGORY index="0x10" name="A/C" />
+  <CATEGORY index="0x11" name="EGR" />
  </XDFHEADER>
  <XDFTABLE uniqueid="0x101" flags="0x0">
   <title>BaroUpdateMapOffset</title>
@@ -12611,7 +12612,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x24F" flags="0x0">
   <title>FlexSensorCurve</title>
-  <description>Analog input $0A8E (probably the fuel composition sensor: Sub_2C7FE reports P0176/P0178/P0179 for it) to $0A64,Z $42AD, 2D; inputs: FlexSensorRaw</description>
+  <description>Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to $0A64,Z $42AD, 2D; inputs: FlexSensorRaw</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -17821,7 +17822,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x412" flags="0x0">
   <title>LdpBattTempMax</title>
-  <description>EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value $2A7E</description>
+  <description>EVAP leak test (LdpMonitor, leak detection pump): battery temperature at or below this value $2A7E</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2A7E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -17881,7 +17882,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x417" flags="0x0">
   <title>LdpPumpOnTime</title>
-  <description>Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke $2A84</description>
+  <description>Leak detection pump (LdpPumpStroke): pump-on count ($0591,Z) per stroke $2A84</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2A84" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18193,8 +18194,8 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x431" flags="0x0">
   <title>PurgeMonTimeMin</title>
-  <description>Purge flow monitor (Sub_252A8): time since start at or above this value $2AB4</description>
-  <CATEGORYMEM index="0" category="10" />
+  <description>Purge flow monitor (PurgeFlowTest): time since start at or above this value $2AB4</description>
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2AB4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18206,7 +18207,7 @@
  <XDFCONSTANT uniqueid="0x432" flags="0x0">
   <title>PurgeMonSpeedMax</title>
   <description>Purge flow monitor: vehicle speed at or below this value $2AB6</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2AB6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18218,7 +18219,7 @@
  <XDFCONSTANT uniqueid="0x433" flags="0x0">
   <title>PurgeMonMapMax</title>
   <description>Purge flow monitor: MAP at or below this value $2AB7</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2AB7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -18230,7 +18231,7 @@
  <XDFCONSTANT uniqueid="0x434" flags="0x0">
   <title>PurgeMonRpmBand</title>
   <description>Purge flow monitor: engine rpm within the idle target plus or minus this value $2AB8</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2AB8" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
   <decimalpl>0</decimalpl>
@@ -18241,7 +18242,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x435" flags="0x0">
   <title>PurgeFlowSettleCount</title>
-  <description>EVAP purge flow test (Sub_252A8): settle count ($05B1,Z) before the test starts $2ABA</description>
+  <description>EVAP purge flow test (PurgeFlowTest): settle count ($05B1,Z) before the test starts $2ABA</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2ABA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18266,7 +18267,7 @@
  <XDFCONSTANT uniqueid="0x437" flags="0x0">
   <title>PurgeMonIacBand</title>
   <description>Purge flow monitor: IAC command within this many steps of the IAC position $2ABC</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2ABC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18278,7 +18279,7 @@
  <XDFCONSTANT uniqueid="0x438" flags="0x0">
   <title>PurgeMonIacDrift</title>
   <description>Purge flow monitor: IAC position drift limit during the test $2ABD</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2ABD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18290,7 +18291,7 @@
  <XDFCONSTANT uniqueid="0x439" flags="0x0">
   <title>PurgeMonMapDrift</title>
   <description>Purge flow monitor: MAP drift limit during the test $2ABE</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2ABE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -18302,7 +18303,7 @@
  <XDFCONSTANT uniqueid="0x43A" flags="0x0">
   <title>PurgeMonFilter</title>
   <description>Purge flow monitor: filter weight of the trim responses $2ABF</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2ABF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18434,7 +18435,7 @@
  <XDFCONSTANT uniqueid="0x445" flags="0x0">
   <title>EgrMonVacuumMin</title>
   <description>EGR flow monitor: manifold vacuum at or above this value $2AD9</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2AD9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -18446,7 +18447,7 @@
  <XDFCONSTANT uniqueid="0x446" flags="0x0">
   <title>EgrMonSpeedMin</title>
   <description>EGR flow monitor: vehicle speed at or above this value $2ADA</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2ADA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18458,7 +18459,7 @@
  <XDFCONSTANT uniqueid="0x447" flags="0x0">
   <title>EgrMonMapAccelMax</title>
   <description>EGR flow monitor: MAP acceleration fuel at or below this value $2ADB</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2ADB" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18470,7 +18471,7 @@
  <XDFCONSTANT uniqueid="0x448" flags="0x0">
   <title>EgrMonTpsAccelMax</title>
   <description>EGR flow monitor: throttle acceleration fuel at or below this value $2ADD</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2ADD" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18482,7 +18483,7 @@
  <XDFCONSTANT uniqueid="0x449" flags="0x0">
   <title>EgrMonTipInMax</title>
   <description>EGR flow monitor: tip-in fuel at or below this value $2ADF</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2ADF" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18494,7 +18495,7 @@
  <XDFCONSTANT uniqueid="0x44A" flags="0x0">
   <title>EgrMonDecelLeanMin</title>
   <description>EGR flow monitor: decel enleanment, when present, at or above this value $2AE1</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2AE1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18506,7 +18507,7 @@
  <XDFCONSTANT uniqueid="0x44B" flags="0x0">
   <title>EgrMonPhaseTime</title>
   <description>EGR flow monitor: length of the first test phase ($057E,Z) $2AE9</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2AE9" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18518,7 +18519,7 @@
  <XDFCONSTANT uniqueid="0x44C" flags="0x0">
   <title>EgrMonTrimMin</title>
   <description>EGR flow monitor: short-term trim at or above this value (signed) $2AF7</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2AF7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18530,7 +18531,7 @@
  <XDFCONSTANT uniqueid="0x44D" flags="0x0">
   <title>EgrMonTrimMax</title>
   <description>EGR flow monitor: short-term trim at or below this value (signed) $2AF8</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2AF8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18542,7 +18543,7 @@
  <XDFCONSTANT uniqueid="0x44E" flags="0x0">
   <title>EgrMonPhaseTime2</title>
   <description>EGR flow monitor: length of the second test phase $2AF9</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2AF9" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18554,7 +18555,7 @@
  <XDFCONSTANT uniqueid="0x44F" flags="0x0">
   <title>EgrMonResultMin</title>
   <description>EGR flow monitor: trim response below this value fails the test $2B07</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2B07" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18566,7 +18567,7 @@
  <XDFCONSTANT uniqueid="0x450" flags="0x0">
   <title>EgrMonResultMax</title>
   <description>EGR flow monitor: trim response above this value passes it $2B08</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2B08" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18578,7 +18579,7 @@
  <XDFCONSTANT uniqueid="0x451" flags="0x0">
   <title>EgrMonFailCount</title>
   <description>EGR flow monitor: failed tests before the fault $2B09</description>
-  <CATEGORYMEM index="0" category="10" />
+  <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x2B09" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>

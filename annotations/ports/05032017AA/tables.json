@@ -2387,7 +2387,7 @@
   "350B": {
    "name": "SpeedCtlErrorGain",
    "category": "Speed control",
-   "desc": "Servo step against the speed error (one of the error curves of Sub_3B800, by $0400,Z bits 2-3)",
+   "desc": "Servo step against the speed error (one of the error curves of SpeedCtlControl, by $0400,Z bits 2-3)",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -2805,7 +2805,7 @@
   "70D7": {
    "name": "FlexSensorCurve",
    "category": "Sensors",
-   "desc": "Analog input $0A8E (probably the fuel composition sensor: Sub_2C7FE reports P0176/P0178/P0179 for it) to $0A64,Z",
+   "desc": "Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to $0A64,Z",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -3368,44 +3368,34 @@
    "name": "SensorBatteryTempThresh1"
   },
   "0360": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempBusCountMax",
+   "desc": "Battery temperature model: count limit of $0E02,Z while the bus temperature is valid",
    "category": "Sensors",
-   "desc": "Byte compared with V0E02; read by Sub_2C3AC.",
-   "name": "BattV0E02Thresh"
+   "size": 1
   },
   "0361": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrResultFailCount",
+   "desc": "EGR flow test result (EgrPositionMonitor): failed tests ($01EC,Z) before the fault is set",
    "category": "EGR",
-   "desc": "Byte compared with; read by Sub_22808. Fault: P0405.",
-   "name": "EgrThresh2"
+   "size": 1
   },
   "0362": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrTrackFailCount",
+   "desc": "EGR position tracking test: failed tests ($01ED,Z) before the fault is set",
    "category": "EGR",
-   "desc": "Byte compared with; read by Sub_22808. Fault: P0405.",
-   "name": "EgrThresh3"
+   "size": 1
   },
   "0363": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrTrackErrorTime",
+   "desc": "EGR position tracking test: time ($0B59,Z) with a large position error before a test fails",
    "category": "EGR",
-   "desc": "Byte compared with V0B59; read by Sub_22808. Fault: P0405.",
-   "name": "EgrV0B59Thresh"
+   "size": 1
   },
   "0364": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrTrackDelay",
+   "desc": "EGR position tracking test: delay ($0B5A,Z) after the conditions are met",
    "category": "EGR",
-   "desc": "Byte compared with V0B5A; read by Sub_22808. Fault: P0405.",
-   "name": "EgrV0B5AThresh"
+   "size": 1
   },
   "0365": {
    "name": "AfterStartSparkBaroMin",
@@ -3441,7 +3431,7 @@
   "0369": {
    "name": "EgrMonTimeMax",
    "desc": "EGR monitor: upper limit of the timer EgrMonTimer",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "036A": {
@@ -3828,76 +3818,58 @@
    "name": "AcV0B55Thresh"
   },
   "04A1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempSoakStep",
+   "desc": "Battery temperature model: step per bus engine-off time unit ($09C1,Z) towards the measured value",
    "category": "Sensors",
-   "desc": "Byte multiplied; read by Sub_2C3AC.",
-   "name": "BattFactor"
+   "size": 1
   },
   "04A2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempOffTimeMax",
+   "desc": "Battery temperature model: bus engine-off time ($09C1,Z) below which the soak step applies",
    "category": "Sensors",
-   "desc": "Byte compared with V09C1; read by Sub_2C3AC.",
-   "name": "BattV09C1Thresh"
+   "size": 1
   },
   "04A3": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempModelUpCount",
+   "desc": "Battery temperature model (BatteryTempModel): accumulator $0A5F,Z (word, centre $8000) at or above which the model value rises one step",
    "category": "Sensors",
-   "desc": "Word compared with; read by Sub_2C3AC.",
-   "name": "BattThresh1"
+   "size": 2
   },
   "04A5": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempModelDownCount",
+   "desc": "Battery temperature model: accumulator below which the model value falls one step",
    "category": "Sensors",
-   "desc": "Word compared with; read by Sub_2C3AC.",
-   "name": "BattThresh2"
+   "size": 2
   },
   "04C7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempDriveSpeedMin",
+   "desc": "Battery temperature (Options0330 bit 0): speed at or above which the driving count $0A5D,Z rises",
    "category": "Sensors",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_2C3AC.",
-   "name": "BattSpeedThresh"
+   "size": 1
   },
   "04C8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempDriveCountMin",
+   "desc": "Battery temperature: driving count below which the stored value $0A5B,Z is kept",
    "category": "Sensors",
-   "desc": "Byte compared with V0A5D; read by Sub_2C3AC.",
-   "name": "BattV0A5DThresh"
+   "size": 1
   },
   "04C9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempDriveCountMax",
+   "desc": "Battery temperature: upper limit of the driving count $0A5D,Z",
    "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_2C3AC.",
-   "name": "BattThresh3"
+   "size": 1
   },
   "04CA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempStartTime",
+   "desc": "Battery temperature: time after start (Count191ms) up to which the start logic applies",
    "category": "Sensors",
-   "desc": "Byte compared with Count191ms; read by Sub_2C3AC.",
-   "name": "BattCount191msThresh"
+   "size": 1
   },
   "04CB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BattTempOffTimeMin",
+   "desc": "Battery temperature: engine-off time ($017B,Z) above which the bus temperature is used at start",
    "category": "Sensors",
-   "desc": "Byte compared with V017B; read by Sub_2C3AC.",
-   "name": "BattV017BThresh"
+   "size": 1
   },
   "04D6": {
    "name": "FanAcSensorStage1",
@@ -4605,20 +4577,16 @@
    "category": "EGR"
   },
   "0603": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrTrackTargetMax",
+   "desc": "EGR position tracking test: target position at or below this value",
    "category": "EGR",
-   "desc": "Byte compared with EgrTargetPos; read by Sub_22808. Fault: P0405.",
-   "name": "EgrTargetPosThresh1"
+   "size": 1
   },
   "0604": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrResultPassCount",
+   "desc": "EGR flow test result: passed tests ($0B57,Z) before the test counts as passed",
    "category": "EGR",
-   "desc": "Byte compared with; read by Sub_22808. Fault: P0405.",
-   "name": "EgrThresh5"
+   "size": 1
   },
   "0605": {
    "size": 1,
@@ -5745,20 +5713,16 @@
    "category": "Fuel"
   },
   "1722": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte added to; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorAdder4"
+   "name": "FlexSensorTrackStepUp",
+   "desc": "Flex sensor: step of FlexEthanolLearned towards a higher sensor value (difference of 4 or more)",
+   "category": "Fuel",
+   "size": 1
   },
   "1723": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte subtracted from; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorOffset2"
+   "name": "FlexSensorTrackStepDown",
+   "desc": "Flex sensor: step of FlexEthanolLearned towards a lower sensor value",
+   "category": "Fuel",
+   "size": 1
   },
   "1724": {
    "name": "O2FlexEthanolMin",
@@ -5847,92 +5811,70 @@
    "name": "O2Value4"
   },
   "18EE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V019F; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorV019FThresh"
+   "name": "RefuelStopTimeMin",
+   "desc": "Refuel check (Options032F bit 3): time stopped ($019F,Z) at or above which the fuel level is stored",
+   "category": "Fuel",
+   "size": 1
   },
   "18EF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with FuelLevelScaled; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorFuelLevelScaledThresh"
+   "name": "RefuelLevelRise",
+   "desc": "Refuel check: fuel level rise since the stop at or above which a refuel is detected",
+   "category": "Fuel",
+   "size": 1
   },
   "18F0": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorFlexLearnFuelSumThresh1"
+   "name": "RefuelWindowFuel",
+   "desc": "Refuel check: fuel used (FlexLearnFuelSum, word) within which the sensor change must appear",
+   "category": "Fuel",
+   "size": 2
   },
   "18F2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V019A; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorV019AThresh"
+   "name": "RefuelSensorChange",
+   "desc": "Refuel check: flex sensor change since the refuel at or above which the new fuel is seen",
+   "category": "Fuel",
+   "size": 1
   },
   "18F3": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with V01A4; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorV01A4Thresh"
+   "name": "RefuelSensorTimeMin",
+   "desc": "Refuel check: count $01A4,Z (word) at or above which the flex sensor reading is stored at the stop",
+   "category": "Fuel",
+   "size": 2
   },
   "18F5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V019B; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorV019BThresh"
+   "name": "RefuelSensorChange2",
+   "desc": "Refuel check: flex sensor change since the stop at or above which the new fuel is seen",
+   "category": "Fuel",
+   "size": 1
   },
   "18F6": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word used with; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorValue6"
+   "name": "RefuelBlendDelay",
+   "desc": "Refuel check: fuel used before blending starts (sensor lower, change after refuel; word)",
+   "category": "Fuel",
+   "size": 2
   },
   "18F8": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorFlexLearnFuelSumThresh2"
+   "name": "RefuelBlendDelay2",
+   "desc": "As RefuelBlendDelay with the sensor reading lower",
+   "category": "Fuel",
+   "size": 2
   },
   "18FA": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word used with; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorValue7"
+   "name": "RefuelBlendDelayStop",
+   "desc": "As RefuelBlendDelay for a change since the stop, sensor higher",
+   "category": "Fuel",
+   "size": 2
   },
   "18FC": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word used with; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorValue8"
+   "name": "RefuelBlendDelayStop2",
+   "desc": "As RefuelBlendDelayStop with the sensor reading lower",
+   "category": "Fuel",
+   "size": 2
   },
   "18FF": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorFlexLearnFuelSumThresh3"
+   "name": "RefuelBlendFuel",
+   "desc": "Refuel check: fuel used (word) over which the learned ethanol value is blended to the new reading",
+   "category": "Fuel",
+   "size": 2
   },
   "1919": {
    "name": "AccelMapRiseOffset",
@@ -7112,68 +7054,52 @@
    "size": 1
   },
   "1F08": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCtlGainP",
+   "desc": "Purge flow controller (PurgeFlowControl): gain on the flow error $045A,Z (output = sum of the three terms / 128)",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3E074.",
-   "name": "PurgeValue2"
+   "size": 1
   },
   "1F09": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCtlGainD",
+   "desc": "Purge flow controller: gain on the change of the flow error $0458,Z",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3E074.",
-   "name": "PurgeValue3"
+   "size": 1
   },
   "1F0A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCtlGainI",
+   "desc": "Purge flow controller: gain on the summed flow error $0456,Z",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3E074.",
-   "name": "PurgeValue4"
+   "size": 1
   },
   "1F0B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeTargetChangeMax",
+   "desc": "Purge flow controller: summed target change ($0464,Z) below which a settled rise starts the soft step",
    "category": "EVAP purge",
-   "desc": "Byte compared with V0464; read by Sub_3E074.",
-   "name": "PurgeV0464Thresh"
+   "size": 1
   },
   "1F0C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeSoftStepOffset",
+   "desc": "Purge flow controller: reduction of the flow target during the soft step",
    "category": "EVAP purge",
-   "desc": "Byte subtracted from; read by Sub_3E074.",
-   "name": "PurgeOffset1"
+   "size": 1
   },
   "1F0D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeSoftStepLoops",
+   "desc": "Purge flow controller: loops ($0465,Z) of the soft step",
    "category": "EVAP purge",
-   "desc": "Byte stored into V0465; read by Sub_3E074.",
-   "name": "PurgeV0465Init"
+   "size": 1
   },
   "1F0E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeTargetSettleBand",
+   "desc": "Purge flow controller: target-to-flow difference at or below which the target counts as settled",
    "category": "EVAP purge",
-   "desc": "Byte compared with; read by Sub_3E074.",
-   "name": "PurgeThresh2"
+   "size": 1
   },
   "1F0F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeTargetStepMin",
+   "desc": "Purge flow controller: signed change of the flow target that sets the rising/falling flags ($0469,Z)",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3E074.",
-   "name": "PurgeValue5"
+   "size": 1
   },
   "1F10": {
    "name": "PurgeBattTempStartMax",
@@ -7283,7 +7209,7 @@
   },
   "1FE4": {
    "name": "PurgeStartCoolantMax",
-   "desc": "Vapor learning (Sub_3E500): start coolant below this value",
+   "desc": "Vapor learning (PurgeVaporLearn): start coolant below this value",
    "unit": "tempc",
    "category": "EVAP purge",
    "size": 1
@@ -7295,34 +7221,28 @@
    "size": 1
   },
   "1FE6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeTrimFilterOff",
+   "desc": "Purge vapour learning (PurgeVaporLearn): filter weight of the short-term trim average without purge ($044C,Z)",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3E500.",
-   "name": "PurgeValue6"
+   "size": 1
   },
   "1FE7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeTrimFilterOn",
+   "desc": "Purge vapour learning: filter weight of the short-term trim average with purge ($044D,Z)",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3E500.",
-   "name": "PurgeValue7"
+   "size": 1
   },
   "1FE8": {
    "name": "PurgeLearnTimeMax",
-   "desc": "Purge vapor learning (Sub_3E500): length of the part-throttle phase (word)",
+   "desc": "Purge vapor learning (PurgeVaporLearn): length of the part-throttle phase (word)",
    "category": "EVAP purge",
    "size": 2
   },
   "1FEA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeVaporBias",
+   "desc": "Purge vapour learning: signed offset added to the vapour estimate ($07E8,Z) giving $07E9,Z",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3E500.",
-   "name": "PurgeValue8"
+   "size": 1
   },
   "1FEB": {
    "name": "PurgeLearnRateInit",
@@ -7349,36 +7269,28 @@
    "size": 1
   },
   "1FEF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeVaporTrimDrop",
+   "desc": "Purge vapour learning: signed offset added to the no-purge trim average; a purge trim average below it counts as vapour",
    "category": "EVAP purge",
-   "desc": "Byte added to V044C; read by Sub_3E500.",
-   "name": "PurgeV044CAdder"
+   "size": 1
   },
   "1FF0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeVaporDetectCount",
+   "desc": "Purge vapour learning: counts ($0447,Z) of the vapour condition before the vapour learning starts",
    "category": "EVAP purge",
-   "desc": "Byte compared with V0447; read by Sub_3E500.",
-   "name": "PurgeV0447Thresh"
+   "size": 1
   },
   "1FF1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnRateTipStep",
+   "desc": "Purge vapour learning: learning rate ($0444,Z) increase after a throttle event ($071D,Z bit 3)",
    "category": "EVAP purge",
-   "desc": "Byte added to; read by Sub_3E500.",
-   "name": "PurgeAdder4"
+   "size": 1
   },
   "1FF2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnRateTipMax",
+   "desc": "Purge vapour learning: upper limit of that increase",
    "category": "EVAP purge",
-   "desc": "Byte compared with V0444; read by Sub_3E500.",
-   "name": "PurgeV0444Thresh2"
+   "size": 1
   },
   "1FF3": {
    "name": "PurgeLearnRateInit2",
@@ -7429,28 +7341,22 @@
    "size": 1
   },
   "1FFC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnTrimBandUp",
+   "desc": "Purge vapour learning: positive short-term trim at or below this value changes nothing",
    "category": "EVAP purge",
-   "desc": "Byte compared with ShortTermTrim1; read by Sub_3E500.",
-   "name": "PurgeShortTermTrim1Thresh1"
+   "size": 1
   },
   "1FFD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnTrimBandDown",
+   "desc": "Purge vapour learning: negative trim band (complemented / negated before the compare)",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3E500.",
-   "name": "PurgeValue9"
+   "size": 1
   },
   "1FFE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeVaporSettleTime",
+   "desc": "Purge vapour learning: time ($044E,Z) after the learning start before the trims are compared",
    "category": "EVAP purge",
-   "desc": "Byte compared with V044E; read by Sub_3E500.",
-   "name": "PurgeV044EThresh"
+   "size": 1
   },
   "1FFF": {
    "name": "PurgeLearnTrimCount",
@@ -9899,12 +9805,10 @@
    "name": "PurgeAirTempThresh"
   },
   "53B6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeMonCommand",
+   "desc": "Purge command used for the flow value $047F,Z of the purge monitor (also read by Sub_3ED66)",
    "category": "EVAP purge",
-   "desc": "Byte used with; read by Sub_3E074, Sub_3ED66.",
-   "name": "PurgeValue10"
+   "size": 1
   },
   "53B7": {
    "size": 1,
@@ -9916,7 +9820,7 @@
   },
   "5512": {
    "name": "LdpBattTempMax",
-   "desc": "EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value",
+   "desc": "EVAP leak test (LdpMonitor, leak detection pump): battery temperature at or below this value",
    "unit": "tempc",
    "category": "EVAP purge",
    "size": 1
@@ -9958,7 +9862,7 @@
   },
   "5518": {
    "name": "LdpPumpOnTime",
-   "desc": "Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke",
+   "desc": "Leak detection pump (LdpPumpStroke): pump-on count ($0591,Z) per stroke",
    "category": "EVAP purge",
    "size": 1
   },
@@ -10119,40 +10023,40 @@
   },
   "5546": {
    "name": "PurgeMonTimeMin",
-   "desc": "Purge flow monitor (Sub_252A8): time since start at or above this value",
-   "category": "Diagnostics",
+   "desc": "Purge flow monitor (PurgeFlowTest): time since start at or above this value",
+   "category": "EVAP purge",
    "size": 1
   },
   "5547": {
    "name": "PurgeMonCoolantMin",
    "desc": "Purge flow monitor: coolant at or above this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "5548": {
    "name": "PurgeMonSpeedMax",
    "desc": "Purge flow monitor: vehicle speed at or below this value",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "5549": {
    "name": "PurgeMonMapMax",
    "desc": "Purge flow monitor: MAP at or below this value",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "554A": {
    "name": "PurgeMonRpmBand",
    "desc": "Purge flow monitor: engine rpm within the idle target plus or minus this value",
    "unit": "rpmw",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 2
   },
   "554C": {
    "name": "PurgeFlowSettleCount",
-   "desc": "EVAP purge flow test (Sub_252A8): settle count ($05B1,Z) before the test starts",
+   "desc": "EVAP purge flow test (PurgeFlowTest): settle count ($05B1,Z) before the test starts",
    "category": "EVAP purge",
    "size": 1
   },
@@ -10165,26 +10069,26 @@
   "554E": {
    "name": "PurgeMonIacBand",
    "desc": "Purge flow monitor: IAC command within this many steps of the IAC position",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "554F": {
    "name": "PurgeMonIacDrift",
    "desc": "Purge flow monitor: IAC position drift limit during the test",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "5550": {
    "name": "PurgeMonMapDrift",
    "desc": "Purge flow monitor: MAP drift limit during the test",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "5551": {
    "name": "PurgeMonFilter",
    "desc": "Purge flow monitor: filter weight of the trim responses",
-   "category": "Diagnostics",
+   "category": "EVAP purge",
    "size": 1
   },
   "5559": {
@@ -10288,100 +10192,100 @@
   "5569": {
    "name": "EgrMonSteadyTime",
    "desc": "EGR flow monitor: steady time ($0581,Z) before the test",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "556A": {
    "name": "EgrMonCoolantMin",
    "desc": "EGR flow monitor (Sub_25000, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "556B": {
    "name": "EgrMonBattTempMin",
    "desc": "EGR flow monitor: battery temperature at or above this value",
    "unit": "tempc",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "556C": {
    "name": "EgrMonVacuumMin",
    "desc": "EGR flow monitor: manifold vacuum at or above this value",
    "unit": "kpa",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "556D": {
    "name": "EgrMonSpeedMin",
    "desc": "EGR flow monitor: vehicle speed at or above this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "556E": {
    "name": "EgrMonMapAccelMax",
    "desc": "EGR flow monitor: MAP acceleration fuel at or below this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "5570": {
    "name": "EgrMonTpsAccelMax",
    "desc": "EGR flow monitor: throttle acceleration fuel at or below this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "5572": {
    "name": "EgrMonTipInMax",
    "desc": "EGR flow monitor: tip-in fuel at or below this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "5574": {
    "name": "EgrMonDecelLeanMin",
    "desc": "EGR flow monitor: decel enleanment, when present, at or above this value",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "557C": {
    "name": "EgrMonPhaseTime",
    "desc": "EGR flow monitor: length of the first test phase ($057E,Z)",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "558A": {
    "name": "EgrMonTrimMin",
    "desc": "EGR flow monitor: short-term trim at or above this value (signed)",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "558B": {
    "name": "EgrMonTrimMax",
    "desc": "EGR flow monitor: short-term trim at or below this value (signed)",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "558C": {
    "name": "EgrMonPhaseTime2",
    "desc": "EGR flow monitor: length of the second test phase",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 2
   },
   "559A": {
    "name": "EgrMonResultMin",
    "desc": "EGR flow monitor: trim response below this value fails the test",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "559B": {
    "name": "EgrMonResultMax",
    "desc": "EGR flow monitor: trim response above this value passes it",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "559C": {
    "name": "EgrMonFailCount",
    "desc": "EGR flow monitor: failed tests before the fault",
-   "category": "Diagnostics",
+   "category": "EGR",
    "size": 1
   },
   "559D": {
@@ -11111,20 +11015,18 @@
    "name": "SensorO2UpBank2RawThresh"
   },
   "5787": {
-   "size": 1,
+   "name": "FlexFaultRpmHigh",
+   "desc": "Flex sensor fault: rpm at or above which the fault fallback flags ($0770,Z bit 4, $0760,Z) are set",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorRpmThresh8"
+   "category": "Fuel",
+   "size": 1
   },
   "5788": {
-   "size": 1,
+   "name": "FlexFaultRpmLow",
+   "desc": "Flex sensor fault: rpm below which the fallback flag $0770,Z bit 4 is cleared",
    "unit": "rpm32",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with EngineRpm; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorRpmThresh9"
+   "category": "Fuel",
+   "size": 1
   },
   "5789": {
    "size": 1,
@@ -11410,84 +11312,64 @@
    "name": "DiagRpmThresh8"
   },
   "501C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccThrottleFilter",
+   "desc": "Torque converter clutch monitor (TccMonitor, P0740): filter weight of the throttle average $0672,Z",
    "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_2352A.",
-   "name": "DiagValue8"
+   "size": 1
   },
   "501D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccRatioFilter",
+   "desc": "Torque converter clutch monitor: filter weight of RpmSpeedRatioFiltered",
    "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_2352A.",
-   "name": "DiagValue9"
+   "size": 1
   },
   "501E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccMonSpeedMax",
+   "desc": "Torque converter clutch monitor: runs at or below this vehicle speed",
    "category": "Diagnostics",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_2352A.",
-   "name": "DiagSpeedThresh9"
+   "size": 1
   },
   "501F": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccRatioStableBand",
+   "desc": "Torque converter clutch monitor: ratio change (word) at or above which the stable time restarts before lock-up",
    "category": "Diagnostics",
-   "desc": "Word compared with RpmSpeedRatioFiltered; read by Sub_2352A.",
-   "name": "DiagRpmSpeedRatioFilteredThresh1"
+   "size": 2
   },
   "5021": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccRatioMax",
+   "desc": "Torque converter clutch monitor: filtered rpm/speed ratio below this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with RpmSpeedRatioFiltered; read by Sub_2352A.",
-   "name": "DiagRpmSpeedRatioFilteredThresh2"
+   "size": 1
   },
   "5022": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccStableTimeMin",
+   "desc": "Torque converter clutch monitor: stable time ($0676,Z) before the lock-up is judged",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0676; read by Sub_2352A.",
-   "name": "DiagV0676Thresh"
+   "size": 1
   },
   "5023": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccThrottleMin",
+   "desc": "Torque converter clutch monitor: throttle average above this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0672; read by Sub_2352A.",
-   "name": "DiagV0672Thresh1"
+   "size": 1
   },
   "5024": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccThrottleChangeMax",
+   "desc": "Torque converter clutch monitor: throttle change since lock-up below this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0672; read by Sub_2352A.",
-   "name": "DiagV0672Thresh2"
+   "size": 1
   },
   "5025": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccRatioDropMin",
+   "desc": "Torque converter clutch monitor: signed ratio drop (word) that counts as lock-up; its low byte ($33C1) is also read directly as the fail count limit of $0678,Z",
    "category": "Diagnostics",
-   "desc": "Word compared with V0678; read by Sub_2352A.",
-   "name": "DiagV0678Thresh"
+   "size": 2
   },
   "5027": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "TccTestDelay",
+   "desc": "Torque converter clutch monitor: delay ($0677,Z) after lock-up before the ratio drop is checked",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0677; read by Sub_2352A.",
-   "name": "DiagV0677Thresh"
+   "size": 1
   },
   "5028": {
    "size": 1,
@@ -11771,36 +11653,28 @@
    "size": 1
   },
   "57FA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrTrackTargetMin",
+   "desc": "EGR position tracking test: target position at or above this value",
    "category": "EGR",
-   "desc": "Byte compared with EgrTargetPos; read by Sub_22808. Fault: P0405.",
-   "name": "EgrTargetPosThresh3"
+   "size": 1
   },
   "57FB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrTrackErrorMax",
+   "desc": "EGR position tracking test: position error ($0B40,Z) at or below which the position counts as good",
    "category": "EGR",
-   "desc": "Byte used with; read by Sub_22808. Fault: P0405.",
-   "name": "EgrValue9"
+   "size": 1
   },
   "57FC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrTrackGoodTime",
+   "desc": "EGR position tracking test: time ($058C,Z) with a small position error before a test passes",
    "category": "EGR",
-   "desc": "Byte compared with V058C; read by Sub_22808. Fault: P0405.",
-   "name": "EgrV058CThresh"
+   "size": 1
   },
   "57FD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrTrackPassCount",
+   "desc": "EGR position tracking test: passed tests ($058D,Z) before the test counts as passed",
    "category": "EGR",
-   "desc": "Byte compared with; read by Sub_22808. Fault: P0405.",
-   "name": "EgrThresh8"
+   "size": 1
   },
   "57FE": {
    "name": "ThrottleRawLow",
@@ -11967,20 +11841,16 @@
    "size": 1
   },
   "5816": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorThresh19"
+   "name": "FlexSensorRatioHigh",
+   "desc": "Flex sensor check (FlexSensorCheck): ratio of the reading to the start reading (×227) at or above this value is a fault (P0179)",
+   "category": "Fuel",
+   "size": 1
   },
   "5817": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_2C7FE. Fault: P0176.",
-   "name": "SensorThresh20"
+   "name": "FlexSensorRatioLow",
+   "desc": "Flex sensor check: ratio below this value is a fault (P0178)",
+   "category": "Fuel",
+   "size": 1
   },
   "581A": {
    "size": 1,
@@ -12093,20 +11963,16 @@
    "name": "SensorV0A63Thresh2"
   },
   "582F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrPosSensorLow",
+   "desc": "EGR position sensor below this value is a low-input fault",
    "category": "EGR",
-   "desc": "Byte compared with; read by Sub_22808. Fault: P0405.",
-   "name": "EgrThresh9"
+   "size": 1
   },
   "5830": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "EgrPosSensorHigh",
+   "desc": "EGR position sensor ($0A8D,Z) above this value is a high-input fault (EgrPositionMonitor)",
    "category": "EGR",
-   "desc": "Byte compared with V0A8D; read by Sub_22808. Fault: P0405.",
-   "name": "EgrV0A8DThresh"
+   "size": 1
   },
   "5831": {
    "size": 1,
@@ -12279,28 +12145,22 @@
    "name": "CalValue8"
   },
   "777C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeMonitorValueInit",
+   "desc": "Start value of PurgeMonitorValue",
    "category": "EVAP purge",
-   "desc": "Byte stored into PurgeMonitorValue; read by Sub_3E074.",
-   "name": "PurgeMonitorValueInit"
+   "size": 1
   },
   "777D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeMonitorValueMin",
+   "desc": "Lower limit of PurgeMonitorValue from PurgeMonitorLimit",
    "category": "EVAP purge",
-   "desc": "Byte compared with PurgeMonitorValue; read by Sub_3E074, Sub_3ECC6.",
-   "name": "PurgeMonitorValueThresh"
+   "size": 1
   },
   "777E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeMonHoldTime",
+   "desc": "Purge monitor: time ($047D,Z) the hold state ($047A,Z bit 4) lasts",
    "category": "EVAP purge",
-   "desc": "Byte compared with V047D; read by Sub_3E074.",
-   "name": "PurgeV047DThresh"
+   "size": 1
   },
   "ABB8": {
    "size": 4,

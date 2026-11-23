@@ -5213,7 +5213,7 @@ Tab3D_2970:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00
 LdpBattTempMax:
-        dc.b    $9F                                      ; EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value
+        dc.b    $9F                                      ; EVAP leak test (LdpMonitor, leak detection pump): battery temperature at or below this value
 LdpBattTempMin:
         dc.b    $84                                      ; EVAP leak test: battery temperature at or above this value
         dc.b    $06
@@ -5224,7 +5224,7 @@ LdpVoltsMin:
 LdpVacuumMin:
         dc.b    $20                                      ; EVAP leak test: manifold vacuum at or above this value for the test states
 LdpPumpOnTime:
-        dc.b    $14                                      ; Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke
+        dc.b    $14                                      ; Leak detection pump (LdpPumpStroke): pump-on count ($0591,Z) per stroke
 LdpStrokeTimeMax:
         dc.b    $1C                                      ; Leak detection pump, pump-up state: stroke time ($0593,Z) at or above which the stroke counts restart
 LdpPumpOffTime:
@@ -5303,7 +5303,7 @@ LdpPumpTimeByLevel2:
         dc.b    0,45, 80,30, 100,26                      ; x, y
 
 PurgeMonTimeMin:
-        dc.b    $13                                      ; Purge flow monitor (Sub_252A8): time since start at or above this value
+        dc.b    $13                                      ; Purge flow monitor (PurgeFlowTest): time since start at or above this value
         dc.b    $CD
 PurgeMonSpeedMax:
         dc.b    $00                                      ; Purge flow monitor: vehicle speed at or below this value
@@ -5312,7 +5312,7 @@ PurgeMonMapMax:
 PurgeMonRpmBand:
         dc.b    $03,$40                                  ; Purge flow monitor: engine rpm within the idle target plus or minus this value
 PurgeFlowSettleCount:
-        dc.b    $20                                      ; EVAP purge flow test (Sub_252A8): settle count ($05B1,Z) before the test starts
+        dc.b    $20                                      ; EVAP purge flow test (PurgeFlowTest): settle count ($05B1,Z) before the test starts
 PurgeFlowSettleStart:
         dc.b    $00                                      ; EVAP purge flow test: start value of the settle count = PurgeFlowSettleCount × (256 − this)/256 (0 = start at zero)
 PurgeMonIacBand:
@@ -6281,7 +6281,7 @@ AcSensorCurve:
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexSensorCurve ($42AD): 2D table, 8 points, unsigned
-; Analog input $0A8E (probably the fuel composition sensor: Sub_2C7FE reports P0176/P0178/P0179 for it) to $0A64,Z
+; Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to $0A64,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: FlexSensorRaw
 ; Read at $144B2

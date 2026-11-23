@@ -4534,7 +4534,7 @@ Tab3D_28EC:
 
         dc.b    $08,$00,$F5,$03,$00,$00
 LdpBattTempMax:
-        dc.b    $9F                                      ; EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value
+        dc.b    $9F                                      ; EVAP leak test (LdpMonitor, leak detection pump): battery temperature at or below this value
 LdpBattTempMin:
         dc.b    $84                                      ; EVAP leak test: battery temperature at or above this value
         dc.b    $06,$B5
@@ -4545,7 +4545,7 @@ LdpVoltsMin:
 LdpVacuumMin:
         dc.b    $20                                      ; EVAP leak test: manifold vacuum at or above this value for the test states
 LdpPumpOnTime:
-        dc.b    $14                                      ; Leak detection pump (Sub_25DA8): pump-on count ($0591,Z) per stroke
+        dc.b    $14                                      ; Leak detection pump (LdpPumpStroke): pump-on count ($0591,Z) per stroke
 LdpPumpOffTime:
         dc.b    $01                                      ; Leak detection pump: pump-off count ($0592,Z) per stroke
 LdpStrokeTimeValid:

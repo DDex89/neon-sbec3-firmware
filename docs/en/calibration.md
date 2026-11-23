@@ -176,7 +176,7 @@ add or subtract (`LDAA >CoolantTemp,Z` then `CMPA $2853`), or what a loaded valu
 or stored into. That gives the unit (temperature, rpm, kPa, volts) and a structural name: the
 prefix of the tables of the same routine or the subsystem, the variable, and the role (`Thresh` for
 a compare, `Adder`, `Offset`, `Factor`, `Init` for a value stored into RAM, `Value` otherwise),
-numbered when repeated. 888 constants have hand names from the code read so far (idle, spark,
+numbered when repeated. 959 constants have hand names from the code read so far (idle, spark,
 knock, EGR, fan, A/C, diagnostics, the fuel constants and limits); the rest keep the structural
 name with * in the catalogue. Word rpm values use the unit `rpmw` (rpm = x / 8).
 
@@ -252,7 +252,7 @@ Besides the base pulse, the code builds these corrections (names as in the sourc
 | Air temperature | `Sub_10AEC` | `FuelAirTempCorr` with rpm and MAP weights | multiplies the fuel |
 | MAP and throttle filters | `Sub_1204A` | filter coefficients for rising and falling MAP and throttle against start coolant | `MapFilterCoef`, `TpsFilterCoef` |
 
-**Flex fuel.** The program supports flexible-fuel vehicles: `Sub_2C7FE` checks the fuel composition
+**Flex fuel.** The program supports flexible-fuel vehicles: `FlexSensorCheck` checks the fuel composition
 sensor (`FlexSensorRaw`, $0A8E,Z) and the flex-fuel learning code (`FlexLearn...`, around
 `Sub_17000`) learns the ethanol content from the oxygen-sensor trims (`FlexEthanolLearned` $0197,Z,
 0-170, and `FlexEthanol` $0198,Z). The ethanol content then selects rows in the `Flex...` fuel and
@@ -275,10 +275,11 @@ fault bit, `ReportPass` ($24160) counts a passed one and clears it; both take in
 | `Sub_21E38, Sub_21EFE` | P0106, P0107, P0108 | MAP rationality, low, high |
 | `Sub_22688` | P0132, P0152 | upstream O2 high, banks 1 and 2 |
 | `Sub_22762` | P0443 | purge solenoid circuit |
-| `Sub_22808, Sub_22B16` | P0405, P0403 | EGR position low, EGR solenoid circuit |
+| `EgrPositionMonitor, Sub_22B16` | P0405, P0406, P0403 | EGR position sensor low and high, EGR solenoid circuit |
 | `Sub_22C1C` | P1298 | lean at WOT |
 | `Sub_22CD8` | P1496 | 5 V supply low |
 | `Sub_22CF0` | P0700 | transmission control |
+| `TccMonitor` | P0740 | torque converter clutch (rpm/speed ratio does not drop at lock-up) |
 | `Sub_236D4, Sub_2D208` | P0121, P0122, P0123 | throttle sensor rationality, low, high |
 | `Sub_23970` | P0500 | vehicle speed sensor (load without speed) |
 | `Sub_23AB2, Sub_23B84` | P0340, P1391 | cam sensor, intermittent cam/crank |
@@ -286,7 +287,7 @@ fault bit, `ReportPass` ($24160) counts a passed one and clears it; both take in
 | `Sub_25F40` | P1495 | leak detection pump solenoid |
 | `Sub_2C1CA, Sub_2C2E6` | P0117, P0118, P0112, P0113 | coolant and air temperature sensors low/high |
 | `Sub_2C636` | P1492, P1493 | battery temperature sensor high/low |
-| `Sub_2C7FE` | P0176, P0178, P0179 | fuel composition sensor |
+| `FlexSensorCheck` | P0176, P0178, P0179 | fuel composition sensor |
 | `Sub_2CC42, Sub_387FE` | P1697, P1696 | SRI mileage not stored, EEPROM write denied |
 | `Sub_2DCC2` | P1484 | catalyst overheat |
 | `Sub_2FA52` | P1289 | manifold tune valve |
@@ -296,7 +297,7 @@ Misfire, catalyst, O2-sensor, EVAP-leak and purge-flow monitors report through t
 machines; their constants are named after the monitor (`Misfire...`, `CatMon...`, `O2Mon...`,
 `Ldp...`, `PurgeMon...`).
 
-The P0176 test of `Sub_2C7FE` changes one earlier reading: $0A8E,Z, read as the fuel level,
+The P0176 test of `FlexSensorCheck` changes one earlier reading: $0A8E,Z, read as the fuel level,
 is the fuel composition sensor input (now `FlexSensorRaw`), and the P1697 test shows that the
 word at $000D,Z is the SRI (service reminder) mileage (`SriMileage`).
 
@@ -336,7 +337,7 @@ applies only to the reference image.
   duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
   subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
   them on a running car would settle them.
-- 560 constants have structural names only, and about 270 RAM variables are still known by
+- 489 constants have structural names only, and about 270 RAM variables are still known by
   address.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
   $146E4 and $1974A), are not followed yet.
