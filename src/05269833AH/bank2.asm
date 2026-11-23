@@ -2383,7 +2383,7 @@ MapKeyOnCheck:
         CPE     #$07D0
         BCC     L21E62
         LDD     >Count3s,Z
-        BRSET   >SystemFlags00A,Z,#$20,L21E52
+        BRSET   >SystemFlags00A,Z,#$20,L21E52            ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         BRSET   >DriveFlags,Z,#$02,L21E52                ; bit 1: reference pulses seen since key-on (Isr_GPT_IC1); MapKeyOnCheck needs it clear
         BRSET   >DriveFlags,Z,#$04,L21E52                ; bit 2: crank and cam synchronised since key-on (Isr_GPT_PAI)
         BRCLR   >BrakeSwFlags,Z,#$01,L21E58              ; bit 0: used by MapKeyOnCheck
@@ -3855,16 +3855,16 @@ L22E3E:
         LBCC    L22EAE
         BSET    >FuelLevelFlags2,Z,#$10                  ; bit 4: fuel level change at shutdown under FuelSenderShutdownDiff (FuelSenderMonitor)
 L22E4C:
-        BRSET   >SystemFlags00A,Z,#$08,L22E6C
+        BRSET   >SystemFlags00A,Z,#$08,L22E6C            ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
         LDAB    >FuelSenderFiltered,Z
         STAB    $011E,Z
         CLR     >FuelSenderFuelUsed,Z
-        BSET    <SystemFlags00A,Z,#$08
+        BSET    <SystemFlags00A,Z,#$08                   ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
         CMPB    >FuelSenderLowLevel
         BCC     L22E6C
-        BSET    <SystemFlags00A,Z,#$01
+        BSET    <SystemFlags00A,Z,#$01                   ; bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
 L22E6C:
-        BRCLR   >SystemFlags00A,Z,#$01,L22E90
+        BRCLR   >SystemFlags00A,Z,#$01,L22E90            ; bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
         LDAA    $011E,Z
         CBA
         BCC     L22E7C
@@ -3907,7 +3907,7 @@ L22ECC:
 L22ED6:
         BCLR    >FaultSet13,Z,#$80
 L22EDA:
-        BCLR    <SystemFlags00A,Z,#$09
+        BCLR    <SystemFlags00A,Z,#$09                   ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it; bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
 L22EDE:
         LDAA    >FaultSet13,Z
         BITA    #$E0
@@ -4217,7 +4217,7 @@ PnSwitchMonitor:
         LDAA    >VehicleSpeed,Z
         CMPA    >PnSwitchStartSpeedMax
         BHI     L23298
-        BRSET   >SystemFlags00A,Z,#$20,L23298
+        BRSET   >SystemFlags00A,Z,#$20,L23298            ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         BRSET   >MonitorDisableFlags,Z,#$08,L23298       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
         BRSET   >MonitorDisableFlags,Z,#$02,L23298       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
         BRSET   >MonitorDisableFlags,Z,#$04,L23298       ; bit 2: battery voltage at or below MonEnableVoltsMin
@@ -6433,7 +6433,7 @@ L252DE:
         BSET    >PurgeFlowTestResult,Z,#$01
         JMP     L2572A
 L252F0:
-        BRCLR   >PurgeLearnFlags,Z,#$80,L252FE
+        BRCLR   >PurgeLearnFlags,Z,#$80,L252FE           ; bit 7: purge vapour learning running (PurgeVaporLearn)
         BSET    >PurgeFlowTestResult,Z,#$02
         JMP     L2572A
 L252FE:
@@ -6838,7 +6838,7 @@ L2580A:
 L2580E:
         JMP     L25CFC
 L25812:
-        BCLR    >LdpFlags2,Z,#$0F
+        BCLR    >LdpFlags2,Z,#$0F                        ; bit 3: pump stroke time average taken (LDP state machine); bit 2: stroke time at or above LdpSealedStrokeTime2: system sealed (LDP state machine); bit 1: leak test step started (LDP state machine); bit 0: soak difference under LdpSoakDiffMax (LDP state machine); PurgeRampControl reads it
         BRSET   >LdpFlags3,Z,#$02,L2583C                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDAA    >BatteryTemp,Z
         CMPA    >LdpBattTempMax
@@ -6851,14 +6851,14 @@ L25812:
         CMPA    >LdpSoakDiffMax
         BCC     L25840
 L2583C:
-        BSET    >LdpFlags2,Z,#$01
+        BSET    >LdpFlags2,Z,#$01                        ; bit 0: soak difference under LdpSoakDiffMax (LDP state machine); PurgeRampControl reads it
 L25840:
         BRCLR   >LdpFlags3,Z,#$02,L2584C                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
-        BRSET   >LdpFlags2,Z,#$20,L2586E
+        BRSET   >LdpFlags2,Z,#$20,L2586E                 ; bit 5: leak test window counting (LDP state machine)
 L2584C:
         BRSET   >IoInputs0,Z,#$02,L2586E                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
-        BRSET   >LdpFlags2,Z,#$80,L25862
-        BRCLR   >LdpFlags2,Z,#$10,L25862
+        BRSET   >LdpFlags2,Z,#$80,L25862                 ; bit 7: pump switch closed at the purged check (LdpPurgedCheck)
+        BRCLR   >LdpFlags2,Z,#$10,L25862                 ; bit 4: purged time reached (LdpPurgedCheck)
         BSET    >LdpFlags,Z,#$04                         ; bit 2: pump switch closed in the current step (IoInputs0 bit 1)
 L25862:
         BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
@@ -6923,7 +6923,7 @@ L25900:
         BRA     L25894
 L2590C:
         BCLR    >LdpFlags,Z,#$04                         ; bit 2: pump switch closed in the current step (IoInputs0 bit 1)
-        BRCLR   >LdpFlags2,Z,#$01,L25894
+        BRCLR   >LdpFlags2,Z,#$01,L25894                 ; bit 0: soak difference under LdpSoakDiffMax (LDP state machine); PurgeRampControl reads it
         LDAA    #$12
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
@@ -6960,14 +6960,14 @@ L2596E:
         STAA    >LdpState,Z
         CLR     >LdpStateTime,Z
         BRCLR   >LdpFlags3,Z,#$02,L2599C                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
-        BRSET   >LdpFlags2,Z,#$20,L259C4
+        BRSET   >LdpFlags2,Z,#$20,L259C4                 ; bit 5: leak test window counting (LDP state machine)
         BSET    <MonStatusPurge,Z,#$48                   ; bit 6: purge flow monitor complete this drive cycle; bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
         BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
         LDAA    #$29
         STAA    >LdpState,Z
 L2599C:
         BSET    >LdpFlags,Z,#$10                         ; bit 4: leak test running (LDP state machine)
-        BCLR    >LdpFlags2,Z,#$20
+        BCLR    >LdpFlags2,Z,#$20                        ; bit 5: leak test window counting (LDP state machine)
         BRA     L259C4
 L259A6:
         LDAA    #$23
@@ -6976,8 +6976,8 @@ L259A6:
         CLR     >LdpPumpUpTimer,Z
         CLR     >LdpWindowStrokeCount,Z
         BCLR    >LdpFlags,Z,#$10                         ; bit 4: leak test running (LDP state machine)
-        BSET    >LdpFlags2,Z,#$20
-        BCLR    >LdpFlags2,Z,#$02
+        BSET    >LdpFlags2,Z,#$20                        ; bit 5: leak test window counting (LDP state machine)
+        BCLR    >LdpFlags2,Z,#$02                        ; bit 1: leak test step started (LDP state machine)
 L259C4:
         LBRA    L25D26
 L259C8:
@@ -7032,7 +7032,7 @@ L25A52:
         STAA    >LdpPumpUpTimer,Z
         CLR     >LdpWindowStrokeCount,Z
 L25A5A:
-        BRSET   >LdpFlags2,Z,#$02,L25A8A
+        BRSET   >LdpFlags2,Z,#$02,L25A8A                 ; bit 1: leak test step started (LDP state machine)
         LDAA    >FuelLevelScaled,Z
         BRCLR   >LdpFlags3,Z,#$02,L25A7A                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         LDX     #LdpPumpTimeByLevel2
@@ -7055,7 +7055,7 @@ L25A96:
         LDAA    #$34
         STAA    >LdpState,Z
 L25A9C:
-        BSET    >LdpFlags2,Z,#$02
+        BSET    >LdpFlags2,Z,#$02                        ; bit 1: leak test step started (LDP state machine)
         CLR     >LdpStateTime,Z
         CLR     >LdpStrokes,Z
         CLR     >LdpStrokeCount,Z
@@ -7124,10 +7124,10 @@ L25B48:
         LDAA    >LdpStrokeTime,Z
         CMPA    >LdpSealedStrokeTime2
         BCS     L25B70
-        BSET    >LdpFlags2,Z,#$04
+        BSET    >LdpFlags2,Z,#$04                        ; bit 2: stroke time at or above LdpSealedStrokeTime2: system sealed (LDP state machine)
         LBRA    L25C0A
 L25B70:
-        BCLR    >LdpFlags2,Z,#$04
+        BCLR    >LdpFlags2,Z,#$04                        ; bit 2: stroke time at or above LdpSealedStrokeTime2: system sealed (LDP state machine)
         LBRA    L25C0A
 L25B78:
         JSR     LdpStateTimer
@@ -7143,7 +7143,7 @@ L25B8C:
 L25B94:
         BRCLR   >LdpFlags3,Z,#$02,L25BBC                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BCLR    >MonData646,Z,#$01
-        BCLR    >LdpFlags2,Z,#$20
+        BCLR    >LdpFlags2,Z,#$20                        ; bit 5: leak test window counting (LDP state machine)
         LDAA    >LdpStrokeTimeAvg,Z
         CMPA    $059C,Z
         BCS     L25BF4
@@ -7158,7 +7158,7 @@ L25BBC:
         LSRB
         ORAB    #$C0
         STAB    $0170,Z
-        BSET    >LdpFlags2,Z,#$08
+        BSET    >LdpFlags2,Z,#$08                        ; bit 3: pump stroke time average taken (LDP state machine)
         LDAA    >LdpStrokeTimeAvg,Z
         STAA    >LdpStrokeResult,Z
         CMPA    >LdpSmallLeakStrokeTime
@@ -7259,7 +7259,7 @@ L25CBA:
         BCS     L25CE0
         BRA     L25CE4
 L25CD0:
-        BRCLR   >LdpFlags2,Z,#$04,L25CF4
+        BRCLR   >LdpFlags2,Z,#$04,L25CF4                 ; bit 2: stroke time at or above LdpSealedStrokeTime2: system sealed (LDP state machine)
         LDAA    >LdpStrokeTime,Z
         CMPA    >LdpSealedStrokeTime2
         BCC     L25CF4
@@ -7278,7 +7278,7 @@ L25CFA:
         BRA     L25D26
 L25CFC:
         BRCLR   >LdpFlags,Z,#$64,L25D16                  ; bit 6: large leak: pump strokes faster than LdpLargeLeakStrokeTime; bit 5: leak test step result: small leak or not settled, probably; bit 2: pump switch closed in the current step (IoInputs0 bit 1)
-        BRCLR   >LdpFlags2,Z,#$01,L25D16
+        BRCLR   >LdpFlags2,Z,#$01,L25D16                 ; bit 0: soak difference under LdpSoakDiffMax (LDP state machine); PurgeRampControl reads it
         BSET    <MonStatusLdp,Z,#$48
         BRSET   <DiagStatusFlags,Z,#$02,L25D24           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BCLR    <MonStatusLdp,Z,#$80
@@ -7366,14 +7366,14 @@ L25DC0:
         BCS     L25DCE
         STAA    >LdpStrokeTime,Z
 L25DCE:
-        BRSET   >LdpFlags2,Z,#$08,L25E40
+        BRSET   >LdpFlags2,Z,#$08,L25E40                 ; bit 3: pump stroke time average taken (LDP state machine)
         LDAA    >LdpStrokeTime,Z
         CMPA    >LdpStrokeTimeValid
         BCS     L25E40
         STAA    >LdpStrokeTimeAvg,Z
         BRA     L25E40
 L25DE4:
-        BRSET   >LdpFlags2,Z,#$08,L25E10
+        BRSET   >LdpFlags2,Z,#$08,L25E10                 ; bit 3: pump stroke time average taken (LDP state machine)
         LDAA    >LdpState,Z
         ANDA    #$0F
         CMPA    #$03
@@ -7431,13 +7431,13 @@ L25E58:
 L25E78:
         BCLR    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         BRCLR   >IoInputs0,Z,#$02,L25E90                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
-        BSET    >LdpFlags2,Z,#$80
-        BCLR    >LdpFlags2,Z,#$10
+        BSET    >LdpFlags2,Z,#$80                        ; bit 7: pump switch closed at the purged check (LdpPurgedCheck)
+        BCLR    >LdpFlags2,Z,#$10                        ; bit 4: purged time reached (LdpPurgedCheck)
         CLR     >LdpPurgedTimer,Z
         BRA     L25EDE
 L25E90:
-        BCLR    >LdpFlags2,Z,#$80
-        BRSET   >LdpFlags2,Z,#$10,L25EDE
+        BCLR    >LdpFlags2,Z,#$80                        ; bit 7: pump switch closed at the purged check (LdpPurgedCheck)
+        BRSET   >LdpFlags2,Z,#$10,L25EDE                 ; bit 4: purged time reached (LdpPurgedCheck)
         BRCLR   >MainLoopPhaseMask,Z,#$08,L25EDE         ; bit 3: one pass in 16 (about 191 ms)
         LDAA    >PurgeDuty,Z
         CMPA    >LdpPurgedDutyMin
@@ -7457,12 +7457,12 @@ L25EC4:
         BCC     L25ECC
         BRA     L25EDE
 L25ECC:
-        BSET    >LdpFlags2,Z,#$10
+        BSET    >LdpFlags2,Z,#$10                        ; bit 4: purged time reached (LdpPurgedCheck)
         BRA     L25EDE
 L25ED2:
         BSET    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         CLR     >LdpPurgedTimer,Z
-        BCLR    >LdpFlags2,Z,#$10
+        BCLR    >LdpFlags2,Z,#$10                        ; bit 4: purged time reached (LdpPurgedCheck)
 L25EDE:
         JSR     LdpSolenoidCheck
 L25EE2:
@@ -11754,14 +11754,14 @@ MisfireTransient:
         DEC     >MisfireTransientHold,Z
 L2B108:
         BRSET   >EngineStateFlags,Z,#$80,L2B122          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BSET    >MisfireFlags5,Z,#$80
+        BSET    >MisfireFlags5,Z,#$80                    ; bit 7: engine just started or stalled: misfire transient hold (MisfireTransient, MisfireSegmentTime)
         LDAB    >MisfireHoldStart
         CMPB    >MisfireTransientHold,Z
         BLS     L2B126
         STAB    >MisfireTransientHold,Z
         BRA     L2B126
 L2B122:
-        BCLR    >MisfireFlags5,Z,#$80
+        BCLR    >MisfireFlags5,Z,#$80                    ; bit 7: engine just started or stalled: misfire transient hold (MisfireTransient, MisfireSegmentTime)
 L2B126:
         LDAB    $061F,Z
         STAB    >MisfireLoad,Z
@@ -11772,7 +11772,7 @@ L2B126:
         NEGA
         CMPA    >MisfireMapChangeMax
         BLS     L2B170
-        BSET    >MisfireFlags5,Z,#$20
+        BSET    >MisfireFlags5,Z,#$20                    ; bit 5: MAP or throttle changed past MisfireMapChangeMax / MisfireThrottleChangeMax: hold
         LDAB    >MisfireHoldMap
         CMPB    >MisfireTransientHold,Z
         BLS     L2B174
@@ -11781,14 +11781,14 @@ L2B126:
 L2B156:
         CMPA    >MisfireThrottleChangeMax
         BLS     L2B170
-        BSET    >MisfireFlags5,Z,#$20
+        BSET    >MisfireFlags5,Z,#$20                    ; bit 5: MAP or throttle changed past MisfireMapChangeMax / MisfireThrottleChangeMax: hold
         LDAB    >MisfireHoldThrottle
         CMPB    >MisfireTransientHold,Z
         BLS     L2B174
         STAB    >MisfireTransientHold,Z
         BRA     L2B174
 L2B170:
-        BCLR    >MisfireFlags5,Z,#$20
+        BCLR    >MisfireFlags5,Z,#$20                    ; bit 5: MAP or throttle changed past MisfireMapChangeMax / MisfireThrottleChangeMax: hold
 L2B174:
         LDAA    >RevLimit
         BRSET   >DriveFlags,Z,#$20,L2B182                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
@@ -11796,14 +11796,14 @@ L2B174:
 L2B182:
         CMPA    >SegmentRpm,Z
         BCC     L2B19C
-        BSET    >MisfireFlags5,Z,#$10
+        BSET    >MisfireFlags5,Z,#$10                    ; bit 4: SegmentRpm above the rev-limit hold rpm (MisfireTransient)
         LDAB    >MisfireHoldRevLimit
         CMPB    >MisfireTransientHold,Z
         BLS     L2B1A0
         STAB    >MisfireTransientHold,Z
         BRA     L2B1A0
 L2B19C:
-        BCLR    >MisfireFlags5,Z,#$10
+        BCLR    >MisfireFlags5,Z,#$10                    ; bit 4: SegmentRpm above the rev-limit hold rpm (MisfireTransient)
 L2B1A0:
         LDAA    >MisfireHoldDefault
         BRCLR   >ClosedLoopMonFlags,Z,#$40,L2B1B4        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
@@ -11812,14 +11812,14 @@ L2B1A0:
 L2B1B4:
         CMPA    >SegmentRpm,Z
         BCC     L2B1CE
-        BSET    >MisfireFlags5,Z,#$01
+        BSET    >MisfireFlags5,Z,#$01                    ; bit 0: SegmentRpm above the misfire rpm limit: hold (MisfireTransient)
         LDAB    >MisfireHoldRpm
         CMPB    >MisfireTransientHold,Z
         BLS     L2B1D2
         STAB    >MisfireTransientHold,Z
         BRA     L2B1D2
 L2B1CE:
-        BCLR    >MisfireFlags5,Z,#$01
+        BCLR    >MisfireFlags5,Z,#$01                    ; bit 0: SegmentRpm above the misfire rpm limit: hold (MisfireTransient)
 L2B1D2:
         LDAA    >DecelLeanFuel,Z
         BEQ     L2B1DE
@@ -11837,16 +11837,16 @@ L2B1DE:
         ANDA    #$0C
         BNE     L2B206
         BRSET   >EventSparkFlags,Z,#$10,L2B206           ; bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it
-        BCLR    >MisfireFlags5,Z,#$08
+        BCLR    >MisfireFlags5,Z,#$08                    ; bit 3: per-event spark or fuel event active: hold (MisfireTransient)
         BRA     L2B218
 L2B206:
-        BSET    >MisfireFlags5,Z,#$08
+        BSET    >MisfireFlags5,Z,#$08                    ; bit 3: per-event spark or fuel event active: hold (MisfireTransient)
         LDAB    >MisfireHoldDecel
         CMPB    >MisfireTransientHold,Z
         BLS     L2B218
         STAB    >MisfireTransientHold,Z
 L2B218:
-        BCLR    >MisfireFlags5,Z,#$02
+        BCLR    >MisfireFlags5,Z,#$02                    ; bit 1: MAP below the misfire enable value: hold (MisfireTransient)
         LDAB    >Map,Z
         CMPB    >MisfireIdleMapMax
         BCC     L2B24A
@@ -11864,7 +11864,7 @@ L2B218:
 L2B24A:
         CMPB    >MisfireEnable,Z
         BCC     L2B28C
-        BSET    >MisfireFlags5,Z,#$02
+        BSET    >MisfireFlags5,Z,#$02                    ; bit 1: MAP below the misfire enable value: hold (MisfireTransient)
         LDAB    >MisfireHoldEnable
         CMPB    >MisfireTransientHold,Z
         BLS     L2B28C
@@ -11894,18 +11894,18 @@ L2B2A2:
         BRSET   >MisfireFlags2,Z,#$40,L2B2C0             ; bit 6: throttle open state seen by the misfire transient filter (MisfireTransient)
         BSET    >MisfireFlags2,Z,#$40                    ; bit 6: throttle open state seen by the misfire transient filter (MisfireTransient)
 L2B2AC:
-        BSET    >MisfireFlags5,Z,#$40
+        BSET    >MisfireFlags5,Z,#$40                    ; bit 6: throttle opened: misfire transient hold (MisfireTransient)
         LDAB    >MisfireHoldEvent
         CMPB    >MisfireTransientHold,Z
         BLS     L2B2C4
         STAB    >MisfireTransientHold,Z
         BRA     L2B2C4
 L2B2C0:
-        BCLR    >MisfireFlags5,Z,#$40
+        BCLR    >MisfireFlags5,Z,#$40                    ; bit 6: throttle opened: misfire transient hold (MisfireTransient)
 L2B2C4:
         BRCLR   >MisfireOptions,#$40,L2B2FE              ; bit 6: selects a branch in MisfireTransient
         BRSET   >EventSparkFlags,Z,#$10,L2B2D6           ; bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it
-        BRCLR   >EventSparkFlags2,Z,#$04,L2B2FE
+        BRCLR   >EventSparkFlags2,Z,#$04,L2B2FE          ; bit 2: speed damping pass done (SpeedDampControl); MisfireTransient reads it
 L2B2D6:
         LDAA    >SpeedDampSpark,Z
         CMPA    >MisfireSparkMin
@@ -11913,14 +11913,14 @@ L2B2D6:
         LDAA    >EventSpark,Z
         CMPA    >MisfireSparkMin
         BLT     L2B2FE
-        BSET    >MisfireFlags5,Z,#$04
+        BSET    >MisfireFlags5,Z,#$04                    ; bit 2: event spark at or above MisfireSparkMin: hold (MisfireTransient)
         LDAB    >MisfireHoldSpark
         CMPB    >MisfireTransientHold,Z
         BLS     L2B302
         STAB    >MisfireTransientHold,Z
         BRA     L2B302
 L2B2FE:
-        BCLR    >MisfireFlags5,Z,#$04
+        BCLR    >MisfireFlags5,Z,#$04                    ; bit 2: event spark at or above MisfireSparkMin: hold (MisfireTransient)
 L2B302:
         RTS
 
@@ -12497,7 +12497,7 @@ L2B8F8:
         STX     >MisfireRpmCol,Z
         STX     >MisfireRpmRef,Z
         BCLR    <MonRecordB7,Z,#$10
-        BSET    >MisfireFlags5,Z,#$80
+        BSET    >MisfireFlags5,Z,#$80                    ; bit 7: engine just started or stalled: misfire transient hold (MisfireTransient, MisfireSegmentTime)
         LDAB    >MisfireHoldStart
         CMPB    >MisfireTransientHold,Z
         BLS     L2B92E
@@ -13406,7 +13406,7 @@ L2C7C2:
         STAA    $0A8F,Z
         CMPA    #$0F
         BCC     L2C7FA
-        BRCLR   >FlexStartFlags,Z,#$04,L2CA86
+        BRCLR   >FlexStartFlags,Z,#$04,L2CA86            ; bit 2: power-down tasks running (CheckPowerDown)
         LDAA    >FlexSensorRaw,Z
         CMPA    #$EC
         LBCC    L2CA86
@@ -13415,7 +13415,7 @@ L2C7C2:
         ADDA    >FlexSensorStart,Z
         RORA
         STAA    >FlexSensorStart,Z
-        BCLR    <FlexStartFlags,Z,#$03
+        BCLR    <FlexStartFlags,Z,#$03                   ; bit 1: cleared when the flex sensor start value is averaged (FlexSensorCheck); bit 0: cleared when the flex sensor start value is averaged (FlexSensorCheck)
         JMP     L2CA86
 L2C7FA:
         CMPA    #$19
@@ -13832,7 +13832,7 @@ L2CC30:
         CLRA
         ASLD
         STD     >EepromAddr,Z
-        BRCLR   >SystemFlags00A,Z,#$08,L2CC54
+        BRCLR   >SystemFlags00A,Z,#$08,L2CC54            ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
         INC     >FuelSenderFuelUsed,Z
 L2CC54:
         BRCLR   >MonitorDisableFlags,Z,#$08,L2CC5E       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
@@ -14847,8 +14847,8 @@ L2D6BA:
 L2D6C2:
         STAA    $0C4B,Z
         BRCLR   >SparkFlags,Z,#$40,L2D6D8                ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
-        BSET    >EventSparkFlags2,Z,#$80
-        BSET    <FlexStartFlags,Z,#$80
+        BSET    >EventSparkFlags2,Z,#$80                 ; bit 7: reference event since the last rpm update (CalcEngineRpm); SpeedDampControl reads it
+        BSET    <FlexStartFlags,Z,#$80                   ; bit 7: reference event handled since the last rpm update (CalcEngineRpm)
         BCLR    >SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
 L2D6D8:
         CLRW    >Scratch0,Z
@@ -14996,7 +14996,7 @@ L2D836:
         CLR     >FuelSysCount1,Z
         CLR     >FuelSysCount2,Z
         BRCLR   >Options032C,#$40,L2D8BA                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
-        BRCLR   <FlexStartFlags,Z,#$28,L2D8BA
+        BRCLR   <FlexStartFlags,Z,#$28,L2D8BA            ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
         BRA     L2D8BE
 L2D8BA:
         JSR     PurgeReset

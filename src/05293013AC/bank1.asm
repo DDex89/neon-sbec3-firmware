@@ -3126,7 +3126,7 @@ L120D6:
 Sub_120DC:
         BRSET   >EepromFlags,Z,#$80,L1218E               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   $0325,Z,#$04,L1218E
-        BRCLR   >SystemFlags00A,Z,#$08,L120F0
+        BRCLR   >SystemFlags00A,Z,#$08,L120F0            ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
         INC     $3D,Z
 L120F0:
         BRCLR   $0037,Z,#$08,L120FA
@@ -17588,16 +17588,16 @@ L1BCB2:
         BCC     L1BD2C
         BSET    $01A4,Z,#$10
 L1BCBE:
-        BRSET   >SystemFlags00A,Z,#$08,L1BCDA
+        BRSET   >SystemFlags00A,Z,#$08,L1BCDA            ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
         LDAB    $0266,Z
         STAB    $3C,Z
         CLR     $3D,Z
-        BSET    <SystemFlags00A,Z,#$08
+        BSET    <SystemFlags00A,Z,#$08                   ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
         CMPB    $3D63
         BCC     L1BCDA
-        BSET    <SystemFlags00A,Z,#$01
+        BSET    <SystemFlags00A,Z,#$01                   ; bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
 L1BCDA:
-        BRCLR   >SystemFlags00A,Z,#$01,L1BCFA
+        BRCLR   >SystemFlags00A,Z,#$01,L1BCFA            ; bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
         LDAA    $3C,Z
         CBA
         BCC     L1BCE8
@@ -17638,7 +17638,7 @@ L1BD2C:
 L1BD30:
         BCLR    $0176,Z,#$80
 L1BD34:
-        BCLR    <SystemFlags00A,Z,#$09
+        BCLR    <SystemFlags00A,Z,#$09                   ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it; bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
 L1BD38:
         RTS
 
@@ -20550,7 +20550,7 @@ Sub_1DC56:
         BRCLR   >SwitchInputs2,Z,#$20,L1DCCC             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BRSET   $0037,Z,#$08,L1DCC8
         BRSET   $01A4,Z,#$02,L1DCC8
-        BRSET   >SystemFlags00A,Z,#$20,L1DCCC
+        BRSET   >SystemFlags00A,Z,#$20,L1DCCC            ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         CLRA
         LDAB    >VehicleSpeedCoarse,Z
         CPD     $25A3

@@ -9768,7 +9768,7 @@ Reset:
         JSR     KickWatchdogsLong
         JSR     NvChecksum
         LDY     #$4AB5
-        BSET    <SystemFlags00A,Z,#$02
+        BSET    <SystemFlags00A,Z,#$02                   ; bit 1: NV checksum checked at reset (Reset)
         CPD     <ResetCheckWord,Z
         BEQ     L06A60
         AIY     #$01
@@ -10070,7 +10070,7 @@ L06D6A:
         JSR     ObdClearCodes
         TZX
         LDX     #$8055
-        BSET    <SystemFlags00A,Z,#$10
+        BSET    <SystemFlags00A,Z,#$10                   ; bit 4: codes cleared at reset after a failed RAM check (Reset)
 L06E18:
         BCLR    >PORTC,Z,#$07
         LDAA    #$30
@@ -10121,7 +10121,7 @@ L06E9E:
         STAA    >Map,Z
         STAA    $0555,Z
         STAA    >MapLast,Z
-        BRSET   >SystemFlags00A,Z,#$20,L06EC4
+        BRSET   >SystemFlags00A,Z,#$20,L06EC4            ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         STAA    <Baro,Z
 L06EC4:
         LDAA    #$FF
@@ -10306,7 +10306,7 @@ L070EC:
         BNE     L07102
         BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
 L07102:
-        BRCLR   <FlexStartFlags,Z,#$04,L07110
+        BRCLR   <FlexStartFlags,Z,#$04,L07110            ; bit 2: power-down tasks running (CheckPowerDown)
         LDAA    <FlexStartFlags,Z
         ANDA    #$03
         CMPA    #$02
@@ -10454,7 +10454,7 @@ L07274:
         STAA    >Options033ECopy,Z
         LDAA    >Options033F
         STAA    >Options033FCopy,Z
-        BCLR    <FlexStartFlags,Z,#$20
+        BCLR    <FlexStartFlags,Z,#$20                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
         LDAA    #$36
         STAA    $0381,Z
         LDAB    #$FF
@@ -10727,7 +10727,7 @@ L07620:
         JMP     L07762
 L0762C:
         ORP     #$00E0
-        BCLR    <FlexStartFlags,Z,#$04
+        BCLR    <FlexStartFlags,Z,#$04                   ; bit 2: power-down tasks running (CheckPowerDown)
         CLR     >FaultPending1,Z
         CLR     >FaultPendingCount1,Z
         JSR     KickWatchdogsLong
@@ -10766,7 +10766,7 @@ L07688:
         STAA    $0526,Z
         CLRW    >SPCR2,Z
         JSR     QspiWaitIdle
-        BSET    <SystemFlags00A,Z,#$20
+        BSET    <SystemFlags00A,Z,#$20                   ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         LDX     #$BF40
         JSR     PowerInputHold
         BCS     L076F6
@@ -10784,14 +10784,14 @@ L076DC:
         BNE     L076F6
         DECB
         BNE     L076DC
-        BCLR    <SystemFlags00A,Z,#$20
+        BCLR    <SystemFlags00A,Z,#$20                   ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
 L076F6:
         BRCLR   >IoInputs0,Z,#$08,L0770A                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         JSR     EquipmentProbe
         BRCLR   >IoInputs0,Z,#$08,L0770A                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         JSR     Sub_17CA0
 L0770A:
-        BSET    <FlexStartFlags,Z,#$04
+        BSET    <FlexStartFlags,Z,#$04                   ; bit 2: power-down tasks running (CheckPowerDown)
         LDAA    $04AE,Z
         CMPA    $0EA2
         BCS     L0771A
@@ -10817,7 +10817,7 @@ L07746:
         DECA
         BNE     L07746
         JSR     KickWatchdogsLong
-        BCLR    <FlexStartFlags,Z,#$04
+        BCLR    <FlexStartFlags,Z,#$04                   ; bit 2: power-down tasks running (CheckPowerDown)
         JSR     NvChecksum
         STD     <ResetCheckWord,Z
         JMP     Reset
@@ -12598,7 +12598,7 @@ L089A2:
 L089C2:
         LDE     #$FFFF
 L089C6:
-        BRCLR   >PurgeLearnFlags,Z,#$80,L089E8
+        BRCLR   >PurgeLearnFlags,Z,#$80,L089E8           ; bit 7: purge vapour learning running (PurgeVaporLearn)
         BRSET   <ThrottleState,Z,#$40,L089E8             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BNE     L089E8
@@ -12786,7 +12786,7 @@ L08B9E:
 Sub_08BA0:
         BRSET   >Options032C,#$80,L08BFC                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         BRSET   >PurgeFlags2,Z,#$0A,L08BD8               ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate); bit 1: purge cell 2 reference reached, bank 1
-        BRSET   <FlexStartFlags,Z,#$28,L08BD8
+        BRSET   <FlexStartFlags,Z,#$28,L08BD8            ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
         BRSET   >PurgeFlags2,Z,#$80,L08BD8               ; bit 7: read by the adaptive fuel code, byte writes only
         BRSET   >SensorFaultFlags,Z,#$80,L08BD8          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   <ThrottleState,Z,#$40,L08BD8             ; bit 6: wide-open throttle (DetectWot)
@@ -12824,7 +12824,7 @@ L08BFC:
 Sub_08C02:
         BRSET   >Options032C,#$80,L08C5E                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         BRSET   >PurgeFlags2,Z,#$05,L08C3A               ; bit 2: purge cell 1 reference reached, bank 2; bit 0: purge cell 2 reference reached, bank 2
-        BRSET   <FlexStartFlags,Z,#$28,L08C3A
+        BRSET   <FlexStartFlags,Z,#$28,L08C3A            ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
         BRSET   >PurgeFlags2,Z,#$80,L08C3A               ; bit 7: read by the adaptive fuel code, byte writes only
         BRSET   >SensorFaultFlags,Z,#$80,L08C3A          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   <ThrottleState,Z,#$40,L08C3A             ; bit 6: wide-open throttle (DetectWot)
@@ -14846,7 +14846,7 @@ Sub_0A004:
         ORP     #$00E0
         INC     <MainLoopCounter,Z
         BNE     L0A022
-        BCLR    <SystemFlags00A,Z,#$C0
+        BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
         LDAA    <Count3s,Z
         INCA
         BEQ     L0A022
@@ -17558,14 +17558,14 @@ L0B938:
         LDAB    <SriMileageLow,Z
         CMPB    >O2NewMileageOpenMax
         BCC     L0B950
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    <FanSoakFlags,Z,#$50                     ; bit 6: fan soak condition met (FanControl); bit 4: fan after-run: temperature below the off threshold (FanControl)
         BSET    <Scratch1,Z,#$50
 L0B950:
         TST     >DecelFuelFactor,Z
         BEQ     L0B976
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    <FanSoakFlags,Z,#$70                     ; bit 6: fan soak condition met (FanControl); bit 5: fan after-run: temperature at or above the on threshold (FanControl); bit 4: fan after-run: temperature below the off threshold (FanControl)
         BSET    <Scratch1,Z,#$70
         TST     $00,X
@@ -17584,8 +17584,8 @@ L0B976:
         BSET    <FanSoakFlags,Z,#$80                     ; bit 7: fan soak time over (FanSoakTimeMax, FanControl)
         BSET    <Scratch1,Z,#$80
 L0B996:
-        BRCLR   >O2InactiveFlags,Z,#$01,L0B9A8
-        BSET    >O2InactiveFlags,Z,#$C0
+        BRCLR   >O2InactiveFlags,Z,#$01,L0B9A8           ; bit 0: read by ClosedLoopManager
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    <FanSoakFlags,Z,#$50                     ; bit 6: fan soak condition met (FanControl); bit 4: fan after-run: temperature below the off threshold (FanControl)
         BSET    <Scratch1,Z,#$50
 L0B9A8:
@@ -17614,7 +17614,7 @@ L0B9CE:
 L0B9F8:
         BRCLR   >FuelModeFlags,Z,#$20,L0BA0E             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    <FanSoakFlags,Z,#$F0                     ; bit 7: fan soak time over (FanSoakTimeMax, FanControl); bit 6: fan soak condition met (FanControl); bit 5: fan after-run: temperature at or above the on threshold (FanControl); bit 4: fan after-run: temperature below the off threshold (FanControl)
         BSET    <Scratch1,Z,#$F0
 L0BA0E:
@@ -17653,7 +17653,7 @@ L0BA6A:
         BCS     L0BAAC
         BSET    <FanSoakFlags,Z,#$50                     ; bit 6: fan soak condition met (FanControl); bit 4: fan after-run: temperature below the off threshold (FanControl)
         BSET    <Scratch1,Z,#$50
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         LDAA    $B5,Z
         ANDA    #$03
         BNE     L0BAA0
@@ -17670,15 +17670,15 @@ L0BA6A:
 L0BAA0:
         BSET    <FanSoakFlags,Z,#$50                     ; bit 6: fan soak condition met (FanControl); bit 4: fan after-run: temperature below the off threshold (FanControl)
         BSET    <Scratch1,Z,#$50
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
 L0BAAC:
         BRCLR   $001E,X,#$01,L0BABA
         BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
-        BSET    >O2InactiveFlags,Z,#$80
+        BSET    >O2InactiveFlags,Z,#$80                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)
 L0BABA:
         BRCLR   $001E,Y,#$01,L0BAC8
         BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    >O2InactiveFlags,Z,#$40
+        BSET    >O2InactiveFlags,Z,#$40                  ; bit 6: bank 2 closed loop held open (as bit 7)
 L0BAC8:
         LDAB    <O2CrossFlags,Z
         BITB    #$80
@@ -17692,7 +17692,7 @@ L0BADA:
         BRCLR   >SparkFlags2,Z,#$80,L0BAF0               ; bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
         BSET    <FanSoakFlags,Z,#$F0                     ; bit 7: fan soak time over (FanSoakTimeMax, FanControl); bit 6: fan soak condition met (FanControl); bit 5: fan after-run: temperature at or above the on threshold (FanControl); bit 4: fan after-run: temperature below the off threshold (FanControl)
         BSET    <Scratch1,Z,#$F0
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 L0BAF0:
         BRCLR   >RevLimitFlags,Z,#$C0,L0BAFA
@@ -17882,12 +17882,12 @@ L0BCDA:
         BRCLR   >Options032F,#$80,L0BCF2                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         BRSET   >O2Bank1Flags,Z,#$10,L0BD0C              ; bit 4: bank 1 state read by ClosedLoopManager and O2DownEnable, byte writes only
         BRSET   >O2Bank1Flags,Z,#$40,L0BD0C              ; bit 6: set with bit 7; read by O2DownEnable
-        BRSET   >O2InactiveFlags,Z,#$80,L0BD0C
+        BRSET   >O2InactiveFlags,Z,#$80,L0BD0C           ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)
 L0BCF2:
         BRCLR   >Options032F,#$40,L0BD14                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$10,L0BD0C
         BRSET   >O2Bank2Flags,Z,#$40,L0BD0C
-        BRSET   >O2InactiveFlags,Z,#$40,L0BD0C
+        BRSET   >O2InactiveFlags,Z,#$40,L0BD0C           ; bit 6: bank 2 closed loop held open (as bit 7)
         BRA     L0BD14
 L0BD0C:
         LDAA    >O2ReopenHoldTime
@@ -17895,7 +17895,7 @@ L0BD0C:
 L0BD14:
         BCLR    >O2Bank1Flags,Z,#$C0                     ; bit 7: bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens; bit 6: set with bit 7; read by O2DownEnable
         BCLR    >O2Bank2Flags,Z,#$C0
-        BCLR    >O2InactiveFlags,Z,#$C0
+        BCLR    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BCLR    >O2ResetFlags2,Z,#$3C                    ; bit 5: bank 1 short-term trim reset, memory change hold started (O2CellSelect, FuelCutControl); bit 4: bank 2 short-term trim reset (O2CellSelect, FuelCutControl); bit 3: bank 1 trim at or below PurgeLearnTrimMin during vapour learning (PurgeVaporLearn); bit 2: bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)
         BCLR    >O2ResetFlags,Z,#$C0
         RTS
@@ -18949,13 +18949,13 @@ L0C736:
         LDAB    >O2LearnRpmMax
         SUBB    <EngineRpm,Z
         BCS     L0C766
-        BRCLR   >O2InactiveFlags,Z,#$02,L0C76E
+        BRCLR   >O2InactiveFlags,Z,#$02,L0C76E           ; bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
         SUBB    >O2LearnRpmHyst
         LBCS    L0C832
-        BCLR    >O2InactiveFlags,Z,#$02
+        BCLR    >O2InactiveFlags,Z,#$02                  ; bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
         BRA     L0C76E
 L0C766:
-        BSET    >O2InactiveFlags,Z,#$02
+        BSET    >O2InactiveFlags,Z,#$02                  ; bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
         LBRA    L0C832
 L0C76E:
         LDAB    >ColdEnrich,Z
@@ -18974,7 +18974,7 @@ L0C794:
         BRSET   >EgrMonFlags,Z,#$04,L0C832               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
         BRSET   >PurgeFlowTestFlags,Z,#$10,L0C832
         BRSET   >PurgeFlowTestFlags,Z,#$20,L0C832
-        BRSET   >PurgeLearnFlags,Z,#$80,L0C832
+        BRSET   >PurgeLearnFlags,Z,#$80,L0C832           ; bit 7: purge vapour learning running (PurgeVaporLearn)
         LDE     >FuelPulseBank1,Z
         CPE     >O2PulseWidthMin
         BCC     L0C7BC
@@ -20020,13 +20020,13 @@ L0D0F2:
         LBRA    L0D122
 L0D10E:
         BRCLR   >Options032C,#$40,L0D11A                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
-        BRSET   >FlexStartFlags,Z,#$08,L0D642
+        BRSET   >FlexStartFlags,Z,#$08,L0D642            ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
 L0D11A:
         BRSET   >PurgeFlags,Z,#$40,L0D536                ; bit 6: purge battery-temperature timer running (PurgeEnable)
         BRA     L0D150
 L0D122:
         BRCLR   >Options0338,#$80,L0D628                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
-        BRSET   >PurgeLearnFlags,Z,#$02,L0D536
+        BRSET   >PurgeLearnFlags,Z,#$02,L0D536           ; bit 1: purge vapour learning ended (PurgeVaporLearn)
         LDAB    >ShortTermTrim1,Z
         SXT
         TDE
@@ -20040,7 +20040,7 @@ L0D122:
         LBRA    L0D628
 L0D150:
         BRCLR   >Options0338,#$80,L0D536                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
-        BRSET   >PurgeLearnFlags,Z,#$02,L0D536
+        BRSET   >PurgeLearnFlags,Z,#$02,L0D536           ; bit 1: purge vapour learning ended (PurgeVaporLearn)
         BRCLR   >EngineStateFlags,Z,#$80,L0D16E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >ThrottleState,Z,#$40,L0D16E             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
@@ -20049,9 +20049,9 @@ L0D16E:
         CLR     >PurgeDuty,Z
         LBRA    L0D670
 L0D176:
-        BRSET   >PurgeLearnFlags,Z,#$80,L0D32A
-        BRSET   >PurgeLearnFlags,Z,#$20,L0D536
-        BRSET   >PurgeLearnFlags,Z,#$10,L0D1F0
+        BRSET   >PurgeLearnFlags,Z,#$80,L0D32A           ; bit 7: purge vapour learning running (PurgeVaporLearn)
+        BRSET   >PurgeLearnFlags,Z,#$20,L0D536           ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
+        BRSET   >PurgeLearnFlags,Z,#$10,L0D1F0           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         LDAA    >PurgeRamp,Z
         CMPA    $16AD
         BLS     L0D20E
@@ -20084,15 +20084,15 @@ L0D176:
         BITA    #$60
         BNE     L0D20E
 L0D1F0:
-        BRSET   >PurgeLearnFlags,Z,#$08,L0D216
-        BCLR    >PurgeLearnFlags,Z,#$80
-        BSET    >PurgeLearnFlags,Z,#$58
+        BRSET   >PurgeLearnFlags,Z,#$08,L0D216           ; bit 3: purge vapour learning step state (PurgeVaporLearn)
+        BCLR    >PurgeLearnFlags,Z,#$80                  ; bit 7: purge vapour learning running (PurgeVaporLearn)
+        BSET    >PurgeLearnFlags,Z,#$58                  ; bit 6: purge vapour learning step state; O2LearnEnable reads it; bit 4: purge vapour settle time reached (PurgeVaporSettleTime); bit 3: purge vapour learning step state (PurgeVaporLearn)
         LDAA    $16B2
         STAA    >PurgeDuty,Z
         STAA    $0649,Z
         JMP     L0D216
 L0D20E:
-        BSET    >PurgeLearnFlags,Z,#$30
+        BSET    >PurgeLearnFlags,Z,#$30                  ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         JMP     L0D51A
 L0D216:
         LDD     $0642,Z
@@ -20124,7 +20124,7 @@ L0D256:
         LDAA    $064C,Z
         CMPA    $16C5
         BCS     L0D27A
-        BSET    >PurgeLearnFlags,Z,#$10
+        BSET    >PurgeLearnFlags,Z,#$10                  ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         BRA     L0D27E
 L0D27A:
         INC     $064C,Z
@@ -20139,7 +20139,7 @@ L0D27E:
         JSR     Blend16Signed
         AIS     #$04
         STAB    $064B,Z
-        BRCLR   >PurgeLearnFlags,Z,#$10,L0D536
+        BRCLR   >PurgeLearnFlags,Z,#$10,L0D536           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         TBA
         LDAB    $0644,Z
         ADDB    $16B6
@@ -20162,8 +20162,8 @@ L0D2CE:
         CLR     $0641,Z
         JMP     L0D516
 L0D2D6:
-        BSET    >PurgeLearnFlags,Z,#$C0
-        BCLR    >PurgeLearnFlags,Z,#$08
+        BSET    >PurgeLearnFlags,Z,#$C0                  ; bit 7: purge vapour learning running (PurgeVaporLearn); bit 6: purge vapour learning step state; O2LearnEnable reads it
+        BCLR    >PurgeLearnFlags,Z,#$08                  ; bit 3: purge vapour learning step state (PurgeVaporLearn)
         LDAA    $16BD
         STAA    $0499,Z
         LDAA    $16BE
@@ -20211,11 +20211,11 @@ L0D340:
 L0D35C:
         LDAA    $0649,Z
         BRCLR   >O2Bank1Flags,Z,#$08,L0D36C              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
-        BSET    >PurgeLearnFlags,Z,#$01
+        BSET    >PurgeLearnFlags,Z,#$01                  ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
         BRA     L0D388
 L0D36C:
-        BRCLR   >PurgeLearnFlags,Z,#$01,L0D39C
-        BCLR    >PurgeLearnFlags,Z,#$01
+        BRCLR   >PurgeLearnFlags,Z,#$01,L0D39C           ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
+        BCLR    >PurgeLearnFlags,Z,#$01                  ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
         ADDA    $16B8
         BCC     L0D37E
         LDAA    #$64
@@ -20258,11 +20258,11 @@ L0D3DA:
         BLE     L0D3E8
         BRA     L0D3F6
 L0D3E8:
-        BSET    >PurgeLearnFlags,Z,#$04
+        BSET    >PurgeLearnFlags,Z,#$04                  ; bit 2: trim at or below the learning limit (PurgeVaporLearn)
         BRCLR   >ThrottleState,Z,#$80,L0D670             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         JMP     L0D4E0
 L0D3F6:
-        BCLR    >PurgeLearnFlags,Z,#$04
+        BCLR    >PurgeLearnFlags,Z,#$04                  ; bit 2: trim at or below the learning limit (PurgeVaporLearn)
 L0D3FA:
         BRSET   >ThrottleState,Z,#$80,L0D484             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >ShortTermTrim1,Z
@@ -20367,8 +20367,8 @@ L0D512:
 L0D516:
         LBRA    L0D670
 L0D51A:
-        BSET    >PurgeLearnFlags,Z,#$02
-        BCLR    >PurgeLearnFlags,Z,#$DD
+        BSET    >PurgeLearnFlags,Z,#$02                  ; bit 1: purge vapour learning ended (PurgeVaporLearn)
+        BCLR    >PurgeLearnFlags,Z,#$DD                  ; bit 7: purge vapour learning running (PurgeVaporLearn); bit 6: purge vapour learning step state; O2LearnEnable reads it; bit 4: purge vapour settle time reached (PurgeVaporSettleTime); bit 3: purge vapour learning step state (PurgeVaporLearn); bit 2: trim at or below the learning limit (PurgeVaporLearn); bit 0: bank 1 learning rate step (PurgeVaporLearn)
         LDD     #$FFFF
         STD     $0642,Z
         CLR     $0499,Z
@@ -20390,9 +20390,9 @@ L0D536:
         BNE     L0D55E
         ORAB    #$01
 L0D55E:
-        BRCLR   >PurgeLearnFlags,Z,#$10,L0D5A2
-        BRSET   >PurgeLearnFlags,Z,#$20,L0D5A2
-        BRSET   >PurgeLearnFlags,Z,#$20,L0D5A2
+        BRCLR   >PurgeLearnFlags,Z,#$10,L0D5A2           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
+        BRSET   >PurgeLearnFlags,Z,#$20,L0D5A2           ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
+        BRSET   >PurgeLearnFlags,Z,#$20,L0D5A2           ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
         LDAA    $18,Z
         CMPA    $174D
         BCC     L0D5A2
@@ -20401,9 +20401,9 @@ L0D57C:
         LDAB    #$01
         CMPA    >PurgeCell3
         LBNE    L0D642
-        BRCLR   >PurgeLearnFlags,Z,#$10,L0D5A2
-        BRSET   >PurgeLearnFlags,Z,#$20,L0D5A2
-        BRSET   >PurgeLearnFlags,Z,#$20,L0D5A2
+        BRCLR   >PurgeLearnFlags,Z,#$10,L0D5A2           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
+        BRSET   >PurgeLearnFlags,Z,#$20,L0D5A2           ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
+        BRSET   >PurgeLearnFlags,Z,#$20,L0D5A2           ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
         LDAA    $18,Z
         CMPA    $174E
         LBCS    L0D642
@@ -22977,7 +22977,7 @@ L0F312:
         JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $0520,Z
-        BCLR    <SystemFlags00A,Z,#$C0
+        BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0F356:
         BSET    >CrankSyncFlags2,Z,#$20
         LDAA    $0216,Z
@@ -23799,7 +23799,7 @@ L0FCB6:
         JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $0520,Z
-        BCLR    <SystemFlags00A,Z,#$C0
+        BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0FCDE:
         CLRA
         BRCLR   >PACTL,Z,#$80,L0FCF6

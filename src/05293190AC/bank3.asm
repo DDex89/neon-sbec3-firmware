@@ -830,7 +830,7 @@ L30920:
         ANDB    #$FE
         BRA     L30934
 L3092C:
-        BRCLR   >EventSparkFlags2,Z,#$40,L30934
+        BRCLR   >EventSparkFlags2,Z,#$40,L30934          ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         ORAB    #$03
 L30934:
         AIS     #$FC
@@ -1054,7 +1054,7 @@ L30AD8:
         ANDB    #$FE
         BRA     L30AEC
 L30AE4:
-        BRCLR   >EventSparkFlags2,Z,#$40,L30AEC
+        BRCLR   >EventSparkFlags2,Z,#$40,L30AEC          ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         ORAB    #$03
 L30AEC:
         AIS     #$FC
@@ -2825,7 +2825,7 @@ L31DC4:
         ANDA    #$FE
         BRA     L31DD8
 L31DD0:
-        BRCLR   >EventSparkFlags2,Z,#$40,L31DD8
+        BRCLR   >EventSparkFlags2,Z,#$40,L31DD8          ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         ORAA    #$03
 L31DD8:
         STAA    $02,Y
@@ -6924,7 +6924,7 @@ L35C42:
         CLR     >O2AdaptValue2,Z
         CLR     >PurgeCellCount,Z
         CLR     >PurgeCellFlags,Z
-        BCLR    <FlexStartFlags,Z,#$38
+        BCLR    <FlexStartFlags,Z,#$38                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    <PurgeCellRichFlags,Z,#$40
         BRA     L35C82
@@ -11243,14 +11243,14 @@ L3A3DC:
         BRSET   >Options0331,#$40,L3A3FC                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRSET   >IdleFlags8,Z,#$02,L3A402                ; bit 1: gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it
 L3A3FC:
-        BCLR    >BusTempFlags,Z,#$04
+        BCLR    >BusTempFlags,Z,#$04                     ; bit 2: gear idle steps pending with the fan (FanRelayControl)
         BRA     L3A406
 L3A402:
-        BSET    >BusTempFlags,Z,#$04
+        BSET    >BusTempFlags,Z,#$04                     ; bit 2: gear idle steps pending with the fan (FanRelayControl)
 L3A406:
         LDY     #$A30E
         LDD     #$A2B6
-        BRCLR   >BusTempFlags,Z,#$04,L3A41A
+        BRCLR   >BusTempFlags,Z,#$04,L3A41A              ; bit 2: gear idle steps pending with the fan (FanRelayControl)
         LDD     #$A2C2
         AIY     #$14
 L3A41A:
@@ -11263,7 +11263,7 @@ L3A41A:
         LDX     $00,Y
         CMPA    $00,X
         BHI     L3A462
-        BRCLR   >BusTempFlags,Z,#$10,L3A43A
+        BRCLR   >BusTempFlags,Z,#$10,L3A43A              ; bit 4: fan stage from coolant: stage 2 (FanRelayControl)
         LDX     $02,Y
         CMPA    $00,X
         BCC     L3A462
@@ -11271,23 +11271,23 @@ L3A43A:
         LDX     $04,Y
         CMPA    $00,X
         BHI     L3A454
-        BRCLR   >BusTempFlags,Z,#$08,L3A44C
+        BRCLR   >BusTempFlags,Z,#$08,L3A44C              ; bit 3: fan stage from coolant: stage 1 (FanRelayControl)
         LDX     $06,Y
         CMPA    $00,X
         BCC     L3A454
 L3A44C:
         CLRE
-        BCLR    >BusTempFlags,Z,#$18
+        BCLR    >BusTempFlags,Z,#$18                     ; bit 4: fan stage from coolant: stage 2 (FanRelayControl); bit 3: fan stage from coolant: stage 1 (FanRelayControl)
         BRA     L3A46E
 L3A454:
         LDE     #$0004
-        BSET    >BusTempFlags,Z,#$08
-        BCLR    >BusTempFlags,Z,#$10
+        BSET    >BusTempFlags,Z,#$08                     ; bit 3: fan stage from coolant: stage 1 (FanRelayControl)
+        BCLR    >BusTempFlags,Z,#$10                     ; bit 4: fan stage from coolant: stage 2 (FanRelayControl)
         BRA     L3A46E
 L3A462:
         LDE     #$0008
-        BSET    >BusTempFlags,Z,#$10
-        BCLR    >BusTempFlags,Z,#$08
+        BSET    >BusTempFlags,Z,#$10                     ; bit 4: fan stage from coolant: stage 2 (FanRelayControl)
+        BCLR    >BusTempFlags,Z,#$08                     ; bit 3: fan stage from coolant: stage 1 (FanRelayControl)
 L3A46E:
         AIY     #$08
         TPD
@@ -11296,7 +11296,7 @@ L3A46E:
         LDX     $00,Y
         CMPA    $00,X
         BHI     L3A4CC
-        BRCLR   >BusTempFlags,Z,#$80,L3A48A
+        BRCLR   >BusTempFlags,Z,#$80,L3A48A              ; bit 7: fan stage from the bus temperature, bit 7 (FanRelayControl)
         LDX     $02,Y
         CMPA    $00,X
         BCC     L3A4CC
@@ -11304,7 +11304,7 @@ L3A48A:
         LDX     $04,Y
         CMPA    $00,X
         BHI     L3A4C0
-        BRCLR   >BusTempFlags,Z,#$40,L3A49C
+        BRCLR   >BusTempFlags,Z,#$40,L3A49C              ; bit 6: fan stage from the bus temperature: stage 2 (FanRelayControl)
         LDX     $06,Y
         CMPA    $00,X
         BCC     L3A4C0
@@ -11312,27 +11312,27 @@ L3A49C:
         LDX     $08,Y
         CMPA    $00,X
         BHI     L3A4B4
-        BRCLR   >BusTempFlags,Z,#$20,L3A4AE
+        BRCLR   >BusTempFlags,Z,#$20,L3A4AE              ; bit 5: fan stage from the bus temperature: stage 1 (FanRelayControl)
         LDX     $0A,Y
         CMPA    $00,X
         BCC     L3A4B4
 L3A4AE:
-        BCLR    >BusTempFlags,Z,#$E0
+        BCLR    >BusTempFlags,Z,#$E0                     ; bit 7: fan stage from the bus temperature, bit 7 (FanRelayControl); bit 6: fan stage from the bus temperature: stage 2 (FanRelayControl); bit 5: fan stage from the bus temperature: stage 1 (FanRelayControl)
         BRA     L3A4D6
 L3A4B4:
         ADDE    #$01
-        BSET    >BusTempFlags,Z,#$20
-        BCLR    >BusTempFlags,Z,#$C0
+        BSET    >BusTempFlags,Z,#$20                     ; bit 5: fan stage from the bus temperature: stage 1 (FanRelayControl)
+        BCLR    >BusTempFlags,Z,#$C0                     ; bit 7: fan stage from the bus temperature, bit 7 (FanRelayControl); bit 6: fan stage from the bus temperature: stage 2 (FanRelayControl)
         BRA     L3A4D6
 L3A4C0:
         ADDE    #$02
-        BSET    >BusTempFlags,Z,#$40
-        BCLR    >BusTempFlags,Z,#$A0
+        BSET    >BusTempFlags,Z,#$40                     ; bit 6: fan stage from the bus temperature: stage 2 (FanRelayControl)
+        BCLR    >BusTempFlags,Z,#$A0                     ; bit 7: fan stage from the bus temperature, bit 7 (FanRelayControl); bit 5: fan stage from the bus temperature: stage 1 (FanRelayControl)
         BRA     L3A4D6
 L3A4CC:
         ADDE    #$03
-        BSET    >BusTempFlags,Z,#$80
-        BCLR    >BusTempFlags,Z,#$60
+        BSET    >BusTempFlags,Z,#$80                     ; bit 7: fan stage from the bus temperature, bit 7 (FanRelayControl)
+        BCLR    >BusTempFlags,Z,#$60                     ; bit 6: fan stage from the bus temperature: stage 2 (FanRelayControl); bit 5: fan stage from the bus temperature: stage 1 (FanRelayControl)
 L3A4D6:
         TPD
         TBXK
@@ -11641,8 +11641,8 @@ L3A804:
 L3A80C:
         TST     >FanPwmCount,Z
         BEQ     L3A830
-        BRSET   >BusTempFlags,Z,#$02,L3A820
-        BSET    >BusTempFlags,Z,#$02
+        BRSET   >BusTempFlags,Z,#$02,L3A820              ; bit 1: fan PWM running (FanPwmMain)
+        BSET    >BusTempFlags,Z,#$02                     ; bit 1: fan PWM running (FanPwmMain)
         BSET    >ControlFlagsC33,Z,#$04                  ; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
 L3A820:
         BRSET   >ThrottleState,Z,#$80,L3A838             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -11650,10 +11650,10 @@ L3A820:
         JMP     L3A888
 L3A830:
         BCLR    >ControlFlagsC33,Z,#$04                  ; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
-        BCLR    >BusTempFlags,Z,#$02
+        BCLR    >BusTempFlags,Z,#$02                     ; bit 1: fan PWM running (FanPwmMain)
 L3A838:
         CLRA
-        BRCLR   >BusTempFlags,Z,#$02,L3A852
+        BRCLR   >BusTempFlags,Z,#$02,L3A852              ; bit 1: fan PWM running (FanPwmMain)
         LDAA    >FanStartKickTimer,Z
         CMPA    >FanStartKickTime
         BCC     L3A856
@@ -12288,13 +12288,13 @@ BusTempFlag:
         LDAA    >BusTemp,Z
         CMPA    >BusTempLatchOn
         BLT     L3AE14
-        BSET    >BusTempFlags,Z,#$01
+        BSET    >BusTempFlags,Z,#$01                     ; bit 0: bus temperature high: above BusTempLatchOn, off below BusTempLatchOff (BusTempFlag)
 L3AE14:
         CMPA    >BusTempLatchOff
         BGT     L3AE1E
-        BCLR    >BusTempFlags,Z,#$01
+        BCLR    >BusTempFlags,Z,#$01                     ; bit 0: bus temperature high: above BusTempLatchOn, off below BusTempLatchOff (BusTempFlag)
 L3AE1E:
-        BRSET   >BusTempFlags,Z,#$01,L3AE30
+        BRSET   >BusTempFlags,Z,#$01,L3AE30              ; bit 0: bus temperature high: above BusTempLatchOn, off below BusTempLatchOff (BusTempFlag)
         CMPA    >BusTempFlagMin
         BLT     L3AE36
         BRSET   >ControlFlags944,Z,#$18,L3AE36           ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test); bit 3: second fan relay, probably; driven only with A/C fitted
@@ -14717,15 +14717,15 @@ L3DAB2:
 L3DAB6:
         LDAA    >PurgeDutyTarget,Z
         STAA    <Scratch0,Z
-        BRCLR   >LdpFlags2,Z,#$01,L3DAC8
-        BCLR    >PurgeCtlFlags,Z,#$08
+        BRCLR   >LdpFlags2,Z,#$01,L3DAC8                 ; bit 0: soak difference under LdpSoakDiffMax (LDP state machine); PurgeRampControl reads it
+        BCLR    >PurgeCtlFlags,Z,#$08                    ; bit 3: battery temperature at start below PurgeBattTempStartMax (PurgeRampControl)
         BRA     L3DADC
 L3DAC8:
-        BRSET   >PurgeCtlFlags,Z,#$08,L3DADC
+        BRSET   >PurgeCtlFlags,Z,#$08,L3DADC             ; bit 3: battery temperature at start below PurgeBattTempStartMax (PurgeRampControl)
         LDAA    >BatteryTempStart,Z
         CMPA    >PurgeBattTempStartMax
         BCC     L3DADC
-        BSET    >PurgeCtlFlags,Z,#$08
+        BSET    >PurgeCtlFlags,Z,#$08                    ; bit 3: battery temperature at start below PurgeBattTempStartMax (PurgeRampControl)
 L3DADC:
         TST     >PurgeStartRamp,Z
         BEQ     L3DB60
@@ -14755,7 +14755,7 @@ L3DB1A:
         LDAA    #$FF
 L3DB2A:
         STAA    <Scratch0,Z
-        BRCLR   >PurgeCtlFlags,Z,#$08,L3DB48
+        BRCLR   >PurgeCtlFlags,Z,#$08,L3DB48             ; bit 3: battery temperature at start below PurgeBattTempStartMax (PurgeRampControl)
         LDAA    >PurgeColdFactor
         LDAB    <Scratch0,Z
         MUL
@@ -14777,7 +14777,7 @@ L3DB5C:
         STAA    <Scratch0,Z
         BRA     L3DBC4
 L3DB60:
-        BRCLR   >PurgeCtlFlags,Z,#$08,L3DB7A
+        BRCLR   >PurgeCtlFlags,Z,#$08,L3DB7A             ; bit 3: battery temperature at start below PurgeBattTempStartMax (PurgeRampControl)
         LDAA    >PurgeColdFactor
         LDAB    <Scratch0,Z
         MUL
@@ -15440,21 +15440,21 @@ L3E1C2:
         TED
         CMPB    >PurgeTargetSettleBand
         BHI     L3E1F2
-        BRCLR   >PurgeCtlFlags,Z,#$01,L3E1E4
+        BRCLR   >PurgeCtlFlags,Z,#$01,L3E1E4             ; bit 0: purge target change small (under PurgeTargetChangeMax) (PurgeFlowControl)
         LDAA    >PurgeTargetChange,Z
         CMPA    >PurgeTargetChangeMax
         BCC     L3E1F2
-        BSET    >PurgeCtlFlags,Z,#$04
-        BCLR    >PurgeCtlFlags,Z,#$01
+        BSET    >PurgeCtlFlags,Z,#$04                    ; bit 2: purge soft step running (PurgeFlowControl, PurgeSoftStepCount)
+        BCLR    >PurgeCtlFlags,Z,#$01                    ; bit 0: purge target change small (under PurgeTargetChangeMax) (PurgeFlowControl)
         BRA     L3E1F2
 L3E1E4:
-        BRCLR   >PurgeCtlFlags,Z,#$02,L3E1F2
-        BSET    >PurgeCtlFlags,Z,#$04
-        BCLR    >PurgeCtlFlags,Z,#$02
+        BRCLR   >PurgeCtlFlags,Z,#$02,L3E1F2             ; bit 1: purge target change pending (PurgeFlowControl)
+        BSET    >PurgeCtlFlags,Z,#$04                    ; bit 2: purge soft step running (PurgeFlowControl, PurgeSoftStepCount)
+        BCLR    >PurgeCtlFlags,Z,#$02                    ; bit 1: purge target change pending (PurgeFlowControl)
 L3E1F2:
         JSR     PurgeMonStep
         LDAB    $0463,Z
-        BRCLR   >PurgeCtlFlags,Z,#$04,L3E22A
+        BRCLR   >PurgeCtlFlags,Z,#$04,L3E22A             ; bit 2: purge soft step running (PurgeFlowControl, PurgeSoftStepCount)
         TST     >PurgeSoftStepCount,Z
         BNE     L3E210
         LDAA    >PurgeSoftStepLoops
@@ -15463,7 +15463,7 @@ L3E1F2:
 L3E210:
         DEC     >PurgeSoftStepCount,Z
         BNE     L3E21C
-        BCLR    >PurgeCtlFlags,Z,#$04
+        BCLR    >PurgeCtlFlags,Z,#$04                    ; bit 2: purge soft step running (PurgeFlowControl, PurgeSoftStepCount)
         BRA     L3E22A
 L3E21C:
         BRSET   >PurgeMonFlags,Z,#$80,L3E22A             ; bit 7: purge flow monitor armed (PurgeMonitorArm)
@@ -15785,13 +15785,13 @@ L3E53E:
         LBRA    L3E56E
 L3E55A:
         BRCLR   >Options032C,#$40,L3E566                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
-        BRSET   >FlexStartFlags,Z,#$08,L3EABC
+        BRSET   >FlexStartFlags,Z,#$08,L3EABC            ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
 L3E566:
         BRSET   >PurgeFlags,Z,#$40,L3E9AA                ; bit 6: purge battery-temperature timer running (PurgeEnable)
         BRA     L3E59C
 L3E56E:
         BRCLR   >Options0338,#$80,L3EA96                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
-        BRSET   >PurgeLearnFlags,Z,#$02,L3E9AA
+        BRSET   >PurgeLearnFlags,Z,#$02,L3E9AA           ; bit 1: purge vapour learning ended (PurgeVaporLearn)
         LDAB    >ShortTermTrim1,Z
         SXT
         TDE
@@ -15805,14 +15805,14 @@ L3E56E:
         LBRA    L3EA96
 L3E59C:
         BRCLR   >Options0338,#$80,L3E9AA                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
-        BRSET   >PurgeLearnFlags,Z,#$02,L3E9AA
+        BRSET   >PurgeLearnFlags,Z,#$02,L3E9AA           ; bit 1: purge vapour learning ended (PurgeVaporLearn)
         BRCLR   >EngineStateFlags,Z,#$80,L3EA96          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >ThrottleState,Z,#$40,L3EA96             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         LBNE    L3EA96
-        BRSET   >PurgeLearnFlags,Z,#$80,L3E76E
-        BRSET   >PurgeLearnFlags,Z,#$20,L3E9AA
-        BRSET   >PurgeLearnFlags,Z,#$08,L3E62A
+        BRSET   >PurgeLearnFlags,Z,#$80,L3E76E           ; bit 7: purge vapour learning running (PurgeVaporLearn)
+        BRSET   >PurgeLearnFlags,Z,#$20,L3E9AA           ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
+        BRSET   >PurgeLearnFlags,Z,#$08,L3E62A           ; bit 3: purge vapour learning step state (PurgeVaporLearn)
         BRSET   >Options032C,#$80,L3E982                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         LDAA    >PurgeRamp,Z
         CMPA    >PurgeRampLearnMin
@@ -15831,8 +15831,8 @@ L3E59C:
         LDAA    >SensorFaultFlags2,Z
         BITA    #$0F
         LBNE    L3E982
-        BCLR    >PurgeLearnFlags,Z,#$80
-        BSET    >PurgeLearnFlags,Z,#$48
+        BCLR    >PurgeLearnFlags,Z,#$80                  ; bit 7: purge vapour learning running (PurgeVaporLearn)
+        BSET    >PurgeLearnFlags,Z,#$48                  ; bit 6: purge vapour learning step state; O2LearnEnable reads it; bit 3: purge vapour learning step state (PurgeVaporLearn)
         LDAA    >PurgeLearnRateInit
         STAA    >PurgeLearnRate,Z
 L3E62A:
@@ -15864,7 +15864,7 @@ L3E66A:
         LDAA    >PurgeVaporSettle,Z
         CMPA    >PurgeVaporSettleTime
         BCS     L3E68A
-        BSET    >PurgeLearnFlags,Z,#$10
+        BSET    >PurgeLearnFlags,Z,#$10                  ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         BRA     L3E694
 L3E68A:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L3E694         ; bit 2: one pass in 8 (about 96 ms)
@@ -15880,7 +15880,7 @@ L3E694:
         JSR     Blend16Signed
         AIS     #$04
         STAB    >PurgeTrimAvgOn,Z
-        BRCLR   >PurgeLearnFlags,Z,#$10,L3E9AA
+        BRCLR   >PurgeLearnFlags,Z,#$10,L3E9AA           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
         TBA
         LDAB    >PurgeTrimAvgOff,Z
         ADDB    >PurgeVaporTrimDrop
@@ -15903,8 +15903,8 @@ L3E6E4:
         CLR     >PurgeVaporCount,Z
         JMP     L3E97E
 L3E6EC:
-        BSET    >PurgeLearnFlags,Z,#$C0
-        BCLR    >PurgeLearnFlags,Z,#$08
+        BSET    >PurgeLearnFlags,Z,#$C0                  ; bit 7: purge vapour learning running (PurgeVaporLearn); bit 6: purge vapour learning step state; O2LearnEnable reads it
+        BCLR    >PurgeLearnFlags,Z,#$08                  ; bit 3: purge vapour learning step state (PurgeVaporLearn)
         CLR     >PurgeStartRamp,Z
         LDAA    >PurgeVaporPartInit
         STAA    >PurgeVaporPart,Z
@@ -15972,11 +15972,11 @@ L3E784:
 L3E7A0:
         LDAA    >PurgeLearnRate,Z
         BRCLR   >O2Bank1Flags,Z,#$08,L3E7B0              ; bit 3: bank 1 state read by the purge ramp and vapour learning, byte writes only
-        BSET    >PurgeLearnFlags,Z,#$01
+        BSET    >PurgeLearnFlags,Z,#$01                  ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
         BRA     L3E7CC
 L3E7B0:
-        BRCLR   >PurgeLearnFlags,Z,#$01,L3E7DC
-        BCLR    >PurgeLearnFlags,Z,#$01
+        BRCLR   >PurgeLearnFlags,Z,#$01,L3E7DC           ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
+        BCLR    >PurgeLearnFlags,Z,#$01                  ; bit 0: bank 1 learning rate step (PurgeVaporLearn)
         ADDA    >PurgeLearnRateTipStep
         BCC     L3E7C2
         LDAA    #$FF
@@ -16018,11 +16018,11 @@ L3E81A:
         BLE     L3E828
         BRA     L3E836
 L3E828:
-        BSET    >PurgeLearnFlags,Z,#$04
+        BSET    >PurgeLearnFlags,Z,#$04                  ; bit 2: trim at or below the learning limit (PurgeVaporLearn)
         BRCLR   >ThrottleState,Z,#$80,L3EAEA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         JMP     L3E920
 L3E836:
-        BCLR    >PurgeLearnFlags,Z,#$04
+        BCLR    >PurgeLearnFlags,Z,#$04                  ; bit 2: trim at or below the learning limit (PurgeVaporLearn)
 L3E83A:
         BRSET   >ThrottleState,Z,#$80,L3E8C4             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >ShortTermTrim1,Z
@@ -16145,10 +16145,10 @@ L3E97A:
 L3E97E:
         LBRA    L3EAEA
 L3E982:
-        BSET    >PurgeLearnFlags,Z,#$20
+        BSET    >PurgeLearnFlags,Z,#$20                  ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
 L3E986:
-        BSET    >PurgeLearnFlags,Z,#$02
-        BCLR    >PurgeLearnFlags,Z,#$DD
+        BSET    >PurgeLearnFlags,Z,#$02                  ; bit 1: purge vapour learning ended (PurgeVaporLearn)
+        BCLR    >PurgeLearnFlags,Z,#$DD                  ; bit 7: purge vapour learning running (PurgeVaporLearn); bit 6: purge vapour learning step state; O2LearnEnable reads it; bit 4: purge vapour settle time reached (PurgeVaporSettleTime); bit 3: purge vapour learning step state (PurgeVaporLearn); bit 2: trim at or below the learning limit (PurgeVaporLearn); bit 0: bank 1 learning rate step (PurgeVaporLearn)
         LDD     #$FFFF
         STD     $0448,Z
         CLR     >PurgeVaporEstimate,Z
@@ -16172,8 +16172,8 @@ L3E9AA:
         BNE     L3E9D2
         ORAB    #$01
 L3E9D2:
-        BRCLR   >PurgeLearnFlags,Z,#$10,L3EA0E
-        BRSET   >PurgeLearnFlags,Z,#$20,L3EA0E
+        BRCLR   >PurgeLearnFlags,Z,#$10,L3EA0E           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
+        BRSET   >PurgeLearnFlags,Z,#$20,L3EA0E           ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
         LDAA    >VehicleSpeed,Z
         CMPA    >PurgeLearnSpeedMax
         BCC     L3EA0E
@@ -16182,8 +16182,8 @@ L3E9EC:
         LDAB    #$01
         CMPA    >PurgeCell3
         LBNE    L3EABC
-        BRCLR   >PurgeLearnFlags,Z,#$10,L3EA0E
-        BRSET   >PurgeLearnFlags,Z,#$20,L3EA0E
+        BRCLR   >PurgeLearnFlags,Z,#$10,L3EA0E           ; bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
+        BRSET   >PurgeLearnFlags,Z,#$20,L3EA0E           ; bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
         LDAA    >VehicleSpeed,Z
         CMPA    >PurgeLearnSpeedMin
         LBCS    L3EABC
@@ -16325,14 +16325,14 @@ L3EB66:
         BRSET   >PurgeFlags,Z,#$80,L3EBAE                ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
         BRSET   <MonStatusPurge,Z,#$04,L3EBAE            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         BRSET   >ThrottleState,Z,#$80,L3EBCA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRSET   >PurgeCtlFlags,Z,#$10,L3EB96
+        BRSET   >PurgeCtlFlags,Z,#$10,L3EB96             ; bit 4: purge adaptation: large rich error (PurgeAdaptRichLarge)
         TST     >PurgeAdaptHoldTimer,Z
         BEQ     L3EB96
         BRCLR   >MainLoopPhaseMask,Z,#$02,L3ECC4         ; bit 1: one pass in 4 (about 48 ms)
         DEC     >PurgeAdaptHoldTimer,Z
         LBRA    L3ECC4
 L3EB96:
-        BCLR    >PurgeCtlFlags,Z,#$10
+        BCLR    >PurgeCtlFlags,Z,#$10                    ; bit 4: purge adaptation: large rich error (PurgeAdaptRichLarge)
         LDAA    >PurgeTrimLatched,Z
         BPL     L3EBF0
         CMPA    >PurgeAdaptRichSmall
@@ -16340,8 +16340,8 @@ L3EB96:
         CMPA    >PurgeAdaptRichLarge
         LBCS    L3EC3A
 L3EBAE:
-        BSET    >PurgeCtlFlags,Z,#$10
-        BCLR    >PurgeCtlFlags,Z,#$60
+        BSET    >PurgeCtlFlags,Z,#$10                    ; bit 4: purge adaptation: large rich error (PurgeAdaptRichLarge)
+        BCLR    >PurgeCtlFlags,Z,#$60                    ; bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation); bit 5: purge adaptation state counted (PurgeFlowAdaptation)
         LDAA    >PurgeAdaptHold
         STAA    >PurgeAdaptHoldTimer,Z
         CLR     >PurgeAdaptStateCount,Z
@@ -16363,7 +16363,7 @@ L3EBF0:
         TST     >PurgeAdaptHoldTimer,Z
         LBNE    L3EC80
         BRCLR   >PurgeFlags,Z,#$08,L3EC04                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
-        BRSET   >PurgeCtlFlags,Z,#$20,L3EC80
+        BRSET   >PurgeCtlFlags,Z,#$20,L3EC80             ; bit 5: purge adaptation state counted (PurgeFlowAdaptation)
 L3EC04:
         LDAA    >PurgeAdaptCounter,Z
         CMPA    >PurgeAdaptUpTime
@@ -16388,7 +16388,7 @@ L3EC3A:
         TST     >PurgeAdaptHoldTimer,Z
         BNE     L3EC80
         BRSET   >PurgeFlags,Z,#$08,L3EC4C                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
-        BRSET   >PurgeCtlFlags,Z,#$20,L3EC80
+        BRSET   >PurgeCtlFlags,Z,#$20,L3EC80             ; bit 5: purge adaptation state counted (PurgeFlowAdaptation)
 L3EC4C:
         LDAA    >PurgeAdaptCounter,Z
         CMPA    >PurgeAdaptDownTime
@@ -16410,10 +16410,10 @@ L3EC7C:
         STAA    >PurgeFlowAdapt,Z
 L3EC80:
         BRSET   >PurgeFlags,Z,#$08,L3EC8E                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
-        BRSET   >PurgeCtlFlags,Z,#$40,L3ECAC
+        BRSET   >PurgeCtlFlags,Z,#$40,L3ECAC             ; bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation)
         BRA     L3EC94
 L3EC8E:
-        BRCLR   >PurgeCtlFlags,Z,#$40,L3ECAC
+        BRCLR   >PurgeCtlFlags,Z,#$40,L3ECAC             ; bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation)
 L3EC94:
         LDAA    >PurgeAdaptStateCount,Z
         CMPA    >PurgeAdaptStateTime
@@ -16422,16 +16422,16 @@ L3EC94:
         STAA    >PurgeAdaptStateCount,Z
         BRA     L3ECC4
 L3ECA6:
-        BSET    >PurgeCtlFlags,Z,#$20
+        BSET    >PurgeCtlFlags,Z,#$20                    ; bit 5: purge adaptation state counted (PurgeFlowAdaptation)
         BRA     L3ECC4
 L3ECAC:
         CLR     >PurgeAdaptStateCount,Z
-        BCLR    >PurgeCtlFlags,Z,#$20
+        BCLR    >PurgeCtlFlags,Z,#$20                    ; bit 5: purge adaptation state counted (PurgeFlowAdaptation)
         BRSET   >PurgeFlags,Z,#$08,L3ECC0                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
-        BCLR    >PurgeCtlFlags,Z,#$40
+        BCLR    >PurgeCtlFlags,Z,#$40                    ; bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation)
         BRA     L3ECC4
 L3ECC0:
-        BSET    >PurgeCtlFlags,Z,#$40
+        BSET    >PurgeCtlFlags,Z,#$40                    ; bit 6: purge adaptation: trim counted for this cell (PurgeFlowAdaptation)
 L3ECC4:
         RTS
 

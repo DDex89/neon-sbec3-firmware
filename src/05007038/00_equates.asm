@@ -138,6 +138,13 @@ SpeedCtlFlags    equ $0029        ; $F8029
 ;                 bit 1: switch count at 8 or more (SpeedCtlSwitchCheck)
 ;                 bit 0: switch event handled (SpeedCtlSwitchRead)
 SystemFlags00A   equ $002A        ; $F802A
+;                 bit 7: cleared after an output driver status read and every 256 main loop passes
+;                 bit 6: cleared with bit 7
+;                 bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
+;                 bit 4: codes cleared at reset after a failed RAM check (Reset)
+;                 bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
+;                 bit 1: NV checksum checked at reset (Reset)
+;                 bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
 ThrottleClosed   equ $002B        ; $F802B
 Baro             equ $002C        ; $F802C
 SriMileage       equ $002D        ; $F802D
@@ -183,6 +190,13 @@ PurgeCellRichFlags equ $0087        ; $F8087
 O2HeaterTimer    equ $00B0        ; $F80B0
 MonFlags09E      equ $00B6        ; $F80B6
 LdpFlags2        equ $00B7        ; $F80B7
+;                 bit 7: pump switch closed at the purged check (LdpPurgedCheck)
+;                 bit 5: leak test window counting (LDP state machine)
+;                 bit 4: purged time reached (LdpPurgedCheck)
+;                 bit 3: pump stroke time average taken (LDP state machine)
+;                 bit 2: stroke time at or above LdpSealedStrokeTime2: system sealed (LDP state machine)
+;                 bit 1: leak test step started (LDP state machine)
+;                 bit 0: soak difference under LdpSoakDiffMax (LDP state machine); PurgeRampControl reads it
 MonStatusO2Sensor1 equ $00BA        ; $F80BA
 MonStatusO2Sensor2 equ $00BB        ; $F80BB
 MonStatusO2Sensor4 equ $00BC        ; $F80BC
@@ -220,6 +234,13 @@ MonRecordC5      equ $00D9        ; $F80D9
 MonRecordC6      equ $00DA        ; $F80DA
 MisfireRecordD9  equ $00DB        ; $F80DB
 FlexStartFlags   equ $00DC        ; $F80DC
+;                 bit 7: reference event handled since the last rpm update (CalcEngineRpm)
+;                 bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
+;                 bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
+;                 bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+;                 bit 2: power-down tasks running (CheckPowerDown)
+;                 bit 1: cleared when the flex sensor start value is averaged (FlexSensorCheck)
+;                 bit 0: cleared when the flex sensor start value is averaged (FlexSensorCheck)
 VacLeakFlags     equ $00DD        ; $F80DD
 O2CrossFlags     equ $00E6        ; $F80E6
 MisfireRecordDD  equ $00E8        ; $F80E8
@@ -483,6 +504,14 @@ MisfireFlags2    equ $02C5        ; $F82C5
 ;                 bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
 ;                 bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
 MisfireFlags5    equ $02C6        ; $F82C6
+;                 bit 7: engine just started or stalled: misfire transient hold (MisfireTransient, MisfireSegmentTime)
+;                 bit 6: throttle opened: misfire transient hold (MisfireTransient)
+;                 bit 5: MAP or throttle changed past MisfireMapChangeMax / MisfireThrottleChangeMax: hold
+;                 bit 4: SegmentRpm above the rev-limit hold rpm (MisfireTransient)
+;                 bit 3: per-event spark or fuel event active: hold (MisfireTransient)
+;                 bit 2: event spark at or above MisfireSparkMin: hold (MisfireTransient)
+;                 bit 1: MAP below the misfire enable value: hold (MisfireTransient)
+;                 bit 0: SegmentRpm above the misfire rpm limit: hold (MisfireTransient)
 MisfireFlags4    equ $02C7        ; $F82C7
 ;                 bit 6: set by IdleTargetControl at the end of a gear idle step; read by MisfireDeviation
 MisfireWork628   equ $02C8        ; $F82C8
@@ -611,6 +640,10 @@ O2PurgeHoldTimer equ $040B        ; $F840B
 O2LearnFlags     equ $040C        ; $F840C
 O2SwitchFlags    equ $040D        ; $F840D
 O2InactiveFlags  equ $040E        ; $F840E
+;                 bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)
+;                 bit 6: bank 2 closed loop held open (as bit 7)
+;                 bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
+;                 bit 0: read by ClosedLoopManager
 O2ResetFlags2    equ $040F        ; $F840F
 ;                 bit 7: adaptive cell selection: not the last cell (O2LearnEnable)
 ;                 bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
@@ -888,6 +921,14 @@ ControlFlagsC39  equ $0610        ; $F8610
 ;                 bit 2: set and cleared with bit 7
 CrankSyncFlags2  equ $0611        ; $F8611
 BusTempFlags     equ $0617        ; $F8617
+;                 bit 7: fan stage from the bus temperature, bit 7 (FanRelayControl)
+;                 bit 6: fan stage from the bus temperature: stage 2 (FanRelayControl)
+;                 bit 5: fan stage from the bus temperature: stage 1 (FanRelayControl)
+;                 bit 4: fan stage from coolant: stage 2 (FanRelayControl)
+;                 bit 3: fan stage from coolant: stage 1 (FanRelayControl)
+;                 bit 2: gear idle steps pending with the fan (FanRelayControl)
+;                 bit 1: fan PWM running (FanPwmMain)
+;                 bit 0: bus temperature high: above BusTempLatchOn, off below BusTempLatchOff (BusTempFlag)
 VssFlags         equ $0618        ; $F8618
 ;                 bit 4: vehicle speed reading valid (set at reset and by CalcVehicleSpeed)
 ;                 bit 3: new VSS period to process (Isr_GPT_IC3, cleared by CalcVehicleSpeed)
@@ -925,6 +966,14 @@ PurgeFlags2      equ $063E        ; $F863E
 ;                 bit 1: purge cell 2 reference reached, bank 1
 ;                 bit 0: purge cell 2 reference reached, bank 2
 PurgeLearnFlags  equ $0645        ; $F8645
+;                 bit 7: purge vapour learning running (PurgeVaporLearn)
+;                 bit 6: purge vapour learning step state; O2LearnEnable reads it
+;                 bit 5: purge vapour learning stopped: O2 sensor fault or conditions lost
+;                 bit 4: purge vapour settle time reached (PurgeVaporSettleTime)
+;                 bit 3: purge vapour learning step state (PurgeVaporLearn)
+;                 bit 2: trim at or below the learning limit (PurgeVaporLearn)
+;                 bit 1: purge vapour learning ended (PurgeVaporLearn)
+;                 bit 0: bank 1 learning rate step (PurgeVaporLearn)
 PurgeCellNum1    equ $064F        ; $F864F
 PurgeCellNum2    equ $0650        ; $F8650
 PurgeCellNum3    equ $0651        ; $F8651

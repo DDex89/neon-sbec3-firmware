@@ -7,6 +7,13 @@ UnexpectedIrqStack4 equ $0002        ; $F8002
 UnexpectedIrqStack6 equ $0004        ; $F8004
 ResetCheckWord   equ $0006        ; $F8006
 SystemFlags00A   equ $0008        ; $F8008
+;                 bit 7: cleared after an output driver status read and every 256 main loop passes
+;                 bit 6: cleared with bit 7
+;                 bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
+;                 bit 4: codes cleared at reset after a failed RAM check (Reset)
+;                 bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
+;                 bit 1: NV checksum checked at reset (Reset)
+;                 bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
 ThrottleClosed   equ $0009        ; $F8009
 IacStepFlags     equ $000A        ; $F800A
 ;                 bit 7: stepper phase toggle (IacStepperDrive)

@@ -2731,7 +2731,7 @@ L11DCE:
 L11DD6:
         STAA    $03A8,Z
         BRCLR   >SparkFlags,Z,#$40,L11DEC                ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
-        BSET    >EventSparkFlags2,Z,#$80
+        BSET    >EventSparkFlags2,Z,#$80                 ; bit 7: reference event since the last rpm update (CalcEngineRpm); SpeedDampControl reads it
         BSET    $34,Z,#$80
         BCLR    >SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
 L11DEC:
@@ -3094,7 +3094,7 @@ L121B2:
 Sub_121B8:
         BRSET   >EepromFlags,Z,#$80,L1226A               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   $030E,Z,#$04,L1226A
-        BRCLR   >SystemFlags00A,Z,#$08,L121CC
+        BRCLR   >SystemFlags00A,Z,#$08,L121CC            ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
         INC     $3B,Z
 L121CC:
         BRCLR   $0035,Z,#$08,L121D6
@@ -12842,16 +12842,16 @@ L18C96:
         BCC     L18D10
         BSET    $016E,Z,#$10
 L18CA2:
-        BRSET   >SystemFlags00A,Z,#$08,L18CBE
+        BRSET   >SystemFlags00A,Z,#$08,L18CBE            ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
         LDAB    $024B,Z
         STAB    $3A,Z
         CLR     $3B,Z
-        BSET    <SystemFlags00A,Z,#$08
+        BSET    <SystemFlags00A,Z,#$08                   ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it
         CMPB    $3D38
         BCC     L18CBE
-        BSET    <SystemFlags00A,Z,#$01
+        BSET    <SystemFlags00A,Z,#$01                   ; bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
 L18CBE:
-        BRCLR   >SystemFlags00A,Z,#$01,L18CDE
+        BRCLR   >SystemFlags00A,Z,#$01,L18CDE            ; bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
         LDAA    $3A,Z
         CBA
         BCC     L18CCC
@@ -12892,7 +12892,7 @@ L18D10:
 L18D14:
         BCLR    $0146,Z,#$80
 L18D18:
-        BCLR    <SystemFlags00A,Z,#$09
+        BCLR    <SystemFlags00A,Z,#$09                   ; bit 3: fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it; bit 0: fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)
 L18D1C:
         RTS
 
@@ -16438,7 +16438,7 @@ Sub_1B388:
         BRCLR   >SwitchInputs2,Z,#$20,L1B3FE             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BRSET   $0035,Z,#$08,L1B3FA
         BRSET   $016E,Z,#$02,L1B3FA
-        BRSET   >SystemFlags00A,Z,#$20,L1B3FE
+        BRSET   >SystemFlags00A,Z,#$20,L1B3FE            ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         CLRA
         LDAB    >VehicleSpeedCoarse,Z
         CPD     $2313
@@ -18697,7 +18697,7 @@ L1CA2C:
         LDAA    >EventSpark,Z
         BEQ     L1CA5E
         ORP     #$00E0
-        BRCLR   >EventSparkFlags2,Z,#$10,L1CA46
+        BRCLR   >EventSparkFlags2,Z,#$10,L1CA46          ; bit 4: per-event spark state from the park/neutral switch (Isr_GPT_IC4OC5); EventSparkControl reads it
         SUBA    >EventSparkDecay
         BCC     L1CA4E
         CLRA
@@ -18739,9 +18739,9 @@ Sub_1CA64:
         LBCC    L1CB74
         JMP     L1CB9E
 L1CAAC:
-        BSET    >EventSparkFlags2,Z,#$04
-        BRCLR   >EventSparkFlags2,Z,#$80,L1CB9E
-        BCLR    >EventSparkFlags2,Z,#$80
+        BSET    >EventSparkFlags2,Z,#$04                 ; bit 2: speed damping pass done (SpeedDampControl); MisfireTransient reads it
+        BRCLR   >EventSparkFlags2,Z,#$80,L1CB9E          ; bit 7: reference event since the last rpm update (CalcEngineRpm); SpeedDampControl reads it
+        BCLR    >EventSparkFlags2,Z,#$80                 ; bit 7: reference event since the last rpm update (CalcEngineRpm); SpeedDampControl reads it
         LDD     >EngineRpm,Z
         ASLD
         BCC     L1CAC4
@@ -18765,13 +18765,13 @@ L1CAEA:
         XGAB
         SBA
         BCC     L1CB00
-        BSET    >EventSparkFlags2,Z,#$08
+        BSET    >EventSparkFlags2,Z,#$08                 ; bit 3: speed damping correction started (SpeedDampControl)
         NEGA
         BVS     L1CB06
         BPL     L1CB08
         BRA     L1CB06
 L1CB00:
-        BCLR    >EventSparkFlags2,Z,#$08
+        BCLR    >EventSparkFlags2,Z,#$08                 ; bit 3: speed damping correction started (SpeedDampControl)
         BPL     L1CB08
 L1CB06:
         LDAA    #$7F
@@ -18779,7 +18779,7 @@ L1CB08:
         STAA    $01F6,Z
         LDX     #Tab2D_1D0F
         JSR     Lookup2D
-        BRSET   >EventSparkFlags2,Z,#$08,L1CB1C
+        BRSET   >EventSparkFlags2,Z,#$08,L1CB1C          ; bit 3: speed damping correction started (SpeedDampControl)
         NEGA
 L1CB1C:
         STAA    $01F7,Z
@@ -18790,17 +18790,17 @@ L1CB1C:
 L1CB2C:
         LDX     #Tab2D_1D19
         JSR     Lookup2D
-        BRSET   >EventSparkFlags2,Z,#$02,L1CB3C
+        BRSET   >EventSparkFlags2,Z,#$02,L1CB3C          ; bit 1: speed damping correction negative (SpeedDampControl)
         NEGA
 L1CB3C:
         ADDA    $01F7,Z
         STAA    $01F7,Z
-        BRSET   >EventSparkFlags2,Z,#$08,L1CB50
-        BCLR    >EventSparkFlags2,Z,#$0A
+        BRSET   >EventSparkFlags2,Z,#$08,L1CB50          ; bit 3: speed damping correction started (SpeedDampControl)
+        BCLR    >EventSparkFlags2,Z,#$0A                 ; bit 3: speed damping correction started (SpeedDampControl); bit 1: speed damping correction negative (SpeedDampControl)
         BRA     L1CB58
 L1CB50:
-        BCLR    >EventSparkFlags2,Z,#$08
-        BSET    >EventSparkFlags2,Z,#$02
+        BCLR    >EventSparkFlags2,Z,#$08                 ; bit 3: speed damping correction started (SpeedDampControl)
+        BSET    >EventSparkFlags2,Z,#$02                 ; bit 1: speed damping correction negative (SpeedDampControl)
 L1CB58:
         LDAA    $01F6,Z
         STAA    $0409,Z
@@ -18808,7 +18808,7 @@ L1CB58:
         NEGA
         BPL     L1CB6E
         CLRA
-        BCLR    >EventSparkFlags2,Z,#$04
+        BCLR    >EventSparkFlags2,Z,#$04                 ; bit 2: speed damping pass done (SpeedDampControl); MisfireTransient reads it
 L1CB6E:
         STAA    >EventSpark,Z
         BRA     L1CB9E
@@ -18819,7 +18819,7 @@ L1CB74:
         SUBA    $1D02
         BCC     L1CB8A
         CLRA
-        BCLR    >EventSparkFlags2,Z,#$04
+        BCLR    >EventSparkFlags2,Z,#$04                 ; bit 2: speed damping pass done (SpeedDampControl); MisfireTransient reads it
 L1CB8A:
         STAA    >EventSpark,Z
         LDAA    $1D01
@@ -18872,7 +18872,7 @@ L1CBEE:
         INCA
         CMPA    $1D23
         BCS     L1CC06
-        BCLR    >EventSparkFlags2,Z,#$20
+        BCLR    >EventSparkFlags2,Z,#$20                 ; bit 5: cleared by CamSignalCheck
         BCLR    >EventSparkFlags,Z,#$1C                  ; bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         CMPA    #$FF
         BEQ     L1CC0A

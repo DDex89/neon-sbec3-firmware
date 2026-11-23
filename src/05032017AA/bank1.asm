@@ -1536,7 +1536,7 @@ L10FE4:
 ;---------------------------------------------------------------------------------------------------
 Sub_10FE6:
         BRSET   >Options032C,#$80,L11058                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
-        BRCLR   >PurgeLearnFlags,Z,#$80,L11012
+        BRCLR   >PurgeLearnFlags,Z,#$80,L11012           ; bit 7: purge vapour learning running (PurgeVaporLearn)
         BRSET   >ThrottleState,Z,#$40,L11012             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BNE     L11012
@@ -1549,7 +1549,7 @@ L1100C:
         EMUL
 L11012:
         BRSET   >PurgeFlags2,Z,#$0A,L11046               ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate); bit 1: purge cell 2 reference reached, bank 1
-        BRSET   <FlexStartFlags,Z,#$28,L11046
+        BRSET   <FlexStartFlags,Z,#$28,L11046            ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
         BRSET   >PurgeFlags2,Z,#$80,L11046               ; bit 7: read by the adaptive fuel code, byte writes only
         BRSET   >SensorFaultFlags,Z,#$80,L11046          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   >ThrottleState,Z,#$40,L11046             ; bit 6: wide-open throttle (DetectWot)
@@ -1580,7 +1580,7 @@ L11058:
 ;---------------------------------------------------------------------------------------------------
 Sub_1105E:
         BRSET   >Options032C,#$80,L110D0                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
-        BRCLR   >PurgeLearnFlags,Z,#$80,L1108A
+        BRCLR   >PurgeLearnFlags,Z,#$80,L1108A           ; bit 7: purge vapour learning running (PurgeVaporLearn)
         BRSET   >ThrottleState,Z,#$40,L1108A             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >DecelFuelFactor,Z
         BNE     L1108A
@@ -1593,7 +1593,7 @@ L11084:
         EMUL
 L1108A:
         BRSET   >PurgeFlags2,Z,#$05,L110BE               ; bit 2: purge cell 1 reference reached, bank 2; bit 0: purge cell 2 reference reached, bank 2
-        BRSET   <FlexStartFlags,Z,#$28,L110BE
+        BRSET   <FlexStartFlags,Z,#$28,L110BE            ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
         BRSET   >PurgeFlags2,Z,#$80,L110BE               ; bit 7: read by the adaptive fuel code, byte writes only
         BRSET   >SensorFaultFlags,Z,#$80,L110BE          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   >ThrottleState,Z,#$40,L110BE             ; bit 6: wide-open throttle (DetectWot)
@@ -5507,13 +5507,13 @@ L14A10:
         BCLR    >O2ActiveFlags,Z,#$22                    ; bit 5: downstream O2 sensor 1 active: output passed O2DownActiveLow; bit 1: as bit 5, cleared by SensorFaultFlags2 bit 1
         CLR     $11,X
         BSET    <Scratch0,Z,#$50
-        BSET    >O2InactiveFlags,Z,#$80
+        BSET    >O2InactiveFlags,Z,#$80                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)
 L14A24:
         BRCLR   >SensorFaultFlags2,Z,#$01,L14A38         ; bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
         BCLR    >O2ActiveFlags,Z,#$11                    ; bit 4: downstream O2 sensor 2 active (as bit 5); bit 0: as bit 4, cleared by SensorFaultFlags2 bit 0
         CLR     $11,Y
         BSET    <Scratch1,Z,#$50
-        BSET    >O2InactiveFlags,Z,#$40
+        BSET    >O2InactiveFlags,Z,#$40                  ; bit 6: bank 2 closed loop held open (as bit 7)
 L14A38:
         LDAA    >O2ActiveFlags,Z
         BITA    #$0C
@@ -5601,7 +5601,7 @@ L14B18:
         LDAB    <SriMileageLow,Z
         CMPB    >O2NewMileageOpenMax
         BCC     L14B30
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    <Scratch0,Z,#$50
         BSET    <Scratch1,Z,#$50
 L14B30:
@@ -5613,8 +5613,8 @@ L14B30:
         BSET    <Scratch0,Z,#$80
         BSET    <Scratch1,Z,#$80
 L14B50:
-        BRCLR   >O2InactiveFlags,Z,#$01,L14B62
-        BSET    >O2InactiveFlags,Z,#$C0
+        BRCLR   >O2InactiveFlags,Z,#$01,L14B62           ; bit 0: read by ClosedLoopManager
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    <Scratch0,Z,#$50
         BSET    <Scratch1,Z,#$50
 L14B62:
@@ -5643,7 +5643,7 @@ L14B8A:
 L14BB4:
         BRCLR   >FuelModeFlags,Z,#$20,L14BCA             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    <Scratch0,Z,#$F0
         BSET    <Scratch1,Z,#$F0
 L14BCA:
@@ -5682,15 +5682,15 @@ L14C26:
         BCS     L14C3C
         BSET    <Scratch0,Z,#$50
         BSET    <Scratch1,Z,#$50
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
 L14C3C:
         BRCLR   $001E,X,#$01,L14C4A
         BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
-        BSET    >O2InactiveFlags,Z,#$80
+        BSET    >O2InactiveFlags,Z,#$80                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)
 L14C4A:
         BRCLR   $001E,Y,#$01,L14C58
         BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    >O2InactiveFlags,Z,#$40
+        BSET    >O2InactiveFlags,Z,#$40                  ; bit 6: bank 2 closed loop held open (as bit 7)
 L14C58:
         LDAB    >O2CrossFlags,Z
         BITB    #$80
@@ -5704,7 +5704,7 @@ L14C6C:
         BRCLR   >SparkFlags2,Z,#$80,L14C82               ; bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
         BSET    <Scratch0,Z,#$F0
         BSET    <Scratch1,Z,#$F0
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 L14C82:
         BRCLR   >RevLimitFlags,Z,#$C0,L14C8C
@@ -5713,7 +5713,7 @@ L14C8C:
         TST     >DecelFuelFactor,Z
         BEQ     L14CE6
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
-        BSET    >O2InactiveFlags,Z,#$C0
+        BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    <Scratch0,Z,#$70
         BSET    <Scratch1,Z,#$70
         TST     >O2TrimAvgCount,Z
@@ -5966,12 +5966,12 @@ L14F32:
         BRCLR   >Options032F,#$80,L14F4A                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         BRSET   >O2Bank1Flags,Z,#$10,L14F64              ; bit 4: bank 1 state read by ClosedLoopManager and O2DownEnable, byte writes only
         BRSET   >O2Bank1Flags,Z,#$40,L14F64              ; bit 6: set with bit 7; read by O2DownEnable
-        BRSET   >O2InactiveFlags,Z,#$80,L14F64
+        BRSET   >O2InactiveFlags,Z,#$80,L14F64           ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)
 L14F4A:
         BRCLR   >Options032F,#$40,L14F6C                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2Bank2Flags,Z,#$10,L14F64
         BRSET   >O2Bank2Flags,Z,#$40,L14F64
-        BRSET   >O2InactiveFlags,Z,#$40,L14F64
+        BRSET   >O2InactiveFlags,Z,#$40,L14F64           ; bit 6: bank 2 closed loop held open (as bit 7)
         BRA     L14F6C
 L14F64:
         LDAA    >O2ReopenHoldTime
@@ -5979,7 +5979,7 @@ L14F64:
 L14F6C:
         BCLR    >O2Bank1Flags,Z,#$C0                     ; bit 7: bank 1 lean adaptive memory cleared (O2MemClearLeanBank1); cleared when closed loop reopens; bit 6: set with bit 7; read by O2DownEnable
         BCLR    >O2Bank2Flags,Z,#$C0
-        BCLR    >O2InactiveFlags,Z,#$C0
+        BCLR    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BCLR    >O2ResetFlags2,Z,#$3C                    ; bit 5: bank 1 short-term trim reset, memory change hold started (O2CellSelect, FuelCutControl); bit 4: bank 2 short-term trim reset (O2CellSelect, FuelCutControl); bit 3: bank 1 trim at or below PurgeLearnTrimMin during vapour learning (PurgeVaporLearn); bit 2: bank 2 trim at or below PurgeLearnTrimMin (PurgeVaporLearn)
         BCLR    >O2ResetFlags,Z,#$C0
         RTS
@@ -7071,7 +7071,7 @@ L15A42:
         CLR     >O2LearnTimer2,Z
         CLR     >PurgeCellCount,Z
         BRCLR   >Options032C,#$40,L15A58                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
-        BRSET   <FlexStartFlags,Z,#$08,L15A82
+        BRSET   <FlexStartFlags,Z,#$08,L15A82            ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
 L15A58:
         LDAA    #$20
         CMPB    >PurgeCell1
@@ -7141,13 +7141,13 @@ L15AE8:
         LDAB    >O2LearnRpmMax
         SUBB    >EngineRpm,Z
         BCS     L15B1A
-        BRCLR   >O2InactiveFlags,Z,#$02,L15B22
+        BRCLR   >O2InactiveFlags,Z,#$02,L15B22           ; bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
         SUBB    >O2LearnRpmHyst
         LBCS    L15BF2
-        BCLR    >O2InactiveFlags,Z,#$02
+        BCLR    >O2InactiveFlags,Z,#$02                  ; bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
         BRA     L15B22
 L15B1A:
-        BSET    >O2InactiveFlags,Z,#$02
+        BSET    >O2InactiveFlags,Z,#$02                  ; bit 1: rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)
         LBRA    L15BF2
 L15B22:
         LDAB    >ColdEnrich,Z
@@ -7168,7 +7168,7 @@ L15B54:
         BRSET   >EgrMonFlags,Z,#$04,L15BF2               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
         BRSET   >PurgeFlowTestFlags,Z,#$10,L15BF2
         BRSET   >PurgeFlowTestFlags,Z,#$20,L15BF2
-        BRSET   >PurgeLearnFlags,Z,#$40,L15BF2
+        BRSET   >PurgeLearnFlags,Z,#$40,L15BF2           ; bit 6: purge vapour learning step state; O2LearnEnable reads it
         LDE     >FuelPulseBank1,Z
         CPE     >O2PulseWidthMin
         BCC     L15B7C
@@ -7353,13 +7353,13 @@ L15D40:
 L15D44:
         LDAB    >O2LearnRate
         BRCLR   >Options032C,#$40,L15D58                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
-        BRCLR   >FlexStartFlags,Z,#$10,L15D58
+        BRCLR   >FlexStartFlags,Z,#$10,L15D58            ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
         LDAB    >O2LearnRateFlex
 L15D58:
         BRSET   >ThrottleState,Z,#$80,L15D72             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAB    >O2LearnRateWot
         BRCLR   >Options032C,#$40,L15D72                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
-        BRCLR   >FlexStartFlags,Z,#$10,L15D72
+        BRCLR   >FlexStartFlags,Z,#$10,L15D72            ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
         LDAB    >O2LearnRateWotFlex
 L15D72:
         CLRA
@@ -7621,7 +7621,7 @@ L15FAC:
         CMPA    $00,X
         BLE     L15FB6
         STAB    $00,X
-        BSET    <FlexStartFlags,Z,#$10
+        BSET    <FlexStartFlags,Z,#$10                   ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
 L15FB6:
         AIX     #$01
         CPX     #$806B
@@ -7631,7 +7631,7 @@ L15FC2:
         CMPA    $00,X
         BLE     L15FCC
         STAB    $00,X
-        BSET    <FlexStartFlags,Z,#$10
+        BSET    <FlexStartFlags,Z,#$10                   ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
 L15FCC:
         AIX     #$01
         CPX     #$807E
@@ -9074,10 +9074,10 @@ L1723A:
         STAA    >FlexEstimate2,Z
         BCLR    >FlexLearnFlags4,Z,#$D0
         BSET    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
-        BCLR    >FlexLearnFlags3,Z,#$23
+        BCLR    >FlexLearnFlags3,Z,#$23                  ; bit 5: flex learning count reached FlexLearnCountMax (FlexLearnMain); bit 1: flex trim at or above FlexLearnTrimMin (FlexLearnMain); bit 0: second flex count reached FlexLearnCountMax2 (FlexLearnMain)
         CLR     >FlexLearnCounter2,Z
         JSR     FlexLearnRestart2
-        BSET    >FlexLearnFlags3,Z,#$40
+        BSET    >FlexLearnFlags3,Z,#$40                  ; bit 6: flex learning restarted (FlexLearnMain, FlexLearnInitRun)
 L17280:
         BRCLR   >FlexLearnFlags,Z,#$20,L172D8            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         LDD     >FlexLearnFuelSum,Z
@@ -9085,8 +9085,8 @@ L17280:
         BCS     L172B0
         BCLR    >FlexLearnFlags5,Z,#$08
         BSET    >FlexLearnFlags,Z,#$10                   ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
-        BRSET   >FlexLearnFlags3,Z,#$04,L172B4
-        BSET    >FlexLearnFlags3,Z,#$04
+        BRSET   >FlexLearnFlags3,Z,#$04,L172B4           ; bit 2: read by FlexLearnMain after a refuel; cleared by the restart routines
+        BSET    >FlexLearnFlags3,Z,#$04                  ; bit 2: read by FlexLearnMain after a refuel; cleared by the restart routines
         LDD     >FlexLearnFuelSum,Z
         STD     >FlexLearnFuelMark,Z
         JSR     FlexLevelTrack
@@ -9250,34 +9250,34 @@ L17470:
         CMPA    $077A
         BCC     L17498
         INC     >FlexLearnCounter,Z
-        BCLR    >FlexLearnFlags3,Z,#$20
+        BCLR    >FlexLearnFlags3,Z,#$20                  ; bit 5: flex learning count reached FlexLearnCountMax (FlexLearnMain)
         BRA     L174A8
 L17498:
-        BSET    >FlexLearnFlags3,Z,#$20
+        BSET    >FlexLearnFlags3,Z,#$20                  ; bit 5: flex learning count reached FlexLearnCountMax (FlexLearnMain)
         BCLR    >FlexLearnFlags2,Z,#$80
         BCLR    >FlexLearnFlags7,Z,#$80                  ; bit 7: cleared by FlexLearnMain at the end of a learning pass
-        BCLR    >FlexLearnFlags3,Z,#$40
+        BCLR    >FlexLearnFlags3,Z,#$40                  ; bit 6: flex learning restarted (FlexLearnMain, FlexLearnInitRun)
 L174A8:
         BRCLR   >FlexLearnFlags,Z,#$20,L174B4            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         BRCLR   >FlexLearnFlags2,Z,#$10,L174B8
 L174B4:
         JSR     FlexPurgeRichCheck
 L174B8:
-        BRSET   >FlexLearnFlags3,Z,#$40,L174C2
+        BRSET   >FlexLearnFlags3,Z,#$40,L174C2           ; bit 6: flex learning restarted (FlexLearnMain, FlexLearnInitRun)
         JSR     FlexLearnRestart
 L174C2:
-        BRCLR   >FlexLearnFlags3,Z,#$20,L17512
-        BRSET   >FlexLearnFlags3,Z,#$02,L174E4
+        BRCLR   >FlexLearnFlags3,Z,#$20,L17512           ; bit 5: flex learning count reached FlexLearnCountMax (FlexLearnMain)
+        BRSET   >FlexLearnFlags3,Z,#$02,L174E4           ; bit 1: flex trim at or above FlexLearnTrimMin (FlexLearnMain)
         LDAA    >FlexLearnTrimSum,Z
         TSTA
         BMI     L17512
         CMPA    $07C9
         BCS     L17512
-        BSET    >FlexLearnFlags3,Z,#$02
+        BSET    >FlexLearnFlags3,Z,#$02                  ; bit 1: flex trim at or above FlexLearnTrimMin (FlexLearnMain)
         CLR     >FlexLearnTrimSum,Z
 L174E4:
-        BRCLR   >FlexLearnFlags3,Z,#$02,L17512
-        BRSET   >FlexLearnFlags3,Z,#$01,L17512
+        BRCLR   >FlexLearnFlags3,Z,#$02,L17512           ; bit 1: flex trim at or above FlexLearnTrimMin (FlexLearnMain)
+        BRSET   >FlexLearnFlags3,Z,#$01,L17512           ; bit 0: second flex count reached FlexLearnCountMax2 (FlexLearnMain)
         BRCLR   >FlexLearnFlags7,Z,#$80,L17512           ; bit 7: cleared by FlexLearnMain at the end of a learning pass
         LDAA    >FlexLearnCounter2,Z
         CMPA    #$FF
@@ -9285,10 +9285,10 @@ L174E4:
         CMPA    $077B
         BCC     L1750E
         INC     >FlexLearnCounter2,Z
-        BCLR    >FlexLearnFlags3,Z,#$01
+        BCLR    >FlexLearnFlags3,Z,#$01                  ; bit 0: second flex count reached FlexLearnCountMax2 (FlexLearnMain)
         BRA     L17512
 L1750E:
-        BSET    >FlexLearnFlags3,Z,#$01
+        BSET    >FlexLearnFlags3,Z,#$01                  ; bit 0: second flex count reached FlexLearnCountMax2 (FlexLearnMain)
 L17512:
         JSR     FlexPurgeFactor
         RTS
@@ -9426,17 +9426,17 @@ FlexPurgeRichCheck:
         LDAA    >FlexLearnTrimSum,Z
         BPL     L17A4C
         NEGA
-        BRSET   >FlexLearnFlags3,Z,#$80,L17A42
+        BRSET   >FlexLearnFlags3,Z,#$80,L17A42           ; bit 7: purge cell rich past PurgeCellRichMax2 (FlexPurgeRichCheck)
         LDAB    >PurgeCellRichMax2
         ADDB    >PurgeCellRichHyst2
         CBA
         BCS     L17A4C
-        BSET    >FlexLearnFlags3,Z,#$80
+        BSET    >FlexLearnFlags3,Z,#$80                  ; bit 7: purge cell rich past PurgeCellRichMax2 (FlexPurgeRichCheck)
         BRA     L17A4C
 L17A42:
         CMPA    >PurgeCellRichMax2
         BCC     L17A4C
-        BCLR    >FlexLearnFlags3,Z,#$80
+        BCLR    >FlexLearnFlags3,Z,#$80                  ; bit 7: purge cell rich past PurgeCellRichMax2 (FlexPurgeRichCheck)
 L17A4C:
         RTS
 
@@ -9905,10 +9905,10 @@ L17FDE:
         STAA    >FlexEstimate2,Z
         BCLR    >FlexLearnFlags4,Z,#$D0
         BSET    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
-        BCLR    >FlexLearnFlags3,Z,#$23
+        BCLR    >FlexLearnFlags3,Z,#$23                  ; bit 5: flex learning count reached FlexLearnCountMax (FlexLearnMain); bit 1: flex trim at or above FlexLearnTrimMin (FlexLearnMain); bit 0: second flex count reached FlexLearnCountMax2 (FlexLearnMain)
         CLR     >FlexLearnCounter2,Z
         JSR     FlexLearnRestart2
-        BSET    >FlexLearnFlags3,Z,#$40
+        BSET    >FlexLearnFlags3,Z,#$40                  ; bit 6: flex learning restarted (FlexLearnMain, FlexLearnInitRun)
 L1802E:
         LDAA    >FlexLearnCounter3,Z
         STAA    $0F46,Z
@@ -9919,7 +9919,7 @@ L1802E:
         LDX     #FlexLearnLimitPurgeTrim2
         JSR     Lookup2D
         STAA    >FlexEthanolLimit,Z
-        BRSET   >FlexLearnFlags3,Z,#$40,L180AC
+        BRSET   >FlexLearnFlags3,Z,#$40,L180AC           ; bit 6: flex learning restarted (FlexLearnMain, FlexLearnInitRun)
         CLR     >FlexLearnWarmCounter,Z
         CLR     >FlexLearnCounter,Z
         CLR     >FlexLearnFlags2,Z
@@ -9930,7 +9930,7 @@ L1802E:
         LBRA    L180FC
 L18076:
         BRSET   >Options0333,#$10,L180A0                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
-        BRSET   >FlexLearnFlags3,Z,#$08,L180A0
+        BRSET   >FlexLearnFlags3,Z,#$08,L180A0           ; bit 3: cold purge learning: fuel used past the limit (FlexColdPurge)
         LDAA    >FlexEthanolFaultValue
         CMPA    >FlexEthanolStart,Z
         BCS     L180A0
@@ -9952,7 +9952,7 @@ L180AC:
         BRA     L180F2
 L180BE:
         BRSET   >Options0333,#$10,L180E8                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
-        BRSET   >FlexLearnFlags3,Z,#$08,L180E8
+        BRSET   >FlexLearnFlags3,Z,#$08,L180E8           ; bit 3: cold purge learning: fuel used past the limit (FlexColdPurge)
         LDAA    >FlexEthanolFaultValue
         CMPA    >FlexEthanolStart,Z
         BCS     L180E8
@@ -9970,15 +9970,15 @@ L180F2:
         ANDA    #$71
         STAA    >FlexLearnFlags2,Z
 L180FC:
-        BCLR    >FlexLearnFlags3,Z,#$08
-        BRCLR   >FlexLearnFlags3,Z,#$80,L1811E
+        BCLR    >FlexLearnFlags3,Z,#$08                  ; bit 3: cold purge learning: fuel used past the limit (FlexColdPurge)
+        BRCLR   >FlexLearnFlags3,Z,#$80,L1811E           ; bit 7: purge cell rich past PurgeCellRichMax2 (FlexPurgeRichCheck)
         LDAA    >StartCoolantTemp2,Z
         CMPA    >SoakStartCoolantMin
         BCS     L1811E
         CMPA    >FlexSoakCoolantMax
         BCC     L1811E
         CLR     >FlexLearnTrimSum,Z
-        BCLR    >FlexLearnFlags3,Z,#$80
+        BCLR    >FlexLearnFlags3,Z,#$80                  ; bit 7: purge cell rich past PurgeCellRichMax2 (FlexPurgeRichCheck)
 L1811E:
         LDAA    >FlexLearnCycleCount,Z
         CMPA    #$01
@@ -10021,7 +10021,7 @@ FlexLearnRestart:
         CLR     >FlexLearnCounter,Z
         CLRW    >FlexLearnFuelSum,Z
         CLRW    >FlexSensorRef,Z
-        BCLR    >FlexLearnFlags3,Z,#$04
+        BCLR    >FlexLearnFlags3,Z,#$04                  ; bit 2: read by FlexLearnMain after a refuel; cleared by the restart routines
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -10039,7 +10039,7 @@ FlexLearnRestart2:
         CLR     >FlexLearnCounter,Z
         CLRW    >FlexLearnFuelSum,Z
         CLRW    >FlexSensorRef,Z
-        BCLR    >FlexLearnFlags3,Z,#$04
+        BCLR    >FlexLearnFlags3,Z,#$04                  ; bit 2: read by FlexLearnMain after a refuel; cleared by the restart routines
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -10859,7 +10859,7 @@ L18C26:
         BRSET   >FlexLearnFlags,Z,#$08,L18C3A            ; bit 3: fuel used past FlexRefuelFuelMin2 (FlexLearnMain)
         BRA     L18C3E
 L18C3A:
-        BSET    >FlexLearnFlags3,Z,#$08
+        BSET    >FlexLearnFlags3,Z,#$08                  ; bit 3: cold purge learning: fuel used past the limit (FlexColdPurge)
 L18C3E:
         LDAA    >FlexLearnTimer,Z
         CMPA    >FlexLearnTimeMin
@@ -16476,7 +16476,7 @@ L1DC60:
         LDAA    >EventSpark,Z
         BEQ     L1DC92
         ORP     #$00E0
-        BRCLR   >EventSparkFlags2,Z,#$10,L1DC7A
+        BRCLR   >EventSparkFlags2,Z,#$10,L1DC7A          ; bit 4: per-event spark state from the park/neutral switch (Isr_GPT_IC4OC5); EventSparkControl reads it
         SUBA    >EventSparkDecay
         BCC     L1DC82
         CLRA
@@ -16538,7 +16538,7 @@ L1DD1A:
 L1DD1C:
         CLRA
         STAA    $0860,Z
-        BCLR    >EventSparkFlags2,Z,#$0A
+        BCLR    >EventSparkFlags2,Z,#$0A                 ; bit 3: speed damping correction started (SpeedDampControl); bit 1: speed damping correction negative (SpeedDampControl)
         LDAB    >SpeedDampTimer,Z
         BNE     L1DD4E
         LDAA    >SpeedDampSpark,Z
@@ -16552,7 +16552,7 @@ L1DD40:
         STAB    <Scratch1,Z
         STAB    <Scratch3,Z
         STAB    <Scratch4,Z
-        BCLR    >EventSparkFlags2,Z,#$04
+        BCLR    >EventSparkFlags2,Z,#$04                 ; bit 2: speed damping pass done (SpeedDampControl); MisfireTransient reads it
         BRA     L1DD66
 L1DD4E:
         DECB
@@ -16568,9 +16568,9 @@ L1DD58:
 L1DD66:
         JMP     L1DE90
 L1DD6A:
-        BSET    >EventSparkFlags2,Z,#$04
-        BRCLR   >EventSparkFlags2,Z,#$80,L1DD54
-        BCLR    >EventSparkFlags2,Z,#$80
+        BSET    >EventSparkFlags2,Z,#$04                 ; bit 2: speed damping pass done (SpeedDampControl); MisfireTransient reads it
+        BRCLR   >EventSparkFlags2,Z,#$80,L1DD54          ; bit 7: reference event since the last rpm update (CalcEngineRpm); SpeedDampControl reads it
+        BCLR    >EventSparkFlags2,Z,#$80                 ; bit 7: reference event since the last rpm update (CalcEngineRpm); SpeedDampControl reads it
         LDD     >EngineRpm,Z
         ASLD
         BCC     L1DD82
@@ -16598,13 +16598,13 @@ L1DDBA:
         BPL     L1DDBE
         LDAA    #$7F
 L1DDBE:
-        BRSET   >EventSparkFlags2,Z,#$08,L1DDCC
-        BSET    >EventSparkFlags2,Z,#$08
+        BRSET   >EventSparkFlags2,Z,#$08,L1DDCC          ; bit 3: speed damping correction started (SpeedDampControl)
+        BSET    >EventSparkFlags2,Z,#$08                 ; bit 3: speed damping correction started (SpeedDampControl)
         STAA    $0861,Z
 L1DDCC:
         STAA    <Scratch1,Z
         BPL     L1DDD4
-        BSET    >EventSparkFlags2,Z,#$02
+        BSET    >EventSparkFlags2,Z,#$02                 ; bit 1: speed damping correction negative (SpeedDampControl)
 L1DDD4:
         SUBA    $0861,Z
         BVC     L1DDE2
@@ -16616,7 +16616,7 @@ L1DDE0:
 L1DDE2:
         STAA    <Scratch2,Z
         CLRA
-        BRCLR   >EventSparkFlags2,Z,#$02,L1DDFC
+        BRCLR   >EventSparkFlags2,Z,#$02,L1DDFC          ; bit 1: speed damping correction negative (SpeedDampControl)
         LDAA    <Scratch1,Z
         ADDA    $085F,Z
         BVC     L1DDFC
@@ -16638,7 +16638,7 @@ L1DE0E:
         NEGA
 L1DE14:
         STAA    <Scratch4,Z
-        BRSET   >EventSparkFlags2,Z,#$02,L1DE24
+        BRSET   >EventSparkFlags2,Z,#$02,L1DE24          ; bit 1: speed damping correction negative (SpeedDampControl)
         LDAA    <Scratch1,Z
         CMPA    >SpeedDampDeviationMax
         BGT     L1DE66
@@ -16703,7 +16703,7 @@ L1DE90:
         STAA    $085F,Z
         LDAA    <Scratch4,Z
         STAA    >SpeedDampSpark,Z
-        BRSET   >EventSparkFlags2,Z,#$02,L1DEAA
+        BRSET   >EventSparkFlags2,Z,#$02,L1DEAA          ; bit 1: speed damping correction negative (SpeedDampControl)
         LDAB    >MainLoopCounter,Z
         BITB    #$0F
         BNE     L1DEB0
@@ -16762,7 +16762,7 @@ L1DF16:
         INC     >CamSignalCount,Z
         BRA     L1DF4E
 L1DF26:
-        BCLR    >EventSparkFlags2,Z,#$20
+        BCLR    >EventSparkFlags2,Z,#$20                 ; bit 5: cleared by CamSignalCheck
         BCLR    >EventSparkFlags,Z,#$1C                  ; bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         BRCLR   >EventSparkFlags,Z,#$C0,L1DF4E           ; bit 7: per-event spark state A, set with bit 3 by Isr_GPT_IC4OC5 when SwitchInputs2 bit 5 is set; reported on the bus; bit 6: per-event spark state B, set with bit 2 (the opposite of bit 7); reported on the bus
         BCLR    >EventSparkFlags,Z,#$C0                  ; bit 7: per-event spark state A, set with bit 3 by Isr_GPT_IC4OC5 when SwitchInputs2 bit 5 is set; reported on the bus; bit 6: per-event spark state B, set with bit 2 (the opposite of bit 7); reported on the bus

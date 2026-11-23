@@ -6317,7 +6317,7 @@ L05146:
         JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $0480,Z
-        BCLR    <SystemFlags00A,Z,#$C0
+        BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0516C:
         CLRA
         BRCLR   >PACTL,Z,#$80,L05186
@@ -7325,17 +7325,17 @@ L05EE6:
         BCLR    $0400,Z,#$10
         BSET    >EventSparkFlags,Z,#$08                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
         BCLR    >EventSparkFlags,Z,#$04                  ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BCLR    >EventSparkFlags2,Z,#$50
+        BCLR    >EventSparkFlags2,Z,#$50                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus; bit 4: per-event spark state from the park/neutral switch (Isr_GPT_IC4OC5); EventSparkControl reads it
         LDAB    #$00
         TBXK
         LDX     #$1D52
         BRA     L05F52
 L05F00:
         BCLR    $0400,Z,#$10
-        BCLR    >EventSparkFlags2,Z,#$01
-        BSET    >EventSparkFlags2,Z,#$40
+        BCLR    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
+        BSET    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         JSR     Sub_14E72
-        BCLR    >EventSparkFlags2,Z,#$40
+        BCLR    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         LBRA    L05FA0
 L05F18:
         BCLR    $0400,Z,#$10
@@ -7345,20 +7345,20 @@ L05F22:
         BCLR    $0400,Z,#$10
         BSET    >EventSparkFlags,Z,#$04                  ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         BCLR    >EventSparkFlags,Z,#$08                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BSET    >EventSparkFlags2,Z,#$10
-        BCLR    >EventSparkFlags2,Z,#$40
+        BSET    >EventSparkFlags2,Z,#$10                 ; bit 4: per-event spark state from the park/neutral switch (Isr_GPT_IC4OC5); EventSparkControl reads it
+        BCLR    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         LDAB    #$00
         TBXK
         LDX     #$1D45
         BRA     L05F52
 L05F40:
         BSET    $0400,Z,#$10
-        BCLR    >EventSparkFlags2,Z,#$01
+        BCLR    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         JSR     Sub_14E8A
         BCLR    $0400,Z,#$10
         BRA     L05FA0
 L05F52:
-        BSET    >EventSparkFlags2,Z,#$01
+        BSET    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BSET    >EventSparkFlags,Z,#$10                  ; bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it
         BSET    >EventSparkFlags,Z,#$20                  ; bit 5: per-event history to be refilled (Isr_GPT_IC4OC5, cleared by EventTableCheck)
         LDAB    $00,X
@@ -7378,7 +7378,7 @@ L05F74:
         JSR     Sub_14E72
         BRA     L05FA0
 L05F84:
-        BRCLR   >EventSparkFlags2,Z,#$01,L05F8E
+        BRCLR   >EventSparkFlags2,Z,#$01,L05F8E          ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BCLR    >EventSparkFlags,Z,#$0C                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
 L05F8E:
         CLR     $040E,Z
@@ -16728,7 +16728,7 @@ Reset:
         JSR     KickWatchdogsLong
         JSR     Sub_0E6BC
         LDY     #$4AB5
-        BSET    <SystemFlags00A,Z,#$02
+        BSET    <SystemFlags00A,Z,#$02                   ; bit 1: NV checksum checked at reset (Reset)
         CPD     <ResetCheckWord,Z
         BEQ     L0C7C0
         AIY     #$01
@@ -16980,7 +16980,7 @@ L0CA8E:
         JSR     Sub_1FBE6
         TZX
         LDX     #$8032
-        BSET    <SystemFlags00A,Z,#$10
+        BSET    <SystemFlags00A,Z,#$10                   ; bit 4: codes cleared at reset after a failed RAM check (Reset)
 L0CAFE:
         BCLR    >PORTC,Z,#$07
         LDAA    #$30
@@ -17024,10 +17024,10 @@ L0CB74:
         STAA    >MapRaw,Z
         STAA    $033F,Z
         STAA    >MapLast,Z
-        BRSET   >SystemFlags00A,Z,#$20,L0CB9A
+        BRSET   >SystemFlags00A,Z,#$20,L0CB9A            ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         STAA    <ScratchC,Z
 L0CB9A:
-        BRCLR   <SystemFlags00A,Z,#$02,L0CBE0
+        BRCLR   <SystemFlags00A,Z,#$02,L0CBE0            ; bit 1: NV checksum checked at reset (Reset)
         BRCLR   <SystemFlags00A,Z,#$04,L0CBE0
         LDAA    >MapRawStart,Z
         CMPA    $3DA9
@@ -17708,7 +17708,7 @@ L0D3A2:
         STD     >IoCfg1FL,Z
         CLR     >SPCR2,Z
         JSR     QspiWaitIdle
-        BSET    <SystemFlags00A,Z,#$20
+        BSET    <SystemFlags00A,Z,#$20                   ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         LDX     #$7F80
         JSR     PowerInputHold
         BCS     L0D436
@@ -17740,7 +17740,7 @@ L0D40C:
 L0D42E:
         BCLR    <SystemFlags00A,Z,#$04
 L0D432:
-        BCLR    <SystemFlags00A,Z,#$20
+        BCLR    <SystemFlags00A,Z,#$20                   ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
 L0D436:
         BRCLR   $0324,#$01,L0D490
         BCLR    $34,Z,#$10
@@ -19286,7 +19286,7 @@ L0E692:
         TST     >MainLoopCounter,Z
         BHI     L0E6BA
         INC     $010A,Z
-        BCLR    <SystemFlags00A,Z,#$C0
+        BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
         LDAA    >Count3s,Z
         INCA
         BEQ     L0E6BA

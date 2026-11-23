@@ -10581,19 +10581,19 @@ L08A04:
         BCLR    $0855,Z,#$10
         BSET    >EventSparkFlags,Z,#$08                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
         BCLR    >EventSparkFlags,Z,#$04                  ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BCLR    >EventSparkFlags2,Z,#$50
+        BCLR    >EventSparkFlags2,Z,#$50                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus; bit 4: per-event spark state from the park/neutral switch (Isr_GPT_IC4OC5); EventSparkControl reads it
         LDAB    #$00
         TBXK
         LDX     #$1FEA
         BRA     L08A7C
 L08A24:
         BCLR    $0855,Z,#$10
-        BCLR    >EventSparkFlags2,Z,#$01
-        BSET    >EventSparkFlags2,Z,#$40
+        BCLR    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
+        BSET    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         LBRA    L08BB6
 L08A34:
         BCLR    $0855,Z,#$10
-        BCLR    >EventSparkFlags2,Z,#$01
+        BCLR    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BCLR    >EventSparkFlags,Z,#$0C                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         LBRA    L08BB6
 L08A44:
@@ -10601,15 +10601,15 @@ L08A44:
         BCLR    $0855,Z,#$10
         BSET    >EventSparkFlags,Z,#$04                  ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         BCLR    >EventSparkFlags,Z,#$08                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BSET    >EventSparkFlags2,Z,#$10
-        BCLR    >EventSparkFlags2,Z,#$40
+        BSET    >EventSparkFlags2,Z,#$10                 ; bit 4: per-event spark state from the park/neutral switch (Isr_GPT_IC4OC5); EventSparkControl reads it
+        BCLR    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         LDAB    #$00
         TBXK
         LDX     #$1FDD
         BRA     L08A7C
 L08A68:
         BSET    $0855,Z,#$10
-        BCLR    >EventSparkFlags2,Z,#$01
+        BCLR    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BCLR    $0855,Z,#$10
         BSET    >BusTxRequest,Z,#$20                     ; bit 5: send the per-event spark message (set in Isr_GPT_IC4OC5)
         LBRA    L08BB6
@@ -10617,7 +10617,7 @@ L08A7C:
         CLR     >EventSparkCount,Z
         CLR     >EventSparkPeriodA,Z
         CLR     >EventSparkTimer,Z
-        BSET    >EventSparkFlags2,Z,#$01
+        BSET    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BSET    >EventSparkFlags,Z,#$10                  ; bit 4: per-event spark restart: timers cleared (Isr_GPT_IC4OC5); EventSparkControl reads it
         BSET    >EventSparkFlags,Z,#$20                  ; bit 5: per-event history to be refilled (Isr_GPT_IC4OC5, cleared by EventTableCheck)
         LDAA    #$FF
@@ -10643,7 +10643,7 @@ L08AC2:
         STAB    $085B,Z
         LBRA    L08BB6
 L08AD0:
-        BRCLR   >EventSparkFlags2,Z,#$01,L08BA4
+        BRCLR   >EventSparkFlags2,Z,#$01,L08BA4          ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BCLR    >EventSparkFlags,Z,#$0C                  ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
         LDAA    >EventSparkPeriodB,Z
         BEQ     L08B34
@@ -11225,7 +11225,7 @@ L0A0FA:
         JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $093C,Z
-        BCLR    <SystemFlags00A,Z,#$C0
+        BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0A13E:
         BSET    >CrankSyncFlags2,Z,#$20
         LDAA    $0694,Z
@@ -12077,7 +12077,7 @@ L0AB14:
         JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $093C,Z
-        BCLR    <SystemFlags00A,Z,#$C0
+        BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0AB3C:
         CLRA
         BRCLR   >PACTL,Z,#$80,L0AB56
@@ -12871,7 +12871,7 @@ MainLoopCounters:
 L0C00E:
         INC     >MainLoopCounter,Z
         BNE     L0C038
-        BCLR    <SystemFlags00A,Z,#$C0
+        BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
         LDAA    >Count3s,Z
         INCA
         BEQ     L0C038
@@ -14599,7 +14599,7 @@ Reset:
         JSR     KickWatchdogsLong
         JSR     NvChecksum
         LDY     #$4AB5
-        BSET    <SystemFlags00A,Z,#$02
+        BSET    <SystemFlags00A,Z,#$02                   ; bit 1: NV checksum checked at reset (Reset)
         CPD     <ResetCheckWord,Z
         BEQ     L0D192
         AIY     #$01
@@ -14857,7 +14857,7 @@ L0D4BC:
 L0D4CA:
         TZX
         TZY
-        BCLR    <SystemFlags00A,Z,#$10
+        BCLR    <SystemFlags00A,Z,#$10                   ; bit 4: codes cleared at reset after a failed RAM check (Reset)
         LDX     #$82EE
         LDY     <ResetCheckWord,Z
         CPY     #$4AB5
@@ -14907,7 +14907,7 @@ L0D52E:
         JSR     ObdClearCodes
         TZX
         LDX     #$8050
-        BSET    <SystemFlags00A,Z,#$10
+        BSET    <SystemFlags00A,Z,#$10                   ; bit 4: codes cleared at reset after a failed RAM check (Reset)
 L0D55E:
         LDAA    >PORTF0,Z
         ANDA    #$1F
@@ -14921,7 +14921,7 @@ L0D572:
         AIX     #$02
         CPX     #$8FFF
         BCS     L0D572
-        BRCLR   >SystemFlags00A,Z,#$10,L0D5D8
+        BRCLR   >SystemFlags00A,Z,#$10,L0D5D8            ; bit 4: codes cleared at reset after a failed RAM check (Reset)
         BRCLR   >Options032C,#$40,L0D5CA                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         LDAA    #$E3
         STAA    >FlexSensorStart,Z
@@ -14991,7 +14991,7 @@ L0D644:
         STAA    >MapLast,Z
         JSR     RawScale69
         STAA    $0A82,Z
-        BRSET   >SystemFlags00A,Z,#$20,L0D676
+        BRSET   >SystemFlags00A,Z,#$20,L0D676            ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         LDAA    >Map,Z
         STAA    <Baro,Z
 L0D676:
@@ -15181,7 +15181,7 @@ L0D8A8:
         BNE     L0D8BE
         BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
 L0D8BE:
-        BRCLR   <FlexStartFlags,Z,#$04,L0D8CC
+        BRCLR   <FlexStartFlags,Z,#$04,L0D8CC            ; bit 2: power-down tasks running (CheckPowerDown)
         LDAA    <FlexStartFlags,Z
         ANDA    #$03
         CMPA    #$02
@@ -15364,8 +15364,8 @@ L0DAC6:
         LDAA    >FlexEthanol,Z
         CMPA    >FlexColdStartEthanolMin
         BCS     L0DB02
-        BSET    <FlexStartFlags,Z,#$08
-        BCLR    <FlexStartFlags,Z,#$20
+        BSET    <FlexStartFlags,Z,#$08                   ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+        BCLR    <FlexStartFlags,Z,#$20                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
 L0DB02:
         LDAA    >CoolantTemp,Z
         CMPA    >HotRestartCoolantMin
@@ -15379,9 +15379,9 @@ L0DB10:
         JSR     CalcDeadTime
         JSR     CrankFuel
         BRCLR   >Options032C,#$40,L0DB3E                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
-        BRCLR   <FlexStartFlags,Z,#$28,L0DB3E
-        BRSET   >FlexStartFlags,Z,#$08,L0DB42
-        BCLR    <FlexStartFlags,Z,#$10
+        BRCLR   <FlexStartFlags,Z,#$28,L0DB3E            ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+        BRSET   >FlexStartFlags,Z,#$08,L0DB42            ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+        BCLR    <FlexStartFlags,Z,#$10                   ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
         BRA     L0DB42
 L0DB3E:
         JSR     PurgeReset
@@ -15396,7 +15396,7 @@ L0DB42:
         STAA    >Options033ECopy,Z
         LDAA    >Options033F
         STAA    >Options033FCopy,Z
-        BCLR    <FlexStartFlags,Z,#$20
+        BCLR    <FlexStartFlags,Z,#$20                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
         LDAA    #$36
         STAA    >DiagModeFlags,Z
         LDX     #$1388
@@ -15717,7 +15717,7 @@ L0DF62:
         JMP     L0E10C
 L0DF6E:
         ORP     #$00E0
-        BCLR    <FlexStartFlags,Z,#$04
+        BCLR    <FlexStartFlags,Z,#$04                   ; bit 2: power-down tasks running (CheckPowerDown)
         CLR     >FaultPending1,Z
         CLR     >FaultPendingCount1,Z
         JSR     KickWatchdogsLong
@@ -15754,7 +15754,7 @@ L0DFBA:
         STAA    >FanBusFlags,Z
         CLRW    >SPCR2,Z
         JSR     QspiWaitIdle
-        BSET    <SystemFlags00A,Z,#$20
+        BSET    <SystemFlags00A,Z,#$20                   ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         LDX     #$BF40
         JSR     PowerInputHold
         BCS     L0E034
@@ -15772,11 +15772,11 @@ L0E01A:
         BNE     L0E034
         DECB
         BNE     L0E01A
-        BCLR    <SystemFlags00A,Z,#$20
+        BCLR    <SystemFlags00A,Z,#$20                   ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
 L0E034:
         BRCLR   >Options032C,#$40,L0E090                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
-        BCLR    <FlexStartFlags,Z,#$10
-        BRCLR   >FlexStartFlags,Z,#$08,L0E064
+        BCLR    <FlexStartFlags,Z,#$10                   ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
+        BRCLR   >FlexStartFlags,Z,#$08,L0E064            ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
         LDD     <SriMileage,Z
         SUBD    $0F09,Z
         BCS     L0E060
@@ -15785,11 +15785,11 @@ L0E034:
         CMPB    >FlexColdStartMiles
         BCS     L0E064
 L0E056:
-        BCLR    <FlexStartFlags,Z,#$08
-        BSET    <FlexStartFlags,Z,#$20
+        BCLR    <FlexStartFlags,Z,#$08                   ; bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
+        BSET    <FlexStartFlags,Z,#$20                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
         BRA     L0E064
 L0E060:
-        BCLR    <FlexStartFlags,Z,#$28
+        BCLR    <FlexStartFlags,Z,#$28                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles); bit 3: high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start
 L0E064:
         BRSET   >FaultSet07,Z,#$02,L0E090
         LDAA    >FlexEthanol,Z
@@ -15814,7 +15814,7 @@ L0E090:
         JSR     O2HeaterMonitor
         JSR     IacResetLoop
 L0E0AE:
-        BSET    <FlexStartFlags,Z,#$04
+        BSET    <FlexStartFlags,Z,#$04                   ; bit 2: power-down tasks running (CheckPowerDown)
         LDAA    >EngineOffTimeStart,Z
         CMPA    >EngineOffTimeMin
         BCS     L0E0C0
@@ -15840,7 +15840,7 @@ L0E0F0:
         DECA
         BNE     L0E0F0
         JSR     KickWatchdogsLong
-        BCLR    <FlexStartFlags,Z,#$04
+        BCLR    <FlexStartFlags,Z,#$04                   ; bit 2: power-down tasks running (CheckPowerDown)
         JSR     NvChecksum
         STD     <ResetCheckWord,Z
         JMP     Reset
@@ -16696,14 +16696,14 @@ L0EA84:
         BRA     L0EB48
 L0EACE:
         BRSET   >PciFlags4,Z,#$80,L0EAE6                 ; bit 7: PCI message $16 to send (PciStateSet2)
-        BRCLR   >EventSparkFlags2,Z,#$40,L0EAE6
+        BRCLR   >EventSparkFlags2,Z,#$40,L0EAE6          ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         BRSET   >PciFlags4,Z,#$40,L0EAE6
         BSET    >PciFlags4,Z,#$40
         BRA     L0EB24
 L0EAE6:
         JSR     PciStateSet2
         BRSET   >PciFlags4,Z,#$80,L0EB48                 ; bit 7: PCI message $16 to send (PciStateSet2)
-        BCLR    >EventSparkFlags2,Z,#$40
+        BCLR    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         BCLR    >PciFlags4,Z,#$40
         BCLR    >BusTxRequest,Z,#$38                     ; bit 5: send the per-event spark message (set in Isr_GPT_IC4OC5); bit 4: send the spark status message (set in Isr_GPT_IC4OC5); bit 3: send message $91 (BusTxMsg91); set when the MAP-high bus flag changes (MapHighBusFlag)
         BRA     L0EB48

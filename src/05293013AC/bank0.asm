@@ -6363,7 +6363,7 @@ L05152:
         JSR     QspiWaitIdle
         LDD     >RR0,Z
         STD     $049A,Z
-        BCLR    <SystemFlags00A,Z,#$C0
+        BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L05178:
         CLRA
         BRCLR   >PACTL,Z,#$80,L05192
@@ -16951,7 +16951,7 @@ Reset:
         JSR     KickWatchdogsLong
         JSR     Sub_0E7BC
         LDY     #$4AB5
-        BSET    <SystemFlags00A,Z,#$02
+        BSET    <SystemFlags00A,Z,#$02                   ; bit 1: NV checksum checked at reset (Reset)
         CPD     <ResetCheckWord,Z
         BEQ     L0C8C0
         AIY     #$01
@@ -17220,7 +17220,7 @@ L0CBEE:
         JSR     Sub_1FD26
         TZX
         LDX     #$8034
-        BSET    <SystemFlags00A,Z,#$10
+        BSET    <SystemFlags00A,Z,#$10                   ; bit 4: codes cleared at reset after a failed RAM check (Reset)
 L0CC34:
         BCLR    >PORTC,Z,#$07
         LDAA    #$30
@@ -17264,10 +17264,10 @@ L0CCAA:
         STAA    >Map,Z
         STAA    $0359,Z
         STAA    >MapLast,Z
-        BRSET   >SystemFlags00A,Z,#$20,L0CCD0
+        BRSET   >SystemFlags00A,Z,#$20,L0CCD0            ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         STAA    <ScratchC,Z
 L0CCD0:
-        BRCLR   <SystemFlags00A,Z,#$02,L0CD16
+        BRCLR   <SystemFlags00A,Z,#$02,L0CD16            ; bit 1: NV checksum checked at reset (Reset)
         BRCLR   <SystemFlags00A,Z,#$04,L0CD16
         LDAA    >MapRawStart,Z
         CMPA    $3DD4
@@ -17953,7 +17953,7 @@ L0D4E6:
         STD     >IoCfg1FL,Z
         CLR     >SPCR2,Z
         JSR     QspiWaitIdle
-        BSET    <SystemFlags00A,Z,#$20
+        BSET    <SystemFlags00A,Z,#$20                   ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
         LDX     #$BF40
         JSR     PowerInputHold
         BCS     L0D584
@@ -17988,7 +17988,7 @@ L0D55A:
 L0D57C:
         BCLR    <SystemFlags00A,Z,#$04
 L0D580:
-        BCLR    <SystemFlags00A,Z,#$20
+        BCLR    <SystemFlags00A,Z,#$20                   ; bit 5: power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it
 L0D584:
         BRCLR   $0324,#$01,L0D5DE
         BCLR    $36,Z,#$10
@@ -19530,7 +19530,7 @@ L0E792:
         TST     >MainLoopCounter,Z
         BHI     L0E7BA
         INC     $013A,Z
-        BCLR    <SystemFlags00A,Z,#$C0
+        BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
         LDAA    >Count3s,Z
         INCA
         BEQ     L0E7BA

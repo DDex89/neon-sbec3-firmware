@@ -43,6 +43,16 @@
   "1": "bus message bit 6 (CcdReceive); set on a body bus timeout",
   "0": "bus message status bits = $80 (CcdReceive); set on a body bus timeout"
  },
+ "BusTempFlags": {
+  "7": "fan stage from the bus temperature, bit 7 (FanRelayControl)",
+  "6": "fan stage from the bus temperature: stage 2 (FanRelayControl)",
+  "5": "fan stage from the bus temperature: stage 1 (FanRelayControl)",
+  "4": "fan stage from coolant: stage 2 (FanRelayControl)",
+  "3": "fan stage from coolant: stage 1 (FanRelayControl)",
+  "2": "gear idle steps pending with the fan (FanRelayControl)",
+  "1": "fan PWM running (FanPwmMain)",
+  "0": "bus temperature high: above BusTempLatchOn, off below BusTempLatchOff (BusTempFlag)"
+ },
  "BusTxRequest": {
   "7": "send the reply to bus message $C8 (set by CcdReceive, cleared when PciService sends it)",
   "6": "send the security message (BusTxSecurity); set at reset",
@@ -252,6 +262,16 @@
   "2": "pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)",
   "0": "input capture 4 edge was the first kind (TCTL2 bit 7 clear) (Isr_GPT_IC4OC5)"
  },
+ "EventSparkFlags2": {
+  "7": "reference event since the last rpm update (CalcEngineRpm); SpeedDampControl reads it",
+  "6": "input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus",
+  "5": "cleared by CamSignalCheck",
+  "4": "per-event spark state from the park/neutral switch (Isr_GPT_IC4OC5); EventSparkControl reads it",
+  "3": "speed damping correction started (SpeedDampControl)",
+  "2": "speed damping pass done (SpeedDampControl); MisfireTransient reads it",
+  "1": "speed damping correction negative (SpeedDampControl)",
+  "0": "input capture 4 edge pending (Isr_GPT_IC4OC5)"
+ },
  "FanFlags": {
   "7": "A/C fan stage bit (FanAcStage)",
   "6": "A/C fan stage bit (FanAcStage)",
@@ -285,6 +305,15 @@
   "2": "cleared at stall (FlexLearnStall)",
   "1": "closed-loop flex trim allowed: run time past O2FlexRunTimeMin (ClosedLoopManager)"
  },
+ "FlexLearnFlags3": {
+  "7": "purge cell rich past PurgeCellRichMax2 (FlexPurgeRichCheck)",
+  "6": "flex learning restarted (FlexLearnMain, FlexLearnInitRun)",
+  "5": "flex learning count reached FlexLearnCountMax (FlexLearnMain)",
+  "3": "cold purge learning: fuel used past the limit (FlexColdPurge)",
+  "2": "read by FlexLearnMain after a refuel; cleared by the restart routines",
+  "1": "flex trim at or above FlexLearnTrimMin (FlexLearnMain)",
+  "0": "second flex count reached FlexLearnCountMax2 (FlexLearnMain)"
+ },
  "FlexLearnFlags6": {
   "7": "flex learning time limit reached (FlexLearnTimeCount past FlexLearnTimeMax)",
   "6": "flex idle learning enabled (FlexIdleEnable, FlexColdStart)",
@@ -309,6 +338,15 @@
   "3": "reset the cycle counts (FlexLearnMain)",
   "2": "load FlexEthanolStartInit (FlexLearnMain, FlexMisfireCheck)",
   "0": "selects a branch in FlexLearnMain"
+ },
+ "FlexStartFlags": {
+  "7": "reference event handled since the last rpm update (CalcEngineRpm)",
+  "5": "cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)",
+  "4": "flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it",
+  "3": "high ethanol at reset (FlexEthanol at or above FlexColdStartEthanolMin): flex cold start",
+  "2": "power-down tasks running (CheckPowerDown)",
+  "1": "cleared when the flex sensor start value is averaged (FlexSensorCheck)",
+  "0": "cleared when the flex sensor start value is averaged (FlexSensorCheck)"
  },
  "FuelEventFlags": {
   "7": "first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)",
@@ -568,6 +606,15 @@
   "1": "pump switch closed (LdpPurgedCheck)",
   "0": "pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it"
  },
+ "LdpFlags2": {
+  "7": "pump switch closed at the purged check (LdpPurgedCheck)",
+  "5": "leak test window counting (LDP state machine)",
+  "4": "purged time reached (LdpPurgedCheck)",
+  "3": "pump stroke time average taken (LDP state machine)",
+  "2": "stroke time at or above LdpSealedStrokeTime2: system sealed (LDP state machine)",
+  "1": "leak test step started (LDP state machine)",
+  "0": "soak difference under LdpSoakDiffMax (LDP state machine); PurgeRampControl reads it"
+ },
  "LdpFlags3": {
   "7": "MonData643Update first pass done (counter MonData643 cleared)",
   "6": "MonTaskB first pass done",
@@ -618,6 +665,16 @@
  "MisfireFlags4": {
   "6": "set by IdleTargetControl at the end of a gear idle step; read by MisfireDeviation"
  },
+ "MisfireFlags5": {
+  "7": "engine just started or stalled: misfire transient hold (MisfireTransient, MisfireSegmentTime)",
+  "6": "throttle opened: misfire transient hold (MisfireTransient)",
+  "5": "MAP or throttle changed past MisfireMapChangeMax / MisfireThrottleChangeMax: hold",
+  "4": "SegmentRpm above the rev-limit hold rpm (MisfireTransient)",
+  "3": "per-event spark or fuel event active: hold (MisfireTransient)",
+  "2": "event spark at or above MisfireSparkMin: hold (MisfireTransient)",
+  "1": "MAP below the misfire enable value: hold (MisfireTransient)",
+  "0": "SegmentRpm above the misfire rpm limit: hold (MisfireTransient)"
+ },
  "MisfireOptions": {
   "7": "MisfireFlags2 bit 4 handling in ClosedLoopManager and FuelSystemStatus",
   "6": "selects a branch in MisfireTransient",
@@ -666,6 +723,12 @@
   "5": "bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only",
   "4": "bank 1 state read by ClosedLoopManager and O2DownEnable, byte writes only",
   "3": "bank 1 state read by the purge ramp and vapour learning, byte writes only"
+ },
+ "O2InactiveFlags": {
+  "7": "bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax)",
+  "6": "bank 2 closed loop held open (as bit 7)",
+  "1": "rpm above the O2 learning range (hysteresis O2LearnRpmHyst) (O2LearnEnable)",
+  "0": "read by ClosedLoopManager"
  },
  "O2ResetFlags": {
   "5": "post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)",
@@ -904,6 +967,15 @@
   "2": "spark status message pending, second copy",
   "1": "per-event spark change to report (Isr_GPT_IC4OC5)"
  },
+ "PurgeCtlFlags": {
+  "6": "purge adaptation: trim counted for this cell (PurgeFlowAdaptation)",
+  "5": "purge adaptation state counted (PurgeFlowAdaptation)",
+  "4": "purge adaptation: large rich error (PurgeAdaptRichLarge)",
+  "3": "battery temperature at start below PurgeBattTempStartMax (PurgeRampControl)",
+  "2": "purge soft step running (PurgeFlowControl, PurgeSoftStepCount)",
+  "1": "purge target change pending (PurgeFlowControl)",
+  "0": "purge target change small (under PurgeTargetChangeMax) (PurgeFlowControl)"
+ },
  "PurgeFlags": {
   "7": "purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain",
   "6": "purge battery-temperature timer running (PurgeEnable)",
@@ -931,6 +1003,16 @@
   "2": "A/C engaged during the purge test (AcFlags bit 6)",
   "1": "idle target raise active during the purge test (IdleFlags bit 6)",
   "0": "purge cell rose past PurgeCellFaultRise (PurgeCellCheck)"
+ },
+ "PurgeLearnFlags": {
+  "7": "purge vapour learning running (PurgeVaporLearn)",
+  "6": "purge vapour learning step state; O2LearnEnable reads it",
+  "5": "purge vapour learning stopped: O2 sensor fault or conditions lost",
+  "4": "purge vapour settle time reached (PurgeVaporSettleTime)",
+  "3": "purge vapour learning step state (PurgeVaporLearn)",
+  "2": "trim at or below the learning limit (PurgeVaporLearn)",
+  "1": "purge vapour learning ended (PurgeVaporLearn)",
+  "0": "bank 1 learning rate step (PurgeVaporLearn)"
  },
  "PurgeMonFlags": {
   "7": "purge flow monitor armed (PurgeMonitorArm)",
@@ -1064,6 +1146,15 @@
   "2": "thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)",
   "1": "thermostat monitor running (ThermostatMonitor)",
   "0": "power steering switch monitor: switch state for the report (PspSwitchMonitor)"
+ },
+ "SystemFlags00A": {
+  "7": "cleared after an output driver status read and every 256 main loop passes",
+  "6": "cleared with bit 7",
+  "5": "power-down EEPROM work running (CheckPowerDown); MapKeyOnCheck and PnSwitchMonitor read it",
+  "4": "codes cleared at reset after a failed RAM check (Reset)",
+  "3": "fuel sender reading taken at shutdown (FuelSenderMonitor); SriMileageStore reads it",
+  "1": "NV checksum checked at reset (Reset)",
+  "0": "fuel sender reading below FuelSenderLowLevel (FuelSenderMonitor)"
  },
  "SystemFlags945": {
   "7": "QSPI transfer running (set by QspiSendFrame, cleared by QspiService)",
