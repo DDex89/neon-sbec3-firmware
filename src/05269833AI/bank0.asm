@@ -10554,7 +10554,7 @@ Sub_08520:
         DEC     >FieldDutyLimit,Z
         BRA     L08570
 L0853A:
-        BRSET   $0500,Z,#$08,L08570
+        BRSET   >FaultSet00,Z,#$08,L08570
         BRCLR   $1000,Z,#$04,L08570
         BRCLR   $1013,Z,#$20,L08554
         BRCLR   $106E,Z,#$20,L08570
@@ -11374,7 +11374,7 @@ L08D86:
         LDD     #$061B
         STD     >Temp4F0,Z
 L08D96:
-        BRSET   $0500,Z,#$40,L08DA0
+        BRSET   >FaultSet00,Z,#$40,L08DA0
         BSET    $06B6,Z,#$10
 L08DA0:
         LDD     >Temp4F0,Z
@@ -11394,7 +11394,7 @@ Sub_08DAA:
         DEC     >FieldDutyLimit,Z
         BRA     L08DFA
 L08DC4:
-        BRSET   $0500,Z,#$08,L08DFA
+        BRSET   >FaultSet00,Z,#$08,L08DFA
         BRCLR   $1000,Z,#$04,L08DFA
         BRCLR   $1013,Z,#$20,L08DDE
         BRCLR   $106E,Z,#$20,L08DFA
@@ -11915,7 +11915,7 @@ L0A0FA:
         LDAB    >Ic2OverflowCount,Z
         STAB    $0AC5,Z
         STE     $0AC6,Z
-        BRCLR   $0501,Z,#$02,L0A196
+        BRCLR   >FaultSet01,Z,#$02,L0A196
         BRCLR   >ControlFlags943,Z,#$10,L0A13E
         BCLR    >ControlFlags943,Z,#$18
         JSR     Sub_3821C
@@ -14163,8 +14163,8 @@ L0C682:
 L0C68C:
         CLR     >SparkStartRampValue,Z
 L0C690:
-        BRSET   $050D,Z,#$10,L0C69C
-        BRCLR   $050B,Z,#$30,L0C71C
+        BRSET   >FaultSet0D,Z,#$10,L0C69C
+        BRCLR   >FaultSet0B,Z,#$30,L0C71C
 L0C69C:
         BRCLR   >O2ActiveFlags,Z,#$80,L0C71C
         LDAA    >ShortTermTrim1,Z
@@ -14780,7 +14780,7 @@ L0CC9A:
         LDX     #$747B
 L0CC9E:
         JSR     Sub_0C4E8
-        BRCLR   $050D,Z,#$10,L0CCAA
+        BRCLR   >FaultSet0D,Z,#$10,L0CCAA
         ORAA    #$20
 L0CCAA:
         STAA    $09D2,Z
@@ -14827,8 +14827,8 @@ L0CCFE:
         BEQ     L0CD32
 L0CD1E:
         BRCLR   $0A4A,Z,#$10,L0CD34
-        BRSET   $0500,Z,#$80,L0CD34
-        BRCLR   $050B,Z,#$C4,L0CD32
+        BRSET   >FaultSet00,Z,#$80,L0CD34
+        BRCLR   >FaultSet0B,Z,#$C4,L0CD32
         BRA     L0CD34
 L0CD32:
         ORAB    #$04
@@ -16166,8 +16166,8 @@ L0DED0:
 L0DEDC:
         ORP     #$00E0
         BCLR    <FlexStartFlags,Z,#$04
-        CLR     $0520,Z
-        CLR     $0522,Z
+        CLR     >FaultPending1,Z
+        CLR     >FaultPendingCount1,Z
         JSR     KickWatchdogsLong
         LDAA    #$20
 L0DEF2:
@@ -16250,7 +16250,7 @@ L0DFDA:
 L0DFE4:
         BCLR    <FlexStartFlags,Z,#$28
 L0DFE8:
-        BRSET   $0507,Z,#$02,L0E014
+        BRSET   >FaultSet07,Z,#$02,L0E014
         LDAA    >FlexEthanol,Z
         STAA    $0948,Z
         SUBA    $0A90,Z
@@ -17589,7 +17589,7 @@ L0EEFA:
         CMPB    #$C8
         BCS     L0EF16
 L0EEFE:
-        BRSET   $050D,Z,#$02,L0EF16
+        BRSET   >FaultSet0D,Z,#$02,L0EF16
         LDY     #$4352
         JSR     ReportFault
         BCC     L0EF16
@@ -17626,7 +17626,7 @@ Sub_0EF54:
         LBEQ    L0EFDE
         ORP     #$00E0
         CLR     $08F0,Z
-        BRSET   $0507,Z,#$02,L0EFD6
+        BRSET   >FaultSet07,Z,#$02,L0EFD6
         BRSET   $094A,Z,#$80,L0EFDA
         BSET    $094A,Z,#$80
         BITA    #$08
@@ -17756,7 +17756,7 @@ L0F090:
 L0F0AC:
         ANDA    #$DF
 L0F0AE:
-        BRSET   $0507,Z,#$02,L0F10E
+        BRSET   >FaultSet07,Z,#$02,L0F10E
         BRSET   $094A,Z,#$80,L0F0CA
         BSET    $094A,Z,#$80
         STAA    $0948,Z
@@ -17771,7 +17771,7 @@ L0F0CA:
         BRSET   >Options032E,#$04,L0F104
         BRCLR   $09BC,Z,#$08,L0F104
 L0F0E4:
-        BRSET   $0507,Z,#$02,L0F10E
+        BRSET   >FaultSet07,Z,#$02,L0F10E
         BRSET   $094A,Z,#$80,L0F10E
         ANDA    #$E0
         BSET    $094A,Z,#$80
@@ -17799,7 +17799,7 @@ L0F130:
 L0F134:
         BSET    $09BC,Z,#$20
         BRSET   $0A1E,Z,#$02,L0F176
-        BRSET   $0507,Z,#$02,L0F176
+        BRSET   >FaultSet07,Z,#$02,L0F176
         BRSET   $094A,Z,#$80,L0F176
         LDAA    $094C,Z
         TAB

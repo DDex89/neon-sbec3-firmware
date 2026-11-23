@@ -10913,7 +10913,7 @@ Sub_0853C:
         DEC     >FieldDutyLimit,Z
         BRA     L0858C
 L08556:
-        BRSET   $0500,Z,#$08,L0858C
+        BRSET   >FaultSet00,Z,#$08,L0858C
         BRCLR   $1000,Z,#$04,L0858C
         BRCLR   $1013,Z,#$20,L08570
         BRCLR   $106E,Z,#$20,L0858C
@@ -11721,7 +11721,7 @@ L08D88:
         LDD     #$061B
         STD     >Temp4F0,Z
 L08D98:
-        BRSET   $0500,Z,#$40,L08DA2
+        BRSET   >FaultSet00,Z,#$40,L08DA2
         BSET    $06B6,Z,#$10
 L08DA2:
         LDD     >Temp4F0,Z
@@ -11741,7 +11741,7 @@ Sub_08DAC:
         DEC     >FieldDutyLimit,Z
         BRA     L08DFC
 L08DC6:
-        BRSET   $0500,Z,#$08,L08DFC
+        BRSET   >FaultSet00,Z,#$08,L08DFC
         BRCLR   $1000,Z,#$04,L08DFC
         BRCLR   $1013,Z,#$20,L08DE0
         BRCLR   $106E,Z,#$20,L08DFC
@@ -12273,7 +12273,7 @@ L0A0FA:
         LDAB    >Ic2OverflowCount,Z
         STAB    $0AC9,Z
         STE     $0ACA,Z
-        BRCLR   $0501,Z,#$02,L0A196
+        BRCLR   >FaultSet01,Z,#$02,L0A196
         BRCLR   >ControlFlags943,Z,#$10,L0A13E
         BCLR    >ControlFlags943,Z,#$18
         JSR     Sub_38224
@@ -14510,8 +14510,8 @@ L0C668:
 L0C672:
         CLR     >SparkStartRampValue,Z
 L0C676:
-        BRSET   $050D,Z,#$10,L0C682
-        BRCLR   $050B,Z,#$30,L0C702
+        BRSET   >FaultSet0D,Z,#$10,L0C682
+        BRCLR   >FaultSet0B,Z,#$30,L0C702
 L0C682:
         BRCLR   >O2ActiveFlags,Z,#$80,L0C702
         LDAA    >ShortTermTrim1,Z
@@ -15127,7 +15127,7 @@ L0CC80:
         LDX     #$74A5
 L0CC84:
         JSR     Sub_0C4CE
-        BRCLR   $050D,Z,#$10,L0CC90
+        BRCLR   >FaultSet0D,Z,#$10,L0CC90
         ORAA    #$20
 L0CC90:
         STAA    $09D4,Z
@@ -15171,8 +15171,8 @@ L0CCE0:
         CMPA    $353B
         BCS     L0CD12
         BRCLR   $0A4F,Z,#$10,L0CD14
-        BRSET   $0500,Z,#$80,L0CD14
-        BRCLR   $050B,Z,#$C4,L0CD12
+        BRSET   >FaultSet00,Z,#$80,L0CD14
+        BRCLR   >FaultSet0B,Z,#$C4,L0CD12
         BRA     L0CD14
 L0CD12:
         ORAB    #$04
@@ -16527,8 +16527,8 @@ L0DF18:
 L0DF24:
         ORP     #$00E0
         BCLR    <FlexStartFlags,Z,#$04
-        CLR     $0520,Z
-        CLR     $0522,Z
+        CLR     >FaultPending1,Z
+        CLR     >FaultPendingCount1,Z
         JSR     KickWatchdogsLong
         LDAA    #$20
 L0DF3A:
@@ -16611,7 +16611,7 @@ L0E022:
 L0E02C:
         BCLR    <FlexStartFlags,Z,#$28
 L0E030:
-        BRSET   $0507,Z,#$02,L0E05C
+        BRSET   >FaultSet07,Z,#$02,L0E05C
         LDAA    >FlexEthanol,Z
         STAA    $094A,Z
         SUBA    $0A94,Z
@@ -16626,7 +16626,7 @@ L0E046:
         BCS     L0E05C
         STAA    $0A94,Z
 L0E05C:
-        BRSET   $0507,Z,#$02,L0E080
+        BRSET   >FaultSet07,Z,#$02,L0E080
         LDAA    $DC,Z
         STAA    $094A,Z
         CMPA    $0DDB,Z
@@ -17966,7 +17966,7 @@ L0EF7A:
         CMPB    #$C8
         BCS     L0EFA0
 L0EF7E:
-        BRSET   $050D,Z,#$02,L0EFA0
+        BRSET   >FaultSet0D,Z,#$02,L0EFA0
         LDY     #$49C3
         JSR     ReportFault
         BCC     L0EFA0
@@ -18005,7 +18005,7 @@ Sub_0EFDE:
         LBEQ    L0F068
         ORP     #$00E0
         CLR     $08F0,Z
-        BRSET   $0507,Z,#$02,L0F060
+        BRSET   >FaultSet07,Z,#$02,L0F060
         BRSET   $094C,Z,#$80,L0F064
         BSET    $094C,Z,#$80
         BITA    #$08
@@ -18135,7 +18135,7 @@ L0F11A:
 L0F136:
         ANDA    #$DF
 L0F138:
-        BRSET   $0507,Z,#$02,L0F198
+        BRSET   >FaultSet07,Z,#$02,L0F198
         BRSET   $094C,Z,#$80,L0F154
         BSET    $094C,Z,#$80
         STAA    $094A,Z
@@ -18150,7 +18150,7 @@ L0F154:
         BRSET   >Options032E,#$04,L0F18E
         BRCLR   $09BE,Z,#$08,L0F18E
 L0F16E:
-        BRSET   $0507,Z,#$02,L0F198
+        BRSET   >FaultSet07,Z,#$02,L0F198
         BRSET   $094C,Z,#$80,L0F198
         ANDA    #$E0
         BSET    $094C,Z,#$80
@@ -18178,7 +18178,7 @@ L0F1BA:
 L0F1BE:
         BSET    $09BE,Z,#$20
         BRSET   $0A23,Z,#$02,L0F200
-        BRSET   $0507,Z,#$02,L0F200
+        BRSET   >FaultSet07,Z,#$02,L0F200
         BRSET   $094C,Z,#$80,L0F200
         LDAA    $094E,Z
         TAB

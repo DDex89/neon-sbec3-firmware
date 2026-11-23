@@ -344,7 +344,7 @@ applies only to the reference image.
   duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
   subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
   them on a running car would settle them.
-- 726 RAM variables have names; about 1,050 other Z offsets used in the code (many of them flag
+- 847 RAM variables have names (fault bit arrays FaultSet00-1B and FaultMem00-1B, monitor status and freeze-frame bytes included); about 930 other Z offsets used in the code (many of them flag
   bytes and array elements) are still known by address. Constant descriptions give these as
   $xxxx,Z.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at
