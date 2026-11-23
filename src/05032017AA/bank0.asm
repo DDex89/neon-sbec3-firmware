@@ -540,8 +540,14 @@ MapFilterRisePurgeLoad:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 FuelPulseFixed:
         dc.b    $00,$00                                  ; Fixed injector pulse (word) used with Options033D bit 1 (StartInjectorPulse)
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$80,$00,$80,$00
-        dc.b    $80,$00,$80,$00,$80,$00,$80,$00,$00,$00,$00,$00,$00,$00,$00
+
+;---------------------------------------------------------------------------------------------------
+; StartPulseWords ($03FE): 1 rows of 31 bytes
+; Words indexed by the injector number in StartInjectorPulse (all zero in 05293190AC)
+;---------------------------------------------------------------------------------------------------
+StartPulseWords:
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$80,$00,$80,$00,$80,$00,$80,$00,$80,$00,$80,$00,$00,$00,$00,$00,$00,$00,$00
+
 IacTargetCmdFixed:
         dc.b    $00                                      ; IAC target command loaded every pass with Options033D bit 3 (IdleControl)
 FanPwmFixedDuty:
@@ -3880,9 +3886,15 @@ FuelAirTempMapWeight:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,28                                   ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$03,$1C,$00,$0F,$0E,$02,$02,$0B
-        dc.b    $03,$01,$00,$00,$00,$00,$00,$00,$04,$00,$3C,$00,$0F,$00,$30,$02
-        dc.b    $02,$00,$24,$03,$01,$00,$18,$04,$00,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; EventCorrSequenceB ($1E48): 1 rows of 37 bytes
+; Byte sequence read by EventCorrections (second branch, with RAM $87A5)
+;---------------------------------------------------------------------------------------------------
+EventCorrSequenceB:
+        dc.b    $03,$1C,$00,$0F,$0E,$02,$02,$0B,$03,$01,$00,$00,$00,$00,$00,$00,$04,$00,$3C,$00,$0F,$00,$30,$02,$02,$00,$24,$03,$01,$00,$18,$04,$00,$00,$00,$00,$00
+
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelCutRpmFactor ($1E6D): 2D table, 1 points, unsigned
@@ -3914,10 +3926,18 @@ IdleFlareAcRpmOn:
         dc.b    $1E                                      ; Idle flare flags: rpm above the target at or above this value sets IdleFlareFlags bit 6 (A/C or Options033A bit 7)
 IdleFlareAcRpmOff:
         dc.b    $11                                      ; Idle flare flags: rpm above the target below this value clears bit 6
-        dc.b    $05,$23,$00,$01,$1F,$02,$03,$1B,$01,$01,$16,$03,$02,$11,$02,$01
-        dc.b    $00,$05,$05,$00,$21,$42,$63,$85,$A6,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; EventCorrSequenceA ($1E8A): 5 rows of 10 bytes
+; Byte sequence read by EventCorrections (first branch, with RAM $87A8): step data for the per-event correction
+;---------------------------------------------------------------------------------------------------
+EventCorrSequenceA:
+        dc.b    $05,$23,$00,$01,$1F,$02,$03,$1B,$01,$01
+        dc.b    $16,$03,$02,$11,$02,$01,$00,$05,$05,$00
+        dc.b    $21,$42,$63,$85,$A6,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1EBC ($1EBC): 2D table, 5 points, unsigned
@@ -5339,9 +5359,32 @@ KnockLearnTimeMin:
         dc.b    $09                                      ; Knock noise learning runs after this time since start
 KnockLearnAirTempMax:
         dc.b    $D2                                      ; Knock noise learning runs below this air temperature
-        dc.b    $27,$10,$2E,$E0,$36,$B0,$3E,$80,$46,$50,$4E,$20,$55,$F0,$5D,$C0
-        dc.b    $65,$90,$6D,$60,$75,$30,$7D,$00,$84,$D0,$8C,$A0,$94,$70,$9C,$40
-        dc.b    $A4,$10,$AB,$E0,$B3,$B0
+
+;---------------------------------------------------------------------------------------------------
+; KnockRpmSteps ($2CBD): 19 rows of 2 bytes
+; Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points
+;---------------------------------------------------------------------------------------------------
+KnockRpmSteps:
+        dc.b    $27,$10
+        dc.b    $2E,$E0
+        dc.b    $36,$B0
+        dc.b    $3E,$80
+        dc.b    $46,$50
+        dc.b    $4E,$20
+        dc.b    $55,$F0
+        dc.b    $5D,$C0
+        dc.b    $65,$90
+        dc.b    $6D,$60
+        dc.b    $75,$30
+        dc.b    $7D,$00
+        dc.b    $84,$D0
+        dc.b    $8C,$A0
+        dc.b    $94,$70
+        dc.b    $9C,$40
+        dc.b    $A4,$10
+        dc.b    $AB,$E0
+        dc.b    $B3,$B0
+
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockMapThresholdRpm ($2CE3): 2D table, 6 points, unsigned
@@ -5582,10 +5625,19 @@ KnockRetardMaxRpm:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,127                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$40,$40,$40,$40,$40,$40,$40,$40
-        dc.b    $40,$80,$80,$80,$80,$80,$80,$80,$80,$80,$C0,$C0,$C0,$C0,$C0,$C0
-        dc.b    $C0,$C0,$C0,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; KnockWindowSetup ($2E59): 5 rows of 9 bytes
+; Knock chip set-up values sent by KnockChipConfig (KnockWindowInit, KnockWindowUpdate); 9 per row, probably one per window position
+;---------------------------------------------------------------------------------------------------
+KnockWindowSetup:
+        dc.b    $40,$40,$40,$40,$40,$40,$40,$40,$40
+        dc.b    $80,$80,$80,$80,$80,$80,$80,$80,$80
+        dc.b    $C0,$C0,$C0,$C0,$C0,$C0,$C0,$C0,$C0
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00
+
 KnockWindowMargin:
         dc.b    $00,$00                                  ; KnockWindowUpdate: margin (word) added before the window compare (KnockWindow)
         dc.b    $00

@@ -2006,7 +2006,7 @@ L11498:
 L114B8:
         LDAB    #$00
         TBXK
-        LDX     #$03FE
+        LDX     #StartPulseWords
         LDAB    >StartInjector808,Z
         ASLB
         ABX
@@ -2548,7 +2548,7 @@ L11A70:
         BRA     L11AF6
 L11A96:
         BRCLR   >IdleFlareFlags,Z,#$40,L11AB8            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
-        LDX     #$195E
+        LDX     #EventCorrSequenceA
         LDY     #$87A8
         LDAB    #$04
         STAB    >EventCorrections7A9,Z
@@ -2569,7 +2569,7 @@ L11AB8:
         STAB    >Temp4F0,Z
         BRA     L11AF6
 L11AE0:
-        LDX     #$191D
+        LDX     #EventCorrSequenceB
         LDY     #$87A5
         LDAB    #$01
         STAB    >EventCorrections7A9,Z
@@ -16589,7 +16589,7 @@ L1F30A:
 KnockThresholdCalc:
         LDAB    #$00
         TBXK
-        LDX     #$23A9
+        LDX     #KnockRpmSteps
         TZY
         LDY     #$802B
         LDD     >EngineRpm,Z
@@ -16895,7 +16895,7 @@ L1F62C:
         TBXK
         TZY
         AIY     #$2B
-        LDX     #$23A9
+        LDX     #KnockRpmSteps
 L1F66E:
         LDE     $0000,X
         TED
@@ -16958,7 +16958,7 @@ KnockWindowInit:
         LDAB    #$00
         TBXK
         CLR     >KnockWindow,Z
-        LDX     #$24C2
+        LDX     #KnockWindowSetup
         JSR     KnockChipConfig
 L1F6F8:
         RTS
@@ -16991,7 +16991,7 @@ L1F71C:
         BHI     L1F746
 L1F734:
         STAB    >KnockWindow,Z
-        LDX     #$24C2
+        LDX     #KnockWindowSetup
         ABX
         BCLR    >SystemFlags945,Z,#$10                   ; bit 4: knock chip configured (KnockChipConfig); cleared before a new window is set
         JSR     KnockChipConfig

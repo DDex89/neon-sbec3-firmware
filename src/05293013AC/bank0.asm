@@ -1826,22 +1826,19 @@ IdleFlareAcRpmOn:
         dc.b    $30                                      ; Idle flare flags: rpm above the target at or above this value sets IdleFlareFlags bit 6 (A/C or Options033A bit 7)
 IdleFlareAcRpmOff:
         dc.b    $19                                      ; Idle flare flags: rpm above the target below this value clears bit 6
-        dc.b    $01,$0A,$00,$01,$1F,$02,$03,$1B,$01,$01,$16,$03,$02,$11,$02,$01
-O2WarmDelayCoolant:
-        dc.b    $BD                                      ; Coolant at or above which the warm delay O2WarmDelay counts down (below it the delay is reloaded with O2DelayWarm)
-        dc.b    $08,$0F,$BD,$57,$7E,$A6,$CE,$DA,$05,$3D,$03,$03,$05,$02,$6E,$DC
-        dc.b    $18,$A2,$02,$09,$08,$09,$09
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_11D5 ($11D5): 2D table, 3 points, unsigned
-; Inputs: Scratch3
-; Read at $0A0E4
+; EventCorrSequenceA ($11AD): 5 rows of 10 bytes
+; Byte sequence read by EventCorrections (first branch, with RAM $87A8): step data for the per-event correction
 ;---------------------------------------------------------------------------------------------------
-Tab2D_11D5:
-        dc.b    3,$80                                    ; points, flags
-        dc.b    3,0, 4,1, 26,2                           ; x, y
+EventCorrSequenceA:
+        dc.b    $01,$0A,$00,$01,$1F,$02,$03,$1B,$01,$01
+        dc.b    $16,$03,$02,$11,$02,$01,$BD,$08,$0F,$BD
+        dc.b    $57,$7E,$A6,$CE,$DA,$05,$3D,$03,$03,$05
+        dc.b    $02,$6E,$DC,$18,$A2,$02,$09,$08,$09,$09
+        dc.b    $03,$80,$03,$00,$04,$01,$1A,$02,$FF,$FF
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$1A,$5E,$03,$00,$AF,$7F,$80
+        dc.b    $FF,$FF,$FF,$1A,$5E,$03,$00,$AF,$7F,$80
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_11E9 ($11E9): 2D table, 5 points, unsigned
@@ -2810,39 +2807,34 @@ Tab2D_1C7B:
         dc.b    1,$80                                    ; points, flags
         dc.b    255,146                                  ; x, y
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$03,$20,$13,$C7,$20,$00
-        dc.b    $37,$00,$37,$00,$37,$00,$37,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$03,$20,$13,$C7
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1C97 ($1C97): 2D table, 2 points, unsigned
-; Inputs: EngineRpm
-; Read at $155C4
+; KnockRpmSteps ($1C8D): 19 rows of 2 bytes
+; Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1C97:
-        dc.b    2,$80                                    ; points, flags
-        dc.b    83,224, 94,245                           ; x, y
+KnockRpmSteps:
+        dc.b    $20,$00
+        dc.b    $37,$00
+        dc.b    $37,$00
+        dc.b    $37,$00
+        dc.b    $37,$00
+        dc.b    $02,$80
+        dc.b    $53,$E0
+        dc.b    $5E,$F5
+        dc.b    $FF,$FF
+        dc.b    $FF,$FF
+        dc.b    $FF,$FF
+        dc.b    $05,$80
+        dc.b    $30,$16
+        dc.b    $50,$16
+        dc.b    $70,$16
+        dc.b    $90,$1B
+        dc.b    $B0,$1B
+        dc.b    $05,$80
+        dc.b    $30,$3A
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
-
-;---------------------------------------------------------------------------------------------------
-; Tab2D_1CA3 ($1CA3): 2D table, 5 points, unsigned
-; Inputs: EngineRpm
-; Read at $155A4
-;---------------------------------------------------------------------------------------------------
-Tab2D_1CA3:
-        dc.b    5,$80                                    ; points, flags
-        dc.b    48,22, 80,22, 112,22, 144,27, 176,27     ; x, y
-
-
-;---------------------------------------------------------------------------------------------------
-; Tab2D_1CAF ($1CAF): 2D table, 5 points, unsigned
-; Inputs: EngineRpm
-; Read at $15594
-;---------------------------------------------------------------------------------------------------
-Tab2D_1CAF:
-        dc.b    5,$80                                    ; points, flags
-        dc.b    48,58, 80,58, 112,68, 144,76, 176,76     ; x, y
-
+        dc.b    $50,$3A,$70,$44,$90,$4C,$B0,$4C
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockThreshold ($1CBB): 2D table, 5 points, unsigned
@@ -9910,7 +9902,7 @@ L07C60:
         BRA     L07CA0
 L07C70:
         BRCLR   >EventFlags,Z,#$40,L07C80                ; bit 6: idle per-event spark state (SparkEventCalc, calibration bit $0339.5)
-        LDX     #$11AD
+        LDX     #EventCorrSequenceA
         JSR     LookupWordStep
         BRA     L07CCA
 L07C80:
@@ -12374,7 +12366,7 @@ L09718:
 L09724:
         DEC     $05AB,Z
 L09728:
-        CMPA    >O2WarmDelayCoolant
+        CMPA    $11BD
         LDAB    $056F,Z
         BCC     L0973A
         BNE     L09742
@@ -13336,7 +13328,7 @@ L0A0D2:
         NEGA
 L0A0DE:
         PSHM    X
-        LDX     #Tab2D_11D5
+        LDX     #$11D5
         JSR     Lookup2D
         PULM    X
         LDAB    >PurgeCellCount,Z

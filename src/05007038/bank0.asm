@@ -2430,32 +2430,19 @@ IdleFlareAcRpmOn:
         dc.b    $30                                      ; Idle flare flags: rpm above the target at or above this value sets IdleFlareFlags bit 6 (A/C or Options033A bit 7)
 IdleFlareAcRpmOff:
         dc.b    $23                                      ; Idle flare flags: rpm above the target below this value clears bit 6
-        dc.b    $01,$23,$00,$01,$1F,$02,$03,$1B,$01,$01,$16,$03,$02,$11,$02,$01
-PurgeCoolantMin:
-        dc.b    $90                                      ; Purge runs at or above this coolant temperature
-PurgeWarmCoolant:
-        dc.b    $CD                                      ; Purge reset: coolant at or above this value selects the warm delay
-PurgeColdDelay:
-        dc.b    $3E                                      ; Purge reset (PurgeReset): purge delay PurgeDelay with coolant below PurgeWarmCoolant
-PurgeWarmDelay:
-        dc.b    $0B                                      ; Purge reset: purge delay PurgeDelay with a warm engine
-        dc.b    $6E,$8A,$02,$31,$FF
-O2MemFlexDiffMax:
-        dc.b    $14                                      ; Long-term cell update: with FuelModeFlags2 bit 7 a cell more than this below the flex reference cell is replaced by it
-        dc.b    $01,$84,$0F,$0A
-PurgeDelayInit:
-        dc.b    $B3                                      ; Start value of the purge delay PurgeStartRamp (reset, PurgeEnable, PurgeReset)
-        dc.b    $96,$02,$14,$14,$00,$01,$08,$08,$20,$AA,$AC,$A3,$01
 
 ;---------------------------------------------------------------------------------------------------
-; Tab2D_1658 ($1658): 2D table, 5 points, unsigned
-; Inputs: PurgeRamp
-; Read at $0D7F2
+; EventCorrSequenceA ($162C): 5 rows of 10 bytes
+; Byte sequence read by EventCorrections (first branch, with RAM $87A8): step data for the per-event correction
 ;---------------------------------------------------------------------------------------------------
-Tab2D_1658:
-        dc.b    5,$80                                    ; points, flags
-        dc.b    5,12, 32,73, 64,94, 80,101, 200,108      ; x, y
+EventCorrSequenceA:
+        dc.b    $01,$23,$00,$01,$1F,$02,$03,$1B,$01,$01
+        dc.b    $16,$03,$02,$11,$02,$01,$90,$CD,$3E,$0B
+        dc.b    $6E,$8A,$02,$31,$FF,$14,$01,$84,$0F,$0A
+        dc.b    $B3,$96,$02,$14,$14,$00,$01,$08,$08,$20
+        dc.b    $AA,$AC,$A3,$01,$05,$80,$05,$0C,$20,$49
 
+        dc.b    $40,$5E,$50,$65,$C8,$6C
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1664 ($1664): 2D table, 5 points, unsigned
@@ -3364,46 +3351,33 @@ KnockLearnTimeMin:
         dc.b    $13                                      ; Knock noise learning runs after this time since start
 KnockLearnAirTempMax:
         dc.b    $C7                                      ; Knock noise learning runs below this air temperature
-        dc.b    $03,$20,$06,$40,$09,$60,$0C,$80,$1A,$90
 
 ;---------------------------------------------------------------------------------------------------
-; KnockNoiseLearnWeight ($1F6B): 2D table, 1 points, unsigned
-; Filter weight of the learned knock noise level per rpm band (KnockNoiseLevel)
-; x: rpm32, y: mult256 (units: docs/en/calibration.md)
-; Inputs: EngineRpm
-; Read at $0AB7A
+; KnockRpmSteps ($1F61): 19 rows of 2 bytes
+; Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points
 ;---------------------------------------------------------------------------------------------------
-KnockNoiseLearnWeight:
-        dc.b    1,$80                                    ; points, flags
-        dc.b    255,129                                  ; x, y
+KnockRpmSteps:
+        dc.b    $03,$20
+        dc.b    $06,$40
+        dc.b    $09,$60
+        dc.b    $0C,$80
+        dc.b    $1A,$90
+        dc.b    $01,$80
+        dc.b    $FF,$81
+        dc.b    $FF,$FF
+        dc.b    $FF,$FF
+        dc.b    $FF,$FF
+        dc.b    $FF,$FF
+        dc.b    $FF,$FF
+        dc.b    $01,$80
+        dc.b    $FF,$E9
+        dc.b    $FF,$FF
+        dc.b    $FF,$FF
+        dc.b    $FF,$FF
+        dc.b    $FF,$FF
+        dc.b    $01,$80
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-
-;---------------------------------------------------------------------------------------------------
-; KnockSensorCheckRpm ($1F79): 2D table, 1 points, unsigned
-; Minimum filtered knock signal for the sensor check (KnockSensorCheck) against engine rpm
-; x: rpm32, y: raw (units: docs/en/calibration.md)
-; Inputs: EngineRpm
-; Read at $0AB88
-;---------------------------------------------------------------------------------------------------
-KnockSensorCheckRpm:
-        dc.b    1,$80                                    ; points, flags
-        dc.b    255,233                                  ; x, y
-
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-
-;---------------------------------------------------------------------------------------------------
-; KnockNoiseMin ($1F85): 2D table, 1 points, unsigned
-; Lower limit of the learned knock noise level against engine rpm
-; x: rpm32, y: raw (units: docs/en/calibration.md)
-; Inputs: EngineRpm
-; Read at $0AB6C
-;---------------------------------------------------------------------------------------------------
-KnockNoiseMin:
-        dc.b    1,$80                                    ; points, flags
-        dc.b    255,20                                   ; x, y
-
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$14,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockNoiseMax ($1F91): 2D table, 1 points, unsigned
@@ -10427,7 +10401,7 @@ L071E2:
         LDD     #$FFFF
         STD     >MtvSwitchTime,Z
         BSET    >MtvFlags,Z,#$10                         ; bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
-        LDAA    >PurgeDelayInit
+        LDAA    $164A
         STAA    >PurgeStartRamp,Z
         LDAA    #$64
         STAA    >Reset434,Z
@@ -13754,7 +13728,7 @@ L094EC:
         BRA     L09526
 L094FC:
         BRCLR   >IdleFlareFlags,Z,#$40,L0950C            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
-        LDX     #$162C
+        LDX     #EventCorrSequenceA
         JSR     LookupWordStep
         BRA     L09544
 L0950C:
@@ -16304,7 +16278,7 @@ L0AAEE:
 KnockThresholdCalc:
         LDAB    #$00
         TBXK
-        LDX     #$1F61
+        LDX     #KnockRpmSteps
         TZY
         LDY     #$8032
         LDD     <EngineRpm,Z
@@ -16364,15 +16338,15 @@ KnockNoiseCalc:
         JSR     Lookup2D
         STAA    >KnockNoiseDA6,Z
         LDAA    <EngineRpm,Z
-        LDX     #KnockNoiseMin
+        LDX     #$1F85
         JSR     Lookup2D
         STAA    >KnockNoiseDA7,Z
         LDAA    <EngineRpm,Z
-        LDX     #KnockNoiseLearnWeight
+        LDX     #$1F6B
         JSR     Lookup2D
         STAA    >KnockMapThreshold,Z
         LDAA    <EngineRpm,Z
-        LDX     #KnockSensorCheckRpm
+        LDX     #$1F79
         JSR     Lookup2D
         STAA    $059E,Z
         LDAA    <EngineRpm,Z
@@ -16585,7 +16559,7 @@ L0ADB0:
         TBXK
         TZY
         AIY     #$32
-        LDX     #$1F61
+        LDX     #KnockRpmSteps
 L0ADEE:
         LDE     $0000,X
         TED
@@ -19270,7 +19244,7 @@ L0CA2E:
         SBA
         BGE     L0CA3E
         NEGA
-        CMPA    >O2MemFlexDiffMax
+        CMPA    $1645
         BLS     L0CA3E
         TBA
         BRA     L0CA40
@@ -19307,7 +19281,7 @@ L0CA7A:
         SBA
         BGE     L0CA8A
         NEGA
-        CMPA    >O2MemFlexDiffMax
+        CMPA    $1645
         BLS     L0CA8A
         TBA
         BRA     L0CA8C
@@ -19577,14 +19551,14 @@ PurgeReset:
         BSET    <PurgeCellRichFlags,Z,#$40               ; bit 6: closed-loop learning restarted: purge cells to be relearnt (ClosedLoopMain, ClosedLoopManager, PurgeReset)
         BSET    >PurgeCellFlags,Z,#$80
         BSET    <PurgeCellRichFlags,Z,#$80               ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
-        LDAB    >PurgeColdDelay
+        LDAB    $163E
         LDAA    $0C,Z
-        CMPA    >PurgeCoolantMin
+        CMPA    $163C
         BCS     L0CCB0
         BCLR    <PurgeCellRichFlags,Z,#$80               ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
-        CMPA    >PurgeWarmCoolant
+        CMPA    $163D
         BCS     L0CCB0
-        LDAB    >PurgeWarmDelay
+        LDAB    $163F
 L0CCB0:
         STAB    >PurgeDelay,Z
         CMPA    >SoakStartCoolantMin
@@ -20044,7 +20018,7 @@ L0D0C4:
         BRSET   >PurgeFlags,Z,#$10,L0D628                ; bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
         BRCLR   <PurgeCellRichFlags,Z,#$80,L0D0F2        ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
         LDAA    $0C,Z
-        CMPA    >PurgeCoolantMin
+        CMPA    $163C
         LBCS    L0D122
         BCLR    <PurgeCellRichFlags,Z,#$80               ; bit 7: coolant below PurgeCoolantMin at the purge reset (PurgeReset, PurgeVaporLearn)
 L0D0F2:
@@ -20656,7 +20630,7 @@ L0D7E6:
         DEC     $064E,Z
 L0D7EA:
         LDAA    >PurgeRamp,Z
-        LDX     #Tab2D_1658
+        LDX     #$1658
         JSR     Lookup2D
         STAA    <FanSoakFlags,Z
         BRCLR   >PurgeFlowTestFlags,Z,#$30,L0D85E        ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
@@ -20878,7 +20852,7 @@ L0DA14:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L0DA56         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         SUBD    #$0001
         BNE     L0DA52
-        LDAA    >PurgeDelayInit
+        LDAA    $164A
         STAA    >PurgeStartRamp,Z
         CLRD
         STAA    $0634,Z

@@ -19650,7 +19650,7 @@ L1D3B8:
 KnockThresholdCalc:
         LDAB    #$00
         TBXK
-        LDX     #$1C75
+        LDX     #KnockRpmSteps
         TZY
         LDY     #$8011
         LDD     >EngineRpm,Z
@@ -19706,11 +19706,11 @@ L1D424:
 ;---------------------------------------------------------------------------------------------------
 Sub_1D42A:
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_1C97
+        LDX     #$1C97
         JSR     Lookup2D
         STAA    $0370,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_1C8B
+        LDX     #$1C8B
         JSR     Lookup2D
         STAA    $0371,Z
         LDAA    >EngineRpm,Z
@@ -19718,7 +19718,7 @@ Sub_1D42A:
         JSR     Lookup2D
         STAA    >KnockMapThreshold,Z
         LDAA    >EngineRpm,Z
-        LDX     #Tab2D_1C7F
+        LDX     #$1C7F
         JSR     Lookup2D
         STAA    $036F,Z
         LDAA    >EngineRpm,Z
@@ -19933,7 +19933,7 @@ L1D68E:
         TBXK
         TZY
         AIY     #$11
-        LDX     #$1C75
+        LDX     #KnockRpmSteps
 L1D6DA:
         LDE     $0000,X
         TED
@@ -22279,7 +22279,7 @@ FuelSysConditions2:
         LDAA    E,Z
         ANDA    #$FE
         LDAB    >CoolantTemp,Z
-        CMPB    >O2WarmDelayCoolant
+        CMPB    $11AA
         BCS     L1F906
         ORAA    #$01
 L1F906:
@@ -22823,7 +22823,7 @@ L1FD88:
         CMPA    #$0C
         BHI     L1FDAC
         LDAA    >CoolantTemp,Z
-        CMPA    >O2WarmDelayCoolant
+        CMPA    $11AA
         BCS     L1FD9C
         BITB    #$01
         BEQ     L1FDAC

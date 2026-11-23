@@ -11405,6 +11405,51 @@
    "rows": 1,
    "row_size": 48,
    "desc": "Pairs of RAM counter address and limit used by EventCounters"
+  },
+  "2E59": {
+   "name": "KnockWindowSetup",
+   "kind": "grid",
+   "rows": 5,
+   "cols": 9,
+   "row_size": 9,
+   "desc": "Knock chip set-up values sent by KnockChipConfig (KnockWindowInit, KnockWindowUpdate); 9 per row, probably one per window position",
+   "category": "Spark"
+  },
+  "2CBD": {
+   "name": "KnockRpmSteps",
+   "kind": "grid",
+   "rows": 19,
+   "cols": 2,
+   "row_size": 2,
+   "desc": "Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points",
+   "category": "Spark"
+  },
+  "1E8A": {
+   "name": "EventCorrSequenceA",
+   "kind": "grid",
+   "rows": 5,
+   "cols": 10,
+   "row_size": 10,
+   "desc": "Byte sequence read by EventCorrections (first branch, with RAM $87A8): step data for the per-event correction",
+   "category": "Fuel"
+  },
+  "1E48": {
+   "name": "EventCorrSequenceB",
+   "kind": "grid",
+   "rows": 1,
+   "cols": 37,
+   "row_size": 37,
+   "desc": "Byte sequence read by EventCorrections (second branch, with RAM $87A5)",
+   "category": "Fuel"
+  },
+  "03FE": {
+   "name": "StartPulseWords",
+   "kind": "grid",
+   "rows": 1,
+   "cols": 31,
+   "row_size": 31,
+   "desc": "Words indexed by the injector number in StartInjectorPulse (all zero in 05293190AC)",
+   "category": "Fuel"
   }
  }
 }

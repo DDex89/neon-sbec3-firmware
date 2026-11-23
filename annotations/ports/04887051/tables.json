@@ -2656,6 +2656,24 @@
    "rows": 256,
    "row_size": 10,
    "desc": "Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes"
+  },
+  "1C75": {
+   "name": "KnockRpmSteps",
+   "kind": "grid",
+   "rows": 19,
+   "cols": 2,
+   "row_size": 2,
+   "desc": "Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points",
+   "category": "Spark"
+  },
+  "119A": {
+   "name": "EventCorrSequenceA",
+   "kind": "grid",
+   "rows": 5,
+   "cols": 10,
+   "row_size": 10,
+   "desc": "Byte sequence read by EventCorrections (first branch, with RAM $87A8): step data for the per-event correction",
+   "category": "Fuel"
   }
  }
 }
