@@ -10,12 +10,12 @@ ResetCountsExtSw equ $0008        ; $F8008
 ResetCountsHltPow equ $0009        ; $F8009
 ThrottleClosed   equ $000B        ; $F800B
 Baro             equ $000C        ; $F800C
-EepromCount      equ $000D        ; $F800D
+SriMileage       equ $000D        ; $F800D
 IacPosition      equ $0018        ; $F8018
 IdleMapLearned   equ $002A        ; $F802A
 EngineOffTime    equ $017C        ; $F817C
 Temp3            equ $0195        ; $F8195
-FuelLevelFiltered equ $0196        ; $F8196
+FlexSensorStart  equ $0196        ; $F8196
 FlexEthanolLearned equ $0197        ; $F8197
 FlexEthanol      equ $0198        ; $F8198
 FuelLevelScaled  equ $019C        ; $F819C
@@ -151,7 +151,7 @@ ManifoldVacuum   equ $0A89        ; $F8A89
 AcSensorRaw      equ $0A8B        ; $F8A8B
 AcSensor         equ $0A8C        ; $F8A8C
 KnockThresholdNow equ $0A90        ; $F8A90
-FuelLevel        equ $0A92        ; $F8A92
+FlexSensorRaw    equ $0A92        ; $F8A92
 FlexEthanolScaled equ $0A95        ; $F8A95
 AnalogV0A92Scaled equ $0A97        ; $F8A97
 AnalogV0A92Filtered equ $0A98        ; $F8A98

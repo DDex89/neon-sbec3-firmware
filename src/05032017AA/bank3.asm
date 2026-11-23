@@ -365,12 +365,12 @@ L304B0:
         BRA     L304EE
 L304D4:
         BRSET   $051C,Z,#$01,L304EE
-        LDD     <EepromCount,Z
+        LDD     <SriMileage,Z
         CPD     #$0003
         BCS     L304EE
         PSHM    Y,K
         LDY     #$4F09
-        JSR     Sub_245D6
+        JSR     ReportFault
         PULM    K,Y
 L304EE:
         BSET    $0A26,Z,#$40
@@ -1980,12 +1980,12 @@ L31650:
         BRA     L3168A
 L31670:
         BRSET   $051C,Z,#$01,L3168A
-        LDD     <EepromCount,Z
+        LDD     <SriMileage,Z
         CPD     #$0003
         BCS     L3168A
         PSHM    Y,K
         LDY     #$4F09
-        JSR     Sub_245D6
+        JSR     ReportFault
         PULM    K,Y
 L3168A:
         BSET    $0A26,Z,#$40
@@ -4800,7 +4800,7 @@ Sub_334E0:
         BRSET   $0129,Z,#$01,L33504
         BRSET   $0127,Z,#$08,L33504
         BRSET   $064E,Z,#$40,L33504
-        LDD     <EepromCount,Z
+        LDD     <SriMileage,Z
         TSTA
         BNE     L33504
         CMPB    $05FA,Z
@@ -8805,7 +8805,7 @@ L38152:
         BNE     L38162
         BRCLR   >Options0335,#$40,L38162
 L3815E:
-        JSR     Sub_245D6
+        JSR     ReportFault
 L38162:
         LDAB    #$03
         TBXK
@@ -8855,7 +8855,7 @@ L381E2:
 L38206:
         BRSET   $0503,Z,#$02,L38222
 L3820C:
-        JSR     Sub_245D6
+        JSR     ReportFault
         BRA     L38222
 L38212:
         JSR     Sub_38278
@@ -9446,7 +9446,7 @@ L3891C:
         JSR     Sub_38278
         BRSET   $0507,Z,#$02,L3892E
         LDY     #$47E3
-        JSR     Sub_245D6
+        JSR     ReportFault
 L3892E:
         BCLR    $094C,Z,#$80
 L38932:
@@ -13797,7 +13797,7 @@ Sub_3C288:
         BRSET   $1012,Z,#$01,L3C2E6
         BRCLR   >MainLoopPhaseMask,Z,#$04,L3C36E
         LDY     #$492D
-        JSR     Sub_245D6
+        JSR     ReportFault
         LBCC    L3C36E
         LBRA    L3C368
 L3C2E6:
@@ -14144,7 +14144,7 @@ L3C622:
 L3C628:
         PSHM    Y
         LDY     #$468F
-        JSR     Sub_245D6
+        JSR     ReportFault
         PULM    Y
         BRCLR   $F0,Z,#$FF,L3C650
         TZX

@@ -277,12 +277,12 @@
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $55,$00,$05,$26,$98
 CalThresh1:
-        dc.b    $33                                      ; Byte compared with; read by Sub_2191E.
+        dc.b    $33                                      ; Byte compared with; read by Sub_2191E. Fault: P0601.
         dc.b    $41,$48,$A0,$20,$20,$20,$20,$20,$20,$73,$04,$09,$B3,$96,$04
 ThermistorValue1:
         dc.b    $07                                      ; Byte used with; read by Sub_32318.
 StartValue1:
-        dc.b    $07                                      ; Byte used with; read by Reset.
+        dc.b    $07                                      ; Byte used with; read by Reset. Fault: P1602.
         dc.b    $01,$04,$01,$08,$10,$07,$01,$07,$04
 CalValue1:
         dc.b    $00,$00                                  ; Word used with; read by Sub_3060E.
@@ -337,7 +337,7 @@ Options033D:
 Options033E:
         dc.b    $B7                                      ; Option byte copied to $06B8,Z at reset; bit 1 selects branches in the start and closed-loop code
 StartV06B9Flag:
-        dc.b    $A8                                      ; Byte tested V06B9; read by Reset, Sub_20E1E, Sub_28D78.
+        dc.b    $A8                                      ; Byte tested V06B9; read by Reset, Sub_20E1E, Sub_28D78. Fault: P1602.
 Options0340:
         dc.b    $9F                                      ; Option byte (global configuration); bits used are listed with their names where known
         dc.b    $00
@@ -413,7 +413,7 @@ FanV0B12Thresh:
 CoolantSlowInit:
         dc.b    $6E                                      ; Start value of CoolantTempSlow (calibration bit $033D.5)
 ThermistorValue5:
-        dc.b    $00                                      ; Byte used with; read by ProcessCoolantTemp.
+        dc.b    $00                                      ; Byte used with; read by ProcessCoolantTemp. Fault: P0117, P0118.
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
@@ -459,7 +459,7 @@ CalOffset2:
 CalOffset3:
         dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
 StartV0C03Init:
-        dc.b    $00                                      ; Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10.
+        dc.b    $00                                      ; Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10. Fault: P1602.
 CalV0C08Thresh2:
         dc.b    $00,$00                                  ; Word compared with V0C08; read by Sub_2F800.
 CalCoolantThresh1:
@@ -776,9 +776,9 @@ IacStartTimeMin:
 IacV0C24Init:
         dc.b    $0D                                      ; Byte stored into V0C24; read by Sub_19808.
 SensorV086DInit:
-        dc.b    $00                                      ; Byte stored into V086D; read by Sub_3017C, Sub_3123A.
+        dc.b    $00                                      ; Byte stored into V086D; read by Sub_3017C, Sub_3123A. Fault: P1685.
 SensorThrottleThresh2:
-        dc.b    $00                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3017C, Sub_3123A.
+        dc.b    $00                                      ; Byte compared with ThrottleAboveClosed; read by Sub_3017C, Sub_3123A. Fault: P1685.
 AcCutCoolantOn:
         dc.b    $F4                                      ; A/C cut-out (Sub_39412): coolant at or above which the A/C is cut
 AcCutCoolantOff:
@@ -914,7 +914,7 @@ EgrStartDelayCoolant:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 StartV0040Init:
-        dc.b    $00                                      ; Byte stored into V0040; read by Reset.
+        dc.b    $00                                      ; Byte stored into V0040; read by Reset. Fault: P1602.
         dc.b    $00,$00,$6E,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
@@ -2381,9 +2381,9 @@ ColdSoakMapCoolant:
         dc.b    255,255,255,255,255                      ; row 4
 
 StartCoolantThresh2:
-        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Reset.
+        dc.b    $FF                                      ; Byte compared with CoolantTemp; read by Reset. Fault: P1602.
 StartAirTempThresh:
-        dc.b    $FF                                      ; Byte compared with AirTemp; read by Reset.
+        dc.b    $FF                                      ; Byte compared with AirTemp; read by Reset. Fault: P1602.
 IdleFuelRpmMax:
         dc.b    $FF                                      ; Idle enrichment (Sub_11074): below this engine rpm
 IdleFuelMapMax:
@@ -2399,7 +2399,7 @@ IdleFuelRampUp:
 IdleFuelTimeMin:
         dc.b    $09                                      ; Idle enrichment steps run after this time since start
 FuelV0812Thresh:
-        dc.b    $32                                      ; Byte compared with V0812; read by CheckPowerDown, Sub_11074, CalcEngineRpm +2.
+        dc.b    $32                                      ; Byte compared with V0812; read by CheckPowerDown, Sub_11074, CalcEngineRpm +2. Fault: P1685.
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleEnrichSoakTime ($117E): 2D table, 1 points, unsigned
@@ -2448,9 +2448,9 @@ IdleEnrichEthanolAirTemp:
         dc.b    0,0,0,0,0,0,0,0,0                        ; row 8
 
 SensorAdder4:
-        dc.b    $00                                      ; Byte added to; read by Sub_2C7FE.
+        dc.b    $00                                      ; Byte added to; read by Sub_2C7FE. Fault: P0176.
 SensorOffset2:
-        dc.b    $00                                      ; Byte subtracted from; read by Sub_2C7FE.
+        dc.b    $00                                      ; Byte subtracted from; read by Sub_2C7FE. Fault: P0176.
 O2FlexEthanolThresh:
         dc.b    $28                                      ; Byte compared with FlexEthanol; read by Sub_15F5C.
 O2Adder1:
@@ -2458,11 +2458,11 @@ O2Adder1:
 O2Adder2:
         dc.b    $01                                      ; Byte added to; read by Sub_15F5C.
 StartFlexEthanolThresh:
-        dc.b    $AA                                      ; Byte compared with FlexEthanol; read by Reset.
+        dc.b    $AA                                      ; Byte compared with FlexEthanol; read by Reset. Fault: P1602.
 StartCoolantThresh3:
-        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Reset.
-SensorEepromCountThresh:
-        dc.b    $00                                      ; Byte compared with EepromCount; read by CheckPowerDown.
+        dc.b    $58                                      ; Byte compared with CoolantTemp; read by Reset. Fault: P1602.
+SensorSriMileageThresh:
+        dc.b    $00                                      ; Byte compared with SriMileage; read by CheckPowerDown.
 SensorValue4:
         dc.b    $80                                      ; Byte used with; read by Sub_15FF4.
 O2Value2:
@@ -2559,28 +2559,28 @@ Tab3D_1366:
         dc.b    64,64,64,64,64,64,64,64,64               ; row 8
 
 SensorV019FThresh:
-        dc.b    $00                                      ; Byte compared with V019F; read by Sub_2C7FE.
+        dc.b    $00                                      ; Byte compared with V019F; read by Sub_2C7FE. Fault: P0176.
 SensorFuelLevelScaledThresh:
-        dc.b    $FF                                      ; Byte compared with FuelLevelScaled; read by Sub_2C7FE.
+        dc.b    $FF                                      ; Byte compared with FuelLevelScaled; read by Sub_2C7FE. Fault: P0176.
 SensorFlexLearnFuelSumThresh1:
-        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE.
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.
 SensorV019AThresh:
-        dc.b    $FF                                      ; Byte compared with V019A; read by Sub_2C7FE.
+        dc.b    $FF                                      ; Byte compared with V019A; read by Sub_2C7FE. Fault: P0176.
 SensorV01A4Thresh:
-        dc.b    $00,$00                                  ; Word compared with V01A4; read by Sub_2C7FE.
+        dc.b    $00,$00                                  ; Word compared with V01A4; read by Sub_2C7FE. Fault: P0176.
 SensorV019BThresh:
-        dc.b    $FF                                      ; Byte compared with V019B; read by Sub_2C7FE.
+        dc.b    $FF                                      ; Byte compared with V019B; read by Sub_2C7FE. Fault: P0176.
 SensorValue6:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE.
+        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE. Fault: P0176.
 SensorFlexLearnFuelSumThresh2:
-        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE.
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.
 SensorValue7:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE.
+        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE. Fault: P0176.
 SensorValue8:
-        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE.
+        dc.b    $00,$00                                  ; Word used with; read by Sub_2C7FE. Fault: P0176.
         dc.b    $00
 SensorFlexLearnFuelSumThresh3:
-        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE.
+        dc.b    $00,$00                                  ; Word compared with FlexLearnFuelSum; read by Sub_2C7FE. Fault: P0176.
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnBlend ($13D6): 2D table, 1 points, unsigned
@@ -3331,7 +3331,7 @@ TrimLowerLimitRpm:
 
         dc.b    $FF,$FF,$FF,$FF
 StartV07EEValue:
-        dc.b    $80                                      ; Byte used with V07EE; read by Reset, Sub_10AEC.
+        dc.b    $80                                      ; Byte used with V07EE; read by Reset, Sub_10AEC. Fault: P1602.
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_1898 ($1898): 2D table, 1 points, unsigned
@@ -3554,7 +3554,7 @@ PurgeFactor1:
         dc.b    $01,$84                                  ; Word multiplied; read by Sub_3E4CA.
         dc.b    $07,$02
 StartV042FInit:
-        dc.b    $80                                      ; Byte stored into V042F; read by Reset, Sub_3DC64, Sub_3DE9C.
+        dc.b    $80                                      ; Byte stored into V042F; read by Reset, Sub_3DC64, Sub_3DE9C. Fault: P1602.
         dc.b    $96,$02,$05,$04,$00,$1C,$04,$05,$20,$B3,$CD,$BC,$1E,$40,$20,$39
         dc.b    $0A,$0A,$02,$01,$00,$58,$FE,$C0,$9D,$91,$28,$01,$FF,$00,$01,$28
         dc.b    $FA,$50,$FE,$00
@@ -3717,11 +3717,11 @@ FlexLearnStartCoolantThresh2:
         dc.b    $84                                      ; Byte compared with StartCoolantTemp2; read by Sub_17FC4, Sub_3DE9C.
         dc.b    $28,$3C
 StartV0801Thresh:
-        dc.b    $0C                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5.
+        dc.b    $0C                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602.
 StartV043BValue:
-        dc.b    $03                                      ; Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4.
+        dc.b    $03                                      ; Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.
 StartV043CThresh:
-        dc.b    $05                                      ; Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4.
+        dc.b    $05                                      ; Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.
 O2V0439Thresh:
         dc.b    $05                                      ; Byte compared with V0439; read by Sub_15B20.
         dc.b    $12,$0D
@@ -4066,7 +4066,7 @@ EventSparkInit:
 FuelV0862Init:
         dc.b    $00                                      ; Byte stored into V0862; read by Sub_11C44.
 StartV0863Thresh:
-        dc.b    $04                                      ; Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44.
+        dc.b    $04                                      ; Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44. Fault: P1602.
 FuelEventValue10:
         dc.b    $45                                      ; Byte used with; read by Sub_12CCC.
         dc.b    $03,$75,$02,$02,$4D,$02,$02,$00,$00,$04,$00,$00,$00,$01,$4D,$00
@@ -5023,7 +5023,7 @@ O2SparkTrimNegPN:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$75,$00,$AD,$01,$04
 EventFactor:
-        dc.b    $1A                                      ; Byte multiplied; read by Isr_GPT_IC1, Reset, Sub_0E0B6.
+        dc.b    $1A                                      ; Byte multiplied; read by Isr_GPT_IC1, Reset, Sub_0E0B6. Fault: P1602.
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleSparkFilterCoolant ($254D): 2D table, 1 points, unsigned
@@ -5232,7 +5232,7 @@ IdleRampTargetOffset:
 IdleAcTargetMin:
         dc.b    $19,$00                                  ; Minimum idle target with A/C requested and $09CE,Z bit 1 set
 IdleRampCountMin:
-        dc.b    $01,$31                                  ; Idle ramp: runs only while the EEPROM counter $000D,Z is at most this value
+        dc.b    $01,$31                                  ; Idle ramp: runs only while the SRI mileage $000D,Z is at most this value
 IacGearRpmEnd:
         dc.b    $17,$70                                  ; Gear-change IAC ends above this segment rpm
 
@@ -6779,7 +6779,7 @@ MisfireLoadScaleDrive:
 
 ;---------------------------------------------------------------------------------------------------
 ; ExpectedMapThrottleScale ($2BF3): 2D table, 5 points, unsigned
-; MAP/throttle rationality (Sub_2197C): throttle to row position of ExpectedMap
+; Vacuum-leak check (Sub_2197C, P1299): throttle to row position of ExpectedMap
 ; x: raw, y: pos256 (units: docs/en/calibration.md)
 ; Inputs: ThrottleAboveClosed
 ; Read at $219F8
@@ -7058,8 +7058,8 @@ MisfirePeriodOffsetLo:
         dc.b    $54,$38                                  ; Low word of the period offset
 MisfireValue2:
         dc.b    $00,$0C                                  ; Word used with; read by Sub_2A906.
-MisfireIdleTargetAdder1:
-        dc.b    $00,$08                                  ; Word added to IdleTarget; read by Sub_2A906.
+MisfireIdleMargin:
+        dc.b    $00,$08                                  ; Misfire monitor (Sub_2A906): idle target plus this margin
 MisfireV00DEThresh:
         dc.b    $00,$FF                                  ; Word compared with V00DE; read by Sub_2A906, Sub_2B448.
 MisfireV0623Thresh1:
@@ -7068,8 +7068,8 @@ MisfireV0623Thresh2:
         dc.b    $02                                      ; Byte compared with V0623; read by Sub_2A906.
 MisfireHoldSpeedMin:
         dc.b    $06                                      ; Misfire hold-off (MisfireHoldSegRpm) applies above this vehicle speed
-MisfireIdleTargetAdder2:
-        dc.b    $BC                                      ; Byte added to IdleTarget; read by Sub_2A906.
+MisfireIdleMargin2:
+        dc.b    $BC                                      ; Misfire monitor: second idle target margin (segment rpm)
 MisfireDevFilter:
         dc.b    $10                                      ; Misfire monitor: filter weight of the segment-time deviation
         dc.b    $05,$33,$00,$01,$2A,$01,$03,$17,$01,$01,$10,$03,$01,$0B,$05,$01
@@ -7192,18 +7192,18 @@ MisfireNoiseLimit:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00
-DiagBatteryTempThresh1:
-        dc.b    $9F                                      ; Byte compared with BatteryTemp; read by Sub_25784.
-DiagBatteryTempThresh2:
-        dc.b    $84                                      ; Byte compared with BatteryTemp; read by Sub_25784.
-DiagCoolantThresh1:
-        dc.b    $06                                      ; Byte compared with CoolantTemp; read by Sub_25784.
-DiagVoltsThresh1:
-        dc.b    $F6                                      ; Byte compared with BatteryVolts2; read by Sub_25784.
-DiagVoltsThresh2:
-        dc.b    $92                                      ; Byte compared with BatteryVolts2; read by Sub_25784.
-DiagVacuumThresh1:
-        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_25784.
+LdpBattTempMax:
+        dc.b    $9F                                      ; EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value
+LdpBattTempMin:
+        dc.b    $84                                      ; EVAP leak test: battery temperature at or above this value
+LdpSoakDiffMax:
+        dc.b    $06                                      ; EVAP leak test: coolant minus battery temperature below this value (cold soak)
+LdpVoltsMax:
+        dc.b    $F6                                      ; EVAP leak test: battery voltage at or below this value
+LdpVoltsMin:
+        dc.b    $92                                      ; EVAP leak test: battery voltage at or above this value
+LdpVacuumMin:
+        dc.b    $20                                      ; EVAP leak test: manifold vacuum at or above this value for the test states
 DiagV0591Thresh:
         dc.b    $14                                      ; Byte compared with V0591; read by Sub_25DA8.
 DiagV0593Thresh:
@@ -7250,8 +7250,8 @@ DiagThresh6:
         dc.b    $07                                      ; Byte compared with; read by Sub_25784.
 DiagMonPeakThresh4:
         dc.b    $12                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
-DiagVacuumThresh2:
-        dc.b    $0D                                      ; Byte compared with ManifoldVacuum; read by Sub_25784.
+LdpVacuumMin2:
+        dc.b    $0D                                      ; EVAP leak test: manifold vacuum limit of the last state
 SensorPurgeDutyThresh1:
         dc.b    $0F                                      ; Byte compared with PurgeDuty; read by Sub_25E9E.
 SensorV059BThresh:
@@ -7282,28 +7282,28 @@ DiagLevelLimit2:
         dc.b    255,27                                   ; x, y
 
         dc.b    $FF,$FF,$FF,$FF
-DiagTimeThresh1:
-        dc.b    $13                                      ; Byte compared with Count3s; read by Sub_252A8.
-DiagCoolantThresh2:
-        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_252A8.
-DiagSpeedThresh1:
-        dc.b    $02                                      ; Byte compared with VehicleSpeed; read by Sub_252A8.
-DiagMapThresh1:
-        dc.b    $BA                                      ; Byte compared with Map; read by Sub_252A8.
-DiagRpmThresh1:
-        dc.b    $09,$10                                  ; Word compared with EngineRpm; read by Sub_252A8.
+PurgeMonTimeMin:
+        dc.b    $13                                      ; Purge flow monitor (Sub_252A8): time since start at or above this value
+PurgeMonCoolantMin:
+        dc.b    $CD                                      ; Purge flow monitor: coolant at or above this value
+PurgeMonSpeedMax:
+        dc.b    $02                                      ; Purge flow monitor: vehicle speed at or below this value
+PurgeMonMapMax:
+        dc.b    $BA                                      ; Purge flow monitor: MAP at or below this value
+PurgeMonRpmBand:
+        dc.b    $09,$10                                  ; Purge flow monitor: engine rpm within the idle target plus or minus this value
 DiagV05B1Value:
         dc.b    $3C                                      ; Byte used with V05B1; read by Sub_252A8.
 DiagValue2:
         dc.b    $EF                                      ; Byte used with; read by Sub_252A8.
-DiagIacTargetCmdThresh:
-        dc.b    $01                                      ; Byte compared with IacTargetCmd; read by Sub_252A8.
-DiagIacPositionThresh:
-        dc.b    $02                                      ; Byte compared with IacPosition; read by Sub_252A8.
-DiagMapThresh2:
-        dc.b    $08                                      ; Byte compared with Map; read by Sub_252A8.
-DiagValue3:
-        dc.b    $10                                      ; Byte used with; read by Sub_252A8.
+PurgeMonIacBand:
+        dc.b    $01                                      ; Purge flow monitor: IAC command within this many steps of the IAC position
+PurgeMonIacDrift:
+        dc.b    $02                                      ; Purge flow monitor: IAC position drift limit during the test
+PurgeMonMapDrift:
+        dc.b    $08                                      ; Purge flow monitor: MAP drift limit during the test
+PurgeMonFilter:
+        dc.b    $10                                      ; Purge flow monitor: filter weight of the trim responses
         dc.b    $06,$FA,$06,$FA,$10,$10,$02
 O2Adder5:
         dc.b    $00                                      ; Byte added to; read by Sub_15364.
@@ -7437,20 +7437,20 @@ FuelSysLimitScale2:
         dc.b    5,$80                                    ; points, flags
         dc.b    15,0, 30,64, 50,128, 85,192, 255,255     ; x, y
 
-DiagTimeThresh2:
-        dc.b    $41                                      ; Byte compared with Count3s; read by Sub_2877A.
-DiagCoolantThresh3:
-        dc.b    $C7                                      ; Byte compared with CoolantTemp; read by Sub_2877A.
-DiagSpeedThresh2:
-        dc.b    $14                                      ; Byte compared with VehicleSpeed; read by Sub_2877A.
-DiagV053FThresh:
-        dc.b    $1C                                      ; Byte compared with V053F; read by Sub_2877A.
-DiagIdleTargetThresh:
-        dc.b    $06,$40                                  ; Word compared with IdleTarget; read by Sub_2877A.
-DiagThresh10:
-        dc.b    $7B                                      ; Byte compared with; read by Sub_2877A.
-DiagThresh11:
-        dc.b    $85                                      ; Byte compared with; read by Sub_2877A.
+O2MonTimeMin:
+        dc.b    $41                                      ; O2 sensor monitor at idle (Sub_2877A): time since start at or above this value
+O2MonCoolantMin:
+        dc.b    $C7                                      ; O2 sensor monitor at idle: coolant at or above this value
+O2MonSpeedMax:
+        dc.b    $14                                      ; O2 sensor monitor at idle: vehicle speed at or below this value
+O2MonIdleTime:
+        dc.b    $1C                                      ; O2 sensor monitor at idle: idle time ($053F,Z) at or above this value
+O2MonRpmBand:
+        dc.b    $06,$40                                  ; O2 sensor monitor at idle: engine rpm within the idle target plus or minus this value
+O2MonTrimMax:
+        dc.b    $7B                                      ; O2 sensor monitor at idle: short-term trim at or below this value
+O2MonTrimMin:
+        dc.b    $85                                      ; O2 sensor monitor at idle: short-term trim at or above this value
 DiagV0542Thresh:
         dc.b    $08                                      ; Byte compared with V0542; read by Sub_2877A.
 DiagV0541Init:
@@ -7489,23 +7489,23 @@ CalV010EThresh:
         dc.b    $0A,$00,$0A,$00
 O2Adder6:
         dc.b    $25                                      ; Byte added to; read by Sub_14740.
-DiagCoolantThresh4:
-        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_285CA.
-DiagSpeedThresh3:
-        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_285CA.
-DiagV056EThresh:
-        dc.b    $FC                                      ; Byte compared with V056E; read by Sub_285CA.
-DiagRpmSpeedRatioThresh:
-        dc.b    $60                                      ; Byte compared with RpmSpeedRatio; read by Sub_285CA.
+CatMonCoolantMin:
+        dc.b    $CD                                      ; Catalyst monitor (Sub_285CA): coolant at or above this value
+CatMonSpeedMin:
+        dc.b    $28                                      ; Catalyst monitor: vehicle speed at or above this value (closed throttle not allowed)
+CatMonCruiseTime:
+        dc.b    $FC                                      ; Catalyst monitor: steady time ($056E,Z) before the test
+CatMonRatioMax:
+        dc.b    $60                                      ; Catalyst monitor: rpm/speed ratio (gear) at or below this value
         dc.b    $19,$80,$80
-DiagMapAccelFuelThresh:
-        dc.b    $01,$00                                  ; Word compared with MapAccelFuel; read by Sub_285CA.
-DiagAccelTpsFuelThresh:
-        dc.b    $01,$00                                  ; Word compared with AccelTpsFuel; read by Sub_285CA.
-DiagTipInFuelThresh:
-        dc.b    $01,$00                                  ; Word compared with TipInFuel; read by Sub_285CA.
-DiagDecelLeanFuelThresh:
-        dc.b    $FA                                      ; Byte compared with DecelLeanFuel; read by Sub_285CA.
+CatMonMapAccelMax:
+        dc.b    $01,$00                                  ; Catalyst monitor: MAP acceleration fuel at or below this value
+CatMonTpsAccelMax:
+        dc.b    $01,$00                                  ; Catalyst monitor: throttle acceleration fuel at or below this value
+CatMonTipInMax:
+        dc.b    $01,$00                                  ; Catalyst monitor: tip-in fuel at or below this value
+CatMonDecelLeanMin:
+        dc.b    $FA                                      ; Catalyst monitor: decel enleanment, when present, at or above this value
 DiagThresh16:
         dc.b    $50                                      ; Byte compared with; read by Sub_281E2.
         dc.b    $57,$7E,$31,$5F,$00,$00,$00,$00
@@ -7548,13 +7548,13 @@ DiagThresh25:
         dc.b    $0B,$F5,$24,$DC,$28,$28,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF
         dc.b    $FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 SensorV0A64Thresh1:
-        dc.b    $00                                      ; Byte compared with V0A64; read by Sub_2DCC2.
+        dc.b    $00                                      ; Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484.
 SensorV0A64Thresh2:
-        dc.b    $00                                      ; Byte compared with V0A64; read by Sub_2DCC2.
+        dc.b    $00                                      ; Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484.
 SensorV06B2Thresh:
-        dc.b    $00                                      ; Byte compared with V06B2; read by Sub_2DCC2.
+        dc.b    $00                                      ; Byte compared with V06B2; read by Sub_2DCC2. Fault: P1484.
 SensorTimeThresh4:
-        dc.b    $00                                      ; Byte compared with Count3s; read by Sub_2DCC2.
+        dc.b    $00                                      ; Byte compared with Count3s; read by Sub_2DCC2. Fault: P1484.
 SensorCoolantThresh7:
         dc.b    $9B                                      ; Byte compared with CoolantTemp; read by Sub_2802A.
 SensorSpeedThresh2:
@@ -7579,7 +7579,7 @@ CalThresh3:
         dc.b    $00                                      ; Byte compared with; read by Sub_21800.
         dc.b    $14,$12
 StartV01B6Value:
-        dc.b    $80                                      ; Byte used with V01B6; read by Reset, Sub_17A48, Sub_2C708.
+        dc.b    $80                                      ; Byte used with V01B6; read by Reset, Sub_17A48, Sub_2C708. Fault: P1602.
 AnalogTimeThresh:
         dc.b    $1C                                      ; Byte compared with Count3s; read by CheckPowerDown, Sub_2C708.
 AnalogValue:
@@ -7644,26 +7644,26 @@ AnalogV0A92Curve:
         dc.b    0,255, 255,0                             ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
-DiagFactor1:
-        dc.b    $FF                                      ; Byte multiplied; read by Sub_2197C.
-DiagAdder1:
-        dc.b    $00                                      ; Byte added to; read by Sub_2197C.
-DiagAdder2:
-        dc.b    $00                                      ; Byte added to; read by Sub_2197C.
+VacLeakBaroFactor:
+        dc.b    $FF                                      ; Vacuum-leak check (Sub_2197C, P1299): factor on baro
+VacLeakAcAdder:
+        dc.b    $00                                      ; Vacuum-leak check: expected-MAP addition with the A/C clutch on
+VacLeakAcReqAdder:
+        dc.b    $00                                      ; Vacuum-leak check: expected-MAP addition with A/C requested
 DiagV06AFThresh:
-        dc.b    $FF                                      ; Byte compared with V06AF; read by Sub_2197C.
-DiagSpeedThresh4:
-        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2197C.
-DiagRpmThresh2:
-        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2197C.
+        dc.b    $FF                                      ; Byte compared with V06AF; read by Sub_2197C. Fault: P1299.
+VacLeakSpeedMax:
+        dc.b    $00                                      ; Vacuum-leak check: vehicle speed below this value
+VacLeakRpmMin:
+        dc.b    $FF                                      ; Vacuum-leak check: engine rpm at or above this value
 DiagRpmThresh3:
-        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2197C.
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2197C. Fault: P1299.
 DiagV06AEThresh:
-        dc.b    $00                                      ; Byte compared with V06AE; read by Sub_2197C.
+        dc.b    $00                                      ; Byte compared with V06AE; read by Sub_2197C. Fault: P1299.
 ExpectedMapRpmMin:
         dc.b    $FF                                      ; MAP/throttle rationality runs above this engine rpm
 DiagSpeedThresh5:
-        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2197C.
+        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_2197C. Fault: P1299.
 LimpRpmMapFault:
         dc.b    $FF                                      ; Rpm limit with the MAP fault
 LimpMapFaultTime:
@@ -7742,31 +7742,31 @@ ExpectedMap:
         dc.b    255,255,255,255,255,255,255,255,255      ; row 8
 
 SensorV06CCThresh:
-        dc.b    $00                                      ; Byte compared with V06CC; read by Sub_22C1C.
+        dc.b    $00                                      ; Byte compared with V06CC; read by Sub_22C1C. Fault: P1298.
 SensorThresh14:
-        dc.b    $FF,$00                                  ; Word compared with; read by Sub_22C1C.
+        dc.b    $FF,$00                                  ; Word compared with; read by Sub_22C1C. Fault: P1298.
 SensorV06CDThresh:
-        dc.b    $00                                      ; Byte compared with V06CD; read by Sub_22C1C.
+        dc.b    $00                                      ; Byte compared with V06CD; read by Sub_22C1C. Fault: P1298.
 SensorThresh15:
-        dc.b    $00,$FF                                  ; Word compared with; read by Sub_22C1C.
+        dc.b    $00,$FF                                  ; Word compared with; read by Sub_22C1C. Fault: P1298.
 SensorThresh16:
-        dc.b    $00,$FF                                  ; Word compared with; read by Sub_22C1C.
+        dc.b    $00,$FF                                  ; Word compared with; read by Sub_22C1C. Fault: P1298.
 SensorO2UpBank1RawThresh:
-        dc.b    $00                                      ; Byte compared with O2UpBank1Raw; read by Sub_22C1C.
+        dc.b    $00                                      ; Byte compared with O2UpBank1Raw; read by Sub_22C1C. Fault: P1298.
 SensorO2UpBank2RawThresh:
-        dc.b    $00                                      ; Byte compared with O2UpBank2Raw; read by Sub_22C1C.
+        dc.b    $00                                      ; Byte compared with O2UpBank2Raw; read by Sub_22C1C. Fault: P1298.
 SensorRpmThresh8:
-        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2C7FE.
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2C7FE. Fault: P0176.
 SensorRpmThresh9:
-        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2C7FE.
+        dc.b    $FF                                      ; Byte compared with EngineRpm; read by Sub_2C7FE. Fault: P0176.
 FuelThresh7:
         dc.b    $00                                      ; Byte compared with; read by Sub_0C5B4.
 FuelV0F07Thresh:
         dc.b    $00                                      ; Byte compared with V0F07; read by Sub_0C5B4.
 FuelV0F08Thresh:
         dc.b    $00                                      ; Byte compared with V0F08; read by Sub_0C5B4.
-CalV068FOffset:
-        dc.b    $40                                      ; Byte subtracted from V068F; read by Sub_23C3E.
+CamCrankOffsetBase:
+        dc.b    $40                                      ; Cam/crank relation: base subtracted from the measured offset $068F,Z
         dc.b    $3F,$C0,$3F,$C0,$FF,$00,$00
 MonSteadyTimeMin:
         dc.b    $13                                      ; Steady-state condition (Sub_23C3E): time since start at or above this value
@@ -7780,29 +7780,29 @@ MonSteadyThrottleDelta:
         dc.b    $02                                      ; Steady-state condition: throttle change below this value
 MonSteadyRpmMin:
         dc.b    $12                                      ; Steady-state condition: engine rpm above this value
-CalRpmThresh2:
-        dc.b    $21                                      ; Byte compared with EngineRpm; read by Sub_23C3E.
-CalRpmThresh3:
-        dc.b    $1E                                      ; Byte compared with EngineRpm; read by Sub_23C3E.
+MonSteadyRpmMax:
+        dc.b    $21                                      ; Steady-state condition (P1390): engine rpm at or below this value
+MonSteadyRpmBand:
+        dc.b    $1E                                      ; Steady-state condition: rpm band start
 CalThresh4:
-        dc.b    $7D                                      ; Byte compared with; read by Sub_23C3E.
-CalSpeedThresh1:
-        dc.b    $C8                                      ; Byte compared with VehicleSpeed; read by Sub_23C3E.
-FuelThresh8:
-        dc.b    $10                                      ; Byte compared with; read by Sub_23D76.
-FuelThresh9:
-        dc.b    $70                                      ; Byte compared with; read by Sub_23D76.
-FuelThresh10:
-        dc.b    $03                                      ; Byte compared with; read by Sub_23D76.
-FuelV068EThresh:
-        dc.b    $6A                                      ; Byte compared with V068E; read by Sub_23D76.
+        dc.b    $7D                                      ; Byte compared with; read by Sub_23C3E. Fault: P1390.
+MonSteadySpeedMax:
+        dc.b    $C8                                      ; Steady-state condition: vehicle speed at or below this value
+CamCrankOffsetMin:
+        dc.b    $10                                      ; Cam/crank relation (Sub_23D76, P1390): offset below this value counts as skipped
+CamCrankOffsetMax:
+        dc.b    $70                                      ; Cam/crank relation: offset at or above this value counts as skipped
+CamCrankOffsetJitter:
+        dc.b    $03                                      ; Cam/crank relation: change of the offset below which a reading is stable
+CamCrankStableCount:
+        dc.b    $6A                                      ; Cam/crank relation: stable readings needed ($068E,Z)
         dc.b    $3C
 CalOffset7:
-        dc.b    $1A                                      ; Byte subtracted from; read by Sub_23C3E.
+        dc.b    $1A                                      ; Byte subtracted from; read by Sub_23C3E. Fault: P1390.
 CalV068AThresh:
-        dc.b    $C8                                      ; Byte compared with V068A; read by Sub_23B84.
+        dc.b    $C8                                      ; Byte compared with V068A; read by Sub_23B84. Fault: P1391.
 CalV068DInit:
-        dc.b    $01                                      ; Byte stored into V068D; read by Sub_23B84.
+        dc.b    $01                                      ; Byte stored into V068D; read by Sub_23B84. Fault: P1391.
 DiagSpeedThresh6:
         dc.b    $FF                                      ; Byte compared with VehicleSpeed; read by Sub_233FE.
 DiagRpmThresh5:
@@ -7831,16 +7831,16 @@ ThermostatTimeLimit:
 
 DiagBaroThresh1:
         dc.b    $C2                                      ; Byte compared with Baro; read by Sub_23816.
-DiagV0660Thresh:
-        dc.b    $C8                                      ; Byte compared with V0660; read by Sub_2375A.
-DiagRpmThresh7:
-        dc.b    $06,$40                                  ; Word compared with EngineRpm; read by Sub_2375A.
-DiagThresh26:
-        dc.b    $03,$20                                  ; Word compared with; read by Sub_2375A.
+IdleMonDelay:
+        dc.b    $C8                                      ; Idle speed monitor (Sub_2375A): delay before the test ($0660,Z)
+IdleMonRpmHigh:
+        dc.b    $06,$40                                  ; Idle speed monitor: engine rpm above the idle target by more than this value counts as high
+IdleMonRpmLow:
+        dc.b    $03,$20                                  ; Idle speed monitor: engine rpm below the idle target by more than this value counts as low
 DiagV0662Thresh:
         dc.b    $01,$E0                                  ; Word compared with V0662; read by Sub_2375A.
-DiagV0661Thresh:
-        dc.b    $02                                      ; Byte compared with V0661; read by Sub_2375A.
+IdleMonCount:
+        dc.b    $02                                      ; Idle speed monitor: failed tests before the result
 DiagV0668Thresh:
         dc.b    $C7                                      ; Byte compared with V0668; read by Sub_238D0.
 DiagSpeedThresh8:
@@ -8345,19 +8345,19 @@ FaultTable:
         dc.b    $FE,$00,$00,$03,$40,$1E,$00,$00,$00,$00
         dc.b    $FF,$00,$00,$03,$80,$1E,$00,$00,$00,$00
 
-DiagThrottleRawThresh1:
-        dc.b    $1A                                      ; Byte compared with ThrottleRaw; read by Sub_236D4.
-DiagSpeedThresh12:
-        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_236D4.
-DiagRpmThresh9:
-        dc.b    $2F                                      ; Byte compared with EngineRpm; read by Sub_236D4.
-DiagVacuumThresh3:
-        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_236D4.
+TpsCheckThrottleMax:
+        dc.b    $1A                                      ; Throttle rationality (Sub_236D4, P0121): raw throttle below this value with high load
+TpsCheckSpeedMin:
+        dc.b    $28                                      ; Throttle rationality: vehicle speed above this value
+TpsCheckRpmMax:
+        dc.b    $2F                                      ; Throttle rationality: engine rpm up to this value
+TpsCheckVacuumMax:
+        dc.b    $20                                      ; Throttle rationality: manifold vacuum below this value (high load)
         dc.b    $66
-DiagThrottleRawThresh2:
-        dc.b    $97                                      ; Byte compared with ThrottleRaw; read by Sub_236D4.
-DiagRpmThresh10:
-        dc.b    $13                                      ; Byte compared with EngineRpm; read by Sub_236D4.
+TpsCheckThrottleMin:
+        dc.b    $97                                      ; Throttle rationality: raw throttle above this value with low load
+TpsCheckRpmMin:
+        dc.b    $13                                      ; Throttle rationality: engine rpm at or above this value
 
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleLimpFromVacuum ($498F): 2D table, 4 points, unsigned
@@ -8372,12 +8372,12 @@ ThrottleLimpFromVacuum:
 
 CalRpmThresh4:
         dc.b    $02,$00                                  ; Word compared with EngineRpm; read by Sub_21EA6.
-DiagBaroThresh2:
-        dc.b    $E3                                      ; Byte compared with Baro; read by Sub_21EA6, Sub_236D4, Sub_23816.
-DiagValue10:
-        dc.b    $07                                      ; Byte used with; read by Sub_21EA6, Sub_236D4, Sub_23816.
-DiagVacuumThresh4:
-        dc.b    $03                                      ; Byte compared with ManifoldVacuum; read by Sub_21EA6, Sub_236D4, Sub_23816.
+MapCheckBaroMax:
+        dc.b    $E3                                      ; MAP checks: barometric pressure above which the high-altitude vacuum limit is not used
+MapCheckVacuumMin:
+        dc.b    $07                                      ; MAP checks: manifold vacuum limit (low altitude)
+MapCheckVacuumMinAlt:
+        dc.b    $03                                      ; MAP checks: manifold vacuum limit (high altitude)
 MapAdder2:
         dc.b    $22                                      ; Byte added to result of MapLimpFromThrottle; read by Sub_241AA.
 MapThrottleAdder:
@@ -8394,19 +8394,19 @@ MapLimpFromThrottle:
         dc.b    5,$80                                    ; points, flags
         dc.b    0,0, 8,73, 20,112, 57,186, 120,193       ; x, y
 
-DiagThresh27:
-        dc.b    $32                                      ; Byte compared with; read by Sub_23970.
-DiagIdleVacuumCoolantMin:
-        dc.b    $B6                                      ; Monitor in Sub_23970 runs above this coolant temperature
+VssThresh:
+        dc.b    $32                                      ; Byte compared with; read by Sub_23970. Fault: P0500.
+VssCheckCoolantMin:
+        dc.b    $B6                                      ; Vehicle speed sensor check (Sub_23970, P0500) runs above this coolant temperature
 
 ;---------------------------------------------------------------------------------------------------
-; DiagIdleVacuumRpm ($49AE): 2D table, 4 points, unsigned
-; Monitor in Sub_23970 (closed throttle, P/N, warm): manifold vacuum limit against engine rpm
+; VssCheckVacuumRpm ($49AE): 2D table, 4 points, unsigned
+; Vehicle speed sensor check (Sub_23970, P0500): manifold vacuum limit against engine rpm (closed throttle, P/N, warm)
 ; x: rpm8, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $2380A
 ;---------------------------------------------------------------------------------------------------
-DiagIdleVacuumRpm:
+VssCheckVacuumRpm:
         dc.b    4,$80                                    ; points, flags
         dc.b    63,0, 69,113, 78,113, 80,0               ; x, y
 
@@ -8459,22 +8459,22 @@ SensorThresh18:
 SensorTimeThresh5:
         dc.b    $03                                      ; Byte compared with Count3s; read by Sub_21D02.
         dc.b    $66,$FF,$64,$FF
-ThrottleRawThresh1:
-        dc.b    $08                                      ; Byte compared with ThrottleRaw; read by Sub_236D4, ProcessThrottle.
-ThrottleRawThresh2:
-        dc.b    $E4                                      ; Byte compared with ThrottleRaw; read by Sub_236D4, ProcessThrottle.
+ThrottleRawLow:
+        dc.b    $08                                      ; Throttle sensor raw value below which it counts as shorted (P0122)
+ThrottleRawHigh:
+        dc.b    $E4                                      ; Throttle sensor raw value at or above which it counts as open (P0123)
 SensorMapRawThresh1:
-        dc.b    $01                                      ; Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap.
+        dc.b    $01                                      ; Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108.
 SensorMapRawThresh2:
-        dc.b    $EE                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap.
+        dc.b    $EE                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
 CalV06D1Thresh:
-        dc.b    $18                                      ; Byte compared with V06D1; read by Sub_21E38.
+        dc.b    $18                                      ; Byte compared with V06D1; read by Sub_21E38. Fault: P0106.
 CalThresh10:
-        dc.b    $1C                                      ; Byte compared with; read by Sub_21E38.
+        dc.b    $1C                                      ; Byte compared with; read by Sub_21E38. Fault: P0106.
 CalMapRawThresh:
-        dc.b    $70                                      ; Byte compared with MapRaw; read by Sub_21E38.
+        dc.b    $70                                      ; Byte compared with MapRaw; read by Sub_21E38. Fault: P0106.
 SensorThrottleThresh4:
-        dc.b    $3D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap.
+        dc.b    $3D                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
 AcSensorRawHigh:
         dc.b    $FB                                      ; A/C sensor circuit check: raw value above this counts as open/high
 AcSensorRawLow:
@@ -8487,14 +8487,14 @@ CoolantRawHigh:
         dc.b    $FD                                      ; Coolant sensor raw value at or above which it counts as open (fault)
 CoolantFaultValue:
         dc.b    $AE                                      ; Coolant value used with a coolant sensor fault
-DiagStartCoolantThresh1:
-        dc.b    $79                                      ; Byte compared with StartCoolantTemp2; read by Sub_231EC.
-DiagStartCoolantThresh2:
-        dc.b    $E4                                      ; Byte compared with StartCoolantTemp2; read by Sub_231EC.
-DiagBatteryTempStartThresh:
-        dc.b    $68                                      ; Byte compared with BatteryTempStart; read by Sub_231EC.
-DiagCoolantThresh6:
-        dc.b    $C7                                      ; Byte compared with CoolantTemp; read by Sub_231EC.
+ThermostatStartCoolantMin:
+        dc.b    $79                                      ; Warm-up monitor (Sub_23280): start coolant at or above this value
+ThermostatStartCoolantMax:
+        dc.b    $E4                                      ; Warm-up monitor: start coolant below this value
+ThermostatBattTempMin:
+        dc.b    $68                                      ; Warm-up monitor: start battery temperature at or above this value
+ThermostatCoolantDone:
+        dc.b    $C7                                      ; Warm-up monitor: coolant at or above this value passes the test
 DiagV06C9Thresh:
         dc.b    $FF                                      ; Byte compared with V06C9; read by Sub_231EC.
 AirTempRawLow:
@@ -8508,9 +8508,9 @@ BatteryTempRawLow:
 BatteryTempRawHigh:
         dc.b    $FA                                      ; Battery temperature sensor raw value above which it counts as open
 SensorThresh19:
-        dc.b    $FF                                      ; Byte compared with; read by Sub_2C7FE.
+        dc.b    $FF                                      ; Byte compared with; read by Sub_2C7FE. Fault: P0176.
 SensorThresh20:
-        dc.b    $00                                      ; Byte compared with; read by Sub_2C7FE.
+        dc.b    $00                                      ; Byte compared with; read by Sub_2C7FE. Fault: P0176.
         dc.b    $0A,$B7
 CalV06CBThresh:
         dc.b    $6E                                      ; Byte compared with V06CB; read by Sub_220AE.
@@ -8540,24 +8540,24 @@ SensorThresh23:
 SensorThresh24:
         dc.b    $6D                                      ; Byte compared with; read by Sub_21C78.
 SensorV0A63Thresh1:
-        dc.b    $FF                                      ; Byte compared with V0A63; read by Sub_2DCC2.
+        dc.b    $FF                                      ; Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.
 SensorV0A63Thresh2:
-        dc.b    $05                                      ; Byte compared with V0A63; read by Sub_2DCC2.
+        dc.b    $05                                      ; Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.
         dc.b    $08,$F0
 EgrThresh10:
-        dc.b    $03                                      ; Byte compared with; read by Sub_22B16.
+        dc.b    $03                                      ; Byte compared with; read by Sub_22B16. Fault: P0403.
 EgrV7926Offset:
-        dc.b    $05                                      ; Byte subtracted from V7926; read by Sub_22B16.
+        dc.b    $05                                      ; Byte subtracted from V7926; read by Sub_22B16. Fault: P0403.
 EgrThresh11:
-        dc.b    $FF                                      ; Byte compared with; read by Sub_22B16.
+        dc.b    $FF                                      ; Byte compared with; read by Sub_22B16. Fault: P0403.
 PurgeV045FThresh:
-        dc.b    $66                                      ; Byte compared with V045F; read by Sub_22762.
+        dc.b    $66                                      ; Byte compared with V045F; read by Sub_22762. Fault: P0443.
 PurgeV045AThresh:
-        dc.b    $14                                      ; Byte compared with V045A; read by Sub_22762.
+        dc.b    $14                                      ; Byte compared with V045A; read by Sub_22762. Fault: P0443.
 PurgeV05C0Thresh:
-        dc.b    $C8                                      ; Byte compared with V05C0; read by Sub_22762.
+        dc.b    $C8                                      ; Byte compared with V05C0; read by Sub_22762. Fault: P0443.
 PurgeV045EThresh:
-        dc.b    $99                                      ; Byte compared with V045E; read by Sub_22762.
+        dc.b    $99                                      ; Byte compared with V045E; read by Sub_22762. Fault: P0443.
         dc.b    $00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -9262,13 +9262,13 @@ FlexEthanolCurve:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FuelLevelCurve ($70AD): 2D table, 8 points, unsigned
-; Fuel level sensor counts to fuel level
+; FlexSensorCurve ($70AD): 2D table, 8 points, unsigned
+; Analog input $0A8E (probably the fuel composition sensor: Sub_2C7FE reports P0176/P0178/P0179 for it) to $0A64,Z
 ; x: raw, y: raw (units: docs/en/calibration.md)
-; Inputs: FuelLevel
+; Inputs: FlexSensorRaw
 ; Read at $2DC72
 ;---------------------------------------------------------------------------------------------------
-FuelLevelCurve:
+FlexSensorCurve:
         dc.b    8,$80                                    ; points, flags
         dc.b    11,175, 24,133, 27,125, 43,100, 74,75, 113,50, 167,25, 209,0 ; x, y
 
@@ -9380,11 +9380,11 @@ DwellTime:
 SensorV0AB2Thresh:
         dc.b    $1E                                      ; Byte compared with V0AB2; read by CalcVehicleSpeed.
 StartFactor1:
-        dc.b    $3F                                      ; Byte multiplied; read by Reset.
+        dc.b    $3F                                      ; Byte multiplied; read by Reset. Fault: P1602.
 StartFactor2:
-        dc.b    $05                                      ; Byte multiplied; read by Reset.
+        dc.b    $05                                      ; Byte multiplied; read by Reset. Fault: P1602.
 PurgeV0471Thresh:
-        dc.b    $18                                      ; Byte compared with V0471; read by Sub_22762.
+        dc.b    $18                                      ; Byte compared with V0471; read by Sub_22762. Fault: P0443.
         dc.b    $00,$10,$04,$01,$20,$08,$02,$01,$10,$03,$02,$20,$04,$04,$01,$05
         dc.b    $08,$02,$00,$02,$04,$01,$01,$08,$02,$04,$02,$03,$08,$01,$00,$02
         dc.b    $01,$01,$01,$04,$02,$04,$08,$03,$08,$02,$07,$73,$80,$80,$07,$73
@@ -14877,7 +14877,7 @@ L0D4CA:
         LDX     #$8AD0
         LDAB    #$04
         JSR     Sub_0CB76
-        STE     >EepromCount,Z
+        STE     >SriMileage,Z
         LDAA    >ThrottleClosedDefault
         STAA    <ThrottleClosed,Z
         LDAA    #$F0
@@ -14924,7 +14924,7 @@ L0D572:
         BRCLR   $000A,Z,#$10,L0D5D8
         BRCLR   >Options032C,#$40,L0D5CA
         LDAA    #$E3
-        STAA    >FuelLevelFiltered,Z
+        STAA    >FlexSensorStart,Z
         LDD     #$000C
         JSR     Sub_383F0
         CMPA    #$AB
@@ -15055,7 +15055,7 @@ L0D70C:
 L0D730:
         BRCLR   >ADCSTAT,Z,#$80,L0D730
         LDAA    >RJURR2_L,Z
-        STAA    >FuelLevel,Z
+        STAA    >FlexSensorRaw,Z
         JSR     Sub_2DC62
 L0D742:
         LDAA    >PORTF0,Z
@@ -15356,7 +15356,7 @@ L0DAC6:
         LDX     #FlexEthanolScale
         JSR     Lookup2D
         STAA    >FlexEthanolScaled,Z
-        LDD     <EepromCount,Z
+        LDD     <SriMileage,Z
         STD     $0F09,Z
         LDAA    >CoolantTemp,Z
         CMPA    >StartCoolantThresh3
@@ -15777,12 +15777,12 @@ L0E034:
         BRCLR   >Options032C,#$40,L0E090
         BCLR    $50,Z,#$10
         BRCLR   $0050,Z,#$08,L0E064
-        LDD     <EepromCount,Z
+        LDD     <SriMileage,Z
         SUBD    $0F09,Z
         BCS     L0E060
         TSTA
         BNE     L0E056
-        CMPB    >SensorEepromCountThresh
+        CMPB    >SensorSriMileageThresh
         BCS     L0E064
 L0E056:
         BCLR    $50,Z,#$08
@@ -16846,7 +16846,7 @@ L0EC3A:
 L0EC3E:
         BRSET   $051D,Z,#$02,L0EC52
         LDY     #$4852
-        JSR     Sub_245A8
+        JSR     ReportFault
         BCC     L0EC52
         NOP
         NOP
@@ -16867,7 +16867,7 @@ L0EC78:
 L0EC7C:
         BRSET   $051D,Z,#$04,L0EC90
         LDY     #$485C
-        JSR     Sub_245A8
+        JSR     ReportFault
         BCC     L0EC90
         NOP
         NOP
@@ -16888,7 +16888,7 @@ L0ECB6:
 L0ECBA:
         BRSET   $050D,Z,#$02,L0ECD2
         LDY     #$4352
-        JSR     Sub_245A8
+        JSR     ReportFault
         BCC     L0ECD2
         CLR     $017B,Z
         BCLR    $0C21,Z,#$08

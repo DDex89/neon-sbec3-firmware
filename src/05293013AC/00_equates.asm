@@ -10,7 +10,7 @@ ThrottleClosed   equ $0009        ; $F8009
 IacPosition      equ $000B        ; $F800B
 Baro             equ $000D        ; $F800D
 FlexEthanol      equ $000E        ; $F800E
-EepromCount      equ $0020        ; $F8020
+SriMileage       equ $0020        ; $F8020
 Count3s          equ $013B        ; $F813B
 MainLoopCounter  equ $013C        ; $F813C
 MainLoopPhaseMask equ $013D        ; $F813D

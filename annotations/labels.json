@@ -18,6 +18,8 @@
  "11F40": "CalcFuelPulse",
  "1D000": "CalcSpark",
  "1D266": "CalcBaseSpark",
+ "24160": "ReportPass",
+ "245CC": "ReportFault",
  "2C028": "ReadAnalogInputs",
  "2C1CA": "ProcessCoolantTemp",
  "2C2E6": "ProcessAirTemp",

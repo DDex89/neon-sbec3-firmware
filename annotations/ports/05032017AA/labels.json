@@ -23,6 +23,8 @@
  "1172C": "FinishFuelPulse",
  "11D40": "CalcFuelPulse",
  "1F000": "CalcSpark",
+ "24160": "ReportPass",
+ "245D6": "ReportFault",
  "2C20E": "ProcessCoolantTemp",
  "2C32A": "ProcessAirTemp",
  "2D2CE": "ProcessThrottle",

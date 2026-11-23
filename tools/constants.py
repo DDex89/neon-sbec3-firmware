@@ -227,10 +227,35 @@ class Constants:
         return cats.most_common(1)[0][0] if cats else None
 
 
+FAULT_TABLE, FAULT_ROW = 0x4052, 10
+REPORT = {0x245CC: "fail", 0x24160: "pass"}     # ReportFault, ReportPass: Y = fault table row
+
+
+def fault_codes(data, an, x):
+    """Routine -> P-codes it reports (LDY #row then JSR ReportFault/ReportPass)."""
+    order = sorted(an.insn)
+    idx = {a: n for n, a in enumerate(order)}
+    out = collections.defaultdict(set)
+    for a, i in an.insn.items():
+        if i.mn != "JSR" or i.target() not in REPORT:
+            continue
+        for k in range(idx[a] - 1, max(idx[a] - 6, 0), -1):
+            j = an.insn[order[k]]
+            y = dict(j.vals).get("jjkk")
+            if j.mn == "LDY" and y is not None:
+                if FAULT_TABLE <= y < FAULT_TABLE + 256 * FAULT_ROW and (y - FAULT_TABLE) % FAULT_ROW == 0:
+                    b = data[y + 6:y + 8]
+                    if any(b):
+                        out[x.owner(a)].add("P%02X%02X" % (b[0], b[1]))
+                break
+    return out
+
+
 def build(data, an, x, names, cal, top=None, cats=None):
     """Structural entries for every constant; top(owner) -> routine used for the prefix."""
     c = Constants(data, an, x, names, cal)
     c.cat_of = cats or {}
+    faults = fault_codes(data, an, x)
     found = c.find()
     entries = {}
     for h, k in found.items():
@@ -279,6 +304,9 @@ def build(data, an, x, names, cal, top=None, cats=None):
                 ctx = "factor, with " + var
             e["desc"] = "%s %s; read by %s." % ("Word" if k["size"] == 2 else ("Long" if k["size"] == 4 else "Byte"),
                                                 ctx, routines_text(names, owners))
+        codes = sorted(set().union(*[faults.get(o, set()) for o in owners])) if owners else []
+        if codes:
+            e["desc"] += " Fault: %s." % ", ".join(codes)
         entries["%04X" % h] = e
     # numbering of repeated names
     count = collections.Counter(e["base"] for e in entries.values())

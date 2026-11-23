@@ -1233,7 +1233,7 @@
    "unit": "raw",
    "auto": true,
    "category": "Startup",
-   "desc": "Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10.",
+   "desc": "Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10. Fault: P1602.",
    "name": "StartV0C03Init"
   },
   "0363": {
@@ -1814,7 +1814,7 @@
    "unit": "raw",
    "auto": true,
    "category": "Startup",
-   "desc": "Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5.",
+   "desc": "Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602.",
    "name": "StartV0801Thresh"
   },
   "138E": {
@@ -1822,7 +1822,7 @@
    "unit": "raw",
    "auto": true,
    "category": "Startup",
-   "desc": "Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4.",
+   "desc": "Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.",
    "name": "StartV043BValue"
   },
   "138F": {
@@ -1830,7 +1830,7 @@
    "unit": "raw",
    "auto": true,
    "category": "Startup",
-   "desc": "Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4.",
+   "desc": "Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.",
    "name": "StartV043CThresh"
   },
   "199F": {
@@ -1961,7 +1961,7 @@
    "unit": "raw",
    "auto": true,
    "category": "Startup",
-   "desc": "Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44.",
+   "desc": "Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44. Fault: P1602.",
    "name": "StartV0863Thresh"
   },
   "1BA1": {
@@ -2403,44 +2403,39 @@
    "category": "Diagnostics"
   },
   "294F": {
-   "size": 1,
+   "name": "LdpBattTempMax",
+   "desc": "EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value",
    "unit": "tempc",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Byte compared with BatteryTemp; read by Sub_25784.",
-   "name": "DiagBatteryTempThresh1"
+   "size": 1
   },
   "2950": {
-   "size": 1,
+   "name": "LdpBattTempMin",
+   "desc": "EVAP leak test: battery temperature at or above this value",
    "unit": "tempc",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Byte compared with BatteryTemp; read by Sub_25784.",
-   "name": "DiagBatteryTempThresh2"
+   "size": 1
   },
   "2953": {
-   "size": 1,
+   "name": "LdpVoltsMax",
+   "desc": "EVAP leak test: battery voltage at or below this value",
    "unit": "volt16",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Byte compared with BatteryVolts2; read by Sub_25784.",
-   "name": "DiagVoltsThresh1"
+   "size": 1
   },
   "2954": {
-   "size": 1,
+   "name": "LdpVoltsMin",
+   "desc": "EVAP leak test: battery voltage at or above this value",
    "unit": "volt16",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Byte compared with BatteryVolts2; read by Sub_25784.",
-   "name": "DiagVoltsThresh2"
+   "size": 1
   },
   "2955": {
-   "size": 1,
+   "name": "LdpVacuumMin",
+   "desc": "EVAP leak test: manifold vacuum at or above this value for the test states",
    "unit": "kpa",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Byte compared with ManifoldVacuum; read by Sub_25784.",
-   "name": "DiagVacuumThresh1"
+   "size": 1
   },
   "2956": {
    "size": 1,
@@ -2611,12 +2606,11 @@
    "name": "DiagMonPeakThresh4"
   },
   "2969": {
-   "size": 1,
+   "name": "LdpVacuumMin2",
+   "desc": "EVAP leak test: manifold vacuum limit of the last state",
    "unit": "kpa",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Byte compared with ManifoldVacuum; read by Sub_25784.",
-   "name": "DiagVacuumThresh2"
+   "size": 1
   },
   "231A": {
    "size": 1,
@@ -2627,60 +2621,48 @@
    "name": "O2Adder5"
   },
   "252D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonTimeMin",
+   "desc": "O2 sensor monitor at idle (Sub_2877A): time since start at or above this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with Count3s; read by Sub_2877A.",
-   "name": "DiagTimeThresh2"
+   "size": 1
   },
   "2531": {
-   "size": 1,
+   "name": "O2MonCoolantMin",
+   "desc": "O2 sensor monitor at idle: coolant at or above this value",
    "unit": "tempc",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Byte compared with CoolantTemp; read by Sub_2877A.",
-   "name": "DiagCoolantThresh3"
+   "size": 1
   },
   "2530": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonSpeedMax",
+   "desc": "O2 sensor monitor at idle: vehicle speed at or below this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_2877A.",
-   "name": "DiagSpeedThresh2"
+   "size": 1
   },
   "252E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonIdleTime",
+   "desc": "O2 sensor monitor at idle: idle time ($053F,Z) at or above this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with V053F; read by Sub_2877A.",
-   "name": "DiagV053FThresh"
+   "size": 1
   },
   "2534": {
-   "size": 2,
+   "name": "O2MonRpmBand",
+   "desc": "O2 sensor monitor at idle: engine rpm within the idle target plus or minus this value",
    "unit": "rpmw",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Word compared with IdleTarget; read by Sub_2877A.",
-   "name": "DiagIdleTargetThresh"
+   "size": 2
   },
   "2533": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonTrimMax",
+   "desc": "O2 sensor monitor at idle: short-term trim at or below this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh10"
+   "size": 1
   },
   "2532": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2MonTrimMin",
+   "desc": "O2 sensor monitor at idle: short-term trim at or above this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_2877A.",
-   "name": "DiagThresh11"
+   "size": 1
   },
   "2536": {
    "size": 1,
@@ -2755,36 +2737,28 @@
    "name": "CalV010AThresh1"
   },
   "2454": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with; read by Sub_23D76.",
-   "name": "FuelThresh8"
+   "name": "CamCrankOffsetMin",
+   "desc": "Cam/crank relation (Sub_23D76, P1390): offset below this value counts as skipped",
+   "category": "Diagnostics",
+   "size": 1
   },
   "2455": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with; read by Sub_23D76.",
-   "name": "FuelThresh9"
+   "name": "CamCrankOffsetMax",
+   "desc": "Cam/crank relation: offset at or above this value counts as skipped",
+   "category": "Diagnostics",
+   "size": 1
   },
   "2456": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with; read by Sub_23D76.",
-   "name": "FuelThresh10"
+   "name": "CamCrankOffsetJitter",
+   "desc": "Cam/crank relation: change of the offset below which a reading is stable",
+   "category": "Diagnostics",
+   "size": 1
   },
   "2457": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with V068E; read by Sub_23D76.",
-   "name": "FuelV068EThresh"
+   "name": "CamCrankStableCount",
+   "desc": "Cam/crank relation: stable readings needed ($068E,Z)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3DD9": {
    "size": 1,
@@ -2821,7 +2795,7 @@
    "unit": "raw",
    "auto": true,
    "category": "Sensors",
-   "desc": "Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap.",
+   "desc": "Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108.",
    "name": "SensorMapRawThresh1"
   },
   "3DA8": {
@@ -2829,7 +2803,7 @@
    "unit": "raw",
    "auto": true,
    "category": "Sensors",
-   "desc": "Byte compared with MapRaw; read by Sub_21EFE, ReadMap.",
+   "desc": "Byte compared with MapRaw; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.",
    "name": "SensorMapRawThresh2"
   },
   "3DAA": {
@@ -2837,7 +2811,7 @@
    "unit": "raw",
    "auto": true,
    "category": "Sensors",
-   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap.",
+   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.",
    "name": "SensorThrottleThresh4"
   },
   "3DBA": {

@@ -1348,7 +1348,7 @@ L10DC4:
         EMUL
         LSRW    $00F4,Z
         ADDE    $00F4,Z
-        LDAA    <EepromCount,Z
+        LDAA    <SriMileage,Z
         BNE     L10E0C
         BRSET   >FuelModeFlags,Z,#$20,L10E0C
         BRSET   $0505,Z,#$08,L10E0C
@@ -4820,7 +4820,7 @@ L14544:
         LDAA    #$80
         STAA    $11,X
 L14558:
-        TST     <EepromCount,Z
+        TST     <SriMileage,Z
         BNE     L1457A
         LDAB    $0E,Z
         CMPB    >O2V000EThresh2
@@ -5378,7 +5378,7 @@ L14AF8:
         JSR     Sub_15EC8
         JSR     Sub_15EEA
 L14B18:
-        TST     <EepromCount,Z
+        TST     <SriMileage,Z
         BNE     L14B30
         LDAB    $0E,Z
         CMPB    >O2V000EThresh1
@@ -7902,7 +7902,7 @@ L1618C:
 ; Called from: Sub_2C6C0
 ;---------------------------------------------------------------------------------------------------
 Sub_17000:
-        LDAA    <EepromCount,Z
+        LDAA    <SriMileage,Z
         BNE     L1700E
         LDAA    $0E,Z
         CMPA    >FlexLearnV000EThresh
@@ -13163,7 +13163,7 @@ L1B39A:
         BRCLR   $0C31,Z,#$20,L1B408
 L1B3C0:
         LDD     >IdleRampCountMin
-        CPD     <EepromCount,Z
+        CPD     <SriMileage,Z
         LBHI    L1B408
         LDAA    <Baro,Z
         CMPA    >IdleRampBaroMin

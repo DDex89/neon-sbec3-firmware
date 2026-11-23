@@ -951,7 +951,7 @@ Sub_10980:
         BRSET   $0812,Z,#$01,L109DE
         BRCLR   >MainLoopPhaseMask,Z,#$04,L10A66
         LDY     #$3864
-        JSR     Sub_1E68C
+        JSR     ReportFault
         LBCC    L10A66
         LBRA    L10A60
 L109DE:
@@ -1317,7 +1317,7 @@ L10D50:
 L10D56:
         PSHM    Y
         LDY     #$35C6
-        JSR     Sub_1E68C
+        JSR     ReportFault
         PULM    Y
         BRCLR   >IacBase,Z,#$FF,L10D80
         TZX
@@ -1529,14 +1529,14 @@ L10FF8:
         CMPA    $3DB5
         BHI     L11048
         BRCLR   $0165,Z,#$80,L11012
-        JSR     Sub_1E3CC
+        JSR     ReportPass
         BRA     L11066
 L11012:
         LDY     #$365C
         CMPA    $3DB4
         BCS     L11048
         BRCLR   $0165,Z,#$40,L11028
-        JSR     Sub_1E3CC
+        JSR     ReportPass
         BRA     L11066
 L11028:
         JSR     Lookup2D
@@ -1553,7 +1553,7 @@ L1103C:
         STAB    >CoolantTemp,Z
         BRA     L11066
 L11048:
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L11066
         LDAA    $3DB6
         STAA    >CoolantTemp,Z
@@ -1589,14 +1589,14 @@ L110A6:
         CMPA    $3D5C
         BHI     L110F6
         BRCLR   $0169,Z,#$04,L110C0
-        JSR     Sub_1E3CC
+        JSR     ReportPass
         BRA     L11110
 L110C0:
         LDY     #$376A
         CMPA    $3D5B
         BCS     L110F6
         BRCLR   $0169,Z,#$02,L110D6
-        JSR     Sub_1E3CC
+        JSR     ReportPass
         BRA     L11110
 L110D6:
         JSR     Lookup2D
@@ -1613,7 +1613,7 @@ L110EA:
         STAB    >AirTemp,Z
         BRA     L11110
 L110F6:
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L11110
         LDAA    $3D5D
         LDAB    $0165,Z
@@ -1660,7 +1660,7 @@ L11152:
         LBNE    L1120A
         BRSET   $0170,Z,#$10,L111FC
         LDY     #$3918
-        JSR     Sub_1E68C
+        JSR     ReportFault
         JMP     L111FC
 L11172:
         CLRA
@@ -1706,7 +1706,7 @@ L111D6:
         STAA    <FlexEthanol,Z
         BRA     L111FE
 L111DA:
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L111DE:
         LDAA    >EngineRpm,Z
         CMPA    $3D9E
@@ -1816,7 +1816,7 @@ L112E0:
         BRCLR   $0011,Z,#$80,L112F6
         BRSET   $0174,Z,#$40,L112F6
         LDY     #$3A6C
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCS     L11344
 L112F6:
         CLR     $0192,Z
@@ -1826,14 +1826,14 @@ L112FA:
         CMPA    $3DAD
         BHI     L11338
         BRCLR   $016D,Z,#$04,L11314
-        JSR     Sub_1E3CC
+        JSR     ReportPass
         BRA     L1134C
 L11314:
         LDY     #$38BE
         CMPA    $3DAE
         BCS     L11338
         BRCLR   $016D,Z,#$08,L1132A
-        JSR     Sub_1E3CC
+        JSR     ReportPass
         BRA     L1134C
 L1132A:
         LDX     #FlexLearnEthanolCurve
@@ -1842,7 +1842,7 @@ L1132A:
         BRA     L1134C
 L11338:
         BRCLR   $0011,Z,#$80,L1134C
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L1134C
 L11344:
         LDAA    $3DB1
@@ -1945,7 +1945,7 @@ L1142C:
         BRCLR   $0011,Z,#$40,L11456
         BRSET   $016E,Z,#$80,L11456
         LDY     #$3896
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BSET    $031B,Z,#$04
         BCLR    $031B,Z,#$09
         BRA     L11456
@@ -2064,7 +2064,7 @@ L11564:
         BRCLR   $0011,Z,#$40,L1158E
         BRSET   $016E,Z,#$80,L1158E
         LDY     #$3896
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BSET    $031B,Z,#$04
         BCLR    $031B,Z,#$19
         BRA     L1158E
@@ -2157,7 +2157,7 @@ L1166A:
         BRCLR   $0011,Z,#$40,L116EC
         BRSET   $016E,Z,#$40,L116EC
         LDY     #$388C
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BSET    $031B,Z,#$04
         BCLR    $031B,Z,#$19
         CLR     $0147,Z
@@ -2191,7 +2191,7 @@ L116C2:
         BRCLR   $0011,Z,#$40,L116EC
         BRSET   $016E,Z,#$80,L116EC
         LDY     #$3896
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BSET    $031B,Z,#$04
         BCLR    $031B,Z,#$19
         BRA     L116EC
@@ -2405,14 +2405,14 @@ L11920:
         BCS     L119A8
         BRCLR   $0165,Z,#$04,L11934
         LDY     $00,X
-        JSR     Sub_1E3CC
+        JSR     ReportPass
 L11934:
         AIX     #$06
         CMPA    $3DCC
         BCC     L119A8
         BRCLR   $0165,Z,#$08,L11948
         LDY     $00,X
-        JSR     Sub_1E3CC
+        JSR     ReportPass
 L11948:
         AIX     #$06
         LDAB    >EngineRpm,Z
@@ -2433,7 +2433,7 @@ L11964:
         BHI     L1199C
         BRCLR   $0174,Z,#$10,L11986
         LDY     $00,X
-        JSR     Sub_1E3CC
+        JSR     ReportPass
 L11986:
         BRSET   $0174,Z,#$10,L119A8
         BRSET   $0165,Z,#$0C,L119A8
@@ -2449,7 +2449,7 @@ L119A8:
         BITB    $05,X
         BNE     L119BE
         LDY     $00,X
-        JSR     Sub_1E68C
+        JSR     ReportFault
         LDAA    >Throttle,Z
         BCC     L119E0
 L119BE:
@@ -2958,10 +2958,10 @@ L11F50:
         INCA
         BRA     L11F6A
 L11F58:
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCS     L11F68
         LDY     #$37F6
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L11F6A
 L11F68:
         LDAA    #$BE
@@ -3167,7 +3167,7 @@ L12150:
         LDD     $04A4,Z
         BNE     L12168
         LDY     #$3710
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L12188
 L12160:
         BCLR    $0325,Z,#$04
@@ -3189,7 +3189,7 @@ L12182:
 L12188:
         LDD     $04A4,Z
 L1218C:
-        STD     <EepromCount,Z
+        STD     <SriMileage,Z
 L1218E:
         RTS
 
@@ -4255,7 +4255,7 @@ L12D28:
 L12D46:
         BRSET   $0167,Z,#$40,L12D68
         LDY     #$36FC
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L12D68
 L12D56:
         LDAB    $028F,Z
@@ -5605,7 +5605,7 @@ L13CA0:
         CMPA    $29A8
         BCS     L13CD4
         LDY     #$3AF8
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L13CD4
 L13CCC:
         BSET    $02A6,Z,#$10
@@ -10512,7 +10512,7 @@ L16FCA:
         BRCLR   >Options032A,#$0A,L16FE2
         BRCLR   $031B,Z,#$80,L16FE6
 L16FE2:
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L16FE6:
         LDX     #$6F04
         LDY     #$6F0C
@@ -10550,7 +10550,7 @@ L17030:
 L17042:
         BRSET   $0166,Z,#$02,L17052
 L17048:
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L17052
 L1704E:
         JSR     Sub_17064
@@ -10943,7 +10943,7 @@ L17512:
         JSR     Sub_17064
         BRSET   $016A,Z,#$02,L17524
         LDY     #$371A
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L17524:
         BCLR    $04A6,Z,#$80
 L17528:
@@ -12710,7 +12710,7 @@ Sub_187B6:
         BRSET   $007F,Z,#$01,L187DA
         BRSET   $007D,Z,#$08,L187DA
         BRSET   $050C,Z,#$40,L187DA
-        LDD     <EepromCount,Z
+        LDD     <SriMileage,Z
         TSTA
         BNE     L187DA
         CMPB    $0719,Z
@@ -13618,7 +13618,7 @@ L1925A:
 L19276:
         BRSET   $0170,Z,#$02,L1928C
         LDY     #$38FA
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L1928C
         CLR     $72,Z
         BCLR    $03A1,Z,#$08
@@ -13634,7 +13634,7 @@ L1928C:
 L192A8:
         BRSET   $0170,Z,#$01,L192D0
         LDY     #$38F0
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L192D0
         BCLR    $0670,Z,#$40
         LDAB    #$80
@@ -16240,7 +16240,7 @@ L1AE4C:
 L1AE5E:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L1AE7A
         LDAB    >VehicleSpeed,Z
-        CMPB    >DiagSpeedThresh2
+        CMPB    >O2MonSpeedMax
         BLS     L1AE7A
         LDAA    $02CA,Z
         INCA
@@ -16270,26 +16270,26 @@ L1AE7A:
         LBNE    L1AFB4
         LDE     $0006,Y
         LDAA    E,Z
-        CMPA    >DiagThresh10
+        CMPA    >O2MonTrimMax
         LBGT    L1AFB4
-        CMPA    >DiagThresh11
+        CMPA    >O2MonTrimMin
         LBLT    L1AFB4
         LDAA    >Count3s,Z
-        CMPA    >DiagTimeThresh2
+        CMPA    >O2MonTimeMin
         LBCS    L1AFB4
         BRCLR   $031C,Z,#$01,L1AFB4
         LDAB    >VehicleSpeed,Z
-        CMPB    >DiagSpeedThresh2
+        CMPB    >O2MonSpeedMax
         LBHI    L1AFB4
         LDAA    $02CA,Z
-        CMPA    >DiagV053FThresh
+        CMPA    >O2MonIdleTime
         LBCS    L1AFB4
         TST     $0555,Z
         LBNE    L1AFB4
         TST     $0556,Z
         LBNE    L1AFB4
         LDAA    >CoolantTemp,Z
-        CMPA    >DiagCoolantThresh3
+        CMPA    >O2MonCoolantMin
         LBCS    L1AFB4
         LDAA    $0326,Z
         CMPA    >DiagV0A4EThresh
@@ -16311,7 +16311,7 @@ L1AF46:
         BCC     L1AF5A
         NEGE
 L1AF5A:
-        CPE     >DiagIdleTargetThresh
+        CPE     >O2MonRpmBand
         LBCC    L1AFB4
         TST     $03CF,Z
         BNE     L1AF84
@@ -16835,7 +16835,7 @@ L1B458:
         BCS     L1B498
         BRSET   $0037,Z,#$08,L1B48E
         LDY     #$3940
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1B48E:
         LDAA    #$FF
         STAA    $06F4,Z
@@ -16874,7 +16874,7 @@ L1B4CE:
         BCS     L1B50C
         BRSET   $0037,Z,#$08,L1B502
         LDY     #$3940
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1B502:
         LDAA    #$FF
         STAA    $06F4,Z
@@ -17562,11 +17562,11 @@ L1BC40:
         CMPB    $3D61
         BCS     L1BC7C
         LDY     #$3B0C
-        JSR     Sub_1E68C
+        JSR     ReportFault
         LBRA    L1BD38
 L1BC70:
         LDY     #$3B02
-        JSR     Sub_1E68C
+        JSR     ReportFault
         LBRA    L1BD38
 L1BC7C:
         BRSET   $01A4,Z,#$40,L1BD38
@@ -17631,7 +17631,7 @@ L1BD1C:
         BSET    $01A4,Z,#$40
         CLR     $3D,Z
         LDY     #$3B16
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1BD34
 L1BD2C:
         BSET    $01A4,Z,#$40
@@ -17717,7 +17717,7 @@ L1BDCC:
         BPL     L1BDDA
         NEGA
 L1BDDA:
-        CMPA    >FuelThresh10
+        CMPA    >CamCrankOffsetJitter
         BCS     L1BDE4
         LDAB    $F0,Z
         BRA     L1BDF8
@@ -17726,7 +17726,7 @@ L1BDE4:
         INCA
         BEQ     L1BE02
         STAA    $01AC,Z
-        CMPA    >FuelV068EThresh
+        CMPA    >CamCrankStableCount
         BCC     L1BE02
         BRA     L1BDFC
 L1BDF8:
@@ -17736,13 +17736,13 @@ L1BDFC:
         BRA     L1BE32
 L1BE02:
         STAB    $01AB,Z
-        CMPB    >FuelThresh9
+        CMPB    >CamCrankOffsetMax
         BCC     L1BE12
-        CMPB    >FuelThresh8
+        CMPB    >CamCrankOffsetMin
         BHI     L1BE1C
 L1BE12:
         LDY     #$3A62
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1BE32
 L1BE1C:
         BRSET   $04A6,Z,#$80,L1BE32
@@ -19255,7 +19255,7 @@ L1CDD0:
         CMPA    $3E0B
         BEQ     L1CDF4
         LDY     #$3544
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1CDF4:
         RTS
 
@@ -19368,7 +19368,7 @@ L1CF34:
         JSR     Lookup2D
         STAA    $01F4,Z
         LDY     #$3ADA
-        JSR     Sub_1E68C
+        JSR     ReportFault
         LBRA    L1CFF6
 L1CF58:
         CLR     $0288,Z
@@ -19491,7 +19491,7 @@ L1D0AC:
         BITB    $07,X
         BNE     L1D0D4
         LDY     $02,X
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L1D0D4
 L1D0D4:
         LDD     #$0002
@@ -19534,7 +19534,7 @@ L1D10C:
         CMPA    #$4F
         BCS     L1D14A
         LDY     #$36C0
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1D188
 L1D146:
         CLR     $01A6,Z
@@ -19544,7 +19544,7 @@ L1D14A:
         CMPA    #$08
         BCS     L1D166
         LDY     #$36C0
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1D188
 L1D160:
         CMPA    #$3C
@@ -19561,7 +19561,7 @@ L1D166:
 L1D17A:
         BRSET   $0164,Z,#$02,L1D188
         LDY     #$353A
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1D188:
         RTS
 
@@ -19609,12 +19609,12 @@ L1D1F6:
         BRSET   $01A4,Z,#$02,L1D228
         BRSET   $0168,Z,#$08,L1D228
         LDY     #$368E
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1D228
 L1D21C:
         CLR     $0267,Z
         LDY     #$368E
-        JSR     Sub_1E3CC
+        JSR     ReportPass
 L1D228:
         RTS
 
@@ -19661,7 +19661,7 @@ L1D296:
         BCS     L1D2B2
         BCLR    $042E,Z,#$40
         LDY     #$3562
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1D2AE
 L1D2AA:
         BCLR    $042E,Z,#$C8
@@ -19696,7 +19696,7 @@ L1D2EC:
         BNE     L1D2D8
         BRSET   $0163,Z,#$08,L1D2FE
         LDY     #$359E
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1D2FE:
         LDE     $086E,Z
         EORE    #$2000
@@ -19726,7 +19726,7 @@ L1D348:
         BRSET   $0163,Z,#$08,L1D35A
         ANDP    #$FF1F
         LDY     #$359E
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1D35A:
         ANDP    #$FF1F
         RTS
@@ -19802,7 +19802,7 @@ L1D404:
 L1D408:
         ANDP    #$FF1F
         LDY     #$36E8
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1D414:
         ANDP    #$FF1F
         RTS
@@ -19842,7 +19842,7 @@ L1D468:
         BRSET   $0037,Z,#$08,L1D480
         BRSET   $01A4,Z,#$02,L1D480
         LDY     #$36B6
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1D480:
         BRCLR   $013F,Z,#$02,L1D4AC
         LDAA    #$20
@@ -19880,7 +19880,7 @@ L1D4D0:
         CMPA    >SensorMapRawThresh1
         BCC     L1D4F8
 L1D4F2:
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1D510
 L1D4F8:
         BRCLR   $0168,Z,#$30,L1D510
@@ -19888,7 +19888,7 @@ L1D4F8:
         BRSET   $0168,Z,#$10,L1D50C
         LDY     #$36A2
 L1D50C:
-        JSR     Sub_1E3CC
+        JSR     ReportPass
 L1D510:
         RTS
 
@@ -19905,7 +19905,7 @@ Sub_1D512:
         BCS     L1D536
         BRSET   $0164,Z,#$40,L1D53A
         LDY     #$356C
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1D53A
 L1D536:
         BCLR    $0164,Z,#$40
@@ -19939,7 +19939,7 @@ L1D560:
         BNE     L1D590
         BRSET   $0037,Z,#$08,L1D598
         LDY     #$367A
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L1D598
         BSET    $0189,Z,#$04
         BRA     L1D598
@@ -20112,7 +20112,7 @@ L1D764:
         BRA     L1D7C4
 L1D77C:
         LDY     $0E,X
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L1D7C4
         BCLR    $02C6,Z,#$04
         LDAA    $0B,X
@@ -20180,7 +20180,7 @@ L1D836:
         BCS     L1D866
 L1D866:
         LDY     $0A,X
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1D86C:
         AIX     #$10
         CPX     #$D806
@@ -20218,7 +20218,7 @@ L1D8CA:
         BRCLR   $03DF,Z,#$10,L1D8DE
         BRSET   $0166,Z,#$04,L1D8DE
         LDY     #$35E4
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1D8DE:
         BSET    $03DF,Z,#$10
         BRA     L1D8E8
@@ -20272,7 +20272,7 @@ L1D95E:
         BRSET   $0174,Z,#$08,L1D978
         BRSET   $0037,Z,#$08,L1D978
         LDY     #$3A4E
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1D97E
 L1D978:
         CPE     $3DA7
@@ -20364,7 +20364,7 @@ L1DA54:
         BRSET   $01A4,Z,#$02,L1DA70
         BRSET   $01A4,Z,#$04,L1DA70
         LDY     #$3A94
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1DA74
 L1DA70:
         CLR     $018B,Z
@@ -20504,7 +20504,7 @@ L1DBE8:
         BCC     L1DBF6
 L1DBEE:
         LDY     #$3A62
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1DBF6:
         BRCLR   >Options033A,#$10,L1DC08
         LDAA    $01AB,Z
@@ -20559,7 +20559,7 @@ Sub_1DC56:
         BRCLR   $03BB,Z,#$80,L1DCCC
         BRCLR   $01B4,Z,#$20,L1DCBE
         LDY     #$39A4
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1DCC8
 L1DCBE:
         BSET    $01B4,Z,#$80
@@ -20607,7 +20607,7 @@ Sub_1DCD2:
         CMPA    $25AB
         BCS     L1DD4A
         LDY     #$39A4
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1DD4E
 L1DD4A:
         STAA    $0191,Z
@@ -20634,7 +20634,7 @@ Sub_1DD50:
         CMPA    $25D7
         BCC     L1DD92
         LDY     #$3A30
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L1DDA8
         BRA     L1DDA4
 L1DD92:
@@ -20673,7 +20673,7 @@ L1DDCE:
         ANDP    #$FF1F
         BLS     L1DDE8
         LDY     #$3AE4
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1DDE8:
         RTS
 
@@ -20700,7 +20700,7 @@ Sub_1DDEA:
         BRSET   $0037,Z,#$08,L1DE3C
         BRSET   $01A4,Z,#$02,L1DE3C
         LDY     #$39AE
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BRA     L1DE48
 L1DE3C:
         BCLR    $031C,Z,#$48
@@ -20734,7 +20734,7 @@ L1DE6C:
         BITB    #$01
         BNE     L1DEA2
         LDY     #$3A8A
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L1DEA2
         ANDB    #$F9
         ORAB    #$09
@@ -20844,7 +20844,7 @@ L1DF80:
         BRSET   $0037,Z,#$08,L1DFBC
 L1DFB6:
         LDY     $04,X
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1DFBC:
         AIX     #$10
         CPX     #$DEE4
@@ -20925,7 +20925,7 @@ L1E070:
         BCS     L1E096
         BRSET   $0037,Z,#$08,L1E096
         LDY     #$3B52
-        JSR     Sub_1E68C
+        JSR     ReportFault
         BCC     L1E096
 L1E096:
         RTS
@@ -21058,7 +21058,7 @@ Sub_1E1D8:
         CMPA    $25AC
         BCS     L1E23A
         LDY     #$3B20
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1E236:
         CLR     $0039,Z
 L1E23A:
@@ -21088,7 +21088,7 @@ L1E272:
         CMPA    $25AD
         BCS     L1E29A
         LDY     #$3B20
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1E296:
         CLR     $003A,Z
 L1E29A:
@@ -21134,7 +21134,7 @@ L1E2F4:
         BITA    E,Z
         BNE     L1E326
         LDY     $00,X
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1E326:
         LDAA    $01F6,Z
         ANDP    #$FEFF
@@ -21221,10 +21221,10 @@ L1E3CA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E3CC ($1E3CC)
+; ReportPass ($1E3CC)
 ; Called from: Sub_10FB6, Sub_112AC, Sub_118E8, Sub_1D18A, Sub_1D41A (11 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1E3CC:
+ReportPass:
         PSHM    D
         CLRB
         TBYK
@@ -21537,10 +21537,10 @@ L1E68A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E68C ($1E68C)
+; ReportFault ($1E68C)
 ; Called from: Sub_0D46C, Sub_10980, Sub_10CE8, Sub_10FB6, Sub_11112, Sub_112AC, Sub_11358, Sub_118E8 and 39 more routines (64 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_1E68C:
+ReportFault:
         PSHM    D,E,X,K
         CLRB
         TBYK
@@ -21621,7 +21621,7 @@ L1E766:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1E76A ($1E76A)
-; Called from: Sub_1E68C
+; Called from: ReportFault
 ;---------------------------------------------------------------------------------------------------
 Sub_1E76A:
         TZX
@@ -21657,7 +21657,7 @@ L1E7A2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1E7A8 ($1E7A8)
-; Called from: Sub_1E3CC, Sub_1E68C
+; Called from: ReportPass, ReportFault
 ;---------------------------------------------------------------------------------------------------
 Sub_1E7A8:
         PSHM    D,E,K
@@ -21689,9 +21689,9 @@ Sub_1E7C2:
         BEQ     L1E800
         BRSET   $0507,Z,#$02,L1E800
         LDAA    >BatteryVolts2,Z
-        CMPA    >DiagVoltsThresh2
+        CMPA    >LdpVoltsMin
         BCS     L1E7F6
-        CMPA    >DiagVoltsThresh1
+        CMPA    >LdpVoltsMax
         BLS     L1E800
 L1E7F6:
         BSET    $02B6,Z,#$80
@@ -21732,9 +21732,9 @@ L1E842:
         BCLR    $02B5,Z,#$07
         BRSET   $0507,Z,#$02,L1E87C
         LDAA    $032C,Z
-        CMPA    >DiagBatteryTempThresh1
+        CMPA    >LdpBattTempMax
         BHI     L1E89E
-        CMPA    >DiagBatteryTempThresh2
+        CMPA    >LdpBattTempMin
         BCS     L1E880
         LDAA    >CoolantTemp,Z
         LDAB    $032C,Z
@@ -21783,7 +21783,7 @@ L1E8D2:
         LBRA    L1E978
 L1E8E0:
         LDAA    >ManifoldVacuum,Z
-        CMPA    >DiagVacuumThresh1
+        CMPA    >LdpVacuumMin
         BCC     L1E8F0
         CLR     $02BA,Z
         BRA     L1E920
@@ -21889,7 +21889,7 @@ L1EA18:
         LBRA    L1EB08
 L1EA26:
         LDAA    >ManifoldVacuum,Z
-        CMPA    >DiagVacuumThresh1
+        CMPA    >LdpVacuumMin
         BCC     L1EA38
         BRSET   $0507,Z,#$02,L1EA18
         BRA     L1EA5C
@@ -21974,7 +21974,7 @@ L1EB0C:
         BRA     L1EB86
 L1EB24:
         LDAA    >ManifoldVacuum,Z
-        CMPA    >DiagVacuumThresh1
+        CMPA    >LdpVacuumMin
         BCC     L1EB44
         LDAA    #$04
         STAA    $02B8,Z
@@ -22019,7 +22019,7 @@ L1EB96:
         LBRA    L1EC64
 L1EBA4:
         LDAA    >ManifoldVacuum,Z
-        CMPA    >DiagVacuumThresh1
+        CMPA    >LdpVacuumMin
         BCC     L1EBDE
         BRSET   $0507,Z,#$02,L1EB96
         LDAA    $02B7,Z
@@ -22097,7 +22097,7 @@ L1EC82:
         LBRA    L1ED84
 L1EC86:
         LDAA    >ManifoldVacuum,Z
-        CMPA    >DiagVacuumThresh2
+        CMPA    >LdpVacuumMin2
         BCC     L1EC98
         LDAA    #$79
         STAA    $02B7,Z
@@ -22125,7 +22125,7 @@ L1ECBE:
         LBRA    L1ED82
 L1ECCC:
         LDAA    >ManifoldVacuum,Z
-        CMPA    >DiagVacuumThresh1
+        CMPA    >LdpVacuumMin
         BCC     L1ED06
         BRCLR   >MainLoopPhaseMask,Z,#$40,L1ED00
         LDAA    $02C3,Z
@@ -22331,7 +22331,7 @@ L1EECC:
 L1EED2:
         BRSET   $017A,Z,#$80,L1EEE0
         LDY     #$3C56
-        JSR     Sub_1E68C
+        JSR     ReportFault
 L1EEE0:
         BRCLR   $0800,Z,#$02,L1EEEC
         BSET    $02B5,Z,#$10
@@ -23284,7 +23284,7 @@ L1F902:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_1F904 ($1F904)
-; Called from: Sub_1E68C, Sub_1FA50 (3 calls)
+; Called from: ReportFault, Sub_1FA50 (3 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_1F904:
         PSHM    X,Y,K
@@ -23525,7 +23525,7 @@ L1FB0C:
         LDAB    $00,Y
         STAB    $01F5,Z
         STY     $01F8,Z
-        JSR     Sub_1E68C
+        JSR     ReportFault
         TZY
         LDY     >IacBase,Z
         LBCC    L1FC18

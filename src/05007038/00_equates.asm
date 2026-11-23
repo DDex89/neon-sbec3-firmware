@@ -16,7 +16,7 @@ MainLoopPhaseMask equ $001B        ; $F801B
 ThrottleState    equ $0025        ; $F8025
 ThrottleClosed   equ $002B        ; $F802B
 Baro             equ $002C        ; $F802C
-EepromCount      equ $002D        ; $F802D
+SriMileage       equ $002D        ; $F802D
 IacPosition      equ $0042        ; $F8042
 IdleMapLearned   equ $0054        ; $F8054
 IacTargetCmd     equ $018C        ; $F818C
@@ -73,7 +73,7 @@ FanStageTimer    equ $04B9        ; $F84B9
 BatteryVoltsFiltered equ $053A        ; $F853A
 BatteryTempRaw   equ $053F        ; $F853F
 AirTemp          equ $0542        ; $F8542
-FuelLevel        equ $0543        ; $F8543
+FlexSensorRaw    equ $0543        ; $F8543
 ThrottleLast     equ $0544        ; $F8544
 Throttle         equ $0546        ; $F8546
 TpsFilterCoef    equ $0547        ; $F8547

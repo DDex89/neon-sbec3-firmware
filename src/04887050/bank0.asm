@@ -316,7 +316,7 @@ CalOffset2:
 CalOffset3:
         dc.b    $00,$00                                  ; Word subtracted from; read by Sub_2F800.
 StartV0C03Init:
-        dc.b    $00                                      ; Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10.
+        dc.b    $00                                      ; Byte stored into V0C03; read by Reset, Sub_2F800, Sub_2FA10. Fault: P1602.
 CalV0C08Thresh2:
         dc.b    $00,$00                                  ; Word compared with V0C08; read by Sub_2F800.
 CalCoolantThresh1:
@@ -1948,11 +1948,11 @@ Tab2D_1378:
 
         dc.b    $27,$6E,$84,$02,$30,$90,$CD,$3E,$1A
 StartV0801Thresh:
-        dc.b    $0D                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5.
+        dc.b    $0D                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602.
 StartV043BValue:
-        dc.b    $04                                      ; Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4.
+        dc.b    $04                                      ; Byte used with V043B; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.
 StartV043CThresh:
-        dc.b    $05                                      ; Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4.
+        dc.b    $05                                      ; Byte compared with V043C; read by Reset, Sub_1594A, Sub_15D56 +4. Fault: P1602.
         dc.b    $2C,$2C,$2C,$05,$05,$05,$12,$0D,$05,$D7,$00,$FF,$84,$33,$BC,$0F
         dc.b    $00
 
@@ -2951,7 +2951,7 @@ EventSparkInit:
 FuelV0862Init:
         dc.b    $00                                      ; Byte stored into V0862; read by Sub_11C44.
 StartV0863Thresh:
-        dc.b    $04                                      ; Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44.
+        dc.b    $04                                      ; Byte compared with V0863; read by Isr_GPT_IC4OC5, Reset, Sub_11C44. Fault: P1602.
         dc.b    $01,$00
 
 ;---------------------------------------------------------------------------------------------------
@@ -4126,14 +4126,14 @@ O2Adder5:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$13,$CD
         dc.b    $02,$02,$80,$02,$12,$21,$1E,$7D,$C8
-FuelThresh8:
-        dc.b    $10                                      ; Byte compared with; read by Sub_23D76.
-FuelThresh9:
-        dc.b    $70                                      ; Byte compared with; read by Sub_23D76.
-FuelThresh10:
-        dc.b    $03                                      ; Byte compared with; read by Sub_23D76.
-FuelV068EThresh:
-        dc.b    $6A                                      ; Byte compared with V068E; read by Sub_23D76.
+CamCrankOffsetMin:
+        dc.b    $10                                      ; Cam/crank relation (Sub_23D76, P1390): offset below this value counts as skipped
+CamCrankOffsetMax:
+        dc.b    $70                                      ; Cam/crank relation: offset at or above this value counts as skipped
+CamCrankOffsetJitter:
+        dc.b    $03                                      ; Cam/crank relation: change of the offset below which a reading is stable
+CamCrankStableCount:
+        dc.b    $6A                                      ; Cam/crank relation: stable readings needed ($068E,Z)
         dc.b    $3C,$1A,$40,$3F,$C0,$3F,$C0,$FF,$00,$00,$64,$01,$EF,$B5,$FF,$A6
         dc.b    $7F,$1D,$7F,$0F,$25,$02,$BA,$EF,$01,$02,$10,$05,$0E,$09,$10,$84
         dc.b    $03,$7F,$1D,$FF,$06,$F9,$06,$FA,$02,$10,$10,$06,$F9,$06,$F9,$10
@@ -4203,22 +4203,22 @@ Tab3D_24B4:
 
         dc.b    $01,$14,$CD,$AB,$04,$F0,$F0,$20,$07,$26,$25,$1A,$1C,$04,$02,$80
         dc.b    $40,$05,$05,$01,$03,$03,$86,$82,$86,$82,$02,$02
-DiagTimeThresh2:
-        dc.b    $28                                      ; Byte compared with Count3s; read by Sub_2877A.
-DiagV053FThresh:
-        dc.b    $17                                      ; Byte compared with V053F; read by Sub_2877A.
+O2MonTimeMin:
+        dc.b    $28                                      ; O2 sensor monitor at idle (Sub_2877A): time since start at or above this value
+O2MonIdleTime:
+        dc.b    $17                                      ; O2 sensor monitor at idle: idle time ($053F,Z) at or above this value
 DiagV0543Thresh:
         dc.b    $1C                                      ; Byte compared with V0543; read by Sub_2877A.
-DiagSpeedThresh2:
-        dc.b    $30                                      ; Byte compared with VehicleSpeed; read by Sub_2877A.
-DiagCoolantThresh3:
-        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_2877A.
-DiagThresh11:
-        dc.b    $80                                      ; Byte compared with; read by Sub_2877A.
-DiagThresh10:
-        dc.b    $7F                                      ; Byte compared with; read by Sub_2877A.
-DiagIdleTargetThresh:
-        dc.b    $03,$80                                  ; Word compared with IdleTarget; read by Sub_2877A.
+O2MonSpeedMax:
+        dc.b    $30                                      ; O2 sensor monitor at idle: vehicle speed at or below this value
+O2MonCoolantMin:
+        dc.b    $CD                                      ; O2 sensor monitor at idle: coolant at or above this value
+O2MonTrimMin:
+        dc.b    $80                                      ; O2 sensor monitor at idle: short-term trim at or above this value
+O2MonTrimMax:
+        dc.b    $7F                                      ; O2 sensor monitor at idle: short-term trim at or below this value
+O2MonRpmBand:
+        dc.b    $03,$80                                  ; O2 sensor monitor at idle: engine rpm within the idle target plus or minus this value
 DiagV0542Thresh:
         dc.b    $07                                      ; Byte compared with V0542; read by Sub_2877A.
         dc.b    $18
@@ -4533,17 +4533,17 @@ Tab3D_28EC:
         dc.b    254,254,254,254,254,254,254,254,254      ; row 8
 
         dc.b    $08,$00,$F5,$03,$00,$00
-DiagBatteryTempThresh1:
-        dc.b    $9F                                      ; Byte compared with BatteryTemp; read by Sub_25784.
-DiagBatteryTempThresh2:
-        dc.b    $84                                      ; Byte compared with BatteryTemp; read by Sub_25784.
+LdpBattTempMax:
+        dc.b    $9F                                      ; EVAP leak test (Sub_25784, leak detection pump): battery temperature at or below this value
+LdpBattTempMin:
+        dc.b    $84                                      ; EVAP leak test: battery temperature at or above this value
         dc.b    $06,$B5
-DiagVoltsThresh1:
-        dc.b    $F6                                      ; Byte compared with BatteryVolts2; read by Sub_25784.
-DiagVoltsThresh2:
-        dc.b    $92                                      ; Byte compared with BatteryVolts2; read by Sub_25784.
-DiagVacuumThresh1:
-        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_25784.
+LdpVoltsMax:
+        dc.b    $F6                                      ; EVAP leak test: battery voltage at or below this value
+LdpVoltsMin:
+        dc.b    $92                                      ; EVAP leak test: battery voltage at or above this value
+LdpVacuumMin:
+        dc.b    $20                                      ; EVAP leak test: manifold vacuum at or above this value for the test states
 DiagV0591Thresh:
         dc.b    $14                                      ; Byte compared with V0591; read by Sub_25DA8.
 DiagV0592Thresh:
@@ -4581,8 +4581,8 @@ DiagMonPeakThresh4:
         dc.b    $12                                      ; Byte compared with DiagMonPeak; read by Sub_25784.
 DiagThresh5:
         dc.b    $18                                      ; Byte compared with; read by Sub_25784.
-DiagVacuumThresh2:
-        dc.b    $0D                                      ; Byte compared with ManifoldVacuum; read by Sub_25784.
+LdpVacuumMin2:
+        dc.b    $0D                                      ; EVAP leak test: manifold vacuum limit of the last state
 DiagV0599Thresh:
         dc.b    $06                                      ; Byte compared with V0599; read by Sub_25784.
 DiagV059AThresh:
@@ -5059,12 +5059,12 @@ Tab2D_3D8E:
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$05,$FA,$08,$E4,$1A,$28,$2F,$20,$66
 SensorMapRawThresh1:
-        dc.b    $01                                      ; Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap.
+        dc.b    $01                                      ; Byte compared with MapRaw; read by Sub_21E38, Sub_21EFE, ReadMap. Fault: P0106, P0107, P0108.
 SensorMapRawThresh2:
-        dc.b    $EE                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap.
+        dc.b    $EE                                      ; Byte compared with MapRaw; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
         dc.b    $3D
 SensorThrottleThresh4:
-        dc.b    $1A                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap.
+        dc.b    $1A                                      ; Byte compared with ThrottleAboveClosed; read by Sub_21EFE, ReadMap. Fault: P0107, P0108.
 KnockValue3:
         dc.b    $FF                                      ; Byte used with; read by Sub_1F408.
 KnockSignalMax:
@@ -17734,7 +17734,7 @@ L0D40C:
         DECB
         BNE     L0D408
         LDY     #$3A4B
-        JSR     Sub_1BD48
+        JSR     ReportFault
         BSET    $08,Z,#$04
         BRA     L0D432
 L0D42E:

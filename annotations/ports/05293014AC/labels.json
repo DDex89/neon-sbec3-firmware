@@ -16,5 +16,7 @@
  "0E9A6": "Blend16Signed",
  "1231C": "EmptyHook",
  "12330": "ReadMap",
- "141E4": "CalcBaseSpark"
+ "141E4": "CalcBaseSpark",
+ "1E3CC": "ReportPass",
+ "1E68C": "ReportFault"
 }

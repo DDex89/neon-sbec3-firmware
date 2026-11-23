@@ -1431,7 +1431,7 @@ L10EA8:
         EMUL
         LSRW    $00F4,Z
         ADDE    $00F4,Z
-        LDAA    <EepromCount,Z
+        LDAA    <SriMileage,Z
         BNE     L10EF0
         BRSET   >FuelModeFlags,Z,#$20,L10EF0
         BRSET   $0505,Z,#$08,L10EF0
@@ -4273,7 +4273,7 @@ L12C6E:
 L12C7C:
         BRSET   $0501,Z,#$80,L12C8A
         LDY     #$463F
-        JSR     Sub_245D6
+        JSR     ReportFault
 L12C8A:
         CLR     $0F0B,Z
         LDAB    #$FF
@@ -5038,7 +5038,7 @@ L14544:
         LDAA    #$80
         STAA    $11,X
 L14558:
-        TST     <EepromCount,Z
+        TST     <SriMileage,Z
         BNE     L1457A
         LDAB    $0E,Z
         CMPB    >O2V000EThresh2
@@ -5596,7 +5596,7 @@ L14AF8:
         JSR     Sub_15FF8
         JSR     Sub_1601A
 L14B18:
-        TST     <EepromCount,Z
+        TST     <SriMileage,Z
         BNE     L14B30
         LDAB    $0E,Z
         CMPB    >O2V000EThresh1
@@ -8499,7 +8499,7 @@ Sub_16732:
         BRCLR   $0DD9,Z,#$01,L16750
         BCLR    $0DD9,Z,#$01
         LDY     #$467B
-        JSR     Sub_245D6
+        JSR     ReportFault
 L16750:
         RTS
 
@@ -8895,7 +8895,7 @@ L169F0:
 ; Called from: Sub_2C790
 ;---------------------------------------------------------------------------------------------------
 Sub_17000:
-        LDAA    <EepromCount,Z
+        LDAA    <SriMileage,Z
         BNE     L1700E
         LDAA    $0E,Z
         CMPA    $07D0
@@ -14371,7 +14371,7 @@ L1B4AA:
         BRCLR   $0C31,Z,#$20,L1B518
 L1B4D0:
         LDD     >IdleRampCountMin
-        CPD     <EepromCount,Z
+        CPD     <SriMileage,Z
         LBHI    L1B518
         LDAA    <Baro,Z
         CMPA    >IdleRampBaroMin

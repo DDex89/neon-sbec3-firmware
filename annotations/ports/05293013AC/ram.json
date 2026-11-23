@@ -8,7 +8,7 @@
  "000B": "IacPosition",
  "000D": "Baro",
  "000E": "FlexEthanol",
- "0020": "EepromCount",
+ "0020": "SriMileage",
  "013B": "Count3s",
  "013C": "MainLoopCounter",
  "013D": "MainLoopPhaseMask",
