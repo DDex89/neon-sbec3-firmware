@@ -213,6 +213,26 @@
   "7": "PWM C18 driver status (PwmC18CircuitCheck)",
   "6": "leak detection pump solenoid status (LdpSolenoidCheck)"
  },
+ "LdpFlags": {
+  "7": "leak test finished (LDP state machine)",
+  "6": "large leak: pump strokes faster than LdpLargeLeakStrokeTime",
+  "5": "leak test step result: small leak or not settled, probably",
+  "4": "leak test running (LDP state machine)",
+  "3": "pump step ended (LDP state machine, LdpMonitor voltage check)",
+  "2": "pump switch closed in the current step (IoInputs0 bit 1)",
+  "1": "pump switch closed (LdpPurgedCheck)",
+  "0": "pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it"
+ },
+ "MisfireFlags": {
+  "7": "misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)",
+  "6": "misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)",
+  "5": "crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)",
+  "4": "misfire noise peak at or below its limit (MisfireEnableMain)",
+  "3": "misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)",
+  "2": "misfire-driven event correction active (EventCorrections, LimitReasonCode)",
+  "1": "cleared with the misfire records; read by MisfireCount",
+  "0": "misfire start delay elapsed (MisfireEnableMain)"
+ },
  "MisfireOptions": {
   "7": "MisfireFlags2 bit 4 handling in ClosedLoopManager and FuelSystemStatus",
   "6": "selects a branch in MisfireTransient",
@@ -239,6 +259,14 @@
   "2": "as bit 6, cleared by SensorFaultFlags2 bit 2",
   "1": "as bit 5, cleared by SensorFaultFlags2 bit 1",
   "0": "as bit 4, cleared by SensorFaultFlags2 bit 0"
+ },
+ "O2ResetFlags": {
+  "5": "post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)",
+  "4": "post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)",
+  "3": "cold enrichment active when closed loop started (ClosedLoopManager)",
+  "2": "O2 hold count still rising (ClosedLoopTiming)",
+  "1": "restart closed-loop learning, bank 1 (O2LearnEnable)",
+  "0": "restart closed-loop learning, bank 2 (O2LearnEnable)"
  },
  "Options0328": {
   "1": "security variant: selects a branch in SecurityState",
@@ -415,6 +443,16 @@
   "2": "cam/crank sync monitor on (CamCrankSyncMonitor)",
   "1": "fuel sender monitor on (FuelSenderMonitor)",
   "0": "O2 activity checks variant (O2NoActivityCold, O2DownEnable)"
+ },
+ "PurgeFlags": {
+  "7": "purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain",
+  "6": "purge battery-temperature timer running (PurgeEnable)",
+  "5": "per-event correction asked for purge to stop (EventCorrections)",
+  "4": "purge held off: rev limit or bit 5 (PurgeEnable)",
+  "3": "purge trim counted for the current cell (PurgeRampControl)",
+  "2": "battery temperature checked (PurgeEnable)",
+  "1": "battery temperature at or above PurgeBattTempMax (PurgeEnable)",
+  "0": "battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)"
  },
  "SensorFaultFlags": {
   "7": "coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use",

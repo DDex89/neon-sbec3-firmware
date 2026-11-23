@@ -11242,7 +11242,7 @@ L17AE8:
 ;---------------------------------------------------------------------------------------------------
 PurgeFlowTest:
         BRCLR   $0329,#$28,L17EC4
-        BRSET   >PurgeFlags,Z,#$08,L17E7A
+        BRSET   >PurgeFlags,Z,#$08,L17E7A                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BRSET   $0135,Z,#$02,L17B3A
         BRSET   $0136,Z,#$04,L17B3A
         BRSET   $0143,Z,#$04,L17B3A
@@ -11260,7 +11260,7 @@ L17B22:
         BRSET   $00B7,Z,#$08,L17B3A
         BRCLR   $029C,Z,#$80,L17B46
 L17B3A:
-        BSET    >PurgeFlags,Z,#$08
+        BSET    >PurgeFlags,Z,#$08                       ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BCLR    $B0,Z,#$08
         LBRA    L17E7A
 L17B46:
@@ -11335,10 +11335,10 @@ L17C3A:
         BRCLR   >IdleFlags,Z,#$40,L17C54                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
         TST     $019D,Z
         BNE     L17C58
-        BSET    >PurgeFlags,Z,#$80
+        BSET    >PurgeFlags,Z,#$80                       ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
         BRA     L17C58
 L17C54:
-        BCLR    >PurgeFlags,Z,#$80
+        BCLR    >PurgeFlags,Z,#$80                       ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
 L17C58:
         BSET    $B0,Z,#$04
         LDAB    $019D,Z
@@ -11420,10 +11420,10 @@ L17D3E:
 L17D5E:
         BRCLR   >DriveFlags,Z,#$01,L17E56                ; bit 0: the active adaptive cell is the idle cell PurgeCell1 (UpdateDriveFlags)
         BRCLR   >IdleFlags,Z,#$40,L17D74                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BRSET   >PurgeFlags,Z,#$80,L17D7A
+        BRSET   >PurgeFlags,Z,#$80,L17D7A                ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
         LBRA    L17E56
 L17D74:
-        BRSET   >PurgeFlags,Z,#$80,L17E56
+        BRSET   >PurgeFlags,Z,#$80,L17E56                ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
 L17D7A:
         LDAA    $019A,Z
         SUBA    <IacPosition,Z
@@ -11525,7 +11525,7 @@ L17E7A:
         TST     $01A2,Z
         BNE     L17EC4
         BCLR    $B0,Z,#$04
-        BRSET   >PurgeFlags,Z,#$08,L17E9C
+        BRSET   >PurgeFlags,Z,#$08,L17E9C                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BRCLR   $019C,Z,#$10,L17EC4
 L17E9C:
         BCLR    $B0,Z,#$04
@@ -11536,7 +11536,7 @@ L17E9C:
         BRA     L17EC4
 L17EB2:
         BCLR    $B0,Z,#$80
-        BRSET   >PurgeFlags,Z,#$08,L17EC4
+        BRSET   >PurgeFlags,Z,#$08,L17EC4                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BSET    $B0,Z,#$40
         LBRA    L17EC4
 L17EC4:
@@ -13032,10 +13032,10 @@ L18E48:
 L18E50:
         LBSR    MisfireSegmentTime
         LBSR    Sub_194B0
-        BCLR    >MisfireFlags,Z,#$08
+        BCLR    >MisfireFlags,Z,#$08                     ; bit 3: misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)
         LBSR    Sub_190A2
         BEQ     L18EB2
-        BSET    >MisfireFlags,Z,#$08
+        BSET    >MisfireFlags,Z,#$08                     ; bit 3: misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)
         LBSR    Sub_18EB6
         BEQ     L18EB2
         TST     >MisfireTransientHold,Z
@@ -13201,7 +13201,7 @@ L1902A:
         BRCLR   >MisfireFlags4,Z,#$01,L1908E
         BRCLR   >MisfireFlags4,Z,#$02,L1908E
         BCLR    >MisfireFlags4,Z,#$04
-        BSET    >MisfireFlags,Z,#$40
+        BSET    >MisfireFlags,Z,#$40                     ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         BSET    $B2,Z,#$59
         LDAB    #$80
         STAB    $BB,Z
@@ -13210,12 +13210,12 @@ L19048:
         BRCLR   >MisfireFlags4,Z,#$01,L19052
         BCLR    >MisfireFlags4,Z,#$04
 L19052:
-        BRCLR   >MisfireFlags,Z,#$40,L1907E
+        BRCLR   >MisfireFlags,Z,#$40,L1907E              ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         LDAB    $BB,Z
         ANDB    #$7F
         CMPB    #$04
         BCS     L19068
-        BCLR    >MisfireFlags,Z,#$40
+        BCLR    >MisfireFlags,Z,#$40                     ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         CLR     $BB,Z
         BRA     L1908E
 L19068:
@@ -13231,9 +13231,9 @@ L19074:
         BSET    $B2,Z,#$40
         BRA     L1908E
 L1907E:
-        BRSET   >MisfireFlags,Z,#$80,L19092
+        BRSET   >MisfireFlags,Z,#$80,L19092              ; bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
         BRCLR   >MisfireFlags4,Z,#$01,L1908E
-        BSET    >MisfireFlags,Z,#$80
+        BSET    >MisfireFlags,Z,#$80                     ; bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
 L1908E:
         CLRA
         BRA     L19094
@@ -13330,7 +13330,7 @@ L19130:
 ; Called from: MisfireMonitorEvent
 ;---------------------------------------------------------------------------------------------------
 MisfireThreshold:
-        BRSET   >MisfireFlags,Z,#$10,L192BA
+        BRSET   >MisfireFlags,Z,#$10,L192BA              ; bit 4: misfire noise peak at or below its limit (MisfireEnableMain)
         TST     >MisfireHold,Z
         LBNE    L192BA
         LDE     $020E,Z
@@ -13342,7 +13342,7 @@ MisfireThreshold:
         LDX     #MisfireWeightLoadScale
         JSR     Lookup2D
         LDAB    >MisfireRpmCol,Z
-        BRCLR   >MisfireFlags,Z,#$20,L1917C
+        BRCLR   >MisfireFlags,Z,#$20,L1917C              ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         TBA
         LDX     #MisfireLoadScaleDrive
         JSR     Lookup2D
@@ -13545,7 +13545,7 @@ L19354:
         CLRA
 L1939E:
         CMPA    $26D9
-        BRSET   >MisfireFlags,Z,#$20,L193AC
+        BRSET   >MisfireFlags,Z,#$20,L193AC              ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         CMPA    $26E8
 L193AC:
         BLS     L1940E
@@ -13838,7 +13838,7 @@ L196BE:
         STAB    >MisfireTransientHold,Z
         BRA     L196FA
 L196D8:
-        BRSET   >MisfireFlags,Z,#$20,L196EA
+        BRSET   >MisfireFlags,Z,#$20,L196EA              ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         TST     $0228,Z
         BNE     L196FA
         TST     $0235,Z
@@ -13847,10 +13847,10 @@ L196EA:
         LDE     >MisfireChangeFiltered,Z
         CPE     >MisfireNoiseLevel,Z
         BCC     L196FA
-        BSET    >MisfireFlags,Z,#$20
+        BSET    >MisfireFlags,Z,#$20                     ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         BRA     L196FE
 L196FA:
-        BCLR    >MisfireFlags,Z,#$20
+        BCLR    >MisfireFlags,Z,#$20                     ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
 L196FE:
         BRSET   >ThrottleState,Z,#$80,L19710             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRCLR   >MisfireFlags2,Z,#$40,L1972E
@@ -14115,10 +14115,10 @@ L1996A:
         CPD     $0214,Z
         BLS     L199A0
 L1999A:
-        BCLR    >MisfireFlags,Z,#$10
+        BCLR    >MisfireFlags,Z,#$10                     ; bit 4: misfire noise peak at or below its limit (MisfireEnableMain)
         BRA     L199A4
 L199A0:
-        BSET    >MisfireFlags,Z,#$10
+        BSET    >MisfireFlags,Z,#$10                     ; bit 4: misfire noise peak at or below its limit (MisfireEnableMain)
 L199A4:
         RTS
 
@@ -14309,7 +14309,7 @@ L19BB6:
         SUBD    >SegmentRpm,Z
         STD     >RpmRate,Z
         BRSET   >MisfireFlags2,Z,#$04,L19C02
-        BRCLR   >MisfireFlags,Z,#$80,L19BD6
+        BRCLR   >MisfireFlags,Z,#$80,L19BD6              ; bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
         CLRW    $00E5,Z
 L19BD6:
         LDAA    <Temp4F0,Z
@@ -21642,7 +21642,7 @@ L1F342:
 L1F354:
         BSET    $01F7,Z,#$06
         LDY     #$F14A
-        BRSET   >MisfireFlags,Z,#$40,L1F3A2
+        BRSET   >MisfireFlags,Z,#$40,L1F3A2              ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         LDAA    $0239,Z
         BITA    #$80
         BNE     L1F36E

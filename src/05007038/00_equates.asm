@@ -163,6 +163,14 @@ MisfireRecordDD  equ $00E8        ; $F80E8
 MisfireEventCount equ $00E9        ; $F80E9
 MisfireRpmDev    equ $00EB        ; $F80EB
 MisfireFlags     equ $00EF        ; $F80EF
+;                 bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
+;                 bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
+;                 bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
+;                 bit 4: misfire noise peak at or below its limit (MisfireEnableMain)
+;                 bit 3: misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)
+;                 bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
+;                 bit 1: cleared with the misfire records; read by MisfireCount
+;                 bit 0: misfire start delay elapsed (MisfireEnableMain)
 FanSoakFlags     equ $00F0        ; $F80F0
 Scratch1         equ $00F1        ; $F80F1
 Scratch2         equ $00F2        ; $F80F2
@@ -356,6 +364,14 @@ DiagBusFlags     equ $0316        ; $F8316
 LoadValueObd     equ $0323        ; $F8323
 MapRaw           equ $0324        ; $F8324
 LdpFlags         equ $0330        ; $F8330
+;                 bit 7: leak test finished (LDP state machine)
+;                 bit 6: large leak: pump strokes faster than LdpLargeLeakStrokeTime
+;                 bit 5: leak test step result: small leak or not settled, probably
+;                 bit 4: leak test running (LDP state machine)
+;                 bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
+;                 bit 2: pump switch closed in the current step (IoInputs0 bit 1)
+;                 bit 1: pump switch closed (LdpPurgedCheck)
+;                 bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
 LdpState         equ $0331        ; $F8331
 LdpStateTime     equ $0332        ; $F8332
 LdpPumpOnCount   equ $0333        ; $F8333
@@ -411,6 +427,12 @@ O2SwitchFlags    equ $040D        ; $F840D
 O2InactiveFlags  equ $040E        ; $F840E
 O2ResetFlags2    equ $040F        ; $F840F
 O2ResetFlags     equ $0410        ; $F8410
+;                 bit 5: post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)
+;                 bit 4: post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)
+;                 bit 3: cold enrichment active when closed loop started (ClosedLoopManager)
+;                 bit 2: O2 hold count still rising (ClosedLoopTiming)
+;                 bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
+;                 bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 FuelPulseFlags   equ $041B        ; $F841B
 ;                 bit 7: injector timers loaded for the current event (FuelEventCalc), probably
 ;                 bit 6: set in FuelEventCalc for event code $42, cleared for the others
@@ -615,6 +637,14 @@ SciUnlockState   equ $061E        ; $F861E
 SciSecurityState equ $0622        ; $F8622
 LookupResult     equ $0627        ; $F8627
 PurgeFlags       equ $062B        ; $F862B
+;                 bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
+;                 bit 6: purge battery-temperature timer running (PurgeEnable)
+;                 bit 5: per-event correction asked for purge to stop (EventCorrections)
+;                 bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
+;                 bit 3: purge trim counted for the current cell (PurgeRampControl)
+;                 bit 2: battery temperature checked (PurgeEnable)
+;                 bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
+;                 bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
 PurgeCellCount   equ $062C        ; $F862C
 PurgeCellFlags   equ $062D        ; $F862D
 PurgeDelay       equ $062E        ; $F862E

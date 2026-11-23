@@ -6925,7 +6925,7 @@ L35C42:
         CLR     >PurgeCellCount,Z
         CLR     >PurgeCellFlags,Z
         BCLR    <FlexStartFlags,Z,#$38
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    <PurgeCellRichFlags,Z,#$40
         BRA     L35C82
 L35C6A:
@@ -14481,9 +14481,9 @@ L3D80A:
         JSR     PurgeDutyOverride
         TSTA
         BNE     L3D858
-        BCLR    >PurgeFlags,Z,#$80
+        BCLR    >PurgeFlags,Z,#$80                       ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
         JSR     PurgeVaporLearn
-        BRSET   >PurgeFlags,Z,#$80,L3D83C
+        BRSET   >PurgeFlags,Z,#$80,L3D83C                ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
         JSR     PurgeRampControl
 L3D83C:
         BRSET   >Options033B,#$20,L3D848                 ; bit 5: selects a branch in PurgeMain
@@ -14549,14 +14549,14 @@ L3D8C8:
         LDAB    >ShortTermTrim1,Z
         STAB    $02,Y
 L3D8DA:
-        BRSET   >PurgeFlags,Z,#$08,L3D8EE
+        BRSET   >PurgeFlags,Z,#$08,L3D8EE                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BRCLR   $03,Y,#$08,L3D900
-        BSET    >PurgeFlags,Z,#$08
+        BSET    >PurgeFlags,Z,#$08                       ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         INC     >PurgeTrimCount,Z
         BRA     L3D900
 L3D8EE:
         BRSET   $03,Y,#$08,L3D900
-        BCLR    >PurgeFlags,Z,#$08
+        BCLR    >PurgeFlags,Z,#$08                       ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BRA     L3D900
 L3D8F8:
         CLRB
@@ -14886,7 +14886,7 @@ L3DC5E:
 ; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeEnable:
-        BRCLR   >PurgeFlags,Z,#$04,L3DC70
+        BRCLR   >PurgeFlags,Z,#$04,L3DC70                ; bit 2: battery temperature checked (PurgeEnable)
         BRSET   >EngineStateFlags,Z,#$80,L3DCBE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
 L3DC70:
         LDAA    >BatteryTemp,Z
@@ -14894,23 +14894,23 @@ L3DC70:
         BCS     L3DC98
         CMPA    >PurgeBattTempMax
         BCC     L3DCAC
-        BCLR    >PurgeFlags,Z,#$02
-        BSET    >PurgeFlags,Z,#$01
+        BCLR    >PurgeFlags,Z,#$02                       ; bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
+        BSET    >PurgeFlags,Z,#$01                       ; bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
         LDD     >PurgeBattTimerInit
         STD     >PurgeBattTimer,Z
-        BSET    >PurgeFlags,Z,#$04
+        BSET    >PurgeFlags,Z,#$04                       ; bit 2: battery temperature checked (PurgeEnable)
         LBRA    L3DD3A
 L3DC98:
-        BCLR    >PurgeFlags,Z,#$02
-        BCLR    >PurgeFlags,Z,#$01
+        BCLR    >PurgeFlags,Z,#$02                       ; bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
+        BCLR    >PurgeFlags,Z,#$01                       ; bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
         CLRW    >PurgeBattTimer,Z
-        BSET    >PurgeFlags,Z,#$04
+        BSET    >PurgeFlags,Z,#$04                       ; bit 2: battery temperature checked (PurgeEnable)
         LBRA    L3DD3A
 L3DCAC:
-        BSET    >PurgeFlags,Z,#$02
-        BCLR    >PurgeFlags,Z,#$01
+        BSET    >PurgeFlags,Z,#$02                       ; bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
+        BCLR    >PurgeFlags,Z,#$01                       ; bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
         CLRW    >PurgeBattTimer,Z
-        BSET    >PurgeFlags,Z,#$04
+        BSET    >PurgeFlags,Z,#$04                       ; bit 2: battery temperature checked (PurgeEnable)
         BRA     L3DD3A
 L3DCBE:
         BRSET   >ThrottleState,Z,#$80,L3DD04             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -14934,10 +14934,10 @@ L3DCBE:
 L3DCFA:
         STD     >PurgeBattTimer,Z
 L3DCFE:
-        BSET    >PurgeFlags,Z,#$40
+        BSET    >PurgeFlags,Z,#$40                       ; bit 6: purge battery-temperature timer running (PurgeEnable)
         BRA     L3DD08
 L3DD04:
-        BCLR    >PurgeFlags,Z,#$40
+        BCLR    >PurgeFlags,Z,#$40                       ; bit 6: purge battery-temperature timer running (PurgeEnable)
 L3DD08:
         LDAA    >Map,Z
         CMPA    >PurgeMapMax
@@ -14946,12 +14946,12 @@ L3DD08:
         BRCLR   >FuelModeFlags2,Z,#$40,L3DD36            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRSET   >RevLimitFlags,Z,#$40,L3DD30
         BRSET   >RevLimitFlags,Z,#$80,L3DD30
-        BRCLR   >PurgeFlags,Z,#$20,L3DD36
+        BRCLR   >PurgeFlags,Z,#$20,L3DD36                ; bit 5: per-event correction asked for purge to stop (EventCorrections)
 L3DD30:
-        BSET    >PurgeFlags,Z,#$10
+        BSET    >PurgeFlags,Z,#$10                       ; bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
         BRA     L3DD3A
 L3DD36:
-        BCLR    >PurgeFlags,Z,#$10
+        BCLR    >PurgeFlags,Z,#$10                       ; bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
 L3DD3A:
         RTS
 
@@ -15472,7 +15472,7 @@ L3E21C:
         LDAB    #$00
 L3E22A:
         STAB    >PurgeFlowTarget,Z
-        BRCLR   >PurgeFlags,Z,#$80,L3E258
+        BRCLR   >PurgeFlags,Z,#$80,L3E258                ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
         CLRW    $045C,Z
         CLRW    >PurgeFlowError,Z
         CLRW    >PurgeFlowErrorSum,Z
@@ -15768,7 +15768,7 @@ PurgeVaporLearn:
         BRSET   >LdpPurgeTestFlags,Z,#$01,L3EA96
         BRSET   >FaultSet03,Z,#$04,L3EA96                ; bit 2: P0443
         BRSET   >MisfireFlags4,Z,#$10,L3EA96
-        BRSET   >PurgeFlags,Z,#$10,L3EA96
+        BRSET   >PurgeFlags,Z,#$10,L3EA96                ; bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
         BRSET   >FlexLearnFlags7,Z,#$10,L3EA96
         BRCLR   <PurgeCellRichFlags,Z,#$80,L3E53E
         LDAA    >CoolantTemp,Z
@@ -15787,7 +15787,7 @@ L3E55A:
         BRCLR   >Options032C,#$40,L3E566                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >FlexStartFlags,Z,#$08,L3EABC
 L3E566:
-        BRSET   >PurgeFlags,Z,#$40,L3E9AA
+        BRSET   >PurgeFlags,Z,#$40,L3E9AA                ; bit 6: purge battery-temperature timer running (PurgeEnable)
         BRA     L3E59C
 L3E56E:
         BRCLR   >Options0338,#$80,L3EA96                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
@@ -16234,7 +16234,7 @@ L3EA88:
         BSET    >O2ResetFlags2,Z,#$04
 L3EA96:
         CLR     >PurgeCommand,Z
-        BSET    >PurgeFlags,Z,#$80
+        BSET    >PurgeFlags,Z,#$80                       ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
         CLR     >PurgeLoadUpCounter,Z
         CLR     >PurgeLoadDownCounter,Z
         BRA     L3EAEA
@@ -16257,7 +16257,7 @@ L3EACC:
         BRSET   >ThrottleState,Z,#$40,L3EA96             ; bit 6: wide-open throttle (DetectWot)
         BRSET   >PurgeFlowTestFlags,Z,#$10,L3EAEA
         BRSET   >PurgeFlowTestFlags,Z,#$20,L3EAEA
-        BRSET   >PurgeFlags,Z,#$40,L3EA96
+        BRSET   >PurgeFlags,Z,#$40,L3EA96                ; bit 6: purge battery-temperature timer running (PurgeEnable)
 L3EAEA:
         RTS
 
@@ -16322,7 +16322,7 @@ PurgeFlowAdaptation:
 L3EB66:
         TST     >PurgeCellCount,Z
         BNE     L3EBAE
-        BRSET   >PurgeFlags,Z,#$80,L3EBAE
+        BRSET   >PurgeFlags,Z,#$80,L3EBAE                ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
         BRSET   <MonStatusPurge,Z,#$04,L3EBAE
         BRSET   >ThrottleState,Z,#$80,L3EBCA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >PurgeCtlFlags,Z,#$10,L3EB96
@@ -16362,7 +16362,7 @@ L3EBCA:
 L3EBF0:
         TST     >PurgeAdaptHoldTimer,Z
         LBNE    L3EC80
-        BRCLR   >PurgeFlags,Z,#$08,L3EC04
+        BRCLR   >PurgeFlags,Z,#$08,L3EC04                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BRSET   >PurgeCtlFlags,Z,#$20,L3EC80
 L3EC04:
         LDAA    >PurgeAdaptCounter,Z
@@ -16387,7 +16387,7 @@ L3EC34:
 L3EC3A:
         TST     >PurgeAdaptHoldTimer,Z
         BNE     L3EC80
-        BRSET   >PurgeFlags,Z,#$08,L3EC4C
+        BRSET   >PurgeFlags,Z,#$08,L3EC4C                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BRSET   >PurgeCtlFlags,Z,#$20,L3EC80
 L3EC4C:
         LDAA    >PurgeAdaptCounter,Z
@@ -16409,7 +16409,7 @@ L3EC72:
 L3EC7C:
         STAA    >PurgeFlowAdapt,Z
 L3EC80:
-        BRSET   >PurgeFlags,Z,#$08,L3EC8E
+        BRSET   >PurgeFlags,Z,#$08,L3EC8E                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BRSET   >PurgeCtlFlags,Z,#$40,L3ECAC
         BRA     L3EC94
 L3EC8E:
@@ -16427,7 +16427,7 @@ L3ECA6:
 L3ECAC:
         CLR     >PurgeAdaptStateCount,Z
         BCLR    >PurgeCtlFlags,Z,#$20
-        BRSET   >PurgeFlags,Z,#$08,L3ECC0
+        BRSET   >PurgeFlags,Z,#$08,L3ECC0                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         BCLR    >PurgeCtlFlags,Z,#$40
         BRA     L3ECC4
 L3ECC0:
@@ -16455,7 +16455,7 @@ L3ECEA:
         LDAA    >PurgeRamp,Z
         CMPA    >PurgeLoadRampMax
         BCC     L3ED5C
-        BRSET   >PurgeFlags,Z,#$08,L3ED64
+        BRSET   >PurgeFlags,Z,#$08,L3ED64                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         CLR     >PurgeLoadDownCounter,Z
         LDAA    >PurgeLoadUpCounter,Z
         BNE     L3ED0A
@@ -16473,7 +16473,7 @@ L3ED1E:
         LDAA    >PurgeMonitorValue,Z
         CMPA    >PurgeMonitorValueMin
         BLS     L3ED5C
-        BRCLR   >PurgeFlags,Z,#$08,L3ED64
+        BRCLR   >PurgeFlags,Z,#$08,L3ED64                ; bit 3: purge trim counted for the current cell (PurgeRampControl)
         CLR     >PurgeLoadUpCounter,Z
         LDAA    >PurgeLoadDownCounter,Z
         BNE     L3ED3E

@@ -2860,13 +2860,13 @@ L11D82:
         CLRB
         TBXK
         TZY
-        BRSET   >MisfireFlags,Z,#$04,L11D9A
+        BRSET   >MisfireFlags,Z,#$04,L11D9A              ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         BRCLR   >MisfireFlags4,Z,#$08,L11DC0
         BRCLR   >FuelModeFlags2,Z,#$80,L11DC0            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L11D9A:
         BRSET   >MisfireFlags2,Z,#$01,L11DC0
         BRCLR   <MonStatusMisfire,Z,#$80,L11DC0
-        BSET    <MisfireFlags,Z,#$04
+        BSET    <MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         LDX     #$2F87
         LDY     #$87A7
         LDAB    #$03
@@ -2913,10 +2913,10 @@ L11E20:
         BHI     L11E3E
         LDD     >Temp4F2,Z
 L11E3E:
-        BSET    >PurgeFlags,Z,#$20
+        BSET    >PurgeFlags,Z,#$20                       ; bit 5: per-event correction asked for purge to stop (EventCorrections)
         TSTA
         BEQ     L11E4A
-        BCLR    >PurgeFlags,Z,#$20
+        BCLR    >PurgeFlags,Z,#$20                       ; bit 5: per-event correction asked for purge to stop (EventCorrections)
 L11E4A:
         STD     >IdleMapIacFlag,Z
         STAA    $07A3,Z
@@ -2942,7 +2942,7 @@ L11E86:
         BRA     L11EC4
 L11E8E:
         BCLR    >MisfireFlags4,Z,#$10
-        BCLR    <MisfireFlags,Z,#$04
+        BCLR    <MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         CLR     $07A3,Z
         CLR     $07A4,Z
         LDAA    >IoStatus3,Z
@@ -2969,11 +2969,11 @@ L11ED2:
         STAA    $07A7,Z
         STAA    $07A8,Z
         BCLR    >MisfireFlags4,Z,#$10
-        BCLR    <MisfireFlags,Z,#$04
+        BCLR    <MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         CLR     $07A3,Z
         CLR     $07A4,Z
 L11EF4:
-        BCLR    >PurgeFlags,Z,#$20
+        BCLR    >PurgeFlags,Z,#$20                       ; bit 5: per-event correction asked for purge to stop (EventCorrections)
         ANDP    #$FEFF
 L11EFC:
         RTS
@@ -4370,7 +4370,7 @@ LimitReasonCode:
         BRSET   >IdleFlareFlags,Z,#$40,L12D70
         BRSET   >SecurityFlags,Z,#$20,L12D74
         BRSET   >FuelModeFlags2,Z,#$10,L12D78            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
-        BRSET   >MisfireFlags,Z,#$04,L12D7C
+        BRSET   >MisfireFlags,Z,#$04,L12D7C              ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         BRSET   >EventFlags,Z,#$10,L12D80
         BRSET   >EventFlags,Z,#$08,L12D84
         BRA     L12D9A
@@ -4763,7 +4763,7 @@ ClosedLoopMain:
         CLRW    $0734,Z
         CLR     $0736,Z
         CLR     $0739,Z
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    <PurgeCellRichFlags,Z,#$40
         CLR     >O2CellWork,Z
         CLR     >O2AdaptValue1,Z
@@ -5328,7 +5328,7 @@ L1473A:
 ; Called from: ClosedLoopMain
 ;---------------------------------------------------------------------------------------------------
 O2StartDelays:
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         LDAB    >O2DelayWarm
         LDAA    >CoolantTemp,Z
         CMPA    >O2DelayCoolantMax
@@ -5553,7 +5553,7 @@ L149BE:
         AIX     #$01
         CPX     #$806A
         BCS     L149BE
-        BSET    >O2ResetFlags,Z,#$02
+        BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
         PULM    K,X
         BRA     L149D4
 L149D0:
@@ -5574,7 +5574,7 @@ L149FA:
         AIX     #$01
         CPX     #$807D
         BCS     L149FA
-        BSET    >O2ResetFlags,Z,#$01
+        BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         PULM    K,X
         BRA     L14A10
 L14A0C:
@@ -5602,7 +5602,7 @@ L14A4C:
         BRCLR   >Options032F,#$80,L14A58                 ; bit 7: upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)
         BRSET   >O2ActiveFlags,Z,#$08,L14A78             ; bit 3: as bit 7, but cleared when O2CheckEnable disables the sensor (SensorFaultFlags2 bit 3)
 L14A58:
-        BSET    >O2ResetFlags,Z,#$02
+        BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
         BSET    <Scratch0,Z,#$70
         LDAA    $00,Y
         STAA    $00,X
@@ -5620,7 +5620,7 @@ L14A78:
         BRCLR   >Options032F,#$40,L14A84                 ; bit 6: upstream O2 sensor 2 fitted (second bank)
         BRSET   >O2ActiveFlags,Z,#$04,L14AA4             ; bit 2: as bit 6, cleared by SensorFaultFlags2 bit 2
 L14A84:
-        BSET    >O2ResetFlags,Z,#$01
+        BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    <Scratch1,Z,#$70
         LDAA    $00,X
         STAA    $00,Y
@@ -5657,10 +5657,10 @@ L14AD8:
         BNE     L14AE8
         BSET    <Scratch0,Z,#$80
         BSET    <Scratch1,Z,#$80
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 L14AE8:
         BRCLR   >ThrottleState,Z,#$02,L14B3E             ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    >O2InactiveFlags,Z,#$C0
         BSET    <Scratch0,Z,#$70
         BSET    <Scratch1,Z,#$70
@@ -5715,7 +5715,7 @@ L14B6E:
         BSET    <Scratch1,Z,#$50
 L14B86:
         BRCLR   >O2SwitchFlags,Z,#$20,L14BA6
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    <Scratch0,Z,#$20
         BSET    <Scratch1,Z,#$20
         BRCLR   >O2SwitchFlags,Z,#$40,L14BA6
@@ -5733,14 +5733,14 @@ L14BB8:
         BCC     L14BE0
         TST     >ColdEnrich,Z
         BEQ     L14BE0
-        BSET    >O2ResetFlags,Z,#$08
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$08                     ; bit 3: cold enrichment active when closed loop started (ClosedLoopManager)
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    <Scratch0,Z,#$70
         BSET    <Scratch1,Z,#$70
         BRA     L14C0A
 L14BE0:
-        BRCLR   >O2ResetFlags,Z,#$08,L14C0A
-        BCLR    >O2ResetFlags,Z,#$08
+        BRCLR   >O2ResetFlags,Z,#$08,L14C0A              ; bit 3: cold enrichment active when closed loop started (ClosedLoopManager)
+        BCLR    >O2ResetFlags,Z,#$08                     ; bit 3: cold enrichment active when closed loop started (ClosedLoopManager)
         CLR     $0702,Z
         CLR     $0703,Z
         CLR     $0718,Z
@@ -5751,7 +5751,7 @@ L14BE0:
         CLR     $0741,Z
 L14C0A:
         BRCLR   >FuelModeFlags,Z,#$20,L14C20             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    >O2InactiveFlags,Z,#$C0
         BSET    <Scratch0,Z,#$F0
         BSET    <Scratch1,Z,#$F0
@@ -5760,12 +5760,12 @@ L14C20:
         BEQ     L14C32
         BSET    <Scratch0,Z,#$20
         BSET    <Scratch1,Z,#$20
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 L14C32:
         BRCLR   >IdleFlareFlags,Z,#$40,L14C44
         BSET    <Scratch0,Z,#$A0
         BSET    <Scratch1,Z,#$A0
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 L14C44:
         BRSET   >IdleFlags,Z,#$80,L14C54                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         LDAA    >PurgeRamp,Z
@@ -5794,11 +5794,11 @@ L14C7C:
         BSET    >O2InactiveFlags,Z,#$C0
 L14C92:
         BRCLR   $001E,X,#$01,L14CA0
-        BSET    >O2ResetFlags,Z,#$02
+        BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
         BSET    >O2InactiveFlags,Z,#$80
 L14CA0:
         BRCLR   $001E,Y,#$01,L14CAE
-        BSET    >O2ResetFlags,Z,#$01
+        BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    >O2InactiveFlags,Z,#$40
 L14CAE:
         LDAB    >O2CrossFlags,Z
@@ -5814,14 +5814,14 @@ L14CC2:
         BSET    <Scratch0,Z,#$F0
         BSET    <Scratch1,Z,#$F0
         BSET    >O2InactiveFlags,Z,#$C0
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 L14CD8:
         BRCLR   >RevLimitFlags,Z,#$C0,L14CE2
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 L14CE2:
         TST     >DecelFuelFactor,Z
         BEQ     L14D3C
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    >O2InactiveFlags,Z,#$C0
         BSET    <Scratch0,Z,#$70
         BSET    <Scratch1,Z,#$70
@@ -5951,12 +5951,12 @@ L14E2A:
         BITA    #$20
         BEQ     L14E3A
         BSET    <Scratch0,Z,#$A0
-        BSET    >O2ResetFlags,Z,#$02
+        BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
 L14E3A:
         BITA    #$10
         BEQ     L14E46
         BSET    <Scratch1,Z,#$A0
-        BSET    >O2ResetFlags,Z,#$01
+        BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 L14E46:
         LDD     <Scratch0,Z
         STAA    >O2Bank1Flags,Z
@@ -5975,7 +5975,7 @@ L14E46:
         CLR     $0725,Z
         CLR     $0724,Z
         CLR     $0726,Z
-        BSET    >O2ResetFlags,Z,#$02
+        BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
         BSET    <PurgeCellRichFlags,Z,#$40
 L14E88:
         BRCLR   >O2Bank2Flags,Z,#$80,L14EBC
@@ -5991,7 +5991,7 @@ L14E88:
         CLR     $074D,Z
         CLR     $074C,Z
         CLR     $074E,Z
-        BSET    >O2ResetFlags,Z,#$01
+        BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    <PurgeCellRichFlags,Z,#$40
 L14EBC:
         BRCLR   >O2Bank1Flags,Z,#$40,L14F22
@@ -6400,11 +6400,11 @@ L15334:
         CMPB    >O2HoldCount,Z
         BLS     L15356
         INC     >O2HoldCount,Z
-        BSET    >O2ResetFlags,Z,#$04
+        BSET    >O2ResetFlags,Z,#$04                     ; bit 2: O2 hold count still rising (ClosedLoopTiming)
         BRA     L1535E
 L15356:
         STAB    >O2HoldCount,Z
-        BCLR    >O2ResetFlags,Z,#$04
+        BCLR    >O2ResetFlags,Z,#$04                     ; bit 2: O2 hold count still rising (ClosedLoopTiming)
 L1535E:
         ANDP    #$FF1F
         RTS
@@ -6745,7 +6745,7 @@ L1563E:
         LDAA    >O2ColdTrimMinDrive
         BRA     L15660
 L15656:
-        BRCLR   >O2ResetFlags,Z,#$04,L15672
+        BRCLR   >O2ResetFlags,Z,#$04,L15672              ; bit 2: O2 hold count still rising (ClosedLoopTiming)
         LDAA    >O2HoldTrimMin
 L15660:
         CLRB
@@ -6898,7 +6898,7 @@ L157B2:
         LDAB    $06,X
         STAB    $07,X
 L157C0:
-        BRSET   >O2ResetFlags,Z,#$04,L157CC
+        BRSET   >O2ResetFlags,Z,#$04,L157CC              ; bit 2: O2 hold count still rising (ClosedLoopTiming)
         BRCLR   $001E,X,#$01,L157D0
 L157CC:
         CLR     $03,X
@@ -6967,7 +6967,7 @@ L15862:
         BSET    $1E,X,#$01
         BRA     L1589C
 L1586E:
-        BRCLR   >O2ResetFlags,Z,#$04,L15880
+        BRCLR   >O2ResetFlags,Z,#$04,L15880              ; bit 2: O2 hold count still rising (ClosedLoopTiming)
         LDAA    >O2HoldTrimMin
         CBA
         BLT     L1589C
@@ -7015,7 +7015,7 @@ O2PostFuelCheck:
         LDD     >TipInFuel,Z
         CPD     >O2AccelFuelMax
         BCC     L15920
-        BRCLR   >O2ResetFlags,Z,#$30,L15934
+        BRCLR   >O2ResetFlags,Z,#$30,L15934              ; bit 5: post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck); bit 4: post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)
         TSTW    >AccelFuel,Z
         BNE     L15920
         TSTW    >TipInFuel,Z
@@ -7026,26 +7026,26 @@ O2PostFuelCheck:
         DEC     >O2PostFuel,Z
 L15904:
         BRCLR   $071E,Z,#$80,L1590E
-        BCLR    >O2ResetFlags,Z,#$20
+        BCLR    >O2ResetFlags,Z,#$20                     ; bit 5: post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)
 L1590E:
         BRCLR   $0746,Z,#$80,L15934
-        BCLR    >O2ResetFlags,Z,#$10
+        BCLR    >O2ResetFlags,Z,#$10                     ; bit 4: post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)
         BRA     L15934
 L1591A:
-        BCLR    >O2ResetFlags,Z,#$30
+        BCLR    >O2ResetFlags,Z,#$30                     ; bit 5: post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck); bit 4: post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)
         BRA     L15934
 L15920:
-        BSET    >O2ResetFlags,Z,#$30
+        BSET    >O2ResetFlags,Z,#$30                     ; bit 5: post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck); bit 4: post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)
         BCLR    $071E,Z,#$80
         BCLR    $0746,Z,#$80
         LDAA    >O2PostFuelHold
         STAA    >O2PostFuel,Z
 L15934:
-        BRCLR   >O2ResetFlags,Z,#$20,L1593E
-        BSET    >O2ResetFlags,Z,#$02
+        BRCLR   >O2ResetFlags,Z,#$20,L1593E              ; bit 5: post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)
+        BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
 L1593E:
-        BRCLR   >O2ResetFlags,Z,#$10,L15948
-        BSET    >O2ResetFlags,Z,#$01
+        BRCLR   >O2ResetFlags,Z,#$10,L15948              ; bit 4: post-fuel-cut O2 check pending, sensor 2 (O2PostFuelCheck)
+        BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 L15948:
         RTS
 
@@ -7237,10 +7237,10 @@ L15B28:
         STAB    <Scratch4,Z
         CPY     #$878A
         BEQ     L15B38
-        BRSET   >O2ResetFlags,Z,#$01,L15C48
+        BRSET   >O2ResetFlags,Z,#$01,L15C48              ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BRA     L15B3E
 L15B38:
-        BRSET   >O2ResetFlags,Z,#$02,L15C48
+        BRSET   >O2ResetFlags,Z,#$02,L15C48              ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
 L15B3E:
         LDAB    >Map,Z
         CMPB    >O2LearnMapMax
@@ -7425,7 +7425,7 @@ L15D46:
         CPX     #$807D
         BNE     L15D46
 L15D50:
-        BCLR    >O2ResetFlags,Z,#$03
+        BCLR    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -7764,7 +7764,7 @@ L1603E:
         AIX     #$01
         CPX     #$806A
         BCS     L16038
-        BSET    >O2ResetFlags,Z,#$02
+        BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
         PULM    K,X
         RTS
 
@@ -7775,7 +7775,7 @@ L1603E:
 O2MemClearLeanBank2:
         PSHM    X,K
         BSET    >O2Bank2Flags,Z,#$C0
-        BSET    >O2ResetFlags,Z,#$01
+        BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         TZX
         LDX     #$806D
 L1605E:
@@ -7834,7 +7834,7 @@ L160B0:
         AIX     #$01
         CPX     #$806A
         BCS     L160AA
-        BSET    >O2ResetFlags,Z,#$02
+        BSET    >O2ResetFlags,Z,#$02                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable)
         PULM    K,X
         RTS
 
@@ -7844,7 +7844,7 @@ L160B0:
 ;---------------------------------------------------------------------------------------------------
 O2MemClearRichBank2:
         PSHM    X,K
-        BSET    >O2ResetFlags,Z,#$01
+        BSET    >O2ResetFlags,Z,#$01                     ; bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         TZX
         LDX     #$806D
 L160CC:

@@ -9766,13 +9766,13 @@ L07C0E:
 L07C2A:
         CLRB
         TBXK
-        BRSET   >MisfireFlags,Z,#$04,L07C40
+        BRSET   >MisfireFlags,Z,#$04,L07C40              ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         BRCLR   >MisfireFlags4,Z,#$04,L07C50
         BRCLR   >FuelModeFlags2,Z,#$80,L07C50            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L07C40:
         BRSET   >MisfireFlags2,Z,#$01,L07C50
         LDX     #$266D
-        BSET    >MisfireFlags,Z,#$04
+        BSET    >MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         BRA     L07C80
 L07C50:
         BRCLR   >EventFlags,Z,#$40,L07C60
@@ -9799,10 +9799,10 @@ L07C80:
         BHI     L07C9E
         LDD     >Temp4F2,Z
 L07C9E:
-        BSET    >PurgeFlags,Z,#$20
+        BSET    >PurgeFlags,Z,#$20                       ; bit 5: per-event correction asked for purge to stop (EventCorrections)
         TSTA
         BEQ     L07CAA
-        BCLR    >PurgeFlags,Z,#$20
+        BCLR    >PurgeFlags,Z,#$20                       ; bit 5: per-event correction asked for purge to stop (EventCorrections)
 L07CAA:
         STD     >IdleMapIacFlag,Z
         STAA    $05CF,Z
@@ -9828,7 +9828,7 @@ L07CE8:
         BRA     L07D26
 L07CF0:
         BCLR    >MisfireFlags4,Z,#$08
-        BCLR    >MisfireFlags,Z,#$04
+        BCLR    >MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         CLR     $05CF,Z
         CLR     $05D0,Z
         LDAA    >IoStatus3,Z
@@ -9850,11 +9850,11 @@ L07D26:
         BRA     L07D4C
 L07D34:
         BCLR    >MisfireFlags4,Z,#$08
-        BCLR    >MisfireFlags,Z,#$04
+        BCLR    >MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         CLR     $05CF,Z
         CLR     $05D0,Z
 L07D44:
-        BCLR    >PurgeFlags,Z,#$20
+        BCLR    >PurgeFlags,Z,#$20                       ; bit 5: per-event correction asked for purge to stop (EventCorrections)
         ANDP    #$FEFF
 L07D4C:
         RTS
@@ -16976,7 +16976,7 @@ L0CA8E:
         LDED    $2649
         STE     $001A,Z
         STD     $1C,Z
-        BCLR    <MisfireFlags,Z,#$80
+        BCLR    <MisfireFlags,Z,#$80                     ; bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
         JSR     Sub_1FBE6
         TZX
         LDX     #$8032
@@ -21097,36 +21097,36 @@ Sub_0F872:
         BCS     L0F89C
         CMPA    $1386
         BCC     L0F8AC
-        BCLR    >PurgeFlags,Z,#$02
-        BSET    >PurgeFlags,Z,#$01
+        BCLR    >PurgeFlags,Z,#$02                       ; bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
+        BSET    >PurgeFlags,Z,#$01                       ; bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
         LDD     $1387
         STD     $03B2,Z
         LBRA    L0F948
 L0F89C:
-        BCLR    >PurgeFlags,Z,#$02
-        BCLR    >PurgeFlags,Z,#$01
+        BCLR    >PurgeFlags,Z,#$02                       ; bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
+        BCLR    >PurgeFlags,Z,#$01                       ; bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
         CLRW    $03B2,Z
         LBRA    L0F948
 L0F8AC:
-        BSET    >PurgeFlags,Z,#$02
-        BCLR    >PurgeFlags,Z,#$01
+        BSET    >PurgeFlags,Z,#$02                       ; bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
+        BCLR    >PurgeFlags,Z,#$01                       ; bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
         CLRW    $03B2,Z
         LBRA    L0F948
 L0F8BC:
         BRSET   >ThrottleState,Z,#$80,L0F91E             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
         LDAB    >IdleRollSpeed
-        BRCLR   >PurgeFlags,Z,#$04,L0F8D6
+        BRCLR   >PurgeFlags,Z,#$04,L0F8D6                ; bit 2: battery temperature checked (PurgeEnable)
         ADDB    #$03
         BCC     L0F8D6
         LDAB    #$FF
 L0F8D6:
         CBA
         BCS     L0F8E0
-        BCLR    >PurgeFlags,Z,#$04
+        BCLR    >PurgeFlags,Z,#$04                       ; bit 2: battery temperature checked (PurgeEnable)
         BRA     L0F91E
 L0F8E0:
-        BSET    >PurgeFlags,Z,#$04
+        BSET    >PurgeFlags,Z,#$04                       ; bit 2: battery temperature checked (PurgeEnable)
         LDAA    >PurgeFlags,Z
         ANDA    #$03
         BEQ     L0F918
@@ -21145,22 +21145,22 @@ L0F8E0:
 L0F914:
         STD     $03B2,Z
 L0F918:
-        BSET    >PurgeFlags,Z,#$40
+        BSET    >PurgeFlags,Z,#$40                       ; bit 6: purge battery-temperature timer running (PurgeEnable)
         BRA     L0F922
 L0F91E:
-        BCLR    >PurgeFlags,Z,#$40
+        BCLR    >PurgeFlags,Z,#$40                       ; bit 6: purge battery-temperature timer running (PurgeEnable)
 L0F922:
         LDAA    >MapRaw,Z
         CMPA    $1384
         BCC     L0F944
-        BRCLR   >PurgeFlags,Z,#$20,L0F944
+        BRCLR   >PurgeFlags,Z,#$20,L0F944                ; bit 5: per-event correction asked for purge to stop (EventCorrections)
         BRSET   >FuelModeFlags2,Z,#$40,L0F93E            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRCLR   >EventFlags,Z,#$40,L0F944
 L0F93E:
-        BSET    >PurgeFlags,Z,#$10
+        BSET    >PurgeFlags,Z,#$10                       ; bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
         BRA     L0F948
 L0F944:
-        BCLR    >PurgeFlags,Z,#$10
+        BCLR    >PurgeFlags,Z,#$10                       ; bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
 L0F948:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF

@@ -9373,7 +9373,7 @@ PurgeFlowTest:
         BRSET   >DiagStatusFlags,Z,#$01,L167A4           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BRCLR   >Options033E,#$02,L1633E                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRSET   >MonStatusLdp,Z,#$80,L167C2
-        BRSET   >LdpFlags,Z,#$80,L1633E
+        BRSET   >LdpFlags,Z,#$80,L1633E                  ; bit 7: leak test finished (LDP state machine)
         BSET    >PurgeFlowTestFlags,Z,#$80
         BCLR    <MonStatusPurge,Z,#$80
         JMP     L167A4
@@ -9430,7 +9430,7 @@ L163C8:
         BRSET   >MonitorDisableFlags,Z,#$04,L16784       ; bit 2: battery voltage at or below MonEnableVoltsMin
         BRSET   >MonitorDisableFlags,Z,#$02,L16784       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
         BRSET   >MonitorDisableFlags,Z,#$01,L16784       ; bit 0: battery (ambient) temperature below MonEnableBattTempMin
-        BRSET   >PurgeFlags,Z,#$40,L1640C
+        BRSET   >PurgeFlags,Z,#$40,L1640C                ; bit 6: purge battery-temperature timer running (PurgeEnable)
         TST     >PurgeDuty,Z
         LBEQ    L16784
 L1640C:
@@ -9751,7 +9751,7 @@ LdpMonitor:
         CMPA    >LdpVoltsMax
         BLS     L1681C
 L16812:
-        BSET    >LdpFlags,Z,#$08
+        BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
         LDAA    #$09
         STAA    >LdpState,Z
 L1681C:
@@ -9808,9 +9808,9 @@ L16892:
         BRSET   >IoInputs0,Z,#$02,L168B0                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
         BRSET   <LdpFlags2,Z,#$80,L168A4
         BRCLR   <LdpFlags2,Z,#$08,L168A4
-        BSET    >LdpFlags,Z,#$04
+        BSET    >LdpFlags,Z,#$04                         ; bit 2: pump switch closed in the current step (IoInputs0 bit 1)
 L168A4:
-        BSET    >LdpFlags,Z,#$08
+        BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
         LDAA    #$09
         STAA    >LdpState,Z
         BRA     L168C6
@@ -9820,7 +9820,7 @@ L168B0:
         CLR     >LdpStateTime,Z
         CLR     >LdpPumpOnCount,Z
         CLR     >LdpPumpOffCount,Z
-        BSET    >LdpFlags,Z,#$01
+        BSET    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
 L168C6:
         LBRA    L16D5A
 L168CA:
@@ -9828,7 +9828,7 @@ L168CA:
         TST     >PurgeDelay,Z
         BNE     L168E4
 L168D6:
-        BSET    >LdpFlags,Z,#$08
+        BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
         LDAA    #$19
         STAA    >LdpState,Z
         LBRA    L16972
@@ -9854,10 +9854,10 @@ L16910:
         BEQ     L16922
         STAA    >LdpPumpOnCount,Z
 L16922:
-        BSET    >LdpFlags,Z,#$01
+        BSET    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         BRA     L16972
 L16928:
-        BCLR    >LdpFlags,Z,#$01
+        BCLR    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         LDAA    >LdpPumpOffCount,Z
         CMPA    >LdpPumpOffTime
         BCC     L16940
@@ -9868,10 +9868,10 @@ L1693E:
         BRA     L16972
 L16940:
         BRCLR   >IoInputs0,Z,#$02,L1694C                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
-        BSET    >LdpFlags,Z,#$04
+        BSET    >LdpFlags,Z,#$04                         ; bit 2: pump switch closed in the current step (IoInputs0 bit 1)
         BRA     L168D6
 L1694C:
-        BCLR    >LdpFlags,Z,#$04
+        BCLR    >LdpFlags,Z,#$04                         ; bit 2: pump switch closed in the current step (IoInputs0 bit 1)
         BRCLR   <LdpFlags2,Z,#$01,L168D6
         LDAA    #$12
         STAA    >LdpState,Z
@@ -9888,7 +9888,7 @@ L16976:
         BRSET   >LdpFlags3,Z,#$02,L16992
         TST     >PurgeDelay,Z
         BNE     L16992
-        BSET    >LdpFlags,Z,#$08
+        BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
         LDAA    #$29
         STAA    >LdpState,Z
         BRA     L16A02
@@ -9915,7 +9915,7 @@ L169AC:
         LDAA    #$29
         STAA    >LdpState,Z
 L169DA:
-        BSET    >LdpFlags,Z,#$10
+        BSET    >LdpFlags,Z,#$10                         ; bit 4: leak test running (LDP state machine)
         BCLR    <LdpFlags2,Z,#$10
         BRA     L16A02
 L169E4:
@@ -9924,7 +9924,7 @@ L169E4:
         CLR     >LdpStateTime,Z
         CLR     >LdpPumpUpTimer,Z
         CLR     >LdpWindowStrokeCount,Z
-        BCLR    >LdpFlags,Z,#$10
+        BCLR    >LdpFlags,Z,#$10                         ; bit 4: leak test running (LDP state machine)
         BSET    <LdpFlags2,Z,#$10
         BCLR    <LdpFlags2,Z,#$02
 L16A02:
@@ -9934,7 +9934,7 @@ L16A06:
         TST     >PurgeDelay,Z
         BNE     L16A20
 L16A12:
-        BSET    >LdpFlags,Z,#$08
+        BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
         LDAA    #$39
         STAA    >LdpState,Z
         LBRA    L16AF2
@@ -9967,7 +9967,7 @@ L16A56:
         CLR     >LdpStrokeCount,Z
         CLR     >LdpPumpOnCount,Z
         CLR     >LdpPumpOffCount,Z
-        BSET    >LdpFlags,Z,#$01
+        BSET    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         BRA     L16A98
 L16A7A:
         LDAA    >LdpWindowStrokeCount,Z
@@ -10010,13 +10010,13 @@ L16AD6:
         CLR     >LdpStrokeCount,Z
         CLR     >LdpPumpOnCount,Z
         CLR     >LdpPumpOffCount,Z
-        BSET    >LdpFlags,Z,#$01
+        BSET    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
 L16AF2:
         LBRA    L16D5A
 L16AF6:
         TST     >PurgeDelay,Z
         BNE     L16B08
-        BSET    >LdpFlags,Z,#$08
+        BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
         LDAA    #$49
         STAA    >LdpState,Z
         BRA     L16B64
@@ -10059,7 +10059,7 @@ L16B68:
         TST     >PurgeDelay,Z
         BNE     L16B82
 L16B74:
-        BSET    >LdpFlags,Z,#$08
+        BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
         LDAA    #$59
         STAA    >LdpState,Z
         LBRA    L16C40
@@ -10096,7 +10096,7 @@ L16BCE:
         LDAA    >LdpStrokeTimeAvg,Z
         CMPA    $0770,Z
         BCS     L16C2A
-        BSET    >LdpFlags,Z,#$80
+        BSET    >LdpFlags,Z,#$80                         ; bit 7: leak test finished (LDP state machine)
         BCLR    >MonData646,Z,#$02
         LDAA    #$59
         STAA    >LdpState,Z
@@ -10115,23 +10115,23 @@ L16BF6:
         STAB    $0146,Z
         CMPA    >LdpLargeLeakStrokeTime
         BCC     L16C2A
-        BSET    >LdpFlags,Z,#$40
+        BSET    >LdpFlags,Z,#$40                         ; bit 6: large leak: pump strokes faster than LdpLargeLeakStrokeTime
         BSET    $0146,Z,#$01
         LBRA    L16B74
 L16C2A:
-        BSET    >LdpFlags,Z,#$20
+        BSET    >LdpFlags,Z,#$20                         ; bit 5: leak test step result: small leak or not settled, probably
         LBRA    L16B74
 L16C32:
         LDAA    #$56
         STAA    >LdpState,Z
-        BCLR    >LdpFlags,Z,#$60
-        BSET    >LdpFlags,Z,#$80
+        BCLR    >LdpFlags,Z,#$60                         ; bit 6: large leak: pump strokes faster than LdpLargeLeakStrokeTime; bit 5: leak test step result: small leak or not settled, probably
+        BSET    >LdpFlags,Z,#$80                         ; bit 7: leak test finished (LDP state machine)
 L16C40:
         LBRA    L16D5A
 L16C44:
         TST     >PurgeDelay,Z
         BEQ     L16C50
-        BSET    >LdpFlags,Z,#$01
+        BSET    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         BRA     L16C5C
 L16C50:
         LDAA    #$67
@@ -10164,7 +10164,7 @@ L16C92:
         TST     >PurgeDelay,Z
         BNE     L16CA6
 L16C98:
-        BSET    >LdpFlags,Z,#$08
+        BSET    >LdpFlags,Z,#$08                         ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
         LDAA    #$89
         STAA    >LdpState,Z
         LBRA    L16D58
@@ -10225,7 +10225,7 @@ L16D26:
 L16D2C:
         BRA     L16D5A
 L16D2E:
-        BRCLR   >LdpFlags,Z,#$64,L16D4A
+        BRCLR   >LdpFlags,Z,#$64,L16D4A                  ; bit 6: large leak: pump strokes faster than LdpLargeLeakStrokeTime; bit 5: leak test step result: small leak or not settled, probably; bit 2: pump switch closed in the current step (IoInputs0 bit 1)
         BRCLR   >LdpFlags2,Z,#$01,L16D4A
         BSET    <MonStatusLdp,Z,#$48
         BRSET   >DiagStatusFlags,Z,#$02,L16D58           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
@@ -10233,7 +10233,7 @@ L16D2E:
         BRA     L16D58
 L16D4A:
         BCLR    <MonStatusLdp,Z,#$88
-        BRSET   >LdpFlags,Z,#$08,L16D58
+        BRSET   >LdpFlags,Z,#$08,L16D58                  ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
         BSET    <MonStatusLdp,Z,#$40
 L16D58:
         BRA     L16D5A
@@ -10271,10 +10271,10 @@ LdpPumpStroke:
         BEQ     L16D8C
         STAA    >LdpPumpOnCount,Z
 L16D8C:
-        BSET    >LdpFlags,Z,#$01
+        BSET    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         LBRA    L16E64
 L16D94:
-        BCLR    >LdpFlags,Z,#$01
+        BCLR    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         LDAA    >LdpState,Z
         ANDA    #$0F
         CMPA    #$03
@@ -10349,7 +10349,7 @@ L16E54:
         CLR     >LdpStrokeCount,Z
         CLR     >LdpPumpOnCount,Z
         CLR     >LdpPumpOffCount,Z
-        BSET    >LdpFlags,Z,#$01
+        BSET    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
 L16E64:
         RTS
 
@@ -10360,10 +10360,10 @@ L16E64:
 LdpPurgedCheck:
         BRCLR   >Options033E,#$02,L16F06                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRCLR   >IoInputs0,Z,#$02,L16E78                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
-        BSET    >LdpFlags,Z,#$02
+        BSET    >LdpFlags,Z,#$02                         ; bit 1: pump switch closed (LdpPurgedCheck)
         BRA     L16E7C
 L16E78:
-        BCLR    >LdpFlags,Z,#$02
+        BCLR    >LdpFlags,Z,#$02                         ; bit 1: pump switch closed (LdpPurgedCheck)
 L16E7C:
         LDAA    >LdpState,Z
         ANDA    #$0F
@@ -10374,7 +10374,7 @@ L16E7C:
         BRSET   >FaultSet16,Z,#$01,L16E9C
         BRSET   <MonStatusPurge,Z,#$04,L16EF6
 L16E9C:
-        BCLR    >LdpFlags,Z,#$01
+        BCLR    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         BRCLR   >IoInputs0,Z,#$02,L16EB4                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
         BSET    <LdpFlags2,Z,#$80
         BCLR    <LdpFlags2,Z,#$08
@@ -10405,7 +10405,7 @@ L16EF0:
         BSET    <LdpFlags2,Z,#$08
         BRA     L16F02
 L16EF6:
-        BSET    >LdpFlags,Z,#$01
+        BSET    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         CLR     >LdpPurgedTimer,Z
         BCLR    <LdpFlags2,Z,#$08
 L16F02:
@@ -10431,7 +10431,7 @@ LdpSolenoidCheck:
         BEQ     L16F2C
         BRA     L16F3C
 L16F26:
-        BRCLR   >LdpFlags,Z,#$01,L16F3C
+        BRCLR   >LdpFlags,Z,#$01,L16F3C                  ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
 L16F2C:
         BRSET   >IoDriver62,Z,#$20,L16F4C                ; bit 5: leak detection pump solenoid on (word bit 13)
         BSETW   >IoDriver62,Z,#$2000                     ; IoDriver62.5: leak detection pump solenoid on (word bit 13)
@@ -13085,10 +13085,10 @@ L18A9A:
 L18AA2:
         LBSR    MisfireSegmentTime
         LBSR    MisfireTransient
-        BCLR    <MisfireFlags,Z,#$08
+        BCLR    <MisfireFlags,Z,#$08                     ; bit 3: misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)
         LBSR    MisfireEnableCheck
         BEQ     L18B1E
-        BSET    <MisfireFlags,Z,#$08
+        BSET    <MisfireFlags,Z,#$08                     ; bit 3: misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)
         LBSR    MisfireDeviation
         BRSET   >ClosedLoopMonFlags,Z,#$40,L18AC4
         BEQ     L18B1E
@@ -13274,7 +13274,7 @@ L18CBC:
         BRCLR   >MisfireFlags4,Z,#$02,L18D20
         BRCLR   >MisfireFlags4,Z,#$04,L18D20
         BCLR    >MisfireFlags4,Z,#$08
-        BSET    <MisfireFlags,Z,#$40
+        BSET    <MisfireFlags,Z,#$40                     ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         BSET    <MisfireRecordE4,Z,#$49
         LDAB    #$80
         STAB    <MonRecordB4,Z
@@ -13283,12 +13283,12 @@ L18CDA:
         BRCLR   >MisfireFlags4,Z,#$02,L18CE4
         BCLR    >MisfireFlags4,Z,#$08
 L18CE4:
-        BRCLR   >MisfireFlags,Z,#$40,L18D10
+        BRCLR   >MisfireFlags,Z,#$40,L18D10              ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         LDAB    <MonRecordB4,Z
         ANDB    #$7F
         CMPB    #$04
         BCS     L18CFA
-        BCLR    <MisfireFlags,Z,#$40
+        BCLR    <MisfireFlags,Z,#$40                     ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         CLR     <MonRecordB4,Z
         BRA     L18D20
 L18CFA:
@@ -13304,9 +13304,9 @@ L18D06:
         BSET    <MisfireRecordE4,Z,#$40
         BRA     L18D20
 L18D10:
-        BRSET   >MisfireFlags,Z,#$80,L18D24
+        BRSET   >MisfireFlags,Z,#$80,L18D24              ; bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
         BRCLR   >MisfireFlags4,Z,#$02,L18D20
-        BSET    <MisfireFlags,Z,#$80
+        BSET    <MisfireFlags,Z,#$80                     ; bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
 L18D20:
         CLRA
         BRA     L18D26
@@ -13415,7 +13415,7 @@ L18DEA:
 ; Called from: MisfireMonitorEvent
 ;---------------------------------------------------------------------------------------------------
 MisfireThreshold:
-        BRSET   >MisfireFlags,Z,#$10,L18FE4
+        BRSET   >MisfireFlags,Z,#$10,L18FE4              ; bit 4: misfire noise peak at or below its limit (MisfireEnableMain)
         TST     >MisfireHold,Z
         LBNE    L18FE4
         LDD     $0294,Z
@@ -13429,7 +13429,7 @@ MisfireThreshold:
         LDX     #MisfireLoadScale
         JSR     Lookup2D
         LDAB    >MisfireRpmCol,Z
-        BRCLR   >MisfireFlags,Z,#$20,L18E3E
+        BRCLR   >MisfireFlags,Z,#$20,L18E3E              ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         TBA
         LDX     #MisfireLoadScaleDrive
         JSR     Lookup2D
@@ -13673,7 +13673,7 @@ L1909A:
         BRSET   >ClosedLoopMonFlags,Z,#$40,L19150
         LDAA    >MisfireCount2,Z
         CMPA    >MisfireCountLimitAlt
-        BRSET   >MisfireFlags,Z,#$20,L190F0
+        BRSET   >MisfireFlags,Z,#$20,L190F0              ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         CMPA    >MisfireCountLimitCat
 L190F0:
         BCS     L19150
@@ -13894,7 +13894,7 @@ L1932E:
         STAB    >MisfireTransientHold,Z
         BRA     L19370
 L19348:
-        BRSET   >MisfireFlags,Z,#$20,L1935A
+        BRSET   >MisfireFlags,Z,#$20,L1935A              ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         TST     $02B0,Z
         BNE     L19370
         TST     $02BC,Z
@@ -13904,10 +13904,10 @@ L1935A:
         CPE     >MisfireNoiseLevel,Z
         BCC     L19370
         BRSET   >ClosedLoopMonFlags,Z,#$40,L19370
-        BSET    <MisfireFlags,Z,#$20
+        BSET    <MisfireFlags,Z,#$20                     ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         BRA     L19374
 L19370:
-        BCLR    <MisfireFlags,Z,#$20
+        BCLR    <MisfireFlags,Z,#$20                     ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
 L19374:
         BRSET   >ThrottleState,Z,#$80,L19386             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRCLR   >MisfireFlags2,Z,#$40,L193A4
@@ -14189,10 +14189,10 @@ L1960A:
         CPD     >MisfireNoisePeak,Z
         BLS     L19640
 L1963A:
-        BCLR    <MisfireFlags,Z,#$10
+        BCLR    <MisfireFlags,Z,#$10                     ; bit 4: misfire noise peak at or below its limit (MisfireEnableMain)
         BRA     L19644
 L19640:
-        BSET    <MisfireFlags,Z,#$10
+        BSET    <MisfireFlags,Z,#$10                     ; bit 4: misfire noise peak at or below its limit (MisfireEnableMain)
 L19644:
         RTS
 
@@ -14480,7 +14480,7 @@ L1995C:
         STD     >RpmRate,Z
 L1996C:
         BRSET   >MisfireFlags2,Z,#$04,L199B6
-        BRCLR   >MisfireFlags,Z,#$80,L1997C
+        BRCLR   >MisfireFlags,Z,#$80,L1997C              ; bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
         CLRW    >MisfireEventCount,Z
 L1997C:
         LDAA    >Temp4F0,Z
@@ -16986,7 +16986,7 @@ L1B290:
         CLR     >PurgeCellCount,Z
         CLR     >PurgeCellFlags,Z
         BCLR    <FlexStartFlags,Z,#$38
-        BSET    >O2ResetFlags,Z,#$03
+        BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    <PurgeCellRichFlags,Z,#$40
         BRA     L1B2D0
 L1B2B8:
@@ -23055,7 +23055,7 @@ Sub_1F474:
         LBRA    L1F6D2
 L1F49A:
         BSET    <Scratch7,Z,#$06
-        BRCLR   >LdpFlags,Z,#$10,L1F4B8
+        BRCLR   >LdpFlags,Z,#$10,L1F4B8                  ; bit 4: leak test running (LDP state machine)
         LDY     #$EFB2
         LDAB    #$01
         TBYK
@@ -23182,7 +23182,7 @@ L1F5F2:
         BSET    <Scratch7,Z,#$06
         LDAA    $0309,Z
         BRSET   >ClosedLoopMonFlags,Z,#$40,L1F626
-        BRCLR   >MisfireFlags,Z,#$40,L1F61A
+        BRCLR   >MisfireFlags,Z,#$40,L1F61A              ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         LDY     #$EFAC
         LDAB    #$01
         TBYK

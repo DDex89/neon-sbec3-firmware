@@ -67,6 +67,14 @@ DiagStatusFlags  equ $00E7        ; $F80E7
 ;                 bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 ;                 bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 MisfireFlags     equ $00EF        ; $F80EF
+;                 bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
+;                 bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
+;                 bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
+;                 bit 4: misfire noise peak at or below its limit (MisfireEnableMain)
+;                 bit 3: misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)
+;                 bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
+;                 bit 1: cleared with the misfire records; read by MisfireCount
+;                 bit 0: misfire start delay elapsed (MisfireEnableMain)
 Temp4F0          equ $00F0        ; $F80F0
 Temp4F2          equ $00F2        ; $F80F2
 Temp4F4          equ $00F4        ; $F80F4
@@ -233,6 +241,14 @@ CrankSyncFlags   equ $03BB        ; $F83BB
 CrankSyncFlags2  equ $03BC        ; $F83BC
 CylinderIndex    equ $03BE        ; $F83BE
 PurgeFlags       equ $03CC        ; $F83CC
+;                 bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
+;                 bit 6: purge battery-temperature timer running (PurgeEnable)
+;                 bit 5: per-event correction asked for purge to stop (EventCorrections)
+;                 bit 4: purge held off: rev limit or bit 5 (PurgeEnable)
+;                 bit 3: purge trim counted for the current cell (PurgeRampControl)
+;                 bit 2: battery temperature checked (PurgeEnable)
+;                 bit 1: battery temperature at or above PurgeBattTempMax (PurgeEnable)
+;                 bit 0: battery temperature between PurgeBattTempMin and PurgeBattTempMax: timer started (PurgeEnable)
 PurgeCellCount   equ $03CD        ; $F83CD
 PurgeCellFlags   equ $03CE        ; $F83CE
 PurgeDelay       equ $03CF        ; $F83CF
