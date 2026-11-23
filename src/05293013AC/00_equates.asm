@@ -41,14 +41,30 @@ SriMileage       equ $0020        ; $F8020
 FaultMem05       equ $007D        ; $F807D
 FaultMem07       equ $007F        ; $F807F
 MonStatusCatBank1 equ $00B3        ; $F80B3
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 0) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0420 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusCatBank2 equ $00B4        ; $F80B4
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 1) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0432 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusO2Resp1 equ $00B5        ; $F80B5
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 2) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0133 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusO2Resp2 equ $00B6        ; $F80B6
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 3) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0153 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MisfireRecordE4  equ $00BA        ; $F80BA
 MonStatusFuelSysTooLean1 equ $00BB        ; $F80BB
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 11) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0171 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusFuelSysTooLean2 equ $00BC        ; $F80BC
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 12) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0174 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusFuelSysTooRich1 equ $00BD        ; $F80BD
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 13) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0172 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusFuelSysTooRich2 equ $00BE        ; $F80BE
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 14) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0175 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 FreezeFrameFault equ $00C2        ; $F80C2
 MonRecordB4      equ $00C3        ; $F80C3
 MonRecordB7      equ $00C6        ; $F80C6
@@ -258,10 +274,10 @@ O2Heater55E      equ $0310        ; $F8310
 O2Heater55F      equ $0311        ; $F8311
 O2Heater560      equ $0312        ; $F8312
 SwitchInputs2    equ $031B        ; $F831B
-;                 bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
-;                 bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+;                 bit 7: A/C request switch (AcClutchControl, EquipmentDetect)
+;                 bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
 ;                 bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
-;                 bit 4: speed control switch (on/off, probably)
+;                 bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
 ;                 bit 3: speed control switch
 ;                 bit 2: speed control switch (set at reset)
 ;                 bit 1: speed control switch
@@ -964,7 +980,9 @@ ADCMCR           equ $7700        ; $FF700
 ADCTL0_L         equ $770B        ; $FF70B
 ADCTL1_L         equ $770D        ; $FF70D
 ADCSTAT          equ $770E        ; $FF70E
+;                 bit 7: SCF: ADC sequence complete flag
 ADCSTAT_L        equ $770F        ; $FF70F
+;                 bit 0: CCF0: ADC conversion 0 complete
 RJURR0_L         equ $7711        ; $FF711
 RJURR1_L         equ $7713        ; $FF713
 RJURR2_L         equ $7715        ; $FF715
@@ -977,10 +995,26 @@ GPTMCR           equ $7900        ; $FF900
 ICR              equ $7904        ; $FF904
 DDRGP            equ $7906        ; $FF906
 PORTGP           equ $7907        ; $FF907
+;                 bit 7: GPT port pin 7 level (IC4/OC5)
+;                 bit 6: GPT port pin 6 level (OC4)
+;                 bit 5: GPT port pin 5 level (OC3)
+;                 bit 4: GPT port pin 4 level (OC2)
+;                 bit 3: GPT port pin 3 level (OC1)
+;                 bit 2: GPT port pin 2 level (IC3)
+;                 bit 1: GPT port pin 1 level (IC2)
+;                 bit 0: GPT port pin 0 level (IC1)
 OC1M             equ $7908        ; $FF908
 OC1D             equ $7909        ; $FF909
 TCNT             equ $790A        ; $FF90A
 PACTL            equ $790C        ; $FF90C
+;                 bit 7: PAIS: pulse accumulator input pin state
+;                 bit 6: PAEN: pulse accumulator enable
+;                 bit 5: PAMOD: pulse accumulator mode (gated time)
+;                 bit 4: PEDGE: pulse accumulator edge
+;                 bit 3: PCLKS: PCLK pin state
+;                 bit 2: I4/O5: pin is IC4 (set) or OC5 (clear)
+;                 bit 1: PACLK1: pulse accumulator clock select
+;                 bit 0: PACLK0: pulse accumulator clock select
 PACNT            equ $790D        ; $FF90D
 CrankPeriodSum   equ $790E        ; $FF90E
 TIC2             equ $7910        ; $FF910
@@ -989,25 +1023,101 @@ TOC1             equ $7914        ; $FF914
 TOC2             equ $7916        ; $FF916
 TI4O5            equ $791C        ; $FF91C
 TCTL1            equ $791E        ; $FF91E
+;                 bit 7: OM5: OC5 output mode
+;                 bit 6: OL5: OC5 output level
+;                 bit 5: OM4: OC4 output mode
+;                 bit 4: OL4: OC4 output level
+;                 bit 3: OM3: OC3 output mode
+;                 bit 2: OL3: OC3 output level
+;                 bit 1: OM2: OC2 output mode
+;                 bit 0: OL2: OC2 output level
 TCTL2            equ $791F        ; $FF91F
+;                 bit 7: EDGE4B: IC4 edge select
+;                 bit 6: EDGE4A: IC4 edge select
+;                 bit 5: EDGE3B: IC3 edge select
+;                 bit 4: EDGE3A: IC3 edge select
+;                 bit 3: EDGE2B: IC2 edge select
+;                 bit 2: EDGE2A: IC2 edge select
+;                 bit 1: EDGE1B: IC1 edge select
+;                 bit 0: EDGE1A: IC1 edge select
 TMSK1            equ $7920        ; $FF920
+;                 bit 7: I4/O5I: IC4/OC5 interrupt enable
+;                 bit 6: OC4I: OC4 interrupt enable
+;                 bit 5: OC3I: OC3 interrupt enable
+;                 bit 4: OC2I: OC2 interrupt enable
+;                 bit 3: OC1I: OC1 interrupt enable
+;                 bit 2: IC3I: IC3 interrupt enable
+;                 bit 1: IC2I: IC2 interrupt enable
+;                 bit 0: IC1I: IC1 interrupt enable
 TMSK2            equ $7921        ; $FF921
+;                 bit 7: TOI: timer overflow interrupt enable
+;                 bit 5: PAII: pulse accumulator input interrupt enable
+;                 bit 4: PAOVI: pulse accumulator overflow interrupt enable
 TFLG1            equ $7922        ; $FF922
+;                 bit 7: I4/O5F: input capture 4 / output compare 5 flag
+;                 bit 6: OC4F: output compare 4 flag
+;                 bit 5: OC3F: output compare 3 flag
+;                 bit 4: OC2F: output compare 2 flag
+;                 bit 3: OC1F: output compare 1 flag
+;                 bit 2: IC3F: input capture 3 flag
+;                 bit 1: IC2F: input capture 2 flag
+;                 bit 0: IC1F: input capture 1 flag
 TFLG2            equ $7923        ; $FF923
+;                 bit 7: TOF: timer overflow flag
+;                 bit 5: PAIF: pulse accumulator input flag
+;                 bit 4: PAOVF: pulse accumulator overflow flag
 CFORC            equ $7924        ; $FF924
 PWMC             equ $7925        ; $FF925
 SIMCR            equ $7A00        ; $FFA00
 SYNCR            equ $7A04        ; $FFA04
+;                 bit 7: W: clock synthesizer frequency control (VCO)
+;                 bit 6: X: clock synthesizer frequency control (prescaler)
+;                 bit 5: Y5: clock synthesizer multiplier
+;                 bit 4: Y4: clock synthesizer multiplier
+;                 bit 3: Y3: clock synthesizer multiplier
+;                 bit 2: Y2: clock synthesizer multiplier
+;                 bit 1: Y1: clock synthesizer multiplier
+;                 bit 0: Y0: clock synthesizer multiplier
 SYNCR_L          equ $7A05        ; $FFA05
+;                 bit 7: EDIV: ECLK divide rate
+;                 bit 4: SLIMP: limp mode (no reference clock)
+;                 bit 3: SLOCK: synthesizer locked
+;                 bit 2: RSTEN: reset on loss of clock
+;                 bit 1: STSIM: SIM clock in stop mode
+;                 bit 0: STEXT: CLKOUT in stop mode
 DDRE             equ $7A15        ; $FFA15
 PEPAR            equ $7A17        ; $FFA17
 DDRF             equ $7A1D        ; $FFA1D
+;                 bit 7: port F pin 7 direction (set = output)
+;                 bit 6: port F pin 6 direction (set = output)
+;                 bit 5: port F pin 5 direction (set = output)
+;                 bit 4: port F pin 4 direction (set = output)
+;                 bit 3: port F pin 3 direction (set = output)
+;                 bit 2: port F pin 2 direction (set = output)
+;                 bit 1: port F pin 1 direction (set = output)
+;                 bit 0: port F pin 0 direction (set = output)
 PFPAR            equ $7A1F        ; $FFA1F
+;                 bit 7: port F pin 7 function (set = IRQ7 input)
+;                 bit 6: port F pin 6 function (set = IRQ6 input)
+;                 bit 5: port F pin 5 function (set = IRQ5 input)
+;                 bit 4: port F pin 4 function (set = IRQ4 input)
+;                 bit 3: port F pin 3 function (set = IRQ3 input)
+;                 bit 2: port F pin 2 function (set = IRQ2 input)
+;                 bit 1: port F pin 1 function (set = IRQ1 input)
+;                 bit 0: port F pin 0 function (set = MODCLK)
 SYPCR            equ $7A21        ; $FFA21
 PICR             equ $7A22        ; $FFA22
 PITR             equ $7A24        ; $FFA24
 SWSR             equ $7A27        ; $FFA27
 PORTC            equ $7A41        ; $FFA41
+;                 bit 7: port C pin 7 output level (chip-select pin used as output)
+;                 bit 6: port C pin 6 output level (chip-select pin used as output)
+;                 bit 5: port C pin 5 output level (chip-select pin used as output)
+;                 bit 4: port C pin 4 output level (chip-select pin used as output)
+;                 bit 3: port C pin 3 output level (chip-select pin used as output)
+;                 bit 2: port C pin 2 output level (chip-select pin used as output)
+;                 bit 1: port C pin 1 output level (chip-select pin used as output)
+;                 bit 0: port C pin 0 output level (chip-select pin used as output)
 CSPAR0           equ $7A44        ; $FFA44
 CSPAR1           equ $7A46        ; $FFA46
 CSBARBT          equ $7A48        ; $FFA48
@@ -1043,8 +1153,25 @@ QIVR             equ $7C05        ; $FFC05
 SCCR0            equ $7C08        ; $FFC08
 SCCR1            equ $7C0A        ; $FFC0A
 SCCR1_L          equ $7C0B        ; $FFC0B
+;                 bit 7: TIE: SCI transmit interrupt enable
+;                 bit 6: TCIE: SCI transmit complete interrupt enable
+;                 bit 5: RIE: SCI receive interrupt enable
+;                 bit 4: ILIE: SCI idle line interrupt enable
+;                 bit 3: TE: SCI transmitter enable
+;                 bit 2: RE: SCI receiver enable
+;                 bit 1: RWU: SCI receiver wake-up
+;                 bit 0: SBK: SCI send break
 SCSR             equ $7C0C        ; $FFC0C
+;                 bit 0: TDRE: SCI transmit data register empty
 SCSR_L           equ $7C0D        ; $FFC0D
+;                 bit 7: TC: SCI transmit complete
+;                 bit 6: RDRF: SCI receive data register full
+;                 bit 5: RAF: SCI receiver active
+;                 bit 4: IDLE: SCI idle line detected
+;                 bit 3: OR: SCI overrun
+;                 bit 2: NF: SCI noise flag
+;                 bit 1: FE: SCI framing error
+;                 bit 0: PF: SCI parity error
 SCDR             equ $7C0E        ; $FFC0E
 SCDR_L           equ $7C0F        ; $FFC0F
 PORTQS           equ $7C15        ; $FFC15
@@ -1052,9 +1179,13 @@ DDRQS            equ $7C16        ; $FFC16
 DDRQS_L          equ $7C17        ; $FFC17
 SPCR0            equ $7C18        ; $FFC18
 SPCR1            equ $7C1A        ; $FFC1A
+;                 bit 7: SPE: QSPI enable
 SPCR2            equ $7C1C        ; $FFC1C
 SPCR3            equ $7C1E        ; $FFC1E
 SPSR             equ $7C1F        ; $FFC1F
+;                 bit 7: SPIF: QSPI finished flag
+;                 bit 6: MODF: QSPI mode fault
+;                 bit 5: HALTA: QSPI halt acknowledge
 RR0              equ $7D00        ; $FFD00
 RR1              equ $7D02        ; $FFD02
 RR9              equ $7D12        ; $FFD12

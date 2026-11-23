@@ -421,6 +421,8 @@ class Calibration:
             def wname(w):
                 if w == 0xFFFF:
                     return "end"
+                if "code_bank" in c:  # bank-relative addresses of routines
+                    return self.names.labels.get((c["code_bank"] << 16) | w, "$%X%04X" % (c["code_bank"], w))
                 if w in self.names.ram:
                     return self.names.ram[w]
                 if FAULT_TABLE <= w < FAULT_TABLE + 10 * FAULT_ROWS and (w - FAULT_TABLE) % 10 == 0:
@@ -435,6 +437,17 @@ class Calibration:
                 else:
                     note = ", ".join(wname(w) for w in ws)
                 out.append("        dc.b    %-40s ; %s" % (",".join("$%02X" % x for x in b), note))
+        elif kind == "optbits":  # (option byte address, mask word) per OBD monitor row
+            base = c.get("monitors", 0x20000)
+            for r in range(t["rows"]):
+                p = a + 4 * r
+                b = d[p:p + 4]
+                opt = (b[0] << 8) | b[1]
+                st = (d[base + 20 * r + 2] << 8) | d[base + 20 * r + 3]
+                bit = self.names.bits.get(self.scalars.get(opt, {}).get("name", ""), {}).get(str(b[3].bit_length() - 1), "")
+                out.append("        dc.b    %-40s ; monitor row %d: %s & $%02X -> %s bit 7%s" % (
+                    ",".join("$%02X" % x for x in b), r, self.scalars.get(opt, {}).get("name", "$%04X" % opt), b[3],
+                    self.names.ram.get(st, "$%04X,Z" % st), " (" + bit + ")" if bit else ""))
         elif kind == "monitors":
             for r in range(t["rows"]):
                 p = a + r * t["row_size"]

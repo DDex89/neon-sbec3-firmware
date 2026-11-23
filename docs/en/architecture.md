@@ -2,7 +2,7 @@
 
 This page describes the program skeleton of the reference image **05293190AC**: start-up, memory,
 interrupts and the two schedulers. Names refer to the generated source in `src/05293190AC/` and to
-`annotations/`. Every routine of this image has a name (`annotations/labels.json`, 652 names). Where the purpose is
+`annotations/`. Every routine of this image has a name (`annotations/labels.json`, 675 names). Where the purpose is
 not certain the name is neutral (`OutputTestB`, `MonTaskC`, `PciStateSet3`). In the other families,
 numbers like `Sub_2CC42` are left where a routine has not been matched to the reference yet.
 The other families have the same structure at other addresses (stage 5).
@@ -195,15 +195,19 @@ $F3-$F5). `SciRequestReceive` takes the ordinary requests (`DiagCommand`,
 
 ## Unreached code
 
-Ten routines (about 2 KB) are never called, jumped to or pointed at: an older copy of the flex
-fuel learning with its helpers ($17512-$17F2x and $18264), a rpm-window flag and fuel hold table
-($12BFA), a crank period delta, a period tracker and two small arithmetic helpers in bank 0, and a
-spark limit by a bus value ($1E65C). They decode cleanly and end in RTS, so they are listed in
+Thirteen routines (about 2.2 KB) are never called, jumped to or pointed at: an older copy of the
+flex fuel learning with its helpers ($17512-$17F2x and $18264), a rpm-window flag and fuel hold
+table ($12BFA), a crank period delta, a period tracker and five small arithmetic helpers in bank 0
+(two of them, $0C9F8 and $0CA5C, use the bit-mask words at $0C9D8), and a spark limit by a bus value
+($1E65C). A fourteenth piece, $1E418, sits inside the spark start ramp behind a `BRA` that always
+skips it: a per-cylinder spark trim from the calibration bytes $04A2/$04A3 into RAM $0D7A. They
+decode cleanly and end in RTS (the skipped block falls through to the code after it), so they are listed in
 `annotations/analysis.json` (`unreached_code`) and disassembled; their names start with `Unused`.
 The string `COPYRIGHT 1996 CHRYSLER CORPORATION` sits at $07000.
 
 ## Open questions
 
-- The exact part used as the CS2 device; the bits marked "probably" in `bits.json`.
+- The exact part used as the CS2 device.
 - Whether IC2 is the second edge of the crank signal (see the interrupt table).
-- Whether the second bus variant is J1850 PCI (see above).
+- Everything else still open (items marked "probably", data not decoded yet) is listed in
+  [open-questions.md](open-questions.md). The second bus variant is PCI, which is SAE J1850 VPW.

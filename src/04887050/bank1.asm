@@ -12,7 +12,7 @@ Sub_10000:
         AIS     #$FA
         TSY
         BCLR    $011B,Z,#$0F
-        BRSET   >SwitchInputs2,Z,#$10,L10020             ; bit 4: speed control switch (on/off, probably)
+        BRSET   >SwitchInputs2,Z,#$10,L10020             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         CLR     $011F,Z
         BRCLR   >FaultSet0B,Z,#$C0,L100B6
         BSET    $011B,Z,#$0C
@@ -83,7 +83,7 @@ L100CA:
         BSET    >SpeedCtlState,Z,#$A0                    ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel); bit 5: set at reset, on cancel and on engage; meaning not settled
         BCLR    $011A,Z,#$0F
         BCLR    $011C,Z,#$18
-        BRSET   >SwitchInputs2,Z,#$10,L100FA             ; bit 4: speed control switch (on/off, probably)
+        BRSET   >SwitchInputs2,Z,#$10,L100FA             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
 L100FA:
         BSET    $0120,Z,#$80
         LBRA    L103A8
@@ -977,7 +977,7 @@ L10A0C:
         LDAA    >FaultSet0B,Z
         BITA    #$C0
         BNE     L10A8E
-        BRCLR   >SwitchInputs2,Z,#$10,L10A8A             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L10A8A             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         BRCLR   >Options0339,#$20,L10A48                 ; bit 5: selects a branch in SparkEventCalc
         TST     >SpeedCtlRpmJumpTimer,Z
         BEQ     L10A36
@@ -1146,7 +1146,7 @@ L10B5A:
         JSR     Blend16
         AIS     #$04
         STD     >SpeedCtlThrottleAvg,Z
-        BRCLR   >SwitchInputs2,Z,#$10,L10BE6             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L10BE6             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         BRSET   >SensorFaultFlags,Z,#$10,L10BE6          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         LDD     >EngineRpm,Z
         CPD     >SpeedCtlRpmJumpMinRpm
@@ -1339,11 +1339,11 @@ SpeedCtlThrottleRef:
 ;---------------------------------------------------------------------------------------------------
 Sub_10F28:
         ORP     #$00E0
-        BCLR    >PORTC,Z,#$07
+        BCLR    >PORTC,Z,#$07                            ; bit 2: port C pin 2 output level (chip-select pin used as output); bit 1: port C pin 1 output level (chip-select pin used as output); bit 0: port C pin 0 output level (chip-select pin used as output)
         LDAA    #$30
         STAA    >ADCTL1_L,Z
 L10F36:
-        BRCLR   >ADCSTAT,Z,#$80,L10F36
+        BRCLR   >ADCSTAT,Z,#$80,L10F36                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR0_L,Z
         STAB    $0269,Z
         LDAB    >RJURR1_L,Z
@@ -1384,7 +1384,7 @@ L10F36:
         AEY
         AEY
 L10FC4:
-        BRCLR   >ADCSTAT,Z,#$80,L10FC4
+        BRCLR   >ADCSTAT,Z,#$80,L10FC4                   ; bit 7: SCF: ADC sequence complete flag
         LDE     $0000,Y
         BEQ     L10FD6
         LDAB    >RJURR1_L,Z
@@ -2049,7 +2049,7 @@ L11664:
         LDY     #$386B
         JSR     ReportFault
         BSET    >SwitchInputs2,Z,#$04                    ; bit 2: speed control switch (set at reset)
-        BCLR    >SwitchInputs2,Z,#$19                    ; bit 4: speed control switch (on/off, probably); bit 3: speed control switch; bit 0: speed control switch
+        BCLR    >SwitchInputs2,Z,#$19                    ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect); bit 3: speed control switch; bit 0: speed control switch
         BRA     L1168E
 L11686:
         CLR     $0164,Z
@@ -2142,7 +2142,7 @@ L1176A:
         LDY     #$3861
         JSR     ReportFault
         BSET    >SwitchInputs2,Z,#$04                    ; bit 2: speed control switch (set at reset)
-        BCLR    >SwitchInputs2,Z,#$19                    ; bit 4: speed control switch (on/off, probably); bit 3: speed control switch; bit 0: speed control switch
+        BCLR    >SwitchInputs2,Z,#$19                    ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect); bit 3: speed control switch; bit 0: speed control switch
         CLR     $0117,Z
         BRA     L117A2
 L11790:
@@ -2176,7 +2176,7 @@ L117C2:
         LDY     #$386B
         JSR     ReportFault
         BSET    >SwitchInputs2,Z,#$04                    ; bit 2: speed control switch (set at reset)
-        BCLR    >SwitchInputs2,Z,#$19                    ; bit 4: speed control switch (on/off, probably); bit 3: speed control switch; bit 0: speed control switch
+        BCLR    >SwitchInputs2,Z,#$19                    ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect); bit 3: speed control switch; bit 0: speed control switch
         BRA     L117EC
 L117E4:
         CLR     $0164,Z
@@ -2787,7 +2787,7 @@ L11E5A:
         BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         CLR     >CrankSyncFlags,Z
         BCLR    >CrankSyncFlags2,Z,#$70                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI); bit 5: reference event after the QSPI status read (Isr_GPT_IC1); bit 4: knock sample taken on this event (Isr_GPT_IC1)
-        BSET    >TMSK2,Z,#$10
+        BSET    >TMSK2,Z,#$10                            ; bit 4: PAOVI: pulse accumulator overflow interrupt enable
         CLR     >CrankFlags2,Z
         CLRW    >HighRpmTimer,Z
         CLR     $03A6,Z
@@ -2796,7 +2796,7 @@ L11E5A:
         BITB    #$60
         BNE     L11EA4
         LDAA    #$65
-        BRSET   >PACTL,Z,#$80,L11EA4
+        BRSET   >PACTL,Z,#$80,L11EA4                     ; bit 7: PAIS: pulse accumulator input pin state
         LDAA    #$75
 L11EA4:
         STAA    >PACTL,Z
@@ -2876,7 +2876,7 @@ L11FAE:
         JSR     Sub_0EC10
 L11FB2:
         ORP     #$00E0
-        BCLR    >TMSK1,Z,#$70
+        BCLR    >TMSK1,Z,#$70                            ; bit 6: OC4I: OC4 interrupt enable; bit 5: OC3I: OC3 interrupt enable; bit 4: OC2I: OC2 interrupt enable
         LDD     #$2B70
         BRSET   >Options0337,#$40,L11FC8                 ; bit 6: speed damping spark on (SpeedDampOn)
         LDD     #$2A70
@@ -3347,7 +3347,7 @@ EmptyHook:
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
 ReadMap:
-        BRCLR   >ADCSTAT_L,Z,#$01,ReadMap
+        BRCLR   >ADCSTAT_L,Z,#$01,ReadMap                ; bit 0: CCF0: ADC conversion 0 complete
         LDAA    >RJURR0_L,Z
         LDAB    >EngineRpm,Z
         CMPB    #$2F
@@ -3407,7 +3407,7 @@ L1249A:
         LDAA    >Options032A
         BITA    #$0B
         BEQ     L124AA
-        BRCLR   >SwitchInputs2,Z,#$80,L124C8             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
+        BRCLR   >SwitchInputs2,Z,#$80,L124C8             ; bit 7: A/C request switch (AcClutchControl, EquipmentDetect)
         BRA     L124B2
 L124AA:
         BRCLR   >AcFlags,Z,#$08,L124C8                   ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
@@ -3428,7 +3428,7 @@ L124CC:
         LDAA    >Options032A
         BITA    #$0A
         BEQ     L124F2
-        BRCLR   >SwitchInputs2,Z,#$10,L124F2             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L124F2             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         LDAA    $016C,Z
         CMPA    $0368
         BCC     L1251C
@@ -3441,11 +3441,11 @@ L124F6:
         BRSET   >SwitchInputs2,Z,#$08,L1251C             ; bit 3: speed control switch
         BRCLR   >SwitchInputs2,Z,#$04,L1251C             ; bit 2: speed control switch (set at reset)
         BRCLR   $0324,#$08,L12510
-        BRSET   >SwitchInputs2,Z,#$10,L1251C             ; bit 4: speed control switch (on/off, probably)
+        BRSET   >SwitchInputs2,Z,#$10,L1251C             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         BRA     L12520
 L12510:
         BRCLR   $0324,#$04,L12520
-        BRCLR   >SwitchInputs2,Z,#$11,L12520             ; bit 4: speed control switch (on/off, probably); bit 0: speed control switch
+        BRCLR   >SwitchInputs2,Z,#$11,L12520             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect); bit 0: speed control switch
 L1251C:
         BSET    $003E,Z,#$20
 L12520:
@@ -3455,7 +3455,7 @@ L12520:
         LDAA    >BatteryVolts2,Z
         CMPA    #$C2
         BCS     L12556
-        BRSET   >SwitchInputs2,Z,#$40,L12556             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L12556             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         LDAA    $016D,Z
         CMPA    $036A
         BCC     L12552
@@ -4171,7 +4171,7 @@ L12DB8:
         BSET    >DiagFlags,Z,#$80                        ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
         CLR     >DiagCommand,Z
 L12DC0:
-        BRCLR   >SCSR_L,Z,#$80,L12DC0
+        BRCLR   >SCSR_L,Z,#$80,L12DC0                    ; bit 7: TC: SCI transmit complete
         LDD     #$0008
         STD     >SCCR0,Z
         RTS
@@ -4337,7 +4337,7 @@ L12F30:
 ; Called from: Sub_12D28, Sub_12FA2, Sub_13948, Sub_139C2, Sub_13C0A, Sub_15200 (9 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_12F36:
-        BRCLR   >SCSR,Z,#$01,Sub_12F36
+        BRCLR   >SCSR,Z,#$01,Sub_12F36                   ; bit 0: TDRE: SCI transmit data register empty
         STAA    >SCDR_L,Z
         RTS
         dc.b    $3D,$DD,$3D,$DE,$3D,$DF,$3D,$E0,$3D,$E1,$03,$00,$03,$01,$03,$02
@@ -5547,7 +5547,7 @@ Sub_13AD8:
         LDD     #$2A70
 L13B08:
         ORP     #$00E0
-        BCLR    >TMSK1,Z,#$70
+        BCLR    >TMSK1,Z,#$70                            ; bit 6: OC4I: OC4 interrupt enable; bit 5: OC3I: OC3 interrupt enable; bit 4: OC2I: OC2 interrupt enable
         STAA    >TCTL1,Z
         STAB    >CFORC,Z
         CLRW    >TFLG1,Z
@@ -5722,7 +5722,7 @@ L13D76:
         BNE     L13D90
         BRCLR   $003E,Z,#$40,L13DC4
         BRCLR   >Options032A,#$0A,L13DC0
-        BRCLR   >SwitchInputs2,Z,#$80,L13DC4             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
+        BRCLR   >SwitchInputs2,Z,#$80,L13DC4             ; bit 7: A/C request switch (AcClutchControl, EquipmentDetect)
         BRA     L13DC0
 L13D90:
         CPY     #$359B
@@ -5812,14 +5812,14 @@ L13E56:
 ; Called from: Isr_GPT_PAI, Reset, Sub_0D328, Sub_13CC8, Sub_13E94, Sub_13EB6, Sub_13ED4, Sub_13F4C and 6 more routines (17 calls)
 ;---------------------------------------------------------------------------------------------------
 QspiWaitIdle:
-        BCLR    >SPSR,Z,#$80
-        BSET    >SPCR1,Z,#$80
+        BCLR    >SPSR,Z,#$80                             ; bit 7: SPIF: QSPI finished flag
+        BSET    >SPCR1,Z,#$80                            ; bit 7: SPE: QSPI enable
         CLRA
 L13E6E:
         DECA
         BEQ     L13E92
-        BRCLR   >SPSR,Z,#$80,L13E6E
-        BCLR    >SPSR,Z,#$80
+        BRCLR   >SPSR,Z,#$80,L13E6E                      ; bit 7: SPIF: QSPI finished flag
+        BCLR    >SPSR,Z,#$80                             ; bit 7: SPIF: QSPI finished flag
         TSTA
         BRA     L13E92
         dc.b    $2B,$10,$01,$3C,$00,$0C,$34,$08,$37,$BD,$37,$AD,$FA,$01,$BD,$48
@@ -7231,7 +7231,7 @@ L14DB0:
         BNE     L14DD6
         BRA     L14DD4
 L14DCE:
-        BRCLR   >SwitchInputs2,Z,#$10,L14DD6             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L14DD6             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
 L14DD4:
         ORAB    #$04
 L14DD6:
@@ -7916,7 +7916,7 @@ L154E0:
 Sub_154E2:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L155B6         ; bit 0: one pass in 2 (about 24 ms)
         BRCLR   >Options0331,#$02,L154FC
-        BRCLR   >SwitchInputs2,Z,#$80,L15554             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
+        BRCLR   >SwitchInputs2,Z,#$80,L15554             ; bit 7: A/C request switch (AcClutchControl, EquipmentDetect)
         BRSET   >IdleAcFlags,Z,#$80,L15554               ; bit 7: A/C idle step active (IdleTargetControl); AcClutchControl reads it
         BRA     L15532
 L154FC:
@@ -10137,7 +10137,7 @@ FuelSysTooRich1Monitor:
         DEC     $0182,Z
         LBRA    L17066
 L16F0E:
-        BRCLR   <MonStatusFuelSysTooRich1,Z,#$80,L16F1E
+        BRCLR   <MonStatusFuelSysTooRich1,Z,#$80,L16F1E  ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 13) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRCLR   <DiagStatusFlags,Z,#$01,L16F26           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         LDAA    $25DC
         STAA    $0194,Z
@@ -10223,7 +10223,7 @@ L16FE6:
         BEQ     L1705E
         STAA    $C7,Z
         BSET    <MonStatusFuelSysTooRich1,Z,#$48
-        BCLR    <MonStatusFuelSysTooRich1,Z,#$80
+        BCLR    <MonStatusFuelSysTooRich1,Z,#$80         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 13) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRSET   $CA,Z,#$08,L1705E
         BSET    $CA,Z,#$08
         LDX     #$F0C8
@@ -10263,7 +10263,7 @@ FuelSysTooRich2Monitor:
         DEC     $0187,Z
         LBRA    L171E0
 L17076:
-        BRCLR   <MonStatusFuelSysTooRich2,Z,#$80,L17086
+        BRCLR   <MonStatusFuelSysTooRich2,Z,#$80,L17086  ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 14) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRCLR   <DiagStatusFlags,Z,#$01,L1708E           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         LDAA    $25DC
         STAA    $0195,Z
@@ -10350,7 +10350,7 @@ L17160:
         BEQ     L171D8
         STAA    $CB,Z
         BSET    <MonStatusFuelSysTooRich2,Z,#$48
-        BCLR    <MonStatusFuelSysTooRich2,Z,#$80
+        BCLR    <MonStatusFuelSysTooRich2,Z,#$80         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 14) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRSET   $CE,Z,#$08,L171D8
         BSET    $CE,Z,#$08
         LDX     #$F0DC
@@ -10890,7 +10890,7 @@ O2HeaterAdcSample:
         LDAA    #$30
         STAA    >ADCTL1_L,Z
 L177C2:
-        BRCLR   >ADCSTAT,Z,#$80,L177C2
+        BRCLR   >ADCSTAT,Z,#$80,L177C2                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR4_L,Z
         STAB    >O2Heater55D,Z
         LDAB    >RJURR5_L,Z
@@ -10904,7 +10904,7 @@ L177C2:
         LDAA    #$30
         STAA    >ADCTL1_L,Z
 L177F2:
-        BRCLR   >ADCSTAT,Z,#$80,L177F2
+        BRCLR   >ADCSTAT,Z,#$80,L177F2                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR1_L,Z
         STAB    >O2Heater560,Z
         BSETW   >IoCtl12,Z,#$2000
@@ -10917,7 +10917,7 @@ L177F2:
         LDAA    #$30
         STAA    >ADCTL1_L,Z
 L17820:
-        BRCLR   >ADCSTAT,Z,#$80,L17820
+        BRCLR   >ADCSTAT,Z,#$80,L17820                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR4_L,Z
         STAB    >O2Heater559,Z
         LDAB    >RJURR5_L,Z
@@ -10931,7 +10931,7 @@ L17820:
         LDAA    #$30
         STAA    >ADCTL1_L,Z
 L17850:
-        BRCLR   >ADCSTAT,Z,#$80,L17850
+        BRCLR   >ADCSTAT,Z,#$80,L17850                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR1_L,Z
         STAB    >O2Heater55C,Z
         BCLRW   >IoCtl12,Z,#$2000
@@ -12444,7 +12444,7 @@ L18844:
 CatMonitorSetup:
         BRCLR   $01A6,Z,#$80,L18A00
         BRCLR   $0329,#$10,L189EC
-        BRCLR   >MonStatusCatBank1,Z,#$80,L189F0
+        BRCLR   >MonStatusCatBank1,Z,#$80,L189F0         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 0) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRSET   $009D,Z,#$80,L189EC
         BRSET   >MonStatusCatBank1,Z,#$08,L189C0
         BRSET   >MonStatusCatBank1,Z,#$40,L189E4
@@ -12592,7 +12592,7 @@ L189E4:
         BRSET   <DiagStatusFlags,Z,#$02,L18A00           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BSET    $9D,Z,#$C0
 L189EC:
-        BCLR    >MonStatusCatBank1,Z,#$80
+        BCLR    >MonStatusCatBank1,Z,#$80                ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 0) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L189F0:
         BCLR    $01A6,Z,#$80
 L189F4:
@@ -12609,7 +12609,7 @@ L18A00:
 CatMonSwitchRatio:
         BRCLR   $01A7,Z,#$80,L18BC2
         BRCLR   $032A,#$20,L18BAE
-        BRCLR   >MonStatusCatBank2,Z,#$80,L18BB2
+        BRCLR   >MonStatusCatBank2,Z,#$80,L18BB2         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 1) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRSET   $009E,Z,#$80,L18BAE
         BRSET   >MonStatusCatBank2,Z,#$08,L18B82
         BRSET   >MonStatusCatBank2,Z,#$40,L18BA6
@@ -12759,7 +12759,7 @@ L18BA6:
         BRSET   <DiagStatusFlags,Z,#$02,L18BC2           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BSET    $9E,Z,#$C0
 L18BAE:
-        BCLR    >MonStatusCatBank2,Z,#$80
+        BCLR    >MonStatusCatBank2,Z,#$80                ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 1) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L18BB2:
         BCLR    $01A7,Z,#$80
 L18BB6:
@@ -15231,7 +15231,7 @@ L1A61A:
         STAA    $01F2,Z
         BRCLR   $003E,Z,#$80,L1A638
         BRSET   >FaultSet0F,Z,#$08,L1A638
-        BRCLR   >SwitchInputs2,Z,#$40,L1A638             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRCLR   >SwitchInputs2,Z,#$40,L1A638             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         ADDA    $248B
         BCC     L1A638
         LDAA    #$FF
@@ -15414,7 +15414,7 @@ Sub_1A82E:
         CMPB    $3D88
         BCC     L1A88E
 L1A854:
-        BRCLR   >ADCSTAT_L,Z,#$01,L1A854
+        BRCLR   >ADCSTAT_L,Z,#$01,L1A854                 ; bit 0: CCF0: ADC conversion 0 complete
         ANDP    #$FF1F
         LDAA    >RJURR0_L,Z
         JSR     RawScaleF4
@@ -15745,7 +15745,7 @@ L1ABC8:
         ORP     #$00E0
         STAA    >ADCTL1_L,Z
 L1ABD8:
-        BRCLR   >ADCSTAT_L,Z,#$01,L1ABD8
+        BRCLR   >ADCSTAT_L,Z,#$01,L1ABD8                 ; bit 0: CCF0: ADC conversion 0 complete
         LDAA    >RJURR0_L,Z
         ANDP    #$FF1F
         CMPA    $3DA9
@@ -15766,7 +15766,7 @@ L1ABF4:
         ORP     #$00E0
         STAA    >ADCTL1_L,Z
 L1AC18:
-        BRCLR   >ADCSTAT_L,Z,#$01,L1AC18
+        BRCLR   >ADCSTAT_L,Z,#$01,L1AC18                 ; bit 0: CCF0: ADC conversion 0 complete
         LDAA    >RJURR0_L,Z
         ANDP    #$FF1F
         LDY     #$3677
@@ -16279,7 +16279,7 @@ Sub_1B1A8:
         BNE     L1B24A
         BRCLR   $003E,Z,#$80,L1B1E8
         BRSET   >FaultSet0F,Z,#$08,L1B1E8
-        BRSET   >SwitchInputs2,Z,#$40,L1B24A             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L1B24A             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
 L1B1E8:
         BRSET   >ThrottleState,Z,#$02,L1B24A             ; bit 1: set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark
         BRSET   $0138,Z,#$08,L1B24A
@@ -16574,7 +16574,7 @@ Sub_1B51C:
         CLRB
         BRSET   >FaultSet0F,Z,#$08,L1B56E
         BRCLR   >EngineStateFlags,Z,#$80,L1B576          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >SwitchInputs2,Z,#$40,L1B576             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRCLR   >SwitchInputs2,Z,#$40,L1B576             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         BRCLR   $032B,#$08,L1B576
         TST     >MonStartDelay,Z
         BNE     L1B576
@@ -18862,7 +18862,7 @@ L1CBD0:
 Sub_1CBD2:
         ORP     #$00E0
         LDD     >TCNT,Z
-        BRSET   >PORTGP,Z,#$80,L1CBEE
+        BRSET   >PORTGP,Z,#$80,L1CBEE                    ; bit 7: GPT port pin 7 level (IC4/OC5)
         LDX     #$840E
         LDY     #$81F0
         JSR     Sub_0E516
@@ -20157,7 +20157,7 @@ L1D938:
         XGDX
         JMP     $1D8BC,X
 L1D948:
-        BCLR    >SCCR1_L,Z,#$A0
+        BCLR    >SCCR1_L,Z,#$A0                          ; bit 7: TIE: SCI transmit interrupt enable; bit 5: RIE: SCI receive interrupt enable
         BRSET   >IoInputs0,Z,#$08,L1D996                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         BRSET   $080B,Z,#$20,L1D96A
         LDAA    #$05
@@ -20287,7 +20287,7 @@ L1DA9E:
 L1DAA2:
         RTS
 L1DAA4:
-        BRCLR   >SCSR_L,Z,#$40,L1DAC2
+        BRCLR   >SCSR_L,Z,#$40,L1DAC2                    ; bit 6: RDRF: SCI receive data register full
         LDAA    >SCDR_L,Z
         CMPA    #$55
         LBNE    L1E3E8
@@ -20307,7 +20307,7 @@ L1DAC2:
 L1DAD8:
         RTS
 L1DADA:
-        BRCLR   >SCSR_L,Z,#$80,L1DAF6
+        BRCLR   >SCSR_L,Z,#$80,L1DAF6                    ; bit 7: TC: SCI transmit complete
         DEC     $0250,Z
         BNE     L1DAF6
         LDAA    #$08
@@ -20318,7 +20318,7 @@ L1DADA:
 L1DAF6:
         RTS
 L1DAF8:
-        BRCLR   >SCSR_L,Z,#$80,L1DB14
+        BRCLR   >SCSR_L,Z,#$80,L1DB14                    ; bit 7: TC: SCI transmit complete
         DEC     $0250,Z
         BNE     L1DB14
         LDAA    #$08
@@ -20331,7 +20331,7 @@ L1DB14:
 L1DB16:
         DEC     $0250,Z
         BEQ     L1DB2C
-        BRCLR   >SCSR_L,Z,#$40,L1DB3C
+        BRCLR   >SCSR_L,Z,#$40,L1DB3C                    ; bit 6: RDRF: SCI receive data register full
         LDAB    >SCDR_L,Z
         COMB
         CMPB    #$08
@@ -20356,7 +20356,7 @@ L1DB3E:
 L1DB52:
         RTS
 L1DB54:
-        BRCLR   >SCSR_L,Z,#$40,L1DB70
+        BRCLR   >SCSR_L,Z,#$40,L1DB70                    ; bit 6: RDRF: SCI receive data register full
         LDAA    >SCDR_L,Z
         CMPA    #$08
         LBNE    L1E3E8
@@ -20370,7 +20370,7 @@ L1DB70:
 L1DB78:
         RTS
 L1DB7A:
-        BRCLR   >SCSR_L,Z,#$40,L1DB96
+        BRCLR   >SCSR_L,Z,#$40,L1DB96                    ; bit 6: RDRF: SCI receive data register full
         LDAA    >SCDR_L,Z
         CMPA    #$08
         LBNE    L1E3E8
@@ -20384,7 +20384,7 @@ L1DB96:
 L1DB9E:
         RTS
 L1DBA0:
-        BRCLR   >SCSR_L,Z,#$40,L1DBBE
+        BRCLR   >SCSR_L,Z,#$40,L1DBBE                    ; bit 6: RDRF: SCI receive data register full
         LDAA    >SCDR_L,Z
         COMA
         CMPA    #$08
@@ -20399,7 +20399,7 @@ L1DBBE:
 L1DBC6:
         RTS
 L1DBC8:
-        BRCLR   >SCSR_L,Z,#$40,L1DBE0
+        BRCLR   >SCSR_L,Z,#$40,L1DBE0                    ; bit 6: RDRF: SCI receive data register full
         LDAA    >SCDR_L,Z
         COMA
         CMPA    #$33
@@ -20416,7 +20416,7 @@ L1DBEA:
         LDAB    >SCDR_L,Z
         CLR     $0251,Z
         CLR     $0253,Z
-        BSET    >SCCR1_L,Z,#$20
+        BSET    >SCCR1_L,Z,#$20                          ; bit 5: RIE: SCI receive interrupt enable
         LDD     #$0AE7
         STD     $024F,Z
         INC     $024D,Z
@@ -21096,12 +21096,12 @@ L1E35C:
         BLS     L1E38A
         CMPA    #$15
         BCS     L1E396
-        BCLR    >SCCR1_L,Z,#$20
+        BCLR    >SCCR1_L,Z,#$20                          ; bit 5: RIE: SCI receive interrupt enable
         BSET    >DiagBusFlags,Z,#$80                     ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
         LDAA    >SCSR_L,Z
         LDAA    $025D,Z
         STAA    >SCDR_L,Z
-        BSET    >SCCR1_L,Z,#$80
+        BSET    >SCCR1_L,Z,#$80                          ; bit 7: TIE: SCI transmit interrupt enable
         INC     $024D,Z
         INC     $024D,Z
         BRA     L1E396
@@ -21117,12 +21117,12 @@ L1E398:
         LDAA    $0251,Z
         CMPA    #$15
         BLS     L1E3C8
-        BCLR    >SCCR1_L,Z,#$20
+        BCLR    >SCCR1_L,Z,#$20                          ; bit 5: RIE: SCI receive interrupt enable
         BSET    >DiagBusFlags,Z,#$80                     ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
         LDAA    >SCSR_L,Z
         LDAA    $025D,Z
         STAA    >SCDR_L,Z
-        BSET    >SCCR1_L,Z,#$80
+        BSET    >SCCR1_L,Z,#$80                          ; bit 7: TIE: SCI transmit interrupt enable
         INC     $024D,Z
         BRA     L1E3C8
 L1E3C4:
@@ -21133,7 +21133,7 @@ L1E3CA:
         LDAB    $025C,Z
         CMPB    $025B,Z
         BCS     L1E3E6
-        BRCLR   >SCSR_L,Z,#$80,L1E3E6
+        BRCLR   >SCSR_L,Z,#$80,L1E3E6                    ; bit 7: TC: SCI transmit complete
         BRCLR   $0252,Z,#$FF,L1E3E8
         LDAA    #$0E
         STAA    $024D,Z
@@ -21198,7 +21198,7 @@ Sub_1E464:
         LDD     #$0AE7
         STD     $024F,Z
         BRSET   >DiagBusFlags,Z,#$80,L1E4A6              ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
-        BRCLR   >SCSR_L,Z,#$0E,L1E484
+        BRCLR   >SCSR_L,Z,#$0E,L1E484                    ; bit 3: OR: SCI overrun; bit 2: NF: SCI noise flag; bit 1: FE: SCI framing error
         LDAB    >SCDR_L,Z
         BRA     L1E4CC
 L1E484:
@@ -21231,7 +21231,7 @@ L1E4A6:
         BRA     L1E4D4
 L1E4CC:
         BCLR    >DiagBusFlags,Z,#$80                     ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
-        BCLR    >SCCR1_L,Z,#$80
+        BCLR    >SCCR1_L,Z,#$80                          ; bit 7: TIE: SCI transmit interrupt enable
 L1E4D4:
         PULM    E,D
         RTS

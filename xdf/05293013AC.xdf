@@ -6373,7 +6373,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A9" flags="0x0">
   <title>KnockRpmSteps</title>
-  <description>Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points $1C8D</description>
+  <description>Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables $1C8D</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -14313,8 +14313,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2FD" flags="0x0">
-  <title>IacAcRequestAdder</title>
-  <description>IAC addition with A/C requested (A/C switch input, not blocked) $1FEB</description>
+  <title>IacPsSwitchAdder</title>
+  <description>IAC addition while the power steering pressure switch is on (SwitchInputs2 bit 6; only with the switch fitted and no P0551) $1FEB</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1FEB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14782,7 +14782,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x324" flags="0x0">
   <title>O2HeaterSampleTime</title>
-  <description>Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled $2582</description>
+  <description>O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled $2582</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2582" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />

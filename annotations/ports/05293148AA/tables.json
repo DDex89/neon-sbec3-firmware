@@ -1337,9 +1337,9 @@
    "auto": false
   },
   "42AD": {
-   "name": "FlexSensorCurve",
+   "name": "CatTempSensorCurve",
    "category": "Sensors",
-   "desc": "Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to CatTempFiltered",
+   "desc": "Catalyst temperature sensor (Options0330 bit 4; CatTempMonitor reports P1482/P1483 shorted low/high and P1484 overheat): analog input $0A8E to CatTempFiltered. The same input serves the flex-fuel sensor (FlexSensorCheck, P0176/P0178/P0179) where that is fitted",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -3475,8 +3475,8 @@
    "category": "Idle"
   },
   "2346": {
-   "name": "IacAcRequestAdder",
-   "desc": "IAC addition with A/C requested (A/C switch input, not blocked)",
+   "name": "IacPsSwitchAdder",
+   "desc": "IAC addition while the power steering pressure switch is on (SwitchInputs2 bit 6; only with the switch fitted and no P0551)",
    "size": 1,
    "category": "Idle"
   },
@@ -4487,13 +4487,13 @@
   },
   "2B6A": {
    "name": "O2HeaterSampleTime",
-   "desc": "Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled",
    "category": "Diagnostics",
    "size": 2
   },
   "2B6E": {
    "name": "O2HeaterSettleTime",
-   "desc": "Probably the O2 heater monitor (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated",
    "category": "Diagnostics",
    "size": 2
   },
@@ -4973,7 +4973,7 @@
    "rows": 19,
    "cols": 2,
    "row_size": 2,
-   "desc": "Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points",
+   "desc": "Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables",
    "category": "Spark"
   },
   "162C": {

@@ -652,7 +652,7 @@
  },
  "IoStatus0B": {
   "5": "SCI line status, probably (SciPitService)",
-  "3": "bus transmitter busy, probably (CCD/PCI transmit code waits on it)"
+  "3": "bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set"
  },
  "IoStatus2": {
   "2": "tested by KnockChipConfig"
@@ -763,32 +763,32 @@
   "0": "misfire threshold in the closed-loop range (MisfireThreshold)"
  },
  "MonFlags09D": {
-  "7": "P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
-  "6": "P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
-  "5": "P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
-  "4": "P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
-  "3": "P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
-  "2": "P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
-  "1": "P1281 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
-  "0": "P0551 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)"
+  "7": "P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear",
+  "6": "P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear",
+  "5": "P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear",
+  "4": "P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear",
+  "3": "P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear",
+  "2": "P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear",
+  "1": "P1281 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear",
+  "0": "P0551 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear"
  },
  "MonFlags09E": {
-  "7": "P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
-  "6": "P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
-  "5": "P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
-  "4": "P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
-  "3": "P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
-  "2": "P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
-  "1": "P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
-  "0": "P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)"
+  "7": "P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear",
+  "6": "P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear",
+  "5": "P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear",
+  "4": "P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear",
+  "3": "P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear",
+  "2": "P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear",
+  "1": "P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear",
+  "0": "P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear"
  },
  "MonFlags09F": {
-  "7": "P0463 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)",
-  "6": "P0462 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)",
-  "5": "P0460 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)",
-  "4": "P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)",
-  "3": "P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)",
-  "2": "P1698 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)"
+  "7": "P0463 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear",
+  "6": "P0462 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear",
+  "5": "P0460 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear",
+  "4": "P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear",
+  "3": "P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear",
+  "2": "P1698 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear"
  },
  "MonFlags101": {
   "7": "body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)",
@@ -812,9 +812,9 @@
   "2": "P1698: body bus timeout fault reported (BodyBusTimeout)"
  },
  "MonStatusPurge": {
-  "7": "purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)",
+  "7": "purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest); monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 4) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
   "6": "purge flow monitor complete this drive cycle",
-  "4": "read by ObdReadiness",
+  "4": "read by ObdReadiness; P0441 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)",
   "3": "purge flow monitor failed (PurgeFlowFailCount reached)",
   "2": "purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)",
   "1": "read by ObdReadiness and PurgeFlowTest"
@@ -867,14 +867,14 @@
   "0": "adaptive cell update: rich step (O2CellUpdate)"
  },
  "O2MonFlags": {
-  "7": "P0138 result (fault-to-status map, paired with MonFlags09E)",
-  "6": "P0158 result (fault-to-status map, paired with MonFlags09E)",
-  "5": "P0140 result (fault-to-status map, paired with MonFlags09E)",
-  "4": "P0160 result (fault-to-status map, paired with MonFlags09E)",
-  "3": "P0137 result (fault-to-status map, paired with MonFlags09E)",
-  "2": "P0157 result (fault-to-status map, paired with MonFlags09E)",
-  "1": "P0153 result (fault-to-status map, paired with MonFlags09E)",
-  "0": "P0133 result (fault-to-status map, paired with MonFlags09E)"
+  "7": "P0138 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)",
+  "6": "P0158 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)",
+  "5": "P0140 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)",
+  "4": "P0160 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)",
+  "3": "P0137 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)",
+  "2": "P0157 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)",
+  "1": "P0153 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)",
+  "0": "P0133 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)"
  },
  "O2ResetFlags": {
   "5": "post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)",
@@ -949,7 +949,7 @@
   "5": "transmission controller on the bus (sets EquipmentFlags bit 5)",
   "4": "bus timeout variant (BusTimeoutCheck)",
   "3": "PCI link variant (PciLinkCheck, PciBuildMessage)",
-  "2": "PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit"
+  "2": "PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit"
  },
  "Options032F": {
   "7": "upstream O2 sensor 1 fitted (pairs with O2ActiveFlags bits 7/3 and Options033F bit 7)",
@@ -1067,20 +1067,21 @@
   "1": "selects a branch in StartInjectorPulse"
  },
  "Options033E": {
-  "7": "readiness: monitor supported (ObdReadiness)",
-  "6": "readiness: monitor supported (ObdReadiness)",
-  "5": "purge flow test on (PurgeFlowTest)",
-  "4": "readiness: monitor supported (ObdReadiness)",
-  "3": "readiness: monitor supported (ObdReadiness)",
-  "2": "misfire monitor variant (MisfireEnableCheck)",
-  "1": "leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)",
-  "0": "EGR flow monitor supported (EgrFlowMonitor, ObdReadiness)"
+  "7": "O2 response monitor, sensor 1 (P0133) on: ObdMonitorOptionBits row 2; also readiness (ObdReadiness)",
+  "6": "O2 response monitor, sensor 2 (P0153) on: ObdMonitorOptionBits row 3; also readiness (ObdReadiness)",
+  "5": "purge flow test on (PurgeFlowTest); purge monitor row 4 of ObdMonitorOptionBits",
+  "4": "catalyst monitor bank 1 (P0420) on: ObdMonitorOptionBits row 0; also readiness (ObdReadiness)",
+  "3": "catalyst monitor bank 2 (P0432) on: ObdMonitorOptionBits row 1; also readiness (ObdReadiness)",
+  "2": "misfire monitor variant (MisfireEnableCheck); misfire monitor row 15 of ObdMonitorOptionBits",
+  "1": "leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits",
+  "0": "EGR flow monitor supported (EgrFlowMonitor, ObdReadiness); row 5 of ObdMonitorOptionBits"
  },
  "Options033F": {
   "7": "heater monitor for O2 sensor 1 supported (O2HeaterMonitor, ObdReadiness)",
   "6": "heater monitor for O2 sensor 2 supported",
   "5": "heater monitor for O2 sensor 3 (downstream 1) supported",
-  "4": "heater monitor for O2 sensor 4 (downstream 2) supported"
+  "4": "heater monitor for O2 sensor 4 (downstream 2) supported",
+  "3": "fuel system monitors (P0171/P0172/P0174/P0175) on: ObdMonitorOptionBits rows 11-14"
  },
  "Options0340": {
   "7": "idle rpm monitor on (IdleRpmMonitor)",
@@ -1336,10 +1337,10 @@
   "0": "brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)"
  },
  "SwitchInputs2": {
-  "7": "switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)",
-  "6": "switch input used by the idle air code (load switch, probably power steering or A/C)",
+  "7": "A/C request switch (AcClutchControl, EquipmentDetect)",
+  "6": "power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)",
   "5": "park/neutral switch (gear state, starter cut, park/neutral monitor)",
-  "4": "speed control switch (on/off, probably)",
+  "4": "speed control on/off switch (speed control code, lamp state, EquipmentDetect)",
   "3": "speed control switch",
   "2": "speed control switch (set at reset)",
   "1": "speed control switch",
@@ -1398,5 +1399,225 @@
   "2": "mileage step reached: SRI mileage to be stored (Isr_GPT_IC3, SriMileageStore)",
   "1": "second VSS pulse seen (Isr_GPT_IC3)",
   "0": "first VSS pulse seen (Isr_GPT_IC3)"
+ },
+ "MonStatusCatBank1": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 0) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0420 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusCatBank2": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 1) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0432 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusO2Resp1": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 2) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0133 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusO2Resp2": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 3) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0153 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusEgrFlow": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 5) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0401 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusLdp": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 6) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0442 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusO2Sensor1": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 7) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0135 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusO2Sensor2": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 8) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0155 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusO2Sensor3": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 9) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0141 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusO2Sensor4": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 10) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0161 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusFuelSysTooLean1": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 11) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0171 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusFuelSysTooLean2": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 12) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0174 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusFuelSysTooRich1": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 13) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0172 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusFuelSysTooRich2": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 14) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set",
+  "4": "P0175 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)"
+ },
+ "MonStatusMisfire": {
+  "7": "monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 15) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set"
+ },
+ "TFLG1": {
+  "7": "I4/O5F: input capture 4 / output compare 5 flag",
+  "6": "OC4F: output compare 4 flag",
+  "5": "OC3F: output compare 3 flag",
+  "4": "OC2F: output compare 2 flag",
+  "3": "OC1F: output compare 1 flag",
+  "2": "IC3F: input capture 3 flag",
+  "1": "IC2F: input capture 2 flag",
+  "0": "IC1F: input capture 1 flag"
+ },
+ "TMSK1": {
+  "7": "I4/O5I: IC4/OC5 interrupt enable",
+  "6": "OC4I: OC4 interrupt enable",
+  "5": "OC3I: OC3 interrupt enable",
+  "4": "OC2I: OC2 interrupt enable",
+  "3": "OC1I: OC1 interrupt enable",
+  "2": "IC3I: IC3 interrupt enable",
+  "1": "IC2I: IC2 interrupt enable",
+  "0": "IC1I: IC1 interrupt enable"
+ },
+ "TFLG2": {
+  "7": "TOF: timer overflow flag",
+  "5": "PAIF: pulse accumulator input flag",
+  "4": "PAOVF: pulse accumulator overflow flag"
+ },
+ "TMSK2": {
+  "7": "TOI: timer overflow interrupt enable",
+  "5": "PAII: pulse accumulator input interrupt enable",
+  "4": "PAOVI: pulse accumulator overflow interrupt enable"
+ },
+ "TCTL1": {
+  "7": "OM5: OC5 output mode",
+  "6": "OL5: OC5 output level",
+  "5": "OM4: OC4 output mode",
+  "4": "OL4: OC4 output level",
+  "3": "OM3: OC3 output mode",
+  "2": "OL3: OC3 output level",
+  "1": "OM2: OC2 output mode",
+  "0": "OL2: OC2 output level"
+ },
+ "TCTL2": {
+  "7": "EDGE4B: IC4 edge select",
+  "6": "EDGE4A: IC4 edge select",
+  "5": "EDGE3B: IC3 edge select",
+  "4": "EDGE3A: IC3 edge select",
+  "3": "EDGE2B: IC2 edge select",
+  "2": "EDGE2A: IC2 edge select",
+  "1": "EDGE1B: IC1 edge select",
+  "0": "EDGE1A: IC1 edge select"
+ },
+ "PACTL": {
+  "7": "PAIS: pulse accumulator input pin state",
+  "6": "PAEN: pulse accumulator enable",
+  "5": "PAMOD: pulse accumulator mode (gated time)",
+  "4": "PEDGE: pulse accumulator edge",
+  "3": "PCLKS: PCLK pin state",
+  "2": "I4/O5: pin is IC4 (set) or OC5 (clear)",
+  "1": "PACLK1: pulse accumulator clock select",
+  "0": "PACLK0: pulse accumulator clock select"
+ },
+ "SCSR": {
+  "0": "TDRE: SCI transmit data register empty"
+ },
+ "SCSR_L": {
+  "7": "TC: SCI transmit complete",
+  "6": "RDRF: SCI receive data register full",
+  "5": "RAF: SCI receiver active",
+  "4": "IDLE: SCI idle line detected",
+  "3": "OR: SCI overrun",
+  "2": "NF: SCI noise flag",
+  "1": "FE: SCI framing error",
+  "0": "PF: SCI parity error"
+ },
+ "SCCR1_L": {
+  "7": "TIE: SCI transmit interrupt enable",
+  "6": "TCIE: SCI transmit complete interrupt enable",
+  "5": "RIE: SCI receive interrupt enable",
+  "4": "ILIE: SCI idle line interrupt enable",
+  "3": "TE: SCI transmitter enable",
+  "2": "RE: SCI receiver enable",
+  "1": "RWU: SCI receiver wake-up",
+  "0": "SBK: SCI send break"
+ },
+ "SPCR1": {
+  "7": "SPE: QSPI enable"
+ },
+ "SPSR": {
+  "7": "SPIF: QSPI finished flag",
+  "6": "MODF: QSPI mode fault",
+  "5": "HALTA: QSPI halt acknowledge"
+ },
+ "SYNCR": {
+  "7": "W: clock synthesizer frequency control (VCO)",
+  "6": "X: clock synthesizer frequency control (prescaler)",
+  "5": "Y5: clock synthesizer multiplier",
+  "4": "Y4: clock synthesizer multiplier",
+  "3": "Y3: clock synthesizer multiplier",
+  "2": "Y2: clock synthesizer multiplier",
+  "1": "Y1: clock synthesizer multiplier",
+  "0": "Y0: clock synthesizer multiplier"
+ },
+ "SYNCR_L": {
+  "7": "EDIV: ECLK divide rate",
+  "4": "SLIMP: limp mode (no reference clock)",
+  "3": "SLOCK: synthesizer locked",
+  "2": "RSTEN: reset on loss of clock",
+  "1": "STSIM: SIM clock in stop mode",
+  "0": "STEXT: CLKOUT in stop mode"
+ },
+ "RSR": {
+  "7": "EXT: last reset was external",
+  "6": "POW: last reset was power-up",
+  "5": "SW: last reset was the software watchdog",
+  "4": "HLT: last reset was a halt monitor reset"
+ },
+ "ADCSTAT": {
+  "7": "SCF: ADC sequence complete flag"
+ },
+ "ADCSTAT_L": {
+  "0": "CCF0: ADC conversion 0 complete"
+ },
+ "DDRF": {
+  "0": "port F pin 0 direction (set = output)",
+  "1": "port F pin 1 direction (set = output)",
+  "2": "port F pin 2 direction (set = output)",
+  "3": "port F pin 3 direction (set = output)",
+  "4": "port F pin 4 direction (set = output)",
+  "5": "port F pin 5 direction (set = output)",
+  "6": "port F pin 6 direction (set = output)",
+  "7": "port F pin 7 direction (set = output)"
+ },
+ "PFPAR": {
+  "0": "port F pin 0 function (set = MODCLK)",
+  "1": "port F pin 1 function (set = IRQ1 input)",
+  "2": "port F pin 2 function (set = IRQ2 input)",
+  "3": "port F pin 3 function (set = IRQ3 input)",
+  "4": "port F pin 4 function (set = IRQ4 input)",
+  "5": "port F pin 5 function (set = IRQ5 input)",
+  "6": "port F pin 6 function (set = IRQ6 input)",
+  "7": "port F pin 7 function (set = IRQ7 input)"
+ },
+ "PORTGP": {
+  "0": "GPT port pin 0 level (IC1)",
+  "1": "GPT port pin 1 level (IC2)",
+  "2": "GPT port pin 2 level (IC3)",
+  "3": "GPT port pin 3 level (OC1)",
+  "4": "GPT port pin 4 level (OC2)",
+  "5": "GPT port pin 5 level (OC3)",
+  "6": "GPT port pin 6 level (OC4)",
+  "7": "GPT port pin 7 level (IC4/OC5)"
+ },
+ "PORTC": {
+  "0": "port C pin 0 output level (chip-select pin used as output)",
+  "1": "port C pin 1 output level (chip-select pin used as output)",
+  "2": "port C pin 2 output level (chip-select pin used as output)",
+  "3": "port C pin 3 output level (chip-select pin used as output)",
+  "4": "port C pin 4 output level (chip-select pin used as output)",
+  "5": "port C pin 5 output level (chip-select pin used as output)",
+  "6": "port C pin 6 output level (chip-select pin used as output)",
+  "7": "port C pin 7 output level (chip-select pin used as output)"
  }
 }

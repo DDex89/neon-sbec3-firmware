@@ -8931,7 +8931,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1ED" flags="0x0">
   <title>KnockRpmSteps</title>
-  <description>Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points $2435</description>
+  <description>Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables $2435</description>
   <CATEGORYMEM index="0" category="10" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -17691,8 +17691,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x2C9" flags="0x0">
-  <title>FlexSensorCurve</title>
-  <description>Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to CatTempFiltered $70AD, 2D; inputs: FlexSensorRaw</description>
+  <title>CatTempSensorCurve</title>
+  <description>Catalyst temperature sensor (Options0330 bit 4; CatTempMonitor reports P1482/P1483 shorted low/high and P1484 overheat): analog input $0A8E to CatTempFiltered. The same input serves the flex-fuel sensor (FlexSensorCheck, P0176/P0178/P0179) where that is fitted $70AD, 2D; inputs: FlexSensorRaw</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -18231,7 +18231,7 @@
  </XDFFLAG>
  <XDFFLAG uniqueid="0x2EB" flags="0x0">
   <title>Options032E bit $04</title>
-  <description>PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit. Option byte (global configuration); bits used are listed with their names where known $032E mask $04</description>
+  <description>PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit. Option byte (global configuration); bits used are listed with their names where known $032E mask $04</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x04</mask>
@@ -29356,8 +29356,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6B3" flags="0x0">
-  <title>IacAcRequestAdder</title>
-  <description>IAC addition with A/C requested (A/C switch input, not blocked) $28D2</description>
+  <title>IacPsSwitchAdder</title>
+  <description>IAC addition while the power steering pressure switch is on (SwitchInputs2 bit 6; only with the switch fitted and no P0551) $28D2</description>
   <CATEGORYMEM index="0" category="1" />
   <EMBEDDEDDATA mmedaddress="0x28D2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32862,7 +32862,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7DA" flags="0x0">
   <title>O2HeaterRunTimeMin</title>
-  <description>Probably the O2 heater monitor (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value $321E</description>
+  <description>O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value $321E</description>
   <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x321E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32874,7 +32874,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7DB" flags="0x0">
   <title>O2HeaterSampleTime</title>
-  <description>Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled $3222</description>
+  <description>O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled $3222</description>
   <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x3222" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -32886,7 +32886,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7DC" flags="0x0">
   <title>O2HeaterTestTime</title>
-  <description>Probably the O2 heater monitor: timer O2HeaterTimer (word) limit of the test $3224</description>
+  <description>O2 heater monitor (run at key-off from CheckPowerDown): timer O2HeaterTimer (word) limit of the test $3224</description>
   <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x3224" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -32898,7 +32898,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7DD" flags="0x0">
   <title>O2HeaterSettleTime</title>
-  <description>Probably the O2 heater monitor (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated $3226</description>
+  <description>O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated $3226</description>
   <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x3226" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -32910,7 +32910,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7DE" flags="0x0">
   <title>O2HeaterCountMin</title>
-  <description>Probably the O2 heater monitor (O2HeaterResult): count O2HeaterCount above which the results are judged $3228</description>
+  <description>O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterResult): count O2HeaterCount above which the results are judged $3228</description>
   <CATEGORYMEM index="0" category="14" />
   <EMBEDDEDDATA mmedaddress="0x3228" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -35801,6 +35801,30 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x8CF" flags="0x0">
+  <title>FaultStatusMapRows</title>
+  <description>Number of FaultStatusMap rows scanned by SciDiagCommand (44) $7744</description>
+  <CATEGORYMEM index="0" category="14" />
+  <EMBEDDEDDATA mmedaddress="0x7744" mmedelementsizebits="8" mmedtypeflags="0x00" />
+  <units />
+  <decimalpl>0</decimalpl>
+  <outputtype>1</outputtype>
+  <MATH equation="X">
+   <VAR id="X" />
+  </MATH>
+ </XDFCONSTANT>
+ <XDFCONSTANT uniqueid="0x8D0" flags="0x0">
+  <title>FaultTwoTripRows</title>
+  <description>Number of two-trip rows ObdFaultReport searches, from row 11 ($75FA) of FaultStatusMap (22) $7746</description>
+  <CATEGORYMEM index="0" category="14" />
+  <EMBEDDEDDATA mmedaddress="0x7746" mmedelementsizebits="8" mmedtypeflags="0x00" />
+  <units />
+  <decimalpl>0</decimalpl>
+  <outputtype>1</outputtype>
+  <MATH equation="X">
+   <VAR id="X" />
+  </MATH>
+ </XDFCONSTANT>
+ <XDFCONSTANT uniqueid="0x8D1" flags="0x0">
   <title>CamFaultDelay</title>
   <description>Cam sensor monitor (CamSensorMonitor, P0340): delay (CamFaultTimer, word) set after a fault report $774C</description>
   <CATEGORYMEM index="0" category="14" />
@@ -35812,7 +35836,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8D0" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8D2" flags="0x0">
   <title>PurgeMonitorValueInit</title>
   <description>Start value of PurgeMonitorValue $774E</description>
   <CATEGORYMEM index="0" category="4" />
@@ -35824,7 +35848,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8D1" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8D3" flags="0x0">
   <title>PurgeMonitorValueMin</title>
   <description>Lower limit of PurgeMonitorValue from PurgeMonitorLimit $774F</description>
   <CATEGORYMEM index="0" category="4" />
@@ -35836,7 +35860,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8D2" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8D4" flags="0x0">
   <title>PurgeMonHoldTime</title>
   <description>Purge monitor: time (PurgeMonTimer) the hold state (PurgeMonFlags bit 4) lasts $7750</description>
   <CATEGORYMEM index="0" category="4" />
@@ -35848,7 +35872,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8D3" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8D5" flags="0x0">
   <title>RpmPeriodConstant</title>
   <description>Dividend (long, also read from $ABB1) for engine rpm from the reference period (CalcEngineRpm, CalcRpmFromPeriod) $ABB0</description>
   <CATEGORYMEM index="0" category="6" />
@@ -35860,7 +35884,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8D4" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8D6" flags="0x0">
   <title>CylinderCount</title>
   <description>Number of cylinders (4): the cylinder index CylinderIndex counts up to it and the per-event code uses it $ABB5</description>
   <CATEGORYMEM index="0" category="3" />
@@ -35872,7 +35896,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8D5" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8D7" flags="0x0">
   <title>RunModeTimeWarm</title>
   <description>Run-mode switch (RunModeSwitch): time after start (Count3s, word) with coolant at or above 15 °C before ControlFlags943 bits 3-4 are set $ABB6</description>
   <CATEGORYMEM index="0" category="8" />
@@ -35884,7 +35908,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8D6" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8D8" flags="0x0">
   <title>RunModeTimeCold</title>
   <description>As RunModeTimeWarm with colder coolant $ABB8</description>
   <CATEGORYMEM index="0" category="8" />
@@ -35896,7 +35920,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8D7" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8D9" flags="0x0">
   <title>RunModeCountRunning</title>
   <description>Run-mode switch: count needed once the engine has run (ControlFlagsC33 bit 5) and the battery is at or above 11.0 V $ABBA</description>
   <CATEGORYMEM index="0" category="8" />
@@ -35908,7 +35932,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8D8" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8DA" flags="0x0">
   <title>RunModeCount</title>
   <description>Run-mode switch: count RunModeCounter needed (battery at or above 11.0 V, or warm) $ABBB</description>
   <CATEGORYMEM index="0" category="8" />
@@ -35920,7 +35944,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8D9" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8DB" flags="0x0">
   <title>RunModeCountColdLowVolts</title>
   <description>Run-mode switch: count needed cold with the battery below 11.0 V $ABBC</description>
   <CATEGORYMEM index="0" category="8" />
@@ -35932,7 +35956,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8DA" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8DC" flags="0x0">
   <title>FuelEventCylFactor</title>
   <description>Per-cylinder offset factor (multiplied by the cylinder index CylinderIndex) $ABD7</description>
   <CATEGORYMEM index="0" category="2" />
@@ -35944,7 +35968,7 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x8DB" flags="0x0">
+ <XDFCONSTANT uniqueid="0x8DD" flags="0x0">
   <title>RpmRateDivisor</title>
   <description>Divisor of the rpm rate terms (IdleRpmRate, RpmRateTerm): rpm change × segment rpm / this value (word) $ABE4</description>
   <CATEGORYMEM index="0" category="6" />

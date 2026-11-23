@@ -2889,9 +2889,9 @@
    "auto": false
   },
   "70AD": {
-   "name": "FlexSensorCurve",
+   "name": "CatTempSensorCurve",
    "category": "Sensors",
-   "desc": "Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to CatTempFiltered",
+   "desc": "Catalyst temperature sensor (Options0330 bit 4; CatTempMonitor reports P1482/P1483 shorted low/high and P1484 overheat): analog input $0A8E to CatTempFiltered. The same input serves the flex-fuel sensor (FlexSensorCheck, P0176/P0178/P0179) where that is fitted",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -7883,8 +7883,8 @@
    "category": "Idle"
   },
   "283E": {
-   "name": "IacAcRequestAdder",
-   "desc": "IAC addition with A/C requested (A/C switch input, not blocked)",
+   "name": "IacPsSwitchAdder",
+   "desc": "IAC addition while the power steering pressure switch is on (SwitchInputs2 bit 6; only with the switch fitted and no P0551)",
    "size": 1,
    "category": "Idle"
   },
@@ -9484,31 +9484,31 @@
   },
   "3154": {
    "name": "O2HeaterRunTimeMin",
-   "desc": "Probably the O2 heater monitor (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value",
    "category": "Diagnostics",
    "size": 1
   },
   "3158": {
    "name": "O2HeaterSampleTime",
-   "desc": "Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled",
    "category": "Diagnostics",
    "size": 2
   },
   "315A": {
    "name": "O2HeaterTestTime",
-   "desc": "Probably the O2 heater monitor: timer O2HeaterTimer (word) limit of the test",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown): timer O2HeaterTimer (word) limit of the test",
    "category": "Diagnostics",
    "size": 2
   },
   "315C": {
    "name": "O2HeaterSettleTime",
-   "desc": "Probably the O2 heater monitor (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated",
    "category": "Diagnostics",
    "size": 2
   },
   "315E": {
    "name": "O2HeaterCountMin",
-   "desc": "Probably the O2 heater monitor (O2HeaterResult): count O2HeaterCount above which the results are judged",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterResult): count O2HeaterCount above which the results are judged",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10987,9 +10987,9 @@
   "758C": {
    "name": "FaultStatusMap",
    "kind": "faultmap",
-   "rows": 43,
+   "rows": 44,
    "row_size": 10,
-   "desc": "Fault-to-status map: fault table row, monitor status byte and bit, second status byte and bit (read by ObdFaultReport and the OBD request code)"
+   "desc": "Fault-to-status map, 44 rows: fault table row, status byte and mask, second status byte and mask. SciDiagCommand scans all rows (FaultStatusMapRows) and sends the codes whose status bit is set. Rows 11-32 ($75FA, FaultTwoTripRows) are the two-trip tests of ObdFaultReport: the first pair is the pending byte (MonFlags09D-09F), the second the test result the monitor sets before the call; a failure with the pending bit set reports the fault, a pass clears both"
   },
   "C584": {
    "name": "IncSaturateList",
@@ -11014,7 +11014,7 @@
    "rows": 19,
    "cols": 2,
    "row_size": 2,
-   "desc": "Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points",
+   "desc": "Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables",
    "category": "Spark"
   },
   "195E": {

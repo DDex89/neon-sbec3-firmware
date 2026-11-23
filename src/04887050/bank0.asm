@@ -2793,7 +2793,7 @@ Tab2D_1C63:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRpmSteps ($1C75): 19 rows of 2 bytes
-; Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points
+; Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables
 ;---------------------------------------------------------------------------------------------------
 KnockRpmSteps:
         dc.b    $20,$00
@@ -3501,8 +3501,8 @@ Tab2D_1FBB:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
-IacAcRequestAdder:
-        dc.b    $11                                      ; IAC addition with A/C requested (A/C switch input, not blocked)
+IacPsSwitchAdder:
+        dc.b    $11                                      ; IAC addition while the power steering pressure switch is on (SwitchInputs2 bit 6; only with the switch fitted and no P0551)
 IacDriveAdder:
         dc.b    $00                                      ; IAC addition (signed) in drive
 
@@ -4232,7 +4232,7 @@ O2MonWindowMin:
         dc.b    $13                                      ; O2 sensor monitor at idle: window count at or above which the switch counts are judged
         dc.b    $08,$80,$04,$A2,$60
 O2HeaterSampleTime:
-        dc.b    $00,$64                                  ; Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled
+        dc.b    $00,$64                                  ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled
         dc.b    $15,$90,$11,$30,$1E,$4D,$4D,$4D,$4D,$1A,$1A,$1A,$1A,$01,$01,$01
         dc.b    $01,$08,$08,$08,$08,$0A,$0A,$0A,$0A,$05,$04,$80,$25,$0C,$80,$3E
         dc.b    $00,$8C,$00,$19,$A8,$64,$10,$10,$28,$28,$01,$02,$80
@@ -5578,10 +5578,10 @@ L04892:
         LDAA    >CrankSyncFlags,Z
         BITA    #$20
         BEQ     L048AE
-        BRSET   >PACTL,Z,#$80,L048C6
+        BRSET   >PACTL,Z,#$80,L048C6                     ; bit 7: PAIS: pulse accumulator input pin state
         BRA     L048B4
 L048AE:
-        BRCLR   >PACTL,Z,#$80,L048C6
+        BRCLR   >PACTL,Z,#$80,L048C6                     ; bit 7: PAIS: pulse accumulator input pin state
 L048B4:
         ADDA    #$01
         TAB
@@ -5637,7 +5637,7 @@ L04930:
         JSR     FuelEventCalc
         JSR     CamCrankMeasure
 L04940:
-        BRCLR   >ADCSTAT_L,Z,#$01,L04940
+        BRCLR   >ADCSTAT_L,Z,#$01,L04940                 ; bit 0: CCF0: ADC conversion 0 complete
         LDAA    >RJURR0_L,Z
         STAA    >MapRawStart,Z
         BRSET   >CrankSyncFlags,Z,#$40,L0496E            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
@@ -5645,8 +5645,8 @@ L04940:
         LDAA    #$75
         STAA    >PACTL,Z
         CLR     >PACNT,Z
-        BCLR    >TFLG2,Z,#$10
-        BSET    >TMSK2,Z,#$10
+        BCLR    >TFLG2,Z,#$10                            ; bit 4: PAOVF: pulse accumulator overflow flag
+        BSET    >TMSK2,Z,#$10                            ; bit 4: PAOVI: pulse accumulator overflow interrupt enable
         JMP     L04B10
 L0496E:
         JSR     KnockSample
@@ -5803,7 +5803,7 @@ L04B0A:
         LDAB    #$04
         JSR     FuelEventStart
 L04B10:
-        BCLR    >PORTC,Z,#$07
+        BCLR    >PORTC,Z,#$07                            ; bit 2: port C pin 2 output level (chip-select pin used as output); bit 1: port C pin 1 output level (chip-select pin used as output); bit 0: port C pin 0 output level (chip-select pin used as output)
         LDAA    #$30
         STAA    >ADCTL1_L,Z
         JMP     L0492C
@@ -5976,7 +5976,7 @@ L04CE8:
 L04D00:
         JSR     Sub_13B24
 L04D04:
-        BRCLR   >ADCSTAT,Z,#$80,L04D04
+        BRCLR   >ADCSTAT,Z,#$80,L04D04                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR4_L,Z
         STAB    >O2UpBank1Raw,Z
         LDAB    >RJURR5_L,Z
@@ -5997,7 +5997,7 @@ L04D3A:
         BRSET   >Options0337,#$20,L04D60                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
         BRCLR   >EngineStateFlags,Z,#$80,L04D60          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
 L04D52:
-        BRCLR   >ADCSTAT,Z,#$80,L04D52
+        BRCLR   >ADCSTAT,Z,#$80,L04D52                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR1_L,Z
         STAB    $052C,Z
 L04D60:
@@ -6010,8 +6010,8 @@ L04D72:
         LDAA    #$75
         STAA    >PACTL,Z
         CLR     >PACNT,Z
-        BCLR    >TFLG2,Z,#$10
-        BSET    >TMSK2,Z,#$10
+        BCLR    >TFLG2,Z,#$10                            ; bit 4: PAOVF: pulse accumulator overflow flag
+        BSET    >TMSK2,Z,#$10                            ; bit 4: PAOVI: pulse accumulator overflow interrupt enable
         BRCLR   >SparkFlags,Z,#$20,L04EE2                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDD     >SparkPeriod,Z
         CPD     #$2710
@@ -6313,7 +6313,7 @@ L050C8:
 L050F6:
         STE     >FuelPulseAdder,Z
 L050FA:
-        BCLR    >PORTC,Z,#$07
+        BCLR    >PORTC,Z,#$07                            ; bit 2: port C pin 2 output level (chip-select pin used as output); bit 1: port C pin 1 output level (chip-select pin used as output); bit 0: port C pin 0 output level (chip-select pin used as output)
         LDAA    #$30
         STAA    >ADCTL1_L,Z
         JMP     L0492C
@@ -6325,8 +6325,8 @@ L050FA:
 Isr_GPT_PAI:
         ORP     #$00E0
         PSHM    D,E
-        BRCLR   >TFLG2,Z,#$20,L0519C
-        BCLR    >TFLG2,Z,#$20
+        BRCLR   >TFLG2,Z,#$20,L0519C                     ; bit 5: PAIF: pulse accumulator input flag
+        BCLR    >TFLG2,Z,#$20                            ; bit 5: PAIF: pulse accumulator input flag
         CLR     >PACNT,Z
         LDD     >TCNT,Z
         STD     >Cam691,Z
@@ -6351,9 +6351,9 @@ L05146:
         BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0516C:
         CLRA
-        BRCLR   >PACTL,Z,#$80,L05186
+        BRCLR   >PACTL,Z,#$80,L05186                     ; bit 7: PAIS: pulse accumulator input pin state
         BCLR    >CrankSyncFlags,Z,#$20                   ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
-        BRCLR   >PORTGP,Z,#$01,L05180
+        BRCLR   >PORTGP,Z,#$01,L05180                    ; bit 0: GPT port pin 0 level (IC1)
         LDAA    #$02
 L05180:
         STAA    >CylinderIndex,Z
@@ -6425,7 +6425,7 @@ Isr_GPT_IC3:
         PSHM    D,E,X,Y,K
         LDE     #$0010
         JSR     Sub_0E75E
-        BRSET   >PORTGP,Z,#$04,L0540C
+        BRSET   >PORTGP,Z,#$04,L0540C                    ; bit 2: GPT port pin 2 level (IC3)
         INC     $0466,Z
         LDD     >TIC3,Z
         TZX
@@ -6656,7 +6656,7 @@ L054A2:
         BRSET   $039C,Z,#$02,L054AC
         JSR     Sub_0557E
 L054AC:
-        BCLR    >PORTC,Z,#$07
+        BCLR    >PORTC,Z,#$07                            ; bit 2: port C pin 2 output level (chip-select pin used as output); bit 1: port C pin 1 output level (chip-select pin used as output); bit 0: port C pin 0 output level (chip-select pin used as output)
         LDAA    #$30
         STAA    >ADCTL1_L,Z
 L054B6:
@@ -7315,7 +7315,7 @@ Isr_GPT_IC4OC5:
         BRCLR   >Options0337,#$80,L05FAC                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         LDD     >TI4O5,Z
         TDE
-        BRSET   >TCTL2,Z,#$80,L05F84
+        BRSET   >TCTL2,Z,#$80,L05F84                     ; bit 7: EDGE4B: IC4 edge select
         LDX     #$840E
         LDY     #$80F0
         JSR     Sub_0E516
@@ -7414,13 +7414,13 @@ L05F84:
 L05F8E:
         CLR     $040E,Z
         STE     $0412,Z
-        BSET    >TCTL2,Z,#$40
-        BCLR    >TCTL2,Z,#$80
+        BSET    >TCTL2,Z,#$40                            ; bit 6: EDGE4A: IC4 edge select
+        BCLR    >TCTL2,Z,#$80                            ; bit 7: EDGE4B: IC4 edge select
         BRA     L05FAC
 L05FA0:
         CLR     $040C,Z
-        BSET    >TCTL2,Z,#$80
-        BCLR    >TCTL2,Z,#$40
+        BSET    >TCTL2,Z,#$80                            ; bit 7: EDGE4B: IC4 edge select
+        BCLR    >TCTL2,Z,#$40                            ; bit 6: EDGE4A: IC4 edge select
 L05FAC:
         LDAA    >TFLG1,Z
         EORA    #$80
@@ -14666,7 +14666,7 @@ L0B12C:
 L0B13E:
         BRCLR   $003E,Z,#$80,L0B182
         BRSET   >FaultSet0F,Z,#$08,L0B182
-        BRSET   >SwitchInputs2,Z,#$40,L0B15C             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L0B15C             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         BRCLR   >DriveFlags,Z,#$08,L0B182                ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         BCLR    >DriveFlags,Z,#$08                       ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         BRA     L0B166
@@ -15243,7 +15243,7 @@ L0B782:
         BRCLR   >IoCfg1FL,Z,#$01,L0B85A
         BRCLR   $003E,Z,#$80,L0B7A0
         BRSET   >FaultSet0F,Z,#$08,L0B7A0
-        BRSET   >SwitchInputs2,Z,#$40,L0B85A             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L0B85A             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
 L0B7A0:
         BRSET   $0327,#$01,L0B7F8
         LDAA    >MapRaw,Z
@@ -15376,7 +15376,7 @@ Sub_0B8DE:
         LBNE    L0B982
         BRCLR   $003E,Z,#$80,L0B904
         BRSET   >FaultSet0F,Z,#$08,L0B904
-        BRSET   >SwitchInputs2,Z,#$40,L0B982             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L0B982             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
 L0B904:
         BRCLR   >IoCfg1FL,Z,#$01,L0B982
         LDAA    >IdleFlags5,Z
@@ -15624,8 +15624,8 @@ L0BB56:
 L0BB5E:
         BRCLR   $003E,Z,#$80,L0BB78
         BRSET   >FaultSet0F,Z,#$08,L0BB78
-        BRCLR   >SwitchInputs2,Z,#$40,L0BB78             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
-        LDAB    >IacAcRequestAdder
+        BRCLR   >SwitchInputs2,Z,#$40,L0BB78             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
+        LDAB    >IacPsSwitchAdder
         CLRA
         ADE
 L0BB78:
@@ -15706,7 +15706,7 @@ L0BC06:
 L0BC0E:
         BRCLR   $003E,Z,#$80,L0BC28
         BRSET   >FaultSet0F,Z,#$08,L0BC28
-        BRCLR   >SwitchInputs2,Z,#$40,L0BC28             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRCLR   >SwitchInputs2,Z,#$40,L0BC28             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         LDAB    $20C4
         CLRA
         ADE
@@ -16093,8 +16093,8 @@ L0BFFE:
 L0C05A:
         BRCLR   $003E,Z,#$80,L0C074
         BRSET   >FaultSet0F,Z,#$08,L0C074
-        BRCLR   >SwitchInputs2,Z,#$40,L0C074             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
-        LDAB    >IacAcRequestAdder
+        BRCLR   >SwitchInputs2,Z,#$40,L0C074             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
+        LDAB    >IacPsSwitchAdder
         CLRA
         ADE
 L0C074:
@@ -16198,7 +16198,7 @@ L0C17E:
 L0C198:
         BRCLR   $003E,Z,#$80,L0C1B8
         BRSET   >FaultSet0F,Z,#$08,L0C1B8
-        BRCLR   >SwitchInputs2,Z,#$40,L0C1B8             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRCLR   >SwitchInputs2,Z,#$40,L0C1B8             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         LDAA    $1DDE
         CMPA    $069F,Z
         BLS     L0C1B8
@@ -16534,8 +16534,8 @@ L0C586:
 Isr_IRQ1:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$02
-        BCLR    >DDRF,Z,#$02
+        BCLR    >PFPAR,Z,#$02                            ; bit 1: port F pin 1 function (set = IRQ1 input)
+        BCLR    >DDRF,Z,#$02                             ; bit 1: port F pin 1 direction (set = output)
         LDD     #$8000
         JMP     UnexpectedInterrupt
 
@@ -16546,8 +16546,8 @@ Isr_IRQ1:
 Isr_IRQ3:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$08
-        BCLR    >DDRF,Z,#$08
+        BCLR    >PFPAR,Z,#$08                            ; bit 3: port F pin 3 function (set = IRQ3 input)
+        BCLR    >DDRF,Z,#$08                             ; bit 3: port F pin 3 direction (set = output)
         LDD     #$4000
         JMP     UnexpectedInterrupt
 
@@ -16558,8 +16558,8 @@ Isr_IRQ3:
 Isr_IRQ5:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$20
-        BCLR    >DDRF,Z,#$20
+        BCLR    >PFPAR,Z,#$20                            ; bit 5: port F pin 5 function (set = IRQ5 input)
+        BCLR    >DDRF,Z,#$20                             ; bit 5: port F pin 5 direction (set = output)
         LDD     #$2000
         JMP     UnexpectedInterrupt
 
@@ -16570,8 +16570,8 @@ Isr_IRQ5:
 Isr_IRQ6:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$40
-        BCLR    >DDRF,Z,#$40
+        BCLR    >PFPAR,Z,#$40                            ; bit 6: port F pin 6 function (set = IRQ6 input)
+        BCLR    >DDRF,Z,#$40                             ; bit 6: port F pin 6 direction (set = output)
         LDD     #$1000
         JMP     UnexpectedInterrupt
 
@@ -16582,8 +16582,8 @@ Isr_IRQ6:
 Isr_IRQ7:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$80
-        BCLR    >DDRF,Z,#$80
+        BCLR    >PFPAR,Z,#$80                            ; bit 7: port F pin 7 function (set = IRQ7 input)
+        BCLR    >DDRF,Z,#$80                             ; bit 7: port F pin 7 direction (set = output)
         LDD     #$0800
         BRA     UnexpectedInterrupt
 
@@ -16594,8 +16594,8 @@ Isr_IRQ7:
 Isr_GPT_Overflow:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >TMSK2,Z,#$80
-        BCLR    >TFLG2,Z,#$80
+        BCLR    >TMSK2,Z,#$80                            ; bit 7: TOI: timer overflow interrupt enable
+        BCLR    >TFLG2,Z,#$80                            ; bit 7: TOF: timer overflow flag
         LDD     #$0400
         BRA     UnexpectedInterrupt
 
@@ -16606,8 +16606,8 @@ Isr_GPT_Overflow:
 Isr_GPT_PAOverflow:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >TMSK2,Z,#$20
-        BCLR    >TFLG2,Z,#$20
+        BCLR    >TMSK2,Z,#$20                            ; bit 5: PAII: pulse accumulator input interrupt enable
+        BCLR    >TFLG2,Z,#$20                            ; bit 5: PAIF: pulse accumulator input flag
         LDD     #$0200
         BRA     UnexpectedInterrupt
 
@@ -16618,8 +16618,8 @@ Isr_GPT_PAOverflow:
 Isr_GPT_IC2:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >TMSK1,Z,#$02
-        BCLR    >TFLG1,Z,#$02
+        BCLR    >TMSK1,Z,#$02                            ; bit 1: IC2I: IC2 interrupt enable
+        BCLR    >TFLG1,Z,#$02                            ; bit 1: IC2F: input capture 2 flag
         LDD     #$0100
         BRA     UnexpectedInterrupt
 
@@ -16630,8 +16630,8 @@ Isr_GPT_IC2:
 Isr_GPT_OC1:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >TMSK1,Z,#$08
-        BCLR    >TFLG1,Z,#$08
+        BCLR    >TMSK1,Z,#$08                            ; bit 3: OC1I: OC1 interrupt enable
+        BCLR    >TFLG1,Z,#$08                            ; bit 3: OC1F: output compare 1 flag
         LDD     #$0080
         BRA     UnexpectedInterrupt
 UnexpectedInterrupt:
@@ -16832,7 +16832,7 @@ L0C7C0:
         STAA    >PACTL,Z
         BRA     L0C8C6
 L0C8B2:
-        BRCLR   >PACTL,Z,#$80,L0C8C0
+        BRCLR   >PACTL,Z,#$80,L0C8C0                     ; bit 7: PAIS: pulse accumulator input pin state
         LDAA    #$65
         STAA    >PACTL,Z
         BRA     L0C8C6
@@ -17013,7 +17013,7 @@ L0CA8E:
         LDX     #$8032
         BSET    <SystemFlags00A,Z,#$10                   ; bit 4: codes cleared at reset after a failed RAM check (Reset)
 L0CAFE:
-        BCLR    >PORTC,Z,#$07
+        BCLR    >PORTC,Z,#$07                            ; bit 2: port C pin 2 output level (chip-select pin used as output); bit 1: port C pin 1 output level (chip-select pin used as output); bit 0: port C pin 0 output level (chip-select pin used as output)
         LDAA    #$30
         STAA    >ADCTL1_L,Z
         CLRE
@@ -17048,7 +17048,7 @@ L0CB0A:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0CB74:
-        BRCLR   >ADCSTAT,Z,#$80,L0CB74
+        BRCLR   >ADCSTAT,Z,#$80,L0CB74                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR0_L,Z
         STAA    >MapRawStart,Z
         JSR     RawScaleF4
@@ -17072,7 +17072,7 @@ L0CBB0:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0CBC2:
-        BRCLR   >ADCSTAT_L,Z,#$01,L0CBC2
+        BRCLR   >ADCSTAT_L,Z,#$01,L0CBC2                 ; bit 0: CCF0: ADC conversion 0 complete
         LDAA    >RJURR0_L,Z
         CMPA    $3DA9
         BCC     L0CBE0
@@ -17097,7 +17097,7 @@ L0CBE0:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0CC12:
-        BRCLR   >ADCSTAT,Z,#$80,L0CC12
+        BRCLR   >ADCSTAT,Z,#$80,L0CC12                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR1_L,Z
 L0CC1C:
         STAA    >CoolantRaw,Z
@@ -17110,7 +17110,7 @@ L0CC1C:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0CC3A:
-        BRCLR   >ADCSTAT,Z,#$80,L0CC3A
+        BRCLR   >ADCSTAT,Z,#$80,L0CC3A                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
         CMPA    #$40
         BCC     L0CC76
@@ -17125,7 +17125,7 @@ L0CC3A:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0CC6C:
-        BRCLR   >ADCSTAT,Z,#$80,L0CC6C
+        BRCLR   >ADCSTAT,Z,#$80,L0CC6C                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
 L0CC76:
         STAA    $0312,Z
@@ -17447,8 +17447,8 @@ L0D00C:
         STD     $0806,Z
         LDD     #$03FF
         STD     $0808,Z
-        BCLR    >TFLG1,Z,#$FF
-        BCLR    >TFLG2,Z,#$B0
+        BCLR    >TFLG1,Z,#$FF                            ; bit 7: I4/O5F: input capture 4 / output compare 5 flag; bit 6: OC4F: output compare 4 flag; bit 5: OC3F: output compare 3 flag; bit 4: OC2F: output compare 2 flag; bit 3: OC1F: output compare 1 flag; bit 2: IC3F: input capture 3 flag; bit 1: IC2F: input capture 2 flag; bit 0: IC1F: input capture 1 flag
+        BCLR    >TFLG2,Z,#$B0                            ; bit 7: TOF: timer overflow flag; bit 5: PAIF: pulse accumulator input flag; bit 4: PAOVF: pulse accumulator overflow flag
         LDD     #$02FF
         STD     >IoIrqStatus,Z
         LDD     #$0000
@@ -17491,7 +17491,7 @@ L0D098:
         BEQ     L0D098
         STD     $04C0,Z
 L0D0A2:
-        BRSET   >SYNCR_L,Z,#$08,L0D0AE
+        BRSET   >SYNCR_L,Z,#$08,L0D0AE                   ; bit 3: SLOCK: synthesizer locked
         JSR     KickWatchdogsLong
         BRA     L0D0A2
 L0D0AE:
@@ -17743,7 +17743,7 @@ L0D3A2:
         LDX     #$7F80
         JSR     PowerInputHold
         BCS     L0D436
-        BCLR    >TFLG1,Z,#$FF
+        BCLR    >TFLG1,Z,#$FF                            ; bit 7: I4/O5F: input capture 4 / output compare 5 flag; bit 6: OC4F: output compare 4 flag; bit 5: OC3F: output compare 3 flag; bit 4: OC2F: output compare 2 flag; bit 3: OC1F: output compare 1 flag; bit 2: IC3F: input capture 3 flag; bit 1: IC2F: input capture 2 flag; bit 0: IC1F: input capture 1 flag
         LDAB    #$19
 L0D3F0:
         LDX     #$0510
@@ -17758,7 +17758,7 @@ L0D3F0:
 L0D408:
         CLR     >ADCTL1_L,Z
 L0D40C:
-        BRCLR   >ADCSTAT_L,Z,#$01,L0D40C
+        BRCLR   >ADCSTAT_L,Z,#$01,L0D40C                 ; bit 0: CCF0: ADC conversion 0 complete
         LDAA    >RJURR0_L,Z
         CMPA    $3DA9
         BCC     L0D42E
@@ -17822,7 +17822,7 @@ L0D4B4:
         BNE     L0D4CC
         BITB    #$07
         BEQ     L0D4CC
-        BRCLR   <MonStatusCatBank1,Z,#$80,L0D4CC
+        BRCLR   <MonStatusCatBank1,Z,#$80,L0D4CC         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 0) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         ORAB    #$18
         STAB    $9D,Z
 L0D4CC:
@@ -17833,7 +17833,7 @@ L0D4CC:
         BNE     L0D4EA
         BITA    #$07
         BEQ     L0D4EA
-        BRCLR   <MonStatusCatBank2,Z,#$80,L0D4EA
+        BRCLR   <MonStatusCatBank2,Z,#$80,L0D4EA         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 1) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         ORAA    #$18
         STAA    $9E,Z
 L0D4EA:
@@ -17846,7 +17846,7 @@ L0D4FA:
         JSR     Sub_0E6BC
         STD     <ResetCheckWord,Z
         JSR     KickWatchdogsLong
-        BSET    >PORTC,Z,#$10
+        BSET    >PORTC,Z,#$10                            ; bit 4: port C pin 4 output level (chip-select pin used as output)
 L0D508:
         JSR     ServiceWatchdog
         BRSET   >IoInputs0,Z,#$08,L0D508                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
@@ -18326,23 +18326,23 @@ L0DA9A:
         LDE     #$0055
         STE     $0179,Z
 L0DAA8:
-        BRCLR   >SYNCR,Z,#$80,L0DABA
-        BCLR    >SYNCR,Z,#$80
+        BRCLR   >SYNCR,Z,#$80,L0DABA                     ; bit 7: W: clock synthesizer frequency control (VCO)
+        BCLR    >SYNCR,Z,#$80                            ; bit 7: W: clock synthesizer frequency control (VCO)
         LDE     #$0056
         STE     $0179,Z
 L0DABA:
-        BRSET   >SYNCR,Z,#$7F,L0DACC
-        BSET    >SYNCR,Z,#$7F
+        BRSET   >SYNCR,Z,#$7F,L0DACC                     ; bit 6: X: clock synthesizer frequency control (prescaler); bit 5: Y5: clock synthesizer multiplier; bit 4: Y4: clock synthesizer multiplier; bit 3: Y3: clock synthesizer multiplier; bit 2: Y2: clock synthesizer multiplier; bit 1: Y1: clock synthesizer multiplier; bit 0: Y0: clock synthesizer multiplier
+        BSET    >SYNCR,Z,#$7F                            ; bit 6: X: clock synthesizer frequency control (prescaler); bit 5: Y5: clock synthesizer multiplier; bit 4: Y4: clock synthesizer multiplier; bit 3: Y3: clock synthesizer multiplier; bit 2: Y2: clock synthesizer multiplier; bit 1: Y1: clock synthesizer multiplier; bit 0: Y0: clock synthesizer multiplier
         LDE     #$0057
         STE     $0179,Z
 L0DACC:
-        BRCLR   >SYNCR_L,Z,#$07,L0DADE
-        BCLR    >SYNCR_L,Z,#$07
+        BRCLR   >SYNCR_L,Z,#$07,L0DADE                   ; bit 2: RSTEN: reset on loss of clock; bit 1: STSIM: SIM clock in stop mode; bit 0: STEXT: CLKOUT in stop mode
+        BCLR    >SYNCR_L,Z,#$07                          ; bit 2: RSTEN: reset on loss of clock; bit 1: STSIM: SIM clock in stop mode; bit 0: STEXT: CLKOUT in stop mode
         LDE     #$0058
         STE     $0179,Z
 L0DADE:
-        BRSET   >SYNCR_L,Z,#$80,L0DAF0
-        BSET    >SYNCR_L,Z,#$80
+        BRSET   >SYNCR_L,Z,#$80,L0DAF0                   ; bit 7: EDIV: ECLK divide rate
+        BSET    >SYNCR_L,Z,#$80                          ; bit 7: EDIV: ECLK divide rate
         LDE     #$0059
         STE     $0179,Z
 L0DAF0:
@@ -18351,20 +18351,20 @@ L0DAF0:
         LDE     #$005A
         STE     $0179,Z
 L0DB04:
-        BRSET   >PORTC,Z,#$08,L0DB16
-        BSET    >PORTC,Z,#$08
+        BRSET   >PORTC,Z,#$08,L0DB16                     ; bit 3: port C pin 3 output level (chip-select pin used as output)
+        BSET    >PORTC,Z,#$08                            ; bit 3: port C pin 3 output level (chip-select pin used as output)
         LDE     #$005B
         STE     $0179,Z
 L0DB16:
         BRCLR   >Options0337,#$80,L0DB30                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
-        BRSET   >TMSK1,Z,#$80,L0DB42
-        BSET    >TMSK1,Z,#$80
+        BRSET   >TMSK1,Z,#$80,L0DB42                     ; bit 7: I4/O5I: IC4/OC5 interrupt enable
+        BSET    >TMSK1,Z,#$80                            ; bit 7: I4/O5I: IC4/OC5 interrupt enable
         LDE     #$005C
         STE     $0179,Z
         BRA     L0DB42
 L0DB30:
-        BRCLR   >TMSK1,Z,#$80,L0DB42
-        BCLR    >TMSK1,Z,#$80
+        BRCLR   >TMSK1,Z,#$80,L0DB42                     ; bit 7: I4/O5I: IC4/OC5 interrupt enable
+        BCLR    >TMSK1,Z,#$80                            ; bit 7: I4/O5I: IC4/OC5 interrupt enable
         LDE     #$005C
         STE     $0179,Z
 L0DB42:
@@ -18420,11 +18420,11 @@ L0DBAE:
         STE     $0179,Z
 L0DBC6:
         ORP     #$00E0
-        BRCLR   >TCTL1,Z,#$C0,L0DBD4
-        BCLR    >TCTL1,Z,#$C0
+        BRCLR   >TCTL1,Z,#$C0,L0DBD4                     ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
+        BCLR    >TCTL1,Z,#$C0                            ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
 L0DBD4:
-        BRSET   >TCTL1,Z,#$2A,L0DBE6
-        BSET    >TCTL1,Z,#$2A
+        BRSET   >TCTL1,Z,#$2A,L0DBE6                     ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
+        BSET    >TCTL1,Z,#$2A                            ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         LDE     #$002D
         STE     $0179,Z
 L0DBE6:
@@ -18451,8 +18451,8 @@ L0DC04:
 L0DC20:
         ANDP    #$FF1F
         ORP     #$00E0
-        BRCLR   >TMSK2,Z,#$AD,L0DC3A
-        BCLR    >TMSK2,Z,#$AD
+        BRCLR   >TMSK2,Z,#$AD,L0DC3A                     ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
+        BCLR    >TMSK2,Z,#$AD                            ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
         LDE     #$0031
         STE     $0179,Z
 L0DC3A:
@@ -18574,7 +18574,7 @@ L0DD86:
         BNE     L0DDB4
         LDAA    >PACTL,Z
         ANDA    #$7F
-        BRCLR   >PACTL,Z,#$80,L0DDA2
+        BRCLR   >PACTL,Z,#$80,L0DDA2                     ; bit 7: PAIS: pulse accumulator input pin state
         CMPA    #$65
         BEQ     L0DDB4
         LDAA    #$65
@@ -18589,11 +18589,11 @@ L0DDA8:
         STE     $0179,Z
 L0DDB4:
         ORP     #$00E0
-        BRCLR   >TCTL1,Z,#$C0,L0DDC2
-        BCLR    >TCTL1,Z,#$C0
+        BRCLR   >TCTL1,Z,#$C0,L0DDC2                     ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
+        BCLR    >TCTL1,Z,#$C0                            ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
 L0DDC2:
-        BRSET   >TCTL1,Z,#$2A,L0DDD4
-        BSET    >TCTL1,Z,#$2A
+        BRSET   >TCTL1,Z,#$2A,L0DDD4                     ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
+        BSET    >TCTL1,Z,#$2A                            ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         LDE     #$002D
         STE     $0179,Z
 L0DDD4:
@@ -18620,8 +18620,8 @@ L0DDF2:
 L0DE0E:
         ANDP    #$FF1F
         ORP     #$00E0
-        BRCLR   >TMSK2,Z,#$AD,L0DE28
-        BCLR    >TMSK2,Z,#$AD
+        BRCLR   >TMSK2,Z,#$AD,L0DE28                     ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
+        BCLR    >TMSK2,Z,#$AD                            ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
         LDE     #$0031
         STE     $0179,Z
 L0DE28:
@@ -18747,7 +18747,7 @@ L0DF7C:
         LDE     #$002B
         STE     $0179,Z
 L0DF90:
-        BRSET   >PACTL,Z,#$80,L0DFAE
+        BRSET   >PACTL,Z,#$80,L0DFAE                     ; bit 7: PAIS: pulse accumulator input pin state
         LDAA    >PACTL,Z
         ANDA    #$7F
         CMPA    #$75
@@ -18758,11 +18758,11 @@ L0DF90:
         STE     $0179,Z
 L0DFAE:
         ORP     #$00E0
-        BRCLR   >TCTL1,Z,#$C0,L0DFBC
-        BCLR    >TCTL1,Z,#$C0
+        BRCLR   >TCTL1,Z,#$C0,L0DFBC                     ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
+        BCLR    >TCTL1,Z,#$C0                            ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
 L0DFBC:
-        BRSET   >TCTL1,Z,#$2A,L0DFCE
-        BSET    >TCTL1,Z,#$2A
+        BRSET   >TCTL1,Z,#$2A,L0DFCE                     ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
+        BSET    >TCTL1,Z,#$2A                            ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         LDE     #$002D
         STE     $0179,Z
 L0DFCE:
@@ -18789,8 +18789,8 @@ L0DFEC:
 L0E008:
         ANDP    #$FF1F
         ORP     #$00E0
-        BRCLR   >TMSK2,Z,#$AD,L0E022
-        BCLR    >TMSK2,Z,#$AD
+        BRCLR   >TMSK2,Z,#$AD,L0E022                     ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
+        BCLR    >TMSK2,Z,#$AD                            ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
         LDE     #$0031
         STE     $0179,Z
 L0E022:
@@ -19374,13 +19374,13 @@ ServiceWatchdog:
 KickWatchdogsLong:
         PSHM    D
         LDAA    #$15
-        BCLR    >PORTC,Z,#$20
-        BRSET   >SYNCR,Z,#$40,L0E70A
+        BCLR    >PORTC,Z,#$20                            ; bit 5: port C pin 5 output level (chip-select pin used as output)
+        BRSET   >SYNCR,Z,#$40,L0E70A                     ; bit 6: X: clock synthesizer frequency control (prescaler)
         LDAA    #$0A
 L0E70A:
         DECA
         BNE     L0E70A
-        BSET    >PORTC,Z,#$20
+        BSET    >PORTC,Z,#$20                            ; bit 5: port C pin 5 output level (chip-select pin used as output)
         LDD     #$55AA
         STAA    >SWSR,Z
         STAB    >SWSR,Z

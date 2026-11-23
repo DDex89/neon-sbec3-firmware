@@ -3289,9 +3289,9 @@
    "auto": false
   },
   "70AD": {
-   "name": "FlexSensorCurve",
+   "name": "CatTempSensorCurve",
    "category": "Sensors",
-   "desc": "Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to CatTempFiltered",
+   "desc": "Catalyst temperature sensor (Options0330 bit 4; CatTempMonitor reports P1482/P1483 shorted low/high and P1484 overheat): analog input $0A8E to CatTempFiltered. The same input serves the flex-fuel sensor (FlexSensorCheck, P0176/P0178/P0179) where that is fitted",
    "x": "raw",
    "y": "raw",
    "auto": false
@@ -9218,8 +9218,8 @@
    "category": "Idle"
   },
   "28D2": {
-   "name": "IacAcRequestAdder",
-   "desc": "IAC addition with A/C requested (A/C switch input, not blocked)",
+   "name": "IacPsSwitchAdder",
+   "desc": "IAC addition while the power steering pressure switch is on (SwitchInputs2 bit 6; only with the switch fitted and no P0551)",
    "size": 1,
    "category": "Idle"
   },
@@ -11022,31 +11022,31 @@
   },
   "321E": {
    "name": "O2HeaterRunTimeMin",
-   "desc": "Probably the O2 heater monitor (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value",
    "category": "Diagnostics",
    "size": 1
   },
   "3222": {
    "name": "O2HeaterSampleTime",
-   "desc": "Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled",
    "category": "Diagnostics",
    "size": 2
   },
   "3224": {
    "name": "O2HeaterTestTime",
-   "desc": "Probably the O2 heater monitor: timer O2HeaterTimer (word) limit of the test",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown): timer O2HeaterTimer (word) limit of the test",
    "category": "Diagnostics",
    "size": 2
   },
   "3226": {
    "name": "O2HeaterSettleTime",
-   "desc": "Probably the O2 heater monitor (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated",
    "category": "Diagnostics",
    "size": 2
   },
   "3228": {
    "name": "O2HeaterCountMin",
-   "desc": "Probably the O2 heater monitor (O2HeaterResult): count O2HeaterCount above which the results are judged",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterResult): count O2HeaterCount above which the results are judged",
    "category": "Diagnostics",
    "size": 1
   },
@@ -12544,6 +12544,18 @@
    "category": "Sensors",
    "size": 1
   },
+  "7744": {
+   "name": "FaultStatusMapRows",
+   "desc": "Number of FaultStatusMap rows scanned by SciDiagCommand (44)",
+   "category": "Diagnostics",
+   "size": 1
+  },
+  "7746": {
+   "name": "FaultTwoTripRows",
+   "desc": "Number of two-trip rows ObdFaultReport searches, from row 11 ($75FA) of FaultStatusMap (22)",
+   "category": "Diagnostics",
+   "size": 1
+  },
   "774C": {
    "name": "CamFaultDelay",
    "desc": "Cam sensor monitor (CamSensorMonitor, P0340): delay (CamFaultTimer, word) set after a fault report",
@@ -12657,9 +12669,9 @@
   "758C": {
    "name": "FaultStatusMap",
    "kind": "faultmap",
-   "rows": 43,
+   "rows": 44,
    "row_size": 10,
-   "desc": "Fault-to-status map: fault table row, monitor status byte and bit, second status byte and bit (read by ObdFaultReport and the OBD request code)"
+   "desc": "Fault-to-status map, 44 rows: fault table row, status byte and mask, second status byte and mask. SciDiagCommand scans all rows (FaultStatusMapRows) and sends the codes whose status bit is set. Rows 11-32 ($75FA, FaultTwoTripRows) are the two-trip tests of ObdFaultReport: the first pair is the pending byte (MonFlags09D-09F), the second the test result the monitor sets before the call; a failure with the pending bit set reports the fault, a pass clears both"
   },
   "38448": {
    "name": "EepromShadowMap",
@@ -12796,7 +12808,8 @@
    "size": 256,
    "rows": 1,
    "row_size": 256,
-   "desc": "Transmit rotation for CcdTransmit and PciPitTick: RAM addresses of the values sent, probably"
+   "desc": "CCD transmit schedule: 128 slots, each the bank-3 address of a message builder; CcdTransmit (and the PCI code) step through it with CcdTxIndex, find the address in CcdTxJumpTable ($30100) and call that entry",
+   "code_bank": 3
   },
   "254E": {
    "name": "KnockWindowSetup",
@@ -12813,7 +12826,7 @@
    "rows": 19,
    "cols": 2,
    "row_size": 2,
-   "desc": "Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points",
+   "desc": "Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables",
    "category": "Spark"
   },
   "19EA": {
@@ -12842,6 +12855,77 @@
    "row_size": 31,
    "desc": "Words indexed by the injector number in StartInjectorPulse (all zero in 05293190AC)",
    "category": "Fuel"
+  },
+  "20CBE": {
+   "name": "ObdMonitorOptionBits",
+   "kind": "optbits",
+   "rows": 16,
+   "row_size": 4,
+   "desc": "Option bit of each OBD monitor row: ObdRecordFlags (at reset and on a code clear) sets bit 7 of the row's status byte when the option bit is set, clears it otherwise; ObdMonitorMain runs only rows with bit 7 set"
+  },
+  "37846": {
+   "name": "DiagDataList9",
+   "kind": "words",
+   "size": 38,
+   "rows": 1,
+   "row_size": 38,
+   "desc": "Lists of RAM addresses next to DiagDataList1-8, not referenced directly (same layout)"
+  },
+  "37880": {
+   "name": "DiagDataList10",
+   "kind": "words",
+   "size": 38,
+   "rows": 1,
+   "row_size": 38,
+   "desc": "Lists of RAM addresses next to DiagDataList1-8, not referenced directly (same layout)"
+  },
+  "37932": {
+   "name": "DiagDataList11",
+   "kind": "words",
+   "size": 36,
+   "rows": 1,
+   "row_size": 36,
+   "desc": "Lists of RAM addresses next to DiagDataList1-8, not referenced directly (same layout)"
+  },
+  "37DBC": {
+   "name": "DiagDataList12",
+   "kind": "words",
+   "size": 28,
+   "rows": 1,
+   "row_size": 28,
+   "desc": "Lists of RAM addresses next to DiagDataList1-8, not referenced directly (same layout)"
+  },
+  "3522C": {
+   "name": "SciDataGroups1",
+   "kind": "words",
+   "size": 64,
+   "rows": 1,
+   "row_size": 64,
+   "desc": "RAM address groups ($FFFF ends a group) of the SCI diagnostic service, next to SciRequestReceive's data"
+  },
+  "35270": {
+   "name": "SciDataGroups2",
+   "kind": "words",
+   "size": 30,
+   "rows": 1,
+   "row_size": 30,
+   "desc": "RAM address groups ($FFFF ends a group) of the SCI diagnostic service"
+  },
+  "367F4": {
+   "name": "BitMaskWords",
+   "kind": "words",
+   "size": 32,
+   "rows": 1,
+   "row_size": 32,
+   "desc": "The 16 one-bit masks $0001-$8000 as words; no reader found"
+  },
+  "0C9D8": {
+   "name": "BitMaskWordsC9D8",
+   "kind": "words",
+   "size": 32,
+   "rows": 1,
+   "row_size": 32,
+   "desc": "The 16 one-bit masks $0001-$8000 as words, used by the code that follows ($0C9F8)"
   }
  }
 }

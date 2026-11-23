@@ -2145,8 +2145,8 @@
    "category": "Idle"
   },
   "1FC5": {
-   "name": "IacAcRequestAdder",
-   "desc": "IAC addition with A/C requested (A/C switch input, not blocked)",
+   "name": "IacPsSwitchAdder",
+   "desc": "IAC addition while the power steering pressure switch is on (SwitchInputs2 bit 6; only with the switch fitted and no P0551)",
    "size": 1,
    "category": "Idle"
   },
@@ -2535,7 +2535,7 @@
   },
   "2568": {
    "name": "O2HeaterSampleTime",
-   "desc": "Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled",
+   "desc": "O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled",
    "category": "Diagnostics",
    "size": 2
   },
@@ -2665,7 +2665,7 @@
    "rows": 19,
    "cols": 2,
    "row_size": 2,
-   "desc": "Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points",
+   "desc": "Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables",
    "category": "Spark"
   },
   "119A": {

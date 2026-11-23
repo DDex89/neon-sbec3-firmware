@@ -6935,7 +6935,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1BA" flags="0x0">
   <title>KnockRpmSteps</title>
-  <description>Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points $1F61</description>
+  <description>Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables $1F61</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12655,8 +12655,8 @@
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x24F" flags="0x0">
-  <title>FlexSensorCurve</title>
-  <description>Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to CatTempFiltered $42AD, 2D; inputs: FlexSensorRaw</description>
+  <title>CatTempSensorCurve</title>
+  <description>Catalyst temperature sensor (Options0330 bit 4; CatTempMonitor reports P1482/P1483 shorted low/high and P1484 overheat): analog input $0A8E to CatTempFiltered. The same input serves the flex-fuel sensor (FlexSensorCheck, P0176/P0178/P0179) where that is fitted $42AD, 2D; inputs: FlexSensorRaw</description>
   <CATEGORYMEM index="0" category="1" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12910,7 +12910,7 @@
  </XDFCONSTANT>
  <XDFFLAG uniqueid="0x257" flags="0x0">
   <title>Options032E bit $04</title>
-  <description>PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit. Option byte (global configuration); bits used are listed with their names where known $0324 mask $04</description>
+  <description>PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit. Option byte (global configuration); bits used are listed with their names where known $0324 mask $04</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x04</mask>
@@ -16880,8 +16880,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x3BD" flags="0x0">
-  <title>IacAcRequestAdder</title>
-  <description>IAC addition with A/C requested (A/C switch input, not blocked) $2346</description>
+  <title>IacPsSwitchAdder</title>
+  <description>IAC addition while the power steering pressure switch is on (SwitchInputs2 bit 6; only with the switch fitted and no P0551) $2346</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2346" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18862,7 +18862,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x465" flags="0x0">
   <title>O2HeaterSampleTime</title>
-  <description>Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled $2B6A</description>
+  <description>O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled $2B6A</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B6A" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -18874,7 +18874,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x466" flags="0x0">
   <title>O2HeaterSettleTime</title>
-  <description>Probably the O2 heater monitor (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated $2B6E</description>
+  <description>O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated $2B6E</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B6E" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />

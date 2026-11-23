@@ -4,10 +4,10 @@
  "routines_ref": 657,
  "instructions_mapped": 15809,
  "instructions_ref": 43370,
- "labels": "278 of 657",
+ "labels": "278 of 680",
  "ram": "905 of 1868",
  "tables": "167 of 410",
- "scalars": "548 of 1448",
+ "scalars": "548 of 1450",
  "ram_identity": 102,
  "ram_moved": 913
 }

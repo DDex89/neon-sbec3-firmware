@@ -4752,7 +4752,7 @@ KnockLearnAirTempMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRpmSteps ($23A9): 19 rows of 2 bytes
-; Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points
+; Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables
 ;---------------------------------------------------------------------------------------------------
 KnockRpmSteps:
         dc.b    $20,$00
@@ -5935,8 +5935,8 @@ IacAcEngageAdder:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-IacAcRequestAdder:
-        dc.b    $11                                      ; IAC addition with A/C requested (A/C switch input, not blocked)
+IacPsSwitchAdder:
+        dc.b    $11                                      ; IAC addition while the power steering pressure switch is on (SwitchInputs2 bit 6; only with the switch fitted and no P0551)
 IacDriveAdder:
         dc.b    $00                                      ; IAC addition (signed) in drive
 IacUpdateMask:
@@ -7527,16 +7527,16 @@ O2MonWindowMin:
         dc.b    $0C                                      ; O2 sensor monitor at idle: window count at or above which the switch counts are judged
         dc.b    $12,$80,$80
 O2HeaterRunTimeMin:
-        dc.b    $60                                      ; Probably the O2 heater monitor (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value
+        dc.b    $60                                      ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value
         dc.b    $26,$80,$80
 O2HeaterSampleTime:
-        dc.b    $00,$64                                  ; Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled
+        dc.b    $00,$64                                  ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled
 O2HeaterTestTime:
-        dc.b    $15,$90                                  ; Probably the O2 heater monitor: timer O2HeaterTimer (word) limit of the test
+        dc.b    $15,$90                                  ; O2 heater monitor (run at key-off from CheckPowerDown): timer O2HeaterTimer (word) limit of the test
 O2HeaterSettleTime:
-        dc.b    $11,$30                                  ; Probably the O2 heater monitor (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated
+        dc.b    $11,$30                                  ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated
 O2HeaterCountMin:
-        dc.b    $1E                                      ; Probably the O2 heater monitor (O2HeaterResult): count O2HeaterCount above which the results are judged
+        dc.b    $1E                                      ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterResult): count O2HeaterCount above which the results are judged
         dc.b    $4D,$00,$4D,$00,$1A,$00,$1A,$00,$01,$00,$01,$00,$08,$00,$08,$00
         dc.b    $0A,$00,$0A,$00
 O2ColdTrimHeaterAdder:
@@ -8013,7 +8013,7 @@ CondList36B9:
 ;---------------------------------------------------------------------------------------------------
 CondList36F6:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8042,7 +8042,7 @@ CondList375C:
 ;---------------------------------------------------------------------------------------------------
 CondList3799:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8071,7 +8071,7 @@ CondList37FF:
 ;---------------------------------------------------------------------------------------------------
 CondList383C:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8100,7 +8100,7 @@ CondList38A2:
 ;---------------------------------------------------------------------------------------------------
 CondList38DF:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8164,13 +8164,13 @@ CondList3B67:
 ;---------------------------------------------------------------------------------------------------
 CondList3BA4:
         dc.b    $07                                      ; entries
-        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
-        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
-        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: bit 4
-        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: bit 4
-        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: P0171 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: P0172 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: P0174 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: P0175 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$14,$01,$23,$00
         dc.b    $06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00
@@ -9413,13 +9413,13 @@ FlexEthanolCurve:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FlexSensorCurve ($70AD): 2D table, 8 points, unsigned
-; Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to CatTempFiltered
+; CatTempSensorCurve ($70AD): 2D table, 8 points, unsigned
+; Catalyst temperature sensor (Options0330 bit 4; CatTempMonitor reports P1482/P1483 shorted low/high and P1484 overheat): analog input $0A8E to CatTempFiltered. The same input serves the flex-fuel sensor (FlexSensorCheck, P0176/P0178/P0179) where that is fitted
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: FlexSensorRaw
 ; Read at $2DC72
 ;---------------------------------------------------------------------------------------------------
-FlexSensorCurve:
+CatTempSensorCurve:
         dc.b    8,$80                                    ; points, flags
         dc.b    11,175, 24,133, 27,125, 43,100, 74,75, 113,50, 167,25, 209,0 ; x, y
 
@@ -9476,18 +9476,18 @@ DwellTime:
 ;---------------------------------------------------------------------------------------------------
 BitCollectMaps:
 ; map 0 ($713B): used by SciSendByte
-        dc.b    $0A,$47,$40,$80                          ; out bit 7 <- SwitchInputs2 & $40 (switch input used by the idle air code (load switch, probably power steering or A/C))
-        dc.b    $0A,$47,$80,$40                          ; out bit 6 <- SwitchInputs2 & $80 (switch input used by EquipmentDetect and AcClutchControl (A/C request, probably))
+        dc.b    $0A,$47,$40,$80                          ; out bit 7 <- SwitchInputs2 & $40 (power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2))
+        dc.b    $0A,$47,$80,$40                          ; out bit 6 <- SwitchInputs2 & $80 (A/C request switch (AcClutchControl, EquipmentDetect))
         dc.b    $0A,$46,$01,$20                          ; out bit 5 <- SwitchInputs & $01 (brake switch (BrakeSwitchMonitor, idle, speed damping, purge test))
         dc.b    $0A,$47,$20,$10                          ; out bit 4 <- SwitchInputs2 & $20 (park/neutral switch (gear state, starter cut, park/neutral monitor))
         dc.b    $0A,$47,$08,$08                          ; out bit 3 <- SwitchInputs2 & $08 (speed control switch)
-        dc.b    $0A,$47,$10,$04                          ; out bit 2 <- SwitchInputs2 & $10 (speed control switch (on/off, probably))
+        dc.b    $0A,$47,$10,$04                          ; out bit 2 <- SwitchInputs2 & $10 (speed control on/off switch (speed control code, lamp state, EquipmentDetect))
         dc.b    $0A,$47,$04,$02                          ; out bit 1 <- SwitchInputs2 & $04 (speed control switch (set at reset))
         dc.b    $0A,$47,$01,$01                          ; out bit 0 <- SwitchInputs2 & $01 (speed control switch)
 ; map 1 ($715B): used by SciSendByte
         dc.b    $0A,$46,$02,$80                          ; out bit 7 <- SwitchInputs & $02 (bit 1)
         dc.b    $10,$00,$08,$40                          ; out bit 6 <- IoInputs0 & $08 (key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path)
-        dc.b    $79,$07,$80,$20                          ; out bit 5 <- PORTGP & $80 (bit 7)
+        dc.b    $79,$07,$80,$20                          ; out bit 5 <- PORTGP & $80 (GPT port pin 7 level (IC4/OC5))
         dc.b    $10,$00,$04,$10                          ; out bit 4 <- IoInputs0 & $04 (ASD relay output present, probably (AsdRelayCheck, the reference-event code))
         dc.b    $0C,$21,$08,$08                          ; out bit 3 <- AcFlags & $08 (A/C request from the bus (message bit 0 in CcdReceive))
         dc.b    $00,$00,$00,$04                          ; unused
@@ -9801,8 +9801,8 @@ BatteryVoltsDwellFilter:
         dc.b    $FA
 
 ;---------------------------------------------------------------------------------------------------
-; FaultStatusMap ($758C): 43 rows of 10 bytes
-; Fault-to-status map: fault table row, monitor status byte and bit, second status byte and bit (read by ObdFaultReport and the OBD request code)
+; FaultStatusMap ($758C): 44 rows of 10 bytes
+; Fault-to-status map, 44 rows: fault table row, status byte and mask, second status byte and mask. SciDiagCommand scans all rows (FaultStatusMapRows) and sends the codes whose status bit is set. Rows 11-32 ($75FA, FaultTwoTripRows) are the two-trip tests of ObdFaultReport: the first pair is the pending byte (MonFlags09D-09F), the second the test result the monitor sets before the call; a failure with the pending bit set reports the fault, a pass clears both
 ;---------------------------------------------------------------------------------------------------
 FaultStatusMap:
         dc.b    $45,$C8,$00,$B0,$00,$10,$00,$00,$00,$00  ; P0442: MonStatusLdp & $10
@@ -9848,9 +9848,9 @@ FaultStatusMap:
         dc.b    $43,$D4,$00,$DD,$00,$08,$00,$00,$00,$00  ; P0304: MisfireRecordDD & $08
         dc.b    $46,$54,$00,$DD,$00,$10,$00,$00,$00,$00  ; P0305: MisfireRecordDD & $10
         dc.b    $46,$5E,$00,$DD,$00,$20,$00,$00,$00,$00  ; P0306: MisfireRecordDD & $20
+        dc.b    $43,$AC,$00,$DD,$00,$40,$00,$00,$00,$00  ; P0300: MisfireRecordDD & $40
 
-        dc.b    $43,$AC,$00,$DD,$00,$40,$00,$00,$00,$00,$2C,$1F,$16,$FF,$01,$3F
-        dc.b    $00,$C0,$00,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $2C,$1F,$16,$FF,$01,$3F,$00,$C0,$00,$FF,$00,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -9989,7 +9989,7 @@ FaultStatusMap:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; Isr_GPT_IC3 ($08000)
@@ -10000,7 +10000,7 @@ Isr_GPT_IC3:
         PSHM    D,E,X,Y,K
         LDE     #$0010
         JSR     DelayLoop
-        BRSET   >PORTGP,Z,#$04,L08268
+        BRSET   >PORTGP,Z,#$04,L08268                    ; bit 2: GPT port pin 2 level (IC3)
         INC     >DistancePulses,Z
         INCW    >Vss052,Z
         BRSET   >Options032D,#$20,L0802A                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
@@ -10260,7 +10260,7 @@ L082F4:
         BNE     L0831A
         LDAA    #$18
         STAA    >PciTimer97B,Z
-        BRSET   >Options032E,#$04,L08310                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L08310                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     CcdTransmit
         BRA     L0831A
 L08310:
@@ -10364,7 +10364,7 @@ L083CA:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 ChargeControl:
-        BRCLR   >ADCSTAT,Z,#$80,ChargeControl
+        BRCLR   >ADCSTAT,Z,#$80,ChargeControl            ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR3_L,Z
         STAA    >BatteryVolts,Z
         BRCLR   >FieldDutyLimit,Z,#$FF,L08422
@@ -10875,7 +10875,7 @@ Isr_SCI:
 ; Called from: Isr_IRQ2
 ;---------------------------------------------------------------------------------------------------
 Sub_0890C:
-        BRSET   >Options032E,#$04,L08918                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L08918                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     Irq2BusHandler
         BRA     L0891C
 L08918:
@@ -10928,7 +10928,7 @@ Isr_GPT_IC4OC5:
         BRCLR   >Options0337,#$80,L08BC6                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         LDD     >TI4O5,Z
         TDE
-        BRSET   >TCTL2,Z,#$80,L08AD0
+        BRSET   >TCTL2,Z,#$80,L08AD0                     ; bit 7: EDGE4B: IC4 edge select
         LDX     #$8866
         LDY     #$84F0
         JSR     PeriodChangeTrack
@@ -11110,14 +11110,14 @@ L08B98:
 L08BA4:
         CLR     >Ic4866,Z
         STE     >Ic486A,Z
-        BSET    >TCTL2,Z,#$40
-        BCLR    >TCTL2,Z,#$80
+        BSET    >TCTL2,Z,#$40                            ; bit 6: EDGE4A: IC4 edge select
+        BCLR    >TCTL2,Z,#$80                            ; bit 7: EDGE4B: IC4 edge select
         BRA     L08BC6
 L08BB6:
         BSET    >BusTxRequest,Z,#$10                     ; bit 4: send the spark status message (set in Isr_GPT_IC4OC5)
         CLR     $0864,Z
-        BSET    >TCTL2,Z,#$80
-        BCLR    >TCTL2,Z,#$40
+        BSET    >TCTL2,Z,#$80                            ; bit 7: EDGE4B: IC4 edge select
+        BCLR    >TCTL2,Z,#$40                            ; bit 6: EDGE4A: IC4 edge select
 L08BC6:
         LDAA    >TFLG1,Z
         EORA    #$80
@@ -11554,7 +11554,7 @@ L0A066:
 L0A078:
         LDD     >TIC1,Z
         STD     >CrankPeriodSum,Z
-        BCLR    >TMSK2,Z,#$80
+        BCLR    >TMSK2,Z,#$80                            ; bit 7: TOI: timer overflow interrupt enable
         TST     >MonStartDelay,Z
         LBNE    L0A19E
         LDAA    >CamWindowCount,Z
@@ -11657,10 +11657,10 @@ L0A19E:
         LDAA    >CrankSyncFlags,Z
         BITA    #$20
         BEQ     L0A1BA
-        BRSET   >PACTL,Z,#$80,L0A1D2
+        BRSET   >PACTL,Z,#$80,L0A1D2                     ; bit 7: PAIS: pulse accumulator input pin state
         BRA     L0A1C0
 L0A1BA:
-        BRCLR   >PACTL,Z,#$80,L0A1D2
+        BRCLR   >PACTL,Z,#$80,L0A1D2                     ; bit 7: PAIS: pulse accumulator input pin state
 L0A1C0:
         ADDA    #$01
         TAB
@@ -11777,15 +11777,15 @@ L0A2EC:
         JSR     FuelEventCalc
         JSR     CamCrankMeasure
 L0A2F8:
-        BRCLR   >ADCSTAT_L,Z,#$01,L0A2F8
+        BRCLR   >ADCSTAT_L,Z,#$01,L0A2F8                 ; bit 0: CCF0: ADC conversion 0 complete
         LDAA    >RJURR0_L,Z
         STAA    >MapRawStart,Z
         BRSET   >CrankSyncFlags,Z,#$40,L0A322            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         LDAA    #$75
         STAA    >PACTL,Z
         CLR     >PACNT,Z
-        BCLR    >TFLG2,Z,#$10
-        BSET    >TMSK2,Z,#$10
+        BCLR    >TFLG2,Z,#$10                            ; bit 4: PAOVF: pulse accumulator overflow flag
+        BSET    >TMSK2,Z,#$10                            ; bit 4: PAOVI: pulse accumulator overflow interrupt enable
         JMP     L0A4DA
 L0A322:
         JSR     KnockSample
@@ -12099,7 +12099,7 @@ L0A6A4:
         EORA    $02,Y
         STAA    >TFLG1,Z
 L0A6BC:
-        BRCLR   >ADCSTAT,Z,#$80,L0A6BC
+        BRCLR   >ADCSTAT,Z,#$80,L0A6BC                   ; bit 7: SCF: ADC sequence complete flag
         BRSET   >O2SwitchFlags,Z,#$02,L0A6DA             ; bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
         LDAB    >RJURR0_L,Z
         STAB    >O2UpBank1Raw,Z
@@ -12130,8 +12130,8 @@ L0A71A:
         LDAA    #$75
         STAA    >PACTL,Z
         CLR     >PACNT,Z
-        BCLR    >TFLG2,Z,#$10
-        BSET    >TMSK2,Z,#$10
+        BCLR    >TFLG2,Z,#$10                            ; bit 4: PAOVF: pulse accumulator overflow flag
+        BSET    >TMSK2,Z,#$10                            ; bit 4: PAOVI: pulse accumulator overflow interrupt enable
         BRCLR   >SparkFlags,Z,#$20,L0A88A                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDD     >SparkPeriod,Z
         CPD     #$5DC0
@@ -12438,8 +12438,8 @@ L0AAC6:
 Isr_GPT_PAI:
         ORP     #$00E0
         PSHM    D,E
-        BRCLR   >TFLG2,Z,#$20,L0AB74
-        BCLR    >TFLG2,Z,#$20
+        BRCLR   >TFLG2,Z,#$20,L0AB74                     ; bit 5: PAIF: pulse accumulator input flag
+        BCLR    >TFLG2,Z,#$20                            ; bit 5: PAIF: pulse accumulator input flag
         CLR     >PACNT,Z
         LDD     >TCNT,Z
         STD     >Cam691,Z
@@ -12465,9 +12465,9 @@ L0AB14:
         BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0AB3C:
         CLRA
-        BRCLR   >PACTL,Z,#$80,L0AB56
+        BRCLR   >PACTL,Z,#$80,L0AB56                     ; bit 7: PAIS: pulse accumulator input pin state
         BCLR    >CrankSyncFlags,Z,#$20                   ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
-        BRCLR   >PORTGP,Z,#$01,L0AB50
+        BRCLR   >PORTGP,Z,#$01,L0AB50                    ; bit 0: GPT port pin 0 level (IC1)
         LDAA    #$02
 L0AB50:
         STAA    >CylinderIndex,Z
@@ -12503,11 +12503,11 @@ L0AB74:
 Isr_GPT_IC2:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >TFLG2,Z,#$80
-        BSET    >TMSK2,Z,#$80
+        BCLR    >TFLG2,Z,#$80                            ; bit 7: TOF: timer overflow flag
+        BSET    >TMSK2,Z,#$80                            ; bit 7: TOI: timer overflow interrupt enable
         CLR     >Ic2OverflowCount,Z
-        BSET    >TMSK1,Z,#$01
-        BCLR    >TFLG1,Z,#$02
+        BSET    >TMSK1,Z,#$01                            ; bit 0: IC1I: IC1 interrupt enable
+        BCLR    >TFLG1,Z,#$02                            ; bit 1: IC2F: input capture 2 flag
         PULM    K,X,D
         RTI
         dc.b    $27,$4C,$27,$4C
@@ -12524,7 +12524,7 @@ Isr_GPT_Overflow:
         BEQ     L0ABCC
         STAA    >Ic2OverflowCount,Z
 L0ABCC:
-        BCLR    >TFLG2,Z,#$80
+        BCLR    >TFLG2,Z,#$80                            ; bit 7: TOF: timer overflow flag
         PULM    K,X,D
         RTI
         dc.b    $27,$4C,$27,$4C
@@ -12536,8 +12536,8 @@ L0ABCC:
 Isr_IRQ1:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$02
-        BCLR    >DDRF,Z,#$02
+        BCLR    >PFPAR,Z,#$02                            ; bit 1: port F pin 1 function (set = IRQ1 input)
+        BCLR    >DDRF,Z,#$02                             ; bit 1: port F pin 1 direction (set = output)
         LDD     #$8000
         JMP     UnexpectedInterrupt
 
@@ -12548,8 +12548,8 @@ Isr_IRQ1:
 Isr_IRQ3:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$08
-        BCLR    >DDRF,Z,#$08
+        BCLR    >PFPAR,Z,#$08                            ; bit 3: port F pin 3 function (set = IRQ3 input)
+        BCLR    >DDRF,Z,#$08                             ; bit 3: port F pin 3 direction (set = output)
         LDD     #$4000
         JMP     UnexpectedInterrupt
 
@@ -12560,8 +12560,8 @@ Isr_IRQ3:
 Isr_IRQ5:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$20
-        BCLR    >DDRF,Z,#$20
+        BCLR    >PFPAR,Z,#$20                            ; bit 5: port F pin 5 function (set = IRQ5 input)
+        BCLR    >DDRF,Z,#$20                             ; bit 5: port F pin 5 direction (set = output)
         LDD     #$2000
         JMP     UnexpectedInterrupt
 
@@ -12572,8 +12572,8 @@ Isr_IRQ5:
 Isr_IRQ6:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$40
-        BCLR    >DDRF,Z,#$40
+        BCLR    >PFPAR,Z,#$40                            ; bit 6: port F pin 6 function (set = IRQ6 input)
+        BCLR    >DDRF,Z,#$40                             ; bit 6: port F pin 6 direction (set = output)
         LDD     #$1000
         JMP     UnexpectedInterrupt
 
@@ -12584,8 +12584,8 @@ Isr_IRQ6:
 Isr_IRQ7:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$80
-        BCLR    >DDRF,Z,#$80
+        BCLR    >PFPAR,Z,#$80                            ; bit 7: port F pin 7 function (set = IRQ7 input)
+        BCLR    >DDRF,Z,#$80                             ; bit 7: port F pin 7 direction (set = output)
         LDD     #$0800
         BRA     UnexpectedInterrupt
         dc.b    $37,$3B,$00,$E0,$34,$25,$28,$02,$79,$20,$28,$02,$79,$22,$37,$B5
@@ -12598,8 +12598,8 @@ Isr_IRQ7:
 Isr_GPT_PAOverflow:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >TMSK2,Z,#$20
-        BCLR    >TFLG2,Z,#$20
+        BCLR    >TMSK2,Z,#$20                            ; bit 5: PAII: pulse accumulator input interrupt enable
+        BCLR    >TFLG2,Z,#$20                            ; bit 5: PAIF: pulse accumulator input flag
         LDD     #$0200
         BRA     UnexpectedInterrupt
 
@@ -12610,8 +12610,8 @@ Isr_GPT_PAOverflow:
 Isr_GPT_OC1:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >TMSK1,Z,#$08
-        BCLR    >TFLG1,Z,#$08
+        BCLR    >TMSK1,Z,#$08                            ; bit 3: OC1I: OC1 interrupt enable
+        BCLR    >TFLG1,Z,#$08                            ; bit 3: OC1F: output compare 1 flag
         LDD     #$0080
         BRA     UnexpectedInterrupt
 
@@ -12831,7 +12831,7 @@ L0AE0A:
         LDE     #$002B
         STE     >ResetCheckCode,Z
 L0AE1E:
-        BRSET   >PACTL,Z,#$80,L0AE3C
+        BRSET   >PACTL,Z,#$80,L0AE3C                     ; bit 7: PAIS: pulse accumulator input pin state
         LDAA    >PACTL,Z
         ANDA    #$7F
         CMPA    #$75
@@ -12842,11 +12842,11 @@ L0AE1E:
         STE     >ResetCheckCode,Z
 L0AE3C:
         ORP     #$00E0
-        BRCLR   >TCTL1,Z,#$C0,L0AE4A
-        BCLR    >TCTL1,Z,#$C0
+        BRCLR   >TCTL1,Z,#$C0,L0AE4A                     ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
+        BCLR    >TCTL1,Z,#$C0                            ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
 L0AE4A:
-        BRSET   >TCTL1,Z,#$2A,L0AE5C
-        BSET    >TCTL1,Z,#$2A
+        BRSET   >TCTL1,Z,#$2A,L0AE5C                     ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
+        BSET    >TCTL1,Z,#$2A                            ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         LDE     #$002D
         STE     >ResetCheckCode,Z
 L0AE5C:
@@ -12874,14 +12874,14 @@ L0AE96:
         ANDP    #$FF1F
         ORP     #$00E0
         BRCLR   >FaultSet01,Z,#$02,L0AEB8
-        BRCLR   >TMSK2,Z,#$2D,L0AECA
-        BCLR    >TMSK2,Z,#$2D
+        BRCLR   >TMSK2,Z,#$2D,L0AECA                     ; bit 5: PAII: pulse accumulator input interrupt enable
+        BCLR    >TMSK2,Z,#$2D                            ; bit 5: PAII: pulse accumulator input interrupt enable
         LDE     #$0031
         STE     >ResetCheckCode,Z
         BRA     L0AECA
 L0AEB8:
-        BRCLR   >TMSK2,Z,#$AD,L0AECA
-        BCLR    >TMSK2,Z,#$AD
+        BRCLR   >TMSK2,Z,#$AD,L0AECA                     ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
+        BCLR    >TMSK2,Z,#$AD                            ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
         LDE     #$0031
         STE     >ResetCheckCode,Z
 L0AECA:
@@ -12902,7 +12902,7 @@ L0AEF4:
         ANDD    #$F7FF
         CPD     #$0003
         BEQ     L0AF10
-        BRSET   >Options032E,#$04,L0AF0C                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0AF0C                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$0803
 L0AF0C:
         STD     $100C,Z
@@ -13855,13 +13855,13 @@ ServiceWatchdog:
 KickWatchdogsLong:
         PSHM    D
         LDAA    #$1C
-        BCLR    >PORTC,Z,#$20
-        BRSET   >SYNCR,Z,#$40,L0C450
+        BCLR    >PORTC,Z,#$20                            ; bit 5: port C pin 5 output level (chip-select pin used as output)
+        BRSET   >SYNCR,Z,#$40,L0C450                     ; bit 6: X: clock synthesizer frequency control (prescaler)
         LDAA    #$0E
 L0C450:
         DECA
         BNE     L0C450
-        BSET    >PORTC,Z,#$20
+        BSET    >PORTC,Z,#$20                            ; bit 5: port C pin 5 output level (chip-select pin used as output)
         LDD     #$55AA
         STAA    >SWSR,Z
         STAB    >SWSR,Z
@@ -14715,7 +14715,7 @@ L0CC2A:
 ;---------------------------------------------------------------------------------------------------
 BusStatusByte:
         ORP     #$00E0
-        BRSET   >Options032E,#$04,L0CC98                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0CC98                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDX     #$739B
         BRA     L0CC9C
 L0CC98:
@@ -14736,7 +14736,7 @@ L0CCA8:
 ;---------------------------------------------------------------------------------------------------
 BusStatusBytes:
         ORP     #$00E0
-        BRSET   >Options032E,#$04,L0CD3E                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0CD3E                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDX     #$73DB
         JSR     CollectBits
         BRCLR   >EquipmentFlags,Z,#$40,L0CCF0            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
@@ -15063,12 +15063,12 @@ L0D192:
         TAB
         ANDA    #$0F
         ANDB    #$F0
-        BRCLR   >RSR,Z,#$80,L0D280
+        BRCLR   >RSR,Z,#$80,L0D280                       ; bit 7: EXT: last reset was external
         CMPB    #$F0
         BEQ     L0D280
         ADDB    #$10
 L0D280:
-        BRCLR   >RSR,Z,#$20,L0D28C
+        BRCLR   >RSR,Z,#$20,L0D28C                       ; bit 5: SW: last reset was the software watchdog
         CMPA    #$0F
         BEQ     L0D28C
         INCA
@@ -15079,12 +15079,12 @@ L0D28C:
         TAB
         ANDA    #$0F
         ANDB    #$F0
-        BRCLR   >RSR,Z,#$10,L0D2A4
+        BRCLR   >RSR,Z,#$10,L0D2A4                       ; bit 4: HLT: last reset was a halt monitor reset
         CMPB    #$F0
         BEQ     L0D2A4
         ADDB    #$10
 L0D2A4:
-        BRCLR   >RSR,Z,#$40,L0D2B0
+        BRCLR   >RSR,Z,#$40,L0D2B0                       ; bit 6: POW: last reset was power-up
         CMPA    #$0F
         BEQ     L0D2B0
         INCA
@@ -15100,7 +15100,7 @@ L0D2B0:
         LDAA    #$08
         STAA    >OC1M,Z
         BRCLR   >Options032A,#$E0,L0D2EC                 ; bit 7: engine/ignition variant used by the event, spark, knock and rpm code; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably); bit 5: hardware set-up variant at reset (Reset, HardwareCheck)
-        BRCLR   >PACTL,Z,#$80,L0D2E4
+        BRCLR   >PACTL,Z,#$80,L0D2E4                     ; bit 7: PAIS: pulse accumulator input pin state
         LDAA    #$65
         STAA    >PACTL,Z
         BRA     L0D2F2
@@ -15136,7 +15136,7 @@ L0D318:
         STAA    >EgrDuty,Z
         STAA    >PWMA,Z
         LDD     #$0003
-        BRSET   >Options032E,#$04,L0D344                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0D344                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$0803
 L0D344:
         STD     $100C,Z
@@ -15178,7 +15178,7 @@ L0D344:
         LDD     #$1800
         STD     >IoCtl12,Z
         LDD     #$0000
-        BRSET   >Options032E,#$04,L0D3DC                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0D3DC                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$202C
 L0D3DC:
         STD     >IoCfg18,Z
@@ -15346,7 +15346,7 @@ L0D5CA:
         ADCA    #$00
         STAA    >FuelLevelScaled,Z
 L0D5D8:
-        BRCLR   >Options032E,#$04,L0D5E2                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0D5E2                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     PciFlagsInit
 L0D5E2:
         LDAA    #$02
@@ -15377,7 +15377,7 @@ L0D5E2:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D644:
-        BRCLR   >ADCSTAT,Z,#$80,L0D644
+        BRCLR   >ADCSTAT,Z,#$80,L0D644                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR0_L,Z
         STAA    >MapRawStart,Z
         JSR     RawScaleF4
@@ -15406,7 +15406,7 @@ L0D676:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D6A8:
-        BRCLR   >ADCSTAT,Z,#$80,L0D6A8
+        BRCLR   >ADCSTAT,Z,#$80,L0D6A8                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR1_L,Z
 L0D6B2:
         STAA    >CoolantRaw,Z
@@ -15419,7 +15419,7 @@ L0D6B2:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D6D0:
-        BRCLR   >ADCSTAT,Z,#$80,L0D6D0
+        BRCLR   >ADCSTAT,Z,#$80,L0D6D0                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
         CMPA    #$40
         BCC     L0D70C
@@ -15434,7 +15434,7 @@ L0D6D0:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D702:
-        BRCLR   >ADCSTAT,Z,#$80,L0D702
+        BRCLR   >ADCSTAT,Z,#$80,L0D702                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
 L0D70C:
         STAA    >AirTempRaw,Z
@@ -15448,7 +15448,7 @@ L0D70C:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D730:
-        BRCLR   >ADCSTAT,Z,#$80,L0D730
+        BRCLR   >ADCSTAT,Z,#$80,L0D730                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
         STAA    >FlexSensorRaw,Z
         JSR     CatTempInput
@@ -15460,7 +15460,7 @@ L0D742:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D754:
-        BRCLR   >ADCSTAT,Z,#$80,L0D754
+        BRCLR   >ADCSTAT,Z,#$80,L0D754                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
         STAA    >ReadAnalog470,Z
         LDAA    >PORTC,Z
@@ -15564,7 +15564,7 @@ L0D880:
         LDAA    #$01
 L0D89C:
         STAA    <Ac058,Z
-        BRCLR   >Options033E,#$02,L0D8A8                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRCLR   >Options033E,#$02,L0D8A8                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         BSET    <EquipmentFlags,Z,#$08                   ; bit 3: copy of calibration bit $033E.1 at reset; not read
 L0D8A8:
         LDD     #$0097
@@ -15804,8 +15804,8 @@ L0DB82:
         STD     >IoTimer06,Z
         LDD     #$03FF
         STD     >IoTimer08,Z
-        BCLR    >TFLG1,Z,#$FF
-        BCLR    >TFLG2,Z,#$B0
+        BCLR    >TFLG1,Z,#$FF                            ; bit 7: I4/O5F: input capture 4 / output compare 5 flag; bit 6: OC4F: output compare 4 flag; bit 5: OC3F: output compare 3 flag; bit 4: OC2F: output compare 2 flag; bit 3: OC1F: output compare 1 flag; bit 2: IC3F: input capture 3 flag; bit 1: IC2F: input capture 2 flag; bit 0: IC1F: input capture 1 flag
+        BCLR    >TFLG2,Z,#$B0                            ; bit 7: TOF: timer overflow flag; bit 5: PAIF: pulse accumulator input flag; bit 4: PAOVF: pulse accumulator overflow flag
         LDD     #$03FF
         STD     >IoIrqStatus,Z
         LDD     #$0000
@@ -15855,7 +15855,7 @@ L0DC26:
         STD     >DiagRam9B7,Z
         JSR     FlexLearnInitRun
 L0DC34:
-        BRSET   >SYNCR_L,Z,#$08,MainLoop
+        BRSET   >SYNCR_L,Z,#$08,MainLoop                 ; bit 3: SLOCK: synthesizer locked
         JSR     KickWatchdogsLong
         BRA     L0DC34
 
@@ -15888,7 +15888,7 @@ L0DC86:
         BRCLR   >Options0333,#$80,L0DC90                 ; bit 7: EVAP purge solenoid fitted
         BSET    <BusTempFlags2,Z,#$08
 L0DC90:
-        BRCLR   >Options032E,#$04,L0DC9A                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0DC9A                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BSET    <BusTempFlags2,Z,#$04
 L0DC9A:
         BRCLR   >Options032E,#$20,L0DCA4                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
@@ -16052,7 +16052,7 @@ L0DE4E:
         JSR     QspiOutputStatus
         JSR     EepromWriteService
         JSR     EepromWriteQueue
-        BRSET   >Options032E,#$04,L0DEE2                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0DEE2                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     CcdReceive
         BRA     L0DEEA
 L0DEE2:
@@ -16156,7 +16156,7 @@ L0DFBA:
         LDX     #$BF40
         JSR     PowerInputHold
         BCS     L0E034
-        BCLR    >TFLG1,Z,#$FF
+        BCLR    >TFLG1,Z,#$FF                            ; bit 7: I4/O5F: input capture 4 / output compare 5 flag; bit 6: OC4F: output compare 4 flag; bit 5: OC3F: output compare 3 flag; bit 4: OC2F: output compare 2 flag; bit 3: OC1F: output compare 1 flag; bit 2: IC3F: input capture 3 flag; bit 1: IC2F: input capture 2 flag; bit 0: IC1F: input capture 1 flag
         LDAB    #$19
 L0E01A:
         LDX     #$0510
@@ -16224,7 +16224,7 @@ L0E0D2:
         JSR     NvChecksum
         STD     <ResetCheckWord,Z
         JSR     KickWatchdogsLong
-        BSET    >PORTC,Z,#$10
+        BSET    >PORTC,Z,#$10                            ; bit 4: port C pin 4 output level (chip-select pin used as output)
 L0E0E0:
         JSR     ServiceWatchdog
         BRSET   >IoInputs0,Z,#$08,L0E0E0                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
@@ -16616,7 +16616,7 @@ L0E54A:
 L0E560:
         ANDP    #$FF1F
         LDD     #$FA91
-        BRSET   >Options032E,#$04,L0E572                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0E572                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$F891
 L0E572:
         CPD     >IoCfg14,Z
@@ -16627,7 +16627,7 @@ L0E572:
 L0E584:
         ORP     #$00E0
         LDD     >IoCfg18,Z
-        BRSET   >Options032E,#$04,L0E5D4                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0E5D4                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRCLR   >IoCfg18,Z,#$18,L0E5A2
         ANDA    #$E7
         LDE     #$0042
@@ -16704,40 +16704,40 @@ L0E676:
         LDE     #$0055
         STE     >ResetCheckCode,Z
 L0E68A:
-        BRCLR   >SYNCR,Z,#$80,L0E69C
-        BCLR    >SYNCR,Z,#$80
+        BRCLR   >SYNCR,Z,#$80,L0E69C                     ; bit 7: W: clock synthesizer frequency control (VCO)
+        BCLR    >SYNCR,Z,#$80                            ; bit 7: W: clock synthesizer frequency control (VCO)
         LDE     #$0056
         STE     >ResetCheckCode,Z
 L0E69C:
-        BRSET   >SYNCR,Z,#$7F,L0E6AE
-        BSET    >SYNCR,Z,#$7F
+        BRSET   >SYNCR,Z,#$7F,L0E6AE                     ; bit 6: X: clock synthesizer frequency control (prescaler); bit 5: Y5: clock synthesizer multiplier; bit 4: Y4: clock synthesizer multiplier; bit 3: Y3: clock synthesizer multiplier; bit 2: Y2: clock synthesizer multiplier; bit 1: Y1: clock synthesizer multiplier; bit 0: Y0: clock synthesizer multiplier
+        BSET    >SYNCR,Z,#$7F                            ; bit 6: X: clock synthesizer frequency control (prescaler); bit 5: Y5: clock synthesizer multiplier; bit 4: Y4: clock synthesizer multiplier; bit 3: Y3: clock synthesizer multiplier; bit 2: Y2: clock synthesizer multiplier; bit 1: Y1: clock synthesizer multiplier; bit 0: Y0: clock synthesizer multiplier
         LDE     #$0057
         STE     >ResetCheckCode,Z
 L0E6AE:
-        BRCLR   >SYNCR_L,Z,#$07,L0E6C0
-        BCLR    >SYNCR_L,Z,#$07
+        BRCLR   >SYNCR_L,Z,#$07,L0E6C0                   ; bit 2: RSTEN: reset on loss of clock; bit 1: STSIM: SIM clock in stop mode; bit 0: STEXT: CLKOUT in stop mode
+        BCLR    >SYNCR_L,Z,#$07                          ; bit 2: RSTEN: reset on loss of clock; bit 1: STSIM: SIM clock in stop mode; bit 0: STEXT: CLKOUT in stop mode
         LDE     #$0058
         STE     >ResetCheckCode,Z
 L0E6C0:
-        BRSET   >SYNCR_L,Z,#$80,L0E6D2
-        BSET    >SYNCR_L,Z,#$80
+        BRSET   >SYNCR_L,Z,#$80,L0E6D2                   ; bit 7: EDIV: ECLK divide rate
+        BSET    >SYNCR_L,Z,#$80                          ; bit 7: EDIV: ECLK divide rate
         LDE     #$0059
         STE     >ResetCheckCode,Z
 L0E6D2:
-        BRSET   >PORTC,Z,#$08,L0E6E4
-        BSET    >PORTC,Z,#$08
+        BRSET   >PORTC,Z,#$08,L0E6E4                     ; bit 3: port C pin 3 output level (chip-select pin used as output)
+        BSET    >PORTC,Z,#$08                            ; bit 3: port C pin 3 output level (chip-select pin used as output)
         LDE     #$005B
         STE     >ResetCheckCode,Z
 L0E6E4:
         BRCLR   >Options0337,#$80,L0E6FE                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
-        BRSET   >TMSK1,Z,#$80,L0E710
-        BSET    >TMSK1,Z,#$80
+        BRSET   >TMSK1,Z,#$80,L0E710                     ; bit 7: I4/O5I: IC4/OC5 interrupt enable
+        BSET    >TMSK1,Z,#$80                            ; bit 7: I4/O5I: IC4/OC5 interrupt enable
         LDE     #$005C
         STE     >ResetCheckCode,Z
         BRA     L0E710
 L0E6FE:
-        BRCLR   >TMSK1,Z,#$80,L0E710
-        BCLR    >TMSK1,Z,#$80
+        BRCLR   >TMSK1,Z,#$80,L0E710                     ; bit 7: I4/O5I: IC4/OC5 interrupt enable
+        BCLR    >TMSK1,Z,#$80                            ; bit 7: I4/O5I: IC4/OC5 interrupt enable
         LDE     #$005C
         STE     >ResetCheckCode,Z
 L0E710:
@@ -17030,7 +17030,7 @@ L0EA14:
 ;---------------------------------------------------------------------------------------------------
 PciService:
         ORP     #$00E0
-        BRSET   >Options032E,#$04,L0EA84                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0EA84                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDAA    >BusTxRequest,Z
         LBEQ    L0EB48
         BITA    #$10
@@ -17071,7 +17071,7 @@ L0EA78:
 L0EA84:
         BRSET   >PciFlags2,Z,#$04,L0EB48                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         BRSET   >SystemFlags945,Z,#$80,L0EB48            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
-        BRSET   >IoStatus0B,Z,#$08,L0EB48                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+        BRSET   >IoStatus0B,Z,#$08,L0EB48                ; bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
         LDAB    >PciTimer97B,Z
         CMPB    #$04
         LBCS    L0EB48
@@ -17230,7 +17230,7 @@ L0EC02:
         INCB
         BEQ     L0EC3E
         STAB    >PciTimeout,Z
-        BRCLR   >Options032E,#$04,L0EC3A                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0EC3A                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0EC3A                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0EC52
@@ -17251,7 +17251,7 @@ L0EC52:
         INCB
         BEQ     L0EC7C
         STAB    >SkimTimeout,Z
-        BRCLR   >Options032E,#$04,L0EC78                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0EC78                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0EC78                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0EC90
@@ -17272,7 +17272,7 @@ L0EC90:
         INCB
         BEQ     L0ECBA
         STAB    >BusTimeout1,Z
-        BRCLR   >Options032E,#$04,L0ECB6                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0ECB6                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0ECB6                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0ECD2
@@ -17293,7 +17293,7 @@ L0ECD2:
         INCB
         BEQ     L0ECF8
         STAB    >BodyMsgTimeout,Z
-        BRCLR   >Options032E,#$04,L0ECF8                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0ECF8                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0ECF8                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0ED0E
@@ -17388,7 +17388,7 @@ L0EDB8:
         JSR     EepromSkimRead
         BRA     L0EDD6
 L0EDC6:
-        BRSET   >Options032E,#$04,L0EDD2                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0EDD2                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     SkimTimerService
         BRA     L0EDD6
 L0EDD2:
@@ -17459,7 +17459,7 @@ L0EE80:
         BRSET   >SkimFlags,Z,#$10,L0EE9A                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BITA    #$40
         BEQ     L0EEBA
-        BRSET   >Options032E,#$04,L0EEBA                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0EEBA                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRCLR   >SecurityFlags,Z,#$08,L0EEBA             ; bit 3: security exchange step 2 (CcdReceive)
 L0EE9A:
         BRSET   >FaultSet07,Z,#$02,L0EEC4
@@ -17478,7 +17478,7 @@ L0EEBA:
 L0EEC4:
         BRSET   >SkimFlags,Z,#$10,L0EF28                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BRSET   >Options0328,#$01,L0EEE6                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
-        BRSET   >Options032E,#$04,L0EEE2                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0EEE2                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >SecurityFlags,Z,#$08,L0EF28             ; bit 3: security exchange step 2 (CcdReceive)
         BRSET   >SecurityFlags,Z,#$04,L0EEE6             ; bit 2: security exchange step 1 (CcdReceive)
 L0EEE2:

@@ -14,7 +14,8 @@ from analyse import Analysis
 from gen_source import Calibration, Names, annotation_set
 from xref import Xref
 
-FORMAT = {"2D": "2D", "2Dr": "2D (y, x)", "3D": "3D", "3Dn": "3D, no axis", "fault": "fault rows", "grid": "grid"}
+FORMAT = {"2D": "2D", "2Dr": "2D (y, x)", "3D": "3D", "3Dn": "3D, no axis", "fault": "fault rows", "grid": "grid", "cond": "condition list", "bitmaps": "bit maps", "faultmap": "fault map",
+          "words": "word list", "monitors": "monitor rows"}
 
 
 def size_text(d, a, t):
@@ -23,6 +24,8 @@ def size_text(d, a, t):
         return "%d points" % d[a]
     if k in ("3D", "3Dn"):
         return "%d x %d%s" % (d[a], d[a + 1], ", signed" if d[a + 2] else "")
+    if k == "cond":
+        return "%d entries" % d[a]
     return "%d x %d bytes" % (t["rows"], t["row_size"])
 
 
@@ -64,7 +67,7 @@ def main():
                 owners.append(o)
         L.append("| $%04X | %s | %s | %s | %s | %d | %s | %s | %s | %s |" % (
             a, t["name"] + ("" if not t.get("cur", {}).get("auto") else " *"), t.get("cur", {}).get("category", ""),
-            FORMAT[t["kind"]], size_text(d, a, t), t["size"],
+            FORMAT.get(t["kind"], t["kind"]), size_text(d, a, t), t["size"],
             cal.input_text(t).replace("|", "/") if t.get("inputs") else "",
             ", ".join(zname(o) for o in t.get("dest", {})),
             ", ".join(owners[:3]) + (" +%d" % (len(owners) - 3) if len(owners) > 3 else ""),

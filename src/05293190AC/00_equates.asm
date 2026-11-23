@@ -97,53 +97,82 @@ MonitorDisableFlags equ $009C        ; $F809C
 ;                 bit 1: barometric pressure below MonEnableBaroMin (altitude)
 ;                 bit 0: battery (ambient) temperature below MonEnableBattTempMin
 MonFlags09D      equ $009D        ; $F809D
-;                 bit 7: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-;                 bit 6: P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-;                 bit 5: P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-;                 bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-;                 bit 3: P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-;                 bit 2: P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-;                 bit 1: P1281 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-;                 bit 0: P0551 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 7: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 6: P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 5: P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 3: P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 2: P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 1: P1281 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 0: P0551 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 MonFlags09E      equ $009E        ; $F809E
-;                 bit 7: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-;                 bit 6: P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-;                 bit 5: P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-;                 bit 4: P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-;                 bit 3: P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-;                 bit 2: P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-;                 bit 1: P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-;                 bit 0: P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 7: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 6: P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 5: P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 4: P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 3: P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 2: P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 1: P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 0: P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
 MonFlags09F      equ $009F        ; $F809F
-;                 bit 7: P0463 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
-;                 bit 6: P0462 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
-;                 bit 5: P0460 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
-;                 bit 4: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
-;                 bit 3: P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
-;                 bit 2: P1698 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+;                 bit 7: P0463 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+;                 bit 6: P0462 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+;                 bit 5: P0460 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+;                 bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+;                 bit 3: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+;                 bit 2: P1698 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 MonTask0A0       equ $00A0        ; $F80A0
 MonStatusCatBank1 equ $00A1        ; $F80A1
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 0) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0420 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusCatBank2 equ $00A2        ; $F80A2
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 1) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0432 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusO2Resp1 equ $00A3        ; $F80A3
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 2) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0133 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusO2Resp2 equ $00A4        ; $F80A4
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 3) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0153 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusO2Sensor1 equ $00A5        ; $F80A5
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 7) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0135 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusO2Sensor2 equ $00A6        ; $F80A6
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 8) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0155 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusO2Sensor3 equ $00A7        ; $F80A7
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 9) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0141 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusO2Sensor4 equ $00A8        ; $F80A8
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 10) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0161 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusPurge   equ $00A9        ; $F80A9
-;                 bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
+;                 bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest); monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 4) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 ;                 bit 6: purge flow monitor complete this drive cycle
-;                 bit 4: read by ObdReadiness
+;                 bit 4: read by ObdReadiness; P0441 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 ;                 bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
 ;                 bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
 ;                 bit 1: read by ObdReadiness and PurgeFlowTest
 MonStatusEgrFlow equ $00AA        ; $F80AA
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 5) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0401 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusMisfire equ $00AB        ; $F80AB
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 15) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 MonStatusFuelSysTooLean1 equ $00AC        ; $F80AC
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 11) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0171 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusFuelSysTooLean2 equ $00AD        ; $F80AD
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 12) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0174 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusFuelSysTooRich1 equ $00AE        ; $F80AE
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 13) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0172 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusFuelSysTooRich2 equ $00AF        ; $F80AF
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 14) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0175 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusLdp     equ $00B0        ; $F80B0
+;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 6) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+;                 bit 4: P0442 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 MonStatusO2Heater equ $00B1        ; $F80B1
 FreezeFrameCount equ $00B2        ; $F80B2
 FreezeFrameFault equ $00B3        ; $F80B3
@@ -1463,14 +1492,14 @@ SwitchMonFlags   equ $0658        ; $F8658
 ;                 bit 1: P1281: thermostat monitor running (ThermostatMonitor)
 ;                 bit 0: P0551: power steering switch monitor: switch state for the report (PspSwitchMonitor)
 O2MonFlags       equ $0659        ; $F8659
-;                 bit 7: P0138 result (fault-to-status map, paired with MonFlags09E)
-;                 bit 6: P0158 result (fault-to-status map, paired with MonFlags09E)
-;                 bit 5: P0140 result (fault-to-status map, paired with MonFlags09E)
-;                 bit 4: P0160 result (fault-to-status map, paired with MonFlags09E)
-;                 bit 3: P0137 result (fault-to-status map, paired with MonFlags09E)
-;                 bit 2: P0157 result (fault-to-status map, paired with MonFlags09E)
-;                 bit 1: P0153 result (fault-to-status map, paired with MonFlags09E)
-;                 bit 0: P0133 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 7: P0138 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+;                 bit 6: P0158 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+;                 bit 5: P0140 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+;                 bit 4: P0160 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+;                 bit 3: P0137 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+;                 bit 2: P0157 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+;                 bit 1: P0153 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+;                 bit 0: P0133 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
 MonFlags65A      equ $065A        ; $F865A
 ;                 bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
 ;                 bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
@@ -2262,10 +2291,10 @@ LoadValueObd     equ $0A42        ; $F8A42
 SwitchInputs     equ $0A46        ; $F8A46
 ;                 bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
 SwitchInputs2    equ $0A47        ; $F8A47
-;                 bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
-;                 bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+;                 bit 7: A/C request switch (AcClutchControl, EquipmentDetect)
+;                 bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
 ;                 bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
-;                 bit 4: speed control switch (on/off, probably)
+;                 bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
 ;                 bit 3: speed control switch
 ;                 bit 2: speed control switch (set at reset)
 ;                 bit 1: speed control switch
@@ -2972,7 +3001,7 @@ IoTimer08        equ $1008        ; $F9008
 IoStatus0A       equ $100A        ; $F900A
 IoStatus0B       equ $100B        ; $F900B
 ;                 bit 5: SCI line status, probably (SciPitService)
-;                 bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+;                 bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
 IoIrqEnable      equ $100C        ; $F900C
 ;                 bit 3: bus timer interrupt enable (word bit 11; PciTimeoutRestart sets it)
 IoIrqStatus      equ $100E        ; $F900E
@@ -3052,7 +3081,9 @@ ADCMCR           equ $7700        ; $FF700
 ADCTL0_L         equ $770B        ; $FF70B
 ADCTL1_L         equ $770D        ; $FF70D
 ADCSTAT          equ $770E        ; $FF70E
+;                 bit 7: SCF: ADC sequence complete flag
 ADCSTAT_L        equ $770F        ; $FF70F
+;                 bit 0: CCF0: ADC conversion 0 complete
 RJURR0_L         equ $7711        ; $FF711
 RJURR1_L         equ $7713        ; $FF713
 RJURR2_L         equ $7715        ; $FF715
@@ -3065,11 +3096,27 @@ GPTMCR           equ $7900        ; $FF900
 ICR              equ $7904        ; $FF904
 DDRGP            equ $7906        ; $FF906
 PORTGP           equ $7907        ; $FF907
+;                 bit 7: GPT port pin 7 level (IC4/OC5)
+;                 bit 6: GPT port pin 6 level (OC4)
+;                 bit 5: GPT port pin 5 level (OC3)
+;                 bit 4: GPT port pin 4 level (OC2)
+;                 bit 3: GPT port pin 3 level (OC1)
+;                 bit 2: GPT port pin 2 level (IC3)
+;                 bit 1: GPT port pin 1 level (IC2)
+;                 bit 0: GPT port pin 0 level (IC1)
 OC1M             equ $7908        ; $FF908
 OC1D             equ $7909        ; $FF909
 TCNT             equ $790A        ; $FF90A
 TCNT_L           equ $790B        ; $FF90B
 PACTL            equ $790C        ; $FF90C
+;                 bit 7: PAIS: pulse accumulator input pin state
+;                 bit 6: PAEN: pulse accumulator enable
+;                 bit 5: PAMOD: pulse accumulator mode (gated time)
+;                 bit 4: PEDGE: pulse accumulator edge
+;                 bit 3: PCLKS: PCLK pin state
+;                 bit 2: I4/O5: pin is IC4 (set) or OC5 (clear)
+;                 bit 1: PACLK1: pulse accumulator clock select
+;                 bit 0: PACLK0: pulse accumulator clock select
 PACNT            equ $790D        ; $FF90D
 TIC1             equ $790E        ; $FF90E
 TIC2             equ $7910        ; $FF910
@@ -3078,29 +3125,109 @@ TOC1             equ $7914        ; $FF914
 TOC2             equ $7916        ; $FF916
 TI4O5            equ $791C        ; $FF91C
 TCTL1            equ $791E        ; $FF91E
+;                 bit 7: OM5: OC5 output mode
+;                 bit 6: OL5: OC5 output level
+;                 bit 5: OM4: OC4 output mode
+;                 bit 4: OL4: OC4 output level
+;                 bit 3: OM3: OC3 output mode
+;                 bit 2: OL3: OC3 output level
+;                 bit 1: OM2: OC2 output mode
+;                 bit 0: OL2: OC2 output level
 TCTL2            equ $791F        ; $FF91F
+;                 bit 7: EDGE4B: IC4 edge select
+;                 bit 6: EDGE4A: IC4 edge select
+;                 bit 5: EDGE3B: IC3 edge select
+;                 bit 4: EDGE3A: IC3 edge select
+;                 bit 3: EDGE2B: IC2 edge select
+;                 bit 2: EDGE2A: IC2 edge select
+;                 bit 1: EDGE1B: IC1 edge select
+;                 bit 0: EDGE1A: IC1 edge select
 TMSK1            equ $7920        ; $FF920
+;                 bit 7: I4/O5I: IC4/OC5 interrupt enable
+;                 bit 6: OC4I: OC4 interrupt enable
+;                 bit 5: OC3I: OC3 interrupt enable
+;                 bit 4: OC2I: OC2 interrupt enable
+;                 bit 3: OC1I: OC1 interrupt enable
+;                 bit 2: IC3I: IC3 interrupt enable
+;                 bit 1: IC2I: IC2 interrupt enable
+;                 bit 0: IC1I: IC1 interrupt enable
 TMSK2            equ $7921        ; $FF921
+;                 bit 7: TOI: timer overflow interrupt enable
+;                 bit 5: PAII: pulse accumulator input interrupt enable
+;                 bit 4: PAOVI: pulse accumulator overflow interrupt enable
 TFLG1            equ $7922        ; $FF922
+;                 bit 7: I4/O5F: input capture 4 / output compare 5 flag
+;                 bit 6: OC4F: output compare 4 flag
+;                 bit 5: OC3F: output compare 3 flag
+;                 bit 4: OC2F: output compare 2 flag
+;                 bit 3: OC1F: output compare 1 flag
+;                 bit 2: IC3F: input capture 3 flag
+;                 bit 1: IC2F: input capture 2 flag
+;                 bit 0: IC1F: input capture 1 flag
 TFLG2            equ $7923        ; $FF923
+;                 bit 7: TOF: timer overflow flag
+;                 bit 5: PAIF: pulse accumulator input flag
+;                 bit 4: PAOVF: pulse accumulator overflow flag
 CFORC            equ $7924        ; $FF924
 PWMC             equ $7925        ; $FF925
 PWMA             equ $7926        ; $FF926
 PWMCNT           equ $7928        ; $FF928
 SIMCR            equ $7A00        ; $FFA00
 SYNCR            equ $7A04        ; $FFA04
+;                 bit 7: W: clock synthesizer frequency control (VCO)
+;                 bit 6: X: clock synthesizer frequency control (prescaler)
+;                 bit 5: Y5: clock synthesizer multiplier
+;                 bit 4: Y4: clock synthesizer multiplier
+;                 bit 3: Y3: clock synthesizer multiplier
+;                 bit 2: Y2: clock synthesizer multiplier
+;                 bit 1: Y1: clock synthesizer multiplier
+;                 bit 0: Y0: clock synthesizer multiplier
 SYNCR_L          equ $7A05        ; $FFA05
+;                 bit 7: EDIV: ECLK divide rate
+;                 bit 4: SLIMP: limp mode (no reference clock)
+;                 bit 3: SLOCK: synthesizer locked
+;                 bit 2: RSTEN: reset on loss of clock
+;                 bit 1: STSIM: SIM clock in stop mode
+;                 bit 0: STEXT: CLKOUT in stop mode
 RSR              equ $7A07        ; $FFA07
+;                 bit 7: EXT: last reset was external
+;                 bit 6: POW: last reset was power-up
+;                 bit 5: SW: last reset was the software watchdog
+;                 bit 4: HLT: last reset was a halt monitor reset
 DDRE             equ $7A15        ; $FFA15
 PEPAR            equ $7A17        ; $FFA17
 PORTF0           equ $7A19        ; $FFA19
 DDRF             equ $7A1D        ; $FFA1D
+;                 bit 7: port F pin 7 direction (set = output)
+;                 bit 6: port F pin 6 direction (set = output)
+;                 bit 5: port F pin 5 direction (set = output)
+;                 bit 4: port F pin 4 direction (set = output)
+;                 bit 3: port F pin 3 direction (set = output)
+;                 bit 2: port F pin 2 direction (set = output)
+;                 bit 1: port F pin 1 direction (set = output)
+;                 bit 0: port F pin 0 direction (set = output)
 PFPAR            equ $7A1F        ; $FFA1F
+;                 bit 7: port F pin 7 function (set = IRQ7 input)
+;                 bit 6: port F pin 6 function (set = IRQ6 input)
+;                 bit 5: port F pin 5 function (set = IRQ5 input)
+;                 bit 4: port F pin 4 function (set = IRQ4 input)
+;                 bit 3: port F pin 3 function (set = IRQ3 input)
+;                 bit 2: port F pin 2 function (set = IRQ2 input)
+;                 bit 1: port F pin 1 function (set = IRQ1 input)
+;                 bit 0: port F pin 0 function (set = MODCLK)
 SYPCR            equ $7A21        ; $FFA21
 PICR             equ $7A22        ; $FFA22
 PITR             equ $7A24        ; $FFA24
 SWSR             equ $7A27        ; $FFA27
 PORTC            equ $7A41        ; $FFA41
+;                 bit 7: port C pin 7 output level (chip-select pin used as output)
+;                 bit 6: port C pin 6 output level (chip-select pin used as output)
+;                 bit 5: port C pin 5 output level (chip-select pin used as output)
+;                 bit 4: port C pin 4 output level (chip-select pin used as output)
+;                 bit 3: port C pin 3 output level (chip-select pin used as output)
+;                 bit 2: port C pin 2 output level (chip-select pin used as output)
+;                 bit 1: port C pin 1 output level (chip-select pin used as output)
+;                 bit 0: port C pin 0 output level (chip-select pin used as output)
 CSPAR0           equ $7A44        ; $FFA44
 CSPAR1           equ $7A46        ; $FFA46
 CSBARBT          equ $7A48        ; $FFA48
@@ -3136,8 +3263,25 @@ QIVR             equ $7C05        ; $FFC05
 SCCR0            equ $7C08        ; $FFC08
 SCCR1            equ $7C0A        ; $FFC0A
 SCCR1_L          equ $7C0B        ; $FFC0B
+;                 bit 7: TIE: SCI transmit interrupt enable
+;                 bit 6: TCIE: SCI transmit complete interrupt enable
+;                 bit 5: RIE: SCI receive interrupt enable
+;                 bit 4: ILIE: SCI idle line interrupt enable
+;                 bit 3: TE: SCI transmitter enable
+;                 bit 2: RE: SCI receiver enable
+;                 bit 1: RWU: SCI receiver wake-up
+;                 bit 0: SBK: SCI send break
 SCSR             equ $7C0C        ; $FFC0C
+;                 bit 0: TDRE: SCI transmit data register empty
 SCSR_L           equ $7C0D        ; $FFC0D
+;                 bit 7: TC: SCI transmit complete
+;                 bit 6: RDRF: SCI receive data register full
+;                 bit 5: RAF: SCI receiver active
+;                 bit 4: IDLE: SCI idle line detected
+;                 bit 3: OR: SCI overrun
+;                 bit 2: NF: SCI noise flag
+;                 bit 1: FE: SCI framing error
+;                 bit 0: PF: SCI parity error
 SCDR             equ $7C0E        ; $FFC0E
 SCDR_L           equ $7C0F        ; $FFC0F
 PORTQS           equ $7C15        ; $FFC15
@@ -3145,9 +3289,13 @@ DDRQS            equ $7C16        ; $FFC16
 DDRQS_L          equ $7C17        ; $FFC17
 SPCR0            equ $7C18        ; $FFC18
 SPCR1            equ $7C1A        ; $FFC1A
+;                 bit 7: SPE: QSPI enable
 SPCR2            equ $7C1C        ; $FFC1C
 SPCR3            equ $7C1E        ; $FFC1E
 SPSR             equ $7C1F        ; $FFC1F
+;                 bit 7: SPIF: QSPI finished flag
+;                 bit 6: MODF: QSPI mode fault
+;                 bit 5: HALTA: QSPI halt acknowledge
 RR0              equ $7D00        ; $FFD00
 RR1              equ $7D02        ; $FFD02
 RR2              equ $7D04        ; $FFD04

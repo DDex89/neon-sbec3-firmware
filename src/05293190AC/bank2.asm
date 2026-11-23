@@ -85,7 +85,7 @@ L2019C:
         BRSET   >MonEnableFlags2,Z,#$80,L201DA           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >LdpPurgeTestFlags,Z,#$01,L201DA         ; bit 0: third kind of purge test request (LdpPurgeTestRun)
         BRCLR   >LdpPurgeTestFlags,Z,#$04,L201F6         ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
-        BRCLR   >MonStatusPurge,Z,#$80,L201F6            ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
+        BRCLR   >MonStatusPurge,Z,#$80,L201F6            ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest); monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 4) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L201DA:
         BCLR    <DiagStatusFlags,Z,#$03                  ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         CPX     #$0078
@@ -1301,10 +1301,29 @@ L20CB2:
         STAB    >LoadValueObd,Z
         PULM    X,E,D
         RTS
-        dc.b    $03,$3E,$00,$10,$03,$3E,$00,$08,$03,$3E,$00,$80,$03,$3E,$00,$40
-        dc.b    $03,$3E,$00,$20,$03,$3E,$00,$01,$03,$3E,$00,$02,$03,$3F,$00,$80
-        dc.b    $03,$3F,$00,$40,$03,$3F,$00,$20,$03,$3F,$00,$10,$03,$3F,$00,$08
-        dc.b    $03,$3F,$00,$08,$03,$3F,$00,$08,$03,$3F,$00,$08,$03,$3E,$00,$04
+
+;---------------------------------------------------------------------------------------------------
+; ObdMonitorOptionBits ($20CBE): 16 rows of 4 bytes
+; Option bit of each OBD monitor row: ObdRecordFlags (at reset and on a code clear) sets bit 7 of the row's status byte when the option bit is set, clears it otherwise; ObdMonitorMain runs only rows with bit 7 set
+;---------------------------------------------------------------------------------------------------
+ObdMonitorOptionBits:
+        dc.b    $03,$3E,$00,$10                          ; monitor row 0: Options033E & $10 -> MonStatusCatBank1 bit 7 (catalyst monitor bank 1 (P0420) on: ObdMonitorOptionBits row 0; also readiness (ObdReadiness))
+        dc.b    $03,$3E,$00,$08                          ; monitor row 1: Options033E & $08 -> MonStatusCatBank2 bit 7 (catalyst monitor bank 2 (P0432) on: ObdMonitorOptionBits row 1; also readiness (ObdReadiness))
+        dc.b    $03,$3E,$00,$80                          ; monitor row 2: Options033E & $80 -> MonStatusO2Resp1 bit 7 (O2 response monitor, sensor 1 (P0133) on: ObdMonitorOptionBits row 2; also readiness (ObdReadiness))
+        dc.b    $03,$3E,$00,$40                          ; monitor row 3: Options033E & $40 -> MonStatusO2Resp2 bit 7 (O2 response monitor, sensor 2 (P0153) on: ObdMonitorOptionBits row 3; also readiness (ObdReadiness))
+        dc.b    $03,$3E,$00,$20                          ; monitor row 4: Options033E & $20 -> MonStatusPurge bit 7 (purge flow test on (PurgeFlowTest); purge monitor row 4 of ObdMonitorOptionBits)
+        dc.b    $03,$3E,$00,$01                          ; monitor row 5: Options033E & $01 -> MonStatusEgrFlow bit 7 (EGR flow monitor supported (EgrFlowMonitor, ObdReadiness); row 5 of ObdMonitorOptionBits)
+        dc.b    $03,$3E,$00,$02                          ; monitor row 6: Options033E & $02 -> MonStatusLdp bit 7 (leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits)
+        dc.b    $03,$3F,$00,$80                          ; monitor row 7: Options033F & $80 -> MonStatusO2Sensor1 bit 7 (heater monitor for O2 sensor 1 supported (O2HeaterMonitor, ObdReadiness))
+        dc.b    $03,$3F,$00,$40                          ; monitor row 8: Options033F & $40 -> MonStatusO2Sensor2 bit 7 (heater monitor for O2 sensor 2 supported)
+        dc.b    $03,$3F,$00,$20                          ; monitor row 9: Options033F & $20 -> MonStatusO2Sensor3 bit 7 (heater monitor for O2 sensor 3 (downstream 1) supported)
+        dc.b    $03,$3F,$00,$10                          ; monitor row 10: Options033F & $10 -> MonStatusO2Sensor4 bit 7 (heater monitor for O2 sensor 4 (downstream 2) supported)
+        dc.b    $03,$3F,$00,$08                          ; monitor row 11: Options033F & $08 -> MonStatusFuelSysTooLean1 bit 7 (fuel system monitors (P0171/P0172/P0174/P0175) on: ObdMonitorOptionBits rows 11-14)
+        dc.b    $03,$3F,$00,$08                          ; monitor row 12: Options033F & $08 -> MonStatusFuelSysTooLean2 bit 7 (fuel system monitors (P0171/P0172/P0174/P0175) on: ObdMonitorOptionBits rows 11-14)
+        dc.b    $03,$3F,$00,$08                          ; monitor row 13: Options033F & $08 -> MonStatusFuelSysTooRich1 bit 7 (fuel system monitors (P0171/P0172/P0174/P0175) on: ObdMonitorOptionBits rows 11-14)
+        dc.b    $03,$3F,$00,$08                          ; monitor row 14: Options033F & $08 -> MonStatusFuelSysTooRich2 bit 7 (fuel system monitors (P0171/P0172/P0174/P0175) on: ObdMonitorOptionBits rows 11-14)
+        dc.b    $03,$3E,$00,$04                          ; monitor row 15: Options033E & $04 -> MonStatusMisfire bit 7 (misfire monitor variant (MisfireEnableCheck); misfire monitor row 15 of ObdMonitorOptionBits)
+
 
 ;---------------------------------------------------------------------------------------------------
 ; ObdRecordFlags ($20CFE)
@@ -1449,31 +1468,31 @@ L20DE6:
 ;---------------------------------------------------------------------------------------------------
 ObdReadiness:
         BRSET   >DiagStatusFlags,Z,#$20,L20F34           ; bit 5: readiness: every supported monitor complete (ObdReadiness)
-        BRCLR   >Options033E,#$10,L20E48                 ; bit 4: readiness: monitor supported (ObdReadiness)
+        BRCLR   >Options033E,#$10,L20E48                 ; bit 4: catalyst monitor bank 1 (P0420) on: ObdMonitorOptionBits row 0; also readiness (ObdReadiness)
         BRCLR   >MonStatusCatBank1,Z,#$02,L20E4C
-        BRSET   >MonStatusCatBank1,Z,#$10,L20E4C
-        BRCLR   >Options033E,#$08,L20E48                 ; bit 3: readiness: monitor supported (ObdReadiness)
+        BRSET   >MonStatusCatBank1,Z,#$10,L20E4C         ; bit 4: P0420 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        BRCLR   >Options033E,#$08,L20E48                 ; bit 3: catalyst monitor bank 2 (P0432) on: ObdMonitorOptionBits row 1; also readiness (ObdReadiness)
         BRCLR   >MonStatusCatBank2,Z,#$02,L20E4C
-        BRSET   >MonStatusCatBank2,Z,#$10,L20E4C
+        BRSET   >MonStatusCatBank2,Z,#$10,L20E4C         ; bit 4: P0432 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 L20E48:
         BCLR    <ReadinessIncomplete,Z,#$01
 L20E4C:
-        BRCLR   >Options033E,#$80,L20E70                 ; bit 7: readiness: monitor supported (ObdReadiness)
+        BRCLR   >Options033E,#$80,L20E70                 ; bit 7: O2 response monitor, sensor 1 (P0133) on: ObdMonitorOptionBits row 2; also readiness (ObdReadiness)
         BRCLR   >MonStatusO2Resp1,Z,#$02,L20E74
-        BRSET   >MonStatusO2Resp1,Z,#$10,L20E74
-        BRCLR   >Options033E,#$40,L20E70                 ; bit 6: readiness: monitor supported (ObdReadiness)
+        BRSET   >MonStatusO2Resp1,Z,#$10,L20E74          ; bit 4: P0133 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        BRCLR   >Options033E,#$40,L20E70                 ; bit 6: O2 response monitor, sensor 2 (P0153) on: ObdMonitorOptionBits row 3; also readiness (ObdReadiness)
         BRCLR   >MonStatusO2Resp2,Z,#$02,L20E74
-        BRSET   >MonStatusO2Resp2,Z,#$10,L20E74
+        BRSET   >MonStatusO2Resp2,Z,#$10,L20E74          ; bit 4: P0153 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 L20E70:
         BCLR    <ReadinessIncomplete,Z,#$20
 L20E74:
-        BRCLR   >Options033E,#$01,L20E86                 ; bit 0: EGR flow monitor supported (EgrFlowMonitor, ObdReadiness)
+        BRCLR   >Options033E,#$01,L20E86                 ; bit 0: EGR flow monitor supported (EgrFlowMonitor, ObdReadiness); row 5 of ObdMonitorOptionBits
         BRCLR   >MonStatusEgrFlow,Z,#$02,L20E8A
-        BRSET   >MonStatusEgrFlow,Z,#$10,L20E8A
+        BRSET   >MonStatusEgrFlow,Z,#$10,L20E8A          ; bit 4: P0401 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 L20E86:
         BCLR    <ReadinessIncomplete,Z,#$80
 L20E8A:
-        BRCLR   >Options033E,#$02,L20ED2                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRCLR   >Options033E,#$02,L20ED2                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         BRSET   >FaultMem15,Z,#$02,L20ED2                ; bit 1: P0455
         BRSET   >FaultMem15,Z,#$01,L20ED2                ; bit 0: P0442
         BRSET   >FaultMem17,Z,#$80,L20ED2                ; bit 7: P1495
@@ -1482,26 +1501,26 @@ L20E8A:
         BRSET   >FaultMem0F,Z,#$02,L20ED2                ; bit 1: P0441
         BRSET   >FaultMem03,Z,#$04,L20ED2                ; bit 2: P0443
         BRCLR   >MonStatusLdp,Z,#$02,L20ED6
-        BRSET   >MonStatusLdp,Z,#$10,L20ED6
+        BRSET   >MonStatusLdp,Z,#$10,L20ED6              ; bit 4: P0442 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         BRCLR   >MonStatusPurge,Z,#$02,L20ED6            ; bit 1: read by ObdReadiness and PurgeFlowTest
-        BRSET   >MonStatusPurge,Z,#$10,L20ED6            ; bit 4: read by ObdReadiness
+        BRSET   >MonStatusPurge,Z,#$10,L20ED6            ; bit 4: read by ObdReadiness; P0441 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 L20ED2:
         BCLR    <ReadinessIncomplete,Z,#$04
 L20ED6:
         BRCLR   >Options033F,#$80,L20F1E                 ; bit 7: heater monitor for O2 sensor 1 supported (O2HeaterMonitor, ObdReadiness)
         BRCLR   >MonStatusO2Sensor1,Z,#$02,L20F22
-        BRSET   >MonStatusO2Sensor1,Z,#$10,L20F22
+        BRSET   >MonStatusO2Sensor1,Z,#$10,L20F22        ; bit 4: P0135 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         BRCLR   >Options033F,#$40,L20EFA                 ; bit 6: heater monitor for O2 sensor 2 supported
         BRCLR   >MonStatusO2Sensor2,Z,#$02,L20F22
-        BRSET   >MonStatusO2Sensor2,Z,#$10,L20F22
+        BRSET   >MonStatusO2Sensor2,Z,#$10,L20F22        ; bit 4: P0155 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 L20EFA:
         BRCLR   >Options033F,#$20,L20F0C                 ; bit 5: heater monitor for O2 sensor 3 (downstream 1) supported
         BRCLR   >MonStatusO2Sensor3,Z,#$02,L20F22
-        BRSET   >MonStatusO2Sensor3,Z,#$10,L20F22
+        BRSET   >MonStatusO2Sensor3,Z,#$10,L20F22        ; bit 4: P0141 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 L20F0C:
         BRCLR   >Options033F,#$10,L20F1E                 ; bit 4: heater monitor for O2 sensor 4 (downstream 2) supported
         BRCLR   >MonStatusO2Sensor4,Z,#$02,L20F22
-        BRSET   >MonStatusO2Sensor4,Z,#$10,L20F22
+        BRSET   >MonStatusO2Sensor4,Z,#$10,L20F22        ; bit 4: P0161 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
 L20F1E:
         BCLR    <ReadinessIncomplete,Z,#$40
 L20F22:
@@ -1837,7 +1856,7 @@ MonitorEnable:
         BRSET   >MonEnableFlags2,Z,#$80,L21818           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >LdpPurgeTestFlags,Z,#$10,L21818         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         BRCLR   >LdpPurgeTestFlags,Z,#$04,L2181E         ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
-        BRCLR   >MonStatusPurge,Z,#$80,L2181E            ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
+        BRCLR   >MonStatusPurge,Z,#$80,L2181E            ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest); monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 4) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L21818:
         CLR     <MonitorDisableFlags,Z
         JMP     L2191C
@@ -2055,7 +2074,7 @@ L21A56:
         STAA    <Scratch2,Z
         BRCLR   >EquipmentFlags,Z,#$04,L21A72            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L21A72                ; bit 3: P0551
-        BRCLR   >SwitchInputs2,Z,#$40,L21A72             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRCLR   >SwitchInputs2,Z,#$40,L21A72             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         ADDA    >VacLeakAcReqAdder
         BCC     L21A72
         LDAA    #$FF
@@ -3271,9 +3290,9 @@ L226DE:
 L226E2:
         BRCLR   >Options032F,#$20,L2270C                 ; bit 5: downstream O2 sensor 1 fitted
         BRSET   >FaultSet12,Z,#$10,L22706                ; bit 4: P0137
-        BRSET   >O2MonFlags,Z,#$08,L22706                ; bit 3: P0137 result (fault-to-status map, paired with MonFlags09E)
-        BRSET   >O2MonFlags,Z,#$20,L22706                ; bit 5: P0140 result (fault-to-status map, paired with MonFlags09E)
-        BRCLR   >MonFlags09E,Z,#$80,L2270C               ; bit 7: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+        BRSET   >O2MonFlags,Z,#$08,L22706                ; bit 3: P0137 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+        BRSET   >O2MonFlags,Z,#$20,L22706                ; bit 5: P0140 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+        BRCLR   >MonFlags09E,Z,#$80,L2270C               ; bit 7: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
         BRSET   >O2DownFlags,Z,#$08,L2270C               ; bit 3: downstream O2 sensor 1 check state, read by O2CheckEnable
 L22706:
         BSET    >SensorFaultFlags2,Z,#$02                ; bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
@@ -3293,9 +3312,9 @@ L2272E:
 L22732:
         BRCLR   >Options032F,#$10,L2275C                 ; bit 4: downstream O2 sensor 2 fitted
         BRSET   >FaultSet17,Z,#$40,L22756                ; bit 6: P0157
-        BRSET   >O2MonFlags,Z,#$04,L22756                ; bit 2: P0157 result (fault-to-status map, paired with MonFlags09E)
-        BRSET   >O2MonFlags,Z,#$10,L22756                ; bit 4: P0160 result (fault-to-status map, paired with MonFlags09E)
-        BRCLR   >MonFlags09E,Z,#$40,L2275C               ; bit 6: P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+        BRSET   >O2MonFlags,Z,#$04,L22756                ; bit 2: P0157 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+        BRSET   >O2MonFlags,Z,#$10,L22756                ; bit 4: P0160 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+        BRCLR   >MonFlags09E,Z,#$40,L2275C               ; bit 6: P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
         BRSET   >O2DownFlags,Z,#$04,L2275C               ; bit 2: downstream O2 sensor 2 check state, read by O2CheckEnable
 L22756:
         BSET    >SensorFaultFlags2,Z,#$01                ; bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
@@ -3430,10 +3449,10 @@ L228D4:
         LDAA    >Count3s,Z
         CMPA    #$26
         LBCS    L228FA
-        BRSET   >MonStatusCatBank1,Z,#$80,L228FA
-        BRSET   >MonStatusCatBank2,Z,#$80,L228FA
-        BRSET   >MonStatusO2Resp1,Z,#$80,L228FA
-        BRSET   >MonStatusO2Resp2,Z,#$80,L228FA
+        BRSET   >MonStatusCatBank1,Z,#$80,L228FA         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 0) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+        BRSET   >MonStatusCatBank2,Z,#$80,L228FA         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 1) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+        BRSET   >MonStatusO2Resp1,Z,#$80,L228FA          ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 2) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+        BRSET   >MonStatusO2Resp2,Z,#$80,L228FA          ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 3) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BSET    >EgrFlags2,Z,#$04                        ; bit 2: EGR position monitor allowed: no catalyst or O2 response monitor running (EgrPositionMonitor)
 L228FA:
         BRCLR   >EgrZeroFlags,Z,#$01,L22B14              ; bit 0: EGR zero position learnt (EgrZeroPos, EgrZeroCheck)
@@ -3797,7 +3816,7 @@ TransMilRequest:
         BRCLR   >TransBusStatus,Z,#$02,L22D8E
         BRSET   >TransBusStatus,Z,#$01,L22D62
         BCLR    >BusModuleFlags,Z,#$01                   ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
-        BRCLR   >MonFlags09F,Z,#$10,L22D8E               ; bit 4: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        BRCLR   >MonFlags09F,Z,#$10,L22D8E               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
         LDAA    $45AC
         BCLR    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
@@ -3806,13 +3825,13 @@ L22D30:
         BRCLR   >FaultMem10,Z,#$02,L22D3A                ; bit 1: P0700
         JSR     TransFaultStore
 L22D3A:
-        BRCLR   >MonFlags09F,Z,#$10,L22D8E               ; bit 4: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        BRCLR   >MonFlags09F,Z,#$10,L22D8E               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
         LDAA    $45AC
         BCLR    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22D8E
 L22D4E:
-        BRSET   >MonFlags09F,Z,#$10,L22D8E               ; bit 4: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        BRSET   >MonFlags09F,Z,#$10,L22D8E               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
         LDAA    $45AC
         BSET    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
@@ -3837,7 +3856,7 @@ L22D8E:
 ; Called from: BusTimeoutCheck
 ;---------------------------------------------------------------------------------------------------
 BodyBusTimeout:
-        BRCLR   >MonFlags09F,Z,#$04,L22DB2               ; bit 2: P1698 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        BRCLR   >MonFlags09F,Z,#$04,L22DB2               ; bit 2: P1698 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
         BRSET   >O2DownFlags,Z,#$80,L22DB2               ; bit 7: body bus message seen after start (BodyBusTimeout)
         BRCLR   >MonFlags101,Z,#$80,L22DB2               ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
         BCLR    >MonFlags101,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
@@ -4751,7 +4770,7 @@ IdleMonitorEnable:
         BRSET   >MonitorDisableFlags,Z,#$02,L238CA       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
         BRCLR   >EquipmentFlags,Z,#$04,L23876            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L23876                ; bit 3: P0551
-        BRSET   >SwitchInputs2,Z,#$40,L238CA             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L238CA             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
 L23876:
         TSTW    >VehicleSpeedRaw,Z
         BNE     L238CA
@@ -4806,8 +4825,8 @@ PspSwitchMonitor:
         BRSET   <MonitorDisableFlags,Z,#$04,L2396A       ; bit 2: battery voltage at or below MonEnableVoltsMin
         TST     >MonStartDelay,Z
         BNE     L2396A
-        BRSET   >SwitchInputs2,Z,#$40,L23934             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
-        BRCLR   >MonFlags09D,Z,#$01,L2396E               ; bit 0: P0551 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BRSET   >SwitchInputs2,Z,#$40,L23934             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
+        BRCLR   >MonFlags09D,Z,#$01,L2396E               ; bit 0: P0551 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
         CLR     >PspSwitch667,Z
         LDAB    >PspSwitch668,Z
         INCB
@@ -4849,7 +4868,7 @@ L2396E:
 ;---------------------------------------------------------------------------------------------------
 VssMonitor:
         BRCLR   >EngineStateFlags,Z,#$80,L23A40          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >MonFlags09D,Z,#$10,L23982               ; bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BRCLR   >MonFlags09D,Z,#$10,L23982               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
         BRSET   >MonitorDisableFlags,Z,#$08,L23A40       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
 L23982:
         BRSET   >MonitorDisableFlags,Z,#$02,L23A40       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
@@ -4975,7 +4994,7 @@ CamSensorMonitor:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L23AE0:
-        BRCLR   >ADCSTAT_L,Z,#$01,L23AE0
+        BRCLR   >ADCSTAT_L,Z,#$01,L23AE0                 ; bit 0: CCF0: ADC conversion 0 complete
         ANDP    #$FF1F
         LDAA    >RJURR0_L,Z
         JSR     RawScaleF4
@@ -5836,7 +5855,7 @@ L2444E:
         STAA    >DiagModeFlags,Z
         ORAB    >DiagModeFlags,Z
         STAB    >DiagModeFlags,Z
-        BRSET   >Options032E,#$04,L24470                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L24470                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRCLR   >DiagModeFlags,Z,#$80,L2446C
         BCLR    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
         BRA     L24470
@@ -6386,9 +6405,9 @@ L24814:
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 EgrFlowMonitor:
-        BRCLR   >Options033E,#$01,L252A6                 ; bit 0: EGR flow monitor supported (EgrFlowMonitor, ObdReadiness)
+        BRCLR   >Options033E,#$01,L252A6                 ; bit 0: EGR flow monitor supported (EgrFlowMonitor, ObdReadiness); row 5 of ObdMonitorOptionBits
         BRSET   >MonStatusEgrFlow,Z,#$02,L252A6
-        BRCLR   >MonStatusEgrFlow,Z,#$80,L25296
+        BRCLR   >MonStatusEgrFlow,Z,#$80,L25296          ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 5) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRSET   >DiagStatusFlags,Z,#$01,L25296           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BSET    >EgrMonFlags,Z,#$01                      ; bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
         BRCLR   >EngineStateFlags,Z,#$80,L25296          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -6576,7 +6595,7 @@ L25282:
         BRCLR   >MonStatusEgrFlow,Z,#$08,L25292
         BRSET   >DiagStatusFlags,Z,#$02,L25296           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 L25292:
-        BCLR    <MonStatusEgrFlow,Z,#$80
+        BCLR    <MonStatusEgrFlow,Z,#$80                 ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 5) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L25296:
         BCLR    >EgrMonFlags,Z,#$01                      ; bit 0: EGR flow test step done (cleared by EgrFlowMonitor)
 L2529A:
@@ -6591,15 +6610,15 @@ L252A6:
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 PurgeFlowTest:
-        BRCLR   >Options033E,#$20,L25782                 ; bit 5: purge flow test on (PurgeFlowTest)
+        BRCLR   >Options033E,#$20,L25782                 ; bit 5: purge flow test on (PurgeFlowTest); purge monitor row 4 of ObdMonitorOptionBits
         BRSET   >MonStatusPurge,Z,#$02,L25782            ; bit 1: read by ObdReadiness and PurgeFlowTest
-        BRCLR   >MonStatusPurge,Z,#$80,L25750            ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
+        BRCLR   >MonStatusPurge,Z,#$80,L25750            ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest); monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 4) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRSET   >DiagStatusFlags,Z,#$01,L25750           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
-        BRCLR   >Options033E,#$02,L252DE                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
-        BRSET   >MonStatusLdp,Z,#$80,L25782
+        BRCLR   >Options033E,#$02,L252DE                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
+        BRSET   >MonStatusLdp,Z,#$80,L25782              ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 6) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRSET   >LdpFlags,Z,#$80,L252DE                  ; bit 7: leak test finished (LDP state machine)
         BSET    >PurgeFlowTestFlags,Z,#$80               ; bit 7: purge flow test started (PurgeFlowTest, only with the LDP fitted)
-        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
+        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest); monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 4) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         JMP     L25750
 L252DE:
         BSET    >PurgeFlowTestFlags,Z,#$01               ; bit 0: purge flow test not possible: no LDP (PurgeFlowTest)
@@ -6802,7 +6821,7 @@ L255A4:
         BRSET   >PurgeFlowTestFlags2,Z,#$20,L25730       ; bit 5: fan relay 2 on during the purge test (ControlFlags944 bit 3)
 L255AA:
         CLRW    >Scratch2,Z
-        BRSET   >Options033E,#$02,L255D8                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRSET   >Options033E,#$02,L255D8                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         LDAA    >PurgeFlow5B4,Z
         SUBA    <IacPosition,Z
         BCS     L255D8
@@ -6854,7 +6873,7 @@ L2562E:
         JMP     L25782
 L25640:
         CLRW    >Scratch6,Z
-        BRSET   >Options033E,#$02,L2566E                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRSET   >Options033E,#$02,L2566E                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         LDD     >EngineRpm,Z
         SUBD    >PurgeFlow5B5,Z
         BCS     L2566E
@@ -6933,7 +6952,7 @@ L2571C:
 L25730:
         TST     >PurgeFlowTestResult,Z
         BEQ     L25750
-        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
+        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest); monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 4) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L2573A:
         BCLR    >PurgeFlowTestFlags,Z,#$01               ; bit 0: purge flow test not possible: no LDP (PurgeFlowTest)
         BSET    <MonStatusPurge,Z,#$40                   ; bit 6: purge flow monitor complete this drive cycle
@@ -6946,7 +6965,7 @@ L25750:
         BRCLR   >PurgeFlowTestFlags,Z,#$10,L25782        ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
         BCLR    >PurgeFlowTestFlags,Z,#$10               ; bit 4: purge flow test measuring phase; O2 learning and idle O2 monitor wait
         BSET    >PurgeFlowTestFlags,Z,#$20               ; bit 5: purge flow test ramp phase (PurgeFlowTest, PurgeRampControl); O2 learning and idle O2 monitor wait
-        BRCLR   >Options033E,#$02,L2577A                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRCLR   >Options033E,#$02,L2577A                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         TSTW    >O2PurgeTestRestoreDelay
         BEQ     L2577A
         BSET    >PurgeFlowTestFlags2,Z,#$40              ; bit 6: purge test restore delay running: closed loop waits (PurgeFlowTest, ClosedLoopManager)
@@ -6962,7 +6981,7 @@ L25782:
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 LdpMonitor:
-        BRCLR   >Options033E,#$02,L25D86                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRCLR   >Options033E,#$02,L25D86                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         BRSET   >MonStatusLdp,Z,#$02,L25D86
         BRSET   >LdpPurgeTestFlags,Z,#$20,L25D86         ; bit 5: idle phase of the purge test reached (LdpPurgeTest)
         BRSET   >DiagStatusFlags,Z,#$01,L25D86           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
@@ -7148,7 +7167,7 @@ L259A0:
         BRCLR   >LdpFlags3,Z,#$02,L259CE                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >LdpFlags2,Z,#$20,L259F6                 ; bit 5: leak test window counting (LDP state machine)
         BSET    <MonStatusPurge,Z,#$48                   ; bit 6: purge flow monitor complete this drive cycle; bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
-        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
+        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest); monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 4) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         LDAA    #$29
         STAA    >LdpState,Z
 L259CE:
@@ -7478,10 +7497,10 @@ L25D5C:
 L25D68:
         BSET    <MonStatusLdp,Z,#$48
         BRSET   <DiagStatusFlags,Z,#$02,L25D84           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
-        BCLR    <MonStatusLdp,Z,#$80
+        BCLR    <MonStatusLdp,Z,#$80                     ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 6) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRA     L25D84
 L25D76:
-        BCLR    <MonStatusLdp,Z,#$88
+        BCLR    <MonStatusLdp,Z,#$88                     ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 6) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRSET   >LdpFlags,Z,#$08,L25D84                  ; bit 3: pump step ended (LDP state machine, LdpMonitor voltage check)
         BSET    <MonStatusLdp,Z,#$40
 L25D84:
@@ -7607,7 +7626,7 @@ L25E9C:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 LdpPurgedCheck:
-        BRCLR   >Options033E,#$02,L25F3E                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRCLR   >Options033E,#$02,L25F3E                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         BRCLR   >IoInputs0,Z,#$02,L25EB0                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
         BSET    >LdpFlags,Z,#$02                         ; bit 1: pump switch closed (LdpPurgedCheck)
         BRA     L25EB4
@@ -7713,7 +7732,7 @@ L25FBA:
 ; Called from: DiagRunRamCode
 ;---------------------------------------------------------------------------------------------------
 LdpPurgeTestRun:
-        BRCLR   >Options033E,#$02,L26028                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRCLR   >Options033E,#$02,L26028                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         BRSET   >LdpFlags3,Z,#$02,L26028                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRCLR   >EngineStateFlags,Z,#$80,L26028          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >DriveFlags,Z,#$20,L26028                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
@@ -7736,7 +7755,7 @@ L25FF4:
 L26012:
         BRCLR   >LdpPurgeTestFlags,Z,#$10,L26036         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         BRSET   >MonStatusLdp,Z,#$02,L26046
-        BRCLR   >MonStatusLdp,Z,#$80,L2603A
+        BRCLR   >MonStatusLdp,Z,#$80,L2603A              ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 6) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         LBRA    L26036
 L26028:
         LDAA    #$FE
@@ -9668,10 +9687,10 @@ O2HeaterDescriptors:
 ;---------------------------------------------------------------------------------------------------
 O2HeaterMonitor:
         BRCLR   >Options033F,#$F0,L28E48                 ; bit 7: heater monitor for O2 sensor 1 supported (O2HeaterMonitor, ObdReadiness); bit 6: heater monitor for O2 sensor 2 supported; bit 5: heater monitor for O2 sensor 3 (downstream 1) supported; bit 4: heater monitor for O2 sensor 4 (downstream 2) supported
-        BRSET   >MonStatusO2Sensor1,Z,#$80,L28D9A
-        BRSET   >MonStatusO2Sensor2,Z,#$80,L28D9A
-        BRSET   >MonStatusO2Sensor3,Z,#$80,L28D9A
-        BRSET   >MonStatusO2Sensor4,Z,#$80,L28D9A
+        BRSET   >MonStatusO2Sensor1,Z,#$80,L28D9A        ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 7) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+        BRSET   >MonStatusO2Sensor2,Z,#$80,L28D9A        ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 8) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+        BRSET   >MonStatusO2Sensor3,Z,#$80,L28D9A        ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 9) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+        BRSET   >MonStatusO2Sensor4,Z,#$80,L28D9A        ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 10) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         LBRA    L28E48
 L28D9A:
         CLRB
@@ -9940,10 +9959,10 @@ L290C8:
         BSET    <MonStatusO2Sensor4,Z,#$08
 L290D2:
         BRSET   <MonStatusO2Heater,Z,#$02,L290E6
-        BCLR    <MonStatusO2Sensor1,Z,#$80
-        BCLR    <MonStatusO2Sensor2,Z,#$80
-        BCLR    <MonStatusO2Sensor3,Z,#$80
-        BCLR    <MonStatusO2Sensor4,Z,#$80
+        BCLR    <MonStatusO2Sensor1,Z,#$80               ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 7) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+        BCLR    <MonStatusO2Sensor2,Z,#$80               ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 8) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+        BCLR    <MonStatusO2Sensor3,Z,#$80               ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 9) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
+        BCLR    <MonStatusO2Sensor4,Z,#$80               ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 10) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L290E6:
         LDX     #$BF53
         JSR     PowerInputHold
@@ -9982,7 +10001,7 @@ O2HeaterAdcSample:
         LDAA    #$30
         STAA    >ADCTL1_L,Z
 L29128:
-        BRCLR   >ADCSTAT,Z,#$80,L29128
+        BRCLR   >ADCSTAT,Z,#$80,L29128                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR4_L,Z
         STAB    >O2Heater55D,Z
         LDAB    >RJURR5_L,Z
@@ -10000,7 +10019,7 @@ L29128:
         LDAA    #$30
         STAA    >ADCTL1_L,Z
 L2916C:
-        BRCLR   >ADCSTAT,Z,#$80,L2916C
+        BRCLR   >ADCSTAT,Z,#$80,L2916C                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR4_L,Z
         STAB    >O2Heater559,Z
         LDAB    >RJURR5_L,Z
@@ -10736,7 +10755,7 @@ FuelSysTooRich1Done:
         LDX     #$0104
         JSR     FuelSysConditions2
         BRSET   >DiagStatusFlags,Z,#$02,L2A210           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
-        BCLR    <MonStatusFuelSysTooRich1,Z,#$80
+        BCLR    <MonStatusFuelSysTooRich1,Z,#$80         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 13) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L2A210:
         RTS
 
@@ -10927,7 +10946,7 @@ FuelSysTooRich2Done:
         LDX     #$0118
         JSR     FuelSysConditions2
         BRSET   >DiagStatusFlags,Z,#$02,L2A422           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
-        BCLR    <MonStatusFuelSysTooRich2,Z,#$80
+        BCLR    <MonStatusFuelSysTooRich2,Z,#$80         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 14) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L2A422:
         RTS
 
@@ -11092,7 +11111,7 @@ FuelSysTooLean1Done:
         LDX     #$00DC
         JSR     FuelSysConditions2
         BRSET   >DiagStatusFlags,Z,#$02,L2A5F0           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
-        BCLR    <MonStatusFuelSysTooLean1,Z,#$80
+        BCLR    <MonStatusFuelSysTooLean1,Z,#$80         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 11) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L2A5F0:
         RTS
 
@@ -11257,7 +11276,7 @@ FuelSysTooLean2Done:
         LDX     #$00F0
         JSR     FuelSysConditions2
         BRSET   >DiagStatusFlags,Z,#$02,L2A7BE           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
-        BCLR    <MonStatusFuelSysTooLean2,Z,#$80
+        BCLR    <MonStatusFuelSysTooLean2,Z,#$80         ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 12) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L2A7BE:
         RTS
 
@@ -11604,8 +11623,8 @@ L2AB0C:
 ; Called from: MisfireMonitorEvent
 ;---------------------------------------------------------------------------------------------------
 MisfireEnableCheck:
-        BRCLR   >Options033E,#$04,L2AB98                 ; bit 2: misfire monitor variant (MisfireEnableCheck)
-        BRCLR   >MonStatusMisfire,Z,#$80,L2AB98
+        BRCLR   >Options033E,#$04,L2AB98                 ; bit 2: misfire monitor variant (MisfireEnableCheck); misfire monitor row 15 of ObdMonitorOptionBits
+        BRCLR   >MonStatusMisfire,Z,#$80,L2AB98          ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 15) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRCLR   >MisfireFlags2,Z,#$04,L2AB98             ; bit 2: misfire transient hold running (MisfireSegmentTime)
         TST     >SystemTestMode,Z
         LBNE    L2AB98
@@ -13112,7 +13131,7 @@ ReadAnalogInputs:
         LDAA    #$30
         STAA    >ADCTL1_L,Z
 L2C03C:
-        BRCLR   >ADCSTAT,Z,#$80,L2C03C
+        BRCLR   >ADCSTAT,Z,#$80,L2C03C                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR0_L,Z
         STAB    >MapRaw,Z
         LDAB    >RJURR1_L,Z
@@ -13155,7 +13174,7 @@ L2C03C:
         AEY
         AEY
 L2C0D2:
-        BRCLR   >ADCSTAT,Z,#$80,L2C0D2
+        BRCLR   >ADCSTAT,Z,#$80,L2C0D2                   ; bit 7: SCF: ADC sequence complete flag
         LDE     $0000,Y
         BEQ     L2C0E4
         LDAB    >RJURR1_L,Z
@@ -13178,7 +13197,7 @@ L2C0F8:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L2C10E:
-        BRCLR   >ADCSTAT,Z,#$80,L2C10E
+        BRCLR   >ADCSTAT,Z,#$80,L2C10E                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR1_L,Z
         STAA    >FlexFaultACB,Z
         LDAA    >RJURR2_L,Z
@@ -13196,7 +13215,7 @@ L2C10E:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L2C148:
-        BRCLR   >ADCSTAT,Z,#$80,L2C148
+        BRCLR   >ADCSTAT,Z,#$80,L2C148                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
         STAA    >FlexSensorRaw,Z
         ANDP    #$FF1F
@@ -13211,7 +13230,7 @@ L2C15E:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L2C174:
-        BRCLR   >ADCSTAT,Z,#$80,L2C174
+        BRCLR   >ADCSTAT,Z,#$80,L2C174                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR1_L,Z
         STAA    >ReadAnalogA4B,Z
         LDAA    >RJURR2_L,Z
@@ -13227,7 +13246,7 @@ L2C174:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L2C1A8:
-        BRCLR   >ADCSTAT,Z,#$80,L2C1A8
+        BRCLR   >ADCSTAT,Z,#$80,L2C1A8                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR1_L,Z
         STAA    >EgrPosition,Z
         ANDP    #$FF1F
@@ -15077,7 +15096,7 @@ L2D526:
         BNE     L2D5A4
         BRCLR   >VssFlags,Z,#$02,L2D5A4                  ; bit 1: second VSS pulse seen (Isr_GPT_IC3)
         ORP     #$00E0
-        BCLR    >TMSK1,Z,#$04
+        BCLR    >TMSK1,Z,#$04                            ; bit 2: IC3I: IC3 interrupt enable
         ANDP    #$FF1F
         BRSET   >VssFlags,Z,#$08,L2D594                  ; bit 3: new VSS period to process (Isr_GPT_IC3, cleared by CalcVehicleSpeed)
         LDAA    >VssPulseIndex,Z
@@ -15108,7 +15127,7 @@ L2D590:
 L2D594:
         BCLR    >VssFlags,Z,#$08                         ; bit 3: new VSS period to process (Isr_GPT_IC3, cleared by CalcVehicleSpeed)
         ORP     #$00E0
-        BSET    >TMSK1,Z,#$04
+        BSET    >TMSK1,Z,#$04                            ; bit 2: IC3I: IC3 interrupt enable
         ANDP    #$FF1F
 L2D5A4:
         LDD     >VehicleSpeedRaw,Z
@@ -15146,7 +15165,7 @@ L2D5E0:
 ;---------------------------------------------------------------------------------------------------
 VssStore:
         ORP     #$00E0
-        BCLR    >TMSK1,Z,#$04
+        BCLR    >TMSK1,Z,#$04                            ; bit 2: IC3I: IC3 interrupt enable
         ANDP    #$FF1F
         LDE     #$FFFF
         LDAA    #$7F
@@ -15166,7 +15185,7 @@ VssStore:
         ORAA    #$10
         STAA    >VssFlags,Z
         ORP     #$00E0
-        BSET    >TMSK1,Z,#$04
+        BSET    >TMSK1,Z,#$04                            ; bit 2: IC3I: IC3 interrupt enable
         ANDP    #$FF1F
         RTS
 
@@ -15331,7 +15350,7 @@ L2D78C:
         BCLR    >CamCrankFlags,Z,#$20                    ; bit 5: park/neutral switch seen in drive at a cam edge (Isr_GPT_PAI; cleared in Isr_GPT_IC1)
         CLR     >CrankSyncFlags,Z
         BCLR    >CrankSyncFlags2,Z,#$70                  ; bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI); bit 5: reference event after the QSPI status read (Isr_GPT_IC1); bit 4: knock sample taken on this event (Isr_GPT_IC1)
-        BSET    >TMSK2,Z,#$10
+        BSET    >TMSK2,Z,#$10                            ; bit 4: PAOVI: pulse accumulator overflow interrupt enable
         CLRW    >HighRpmTimer,Z
         CLR     >CalcEngineC48,Z
         CLR     >IdleSparkSteps,Z
@@ -15346,7 +15365,7 @@ L2D78C:
 L2D7E8:
         BRCLR   >Options032A,#$C0,L2D7FC                 ; bit 7: engine/ignition variant used by the event, spark, knock and rpm code; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)
         LDAA    #$65
-        BRSET   >PACTL,Z,#$80,L2D7F8
+        BRSET   >PACTL,Z,#$80,L2D7F8                     ; bit 7: PAIS: pulse accumulator input pin state
         LDAA    #$75
 L2D7F8:
         STAA    >PACTL,Z
@@ -15659,7 +15678,7 @@ AdcStartF0:
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
 ReadMap:
-        BRCLR   >ADCSTAT_L,Z,#$01,ReadMap
+        BRCLR   >ADCSTAT_L,Z,#$01,ReadMap                ; bit 0: CCF0: ADC conversion 0 complete
         LDAA    >RJURR0_L,Z
         STAA    >MapRaw,Z
         LDAB    >EngineRpm,Z
@@ -15718,10 +15737,10 @@ EquipmentDetect:
 L2DB72:
         BRSET   >Options0331,#$40,L2DB8E                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRCLR   >Options0331,#$20,L2DB86                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
-        BRCLR   >SwitchInputs2,Z,#$80,L2DBAC             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
+        BRCLR   >SwitchInputs2,Z,#$80,L2DBAC             ; bit 7: A/C request switch (AcClutchControl, EquipmentDetect)
         BRA     L2DB96
 L2DB86:
-        BRSET   >SwitchInputs2,Z,#$80,L2DBAC             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
+        BRSET   >SwitchInputs2,Z,#$80,L2DBAC             ; bit 7: A/C request switch (AcClutchControl, EquipmentDetect)
         BRA     L2DB96
 L2DB8E:
         BRCLR   >AcFlags,Z,#$08,L2DBAC                   ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
@@ -15740,7 +15759,7 @@ L2DBAC:
 L2DBB0:
         BRSET   >EquipmentFlags,Z,#$40,L2DC02            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
         BRCLR   >Options032D,#$20,L2DBD4                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
-        BRCLR   >SwitchInputs2,Z,#$10,L2DBD4             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L2DBD4             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         LDAA    >SpeedCtlPresentCounter,Z
         CMPA    >SpeedCtlPresentCount
         BCC     L2DBFE
@@ -15753,11 +15772,11 @@ L2DBD8:
         BRSET   >SwitchInputs2,Z,#$08,L2DBFE             ; bit 3: speed control switch
         BRCLR   >SwitchInputs2,Z,#$04,L2DBFE             ; bit 2: speed control switch (set at reset)
         BRCLR   >Options0332,#$02,L2DBF2                 ; bit 1: speed control switch variant; also used by EquipmentDetect
-        BRSET   >SwitchInputs2,Z,#$10,L2DBFE             ; bit 4: speed control switch (on/off, probably)
+        BRSET   >SwitchInputs2,Z,#$10,L2DBFE             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         BRA     L2DC02
 L2DBF2:
         BRCLR   >Options0332,#$04,L2DC02                 ; bit 2: speed control switch variant; also used by EquipmentDetect
-        BRCLR   >SwitchInputs2,Z,#$11,L2DC02             ; bit 4: speed control switch (on/off, probably); bit 0: speed control switch
+        BRCLR   >SwitchInputs2,Z,#$11,L2DC02             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect); bit 0: speed control switch
 L2DBFE:
         BSET    <EquipmentFlags,Z,#$40                   ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
 L2DC02:
@@ -15768,7 +15787,7 @@ L2DC02:
         LDAA    >BatteryVolts2,Z
         CMPA    #$C2
         BCS     L2DC3E
-        BRSET   >SwitchInputs2,Z,#$40,L2DC3E             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L2DC3E             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         LDAA    >PspPresentCounter,Z
         CMPA    >PspPresentCount
         BCC     L2DC3A
@@ -15815,7 +15834,7 @@ L2DC86:
 CatTempInput:
         CLRB
         TBXK
-        LDX     #FlexSensorCurve
+        LDX     #CatTempSensorCurve
         LDAA    >FlexSensorRaw,Z
         STAA    >CatTempInputRaw,Z
         JSR     Lookup2D

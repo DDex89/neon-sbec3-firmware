@@ -27,6 +27,8 @@ has its source in the repository.
 | 5 | Detailed annotation, documentation in English and Russian, porting to the other families | first pass done, see [docs/en/porting.md](docs/en/porting.md); naming continues |
 | 6 | Editor definitions: TunerPro XDF generated from the annotations | first version, see [docs/en/tunerpro.md](docs/en/tunerpro.md); to be tried in TunerPro |
 
+What is still open, and the checks run on the annotations: [docs/en/open-questions.md](docs/en/open-questions.md).
+
 ## Layout
 
 ```

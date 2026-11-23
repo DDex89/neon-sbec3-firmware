@@ -2537,7 +2537,7 @@ L11A58:
         BRCLR   >FuelModeFlags2,Z,#$80,L11A96            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L11A70:
         BRSET   >MisfireFlags2,Z,#$01,L11A96             ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
-        BRCLR   <MonStatusMisfire,Z,#$80,L11A96
+        BRCLR   <MonStatusMisfire,Z,#$80,L11A96          ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 15) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BSET    <MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         LDX     #$2EC5
         LDY     #$87A7
@@ -10280,7 +10280,7 @@ L1943C:
         BLS     L1947E
         BRCLR   >EquipmentFlags,Z,#$04,L19460            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L19460
-        BRSET   >SwitchInputs2,Z,#$40,L1947E             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L1947E             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         BRSET   >DriveFlags,Z,#$08,L1947E                ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         BRSET   >IdleFlags,Z,#$10,L1947E                 ; bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
 L19460:
@@ -11382,7 +11382,7 @@ L1A0D8:
 L1A0EA:
         BRCLR   >EquipmentFlags,Z,#$04,L1A128            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1A128
-        BRSET   >SwitchInputs2,Z,#$40,L1A108             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L1A108             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         BRCLR   >DriveFlags,Z,#$08,L1A128                ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         BCLR    >DriveFlags,Z,#$08                       ; bit 3: follows SwitchInputs2 bit 6 (IdleTargetControl)
         BRA     L1A112
@@ -11994,7 +11994,7 @@ L1A73C:
         BCC     L1A7AC
         BRCLR   >EquipmentFlags,Z,#$04,L1A754            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1A754
-        BRSET   >SwitchInputs2,Z,#$40,L1A7AC             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L1A7AC             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
 L1A754:
         BRCLR   >Options032C,#$40,L1A76C                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >Options032F,#$08,L1A76C                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
@@ -12115,7 +12115,7 @@ IdleStopRpmCheck:
         LBNE    L1A932
         BRCLR   >EquipmentFlags,Z,#$04,L1A898            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1A898
-        BRSET   >SwitchInputs2,Z,#$40,L1A932             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRSET   >SwitchInputs2,Z,#$40,L1A932             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
 L1A898:
         BRCLR   >Options032C,#$40,L1A8B0                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >Options032F,#$08,L1A8B0                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
@@ -12386,8 +12386,8 @@ L1AB1E:
 L1AB26:
         BRCLR   >EquipmentFlags,Z,#$04,L1AB40            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1AB40
-        BRCLR   >SwitchInputs2,Z,#$40,L1AB40             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
-        LDAB    >IacAcRequestAdder
+        BRCLR   >SwitchInputs2,Z,#$40,L1AB40             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
+        LDAB    >IacPsSwitchAdder
         CLRA
         ADE
 L1AB40:
@@ -12472,7 +12472,7 @@ L1ABCE:
 L1ABD6:
         BRCLR   >EquipmentFlags,Z,#$04,L1ABF0            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1ABF0
-        BRCLR   >SwitchInputs2,Z,#$40,L1ABF0             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRCLR   >SwitchInputs2,Z,#$40,L1ABF0             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         LDAB    >IdleMapAcAdder
         CLRA
         ADE
@@ -12805,8 +12805,8 @@ L1AF24:
 L1AF6A:
         BRCLR   >EquipmentFlags,Z,#$04,L1AF84            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1AF84
-        BRCLR   >SwitchInputs2,Z,#$40,L1AF84             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
-        LDAB    >IacAcRequestAdder
+        BRCLR   >SwitchInputs2,Z,#$40,L1AF84             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
+        LDAB    >IacPsSwitchAdder
         CLRA
         ADE
 L1AF84:
@@ -12924,7 +12924,7 @@ L1B0BC:
 L1B0D6:
         BRCLR   >EquipmentFlags,Z,#$04,L1B0F6            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1B0F6
-        BRCLR   >SwitchInputs2,Z,#$40,L1B0F6             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
+        BRCLR   >SwitchInputs2,Z,#$40,L1B0F6             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
         LDAA    >IdleRampBlockEvent
         CMPA    >IdleRampBlockTimer,Z
         BLS     L1B0F6
@@ -14999,7 +14999,7 @@ SpeedDampControl:
         BRCLR   >Options0337,#$40,L1DE30                 ; bit 6: speed damping spark on (SpeedDampOn)
         BRSET   >EventSparkFlags,Z,#$08,L1DCC0           ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
         BRSET   >EventSparkFlags,Z,#$04,L1DCC0           ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BRSET   >MonFlags09D,Z,#$10,L1DC9C               ; bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BRSET   >MonFlags09D,Z,#$10,L1DC9C               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
         BRCLR   >EquipmentFlags,Z,#$20,L1DC4A            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >BusModuleFlags,Z,#$02,L1DC4A            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BRSET   >BusFlags9CE,Z,#$01,L1DC9C
@@ -15241,7 +15241,7 @@ Sub_1DE64:
         BRCLR   >Options0337,#$80,L1DEA2                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         ORP     #$00E0
         LDD     >TCNT,Z
-        BRSET   >PORTGP,Z,#$80,L1DE86
+        BRSET   >PORTGP,Z,#$80,L1DE86                    ; bit 7: GPT port pin 7 level (IC4/OC5)
         LDX     #$8866
         LDY     #$80F0
         JSR     PeriodChangeTrack
@@ -16688,7 +16688,7 @@ KnockNoiseCalc:
 KnockSample:
         BRCLR   >Options032F,#$06,L1F588                 ; bit 2: knock sensor variant (knock sample, retard, learn and spark code); bit 1: knock sensor variant (as bit 2)
 L1F40E:
-        BRCLR   >ADCSTAT,Z,#$80,L1F40E
+        BRCLR   >ADCSTAT,Z,#$80,L1F40E                   ; bit 7: SCF: ADC sequence complete flag
         BRCLR   >Options032F,#$01,L1F424                 ; bit 0: knock window variant (KnockWindowInit, KnockWindowUpdate)
         LDAA    >RJURR3_L,Z
         STAA    >KnockSampleA89,Z

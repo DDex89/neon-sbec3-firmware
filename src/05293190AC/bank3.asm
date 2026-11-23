@@ -6,78 +6,78 @@
 
 ;---------------------------------------------------------------------------------------------------
 ; CcdTransmitList ($30000): 1 rows of 256 bytes
-; Transmit rotation for CcdTransmit and PciPitTick: RAM addresses of the values sent, probably
+; CCD transmit schedule: 128 slots, each the bank-3 address of a message builder; CcdTransmit (and the PCI code) step through it with CcdTxIndex, find the address in CcdTxJumpTable ($30100) and call that entry
 ;---------------------------------------------------------------------------------------------------
 CcdTransmitList:
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
-        dc.b    $06,$A6,$07,$9A,$07,$02,$06,$9E          ; $06A6, $079A, ClosedLoop702, $069E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
-        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; $06A6, HwErrorFlags, $069E, $069E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
-        dc.b    $06,$A6,$07,$D4,$06,$9E,$06,$9E          ; $06A6, AccelMapGain, $069E, $069E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
-        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; $06A6, HwErrorFlags, $069E, $069E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
-        dc.b    $06,$A6,$07,$68,$06,$9E,$06,$9E          ; $06A6, CrankCoolant, $069E, $069E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
-        dc.b    $06,$A6,$06,$B6,$08,$02,$06,$9E          ; $06A6, HwErrorFlags, TipIn802, $069E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
-        dc.b    $06,$A6,$07,$AA,$06,$9E,$06,$9E          ; $06A6, WotTimeEnrich, $069E, $069E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
-        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; $06A6, HwErrorFlags, $069E, $069E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
-        dc.b    $06,$A6,$07,$9A,$06,$9E,$06,$9E          ; $06A6, $079A, $069E, $069E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
-        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; $06A6, HwErrorFlags, $069E, $069E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
-        dc.b    $06,$A6,$09,$6C,$06,$9E,$06,$9E          ; $06A6, $096C, $069E, $069E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
-        dc.b    $06,$A6,$06,$B6,$07,$78,$06,$9E          ; $06A6, HwErrorFlags, DecelFuelRamp, $069E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
-        dc.b    $06,$A6,$07,$68,$06,$9E,$06,$9E          ; $06A6, CrankCoolant, $069E, $069E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
-        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; $06A6, HwErrorFlags, $069E, $069E
-        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; $06A6, $0720, $089A, $0848
-        dc.b    $06,$A6,$07,$52,$06,$9E,$06,$9E          ; $06A6, O2PurgeCount, $069E, $069E
-        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; $06A6, PurgeTrimCount, $0900, $0848
-        dc.b    $06,$A6,$06,$B6,$06,$D2,$06,$9E          ; $06A6, HwErrorFlags, SpeedCtlSw6D2, $069E
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
+        dc.b    $06,$A6,$07,$9A,$07,$02,$06,$9E          ; CcdTxE4Map, CcdTxD4Charge, CcdTx6CTrans, CcdTxNone
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
+        dc.b    $06,$A6,$07,$D4,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx54BaroAir, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
+        dc.b    $06,$A6,$07,$68,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx8CTemps, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$06,$B6,$08,$02,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxA5, CcdTxNone
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
+        dc.b    $06,$A6,$07,$AA,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTxCCRpmIdle, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
+        dc.b    $06,$A6,$07,$9A,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTxD4Charge, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
+        dc.b    $06,$A6,$09,$6C,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTxECSecurity, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$06,$B6,$07,$78,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTx75AcSensor, CcdTxNone
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
+        dc.b    $06,$A6,$07,$68,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx8CTemps, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$06,$B6,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$07,$20,$08,$9A,$08,$48          ; CcdTxE4Map, CcdTx84FuelUsed, CcdTxEepromMsg, CcdTxB4Speed
+        dc.b    $06,$A6,$07,$52,$06,$9E,$06,$9E          ; CcdTxE4Map, CcdTxACAcData, CcdTxNone, CcdTxNone
+        dc.b    $06,$A6,$08,$18,$09,$00,$08,$48          ; CcdTxE4Map, CcdTx24Speed, CcdTxA4, CcdTxB4Speed
+        dc.b    $06,$A6,$06,$B6,$06,$D2,$06,$9E          ; CcdTxE4Map, CcdTx42SpeedCtl, CcdTx6DVin, CcdTxNone
 
-JumpTable_30100:
-        JMP     L306A6
+CcdTxJumpTable:
+        JMP     CcdTxE4Map
 L30104:
-        JMP     L3069E
+        JMP     CcdTxNone
 L30108:
-        JMP     L30848
+        JMP     CcdTxB4Speed
 L3010C:
-        JMP     L30720
+        JMP     CcdTx84FuelUsed
 L30110:
-        JMP     L3089A
+        JMP     CcdTxEepromMsg
 L30114:
-        JMP     L30818
+        JMP     CcdTx24Speed
 L30118:
-        JMP     L30900
+        JMP     CcdTxA4
 L3011C:
-        JMP     L306B6
+        JMP     CcdTx42SpeedCtl
 L30120:
-        JMP     L30768
+        JMP     CcdTx8CTemps
 L30124:
-        JMP     L3079A
+        JMP     CcdTxD4Charge
 L30128:
-        JMP     L30752
+        JMP     CcdTxACAcData
 L3012C:
-        JMP     L30778
+        JMP     CcdTx75AcSensor
 L30130:
-        JMP     L307AA
+        JMP     CcdTxCCRpmIdle
 L30134:
-        JMP     L307D4
+        JMP     CcdTx54BaroAir
 L30138:
-        JMP     L3096C
+        JMP     CcdTxECSecurity
 L3013C:
-        JMP     L306D2
+        JMP     CcdTx6DVin
 L30140:
-        JMP     L30702
+        JMP     CcdTx6CTrans
 L30144:
-        JMP     L30802
+        JMP     CcdTxA5
         dc.b    $36,$B6,$76,$F6,$0D,$8D,$4D,$CD,$11,$36,$B6,$76,$F6,$0D,$8D,$4D
         dc.b    $CD,$11,$00,$FF,$AA,$85,$16,$85,$7E,$83,$91,$84,$A1,$84,$02,$83
         dc.b    $DC,$83,$A9,$83,$95,$84,$29,$84,$7C,$84,$52,$84,$56,$86,$BE,$83
@@ -88,7 +88,7 @@ L30144:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 CcdReceive:
-        BRSET   >IoStatus0B,Z,#$08,L30186                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+        BRSET   >IoStatus0B,Z,#$08,L30186                ; bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
         BSET    >CcdBusFlags,Z,#$80                      ; bit 7: bus ready for the next message (CcdReceive, Irq4BusHandler, Irq2BusHandler)
 L30186:
         TZY
@@ -570,21 +570,21 @@ L30686:
         ADDA    $02,Y
         STAA    $03,Y
 L30692:
-        BRSET   >IoStatus0B,Z,#$08,L3069C                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+        BRSET   >IoStatus0B,Z,#$08,L3069C                ; bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
         JSR     BusTxStart
 L3069C:
         RTS
-L3069E:
+CcdTxNone:
         CLRD
         STAA    >CcdTxId,Z
         RTS
-L306A6:
+CcdTxE4Map:
         LDAA    #$E4
         STAA    >CcdTxId,Z
         LDAA    >CcdTransmitD59,Z
         LDAB    >Map,Z
         RTS
-L306B6:
+CcdTx42SpeedCtl:
         LDAA    #$42
         STAA    >CcdTxId,Z
         LDAA    >ThrottleAboveClosed,Z
@@ -594,7 +594,7 @@ L306B6:
 L306CE:
         LSRB
         RTS
-L306D2:
+CcdTx6DVin:
         CLRD
         BRCLR   >EepromFlags,Z,#$80,L306E0               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         STAA    >CcdTxId,Z
@@ -615,7 +615,7 @@ L306F0:
         LDAB    E,Z
 L30700:
         RTS
-L30702:
+CcdTx6CTrans:
         CLRD
         BRSET   >EquipmentFlags,Z,#$20,L30710            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         STAA    >CcdTxId,Z
@@ -628,7 +628,7 @@ L30710:
         ORAB    #$00
 L3071E:
         RTS
-L30720:
+CcdTx84FuelUsed:
         LDAA    #$84
         STAA    >CcdTxId,Z
         LDD     >FuelUsedAccum,Z
@@ -647,7 +647,7 @@ L30736:
         LDAB    >DistancePulses,Z
         CLR     >DistancePulses,Z
         RTS
-L30752:
+CcdTxACAcData:
         LDAA    #$AC
         STAA    >CcdTxId,Z
         LDD     >BusMsgAcData
@@ -656,13 +656,13 @@ L30752:
         ORAB    #$08
 L30766:
         RTS
-L30768:
+CcdTx8CTemps:
         LDAA    #$8C
         STAA    >CcdTxId,Z
         LDAA    >CoolantTemp,Z
         LDAB    >BatteryTemp,Z
         RTS
-L30778:
+CcdTx75AcSensor:
         LDAA    #$75
         STAA    >CcdTxId,Z
         LDAA    >AcSensor,Z
@@ -673,13 +673,13 @@ L30778:
         LDAB    >FlexLearnBase,Z
 L30798:
         RTS
-L3079A:
+CcdTxD4Charge:
         LDAA    #$D4
         STAA    >CcdTxId,Z
         LDAA    >BatteryVolts2,Z
         LDAB    >ChargeTargetVolts,Z
         RTS
-L307AA:
+CcdTxCCRpmIdle:
         LDAA    #$CC
         STAA    >CcdTxId,Z
         BRSET   >EepromFlags,Z,#$80,L30844               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -695,7 +695,7 @@ L307AA:
         ADE
         TED
         RTS
-L307D4:
+CcdTx54BaroAir:
         LDAA    #$54
         STAA    >CcdTxId,Z
         LDAA    <Baro,Z
@@ -720,7 +720,7 @@ BusTxMsg91:
         JSR     BusTxStart
         PULM    CCR
         RTS
-L30802:
+CcdTxA5:
         LDAA    #$A5
         STAA    >CcdTxId,Z
 
@@ -735,7 +735,7 @@ BusMsg91Build:
         ORAB    #$01
 L30816:
         RTS
-L30818:
+CcdTx24Speed:
         LDAA    #$24
         STAA    >CcdTxId,Z
         LDD     >VehicleSpeedRaw,Z
@@ -756,8 +756,8 @@ L30830:
         LDAA    >Temp4F2,Z
         RTS
 L30844:
-        JMP     L3069E
-L30848:
+        JMP     CcdTxNone
+CcdTxB4Speed:
         LDAA    #$B4
         STAA    >CcdTxId,Z
         BRCLR   >Options032E,#$40,L30864                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
@@ -791,7 +791,7 @@ L30888:
 L30894:
         STD     >LookupResult,Z
         RTS
-L3089A:
+CcdTxEepromMsg:
         BRSET   >EepromFlags,Z,#$80,L30844               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         TZX
         LDX     #$8962
@@ -830,7 +830,7 @@ L308EE:
         CLR     >BusMsg91Byte2,Z
         LDD     $00,X
         RTS
-L30900:
+CcdTxA4:
         LDAA    #$A4
         STAA    >CcdTxId,Z
 
@@ -885,7 +885,7 @@ BusTxSecurity:
         JSR     BusTxStart
         PULM    CCR
         RTS
-L3096C:
+CcdTxECSecurity:
         LDAA    #$EC
         STAA    >CcdTxId,Z
 
@@ -1206,7 +1206,7 @@ L30BDA:
         BITA    #$80
         BEQ     L30C26
         BRCLR   >IoBusStatusL,Z,#$80,L30C26              ; bit 7: tested by BusTxStart before a byte is sent
-        BRSET   >IoStatus0B,Z,#$08,L30C26                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+        BRSET   >IoStatus0B,Z,#$08,L30C26                ; bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
         STE     >IoBusData,Z
         CPE     #$00B2
         BNE     L30C00
@@ -1268,7 +1268,7 @@ L30C8C:
         CMPB    #$03
         BCC     L30CB4
 L30C90:
-        BRCLR   >IoStatus0B,Z,#$08,L30D34                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+        BRCLR   >IoStatus0B,Z,#$08,L30D34                ; bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
         LDAB    $01,Y
         CLRA
         STD     >IoBusData,Z
@@ -2107,7 +2107,7 @@ PciTxStep:
         LDX     #$0058
 L31708:
         BRSET   >PciFlags2,Z,#$04,L317B4                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
-        BRSET   >IoStatus0B,Z,#$08,L317B4                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+        BRSET   >IoStatus0B,Z,#$08,L317B4                ; bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
         LDAB    #$03
         TBXK
         BRCLR   >PciFlags3,Z,#$01,L31722                 ; bit 0: PCI frame in the transmit buffer (PciTxStep)
@@ -2181,7 +2181,7 @@ L317B4:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 PciPitTick:
-        BRCLR   >Options032E,#$04,L31898                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L31898                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags3,Z,#$08,L31898                 ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         LDAB    #$03
         TBYK
@@ -2898,12 +2898,12 @@ L31E24:
         SUBE    #$0001
         BCC     L31E24
         STAA    $16,X
-        BCLR    >SPSR,Z,#$80
+        BCLR    >SPSR,Z,#$80                             ; bit 7: SPIF: QSPI finished flag
         LDD     #$8F04
         STD     >SPCR2,Z
         BSET    >SystemFlags945,Z,#$80                   ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         BSET    >SystemFlags945,Z,#$02                   ; bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
-        BSET    >SPCR1,Z,#$80
+        BSET    >SPCR1,Z,#$80                            ; bit 7: SPE: QSPI enable
         BCLR    >PciFlags3,Z,#$91                        ; bit 7: PCI frame timer expired (PciPitTick); bit 4: PCI transmit retry (PciTxStep, PciPitTick); bit 0: PCI frame in the transmit buffer (PciTxStep)
         RTS
 
@@ -2914,7 +2914,7 @@ L31E24:
 PciTimeoutRestart:
         BCLR    >SystemFlags945,Z,#$01                   ; bit 0: PCI frame timer running, probably (PciTimeoutRestart)
         BCLR    >PciFlags,Z,#$40
-        BRCLR   >IoStatus0B,Z,#$08,L31E8A                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+        BRCLR   >IoStatus0B,Z,#$08,L31E8A                ; bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
         LDD     #$0008
         STD     >IoIrqStatus,Z
         BSETW   >IoIrqEnable,Z,#$0800                    ; IoIrqEnable.3: bus timer interrupt enable (word bit 11; PciTimeoutRestart sets it)
@@ -2934,7 +2934,7 @@ L31E8A:
 ; Called from: Isr_QSPI
 ;---------------------------------------------------------------------------------------------------
 QspiService:
-        BCLR    >SPSR,Z,#$80
+        BCLR    >SPSR,Z,#$80                             ; bit 7: SPIF: QSPI finished flag
         CLRW    >SPCR2,Z
         BCLR    >SystemFlags945,Z,#$80                   ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
         BCLR    >SystemFlags945,Z,#$02                   ; bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
@@ -2949,7 +2949,7 @@ QspiService:
         LDD     >RR0,Z
         STD     >OutputStatusWord,Z
 L31EC6:
-        BRCLR   >Options032E,#$04,L31EF4                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L31EF4                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$04,L31F48                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         PSHM    D,E,X,Y,K
         TST     >RR4_L,Z
@@ -3070,7 +3070,7 @@ L31FCA:
         BRA     L31FEE
 L31FDE:
         BRSET   >SystemFlags945,Z,#$80,L31FEE            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
-        BRCLR   >SPSR,Z,#$80,L31FEE
+        BRCLR   >SPSR,Z,#$80,L31FEE                      ; bit 7: SPIF: QSPI finished flag
         BCLR    >SystemFlags945,Z,#$02                   ; bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
 L31FEE:
         ANDP    #$FF1F
@@ -4219,7 +4219,7 @@ L32BCC:
         LDD     #$486B
         STD     >SciObdCount,Z
         LDAA    #$10
-        BRSET   >Options032E,#$04,L32BEA                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L32BEA                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDAA    #$40
 L32BEA:
         STAA    >SciObdIndex,Z
@@ -4333,7 +4333,7 @@ L33044:
 SciPitService:
         BRSET   >DiagBusFlags,Z,#$10,L330EC              ; bit 4: output-compare test pulse running (diagnostic test, JumpTable_35BB0)
         BRSET   >PciFlags5,Z,#$40,L330EC
-        BRSET   >Options032E,#$04,L330EC                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L330EC                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >CrankFlags2,Z,#$02,L330EC               ; bit 1: engine rpm below $1900: HighRpmTimer counting (HighRpmTimerPit); AsdRelayCheck and others read it
         LDAA    >SciReplyState,Z
         INCA
@@ -4355,7 +4355,7 @@ L33082:
         XGDX
         JMP     $33000,X
 L33092:
-        BCLR    >SCCR1_L,Z,#$A0
+        BCLR    >SCCR1_L,Z,#$A0                          ; bit 7: TIE: SCI transmit interrupt enable; bit 5: RIE: SCI receive interrupt enable
         BCLR    >DiagBusFlags,Z,#$08                     ; bit 3: OBD reply in progress (SciPitService)
         BRSET   >IoInputs0,Z,#$08,L330EC                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         BRSET   >IoStatus0B,Z,#$20,L330BC                ; bit 5: SCI line status, probably (SciPitService)
@@ -4489,7 +4489,7 @@ L331F8:
 L331FC:
         RTS
 L331FE:
-        BRCLR   >SCSR_L,Z,#$40,L3321C
+        BRCLR   >SCSR_L,Z,#$40,L3321C                    ; bit 6: RDRF: SCI receive data register full
         LDAA    >SCDR_L,Z
         CMPA    #$55
         LBNE    L33404
@@ -4509,7 +4509,7 @@ L3321C:
 L33232:
         RTS
 L33234:
-        BRCLR   >SCSR_L,Z,#$80,L33250
+        BRCLR   >SCSR_L,Z,#$80,L33250                    ; bit 7: TC: SCI transmit complete
         DEC     >SciByteTimer,Z
         BNE     L33250
         LDAA    #$08
@@ -4520,7 +4520,7 @@ L33234:
 L33250:
         RTS
 L33252:
-        BRCLR   >SCSR_L,Z,#$80,L3326E
+        BRCLR   >SCSR_L,Z,#$80,L3326E                    ; bit 7: TC: SCI transmit complete
         DEC     >SciByteTimer,Z
         BNE     L3326E
         LDAA    #$08
@@ -4533,7 +4533,7 @@ L3326E:
 L33270:
         DEC     >SciByteTimer,Z
         BEQ     L33286
-        BRCLR   >SCSR_L,Z,#$40,L33296
+        BRCLR   >SCSR_L,Z,#$40,L33296                    ; bit 6: RDRF: SCI receive data register full
         LDAB    >SCDR_L,Z
         COMB
         CMPB    #$08
@@ -4558,7 +4558,7 @@ L33298:
 L332AC:
         RTS
 L332AE:
-        BRCLR   >SCSR_L,Z,#$40,L332CA
+        BRCLR   >SCSR_L,Z,#$40,L332CA                    ; bit 6: RDRF: SCI receive data register full
         LDAA    >SCDR_L,Z
         CMPA    #$08
         LBNE    L33404
@@ -4572,7 +4572,7 @@ L332CA:
 L332D2:
         RTS
 L332D4:
-        BRCLR   >SCSR_L,Z,#$40,L332F0
+        BRCLR   >SCSR_L,Z,#$40,L332F0                    ; bit 6: RDRF: SCI receive data register full
         LDAA    >SCDR_L,Z
         CMPA    #$08
         LBNE    L33404
@@ -4586,7 +4586,7 @@ L332F0:
 L332F8:
         RTS
 L332FA:
-        BRCLR   >SCSR_L,Z,#$40,L33318
+        BRCLR   >SCSR_L,Z,#$40,L33318                    ; bit 6: RDRF: SCI receive data register full
         LDAA    >SCDR_L,Z
         COMA
         CMPA    #$08
@@ -4601,7 +4601,7 @@ L33318:
 L33320:
         RTS
 L33322:
-        BRCLR   >SCSR_L,Z,#$40,L3333A
+        BRCLR   >SCSR_L,Z,#$40,L3333A                    ; bit 6: RDRF: SCI receive data register full
         LDAA    >SCDR_L,Z
         COMA
         CMPA    #$33
@@ -4618,7 +4618,7 @@ L33344:
         LDAB    >SCDR_L,Z
         CLR     >SciReplyState,Z
         CLR     >ObdRequestId,Z
-        BSET    >SCCR1_L,Z,#$20
+        BSET    >SCCR1_L,Z,#$20                          ; bit 5: RIE: SCI receive interrupt enable
         LDD     #$0AE7
         STD     >SciPointer,Z
         INC     >SciTimer,Z
@@ -4638,12 +4638,12 @@ L33378:
         BLS     L333A6
         CMPA    #$15
         BCS     L333B2
-        BCLR    >SCCR1_L,Z,#$20
+        BCLR    >SCCR1_L,Z,#$20                          ; bit 5: RIE: SCI receive interrupt enable
         BSET    >DiagBusFlags,Z,#$80                     ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
         LDAA    >SCSR_L,Z
         LDAA    >SciObdCount,Z
         STAA    >SCDR_L,Z
-        BSET    >SCCR1_L,Z,#$80
+        BSET    >SCCR1_L,Z,#$80                          ; bit 7: TIE: SCI transmit interrupt enable
         INC     >SciTimer,Z
         INC     >SciTimer,Z
         BRA     L333B2
@@ -4659,12 +4659,12 @@ L333B4:
         LDAA    >SciReplyState,Z
         CMPA    #$15
         BLS     L333E4
-        BCLR    >SCCR1_L,Z,#$20
+        BCLR    >SCCR1_L,Z,#$20                          ; bit 5: RIE: SCI receive interrupt enable
         BSET    >DiagBusFlags,Z,#$80                     ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
         LDAA    >SCSR_L,Z
         LDAA    >SciObdCount,Z
         STAA    >SCDR_L,Z
-        BSET    >SCCR1_L,Z,#$80
+        BSET    >SCCR1_L,Z,#$80                          ; bit 7: TIE: SCI transmit interrupt enable
         INC     >SciTimer,Z
         BRA     L333E4
 L333E0:
@@ -4675,7 +4675,7 @@ L333E6:
         LDAB    >SciObdByte,Z
         CMPB    >ObdRequestIndex,Z
         BLS     L33402
-        BRCLR   >SCSR_L,Z,#$80,L33402
+        BRCLR   >SCSR_L,Z,#$80,L33402                    ; bit 7: TC: SCI transmit complete
         BRCLR   >SciCounter,Z,#$FF,L33404
         LDAA    #$0E
         STAA    >SciTimer,Z
@@ -4716,7 +4716,7 @@ SciInterrupt:
         LDD     #$0AE7
         STD     >SciPointer,Z
         BRSET   >DiagBusFlags,Z,#$80,L3347E              ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
-        BRCLR   >SCSR_L,Z,#$0E,L3345C
+        BRCLR   >SCSR_L,Z,#$0E,L3345C                    ; bit 3: OR: SCI overrun; bit 2: NF: SCI noise flag; bit 1: FE: SCI framing error
         LDAB    >SCDR_L,Z
         BRA     L334A4
 L3345C:
@@ -4749,7 +4749,7 @@ L3347E:
         BRA     L334AC
 L334A4:
         BCLR    >DiagBusFlags,Z,#$80                     ; bit 7: SCI transmit pending (SciPitService, cleared by SciInterrupt)
-        BCLR    >SCCR1_L,Z,#$80
+        BCLR    >SCCR1_L,Z,#$80                          ; bit 7: TIE: SCI transmit interrupt enable
 L334AC:
         PULM    E,D
         RTS
@@ -5377,13 +5377,13 @@ L33B5E:
 MonTaskLdp:
         BRCLR   >MonEnableFlags2,Z,#$80,L33BA8           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRCLR   >MonFlags64E,Z,#$01,L33BA8
-        BRSET   >Options033E,#$02,L33B78                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRSET   >Options033E,#$02,L33B78                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         BCLR    >MonData646,Z,#$03
         BRA     L33BC8
 L33B78:
         BRSET   >LdpFlags3,Z,#$02,L33B9C                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >MonStatusLdp,Z,#$04,L33BC8
-        BRSET   >MonStatusLdp,Z,#$80,L33B92
+        BRSET   >MonStatusLdp,Z,#$80,L33B92              ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 6) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRCLR   >EngineStateFlags,Z,#$80,L33BC8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRA     L33BA8
 L33B92:
@@ -5392,7 +5392,7 @@ L33B92:
         BRA     L33BC8
 L33B9C:
         BRCLR   >EngineStateFlags,Z,#$80,L33BC8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >MonStatusLdp,Z,#$80,L33BC8
+        BRSET   >MonStatusLdp,Z,#$80,L33BC8              ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 6) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
 L33BA8:
         BRCLR   >LdpFlags3,Z,#$02,L33BC8                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BCLR    >LdpFlags3,Z,#$02                        ; bit 1: leak detection monitor restart requested (MonTaskLdp)
@@ -6005,23 +6005,45 @@ L3521C:
         JMP     FanTestToggle
 L35220:
         JMP     FanTestToggle2
-        dc.b    $0A,$59,$07,$01,$FF,$FF,$FF,$FF,$0A,$6A,$0A,$6C,$0A,$74,$00,$0B
-        dc.b    $0A,$89,$0A,$51,$0A,$7E,$00,$18,$FF,$FF,$07,$B0,$00,$0C,$0C,$4C
-        dc.b    $0C,$4C,$0C,$36,$01,$4C,$FF,$FF,$0D,$11,$0D,$AC,$0D,$AD,$0D,$AE
-        dc.b    $0D,$AF,$FF,$FF,$0A,$62,$0A,$61,$04,$08,$01,$4B,$01,$4A,$FF,$FF
-        dc.b    $0D,$AC,$FF,$FF,$0A,$54,$0D,$B9,$FF,$FF,$FF,$FF,$09,$BC,$FF,$FF
-        dc.b    $0A,$CA,$0C,$46,$FF,$FF,$0A,$4B,$0A,$5A,$FF,$FF,$07,$29,$0A,$8A
-        dc.b    $07,$B1,$0A,$87,$0A,$88,$0A,$8E,$01,$98,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$05,$28,$FF,$FF,$FF,$FF,$07,$EE,$07,$0B,$FF,$FF
+        dc.b    $0A,$59,$07,$01,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; SciDataGroups1 ($3522C): 1 rows of 64 bytes
+; RAM address groups ($FFFF ends a group) of the SCI diagnostic service, next to SciRequestReceive's data
+;---------------------------------------------------------------------------------------------------
+SciDataGroups1:
+        dc.b    $0A,$6A,$0A,$6C,$0A,$74,$00,$0B          ; CoolantTemp, CoolantRaw, ThrottleRaw, ThrottleClosed
+        dc.b    $0A,$89,$0A,$51,$0A,$7E,$00,$18          ; KnockSampleA89, BatteryVolts2, Map, IacPosition
+        dc.b    $FF,$FF,$07,$B0,$00,$0C,$0C,$4C          ; end, O2AdaptValue1, Baro, EngineRpm
+        dc.b    $0C,$4C,$0C,$36,$01,$4C,$FF,$FF          ; EngineRpm, CrankSyncFlags2, FaultListInfo1, end
+        dc.b    $0D,$11,$0D,$AC,$0D,$AD,$0D,$AE          ; SparkAdvanceD11, KnockSampleDAC, KnockSampleDAD, KnockSampleDAE
+        dc.b    $0D,$AF,$FF,$FF,$0A,$62,$0A,$61          ; KnockSampleDAF, end, AirTemp, AirTempRaw
+        dc.b    $04,$08,$01,$4B,$01,$4A,$FF,$FF          ; SpeedCtlSetSpeed, FaultListInfo2, FaultListInfo3, end
+        dc.b    $0D,$AC,$FF,$FF,$0A,$54,$0D,$B9          ; KnockSampleDAC, end, ChargeA54, ChargeTargetVolts
+
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; SciDataGroups2 ($35270): 1 rows of 30 bytes
+; RAM address groups ($FFFF ends a group) of the SCI diagnostic service
+;---------------------------------------------------------------------------------------------------
+SciDataGroups2:
+        dc.b    $09,$BC,$FF,$FF,$0A,$CA,$0C,$46          ; SecurityFlags, end, FuelTrimAdjustValue, CylinderIndex
+        dc.b    $FF,$FF,$0A,$4B,$0A,$5A,$FF,$FF          ; end, ReadAnalogA4B, BatteryTemp, end
+        dc.b    $07,$29,$0A,$8A,$07,$B1,$0A,$87          ; O2UpBank2Raw, KnockSampleA8A, O2AdaptValue2, AcSensorRaw
+        dc.b    $0A,$88,$0A,$8E,$01,$98                  ; AcSensor, FlexSensorRaw, FlexEthanol
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$05,$28,$FF,$FF,$FF,$FF
+        dc.b    $07,$EE,$07,$0B,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$0A,$94,$01,$9C,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$05,$29,$04,$02
-        dc.b    $04,$04,$FF,$FF,$FF,$FF,$0A,$42,$FF,$FF,$FF,$FF,$0A,$8D,$0B,$4C
-        dc.b    $FF,$FF,$FF,$FF,$00,$55,$04,$5F,$0A,$63,$0A,$64,$00,$56,$00,$57
-        dc.b    $0A,$1B,$00,$00,$00,$10,$10,$00,$00,$00,$10,$10,$10,$00,$00,$00
-        dc.b    $20,$20,$20,$10,$10,$10,$00,$20,$30,$30,$20,$30,$10,$00,$30,$20
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$10,$30,$03,$02,$00,$01,$FF,$FF,$02
-        dc.b    $01,$03,$00,$FF,$FF,$04,$05,$00,$01,$02,$03,$FF
+        dc.b    $0A,$94,$01,$9C,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$05,$29,$04,$02,$04,$04,$FF,$FF,$FF,$FF,$0A,$42,$FF,$FF
+        dc.b    $FF,$FF,$0A,$8D,$0B,$4C,$FF,$FF,$FF,$FF,$00,$55,$04,$5F,$0A,$63
+        dc.b    $0A,$64,$00,$56,$00,$57,$0A,$1B,$00,$00,$00,$10,$10,$00,$00,$00
+        dc.b    $10,$10,$10,$00,$00,$00,$20,$20,$20,$10,$10,$10,$00,$20,$30,$30
+        dc.b    $20,$30,$10,$00,$30,$20,$00,$00,$00,$00,$00,$00,$00,$10,$30,$03
+        dc.b    $02,$00,$01,$FF,$FF,$02,$01,$03,$00,$FF,$FF,$04,$05,$00,$01,$02
+        dc.b    $03,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; SciRequestReceive ($35330)
@@ -6441,7 +6463,7 @@ L35738:
         BSET    >DiagFlags,Z,#$80                        ; bit 7: bus data request answered (BusDataRequest); cleared by the SCI receive code
         CLR     >DiagCommand,Z
 L35740:
-        BRCLR   >SCSR_L,Z,#$80,L35740
+        BRCLR   >SCSR_L,Z,#$80,L35740                    ; bit 7: TC: SCI transmit complete
         LDD     #$0008
         STD     >SCCR0,Z
         RTS
@@ -6620,7 +6642,7 @@ L358D6:
 ; Called from: SciDiagCommand, BusDataRequest, DiagRunRamCode, DiagRamSession1, DiagRamSession2, DiagPciCommand, DiagCommandMain, RunModeSwitch (13 calls)
 ;---------------------------------------------------------------------------------------------------
 SciSendByte:
-        BRCLR   >SCSR,Z,#$01,SciSendByte
+        BRCLR   >SCSR,Z,#$01,SciSendByte                 ; bit 0: TDRE: SCI transmit data register empty
         STAA    >SCDR_L,Z
         RTS
         dc.b    $00,$00,$03,$02,$00,$00,$03,$03,$00,$00,$03,$04,$00,$00,$03,$05
@@ -7001,7 +7023,7 @@ L35CC6:
         LDAA    #$F0
         JSR     SciSendByte
 L35CD4:
-        BRCLR   >SCSR,Z,#$01,L35CD4
+        BRCLR   >SCSR,Z,#$01,L35CD4                      ; bit 0: TDRE: SCI transmit data register empty
         JMP     Reset
 L35CDE:
         BRSET   >EepromFlags,Z,#$80,SciSendByte          ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -7906,7 +7928,7 @@ L365B6:
 ; Called from: OutputTestDispatch
 ;---------------------------------------------------------------------------------------------------
 OutputTestLdp:
-        BRCLR   >Options033E,#$02,L365D0                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRCLR   >Options033E,#$02,L365D0                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         BRCLR   >MainLoopPhaseMask,Z,#$40,L365D0         ; bit 6: one pass in 128 (about 1.5 s)
         LDE     >IoDriver62,Z
         EORE    #$2000
@@ -8124,8 +8146,17 @@ L367B2:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$EF,$FF,$FF,$FF,$FF,$FF,$7F,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $00,$01,$00,$02,$00,$04,$00,$08,$00,$10,$00,$20,$00,$40,$00,$80
-        dc.b    $01,$00,$02,$00,$04,$00,$08,$00,$10,$00,$20,$00,$40,$00,$80,$00
+
+;---------------------------------------------------------------------------------------------------
+; BitMaskWords ($367F4): 1 rows of 32 bytes
+; The 16 one-bit masks $0001-$8000 as words; no reader found
+;---------------------------------------------------------------------------------------------------
+BitMaskWords:
+        dc.b    $00,$01,$00,$02,$00,$04,$00,$08          ; $0001, UnexpectedIrqStack4, UnexpectedIrqStack6, ResetCountsExtSw
+        dc.b    $00,$10,$00,$20,$00,$40,$00,$80          ; $0010, $0020, EgrZeroPos, PurgeCellRichFlags
+        dc.b    $01,$00,$02,$00,$04,$00,$08,$00          ; O2NoActivityFlags, $0200, SpeedCtlState, O2CellIndex
+        dc.b    $10,$00,$20,$00,$40,$00,$80,$00          ; IoInputs0, $2000, $4000, $8000
+
 
 ;---------------------------------------------------------------------------------------------------
 ; DiagRamAddrAllowed ($36814)
@@ -8173,8 +8204,8 @@ OcOutputsReset:
 L36870:
         LDAB    #$70
         ORP     #$00E0
-        BCLR    >TMSK1,Z,#$70
-        BCLR    >TFLG1,Z,#$70
+        BCLR    >TMSK1,Z,#$70                            ; bit 6: OC4I: OC4 interrupt enable; bit 5: OC3I: OC3 interrupt enable; bit 4: OC2I: OC2 interrupt enable
+        BCLR    >TFLG1,Z,#$70                            ; bit 6: OC4F: output compare 4 flag; bit 5: OC3F: output compare 3 flag; bit 4: OC2F: output compare 2 flag
         STAA    >TCTL1,Z
         STAB    >CFORC,Z
         ANDP    #$FF1F
@@ -8507,13 +8538,34 @@ DiagDataList4:
         dc.b    $04,$58,$04,$59,$04,$5A,$04,$5B          ; PurgeFlowErrorDiff, $0459, PurgeFlowError, $045B
         dc.b    $04,$5C,$04,$5D,$04,$60                  ; PurgeFlow45C, $045D, PurgePwmDuty
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$01,$72,$01,$73,$01,$74,$01,$75
-        dc.b    $01,$76,$01,$77,$01,$78,$00,$85,$00,$86,$00,$87,$00,$88,$00,$89
-        dc.b    $00,$8A,$00,$8B,$00,$8C,$00,$8D,$00,$8E,$00,$8F,$00,$90,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$0A,$CB,$0A,$5C,$FF,$FF
-        dc.b    $FF,$FF,$00,$2B,$00,$2C,$00,$2D,$00,$2E,$00,$2F,$00,$30,$00,$31
-        dc.b    $00,$32,$00,$33,$00,$34,$00,$35,$00,$36,$00,$37,$00,$38,$00,$39
-        dc.b    $00,$3A,$00,$3B,$00,$3C,$00,$3D,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList9 ($37846): 1 rows of 38 bytes
+; Lists of RAM addresses next to DiagDataList1-8, not referenced directly (same layout)
+;---------------------------------------------------------------------------------------------------
+DiagDataList9:
+        dc.b    $01,$72,$01,$73,$01,$74,$01,$75          ; PurgeFlow172, PurgeFlow173, PurgeFlow174, PurgeFlow175
+        dc.b    $01,$76,$01,$77,$01,$78,$00,$85          ; PurgeResultFlags, PurgeFlow177, $0178, SparkOcTime2
+        dc.b    $00,$86,$00,$87,$00,$88,$00,$89          ; SparkOcTime3, CalcSpark087, $0088, $0089
+        dc.b    $00,$8A,$00,$8B,$00,$8C,$00,$8D          ; $008A, $008B, $008C, $008D
+        dc.b    $00,$8E,$00,$8F,$00,$90                  ; $008E, $008F, $0090
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$0A,$CB,$0A,$5C
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList10 ($37880): 1 rows of 38 bytes
+; Lists of RAM addresses next to DiagDataList1-8, not referenced directly (same layout)
+;---------------------------------------------------------------------------------------------------
+DiagDataList10:
+        dc.b    $00,$2B,$00,$2C,$00,$2D,$00,$2E          ; $002B, $002C, $002D, $002E
+        dc.b    $00,$2F,$00,$30,$00,$31,$00,$32          ; $002F, $0030, $0031, $0032
+        dc.b    $00,$33,$00,$34,$00,$35,$00,$36          ; $0033, $0034, $0035, $0036
+        dc.b    $00,$37,$00,$38,$00,$39,$00,$3A          ; $0037, $0038, $0039, $003A
+        dc.b    $00,$3B,$00,$3C,$00,$3D                  ; $003B, $003C, $003D
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; DiagDataList5 ($378AE): 1 rows of 64 bytes
@@ -8533,9 +8585,20 @@ DiagDataList5:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$06,$13,$06,$14,$06,$15,$06,$16,$06,$17,$06,$18,$FF,$FF
         dc.b    $06,$C2,$06,$C3,$06,$C4,$06,$C5,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$01,$4E,$01,$50,$01,$52,$01,$54,$01,$56,$01,$58
-        dc.b    $01,$5A,$01,$5C,$01,$5E,$01,$60,$01,$62,$01,$64,$01,$66,$01,$68
-        dc.b    $01,$6A,$01,$6C,$01,$6E,$01,$70,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList11 ($37932): 1 rows of 36 bytes
+; Lists of RAM addresses next to DiagDataList1-8, not referenced directly (same layout)
+;---------------------------------------------------------------------------------------------------
+DiagDataList11:
+        dc.b    $01,$4E,$01,$50,$01,$52,$01,$54          ; ObdRec14E, ObdRec150, ObdRec152, ObdRec154
+        dc.b    $01,$56,$01,$58,$01,$5A,$01,$5C          ; ObdRec156, ObdRec158, ObdRec15A, ObdRec15C
+        dc.b    $01,$5E,$01,$60,$01,$62,$01,$64          ; ObdRec15E, ObdRec160, ObdRec162, ObdRec164
+        dc.b    $01,$66,$01,$68,$01,$6A,$01,$6C          ; ObdTid21Status, Obd168, ObdRec16A, ObdRec16C
+        dc.b    $01,$6E,$01,$70                          ; EgrFlow16E, LdpResultFlags
+
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; DiagDataList6 ($3795E): 1 rows of 66 bytes
@@ -8712,23 +8775,21 @@ DiagDataList8:
         dc.b    $05,$0E,$05,$14,$05,$17,$06,$68          ; FaultSet0E, FaultSet14, FaultSet17, PspSwitch668
         dc.b    $06,$AC                                  ; LimpFlags
 
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$01,$11,$01,$17,$05,$AE,$05,$AF,$05,$BB
-        dc.b    $05,$BC,$05,$B4,$05,$B9,$05,$BA,$05,$B5,$05,$B6,$05,$B7,$05,$B3
-        dc.b    $05,$BD,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$27,$4C,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
+
+;---------------------------------------------------------------------------------------------------
+; DiagDataList12 ($37DBC): 1 rows of 28 bytes
+; Lists of RAM addresses next to DiagDataList1-8, not referenced directly (same layout)
+;---------------------------------------------------------------------------------------------------
+DiagDataList12:
+        dc.b    $01,$11,$01,$17,$05,$AE,$05,$AF          ; ObdRec111, ObdRec117, PurgeFlowTestFlags, PurgeFlowTestResult
+        dc.b    $05,$BB,$05,$BC,$05,$B4,$05,$B9          ; PurgeFlow5BB, PurgeFlow5BC, PurgeFlow5B4, O2PurgeTestValue1
+        dc.b    $05,$BA,$05,$B5,$05,$B6,$05,$B7          ; O2PurgeTestValue2, PurgeFlow5B5, $05B6, PurgeFlow5B7
+        dc.b    $05,$B3,$05,$BD                          ; PurgeFlow5B3, PurgeFlowFails
+
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$27,$4C,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -8748,14 +8809,25 @@ DiagDataList8:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$80,$40,$20,$10,$08,$04
-        dc.b    $02,$01,$40,$CA,$00,$00,$00,$00,$40,$B6,$44,$44,$49,$44,$00,$00
-        dc.b    $40,$F2,$00,$00,$00,$00,$00,$00,$40,$B6,$44,$44,$49,$4E,$00,$00
-        dc.b    $40,$F2,$00,$00,$00,$00,$00,$00,$40,$B6,$44,$44,$48,$04,$00,$00
-        dc.b    $40,$F2,$00,$00,$00,$00,$00,$00,$43,$EA,$43,$F4,$40,$FC,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$43,$EA,$43,$F4,$00,$00,$00,$00
-        dc.b    $00,$00,$00,$00,$00,$00,$45,$C0,$43,$EA,$43,$F4,$40,$FC,$00,$00
-        dc.b    $00,$00
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$80,$40,$20,$10,$08,$04,$02,$01
+        dc.b    $40,$CA,$00,$00,$00,$00,$40,$B6,$44,$44,$49,$44,$00,$00,$40,$F2
+        dc.b    $00,$00,$00,$00,$00,$00,$40,$B6,$44,$44,$49,$4E,$00,$00,$40,$F2
+        dc.b    $00,$00,$00,$00,$00,$00,$40,$B6,$44,$44,$48,$04,$00,$00,$40,$F2
+        dc.b    $00,$00,$00,$00,$00,$00,$43,$EA,$43,$F4,$40,$FC,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$00,$00,$43,$EA,$43,$F4,$00,$00,$00,$00,$00,$00
+        dc.b    $00,$00,$00,$00,$45,$C0,$43,$EA,$43,$F4,$40,$FC,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
 ; QspiOutputStatus ($38068)
@@ -8952,14 +9024,14 @@ L38284:
 ; Called from: Isr_GPT_IC1, Isr_GPT_PAI, Reset, CheckPowerDown, O2HeaterMonitor, O2HeaterTest, QspiService, QspiOutputStatus and 9 more routines (22 calls)
 ;---------------------------------------------------------------------------------------------------
 QspiWaitIdle:
-        BCLR    >SPSR,Z,#$80
-        BSET    >SPCR1,Z,#$80
+        BCLR    >SPSR,Z,#$80                             ; bit 7: SPIF: QSPI finished flag
+        BSET    >SPCR1,Z,#$80                            ; bit 7: SPE: QSPI enable
         CLRA
 L3829C:
         DECA
         BEQ     L382AC
-        BRCLR   >SPSR,Z,#$80,L3829C
-        BCLR    >SPSR,Z,#$80
+        BRCLR   >SPSR,Z,#$80,L3829C                      ; bit 7: SPIF: QSPI finished flag
+        BCLR    >SPSR,Z,#$80                             ; bit 7: SPIF: QSPI finished flag
         BRA     L382B0
 L382AC:
         BSET    >HwErrorFlags,Z,#$02
@@ -9969,10 +10041,10 @@ L392E8:
 L392F6:
         BRSET   >Options0331,#$40,L39312                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         BRCLR   >Options0331,#$20,L3930A                 ; bit 5: A/C detection variant (EquipmentDetect, AcClutchControl)
-        BRCLR   >SwitchInputs2,Z,#$80,L3933A             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
+        BRCLR   >SwitchInputs2,Z,#$80,L3933A             ; bit 7: A/C request switch (AcClutchControl, EquipmentDetect)
         BRA     L39318
 L3930A:
-        BRSET   >SwitchInputs2,Z,#$80,L3933A             ; bit 7: switch input used by EquipmentDetect and AcClutchControl (A/C request, probably)
+        BRSET   >SwitchInputs2,Z,#$80,L3933A             ; bit 7: A/C request switch (AcClutchControl, EquipmentDetect)
         BRA     L39318
 L39312:
         BRCLR   >AcFlags,Z,#$08,L3933A                   ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
@@ -12897,7 +12969,7 @@ SpeedCtlControl:
         JSR     SpeedCtlSwitchCheck
         JSR     SpeedCtlBusCheck
         LDAB    #$00
-        BRCLR   >SwitchInputs2,Z,#$10,L3B8AC             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L3B8AC             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         LDAB    #$01
         LDAA    >VehicleSpeed,Z
         CMPA    >SpeedCtlEngageSpeedMin
@@ -12948,7 +13020,7 @@ L3B894:
 L3B8AC:
         JSR     Nibble402Add
         CLRA
-        BRCLR   >SwitchInputs2,Z,#$10,L3B8D8             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L3B8D8             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         BRCLR   >SpeedCtlState,Z,#$18,L3B8DC             ; bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
         LDAA    >VehicleSpeed,Z
         BRCLR   >SpeedCtlState,Z,#$10,L3B8D8             ; bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
@@ -13905,7 +13977,7 @@ L3C2E6:
         LDAA    >FaultSet0B,Z
         BITA    #$C0
         BNE     L3C368
-        BRCLR   >SwitchInputs2,Z,#$10,L3C364             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L3C364             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         BRCLR   >Options032E,#$40,L3C322                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         TST     >SpeedCtlRpmJumpTimer,Z
         BEQ     L3C310
@@ -14035,7 +14107,7 @@ L3C3DE:
         JSR     Blend16
         AIS     #$04
         STD     >SpeedCtlThrottleAvg,Z
-        BRCLR   >SwitchInputs2,Z,#$10,L3C466             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L3C466             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         BRSET   >SensorFaultFlags,Z,#$10,L3C466          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         LDD     >EngineRpm,Z
         CPD     >SpeedCtlRpmJumpMinRpm
@@ -14214,7 +14286,7 @@ Nibble402Add:
 ;---------------------------------------------------------------------------------------------------
 SpeedCtlSwitchCheck:
         BRCLR   >EquipmentFlags,Z,#$40,L3C65A            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
-        BRCLR   >SwitchInputs2,Z,#$10,L3C65A             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L3C65A             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         BRSET   >IoInputs0,Z,#$01,L3C65A                 ; bit 0: speed control switch input (SpeedCtlSwitchCheck, SpeedCtlCancelMonitor)
         BRSET   >SwitchInputs,Z,#$01,L3C65A              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
         BRSET   >FaultSet00,Z,#$80,L3C65A                ; bit 7: fault row $0F, no P-code
@@ -14348,7 +14420,7 @@ L3C6F8:
         BRSET   >Options0332,#$02,L3C730                 ; bit 1: speed control switch variant; also used by EquipmentDetect
         BRA     L3C748
 L3C718:
-        BRCLR   >SwitchInputs2,Z,#$10,L3C73C             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L3C73C             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         ORAB    #$01
 L3C720:
         BRSET   >SpeedCtlState,Z,#$80,L3C73C             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
@@ -14357,7 +14429,7 @@ L3C720:
         ORAB    #$02
         BRA     L3C73C
 L3C730:
-        BRCLR   >SwitchInputs2,Z,#$10,L3C73C             ; bit 4: speed control switch (on/off, probably)
+        BRCLR   >SwitchInputs2,Z,#$10,L3C73C             ; bit 4: speed control on/off switch (speed control code, lamp state, EquipmentDetect)
         ORAB    #$01
         BRA     L3C73C
 L3C73A:

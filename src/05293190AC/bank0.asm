@@ -5238,7 +5238,7 @@ KnockLearnAirTempMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRpmSteps ($2435): 19 rows of 2 bytes
-; Word list compared with the rpm value at $0C4C by KnockThresholdCalc and KnockCylinderRetard, probably rpm break points
+; Word list of rpm break points: KnockThresholdCalc and KnockCylinderRetard compare EngineRpm with it to pick the row of their tables
 ;---------------------------------------------------------------------------------------------------
 KnockRpmSteps:
         dc.b    $20,$00
@@ -6425,8 +6425,8 @@ IacAcEngageAdder:
         dc.b    255,0                                    ; x, y
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-IacAcRequestAdder:
-        dc.b    $11                                      ; IAC addition with A/C requested (A/C switch input, not blocked)
+IacPsSwitchAdder:
+        dc.b    $11                                      ; IAC addition while the power steering pressure switch is on (SwitchInputs2 bit 6; only with the switch fitted and no P0551)
 IacDriveAdder:
         dc.b    $00                                      ; IAC addition (signed) in drive
 IacUpdateMask:
@@ -8123,16 +8123,16 @@ O2MonWindowMin:
         dc.b    $0C                                      ; O2 sensor monitor at idle: window count at or above which the switch counts are judged
         dc.b    $12,$80,$80
 O2HeaterRunTimeMin:
-        dc.b    $60                                      ; Probably the O2 heater monitor (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value
+        dc.b    $60                                      ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterMonitor, Options033F bits 4-7): run time at or above this value
         dc.b    $26,$80,$80
 O2HeaterSampleTime:
-        dc.b    $00,$64                                  ; Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled
+        dc.b    $00,$64                                  ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled
 O2HeaterTestTime:
-        dc.b    $15,$90                                  ; Probably the O2 heater monitor: timer O2HeaterTimer (word) limit of the test
+        dc.b    $15,$90                                  ; O2 heater monitor (run at key-off from CheckPowerDown): timer O2HeaterTimer (word) limit of the test
 O2HeaterSettleTime:
-        dc.b    $11,$30                                  ; Probably the O2 heater monitor (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated
+        dc.b    $11,$30                                  ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterTest): timer O2HeaterTimer (word) below which the records are updated
 O2HeaterCountMin:
-        dc.b    $1E                                      ; Probably the O2 heater monitor (O2HeaterResult): count O2HeaterCount above which the results are judged
+        dc.b    $1E                                      ; O2 heater monitor (run at key-off from CheckPowerDown) (O2HeaterResult): count O2HeaterCount above which the results are judged
         dc.b    $4D,$00,$4D,$00,$1A,$00,$1A,$00,$01,$00,$01,$00,$08,$00,$08,$00
         dc.b    $0A,$00,$0A,$00
 O2ColdTrimHeaterAdder:
@@ -8586,18 +8586,18 @@ CatBank1Conds2:
 ;---------------------------------------------------------------------------------------------------
 CatBank1Conds3:
         dc.b    $0C                                      ; entries
-        dc.b    $00,$A3,$00,$90                          ; MonStatusO2Resp1 needs clear: bit 7; bit 4
+        dc.b    $00,$A3,$00,$90                          ; MonStatusO2Resp1 needs clear: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 2) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set; P0133 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$A3,$02,$02                          ; MonStatusO2Resp1 needs all set: bit 1
-        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
-        dc.b    $00,$A7,$00,$10                          ; MonStatusO2Sensor3 needs clear: bit 4
-        dc.b    $00,$A9,$00,$10                          ; MonStatusPurge needs clear: read by ObdReadiness
-        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: bit 4
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: P0135 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A7,$00,$10                          ; MonStatusO2Sensor3 needs clear: P0141 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A9,$00,$10                          ; MonStatusPurge needs clear: read by ObdReadiness; P0441 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: P0401 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
-        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
-        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
-        dc.b    $00,$9D,$00,$7C                          ; MonFlags09D needs clear: P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A); P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: P0171 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: P0172 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$9D,$00,$7C                          ; MonFlags09D needs clear: P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear; P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
@@ -8650,18 +8650,18 @@ CatBank2Conds2:
 ;---------------------------------------------------------------------------------------------------
 CatBank2Conds3:
         dc.b    $0C                                      ; entries
-        dc.b    $00,$A4,$00,$90                          ; MonStatusO2Resp2 needs clear: bit 7; bit 4
+        dc.b    $00,$A4,$00,$90                          ; MonStatusO2Resp2 needs clear: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 3) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set; P0153 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$A4,$02,$02                          ; MonStatusO2Resp2 needs all set: bit 1
-        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
-        dc.b    $00,$A8,$00,$10                          ; MonStatusO2Sensor4 needs clear: bit 4
-        dc.b    $00,$A9,$00,$10                          ; MonStatusPurge needs clear: read by ObdReadiness
-        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: bit 4
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: P0155 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A8,$00,$10                          ; MonStatusO2Sensor4 needs clear: P0161 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A9,$00,$10                          ; MonStatusPurge needs clear: read by ObdReadiness; P0441 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: P0401 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
-        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: bit 4
-        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: bit 4
-        dc.b    $00,$9D,$00,$7C                          ; MonFlags09D needs clear: P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A); P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: P0174 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: P0175 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$9D,$00,$7C                          ; MonFlags09D needs clear: P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear; P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
@@ -8711,11 +8711,11 @@ O2Resp1Conds2:
 ;---------------------------------------------------------------------------------------------------
 O2Resp1Conds3:
         dc.b    $05                                      ; entries
-        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: P0135 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
-        dc.b    $00,$9D,$00,$5C                          ; MonFlags09D needs clear: P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A); P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$9D,$00,$5C                          ; MonFlags09D needs clear: P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear; P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF
@@ -8766,11 +8766,11 @@ O2Resp2Conds2:
 ;---------------------------------------------------------------------------------------------------
 O2Resp2Conds3:
         dc.b    $05                                      ; entries
-        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: P0155 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
-        dc.b    $00,$9D,$00,$5C                          ; MonFlags09D needs clear: P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A); P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$9D,$00,$5C                          ; MonFlags09D needs clear: P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear; P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF
@@ -8816,7 +8816,7 @@ O2HeaterMonitorConds:
 ;---------------------------------------------------------------------------------------------------
 O2HeaterMonitorConds2:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -8863,7 +8863,7 @@ O2HeaterMonitorConds3:
 ;---------------------------------------------------------------------------------------------------
 O2HeaterMonitorConds4:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -8910,7 +8910,7 @@ O2HeaterMonitorConds5:
 ;---------------------------------------------------------------------------------------------------
 O2HeaterMonitorConds6:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -8957,7 +8957,7 @@ O2HeaterMonitorConds7:
 ;---------------------------------------------------------------------------------------------------
 O2HeaterMonitorConds8:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -9015,21 +9015,21 @@ PurgeConds2:
 ;---------------------------------------------------------------------------------------------------
 PurgeConds3:
         dc.b    $0F                                      ; entries
-        dc.b    $00,$A3,$00,$10                          ; MonStatusO2Resp1 needs clear: bit 4
-        dc.b    $00,$A4,$00,$10                          ; MonStatusO2Resp2 needs clear: bit 4
+        dc.b    $00,$A3,$00,$10                          ; MonStatusO2Resp1 needs clear: P0133 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A4,$00,$10                          ; MonStatusO2Resp2 needs clear: P0153 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$A3,$02,$02                          ; MonStatusO2Resp1 needs all set: bit 1
         dc.b    $00,$A4,$00,$00                          ; MonStatusO2Resp2 needs clear $00
-        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
-        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: P0135 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: P0155 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
-        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
-        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
-        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: bit 4
-        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: bit 4
-        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: bit 4
-        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A); P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: P0171 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: P0172 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: P0174 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: P0175 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: P0401 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear; P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
 
 ;---------------------------------------------------------------------------------------------------
@@ -9083,20 +9083,20 @@ EgrFlowConds2:
 ;---------------------------------------------------------------------------------------------------
 EgrFlowConds3:
         dc.b    $0E                                      ; entries
-        dc.b    $00,$A3,$00,$90                          ; MonStatusO2Resp1 needs clear: bit 7; bit 4
-        dc.b    $00,$A4,$00,$90                          ; MonStatusO2Resp2 needs clear: bit 7; bit 4
+        dc.b    $00,$A3,$00,$90                          ; MonStatusO2Resp1 needs clear: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 2) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set; P0133 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A4,$00,$90                          ; MonStatusO2Resp2 needs clear: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 3) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set; P0153 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$A3,$02,$02                          ; MonStatusO2Resp1 needs all set: bit 1
         dc.b    $00,$A4,$00,$00                          ; MonStatusO2Resp2 needs clear $00
-        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
-        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: P0135 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: P0155 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$AB,$00,$10                          ; MonStatusMisfire needs clear: bit 4
-        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
-        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
-        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: bit 4
-        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: bit 4
-        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A); P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: P0171 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: P0172 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: P0174 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: P0175 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$18                          ; MonFlags09F needs clear: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear; P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF
 
@@ -9145,13 +9145,13 @@ MisfireEnableCheckConds:
 ;---------------------------------------------------------------------------------------------------
 MisfireEnableCheckConds2:
         dc.b    $07                                      ; entries
-        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: bit 4
-        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
-        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: bit 4
-        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: bit 4
-        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$AC,$00,$10                          ; MonStatusFuelSysTooLean1 needs clear: P0171 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: P0172 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: P0174 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: P0175 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
@@ -9200,11 +9200,11 @@ FuelSysTooLean1Conds2:
 ;---------------------------------------------------------------------------------------------------
 FuelSysTooLean1Conds3:
         dc.b    $05                                      ; entries
-        dc.b    $00,$A3,$00,$10                          ; MonStatusO2Resp1 needs clear: bit 4
-        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
-        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$A3,$00,$10                          ; MonStatusO2Resp1 needs clear: P0133 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: P0135 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF
@@ -9254,12 +9254,12 @@ FuelSysTooRich1Conds2:
 ;---------------------------------------------------------------------------------------------------
 FuelSysTooRich1Conds3:
         dc.b    $06                                      ; entries
-        dc.b    $00,$A3,$00,$10                          ; MonStatusO2Resp1 needs clear: bit 4
-        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: bit 4
-        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: bit 4
-        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$A3,$00,$10                          ; MonStatusO2Resp1 needs clear: P0133 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A5,$00,$10                          ; MonStatusO2Sensor1 needs clear: P0135 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: P0401 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$A9                          ; MonFlags09E needs clear: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
@@ -9308,11 +9308,11 @@ FuelSysTooLean2Conds2:
 ;---------------------------------------------------------------------------------------------------
 FuelSysTooLean2Conds3:
         dc.b    $05                                      ; entries
-        dc.b    $00,$A4,$00,$10                          ; MonStatusO2Resp2 needs clear: bit 4
-        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
-        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$A4,$00,$10                          ; MonStatusO2Resp2 needs clear: P0153 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: P0155 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF
@@ -9362,12 +9362,12 @@ FuelSysTooRich2Conds2:
 ;---------------------------------------------------------------------------------------------------
 FuelSysTooRich2Conds3:
         dc.b    $06                                      ; entries
-        dc.b    $00,$A4,$00,$10                          ; MonStatusO2Resp2 needs clear: bit 4
-        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: bit 4
-        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: bit 4
-        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
-        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
-        dc.b    $00,$9F,$00,$10                          ; MonFlags09F needs clear: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$A4,$00,$10                          ; MonStatusO2Resp2 needs clear: P0153 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$A6,$00,$10                          ; MonStatusO2Sensor2 needs clear: P0155 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$AA,$00,$10                          ; MonStatusEgrFlow needs clear: P0401 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$56                          ; MonFlags09E needs clear: P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$10                          ; MonFlags09F needs clear: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
@@ -9414,7 +9414,7 @@ LdpConds2:
 LdpConds3:
         dc.b    $02                                      ; entries
         dc.b    $00,$AB,$00,$04                          ; MonStatusMisfire needs clear: bit 2
-        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -10607,13 +10607,13 @@ FlexEthanolCurve:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; FlexSensorCurve ($70AD): 2D table, 8 points, unsigned
-; Analog input $0A8E (probably the fuel composition sensor: FlexSensorCheck reports P0176/P0178/P0179 for it) to CatTempFiltered
+; CatTempSensorCurve ($70AD): 2D table, 8 points, unsigned
+; Catalyst temperature sensor (Options0330 bit 4; CatTempMonitor reports P1482/P1483 shorted low/high and P1484 overheat): analog input $0A8E to CatTempFiltered. The same input serves the flex-fuel sensor (FlexSensorCheck, P0176/P0178/P0179) where that is fitted
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: FlexSensorRaw
 ; Read at $2DC98
 ;---------------------------------------------------------------------------------------------------
-FlexSensorCurve:
+CatTempSensorCurve:
         dc.b    8,$80                                    ; points, flags
         dc.b    11,175, 24,133, 27,125, 43,100, 74,75, 113,50, 167,25, 209,0 ; x, y
 
@@ -10670,18 +10670,18 @@ DwellTime:
 ;---------------------------------------------------------------------------------------------------
 BitCollectMaps:
 ; map 0 ($713B): used by SciSendByte
-        dc.b    $0A,$47,$40,$80                          ; out bit 7 <- SwitchInputs2 & $40 (switch input used by the idle air code (load switch, probably power steering or A/C))
-        dc.b    $0A,$47,$80,$40                          ; out bit 6 <- SwitchInputs2 & $80 (switch input used by EquipmentDetect and AcClutchControl (A/C request, probably))
+        dc.b    $0A,$47,$40,$80                          ; out bit 7 <- SwitchInputs2 & $40 (power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2))
+        dc.b    $0A,$47,$80,$40                          ; out bit 6 <- SwitchInputs2 & $80 (A/C request switch (AcClutchControl, EquipmentDetect))
         dc.b    $0A,$46,$01,$20                          ; out bit 5 <- SwitchInputs & $01 (brake switch (BrakeSwitchMonitor, idle, speed damping, purge test))
         dc.b    $0A,$47,$20,$10                          ; out bit 4 <- SwitchInputs2 & $20 (park/neutral switch (gear state, starter cut, park/neutral monitor))
         dc.b    $0A,$47,$08,$08                          ; out bit 3 <- SwitchInputs2 & $08 (speed control switch)
-        dc.b    $0A,$47,$10,$04                          ; out bit 2 <- SwitchInputs2 & $10 (speed control switch (on/off, probably))
+        dc.b    $0A,$47,$10,$04                          ; out bit 2 <- SwitchInputs2 & $10 (speed control on/off switch (speed control code, lamp state, EquipmentDetect))
         dc.b    $0A,$47,$04,$02                          ; out bit 1 <- SwitchInputs2 & $04 (speed control switch (set at reset))
         dc.b    $0A,$47,$01,$01                          ; out bit 0 <- SwitchInputs2 & $01 (speed control switch)
 ; map 1 ($715B): used by SciSendByte
         dc.b    $0A,$46,$02,$80                          ; out bit 7 <- SwitchInputs & $02 (bit 1)
         dc.b    $10,$00,$08,$40                          ; out bit 6 <- IoInputs0 & $08 (key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path)
-        dc.b    $79,$07,$80,$20                          ; out bit 5 <- PORTGP & $80 (bit 7)
+        dc.b    $79,$07,$80,$20                          ; out bit 5 <- PORTGP & $80 (GPT port pin 7 level (IC4/OC5))
         dc.b    $10,$00,$04,$10                          ; out bit 4 <- IoInputs0 & $04 (ASD relay output present, probably (AsdRelayCheck, the reference-event code))
         dc.b    $0C,$21,$08,$08                          ; out bit 3 <- AcFlags & $08 (A/C request from the bus (message bit 0 in CcdReceive))
         dc.b    $00,$00,$00,$04                          ; unused
@@ -10995,8 +10995,8 @@ BatteryVoltsDwellFilter:
         dc.b    $FA
 
 ;---------------------------------------------------------------------------------------------------
-; FaultStatusMap ($758C): 43 rows of 10 bytes
-; Fault-to-status map: fault table row, monitor status byte and bit, second status byte and bit (read by ObdFaultReport and the OBD request code)
+; FaultStatusMap ($758C): 44 rows of 10 bytes
+; Fault-to-status map, 44 rows: fault table row, status byte and mask, second status byte and mask. SciDiagCommand scans all rows (FaultStatusMapRows) and sends the codes whose status bit is set. Rows 11-32 ($75FA, FaultTwoTripRows) are the two-trip tests of ObdFaultReport: the first pair is the pending byte (MonFlags09D-09F), the second the test result the monitor sets before the call; a failure with the pending bit set reports the fault, a pass clears both
 ;---------------------------------------------------------------------------------------------------
 FaultStatusMap:
         dc.b    $46,$92,$00,$B0,$00,$10,$00,$00,$00,$00  ; P0442: MonStatusLdp & $10
@@ -11042,9 +11042,14 @@ FaultStatusMap:
         dc.b    $44,$9E,$00,$DD,$00,$08,$00,$00,$00,$00  ; P0304: MisfireRecordDD & $08
         dc.b    $47,$1E,$00,$DD,$00,$10,$00,$00,$00,$00  ; P0305: MisfireRecordDD & $10
         dc.b    $47,$28,$00,$DD,$00,$20,$00,$00,$00,$00  ; P0306: MisfireRecordDD & $20
+        dc.b    $44,$76,$00,$DD,$00,$40,$00,$00,$00,$00  ; P0300: MisfireRecordDD & $40
 
-        dc.b    $44,$76,$00,$DD,$00,$40,$00,$00,$00,$00,$2C,$1F,$16,$FF,$00,$C0
-        dc.b    $01,$04
+FaultStatusMapRows:
+        dc.b    $2C                                      ; Number of FaultStatusMap rows scanned by SciDiagCommand (44)
+        dc.b    $1F
+FaultTwoTripRows:
+        dc.b    $16                                      ; Number of two-trip rows ObdFaultReport searches, from row 11 ($75FA) of FaultStatusMap (22)
+        dc.b    $FF,$00,$C0,$01,$04
 CamFaultDelay:
         dc.b    $01,$17                                  ; Cam sensor monitor (CamSensorMonitor, P0340): delay (CamFaultTimer, word) set after a fault report
 PurgeMonitorValueInit:
@@ -11200,8 +11205,8 @@ PurgeMonHoldTime:
 Isr_IRQ1:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$02
-        BCLR    >DDRF,Z,#$02
+        BCLR    >PFPAR,Z,#$02                            ; bit 1: port F pin 1 function (set = IRQ1 input)
+        BCLR    >DDRF,Z,#$02                             ; bit 1: port F pin 1 direction (set = output)
         LDD     #$8000
         LBRA    UnexpectedInterrupt
 
@@ -11212,8 +11217,8 @@ Isr_IRQ1:
 Isr_IRQ3:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$08
-        BCLR    >DDRF,Z,#$08
+        BCLR    >PFPAR,Z,#$08                            ; bit 3: port F pin 3 function (set = IRQ3 input)
+        BCLR    >DDRF,Z,#$08                             ; bit 3: port F pin 3 direction (set = output)
         LDD     #$4000
         LBRA    UnexpectedInterrupt
 
@@ -11224,8 +11229,8 @@ Isr_IRQ3:
 Isr_IRQ5:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$20
-        BSET    >DDRF,Z,#$20
+        BCLR    >PFPAR,Z,#$20                            ; bit 5: port F pin 5 function (set = IRQ5 input)
+        BSET    >DDRF,Z,#$20                             ; bit 5: port F pin 5 direction (set = output)
         LDD     #$2000
         LBRA    UnexpectedInterrupt
 
@@ -11236,8 +11241,8 @@ Isr_IRQ5:
 Isr_IRQ6:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$40
-        BSET    >DDRF,Z,#$40
+        BCLR    >PFPAR,Z,#$40                            ; bit 6: port F pin 6 function (set = IRQ6 input)
+        BSET    >DDRF,Z,#$40                             ; bit 6: port F pin 6 direction (set = output)
         LDD     #$1000
         LBRA    UnexpectedInterrupt
 
@@ -11248,8 +11253,8 @@ Isr_IRQ6:
 Isr_IRQ7:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >PFPAR,Z,#$80
-        BSET    >DDRF,Z,#$80
+        BCLR    >PFPAR,Z,#$80                            ; bit 7: port F pin 7 function (set = IRQ7 input)
+        BSET    >DDRF,Z,#$80                             ; bit 7: port F pin 7 direction (set = output)
         LDD     #$0800
         BRA     UnexpectedInterrupt
 
@@ -11260,8 +11265,8 @@ Isr_IRQ7:
 Isr_GPT_PAOverflow:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >TMSK2,Z,#$20
-        BCLR    >TFLG2,Z,#$20
+        BCLR    >TMSK2,Z,#$20                            ; bit 5: PAII: pulse accumulator input interrupt enable
+        BCLR    >TFLG2,Z,#$20                            ; bit 5: PAIF: pulse accumulator input flag
         LDD     #$0200
         BRA     UnexpectedInterrupt
 
@@ -11272,8 +11277,8 @@ Isr_GPT_PAOverflow:
 Isr_GPT_OC1:
         ORP     #$00E0
         PSHM    D,X,K
-        BCLR    >TMSK1,Z,#$08
-        BCLR    >TFLG1,Z,#$08
+        BCLR    >TMSK1,Z,#$08                            ; bit 3: OC1I: OC1 interrupt enable
+        BCLR    >TFLG1,Z,#$08                            ; bit 3: OC1F: output compare 1 flag
         LDD     #$0080
         BRA     UnexpectedInterrupt
         dc.b    $34,$25,$28,$02,$79,$20,$28,$02,$79,$22,$37,$B5,$01,$00,$B0,$0C
@@ -11307,7 +11312,7 @@ Isr_GPT_IC3:
         PSHM    D,E,X,Y,K
         LDE     #$0010
         JSR     DelayLoop
-        BRSET   >PORTGP,Z,#$04,L08332
+        BRSET   >PORTGP,Z,#$04,L08332                    ; bit 2: GPT port pin 2 level (IC3)
         INC     >DistancePulses,Z
         INCW    >Vss052,Z
         BRSET   >Options032D,#$20,L080F4                 ; bit 5: A/C clutch logic on (AcClutchLogicOn); also selects the switch-input map, the VSS constants and the speed control lamp
@@ -11595,7 +11600,7 @@ L0840C:
         BNE     L08432
         LDAA    #$18
         STAA    >PciTimer97B,Z
-        BRSET   >Options032E,#$04,L08428                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L08428                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     CcdTransmit
         BRA     L08432
 L08428:
@@ -11699,7 +11704,7 @@ L084E2:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 ChargeControl:
-        BRCLR   >ADCSTAT,Z,#$80,ChargeControl
+        BRCLR   >ADCSTAT,Z,#$80,ChargeControl            ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR3_L,Z
         STAA    >BatteryVolts,Z
         BRCLR   >FieldDutyLimit,Z,#$FF,L0853A
@@ -12213,7 +12218,7 @@ Isr_SCI:
 ; Called from: Isr_IRQ2
 ;---------------------------------------------------------------------------------------------------
 Irq2Dispatch:
-        BRSET   >Options032E,#$04,L08A38                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L08A38                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     Irq2BusHandler
         BRA     L08A3C
 L08A38:
@@ -12262,7 +12267,7 @@ Isr_GPT_IC4OC5:
         BRCLR   >CamSignalE05,Z,#$01,L08CFC
         LDD     >TI4O5,Z
         TDE
-        BRSET   >TCTL2,Z,#$80,L08BD6
+        BRSET   >TCTL2,Z,#$80,L08BD6                     ; bit 7: EDGE4B: IC4 edge select
         BSET    >EventSparkFlags,Z,#$01                  ; bit 0: input capture 4 edge was the first kind (TCTL2 bit 7 clear) (Isr_GPT_IC4OC5)
         LDX     #$8866
         LDY     #$84F0
@@ -12312,7 +12317,7 @@ L08B34:
 L08B40:
         BCLR    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BCLR    >EventSparkFlags,Z,#$CC                  ; bit 7: per-event spark state A, set with bit 3 by Isr_GPT_IC4OC5 when SwitchInputs2 bit 5 is set; reported on the bus; bit 6: per-event spark state B, set with bit 2 (the opposite of bit 7); reported on the bus; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl); bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BRSET   >Options032E,#$04,L08CDC                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L08CDC                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LBRA    L08CE8
 L08B52:
         BRCLR   >SwitchInputs2,Z,#$20,L08B6E             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
@@ -12443,11 +12448,11 @@ L08CA6:
 L08CB2:
         CLR     >Ic4866,Z
         STE     >Ic486A,Z
-        BSET    >TCTL2,Z,#$40
-        BCLR    >TCTL2,Z,#$80
+        BSET    >TCTL2,Z,#$40                            ; bit 6: EDGE4A: IC4 edge select
+        BCLR    >TCTL2,Z,#$80                            ; bit 7: EDGE4B: IC4 edge select
         BRA     L08CFC
 L08CC4:
-        BRSET   >Options032E,#$04,L08CDC                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L08CDC                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >Ic4Flags,Z,#$10,L08CD6
         JSR     BusTxSparkEvent
         BRA     L08CE4
@@ -12463,8 +12468,8 @@ L08CE8:
         CLR     >CamSignalCount,Z
         BCLR    >Ic4Flags,Z,#$10
         BCLR    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
-        BSET    >TCTL2,Z,#$80
-        BCLR    >TCTL2,Z,#$40
+        BSET    >TCTL2,Z,#$80                            ; bit 7: EDGE4B: IC4 edge select
+        BCLR    >TCTL2,Z,#$40                            ; bit 6: EDGE4A: IC4 edge select
 L08CFC:
         LDAA    >TFLG1,Z
         EORA    #$80
@@ -12553,7 +12558,7 @@ L08DD2:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 ChargeControl2:
-        BRCLR   >ADCSTAT,Z,#$80,ChargeControl2
+        BRCLR   >ADCSTAT,Z,#$80,ChargeControl2           ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR3_L,Z
         STAA    >BatteryVolts,Z
         BRCLR   >FieldDutyLimit,Z,#$FF,L08DEE
@@ -13046,7 +13051,7 @@ L0A066:
 L0A078:
         LDD     >TIC1,Z
         STD     >CrankPeriodSum,Z
-        BCLR    >TMSK2,Z,#$80
+        BCLR    >TMSK2,Z,#$80                            ; bit 7: TOI: timer overflow interrupt enable
         TST     >MonStartDelay,Z
         LBNE    L0A19E
         LDAA    >CamWindowCount,Z
@@ -13149,10 +13154,10 @@ L0A19E:
         LDAA    >CrankSyncFlags,Z
         BITA    #$20
         BEQ     L0A1BA
-        BRSET   >PACTL,Z,#$80,L0A1D2
+        BRSET   >PACTL,Z,#$80,L0A1D2                     ; bit 7: PAIS: pulse accumulator input pin state
         BRA     L0A1C0
 L0A1BA:
-        BRCLR   >PACTL,Z,#$80,L0A1D2
+        BRCLR   >PACTL,Z,#$80,L0A1D2                     ; bit 7: PAIS: pulse accumulator input pin state
 L0A1C0:
         ADDA    #$01
         TAB
@@ -13270,15 +13275,15 @@ L0A2EC:
         JSR     FuelEventCalc
         JSR     CamCrankMeasure
 L0A2FC:
-        BRCLR   >ADCSTAT_L,Z,#$01,L0A2FC
+        BRCLR   >ADCSTAT_L,Z,#$01,L0A2FC                 ; bit 0: CCF0: ADC conversion 0 complete
         LDAA    >RJURR0_L,Z
         STAA    >MapRawStart,Z
         BRSET   >CrankSyncFlags,Z,#$40,L0A326            ; bit 6: at least one reference event since the engine started turning (Isr_GPT_IC1)
         LDAA    #$75
         STAA    >PACTL,Z
         CLR     >PACNT,Z
-        BCLR    >TFLG2,Z,#$10
-        BSET    >TMSK2,Z,#$10
+        BCLR    >TFLG2,Z,#$10                            ; bit 4: PAOVF: pulse accumulator overflow flag
+        BSET    >TMSK2,Z,#$10                            ; bit 4: PAOVI: pulse accumulator overflow interrupt enable
         JMP     L0A4DE
 L0A326:
         JSR     KnockSample
@@ -13592,7 +13597,7 @@ L0A6A8:
         EORA    $02,Y
         STAA    >TFLG1,Z
 L0A6C0:
-        BRCLR   >ADCSTAT,Z,#$80,L0A6C0
+        BRCLR   >ADCSTAT,Z,#$80,L0A6C0                   ; bit 7: SCF: ADC sequence complete flag
         BRSET   >O2SwitchFlags,Z,#$02,L0A6DE             ; bit 1: upstream O2 step count reached: trim step due (O2UpdateUpstream)
         LDAB    >RJURR0_L,Z
         STAB    >O2UpBank1Raw,Z
@@ -13623,8 +13628,8 @@ L0A71E:
         LDAA    #$75
         STAA    >PACTL,Z
         CLR     >PACNT,Z
-        BCLR    >TFLG2,Z,#$10
-        BSET    >TMSK2,Z,#$10
+        BCLR    >TFLG2,Z,#$10                            ; bit 4: PAOVF: pulse accumulator overflow flag
+        BSET    >TMSK2,Z,#$10                            ; bit 4: PAOVI: pulse accumulator overflow interrupt enable
         BRCLR   >SparkFlags,Z,#$20,L0A88E                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDD     >SparkPeriod,Z
         CPD     #$5DC0
@@ -13936,8 +13941,8 @@ L0AADE:
 Isr_GPT_PAI:
         ORP     #$00E0
         PSHM    D,E
-        BRCLR   >TFLG2,Z,#$20,L0AB8C
-        BCLR    >TFLG2,Z,#$20
+        BRCLR   >TFLG2,Z,#$20,L0AB8C                     ; bit 5: PAIF: pulse accumulator input flag
+        BCLR    >TFLG2,Z,#$20                            ; bit 5: PAIF: pulse accumulator input flag
         CLR     >PACNT,Z
         LDD     >TCNT,Z
         STD     >Cam691,Z
@@ -13963,9 +13968,9 @@ L0AB2C:
         BCLR    <SystemFlags00A,Z,#$C0                   ; bit 7: cleared after an output driver status read and every 256 main loop passes; bit 6: cleared with bit 7
 L0AB54:
         CLRA
-        BRCLR   >PACTL,Z,#$80,L0AB6E
+        BRCLR   >PACTL,Z,#$80,L0AB6E                     ; bit 7: PAIS: pulse accumulator input pin state
         BCLR    >CrankSyncFlags,Z,#$20                   ; bit 5: pulse accumulator not in gated mode at the cam edge (Isr_GPT_PAI): cylinder index taken from PORTGP
-        BRCLR   >PORTGP,Z,#$01,L0AB68
+        BRCLR   >PORTGP,Z,#$01,L0AB68                    ; bit 0: GPT port pin 0 level (IC1)
         LDAA    #$02
 L0AB68:
         STAA    >CylinderIndex,Z
@@ -14162,11 +14167,11 @@ L0ACC2:
 ;---------------------------------------------------------------------------------------------------
 Isr_GPT_IC2:
         ORP     #$00E0
-        BCLR    >TFLG2,Z,#$80
-        BSET    >TMSK2,Z,#$80
+        BCLR    >TFLG2,Z,#$80                            ; bit 7: TOF: timer overflow flag
+        BSET    >TMSK2,Z,#$80                            ; bit 7: TOI: timer overflow interrupt enable
         CLR     >Ic2OverflowCount,Z
-        BSET    >TMSK1,Z,#$01
-        BCLR    >TFLG1,Z,#$02
+        BSET    >TMSK1,Z,#$01                            ; bit 0: IC1I: IC1 interrupt enable
+        BCLR    >TFLG1,Z,#$02                            ; bit 1: IC2F: input capture 2 flag
         RTI
         dc.b    $27,$4C,$27,$4C
 
@@ -14182,7 +14187,7 @@ Isr_GPT_Overflow:
         BEQ     L0AD02
         STAA    >Ic2OverflowCount,Z
 L0AD02:
-        BCLR    >TFLG2,Z,#$80
+        BCLR    >TFLG2,Z,#$80                            ; bit 7: TOF: timer overflow flag
         PULM    D
         RTI
         dc.b    $27,$4C,$27,$4C,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -15121,13 +15126,13 @@ ServiceWatchdog:
 KickWatchdogsLong:
         PSHM    D
         LDAA    #$1C
-        BCLR    >PORTC,Z,#$20
-        BRSET   >SYNCR,Z,#$40,L0C450
+        BCLR    >PORTC,Z,#$20                            ; bit 5: port C pin 5 output level (chip-select pin used as output)
+        BRSET   >SYNCR,Z,#$40,L0C450                     ; bit 6: X: clock synthesizer frequency control (prescaler)
         LDAA    #$0E
 L0C450:
         DECA
         BNE     L0C450
-        BSET    >PORTC,Z,#$20
+        BSET    >PORTC,Z,#$20                            ; bit 5: port C pin 5 output level (chip-select pin used as output)
         LDD     #$55AA
         STAA    >SWSR,Z
         STAB    >SWSR,Z
@@ -15149,9 +15154,25 @@ L0C47C:
         ORP     #$0100
 L0C480:
         RTS
-        dc.b    $34,$01,$37,$B5,$00,$08,$27,$79,$B3,$52,$37,$30,$00,$02,$B3,$40
-        dc.b    $37,$E5,$01,$00,$37,$30,$00,$02,$B2,$EC,$37,$24,$37,$0B,$35,$40
-        dc.b    $27,$F7
+
+;---------------------------------------------------------------------------------------------------
+; UnusedCalcC482 ($0C482)
+;---------------------------------------------------------------------------------------------------
+UnusedCalcC482:
+        PSHM    D
+        LDD     #$0008
+        SDE
+        BLS     L0C4E2
+L0C48C:
+        SUBE    #$0002
+        BLS     L0C4D6
+        LDD     >O2NoActivityFlags,Z
+        SUBE    #$0002
+        BHI     L0C48C
+        MUL
+        ABA
+        PULM    D
+        RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; DelayLoop ($0C4A4)
@@ -15769,18 +15790,97 @@ L0C9CA:
 L0C9D4:
         PULM    X
         RTS
-        dc.b    $00,$01,$00,$02,$00,$04,$00,$08,$00,$10,$00,$20,$00,$40,$00,$80
-        dc.b    $01,$00,$02,$00,$04,$00,$08,$00,$10,$00,$20,$00,$40,$00,$80,$00
-        dc.b    $37,$38,$00,$0F,$B4,$58,$34,$0E,$3F,$FC,$27,$5F,$9C,$06,$27,$75
-        dc.b    $27,$F6,$BA,$00,$37,$35,$FF,$FF,$37,$29,$9C,$00,$DC,$06,$37,$2B
-        dc.b    $9C,$02,$37,$35,$00,$0F,$37,$50,$00,$08,$27,$74,$F5,$00,$37,$9C
-        dc.b    $37,$BC,$C9,$D8,$27,$85,$37,$55,$00,$00,$37,$26,$9A,$00,$37,$55
-        dc.b    $00,$08,$7C,$01,$27,$74,$27,$85,$37,$CC,$95,$02,$37,$2A,$37,$CC
-        dc.b    $37,$55,$00,$00,$BA,$00,$27,$79,$B0,$FE,$27,$78,$27,$FB,$DD,$04
-        dc.b    $3F,$0A,$27,$F7,$37,$38,$00,$0F,$B4,$2E,$34,$0E,$3F,$FC,$27,$5F
-        dc.b    $37,$4C,$37,$26,$9A,$00,$37,$5A,$00,$02,$37,$35,$00,$0F,$37,$50
-        dc.b    $00,$08,$27,$74,$F5,$00,$37,$9C,$37,$BC,$C9,$D8,$27,$85,$37,$CC
-        dc.b    $95,$00,$37,$55,$00,$02,$37,$29,$DD,$04,$3F,$0A,$27,$F7
+
+;---------------------------------------------------------------------------------------------------
+; BitMaskWordsC9D8 ($C9D8): 1 rows of 32 bytes
+; The 16 one-bit masks $0001-$8000 as words, used by the code that follows ($0C9F8)
+;---------------------------------------------------------------------------------------------------
+BitMaskWordsC9D8:
+        dc.b    $00,$01,$00,$02,$00,$04,$00,$08          ; $0001, UnexpectedIrqStack4, UnexpectedIrqStack6, ResetCountsExtSw
+        dc.b    $00,$10,$00,$20,$00,$40,$00,$80          ; $0010, $0020, EgrZeroPos, PurgeCellRichFlags
+        dc.b    $01,$00,$02,$00,$04,$00,$08,$00          ; O2NoActivityFlags, $0200, SpeedCtlState, O2CellIndex
+        dc.b    $10,$00,$20,$00,$40,$00,$80,$00          ; IoInputs0, $2000, $4000, $8000
+
+
+;---------------------------------------------------------------------------------------------------
+; UnusedShiftDivide ($0C9F8)
+;---------------------------------------------------------------------------------------------------
+UnusedShiftDivide:
+        CPE     #$000F
+        BCC     L0CA5A
+        PSHM    E,X,Y
+        AIS     #$FC
+        TSY
+        STX     $06,Y
+        CLRE
+        TSTD
+        BPL     L0CA10
+        LDE     #$FFFF
+L0CA10:
+        EDIVS
+        STX     $00,Y
+        LDX     $06,Y
+        FDIV
+        STX     $02,Y
+        LDE     #$000F
+        SUBE    $0008,Y
+        ASLE
+        LDAB    #$00
+        TBXK
+        LDX     #BitMaskWordsC9D8
+        LDD     E,X
+        LDE     $0000,Y
+        EMULS
+        STD     $00,Y
+        LDE     $0008,Y
+        ADDE    #$01
+        ASLE
+        LDD     E,X
+        XGDX
+        LDD     $02,Y
+        IDIV
+        XGDX
+        LDE     $0000,Y
+        BPL     L0CA52
+        SDE
+        BRA     L0CA54
+L0CA52:
+        ADE
+L0CA54:
+        TED
+        LDY     $04,Y
+        AIS     #$0A
+L0CA5A:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedShiftMulDiv ($0CA5C)
+;---------------------------------------------------------------------------------------------------
+UnusedShiftMulDiv:
+        CPE     #$000F
+        BCC     L0CA94
+        PSHM    E,X,Y
+        AIS     #$FC
+        TSY
+        XGEX
+        EMULS
+        STD     $00,Y
+        STE     $0002,Y
+        LDE     #$000F
+        SUBE    $0008,Y
+        ASLE
+        LDAB    #$00
+        TBXK
+        LDX     #BitMaskWordsC9D8
+        LDD     E,X
+        XGDX
+        LDD     $00,Y
+        LDE     $0002,Y
+        EDIVS
+        LDY     $04,Y
+        AIS     #$0A
+L0CA94:
+        RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; SelectCell3x3 ($0CA96)
@@ -16075,7 +16175,7 @@ L0CC7E:
 ;---------------------------------------------------------------------------------------------------
 BusStatusByte:
         ORP     #$00E0
-        BRSET   >Options032E,#$04,L0CC9A                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0CC9A                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDX     #$739B
         BRA     L0CC9E
 L0CC9A:
@@ -16096,7 +16196,7 @@ L0CCAA:
 ;---------------------------------------------------------------------------------------------------
 BusStatusBytes:
         ORP     #$00E0
-        BRSET   >Options032E,#$04,L0CD3A                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0CD3A                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDX     #$73DB
         JSR     CollectBits
         BRCLR   >EquipmentFlags,Z,#$40,L0CCEC            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
@@ -16415,12 +16515,12 @@ L0D0EC:
         TAB
         ANDA    #$0F
         ANDB    #$F0
-        BRCLR   >RSR,Z,#$80,L0D1CC
+        BRCLR   >RSR,Z,#$80,L0D1CC                       ; bit 7: EXT: last reset was external
         CMPB    #$F0
         BEQ     L0D1CC
         ADDB    #$10
 L0D1CC:
-        BRCLR   >RSR,Z,#$20,L0D1D8
+        BRCLR   >RSR,Z,#$20,L0D1D8                       ; bit 5: SW: last reset was the software watchdog
         CMPA    #$0F
         BEQ     L0D1D8
         INCA
@@ -16431,12 +16531,12 @@ L0D1D8:
         TAB
         ANDA    #$0F
         ANDB    #$F0
-        BRCLR   >RSR,Z,#$10,L0D1F0
+        BRCLR   >RSR,Z,#$10,L0D1F0                       ; bit 4: HLT: last reset was a halt monitor reset
         CMPB    #$F0
         BEQ     L0D1F0
         ADDB    #$10
 L0D1F0:
-        BRCLR   >RSR,Z,#$40,L0D1FC
+        BRCLR   >RSR,Z,#$40,L0D1FC                       ; bit 6: POW: last reset was power-up
         CMPA    #$0F
         BEQ     L0D1FC
         INCA
@@ -16452,7 +16552,7 @@ L0D1FC:
         LDAA    #$08
         STAA    >OC1M,Z
         BRCLR   >Options032A,#$E0,L0D238                 ; bit 7: engine/ignition variant used by the event, spark, knock and rpm code; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably); bit 5: hardware set-up variant at reset (Reset, HardwareCheck)
-        BRCLR   >PACTL,Z,#$80,L0D230
+        BRCLR   >PACTL,Z,#$80,L0D230                     ; bit 7: PAIS: pulse accumulator input pin state
         LDAA    #$65
         STAA    >PACTL,Z
         BRA     L0D23E
@@ -16493,7 +16593,7 @@ L0D26C:
         STAA    >PWMA,Z
 L0D290:
         LDD     #$0003
-        BRSET   >Options032E,#$04,L0D29E                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0D29E                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$0803
 L0D29E:
         STD     >IoIrqEnable,Z
@@ -16531,14 +16631,14 @@ L0D29E:
         LDAA    #$07
         STAA    >ADCTL0_L,Z
         LDD     #$FA91
-        BRSET   >Options032E,#$04,L0D326                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0D326                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$F891
 L0D326:
         STD     >IoCfg14,Z
         LDD     #$1800
         STD     >IoCtl12,Z
         LDD     #$0000
-        BRSET   >Options032E,#$04,L0D340                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0D340                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$202C
 L0D340:
         STD     >IoCfg18,Z
@@ -16706,7 +16806,7 @@ L0D52A:
         ADCA    #$00
         STAA    >FuelLevelScaled,Z
 L0D538:
-        BRCLR   >Options032E,#$04,L0D542                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0D542                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     PciFlagsInit
 L0D542:
         LDAA    #$02
@@ -16738,7 +16838,7 @@ L0D542:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D5A8:
-        BRCLR   >ADCSTAT,Z,#$80,L0D5A8
+        BRCLR   >ADCSTAT,Z,#$80,L0D5A8                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR0_L,Z
         STAA    >MapRawStart,Z
         JSR     RawScaleF4
@@ -16767,7 +16867,7 @@ L0D5DA:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D60C:
-        BRCLR   >ADCSTAT,Z,#$80,L0D60C
+        BRCLR   >ADCSTAT,Z,#$80,L0D60C                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR1_L,Z
 L0D616:
         STAA    >CoolantRaw,Z
@@ -16780,7 +16880,7 @@ L0D616:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D634:
-        BRCLR   >ADCSTAT,Z,#$80,L0D634
+        BRCLR   >ADCSTAT,Z,#$80,L0D634                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
         CMPA    #$40
         BCC     L0D670
@@ -16795,7 +16895,7 @@ L0D634:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D666:
-        BRCLR   >ADCSTAT,Z,#$80,L0D666
+        BRCLR   >ADCSTAT,Z,#$80,L0D666                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
 L0D670:
         STAA    >AirTempRaw,Z
@@ -16809,7 +16909,7 @@ L0D670:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D694:
-        BRCLR   >ADCSTAT,Z,#$80,L0D694
+        BRCLR   >ADCSTAT,Z,#$80,L0D694                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
         STAA    >FlexSensorRaw,Z
         JSR     CatTempInput
@@ -16821,7 +16921,7 @@ L0D6A6:
         LDAA    #$20
         STAA    >ADCTL1_L,Z
 L0D6B8:
-        BRCLR   >ADCSTAT,Z,#$80,L0D6B8
+        BRCLR   >ADCSTAT,Z,#$80,L0D6B8                   ; bit 7: SCF: ADC sequence complete flag
         LDAA    >RJURR2_L,Z
         STAA    >ReadAnalog470,Z
         LDAA    >PORTC,Z
@@ -16927,7 +17027,7 @@ L0D7EC:
         LDAA    #$01
 L0D808:
         STAA    <Ac058,Z
-        BRCLR   >Options033E,#$02,L0D814                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
+        BRCLR   >Options033E,#$02,L0D814                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches); LDP monitor row 6 of ObdMonitorOptionBits
         BSET    <EquipmentFlags,Z,#$08                   ; bit 3: copy of calibration bit $033E.1 at reset; not read
 L0D814:
         LDD     #$0097
@@ -17171,8 +17271,8 @@ L0DAFA:
         STD     >IoTimer06,Z
         LDD     #$03FF
         STD     >IoTimer08,Z
-        BCLR    >TFLG1,Z,#$FF
-        BCLR    >TFLG2,Z,#$B0
+        BCLR    >TFLG1,Z,#$FF                            ; bit 7: I4/O5F: input capture 4 / output compare 5 flag; bit 6: OC4F: output compare 4 flag; bit 5: OC3F: output compare 3 flag; bit 4: OC2F: output compare 2 flag; bit 3: OC1F: output compare 1 flag; bit 2: IC3F: input capture 3 flag; bit 1: IC2F: input capture 2 flag; bit 0: IC1F: input capture 1 flag
+        BCLR    >TFLG2,Z,#$B0                            ; bit 7: TOF: timer overflow flag; bit 5: PAIF: pulse accumulator input flag; bit 4: PAOVF: pulse accumulator overflow flag
         LDD     #$03FF
         STD     >IoIrqStatus,Z
         LDD     #$0000
@@ -17227,7 +17327,7 @@ L0DB9E:
         BRCLR   $0003,Y,#$80,L0DBBE
         JSR     ReportFault
 L0DBBE:
-        BRSET   >SYNCR_L,Z,#$08,MainLoop
+        BRSET   >SYNCR_L,Z,#$08,MainLoop                 ; bit 3: SLOCK: synthesizer locked
         JSR     KickWatchdogsLong
         BRA     L0DBBE
 
@@ -17261,7 +17361,7 @@ L0DC16:
         BRCLR   >Options0333,#$80,L0DC20                 ; bit 7: EVAP purge solenoid fitted
         BSET    <BusTempFlags2,Z,#$08
 L0DC20:
-        BRCLR   >Options032E,#$04,L0DC2A                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0DC2A                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BSET    <BusTempFlags2,Z,#$04
 L0DC2A:
         BRCLR   >Options032E,#$20,L0DC34                 ; bit 5: transmission controller on the bus (sets EquipmentFlags bit 5)
@@ -17434,7 +17534,7 @@ L0DDA8:
         JSR     QspiOutputStatus
         JSR     EepromWriteService
         JSR     EepromWriteQueue
-        BRSET   >Options032E,#$04,L0DE74                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0DE74                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     CcdReceive
         BRA     L0DE7C
 L0DE74:
@@ -17548,7 +17648,7 @@ L0DF4E:
         LDX     #$BF40
         JSR     PowerInputHold
         BCS     L0DFDA
-        BCLR    >TFLG1,Z,#$FF
+        BCLR    >TFLG1,Z,#$FF                            ; bit 7: I4/O5F: input capture 4 / output compare 5 flag; bit 6: OC4F: output compare 4 flag; bit 5: OC3F: output compare 3 flag; bit 4: OC2F: output compare 2 flag; bit 3: OC1F: output compare 1 flag; bit 2: IC3F: input capture 3 flag; bit 1: IC2F: input capture 2 flag; bit 0: IC1F: input capture 1 flag
         LDAB    #$19
 L0DFC0:
         LDX     #$0510
@@ -17617,7 +17717,7 @@ L0E078:
         JSR     NvChecksum
         STD     <ResetCheckWord,Z
         JSR     KickWatchdogsLong
-        BSET    >PORTC,Z,#$10
+        BSET    >PORTC,Z,#$10                            ; bit 4: port C pin 4 output level (chip-select pin used as output)
 L0E08A:
         JSR     ServiceWatchdog
         BRSET   >IoInputs0,Z,#$08,L0E08A                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
@@ -17690,23 +17790,23 @@ L0E12E:
         LDE     #$0001
         STE     >ResetCheckCode,Z
 L0E144:
-        BRCLR   >SYNCR,Z,#$80,L0E156
-        BCLR    >SYNCR,Z,#$80
+        BRCLR   >SYNCR,Z,#$80,L0E156                     ; bit 7: W: clock synthesizer frequency control (VCO)
+        BCLR    >SYNCR,Z,#$80                            ; bit 7: W: clock synthesizer frequency control (VCO)
         LDE     #$0056
         STE     >ResetCheckCode,Z
 L0E156:
-        BRSET   >SYNCR,Z,#$7F,L0E168
-        BSET    >SYNCR,Z,#$7F
+        BRSET   >SYNCR,Z,#$7F,L0E168                     ; bit 6: X: clock synthesizer frequency control (prescaler); bit 5: Y5: clock synthesizer multiplier; bit 4: Y4: clock synthesizer multiplier; bit 3: Y3: clock synthesizer multiplier; bit 2: Y2: clock synthesizer multiplier; bit 1: Y1: clock synthesizer multiplier; bit 0: Y0: clock synthesizer multiplier
+        BSET    >SYNCR,Z,#$7F                            ; bit 6: X: clock synthesizer frequency control (prescaler); bit 5: Y5: clock synthesizer multiplier; bit 4: Y4: clock synthesizer multiplier; bit 3: Y3: clock synthesizer multiplier; bit 2: Y2: clock synthesizer multiplier; bit 1: Y1: clock synthesizer multiplier; bit 0: Y0: clock synthesizer multiplier
         LDE     #$0057
         STE     >ResetCheckCode,Z
 L0E168:
-        BRCLR   >SYNCR_L,Z,#$07,L0E17A
-        BCLR    >SYNCR_L,Z,#$07
+        BRCLR   >SYNCR_L,Z,#$07,L0E17A                   ; bit 2: RSTEN: reset on loss of clock; bit 1: STSIM: SIM clock in stop mode; bit 0: STEXT: CLKOUT in stop mode
+        BCLR    >SYNCR_L,Z,#$07                          ; bit 2: RSTEN: reset on loss of clock; bit 1: STSIM: SIM clock in stop mode; bit 0: STEXT: CLKOUT in stop mode
         LDE     #$0058
         STE     >ResetCheckCode,Z
 L0E17A:
-        BRSET   >SYNCR_L,Z,#$80,L0E18C
-        BSET    >SYNCR_L,Z,#$80
+        BRSET   >SYNCR_L,Z,#$80,L0E18C                   ; bit 7: EDIV: ECLK divide rate
+        BSET    >SYNCR_L,Z,#$80                          ; bit 7: EDIV: ECLK divide rate
         LDE     #$0059
         STE     >ResetCheckCode,Z
 L0E18C:
@@ -17898,8 +17998,8 @@ L0E3BA:
         LDE     #$0023
         STE     >ResetCheckCode,Z
 L0E3CC:
-        BRSET   >PORTC,Z,#$08,L0E3DE
-        BSET    >PORTC,Z,#$08
+        BRSET   >PORTC,Z,#$08,L0E3DE                     ; bit 3: port C pin 3 output level (chip-select pin used as output)
+        BSET    >PORTC,Z,#$08                            ; bit 3: port C pin 3 output level (chip-select pin used as output)
         LDE     #$005B
         STE     >ResetCheckCode,Z
 L0E3DE:
@@ -17965,7 +18065,7 @@ L0E482:
         BNE     L0E4C4
         LDAA    >PACTL,Z
         ANDA    #$77
-        BRCLR   >PACTL,Z,#$80,L0E4A4
+        BRCLR   >PACTL,Z,#$80,L0E4A4                     ; bit 7: PAIS: pulse accumulator input pin state
         CMPA    #$65
         BEQ     L0E4C4
         LDAA    #$65
@@ -17987,13 +18087,13 @@ L0E4B8:
         STE     >ResetCheckCode,Z
 L0E4C4:
         ORP     #$00E0
-        BRCLR   >TCTL1,Z,#$C0,L0E4DA
-        BCLR    >TCTL1,Z,#$C0
+        BRCLR   >TCTL1,Z,#$C0,L0E4DA                     ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
+        BCLR    >TCTL1,Z,#$C0                            ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
         LDE     #$002D
         STE     >ResetCheckCode,Z
 L0E4DA:
-        BRSET   >TCTL1,Z,#$2A,L0E4EC
-        BSET    >TCTL1,Z,#$2A
+        BRSET   >TCTL1,Z,#$2A,L0E4EC                     ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
+        BSET    >TCTL1,Z,#$2A                            ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         LDE     #$002D
         STE     >ResetCheckCode,Z
 L0E4EC:
@@ -18188,7 +18288,7 @@ L0E6E4:
 L0E6FA:
         ANDP    #$FF1F
         LDD     #$FA91
-        BRSET   >Options032E,#$04,L0E70C                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0E70C                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     #$F891
 L0E70C:
         CPD     >IoCfg14,Z
@@ -18199,7 +18299,7 @@ L0E70C:
 L0E71E:
         ORP     #$00E0
         LDD     >IoCfg18,Z
-        BRSET   >Options032E,#$04,L0E744                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0E744                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         ANDD    #$38FD
         CPD     #$202C
         BEQ     L0E758
@@ -18244,7 +18344,7 @@ L0E7AA:
         CPD     #$0003
         BEQ     L0E7DA
         LDD     #$0803
-        BRCLR   >Options032E,#$04,L0E7CE                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0E7CE                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         LDD     >IoIrqEnable,Z
         ANDD    #$0800
         ORD     #$0003
@@ -18647,7 +18747,7 @@ L0EC38:
 ; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
 PciService:
-        BRSET   >Options032E,#$04,L0ECAC                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0ECAC                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         ORP     #$00E0
         LDAA    >BusTxRequest,Z
         LBEQ    L0ED7C
@@ -18688,7 +18788,7 @@ L0ECA0:
         BCLR    >BusTxRequest,Z,#$80                     ; bit 7: send the reply to bus message $C8 (set by CcdReceive, cleared when PciService sends it)
         LBRA    L0ED7C
 L0ECAC:
-        BRSET   >IoStatus0B,Z,#$08,L0ED7C                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
+        BRSET   >IoStatus0B,Z,#$08,L0ED7C                ; bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
         ORP     #$00E0
         BRSET   >PciFlags2,Z,#$04,L0ED7C                 ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set
         BRSET   >SystemFlags945,Z,#$80,L0ED7C            ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService)
@@ -18756,7 +18856,7 @@ L0ED7C:
         BRSET   >PciRxFlags,Z,#$10,L0EDAE                ; bit 4: PCI service: three seconds since key-on passed (PciService); SkimState reads it
         BRCLR   >EngineStateFlags,Z,#$80,L0EDAE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >BusConfigFlags,Z,#$40,L0EDA4            ; bit 6: SKIM / security exchange configured on the bus; read by the bus and SKIM code
-        BRSET   >Options032E,#$04,L0EDA4                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0EDA4                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >SkimFlags,Z,#$10,L0EDA4                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BRSET   >BusMsgFlags,Z,#$04,L0EDA4               ; bit 2: bus receive acknowledged (BusRxAck)
         JSR     BusRxAck
@@ -18866,7 +18966,7 @@ L0EE68:
         INCB
         BEQ     L0EEA4
         STAB    >PciTimeout,Z
-        BRCLR   >Options032E,#$04,L0EEA0                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0EEA0                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0EEA0                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0EEB8
@@ -18887,7 +18987,7 @@ L0EEB8:
         INCB
         BEQ     L0EEE2
         STAB    >SkimTimeout,Z
-        BRCLR   >Options032E,#$04,L0EEDE                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0EEDE                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0EEDE                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0EEF6
@@ -18908,7 +19008,7 @@ L0EEF6:
         INCB
         BEQ     L0EF20
         STAB    >BusTimeout1,Z
-        BRCLR   >Options032E,#$04,L0EF1C                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0EF1C                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0EF1C                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0EF38
@@ -18929,7 +19029,7 @@ L0EF38:
         INCB
         BEQ     L0EF5E
         STAB    >BodyMsgTimeout,Z
-        BRCLR   >Options032E,#$04,L0EF5E                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRCLR   >Options032E,#$04,L0EF5E                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >PciFlags2,Z,#$08,L0EF5E                 ; bit 3: a PCI timeout already reported (BusTimeoutCheck)
         CMPB    #$64
         BCS     L0EF74
@@ -19024,7 +19124,7 @@ L0F01E:
         JSR     EepromSkimRead
         BRA     L0F03C
 L0F02C:
-        BRSET   >Options032E,#$04,L0F038                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0F038                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     SkimTimerService
         BRA     L0F03C
 L0F038:
@@ -19096,7 +19196,7 @@ L0F0EC:
         BRSET   >SkimFlags,Z,#$10,L0F106                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BITA    #$40
         BEQ     L0F126
-        BRSET   >Options032E,#$04,L0F126                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0F126                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRCLR   >SecurityFlags,Z,#$08,L0F126             ; bit 3: security exchange step 2 (CcdReceive)
 L0F106:
         BRSET   >FaultSet07,Z,#$02,L0F130                ; bit 1: P1696
@@ -19115,7 +19215,7 @@ L0F126:
 L0F130:
         BRSET   >SkimFlags,Z,#$10,L0F194                 ; bit 4: SKIM key matches (CcdReceive, PciReceive)
         BRSET   >Options0328,#$01,L0F152                 ; bit 0: SKIM immobiliser handling off (SkimState skips when set)
-        BRSET   >Options032E,#$04,L0F14E                 ; bit 2: PCI bus (J1850, probably) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
+        BRSET   >Options032E,#$04,L0F14E                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         BRSET   >SecurityFlags,Z,#$08,L0F194             ; bit 3: security exchange step 2 (CcdReceive)
         BRSET   >SecurityFlags,Z,#$04,L0F152             ; bit 2: security exchange step 1 (CcdReceive)
 L0F14E:
