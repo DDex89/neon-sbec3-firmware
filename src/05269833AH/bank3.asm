@@ -259,7 +259,7 @@ L30392:
         BRCLR   >Options0331,#$10,L3051A
         BSET    $06C1,Z,#$01
         LDD     $01,Y
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         LDAA    $06B5,Z
         BITA    #$80
         LBNE    L3051A
@@ -1812,7 +1812,7 @@ L31518:
         BRCLR   >Options0331,#$10,L31534
         BSET    $06C1,Z,#$01
         LDD     $02,Y
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         LDAA    $06B5,Z
         BITA    #$80
         BNE     L31534
@@ -4868,7 +4868,7 @@ L336EA:
         BRSET   $050D,Z,#$02,L3376C
         BRCLR   $06C1,Z,#$01,L3376C
 L33716:
-        LDAA    >AnalogV0A92Scaled,Z
+        LDAA    >FuelSenderScaled,Z
         CMPA    $0657,Z
         BHI     L3376C
         BRSET   $0649,Z,#$40,L3372E
@@ -7043,10 +7043,10 @@ L35EA8:
         JMP     Sub_3589E
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_35EB0 ($35EB0)
+; LdpPurgeTest ($35EB0)
 ; Called from: Sub_0DC40
 ;---------------------------------------------------------------------------------------------------
-Sub_35EB0:
+LdpPurgeTest:
         LDAA    $0ABD,Z
         CMPA    #$50
         BLS     L35EEE
@@ -7988,7 +7988,7 @@ L367DC:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_367E0 ($367E0)
-; Called from: CalcEngineRpm, Sub_35EB0, Sub_36402 (5 calls)
+; Called from: CalcEngineRpm, LdpPurgeTest, Sub_36402 (5 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_367E0:
         BRSET   $0774,Z,#$80,L36828
@@ -14151,8 +14151,8 @@ Sub_3D800:
         JSR     Sub_3DB8C
         JSR     PurgeCellCheck
         JSR     Sub_3E18E
-        JSR     Sub_2274E
-        JSR     Sub_3E938
+        JSR     PurgeSolenoidCheck
+        JSR     PurgeFlowMeasure
         JSR     Sub_3E30A
         JSR     Sub_3E2B4
         TSTA
@@ -15807,10 +15807,10 @@ Sub_3E912:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3E938 ($3E938)
+; PurgeFlowMeasure ($3E938)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3E938:
+PurgeFlowMeasure:
         PSHM    D,E
         CLRB
         LDAA    $0470,Z

@@ -161,8 +161,8 @@ AcSensor         equ $0A8C        ; $F8A8C
 KnockThresholdNow equ $0A90        ; $F8A90
 FlexSensorRaw    equ $0A92        ; $F8A92
 FlexEthanolScaled equ $0A95        ; $F8A95
-AnalogV0A92Scaled equ $0A97        ; $F8A97
-AnalogV0A92Filtered equ $0A98        ; $F8A98
+FuelSenderScaled equ $0A97        ; $F8A97
+FuelSenderFiltered equ $0A98        ; $F8A98
 VehicleSpeedRaw  equ $0A9C        ; $F8A9C
 VehicleSpeed     equ $0A9E        ; $F8A9E
 VehicleSpeedCoarse equ $0A9F        ; $F8A9F

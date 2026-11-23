@@ -96,7 +96,7 @@ AcSensor         equ $0558        ; $F8558
 AcSensorRaw      equ $0559        ; $F8559
 KnockThresholdNow equ $055D        ; $F855D
 FlexEthanolScaled equ $0561        ; $F8561
-AnalogV0A92Scaled equ $0563        ; $F8563
+FuelSenderScaled equ $0563        ; $F8563
 VehicleSpeedRaw  equ $0566        ; $F8566
 VehicleSpeedCoarse equ $0572        ; $F8572
 Ic2OverflowCount equ $058C        ; $F858C

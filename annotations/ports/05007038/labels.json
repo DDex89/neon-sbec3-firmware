@@ -34,6 +34,8 @@
  "12EDC": "SpeedCtlShift",
  "12FFC": "SpeedCtlThrottleRef",
  "1430C": "ReadMap",
+ "144A2": "CatTempInput",
+ "144DC": "CatTempMonitor",
  "16308": "PurgeFlowTest",
  "167C4": "LdpMonitor",
  "16D5C": "LdpStateTimer",

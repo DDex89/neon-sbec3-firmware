@@ -23265,7 +23265,7 @@
  <XDFCONSTANT uniqueid="0x4DA" flags="0x0">
   <title>O2DownActiveHigh</title>
   <description>Downstream O2 sensor: raw value at or above this counts as switching high $1BDB</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1BDB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -23277,7 +23277,7 @@
  <XDFCONSTANT uniqueid="0x4DB" flags="0x0">
   <title>O2DownActiveLow</title>
   <description>Downstream O2 sensor: raw value below this marks it as active $1BDC</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1BDC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -23469,7 +23469,7 @@
  <XDFCONSTANT uniqueid="0x4EB" flags="0x0">
   <title>O2DownEnableCoolant</title>
   <description>Coolant at or above which the downstream O2 delay $0757,Z counts down $1BFC</description>
-  <CATEGORYMEM index="0" category="13" />
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x1BFC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -29193,8 +29193,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6C9" flags="0x0">
-  <title>DiagSpeedThresh6</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_233FE. $4FF9</description>
+  <title>PnSwitchSpeedMin</title>
+  <description>P/N switch monitor (PnSwitchMonitor, P1899): vehicle speed at or above this value $4FF9</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x4FF9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29205,8 +29205,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6CA" flags="0x0">
-  <title>DiagRpmThresh5</title>
-  <description>Word compared with EngineRpm; read by Sub_233FE. $4FFA</description>
+  <title>PnSwitchRpmMin</title>
+  <description>P/N switch monitor: engine rpm at or above this value (word) $4FFA</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x4FFA" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -29217,8 +29217,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6CB" flags="0x0">
-  <title>DiagRpmThresh6</title>
-  <description>Word compared with EngineRpm; read by Sub_233FE. $4FFC</description>
+  <title>PnSwitchRpmMax</title>
+  <description>P/N switch monitor: engine rpm below this value (word) $4FFC</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x4FFC" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -29229,8 +29229,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6CC" flags="0x0">
-  <title>DiagThrottleThresh1</title>
-  <description>Byte compared with ThrottleAboveClosed; read by Sub_233FE. $4FFE</description>
+  <title>PnSwitchThrottleMin</title>
+  <description>P/N switch monitor: throttle opening at or above this value $4FFE</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x4FFE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29241,8 +29241,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6CD" flags="0x0">
-  <title>DiagFactor2</title>
-  <description>Byte multiplied; read by Sub_233FE. $4FFF</description>
+  <title>PnSwitchMapFactor</title>
+  <description>P/N switch monitor: MAP above baro × this / 256 (engine under load) $4FFF</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x4FFF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29253,8 +29253,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6CE" flags="0x0">
-  <title>DiagV0665Thresh</title>
-  <description>Byte compared with V0665; read by Sub_233FE. $5000</description>
+  <title>PnSwitchCount</title>
+  <description>P/N switch monitor: counts ($0665/$0666,Z) of the switch reading in gear or in P/N before the result $5000</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5000" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29265,8 +29265,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6CF" flags="0x0">
-  <title>DiagSpeedThresh7</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_233FE. $5001</description>
+  <title>PnSwitchStartSpeedMax</title>
+  <description>P/N switch monitor: vehicle speed at or below this value for the key-on check $5001</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5001" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29505,8 +29505,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6E3" flags="0x0">
-  <title>DiagV011CThresh</title>
-  <description>Byte compared with V011C; read by Sub_23280. $5028</description>
+  <title>BrakeSwStopCount</title>
+  <description>Brake switch monitor (BrakeSwitchMonitor, P0703): stops from BrakeSwStopSpeed without the brake switch ($011C,Z) before the fault $5028</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5028" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29517,8 +29517,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6E4" flags="0x0">
-  <title>DiagV011DThresh</title>
-  <description>Byte compared with V011D; read by Sub_23280. $5029</description>
+  <title>BrakeSwDriveCount</title>
+  <description>Brake switch monitor: drives with the brake switch on while accelerating ($011D,Z) before the fault $5029</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5029" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29529,8 +29529,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6E5" flags="0x0">
-  <title>DiagSpeedThresh10</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_23280. $502A</description>
+  <title>BrakeSwStopSpeed</title>
+  <description>Brake switch monitor: speed above which a following stop is counted $502A</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29541,8 +29541,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6E6" flags="0x0">
-  <title>DiagSpeedThresh11</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_23280. $502B</description>
+  <title>BrakeSwDriveSpeed</title>
+  <description>Brake switch monitor: speed at or above which the switch is checked while driving $502B</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29553,8 +29553,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6E7" flags="0x0">
-  <title>DiagThrottleThresh2</title>
-  <description>Byte compared with ThrottleAboveClosed; read by Sub_23280. $502C</description>
+  <title>BrakeSwThrottleMin</title>
+  <description>Brake switch monitor: throttle opening at or above which brake-on driving is counted $502C</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29565,8 +29565,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6E8" flags="0x0">
-  <title>DiagV066AThresh</title>
-  <description>Byte compared with V066A; read by Sub_23280. $502D</description>
+  <title>BrakeSwDriveTime</title>
+  <description>Brake switch monitor: time ($066A,Z) of brake-on driving per count $502D</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29577,8 +29577,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x6E9" flags="0x0">
-  <title>DiagV066BThresh</title>
-  <description>Byte compared with V066B; read by Sub_23280. $502E</description>
+  <title>BrakeSwSeenTime</title>
+  <description>Brake switch monitor: time ($066B/$066C,Z) each switch state must be seen to pass $502E</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x502E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -31930,9 +31930,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7B0" flags="0x0">
-  <title>SensorV0A64Thresh1</title>
-  <description>Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484. $56B1</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>CatTempOverheat</title>
+  <description>Catalyst temperature: filtered value ($0A64,Z) at or above this value enters the overheat state $56B1</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x56B1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31942,9 +31942,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7B1" flags="0x0">
-  <title>SensorV0A64Thresh2</title>
-  <description>Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484. $56B2</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>CatTempOverheatOff</title>
+  <description>Catalyst temperature: filtered value at or below this value leaves the overheat state $56B2</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x56B2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31954,9 +31954,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7B2" flags="0x0">
-  <title>SensorV06B2Thresh</title>
-  <description>Byte compared with V06B2; read by Sub_2DCC2. Fault: P1484. $56B3</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>CatTempFaultCount</title>
+  <description>Catalyst temperature: counts ($06B2,Z) before a circuit or overheat fault (P1484) $56B3</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x56B3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -31966,9 +31966,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7B3" flags="0x0">
-  <title>SensorTimeThresh4</title>
-  <description>Byte compared with Count3s; read by Sub_2DCC2. Fault: P1484. $56B4</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>CatTempCheckTime</title>
+  <description>Catalyst temperature sensor: time since start (Count3s) at or above which the circuit is checked $56B4</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x56B4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32074,8 +32074,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7BC" flags="0x0">
-  <title>AnalogV0A92ReadTime</title>
-  <description>Time since start after which analog input $0A92 is read for $019C,Z $56C3</description>
+  <title>FuelSenderReadTime</title>
+  <description>Time since start after which the fuel level sender ($0A92) is read for FuelLevelScaled $56C3</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56C3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32086,8 +32086,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7BD" flags="0x0">
-  <title>AnalogV0A92Low</title>
-  <description>Analog input $0A92 (probably fuel level) circuit check: filtered value at or below this counts as low $56C5</description>
+  <title>FuelSenderLow</title>
+  <description>Fuel level sender ($0A92) circuit check (FuelSenderMonitor): filtered value at or below this counts as low (P0462) $56C5</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56C5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32098,8 +32098,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7BE" flags="0x0">
-  <title>AnalogV0A92High</title>
-  <description>Analog input $0A92 circuit check: filtered value above this counts as high $56C6</description>
+  <title>FuelSenderHigh</title>
+  <description>Fuel level sender circuit check: filtered value above this counts as high (P0463) $56C6</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56C6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32110,8 +32110,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7BF" flags="0x0">
-  <title>AnalogV0A92HighCount</title>
-  <description>Analog input $0A92 check: counts before the high fault $56C7</description>
+  <title>FuelSenderHighCount</title>
+  <description>Fuel level sender check: counts before a circuit fault is set $56C7</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56C7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32122,8 +32122,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7C0" flags="0x0">
-  <title>AnalogV0A92LowCount</title>
-  <description>Analog input $0A92 check: counts before the low fault $56C8</description>
+  <title>FuelSenderLowCount</title>
+  <description>Fuel level sender check: counts in range before a circuit fault clears $56C8</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56C8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32134,8 +32134,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7C1" flags="0x0">
-  <title>SensorThresh10</title>
-  <description>Byte compared with; read by Sub_22EA6. $56C9</description>
+  <title>FuelSenderLowLevel</title>
+  <description>Fuel level sender stuck test: start reading below this value selects the low-level limits $56C9</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56C9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32146,8 +32146,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7C2" flags="0x0">
-  <title>SensorThresh11</title>
-  <description>Byte compared with; read by Sub_22EA6. $56CA</description>
+  <title>FuelSenderMoveMin</title>
+  <description>Fuel level sender stuck test: change from the start reading at or above this value passes the test $56CA</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56CA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32158,8 +32158,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7C3" flags="0x0">
-  <title>SensorV011FThresh1</title>
-  <description>Byte compared with V011F; read by Sub_22EA6. $56CB</description>
+  <title>FuelSenderStuckFuel</title>
+  <description>Fuel level sender stuck test: fuel used ($011F,Z) without that change that fails the test $56CB</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56CB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32170,8 +32170,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7C4" flags="0x0">
-  <title>SensorAnalogV0A92FilteredThresh3</title>
-  <description>Byte compared with AnalogV0A92Filtered; read by Sub_22EA6. $56CC</description>
+  <title>FuelSenderTestMin</title>
+  <description>Fuel level sender stuck test (FuelSenderMonitor, P0460): filtered sender value at or above this value $56CC</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56CC" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32182,8 +32182,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7C5" flags="0x0">
-  <title>SensorThresh12</title>
-  <description>Byte compared with; read by Sub_22EA6. $56CD</description>
+  <title>FuelSenderMoveMinLow</title>
+  <description>As FuelSenderMoveMin at low level $56CD</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56CD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32194,8 +32194,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7C6" flags="0x0">
-  <title>SensorV011FThresh2</title>
-  <description>Byte compared with V011F; read by Sub_22EA6. $56CE</description>
+  <title>FuelSenderStuckFuelLow</title>
+  <description>As FuelSenderStuckFuel at low level $56CE</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56CE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32206,8 +32206,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7C7" flags="0x0">
-  <title>SensorThresh13</title>
-  <description>Byte compared with; read by Sub_22EA6. $56CF</description>
+  <title>FuelSenderShutdownDiff</title>
+  <description>Fuel level sender stuck test: starts when the reading is within this value of the reading stored at power-down ($0120,Z) $56CF</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x56CF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -32362,9 +32362,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7D4" flags="0x0">
-  <title>SensorV06CCThresh</title>
-  <description>Byte compared with V06CC; read by Sub_22C1C. Fault: P1298. $577D</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>WotLeanDelay</title>
+  <description>Lean-at-WOT monitor (WotLeanMonitor, P1298, flex only): WOT time ($06CC,Z) before the test $577D</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x577D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32374,21 +32374,21 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7D5" flags="0x0">
-  <title>SensorThresh14</title>
-  <description>Word compared with; read by Sub_22C1C. Fault: P1298. $577E</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>WotLeanRpmMin</title>
+  <description>Lean-at-WOT monitor: engine rpm above this value (word) $577E</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x577E" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7D6" flags="0x0">
-  <title>SensorV06CDThresh</title>
-  <description>Byte compared with V06CD; read by Sub_22C1C. Fault: P1298. $5780</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>WotLeanCount</title>
+  <description>Lean-at-WOT monitor: lean counts ($06CD,Z) before the fault $5780</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5780" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32398,33 +32398,33 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7D7" flags="0x0">
-  <title>SensorThresh15</title>
-  <description>Word compared with; read by Sub_22C1C. Fault: P1298. $5781</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>WotLeanFallbackRpm</title>
+  <description>Lean-at-WOT monitor: after a lean fault, rpm at or above this value sets the fallback flag $0770,Z bit 4 $5781</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5781" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7D8" flags="0x0">
-  <title>SensorThresh16</title>
-  <description>Word compared with; read by Sub_22C1C. Fault: P1298. $5783</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>WotLeanFallbackRpmOff</title>
+  <description>Lean-at-WOT monitor: rpm below this value clears the fallback flag $5783</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5783" mmedelementsizebits="16" mmedtypeflags="0x00" />
-  <units />
+  <units>rpm</units>
   <decimalpl>0</decimalpl>
   <outputtype>1</outputtype>
-  <MATH equation="X">
+  <MATH equation="X/8">
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7D9" flags="0x0">
-  <title>SensorO2UpBank1RawThresh</title>
-  <description>Byte compared with O2UpBank1Raw; read by Sub_22C1C. Fault: P1298. $5785</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>WotLeanO2Max</title>
+  <description>Lean-at-WOT monitor: bank 1 upstream O2 below this value counts as lean $5785</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5785" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32434,9 +32434,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x7DA" flags="0x0">
-  <title>SensorO2UpBank2RawThresh</title>
-  <description>Byte compared with O2UpBank2Raw; read by Sub_22C1C. Fault: P1298. $5786</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>WotLeanO2Max2</title>
+  <description>Lean-at-WOT monitor: bank 2 upstream O2 below this value counts as lean $5786</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5786" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32986,9 +32986,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x808" flags="0x0">
-  <title>CalThresh7</title>
-  <description>Byte compared with; read by Sub_223CC. $57E3</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2DownLowRaw</title>
+  <description>Downstream O2 circuit check (O2DownCircuitCheck): raw reading below this value counts as low (P0137/P0157) $57E3</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x57E3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -32998,9 +32998,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x809" flags="0x0">
-  <title>CalThresh8</title>
-  <description>Byte compared with; read by Sub_223CC. $57E4</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2DownLowFaultCount</title>
+  <description>Downstream O2 circuit check: low counts that set the fault $57E4</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x57E4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33010,9 +33010,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x80A" flags="0x0">
-  <title>CalThresh9</title>
-  <description>Byte compared with; read by Sub_223CC. $57E5</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2DownLowPassCount</title>
+  <description>Downstream O2 circuit check: low-check counts that pass the test $57E5</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x57E5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33335,7 +33335,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x825" flags="0x0">
   <title>ThermostatStartCoolantMin</title>
-  <description>Warm-up monitor (Sub_23280): start coolant at or above this value $580C</description>
+  <description>Warm-up monitor (BrakeSwitchMonitor): start coolant at or above this value $580C</description>
   <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x580C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -33526,9 +33526,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x835" flags="0x0">
-  <title>CalThresh13</title>
-  <description>Byte compared with; read by Sub_223CC. $5824</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2DownHighRaw</title>
+  <description>Downstream O2 circuit check: raw reading above this value counts as high (P0138/P0158) $5824</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5824" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33538,9 +33538,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x836" flags="0x0">
-  <title>CalThresh14</title>
-  <description>Byte compared with; read by Sub_223CC. $5825</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2DownHighFaultCount</title>
+  <description>Downstream O2 circuit check: high counts that set the fault $5825</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5825" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33550,9 +33550,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x837" flags="0x0">
-  <title>CalThresh15</title>
-  <description>Byte compared with; read by Sub_223CC. $5826</description>
-  <CATEGORYMEM index="0" category="3" />
+  <title>O2DownHighPassCount</title>
+  <description>Downstream O2 circuit check: high-check counts that pass the test $5826</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x5826" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33634,9 +33634,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x83E" flags="0x0">
-  <title>SensorV0A63Thresh1</title>
-  <description>Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484. $582D</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>CatTempSensorHigh</title>
+  <description>Catalyst temperature sensor (CatTempMonitor, Options0330 bit 4, input $0A8E shared with the flex sensor): reading at or above this value is a high fault (P1483) $582D</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x582D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33646,9 +33646,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x83F" flags="0x0">
-  <title>SensorV0A63Thresh2</title>
-  <description>Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484. $582E</description>
-  <CATEGORYMEM index="0" category="7" />
+  <title>CatTempSensorLow</title>
+  <description>Catalyst temperature sensor: reading at or below this value is a low fault (P1482) $582E</description>
+  <CATEGORYMEM index="0" category="16" />
   <EMBEDDEDDATA mmedaddress="0x582E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -33718,8 +33718,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x845" flags="0x0">
-  <title>PurgeV045FThresh</title>
-  <description>Byte compared with V045F; read by Sub_22762. Fault: P0443. $5834</description>
+  <title>PurgeCircuitFlowMax</title>
+  <description>Purge solenoid check: measured flow ($045F,Z) at or above this value with the valve closed is a fault $5834</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x5834" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33730,8 +33730,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x846" flags="0x0">
-  <title>PurgeV045AThresh</title>
-  <description>Byte compared with V045A; read by Sub_22762. Fault: P0443. $5835</description>
+  <title>PurgeCircuitErrorMax</title>
+  <description>Purge solenoid check: flow error above this value counts as not tracking $5835</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x5835" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33742,8 +33742,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x847" flags="0x0">
-  <title>PurgeV05C0Thresh</title>
-  <description>Byte compared with V05C0; read by Sub_22762. Fault: P0443. $5836</description>
+  <title>PurgeCircuitErrorCount</title>
+  <description>Purge solenoid check: counts ($05C0,Z) of not tracking before the fault $5836</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x5836" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33754,8 +33754,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x848" flags="0x0">
-  <title>PurgeV045EThresh</title>
-  <description>Byte compared with V045E; read by Sub_22762. Fault: P0443. $5837</description>
+  <title>PurgeCircuitTargetMax</title>
+  <description>Purge solenoid check: flow target ($045E,Z) at or below this value for the tracking check $5837</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x5837" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -33826,8 +33826,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x84E" flags="0x0">
-  <title>PurgeV0471Thresh</title>
-  <description>Byte compared with V0471; read by Sub_22762. Fault: P0443. $7512</description>
+  <title>PurgeCircuitCloseTime</title>
+  <description>Purge solenoid check (PurgeSolenoidCheck, P0443, proportional purge): time ($0471,Z) after the duty drops to zero $7512</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x7512" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

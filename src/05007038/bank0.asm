@@ -5509,14 +5509,14 @@ O2SwitchFilterRich:
         dc.b    $4D                                      ; Catalyst/O2 switch analysis: filter weight of the rich peak
         dc.b    $AD,$80,$00,$00,$00,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF,$FF
         dc.b    $FF,$01,$80,$FF,$C0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-SensorV0A64Thresh1:
-        dc.b    $85                                      ; Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484.
-SensorV0A64Thresh2:
-        dc.b    $7D                                      ; Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484.
-SensorV06B2Thresh:
-        dc.b    $A0                                      ; Byte compared with V06B2; read by Sub_2DCC2. Fault: P1484.
-SensorTimeThresh4:
-        dc.b    $FF                                      ; Byte compared with Count3s; read by Sub_2DCC2. Fault: P1484.
+CatTempOverheat:
+        dc.b    $85                                      ; Catalyst temperature: filtered value ($0A64,Z) at or above this value enters the overheat state
+CatTempOverheatOff:
+        dc.b    $7D                                      ; Catalyst temperature: filtered value at or below this value leaves the overheat state
+CatTempFaultCount:
+        dc.b    $A0                                      ; Catalyst temperature: counts ($06B2,Z) before a circuit or overheat fault (P1484)
+CatTempCheckTime:
+        dc.b    $FF                                      ; Catalyst temperature sensor: time since start (Count3s) at or above which the circuit is checked
 O2ActivityCoolantMin:
         dc.b    $9B                                      ; O2 activity counters (O2ActivityCount): coolant at or above this value, else all counters clear
 O2ActivitySpeedMin:
@@ -6184,10 +6184,10 @@ BattLowClearCount:
         dc.b    $9A                                      ; Low-voltage monitor: counts before $0DB8,Z bit 2 clears
 BattLowStartTime:
         dc.b    $03                                      ; Low-voltage monitor: runs after this time since start
-SensorV0A63Thresh1:
-        dc.b    $FF                                      ; Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.
-SensorV0A63Thresh2:
-        dc.b    $05                                      ; Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.
+CatTempSensorHigh:
+        dc.b    $FF                                      ; Catalyst temperature sensor (CatTempMonitor, Options0330 bit 4, input $0A8E shared with the flex sensor): reading at or above this value is a high fault (P1483)
+CatTempSensorLow:
+        dc.b    $05                                      ; Catalyst temperature sensor: reading at or below this value is a low fault (P1482)
         dc.b    $00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -10175,7 +10175,7 @@ L06F54:
 L06F5E:
         STAA    >FlexSensorRaw,Z
         BRCLR   >Options032F,#$04,L06F6C
-        JSR     Sub_144A2
+        JSR     CatTempInput
 L06F6C:
         LDAA    >RJURR1_L,Z
         STAA    >BatteryTempRaw,Z
@@ -10688,7 +10688,7 @@ L07510:
         JSR     Sub_1501E
         JSR     Sub_0CB94
         JSR     Sub_07E32
-        JSR     Sub_144DC
+        JSR     CatTempMonitor
         LDAA    $E0,Z
         TAB
         COMB

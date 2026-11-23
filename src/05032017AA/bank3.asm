@@ -268,7 +268,7 @@ L303AA:
         BRCLR   >Options0331,#$10,L30532
         BSET    $06C1,Z,#$01
         LDD     $01,Y
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         LDAA    $06B5,Z
         BITA    #$80
         LBNE    L30532
@@ -1888,7 +1888,7 @@ L3155C:
 L3156E:
         BSET    $06C1,Z,#$01
         LDD     $02,Y
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         LDAA    $06B5,Z
         BITA    #$80
         BNE     L31584
@@ -4966,7 +4966,7 @@ L336B4:
         BRSET   $0A27,Z,#$20,L33716
         BRCLR   $06C1,Z,#$01,L33716
 L336C0:
-        LDAA    >AnalogV0A92Scaled,Z
+        LDAA    >FuelSenderScaled,Z
         CMPA    $0657,Z
         BHI     L33716
         BRSET   $0649,Z,#$40,L336D8
@@ -6360,10 +6360,10 @@ L3569C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3569E ($3569E)
+; LdpPurgeTest ($3569E)
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
-Sub_3569E:
+LdpPurgeTest:
         LDAA    $0932,Z
         BITA    #$30
         BNE     L356CE
@@ -6587,7 +6587,7 @@ L358B8:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_358BE ($358BE)
-; Called from: Sub_3569E, Sub_358BE, Sub_36638, Sub_366F2, Sub_367B4, Sub_36A34, RunModeSwitch (27 calls)
+; Called from: LdpPurgeTest, Sub_358BE, Sub_36638, Sub_366F2, Sub_367B4, Sub_36A34, RunModeSwitch (27 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_358BE:
         BRCLR   >SCSR,Z,#$01,Sub_358BE
@@ -14561,8 +14561,8 @@ L3D80A:
         JSR     Sub_3DC64
         JSR     PurgeCellCheck
         JSR     Sub_3E344
-        JSR     Sub_2276E
-        JSR     Sub_3EB02
+        JSR     PurgeSolenoidCheck
+        JSR     PurgeFlowMeasure
         JSR     Sub_3E4C0
         JSR     Sub_3E46A
         TSTA
@@ -16362,10 +16362,10 @@ Sub_3EADC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3EB02 ($3EB02)
+; PurgeFlowMeasure ($3EB02)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3EB02:
+PurgeFlowMeasure:
         PSHM    D,E
         CLRB
         LDAA    $0476,Z

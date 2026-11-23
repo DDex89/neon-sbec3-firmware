@@ -1441,7 +1441,7 @@ L10F0C:
 L10F14:
         LDX     #Tab2D_3D90
         JSR     Lookup2D
-        STAB    >AnalogV0A92Scaled,Z
+        STAB    >FuelSenderScaled,Z
         CLRA
         TDE
         LDAB    $0266,Z
@@ -12866,7 +12866,7 @@ Sub_1894E:
         LDAB    $037D,Z
         CMPB    #$30
         BLS     L189CA
-        LDAA    >AnalogV0A92Scaled,Z
+        LDAA    >FuelSenderScaled,Z
         CMPA    $0723,Z
         BHI     L189CA
         BRSET   $0507,Z,#$40,L1898C
@@ -13475,7 +13475,7 @@ L190D6:
         LBNE    L1918A
         BSET    $01A4,Z,#$20
         LDD     $01,Y
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         BRSET   $0176,Z,#$40,L19104
         BRSET   $0176,Z,#$20,L19104
         BRSET   $0176,Z,#$80,L19104
@@ -17578,7 +17578,7 @@ L1BC7C:
         LBCS    L1BD38
         BRSET   $01A4,Z,#$10,L1BCBE
         LDAA    $3E,Z
-        LDAB    >AnalogV0A92Scaled,Z
+        LDAB    >FuelSenderScaled,Z
         CBA
         BCC     L1BCB2
         XGAB

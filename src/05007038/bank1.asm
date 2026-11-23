@@ -2362,7 +2362,7 @@ L119E8:
         BRSET   $032A,#$10,L11A98
         BSET    $0211,Z,#$01
         LDD     $01,Y
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         BRSET   $022F,Z,#$40,L11A98
         BRSET   $022F,Z,#$20,L11A98
         BRSET   $022F,Z,#$80,L11A98
@@ -5013,7 +5013,7 @@ L13424:
         STAA    $F0,Z
         LDX     #Tab2D_2C10
         JSR     Lookup2D
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         LDAA    $F0,Z
         LDX     #Tab2D_2C04
         JSR     Lookup2D
@@ -5035,7 +5035,7 @@ L1345A:
         STAA    $0565,Z
         BRCLR   >MainLoopPhaseMask,Z,#$20,L13480
         CLRA
-        LDAB    >AnalogV0A92Scaled,Z
+        LDAB    >FuelSenderScaled,Z
         TDE
         LDAB    $0564,Z
         PSHM    D,E
@@ -6618,10 +6618,10 @@ L144A0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_144A2 ($144A2)
-; Called from: Reset, Sub_144DC
+; CatTempInput ($144A2)
+; Called from: Reset, CatTempMonitor
 ;---------------------------------------------------------------------------------------------------
-Sub_144A2:
+CatTempInput:
         CLRB
         TBXK
         LDX     #FlexSensorCurve
@@ -6645,12 +6645,12 @@ L144C6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_144DC ($144DC)
+; CatTempMonitor ($144DC)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_144DC:
+CatTempMonitor:
         BRCLR   >Options032F,#$04,L14588
-        JSR     Sub_144A2
+        JSR     CatTempInput
         BRSET   $0236,Z,#$08,L14588
         BRSET   $0236,Z,#$10,L14588
         BRCLR   $0020,Z,#$80,L14580
@@ -6658,34 +6658,34 @@ Sub_144DC:
         CPD     #$031D
         LBCS    L14580
         LDAA    <Count3s,Z
-        CMPA    >SensorTimeThresh4
+        CMPA    >CatTempCheckTime
         BCS     L1453A
         LDY     #$40ED
         LDAA    $038F,Z
-        CMPA    >SensorV0A63Thresh1
+        CMPA    >CatTempSensorHigh
         BCC     L14522
         LDY     #$40F7
-        CMPA    >SensorV0A63Thresh2
+        CMPA    >CatTempSensorLow
         BHI     L14544
 L14522:
         LDAA    $0391,Z
         ADDA    #$01
         SBCA    #$00
         STAA    $0391,Z
-        CMPA    >SensorV06B2Thresh
+        CMPA    >CatTempFaultCount
         BCS     L14588
         JSR     ReportFault
         BRA     L14580
 L1453A:
         LDAA    $038F,Z
-        CMPA    >SensorV0A63Thresh2
+        CMPA    >CatTempSensorLow
         BLS     L14580
 L14544:
         LDAA    $038E,Z
-        CMPA    >SensorV0A64Thresh2
+        CMPA    >CatTempOverheatOff
         BLS     L14580
         BRSET   $0390,Z,#$01,L1455E
-        CMPA    >SensorV0A64Thresh1
+        CMPA    >CatTempOverheat
         BCS     L14580
         BSET    $0390,Z,#$01
 L1455E:
@@ -6694,7 +6694,7 @@ L1455E:
         ADDA    #$01
         SBCA    #$00
         STAA    $0391,Z
-        CMPA    >SensorV06B2Thresh
+        CMPA    >CatTempFaultCount
         BCS     L14588
         LDY     #$3FFD
         JSR     ReportFault
@@ -8966,7 +8966,7 @@ L15E08:
         LBCS    L15ED6
         BRSET   $0211,Z,#$40,L15E56
         LDAA    $5F,Z
-        LDAB    >AnalogV0A92Scaled,Z
+        LDAB    >FuelSenderScaled,Z
         CBA
         BCC     L15E4A
         XGAB
@@ -19778,7 +19778,7 @@ Sub_1D0AE:
         BRSET   $0229,Z,#$02,L1D11E
         BRCLR   $0211,Z,#$01,L1D11E
 L1D0E6:
-        LDAA    >AnalogV0A92Scaled,Z
+        LDAA    >FuelSenderScaled,Z
         CMPA    $0779,Z
         BHI     L1D11E
         BRSET   $02DD,Z,#$40,L1D0FE

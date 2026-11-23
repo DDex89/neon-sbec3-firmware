@@ -14486,7 +14486,7 @@
  <XDFCONSTANT uniqueid="0x2F9" flags="0x0">
   <title>O2DownActiveHigh</title>
   <description>Downstream O2 sensor: raw value at or above this counts as switching high $13AA</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x13AA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14498,7 +14498,7 @@
  <XDFCONSTANT uniqueid="0x2FA" flags="0x0">
   <title>O2DownActiveLow</title>
   <description>Downstream O2 sensor: raw value below this marks it as active $13AB</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x13AB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -14678,7 +14678,7 @@
  <XDFCONSTANT uniqueid="0x309" flags="0x0">
   <title>O2DownEnableCoolant</title>
   <description>Coolant at or above which the downstream O2 delay $0757,Z counts down $13CA</description>
-  <CATEGORYMEM index="0" category="12" />
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x13CA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -19153,9 +19153,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x481" flags="0x0">
-  <title>SensorV0A64Thresh1</title>
-  <description>Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484. $2BDE</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CatTempOverheat</title>
+  <description>Catalyst temperature: filtered value ($0A64,Z) at or above this value enters the overheat state $2BDE</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2BDE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19165,9 +19165,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x482" flags="0x0">
-  <title>SensorV0A64Thresh2</title>
-  <description>Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484. $2BDF</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CatTempOverheatOff</title>
+  <description>Catalyst temperature: filtered value at or below this value leaves the overheat state $2BDF</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2BDF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19177,9 +19177,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x483" flags="0x0">
-  <title>SensorV06B2Thresh</title>
-  <description>Byte compared with V06B2; read by Sub_2DCC2. Fault: P1484. $2BE0</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CatTempFaultCount</title>
+  <description>Catalyst temperature: counts ($06B2,Z) before a circuit or overheat fault (P1484) $2BE0</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2BE0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19189,9 +19189,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x484" flags="0x0">
-  <title>SensorTimeThresh4</title>
-  <description>Byte compared with Count3s; read by Sub_2DCC2. Fault: P1484. $2BE1</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CatTempCheckTime</title>
+  <description>Catalyst temperature sensor: time since start (Count3s) at or above which the circuit is checked $2BE1</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2BE1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19705,9 +19705,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4AF" flags="0x0">
-  <title>SensorV0A63Thresh1</title>
-  <description>Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484. $4195</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CatTempSensorHigh</title>
+  <description>Catalyst temperature sensor (CatTempMonitor, Options0330 bit 4, input $0A8E shared with the flex sensor): reading at or above this value is a high fault (P1483) $4195</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x4195" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19717,9 +19717,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x4B0" flags="0x0">
-  <title>SensorV0A63Thresh2</title>
-  <description>Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484. $4196</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>CatTempSensorLow</title>
+  <description>Catalyst temperature sensor: reading at or below this value is a low fault (P1482) $4196</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x4196" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>

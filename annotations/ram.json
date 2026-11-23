@@ -11,6 +11,7 @@
  "000D": "SriMileage",
  "0018": "IacPosition",
  "002A": "IdleMapLearned",
+ "0040": "EgrZeroPos",
  "017C": "EngineOffTime",
  "0195": "Temp3",
  "0196": "FlexSensorStart",
@@ -161,8 +162,9 @@
  "0A8C": "KnockThresholdNow",
  "0A8E": "FlexSensorRaw",
  "0A91": "FlexEthanolScaled",
- "0A93": "AnalogV0A92Scaled",
- "0A94": "AnalogV0A92Filtered",
+ "0A92": "FuelSenderRaw",
+ "0A93": "FuelSenderScaled",
+ "0A94": "FuelSenderFiltered",
  "0A98": "VehicleSpeedRaw",
  "0A9A": "VehicleSpeed",
  "0A9B": "VehicleSpeedCoarse",
@@ -220,6 +222,5 @@
  "0DAA": "KnockRetardMax",
  "0DB9": "ChargeTargetVolts",
  "0DC6": "ChargeDeficit",
- "0F00": "FlexFuelFactor",
- "0040": "EgrZeroPos"
+ "0F00": "FlexFuelFactor"
 }

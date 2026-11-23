@@ -2204,13 +2204,13 @@
   "13AA": {
    "name": "O2DownActiveHigh",
    "desc": "Downstream O2 sensor: raw value at or above this counts as switching high",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "13AB": {
    "name": "O2DownActiveLow",
    "desc": "Downstream O2 sensor: raw value below this marks it as active",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "13AC": {
@@ -2309,7 +2309,7 @@
    "name": "O2DownEnableCoolant",
    "desc": "Coolant at or above which the downstream O2 delay $0757,Z counts down",
    "unit": "tempc",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "13CB": {
@@ -4704,36 +4704,28 @@
    "size": 1
   },
   "2BDE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorV0A64Thresh1"
+   "name": "CatTempOverheat",
+   "desc": "Catalyst temperature: filtered value ($0A64,Z) at or above this value enters the overheat state",
+   "category": "Diagnostics",
+   "size": 1
   },
   "2BDF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorV0A64Thresh2"
+   "name": "CatTempOverheatOff",
+   "desc": "Catalyst temperature: filtered value at or below this value leaves the overheat state",
+   "category": "Diagnostics",
+   "size": 1
   },
   "2BE0": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V06B2; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorV06B2Thresh"
+   "name": "CatTempFaultCount",
+   "desc": "Catalyst temperature: counts ($06B2,Z) before a circuit or overheat fault (P1484)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "2BE1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with Count3s; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorTimeThresh4"
+   "name": "CatTempCheckTime",
+   "desc": "Catalyst temperature sensor: time since start (Count3s) at or above which the circuit is checked",
+   "category": "Diagnostics",
+   "size": 1
   },
   "2BE2": {
    "name": "O2ActivityCoolantMin",
@@ -5014,20 +5006,16 @@
    "size": 1
   },
   "4195": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorV0A63Thresh1"
+   "name": "CatTempSensorHigh",
+   "desc": "Catalyst temperature sensor (CatTempMonitor, Options0330 bit 4, input $0A8E shared with the flex sensor): reading at or above this value is a high fault (P1483)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4196": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorV0A63Thresh2"
+   "name": "CatTempSensorLow",
+   "desc": "Catalyst temperature sensor: reading at or below this value is a low fault (P1482)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "4287": {
    "name": "ChargeVoltsMin",

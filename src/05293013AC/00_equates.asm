@@ -62,7 +62,7 @@ EventSpark       equ $041C        ; $F841C
 EventSparkTimer  equ $041D        ; $F841D
 ChargeTargetVolts equ $042F        ; $F842F
 FuelLevelScaled  equ $0485        ; $F8485
-AnalogV0A92Scaled equ $0486        ; $F8486
+FuelSenderScaled equ $0486        ; $F8486
 ShortTermTrim1   equ $050F        ; $F850F
 O2UpBank1Raw     equ $0510        ; $F8510
 O2DownBank1Raw   equ $051A        ; $F851A

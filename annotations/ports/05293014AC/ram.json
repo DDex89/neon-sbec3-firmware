@@ -60,7 +60,7 @@
  "041D": "EventSparkTimer",
  "042F": "ChargeTargetVolts",
  "0485": "FuelLevelScaled",
- "0486": "AnalogV0A92Scaled",
+ "0486": "FuelSenderScaled",
  "050F": "ShortTermTrim1",
  "0510": "O2UpBank1Raw",
  "051A": "O2DownBank1Raw",

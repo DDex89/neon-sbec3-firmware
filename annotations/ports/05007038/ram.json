@@ -94,7 +94,7 @@
  "0559": "AcSensorRaw",
  "055D": "KnockThresholdNow",
  "0561": "FlexEthanolScaled",
- "0563": "AnalogV0A92Scaled",
+ "0563": "FuelSenderScaled",
  "0566": "VehicleSpeedRaw",
  "0572": "VehicleSpeedCoarse",
  "058C": "Ic2OverflowCount",

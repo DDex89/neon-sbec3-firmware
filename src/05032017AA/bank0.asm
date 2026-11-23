@@ -8207,20 +8207,20 @@ FaultTable:
         dc.b    $FE,$00,$00,$00,$40,$1E,$00,$00,$00,$00
         dc.b    $FF,$00,$00,$00,$80,$1E,$00,$00,$00,$00
 
-DiagSpeedThresh6:
-        dc.b    $36                                      ; Byte compared with VehicleSpeed; read by Sub_233FE.
-DiagRpmThresh5:
-        dc.b    $28,$A0                                  ; Word compared with EngineRpm; read by Sub_233FE.
-DiagRpmThresh6:
-        dc.b    $44,$C0                                  ; Word compared with EngineRpm; read by Sub_233FE.
-DiagThrottleThresh1:
-        dc.b    $09                                      ; Byte compared with ThrottleAboveClosed; read by Sub_233FE.
-DiagFactor2:
-        dc.b    $8A                                      ; Byte multiplied; read by Sub_233FE.
-DiagV0665Thresh:
-        dc.b    $0D                                      ; Byte compared with V0665; read by Sub_233FE.
-DiagSpeedThresh7:
-        dc.b    $00                                      ; Byte compared with VehicleSpeed; read by Sub_233FE.
+PnSwitchSpeedMin:
+        dc.b    $36                                      ; P/N switch monitor (PnSwitchMonitor, P1899): vehicle speed at or above this value
+PnSwitchRpmMin:
+        dc.b    $28,$A0                                  ; P/N switch monitor: engine rpm at or above this value (word)
+PnSwitchRpmMax:
+        dc.b    $44,$C0                                  ; P/N switch monitor: engine rpm below this value (word)
+PnSwitchThrottleMin:
+        dc.b    $09                                      ; P/N switch monitor: throttle opening at or above this value
+PnSwitchMapFactor:
+        dc.b    $8A                                      ; P/N switch monitor: MAP above baro × this / 256 (engine under load)
+PnSwitchCount:
+        dc.b    $0D                                      ; P/N switch monitor: counts ($0665/$0666,Z) of the switch reading in gear or in P/N before the result
+PnSwitchStartSpeedMax:
+        dc.b    $00                                      ; P/N switch monitor: vehicle speed at or below this value for the key-on check
 
 ;---------------------------------------------------------------------------------------------------
 ; ThermostatTimeLimit ($5002): 2D table, 4 points, unsigned
@@ -8272,20 +8272,20 @@ TccRatioDropMin:
         dc.b    $04,$03                                  ; Torque converter clutch monitor: signed ratio drop (word) that counts as lock-up; its low byte ($33C1) is also read directly as the fail count limit of $0678,Z
 TccTestDelay:
         dc.b    $98                                      ; Torque converter clutch monitor: delay ($0677,Z) after lock-up before the ratio drop is checked
-DiagV011CThresh:
-        dc.b    $FE                                      ; Byte compared with V011C; read by Sub_23280.
-DiagV011DThresh:
-        dc.b    $FE                                      ; Byte compared with V011D; read by Sub_23280.
-DiagSpeedThresh10:
-        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_23280.
-DiagSpeedThresh11:
-        dc.b    $28                                      ; Byte compared with VehicleSpeed; read by Sub_23280.
-DiagThrottleThresh2:
-        dc.b    $01                                      ; Byte compared with ThrottleAboveClosed; read by Sub_23280.
-DiagV066AThresh:
-        dc.b    $40                                      ; Byte compared with V066A; read by Sub_23280.
-DiagV066BThresh:
-        dc.b    $03                                      ; Byte compared with V066B; read by Sub_23280.
+BrakeSwStopCount:
+        dc.b    $FE                                      ; Brake switch monitor (BrakeSwitchMonitor, P0703): stops from BrakeSwStopSpeed without the brake switch ($011C,Z) before the fault
+BrakeSwDriveCount:
+        dc.b    $FE                                      ; Brake switch monitor: drives with the brake switch on while accelerating ($011D,Z) before the fault
+BrakeSwStopSpeed:
+        dc.b    $28                                      ; Brake switch monitor: speed above which a following stop is counted
+BrakeSwDriveSpeed:
+        dc.b    $28                                      ; Brake switch monitor: speed at or above which the switch is checked while driving
+BrakeSwThrottleMin:
+        dc.b    $01                                      ; Brake switch monitor: throttle opening at or above which brake-on driving is counted
+BrakeSwDriveTime:
+        dc.b    $40                                      ; Brake switch monitor: time ($066A,Z) of brake-on driving per count
+BrakeSwSeenTime:
+        dc.b    $03                                      ; Brake switch monitor: time ($066B/$066C,Z) each switch state must be seen to pass
 MisfireOptions:
         dc.b    $04                                      ; Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve)
 MisfireMapChangeMax:
@@ -9088,14 +9088,14 @@ O2SwitchRich2:
         dc.b    $21                                      ; As O2SwitchRich for the other direction
         dc.b    $14,$E6,$14,$E6,$18,$18,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF
         dc.b    $FF,$FF,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF,$FF,$FF
-SensorV0A64Thresh1:
-        dc.b    $A0                                      ; Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484.
-SensorV0A64Thresh2:
-        dc.b    $94                                      ; Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484.
-SensorV06B2Thresh:
-        dc.b    $05                                      ; Byte compared with V06B2; read by Sub_2DCC2. Fault: P1484.
-SensorTimeThresh4:
-        dc.b    $05                                      ; Byte compared with Count3s; read by Sub_2DCC2. Fault: P1484.
+CatTempOverheat:
+        dc.b    $A0                                      ; Catalyst temperature: filtered value ($0A64,Z) at or above this value enters the overheat state
+CatTempOverheatOff:
+        dc.b    $94                                      ; Catalyst temperature: filtered value at or below this value leaves the overheat state
+CatTempFaultCount:
+        dc.b    $05                                      ; Catalyst temperature: counts ($06B2,Z) before a circuit or overheat fault (P1484)
+CatTempCheckTime:
+        dc.b    $05                                      ; Catalyst temperature sensor: time since start (Count3s) at or above which the circuit is checked
 O2ActivityCoolantMin:
         dc.b    $9B                                      ; O2 activity counters (O2ActivityCount): coolant at or above this value, else all counters clear
 O2ActivitySpeedMin:
@@ -9113,31 +9113,31 @@ PurgeLoadDownTime:
         dc.b    $21                                      ; Purge vapour load: counts ($0473,Z) before the load falls (0 = off)
 FuelLevelRef:
         dc.b    $80                                      ; Reference value of the fuel level terms ($32AF minus $019C,Z, $01B6,Z)
-AnalogV0A92ReadTime:
-        dc.b    $06                                      ; Time since start after which analog input $0A92 is read for $019C,Z
+FuelSenderReadTime:
+        dc.b    $06                                      ; Time since start after which the fuel level sender ($0A92) is read for FuelLevelScaled
         dc.b    $20
-AnalogV0A92Low:
-        dc.b    $05                                      ; Analog input $0A92 (probably fuel level) circuit check: filtered value at or below this counts as low
-AnalogV0A92High:
-        dc.b    $E6                                      ; Analog input $0A92 circuit check: filtered value above this counts as high
-AnalogV0A92HighCount:
-        dc.b    $08                                      ; Analog input $0A92 check: counts before the high fault
-AnalogV0A92LowCount:
-        dc.b    $04                                      ; Analog input $0A92 check: counts before the low fault
-SensorThresh10:
-        dc.b    $8C                                      ; Byte compared with; read by Sub_22EA6.
-SensorThresh11:
-        dc.b    $0C                                      ; Byte compared with; read by Sub_22EA6.
-SensorV011FThresh1:
-        dc.b    $25                                      ; Byte compared with V011F; read by Sub_22EA6.
-SensorAnalogV0A92FilteredThresh3:
-        dc.b    $1D                                      ; Byte compared with AnalogV0A92Filtered; read by Sub_22EA6.
-SensorThresh12:
-        dc.b    $10                                      ; Byte compared with; read by Sub_22EA6.
-SensorV011FThresh2:
-        dc.b    $0C                                      ; Byte compared with V011F; read by Sub_22EA6.
-SensorThresh13:
-        dc.b    $05                                      ; Byte compared with; read by Sub_22EA6.
+FuelSenderLow:
+        dc.b    $05                                      ; Fuel level sender ($0A92) circuit check (FuelSenderMonitor): filtered value at or below this counts as low (P0462)
+FuelSenderHigh:
+        dc.b    $E6                                      ; Fuel level sender circuit check: filtered value above this counts as high (P0463)
+FuelSenderHighCount:
+        dc.b    $08                                      ; Fuel level sender check: counts before a circuit fault is set
+FuelSenderLowCount:
+        dc.b    $04                                      ; Fuel level sender check: counts in range before a circuit fault clears
+FuelSenderLowLevel:
+        dc.b    $8C                                      ; Fuel level sender stuck test: start reading below this value selects the low-level limits
+FuelSenderMoveMin:
+        dc.b    $0C                                      ; Fuel level sender stuck test: change from the start reading at or above this value passes the test
+FuelSenderStuckFuel:
+        dc.b    $25                                      ; Fuel level sender stuck test: fuel used ($011F,Z) without that change that fails the test
+FuelSenderTestMin:
+        dc.b    $1D                                      ; Fuel level sender stuck test (FuelSenderMonitor, P0460): filtered sender value at or above this value
+FuelSenderMoveMinLow:
+        dc.b    $10                                      ; As FuelSenderMoveMin at low level
+FuelSenderStuckFuelLow:
+        dc.b    $0C                                      ; As FuelSenderStuckFuel at low level
+FuelSenderShutdownDiff:
+        dc.b    $05                                      ; Fuel level sender stuck test: starts when the reading is within this value of the reading stored at power-down ($0120,Z)
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_56D0 ($56D0): 2D table, 3 points, signed
@@ -9268,20 +9268,20 @@ ExpectedMap:
         dc.b    255,255,255,255,255,255,255,255,255      ; row 7
         dc.b    255,255,255,255,255,255,255,255,255      ; row 8
 
-SensorV06CCThresh:
-        dc.b    $00                                      ; Byte compared with V06CC; read by Sub_22C1C. Fault: P1298.
-SensorThresh14:
-        dc.b    $FF,$00                                  ; Word compared with; read by Sub_22C1C. Fault: P1298.
-SensorV06CDThresh:
-        dc.b    $00                                      ; Byte compared with V06CD; read by Sub_22C1C. Fault: P1298.
-SensorThresh15:
-        dc.b    $00,$FF                                  ; Word compared with; read by Sub_22C1C. Fault: P1298.
-SensorThresh16:
-        dc.b    $00,$FF                                  ; Word compared with; read by Sub_22C1C. Fault: P1298.
-SensorO2UpBank1RawThresh:
-        dc.b    $00                                      ; Byte compared with O2UpBank1Raw; read by Sub_22C1C. Fault: P1298.
-SensorO2UpBank2RawThresh:
-        dc.b    $00                                      ; Byte compared with O2UpBank2Raw; read by Sub_22C1C. Fault: P1298.
+WotLeanDelay:
+        dc.b    $00                                      ; Lean-at-WOT monitor (WotLeanMonitor, P1298, flex only): WOT time ($06CC,Z) before the test
+WotLeanRpmMin:
+        dc.b    $FF,$00                                  ; Lean-at-WOT monitor: engine rpm above this value (word)
+WotLeanCount:
+        dc.b    $00                                      ; Lean-at-WOT monitor: lean counts ($06CD,Z) before the fault
+WotLeanFallbackRpm:
+        dc.b    $00,$FF                                  ; Lean-at-WOT monitor: after a lean fault, rpm at or above this value sets the fallback flag $0770,Z bit 4
+WotLeanFallbackRpmOff:
+        dc.b    $00,$FF                                  ; Lean-at-WOT monitor: rpm below this value clears the fallback flag
+WotLeanO2Max:
+        dc.b    $00                                      ; Lean-at-WOT monitor: bank 1 upstream O2 below this value counts as lean
+WotLeanO2Max2:
+        dc.b    $00                                      ; Lean-at-WOT monitor: bank 2 upstream O2 below this value counts as lean
 FlexFaultRpmHigh:
         dc.b    $FF                                      ; Flex sensor fault: rpm at or above which the fault fallback flags ($0770,Z bit 4, $0760,Z) are set
 FlexFaultRpmLow:
@@ -9412,12 +9412,12 @@ CalThresh6:
         dc.b    $04                                      ; Byte compared with; read by Sub_21F82, Sub_291F0.
 CalSpeedThresh2:
         dc.b    $50                                      ; Byte compared with VehicleSpeed; read by Sub_222FA.
-CalThresh7:
-        dc.b    $04                                      ; Byte compared with; read by Sub_223CC.
-CalThresh8:
-        dc.b    $13                                      ; Byte compared with; read by Sub_223CC.
-CalThresh9:
-        dc.b    $0A                                      ; Byte compared with; read by Sub_223CC.
+O2DownLowRaw:
+        dc.b    $04                                      ; Downstream O2 circuit check (O2DownCircuitCheck): raw reading below this value counts as low (P0137/P0157)
+O2DownLowFaultCount:
+        dc.b    $13                                      ; Downstream O2 circuit check: low counts that set the fault
+O2DownLowPassCount:
+        dc.b    $0A                                      ; Downstream O2 circuit check: low-check counts that pass the test
 O2MemResetValue:
         dc.b    $33                                      ; Closed-loop manager: value written into the 16 adaptive cells of a bank when its memory is reset after a fault
 KnockValue3:
@@ -9484,7 +9484,7 @@ CoolantRawHigh:
 CoolantFaultValue:
         dc.b    $AE                                      ; Coolant value used with a coolant sensor fault
 ThermostatStartCoolantMin:
-        dc.b    $79                                      ; Warm-up monitor (Sub_23280): start coolant at or above this value
+        dc.b    $79                                      ; Warm-up monitor (BrakeSwitchMonitor): start coolant at or above this value
 ThermostatStartCoolantMax:
         dc.b    $E4                                      ; Warm-up monitor: start coolant below this value
 ThermostatBattTempMin:
@@ -9517,12 +9517,12 @@ CalSpeedThresh3:
         dc.b    $13,$13,$1E,$12,$1E,$12
 O2RawHigh:
         dc.b    $3E                                      ; O2 sensor raw value at or above which the high-voltage check counts
-CalThresh13:
-        dc.b    $42                                      ; Byte compared with; read by Sub_223CC.
-CalThresh14:
-        dc.b    $96                                      ; Byte compared with; read by Sub_223CC.
-CalThresh15:
-        dc.b    $4B                                      ; Byte compared with; read by Sub_223CC.
+O2DownHighRaw:
+        dc.b    $42                                      ; Downstream O2 circuit check: raw reading above this value counts as high (P0138/P0158)
+O2DownHighFaultCount:
+        dc.b    $96                                      ; Downstream O2 circuit check: high counts that set the fault
+O2DownHighPassCount:
+        dc.b    $4B                                      ; Downstream O2 circuit check: high-check counts that pass the test
 FieldThresh:
         dc.b    $04                                      ; Byte compared with; read by Sub_08520, Sub_08DD4.
 ChargeMonVoltsMargin:
@@ -9535,10 +9535,10 @@ ChargeMonClearTime:
         dc.b    $05                                      ; Charging monitor: time before $0DB8,Z bit 6 clears
 ChargeMonFailTime:
         dc.b    $6D                                      ; Charging monitor: time before $0DB8,Z bit 6 (fault) sets
-SensorV0A63Thresh1:
-        dc.b    $FF                                      ; Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.
-SensorV0A63Thresh2:
-        dc.b    $05                                      ; Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.
+CatTempSensorHigh:
+        dc.b    $FF                                      ; Catalyst temperature sensor (CatTempMonitor, Options0330 bit 4, input $0A8E shared with the flex sensor): reading at or above this value is a high fault (P1483)
+CatTempSensorLow:
+        dc.b    $05                                      ; Catalyst temperature sensor: reading at or below this value is a low fault (P1482)
 EgrPosSensorLow:
         dc.b    $08                                      ; EGR position sensor below this value is a low-input fault
 EgrPosSensorHigh:
@@ -9549,14 +9549,14 @@ EgrV7926Offset:
         dc.b    $05                                      ; Byte subtracted from V7926; read by Sub_22B16. Fault: P0403.
 EgrThresh11:
         dc.b    $FF                                      ; Byte compared with; read by Sub_22B16. Fault: P0403.
-PurgeV045FThresh:
-        dc.b    $66                                      ; Byte compared with V045F; read by Sub_22762. Fault: P0443.
-PurgeV045AThresh:
-        dc.b    $14                                      ; Byte compared with V045A; read by Sub_22762. Fault: P0443.
-PurgeV05C0Thresh:
-        dc.b    $C8                                      ; Byte compared with V05C0; read by Sub_22762. Fault: P0443.
-PurgeV045EThresh:
-        dc.b    $99                                      ; Byte compared with V045E; read by Sub_22762. Fault: P0443.
+PurgeCircuitFlowMax:
+        dc.b    $66                                      ; Purge solenoid check: measured flow ($045F,Z) at or above this value with the valve closed is a fault
+PurgeCircuitErrorMax:
+        dc.b    $14                                      ; Purge solenoid check: flow error above this value counts as not tracking
+PurgeCircuitErrorCount:
+        dc.b    $C8                                      ; Purge solenoid check: counts ($05C0,Z) of not tracking before the fault
+PurgeCircuitTargetMax:
+        dc.b    $99                                      ; Purge solenoid check: flow target ($045E,Z) at or below this value for the tracking check
         dc.b    $00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -10178,8 +10178,8 @@ PwmPeriodC18:
         dc.b    $3F                                      ; PWM period of the TPU output set up by Sub_3B03C (duty $0C20,Z in %): value × 250 into $0C18,Z (Options0333 bit 6)
 PurgePwmPeriod:
         dc.b    $05                                      ; Proportional purge PWM period (Options0333 bit 7): value × 250 into $0452,Z; the duty comes from $0460,Z
-PurgeV0471Thresh:
-        dc.b    $18                                      ; Byte compared with V0471; read by Sub_22762. Fault: P0443.
+PurgeCircuitCloseTime:
+        dc.b    $18                                      ; Purge solenoid check (PurgeSolenoidCheck, P0443, proportional purge): time ($0471,Z) after the duty drops to zero
         dc.b    $00,$10,$04,$01,$20,$08,$02,$01,$10,$03,$02,$20,$04,$04,$01,$05
         dc.b    $08,$02,$00,$02,$04,$01,$01,$08,$02,$04,$02,$03,$08,$01,$00,$02
         dc.b    $01,$01,$01,$04,$02,$04,$08,$03,$08,$02,$07,$73,$80,$80,$07,$73
@@ -15865,7 +15865,7 @@ L0D6D2:
         BRCLR   >ADCSTAT,Z,#$80,L0D6D2
         LDAA    >RJURR2_L,Z
         STAA    >FlexSensorRaw,Z
-        JSR     Sub_2DD76
+        JSR     CatTempInput
 L0D6E4:
         LDAA    >PORTF0,Z
         ANDA    #$1F
@@ -16371,7 +16371,7 @@ L0DD24:
         LBRA    L0DDCE
 L0DD28:
         JSR     Sub_22CE4
-        JSR     Sub_22EB2
+        JSR     FuelSenderMonitor
         LBRA    L0DDCE
 L0DD34:
         JSR     Sub_1DB8C
@@ -16385,7 +16385,7 @@ L0DD4C:
         JSR     Sub_0EE90
         JSR     Sub_355C6
         JSR     Sub_21D04
-        JSR     Sub_22C28
+        JSR     WotLeanMonitor
         BRA     L0DDCE
 L0DD62:
         JSR     Sub_0F206
@@ -16460,7 +16460,7 @@ L0DDCE:
         JSR     Sub_36638
         JSR     Sub_366F2
         JSR     Sub_35334
-        JSR     Sub_3569E
+        JSR     LdpPurgeTest
         JSR     Sub_35EDA
         JSR     Sub_35578
         JSR     Sub_38224
@@ -16479,7 +16479,7 @@ L0DEA2:
         JSR     Sub_160A0
         JSR     Sub_1616C
         JSR     Sub_0EBB6
-        JSR     Sub_2DDB0
+        JSR     CatTempMonitor
         JSR     Sub_382BC
         JSR     Sub_0EE7C
         JSR     Sub_0CC9E
@@ -16652,9 +16652,9 @@ L0E09E:
         CLR     >EngineOffTime,Z
 L0E0B0:
         LDAA    >Count3s,Z
-        CMPA    >AnalogV0A92ReadTime
+        CMPA    >FuelSenderReadTime
         BCS     L0E0C2
-        LDAA    >AnalogV0A92Filtered,Z
+        LDAA    >FuelSenderFiltered,Z
         STAA    $0120,Z
 L0E0C2:
         ORP     #$00E0

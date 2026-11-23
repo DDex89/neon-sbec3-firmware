@@ -1825,7 +1825,7 @@ L2185C:
         BCLR    $9D,Z,#$18
         BRA     L218BC
 L21862:
-        LDAA    >AnalogV0A92Filtered,Z
+        LDAA    >FuelSenderFiltered,Z
         BRSET   $0505,Z,#$08,L218A4
         BRSET   $0507,Z,#$02,L218A4
         BRSET   $0507,Z,#$01,L218A4
@@ -2503,7 +2503,7 @@ Sub_21F50:
         JSR     Sub_21F8E
         JSR     Sub_220BA
         JSR     Sub_22306
-        JSR     Sub_223D8
+        JSR     O2DownCircuitCheck
         JSR     Sub_22694
         JSR     Sub_226CC
         RTS
@@ -2886,10 +2886,10 @@ L223A6:
         dc.b    $4A,$EF,$04,$40,$40,$04,$01,$01,$04,$04,$01,$04,$02,$20,$01,$10
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_223D8 ($223D8)
+; O2DownCircuitCheck ($223D8)
 ; Called from: Sub_21F50
 ;---------------------------------------------------------------------------------------------------
-Sub_223D8:
+O2DownCircuitCheck:
         JSR     Sub_22610
         TPD
         TBXK
@@ -2911,9 +2911,9 @@ L223F4:
 L22404:
         LDE     $0000,X
         LDAA    E,Z
-        CMPA    >CalThresh7
+        CMPA    >O2DownLowRaw
         BCS     L22420
-        CMPA    >CalThresh13
+        CMPA    >O2DownHighRaw
         BHI     L2242A
         JSR     Sub_225D0
         JSR     Sub_2255E
@@ -2934,7 +2934,7 @@ L22432:
         LDAA    $0685,Z
         BITA    $16,X
         BNE     L2246E
-        CMPB    >CalThresh15
+        CMPB    >O2DownHighPassCount
         BCS     L224AA
         LDAA    $0D,X
         ORAA    $0686,Z
@@ -2947,7 +2947,7 @@ L22432:
         STAA    E,Z
         BRA     L224AA
 L2246E:
-        CMPB    >CalThresh14
+        CMPB    >O2DownHighFaultCount
         BCS     L224AA
         LDAA    $0659,Z
         ORAA    $0C,X
@@ -2977,7 +2977,7 @@ L224AA:
         LDAA    $0685,Z
         BITA    $17,X
         BNE     L224E4
-        CMPB    >CalThresh9
+        CMPB    >O2DownLowPassCount
         BCS     L22520
         LDAA    $12,X
         ORAA    $0686,Z
@@ -2989,7 +2989,7 @@ L224AA:
         LDE     $0004,X
         STAA    E,Z
 L224E4:
-        CMPB    >CalThresh8
+        CMPB    >O2DownLowFaultCount
         BCS     L22520
         LDAA    $0659,Z
         ORAA    $11,X
@@ -3018,7 +3018,7 @@ L22520:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2252C ($2252C)
-; Called from: Sub_223D8
+; Called from: O2DownCircuitCheck
 ;---------------------------------------------------------------------------------------------------
 Sub_2252C:
         LDAA    $0685,Z
@@ -3044,7 +3044,7 @@ L2255C:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2255E ($2255E)
-; Called from: Sub_223D8 (2 calls)
+; Called from: O2DownCircuitCheck (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_2255E:
         LDAB    $16,X
@@ -3075,7 +3075,7 @@ L2259C:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_2259E ($2259E)
-; Called from: Sub_223D8
+; Called from: O2DownCircuitCheck
 ;---------------------------------------------------------------------------------------------------
 Sub_2259E:
         LDAA    $0685,Z
@@ -3101,7 +3101,7 @@ L225CE:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_225D0 ($225D0)
-; Called from: Sub_223D8 (2 calls)
+; Called from: O2DownCircuitCheck (2 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_225D0:
         LDAB    $17,X
@@ -3132,7 +3132,7 @@ L2260E:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_22610 ($22610)
-; Called from: Sub_223D8
+; Called from: O2DownCircuitCheck
 ;---------------------------------------------------------------------------------------------------
 Sub_22610:
         TPD
@@ -3262,10 +3262,10 @@ L2276C:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2276E ($2276E)
+; PurgeSolenoidCheck ($2276E)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_2276E:
+PurgeSolenoidCheck:
         BRSET   $0503,Z,#$04,L22812
         TST     $0C40,Z
         LBNE    L22812
@@ -3286,20 +3286,20 @@ L22796:
         BRA     L227D0
 L227AC:
         LDAA    $0477,Z
-        CMPA    >PurgeV0471Thresh
+        CMPA    >PurgeCircuitCloseTime
         BCC     L227BE
         INCA
         STAA    $0477,Z
         BRA     L227D0
 L227BE:
         LDAA    $0465,Z
-        CMPA    >PurgeV045FThresh
+        CMPA    >PurgeCircuitFlowMax
         BCS     L227D0
         BSET    $05BE,Z,#$40
         LBRA    L2280A
 L227D0:
         LDAA    $0464,Z
-        CMPA    >PurgeV045EThresh
+        CMPA    >PurgeCircuitTargetMax
         BLS     L227E0
         CLR     $05C0,Z
         BRA     L22812
@@ -3308,13 +3308,13 @@ L227E0:
         BPL     L227E8
         NEGD
 L227E8:
-        CMPB    >PurgeV045AThresh
+        CMPB    >PurgeCircuitErrorMax
         BHI     L227F4
         CLR     $05C0,Z
         BRA     L22812
 L227F4:
         LDAA    $05C0,Z
-        CMPA    >PurgeV05C0Thresh
+        CMPA    >PurgeCircuitErrorCount
         BLS     L22804
         BSET    $05BE,Z,#$20
         BRA     L2280A
@@ -3663,10 +3663,10 @@ L22C26:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_22C28 ($22C28)
+; WotLeanMonitor ($22C28)
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
-Sub_22C28:
+WotLeanMonitor:
         BRCLR   >Options032C,#$40,L22CE2
         TST     $07B5,Z
         LBNE    L22CE2
@@ -3679,28 +3679,28 @@ Sub_22C28:
         BRA     L22CAE
 L22C52:
         LDAA    $06CC,Z
-        CMPA    >SensorV06CCThresh
+        CMPA    >WotLeanDelay
         BCC     L22C62
         INC     $06CC,Z
         BRA     L22CAE
 L22C62:
-        CPE     >SensorThresh14
+        CPE     >WotLeanRpmMin
         BLS     L22CAE
         BRSET   $07BB,Z,#$80,L22CCC
         BRSET   $06B5,Z,#$08,L22CAE
         BRSET   $050D,Z,#$40,L22CAE
         LDAA    >O2UpBank1Raw,Z
-        CMPA    >SensorO2UpBank1RawThresh
+        CMPA    >WotLeanO2Max
         BCC     L22CAE
         BRCLR   >Options032F,#$40,L22CA0
         BRSET   $06B5,Z,#$04,L22CAE
         BRSET   $050E,Z,#$04,L22CAE
         LDAA    >O2UpBank2Raw,Z
-        CMPA    >SensorO2UpBank2RawThresh
+        CMPA    >WotLeanO2Max2
         BCC     L22CAE
 L22CA0:
         LDAA    $06CD,Z
-        CMPA    >SensorV06CDThresh
+        CMPA    >WotLeanCount
         BCC     L22CB4
         INC     $06CD,Z
 L22CAE:
@@ -3714,10 +3714,10 @@ L22CB4:
         JSR     ReportFault
         BRA     L22CD2
 L22CCC:
-        CPE     >SensorThresh15
+        CPE     >WotLeanFallbackRpm
         BCC     L22CDE
 L22CD2:
-        CPE     >SensorThresh16
+        CPE     >WotLeanFallbackRpmOff
         BCC     L22CE2
         BCLR    $0770,Z,#$10
         BRA     L22CE2
@@ -3884,10 +3884,10 @@ L22EB0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_22EB2 ($22EB2)
+; FuelSenderMonitor ($22EB2)
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
-Sub_22EB2:
+FuelSenderMonitor:
         BRSET   $0A27,Z,#$20,L2309C
         BRCLR   $06C1,Z,#$02,L230A4
         BRSET   $009D,Z,#$04,L230A4
@@ -3910,13 +3910,13 @@ L22EEA:
 L22F06:
         BRSET   $0513,Z,#$80,L230A4
         BRSET   $065A,Z,#$80,L22F66
-        LDAA    >AnalogV0A92Filtered,Z
-        CMPA    >AnalogV0A92High
+        LDAA    >FuelSenderFiltered,Z
+        CMPA    >FuelSenderHigh
         BLS     L22F48
         CLR     $06C4,Z
         LDAA    $06C5,Z
         INCA
-        CMPA    >AnalogV0A92HighCount
+        CMPA    >FuelSenderHighCount
         BHI     L22F32
         STAA    $06C5,Z
         BRA     L22F66
@@ -3931,7 +3931,7 @@ L22F48:
         CLR     $06C5,Z
         LDAA    $06C4,Z
         INCA
-        CMPA    >AnalogV0A92LowCount
+        CMPA    >FuelSenderLowCount
         BHI     L22F5E
         STAA    $06C4,Z
         BRA     L22F66
@@ -3940,13 +3940,13 @@ L22F5E:
         BSET    $0686,Z,#$20
 L22F66:
         BRSET   $065A,Z,#$40,L22FC0
-        LDAA    >AnalogV0A92Filtered,Z
-        CMPA    >AnalogV0A92Low
+        LDAA    >FuelSenderFiltered,Z
+        CMPA    >FuelSenderLow
         BHI     L22FA2
         CLR     $06C2,Z
         LDAA    $06C3,Z
         INCA
-        CMPA    >AnalogV0A92HighCount
+        CMPA    >FuelSenderHighCount
         BHI     L22F8C
         STAA    $06C3,Z
         BRA     L22FC0
@@ -3961,7 +3961,7 @@ L22FA2:
         CLR     $06C3,Z
         LDAA    $06C2,Z
         INCA
-        CMPA    >AnalogV0A92LowCount
+        CMPA    >FuelSenderLowCount
         BHI     L22FB8
         STAA    $06C2,Z
         BRA     L22FC0
@@ -3975,27 +3975,27 @@ L22FC0:
         BRCLR   $0D00,Z,#$20,L230A4
         BRSET   $0513,Z,#$40,L230A4
         BRSET   $0513,Z,#$20,L230A4
-        LDAB    >AnalogV0A92Filtered,Z
-        CMPB    >SensorAnalogV0A92FilteredThresh3
+        LDAB    >FuelSenderFiltered,Z
+        CMPB    >FuelSenderTestMin
         LBCS    L230A4
         BRSET   $06C1,Z,#$10,L23012
         LDAA    $0120,Z
-        LDAB    >AnalogV0A92Scaled,Z
+        LDAB    >FuelSenderScaled,Z
         CBA
         BCC     L23004
         XGAB
 L23004:
         SBA
-        CMPA    >SensorThresh13
+        CMPA    >FuelSenderShutdownDiff
         LBCC    L23074
         BSET    $06C1,Z,#$10
 L23012:
         BRSET   $000A,Z,#$08,L23032
-        LDAB    >AnalogV0A92Filtered,Z
+        LDAB    >FuelSenderFiltered,Z
         STAB    $011E,Z
         CLR     $011F,Z
         BSET    $0A,Z,#$08
-        CMPB    >SensorThresh10
+        CMPB    >FuelSenderLowLevel
         BCC     L23032
         BSET    $0A,Z,#$01
 L23032:
@@ -4006,10 +4006,10 @@ L23032:
         XGAB
 L23042:
         SBA
-        CMPA    >SensorThresh12
+        CMPA    >FuelSenderMoveMinLow
         BCC     L23074
         LDAB    $011F,Z
-        CMPB    >SensorV011FThresh2
+        CMPB    >FuelSenderStuckFuelLow
         BCS     L230A4
         BRA     L23086
 L23056:
@@ -4019,10 +4019,10 @@ L23056:
         XGAB
 L23060:
         SBA
-        CMPA    >SensorThresh11
+        CMPA    >FuelSenderMoveMin
         BCC     L23074
         LDAB    $011F,Z
-        CMPB    >SensorV011FThresh1
+        CMPB    >FuelSenderStuckFuel
         BCS     L230A4
         BRA     L23086
 L23074:
@@ -4152,8 +4152,8 @@ L231A8:
 ;---------------------------------------------------------------------------------------------------
 Sub_231AE:
         JSR     Sub_231F2
-        JSR     Sub_23286
-        JSR     Sub_23404
+        JSR     BrakeSwitchMonitor
+        JSR     PnSwitchMonitor
         BRCLR   >MainLoopPhaseMask,Z,#$01,L231C4
         JSR     TccMonitor
 L231C4:
@@ -4223,10 +4223,10 @@ L23284:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_23286 ($23286)
+; BrakeSwitchMonitor ($23286)
 ; Called from: Sub_231AE
 ;---------------------------------------------------------------------------------------------------
-Sub_23286:
+BrakeSwitchMonitor:
         BRSET   $0669,Z,#$0C,L233F6
         BRCLR   >Options0340,#$20,L232B8
         BRSET   $0512,Z,#$01,L232B8
@@ -4245,14 +4245,14 @@ L232C4:
         BRSET   $0669,Z,#$08,L23306
         BRSET   $0A4A,Z,#$01,L232F8
         LDAA    >VehicleSpeed,Z
-        CMPA    >DiagSpeedThresh10
+        CMPA    >BrakeSwStopSpeed
         BCC     L23302
         BRCLR   $0669,Z,#$80,L23306
         LDAA    >VehicleSpeed,Z
         BNE     L23306
         INC     $011C,Z
         LDAA    $011C,Z
-        CMPA    >DiagV011CThresh
+        CMPA    >BrakeSwStopCount
         BCS     L232FC
         BSET    $0669,Z,#$20
 L232F8:
@@ -4266,21 +4266,21 @@ L23306:
         BRSET   $0669,Z,#$04,L23370
         BRCLR   $0A4A,Z,#$01,L23358
         LDAA    >VehicleSpeed,Z
-        CMPA    >DiagSpeedThresh11
+        CMPA    >BrakeSwDriveSpeed
         BCS     L23366
         BRCLR   $0669,Z,#$40,L23370
         BRCLR   >ThrottleState,Z,#$80,L23360
         LDAA    >ThrottleAboveClosed,Z
-        CMPA    >DiagThrottleThresh2
+        CMPA    >BrakeSwThrottleMin
         BCS     L23360
         BRCLR   >MainLoopPhaseMask,Z,#$04,L23370
         INC     $066A,Z
         LDAA    $066A,Z
-        CMPA    >DiagV066AThresh
+        CMPA    >BrakeSwDriveTime
         BCS     L23370
         INC     $011D,Z
         LDAA    $011D,Z
-        CMPA    >DiagV011DThresh
+        CMPA    >BrakeSwDriveCount
         BCS     L2335C
         BSET    $0669,Z,#$10
 L23358:
@@ -4299,12 +4299,12 @@ L23370:
         BRCLR   $0A4A,Z,#$01,L233A6
         BRSET   >ThrottleState,Z,#$80,L233A6
         LDAA    >VehicleSpeed,Z
-        CMPA    >DiagSpeedThresh10
+        CMPA    >BrakeSwStopSpeed
         BCC     L233A6
         BRCLR   >MainLoopPhaseMask,Z,#$04,L233AA
         INC     $066B,Z
         LDAA    $066B,Z
-        CMPA    >DiagV066BThresh
+        CMPA    >BrakeSwSeenTime
         BCS     L233AA
         BSET    $0669,Z,#$08
         BRA     L233AA
@@ -4315,12 +4315,12 @@ L233AA:
         BRSET   $0A4A,Z,#$01,L233E0
         BRCLR   >ThrottleState,Z,#$80,L233E0
         LDAA    >VehicleSpeed,Z
-        CMPA    >DiagSpeedThresh11
+        CMPA    >BrakeSwDriveSpeed
         BCS     L233E0
         BRCLR   >MainLoopPhaseMask,Z,#$04,L233E4
         INC     $066C,Z
         LDAA    $066C,Z
-        CMPA    >DiagV066BThresh
+        CMPA    >BrakeSwSeenTime
         BCS     L233E4
         BSET    $0669,Z,#$04
         BRA     L233E4
@@ -4340,10 +4340,10 @@ L23402:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_23404 ($23404)
+; PnSwitchMonitor ($23404)
 ; Called from: Sub_231AE
 ;---------------------------------------------------------------------------------------------------
-Sub_23404:
+PnSwitchMonitor:
         BRSET   $0664,Z,#$C0,L23522
         BRSET   $06BC,Z,#$80,L23468
         BRSET   >Options0333,#$04,L23460
@@ -4351,7 +4351,7 @@ Sub_23404:
         BRSET   >Options032E,#$40,L23464
         BRSET   $0774,Z,#$80,L23464
         LDAA    >VehicleSpeed,Z
-        CMPA    >DiagSpeedThresh7
+        CMPA    >PnSwitchStartSpeedMax
         BHI     L23464
         BRSET   $000A,Z,#$20,L23464
         BRSET   $009D,Z,#$08,L23464
@@ -4379,18 +4379,18 @@ L23468:
 L23494:
         BRSET   $050F,Z,#$04,L23508
         LDAA    >VehicleSpeed,Z
-        CMPA    >DiagSpeedThresh6
+        CMPA    >PnSwitchSpeedMin
         BCS     L23508
         LDE     >EngineRpm,Z
-        CPE     >DiagRpmThresh5
+        CPE     >PnSwitchRpmMin
         BCS     L23508
-        CPE     >DiagRpmThresh6
+        CPE     >PnSwitchRpmMax
         BCC     L23508
         LDAB    >ThrottleAboveClosed,Z
-        CMPB    >DiagThrottleThresh1
+        CMPB    >PnSwitchThrottleMin
         BCS     L23508
         LDAA    <Baro,Z
-        LDAB    >DiagFactor2
+        LDAB    >PnSwitchMapFactor
         MUL
         TAB
         CMPB    >Map,Z
@@ -4400,7 +4400,7 @@ L23494:
         CLR     $0666,Z
         INC     $0665,Z
         LDAA    $0665,Z
-        CMPA    >DiagV0665Thresh
+        CMPA    >PnSwitchCount
         BCS     L23510
         BSET    $0664,Z,#$10
         BRA     L23508
@@ -4408,7 +4408,7 @@ L234F2:
         CLR     $0665,Z
         INC     $0666,Z
         LDAA    $0666,Z
-        CMPA    >DiagV0665Thresh
+        CMPA    >PnSwitchCount
         BCS     L23510
         BSET    $0664,Z,#$40
 L23508:
@@ -5846,7 +5846,7 @@ L244EA:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_244EC ($244EC)
-; Called from: Sub_220BA, Sub_223D8, Sub_22610, EgrPositionMonitor, Sub_22CFC, Sub_22D9C, Sub_22EB2, Sub_231F2 and 8 more routines (37 calls)
+; Called from: Sub_220BA, O2DownCircuitCheck, Sub_22610, EgrPositionMonitor, Sub_22CFC, Sub_22D9C, FuelSenderMonitor, Sub_231F2 and 8 more routines (37 calls)
 ;---------------------------------------------------------------------------------------------------
 Sub_244EC:
         PSHM    X,Y,K
@@ -13532,7 +13532,7 @@ L2C7CE:
         STAA    $F0,Z
         LDX     #Tab2D_56E8
         JSR     Lookup2D
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         LDAA    $F0,Z
         LDX     #Tab2D_56DC
         JSR     Lookup2D
@@ -13554,16 +13554,16 @@ L2C80A:
         STAA    $0A9A,Z
         BRCLR   >MainLoopPhaseMask,Z,#$40,L2C83A
         CLRB
-        LDAA    >AnalogV0A92Scaled,Z
+        LDAA    >FuelSenderScaled,Z
         TDE
         BRCLR   $06C1,Z,#$08,L2C826
-        LDD     >AnalogV0A92Filtered,Z
+        LDD     >FuelSenderFiltered,Z
 L2C826:
         PSHM    D,E
         LDAA    $56C4
         JSR     Blend16
         AIS     #$04
-        STD     >AnalogV0A92Filtered,Z
+        STD     >FuelSenderFiltered,Z
         BSET    $06C1,Z,#$08
 L2C83A:
         BRCLR   $0774,Z,#$80,L2C87E
@@ -13578,7 +13578,7 @@ L2C852:
         CLR     $06C6,Z
         BRA     L2C87E
 L2C868:
-        CMPA    >AnalogV0A92ReadTime
+        CMPA    >FuelSenderReadTime
         BCC     L2C87A
         BRCLR   >MainLoopPhaseMask,Z,#$80,L2C87E
         INC     $06C6,Z
@@ -15616,10 +15616,10 @@ L2DD74:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2DD76 ($2DD76)
-; Called from: Reset, Sub_2DDB0
+; CatTempInput ($2DD76)
+; Called from: Reset, CatTempMonitor
 ;---------------------------------------------------------------------------------------------------
-Sub_2DD76:
+CatTempInput:
         CLRB
         TBXK
         LDX     #FlexSensorCurve
@@ -15643,12 +15643,12 @@ L2DD9A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_2DDB0 ($2DDB0)
+; CatTempMonitor ($2DDB0)
 ; Called from: Sub_0DBEA
 ;---------------------------------------------------------------------------------------------------
-Sub_2DDB0:
+CatTempMonitor:
         BRCLR   >Options0330,#$10,L2DE60
-        JSR     Sub_2DD76
+        JSR     CatTempInput
         BRSET   $051A,Z,#$08,L2DE60
         BRSET   $051A,Z,#$10,L2DE60
         BRCLR   $0774,Z,#$80,L2DE58
@@ -15656,34 +15656,34 @@ Sub_2DDB0:
         CPD     #$031D
         LBCS    L2DE58
         LDAA    >Count3s,Z
-        CMPA    >SensorTimeThresh4
+        CMPA    >CatTempCheckTime
         BCS     L2DE12
         LDY     #$4E87
         LDAA    $0A68,Z
-        CMPA    >SensorV0A63Thresh1
+        CMPA    >CatTempSensorHigh
         BCC     L2DDFA
         LDY     #$4E91
-        CMPA    >SensorV0A63Thresh2
+        CMPA    >CatTempSensorLow
         BHI     L2DE1C
 L2DDFA:
         LDAA    $06B2,Z
         ADDA    #$01
         SBCA    #$00
         STAA    $06B2,Z
-        CMPA    >SensorV06B2Thresh
+        CMPA    >CatTempFaultCount
         BCS     L2DE60
         JSR     ReportFault
         BRA     L2DE58
 L2DE12:
         LDAA    $0A68,Z
-        CMPA    >SensorV0A63Thresh2
+        CMPA    >CatTempSensorLow
         BLS     L2DE58
 L2DE1C:
         LDAA    $0A69,Z
-        CMPA    >SensorV0A64Thresh2
+        CMPA    >CatTempOverheatOff
         BLS     L2DE58
         BRSET   $06B1,Z,#$01,L2DE36
-        CMPA    >SensorV0A64Thresh1
+        CMPA    >CatTempOverheat
         BCS     L2DE58
         BSET    $06B1,Z,#$01
 L2DE36:
@@ -15692,7 +15692,7 @@ L2DE36:
         ADDA    #$01
         SBCA    #$00
         STAA    $06B2,Z
-        CMPA    >SensorV06B2Thresh
+        CMPA    >CatTempFaultCount
         BCS     L2DE60
         LDY     #$4D97
         JSR     ReportFault

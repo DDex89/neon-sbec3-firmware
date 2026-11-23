@@ -5972,13 +5972,13 @@
   "1BDB": {
    "name": "O2DownActiveHigh",
    "desc": "Downstream O2 sensor: raw value at or above this counts as switching high",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "1BDC": {
    "name": "O2DownActiveLow",
    "desc": "Downstream O2 sensor: raw value below this marks it as active",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "1BDD": {
@@ -6077,7 +6077,7 @@
    "name": "O2DownEnableCoolant",
    "desc": "Coolant at or above which the downstream O2 delay $0757,Z counts down",
    "unit": "tempc",
-   "category": "Closed loop",
+   "category": "Diagnostics",
    "size": 1
   },
   "1BFD": {
@@ -10384,36 +10384,28 @@
    "size": 1
   },
   "56B1": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorV0A64Thresh1"
+   "name": "CatTempOverheat",
+   "desc": "Catalyst temperature: filtered value ($0A64,Z) at or above this value enters the overheat state",
+   "category": "Diagnostics",
+   "size": 1
   },
   "56B2": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V0A64; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorV0A64Thresh2"
+   "name": "CatTempOverheatOff",
+   "desc": "Catalyst temperature: filtered value at or below this value leaves the overheat state",
+   "category": "Diagnostics",
+   "size": 1
   },
   "56B3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V06B2; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorV06B2Thresh"
+   "name": "CatTempFaultCount",
+   "desc": "Catalyst temperature: counts ($06B2,Z) before a circuit or overheat fault (P1484)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "56B4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with Count3s; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorTimeThresh4"
+   "name": "CatTempCheckTime",
+   "desc": "Catalyst temperature sensor: time since start (Count3s) at or above which the circuit is checked",
+   "category": "Diagnostics",
+   "size": 1
   },
   "56B5": {
    "name": "O2ActivityCoolantMin",
@@ -10465,90 +10457,76 @@
    "size": 1
   },
   "56C3": {
-   "name": "AnalogV0A92ReadTime",
-   "desc": "Time since start after which analog input $0A92 is read for $019C,Z",
+   "name": "FuelSenderReadTime",
+   "desc": "Time since start after which the fuel level sender ($0A92) is read for FuelLevelScaled",
    "category": "Sensors",
    "size": 1
   },
   "56C5": {
-   "name": "AnalogV0A92Low",
-   "desc": "Analog input $0A92 (probably fuel level) circuit check: filtered value at or below this counts as low",
+   "name": "FuelSenderLow",
+   "desc": "Fuel level sender ($0A92) circuit check (FuelSenderMonitor): filtered value at or below this counts as low (P0462)",
    "category": "Sensors",
    "size": 1
   },
   "56C6": {
-   "name": "AnalogV0A92High",
-   "desc": "Analog input $0A92 circuit check: filtered value above this counts as high",
+   "name": "FuelSenderHigh",
+   "desc": "Fuel level sender circuit check: filtered value above this counts as high (P0463)",
    "category": "Sensors",
    "size": 1
   },
   "56C7": {
-   "name": "AnalogV0A92HighCount",
-   "desc": "Analog input $0A92 check: counts before the high fault",
+   "name": "FuelSenderHighCount",
+   "desc": "Fuel level sender check: counts before a circuit fault is set",
    "category": "Sensors",
    "size": 1
   },
   "56C8": {
-   "name": "AnalogV0A92LowCount",
-   "desc": "Analog input $0A92 check: counts before the low fault",
+   "name": "FuelSenderLowCount",
+   "desc": "Fuel level sender check: counts in range before a circuit fault clears",
    "category": "Sensors",
    "size": 1
   },
   "56C9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FuelSenderLowLevel",
+   "desc": "Fuel level sender stuck test: start reading below this value selects the low-level limits",
    "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_22EA6.",
-   "name": "SensorThresh10"
+   "size": 1
   },
   "56CA": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FuelSenderMoveMin",
+   "desc": "Fuel level sender stuck test: change from the start reading at or above this value passes the test",
    "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_22EA6.",
-   "name": "SensorThresh11"
+   "size": 1
   },
   "56CB": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FuelSenderStuckFuel",
+   "desc": "Fuel level sender stuck test: fuel used ($011F,Z) without that change that fails the test",
    "category": "Sensors",
-   "desc": "Byte compared with V011F; read by Sub_22EA6.",
-   "name": "SensorV011FThresh1"
+   "size": 1
   },
   "56CC": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FuelSenderTestMin",
+   "desc": "Fuel level sender stuck test (FuelSenderMonitor, P0460): filtered sender value at or above this value",
    "category": "Sensors",
-   "desc": "Byte compared with AnalogV0A92Filtered; read by Sub_22EA6.",
-   "name": "SensorAnalogV0A92FilteredThresh3"
+   "size": 1
   },
   "56CD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FuelSenderMoveMinLow",
+   "desc": "As FuelSenderMoveMin at low level",
    "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_22EA6.",
-   "name": "SensorThresh12"
+   "size": 1
   },
   "56CE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FuelSenderStuckFuelLow",
+   "desc": "As FuelSenderStuckFuel at low level",
    "category": "Sensors",
-   "desc": "Byte compared with V011F; read by Sub_22EA6.",
-   "name": "SensorV011FThresh2"
+   "size": 1
   },
   "56CF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "FuelSenderShutdownDiff",
+   "desc": "Fuel level sender stuck test: starts when the reading is within this value of the reading stored at power-down ($0120,Z)",
    "category": "Sensors",
-   "desc": "Byte compared with; read by Sub_22EA6.",
-   "name": "SensorThresh13"
+   "size": 1
   },
   "56F4": {
    "name": "VacLeakBaroFactor",
@@ -10634,60 +10612,49 @@
    "category": "Diagnostics"
   },
   "577D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V06CC; read by Sub_22C1C. Fault: P1298.",
-   "name": "SensorV06CCThresh"
+   "name": "WotLeanDelay",
+   "desc": "Lean-at-WOT monitor (WotLeanMonitor, P1298, flex only): WOT time ($06CC,Z) before the test",
+   "category": "Diagnostics",
+   "size": 1
   },
   "577E": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with; read by Sub_22C1C. Fault: P1298.",
-   "name": "SensorThresh14"
+   "name": "WotLeanRpmMin",
+   "desc": "Lean-at-WOT monitor: engine rpm above this value (word)",
+   "unit": "rpmw",
+   "category": "Diagnostics",
+   "size": 2
   },
   "5780": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V06CD; read by Sub_22C1C. Fault: P1298.",
-   "name": "SensorV06CDThresh"
+   "name": "WotLeanCount",
+   "desc": "Lean-at-WOT monitor: lean counts ($06CD,Z) before the fault",
+   "category": "Diagnostics",
+   "size": 1
   },
   "5781": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with; read by Sub_22C1C. Fault: P1298.",
-   "name": "SensorThresh15"
+   "name": "WotLeanFallbackRpm",
+   "desc": "Lean-at-WOT monitor: after a lean fault, rpm at or above this value sets the fallback flag $0770,Z bit 4",
+   "unit": "rpmw",
+   "category": "Diagnostics",
+   "size": 2
   },
   "5783": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Word compared with; read by Sub_22C1C. Fault: P1298.",
-   "name": "SensorThresh16"
+   "name": "WotLeanFallbackRpmOff",
+   "desc": "Lean-at-WOT monitor: rpm below this value clears the fallback flag",
+   "unit": "rpmw",
+   "category": "Diagnostics",
+   "size": 2
   },
   "5785": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with O2UpBank1Raw; read by Sub_22C1C. Fault: P1298.",
-   "name": "SensorO2UpBank1RawThresh"
+   "name": "WotLeanO2Max",
+   "desc": "Lean-at-WOT monitor: bank 1 upstream O2 below this value counts as lean",
+   "category": "Diagnostics",
+   "size": 1
   },
   "5786": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with O2UpBank2Raw; read by Sub_22C1C. Fault: P1298.",
-   "name": "SensorO2UpBank2RawThresh"
+   "name": "WotLeanO2Max2",
+   "desc": "Lean-at-WOT monitor: bank 2 upstream O2 below this value counts as lean",
+   "category": "Diagnostics",
+   "size": 1
   },
   "5787": {
    "name": "FlexFaultRpmHigh",
@@ -10861,60 +10828,48 @@
    "name": "CalV068DInit"
   },
   "4FF9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PnSwitchSpeedMin",
+   "desc": "P/N switch monitor (PnSwitchMonitor, P1899): vehicle speed at or above this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_233FE.",
-   "name": "DiagSpeedThresh6"
+   "size": 1
   },
   "4FFA": {
-   "size": 2,
+   "name": "PnSwitchRpmMin",
+   "desc": "P/N switch monitor: engine rpm at or above this value (word)",
    "unit": "rpmw",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Word compared with EngineRpm; read by Sub_233FE.",
-   "name": "DiagRpmThresh5"
+   "size": 2
   },
   "4FFC": {
-   "size": 2,
+   "name": "PnSwitchRpmMax",
+   "desc": "P/N switch monitor: engine rpm below this value (word)",
    "unit": "rpmw",
-   "auto": true,
    "category": "Diagnostics",
-   "desc": "Word compared with EngineRpm; read by Sub_233FE.",
-   "name": "DiagRpmThresh6"
+   "size": 2
   },
   "4FFE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PnSwitchThrottleMin",
+   "desc": "P/N switch monitor: throttle opening at or above this value",
    "category": "Diagnostics",
-   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_233FE.",
-   "name": "DiagThrottleThresh1"
+   "size": 1
   },
   "4FFF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PnSwitchMapFactor",
+   "desc": "P/N switch monitor: MAP above baro × this / 256 (engine under load)",
    "category": "Diagnostics",
-   "desc": "Byte multiplied; read by Sub_233FE.",
-   "name": "DiagFactor2"
+   "size": 1
   },
   "5000": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PnSwitchCount",
+   "desc": "P/N switch monitor: counts ($0665/$0666,Z) of the switch reading in gear or in P/N before the result",
    "category": "Diagnostics",
-   "desc": "Byte compared with V0665; read by Sub_233FE.",
-   "name": "DiagV0665Thresh"
+   "size": 1
   },
   "5001": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PnSwitchStartSpeedMax",
+   "desc": "P/N switch monitor: vehicle speed at or below this value for the key-on check",
    "category": "Diagnostics",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_233FE.",
-   "name": "DiagSpeedThresh7"
+   "size": 1
   },
   "5010": {
    "size": 1,
@@ -11043,60 +10998,46 @@
    "size": 1
   },
   "5028": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BrakeSwStopCount",
+   "desc": "Brake switch monitor (BrakeSwitchMonitor, P0703): stops from BrakeSwStopSpeed without the brake switch ($011C,Z) before the fault",
    "category": "Diagnostics",
-   "desc": "Byte compared with V011C; read by Sub_23280.",
-   "name": "DiagV011CThresh"
+   "size": 1
   },
   "5029": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BrakeSwDriveCount",
+   "desc": "Brake switch monitor: drives with the brake switch on while accelerating ($011D,Z) before the fault",
    "category": "Diagnostics",
-   "desc": "Byte compared with V011D; read by Sub_23280.",
-   "name": "DiagV011DThresh"
+   "size": 1
   },
   "502A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BrakeSwStopSpeed",
+   "desc": "Brake switch monitor: speed above which a following stop is counted",
    "category": "Diagnostics",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_23280.",
-   "name": "DiagSpeedThresh10"
+   "size": 1
   },
   "502B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BrakeSwDriveSpeed",
+   "desc": "Brake switch monitor: speed at or above which the switch is checked while driving",
    "category": "Diagnostics",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_23280.",
-   "name": "DiagSpeedThresh11"
+   "size": 1
   },
   "502C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BrakeSwThrottleMin",
+   "desc": "Brake switch monitor: throttle opening at or above which brake-on driving is counted",
    "category": "Diagnostics",
-   "desc": "Byte compared with ThrottleAboveClosed; read by Sub_23280.",
-   "name": "DiagThrottleThresh2"
+   "size": 1
   },
   "502D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BrakeSwDriveTime",
+   "desc": "Brake switch monitor: time ($066A,Z) of brake-on driving per count",
    "category": "Diagnostics",
-   "desc": "Byte compared with V066A; read by Sub_23280.",
-   "name": "DiagV066AThresh"
+   "size": 1
   },
   "502E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "BrakeSwSeenTime",
+   "desc": "Brake switch monitor: time ($066B/$066C,Z) each switch state must be seen to pass",
    "category": "Diagnostics",
-   "desc": "Byte compared with V066B; read by Sub_23280.",
-   "name": "DiagV066BThresh"
+   "size": 1
   },
   "57A7": {
    "name": "TpsCheckThrottleMax",
@@ -11246,28 +11187,22 @@
    "name": "CalSpeedThresh2"
   },
   "57E3": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_223CC.",
-   "name": "CalThresh7"
+   "name": "O2DownLowRaw",
+   "desc": "Downstream O2 circuit check (O2DownCircuitCheck): raw reading below this value counts as low (P0137/P0157)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "57E4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_223CC.",
-   "name": "CalThresh8"
+   "name": "O2DownLowFaultCount",
+   "desc": "Downstream O2 circuit check: low counts that set the fault",
+   "category": "Diagnostics",
+   "size": 1
   },
   "57E5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_223CC.",
-   "name": "CalThresh9"
+   "name": "O2DownLowPassCount",
+   "desc": "Downstream O2 circuit check: low-check counts that pass the test",
+   "category": "Diagnostics",
+   "size": 1
   },
   "57E6": {
    "name": "O2MemResetValue",
@@ -11444,7 +11379,7 @@
   },
   "580C": {
    "name": "ThermostatStartCoolantMin",
-   "desc": "Warm-up monitor (Sub_23280): start coolant at or above this value",
+   "desc": "Warm-up monitor (BrakeSwitchMonitor): start coolant at or above this value",
    "unit": "tempc",
    "category": "Diagnostics",
    "size": 1
@@ -11552,28 +11487,22 @@
    "size": 1
   },
   "5824": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_223CC.",
-   "name": "CalThresh13"
+   "name": "O2DownHighRaw",
+   "desc": "Downstream O2 circuit check: raw reading above this value counts as high (P0138/P0158)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "5825": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_223CC.",
-   "name": "CalThresh14"
+   "name": "O2DownHighFaultCount",
+   "desc": "Downstream O2 circuit check: high counts that set the fault",
+   "category": "Diagnostics",
+   "size": 1
   },
   "5826": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Other",
-   "desc": "Byte compared with; read by Sub_223CC.",
-   "name": "CalThresh15"
+   "name": "O2DownHighPassCount",
+   "desc": "Downstream O2 circuit check: high-check counts that pass the test",
+   "category": "Diagnostics",
+   "size": 1
   },
   "5827": {
    "size": 1,
@@ -11616,20 +11545,16 @@
    "size": 1
   },
   "582D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorV0A63Thresh1"
+   "name": "CatTempSensorHigh",
+   "desc": "Catalyst temperature sensor (CatTempMonitor, Options0330 bit 4, input $0A8E shared with the flex sensor): reading at or above this value is a high fault (P1483)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "582E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte compared with V0A63; read by Sub_2DCC2. Fault: P1484.",
-   "name": "SensorV0A63Thresh2"
+   "name": "CatTempSensorLow",
+   "desc": "Catalyst temperature sensor: reading at or below this value is a low fault (P1482)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "582F": {
    "name": "EgrPosSensorLow",
@@ -11668,36 +11593,28 @@
    "name": "EgrThresh11"
   },
   "5834": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCircuitFlowMax",
+   "desc": "Purge solenoid check: measured flow ($045F,Z) at or above this value with the valve closed is a fault",
    "category": "EVAP purge",
-   "desc": "Byte compared with V045F; read by Sub_22762. Fault: P0443.",
-   "name": "PurgeV045FThresh"
+   "size": 1
   },
   "5835": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCircuitErrorMax",
+   "desc": "Purge solenoid check: flow error above this value counts as not tracking",
    "category": "EVAP purge",
-   "desc": "Byte compared with V045A; read by Sub_22762. Fault: P0443.",
-   "name": "PurgeV045AThresh"
+   "size": 1
   },
   "5836": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCircuitErrorCount",
+   "desc": "Purge solenoid check: counts ($05C0,Z) of not tracking before the fault",
    "category": "EVAP purge",
-   "desc": "Byte compared with V05C0; read by Sub_22762. Fault: P0443.",
-   "name": "PurgeV05C0Thresh"
+   "size": 1
   },
   "5837": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCircuitTargetMax",
+   "desc": "Purge solenoid check: flow target ($045E,Z) at or below this value for the tracking check",
    "category": "EVAP purge",
-   "desc": "Byte compared with V045E; read by Sub_22762. Fault: P0443.",
-   "name": "PurgeV045EThresh"
+   "size": 1
   },
   "70B1": {
    "name": "ChargeVoltsMin",
@@ -11734,12 +11651,10 @@
    "size": 1
   },
   "7512": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeCircuitCloseTime",
+   "desc": "Purge solenoid check (PurgeSolenoidCheck, P0443, proportional purge): time ($0471,Z) after the duty drops to zero",
    "category": "EVAP purge",
-   "desc": "Byte compared with V0471; read by Sub_22762. Fault: P0443.",
-   "name": "PurgeV0471Thresh"
+   "size": 1
   },
   "755D": {
    "name": "FieldRpmMin",

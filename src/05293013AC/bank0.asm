@@ -17161,7 +17161,7 @@ L0CB42:
         LDAA    #$E3
         STAA    $0F,Z
         LDAA    #$CC
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         LDD     #$000C
         JSR     Sub_1716E
         CMPA    #$AB

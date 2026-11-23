@@ -259,7 +259,7 @@ L30392:
         BRCLR   >Options0331,#$10,L3051A
         BSET    $06C1,Z,#$01
         LDD     $01,Y
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         LDAA    $06B5,Z
         BITA    #$80
         LBNE    L3051A
@@ -1862,7 +1862,7 @@ L31520:
         BRCLR   >Options0331,#$10,L3153C
         BSET    $06C1,Z,#$01
         LDD     $02,Y
-        STAA    >AnalogV0A92Scaled,Z
+        STAA    >FuelSenderScaled,Z
         LDAA    $06B5,Z
         BITA    #$80
         BNE     L3153C
@@ -4966,7 +4966,7 @@ L336EA:
         BRSET   $050D,Z,#$02,L3376C
         BRCLR   $06C1,Z,#$01,L3376C
 L33716:
-        LDAA    >AnalogV0A92Scaled,Z
+        LDAA    >FuelSenderScaled,Z
         CMPA    $0657,Z
         BHI     L3376C
         BRSET   $0649,Z,#$40,L3372E
@@ -14475,8 +14475,8 @@ L3D80A:
         JSR     Sub_3DC64
         JSR     PurgeCellCheck
         JSR     Sub_3E344
-        JSR     Sub_22762
-        JSR     Sub_3EB12
+        JSR     PurgeSolenoidCheck
+        JSR     PurgeFlowMeasure
         JSR     Sub_3E4CA
         JSR     Sub_3E46A
         TSTA
@@ -16279,10 +16279,10 @@ Sub_3EAEC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_3EB12 ($3EB12)
+; PurgeFlowMeasure ($3EB12)
 ; Called from: Sub_3D800
 ;---------------------------------------------------------------------------------------------------
-Sub_3EB12:
+PurgeFlowMeasure:
         PSHM    D,E
         CLRB
         LDAA    $0470,Z
