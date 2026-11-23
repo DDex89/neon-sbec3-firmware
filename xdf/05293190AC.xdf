@@ -1302,7 +1302,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x124" flags="0x0">
   <title>FlexLearnTimeGain2</title>
-  <description>Flex-fuel learning: second gain $0F21,Z against the learning time $0884, 2D; inputs: $0F22,Z</description>
+  <description>Flex-fuel learning: second gain $0F21,Z against the learning time $0884, 2D; inputs: FlexEstimateF22</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2706,7 +2706,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x14B" flags="0x0">
   <title>CrankBasePulse</title>
-  <description>Cranking base pulse width: ethanol content ($0A91,Z, rows) x cranking coolant temperature (columns); squared, then reduced by the decay factors below; into $0766,Z $0A91, 3D; inputs: FlexEthanolScaled x CoolantTemp; FlexEthanolScaled x $05FE,Z; FlexEthanolScaled x CrankCoolant</description>
+  <description>Cranking base pulse width: ethanol content ($0A91,Z, rows) x cranking coolant temperature (columns); squared, then reduced by the decay factors below; into $0766,Z $0A91, 3D; inputs: FlexEthanolScaled x CoolantTemp; FlexEthanolScaled x CrankFuel5FE; FlexEthanolScaled x CrankCoolant</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xA94" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />

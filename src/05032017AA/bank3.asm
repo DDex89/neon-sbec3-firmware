@@ -211,7 +211,7 @@ L30300:
         BRCLR   >BusModuleFlags,Z,#$80,L3031E            ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
         BSET    <EquipmentFlags,Z,#$20                   ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDAB    #$04
-        STAB    $59,Z
+        STAB    <Ac058,Z
 L3031E:
         LDAA    $01,Y
         ANDA    #$07
@@ -364,7 +364,7 @@ L304B0:
         CLR     >SecurityTimer,Z
         BRA     L304EE
 L304D4:
-        BRSET   $051C,Z,#$01,L304EE
+        BRSET   >Ccd51C,Z,#$01,L304EE
         LDD     <SriMileage,Z
         CPD     #$0003
         BCS     L304EE
@@ -567,7 +567,7 @@ L306B6:
 L306BE:
         LDAA    #$E4
         STAA    >CcdTxId,Z
-        LDAA    $0D51,Z
+        LDAA    >CcdTransmitD59,Z
         LDAB    >Map,Z
         RTS
 L306CE:
@@ -754,7 +754,7 @@ L30860:
         BRA     L308AC
 L3087C:
         LDD     >VssBusValue,Z
-        LDE     $0AB9,Z
+        LDE     >VssAB5,Z
         ROLE
         ROLD
         BCS     L3089C
@@ -827,8 +827,8 @@ L30918:
 BusTxSparkStatus:
         PSHM    CCR
         ORP     #$00E0
-        LDAA    $09D5,Z
-        LDAB    $09D6,Z
+        LDAA    >BusStatus9D3,Z
+        LDAB    >BusStatus9D4,Z
         BRCLR   >EventSparkFlags,Z,#$40,L30938           ; bit 6: per-event spark state B, set with bit 2 (the opposite of bit 7); reported on the bus
         ORAB    #$01
         ANDB    #$FD
@@ -880,7 +880,7 @@ L30984:
 ; Called from: BusTxSecurity
 ;---------------------------------------------------------------------------------------------------
 SecurityStatusCalc:
-        LDAA    $09D4,Z
+        LDAA    >BusStatus9D2,Z
         LDAB    >BusMsgEcData
         ANDB    #$FC
         BRSET   >BusConfigFlags,Z,#$C0,L3099C            ; bit 7: bus configuration bit read by SkimState and SecurityStatusCalc; not set by bit instructions; bit 6: SKIM / security exchange configured on the bus; read by the bus and SKIM code
@@ -904,16 +904,16 @@ BusTxTimer:
         ORP     #$00E0
         AIS     #$FC
         TSX
-        LDD     $09F2,Z
+        LDD     >BusTx9F2,Z
         BNE     L309D0
         LDD     >TCNT,Z
         BNE     L309D0
         LDD     #$AA55
 L309D0:
         STD     $01,X
-        STD     $09F2,Z
+        STD     >BusTx9F2,Z
         XGAB
-        STD     $09F4,Z
+        STD     >PciBuild9F4,Z
         LDAA    #$A6
         STAA    $00,X
         JSR     BusTxQueue
@@ -1046,8 +1046,8 @@ L30ACC:
 ; Called from: Isr_GPT_IC4OC5
 ;---------------------------------------------------------------------------------------------------
 BusTxSparkEvent:
-        LDAA    $09D5,Z
-        LDAB    $09D6,Z
+        LDAA    >BusStatus9D3,Z
+        LDAB    >BusStatus9D4,Z
         BRCLR   >EventSparkFlags,Z,#$40,L30AE2           ; bit 6: per-event spark state B, set with bit 2 (the opposite of bit 7); reported on the bus
         ORAB    #$01
         ANDB    #$FD
@@ -1170,11 +1170,11 @@ L30BBC:
 ;---------------------------------------------------------------------------------------------------
 BusTxStart:
         BRCLR   >CcdRxFlags,Z,#$80,L30BCC                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
-        LDAB    $0980,Z
+        LDAB    >BusTx97E,Z
         BRA     L30BE4
 L30BCC:
         BRCLR   >CcdRxFlags,Z,#$10,L30BD8                ; bit 4: CCD transmit buffer 1 in use (CcdTransmit)
-        LDAB    $0992,Z
+        LDAB    >BusTx990,Z
         BRA     L30BE4
 L30BD8:
         BRCLR   >CcdRxFlags,Z,#$6C,L30C30                ; bit 6: CCD transmit state bit (BusTxByte, BusTxStart, Irq2BusHandler); bit 5: CCD transmit state bit (BusTxStart, Irq2BusHandler); bit 3: CCD transmit buffer 2 in use (CcdTransmit); bit 2: CCD transmit buffer 3 in use (CcdTransmit)
@@ -1205,7 +1205,7 @@ L30C22:
         BITA    #$02
         BNE     L30C2C
         LDAA    #$04
-        STAA    $097C,Z
+        STAA    >BusTx97A,Z
 L30C2C:
         CLR     >CcdByteIndex,Z
 L30C30:
@@ -1260,7 +1260,7 @@ L30CAC:
         BNE     L30CB8
         BSET    >CcdBusFlags,Z,#$04                      ; bit 2: last byte of the message sent (Irq4BusHandler)
 L30CB8:
-        DEC     $097C,Z
+        DEC     >BusTx97A,Z
         BNE     L30CDA
 L30CBE:
         BCLR    >CcdBusFlags,Z,#$02                      ; bit 1: message transmission running (Irq4BusHandler)
@@ -1718,7 +1718,7 @@ L313A2:
         BRCLR   >BusModuleFlags,Z,#$80,L313C6            ; bit 7: transmission module message seen on the bus (CcdReceive, PciReceive)
         BSET    <EquipmentFlags,Z,#$20                   ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         LDAB    #$04
-        STAB    $59,Z
+        STAB    <Ac058,Z
 L313C6:
         BCLR    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         CLR     >BodyMsgTimeout,Z
@@ -1909,7 +1909,7 @@ L31586:
 L315A4:
         BSET    $0A0B,Z,#$02
         LDD     $02,Y
-        STD     $0A1E,Z
+        STD     >PciA19,Z
         BRCLR   >Options0330,#$01,L315B8                 ; bit 0: battery temperature model on (BattTempModelOn); PciReceive also reads it
         BSET    >BattTempBusFlags,Z,#$01
 L315B8:
@@ -1919,7 +1919,7 @@ L315B8:
 L315C2:
         BSET    $0A0B,Z,#$04
         LDAB    $02,Y
-        STAB    $0A10,Z
+        STAB    >PciA0C,Z
         CLR     >BusTimeout1,Z
         BRCLR   >BusConfigFlags,Z,#$40,L315EC            ; bit 6: SKIM / security exchange configured on the bus; read by the bus and SKIM code
         BSET    >SkimFlags,Z,#$04                        ; bit 2: SKIM present on the bus, probably
@@ -1979,7 +1979,7 @@ L31650:
         CLR     >SecurityTimer,Z
         BRA     L3168A
 L31670:
-        BRSET   $051C,Z,#$01,L3168A
+        BRSET   >Ccd51C,Z,#$01,L3168A
         LDD     <SriMileage,Z
         CPD     #$0003
         BCS     L3168A
@@ -2295,7 +2295,7 @@ L31906:
         EMUL
         ADCE    #$0000
         STE     $0004,Y
-        LDAB    $0A86,Z
+        LDAB    >ReadMapA82,Z
         STAB    $06,Y
         RTS
 L31936:
@@ -2310,7 +2310,7 @@ L31936:
         BRA     L31982
 L31952:
         LDD     >VssBusValue,Z
-        LDE     $0AB9,Z
+        LDE     >VssAB5,Z
         ROLE
         ROLD
         BCS     L31972
@@ -2353,10 +2353,10 @@ L31986:
         BRA     L319DC
 L319BC:
         CLRW    >FuelUsedAccum,Z
-        LDAA    $09CD,Z
+        LDAA    >PciBuild9CB,Z
         TAB
         ANDB    #$0F
-        STAB    $09CD,Z
+        STAB    >PciBuild9CB,Z
         ASLA
         ROLE
         ASLA
@@ -2395,7 +2395,7 @@ L31A16:
         MUL
         ADCA    #$00
         STAA    $03,Y
-        LDAA    $0A0F,Z
+        LDAA    >BusStatusA0B,Z
         STAA    $04,Y
         LDD     >IdleTarget,Z
         ASLD
@@ -2408,9 +2408,9 @@ L31A34:
         LDAA    #$03
         LDAB    #$35
         STD     $00,Y
-        LDAA    $0A15,Z
+        LDAA    >BusStatusA10,Z
         STAA    $02,Y
-        LDAA    $0A16,Z
+        LDAA    >BusStatusA11,Z
         STAA    $03,Y
         RTS
 L31A48:
@@ -2450,7 +2450,7 @@ L31A84:
         BRCLR   >FaultSet11,Z,#$10,L31A94
         ORAA    #$01
 L31A94:
-        LDAB    $0A14,Z
+        LDAB    >PciBuildA0F,Z
         STD     $02,Y
         RTS
 L31A9C:
@@ -2575,11 +2575,11 @@ L31BA0:
         LDAA    #$06
         LDAB    #$6E
         STD     $00,Y
-        LDE     $0964,Z
+        LDE     >PciBuild962,Z
         STE     $0002,Y
-        LDE     $0966,Z
+        LDE     >PciBuild964,Z
         STE     $0004,Y
-        LDAA    $0976,Z
+        LDAA    >PciBuild974,Z
         ANDA    #$0F
         STAA    $06,Y
         BRA     L31BE4
@@ -2587,11 +2587,11 @@ L31BC0:
         LDAA    #$06
         LDAB    #$6F
         STD     $00,Y
-        LDE     $0968,Z
+        LDE     >PciBuild966,Z
         STE     $0002,Y
-        LDE     $096A,Z
+        LDE     >PciBuild968,Z
         STE     $0004,Y
-        LDAA    $0976,Z
+        LDAA    >PciBuild974,Z
         LSRA
         LSRA
         LSRA
@@ -2688,10 +2688,10 @@ L31CB0:
         LDD     $06,X
         BEQ     L31C54
 L31CC2:
-        STD     $08FC,Z
+        STD     >PciBuild8FC,Z
         BRA     L31CD4
 L31CC8:
-        LDD     $08FC,Z
+        LDD     >PciBuild8FC,Z
         BRA     L31CD4
 L31CCE:
         BCLR    >ControlFlagsC39,Z,#$80                  ; bit 7: PCI link variant: set at reset from the bus configuration, cleared when the link check fails
@@ -2710,8 +2710,8 @@ L31CE8:
         LDAA    #$05
         LDAB    #$3F
         STD     $00,Y
-        LDE     $09F2,Z
-        LDD     $09F4,Z
+        LDE     >BusTx9F2,Z
+        LDD     >PciBuild9F4,Z
         BNE     L31D14
         LDE     >PWMCNT,Z
         BNE     L31D02
@@ -2721,8 +2721,8 @@ L31D02:
         BNE     L31D0C
         LDD     #$AA55
 L31D0C:
-        STE     $09F2,Z
-        STD     $09F4,Z
+        STE     >BusTx9F2,Z
+        STD     >PciBuild9F4,Z
 L31D14:
         STE     $0002,Y
         STD     $04,Y
@@ -2750,19 +2750,19 @@ L31D3C:
 L31D46:
         CLR     >SkimTimer,Z
         LDAA    #$02
-        LDAB    $08F4,Z
+        LDAB    >PciBuild8F4,Z
         TDE
-        LDAA    $08F5,Z
+        LDAA    >PciBuild8F5,Z
         CLRB
         BRA     L31D70
 L31D5A:
         SUBA    #$03
         STAA    >SkimTimer,Z
         LDAA    #$01
-        LDAB    $08F1,Z
+        LDAB    >PciBuild8F1,Z
         TDE
-        LDAA    $08F2,Z
-        LDAB    $08F3,Z
+        LDAA    >PciBuild8F2,Z
+        LDAB    >PciBuild8F3,Z
 L31D70:
         STE     $0003,Y
         STD     $05,Y
@@ -2777,7 +2777,7 @@ L31D78:
         BRCLR   >FaultSet11,Z,#$10,L31D8C
         ORAA    #$01
 L31D8C:
-        LDAB    $0A14,Z
+        LDAB    >PciBuildA0F,Z
         STD     $03,Y
         JSR     FanStatusByte
         CLRB
@@ -2802,7 +2802,7 @@ L31DB8:
         STD     $00,Y
         LDAB    #$10
         STAB    $02,Y
-        BRSET   $0A09,Z,#$01,L31E12
+        BRSET   >PciBuildA08,Z,#$01,L31E12
         LDD     >PciMsgWord,Z
         CMPB    #$28
         BEQ     L31DE2
@@ -2816,7 +2816,7 @@ L31DE2:
         TSTW    >EngineRpm,Z
         BNE     L31E06
         LDAA    #$96
-        STAA    $0A06,Z
+        STAA    >PciRpmA05,Z
         CLR     >PciFrameCount,Z
         BSET    >PciFlags3,Z,#$08                        ; bit 3: PCI rpm message timer running (PciRpmTimeout; set during the idle air reset loop)
         LDAA    #$68
@@ -2836,7 +2836,7 @@ L31E06:
         LDAB    #$28
         BRA     L31E20
 L31E12:
-        BCLR    $0A09,Z,#$01
+        BCLR    >PciBuildA08,Z,#$01
         LDAA    #$01
         LDAB    #$61
         TDE
@@ -2860,7 +2860,7 @@ L31E32:
         LDAA    #$04
         LDAB    #$16
         STD     $00,Y
-        LDAA    $0A13,Z
+        LDAA    >BusStatusA0E,Z
         BRCLR   >EventSparkFlags,Z,#$40,L31E48           ; bit 6: per-event spark state B, set with bit 2 (the opposite of bit 7); reported on the bus
         ORAA    #$01
         ANDA    #$FD
@@ -3009,15 +3009,15 @@ L31F98:
         LDAB    E,X
         LSRE
         STAB    E,Y
-        STAB    $03F6,Z
+        STAB    >PciRx3F6,Z
         ABA
         SUBE    #$0001
         BCC     L31F98
-        STAA    $03F7,Z
+        STAA    >PciRx3F7,Z
         CMPA    $16,X
         BEQ     L31FD2
         BSET    >PciFlags,Z,#$04
-        INC     $0F4E,Z
+        INC     >PciRxF4A,Z
         LDE     #$000A
         CLRB
 L31FC2:
@@ -3073,10 +3073,10 @@ L32024:
 QspiCheck:
         ORP     #$00E0
         LDE     >IoInputs0,Z
-        STE     $0F52,Z
+        STE     >QspiF4E,Z
         BRCLR   >PciFlags2,Z,#$03,L32072                 ; bit 1: QSPI link restart pending (PciFlagsInit, QspiCheck); bit 0: set with any PCI timeout; cleared by QspiCheck
-        INC     $0A05,Z
-        LDAA    $0A05,Z
+        INC     >QspiA04,Z
+        LDAA    >QspiA04,Z
         BRSET   >PciFlags2,Z,#$02,L3204E                 ; bit 1: QSPI link restart pending (PciFlagsInit, QspiCheck)
         CMPA    #$03
         BCS     L32082
@@ -3084,7 +3084,7 @@ QspiCheck:
 L3204E:
         BRSET   >IoStatus0B,Z,#$08,L3205A                ; bit 3: bus transmitter busy, probably (CCD/PCI transmit code waits on it)
         LDAB    #$10
-        STAB    $0A05,Z
+        STAB    >QspiA04,Z
 L3205A:
         CMPA    #$11
         BCS     L32082
@@ -3092,7 +3092,7 @@ L3205E:
         BCLR    >PciFlags2,Z,#$03                        ; bit 1: QSPI link restart pending (PciFlagsInit, QspiCheck); bit 0: set with any PCI timeout; cleared by QspiCheck
         LDAA    #$12
         STAA    >PciTimer97B,Z
-        CLR     $0A05,Z
+        CLR     >QspiA04,Z
         JSR     QspiStop
         BRA     L32082
 L32072:
@@ -3134,8 +3134,8 @@ L320B8:
         BNE     L320B8
         BSETW   >IoCtl12,Z,#$0200
         BSET    >PciFlags2,Z,#$06                        ; bit 2: PCI link down: set with each timeout and at init; the PCI code waits while it is set; bit 1: QSPI link restart pending (PciFlagsInit, QspiCheck)
-        BSET    $0A09,Z,#$01
-        CLR     $0A05,Z
+        BSET    >PciBuildA08,Z,#$01
+        CLR     >QspiA04,Z
         PULM    CCR,D
         RTS
 
@@ -3150,15 +3150,15 @@ PciRxFrame:
         CLRA
 L320DE:
         LDAB    E,X
-        STAB    $03F2,Z
+        STAB    >PciRx3F2,Z
         ABA
         SUBE    #$0002
         BCC     L320DE
-        STAA    $03F3,Z
+        STAA    >PciRx3F3,Z
         CMPA    $16,X
         BEQ     L320FE
         BSET    >PciFlags,Z,#$04
-        INC     $0F4E,Z
+        INC     >PciRxF4A,Z
         BRA     L32168
 L320FE:
         CMPB    #$87
@@ -3174,17 +3174,17 @@ L32108:
 L3211A:
         LDAA    $02,X
         LDAB    $04,X
-        STD     $0A1C,Z
+        STD     >PciRxA17,Z
         BRA     L32168
 L32124:
         CMPB    #$A1
         BNE     L3213C
         LDAA    $02,X
-        STAA    $0F4F,Z
+        STAA    >PciRxF4B,Z
         LDAA    $06,X
-        STAA    $0F50,Z
+        STAA    >PciRxF4C,Z
         LDAA    $08,X
-        STAA    $0F51,Z
+        STAA    >PciRxF4D,Z
         BRA     L32168
 L3213C:
         CMPB    #$89
@@ -3201,10 +3201,10 @@ L3214A:
 L32154:
         CMPA    #$16
         BNE     L32168
-        LDAA    $09FE,Z
+        LDAA    >BodyTimeout9FE,Z
         CMPA    #$03
         BCC     L32168
-        INC     $09FE,Z
+        INC     >BodyTimeout9FE,Z
         BSET    >BusTxRequest,Z,#$10                     ; bit 4: send the spark status message (set in Isr_GPT_IC4OC5)
 L32168:
         RTS
@@ -3214,8 +3214,8 @@ L32168:
 ; Called from: CcdReceive, PciReceive
 ;---------------------------------------------------------------------------------------------------
 SkimKeyCheck:
-        LDAB    $09F3,Z
-        LDE     $09F4,Z
+        LDAB    >SkimKey9F3,Z
+        LDE     >PciBuild9F4,Z
         STAB    >SkimCalcB,Z
         STE     >SkimCalcC,Z
         LDAA    >Vin17,Z
@@ -3254,7 +3254,7 @@ SkimKeyMix:
 ; Called from: DiagSeedSend
 ;---------------------------------------------------------------------------------------------------
 SkimSeedCalc:
-        LDD     $09F0,Z
+        LDD     >SkimSeed9F0,Z
         STAB    >SkimCalcC,Z
         STAB    >SkimCalcD,Z
         TAB
@@ -3273,7 +3273,7 @@ SkimSeedCalc:
         LDAB    >SkimCalcA,Z
         ADE
         STE     >SkimCalcA,Z
-        LDD     $09F0,Z
+        LDD     >SkimSeed9F0,Z
         RTS
         dc.b    $27,$4C,$05,$05,$05,$01,$01,$05,$05,$01,$01,$01,$01,$02,$05,$05
         dc.b    $01,$01
@@ -3304,10 +3304,10 @@ L32242:
         BHI     L32242
         CBA
         BNE     L322A0
-        LDD     $0A3A,Z
+        LDD     >PciObdA35,Z
         CPD     #$686A
         BNE     L322A0
-        LDAA    $0A3C,Z
+        LDAA    >ObdSciA37,Z
         CMPA    #$F0
         BCS     L322A0
         BSET    >PciFlags5,Z,#$20
@@ -3345,8 +3345,8 @@ L322A6:
 ObdPciRequest:
         CMPA    #$36
         BEQ     L322C2
-        STAB    $0A3D,Z
-        STE     $0A3E,Z
+        STAB    >ObdPciA38,Z
+        STE     >ObdA39,Z
         TSTB
         BEQ     L32318
         CMPB    #$0A
@@ -3382,11 +3382,11 @@ L322EE:
         CLRW    >SciObdCount,Z
 L32308:
         TAB
-        ADDB    $093A,Z
-        STAB    $093A,Z
+        ADDB    >ObdPci939,Z
+        STAB    >ObdPci939,Z
         BRA     L3231C
 L32314:
-        LDAA    $093A,Z
+        LDAA    >ObdPci939,Z
 L32318:
         BCLR    >PciFlags5,Z,#$40
 L3231C:
@@ -3429,11 +3429,11 @@ L32356:
         SUBE    #$0001
         BNE     L32356
         LDAA    #$68
-        STAA    $0A3A,Z
-        LDD     $0A3A,Z
+        STAA    >PciObdA35,Z
+        LDD     >PciObdA35,Z
         CPD     #$686A
         BNE     L3238C
-        LDAA    $0A3C,Z
+        LDAA    >ObdSciA37,Z
         CMPA    #$F0
         BCS     L3238C
         LDE     #$000A
@@ -3464,12 +3464,12 @@ L323AA:
 ObdRequest:
         CLRW    >SciObdState,Z
         CLRW    >ObdResponse,Z
-        CLRW    $0A30,Z
-        CLRW    $0A32,Z
+        CLRW    >ObdA2B,Z
+        CLRW    >ObdA2D,Z
         BRSET   >ObdFlags,Z,#$01,L3284A                  ; bit 0: OBD mode $43 reply in progress (OBD request code)
         BRSET   >ObdFlags,Z,#$02,L32A0C                  ; bit 1: OBD reply uses the EGR minimum instead of the maximum (OBD request code)
         BRSET   >ObdFlags,Z,#$04,L32BAE                  ; bit 2: OBD mode $47 reply in progress (OBD request code)
-        LDD     $0A3D,Z
+        LDD     >ObdPciA38,Z
         CMPA    #$01
         LBEQ    L3247E
         CMPA    #$02
@@ -3592,7 +3592,7 @@ L324F4:
         LDAA    >FuelSystemStatusPid,Z
         CLRB
         BRCLR   >ObdPidSupport1,#$01,L32504
-        LDAB    $0529,Z
+        LDAB    >FuelSystem529,Z
 L32504:
         LBRA    L32680
 L32508:
@@ -3742,7 +3742,7 @@ L32680:
         LDAA    #$07
         JMP     L32C60
 L3268A:
-        STD     $0A30,Z
+        STD     >ObdA2B,Z
         LDAA    #$09
         JMP     L32C60
 JumpTable_32694:
@@ -3777,7 +3777,7 @@ L326CC:
         LDAA    >ObdRequestId,Z
         CMPA    #$07
         LBNE    L32C56
-        TST     $0A3F,Z
+        TST     >ObdA3A,Z
         LBNE    L32C56
         TSTB
         BEQ     L326F2
@@ -3897,7 +3897,7 @@ L32806:
         ADCA    #$00
         BRA     L32822
 L32816:
-        STD     $0A31,Z
+        STD     >ObdA2C,Z
         LDAA    #$0A
         JMP     L32C60
 L32820:
@@ -4032,7 +4032,7 @@ L32A0C:
         LDAB    #$03
         TBXK
         LDAA    #$46
-        LDAB    $0A3E,Z
+        LDAB    >ObdA39,Z
         STD     >SciObdState,Z
         CMPB    #$21
         LBEQ    L32AC4
@@ -4054,7 +4054,7 @@ L32A0C:
         MUL
         LDX     #$2934
         ABX
-        LDAA    $0A3E,Z
+        LDAA    >ObdA39,Z
         CMPA    $00,X
         LBNE    L32C56
         TZY
@@ -4122,7 +4122,7 @@ L32AF4:
         LDAB    >ObdTid21LimitAlt
         LBRA    L32B74
 L32AFE:
-        BRCLR   $0168,Z,#$80,L32C56
+        BRCLR   >Obd168,Z,#$80,L32C56
         LDAA    #$00
         STAA    >ObdResponse,Z
         CLRA
@@ -4132,7 +4132,7 @@ L32AFE:
         BLS     L32B24
         CMPB    >ObdTid22LimitAlt
         BLS     L32B2E
-        BRCLR   $0168,Z,#$10,L32B2E
+        BRCLR   >Obd168,Z,#$10,L32B2E
 L32B24:
         CLRA
         LDAB    >ObdTid22Limit
@@ -4142,12 +4142,12 @@ L32B2E:
         LDAB    >ObdTid22LimitAlt
         LBRA    L32B74
 L32B38:
-        BRCLR   $016E,Z,#$80,L32C56
+        BRCLR   >EgrFlow16E,Z,#$80,L32C56
         BRSET   >ObdFlags,Z,#$02,L32B5E                  ; bit 1: OBD reply uses the EGR minimum instead of the maximum (OBD request code)
         LDAA    #$80
         STAA    >ObdResponse,Z
         CLRA
-        LDAB    $016F,Z
+        LDAB    >Obd16F,Z
         TDE
         LDAB    >EgrMonResultMin
         BSET    >ObdFlags,Z,#$02                         ; bit 1: OBD reply uses the EGR minimum instead of the maximum (OBD request code)
@@ -4156,20 +4156,20 @@ L32B5E:
         LDAA    #$00
         STAA    >ObdResponse,Z
         CLRA
-        LDAB    $016F,Z
+        LDAB    >Obd16F,Z
         TDE
         LDAB    >EgrMonResultMax
         BCLR    >ObdFlags,Z,#$02                         ; bit 1: OBD reply uses the EGR minimum instead of the maximum (OBD request code)
 L32B74:
         STE     >ObdRespByte2,Z
-        STD     $0A31,Z
+        STD     >ObdA2C,Z
         LDAA    #$0A
         JMP     L32C60
 L32B82:
         BRCLR   >PurgeResultFlags,Z,#$80,L32C56
         LDAA    #$80
         STAA    >ObdResponse,Z
-        LDE     $0177,Z
+        LDE     >PurgeFlow177,Z
         LDD     >PurgeFlowRpmRise
         BRCLR   >PurgeResultFlags,Z,#$01,L32BA0
         LDD     >PurgeFlowRpmRiseAlt
@@ -4438,7 +4438,7 @@ L3313E:
         CMPA    #$04
         BCS     L3315C
         CLRW    >SciObdIndex,Z
-        CLR     $0A2D,Z
+        CLR     >SciPitA28,Z
         INC     >SciTimer,Z
         LDAA    #$5C
         BRA     L33164
@@ -4461,8 +4461,8 @@ L3317C:
         LDAA    >SciObdState,Z
         CMPA    #$03
         BCS     L331F6
-        INC     $0A2D,Z
-        LDAA    $0A2D,Z
+        INC     >SciPitA28,Z
+        LDAA    >SciPitA28,Z
         CMPA    #$08
         BHI     L331B2
         LDAB    >SciObdIndex,Z
@@ -4803,7 +4803,7 @@ MonEnableCheck:
         LDD     <SriMileage,Z
         TSTA
         BNE     L33504
-        CMPB    $05FA,Z
+        CMPB    >MonEnable5FA,Z
         BCS     L3352C
 L33504:
         BCLR    >MonEnableFlags2,Z,#$80                  ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
@@ -4830,7 +4830,7 @@ L3353E:
 ; Called from: MonEnableCheck
 ;---------------------------------------------------------------------------------------------------
 MonDataReset:
-        LDAA    $064C,Z
+        LDAA    >MonData64C,Z
         STAA    >MonData644,Z
         LDAA    >MonFlags64D,Z
         STAA    >MonData645,Z
@@ -4838,10 +4838,10 @@ MonDataReset:
         STAA    >MonData646,Z
         LDAA    >MonData64F,Z
         STAA    >MonData647,Z
-        LDD     $063C,Z
-        STD     $0636,Z
-        LDAA    $0634,Z
-        STAA    $0635,Z
+        LDD     >MonData63C,Z
+        STD     >MisfireThreshold636,Z
+        LDAA    >MisfireThreshold634,Z
+        STAA    >MisfireThreshold635,Z
         BSET    >MonEnableFlags2,Z,#$10                  ; bit 4: monitor data reset done (MonDataReset)
         LDAA    >MonData646,Z
         ANDA    #$7F
@@ -4849,7 +4849,7 @@ MonDataReset:
         LDAA    >MonData647,Z
         ANDA    #$3F
         STAA    >MonData647,Z
-        CLR     $0648,Z
+        CLR     >MonData648,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -4860,7 +4860,7 @@ MonDataStore:
         BRCLR   >MonEnableFlags2,Z,#$10,L33610           ; bit 4: monitor data reset done (MonDataReset)
         LDE     #$00CC
         LDAA    >MonData644,Z
-        CMPA    $064C,Z
+        CMPA    >MonData64C,Z
         BNE     L335F8
         ADDE    #$01
         LDAA    >MonData645,Z
@@ -4886,12 +4886,12 @@ L335D2:
         CMPA    >MonData64F,Z
         BNE     L335F8
         ADDE    #$01
-        LDAA    $0648,Z
-        CMPA    $0650,Z
+        LDAA    >MonData648,Z
+        CMPA    >MonData650,Z
         BNE     L335F8
         LDE     #$0080
-        LDAA    $0635,Z
-        CMPA    $0634,Z
+        LDAA    >MisfireThreshold635,Z
+        CMPA    >MisfireThreshold634,Z
         BEQ     L33610
 L335F8:
         BSET    >MonEnableFlags2,Z,#$20                  ; bit 5: monitor data changed: to be written to the EEPROM (MonDataStore)
@@ -4925,7 +4925,7 @@ L33644:
         ANDA    #$0F
         CMPA    #$08
         BNE     L3365C
-        LDAA    $05F4,Z
+        LDAA    >MonData6435F4,Z
         CMPA    >MonData643,Z
         BCS     L33662
         INC     >MonData643,Z
@@ -4967,7 +4967,7 @@ L336B4:
         BRCLR   >FuelLevelFlags2,Z,#$01,L33716           ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
 L336C0:
         LDAA    >FuelSenderScaled,Z
-        CMPA    $0657,Z
+        CMPA    >MonTask657,Z
         BHI     L33716
         BRSET   >LdpFlags3,Z,#$40,L336D8                 ; bit 6: MonTaskB first pass done
         CLR     >MonData643,Z
@@ -4977,7 +4977,7 @@ L336D8:
         ANDA    #$1F
         CMPA    #$10
         BNE     L336F0
-        LDAA    $05F5,Z
+        LDAA    >MonTask5F5,Z
         CMPA    >MonData643,Z
         BCS     L33712
         INC     >MonData643,Z
@@ -5022,7 +5022,7 @@ MonTaskC:
         CLRB
         TBYK
         LDX     #$3720
-        BRSET   $064C,Z,#$0F,L337AE
+        BRSET   >MonData64C,Z,#$0F,L337AE
 L33790:
         LDAA    $05,X
         COMA
@@ -5042,7 +5042,7 @@ L337AE:
         BSETW   >IoCtl12,Z,#$4000
         BSET    >LdpFlags3,Z,#$04                        ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
 L337C0:
-        LDAA    $05F0,Z
+        LDAA    >MonTask5F0,Z
         CMPA    >MonData643,Z
         BCS     L33818
         INC     >MonData643,Z
@@ -5061,7 +5061,7 @@ L337DA:
         BEQ     L337FC
         LDE     $0000,X
         LDAA    E,Z
-        CMPA    $05F2,Z
+        CMPA    >MonTask5F2,Z
         BCS     L3380C
 L337FC:
         LDE     $000A,X
@@ -5081,7 +5081,7 @@ L33818:
         BSET    >LdpFlags3,Z,#$08                        ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
         BCLR    >LdpFlags3,Z,#$04                        ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
 L3382E:
-        LDAA    $05F1,Z
+        LDAA    >MonTask5F1,Z
         CMPA    >MonData643,Z
         BCS     L33892
         INC     >MonData643,Z
@@ -5105,7 +5105,7 @@ L33848:
         BCC     L3386E
         CLRA
 L3386E:
-        CMPA    $05F3,Z
+        CMPA    >MonTask5F3,Z
         BCS     L33888
         LDAA    $03,X
         COMA
@@ -5128,10 +5128,10 @@ L33896:
 L338A0:
         BCLR    >LdpFlags3,Z,#$04                        ; bit 2: MonTaskC phase 1 started (IoCtl12 bit 14 set)
         BCLR    >LdpFlags3,Z,#$08                        ; bit 3: MonTaskC phase 2: ASD relay held off (ControlFlags943 bit 4), probably part of a key-off test
-        CLR     $0652,Z
-        CLR     $0653,Z
-        CLR     $0654,Z
-        CLR     $0655,Z
+        CLR     >MonTask652,Z
+        CLR     >MonTask653,Z
+        CLR     >MonTask654,Z
+        CLR     >MonTask655,Z
         BRSET   >O2TestFlags,Z,#$10,L338C4               ; bit 4: O2 activity test running: heater/output switched (O2ActivityWarm)
         BCLRW   >IoCtl12,Z,#$4000
 L338C4:
@@ -5149,7 +5149,7 @@ MonTaskD:
         BRSET   >ThrottleState,Z,#$80,L339B4             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         TST     >VehicleSpeed,Z
         LBNE    L339B4
-        LDAA    $05F6,Z
+        LDAA    >Ldp5F6,Z
         CMPA    >Count3s,Z
         LBCC    L339B4
         BRSET   >LdpFlags3,Z,#$10,L33972                 ; bit 4: MonTaskD second phase started
@@ -5158,32 +5158,32 @@ MonTaskD:
         BSET    >LdpFlags3,Z,#$20                        ; bit 5: MonTaskD first phase started
 L3390C:
         LDAA    >EngineRpm,Z
-        SUBA    $05F7,Z
+        SUBA    >IdleRpm5F7,Z
         BHI     L33918
         NEGA
 L33918:
-        CMPA    $05F8,Z
+        CMPA    >MonTask5F8,Z
         BHI     L33950
         BCLR    >MonData646,Z,#$08
         BCLR    >MonData647,Z,#$08
         BRCLR   >Options032C,#$40,L33936                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         LDAB    >PowerDownCount,Z
-        CMPB    $05FD,Z
+        CMPB    >MonTask5FD,Z
         BCC     L3393A
 L33936:
         BCLR    >MonData647,Z,#$10
 L3393A:
         LDAB    >BatteryVolts2,Z
-        CMPB    $05FC,Z
+        CMPB    >MonTask5FC,Z
         BHI     L33966
-        CMPB    $05FB,Z
+        CMPB    >MonTask5FB,Z
         BCS     L33966
         BCLR    >MonData647,Z,#$01
         BRA     L33966
 L33950:
         TST     >MainLoopCounter,Z
         BNE     L339B8
-        LDAA    $05F9,Z
+        LDAA    >MonTask5F9,Z
         CMPA    >MonData643,Z
         BCS     L3399E
         INC     >MonData643,Z
@@ -5198,11 +5198,11 @@ L33972:
         BHI     L3397E
         NEGA
 L3397E:
-        CMPA    $05F8,Z
+        CMPA    >MonTask5F8,Z
         BCS     L3399A
         TST     >MainLoopCounter,Z
         BNE     L339B8
-        LDAA    $05F9,Z
+        LDAA    >MonTask5F9,Z
         CMPA    >MonData643,Z
         BCS     L3399E
         INC     >MonData643,Z
@@ -5248,7 +5248,7 @@ L339F0:
         BCLR    >MilRequestFlags,Z,#$01
         CLR     >DiagTimer527,Z
         BRSET   >MonFlags64D,Z,#$04,L33A10               ; bit 2: monitor data state bit read by MonData643Update, MonTaskC, MonTaskE
-        TST     $064C,Z
+        TST     >MonData64C,Z
         LBNE    L33A94
         LDAA    >MonFlags64D,Z
         ANDA    #$03
@@ -5289,10 +5289,10 @@ L33A6C:
         BNE     L33A94
         TST     <MonFlags09F,Z
         BNE     L33A94
-        TST     $A1,Z
+        TST     <MonTask0A0,Z
         BNE     L33A94
-        BRSET   $0651,Z,#$08,L33A8E
-        BRSET   $0651,Z,#$04,L33A94
+        BRSET   >MonTask651,Z,#$08,L33A8E
+        BRSET   >MonTask651,Z,#$04,L33A94
 L33A8E:
         BCLR    >MilRequestFlags,Z,#$02
         BRA     L33A98
@@ -5332,12 +5332,12 @@ L33AD4:
 ClosedLoopMonTimer:
         BRCLR   >MonEnableFlags2,Z,#$80,L33B04           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRCLR   >EngineStateFlags,Z,#$80,L33B04          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        LDAA    $0641,Z
+        LDAA    >ClosedLoop641,Z
         CMPA    >Count3s,Z
         BCC     L33B04
         BSET    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
-        LDAA    $0634,Z
-        CMPA    $0639,Z
+        LDAA    >MisfireThreshold634,Z
+        CMPA    >ClosedLoop639,Z
         BCS     L33B08
         BSET    >MonData645,Z,#$40
         BSET    >MisfireRecFlags3,Z,#$80
@@ -6226,16 +6226,16 @@ FuelTrimAdjustStore:
         LDAA    >SystemTestMode,Z
         CMPA    #$10
         BNE     L355C4
-        LDAB    $097A,Z
-        LDAA    $0974,Z
+        LDAB    >FuelTrim978,Z
+        LDAA    >FuelTrim972,Z
         COMA
         CBA
         BNE     L355C4
         LDAA    #$19
-        CMPA    $0978,Z
+        CMPA    >FuelTrim976,Z
         BNE     L355A8
         LDAA    #$87
-        CMPA    $0979,Z
+        CMPA    >FuelTrim977,Z
         BNE     L355AE
         STAB    >FuelTrimAdjustValue,Z
         BCLR    >ControlFlagsC33,Z,#$10                  ; bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
@@ -6297,8 +6297,8 @@ L35610:
 L35614:
         CLR     >SystemTestMode,Z
         CLR     >SystemTestValue,Z
-        CLRW    $0784,Z
-        CLRW    $0786,Z
+        CLRW    >System784,Z
+        CLRW    >System786,Z
         LDAA    #$FF
         STAA    >InjectorKillCyl1,Z
         STAA    >InjectorKillCyl2,Z
@@ -6932,10 +6932,10 @@ L35C72:
         BRA     L35C64
 L35C7E:
         CLR     <LimitCauseFlags,Z
-        CLR     $85,Z
+        CLR     <CamCrank084,Z
         BRA     L35C64
 L35C84:
-        CLR     $0179,Z
+        CLR     >CalcEngine179,Z
         CLR     >RunTime,Z
         BRA     L35C64
 L35C8E:
@@ -7116,11 +7116,11 @@ L35E2E:
         STAA    >EepromData,Z
         CPE     #$00EF
         BNE     L35E70
-        STAA    $0F46,Z
+        STAA    >FlexF42,Z
 L35E70:
         CPE     #$00FC
         BNE     L35E7A
-        STAA    $0F4C,Z
+        STAA    >FlexF48,Z
 L35E7A:
         LDAA    #$E2
         ANDP    #$FF1F
@@ -7956,7 +7956,7 @@ L36676:
         CLR     >DiagCommand,Z
         BRCLR   >DiagRamFlags,Z,#$01,L36688              ; bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
         CLRD
-        CLRW    $09B9,Z
+        CLRW    >DiagRam9B7,Z
         BRA     L366A0
 L36688:
         LDD     >TCNT,Z
@@ -7968,28 +7968,28 @@ L36692:
         ASLE
         ADDE    #$9018
 L3669C:
-        STE     $09B9,Z
+        STE     >DiagRam9B7,Z
 L366A0:
-        STD     $09BB,Z
+        STD     >DiagRam9B9,Z
         BSET    >DiagRamFlags,Z,#$0E                     ; bit 3: reply byte 1 pending (DiagRamSession1); bit 2: reply byte 2 pending (DiagRamSession1); bit 1: reply word pending (DiagRamSession1)
         BRA     L366F0
 L366AA:
         BITB    #$08
         BEQ     L366BC
         BCLR    >DiagRamFlags,Z,#$08                     ; bit 3: reply byte 1 pending (DiagRamSession1)
-        LDAA    $09BB,Z
+        LDAA    >DiagRam9B9,Z
         JSR     SciSendByte
         BRA     L366F0
 L366BC:
         BITB    #$04
         BEQ     L366CE
         BCLR    >DiagRamFlags,Z,#$04                     ; bit 2: reply byte 2 pending (DiagRamSession1)
-        LDAA    $09BC,Z
+        LDAA    >DiagRam9BA,Z
         JSR     SciSendByte
         BRA     L366F0
 L366CE:
         BCLR    >DiagRamFlags,Z,#$02                     ; bit 1: reply word pending (DiagRamSession1)
-        LDD     $09BB,Z
+        LDD     >DiagRam9B9,Z
         ABA
         BRCLR   >DiagRamFlags,Z,#$C0,L366EA              ; bit 7: RAM session of type 1 open (DiagRamSession1, parameter 1); bit 6: RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)
         ADDA    #$36
@@ -8009,11 +8009,11 @@ L366F0:
 ;---------------------------------------------------------------------------------------------------
 DiagRamSession2:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L36706         ; bit 2: one pass in 8 (about 96 ms)
-        LDAA    $09B8,Z
+        LDAA    >DiagRam9B6,Z
         DECA
         CMPA    #$FF
         BEQ     L36706
-        STAA    $09B8,Z
+        STAA    >DiagRam9B6,Z
 L36706:
         LDAA    >DiagCommand,Z
         CMPA    #$2C
@@ -8028,7 +8028,7 @@ L36706:
 L36726:
         BRSET   >DiagRamFlags,Z,#$10,L36786              ; bit 4: key accepted for session 2 (DiagRamSession2)
 L3672C:
-        TST     $09B8,Z
+        TST     >DiagRam9B6,Z
         BNE     L36742
         LDAA    >DiagParam2,Z
         ADDA    >DiagParam3,Z
@@ -8039,7 +8039,7 @@ L36742:
         LDAA    #$02
         BRA     L36786
 L36746:
-        LDAB    $09B7,Z
+        LDAB    >DiagRam9B5,Z
         CMPB    #$02
         BLS     L36752
         LDAA    #$03
@@ -8047,7 +8047,7 @@ L36746:
 L36752:
         LDAA    >DiagParam3,Z
         LDAB    >DiagParam2,Z
-        CPD     $09B9,Z
+        CPD     >DiagRam9B7,Z
         BNE     L36774
         BRSET   >DiagRamFlags,Z,#$40,L3676C              ; bit 6: RAM session of type 2 open: seed sent (DiagRamSession1, DiagSeedSend)
         BSET    >DiagRamFlags,Z,#$21                     ; bit 5: key accepted for session 1 (DiagRamSession2); bit 0: diagnostic RAM access unlocked (DiagRamAddrAllowed, DiagWriteRamByte)
@@ -8058,12 +8058,12 @@ L36770:
         CLRA
         BRA     L36786
 L36774:
-        INC     $09B7,Z
+        INC     >DiagRam9B5,Z
         BNE     L3677E
-        DEC     $09B7,Z
+        DEC     >DiagRam9B5,Z
 L3677E:
         LDAB    #$64
-        STAB    $09B8,Z
+        STAB    >DiagRam9B6,Z
         LDAA    #$01
 L36786:
         CLR     >DiagCommand,Z
@@ -8086,7 +8086,7 @@ L367A0:
         BNE     L367AA
         LDD     #$A55A
 L367AA:
-        STD     $09F0,Z
+        STD     >SkimSeed9F0,Z
         JSR     SkimSeedCalc
 L367B2:
         RTS
@@ -8108,7 +8108,7 @@ DiagPciCommand:
         ADDA    >DiagParam1,Z
         ADDA    >DiagParam2,Z
         ADDA    >DiagParam3,Z
-        STAA    $093A,Z
+        STAA    >ObdPci939,Z
         LDAA    >DiagParam2,Z
         LDAB    >DiagParam1,Z
         TDE
@@ -8741,7 +8741,7 @@ Sub_38068:
         LBEQ    L38212
         STE     >OutputStatusWord,Z
         EORE    >OutputStatusPrev,Z
-        STE     $0942,Z
+        STE     >AsdRelay940,Z
         LDD     >SwitchBits0,Z
         STD     >OutputStatusPrev,Z
         TSTE
@@ -8891,7 +8891,7 @@ L38252:
         STAA    >SwitchBits0,Z
         XGEX
         JSR     CollectBits
-        STAA    $093D,Z
+        STAA    >SwitchBits93B,Z
         PULM    CCR,X,E
         RTS
         dc.b    $4D,$4B,$4B,$4B,$BE,$AE,$AE,$AE,$AE,$AE,$AE,$AE,$AE,$AE,$AE,$AE
@@ -8943,12 +8943,12 @@ L382B8:
 QspiRecover:
         ORP     #$00E0
         BRCLR   >SystemFlags945,Z,#$40,L382F0            ; bit 6: QSPI command RAM reloaded for an output driver status read, probably (QspiOutputStatus)
-        INC     $0A19,Z
-        LDAA    $0A19,Z
+        INC     >QspiRecoverA14,Z
+        LDAA    >QspiRecoverA14,Z
         CMPA    #$03
         BCS     L382F4
         LDAB    >SPSR,Z
-        STAB    $0A1B,Z
+        STAB    >QspiRecoverA16,Z
         CMPA    #$06
         BCS     L382F4
         BCLR    >SystemFlags945,Z,#$C2                   ; bit 7: QSPI transfer running (set by QspiSendFrame, cleared by QspiService); bit 6: QSPI command RAM reloaded for an output driver status read, probably (QspiOutputStatus); bit 1: QSPI frame sent, end not seen yet (QspiSendFrame, QspiCheck)
@@ -8959,7 +8959,7 @@ QspiRecover:
 L382EC:
         JSR     QspiCommandInit
 L382F0:
-        CLR     $0A19,Z
+        CLR     >QspiRecoverA14,Z
 L382F4:
         ANDP    #$FF1F
         RTS
@@ -9151,7 +9151,7 @@ L3860E:
         LDAB    #$03
         TBXK
         LDX     #$8450
-        LDAB    $094D,Z
+        LDAB    >EepromWrite94B,Z
         BRSET   >EepromFlags,Z,#$02,L38648               ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
         LDAA    >BusMsg91Byte1,Z
         BRCLR   >EepromFlags,Z,#$08,L38636               ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
@@ -9175,7 +9175,7 @@ L3864C:
         BCS     L38654
         CLRB
 L38654:
-        STAB    $094D,Z
+        STAB    >EepromWrite94B,Z
         CLRA
         ASLD
         ASLD
@@ -9195,7 +9195,7 @@ L38670:
 ;---------------------------------------------------------------------------------------------------
 EepromReadInit:
         LDAB    #$FF
-        STAB    $094D,Z
+        STAB    >EepromWrite94B,Z
         LDAB    #$03
         TBXK
         LDX     #$8450
@@ -9237,7 +9237,7 @@ EepromReadStartup:
         LDD     >RR2,Z
         LDE     >RR3,Z
         STD     >RpmForBus,Z
-        STE     $0AD6,Z
+        STE     >EepromReadAD2,Z
         LDAA    #$03
         LDAB    #$04
         STD     >TR1,Z
@@ -9246,8 +9246,8 @@ EepromReadStartup:
         BEQ     L3870A
         LDD     >RR2,Z
         LDE     >RR3,Z
-        STD     $0AD8,Z
-        STE     $0ADA,Z
+        STD     >EepromReadAD4,Z
+        STE     >EepromReadAD6,Z
         BRA     L3870E
 L3870A:
         JSR     QspiCommandInit
@@ -9281,11 +9281,11 @@ EepromSkimRead:
         TSTA
         BEQ     L3879A
         LDD     >RR2,Z
-        STAA    $08F1,Z
-        STAB    $08F2,Z
+        STAA    >PciBuild8F1,Z
+        STAB    >PciBuild8F2,Z
         LDD     >RR3,Z
-        STAA    $08F3,Z
-        STAB    $08F4,Z
+        STAA    >PciBuild8F3,Z
+        STAB    >PciBuild8F4,Z
         LDAA    #$4B
         STAA    >CR2,Z
         LDD     #$0201
@@ -9297,7 +9297,7 @@ EepromSkimRead:
         TSTA
         BEQ     L3879A
         LDD     >RR2,Z
-        STAA    $08F5,Z
+        STAA    >PciBuild8F5,Z
         BSET    >SkimTimer,Z,#$80
         BRA     L3879E
 L3879A:
@@ -9363,7 +9363,7 @@ EepromWriteService:
         BRCLR   >EepromFlags,Z,#$10,L3882A               ; bit 4: second byte of a word write in progress (EepromWriteService)
         BCLR    >EepromFlags,Z,#$10                      ; bit 4: second byte of a word write in progress (EepromWriteService)
         INCW    >EepromAddr,Z
-        LDAA    $094B,Z
+        LDAA    >EepromWrite949,Z
         STAA    >EepromData,Z
 L3882A:
         PSHM    CCR
@@ -9390,8 +9390,8 @@ L3882A:
         LDAB    >EepromData,Z
         STD     >TR2,Z
         BRCLR   >EepromFlags,Z,#$40,L388A0               ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
-        BRSET   $0949,Z,#$03,L38898
-        LDAB    $094B,Z
+        BRSET   >EepromWrite947,Z,#$03,L38898
+        LDAB    >EepromWrite949,Z
         STD     >TR3,Z
         LDAA    #$0B
         STAA    >CR3,Z
@@ -9436,7 +9436,7 @@ L388E4:
         BRSET   >EepromFlags,Z,#$10,L38932               ; bit 4: second byte of a word write in progress (EepromWriteService)
         BRCLR   >EepromFlags,Z,#$40,L3892E               ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         BCLR    >EepromFlags,Z,#$40                      ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
-        CMPB    $094B,Z
+        CMPB    >EepromWrite949,Z
         BEQ     L3892E
 L38910:
         BRSET   >EepromFlags,Z,#$01,L3891C               ; bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
@@ -9465,7 +9465,7 @@ L38940:
         BRA     L3895A
 L38950:
         DECB
-        STAB    $094D,Z
+        STAB    >EepromWrite94B,Z
         BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
 L3895A:
         BCLR    >EepromFlags,Z,#$A1                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 5: write in progress (EepromWriteService); bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
@@ -9779,12 +9779,12 @@ L39172:
 OutputTestEeprom:
         BRCLR   >OutputTestFlags,Z,#$40,L391D8           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRSET   >ControlFlags943,Z,#$01,L39198           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
-        LDD     $0C25,Z
+        LDD     >OutputTestC25,Z
         ADDD    #$01
         BEQ     L39194
         CPD     #$1276
         BCC     L39194
-        INCW    $0C25,Z
+        INCW    >OutputTestC25,Z
         BRA     L39198
 L39194:
         BSET    >OutputTestFlags,Z,#$20                  ; bit 5: EEPROM test write pending (OutputTestEeprom)
@@ -9794,7 +9794,7 @@ L39198:
         BRSET   >OutputTestFlags,Z,#$80,L391D8           ; bit 7: EEPROM self-test started this drive (OutputTestEeprom)
         ORP     #$00E0
         BSET    >OutputTestFlags,Z,#$80                  ; bit 7: EEPROM self-test started this drive (OutputTestEeprom)
-        LDAB    $094F,Z
+        LDAB    >OutputTest94D,Z
         INCB
         BEQ     L391D0
         CMPB    #$07
@@ -9814,7 +9814,7 @@ L391D8:
         BRCLR   >OutputTestFlags,Z,#$04,L3922C           ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         BRSET   >OutputTestFlags,Z,#$10,L3922C           ; bit 4: EEPROM test cell cleared (OutputTestEeprom)
         BRCLR   >OutputTestFlags,Z,#$02,L39212           ; bit 1: EEPROM test pattern written (OutputTestEeprom)
-        CLRW    $0C25,Z
+        CLRW    >OutputTestC25,Z
         LDD     #$0009
         STD     >EepromAddr,Z
         CLR     >EepromData,Z
@@ -9831,7 +9831,7 @@ L39212:
         BSET    >OutputTestFlags,Z,#$02                  ; bit 1: EEPROM test pattern written (OutputTestEeprom)
         BRA     L39240
 L3922C:
-        LDD     $0C27,Z
+        LDD     >OutputTestC27,Z
         CPD     #$4AB5
         BNE     L3923C
         BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
@@ -10646,7 +10646,7 @@ L39BC6:
         BRCLR   >EgrFlags,Z,#$21,L39BD0                  ; bit 5: EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1); bit 0: EGR conditions not met (EgrEnable, EgrControl)
         CLRA
 L39BD0:
-        STAA    $0B37,Z
+        STAA    >EgrB3B,Z
         LDAB    >EgrExhaustPressRef
         SUBB    >Map,Z
         BCS     L39BFC
@@ -10691,13 +10691,13 @@ L39C32:
         BRCLR   >EgrFlags2,Z,#$02,L39C44                 ; bit 1: EGR duty above the position-based limit (EgrControl)
         LDX     >EgrFlowFilterRise
 L39C44:
-        INC     $0B49,Z
-        LDAB    $0B49,Z
+        INC     >EgrB4D,Z
+        LDAB    >EgrB4D,Z
         LDAA    >EgrFlowUpdatePeriod
         BEQ     L39C5A
         CBA
         BNE     L39CA6
-        CLR     $0B49,Z
+        CLR     >EgrB4D,Z
 L39C5A:
         PSHM    X
         LDAA    >ManifoldVacuum,Z
@@ -10710,17 +10710,17 @@ L39C5A:
         FDIV
         XGDX
         TAB
-        STAB    $0B4A,Z
+        STAB    >EgrB4E,Z
         COMB
         LDAA    >EgrFlowEstimate,Z
         MUL
         ADCA    #$00
         STAA    <Scratch4,Z
-        LDAA    $0B37,Z
+        LDAA    >EgrB3B,Z
         LDAB    >EgrPressureFactor,Z
         MUL
         ADCA    #$00
-        LDAB    $0B4A,Z
+        LDAB    >EgrB4E,Z
         MUL
         ADCA    #$00
         ADDA    <Scratch4,Z
@@ -10734,17 +10734,17 @@ L39CA6:
         CLRA
 L39CB2:
         COMA
-        STAA    $0B36,Z
+        STAA    >PartThrottleB3A,Z
         BRCLR   >ThrottleState,Z,#$40,L39CC2             ; bit 6: wide-open throttle (DetectWot)
         CLRA
         BRA     L39CE0
 L39CC2:
         CLRB
-        LDAA    $0B37,Z
+        LDAA    >EgrB3B,Z
         BEQ     L39CE0
         XGDX
         LDAA    >EgrFlowEstimate,Z
-        CMPA    $0B37,Z
+        CMPA    >EgrB3B,Z
         BCC     L39CDE
         CLRB
         FDIV
@@ -10782,11 +10782,11 @@ L39D30:
         BCC     L39D3A
         CLRA
 L39D3A:
-        STAA    $0B39,Z
+        STAA    >EgrB3D,Z
         CLRA
         LDAB    >EgrTargetPos,Z
         TDE
-        LDAB    $0B39,Z
+        LDAB    >EgrB3D,Z
         SDE
         STE     >EgrPosError,Z
         TED
@@ -10803,7 +10803,7 @@ L39D60:
         LDAB    >EgrPidP
         JSR     MulSignedSat
 L39D6E:
-        STD     $0B40,Z
+        STD     >EgrB44,Z
         LDD     >EgrPosError,Z
         BEQ     L39DAC
         BPL     L39D7C
@@ -10838,15 +10838,15 @@ L39DB4:
         BRA     L39DD2
 L39DBE:
         LDD     >EgrPosError,Z
-        SUBD    $0B3E,Z
+        SUBD    >EgrB42,Z
         TDE
         CLRA
         LDAB    >EgrPidD
         JSR     MulSignedSat
 L39DD2:
-        STD     $0B44,Z
+        STD     >EgrB48,Z
         LDD     >EgrPosError,Z
-        STD     $0B3E,Z
+        STD     >EgrB42,Z
         LDAA    >EgrTargetPos,Z
         LDX     #EgrFeedForward
         JSR     Lookup2D
@@ -10857,7 +10857,7 @@ L39DD2:
         ASLD
         ASLD
         ASLD
-        ADDD    $0B40,Z
+        ADDD    >EgrB44,Z
         BVC     L39E0A
         BPL     L39E06
         LDD     #$7FFF
@@ -10873,7 +10873,7 @@ L39E0A:
 L39E18:
         LDD     #$8000
 L39E1C:
-        ADDD    $0B44,Z
+        ADDD    >EgrB48,Z
         BVC     L39E2A
         BPL     L39E40
         LDD     #$00FF
@@ -10912,13 +10912,13 @@ L39E64:
 L39E6C:
         CLRD
         STD     >EgrPosError,Z
-        STD     $0B3E,Z
+        STD     >EgrB42,Z
         STD     >EgrPidIntegral,Z
-        STD     $0B40,Z
-        STD     $0B44,Z
+        STD     >EgrB44,Z
+        STD     >EgrB48,Z
         STAB    >EgrDuty,Z
         STAB    >EgrTargetPos,Z
-        STAB    $0B39,Z
+        STAB    >EgrB3D,Z
         STAB    >PWMA,Z
         BCLRW   >CFORC,Z,#$0202
 L39E98:
@@ -11149,7 +11149,7 @@ L3A0D0:
 L3A0E2:
         LDAB    #$03
         TBXK
-        STAA    $0B03,Z
+        STAA    >FanB03,Z
         CLRB
         TBYK
         LDAA    >CoolantTemp,Z
@@ -11234,7 +11234,7 @@ L3A1DE:
         BRA     L3A21A
 L3A1E8:
         BRSET   >FanFlags,Z,#$04,L3A1C0                  ; bit 2: vehicle speed below FanWarmupSpeedMax (FanWarmupState)
-        CLR     $0B03,Z
+        CLR     >FanB03,Z
         LDAB    >ActuatorTest,Z
         CMPB    #$2E
         BEQ     L3A21A
@@ -11765,20 +11765,20 @@ L3A7EE:
 FanPwmPeriodSelect:
         LDD     #$0001
         STD     >FanPwmPeriodCount,Z
-        STD     $0B18,Z
-        STD     $0B25,Z
-        CLR     $0B1D,Z
-        CLR     $0B1E,Z
-        CLR     $0B29,Z
-        CLRW    $0B1F,Z
-        CLRW    $0B21,Z
-        CLRW    $0B2A,Z
+        STD     >FanPwmB1C,Z
+        STD     >FanPwmB29,Z
+        CLR     >FanPwmB21,Z
+        CLR     >FanPwmB22,Z
+        CLR     >FanPwmB2D,Z
+        CLRW    >FanPwmB23,Z
+        CLRW    >FanPwmB25,Z
+        CLRW    >FanPwmB2E,Z
         LDAA    >CoolantTemp,Z
-        STAA    $0B14,Z
+        STAA    >FanPwmB18,Z
         LDAA    >AcSensorFiltered,Z
-        STAA    $0B1A,Z
+        STAA    >FanPwmB1E,Z
         LDAA    >BusTemp,Z
-        STAA    $0B27,Z
+        STAA    >FanPwmB2B,Z
         CLRB
         STAB    >FanPwmCount,Z
         RTS
@@ -11797,18 +11797,18 @@ FanPwmCoolantPid:
         LBNE    L3A9A8
         LDD     >FanPwmPeriod
         STD     >FanPwmPeriodCount,Z
-        LDAB    $0B1D,Z
+        LDAB    >FanPwmB21,Z
         INCB
         BNE     L3A868
         LDAB    #$FF
 L3A868:
-        STAB    $0B1D,Z
+        STAB    >FanPwmB21,Z
         CLRA
         XGDX
         CLRA
         LDAB    >CoolantTemp,Z
         TDE
-        LDAB    $0B14,Z
+        LDAB    >FanPwmB18,Z
         SDE
         LBEQ    L3A95C
         BPL     L3A88A
@@ -11835,9 +11835,9 @@ L3A8A6:
 L3A8AC:
         LDE     #$7FFF
 L3A8B0:
-        STE     $0B1F,Z
+        STE     >FanPwmB23,Z
         CLRA
-        STAA    $0B1D,Z
+        STAA    >FanPwmB21,Z
         LDAB    >FanPwmD
         EMULS
         TSTE
@@ -11911,7 +11911,7 @@ L3A958:
 L3A95C:
         LDAB    >FanPwmStepCoolantValue,Z
         LDAA    >CoolantTemp,Z
-        STAA    $0B14,Z
+        STAA    >FanPwmB18,Z
         TBA
         ADDA    #$80
         LDX     #FanPwmStepCoolant
@@ -11921,7 +11921,7 @@ L3A95C:
         ASRD
         ASRD
         TDE
-        LDD     $0B10,Z
+        LDD     >FanPwmB14,Z
         TSTE
         BLE     L3A992
         CMPA    >FanPwmMinDuty
@@ -11938,7 +11938,7 @@ L3A99A:
         BLS     L3A9A4
         LDE     #$6400
 L3A9A4:
-        STE     $0B10,Z
+        STE     >FanPwmB14,Z
 L3A9A8:
         RTS
 
@@ -11957,22 +11957,22 @@ FanPwmControl:
         LBCC    L3AB5E
         BRCLR   >Options0331,#$80,L3AAEE                 ; bit 7: A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan
         LDE     >FanPwmWork,Z
-        DECW    $0B18,Z
+        DECW    >FanPwmB1C,Z
         LBNE    L3AB62
         LDD     >FanPwmPeriodAc
-        STD     $0B18,Z
-        LDAB    $0B1E,Z
+        STD     >FanPwmB1C,Z
+        LDAB    >FanPwmB22,Z
         INCB
         BNE     L3A9F2
         LDAB    #$FF
 L3A9F2:
-        STAB    $0B1E,Z
+        STAB    >FanPwmB22,Z
         CLRA
         XGDX
         CLRA
         LDAB    >AcSensorFiltered,Z
         TDE
-        LDAB    $0B1A,Z
+        LDAB    >FanPwmB1E,Z
         SDE
         LBEQ    L3AAD4
         BPL     L3AA14
@@ -11999,9 +11999,9 @@ L3AA30:
 L3AA36:
         LDE     #$7FFF
 L3AA3A:
-        STE     $0B21,Z
+        STE     >FanPwmB25,Z
         CLRA
-        STAA    $0B1E,Z
+        STAA    >FanPwmB22,Z
         LDAB    >FanPwmAcP
         EMULS
         TSTE
@@ -12066,7 +12066,7 @@ L3AAD0:
 L3AAD4:
         LDAB    >FanPwmStepAcValue,Z
         LDAA    >AcSensorFiltered,Z
-        STAA    $0B1A,Z
+        STAA    >FanPwmB1E,Z
         TBA
         ADDA    #$80
         LDX     #FanPwmStepAc
@@ -12133,23 +12133,23 @@ FanPwmBusPid:
         LDAA    >BusTemp,Z
         CMPA    >FanPwmBusMax
         LBGE    L3ACCE
-        LDE     $0B23,Z
-        DECW    $0B25,Z
+        LDE     >FanPwmB27,Z
+        DECW    >FanPwmB29,Z
         LBNE    L3ACD2
         LDD     >FanPwmPeriodBus
-        STD     $0B25,Z
-        LDAB    $0B29,Z
+        STD     >FanPwmB29,Z
+        LDAB    >FanPwmB2D,Z
         INCB
         BNE     L3ABA0
         LDAB    #$FF
 L3ABA0:
-        STAB    $0B29,Z
+        STAB    >FanPwmB2D,Z
         CLRA
         XGDX
         LDAB    >BusTemp,Z
         SXT
         TDE
-        LDAB    $0B27,Z
+        LDAB    >FanPwmB2B,Z
         SXT
         SDE
         LBEQ    L3AC86
@@ -12177,9 +12177,9 @@ L3ABE0:
 L3ABE6:
         LDE     #$7FFF
 L3ABEA:
-        STE     $0B2A,Z
+        STE     >FanPwmB2E,Z
         CLRA
-        STAA    $0B29,Z
+        STAA    >FanPwmB2D,Z
         LDAB    >FanPwmBusP
         EMULS
         TSTE
@@ -12245,7 +12245,7 @@ L3AC82:
 L3AC86:
         LDAB    >FanPwmStepBusValue,Z
         LDAA    >BusTemp,Z
-        STAA    $0B27,Z
+        STAA    >FanPwmB2B,Z
         TBA
         ADDA    #$80
         LDX     #FanPwmStepBusTemp
@@ -12255,7 +12255,7 @@ L3AC86:
         ASRD
         ASRD
         TDE
-        LDD     $0B23,Z
+        LDD     >FanPwmB27,Z
         TSTE
         BLE     L3ACBC
         CMPA    >FanPwmMinDuty
@@ -12272,7 +12272,7 @@ L3ACC4:
         BLS     L3ACCE
         LDE     #$6400
 L3ACCE:
-        STE     $0B23,Z
+        STE     >FanPwmB27,Z
 L3ACD2:
         RTS
 
@@ -12281,10 +12281,10 @@ L3ACD2:
 ; Called from: FanPwmMain
 ;---------------------------------------------------------------------------------------------------
 FanWarmupDutyCalc:
-        LDE     $0B23,Z
-        CPE     $0B10,Z
+        LDE     >FanPwmB27,Z
+        CPE     >FanPwmB14,Z
         BHI     L3ACE2
-        LDE     $0B10,Z
+        LDE     >FanPwmB14,Z
 L3ACE2:
         CPE     >FanPwmWork,Z
         BHI     L3ACEC
@@ -12401,11 +12401,11 @@ L3ADBE:
         BRSET   >IacAcFlags,Z,#$02,L3ADD6                ; bit 1: rpm filter from the bus value (RpmIdleFilter, BusFlags9CE bit 6)
         CLRA
         BRCLR   >BusFlags9CE,Z,#$C0,L3ADD6
-        LDAA    $0D50,Z
+        LDAA    >RpmIdleD58,Z
         BEQ     L3ADD6
         DECA
 L3ADD6:
-        STAA    $0D50,Z
+        STAA    >RpmIdleD58,Z
         BNE     L3AE30
         BRCLR   >IdleFlags,Z,#$80,L3AE24                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         BRCLR   >MainLoopPhaseMask,Z,#$02,L3AE30         ; bit 1: one pass in 4 (about 48 ms)
@@ -12436,7 +12436,7 @@ L3AE02:
 L3AE24:
         LDD     >EngineRpm,Z
 L3AE28:
-        STAA    $0D51,Z
+        STAA    >CcdTransmitD59,Z
         STD     >RpmFilteredIdle,Z
 L3AE30:
         RTS
@@ -12460,7 +12460,7 @@ L3AE4A:
         BEQ     L3AE72
         EORA    #$50
         BNE     L3AE72
-        BRCLR   $09D3,Z,#$01,L3AE72
+        BRCLR   >StarterCut9D1,Z,#$01,L3AE72
         CLR     >StarterCutTimer,Z
         BRA     L3AE98
 L3AE72:
@@ -12485,10 +12485,10 @@ L3AE9C:
         ANDA    >BusMsgBEFlags,Z
         EORA    #$10
         BNE     L3AEAC
-        BSET    $09D3,Z,#$01
+        BSET    >StarterCut9D1,Z,#$01
         BRA     L3AEB0
 L3AEAC:
-        BCLR    $09D3,Z,#$01
+        BCLR    >StarterCut9D1,Z,#$01
 L3AEB0:
         RTS
 
@@ -12601,13 +12601,13 @@ PwmC18PeriodCalc:
         EDIV
         XGDX
         ADCD    #$0000
-        STD     $0C1A,Z
+        STD     >PwmC18C1A,Z
         STD     >IoPwmC18A,Z
         SUBD    >PwmC18Period,Z
         NEGD
-        STD     $0C1E,Z
+        STD     >PwmC18C1E,Z
         STD     >IoPwmC18B,Z
-        BSET    $06C0,Z,#$01
+        BSET    >PwmC186C0,Z,#$01
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -12621,8 +12621,8 @@ PwmC18Off:
         STAA    >PwmC18Duty,Z
         CLRW    >IoPwmC18A,Z
         CLRW    >IoPwmC18B,Z
-        CLRW    $0C1E,Z
-        CLRW    $0C1A,Z
+        CLRW    >PwmC18C1E,Z
+        CLRW    >PwmC18C1A,Z
         BSET    >PwmC18Flags,Z,#$10
         RTS
 
@@ -12636,8 +12636,8 @@ PwmC18DutySet:
         CLR     >PwmC18Duty,Z
         CLRW    >IoPwmC18A,Z
         CLRW    >IoPwmC18B,Z
-        CLRW    $0C1E,Z
-        CLRW    $0C1A,Z
+        CLRW    >PwmC18C1E,Z
+        CLRW    >PwmC18C1A,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -12873,7 +12873,7 @@ L3B8F0:
         STAB    >SpeedCtlResumeSpeed,Z
         STAB    >SpeedCtlTimer,Z
         STAB    >SpeedCtlErrorPeak,Z
-        STAB    $0417,Z
+        STAB    >SpeedCtl410,Z
         BCLR    >SpeedCtlState,Z,#$1F                    ; bit 4: coast hold, probably (after SpeedCtlCoastHoldTime); bit 0: set or resume engaged, probably
         BCLR    >SpeedCtlState2,Z,#$0F                   ; bit 3: speed control accelerate hold reached (SpeedCtlAccelHoldTime); bit 2: speed control servo step state (SpeedCtlControl); bit 1: speed control servo step state (SpeedCtlControl); bit 0: vacuum at or above SpeedCtlVacuumMin (SpeedCtlControl)
         BCLR    >SpeedCtlFlags,Z,#$04                    ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
@@ -13271,7 +13271,7 @@ L3BD74:
         BRSET   >SpeedCtlState,Z,#$08,L3BD8E
         LDAB    #$0B
 L3BD8E:
-        STAB    $040B,Z
+        STAB    >SpeedCtl404,Z
         BRSET   >SpeedCtlState,Z,#$80,L3BDF0             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         LDAA    >MainLoopCounter,Z
         ANDA    >SpeedCtlOverrideLoopMask
@@ -13282,11 +13282,11 @@ L3BD8E:
         BCS     L3BDF0
         JSR     SpeedCtlServoTime
         LDAA    >ThrottleAboveClosed,Z
-        SUBA    $0428,Z
+        SUBA    >SpeedCtl421,Z
         BCC     L3BDC0
         CLRA
 L3BDC0:
-        SUBA    $0429,Z
+        SUBA    >SpeedCtl422,Z
         BLS     L3BDE0
         CMPA    >SpeedCtlOverrideMargin
         BLS     L3BDE0
@@ -13309,7 +13309,7 @@ L3BDF8:
         CLR     >SpeedCtlVentTime,Z
         CLR     >SpeedCtlApplyTime,Z
         LDAA    >ThrottleAboveClosed,Z
-        STAA    $0428,Z
+        STAA    >SpeedCtl421,Z
 L3BE08:
         LBSR    SpeedCtlLampState
         LBSR    SpeedCtlShift
@@ -13419,18 +13419,18 @@ L3BF1A:
         LDD     $00,Y
         SUBD    >VehicleSpeedRaw,Z
         BNE     L3BF26
-        CLR     $0415,Z
+        CLR     >SpeedCtl40E,Z
 L3BF26:
         STD     $00,Y
         CLRA
-        LDAB    $0415,Z
+        LDAB    >SpeedCtl40E,Z
         BPL     L3BF32
         DECA
 L3BF32:
         ADDD    $00,Y
         ASRD
         JSR     ClampSigned8
-        STAB    $0415,Z
+        STAB    >SpeedCtl40E,Z
         BRSET   >SpeedCtlState,Z,#$80,L3C170             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         BRCLR   >SpeedCtlFlags,Z,#$10,L3BF62             ; bit 4: switch command accepted (SpeedCtlShift)
         LDAA    >SpeedCtlOverrideTimer,Z
@@ -13541,7 +13541,7 @@ L3C048:
         STAA    $03,Y
         CLRA
         STAA    $02,Y
-        LDAB    $0415,Z
+        LDAB    >SpeedCtl40E,Z
         BPL     L3C056
         DECA
 L3C056:
@@ -13574,7 +13574,7 @@ L3C088:
         LBLS    L3C170
 L3C094:
         CLRA
-        LDAB    $0417,Z
+        LDAB    >SpeedCtl410,Z
         BPL     L3C09E
         DECA
 L3C09E:
@@ -13589,11 +13589,11 @@ L3C0A6:
         BPL     L3C0B0
         NEGB
 L3C0B0:
-        STAB    $0417,Z
+        STAB    >SpeedCtl410,Z
         LBRA    L3C170
 L3C0B8:
         CLRA
-        STAA    $0417,Z
+        STAA    >SpeedCtl410,Z
         LDAA    $04,Y
         ANDA    #$80
         LDAB    >SpeedCtlServoCmd,Z
@@ -14123,7 +14123,7 @@ SpeedCtlSwitchCheck:
         BRCLR   >IoCtl13,Z,#$80,L3C65A
         BRCLR   >IoCtl12,Z,#$01,L3C65A
 L3C5F4:
-        LDD     $0942,Z
+        LDD     >AsdRelay940,Z
         ANDA    #$40
         ANDB    #$02
         STD     <Scratch0,Z
@@ -14194,7 +14194,7 @@ L3C66E:
 L3C688:
         CLRA
 L3C68A:
-        STAA    $0429,Z
+        STAA    >SpeedCtl422,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -14230,7 +14230,7 @@ SpeedCtlLampState:
         BRCLR   >EquipmentFlags,Z,#$40,L3C756            ; bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
         BRSET   >BusTxRequest,Z,#$02,L3C756              ; bit 1: speed control switch state changed: send it (speed control switch code)
         PSHM    D
-        LDAA    $040E,Z
+        LDAA    >SpeedCtl407,Z
         CLRB
         BRSET   >EngineStateFlags,Z,#$80,L3C6F2          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         PSHB
@@ -14271,7 +14271,7 @@ L3C744:
         BEQ     L3C750
         BSET    >BusTxRequest,Z,#$02                     ; bit 1: speed control switch state changed: send it (speed control switch code)
 L3C750:
-        STAB    $040E,Z
+        STAB    >SpeedCtl407,Z
         PULM    D
 L3C756:
         RTS
@@ -14591,7 +14591,7 @@ L3D85C:
 ;---------------------------------------------------------------------------------------------------
 PurgeRampControl:
         BRCLR   >Options0338,#$80,L3D870                 ; bit 7: purge variant (PurgeRampControl, PurgeVaporLearn)
-        LDD     $044E,Z
+        LDD     >PurgeVapor448,Z
         CPD     #$FFFF
         LBNE    L3DA36
 L3D870:
@@ -15235,7 +15235,7 @@ PurgeCellRefCheck:
         ABX
         LDAA    <PurgeCellTrim1,Z
         LBSR    PurgeCellDiff
-        STAA    $0445,Z
+        STAA    >PurgeCell43F,Z
         BNE     L3DF42
         BSET    >PurgeFlags2,Z,#$08                      ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
 L3DF42:
@@ -15254,7 +15254,7 @@ L3DF42:
         BCC     L3DF66
         TBA
 L3DF66:
-        STAA    $0447,Z
+        STAA    >PurgeCell441,Z
         BNE     L3DF70
         BSET    >PurgeFlags2,Z,#$02                      ; bit 1: purge cell 2 reference reached, bank 1
 L3DF70:
@@ -15263,7 +15263,7 @@ L3DF70:
         ABX
         LDAA    <PurgeCellTrim1B2,Z
         BSR     PurgeCellDiff
-        STAA    $0446,Z
+        STAA    >PurgeCell440,Z
         BNE     L3DF88
         BSET    >PurgeFlags2,Z,#$04                      ; bit 2: purge cell 1 reference reached, bank 2
 L3DF88:
@@ -15282,7 +15282,7 @@ L3DF88:
         BCC     L3DFAC
         TBA
 L3DFAC:
-        STAA    $0448,Z
+        STAA    >PurgeCell442,Z
         BNE     L3DFB6
         BSET    >PurgeFlags2,Z,#$01                      ; bit 0: purge cell 2 reference reached, bank 2
 L3DFB6:
@@ -15416,7 +15416,7 @@ L3E08A:
 L3E098:
         LDAA    >PurgeMonitorValueInit
         STAA    >PurgeMonitorValue,Z
-        CLR     $0482,Z
+        CLR     >PurgeFlow47C,Z
 L3E0A4:
         CLRB
         LDAA    >PurgeMonCommand
@@ -15451,21 +15451,21 @@ L3E0E8:
         BHI     L3E10A
         TED
 L3E10A:
-        LDAA    $0469,Z
-        STAA    $046D,Z
-        STAB    $0469,Z
-        LDAA    $046C,Z
-        STAA    $046E,Z
+        LDAA    >PurgeFlow463,Z
+        STAA    >PurgeFlow467,Z
+        STAB    >PurgeFlow463,Z
+        LDAA    >PurgeFlow466,Z
+        STAA    >PurgeFlow468,Z
         CLRA
         TDE
-        LDAB    $046D,Z
+        LDAB    >PurgeFlow467,Z
         SDE
         TED
         BPL     L3E12E
         NEGD
 L3E12E:
-        STAB    $046C,Z
-        ADDB    $046E,Z
+        STAB    >PurgeFlow466,Z
+        ADDB    >PurgeFlow468,Z
         BCC     L3E13A
         LDAB    #$FF
 L3E13A:
@@ -15485,7 +15485,7 @@ L3E15C:
         BCC     L3E16C
         CLRA
 L3E16C:
-        STAA    $0482,Z
+        STAA    >PurgeFlow47C,Z
         PULM    X,E
 L3E172:
         PSHM    E
@@ -15513,12 +15513,12 @@ L3E194:
 L3E1A6:
         STAA    >PurgeCtlFlags,Z
 L3E1AA:
-        TST     $046C,Z
+        TST     >PurgeFlow466,Z
         BNE     L3E1F2
         CLRA
         LDAB    >PurgeFlowMeasured,Z
         TDE
-        LDAB    $0469,Z
+        LDAB    >PurgeFlow463,Z
         SDE
         BPL     L3E1C2
         NEGE
@@ -15539,7 +15539,7 @@ L3E1E4:
         BCLR    >PurgeCtlFlags,Z,#$02                    ; bit 1: purge target change pending (PurgeFlowControl)
 L3E1F2:
         JSR     PurgeMonStep
-        LDAB    $0469,Z
+        LDAB    >PurgeFlow463,Z
         BRCLR   >PurgeCtlFlags,Z,#$04,L3E22A             ; bit 2: purge soft step running (PurgeFlowControl, PurgeSoftStepCount)
         TST     >PurgeSoftStepCount,Z
         BNE     L3E210
@@ -15559,7 +15559,7 @@ L3E21C:
 L3E22A:
         STAB    >PurgeFlowTarget,Z
         BRCLR   >PurgeFlags,Z,#$80,L3E258                ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
-        CLRW    $0462,Z
+        CLRW    >PurgeFlow45C,Z
         CLRW    >PurgeFlowError,Z
         CLRW    >PurgeFlowErrorSum,Z
         CLRW    >PurgeFlowErrorDiff,Z
@@ -15597,11 +15597,11 @@ L3E2A8:
 L3E2AC:
         STE     >PurgeFlowErrorSum,Z
         LDE     >PurgeFlowError,Z
-        LDD     $0462,Z
+        LDD     >PurgeFlow45C,Z
         SDE
         STE     >PurgeFlowErrorDiff,Z
         LDD     >PurgeFlowError,Z
-        STD     $0462,Z
+        STD     >PurgeFlow45C,Z
         AIS     #$F4
         TSX
         LDD     >PurgeFlowError,Z
@@ -15676,37 +15676,37 @@ L3E36A:
         BCS     L3E3DE
         CLR     >PurgeCellUpdateCounter,Z
         BRSET   >PurgeFlags2,Z,#$08,L3E396               ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
-        LDAA    $0445,Z
+        LDAA    >PurgeCell43F,Z
         BEQ     L3E392
         DECA
-        STAA    $0445,Z
+        STAA    >PurgeCell43F,Z
         BNE     L3E396
 L3E392:
         BSET    >PurgeFlags2,Z,#$08                      ; bit 3: purge cell 1 reference reached, bank 1 (PurgeCellRefCheck, PurgeCellUpdateGate)
 L3E396:
         BRSET   >PurgeFlags2,Z,#$04,L3E3AE               ; bit 2: purge cell 1 reference reached, bank 2
-        LDAA    $0446,Z
+        LDAA    >PurgeCell440,Z
         BEQ     L3E3AA
         DECA
-        STAA    $0446,Z
+        STAA    >PurgeCell440,Z
         BNE     L3E3AE
 L3E3AA:
         BSET    >PurgeFlags2,Z,#$04                      ; bit 2: purge cell 1 reference reached, bank 2
 L3E3AE:
         BRSET   >PurgeFlags2,Z,#$02,L3E3C6               ; bit 1: purge cell 2 reference reached, bank 1
-        LDAA    $0447,Z
+        LDAA    >PurgeCell441,Z
         BEQ     L3E3C2
         DECA
-        STAA    $0447,Z
+        STAA    >PurgeCell441,Z
         BNE     L3E3C6
 L3E3C2:
         BSET    >PurgeFlags2,Z,#$02                      ; bit 1: purge cell 2 reference reached, bank 1
 L3E3C6:
         BRSET   >PurgeFlags2,Z,#$01,L3E3DE               ; bit 0: purge cell 2 reference reached, bank 2
-        LDAA    $0448,Z
+        LDAA    >PurgeCell442,Z
         BEQ     L3E3DA
         DECA
-        STAA    $0448,Z
+        STAA    >PurgeCell442,Z
         BNE     L3E3DE
 L3E3DA:
         BSET    >PurgeFlags2,Z,#$01                      ; bit 0: purge cell 2 reference reached, bank 2
@@ -15816,7 +15816,7 @@ L3E4BC:
 ; Called from: PurgeMain
 ;---------------------------------------------------------------------------------------------------
 PurgeRampCalc:
-        LDD     $0438,Z
+        LDD     >CalcFuel432,Z
         LSRD
         LSRD
         LSRD
@@ -15919,19 +15919,19 @@ L3E58C:
         LDAA    >PurgeLearnRateInit
         STAA    >PurgeLearnRate,Z
 L3E61A:
-        LDD     $044E,Z
+        LDD     >PurgeVapor448,Z
         CPD     >PurgeLearnTimeMax
         LBCC    L3E976
-        INCW    $044E,Z
+        INCW    >PurgeVapor448,Z
         LDAA    >PurgeLearnRate,Z
         CMPA    >PurgeLearnRateMax
         BCC     L3E65A
-        LDAB    $044C,Z
+        LDAB    >PurgeVapor446,Z
         INCB
-        STAB    $044C,Z
+        STAB    >PurgeVapor446,Z
         CMPB    >PurgeLearnRateTime
         BNE     L3E65A
-        CLR     $044C,Z
+        CLR     >PurgeVapor446,Z
         ADDA    >PurgeLearnRateStep
         BCC     L3E650
         LDAA    #$FF
@@ -16041,8 +16041,8 @@ L3E75A:
 L3E75E:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L3E774         ; bit 0: one pass in 2 (about 24 ms)
         LDD     >PurgeLearnTimeClosed
-        INCW    $0450,Z
-        CPD     $0450,Z
+        INCW    >PurgeVapor44A,Z
+        CPD     >PurgeVapor44A,Z
         LBLS    L3E976
 L3E774:
         BRSET   >ThrottleState,Z,#$80,L3E790             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -16233,7 +16233,7 @@ L3E976:
         BSET    >PurgeLearnFlags,Z,#$02                  ; bit 1: purge vapour learning ended (PurgeVaporLearn)
         BCLR    >PurgeLearnFlags,Z,#$DD                  ; bit 7: purge vapour learning running (PurgeVaporLearn); bit 6: purge vapour learning step state; O2LearnEnable reads it; bit 4: purge vapour settle time reached (PurgeVaporSettleTime); bit 3: purge vapour learning step state (PurgeVaporLearn); bit 2: trim at or below the learning limit (PurgeVaporLearn); bit 0: bank 1 learning rate step (PurgeVaporLearn)
         LDD     #$FFFF
-        STD     $044E,Z
+        STD     >PurgeVapor448,Z
         CLR     >PurgeVaporEstimate,Z
         CLR     >PurgeVaporEstimate2,Z
         CLR     >PurgeVaporPart,Z
@@ -16368,16 +16368,16 @@ PurgeFuelCalc:
 PurgeFlowMeasure:
         PSHM    D,E
         CLRB
-        LDAA    $0476,Z
+        LDAA    >ReadAnalog470,Z
         TDE
         CLRA
-        LDAB    $0475,Z
+        LDAB    >PurgeFlow46F,Z
         BMI     L3EB16
         LDAA    #$01
 L3EB16:
         EMUL
         ADCE    #$0000
-        LDAB    $0474,Z
+        LDAB    >PurgeFlow46E,Z
         SXT
         ADE
         LDAB    #$00
@@ -16641,7 +16641,7 @@ PurgeMonStep:
         BRCLR   >PurgeMonFlags,Z,#$80,L3EE18             ; bit 7: purge flow monitor armed (PurgeMonitorArm)
         BRCLR   >PurgeMonFlags,Z,#$40,L3EE00             ; bit 6: set with bit 7 when the monitor arms
         LDAA    >PurgeMonTimer,Z
-        CMPA    $0482,Z
+        CMPA    >PurgeFlow47C,Z
         BCS     L3EE00
         CLR     >PurgeMonTimer,Z
         BCLR    >PurgeMonFlags,Z,#$40                    ; bit 6: set with bit 7 when the monitor arms
@@ -16665,17 +16665,17 @@ L3EE30:
         BRSET   >PurgeMonFlags,Z,#$20,L3EE5A             ; bit 5: purge monitor step state (PurgeMonStep)
         BRCLR   >PurgeMonFlags,Z,#$40,L3EE5A             ; bit 6: set with bit 7 when the monitor arms
         LDAA    >PurgePwmDuty,Z
-        STAA    $0484,Z
+        STAA    >PurgeMon47E,Z
         CLR     >PurgePwmDuty,Z
         CLR     >PurgeDuty,Z
         CLRW    >PurgeFlowError,Z
-        CLRW    $0462,Z
+        CLRW    >PurgeFlow45C,Z
         BSET    >PurgeMonFlags,Z,#$10                    ; bit 4: purge monitor step state (PurgeMonStep, PurgeMonitorArm)
         BRA     L3EE6E
 L3EE5A:
         BRCLR   >PurgeMonFlags,Z,#$20,L3EE6E             ; bit 5: purge monitor step state (PurgeMonStep)
         BRSET   >PurgeMonFlags,Z,#$40,L3EE6E             ; bit 6: set with bit 7 when the monitor arms
-        LDAA    $0484,Z
+        LDAA    >PurgeMon47E,Z
         STAA    >PurgePwmDuty,Z
 L3EE6E:
         RTS
@@ -16924,7 +16924,7 @@ L3F8AC:
         BCS     L3F8D6
         ASLA
         BCS     L3F8CC
-        STAB    $0C5C,Z
+        STAB    >SciSecurityC5C,Z
         LDAA    #$10
         JMP     L3F9D0
 L3F8CC:
@@ -17001,7 +17001,7 @@ L3F96C:
         LDAA    $00,X
         STAA    >SCDR_L,Z
         INCW    >SciSecurityPtr,Z
-        DECW    $0C59,Z
+        DECW    >SciSecurityC59,Z
         BNE     L3F98E
         CLR     >SciSecurityState,Z
         BCLR    >DiagFlags,Z,#$40                        ; bit 6: SCI security exchange passed (SciSecurityReceive, code $1B)
@@ -17020,15 +17020,15 @@ L3F998:
         BCS     L3F9B8
         ASLA
         BCS     L3F9B0
-        STAB    $0C5A,Z
+        STAB    >SciSecurityC5A,Z
         LDAA    #$08
         BRA     L3F9D0
 L3F9B0:
-        STAB    $0C59,Z
+        STAB    >SciSecurityC59,Z
         LDAA    #$10
         BRA     L3F9D0
 L3F9B8:
-        STAB    $0C5C,Z
+        STAB    >SciSecurityC5C,Z
         LDAA    #$20
         BRA     L3F9D0
 L3F9C0:
