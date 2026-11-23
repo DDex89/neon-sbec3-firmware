@@ -6567,7 +6567,7 @@ BitCollectMaps:
         dc.b    $00,$00,$00,$04                          ; unused
         dc.b    $00,$00,$00,$02                          ; unused
         dc.b    $00,$00,$00,$01                          ; unused
-; map 4 ($41CE): used by CcdTx54BaroAir
+; map 4 ($41CE): used by CcdA4StatusBytes
         dc.b    $01,$3C,$80,$80                          ; out bit 7 <- FaultSet09 & $80 (bit 7)
         dc.b    $01,$39,$06,$40                          ; out bit 6 <- FaultSet06 & $06 (bit 2; bit 1)
         dc.b    $01,$3E,$30,$20                          ; out bit 5 <- FaultSet0B & $30 (bit 5; bit 4)
@@ -6583,9 +6583,9 @@ BitCollectMaps:
         dc.b    $00,$00,$00,$10                          ; unused
         dc.b    $00,$00,$00,$08                          ; unused
         dc.b    $00,$00,$00,$04                          ; unused
-        dc.b    $04,$8C,$01,$02                          ; out bit 1 <- $048C,Z & $01 (bit 0)
+        dc.b    $04,$8C,$01,$02                          ; out bit 1 <- SecurityStatus & $01 (bit 0)
         dc.b    $04,$59,$01,$01                          ; out bit 0 <- SecurityFlags & $01 (security status to be sent (CcdReceive, SecurityStatusCalc))
-; map 6 ($420E): used by CcdTx54BaroAir
+; map 6 ($420E): used by CcdA4StatusBytes
         dc.b    $00,$00,$00,$80                          ; unused
         dc.b    $03,$05,$20,$40                          ; out bit 6 <- DriveFlags & $20 (transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear))
         dc.b    $01,$10,$10,$20                          ; out bit 5 <- ControlFlagsC39 & $10 (transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it)
@@ -6594,7 +6594,7 @@ BitCollectMaps:
         dc.b    $03,$03,$01,$04                          ; out bit 2 <- SwitchInputs & $01 (brake switch (BrakeSwitchMonitor, idle, speed damping, purge test))
         dc.b    $00,$00,$00,$02                          ; unused
         dc.b    $00,$00,$00,$01                          ; unused
-; map 7 ($422E): used by CcdTx54BaroAir
+; map 7 ($422E): used by CcdA4StatusBytes
         dc.b    $00,$00,$00,$80                          ; unused
         dc.b    $00,$00,$00,$40                          ; unused
         dc.b    $00,$00,$00,$20                          ; unused
@@ -6612,7 +6612,7 @@ BitCollectMaps:
         dc.b    $00,$B0,$02,$04                          ; out bit 2 <- MonStatusPurge & $02 (read by ObdReadiness and PurgeFlowTest)
         dc.b    $00,$00,$00,$02                          ; unused
         dc.b    $00,$AB,$02,$01                          ; out bit 0 <- MonStatusCatBank1 & $02 (bit 1)
-; map 9 ($426E): used by DiagCommandMain
+; map 9 ($426E): used by DiagStatusBits
         dc.b    $02,$45,$01,$80                          ; out bit 7 <- MisfireFlags4 & $01 (bit 0)
         dc.b    $03,$C9,$08,$40                          ; out bit 6 <- PurgeLearnFlags & $08 (purge vapour learning step state (PurgeVaporLearn))
         dc.b    $00,$35,$08,$20                          ; out bit 5 <- VacLeakFlags & $08 (VSS pulse calculation hit a zero step (VssPulseCalc))
@@ -6870,7 +6870,7 @@ L0492C:
         RTI
 L04930:
         JSR     AdcStartF0
-        JSR     Sub_0EBCC
+        JSR     RefPeriodUpdate
         JSR     FuelEventCalc
         JSR     CamCrankMeasure
 L04940:
@@ -7211,7 +7211,7 @@ L04CE8:
         EORA    $04,Y
         STAA    >TFLG1,Z
 L04D00:
-        JSR     Sub_13B24
+        JSR     ActuatorTestCancel
 L04D04:
         BRCLR   >ADCSTAT,Z,#$80,L04D04                   ; bit 7: SCF: ADC sequence complete flag
         LDAB    >RJURR4_L,Z
@@ -8508,7 +8508,7 @@ L05DD6:
         BITB    #$80
         BEQ     L05DFC
 L05DEA:
-        JSR     Sub_0F70A
+        JSR     PurgeDutyOutput
         BSETW   >IoTimer08,Z,#$00C0
         LDD     >IoIrqStatus,Z
         BITB    #$08
@@ -8619,7 +8619,7 @@ L05F00:
         BCLR    >Ic4Flags,Z,#$10
         BCLR    >EventSparkFlags2,Z,#$01                 ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
         BSET    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
-        JSR     Sub_14E72
+        JSR     CcdTxA4Queue
         BCLR    >EventSparkFlags2,Z,#$40                 ; bit 6: input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus
         LBRA    L05FA0
 L05F18:
@@ -8660,7 +8660,7 @@ L05F74:
         LDD     $01,X
         STAA    >EventCorrections85C,Z
         STAB    >EventCorrections85B,Z
-        JSR     Sub_14E72
+        JSR     CcdTxA4Queue
         BRA     L05FA0
 L05F84:
         BRCLR   >EventSparkFlags2,Z,#$01,L05F8E          ; bit 0: input capture 4 edge pending (Isr_GPT_IC4OC5)
@@ -8769,10 +8769,10 @@ CalcDeadTime:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_06436 ($06436)
+; FuelCutControl ($06436)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_06436:
+FuelCutControl:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L06470         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         BRSET   >ThrottleState,Z,#$80,L06464             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >EngineRpm,Z
@@ -9160,38 +9160,38 @@ L068BC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_068BE ($068BE)
+; WotModeDelay ($068BE)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_068BE:
+WotModeDelay:
         BRSET   >SensorFaultFlags,Z,#$10,L06916          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
         BRCLR   >ThrottleState,Z,#$40,L06904             ; bit 6: wide-open throttle (DetectWot)
         LDAA    >VehicleSpeed,Z
         CMPA    $0F41
         BCS     L068F6
         BSET    >FuelModeFlags,Z,#$40                    ; bit 6: first fuel event calculation done (FuelEventCalc)
-        LDAA    $05ED,Z
+        LDAA    >WotDelayTimer,Z
         CMPA    $0F43
         BCC     L068EE
         BRCLR   >MainLoopPhaseMask,Z,#$10,L068EE         ; bit 4: one pass in 32 (about 383 ms)
         INCA
-        STAA    $05ED,Z
+        STAA    >WotDelayTimer,Z
 L068EE:
         CMPA    $0F42
         BCS     L0691E
         BRA     L068FE
 L068F6:
         LDAA    $0F42
-        STAA    $05ED,Z
+        STAA    >WotDelayTimer,Z
 L068FE:
         BSET    >FuelModeFlags,Z,#$20                    ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BRA     L0691E
 L06904:
-        LDAA    $05ED,Z
+        LDAA    >WotDelayTimer,Z
         BEQ     L06916
         BRCLR   >MainLoopPhaseMask,Z,#$10,L06916         ; bit 4: one pass in 32 (about 383 ms)
         DECA
-        STAA    $05ED,Z
+        STAA    >WotDelayTimer,Z
 L06916:
         BCLR    >FuelModeFlags,Z,#$40                    ; bit 6: first fuel event calculation done (FuelEventCalc)
         BCLR    >FuelModeFlags,Z,#$20                    ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
@@ -9798,10 +9798,13 @@ L06EFA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_06EFC ($06EFC)
+; FlexFactorCalc ($06EFC)
 ; Called from: Reset
+;
+; Flex fuel factors: with Options032C bit 0 every 8th pass from ethanol content and coolant (3D
+; tables), otherwise the neutral values. 05007038 has only the neutral part (FlexFactorDefaults).
 ;---------------------------------------------------------------------------------------------------
-Sub_06EFC:
+FlexFactorCalc:
         BRSET   >Options032C,#$01,L06F28
         LDD     #$0040
         STAA    $056B,Z
@@ -10176,7 +10179,7 @@ L0733C:
 
 ;---------------------------------------------------------------------------------------------------
 ; ScaleByFraction ($07342)
-; Called from: Sub_06EFC, FinishFuelPulse, CalcFuelPulse, IdleTargetControl (21 calls)
+; Called from: FlexFactorCalc, FinishFuelPulse, CalcFuelPulse, IdleTargetControl (21 calls)
 ;---------------------------------------------------------------------------------------------------
 ScaleByFraction:
         CLRB
@@ -10382,10 +10385,10 @@ L0754A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_07550 ($07550)
+; PurgeCellTrimFilter ($07550)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_07550:
+PurgeCellTrimFilter:
         LDAA    >O2MemCell,Z
         CMPA    >PurgeCell1
         BNE     L07592
@@ -10393,24 +10396,24 @@ Sub_07550:
         LDAB    $2472
         LDAA    >ShortTermTrim1,Z
         SUBA    $019E,Z
-        BSR     Sub_07594
+        BSR     SignedScaleStep
         ADDA    $019E,Z
         STAA    $019E,Z
         BRCLR   >Options0331,#$40,L07592                 ; bit 6: A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)
         LDAB    $2472
         LDAA    >ShortTermTrim2,Z
         SUBA    $019F,Z
-        BSR     Sub_07594
+        BSR     SignedScaleStep
         ADDA    $019F,Z
         STAA    $019F,Z
 L07592:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_07594 ($07594)
-; Called from: Sub_07550 (2 calls)
+; SignedScaleStep ($07594)
+; Called from: PurgeCellTrimFilter (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_07594:
+SignedScaleStep:
         BVC     L0759A
         BMI     L0759C
         BRA     L075A2
@@ -14570,7 +14573,7 @@ L0A170:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearLeanBank1 ($0A17A)
-; Called from: ClosedLoopManager, Sub_1AD22, Sub_1AF40
+; Called from: ClosedLoopManager, O2ActivityWarm, O2HighVoltMonitor
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank1:
         PSHM    X,K
@@ -14591,7 +14594,7 @@ L0A18C:
 
 ;---------------------------------------------------------------------------------------------------
 ; O2MemClearLeanBank2 ($0A19C)
-; Called from: ClosedLoopManager, Sub_1AD22, Sub_1AF40
+; Called from: ClosedLoopManager, O2ActivityWarm, O2HighVoltMonitor
 ;---------------------------------------------------------------------------------------------------
 O2MemClearLeanBank2:
         PSHM    X,K
@@ -18231,7 +18234,7 @@ L0CA42:
         CLRA
 L0CA8E:
         STAA    <FlexEthanol,Z
-        JSR     Sub_14110
+        JSR     QspiStartupConfig
         LDD     >RpmForBus,Z
         STD     <SriMileage,Z
         LDAA    >ThrottleClosedDefault
@@ -18672,7 +18675,7 @@ L0CF8A:
         BCLR    <FlexStartFlags,Z,#$10                   ; bit 4: flex adaptive cell raised (FlexCellCheck); O2CellUpdate reads it
         BRA     L0CFBC
 L0CFB8:
-        JSR     Sub_0EC10
+        JSR     PurgeCellRefCheck
 L0CFBC:
         BCLR    <FlexStartFlags,Z,#$20                   ; bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
         LDAA    #$36
@@ -18713,7 +18716,7 @@ L0D00C:
         ORAA    #$10
         ANDA    #$F7
         STAA    >ControlFlagsC39,Z
-        JSR     Sub_1BCFA
+        JSR     EmptyHook1BCFA
         JSR     EepromReadInit
         BRCLR   >Options0337,#$20,L0D08C                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
         LDAA    >FuelTrim976,Z
@@ -18749,16 +18752,16 @@ L0D0A2:
         JSR     KickWatchdogsLong
         BRA     L0D0A2
 MainLoop:
-        JSR     Sub_10F28
+        JSR     ReadAnalogInputs
         JSR     KickWatchdogs
-        JSR     Sub_0D536
+        JSR     HardwareCheck
         JSR     MainLoopCounters
         JSR     UpdateDriveFlags
-        JSR     Sub_119E8
+        JSR     ThrottleInputs
         JSR     BaroUpdate
         JSR     ClosedLoopMain
         JSR     SpeedCtlSwitchRead
-        JSR     Sub_15FDA
+        JSR     CruiseLampOutput
         JSR     SpeedCtlCancelMonitor
         JSR     SpeedCtlRpmJumpCheck
         JSR     SpeedCtlControl
@@ -18769,8 +18772,8 @@ MainLoop:
         JSR     IdleControl
         JSR     FanMain
         JSR     IdleStateUpdate
-        JSR     Sub_154E2
-        JSR     Sub_11CB6
+        JSR     AcClutchControl
+        JSR     CalcVehicleSpeed
         JSR     ChargeLowMonitor
         JSR     CrankFuel
         JSR     RunModeSwitch
@@ -18779,8 +18782,8 @@ MainLoop:
         JSR     MisfireEnableMain
         JSR     ObdMonitorMain
         JSR     CalcLoadValue
-        JSR     Sub_1675C
-        JSR     Sub_1A2B2
+        JSR     AcCutControl
+        JSR     LdpCircuitCheck
         JSR     KnockEnrichment
         JSR     O2NoActivityCold
         JSR     VacuumLeakMonitor
@@ -18802,49 +18805,49 @@ MainLoop:
         BCS     L0D180
         LSRA
         LBCC    L0D238
-        JSR     Sub_1866A
-        JSR     Sub_121B8
+        JSR     CatMonO2Activity
+        JSR     SriMileageStore
         JSR     FaultPendingAge
-        JSR     Sub_1D27E
-        JSR     Sub_13C88
+        JSR     KnockLearnUpdate
+        JSR     DiagStatusBits
         LBRA    L0D238
 L0D180:
-        JSR     Sub_16A40
+        JSR     FanOutputControl
         LBRA    L0D238
 L0D188:
-        JSR     Sub_1B404
-        JSR     Sub_1B4DC
-        JSR     Sub_18BC4
-        JSR     Sub_1B8AE
-        JSR     Sub_10FE8
+        JSR     PnSwitchMonitor2
+        JSR     SensorSupplyCheck
+        JSR     FuelSenderMonitor
+        JSR     EmptyHook10898
+        JSR     FuelLevelProcess
         LBRA    L0D238
 L0D1A0:
-        JSR     Sub_1C948
+        JSR     SparkOcTimeRamp
         JSR     ChargeHighMonitor
         JSR     MilLampUpdate
-        JSR     Sub_16012
+        JSR     KeyOnOutputTimer
         JSR     VssMonitor
         BRA     L0D238
 L0D1B6:
         JSR     SystemTestRejectCount
-        JSR     Sub_1860A
+        JSR     CatMonEnableTimer
         JSR     BatteryLowFlag
         JSR     WotLeanMonitor
-        JSR     Sub_1B51C
+        JSR     PspSwitchMonitor
         BRA     L0D238
 L0D1CC:
-        JSR     Sub_1A9FC
+        JSR     FieldCircuitCheck
         JSR     ProcessCoolantTemp
         JSR     AcPressureSensor
-        JSR     Sub_11FDE
-        JSR     Sub_11212
-        JSR     Sub_1AB62
+        JSR     BatteryTempInputs
+        JSR     FlexSensorCheck
+        JSR     MapSensorMonitor
         JSR     SystemTestCheck
         JSR     MonSteadyRateCalc
         JSR     HotEngineEnrichCalc
-        JSR     Sub_1B0CA
-        JSR     Sub_1B388
-        JSR     Sub_1B482
+        JSR     IdleRpmMonitor
+        JSR     PnSwitchMonitor
+        JSR     CoolantWarmupMonitor
         JSR     FuelSystemStatus
         JSR     CamCrankRelation
         JSR     SparkStartTimer
@@ -18860,19 +18863,19 @@ L0D214:
         JSR     InputFilters
         JSR     EquipmentDetect
         JSR     TccMonitor
-        JSR     Sub_1B57C
+        JSR     TransMilRequest
         JSR     WotEnrichControl
-        JSR     Sub_068BE
+        JSR     WotModeDelay
 L0D238:
-        JSR     Sub_158AE
-        JSR     Sub_1AFE2
+        JSR     EgrFlowMonitor
+        JSR     PurgeCircuitCheck
         JSR     ChargeLampRequest
         BRCLR   >Options0337,#$80,L0D252                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         JSR     CamSignalCheck
         JSR     EventSparkControl
 L0D252:
         BRCLR   >Options0337,#$10,L0D25C                 ; bit 4: surge spark control on (SurgeSparkOn)
-        JSR     Sub_1CA64
+        JSR     SurgeSparkControl
 L0D25C:
         BRCLR   >Options0330,#$C0,L0D276
         JSR     KnockNoiseCalc
@@ -18889,34 +18892,34 @@ L0D276:
         JSR     CalcBaroFuelAdder
         JSR     PurgeEnable
         JSR     PurgeVaporLearn
-        JSR     Sub_0F760
+        JSR     PurgeCellCheck
         JSR     PurgeCellUpdateGate
-        JSR     Sub_06436
+        JSR     FuelCutControl
         JSR     IdleFlareCheck
-        JSR     Sub_06EFC
+        JSR     FlexFactorCalc
         JSR     CamSensorMonitor
-        JSR     Sub_1BC52
+        JSR     MilRequestControl
         JSR     OutputFaultReport
-        JSR     Sub_1AC84
-        JSR     Sub_1AD22
+        JSR     ThermostatMonitor
+        JSR     O2ActivityWarm
         JSR     OutputDriverCheck
         JSR     DiagCommandMain
-        JSR     Sub_14612
+        JSR     CcdReceive
         JSR     BusEepromWrite
         JSR     DiagRamSession1
         JSR     DiagRamSession2
         JSR     SciRequestReceive
         JSR     BusDataRequest
-        JSR     Sub_13494
+        JSR     ActuatorTestMain
         JSR     FuelTrimAdjustStore
         JSR     QspiOutputStatus
         JSR     EepromWriteService
         JSR     EepromWriteQueue
         JSR     HighRpmTimerUpdate
         JSR     BrakeSwitchMonitor
-        JSR     Sub_1AF40
-        JSR     Sub_07550
-        JSR     Sub_18434
+        JSR     O2HighVoltMonitor
+        JSR     PurgeCellTrimFilter
+        JSR     O2DownResponseMonitor
         LDAA    $33,Z
         TAB
         COMB
@@ -19119,39 +19122,39 @@ L0D534:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0D536 ($0D536)
+; HardwareCheck ($0D536)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_0D536:
+HardwareCheck:
         BRCLR   >SIMCR,Z,#$02,L0D548
         BCLR    >SIMCR,Z,#$02
         LDE     #$0001
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D548:
         BRSET   >SIMCR,Z,#$61,L0D55A
         BSET    >SIMCR,Z,#$61
         LDE     #$0002
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D55A:
         LDAA    #$FF
         CMPA    >RAMBAH_L,Z
         BEQ     L0D56E
         STAA    >RAMBAH_L,Z
         LDE     #$0003
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D56E:
         LDD     #$8000
         CPD     >RAMBAL,Z
         BEQ     L0D580
         LDE     #$0004
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D580:
         LDAA    #$08
         CMPA    >RAMMCR,Z
         BEQ     L0D594
         STAA    >RAMMCR,Z
         LDE     #$0005
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D594:
         CLRB
         TBEK
@@ -19172,246 +19175,246 @@ L0D594:
         LDS     #$87FA
         ANDP    #$FF1F
         LDE     #$0006
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D5CC:
         LDD     #$0007
         CPD     >PITR,Z
         BEQ     L0D5E2
         STD     >PITR,Z
         LDE     #$0007
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D5E2:
         LDD     #$0338
         CPD     >PICR,Z
         BEQ     L0D5F8
         STD     >PICR,Z
         LDE     #$0008
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D5F8:
         LDAA    #$94
         CMPA    >SYPCR,Z
         BEQ     L0D60C
         STAA    >SYPCR,Z
         LDE     #$0009
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D60C:
         LDD     #$00FF
         CPD     >CSPAR0,Z
         BEQ     L0D622
         STD     >CSPAR0,Z
         LDE     #$000A
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D622:
         LDD     #$0000
         CPD     >CSPAR1,Z
         BEQ     L0D638
         STD     >CSPAR1,Z
         LDE     #$000B
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D638:
         LDD     #$0004
         CPD     >CSBARBT,Z
         BEQ     L0D64E
         STD     >CSBARBT,Z
         LDE     #$000C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D64E:
         LDD     #$0004
         CPD     >CSBAR0,Z
         BEQ     L0D664
         STD     >CSBAR0,Z
         LDE     #$000D
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D664:
         LDD     #$FF88
         CPD     >CSBAR2,Z
         BEQ     L0D67A
         STD     >CSBAR2,Z
         LDE     #$000E
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D67A:
         LDD     #$0100
         CPD     >CSBAR1,Z
         BEQ     L0D690
         STD     >CSBAR1,Z
         LDE     #$000F
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D690:
         CPD     >CSBAR3,Z
         BEQ     L0D69E
         LDE     #$0010
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D69E:
         CPD     >CSBAR4,Z
         BEQ     L0D6B0
         STD     >CSBAR4,Z
         LDE     #$0011
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D6B0:
         CPD     >CSBAR5,Z
         BEQ     L0D6C2
         STD     >CSBAR5,Z
         LDE     #$0012
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D6C2:
         CPD     >CSBAR6,Z
         BEQ     L0D6D4
         STD     >CSBAR6,Z
         LDE     #$0013
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D6D4:
         CPD     >CSBAR7,Z
         BEQ     L0D6E6
         STD     >CSBAR7,Z
         LDE     #$0014
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D6E6:
         CPD     >CSBAR8,Z
         BEQ     L0D6F8
         STD     >CSBAR8,Z
         LDE     #$0015
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D6F8:
         CPD     >CSBAR9,Z
         BEQ     L0D70A
         STD     >CSBAR9,Z
         LDE     #$0016
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D70A:
         CPD     >CSBAR10,Z
         BEQ     L0D71C
         STD     >CSBAR10,Z
         LDE     #$0017
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D71C:
         LDD     #$6870
         CPD     >CSORBT,Z
         BEQ     L0D732
         STD     >CSORBT,Z
         LDE     #$0018
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D732:
         LDD     #$7070
         CPD     >CSOR0,Z
         BEQ     L0D748
         STD     >CSOR0,Z
         LDE     #$0019
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D748:
         LDD     #$7870
         CPD     >CSOR2,Z
         BEQ     L0D75E
         STD     >CSOR2,Z
         LDE     #$001A
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D75E:
         LDD     #$0000
         CPD     >CSOR1,Z
         BEQ     L0D774
         STD     >CSOR1,Z
         LDE     #$001B
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D774:
         CPD     >CSOR3,Z
         BEQ     L0D786
         STD     >CSOR3,Z
         LDE     #$001C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D786:
         CPD     >CSOR4,Z
         BEQ     L0D798
         STD     >CSOR4,Z
         LDE     #$001D
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D798:
         CPD     >CSOR5,Z
         BEQ     L0D7AA
         STD     >CSOR5,Z
         LDE     #$001E
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D7AA:
         CPD     >CSOR6,Z
         BEQ     L0D7BC
         STD     >CSOR6,Z
         LDE     #$001F
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D7BC:
         CPD     >CSOR7,Z
         BEQ     L0D7CE
         STD     >CSOR7,Z
         LDE     #$0020
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D7CE:
         CPD     >CSOR8,Z
         BEQ     L0D7E0
         STD     >CSOR8,Z
         LDE     #$0021
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D7E0:
         CPD     >CSOR9,Z
         BEQ     L0D7F2
         STD     >CSOR9,Z
         LDE     #$0022
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D7F2:
         CPD     >CSOR10,Z
         BEQ     L0D804
         STD     >CSOR10,Z
         LDE     #$0023
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D804:
         LDAA    #$FC
         CMPA    >PEPAR,Z
         BEQ     L0D818
         STAA    >PEPAR,Z
         LDE     #$0024
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D818:
         LDAA    #$00
         CMPA    >DDRE,Z
         BEQ     L0D82C
         STAA    >DDRE,Z
         LDE     #$0025
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D82C:
         LDAA    #$14
         CMPA    >PFPAR,Z
         BEQ     L0D840
         STAA    >PFPAR,Z
         LDE     #$0026
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D840:
         LDAA    #$00
         CMPA    >DDRF,Z
         BEQ     L0D854
         STAA    >DDRF,Z
         LDE     #$0027
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D854:
         BRCLR   >Options032A,#$60,L0D860                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably); bit 5: hardware set-up variant at reset (Reset, HardwareCheck)
-        JSR     Sub_0DB5A
+        JSR     GptRegisterCheck
         BRA     L0D876
 L0D860:
         BRCLR   >Options032A,#$18,L0D86C
-        JSR     Sub_0DD32
+        JSR     GptRegisterCheck2
         BRA     L0D876
 L0D86C:
         BRCLR   >Options032A,#$87,L0D876                 ; bit 7: engine/ignition variant used by the event, spark, knock and rpm code
-        JSR     Sub_0DF3C
+        JSR     GptRegisterCheck3
 L0D876:
         LDD     #$4089
         CPD     >QSMCR,Z
         BEQ     L0D88C
         STD     >QSMCR,Z
         LDE     #$0034
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D88C:
         LDAA    #$03
         CMPA    >QILR,Z
         BEQ     L0D8A0
         STAA    >QILR,Z
         LDE     #$0035
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D8A0:
         LDAA    #$FF
         CMPA    >QIVR,Z
@@ -19419,42 +19422,42 @@ L0D8A0:
         LDAA    #$FE
         STAA    >QIVR,Z
         LDE     #$0036
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D8B6:
         LDAA    #$33
         CMPA    >DDRQS,Z
         BEQ     L0D8CA
         STAA    >DDRQS,Z
         LDE     #$0037
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D8CA:
         LDAA    #$B6
         CMPA    >DDRQS_L,Z
         BEQ     L0D8DE
         STAA    >DDRQS_L,Z
         LDE     #$0038
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D8DE:
         LDD     #$8108
         CPD     >SPCR0,Z
         BEQ     L0D8F4
         STD     >SPCR0,Z
         LDE     #$0039
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D8F4:
         LDD     #$1000
         CPD     >SPCR1,Z
         BEQ     L0D90A
         STD     >SPCR1,Z
         LDE     #$003A
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D90A:
         LDAA    #$00
         CMPA    >SPCR3,Z
         BEQ     L0D91E
         STAA    >SPCR3,Z
         LDE     #$003B
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D91E:
         BRCLR   >DiagBusFlags,Z,#$40,L0D92C              ; bit 6: OBD request of $33 bytes taken: reply pending (SciPitService)
         LDD     >SCCR1,Z
@@ -19466,28 +19469,28 @@ L0D92C:
         BEQ     L0D942
         STD     >SCCR1,Z
         LDE     #$003C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D942:
         LDD     #$0000
         CPD     >ADCMCR,Z
         BEQ     L0D958
         STD     >ADCMCR,Z
         LDE     #$003D
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D958:
         LDAA    #$07
         CMPA    >ADCTL0_L,Z
         BEQ     L0D96C
         STAA    >ADCTL0_L,Z
         LDE     #$003E
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D96C:
         ORP     #$00E0
         LDD     >IoCtl04,Z
         BEQ     L0D982
         CLRW    >IoCtl04,Z
         LDE     #$003F
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D982:
         ANDP    #$FF1F
         LDD     #$F881
@@ -19495,62 +19498,62 @@ L0D982:
         BEQ     L0D99C
         STD     >IoCfg14,Z
         LDE     #$0041
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D99C:
         ORP     #$00E0
         LDD     >IoCfg18,Z
         BRCLR   >IoCfg18,Z,#$18,L0D9B4
         ANDA    #$E7
         LDE     #$0042
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D9B4:
         BRSET   >IoCfg18,Z,#$20,L0D9C4
         ORAA    #$20
         LDE     #$0043
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D9C4:
         BRCLR   $0819,Z,#$D1,L0D9D4
         ANDB    #$2E
         LDE     #$0044
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D9D4:
         BRSET   $0819,Z,#$2C,L0D9E4
         ORAB    #$2C
         LDE     #$0045
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0D9E4:
         STD     >IoCfg18,Z
         ANDP    #$FF1F
         BRCLR   $081D,Z,#$BA,L0DA00
         BCLRW   >IoCfg1C,Z,#$00BA
         LDE     #$0046
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DA00:
         BRSET   $081D,Z,#$05,L0DA14
         BSETW   >IoCfg1C,Z,#$0005
         LDE     #$0047
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DA14:
         LDD     #$0000
         CPD     $0820,Z
         BEQ     L0DA2A
         STD     $0820,Z
         LDE     #$0048
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DA2A:
         LDD     #$E01B
         CPD     $0868,Z
         BEQ     L0DA40
         STD     $0868,Z
         LDE     #$0052
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DA40:
         LDD     #$C209
         CPD     $086A,Z
         BEQ     L0DA56
         STD     $086A,Z
         LDE     #$0053
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DA56:
         LDAA    >ActuatorTest,Z
         CMPA    #$0B
@@ -19564,7 +19567,7 @@ L0DA56:
         LDD     #$961B
         STD     $086C,Z
         LDE     #$0054
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DA80:
         LDAA    >ActuatorTest,Z
         CMPA    #$0D
@@ -19578,91 +19581,95 @@ L0DA94:
 L0DA9A:
         BCLRW   $086E,Z,#$DE3F
         LDE     #$0055
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DAA8:
         BRCLR   >SYNCR,Z,#$80,L0DABA                     ; bit 7: W: clock synthesizer frequency control (VCO)
         BCLR    >SYNCR,Z,#$80                            ; bit 7: W: clock synthesizer frequency control (VCO)
         LDE     #$0056
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DABA:
         BRSET   >SYNCR,Z,#$7F,L0DACC                     ; bit 6: X: clock synthesizer frequency control (prescaler); bit 5: Y5: clock synthesizer multiplier; bit 4: Y4: clock synthesizer multiplier; bit 3: Y3: clock synthesizer multiplier; bit 2: Y2: clock synthesizer multiplier; bit 1: Y1: clock synthesizer multiplier; bit 0: Y0: clock synthesizer multiplier
         BSET    >SYNCR,Z,#$7F                            ; bit 6: X: clock synthesizer frequency control (prescaler); bit 5: Y5: clock synthesizer multiplier; bit 4: Y4: clock synthesizer multiplier; bit 3: Y3: clock synthesizer multiplier; bit 2: Y2: clock synthesizer multiplier; bit 1: Y1: clock synthesizer multiplier; bit 0: Y0: clock synthesizer multiplier
         LDE     #$0057
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DACC:
         BRCLR   >SYNCR_L,Z,#$07,L0DADE                   ; bit 2: RSTEN: reset on loss of clock; bit 1: STSIM: SIM clock in stop mode; bit 0: STEXT: CLKOUT in stop mode
         BCLR    >SYNCR_L,Z,#$07                          ; bit 2: RSTEN: reset on loss of clock; bit 1: STSIM: SIM clock in stop mode; bit 0: STEXT: CLKOUT in stop mode
         LDE     #$0058
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DADE:
         BRSET   >SYNCR_L,Z,#$80,L0DAF0                   ; bit 7: EDIV: ECLK divide rate
         BSET    >SYNCR_L,Z,#$80                          ; bit 7: EDIV: ECLK divide rate
         LDE     #$0059
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DAF0:
         BRCLR   >IoIrqStatus,Z,#$01,L0DB04
         BCLRW   >IoIrqStatus,Z,#$0100
         LDE     #$005A
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DB04:
         BRSET   >PORTC,Z,#$08,L0DB16                     ; bit 3: port C pin 3 output level (chip-select pin used as output)
         BSET    >PORTC,Z,#$08                            ; bit 3: port C pin 3 output level (chip-select pin used as output)
         LDE     #$005B
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DB16:
         BRCLR   >Options0337,#$80,L0DB30                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         BRSET   >TMSK1,Z,#$80,L0DB42                     ; bit 7: I4/O5I: IC4/OC5 interrupt enable
         BSET    >TMSK1,Z,#$80                            ; bit 7: I4/O5I: IC4/OC5 interrupt enable
         LDE     #$005C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
         BRA     L0DB42
 L0DB30:
         BRCLR   >TMSK1,Z,#$80,L0DB42                     ; bit 7: I4/O5I: IC4/OC5 interrupt enable
         BCLR    >TMSK1,Z,#$80                            ; bit 7: I4/O5I: IC4/OC5 interrupt enable
         LDE     #$005C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DB42:
         LDD     #$0000
         CPD     $081E,Z
         BEQ     L0DB58
         STD     $081E,Z
         LDE     #$005D
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DB58:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0DB5A ($0DB5A)
-; Called from: Sub_0D536
+; GptRegisterCheck ($0DB5A)
+; Called from: HardwareCheck
+;
+; GPT register check of HardwareCheck (HwCheckCode). There are three variants of it for different
+; hardware: HardwareCheck calls GptRegisterCheck with Options032A bits 5-6, GptRegisterCheck2 with
+; bits 3-4, GptRegisterCheck3 with bits 0-2 or 7.
 ;---------------------------------------------------------------------------------------------------
-Sub_0DB5A:
+GptRegisterCheck:
         LDD     #$0007
         CPD     >GPTMCR,Z
         BEQ     L0DB70
         STD     >GPTMCR,Z
         LDE     #$0028
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DB70:
         LDD     #$B340
         CPD     >ICR,Z
         BEQ     L0DB86
         STD     >ICR,Z
         LDE     #$0029
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DB86:
         LDAA    #$78
         CMPA    >DDRGP,Z
         BEQ     L0DB9A
         STAA    >DDRGP,Z
         LDE     #$002A
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DB9A:
         LDAA    #$08
         CMPA    >OC1M,Z
         BEQ     L0DBAE
         STAA    >OC1M,Z
         LDE     #$002B
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DBAE:
         LDAA    >PACTL,Z
         ANDA    #$7F
@@ -19671,7 +19678,7 @@ L0DBAE:
         LDAA    #$74
         STAA    >PACTL,Z
         LDE     #$002C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DBC6:
         ORP     #$00E0
         BRCLR   >TCTL1,Z,#$C0,L0DBD4                     ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
@@ -19680,7 +19687,7 @@ L0DBD4:
         BRSET   >TCTL1,Z,#$2A,L0DBE6                     ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         BSET    >TCTL1,Z,#$2A                            ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         LDE     #$002D
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DBE6:
         LDAA    >TCTL2,Z
         ANDA    #$3F
@@ -19691,7 +19698,7 @@ L0DBE6:
         ORAA    #$29
         STAA    >TCTL2,Z
         LDE     #$002E
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DC04:
         ORP     #$00E0
         LDAA    >TMSK1,Z
@@ -19701,19 +19708,19 @@ L0DC04:
         LDAA    #$05
         STAA    >TMSK1,Z
         LDE     #$002F
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DC20:
         ANDP    #$FF1F
         ORP     #$00E0
         BRCLR   >TMSK2,Z,#$AD,L0DC3A                     ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
         BCLR    >TMSK2,Z,#$AD                            ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
         LDE     #$0031
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DC3A:
         BRSET   >TMSK2,Z,#$02,L0DC4C
         BSET    >TMSK2,Z,#$02
         LDE     #$0032
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DC4C:
         ANDP    #$FF1F
         LDAA    #$30
@@ -19721,14 +19728,14 @@ L0DC4C:
         BEQ     L0DC64
         STAA    >PWMC,Z
         LDE     #$0033
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DC64:
         LDD     #$0803
         CPD     >IoIrqEnable,Z
         BEQ     L0DC7A
         STD     >IoIrqEnable,Z
         LDE     #$0040
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DC7A:
         LDD     #$C01B
         BRCLR   >FuelPulseFlags,Z,#$80,L0DC88            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
@@ -19738,90 +19745,90 @@ L0DC88:
         BEQ     L0DC9A
         STD     >IoInjector0,Z
         LDE     #$0049
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DC9A:
         CPD     >IoInjector1,Z
         BEQ     L0DCAC
         STD     >IoInjector1,Z
         LDE     #$004A
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DCAC:
         CPD     >IoInjector2,Z
         BEQ     L0DCBE
         STD     >IoInjector2,Z
         LDE     #$004B
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DCBE:
         CPD     >IoInjector3,Z
         BEQ     L0DCD0
         STD     >IoInjector3,Z
         LDE     #$004C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DCD0:
         CPD     >IoInjector4,Z
         BEQ     L0DCE2
         STD     >IoInjector4,Z
         LDE     #$004D
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DCE2:
         CPD     >IoInjector5,Z
         BEQ     L0DCF4
         STD     >IoInjector5,Z
         LDE     #$004E
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DCF4:
         BRCLR   >IoDriver62,Z,#$C0,L0DD08                ; bit 7: driver status, checked by HardwareCheck; bit 6: driver status, checked by HardwareCheck
         BCLRW   >IoDriver62,Z,#$C000                     ; IoDriver62.7: driver status, checked by HardwareCheck; IoDriver62.6: driver status, checked by HardwareCheck
         LDE     #$004F
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DD08:
         LDD     #$0000
         CPD     $0864,Z
         BEQ     L0DD1E
         STD     $0864,Z
         LDE     #$0050
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DD1E:
         CPD     >IoDriver68,Z
         BEQ     L0DD30
         STD     >IoDriver68,Z
         LDE     #$0051
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DD30:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0DD32 ($0DD32)
-; Called from: Sub_0D536
+; GptRegisterCheck2 ($0DD32)
+; Called from: HardwareCheck
 ;---------------------------------------------------------------------------------------------------
-Sub_0DD32:
+GptRegisterCheck2:
         LDD     #$0007
         CPD     >GPTMCR,Z
         BEQ     L0DD48
         STD     >GPTMCR,Z
         LDE     #$0028
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DD48:
         LDD     #$B340
         CPD     >ICR,Z
         BEQ     L0DD5E
         STD     >ICR,Z
         LDE     #$0029
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DD5E:
         LDAA    #$78
         CMPA    >DDRGP,Z
         BEQ     L0DD72
         STAA    >DDRGP,Z
         LDE     #$002A
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DD72:
         LDAA    #$08
         CMPA    >OC1M,Z
         BEQ     L0DD86
         STAA    >OC1M,Z
         LDE     #$002B
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DD86:
         LDAA    >PACNT,Z
         CMPA    #$FF
@@ -19840,7 +19847,7 @@ L0DDA2:
 L0DDA8:
         STAA    >PACTL,Z
         LDE     #$002C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DDB4:
         ORP     #$00E0
         BRCLR   >TCTL1,Z,#$C0,L0DDC2                     ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
@@ -19849,7 +19856,7 @@ L0DDC2:
         BRSET   >TCTL1,Z,#$2A,L0DDD4                     ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         BSET    >TCTL1,Z,#$2A                            ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         LDE     #$002D
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DDD4:
         LDAA    >TCTL2,Z
         ANDA    #$3F
@@ -19860,7 +19867,7 @@ L0DDD4:
         ORAA    #$29
         STAA    >TCTL2,Z
         LDE     #$002E
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DDF2:
         ORP     #$00E0
         LDAA    >TMSK1,Z
@@ -19870,19 +19877,19 @@ L0DDF2:
         LDAA    #$05
         STAA    >TMSK1,Z
         LDE     #$002F
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DE0E:
         ANDP    #$FF1F
         ORP     #$00E0
         BRCLR   >TMSK2,Z,#$AD,L0DE28                     ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
         BCLR    >TMSK2,Z,#$AD                            ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
         LDE     #$0031
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DE28:
         BRSET   >TMSK2,Z,#$02,L0DE3A
         BSET    >TMSK2,Z,#$02
         LDE     #$0032
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DE3A:
         ANDP    #$FF1F
         LDAA    #$30
@@ -19890,14 +19897,14 @@ L0DE3A:
         BEQ     L0DE52
         STAA    >PWMC,Z
         LDE     #$0033
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DE52:
         LDD     #$0803
         CPD     >IoIrqEnable,Z
         BEQ     L0DE68
         STD     >IoIrqEnable,Z
         LDE     #$0040
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DE68:
         LDD     #$C01B
         BRCLR   >FuelPulseFlags,Z,#$80,L0DE76            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
@@ -19907,42 +19914,42 @@ L0DE76:
         BEQ     L0DE88
         STD     >IoInjector0,Z
         LDE     #$0049
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DE88:
         CPD     >IoInjector1,Z
         BEQ     L0DE9A
         STD     >IoInjector1,Z
         LDE     #$004A
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DE9A:
         CPD     >IoInjector2,Z
         BEQ     L0DEAC
         STD     >IoInjector2,Z
         LDE     #$004B
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DEAC:
         CPD     >IoInjector3,Z
         BEQ     L0DEBE
         STD     >IoInjector3,Z
         LDE     #$004C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DEBE:
         CPD     >IoInjector4,Z
         BEQ     L0DED0
         STD     >IoInjector4,Z
         LDE     #$004D
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DED0:
         CPD     >IoInjector5,Z
         BEQ     L0DEE2
         STD     >IoInjector5,Z
         LDE     #$004E
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DEE2:
         BRCLR   >IoDriver62,Z,#$C0,L0DEF6                ; bit 7: driver status, checked by HardwareCheck; bit 6: driver status, checked by HardwareCheck
         BCLRW   >IoDriver62,Z,#$C000                     ; IoDriver62.7: driver status, checked by HardwareCheck; IoDriver62.6: driver status, checked by HardwareCheck
         LDE     #$004F
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DEF6:
         BRCLR   >Options032A,#$08,L0DF0E
         LDD     $0864,Z
@@ -19957,49 +19964,49 @@ L0DF0E:
         STD     $0864,Z
 L0DF1C:
         LDE     #$0050
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DF24:
         LDD     #$0000
         CPD     >IoDriver68,Z
         BEQ     L0DF3A
         STD     >IoDriver68,Z
         LDE     #$0051
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DF3A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0DF3C ($0DF3C)
-; Called from: Sub_0D536
+; GptRegisterCheck3 ($0DF3C)
+; Called from: HardwareCheck
 ;---------------------------------------------------------------------------------------------------
-Sub_0DF3C:
+GptRegisterCheck3:
         LDD     #$0007
         CPD     >GPTMCR,Z
         BEQ     L0DF52
         STD     >GPTMCR,Z
         LDE     #$0028
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DF52:
         LDD     #$B340
         CPD     >ICR,Z
         BEQ     L0DF68
         STD     >ICR,Z
         LDE     #$0029
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DF68:
         LDAA    #$78
         CMPA    >DDRGP,Z
         BEQ     L0DF7C
         STAA    >DDRGP,Z
         LDE     #$002A
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DF7C:
         LDAA    #$08
         CMPA    >OC1M,Z
         BEQ     L0DF90
         STAA    >OC1M,Z
         LDE     #$002B
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DF90:
         BRSET   >PACTL,Z,#$80,L0DFAE                     ; bit 7: PAIS: pulse accumulator input pin state
         LDAA    >PACTL,Z
@@ -20009,7 +20016,7 @@ L0DF90:
         LDAA    #$75
         STAA    >PACTL,Z
         LDE     #$002C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DFAE:
         ORP     #$00E0
         BRCLR   >TCTL1,Z,#$C0,L0DFBC                     ; bit 7: OM5: OC5 output mode; bit 6: OL5: OC5 output level
@@ -20018,7 +20025,7 @@ L0DFBC:
         BRSET   >TCTL1,Z,#$2A,L0DFCE                     ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         BSET    >TCTL1,Z,#$2A                            ; bit 5: OM4: OC4 output mode; bit 3: OM3: OC3 output mode; bit 1: OM2: OC2 output mode
         LDE     #$002D
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DFCE:
         LDAA    >TCTL2,Z
         ANDA    #$3F
@@ -20029,7 +20036,7 @@ L0DFCE:
         ORAA    #$29
         STAA    >TCTL2,Z
         LDE     #$002E
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0DFEC:
         ORP     #$00E0
         LDAA    >TMSK1,Z
@@ -20039,19 +20046,19 @@ L0DFEC:
         LDAA    #$05
         STAA    >TMSK1,Z
         LDE     #$002F
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E008:
         ANDP    #$FF1F
         ORP     #$00E0
         BRCLR   >TMSK2,Z,#$AD,L0E022                     ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
         BCLR    >TMSK2,Z,#$AD                            ; bit 7: TOI: timer overflow interrupt enable; bit 5: PAII: pulse accumulator input interrupt enable
         LDE     #$0031
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E022:
         BRSET   >TMSK2,Z,#$02,L0E034
         BSET    >TMSK2,Z,#$02
         LDE     #$0032
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E034:
         ANDP    #$FF1F
         LDAA    #$30
@@ -20059,14 +20066,14 @@ L0E034:
         BEQ     L0E04C
         STAA    >PWMC,Z
         LDE     #$0033
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E04C:
         LDD     #$0803
         CPD     >IoIrqEnable,Z
         BEQ     L0E062
         STD     >IoIrqEnable,Z
         LDE     #$0040
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E062:
         LDD     #$C01B
         BRCLR   >FuelPulseFlags,Z,#$80,L0E070            ; bit 7: injector timers loaded for the current event (FuelEventCalc), probably
@@ -20076,43 +20083,43 @@ L0E070:
         BEQ     L0E082
         STD     >IoInjector0,Z
         LDE     #$0049
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E082:
         CPD     >IoInjector1,Z
         BEQ     L0E094
         STD     >IoInjector1,Z
         LDE     #$004A
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E094:
         CPD     >IoInjector2,Z
         BEQ     L0E0A6
         STD     >IoInjector2,Z
         LDE     #$004B
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E0A6:
         CPD     >IoInjector3,Z
         BEQ     L0E0B8
         STD     >IoInjector3,Z
         LDE     #$004C
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E0B8:
         LDD     #$0000
         CPD     >IoInjector4,Z
         BEQ     L0E0CE
         STD     >IoInjector4,Z
         LDE     #$004D
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E0CE:
         CPD     >IoInjector5,Z
         BEQ     L0E0E0
         STD     >IoInjector5,Z
         LDE     #$004E
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E0E0:
         BRCLR   >IoDriver62,Z,#$C0,L0E0F4                ; bit 7: driver status, checked by HardwareCheck; bit 6: driver status, checked by HardwareCheck
         BCLRW   >IoDriver62,Z,#$C000                     ; IoDriver62.7: driver status, checked by HardwareCheck; IoDriver62.6: driver status, checked by HardwareCheck
         LDE     #$004F
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E0F4:
         BRCLR   >Options032A,#$03,L0E10C
         LDD     $0864,Z
@@ -20127,14 +20134,14 @@ L0E10C:
         STD     $0864,Z
 L0E11A:
         LDE     #$0050
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E122:
         LDD     #$0000
         CPD     >IoDriver68,Z
         BEQ     L0E138
         STD     >IoDriver68,Z
         LDE     #$0051
-        STE     $0179,Z
+        STE     >HwCheckCode,Z
 L0E138:
         RTS
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -20185,7 +20192,7 @@ L0E138:
 
 ;---------------------------------------------------------------------------------------------------
 ; Lookup2D ($0E400)
-; Called from: Isr_GPT_IC1, CalcDeadTime, Sub_06436, WotEnrichControl, DecelFuelRampControl, CalcBaroFuelAdder, AccelEnrichFactors, TipInFuelControl and 94 more routines (296 calls)
+; Called from: Isr_GPT_IC1, CalcDeadTime, FuelCutControl, WotEnrichControl, DecelFuelRampControl, CalcBaroFuelAdder, AccelEnrichFactors, TipInFuelControl and 94 more routines (296 calls)
 ;---------------------------------------------------------------------------------------------------
 Lookup2D:
         PSHM    E,Y,K
@@ -20341,7 +20348,7 @@ L0E50C:
 
 ;---------------------------------------------------------------------------------------------------
 ; PeriodChangeTrack ($0E516)
-; Called from: Isr_GPT_IC1, Isr_GPT_IC3, Isr_GPT_IC4OC5, Sub_0EBCC, Sub_11CB6, CalcEngineRpm, CamSignalCheck (9 calls)
+; Called from: Isr_GPT_IC1, Isr_GPT_IC3, Isr_GPT_IC4OC5, RefPeriodUpdate, CalcVehicleSpeed, CalcEngineRpm, CamSignalCheck (9 calls)
 ;---------------------------------------------------------------------------------------------------
 PeriodChangeTrack:
         PSHM    X,Y
@@ -20376,7 +20383,7 @@ L0E54C:
 
 ;---------------------------------------------------------------------------------------------------
 ; Lookup3D ($0E54E)
-; Called from: DecelFuelRampControl, IacFuelControl, Sub_06EFC, IdleEnrichment, CalcFuelPulse, DecelLeanControl, CrankFuel, IdleTargetControl and 14 more routines (39 calls)
+; Called from: DecelFuelRampControl, IacFuelControl, FlexFactorCalc, IdleEnrichment, CalcFuelPulse, DecelLeanControl, CrankFuel, IdleTargetControl and 14 more routines (39 calls)
 ;---------------------------------------------------------------------------------------------------
 Lookup3D:
         PSHM    E,Y,K
@@ -20434,7 +20441,7 @@ L0E598:
 
 ;---------------------------------------------------------------------------------------------------
 ; Lookup3DNorm ($0E5AE)
-; Called from: Sub_06EFC, DecelLeanControl, PurgeFuelCalc, DwellCalc (5 calls)
+; Called from: FlexFactorCalc, DecelLeanControl, PurgeFuelCalc, DwellCalc (5 calls)
 ;---------------------------------------------------------------------------------------------------
 Lookup3DNorm:
         PSHM    E,Y,K
@@ -20662,7 +20669,7 @@ L0E73A:
 
 ;---------------------------------------------------------------------------------------------------
 ; DelayLoop ($0E75E)
-; Called from: Isr_GPT_IC3, IacStepperDrive, Reset, EepromPowerDownWrite, OutputDriverCheck, Sub_1A9FC (10 calls)
+; Called from: Isr_GPT_IC3, IacStepperDrive, Reset, EepromPowerDownWrite, OutputDriverCheck, FieldCircuitCheck (10 calls)
 ;---------------------------------------------------------------------------------------------------
 DelayLoop:
         PSHM    D
@@ -20689,7 +20696,7 @@ L0E782:
 
 ;---------------------------------------------------------------------------------------------------
 ; CollectBits ($0E788)
-; Called from: Sub_06436, SciSendByte, Sub_13C88, Sub_14D58, Sub_1B8AE (10 calls)
+; Called from: FuelCutControl, SciSendByte, DiagStatusBits, CcdA4StatusBytes, EmptyHook10898 (10 calls)
 ;---------------------------------------------------------------------------------------------------
 CollectBits:
         PSHM    E,Y
@@ -20770,7 +20777,7 @@ L0E822:
 
 ;---------------------------------------------------------------------------------------------------
 ; Blend16 ($0E824)
-; Called from: IdleMapLoop, IacBaseCalc, SpeedCtlRpmJumpCheck, Sub_10FE8, Sub_14612, TccMonitor, MisfireNoiseCalc, LdpPumpStroke and 2 more routines (18 calls)
+; Called from: IdleMapLoop, IacBaseCalc, SpeedCtlRpmJumpCheck, FuelLevelProcess, CcdReceive, TccMonitor, MisfireNoiseCalc, LdpPumpStroke and 2 more routines (18 calls)
 ;---------------------------------------------------------------------------------------------------
 Blend16:
         PSHM    E,X,Y,K,CCR
@@ -21181,10 +21188,10 @@ L0EBCA:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0EBCC ($0EBCC)
+; RefPeriodUpdate ($0EBCC)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_0EBCC:
+RefPeriodUpdate:
         LDD     >CrankPeriodSum,Z
         TDE
         BRCLR   >Options032A,#$78,L0EC04                 ; bit 6: engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably); bit 5: hardware set-up variant at reset (Reset, HardwareCheck)
@@ -21208,10 +21215,10 @@ L0EC04:
         dc.b    $27,$4C
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0EC10 ($0EC10)
+; PurgeCellRefCheck ($0EC10)
 ; Called from: Reset, CalcEngineRpm
 ;---------------------------------------------------------------------------------------------------
-Sub_0EC10:
+PurgeCellRefCheck:
         LDAA    >FaultSet01,Z
         BITA    #$18
         LBNE    L0ECF6
@@ -21290,7 +21297,7 @@ L0ECD8:
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeCellRichCheck ($0ECE4)
-; Called from: Sub_0EC10 (6 calls)
+; Called from: PurgeCellRefCheck (6 calls)
 ;---------------------------------------------------------------------------------------------------
 PurgeCellRichCheck:
         SUBA    $00,X
@@ -22224,10 +22231,10 @@ L0F704:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0F70A ($0F70A)
+; PurgeDutyOutput ($0F70A)
 ; Called from: Isr_IRQ2
 ;---------------------------------------------------------------------------------------------------
-Sub_0F70A:
+PurgeDutyOutput:
         LDE     #$61A8
         LDAA    >PurgeDuty,Z
         BNE     L0F71E
@@ -22265,10 +22272,10 @@ L0F756:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_0F760 ($0F760)
+; PurgeCellCheck ($0F760)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_0F760:
+PurgeCellCheck:
         BRSET   >PurgeCellFlags,Z,#$40,L0F846
         TZX
         BRCLR   <PurgeCellRichFlags,Z,#$04,L0F7AE        ; bit 2: read by PurgeCellCheck

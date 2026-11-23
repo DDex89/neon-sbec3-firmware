@@ -8,10 +8,17 @@ UnexpectedIrqStack6 equ $0004        ; $F8004
 ResetCheckWord   equ $0006        ; $F8006
 ResetCountsExtSw equ $0008        ; $F8008
 ResetCountsHltPow equ $0009        ; $F8009
+StartCoolantTemp2 equ $000A        ; $F800A
+CoolantTemp      equ $000C        ; $F800C
+CoolantRaw       equ $000E        ; $F800E
+StartCoolantTemp equ $000F        ; $F800F
 Count3s          equ $0010        ; $F8010
 MainLoopCounter  equ $0011        ; $F8011
 EngineRpm        equ $0012        ; $F8012
 IdleTarget       equ $0014        ; $F8014
+BatteryTemp      equ $0016        ; $F8016
+BatteryVolts2    equ $0017        ; $F8017
+VehicleSpeed     equ $0018        ; $F8018
 CylinderIndex    equ $0019        ; $F8019
 AcFlags          equ $001A        ; $F801A
 ;                 bit 7: A/C clutch engaged (AcClutchControl); set at reset
@@ -573,6 +580,7 @@ SpeedCtlOverrideTimer equ $01EA        ; $F81EA
 SpeedCtlShiftThrottle equ $01EB        ; $F81EB
 SpeedCtlOverrideCmd equ $01EC        ; $F81EC
 SpeedCtlResumeTimer equ $01ED        ; $F81ED
+SpeedCtlServoPos equ $01EF        ; $F81EF
 Temp4F0          equ $01F0        ; $F81F0
 MisfireThreshold4F1 equ $01F1        ; $F81F1
 Temp4F2          equ $01F2        ; $F81F2
@@ -606,6 +614,7 @@ KnockSample6CE   equ $020B        ; $F820B
 KnockSample6CF   equ $020C        ; $F820C
 KnockSample6D0   equ $020D        ; $F820D
 HwErrorFlags     equ $020E        ; $F820E
+MilFlashState    equ $020F        ; $F820F
 FuelLevelFlags2  equ $0211        ; $F8211
 ;                 bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
 ;                 bit 4: fuel level change at shutdown under FuelSenderShutdownDiff (FuelSenderMonitor)
@@ -669,6 +678,7 @@ PspPresentCounter equ $024F        ; $F824F
 CamCrankStable   equ $0250        ; $F8250
 CamCrankHoldCount equ $0251        ; $F8251
 CamCrank690      equ $0252        ; $F8252
+HwCheckCode      equ $0253        ; $F8253
 CamCrankFlags    equ $0255        ; $F8255
 ;                 bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
 ;                 bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
@@ -1250,6 +1260,7 @@ IdleEnrichment813 equ $04AF        ; $F84AF
 PurgeTrimCount   equ $04B4        ; $F84B4
 PurgeTrimLatched equ $04B5        ; $F84B5
 WotEnrich        equ $04B6        ; $F84B6
+WotDelayTimer    equ $04B7        ; $F84B7
 FanFlags         equ $04B8        ; $F84B8
 ;                 bit 7: A/C fan stage bit (FanAcStage)
 ;                 bit 6: A/C fan stage bit (FanAcStage)
@@ -1261,6 +1272,7 @@ FanStageTimer    equ $04B9        ; $F84B9
 IdleTargetB02    equ $04BA        ; $F84BA
 FanB03           equ $04BB        ; $F84BB
 FanState         equ $04BC        ; $F84BC
+FanWarmupCount   equ $04C3        ; $F84C3
 DiagCommand      equ $04E2        ; $F84E2
 DiagParam1       equ $04E3        ; $F84E3
 DiagParam2       equ $04E4        ; $F84E4
@@ -1287,6 +1299,7 @@ IdleRpm5F7       equ $04F7        ; $F84F7
 MonTask5F8       equ $04F8        ; $F84F8
 MonTask5F9       equ $04F9        ; $F84F9
 MonEnable5FA     equ $04FA        ; $F84FA
+SecurityStatus   equ $0500        ; $F8500
 OutputTest94D    equ $0501        ; $F8501
 CamCrank950      equ $0504        ; $F8504
 FuelTrim972      equ $0516        ; $F8516
@@ -1748,6 +1761,7 @@ SecurityFlags    equ $06BF        ; $F86BF
 ;                 bit 3: security exchange step 2 (CcdReceive)
 ;                 bit 2: security exchange step 1 (CcdReceive)
 ;                 bit 0: security status to be sent (CcdReceive, SecurityStatusCalc)
+SecurityMsgTimer equ $06C1        ; $F86C1
 BusTemp          equ $06C2        ; $F86C2
 CcdTxIndex       equ $06CA        ; $F86CA
 FuelUsedAccum    equ $06CB        ; $F86CB
@@ -1766,6 +1780,7 @@ BusMsgFlags      equ $06D4        ; $F86D4
 ;                 bit 0: engine-off time received from the bus (BusEngineOffTime); BatteryTempModel reads it
 BusMsg91Byte1    equ $06D5        ; $F86D5
 BusMsg91Byte2    equ $06D6        ; $F86D6
+BusRpmHoldTimer  equ $06D9        ; $F86D9
 CcdTransmitD59   equ $06DA        ; $F86DA
 IacAcBusTimer    equ $06DB        ; $F86DB
 CcdRxFlags       equ $0700        ; $F8700
@@ -1780,9 +1795,15 @@ CcdRxFlags       equ $0700        ; $F8700
 CcdByteIndex     equ $0701        ; $F8701
 BusTx97E         equ $0702        ; $F8702
 BusTx990         equ $0714        ; $F8714
+DevPortWriteMask equ $0732        ; $F8732
+DevPortReadMask  equ $0734        ; $F8734
+DevPortParam1    equ $0736        ; $F8736
+DevPortParam2    equ $0738        ; $F8738
 SparkEvent907    equ $0739        ; $F8739
 SparkEvent908    equ $073A        ; $F873A
+DevPortParam3    equ $0741        ; $F8741
 FinishFuel911    equ $0742        ; $F8742
+DevPortFlags     equ $074F        ; $F874F
 IacTarget        equ $075F        ; $F875F
 Misfire63E       equ $0761        ; $F8761
 MisfireThreshold63F equ $0762        ; $F8762

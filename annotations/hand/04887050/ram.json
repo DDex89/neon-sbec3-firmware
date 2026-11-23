@@ -1,0 +1,4 @@
+{
+ "_comment": "Hand names for 04887050 (family A; also used for 04887051, same code), read from the code. tools/port.py lays them over the names carried over from 05293190AC and 05293013AC.",
+ "01A5": "CatMonFlags"
+}

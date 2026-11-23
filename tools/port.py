@@ -327,6 +327,41 @@ def load(name, base=ANN):
 # names the reference gives are kept, the closer image only fills what is still open
 VIA = {"05293013AC": "05007038", "05293014AC": "05007038",
        "04887050": "05293013AC", "04887051": "05293013AC"}
+# hand annotations made on one image of a family (annotations/hand/<PN>/), valid for every image
+# with the same code: they override what was carried over
+HAND = {"05007038": "05007038", "05293148AA": "05007038",
+        "04887050": "04887050", "04887051": "04887050"}
+
+
+def overlay(base, hand):
+    """hand names win at their address; a carried-over copy of the same name elsewhere goes."""
+    names = set(hand.values())
+    out = {k: v for k, v in base.items() if v not in names and k not in hand}
+    out.update(hand)
+    return out
+
+
+def apply_hand(pn, labels, ramn, tables_out):
+    code = HAND.get(pn)
+    hdir = os.path.join(ANN, "hand", code) if code else None
+    if not hdir or not os.path.isdir(hdir):
+        return None, {}
+    labels = overlay(labels, load("labels.json", hdir))
+    ramn = overlay(ramn, load("ram.json", hdir))
+    ht = load("tables.json", hdir)
+    for part in ("tables", "scalars", "special"):
+        hp = ht.get(part, {})
+        hn = {v["name"] for v in hp.values()}
+        cur = {k: v for k, v in tables_out[part].items() if v["name"] not in hn and k not in hp}
+        for k, v in hp.items():
+            base = tables_out[part].get(k, {})
+            cur[k] = dict(base, **v)          # a hand entry may only rename or describe
+        tables_out[part] = cur
+    extra = {}
+    for f in ("routines.md", "bits.json"):
+        if os.path.exists(os.path.join(hdir, f)):
+            extra[f] = open(os.path.join(hdir, f), encoding="utf-8").read()
+    return (labels, ramn, tables_out), extra
 
 
 def carry(ref, new, base, routines):
@@ -472,6 +507,9 @@ def main():
         ramn = merge(ramn, r2)
         for part in ("tables", "scalars", "special"):
             tables_out[part] = merge(tables_out[part], t2[part], keyed=lambda v: v["name"])
+    hand, hand_files = apply_hand(pn, labels, ramn, tables_out)
+    if hand:
+        labels, ramn, tables_out = hand
     clamp(new, tables_out)
 
     out = os.path.join(ANN, "ports", pn)
@@ -487,12 +525,18 @@ def main():
     dump("ram.json", ramn)
     dump("tables.json", tables_out)
     dump("analysis.json", analysis)
+    for f in ("routines.md", "bits.json"):
+        p = os.path.join(out, f)
+        if f in hand_files:
+            open(p, "w", encoding="utf-8").write(hand_files[f])
+        elif os.path.exists(p):
+            os.remove(p)
     nr = len(ref.body)
     stats = {
         "sha256": hashlib.sha256(new.data).hexdigest(),
         "routines_matched": len(m.pairs), "routines_ref": nr,
         "instructions_mapped": len(m.insn), "instructions_ref": len(ref.an.insn),
-        "via": via,
+        "via": via, "hand": HAND.get(pn) if hand_files or hand else None,
         "labels": "%d of %d" % (len(labels), len({int(k, 16) for k in load("labels.json")} | set(gen_source.load_routines()))),
         "ram": "%d of %d" % (len(ramn), len(load("ram.json"))),
         "tables": "%d of %d" % (len(tables_out["tables"]), len(tab.get("tables", {}))),

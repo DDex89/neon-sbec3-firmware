@@ -36,6 +36,7 @@ docs/en, docs/ru        documentation
 src/<part number>/      generated source, one file per 64 KB bank; one image per family
 annotations/            names and notes the generator uses: labels, RAM, flag bits, registers, vectors, tables
 annotations/ports/      the same, carried over to the other images by tools/port.py
+annotations/hand/       hand names for ported images (05007038, 04887050) where the port leaves gaps
 docs/catalogue/         generated calibration catalogue of each image
 docs/diffs/             generated calibration differences inside each family
 xdf/                    generated TunerPro definitions, one per image

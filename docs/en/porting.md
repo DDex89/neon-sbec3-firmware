@@ -37,6 +37,13 @@ Structures taken over with the row count of the reference (bit maps, word lists,
 cut where the next named item or code starts, so a shorter list in an older program does not run
 into the code after it.
 
+**Hand names.** For the images whose code differs most from the reference, the routines the port
+leaves open are named by reading the code: `annotations/hand/05007038/` (also used for
+05293148AA) and `annotations/hand/04887050/` (also 04887051) hold labels, RAM names, bit texts and
+routine notes. `tools/port.py` lays them over the carried-over names (a hand name wins and the
+same name elsewhere is dropped), and the chain takes the names of C on to B. In C and A every
+routine now has a name; B still has 56 `Sub_` routines.
+
 The result is written to `annotations/ports/<part number>/` (labels, RAM, tables, analysis) with
 `stats.json`, which also holds the SHA-256 of the image so that the set is never applied to the
 wrong file. These files are generated: change the reference annotations and re-run the port
@@ -49,9 +56,9 @@ wrong file. These files are generated: change the reference annotations and re-r
 | 05269833AI, 05269834AJ | E | 256 KB | 654 of 657 | 42,460 of 43,370 | 651 of 680 | 1,800 of 1,871 | 402 of 410 | 1,404 of 1,451 |
 | 05269833AH | D | 256 KB | 642 | 40,076 | 639 | 1,735 | 391 | 1,351 |
 | 05032017AA | G | 256 KB | 647 | 42,145 | 644 | 1,802 | 385 | 1,399 |
-| 05007038, 05293148AA | C | 128 KB | 409 | 23,699 | 397 | 1,147 | 295 | 861 |
-| 05293013AC, 05293014AC | B | 128 KB | 320 | 16,963 | 325 | 949 | 241 | 701 |
-| 04887050, 04887051 | A | 128 KB | 297 | 15,417 | 309 | 870 | 240 | 695 |
+| 05007038, 05293148AA | C | 128 KB | 409 + 60 by hand | 23,699 | 457 | 1,168 | 295 | 861 |
+| 05293013AC, 05293014AC | B | 128 KB | 320 | 16,963 | 355 | 955 | 241 | 701 |
+| 04887050, 04887051 | A | 128 KB | 297 + 59 by hand | 15,417 | 397 | 877 | 240 | 695 |
 
 The 256 KB families are close relatives of the reference: almost everything carries over, and
 the RAM layout is nearly the same. The 128 KB families are an older, smaller program (30,000 to
@@ -93,8 +100,10 @@ program.
 
 ## Open points
 
-- The 128 KB port leaves about half of the routines of C unnamed: code that the 256 KB program
-  rewrote or does not have. Naming them needs reading the 128 KB code itself; every new name in
-  C then also reaches A and B through the chain.
+- In family B 56 routines have no name yet (most of them the OBD monitors that A also has: the
+  names of A could be chained to B the same way).
+- Bit texts in the 128 KB images come from the reference by RAM name; where a byte is used
+  differently in the older program the text can be wrong. They are corrected by hand only where
+  the code was read (for example Options033A bit 4 in C, the development port).
 - Vehicle and engine of most images are still unknown; the fault tables (cylinder count) and the
   calibration differences are the next clues.

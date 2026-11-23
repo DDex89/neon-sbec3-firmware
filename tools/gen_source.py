@@ -47,7 +47,9 @@ def annotation_set(data, pn):
     d = os.path.join(ANN, "ports", pn)
     st = os.path.join(d, "stats.json")
     if os.path.exists(st) and json.load(open(st)).get("sha256") == hashlib.sha256(data).hexdigest():
-        return (lambda name: load(os.path.join("ports", pn, name))), False
+        f = lambda name: load(os.path.join("ports", pn, name))
+        f.dir = d
+        return f, False
     return (lambda name: {}), False
 
 
@@ -61,9 +63,9 @@ def load(name, default=None):
     return d
 
 
-def load_routines():
+def load_routines(p=None):
     """annotations/routines.md: '## XXXXX Name' headings followed by note lines."""
-    p = os.path.join(ANN, "routines.md")
+    p = p or os.path.join(ANN, "routines.md")
     out = {}
     if not os.path.exists(p):
         return out
@@ -86,13 +88,18 @@ def load_routines():
 class Names:
     def __init__(self, an, data, own=load, ref=True):
         self.an = an
+        self.is_ref = ref
         self.labels_ann = {int(k, 16): v for k, v in own("labels.json").items()}
         for a, kind in caltables.routines(data).items():
             self.labels_ann.setdefault(a, caltables.NAMES[kind])
         self.vectors = {int(k, 16): v for k, v in load("vectors.json").items()}
         self.ram = {int(k, 16): v for k, v in own("ram.json").items()}
         self.regs = {int(k, 16): v["name"] for k, v in load("hc16z_registers.json").items()}
-        self.routines = load_routines() if ref else {}
+        if ref:
+            self.routines = load_routines()
+        else:   # hand notes of a ported image (annotations/hand/<PN>/, copied by tools/port.py)
+            hp = os.path.join(getattr(own, "dir", ""), "routines.md")
+            self.routines = load_routines(hp) if getattr(own, "dir", None) and os.path.exists(hp) else {}
         self.z_not_base = [(int(a, 16), int(b, 16)) for a, b, *_ in own("analysis.json").get("z_not_base", [])]
         self.callers = collections.defaultdict(list)
         for a, i in an.insn.items():
@@ -110,6 +117,10 @@ class Names:
             self.labels.setdefault(a, r["name"])
         self.used = {}
         self.bits = {k: v for k, v in load("bits.json").items() if isinstance(v, dict)}
+        if not ref:     # hand bit texts of a ported image replace single bits
+            for k, v in own("bits.json").items():
+                if isinstance(v, dict):
+                    self.bits[k] = dict(self.bits.get(k, {}), **v)
         if ref:
             self.bits.update(fault_bits(data))
 
@@ -278,7 +289,7 @@ class Calibration:
             size = 1 + 4 * d[y]
             if any(x in an.insn for x in range(y, y + size)):
                 continue
-            if not self.names.routines:
+            if not self.names.is_ref:
                 name = "CondList%04X" % y  # other images: the caller labels are only partly carried over
             else:
                 name = base if base.endswith(("1", "2", "3")) and "Conds" in base else base + "Conds"

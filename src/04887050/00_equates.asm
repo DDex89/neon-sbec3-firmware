@@ -266,6 +266,7 @@ SpeedCtlHoldCount equ $0129        ; $F8129
 SpeedCtlOverrideTimer equ $012D        ; $F812D
 SpeedCtlShiftThrottle equ $012E        ; $F812E
 SpeedCtlOverrideCmd equ $012F        ; $F812F
+SpeedCtlServoPos equ $0132        ; $F8132
 FaultSet00       equ $0133        ; $F8133
 FaultSet01       equ $0134        ; $F8134
 FaultSet02       equ $0135        ; $F8135
@@ -332,6 +333,7 @@ CamCrankOffset   equ $0175        ; $F8175
 CamCrankStable   equ $0176        ; $F8176
 CamCrankHoldCount equ $0177        ; $F8177
 CamCrank690      equ $0178        ; $F8178
+HwCheckCode      equ $0179        ; $F8179
 CamCrankFlags    equ $017B        ; $F817B
 ;                 bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
 ;                 bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
@@ -356,6 +358,14 @@ FuelSysCount3    equ $0185        ; $F8185
 FuelSysTooLeanCount2 equ $0186        ; $F8186
 O2MemChangeHold2 equ $0187        ; $F8187
 O2Activity545    equ $01A2        ; $F81A2
+CatMonFlags      equ $01A5        ; $F81A5
+;                 bit 7: catalyst monitor conditions to be rechecked (CatMonitorSetup, CatMonSwitchRatio)
+;                 bit 5: catalyst monitor condition bit (CatMonConditions)
+;                 bit 4: catalyst monitor condition bit (CatMonConditions)
+;                 bit 3: catalyst monitor window met (CatMonConditions)
+;                 bit 2: O2 switching suitable for the catalyst test (CatMonConditions)
+;                 bit 1: steady cruise long enough (CatMonCruiseTime, CatMonConditions)
+;                 bit 0: coolant at or above CatMonCoolantMin (CatMonConditions)
 CalcEngine574    equ $01A8        ; $F81A8
 CalcEngine575    equ $01A9        ; $F81A9
 CalcEngine570    equ $01B6        ; $F81B6
@@ -779,6 +789,7 @@ FanStageTimer    equ $03DA        ; $F83DA
 IdleTargetB02    equ $03DB        ; $F83DB
 FanB03           equ $03DC        ; $F83DC
 FanState         equ $03DD        ; $F83DD
+FanWarmupCount   equ $03E4        ; $F83E4
 DiagModeFlags    equ $03E5        ; $F83E5
 FuelSystemStatusPid equ $03E7        ; $F83E7
 FuelSystem529    equ $03E8        ; $F83E8
@@ -873,6 +884,7 @@ SecurityFlags    equ $0459        ; $F8459
 ;                 bit 3: security exchange step 2 (CcdReceive)
 ;                 bit 2: security exchange step 1 (CcdReceive)
 ;                 bit 0: security status to be sent (CcdReceive, SecurityStatusCalc)
+SecurityMsgTimer equ $045A        ; $F845A
 BusMsgFlags      equ $045B        ; $F845B
 ;                 bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
 ;                 bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
@@ -938,6 +950,7 @@ EepromFlags      equ $048A        ; $F848A
 ;                 bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 ;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
 EepromWrite94B   equ $048B        ; $F848B
+SecurityStatus   equ $048C        ; $F848C
 OutputTest94D    equ $048D        ; $F848D
 CamCrank950      equ $0490        ; $F8490
 FuelTrim976      equ $04B5        ; $F84B5
@@ -1188,6 +1201,7 @@ ResetF09         equ $05E6        ; $F85E6
 PurgeTrimCount   equ $05EA        ; $F85EA
 PurgeTrimLatched equ $05EB        ; $F85EB
 WotEnrich        equ $05EC        ; $F85EC
+WotDelayTimer    equ $05ED        ; $F85ED
 SparkFlags       equ $0600        ; $F8600
 ;                 bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
 ;                 bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)

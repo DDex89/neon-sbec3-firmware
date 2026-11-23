@@ -292,6 +292,7 @@ SpeedCtlHoldCount equ $0159        ; $F8159
 SpeedCtlOverrideTimer equ $015D        ; $F815D
 SpeedCtlShiftThrottle equ $015E        ; $F815E
 SpeedCtlOverrideCmd equ $015F        ; $F815F
+SpeedCtlServoPos equ $0162        ; $F8162
 FaultSet00       equ $0163        ; $F8163
 FaultSet01       equ $0164        ; $F8164
 FaultSet02       equ $0165        ; $F8165
@@ -361,6 +362,7 @@ CamCrank68B      equ $01AE        ; $F81AE
 CamCrankFaultCounter equ $01AF        ; $F81AF
 CamCrank68C      equ $01B0        ; $F81B0
 CamCrank690      equ $01B1        ; $F81B1
+HwCheckCode      equ $01B2        ; $F81B2
 CamCrankFlags    equ $01B4        ; $F81B4
 ;                 bit 7: park/neutral switch monitor done this drive cycle (PnSwitchMonitor)
 ;                 bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
@@ -802,6 +804,7 @@ FanStageTimer    equ $0403        ; $F8403
 IdleTargetB02    equ $0404        ; $F8404
 FanB03           equ $0405        ; $F8405
 FanState         equ $0406        ; $F8406
+FanWarmupCount   equ $040D        ; $F840D
 DiagModeFlags    equ $040E        ; $F840E
 FuelSystemStatusPid equ $0410        ; $F8410
 FuelSystem529    equ $0411        ; $F8411
@@ -896,6 +899,7 @@ SecurityFlags    equ $0473        ; $F8473
 ;                 bit 3: security exchange step 2 (CcdReceive)
 ;                 bit 2: security exchange step 1 (CcdReceive)
 ;                 bit 0: security status to be sent (CcdReceive, SecurityStatusCalc)
+SecurityMsgTimer equ $0474        ; $F8474
 BusMsgFlags      equ $0475        ; $F8475
 ;                 bit 7: bus EEPROM write: second kind stored (set by BusEepromWrite; sent and cleared by CcdTxEepromMsg, cleared by PciBuildMessage)
 ;                 bit 6: bus EEPROM write: first kind stored (BusEepromWrite)
@@ -961,6 +965,7 @@ EepromFlags      equ $04A6        ; $F84A6
 ;                 bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 ;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
 EepromWrite94B   equ $04A7        ; $F84A7
+SecurityStatus   equ $04A8        ; $F84A8
 OutputTest94D    equ $04A9        ; $F84A9
 CamCrank950      equ $04AC        ; $F84AC
 FuelTrim976      equ $04D1        ; $F84D1
@@ -1258,6 +1263,7 @@ ResetF09         equ $0606        ; $F8606
 PurgeTrimCount   equ $060A        ; $F860A
 PurgeTrimLatched equ $060B        ; $F860B
 WotEnrich        equ $060C        ; $F860C
+WotDelayTimer    equ $060D        ; $F860D
 SparkFlags       equ $060E        ; $F860E
 ;                 bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
 ;                 bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)

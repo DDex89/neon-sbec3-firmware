@@ -320,7 +320,7 @@ L10374:
         STAA    >SpeedCtlSetSpeed,Z
 L1038E:
         STAB    >SpeedCtlServoCmd,Z
-        JSR     Sub_10AC4
+        JSR     SpeedCtlServoCalc
 L10396:
         LBRA    L104C0
 L1039A:
@@ -460,12 +460,12 @@ L104E6:
 L10516:
         STAA    >Scratch2,Z
         STAB    $0161,Z
-        LDAA    $0162,Z
+        LDAA    >SpeedCtlServoPos,Z
         ADDA    $2334
         BCC     L1052A
         LDAA    #$FF
 L1052A:
-        CLR     $0162,Z
+        CLR     >SpeedCtlServoPos,Z
         LDAB    >Scratch2,Z
         CBA
         BCC     L1053C
@@ -631,7 +631,7 @@ L106C2:
         ORAA    #$80
 L106C8:
         STAA    >SpeedCtlServoCmd,Z
-        JSR     Sub_10AC4
+        JSR     SpeedCtlServoCalc
         LBRA    L108D4
 L106D4:
         LDX     #$2237
@@ -684,7 +684,7 @@ L1074C:
 L1074E:
         ORAA    #$80
         STAA    >SpeedCtlServoCmd,Z
-        JSR     Sub_10AC4
+        JSR     SpeedCtlServoCalc
 L10758:
         LBRA    L108D4
 L1075C:
@@ -844,7 +844,7 @@ L108CA:
         TBA
 L108CC:
         STAA    >SpeedCtlServoCmd,Z
-        JSR     Sub_10AC4
+        JSR     SpeedCtlServoCalc
 L108D4:
         BRSET   >SpeedCtlState,Z,#$80,L108F4             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
         LDAB    >SpeedCtlServoCmd,Z
@@ -1064,10 +1064,10 @@ L10AC2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10AC4 ($10AC4)
+; SpeedCtlServoCalc ($10AC4)
 ; Called from: SpeedCtlControl, SpeedCtlShift (5 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_10AC4:
+SpeedCtlServoCalc:
         CLRA
         LDAB    >SpeedCtlServoCmd,Z
         BPL     L10AEA
@@ -1076,7 +1076,7 @@ Sub_10AC4:
         EMUL
         ANDP    #$FEFF
         STAA    >Scratch0,Z
-        LDAA    $0162,Z
+        LDAA    >SpeedCtlServoPos,Z
         SUBA    >Scratch0,Z
         BCC     L10B0E
         CLRA
@@ -1092,11 +1092,11 @@ L10AFC:
 L10B00:
         EMUL
         ANDP    #$FEFF
-        ADDA    $0162,Z
+        ADDA    >SpeedCtlServoPos,Z
         BCC     L10B0E
         LDAA    #$FF
 L10B0E:
-        STAA    $0162,Z
+        STAA    >SpeedCtlServoPos,Z
         RTS
 
 ;---------------------------------------------------------------------------------------------------
@@ -1218,7 +1218,7 @@ L10C54:
         DECA
         STAA    >SpeedCtlOverrideTimer,Z
         CLR     >SpeedCtlServoCmd,Z
-        JSR     Sub_10AC4
+        JSR     SpeedCtlServoCalc
         BRA     L10C9C
 L10C70:
         LDAA    >ThrottleAboveClosed,Z
@@ -1351,10 +1351,10 @@ L10D8A:
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_10E28 ($10E28)
+; ReadAnalogInputs ($10E28)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_10E28:
+ReadAnalogInputs:
         ORP     #$00E0
         BCLR    >PORTC,Z,#$07                            ; bit 2: port C pin 2 output level (chip-select pin used as output); bit 1: port C pin 1 output level (chip-select pin used as output); bit 0: port C pin 0 output level (chip-select pin used as output)
         LDAA    #$30
@@ -2007,7 +2007,7 @@ L114C6:
         ANDA    #$E6
         ORAA    #$04
         STAA    >SwitchInputs2,Z
-        JSR     Sub_19682
+        JSR     CcdTxA4
         BRA     L11548
 L114E4:
         TST     $0147,Z
@@ -2035,7 +2035,7 @@ L11514:
         ANDA    #$F6
         ORAA    #$14
         STAA    >SwitchInputs2,Z
-        JSR     Sub_19682
+        JSR     CcdTxA4
         BRA     L11548
 L11532:
         TST     $0147,Z
@@ -2131,7 +2131,7 @@ L11610:
         LDAA    >SwitchInputs2,Z
         EORA    #$10
         STAA    >SwitchInputs2,Z
-        JSR     Sub_19682
+        JSR     CcdTxA4
         BRA     L11696
 L11636:
         BSET    >SpeedCtlFlags2,Z,#$10                   ; bit 4: speed control switch held (switch code)
@@ -2378,10 +2378,10 @@ L118CE:
         dc.b    $00,$08,$3A,$58,$01,$74,$00,$10
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_118E8 ($118E8)
+; ThrottleInputs ($118E8)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_118E8:
+ThrottleInputs:
         TPD
         TBXK
         LDX     #$18D0
@@ -4785,7 +4785,7 @@ L13328:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 FanMain:
-        JSR     Sub_13A24
+        JSR     FanWarmupTimer
         BRCLR   >Options0334,#$08,L13340                 ; bit 3: output driver variant (QspiOutputStatus)
         BRCLR   >MainLoopPhaseMask,Z,#$01,L13344         ; bit 0: one pass in 2 (about 24 ms)
         JSR     FanRelayControl
@@ -4939,7 +4939,7 @@ L134C8:
         BRSET   >Scratch0,Z,#$01,L135B0
         LBRA    L1357E
 L134EA:
-        JSR     Sub_139C8
+        JSR     FanWarmupState
         BCS     L13556
         LBRA    L135B0
 L134F4:
@@ -4991,7 +4991,7 @@ L13574:
         CLR     >FanStageTimer,Z
         BRA     L135B0
 L1357E:
-        JSR     Sub_139C8
+        JSR     FanWarmupState
         BCS     L13556
         CLR     >FanB03,Z
         LDAB    >ActuatorTest,Z
@@ -5180,7 +5180,7 @@ L137E2:
         BCLR    >FanFlags,Z,#$04                         ; bit 2: vehicle speed below FanWarmupSpeedMax (FanWarmupState)
         BRA     L137F4
 L137EC:
-        JSR     Sub_139C8
+        JSR     FanWarmupState
         BCC     L137F4
         INCB
 L137F4:
@@ -5350,10 +5350,10 @@ L139C2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_139C8 ($139C8)
+; FanWarmupState ($139C8)
 ; Called from: FanControl, FanRelayControl (3 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_139C8:
+FanWarmupState:
         PSHM    D
         LDAA    >StartCoolantTemp2,Z
         CMPA    $03EA
@@ -5370,7 +5370,7 @@ Sub_139C8:
 L139F4:
         CMPA    >VehicleSpeed,Z
         BCS     L13A18
-        LDAA    $040D,Z
+        LDAA    >FanWarmupCount,Z
         CMPA    $03E9
         BCC     L13A18
         LDAA    >CoolantTemp,Z
@@ -5387,10 +5387,10 @@ L13A20:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_13A24 ($13A24)
+; FanWarmupTimer ($13A24)
 ; Called from: FanMain
 ;---------------------------------------------------------------------------------------------------
-Sub_13A24:
+FanWarmupTimer:
         BRCLR   >MainLoopPhaseMask,Z,#$80,L13A5A         ; bit 7: one pass in 256 (about 3.1 s); the mask holds the trailing one bits of MainLoopCounter
         PSHM    D
         LDAB    >StartCoolantTemp2,Z
@@ -5399,7 +5399,7 @@ Sub_13A24:
         LDAB    >BatteryTemp,Z
         CMPB    $03EB
         BCC     L13A58
-        LDAA    $040D,Z
+        LDAA    >FanWarmupCount,Z
         BNE     L13A50
         LDAB    >CoolantTemp,Z
         CMPB    $03EC
@@ -5407,7 +5407,7 @@ Sub_13A24:
 L13A50:
         INCA
         BEQ     L13A58
-        STAA    $040D,Z
+        STAA    >FanWarmupCount,Z
 L13A58:
         PULM    D
 L13A5A:
@@ -6902,10 +6902,10 @@ L14A8C:
         dc.b    $75,$0C,$78,$F4,$BC,$FE,$75,$F4,$27,$F7
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_14AAA ($14AAA)
+; SparkOcTimeRamp ($14AAA)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_14AAA:
+SparkOcTimeRamp:
         BRSET   >Options0337,#$40,L14AEE                 ; bit 6: speed damping spark on (SpeedDampOn)
         BRCLR   >SparkFlags,Z,#$80,L14AEE                ; bit 7: set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)
         BRCLR   >SparkFlags,Z,#$20,L14AEE                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
@@ -9652,10 +9652,10 @@ L166AC:
         JMP     SciSendByte
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_166B4 ($166B4)
+; ActuatorTestMain ($166B4)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_166B4:
+ActuatorTestMain:
         LDAA    >RefPeriod,Z
         CMPA    #$50
         BLS     L166F8
@@ -10315,7 +10315,7 @@ L16CF4:
 
 ;---------------------------------------------------------------------------------------------------
 ; OcOutputsReset ($16CF8)
-; Called from: Sub_166B4, OutputTestOcFire (4 calls)
+; Called from: ActuatorTestMain, OutputTestOcFire (4 calls)
 ;---------------------------------------------------------------------------------------------------
 OcOutputsReset:
         BRSET   >EngineStateFlags,Z,#$80,L16D42          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -10342,10 +10342,10 @@ L16D42:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_16D44 ($16D44)
+; ActuatorTestCancel ($16D44)
 ; Called from: Isr_GPT_IC1
 ;---------------------------------------------------------------------------------------------------
-Sub_16D44:
+ActuatorTestCancel:
         CLR     >ActuatorTest,Z
         LDAA    >DiagCommand,Z
         CMPA    #$0A
@@ -10560,7 +10560,7 @@ L17052:
 
 ;---------------------------------------------------------------------------------------------------
 ; QspiCommandInit ($17064)
-; Called from: Reset, QspiOutputStatus, EepromPowerDownWrite, EepromReadByte, Sub_173A6, EepromStatusRead, EepromWriteService (9 calls)
+; Called from: Reset, QspiOutputStatus, EepromPowerDownWrite, EepromReadByte, QspiStartupConfig, EepromStatusRead, EepromWriteService (9 calls)
 ;---------------------------------------------------------------------------------------------------
 QspiCommandInit:
         PSHM    D,E,X,Y,K
@@ -10801,10 +10801,10 @@ L17390:
         BCS     L17390
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_173A6 ($173A6)
+; QspiStartupConfig ($173A6)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_173A6:
+QspiStartupConfig:
         LDD     #$0300
         STD     >TRB,Z
         LDD     #$0F0B
@@ -11393,7 +11393,7 @@ L17954:
         DEC     $026B,Z
         BNE     L1796A
         LDAA    #$55
-        JSR     Sub_18648
+        JSR     SciObdSendByte
         LDAA    #$07
         STAA    $026B,Z
         INC     >SciTimer,Z
@@ -11404,7 +11404,7 @@ L1796C:
         DEC     $026B,Z
         BNE     L17988
         LDAA    #$08
-        JSR     Sub_18648
+        JSR     SciObdSendByte
         LDAA    #$05
         STAA    $026B,Z
         INC     >SciTimer,Z
@@ -11415,7 +11415,7 @@ L1798A:
         DEC     $026B,Z
         BNE     L179A6
         LDAA    #$08
-        JSR     Sub_18648
+        JSR     SciObdSendByte
         LDAA    #$1C
         STAA    $026B,Z
         INC     >SciTimer,Z
@@ -11443,7 +11443,7 @@ L179D0:
         BNE     L179E4
         LDAA    #$33
         COMA
-        JSR     Sub_18648
+        JSR     SciObdSendByte
         LDAA    #$0D
         STAA    >SciTimer,Z
 L179E4:
@@ -12585,10 +12585,10 @@ L18640:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_18648 ($18648)
+; SciObdSendByte ($18648)
 ; Called from: ObdRequest (4 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_18648:
+SciObdSendByte:
         PSHM    CCR
         ORP     #$00E0
         BCLR    >OC1D,Z,#$08
@@ -13322,16 +13322,16 @@ L18F30:
         dc.b    $CD,$11,$00,$FF
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_18F48 ($18F48)
+; CcdReceive ($18F48)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_18F48:
+CcdReceive:
         BRSET   >IoStatus0B,Z,#$08,L18F52                ; bit 3: bus transmitter busy: CcdTransmit and the PCI transmit code skip BusTxStart while it is set
         BSET    >CcdBusFlags,Z,#$80                      ; bit 7: bus ready for the next message (CcdReceive, Irq4BusHandler, Irq2BusHandler)
 L18F52:
         BRSET   >SecurityFlags,Z,#$10,L18F62             ; bit 4: security timer expired (SecurityState)
         BRCLR   >SecurityFlags,Z,#$40,L18F62             ; bit 6: security/SKIM message received recently (CcdReceive, PciReceive; cleared by SkimState)
-        LBSR    Sub_192D2
+        LBSR    SecurityTimeoutStore
 L18F62:
         TZY
         BRCLR   >CcdRxFlags,Z,#$01,L18F76                ; bit 0: CCD message received in buffer $89A8 (Irq2BusHandler, cleared by CcdReceive)
@@ -13363,13 +13363,13 @@ L18FB0:
         BSET    >SecurityFlags,Z,#$80                    ; bit 7: security message of the first kind received (CcdReceive); SkimState reads it
         BRA     L18FBE
 L18FB6:
-        CLR     $0474,Z
+        CLR     >SecurityMsgTimer,Z
 L18FBA:
         BCLR    >BusMsgFlags,Z,#$02                      ; bit 1: bus message $B2 sent: answer awaited (BusTxStart, Irq4BusHandler)
 L18FBE:
         BSET    >SecurityFlags,Z,#$41                    ; bit 6: security/SKIM message received recently (CcdReceive, PciReceive; cleared by SkimState); bit 0: security status to be sent (CcdReceive, SecurityStatusCalc)
-        BRCLR   $04A8,Z,#$01,L1918A
-        LBSR    Sub_192D2
+        BRCLR   >SecurityStatus,Z,#$01,L1918A
+        LBSR    SecurityTimeoutStore
         LBRA    L1918A
 L18FD0:
         CMPA    #$91
@@ -13545,17 +13545,17 @@ L1919C:
         BCLR    >CcdBusFlags,Z,#$08                      ; bit 3: message sent with a receive copy (BusTxStart, CcdRxFlags bit 7)
 L191A6:
         BRCLR   >MainLoopPhaseMask,Z,#$04,L192D0         ; bit 2: one pass in 8 (about 96 ms)
-        BRSET   $04A8,Z,#$01,L19242
+        BRSET   >SecurityStatus,Z,#$01,L19242
         LDAA    >MonStartDelay,Z
         LBNE    L1925A
         BRCLR   >EngineStateFlags,Z,#$80,L1925A          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        LDAB    $0474,Z
+        LDAB    >SecurityMsgTimer,Z
         INCB
         BNE     L191CA
         DECB
 L191CA:
-        STAB    $0474,Z
-        LDAA    $04A8,Z
+        STAB    >SecurityMsgTimer,Z
+        LDAA    >SecurityStatus,Z
         BRCLR   >SecurityFlags,Z,#$0C,L1922E             ; bit 3: security exchange step 2 (CcdReceive); bit 2: security exchange step 1 (CcdReceive)
         BRCLR   >SecurityFlags,Z,#$40,L191F6             ; bit 6: security/SKIM message received recently (CcdReceive, PciReceive; cleared by SkimState)
         BRSET   >SecurityFlags,Z,#$04,L19238             ; bit 2: security exchange step 1 (CcdReceive)
@@ -13601,7 +13601,7 @@ L19238:
 L19242:
         BRSET   >SecurityFlags,Z,#$10,L19256             ; bit 4: security timer expired (SecurityState)
         BCLR    >BusMsgFlags,Z,#$02                      ; bit 1: bus message $B2 sent: answer awaited (BusTxStart, Irq4BusHandler)
-        INC     $0474,Z
+        INC     >SecurityMsgTimer,Z
         BPL     L19256
         BSET    >SecurityFlags,Z,#$10                    ; bit 4: security timer expired (SecurityState)
 L19256:
@@ -13649,11 +13649,11 @@ L192D0:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_192D2 ($192D2)
-; Called from: Sub_18F48 (2 calls)
+; SecurityTimeoutStore ($192D2)
+; Called from: CcdReceive (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_192D2:
-        BRCLR   $04A8,Z,#$01,L1930E
+SecurityTimeoutStore:
+        BRCLR   >SecurityStatus,Z,#$01,L1930E
         BRSET   >EepromFlags,Z,#$80,L19312               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRSET   >FaultSet07,Z,#$02,L1930E
         PSHM    CCR
@@ -13664,7 +13664,7 @@ Sub_192D2:
 L192F4:
         BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         PULM    CCR
-        LDAA    $04A8,Z
+        LDAA    >SecurityStatus,Z
         ANDA    #$FE
         STAA    >EepromData,Z
         LDD     #$0008
@@ -14028,19 +14028,19 @@ L1966C:
         LDAA    #$A4
         STAA    >CcdTxId,Z
         TST     >Count3s,Z
-        BEQ     Sub_19682
+        BEQ     CcdTxA4
         LDAB    >DiagCommand,Z
         CMPB    #$0A
         LBEQ    CcdTxNone
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_19682 ($19682)
+; CcdTxA4 ($19682)
 ; Called from: SpeedCtlSwitchRead, Sub_1E63C (4 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_19682:
+CcdTxA4:
         PSHM    CCR
         ORP     #$00E0
-        BSR     Sub_196A2
+        BSR     CcdA4StatusBytes
         AIS     #$FC
         TSX
         STD     $01,X
@@ -14053,10 +14053,10 @@ Sub_19682:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_196A2 ($196A2)
-; Called from: Sub_19682, Sub_197BA
+; CcdA4StatusBytes ($196A2)
+; Called from: CcdTxA4, CcdTxA4Queue
 ;---------------------------------------------------------------------------------------------------
-Sub_196A2:
+CcdA4StatusBytes:
         AIS     #$FE
         TSY
         LDX     #$422E
@@ -14122,7 +14122,7 @@ L1974A:
 L19752:
         LDAB    $034C
         ANDB    #$FC
-        BRSET   $04A8,Z,#$01,L19760
+        BRSET   >SecurityStatus,Z,#$01,L19760
         ORAB    #$02
 L19760:
         BRCLR   >SecurityFlags,Z,#$01,L1976C             ; bit 0: security status to be sent (CcdReceive, SecurityStatusCalc)
@@ -14134,7 +14134,7 @@ L1976C:
 
 ;---------------------------------------------------------------------------------------------------
 ; BusTxQueue ($19774)
-; Called from: Sub_19682, Sub_197BA, BusTxEvent (7 calls)
+; Called from: CcdTxA4, CcdTxA4Queue, BusTxEvent (7 calls)
 ;---------------------------------------------------------------------------------------------------
 BusTxQueue:
         LDD     #$8000
@@ -14171,11 +14171,11 @@ L197B8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_197BA ($197BA)
+; CcdTxA4Queue ($197BA)
 ; Called from: Isr_GPT_IC4OC5 (2 calls)
 ;---------------------------------------------------------------------------------------------------
-Sub_197BA:
-        JSR     Sub_196A2
+CcdTxA4Queue:
+        JSR     CcdA4StatusBytes
         AIS     #$FC
         TSX
         STD     $01,X
@@ -14281,7 +14281,7 @@ L19878:
 
 ;---------------------------------------------------------------------------------------------------
 ; BusTxStart ($1987C)
-; Called from: CcdTransmit, Sub_19682, Irq2BusHandler
+; Called from: CcdTransmit, CcdTxA4, Irq2BusHandler
 ;---------------------------------------------------------------------------------------------------
 BusTxStart:
         BRCLR   >CcdRxFlags,Z,#$80,L19888                ; bit 7: CCD message sent with a receive copy pending (BusTxStart, Irq4BusHandler)
@@ -17516,10 +17516,10 @@ L1BBDE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1BBE0 ($1BBE0)
+; FuelSenderMonitor ($1BBE0)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1BBE0:
+FuelSenderMonitor:
         BRCLR   >Options0340,#$02,L1BD38                 ; bit 1: fuel sender monitor on (FuelSenderMonitor)
         LDAA    >Options032A
         BITA    #$0B
@@ -19913,10 +19913,10 @@ L1D53A:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D53C ($1D53C)
+; ThermostatMonitor ($1D53C)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1D53C:
+ThermostatMonitor:
         BRSET   >StartFlags,Z,#$04,L1D598                ; bit 2: thermostat fault reported this drive cycle (ThermostatMonitor)
         BRCLR   >EngineStateFlags,Z,#$80,L1D598          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    >FaultSet02,Z
@@ -19955,10 +19955,10 @@ L1D598:
         dc.b    $00,$10,$01,$74,$00,$04,$05,$3B,$02,$CC,$00,$00,$00,$08,$3A,$44
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D5DA ($1D5DA)
+; O2ActivityWarm ($1D5DA)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1D5DA:
+O2ActivityWarm:
         BRSET   >IoInputs0,Z,#$08,L1D7C4                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         BRCLR   >EngineStateFlags,Z,#$80,L1D6A8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRSET   >DecelLeanFlags,Z,#$80,L1D6A8            ; bit 7: WOT lean condition counted (WotLeanMonitor); closed loop and O2 activity read it
@@ -20200,10 +20200,10 @@ L1D8A6:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1D8A8 ($1D8A8)
+; PurgeCircuitCheck ($1D8A8)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1D8A8:
+PurgeCircuitCheck:
         TST     >MonStartDelay,Z
         BNE     L1D8E8
         LDAB    >BatteryVolts2,Z
@@ -20650,10 +20650,10 @@ L1DDA8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DDAA ($1DDAA)
+; SensorSupplyCheck ($1DDAA)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1DDAA:
+SensorSupplyCheck:
         BRSET   >FaultSet13,Z,#$04,L1DDE8
         LDAB    >PORTC,Z
         ORAB    #$07
@@ -20678,10 +20678,10 @@ L1DDE8:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DDEA ($1DDEA)
+; PspSwitchMonitor ($1DDEA)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1DDEA:
+PspSwitchMonitor:
         BRCLR   >EquipmentFlags,Z,#$04,L1DE48            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         CLRB
         BRSET   >FaultSet0F,Z,#$08,L1DE3C
@@ -20711,10 +20711,10 @@ L1DE48:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1DE4A ($1DE4A)
+; TransMilRequest ($1DE4A)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1DE4A:
+TransMilRequest:
         LDAB    $0284,Z
         BITB    #$10
         BEQ     L1DEA2
@@ -21024,10 +21024,10 @@ L1E1C4:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1E1CA ($1E1CA)
+; EmptyHook10898 ($1E1CA)
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
-Sub_1E1CA:
+EmptyHook10898:
         LDX     #$4312
         JSR     CollectBits
         STAA    >SensorFaultFlags,Z
@@ -21222,7 +21222,7 @@ L1E3CA:
 
 ;---------------------------------------------------------------------------------------------------
 ; ReportPass ($1E3CC)
-; Called from: ProcessCoolantTemp, AcPressureSensor, Sub_118E8, VssMonitor, Sub_1D41A (11 calls)
+; Called from: ProcessCoolantTemp, AcPressureSensor, ThrottleInputs, VssMonitor, Sub_1D41A (11 calls)
 ;---------------------------------------------------------------------------------------------------
 ReportPass:
         PSHM    D
@@ -21525,7 +21525,7 @@ L1E656:
         BCLR    >ControlFlags944,Z,#$01                  ; bit 0: starter cut active (StarterCut)
         BRA     L1E670
 L1E66C:
-        JSR     Sub_19682
+        JSR     CcdTxA4
 L1E670:
         BRCLR   >Options032A,#$0B,L1E68A
         BRSET   >MonEnableFlags2,Z,#$80,L1E68A           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
@@ -21538,7 +21538,7 @@ L1E68A:
 
 ;---------------------------------------------------------------------------------------------------
 ; ReportFault ($1E68C)
-; Called from: CheckPowerDown, SpeedCtlCancelMonitor, SpeedCtlSwitchCheck, ProcessCoolantTemp, Sub_11112, AcPressureSensor, SpeedCtlSwitchRead, Sub_118E8 and 39 more routines (64 calls)
+; Called from: CheckPowerDown, SpeedCtlCancelMonitor, SpeedCtlSwitchCheck, ProcessCoolantTemp, Sub_11112, AcPressureSensor, SpeedCtlSwitchRead, ThrottleInputs and 39 more routines (64 calls)
 ;---------------------------------------------------------------------------------------------------
 ReportFault:
         PSHM    D,E,X,K
@@ -22795,7 +22795,7 @@ L1F4A6:
 
 ;---------------------------------------------------------------------------------------------------
 ; FreezeFrameClear ($1F4A8)
-; Called from: Sub_1DE4A, FreezeFrameSelect, MisfireFaultRecord, MonitorFlagsClear
+; Called from: TransMilRequest, FreezeFrameSelect, MisfireFaultRecord, MonitorFlagsClear
 ;---------------------------------------------------------------------------------------------------
 FreezeFrameClear:
         CLR     <FreezeFrame00,Z
@@ -22991,10 +22991,10 @@ Sub_1F6A6:
         BRA     L1F6B4
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_1F6AE ($1F6AE)
+; ObdReadiness ($1F6AE)
 ; Called from: MonitorFlagsClear
 ;---------------------------------------------------------------------------------------------------
-Sub_1F6AE:
+ObdReadiness:
         CLR     <ReadinessIncomplete,Z
         CLR     >Scratch2,Z
 L1F6B4:
@@ -23834,7 +23834,7 @@ MonitorFlagsClear:
         CLR     >LdpResultFlags,Z
         BCLR    <DiagStatusFlags,Z,#$98                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
         CLR     <MisfireRecordD9,Z
-        LBSR    Sub_1F6AE
+        LBSR    ObdReadiness
         RTS
 
 ;---------------------------------------------------------------------------------------------------
