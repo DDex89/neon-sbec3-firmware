@@ -16518,7 +16518,7 @@
  <XDFCONSTANT uniqueid="0x324" flags="0x0">
   <title>EgrMonTimeMax</title>
   <description>EGR monitor: upper limit of the timer EgrMonTimer $0369</description>
-  <CATEGORYMEM index="0" category="9" />
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x369" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -23455,8 +23455,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x56A" flags="0x0">
-  <title>PurgeV0448Thresh</title>
-  <description>Word compared with V0448; read by Sub_3E500. $1A8C</description>
+  <title>PurgeLearnTimeMax</title>
+  <description>Purge vapor learning (Sub_3E500): length of the part-throttle phase (word) $1A8C</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A8C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -23479,8 +23479,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x56C" flags="0x0">
-  <title>PurgeV0444Init1</title>
-  <description>Byte stored into V0444; read by Sub_3E500. $1A8F</description>
+  <title>PurgeLearnRateInit</title>
+  <description>Purge vapor learning: start value of the learning rate $0444,Z $1A8F</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A8F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23491,8 +23491,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x56D" flags="0x0">
-  <title>PurgeAdder3</title>
-  <description>Byte added to; read by Sub_3E500. $1A90</description>
+  <title>PurgeLearnRateStep</title>
+  <description>Purge vapor learning: increase of the learning rate $1A90</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A90" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23503,8 +23503,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x56E" flags="0x0">
-  <title>PurgeV0446Thresh</title>
-  <description>Byte compared with V0446; read by Sub_3E500. $1A91</description>
+  <title>PurgeLearnRateTime</title>
+  <description>Purge vapor learning: loops between learning-rate increases $1A91</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A91" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23515,8 +23515,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x56F" flags="0x0">
-  <title>PurgeV0444Thresh1</title>
-  <description>Byte compared with V0444; read by Sub_3E500. $1A92</description>
+  <title>PurgeLearnRateMax</title>
+  <description>Purge vapor learning: upper limit of the learning rate $1A92</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A92" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23575,8 +23575,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x574" flags="0x0">
-  <title>PurgeV0444Init2</title>
-  <description>Byte stored into V0444; read by Sub_3E500. $1A97</description>
+  <title>PurgeLearnRateInit2</title>
+  <description>Purge vapor learning: learning rate at closed throttle $1A97</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A97" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23587,8 +23587,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x575" flags="0x0">
-  <title>PurgeV044AThresh</title>
-  <description>Word compared with V044A; read by Sub_3E500. $1A98</description>
+  <title>PurgeLearnTimeClosed</title>
+  <description>Purge vapor learning: length of the closed-throttle phase (word) $1A98</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A98" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -23599,8 +23599,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x576" flags="0x0">
-  <title>PurgeV07E8Init</title>
-  <description>Byte stored into V07E8; read by Sub_3E500. $1A9A</description>
+  <title>PurgeVaporInit2</title>
+  <description>Start value of $07E8,Z (vapor learning) $1A9A</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A9A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23612,7 +23612,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x577" flags="0x0">
   <title>PurgeVaporPartInit</title>
-  <description>Byte stored into PurgeVaporPart; read by Sub_3E500. $1A9B</description>
+  <description>Start value of the learned part-throttle vapor PurgeVaporPart $1A9B</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A9B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23623,8 +23623,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x578" flags="0x0">
-  <title>PurgeRampThresh5</title>
-  <description>Byte compared with PurgeRamp; read by Sub_3E500. $1A9C</description>
+  <title>PurgeLearnRampMin</title>
+  <description>Purge vapor learning runs at or above this purge ramp $1A9C</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A9C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23635,8 +23635,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x579" flags="0x0">
-  <title>PurgeRampThresh6</title>
-  <description>Byte compared with PurgeRamp; read by Sub_3E500. $1A9D</description>
+  <title>PurgeLearnRampFull</title>
+  <description>Purge vapor learning: ramp at or above which the full step applies $1A9D</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A9D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23647,8 +23647,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x57A" flags="0x0">
-  <title>PurgeThresh3</title>
-  <description>Byte compared with; read by Sub_3E500. $1A9E</description>
+  <title>PurgeVaporMax</title>
+  <description>Purge vapor learning: upper limit of $07E8,Z $1A9E</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A9E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23659,8 +23659,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x57B" flags="0x0">
-  <title>PurgeThresh4</title>
-  <description>Byte compared with; read by Sub_3E500. $1A9F</description>
+  <title>PurgeVaporPartMax</title>
+  <description>Purge vapor learning: upper limit of PurgeVaporPart $1A9F</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1A9F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23707,8 +23707,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x57F" flags="0x0">
-  <title>PurgeV07ECThresh1</title>
-  <description>Byte compared with V07EC; read by Sub_3E500. $1AA3</description>
+  <title>PurgeLearnTrimCount</title>
+  <description>Purge vapor learning: trim events before a step $1AA3</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1AA3" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23719,8 +23719,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x580" flags="0x0">
-  <title>PurgeV07ECThresh2</title>
-  <description>Byte compared with V07EC; read by Sub_3E500. $1AA4</description>
+  <title>PurgeLearnTrimCount2</title>
+  <description>Purge vapor learning: trim events before a step (second branch) $1AA4</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1AA4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23743,8 +23743,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x582" flags="0x0">
-  <title>PurgeSpeedThresh2</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_3E500. $1B2A</description>
+  <title>PurgeLearnSpeedMax</title>
+  <description>Purge vapor learning: closed-throttle branch below this vehicle speed $1B2A</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1B2A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23755,8 +23755,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x583" flags="0x0">
-  <title>PurgeSpeedThresh3</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_3E500. $1B2B</description>
+  <title>PurgeLearnSpeedMin</title>
+  <description>Purge vapor learning: part-throttle branch at or above this vehicle speed $1B2B</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1B2B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -23899,8 +23899,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x58F" flags="0x0">
-  <title>PurgeShortTermTrim1Thresh2</title>
-  <description>Byte compared with ShortTermTrim1; read by Sub_3E500. $1B39</description>
+  <title>PurgeLearnTrimMin</title>
+  <description>Purge vapor learning: short-term trim at or below this value (signed) marks the rich limit $1B39</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1B39" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29180,9 +29180,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x74A" flags="0x0">
-  <title>MapV0581Thresh</title>
-  <description>Byte compared with V0581; read by Sub_25000. $308C</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonSteadyTime</title>
+  <description>EGR flow monitor: steady time ($0581,Z) before the test $308C</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x308C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29192,9 +29192,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x74B" flags="0x0">
-  <title>MapCoolantThresh</title>
-  <description>Byte compared with CoolantTemp; read by Sub_25000. $308D</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonCoolantMin</title>
+  <description>EGR flow monitor (Sub_25000, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value $308D</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x308D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -29204,9 +29204,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x74C" flags="0x0">
-  <title>MapBatteryTempThresh</title>
-  <description>Byte compared with BatteryTemp; read by Sub_25000. $308E</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonBattTempMin</title>
+  <description>EGR flow monitor: battery temperature at or above this value $308E</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x308E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
   <decimalpl>0</decimalpl>
@@ -29216,9 +29216,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x74D" flags="0x0">
-  <title>MapVacuumThresh</title>
-  <description>Byte compared with ManifoldVacuum; read by Sub_25000. $308F</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonVacuumMin</title>
+  <description>EGR flow monitor: manifold vacuum at or above this value $308F</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x308F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -29228,9 +29228,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x74E" flags="0x0">
-  <title>MapSpeedThresh</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_25000. $3090</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonSpeedMin</title>
+  <description>EGR flow monitor: vehicle speed at or above this value $3090</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3090" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29240,9 +29240,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x74F" flags="0x0">
-  <title>MapAccelFuelThresh</title>
-  <description>Word compared with MapAccelFuel; read by Sub_25000. $3091</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonMapAccelMax</title>
+  <description>EGR flow monitor: MAP acceleration fuel at or below this value $3091</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3091" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29252,9 +29252,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x750" flags="0x0">
-  <title>MapAccelTpsFuelThresh</title>
-  <description>Word compared with AccelTpsFuel; read by Sub_25000. $3093</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonTpsAccelMax</title>
+  <description>EGR flow monitor: throttle acceleration fuel at or below this value $3093</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3093" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29264,9 +29264,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x751" flags="0x0">
-  <title>MapTipInFuelThresh</title>
-  <description>Word compared with TipInFuel; read by Sub_25000. $3095</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonTipInMax</title>
+  <description>EGR flow monitor: tip-in fuel at or below this value $3095</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3095" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29276,9 +29276,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x752" flags="0x0">
-  <title>MapDecelLeanFuelThresh</title>
-  <description>Byte compared with DecelLeanFuel; read by Sub_25000. $3097</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonDecelLeanMin</title>
+  <description>EGR flow monitor: decel enleanment, when present, at or above this value $3097</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x3097" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29288,9 +29288,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x753" flags="0x0">
-  <title>MapV057EThresh1</title>
-  <description>Word compared with V057E; read by Sub_25000. $309F</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonPhaseTime</title>
+  <description>EGR flow monitor: length of the first test phase ($057E,Z) $309F</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x309F" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29300,9 +29300,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x754" flags="0x0">
-  <title>MapShortTermTrim1Thresh1</title>
-  <description>Byte compared with ShortTermTrim1; read by Sub_25000. $30AD</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonTrimMin</title>
+  <description>EGR flow monitor: short-term trim at or above this value (signed) $30AD</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x30AD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29312,9 +29312,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x755" flags="0x0">
-  <title>MapShortTermTrim1Thresh2</title>
-  <description>Byte compared with ShortTermTrim1; read by Sub_25000. $30AE</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonTrimMax</title>
+  <description>EGR flow monitor: short-term trim at or below this value (signed) $30AE</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x30AE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29324,9 +29324,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x756" flags="0x0">
-  <title>MapV057EThresh2</title>
-  <description>Word compared with V057E; read by Sub_25000. $30AF</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonPhaseTime2</title>
+  <description>EGR flow monitor: length of the second test phase $30AF</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x30AF" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29336,9 +29336,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x757" flags="0x0">
-  <title>ThermistorV0588Value1</title>
-  <description>Byte used with V0588; read by Sub_25000, Sub_32318. $30BD</description>
-  <CATEGORYMEM index="0" category="5" />
+  <title>EgrMonResultMin</title>
+  <description>EGR flow monitor: trim response below this value fails the test $30BD</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x30BD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29348,9 +29348,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x758" flags="0x0">
-  <title>ThermistorV0588Value2</title>
-  <description>Byte used with V0588; read by Sub_25000, Sub_32318. $30BE</description>
-  <CATEGORYMEM index="0" category="5" />
+  <title>EgrMonResultMax</title>
+  <description>EGR flow monitor: trim response above this value passes it $30BE</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x30BE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29360,9 +29360,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x759" flags="0x0">
-  <title>MapV0589Thresh</title>
-  <description>Byte compared with V0589; read by Sub_25000. $30BF</description>
-  <CATEGORYMEM index="0" category="2" />
+  <title>EgrMonFailCount</title>
+  <description>EGR flow monitor: failed tests before the fault $30BF</description>
+  <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x30BF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -29852,8 +29852,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x782" flags="0x0">
-  <title>DiagThresh17</title>
-  <description>Word compared with; read by Sub_281E2. $318B</description>
+  <title>CatMonTestLength</title>
+  <description>Catalyst/O2 switch analysis: test length (word counter) $318B</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x318B" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -29888,8 +29888,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x785" flags="0x0">
-  <title>DiagThresh18</title>
-  <description>Byte compared with; read by Sub_281E2. $31A8</description>
+  <title>O2SwitchLean</title>
+  <description>Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction) $31A8</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x31A8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29900,8 +29900,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x786" flags="0x0">
-  <title>DiagThresh19</title>
-  <description>Byte compared with; read by Sub_281E2. $31A9</description>
+  <title>O2SwitchRich</title>
+  <description>Catalyst/O2 switch analysis: raw O2 above this value counts as rich $31A9</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x31A9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29948,8 +29948,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x78A" flags="0x0">
-  <title>DiagValue6</title>
-  <description>Byte used with; read by Sub_281E2. $31AD</description>
+  <title>O2SwitchFilterLean</title>
+  <description>Catalyst/O2 switch analysis: filter weight of the lean peak $31AD</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x31AD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -29960,8 +29960,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x78B" flags="0x0">
-  <title>DiagValue7</title>
-  <description>Byte used with; read by Sub_281E2. $31AE</description>
+  <title>O2SwitchFilterRich</title>
+  <description>Catalyst/O2 switch analysis: filter weight of the rich peak $31AE</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x31AE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -30032,8 +30032,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x791" flags="0x0">
-  <title>DiagThresh24</title>
-  <description>Byte compared with; read by Sub_281E2. $31B4</description>
+  <title>O2SwitchLean2</title>
+  <description>As O2SwitchLean for the other direction $31B4</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x31B4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -30044,8 +30044,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x792" flags="0x0">
-  <title>DiagThresh25</title>
-  <description>Byte compared with; read by Sub_281E2. $31B5</description>
+  <title>O2SwitchRich2</title>
+  <description>As O2SwitchRich for the other direction $31B5</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x31B5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

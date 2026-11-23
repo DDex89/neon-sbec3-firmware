@@ -10089,132 +10089,103 @@
    "name": "DiagV05BDThresh"
   },
   "308C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with V0581; read by Sub_25000.",
-   "name": "MapV0581Thresh"
+   "name": "EgrMonSteadyTime",
+   "desc": "EGR flow monitor: steady time ($0581,Z) before the test",
+   "category": "Diagnostics",
+   "size": 1
   },
   "308D": {
-   "size": 1,
+   "name": "EgrMonCoolantMin",
+   "desc": "EGR flow monitor (Sub_25000, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value",
    "unit": "tempc",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with CoolantTemp; read by Sub_25000.",
-   "name": "MapCoolantThresh"
+   "category": "Diagnostics",
+   "size": 1
   },
   "308E": {
-   "size": 1,
+   "name": "EgrMonBattTempMin",
+   "desc": "EGR flow monitor: battery temperature at or above this value",
    "unit": "tempc",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with BatteryTemp; read by Sub_25000.",
-   "name": "MapBatteryTempThresh"
+   "category": "Diagnostics",
+   "size": 1
   },
   "308F": {
-   "size": 1,
+   "name": "EgrMonVacuumMin",
+   "desc": "EGR flow monitor: manifold vacuum at or above this value",
    "unit": "kpa",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with ManifoldVacuum; read by Sub_25000.",
-   "name": "MapVacuumThresh"
+   "category": "Diagnostics",
+   "size": 1
   },
   "3090": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_25000.",
-   "name": "MapSpeedThresh"
+   "name": "EgrMonSpeedMin",
+   "desc": "EGR flow monitor: vehicle speed at or above this value",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3091": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Word compared with MapAccelFuel; read by Sub_25000.",
-   "name": "MapAccelFuelThresh"
+   "name": "EgrMonMapAccelMax",
+   "desc": "EGR flow monitor: MAP acceleration fuel at or below this value",
+   "category": "Diagnostics",
+   "size": 2
   },
   "3093": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Word compared with AccelTpsFuel; read by Sub_25000.",
-   "name": "MapAccelTpsFuelThresh"
+   "name": "EgrMonTpsAccelMax",
+   "desc": "EGR flow monitor: throttle acceleration fuel at or below this value",
+   "category": "Diagnostics",
+   "size": 2
   },
   "3095": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Word compared with TipInFuel; read by Sub_25000.",
-   "name": "MapTipInFuelThresh"
+   "name": "EgrMonTipInMax",
+   "desc": "EGR flow monitor: tip-in fuel at or below this value",
+   "category": "Diagnostics",
+   "size": 2
   },
   "3097": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with DecelLeanFuel; read by Sub_25000.",
-   "name": "MapDecelLeanFuelThresh"
+   "name": "EgrMonDecelLeanMin",
+   "desc": "EGR flow monitor: decel enleanment, when present, at or above this value",
+   "category": "Diagnostics",
+   "size": 1
   },
   "309F": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Word compared with V057E; read by Sub_25000.",
-   "name": "MapV057EThresh1"
+   "name": "EgrMonPhaseTime",
+   "desc": "EGR flow monitor: length of the first test phase ($057E,Z)",
+   "category": "Diagnostics",
+   "size": 2
   },
   "30AD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with ShortTermTrim1; read by Sub_25000.",
-   "name": "MapShortTermTrim1Thresh1"
+   "name": "EgrMonTrimMin",
+   "desc": "EGR flow monitor: short-term trim at or above this value (signed)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "30AE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with ShortTermTrim1; read by Sub_25000.",
-   "name": "MapShortTermTrim1Thresh2"
+   "name": "EgrMonTrimMax",
+   "desc": "EGR flow monitor: short-term trim at or below this value (signed)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "30AF": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Word compared with V057E; read by Sub_25000.",
-   "name": "MapV057EThresh2"
+   "name": "EgrMonPhaseTime2",
+   "desc": "EGR flow monitor: length of the second test phase",
+   "category": "Diagnostics",
+   "size": 2
   },
   "30BD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with V0588; read by Sub_25000, Sub_32318.",
-   "name": "ThermistorV0588Value1"
+   "name": "EgrMonResultMin",
+   "desc": "EGR flow monitor: trim response below this value fails the test",
+   "category": "Diagnostics",
+   "size": 1
   },
   "30BE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with V0588; read by Sub_25000, Sub_32318.",
-   "name": "ThermistorV0588Value2"
+   "name": "EgrMonResultMax",
+   "desc": "EGR flow monitor: trim response above this value passes it",
+   "category": "Diagnostics",
+   "size": 1
   },
   "30BF": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with V0589; read by Sub_25000.",
-   "name": "MapV0589Thresh"
+   "name": "EgrMonFailCount",
+   "desc": "EGR flow monitor: failed tests before the fault",
+   "category": "Diagnostics",
+   "size": 1
   },
   "30C0": {
    "size": 1,
@@ -10510,12 +10481,10 @@
    "name": "DiagThresh16"
   },
   "318B": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "CatMonTestLength",
+   "desc": "Catalyst/O2 switch analysis: test length (word counter)",
    "category": "Diagnostics",
-   "desc": "Word compared with; read by Sub_281E2.",
-   "name": "DiagThresh17"
+   "size": 2
   },
   "31A6": {
    "size": 1,
@@ -10534,20 +10503,16 @@
    "name": "DiagValue5"
   },
   "31A8": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchLean",
+   "desc": "Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction)",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh18"
+   "size": 1
   },
   "31A9": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchRich",
+   "desc": "Catalyst/O2 switch analysis: raw O2 above this value counts as rich",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh19"
+   "size": 1
   },
   "31AA": {
    "size": 1,
@@ -10574,20 +10539,16 @@
    "name": "DiagThresh22"
   },
   "31AD": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchFilterLean",
+   "desc": "Catalyst/O2 switch analysis: filter weight of the lean peak",
    "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_281E2.",
-   "name": "DiagValue6"
+   "size": 1
   },
   "31AE": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchFilterRich",
+   "desc": "Catalyst/O2 switch analysis: filter weight of the rich peak",
    "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_281E2.",
-   "name": "DiagValue7"
+   "size": 1
   },
   "31AF": {
    "size": 1,
@@ -10630,20 +10591,16 @@
    "name": "DiagThresh23"
   },
   "31B4": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchLean2",
+   "desc": "As O2SwitchLean for the other direction",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh24"
+   "size": 1
   },
   "31B5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchRich2",
+   "desc": "As O2SwitchRich for the other direction",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh25"
+   "size": 1
   },
   "31D4": {
    "size": 1,

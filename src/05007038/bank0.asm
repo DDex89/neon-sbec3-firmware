@@ -5346,35 +5346,35 @@ PurgeV006AThresh:
 DiagV05BDThresh:
         dc.b    $02                                      ; Byte compared with V05BD; read by Sub_252A8.
         dc.b    $41,$58
-MapVacuumThresh:
-        dc.b    $31                                      ; Byte compared with ManifoldVacuum; read by Sub_25000.
-MapSpeedThresh:
-        dc.b    $5A                                      ; Byte compared with VehicleSpeed; read by Sub_25000.
-MapAccelFuelThresh:
-        dc.b    $01,$00                                  ; Word compared with MapAccelFuel; read by Sub_25000.
-MapAccelTpsFuelThresh:
-        dc.b    $01,$00                                  ; Word compared with AccelTpsFuel; read by Sub_25000.
-MapTipInFuelThresh:
-        dc.b    $01,$00                                  ; Word compared with TipInFuel; read by Sub_25000.
-MapDecelLeanFuelThresh:
-        dc.b    $80                                      ; Byte compared with DecelLeanFuel; read by Sub_25000.
+EgrMonVacuumMin:
+        dc.b    $31                                      ; EGR flow monitor: manifold vacuum at or above this value
+EgrMonSpeedMin:
+        dc.b    $5A                                      ; EGR flow monitor: vehicle speed at or above this value
+EgrMonMapAccelMax:
+        dc.b    $01,$00                                  ; EGR flow monitor: MAP acceleration fuel at or below this value
+EgrMonTpsAccelMax:
+        dc.b    $01,$00                                  ; EGR flow monitor: throttle acceleration fuel at or below this value
+EgrMonTipInMax:
+        dc.b    $01,$00                                  ; EGR flow monitor: tip-in fuel at or below this value
+EgrMonDecelLeanMin:
+        dc.b    $80                                      ; EGR flow monitor: decel enleanment, when present, at or above this value
         dc.b    $10,$F0,$15,$EB,$40,$40,$0D
-MapV057EThresh1:
-        dc.b    $00,$80                                  ; Word compared with V057E; read by Sub_25000.
+EgrMonPhaseTime:
+        dc.b    $00,$80                                  ; EGR flow monitor: length of the first test phase ($057E,Z)
         dc.b    $71,$A0,$42,$50,$03,$3F,$00,$00,$00,$00,$00,$00
-MapShortTermTrim1Thresh1:
-        dc.b    $B3                                      ; Byte compared with ShortTermTrim1; read by Sub_25000.
-MapShortTermTrim1Thresh2:
-        dc.b    $1F                                      ; Byte compared with ShortTermTrim1; read by Sub_25000.
-MapV057EThresh2:
-        dc.b    $00,$B8                                  ; Word compared with V057E; read by Sub_25000.
+EgrMonTrimMin:
+        dc.b    $B3                                      ; EGR flow monitor: short-term trim at or above this value (signed)
+EgrMonTrimMax:
+        dc.b    $1F                                      ; EGR flow monitor: short-term trim at or below this value (signed)
+EgrMonPhaseTime2:
+        dc.b    $00,$B8                                  ; EGR flow monitor: length of the second test phase
         dc.b    $59,$A0,$40,$51,$03,$3F,$00,$00,$00,$00,$00,$00
-ThermistorV0588Value1:
-        dc.b    $11                                      ; Byte used with V0588; read by Sub_25000, Sub_32318.
-ThermistorV0588Value2:
-        dc.b    $5C                                      ; Byte used with V0588; read by Sub_25000, Sub_32318.
-MapV0589Thresh:
-        dc.b    $03                                      ; Byte compared with V0589; read by Sub_25000.
+EgrMonResultMin:
+        dc.b    $11                                      ; EGR flow monitor: trim response below this value fails the test
+EgrMonResultMax:
+        dc.b    $5C                                      ; EGR flow monitor: trim response above this value passes it
+EgrMonFailCount:
+        dc.b    $03                                      ; EGR flow monitor: failed tests before the fault
         dc.b    $03
 FuelOffset4:
         dc.b    $03                                      ; Byte subtracted from result of FuelSysLimit2; read by Sub_2A4F2, Sub_2A6C0.
@@ -5485,28 +5485,28 @@ CatMonDecelLeanMin:
 DiagThresh16:
         dc.b    $50                                      ; Byte compared with; read by Sub_281E2.
         dc.b    $48,$96,$27,$59,$48,$96,$27,$59
-DiagThresh17:
-        dc.b    $05,$5F                                  ; Word compared with; read by Sub_281E2.
+CatMonTestLength:
+        dc.b    $05,$5F                                  ; Catalyst/O2 switch analysis: test length (word counter)
         dc.b    $40,$96,$26,$5A,$40,$96,$26,$5A,$14,$EC,$00,$00,$1F,$E1,$00,$00
         dc.b    $18,$18,$00,$00,$09,$71,$83,$00,$00
 DiagValue4:
         dc.b    $72                                      ; Byte used with; read by Sub_281E2.
 DiagValue5:
         dc.b    $82                                      ; Byte used with; read by Sub_281E2.
-DiagThresh18:
-        dc.b    $81                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh19:
-        dc.b    $85                                      ; Byte compared with; read by Sub_281E2.
+O2SwitchLean:
+        dc.b    $81                                      ; Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction)
+O2SwitchRich:
+        dc.b    $85                                      ; Catalyst/O2 switch analysis: raw O2 above this value counts as rich
 DiagThresh20:
         dc.b    $08                                      ; Byte compared with; read by Sub_281E2.
 DiagThresh21:
         dc.b    $26                                      ; Byte compared with; read by Sub_281E2.
 DiagThresh22:
         dc.b    $06                                      ; Byte compared with; read by Sub_281E2.
-DiagValue6:
-        dc.b    $33                                      ; Byte used with; read by Sub_281E2.
-DiagValue7:
-        dc.b    $4D                                      ; Byte used with; read by Sub_281E2.
+O2SwitchFilterLean:
+        dc.b    $33                                      ; Catalyst/O2 switch analysis: filter weight of the lean peak
+O2SwitchFilterRich:
+        dc.b    $4D                                      ; Catalyst/O2 switch analysis: filter weight of the rich peak
         dc.b    $AD,$80,$00,$00,$00,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF,$FF
         dc.b    $FF,$01,$80,$FF,$C0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 SensorV0A64Thresh1:

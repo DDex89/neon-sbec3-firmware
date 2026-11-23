@@ -9201,23 +9201,23 @@ L160FA:
         CMPA    $2AD7
         LBCS    L162F6
         LDAA    >ManifoldVacuum,Z
-        CMPA    >MapVacuumThresh
+        CMPA    >EgrMonVacuumMin
         LBCS    L162F6
         LDAA    $18,Z
-        CMPA    >MapSpeedThresh
+        CMPA    >EgrMonSpeedMin
         LBCS    L162F6
         LDD     >MapAccelFuel,Z
-        CPD     >MapAccelFuelThresh
+        CPD     >EgrMonMapAccelMax
         LBHI    L162F6
         LDD     >AccelTpsFuel,Z
-        CPD     >MapAccelTpsFuelThresh
+        CPD     >EgrMonTpsAccelMax
         LBHI    L162F6
         LDD     >TipInFuel,Z
-        CPD     >MapTipInFuelThresh
+        CPD     >EgrMonTipInMax
         LBHI    L162F6
         LDAA    >DecelLeanFuel,Z
         BEQ     L1615A
-        CMPA    >MapDecelLeanFuelThresh
+        CMPA    >EgrMonDecelLeanMin
         LBCS    L162F6
 L1615A:
         CLRB
@@ -9257,19 +9257,19 @@ L16190:
         BSET    $0376,Z,#$02
         BSET    $BE,Z,#$04
         LDAA    >ShortTermTrim1,Z
-        CMPA    >MapShortTermTrim1Thresh1
+        CMPA    >EgrMonTrimMin
         LBLT    L162FA
-        CMPA    >MapShortTermTrim1Thresh2
+        CMPA    >EgrMonTrimMax
         LBGT    L162FA
         BRCLR   >Options032F,#$40,L161F6
         LDAA    >ShortTermTrim2,Z
-        CMPA    >MapShortTermTrim1Thresh1
+        CMPA    >EgrMonTrimMin
         LBLT    L162FA
-        CMPA    >MapShortTermTrim1Thresh2
+        CMPA    >EgrMonTrimMax
         LBGT    L162FA
 L161F6:
         LDE     $0377,Z
-        CPE     >MapV057EThresh1
+        CPE     >EgrMonPhaseTime
         LBCC    L16230
         INCW    $0377,Z
         LDAB    $0413,Z
@@ -9294,7 +9294,7 @@ L16230:
 L16240:
         BSET    $0376,Z,#$04
         LDE     $0377,Z
-        CPE     >MapV057EThresh2
+        CPE     >EgrMonPhaseTime2
         LBCC    L1628A
         INCW    $0377,Z
         LDAB    $0413,Z
@@ -9318,9 +9318,9 @@ L16282:
         JMP     L16306
 L1628A:
         LDAA    $037F,Z
-        CMPA    >ThermistorV0588Value1
+        CMPA    >EgrMonResultMin
         BCS     L162AC
-        CMPA    >ThermistorV0588Value2
+        CMPA    >EgrMonResultMax
         BHI     L162B2
         BSET    $0376,Z,#$88
         BCLR    $0376,Z,#$30
@@ -9335,7 +9335,7 @@ L162B2:
 L162B6:
         INC     $0380,Z
         LDAB    $0380,Z
-        CMPB    >MapV0589Thresh
+        CMPB    >EgrMonFailCount
         BCS     L162F6
         BSET    $0376,Z,#$48
         BSET    $BE,Z,#$48
@@ -10699,7 +10699,7 @@ L1721E:
 L17230:
         LDE     $0014,Y
         LDD     E,Z
-        CPD     >DiagThresh17
+        CPD     >CatMonTestLength
         LBCC    L172D8
         ADDD    #$01
         STD     E,Z
@@ -10744,13 +10744,13 @@ L1729A:
         LDAB    E,Z
         BITB    #$01
         BEQ     L172BA
-        CMPA    >DiagThresh18
+        CMPA    >O2SwitchLean
         LBHI    L1752E
         EORB    #$01
         STAB    E,Z
         LBRA    L1752E
 L172BA:
-        CMPA    >DiagThresh19
+        CMPA    >O2SwitchRich
         LBCS    L1752E
         ORAB    #$01
         STAB    E,Z
@@ -10895,7 +10895,7 @@ L173FC:
         LDAB    E,Z
         LDE     $00F0,Z
         PSHM    D,E
-        LDAA    >DiagValue7
+        LDAA    >O2SwitchFilterRich
         JSR     Blend16
         AIS     #$04
         LDE     $0004,Y
@@ -10905,7 +10905,7 @@ L173FC:
         LDAB    E,Z
         LDE     $00F0,Z
         PSHM    D,E
-        LDAA    >DiagValue6
+        LDAA    >O2SwitchFilterLean
         JSR     Blend16
         AIS     #$04
         LDE     $0002,Y
@@ -19248,7 +19248,7 @@ L1CAA4:
         CLRA
         LDAB    $013E,Z
         TDE
-        LDAB    >ThermistorV0588Value1
+        LDAB    >EgrMonResultMin
         INC     $02ED,Z
         LBRA    L1CB9A
 L1CACA:
@@ -19257,7 +19257,7 @@ L1CACA:
         CLRA
         LDAB    $013E,Z
         TDE
-        LDAB    >ThermistorV0588Value2
+        LDAB    >EgrMonResultMax
         CLR     $02ED,Z
         LBRA    L1CB9A
 L1CAE4:

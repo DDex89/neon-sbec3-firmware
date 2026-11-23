@@ -3937,7 +3937,7 @@
   "0369": {
    "name": "EgrMonTimeMax",
    "desc": "EGR monitor: upper limit of the timer EgrMonTimer",
-   "category": "EGR",
+   "category": "Diagnostics",
    "size": 1
   },
   "036A": {
@@ -8288,12 +8288,10 @@
    "name": "PurgeValue7"
   },
   "1B18": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnTimeMax",
+   "desc": "Purge vapor learning (Sub_3E500): length of the part-throttle phase (word)",
    "category": "EVAP purge",
-   "desc": "Word compared with V0448; read by Sub_3E500.",
-   "name": "PurgeV0448Thresh"
+   "size": 2
   },
   "1B1A": {
    "size": 1,
@@ -8304,36 +8302,28 @@
    "name": "PurgeValue8"
   },
   "1B1B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnRateInit",
+   "desc": "Purge vapor learning: start value of the learning rate $0444,Z",
    "category": "EVAP purge",
-   "desc": "Byte stored into V0444; read by Sub_3E500.",
-   "name": "PurgeV0444Init1"
+   "size": 1
   },
   "1B1C": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnRateStep",
+   "desc": "Purge vapor learning: increase of the learning rate",
    "category": "EVAP purge",
-   "desc": "Byte added to; read by Sub_3E500.",
-   "name": "PurgeAdder3"
+   "size": 1
   },
   "1B1D": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnRateTime",
+   "desc": "Purge vapor learning: loops between learning-rate increases",
    "category": "EVAP purge",
-   "desc": "Byte compared with V0446; read by Sub_3E500.",
-   "name": "PurgeV0446Thresh"
+   "size": 1
   },
   "1B1E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnRateMax",
+   "desc": "Purge vapor learning: upper limit of the learning rate",
    "category": "EVAP purge",
-   "desc": "Byte compared with V0444; read by Sub_3E500.",
-   "name": "PurgeV0444Thresh1"
+   "size": 1
   },
   "1B1F": {
    "size": 1,
@@ -8368,68 +8358,52 @@
    "name": "PurgeV0444Thresh2"
   },
   "1B23": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnRateInit2",
+   "desc": "Purge vapor learning: learning rate at closed throttle",
    "category": "EVAP purge",
-   "desc": "Byte stored into V0444; read by Sub_3E500.",
-   "name": "PurgeV0444Init2"
+   "size": 1
   },
   "1B24": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnTimeClosed",
+   "desc": "Purge vapor learning: length of the closed-throttle phase (word)",
    "category": "EVAP purge",
-   "desc": "Word compared with V044A; read by Sub_3E500.",
-   "name": "PurgeV044AThresh"
+   "size": 2
   },
   "1B26": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeVaporInit2",
+   "desc": "Start value of $07E8,Z (vapor learning)",
    "category": "EVAP purge",
-   "desc": "Byte stored into V07E8; read by Sub_3E500.",
-   "name": "PurgeV07E8Init"
+   "size": 1
   },
   "1B27": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeVaporPartInit",
+   "desc": "Start value of the learned part-throttle vapor PurgeVaporPart",
    "category": "EVAP purge",
-   "desc": "Byte stored into PurgeVaporPart; read by Sub_3E500.",
-   "name": "PurgeVaporPartInit"
+   "size": 1
   },
   "1B28": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnRampMin",
+   "desc": "Purge vapor learning runs at or above this purge ramp",
    "category": "EVAP purge",
-   "desc": "Byte compared with PurgeRamp; read by Sub_3E500.",
-   "name": "PurgeRampThresh5"
+   "size": 1
   },
   "1B29": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnRampFull",
+   "desc": "Purge vapor learning: ramp at or above which the full step applies",
    "category": "EVAP purge",
-   "desc": "Byte compared with PurgeRamp; read by Sub_3E500.",
-   "name": "PurgeRampThresh6"
+   "size": 1
   },
   "1B2A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeVaporMax",
+   "desc": "Purge vapor learning: upper limit of $07E8,Z",
    "category": "EVAP purge",
-   "desc": "Byte compared with; read by Sub_3E500.",
-   "name": "PurgeThresh3"
+   "size": 1
   },
   "1B2B": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeVaporPartMax",
+   "desc": "Purge vapor learning: upper limit of PurgeVaporPart",
    "category": "EVAP purge",
-   "desc": "Byte compared with; read by Sub_3E500.",
-   "name": "PurgeThresh4"
+   "size": 1
   },
   "1B2C": {
    "size": 1,
@@ -8456,20 +8430,16 @@
    "name": "PurgeV044EThresh"
   },
   "1B2F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnTrimCount",
+   "desc": "Purge vapor learning: trim events before a step",
    "category": "EVAP purge",
-   "desc": "Byte compared with V07EC; read by Sub_3E500.",
-   "name": "PurgeV07ECThresh1"
+   "size": 1
   },
   "1B30": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnTrimCount2",
+   "desc": "Purge vapor learning: trim events before a step (second branch)",
    "category": "EVAP purge",
-   "desc": "Byte compared with V07EC; read by Sub_3E500.",
-   "name": "PurgeV07ECThresh2"
+   "size": 1
   },
   "1BB5": {
    "size": 1,
@@ -8480,20 +8450,16 @@
    "name": "FlexLearnStartCoolantThresh2"
   },
   "1BB6": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnSpeedMax",
+   "desc": "Purge vapor learning: closed-throttle branch below this vehicle speed",
    "category": "EVAP purge",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_3E500.",
-   "name": "PurgeSpeedThresh2"
+   "size": 1
   },
   "1BB7": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnSpeedMin",
+   "desc": "Purge vapor learning: part-throttle branch at or above this vehicle speed",
    "category": "EVAP purge",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_3E500.",
-   "name": "PurgeSpeedThresh3"
+   "size": 1
   },
   "1BB8": {
    "size": 1,
@@ -8584,12 +8550,10 @@
    "name": "PurgeAdder7"
   },
   "1BC5": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "PurgeLearnTrimMin",
+   "desc": "Purge vapor learning: short-term trim at or below this value (signed) marks the rich limit",
    "category": "EVAP purge",
-   "desc": "Byte compared with ShortTermTrim1; read by Sub_3E500.",
-   "name": "PurgeShortTermTrim1Thresh2"
+   "size": 1
   },
   "1BC6": {
    "size": 1,
@@ -11856,132 +11820,103 @@
    "name": "DiagV05BDThresh"
   },
   "3156": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with V0581; read by Sub_25000.",
-   "name": "MapV0581Thresh"
+   "name": "EgrMonSteadyTime",
+   "desc": "EGR flow monitor: steady time ($0581,Z) before the test",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3157": {
-   "size": 1,
+   "name": "EgrMonCoolantMin",
+   "desc": "EGR flow monitor (Sub_25000, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value",
    "unit": "tempc",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with CoolantTemp; read by Sub_25000.",
-   "name": "MapCoolantThresh"
+   "category": "Diagnostics",
+   "size": 1
   },
   "3158": {
-   "size": 1,
+   "name": "EgrMonBattTempMin",
+   "desc": "EGR flow monitor: battery temperature at or above this value",
    "unit": "tempc",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with BatteryTemp; read by Sub_25000.",
-   "name": "MapBatteryTempThresh"
+   "category": "Diagnostics",
+   "size": 1
   },
   "3159": {
-   "size": 1,
+   "name": "EgrMonVacuumMin",
+   "desc": "EGR flow monitor: manifold vacuum at or above this value",
    "unit": "kpa",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with ManifoldVacuum; read by Sub_25000.",
-   "name": "MapVacuumThresh"
+   "category": "Diagnostics",
+   "size": 1
   },
   "315A": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with VehicleSpeed; read by Sub_25000.",
-   "name": "MapSpeedThresh"
+   "name": "EgrMonSpeedMin",
+   "desc": "EGR flow monitor: vehicle speed at or above this value",
+   "category": "Diagnostics",
+   "size": 1
   },
   "315B": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Word compared with MapAccelFuel; read by Sub_25000.",
-   "name": "MapAccelFuelThresh"
+   "name": "EgrMonMapAccelMax",
+   "desc": "EGR flow monitor: MAP acceleration fuel at or below this value",
+   "category": "Diagnostics",
+   "size": 2
   },
   "315D": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Word compared with AccelTpsFuel; read by Sub_25000.",
-   "name": "MapAccelTpsFuelThresh"
+   "name": "EgrMonTpsAccelMax",
+   "desc": "EGR flow monitor: throttle acceleration fuel at or below this value",
+   "category": "Diagnostics",
+   "size": 2
   },
   "315F": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Word compared with TipInFuel; read by Sub_25000.",
-   "name": "MapTipInFuelThresh"
+   "name": "EgrMonTipInMax",
+   "desc": "EGR flow monitor: tip-in fuel at or below this value",
+   "category": "Diagnostics",
+   "size": 2
   },
   "3161": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with DecelLeanFuel; read by Sub_25000.",
-   "name": "MapDecelLeanFuelThresh"
+   "name": "EgrMonDecelLeanMin",
+   "desc": "EGR flow monitor: decel enleanment, when present, at or above this value",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3169": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Word compared with V057E; read by Sub_25000.",
-   "name": "MapV057EThresh1"
+   "name": "EgrMonPhaseTime",
+   "desc": "EGR flow monitor: length of the first test phase ($057E,Z)",
+   "category": "Diagnostics",
+   "size": 2
   },
   "3177": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with ShortTermTrim1; read by Sub_25000.",
-   "name": "MapShortTermTrim1Thresh1"
+   "name": "EgrMonTrimMin",
+   "desc": "EGR flow monitor: short-term trim at or above this value (signed)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3178": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with ShortTermTrim1; read by Sub_25000.",
-   "name": "MapShortTermTrim1Thresh2"
+   "name": "EgrMonTrimMax",
+   "desc": "EGR flow monitor: short-term trim at or below this value (signed)",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3179": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Word compared with V057E; read by Sub_25000.",
-   "name": "MapV057EThresh2"
+   "name": "EgrMonPhaseTime2",
+   "desc": "EGR flow monitor: length of the second test phase",
+   "category": "Diagnostics",
+   "size": 2
   },
   "3187": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with V0588; read by Sub_25000, Sub_32318.",
-   "name": "ThermistorV0588Value1"
+   "name": "EgrMonResultMin",
+   "desc": "EGR flow monitor: trim response below this value fails the test",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3188": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Sensors",
-   "desc": "Byte used with V0588; read by Sub_25000, Sub_32318.",
-   "name": "ThermistorV0588Value2"
+   "name": "EgrMonResultMax",
+   "desc": "EGR flow monitor: trim response above this value passes it",
+   "category": "Diagnostics",
+   "size": 1
   },
   "3189": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
-   "category": "Fuel",
-   "desc": "Byte compared with V0589; read by Sub_25000.",
-   "name": "MapV0589Thresh"
+   "name": "EgrMonFailCount",
+   "desc": "EGR flow monitor: failed tests before the fault",
+   "category": "Diagnostics",
+   "size": 1
   },
   "318A": {
    "size": 1,
@@ -12277,12 +12212,10 @@
    "name": "DiagThresh16"
   },
   "3255": {
-   "size": 2,
-   "unit": "raw",
-   "auto": true,
+   "name": "CatMonTestLength",
+   "desc": "Catalyst/O2 switch analysis: test length (word counter)",
    "category": "Diagnostics",
-   "desc": "Word compared with; read by Sub_281E2.",
-   "name": "DiagThresh17"
+   "size": 2
   },
   "3270": {
    "size": 1,
@@ -12301,20 +12234,16 @@
    "name": "DiagValue5"
   },
   "3272": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchLean",
+   "desc": "Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction)",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh18"
+   "size": 1
   },
   "3273": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchRich",
+   "desc": "Catalyst/O2 switch analysis: raw O2 above this value counts as rich",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh19"
+   "size": 1
   },
   "3274": {
    "size": 1,
@@ -12341,20 +12270,16 @@
    "name": "DiagThresh22"
   },
   "3277": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchFilterLean",
+   "desc": "Catalyst/O2 switch analysis: filter weight of the lean peak",
    "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_281E2.",
-   "name": "DiagValue6"
+   "size": 1
   },
   "3278": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchFilterRich",
+   "desc": "Catalyst/O2 switch analysis: filter weight of the rich peak",
    "category": "Diagnostics",
-   "desc": "Byte used with; read by Sub_281E2.",
-   "name": "DiagValue7"
+   "size": 1
   },
   "3279": {
    "size": 1,
@@ -12397,20 +12322,16 @@
    "name": "DiagThresh23"
   },
   "327E": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchLean2",
+   "desc": "As O2SwitchLean for the other direction",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh24"
+   "size": 1
   },
   "327F": {
-   "size": 1,
-   "unit": "raw",
-   "auto": true,
+   "name": "O2SwitchRich2",
+   "desc": "As O2SwitchRich for the other direction",
    "category": "Diagnostics",
-   "desc": "Byte compared with; read by Sub_281E2.",
-   "name": "DiagThresh25"
+   "size": 1
   },
   "329E": {
    "size": 1,

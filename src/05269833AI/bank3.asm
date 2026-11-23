@@ -4083,7 +4083,7 @@ L32A80:
         CLRA
         LDAB    $016F,Z
         TDE
-        LDAB    >ThermistorV0588Value1
+        LDAB    >EgrMonResultMin
         BSET    $0A20,Z,#$02
         LBRA    L32ABC
 L32AA6:
@@ -4092,7 +4092,7 @@ L32AA6:
         CLRA
         LDAB    $016F,Z
         TDE
-        LDAB    >ThermistorV0588Value2
+        LDAB    >EgrMonResultMax
         BCLR    $0A20,Z,#$02
 L32ABC:
         STE     $0A2A,Z
@@ -15649,29 +15649,29 @@ L3E58C:
         LBNE    L3E972
         BCLR    $0443,Z,#$80
         BSET    $0443,Z,#$48
-        LDAA    >PurgeV0444Init1
+        LDAA    >PurgeLearnRateInit
         STAA    $0444,Z
 L3E61A:
         LDD     $0448,Z
-        CPD     >PurgeV0448Thresh
+        CPD     >PurgeLearnTimeMax
         LBCC    L3E976
         INCW    $0448,Z
         LDAA    $0444,Z
-        CMPA    >PurgeV0444Thresh1
+        CMPA    >PurgeLearnRateMax
         BCC     L3E65A
         LDAB    $0446,Z
         INCB
         STAB    $0446,Z
-        CMPB    >PurgeV0446Thresh
+        CMPB    >PurgeLearnRateTime
         BNE     L3E65A
         CLR     $0446,Z
-        ADDA    >PurgeAdder3
+        ADDA    >PurgeLearnRateStep
         BCC     L3E650
         LDAA    #$FF
 L3E650:
-        CMPA    >PurgeV0444Thresh1
+        CMPA    >PurgeLearnRateMax
         BCS     L3E65A
-        LDAA    >PurgeV0444Thresh1
+        LDAA    >PurgeLearnRateMax
 L3E65A:
         STAA    $0444,Z
         ORP     #$00E0
@@ -15724,7 +15724,7 @@ L3E6DC:
         CLR     $042F,Z
         LDAA    >PurgeVaporPartInit
         STAA    >PurgeVaporPart,Z
-        LDAA    >PurgeV07E8Init
+        LDAA    >PurgeVaporInit2
         STAA    $07E8,Z
         BEQ     L3E71E
         LDAB    >PurgeValue8
@@ -15773,13 +15773,13 @@ L3E75A:
         STAB    >PurgeVaporClosed,Z
 L3E75E:
         BRCLR   >MainLoopPhaseMask,Z,#$01,L3E774
-        LDD     >PurgeV044AThresh
+        LDD     >PurgeLearnTimeClosed
         INCW    $044A,Z
         CPD     $044A,Z
         LBLS    L3E976
 L3E774:
         BRSET   >ThrottleState,Z,#$80,L3E790
-        LDAA    >PurgeV0444Init2
+        LDAA    >PurgeLearnRateInit2
         ORP     #$00E0
         STAA    $0444,Z
         BCLR    $0C34,Z,#$40
@@ -15807,7 +15807,7 @@ L3E7BC:
         ANDP    #$FF1F
 L3E7CC:
         LDAA    >PurgeRamp,Z
-        CMPA    >PurgeRampThresh5
+        CMPA    >PurgeLearnRampMin
         LBCS    L3E976
         LDAA    >O2UpBank1Raw,Z
         LDX     #O2VoltageScale
@@ -15847,7 +15847,7 @@ L3E82A:
         CBA
         LBLS    L3E96E
         LDAB    $07EC,Z
-        CMPB    >PurgeV07ECThresh1
+        CMPB    >PurgeLearnTrimCount
         LBCS    L3E96E
         CLR     $07EC,Z
         LDX     #PurgeLearnUpPart
@@ -15864,7 +15864,7 @@ L3E866:
         CBA
         LBCC    L3E96E
         LDAB    $07EC,Z
-        CMPB    >PurgeV07ECThresh1
+        CMPB    >PurgeLearnTrimCount
         LBCS    L3E96E
         CLR     $07EC,Z
         LDX     #PurgeLearnDownPart
@@ -15875,11 +15875,11 @@ L3E866:
         LDAA    #$01
 L3E894:
         LDAB    >PurgeRamp,Z
-        CMPB    >PurgeRampThresh6
+        CMPB    >PurgeLearnRampFull
         BCC     L3E8AC
         TSTA
         LBEQ    L3E976
-        CMPA    >PurgeThresh4
+        CMPA    >PurgeVaporPartMax
         LBHI    L3E976
 L3E8AC:
         STAA    >PurgeVaporPart,Z
@@ -15890,7 +15890,7 @@ L3E8B4:
         CMPA    >PurgeShortTermTrim1Thresh1
         LBLS    L3E910
         LDAB    $07EC,Z
-        CMPB    >PurgeV07ECThresh2
+        CMPB    >PurgeLearnTrimCount2
         BCS     L3E910
         CLR     $07EC,Z
         LDX     #PurgeLearnUpClosed
@@ -15905,7 +15905,7 @@ L3E8E2:
         CBA
         BCC     L3E910
         LDAB    $07EC,Z
-        CMPB    >PurgeV07ECThresh2
+        CMPB    >PurgeLearnTrimCount2
         BCS     L3E910
         CLR     $07EC,Z
         LDX     #PurgeLearnDownClosed
@@ -15934,9 +15934,9 @@ L3E92E:
         CLRB
 L3E930:
         LDAA    >PurgeRamp,Z
-        CMPA    >PurgeRampThresh6
+        CMPA    >PurgeLearnRampFull
         BCC     L3E942
-        CMPB    >PurgeThresh3
+        CMPB    >PurgeVaporMax
         LBHI    L3E976
 L3E942:
         STAB    $07E8,Z
@@ -15991,7 +15991,7 @@ L3E9C2:
         BRCLR   $0443,Z,#$10,L3E9FE
         BRSET   $0443,Z,#$20,L3E9FE
         LDAA    >VehicleSpeed,Z
-        CMPA    >PurgeSpeedThresh2
+        CMPA    >PurgeLearnSpeedMax
         BCC     L3E9FE
         LBRA    L3EAAC
 L3E9DC:
@@ -16001,7 +16001,7 @@ L3E9DC:
         BRCLR   $0443,Z,#$10,L3E9FE
         BRSET   $0443,Z,#$20,L3E9FE
         LDAA    >VehicleSpeed,Z
-        CMPA    >PurgeSpeedThresh3
+        CMPA    >PurgeLearnSpeedMin
         LBCS    L3EAAC
 L3E9FE:
         BRSET   $071D,Z,#$20,L3EAAC
@@ -16040,12 +16040,12 @@ L3EA52:
         BNE     L3EA86
         BRSET   $050D,Z,#$10,L3EA86
         LDAA    >ShortTermTrim1,Z
-        CMPA    >PurgeShortTermTrim1Thresh2
+        CMPA    >PurgeLearnTrimMin
         BGT     L3EA78
         BSET    $0760,Z,#$08
 L3EA78:
         LDAA    >ShortTermTrim2,Z
-        CMPA    >PurgeShortTermTrim1Thresh2
+        CMPA    >PurgeLearnTrimMin
         BGT     L3EA86
         BSET    $0760,Z,#$04
 L3EA86:

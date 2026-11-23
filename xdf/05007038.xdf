@@ -18432,9 +18432,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x445" flags="0x0">
-  <title>MapVacuumThresh</title>
-  <description>Byte compared with ManifoldVacuum; read by Sub_25000. $2AD9</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonVacuumMin</title>
+  <description>EGR flow monitor: manifold vacuum at or above this value $2AD9</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2AD9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
   <decimalpl>1</decimalpl>
@@ -18444,9 +18444,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x446" flags="0x0">
-  <title>MapSpeedThresh</title>
-  <description>Byte compared with VehicleSpeed; read by Sub_25000. $2ADA</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonSpeedMin</title>
+  <description>EGR flow monitor: vehicle speed at or above this value $2ADA</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2ADA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18456,9 +18456,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x447" flags="0x0">
-  <title>MapAccelFuelThresh</title>
-  <description>Word compared with MapAccelFuel; read by Sub_25000. $2ADB</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonMapAccelMax</title>
+  <description>EGR flow monitor: MAP acceleration fuel at or below this value $2ADB</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2ADB" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18468,9 +18468,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x448" flags="0x0">
-  <title>MapAccelTpsFuelThresh</title>
-  <description>Word compared with AccelTpsFuel; read by Sub_25000. $2ADD</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonTpsAccelMax</title>
+  <description>EGR flow monitor: throttle acceleration fuel at or below this value $2ADD</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2ADD" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18480,9 +18480,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x449" flags="0x0">
-  <title>MapTipInFuelThresh</title>
-  <description>Word compared with TipInFuel; read by Sub_25000. $2ADF</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonTipInMax</title>
+  <description>EGR flow monitor: tip-in fuel at or below this value $2ADF</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2ADF" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18492,9 +18492,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44A" flags="0x0">
-  <title>MapDecelLeanFuelThresh</title>
-  <description>Byte compared with DecelLeanFuel; read by Sub_25000. $2AE1</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonDecelLeanMin</title>
+  <description>EGR flow monitor: decel enleanment, when present, at or above this value $2AE1</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2AE1" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18504,9 +18504,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44B" flags="0x0">
-  <title>MapV057EThresh1</title>
-  <description>Word compared with V057E; read by Sub_25000. $2AE9</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonPhaseTime</title>
+  <description>EGR flow monitor: length of the first test phase ($057E,Z) $2AE9</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2AE9" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18516,9 +18516,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44C" flags="0x0">
-  <title>MapShortTermTrim1Thresh1</title>
-  <description>Byte compared with ShortTermTrim1; read by Sub_25000. $2AF7</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonTrimMin</title>
+  <description>EGR flow monitor: short-term trim at or above this value (signed) $2AF7</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2AF7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18528,9 +18528,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44D" flags="0x0">
-  <title>MapShortTermTrim1Thresh2</title>
-  <description>Byte compared with ShortTermTrim1; read by Sub_25000. $2AF8</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonTrimMax</title>
+  <description>EGR flow monitor: short-term trim at or below this value (signed) $2AF8</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2AF8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18540,9 +18540,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44E" flags="0x0">
-  <title>MapV057EThresh2</title>
-  <description>Word compared with V057E; read by Sub_25000. $2AF9</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonPhaseTime2</title>
+  <description>EGR flow monitor: length of the second test phase $2AF9</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2AF9" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18552,9 +18552,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44F" flags="0x0">
-  <title>ThermistorV0588Value1</title>
-  <description>Byte used with V0588; read by Sub_25000, Sub_32318. $2B07</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>EgrMonResultMin</title>
+  <description>EGR flow monitor: trim response below this value fails the test $2B07</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2B07" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18564,9 +18564,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x450" flags="0x0">
-  <title>ThermistorV0588Value2</title>
-  <description>Byte used with V0588; read by Sub_25000, Sub_32318. $2B08</description>
-  <CATEGORYMEM index="0" category="1" />
+  <title>EgrMonResultMax</title>
+  <description>EGR flow monitor: trim response above this value passes it $2B08</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2B08" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -18576,9 +18576,9 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x451" flags="0x0">
-  <title>MapV0589Thresh</title>
-  <description>Byte compared with V0589; read by Sub_25000. $2B09</description>
-  <CATEGORYMEM index="0" category="4" />
+  <title>EgrMonFailCount</title>
+  <description>EGR flow monitor: failed tests before the fault $2B09</description>
+  <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2B09" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
   <decimalpl>0</decimalpl>
@@ -19032,8 +19032,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x477" flags="0x0">
-  <title>DiagThresh17</title>
-  <description>Word compared with; read by Sub_281E2. $2B9D</description>
+  <title>CatMonTestLength</title>
+  <description>Catalyst/O2 switch analysis: test length (word counter) $2B9D</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2B9D" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -19068,8 +19068,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x47A" flags="0x0">
-  <title>DiagThresh18</title>
-  <description>Byte compared with; read by Sub_281E2. $2BBA</description>
+  <title>O2SwitchLean</title>
+  <description>Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction) $2BBA</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2BBA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -19080,8 +19080,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x47B" flags="0x0">
-  <title>DiagThresh19</title>
-  <description>Byte compared with; read by Sub_281E2. $2BBB</description>
+  <title>O2SwitchRich</title>
+  <description>Catalyst/O2 switch analysis: raw O2 above this value counts as rich $2BBB</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2BBB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -19128,8 +19128,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x47F" flags="0x0">
-  <title>DiagValue6</title>
-  <description>Byte used with; read by Sub_281E2. $2BBF</description>
+  <title>O2SwitchFilterLean</title>
+  <description>Catalyst/O2 switch analysis: filter weight of the lean peak $2BBF</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2BBF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -19140,8 +19140,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x480" flags="0x0">
-  <title>DiagValue7</title>
-  <description>Byte used with; read by Sub_281E2. $2BC0</description>
+  <title>O2SwitchFilterRich</title>
+  <description>Catalyst/O2 switch analysis: filter weight of the rich peak $2BC0</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x2BC0" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

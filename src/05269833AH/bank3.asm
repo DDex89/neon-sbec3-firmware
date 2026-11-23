@@ -3998,7 +3998,7 @@ L32A1A:
         CLRA
         LDAB    $016F,Z
         TDE
-        LDAB    >ThermistorV0588Value1
+        LDAB    >EgrMonResultMin
         BSET    $0A20,Z,#$02
         LBRA    L32A56
 L32A40:
@@ -4007,7 +4007,7 @@ L32A40:
         CLRA
         LDAB    $016F,Z
         TDE
-        LDAB    >ThermistorV0588Value2
+        LDAB    >EgrMonResultMax
         BCLR    $0A20,Z,#$02
 L32A56:
         STE     $0A2A,Z

@@ -7326,41 +7326,41 @@ PurgeV006AThresh:
         dc.b    $29                                      ; Byte compared with V006A; read by Sub_3DD3C.
 DiagV05BDThresh:
         dc.b    $02                                      ; Byte compared with V05BD; read by Sub_252A8.
-MapV0581Thresh:
-        dc.b    $49                                      ; Byte compared with V0581; read by Sub_25000.
-MapCoolantThresh:
-        dc.b    $90                                      ; Byte compared with CoolantTemp; read by Sub_25000.
-MapBatteryTempThresh:
-        dc.b    $84                                      ; Byte compared with BatteryTemp; read by Sub_25000.
-MapVacuumThresh:
-        dc.b    $31                                      ; Byte compared with ManifoldVacuum; read by Sub_25000.
-MapSpeedThresh:
-        dc.b    $3C                                      ; Byte compared with VehicleSpeed; read by Sub_25000.
-MapAccelFuelThresh:
-        dc.b    $00,$01                                  ; Word compared with MapAccelFuel; read by Sub_25000.
-MapAccelTpsFuelThresh:
-        dc.b    $00,$01                                  ; Word compared with AccelTpsFuel; read by Sub_25000.
-MapTipInFuelThresh:
-        dc.b    $00,$01                                  ; Word compared with TipInFuel; read by Sub_25000.
-MapDecelLeanFuelThresh:
-        dc.b    $E6                                      ; Byte compared with DecelLeanFuel; read by Sub_25000.
+EgrMonSteadyTime:
+        dc.b    $49                                      ; EGR flow monitor: steady time ($0581,Z) before the test
+EgrMonCoolantMin:
+        dc.b    $90                                      ; EGR flow monitor (Sub_25000, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value
+EgrMonBattTempMin:
+        dc.b    $84                                      ; EGR flow monitor: battery temperature at or above this value
+EgrMonVacuumMin:
+        dc.b    $31                                      ; EGR flow monitor: manifold vacuum at or above this value
+EgrMonSpeedMin:
+        dc.b    $3C                                      ; EGR flow monitor: vehicle speed at or above this value
+EgrMonMapAccelMax:
+        dc.b    $00,$01                                  ; EGR flow monitor: MAP acceleration fuel at or below this value
+EgrMonTpsAccelMax:
+        dc.b    $00,$01                                  ; EGR flow monitor: throttle acceleration fuel at or below this value
+EgrMonTipInMax:
+        dc.b    $00,$01                                  ; EGR flow monitor: tip-in fuel at or below this value
+EgrMonDecelLeanMin:
+        dc.b    $E6                                      ; EGR flow monitor: decel enleanment, when present, at or above this value
         dc.b    $06,$FA,$12,$EE,$28,$28,$1F
-MapV057EThresh1:
-        dc.b    $01,$00                                  ; Word compared with V057E; read by Sub_25000.
+EgrMonPhaseTime:
+        dc.b    $01,$00                                  ; EGR flow monitor: length of the first test phase ($057E,Z)
         dc.b    $62,$B9,$27,$50,$03,$1B,$00,$00,$00,$00,$00,$00
-MapShortTermTrim1Thresh1:
-        dc.b    $B3                                      ; Byte compared with ShortTermTrim1; read by Sub_25000.
-MapShortTermTrim1Thresh2:
-        dc.b    $23                                      ; Byte compared with ShortTermTrim1; read by Sub_25000.
-MapV057EThresh2:
-        dc.b    $00,$B8                                  ; Word compared with V057E; read by Sub_25000.
+EgrMonTrimMin:
+        dc.b    $B3                                      ; EGR flow monitor: short-term trim at or above this value (signed)
+EgrMonTrimMax:
+        dc.b    $23                                      ; EGR flow monitor: short-term trim at or below this value (signed)
+EgrMonPhaseTime2:
+        dc.b    $00,$B8                                  ; EGR flow monitor: length of the second test phase
         dc.b    $61,$B9,$27,$50,$03,$1B,$00,$00,$00,$00,$00,$00
-ThermistorV0588Value1:
-        dc.b    $11                                      ; Byte used with V0588; read by Sub_25000, Sub_32318.
-ThermistorV0588Value2:
-        dc.b    $5A                                      ; Byte used with V0588; read by Sub_25000, Sub_32318.
-MapV0589Thresh:
-        dc.b    $03                                      ; Byte compared with V0589; read by Sub_25000.
+EgrMonResultMin:
+        dc.b    $11                                      ; EGR flow monitor: trim response below this value fails the test
+EgrMonResultMax:
+        dc.b    $5A                                      ; EGR flow monitor: trim response above this value passes it
+EgrMonFailCount:
+        dc.b    $03                                      ; EGR flow monitor: failed tests before the fault
 FuelOffset4:
         dc.b    $03                                      ; Byte subtracted from result of FuelSysLimit2; read by Sub_2A4F2, Sub_2A6C0.
 FuelAdder:
@@ -7509,28 +7509,28 @@ CatMonDecelLeanMin:
 DiagThresh16:
         dc.b    $50                                      ; Byte compared with; read by Sub_281E2.
         dc.b    $57,$7E,$31,$5F,$00,$00,$00,$00
-DiagThresh17:
-        dc.b    $05,$5F                                  ; Word compared with; read by Sub_281E2.
+CatMonTestLength:
+        dc.b    $05,$5F                                  ; Catalyst/O2 switch analysis: test length (word counter)
         dc.b    $44,$81,$2F,$61,$00,$00,$00,$00,$0B,$F5,$00,$FB,$24,$DC,$00,$FB
         dc.b    $28,$28,$00,$00,$1F,$87,$89,$00,$00
 DiagValue4:
         dc.b    $87                                      ; Byte used with; read by Sub_281E2.
 DiagValue5:
         dc.b    $89                                      ; Byte used with; read by Sub_281E2.
-DiagThresh18:
-        dc.b    $15                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh19:
-        dc.b    $26                                      ; Byte compared with; read by Sub_281E2.
+O2SwitchLean:
+        dc.b    $15                                      ; Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction)
+O2SwitchRich:
+        dc.b    $26                                      ; Catalyst/O2 switch analysis: raw O2 above this value counts as rich
 DiagThresh20:
         dc.b    $08                                      ; Byte compared with; read by Sub_281E2.
 DiagThresh21:
         dc.b    $26                                      ; Byte compared with; read by Sub_281E2.
 DiagThresh22:
         dc.b    $06                                      ; Byte compared with; read by Sub_281E2.
-DiagValue6:
-        dc.b    $26                                      ; Byte used with; read by Sub_281E2.
-DiagValue7:
-        dc.b    $57                                      ; Byte used with; read by Sub_281E2.
+O2SwitchFilterLean:
+        dc.b    $26                                      ; Catalyst/O2 switch analysis: filter weight of the lean peak
+O2SwitchFilterRich:
+        dc.b    $57                                      ; Catalyst/O2 switch analysis: filter weight of the rich peak
 ThermistorThresh1:
         dc.b    $AD                                      ; Byte compared with; read by Sub_32318.
 ThermistorThresh2:
@@ -7541,10 +7541,10 @@ ThermistorThresh4:
         dc.b    $00                                      ; Byte compared with; read by Sub_32318.
 DiagThresh23:
         dc.b    $FF                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh24:
-        dc.b    $15                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh25:
-        dc.b    $26                                      ; Byte compared with; read by Sub_281E2.
+O2SwitchLean2:
+        dc.b    $15                                      ; As O2SwitchLean for the other direction
+O2SwitchRich2:
+        dc.b    $26                                      ; As O2SwitchRich for the other direction
         dc.b    $0B,$F5,$24,$DC,$28,$28,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF
         dc.b    $FF,$FF,$01,$80,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 SensorV0A64Thresh1:

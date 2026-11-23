@@ -6331,17 +6331,17 @@ Sub_25000:
         BSET    $0580,Z,#$01
         BRCLR   $0774,Z,#$80,L25296
         LDAA    >CoolantTemp,Z
-        CMPA    >MapCoolantThresh
+        CMPA    >EgrMonCoolantMin
         LBCS    L25296
         LDAA    $0581,Z
-        CMPA    >MapV0581Thresh
+        CMPA    >EgrMonSteadyTime
         BCC     L25046
         BRCLR   >MainLoopPhaseMask,Z,#$80,L25296
         INC     $0581,Z
         LBRA    L25296
 L25046:
         LDAA    >BatteryTemp,Z
-        CMPA    >MapBatteryTempThresh
+        CMPA    >EgrMonBattTempMin
         LBCS    L25296
         BRSET   $06B4,Z,#$20,L25296
         BRSET   $06B4,Z,#$10,L25296
@@ -6363,23 +6363,23 @@ L250A0:
         TST     $0439,Z
         LBNE    L25296
         LDAA    >ManifoldVacuum,Z
-        CMPA    >MapVacuumThresh
+        CMPA    >EgrMonVacuumMin
         LBCS    L25296
         LDAA    >VehicleSpeed,Z
-        CMPA    >MapSpeedThresh
+        CMPA    >EgrMonSpeedMin
         LBCS    L25296
         LDD     >MapAccelFuel,Z
-        CPD     >MapAccelFuelThresh
+        CPD     >EgrMonMapAccelMax
         LBHI    L25296
         LDD     >AccelTpsFuel,Z
-        CPD     >MapAccelTpsFuelThresh
+        CPD     >EgrMonTpsAccelMax
         LBHI    L25296
         LDD     >TipInFuel,Z
-        CPD     >MapTipInFuelThresh
+        CPD     >EgrMonTipInMax
         LBHI    L25296
         LDAA    >DecelLeanFuel,Z
         BEQ     L250F8
-        CMPA    >MapDecelLeanFuelThresh
+        CMPA    >EgrMonDecelLeanMin
         LBCS    L25296
 L250F8:
         CLRB
@@ -6419,19 +6419,19 @@ L2512E:
         BSET    $0580,Z,#$02
         BSET    $AA,Z,#$04
         LDAA    >ShortTermTrim1,Z
-        CMPA    >MapShortTermTrim1Thresh1
+        CMPA    >EgrMonTrimMin
         LBLT    L2529A
-        CMPA    >MapShortTermTrim1Thresh2
+        CMPA    >EgrMonTrimMax
         LBGT    L2529A
         BRCLR   >Options032F,#$40,L25196
         LDAA    >ShortTermTrim2,Z
-        CMPA    >MapShortTermTrim1Thresh1
+        CMPA    >EgrMonTrimMin
         LBLT    L2529A
-        CMPA    >MapShortTermTrim1Thresh2
+        CMPA    >EgrMonTrimMax
         LBGT    L2529A
 L25196:
         LDE     $057E,Z
-        CPE     >MapV057EThresh1
+        CPE     >EgrMonPhaseTime
         LBCC    L251D0
         INCW    $057E,Z
         LDAB    $0723,Z
@@ -6456,7 +6456,7 @@ L251D0:
 L251E0:
         BSET    $0580,Z,#$04
         LDE     $057E,Z
-        CPE     >MapV057EThresh2
+        CPE     >EgrMonPhaseTime2
         LBCC    L2522A
         INCW    $057E,Z
         LDAB    $0723,Z
@@ -6480,9 +6480,9 @@ L25222:
         JMP     L252A6
 L2522A:
         LDAA    $0588,Z
-        CMPA    >ThermistorV0588Value1
+        CMPA    >EgrMonResultMin
         BCS     L2524C
-        CMPA    >ThermistorV0588Value2
+        CMPA    >EgrMonResultMax
         BHI     L25252
         BSET    $0580,Z,#$88
         BCLR    $0580,Z,#$30
@@ -6497,7 +6497,7 @@ L25252:
 L25256:
         INC     $0589,Z
         LDAB    $0589,Z
-        CMPB    >MapV0589Thresh
+        CMPB    >EgrMonFailCount
         BCS     L25296
         BSET    $0580,Z,#$48
         BSET    $AA,Z,#$48
@@ -8388,7 +8388,7 @@ L282A4:
 L282B6:
         LDE     $0014,Y
         LDD     E,Z
-        CPD     >DiagThresh17
+        CPD     >CatMonTestLength
         LBCC    L2837A
         ADDD    #$01
         STD     E,Z
@@ -8435,11 +8435,11 @@ L28320:
         BEQ     L2834E
         BITB    #$04
         BEQ     L2833E
-        CMPA    >DiagThresh24
+        CMPA    >O2SwitchLean2
         LBHI    L285C8
         BRA     L28346
 L2833E:
-        CMPA    >DiagThresh18
+        CMPA    >O2SwitchLean
         LBHI    L285C8
 L28346:
         EORB    #$01
@@ -8448,11 +8448,11 @@ L28346:
 L2834E:
         BITB    #$04
         BEQ     L2835C
-        CMPA    >DiagThresh25
+        CMPA    >O2SwitchRich2
         LBCS    L285C8
         BRA     L28364
 L2835C:
-        CMPA    >DiagThresh19
+        CMPA    >O2SwitchRich
         LBCS    L285C8
 L28364:
         ORAB    #$01
@@ -8578,7 +8578,7 @@ L28478:
         LDAB    E,Z
         LDE     $00F0,Z
         PSHM    D,E
-        LDAA    >DiagValue7
+        LDAA    >O2SwitchFilterRich
         JSR     Blend16
         AIS     #$04
         STAB    $F2,Z
@@ -8587,7 +8587,7 @@ L28478:
         LDAB    E,Z
         LDE     $00F0,Z
         PSHM    D,E
-        LDAA    >DiagValue6
+        LDAA    >O2SwitchFilterLean
         JSR     Blend16
         AIS     #$04
         STAB    $F3,Z

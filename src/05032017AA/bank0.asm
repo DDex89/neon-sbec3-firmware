@@ -4161,18 +4161,18 @@ PurgeValue6:
         dc.b    $80                                      ; Byte used with; read by Sub_3E500.
 PurgeValue7:
         dc.b    $80                                      ; Byte used with; read by Sub_3E500.
-PurgeV0448Thresh:
-        dc.b    $05,$4B                                  ; Word compared with V0448; read by Sub_3E500.
+PurgeLearnTimeMax:
+        dc.b    $05,$4B                                  ; Purge vapor learning (Sub_3E500): length of the part-throttle phase (word)
 PurgeValue8:
         dc.b    $00                                      ; Byte used with; read by Sub_3E500.
-PurgeV0444Init1:
-        dc.b    $40                                      ; Byte stored into V0444; read by Sub_3E500.
-PurgeAdder3:
-        dc.b    $05                                      ; Byte added to; read by Sub_3E500.
-PurgeV0446Thresh:
-        dc.b    $10                                      ; Byte compared with V0446; read by Sub_3E500.
-PurgeV0444Thresh1:
-        dc.b    $80                                      ; Byte compared with V0444; read by Sub_3E500.
+PurgeLearnRateInit:
+        dc.b    $40                                      ; Purge vapor learning: start value of the learning rate $0444,Z
+PurgeLearnRateStep:
+        dc.b    $05                                      ; Purge vapor learning: increase of the learning rate
+PurgeLearnRateTime:
+        dc.b    $10                                      ; Purge vapor learning: loops between learning-rate increases
+PurgeLearnRateMax:
+        dc.b    $80                                      ; Purge vapor learning: upper limit of the learning rate
 PurgeV044CAdder:
         dc.b    $CD                                      ; Byte added to V044C; read by Sub_3E500.
 PurgeV0447Thresh:
@@ -4181,32 +4181,32 @@ PurgeAdder4:
         dc.b    $0F                                      ; Byte added to; read by Sub_3E500.
 PurgeV0444Thresh2:
         dc.b    $FF                                      ; Byte compared with V0444; read by Sub_3E500.
-PurgeV0444Init2:
-        dc.b    $40                                      ; Byte stored into V0444; read by Sub_3E500.
-PurgeV044AThresh:
-        dc.b    $61,$80                                  ; Word compared with V044A; read by Sub_3E500.
-PurgeV07E8Init:
-        dc.b    $E0                                      ; Byte stored into V07E8; read by Sub_3E500.
+PurgeLearnRateInit2:
+        dc.b    $40                                      ; Purge vapor learning: learning rate at closed throttle
+PurgeLearnTimeClosed:
+        dc.b    $61,$80                                  ; Purge vapor learning: length of the closed-throttle phase (word)
+PurgeVaporInit2:
+        dc.b    $E0                                      ; Start value of $07E8,Z (vapor learning)
 PurgeVaporPartInit:
-        dc.b    $E0                                      ; Byte stored into PurgeVaporPart; read by Sub_3E500.
-PurgeRampThresh5:
-        dc.b    $23                                      ; Byte compared with PurgeRamp; read by Sub_3E500.
-PurgeRampThresh6:
-        dc.b    $60                                      ; Byte compared with PurgeRamp; read by Sub_3E500.
-PurgeThresh3:
-        dc.b    $F0                                      ; Byte compared with; read by Sub_3E500.
-PurgeThresh4:
-        dc.b    $F0                                      ; Byte compared with; read by Sub_3E500.
+        dc.b    $E0                                      ; Start value of the learned part-throttle vapor PurgeVaporPart
+PurgeLearnRampMin:
+        dc.b    $23                                      ; Purge vapor learning runs at or above this purge ramp
+PurgeLearnRampFull:
+        dc.b    $60                                      ; Purge vapor learning: ramp at or above which the full step applies
+PurgeVaporMax:
+        dc.b    $F0                                      ; Purge vapor learning: upper limit of $07E8,Z
+PurgeVaporPartMax:
+        dc.b    $F0                                      ; Purge vapor learning: upper limit of PurgeVaporPart
 PurgeShortTermTrim1Thresh1:
         dc.b    $19                                      ; Byte compared with ShortTermTrim1; read by Sub_3E500.
 PurgeValue9:
         dc.b    $19                                      ; Byte used with; read by Sub_3E500.
 PurgeV044EThresh:
         dc.b    $32                                      ; Byte compared with V044E; read by Sub_3E500.
-PurgeV07ECThresh1:
-        dc.b    $1A                                      ; Byte compared with V07EC; read by Sub_3E500.
-PurgeV07ECThresh2:
-        dc.b    $1A                                      ; Byte compared with V07EC; read by Sub_3E500.
+PurgeLearnTrimCount:
+        dc.b    $1A                                      ; Purge vapor learning: trim events before a step
+PurgeLearnTrimCount2:
+        dc.b    $1A                                      ; Purge vapor learning: trim events before a step (second branch)
 
 ;---------------------------------------------------------------------------------------------------
 ; PurgeLearnUpClosed ($2001): 2D table, 3 points, unsigned
@@ -4281,10 +4281,10 @@ PurgeFuelBase:
 
 FlexLearnStartCoolantThresh2:
         dc.b    $58                                      ; Byte compared with StartCoolantTemp2; read by Sub_17FC4, Sub_3DE9C.
-PurgeSpeedThresh2:
-        dc.b    $1E                                      ; Byte compared with VehicleSpeed; read by Sub_3E500.
-PurgeSpeedThresh3:
-        dc.b    $1E                                      ; Byte compared with VehicleSpeed; read by Sub_3E500.
+PurgeLearnSpeedMax:
+        dc.b    $1E                                      ; Purge vapor learning: closed-throttle branch below this vehicle speed
+PurgeLearnSpeedMin:
+        dc.b    $1E                                      ; Purge vapor learning: part-throttle branch at or above this vehicle speed
 StartV0801Thresh:
         dc.b    $0C                                      ; Byte compared with V0801; read by Sub_0C50A, Reset, Sub_1594A +5. Fault: P1602.
 StartV043BValue:
@@ -4308,8 +4308,8 @@ PurgeAdder6:
         dc.b    $0A                                      ; Byte added to; read by Sub_17A1C, Sub_3DD3C.
 PurgeAdder7:
         dc.b    $0A                                      ; Byte added to; read by Sub_3DD3C.
-PurgeShortTermTrim1Thresh2:
-        dc.b    $CD                                      ; Byte compared with ShortTermTrim1; read by Sub_3E500.
+PurgeLearnTrimMin:
+        dc.b    $CD                                      ; Purge vapor learning: short-term trim at or below this value (signed) marks the rich limit
 O2Value35:
         dc.b    $F1                                      ; Byte used with; read by Sub_14802.
 SensorAdder5:
@@ -8867,41 +8867,41 @@ PurgeV006AThresh:
         dc.b    $29                                      ; Byte compared with V006A; read by Sub_3DD3C.
 DiagV05BDThresh:
         dc.b    $02                                      ; Byte compared with V05BD; read by Sub_252A8.
-MapV0581Thresh:
-        dc.b    $41                                      ; Byte compared with V0581; read by Sub_25000.
-MapCoolantThresh:
-        dc.b    $CD                                      ; Byte compared with CoolantTemp; read by Sub_25000.
-MapBatteryTempThresh:
-        dc.b    $84                                      ; Byte compared with BatteryTemp; read by Sub_25000.
-MapVacuumThresh:
-        dc.b    $20                                      ; Byte compared with ManifoldVacuum; read by Sub_25000.
-MapSpeedThresh:
-        dc.b    $2C                                      ; Byte compared with VehicleSpeed; read by Sub_25000.
-MapAccelFuelThresh:
-        dc.b    $00,$0B                                  ; Word compared with MapAccelFuel; read by Sub_25000.
-MapAccelTpsFuelThresh:
-        dc.b    $00,$0B                                  ; Word compared with AccelTpsFuel; read by Sub_25000.
-MapTipInFuelThresh:
-        dc.b    $00,$0B                                  ; Word compared with TipInFuel; read by Sub_25000.
-MapDecelLeanFuelThresh:
-        dc.b    $F2                                      ; Byte compared with DecelLeanFuel; read by Sub_25000.
+EgrMonSteadyTime:
+        dc.b    $41                                      ; EGR flow monitor: steady time ($0581,Z) before the test
+EgrMonCoolantMin:
+        dc.b    $CD                                      ; EGR flow monitor (Sub_25000, intrusive: switches EGR via $0580,Z and watches the trim): coolant at or above this value
+EgrMonBattTempMin:
+        dc.b    $84                                      ; EGR flow monitor: battery temperature at or above this value
+EgrMonVacuumMin:
+        dc.b    $20                                      ; EGR flow monitor: manifold vacuum at or above this value
+EgrMonSpeedMin:
+        dc.b    $2C                                      ; EGR flow monitor: vehicle speed at or above this value
+EgrMonMapAccelMax:
+        dc.b    $00,$0B                                  ; EGR flow monitor: MAP acceleration fuel at or below this value
+EgrMonTpsAccelMax:
+        dc.b    $00,$0B                                  ; EGR flow monitor: throttle acceleration fuel at or below this value
+EgrMonTipInMax:
+        dc.b    $00,$0B                                  ; EGR flow monitor: tip-in fuel at or below this value
+EgrMonDecelLeanMin:
+        dc.b    $F2                                      ; EGR flow monitor: decel enleanment, when present, at or above this value
         dc.b    $10,$F0,$10,$F0,$18,$18,$12
-MapV057EThresh1:
-        dc.b    $00,$D5                                  ; Word compared with V057E; read by Sub_25000.
+EgrMonPhaseTime:
+        dc.b    $00,$D5                                  ; EGR flow monitor: length of the first test phase ($057E,Z)
         dc.b    $2A,$49,$26,$38,$06,$1F,$2A,$49,$26,$3D,$06,$29
-MapShortTermTrim1Thresh1:
-        dc.b    $E6                                      ; Byte compared with ShortTermTrim1; read by Sub_25000.
-MapShortTermTrim1Thresh2:
-        dc.b    $24                                      ; Byte compared with ShortTermTrim1; read by Sub_25000.
-MapV057EThresh2:
-        dc.b    $00,$C7                                  ; Word compared with V057E; read by Sub_25000.
+EgrMonTrimMin:
+        dc.b    $E6                                      ; EGR flow monitor: short-term trim at or above this value (signed)
+EgrMonTrimMax:
+        dc.b    $24                                      ; EGR flow monitor: short-term trim at or below this value (signed)
+EgrMonPhaseTime2:
+        dc.b    $00,$C7                                  ; EGR flow monitor: length of the second test phase
         dc.b    $24,$4A,$1F,$3F,$06,$21,$49,$4A,$1F,$3F,$06,$21
-ThermistorV0588Value1:
-        dc.b    $14                                      ; Byte used with V0588; read by Sub_25000, Sub_32318.
-ThermistorV0588Value2:
-        dc.b    $F6                                      ; Byte used with V0588; read by Sub_25000, Sub_32318.
-MapV0589Thresh:
-        dc.b    $03                                      ; Byte compared with V0589; read by Sub_25000.
+EgrMonResultMin:
+        dc.b    $14                                      ; EGR flow monitor: trim response below this value fails the test
+EgrMonResultMax:
+        dc.b    $F6                                      ; EGR flow monitor: trim response above this value passes it
+EgrMonFailCount:
+        dc.b    $03                                      ; EGR flow monitor: failed tests before the fault
 FuelOffset4:
         dc.b    $03                                      ; Byte subtracted from result of FuelSysLimit2; read by Sub_2A4F2, Sub_2A6C0.
 FuelAdder:
@@ -9050,28 +9050,28 @@ CatMonDecelLeanMin:
 DiagThresh16:
         dc.b    $38                                      ; Byte compared with; read by Sub_281E2.
         dc.b    $28,$B9,$1E,$3F,$2D,$50,$29,$44
-DiagThresh17:
-        dc.b    $06,$3B                                  ; Word compared with; read by Sub_281E2.
+CatMonTestLength:
+        dc.b    $06,$3B                                  ; Catalyst/O2 switch analysis: test length (word counter)
         dc.b    $47,$61,$1D,$40,$2B,$A5,$26,$47,$1A,$E6,$1A,$E6,$1A,$E6,$1A,$E6
         dc.b    $18,$18,$18,$18,$11,$87,$8D,$87,$8D
 DiagValue4:
         dc.b    $88                                      ; Byte used with; read by Sub_281E2.
 DiagValue5:
         dc.b    $8C                                      ; Byte used with; read by Sub_281E2.
-DiagThresh18:
-        dc.b    $12                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh19:
-        dc.b    $24                                      ; Byte compared with; read by Sub_281E2.
+O2SwitchLean:
+        dc.b    $12                                      ; Catalyst/O2 switch analysis (Sub_281E2): raw O2 below this value counts as lean (one direction)
+O2SwitchRich:
+        dc.b    $24                                      ; Catalyst/O2 switch analysis: raw O2 above this value counts as rich
 DiagThresh20:
         dc.b    $12                                      ; Byte compared with; read by Sub_281E2.
 DiagThresh21:
         dc.b    $4D                                      ; Byte compared with; read by Sub_281E2.
 DiagThresh22:
         dc.b    $06                                      ; Byte compared with; read by Sub_281E2.
-DiagValue6:
-        dc.b    $1A                                      ; Byte used with; read by Sub_281E2.
-DiagValue7:
-        dc.b    $66                                      ; Byte used with; read by Sub_281E2.
+O2SwitchFilterLean:
+        dc.b    $1A                                      ; Catalyst/O2 switch analysis: filter weight of the lean peak
+O2SwitchFilterRich:
+        dc.b    $66                                      ; Catalyst/O2 switch analysis: filter weight of the rich peak
 ThermistorThresh1:
         dc.b    $C8                                      ; Byte compared with; read by Sub_32318.
 ThermistorThresh2:
@@ -9082,10 +9082,10 @@ ThermistorThresh4:
         dc.b    $9A                                      ; Byte compared with; read by Sub_32318.
 DiagThresh23:
         dc.b    $80                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh24:
-        dc.b    $0F                                      ; Byte compared with; read by Sub_281E2.
-DiagThresh25:
-        dc.b    $21                                      ; Byte compared with; read by Sub_281E2.
+O2SwitchLean2:
+        dc.b    $0F                                      ; As O2SwitchLean for the other direction
+O2SwitchRich2:
+        dc.b    $21                                      ; As O2SwitchRich for the other direction
         dc.b    $14,$E6,$14,$E6,$18,$18,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF
         dc.b    $FF,$FF,$03,$80,$01,$06,$02,$0D,$03,$13,$FF,$FF,$FF,$FF
 SensorV0A64Thresh1:
