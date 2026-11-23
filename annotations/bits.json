@@ -762,6 +762,34 @@
   "4": "monitor data reset done (MonDataReset)",
   "0": "misfire threshold in the closed-loop range (MisfireThreshold)"
  },
+ "MonFlags09D": {
+  "7": "P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
+  "6": "P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
+  "5": "P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
+  "4": "P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
+  "3": "P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
+  "2": "P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
+  "1": "P1281 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)",
+  "0": "P0551 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)"
+ },
+ "MonFlags09E": {
+  "7": "P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
+  "6": "P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
+  "5": "P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
+  "4": "P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
+  "3": "P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
+  "2": "P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
+  "1": "P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)",
+  "0": "P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)"
+ },
+ "MonFlags09F": {
+  "7": "P0463 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)",
+  "6": "P0462 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)",
+  "5": "P0460 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)",
+  "4": "P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)",
+  "3": "P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)",
+  "2": "P1698 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)"
+ },
  "MonFlags101": {
   "7": "body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)",
   "5": "fuel sender check result, first kind (FuelSenderMonitor)",
@@ -776,12 +804,12 @@
   "2": "monitor data state bit read by MonData643Update, MonTaskC, MonTaskE"
  },
  "MonFlags65A": {
-  "7": "fuel sender fault reported, first kind (FuelSenderMonitor)",
-  "6": "fuel sender fault reported, second kind (FuelSenderMonitor)",
+  "7": "P0463: fuel sender fault reported, first kind (FuelSenderMonitor)",
+  "6": "P0462: fuel sender fault reported, second kind (FuelSenderMonitor)",
   "5": "fuel sender fault (P0460) reported (FuelSenderMonitor)",
-  "4": "transmission fault reported to the OBD records (TransMilRequest)",
-  "3": "EGR position monitor result reported (EgrPositionMonitor)",
-  "2": "body bus timeout fault reported (BodyBusTimeout)"
+  "4": "P0700: transmission fault reported to the OBD records (TransMilRequest)",
+  "3": "P0404: EGR position monitor result reported (EgrPositionMonitor)",
+  "2": "P1698: body bus timeout fault reported (BodyBusTimeout)"
  },
  "MonStatusPurge": {
   "7": "purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)",
@@ -837,6 +865,16 @@
   "4": "adaptive cell learning direction known (O2LearnEnable, O2CellUpdate)",
   "1": "adaptive cell update: lean step (O2CellUpdate)",
   "0": "adaptive cell update: rich step (O2CellUpdate)"
+ },
+ "O2MonFlags": {
+  "7": "P0138 result (fault-to-status map, paired with MonFlags09E)",
+  "6": "P0158 result (fault-to-status map, paired with MonFlags09E)",
+  "5": "P0140 result (fault-to-status map, paired with MonFlags09E)",
+  "4": "P0160 result (fault-to-status map, paired with MonFlags09E)",
+  "3": "P0137 result (fault-to-status map, paired with MonFlags09E)",
+  "2": "P0157 result (fault-to-status map, paired with MonFlags09E)",
+  "1": "P0153 result (fault-to-status map, paired with MonFlags09E)",
+  "0": "P0133 result (fault-to-status map, paired with MonFlags09E)"
  },
  "O2ResetFlags": {
   "5": "post-fuel-cut O2 check pending, sensor 1 (O2PostFuelCheck)",
@@ -1308,14 +1346,14 @@
   "0": "speed control switch"
  },
  "SwitchMonFlags": {
-  "7": "torque converter clutch monitor: fault reported (TccMonitor)",
-  "6": "park/neutral switch monitor: fault reported (PnSwitchMonitor)",
-  "5": "brake switch monitor: fault reported (BrakeSwitchMonitor)",
-  "4": "vehicle speed monitor: fault reported (VssMonitor)",
-  "3": "idle rpm monitor: fault reported (IdleRpmMonitor)",
-  "2": "thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)",
-  "1": "thermostat monitor running (ThermostatMonitor)",
-  "0": "power steering switch monitor: switch state for the report (PspSwitchMonitor)"
+  "7": "P0740: torque converter clutch monitor: fault reported (TccMonitor)",
+  "6": "P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)",
+  "5": "P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)",
+  "4": "P0500: vehicle speed monitor: fault reported (VssMonitor)",
+  "3": "P1294: idle rpm monitor: fault reported (IdleRpmMonitor)",
+  "2": "P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)",
+  "1": "P1281: thermostat monitor running (ThermostatMonitor)",
+  "0": "P0551: power steering switch monitor: switch state for the report (PspSwitchMonitor)"
  },
  "SystemFlags00A": {
   "7": "cleared after an output driver status read and every 256 main loop passes",

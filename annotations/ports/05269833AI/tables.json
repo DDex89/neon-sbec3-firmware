@@ -12284,6 +12284,20 @@
    "rows": 256,
    "row_size": 10,
    "desc": "Fault attributes: id, trigger count, blink code, attributes, bit mask, byte offset, P-code (BCD), 2 spare bytes"
+  },
+  "713B": {
+   "name": "BitCollectMaps",
+   "kind": "bitmaps",
+   "rows": 29,
+   "row_size": 32,
+   "desc": "Bit maps for CollectBits: 8 entries of RAM offset, mask and output bit build one status byte (switch inputs for SwitchInputsRead and SwitchBitsCollect, output and fault status bytes for the SCI and bus messages)"
+  },
+  "758C": {
+   "name": "FaultStatusMap",
+   "kind": "faultmap",
+   "rows": 43,
+   "row_size": 10,
+   "desc": "Fault-to-status map: fault table row, monitor status byte and bit, second status byte and bit (read by ObdFaultReport and the OBD request code)"
   }
  }
 }

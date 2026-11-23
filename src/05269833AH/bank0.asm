@@ -7961,7 +7961,7 @@ O2HeaterMonitorConds:
 ;---------------------------------------------------------------------------------------------------
 O2HeaterMonitorConds2:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: bit 4
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -7990,7 +7990,7 @@ O2HeaterMonitorConds3:
 ;---------------------------------------------------------------------------------------------------
 O2HeaterMonitorConds4:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: bit 4
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8019,7 +8019,7 @@ O2HeaterMonitorConds5:
 ;---------------------------------------------------------------------------------------------------
 O2HeaterMonitorConds6:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: bit 4
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8048,7 +8048,7 @@ O2HeaterMonitorConds7:
 ;---------------------------------------------------------------------------------------------------
 O2HeaterMonitorConds8:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: bit 4
+        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8116,9 +8116,9 @@ MisfireEnableCheckConds2:
         dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: bit 4
         dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: bit 4
         dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: bit 4
-        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2
-        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: bit 7; bit 6; bit 5; bit 4; bit 3; bit 2; bit 1; bit 0
-        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: bit 3
+        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags); P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags); P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$14,$01,$23,$00
         dc.b    $06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00
@@ -9417,64 +9417,274 @@ DwellTime:
         dc.b    28,85,123,169,192,192,192,192,192        ; row 7
         dc.b    26,74,108,148,185,192,192,192,192        ; row 8
 
-        dc.b    $0A,$47,$40,$80,$0A,$47,$80,$40,$0A,$46,$01,$20,$0A,$47,$20,$10
-        dc.b    $0A,$47,$08,$08,$0A,$47,$10,$04,$0A,$47,$04,$02,$0A,$47,$01,$01
-        dc.b    $0A,$46,$02,$80,$10,$00,$08,$40,$79,$07,$80,$20,$10,$00,$04,$10
-        dc.b    $0C,$21,$08,$08,$00,$00,$00,$04,$00,$00,$00,$02,$0A,$47,$02,$01
-        dc.b    $09,$44,$02,$80,$09,$43,$40,$40,$10,$02,$08,$20,$09,$43,$10,$10
-        dc.b    $09,$44,$20,$08,$09,$43,$08,$04,$09,$44,$04,$02,$09,$43,$01,$01
-        dc.b    $09,$44,$02,$80,$09,$43,$40,$40,$10,$02,$08,$20,$09,$43,$10,$10
-        dc.b    $09,$44,$20,$08,$09,$43,$08,$04,$10,$13,$04,$02,$09,$43,$01,$01
-        dc.b    $09,$44,$02,$80,$09,$43,$40,$40,$10,$02,$08,$20,$09,$43,$10,$10
-        dc.b    $10,$02,$02,$08,$09,$43,$08,$04,$09,$44,$04,$02,$09,$43,$01,$01
-        dc.b    $09,$44,$08,$80,$09,$44,$10,$40,$10,$02,$01,$20,$10,$13,$80,$10
-        dc.b    $10,$02,$10,$08,$09,$42,$02,$04,$09,$44,$80,$02,$10,$1F,$20,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$10,$02,$01,$20,$09,$42,$04,$10
-        dc.b    $09,$42,$01,$08,$09,$44,$01,$04,$10,$03,$40,$02,$09,$43,$80,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $0A,$48,$08,$08,$0A,$48,$04,$04,$0A,$48,$02,$02,$0A,$48,$01,$01
-        dc.b    $0A,$49,$80,$80,$0A,$49,$40,$40,$0A,$49,$20,$20,$0A,$4A,$10,$10
-        dc.b    $0A,$4A,$08,$08,$0A,$4A,$04,$04,$0A,$4A,$02,$02,$0A,$4A,$01,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $0A,$48,$08,$08,$0A,$48,$04,$04,$0A,$48,$02,$02,$0A,$48,$01,$01
-        dc.b    $0A,$49,$80,$80,$0A,$49,$40,$40,$0A,$49,$20,$20,$0A,$49,$10,$10
-        dc.b    $0A,$4A,$08,$08,$0A,$4A,$04,$04,$00,$00,$00,$02,$0A,$4A,$01,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $0A,$48,$08,$08,$0A,$48,$04,$04,$0A,$48,$02,$02,$0A,$48,$01,$01
-        dc.b    $0A,$49,$80,$80,$0A,$49,$40,$40,$0A,$49,$20,$20,$0A,$4A,$10,$10
-        dc.b    $0A,$4A,$08,$08,$0A,$4A,$04,$04,$0A,$4A,$02,$02,$0A,$4A,$01,$01
-        dc.b    $09,$43,$80,$80,$09,$43,$40,$40,$00,$00,$00,$20,$09,$43,$10,$10
-        dc.b    $09,$43,$08,$08,$09,$42,$04,$04,$00,$00,$00,$02,$09,$43,$01,$01
-        dc.b    $09,$44,$80,$80,$00,$00,$00,$40,$00,$00,$00,$20,$09,$44,$10,$10
-        dc.b    $09,$44,$08,$08,$09,$44,$04,$04,$09,$44,$02,$02,$09,$44,$01,$01
-        dc.b    $00,$00,$00,$80,$09,$43,$40,$40,$00,$00,$00,$20,$09,$43,$10,$10
-        dc.b    $09,$43,$08,$08,$09,$42,$01,$04,$00,$00,$00,$02,$09,$43,$01,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$09,$44,$10,$10
-        dc.b    $09,$44,$08,$08,$00,$00,$00,$04,$09,$44,$02,$02,$09,$44,$01,$01
-        dc.b    $00,$00,$00,$80,$09,$43,$40,$40,$00,$00,$00,$20,$09,$43,$10,$10
-        dc.b    $09,$43,$08,$08,$09,$43,$04,$04,$09,$42,$02,$02,$09,$43,$01,$01
-        dc.b    $09,$44,$80,$80,$00,$00,$00,$40,$09,$44,$20,$20,$09,$44,$10,$10
-        dc.b    $09,$44,$08,$08,$09,$44,$04,$04,$09,$44,$02,$02,$00,$00,$00,$01
-        dc.b    $06,$B4,$01,$80,$05,$06,$06,$40,$05,$0B,$30,$20,$05,$0A,$0C,$10
-        dc.b    $0D,$B8,$01,$08,$0D,$B8,$04,$04,$06,$B4,$10,$02,$06,$B4,$80,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $00,$00,$00,$08,$00,$00,$00,$04,$09,$4C,$80,$02,$09,$BC,$01,$01
-        dc.b    $00,$00,$00,$80,$0C,$31,$20,$40,$0C,$39,$10,$20,$00,$00,$00,$10
-        dc.b    $09,$43,$01,$08,$0A,$46,$01,$04,$00,$00,$00,$02,$00,$00,$00,$01
-        dc.b    $00,$00,$00,$80,$06,$B1,$01,$40,$0D,$57,$08,$20,$09,$42,$01,$10
-        dc.b    $04,$03,$08,$08,$08,$57,$40,$03,$08,$56,$08,$02,$08,$56,$04,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $04,$03,$08,$08,$0A,$46,$01,$04,$04,$07,$01,$02,$04,$07,$02,$01
-        dc.b    $08,$6C,$04,$80,$00,$00,$00,$40,$0D,$57,$08,$20,$09,$42,$01,$10
-        dc.b    $00,$00,$00,$08,$08,$57,$40,$03,$08,$56,$08,$02,$08,$56,$04,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $00,$00,$00,$08,$00,$00,$00,$04,$00,$00,$00,$02,$00,$00,$00,$01
-        dc.b    $06,$B4,$01,$80,$05,$06,$06,$40,$05,$0B,$30,$20,$05,$0A,$0C,$10
-        dc.b    $0D,$B8,$01,$08,$0D,$B8,$04,$04,$06,$B4,$10,$02,$06,$B4,$80,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $04,$03,$08,$08,$04,$07,$01,$04,$00,$00,$00,$02,$0A,$1E,$10,$01
-        dc.b    $00,$00,$00,$80,$00,$00,$00,$40,$00,$00,$00,$20,$00,$00,$00,$10
-        dc.b    $09,$43,$01,$08,$0A,$46,$01,$04,$00,$00,$00,$02,$04,$07,$02,$01
+
+;---------------------------------------------------------------------------------------------------
+; BitCollectMaps ($713B): 29 rows of 32 bytes
+; Bit maps for CollectBits: 8 entries of RAM offset, mask and output bit build one status byte (switch inputs for SwitchInputsRead and SwitchBitsCollect, output and fault status bytes for the SCI and bus messages)
+;---------------------------------------------------------------------------------------------------
+BitCollectMaps:
+; map 0 ($713B): used by SciSendByte
+        dc.b    $0A,$47,$40,$80                          ; out bit 7 <- SwitchInputs2 & $40 (switch input used by the idle air code (load switch, probably power steering or A/C))
+        dc.b    $0A,$47,$80,$40                          ; out bit 6 <- SwitchInputs2 & $80 (switch input used by EquipmentDetect and AcClutchControl (A/C request, probably))
+        dc.b    $0A,$46,$01,$20                          ; out bit 5 <- SwitchInputs & $01 (brake switch (BrakeSwitchMonitor, idle, speed damping, purge test))
+        dc.b    $0A,$47,$20,$10                          ; out bit 4 <- SwitchInputs2 & $20 (park/neutral switch (gear state, starter cut, park/neutral monitor))
+        dc.b    $0A,$47,$08,$08                          ; out bit 3 <- SwitchInputs2 & $08 (speed control switch)
+        dc.b    $0A,$47,$10,$04                          ; out bit 2 <- SwitchInputs2 & $10 (speed control switch (on/off, probably))
+        dc.b    $0A,$47,$04,$02                          ; out bit 1 <- SwitchInputs2 & $04 (speed control switch (set at reset))
+        dc.b    $0A,$47,$01,$01                          ; out bit 0 <- SwitchInputs2 & $01 (speed control switch)
+; map 1 ($715B): used by SciSendByte
+        dc.b    $0A,$46,$02,$80                          ; out bit 7 <- SwitchInputs & $02 (bit 1)
+        dc.b    $10,$00,$08,$40                          ; out bit 6 <- IoInputs0 & $08 (key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path)
+        dc.b    $79,$07,$80,$20                          ; out bit 5 <- PORTGP & $80 (bit 7)
+        dc.b    $10,$00,$04,$10                          ; out bit 4 <- IoInputs0 & $04 (ASD relay output present, probably (AsdRelayCheck, the reference-event code))
+        dc.b    $0C,$21,$08,$08                          ; out bit 3 <- AcFlags & $08 (A/C request from the bus (message bit 0 in CcdReceive))
+        dc.b    $00,$00,$00,$04                          ; unused
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $0A,$47,$02,$01                          ; out bit 0 <- SwitchInputs2 & $02 (speed control switch)
+; map 2 ($717B): used by SciSendByte
+        dc.b    $09,$44,$02,$80                          ; out bit 7 <- ControlFlags944 & $02 (toggled by ActuatorTestMain, not read)
+        dc.b    $09,$43,$40,$40                          ; out bit 6 <- ControlFlags943 & $40 (set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire))
+        dc.b    $10,$02,$08,$20                          ; out bit 5 <- IoStatus2 & $08 (bit 3)
+        dc.b    $09,$43,$10,$10                          ; out bit 4 <- ControlFlags943 & $10 (ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it)
+        dc.b    $09,$44,$20,$08                          ; out bit 3 <- ControlFlags944 & $20 (output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read)
+        dc.b    $09,$43,$08,$04                          ; out bit 2 <- ControlFlags943 & $08 (fuel pump relay on, probably (set and cleared with bit 4))
+        dc.b    $09,$44,$04,$02                          ; out bit 1 <- ControlFlags944 & $04 (EGR solenoid on (EgrEnable))
+        dc.b    $09,$43,$01,$01                          ; out bit 0 <- ControlFlags943 & $01 (A/C clutch relay on (AcCutLogic); the idle code reads it)
+; map 3 ($719B): used by SciSendByte
+        dc.b    $09,$44,$02,$80                          ; out bit 7 <- ControlFlags944 & $02 (toggled by ActuatorTestMain, not read)
+        dc.b    $09,$43,$40,$40                          ; out bit 6 <- ControlFlags943 & $40 (set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire))
+        dc.b    $10,$02,$08,$20                          ; out bit 5 <- IoStatus2 & $08 (bit 3)
+        dc.b    $09,$43,$10,$10                          ; out bit 4 <- ControlFlags943 & $10 (ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it)
+        dc.b    $09,$44,$20,$08                          ; out bit 3 <- ControlFlags944 & $20 (output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read)
+        dc.b    $09,$43,$08,$04                          ; out bit 2 <- ControlFlags943 & $08 (fuel pump relay on, probably (set and cleared with bit 4))
+        dc.b    $10,$13,$04,$02                          ; out bit 1 <- IoCtl13 & $04 (bit 2)
+        dc.b    $09,$43,$01,$01                          ; out bit 0 <- ControlFlags943 & $01 (A/C clutch relay on (AcCutLogic); the idle code reads it)
+; map 4 ($71BB): used by SciSendByte
+        dc.b    $09,$44,$02,$80                          ; out bit 7 <- ControlFlags944 & $02 (toggled by ActuatorTestMain, not read)
+        dc.b    $09,$43,$40,$40                          ; out bit 6 <- ControlFlags943 & $40 (set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire))
+        dc.b    $10,$02,$08,$20                          ; out bit 5 <- IoStatus2 & $08 (bit 3)
+        dc.b    $09,$43,$10,$10                          ; out bit 4 <- ControlFlags943 & $10 (ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it)
+        dc.b    $10,$02,$02,$08                          ; out bit 3 <- IoStatus2 & $02 (bit 1)
+        dc.b    $09,$43,$08,$04                          ; out bit 2 <- ControlFlags943 & $08 (fuel pump relay on, probably (set and cleared with bit 4))
+        dc.b    $09,$44,$04,$02                          ; out bit 1 <- ControlFlags944 & $04 (EGR solenoid on (EgrEnable))
+        dc.b    $09,$43,$01,$01                          ; out bit 0 <- ControlFlags943 & $01 (A/C clutch relay on (AcCutLogic); the idle code reads it)
+; map 5 ($71DB): used by SciSendByte
+        dc.b    $09,$44,$08,$80                          ; out bit 7 <- ControlFlags944 & $08 (second fan relay, probably; driven only with A/C fitted)
+        dc.b    $09,$44,$10,$40                          ; out bit 6 <- ControlFlags944 & $10 (radiator fan relay, probably (FanControl, BusTempFlag, output test))
+        dc.b    $10,$02,$01,$20                          ; out bit 5 <- IoStatus2 & $01 (bit 0)
+        dc.b    $10,$13,$80,$10                          ; out bit 4 <- IoCtl13 & $80 (bit 7)
+        dc.b    $10,$02,$10,$08                          ; out bit 3 <- IoStatus2 & $10 (bit 4)
+        dc.b    $09,$42,$02,$04                          ; out bit 2 <- FanBusFlags & $02 (charge lamp off: no charge fault and battery not low (ChargeLampRequest))
+        dc.b    $09,$44,$80,$02                          ; out bit 1 <- ControlFlags944 & $80 (set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7))
+        dc.b    $10,$1F,$20,$01                          ; out bit 0 <- IoCfg1FL & $20 (manifold tuning valve driver status (MtvCheck))
+; map 6 ($71FB): used by SciSendByte
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $10,$02,$01,$20                          ; out bit 5 <- IoStatus2 & $01 (bit 0)
+        dc.b    $09,$42,$04,$10                          ; out bit 4 <- FanBusFlags & $04 (flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart))
+        dc.b    $09,$42,$01,$08                          ; out bit 3 <- FanBusFlags & $01 (fan request on the bus (BusTempFlag, output test))
+        dc.b    $09,$44,$01,$04                          ; out bit 2 <- ControlFlags944 & $01 (starter cut active (StarterCut))
+        dc.b    $10,$03,$40,$02                          ; out bit 1 <- IoStatus3 & $40 (leak detection pump solenoid status (LdpSolenoidCheck))
+        dc.b    $09,$43,$80,$01                          ; out bit 0 <- ControlFlags943 & $80 (A/C cut active (AcCutControl timer running))
+; map 7 ($721B): used by SwitchInputsRead
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $0A,$48,$08,$08                          ; out bit 3 <- SwitchInputsA48 & $08 (bit 3)
+        dc.b    $0A,$48,$04,$04                          ; out bit 2 <- SwitchInputsA48 & $04 (bit 2)
+        dc.b    $0A,$48,$02,$02                          ; out bit 1 <- SwitchInputsA48 & $02 (bit 1)
+        dc.b    $0A,$48,$01,$01                          ; out bit 0 <- SwitchInputsA48 & $01 (bit 0)
+; map 8 ($723B): used by SwitchInputsRead
+        dc.b    $0A,$49,$80,$80                          ; out bit 7 <- $0A49,Z & $80 (bit 7)
+        dc.b    $0A,$49,$40,$40                          ; out bit 6 <- $0A49,Z & $40 (bit 6)
+        dc.b    $0A,$49,$20,$20                          ; out bit 5 <- $0A49,Z & $20 (bit 5)
+        dc.b    $0A,$4A,$10,$10                          ; out bit 4 <- SpeedCtlSwitchFlags & $10 (bit 4)
+        dc.b    $0A,$4A,$08,$08                          ; out bit 3 <- SpeedCtlSwitchFlags & $08 (bit 3)
+        dc.b    $0A,$4A,$04,$04                          ; out bit 2 <- SpeedCtlSwitchFlags & $04 (bit 2)
+        dc.b    $0A,$4A,$02,$02                          ; out bit 1 <- SpeedCtlSwitchFlags & $02 (bit 1)
+        dc.b    $0A,$4A,$01,$01                          ; out bit 0 <- SpeedCtlSwitchFlags & $01 (bit 0)
+; map 9 ($725B): used by SwitchInputsRead
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $0A,$48,$08,$08                          ; out bit 3 <- SwitchInputsA48 & $08 (bit 3)
+        dc.b    $0A,$48,$04,$04                          ; out bit 2 <- SwitchInputsA48 & $04 (bit 2)
+        dc.b    $0A,$48,$02,$02                          ; out bit 1 <- SwitchInputsA48 & $02 (bit 1)
+        dc.b    $0A,$48,$01,$01                          ; out bit 0 <- SwitchInputsA48 & $01 (bit 0)
+; map 10 ($727B): used by SwitchInputsRead
+        dc.b    $0A,$49,$80,$80                          ; out bit 7 <- $0A49,Z & $80 (bit 7)
+        dc.b    $0A,$49,$40,$40                          ; out bit 6 <- $0A49,Z & $40 (bit 6)
+        dc.b    $0A,$49,$20,$20                          ; out bit 5 <- $0A49,Z & $20 (bit 5)
+        dc.b    $0A,$49,$10,$10                          ; out bit 4 <- $0A49,Z & $10 (bit 4)
+        dc.b    $0A,$4A,$08,$08                          ; out bit 3 <- SpeedCtlSwitchFlags & $08 (bit 3)
+        dc.b    $0A,$4A,$04,$04                          ; out bit 2 <- SpeedCtlSwitchFlags & $04 (bit 2)
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $0A,$4A,$01,$01                          ; out bit 0 <- SpeedCtlSwitchFlags & $01 (bit 0)
+; map 11 ($729B): used by SwitchInputsRead
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $0A,$48,$08,$08                          ; out bit 3 <- SwitchInputsA48 & $08 (bit 3)
+        dc.b    $0A,$48,$04,$04                          ; out bit 2 <- SwitchInputsA48 & $04 (bit 2)
+        dc.b    $0A,$48,$02,$02                          ; out bit 1 <- SwitchInputsA48 & $02 (bit 1)
+        dc.b    $0A,$48,$01,$01                          ; out bit 0 <- SwitchInputsA48 & $01 (bit 0)
+; map 12 ($72BB): used by SwitchInputsRead
+        dc.b    $0A,$49,$80,$80                          ; out bit 7 <- $0A49,Z & $80 (bit 7)
+        dc.b    $0A,$49,$40,$40                          ; out bit 6 <- $0A49,Z & $40 (bit 6)
+        dc.b    $0A,$49,$20,$20                          ; out bit 5 <- $0A49,Z & $20 (bit 5)
+        dc.b    $0A,$4A,$10,$10                          ; out bit 4 <- SpeedCtlSwitchFlags & $10 (bit 4)
+        dc.b    $0A,$4A,$08,$08                          ; out bit 3 <- SpeedCtlSwitchFlags & $08 (bit 3)
+        dc.b    $0A,$4A,$04,$04                          ; out bit 2 <- SpeedCtlSwitchFlags & $04 (bit 2)
+        dc.b    $0A,$4A,$02,$02                          ; out bit 1 <- SpeedCtlSwitchFlags & $02 (bit 1)
+        dc.b    $0A,$4A,$01,$01                          ; out bit 0 <- SpeedCtlSwitchFlags & $01 (bit 0)
+; map 13 ($72DB): used by SwitchBitsCollect
+        dc.b    $09,$43,$80,$80                          ; out bit 7 <- ControlFlags943 & $80 (A/C cut active (AcCutControl timer running))
+        dc.b    $09,$43,$40,$40                          ; out bit 6 <- ControlFlags943 & $40 (set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire))
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $09,$43,$10,$10                          ; out bit 4 <- ControlFlags943 & $10 (ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it)
+        dc.b    $09,$43,$08,$08                          ; out bit 3 <- ControlFlags943 & $08 (fuel pump relay on, probably (set and cleared with bit 4))
+        dc.b    $09,$42,$04,$04                          ; out bit 2 <- FanBusFlags & $04 (flex idle learning active, reported on the bus (FlexIdleEnable, FlexColdStart))
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $09,$43,$01,$01                          ; out bit 0 <- ControlFlags943 & $01 (A/C clutch relay on (AcCutLogic); the idle code reads it)
+; map 14 ($72FB): used by SwitchBitsCollect
+        dc.b    $09,$44,$80,$80                          ; out bit 7 <- ControlFlags944 & $80 (set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7))
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $09,$44,$10,$10                          ; out bit 4 <- ControlFlags944 & $10 (radiator fan relay, probably (FanControl, BusTempFlag, output test))
+        dc.b    $09,$44,$08,$08                          ; out bit 3 <- ControlFlags944 & $08 (second fan relay, probably; driven only with A/C fitted)
+        dc.b    $09,$44,$04,$04                          ; out bit 2 <- ControlFlags944 & $04 (EGR solenoid on (EgrEnable))
+        dc.b    $09,$44,$02,$02                          ; out bit 1 <- ControlFlags944 & $02 (toggled by ActuatorTestMain, not read)
+        dc.b    $09,$44,$01,$01                          ; out bit 0 <- ControlFlags944 & $01 (starter cut active (StarterCut))
+; map 15 ($731B): used by SwitchBitsCollect
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $09,$43,$40,$40                          ; out bit 6 <- ControlFlags943 & $40 (set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire))
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $09,$43,$10,$10                          ; out bit 4 <- ControlFlags943 & $10 (ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it)
+        dc.b    $09,$43,$08,$08                          ; out bit 3 <- ControlFlags943 & $08 (fuel pump relay on, probably (set and cleared with bit 4))
+        dc.b    $09,$42,$01,$04                          ; out bit 2 <- FanBusFlags & $01 (fan request on the bus (BusTempFlag, output test))
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $09,$43,$01,$01                          ; out bit 0 <- ControlFlags943 & $01 (A/C clutch relay on (AcCutLogic); the idle code reads it)
+; map 16 ($733B): used by SwitchBitsCollect
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $09,$44,$10,$10                          ; out bit 4 <- ControlFlags944 & $10 (radiator fan relay, probably (FanControl, BusTempFlag, output test))
+        dc.b    $09,$44,$08,$08                          ; out bit 3 <- ControlFlags944 & $08 (second fan relay, probably; driven only with A/C fitted)
+        dc.b    $00,$00,$00,$04                          ; unused
+        dc.b    $09,$44,$02,$02                          ; out bit 1 <- ControlFlags944 & $02 (toggled by ActuatorTestMain, not read)
+        dc.b    $09,$44,$01,$01                          ; out bit 0 <- ControlFlags944 & $01 (starter cut active (StarterCut))
+; map 17 ($735B): used by SwitchBitsCollect
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $09,$43,$40,$40                          ; out bit 6 <- ControlFlags943 & $40 (set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire))
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $09,$43,$10,$10                          ; out bit 4 <- ControlFlags943 & $10 (ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it)
+        dc.b    $09,$43,$08,$08                          ; out bit 3 <- ControlFlags943 & $08 (fuel pump relay on, probably (set and cleared with bit 4))
+        dc.b    $09,$43,$04,$04                          ; out bit 2 <- ControlFlags943 & $04 (output toggled by EgrOutputTest, not read)
+        dc.b    $09,$42,$02,$02                          ; out bit 1 <- FanBusFlags & $02 (charge lamp off: no charge fault and battery not low (ChargeLampRequest))
+        dc.b    $09,$43,$01,$01                          ; out bit 0 <- ControlFlags943 & $01 (A/C clutch relay on (AcCutLogic); the idle code reads it)
+; map 18 ($737B): used by SwitchBitsCollect
+        dc.b    $09,$44,$80,$80                          ; out bit 7 <- ControlFlags944 & $80 (set and cleared by DiagModeInit from ControlFlagsC39 bit 3 (opposite of PciFlags6 bit 7))
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $09,$44,$20,$20                          ; out bit 5 <- ControlFlags944 & $20 (output toggled by EgrOutputTest (with ControlFlags943 bit 2), not read)
+        dc.b    $09,$44,$10,$10                          ; out bit 4 <- ControlFlags944 & $10 (radiator fan relay, probably (FanControl, BusTempFlag, output test))
+        dc.b    $09,$44,$08,$08                          ; out bit 3 <- ControlFlags944 & $08 (second fan relay, probably; driven only with A/C fitted)
+        dc.b    $09,$44,$04,$04                          ; out bit 2 <- ControlFlags944 & $04 (EGR solenoid on (EgrEnable))
+        dc.b    $09,$44,$02,$02                          ; out bit 1 <- ControlFlags944 & $02 (toggled by ActuatorTestMain, not read)
+        dc.b    $00,$00,$00,$01                          ; unused
+; map 19 ($739B): used by BusStatusByte
+        dc.b    $06,$B4,$01,$80                          ; out bit 7 <- SensorFaultFlags & $01 (battery temperature sensor fault (P1492 or P1493))
+        dc.b    $05,$06,$06,$40                          ; out bit 6 <- FaultSet06 & $06 (bit 2; bit 1)
+        dc.b    $05,$0B,$30,$20                          ; out bit 5 <- FaultSet0B & $30 (bit 5; bit 4)
+        dc.b    $05,$0A,$0C,$10                          ; out bit 4 <- FaultSet0A & $0C (bit 3; bit 2)
+        dc.b    $0D,$B8,$01,$08                          ; out bit 3 <- ChargeMonFlags & $01 (a fault with the charge-lamp flag was reported (ReportFault); charge lamp request)
+        dc.b    $0D,$B8,$04,$04                          ; out bit 2 <- ChargeMonFlags & $04 (battery voltage low (BattLowVolts for BattLowSetCount passes, BatteryLowFlag); charge lamp)
+        dc.b    $06,$B4,$10,$02                          ; out bit 1 <- SensorFaultFlags & $10 (throttle sensor fault (ProcessThrottle, P0121 and the circuit codes))
+        dc.b    $06,$B4,$80,$01                          ; out bit 0 <- SensorFaultFlags & $80 (coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use)
+; map 20 ($73BB)
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $00,$00,$00,$08                          ; unused
+        dc.b    $00,$00,$00,$04                          ; unused
+        dc.b    $09,$4C,$80,$02                          ; out bit 1 <- BusConfigFlags & $80 (bus configuration bit read by SkimState and SecurityStatusCalc; not set by bit instructions)
+        dc.b    $09,$BC,$01,$01                          ; out bit 0 <- SecurityFlags & $01 (security status to be sent (CcdReceive, SecurityStatusCalc))
+; map 21 ($73DB): used by BusStatusBytes
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $0C,$31,$20,$40                          ; out bit 6 <- DriveFlags & $20 (transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear))
+        dc.b    $0C,$39,$10,$20                          ; out bit 5 <- ControlFlagsC39 & $10 (transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it)
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $09,$43,$01,$08                          ; out bit 3 <- ControlFlags943 & $01 (A/C clutch relay on (AcCutLogic); the idle code reads it)
+        dc.b    $0A,$46,$01,$04                          ; out bit 2 <- SwitchInputs & $01 (brake switch (BrakeSwitchMonitor, idle, speed damping, purge test))
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $00,$00,$00,$01                          ; unused
+; map 22 ($73FB): used by BusStatusBytes
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $06,$B1,$01,$40                          ; out bit 6 <- CatTemp6B1 & $01 (bit 0)
+        dc.b    $0D,$57,$08,$20                          ; out bit 5 <- IacAcFlags & $08 (A/C request from the transmission module on the bus (IdleTargetControl))
+        dc.b    $09,$42,$01,$10                          ; out bit 4 <- FanBusFlags & $01 (fan request on the bus (BusTempFlag, output test))
+        dc.b    $04,$03,$08,$08                          ; out bit 3 <- SpeedCtlFlags & $08 (driver override: throttle past SpeedCtlOverrideMargin (SpeedCtlControl))
+        dc.b    $08,$57,$40,$03                          ; out bit 1 <- EventSparkFlags2 & $40 (input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus)
+        dc.b    $08,$56,$08,$02                          ; out bit 1 <- EventSparkFlags & $08 (pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl))
+        dc.b    $08,$56,$04,$01                          ; out bit 0 <- EventSparkFlags & $04 (pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl))
+; map 23 ($741B): used by BusStatusBytes
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $04,$03,$08,$08                          ; out bit 3 <- SpeedCtlFlags & $08 (driver override: throttle past SpeedCtlOverrideMargin (SpeedCtlControl))
+        dc.b    $0A,$46,$01,$04                          ; out bit 2 <- SwitchInputs & $01 (brake switch (BrakeSwitchMonitor, idle, speed damping, purge test))
+        dc.b    $04,$07,$01,$02                          ; out bit 1 <- SpeedCtl407 & $01 (bit 0)
+        dc.b    $04,$07,$02,$01                          ; out bit 0 <- SpeedCtl407 & $02 (bit 1)
+; map 24 ($743B): used by BusStatusBytes
+        dc.b    $08,$6C,$04,$80                          ; out bit 7 <- BusReqFlags & $04 (MAP high: MAP above the baro/rpm threshold (MapHighBusFlag, hysteresis BusMapHyst))
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $0D,$57,$08,$20                          ; out bit 5 <- IacAcFlags & $08 (A/C request from the transmission module on the bus (IdleTargetControl))
+        dc.b    $09,$42,$01,$10                          ; out bit 4 <- FanBusFlags & $01 (fan request on the bus (BusTempFlag, output test))
+        dc.b    $00,$00,$00,$08                          ; unused
+        dc.b    $08,$57,$40,$03                          ; out bit 1 <- EventSparkFlags2 & $40 (input capture 4 edge of the second kind seen (Isr_GPT_IC4OC5); reported on the bus)
+        dc.b    $08,$56,$08,$02                          ; out bit 1 <- EventSparkFlags & $08 (pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl))
+        dc.b    $08,$56,$04,$01                          ; out bit 0 <- EventSparkFlags & $04 (pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl))
+; map 25 ($745B)
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $00,$00,$00,$08                          ; unused
+        dc.b    $00,$00,$00,$04                          ; unused
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $00,$00,$00,$01                          ; unused
+; map 26 ($747B): used by BusStatusByte
+        dc.b    $06,$B4,$01,$80                          ; out bit 7 <- SensorFaultFlags & $01 (battery temperature sensor fault (P1492 or P1493))
+        dc.b    $05,$06,$06,$40                          ; out bit 6 <- FaultSet06 & $06 (bit 2; bit 1)
+        dc.b    $05,$0B,$30,$20                          ; out bit 5 <- FaultSet0B & $30 (bit 5; bit 4)
+        dc.b    $05,$0A,$0C,$10                          ; out bit 4 <- FaultSet0A & $0C (bit 3; bit 2)
+        dc.b    $0D,$B8,$01,$08                          ; out bit 3 <- ChargeMonFlags & $01 (a fault with the charge-lamp flag was reported (ReportFault); charge lamp request)
+        dc.b    $0D,$B8,$04,$04                          ; out bit 2 <- ChargeMonFlags & $04 (battery voltage low (BattLowVolts for BattLowSetCount passes, BatteryLowFlag); charge lamp)
+        dc.b    $06,$B4,$10,$02                          ; out bit 1 <- SensorFaultFlags & $10 (throttle sensor fault (ProcessThrottle, P0121 and the circuit codes))
+        dc.b    $06,$B4,$80,$01                          ; out bit 0 <- SensorFaultFlags & $80 (coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use)
+; map 27 ($749B): used by BusStatusBytes
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $04,$03,$08,$08                          ; out bit 3 <- SpeedCtlFlags & $08 (driver override: throttle past SpeedCtlOverrideMargin (SpeedCtlControl))
+        dc.b    $04,$07,$01,$04                          ; out bit 2 <- SpeedCtl407 & $01 (bit 0)
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $0A,$1E,$10,$01                          ; out bit 0 <- SkimFlags & $10 (SKIM key matches (CcdReceive, PciReceive))
+; map 28 ($74BB): used by BusStatusBytes
+        dc.b    $00,$00,$00,$80                          ; unused
+        dc.b    $00,$00,$00,$40                          ; unused
+        dc.b    $00,$00,$00,$20                          ; unused
+        dc.b    $00,$00,$00,$10                          ; unused
+        dc.b    $09,$43,$01,$08                          ; out bit 3 <- ControlFlags943 & $01 (A/C clutch relay on (AcCutLogic); the idle code reads it)
+        dc.b    $0A,$46,$01,$04                          ; out bit 2 <- SwitchInputs & $01 (brake switch (BrakeSwitchMonitor, idle, speed damping, purge test))
+        dc.b    $00,$00,$00,$02                          ; unused
+        dc.b    $04,$07,$02,$01                          ; out bit 0 <- SpeedCtl407 & $02 (bit 1)
+
         dc.b    $00,$0D,$BB,$A0,$00,$00,$1A,$CB,$C0,$00
 VssPeriodMin:
         dc.b    $1E                                      ; Vehicle speed (CalcVehicleSpeed): speed period / 2 below this value takes the high-speed branch
@@ -9536,35 +9746,59 @@ DwellBatteryAlt:
 
 BatteryVoltsDwellFilter:
         dc.b    $C0                                      ; Filter weight of BatteryVoltsDwell (BatteryDwellFilter)
-        dc.b    $FA,$45,$C8,$00,$B0,$00,$10,$00,$00,$00,$00,$43,$F2,$00,$A9,$00
-        dc.b    $10,$00,$00,$00,$00,$43,$8E,$00,$A5,$00,$10,$00,$00,$00,$00,$44
-        dc.b    $60,$00,$A6,$00,$10,$00,$00,$00,$00,$43,$A2,$00,$A7,$00,$10,$00
-        dc.b    $00,$00,$00,$44,$6A,$00,$A8,$00,$10,$00,$00,$00,$00,$43,$E8,$00
-        dc.b    $A1,$00,$10,$00,$00,$00,$00,$46,$90,$00,$A2,$00,$10,$00,$00,$00
-        dc.b    $00,$43,$84,$00,$A3,$00,$10,$00,$00,$00,$00,$44,$4C,$00,$A4,$00
-        dc.b    $10,$00,$00,$00,$00,$41,$54,$00,$AA,$00,$10,$00,$00,$00,$00,$47
-        dc.b    $12,$00,$9E,$00,$02,$06,$59,$00,$02,$47,$08,$00,$9E,$00,$01,$06
-        dc.b    $59,$00,$01,$45,$50,$00,$9D,$00,$80,$06,$58,$00,$80,$43,$FC,$00
-        dc.b    $9D,$00,$40,$06,$58,$00,$40,$45,$78,$00,$9D,$00,$20,$06,$58,$00
-        dc.b    $20,$40,$E6,$00,$9D,$00,$10,$06,$58,$00,$10,$44,$EC,$00,$9D,$00
-        dc.b    $08,$06,$58,$00,$08,$44,$88,$00,$9D,$00,$04,$06,$58,$00,$04,$40
-        dc.b    $D2,$00,$9D,$00,$02,$06,$58,$00,$02,$44,$06,$00,$9D,$00,$01,$06
-        dc.b    $58,$00,$01,$44,$74,$00,$9E,$00,$80,$06,$59,$00,$80,$44,$7E,$00
-        dc.b    $9E,$00,$40,$06,$59,$00,$40,$44,$92,$00,$9E,$00,$20,$06,$59,$00
-        dc.b    $20,$44,$9C,$00,$9E,$00,$10,$06,$59,$00,$10,$45,$A0,$00,$9E,$00
-        dc.b    $08,$06,$59,$00,$08,$46,$A4,$00,$9E,$00,$04,$06,$59,$00,$04,$45
-        dc.b    $64,$00,$9F,$00,$80,$06,$5A,$00,$80,$45,$5A,$00,$9F,$00,$40,$06
-        dc.b    $5A,$00,$40,$45,$6E,$00,$9F,$00,$20,$06,$5A,$00,$20,$44,$E2,$00
-        dc.b    $9F,$00,$10,$06,$5A,$00,$10,$47,$EE,$00,$9F,$00,$08,$06,$5A,$00
-        dc.b    $08,$43,$48,$00,$9F,$00,$04,$06,$5A,$00,$04,$44,$24,$00,$AE,$00
-        dc.b    $10,$00,$00,$00,$00,$44,$2E,$00,$AC,$00,$10,$00,$00,$00,$00,$44
-        dc.b    $38,$00,$AF,$00,$10,$00,$00,$00,$00,$44,$42,$00,$AD,$00,$10,$00
-        dc.b    $00,$00,$00,$43,$B6,$00,$DD,$00,$01,$00,$00,$00,$00,$43,$C0,$00
-        dc.b    $DD,$00,$02,$00,$00,$00,$00,$43,$CA,$00,$DD,$00,$04,$00,$00,$00
-        dc.b    $00,$43,$D4,$00,$DD,$00,$08,$00,$00,$00,$00,$46,$54,$00,$DD,$00
-        dc.b    $10,$00,$00,$00,$00,$46,$5E,$00,$DD,$00,$20,$00,$00,$00,$00,$43
-        dc.b    $AC,$00,$DD,$00,$40,$00,$00,$00,$00,$2C,$1F,$16,$FF,$01,$3F,$00
-        dc.b    $C0,$00,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+        dc.b    $FA
+
+;---------------------------------------------------------------------------------------------------
+; FaultStatusMap ($758C): 43 rows of 10 bytes
+; Fault-to-status map: fault table row, monitor status byte and bit, second status byte and bit (read by ObdFaultReport and the OBD request code)
+;---------------------------------------------------------------------------------------------------
+FaultStatusMap:
+        dc.b    $45,$C8,$00,$B0,$00,$10,$00,$00,$00,$00  ; P0442: MonStatusLdp & $10
+        dc.b    $43,$F2,$00,$A9,$00,$10,$00,$00,$00,$00  ; P0441: MonStatusPurge & $10
+        dc.b    $43,$8E,$00,$A5,$00,$10,$00,$00,$00,$00  ; P0135: MonStatusO2Sensor1 & $10
+        dc.b    $44,$60,$00,$A6,$00,$10,$00,$00,$00,$00  ; P0155: MonStatusO2Sensor2 & $10
+        dc.b    $43,$A2,$00,$A7,$00,$10,$00,$00,$00,$00  ; P0141: MonStatusO2Sensor3 & $10
+        dc.b    $44,$6A,$00,$A8,$00,$10,$00,$00,$00,$00  ; P0161: MonStatusO2Sensor4 & $10
+        dc.b    $43,$E8,$00,$A1,$00,$10,$00,$00,$00,$00  ; P0420: MonStatusCatBank1 & $10
+        dc.b    $46,$90,$00,$A2,$00,$10,$00,$00,$00,$00  ; P0432: MonStatusCatBank2 & $10
+        dc.b    $43,$84,$00,$A3,$00,$10,$00,$00,$00,$00  ; P0133: MonStatusO2Resp1 & $10
+        dc.b    $44,$4C,$00,$A4,$00,$10,$00,$00,$00,$00  ; P0153: MonStatusO2Resp2 & $10
+        dc.b    $41,$54,$00,$AA,$00,$10,$00,$00,$00,$00  ; P0401: MonStatusEgrFlow & $10
+        dc.b    $47,$12,$00,$9E,$00,$02,$06,$59,$00,$02  ; P0153: MonFlags09E & $02, O2MonFlags & $02
+        dc.b    $47,$08,$00,$9E,$00,$01,$06,$59,$00,$01  ; P0133: MonFlags09E & $01, O2MonFlags & $01
+        dc.b    $45,$50,$00,$9D,$00,$80,$06,$58,$00,$80  ; P0740: MonFlags09D & $80, SwitchMonFlags & $80
+        dc.b    $43,$FC,$00,$9D,$00,$40,$06,$58,$00,$40  ; P1899: MonFlags09D & $40, SwitchMonFlags & $40
+        dc.b    $45,$78,$00,$9D,$00,$20,$06,$58,$00,$20  ; P0703: MonFlags09D & $20, SwitchMonFlags & $20
+        dc.b    $40,$E6,$00,$9D,$00,$10,$06,$58,$00,$10  ; P0500: MonFlags09D & $10, SwitchMonFlags & $10
+        dc.b    $44,$EC,$00,$9D,$00,$08,$06,$58,$00,$08  ; P1294: MonFlags09D & $08, SwitchMonFlags & $08
+        dc.b    $44,$88,$00,$9D,$00,$04,$06,$58,$00,$04  ; P0125: MonFlags09D & $04, SwitchMonFlags & $04
+        dc.b    $40,$D2,$00,$9D,$00,$02,$06,$58,$00,$02  ; P1281: MonFlags09D & $02, SwitchMonFlags & $02
+        dc.b    $44,$06,$00,$9D,$00,$01,$06,$58,$00,$01  ; P0551: MonFlags09D & $01, SwitchMonFlags & $01
+        dc.b    $44,$74,$00,$9E,$00,$80,$06,$59,$00,$80  ; P0138: MonFlags09E & $80, O2MonFlags & $80
+        dc.b    $44,$7E,$00,$9E,$00,$40,$06,$59,$00,$40  ; P0158: MonFlags09E & $40, O2MonFlags & $40
+        dc.b    $44,$92,$00,$9E,$00,$20,$06,$59,$00,$20  ; P0140: MonFlags09E & $20, O2MonFlags & $20
+        dc.b    $44,$9C,$00,$9E,$00,$10,$06,$59,$00,$10  ; P0160: MonFlags09E & $10, O2MonFlags & $10
+        dc.b    $45,$A0,$00,$9E,$00,$08,$06,$59,$00,$08  ; P0137: MonFlags09E & $08, O2MonFlags & $08
+        dc.b    $46,$A4,$00,$9E,$00,$04,$06,$59,$00,$04  ; P0157: MonFlags09E & $04, O2MonFlags & $04
+        dc.b    $45,$64,$00,$9F,$00,$80,$06,$5A,$00,$80  ; P0463: MonFlags09F & $80, ObdRec65B & $80
+        dc.b    $45,$5A,$00,$9F,$00,$40,$06,$5A,$00,$40  ; P0462: MonFlags09F & $40, ObdRec65B & $40
+        dc.b    $45,$6E,$00,$9F,$00,$20,$06,$5A,$00,$20  ; P0460: MonFlags09F & $20, ObdRec65B & $20
+        dc.b    $44,$E2,$00,$9F,$00,$10,$06,$5A,$00,$10  ; P0700: MonFlags09F & $10, ObdRec65B & $10
+        dc.b    $47,$EE,$00,$9F,$00,$08,$06,$5A,$00,$08  ; P0404: MonFlags09F & $08, ObdRec65B & $08
+        dc.b    $43,$48,$00,$9F,$00,$04,$06,$5A,$00,$04  ; P1698: MonFlags09F & $04, ObdRec65B & $04
+        dc.b    $44,$24,$00,$AE,$00,$10,$00,$00,$00,$00  ; P0172: MonStatusFuelSysTooRich1 & $10
+        dc.b    $44,$2E,$00,$AC,$00,$10,$00,$00,$00,$00  ; P0171: MonStatusFuelSysTooLean1 & $10
+        dc.b    $44,$38,$00,$AF,$00,$10,$00,$00,$00,$00  ; P0175: MonStatusFuelSysTooRich2 & $10
+        dc.b    $44,$42,$00,$AD,$00,$10,$00,$00,$00,$00  ; P0174: MonStatusFuelSysTooLean2 & $10
+        dc.b    $43,$B6,$00,$DD,$00,$01,$00,$00,$00,$00  ; P0301: MisfireRecordDD & $01
+        dc.b    $43,$C0,$00,$DD,$00,$02,$00,$00,$00,$00  ; P0302: MisfireRecordDD & $02
+        dc.b    $43,$CA,$00,$DD,$00,$04,$00,$00,$00,$00  ; P0303: MisfireRecordDD & $04
+        dc.b    $43,$D4,$00,$DD,$00,$08,$00,$00,$00,$00  ; P0304: MisfireRecordDD & $08
+        dc.b    $46,$54,$00,$DD,$00,$10,$00,$00,$00,$00  ; P0305: MisfireRecordDD & $10
+        dc.b    $46,$5E,$00,$DD,$00,$20,$00,$00,$00,$00  ; P0306: MisfireRecordDD & $20
+
+        dc.b    $43,$AC,$00,$DD,$00,$40,$00,$00,$00,$00,$2C,$1F,$16,$FF,$01,$3F
+        dc.b    $00,$C0,$00,$FF,$00,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -9703,7 +9937,7 @@ BatteryVoltsDwellFilter:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-        dc.b    $FF,$FF,$FF,$FF,$FF
+        dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 
 ;---------------------------------------------------------------------------------------------------
 ; Isr_GPT_IC3 ($08000)

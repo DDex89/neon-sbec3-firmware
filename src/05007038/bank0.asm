@@ -17382,8 +17382,8 @@ L0B6E0:
         BRCLR   >Options032F,#$20,L0B70E                 ; bit 5: downstream O2 sensor 1 fitted
         BRSET   $0228,Z,#$01,L0B70A
         BRSET   $022A,Z,#$40,L0B70A
-        BRSET   >MonFlags09D,Z,#$02,L0B70A
-        BRSET   >O2MonFlags,Z,#$08,L0B70A
+        BRSET   >MonFlags09D,Z,#$02,L0B70A               ; bit 1: P1281 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BRSET   >O2MonFlags,Z,#$08,L0B70A                ; bit 3: P0137 result (fault-to-status map, paired with MonFlags09E)
         BRSET   $022D,Z,#$02,L0B70A
         BRCLR   >SensorFaultFlags2,Z,#$10,L0B710
 L0B70A:
@@ -17403,8 +17403,8 @@ L0B72E:
         LDAA    $022A,Z
         BITA    #$88
         BNE     L0B754
-        BRSET   >MonFlags09D,Z,#$01,L0B754
-        BRSET   >O2MonFlags,Z,#$04,L0B754
+        BRSET   >MonFlags09D,Z,#$01,L0B754               ; bit 0: P0551 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BRSET   >O2MonFlags,Z,#$04,L0B754                ; bit 2: P0157 result (fault-to-status map, paired with MonFlags09E)
         BRSET   $022D,Z,#$04,L0B754
         BRCLR   >FaultSet17,Z,#$40,L0B75A
 L0B754:

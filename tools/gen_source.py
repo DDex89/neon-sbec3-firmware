@@ -204,6 +204,7 @@ class Calibration:
 
     def __init__(self, data, an, names, own=load):
         self.data = data
+        self.an = an
         self.names = names
         found = caltables.find(data, an)[1]
         cur = own("tables.json")
@@ -380,6 +381,39 @@ class Calibration:
                 b = d[p:p + 4]
                 out.append("        dc.b    %-40s ; %s" % (",".join("$%02X" % x for x in b),
                                                           self.cond_text((b[0] << 8) | b[1], b[2], b[3])))
+        elif kind == "bitmaps":
+            users = collections.defaultdict(set)
+            for ia, ins in self.an.insn.items():
+                v = dict(ins.vals).get("jjkk")
+                if v is not None and a <= v < a + t["size"] and (v - a) % t["row_size"] == 0:
+                    st = [x for x in self.names.labels_ann if x <= ia]
+                    users[v].add(self.names.labels_ann[max(st)] if st else "$%05X" % ia)
+            for r in range(t["rows"]):
+                p = a + r * t["row_size"]
+                out.append("; map %d ($%04X)%s" % (r, p, ": used by " + ", ".join(sorted(users[p])) if users.get(p) else ""))
+                for e in range(t["row_size"] // 4):
+                    b = d[p + 4 * e:p + 4 * e + 4]
+                    off, m, ob = (b[0] << 8) | b[1], b[2], b[3]
+                    if m == 0:
+                        note = "unused"
+                    else:
+                        z = self.names.zsym_for(0)
+                        sym = z(off) if z else None
+                        sym = sym or "$%04X,Z" % off
+                        bits = self.names.bits.get(sym, {})
+                        src = "; ".join(bits.get(str(k), "bit %d" % k) for k in range(7, -1, -1) if m >> k & 1)
+                        note = "out bit %d <- %s & $%02X (%s)" % (ob.bit_length() - 1, sym, m, src)
+                    out.append("        dc.b    %-40s ; %s" % (",".join("$%02X" % x for x in b), note))
+        elif kind == "faultmap":
+            for r in range(t["rows"]):
+                p = a + r * t["row_size"]
+                b = d[p:p + t["row_size"]]
+                w = [(b[i] << 8) | b[i + 1] for i in range(0, len(b), 2)]
+                pc = "P%02X%02X" % (d[w[0] + 6], d[w[0] + 7]) if FAULT_TABLE <= w[0] < FAULT_TABLE + 10 * FAULT_ROWS else "$%04X" % w[0]
+                note = "%s: %s & $%02X" % (pc, self.names.ram.get(w[1], "$%04X,Z" % w[1]), w[2] & 0xFF)
+                if w[3]:
+                    note += ", %s & $%02X" % (self.names.ram.get(w[3], "$%04X,Z" % w[3]), w[4] & 0xFF)
+                out.append("        dc.b    %-40s ; %s" % (",".join("$%02X" % x for x in b), note))
         elif kind == "monitors":
             for r in range(t["rows"]):
                 p = a + r * t["row_size"]

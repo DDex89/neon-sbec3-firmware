@@ -205,7 +205,23 @@ SparkOcTime3     equ $0089        ; $F8089
 O2HeaterTimer    equ $00B0        ; $F80B0
 O2Heater10C      equ $00B2        ; $F80B2
 MonFlags09D      equ $00B5        ; $F80B5
+;                 bit 7: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 6: P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 5: P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 3: P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 2: P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 1: P1281 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 0: P0551 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 MonFlags09E      equ $00B6        ; $F80B6
+;                 bit 7: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 6: P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 5: P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 4: P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 3: P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 2: P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 1: P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 0: P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
 LdpFlags2        equ $00B7        ; $F80B7
 ;                 bit 7: pump switch closed at the purged check (LdpPurgedCheck)
 ;                 bit 5: leak test window counting (LDP state machine)
@@ -678,15 +694,23 @@ MisfireHold      equ $02C9        ; $F82C9
 MisfireNoiseTimer equ $02CB        ; $F82CB
 Misfire62C       equ $02CC        ; $F82CC
 SwitchMonFlags   equ $02CE        ; $F82CE
-;                 bit 7: torque converter clutch monitor: fault reported (TccMonitor)
-;                 bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
-;                 bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
-;                 bit 4: vehicle speed monitor: fault reported (VssMonitor)
-;                 bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
-;                 bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
-;                 bit 1: thermostat monitor running (ThermostatMonitor)
-;                 bit 0: power steering switch monitor: switch state for the report (PspSwitchMonitor)
+;                 bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
+;                 bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+;                 bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
+;                 bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
+;                 bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
+;                 bit 2: P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
+;                 bit 1: P1281: thermostat monitor running (ThermostatMonitor)
+;                 bit 0: P0551: power steering switch monitor: switch state for the report (PspSwitchMonitor)
 O2MonFlags       equ $02CF        ; $F82CF
+;                 bit 7: P0138 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 6: P0158 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 5: P0140 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 4: P0160 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 3: P0137 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 2: P0157 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 1: P0153 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 0: P0133 result (fault-to-status map, paired with MonFlags09E)
 IdleMonFlags     equ $02D2        ; $F82D2
 MonEnableFlags2  equ $02D6        ; $F82D6
 ;                 bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors

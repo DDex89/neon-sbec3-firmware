@@ -4740,7 +4740,7 @@ SciDiagCommand:
         TBXK
         TBYK
 L334B6:
-        LDY     #$758C
+        LDY     #FaultStatusMap
         LDX     #$7744
         LDAB    $00,X
         CMPB    >SciCounter,Z
@@ -6663,7 +6663,7 @@ L359C4:
         XGDX
         JMP     $350CC,X
 L359EC:
-        LDX     #$713B
+        LDX     #BitCollectMaps
         JSR     CollectBits
         JMP     SciSendByte
 L359F8:

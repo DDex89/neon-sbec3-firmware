@@ -12644,6 +12644,20 @@
    "rows": 16,
    "row_size": 20,
    "desc": "OBD monitor table read by ObdMonitorMain: per monitor the record offset, the status byte, the run period, the fault table row, three condition lists, and the result byte and bit"
+  },
+  "713B": {
+   "name": "BitCollectMaps",
+   "kind": "bitmaps",
+   "rows": 29,
+   "row_size": 32,
+   "desc": "Bit maps for CollectBits: 8 entries of RAM offset, mask and output bit build one status byte (switch inputs for SwitchInputsRead and SwitchBitsCollect, output and fault status bytes for the SCI and bus messages)"
+  },
+  "758C": {
+   "name": "FaultStatusMap",
+   "kind": "faultmap",
+   "rows": 43,
+   "row_size": 10,
+   "desc": "Fault-to-status map: fault table row, monitor status byte and bit, second status byte and bit (read by ObdFaultReport and the OBD request code)"
   }
  }
 }

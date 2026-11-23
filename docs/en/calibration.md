@@ -353,6 +353,15 @@ between $33CA and $4015 and are laid out in the source with each entry decoded, 
 about 70 P-codes) are set. These lists are calibration: changing them changes which faults suspend
 which monitor.
 
+Two more data blocks of bank 0 are laid out with their entries decoded. `FaultStatusMap` ($758C,
+43 rows of 10 bytes) ties a fault table row to a monitor status byte and bit, and for the
+non-continuous tests to a second pair: `MonFlags09D-09F` hold "not passed yet" bits and
+`SwitchMonFlags`, `O2MonFlags`, `MonFlags65A` the results, so their bits now have P-codes (P0740,
+P1899, P0703, P0500, P1294, P0125, P1281, P0551, the O2 and fuel level codes). `BitCollectMaps`
+($713B, 29 maps of 32 bytes) are the input of `CollectBits`: eight entries of RAM offset, mask and
+output bit build one byte, for the switch inputs and for the status bytes the SCI and bus messages
+send.
+
 ## Tools
 
 ```sh

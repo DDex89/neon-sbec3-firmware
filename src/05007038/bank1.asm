@@ -7119,7 +7119,7 @@ L149E8:
 ;---------------------------------------------------------------------------------------------------
 Sub_149EA:
         BRCLR   >EngineStateFlags,Z,#$80,L14ACE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >MonFlags09D,Z,#$10,L149FC
+        BRCLR   >MonFlags09D,Z,#$10,L149FC               ; bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
         BRSET   >MonitorDisableFlags,Z,#$04,L14ACE       ; bit 2: battery voltage at or below MonEnableVoltsMin
 L149FC:
         BRSET   >MonitorDisableFlags,Z,#$02,L14ACE       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
@@ -7155,16 +7155,16 @@ L14A60:
         STAA    $02E9,Z
         CMPA    $4159
         BLS     L14AD6
-        BRSET   <MonFlags09D,Z,#$10,L14A82
-        BSET    <MonFlags09D,Z,#$10
-        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: vehicle speed monitor: fault reported (VssMonitor)
+        BRSET   <MonFlags09D,Z,#$10,L14A82               ; bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BSET    <MonFlags09D,Z,#$10                      ; bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
         LDAB    $39BD
         LDAA    #$01
         JSR     FreezeFrameCapture
         BRA     L14AD6
 L14A82:
-        BRSET   >SwitchMonFlags,Z,#$10,L14AD6            ; bit 4: vehicle speed monitor: fault reported (VssMonitor)
-        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: vehicle speed monitor: fault reported (VssMonitor)
+        BRSET   >SwitchMonFlags,Z,#$10,L14AD6            ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
+        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
         LDY     #$39BD
         JSR     ReportFault
         BRA     L14AD6
@@ -7184,8 +7184,8 @@ L14AA4:
 L14ABC:
         LDY     #$39BD
         JSR     ReportPass
-        BCLR    <MonFlags09D,Z,#$10
-        BCLR    >SwitchMonFlags,Z,#$10                   ; bit 4: vehicle speed monitor: fault reported (VssMonitor)
+        BCLR    <MonFlags09D,Z,#$10                      ; bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BCLR    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
         BRA     L14AD6
 L14ACE:
         CLR     $02E9,Z
@@ -8221,15 +8221,15 @@ L155CA:
         CMPA    $2CF1
         BCS     L15632
         BCLR    >IdleMonFlags,Z,#$80
-        BRSET   >MonFlags09D,Z,#$08,L15602
-        BSET    <MonFlags09D,Z,#$08
-        BSET    >SwitchMonFlags,Z,#$08                   ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
+        BRSET   >MonFlags09D,Z,#$08,L15602               ; bit 3: P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BSET    <MonFlags09D,Z,#$08                      ; bit 3: P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BSET    >SwitchMonFlags,Z,#$08                   ; bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
         LDAA    #$01
         LDAB    $3DC3
         JSR     FreezeFrameCapture
         BRA     L1563A
 L15602:
-        BSET    >SwitchMonFlags,Z,#$08                   ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
+        BSET    >SwitchMonFlags,Z,#$08                   ; bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
         LDY     #$3DC3
         JSR     ReportFault
         BRA     L1563A
@@ -8242,8 +8242,8 @@ L15616:
         LDAA    $3DC3
         JSR     ObdFaultReport
 L1562A:
-        BCLR    <MonFlags09D,Z,#$08
-        BCLR    >SwitchMonFlags,Z,#$08                   ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
+        BCLR    <MonFlags09D,Z,#$08                      ; bit 3: P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BCLR    >SwitchMonFlags,Z,#$08                   ; bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
 L15632:
         CLR     $02D1,Z
         CLRW    $02D4,Z
@@ -8255,7 +8255,7 @@ L1563A:
 ; Called from: Sub_15566
 ;---------------------------------------------------------------------------------------------------
 IdleMonitorEnable:
-        BRSET   >SwitchMonFlags,Z,#$08,L156EE            ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
+        BRSET   >SwitchMonFlags,Z,#$08,L156EE            ; bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
         BRCLR   >EngineStateFlags,Z,#$80,L156EE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >SparkFlags,Z,#$20,L156EE                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >ThrottleState,Z,#$80,L156EE             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -8600,22 +8600,22 @@ L15A22:
         CLR     $0204,Z
 L15A2A:
         BRCLR   $0205,Z,#$30,L15A74
-        BRCLR   >MonFlags09D,Z,#$40,L15A4A
-        BRSET   >SwitchMonFlags,Z,#$40,L15A74            ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
-        BSET    >SwitchMonFlags,Z,#$40                   ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+        BRCLR   >MonFlags09D,Z,#$40,L15A4A               ; bit 6: P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BRSET   >SwitchMonFlags,Z,#$40,L15A74            ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+        BSET    >SwitchMonFlags,Z,#$40                   ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
         LDY     #$3CD3
         JSR     ReportFault
         BRA     L15A74
 L15A4A:
-        BSET    <MonFlags09D,Z,#$40
-        BSET    >SwitchMonFlags,Z,#$40                   ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+        BSET    <MonFlags09D,Z,#$40                      ; bit 6: P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BSET    >SwitchMonFlags,Z,#$40                   ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
         LDAA    #$01
         LDAB    $3CD3
         JSR     FreezeFrameCapture
         BRA     L15A74
 L15A5E:
-        BCLR    <MonFlags09D,Z,#$40
-        BCLR    >SwitchMonFlags,Z,#$40                   ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+        BCLR    <MonFlags09D,Z,#$40                      ; bit 6: P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BCLR    >SwitchMonFlags,Z,#$40                   ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
         BRSET   $015C,Z,#$04,L15A74
         LDAA    $3CD3
         JSR     ObdFaultReport
@@ -8642,9 +8642,9 @@ L15A96:
         JSR     Lookup2D
         CMPA    <Count3s,Z
         BCC     L15AEA
-        BSET    >SwitchMonFlags,Z,#$04                   ; bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
-        BRSET   >MonFlags09D,Z,#$04,L15AC6
-        BSET    <MonFlags09D,Z,#$04
+        BSET    >SwitchMonFlags,Z,#$04                   ; bit 2: P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
+        BRSET   >MonFlags09D,Z,#$04,L15AC6               ; bit 2: P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BSET    <MonFlags09D,Z,#$04                      ; bit 2: P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
         LDAA    #$01
         LDAB    $3D5F
         JSR     FreezeFrameCapture
@@ -8658,8 +8658,8 @@ L15AD0:
         LDAA    $3D5F
         JSR     ObdFaultReport
 L15ADE:
-        BCLR    >SwitchMonFlags,Z,#$04                   ; bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
-        BCLR    <MonFlags09D,Z,#$04
+        BCLR    >SwitchMonFlags,Z,#$04                   ; bit 2: P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
+        BCLR    <MonFlags09D,Z,#$04                      ; bit 2: P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 L15AE6:
         BSET    >CamCrankFlags,Z,#$40                    ; bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
 L15AEA:
@@ -9139,22 +9139,22 @@ L16022:
         CLR     $02EF,Z
 L16026:
         BRCLR   $02EC,Z,#$30,L16070
-        BRCLR   >MonFlags09D,Z,#$20,L16046
-        BRSET   >SwitchMonFlags,Z,#$20,L16070            ; bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
-        BSET    >SwitchMonFlags,Z,#$20                   ; bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
+        BRCLR   >MonFlags09D,Z,#$20,L16046               ; bit 5: P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BRSET   >SwitchMonFlags,Z,#$20,L16070            ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
+        BSET    >SwitchMonFlags,Z,#$20                   ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
         LDY     #$3E4F
         JSR     ReportFault
         BRA     L16070
 L16046:
-        BSET    <MonFlags09D,Z,#$20
-        BSET    >SwitchMonFlags,Z,#$20                   ; bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
+        BSET    <MonFlags09D,Z,#$20                      ; bit 5: P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BSET    >SwitchMonFlags,Z,#$20                   ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
         LDAA    #$01
         LDAB    $3E4F
         JSR     FreezeFrameCapture
         BRA     L16070
 L1605A:
-        BCLR    <MonFlags09D,Z,#$20
-        BCLR    >SwitchMonFlags,Z,#$20                   ; bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
+        BCLR    <MonFlags09D,Z,#$20                      ; bit 5: P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BCLR    >SwitchMonFlags,Z,#$20                   ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
         BRSET   $015F,Z,#$01,L16070
         LDAA    $3E4F
         JSR     ObdFaultReport
@@ -15583,23 +15583,23 @@ L1A460:
         STAA    $032F,Z
         CMPA    $2D00
         BCS     L1A4CE
-        BRSET   >MonFlags09D,Z,#$80,L1A49C
-        BSET    <MonFlags09D,Z,#$80
-        BSET    >SwitchMonFlags,Z,#$80                   ; bit 7: torque converter clutch monitor: fault reported (TccMonitor)
+        BRSET   >MonFlags09D,Z,#$80,L1A49C               ; bit 7: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BSET    <MonFlags09D,Z,#$80                      ; bit 7: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+        BSET    >SwitchMonFlags,Z,#$80                   ; bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
         LDAA    #$01
         LDAB    $3E27
         JSR     FreezeFrameCapture
         BRA     L1A4CE
 L1A49C:
-        BRSET   >SwitchMonFlags,Z,#$80,L1A4CE            ; bit 7: torque converter clutch monitor: fault reported (TccMonitor)
-        BSET    >SwitchMonFlags,Z,#$80                   ; bit 7: torque converter clutch monitor: fault reported (TccMonitor)
+        BRSET   >SwitchMonFlags,Z,#$80,L1A4CE            ; bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
+        BSET    >SwitchMonFlags,Z,#$80                   ; bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
         LDY     #$3E27
         JSR     ReportFault
         BRA     L1A4CE
 L1A4B0:
         BSET    $02D0,Z,#$80
-        BCLR    >SwitchMonFlags,Z,#$80                   ; bit 7: torque converter clutch monitor: fault reported (TccMonitor)
-        BCLR    <MonFlags09D,Z,#$80
+        BCLR    >SwitchMonFlags,Z,#$80                   ; bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
+        BCLR    <MonFlags09D,Z,#$80                      ; bit 7: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
         BRSET   $0160,Z,#$10,L1A4CA
         LDAA    $3E27
         JSR     ObdFaultReport
@@ -21198,7 +21198,7 @@ Sub_1DF32:
         BRCLR   >Options0337,#$40,L1E13A                 ; bit 6: speed damping spark on (SpeedDampOn)
         BRSET   >EventSparkFlags,Z,#$08,L1DFD2           ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
         BRSET   >EventSparkFlags,Z,#$04,L1DFD2           ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BRSET   >MonFlags09D,Z,#$10,L1DFAE
+        BRSET   >MonFlags09D,Z,#$10,L1DFAE               ; bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
         BRCLR   >EquipmentFlags,Z,#$20,L1DF5E            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >BusModuleFlags,Z,#$01,L1DF5E            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         BRSET   >BusFlags9CE,Z,#$01,L1DFAE

@@ -3217,9 +3217,9 @@ L226CC:
 L226D0:
         BRCLR   >Options032F,#$20,L226FA                 ; bit 5: downstream O2 sensor 1 fitted
         BRSET   >FaultSet12,Z,#$10,L226F4
-        BRSET   >O2MonFlags,Z,#$08,L226F4
-        BRSET   >O2MonFlags,Z,#$20,L226F4
-        BRCLR   >MonFlags09E,Z,#$80,L226FA
+        BRSET   >O2MonFlags,Z,#$08,L226F4                ; bit 3: P0137 result (fault-to-status map, paired with MonFlags09E)
+        BRSET   >O2MonFlags,Z,#$20,L226F4                ; bit 5: P0140 result (fault-to-status map, paired with MonFlags09E)
+        BRCLR   >MonFlags09E,Z,#$80,L226FA               ; bit 7: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
         BRSET   >O2DownFlags,Z,#$08,L226FA               ; bit 3: downstream O2 sensor 1 check state, read by O2CheckEnable
 L226F4:
         BSET    >SensorFaultFlags2,Z,#$02                ; bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
@@ -3239,9 +3239,9 @@ L2271C:
 L22720:
         BRCLR   >Options032F,#$10,L2274A                 ; bit 4: downstream O2 sensor 2 fitted
         BRSET   >FaultSet17,Z,#$40,L22744
-        BRSET   >O2MonFlags,Z,#$04,L22744
-        BRSET   >O2MonFlags,Z,#$10,L22744
-        BRCLR   >MonFlags09E,Z,#$40,L2274A
+        BRSET   >O2MonFlags,Z,#$04,L22744                ; bit 2: P0157 result (fault-to-status map, paired with MonFlags09E)
+        BRSET   >O2MonFlags,Z,#$10,L22744                ; bit 4: P0160 result (fault-to-status map, paired with MonFlags09E)
+        BRCLR   >MonFlags09E,Z,#$40,L2274A               ; bit 6: P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
         BRSET   >O2DownFlags,Z,#$04,L2274A               ; bit 2: downstream O2 sensor 2 check state, read by O2CheckEnable
 L22744:
         BSET    >SensorFaultFlags2,Z,#$01                ; bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
@@ -3357,7 +3357,7 @@ L2283E:
         CLR     >EgrResultPasses,Z
         BRSET   >EgrMonFlags2,Z,#$01,L2288A
         LDAA    $47EE
-        BCLR    >MonFlags65A,Z,#$08                      ; bit 3: EGR position monitor result reported (EgrPositionMonitor)
+        BCLR    >MonFlags65A,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         JSR     ObdFaultReport
 L2288A:
         BRSET   >EgrPosMonFlags2,Z,#$01,L228C2
@@ -3370,7 +3370,7 @@ L2288A:
         CLR     >EgrTrackFails,Z
         CLR     >EgrTrackPasses,Z
         LDAA    $47EE
-        BCLR    >MonFlags65A,Z,#$08                      ; bit 3: EGR position monitor result reported (EgrPositionMonitor)
+        BCLR    >MonFlags65A,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         JSR     ObdFaultReport
 L228C2:
         LDAA    >Count3s,Z
@@ -3427,7 +3427,7 @@ L22960:
         BRSET   >EgrMonFlags2,Z,#$02,L22988
         BRSET   >EgrMonFlags2,Z,#$01,L22994
 L22988:
-        BSET    >MonFlags65A,Z,#$08                      ; bit 3: EGR position monitor result reported (EgrPositionMonitor)
+        BSET    >MonFlags65A,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         LDAA    $47EE
         JSR     ObdFaultReport
 L22994:
@@ -3440,7 +3440,7 @@ L2299A:
 L229A4:
         BCLR    >EgrFlags2,Z,#$40                        ; bit 6: EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)
 L229A8:
-        BRSET   >MonFlags65A,Z,#$08,L22B02               ; bit 3: EGR position monitor result reported (EgrPositionMonitor)
+        BRSET   >MonFlags65A,Z,#$08,L22B02               ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         BRCLR   >ThrottleState,Z,#$80,L22AE0             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >EgrFlags2,Z,#$80,L22B02                 ; bit 7: EGR position tracking result being counted (EgrPositionMonitor)
         LDAA    >EgrTargetPos,Z
@@ -3526,7 +3526,7 @@ L22A9C:
         BRSET   >EgrMonFlags2,Z,#$01,L22AC4
         BRSET   >EgrMonFlags2,Z,#$02,L22AD0
 L22AC4:
-        BSET    >MonFlags65A,Z,#$08                      ; bit 3: EGR position monitor result reported (EgrPositionMonitor)
+        BSET    >MonFlags65A,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         LDAA    $47EE
         JSR     ObdFaultReport
 L22AD0:
@@ -3743,24 +3743,24 @@ TransMilRequest:
         BRCLR   >TransBusStatus,Z,#$02,L22D7C
         BRSET   >TransBusStatus,Z,#$01,L22D50
         BCLR    >BusModuleFlags,Z,#$01                   ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
-        BRCLR   >MonFlags09F,Z,#$10,L22D7C
+        BRCLR   >MonFlags09F,Z,#$10,L22D7C               ; bit 4: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
         LDAA    $44E2
-        BCLR    >MonFlags65A,Z,#$10                      ; bit 4: transmission fault reported to the OBD records (TransMilRequest)
+        BCLR    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22D7C
 L22D1E:
         BRCLR   >FaultMem10,Z,#$02,L22D28
         JSR     TransFaultStore
 L22D28:
-        BRCLR   >MonFlags09F,Z,#$10,L22D7C
+        BRCLR   >MonFlags09F,Z,#$10,L22D7C               ; bit 4: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
         LDAA    $44E2
-        BCLR    >MonFlags65A,Z,#$10                      ; bit 4: transmission fault reported to the OBD records (TransMilRequest)
+        BCLR    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22D7C
 L22D3C:
-        BRSET   >MonFlags09F,Z,#$10,L22D7C
+        BRSET   >MonFlags09F,Z,#$10,L22D7C               ; bit 4: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
         LDAA    $44E2
-        BSET    >MonFlags65A,Z,#$10                      ; bit 4: transmission fault reported to the OBD records (TransMilRequest)
+        BSET    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22D7C
 L22D50:
@@ -3783,22 +3783,22 @@ L22D7C:
 ; Called from: BusTimeoutCheck
 ;---------------------------------------------------------------------------------------------------
 BodyBusTimeout:
-        BRCLR   >MonFlags09F,Z,#$04,L22DA0
+        BRCLR   >MonFlags09F,Z,#$04,L22DA0               ; bit 2: P1698 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
         BRSET   >O2DownFlags,Z,#$80,L22DA0               ; bit 7: body bus message seen after start (BodyBusTimeout)
         BRCLR   >MonFlags101,Z,#$80,L22DA0               ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
         BCLR    >MonFlags101,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
-        BCLR    >MonFlags65A,Z,#$04                      ; bit 2: body bus timeout fault reported (BodyBusTimeout)
+        BCLR    >MonFlags65A,Z,#$04                      ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
         LDAA    $4348
         JSR     ObdFaultReport
 L22DA0:
-        BRSET   >MonFlags65A,Z,#$04,L22DF2               ; bit 2: body bus timeout fault reported (BodyBusTimeout)
+        BRSET   >MonFlags65A,Z,#$04,L22DF2               ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
         LDAA    >BodyMsgTimeout,Z
         CMPA    #$C8
         BCS     L22DDA
         BCLR    >O2DownFlags,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout)
         BCLR    >MonFlags101,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
         BSET    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
-        BSET    >MonFlags65A,Z,#$04                      ; bit 2: body bus timeout fault reported (BodyBusTimeout)
+        BSET    >MonFlags65A,Z,#$04                      ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
         LDAA    $4348
         JSR     ObdFaultReport
         BSET    >BusReqFlags,Z,#$03                      ; bit 1: bus message bit 6 (CcdReceive); set on a body bus timeout; bit 0: bus message status bits = $80 (CcdReceive); set on a body bus timeout
@@ -3888,20 +3888,20 @@ L22EA0:
         LBCC    L2308C
         BRCLR   >MonFlags101,Z,#$20,L22ED2               ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BRSET   >O2DownFlags,Z,#$20,L22ED2               ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
-        BCLR    >MonFlags65A,Z,#$80                      ; bit 7: fuel sender fault reported, first kind (FuelSenderMonitor)
+        BCLR    >MonFlags65A,Z,#$80                      ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    $4564
         JSR     ObdFaultReport
         BCLR    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
 L22ED2:
         BRCLR   >MonFlags101,Z,#$10,L22EEE               ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
         BRSET   >O2DownFlags,Z,#$10,L22EEE               ; bit 4: fuel sender check result, second kind (FuelSenderMonitor; mirrored in MonFlags101 bit 4)
-        BCLR    >MonFlags65A,Z,#$40                      ; bit 6: fuel sender fault reported, second kind (FuelSenderMonitor)
+        BCLR    >MonFlags65A,Z,#$40                      ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    $455A
         JSR     ObdFaultReport
         BCLR    >MonFlags101,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
 L22EEE:
         BRSET   >FaultSet13,Z,#$80,L2308C
-        BRSET   >MonFlags65A,Z,#$80,L22F4E               ; bit 7: fuel sender fault reported, first kind (FuelSenderMonitor)
+        BRSET   >MonFlags65A,Z,#$80,L22F4E               ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    >FuelSenderFiltered,Z
         CMPA    >FuelSenderHigh
         BLS     L22F30
@@ -3915,7 +3915,7 @@ L22EEE:
 L22F1A:
         BCLR    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BCLR    >O2DownFlags,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
-        BSET    >MonFlags65A,Z,#$80                      ; bit 7: fuel sender fault reported, first kind (FuelSenderMonitor)
+        BSET    >MonFlags65A,Z,#$80                      ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    $4564
         JSR     ObdFaultReport
         BRA     L22F4E
@@ -3931,7 +3931,7 @@ L22F46:
         BSET    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BSET    >O2DownFlags,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
 L22F4E:
-        BRSET   >MonFlags65A,Z,#$40,L22FA8               ; bit 6: fuel sender fault reported, second kind (FuelSenderMonitor)
+        BRSET   >MonFlags65A,Z,#$40,L22FA8               ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    >FuelSenderFiltered,Z
         CMPA    >FuelSenderLow
         BHI     L22F8A
@@ -3945,7 +3945,7 @@ L22F4E:
 L22F74:
         BCLR    >MonFlags101,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
         BCLR    >O2DownFlags,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor; mirrored in MonFlags101 bit 4)
-        BSET    >MonFlags65A,Z,#$40                      ; bit 6: fuel sender fault reported, second kind (FuelSenderMonitor)
+        BSET    >MonFlags65A,Z,#$40                      ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    $455A
         JSR     ObdFaultReport
         BRA     L22FA8
@@ -4185,7 +4185,7 @@ ThermostatMonitor:
         LDAA    >CoolantTemp,Z
         CMPA    >ThermostatCoolantDone
         BCS     L2322E
-        BCLR    >SwitchMonFlags,Z,#$02                   ; bit 1: thermostat monitor running (ThermostatMonitor)
+        BCLR    >SwitchMonFlags,Z,#$02                   ; bit 1: P1281: thermostat monitor running (ThermostatMonitor)
         LDAA    $40D2
         JSR     ObdFaultReport
         BRA     L23268
@@ -4205,8 +4205,8 @@ L2322E:
         BRA     L2326C
 L23252:
         BRSET   <MonitorDisableFlags,Z,#$08,L2326C       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
-        BRSET   >SwitchMonFlags,Z,#$02,L2326C            ; bit 1: thermostat monitor running (ThermostatMonitor)
-        BSET    >SwitchMonFlags,Z,#$02                   ; bit 1: thermostat monitor running (ThermostatMonitor)
+        BRSET   >SwitchMonFlags,Z,#$02,L2326C            ; bit 1: P1281: thermostat monitor running (ThermostatMonitor)
+        BSET    >SwitchMonFlags,Z,#$02                   ; bit 1: P1281: thermostat monitor running (ThermostatMonitor)
         LDAA    $40D2
         JSR     ObdFaultReport
 L23268:
@@ -4320,11 +4320,11 @@ L233C8:
         CLR     >BrakeSwSeenTimer,Z
 L233CC:
         BRCLR   >BrakeSwFlags,Z,#$30,L233EA              ; bit 5: stop count reached (BrakeSwStopCount); bit 4: drive count reached (BrakeSwDriveCount)
-        BRSET   >SwitchMonFlags,Z,#$20,L233EA            ; bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
-        BSET    >SwitchMonFlags,Z,#$20                   ; bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
+        BRSET   >SwitchMonFlags,Z,#$20,L233EA            ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
+        BSET    >SwitchMonFlags,Z,#$20                   ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
         BRA     L233E2
 L233DE:
-        BCLR    >SwitchMonFlags,Z,#$20                   ; bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
+        BCLR    >SwitchMonFlags,Z,#$20                   ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
 L233E2:
         LDAA    $4578
         JSR     ObdFaultReport
@@ -4408,11 +4408,11 @@ L234F0:
         CLR     >PnSwitchCounter,Z
 L234F8:
         BRCLR   >PnSwitchMonFlags,Z,#$30,L23516
-        BRSET   >SwitchMonFlags,Z,#$40,L23516            ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
-        BSET    >SwitchMonFlags,Z,#$40                   ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+        BRSET   >SwitchMonFlags,Z,#$40,L23516            ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+        BSET    >SwitchMonFlags,Z,#$40                   ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
         BRA     L2350E
 L2350A:
-        BCLR    >SwitchMonFlags,Z,#$40                   ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+        BCLR    >SwitchMonFlags,Z,#$40                   ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
 L2350E:
         LDAA    $43FC
         JSR     ObdFaultReport
@@ -4508,14 +4508,14 @@ L2361C:
         STAA    >TccFailCount,Z
         CMPA    $32F7
         BCS     L23666
-        BRSET   >SwitchMonFlags,Z,#$80,L23666            ; bit 7: torque converter clutch monitor: fault reported (TccMonitor)
-        BSET    >SwitchMonFlags,Z,#$80                   ; bit 7: torque converter clutch monitor: fault reported (TccMonitor)
+        BRSET   >SwitchMonFlags,Z,#$80,L23666            ; bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
+        BSET    >SwitchMonFlags,Z,#$80                   ; bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
         LDAA    $4550
         JSR     ObdFaultReport
         BRA     L23666
 L23652:
         BSET    >Tcc65C,Z,#$80
-        BCLR    >SwitchMonFlags,Z,#$80                   ; bit 7: torque converter clutch monitor: fault reported (TccMonitor)
+        BCLR    >SwitchMonFlags,Z,#$80                   ; bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
         LDAA    $4550
         JSR     ObdFaultReport
         CLR     >TccFailCount,Z
@@ -4658,8 +4658,8 @@ L237B0:
         CMPA    >IdleMonCount
         BCS     L237FA
         BCLR    >IdleMonFlags,Z,#$80
-        BRSET   >SwitchMonFlags,Z,#$08,L23802            ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
-        BSET    >SwitchMonFlags,Z,#$08                   ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
+        BRSET   >SwitchMonFlags,Z,#$08,L23802            ; bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
+        BSET    >SwitchMonFlags,Z,#$08                   ; bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
         LDAA    $44EC
         JSR     ObdFaultReport
         BRA     L23802
@@ -4668,7 +4668,7 @@ L237E2:
         BRA     L237FA
 L237E8:
         BRCLR   >IdleMonFlags,Z,#$80,L23802
-        BCLR    >SwitchMonFlags,Z,#$08                   ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
+        BCLR    >SwitchMonFlags,Z,#$08                   ; bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
         LDAA    $44EC
         JSR     ObdFaultReport
 L237FA:
@@ -4682,7 +4682,7 @@ L23802:
 ; Called from: IdleRpmMonitor
 ;---------------------------------------------------------------------------------------------------
 IdleMonitorEnable:
-        BRSET   >SwitchMonFlags,Z,#$08,L238B8            ; bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
+        BRSET   >SwitchMonFlags,Z,#$08,L238B8            ; bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
         BRCLR   >EngineStateFlags,Z,#$80,L238B8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         BRCLR   >SparkFlags,Z,#$20,L238B8                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >ThrottleState,Z,#$80,L238B8             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
@@ -4753,13 +4753,13 @@ PspSwitchMonitor:
         TST     >MonStartDelay,Z
         BNE     L23958
         BRSET   >SwitchInputs2,Z,#$40,L23922             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
-        BRCLR   >MonFlags09D,Z,#$01,L2395C
+        BRCLR   >MonFlags09D,Z,#$01,L2395C               ; bit 0: P0551 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
         CLR     >PspSwitch667,Z
         LDAB    >PspSwitch668,Z
         INCB
         CMPB    >PspSwitchCount
         BCS     L2391C
-        BCLR    >SwitchMonFlags,Z,#$01                   ; bit 0: power steering switch monitor: switch state for the report (PspSwitchMonitor)
+        BCLR    >SwitchMonFlags,Z,#$01                   ; bit 0: P0551: power steering switch monitor: switch state for the report (PspSwitchMonitor)
         LDAA    $4406
         JSR     ObdFaultReport
         BSET    >CamCrankFlags,Z,#$08                    ; bit 3: power steering switch fault reported (PspSwitchMonitor)
@@ -4779,7 +4779,7 @@ L23922:
         INCB
         CMPB    >PspSwitchCount
         BCS     L23958
-        BSET    >SwitchMonFlags,Z,#$01                   ; bit 0: power steering switch monitor: switch state for the report (PspSwitchMonitor)
+        BSET    >SwitchMonFlags,Z,#$01                   ; bit 0: P0551: power steering switch monitor: switch state for the report (PspSwitchMonitor)
         LDAA    $4406
         JSR     ObdFaultReport
         BSET    >CamCrankFlags,Z,#$08                    ; bit 3: power steering switch fault reported (PspSwitchMonitor)
@@ -4795,7 +4795,7 @@ L2395C:
 ;---------------------------------------------------------------------------------------------------
 VssMonitor:
         BRCLR   >EngineStateFlags,Z,#$80,L23A2E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >MonFlags09D,Z,#$10,L23970
+        BRCLR   >MonFlags09D,Z,#$10,L23970               ; bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
         BRSET   >MonitorDisableFlags,Z,#$08,L23A2E       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
 L23970:
         BRSET   >MonitorDisableFlags,Z,#$02,L23A2E       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
@@ -4832,8 +4832,8 @@ L239E2:
         STAA    >Vss65D,Z
         CMPA    >VssCheckCount
         BLS     L23A36
-        BRSET   >SwitchMonFlags,Z,#$10,L23A36            ; bit 4: vehicle speed monitor: fault reported (VssMonitor)
-        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: vehicle speed monitor: fault reported (VssMonitor)
+        BRSET   >SwitchMonFlags,Z,#$10,L23A36            ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
+        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
         LDAA    $40E6
         JSR     ObdFaultReport
         BRA     L23A2E
@@ -4847,7 +4847,7 @@ L23A0E:
         STAA    >VssCheckCounter,Z
         CMPA    >VssCheckCount
         BLS     L23A36
-        BCLR    >SwitchMonFlags,Z,#$10                   ; bit 4: vehicle speed monitor: fault reported (VssMonitor)
+        BCLR    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
         LDAA    $40E6
         JSR     ObdFaultReport
         LDY     #$40E6
@@ -4879,11 +4879,11 @@ L23A58:
         JSR     Lookup2D
         CMPA    >Count3s,Z
         BCC     L23A90
-        BRSET   >SwitchMonFlags,Z,#$04,L23A90            ; bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
-        BSET    >SwitchMonFlags,Z,#$04                   ; bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
+        BRSET   >SwitchMonFlags,Z,#$04,L23A90            ; bit 2: P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
+        BSET    >SwitchMonFlags,Z,#$04                   ; bit 2: P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
         BRA     L23A84
 L23A80:
-        BCLR    >SwitchMonFlags,Z,#$04                   ; bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
+        BCLR    >SwitchMonFlags,Z,#$04                   ; bit 2: P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
 L23A84:
         LDAA    $4488
         JSR     ObdFaultReport

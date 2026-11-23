@@ -97,8 +97,30 @@ MonitorDisableFlags equ $009C        ; $F809C
 ;                 bit 1: barometric pressure below MonEnableBaroMin (altitude)
 ;                 bit 0: battery (ambient) temperature below MonEnableBattTempMin
 MonFlags09D      equ $009D        ; $F809D
+;                 bit 7: P0740 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 6: P1899 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 5: P0703 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 3: P1294 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 2: P0125 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 1: P1281 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
+;                 bit 0: P0551 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
 MonFlags09E      equ $009E        ; $F809E
+;                 bit 7: P0138 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 6: P0158 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 5: P0140 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 4: P0160 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 3: P0137 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 2: P0157 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 1: P0153 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
+;                 bit 0: P0133 test not passed yet this drive cycle, probably (fault-to-status map; result bit in O2MonFlags)
 MonFlags09F      equ $009F        ; $F809F
+;                 bit 7: P0463 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+;                 bit 6: P0462 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+;                 bit 5: P0460 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+;                 bit 4: P0700 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+;                 bit 3: P0404 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
+;                 bit 2: P1698 test not passed yet this drive cycle, probably (fault-to-status map; result bit in MonFlags65A)
 MonTask0A0       equ $00A0        ; $F80A0
 MonStatusCatBank1 equ $00A1        ; $F80A1
 MonStatusCatBank2 equ $00A2        ; $F80A2
@@ -1432,22 +1454,30 @@ MonTask655       equ $0655        ; $F8655
 FuelSysWork      equ $0656        ; $F8656
 MonTask657       equ $0657        ; $F8657
 SwitchMonFlags   equ $0658        ; $F8658
-;                 bit 7: torque converter clutch monitor: fault reported (TccMonitor)
-;                 bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
-;                 bit 5: brake switch monitor: fault reported (BrakeSwitchMonitor)
-;                 bit 4: vehicle speed monitor: fault reported (VssMonitor)
-;                 bit 3: idle rpm monitor: fault reported (IdleRpmMonitor)
-;                 bit 2: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
-;                 bit 1: thermostat monitor running (ThermostatMonitor)
-;                 bit 0: power steering switch monitor: switch state for the report (PspSwitchMonitor)
+;                 bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
+;                 bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+;                 bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
+;                 bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
+;                 bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
+;                 bit 2: P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
+;                 bit 1: P1281: thermostat monitor running (ThermostatMonitor)
+;                 bit 0: P0551: power steering switch monitor: switch state for the report (PspSwitchMonitor)
 O2MonFlags       equ $0659        ; $F8659
+;                 bit 7: P0138 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 6: P0158 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 5: P0140 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 4: P0160 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 3: P0137 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 2: P0157 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 1: P0153 result (fault-to-status map, paired with MonFlags09E)
+;                 bit 0: P0133 result (fault-to-status map, paired with MonFlags09E)
 MonFlags65A      equ $065A        ; $F865A
-;                 bit 7: fuel sender fault reported, first kind (FuelSenderMonitor)
-;                 bit 6: fuel sender fault reported, second kind (FuelSenderMonitor)
+;                 bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
+;                 bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
 ;                 bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
-;                 bit 4: transmission fault reported to the OBD records (TransMilRequest)
-;                 bit 3: EGR position monitor result reported (EgrPositionMonitor)
-;                 bit 2: body bus timeout fault reported (BodyBusTimeout)
+;                 bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
+;                 bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
+;                 bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
 ObdRec65B        equ $065B        ; $F865B
 Tcc65C           equ $065C        ; $F865C
 Vss65D           equ $065D        ; $F865D

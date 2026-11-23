@@ -6656,7 +6656,7 @@ L359A6:
         XGDX
         JMP     $350D0,X
 L359CE:
-        LDX     #$7165
+        LDX     #BitCollectMaps
         JSR     CollectBits
         JMP     SciSendByte
 L359DA:

@@ -14596,7 +14596,7 @@ L1B796:
         BRSET   >FaultSet02,Z,#$02,L1B8E8
         BRSET   >FaultSet05,Z,#$20,L1B8E8
         BRSET   >FaultSet05,Z,#$10,L1B8E8
-        BRSET   >SwitchMonFlags,Z,#$40,L1B8E8            ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
+        BRSET   >SwitchMonFlags,Z,#$40,L1B8E8            ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
         BCLR    >IdleDipFlags,Z,#$04                     ; bit 2: idle start time counted; sensor faults stop the correction (IdleRpmTarget)
         LDAA    >IdleDipTimer2,Z
         BEQ     L1B7D8
@@ -16503,7 +16503,7 @@ SpeedDampControl:
         BRCLR   >Options0337,#$40,L1DEB0                 ; bit 6: speed damping spark on (SpeedDampOn)
         BRSET   >EventSparkFlags,Z,#$08,L1DD40           ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
         BRSET   >EventSparkFlags,Z,#$04,L1DD40           ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BRSET   >MonFlags09D,Z,#$10,L1DD1C
+        BRSET   >MonFlags09D,Z,#$10,L1DD1C               ; bit 4: P0500 test not passed yet this drive cycle, probably (fault-to-status map; result bit in SwitchMonFlags)
         BRCLR   >EquipmentFlags,Z,#$20,L1DCCA            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >BusModuleFlags,Z,#$02,L1DCCA            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BRSET   >BusFlags9CE,Z,#$01,L1DD1C
