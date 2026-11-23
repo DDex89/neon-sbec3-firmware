@@ -1367,7 +1367,7 @@ FlexAfterStartTime:
 ; Flex-fuel learning: start value FlexLearnBase against the ethanol value FlexEthanolStart
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: $0857; FlexEthanolStart; $08E4
-; Read at $1705C, $1713C, $1745C, $18092, $180DA, $18150, $18780, $18A56 and 1 more
+; Read at $1705C, $1713C, $1745C, $1784C, $18092, $180DA, $18150, $183B8 and 3 more
 ;---------------------------------------------------------------------------------------------------
 FlexLearnInit:
         dc.b    1,$80                                    ; points, flags
@@ -14277,7 +14277,7 @@ L0C08C:
 
 ;---------------------------------------------------------------------------------------------------
 ; Lookup2D ($0C08E)
-; Called from: ChargeControl2, Isr_GPT_IC1, Reset, CalcDeadTime, FuelCutControl, WotEnrichControl, DecelFuelRampControl, CalcBaroFuelAdder and 129 more routines (382 calls)
+; Called from: ChargeControl2, Isr_GPT_IC1, Reset, CalcDeadTime, FuelCutControl, WotEnrichControl, DecelFuelRampControl, CalcBaroFuelAdder and 131 more routines (384 calls)
 ;
 ; 2D table lookup with linear interpolation. X = table, A = input; result in A and B and in
 ; LookupResult. Table: n, flags, then n (x, y) byte pairs with x ascending. Inputs below the first
@@ -14440,7 +14440,7 @@ L0C19E:
 
 ;---------------------------------------------------------------------------------------------------
 ; PeriodChangeTrack ($0C1A8)
-; Called from: Isr_GPT_IC3, Isr_GPT_IC4OC5, CamSignalCheck, CalcVehicleSpeed, CalcEngineRpm (7 calls)
+; Called from: Isr_GPT_IC3, Isr_GPT_IC4OC5, UnusedPeriodTrack, CamSignalCheck, CalcVehicleSpeed, CalcEngineRpm (8 calls)
 ;---------------------------------------------------------------------------------------------------
 PeriodChangeTrack:
         PSHM    E,K
@@ -15126,12 +15126,52 @@ L0C70A:
         STAA    >FlexEthanol,Z
 L0C71C:
         RTS
-        dc.b    $F5,$0F,$37,$9C,$37,$9D,$37,$65,$0A,$FC,$2B,$01,$0A,$CC,$00,$0A
-        dc.b    $29,$01,$0A,$CC,$37,$4A,$00,$00,$B0,$1E,$85,$00,$37,$4A,$00,$00
-        dc.b    $27,$79,$27,$FB,$37,$BD,$8D,$A3,$5A,$00,$17,$65,$0A,$BC,$27,$FF
-        dc.b    $17,$65,$0A,$BC,$D4,$00,$BA,$FE,$37,$03,$37,$0F,$27,$F7,$34,$6E
-        dc.b    $27,$4E,$27,$5E,$37,$BD,$8D,$A3,$37,$BC,$8A,$BC,$37,$3B,$00,$E0
-        dc.b    $37,$E5,$79,$0A,$FA,$00,$C1,$A8,$37,$65,$0A,$BD,$35,$01,$B0,$04
+
+;---------------------------------------------------------------------------------------------------
+; UnusedCrankPeriodDelta ($0C71E)
+;---------------------------------------------------------------------------------------------------
+UnusedCrankPeriodDelta:
+        LDAB    #$0F
+        TBXK
+        TBYK
+        LDE     >CrankPeriodSum,Z
+        BRSET   >CrankFlags2,Z,#$01,L0C738               ; bit 0: first crank period delta taken (CrankPeriodDelta2)
+        BSET    >CrankFlags2,Z,#$01                      ; bit 0: first crank period delta taken (CrankPeriodDelta2)
+        STE     $0000,X
+        BRA     L0C75A
+L0C738:
+        LDD     $00,X
+        STE     $0000,X
+        SDE
+        TED
+        LDY     #$8DA3
+        STAA    $00,Y
+        LDAA    >RunModeCounter,Z
+        LSRD
+        LDAA    >RunModeCounter,Z
+        EORB    $00,Y
+        BPL     L0C758
+        INCA
+L0C758:
+        LSRA
+L0C75A:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedPeriodTrack ($0C75C)
+;---------------------------------------------------------------------------------------------------
+UnusedPeriodTrack:
+        PSHM    E,X,Y,K,CCR
+        TZX
+        TZY
+        LDY     #$8DA3
+        LDX     #$8ABC
+        ORP     #$00E0
+        LDD     >TCNT,Z
+        JSR     PeriodChangeTrack
+        LDE     >RefPeriod,Z
+        PULM    CCR
+        BRA     L0C786
 
 ;---------------------------------------------------------------------------------------------------
 ; CalcRpmFromPeriod ($0C77E)
@@ -15141,6 +15181,7 @@ CalcRpmFromPeriod:
         PSHM    E,X,Y,K
         TZX
         LDE     >RefPeriod,Z
+L0C786:
         CLRD
         CPE     #$7F00
         BCC     L0C7B4
@@ -15270,8 +15311,20 @@ L0C894:
         AIS     #$04
         PULM    CCR,K,Y,X,E
         RTS
-        dc.b    $34,$02,$27,$7B,$27,$F8,$27,$7A,$37,$17,$27,$F8,$37,$26,$35,$20
-        dc.b    $27,$F7
+
+;---------------------------------------------------------------------------------------------------
+; UnusedMulSigned8 ($0C89C)
+;---------------------------------------------------------------------------------------------------
+UnusedMulSigned8:
+        PSHM    E
+        TDE
+        SXT
+        XGDE
+        TAB
+        SXT
+        EMULS
+        PULM    E
+        RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; MulSignedSat ($0C8AE)
@@ -15672,12 +15725,53 @@ L0CC20:
         PULM    Y
 L0CC2C:
         RTS
-        dc.b    $34,$06,$27,$FF,$27,$FF,$27,$FF,$27,$FF,$27,$FF,$27,$FF,$27,$FF
-        dc.b    $FC,$01,$27,$FF,$37,$B0,$00,$66,$27,$7B,$27,$F4,$27,$F4,$27,$78
-        dc.b    $27,$FB,$27,$75,$79,$80,$B7,$FE,$27,$70,$37,$BC,$00,$09,$37,$29
-        dc.b    $37,$B7,$00,$00,$BA,$06,$37,$35,$FF,$FF,$27,$F2,$37,$CC,$B0,$02
-        dc.b    $37,$35,$00,$01,$37,$CC,$37,$7C,$00,$05,$B4,$00,$37,$35,$00,$00
-        dc.b    $37,$31,$00,$80,$27,$78,$27,$FB,$35,$30,$27,$F7
+
+;---------------------------------------------------------------------------------------------------
+; UnusedScaleCalc ($0CC2E)
+;---------------------------------------------------------------------------------------------------
+UnusedScaleCalc:
+        PSHM    E,X
+        LSRD
+        LSRD
+        LSRD
+        LSRD
+        LSRD
+        LSRD
+        LSRD
+        ADDD    #$01
+        LSRD
+        SUBD    #$0066
+        TDE
+        ASLD
+        ASLD
+        ADE
+        TED
+        CLRE
+        BITA    #$80
+        BEQ     L0CC58
+        COME
+L0CC58:
+        LDX     #$0009
+        EDIVS
+        ORD     #$0000
+        BPL     L0CC6E
+        LDE     #$FFFF
+        NEGD
+        XGDX
+        BRA     L0CC74
+L0CC6E:
+        LDE     #$0001
+        XGDX
+L0CC74:
+        CPX     #$0005
+        BCC     L0CC7E
+        LDE     #$0000
+L0CC7E:
+        ADDE    #$0080
+        ADE
+        TED
+        PULM    X,E
+        RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; BusStatusByte ($0CC8A)

@@ -4250,12 +4250,46 @@ EventCellSelect:
 L12BF4:
         STAB    >FuelEventHoldCount,Z
         RTS
-        dc.b    $27,$36,$0B,$D5,$B7,$30,$37,$E5,$0C,$4C,$37,$F8,$0B,$D3,$B5,$26
-        dc.b    $37,$F0,$0B,$D7,$37,$F8,$0B,$D5,$B4,$1C,$2B,$20,$07,$74,$00,$20
-        dc.b    $37,$E5,$0C,$4C,$37,$F8,$0B,$D5,$B4,$0C,$37,$F0,$0B,$D7,$37,$F8
-        dc.b    $0B,$D3,$B5,$02,$29,$20,$07,$74,$B0,$02,$28,$20,$07,$74,$B0,$18
-        dc.b    $37,$15,$37,$9C,$37,$BC,$0B,$CD,$17,$E5,$0C,$46,$37,$13,$F8,$06
-        dc.b    $B6,$FE,$37,$15,$37,$4F,$C5,$00,$17,$EA,$07,$7B,$27,$F7
+
+;---------------------------------------------------------------------------------------------------
+; UnusedRpmWindowFlag ($12BFA)
+;---------------------------------------------------------------------------------------------------
+UnusedRpmWindowFlag:
+        TSTW    $0BD5
+        BEQ     L12C34
+        LDD     >EngineRpm,Z
+        CPD     $0BD3
+        BCS     L12C34
+        SUBD    $0BD7
+        CPD     $0BD5
+        BCC     L12C34
+        BRSET   >EngineStateFlags,Z,#$20,L12C3A
+        LDD     >EngineRpm,Z
+        CPD     $0BD5
+        BCC     L12C34
+        SUBD    $0BD7
+        CPD     $0BD3
+        BCS     L12C34
+        BSET    >EngineStateFlags,Z,#$20
+        BRA     L12C3A
+L12C34:
+        BCLR    >EngineStateFlags,Z,#$20
+        BRA     L12C56
+L12C3A:
+        CLRB
+        TBXK
+        LDX     #$0BCD
+        LDAB    >CylinderIndex,Z
+        INCB
+        CMPB    #$06
+        BNE     L12C4E
+        CLRB
+L12C4E:
+        ABX
+        LDAB    $00,X
+        STAB    >FuelEventHoldCount,Z
+L12C56:
+        RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; CylinderBit ($12C58)
@@ -8707,77 +8741,439 @@ L17508:
 L1750C:
         JSR     FlexPurgeFactor
         RTS
-        dc.b    $2B,$80,$06,$42,$00,$9C,$2B,$01,$05,$05,$00,$96,$2B,$40,$05,$06
-        dc.b    $00,$90,$2B,$06,$05,$09,$00,$8A,$2B,$08,$05,$12,$00,$84,$2B,$20
-        dc.b    $05,$17,$00,$7E,$FA,$01,$7B,$32,$2A,$80,$01,$AD,$00,$4C,$29,$10
-        dc.b    $0F,$27,$FA,$01,$76,$FA,$2B,$20,$07,$1D,$00,$54,$2A,$80,$07,$5D
-        dc.b    $00,$4E,$2A,$08,$0F,$0D,$00,$10,$28,$01,$0F,$0C,$FA,$01,$7E,$BE
-        dc.b    $2B,$01,$0F,$0C,$00,$1E,$B0,$34,$2A,$01,$0F,$0B,$00,$32,$2A,$10
-        dc.b    $0F,$0D,$00,$2C,$2B,$20,$01,$AD,$00,$0A,$17,$E5,$0A,$6A,$17,$F8
-        dc.b    $08,$E3,$B5,$14,$FA,$01,$78,$02,$B0,$12,$2A,$20,$01,$AD,$00,$0C
-        dc.b    $2B,$10,$01,$AE,$00,$06,$FA,$01,$75,$B6,$B0,$00,$FA,$01,$75,$E2
-        dc.b    $2B,$80,$07,$74,$00,$0C,$17,$65,$0F,$3C,$78,$FF,$B7,$00,$17,$23
-        dc.b    $0F,$3C,$27,$F7,$29,$80,$0F,$27,$FA,$01,$76,$FA,$2A,$80,$01,$AE
-        dc.b    $00,$06,$2B,$01,$0F,$0B,$00,$0E,$29,$01,$01,$AD,$28,$0E,$01,$AE
-        dc.b    $17,$25,$0F,$11,$B0,$04,$28,$01,$01,$AD,$FA,$01,$78,$02,$27,$F7
-        dc.b    $2B,$80,$01,$AD,$00,$2A,$2B,$10,$01,$B0,$00,$06,$28,$10,$0F,$0C
-        dc.b    $B0,$4C,$29,$20,$0F,$0C,$2A,$40,$01,$AF,$00,$14,$FA,$01,$76,$46
-        dc.b    $2A,$80,$0F,$0C,$00,$3C,$29,$10,$0F,$0C,$FA,$01,$78,$02,$B0,$2E
-        dc.b    $2A,$02,$01,$AF,$00,$1A,$2B,$01,$01,$AF,$00,$14,$FA,$01,$76,$C0
-        dc.b    $2A,$80,$0F,$0C,$00,$1C,$29,$10,$0F,$0C,$FA,$01,$78,$02,$B0,$0E
-        dc.b    $28,$10,$0F,$0C,$FA,$01,$76,$8A,$2A,$40,$0F,$0C,$00,$04,$FA,$01
-        dc.b    $78,$56,$27,$F7,$2A,$01,$01,$AE,$00,$38,$17,$65,$0A,$6A,$17,$78
-        dc.b    $08,$02,$B5,$2A,$29,$40,$0F,$27,$FA,$01,$76,$FA,$2A,$01,$0F,$0B
-        dc.b    $00,$20,$2B,$20,$07,$1D,$00,$1A,$2A,$80,$07,$5D,$00,$14,$17,$26
-        dc.b    $07,$AF,$B6,$0A,$29,$80,$0F,$0C,$29,$80,$01,$AE,$28,$40,$0F,$0C
-        dc.b    $B0,$00,$28,$80,$0F,$0C,$27,$F7,$29,$08,$0F,$27,$FA,$01,$76,$FA
-        dc.b    $2A,$01,$0F,$0B,$00,$22,$2B,$20,$07,$1D,$00,$1C,$2A,$80,$07,$5D
-        dc.b    $00,$16,$17,$26,$07,$AF,$B6,$0C,$17,$26,$04,$31,$B7,$06,$29,$40
-        dc.b    $0F,$0C,$28,$80,$0F,$0C,$B0,$00,$28,$40,$0F,$0C,$27,$F7,$17,$65
-        dc.b    $0A,$6A,$17,$78,$08,$02,$B5,$26,$29,$20,$0F,$27,$FA,$01,$76,$FA
-        dc.b    $2A,$01,$0F,$0B,$00,$1C,$2B,$20,$07,$1D,$00,$16,$2A,$80,$07,$5D
-        dc.b    $00,$10,$17,$26,$07,$AF,$B6,$06,$29,$80,$0F,$0C,$28,$40,$0F,$0C
-        dc.b    $B0,$00,$28,$80,$0F,$0C,$27,$F7,$2A,$04,$05,$80,$00,$06,$29,$40
-        dc.b    $0F,$0B,$B0,$00,$28,$40,$0F,$0B,$17,$E5,$0A,$7E,$17,$F8,$18,$EE
-        dc.b    $37,$82,$00,$28,$17,$F8,$18,$EF,$37,$83,$00,$20,$17,$F5,$18,$F0
-        dc.b    $17,$E0,$0C,$4C,$B5,$10,$2A,$04,$0F,$0C,$00,$18,$17,$F0,$18,$F1
-        dc.b    $37,$85,$00,$08,$28,$04,$0F,$0C,$B0,$06,$29,$04,$0F,$0C,$29,$20
-        dc.b    $0F,$0B,$B0,$00,$28,$20,$0F,$0B,$17,$E5,$07,$C2,$37,$16,$B6,$02
-        dc.b    $28,$04,$0F,$0B,$B0,$00,$29,$04,$0F,$0B,$2B,$80,$07,$70,$00,$06
-        dc.b    $28,$02,$0F,$0B,$B0,$00,$29,$02,$0F,$0B,$27,$26,$07,$C6,$B7,$02
-        dc.b    $29,$10,$0F,$0B,$B0,$00,$28,$10,$0F,$0B,$27,$26,$07,$C8,$B7,$02
-        dc.b    $29,$08,$0F,$0B,$B0,$00,$28,$08,$0F,$0B,$17,$65,$0F,$0B,$76,$7E
-        dc.b    $B6,$48,$2B,$02,$0C,$21,$00,$46,$37,$E5,$0F,$1B,$37,$B8,$FF,$FF
-        dc.b    $B4,$46,$2A,$80,$0F,$27,$00,$08,$37,$F8,$08,$14,$B4,$3A,$B0,$24
-        dc.b    $2A,$40,$0F,$27,$00,$08,$37,$F8,$08,$16,$B4,$2C,$B0,$16,$2A,$20
-        dc.b    $0F,$27,$00,$08,$37,$F8,$08,$18,$B4,$1E,$B0,$08,$2A,$10,$0F,$27
-        dc.b    $00,$1A,$37,$F8,$08,$1C,$B4,$10,$27,$23,$0F,$1B,$B0,$04,$29,$80
-        dc.b    $0F,$0B,$27,$25,$0F,$1B,$28,$01,$0F,$0B,$B0,$04,$29,$01,$0F,$0B
-        dc.b    $28,$80,$0F,$0B,$17,$65,$0F,$27,$76,$07,$17,$6A,$0F,$27,$27,$F7
-        dc.b    $2B,$01,$0F,$0C,$00,$1C,$FA,$01,$78,$78,$2A,$08,$01,$AE,$00,$16
-        dc.b    $17,$23,$0F,$11,$17,$65,$0F,$11,$17,$78,$08,$09,$B5,$04,$17,$25
-        dc.b    $0F,$11,$FA,$01,$78,$B0,$2A,$80,$01,$AD,$00,$16,$3B,$10,$03,$33
-        dc.b    $00,$10,$17,$E5,$0A,$6A,$17,$F8,$08,$E3,$B5,$02,$17,$65,$0F,$3A
-        dc.b    $B0,$00,$17,$65,$01,$B4,$37,$BC,$08,$64,$FA,$00,$C0,$8E,$17,$6A
-        dc.b    $01,$B5,$27,$F7,$FA,$01,$78,$78,$2A,$08,$01,$AE,$00,$16,$17,$23
-        dc.b    $0F,$11,$17,$65,$0F,$11,$17,$78,$08,$09,$B5,$04,$17,$25,$0F,$11
-        dc.b    $FA,$01,$79,$2A,$27,$F7,$17,$65,$07,$00,$37,$06,$BA,$12,$37,$02
-        dc.b    $17,$E5,$0F,$10,$37,$12,$37,$1B,$B5,$16,$29,$0A,$01,$AE,$28,$04
-        dc.b    $01,$AE,$B0,$14,$17,$68,$0F,$0F,$B5,$06,$29,$0C,$01,$AE,$28,$02
-        dc.b    $01,$AE,$B0,$04,$28,$0E,$01,$AE,$17,$25,$0F,$11,$27,$F7,$17,$25
-        dc.b    $0F,$11,$2A,$80,$01,$AD,$00,$16,$3B,$10,$03,$33,$00,$10,$17,$E5
-        dc.b    $0A,$6A,$17,$F8,$08,$E3,$B5,$02,$17,$65,$0F,$3A,$B0,$00,$17,$65
-        dc.b    $01,$B4,$2B,$02,$01,$AE,$00,$12,$17,$71,$08,$0A,$B5,$02,$17,$78
-        dc.b    $08,$03,$B5,$0A,$17,$75,$08,$03,$B0,$04,$17,$70,$08,$0A,$B4,$FE
-        dc.b    $37,$05,$3A,$80,$07,$F8,$00,$02,$37,$05,$2A,$80,$01,$AD,$00,$16
-        dc.b    $3B,$10,$03,$33,$00,$10,$17,$E5,$0A,$6A,$17,$F8,$08,$E3,$B5,$02
-        dc.b    $17,$6A,$0F,$3A,$B0,$0C,$17,$6A,$01,$B4,$17,$6A,$0F,$3A,$17,$6A
-        dc.b    $0F,$25,$17,$6A,$01,$BD,$27,$F7,$17,$65,$01,$B8,$37,$06,$BA,$20
-        dc.b    $37,$02,$2B,$04,$01,$AE,$00,$14,$17,$71,$08,$0A,$17,$F5,$08,$07
-        dc.b    $37,$12,$37,$1B,$B5,$06,$17,$75,$08,$07,$B0,$1E,$17,$70,$08,$0A
-        dc.b    $37,$02,$B0,$16,$2B,$04,$01,$AE,$00,$06,$17,$70,$08,$0A,$B0,$0A
-        dc.b    $17,$71,$08,$0A,$17,$78,$08,$06,$B5,$00,$17,$75,$08,$06,$3A,$40
-        dc.b    $07,$F8,$00,$02,$37,$05,$17,$6A,$01,$B8,$27,$F7
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlexLearnMain ($17512)
+;---------------------------------------------------------------------------------------------------
+UnusedFlexLearnMain:
+        BRSET   >MonEnableFlags2,Z,#$80,L175B4           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
+        BRSET   >FaultSet05,Z,#$01,L175B4                ; bit 0: P0134
+        BRSET   >FaultSet06,Z,#$40,L175B4                ; bit 6: P0132
+        BRSET   >FaultSet09,Z,#$06,L175B4                ; bit 2: P0152; bit 1: P0154
+        BRSET   >FaultSet12,Z,#$08,L175B4                ; bit 3: P0131
+        BRSET   >FaultSet17,Z,#$20,L175B4                ; bit 5: P0151
+        JSR     UnusedFlex17B32
+        BRCLR   >FlexLearnFlags,Z,#$80,L1758C            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BSET    >FlexLearnFlags8,Z,#$10
+        JSR     UnusedFlex176FA
+        BRSET   >O2Bank1Flags,Z,#$20,L175A2              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
+        BRCLR   >O2ActiveFlags,Z,#$80,L175A2             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
+        BRCLR   >FlexLearnFlags6,Z,#$08,L1756A           ; bit 3: cold purge learning allowed (FlexColdStart, read by FlexColdPurge)
+        BCLR    >FlexLearnFlags7,Z,#$01
+        JSR     UnusedFlex17EBE
+        BRSET   >FlexLearnFlags7,Z,#$01,L17586
+        BRA     L175A2
+L1756A:
+        BRCLR   >FlexLearnFlags10,Z,#$01,L175A2
+        BRCLR   >FlexLearnFlags6,Z,#$10,L175A2           ; bit 4: cleared with bit 5 by the idle learning steps
+        BRSET   >FlexLearnFlags,Z,#$20,L17586            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        LDAB    >CoolantTemp,Z
+        CMPB    >FlexLearnCoolantMin3
+        BCS     L1759E
+L17586:
+        JSR     UnusedFlex17802
+        BRA     L175A2
+L1758C:
+        BRCLR   >FlexLearnFlags,Z,#$20,L1759E            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        BRSET   >FlexLearnFlags2,Z,#$10,L1759E
+        JSR     UnusedFlex175B6
+        BRA     L175A2
+L1759E:
+        JSR     UnusedFlex175E2
+L175A2:
+        BRSET   >EngineStateFlags,Z,#$80,L175B4          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
+        LDAA    >FlexColdCounter,Z
+        CMPA    #$FF
+        BEQ     L175B4
+        INC     >FlexColdCounter,Z
+L175B4:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex175B6 ($175B6)
+; Called from: UnusedFlexLearnMain
+;---------------------------------------------------------------------------------------------------
+UnusedFlex175B6:
+        BSET    >FlexLearnFlags8,Z,#$80
+        JSR     UnusedFlex176FA
+        BRCLR   >FlexLearnFlags2,Z,#$80,L175CA
+        BRSET   >FlexLearnFlags10,Z,#$01,L175D8
+L175CA:
+        BSET    >FlexLearnFlags,Z,#$01
+        BCLR    >FlexLearnFlags2,Z,#$0E
+        CLR     $0F11,Z
+        BRA     L175E0
+L175D8:
+        BCLR    >FlexLearnFlags,Z,#$01
+        JSR     UnusedFlex17802
+L175E0:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex175E2 ($175E2)
+; Called from: UnusedFlexLearnMain
+;---------------------------------------------------------------------------------------------------
+UnusedFlex175E2:
+        BRSET   >FlexLearnFlags,Z,#$80,L17612            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRSET   >FlexLearnFlags4,Z,#$10,L175F4
+        BCLR    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
+        BRA     L17644
+L175F4:
+        BSET    >FlexLearnFlags7,Z,#$20                  ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
+        BRCLR   >FlexLearnFlags3,Z,#$40,L17612           ; bit 6: flex learning restarted (FlexLearnMain, FlexLearnInitRun)
+        JSR     UnusedFlex17646
+        BRCLR   >FlexLearnFlags7,Z,#$80,L17644           ; bit 7: cleared by FlexLearnMain at the end of a learning pass
+        BSET    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
+        JSR     UnusedFlex17802
+        BRA     L17644
+L17612:
+        BRCLR   >FlexLearnFlags3,Z,#$02,L17632           ; bit 1: flex trim at or above FlexLearnTrimMin (FlexLearnMain)
+        BRSET   >FlexLearnFlags3,Z,#$01,L17632           ; bit 0: second flex count reached FlexLearnCountMax2 (FlexLearnMain)
+        JSR     UnusedFlex176C0
+        BRCLR   >FlexLearnFlags7,Z,#$80,L17644           ; bit 7: cleared by FlexLearnMain at the end of a learning pass
+        BSET    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
+        JSR     UnusedFlex17802
+        BRA     L17644
+L17632:
+        BCLR    >FlexLearnFlags7,Z,#$10                  ; bit 4: flex learning running with O2 active: purge duty and vapour learn wait (PurgeDutySelect, PurgeVaporLearn)
+        JSR     UnusedFlex1768A
+        BRCLR   >FlexLearnFlags7,Z,#$40,L17644
+        JSR     UnusedFlex17856
+L17644:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex17646 ($17646)
+; Called from: UnusedFlex175E2
+;---------------------------------------------------------------------------------------------------
+UnusedFlex17646:
+        BRCLR   >FlexLearnFlags2,Z,#$01,L17684
+        LDAA    >CoolantTemp,Z
+        CMPA    >FlexLearnCoolantMin
+        BCS     L17684
+        BSET    >FlexLearnFlags8,Z,#$40
+        JSR     UnusedFlex176FA
+        BRCLR   >FlexLearnFlags10,Z,#$01,L17684
+        BRSET   >O2Bank1Flags,Z,#$20,L17684              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
+        BRCLR   >O2ActiveFlags,Z,#$80,L17684             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
+        TST     >O2WarmDelay,Z
+        BNE     L17684
+        BSET    >FlexLearnFlags7,Z,#$80                  ; bit 7: cleared by FlexLearnMain at the end of a learning pass
+        BSET    >FlexLearnFlags2,Z,#$80
+        BCLR    >FlexLearnFlags7,Z,#$40
+        BRA     L17688
+L17684:
+        BCLR    >FlexLearnFlags7,Z,#$80                  ; bit 7: cleared by FlexLearnMain at the end of a learning pass
+L17688:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex1768A ($1768A)
+; Called from: UnusedFlex175E2
+;---------------------------------------------------------------------------------------------------
+UnusedFlex1768A:
+        BSET    >FlexLearnFlags8,Z,#$08
+        JSR     UnusedFlex176FA
+        BRCLR   >FlexLearnFlags10,Z,#$01,L176BA
+        BRSET   >O2Bank1Flags,Z,#$20,L176BA              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
+        BRCLR   >O2ActiveFlags,Z,#$80,L176BA             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
+        TST     >O2WarmDelay,Z
+        BNE     L176BA
+        TST     >PurgeDuty,Z
+        BEQ     L176BA
+        BSET    >FlexLearnFlags7,Z,#$40
+        BCLR    >FlexLearnFlags7,Z,#$80                  ; bit 7: cleared by FlexLearnMain at the end of a learning pass
+        BRA     L176BE
+L176BA:
+        BCLR    >FlexLearnFlags7,Z,#$40
+L176BE:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex176C0 ($176C0)
+; Called from: UnusedFlex175E2
+;---------------------------------------------------------------------------------------------------
+UnusedFlex176C0:
+        LDAA    >CoolantTemp,Z
+        CMPA    >FlexLearnCoolantMin
+        BCS     L176F4
+        BSET    >FlexLearnFlags8,Z,#$20
+        JSR     UnusedFlex176FA
+        BRCLR   >FlexLearnFlags10,Z,#$01,L176F4
+        BRSET   >O2Bank1Flags,Z,#$20,L176F4              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
+        BRCLR   >O2ActiveFlags,Z,#$80,L176F4             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
+        TST     >O2WarmDelay,Z
+        BNE     L176F4
+        BSET    >FlexLearnFlags7,Z,#$80                  ; bit 7: cleared by FlexLearnMain at the end of a learning pass
+        BCLR    >FlexLearnFlags7,Z,#$40
+        BRA     L176F8
+L176F4:
+        BCLR    >FlexLearnFlags7,Z,#$80                  ; bit 7: cleared by FlexLearnMain at the end of a learning pass
+L176F8:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex176FA ($176FA)
+; Called from: UnusedFlexLearnMain, UnusedFlex175B6, UnusedFlex17646, UnusedFlex1768A, UnusedFlex176C0
+;---------------------------------------------------------------------------------------------------
+UnusedFlex176FA:
+        BRCLR   >EgrMonFlags,Z,#$04,L17706               ; bit 2: EGR flow test phase running; EGR, closed loop and purge wait (EgrFlowMonitor)
+        BSET    >FlexLearnFlags10,Z,#$40
+        BRA     L1770A
+L17706:
+        BCLR    >FlexLearnFlags10,Z,#$40
+L1770A:
+        LDAB    >Map,Z
+        CMPB    >O2LearnMapMax
+        LBHI    L17740
+        CMPB    >O2MapMin
+        LBLS    L17740
+        LDAB    >O2LearnRpmMax
+        SUBB    >EngineRpm,Z
+        BCS     L1773C
+        BRCLR   >FlexLearnFlags7,Z,#$04,L17746
+        SUBB    >O2LearnRpmHyst
+        LBCS    L17740
+        BCLR    >FlexLearnFlags7,Z,#$04
+        BRA     L17746
+L1773C:
+        BSET    >FlexLearnFlags7,Z,#$04
+L17740:
+        BSET    >FlexLearnFlags10,Z,#$20
+        BRA     L1774A
+L17746:
+        BCLR    >FlexLearnFlags10,Z,#$20
+L1774A:
+        LDAB    >DecelLeanFuel,Z
+        TSTB
+        BNE     L17758
+        BCLR    >FlexLearnFlags10,Z,#$04
+        BRA     L1775C
+L17758:
+        BSET    >FlexLearnFlags10,Z,#$04
+L1775C:
+        BRSET   >FuelModeFlags2,Z,#$80,L17768            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
+        BCLR    >FlexLearnFlags10,Z,#$02
+        BRA     L1776C
+L17768:
+        BSET    >FlexLearnFlags10,Z,#$02
+L1776C:
+        TSTW    >TipInFuel,Z
+        BEQ     L17778
+        BSET    >FlexLearnFlags10,Z,#$10
+        BRA     L1777C
+L17778:
+        BCLR    >FlexLearnFlags10,Z,#$10
+L1777C:
+        TSTW    >AccelFuel,Z
+        BEQ     L17788
+        BSET    >FlexLearnFlags10,Z,#$08
+        BRA     L1778C
+L17788:
+        BCLR    >FlexLearnFlags10,Z,#$08
+L1778C:
+        LDAA    >FlexLearnFlags10,Z
+        ANDA    #$7E
+        BNE     L177E0
+        BRSET   >AcFlags,Z,#$02,L177E0                   ; bit 1: A/C clutch output changed since the last pass (AcCutLogic)
+        LDD     >FlexLearnF1B,Z
+        CPD     #$FFFF
+        BCC     L177EE
+        BRCLR   >FlexLearnFlags8,Z,#$80,L177B2
+        CPD     $0814
+        BCC     L177EE
+        BRA     L177DA
+L177B2:
+        BRCLR   >FlexLearnFlags8,Z,#$40,L177C0
+        CPD     $0816
+        BCC     L177EE
+        BRA     L177DA
+L177C0:
+        BRCLR   >FlexLearnFlags8,Z,#$20,L177CE
+        CPD     $0818
+        BCC     L177EE
+        BRA     L177DA
+L177CE:
+        BRCLR   >FlexLearnFlags8,Z,#$10,L177EE
+        CPD     $081C
+        BCC     L177EE
+L177DA:
+        INCW    >FlexLearnF1B,Z
+        BRA     L177E8
+L177E0:
+        BSET    >FlexLearnFlags10,Z,#$80
+        CLRW    >FlexLearnF1B,Z
+L177E8:
+        BCLR    >FlexLearnFlags10,Z,#$01
+        BRA     L177F6
+L177EE:
+        BSET    >FlexLearnFlags10,Z,#$01
+        BCLR    >FlexLearnFlags10,Z,#$80
+L177F6:
+        LDAA    >FlexLearnFlags8,Z
+        ANDA    #$07
+        STAA    >FlexLearnFlags8,Z
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex17802 ($17802)
+; Called from: UnusedFlexLearnMain, UnusedFlex175B6, UnusedFlex175E2 (4 calls)
+;---------------------------------------------------------------------------------------------------
+UnusedFlex17802:
+        BRSET   >FlexLearnFlags7,Z,#$01,L17824
+        JSR     UnusedFlex17878
+        BRCLR   >FlexLearnFlags2,Z,#$08,L17828
+        INC     $0F11,Z
+        LDAA    $0F11,Z
+        CMPA    $0809
+        BCS     L17828
+        CLR     $0F11,Z
+L17824:
+        JSR     UnusedFlex178B0
+L17828:
+        BRCLR   >FlexLearnFlags,Z,#$80,L17844            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRSET   >Options0333,#$10,L17844                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
+        LDAB    >CoolantTemp,Z
+        CMPB    >FlexLearnCoolantMin3
+        BCS     L17844
+        LDAA    >FlexLearnState,Z
+        BRA     L17848
+L17844:
+        LDAA    >FlexEthanolStart,Z
+L17848:
+        LDX     #FlexLearnInit
+        JSR     Lookup2D
+        STAA    >FlexLearnBase,Z
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex17856 ($17856)
+; Called from: UnusedFlex175E2
+;---------------------------------------------------------------------------------------------------
+UnusedFlex17856:
+        JSR     UnusedFlex17878
+        BRCLR   >FlexLearnFlags2,Z,#$08,L17876
+        INC     $0F11,Z
+        LDAA    $0F11,Z
+        CMPA    $0809
+        BCS     L17876
+        CLR     $0F11,Z
+        JSR     UnusedFlex1792A
+L17876:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex17878 ($17878)
+; Called from: UnusedFlex17802, UnusedFlex17856, UnusedFlex17EBE
+;---------------------------------------------------------------------------------------------------
+UnusedFlex17878:
+        LDAA    >ShortTermTrim1,Z
+        TSTA
+        BPL     L17896
+        NEGA
+        LDAB    $0F10,Z
+        NEGB
+        CBA
+        BCS     L178A6
+        BSET    >FlexLearnFlags2,Z,#$0A
+        BCLR    >FlexLearnFlags2,Z,#$04
+        BRA     L178AE
+L17896:
+        CMPA    $0F0F,Z
+        BCS     L178A6
+        BSET    >FlexLearnFlags2,Z,#$0C
+        BCLR    >FlexLearnFlags2,Z,#$02
+        BRA     L178AE
+L178A6:
+        BCLR    >FlexLearnFlags2,Z,#$0E
+        CLR     $0F11,Z
+L178AE:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex178B0 ($178B0)
+; Called from: UnusedFlex17802
+;---------------------------------------------------------------------------------------------------
+UnusedFlex178B0:
+        CLR     $0F11,Z
+        BRCLR   >FlexLearnFlags,Z,#$80,L178D0            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRSET   >Options0333,#$10,L178D0                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
+        LDAB    >CoolantTemp,Z
+        CMPB    >FlexLearnCoolantMin3
+        BCS     L178D0
+        LDAA    >FlexLearnState,Z
+        BRA     L178D4
+L178D0:
+        LDAA    >FlexEthanolStart,Z
+L178D4:
+        BRSET   >FlexLearnFlags2,Z,#$02,L178EC
+        ADDA    $080A
+        BCS     L178E6
+        CMPA    $0803
+        BCS     L178F4
+L178E6:
+        LDAA    $0803
+        BRA     L178F4
+L178EC:
+        SUBA    $080A
+        BCC     L178F4
+        CLRA
+L178F4:
+        BRCLR   >FlexLearnOptions,#$80,L178FC            ; bit 7: clear the start estimate (FlexLearnMain)
+        CLRA
+L178FC:
+        BRCLR   >FlexLearnFlags,Z,#$80,L17918            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRSET   >Options0333,#$10,L17918                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
+        LDAB    >CoolantTemp,Z
+        CMPB    >FlexLearnCoolantMin3
+        BCS     L17918
+        STAA    >FlexLearnState,Z
+        BRA     L17928
+L17918:
+        STAA    >FlexEthanolStart,Z
+        STAA    >FlexLearnState,Z
+        STAA    >FlexLearnValue,Z
+        STAA    >FlexEthanolPrev,Z
+L17928:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex1792A ($1792A)
+; Called from: UnusedFlex17856
+;---------------------------------------------------------------------------------------------------
+UnusedFlex1792A:
+        LDAA    >FlexLearnTrimSum,Z
+        TSTA
+        BPL     L17956
+        NEGA
+        BRSET   >FlexLearnFlags2,Z,#$04,L1794E
+        ADDA    $080A
+        LDAB    $0807
+        NEGB
+        CBA
+        BCS     L17952
+        LDAA    $0807
+        BRA     L17970
+L1794E:
+        SUBA    $080A
+L17952:
+        NEGA
+        BRA     L17970
+L17956:
+        BRSET   >FlexLearnFlags2,Z,#$04,L17962
+        SUBA    $080A
+        BRA     L17970
+L17962:
+        ADDA    $080A
+        CMPA    $0806
+        BCS     L17970
+        LDAA    $0806
+L17970:
+        BRCLR   >FlexLearnOptions,#$40,L17978            ; bit 6: clear FlexLearnTrimSum (FlexLearnMain)
+        CLRA
+L17978:
+        STAA    >FlexLearnTrimSum,Z
+        RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnFuelCount ($1797E)
@@ -8953,11 +9349,39 @@ L17B1C:
         CLR     <PurgeCellTrim2,Z
         CLR     <PurgeCellTrim3,Z
         RTS
-        dc.b    $17,$65,$0A,$6A,$17,$78,$08,$08,$B5,$1A,$17,$65,$08,$01,$78,$0C
-        dc.b    $B7,$00,$78,$0D,$B6,$20,$17,$75,$08,$0C,$17,$6A,$0F,$10,$17,$75
-        dc.b    $08,$0B,$17,$6A,$0F,$0F,$B0,$1E,$17,$75,$08,$0E,$17,$6A,$0F,$10
-        dc.b    $17,$75,$08,$0D,$17,$6A,$0F,$0F,$B0,$0C,$17,$75,$08,$10,$17,$6A
-        dc.b    $0F,$10,$17,$75,$08,$0F,$17,$6A,$0F,$0F,$27,$F7
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex17B32 ($17B32)
+; Called from: UnusedFlexLearnMain
+;---------------------------------------------------------------------------------------------------
+UnusedFlex17B32:
+        LDAA    >CoolantTemp,Z
+        CMPA    $0808
+        BCS     L17B5A
+        LDAA    >O2MemCell,Z
+        CMPA    #$0C
+        BEQ     L17B48
+        CMPA    #$0D
+        BNE     L17B6C
+L17B48:
+        LDAA    $080C
+        STAA    $0F10,Z
+        LDAA    $080B
+        STAA    $0F0F,Z
+        BRA     L17B7C
+L17B5A:
+        LDAA    $080E
+        STAA    $0F10,Z
+        LDAA    $080D
+        STAA    $0F0F,Z
+        BRA     L17B7C
+L17B6C:
+        LDAA    $0810
+        STAA    $0F10,Z
+        LDAA    $080F
+        STAA    $0F0F,Z
+L17B7C:
+        RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexColdStart ($17B7E)
@@ -9229,13 +9653,55 @@ L17EB0:
         STAA    >FlexLearnTrimWeightValue,Z
 L17EBC:
         RTS
-        dc.b    $FA,$01,$78,$78,$17,$23,$0F,$11,$17,$65,$0F,$11,$17,$68,$0F,$2A
-        dc.b    $B5,$1E,$17,$25,$0F,$11,$3B,$10,$03,$33,$00,$14,$17,$65,$01,$BF
-        dc.b    $78,$FF,$B6,$08,$2A,$04,$01,$AE,$00,$06,$29,$01,$0F,$0C,$B0,$00
-        dc.b    $FA,$01,$7E,$F4,$27,$F7,$17,$65,$01,$BF,$2B,$02,$01,$AE,$00,$18
-        dc.b    $2A,$04,$01,$AE,$00,$22,$17,$61,$0F,$2B,$B5,$02,$17,$78,$08,$31
-        dc.b    $B5,$12,$17,$75,$08,$31,$B0,$0C,$17,$60,$0F,$2B,$B5,$02,$17,$78
-        dc.b    $08,$32,$B4,$00,$17,$75,$08,$32,$17,$6A,$01,$BF,$27,$F7
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex17EBE ($17EBE)
+; Called from: UnusedFlexLearnMain
+;---------------------------------------------------------------------------------------------------
+UnusedFlex17EBE:
+        JSR     UnusedFlex17878
+        INC     $0F11,Z
+        LDAA    $0F11,Z
+        CMPA    >FlexLearnTimer2,Z
+        BCS     L17EF2
+        CLR     $0F11,Z
+        BRSET   >Options0333,#$10,L17EEE                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
+        LDAA    >FlexLearnTimer,Z
+        CMPA    #$FF
+        BNE     L17EEE
+        BRCLR   >FlexLearnFlags2,Z,#$04,L17EEE
+        BSET    >FlexLearnFlags7,Z,#$01
+        BRA     L17EF2
+L17EEE:
+        JSR     UnusedFlex17EF4
+L17EF2:
+        RTS
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlex17EF4 ($17EF4)
+; Called from: UnusedFlex17EBE
+;---------------------------------------------------------------------------------------------------
+UnusedFlex17EF4:
+        LDAA    >FlexLearnTimer,Z
+        BRSET   >FlexLearnFlags2,Z,#$02,L17F16
+        BRCLR   >FlexLearnFlags2,Z,#$04,L17F26
+        ADDA    >FlexLearnTrimWeightValue,Z
+        BCS     L17F10
+        CMPA    $0831
+        BCS     L17F26
+L17F10:
+        LDAA    $0831
+        BRA     L17F26
+L17F16:
+        SUBA    >FlexLearnTrimWeightValue,Z
+        BCS     L17F22
+        CMPA    $0832
+        BCC     L17F26
+L17F22:
+        LDAA    $0832
+L17F26:
+        STAA    >FlexLearnTimer,Z
+        RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnReset ($17F2C)
@@ -9521,28 +9987,110 @@ L1824A:
         STAA    >FlexLearnLevelValue,Z
         PULM    X
         RTS
-        dc.b    $2B,$80,$06,$42,$01,$1C,$2B,$01,$05,$05,$01,$16,$2B,$40,$05,$06
-        dc.b    $01,$10,$2B,$06,$05,$09,$01,$0A,$2B,$08,$05,$12,$01,$04,$2B,$20
-        dc.b    $05,$17,$00,$FE,$2A,$20,$01,$B0,$00,$1A,$2A,$80,$01,$AD,$00,$E2
-        dc.b    $2A,$20,$01,$AD,$00,$DC,$17,$26,$07,$7A,$37,$87,$00,$D2,$2A,$40
-        dc.b    $0C,$30,$00,$CE,$2A,$20,$01,$AD,$00,$06,$2A,$10,$01,$AD,$00,$C2
-        dc.b    $17,$26,$07,$7A,$B6,$02,$2A,$40,$0C,$30,$00,$04,$29,$40,$0F,$0E
-        dc.b    $2B,$80,$07,$70,$00,$06,$17,$65,$07,$C2,$B7,$00,$29,$01,$0F,$0E
-        dc.b    $2B,$20,$07,$1D,$00,$0A,$2A,$80,$07,$5D,$00,$04,$37,$80,$00,$A0
-        dc.b    $2A,$80,$01,$AD,$00,$3E,$3A,$10,$03,$33,$00,$06,$2A,$40,$0F,$0D
-        dc.b    $00,$32,$17,$65,$0A,$6A,$17,$78,$08,$E3,$B5,$24,$17,$65,$04,$2C
-        dc.b    $17,$78,$08,$34,$B5,$78,$29,$80,$0F,$0E,$17,$65,$07,$01,$17,$78
-        dc.b    $08,$4B,$B4,$6A,$37,$E5,$0F,$35,$37,$B8,$FF,$FF,$B4,$60,$27,$23
-        dc.b    $0F,$35,$B0,$5A,$2A,$20,$01,$AD,$00,$48,$2B,$10,$01,$AE,$00,$42
-        dc.b    $2B,$20,$07,$1D,$00,$08,$2A,$80,$07,$5D,$00,$02,$B0,$40,$29,$80
-        dc.b    $0F,$0E,$17,$65,$07,$01,$17,$78,$08,$4A,$B5,$0C,$37,$E5,$0F,$31
-        dc.b    $37,$B8,$FF,$FF,$B4,$28,$27,$23,$0F,$31,$B0,$22,$17,$78,$08,$4B
-        dc.b    $B4,$1C,$37,$E5,$0F,$33,$37,$B8,$FF,$FF,$B4,$12,$27,$23,$0F,$33
-        dc.b    $B0,$0C,$27,$25,$0F,$33,$27,$25,$0F,$31,$27,$25,$0F,$35,$28,$80
-        dc.b    $0F,$0E,$2B,$20,$01,$AD,$00,$34,$2A,$80,$01,$AD,$00,$2E,$2A,$40
-        dc.b    $0F,$0E,$00,$28,$37,$E5,$0F,$35,$37,$F8,$08,$3C,$B5,$1A,$17,$65
-        dc.b    $0F,$3A,$37,$03,$78,$DD,$B4,$00,$17,$6A,$0F,$3A,$27,$25,$0F,$35
-        dc.b    $37,$BC,$08,$64,$FA,$00,$C0,$8E,$17,$6A,$01,$B5,$27,$F7
+
+;---------------------------------------------------------------------------------------------------
+; UnusedFlexLearn2 ($18264)
+;---------------------------------------------------------------------------------------------------
+UnusedFlexLearn2:
+        BRSET   >MonEnableFlags2,Z,#$80,L18386           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
+        BRSET   >FaultSet05,Z,#$01,L18386                ; bit 0: P0134
+        BRSET   >FaultSet06,Z,#$40,L18386                ; bit 6: P0132
+        BRSET   >FaultSet09,Z,#$06,L18386                ; bit 2: P0152; bit 1: P0154
+        BRSET   >FaultSet12,Z,#$08,L18386                ; bit 3: P0131
+        BRSET   >FaultSet17,Z,#$20,L18386                ; bit 5: P0151
+        BRCLR   >FlexLearnFlags4,Z,#$20,L182A8
+        BRCLR   >FlexLearnFlags,Z,#$80,L18376            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRCLR   >FlexLearnFlags,Z,#$20,L18376            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        TST     >DecelFuelFactor,Z
+        LBEQ    L18376
+        BRCLR   >ThrottleState,Z,#$40,L18376             ; bit 6: wide-open throttle (DetectWot)
+L182A8:
+        BRCLR   >FlexLearnFlags,Z,#$20,L182B4            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        BRCLR   >FlexLearnFlags,Z,#$10,L18376            ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
+L182B4:
+        TST     >DecelFuelFactor,Z
+        BNE     L182C0
+        BRCLR   >ThrottleState,Z,#$40,L182C4             ; bit 6: wide-open throttle (DetectWot)
+L182C0:
+        BSET    >FlexLearnFlags9,Z,#$40
+L182C4:
+        BRSET   >FuelModeFlags2,Z,#$80,L182D0            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
+        LDAA    >DecelLeanFuel,Z
+        BEQ     L182D4
+L182D0:
+        BSET    >FlexLearnFlags9,Z,#$01
+L182D4:
+        BRSET   >O2Bank1Flags,Z,#$20,L182E4              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
+        BRCLR   >O2ActiveFlags,Z,#$80,L182E4             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
+        LBRA    L18386
+L182E4:
+        BRCLR   >FlexLearnFlags,Z,#$80,L18328            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRCLR   >Options0333,#$10,L182F6                 ; bit 4: flex learning variant (FlexLearnMain, FlexIdleLearn, FlexEstimate)
+        BRCLR   >FlexLearnFlags6,Z,#$40,L18328           ; bit 6: flex idle learning enabled (FlexIdleEnable, FlexColdStart)
+L182F6:
+        LDAA    >CoolantTemp,Z
+        CMPA    >FlexLearnCoolantMin3
+        BCS     L18328
+        LDAA    >PurgeRamp,Z
+        CMPA    >FlexLearnPurgeRampMin
+        BCS     L18386
+        BSET    >FlexLearnFlags9,Z,#$80
+        LDAA    >O2UpBank1Raw,Z
+        CMPA    $084B
+        BCC     L18386
+        LDD     >FlexSum3,Z
+        CPD     #$FFFF
+        BCC     L18386
+        INCW    >FlexSum3,Z
+        BRA     L18386
+L18328:
+        BRCLR   >FlexLearnFlags,Z,#$20,L18376            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        BRSET   >FlexLearnFlags2,Z,#$10,L18376
+        BRSET   >O2Bank1Flags,Z,#$20,L18342              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
+        BRCLR   >O2ActiveFlags,Z,#$80,L18342             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts)
+        BRA     L18386
+L18342:
+        BSET    >FlexLearnFlags9,Z,#$80
+        LDAA    >O2UpBank1Raw,Z
+        CMPA    $084A
+        BCS     L18360
+        LDD     >FlexSum1,Z
+        CPD     #$FFFF
+        BCC     L18386
+        INCW    >FlexSum1,Z
+        BRA     L18386
+L18360:
+        CMPA    $084B
+        BCC     L18386
+        LDD     >FlexSum2,Z
+        CPD     #$FFFF
+        BCC     L18386
+        INCW    >FlexSum2,Z
+        BRA     L18386
+L18376:
+        CLRW    >FlexSum2,Z
+        CLRW    >FlexSum1,Z
+        CLRW    >FlexSum3,Z
+        BCLR    >FlexLearnFlags9,Z,#$80
+L18386:
+        BRSET   >FlexLearnFlags,Z,#$20,L183C0            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
+        BRCLR   >FlexLearnFlags,Z,#$80,L183C0            ; bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
+        BRCLR   >FlexLearnFlags9,Z,#$40,L183C0
+        LDD     >FlexSum3,Z
+        CPD     >FlexLearnSumMin
+        BCS     L183C0
+        LDAA    >FlexLearnState,Z
+        INCA
+        CMPA    #$DD
+        BCC     L183B0
+        STAA    >FlexLearnState,Z
+L183B0:
+        CLRW    >FlexSum3,Z
+        LDX     #FlexLearnInit
+        JSR     Lookup2D
+        STAA    >FlexLearnBase,Z
+L183C0:
+        RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexEstimate ($183C2)
@@ -16850,11 +17398,46 @@ L1E652:
 GetSparkAdvance:
         LDAA    >SparkAdvanceD11,Z
         RTS
-        dc.b    $34,$24,$34,$01,$17,$F5,$03,$25,$37,$1F,$37,$1F,$37,$1F,$37,$1F
-        dc.b    $37,$1B,$B5,$00,$35,$40,$B0,$28,$27,$4E,$37,$BC,$8D,$7A,$37,$17
-        dc.b    $37,$4F,$35,$40,$45,$00,$78,$62,$BE,$0C,$78,$D6,$BC,$16,$17,$EC
-        dc.b    $0A,$BE,$37,$7C,$44,$00,$B4,$08,$B0,$0A,$17,$EC,$0A,$BE,$37,$7C
-        dc.b    $0C,$00,$B4,$00,$17,$65,$0D,$11,$35,$12,$27,$F7
+
+;---------------------------------------------------------------------------------------------------
+; UnusedSparkBusLimit ($1E65C)
+;---------------------------------------------------------------------------------------------------
+UnusedSparkBusLimit:
+        PSHM    X,K
+        PSHM    D
+        LDAB    >BusInfoByte3
+        LSRB
+        LSRB
+        LSRB
+        LSRB
+        CBA
+        BCS     L1E674
+        PULM    D
+        BRA     L1E6A0
+L1E674:
+        TZX
+        LDX     #$8D7A
+        TAB
+        ABX
+        PULM    D
+        LDAA    $00,X
+        CMPA    #$62
+        BGT     L1E696
+        CMPA    #$D6
+        BGE     L1E6A4
+        LDX     >RefPeriodLow,Z
+        CPX     #$4400
+        BCC     L1E6A0
+        BRA     L1E6A4
+L1E696:
+        LDX     >RefPeriodLow,Z
+        CPX     #$0C00
+        BCC     L1E6A4
+L1E6A0:
+        LDAA    >SparkAdvanceD11,Z
+L1E6A4:
+        PULM    K,X
+        RTS
 
 ;---------------------------------------------------------------------------------------------------
 ; IdleSparkControl ($1E6A8)

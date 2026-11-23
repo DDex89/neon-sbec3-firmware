@@ -13,5 +13,17 @@
    "F8700",
    "SCI diagnostic service: code downloaded byte by byte into RAM $F8700-$F87FF (DiagWriteRamByte), checked (length, checksum, RTS at the end) and run by DiagRunRamCode"
   ]
+ ],
+ "unreached_code": [
+  "0C71E",
+  "0C75C",
+  "0C89C",
+  "0CC2E",
+  "12BFA",
+  "17512",
+  "17B32",
+  "17EBE",
+  "18264",
+  "1E65C"
  ]
 }

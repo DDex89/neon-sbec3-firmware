@@ -2,7 +2,7 @@
 
 This page describes the program skeleton of the reference image **05293190AC**: start-up, memory,
 interrupts and the two schedulers. Names refer to the generated source in `src/05293190AC/` and to
-`annotations/`. Every routine of this image has a name (`annotations/labels.json`, 630 names). Where the purpose is
+`annotations/`. Every routine of this image has a name (`annotations/labels.json`, 652 names). Where the purpose is
 not certain the name is neutral (`OutputTestB`, `MonTaskC`, `PciStateSet3`). In the other families,
 numbers like `Sub_2CC42` are left where a routine has not been matched to the reference yet.
 The other families have the same structure at other addresses (stage 5).
@@ -192,6 +192,15 @@ selects a value that is sent back (from a RAM index list, or a word from a bank-
 $F3-$F5). `SciRequestReceive` takes the ordinary requests (`DiagCommand`,
 `DiagParam1`-`DiagParam3`); a fixed byte sequence ($F8, $F7, $F5, $F3, $14), tracked in
 `SciUnlockState`, switches to command $52.
+
+## Unreached code
+
+Ten routines (about 2 KB) are never called, jumped to or pointed at: an older copy of the flex
+fuel learning with its helpers ($17512-$17F2x and $18264), a rpm-window flag and fuel hold table
+($12BFA), a crank period delta, a period tracker and two small arithmetic helpers in bank 0, and a
+spark limit by a bus value ($1E65C). They decode cleanly and end in RTS, so they are listed in
+`annotations/analysis.json` (`unreached_code`) and disassembled; their names start with `Unused`.
+The string `COPYRIGHT 1996 CHRYSLER CORPORATION` sits at $07000.
 
 ## Open questions
 

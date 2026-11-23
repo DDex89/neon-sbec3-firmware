@@ -431,8 +431,10 @@ def header(names, a):
 
 def generate(image_path, outdir):
     data = open(image_path, "rb").read()
-    an = Analysis(data).run()
     own, ref = annotation_set(data, os.path.splitext(os.path.basename(image_path))[0])
+    # routines no code reaches (no call, jump or vector), listed in analysis.json, are decoded too
+    extra = [(int(x, 16), "unreached") for x in own("analysis.json").get("unreached_code", [])]
+    an = Analysis(data).run(extra=extra)
     names = Names(an, data, own, ref)
     cal = Calibration(data, an, names, own)
     lab = names.labels.get
@@ -440,7 +442,7 @@ def generate(image_path, outdir):
 
     # routine starts: call targets, vector handlers, annotated routines
     starts = set(names.callers) | set(names.routines) | \
-        {a for a, v in names.vec_of.items() if len(v) < 8} | {an.vectors()[0][0]}
+        {a for a, v in names.vec_of.items() if len(v) < 8} | {an.vectors()[0][0]} | {a for a, _ in extra}
     # owner of an address = nearest preceding routine start (for "Called from")
     sorted_starts = sorted(starts)
     import bisect
