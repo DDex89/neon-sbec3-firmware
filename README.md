@@ -60,7 +60,7 @@ write the flash and the EEPROM. Programming needs 20 V on SCI RX. See its
 ## Credits and legal
 
 - Original firmware and calibrations: (c) 1995-1998 Chrysler Corporation.
-- SBECBootLoader: Dino Yancey (dino2gnt), included with the author's permission.
+- SBECBootLoader: Dino Yancey (dino2gnt).
 - Table addresses and unit conventions were checked against the 2GNT calibration pages and table
   viewer (https://www.2gnt.com).
 
