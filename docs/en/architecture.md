@@ -102,11 +102,11 @@ chip too.
 The handlers of the interrupts that should not occur (IRQ1, IRQ3, IRQ5-IRQ7, OC1, pulse
 accumulator overflow) disable their own source and jump to `UnexpectedInterrupt`, which sets a bit
 per source in `UnexpectedIrqFlags` ($00,Z) and saves two words of the interrupted stack frame at
-$02,Z and $04,Z. That is a record for diagnosis, not a recovery.
+`UnexpectedIrqStack4` ($02,Z) and `UnexpectedIrqStack6` ($04,Z). That is a record for diagnosis, not a recovery.
 
 ## Fast scheduler: the PIT interrupt
 
-`Isr_PIT` runs every 0.854 ms. Unless `$0550,Z` is set it increments `PitTickCounter` and
+`Isr_PIT` runs every 0.854 ms. Unless `O2HeaterSample` ($0550,Z) is set it increments `PitTickCounter` and
 `LoopTickCounter` and then picks work by the low bits of `PitTickCounter`:
 
 | Ticks | Period | Work |
@@ -116,7 +116,7 @@ $02,Z and $04,Z. That is a record for diagnosis, not a recovery.
 | 4 mod 8 | 6.84 ms | `IacStepperDrive` |
 | 0 mod 8 | 6.84 ms | nothing |
 
-After that, on every tick: `FanPwmOutputCheck` if calibration bit $0334.4 is set, a counter for $0DC0,Z, and
+After that, on every tick: `FanPwmOutputCheck` if calibration bit $0334.4 is set, a counter for `FieldPwmCounter` ($0DC0,Z), and
 every 24 ticks (20.5 ms) `CcdTransmit` or `PciPitTick`, chosen by calibration bit $032E.2.
 
 ## Background scheduler: the main loop

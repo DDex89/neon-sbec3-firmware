@@ -342,7 +342,7 @@ KnockSampleDB1   equ $0395        ; $F8395
 KnockRpmDB2      equ $0396        ; $F8396
 KnockSensorCheck equ $0397        ; $F8397
 MtvFlags         equ $0398        ; $F8398
-;                 bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+;                 bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
 ;                 bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
 MtvPeriodCount   equ $0399        ; $F8399
 MtvSwitchTime    equ $039A        ; $F839A
@@ -388,7 +388,7 @@ CrankSyncFlags2  equ $03BC        ; $F83BC
 ;                 bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
 ;                 bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
 ;                 bit 4: knock sample taken on this event (Isr_GPT_IC1)
-;                 bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+;                 bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
 CylinderIndex    equ $03BE        ; $F83BE
 Lookup2DC56      equ $03C4        ; $F83C4
 SciSecurityC59   equ $03C6        ; $F83C6
@@ -530,7 +530,7 @@ EepromFlags      equ $04A6        ; $F84A6
 ;                 bit 4: second byte of a word write in progress (EepromWriteService)
 ;                 bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
 ;                 bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
-;                 bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+;                 bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 ;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
 OutputTest94D    equ $04A9        ; $F84A9
 CamCrank950      equ $04AC        ; $F84AC
@@ -583,7 +583,7 @@ LdpPurgeTestFlags equ $0507        ; $F8507
 ;                 bit 0: third kind of purge test request (LdpPurgeTestRun)
 ClosedLoopMonFlags equ $0508        ; $F8508
 ;                 bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
-;                 bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+;                 bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
 MilRequestFlags  equ $0509        ; $F8509
 MonData64C       equ $050A        ; $F850A
 MonFlags64D      equ $050B        ; $F850B
@@ -754,7 +754,7 @@ SparkFlags2      equ $0610        ; $F8610
 ;                 bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
 ;                 bit 6: vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags)
 ;                 bit 5: engine rpm below SparkRpmFlagMin (SparkSpeedFlags)
-;                 bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+;                 bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
 ;                 bit 3: cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions
 ;                 bit 2: cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions
 ;                 bit 1: low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)

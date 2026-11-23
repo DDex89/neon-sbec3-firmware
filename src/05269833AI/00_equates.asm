@@ -1063,7 +1063,7 @@ LdpFlags3        equ $0649        ; $F8649
 ;                 bit 1: leak detection monitor restart requested (MonTaskLdp)
 ClosedLoopMonFlags equ $064A        ; $F864A
 ;                 bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
-;                 bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+;                 bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
 MilRequestFlags  equ $064B        ; $F864B
 MonData64C       equ $064C        ; $F864C
 MonFlags64D      equ $064D        ; $F864D
@@ -1659,7 +1659,7 @@ EepromFlags      equ $094A        ; $F894A
 ;                 bit 4: second byte of a word write in progress (EepromWriteService)
 ;                 bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
 ;                 bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
-;                 bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+;                 bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 ;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
 EepromWrite94B   equ $094B        ; $F894B
 BusConfigFlags   equ $094C        ; $F894C
@@ -2097,7 +2097,7 @@ EgrTrackDelayTimer equ $0B56        ; $F8B56
 IdleRpmRefStart  equ $0C00        ; $F8C00
 StarterCutTimer  equ $0C01        ; $F8C01
 MtvFlags         equ $0C02        ; $F8C02
-;                 bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+;                 bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
 ;                 bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
 MtvPeriodCount   equ $0C03        ; $F8C03
 MtvSwitchTime    equ $0C04        ; $F8C04
@@ -2105,7 +2105,7 @@ MtvTimingC06     equ $0C06        ; $F8C06
 MtvRpmRate       equ $0C08        ; $F8C08
 MtvHoldCount     equ $0C0A        ; $F8C0A
 TuneValve2Flags  equ $0C0C        ; $F8C0C
-;                 bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
+;                 bit 7: engine rpm at or above the switch point at TuneValve2C10 (TuneValve2Control)
 ;                 bit 6: second tuning valve switch timer running (TuneValve2Period)
 ;                 bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
 TuneValve2Count  equ $0C0D        ; $F8C0D
@@ -2193,7 +2193,7 @@ CrankSyncFlags2  equ $0C36        ; $F8C36
 ;                 bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
 ;                 bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
 ;                 bit 4: knock sample taken on this event (Isr_GPT_IC1)
-;                 bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+;                 bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
 ControlFlagsC39  equ $0C39        ; $F8C39
 ;                 bit 7: PCI link variant: set at reset from the bus configuration, cleared when the link check fails
 ;                 bit 6: diagnostic mode request (DiagModeUpdate)
@@ -2291,7 +2291,7 @@ SparkFlags2      equ $0D02        ; $F8D02
 ;                 bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
 ;                 bit 6: vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags)
 ;                 bit 5: engine rpm below SparkRpmFlagMin (SparkSpeedFlags)
-;                 bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+;                 bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
 ;                 bit 3: cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions
 ;                 bit 2: cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions
 ;                 bit 1: low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)

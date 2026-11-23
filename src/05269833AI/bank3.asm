@@ -5322,7 +5322,7 @@ ClosedLoopMonTimer:
         LDAA    >ClosedLoop641,Z
         CMPA    >Count3s,Z
         BCC     L33B5A
-        BSET    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BSET    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         LDAA    >MisfireThreshold634,Z
         CMPA    >ClosedLoop639,Z
         BCS     L33B5E
@@ -5330,7 +5330,7 @@ ClosedLoopMonTimer:
         BSET    >MisfireRecFlags3,Z,#$80
         BRA     L33B5E
 L33B5A:
-        BCLR    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BCLR    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
 L33B5E:
         RTS
 
@@ -8991,7 +8991,7 @@ L38602:
         TBXK
         LDX     #$8448
         LDAB    >EepromWrite94B,Z
-        BRSET   >EepromFlags,Z,#$02,L3863C               ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BRSET   >EepromFlags,Z,#$02,L3863C               ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
         LDAA    >BusMsg91Byte1,Z
         BRCLR   >EepromFlags,Z,#$08,L3862A               ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
         BCLR    >EepromFlags,Z,#$08                      ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
@@ -9007,7 +9007,7 @@ L3862A:
         BNE     L38648
         BRA     L38640
 L3863C:
-        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 L38640:
         INCB
         CMPB    #$66
@@ -9305,7 +9305,7 @@ L38934:
 L38944:
         DECB
         STAB    >EepromWrite94B,Z
-        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 L3894E:
         BCLR    >EepromFlags,Z,#$A1                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 5: write in progress (EepromWriteService); bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
         BSETW   >EepromAddr,Z,#$FFFF

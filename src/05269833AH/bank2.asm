@@ -669,7 +669,7 @@ L20786:
 L2078A:
         BSET    <Scratch7,Z,#$06
         LDAA    >MisfireRecFlags3,Z
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L207BE        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L207BE        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BRCLR   >MisfireFlags,Z,#$40,L207B2              ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         LDY     #$017E
         LDAB    #$02
@@ -4913,12 +4913,12 @@ L23A32:
         LDAA    <CamCrankSyncCount,Z
         CMPA    #$32
         BCC     L23A44
-        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
         INCA
         STAA    <CamCrankSyncCount,Z
         BRA     L23A48
 L23A44:
-        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
 L23A48:
         BSET    >CamCrankFlags,Z,#$10                    ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
 L23A4C:
@@ -10959,7 +10959,7 @@ L2A872:
         BEQ     L2A8F6
         BSET    <MisfireFlags,Z,#$08                     ; bit 3: misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)
         LBSR    MisfireDeviation
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L2A890        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L2A890        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BEQ     L2A8F6
 L2A890:
         TST     >MisfireTransientHold,Z
@@ -11212,7 +11212,7 @@ MisfireEnableCheck:
         BRCLR   >MisfireFlags2,Z,#$04,L2AB98             ; bit 2: misfire transient hold running (MisfireSegmentTime)
         TST     >SystemTestMode,Z
         LBNE    L2AB98
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L2AB40        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L2AB40        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BRCLR   >MonitorDisableFlags,Z,#$2F,L2AB40       ; bit 5: flex-fuel learning hold active (FlexLearnHold not zero): misfire, catalyst, O2, EGR, purge and leak monitors wait; bit 3: fuel level outside the monitor window (MonEnableFuelLow); bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude); bit 0: battery (ambient) temperature below MonEnableBattTempMin
         LBRA    L2AB98
 L2AB40:
@@ -11374,7 +11374,7 @@ L2ACB2:
         LDE     >MisfireWork5D2,Z
         STE     >MisfireThreshold5E4,Z
         BSET    >MisfireWork628,Z,#$80
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2ACC8        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2ACC8        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BSET    >MonEnableFlags2,Z,#$01                  ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 L2ACC8:
         LDE     >MisfireChangeFiltered,Z
@@ -11471,7 +11471,7 @@ L2ADAC:
 L2ADCC:
         BCLR    >MonEnableFlags2,Z,#$01                  ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 L2ADD0:
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2AE1C        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2AE1C        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         CLRA
         LDAB    #$00
         BRCLR   >MonEnableFlags2,Z,#$01,L2ADE2           ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
@@ -11511,7 +11511,7 @@ MisfireCount:
         CMPA    #$64
         LBCS    L2B08A
         BCLR    >MisfireFlags2,Z,#$10                    ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2AE72        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2AE72        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BRCLR   >MonFlags64D,Z,#$40,L2AF32               ; bit 6: monitor data state bit read by MisfireCount and MonTaskE
         TZX
         LDX     #$8600
@@ -11609,7 +11609,7 @@ L2AF32:
         LDAB    >MisfireCount61A,Z
         CMPB    #$05
         LBCS    L2B08A
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L2B05E        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L2B05E        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         LDAA    >MisfireCount2,Z
         BRSET   >MisfireFlags3,Z,#$80,L2AF8A
         CMPA    >MisfireCountLimit2
@@ -11806,7 +11806,7 @@ L2B19C:
         BCLR    >MisfireFlags5,Z,#$10                    ; bit 4: SegmentRpm above the rev-limit hold rpm (MisfireTransient)
 L2B1A0:
         LDAA    >MisfireHoldDefault
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2B1B4        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2B1B4        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BRSET   >MisfireFlags4,Z,#$02,L2B1B4
         LDAA    >MisfireHoldRpmValue,Z
 L2B1B4:
@@ -11880,7 +11880,7 @@ L2B276:
         LDE     >MisfireChangeFiltered,Z
         CPE     >MisfireNoiseLevel,Z
         BCC     L2B28C
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L2B28C        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L2B28C        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BSET    <MisfireFlags,Z,#$20                     ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         BRA     L2B290
 L2B28C:
@@ -16067,9 +16067,9 @@ L2F830:
         LDD     >EngineRpm,Z
         TDE
         SUBD    >MtvTimingC06,Z
-        BSET    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BSET    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         BCC     L2F846
-        BCLR    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BCLR    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         NEGD
 L2F846:
         CPD     >MtvRpmRateMax
@@ -16086,7 +16086,7 @@ L2F866:
         LDD     >MtvRpmRate,Z
         CPD     >MtvRpmRateMin
         LBCS    L2F9E2
-        BRCLR   >MtvFlags,Z,#$20,L2F9E2                  ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BRCLR   >MtvFlags,Z,#$20,L2F9E2                  ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         BRSET   >IoCfg1FL,Z,#$10,L2F8C8                  ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
         LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
@@ -16126,7 +16126,7 @@ L2F8F0:
         BSET    >MtvFlags,Z,#$10                         ; bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
         JMP     L2F9E6
 L2F902:
-        BRCLR   >MtvFlags,Z,#$20,L2F916                  ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BRCLR   >MtvFlags,Z,#$20,L2F916                  ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
         JSR     MtvRateLookup
@@ -16155,7 +16155,7 @@ L2F95C:
         LDD     >MtvRpmRate,Z
         CPD     >MtvRpmRateMin
         LBCS    L2F9E2
-        BRSET   >MtvFlags,Z,#$20,L2F9E2                  ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BRSET   >MtvFlags,Z,#$20,L2F9E2                  ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         BRSET   >IoCfg1FL,Z,#$10,L2F9BE                  ; bit 4: manifold tuning valve driver status (MtvCheck, MtvTiming)
         LDD     >EngineRpm,Z
         SUBD    >MtvRpmLow
@@ -16322,9 +16322,9 @@ TuneValve2Control:
         LDD     >EngineRpm,Z
         TDE
         SUBD    >TuneValve2C10,Z
-        BSET    >TuneValve2Flags,Z,#$80                  ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
+        BSET    >TuneValve2Flags,Z,#$80                  ; bit 7: engine rpm at or above the switch point at TuneValve2C10 (TuneValve2Control)
         BCC     L2FB54
-        BCLR    >TuneValve2Flags,Z,#$80                  ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
+        BCLR    >TuneValve2Flags,Z,#$80                  ; bit 7: engine rpm at or above the switch point at TuneValve2C10 (TuneValve2Control)
         NEGD
 L2FB54:
         CPD     >TuneValve2RateMax
@@ -16338,7 +16338,7 @@ L2FB5E:
         LBCC    L2FBCC
         TST     >TuneValve2Rate,Z
         LBEQ    L2FCA4
-        BRCLR   >TuneValve2Flags,Z,#$80,L2FCA4           ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
+        BRCLR   >TuneValve2Flags,Z,#$80,L2FCA4           ; bit 7: engine rpm at or above the switch point at TuneValve2C10 (TuneValve2Control)
         BRCLR   >TuneValve2Flags,Z,#$20,L2FB9E           ; bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
         LDD     >TuneValve2RpmHigh
         SUBD    >EngineRpm,Z
@@ -16363,7 +16363,7 @@ L2FBCC:
         BRSET   >TuneValve2Flags,Z,#$20,L2FC0E           ; bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
         TST     >TuneValve2Rate,Z
         LBEQ    L2FCA4
-        BRCLR   >TuneValve2Flags,Z,#$80,L2FCA4           ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
+        BRCLR   >TuneValve2Flags,Z,#$80,L2FCA4           ; bit 7: engine rpm at or above the switch point at TuneValve2C10 (TuneValve2Control)
         LDD     >TuneValve2RpmLow
         SUBD    >EngineRpm,Z
         JSR     TuneValve2RateLookup
@@ -16379,7 +16379,7 @@ L2FBCC:
 L2FC0E:
         TST     >TuneValve2Rate,Z
         LBEQ    L2FCAA
-        BRSET   >TuneValve2Flags,Z,#$80,L2FCAA           ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
+        BRSET   >TuneValve2Flags,Z,#$80,L2FCAA           ; bit 7: engine rpm at or above the switch point at TuneValve2C10 (TuneValve2Control)
         LDD     >EngineRpm,Z
         SUBD    >TuneValve2RpmHigh
         JSR     TuneValve2RateLookup
@@ -16395,7 +16395,7 @@ L2FC0E:
 L2FC4A:
         TST     >TuneValve2Rate,Z
         LBEQ    L2FCAA
-        BRSET   >TuneValve2Flags,Z,#$80,L2FCAA           ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
+        BRSET   >TuneValve2Flags,Z,#$80,L2FCAA           ; bit 7: engine rpm at or above the switch point at TuneValve2C10 (TuneValve2Control)
         BRSET   >TuneValve2Flags,Z,#$20,L2FC76           ; bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
         LDD     >EngineRpm,Z
         SUBD    >TuneValve2RpmLow

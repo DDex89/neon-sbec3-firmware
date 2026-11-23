@@ -322,7 +322,7 @@ KnockSampleDB1   equ $037B        ; $F837B
 KnockRpmDB2      equ $037C        ; $F837C
 KnockSensorCheck equ $037D        ; $F837D
 MtvFlags         equ $037E        ; $F837E
-;                 bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+;                 bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
 ;                 bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
 MtvPeriodCount   equ $037F        ; $F837F
 MtvSwitchTime    equ $0380        ; $F8380
@@ -368,7 +368,7 @@ CrankSyncFlags2  equ $03A2        ; $F83A2
 ;                 bit 6: cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)
 ;                 bit 5: reference event after the QSPI status read (Isr_GPT_IC1)
 ;                 bit 4: knock sample taken on this event (Isr_GPT_IC1)
-;                 bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+;                 bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
 CylinderIndex    equ $03A4        ; $F83A4
 Lookup2DC56      equ $03AA        ; $F83AA
 SciSecurityC59   equ $03AC        ; $F83AC
@@ -514,7 +514,7 @@ EepromFlags      equ $048A        ; $F848A
 ;                 bit 4: second byte of a word write in progress (EepromWriteService)
 ;                 bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
 ;                 bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
-;                 bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+;                 bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 ;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
 OutputTest94D    equ $048D        ; $F848D
 CamCrank950      equ $0490        ; $F8490
@@ -678,7 +678,7 @@ SparkFlags2      equ $0602        ; $F8602
 ;                 bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
 ;                 bit 6: vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags)
 ;                 bit 5: engine rpm below SparkRpmFlagMin (SparkSpeedFlags)
-;                 bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+;                 bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
 ;                 bit 3: cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions
 ;                 bit 2: cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions
 ;                 bit 1: low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)

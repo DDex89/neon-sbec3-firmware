@@ -5676,9 +5676,9 @@ L13D6A:
         LDD     >EngineRpm,Z
         TDE
         SUBD    >MtvTimingC06,Z
-        BSET    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BSET    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         BCC     L13D80
-        BCLR    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BCLR    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         NEGD
 L13D80:
         CPD     >MtvRpmRateMax
@@ -5695,7 +5695,7 @@ L13DA0:
         LDD     >MtvRpmRate,Z
         CPD     >MtvRpmRateMin
         LBCS    L13F1C
-        BRCLR   >MtvFlags,Z,#$20,L13F1C                  ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BRCLR   >MtvFlags,Z,#$20,L13F1C                  ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         BRSET   >IoCfg1FL,Z,#$02,L13E02                  ; bit 1: tested by Isr_GPT_OC2 (ignition driver status, probably)
         LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
@@ -5735,7 +5735,7 @@ L13E2A:
         BSET    >MtvFlags,Z,#$10                         ; bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
         JMP     L13F20
 L13E3C:
-        BRCLR   >MtvFlags,Z,#$20,L13E50                  ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BRCLR   >MtvFlags,Z,#$20,L13E50                  ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
         JSR     MtvRateLookup
@@ -5764,7 +5764,7 @@ L13E96:
         LDD     >MtvRpmRate,Z
         CPD     >MtvRpmRateMin
         LBCS    L13F1C
-        BRSET   >MtvFlags,Z,#$20,L13F1C                  ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BRSET   >MtvFlags,Z,#$20,L13F1C                  ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         BRSET   >IoCfg1FL,Z,#$02,L13EF8                  ; bit 1: tested by Isr_GPT_OC2 (ignition driver status, probably)
         LDD     >EngineRpm,Z
         SUBD    >MtvRpmLow
@@ -10731,7 +10731,7 @@ L172F8:
         TPD
         TBXK
         LDAB    $04A7,Z
-        BRSET   >EepromFlags,Z,#$02,L17334               ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BRSET   >EepromFlags,Z,#$02,L17334               ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
         LDAA    $0476,Z
         BRCLR   >EepromFlags,Z,#$08,L17322               ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
         BCLR    >EepromFlags,Z,#$08                      ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
@@ -10749,7 +10749,7 @@ L17322:
         BNE     L17340
         BRA     L17338
 L17334:
-        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 L17338:
         INCB
         INCB
@@ -10961,7 +10961,7 @@ L17536:
         BCS     L17536
 L17544:
         STAB    $04A7,Z
-        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 L1754C:
         BCLR    >EepromFlags,Z,#$A0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 5: write in progress (EepromWriteService)
         BSETW   >EepromAddr,Z,#$FFFF
@@ -13216,7 +13216,7 @@ ClosedLoopMonTimer:
         LDAA    >ClosedLoop641,Z
         CMPA    >Count3s,Z
         BCC     L18D7A
-        BSET    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BSET    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         LDAA    >MisfireThreshold634,Z
         CMPA    >ClosedLoop639,Z
         BCS     L18D7E
@@ -13224,7 +13224,7 @@ ClosedLoopMonTimer:
         BSET    >MisfireRecFlags3,Z,#$80
         BRA     L18D7E
 L18D7A:
-        BCLR    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BCLR    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
 L18D7E:
         RTS
 
@@ -17782,7 +17782,7 @@ L1BE6C:
         LBSR    Sub_1C0C4
         BEQ     L1BED4
         BSET    >MisfireFlags,Z,#$08                     ; bit 3: misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L1BE8E        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L1BE8E        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         LBSR    Sub_1BED8
         BEQ     L1BED4
 L1BE8E:
@@ -18132,7 +18132,7 @@ L1C1FA:
         LDE     >Temp4FC,Z
         STE     >MisfireThreshold5E4,Z
         BSET    >MisfireWork628,Z,#$80
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L1C210        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L1C210        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BSET    >MonEnableFlags2,Z,#$01                  ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 L1C210:
         LDE     >MisfireChangeFiltered,Z
@@ -18233,7 +18233,7 @@ L1C2F2:
         CLR     $0250,Z
         BCLR    >MonEnableFlags2,Z,#$01                  ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 L1C30E:
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L1C35A        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L1C35A        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         CLRA
         LDAB    #$00
         BRCLR   >MonEnableFlags2,Z,#$01,L1C320           ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
@@ -18273,7 +18273,7 @@ MisfireCount:
         CMPA    #$64
         LBCS    L1C510
         BCLR    >MisfireFlags2,Z,#$10                    ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L1C3AA        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L1C3AA        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BRCLR   >MonFlags64D,Z,#$40,L1C424               ; bit 6: monitor data state bit read by MisfireCount and MonTaskE
         TZX
         LDX     #$823A
@@ -18353,7 +18353,7 @@ L1C424:
         BCC     L1C46E
         CLRA
 L1C46E:
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L1C4EC        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L1C4EC        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         CMPA    >MisfireCountLimitAlt
         BRSET   >MisfireFlags,Z,#$20,L1C482              ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         CMPA    >MisfireCountLimitCat
@@ -18590,7 +18590,7 @@ L1C6FE:
 L1C702:
         LDAA    >SegmentRpm,Z
         CMPA    $26D2
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L1C714        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L1C714        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         CMPA    $04E8,Z
 L1C714:
         BLS     L1C72A
@@ -18663,7 +18663,7 @@ L1C7D2:
         LDE     >MisfireChangeFiltered,Z
         CPE     >MisfireNoiseLevel,Z
         BCC     L1C7E8
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L1C7E8        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L1C7E8        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BSET    >MisfireFlags,Z,#$20                     ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         BRA     L1C7EC
 L1C7E8:
@@ -20909,12 +20909,12 @@ L1E054:
         LDAA    <CamCrankSyncCount,Z
         CMPA    #$32
         BCC     L1E068
-        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
         INCA
         STAA    <CamCrankSyncCount,Z
         BRA     L1E06C
 L1E068:
-        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
 L1E06C:
         BSET    >CamCrankFlags,Z,#$10                    ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
 L1E070:

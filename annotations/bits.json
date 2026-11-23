@@ -130,7 +130,7 @@
  },
  "ClosedLoopMonFlags": {
   "7": "adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)",
-  "6": "run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)"
+  "6": "run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)"
  },
  "ControlFlags943": {
   "7": "A/C cut active (AcCutControl timer running)",
@@ -195,7 +195,7 @@
   "6": "cleared when the cam window count passes 8 and at the cam edge (Isr_GPT_IC1, Isr_GPT_PAI)",
   "5": "reference event after the QSPI status read (Isr_GPT_IC1)",
   "4": "knock sample taken on this event (Isr_GPT_IC1)",
-  "0": "cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)"
+  "0": "cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)"
  },
  "DecelLeanFlags": {
   "7": "WOT lean condition counted (WotLeanMonitor); closed loop and O2 activity read it",
@@ -252,7 +252,7 @@
   "4": "second byte of a word write in progress (EepromWriteService)",
   "3": "bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)",
   "2": "bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)",
-  "1": "write retry pending, retry count at $094B,Z (EepromWriteService)",
+  "1": "write retry pending, retry count at EepromWrite94B (EepromWriteService)",
   "0": "write started, waiting for the EEPROM to finish (EepromWriteService)"
  },
  "EgrFlags": {
@@ -397,9 +397,9 @@
  },
  "FlexLearnOptions": {
   "7": "clear the start estimate (FlexLearnMain)",
-  "6": "clear $01B8,Z (FlexLearnMain)",
+  "6": "clear FlexLearnTrimSum (FlexLearnMain)",
   "5": "reload FlexLearnTimer (FlexLearnMain)",
-  "4": "clear $01B6,Z (FlexLearnMain)",
+  "4": "clear FuelLevelStart (FlexLearnMain)",
   "3": "reset the cycle counts (FlexLearnMain)",
   "2": "load FlexEthanolStartInit (FlexLearnMain, FlexMisfireCheck)",
   "0": "selects a branch in FlexLearnMain"
@@ -800,7 +800,7 @@
   "0": "battery (ambient) temperature below MonEnableBattTempMin"
  },
  "MtvFlags": {
-  "5": "engine rpm at or above the switch point at $0C06,Z (MtvTiming)",
+  "5": "engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)",
   "4": "manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)"
  },
  "O2ActiveFlags": {
@@ -1243,7 +1243,7 @@
   "7": "high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)",
   "6": "vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags)",
   "5": "engine rpm below SparkRpmFlagMin (SparkSpeedFlags)",
-  "4": "base spark limited by the value at $0D3E,Z (CalcBaseSpark)",
+  "4": "base spark limited by the value at CalcBaseD3E (CalcBaseSpark)",
   "3": "cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions",
   "2": "cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions",
   "1": "low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)",
@@ -1344,7 +1344,7 @@
   "0": "idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)"
  },
  "TuneValve2Flags": {
-  "7": "engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)",
+  "7": "engine rpm at or above the switch point at TuneValve2C10 (TuneValve2Control)",
   "6": "second tuning valve switch timer running (TuneValve2Period)",
   "5": "second tuning valve on (mirrors IoDriver66 bit 13)"
  },

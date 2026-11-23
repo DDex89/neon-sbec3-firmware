@@ -7956,7 +7956,7 @@ L170BE:
         CLR     >FlexEthanolStart,Z
         CLR     >FlexLearnBase,Z
 L170D2:
-        BRCLR   >FlexLearnOptions,#$10,L170DE            ; bit 4: clear $01B6,Z (FlexLearnMain)
+        BRCLR   >FlexLearnOptions,#$10,L170DE            ; bit 4: clear FuelLevelStart (FlexLearnMain)
         CLRA
         STAA    >FuelLevelStart,Z
 L170DE:
@@ -7976,7 +7976,7 @@ L170EE:
         JSR     Lookup2D
         STAA    >FlexLearnBase,Z
 L17118:
-        BRCLR   >FlexLearnOptions,#$40,L17122            ; bit 6: clear $01B8,Z (FlexLearnMain)
+        BRCLR   >FlexLearnOptions,#$40,L17122            ; bit 6: clear FlexLearnTrimSum (FlexLearnMain)
         CLR     >FlexLearnTrimSum,Z
 L17122:
         BRCLR   >FlexLearnOptions,#$20,L17130            ; bit 5: reload FlexLearnTimer (FlexLearnMain)
@@ -14058,7 +14058,7 @@ L1D264:
         JMP     L1D2F4
 L1D268:
         BRSET   >FuelModeFlags,Z,#$20,L1D294             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
-        BCLR    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+        BCLR    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         CLR     >SparkTrim1,Z
         LDX     #PartThrottleMapScale
         LDAA    >Map,Z
@@ -14076,7 +14076,7 @@ L1D294:
         LDX     #WotSpark
         JSR     Lookup3D
         STAA    >CalcBaseD3E,Z
-        BRSET   >SparkFlags2,Z,#$10,L1D2F4               ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+        BRSET   >SparkFlags2,Z,#$10,L1D2F4               ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         TST     >SparkTrimStep
         BEQ     L1D2EC
         CLRA
@@ -14099,7 +14099,7 @@ L1D2E6:
         CMPA    >CalcBaseD3E,Z
         BLT     L1D2F4
 L1D2EC:
-        BSET    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+        BSET    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         LDAA    >CalcBaseD3E,Z
 L1D2F4:
         RTS

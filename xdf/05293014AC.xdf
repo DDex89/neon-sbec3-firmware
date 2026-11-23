@@ -356,7 +356,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x10A" flags="0x0">
   <title>ResetCoolantFuelInit</title>
-  <description>At reset: $07C4,Z (cranking fuel set-up) against coolant $0452, 2D; inputs: StartCoolantTemp2</description>
+  <description>At reset: ResetCoolantFuel (cranking fuel set-up) against coolant $0452, 2D; inputs: StartCoolantTemp2</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1187,7 +1187,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x121" flags="0x0">
   <title>CrankV0769Decay</title>
-  <description>Cranking pulse reduction against $0769,Z; weighted by CrankV0769DecayWeight $0594, 2D; inputs: CoolantTemp</description>
+  <description>Cranking pulse reduction against CrankDecayIndex; weighted by CrankV0769DecayWeight $0594, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1223,7 +1223,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x122" flags="0x0">
   <title>CrankPulseCoolantFactor</title>
-  <description>Factor on the cranking pulse against the cranking coolant, result into $076B,Z $059C, 2D; inputs: CoolantTemp</description>
+  <description>Factor on the cranking pulse against the cranking coolant, result into CrankPulseCoolant $059C, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -1259,7 +1259,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x123" flags="0x0">
   <title>CrankEthanolCoolant</title>
-  <description>Cranking: value against ethanol content and coolant into $0765,Z $05AD, 3D; inputs: result of Lookup2D x CoolantTemp</description>
+  <description>Cranking: value against ethanol content and coolant into CrankEthanolFactor $05AD, 3D; inputs: result of Lookup2D x CoolantTemp</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x5B0" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -1299,7 +1299,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x124" flags="0x0">
   <title>CrankBasePulse</title>
-  <description>Cranking base pulse width: ethanol content ($0A91,Z, rows) x cranking coolant temperature (columns); squared, then reduced by the decay factors below; into $0766,Z $05CE, 3D; inputs: FlexEthanolScaled x CrankCoolant; FlexEthanolScaled x $0551</description>
+  <description>Cranking base pulse width: ethanol content (FlexEthanolScaled, rows) x cranking coolant temperature (columns); squared, then reduced by the decay factors below; into CrankPulse $05CE, 3D; inputs: FlexEthanolScaled x CrankCoolant; FlexEthanolScaled x $0551</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x5D1" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -1451,7 +1451,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x128" flags="0x0">
   <title>CrankCoolantAdder</title>
-  <description>Cranking: added to the coolant temperature against the number of crank events ($0C44,Z), limited to $0B75; result is the cranking coolant $0768,Z $064F, 2D; inputs: $03B7,Z</description>
+  <description>Cranking: added to the coolant temperature against the number of crank events (CrankEvents), limited to $0B75; result is the cranking coolant CrankCoolant $064F, 2D; inputs: $03B7,Z</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2183,7 +2183,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x13B" flags="0x0">
   <title>DecelMapRpmLimit</title>
-  <description>Deceleration fuel reduction: MAP x rpm threshold; with the throttle closed, values under it ramp DecelFuelFactor ($077A,Z) in $0A21, 3D; inputs: result of Lookup2D x EngineRpm</description>
+  <description>Deceleration fuel reduction: MAP x rpm threshold; with the throttle closed, values under it ramp DecelFuelFactor (DecelFuelFactor) in $0A21, 3D; inputs: result of Lookup2D x EngineRpm</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0xA24" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -2765,7 +2765,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x149" flags="0x0">
   <title>TpsFilterRiseCoolant</title>
-  <description>Filter coefficient for ThrottleLast ($0A73,Z) while the throttle opens, against coolant at start $0EC3, 2D; inputs: StartCoolantTemp</description>
+  <description>Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle opens, against coolant at start $0EC3, 2D; inputs: StartCoolantTemp</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -2910,7 +2910,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x14D" flags="0x0">
   <title>BattTempHeatFactor</title>
-  <description>Battery temperature model: factor on the excess above 110 against coolant (engine heat), into $0A5B,Z $0EF5, 2D; inputs: CoolantTemp</description>
+  <description>Battery temperature model: factor on the excess above 110 against coolant (engine heat), into BattTempStored $0EF5, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3166,7 +3166,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x154" flags="0x0">
   <title>WotTimeEnrichMax</title>
-  <description>Maximum of the WOT enrichment that builds up after a sustained WOT ($07AA,Z), against rpm $0F61, 2D; inputs: EngineRpm</description>
+  <description>Maximum of the WOT enrichment that builds up after a sustained WOT (WotTimeEnrich), against rpm $0F61, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3202,7 +3202,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x155" flags="0x0">
   <title>TpsFilterFallCoolant</title>
-  <description>Filter coefficient for ThrottleLast ($0A73,Z) while the throttle closes, against coolant at start $0F77, 2D; inputs: StartCoolantTemp</description>
+  <description>Filter coefficient for ThrottleLast (TpsFilterCoef) while the throttle closes, against coolant at start $0F77, 2D; inputs: StartCoolantTemp</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3238,7 +3238,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x156" flags="0x0">
   <title>MapFilterFallCoolant</title>
-  <description>Filter coefficient for MapLast ($0A7F,Z) while MAP falls, against coolant at start $0F86, 2D; inputs: StartCoolantTemp</description>
+  <description>Filter coefficient for MapLast (MapFilterCoef) while MAP falls, against coolant at start $0F86, 2D; inputs: StartCoolantTemp</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3274,7 +3274,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x157" flags="0x0">
   <title>DecelLeanBaroFactor</title>
-  <description>Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is $07C2,Z $0F8E, 2D; inputs: ScratchC</description>
+  <description>Deceleration enleanment: factor against barometric pressure; the result, limited by $158A, is DecelLeanFuel $0F8E, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3382,7 +3382,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15A" flags="0x0">
   <title>FlexEthanolScale</title>
-  <description>Flex-fuel: ethanol content ($0198,Z) to the scaled value $0A91,Z used as table input $0FB2, 2D; inputs: CoolantTemp</description>
+  <description>Flex-fuel: ethanol content (FlexEthanol) to the scaled value FlexEthanolScaled used as table input $0FB2, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3418,7 +3418,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15B" flags="0x0">
   <title>DecelLeanThrottleCoolantFactor</title>
-  <description>Deceleration enleanment: factor on the throttle-closing term against coolant at start, into $07C0,Z $0FBC, 2D; inputs: StartCoolantTemp</description>
+  <description>Deceleration enleanment: factor on the throttle-closing term against coolant at start, into DecelLeanThrottleFactor $0FBC, 2D; inputs: StartCoolantTemp</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3454,7 +3454,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15C" flags="0x0">
   <title>DecelLeanMapCoolantFactor</title>
-  <description>Deceleration enleanment: factor on the MAP-drop term against coolant at start, into $07BF,Z $0FCE, 2D; inputs: StartCoolantTemp</description>
+  <description>Deceleration enleanment: factor on the MAP-drop term against coolant at start, into DecelLeanMapFactor $0FCE, 2D; inputs: StartCoolantTemp</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -3562,7 +3562,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x15F" flags="0x0">
   <title>DecelLeanAirflow</title>
-  <description>Deceleration enleanment: airflow value against rpm and throttle position; the drop between last and current throttle goes to $0804,Z $1008, 3Dn; inputs: IacBase</description>
+  <description>Deceleration enleanment: airflow value against rpm and throttle position; the drop between last and current throttle goes to DecelLeanAir $1008, 3Dn; inputs: IacBase</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
@@ -3620,7 +3620,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x160" flags="0x0">
   <title>DecelLeanTimeCoolant</title>
-  <description>Deceleration enleanment shortly after start: time x coolant at start, into $07C1,Z $10A4, 3D; inputs: result of Lookup2D x StartCoolantTemp2</description>
+  <description>Deceleration enleanment shortly after start: time x coolant at start, into DecelLeanTimeFactor $10A4, 3D; inputs: result of Lookup2D x StartCoolantTemp2</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x10A7" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -3916,7 +3916,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x168" flags="0x0">
   <title>DecelCutRpmFactor</title>
-  <description>Factor on the fuel pulse while the deceleration cut-off flag ($0770,Z bit 7) is set, against rpm above the idle target $1199, 2D; inputs: LDD</description>
+  <description>Factor on the fuel pulse while the deceleration cut-off flag (FuelModeFlags2 bit 7) is set, against rpm above the idle target $1199, 2D; inputs: LDD</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4420,7 +4420,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x176" flags="0x0">
   <title>PurgeFuelBase</title>
-  <description>Purge vapor fuel correction base against MAP (rows) and rpm (columns, normalised lookup); multiplied by the learned vapor value $07EB,Z $1427, 3Dn; inputs: result of Lookup2D</description>
+  <description>Purge vapor fuel correction base against MAP (rows) and rpm (columns, normalised lookup); multiplied by the learned vapor value PurgeVaporClosed $1427, 3Dn; inputs: result of Lookup2D</description>
   <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units>position 0-255</units>
@@ -4470,7 +4470,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x177" flags="0x0">
   <title>InjectionModeRpmFactor</title>
-  <description>Factor against rpm on the bank pulse ($0780,Z / $0782,Z) during the change of injection mode in FuelEventSchedule $147E, 2D; inputs: EngineRpm</description>
+  <description>Factor against rpm on the bank pulse (FuelPulseBank1 / FuelPulseBank2) during the change of injection mode in FuelEventSchedule $147E, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -4682,7 +4682,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x17C" flags="0x0">
   <title>FlexSparkMapRpm</title>
-  <description>Flex-fuel spark change, MAP x rpm, minus $0D03,Z, weighted by FlexSparkEthanolWeight $16EE, 3D; inputs: result of Lookup2D x EngineRpm</description>
+  <description>Flex-fuel spark change, MAP x rpm, minus FlexSparkValue, weighted by FlexSparkEthanolWeight $16EE, 3D; inputs: result of Lookup2D x EngineRpm</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x16F1" mmedelementsizebits="8" mmedcolcount="17" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -5082,7 +5082,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x186" flags="0x0">
   <title>FuelEventRpmAdder</title>
-  <description>Pulse width added against rpm while $0D02,Z bit 7 is set (result x 8) $1A13, 2D; inputs: EngineRpm</description>
+  <description>Pulse width added against rpm while SparkFlags2 bit 7 is set (result x 8) $1A13, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5118,7 +5118,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x187" flags="0x0">
   <title>AfterStartSparkCoolant</title>
-  <description>Spark change after start against the coolant temperature at start, into $0D1B,Z $1A21, 2D; inputs: StartCoolantTemp2</description>
+  <description>Spark change after start against the coolant temperature at start, into AfterStartSparkStart $1A21, 2D; inputs: StartCoolantTemp2</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5482,7 +5482,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x191" flags="0x0">
   <title>AirTempSparkFactor</title>
-  <description>Weight of AirTempSparkMapRpm against intake air temperature (or $0A5A,Z with calibration bit $0330.5 clear) $1B09, 2D; inputs: AirTemp</description>
+  <description>Weight of AirTempSparkMapRpm against intake air temperature (or BatteryTemp with calibration bit $0330.5 clear) $1B09, 2D; inputs: AirTemp</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5518,7 +5518,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x192" flags="0x0">
   <title>SurgeJerkLimit</title>
-  <description>Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into $0D36,Z $1B13, 3D; inputs: $01F6,Z x SegmentRpmFast</description>
+  <description>Driveline surge spark control: limit of the jerk retard against MAP position (rows) and fast rpm (columns), into SurgeJerkRetard $1B13, 3D; inputs: $01F6,Z x SegmentRpmFast</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B16" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -5638,7 +5638,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x195" flags="0x0">
   <title>SurgeDecay</title>
-  <description>Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage $0D37,Z (columns) $1B76, 3D; inputs: result of Lookup2D x $01F2,Z</description>
+  <description>Driveline surge spark control: decay factor of the retard against gear (rows) and time in the decay stage SurgeStageTime (columns) $1B76, 3D; inputs: result of Lookup2D x $01F2,Z</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1B79" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -5786,7 +5786,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x199" flags="0x0">
   <title>SurgeRetardRateFactor</title>
-  <description>Driveline surge spark control: factor on the retard against rpm acceleration $0D26,Z $1BDB, 2D; inputs: RpmAccel</description>
+  <description>Driveline surge spark control: factor on the retard against rpm acceleration RpmAccel $1BDB, 2D; inputs: RpmAccel</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5822,7 +5822,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19A" flags="0x0">
   <title>SurgeRetardMapRiseFactor</title>
-  <description>Driveline surge spark control: factor on the retard against MAP rise $0D3B,Z (MAP minus filtered MAP); result into $0D33,Z $1BE7, 2D; inputs: MapRise</description>
+  <description>Driveline surge spark control: factor on the retard against MAP rise MapRise (MAP minus filtered MAP); result into SurgeRetard $1BE7, 2D; inputs: MapRise</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5858,7 +5858,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19B" flags="0x0">
   <title>SurgeRateThreshold</title>
-  <description>Driveline surge spark control: rpm acceleration ($0D26,Z) that starts the retard, against the rpm/speed ratio (gear) $1BF3, 2D; inputs: RpmSpeedRatio</description>
+  <description>Driveline surge spark control: rpm acceleration (RpmAccel) that starts the retard, against the rpm/speed ratio (gear) $1BF3, 2D; inputs: RpmSpeedRatio</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -5930,7 +5930,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x19D" flags="0x0">
   <title>SurgeJerkThreshold</title>
-  <description>Driveline surge spark control: rpm jerk ($0D30,Z) above which the jerk retard applies, against the rpm/speed ratio $1C0F, 2D; inputs: RpmSpeedRatio</description>
+  <description>Driveline surge spark control: rpm jerk (RpmJerk) above which the jerk retard applies, against the rpm/speed ratio $1C0F, 2D; inputs: RpmSpeedRatio</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6182,7 +6182,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A4" flags="0x0">
   <title>AcSparkRateUp</title>
-  <description>A/C spark compensation: spark against positive rpm rate $0D4A,Z, into $0D55,Z $1C59, 2D; inputs: TBA</description>
+  <description>A/C spark compensation: spark against positive rpm rate RpmRate, into AcSpark $1C59, 2D; inputs: TBA</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6506,7 +6506,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AD" flags="0x0">
   <title>KnockRetardMaxMap</title>
-  <description>Maximum knock retard ($0DAA,Z) against MAP (above throttle $24A5 or below rpm $24A6) $1CCB, 2D; inputs: Map</description>
+  <description>Maximum knock retard (KnockRetardMax) against MAP (above throttle $24A5 or below rpm $24A6) $1CCB, 2D; inputs: Map</description>
   <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6542,7 +6542,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AE" flags="0x0">
   <title>KnockRetardStep</title>
-  <description>Knock retard step against the knock signal above the threshold ($0A8B,Z minus KnockThresholdNow) $1CD4, 2D; inputs: KnockSignal</description>
+  <description>Knock retard step against the knock signal above the threshold (KnockSignal minus KnockThresholdNow) $1CD4, 2D; inputs: KnockSignal</description>
   <CATEGORYMEM index="0" category="12" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6722,7 +6722,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1B3" flags="0x0">
   <title>EventSparkThrottle</title>
-  <description>Upper limit of the event spark $0859,Z against throttle while $0856,Z bits 4 and 2 are set (raised by $205D per loop) $1D4A, 2D; inputs: ThrottleAboveClosed</description>
+  <description>Upper limit of the event spark EventSpark against throttle while EventSparkFlags bits 4 and 2 are set (raised by $205D per loop) $1D4A, 2D; inputs: ThrottleAboveClosed</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6758,7 +6758,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1B4" flags="0x0">
   <title>EventSparkThrottle2</title>
-  <description>As EventSparkThrottle while $0856,Z bit 3 is set (raised by $205E per loop) $1D54, 2D; inputs: ThrottleAboveClosed</description>
+  <description>As EventSparkThrottle while EventSparkFlags bit 3 is set (raised by $205E per loop) $1D54, 2D; inputs: ThrottleAboveClosed</description>
   <CATEGORYMEM index="0" category="5" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -7882,7 +7882,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D3" flags="0x0">
   <title>IacGearDelayCoolant</title>
-  <description>Delay timer ($0349,Z) started when $0C31,Z bit 7 sets, against coolant $1F69, 2D; inputs: CoolantTemp</description>
+  <description>Delay timer (IacGearDelay) started when DriveFlags bit 7 sets, against coolant $1F69, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -7954,7 +7954,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D5" flags="0x0">
   <title>IacGearTimeFactor</title>
-  <description>Factor on IacGearTimeCoolant against the time counter $0348,Z $1F87, 2D; inputs: IacGearTime</description>
+  <description>Factor on IacGearTimeCoolant against the time counter IacGearTime $1F87, 2D; inputs: IacGearTime</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -7990,7 +7990,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1D6" flags="0x0">
   <title>IacDroopStepCoolant</title>
-  <description>IAC opening when the rpm drops below the target in gear ($0317,Z bit 3, $0C31,Z bit 7), against coolant $1F91, 2D; inputs: CoolantTemp</description>
+  <description>IAC opening when the rpm drops below the target in gear (IdleFlags3 bit 3, DriveFlags bit 7), against coolant $1F91, 2D; inputs: CoolantTemp</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8206,7 +8206,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DC" flags="0x0">
   <title>IacAcKickMap</title>
-  <description>IAC step when the A/C clutch engages, against MAP (MAP latched into $0341,Z); into $0340,Z $1FCA, 2D; inputs: Map</description>
+  <description>IAC step when the A/C clutch engages, against MAP (MAP latched into IacAcKickMapLatch); into IacKick $1FCA, 2D; inputs: Map</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8242,7 +8242,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1DD" flags="0x0">
   <title>IacAcKickMapLatched</title>
-  <description>IAC step when the A/C clutch releases, against the MAP latched at engagement ($0341,Z) $1FD2, 2D; inputs: IacAcKickMapLatch</description>
+  <description>IAC step when the A/C clutch releases, against the MAP latched at engagement (IacAcKickMapLatch) $1FD2, 2D; inputs: IacAcKickMapLatch</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8466,7 +8466,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E3" flags="0x0">
   <title>IacFieldDutyRpm</title>
-  <description>IAC addition against field duty (rows) and segment rpm (columns), into $F4,Z $206A, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <description>IAC addition against field duty (rows) and segment rpm (columns), into Scratch4 $206A, 3D; inputs: result of Lookup2D x SegmentRpm</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x206D" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -8542,7 +8542,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E5" flags="0x0">
   <title>IacRollFactorAcSensor</title>
-  <description>Factor on the rolling IAC target against the filtered A/C sensor $0345,Z (centred on 128), with calibration bit $0331.7 $209B, 2D; inputs: AcSensorFiltered</description>
+  <description>Factor on the rolling IAC target against the filtered A/C sensor AcSensorFiltered (centred on 128), with calibration bit $0331.7 $209B, 2D; inputs: AcSensorFiltered</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -8686,7 +8686,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1E9" flags="0x0">
   <title>IacRollThrottleRpm</title>
-  <description>IAC target while rolling: addition against throttle (rows) and segment rpm (signed); result into $0366,Z limited by $2642 $20C5, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <description>IAC target while rolling: addition against throttle (rows) and segment rpm (signed); result into IacTarget limited by $2642 $20C5, 3D; inputs: result of Lookup2D x SegmentRpm</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x20C8" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -8942,7 +8942,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F0" flags="0x0">
   <title>IacFieldDutyRpm2</title>
-  <description>Second field-duty table against segment rpm, into $F7,Z (MAP offset for the learned idle MAP) $212F, 3D; inputs: result of Lookup2D x SegmentRpm</description>
+  <description>Second field-duty table against segment rpm, into Scratch7 (MAP offset for the learned idle MAP) $212F, 3D; inputs: result of Lookup2D x SegmentRpm</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x2132" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -9235,7 +9235,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F8" flags="0x0">
   <title>IacBaseBaroTarget</title>
-  <description>Base idle air (IAC position) against barometric pressure (rows) and the idle target (columns), into $0362,Z; added to the IAC target $21B2, 3D; inputs: result of Lookup2D x IdleTarget</description>
+  <description>Base idle air (IAC position) against barometric pressure (rows) and the idle target (columns), into IacBase; added to the IAC target $21B2, 3D; inputs: result of Lookup2D x IdleTarget</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x21B5" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -9275,7 +9275,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1F9" flags="0x0">
   <title>IacStartBaro</title>
-  <description>Idle air position at reset against barometric pressure, into $2A,Z $21D3, 2D; inputs: ScratchC</description>
+  <description>Idle air position at reset against barometric pressure, into IdleMapLearned $21D3, 2D; inputs: ScratchC</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -9311,7 +9311,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1FA" flags="0x0">
   <title>IdleMapBase</title>
-  <description>Base of the idle MAP target ($031E,Z, via $F5,Z): barometric pressure (rows) and idle target rpm (columns) $21DC, 3D; inputs: result of Lookup2D x IdleTarget</description>
+  <description>Base of the idle MAP target (IdleMapTarget, via Scratch5): barometric pressure (rows) and idle target rpm (columns) $21DC, 3D; inputs: result of Lookup2D x IdleTarget</description>
   <CATEGORYMEM index="0" category="6" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x21DF" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -9928,7 +9928,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x20B" flags="0x0">
   <title>LdpPumpTimeByLevel2</title>
-  <description>As LdpPumpTimeByLevel with $0649,Z bit 1 set $2348, 2D; inputs: FuelLevelScaled</description>
+  <description>As LdpPumpTimeByLevel with LdpFlags3 bit 1 set $2348, 2D; inputs: FuelLevelScaled</description>
   <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10442,7 +10442,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x219" flags="0x0">
   <title>MisfireHoldSegRpm</title>
-  <description>Hold-off after a detected misfire ($0629,Z) against segment rpm $26DA, 2D; inputs: SegmentRpm</description>
+  <description>Hold-off after a detected misfire (MisfireHold) against segment rpm $26DA, 2D; inputs: SegmentRpm</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -10586,7 +10586,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21D" flags="0x0">
   <title>MisfireWeight</title>
-  <description>Counter weight of a detected misfire ($04FE,Z) against load (rows) and segment rpm (columns) $271A, 3D; inputs: Temp4FE x MisfireRpmCol</description>
+  <description>Counter weight of a detected misfire (Temp4FE) against load (rows) and segment rpm (columns) $271A, 3D; inputs: Temp4FE x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x271D" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -10630,7 +10630,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21E" flags="0x0">
   <title>MisfireWeight2</title>
-  <description>Second counter weight ($04FF,Z) against the first weight and segment rpm $2777, 3D; inputs: result of Lookup3D x result of Lookup3D</description>
+  <description>Second counter weight (Temp4FF) against the first weight and segment rpm $2777, 3D; inputs: result of Lookup3D x result of Lookup3D</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x277A" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -10674,7 +10674,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x21F" flags="0x0">
   <title>MisfireThreshCoolant</title>
-  <description>Factor on the misfire threshold against load (rows) and coolant (columns), result into $05E2,Z $27D4, 3D; inputs: result of Lookup2D x CoolantTemp</description>
+  <description>Factor on the misfire threshold against load (rows) and coolant (columns), result into MisfireThreshValue $27D4, 3D; inputs: result of Lookup2D x CoolantTemp</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x27D7" mmedelementsizebits="8" mmedcolcount="5" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -10714,7 +10714,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x220" flags="0x0">
   <title>MisfireThresh</title>
-  <description>Misfire threshold of the segment-time change against load (rows) and segment rpm $05C6,Z (columns), P/N $27F5, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
+  <description>Misfire threshold of the segment-time change against load (rows) and segment rpm MisfireRpmCol (columns), P/N $27F5, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x27F8" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -10802,7 +10802,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x222" flags="0x0">
   <title>MisfireThreshNoisy</title>
-  <description>As MisfireThresh when the filtered change $05D4,Z is at or above MisfireNoiseRef $28AF, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
+  <description>As MisfireThresh when the filtered change MisfireChangeFiltered is at or above MisfireNoiseRef $28AF, 3D; inputs: result of Lookup2D x MisfireRpmCol</description>
   <CATEGORYMEM index="0" category="7" />
   <XDFAXIS id="x" uniqueid="0x0">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x28B2" mmedelementsizebits="8" mmedcolcount="9" mmedmajorstridebits="8" mmedminorstridebits="0" />
@@ -10890,7 +10890,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x224" flags="0x0">
   <title>LdpPumpTimeByLevel</title>
-  <description>Leak detection pump, pump-up state: state time limit ($0590,Z) against fuel level $2992, 2D; inputs: FuelLevelScaled</description>
+  <description>Leak detection pump, pump-up state: state time limit (LdpStateTime) against fuel level $2992, 2D; inputs: FuelLevelScaled</description>
   <CATEGORYMEM index="0" category="11" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11500,7 +11500,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22F" flags="0x0">
   <title>ResetCoolantInit2</title>
-  <description>At reset: $0A6B,Z against coolant temperature $4054, 2D; inputs: $032D,Z</description>
+  <description>At reset: ResetCoolant2 against coolant temperature $4054, 2D; inputs: $032D,Z</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11536,7 +11536,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x230" flags="0x0">
   <title>ResetCoolantInit</title>
-  <description>At reset: $0C00,Z against start coolant temperature $4064, 2D; inputs: $032C,Z; $3B,Z; #$98</description>
+  <description>At reset: IdleRpmRefStart against start coolant temperature $4064, 2D; inputs: $032C,Z; $3B,Z; #$98</description>
   <CATEGORYMEM index="0" category="2" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11572,7 +11572,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x231" flags="0x0">
   <title>FlexLearnEthanolCurve</title>
-  <description>Flex-fuel learning: curve from $01BB,Z/$01BC,Z to $01B9,Z/$01BA,Z $4070, 2D; inputs: $0330,Z</description>
+  <description>Flex-fuel learning: curve from FlexLearnLevel1/FlexLearnLevel2 to FlexLearnEthanol1/FlexLearnEthanol2 $4070, 2D; inputs: $0330,Z</description>
   <CATEGORYMEM index="0" category="3" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11644,7 +11644,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x233" flags="0x0">
   <title>AcSensorCurve</title>
-  <description>A/C sensor (probably refrigerant pressure): ADC $0A87,Z to $0A88,Z $4088, 2D; inputs: FlexEthanol; ?; #$AA</description>
+  <description>A/C sensor (probably refrigerant pressure): ADC AcSensorRaw to AcSensor $4088, 2D; inputs: FlexEthanol; ?; #$AA</description>
   <CATEGORYMEM index="0" category="4" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12126,7 +12126,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x240" flags="0x0">
   <title>EventTimingLimit</title>
-  <description>Output-compare set-up in the GPT IC1 interrupt: limit against $0D11,Z compared with $0ABE,Z $51ED, 2D; inputs: SparkAdvanceD11</description>
+  <description>Output-compare set-up in the GPT IC1 interrupt: limit against SparkAdvanceD11 compared with RefPeriodLow $51ED, 2D; inputs: SparkAdvanceD11</description>
   <CATEGORYMEM index="0" category="18" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -12416,7 +12416,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x25F" flags="0x0">
   <title>MtvRpmRateMin</title>
-  <description>Manifold tune valve: rpm change per period ($0C08,Z) at or above which the switch time is predicted $036C</description>
+  <description>Manifold tune valve: rpm change per period (MtvRpmRate) at or above which the switch time is predicted $036C</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x36C" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -12464,7 +12464,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x263" flags="0x0">
   <title>MtvPeriod</title>
-  <description>Manifold tune valve: passes per prediction step ($0C03,Z; also the start value at reset and the time factor in MtvRateLookup) $0374</description>
+  <description>Manifold tune valve: passes per prediction step (MtvPeriodCount; also the start value at reset and the time factor in MtvRateLookup) $0374</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x374" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -12596,7 +12596,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x26E" flags="0x0">
   <title>IacEventTimerInit</title>
-  <description>Value of the IAC event timer $0C24,Z when the gear-change IAC starts $041A</description>
+  <description>Value of the IAC event timer IacEventTimer when the gear-change IAC starts $041A</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x41A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -12608,7 +12608,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x26F" flags="0x0">
   <title>RunPeriodOn</title>
-  <description>Crank ISR (Isr_GPT_IC1): reference period ($0ABD,Z, word) below which the engine counts as running $0541</description>
+  <description>Crank ISR (Isr_GPT_IC1): reference period (RefPeriod, word) below which the engine counts as running $0541</description>
   <CATEGORYMEM index="0" category="2" />
   <EMBEDDEDDATA mmedaddress="0x541" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -12778,7 +12778,7 @@
  </XDFFLAG>
  <XDFCONSTANT uniqueid="0x27E" flags="0x0">
   <title>O2FlexEthanolMin</title>
-  <description>Closed loop: ethanol content below which $0770,Z bit 2 is set (flex fuel) $071D</description>
+  <description>Closed loop: ethanol content below which FuelModeFlags2 bit 2 is set (flex fuel) $071D</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x71D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -12862,7 +12862,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x285" flags="0x0">
   <title>DecelRampStartHyst</title>
-  <description>Hysteresis on DecelRampStart while active ($0776,Z bit 5) $0E68</description>
+  <description>Hysteresis on DecelRampStart while active (DecelFlags bit 5) $0E68</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xE68" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -12910,7 +12910,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x289" flags="0x0">
   <title>DecelRampStepTime</title>
-  <description>Decel fuel reduction: time between steps up ($0777,Z) $0E6C</description>
+  <description>Decel fuel reduction: time between steps up (DecelRampTimer) $0E6C</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xE6C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13006,7 +13006,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x291" flags="0x0">
   <title>WotEnrichDecay</title>
-  <description>WOT time enrichment: decrease of $081A,Z per step after WOT $0F5A</description>
+  <description>WOT time enrichment: decrease of WotEnrich per step after WOT $0F5A</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xF5A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13042,7 +13042,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x294" flags="0x0">
   <title>WotEnrichTimeMax</title>
-  <description>WOT time enrichment: time at WOT ($07AB,Z) up to which the enrichment grows (word) $0F5F</description>
+  <description>WOT time enrichment: time at WOT (WotTimer) up to which the enrichment grows (word) $0F5F</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xF5F" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -13054,7 +13054,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x295" flags="0x0">
   <title>DecelLeanMapDrop</title>
-  <description>Decel enleanment: MAP drop (MapLast minus MAP) that keeps $07BB,Z bit 2 $0F71</description>
+  <description>Decel enleanment: MAP drop (MapLast minus MAP) that keeps DecelLeanFlags bit 2 $0F71</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xF71" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>kPa</units>
@@ -13066,7 +13066,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x296" flags="0x0">
   <title>DecelLeanThrottleDrop</title>
-  <description>Decel enleanment: throttle drop that keeps $07BB,Z bit 0 $0F72</description>
+  <description>Decel enleanment: throttle drop that keeps DecelLeanFlags bit 0 $0F72</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0xF72" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13198,7 +13198,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A1" flags="0x0">
   <title>RevLimit</title>
-  <description>Rev limit, used while $0C31,Z bit 5 is set (2GNT: manual transmission / park-neutral); also scales the calculated load with baro (CalcLoadValue) $110B</description>
+  <description>Rev limit, used while DriveFlags bit 5 is set (2GNT: manual transmission / park-neutral); also scales the calculated load with baro (CalcLoadValue) $110B</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x110B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -13210,7 +13210,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A2" flags="0x0">
   <title>RevLimitAlt</title>
-  <description>Rev limit, used while $0C31,Z bit 5 is clear; also scales the calculated load with baro (CalcLoadValue) $110D</description>
+  <description>Rev limit, used while DriveFlags bit 5 is clear; also scales the calculated load with baro (CalcLoadValue) $110D</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x110D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -13258,7 +13258,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A6" flags="0x0">
   <title>IdleFlareRpmOn</title>
-  <description>Idle flare flags: rpm above the idle target at or above this value sets $0772,Z bit 7 $11A9</description>
+  <description>Idle flare flags: rpm above the idle target at or above this value sets IdleFlareFlags bit 7 $11A9</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x11A9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -13282,7 +13282,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2A8" flags="0x0">
   <title>IdleFlareAcRpmOn</title>
-  <description>Idle flare flags: rpm above the target at or above this value sets $0772,Z bit 6 (A/C or Options033A bit 7) $11AB</description>
+  <description>Idle flare flags: rpm above the target at or above this value sets IdleFlareFlags bit 6 (A/C or Options033A bit 7) $11AB</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x11AB" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -13306,7 +13306,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2AA" flags="0x0">
   <title>O2WarmDelayCoolant</title>
-  <description>Coolant at or above which the warm delay $07AF,Z counts down (below it the delay is reloaded with O2DelayWarm) $11BD</description>
+  <description>Coolant at or above which the warm delay O2WarmDelay counts down (below it the delay is reloaded with O2DelayWarm) $11BD</description>
   <CATEGORYMEM index="0" category="10" />
   <EMBEDDEDDATA mmedaddress="0x11BD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -13486,7 +13486,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2B9" flags="0x0">
   <title>PurgeCell1</title>
-  <description>Adaptive cell number ($0801,Z) used for purge learning (copied to $043A,Z); cell 12 also sets $0C31,Z bit 0 $13A4</description>
+  <description>Adaptive cell number (O2MemCell) used for purge learning (copied to PurgeCellNum1); cell 12 also sets DriveFlags bit 0 $13A4</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x13A4" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13498,7 +13498,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2BA" flags="0x0">
   <title>PurgeCell2</title>
-  <description>Second adaptive cell number for purge learning ($043B,Z) $13A5</description>
+  <description>Second adaptive cell number for purge learning (PurgeCellNum2) $13A5</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x13A5" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13510,7 +13510,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2BB" flags="0x0">
   <title>PurgeCell3</title>
-  <description>Third adaptive cell number for purge learning ($043C,Z) $13A6</description>
+  <description>Third adaptive cell number for purge learning (PurgeCellNum3) $13A6</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x13A6" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13546,7 +13546,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2BE" flags="0x0">
   <title>FuelEventHold</title>
-  <description>Per-event fuel: hold count $077B,Z $147D</description>
+  <description>Per-event fuel: hold count FuelEventHoldCount $147D</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x147D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13570,7 +13570,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2C0" flags="0x0">
   <title>TimedSparkPeriodMax</title>
-  <description>Crank ISR: reference period below which timed spark ($0D00,Z bit 5) is used $19B7</description>
+  <description>Crank ISR: reference period below which timed spark (SparkFlags bit 5) is used $19B7</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x19B7" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -13606,7 +13606,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2C3" flags="0x0">
   <title>AfterStartSparkEvents</title>
-  <description>After-start spark retard (AfterStartSpark): crank events ($076D,Z) before the retard starts $1A1B</description>
+  <description>After-start spark retard (AfterStartSpark): crank events (CrankEventCount) before the retard starts $1A1B</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x1A1B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13702,7 +13702,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2CB" flags="0x0">
   <title>SurgeRpmAccelEnd</title>
-  <description>Driveline surge: rpm acceleration change ($0D2C,Z) below which the retard stage ends early $1BD3</description>
+  <description>Driveline surge: rpm acceleration change (RpmAccelChange) below which the retard stage ends early $1BD3</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x1BD3" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -13750,7 +13750,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2CF" flags="0x0">
   <title>SurgeOpenThrottleTime</title>
-  <description>Throttle open: time ($0D38,Z) during which the jerk spark applies $1BD8</description>
+  <description>Throttle open: time (SurgeOpenTime) during which the jerk spark applies $1BD8</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x1BD8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13774,7 +13774,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D1" flags="0x0">
   <title>SurgeRetardTime</title>
-  <description>Retard stage length ($0D37,Z) before the decay stage $1BDA</description>
+  <description>Retard stage length (SurgeStageTime) before the decay stage $1BDA</description>
   <CATEGORYMEM index="0" category="5" />
   <EMBEDDEDDATA mmedaddress="0x1BDA" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13786,7 +13786,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D2" flags="0x0">
   <title>AcSparkHoldCount</title>
-  <description>A/C spark: hold count $0D56,Z, A/C clutch off $1C1F</description>
+  <description>A/C spark: hold count AcSparkHoldCounter, A/C clutch off $1C1F</description>
   <CATEGORYMEM index="0" category="21" />
   <EMBEDDEDDATA mmedaddress="0x1C1F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13810,7 +13810,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2D4" flags="0x0">
   <title>AcSparkRateChangeMin</title>
-  <description>A/C spark: rpm-rate change ($0D4E,Z) at or above which the compensation starts, A/C clutch off $1C25</description>
+  <description>A/C spark: rpm-rate change (AcSparkRateChange) at or above which the compensation starts, A/C clutch off $1C25</description>
   <CATEGORYMEM index="0" category="21" />
   <EMBEDDEDDATA mmedaddress="0x1C25" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -13954,7 +13954,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2E0" flags="0x0">
   <title>EventSparkStep</title>
-  <description>Event spark: increase per loop while $0856,Z bits 4 and 2 are set $1D3C</description>
+  <description>Event spark: increase per loop while EventSparkFlags bits 4 and 2 are set $1D3C</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1D3C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13966,7 +13966,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2E1" flags="0x0">
   <title>EventSparkStep2</title>
-  <description>Event spark: increase per loop while $0856,Z bit 3 is set $1D3D</description>
+  <description>Event spark: increase per loop while EventSparkFlags bit 3 is set $1D3D</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1D3D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -13978,7 +13978,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2E2" flags="0x0">
   <title>EventSparkDecay</title>
-  <description>Event spark: decrease per loop with $0857,Z bit 4 set $1D3E</description>
+  <description>Event spark: decrease per loop with EventSparkFlags2 bit 4 set $1D3E</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1D3E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14014,7 +14014,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2E5" flags="0x0">
   <title>EventSparkStepDown</title>
-  <description>Event spark: decrease of $0863,Z per period $1D41</description>
+  <description>Event spark: decrease of EventSparkCount per period $1D41</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1D41" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14026,7 +14026,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2E6" flags="0x0">
   <title>EventSparkStepUp</title>
-  <description>Event spark: increase of $085E,Z and $0863,Z per step $1D43</description>
+  <description>Event spark: increase of EventSparkCount2 and EventSparkCount per step $1D43</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1D43" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14050,7 +14050,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2E8" flags="0x0">
   <title>EventSparkPeriodInit</title>
-  <description>Event spark: start value of the period counters $0862/$085D,Z $1D45</description>
+  <description>Event spark: start value of the period counters $0862/EventSparkPeriodB $1D45</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1D45" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14062,7 +14062,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2E9" flags="0x0">
   <title>EventSparkCountMax</title>
-  <description>Event spark: upper limit of $085E,Z and $0863,Z $1D46</description>
+  <description>Event spark: upper limit of EventSparkCount2 and EventSparkCount $1D46</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1D46" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14098,7 +14098,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2EC" flags="0x0">
   <title>BatteryVoltsFilter</title>
-  <description>Filter weight of the filtered battery voltage $0A52,Z $1DD2</description>
+  <description>Filter weight of the filtered battery voltage BatteryVoltsFiltered $1DD2</description>
   <CATEGORYMEM index="0" category="4" />
   <EMBEDDEDDATA mmedaddress="0x1DD2" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14146,7 +14146,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F0" flags="0x0">
   <title>IacGearStepCount</title>
-  <description>Number of gear-change IAC steps ($0352,Z) $1F09</description>
+  <description>Number of gear-change IAC steps (IacGearSteps) $1F09</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F09" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14158,7 +14158,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F1" flags="0x0">
   <title>IacAcOffTimeAdder</title>
-  <description>A/C IAC: added to the hold time $034F,Z when the clutch disengages $1F0B</description>
+  <description>A/C IAC: added to the hold time IacShiftTimer when the clutch disengages $1F0B</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F0B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14170,7 +14170,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F2" flags="0x0">
   <title>IacAcLoadAdder</title>
-  <description>A/C IAC: addition to the A/C sensor term (without $0D57,Z bit 3) $1F0E</description>
+  <description>A/C IAC: addition to the A/C sensor term (without IacAcFlags bit 3) $1F0E</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F0E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14182,7 +14182,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F3" flags="0x0">
   <title>IacKickHold</title>
-  <description>A/C and rpm-dip kicks: hold time $035A,Z $1F0F</description>
+  <description>A/C and rpm-dip kicks: hold time IacKickTimer $1F0F</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F0F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14206,7 +14206,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F5" flags="0x0">
   <title>IacShiftHold</title>
-  <description>Value of $034F,Z (gear-change IAC timer) when $0772,Z bit 7 sets $1F12</description>
+  <description>Value of IacShiftTimer (gear-change IAC timer) when IdleFlareFlags bit 7 sets $1F12</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F12" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14218,7 +14218,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F6" flags="0x0">
   <title>IacShiftTimeAlt</title>
-  <description>As IacShiftTime with $0C33,Z bit 6 set $1F13</description>
+  <description>As IacShiftTime with ControlFlagsC33 bit 6 set $1F13</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F13" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14230,7 +14230,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F7" flags="0x0">
   <title>IacShiftTime</title>
-  <description>Gear-change IAC step: time added to $034F,Z (with the step × 0.57) $1F14</description>
+  <description>Gear-change IAC step: time added to IacShiftTimer (with the step × 0.57) $1F14</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F14" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14242,7 +14242,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F8" flags="0x0">
   <title>IacShiftTime2</title>
-  <description>As IacShiftTime while $0353,Z is not zero $1F15</description>
+  <description>As IacShiftTime while IacShiftMode is not zero $1F15</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F15" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14254,7 +14254,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2F9" flags="0x0">
   <title>IacShiftStepAlt</title>
-  <description>As IacShiftStep with $0C33,Z bit 6 set $1F16</description>
+  <description>As IacShiftStep with ControlFlagsC33 bit 6 set $1F16</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F16" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14278,7 +14278,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2FB" flags="0x0">
   <title>IacShiftStep2</title>
-  <description>As IacShiftStep while $0353,Z is not zero $1F18</description>
+  <description>As IacShiftStep while IacShiftMode is not zero $1F18</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F18" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14290,7 +14290,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2FC" flags="0x0">
   <title>IacGearCoolantMax</title>
-  <description>Gear-change IAC: coolant below which the IacGearTimeCoolant tables and the time counter $0348,Z apply $1F5D</description>
+  <description>Gear-change IAC: coolant below which the IacGearTimeCoolant tables and the time counter IacGearTime apply $1F5D</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1F5D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -14314,7 +14314,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2FE" flags="0x0">
   <title>ChargeDeficitFilter</title>
-  <description>Filter weight of the charging deficit average $0DCA,Z $1FDD</description>
+  <description>Filter weight of the charging deficit average ChargeDeficitAvg $1FDD</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1FDD" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14362,7 +14362,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x302" flags="0x0">
   <title>IacAcKickFactor</title>
-  <description>A/C IAC kick (IdleTargetControl): factor on the A/C load term when the clutch engages (result at most 31 with $0D57,Z bit 3) $208C</description>
+  <description>A/C IAC kick (IdleTargetControl): factor on the A/C load term when the clutch engages (result at most 31 with IacAcFlags bit 3) $208C</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x208C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14386,7 +14386,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x304" flags="0x0">
   <title>IacRollCoolantMin</title>
-  <description>Rolling IAC target: below this coolant the $0335,Z value is used instead $208E</description>
+  <description>Rolling IAC target: below this coolant the IacLearned value is used instead $208E</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x208E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units>deg C</units>
@@ -14410,7 +14410,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x306" flags="0x0">
   <title>IacCoastOffsetUp</title>
-  <description>Coast IAC: signed offset added to $032C,Z (first branch) $218C</description>
+  <description>Coast IAC: signed offset added to IacCoastPosition (first branch) $218C</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x218C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14422,7 +14422,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x307" flags="0x0">
   <title>IacCoastOffsetDown</title>
-  <description>Coast IAC: signed offset added to $032C,Z (second branch) $218D</description>
+  <description>Coast IAC: signed offset added to IacCoastPosition (second branch) $218D</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x218D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14434,7 +14434,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x308" flags="0x0">
   <title>IacAccelHold</title>
-  <description>Hold time $034E,Z after acceleration enrichment (MAP or throttle) $2194</description>
+  <description>Hold time IacAccelTimer after acceleration enrichment (MAP or throttle) $2194</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x2194" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14458,7 +14458,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30A" flags="0x0">
   <title>SpeedCtlRpmFilterLow</title>
-  <description>As SpeedCtlRpmFilter with rpm at or below $0C4E,Z $2326</description>
+  <description>As SpeedCtlRpmFilter with rpm at or below RpmPrev $2326</description>
   <CATEGORYMEM index="0" category="22" />
   <EMBEDDEDDATA mmedaddress="0x2326" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14470,7 +14470,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30B" flags="0x0">
   <title>SpeedCtlRpmFilter</title>
-  <description>Speed control rpm-jump check (SpeedCtlRpmJump): filter weight of the rpm average $040A,Z $2327</description>
+  <description>Speed control rpm-jump check (SpeedCtlRpmJump): filter weight of the rpm average SpeedCtlRpmAvg $2327</description>
   <CATEGORYMEM index="0" category="22" />
   <EMBEDDEDDATA mmedaddress="0x2327" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14482,7 +14482,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30C" flags="0x0">
   <title>SpeedCtlRpmJump</title>
-  <description>Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference $040A,Z cancels (clutch or neutral; manual transmission only) $2328</description>
+  <description>Speed control (SpeedCtlRpmJump): engine rpm rising this much above the reference SpeedCtlRpmAvg cancels (clutch or neutral; manual transmission only) $2328</description>
   <CATEGORYMEM index="0" category="22" />
   <EMBEDDEDDATA mmedaddress="0x2328" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -14506,7 +14506,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x30E" flags="0x0">
   <title>SpeedCtlThrottleFilter</title>
-  <description>Speed control rpm-jump check: filter weight of the throttle average $040C,Z $232C</description>
+  <description>Speed control rpm-jump check: filter weight of the throttle average SpeedCtlThrottleAvg $232C</description>
   <CATEGORYMEM index="0" category="22" />
   <EMBEDDEDDATA mmedaddress="0x232C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14530,7 +14530,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x310" flags="0x0">
   <title>SpeedCtlRpmJumpHold</title>
-  <description>Speed control rpm-jump check: hold count ($0417,Z) set by an rpm jump (clutch pressed) $232E</description>
+  <description>Speed control rpm-jump check: hold count (SpeedCtlRpmJumpTimer) set by an rpm jump (clutch pressed) $232E</description>
   <CATEGORYMEM index="0" category="22" />
   <EMBEDDEDDATA mmedaddress="0x232E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14542,7 +14542,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x311" flags="0x0">
   <title>LdpTestTimeAlt</title>
-  <description>Leak detection pump, test state: state time with $0649,Z bit 1 set $2337</description>
+  <description>Leak detection pump, test state: state time with LdpFlags3 bit 1 set $2337</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2337" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14590,7 +14590,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x315" flags="0x0">
   <title>CamCrankStableCount</title>
-  <description>Cam/crank relation: stable readings needed ($068E,Z) $2470</description>
+  <description>Cam/crank relation: stable readings needed (CamCrankStable) $2470</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2470" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14626,7 +14626,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x318" flags="0x0">
   <title>O2MonIdleTime</title>
-  <description>O2 sensor monitor at idle: idle time ($053F,Z) at or above this value $2548</description>
+  <description>O2 sensor monitor at idle: idle time (O2MonIdleTimer) at or above this value $2548</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2548" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14638,7 +14638,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x319" flags="0x0">
   <title>O2MonPurgeOffTime</title>
-  <description>O2 sensor monitor at idle: purge-off time ($0543,Z) needed when purge is not finished $2549</description>
+  <description>O2 sensor monitor at idle: purge-off time (O2MonPurgeOffTimer) needed when purge is not finished $2549</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2549" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14710,7 +14710,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x31F" flags="0x0">
   <title>O2MonStableTime</title>
-  <description>O2 sensor monitor at idle (O2IdleMonitor): stable-condition count ($0542,Z) at or above which the sensors are tested $2550</description>
+  <description>O2 sensor monitor at idle (O2IdleMonitor): stable-condition count (O2MonStableCount) at or above which the sensors are tested $2550</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2550" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14722,7 +14722,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x320" flags="0x0">
   <title>O2MonRestartDelay</title>
-  <description>O2 sensor monitor at idle: delay ($0541,Z) loaded when the test conditions start again $2552</description>
+  <description>O2 sensor monitor at idle: delay (O2MonRestartTimer) loaded when the test conditions start again $2552</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2552" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14734,7 +14734,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x321" flags="0x0">
   <title>O2MonSensorReadyMin</title>
-  <description>O2 sensor monitor at idle: sensor ready counts ($0A4E/$0A4F,Z) at or above this value $2553</description>
+  <description>O2 sensor monitor at idle: sensor ready counts ($0A4E/O2SensorReady2) at or above this value $2553</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2553" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14758,7 +14758,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x323" flags="0x0">
   <title>O2MonTrimResetMin</title>
-  <description>O2 sensor monitor at idle: trim size at or above which a bank trim reset is requested ($0761,Z) $2571</description>
+  <description>O2 sensor monitor at idle: trim size at or above which a bank trim reset is requested (O2ResetFlags) $2571</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2571" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14794,7 +14794,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x326" flags="0x0">
   <title>O2HeaterSampleTime</title>
-  <description>Probably the O2 heater monitor (O2HeaterSampleStep): timer $010A,Z (word) above which the heater input is sampled $2582</description>
+  <description>Probably the O2 heater monitor (O2HeaterSampleStep): timer O2HeaterTimer (word) above which the heater input is sampled $2582</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2582" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -14818,7 +14818,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x328" flags="0x0">
   <title>MisfireCountLimitAlt</title>
-  <description>Misfire counter limit while $0627,Z bit 7 is clear $26F9</description>
+  <description>Misfire counter limit while MisfireFlags3 bit 7 is clear $26F9</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x26F9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14842,7 +14842,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x32A" flags="0x0">
   <title>MisfireWindowCat</title>
-  <description>Misfire monitor: window length for the catalyst counter with $0627,Z bit 7 $2709</description>
+  <description>Misfire monitor: window length for the catalyst counter with MisfireFlags3 bit 7 $2709</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2709" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14926,7 +14926,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x331" flags="0x0">
   <title>LdpPumpOnTime</title>
-  <description>Leak detection pump (LdpPumpStroke): pump-on count ($0591,Z) per stroke $2979</description>
+  <description>Leak detection pump (LdpPumpStroke): pump-on count (LdpPumpOnCount) per stroke $2979</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2979" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14938,7 +14938,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x332" flags="0x0">
   <title>LdpPumpOffTime</title>
-  <description>Leak detection pump: pump-off count ($0592,Z) per stroke $297A</description>
+  <description>Leak detection pump: pump-off count (LdpPumpOffCount) per stroke $297A</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x297A" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14950,7 +14950,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x333" flags="0x0">
   <title>LdpStrokeTimeValid</title>
-  <description>Leak detection pump: stroke time at or above which it is stored as the result ($0595,Z) before filtering starts $297B</description>
+  <description>Leak detection pump: stroke time at or above which it is stored as the result (LdpStrokeTimeAvg) before filtering starts $297B</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x297B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14962,7 +14962,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x334" flags="0x0">
   <title>LdpStrokeFilter</title>
-  <description>Leak detection pump: filter weight of the averaged stroke time ($0595,Z) $297C</description>
+  <description>Leak detection pump: filter weight of the averaged stroke time (LdpStrokeTimeAvg) $297C</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x297C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14986,7 +14986,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x336" flags="0x0">
   <title>LdpGrossTime</title>
-  <description>Leak detection pump, gross-leak state: state time ($0590,Z) for the first strokes $297E</description>
+  <description>Leak detection pump, gross-leak state: state time (LdpStateTime) for the first strokes $297E</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x297E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14998,7 +14998,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x337" flags="0x0">
   <title>LdpGrossStrokes</title>
-  <description>Leak detection pump, gross-leak state: strokes ($0596,Z) before the stroke time is judged $297F</description>
+  <description>Leak detection pump, gross-leak state: strokes (LdpStrokes) before the stroke time is judged $297F</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x297F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15022,7 +15022,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x339" flags="0x0">
   <title>LdpStrokeTimeMax</title>
-  <description>Leak detection pump, pump-up state: stroke time ($0593,Z) at or above which the stroke counts restart $2981</description>
+  <description>Leak detection pump, pump-up state: stroke time (LdpStrokeCount) at or above which the stroke counts restart $2981</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2981" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15034,7 +15034,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33A" flags="0x0">
   <title>LdpWindowStrokes</title>
-  <description>Leak detection pump, pump-up state: strokes per time-out window ($0597,Z) $2982</description>
+  <description>Leak detection pump, pump-up state: strokes per time-out window (LdpWindowStrokeCount) $2982</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2982" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15046,7 +15046,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33B" flags="0x0">
   <title>LdpPumpTimeMin</title>
-  <description>Leak detection pump, pump-up state: state time limit after refuelling; also taken off the time-out count $0598,Z per stroke window $2983</description>
+  <description>Leak detection pump, pump-up state: state time limit after refuelling; also taken off the time-out count LdpPumpUpTimer per stroke window $2983</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2983" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15058,7 +15058,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x33C" flags="0x0">
   <title>LdpPumpUpTimeMax</title>
-  <description>Leak detection pump, pump-up state: time-out count ($0598,Z) that ends the state $2984</description>
+  <description>Leak detection pump, pump-up state: time-out count (LdpPumpUpTimer) that ends the state $2984</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2984" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15106,7 +15106,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x340" flags="0x0">
   <title>LdpSmallLeakStrokeTime</title>
-  <description>Leak detection pump, test state: averaged stroke time below this value is a small leak (also the mode $06 limit, result in $0171,Z) $2988</description>
+  <description>Leak detection pump, test state: averaged stroke time below this value is a small leak (also the mode $06 limit, result in LdpStrokeResult) $2988</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2988" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15166,7 +15166,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x345" flags="0x0">
   <title>LdpVacLowCountMax</title>
-  <description>Leak detection pump: low-vacuum counts ($0599,Z) allowed in the end state $298D</description>
+  <description>Leak detection pump: low-vacuum counts (LdpVacLowCount) allowed in the end state $298D</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x298D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15178,7 +15178,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x346" flags="0x0">
   <title>LdpVacLowTotalMax</title>
-  <description>Leak detection pump: total low-vacuum counts ($059A,Z) that abort the test $298E</description>
+  <description>Leak detection pump: total low-vacuum counts (LdpVacLowTotal) that abort the test $298E</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x298E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15286,7 +15286,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x34F" flags="0x0">
   <title>ChargeMonTime</title>
-  <description>Charging monitor: time ($0DBB,Z) before $0DB8,Z bit 3 sets $3DE7</description>
+  <description>Charging monitor: time (ChargeMonTimer) before ChargeMonFlags bit 3 sets $3DE7</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x3DE7" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15298,7 +15298,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x350" flags="0x0">
   <title>ChargeMonClearTime</title>
-  <description>Charging monitor: time before $0DB8,Z bit 6 clears $3DE8</description>
+  <description>Charging monitor: time before ChargeMonFlags bit 6 clears $3DE8</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x3DE8" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15310,7 +15310,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x351" flags="0x0">
   <title>ChargeMonFailTime</title>
-  <description>Charging monitor: time before $0DB8,Z bit 6 (fault) sets $3DE9</description>
+  <description>Charging monitor: time before ChargeMonFlags bit 6 (fault) sets $3DE9</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x3DE9" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15346,7 +15346,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x354" flags="0x0">
   <title>CylinderCount</title>
-  <description>Number of cylinders (4): the cylinder index $0C46,Z counts up to it and the per-event code uses it $51DF</description>
+  <description>Number of cylinders (4): the cylinder index CylinderIndex counts up to it and the per-event code uses it $51DF</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x51DF" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15358,7 +15358,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x355" flags="0x0">
   <title>FuelEventCylFactor</title>
-  <description>Per-cylinder offset factor (multiplied by the cylinder index $0C46,Z) $5207</description>
+  <description>Per-cylinder offset factor (multiplied by the cylinder index CylinderIndex) $5207</description>
   <CATEGORYMEM index="0" category="3" />
   <EMBEDDEDDATA mmedaddress="0x5207" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

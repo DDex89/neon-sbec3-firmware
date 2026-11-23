@@ -5953,7 +5953,7 @@ L14062:
         TPD
         TBXK
         LDAB    $048B,Z
-        BRSET   >EepromFlags,Z,#$02,L1409E               ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BRSET   >EepromFlags,Z,#$02,L1409E               ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
         LDAA    $045C,Z
         BRCLR   >EepromFlags,Z,#$08,L1408C               ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
         BCLR    >EepromFlags,Z,#$08                      ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
@@ -5971,7 +5971,7 @@ L1408C:
         BNE     L140AA
         BRA     L140A2
 L1409E:
-        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 L140A2:
         INCB
         INCB
@@ -6183,7 +6183,7 @@ L142A0:
         BCS     L142A0
 L142AE:
         STAB    $048B,Z
-        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 L142B6:
         BCLR    >EepromFlags,Z,#$A0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 5: write in progress (EepromWriteService)
         BSETW   >EepromAddr,Z,#$FFFF
@@ -9914,9 +9914,9 @@ L16BF4:
         LDD     >EngineRpm,Z
         TDE
         SUBD    >MtvTimingC06,Z
-        BSET    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BSET    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         BCC     L16C0A
-        BCLR    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BCLR    >MtvFlags,Z,#$20                         ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         NEGD
 L16C0A:
         CPD     >MtvRpmRateMax
@@ -9933,7 +9933,7 @@ L16C2A:
         LDD     >MtvRpmRate,Z
         CPD     >MtvRpmRateMin
         LBCS    L16DA6
-        BRCLR   >MtvFlags,Z,#$20,L16DA6                  ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BRCLR   >MtvFlags,Z,#$20,L16DA6                  ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         BRSET   >IoCfg1FL,Z,#$02,L16C8C                  ; bit 1: tested by Isr_GPT_OC2 (ignition driver status, probably)
         LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
@@ -9973,7 +9973,7 @@ L16CB4:
         BSET    >MtvFlags,Z,#$10                         ; bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
         JMP     L16DAA
 L16CC6:
-        BRCLR   >MtvFlags,Z,#$20,L16CDA                  ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BRCLR   >MtvFlags,Z,#$20,L16CDA                  ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         LDD     >MtvRpmHigh
         SUBD    >EngineRpm,Z
         JSR     MtvRateLookup
@@ -10002,7 +10002,7 @@ L16D20:
         LDD     >MtvRpmRate,Z
         CPD     >MtvRpmRateMin
         LBCS    L16DA6
-        BRSET   >MtvFlags,Z,#$20,L16DA6                  ; bit 5: engine rpm at or above the switch point at $0C06,Z (MtvTiming)
+        BRSET   >MtvFlags,Z,#$20,L16DA6                  ; bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
         BRSET   >IoCfg1FL,Z,#$02,L16D82                  ; bit 1: tested by Isr_GPT_OC2 (ignition driver status, probably)
         LDD     >EngineRpm,Z
         SUBD    >MtvRpmLow
@@ -16797,12 +16797,12 @@ L1B786:
         LDAA    <CamCrankSyncCount,Z
         CMPA    #$32
         BCC     L1B79A
-        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
         INCA
         STAA    <CamCrankSyncCount,Z
         BRA     L1B79E
 L1B79A:
-        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
 L1B79E:
         BSET    >CamCrankFlags,Z,#$10                    ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
 L1B7A2:

@@ -84,7 +84,7 @@ These are the same as in the 1995 FCC controller and as on the 2GNT pages.
 | $0B9E | ReturnlessFuelScale | fuel multiplier of the returnless fuel system |
 | $24AB | KnockThreshold | knock sensor threshold against rpm |
 | $2684 | IdleTargetRpm | target idle speed against coolant temperature |
-| $19DC, $19DE | RevLimit, RevLimitAlt | two rev limits (6,048 and 7,008 rpm), chosen by $0C31,Z bit 5 |
+| $19DC, $19DE | RevLimit, RevLimitAlt | two rev limits (6,048 and 7,008 rpm), chosen by `DriveFlags` ($0C31,Z) bit 5 |
 | $19E1, $19E3 | SpeedLimit, SpeedLimitMinRpm | speed limiter, enabled by calibration bit $0337.5 |
 | $4052 | FaultTable | 256 fault rows |
 
@@ -132,7 +132,7 @@ The idle air valve is driven by several routines that all end in the step routin
 
 | Routine | What it does | Tables |
 |---|---|---|
-| `IdleRpmTarget` | idle target ($0300,Z): coolant table (P/N variant), additions for an rpm dip in gear, hot intake air, and a ramped target against battery temperature and run time | `IdleTargetRpm*`, `IdleTargetDip*`, `IdleTargetHotAirAdder`, `IdleBattTemp*` |
+| `IdleRpmTarget` | idle target (`IdleTarget` ($0300,Z)): coolant table (P/N variant), additions for an rpm dip in gear, hot intake air, and a ramped target against battery temperature and run time | `IdleTargetRpm*`, `IdleTargetDip*`, `IdleTargetHotAirAdder`, `IdleBattTemp*` |
 | `IdleRpmLoop` | closed loop on rpm: error term (coarse/fine, P/N), rate filter, deadband from MAP and coolant, integrator that takes opening or closing IAC steps | `IdleErrorTerm*`, `IdleRateFilterCoolant`, `IdleDeadband*`, `IdleStep*` |
 | `IdleMapTargetCalc` | closed loop on MAP: idle MAP target ($031E,Z) from base, time, coolant, rpm and baro, then IAC steps against the MAP error | `IdleMap*`, `IacMap*Step*` |
 | `IacBaseCalc` | base IAC position against baro and idle target, coasting target, generator field duty, A/C engagement | `IacBase*`, `IacCoast*`, `IacFieldDuty*`, `IacAcEngageAdder` |
@@ -157,8 +157,8 @@ Knock control learns a noise level per rpm band (`KnockNoise*`), runs above a MA
 (`KnockMapThreshold*`) and limits the retard by rpm and MAP (`KnockRetardMax*`, `KnockRetardLimit`).
 
 Several of these readings rest on how the code uses a variable rather than on a document: the
-battery temperature ($0A5A,Z, used for the charging target), the generator field duty ($032E,Z,
-a duty count of CS2 input $106E bit 5) and the A/C sensor ($0A88,Z, probably A/C
+battery temperature (`BatteryTemp` ($0A5A,Z), used for the charging target), the generator field duty (`FieldDuty` ($032E,Z),
+a duty count of CS2 input $106E bit 5) and the A/C sensor (`AcSensor` ($0A88,Z), probably A/C
 pressure) are inferred this way.
 
 ## Constants and option bits
@@ -224,20 +224,20 @@ used), which fits the manual 05293190AC.
 `CalcFuelPulse` ($11F40) runs from the input-capture 1 interrupt, that is on every reference
 event:
 
-1. Part throttle or WOT is chosen by `$0771,Z` bit 5; this selects the constants, the scale table
+1. Part throttle or WOT is chosen by `FuelModeFlags` ($0771,Z) bit 5; this selects the constants, the scale table
    and the fuel table.
 2. Base pulse width = (Map - MapOffset) x (256 + K) / 16, or zero if MAP is below the offset. With
    calibration bit $0337.2 set, MAP is first raised to the lowest point of the part-throttle scale.
 3. The fuel table gives a signed value v (rows by MAP through the scale table, columns by
    `EngineRpm`, whose high byte is rpm / 32); the base is multiplied by 1 + v / 256.
-4. `$080E,Z` is added and the result is stored in `FuelPulse` ($07E2,Z) and `$04F6,Z`.
+4. `BaroFuelAdder` ($080E,Z) is added and the result is stored in `FuelPulse` ($07E2,Z) and `Temp4F6` ($04F6,Z).
 
 So the fuel tables work like a volumetric-efficiency correction on a linear MAP model, with the
 two constants setting the slope and the zero point. Dead time, temperature and other corrections
 are applied elsewhere (stage 5).
 
-`InjectorDeadTime` is looked up with `$0A51,Z` as input. 2GNT lists a fix that changes this to
-`$0A50,Z` (`BatteryVolts`); who writes $0A51 has not been checked yet.
+`InjectorDeadTime` is looked up with `BatteryVolts2` ($0A51,Z) as input. 2GNT lists a fix that changes this to
+`BatteryVolts` ($0A50,Z) (`BatteryVolts`); who writes $0A51 has not been checked yet.
 
 ## Fuel corrections
 
@@ -247,16 +247,16 @@ Besides the base pulse, the code builds these corrections (names as in the sourc
 |---|---|---|---|
 | Warm-up enrichment | `WarmupFuel` | `WarmupMapCoolant` (MAP x coolant), `WarmupMapCoolantLowSpeed` (below a vehicle speed), `WarmupRpmCoolantIdle` (throttle closed), `WarmupCoolantAdder` (WOT), factors for baro, run time and rpm | `WarmupFuelFactor` ($07E4,Z) |
 | After-start decay | `WarmupFuel` | `AfterStartTimeScale`, `AfterStartDecay` (time since start x cranking coolant) | part of the warm-up factor |
-| Cold-soak | `WarmupFuel` | `ColdSoakMapCoolant`, used when the coolant at start is close to $0A5E,Z | `$07E7,Z` |
-| Cranking | `CrankFuel` | `CrankBasePulse` (ethanol x cranking coolant), reductions against rpm, $0769,Z and baro, each weighted by coolant; `CrankVacuumFactor` | `CrankPulse` ($0766,Z) |
+| Cold-soak | `WarmupFuel` | `ColdSoakMapCoolant`, used when the coolant at start is close to `BatteryTempStart` ($0A5E,Z) | `ColdSoakMap` ($07E7,Z) |
+| Cranking | `CrankFuel` | `CrankBasePulse` (ethanol x cranking coolant), reductions against rpm, `CrankDecayIndex` ($0769,Z) and baro, each weighted by coolant; `CrankVacuumFactor` | `CrankPulse` ($0766,Z) |
 | Throttle tip-in | `TipInFuelControl` | `TipInMatrix` (9 x 9, rows by throttle opening, columns by throttle step), coolant, air temperature and baro factors | `TipInFuel` ($07C6,Z) |
 | MAP-rate and throttle-rate enrichment | `AccelEnrichFactors` | `AccelMapGainCoolant`, `AccelTpsRateLimit`, `AccelTpsCoolantFactor`, baro terms, `AccelRpmFactor` | `AccelMapGain`, `AccelTpsFuel`, `AccelFactor` |
 | Deceleration enleanment | `DecelLeanControl` | `DecelLeanAirflow` (rpm x throttle), coolant, time, rpm, MAP and baro factors | `DecelLeanFuel` ($07C2,Z) |
-| Deceleration fuel cut-off | `FuelCutControl` | `DecelCutMapThreshold`, `DecelCutDelay`, minimum rpm against coolant; rev and speed limits | `$0770,Z` flags, `DecelCutRpmFactor` |
+| Deceleration fuel cut-off | `FuelCutControl` | `DecelCutMapThreshold`, `DecelCutDelay`, minimum rpm against coolant; rev and speed limits | `FuelModeFlags2` ($0770,Z) flags, `DecelCutRpmFactor` |
 | Deceleration fuel reduction | `DecelFuelRampControl` | `DecelMapRpmLimit` (MAP x rpm) | `DecelFuelFactor` ($077A,Z) |
 | WOT enrichment over time | `WotEnrichControl` | `WotTimeEnrichMax` | `WotTimeEnrich` ($07AA,Z) |
 | Idle enrichment | `IdleEnrichment` | run time, ethanol x start air temperature, engine-off time | `IdleEnrichFactor` ($07DA,Z) |
-| Hot-engine enrichment | `HotEngineEnrichCalc` | `HotEngineEnrich` | `$0811,Z` |
+| Hot-engine enrichment | `HotEngineEnrichCalc` | `HotEngineEnrich` | `HotEnrich` ($0811,Z) |
 | Air temperature | `FuelCorrections` | `FuelAirTempCorr` with rpm and MAP weights | multiplies the fuel |
 | MAP and throttle filters | `MapTpsFilters` | filter coefficients for rising and falling MAP and throttle against start coolant | `MapFilterCoef`, `TpsFilterCoef` |
 
@@ -312,9 +312,9 @@ Misfire, catalyst, O2-sensor, EVAP-leak and purge-flow monitors report through t
 machines; their constants are named after the monitor (`Misfire...`, `CatMon...`, `O2Mon...`,
 `Ldp...`, `PurgeMon...`).
 
-The P0176 test of `FlexSensorCheck` changes one earlier reading: $0A8E,Z, read as the fuel level,
+The P0176 test of `FlexSensorCheck` changes one earlier reading: `FlexSensorRaw` ($0A8E,Z), read as the fuel level,
 is the fuel composition sensor input (now `FlexSensorRaw`), and the P1697 test shows that the
-word at $000D,Z is the SRI (service reminder) mileage (`SriMileage`).
+word at `SriMileage` ($000D,Z) is the SRI (service reminder) mileage (`SriMileage`).
 
 ## Fault table
 
@@ -349,7 +349,7 @@ applies only to the reference image.
 ## Open points
 
 - Some table names rest only on how the code uses a value (battery temperature, generator field
-  duty, the A/C sensor, $019C,Z as probably the fuel level; purge, EGR and speed control as
+  duty, the A/C sensor, `FuelLevelScaled` ($019C,Z) as probably the fuel level; purge, EGR and speed control as
   subsystems), and several RAM variables are still named by address (`V0335`, `V006B`). Checking
   them on a running car would settle them.
 - Every RAM offset the code reaches through Z has a name, and so do the 63 used registers of the CS2

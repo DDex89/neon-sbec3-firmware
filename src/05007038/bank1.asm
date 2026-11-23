@@ -8831,12 +8831,12 @@ L15C6E:
         LDAA    <CamCrankSyncCount,Z
         CMPA    #$32
         BCC     L15C80
-        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+        BCLR    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
         INCA
         STAA    <CamCrankSyncCount,Z
         BRA     L15C84
 L15C80:
-        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at $3E,Z reached 50 (Reset, CamCrankSyncMonitor)
+        BSET    >CrankSyncFlags2,Z,#$01                  ; bit 0: cam/crank sync count at CamCrankSyncCount reached 50 (Reset, CamCrankSyncMonitor)
 L15C84:
         BSET    >CamCrankFlags,Z,#$10                    ; bit 4: cam/crank sync monitor done (CamCrankSyncMonitor)
 L15C88:
@@ -13090,7 +13090,7 @@ L18AA2:
         BEQ     L18B1E
         BSET    <MisfireFlags,Z,#$08                     ; bit 3: misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)
         LBSR    MisfireDeviation
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L18AC4        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L18AC4        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BEQ     L18B1E
 L18AC4:
         TST     >MisfireTransientHold,Z
@@ -13338,7 +13338,7 @@ MisfireEnableCheck:
         BRCLR   >MisfireFlags2,Z,#$04,L18DBA             ; bit 2: misfire transient hold running (MisfireSegmentTime)
         TST     >SystemTestMode,Z
         LBNE    L18DBA
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L18D66        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L18D66        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BRSET   >MonitorDisableFlags,Z,#$04,L18DBA       ; bit 2: battery voltage at or below MonEnableVoltsMin
         BRSET   >MonitorDisableFlags,Z,#$02,L18DBA       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
         BRSET   >MonitorDisableFlags,Z,#$01,L18DBA       ; bit 0: battery (ambient) temperature below MonEnableBattTempMin
@@ -13467,7 +13467,7 @@ L18E8A:
         LDE     >MisfireWork5D2,Z
         STE     >MisfireThreshold5E4,Z
         BSET    >MisfireWork628,Z,#$80
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L18EA0        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L18EA0        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BSET    >MonEnableFlags2,Z,#$01                  ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 L18EA0:
         LDE     >MisfireChangeFiltered,Z
@@ -13561,7 +13561,7 @@ L18F74:
 L18F94:
         BCLR    >MonEnableFlags2,Z,#$01                  ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 L18F98:
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L18FE4        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L18FE4        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         CLRA
         LDAB    #$00
         BRCLR   >MonEnableFlags2,Z,#$01,L18FAA           ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
@@ -13601,7 +13601,7 @@ MisfireCount:
         CMPA    #$64
         LBCS    L19178
         BCLR    >MisfireFlags2,Z,#$10                    ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L19032        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L19032        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BRCLR   >MonFlags64D,Z,#$40,L1909A               ; bit 6: monitor data state bit read by MisfireCount and MonTaskE
         TZX
         LDX     #$82AA
@@ -13670,7 +13670,7 @@ L1909A:
         LDAB    >MisfireCount61A,Z
         CMPB    #$05
         LBCS    L19178
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L19150        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L19150        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         LDAA    >MisfireCount2,Z
         CMPA    >MisfireCountLimitAlt
         BRSET   >MisfireFlags,Z,#$20,L190F0              ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
@@ -13829,7 +13829,7 @@ L19286:
         BCLR    >MisfireFlags5,Z,#$10                    ; bit 4: SegmentRpm above the rev-limit hold rpm (MisfireTransient)
 L1928A:
         LDAA    >MisfireHoldDefault
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L1929E        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L1929E        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BRSET   >MisfireFlags4,Z,#$02,L1929E
         LDAA    >MisfireHoldRpmValue,Z
 L1929E:
@@ -13903,7 +13903,7 @@ L1935A:
         LDE     >MisfireChangeFiltered,Z
         CPE     >MisfireNoiseLevel,Z
         BCC     L19370
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L19370        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L19370        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BSET    <MisfireFlags,Z,#$20                     ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         BRA     L19374
 L19370:
@@ -20121,7 +20121,7 @@ ClosedLoopMonTimer:
         LDAA    $0778,Z
         CMPA    <Count3s,Z
         BCC     L1D4B6
-        BSET    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BSET    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         LDAA    >MisfireThreshold634,Z
         CMPA    >ClosedLoop639,Z
         BCS     L1D4BA
@@ -20129,7 +20129,7 @@ ClosedLoopMonTimer:
         BSET    >MisfireRecFlags3,Z,#$80
         BRA     L1D4BA
 L1D4B6:
-        BCLR    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BCLR    >ClosedLoopMonFlags,Z,#$40               ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
 L1D4BA:
         RTS
 
@@ -20354,7 +20354,7 @@ L1D6EC:
 ;---------------------------------------------------------------------------------------------------
 CalcBaseSpark:
         BRSET   >FuelModeFlags,Z,#$20,L1D71A             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
-        BCLR    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+        BCLR    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         CLR     >SparkTrim1,Z
         LDX     #PartThrottleMapScale
         LDAA    >Map,Z
@@ -20372,7 +20372,7 @@ L1D71A:
         LDX     #WotSpark
         JSR     Lookup3D
         STAA    >CalcBaseD3E,Z
-        BRSET   >SparkFlags2,Z,#$10,L1D778               ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+        BRSET   >SparkFlags2,Z,#$10,L1D778               ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         CLRA
         ORP     #$00E0
 L1D740:
@@ -20397,7 +20397,7 @@ L1D75E:
 L1D76A:
         CMPA    >CalcBaseD3E,Z
         BCS     L1D778
-        BSET    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+        BSET    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         LDAA    >CalcBaseD3E,Z
 L1D778:
         RTS
@@ -22259,7 +22259,7 @@ L1EBF2:
         TBXK
         LDX     #$EA80
         LDAB    $05FF,Z
-        BRSET   >EepromFlags,Z,#$02,L1EC2C               ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BRSET   >EepromFlags,Z,#$02,L1EC2C               ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
         LDAA    >BusMsg91Byte1,Z
         BRCLR   >EepromFlags,Z,#$08,L1EC1A               ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
         BCLR    >EepromFlags,Z,#$08                      ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
@@ -22275,7 +22275,7 @@ L1EC1A:
         BNE     L1EC36
         BRA     L1EC30
 L1EC2C:
-        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 L1EC30:
         INCB
         CMPB    #$58
@@ -22493,7 +22493,7 @@ L1EE3A:
 L1EE4A:
         DECB
         STAB    $05FF,Z
-        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at $094B,Z (EepromWriteService)
+        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
 L1EE54:
         BCLR    >EepromFlags,Z,#$A1                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 5: write in progress (EepromWriteService); bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
         BSETW   >EepromAddr,Z,#$FFFF
@@ -23181,7 +23181,7 @@ L1F5EE:
 L1F5F2:
         BSET    <Scratch7,Z,#$06
         LDAA    >MisfireRecFlags3,Z
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L1F626        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L1F626        ; bit 6: run time since start past the stored limit (ClosedLoop641): misfire monitoring allowed (ClosedLoopMonTimer)
         BRCLR   >MisfireFlags,Z,#$40,L1F61A              ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         LDY     #$EFAC
         LDAB    #$01

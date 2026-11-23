@@ -3033,9 +3033,9 @@ L11F3C:
 ;
 ; Fuel pulse width, called from Isr_GPT_IC1 on every reference event. Base pulse width
 ; (Map - MapOffset) * (256 + K) / 16, zero when MAP is below the offset; part-throttle or WOT
-; constants and tables are chosen by $0771,Z bit 5. The base is multiplied by 1 + v / 256, where v
+; constants and tables are chosen by FuelModeFlags bit 5. The base is multiplied by 1 + v / 256, where v
 ; is the signed value of PartThrottleFuel or WotFuel (rows by MAP through the scale table, columns
-; by the high byte of EngineRpm). $080E,Z is added at the end; the result goes to FuelPulse and $04F6,Z.
+; by the high byte of EngineRpm). BaroFuelAdder is added at the end; the result goes to FuelPulse and Temp4F6.
 ;---------------------------------------------------------------------------------------------------
 CalcFuelPulse:
         LDAA    >Map,Z
@@ -8380,7 +8380,7 @@ L170EA:
         CLR     >FlexEthanolStart,Z
         CLR     >FlexLearnBase,Z
 L170FE:
-        BRCLR   >FlexLearnOptions,#$10,L1710A            ; bit 4: clear $01B6,Z (FlexLearnMain)
+        BRCLR   >FlexLearnOptions,#$10,L1710A            ; bit 4: clear FuelLevelStart (FlexLearnMain)
         CLRA
         STAA    >FuelLevelStart,Z
 L1710A:
@@ -8400,7 +8400,7 @@ L1711A:
         JSR     Lookup2D
         STAA    >FlexLearnBase,Z
 L17144:
-        BRCLR   >FlexLearnOptions,#$40,L1714E            ; bit 6: clear $01B8,Z (FlexLearnMain)
+        BRCLR   >FlexLearnOptions,#$40,L1714E            ; bit 6: clear FlexLearnTrimSum (FlexLearnMain)
         CLR     >FlexLearnTrimSum,Z
 L1714E:
         BRCLR   >FlexLearnOptions,#$20,L1715C            ; bit 5: reload FlexLearnTimer (FlexLearnMain)
@@ -14926,7 +14926,7 @@ L1D284:
         JMP     L1D314
 L1D288:
         BRSET   >FuelModeFlags,Z,#$20,L1D2B4             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
-        BCLR    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+        BCLR    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         CLR     >SparkTrim1,Z
         LDX     #PartThrottleMapScale
         LDAA    >Map,Z
@@ -14944,7 +14944,7 @@ L1D2B4:
         LDX     #WotSpark
         JSR     Lookup3D
         STAA    >CalcBaseD3E,Z
-        BRSET   >SparkFlags2,Z,#$10,L1D314               ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+        BRSET   >SparkFlags2,Z,#$10,L1D314               ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         TST     >SparkTrimStep
         BEQ     L1D30C
         CLRA
@@ -14967,7 +14967,7 @@ L1D306:
         CMPA    >CalcBaseD3E,Z
         BLT     L1D314
 L1D30C:
-        BSET    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+        BSET    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         LDAA    >CalcBaseD3E,Z
 L1D314:
         RTS
