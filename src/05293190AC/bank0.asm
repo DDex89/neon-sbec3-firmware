@@ -12297,7 +12297,7 @@ L0A2D6:
         BSET    >SparkFlags3,Z,#$01
 L0A2EC:
         BSET    >SparkFlags,Z,#$40                       ; bit 6: reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)
-        BCLR    <CrankIsrFlags,Z,#$80
+        BCLR    <CrankIsrFlags,Z,#$80                    ; bit 7: segment time capture done for this event (SegmentTimeCapture; cleared in Isr_GPT_IC1)
         JSR     FuelEventCalc
         JSR     CamCrankMeasure
 L0A2FC:
@@ -15864,7 +15864,7 @@ L0D814:
         COMA
         CBA
         BNE     L0D82A
-        BSET    >OutputTestFlags,Z,#$40
+        BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
 L0D82A:
         BRCLR   <FlexStartFlags,Z,#$04,L0D838
         LDAA    <FlexStartFlags,Z

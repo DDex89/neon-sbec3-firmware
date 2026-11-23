@@ -16456,7 +16456,7 @@ L0C52C:
         BLS     L0C542
         STD     $01FE,Z
 L0C542:
-        BRCLR   >OutputTestFlags,Z,#$40,L0C56A
+        BRCLR   >OutputTestFlags,Z,#$40,L0C56A           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRSET   >AcFlags,Z,#$80,L0C56A                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         LDD     >Count3s,Z
         CPD     #$063A
@@ -17224,7 +17224,7 @@ L0CDC2:
         COMA
         CBA
         BNE     L0CDDC
-        BSET    >OutputTestFlags,Z,#$40
+        BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
 L0CDDC:
         BRCLR   $34,Z,#$04,L0CDEA
         LDAA    $34,Z

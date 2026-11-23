@@ -15179,7 +15179,7 @@ L0D8A8:
         COMA
         CBA
         BNE     L0D8BE
-        BSET    >OutputTestFlags,Z,#$40
+        BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
 L0D8BE:
         BRCLR   <FlexStartFlags,Z,#$04,L0D8CC
         LDAA    <FlexStartFlags,Z

@@ -66,6 +66,12 @@ MonStatusO2Sensor2 equ $00A6        ; $F80A6
 MonStatusO2Sensor3 equ $00A7        ; $F80A7
 MonStatusO2Sensor4 equ $00A8        ; $F80A8
 MonStatusPurge   equ $00A9        ; $F80A9
+;                 bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
+;                 bit 6: purge flow monitor complete this drive cycle
+;                 bit 4: read by ObdReadiness
+;                 bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
+;                 bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
+;                 bit 1: read by ObdReadiness and PurgeFlowTest
 MonStatusEgrFlow equ $00AA        ; $F80AA
 MonStatusMisfire equ $00AB        ; $F80AB
 MonStatusFuelSysRich1 equ $00AC        ; $F80AC
@@ -200,6 +206,13 @@ FlexSensorRef    equ $01A2        ; $F81A2
 RefuelSensorTimer equ $01A4        ; $F81A4
 FlexLearnFuelMark equ $01A9        ; $F81A9
 RefuelFlags      equ $01AC        ; $F81AC
+;                 bit 7: refuel confirmed: flex learning restarts (FlexSensorCheck; O2LearnEnable reads it)
+;                 bit 5: fuel used since the refuel past the limit (FlexSensorCheck)
+;                 bit 4: flex sensor reading changed by RefuelSensorChange or more (FlexSensorCheck)
+;                 bit 3: refuel detected by the flex sensor, first kind (FlexSensorCheck)
+;                 bit 2: refuel detected by the flex sensor, second kind (FlexSensorCheck)
+;                 bit 1: fuel level rose by RefuelLevelRise or more (FlexSensorCheck)
+;                 bit 0: vehicle stopped: refuel stop timer running (FlexSensorCheck)
 FlexLearnFlags   equ $01AD        ; $F81AD
 ;                 bit 7: cold start: coolant below FlexLearnColdCoolantMax at the start of learning (FlexColdStart)
 ;                 bit 6: cold start handled once (FlexColdStart)
@@ -384,6 +397,13 @@ SpeedCtlFlags    equ $0403        ; $F8403
 ;                 bit 1: switch count at 8 or more (SpeedCtlSwitchCheck)
 ;                 bit 0: switch event handled (SpeedCtlSwitchRead)
 SpeedCtlFlags2   equ $0405        ; $F8405
+;                 bit 6: speed control cancel output driven (SpeedCtlCancelMonitor, IoCtl12 bit 7)
+;                 bit 5: speed control engage requested (SpeedCtlControl)
+;                 bit 4: speed control switch held (switch code)
+;                 bit 3: speed control switch held, first kind (switch code)
+;                 bit 2: speed control switch held, second kind (switch code)
+;                 bit 1: speed control state bit cleared on cancel (SpeedCtlControl)
+;                 bit 0: speed control just cancelled (set on cancel, cleared on the next engage) (SpeedCtlControl)
 SpeedCtlFlags3   equ $0406        ; $F8406
 SpeedCtlSetSpeed equ $0408        ; $F8408
 SpeedCtlResumeSpeed equ $0409        ; $F8409
@@ -713,6 +733,12 @@ BusModuleFlags   equ $06BE        ; $F86BE
 ;                 bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
 ;                 bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
 FuelLevelFlags2  equ $06C1        ; $F86C1
+;                 bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
+;                 bit 4: fuel level change at shutdown under FuelSenderShutdownDiff (FuelSenderMonitor)
+;                 bit 3: filtered fuel sender value available (FuelLevelProcess)
+;                 bit 2: fuel level outside the monitor window (MonitorEnable)
+;                 bit 1: bus fuel level counted (FuelLevelProcess)
+;                 bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
 StartFlags       equ $06C7        ; $F86C7
 MonSpeedCounter  equ $06C9        ; $F86C9
 O2InactiveTimer  equ $06CB        ; $F86CB
@@ -812,6 +838,11 @@ FuelModeFlags    equ $0771        ; $F8771
 ;                 bit 1: deceleration fuel cut active (FuelCutControl)
 ;                 bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
 IdleFlareFlags   equ $0772        ; $F8772
+;                 bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
+;                 bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
+;                 bit 5: bank 1 fuel pulse below O2PulseWidthMin: adaptive cell update held (O2LearnEnable)
+;                 bit 4: bank 2 fuel pulse below O2PulseWidthMin (O2LearnEnable)
+;                 bit 3: throttle opened since the last flare check (IdleFlareCheck)
 RevLimitFlags    equ $0773        ; $F8773
 EngineStateFlags equ $0774        ; $F8774
 ;                 bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -1204,6 +1235,9 @@ MtvSwitchTime    equ $0C04        ; $F8C04
 MtvRpmRate       equ $0C08        ; $F8C08
 MtvHoldCount     equ $0C0A        ; $F8C0A
 TuneValve2Flags  equ $0C0C        ; $F8C0C
+;                 bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
+;                 bit 6: second tuning valve switch timer running (TuneValve2Period)
+;                 bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
 TuneValve2Count  equ $0C0D        ; $F8C0D
 TuneValve2Rate   equ $0C0E        ; $F8C0E
 TuneValve2Hold   equ $0C13        ; $F8C13
@@ -1221,7 +1255,18 @@ AcFlags          equ $0C21        ; $F8C21
 ;                 bit 2: bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test
 ;                 bit 1: A/C clutch output changed since the last pass (AcCutLogic)
 AcPressureFlags  equ $0C22        ; $F8C22
+;                 bit 7: A/C cut state (AcCutLogic): WOT or coolant cut
+;                 bit 6: A/C cut state (AcCutLogic), cleared with bit 7
+;                 bit 4: A/C pressure low: clutch off until AcPressureLowRestore (AcClutchControl)
+;                 bit 3: A/C cut for coolant temperature (off below AcCutCoolantOff) (AcCutLogic)
+;                 bit 1: A/C clutch cycle time running (AcCycleTimeMin, AcClutchControl)
 OutputTestFlags  equ $0C23        ; $F8C23
+;                 bit 7: EEPROM self-test started this drive (OutputTestEeprom)
+;                 bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
+;                 bit 5: EEPROM test write pending (OutputTestEeprom)
+;                 bit 4: EEPROM test cell cleared (OutputTestEeprom)
+;                 bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
+;                 bit 1: EEPROM test pattern written (OutputTestEeprom)
 IacEventTimer    equ $0C24        ; $F8C24
 AcClutchTimer    equ $0C29        ; $F8C29
 AcWotCutTimer    equ $0C2E        ; $F8C2E

@@ -54,7 +54,7 @@ L2019C:
         BRSET   >MonEnableFlags2,Z,#$80,L201DA           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >LdpPurgeTestFlags,Z,#$01,L201DA         ; bit 0: third kind of purge test request (LdpPurgeTestRun)
         BRCLR   >LdpPurgeTestFlags,Z,#$04,L201F6         ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
-        BRCLR   >MonStatusPurge,Z,#$80,L201F6
+        BRCLR   >MonStatusPurge,Z,#$80,L201F6            ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
 L201DA:
         BCLR    <DiagStatusFlags,Z,#$03                  ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         CPX     #$0078
@@ -1452,8 +1452,8 @@ L20E8A:
         BRSET   >FaultMem03,Z,#$04,L20ED2                ; bit 2: P0443
         BRCLR   >MonStatusLdp,Z,#$02,L20ED6
         BRSET   >MonStatusLdp,Z,#$10,L20ED6
-        BRCLR   >MonStatusPurge,Z,#$02,L20ED6
-        BRSET   >MonStatusPurge,Z,#$10,L20ED6
+        BRCLR   >MonStatusPurge,Z,#$02,L20ED6            ; bit 1: read by ObdReadiness and PurgeFlowTest
+        BRSET   >MonStatusPurge,Z,#$10,L20ED6            ; bit 4: read by ObdReadiness
 L20ED2:
         BCLR    <ReadinessIncomplete,Z,#$04
 L20ED6:
@@ -1806,7 +1806,7 @@ MonitorEnable:
         BRSET   >MonEnableFlags2,Z,#$80,L21818           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >LdpPurgeTestFlags,Z,#$10,L21818         ; bit 4: purge test finished: purge duty back to zero; monitors wait until then
         BRCLR   >LdpPurgeTestFlags,Z,#$04,L2181E         ; bit 2: purge test requested (LdpPurgeTestRun); monitors hold off while it runs
-        BRCLR   >MonStatusPurge,Z,#$80,L2181E
+        BRCLR   >MonStatusPurge,Z,#$80,L2181E            ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
 L21818:
         CLR     <MonitorDisableFlags,Z
         JMP     L2191C
@@ -1832,10 +1832,10 @@ L21850:
         BRCLR   >Options0331,#$10,L2185C                 ; bit 4: fuel level from the bus instead of the sender, probably
         BRSET   >FaultSet0D,Z,#$02,L21874                ; bit 1: P1695
 L2185C:
-        BRCLR   >FuelLevelFlags2,Z,#$02,L218D4
+        BRCLR   >FuelLevelFlags2,Z,#$02,L218D4           ; bit 1: bus fuel level counted (FuelLevelProcess)
         BRSET   >SensorFaultFlags2,Z,#$80,L21874         ; bit 7: fuel level sender fault (FuelSenderMonitor)
         BRCLR   >FaultMem13,Z,#$80,L2187A                ; bit 7: P0460
-        BRSET   >FuelLevelFlags2,Z,#$80,L2187A
+        BRSET   >FuelLevelFlags2,Z,#$80,L2187A           ; bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
 L21874:
         BCLR    <MonitorDisableFlags,Z,#$18              ; bit 4: fuel level below MonEnableFuelEmpty; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
         BRA     L218D4
@@ -1847,7 +1847,7 @@ L2187A:
         BRCLR   >MonitorDisableFlags,Z,#$08,L218AC       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
         CMPA    >MonEnableFuelLowHold
         BHI     L218C0
-        BRSET   >FuelLevelFlags2,Z,#$04,L218BC
+        BRSET   >FuelLevelFlags2,Z,#$04,L218BC           ; bit 2: fuel level outside the monitor window (MonitorEnable)
         LDAB    $0121,Z
         CMPB    #$02
         BCC     L218BC
@@ -1856,7 +1856,7 @@ L218AC:
         CMPA    >MonEnableFuelLow
         BLS     L218BC
         BSET    <MonitorDisableFlags,Z,#$08              ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
-        BSET    >FuelLevelFlags2,Z,#$04
+        BSET    >FuelLevelFlags2,Z,#$04                  ; bit 2: fuel level outside the monitor window (MonitorEnable)
         BRA     L218C0
 L218BC:
         BCLR    <MonitorDisableFlags,Z,#$08              ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
@@ -3894,7 +3894,7 @@ FuelSenderMonitor:
         BRCLR   >Options0331,#$10,L22EB2                 ; bit 4: fuel level from the bus instead of the sender, probably
         BRSET   >FaultSet0D,Z,#$02,L23096                ; bit 1: P1695
 L22EB2:
-        BRCLR   >FuelLevelFlags2,Z,#$02,L2309E
+        BRCLR   >FuelLevelFlags2,Z,#$02,L2309E           ; bit 1: bus fuel level counted (FuelLevelProcess)
         BRSET   >MonitorDisableFlags,Z,#$04,L2309E       ; bit 2: battery voltage at or below MonEnableVoltsMin
         LDAA    >BatteryVolts2,Z
         CMPA    #$F2
@@ -3975,7 +3975,7 @@ L22FB2:
         BSET    >O2DownFlags,Z,#$10
 L22FBA:
         BRCLR   >Options0340,#$02,L2309E                 ; bit 1: fuel sender monitor on (FuelSenderMonitor)
-        BRSET   >FuelLevelFlags2,Z,#$80,L2309E
+        BRSET   >FuelLevelFlags2,Z,#$80,L2309E           ; bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
         BRSET   >FaultSet05,Z,#$08,L23096                ; bit 3: P0500
         BRCLR   >SparkFlags,Z,#$20,L2309E                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >FaultSet13,Z,#$40,L2309E                ; bit 6: P0463
@@ -3983,7 +3983,7 @@ L22FBA:
         LDAB    >FuelSenderFiltered,Z
         CMPB    >FuelSenderTestMin
         LBCS    L2309E
-        BRSET   >FuelLevelFlags2,Z,#$10,L2300C
+        BRSET   >FuelLevelFlags2,Z,#$10,L2300C           ; bit 4: fuel level change at shutdown under FuelSenderShutdownDiff (FuelSenderMonitor)
         LDAA    >FuelSenderShutdown,Z
         LDAB    >FuelSenderScaled,Z
         CBA
@@ -3993,7 +3993,7 @@ L22FFE:
         SBA
         CMPA    >FuelSenderShutdownDiff
         LBCC    L2306E
-        BSET    >FuelLevelFlags2,Z,#$10
+        BSET    >FuelLevelFlags2,Z,#$10                  ; bit 4: fuel level change at shutdown under FuelSenderShutdownDiff (FuelSenderMonitor)
 L2300C:
         BRSET   >SystemFlags00A,Z,#$08,L2302C
         LDAB    >FuelSenderFiltered,Z
@@ -4041,7 +4041,7 @@ L23080:
         LDAA    $4638
         JSR     ObdFaultReport
 L2308C:
-        BSET    >FuelLevelFlags2,Z,#$80
+        BSET    >FuelLevelFlags2,Z,#$80                  ; bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
         CLR     >FuelSenderFuelUsed,Z
         BRA     L2309A
 L23096:
@@ -4700,7 +4700,7 @@ IdleMonitorEnable:
         BRCLR   >SparkFlags,Z,#$20,L238CA                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >ThrottleState,Z,#$80,L238CA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRCLR   >SwitchInputs,Z,#$01,L238CA              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
-        BRSET   >MonStatusPurge,Z,#$04,L238CA
+        BRSET   >MonStatusPurge,Z,#$04,L238CA            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         BRSET   >FaultSet02,Z,#$02,L238CA                ; bit 1: P0505
         BRSET   >SensorFaultFlags,Z,#$20,L238CA          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
         BRSET   >SensorFaultFlags,Z,#$10,L238CA          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
@@ -6551,14 +6551,14 @@ L252A6:
 ;---------------------------------------------------------------------------------------------------
 PurgeFlowTest:
         BRCLR   >Options033E,#$20,L25782                 ; bit 5: purge flow test on (PurgeFlowTest)
-        BRSET   >MonStatusPurge,Z,#$02,L25782
-        BRCLR   >MonStatusPurge,Z,#$80,L25750
+        BRSET   >MonStatusPurge,Z,#$02,L25782            ; bit 1: read by ObdReadiness and PurgeFlowTest
+        BRCLR   >MonStatusPurge,Z,#$80,L25750            ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
         BRSET   >DiagStatusFlags,Z,#$01,L25750           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BRCLR   >Options033E,#$02,L252DE                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRSET   >MonStatusLdp,Z,#$80,L25782
         BRSET   >LdpFlags,Z,#$80,L252DE                  ; bit 7: leak test finished (LDP state machine)
         BSET    >PurgeFlowTestFlags,Z,#$80
-        BCLR    <MonStatusPurge,Z,#$80
+        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
         JMP     L25750
 L252DE:
         BSET    >PurgeFlowTestFlags,Z,#$01
@@ -6678,7 +6678,7 @@ L25462:
         LBNE    L25730
 L2547E:
         BSET    >PurgeFlowTestFlags,Z,#$08
-        BSET    <MonStatusPurge,Z,#$04
+        BSET    <MonStatusPurge,Z,#$04                   ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         LDAA    <IacPosition,Z
         STAA    $05B4,Z
         LDAA    $05BB,Z
@@ -6832,7 +6832,7 @@ L2566E:
         LDAA    >PurgeFlowFails,Z
         CMPA    >PurgeFlowFailCount
         LBCS    L25730
-        BSET    <MonStatusPurge,Z,#$08
+        BSET    <MonStatusPurge,Z,#$08                   ; bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
         BSET    >PurgeFlowTestResult,Z,#$80
 L25686:
         LDAB    <Scratch2,Z
@@ -6887,15 +6887,15 @@ L25714:
 L2571C:
         STAA    $0176,Z
         STE     $0177,Z
-        BRCLR   >MonStatusPurge,Z,#$08,L25730
+        BRCLR   >MonStatusPurge,Z,#$08,L25730            ; bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
         BRSET   >DiagStatusFlags,Z,#$02,L2573A           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 L25730:
         TST     >PurgeFlowTestResult,Z
         BEQ     L25750
-        BCLR    <MonStatusPurge,Z,#$80
+        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
 L2573A:
         BCLR    >PurgeFlowTestFlags,Z,#$01
-        BSET    <MonStatusPurge,Z,#$40
+        BSET    <MonStatusPurge,Z,#$40                   ; bit 6: purge flow monitor complete this drive cycle
         BRSET   >PurgeFlowTestFlags,Z,#$10,L25750
         BCLR    >PurgeFlowTestFlags,Z,#$02
         BSET    >PurgeFlowTestFlags,Z,#$40
@@ -6911,7 +6911,7 @@ L25750:
         BSET    >PurgeFlowTestFlags2,Z,#$40              ; bit 6: purge test restore delay running: closed loop waits (PurgeFlowTest, ClosedLoopManager)
         CLRW    >O2PurgeTestTimer,Z
 L2577A:
-        BCLR    <MonStatusPurge,Z,#$04
+        BCLR    <MonStatusPurge,Z,#$04                   ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         CLR     >PurgeFlowStep,Z
 L25782:
         RTS
@@ -7106,8 +7106,8 @@ L259A0:
         CLR     >LdpStateTime,Z
         BRCLR   >LdpFlags3,Z,#$02,L259CE                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >LdpFlags2,Z,#$20,L259F6
-        BSET    <MonStatusPurge,Z,#$48
-        BCLR    <MonStatusPurge,Z,#$80
+        BSET    <MonStatusPurge,Z,#$48                   ; bit 6: purge flow monitor complete this drive cycle; bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
+        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
         LDAA    #$29
         STAA    >LdpState,Z
 L259CE:
@@ -7580,7 +7580,7 @@ L25EB4:
         BCLR    <MonStatusLdp,Z,#$04
         BRSET   >FaultSet17,Z,#$80,L25ED4                ; bit 7: P1495
         BRSET   >FaultSet16,Z,#$01,L25ED4                ; bit 0: P1494
-        BRSET   <MonStatusPurge,Z,#$04,L25F2E
+        BRSET   <MonStatusPurge,Z,#$04,L25F2E            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
 L25ED4:
         BCLR    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         BRCLR   >IoInputs0,Z,#$02,L25EEC                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
@@ -13644,7 +13644,7 @@ L2C704:
 FuelLevelProcess:
         BRCLR   >Options0331,#$10,L2C71E                 ; bit 4: fuel level from the bus instead of the sender, probably
         BRSET   >FaultSet0D,Z,#$02,L2C760                ; bit 1: P1695
-        BRSET   >FuelLevelFlags2,Z,#$01,L2C75A
+        BRSET   >FuelLevelFlags2,Z,#$01,L2C75A           ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
         JMP     L2C7E6
 L2C71E:
         LDAA    >BatteryVolts2,Z
@@ -13687,7 +13687,7 @@ L2C77A:
         CLRB
         LDAA    >FuelSenderScaled,Z
         TDE
-        BRCLR   >FuelLevelFlags2,Z,#$08,L2C796
+        BRCLR   >FuelLevelFlags2,Z,#$08,L2C796           ; bit 3: filtered fuel sender value available (FuelLevelProcess)
         LDD     >FuelSenderFiltered,Z
 L2C796:
         PSHM    D,E
@@ -13695,14 +13695,14 @@ L2C796:
         JSR     Blend16
         AIS     #$04
         STD     >FuelSenderFiltered,Z
-        BSET    >FuelLevelFlags2,Z,#$08
+        BSET    >FuelLevelFlags2,Z,#$08                  ; bit 3: filtered fuel sender value available (FuelLevelProcess)
 L2C7AA:
         BRCLR   >EngineStateFlags,Z,#$80,L2C7E6          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    $06C6,Z
         BRCLR   >Options0331,#$10,L2C7D0                 ; bit 4: fuel level from the bus instead of the sender, probably
-        BRCLR   >FuelLevelFlags2,Z,#$01,L2C7E6
+        BRCLR   >FuelLevelFlags2,Z,#$01,L2C7E6           ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
         BRCLR   >FaultSet0D,Z,#$02,L2C7D0                ; bit 1: P1695
-        BCLR    >FuelLevelFlags2,Z,#$03
+        BCLR    >FuelLevelFlags2,Z,#$03                  ; bit 1: bus fuel level counted (FuelLevelProcess); bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
         CLR     $06C6,Z
         BRA     L2C7E6
 L2C7D0:
@@ -13712,7 +13712,7 @@ L2C7D0:
         INC     $06C6,Z
         BRA     L2C7E6
 L2C7E2:
-        BSET    >FuelLevelFlags2,Z,#$02
+        BSET    >FuelLevelFlags2,Z,#$02                  ; bit 1: bus fuel level counted (FuelLevelProcess)
 L2C7E6:
         BRSET   >Options032C,#$40,L2C7F2                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         JSR     FlexLearnReset
@@ -13805,13 +13805,13 @@ L2C8D2:
         STAA    >FlexEthanolLearned,Z
 L2C8D6:
         BRCLR   >Options032F,#$08,L2CAB6                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
-        BRSET   >RefuelFlags,Z,#$20,L2CA22
-        BRSET   >RefuelFlags,Z,#$04,L2C9EA
-        BRSET   >RefuelFlags,Z,#$08,L2C9EA
-        BRSET   >RefuelFlags,Z,#$02,L2C978
+        BRSET   >RefuelFlags,Z,#$20,L2CA22               ; bit 5: fuel used since the refuel past the limit (FlexSensorCheck)
+        BRSET   >RefuelFlags,Z,#$04,L2C9EA               ; bit 2: refuel detected by the flex sensor, second kind (FlexSensorCheck)
+        BRSET   >RefuelFlags,Z,#$08,L2C9EA               ; bit 3: refuel detected by the flex sensor, first kind (FlexSensorCheck)
+        BRSET   >RefuelFlags,Z,#$02,L2C978               ; bit 1: fuel level rose by RefuelLevelRise or more (FlexSensorCheck)
         LDD     >VehicleSpeedRaw,Z
         BNE     L2C936
-        BRCLR   >RefuelFlags,Z,#$01,L2C924
+        BRCLR   >RefuelFlags,Z,#$01,L2C924               ; bit 0: vehicle stopped: refuel stop timer running (FlexSensorCheck)
         LDAA    >RefuelStopTimer,Z
         CMPA    >RefuelStopTimeMin
         BCS     L2C912
@@ -13827,10 +13827,10 @@ L2C924:
         CLRW    >RefuelSensorTimer,Z
         CLRW    $01A6,Z
         CLR     >RefuelStopTimer,Z
-        BCLR    >RefuelFlags,Z,#$01
+        BCLR    >RefuelFlags,Z,#$01                      ; bit 0: vehicle stopped: refuel stop timer running (FlexSensorCheck)
         BRA     L2C946
 L2C936:
-        BSET    >RefuelFlags,Z,#$01
+        BSET    >RefuelFlags,Z,#$01                      ; bit 0: vehicle stopped: refuel stop timer running (FlexSensorCheck)
         LDAA    >RefuelStopTimer,Z
         CMPA    #$FF
         BEQ     L2C946
@@ -13846,7 +13846,7 @@ L2C95A:
         STAB    $019D,Z
         CMPB    >RefuelLevelRise
         BCS     L2C9AC
-        BSET    >RefuelFlags,Z,#$02
+        BSET    >RefuelFlags,Z,#$02                      ; bit 1: fuel level rose by RefuelLevelRise or more (FlexSensorCheck)
         LDAB    >FlexSensorRaw,Z
         STAB    $019A,Z
         CLRW    >FlexLearnFuelSum,Z
@@ -13865,9 +13865,9 @@ L2C998:
         NEGA
         CMPA    >RefuelSensorChange
         LBCS    L2CA88
-        BSET    >RefuelFlags,Z,#$10
+        BSET    >RefuelFlags,Z,#$10                      ; bit 4: flex sensor reading changed by RefuelSensorChange or more (FlexSensorCheck)
 L2C9A6:
-        BSET    >RefuelFlags,Z,#$04
+        BSET    >RefuelFlags,Z,#$04                      ; bit 2: refuel detected by the flex sensor, second kind (FlexSensorCheck)
         BRA     L2C9D6
 L2C9AC:
         LDAA    $019B,Z
@@ -13881,29 +13881,29 @@ L2C9C4:
         NEGA
         CMPA    >RefuelSensorChange2
         LBCS    L2CA88
-        BSET    >RefuelFlags,Z,#$10
+        BSET    >RefuelFlags,Z,#$10                      ; bit 4: flex sensor reading changed by RefuelSensorChange or more (FlexSensorCheck)
 L2C9D2:
-        BSET    >RefuelFlags,Z,#$08
+        BSET    >RefuelFlags,Z,#$08                      ; bit 3: refuel detected by the flex sensor, first kind (FlexSensorCheck)
 L2C9D6:
-        BSET    >RefuelFlags,Z,#$80
+        BSET    >RefuelFlags,Z,#$80                      ; bit 7: refuel confirmed: flex learning restarts (FlexSensorCheck; O2LearnEnable reads it)
         CLRW    >FlexLearnFuelSum,Z
         CLRW    >FlexSensorRef,Z
         LDAA    >FlexEthanolLearned,Z
         STAA    $0199,Z
 L2C9EA:
-        BRCLR   >RefuelFlags,Z,#$08,L2CA00
+        BRCLR   >RefuelFlags,Z,#$08,L2CA00               ; bit 3: refuel detected by the flex sensor, first kind (FlexSensorCheck)
         LDD     >RefuelBlendDelayStop
-        BRSET   >RefuelFlags,Z,#$10,L2CA0E
+        BRSET   >RefuelFlags,Z,#$10,L2CA0E               ; bit 4: flex sensor reading changed by RefuelSensorChange or more (FlexSensorCheck)
         LDD     >RefuelBlendDelayStop2
         BRA     L2CA0E
 L2CA00:
         LDD     >RefuelBlendDelay
-        BRSET   >RefuelFlags,Z,#$10,L2CA0E
+        BRSET   >RefuelFlags,Z,#$10,L2CA0E               ; bit 4: flex sensor reading changed by RefuelSensorChange or more (FlexSensorCheck)
         LDD     >RefuelBlendDelay2
 L2CA0E:
         CPD     >FlexLearnFuelSum,Z
         LBCC    L2CABE
-        BSET    >RefuelFlags,Z,#$20
+        BSET    >RefuelFlags,Z,#$20                      ; bit 5: fuel used since the refuel past the limit (FlexSensorCheck)
         CLRW    >FlexLearnFuelSum,Z
         CLRW    >FlexSensorRef,Z
 L2CA22:
@@ -13917,7 +13917,7 @@ L2CA22:
         STAB    $01A8,Z
         TBA
         LDX     #FlexLearnBlend
-        BRSET   >RefuelFlags,Z,#$10,L2CA48
+        BRSET   >RefuelFlags,Z,#$10,L2CA48               ; bit 4: flex sensor reading changed by RefuelSensorChange or more (FlexSensorCheck)
         LDX     #FlexLearnBlend2
 L2CA48:
         JSR     Lookup2D
@@ -14272,28 +14272,28 @@ L2CD9A:
 L2CD9E:
         JMP     L2CDE2
 L2CDA2:
-        BSET    >SpeedCtlFlags2,Z,#$18
+        BSET    >SpeedCtlFlags2,Z,#$18                   ; bit 4: speed control switch held (switch code); bit 3: speed control switch held, first kind (switch code)
         TST     >SpeedCtlSwitchState,Z
         LBNE    L2D03C
         BSET    >SpeedCtlSwitchFlags,Z,#$01
         BRA     L2CDF8
 L2CDB4:
-        BSET    >SpeedCtlFlags2,Z,#$08
+        BSET    >SpeedCtlFlags2,Z,#$08                   ; bit 3: speed control switch held, first kind (switch code)
         TST     >SpeedCtlSwitchState,Z
         LBNE    L2D03C
-        BRSET   >SpeedCtlFlags2,Z,#$10,L2CDF8
+        BRSET   >SpeedCtlFlags2,Z,#$10,L2CDF8            ; bit 4: speed control switch held (switch code)
         BSET    >SpeedCtlSwitchFlags,Z,#$08
         BRA     L2CDFC
 L2CDCC:
         TST     >SpeedCtlSwitchState,Z
         LBNE    L2D03C
-        BRSET   >SpeedCtlFlags2,Z,#$08,L2CDFC
+        BRSET   >SpeedCtlFlags2,Z,#$08,L2CDFC            ; bit 3: speed control switch held, first kind (switch code)
         BCLR    >SpeedCtlSwitchFlags,Z,#$04
         LBRA    L2D03C
 L2CDE2:
         TST     >SpeedCtlSwitchState,Z
         BNE     L2CDF4
-        BCLR    >SpeedCtlFlags2,Z,#$18
+        BCLR    >SpeedCtlFlags2,Z,#$18                   ; bit 4: speed control switch held (switch code); bit 3: speed control switch held, first kind (switch code)
         BRA     L2CDF4
 L2CDEE:
         LDAA    #$03
@@ -14456,39 +14456,39 @@ L2CF8A:
 L2CF8E:
         JMP     L2CFF2
 L2CF92:
-        BSET    >SpeedCtlFlags2,Z,#$1C
+        BSET    >SpeedCtlFlags2,Z,#$1C                   ; bit 4: speed control switch held (switch code); bit 3: speed control switch held, first kind (switch code); bit 2: speed control switch held, second kind (switch code)
         TST     >SpeedCtlSwitchState,Z
         LBNE    L2D03C
         BSET    >SpeedCtlSwitchFlags,Z,#$01
         BRA     L2D00C
 L2CFA4:
-        BSET    >SpeedCtlFlags2,Z,#$18
+        BSET    >SpeedCtlFlags2,Z,#$18                   ; bit 4: speed control switch held (switch code); bit 3: speed control switch held, first kind (switch code)
         TST     >SpeedCtlSwitchState,Z
         LBNE    L2D03C
-        BRSET   >SpeedCtlFlags2,Z,#$04,L2D008
-        BSET    >SpeedCtlFlags2,Z,#$04
+        BRSET   >SpeedCtlFlags2,Z,#$04,L2D008            ; bit 2: speed control switch held, second kind (switch code)
+        BSET    >SpeedCtlFlags2,Z,#$04                   ; bit 2: speed control switch held, second kind (switch code)
         LDAA    >SpeedCtlSwitchFlags,Z
         EORA    #$10
         STAA    >SpeedCtlSwitchFlags,Z
         BSET    >BusTxRequest,Z,#$02                     ; bit 1: speed control switch state changed: send it (speed control switch code)
         BRA     L2D008
 L2CFCA:
-        BSET    >SpeedCtlFlags2,Z,#$10
+        BSET    >SpeedCtlFlags2,Z,#$10                   ; bit 4: speed control switch held (switch code)
         TST     >SpeedCtlSwitchState,Z
         BNE     L2D03C
-        BRSET   >SpeedCtlFlags2,Z,#$08,L2D03C
+        BRSET   >SpeedCtlFlags2,Z,#$08,L2D03C            ; bit 3: speed control switch held, first kind (switch code)
         BCLR    >SpeedCtlSwitchFlags,Z,#$04
         BRA     L2D010
 L2CFE0:
         TST     >SpeedCtlSwitchState,Z
         BNE     L2D03C
-        BRSET   >SpeedCtlFlags2,Z,#$10,L2D010
+        BRSET   >SpeedCtlFlags2,Z,#$10,L2D010            ; bit 4: speed control switch held (switch code)
         BSET    >SpeedCtlSwitchFlags,Z,#$08
         BRA     L2D03C
 L2CFF2:
         TST     >SpeedCtlSwitchState,Z
         BNE     L2D008
-        BCLR    >SpeedCtlFlags2,Z,#$1C
+        BCLR    >SpeedCtlFlags2,Z,#$1C                   ; bit 4: speed control switch held (switch code); bit 3: speed control switch held, first kind (switch code); bit 2: speed control switch held, second kind (switch code)
         BRA     L2D008
 L2CFFE:
         CMPB    #$04
@@ -16641,9 +16641,9 @@ TuneValve2Control:
         LDD     >EngineRpm,Z
         TDE
         SUBD    $0C10,Z
-        BSET    >TuneValve2Flags,Z,#$80
+        BSET    >TuneValve2Flags,Z,#$80                  ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
         BCC     L2FB5A
-        BCLR    >TuneValve2Flags,Z,#$80
+        BCLR    >TuneValve2Flags,Z,#$80                  ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
         NEGD
 L2FB5A:
         CPD     >TuneValve2RateMax
@@ -16657,8 +16657,8 @@ L2FB64:
         LBCC    L2FBD2
         TST     >TuneValve2Rate,Z
         LBEQ    L2FCAA
-        BRCLR   >TuneValve2Flags,Z,#$80,L2FCAA
-        BRCLR   >TuneValve2Flags,Z,#$20,L2FBA4
+        BRCLR   >TuneValve2Flags,Z,#$80,L2FCAA           ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
+        BRCLR   >TuneValve2Flags,Z,#$20,L2FBA4           ; bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
         LDD     >TuneValve2RpmHigh
         SUBD    >EngineRpm,Z
         JSR     TuneValve2RateLookup
@@ -16676,13 +16676,13 @@ L2FBA4:
         CMPB    >TuneValve2Period
         LBCC    L2FCAA
         STAB    $0C12,Z
-        BSET    >TuneValve2Flags,Z,#$40
+        BSET    >TuneValve2Flags,Z,#$40                  ; bit 6: second tuning valve switch timer running (TuneValve2Period)
         LBRA    L2FCB8
 L2FBD2:
-        BRSET   >TuneValve2Flags,Z,#$20,L2FC14
+        BRSET   >TuneValve2Flags,Z,#$20,L2FC14           ; bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
         TST     >TuneValve2Rate,Z
         LBEQ    L2FCAA
-        BRCLR   >TuneValve2Flags,Z,#$80,L2FCAA
+        BRCLR   >TuneValve2Flags,Z,#$80,L2FCAA           ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
         LDD     >TuneValve2RpmLow
         SUBD    >EngineRpm,Z
         JSR     TuneValve2RateLookup
@@ -16693,12 +16693,12 @@ L2FBD2:
         CMPB    >TuneValve2Period
         LBCC    L2FCAA
         STAB    $0C12,Z
-        BSET    >TuneValve2Flags,Z,#$40
+        BSET    >TuneValve2Flags,Z,#$40                  ; bit 6: second tuning valve switch timer running (TuneValve2Period)
         LBRA    L2FCB8
 L2FC14:
         TST     >TuneValve2Rate,Z
         LBEQ    L2FCB0
-        BRSET   >TuneValve2Flags,Z,#$80,L2FCB0
+        BRSET   >TuneValve2Flags,Z,#$80,L2FCB0           ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
         LDD     >EngineRpm,Z
         SUBD    >TuneValve2RpmHigh
         JSR     TuneValve2RateLookup
@@ -16709,13 +16709,13 @@ L2FC14:
         CMPB    >TuneValve2Period
         LBCC    L2FCB0
         STAB    $0C12,Z
-        BCLR    >TuneValve2Flags,Z,#$40
+        BCLR    >TuneValve2Flags,Z,#$40                  ; bit 6: second tuning valve switch timer running (TuneValve2Period)
         LBRA    L2FCB8
 L2FC50:
         TST     >TuneValve2Rate,Z
         LBEQ    L2FCB0
-        BRSET   >TuneValve2Flags,Z,#$80,L2FCB0
-        BRSET   >TuneValve2Flags,Z,#$20,L2FC7C
+        BRSET   >TuneValve2Flags,Z,#$80,L2FCB0           ; bit 7: engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)
+        BRSET   >TuneValve2Flags,Z,#$20,L2FC7C           ; bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
         LDD     >EngineRpm,Z
         SUBD    >TuneValve2RpmLow
         JSR     TuneValve2RateLookup
@@ -16733,13 +16733,13 @@ L2FC7C:
         CMPB    >TuneValve2Period
         LBCC    L2FCB0
         STAB    $0C12,Z
-        BCLR    >TuneValve2Flags,Z,#$40
+        BCLR    >TuneValve2Flags,Z,#$40                  ; bit 6: second tuning valve switch timer running (TuneValve2Period)
         LBRA    L2FCB8
 L2FCAA:
-        BCLR    >TuneValve2Flags,Z,#$40
+        BCLR    >TuneValve2Flags,Z,#$40                  ; bit 6: second tuning valve switch timer running (TuneValve2Period)
         BRA     L2FCB4
 L2FCB0:
-        BSET    >TuneValve2Flags,Z,#$40
+        BSET    >TuneValve2Flags,Z,#$40                  ; bit 6: second tuning valve switch timer running (TuneValve2Period)
 L2FCB4:
         CLR     $0C12,Z
 L2FCB8:
@@ -16754,10 +16754,10 @@ L2FCCE:
         BEQ     L2FCE2
         DECB
         STAB    $0C12,Z
-        BRSET   >TuneValve2Flags,Z,#$20,L2FD0A
+        BRSET   >TuneValve2Flags,Z,#$20,L2FD0A           ; bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
         BRA     L2FCE8
 L2FCE2:
-        BRSET   >TuneValve2Flags,Z,#$40,L2FD0A
+        BRSET   >TuneValve2Flags,Z,#$40,L2FD0A           ; bit 6: second tuning valve switch timer running (TuneValve2Period)
 L2FCE8:
         LDAA    >TuneValve2Hold,Z
         BEQ     L2FCF6
@@ -16767,15 +16767,15 @@ L2FCF6:
         INCA
         STAA    >TuneValve2Hold,Z
         BCLRW   >IoDriver66,Z,#$2000                     ; IoDriver66.5: second tuning valve / speed control output on (word bit 13)
-        BCLR    >TuneValve2Flags,Z,#$20
+        BCLR    >TuneValve2Flags,Z,#$20                  ; bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
         LBRA    L2FD28
 L2FD0A:
-        BRSET   >TuneValve2Flags,Z,#$20,L2FD28
+        BRSET   >TuneValve2Flags,Z,#$20,L2FD28           ; bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
         LDAA    >TuneValve2Hold,Z
         CMPA    >TuneValve2HoldCount
         BCS     L2FCF6
         BSETW   >IoDriver66,Z,#$2000                     ; IoDriver66.5: second tuning valve / speed control output on (word bit 13)
-        BSET    >TuneValve2Flags,Z,#$20
+        BSET    >TuneValve2Flags,Z,#$20                  ; bit 5: second tuning valve on (mirrors IoDriver66 bit 13)
         CLR     >TuneValve2Hold,Z
 L2FD28:
         RTS

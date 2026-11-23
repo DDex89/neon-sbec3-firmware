@@ -16676,7 +16676,7 @@ L0C602:
         BLS     L0C618
         STD     $01FE,Z
 L0C618:
-        BRCLR   >OutputTestFlags,Z,#$40,L0C640
+        BRCLR   >OutputTestFlags,Z,#$40,L0C640           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRSET   >AcFlags,Z,#$80,L0C640                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         LDD     >Count3s,Z
         CPD     #$063A
@@ -17464,7 +17464,7 @@ L0CEF8:
         COMA
         CBA
         BNE     L0CF12
-        BSET    >OutputTestFlags,Z,#$40
+        BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
 L0CF12:
         BRCLR   $36,Z,#$04,L0CF20
         LDAA    $36,Z

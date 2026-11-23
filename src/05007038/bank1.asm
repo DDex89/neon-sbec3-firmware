@@ -67,7 +67,7 @@ Sub_10000:
         ANDB    #$0F
         CBA
         BNE     L100F0
-        BSET    >OutputTestFlags,Z,#$04
+        BSET    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         TST     $0560,Z
         BEQ     L100D2
         BRSET   >EepromFlags,Z,#$80,L100D2               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -92,7 +92,7 @@ L100E8:
 L100F0:
         CLRA
 L100F2:
-        BCLR    >OutputTestFlags,Z,#$04
+        BCLR    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         CLR     >DiagCommand,Z
         CLR     >ActuatorTest,Z
         JSR     Sub_1AF54
@@ -139,7 +139,7 @@ L10156:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 OutputTestEeprom:
-        BRCLR   >OutputTestFlags,Z,#$40,L101BA
+        BRCLR   >OutputTestFlags,Z,#$40,L101BA           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRSET   >ControlFlags943,Z,#$01,L1017C           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDD     $05B5,Z
         ADDD    #$01
@@ -149,13 +149,13 @@ OutputTestEeprom:
         INCW    $05B5,Z
         BRA     L1017C
 L10178:
-        BSET    >OutputTestFlags,Z,#$20
+        BSET    >OutputTestFlags,Z,#$20                  ; bit 5: EEPROM test write pending (OutputTestEeprom)
 L1017C:
         BRSET   >EepromFlags,Z,#$80,L101BA               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   <EngineStateFlags,Z,#$80,L101BA          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >OutputTestFlags,Z,#$80,L101BA
+        BRSET   >OutputTestFlags,Z,#$80,L101BA           ; bit 7: EEPROM self-test started this drive (OutputTestEeprom)
         ORP     #$00E0
-        BSET    >OutputTestFlags,Z,#$80
+        BSET    >OutputTestFlags,Z,#$80                  ; bit 7: EEPROM self-test started this drive (OutputTestEeprom)
         LDAB    $0501,Z
         INCB
         BEQ     L101B2
@@ -167,22 +167,22 @@ L1017C:
         BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRA     L101B6
 L101B2:
-        BSET    >OutputTestFlags,Z,#$20
+        BSET    >OutputTestFlags,Z,#$20                  ; bit 5: EEPROM test write pending (OutputTestEeprom)
 L101B6:
         ANDP    #$FF1F
 L101BA:
         ORP     #$00E0
         BRSET   >EepromFlags,Z,#$80,L10222               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
-        BRCLR   >OutputTestFlags,Z,#$04,L1020E
-        BRSET   >OutputTestFlags,Z,#$10,L1020E
-        BRCLR   >OutputTestFlags,Z,#$02,L101F4
+        BRCLR   >OutputTestFlags,Z,#$04,L1020E           ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
+        BRSET   >OutputTestFlags,Z,#$10,L1020E           ; bit 4: EEPROM test cell cleared (OutputTestEeprom)
+        BRCLR   >OutputTestFlags,Z,#$02,L101F4           ; bit 1: EEPROM test pattern written (OutputTestEeprom)
         CLRW    $05B5,Z
         LDD     #$0009
         STD     >EepromAddr,Z
         CLR     >EepromData,Z
         BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
-        BSET    >OutputTestFlags,Z,#$10
-        BCLR    >OutputTestFlags,Z,#$02
+        BSET    >OutputTestFlags,Z,#$10                  ; bit 4: EEPROM test cell cleared (OutputTestEeprom)
+        BCLR    >OutputTestFlags,Z,#$02                  ; bit 1: EEPROM test pattern written (OutputTestEeprom)
         BRA     L10222
 L101F4:
         LDD     #$0097
@@ -190,19 +190,19 @@ L101F4:
         LDD     #$4AB5
         STD     >EepromData,Z
         BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
-        BSET    >OutputTestFlags,Z,#$02
+        BSET    >OutputTestFlags,Z,#$02                  ; bit 1: EEPROM test pattern written (OutputTestEeprom)
         BRA     L10222
 L1020E:
         LDD     $05B7,Z
         CPD     #$4AB5
         BNE     L1021E
-        BSET    >OutputTestFlags,Z,#$40
+        BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRA     L10222
 L1021E:
-        BCLR    >OutputTestFlags,Z,#$40
+        BCLR    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
 L10222:
         ANDP    #$FF1F
-        BRCLR   >OutputTestFlags,Z,#$20,L10252
+        BRCLR   >OutputTestFlags,Z,#$20,L10252           ; bit 5: EEPROM test write pending (OutputTestEeprom)
         BRSET   >EepromFlags,Z,#$80,L10252               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         ORP     #$00E0
         LDD     #$0097
@@ -210,7 +210,7 @@ L10222:
         LDD     #$EEEE
         STD     >EepromData,Z
         BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
-        BCLR    >OutputTestFlags,Z,#$20
+        BCLR    >OutputTestFlags,Z,#$20                  ; bit 5: EEPROM test write pending (OutputTestEeprom)
         ANDP    #$FF1F
 L10252:
         RTS
@@ -327,7 +327,7 @@ L10364:
         BRCLR   <AcFlags,Z,#$08,L10382                   ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
 L10368:
         BRSET   <AcFlags,Z,#$04,L10382                   ; bit 2: bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test
-        BRCLR   <MonStatusPurge,Z,#$04,L1037C
+        BRCLR   <MonStatusPurge,Z,#$04,L1037C            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         BRCLR   >PurgeFlowTestFlags2,Z,#$04,L1037C       ; bit 2: A/C engaged during the purge test (AcFlags bit 6)
         BRCLR   >PurgeFlowTestFlags2,Z,#$08,L10382       ; bit 3: bus A/C message bit 4 clear during the purge test (AcFlags bit 2)
 L1037C:
@@ -593,7 +593,7 @@ L10686:
         LBRA    L106DC
 L1068A:
         LDE     >EngineRpm,Z
-        BRCLR   >OutputTestFlags,Z,#$40,L106AC
+        BRCLR   >OutputTestFlags,Z,#$40,L106AC           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRCLR   >ControlFlags943,Z,#$01,L106A4           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         CPE     #$1F40
         LBCC    L1063A
@@ -1507,7 +1507,7 @@ L11046:
         CLRB
         JMP     L1161C
 L11088:
-        BRSET   >MonStatusPurge,Z,#$04,L1167C
+        BRSET   >MonStatusPurge,Z,#$04,L1167C            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         JSR     Sub_10F2A
         JSR     FanIdleState
         BRCLR   >SensorFaultFlags,Z,#$80,L110A4          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
@@ -2360,7 +2360,7 @@ L119E8:
         CMPA    #$95
         BNE     L11A14
         BRSET   $032A,#$10,L11A98
-        BSET    >FuelLevelFlags2,Z,#$01
+        BSET    >FuelLevelFlags2,Z,#$01                  ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
         LDD     $01,Y
         STAA    >FuelSenderScaled,Z
         BRSET   $022F,Z,#$40,L11A98
@@ -4994,7 +4994,7 @@ L133EC:
 Sub_133F0:
         BRSET   $032A,#$10,L13406
         BRSET   >BusModuleFlags,Z,#$02,L13444            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
-        BRSET   >FuelLevelFlags2,Z,#$01,L1343E
+        BRSET   >FuelLevelFlags2,Z,#$01,L1343E           ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
         JMP     L134BC
 L13406:
         LDAA    $17,Z
@@ -5047,9 +5047,9 @@ L13480:
         BRCLR   >EngineStateFlags,Z,#$80,L134BC          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
         LDAA    $0777,Z
         BRSET   $032A,#$10,L134A6
-        BRCLR   >FuelLevelFlags2,Z,#$01,L134BC
+        BRCLR   >FuelLevelFlags2,Z,#$01,L134BC           ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
         BRCLR   >BusModuleFlags,Z,#$02,L134A6            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
-        BCLR    >FuelLevelFlags2,Z,#$03
+        BCLR    >FuelLevelFlags2,Z,#$03                  ; bit 1: bus fuel level counted (FuelLevelProcess); bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
         CLR     $0777,Z
         BRA     L134BC
 L134A6:
@@ -5059,7 +5059,7 @@ L134A6:
         INC     $0777,Z
         BRA     L134BC
 L134B8:
-        BSET    >FuelLevelFlags2,Z,#$02
+        BSET    >FuelLevelFlags2,Z,#$02                  ; bit 1: bus fuel level counted (FuelLevelProcess)
 L134BC:
         RTS
         dc.b    $27,$F7
@@ -6737,12 +6737,12 @@ L145CC:
         BRSET   $032A,#$10,L145D8
         BRSET   >BusModuleFlags,Z,#$02,L145FC            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
 L145D8:
-        BRCLR   >FuelLevelFlags2,Z,#$02,L1465A
+        BRCLR   >FuelLevelFlags2,Z,#$02,L1465A           ; bit 1: bus fuel level counted (FuelLevelProcess)
         BRSET   $022F,Z,#$40,L145FC
         BRSET   $022F,Z,#$20,L145FC
         BRSET   $022F,Z,#$80,L145FC
         BRCLR   $0160,Z,#$80,L14604
-        BRSET   >FuelLevelFlags2,Z,#$80,L14604
+        BRSET   >FuelLevelFlags2,Z,#$80,L14604           ; bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
 L145FC:
         BCLR    <MonitorDisableFlags,Z,#$0C              ; bit 3: fuel level outside the monitor window (MonEnableFuelLow); bit 2: battery voltage at or below MonEnableVoltsMin
         JMP     L1465A
@@ -6754,7 +6754,7 @@ L14604:
         BRCLR   >MonitorDisableFlags,Z,#$04,L14634       ; bit 2: battery voltage at or below MonEnableVoltsMin
         CMPA    $2BEA
         BHI     L14648
-        BRSET   >FuelLevelFlags2,Z,#$04,L14644
+        BRSET   >FuelLevelFlags2,Z,#$04,L14644           ; bit 2: fuel level outside the monitor window (MonitorEnable)
         LDAB    $60,Z
         CMPB    #$02
         BCC     L14644
@@ -6763,7 +6763,7 @@ L14634:
         CMPA    $2BE9
         BLS     L14644
         BSET    <MonitorDisableFlags,Z,#$04              ; bit 2: battery voltage at or below MonEnableVoltsMin
-        BSET    >FuelLevelFlags2,Z,#$04
+        BSET    >FuelLevelFlags2,Z,#$04                  ; bit 2: fuel level outside the monitor window (MonitorEnable)
         BRA     L14648
 L14644:
         BCLR    <MonitorDisableFlags,Z,#$04              ; bit 2: battery voltage at or below MonEnableVoltsMin
@@ -8260,7 +8260,7 @@ IdleMonitorEnable:
         BRCLR   >SparkFlags,Z,#$20,L156EE                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   >ThrottleState,Z,#$80,L156EE             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRCLR   >SwitchInputs,Z,#$01,L156EE              ; bit 0: brake switch (BrakeSwitchMonitor, idle, speed damping, purge test)
-        BRSET   >MonStatusPurge,Z,#$04,L156EE
+        BRSET   >MonStatusPurge,Z,#$04,L156EE            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         BRSET   $021E,Z,#$02,L156EE
         BRSET   >SensorFaultFlags,Z,#$20,L156EE          ; bit 5: MAP sensor fault (P0106, P0107, P0108 or P1297 set): limp MAP in use
         BRSET   >SensorFaultFlags,Z,#$10,L156EE          ; bit 4: throttle sensor fault (ProcessThrottle, P0121 and the circuit codes)
@@ -8932,7 +8932,7 @@ Sub_15DAE:
         BRSET   $032A,#$10,L15DBA
         BRSET   >BusModuleFlags,Z,#$02,L15ECA            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
 L15DBA:
-        BRCLR   >FuelLevelFlags2,Z,#$02,L15ED6
+        BRCLR   >FuelLevelFlags2,Z,#$02,L15ED6           ; bit 1: bus fuel level counted (FuelLevelProcess)
         LDAA    $17,Z
         CMPA    #$B2
         LBCS    L15ED6
@@ -8956,7 +8956,7 @@ L15E00:
         LBCS    L15ED6
 L15E08:
         BRCLR   $0337,#$02,L15ED6
-        BRSET   >FuelLevelFlags2,Z,#$80,L15ED6
+        BRSET   >FuelLevelFlags2,Z,#$80,L15ED6           ; bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
         BRSET   >FaultSet05,Z,#$08,L15ECE
         BRCLR   >SparkFlags,Z,#$20,L15ED6                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         BRSET   $022F,Z,#$40,L15ED6
@@ -9012,18 +9012,18 @@ L15E9A:
         BCS     L15ED6
         BRA     L15EB4
 L15EAC:
-        BSET    >FuelLevelFlags2,Z,#$80
+        BSET    >FuelLevelFlags2,Z,#$80                  ; bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
         CLR     $5E,Z
         BRA     L15ED2
 L15EB4:
-        BSET    >FuelLevelFlags2,Z,#$80
+        BSET    >FuelLevelFlags2,Z,#$80                  ; bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
         CLR     $5E,Z
         BRSET   $022F,Z,#$80,L15ED6
         LDY     #$3E45
         JSR     ReportFault
         BRA     L15ED2
 L15ECA:
-        BSET    >FuelLevelFlags2,Z,#$80
+        BSET    >FuelLevelFlags2,Z,#$80                  ; bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
 L15ECE:
         BCLR    $022F,Z,#$80
 L15ED2:
@@ -9368,14 +9368,14 @@ L16306:
 ;---------------------------------------------------------------------------------------------------
 PurgeFlowTest:
         BRCLR   >Options033E,#$20,L167C2                 ; bit 5: purge flow test on (PurgeFlowTest)
-        BRSET   >MonStatusPurge,Z,#$02,L167C2
-        BRCLR   >MonStatusPurge,Z,#$80,L167A4
+        BRSET   >MonStatusPurge,Z,#$02,L167C2            ; bit 1: read by ObdReadiness and PurgeFlowTest
+        BRCLR   >MonStatusPurge,Z,#$80,L167A4            ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
         BRSET   >DiagStatusFlags,Z,#$01,L167A4           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
         BRCLR   >Options033E,#$02,L1633E                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
         BRSET   >MonStatusLdp,Z,#$80,L167C2
         BRSET   >LdpFlags,Z,#$80,L1633E                  ; bit 7: leak test finished (LDP state machine)
         BSET    >PurgeFlowTestFlags,Z,#$80
-        BCLR    <MonStatusPurge,Z,#$80
+        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
         JMP     L167A4
 L1633E:
         BSET    >PurgeFlowTestFlags,Z,#$01
@@ -9494,7 +9494,7 @@ L164BA:
         LBNE    L16784
 L164D6:
         BSET    >PurgeFlowTestFlags,Z,#$08
-        BSET    <MonStatusPurge,Z,#$04
+        BSET    <MonStatusPurge,Z,#$04                   ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         LDAA    <IacPosition,Z
         STAA    $025C,Z
         LDAA    $0263,Z
@@ -9648,7 +9648,7 @@ L166C2:
         LDAA    >PurgeFlowFails,Z
         CMPA    >PurgeFlowFailCount
         LBCS    L16784
-        BSET    <MonStatusPurge,Z,#$08
+        BSET    <MonStatusPurge,Z,#$08                   ; bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
         BSET    >PurgeFlowTestResult,Z,#$80
 L166DA:
         LDAB    <Scratch2,Z
@@ -9703,15 +9703,15 @@ L16768:
 L16770:
         STAA    $0143,Z
         STE     $0144,Z
-        BRCLR   >MonStatusPurge,Z,#$08,L16784
+        BRCLR   >MonStatusPurge,Z,#$08,L16784            ; bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
         BRSET   >DiagStatusFlags,Z,#$02,L1678E           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 L16784:
         TST     >PurgeFlowTestResult,Z
         BEQ     L167A4
-        BCLR    <MonStatusPurge,Z,#$80
+        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
 L1678E:
         BCLR    >PurgeFlowTestFlags,Z,#$01
-        BSET    <MonStatusPurge,Z,#$40
+        BSET    <MonStatusPurge,Z,#$40                   ; bit 6: purge flow monitor complete this drive cycle
         BRSET   >PurgeFlowTestFlags,Z,#$10,L167A4
         BCLR    >PurgeFlowTestFlags,Z,#$02
         BSET    >PurgeFlowTestFlags,Z,#$40
@@ -9721,7 +9721,7 @@ L167A4:
         BRCLR   >PurgeFlowTestFlags,Z,#$10,L167C2
         BCLR    >PurgeFlowTestFlags,Z,#$10
         BSET    >PurgeFlowTestFlags,Z,#$20
-        BCLR    <MonStatusPurge,Z,#$04
+        BCLR    <MonStatusPurge,Z,#$04                   ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         CLR     >PurgeFlowStep,Z
 L167C2:
         RTS
@@ -9910,8 +9910,8 @@ L169AC:
         CLR     >LdpStateTime,Z
         BRCLR   >LdpFlags3,Z,#$02,L169DA                 ; bit 1: leak detection monitor restart requested (MonTaskLdp)
         BRSET   >LdpFlags2,Z,#$10,L16A02
-        BSET    <MonStatusPurge,Z,#$48
-        BCLR    <MonStatusPurge,Z,#$80
+        BSET    <MonStatusPurge,Z,#$48                   ; bit 6: purge flow monitor complete this drive cycle; bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
+        BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
         LDAA    #$29
         STAA    >LdpState,Z
 L169DA:
@@ -10372,7 +10372,7 @@ L16E7C:
         BCLR    <MonStatusLdp,Z,#$04
         BRSET   >FaultSet17,Z,#$80,L16E9C
         BRSET   >FaultSet16,Z,#$01,L16E9C
-        BRSET   <MonStatusPurge,Z,#$04,L16EF6
+        BRSET   <MonStatusPurge,Z,#$04,L16EF6            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
 L16E9C:
         BCLR    >LdpFlags,Z,#$01                         ; bit 0: pump solenoid commanded on (LDP state machine); LdpSolenoidCheck reads it
         BRCLR   >IoInputs0,Z,#$02,L16EB4                 ; bit 1: leak detection pump switch (LdpPumpStroke, LdpPurgedCheck)
@@ -17543,12 +17543,12 @@ OutputTestDispatch:
         STAA    >CFORC,Z
         LDE     >ControlFlags943,Z
         ORE     #$CB84
-        BRSET   >OutputTestFlags,Z,#$04,L1B81A
+        BRSET   >OutputTestFlags,Z,#$04,L1B81A           ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         ORE     #$1800
 L1B81A:
         BRSET   >MainLoopCounter,Z,#$80,L1B82E
         ANDE    #$347B
-        BRSET   >OutputTestFlags,Z,#$04,L1B82E
+        BRSET   >OutputTestFlags,Z,#$04,L1B82E           ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         ANDE    #$E7FF
 L1B82E:
         STE     >ControlFlags943,Z
@@ -19776,7 +19776,7 @@ MonTaskB:
         BLS     L1D11E
         BRSET   $032A,#$10,L1D0E6
         BRSET   >BusModuleFlags,Z,#$02,L1D11E            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
-        BRCLR   >FuelLevelFlags2,Z,#$01,L1D11E
+        BRCLR   >FuelLevelFlags2,Z,#$01,L1D11E           ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
 L1D0E6:
         LDAA    >FuelSenderScaled,Z
         CMPA    $0779,Z
@@ -19794,12 +19794,12 @@ L1D0FE:
         BCS     L1D11A
         INC     >MonData643,Z
 L1D114:
-        BSET    >OutputTestFlags,Z,#$04
+        BSET    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         BRA     L1D126
 L1D11A:
         BCLR    >MonData645,Z,#$20
 L1D11E:
-        BCLR    >OutputTestFlags,Z,#$04
+        BCLR    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         BCLR    >LdpFlags3,Z,#$40                        ; bit 6: MonTaskB first pass done
 L1D126:
         RTS

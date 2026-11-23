@@ -9,6 +9,13 @@
   "2": "bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test",
   "1": "A/C clutch output changed since the last pass (AcCutLogic)"
  },
+ "AcPressureFlags": {
+  "7": "A/C cut state (AcCutLogic): WOT or coolant cut",
+  "6": "A/C cut state (AcCutLogic), cleared with bit 7",
+  "4": "A/C pressure low: clutch off until AcPressureLowRestore (AcClutchControl)",
+  "3": "A/C cut for coolant temperature (off below AcCutCoolantOff) (AcCutLogic)",
+  "1": "A/C clutch cycle time running (AcCycleTimeMin, AcClutchControl)"
+ },
  "AccelFuelOptions": {
   "7": "WOT fuel branch in TipInFuelControl",
   "6": "index shift in CalcFuelPulse"
@@ -121,6 +128,16 @@
   "2": "timer update due for HighRpmTimer2 (HighRpmTimerUpdate)",
   "1": "engine rpm below $1900: HighRpmTimer counting (HighRpmTimerPit); AsdRelayCheck and others read it",
   "0": "first crank period delta taken (CrankPeriodDelta2)"
+ },
+ "CrankIsrFlags": {
+  "7": "segment time capture done for this event (SegmentTimeCapture; cleared in Isr_GPT_IC1)",
+  "6": "segment times of both halves valid (SegmentTimeCapture); CrankFuel reads it",
+  "5": "segment time capture state bit (SegmentTimeCapture)",
+  "4": "segment time capture state bit (SegmentTimeCapture)",
+  "3": "segment time stored, first half (SegmentTimeCapture)",
+  "2": "segment time stored, second half (SegmentTimeCapture)",
+  "1": "segment time capture state bit (SegmentTimeCapture)",
+  "0": "segment time capture state bit (SegmentTimeCapture)"
  },
  "CrankSyncFlags": {
   "7": "crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)",
@@ -277,6 +294,14 @@
   "1": "start pulse of the second kind done (FuelEventStart, FuelEventSchedule)",
   "0": "start pulse of the third kind done (FuelEventStart, FuelEventSchedule)"
  },
+ "FuelLevelFlags2": {
+  "7": "fuel sender fault reported this drive cycle (FuelSenderMonitor)",
+  "4": "fuel level change at shutdown under FuelSenderShutdownDiff (FuelSenderMonitor)",
+  "3": "filtered fuel sender value available (FuelLevelProcess)",
+  "2": "fuel level outside the monitor window (MonitorEnable)",
+  "1": "bus fuel level counted (FuelLevelProcess)",
+  "0": "fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)"
+ },
  "FuelModeFlags": {
   "7": "idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1",
   "6": "first fuel event calculation done (FuelEventCalc)",
@@ -364,6 +389,15 @@
   "1": "A/C idle state bit (IdleTargetControl, AcCutLogic)",
   "0": "A/C idle state bit (IdleTargetControl, AcCutLogic)"
  },
+ "IdleDipFlags": {
+  "7": "idle dip timer restarted (IdleRpmTarget)",
+  "6": "idle dip correction active (IdleRpmTarget, IdleTargetControl)",
+  "5": "idle rpm reference taken from SegmentRpm (IdleRpmTarget)",
+  "4": "idle dip second timer armed (IdleRpmTarget)",
+  "3": "idle air kick applied (IacKickHold, IdleTargetControl)",
+  "2": "idle start time counted; sensor faults stop the correction (IdleRpmTarget)",
+  "1": "idle dip second timer started (IdleRpmTarget)"
+ },
  "IdleFlags": {
   "7": "closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)",
   "6": "set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled",
@@ -428,6 +462,13 @@
   "2": "one of bits 3-7 just ended: idle loop restarts its terms (IdleRpmLoop)",
   "1": "gear idle steps still to apply (IdleTargetControl); FanRelayControl reads it",
   "0": "hot air: AirTemp above IdleHotAirOn, off below IdleHotAirOff (IdleRpmTarget)"
+ },
+ "IdleFlareFlags": {
+  "7": "idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)",
+  "6": "idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it",
+  "5": "bank 1 fuel pulse below O2PulseWidthMin: adaptive cell update held (O2LearnEnable)",
+  "4": "bank 2 fuel pulse below O2PulseWidthMin (O2LearnEnable)",
+  "3": "throttle opened since the last flare check (IdleFlareCheck)"
  },
  "IoBusStatusL": {
   "7": "tested by BusTxStart before a byte is sent"
@@ -569,6 +610,14 @@
   "5": "monitor data changed: to be written to the EEPROM (MonDataStore)",
   "4": "monitor data reset done (MonDataReset)",
   "0": "misfire threshold in the closed-loop range (MisfireThreshold)"
+ },
+ "MonStatusPurge": {
+  "7": "purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)",
+  "6": "purge flow monitor complete this drive cycle",
+  "4": "read by ObdReadiness",
+  "3": "purge flow monitor failed (PurgeFlowFailCount reached)",
+  "2": "purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)",
+  "1": "read by ObdReadiness and PurgeFlowTest"
  },
  "MonitorDisableFlags": {
   "5": "flex-fuel learning hold active (FlexLearnHold not zero): misfire, catalyst, O2, EGR, purge and leak monitors wait",
@@ -789,6 +838,14 @@
   "1": "fuel sender monitor on (FuelSenderMonitor)",
   "0": "O2 activity checks variant (O2NoActivityCold, O2DownEnable)"
  },
+ "OutputTestFlags": {
+  "7": "EEPROM self-test started this drive (OutputTestEeprom)",
+  "6": "EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it",
+  "5": "EEPROM test write pending (OutputTestEeprom)",
+  "4": "EEPROM test cell cleared (OutputTestEeprom)",
+  "2": "key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it",
+  "1": "EEPROM test pattern written (OutputTestEeprom)"
+ },
  "PurgeFlags": {
   "7": "purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain",
   "6": "purge battery-temperature timer running (PurgeEnable)",
@@ -822,6 +879,15 @@
   "6": "set with bit 7 when the monitor arms",
   "5": "purge monitor step state (PurgeMonStep)",
   "4": "purge monitor step state (PurgeMonStep, PurgeMonitorArm)"
+ },
+ "RefuelFlags": {
+  "7": "refuel confirmed: flex learning restarts (FlexSensorCheck; O2LearnEnable reads it)",
+  "5": "fuel used since the refuel past the limit (FlexSensorCheck)",
+  "4": "flex sensor reading changed by RefuelSensorChange or more (FlexSensorCheck)",
+  "3": "refuel detected by the flex sensor, first kind (FlexSensorCheck)",
+  "2": "refuel detected by the flex sensor, second kind (FlexSensorCheck)",
+  "1": "fuel level rose by RefuelLevelRise or more (FlexSensorCheck)",
+  "0": "vehicle stopped: refuel stop timer running (FlexSensorCheck)"
  },
  "SecurityFlags": {
   "7": "security message of the first kind received (CcdReceive); SkimState reads it",
@@ -888,6 +954,15 @@
   "1": "switch count at 8 or more (SpeedCtlSwitchCheck)",
   "0": "switch event handled (SpeedCtlSwitchRead)"
  },
+ "SpeedCtlFlags2": {
+  "6": "speed control cancel output driven (SpeedCtlCancelMonitor, IoCtl12 bit 7)",
+  "5": "speed control engage requested (SpeedCtlControl)",
+  "4": "speed control switch held (switch code)",
+  "3": "speed control switch held, first kind (switch code)",
+  "2": "speed control switch held, second kind (switch code)",
+  "1": "speed control state bit cleared on cancel (SpeedCtlControl)",
+  "0": "speed control just cancelled (set on cancel, cleared on the next engage) (SpeedCtlControl)"
+ },
  "SpeedCtlState": {
   "7": "speed control off: not engaged or cancelled (set at reset and on cancel)",
   "5": "set at reset, on cancel and on engage; meaning not settled",
@@ -933,6 +1008,11 @@
   "3": "closed position taken from the calibration default, probably (ThrottleClosedLearn only)",
   "1": "set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark",
   "0": "idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)"
+ },
+ "TuneValve2Flags": {
+  "7": "engine rpm at or above the switch point at $0C10,Z (TuneValve2Control)",
+  "6": "second tuning valve switch timer running (TuneValve2Period)",
+  "5": "second tuning valve on (mirrors IoDriver66 bit 13)"
  },
  "VssFlags": {
   "4": "vehicle speed reading valid (set at reset and by CalcVehicleSpeed)",

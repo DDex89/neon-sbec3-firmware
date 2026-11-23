@@ -3593,7 +3593,7 @@ Sub_124E0:
         ANDB    #$0F
         CBA
         BNE     L125D2
-        BSET    >OutputTestFlags,Z,#$04
+        BSET    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         TST     $035E,Z
         BEQ     L125B2
         BRSET   >EepromFlags,Z,#$80,L125B2               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -3618,7 +3618,7 @@ L125CA:
 L125D2:
         CLRA
 L125D4:
-        BCLR    >OutputTestFlags,Z,#$04
+        BCLR    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         CLR     >DiagCommand,Z
         CLR     >ActuatorTest,Z
         JSR     Sub_1610A
@@ -3665,7 +3665,7 @@ L12640:
 ; Called from: Reset
 ;---------------------------------------------------------------------------------------------------
 OutputTestEeprom:
-        BRCLR   >OutputTestFlags,Z,#$40,L126A6
+        BRCLR   >OutputTestFlags,Z,#$40,L126A6           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRSET   >IoCfg1FL,Z,#$01,L12666
         LDD     $03A5,Z
         ADDD    #$01
@@ -3675,13 +3675,13 @@ OutputTestEeprom:
         INCW    $03A5,Z
         BRA     L12666
 L12662:
-        BSET    >OutputTestFlags,Z,#$20
+        BSET    >OutputTestFlags,Z,#$20                  ; bit 5: EEPROM test write pending (OutputTestEeprom)
 L12666:
         BRSET   >EepromFlags,Z,#$80,L126A6               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   >EngineStateFlags,Z,#$80,L126A6          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >OutputTestFlags,Z,#$80,L126A6
+        BRSET   >OutputTestFlags,Z,#$80,L126A6           ; bit 7: EEPROM self-test started this drive (OutputTestEeprom)
         ORP     #$00E0
-        BSET    >OutputTestFlags,Z,#$80
+        BSET    >OutputTestFlags,Z,#$80                  ; bit 7: EEPROM self-test started this drive (OutputTestEeprom)
         LDAB    $04A9,Z
         INCB
         BEQ     L1269E
@@ -3693,22 +3693,22 @@ L12666:
         BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRA     L126A2
 L1269E:
-        BSET    >OutputTestFlags,Z,#$20
+        BSET    >OutputTestFlags,Z,#$20                  ; bit 5: EEPROM test write pending (OutputTestEeprom)
 L126A2:
         ANDP    #$FF1F
 L126A6:
         ORP     #$00E0
         BRSET   >EepromFlags,Z,#$80,L1270E               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
-        BRCLR   >OutputTestFlags,Z,#$04,L126FA
-        BRSET   >OutputTestFlags,Z,#$10,L126FA
-        BRCLR   >OutputTestFlags,Z,#$02,L126E0
+        BRCLR   >OutputTestFlags,Z,#$04,L126FA           ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
+        BRSET   >OutputTestFlags,Z,#$10,L126FA           ; bit 4: EEPROM test cell cleared (OutputTestEeprom)
+        BRCLR   >OutputTestFlags,Z,#$02,L126E0           ; bit 1: EEPROM test pattern written (OutputTestEeprom)
         CLRW    $03A5,Z
         LDD     #$0009
         STD     >EepromAddr,Z
         CLR     >EepromData,Z
         BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
-        BSET    >OutputTestFlags,Z,#$10
-        BCLR    >OutputTestFlags,Z,#$02
+        BSET    >OutputTestFlags,Z,#$10                  ; bit 4: EEPROM test cell cleared (OutputTestEeprom)
+        BCLR    >OutputTestFlags,Z,#$02                  ; bit 1: EEPROM test pattern written (OutputTestEeprom)
         BRA     L1270E
 L126E0:
         LDD     #$0097
@@ -3716,19 +3716,19 @@ L126E0:
         LDD     #$4AB5
         STD     >EepromData,Z
         BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
-        BSET    >OutputTestFlags,Z,#$02
+        BSET    >OutputTestFlags,Z,#$02                  ; bit 1: EEPROM test pattern written (OutputTestEeprom)
         BRA     L1270E
 L126FA:
         LDD     $03A7,Z
         CPD     #$4AB5
         BNE     L1270A
-        BSET    >OutputTestFlags,Z,#$40
+        BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRA     L1270E
 L1270A:
-        BCLR    >OutputTestFlags,Z,#$40
+        BCLR    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
 L1270E:
         ANDP    #$FF1F
-        BRCLR   >OutputTestFlags,Z,#$20,L1273E
+        BRCLR   >OutputTestFlags,Z,#$20,L1273E           ; bit 5: EEPROM test write pending (OutputTestEeprom)
         BRSET   >EepromFlags,Z,#$80,L1273E               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         ORP     #$00E0
         LDD     #$0097
@@ -3736,7 +3736,7 @@ L1270E:
         LDD     #$EEEE
         STD     >EepromData,Z
         BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
-        BCLR    >OutputTestFlags,Z,#$20
+        BCLR    >OutputTestFlags,Z,#$20                  ; bit 5: EEPROM test write pending (OutputTestEeprom)
         ANDP    #$FF1F
 L1273E:
         RTS
@@ -4062,7 +4062,7 @@ L12B0A:
         BRA     L12B62
 L12B0C:
         LDE     >EngineRpm,Z
-        BRCLR   >OutputTestFlags,Z,#$40,L12B2E
+        BRCLR   >OutputTestFlags,Z,#$40,L12B2E           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRCLR   >IoCfg1FL,Z,#$01,L12B26
         CPE     #$1F40
         LBCC    L12AA0
@@ -9934,7 +9934,7 @@ L16932:
         ORE     #$0008
 L16936:
         ORE     #$0010
-        BRSET   >OutputTestFlags,Z,#$04,L16944
+        BRSET   >OutputTestFlags,Z,#$04,L16944           ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         ORE     #$1800
 L16944:
         BRSET   >MainLoopCounter,Z,#$80,L1697A
@@ -9955,7 +9955,7 @@ L16968:
         ANDE    #$FFF7
 L1696C:
         ANDE    #$FFEF
-        BRSET   >OutputTestFlags,Z,#$04,L1697A
+        BRSET   >OutputTestFlags,Z,#$04,L1697A           ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         ANDE    #$E7FF
 L1697A:
         STE     >IoCfg1FL,Z
@@ -12882,7 +12882,7 @@ L1898C:
         BCS     L189C6
         INC     >MonData643,Z
 L189A4:
-        BSET    >OutputTestFlags,Z,#$04
+        BSET    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         TST     $035E,Z
         BEQ     L189C4
         BRSET   >EepromFlags,Z,#$80,L189C4               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -12895,7 +12895,7 @@ L189C4:
 L189C6:
         BCLR    >MonData645,Z,#$20
 L189CA:
-        BCLR    >OutputTestFlags,Z,#$04
+        BCLR    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         BCLR    >LdpPurgeTestFlags,Z,#$40                ; bit 6: sign of the last change in LdpPurgeTest
 L189D2:
         RTS

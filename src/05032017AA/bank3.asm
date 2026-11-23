@@ -266,7 +266,7 @@ L303AA:
         CMPA    #$95
         BNE     L303D0
         BRCLR   >Options0331,#$10,L30532                 ; bit 4: fuel level from the bus instead of the sender, probably
-        BSET    >FuelLevelFlags2,Z,#$01
+        BSET    >FuelLevelFlags2,Z,#$01                  ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
         LDD     $01,Y
         STAA    >FuelSenderScaled,Z
         LDAA    >SensorFaultFlags2,Z
@@ -1886,7 +1886,7 @@ L3155C:
         BRSET   >Options0330,#$40,L3156E
         BRA     L31584
 L3156E:
-        BSET    >FuelLevelFlags2,Z,#$01
+        BSET    >FuelLevelFlags2,Z,#$01                  ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
         LDD     $02,Y
         STAA    >FuelSenderScaled,Z
         LDAA    >SensorFaultFlags2,Z
@@ -4964,7 +4964,7 @@ L3368C:
         BRA     L336C0
 L336B4:
         BRSET   >PciRxFlags,Z,#$20,L33716
-        BRCLR   >FuelLevelFlags2,Z,#$01,L33716
+        BRCLR   >FuelLevelFlags2,Z,#$01,L33716           ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
 L336C0:
         LDAA    >FuelSenderScaled,Z
         CMPA    $0657,Z
@@ -4982,7 +4982,7 @@ L336D8:
         BCS     L33712
         INC     >MonData643,Z
 L336F0:
-        BSET    >OutputTestFlags,Z,#$04
+        BSET    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         TST     $0A94,Z
         BEQ     L33710
         BRSET   >EepromFlags,Z,#$80,L33710               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -4995,7 +4995,7 @@ L33710:
 L33712:
         BCLR    >MonData645,Z,#$20
 L33716:
-        BCLR    >OutputTestFlags,Z,#$04
+        BCLR    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         BCLR    >LdpFlags3,Z,#$40                        ; bit 6: MonTaskB first pass done
 L3371E:
         RTS
@@ -7525,12 +7525,12 @@ OutputTestDispatch:
         BCLR    >ControlFlags943,Z,#$10                  ; bit 4: ASD relay on, probably: set with bit 3 for the key-on prime (RunModeSwitch), cleared at stall; circuit checks of ASD-powered outputs read it
         LDE     >ControlFlags943,Z
         ORE     #$5102
-        BRSET   >OutputTestFlags,Z,#$04,L36260
+        BRSET   >OutputTestFlags,Z,#$04,L36260           ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         ORE     #$0800
 L36260:
         BRSET   >MainLoopCounter,Z,#$80,L36274
         ANDE    #$AEFD
-        BRSET   >OutputTestFlags,Z,#$04,L36274
+        BRSET   >OutputTestFlags,Z,#$04,L36274           ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         ANDE    #$F7FF
 L36274:
         STE     >ControlFlags943,Z
@@ -9699,7 +9699,7 @@ RunModeSwitch:
         ANDB    #$0F
         CBA
         BNE     L390EC
-        BSET    >OutputTestFlags,Z,#$04
+        BSET    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         TST     $0A94,Z
         BEQ     L390CC
         BRSET   >EepromFlags,Z,#$80,L390CC               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -9724,7 +9724,7 @@ L390E4:
 L390EC:
         CLRA
 L390EE:
-        BCLR    >OutputTestFlags,Z,#$04
+        BCLR    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
         CLR     >DiagCommand,Z
         CLR     >ActuatorTest,Z
         JSR     SciSendByte
@@ -9777,7 +9777,7 @@ L39172:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 OutputTestEeprom:
-        BRCLR   >OutputTestFlags,Z,#$40,L391D8
+        BRCLR   >OutputTestFlags,Z,#$40,L391D8           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRSET   >ControlFlags943,Z,#$01,L39198           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         LDD     $0C25,Z
         ADDD    #$01
@@ -9787,13 +9787,13 @@ OutputTestEeprom:
         INCW    $0C25,Z
         BRA     L39198
 L39194:
-        BSET    >OutputTestFlags,Z,#$20
+        BSET    >OutputTestFlags,Z,#$20                  ; bit 5: EEPROM test write pending (OutputTestEeprom)
 L39198:
         BRSET   >EepromFlags,Z,#$80,L391D8               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRCLR   >EngineStateFlags,Z,#$80,L391D8          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >OutputTestFlags,Z,#$80,L391D8
+        BRSET   >OutputTestFlags,Z,#$80,L391D8           ; bit 7: EEPROM self-test started this drive (OutputTestEeprom)
         ORP     #$00E0
-        BSET    >OutputTestFlags,Z,#$80
+        BSET    >OutputTestFlags,Z,#$80                  ; bit 7: EEPROM self-test started this drive (OutputTestEeprom)
         LDAB    $094F,Z
         INCB
         BEQ     L391D0
@@ -9805,22 +9805,22 @@ L39198:
         BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BRA     L391D4
 L391D0:
-        BSET    >OutputTestFlags,Z,#$20
+        BSET    >OutputTestFlags,Z,#$20                  ; bit 5: EEPROM test write pending (OutputTestEeprom)
 L391D4:
         ANDP    #$FF1F
 L391D8:
         ORP     #$00E0
         BRSET   >EepromFlags,Z,#$80,L39240               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
-        BRCLR   >OutputTestFlags,Z,#$04,L3922C
-        BRSET   >OutputTestFlags,Z,#$10,L3922C
-        BRCLR   >OutputTestFlags,Z,#$02,L39212
+        BRCLR   >OutputTestFlags,Z,#$04,L3922C           ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
+        BRSET   >OutputTestFlags,Z,#$10,L3922C           ; bit 4: EEPROM test cell cleared (OutputTestEeprom)
+        BRCLR   >OutputTestFlags,Z,#$02,L39212           ; bit 1: EEPROM test pattern written (OutputTestEeprom)
         CLRW    $0C25,Z
         LDD     #$0009
         STD     >EepromAddr,Z
         CLR     >EepromData,Z
         BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
-        BSET    >OutputTestFlags,Z,#$10
-        BCLR    >OutputTestFlags,Z,#$02
+        BSET    >OutputTestFlags,Z,#$10                  ; bit 4: EEPROM test cell cleared (OutputTestEeprom)
+        BCLR    >OutputTestFlags,Z,#$02                  ; bit 1: EEPROM test pattern written (OutputTestEeprom)
         BRA     L39240
 L39212:
         LDD     #$0097
@@ -9828,19 +9828,19 @@ L39212:
         LDD     #$4AB5
         STD     >EepromData,Z
         BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
-        BSET    >OutputTestFlags,Z,#$02
+        BSET    >OutputTestFlags,Z,#$02                  ; bit 1: EEPROM test pattern written (OutputTestEeprom)
         BRA     L39240
 L3922C:
         LDD     $0C27,Z
         CPD     #$4AB5
         BNE     L3923C
-        BSET    >OutputTestFlags,Z,#$40
+        BSET    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRA     L39240
 L3923C:
-        BCLR    >OutputTestFlags,Z,#$40
+        BCLR    >OutputTestFlags,Z,#$40                  ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
 L39240:
         ANDP    #$FF1F
-        BRCLR   >OutputTestFlags,Z,#$20,L39270
+        BRCLR   >OutputTestFlags,Z,#$20,L39270           ; bit 5: EEPROM test write pending (OutputTestEeprom)
         BRSET   >EepromFlags,Z,#$80,L39270               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         ORP     #$00E0
         LDD     #$0097
@@ -9848,7 +9848,7 @@ L39240:
         LDD     #$EEEE
         STD     >EepromData,Z
         BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
-        BCLR    >OutputTestFlags,Z,#$20
+        BCLR    >OutputTestFlags,Z,#$20                  ; bit 5: EEPROM test write pending (OutputTestEeprom)
         ANDP    #$FF1F
 L39270:
         RTS
@@ -9876,7 +9876,7 @@ L392A0:
         LDAB    >FaultSet0A,Z
         BITB    #$0C
         BNE     L392D8
-        BRSET   >AcPressureFlags,Z,#$10,L392C6
+        BRSET   >AcPressureFlags,Z,#$10,L392C6           ; bit 4: A/C pressure low: clutch off until AcPressureLowRestore (AcClutchControl)
         CMPA    >AcPressureHighCut
         BCC     L392DE
         CMPA    >AcPressureLowCut
@@ -9888,14 +9888,14 @@ L392C6:
         CMPA    >AcPressureLowRestore
         BCS     L392D8
 L392D2:
-        BCLR    >AcPressureFlags,Z,#$10
+        BCLR    >AcPressureFlags,Z,#$10                  ; bit 4: A/C pressure low: clutch off until AcPressureLowRestore (AcClutchControl)
         BRA     L392F6
 L392D8:
-        BSET    >AcPressureFlags,Z,#$10
+        BSET    >AcPressureFlags,Z,#$10                  ; bit 4: A/C pressure low: clutch off until AcPressureLowRestore (AcClutchControl)
         BRA     L39346
 L392DE:
         BRSET   >AcFlags,Z,#$80,L39298                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
-        BSET    >AcPressureFlags,Z,#$10
+        BSET    >AcPressureFlags,Z,#$10                  ; bit 4: A/C pressure low: clutch off until AcPressureLowRestore (AcClutchControl)
 L392E8:
         BSET    >AcFlags,Z,#$C0                          ; bit 7: A/C clutch engaged (AcClutchControl); set at reset; bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7
         CLRB
@@ -9913,7 +9913,7 @@ L39312:
         BRCLR   >AcFlags,Z,#$08,L3933A                   ; bit 3: A/C request from the bus (message bit 0 in CcdReceive)
 L39318:
         BRSET   >AcFlags,Z,#$04,L39346                   ; bit 2: bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test
-        BRCLR   <MonStatusPurge,Z,#$04,L3932E
+        BRCLR   <MonStatusPurge,Z,#$04,L3932E            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         BRCLR   >PurgeFlowTestFlags2,Z,#$04,L3932E       ; bit 2: A/C engaged during the purge test (AcFlags bit 6)
         BRCLR   >PurgeFlowTestFlags2,Z,#$08,L3933A       ; bit 3: bus A/C message bit 4 clear during the purge test (AcFlags bit 2)
 L3932E:
@@ -9934,13 +9934,13 @@ L3935C:
         BRCLR   >AcFlags,Z,#$80,L393F6                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
 L39362:
         BRCLR   $0C2B,Z,#$04,L39400
-        BRSET   >AcPressureFlags,Z,#$02,L39386
+        BRSET   >AcPressureFlags,Z,#$02,L39386           ; bit 1: A/C clutch cycle time running (AcCycleTimeMin, AcClutchControl)
         BRSET   >MonStatusA3,Z,#$04,L3937C
         BRSET   >MonStatusA4,Z,#$04,L3937C
         BRA     L393A2
 L3937C:
         BRSET   >AcFlags,Z,#$40,L393A2                   ; bit 6: A/C engaged for idle and purge test (AcClutchControl), cleared separately from bit 7
-        BSET    >AcPressureFlags,Z,#$02
+        BSET    >AcPressureFlags,Z,#$02                  ; bit 1: A/C clutch cycle time running (AcCycleTimeMin, AcClutchControl)
 L39386:
         LDAA    >BatteryTemp,Z
         CMPA    >AcCycleBattTempMin
@@ -9949,7 +9949,7 @@ L39386:
         BCC     L393A2
         CMPB    >AcCycleTimeMin
         BCS     L39404
-        BCLR    >AcPressureFlags,Z,#$02
+        BCLR    >AcPressureFlags,Z,#$02                  ; bit 1: A/C clutch cycle time running (AcCycleTimeMin, AcClutchControl)
         BRA     L393D8
 L393A2:
         BRSET   >Options032D,#$80,L393AC                 ; bit 7: selects branches in SwitchInputsRead, SecurityStatusCalc, SciSendByte and AcClutchControl
@@ -10006,20 +10006,20 @@ AcCutLogic:
         CMPB    #$14
         LBEQ    L396E6
         BRSET   <EquipmentFlags,Z,#$80,L39434            ; bit 7: A/C fitted (EquipmentDetect)
-        BCLR    >AcPressureFlags,Z,#$C8
+        BCLR    >AcPressureFlags,Z,#$C8                  ; bit 7: A/C cut state (AcCutLogic): WOT or coolant cut; bit 6: A/C cut state (AcCutLogic), cleared with bit 7; bit 3: A/C cut for coolant temperature (off below AcCutCoolantOff) (AcCutLogic)
         BCLR    >IdleAcFlags,Z,#$0F                      ; bit 3: A/C state bit cleared by IdleTargetControl and AcCutLogic; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic); bit 1: A/C idle state bit (IdleTargetControl, AcCutLogic); bit 0: A/C idle state bit (IdleTargetControl, AcCutLogic)
         LBRA    L395A8
 L39434:
         LDAA    >CoolantTemp,Z
         CMPA    >AcCutCoolantOn
         BCC     L39450
-        BRCLR   >AcPressureFlags,Z,#$08,L39454
+        BRCLR   >AcPressureFlags,Z,#$08,L39454           ; bit 3: A/C cut for coolant temperature (off below AcCutCoolantOff) (AcCutLogic)
         CMPA    >AcCutCoolantOff
         BHI     L39454
-        BCLR    >AcPressureFlags,Z,#$08
+        BCLR    >AcPressureFlags,Z,#$08                  ; bit 3: A/C cut for coolant temperature (off below AcCutCoolantOff) (AcCutLogic)
         BRA     L39454
 L39450:
-        BSET    >AcPressureFlags,Z,#$08
+        BSET    >AcPressureFlags,Z,#$08                  ; bit 3: A/C cut for coolant temperature (off below AcCutCoolantOff) (AcCutLogic)
 L39454:
         BRCLR   >FaultSet02,Z,#$C0,L3945C
         BRA     L39478
@@ -10031,7 +10031,7 @@ L3945C:
         CMPA    >AcCoolantMin
         BCC     L39488
 L39478:
-        BCLR    >AcPressureFlags,Z,#$C0
+        BCLR    >AcPressureFlags,Z,#$C0                  ; bit 7: A/C cut state (AcCutLogic): WOT or coolant cut; bit 6: A/C cut state (AcCutLogic), cleared with bit 7
         CLR     >AcWotCutTimer,Z
         CLR     >AcLaunchCutTimer,Z
         LBRA    L39550
@@ -10047,7 +10047,7 @@ L39488:
         TST     >AcWotCutTime
         BEQ     L394E2
         INC     >AcWotCutTimer,Z
-        BSET    >AcPressureFlags,Z,#$80
+        BSET    >AcPressureFlags,Z,#$80                  ; bit 7: A/C cut state (AcCutLogic): WOT or coolant cut
         BRA     L394E2
 L394B2:
         LDAA    >ThrottleAboveClosed,Z
@@ -10066,7 +10066,7 @@ L394BE:
 L394DA:
         CLR     >AcWotCutTimer,Z
 L394DE:
-        BCLR    >AcPressureFlags,Z,#$80
+        BCLR    >AcPressureFlags,Z,#$80                  ; bit 7: A/C cut state (AcCutLogic): WOT or coolant cut
 L394E2:
         LDAA    >AcLaunchCutTimer,Z
         BNE     L39516
@@ -10082,7 +10082,7 @@ L394E2:
         TST     >AcLaunchCutTime
         BEQ     L39550
         INC     >AcLaunchCutTimer,Z
-        BSET    >AcPressureFlags,Z,#$40
+        BSET    >AcPressureFlags,Z,#$40                  ; bit 6: A/C cut state (AcCutLogic), cleared with bit 7
         BRA     L39550
 L39516:
         LDAA    >VehicleSpeed,Z
@@ -10104,9 +10104,9 @@ L3952C:
 L39548:
         CLR     >AcLaunchCutTimer,Z
 L3954C:
-        BCLR    >AcPressureFlags,Z,#$40
+        BCLR    >AcPressureFlags,Z,#$40                  ; bit 6: A/C cut state (AcCutLogic), cleared with bit 7
 L39550:
-        BRCLR   >AcPressureFlags,Z,#$C8,L39558
+        BRCLR   >AcPressureFlags,Z,#$C8,L39558           ; bit 7: A/C cut state (AcCutLogic): WOT or coolant cut; bit 6: A/C cut state (AcCutLogic), cleared with bit 7; bit 3: A/C cut for coolant temperature (off below AcCutCoolantOff) (AcCutLogic)
         BRA     L39586
 L39558:
         BRSET   >IdleAcFlags,Z,#$04,L39566               ; bit 2: A/C idle state bit (IdleTargetControl, AcCutLogic)
@@ -10157,7 +10157,7 @@ L395DA:
         LBRA    L396E6
 L395FC:
         LDE     >EngineRpm,Z
-        BRCLR   >OutputTestFlags,Z,#$40,L3961E
+        BRCLR   >OutputTestFlags,Z,#$40,L3961E           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRCLR   >ControlFlags943,Z,#$01,L39616           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
         CPE     #$1F40
         LBCC    L395AE
@@ -11721,7 +11721,7 @@ L3A778:
         STAA    $0B0F,Z
 L3A77C:
         BRSET   >BusReqFlags,Z,#$10,L3A788               ; bit 4: bus A/C or fan request held: throttle below BusReqThrottleMax when it came (CcdReceive, timed by BusReqTimerTick)
-        BRCLR   >MonStatusPurge,Z,#$04,L3A790
+        BRCLR   >MonStatusPurge,Z,#$04,L3A790            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
 L3A788:
         LDAB    >FanPwmDuty,Z
         STAB    >FanPwmCount,Z
@@ -12852,7 +12852,7 @@ L3B8AC:
         BRCLR   >SpeedCtlState,Z,#$18,L3B8DC             ; bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
         LDAA    >VehicleSpeed,Z
         BRCLR   >SpeedCtlState,Z,#$10,L3B8D8             ; bit 4: coast hold, probably (after SpeedCtlCoastHoldTime)
-        BRCLR   >SpeedCtlFlags2,Z,#$02,L3B8D8
+        BRCLR   >SpeedCtlFlags2,Z,#$02,L3B8D8            ; bit 1: speed control state bit cleared on cancel (SpeedCtlControl)
         CMPA    >SpeedCtlSetSpeed,Z
         BLS     L3B8D8
         LDAA    >SpeedCtlSetSpeed,Z
@@ -12877,9 +12877,9 @@ L3B8F0:
         BCLR    >SpeedCtlState,Z,#$1F                    ; bit 4: coast hold, probably (after SpeedCtlCoastHoldTime); bit 0: set or resume engaged, probably
         BCLR    >SpeedCtlState2,Z,#$0F
         BCLR    >SpeedCtlFlags,Z,#$04                    ; bit 2: cleared on engage (SpeedCtlControl); read by SpeedCtlShift
-        BCLR    >SpeedCtlFlags2,Z,#$22
+        BCLR    >SpeedCtlFlags2,Z,#$22                   ; bit 5: speed control engage requested (SpeedCtlControl); bit 1: speed control state bit cleared on cancel (SpeedCtlControl)
         BSET    >SpeedCtlState,Z,#$A0                    ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel); bit 5: set at reset, on cancel and on engage; meaning not settled
-        BSET    >SpeedCtlFlags2,Z,#$01
+        BSET    >SpeedCtlFlags2,Z,#$01                   ; bit 0: speed control just cancelled (set on cancel, cleared on the next engage) (SpeedCtlControl)
         LBRA    L3BC24
 L3B92A:
         BRCLR   >SwitchInputs2,Z,#$02,L3B984             ; bit 1: speed control switch
@@ -12888,9 +12888,9 @@ L3B92A:
         BEQ     L3B93C
         STAB    $041A,Z
 L3B93C:
-        BRSET   >SpeedCtlFlags2,Z,#$20,L3BA38
+        BRSET   >SpeedCtlFlags2,Z,#$20,L3BA38            ; bit 5: speed control engage requested (SpeedCtlControl)
         BRSET   >SpeedCtlState,Z,#$80,L3BD68             ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel)
-        BSET    >SpeedCtlFlags2,Z,#$23
+        BSET    >SpeedCtlFlags2,Z,#$23                   ; bit 5: speed control engage requested (SpeedCtlControl); bit 1: speed control state bit cleared on cancel (SpeedCtlControl); bit 0: speed control just cancelled (set on cancel, cleared on the next engage) (SpeedCtlControl)
         BSET    >SpeedCtlState,Z,#$20                    ; bit 5: set at reset, on cancel and on engage; meaning not settled
         BCLR    >SpeedCtlState,Z,#$03                    ; bit 0: set or resume engaged, probably
         CLR     >SpeedCtlTimer2,Z
@@ -12913,8 +12913,8 @@ L3B97C:
         STAB    >SpeedCtlServoCmd,Z
         LBRA    L3BA18
 L3B984:
-        BRCLR   >SpeedCtlFlags2,Z,#$20,L3B9B8
-        BCLR    >SpeedCtlFlags2,Z,#$20
+        BRCLR   >SpeedCtlFlags2,Z,#$20,L3B9B8            ; bit 5: speed control engage requested (SpeedCtlControl)
+        BCLR    >SpeedCtlFlags2,Z,#$20                   ; bit 5: speed control engage requested (SpeedCtlControl)
         LDAA    $041A,Z
         CMPA    #$50
         LBHI    L3BAE0
@@ -12938,7 +12938,7 @@ L3B9B8:
         STAB    >SpeedCtlTimer2,Z
 L3B9CE:
         BRSET   >SpeedCtlState,Z,#$01,L3B9F6             ; bit 0: set or resume engaged, probably
-        BRSET   >SpeedCtlFlags2,Z,#$01,L3BD68
+        BRSET   >SpeedCtlFlags2,Z,#$01,L3BD68            ; bit 0: speed control just cancelled (set on cancel, cleared on the next engage) (SpeedCtlControl)
         BSET    >SpeedCtlState,Z,#$21                    ; bit 5: set at reset, on cancel and on engage; meaning not settled; bit 0: set or resume engaged, probably
         BCLR    >SpeedCtlState,Z,#$0E
         BSET    >SpeedCtlState2,Z,#$04
@@ -13050,7 +13050,7 @@ L3BB02:
 L3BB1A:
         STAA    $02,Y
         LDAB    >VehicleSpeed,Z
-        BRCLR   >SpeedCtlFlags2,Z,#$02,L3BB30
+        BRCLR   >SpeedCtlFlags2,Z,#$02,L3BB30            ; bit 1: speed control state bit cleared on cancel (SpeedCtlControl)
         CMPB    >SpeedCtlSetSpeed,Z
         BLS     L3BB30
         LDAB    >SpeedCtlSetSpeed,Z
@@ -13065,7 +13065,7 @@ L3BB34:
 L3BB40:
         BCLR    >SpeedCtlState,Z,#$91                    ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel); bit 4: coast hold, probably (after SpeedCtlCoastHoldTime); bit 0: set or resume engaged, probably
         BCLR    >SpeedCtlState2,Z,#$08
-        BCLR    >SpeedCtlFlags2,Z,#$02
+        BCLR    >SpeedCtlFlags2,Z,#$02                   ; bit 1: speed control state bit cleared on cancel (SpeedCtlControl)
         CLR     >SpeedCtlHoldCount,Z
         CLR     >SpeedCtlTimer2,Z
         CLR     $041A,Z
@@ -13074,7 +13074,7 @@ L3BB40:
         LBRA    L3BC24
 L3BB64:
         CLR     >SpeedCtlTimer2,Z
-        BCLR    >SpeedCtlFlags2,Z,#$01
+        BCLR    >SpeedCtlFlags2,Z,#$01                   ; bit 0: speed control just cancelled (set on cancel, cleared on the next engage) (SpeedCtlControl)
         BRCLR   >SwitchInputs2,Z,#$08,L3BCDA             ; bit 3: speed control switch
         LDAB    >SpeedCtlHoldCount,Z
         INCB
@@ -13833,11 +13833,11 @@ L3C33A:
 L3C33C:
         LDAA    >SpeedCtlSpeedErrorTrip
         BEQ     L3C360
-        BRCLR   >SpeedCtlFlags2,Z,#$40,L3C354
+        BRCLR   >SpeedCtlFlags2,Z,#$40,L3C354            ; bit 6: speed control cancel output driven (SpeedCtlCancelMonitor, IoCtl12 bit 7)
         SUBA    #$02
         CBA
         BCS     L3C368
-        BCLR    >SpeedCtlFlags2,Z,#$40
+        BCLR    >SpeedCtlFlags2,Z,#$40                   ; bit 6: speed control cancel output driven (SpeedCtlCancelMonitor, IoCtl12 bit 7)
         BRA     L3C358
 L3C354:
         CBA
@@ -13846,7 +13846,7 @@ L3C358:
         BSETW   >IoCtl12,Z,#$0080
         BRA     L3C36E
 L3C360:
-        BSET    >SpeedCtlFlags2,Z,#$40
+        BSET    >SpeedCtlFlags2,Z,#$40                   ; bit 6: speed control cancel output driven (SpeedCtlCancelMonitor, IoCtl12 bit 7)
 L3C364:
         CLR     >SpeedCtlCancelTimer,Z
 L3C368:
@@ -16406,7 +16406,7 @@ L3EB56:
         TST     >PurgeCellCount,Z
         BNE     L3EB9E
         BRSET   >PurgeFlags,Z,#$80,L3EB9E                ; bit 7: purge vapour learn done for this cycle (PurgeVaporLearn); cleared by PurgeMain
-        BRSET   <MonStatusPurge,Z,#$04,L3EB9E
+        BRSET   <MonStatusPurge,Z,#$04,L3EB9E            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         BRSET   >ThrottleState,Z,#$80,L3EBBA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >PurgeCtlFlags,Z,#$10,L3EB86
         TST     >PurgeAdaptHoldTimer,Z

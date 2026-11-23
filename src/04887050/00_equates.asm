@@ -260,6 +260,12 @@ AcFlags          equ $0387        ; $F8387
 ;                 bit 2: bus message bit 4 (CcdReceive / PciReceive), read by AcClutchControl and the purge test
 ;                 bit 1: A/C clutch output changed since the last pass (AcCutLogic)
 OutputTestFlags  equ $0389        ; $F8389
+;                 bit 7: EEPROM self-test started this drive (OutputTestEeprom)
+;                 bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
+;                 bit 5: EEPROM test write pending (OutputTestEeprom)
+;                 bit 4: EEPROM test cell cleared (OutputTestEeprom)
+;                 bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
+;                 bit 1: EEPROM test pattern written (OutputTestEeprom)
 IacEventTimer    equ $038A        ; $F838A
 MonStartDelay    equ $0394        ; $F8394
 SciUnlockState   equ $0399        ; $F8399

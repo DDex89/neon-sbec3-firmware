@@ -187,6 +187,12 @@ MonStatusO2Sensor1 equ $00BA        ; $F80BA
 MonStatusO2Sensor2 equ $00BB        ; $F80BB
 MonStatusO2Sensor4 equ $00BC        ; $F80BC
 MonStatusPurge   equ $00BD        ; $F80BD
+;                 bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest)
+;                 bit 6: purge flow monitor complete this drive cycle
+;                 bit 4: read by ObdReadiness
+;                 bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
+;                 bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
+;                 bit 1: read by ObdReadiness and PurgeFlowTest
 MonStatusEgrFlow equ $00BE        ; $F80BE
 MisfireRecordE4  equ $00BF        ; $F80BF
 MonStatusFuelSysRich1 equ $00C0        ; $F80C0
@@ -383,6 +389,12 @@ Temp4FF          equ $01FF        ; $F81FF
 StartFlags       equ $0200        ; $F8200
 O2InactiveTimer  equ $0207        ; $F8207
 FuelLevelFlags2  equ $0211        ; $F8211
+;                 bit 7: fuel sender fault reported this drive cycle (FuelSenderMonitor)
+;                 bit 4: fuel level change at shutdown under FuelSenderShutdownDiff (FuelSenderMonitor)
+;                 bit 3: filtered fuel sender value available (FuelLevelProcess)
+;                 bit 2: fuel level outside the monitor window (MonitorEnable)
+;                 bit 1: bus fuel level counted (FuelLevelProcess)
+;                 bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
 CamCrankOffset   equ $021A        ; $F821A
 FaultSet01       equ $021D        ; $F821D
 FaultSet03       equ $021F        ; $F821F
@@ -635,6 +647,11 @@ FuelModeFlags    equ $0427        ; $F8427
 ;                 bit 1: deceleration fuel cut active (FuelCutControl)
 ;                 bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
 IdleFlareFlags   equ $0428        ; $F8428
+;                 bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
+;                 bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
+;                 bit 5: bank 1 fuel pulse below O2PulseWidthMin: adaptive cell update held (O2LearnEnable)
+;                 bit 4: bank 2 fuel pulse below O2PulseWidthMin (O2LearnEnable)
+;                 bit 3: throttle opened since the last flare check (IdleFlareCheck)
 RevLimitFlags    equ $0429        ; $F8429
 FuelEventFlags   equ $042A        ; $F842A
 ;                 bit 7: first reference event after start: start pulses pending (Isr_GPT_IC1, FuelEventSchedule)
@@ -798,6 +815,12 @@ KnockRetardMax   equ $05A3        ; $F85A3
 KnockSignalLearn equ $05A4        ; $F85A4
 KnockCylRetardMax equ $05AC        ; $F85AC
 OutputTestFlags  equ $05B3        ; $F85B3
+;                 bit 7: EEPROM self-test started this drive (OutputTestEeprom)
+;                 bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
+;                 bit 5: EEPROM test write pending (OutputTestEeprom)
+;                 bit 4: EEPROM test cell cleared (OutputTestEeprom)
+;                 bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
+;                 bit 1: EEPROM test pattern written (OutputTestEeprom)
 IacEventTimer    equ $05B4        ; $F85B4
 RpmRate          equ $05BF        ; $F85BF
 AcSparkRateChange equ $05C3        ; $F85C3

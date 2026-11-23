@@ -360,13 +360,13 @@ L1040E:
 ;---------------------------------------------------------------------------------------------------
 IdleFlareCheck:
         BRCLR   >ThrottleState,Z,#$80,L1041A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BSET    >IdleFlareFlags,Z,#$08
+        BSET    >IdleFlareFlags,Z,#$08                   ; bit 3: throttle opened since the last flare check (IdleFlareCheck)
 L1041A:
         BRSET   >Options032E,#$40,L10426                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BRSET   >DriveFlags,Z,#$20,L104BA                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L10426:
         BRSET   >ThrottleState,Z,#$80,L104BA             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRCLR   >IdleFlareFlags,Z,#$08,L104BA
+        BRCLR   >IdleFlareFlags,Z,#$08,L104BA            ; bit 3: throttle opened since the last flare check (IdleFlareCheck)
         LDAA    >VehicleSpeed,Z
         CMPA    >IdleRollSpeed
         BCC     L104BA
@@ -382,38 +382,38 @@ L10426:
         BCC     L10462
         CLRB
 L10462:
-        BRCLR   >IdleFlareFlags,Z,#$80,L10474
+        BRCLR   >IdleFlareFlags,Z,#$80,L10474            ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         CMPB    >IdleFlareRpmOff
         BCC     L1047E
-        BCLR    >IdleFlareFlags,Z,#$80
+        BCLR    >IdleFlareFlags,Z,#$80                   ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         BRA     L1047E
 L10474:
         CMPB    >IdleFlareRpmOn
         BCS     L1047E
-        BSET    >IdleFlareFlags,Z,#$80
+        BSET    >IdleFlareFlags,Z,#$80                   ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
 L1047E:
         LDAA    >IdleFlareFlags,Z
         BITA    #$C0
         BNE     L1048A
-        BCLR    >IdleFlareFlags,Z,#$08
+        BCLR    >IdleFlareFlags,Z,#$08                   ; bit 3: throttle opened since the last flare check (IdleFlareCheck)
 L1048A:
         CMPB    >IdleFlareAcRpmOn
         BCS     L104A2
         BRSET   >Options033A,#$80,L1049C                 ; bit 7: idle flare check off (IdleFlareCheck skips when set)
         BRCLR   >ControlFlags943,Z,#$01,L104BE           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L1049C:
-        BSET    >IdleFlareFlags,Z,#$40
+        BSET    >IdleFlareFlags,Z,#$40                   ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         BRA     L104C2
 L104A2:
-        BRCLR   >IdleFlareFlags,Z,#$40,L104C2
+        BRCLR   >IdleFlareFlags,Z,#$40,L104C2            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         CMPB    >IdleFlareAcRpmOff
         BCS     L104BE
         BRSET   >Options033A,#$80,L104C2                 ; bit 7: idle flare check off (IdleFlareCheck skips when set)
         BRSET   >ControlFlags943,Z,#$01,L104C2           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
 L104BA:
-        BCLR    >IdleFlareFlags,Z,#$80
+        BCLR    >IdleFlareFlags,Z,#$80                   ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
 L104BE:
-        BCLR    >IdleFlareFlags,Z,#$40
+        BCLR    >IdleFlareFlags,Z,#$40                   ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
 L104C2:
         RTS
 
@@ -2629,7 +2629,7 @@ L11B34:
         BRSET   >SecurityFlags,Z,#$20,L11C8E             ; bit 5: SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)
         BRSET   >FuelModeFlags2,Z,#$10,L11C8E            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
         BRSET   >EventFlags,Z,#$10,L11C8E
-        BRSET   >IdleFlareFlags,Z,#$40,L11B66
+        BRSET   >IdleFlareFlags,Z,#$40,L11B66            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         BRCLR   >FuelModeFlags2,Z,#$40,L11CD2            ; bit 6: byte writes only; read by tip-in fuel, event corrections and purge
         BRCLR   >FuelModeFlags2,Z,#$80,L11C8E            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L11B66:
@@ -2660,7 +2660,7 @@ L11B9A:
         STAB    >Temp4F0,Z
         BRA     L11C20
 L11BC0:
-        BRCLR   >IdleFlareFlags,Z,#$40,L11BE2
+        BRCLR   >IdleFlareFlags,Z,#$40,L11BE2            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         LDX     #$1E8A
         LDY     #$87A8
         LDAB    #$04
@@ -4168,7 +4168,7 @@ LimitReasonCode:
         BRSET   >LimitCauseFlags,Z,#$40,L12BA4
         BRSET   >LimitCauseFlags,Z,#$20,L12BA8
         BRSET   >LimpFlags,Z,#$20,L12BAC
-        BRSET   >IdleFlareFlags,Z,#$40,L12BB0
+        BRSET   >IdleFlareFlags,Z,#$40,L12BB0            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         BRSET   >SecurityFlags,Z,#$20,L12BB4             ; bit 5: SKIM state count past $14: engine start blocked, probably (StarterCut, CrankFuel, EventCorrections read it)
         BRSET   >FuelModeFlags2,Z,#$10,L12BB8            ; bit 4: WOT lean fallback active (WotLeanMonitor, FlexSensorCheck)
         BRSET   >MisfireFlags,Z,#$04,L12BBC              ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
@@ -5147,7 +5147,7 @@ L1462C:
         LDAB    >FuelModeFlags2,Z
         BITB    #$D0
         BNE     L146C8
-        BRSET   >IdleFlareFlags,Z,#$40,L146C8
+        BRSET   >IdleFlareFlags,Z,#$40,L146C8            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         LDAB    >RevLimitFlags,Z
         BITB    #$F0
         BNE     L146C8
@@ -5653,7 +5653,7 @@ L14BCA:
         BSET    <Scratch1,Z,#$20
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
 L14BDC:
-        BRCLR   >IdleFlareFlags,Z,#$40,L14BEE
+        BRCLR   >IdleFlareFlags,Z,#$40,L14BEE            ; bit 6: idle flare with the A/C clutch condition met (IdleFlareCheck); event corrections, closed loop and O2 cross check read it
         BSET    <Scratch0,Z,#$A0
         BSET    <Scratch1,Z,#$A0
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
@@ -6732,7 +6732,7 @@ L156D0:
         LDE     #$8000
 L156D4:
         BRCLR   >Options033E,#$02,L15742                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
-        BRSET   >MonStatusPurge,Z,#$04,L156E6
+        BRSET   >MonStatusPurge,Z,#$04,L156E6            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         BRCLR   >PurgeFlowTestFlags2,Z,#$40,L15742       ; bit 6: purge test restore delay running: closed loop waits (PurgeFlowTest, ClosedLoopManager)
 L156E6:
         PSHM    E
@@ -6866,7 +6866,7 @@ L15818:
         BRA     L15846
 L1582A:
         BRCLR   >Options033E,#$02,L15846                 ; bit 1: leak detection pump fitted (LDP monitor and tests; start and closed-loop branches)
-        BRSET   >MonStatusPurge,Z,#$04,L1583C
+        BRSET   >MonStatusPurge,Z,#$04,L1583C            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         BRCLR   >PurgeFlowTestFlags2,Z,#$40,L15846       ; bit 6: purge test restore delay running: closed loop waits (PurgeFlowTest, ClosedLoopManager)
 L1583C:
         LDAA    >Temp4F4,Z
@@ -7156,7 +7156,7 @@ L15B22:
 L15B30:
         LBNE    L15BF2
         BRSET   >FlexLearnFlags7,Z,#$20,L15BF2           ; bit 5: flex estimate reset or refuel: closed-loop learning restarts (FlexLearnMain; read by O2LearnEnable)
-        BRSET   >RefuelFlags,Z,#$80,L15BF2
+        BRSET   >RefuelFlags,Z,#$80,L15BF2               ; bit 7: refuel confirmed: flex learning restarts (FlexSensorCheck; O2LearnEnable reads it)
         LDAA    >SystemTestMode,Z
         CMPA    #$01
         LBEQ    L15BF2
@@ -7172,18 +7172,18 @@ L15B54:
         LDE     >FuelPulseBank1,Z
         CPE     >O2PulseWidthMin
         BCC     L15B7C
-        BSET    >IdleFlareFlags,Z,#$20
+        BSET    >IdleFlareFlags,Z,#$20                   ; bit 5: bank 1 fuel pulse below O2PulseWidthMin: adaptive cell update held (O2LearnEnable)
         BRA     L15B80
 L15B7C:
-        BCLR    >IdleFlareFlags,Z,#$20
+        BCLR    >IdleFlareFlags,Z,#$20                   ; bit 5: bank 1 fuel pulse below O2PulseWidthMin: adaptive cell update held (O2LearnEnable)
 L15B80:
         LDE     >FuelPulseBank2,Z
         CPE     >O2PulseWidthMin
         BCC     L15B90
-        BSET    >IdleFlareFlags,Z,#$10
+        BSET    >IdleFlareFlags,Z,#$10                   ; bit 4: bank 2 fuel pulse below O2PulseWidthMin (O2LearnEnable)
         BRA     L15B94
 L15B90:
-        BCLR    >IdleFlareFlags,Z,#$10
+        BCLR    >IdleFlareFlags,Z,#$10                   ; bit 4: bank 2 fuel pulse below O2PulseWidthMin (O2LearnEnable)
 L15B94:
         CLRB
         TBXK
@@ -7368,11 +7368,11 @@ L15D72:
         CPY     #$806B
         BEQ     L15D90
         BRSET   >O2ResetFlags2,Z,#$40,L15E84             ; bit 6: adaptive cell selection: the last cell reached (O2LearnEnable)
-        BRSET   >IdleFlareFlags,Z,#$10,L15E84
+        BRSET   >IdleFlareFlags,Z,#$10,L15E84            ; bit 4: bank 2 fuel pulse below O2PulseWidthMin (O2LearnEnable)
         BRA     L15D9C
 L15D90:
         BRSET   >O2ResetFlags2,Z,#$80,L15E84             ; bit 7: adaptive cell selection: not the last cell (O2LearnEnable)
-        BRSET   >IdleFlareFlags,Z,#$20,L15E84
+        BRSET   >IdleFlareFlags,Z,#$20,L15E84            ; bit 5: bank 1 fuel pulse below O2PulseWidthMin: adaptive cell update held (O2LearnEnable)
 L15D9C:
         ORP     #$00E0
         LDY     <Scratch4,Z
@@ -9048,7 +9048,7 @@ L171F6:
         BRSET   >FaultSet13,Z,#$40,L1722C
         BRSET   >FaultSet13,Z,#$20,L1722C
         BRSET   >PciRxFlags,Z,#$20,L1722C
-        BRCLR   >FuelLevelFlags2,Z,#$01,L17280
+        BRCLR   >FuelLevelFlags2,Z,#$01,L17280           ; bit 0: fuel level received from the bus (CcdReceive message $95, PciReceive; calibration bit $0331.4)
         BRCLR   >FlexLearnFlags,Z,#$20,L17220            ; bit 5: refuel detected: fuel level rose or was below FlexRefuelLevelMax at start (FlexLearnMain, FlexLearnInitRun)
         BRCLR   >FlexLearnFlags,Z,#$10,L17280            ; bit 4: enough fuel used since the refuel (FlexLearnFuelSum past FlexRefuelFuelMin): new fuel reached the engine
 L17220:
@@ -11171,7 +11171,7 @@ L191D2:
 L191DC:
         BCLR    >IdleFlags8,Z,#$20                       ; bit 5: idle air start hold active (IacStepFlags bit 5, IdleRpmLoop)
 L191E0:
-        BRCLR   >IdleFlareFlags,Z,#$80,L191EC
+        BRCLR   >IdleFlareFlags,Z,#$80,L191EC            ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         BSET    >IdleFlags8,Z,#$10                       ; bit 4: idle flare seen (IdleFlareFlags bit 7, IdleRpmLoop)
         BRA     L191FA
 L191EC:
@@ -11407,8 +11407,8 @@ L19440:
         BRA     L19478
 L19466:
         BRCLR   >Options0337,#$01,L19478                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
-        BRSET   >IdleDipFlags,Z,#$40,L19496
-        BRSET   >IdleDipFlags,Z,#$08,L19496
+        BRSET   >IdleDipFlags,Z,#$40,L19496              ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
+        BRSET   >IdleDipFlags,Z,#$08,L19496              ; bit 3: idle air kick applied (IacKickHold, IdleTargetControl)
 L19478:
         BRCLR   >Options032C,#$40,L19490                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >Options032F,#$08,L19490                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
@@ -11825,7 +11825,7 @@ L19850:
         DEC     >DashpotTimerMoving,Z
 L1985A:
         BCLR    >IdleFlags2,Z,#$80                       ; bit 7: shift idle timer running (IacShiftTimer not zero, IdleTargetControl)
-        BRCLR   >IdleFlareFlags,Z,#$80,L19876
+        BRCLR   >IdleFlareFlags,Z,#$80,L19876            ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         CLR     >DashpotTimer2,Z
         CLR     >DashpotTimerMoving,Z
         LDAA    >IacShiftHold
@@ -12587,8 +12587,8 @@ L1A1DE:
         LDAA    >SegmentRpm,Z
         CMPA    >IacKickRpmMax
         BCC     L1A20A
-        BRCLR   >IdleDipFlags,Z,#$40,L1A20A
-        BRCLR   >IdleDipFlags,Z,#$08,L1A212
+        BRCLR   >IdleDipFlags,Z,#$40,L1A20A              ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
+        BRCLR   >IdleDipFlags,Z,#$08,L1A212              ; bit 3: idle air kick applied (IacKickHold, IdleTargetControl)
 L1A20A:
         BCLR    >IdleFlags,Z,#$10                        ; bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
         LBRA    L1A536
@@ -12596,7 +12596,7 @@ L1A212:
         LDAA    >IacKickHold
         STAA    >IacKickTimer,Z
         BSET    >IdleFlags,Z,#$10                        ; bit 4: idle air target set from the coolant branch of IdleTargetControl, probably; read by IacLearn
-        BSET    >IdleDipFlags,Z,#$08
+        BSET    >IdleDipFlags,Z,#$08                     ; bit 3: idle air kick applied (IacKickHold, IdleTargetControl)
         BRSET   >Options032E,#$40,L1A232                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         LDX     #IacDipKick
         BRCLR   >SwitchInputs2,Z,#$20,L1A240             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
@@ -13125,7 +13125,7 @@ L1A780:
         CMPA    >IdleMapLearnBand
         BCC     L1A7FE
         BRCLR   >Options0337,#$01,L1A794                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
-        BRSET   >IdleDipFlags,Z,#$40,L1A7FE
+        BRSET   >IdleDipFlags,Z,#$40,L1A7FE              ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
         BRA     L1A7A6
 L1A794:
         BRCLR   >EquipmentFlags,Z,#$04,L1A7A6            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
@@ -13206,7 +13206,7 @@ L1A85E:
 L1A862:
         STAB    $0325,Z
         BRCLR   >IdleFlags6,Z,#$80,L1A8AC                ; bit 7: vehicle speed below the MAP-loop speed limit (IdleMapLoop)
-        BRSET   >MonStatusPurge,Z,#$04,L1A8AC
+        BRSET   >MonStatusPurge,Z,#$04,L1A8AC            ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         LDAB    >MainLoopCounter,Z
         BITB    >IacCoastLoopMask
         BNE     L1A8AC
@@ -13250,7 +13250,7 @@ IdleStopRpmCheck:
         BRA     L1A8E6
 L1A8DA:
         BRCLR   >Options0337,#$01,L1A8E6                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
-        BRSET   >IdleDipFlags,Z,#$40,L1A980
+        BRSET   >IdleDipFlags,Z,#$40,L1A980              ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
 L1A8E6:
         BRCLR   >Options032C,#$40,L1A8FE                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRSET   >Options032F,#$08,L1A8FE                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
@@ -13521,7 +13521,7 @@ L1AB66:
         BRA     L1AB8E
 L1AB7A:
         BRCLR   >Options0337,#$01,L1AB8E                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
-        BRCLR   >IdleDipFlags,Z,#$40,L1AB8E
+        BRCLR   >IdleDipFlags,Z,#$40,L1AB8E              ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
 L1AB86:
         LDAB    >IacAcRequestAdder
         CLRA
@@ -13616,7 +13616,7 @@ L1AC2A:
         BRA     L1AC52
 L1AC3E:
         BRCLR   >Options0337,#$01,L1AC52                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
-        BRCLR   >IdleDipFlags,Z,#$40,L1AC52
+        BRCLR   >IdleDipFlags,Z,#$40,L1AC52              ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
 L1AC4A:
         LDAB    >IdleMapAcAdder
         CLRA
@@ -13873,7 +13873,7 @@ L1AEC6:
         BRCLR   >IdleFlags,Z,#$80,L1AEE2                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         TST     >DashpotTimer2,Z
         BNE     L1AEE2
-        BRSET   >IdleFlareFlags,Z,#$80,L1AEE2
+        BRSET   >IdleFlareFlags,Z,#$80,L1AEE2            ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         BRSET   >ThrottleState,Z,#$01,L1AEE2             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BSET    <Scratch8,Z,#$20
 L1AEE2:
@@ -13979,7 +13979,7 @@ L1B010:
         BRA     L1B038
 L1B024:
         BRCLR   >Options0337,#$01,L1B038                 ; bit 0: idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect
-        BRCLR   >IdleDipFlags,Z,#$40,L1B038
+        BRCLR   >IdleDipFlags,Z,#$40,L1B038              ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
 L1B030:
         LDAB    >IacAcRequestAdder
         CLRA
@@ -14088,7 +14088,7 @@ L1B154:
         BLS     L1B16E
         STAA    >IdleRampBlockTimer,Z
 L1B16E:
-        BRSET   >IdleDipFlags,Z,#$40,L1B186
+        BRSET   >IdleDipFlags,Z,#$40,L1B186              ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
         BRCLR   >EquipmentFlags,Z,#$04,L1B194            ; bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
         BRSET   >FaultSet0F,Z,#$08,L1B194
         BRCLR   >SwitchInputs2,Z,#$40,L1B194             ; bit 6: switch input used by the idle air code (load switch, probably power steering or A/C)
@@ -14206,7 +14206,7 @@ L1B2AE:
         CPD     >IdleDipRpm
         BLS     L1B2FC
         CLRB
-        BRCLR   >IdleDipFlags,Z,#$80,L1B310
+        BRCLR   >IdleDipFlags,Z,#$80,L1B310              ; bit 7: idle dip timer restarted (IdleRpmTarget)
         LDAA    >IdleDipTime,Z
         CMPA    #$FF
         BEQ     L1B2F4
@@ -14215,11 +14215,11 @@ L1B2AE:
         BRA     L1B304
 L1B2F4:
         CLRB
-        BCLR    >IdleDipFlags,Z,#$80
+        BCLR    >IdleDipFlags,Z,#$80                     ; bit 7: idle dip timer restarted (IdleRpmTarget)
         BRA     L1B310
 L1B2FC:
         CLR     >IdleDipTime,Z
-        BSET    >IdleDipFlags,Z,#$80
+        BSET    >IdleDipFlags,Z,#$80                     ; bit 7: idle dip timer restarted (IdleRpmTarget)
 L1B304:
         LDAA    >IdleDipTime,Z
         LDX     #IdleTargetDipAdder
@@ -14286,7 +14286,7 @@ L1B39C:
 L1B3A8:
         BRSET   >IdleFlags2,Z,#$20,L1B518                ; bit 5: idle target ramp requested (IdleRpmTarget)
         BRCLR   >IdleFlags6,Z,#$10,L1B518                ; bit 4: idle conditions for learning met (IdleStateFlags)
-        BRSET   >IdleDipFlags,Z,#$04,L1B518
+        BRSET   >IdleDipFlags,Z,#$04,L1B518              ; bit 2: idle start time counted; sensor faults stop the correction (IdleRpmTarget)
         LDAA    >AirTemp,Z
         BRSET   >IdleFlags2,Z,#$01,L1B3DE                ; bit 0: idle target raise, cause 1 (IdleRpmTarget)
         CMPA    >IdleRampAirMin
@@ -14512,7 +14512,7 @@ L1B680:
         BHI     L1B696
         CLR     >IdleFlags9,Z
 L1B696:
-        BRCLR   >OutputTestFlags,Z,#$40,L1B6BA
+        BRCLR   >OutputTestFlags,Z,#$40,L1B6BA           ; bit 6: EEPROM test pattern $4AB5 found (Reset, OutputTestEeprom); AcCutLogic and IdleRpmTarget read it
         BRSET   >AcFlags,Z,#$80,L1B6BA                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         LDD     >Count3s,Z
         CPD     #$063A
@@ -14539,17 +14539,17 @@ L1B6DE:
         DEC     >IdleRpmRefTimer,Z
 L1B6E8:
         BRSET   >IdleFlags,Z,#$40,L1B700                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BRCLR   >IdleDipFlags,Z,#$20,L1B700
+        BRCLR   >IdleDipFlags,Z,#$20,L1B700              ; bit 5: idle rpm reference taken from SegmentRpm (IdleRpmTarget)
         LDAA    >IdleRpmRefHold
         STAA    >IdleRpmRefTimer,Z
-        BCLR    >IdleDipFlags,Z,#$20
+        BCLR    >IdleDipFlags,Z,#$20                     ; bit 5: idle rpm reference taken from SegmentRpm (IdleRpmTarget)
 L1B700:
         LDAA    >IdleRpmRefGearTimer,Z
         LBNE    L1B760
         LDAA    >IdleRpmRefTimer,Z
         LBNE    L1B760
         BRCLR   >IdleFlags,Z,#$40,L1B746                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BRCLR   >IdleDipFlags,Z,#$20,L1B750
+        BRCLR   >IdleDipFlags,Z,#$20,L1B750              ; bit 5: idle rpm reference taken from SegmentRpm (IdleRpmTarget)
         INC     $037B,Z
         LDAA    $037B,Z
         CMPA    >IdleRpmRefStepTime
@@ -14570,7 +14570,7 @@ L1B746:
 L1B750:
         LDD     >SegmentRpm,Z
         STD     >IdleRpmRef,Z
-        BSET    >IdleDipFlags,Z,#$20
+        BSET    >IdleDipFlags,Z,#$20                     ; bit 5: idle rpm reference taken from SegmentRpm (IdleRpmTarget)
         CLR     $037B,Z
 L1B760:
         LDD     >IdleRpmRef,Z
@@ -14588,7 +14588,7 @@ L1B76E:
         INC     >IdleStartTime,Z
         LBRA    L1B8E8
 L1B796:
-        BSET    >IdleDipFlags,Z,#$04
+        BSET    >IdleDipFlags,Z,#$04                     ; bit 2: idle start time counted; sensor faults stop the correction (IdleRpmTarget)
         BRSET   >FaultSet02,Z,#$80,L1B8E8
         BRSET   >FaultSet02,Z,#$40,L1B8E8
         BRSET   >FaultSet02,Z,#$08,L1B8E8
@@ -14597,7 +14597,7 @@ L1B796:
         BRSET   >FaultSet05,Z,#$20,L1B8E8
         BRSET   >FaultSet05,Z,#$10,L1B8E8
         BRSET   >SwitchMonFlags,Z,#$40,L1B8E8            ; bit 6: park/neutral switch monitor: fault reported (PnSwitchMonitor)
-        BCLR    >IdleDipFlags,Z,#$04
+        BCLR    >IdleDipFlags,Z,#$04                     ; bit 2: idle start time counted; sensor faults stop the correction (IdleRpmTarget)
         LDAA    >IdleDipTimer2,Z
         BEQ     L1B7D8
         DEC     >IdleDipTimer2,Z
@@ -14612,25 +14612,25 @@ L1B7E2:
 L1B7EC:
         LDAA    >IacShiftTimer,Z
         BEQ     L1B808
-        BCLR    >IdleDipFlags,Z,#$10
+        BCLR    >IdleDipFlags,Z,#$10                     ; bit 4: idle dip second timer armed (IdleRpmTarget)
         BRCLR   >IdleFlags,Z,#$02,L1B820                 ; bit 1: shift idle step applied (IacShiftStepApply)
         BRCLR   >IdleFlags,Z,#$40,L1B820                 ; bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled
-        BSET    >IdleDipFlags,Z,#$10
+        BSET    >IdleDipFlags,Z,#$10                     ; bit 4: idle dip second timer armed (IdleRpmTarget)
         BRA     L1B820
 L1B808:
-        BCLR    >IdleDipFlags,Z,#$02
-        BRCLR   >IdleDipFlags,Z,#$10,L1B840
+        BCLR    >IdleDipFlags,Z,#$02                     ; bit 1: idle dip second timer started (IdleRpmTarget)
+        BRCLR   >IdleDipFlags,Z,#$10,L1B840              ; bit 4: idle dip second timer armed (IdleRpmTarget)
         LDAA    >IdleDipTimer2Init
         STAA    >IdleDipTimer2,Z
-        BCLR    >IdleDipFlags,Z,#$10
+        BCLR    >IdleDipFlags,Z,#$10                     ; bit 4: idle dip second timer armed (IdleRpmTarget)
         BRA     L1B840
 L1B820:
         BRSET   >IdleFlags,Z,#$08,L1B82E
         BRSET   >IdleFlags,Z,#$04,L1B82E
         BRA     L1B840
 L1B82E:
-        BRSET   >IdleDipFlags,Z,#$02,L1B840
-        BSET    >IdleDipFlags,Z,#$02
+        BRSET   >IdleDipFlags,Z,#$02,L1B840              ; bit 1: idle dip second timer started (IdleRpmTarget)
+        BSET    >IdleDipFlags,Z,#$02                     ; bit 1: idle dip second timer started (IdleRpmTarget)
         LDAA    >IdleDipTimerInit
         STAA    >IdleDipTimer,Z
 L1B840:
@@ -14679,7 +14679,7 @@ L1B8BE:
         LDD     $02,X
         CPD     >SegmentRpm,Z
         BLS     L1B8E8
-        BRSET   >IdleDipFlags,Z,#$40,L1B8F4
+        BRSET   >IdleDipFlags,Z,#$40,L1B8F4              ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
         CPE     >IdleRpmDrop,Z
         BHI     L1B8F0
         LDAA    $037A,Z
@@ -14688,11 +14688,11 @@ L1B8BE:
         INC     $037A,Z
         BRA     L1B8F4
 L1B8E2:
-        BSET    >IdleDipFlags,Z,#$40
+        BSET    >IdleDipFlags,Z,#$40                     ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
         BRA     L1B8F0
 L1B8E8:
-        BCLR    >IdleDipFlags,Z,#$40
-        BCLR    >IdleDipFlags,Z,#$08
+        BCLR    >IdleDipFlags,Z,#$40                     ; bit 6: idle dip correction active (IdleRpmTarget, IdleTargetControl)
+        BCLR    >IdleDipFlags,Z,#$08                     ; bit 3: idle air kick applied (IacKickHold, IdleTargetControl)
 L1B8F0:
         CLR     $037A,Z
 L1B8F4:
@@ -17546,7 +17546,7 @@ L1E790:
         BRCLR   >IdleFlags,Z,#$80,L1E7B8                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
         TST     >DashpotTimer2,Z
         BNE     L1E7B8
-        BRSET   >IdleFlareFlags,Z,#$80,L1E7B8
+        BRSET   >IdleFlareFlags,Z,#$80,L1E7B8            ; bit 7: idle flare: rpm above IdleFlareRpmOn (off below IdleFlareRpmOff) (IdleFlareCheck)
         BRSET   >ThrottleState,Z,#$01,L1E7B8             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BSET    >SparkFlags3,Z,#$40
         BRA     L1E7DE
